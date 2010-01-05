@@ -1,0 +1,58 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="css/options.css" />
+	<script>
+		function fillVals() {
+			var store = localStorage['popupcolor'];
+			for(var i=0; i < document.optform.popupcolor.length; ++i) {
+				if(document.optform.popupcolor[i].value == store) {
+					document.optform.popupcolor[i].selected = true;
+					break;
+				}
+			}
+			store = localStorage['highlight'];
+			if(store == 'yes') {
+				document.optform.highlighttext[0].selected = true;
+			}
+			else
+				document.optform.highlighttext[1].selected = true;
+		}
+		
+		function getVals() {
+			localStorage['popupcolor'] = document.optform.popupcolor.value;
+			localStorage['highlight'] = document.optform.highlighttext.value;
+			chrome.extension.getBackgroundPage().rcxMain.config.css = localStorage["popupcolor"];
+			chrome.extension.getBackgroundPage().rcxMain.config.highlight = localStorage["highlight"];
+		}
+		window.onload = fillVals;
+	</script>
+</head>
+	<body>
+		<div id="rikaikun_options">
+			<div id="headers">
+				<div id="general" class="header">General</div><div id="keyboard" class="header">Keyboard</div><div id="worddict" class="header">Word Dictionary</div><div id="kanjidict" class="header">Kanji Dictionary</div><div id="namedict" class="header">Names Dictionary</div><div id="clipboard" class="header">Clipboard</div>
+			</div>
+			<div id="options">
+				<form id="optform" name="optform">
+					<div id="gencon">
+						Popup color: 
+						<select id="popupcolor" name="popupcolor">
+							<option value="blue">Blue</option>
+							<option value="lightblue">Light Blue</option>
+							<option value="black">Black</option>
+							<option value="yellow">Yellow</option>
+						</select>
+						<br />
+						Highlight text?
+						<select id="highlighttext" name="highlighttext">
+							<option value="yes">Yes</option>
+							<option value="no">No</option>
+						</select>
+						<br />
+						<input type="submit" onClick="getVals()" value="Submit" />
+					</div>	
+				</form>
+			</div>
+		</div>
+	</body>
+</html>
