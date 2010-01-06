@@ -696,9 +696,9 @@ var rcxContent = {
 		
 /*  		console.log( "offset: " + ro + " parentContainer: " +  rp.nodeName + 
 			" total size: " + (rp.data?rp.data.length:"") + " target: " + ev.target.nodeName + 
-			" parentparent: " + rp.parentNode.nodeName); 
+			" parentparent: " + rp.parentNode.nodeName);  */
 		
- */
+
 		
 		if (ev.target == tdata.prevTarget) {
 			//console.log("exit due to same target");
@@ -720,7 +720,7 @@ var rcxContent = {
 		if((rp.data) && ro == rp.data.length) {
 			// A special exception is the WBR tag which is inline but doesn't
 			// contain text.
-			if((rp.nextSibling) && rp.nextSibling.nodeName == 'WBR') {
+			if((rp.nextSibling) && (rp.nextSibling.nodeName == 'WBR')) {
 				rp = rp.nextSibling.nextSibling;
 				ro = 0;
 			}
@@ -736,8 +736,16 @@ var rcxContent = {
 				ro = 0;
 			}
 		}
+		// The case where the before div is empty so the false spot is in the parent
+		// But we should be able to take the target.
+		if(rp && rp.parentNode != ev.target && ro == 1) {
+			rp = ev.target.firstChild;
+			ro=0;
+		}
+		
 		// Otherwise, we're off in nowhere land and we should go home.
-		if(!(rp) || rp.parentNode != ev.target){
+		// offset should be 0 or max in this case.
+		else if(!(rp) || ((rp.parentNode != ev.target))){
 			rp = null;
 			ro = -1;
 			
