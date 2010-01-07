@@ -1,6 +1,6 @@
 {
 	"name": "rikaikun",
-	"version": "0.7",
+	"version": "0.8",
 	
 	"description": "A port of rikaichan for chrome. Translate Japanese by hovering over words.",
 	"icons": { "48": "images/icon48.png",
