@@ -659,7 +659,7 @@ var rcxContent = {
 		tdata = window.rikaichan;
 		
 		if (!e) {
-			this.hidePopup();
+			rcxContent.hidePopup();
 			return;
 		}
 
@@ -686,6 +686,13 @@ var rcxContent = {
 	},
 	
 */
+
+	getFirstTextChild: function(node) {
+		return document.evaluate('descendant::text()[not(parent::rp) and not(ancestor::rt)]',
+							node, null, XPathResult.ANY_TYPE, null).iterateNext();
+			//
+	},
+	
 	onMouseMove: function(ev) { rcxContent._onMouseMove(ev); },
 	_onMouseMove: function(ev) {
 		var tdata = window.rikaichan;	// per-tab data
@@ -696,7 +703,7 @@ var rcxContent = {
 		
 /*  		console.log( "offset: " + ro + " parentContainer: " +  rp.nodeName + 
 			" total size: " + (rp.data?rp.data.length:"") + " target: " + ev.target.nodeName + 
-			" parentparent: " + rp.parentNode.nodeName);  */
+			" parentparent: " + rp.parentNode.nodeName);   */
 		
 
 		
@@ -710,6 +717,9 @@ var rcxContent = {
 			clearTimeout(tdata.timer);
 			tdata.timer = null;
 		}
+		
+		if (ev.target.nodeName == 'LABEL')
+			console.log('label');
 		
 		// This is to account for bugs in caretRangeFromPoint
 		// It includes the fact that it returns text nodes over non text nodes
@@ -738,8 +748,9 @@ var rcxContent = {
 		}
 		// The case where the before div is empty so the false spot is in the parent
 		// But we should be able to take the target.
+		// The 1 seems random but it actually represents the preceding empty tag
 		if(rp && rp.parentNode != ev.target && ro == 1) {
-			rp = ev.target.firstChild;
+			rp = rcxContent.getFirstTextChild(ev.target);
 			ro=0;
 		}
 		
