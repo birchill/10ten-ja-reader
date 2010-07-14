@@ -1,35 +1,39 @@
-.header {
-	float: left;
-	background-color: lightblue;
-	padding:0px;
-/* 	width:100px; */
-	font-size: 10pt;
-	text-align: center;
-	height: 30px;
-	line-height:30px;
-	border: 1px solid red;
-	padding-left: 5px;
-	padding-right: 5px;
-	display: inline;
-}
-
-#headers {
-	background-color:green;
-	width:500px;
-	margin-left:10px;
-}
-
 #rikaikun_options {
-	width:520px;
-	height:600px;
-	background-color:blue;
+	padding: 0 10px;
+	font-family: sans-serif;
+	font-size: 10pt;
+}
+
+#tabs {
+}
+
+.tab {
+	float: left;
+	display: inline;
+	padding: 5px;
+	margin-left: 3px;
+	background-color: #eee;
+	border: 1px solid #999;
+	border-bottom: 0px;
+	font-style: italic;
+	color: #ccc;
+}
+
+.active-tab {
+	font-weight: bold;
+	font-style: normal;
+	color: #000;
+	background-color: #dde;
 }
 
 #options {
-	clear:both;
-	background-color: lightblue;
-	width:500px;
-	margin-left:10px;
-	border: 1px solid red;
-	
+	clear: both;
+	background-color: #dde;
+	padding: 10px;
+	border: 1px solid black;
+}
+
+#options p, #options form {
+	margin: 0;
+	paddign: 0;
 }
