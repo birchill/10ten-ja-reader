@@ -846,11 +846,11 @@ var rcxContent = {
 			if (ev.target == tdata.prevTarget && this.isVisible()) {
 				//console.log("exit due to same target");
 				if (tdata.title) {
-					document.body.removeChild(fake);
+					if(fake) document.body.removeChild(fake);
 					return;
 				}
 				if ((rp == tdata.prevRangeNode) && (ro == tdata.prevRangeOfs)) {
-					document.body.removeChild(fake);
+					if(fake) document.body.removeChild(fake);
 					return;
 				}
 			}
