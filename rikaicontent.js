@@ -714,7 +714,7 @@ var rcxContent = {
 		fake.scrollTop = real.scrollTop;
 		fake.scrollLeft = real.scrollLeft;
 		fake.style.position = "absolute";
-		fake.style.zindex = 1;
+		fake.style.zIndex = 7777;
 		$(fake).offset({top: $(real).offset().top, left: $(real).offset().left})
 		
 		
