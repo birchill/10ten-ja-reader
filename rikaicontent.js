@@ -762,6 +762,8 @@ var rcxContent = {
 			var ro = range.startOffset;
 			
 			if(fake) {
+			        if((rp.data) && rp.data.length == ro)
+			            return;
 			        fake.style.display = "none";
 				ro = this.getTotalOffset(rp.parentNode, rp, ro);
 			}
