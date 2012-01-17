@@ -762,12 +762,12 @@ var rcxContent = {
 			var ro = range.startOffset;
 			
 			if(fake) {
-			        // At the end of a line, don't do anything or you just get beginning of next line
-			        if((rp.data) && rp.data.length == ro) {
-                        document.body.removeChild(fake);
-			            return;
-			        }
-			        fake.style.display = "none";
+				// At the end of a line, don't do anything or you just get beginning of next line
+				if((rp.data) && rp.data.length == ro) {
+					document.body.removeChild(fake);
+					return;
+				}
+				fake.style.display = "none";
 				ro = this.getTotalOffset(rp.parentNode, rp, ro);
 			}
 			
@@ -831,6 +831,7 @@ var rcxContent = {
 			else if(!(fake) && (!(rp) || ((rp.parentNode != ev.target)))){
 				rp = null;
 				ro = -1;
+				return;
 				
 			}
 			
@@ -842,10 +843,16 @@ var rcxContent = {
 				rp.data = rp.value
 			}
 			
-			if (ev.target == tdata.prevTarget) {
+			if (ev.target == tdata.prevTarget && this.isVisible()) {
 				//console.log("exit due to same target");
-				if (tdata.title) return;
-				if ((rp == tdata.prevRangeNode) && (ro == tdata.prevRangeOfs)) return;
+				if (tdata.title) {
+					document.body.removeChild(fake);
+					return;
+				}
+				if ((rp == tdata.prevRangeNode) && (ro == tdata.prevRangeOfs)) {
+					document.body.removeChild(fake);
+					return;
+				}
 			}
 			
 			if(fake) document.body.removeChild(fake);
@@ -853,6 +860,7 @@ var rcxContent = {
 		catch(err) {
 			console.log(err.message);
 			if(fake) document.body.removeChild(fake);
+			return;
 		}
 		
 			
@@ -875,7 +883,7 @@ var rcxContent = {
 			tdata.timer = setTimeout(
 				function() {
 					rcxContent.show(tdata);
-				}, 50/*this.cfg.popdelay*/);
+				}, 1/*this.cfg.popdelay*/);
 			//console.log("showed data");
 			return;
 		}
@@ -903,7 +911,7 @@ var rcxContent = {
 			tdata.timer = setTimeout(
 				function(tdata) {
 					rcxContent.showTitle(tdata);
-				}, 50/*this.cfg.popdelay*/, tdata);
+				}, 1/*this.cfg.popdelay*/, tdata);
 		}
 		else {
 			// dont close just because we moved from a valid popup slightly over to a place with nothing
