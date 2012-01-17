@@ -762,8 +762,11 @@ var rcxContent = {
 			var ro = range.startOffset;
 			
 			if(fake) {
-			        if((rp.data) && rp.data.length == ro)
+			        // At the end of a line, don't do anything or you just get beginning of next line
+			        if((rp.data) && rp.data.length == ro) {
+                                    document.body.removeChild(fake);
 			            return;
+			        }
 			        fake.style.display = "none";
 				ro = this.getTotalOffset(rp.parentNode, rp, ro);
 			}
