@@ -746,97 +746,105 @@ var rcxContent = {
 	onMouseMove: function(ev) { rcxContent._onMouseMove(ev); },
 	_onMouseMove: function(ev) {
 		var fake;
-		if(ev.target.nodeName == 'TEXTAREA' || ev.target.nodeName == 'INPUT') {
-			fake = rcxContent.makeFake(ev.target);
-			document.body.appendChild(fake);
-			fake.scrollTop = ev.target.scrollTop;
-			fake.scrollLeft = ev.target.scrollLeft;
-		}
-		
-		var tdata = window.rikaichan;	// per-tab data
-		
-		var range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
-		var rp = range.startContainer;
-		var ro = range.startOffset;
-		
-		if(fake) {
-		    ro = this.getTotalOffset(rp.parentNode, rp, ro);
-		}
-		
-/*   		console.log( "offset: " + ro + " parentContainer: " +  rp.nodeName + 
-			" total size: " + (rp.data?rp.data.length:"") + " target: " + ev.target.nodeName + 
-			" parentparent: " + rp.parentNode.nodeName); */
-		
-
-		
-		if (ev.target == tdata.prevTarget) {
-			//console.log("exit due to same target");
-			if (tdata.title) return;
-			if ((rp == tdata.prevRangeNode) && (ro == tdata.prevRangeOfs)) return;
-		}
-
-		if (tdata.timer) {
-			clearTimeout(tdata.timer);
-			tdata.timer = null;
-		}
-		
-		// This is to account for bugs in caretRangeFromPoint
-		// It includes the fact that it returns text nodes over non text nodes
-		// and also the fact that it miss the first character of inline nodes.
-
-		// If the range offset is equal to the node data length
-		// Then we have the second case and need to correct.
-		if((rp.data) && ro == rp.data.length) {
-			// A special exception is the WBR tag which is inline but doesn't
-			// contain text.
-			if((rp.nextSibling) && (rp.nextSibling.nodeName == 'WBR')) {
-				rp = rp.nextSibling.nextSibling;
-				ro = 0;
+		// Put this in a try catch so that an exception here doesn't prevent editing due to div.
+		try {
+			if(ev.target.nodeName == 'TEXTAREA' || ev.target.nodeName == 'INPUT') {
+				fake = rcxContent.makeFake(ev.target);
+				document.body.appendChild(fake);
+				fake.scrollTop = ev.target.scrollTop;
+				fake.scrollLeft = ev.target.scrollLeft;
 			}
-			// If we're to the right of an inline character we can use the target.
-			// However, if we're just in a blank spot don't do anything.
-			else if(rcxContent.isInline(ev.target))	{
-			        if(rp.parentNode == ev.target)
-			            ;
-			        else if(fake && rp.parentNode.innerText == ev.target.value)
-			            ;
-			        else {
-				    rp = ev.target.firstChild;
-				    ro = 0;
+			
+			var tdata = window.rikaichan;	// per-tab data
+			
+			var range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
+			var rp = range.startContainer;
+			var ro = range.startOffset;
+			
+			if(fake) {
+			        fake.style.display = "none";
+				ro = this.getTotalOffset(rp.parentNode, rp, ro);
+			}
+			
+	/*   		console.log( "offset: " + ro + " parentContainer: " +  rp.nodeName + 
+				" total size: " + (rp.data?rp.data.length:"") + " target: " + ev.target.nodeName + 
+				" parentparent: " + rp.parentNode.nodeName); */
+			
+
+			
+			if (ev.target == tdata.prevTarget) {
+				//console.log("exit due to same target");
+				if (tdata.title) return;
+				if ((rp == tdata.prevRangeNode) && (ro == tdata.prevRangeOfs)) return;
+			}
+
+			if (tdata.timer) {
+				clearTimeout(tdata.timer);
+				tdata.timer = null;
+			}
+			
+			// This is to account for bugs in caretRangeFromPoint
+			// It includes the fact that it returns text nodes over non text nodes
+			// and also the fact that it miss the first character of inline nodes.
+
+			// If the range offset is equal to the node data length
+			// Then we have the second case and need to correct.
+			if((rp.data) && ro == rp.data.length) {
+				// A special exception is the WBR tag which is inline but doesn't
+				// contain text.
+				if((rp.nextSibling) && (rp.nextSibling.nodeName == 'WBR')) {
+					rp = rp.nextSibling.nextSibling;
+					ro = 0;
+				}
+				// If we're to the right of an inline character we can use the target.
+				// However, if we're just in a blank spot don't do anything.
+				else if(rcxContent.isInline(ev.target))	{
+						if(rp.parentNode == ev.target)
+							;
+						else if(fake && rp.parentNode.innerText == ev.target.value)
+							;
+						else {
+						rp = ev.target.firstChild;
+						ro = 0;
+					}
+				}
+				// Otherwise we're on the right and can take the next sibling of the
+				// inline element.
+				else{
+					rp = rp.parentNode.nextSibling
+					ro = 0;
 				}
 			}
-			// Otherwise we're on the right and can take the next sibling of the
-			// inline element.
-			else{
-				rp = rp.parentNode.nextSibling
-				ro = 0;
+			// The case where the before div is empty so the false spot is in the parent
+			// But we should be able to take the target.
+			// The 1 seems random but it actually represents the preceding empty tag
+			// also we don't want it to mess up with our fake div
+			if(!(fake) && rp && rp.parentNode != ev.target && ro == 1) {
+				rp = rcxContent.getFirstTextChild(ev.target);
+				ro=0;
+			}
+			
+			
+			// Otherwise, we're off in nowhere land and we should go home.
+			// offset should be 0 or max in this case.
+			else if(!(fake) && (!(rp) || ((rp.parentNode != ev.target)))){
+				rp = null;
+				ro = -1;
+				
+			}
+			
+			// For text nodes do special stuff
+			// we make rp the text area and keep the offset the same
+			// we give the text area data so it can act normal
+			if(fake) {
+				rp = ev.target;
+				rp.data = rp.value
+				document.body.removeChild(fake);
 			}
 		}
-		// The case where the before div is empty so the false spot is in the parent
-		// But we should be able to take the target.
-		// The 1 seems random but it actually represents the preceding empty tag
-		// also we don't want it to mess up with our fake div
-		if(!(fake) && rp && rp.parentNode != ev.target && ro == 1) {
-			rp = rcxContent.getFirstTextChild(ev.target);
-			ro=0;
-		}
-		
-		
-		// Otherwise, we're off in nowhere land and we should go home.
-		// offset should be 0 or max in this case.
-		else if(!(fake) && (!(rp) || ((rp.parentNode != ev.target)))){
-			rp = null;
-			ro = -1;
-			
-		}
-		
-		// For text nodes do special stuff
-		// we make rp the text area and keep the offset the same
-		// we give the text area data so it can act normal
-		if(fake) {
-			rp = ev.target;
-			rp.data = rp.value
-			document.body.removeChild(fake);
+		catch(err) {
+			console.log(err.message);
+			if(fake) document.body.removeChild(fake);
 		}
 		
 			
