@@ -820,7 +820,8 @@ var rcxContent = {
 			// But we should be able to take the target.
 			// The 1 seems random but it actually represents the preceding empty tag
 			// also we don't want it to mess up with our fake div
-			if(!(fake) && rp && rp.parentNode != ev.target && ro == 1) {
+			// Also, form elements don't seem to fall into this case either.
+			if(!(fake) && !('form' in ev.target) && rp && rp.parentNode != ev.target && ro == 1) {
 				rp = rcxContent.getFirstTextChild(ev.target);
 				ro=0;
 			}
