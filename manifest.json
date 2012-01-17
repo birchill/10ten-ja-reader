@@ -7,7 +7,7 @@
 				"128": "images/icon128.png"},
 	
 	"permissions": [
-		"tabs"
+		"tabs", "http://*/*", "https://*/*", "ftp://*/*", "file:///*"
 	],
 	"background_page": "background.html",
 	"browser_action": {

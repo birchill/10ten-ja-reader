@@ -508,7 +508,13 @@ var rcxContent = {
 	},
 
 	getTextFromRange: function (rangeParent, offset, selEndList, maxLength) {
+		if(rangeParent.nodeName == 'TEXTAREA' || rangeParent.nodeName == 'INPUT') {
+			var endIndex = Math.min(rangeParent.data.length, offset + maxLength);
+			return rangeParent.value.substring(offset, endIndex);
+		}
+	
 		var text = '';
+		
 		var endIndex;
 
 		var xpathExpr = rangeParent.ownerDocument.createExpression(this.textNodeExpr, null);
@@ -607,7 +613,7 @@ var rcxContent = {
 		
 		rp = tdata.prevRangeNode;
 		// don't try to highlight form elements
-		if ((tdata.config.highlight=='yes') && (!('form' in tdata.prevTarget))) {
+		if ((tdata.config.highlight=='yes') /* && (!('form' in tdata.prevTarget)) */) {
 			var doc = rp.ownerDocument;
 			if (!doc) {
 				rcxContent.clearHi();
@@ -694,8 +700,31 @@ var rcxContent = {
 			//
 	},
 	
+	makeFake: function(real) {
+		var fake = document.createElement('div');
+		fake.innerText = real.value;
+		fake.style.cssText = document.defaultView.getComputedStyle(real, "").cssText;
+		fake.scrollTop = real.scrollTop;
+		fake.scrollLeft = real.scrollLeft;
+		fake.style.position = "absolute";
+		fake.style.zindex = 1;
+		$(fake).offset({top: $(real).offset().top, left: $(real).offset().left})
+		
+		
+		return fake;
+		
+	},
+	
 	onMouseMove: function(ev) { rcxContent._onMouseMove(ev); },
 	_onMouseMove: function(ev) {
+		var fake;
+		if(ev.target.nodeName == 'TEXTAREA' || ev.target.nodeName == 'INPUT') {
+			fake = rcxContent.makeFake(ev.target);
+			document.body.appendChild(fake);
+			fake.scrollTop = ev.target.scrollTop;
+			fake.scrollLeft = ev.target.scrollLeft;
+		}
+		
 		var tdata = window.rikaichan;	// per-tab data
 		
 		var range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
@@ -747,17 +776,28 @@ var rcxContent = {
 		// The case where the before div is empty so the false spot is in the parent
 		// But we should be able to take the target.
 		// The 1 seems random but it actually represents the preceding empty tag
-		if(rp && rp.parentNode != ev.target && ro == 1) {
+		// also we don't want it to mess up with our fake div
+		if(!(fake) && rp && rp.parentNode != ev.target && ro == 1) {
 			rp = rcxContent.getFirstTextChild(ev.target);
 			ro=0;
 		}
 		
+		
 		// Otherwise, we're off in nowhere land and we should go home.
 		// offset should be 0 or max in this case.
-		else if(!(rp) || ((rp.parentNode != ev.target))){
+		else if(!(fake) && (!(rp) || ((rp.parentNode != ev.target)))){
 			rp = null;
 			ro = -1;
 			
+		}
+		
+		// For text nodes do special stuff
+		// we make rp the text area and keep the offset the same
+		// we give the text area data so it can act normal
+		if(fake) {
+			rp = ev.target;
+			rp.data = rp.value
+			document.body.removeChild(fake);
 		}
 		
 			
