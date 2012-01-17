@@ -762,9 +762,16 @@ var rcxContent = {
 				ro = 0;
 			}
 			// If we're to the right of an inline character we can use the target.
+			// However, if we're just in a blank spot don't do anything.
 			else if(rcxContent.isInline(ev.target))	{
-				rp = ev.target.firstChild;
-				ro = 0;
+			        if(rp.parentNode == ev.target)
+			            ;
+			        else if(fake && rp.data == ev.target.value)
+			            ;
+			        else {
+				    rp = ev.target.firstChild;
+				    ro = 0;
+				}
 			}
 			// Otherwise we're on the right and can take the next sibling of the
 			// inline element.
