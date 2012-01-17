@@ -657,9 +657,15 @@ var rcxContent = {
 
 	highlightMatch: function (doc, rp, ro, matchLen, selEndList, tdata) {
 		if (selEndList.length === 0) { 
-		    if(rp.nodeName == 'TEXTAREA' || rp.nodeName == 'INPUT') {
-		            rp.selectionStart = ro;
-		            rp.selectionEnd = matchLen + ro;
+		    try {
+				if(rp.nodeName == 'TEXTAREA' || rp.nodeName == 'INPUT') {
+						rp.selectionStart = ro;
+						rp.selectionEnd = matchLen + ro;
+				}
+		    }
+		    catch(err) {
+		        //console.log("invalid input type for selection:" + rp.type);
+		        //console.log(err.message);
 		    }
 		    return;
 		}
