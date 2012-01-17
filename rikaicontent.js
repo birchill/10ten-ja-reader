@@ -764,7 +764,7 @@ var rcxContent = {
 			if(fake) {
 			        // At the end of a line, don't do anything or you just get beginning of next line
 			        if((rp.data) && rp.data.length == ro) {
-                                    document.body.removeChild(fake);
+                        document.body.removeChild(fake);
 			            return;
 			        }
 			        fake.style.display = "none";
@@ -777,11 +777,7 @@ var rcxContent = {
 			
 
 			
-			if (ev.target == tdata.prevTarget) {
-				//console.log("exit due to same target");
-				if (tdata.title) return;
-				if ((rp == tdata.prevRangeNode) && (ro == tdata.prevRangeOfs)) return;
-			}
+
 
 			if (tdata.timer) {
 				clearTimeout(tdata.timer);
@@ -844,8 +840,15 @@ var rcxContent = {
 			if(fake) {
 				rp = ev.target;
 				rp.data = rp.value
-				document.body.removeChild(fake);
 			}
+			
+			if (ev.target == tdata.prevTarget) {
+				//console.log("exit due to same target");
+				if (tdata.title) return;
+				if ((rp == tdata.prevRangeNode) && (ro == tdata.prevRangeOfs)) return;
+			}
+			
+			if(fake) document.body.removeChild(fake);
 		}
 		catch(err) {
 			console.log(err.message);
