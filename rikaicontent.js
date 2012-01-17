@@ -831,7 +831,6 @@ var rcxContent = {
 			else if(!(fake) && (!(rp) || ((rp.parentNode != ev.target)))){
 				rp = null;
 				ro = -1;
-				return;
 				
 			}
 			
