@@ -1,4 +1,4 @@
-﻿/*
+/*
 
 	Rikaikun
 	Copyright (C) 2010 Erek Speed
@@ -641,6 +641,7 @@ var rcxContent = {
 		    }
 		    return;
 		}
+		
 
 		var selEnd;
 		var offset = matchLen + ro;
@@ -721,6 +722,27 @@ var rcxContent = {
 		
 	},
 	
+	getTotalOffset: function(parent, tNode, offset) {
+	    var fChild = parent.firstChild;
+	    var realO = offset;
+	    if(fChild == tNode)
+	        return offset;
+	    do {
+	        var val = 0;
+	        if(fChild.nodeName == "BR") {
+	            val = 1;
+	        }
+	        else {
+	            val = (fChild.data ? fChild.data.length : 0)
+	        }
+	        realO += val;
+	    }
+	    while((fChild = fChild.nextSibling) != tNode);
+	    
+	    return realO;
+	
+	},
+	
 	onMouseMove: function(ev) { rcxContent._onMouseMove(ev); },
 	_onMouseMove: function(ev) {
 		var fake;
@@ -736,6 +758,10 @@ var rcxContent = {
 		var range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
 		var rp = range.startContainer;
 		var ro = range.startOffset;
+		
+		if(fake) {
+		    ro = this.getTotalOffset(rp.parentNode, rp, ro);
+		}
 		
 /*   		console.log( "offset: " + ro + " parentContainer: " +  rp.nodeName + 
 			" total size: " + (rp.data?rp.data.length:"") + " target: " + ev.target.nodeName + 
@@ -772,7 +798,7 @@ var rcxContent = {
 			else if(rcxContent.isInline(ev.target))	{
 			        if(rp.parentNode == ev.target)
 			            ;
-			        else if(fake && rp.data == ev.target.value)
+			        else if(fake && rp.parentNode.innerText == ev.target.value)
 			            ;
 			        else {
 				    rp = ev.target.firstChild;
