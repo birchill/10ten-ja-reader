@@ -19,7 +19,7 @@
 	"content_scripts": [
 		{
 			"matches": ["http://*/*", "https://*/*", "ftp://*/*", "file:///*"],
-			"js": ["rikaicontent.js"],
+			"js": ["jquery-1.7.1.min.js", "rikaicontent.js"],
 			"all_frames":true
 		}
 	]
