@@ -634,7 +634,13 @@ var rcxContent = {
 	},
 
 	highlightMatch: function (doc, rp, ro, matchLen, selEndList, tdata) {
-		if (selEndList.length === 0) return;
+		if (selEndList.length === 0) { 
+		    if(rp.nodeName == 'TEXTAREA' || rp.nodeName == 'INPUT') {
+		            rp.selectionStart = ro;
+		            rp.selectionEnd = matchLen + ro;
+		    }
+		    return;
+		}
 
 		var selEnd;
 		var offset = matchLen + ro;
