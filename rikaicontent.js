@@ -51,6 +51,8 @@ var rcxContent = {
 			window.addEventListener('mousemove', this.onMouseMove, false);
 			window.addEventListener('keydown', this.onKeyDown, true);
 			window.addEventListener('keyup', this.onKeyUp, true);
+			window.addEventListener('mousedown', this.onMouseDown, false);
+			window.addEventListener('mouseup', this.onMouseUp, false);
 		}
 	},
 	
@@ -61,6 +63,8 @@ var rcxContent = {
 			window.removeEventListener('mousemove', this.onMouseMove, false);
 			window.removeEventListener('keydown', this.onKeyDown, true);
 			window.removeEventListener('keyup', this.onKeyUp, true);
+			window.removeEventListener('mosuedown', this.onMouseDown, false);
+			window.removeEventListener('mouseup', this.onMouseUp, false);
 
 			e = document.getElementById('rikaichan-css');
 			if (e) e.parentNode.removeChild(e);
@@ -392,6 +396,24 @@ var rcxContent = {
 		}
 	},
 	
+	mDown: false,
+	
+	onMouseDown: function(ev) { rcxContent._onMouseDown(ev) },
+	_onMouseDown: function(ev) {
+	        if(ev.button != 0)
+	            return;
+		if(this.isVisible())
+		    this.clearHi();
+		mDown = true;
+	},
+	
+	onMouseUp: function(ev) { rcxContent._onMouseUp(ev) },
+	_onMouseUp: function(ev) {
+	        if(ev.button != 0)
+	            return;
+		mDown = false;
+	},
+	
 	onKeyUp: function(ev) {
 		if (rcxContent.keysDown[ev.keyCode]) rcxContent.keysDown[ev.keyCode] = 0;
 	},
@@ -613,7 +635,7 @@ var rcxContent = {
 		
 		rp = tdata.prevRangeNode;
 		// don't try to highlight form elements
-		if ((tdata.config.highlight=='yes') /* && (!('form' in tdata.prevTarget)) */) {
+		if ((tdata.config.highlight=='yes' && !this.mDown) /* && (!('form' in tdata.prevTarget)) */) {
 			var doc = rp.ownerDocument;
 			if (!doc) {
 				rcxContent.clearHi();
