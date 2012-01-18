@@ -271,10 +271,31 @@ var rcxContent = {
 			tdata.prevSelView = null;
 			return;
 		}
-
+		
 		var sel = tdata.prevSelView.getSelection();
-		if ((sel.isCollapsed) || (tdata.selText == sel.toString())) {
-			sel.removeAllRanges();
+		// If there is an empty selection or the selection was done by
+		// rikaikun then we'll clear it
+		if ((!sel.toString()) || (tdata.selText == sel.toString())) {
+			// In the case of no selection we clear the oldTA
+			// The reason for this is becasue if there's no selection 
+			// we probably clicked somewhere else and we don't want to 
+			// bounce back.
+		    if(!sel.toString())
+		        tdata.oldTA = null;
+				
+			// clear all selections
+		    sel.removeAllRanges();
+		    //Text area stuff
+			// If oldTA is still around that means we had a highlighted region
+			// which we just cleared and now we're going to jump back to where we were
+			// the cursor was before our lookup
+			// if oldCaret is less than 0 it means we clicked outside the box and shouldn't
+			// come back
+		    if(tdata.oldTA && tdata.oldCaret >= 0) {
+		        tdata.oldTA.selectionStart = tdata.oldTA.selectionEnd = tdata.oldCaret; 
+		      
+		    }
+		    
 		}
 		tdata.prevSelView = null;
 		tdata.kanjiChar = null;
@@ -352,6 +373,7 @@ var rcxContent = {
 			break;
 		case 27:	// esc
 			this.hidePopup();
+			this.clearHi();
 			break;
 		case 65:	// a
 			this.altView = (this.altView + 1) % 3;
@@ -405,6 +427,15 @@ var rcxContent = {
 		if(this.isVisible())
 		    this.clearHi();
 		mDown = true;
+		
+		// If we click outside of a text box then we set
+		// oldCaret to -1 as an indicator not to restore position
+		// Otherwise, we switch our saved textarea to whereever
+		// we just clicked
+		if(!('form' in ev.target))
+		    window.rikaichan.oldCaret =  -1;
+		else
+		    window.rikaichan.oldTA = ev.target;
 	},
 	
 	onMouseUp: function(ev) { rcxContent._onMouseUp(ev) },
@@ -635,7 +666,7 @@ var rcxContent = {
 		
 		rp = tdata.prevRangeNode;
 		// don't try to highlight form elements
-		if ((tdata.config.highlight=='yes' && !this.mDown) /* && (!('form' in tdata.prevTarget)) */) {
+		if ((rp) && (tdata.config.highlight=='yes' && !this.mDown) /* && (!('form' in tdata.prevTarget)) */) {
 			var doc = rp.ownerDocument;
 			if (!doc) {
 				rcxContent.clearHi();
@@ -656,21 +687,53 @@ var rcxContent = {
 	},
 
 	highlightMatch: function (doc, rp, ro, matchLen, selEndList, tdata) {
+	    var sel = doc.defaultView.getSelection();
+	    
+		// If selEndList is empty then we're dealing with a textarea/input situation
 		if (selEndList.length === 0) { 
 		    try {
 				if(rp.nodeName == 'TEXTAREA' || rp.nodeName == 'INPUT') {
-						rp.selectionStart = ro;
-						rp.selectionEnd = matchLen + ro;
+					
+					// If there is already a selected region not caused by
+					// rikaikun, leave it alone
+					if((sel.toString()) && (tdata.selText != sel.toString()))
+						return;
+					
+					// If there is no selected region and the saved
+					// textbox is the same as teh current one
+					// then save the current cursor position
+					// The second half of the condition let's us place the
+					// cursor in another text box without having it jump back
+					if(!sel.toString() && tdata.oldTA == rp) {
+						tdata.oldCaret = rp.selectionStart;
+						tdata.oldTA = rp;
+					}
+					rp.selectionStart = ro;
+					rp.selectionEnd = matchLen + ro;
+					
+					tdata.selText = rp.value.substring(ro, matchLen+ro);	
 				}
 		    }
 		    catch(err) {
+				// If there is an error it is probably caused by the input type
+				// being not text.  This is the most general way to deal with
+				// arbitrary types.
+				
+				// we set oldTA to null because we don't want to do weird stuf
+				// with buttons
+		        tdata.oldTA = null;
 		        //console.log("invalid input type for selection:" + rp.type);
-		        //console.log(err.message);
+		        console.log(err.message);
 		    }
 		    return;
 		}
 		
-
+		// Special case for leaving a text box to an outside japanese
+		// Even if we're not currently in a text area we should save
+		// the last one we were in.
+		if(tdata.oldTA && !sel.toString() && tdata.oldCaret >= 0)
+			tdata.oldCaret = tdata.oldTA.selectionStart;   
+                
 		var selEnd;
 		var offset = matchLen + ro;
 
@@ -684,8 +747,7 @@ var rcxContent = {
 		range.setStart(rp, ro);
 		range.setEnd(selEnd.node, offset);
 
-		var sel = doc.defaultView.getSelection();
-		if ((!sel.isCollapsed) && (tdata.selText != sel.toString()))
+		if ((sel.toString()) && (tdata.selText != sel.toString()))
 			return;
 		sel.removeAllRanges();
 		sel.addRange(range);
