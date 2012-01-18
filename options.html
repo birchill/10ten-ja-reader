@@ -1,4 +1,4 @@
-<html>
+ <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="css/options.css" />
 	<script>
@@ -16,13 +16,21 @@
 			}
 			else
 				document.optform.highlighttext[1].selected = true;
+				
+			store = localStorage['textboxhl'];
+			if(store == 'yes')
+				document.optform.textboxhl[0].selected = true;
+			else
+				document.optform.textboxhl[1].selected = true;
 		}
 		
 		function getVals() {
 			localStorage['popupcolor'] = document.optform.popupcolor.value;
 			localStorage['highlight'] = document.optform.highlighttext.value;
+			localStorage['textboxhl'] = document.optform.textboxhl.value;
 			chrome.extension.getBackgroundPage().rcxMain.config.css = localStorage["popupcolor"];
 			chrome.extension.getBackgroundPage().rcxMain.config.highlight = localStorage["highlight"];
+			chrome.extension.getBackgroundPage().rcxMain.config.textboxhl = localStorage["textboxhl"];
 		}
 		window.onload = fillVals;
 	</script>
@@ -45,6 +53,12 @@
 							<br />
 							Highlight text?
 							<select id="highlighttext" name="highlighttext">
+								<option value="yes">Yes</option>
+								<option value="no">No</option>
+							</select>
+							<br />
+							Highlight text inside of text boxes?
+							<select id="textboxhl" name="textboxhl">
 								<option value="yes">Yes</option>
 								<option value="no">No</option>
 							</select>

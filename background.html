@@ -32,13 +32,16 @@
 					}
 				});
 				
-			if(initStorage("v0.8", true)) {
+			if(initStorage("v0.8.5", true)) {
 				// v0.7
 				initStorage("popupcolor", "blue");
 				initStorage("highlight", "yes");
 				
 				// v0.8
 				// No changes to options
+				
+				// V0.8.5
+				initStorage("textboxhl", "no");
 			}
 			
 			/** 
@@ -62,6 +65,7 @@
 		rcxMain.config = {};
 		rcxMain.config.css = localStorage["popupcolor"];
 		rcxMain.config.highlight = localStorage["highlight"];
+		rcxMain.config.textboxhl = localStorage["textboxhl"];
 		</script>
 	</head>
 </html>

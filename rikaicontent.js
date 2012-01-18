@@ -666,7 +666,8 @@ var rcxContent = {
 		
 		rp = tdata.prevRangeNode;
 		// don't try to highlight form elements
-		if ((rp) && (tdata.config.highlight=='yes' && !this.mDown) /* && (!('form' in tdata.prevTarget)) */) {
+		if ((rp) && ((tdata.config.highlight=='yes' && !this.mDown && !('form' in tdata.prevTarget))  || 
+					(('form' in tdata.prevTarget) && tdata.config.textboxhl == 'yes'))) {
 			var doc = rp.ownerDocument;
 			if (!doc) {
 				rcxContent.clearHi();
