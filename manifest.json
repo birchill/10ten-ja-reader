@@ -1,13 +1,13 @@
 {
 	"name": "rikaikun",
-	"version": "0.8.1",
+	"version": "0.8.5",
 	
 	"description": "A port of rikaichan for chrome. Translate Japanese by hovering over words.",
 	"icons": { "48": "images/icon48.png",
 				"128": "images/icon128.png"},
 	
 	"permissions": [
-		"tabs", "http://*/*", "https://*/*", "ftp://*/*", "file:///*"
+		"tabs"
 	],
 	"background_page": "background.html",
 	"browser_action": {
