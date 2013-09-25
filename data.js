@@ -784,7 +784,12 @@ if (0) {
 				t = s.replace(/\//g, '; ');
 				if (/* !this.config.wpos */false) t = t.replace(/^\([^)]+\)\s*/, '');
 				if (/* !this.config.wpop */false) t = t.replace('; (P)', '');
-				t = '<br/><span class="w-def">' + t + '</span><br/>';
+				if (rcxMain.config.onlyreading != 'yes') {
+					t = '<br/><span class="w-def">' + t + '</span><br/>';
+				}
+				else {
+					t = '<br/>';
+				}
 			}
 			b.push(t);
 			if (entry.more) b.push('...<br/>');

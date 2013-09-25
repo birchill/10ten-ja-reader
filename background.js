@@ -38,6 +38,9 @@ if(initStorage("v0.8.5", true)) {
 	
 	// V0.8.5
 	initStorage("textboxhl", "no");
+
+	// v0.8.6
+	initStorage("onlyreading", "no");
 }
 
 /** 
@@ -62,3 +65,4 @@ rcxMain.config = {};
 rcxMain.config.css = localStorage["popupcolor"];
 rcxMain.config.highlight = localStorage["highlight"];
 rcxMain.config.textboxhl = localStorage["textboxhl"];
+rcxMain.config.onlyreading = localStorage["onlyreading"];
