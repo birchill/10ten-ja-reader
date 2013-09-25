@@ -641,7 +641,7 @@ var rcxContent = {
 		
 		lastSelEnd = selEndList;
 		lastRo = ro;
-		chrome.extension.sendRequest({"type":"xsearch", "text":text, "showmode":this.showMode}, 
+		chrome.extension.sendMessage({"type":"xsearch", "text":text, "showmode":this.showMode}, 
 		rcxContent.processEntry);
 		
 		return 1;
@@ -678,7 +678,7 @@ var rcxContent = {
 			tdata.prevSelView = doc.defaultView;
 		}
 		
-		chrome.extension.sendRequest({"type":"makehtml", "entry":e}, rcxContent.processHtml);
+		chrome.extension.sendMessage({"type":"makehtml", "entry":e}, rcxContent.processHtml);
 	},
 
 	processHtml: function(html) {
@@ -756,7 +756,7 @@ var rcxContent = {
 	},
 
 	showTitle: function(tdata) {
-		chrome.extension.sendRequest({"type":"translate", "title":tdata.title}, 
+		chrome.extension.sendMessage({"type":"translate", "title":tdata.title}, 
 			rcxContent.processTitle);
 	},
 	
@@ -773,7 +773,7 @@ var rcxContent = {
 
 		this.lastFound = [e];
 		
-		chrome.extension.sendRequest({"type":"makehtml", "entry":e}, rcxContent.processHtml);
+		chrome.extension.sendMessage({"type":"makehtml", "entry":e}, rcxContent.processHtml);
 	},
 /*
 	inRange: function (event) {
@@ -1019,7 +1019,7 @@ var rcxContent = {
 }
 
 //Event Listeners
-chrome.extension.onRequest.addListener(
+chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
 		switch(request.type) {
 			case 'enable':
@@ -1042,4 +1042,4 @@ chrome.extension.onRequest.addListener(
 );
 
 // When a page first loads, checks to see if it should enable script
-chrome.extension.sendRequest({"type":"enable?"});
+chrome.extension.sendMessage({"type":"enable?"});

@@ -222,7 +222,7 @@ var rcxMain = {
 	_onTabSelect: function(tabId) {
 
 		if ((this.enabled == 1))
-			chrome.tabs.sendRequest(tabId, {"type":"enable", "config":rcxMain.config});
+			chrome.tabs.sendMessage(tabId, {"type":"enable", "config":rcxMain.config});
 	},
 
 /*
@@ -262,11 +262,11 @@ var rcxMain = {
 		}
 		
 		// Send message to current tab to add listeners and create stuff
-		chrome.tabs.sendRequest(tab.id, {"type":"enable", "config":rcxMain.config});
+		chrome.tabs.sendMessage(tab.id, {"type":"enable", "config":rcxMain.config});
 		this.enabled = 1;
 		
 		if(mode == 1) {
-			chrome.tabs.sendRequest(tab.id, {"type":"showPopup", "text":rcxMain.miniHelp});
+			chrome.tabs.sendMessage(tab.id, {"type":"showPopup", "text":rcxMain.miniHelp});
 		} 
 		chrome.browserAction.setBadgeBackgroundColor({"color":[255,0,0,255]});
 		chrome.browserAction.setBadgeText({"text":"On"});
@@ -287,7 +287,7 @@ var rcxMain = {
 				for (var i =0; i < windows.length; ++i) {
 					var tabs = windows[i].tabs;
 					for ( var j = 0; j < tabs.length; ++j) {
-						chrome.tabs.sendRequest(tabs[j].id, {"type":"disable"});
+						chrome.tabs.sendMessage(tabs[j].id, {"type":"disable"});
 					}
 				}
 			});
