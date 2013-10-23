@@ -654,7 +654,7 @@ if (0) {
 				'<td class="k-abox-f">freq<br/>' + (entry.misc['F'] ? entry.misc['F'] : '-') + '</td>' +
 				'<td class="k-abox-s">strokes<br/>' + entry.misc['S'] + '</td>' +
 				'</tr></table>';
-			if (/* this.config.kdisp['COMP'] */1 == 1) {
+			if (rcxMain.config.kanjicomponents == 'true') {
 				k = this.radData[bn].split('\t');
 				box += '<table class="k-bbox-tb">' +
 						'<tr><td class="k-bbox-1a">' + k[0] + '</td>' +
@@ -677,12 +677,13 @@ if (0) {
 			nums = '';
 			j = 0;
 
-			for (i = 0; i < this.numList.length; i += 2) {
-				c = this.numList[i];
-				if (/* this.config.kdisp[c] */1 == 1) {
+			kanjiinfo = rcxMain.config.kanjiinfo;
+			for (i = 0; i*2 < this.numList.length; i++) {
+				c = this.numList[i*2];
+				if (kanjiinfo[i] == 'true') {
 					s = entry.misc[c];
 					c = ' class="k-mix-td' + (j ^= 1) + '"';
-					nums += '<tr><td' + c + '>' + this.numList[i + 1] + '</td><td' + c + '>' + (s ? s : '-') + '</td></tr>';
+					nums += '<tr><td' + c + '>' + this.numList[i*2 + 1] + '</td><td' + c + '>' + (s ? s : '-') + '</td></tr>';
 				}
 			}
 			if (nums.length) nums = '<table class="k-mix-tb">' + nums + '</table>';
@@ -784,7 +785,7 @@ if (0) {
 				t = s.replace(/\//g, '; ');
 				if (/* !this.config.wpos */false) t = t.replace(/^\([^)]+\)\s*/, '');
 				if (/* !this.config.wpop */false) t = t.replace('; (P)', '');
-				if (rcxMain.config.onlyreading != 'yes') {
+				if (rcxMain.config.onlyreading == 'false') {
 					t = '<br/><span class="w-def">' + t + '</span><br/>';
 				}
 				else {

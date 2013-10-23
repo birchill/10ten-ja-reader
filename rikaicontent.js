@@ -303,50 +303,7 @@ var rcxContent = {
 	},
 	
 	lastFound: null,
-/*
-// Need preferences and stuff
-	savePrep: function(clip) {
-		var me, mk;
-		var text;
-		var i;
-		var f;
-		var e;
 
-		f = this.lastFound;
-		if ((!f) || (f.length == 0)) return null;
-
-		if (clip) {
-			me = this.cfg.smaxce;
-			mk = this.cfg.smaxck;
-		}
-		else {
-			me = this.cfg.smaxfe;
-			mk = this.cfg.smaxfk;
-		}
-
-		if (!this.fromLB) mk = 1;
-
-		text = '';
-		for (i = 0; i < f.length; ++i) {
-			e = f[i];
-			if (e.kanji) {
-				if (mk-- <= 0) continue
-				text += this.dict.makeText(e, 1);
-			}
-			else {
-				if (me <= 0) continue;
-				text += this.dict.makeText(e, me);
-				me -= e.data.length;
-			}
-		}
-
-		if (this.cfg.snlf == 1) text = text.replace(/\n/g, '\r\n');
-			else if (this.cfg.snlf == 2) text = text.replace(/\n/g, '\r');
-		if (this.cfg.ssep != '\t') return text.replace(/\t/g, this.cfg.ssep);
-
-		return text;
-	},
-*/	
 	configPage: function() {
 		window.openDialog('chrome://rikaichan/content/prefs.xul', '', 'chrome,centerscreen');
 	},
@@ -361,7 +318,7 @@ var rcxContent = {
 		if ((ev.shiftKey) && (ev.keyCode != 16)) return;
 		if (this.keysDown[ev.keyCode]) return;
 		if (!this.isVisible()) return;
-		if ((false/*this.cfg.nopopkeys*/) && (ev.keyCode != 16)) return;
+		if (window.rikaichan.config.disablekeys == 'true' && (ev.keyCode != 16)) return;
 
 		var i;
 
@@ -380,7 +337,7 @@ var rcxContent = {
 			this.show(ev.currentTarget.rikaichan);
 			break;
 		case 67:	// c
-			this.copyToClip();
+			chrome.extension.sendMessage({"type":"copyToClip", "entry":rcxContent.lastFound});
 			break;
 		case 66:	// b
 			var ofs = ev.currentTarget.rikaichan.uofs;
@@ -391,6 +348,10 @@ var rcxContent = {
 					if (ofs >= ev.currentTarget.rikaichan.uofs) break;	// ! change later
 				}
 			}
+			break;
+		case 68:	// d
+			chrome.extension.sendMessage({"type":"switchOnlyReading"});
+			this.show(ev.currentTarget.rikaichan);
 			break;
 		case 77:	// m
 			ev.currentTarget.rikaichan.uofsNext = 1;
@@ -666,8 +627,8 @@ var rcxContent = {
 		
 		rp = tdata.prevRangeNode;
 		// don't try to highlight form elements
-		if ((rp) && ((tdata.config.highlight=='yes' && !this.mDown && !('form' in tdata.prevTarget))  || 
-					(('form' in tdata.prevTarget) && tdata.config.textboxhl == 'yes'))) {
+		if ((rp) && ((tdata.config.highlight == 'true' && !this.mDown && !('form' in tdata.prevTarget))  || 
+					(('form' in tdata.prevTarget) && tdata.config.textboxhl == 'true'))) {
 			var doc = rp.ownerDocument;
 			if (!doc) {
 				rcxContent.clearHi();

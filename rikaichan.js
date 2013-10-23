@@ -225,24 +225,75 @@ var rcxMain = {
 			chrome.tabs.sendMessage(tabId, {"type":"enable", "config":rcxMain.config});
 	},
 
-/*
+	savePrep: function(clip, entry) {
+		var me, mk;
+		var text;
+		var i;
+		var f;
+		var e;
+
+		f = entry;
+		if ((!f) || (f.length == 0)) return null;
+
+		if (clip) { // save to clipboard
+			me = rcxMain.config.maxClipCopyEntries;
+			//mk = this.cfg.smaxck; // something related to the number of kanji in the look-up bar
+		}
+		/*else { // save to file
+			me = this.cfg.smaxfe;
+			//mk = this.cfg.smaxfk;
+		}*/
+
+		if (!this.fromLB) mk = 1;
+
+		text = '';
+		for (i = 0; i < f.length; ++i) {
+			e = f[i];
+			if (e.kanji) {
+				//if (mk-- <= 0) continue
+				text += this.dict.makeText(e, 1);
+			}
+			else {
+				if (me <= 0) continue;
+				text += this.dict.makeText(e, me);
+				me -= e.data.length;
+			}
+		}
+
+		if (rcxMain.config.lineEnding == "rn") text = text.replace(/\n/g, '\r\n');
+			else if (rcxMain.config.lineEnding == "r") text = text.replace(/\n/g, '\r');
+		if (rcxMain.config.copySeparator != "tab") {
+			if (rcxMain.config.copySeparator == "comma")
+				return text.replace(/\t/g, ",");
+			if (rcxMain.config.copySeparator == "space")
+				return text.replace(/\t/g, " ");
+		}
+
+		return text;
+	},
+
 // Needs entirely new implementation and dependent on savePrep
-	copyToClip: function() {
+	copyToClip: function(tab, entry) {
 		var text;
 
-		if ((text = this.savePrep(1)) != null) {
-			Components.classes['@mozilla.org/widget/clipboardhelper;1']
-				.getService(Components.interfaces.nsIClipboardHelper)
-				.copyString(text);
-			this.showPopup('Copied to clipboard.');
+		if ((text = this.savePrep(1, entry)) != null) {
+			document.oncopy = function(event) {
+				event.clipboardData.setData("Text", text);
+				event.preventDefault();
+			};
+			document.execCommand("Copy");
+			document.oncopy = undefined;
+			chrome.tabs.sendMessage(tab.id, {"type":"showPopup", "text":'Copied to clipboard.'});
 		}
 	},
-*/
+
 	miniHelp:
 		'<span style="font-weight:bold">Rikaikun enabled!</span><br><br>' +
 		'<table cellspacing=5>' +
 		'<tr><td>A</td><td>Alternate popup location</td></tr>' +
 		'<tr><td>Y</td><td>Move popup location down</td></tr>' +
+		'<tr><td>C</td><td>Copy to clipboard</td></tr>' +
+		'<tr><td>D</td><td>Hide/show definitions</td></tr>' +
 		'<tr><td>Shift/Enter&nbsp;&nbsp;</td><td>Switch dictionaries</td></tr>' +
 		'<tr><td>B</td><td>Previous character</td></tr>' +
 		'<tr><td>M</td><td>Next character</td></tr>' +
@@ -265,8 +316,11 @@ var rcxMain = {
 		chrome.tabs.sendMessage(tab.id, {"type":"enable", "config":rcxMain.config});
 		this.enabled = 1;
 		
-		if(mode == 1) {
-			chrome.tabs.sendMessage(tab.id, {"type":"showPopup", "text":rcxMain.miniHelp});
+		if (mode == 1) {
+			if (rcxMain.config.minihelp == 'true')
+				chrome.tabs.sendMessage(tab.id, {"type":"showPopup", "text":rcxMain.miniHelp});
+			else
+				chrome.tabs.sendMessage(tab.id, {"type":"showPopup", "text":'Rikaikun enabled!'});
 		} 
 		chrome.browserAction.setBadgeBackgroundColor({"color":[255,0,0,255]});
 		chrome.browserAction.setBadgeText({"text":"On"});

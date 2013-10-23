@@ -4,42 +4,124 @@
 </head>
 	<body>
 		<div id="rikaikun_options">
-			<div id="tabs">
-				<div id="general" class="tab active-tab">General</div><div id="keyboard" class="tab">Keyboard</div><div id="worddict" class="tab">Word Dictionary</div><div id="kanjidict" class="tab">Kanji Dictionary</div><div id="namedict" class="tab">Names Dictionary</div><div id="clipboard" class="tab">Clipboard</div>
-			</div>
-			<div id="options">
-				<form id="optform" name="optform">
-					<div id="gencon">
+<!--			<div id="tabs">
+				<div id="general" class="tab selected-tab">General</div><div id="keyboard" class="tab active-tab">Keyboard</div><div id="worddict" class="tab">Word Dictionary</div><div id="kanjidict" class="tab active-tab">Kanji Dictionary</div><div id="namedict" class="tab">Names Dictionary</div><div id="clipboard" class="tab active-tab">Clipboard</div>
+			</div> -->
+			<form id="optform" name="optform">
+				<div id="options">
+					<div id="gencon" class="tabContent">
+					<h1>General</h1>
 						<p>Popup color:
-							<select id="popupcolor" name="popupcolor">
+							<select class="inputfield" id="popupcolor" name="popupcolor">
 								<option value="blue">Blue</option>
 								<option value="lightblue">Light Blue</option>
 								<option value="black">Black</option>
 								<option value="yellow">Yellow</option>
 							</select>
 							<br />
-							Highlight text?
-							<select id="highlighttext" name="highlighttext">
-								<option value="yes">Yes</option>
-								<option value="no">No</option>
-							</select>
+							<input type="checkbox" id="highlighttext" name="highlighttext">
+							Highlight text
 							<br />
-							Highlight text inside of text boxes?
-							<select id="textboxhl" name="textboxhl">
-								<option value="yes">Yes</option>
-								<option value="no">No</option>
-							</select>
+							<input type="checkbox" id="textboxhl" name="textboxhl">
+							Highlight text inside of text boxes
 							<br />
-							Hide definitions and show only reading?
-							<select id="onlyreading" name="onlyreading">
-								<option value="yes">Yes</option>
-								<option value="no">No</option>
-							</select>
+							<input type="checkbox" id="onlyreading" name="onlyreading">
+							Hide definitions and show only reading
+							<br />
+							<input type="checkbox" id="minihelp" name="minihelp">
+							Show mini help
 							</p>
-						<p><input type="submit" id="submit" value="Submit" /></p>
 					</div>
-				</form>
-			</div>
+					<!-- <div id="keycon" class="tabcontent hide"> -->
+					<div id="keycon" class="tabContent">
+					<h1>Keyboard</h1>
+						<strong>Keys when popup is visible</strong><br><br>
+						<table cellspacing=5>
+						<tr><td>A</td><td>Alternate popup location</td></tr>
+						<tr><td>Y</td><td>Move popup location down</td></tr>
+						<tr><td>C</td><td>Copy to clipboard</td></tr>
+						<tr><td>D</td><td>Hide/show definitions</td></tr>
+						<tr><td>Shift/Enter&nbsp;&nbsp;</td><td>Switch dictionaries</td></tr>
+						<tr><td>B</td><td>Previous character</td></tr>
+						<tr><td>M</td><td>Next character</td></tr>
+						<tr><td>N</td><td>Next word</td></tr>
+						</table>
+							<br />
+							<input type="checkbox" id="disablekeys" name="disablekeys">
+							Disable these keys
+					</div>
+					<div id="kanjicon" class="tabContent">
+					<h1>Kanji Dictionary</h1>
+						<p>
+						<strong>Displayed information:</strong><br><br>
+							<input type="checkbox" id="kanjicomponents" name="kanjicomponents">
+							Kanji Components
+							<br />
+							<input type="checkbox" id="H" name="H">
+							Halpern
+							<br />
+							<input type="checkbox" id="L" name="L">
+							Heisig
+							<br />
+							<input type="checkbox" id="E" name="E">
+							Henshall
+							<br />
+							<input type="checkbox" id="DK" name="DK">
+							Kanji Learners Dictionary
+							<br />
+							<input type="checkbox" id="N" name="N">
+							Nelson
+							<br />
+							<input type="checkbox" id="V" name="V">
+							New Nelson
+							<br />
+							<input type="checkbox" id="Y" name="Y">
+							PinYin
+							<br />
+							<input type="checkbox" id="P" name="P">
+							Skip Pattern
+							<br />
+							<input type="checkbox" id="IN" name="IN">
+							Tuttle Kanji &amp; Kana
+							<br />
+							<input type="checkbox" id="I" name="I">
+							Tuttle Kanji Dictionary
+							<br />
+							<input type="checkbox" id="U" name="U">
+							Unicode
+							<br />
+						</p>
+					</div>
+					<div id="clipcon" class="tabContent">
+					<h1>Copy to Clipboard</h1>
+						<p>
+						<table cellspacing=5>
+						<tr>
+							<td>Line ending:</td>
+							<td><select id="lineEnding" name="lineEnding">
+								<option value="n">Unix (\n)</option>
+								<option value="rn">Windows (\r\n)</option>
+								<option value="r">Mac (\r)</option>
+							</select></td>
+						</tr>
+						<tr>
+							<td>Field separator:</td>
+							<td><select id="copySeparator" name="copySeparator">
+								<option value="tab">Tab</option>
+								<option value="comma">Comma</option>
+								<option value="space">Space</option>
+							</select></td>
+						</tr>
+						<tr>
+							<td>Maximum entries:</td>
+							<td><input type="number" id="maxClipCopyEntries" name="maxClipCopyEntries" min="1"></td>
+						</tr>
+						</table>
+						</p>
+					</div>
+				</div>
+			<p><input type="submit" id="submit" value="Save" /></p>
+			</form>
 		</div>
 	</body>
 	<script src="options.js"></script>
