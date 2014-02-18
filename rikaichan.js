@@ -39,9 +39,9 @@
 
 */
 var rcxMain = {
-	haveNames: false,
-	canDoNames: false,
-	dictCount: 2,
+	haveNames: true,
+//	canDoNames: false,
+	dictCount: 3,
 	altView: 0,
 	enabled: 0,
 
@@ -164,7 +164,7 @@ var rcxMain = {
 				return false;
 			} */
 			try {
-				this.dict = new rcxDict(false/*this.haveNames && !this.cfg.nadelay*/);
+				this.dict = new rcxDict(this.haveNames/* && !this.cfg.nadelay*/);
 				//this.dict.setConfig(this.dconfig);
 			}
 			catch (ex) {
@@ -354,14 +354,42 @@ var rcxMain = {
 	
 	kanjiN: 1,
 	namesN: 2,
+
+	showMode: 0,
+
+	nextDict: function() {
+		this.showMode = (this.showMode + 1) % this.dictCount;
+	},
+
+	resetDict: function() {
+		this.showMode = 0;
+	},
 	
-	search: function(text, showmode) {
-		var m = showmode;
-		var showMode = showmode;
+	sameDict: '0',
+	forceKanji: '1',
+	defaultDict: '2',
+	nextDict: '3',
+
+	search: function(text, dictOption) {
+
+		switch (dictOption) {
+		case this.forceKanji:
+			var e = this.dict.kanjiSearch(text.charAt(0));
+			return e;
+			break;
+		case this.defaultDict:
+			this.showMode = 0;
+			break;
+		case this.nextDict:
+			this.showMode = (this.showMode + 1) % this.dictCount;
+			break;
+		}
+		
+		var m = this.showMode;
 		var e = null;
 
 		do {
-			switch (showMode) {
+			switch (this.showMode) {
 			case 0:
 				e = this.dict.wordSearch(text, false);
 				break;
@@ -373,8 +401,8 @@ var rcxMain = {
 				break;
 			}
 			if (e) break;
-			showMode = (showMode + 1) % this.dictCount;
-		} while (showMode != m);
+			this.showMode = (this.showMode + 1) % this.dictCount;
+		} while (this.showMode != m);
 		
 		return e;
 	}

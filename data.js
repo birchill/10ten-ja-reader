@@ -93,8 +93,10 @@ rcxDict.prototype = {
 
 	loadNames: function() {
 		if ((this.nameDict) && (this.nameIndex)) return;
-		this.nameDict = this.fileRead(rcxNamesDict.datURI, rcxNamesDict.datCharset);
-		this.nameIndex = this.fileRead(rcxNamesDict.idxURI, rcxNamesDict.idxCharset);
+		/*this.nameDict = this.fileRead(rcxNamesDict.datURI, rcxNamesDict.datCharset);
+		this.nameIndex = this.fileRead(rcxNamesDict.idxURI, rcxNamesDict.idxCharset);*/
+		this.nameDict = this.fileRead(chrome.extension.getURL("data/names.dat"));
+		this.nameIndex = this.fileRead(chrome.extension.getURL("data/names.idx"));
 	},
 
 	//	Note: These are mostly flat text files; loaded as one continous string to reduce memory use
@@ -358,6 +360,7 @@ if (0) {
 			index = this.nameIndex;
 			maxTrim = 20;//this.config.namax;
 			entry.names = 1;
+			console.log('doNames');
 		}
 		else {
 			dict = this.wordDict;
@@ -706,6 +709,10 @@ if (0) {
 			for (i = 0; i < entry.data.length; ++i) {
 				e = entry.data[i][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
 				if (!e) continue;
+				
+				// the next two lines re-process the entries that contain separate search key and spelling due to mixed hiragana/katakana spelling
+				e3 = e[3].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
+				if (e3) e = e3;
 
 				if (s != e[3]) {
 					c.push(t);
@@ -716,6 +723,9 @@ if (0) {
 					else c.push('<span class="w-kana">' + e[1] + '</span><br/> ');
 
 				s = e[3];
+				console.log('e[1]: ' + e[1]);
+				console.log('e[2]: ' + e[2]);
+				console.log('e[3]: ' + e[3]);
 				t = '<span class="w-def">' + s.replace(/\//g, '; ') + '</span><br/>';
 			}
 			c.push(t);

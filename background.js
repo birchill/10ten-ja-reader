@@ -10,8 +10,16 @@ chrome.runtime.onMessage.addListener(
 				break;
 			case 'xsearch':
 				console.log('xsearch');
-				var e = rcxMain.search(request.text, request.showmode);
+				var e = rcxMain.search(request.text, request.dictOption);
 				response(e);
+				break;
+/*			case 'nextDict':
+				console.log('nextDict');
+				rcxMain.nextDict();
+				break;*/
+			case 'resetDict':
+				console.log('resetDict');
+				rcxMain.resetDict();
 				break;
 			case 'translate':
 				console.log('translate');
@@ -40,7 +48,7 @@ chrome.runtime.onMessage.addListener(
 		}
 	});
 	
-if(initStorage("v0.8.8", true)) {
+if(initStorage("v0.8.9", true)) {
 	// v0.7
 	initStorage("popupcolor", "blue");
 	initStorage("highlight", true);

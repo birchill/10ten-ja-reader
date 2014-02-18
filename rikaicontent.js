@@ -41,8 +41,13 @@
 
 var rcxContent = {
 
-	dictCount: 2,
+	dictCount: 3,
 	altView: 0,
+
+	sameDict: 0,
+	forceKanji: 0,
+	defaultDict: 2,
+	nextDict: 3,
 	
 	//Adds the listeners and stuff.
 	enableTab: function() {
@@ -170,7 +175,7 @@ var rcxContent = {
 				x = (window.innerWidth - (pW + 20)) + window.scrollX;
 				y = (window.innerHeight - (pH + 20)) + window.scrollY;
 			}
-			// This probably doesn't actually work
+			// FIXME: This probably doesn't actually work
 			else if (elem instanceof window.HTMLOptionElement) {
 				// these things are always on z-top, so go sideways
 
@@ -325,8 +330,9 @@ var rcxContent = {
 		switch (ev.keyCode) {
 		case 16:	// shift
 		case 13:	// enter
-			this.showMode = (this.showMode + 1) % this.dictCount;
-			this.show(ev.currentTarget.rikaichan);
+			//this.showMode = (this.showMode + 1) % this.dictCount;
+			//chrome.extension.sendMessage({"type":"nextDict"});
+			this.show(ev.currentTarget.rikaichan, this.nextDict);
 			break;
 		case 27:	// esc
 			this.hidePopup();
@@ -334,7 +340,7 @@ var rcxContent = {
 			break;
 		case 65:	// a
 			this.altView = (this.altView + 1) % 3;
-			this.show(ev.currentTarget.rikaichan);
+			this.show(ev.currentTarget.rikaichan, this.sameDict);
 			break;
 		case 67:	// c
 			chrome.extension.sendMessage({"type":"copyToClip", "entry":rcxContent.lastFound});
@@ -343,29 +349,31 @@ var rcxContent = {
 			var ofs = ev.currentTarget.rikaichan.uofs;
 			for (i = 50; i > 0; --i) {
 				ev.currentTarget.rikaichan.uofs = --ofs;
-				this.showMode = 0;
-				if (this.show(ev.currentTarget.rikaichan) >= 0) {
+				//chrome.extension.sendMessage({"type":"resetDict"});
+				//this.showMode = 0;
+				if (this.show(ev.currentTarget.rikaichan, this.defaultDict) >= 0) {
 					if (ofs >= ev.currentTarget.rikaichan.uofs) break;	// ! change later
 				}
 			}
 			break;
 		case 68:	// d
 			chrome.extension.sendMessage({"type":"switchOnlyReading"});
-			this.show(ev.currentTarget.rikaichan);
+			this.show(ev.currentTarget.rikaichan, this.sameDict);
 			break;
 		case 77:	// m
 			ev.currentTarget.rikaichan.uofsNext = 1;
 		case 78:	// n
 			for (i = 50; i > 0; --i) {
 				ev.currentTarget.rikaichan.uofs += ev.currentTarget.rikaichan.uofsNext;
-				this.showMode = 0;
-				if (this.show(ev.currentTarget.rikaichan) >= 0) break;
+				//chrome.extension.sendMessage({"type":"resetDict"});
+				//this.showMode = 0;
+				if (this.show(ev.currentTarget.rikaichan, this.defaultDict) >= 0) break;
 			}
 			break;
 		case 89:	// y
 			this.altView = 0;
 			ev.currentTarget.rikaichan.popY += 20;
-			this.show(ev.currentTarget.rikaichan);
+			this.show(ev.currentTarget.rikaichan, this.sameDict);
 			break;
 		default:
 			return;
@@ -555,7 +563,7 @@ var rcxContent = {
 	// Hack because ro was coming out always 0 for some reason.
 	lastRo: 0,
 	
-	show: function(tdata) {
+	show: function(tdata, dictOption) {
 		var rp = tdata.prevRangeNode;
 		var ro = tdata.prevRangeOfs + tdata.uofs;
 		var u;
@@ -602,7 +610,7 @@ var rcxContent = {
 		
 		lastSelEnd = selEndList;
 		lastRo = ro;
-		chrome.extension.sendMessage({"type":"xsearch", "text":text, "showmode":this.showMode}, 
+		chrome.extension.sendMessage({"type":"xsearch", "text":text, "dictOption": String(dictOption) },
 		rcxContent.processEntry);
 		
 		return 1;
@@ -929,12 +937,14 @@ var rcxContent = {
 		this.uofsNext = 1;
 
 		if ((rp) && (rp.data) && (ro < rp.data.length)) {
-			this.showMode = ev.shiftKey ? 1 : 0;
+			this.forceKanji = ev.shiftKey ? 1 : 0;
 			tdata.popX = ev.clientX;
 			tdata.popY = ev.clientY;
 			tdata.timer = setTimeout(
 				function() {
-					rcxContent.show(tdata);
+					//chrome.extension.sendMessage({"type":"resetDict"});
+					//rcxContent.show(tdata, this.forceKanji ? this.forceKanji : this.defaultDict);
+					rcxContent.show(tdata, rcxContent.forceKanji ? rcxContent.forceKanji : rcxContent.defaultDict);
 				}, 1/*this.cfg.popdelay*/);
 			//console.log("showed data");
 			return;
