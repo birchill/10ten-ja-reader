@@ -27,7 +27,7 @@
 	"content_scripts": [
 		{
 			"matches": ["http://*/*", "https://*/*", "ftp://*/*", "file:///*"],
-			"js": ["jquery-1.7.1.min.js", "rikaicontent.js"],
+			"js": ["rikaicontent.js"],
 			"all_frames":true
 		}
 	],
