@@ -773,15 +773,16 @@ var rcxContent = {
 	
 	makeFake: function(real) {
 		var fake = document.createElement('div');
+		var realRect = real.getBoundingClientRect();
 		fake.innerText = real.value;
 		fake.style.cssText = document.defaultView.getComputedStyle(real, "").cssText;
 		fake.scrollTop = real.scrollTop;
 		fake.scrollLeft = real.scrollLeft;
 		fake.style.position = "absolute";
 		fake.style.zIndex = 7777;
-		$(fake).offset({top: $(real).offset().top, left: $(real).offset().left})
-		
-		
+		fake.style.top = realRect.top + 'px';
+		fake.style.left = realRect.left + 'px';
+
 		return fake;
 		
 	},
