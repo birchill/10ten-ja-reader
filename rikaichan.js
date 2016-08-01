@@ -328,7 +328,7 @@ var rcxMain = {
 				chrome.browserAction.setBadgeText({ "text": "On" });
 
 
-			});
+			}.bind(this));
 
 			//	time = (((new Date()).getTime() - time) / 1000).toFixed(2);
 		}
