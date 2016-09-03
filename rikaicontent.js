@@ -334,6 +334,37 @@ var rcxContent = {
 			//chrome.extension.sendMessage({"type":"nextDict"});
 			this.show(ev.currentTarget.rikaichan, this.nextDict);
 			break;
+		case 74:	// j
+			// reverse cycle through definitions if > max (7)
+			e = this.lastFound[0];
+			if (e.data.length < 7)
+				break;
+			if (!e.index)
+				e.index = 0;
+			if (e.index > 0) e.index -= 1;
+			else e.index = e.data.length - 7;
+			//rcxContent.lastFound = [e];
+			// console.log(e.index);
+			// console.log(e.data);
+			chrome.extension.sendMessage({"type":"makehtml", "entry":e}, rcxContent.processHtml);
+			this.lastFound = [e];
+			break;
+		case 75:	// k
+			// forward cycle through definitions if > max (7)
+			e = this.lastFound[0];
+			if (e.data.length < 7)
+				break;
+			if (!e.index)
+				e.index = 0;
+			if (e.index >= (e.data.length - 7))
+				e.index = 0;
+			else e.index += 1;
+
+			//console.log(e.index);
+
+			chrome.extension.sendMessage({"type":"makehtml", "entry":e}, rcxContent.processHtml);
+			this.lastFound = [e];
+			break;
 		case 27:	// esc
 			this.hidePopup();
 			this.clearHi();

@@ -428,7 +428,7 @@ if (0) {
                     if (ok) {
                         if (count >= maxTrim) {
 							entry.more = 1;
-							break;
+							//break;
 						}
 
 						have[ofs] = 1;
@@ -760,7 +760,12 @@ if (0) {
 			var pK = '';
 			var k;
 
-			for (i = 0; i < entry.data.length; ++i) {
+			if (!entry.index)
+				entry.index = 0;
+
+			if (entry.index != 0) b.push('...<br/>');
+
+			for (i = entry.index; i < Math.min((7 + entry.index), entry.data.length); ++i) {
 				e = entry.data[i][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
 				if (!e) continue;
 
@@ -803,7 +808,7 @@ if (0) {
 				}
 			}
 			b.push(t);
-			if (entry.more) b.push('...<br/>');
+			if (entry.more && (entry.index < (entry.data.length - 7))) b.push('...<br/>');
 		}
 
 		return b.join('');
