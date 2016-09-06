@@ -428,7 +428,6 @@ if (0) {
                     if (ok) {
                         if (count >= maxTrim) {
 							entry.more = 1;
-							//break;
 						}
 
 						have[ofs] = 1;

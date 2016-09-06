@@ -343,9 +343,7 @@ var rcxContent = {
 				e.index = 0;
 			if (e.index > 0) e.index -= 1;
 			else e.index = e.data.length - 7;
-			//rcxContent.lastFound = [e];
-			// console.log(e.index);
-			// console.log(e.data);
+
 			chrome.extension.sendMessage({"type":"makehtml", "entry":e}, rcxContent.processHtml);
 			this.lastFound = [e];
 			break;
@@ -359,8 +357,6 @@ var rcxContent = {
 			if (e.index >= (e.data.length - 7))
 				e.index = 0;
 			else e.index += 1;
-
-			//console.log(e.index);
 
 			chrome.extension.sendMessage({"type":"makehtml", "entry":e}, rcxContent.processHtml);
 			this.lastFound = [e];
