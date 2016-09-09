@@ -236,7 +236,12 @@ var rcxContent = {
 				// go up if necessary
 				if ((y + v + pH) > window.innerHeight) {
 					var t = y - pH - 30;
-					if (t >= 0) y = t;
+					if (t >= 0) {
+						y = t;
+					} else {
+						// if can't go up, still go down to prevent blocking cursor
+						y += v;
+					}
 				}
 				else y += v;
 				
