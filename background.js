@@ -48,7 +48,7 @@ chrome.runtime.onMessage.addListener(
 		}
 	});
 	
-if(initStorage("v0.8.9", true)) {
+if(initStorage("v0.8.92", true)) {
 	// v0.7
 	initStorage("popupcolor", "blue");
 	initStorage("highlight", true);
@@ -84,6 +84,9 @@ if(initStorage("v0.8.9", true)) {
 	for (i = 0; i*2 < rcxDict.prototype.numList.length; i++) {
 		initStorage(rcxDict.prototype.numList[i*2], "true")
 	}
+
+    // v0.8.92
+	initStorage("popupDelay", "150");
 }
 
 /** 
@@ -113,6 +116,7 @@ rcxMain.config.copySeparator = localStorage["copySeparator"];
 rcxMain.config.maxClipCopyEntries = localStorage["maxClipCopyEntries"];
 rcxMain.config.lineEnding = localStorage["lineEnding"];
 rcxMain.config.minihelp = localStorage["minihelp"];
+rcxMain.config.popupDelay = parseInt(localStorage["popupDelay"]);
 rcxMain.config.disablekeys = localStorage["disablekeys"];
 rcxMain.config.kanjicomponents = localStorage["kanjicomponents"];
 rcxMain.config.kanjiinfo = new Array(rcxDict.prototype.numList.length/2);

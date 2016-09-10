@@ -816,6 +816,10 @@ var rcxContent = {
 	onMouseMove: function(ev) { rcxContent._onMouseMove(ev); },
 	_onMouseMove: function(ev) {
 		var fake;
+		var tdata = window.rikaichan; // per-tab data
+		var range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
+		var rp = range.startContainer;
+		var ro = range.startOffset;
 		// Put this in a try catch so that an exception here doesn't prevent editing due to div.
 		try {
 			if(ev.target.nodeName == 'TEXTAREA' || ev.target.nodeName == 'INPUT') {
@@ -824,12 +828,6 @@ var rcxContent = {
 				fake.scrollTop = ev.target.scrollTop;
 				fake.scrollLeft = ev.target.scrollLeft;
 			}
-			
-			var tdata = window.rikaichan;	// per-tab data
-			
-			var range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
-			var rp = range.startContainer;
-			var ro = range.startOffset;
 			
 			if(fake) {
 				// At the end of a line, don't do anything or you just get beginning of next line
@@ -845,14 +843,6 @@ var rcxContent = {
 				" total size: " + (rp.data?rp.data.length:"") + " target: " + ev.target.nodeName + 
 				" parentparent: " + rp.parentNode.nodeName); */
 			
-
-			
-
-
-			if (tdata.timer) {
-				clearTimeout(tdata.timer);
-				tdata.timer = null;
-			}
 			
 			// This is to account for bugs in caretRangeFromPoint
 			// It includes the fact that it returns text nodes over non text nodes
@@ -946,17 +936,19 @@ var rcxContent = {
 		tdata.uofs = 0;
 		this.uofsNext = 1;
 
+		var delay = !!ev.noDelay ? 1 : window.rikaichan.config.popupDelay;
+
 		if ((rp) && (rp.data) && (ro < rp.data.length)) {
 			this.forceKanji = ev.shiftKey ? 1 : 0;
 			tdata.popX = ev.clientX;
 			tdata.popY = ev.clientY;
 			tdata.timer = setTimeout(
-				function() {
-					//chrome.extension.sendMessage({"type":"resetDict"});
-					//rcxContent.show(tdata, this.forceKanji ? this.forceKanji : this.defaultDict);
+				function(rangeNode, rangeOffset) {
+					if (!window.rikaichan || rangeNode != window.rikaichan.prevRangeNode || ro != window.rikaichan.prevRangeOfs) {
+						return;
+					}
 					rcxContent.show(tdata, rcxContent.forceKanji ? rcxContent.forceKanji : rcxContent.defaultDict);
-				}, 1/*this.cfg.popdelay*/);
-			//console.log("showed data");
+				}, delay, rp, ro);
 			return;
 		}
 
@@ -981,9 +973,12 @@ var rcxContent = {
 			tdata.popX = ev.clientX;
 			tdata.popY = ev.clientY;
 			tdata.timer = setTimeout(
-				function(tdata) {
+				function(tdata, title) {
+					if (!window.rikaichan || title !== window.rikaichan.title) {
+						return;
+					}
 					rcxContent.showTitle(tdata);
-				}, 1/*this.cfg.popdelay*/, tdata);
+				}, delay, tdata, tdata.title);
 		}
 		else {
 			// dont close just because we moved from a valid popup slightly over to a place with nothing
