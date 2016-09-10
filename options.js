@@ -63,6 +63,14 @@ function fillVals() {
 
 	document.optform.maxClipCopyEntries.value = parseInt(localStorage['maxClipCopyEntries']);
 
+	store = localStorage['showOnKey'];
+	for(var i = 0; i < document.optform.showOnKey.length; ++i) {
+		if (document.optform.showOnKey[i].value === store) {
+			document.optform.showOnKey[i].checked = true;
+			break;
+		}
+	}
+
 }
 
 function getVals() {
@@ -96,6 +104,7 @@ function getVals() {
 		popupDelay = 150;
 		localStorage['popupDelay'] = "150";
 	}
+	localStorage['showOnKey'] = document.optform.showOnKey.value;
 
 	chrome.extension.getBackgroundPage().rcxMain.config.css = localStorage["popupcolor"];
 	chrome.extension.getBackgroundPage().rcxMain.config.highlight = localStorage["highlight"];
@@ -104,6 +113,7 @@ function getVals() {
 	chrome.extension.getBackgroundPage().rcxMain.config.minihelp = localStorage["minihelp"];
 	chrome.extension.getBackgroundPage().rcxMain.config.popupDelay = popupDelay;
 	chrome.extension.getBackgroundPage().rcxMain.config.disablekeys = localStorage["disablekeys"];
+	chrome.extension.getBackgroundPage().rcxMain.config.showOnKey = localStorage["showOnKey"];
 	chrome.extension.getBackgroundPage().rcxMain.config.kanjicomponents = localStorage["kanjicomponents"];
 	chrome.extension.getBackgroundPage().rcxMain.config.kanjiinfo = kanjiinfoarray;
 	chrome.extension.getBackgroundPage().rcxMain.config.lineEnding = localStorage["lineEnding"];

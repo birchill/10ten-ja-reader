@@ -87,6 +87,7 @@ if(initStorage("v0.8.92", true)) {
 
     // v0.8.92
 	initStorage("popupDelay", "150");
+	initStorage("showOnKey", "");
 }
 
 /** 
@@ -118,6 +119,7 @@ rcxMain.config.lineEnding = localStorage["lineEnding"];
 rcxMain.config.minihelp = localStorage["minihelp"];
 rcxMain.config.popupDelay = parseInt(localStorage["popupDelay"]);
 rcxMain.config.disablekeys = localStorage["disablekeys"];
+rcxMain.config.showOnKey = localStorage["showOnKey"];
 rcxMain.config.kanjicomponents = localStorage["kanjicomponents"];
 rcxMain.config.kanjiinfo = new Array(rcxDict.prototype.numList.length/2);
 for (i = 0; i*2 < rcxDict.prototype.numList.length; i++) {

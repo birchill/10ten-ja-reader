@@ -319,12 +319,29 @@ var rcxContent = {
 	},
 	
 	keysDown: [],
+	lastPos: { x: null, y: null},
+	lastTarget: null,
 
 	onKeyDown: function(ev) { rcxContent._onKeyDown(ev) },
 	_onKeyDown: function(ev) {
 //		this.status("keyCode=" + ev.keyCode + ' charCode=' + ev.charCode + ' detail=' + ev.detail);
 
-		if ((ev.altKey) || (ev.metaKey) || (ev.ctrlKey)) return;
+		if (window.rikaichan.config.showOnKey !== "" && (ev.altKey || ev.ctrlKey || ev.key == "AltGraph")) {
+			if (this.lastTarget !== null) {
+				//console.log(ev);
+				var myEv = {
+					clientX: this.lastPos.x,
+					clientY: this.lastPos.y,
+					target: this.lastTarget,
+					altKey: ev.altKey || ev.key == "AltGraph",
+					ctrlKey: ev.ctrlKey,
+					shiftKey: ev.shiftKey,
+					noDelay: true
+				};
+				this.tryUpdatePopup(myEv);
+			}
+			return;
+		}
 		if ((ev.shiftKey) && (ev.keyCode != 16)) return;
 		if (this.keysDown[ev.keyCode]) return;
 		if (!this.isVisible()) return;
@@ -813,8 +830,22 @@ var rcxContent = {
 	
 	},
 	
-	onMouseMove: function(ev) { rcxContent._onMouseMove(ev); },
-	_onMouseMove: function(ev) {
+	onMouseMove: function(ev) {
+		rcxContent.lastPos.x = ev.clientX;
+		rcxContent.lastPos.y = ev.clientY;
+		rcxContent.lastTarget = ev.target;
+		rcxContent.tryUpdatePopup(ev);
+	},
+	tryUpdatePopup: function(ev) {
+		var altGraph = ev.getModifierState && ev.getModifierState("AltGraph");
+
+		if ((window.rikaichan.config.showOnKey.includes("Alt") && !ev.altKey && !altGraph) ||
+			 (window.rikaichan.config.showOnKey.includes("Ctrl") && !ev.ctrlKey)) {
+			this.clearHi();
+			this.hidePopup();
+			return;
+		}
+
 		var fake;
 		var tdata = window.rikaichan; // per-tab data
 		var range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
