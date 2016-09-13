@@ -236,7 +236,12 @@ var rcxContent = {
 				// go up if necessary
 				if ((y + v + pH) > window.innerHeight) {
 					var t = y - pH - 30;
-					if (t >= 0) y = t;
+					if (t >= 0) {
+						y = t;
+					} else {
+						// if can't go up, still go down to prevent blocking cursor
+						y += v;
+					}
 				}
 				else y += v;
 				
@@ -314,12 +319,29 @@ var rcxContent = {
 	},
 	
 	keysDown: [],
+	lastPos: { x: null, y: null},
+	lastTarget: null,
 
 	onKeyDown: function(ev) { rcxContent._onKeyDown(ev) },
 	_onKeyDown: function(ev) {
 //		this.status("keyCode=" + ev.keyCode + ' charCode=' + ev.charCode + ' detail=' + ev.detail);
 
-		if ((ev.altKey) || (ev.metaKey) || (ev.ctrlKey)) return;
+		if (window.rikaichan.config.showOnKey !== "" && (ev.altKey || ev.ctrlKey || ev.key == "AltGraph")) {
+			if (this.lastTarget !== null) {
+				//console.log(ev);
+				var myEv = {
+					clientX: this.lastPos.x,
+					clientY: this.lastPos.y,
+					target: this.lastTarget,
+					altKey: ev.altKey || ev.key == "AltGraph",
+					ctrlKey: ev.ctrlKey,
+					shiftKey: ev.shiftKey,
+					noDelay: true
+				};
+				this.tryUpdatePopup(myEv);
+			}
+			return;
+		}
 		if ((ev.shiftKey) && (ev.keyCode != 16)) return;
 		if (this.keysDown[ev.keyCode]) return;
 		if (!this.isVisible()) return;
@@ -808,9 +830,27 @@ var rcxContent = {
 	
 	},
 	
-	onMouseMove: function(ev) { rcxContent._onMouseMove(ev); },
-	_onMouseMove: function(ev) {
+	onMouseMove: function(ev) {
+		rcxContent.lastPos.x = ev.clientX;
+		rcxContent.lastPos.y = ev.clientY;
+		rcxContent.lastTarget = ev.target;
+		rcxContent.tryUpdatePopup(ev);
+	},
+	tryUpdatePopup: function(ev) {
+		var altGraph = ev.getModifierState && ev.getModifierState("AltGraph");
+
+		if ((window.rikaichan.config.showOnKey.includes("Alt") && !ev.altKey && !altGraph) ||
+			 (window.rikaichan.config.showOnKey.includes("Ctrl") && !ev.ctrlKey)) {
+			this.clearHi();
+			this.hidePopup();
+			return;
+		}
+
 		var fake;
+		var tdata = window.rikaichan; // per-tab data
+		var range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
+		var rp = range.startContainer;
+		var ro = range.startOffset;
 		// Put this in a try catch so that an exception here doesn't prevent editing due to div.
 		try {
 			if(ev.target.nodeName == 'TEXTAREA' || ev.target.nodeName == 'INPUT') {
@@ -819,12 +859,6 @@ var rcxContent = {
 				fake.scrollTop = ev.target.scrollTop;
 				fake.scrollLeft = ev.target.scrollLeft;
 			}
-			
-			var tdata = window.rikaichan;	// per-tab data
-			
-			var range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
-			var rp = range.startContainer;
-			var ro = range.startOffset;
 			
 			if(fake) {
 				// At the end of a line, don't do anything or you just get beginning of next line
@@ -840,14 +874,6 @@ var rcxContent = {
 				" total size: " + (rp.data?rp.data.length:"") + " target: " + ev.target.nodeName + 
 				" parentparent: " + rp.parentNode.nodeName); */
 			
-
-			
-
-
-			if (tdata.timer) {
-				clearTimeout(tdata.timer);
-				tdata.timer = null;
-			}
 			
 			// This is to account for bugs in caretRangeFromPoint
 			// It includes the fact that it returns text nodes over non text nodes
@@ -941,17 +967,19 @@ var rcxContent = {
 		tdata.uofs = 0;
 		this.uofsNext = 1;
 
+		var delay = !!ev.noDelay ? 1 : window.rikaichan.config.popupDelay;
+
 		if ((rp) && (rp.data) && (ro < rp.data.length)) {
 			this.forceKanji = ev.shiftKey ? 1 : 0;
 			tdata.popX = ev.clientX;
 			tdata.popY = ev.clientY;
 			tdata.timer = setTimeout(
-				function() {
-					//chrome.extension.sendMessage({"type":"resetDict"});
-					//rcxContent.show(tdata, this.forceKanji ? this.forceKanji : this.defaultDict);
+				function(rangeNode, rangeOffset) {
+					if (!window.rikaichan || rangeNode != window.rikaichan.prevRangeNode || ro != window.rikaichan.prevRangeOfs) {
+						return;
+					}
 					rcxContent.show(tdata, rcxContent.forceKanji ? rcxContent.forceKanji : rcxContent.defaultDict);
-				}, 1/*this.cfg.popdelay*/);
-			//console.log("showed data");
+				}, delay, rp, ro);
 			return;
 		}
 
@@ -976,9 +1004,12 @@ var rcxContent = {
 			tdata.popX = ev.clientX;
 			tdata.popY = ev.clientY;
 			tdata.timer = setTimeout(
-				function(tdata) {
+				function(tdata, title) {
+					if (!window.rikaichan || title !== window.rikaichan.title) {
+						return;
+					}
 					rcxContent.showTitle(tdata);
-				}, 1/*this.cfg.popdelay*/, tdata);
+				}, delay, tdata, tdata.title);
 		}
 		else {
 			// dont close just because we moved from a valid popup slightly over to a place with nothing
