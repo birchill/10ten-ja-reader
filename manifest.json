@@ -22,7 +22,9 @@
 		"default_icon": "images/ba.png"
 	},
 	
-	"options_page": "options.html",
+	"options_ui": {
+		"page": "options.html"
+	}
 
 	"content_scripts": [
 		{
