@@ -1,6 +1,7 @@
 
 browser.browserAction.onClicked.addListener(rcxMain.inlineToggle);
-browser.tabs.onSelectionChanged.addListener(rcxMain.onTabSelect);
+browser.tabs.onActivated.addListener(
+	activeInfo => rcxMain.onTabSelect(activeInfo.tabId));
 browser.runtime.onMessage.addListener(
 	function(request, sender, response) {
 		switch(request.type) {
