@@ -222,7 +222,7 @@ var rcxMain = {
 	_onTabSelect: function(tabId) {
 
 		if ((this.enabled == 1))
-			chrome.tabs.sendMessage(tabId, {"type":"enable", "config":rcxMain.config});
+			browser.tabs.sendMessage(tabId, {"type":"enable", "config":rcxMain.config});
 	},
 
 	savePrep: function(clip, entry) {
@@ -283,7 +283,7 @@ var rcxMain = {
 			};
 			document.execCommand("Copy");
 			document.oncopy = undefined;
-			chrome.tabs.sendMessage(tab.id, {"type":"showPopup", "text":'Copied to clipboard.'});
+			browser.tabs.sendMessage(tab.id, {"type":"showPopup", "text":'Copied to clipboard.'});
 		}
 	},
 
@@ -313,17 +313,17 @@ var rcxMain = {
 		}
 		
 		// Send message to current tab to add listeners and create stuff
-		chrome.tabs.sendMessage(tab.id, {"type":"enable", "config":rcxMain.config});
+		browser.tabs.sendMessage(tab.id, {"type":"enable", "config":rcxMain.config});
 		this.enabled = 1;
 		
 		if (mode == 1) {
 			if (rcxMain.config.minihelp == 'true')
-				chrome.tabs.sendMessage(tab.id, {"type":"showPopup", "text":rcxMain.miniHelp});
+				browser.tabs.sendMessage(tab.id, {"type":"showPopup", "text":rcxMain.miniHelp});
 			else
-				chrome.tabs.sendMessage(tab.id, {"type":"showPopup", "text":'Rikaikun enabled!'});
+				browser.tabs.sendMessage(tab.id, {"type":"showPopup", "text":'Rikaikun enabled!'});
 		} 
-		chrome.browserAction.setBadgeBackgroundColor({"color":[255,0,0,255]});
-		chrome.browserAction.setBadgeText({"text":"On"});
+		browser.browserAction.setBadgeBackgroundColor({"color":[255,0,0,255]});
+		browser.browserAction.setBadgeText({"text":"On"});
 	},
 
 	// This function diables 
@@ -332,16 +332,16 @@ var rcxMain = {
 		delete this.dict;
 		
 		this.enabled = 0;
-		chrome.browserAction.setBadgeBackgroundColor({"color":[0,0,0,0]});
-		chrome.browserAction.setBadgeText({"text":""});
+		browser.browserAction.setBadgeBackgroundColor({"color":[0,0,0,0]});
+		browser.browserAction.setBadgeText({"text":""});
 
 		// Send a disable message to all browsers
-		var windows = chrome.windows.getAll({"populate":true}, 
+		var windows = browser.windows.getAll({"populate":true}, 
 			function(windows) {
 				for (var i =0; i < windows.length; ++i) {
 					var tabs = windows[i].tabs;
 					for ( var j = 0; j < tabs.length; ++j) {
-						chrome.tabs.sendMessage(tabs[j].id, {"type":"disable"});
+						browser.tabs.sendMessage(tabs[j].id, {"type":"disable"});
 					}
 				}
 			});

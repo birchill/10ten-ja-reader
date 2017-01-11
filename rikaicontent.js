@@ -105,7 +105,7 @@ var rcxContent = {
 			css.setAttribute('rel', 'stylesheet');
 			css.setAttribute('type', 'text/css');
 			var cssdoc = window.rikaichan.config.css;
-			css.setAttribute('href', chrome.extension.getURL('css/popup-' + 
+			css.setAttribute('href', browser.extension.getURL('css/popup-' + 
 																cssdoc + '.css'));
 			css.setAttribute('id', 'rikaichan-css');
 			topdoc.getElementsByTagName('head')[0].appendChild(css);
@@ -353,7 +353,7 @@ var rcxContent = {
 		case 16:	// shift
 		case 13:	// enter
 			//this.showMode = (this.showMode + 1) % this.dictCount;
-			//chrome.extension.sendMessage({"type":"nextDict"});
+			//browser.extension.sendMessage({"type":"nextDict"});
 			this.show(ev.currentTarget.rikaichan, this.nextDict);
 			break;
 		case 27:	// esc
@@ -365,13 +365,13 @@ var rcxContent = {
 			this.show(ev.currentTarget.rikaichan, this.sameDict);
 			break;
 		case 67:	// c
-			chrome.extension.sendMessage({"type":"copyToClip", "entry":rcxContent.lastFound});
+			browser.extension.sendMessage({"type":"copyToClip", "entry":rcxContent.lastFound});
 			break;
 		case 66:	// b
 			var ofs = ev.currentTarget.rikaichan.uofs;
 			for (i = 50; i > 0; --i) {
 				ev.currentTarget.rikaichan.uofs = --ofs;
-				//chrome.extension.sendMessage({"type":"resetDict"});
+				//browser.extension.sendMessage({"type":"resetDict"});
 				//this.showMode = 0;
 				if (this.show(ev.currentTarget.rikaichan, this.defaultDict) >= 0) {
 					if (ofs >= ev.currentTarget.rikaichan.uofs) break;	// ! change later
@@ -379,7 +379,7 @@ var rcxContent = {
 			}
 			break;
 		case 68:	// d
-			chrome.extension.sendMessage({"type":"switchOnlyReading"});
+			browser.extension.sendMessage({"type":"switchOnlyReading"});
 			this.show(ev.currentTarget.rikaichan, this.sameDict);
 			break;
 		case 77:	// m
@@ -387,7 +387,7 @@ var rcxContent = {
 		case 78:	// n
 			for (i = 50; i > 0; --i) {
 				ev.currentTarget.rikaichan.uofs += ev.currentTarget.rikaichan.uofsNext;
-				//chrome.extension.sendMessage({"type":"resetDict"});
+				//browser.extension.sendMessage({"type":"resetDict"});
 				//this.showMode = 0;
 				if (this.show(ev.currentTarget.rikaichan, this.defaultDict) >= 0) break;
 			}
@@ -636,7 +636,7 @@ var rcxContent = {
 		
 		lastSelEnd = selEndList;
 		lastRo = ro;
-		chrome.extension.sendMessage({"type":"xsearch", "text":text, "dictOption": String(dictOption) },
+		browser.extension.sendMessage({"type":"xsearch", "text":text, "dictOption": String(dictOption) },
 		rcxContent.processEntry);
 		
 		return 1;
@@ -673,7 +673,7 @@ var rcxContent = {
 			tdata.prevSelView = doc.defaultView;
 		}
 		
-		chrome.extension.sendMessage({"type":"makehtml", "entry":e}, rcxContent.processHtml);
+		browser.extension.sendMessage({"type":"makehtml", "entry":e}, rcxContent.processHtml);
 	},
 
 	processHtml: function(html) {
@@ -751,7 +751,7 @@ var rcxContent = {
 	},
 
 	showTitle: function(tdata) {
-		chrome.extension.sendMessage({"type":"translate", "title":tdata.title}, 
+		browser.extension.sendMessage({"type":"translate", "title":tdata.title}, 
 			rcxContent.processTitle);
 	},
 	
@@ -768,7 +768,7 @@ var rcxContent = {
 
 		this.lastFound = [e];
 		
-		chrome.extension.sendMessage({"type":"makehtml", "entry":e}, rcxContent.processHtml);
+		browser.extension.sendMessage({"type":"makehtml", "entry":e}, rcxContent.processHtml);
 	},
 /*
 	inRange: function (event) {
@@ -1026,7 +1026,7 @@ var rcxContent = {
 }
 
 //Event Listeners
-chrome.runtime.onMessage.addListener(
+browser.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
 		switch(request.type) {
 			case 'enable':
@@ -1049,4 +1049,4 @@ chrome.runtime.onMessage.addListener(
 );
 
 // When a page first loads, checks to see if it should enable script
-chrome.extension.sendMessage({"type":"enable?"});
+browser.extension.sendMessage({"type":"enable?"});

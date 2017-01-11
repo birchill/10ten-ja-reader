@@ -1,7 +1,7 @@
 
-chrome.browserAction.onClicked.addListener(rcxMain.inlineToggle);
-chrome.tabs.onSelectionChanged.addListener(rcxMain.onTabSelect);
-chrome.runtime.onMessage.addListener(
+browser.browserAction.onClicked.addListener(rcxMain.inlineToggle);
+browser.tabs.onSelectionChanged.addListener(rcxMain.onTabSelect);
+browser.runtime.onMessage.addListener(
 	function(request, sender, response) {
 		switch(request.type) {
 			case 'enable?':

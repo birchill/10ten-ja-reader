@@ -39,7 +39,7 @@ function fillVals() {
 	else
 		document.optform.kanjicomponents.checked = false;
 
-	numList = chrome.extension.getBackgroundPage().rcxDict.prototype.numList;
+	numList = browser.extension.getBackgroundPage().rcxDict.prototype.numList;
 
 	for (i = 0; i*2 < numList.length; i++) {
 		document.getElementById(numList[i*2]).checked = localStorage[numList[i*2]] == 'true' ? true : false;
@@ -82,8 +82,8 @@ function getVals() {
 	localStorage['disablekeys'] = document.optform.disablekeys.checked;
 	localStorage['kanjicomponents'] = document.optform.kanjicomponents.checked;
 
-	var kanjiinfoarray = new Array(chrome.extension.getBackgroundPage().rcxDict.prototype.numList.length/2);
-	numList = chrome.extension.getBackgroundPage().rcxDict.prototype.numList;
+	var kanjiinfoarray = new Array(browser.extension.getBackgroundPage().rcxDict.prototype.numList.length/2);
+	numList = browser.extension.getBackgroundPage().rcxDict.prototype.numList;
 	for (i = 0; i*2 < numList.length; i++) {
 		localStorage[numList[i*2]] = document.getElementById(numList[i*2]).checked;
 		kanjiinfoarray[i] = localStorage[numList[i*2]];
@@ -106,19 +106,19 @@ function getVals() {
 	}
 	localStorage['showOnKey'] = document.optform.showOnKey.value;
 
-	chrome.extension.getBackgroundPage().rcxMain.config.css = localStorage["popupcolor"];
-	chrome.extension.getBackgroundPage().rcxMain.config.highlight = localStorage["highlight"];
-	chrome.extension.getBackgroundPage().rcxMain.config.textboxhl = localStorage["textboxhl"];
-	chrome.extension.getBackgroundPage().rcxMain.config.onlyreading = localStorage["onlyreading"];
-	chrome.extension.getBackgroundPage().rcxMain.config.minihelp = localStorage["minihelp"];
-	chrome.extension.getBackgroundPage().rcxMain.config.popupDelay = popupDelay;
-	chrome.extension.getBackgroundPage().rcxMain.config.disablekeys = localStorage["disablekeys"];
-	chrome.extension.getBackgroundPage().rcxMain.config.showOnKey = localStorage["showOnKey"];
-	chrome.extension.getBackgroundPage().rcxMain.config.kanjicomponents = localStorage["kanjicomponents"];
-	chrome.extension.getBackgroundPage().rcxMain.config.kanjiinfo = kanjiinfoarray;
-	chrome.extension.getBackgroundPage().rcxMain.config.lineEnding = localStorage["lineEnding"];
-	chrome.extension.getBackgroundPage().rcxMain.config.copySeparator = localStorage["copySeparator"];
-	chrome.extension.getBackgroundPage().rcxMain.config.maxClipCopyEntries = localStorage["maxClipCopyEntries"];
+	browser.extension.getBackgroundPage().rcxMain.config.css = localStorage["popupcolor"];
+	browser.extension.getBackgroundPage().rcxMain.config.highlight = localStorage["highlight"];
+	browser.extension.getBackgroundPage().rcxMain.config.textboxhl = localStorage["textboxhl"];
+	browser.extension.getBackgroundPage().rcxMain.config.onlyreading = localStorage["onlyreading"];
+	browser.extension.getBackgroundPage().rcxMain.config.minihelp = localStorage["minihelp"];
+	browser.extension.getBackgroundPage().rcxMain.config.popupDelay = popupDelay;
+	browser.extension.getBackgroundPage().rcxMain.config.disablekeys = localStorage["disablekeys"];
+	browser.extension.getBackgroundPage().rcxMain.config.showOnKey = localStorage["showOnKey"];
+	browser.extension.getBackgroundPage().rcxMain.config.kanjicomponents = localStorage["kanjicomponents"];
+	browser.extension.getBackgroundPage().rcxMain.config.kanjiinfo = kanjiinfoarray;
+	browser.extension.getBackgroundPage().rcxMain.config.lineEnding = localStorage["lineEnding"];
+	browser.extension.getBackgroundPage().rcxMain.config.copySeparator = localStorage["copySeparator"];
+	browser.extension.getBackgroundPage().rcxMain.config.maxClipCopyEntries = localStorage["maxClipCopyEntries"];
 
 }
 window.onload = fillVals;
