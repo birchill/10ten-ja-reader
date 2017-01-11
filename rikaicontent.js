@@ -325,6 +325,9 @@ var rcxContent = {
 	onKeyDown: function(ev) { rcxContent._onKeyDown(ev) },
 	_onKeyDown: function(ev) {
 //		this.status("keyCode=" + ev.keyCode + ' charCode=' + ev.charCode + ' detail=' + ev.detail);
+		if (!window.rikaichan) {
+			return;
+		}
 
 		if (window.rikaichan.config.showOnKey !== "" && (ev.altKey || ev.ctrlKey || ev.key == "AltGraph")) {
 			if (this.lastTarget !== null) {
@@ -848,9 +851,9 @@ var rcxContent = {
 
 		var fake;
 		var tdata = window.rikaichan; // per-tab data
-		var range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
-		var rp = range.startContainer;
-		var ro = range.startOffset;
+		var position = document.caretPositionFromPoint(ev.clientX, ev.clientY);
+		var rp = position.offsetNode;
+		var ro = position.offset;
 		// Put this in a try catch so that an exception here doesn't prevent editing due to div.
 		try {
 			if(ev.target.nodeName == 'TEXTAREA' || ev.target.nodeName == 'INPUT') {
