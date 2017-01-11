@@ -49,9 +49,9 @@ var rcxContent = {
   defaultDict: 2,
   nextDict: 3,
 
-  //Adds the listeners and stuff.
+  // Adds the listeners and stuff.
   enableTab: function() {
-    if (window.rikaichan == null) {
+    if (!window.rikaichan) {
       window.rikaichan = {};
       window.addEventListener('mousemove', this.onMouseMove, false);
       window.addEventListener('keydown', this.onKeyDown, true);
@@ -61,9 +61,9 @@ var rcxContent = {
     }
   },
 
-  //Removes the listeners and stuff
+  // Removes the listeners and stuff
   disableTab: function() {
-    if(window.rikaichan != null) {
+    if (window.rikaichan) {
       var e;
       window.removeEventListener('mousemove', this.onMouseMove, false);
       window.removeEventListener('keydown', this.onKeyDown, true);

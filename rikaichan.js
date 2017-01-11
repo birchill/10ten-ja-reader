@@ -163,16 +163,11 @@ var rcxMain = {
         this.showDownload();
         return false;
       } */
-      try {
-        this.dict = new rcxDict(this.haveNames/* && !this.cfg.nadelay*/);
-        //this.dict.setConfig(this.dconfig);
-      }
-      catch (ex) {
-        alert('Error loading dictionary: ' + ex);
-        return false;
-      }
+
+      this.dict = new rcxDict(this.haveNames/* && !this.cfg.nadelay*/);
+      //this.dict.setConfig(this.dconfig);
     }
-    return true;
+    return this.dict.loaded;
   },
 /*
   showDownload: function() {
@@ -306,27 +301,27 @@ var rcxMain = {
   // Function which enables the inline mode of rikaikun
   // Unlike rikaichan there is no lookup bar so this is the only enable.
   inlineEnable: function(tab, mode) {
-    if (!this.dict) {
-      //  var time = (new Date()).getTime();
-      if (!this.loadDictionary()) return;
-      //  time = (((new Date()).getTime() - time) / 1000).toFixed(2);
-    }
+    this.loadDictionary().then(() => {
+      // Send message to current tab to add listeners and create stuff
+      browser.tabs.sendMessage(tab.id, { type: 'enable',
+                                         config: rcxMain.config });
+      this.enabled = 1;
 
-    // Send message to current tab to add listeners and create stuff
-    browser.tabs.sendMessage(tab.id, {"type":"enable", "config":rcxMain.config});
-    this.enabled = 1;
-
-    if (mode == 1) {
-      if (rcxMain.config.minihelp == 'true')
-        browser.tabs.sendMessage(tab.id, {"type":"showPopup", "text":rcxMain.miniHelp});
-      else
-        browser.tabs.sendMessage(tab.id, {"type":"showPopup", "text":'Rikaikun enabled!'});
-    } 
-    browser.browserAction.setBadgeBackgroundColor({"color":[255,0,0,255]});
-    browser.browserAction.setBadgeText({"text":"On"});
+      if (mode == 1) {
+        if (rcxMain.config.minihelp == 'true') {
+          browser.tabs.sendMessage(tab.id, { type: 'showPopup',
+                                             text: rcxMain.miniHelp });
+        } else {
+          browser.tabs.sendMessage(tab.id, { type: 'showPopup',
+                                             text: 'Rikaikun enabled!' });
+        }
+      }
+      browser.browserAction.setBadgeBackgroundColor({"color":[255,0,0,255]});
+      browser.browserAction.setBadgeText({"text":"On"});
+    });
   },
 
-  // This function diables 
+  // This function diables
   inlineDisable: function(tab, mode) {
     // Delete dictionary object after we implement it
     delete this.dict;

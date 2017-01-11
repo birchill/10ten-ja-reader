@@ -40,9 +40,11 @@
 */
 
 function rcxDict(loadNames) {
-  this.loadDictionary();
-  if (loadNames) this.loadNames();
-  this.loadDIF();
+  const dictionaryLoaded = this.loadDictionary();
+  const namesLoaded = loadNames ? this.loadNames() : Promise.resolve();
+  const difLoaded = this.loadDIF();
+
+  this.loaded = Promise.all([ dictionaryLoaded, namesLoaded, difLoaded ]);
 }
 
 rcxDict.prototype = {
@@ -52,20 +54,14 @@ rcxDict.prototype = {
     this.config = c;
   },
 
-  fileRead: function(url, charset) {
-    var req = new XMLHttpRequest();
-    req.open("GET", url, false);
-    req.send(null);
-    return req.responseText;
+  fileRead: function(url) {
+    return fetch(url)
+      .then(response => response.text());
   },
 
-  fileReadArray: function(name, charset) {
-    var a = this.fileRead(name, charset).split('\n');
-    // Is this just in case there is blank shit in the file. It was written by
-    // Jon though.
-    // I suppose this is more robust
-    while ((a.length > 0) && (a[a.length - 1].length == 0)) a.pop();
-    return a;
+  fileReadArray: function(name) {
+    return this.fileRead(name)
+      .then(text => text.split('\n').filter(line => line.length));
   },
 
   find: function(data, text) {
@@ -92,8 +88,13 @@ rcxDict.prototype = {
     if ((this.nameDict) && (this.nameIndex)) return;
     /*this.nameDict = this.fileRead(rcxNamesDict.datURI, rcxNamesDict.datCharset);
     this.nameIndex = this.fileRead(rcxNamesDict.idxURI, rcxNamesDict.idxCharset);*/
-    this.nameDict = this.fileRead(browser.extension.getURL("data/names.dat"));
-    this.nameIndex = this.fileRead(browser.extension.getURL("data/names.idx"));
+    const readNameDict =
+      this.fileRead(browser.extension.getURL('data/names.dat'))
+      .then(text => { this.nameDict = text });
+    const readNameIndex =
+      this.fileRead(browser.extension.getURL('data/names.idx'))
+      .then(text => { this.nameIndex = text });
+    return Promise.all([ readNameDict, readNameIndex ]);
   },
 
   // Note: These are mostly flat text files; loaded as one continous string to
@@ -101,10 +102,24 @@ rcxDict.prototype = {
   loadDictionary: function() {
     /* this.wordDict = this.fileRead(rcxWordDict.datURI, rcxWordDict.datCharset);
     this.wordIndex = this.fileRead(rcxWordDict.idxURI, rcxWordDict.idxCharset); */
-    this.wordDict = this.fileRead(browser.extension.getURL("data/dict.dat"));
-    this.wordIndex = this.fileRead(browser.extension.getURL("data/dict.idx"));
-    this.kanjiData = this.fileRead(browser.extension.getURL("data/kanji.dat"), 'UTF-8');
-    this.radData = this.fileReadArray(browser.extension.getURL("data/radicals.dat"), 'UTF-8'); 
+    const dataFiles = {
+      wordDict:  'dict.dat',
+      wordIndex: 'dict.idx',
+      kanjiData: 'kanji.dat',
+      radData:   'radicals.dat',
+    };
+
+    const readPromises = [];
+    for (const key in dataFiles) {
+      if (dataFiles.hasOwnProperty(key)) {
+        const readPromise =
+          this.fileRead(browser.extension.getURL(`data/${dataFiles[key]}`))
+          .then(text => { this[key] = text });
+        readPromises.push(readPromise);
+      }
+    }
+
+    return Promise.all(readPromises);
 
     //  this.test_kanji();
   },
@@ -196,35 +211,35 @@ if (0) {
     this.difRules = [];
     this.difExact = [];
 
-    var buffer =
-      this.fileReadArray(browser.extension.getURL("data/deinflect.dat"),
-                         'UTF-8');
-    var prevLen = -1;
-    var g, o;
+    return this.fileReadArray(browser.extension.getURL('data/deinflect.dat'))
+      .then(buffer => {
+        var prevLen = -1;
+        var g, o;
 
-    // i = 1: skip header
-    for (var i = 1; i < buffer.length; ++i) {
-      var f = buffer[i].split('\t');
+        // i = 1: skip header
+        for (var i = 1; i < buffer.length; ++i) {
+          var f = buffer[i].split('\t');
 
-      if (f.length == 1) {
-        this.difReasons.push(f[0]);
-      }
-      else if (f.length == 4) {
-        o = {};
-        o.from = f[0];
-        o.to = f[1];
-        o.type = f[2];
-        o.reason = f[3];
+          if (f.length == 1) {
+            this.difReasons.push(f[0]);
+          }
+          else if (f.length == 4) {
+            o = {};
+            o.from = f[0];
+            o.to = f[1];
+            o.type = f[2];
+            o.reason = f[3];
 
-        if (prevLen != o.from.length) {
-          prevLen = o.from.length;
-          g = [];
-          g.flen = prevLen;
-          this.difRules.push(g);
+            if (prevLen != o.from.length) {
+              prevLen = o.from.length;
+              g = [];
+              g.flen = prevLen;
+              this.difRules.push(g);
+            }
+            g.push(o);
+          }
         }
-        g.push(o);
-      }
-    }
+      });
   },
 
   deinflect: function(word) {
@@ -293,6 +308,7 @@ if (0) {
   cs:[0x3071,0x3074,0x3077,0x307A,0x307D],
 
   wordSearch: function(word, doNames, max) {
+    console.log(`wordSearch: '${word}', doNames: ${doNames}, max: ${max}`);
     var i, u, v, r, p;
     var trueLen = [0];
     var entry = { };
@@ -341,25 +357,26 @@ if (0) {
       p = v;
     }
     word = r;
-
+    console.log(`Normalized word: ${word}`);
 
     var dict;
     var index;
     var maxTrim;
     var cache = [];
-        var have = [];
-        var count = 0;
-        var maxLen = 0;
+    var have = [];
+    var count = 0;
+    var maxLen = 0;
 
     if (doNames) {
       // check: split this
 
+      // XXX Make this do an async wait
+      console.warn('XXX: Need to wait async for names to load');
       this.loadNames();
       dict = this.nameDict;
       index = this.nameIndex;
       maxTrim = 20;//this.config.namax;
       entry.names = 1;
-      console.log('doNames');
     }
     else {
       dict = this.wordDict;
@@ -367,36 +384,48 @@ if (0) {
       maxTrim = 7;//this.config.wmax;
     }
 
-    if (max != null) maxTrim = max;
+    if (max != null) {
+      maxTrim = max;
+    }
 
     entry.data = [];
 
-        while (word.length > 0) {
+    while (word.length > 0) {
       var showInf = (count != 0);
-      var trys;
+      const trys = doNames
+                   ? [{ word, type: 0xFF, reason: null }]
+                   : this.deinflect(word);
+      console.log('matches to try:');
+      console.log(trys);
 
-      if (doNames) trys = [{'word': word, 'type': 0xFF, 'reason': null}];
-        else trys = this.deinflect(word);
-
-            for (i = 0; i < trys.length; i++) {
-                u = trys[i];
-
+      for (i = 0; i < trys.length; i++) {
+        u = trys[i];
         var ix = cache[u.word];
         if (!ix) {
           ix = this.find(index, u.word + ',');
+          console.log(`Index for ${u.word}: ${ix}`);
           if (!ix) {
             cache[u.word] = [];
             continue;
           }
           ix = ix.split(',');
           cache[u.word] = ix;
+          console.log(`Index after splitting: ${ix}`);
+        } else {
+          console.log(`Using cached index for ${u.word}: ${ix}`);
         }
 
-                for (var j = 1; j < ix.length; ++j) {
-                    var ofs = ix[j];
-          if (have[ofs]) continue;
+        for (let j = 1; j < ix.length; ++j) {
+          var ofs = ix[j];
+          console.log(`Trying index: ${ofs}`);
+          if (have[ofs]) {
+            console.log('... Skipping because we have it?');
+            continue;
+          }
 
           var dentry = dict.substring(ofs, dict.indexOf('\n', ofs));
+          console.log('Got dictionary entry:');
+          console.log(dentry);
 
           var ok = true;
           if (i > 0) {
@@ -412,8 +441,7 @@ if (0) {
             var w;
             var x = dentry.split(/[,()]/);
             var y = u.type;
-            var z = x.length - 1;
-            if (z > 10) z = 10;
+            var z = Math.max(x.length - 1, 10);
             for (; z >= 0; --z) {
               w = x[z];
               if ((y & 1) && (w == 'v1')) break;
@@ -423,39 +451,65 @@ if (0) {
               if ((y & 8) && (w == 'vk')) break;
             }
             ok = (z != -1);
+            console.log(
+              `De-inflection handling: ${w}, ${x}, ${y}, ${z}, ${ok}`);
           }
-                    if (ok) {
-                        if (count >= maxTrim) {
+
+          if (ok) {
+            if (count >= maxTrim) {
               entry.more = 1;
               break;
             }
 
             have[ofs] = 1;
-                        ++count;
-                        if (maxLen == 0) maxLen = trueLen[word.length];
+            ++count;
+
+            if (maxLen == 0) {
+              maxLen = trueLen[word.length];
+            }
+            console.log(`maxLen: ${maxLen}`);
+            console.log(`reason: ${trys[i].reason}`);
 
             if (trys[i].reason) {
-              if (showInf) r = '&lt; ' + trys[i].reason + ' &lt; ' + word;
-                else r = '&lt; ' + trys[i].reason;
-            }
-            else {
+              r = `&lt; ${trys[i].reason}`;
+              if (showInf) {
+                r += ` &lt; ${word}`;
+              }
+            } else {
               r = null;
             }
+            console.log(`r: ${r}`);
 
             entry.data.push([dentry, r]);
-                    }
-                } // for j < ix.length
-        if (count >= maxTrim) break;
-            } // for i < trys.length
-            if (count >= maxTrim) break;
-            word = word.substr(0, word.length - 1);
-        } // while word.length > 0
+          }
+        } // for j < ix.length
 
-    if (entry.data.length == 0) return null;
+        if (count >= maxTrim) {
+          console.log(
+            `Breaking because count(${count}) >= maxTrim(${maxTrim}) (1)`);
+          break;
+        }
+      } // for i < trys.length
+
+      if (count >= maxTrim) {
+        console.log(
+          `Breaking because count(${count}) >= maxTrim(${maxTrim}) (2)`);
+        break;
+      }
+      word = word.substr(0, word.length - 1);
+      console.log(`Updated word to ${word}`);
+    } // while word.length > 0
+
+    console.log('Entry at end of loop:');
+    console.log(entry);
+
+    if (!entry.data.length) {
+      return null;
+    }
 
     entry.matchLen = maxLen;
-        return entry;
-    },
+    return entry;
+  },
 
   translate: function(text) {
     var e, o;
@@ -524,6 +578,7 @@ if (0) {
     if (doNames) {
       e.names = 1;
       max = 20;//this.config.namax;
+      // XXX Make this do an async wait
       this.loadNames();
       d = this.nameDict;
     }
