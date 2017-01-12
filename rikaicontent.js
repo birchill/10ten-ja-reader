@@ -68,7 +68,7 @@ var rcxContent = {
       window.removeEventListener('mousemove', this.onMouseMove, false);
       window.removeEventListener('keydown', this.onKeyDown, true);
       window.removeEventListener('keyup', this.onKeyUp, true);
-      window.removeEventListener('mosuedown', this.onMouseDown, false);
+      window.removeEventListener('mousedown', this.onMouseDown, false);
       window.removeEventListener('mouseup', this.onMouseUp, false);
 
       e = document.getElementById('rikaichan-css');
@@ -325,9 +325,8 @@ var rcxContent = {
   onKeyDown: function(ev) { rcxContent._onKeyDown(ev) },
   _onKeyDown: function(ev) {
 //    this.status("keyCode=" + ev.keyCode + ' charCode=' + ev.charCode + ' detail=' + ev.detail);
-    if (!window.rikaichan) {
-      return;
-    }
+    console.assert(window.rikaichan, 'Rikaichain should be setup if we ' +
+                                     'are getting keydown events');
 
     if (window.rikaichan.config.showOnKey !== "" && (ev.altKey || ev.ctrlKey || ev.key == "AltGraph")) {
       if (this.lastTarget !== null) {
@@ -416,26 +415,32 @@ var rcxContent = {
 
   onMouseDown: function(ev) { rcxContent._onMouseDown(ev) },
   _onMouseDown: function(ev) {
-          if(ev.button != 0)
-              return;
-    if(this.isVisible())
-        this.clearHi();
+    console.assert(window.rikaichan, 'Rikaichan should be setup if we ' +
+                                     'are getting mousedown events');
+    if (ev.button != 0) {
+      return;
+    }
+    if (this.isVisible()) {
+      this.clearHi();
+    }
     mDown = true;
 
     // If we click outside of a text box then we set
     // oldCaret to -1 as an indicator not to restore position
     // Otherwise, we switch our saved textarea to whereever
     // we just clicked
-    if(!('form' in ev.target))
-        window.rikaichan.oldCaret =  -1;
-    else
-        window.rikaichan.oldTA = ev.target;
+    if(!('form' in ev.target)) {
+      window.rikaichan.oldCaret =  -1;
+    } else {
+      window.rikaichan.oldTA = ev.target;
+    }
   },
 
   onMouseUp: function(ev) { rcxContent._onMouseUp(ev) },
   _onMouseUp: function(ev) {
-          if(ev.button != 0)
-              return;
+    if (ev.button != 0) {
+      return;
+    }
     mDown = false;
   },
 
@@ -443,10 +448,13 @@ var rcxContent = {
     if (rcxContent.keysDown[ev.keyCode]) rcxContent.keysDown[ev.keyCode] = 0;
   },
 
-    unicodeInfo: function(c) {
-     hex = '0123456789ABCDEF';
-     u = c.charCodeAt(0);
-    return c + ' U' + hex[(u >>> 12) & 15] + hex[(u >>> 8) & 15] + hex[(u >>> 4) & 15] + hex[u & 15];
+  unicodeInfo: function(c) {
+    hex = '0123456789ABCDEF';
+    u = c.charCodeAt(0);
+    return c + ' U' + hex[(u >>> 12) & 15] +
+                      hex[(u >>> 8) & 15] +
+                      hex[(u >>> 4) & 15] +
+                      hex[u & 15];
   },
 
   kanjiN: 1,
@@ -559,7 +567,8 @@ var rcxContent = {
   },
 
   getTextFromRange: function (rangeParent, offset, selEndList, maxLength) {
-    if(rangeParent.nodeName == 'TEXTAREA' || rangeParent.nodeName == 'INPUT') {
+    if (rangeParent.nodeName === 'TEXTAREA' ||
+        rangeParent.nodeName === 'INPUT') {
       var endIndex = Math.min(rangeParent.data.length, offset + maxLength);
       return rangeParent.value.substring(offset, endIndex);
     }
@@ -573,8 +582,9 @@ var rcxContent = {
     if (rangeParent.ownerDocument.evaluate(this.startElementExpr, rangeParent, null, XPathResult.BOOLEAN_TYPE, null).booleanValue)
       return '';
 
-    if (rangeParent.nodeType != Node.TEXT_NODE)
+    if (rangeParent.nodeType != Node.TEXT_NODE) {
       return '';
+    }
 
     endIndex = Math.min(rangeParent.data.length, offset + maxLength);
     text += rangeParent.data.substring(offset, endIndex);
@@ -633,7 +643,7 @@ var rcxContent = {
       return -2;
     }
 
-    //selection end data
+    // selection end data
     var selEndList = [];
     var text = this.getTextFromRange(rp, ro, selEndList, 13 /*maxlength*/);
 
@@ -647,6 +657,10 @@ var rcxContent = {
   },
 
   processEntry: function(e) {
+    if (!window.rikaichan) {
+      console.log(`Got processEntry despite no rikaichan?
+(${window.location.href})`);
+    }
     tdata = window.rikaichan;
     ro = lastRo;
     selEndList = lastSelEnd;
@@ -834,6 +848,8 @@ var rcxContent = {
   },
 
   onMouseMove: function(ev) {
+    console.assert(window.rikaichan, 'Rikaichain should be setup if we ' +
+                                     'are getting mousemove events');
     rcxContent.lastPos.x = ev.clientX;
     rcxContent.lastPos.y = ev.clientY;
     rcxContent.lastTarget = ev.target;
@@ -854,18 +870,20 @@ var rcxContent = {
     var position = document.caretPositionFromPoint(ev.clientX, ev.clientY);
     var rp = position.offsetNode;
     var ro = position.offset;
-    // Put this in a try catch so that an exception here doesn't prevent editing due to div.
+    // Put this in a try catch so that an exception here doesn't prevent editing
+    // due to div.
     try {
-      if(ev.target.nodeName == 'TEXTAREA' || ev.target.nodeName == 'INPUT') {
+      if (ev.target.nodeName === 'TEXTAREA' || ev.target.nodeName === 'INPUT') {
         fake = rcxContent.makeFake(ev.target);
         document.body.appendChild(fake);
         fake.scrollTop = ev.target.scrollTop;
         fake.scrollLeft = ev.target.scrollLeft;
       }
 
-      if(fake) {
-        // At the end of a line, don't do anything or you just get beginning of next line
-        if((rp.data) && rp.data.length == ro) {
+      if (fake) {
+        // At the end of a line, don't do anything or you just get beginning of
+        // next line
+        if ((rp.data) && rp.data.length == ro) {
           document.body.removeChild(fake);
           return;
         }
@@ -884,42 +902,37 @@ var rcxContent = {
 
       // If the range offset is equal to the node data length
       // Then we have the second case and need to correct.
-      if((rp.data) && ro == rp.data.length) {
+      if ((rp.data) && ro == rp.data.length) {
         // A special exception is the WBR tag which is inline but doesn't
         // contain text.
-        if((rp.nextSibling) && (rp.nextSibling.nodeName == 'WBR')) {
+        if ((rp.nextSibling) && (rp.nextSibling.nodeName == 'WBR')) {
           rp = rp.nextSibling.nextSibling;
           ro = 0;
-        }
         // If we're to the right of an inline character we can use the target.
         // However, if we're just in a blank spot don't do anything.
-        else if(rcxContent.isInline(ev.target)) {
-            if(rp.parentNode == ev.target)
-              ;
-            else if(fake && rp.parentNode.innerText == ev.target.value)
-              ;
-            else {
+        } else if (rcxContent.isInline(ev.target)) {
+          if (rp.parentNode !== ev.target &&
+              !(fake && rp.parentNode.innerText == ev.target.value)) {
             rp = ev.target.firstChild;
             ro = 0;
           }
-        }
         // Otherwise we're on the right and can take the next sibling of the
         // inline element.
-        else{
+        } else {
           rp = rp.parentNode.nextSibling
           ro = 0;
         }
       }
-      // The case where the before div is empty so the false spot is in the parent
+      // The case where the before div is empty so the false spot is in the
+      // parent
       // But we should be able to take the target.
       // The 1 seems random but it actually represents the preceding empty tag
       // also we don't want it to mess up with our fake div
       // Also, form elements don't seem to fall into this case either.
-      if(!(fake) && !('form' in ev.target) && rp && rp.parentNode != ev.target && ro == 1) {
+      if (!(fake) && !('form' in ev.target) && rp && rp.parentNode != ev.target && ro == 1) {
         rp = rcxContent.getFirstTextChild(ev.target);
         ro=0;
       }
-
 
       // Otherwise, we're off in nowhere land and we should go home.
       // offset should be 0 or max in this case.
@@ -932,7 +945,7 @@ var rcxContent = {
       // For text nodes do special stuff
       // we make rp the text area and keep the offset the same
       // we give the text area data so it can act normal
-      if(fake) {
+      if (fake) {
         rp = ev.target;
         rp.data = rp.value
       }
@@ -949,9 +962,11 @@ var rcxContent = {
         }
       }
 
-      if(fake) document.body.removeChild(fake);
+      if (fake) {
+        document.body.removeChild(fake);
+      }
     }
-    catch(err) {
+    catch (err) {
       console.log(err.message);
       if(fake) document.body.removeChild(fake);
       return;

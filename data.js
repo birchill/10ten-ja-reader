@@ -270,23 +270,24 @@ if (0) {
           for (k = 0; k < g.length; ++k) {
             var rule = g[k];
             if ((type & rule.type) && (end == rule.from)) {
-              var newWord = word.substr(0, word.length - rule.from.length) + rule.to;
-              if (newWord.length <= 1) continue;
+              var newWord =
+                word.substr(0, word.length - rule.from.length) + rule.to;
+              if (newWord.length <= 1) {
+                continue;
+              }
               o = {};
-              if (have[newWord] != undefined) {
+              if (have[newWord]) {
                 o = r[have[newWord]];
                 o.type |= (rule.type >> 8);
-
-                //o.reason += ' / ' + r[i].reason + ' ' + this.difReasons[rule.reason];
-                //o.debug += ' @ ' + rule.debug;
                 continue;
               }
               have[newWord] = r.length;
-              if (r[i].reason.length) o.reason = this.difReasons[rule.reason] + ' &lt; ' + r[i].reason;
-                else o.reason = this.difReasons[rule.reason];
+              o.reason = this.difReasons[rule.reason];
+              if (r[i].reason.length) {
+                o.reason += ` &lt; ${r[i].reason}`;
+              }
               o.type = rule.type >> 8;
               o.word = newWord;
-              //o.debug = r[i].debug + ' $ ' + rule.debug;
               r.push(o);
             }
           }
@@ -441,7 +442,7 @@ if (0) {
             var w;
             var x = dentry.split(/[,()]/);
             var y = u.type;
-            var z = Math.max(x.length - 1, 10);
+            var z = Math.min(x.length - 1, 10);
             for (; z >= 0; --z) {
               w = x[z];
               if ((y & 1) && (w == 'v1')) break;
