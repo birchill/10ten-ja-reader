@@ -85,7 +85,9 @@ rcxDict.prototype = {
   },
 
   loadNames: function() {
-    if ((this.nameDict) && (this.nameIndex)) return;
+    if (this.nameDict && this.nameIndex) {
+      return Promise.resolve();
+    }
     /*this.nameDict = this.fileRead(rcxNamesDict.datURI, rcxNamesDict.datCharset);
     this.nameIndex = this.fileRead(rcxNamesDict.idxURI, rcxNamesDict.idxCharset);*/
     const readNameDict =
@@ -308,94 +310,134 @@ if (0) {
     0x3062,0x3065,0x3067,0x3069,0xFF85,0xFF86,0xFF87,0xFF88,0xFF89,0x3070,0x3073,0x3076,0x3079,0x307C],
   cs:[0x3071,0x3074,0x3077,0x307A,0x307D],
 
-  wordSearch: function(word, doNames, max) {
-    console.log(`wordSearch: '${word}', doNames: ${doNames}, max: ${max}`);
-    var i, u, v, r, p;
-    var trueLen = [0];
-    var entry = { };
+  wordSearch: function(input, doNames, max) {
+    console.log(`wordSearch: '${input}', doNames: ${doNames}, max: ${max}`);
+    let [ word, inputLengths ] = this.normalizeInput(input);
+    console.log(`Normalized word: ${word}`);
 
-    // half & full-width katakana to hiragana conversion
-    // note: katakana vu is never converted to hiragana
+    let maxResults = doNames ? 20 /* Should be this.config.namax */
+                             : 7  /* Should be this.config.wmax */;
+    if (max > 0) {
+      maxResults = Math.min(maxResults, max);
+    }
 
-    p = 0;
-    r = '';
-    for (i = 0; i < word.length; ++i) {
-      u = v = word.charCodeAt(i);
+    return this._getDictAndIndex(doNames).then(dictAndIndex => {
+      let [dict, index] = dictAndIndex;
 
-      if (u <= 0x3000) break;
+      const result = this._lookupInput(word, inputLengths,
+                                       dict, index, maxResults, !doNames);
+      if (result && doNames) {
+        result.names = 1;
+      }
+      console.log('wordSearch final result:');
+      console.log(result);
+      return result;
+    });
+  },
+
+  // half & full-width katakana to hiragana conversion
+  // note: katakana vu is never converted to hiragana
+  //
+  // Returns the normalized input and an array that maps each character
+  // in the normalized input to the corresponding length in the original input.
+  //
+  // e.g. If the input string is ｶﾞｰﾃﾞﾝ the result will be
+  //
+  //   [ "がーでん", [ 0, 2, 3, 5, 6 ] ]
+  //
+  // Returns [ normalized input, array with length mapping ]
+  normalizeInput(input) {
+    let inputLengths = [0];
+    let previous = 0;
+    let result = '';
+
+    for (let i = 0; i < input.length; ++i) {
+      let originalChar = input.charCodeAt(i);
+      let c = originalChar;
+
+      if (c <= 0x3002) {
+        break;
+      }
 
       // full-width katakana to hiragana
-      if ((u >= 0x30A1) && (u <= 0x30F3)) {
-        u -= 0x60;
+      if ((c >= 0x30A1) && (c <= 0x30F3)) {
+        c -= 0x60;
       }
       // half-width katakana to hiragana
-      else if ((u >= 0xFF66) && (u <= 0xFF9D)) {
-        u = this.ch[u - 0xFF66];
+      else if ((c >= 0xFF66) && (c <= 0xFF9D)) {
+        c = this.ch[c - 0xFF66];
       }
       // voiced (used in half-width katakana) to hiragana
-      else if (u == 0xFF9E) {
-        if ((p >= 0xFF73) && (p <= 0xFF8E)) {
-          r = r.substr(0, r.length - 1);
-          u = this.cv[p - 0xFF73];
+      else if (c == 0xFF9E) {
+        if ((previous >= 0xFF73) && (previous <= 0xFF8E)) {
+          result = result.slice(0, -1);
+          c = this.cv[previous - 0xFF73];
         }
       }
       // semi-voiced (used in half-width katakana) to hiragana
-      else if (u == 0xFF9F) {
-        if ((p >= 0xFF8A) && (p <= 0xFF8E)) {
-          r = r.substr(0, r.length - 1);
-          u = this.cs[p - 0xFF8A];
+      else if (c == 0xFF9F) {
+        if ((previous >= 0xFF8A) && (previous <= 0xFF8E)) {
+          result = result.slice(0, -1);
+          c = this.cs[previous - 0xFF8A];
         }
       }
-      // ignore J~
-      else if (u == 0xFF5E) {
-        p = 0;
+      // ignore ～
+      else if (c == 0xFF5E) {
+        previous = 0;
         continue;
       }
 
-      r += String.fromCharCode(u);
-      trueLen[r.length] = i + 1;  // need to keep real length because of the
-                                  // half-width semi/voiced conversion
-      p = v;
+      result += String.fromCharCode(c);
+      inputLengths[result.length] = i + 1;  // need to keep real length because
+                                            // of the half-width semi/voiced
+                                            // conversion
+      previous = originalChar;
     }
-    word = r;
-    console.log(`Normalized word: ${word}`);
 
-    var dict;
-    var index;
-    var maxTrim;
-    var cache = [];
-    var have = [];
-    var count = 0;
-    var maxLen = 0;
+    return [ result, inputLengths ];
+  },
 
+  _getDictAndIndex(doNames) {
     if (doNames) {
-      // check: split this
-
-      // XXX Make this do an async wait
-      console.warn('XXX: Need to wait async for names to load');
-      this.loadNames();
-      dict = this.nameDict;
-      index = this.nameIndex;
-      maxTrim = 20;//this.config.namax;
-      entry.names = 1;
-    }
-    else {
-      dict = this.wordDict;
-      index = this.wordIndex;
-      maxTrim = 7;//this.config.wmax;
+      return this.loadNames()
+        .then(() => {
+          return [ this.nameDict, this.nameIndex ];
+        });
     }
 
-    if (max != null) {
-      maxTrim = max;
-    }
+    return Promise.resolve([ this.wordDict, this.wordIndex ]);
+  },
 
-    entry.data = [];
+  // Looks for dictionary entries in |dict| (using |index|) that match some
+  // portion of |input| after de-inflecting it (if |deinflect| is true).
+  // Only entries that match from the beginning of |input| are checked.
+  //
+  // e.g. if |input| is '子犬は' then the entry for '子犬' will match but
+  // '犬' will not.
+  //
+  // Returns an object of the form:
+  //
+  //   { data: [ array of matches ],
+  //     more: < set and true if greater than |maxResults| entries were found,
+  //     matchLen: the length of the longest match using the lengths supplied
+  //               in |inputLengths| }
+  //
+  // or null if no matches were found.
+  _lookupInput(input, inputLengths, dict, index, maxResults, deinflect) {
+    let count = 0;
+    let longestMatch = 0;
+    let cache = [];
+    let have = [];
 
-    while (word.length > 0) {
+    let result = {};
+    result.data = [];
+
+    while (input.length > 0) {
       var showInf = (count != 0);
-      const trys = doNames
-                   ? [{ word, type: 0xFF, reason: null }]
-                   : this.deinflect(word);
+      // TODO: Split inflection handling out into a separate method
+      const trys = deinflect
+                   ? this.deinflect(input)
+                   : [{ word: input , type: 0xFF, reason: null }];
       console.log('matches to try:');
       console.log(trys);
 
@@ -457,59 +499,57 @@ if (0) {
           }
 
           if (ok) {
-            if (count >= maxTrim) {
-              entry.more = 1;
+            if (count >= maxResults) {
+              result.more = 1;
               break;
             }
 
             have[ofs] = 1;
             ++count;
 
-            if (maxLen == 0) {
-              maxLen = trueLen[word.length];
-            }
-            console.log(`maxLen: ${maxLen}`);
+            longestMatch = Math.max(longestMatch, inputLengths[input.length]);
+            console.log(`longestMatch: ${longestMatch}`);
             console.log(`reason: ${trys[i].reason}`);
 
             if (trys[i].reason) {
               r = `&lt; ${trys[i].reason}`;
               if (showInf) {
-                r += ` &lt; ${word}`;
+                r += ` &lt; ${input}`;
               }
             } else {
               r = null;
             }
             console.log(`r: ${r}`);
 
-            entry.data.push([dentry, r]);
+            result.data.push([dentry, r]);
           }
         } // for j < ix.length
 
-        if (count >= maxTrim) {
+        if (count >= maxResults) {
           console.log(
-            `Breaking because count(${count}) >= maxTrim(${maxTrim}) (1)`);
+           `Breaking because count(${count}) >= maxResults(${maxResults}) (1)`);
           break;
         }
       } // for i < trys.length
 
-      if (count >= maxTrim) {
+      if (count >= maxResults) {
         console.log(
-          `Breaking because count(${count}) >= maxTrim(${maxTrim}) (2)`);
+          `Breaking because count(${count}) >= maxResults(${maxResults}) (2)`);
         break;
       }
-      word = word.substr(0, word.length - 1);
-      console.log(`Updated word to ${word}`);
-    } // while word.length > 0
+      input = input.substr(0, input.length - 1);
+      console.log(`Updated input to ${input}`);
+    } // while input.length > 0
 
-    console.log('Entry at end of loop:');
-    console.log(entry);
+    console.log('Result at end of loop:');
+    console.log(result);
 
-    if (!entry.data.length) {
+    if (!result.data.length) {
       return null;
     }
 
-    entry.matchLen = maxLen;
-    return entry;
+    result.matchLen = longestMatch;
+    return result;
   },
 
   translate: function(text) {
@@ -520,7 +560,9 @@ if (0) {
     o.data = [];
     o.textLen = text.length;
 
+    console.warn('XXX: Translate needs to be made async!!');
     while (text.length > 0) {
+      // XXX Need to make this async
       e = this.wordSearch(text, false, 1);
       if (e != null) {
         if (o.data.length >= 7/* this.config.wmax */) {
@@ -543,65 +585,6 @@ if (0) {
 
     o.textLen -= text.length;
     return o;
-  },
-
-  bruteSearch: function(text, doNames) {
-    var r, e, d, i, j;
-    var wb, we;
-    var max;
-
-    r = 1;
-    if (text.charAt(0) == ':') {
-      text = text.substr(1, text.length - 1);
-      if (text.charAt(0) != ':') r = 0;
-    }
-    if (r) {
-      if (text.search(/[\u3000-\uFFFF]/) != -1) {
-        wb = we = '[\\s\\[\\]]';
-      }
-      else {
-        wb = '[\\)/]\\s*';
-        we = '\\s*[/\\(]';
-      }
-      if (text.charAt(0) == '*') {
-        text = text.substr(1, text.length - 1);
-        wb = '';
-      }
-      if (text.charAt(text.length - 1) == '*') {
-        text = text.substr(0, text.length - 1);
-        we = '';
-      }
-      text = wb + text.replace(/[\[\\\^\$\.\|\?\*\+\(\)]/g, function(c) { return '\\' + c; }) + we;
-    }
-
-    e = { data: [], reason: [], kanji: 0, more: 0 };
-
-    if (doNames) {
-      e.names = 1;
-      max = 20;//this.config.namax;
-      // XXX Make this do an async wait
-      this.loadNames();
-      d = this.nameDict;
-    }
-    else {
-      e.names = 0;
-      max = 7;//this.config.wmax;
-      d = this.wordDict;
-    }
-
-    r = new RegExp(text, 'igm');
-    while (r.test(d)) {
-      if (e.data.length >= max) {
-        e.more = 1;
-        break;
-      }
-      j = d.indexOf('\n', r.lastIndex);
-      e.data.push([d.substring(d.lastIndexOf('\n', r.lastIndex - 1) + 1, j),
-                   null]);
-      r.lastIndex = j + 1;
-    }
-
-    return e.data.length ? e : null;
   },
 
   kanjiSearch: function(kanji) {

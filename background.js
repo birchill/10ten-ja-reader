@@ -11,9 +11,10 @@ browser.runtime.onMessage.addListener(
         break;
       case 'xsearch':
         console.log('xsearch');
-        var e = rcxMain.search(request.text, request.dictOption);
-        response(e);
-        break;
+        rcxMain.search(request.text, request.dictOption).then(result => {
+          response(result);
+        });
+        return true; /* Needed to ensure |response| is valid */
 /*      case 'nextDict':
         console.log('nextDict');
         rcxMain.nextDict();

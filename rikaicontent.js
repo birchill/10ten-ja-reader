@@ -649,14 +649,17 @@ var rcxContent = {
 
     lastSelEnd = selEndList;
     lastRo = ro;
-    browser.runtime.sendMessage({"type":"xsearch", "text":text, "dictOption": String(dictOption) },
-    rcxContent.processEntry);
+    browser.runtime.sendMessage(
+      { type: 'xsearch', text, dictOption: String(dictOption) },
+      rcxContent.processEntry);
 
     return 1;
 
   },
 
   processEntry: function(e) {
+    console.log('processEntry');
+    console.log(e);
     if (!window.rikaichan) {
       console.log(`Got processEntry despite no rikaichan?
 (${window.location.href})`);
@@ -678,7 +681,7 @@ var rcxContent = {
 
     rp = tdata.prevRangeNode;
     // don't try to highlight form elements
-    if ((rp) && ((tdata.config.highlight == 'true' && !this.mDown && !('form' in tdata.prevTarget))  || 
+    if ((rp) && ((tdata.config.highlight == 'true' && !this.mDown && !('form' in tdata.prevTarget))  ||
           (('form' in tdata.prevTarget) && tdata.config.textboxhl == 'true'))) {
       var doc = rp.ownerDocument;
       if (!doc) {

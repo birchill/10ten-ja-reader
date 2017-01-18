@@ -366,40 +366,46 @@ var rcxMain = {
   nextDict: '3',
 
   search: function(text, dictOption) {
-
     switch (dictOption) {
-    case this.forceKanji:
-      var e = this.dict.kanjiSearch(text.charAt(0));
-      return e;
-      break;
-    case this.defaultDict:
-      this.showMode = 0;
-      break;
-    case this.nextDict:
-      this.showMode = (this.showMode + 1) % this.dictCount;
-      break;
+      case this.forceKanji:
+        return Promise.resolve(this.dict.kanjiSearch(text.charAt(0)));
+
+      case this.defaultDict:
+        this.showMode = 0;
+        break;
+
+      case this.nextDict:
+        this.showMode = (this.showMode + 1) % this.dictCount;
+        break;
     }
 
-    var m = this.showMode;
-    var e = null;
-
-    do {
+    const searchCurrentDict = text => {
+      console.log(`Searching dictionary ${this.showMode} for ${text}`);
       switch (this.showMode) {
-      case 0:
-        e = this.dict.wordSearch(text, false);
-        break;
-      case this.kanjiN:
-        e = this.dict.kanjiSearch(text.charAt(0));
-        break;
-      case this.namesN:
-        e = this.dict.wordSearch(text, true);
-        break;
+        case this.kanjiN:
+          return Promise.resolve(this.dict.kanjiSearch(text.charAt(0)));
+        case this.namesN:
+          return this.dict.wordSearch(text, true);
       }
-      if (e) break;
-      this.showMode = (this.showMode + 1) % this.dictCount;
-    } while (this.showMode != m);
+      return this.dict.wordSearch(text, false);
+    };
 
-    return e;
+    const originalMode = this.showMode;
+    return (function loopOverDictionaries(text, self) {
+      return searchCurrentDict(text)
+        .then(result => {
+          if (result) {
+            return result;
+          }
+          self.showMode = (self.showMode + 1) % self.dictCount;
+          if (self.showMode === originalMode) {
+            console.log('Exhausted dictionaries, returning');
+            return null;
+          }
+          console.log('Trying next dictionary...');
+          return loopOverDictionaries(text);
+        });
+    }(text, this));
   }
 
 };
