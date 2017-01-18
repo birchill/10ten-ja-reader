@@ -658,8 +658,6 @@ var rcxContent = {
   },
 
   processEntry: function(e) {
-    console.log('processEntry');
-    console.log(e);
     if (!window.rikaichan) {
       console.log(`Got processEntry despite no rikaichan?
 (${window.location.href})`);

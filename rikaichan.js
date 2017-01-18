@@ -403,7 +403,7 @@ var rcxMain = {
             return null;
           }
           console.log('Trying next dictionary...');
-          return loopOverDictionaries(text);
+          return loopOverDictionaries(text, self);
         });
     }(text, this));
   }
