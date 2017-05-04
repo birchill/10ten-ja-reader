@@ -41,6 +41,11 @@ function fillVals() {
 	else
 		document.optform.kanjicomponents.checked = false;
 
+	if (localStorage['ttsEnabled'] == 'true')
+		document.optform.ttsEnabled.checked = true;
+	else
+		document.optform.ttsEnabled.checked = false;
+
 	numList = chrome.extension.getBackgroundPage().rcxDict.prototype.numList;
 
 	for (i = 0; i*2 < numList.length; i++) {
@@ -95,6 +100,8 @@ function getVals() {
 	localStorage['copySeparator'] = document.optform.copySeparator.value;
 	localStorage['maxClipCopyEntries'] = document.optform.maxClipCopyEntries.value;
 
+	localStorage['ttsEnabled'] = document.optform.ttsEnabled.checked;
+
 	var popupDelay;
 	try {
 		popupDelay = parseInt(document.optform.popupDelay.value);
@@ -123,6 +130,7 @@ function getVals() {
 	chrome.extension.getBackgroundPage().rcxMain.config.copySeparator = localStorage["copySeparator"];
 	chrome.extension.getBackgroundPage().rcxMain.config.maxClipCopyEntries = localStorage["maxClipCopyEntries"];
 	chrome.extension.getBackgroundPage().rcxMain.config.popupLocation = localStorage["popupLocation"];
+	chrome.extension.getBackgroundPage().rcxMain.config.ttsEnabled = localStorage["ttsEnabled"];
 }
 window.onload = fillVals;
 
@@ -136,4 +144,3 @@ window.onload = fillVals;
 
 
 document.querySelector('#submit').addEventListener('click', getVals);
-
