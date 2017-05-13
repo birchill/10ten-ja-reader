@@ -157,22 +157,10 @@ var rcxMain = {
 	},
 */
 
-	loadDictionary: function() {
-		if (!this.dict) {
-			/* if (typeof(rcxWordDict) == 'undefined') {
-				this.showDownload();
-				return false;
-			} */
-			try {
-				this.dict = new rcxDict();
-				return this.dict.init(this.haveNames/* && !this.cfg.nadelay*/);
-				//this.dict.setConfig(this.dconfig);
-			}
-			catch (ex) {
-				alert('Error loading dictionary: ' + ex);
-			}
-		}
-		return null;
+	loadDictionary: function() {	
+		this.dict = new rcxDict();
+		return this.dict.init(this.haveNames/* && !this.cfg.nadelay*/);
+		//this.dict.setConfig(this.dconfig);
 	},
 /*
 	showDownload: function() {
@@ -308,12 +296,7 @@ var rcxMain = {
 	inlineEnable: function(tab, mode) {
 		if (!this.dict) {
 			//	var time = (new Date()).getTime();
-			var loadProm = this.loadDictionary();
-
-			if (loadProm == null)
-				return;
-
-			loadProm.then(function () {
+			this.loadDictionary().then(function () {
 				// Send message to current tab to add listeners and create stuff
 				chrome.tabs.sendMessage(tab.id, { "type": "enable", "config": rcxMain.config });
 				this.enabled = 1;
@@ -327,8 +310,9 @@ var rcxMain = {
 				chrome.browserAction.setBadgeBackgroundColor({ "color": [255, 0, 0, 255] });
 				chrome.browserAction.setBadgeText({ "text": "On" });
 
-
-			}.bind(this));
+			}.bind(this)).catch(function(err){
+				alert('Error loading dictionary: ' + err);
+			});
 
 			//	time = (((new Date()).getTime() - time) / 1000).toFixed(2);
 		}

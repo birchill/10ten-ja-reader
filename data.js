@@ -39,9 +39,8 @@
 
 */
 
-function rcxDict(loadNames) {
+function rcxDict() {
 
-	
 }
 
 rcxDict.prototype = {
@@ -59,7 +58,7 @@ rcxDict.prototype = {
 			.then(function () {
 				var ended = +new Date();
 				console.log('rcxDict main then in ' + (ended - started));
-			}.bind(this));
+			});
 	},
 
 	setConfig: function (c) {
@@ -76,18 +75,17 @@ rcxDict.prototype = {
 
 				if (req.readyState === 4) {
 
-					if (!asArray)
+					if (!asArray) {
 						resolve(req.responseText);
+					}
 					else {
-						var a = req.responseText.split('\n')
+						var array = req.responseText.split('\n')
 							.filter(function removeBlanks(o) {
 								return o && o.length > 0
 							});
 
-						resolve(a);
+						resolve(array);
 					}
-
-
 				}
 			};
 
@@ -142,10 +140,10 @@ rcxDict.prototype = {
 		this.nameIndex = this.fileRead(chrome.extension.getURL("data/names.idx"));
 	},
 
-	loadFileShortcut: function (file, isArray, target) {
+	loadFileToTarget: function (file, isArray, target) {
 		var url = chrome.extension.getURL('data/' + file);
 
-		return this.fileReadAsync.call(this, url, isArray).then(function (data) {
+		return this.fileReadAsync(url, isArray).then(function (data) {
 			this[target] = data;
 			console.log('async read complete for ' + target);
 		}.bind(this));
@@ -158,15 +156,15 @@ rcxDict.prototype = {
 		this.wordIndex = this.fileRead(rcxWordDict.idxURI, rcxWordDict.idxCharset); */
 
 		var promises = [
-			this.loadFileShortcut('dict.dat', false, 'wordDict'),
-			this.loadFileShortcut('dict.idx', false, 'wordIndex'),
-			this.loadFileShortcut('kanji.dat', false, 'kanjiData'),
-			this.loadFileShortcut('radicals.dat', true, 'radData')
+			this.loadFileToTarget('dict.dat', false, 'wordDict'),
+			this.loadFileToTarget('dict.idx', false, 'wordIndex'),
+			this.loadFileToTarget('kanji.dat', false, 'kanjiData'),
+			this.loadFileToTarget('radicals.dat', true, 'radData')
 		];
 
 		if (includeNames) {
-			promises.push(this.loadFileShortcut('names.dat', false, 'nameDict'));
-			promises.push(this.loadFileShortcut('names.idx', false, 'nameIndex'));
+			promises.push(this.loadFileToTarget('names.dat', false, 'nameDict'));
+			promises.push(this.loadFileToTarget('names.idx', false, 'nameIndex'));
 
 		}
 
@@ -268,6 +266,7 @@ if (0) {
 		this.difRules = [];
 		this.difExact = [];
 
+		/* asArray */
 		return this.fileReadAsync(chrome.extension.getURL("data/deinflect.dat"), true)
 			.then(function (buffer) {
 				var prevLen = -1;
