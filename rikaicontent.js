@@ -68,7 +68,7 @@ var rcxContent = {
 			window.removeEventListener('mousemove', this.onMouseMove, false);
 			window.removeEventListener('keydown', this.onKeyDown, true);
 			window.removeEventListener('keyup', this.onKeyUp, true);
-			window.removeEventListener('mosuedown', this.onMouseDown, false);
+			window.removeEventListener('mousedown', this.onMouseDown, false);
 			window.removeEventListener('mouseup', this.onMouseUp, false);
 
 			e = document.getElementById('rikaichan-css');
