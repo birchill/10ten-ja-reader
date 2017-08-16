@@ -575,7 +575,7 @@ rcxDict.prototype = {
     while (text.length > 0) {
       // XXX Need to make this async
       e = this.wordSearch(text, false, 1);
-      if (e != null) {
+      if (e && e.data) {
         if (o.data.length >= 7 /* this.config.wmax */) {
           o.more = 1;
           break;
