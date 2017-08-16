@@ -20,8 +20,9 @@ browser.runtime.onMessage.addListener(function(request, sender, response) {
       break;
     case 'translate':
       console.log('translate');
-      var e = rcxMain.dict.translate(request.title);
-      response(e);
+      rcxMain.dict.translate(request.title).then(result => {
+        response(result);
+      });
       break;
     case 'makehtml':
       console.log('makehtml');

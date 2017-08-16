@@ -563,7 +563,7 @@ rcxDict.prototype = {
     return result;
   },
 
-  translate: function(text) {
+  translate: async function(text) {
     var e, o;
     var skip;
 
@@ -571,10 +571,8 @@ rcxDict.prototype = {
     o.data = [];
     o.textLen = text.length;
 
-    console.warn('XXX: Translate needs to be made async!!');
     while (text.length > 0) {
-      // XXX Need to make this async
-      e = this.wordSearch(text, false, 1);
+      e = await this.wordSearch(text, false, 1);
       if (e && e.data) {
         if (o.data.length >= 7 /* this.config.wmax */) {
           o.more = 1;

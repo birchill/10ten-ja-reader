@@ -89,7 +89,7 @@ var rcxContent = {
   getContentType: function(tDoc) {
     var m = tDoc.getElementsByTagName('meta');
     for (var i in m) {
-      if (m[i].httpEquiv == 'Content-Type') {
+      if (m[i].httpEquiv && m[i].httpEquiv === 'Content-Type') {
         var con = m[i].content;
         con = con.split(';');
         return con[0];
@@ -99,7 +99,7 @@ var rcxContent = {
   },
 
   showPopup: function(text, elem, x, y, looseWidth) {
-    topdoc = window.document;
+    const topdoc = window.document;
 
     if (isNaN(x) || isNaN(y)) x = y = 0;
 
@@ -806,7 +806,7 @@ var rcxContent = {
   },
 
   processTitle: function(e) {
-    tdata = window.rikaichamp;
+    const tdata = window.rikaichamp;
 
     if (!e) {
       rcxContent.hidePopup();
@@ -985,7 +985,6 @@ var rcxContent = {
       }
 
       if (ev.target == tdata.prevTarget && this.isVisible()) {
-        //console.log("exit due to same target");
         if (tdata.title) {
           if (fake) document.body.removeChild(fake);
           return;
