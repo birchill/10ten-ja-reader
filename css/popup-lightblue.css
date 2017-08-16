@@ -1,6 +1,6 @@
 /* this is to reset almost everything under the popup to a sane value */
 
-#rikaichan-window, #rikaichan-window * { 
+#rikaichamp-window, #rikaichamp-window * { 
   width: auto;
   height: auto;
   background: transparent;
@@ -20,7 +20,7 @@
   visibility: visible;
 }
 
-#rikaichan-window { 
+#rikaichamp-window { 
   position: absolute;
   z-index: 99992;
   border: 1px solid #D0D0D0 !important;
@@ -34,82 +34,82 @@
 
 /* used for word definitions */
 
-#rikaichan-window .w-kanji {
+#rikaichamp-window .w-kanji {
   font-size: 18px;
   color: #3082BF;
   margin-right: 0.7em;
 }
 
-#rikaichan-window .w-kana {
+#rikaichamp-window .w-kana {
   font-size: 18px;
   color: #00B366;
 }
 
-#rikaichan-window .w-conj {
+#rikaichamp-window .w-conj {
   color: #808080;
   font-size: 12px;
 }
 
-#rikaichan-window .w-def {
+#rikaichamp-window .w-def {
   font-size: 13px;
 }
 
-#rikaichan-window .w-title {
+#rikaichamp-window .w-title {
   font-size: 10px;
   padding: 2px;
   background: #BFE4FF;
   color: #000000;
 }
 
-#rikaichan-window .w-na-tb td {
+#rikaichamp-window .w-na-tb td {
   vertical-align: top;
   padding-right: 0.8em;
 }
 
 /* used for kanji information */
 
-#rikaichan-window .k-main-tb {
+#rikaichamp-window .k-main-tb {
   width: 300px;
 }
 
-#rikaichan-window .k-kanji {
+#rikaichamp-window .k-kanji {
   font-family: serif;
   font-size: 48px;
   color: #000000;
 }
 
-#rikaichan-window .k-eigo {
+#rikaichamp-window .k-eigo {
   font-size: 12px;
 }
 
 /* kanji: readings */
 
-#rikaichan-window .k-yomi {
+#rikaichamp-window .k-yomi {
   font-size: 14px;
   color: #00B366;
   margin: 4px 0px;
 }
 
-#rikaichan-window .k-yomi-hi {
+#rikaichamp-window .k-yomi-hi {
   color: #00868B;
   border: 1px solid red;
 }
 
-#rikaichan-window .k-yomi-ti {
+#rikaichamp-window .k-yomi-ti {
   font-size: 11px;
   color: #000000;
 }
 
 /* kanji radical, grade, freq, strokes box */
 
-#rikaichan-window .k-abox-tb {
+#rikaichamp-window .k-abox-tb {
   width: 120px;
   margin-bottom: 4px;
   float: right;
   clear: right;
 }
 
-#rikaichan-window .k-abox-r {
+#rikaichamp-window .k-abox-r {
   font-size: 12px;
   text-align: center;
   padding: 1px 4px;
@@ -117,7 +117,7 @@
   color: #003D6B;
 }
 
-#rikaichan-window .k-abox-g {
+#rikaichamp-window .k-abox-g {
   font-size: 12px;
   text-align: center;
   padding: 1px 4px;
@@ -125,7 +125,7 @@
   color: #003D6B;
 }
 
-#rikaichan-window .k-abox-f {
+#rikaichamp-window .k-abox-f {
   font-size: 12px;
   text-align: center;
   padding: 1px 4px;
@@ -133,7 +133,7 @@
   color: #003D6B;
 }
 
-#rikaichan-window .k-abox-s {
+#rikaichamp-window .k-abox-s {
   font-size: 12px;
   text-align: center;
   padding: 1px 4px;
@@ -143,14 +143,14 @@
 
 /* kanji components box */
 
-#rikaichan-window .k-bbox-tb {
+#rikaichamp-window .k-bbox-tb {
   width: 120px;
   margin-bottom: 4px;
   float: right;
   clear: right;
 }
 
-#rikaichan-window .k-bbox-0a {
+#rikaichamp-window .k-bbox-0a {
   vertical-align: top;
   font-size: 11px;
   padding: 1px 3px;
@@ -158,7 +158,7 @@
   color: #003D6B;
 }
 
-#rikaichan-window .k-bbox-0b {
+#rikaichamp-window .k-bbox-0b {
   vertical-align: top;
   font-size: 11px;
   padding: 1px 3px;
@@ -166,7 +166,7 @@
   color: #003D6B;
 }
 
-#rikaichan-window .k-bbox-1a {
+#rikaichamp-window .k-bbox-1a {
   vertical-align: top;
   font-size: 11px;
   padding: 1px 3px;
@@ -174,7 +174,7 @@
   color: #003D6B;
 }
 
-#rikaichan-window .k-bbox-1b {
+#rikaichamp-window .k-bbox-1b {
   vertical-align: top;
   font-size: 11px;
   padding: 1px 3px;
@@ -185,17 +185,17 @@
 
 /* kanji: misc index */
 
-#rikaichan-window .k-mix-tb {
+#rikaichamp-window .k-mix-tb {
   width: 100%
 }
 
-#rikaichan-window .k-mix-td0 {
+#rikaichamp-window .k-mix-td0 {
   font-size: 12px;
   background: #DFF1FF;
   color: #003D6B;
 }
 
-#rikaichan-window .k-mix-td1 {
+#rikaichamp-window .k-mix-td1 {
   font-size: 12px;
   background: #FFFFFF;
   color: #003D6B;
@@ -204,17 +204,17 @@
 
 /* manual query */
 
-#rikaichan-window .q-tb td {
+#rikaichamp-window .q-tb td {
 }
 
-#rikaichan-window .q-w {
+#rikaichamp-window .q-w {
   border-right: 1px dotted #B0B0B0 !important;
   padding: 0px 2px;
   vertical-align: top;
   min-width: 300px;
 }
 
-#rikaichan-window .q-k {
+#rikaichamp-window .q-k {
   padding: 0px 2px;
   vertical-align: top;
 }

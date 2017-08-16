@@ -1,6 +1,6 @@
 ﻿/*
 
-  Rikaichamp!
+  Rikai champ
   by Brian Birtles
   https://github.com/birtles/rikaichamp
 
@@ -110,9 +110,9 @@ var rcxMain = {
         try {
           a = !this.cfg[c + 'toggle'];
           b = !this.cfg[c + 'lbar'];
-          document.getElementById('rikaichan-toggle-' + c).hidden = a;
-          document.getElementById('rikaichan-lbar-' + c).hidden = b;
-          document.getElementById('rikaichan-separator-' + xm[i]).hidden = a || b;
+          document.getElementById('rikaichamp-toggle-' + c).hidden = a;
+          document.getElementById('rikaichamp-lbar-' + c).hidden = b;
+          document.getElementById('rikaichamp-separator-' + xm[i]).hidden = a || b;
         }
         catch (ex) {
           //  alert('unable to set menu: c=' + c + ' ex=' + ex)
@@ -131,10 +131,10 @@ var rcxMain = {
         break;
       }
 
-      this.cfg.css = (this.cfg.css.indexOf('/') == -1) ? ('chrome://rikaichan/skin/popup-' + this.cfg.css + '.css') : this.cfg.css;
+      this.cfg.css = (this.cfg.css.indexOf('/') == -1) ? ('chrome://rikaichamp/skin/popup-' + this.cfg.css + '.css') : this.cfg.css;
       if (!this.isTB) {
         for (i = 0; i < gBrowser.browsers.length; ++i) {
-          c = gBrowser.browsers[i].contentDocument.getElementById('rikaichan-css');
+          c = gBrowser.browsers[i].contentDocument.getElementById('rikaichamp-css');
           if (c) c.setAttribute('href', this.cfg.css);
         }
       }
@@ -154,7 +154,7 @@ var rcxMain = {
 
       if (this.isTB) this.cfg.enmode = 0;
 
-      b = document.getElementById('rikaichan-status');
+      b = document.getElementById('rikaichamp-status');
       if (b) b.hidden = (this.cfg.sticon == 0);
     }
     catch (ex) {
@@ -177,7 +177,7 @@ var rcxMain = {
   },
 /*
   showDownload: function() {
-    const url = 'http://rikaichan.mozdev.org/welcome.html';
+    const url = 'http://rikaichamp.mozdev.org/welcome.html';
 
     try {
       var u = '';
@@ -206,10 +206,10 @@ var rcxMain = {
     }
     catch (ex) {
       if (typeof(rcxWordDict) == 'undefined') {
-        alert('[rikaichan] Please install a dictionary file from ' + url);
+        alert('[rikaichamp] Please install a dictionary file from ' + url);
       }
       else {
-        alert('[rikaichan] There was an error while opening ' + url);
+        alert('[rikaichamp] There was an error while opening ' + url);
       }
     }
   },
@@ -289,7 +289,7 @@ var rcxMain = {
   },
 
   miniHelp:
-    '<span style="font-weight:bold">Rikaikun enabled!</span><br><br>' +
+    '<span style="font-weight:bold">Rikai champ enabled!</span><br><br>' +
     '<table cellspacing=5>' +
     '<tr><td>A</td><td>Alternate popup location</td></tr>' +
     '<tr><td>Y</td><td>Move popup location down</td></tr>' +
@@ -304,7 +304,7 @@ var rcxMain = {
 /*      '<tr><td>C</td><td>Copy to clipboard</td></tr>' +
     '<tr><td>S</td><td>Save to file</td></tr>' + */
 
-  // Function which enables the inline mode of rikaikun
+  // Function which enables the inline mode of rikaichamp
   // Unlike rikaichan there is no lookup bar so this is the only enable.
   inlineEnable: function(tab, mode) {
     this.loadDictionary().then(() => {
@@ -319,7 +319,7 @@ var rcxMain = {
                                              text: rcxMain.miniHelp });
         } else {
           browser.tabs.sendMessage(tab.id, { type: 'showPopup',
-                                             text: 'Rikaikun enabled!' });
+                                             text: 'Rikai champ enabled!' });
         }
       }
       browser.browserAction.setBadgeBackgroundColor({"color":[255,0,0,255]});

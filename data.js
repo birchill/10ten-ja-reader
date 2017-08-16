@@ -1,6 +1,6 @@
 ﻿/*
 
-  Rikaichamp!
+  Rikai champ
   by Brian Birtles
   https://github.com/birtles/rikaichamp
 
@@ -149,7 +149,7 @@ rcxDict.prototype = {
 
 /*
   test_index: function() {
-    var ixF = this.fileRead('chrome://rikaichan/content/dict.idx', 'EUC-JP');
+    var ixF = this.fileRead('chrome://rikaichamp/content/dict.idx', 'EUC-JP');
     var ixA = ixF.split('\n');
 
     while ((ixA.length > 0) && (ixA[ixA.length - 1].length == 0)) ixA.pop();
