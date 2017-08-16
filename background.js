@@ -1,91 +1,85 @@
-
 browser.browserAction.onClicked.addListener(rcxMain.inlineToggle);
-browser.tabs.onActivated.addListener(
-  activeInfo => rcxMain.onTabSelect(activeInfo.tabId));
-browser.runtime.onMessage.addListener(
-  function(request, sender, response) {
-    switch(request.type) {
-      case 'enable?':
-        console.log('enable?');
-        rcxMain.onTabSelect(sender.tab.id);
-        break;
-      case 'xsearch':
-        console.log('xsearch');
-        rcxMain.search(request.text, request.dictOption).then(result => {
-          response(result);
-        });
-        return true; /* Needed to ensure |response| is valid */
-      case 'resetDict':
-        console.log('resetDict');
-        rcxMain.resetDict();
-        break;
-      case 'translate':
-        console.log('translate');
-        var e = rcxMain.dict.translate(request.title);
-        response(e);
-        break;
-      case 'makehtml':
-        console.log('makehtml');
-        var html = rcxMain.dict.makeHtml(request.entry);
-        response(html);
-        break;
-      case 'switchOnlyReading':
-        console.log('switchOnlyReading');
-        if(rcxMain.config.onlyreading == 'true')
-          rcxMain.config.onlyreading = 'false';
-        else
-          rcxMain.config.onlyreading = 'true';
-        localStorage['onlyreading'] = rcxMain.config.onlyreading;
-        break;
-      case 'copyToClip':
-        console.log('copyToClip');
-        rcxMain.copyToClip(sender.tab, request.entry);
-        break;
-      default:
-        console.log(request);
-    }
-  });
+browser.tabs.onActivated.addListener(activeInfo =>
+  rcxMain.onTabSelect(activeInfo.tabId)
+);
+browser.runtime.onMessage.addListener(function(request, sender, response) {
+  switch (request.type) {
+    case 'enable?':
+      console.log('enable?');
+      rcxMain.onTabSelect(sender.tab.id);
+      break;
+    case 'xsearch':
+      console.log('xsearch');
+      rcxMain.search(request.text, request.dictOption).then(result => {
+        response(result);
+      });
+      return true; /* Needed to ensure |response| is valid */
+    case 'resetDict':
+      console.log('resetDict');
+      rcxMain.resetDict();
+      break;
+    case 'translate':
+      console.log('translate');
+      var e = rcxMain.dict.translate(request.title);
+      response(e);
+      break;
+    case 'makehtml':
+      console.log('makehtml');
+      var html = rcxMain.dict.makeHtml(request.entry);
+      response(html);
+      break;
+    case 'switchOnlyReading':
+      console.log('switchOnlyReading');
+      if (rcxMain.config.onlyreading == 'true')
+        rcxMain.config.onlyreading = 'false';
+      else rcxMain.config.onlyreading = 'true';
+      localStorage['onlyreading'] = rcxMain.config.onlyreading;
+      break;
+    case 'copyToClip':
+      console.log('copyToClip');
+      rcxMain.copyToClip(sender.tab, request.entry);
+      break;
+    default:
+      console.log(request);
+  }
+});
 
-if(initStorage("v0.8.92", true)) {
+if (initStorage('v0.8.92', true)) {
   // v0.7
-  initStorage("popupcolor", "blue");
-  initStorage("highlight", true);
+  initStorage('popupcolor', 'blue');
+  initStorage('highlight', true);
 
   // v0.8
   // No changes to options
 
   // V0.8.5
-  initStorage("textboxhl", false);
+  initStorage('textboxhl', false);
 
   // v0.8.6
-  initStorage("onlyreading", false);
+  initStorage('onlyreading', false);
   // v0.8.8
-  if (localStorage['highlight'] == "yes")
-    localStorage['highlight'] = "true";
-  if (localStorage['highlight'] == "no")
-    localStorage['highlight'] = "false";
-  if (localStorage['textboxhl'] == "yes")
-    localStorage['textboxhl'] = "true";
-  if (localStorage['textboxhl'] == "no")
-    localStorage['textboxhl'] = "false";
-  if (localStorage['onlyreading'] == "yes")
-    localStorage['onlyreading'] = "true";
-  if (localStorage['onlyreading'] == "no")
-    localStorage['onlyreading'] = "false";
-  initStorage("copySeparator", "tab");
-  initStorage("maxClipCopyEntries", "7");
-  initStorage("lineEnding", "n");
-  initStorage("minihelp", "true");
-  initStorage("disablekeys", "false");
-  initStorage("kanjicomponents", "true");
+  if (localStorage['highlight'] == 'yes') localStorage['highlight'] = 'true';
+  if (localStorage['highlight'] == 'no') localStorage['highlight'] = 'false';
+  if (localStorage['textboxhl'] == 'yes') localStorage['textboxhl'] = 'true';
+  if (localStorage['textboxhl'] == 'no') localStorage['textboxhl'] = 'false';
+  if (localStorage['onlyreading'] == 'yes')
+    localStorage['onlyreading'] = 'true';
+  if (localStorage['onlyreading'] == 'no')
+    localStorage['onlyreading'] = 'false';
+  initStorage('copySeparator', 'tab');
+  initStorage('maxClipCopyEntries', '7');
+  initStorage('lineEnding', 'n');
+  initStorage('minihelp', 'true');
+  initStorage('disablekeys', 'false');
+  initStorage('kanjicomponents', 'true');
 
-  for (i = 0; i*2 < rcxDict.prototype.numList.length; i++) {
-    initStorage(rcxDict.prototype.numList[i*2], "true")
+  for (i = 0; i * 2 < rcxDict.prototype.numList.length; i++) {
+    initStorage(rcxDict.prototype.numList[i * 2], 'true');
   }
 
   // v0.8.92
-  initStorage("popupDelay", "150");
-  initStorage("showOnKey", "");
+  initStorage('popupDelay', '150');
+  initStorage('showOnKey', '');
 }
 
 /**
@@ -100,26 +94,26 @@ if(initStorage("v0.8.92", true)) {
 function initStorage(key, initialValue) {
   var currentValue = localStorage[key];
   if (!currentValue) {
-  localStorage[key] = initialValue;
-  return true;
+    localStorage[key] = initialValue;
+    return true;
   }
   return false;
 }
 
 rcxMain.config = {};
-rcxMain.config.css = localStorage["popupcolor"];
-rcxMain.config.highlight = localStorage["highlight"];
-rcxMain.config.textboxhl = localStorage["textboxhl"];
-rcxMain.config.onlyreading = localStorage["onlyreading"];
-rcxMain.config.copySeparator = localStorage["copySeparator"];
-rcxMain.config.maxClipCopyEntries = localStorage["maxClipCopyEntries"];
-rcxMain.config.lineEnding = localStorage["lineEnding"];
-rcxMain.config.minihelp = localStorage["minihelp"];
-rcxMain.config.popupDelay = parseInt(localStorage["popupDelay"]);
-rcxMain.config.disablekeys = localStorage["disablekeys"];
-rcxMain.config.showOnKey = localStorage["showOnKey"];
-rcxMain.config.kanjicomponents = localStorage["kanjicomponents"];
-rcxMain.config.kanjiinfo = new Array(rcxDict.prototype.numList.length/2);
-for (i = 0; i*2 < rcxDict.prototype.numList.length; i++) {
-  rcxMain.config.kanjiinfo[i] = localStorage[rcxDict.prototype.numList[i*2]];
+rcxMain.config.css = localStorage['popupcolor'];
+rcxMain.config.highlight = localStorage['highlight'];
+rcxMain.config.textboxhl = localStorage['textboxhl'];
+rcxMain.config.onlyreading = localStorage['onlyreading'];
+rcxMain.config.copySeparator = localStorage['copySeparator'];
+rcxMain.config.maxClipCopyEntries = localStorage['maxClipCopyEntries'];
+rcxMain.config.lineEnding = localStorage['lineEnding'];
+rcxMain.config.minihelp = localStorage['minihelp'];
+rcxMain.config.popupDelay = parseInt(localStorage['popupDelay']);
+rcxMain.config.disablekeys = localStorage['disablekeys'];
+rcxMain.config.showOnKey = localStorage['showOnKey'];
+rcxMain.config.kanjicomponents = localStorage['kanjicomponents'];
+rcxMain.config.kanjiinfo = new Array(rcxDict.prototype.numList.length / 2);
+for (i = 0; i * 2 < rcxDict.prototype.numList.length; i++) {
+  rcxMain.config.kanjiinfo[i] = localStorage[rcxDict.prototype.numList[i * 2]];
 }

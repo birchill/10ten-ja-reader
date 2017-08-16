@@ -46,7 +46,6 @@
 */
 
 var rcxContent = {
-
   dictCount: 3,
   altView: 0,
 
@@ -89,8 +88,8 @@ var rcxContent = {
 
   getContentType: function(tDoc) {
     var m = tDoc.getElementsByTagName('meta');
-    for(var i in m) {
-      if(m[i].httpEquiv == 'Content-Type') {
+    for (var i in m) {
+      if (m[i].httpEquiv == 'Content-Type') {
         var con = m[i].content;
         con = con.split(';');
         return con[0];
@@ -102,8 +101,7 @@ var rcxContent = {
   showPopup: function(text, elem, x, y, looseWidth) {
     topdoc = window.document;
 
-    if ((isNaN(x)) || (isNaN(y))) x = y = 0;
-
+    if (isNaN(x) || isNaN(y)) x = y = 0;
 
     var popup = topdoc.getElementById('rikaichamp-window');
     if (!popup) {
@@ -111,8 +109,10 @@ var rcxContent = {
       css.setAttribute('rel', 'stylesheet');
       css.setAttribute('type', 'text/css');
       var cssdoc = window.rikaichamp.config.css;
-      css.setAttribute('href', browser.extension.getURL('css/popup-' + 
-                                cssdoc + '.css'));
+      css.setAttribute(
+        'href',
+        browser.extension.getURL('css/popup-' + cssdoc + '.css')
+      );
       css.setAttribute('id', 'rikaichamp-css');
       topdoc.getElementsByTagName('head')[0].appendChild(css);
 
@@ -120,28 +120,32 @@ var rcxContent = {
       popup.setAttribute('id', 'rikaichamp-window');
       topdoc.documentElement.appendChild(popup);
 
-      popup.addEventListener('dblclick',
-        function (ev) {
+      popup.addEventListener(
+        'dblclick',
+        function(ev) {
           rcxContent.hidePopup();
           ev.stopPropagation();
-        }, true);
+        },
+        true
+      );
     }
 
     popup.style.width = 'auto';
     popup.style.height = 'auto';
-    popup.style.maxWidth = (looseWidth ? '' : '600px');
+    popup.style.maxWidth = looseWidth ? '' : '600px';
 
     if (rcxContent.getContentType(topdoc) == 'text/plain') {
       var df = document.createDocumentFragment();
-      df.appendChild(document.createElementNS('http://www.w3.org/1999/xhtml', 'span'));
+      df.appendChild(
+        document.createElementNS('http://www.w3.org/1999/xhtml', 'span')
+      );
       df.firstChild.innerHTML = text;
 
       while (popup.firstChild) {
         popup.removeChild(popup.firstChild);
       }
       popup.appendChild(df.firstChild);
-    }
-    else {
+    } else {
       popup.innerHTML = text;
     }
 
@@ -169,13 +173,11 @@ var rcxContent = {
       if (this.altView == 1) {
         x = window.scrollX;
         y = window.scrollY;
-      }
-      else if (this.altView == 2) {
-        x = (window.innerWidth - (pW + 20)) + window.scrollX;
-        y = (window.innerHeight - (pH + 20)) + window.scrollY;
-      }
-      // FIXME: This probably doesn't actually work
-      else if (elem instanceof window.HTMLOptionElement) {
+      } else if (this.altView == 2) {
+        x = window.innerWidth - (pW + 20) + window.scrollX;
+        y = window.innerHeight - (pH + 20) + window.scrollY;
+      } else if (elem instanceof window.HTMLOptionElement) {
+        // FIXME: This probably doesn't actually work
         // these things are always on z-top, so go sideways
 
         x = 0;
@@ -189,20 +191,18 @@ var rcxContent = {
         }
         if (elem.offsetTop > elem.parentNode.clientHeight) y -= elem.offsetTop;
 
-        if ((x + popup.offsetWidth) > window.innerWidth) {
+        if (x + popup.offsetWidth > window.innerWidth) {
           // too much to the right, go left
           x -= popup.offsetWidth + 5;
           if (x < 0) x = 0;
-        }
-        else {
+        } else {
           // use SELECT's width
           x += elem.parentNode.offsetWidth + 5;
         }
-      }
-      else {
+      } else {
         // go left if necessary
-        if ((x + pW) > (window.innerWidth - 20)) {
-          x = (window.innerWidth - pW) - 20;
+        if (x + pW > window.innerWidth - 20) {
+          x = window.innerWidth - pW - 20;
           if (x < 0) x = 0;
         }
 
@@ -210,10 +210,10 @@ var rcxContent = {
         var v = 25;
 
         // under the popup title
-        if ((elem.title) && (elem.title != '')) v += 20;
+        if (elem.title && elem.title != '') v += 20;
 
         // go up if necessary
-        if ((y + v + pH) > window.innerHeight) {
+        if (y + v + pH > window.innerHeight) {
           var t = y - pH - 30;
           if (t >= 0) {
             y = t;
@@ -221,15 +221,12 @@ var rcxContent = {
             // if can't go up, still go down to prevent blocking cursor
             y += v;
           }
-        }
-        else y += v;
-
+        } else y += v;
 
         x += window.scrollX;
         y += window.scrollY;
       }
-    }
-    else {
+    } else {
       x += window.scrollX;
       y += window.scrollY;
     }
@@ -250,12 +247,12 @@ var rcxContent = {
 
   isVisible: function() {
     var popup = document.getElementById('rikaichamp-window');
-    return (popup) && (popup.style.display != 'none');
+    return popup && popup.style.display != 'none';
   },
 
   clearHi: function() {
     var tdata = window.rikaichamp;
-    if ((!tdata) || (!tdata.prevSelView)) return;
+    if (!tdata || !tdata.prevSelView) return;
     if (tdata.prevSelView.closed) {
       tdata.prevSelView = null;
       return;
@@ -264,27 +261,24 @@ var rcxContent = {
     var sel = tdata.prevSelView.getSelection();
     // If there is an empty selection or the selection was done by
     // rikaichamp then we'll clear it
-    if ((!sel.toString()) || (tdata.selText == sel.toString())) {
+    if (!sel.toString() || tdata.selText == sel.toString()) {
       // In the case of no selection we clear the oldTA
-      // The reason for this is becasue if there's no selection 
-      // we probably clicked somewhere else and we don't want to 
+      // The reason for this is becasue if there's no selection
+      // we probably clicked somewhere else and we don't want to
       // bounce back.
-        if(!sel.toString())
-            tdata.oldTA = null;
+      if (!sel.toString()) tdata.oldTA = null;
 
       // clear all selections
-        sel.removeAllRanges();
-        //Text area stuff
+      sel.removeAllRanges();
+      //Text area stuff
       // If oldTA is still around that means we had a highlighted region
       // which we just cleared and now we're going to jump back to where we were
       // the cursor was before our lookup
       // if oldCaret is less than 0 it means we clicked outside the box and shouldn't
       // come back
-        if(tdata.oldTA && tdata.oldCaret >= 0) {
-            tdata.oldTA.selectionStart = tdata.oldTA.selectionEnd = tdata.oldCaret; 
-
-        }
-
+      if (tdata.oldTA && tdata.oldCaret >= 0) {
+        tdata.oldTA.selectionStart = tdata.oldTA.selectionEnd = tdata.oldCaret;
+      }
     }
     tdata.prevSelView = null;
     tdata.kanjiChar = null;
@@ -294,101 +288,122 @@ var rcxContent = {
   lastFound: null,
 
   configPage: function() {
-    window.openDialog('chrome://rikaichamp/content/prefs.xul', '', 'chrome,centerscreen');
+    window.openDialog(
+      'chrome://rikaichamp/content/prefs.xul',
+      '',
+      'chrome,centerscreen'
+    );
   },
 
   keysDown: [],
-  lastPos: { x: null, y: null},
+  lastPos: { x: null, y: null },
   lastTarget: null,
 
-  onKeyDown: function(ev) { rcxContent._onKeyDown(ev) },
+  onKeyDown: function(ev) {
+    rcxContent._onKeyDown(ev);
+  },
   _onKeyDown: function(ev) {
-    console.assert(window.rikaichamp, 'Rikai champ should be setup if we ' +
-                                      'are getting keydown events');
+    console.assert(
+      window.rikaichamp,
+      'Rikai champ should be setup if we ' + 'are getting keydown events'
+    );
 
-    if (window.rikaichamp.config.showOnKey !== "" && (ev.altKey || ev.ctrlKey || ev.key == "AltGraph")) {
+    if (
+      window.rikaichamp.config.showOnKey !== '' &&
+      (ev.altKey || ev.ctrlKey || ev.key == 'AltGraph')
+    ) {
       if (this.lastTarget !== null) {
         //console.log(ev);
         var myEv = {
           clientX: this.lastPos.x,
           clientY: this.lastPos.y,
           target: this.lastTarget,
-          altKey: ev.altKey || ev.key == "AltGraph",
+          altKey: ev.altKey || ev.key == 'AltGraph',
           ctrlKey: ev.ctrlKey,
           shiftKey: ev.shiftKey,
-          noDelay: true
+          noDelay: true,
         };
         this.tryUpdatePopup(myEv);
       }
       return;
     }
-    if ((ev.shiftKey) && (ev.keyCode != 16)) return;
+    if (ev.shiftKey && ev.keyCode != 16) return;
     if (this.keysDown[ev.keyCode]) return;
     if (!this.isVisible()) return;
-    if (window.rikaichamp.config.disablekeys == 'true' && (ev.keyCode != 16)) return;
+    if (window.rikaichamp.config.disablekeys == 'true' && ev.keyCode != 16)
+      return;
 
     var i;
 
     switch (ev.keyCode) {
-    case 16:  // shift
-    case 13:  // enter
-      this.show(ev.currentTarget.rikaichamp, this.nextDict);
-      break;
-    case 27:  // esc
-      this.hidePopup();
-      this.clearHi();
-      break;
-    case 65:  // a
-      this.altView = (this.altView + 1) % 3;
-      this.show(ev.currentTarget.rikaichamp, this.sameDict);
-      break;
-    case 67:  // c
-      browser.runtime.sendMessage({"type":"copyToClip", "entry":rcxContent.lastFound});
-      break;
-    case 66:  // b
-      var ofs = ev.currentTarget.rikaichamp.uofs;
-      for (i = 50; i > 0; --i) {
-        ev.currentTarget.rikaichamp.uofs = --ofs;
-        if (this.show(ev.currentTarget.rikaichamp, this.defaultDict) >= 0) {
-          if (ofs >= ev.currentTarget.rikaichamp.uofs) break;  // ! change later
+      case 16: // shift
+      case 13: // enter
+        this.show(ev.currentTarget.rikaichamp, this.nextDict);
+        break;
+      case 27: // esc
+        this.hidePopup();
+        this.clearHi();
+        break;
+      case 65: // a
+        this.altView = (this.altView + 1) % 3;
+        this.show(ev.currentTarget.rikaichamp, this.sameDict);
+        break;
+      case 67: // c
+        browser.runtime.sendMessage({
+          type: 'copyToClip',
+          entry: rcxContent.lastFound,
+        });
+        break;
+      case 66: // b
+        var ofs = ev.currentTarget.rikaichamp.uofs;
+        for (i = 50; i > 0; --i) {
+          ev.currentTarget.rikaichamp.uofs = --ofs;
+          if (this.show(ev.currentTarget.rikaichamp, this.defaultDict) >= 0) {
+            if (ofs >= ev.currentTarget.rikaichamp.uofs) break; // ! change later
+          }
         }
-      }
-      break;
-    case 68:  // d
-      browser.runtime.sendMessage({"type":"switchOnlyReading"});
-      this.show(ev.currentTarget.rikaichamp, this.sameDict);
-      break;
-    case 77:  // m
-      ev.currentTarget.rikaichamp.uofsNext = 1;
-    case 78:  // n
-      for (i = 50; i > 0; --i) {
-        ev.currentTarget.rikaichamp.uofs += ev.currentTarget.rikaichamp.uofsNext;
-        if (this.show(ev.currentTarget.rikaichamp, this.defaultDict) >= 0) break;
-      }
-      break;
-    case 89:  // y
-      this.altView = 0;
-      ev.currentTarget.rikaichamp.popY += 20;
-      this.show(ev.currentTarget.rikaichamp, this.sameDict);
-      break;
-    default:
-      return;
+        break;
+      case 68: // d
+        browser.runtime.sendMessage({ type: 'switchOnlyReading' });
+        this.show(ev.currentTarget.rikaichamp, this.sameDict);
+        break;
+      case 77: // m
+        ev.currentTarget.rikaichamp.uofsNext = 1;
+      case 78: // n
+        for (i = 50; i > 0; --i) {
+          ev.currentTarget.rikaichamp.uofs +=
+            ev.currentTarget.rikaichamp.uofsNext;
+          if (this.show(ev.currentTarget.rikaichamp, this.defaultDict) >= 0)
+            break;
+        }
+        break;
+      case 89: // y
+        this.altView = 0;
+        ev.currentTarget.rikaichamp.popY += 20;
+        this.show(ev.currentTarget.rikaichamp, this.sameDict);
+        break;
+      default:
+        return;
     }
 
     this.keysDown[ev.keyCode] = 1;
 
     // don't eat shift if in this mode
-    if (true/*!this.cfg.nopopkeys*/) {
+    if (true /*!this.cfg.nopopkeys*/) {
       ev.preventDefault();
     }
   },
 
   mDown: false,
 
-  onMouseDown: function(ev) { rcxContent._onMouseDown(ev) },
+  onMouseDown: function(ev) {
+    rcxContent._onMouseDown(ev);
+  },
   _onMouseDown: function(ev) {
-    console.assert(window.rikaichamp, 'Rikai champ should be setup if we ' +
-                                      'are getting mousedown events');
+    console.assert(
+      window.rikaichamp,
+      'Rikai champ should be setup if we ' + 'are getting mousedown events'
+    );
     if (ev.button != 0) {
       return;
     }
@@ -401,14 +416,16 @@ var rcxContent = {
     // oldCaret to -1 as an indicator not to restore position
     // Otherwise, we switch our saved textarea to whereever
     // we just clicked
-    if(!('form' in ev.target)) {
-      window.rikaichamp.oldCaret =  -1;
+    if (!('form' in ev.target)) {
+      window.rikaichamp.oldCaret = -1;
     } else {
       window.rikaichamp.oldTA = ev.target;
     }
   },
 
-  onMouseUp: function(ev) { rcxContent._onMouseUp(ev) },
+  onMouseUp: function(ev) {
+    rcxContent._onMouseUp(ev);
+  },
   _onMouseUp: function(ev) {
     if (ev.button != 0) {
       return;
@@ -423,10 +440,14 @@ var rcxContent = {
   unicodeInfo: function(c) {
     hex = '0123456789ABCDEF';
     u = c.charCodeAt(0);
-    return c + ' U' + hex[(u >>> 12) & 15] +
-                      hex[(u >>> 8) & 15] +
-                      hex[(u >>> 4) & 15] +
-                      hex[u & 15];
+    return (
+      c +
+      ' U' +
+      hex[(u >>> 12) & 15] +
+      hex[(u >>> 8) & 15] +
+      hex[(u >>> 4) & 15] +
+      hex[u & 15]
+    );
   },
 
   kanjiN: 1,
@@ -437,59 +458,65 @@ var rcxContent = {
     '#text': true,
 
     // font style
-    'FONT': true,
-    'TT': true,
-    'I' : true,
-    'B' : true,
-    'BIG' : true,
-    'SMALL' : true,
+    FONT: true,
+    TT: true,
+    I: true,
+    B: true,
+    BIG: true,
+    SMALL: true,
     //deprecated
-    'STRIKE': true,
-    'S': true,
-    'U': true,
+    STRIKE: true,
+    S: true,
+    U: true,
 
     // phrase
-    'EM': true,
-    'STRONG': true,
-    'DFN': true,
-    'CODE': true,
-    'SAMP': true,
-    'KBD': true,
-    'VAR': true,
-    'CITE': true,
-    'ABBR': true,
-    'ACRONYM': true,
+    EM: true,
+    STRONG: true,
+    DFN: true,
+    CODE: true,
+    SAMP: true,
+    KBD: true,
+    VAR: true,
+    CITE: true,
+    ABBR: true,
+    ACRONYM: true,
 
     // special, not included IMG, OBJECT, BR, SCRIPT, MAP, BDO
-    'A': true,
-    'Q': true,
-    'SUB': true,
-    'SUP': true,
-    'SPAN': true,
-    'WBR': true,
+    A: true,
+    Q: true,
+    SUB: true,
+    SUP: true,
+    SPAN: true,
+    WBR: true,
 
     // ruby
-    'RUBY': true,
-    'RBC': true,
-    'RTC': true,
-    'RB': true,
-    'RT': true,
-    'RP': true
-  },  
+    RUBY: true,
+    RBC: true,
+    RTC: true,
+    RB: true,
+    RT: true,
+    RP: true,
+  },
   isInline: function(node) {
-    return this.inlineNames.hasOwnProperty(node.nodeName) || 
-    // only check styles for elements
-    // comments do not have getComputedStyle method
-    (document.nodeType == Node.ELEMENT_NODE && 
-      (document.defaultView.getComputedStyle(node,null).getPropertyValue('display') == 'inline' ||
-      document.defaultView.getComputedStyle(node,null).getPropertyValue('display') == 'inline-block')
+    return (
+      this.inlineNames.hasOwnProperty(node.nodeName) ||
+      // only check styles for elements
+      // comments do not have getComputedStyle method
+      (document.nodeType == Node.ELEMENT_NODE &&
+        (document.defaultView
+          .getComputedStyle(node, null)
+          .getPropertyValue('display') == 'inline' ||
+          document.defaultView
+            .getComputedStyle(node, null)
+            .getPropertyValue('display') == 'inline-block'))
     );
   },
 
   // XPath expression which evaluates to text nodes
   // tells rikaichamp which text to translate
   // expression to get all text nodes that are not in (RP or RT) elements
-  textNodeExpr: 'descendant-or-self::text()[not(parent::rp) and not(ancestor::rt)]',
+  textNodeExpr:
+    'descendant-or-self::text()[not(parent::rp) and not(ancestor::rt)]',
 
   // XPath expression which evaluates to a boolean. If it evaluates to true
   // then rikaichamp will not start looking for text in this text node
@@ -503,22 +530,26 @@ var rcxContent = {
   // maxLength: the maximum length of returned string
   // xpathExpr: an XPath expression, which evaluates to text nodes, will be evaluated
   // relative to "node" argument
-  getInlineText: function (node, selEndList, maxLength, xpathExpr) {
+  getInlineText: function(node, selEndList, maxLength, xpathExpr) {
     var text = '';
     var endIndex;
 
     if (node.nodeName == '#text') {
       endIndex = Math.min(maxLength, node.data.length);
-      selEndList.push({node: node, offset: endIndex});
+      selEndList.push({ node: node, offset: endIndex });
       return node.data.substring(0, endIndex);
     }
 
-    var result = xpathExpr.evaluate(node, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+    var result = xpathExpr.evaluate(
+      node,
+      XPathResult.ORDERED_NODE_ITERATOR_TYPE,
+      null
+    );
 
-    while ((text.length < maxLength) && (node = result.iterateNext())) {
+    while (text.length < maxLength && (node = result.iterateNext())) {
       endIndex = Math.min(node.data.length, maxLength - text.length);
       text += node.data.substring(0, endIndex);
-      selEndList.push( {node: node, offset: endIndex} );
+      selEndList.push({ node: node, offset: endIndex });
     }
 
     return text;
@@ -530,17 +561,18 @@ var rcxContent = {
   getNext: function(node) {
     var nextNode;
 
-    if ((nextNode = node.nextSibling) != null)
-      return nextNode
-    if (((nextNode = node.parentNode) != null) && this.isInline(nextNode))
+    if ((nextNode = node.nextSibling) != null) return nextNode;
+    if ((nextNode = node.parentNode) != null && this.isInline(nextNode))
       return this.getNext(nextNode);
 
     return null;
   },
 
-  getTextFromRange: function (rangeParent, offset, selEndList, maxLength) {
-    if (rangeParent.nodeName === 'TEXTAREA' ||
-        rangeParent.nodeName === 'INPUT') {
+  getTextFromRange: function(rangeParent, offset, selEndList, maxLength) {
+    if (
+      rangeParent.nodeName === 'TEXTAREA' ||
+      rangeParent.nodeName === 'INPUT'
+    ) {
       var endIndex = Math.min(rangeParent.data.length, offset + maxLength);
       return rangeParent.value.substring(offset, endIndex);
     }
@@ -549,9 +581,20 @@ var rcxContent = {
 
     var endIndex;
 
-    var xpathExpr = rangeParent.ownerDocument.createExpression(this.textNodeExpr, null);
+    var xpathExpr = rangeParent.ownerDocument.createExpression(
+      this.textNodeExpr,
+      null
+    );
 
-    if (rangeParent.ownerDocument.evaluate(this.startElementExpr, rangeParent, null, XPathResult.BOOLEAN_TYPE, null).booleanValue)
+    if (
+      rangeParent.ownerDocument.evaluate(
+        this.startElementExpr,
+        rangeParent,
+        null,
+        XPathResult.BOOLEAN_TYPE,
+        null
+      ).booleanValue
+    )
       return '';
 
     if (rangeParent.nodeType != Node.TEXT_NODE) {
@@ -560,17 +603,26 @@ var rcxContent = {
 
     endIndex = Math.min(rangeParent.data.length, offset + maxLength);
     text += rangeParent.data.substring(offset, endIndex);
-    selEndList.push( {node: rangeParent, offset: endIndex} );
+    selEndList.push({ node: rangeParent, offset: endIndex });
 
     var nextNode = rangeParent;
-    while (((nextNode = this.getNext(nextNode)) != null) && (this.isInline(nextNode)) && (text.length < maxLength))
-      text += this.getInlineText(nextNode, selEndList, maxLength - text.length, xpathExpr);
+    while (
+      (nextNode = this.getNext(nextNode)) != null &&
+      this.isInline(nextNode) &&
+      text.length < maxLength
+    )
+      text += this.getInlineText(
+        nextNode,
+        selEndList,
+        maxLength - text.length,
+        xpathExpr
+      );
 
     return text;
   },
 
   // Hack because SelEnd can't be sent in messages
-  lastSelEnd:  [],
+  lastSelEnd: [],
   // Hack because ro was coming out always 0 for some reason.
   lastRo: 0,
 
@@ -587,14 +639,14 @@ var rcxContent = {
       return 0;
     }
 
-    if ((ro < 0) || (ro >= rp.data.length)) {
+    if (ro < 0 || ro >= rp.data.length) {
       this.clearHi();
       this.hidePopup();
       return 0;
     }
 
     // if we have '   XYZ', where whitespace is compressed, X never seems to get selected
-    while (((u = rp.data.charCodeAt(ro)) == 32) || (u == 9) || (u == 10)) {
+    while ((u = rp.data.charCodeAt(ro)) == 32 || u == 9 || u == 10) {
       ++ro;
       if (ro >= rp.data.length) {
         this.clearHi();
@@ -604,12 +656,14 @@ var rcxContent = {
     }
 
     //
-    if ((isNaN(u)) ||
-      ((u != 0x25CB) &&
-      ((u < 0x3001) || (u > 0x30FF)) &&
-      ((u < 0x3400) || (u > 0x9FFF)) &&
-      ((u < 0xF900) || (u > 0xFAFF)) &&
-      ((u < 0xFF10) || (u > 0xFF9D)))) {
+    if (
+      isNaN(u) ||
+      (u != 0x25cb &&
+        (u < 0x3001 || u > 0x30ff) &&
+        (u < 0x3400 || u > 0x9fff) &&
+        (u < 0xf900 || u > 0xfaff) &&
+        (u < 0xff10 || u > 0xff9d))
+    ) {
       this.clearHi();
       this.hidePopup();
       return -2;
@@ -623,10 +677,10 @@ var rcxContent = {
     lastRo = ro;
     browser.runtime.sendMessage(
       { type: 'xsearch', text, dictOption: String(dictOption) },
-      rcxContent.processEntry);
+      rcxContent.processEntry
+    );
 
     return 1;
-
   },
 
   processEntry: function(e) {
@@ -647,12 +701,17 @@ var rcxContent = {
 
     if (!e.matchLen) e.matchLen = 1;
     tdata.uofsNext = e.matchLen;
-    tdata.uofs = (ro - tdata.prevRangeOfs);
+    tdata.uofs = ro - tdata.prevRangeOfs;
 
     rp = tdata.prevRangeNode;
     // don't try to highlight form elements
-    if ((rp) && ((tdata.config.highlight == 'true' && !this.mDown && !('form' in tdata.prevTarget))  ||
-          (('form' in tdata.prevTarget) && tdata.config.textboxhl == 'true'))) {
+    if (
+      rp &&
+      ((tdata.config.highlight == 'true' &&
+        !this.mDown &&
+        !('form' in tdata.prevTarget)) ||
+        ('form' in tdata.prevTarget && tdata.config.textboxhl == 'true'))
+    ) {
       var doc = rp.ownerDocument;
       if (!doc) {
         rcxContent.clearHi();
@@ -663,7 +722,10 @@ var rcxContent = {
       tdata.prevSelView = doc.defaultView;
     }
 
-    browser.runtime.sendMessage({"type":"makehtml", "entry":e}, rcxContent.processHtml);
+    browser.runtime.sendMessage(
+      { type: 'makehtml', entry: e },
+      rcxContent.processHtml
+    );
   },
 
   processHtml: function(html) {
@@ -672,59 +734,56 @@ var rcxContent = {
     return 1;
   },
 
-  highlightMatch: function (doc, rp, ro, matchLen, selEndList, tdata) {
-      var sel = doc.defaultView.getSelection();
+  highlightMatch: function(doc, rp, ro, matchLen, selEndList, tdata) {
+    var sel = doc.defaultView.getSelection();
 
     // If selEndList is empty then we're dealing with a textarea/input situation
-    if (selEndList.length === 0) { 
-        try {
-        if(rp.nodeName == 'TEXTAREA' || rp.nodeName == 'INPUT') {
-
+    if (selEndList.length === 0) {
+      try {
+        if (rp.nodeName == 'TEXTAREA' || rp.nodeName == 'INPUT') {
           // If there is already a selected region not caused by
           // rikaichamp, leave it alone
-          if((sel.toString()) && (tdata.selText != sel.toString()))
-            return;
+          if (sel.toString() && tdata.selText != sel.toString()) return;
 
           // If there is no selected region and the saved
           // textbox is the same as teh current one
           // then save the current cursor position
           // The second half of the condition let's us place the
           // cursor in another text box without having it jump back
-          if(!sel.toString() && tdata.oldTA == rp) {
+          if (!sel.toString() && tdata.oldTA == rp) {
             tdata.oldCaret = rp.selectionStart;
             tdata.oldTA = rp;
           }
           rp.selectionStart = ro;
           rp.selectionEnd = matchLen + ro;
 
-          tdata.selText = rp.value.substring(ro, matchLen+ro);  
+          tdata.selText = rp.value.substring(ro, matchLen + ro);
         }
-        }
-        catch(err) {
+      } catch (err) {
         // If there is an error it is probably caused by the input type
         // being not text.  This is the most general way to deal with
         // arbitrary types.
 
         // we set oldTA to null because we don't want to do weird stuf
         // with buttons
-            tdata.oldTA = null;
-            //console.log("invalid input type for selection:" + rp.type);
-            console.log(err.message);
-        }
-        return;
+        tdata.oldTA = null;
+        //console.log("invalid input type for selection:" + rp.type);
+        console.log(err.message);
+      }
+      return;
     }
 
     // Special case for leaving a text box to an outside japanese
     // Even if we're not currently in a text area we should save
     // the last one we were in.
-    if(tdata.oldTA && !sel.toString() && tdata.oldCaret >= 0)
-      tdata.oldCaret = tdata.oldTA.selectionStart;   
+    if (tdata.oldTA && !sel.toString() && tdata.oldCaret >= 0)
+      tdata.oldCaret = tdata.oldTA.selectionStart;
 
     var selEnd;
     var offset = matchLen + ro;
 
     for (var i = 0, len = selEndList.length; i < len; i++) {
-      selEnd = selEndList[i]
+      selEnd = selEndList[i];
       if (offset <= selEnd.offset) break;
       offset -= selEnd.offset;
     }
@@ -733,16 +792,17 @@ var rcxContent = {
     range.setStart(rp, ro);
     range.setEnd(selEnd.node, offset);
 
-    if ((sel.toString()) && (tdata.selText != sel.toString()))
-      return;
+    if (sel.toString() && tdata.selText != sel.toString()) return;
     sel.removeAllRanges();
     sel.addRange(range);
     tdata.selText = sel.toString();
   },
 
   showTitle: function(tdata) {
-    browser.runtime.sendMessage({"type":"translate", "title":tdata.title}, 
-      rcxContent.processTitle);
+    browser.runtime.sendMessage(
+      { type: 'translate', title: tdata.title },
+      rcxContent.processTitle
+    );
   },
 
   processTitle: function(e) {
@@ -753,69 +813,87 @@ var rcxContent = {
       return;
     }
 
-    e.title = tdata.title.substr(0, e.textLen).replace(/[\x00-\xff]/g, function (c) { return '&#' + c.charCodeAt(0) + ';' } );
+    e.title = tdata.title
+      .substr(0, e.textLen)
+      .replace(/[\x00-\xff]/g, function(c) {
+        return '&#' + c.charCodeAt(0) + ';';
+      });
     if (tdata.title.length > e.textLen) e.title += '...';
 
     this.lastFound = [e];
 
-    browser.runtime.sendMessage({"type":"makehtml", "entry":e}, rcxContent.processHtml);
+    browser.runtime.sendMessage(
+      { type: 'makehtml', entry: e },
+      rcxContent.processHtml
+    );
   },
 
   getFirstTextChild: function(node) {
-    return document.evaluate('descendant::text()[not(parent::rp) and not(ancestor::rt)]',
-              node, null, XPathResult.ANY_TYPE, null).iterateNext();
+    return document
+      .evaluate(
+        'descendant::text()[not(parent::rp) and not(ancestor::rt)]',
+        node,
+        null,
+        XPathResult.ANY_TYPE,
+        null
+      )
+      .iterateNext();
   },
 
   makeFake: function(real) {
     var fake = document.createElement('div');
     var realRect = real.getBoundingClientRect();
     fake.innerText = real.value;
-    fake.style.cssText = document.defaultView.getComputedStyle(real, "").cssText;
+    fake.style.cssText = document.defaultView.getComputedStyle(
+      real,
+      ''
+    ).cssText;
     fake.scrollTop = real.scrollTop;
     fake.scrollLeft = real.scrollLeft;
-    fake.style.position = "absolute";
+    fake.style.position = 'absolute';
     fake.style.zIndex = 7777;
     fake.style.top = realRect.top + 'px';
     fake.style.left = realRect.left + 'px';
 
     return fake;
-
   },
 
   getTotalOffset: function(parent, tNode, offset) {
-      var fChild = parent.firstChild;
-      var realO = offset;
-      if(fChild == tNode)
-          return offset;
-      do {
-          var val = 0;
-          if(fChild.nodeName == "BR") {
-              val = 1;
-          }
-          else {
-              val = (fChild.data ? fChild.data.length : 0)
-          }
-          realO += val;
+    var fChild = parent.firstChild;
+    var realO = offset;
+    if (fChild == tNode) return offset;
+    do {
+      var val = 0;
+      if (fChild.nodeName == 'BR') {
+        val = 1;
+      } else {
+        val = fChild.data ? fChild.data.length : 0;
       }
-      while((fChild = fChild.nextSibling) != tNode);
+      realO += val;
+    } while ((fChild = fChild.nextSibling) != tNode);
 
-      return realO;
-
+    return realO;
   },
 
   onMouseMove: function(ev) {
-    console.assert(window.rikaichamp, 'Rikai champ should be setup if we ' +
-                                      'are getting mousemove events');
+    console.assert(
+      window.rikaichamp,
+      'Rikai champ should be setup if we ' + 'are getting mousemove events'
+    );
     rcxContent.lastPos.x = ev.clientX;
     rcxContent.lastPos.y = ev.clientY;
     rcxContent.lastTarget = ev.target;
     rcxContent.tryUpdatePopup(ev);
   },
   tryUpdatePopup: function(ev) {
-    var altGraph = ev.getModifierState && ev.getModifierState("AltGraph");
+    var altGraph = ev.getModifierState && ev.getModifierState('AltGraph');
 
-    if ((window.rikaichamp.config.showOnKey.includes("Alt") && !ev.altKey && !altGraph) ||
-       (window.rikaichamp.config.showOnKey.includes("Ctrl") && !ev.ctrlKey)) {
+    if (
+      (window.rikaichamp.config.showOnKey.includes('Alt') &&
+        !ev.altKey &&
+        !altGraph) ||
+      (window.rikaichamp.config.showOnKey.includes('Ctrl') && !ev.ctrlKey)
+    ) {
       this.clearHi();
       this.hidePopup();
       return;
@@ -839,11 +917,11 @@ var rcxContent = {
       if (fake) {
         // At the end of a line, don't do anything or you just get beginning of
         // next line
-        if ((rp.data) && rp.data.length == ro) {
+        if (rp.data && rp.data.length == ro) {
           document.body.removeChild(fake);
           return;
         }
-        fake.style.display = "none";
+        fake.style.display = 'none';
         ro = this.getTotalOffset(rp.parentNode, rp, ro);
       }
 
@@ -853,24 +931,26 @@ var rcxContent = {
 
       // If the range offset is equal to the node data length
       // Then we have the second case and need to correct.
-      if ((rp.data) && ro == rp.data.length) {
+      if (rp.data && ro == rp.data.length) {
         // A special exception is the WBR tag which is inline but doesn't
         // contain text.
-        if ((rp.nextSibling) && (rp.nextSibling.nodeName == 'WBR')) {
+        if (rp.nextSibling && rp.nextSibling.nodeName == 'WBR') {
           rp = rp.nextSibling.nextSibling;
           ro = 0;
-        // If we're to the right of an inline character we can use the target.
-        // However, if we're just in a blank spot don't do anything.
+          // If we're to the right of an inline character we can use the target.
+          // However, if we're just in a blank spot don't do anything.
         } else if (rcxContent.isInline(ev.target)) {
-          if (rp.parentNode !== ev.target &&
-              !(fake && rp.parentNode.innerText == ev.target.value)) {
+          if (
+            rp.parentNode !== ev.target &&
+            !(fake && rp.parentNode.innerText == ev.target.value)
+          ) {
             rp = ev.target.firstChild;
             ro = 0;
           }
-        // Otherwise we're on the right and can take the next sibling of the
-        // inline element.
+          // Otherwise we're on the right and can take the next sibling of the
+          // inline element.
         } else {
-          rp = rp.parentNode.nextSibling
+          rp = rp.parentNode.nextSibling;
           ro = 0;
         }
       }
@@ -880,17 +960,20 @@ var rcxContent = {
       // The 1 seems random but it actually represents the preceding empty tag
       // also we don't want it to mess up with our fake div
       // Also, form elements don't seem to fall into this case either.
-      if (!(fake) && !('form' in ev.target) && rp && rp.parentNode != ev.target && ro == 1) {
+      if (
+        !fake &&
+        !('form' in ev.target) &&
+        rp &&
+        rp.parentNode != ev.target &&
+        ro == 1
+      ) {
         rp = rcxContent.getFirstTextChild(ev.target);
-        ro=0;
-      }
-
-      // Otherwise, we're off in nowhere land and we should go home.
-      // offset should be 0 or max in this case.
-      else if(!(fake) && (!(rp) || ((rp.parentNode != ev.target)))){
+        ro = 0;
+      } else if (!fake && (!rp || rp.parentNode != ev.target)) {
+        // Otherwise, we're off in nowhere land and we should go home.
+        // offset should be 0 or max in this case.
         rp = null;
         ro = -1;
-
       }
 
       // For text nodes do special stuff
@@ -898,17 +981,17 @@ var rcxContent = {
       // we give the text area data so it can act normal
       if (fake) {
         rp = ev.target;
-        rp.data = rp.value
+        rp.data = rp.value;
       }
 
       if (ev.target == tdata.prevTarget && this.isVisible()) {
         //console.log("exit due to same target");
         if (tdata.title) {
-          if(fake) document.body.removeChild(fake);
+          if (fake) document.body.removeChild(fake);
           return;
         }
-        if ((rp == tdata.prevRangeNode) && (ro == tdata.prevRangeOfs)) {
-          if(fake) document.body.removeChild(fake);
+        if (rp == tdata.prevRangeNode && ro == tdata.prevRangeOfs) {
+          if (fake) document.body.removeChild(fake);
           return;
         }
       }
@@ -916,10 +999,9 @@ var rcxContent = {
       if (fake) {
         document.body.removeChild(fake);
       }
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err.message);
-      if(fake) document.body.removeChild(fake);
+      if (fake) document.body.removeChild(fake);
       return;
     }
 
@@ -932,25 +1014,37 @@ var rcxContent = {
 
     var delay = !!ev.noDelay ? 1 : window.rikaichamp.config.popupDelay;
 
-    if ((rp) && (rp.data) && (ro < rp.data.length)) {
+    if (rp && rp.data && ro < rp.data.length) {
       this.forceKanji = ev.shiftKey ? 1 : 0;
       tdata.popX = ev.clientX;
       tdata.popY = ev.clientY;
       tdata.timer = setTimeout(
         function(rangeNode, rangeOffset) {
-          if (!window.rikaichamp || rangeNode != window.rikaichamp.prevRangeNode || ro != window.rikaichamp.prevRangeOfs) {
+          if (
+            !window.rikaichamp ||
+            rangeNode != window.rikaichamp.prevRangeNode ||
+            ro != window.rikaichamp.prevRangeOfs
+          ) {
             return;
           }
-          rcxContent.show(tdata, rcxContent.forceKanji ? rcxContent.forceKanji : rcxContent.defaultDict);
-        }, delay, rp, ro);
+          rcxContent.show(
+            tdata,
+            rcxContent.forceKanji
+              ? rcxContent.forceKanji
+              : rcxContent.defaultDict
+          );
+        },
+        delay,
+        rp,
+        ro
+      );
       return;
     }
 
     if (true /*this.cfg.title*/) {
-      if ((typeof(ev.target.title) == 'string') && (ev.target.title.length)) {
+      if (typeof ev.target.title == 'string' && ev.target.title.length) {
         tdata.title = ev.target.title;
-      }
-      else if ((typeof(ev.target.alt) == 'string') && (ev.target.alt.length)) {
+      } else if (typeof ev.target.alt == 'string' && ev.target.alt.length) {
         tdata.title = ev.target.alt;
       }
     }
@@ -958,8 +1052,7 @@ var rcxContent = {
     // FF3
     if (ev.target.nodeName == 'OPTION') {
       tdata.title = ev.target.text;
-    }
-    else if (ev.target.nodeName == 'SELECT') {
+    } else if (ev.target.nodeName == 'SELECT') {
       tdata.title = ev.target.options[ev.target.selectedIndex].text;
     }
 
@@ -972,9 +1065,12 @@ var rcxContent = {
             return;
           }
           rcxContent.showTitle(tdata);
-        }, delay, tdata, tdata.title);
-    }
-    else {
+        },
+        delay,
+        tdata,
+        tdata.title
+      );
+    } else {
       // dont close just because we moved from a valid popup slightly over to a place with nothing
       var dx = tdata.popX - ev.clientX;
       var dy = tdata.popY - ev.clientY;
@@ -984,32 +1080,29 @@ var rcxContent = {
         this.hidePopup();
       }
     }
-
-  }
-}
+  },
+};
 
 //Event Listeners
-browser.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-    switch(request.type) {
-      case 'enable':
-        rcxContent.enableTab();
-        window.rikaichamp.config = request.config;
-        console.log("enable");
-        break;
-      case 'disable':
-        rcxContent.disableTab();
-        console.log("disable");
-        break;
-      case 'showPopup':
-        console.log("showPopup");
-        rcxContent.showPopup(request.text);
-        break;
-      default:
-        console.log(request);
-    }
+browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  switch (request.type) {
+    case 'enable':
+      rcxContent.enableTab();
+      window.rikaichamp.config = request.config;
+      console.log('enable');
+      break;
+    case 'disable':
+      rcxContent.disableTab();
+      console.log('disable');
+      break;
+    case 'showPopup':
+      console.log('showPopup');
+      rcxContent.showPopup(request.text);
+      break;
+    default:
+      console.log(request);
   }
-);
+});
 
 // When a page first loads, checks to see if it should enable script
-browser.runtime.sendMessage({"type":"enable?"});
+browser.runtime.sendMessage({ type: 'enable?' });

@@ -1,4 +1,4 @@
-﻿/*
+/*
 
   Rikai champ
   by Brian Birtles
@@ -52,7 +52,7 @@ var rcxMain = {
 
   loadDictionary: function() {
     if (!this.dict) {
-      this.dict = new rcxDict(this.haveNames/* && !this.cfg.nadelay*/);
+      this.dict = new rcxDict(this.haveNames /* && !this.cfg.nadelay*/);
     }
     return this.dict.loaded;
   },
@@ -60,11 +60,15 @@ var rcxMain = {
   // The callback for onSelectionChanged
   // Just sends a message to the tab to enable itself if it hasn't
   // already
-  onTabSelect: function(tabId) { rcxMain._onTabSelect(tabId); },
+  onTabSelect: function(tabId) {
+    rcxMain._onTabSelect(tabId);
+  },
   _onTabSelect: function(tabId) {
-
-    if ((this.enabled == 1))
-      browser.tabs.sendMessage(tabId, {"type":"enable", "config":rcxMain.config});
+    if (this.enabled == 1)
+      browser.tabs.sendMessage(tabId, {
+        type: 'enable',
+        config: rcxMain.config,
+      });
   },
 
   savePrep: function(clip, entry) {
@@ -75,9 +79,10 @@ var rcxMain = {
     var e;
 
     f = entry;
-    if ((!f) || (f.length == 0)) return null;
+    if (!f || f.length == 0) return null;
 
-    if (clip) { // save to clipboard
+    if (clip) {
+      // save to clipboard
       me = rcxMain.config.maxClipCopyEntries;
     }
 
@@ -88,38 +93,40 @@ var rcxMain = {
       e = f[i];
       if (e.kanji) {
         text += this.dict.makeText(e, 1);
-      }
-      else {
+      } else {
         if (me <= 0) continue;
         text += this.dict.makeText(e, me);
         me -= e.data.length;
       }
     }
 
-    if (rcxMain.config.lineEnding == "rn") text = text.replace(/\n/g, '\r\n');
-      else if (rcxMain.config.lineEnding == "r") text = text.replace(/\n/g, '\r');
-    if (rcxMain.config.copySeparator != "tab") {
-      if (rcxMain.config.copySeparator == "comma")
-        return text.replace(/\t/g, ",");
-      if (rcxMain.config.copySeparator == "space")
-        return text.replace(/\t/g, " ");
+    if (rcxMain.config.lineEnding == 'rn') text = text.replace(/\n/g, '\r\n');
+    else if (rcxMain.config.lineEnding == 'r') text = text.replace(/\n/g, '\r');
+    if (rcxMain.config.copySeparator != 'tab') {
+      if (rcxMain.config.copySeparator == 'comma')
+        return text.replace(/\t/g, ',');
+      if (rcxMain.config.copySeparator == 'space')
+        return text.replace(/\t/g, ' ');
     }
 
     return text;
   },
 
-// Needs entirely new implementation and dependent on savePrep
+  // Needs entirely new implementation and dependent on savePrep
   copyToClip: function(tab, entry) {
     var text;
 
     if ((text = this.savePrep(1, entry)) != null) {
       document.oncopy = function(event) {
-        event.clipboardData.setData("Text", text);
+        event.clipboardData.setData('Text', text);
         event.preventDefault();
       };
-      document.execCommand("Copy");
+      document.execCommand('Copy');
       document.oncopy = undefined;
-      browser.tabs.sendMessage(tab.id, {"type":"showPopup", "text":'Copied to clipboard.'});
+      browser.tabs.sendMessage(tab.id, {
+        type: 'showPopup',
+        text: 'Copied to clipboard.',
+      });
     }
   },
 
@@ -136,27 +143,34 @@ var rcxMain = {
     '<tr><td>N</td><td>Next word</td></tr>' +
     '</table>',
 
-
   // Function which enables the inline mode of rikaichamp
   // Unlike rikaichan there is no lookup bar so this is the only enable.
   inlineEnable: function(tab, mode) {
     this.loadDictionary().then(() => {
       // Send message to current tab to add listeners and create stuff
-      browser.tabs.sendMessage(tab.id, { type: 'enable',
-                                         config: rcxMain.config });
+      browser.tabs.sendMessage(tab.id, {
+        type: 'enable',
+        config: rcxMain.config,
+      });
       this.enabled = 1;
 
       if (mode == 1) {
         if (rcxMain.config.minihelp == 'true') {
-          browser.tabs.sendMessage(tab.id, { type: 'showPopup',
-                                             text: rcxMain.miniHelp });
+          browser.tabs.sendMessage(tab.id, {
+            type: 'showPopup',
+            text: rcxMain.miniHelp,
+          });
         } else {
-          browser.tabs.sendMessage(tab.id, { type: 'showPopup',
-                                             text: 'Rikai champ enabled!' });
+          browser.tabs.sendMessage(tab.id, {
+            type: 'showPopup',
+            text: 'Rikai champ enabled!',
+          });
         }
       }
-      browser.browserAction.setBadgeBackgroundColor({"color":[255,0,0,255]});
-      browser.browserAction.setBadgeText({"text":"On"});
+      browser.browserAction.setBadgeBackgroundColor({
+        color: [255, 0, 0, 255],
+      });
+      browser.browserAction.setBadgeText({ text: 'On' });
     });
   },
 
@@ -166,24 +180,23 @@ var rcxMain = {
     delete this.dict;
 
     this.enabled = 0;
-    browser.browserAction.setBadgeBackgroundColor({"color":[0,0,0,0]});
-    browser.browserAction.setBadgeText({"text":""});
+    browser.browserAction.setBadgeBackgroundColor({ color: [0, 0, 0, 0] });
+    browser.browserAction.setBadgeText({ text: '' });
 
     // Send a disable message to all browsers
-    var windows = browser.windows.getAll({"populate":true}, 
-      function(windows) {
-        for (var i =0; i < windows.length; ++i) {
-          var tabs = windows[i].tabs;
-          for ( var j = 0; j < tabs.length; ++j) {
-            browser.tabs.sendMessage(tabs[j].id, {"type":"disable"});
-          }
+    var windows = browser.windows.getAll({ populate: true }, function(windows) {
+      for (var i = 0; i < windows.length; ++i) {
+        var tabs = windows[i].tabs;
+        for (var j = 0; j < tabs.length; ++j) {
+          browser.tabs.sendMessage(tabs[j].id, { type: 'disable' });
         }
-      });
+      }
+    });
   },
 
   inlineToggle: function(tab) {
     if (rcxMain.enabled) rcxMain.inlineDisable(tab, 1);
-      else rcxMain.inlineEnable(tab, 1);
+    else rcxMain.inlineEnable(tab, 1);
   },
 
   kanjiN: 1,
@@ -231,25 +244,21 @@ var rcxMain = {
 
     const originalMode = this.showMode;
     return (function loopOverDictionaries(text, self) {
-      return searchCurrentDict(text)
-        .then(result => {
-          if (result) {
-            return result;
-          }
-          self.showMode = (self.showMode + 1) % self.dictCount;
-          if (self.showMode === originalMode) {
-            console.log('Exhausted dictionaries, returning');
-            return null;
-          }
-          console.log('Trying next dictionary...');
-          return loopOverDictionaries(text, self);
-        });
-    }(text, this));
-  }
-
+      return searchCurrentDict(text).then(result => {
+        if (result) {
+          return result;
+        }
+        self.showMode = (self.showMode + 1) % self.dictCount;
+        if (self.showMode === originalMode) {
+          console.log('Exhausted dictionaries, returning');
+          return null;
+        }
+        console.log('Trying next dictionary...');
+        return loopOverDictionaries(text, self);
+      });
+    })(text, this);
+  },
 };
-
-
 
 /*
   2E80 - 2EFF CJK Radicals Supplement
