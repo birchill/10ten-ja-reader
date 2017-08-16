@@ -1,7 +1,13 @@
 /*
 
-  Rikaikun
-  Copyright (C) 2010 Erek Speed
+  Rikaichamp!
+  by Brian Birtles
+  https://github.com/birtles/rikaichamp
+
+  ---
+
+  Originally based on Rikaikun
+  by Erek Speed
   http://code.google.com/p/rikaikun/
 
   ---
