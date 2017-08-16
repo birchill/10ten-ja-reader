@@ -1070,7 +1070,8 @@ var rcxContent = {
         tdata.title
       );
     } else {
-      // dont close just because we moved from a valid popup slightly over to a place with nothing
+      // dont close just because we moved from a valid popup slightly over to
+      // a place with nothing
       var dx = tdata.popX - ev.clientX;
       var dy = tdata.popY - ev.clientY;
       var distance = Math.sqrt(dx * dx + dy * dy);
@@ -1082,7 +1083,7 @@ var rcxContent = {
   },
 };
 
-//Event Listeners
+// Event Listeners
 browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   switch (request.type) {
     case 'enable':
@@ -1096,10 +1097,14 @@ browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       break;
     case 'showPopup':
       console.log('showPopup');
-      rcxContent.showPopup(request.text);
+      // Don't show the popup on all the iframes, only the topmost window
+      if (self === top) {
+        rcxContent.showPopup(request.text);
+      }
       break;
     default:
-      console.log(request);
+      console.log(`Unrecognized request ${JSON.stringify(request)}`);
+      break;
   }
 });
 
