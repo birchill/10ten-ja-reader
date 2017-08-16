@@ -15,10 +15,6 @@ browser.runtime.onMessage.addListener(
           response(result);
         });
         return true; /* Needed to ensure |response| is valid */
-/*      case 'nextDict':
-        console.log('nextDict');
-        rcxMain.nextDict();
-        break;*/
       case 'resetDict':
         console.log('resetDict');
         rcxMain.resetDict();
@@ -87,7 +83,7 @@ if(initStorage("v0.8.92", true)) {
     initStorage(rcxDict.prototype.numList[i*2], "true")
   }
 
-    // v0.8.92
+  // v0.8.92
   initStorage("popupDelay", "150");
   initStorage("showOnKey", "");
 }
@@ -127,4 +123,3 @@ rcxMain.config.kanjiinfo = new Array(rcxDict.prototype.numList.length/2);
 for (i = 0; i*2 < rcxDict.prototype.numList.length; i++) {
   rcxMain.config.kanjiinfo[i] = localStorage[rcxDict.prototype.numList[i*2]];
 }
-

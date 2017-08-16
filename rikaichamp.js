@@ -46,175 +46,16 @@
 */
 var rcxMain = {
   haveNames: true,
-//  canDoNames: false,
   dictCount: 3,
   altView: 0,
   enabled: 0,
 
-/*
-    onLoad: function() { rcxMain._onLoad(); },
-  _onLoad: function() {
-    try {
-      //this.loadPrefs();
-      //this.haveNames = this.canDoNames = (typeof(rcxNamesDict) != 'undefined');
-    }
-    catch (ex) {
-      alert('Exception in onLoad: ' + ex);
-    }
-  },
-*/
-/*
-  //Switch this over to local storage method for chrome.  Have to make a UI.
-  loadPrefs: function() {
-    try {
-        var pb = this.getPrefBranch();
-      var xm = ['cm', 'tm'];
-      var i;
-      var a, b, c;
-
-      this.cfg = {};
-      for (i = 0; i < rcxCfgList.length; ++i) {
-        b = rcxCfgList[i];
-        switch (b[0]) {
-        case 0:
-          this.cfg[b[1]] = pb.getIntPref(b[1]);
-          break;
-        case 1:
-          this.cfg[b[1]] = pb.getCharPref(b[1]);
-          break;
-        case 2:
-          this.cfg[b[1]] = pb.getBoolPref(b[1]);
-          break;
-        }
-      }
-
-      this.dictCount = 3;
-      this.canDoNames = this.haveNames;
-      if (!this.haveNames) this.cfg.dictorder = 0;
-      switch (this.cfg.dictorder) {
-      case 0:
-        this.canDoNames = false;
-        this.dictCount = 2;
-      case 1:
-        this.kanjiN = 1;
-        this.namesN = 2;
-        break;
-      case 2:
-        this.kanjiN = 2;
-        this.namesN = 1;
-        break;
-      }
-
-      for (i = 1; i >= 0; --i) {
-        c = xm[i];
-        try {
-          a = !this.cfg[c + 'toggle'];
-          b = !this.cfg[c + 'lbar'];
-          document.getElementById('rikaichamp-toggle-' + c).hidden = a;
-          document.getElementById('rikaichamp-lbar-' + c).hidden = b;
-          document.getElementById('rikaichamp-separator-' + xm[i]).hidden = a || b;
-        }
-        catch (ex) {
-          //  alert('unable to set menu: c=' + c + ' ex=' + ex)
-        }
-      }
-
-      switch (this.cfg.ssep) {
-      case 'Tab':
-        this.cfg.ssep = '\t';
-        break;
-      case 'Comma':
-        this.cfg.ssep = ',';
-        break;
-      case 'Space':
-        this.cfg.ssep = ' ';
-        break;
-      }
-
-      this.cfg.css = (this.cfg.css.indexOf('/') == -1) ? ('chrome://rikaichamp/skin/popup-' + this.cfg.css + '.css') : this.cfg.css;
-      if (!this.isTB) {
-        for (i = 0; i < gBrowser.browsers.length; ++i) {
-          c = gBrowser.browsers[i].contentDocument.getElementById('rikaichamp-css');
-          if (c) c.setAttribute('href', this.cfg.css);
-        }
-      }
-
-      c = { };
-      c.kdisp = [];
-      a = pb.getCharPref('kindex').split(',');
-      for (i = 0; i < a.length; ++i) {
-        c.kdisp[a[i]] = 1;
-      }
-      c.wmax = this.cfg.wmax;
-      c.wpop = this.cfg.wpop;
-      c.wpos = this.cfg.wpos;
-      c.namax = this.cfg.namax;
-      this.dconfig = c;
-      if (this.dict) this.dict.setConfig(c);
-
-      if (this.isTB) this.cfg.enmode = 0;
-
-      b = document.getElementById('rikaichamp-status');
-      if (b) b.hidden = (this.cfg.sticon == 0);
-    }
-    catch (ex) {
-      alert('Exception in LoadPrefs: ' + ex);
-    }
-  },
-*/
-
   loadDictionary: function() {
     if (!this.dict) {
-      /* if (typeof(rcxWordDict) == 'undefined') {
-        this.showDownload();
-        return false;
-      } */
-
       this.dict = new rcxDict(this.haveNames/* && !this.cfg.nadelay*/);
-      //this.dict.setConfig(this.dconfig);
     }
     return this.dict.loaded;
   },
-/*
-  showDownload: function() {
-    const url = 'http://rikaichamp.mozdev.org/welcome.html';
-
-    try {
-      var u = '';
-
-      if (this.version != null) {
-        u += 'rv=' + this.version + '&';
-      }
-      if ((typeof(rcxWordDict) != 'undefined') && (rcxWordDict.version != null)) {
-        u += 'wv=' + rcxWordDict.version + '&';
-      }
-      if ((typeof(rcxNamesDict) != 'undefined') && (rcxNamesDict.version != null)) {
-        u += 'nv=' + rcxNamesDict.version + '&';
-      }
-      if (u.length) u = url + '?' + u;
-        else u = url;
-
-      if (this.isTB) {
-        Components.classes['@mozilla.org/messenger;1'].createInstance()
-          .QueryInterface(Components.interfaces.nsIMessenger)
-          .launchExternalURL(u);
-      }
-      else {
-        var w = window.open(u, 'rcxdict');
-        if (w) w.focus();
-      }
-    }
-    catch (ex) {
-      if (typeof(rcxWordDict) == 'undefined') {
-        alert('[rikaichamp] Please install a dictionary file from ' + url);
-      }
-      else {
-        alert('[rikaichamp] There was an error while opening ' + url);
-      }
-    }
-  },
-
-*/
 
   // The callback for onSelectionChanged
   // Just sends a message to the tab to enable itself if it hasn't
@@ -238,12 +79,7 @@ var rcxMain = {
 
     if (clip) { // save to clipboard
       me = rcxMain.config.maxClipCopyEntries;
-      //mk = this.cfg.smaxck; // something related to the number of kanji in the look-up bar
     }
-    /*else { // save to file
-      me = this.cfg.smaxfe;
-      //mk = this.cfg.smaxfk;
-    }*/
 
     if (!this.fromLB) mk = 1;
 
@@ -251,7 +87,6 @@ var rcxMain = {
     for (i = 0; i < f.length; ++i) {
       e = f[i];
       if (e.kanji) {
-        //if (mk-- <= 0) continue
         text += this.dict.makeText(e, 1);
       }
       else {
@@ -301,8 +136,6 @@ var rcxMain = {
     '<tr><td>N</td><td>Next word</td></tr>' +
     '</table>',
 
-/*      '<tr><td>C</td><td>Copy to clipboard</td></tr>' +
-    '<tr><td>S</td><td>Save to file</td></tr>' + */
 
   // Function which enables the inline mode of rikaichamp
   // Unlike rikaichan there is no lookup bar so this is the only enable.

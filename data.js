@@ -94,8 +94,6 @@ rcxDict.prototype = {
     if (this.nameDict && this.nameIndex) {
       return Promise.resolve();
     }
-    /*this.nameDict = this.fileRead(rcxNamesDict.datURI, rcxNamesDict.datCharset);
-    this.nameIndex = this.fileRead(rcxNamesDict.idxURI, rcxNamesDict.idxCharset);*/
     const readNameDict =
       this.fileRead(browser.extension.getURL('data/names.dat'))
       .then(text => { this.nameDict = text });
@@ -108,8 +106,6 @@ rcxDict.prototype = {
   // Note: These are mostly flat text files; loaded as one continous string to
   // reduce memory use
   loadDictionary: function() {
-    /* this.wordDict = this.fileRead(rcxWordDict.datURI, rcxWordDict.datCharset);
-    this.wordIndex = this.fileRead(rcxWordDict.idxURI, rcxWordDict.idxCharset); */
     const dataFiles = {
       wordDict:  'dict.dat',
       wordIndex: 'dict.idx',
@@ -128,90 +124,8 @@ rcxDict.prototype = {
     }
 
     return Promise.all(readPromises);
-
-    //  this.test_kanji();
-  },
-/*
-  test_kanji: function() {
-    var a = this.kanjiData.split('\n');
-
-    alert('begin test. a.length=' + a.length);
-    var start = (new Date()).getTime();
-    for (var i = 0; i < a.length; ++i) {
-      if (!this.kanjiSearch(a[i].charAt(0))) {
-        alert('error @' + i + ': ' + a[i]);
-        return;
-      }
-    }
-    alert('time = ' + ((new Date()).getTime() - start));
-  },
-*/
-
-/*
-  test_index: function() {
-    var ixF = this.fileRead('chrome://rikaichamp/content/dict.idx', 'EUC-JP');
-    var ixA = ixF.split('\n');
-
-    while ((ixA.length > 0) && (ixA[ixA.length - 1].length == 0)) ixA.pop();
-
-//    alert('length=' + ixA.length + ' / ' + ixF.length);
-if (0) {
-    var timeA = (new Date()).getTime();
-    for (var i = ixA.length - 1; i >= 0; --i) {
-      if ((i & 0xFF) == 0) window.status = 'A: ' + i;
-      var s = ixA[i];
-      var r = this.binSearchX(ixA, s.substr(0, s.indexOf(',') + 1));
-      if ((r == -1) || (ixA[r] != s)) {
-        alert('A failed: ' + s);
-        return;
-      }
-    }
-}
-    timeA = ((new Date()).getTime() - timeA) / 1000;
-
-
-    var timeF = (new Date()).getTime();
-    for (var i = ixA.length - 1; i >= 0; --i) {
-      if ((i & 0xFF) == 0) window.status = 'F: ' + i;
-      var s = ixA[i];
-      var r = this.find(ixF, s.substr(0, s.indexOf(',') + 1));
-      if (r != s) {
-        alert('F failed: ' + s);
-        return;
-      }
-    }
-    timeF = ((new Date()).getTime() - timeF) / 1000;
-
-    var timeX = (new Date()).getTime();
-if (0) {
-    for (var i = ixA.length - 1; i >= 0; --i) {
-      if ((i & 0xFF) == 0) window.status = 'X: ' + i;
-      var s = ixA[i];
-
-      var w = s.substr(0, s.indexOf(',') + 1);
-      var j = 0;
-      r = '';
-      if (ixF.substr(0, w.length) == w) {
-        r = ixF.substr(0, ixF.indexOf('\n'));
-      }
-      else {
-        w = '\n' + w;
-        j = ixF.indexOf(w);
-        if (j != -1) r = ixF.substring(j + 1, ixF.indexOf('\n', j + 1));
-      }
-
-      if (r != s) {
-        alert('X failed:\n[' + s + ']\n[' + r + ']');
-        return;
-      }
-    }
-}
-    timeX = ((new Date()).getTime() - timeX) / 1000;
-
-    alert('A=' + timeA + ' / F=' + timeF + ' / X=' + timeX);
   },
 
-*/
   ///
 
   loadDIF: function() {
@@ -259,7 +173,6 @@ if (0) {
     o.word = word;
     o.type = 0xFF;
     o.reason = '';
-    //o.debug = 'root';
     r.push(o);
     have[word] = 0;
 
@@ -575,7 +488,6 @@ if (0) {
           o.more = 1;
           break;
         }
-//        o.data = o.data.concat(e.data);
         o.data.push(e.data[0]);
         skip = e.matchLen;
       }

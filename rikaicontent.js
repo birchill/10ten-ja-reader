@@ -125,13 +125,6 @@ var rcxContent = {
           rcxContent.hidePopup();
           ev.stopPropagation();
         }, true);
-
-      /* if (this.cfg.resizedoc) {
-        if ((topdoc.body.clientHeight < 1024) && (topdoc.body.style.minHeight == '')) {
-          topdoc.body.style.minHeight = '1024px';
-          topdoc.body.style.overflow = 'auto';
-        }
-      } */
     }
 
     popup.style.width = 'auto';
@@ -205,28 +198,8 @@ var rcxContent = {
           // use SELECT's width
           x += elem.parentNode.offsetWidth + 5;
         }
-
-/*
-        // in some cases (ex: google.co.jp), ebo doesn't add the width of the scroller (?), so use SELECT's width
-        const epbo = elem.ownerDocument.getBoxObjectFor(elem.parentNode);
-
-        const ebo = elem.ownerDocument.getBoxObjectFor(elem);
-        x = ebo.screenX - bbo.screenX;
-        y = ebo.screenY - bbo.screenY;
-
-        if (x > (window.innerWidth - (x + epbo.width))) {
-          x = (x - popup.offsetWidth - 5);
-          if (x < 0) x = 0;
-        }
-        else {
-          x += epbo.width + 5;
-        }
-*/
       }
       else {
-        //x -= bbo.screenX;
-        //y -= bbo.screenY;
-
         // go left if necessary
         if ((x + pW) > (window.innerWidth - 20)) {
           x = (window.innerWidth - pW) - 20;
@@ -330,7 +303,6 @@ var rcxContent = {
 
   onKeyDown: function(ev) { rcxContent._onKeyDown(ev) },
   _onKeyDown: function(ev) {
-//    this.status("keyCode=" + ev.keyCode + ' charCode=' + ev.charCode + ' detail=' + ev.detail);
     console.assert(window.rikaichamp, 'Rikai champ should be setup if we ' +
                                       'are getting keydown events');
 
@@ -360,8 +332,6 @@ var rcxContent = {
     switch (ev.keyCode) {
     case 16:  // shift
     case 13:  // enter
-      //this.showMode = (this.showMode + 1) % this.dictCount;
-      //browser.runtime.sendMessage({"type":"nextDict"});
       this.show(ev.currentTarget.rikaichamp, this.nextDict);
       break;
     case 27:  // esc
@@ -379,8 +349,6 @@ var rcxContent = {
       var ofs = ev.currentTarget.rikaichamp.uofs;
       for (i = 50; i > 0; --i) {
         ev.currentTarget.rikaichamp.uofs = --ofs;
-        //browser.runtime.sendMessage({"type":"resetDict"});
-        //this.showMode = 0;
         if (this.show(ev.currentTarget.rikaichamp, this.defaultDict) >= 0) {
           if (ofs >= ev.currentTarget.rikaichamp.uofs) break;  // ! change later
         }
@@ -395,8 +363,6 @@ var rcxContent = {
     case 78:  // n
       for (i = 50; i > 0; --i) {
         ev.currentTarget.rikaichamp.uofs += ev.currentTarget.rikaichamp.uofsNext;
-        //browser.runtime.sendMessage({"type":"resetDict"});
-        //this.showMode = 0;
         if (this.show(ev.currentTarget.rikaichamp, this.defaultDict) >= 0) break;
       }
       break;
@@ -794,27 +760,10 @@ var rcxContent = {
 
     browser.runtime.sendMessage({"type":"makehtml", "entry":e}, rcxContent.processHtml);
   },
-/*
-  inRange: function (event) {
-    var selection = event.view.getSelection();
-    if ((selection.rangeCount === 0) || (!event.rangeParent)) return false;
-    var newRange = event.view.document.createRange();
-    newRange.setStart(event.rangeParent, event.rangeOffset);
-    newRange.setEnd(event.rangeParent, event.rangeOffset);
-
-    var curRange = selection.getRangeAt(0);
-    if (newRange.compareBoundaryPoints(Range.START_TO_START, curRange) > -1 &&
-      newRange.compareBoundaryPoints(Range.END_TO_END, curRange) < 0)
-      return true;
-    else return false;
-  },
-
-*/
 
   getFirstTextChild: function(node) {
     return document.evaluate('descendant::text()[not(parent::rp) and not(ancestor::rt)]',
               node, null, XPathResult.ANY_TYPE, null).iterateNext();
-      //
   },
 
   makeFake: function(real) {
@@ -898,11 +847,6 @@ var rcxContent = {
         ro = this.getTotalOffset(rp.parentNode, rp, ro);
       }
 
-  /*      console.log( "offset: " + ro + " parentContainer: " +  rp.nodeName + 
-        " total size: " + (rp.data?rp.data.length:"") + " target: " + ev.target.nodeName + 
-        " parentparent: " + rp.parentNode.nodeName); */
-
-
       // This is to account for bugs in caretRangeFromPoint
       // It includes the fact that it returns text nodes over non text nodes
       // and also the fact that it miss the first character of inline nodes.
@@ -978,12 +922,6 @@ var rcxContent = {
       if(fake) document.body.removeChild(fake);
       return;
     }
-
-
-/*      if ((rp) && (rp.nodeType != Node.TEXT_NODE) && !('form' in rp)) {
-      rp = null;
-      ro = -1;
-    }  */
 
     tdata.prevTarget = ev.target;
     tdata.prevRangeNode = rp;
