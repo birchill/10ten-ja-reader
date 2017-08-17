@@ -973,4 +973,6 @@ rcxDict.prototype = {
   },
 };
 
-module.exports = rcxDict;
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = rcxDict;
+}
