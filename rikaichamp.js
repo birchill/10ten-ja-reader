@@ -232,7 +232,6 @@ var rcxMain = {
     }
 
     const searchCurrentDict = text => {
-      console.log(`Searching dictionary ${this.showMode} for ${text}`);
       switch (this.showMode) {
         case this.kanjiN:
           return Promise.resolve(this.dict.kanjiSearch(text.charAt(0)));
@@ -250,10 +249,8 @@ var rcxMain = {
         }
         self.showMode = (self.showMode + 1) % self.dictCount;
         if (self.showMode === originalMode) {
-          console.log('Exhausted dictionaries, returning');
           return null;
         }
-        console.log('Trying next dictionary...');
         return loopOverDictionaries(text, self);
       });
     })(text, this);

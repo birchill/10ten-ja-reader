@@ -5,43 +5,34 @@ browser.tabs.onActivated.addListener(activeInfo =>
 browser.runtime.onMessage.addListener(function(request, sender, response) {
   switch (request.type) {
     case 'enable?':
-      console.log('enable?');
       rcxMain.onTabSelect(sender.tab.id);
       break;
     case 'xsearch':
-      console.log('xsearch');
       rcxMain.search(request.text, request.dictOption).then(result => {
         response(result);
       });
       return true; /* Needed to ensure |response| is valid */
     case 'resetDict':
-      console.log('resetDict');
       rcxMain.resetDict();
       break;
     case 'translate':
-      console.log('translate');
       rcxMain.dict.translate(request.title).then(result => {
         response(result);
       });
       break;
     case 'makehtml':
-      console.log('makehtml');
       var html = rcxMain.dict.makeHtml(request.entry);
       response(html);
       break;
     case 'switchOnlyReading':
-      console.log('switchOnlyReading');
       if (rcxMain.config.onlyreading == 'true')
         rcxMain.config.onlyreading = 'false';
       else rcxMain.config.onlyreading = 'true';
       localStorage['onlyreading'] = rcxMain.config.onlyreading;
       break;
     case 'copyToClip':
-      console.log('copyToClip');
       rcxMain.copyToClip(sender.tab, request.entry);
       break;
-    default:
-      console.log(request);
   }
 });
 

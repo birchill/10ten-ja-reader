@@ -303,17 +303,11 @@ var rcxContent = {
     rcxContent._onKeyDown(ev);
   },
   _onKeyDown: function(ev) {
-    console.assert(
-      window.rikaichamp,
-      'Rikai champ should be setup if we ' + 'are getting keydown events'
-    );
-
     if (
       window.rikaichamp.config.showOnKey !== '' &&
       (ev.altKey || ev.ctrlKey || ev.key == 'AltGraph')
     ) {
       if (this.lastTarget !== null) {
-        //console.log(ev);
         var myEv = {
           clientX: this.lastPos.x,
           clientY: this.lastPos.y,
@@ -400,10 +394,6 @@ var rcxContent = {
     rcxContent._onMouseDown(ev);
   },
   _onMouseDown: function(ev) {
-    console.assert(
-      window.rikaichamp,
-      'Rikai champ should be setup if we ' + 'are getting mousedown events'
-    );
     if (ev.button != 0) {
       return;
     }
@@ -684,10 +674,6 @@ var rcxContent = {
   },
 
   processEntry: function(e) {
-    if (!window.rikaichamp) {
-      console.log(`Got processEntry despite no rikaichamp?
-(${window.location.href})`);
-    }
     tdata = window.rikaichamp;
     ro = lastRo;
     selEndList = lastSelEnd;
@@ -767,8 +753,7 @@ var rcxContent = {
         // we set oldTA to null because we don't want to do weird stuf
         // with buttons
         tdata.oldTA = null;
-        //console.log("invalid input type for selection:" + rp.type);
-        console.log(err.message);
+        console.error(err.message);
       }
       return;
     }
@@ -876,10 +861,6 @@ var rcxContent = {
   },
 
   onMouseMove: function(ev) {
-    console.assert(
-      window.rikaichamp,
-      'Rikai champ should be setup if we ' + 'are getting mousemove events'
-    );
     rcxContent.lastPos.x = ev.clientX;
     rcxContent.lastPos.y = ev.clientY;
     rcxContent.lastTarget = ev.target;
@@ -999,7 +980,7 @@ var rcxContent = {
         document.body.removeChild(fake);
       }
     } catch (err) {
-      console.log(err.message);
+      console.error(err.message);
       if (fake) document.body.removeChild(fake);
       return;
     }
@@ -1089,21 +1070,18 @@ browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     case 'enable':
       rcxContent.enableTab();
       window.rikaichamp.config = request.config;
-      console.log('enable');
       break;
     case 'disable':
       rcxContent.disableTab();
-      console.log('disable');
       break;
     case 'showPopup':
-      console.log('showPopup');
       // Don't show the popup on all the iframes, only the topmost window
       if (self === top) {
         rcxContent.showPopup(request.text);
       }
       break;
     default:
-      console.log(`Unrecognized request ${JSON.stringify(request)}`);
+      console.error(`Unrecognized request ${JSON.stringify(request)}`);
       break;
   }
 });

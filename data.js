@@ -317,9 +317,7 @@ rcxDict.prototype = {
   cs: [0x3071, 0x3074, 0x3077, 0x307a, 0x307d],
 
   wordSearch: function(input, doNames, max) {
-    console.log(`wordSearch: '${input}', doNames: ${doNames}, max: ${max}`);
     let [word, inputLengths] = this.normalizeInput(input);
-    console.log(`Normalized word: ${word}`);
 
     let maxResults = doNames
       ? 20 /* Should be this.config.namax */
@@ -342,8 +340,6 @@ rcxDict.prototype = {
       if (result && doNames) {
         result.names = 1;
       }
-      console.log('wordSearch final result:');
-      console.log(result);
       return result;
     });
   },
@@ -446,39 +442,30 @@ rcxDict.prototype = {
       const trys = deinflect
         ? this.deinflect(input)
         : [{ word: input, type: 0xff, reason: null }];
-      console.log('matches to try:');
-      console.log(trys);
 
       for (i = 0; i < trys.length; i++) {
         u = trys[i];
         var ix = cache[u.word];
         if (!ix) {
           ix = this.find(index, u.word + ',');
-          console.log(`Index for ${u.word}: ${ix}`);
           if (!ix) {
             cache[u.word] = [];
             continue;
           }
           ix = ix.split(',');
           cache[u.word] = ix;
-          console.log(`Index after splitting: ${ix}`);
         } else {
-          console.log(`Using cached index for ${u.word}: ${ix}`);
         }
 
         for (let j = 1; j < ix.length; ++j) {
           var ofs = ix[j];
-          console.log(`Trying index: ${ofs}`);
           if (have[ofs]) {
-            console.log('... Skipping because we have it?');
             continue;
           }
 
           var dentry = dict.substring(ofs, dict.indexOf('\n', ofs));
-          console.log('Got dictionary entry:');
-          console.log(dentry);
-
           var ok = true;
+
           if (i > 0) {
             // > 0 a de-inflected word
 
@@ -502,9 +489,6 @@ rcxDict.prototype = {
               if (y & 8 && w == 'vk') break;
             }
             ok = z != -1;
-            console.log(
-              `De-inflection handling: ${w}, ${x}, ${y}, ${z}, ${ok}`
-            );
           }
 
           if (ok) {
@@ -517,8 +501,6 @@ rcxDict.prototype = {
             ++count;
 
             longestMatch = Math.max(longestMatch, inputLengths[input.length]);
-            console.log(`longestMatch: ${longestMatch}`);
-            console.log(`reason: ${trys[i].reason}`);
 
             if (trys[i].reason) {
               r = `&lt; ${trys[i].reason}`;
@@ -528,32 +510,21 @@ rcxDict.prototype = {
             } else {
               r = null;
             }
-            console.log(`r: ${r}`);
 
             result.data.push([dentry, r]);
           }
         } // for j < ix.length
 
         if (count >= maxResults) {
-          console.log(
-            `Breaking because count(${count}) >= maxResults(${maxResults}) (1)`
-          );
           break;
         }
       } // for i < trys.length
 
       if (count >= maxResults) {
-        console.log(
-          `Breaking because count(${count}) >= maxResults(${maxResults}) (2)`
-        );
         break;
       }
       input = input.substr(0, input.length - 1);
-      console.log(`Updated input to ${input}`);
     } // while input.length > 0
-
-    console.log('Result at end of loop:');
-    console.log(result);
 
     if (!result.data.length) {
       return null;
@@ -829,9 +800,6 @@ rcxDict.prototype = {
         else c.push('<span class="w-kana">' + e[1] + '</span><br/> ');
 
         s = e[3];
-        console.log('e[1]: ' + e[1]);
-        console.log('e[2]: ' + e[2]);
-        console.log('e[3]: ' + e[3]);
         t = '<span class="w-def">' + s.replace(/\//g, '; ') + '</span><br/>';
       }
       c.push(t);
