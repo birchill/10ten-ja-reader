@@ -45,32 +45,82 @@
 
 */
 
-function rcxDict(loadNames) {
-  const dictionaryLoaded = this.loadDictionary();
-  const namesLoaded = loadNames ? this.loadNames() : Promise.resolve();
-  const difLoaded = this.loadDIF();
+// Katakana -> Hiragana conversion tables
 
-  this.loaded = Promise.all([dictionaryLoaded, namesLoaded, difLoaded]);
-}
+// prettier-ignore
+const HANKAKU_KATAKANA_TO_HIRAGANA = [
+  0x3092, 0x3041, 0x3043, 0x3045, 0x3047, 0x3049, 0x3083, 0x3085, 0x3087,
+  0x3063, 0x30fc, 0x3042, 0x3044, 0x3046, 0x3048, 0x304a, 0x304b, 0x304d,
+  0x304f, 0x3051, 0x3053, 0x3055, 0x3057, 0x3059, 0x305b, 0x305d, 0x305f,
+  0x3061, 0x3064, 0x3066, 0x3068, 0x306a, 0x306b, 0x306c, 0x306d, 0x306e,
+  0x306f, 0x3072, 0x3075, 0x3078, 0x307b, 0x307e, 0x307f, 0x3080, 0x3081,
+  0x3082, 0x3084, 0x3086, 0x3088, 0x3089, 0x308a, 0x308b, 0x308c, 0x308d,
+  0x308f, 0x3093,
+];
+// prettier-ignore
+const VOICED_KATAKANA_TO_HIRAGANA = [
+  0x30f4, 0xff74, 0xff75, 0x304c, 0x304e, 0x3050, 0x3052, 0x3054, 0x3056,
+  0x3058, 0x305a, 0x305c, 0x305e, 0x3060, 0x3062, 0x3065, 0x3067, 0x3069,
+  0xff85, 0xff86, 0xff87, 0xff88, 0xff89, 0x3070, 0x3073, 0x3076, 0x3079,
+  0x307c,
+];
+// prettier-ignore
+const SEMIVOICED_KATAKANA_TO_HIRAGANA = [
+  0x3071, 0x3074, 0x3077, 0x307a, 0x307d
+];
 
-rcxDict.prototype = {
-  config: {},
+// prettier-ignore
+const REF_ABBREVIATIONS = [
+  /*
+  'C',  'Classical Radical',
+  'DR', 'Father Joseph De Roo Index',
+  'DO', 'P.G. O\'Neill Index',
+  'O',  'P.G. O\'Neill Japanese Names Index',
+  'Q',  'Four Corner Code',
+  'MN', 'Morohashi Daikanwajiten Index',
+  'MP', 'Morohashi Daikanwajiten Volume/Page',
+  'K',  'Gakken Kanji Dictionary Index',
+  'W',  'Korean Reading',
+  */
+  'H',  'Halpern',
+  'L',  'Heisig',
+  'E',  'Henshall',
+  'DK', 'Kanji Learners Dictionary',
+  'N',  'Nelson',
+  'V',  'New Nelson',
+  'Y',  'PinYin',
+  'P',  'Skip Pattern',
+  'IN', 'Tuttle Kanji &amp; Kana',
+  'I',  'Tuttle Kanji Dictionary',
+  'U',  'Unicode',
+];
 
-  setConfig: function(c) {
+class Dictionary {
+  constructor(loadNames) {
+    this.config = {};
+
+    const dictionaryLoaded = this.loadDictionary();
+    const namesLoaded = loadNames ? this.loadNames() : Promise.resolve();
+    const difLoaded = this.loadDIF();
+
+    this.loaded = Promise.all([dictionaryLoaded, namesLoaded, difLoaded]);
+  }
+
+  setConfig(c) {
     this.config = c;
-  },
+  }
 
-  fileRead: function(url) {
+  fileRead(url) {
     return fetch(url).then(response => response.text());
-  },
+  }
 
-  fileReadArray: function(name) {
+  fileReadArray(name) {
     return this.fileRead(name).then(text =>
       text.split('\n').filter(line => line.length)
     );
-  },
+  }
 
-  find: function(data, text) {
+  find(data, text) {
     const tlen = text.length;
     var beg = 0;
     var end = data.length - 1;
@@ -88,9 +138,9 @@ rcxDict.prototype = {
       else return data.substring(i, data.indexOf('\n', mi + 1));
     }
     return null;
-  },
+  }
 
-  loadNames: function() {
+  loadNames() {
     if (this.nameDict && this.nameIndex) {
       return Promise.resolve();
     }
@@ -105,11 +155,11 @@ rcxDict.prototype = {
       this.nameIndex = text;
     });
     return Promise.all([readNameDict, readNameIndex]);
-  },
+  }
 
   // Note: These are mostly flat text files; loaded as one continous string to
   // reduce memory use
-  loadDictionary: function() {
+  loadDictionary() {
     const dataFiles = {
       wordDict: 'dict.dat',
       wordIndex: 'dict.idx',
@@ -130,11 +180,11 @@ rcxDict.prototype = {
     }
 
     return Promise.all(readPromises);
-  },
+  }
 
   ///
 
-  loadDIF: function() {
+  loadDIF() {
     this.difReasons = [];
     this.difRules = [];
     this.difExact = [];
@@ -168,9 +218,9 @@ rcxDict.prototype = {
         }
       }
     });
-  },
+  }
 
-  deinflect: function(word) {
+  deinflect(word) {
     var r = [];
     var have = [];
     var o;
@@ -223,100 +273,9 @@ rcxDict.prototype = {
     } while (++i < r.length);
 
     return r;
-  },
+  }
 
-  // katakana -> hiragana conversion tables
-  ch: [
-    0x3092,
-    0x3041,
-    0x3043,
-    0x3045,
-    0x3047,
-    0x3049,
-    0x3083,
-    0x3085,
-    0x3087,
-    0x3063,
-    0x30fc,
-    0x3042,
-    0x3044,
-    0x3046,
-    0x3048,
-    0x304a,
-    0x304b,
-    0x304d,
-    0x304f,
-    0x3051,
-    0x3053,
-    0x3055,
-    0x3057,
-    0x3059,
-    0x305b,
-    0x305d,
-    0x305f,
-    0x3061,
-    0x3064,
-    0x3066,
-    0x3068,
-    0x306a,
-    0x306b,
-    0x306c,
-    0x306d,
-    0x306e,
-    0x306f,
-    0x3072,
-    0x3075,
-    0x3078,
-    0x307b,
-    0x307e,
-    0x307f,
-    0x3080,
-    0x3081,
-    0x3082,
-    0x3084,
-    0x3086,
-    0x3088,
-    0x3089,
-    0x308a,
-    0x308b,
-    0x308c,
-    0x308d,
-    0x308f,
-    0x3093,
-  ],
-  cv: [
-    0x30f4,
-    0xff74,
-    0xff75,
-    0x304c,
-    0x304e,
-    0x3050,
-    0x3052,
-    0x3054,
-    0x3056,
-    0x3058,
-    0x305a,
-    0x305c,
-    0x305e,
-    0x3060,
-    0x3062,
-    0x3065,
-    0x3067,
-    0x3069,
-    0xff85,
-    0xff86,
-    0xff87,
-    0xff88,
-    0xff89,
-    0x3070,
-    0x3073,
-    0x3076,
-    0x3079,
-    0x307c,
-  ],
-  cs: [0x3071, 0x3074, 0x3077, 0x307a, 0x307d],
-
-  wordSearch: function(input, doNames, max) {
+  wordSearch(input, doNames, max) {
     let [word, inputLengths] = this.normalizeInput(input);
 
     let maxResults = doNames
@@ -342,7 +301,7 @@ rcxDict.prototype = {
       }
       return result;
     });
-  },
+  }
 
   // half & full-width katakana to hiragana conversion
   // note: katakana vu is never converted to hiragana
@@ -373,18 +332,18 @@ rcxDict.prototype = {
         c -= 0x60;
       } else if (c >= 0xff66 && c <= 0xff9d) {
         // half-width katakana to hiragana
-        c = this.ch[c - 0xff66];
+        c = HANKAKU_KATAKANA_TO_HIRAGANA[c - 0xff66];
       } else if (c == 0xff9e) {
         // voiced (used in half-width katakana) to hiragana
         if (previous >= 0xff73 && previous <= 0xff8e) {
           result = result.slice(0, -1);
-          c = this.cv[previous - 0xff73];
+          c = VOICED_KATAKANA_TO_HIRAGANA[previous - 0xff73];
         }
       } else if (c == 0xff9f) {
         // semi-voiced (used in half-width katakana) to hiragana
         if (previous >= 0xff8a && previous <= 0xff8e) {
           result = result.slice(0, -1);
-          c = this.cs[previous - 0xff8a];
+          c = SEMIVOICED_KATAKANA_TO_HIRAGANA[previous - 0xff8a];
         }
       } else if (c == 0xff5e) {
         // ignore ～
@@ -400,7 +359,7 @@ rcxDict.prototype = {
     }
 
     return [result, inputLengths];
-  },
+  }
 
   _getDictAndIndex(doNames) {
     if (doNames) {
@@ -410,7 +369,7 @@ rcxDict.prototype = {
     }
 
     return Promise.resolve([this.wordDict, this.wordIndex]);
-  },
+  }
 
   // Looks for dictionary entries in |dict| (using |index|) that match some
   // portion of |input| after de-inflecting it (if |deinflect| is true).
@@ -533,9 +492,9 @@ rcxDict.prototype = {
 
     result.matchLen = longestMatch;
     return result;
-  },
+  }
 
-  translate: async function(text) {
+  async translate(text) {
     var e, o;
     var skip;
 
@@ -564,9 +523,9 @@ rcxDict.prototype = {
 
     o.textLen -= text.length;
     return o;
-  },
+  }
 
-  kanjiSearch: function(kanji) {
+  kanjiSearch(kanji) {
     const hex = '0123456789ABCDEF';
     var kde;
     var entry;
@@ -606,34 +565,9 @@ rcxDict.prototype = {
     entry.eigo = a[5];
 
     return entry;
-  },
+  }
 
-  numList: [
-    /*
-    'C',  'Classical Radical',
-    'DR', 'Father Joseph De Roo Index',
-    'DO', 'P.G. O\'Neill Index',
-    'O',  'P.G. O\'Neill Japanese Names Index',
-    'Q',  'Four Corner Code',
-    'MN', 'Morohashi Daikanwajiten Index',
-    'MP', 'Morohashi Daikanwajiten Volume/Page',
-    'K',  'Gakken Kanji Dictionary Index',
-    'W',  'Korean Reading',
-*/
-    'H',  'Halpern',
-    'L',  'Heisig',
-    'E',  'Henshall',
-    'DK', 'Kanji Learners Dictionary',
-    'N',  'Nelson',
-    'V',  'New Nelson',
-    'Y',  'PinYin',
-    'P',  'Skip Pattern',
-    'IN', 'Tuttle Kanji &amp; Kana',
-    'I',  'Tuttle Kanji Dictionary',
-    'U',  'Unicode',
-  ],
-
-  makeHtml: function(entry) {
+  makeHtml(entry) {
     var e;
     var b;
     var c, s, t;
@@ -740,8 +674,8 @@ rcxDict.prototype = {
       j = 0;
 
       kanjiinfo = rcxMain.config.kanjiinfo;
-      for (i = 0; i * 2 < this.numList.length; i++) {
-        c = this.numList[i * 2];
+      for (i = 0; i * 2 < REF_ABBREVIATIONS.length; i++) {
+        c = REF_ABBREVIATIONS[i * 2];
         if (kanjiinfo[i] == 'true') {
           s = entry.misc[c];
           c = ' class="k-mix-td' + (j ^= 1) + '"';
@@ -749,7 +683,7 @@ rcxDict.prototype = {
             '<tr><td' +
             c +
             '>' +
-            this.numList[i * 2 + 1] +
+            REF_ABBREVIATIONS[i * 2 + 1] +
             '</td><td' +
             c +
             '>' +
@@ -884,9 +818,9 @@ rcxDict.prototype = {
     }
 
     return b.join('');
-  },
+  }
 
-  makeHtmlForRuby: function(entry) {
+  makeHtmlForRuby(entry) {
     var e;
     var b;
     var c, s, t;
@@ -915,9 +849,9 @@ rcxDict.prototype = {
     b.push(t);
 
     return b.join('');
-  },
+  }
 
-  makeText: function(entry, max) {
+  makeText(entry, max) {
     var e;
     var b;
     var i, j;
@@ -939,12 +873,12 @@ rcxDict.prototype = {
         b.push('\u90E8\u9996\u540D\t' + entry.bushumei + '\n');
       }
 
-      for (i = 0; i < this.numList.length; i += 2) {
-        e = this.numList[i];
+      for (i = 0; i < REF_ABBREVIATIONS.length; i += 2) {
+        e = REF_ABBREVIATIONS[i];
         if (/* this.config.kdisp[e] */ 1 == 1) {
           j = entry.misc[e];
           b.push(
-            this.numList[i + 1].replace('&amp;', '&') +
+            REF_ABBREVIATIONS[i + 1].replace('&amp;', '&') +
               '\t' +
               (j ? j : '-') +
               '\n'
@@ -970,9 +904,9 @@ rcxDict.prototype = {
       }
     }
     return b.join('');
-  },
-};
+  }
+}
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = rcxDict;
+  module.exports = Dictionary;
 }

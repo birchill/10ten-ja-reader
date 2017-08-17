@@ -65,8 +65,8 @@ if (initStorage('v0.8.92', true)) {
   initStorage('disablekeys', 'false');
   initStorage('kanjicomponents', 'true');
 
-  for (let i = 0; i * 2 < rcxDict.prototype.numList.length; i++) {
-    initStorage(rcxDict.prototype.numList[i * 2], 'true');
+  for (let i = 0; i * 2 < REF_ABBREVIATIONS.length; i++) {
+    initStorage(REF_ABBREVIATIONS[i * 2], 'true');
   }
 
   // v0.8.92
@@ -105,7 +105,7 @@ rcxMain.config.popupDelay = parseInt(localStorage['popupDelay']);
 rcxMain.config.disablekeys = localStorage['disablekeys'];
 rcxMain.config.showOnKey = localStorage['showOnKey'];
 rcxMain.config.kanjicomponents = localStorage['kanjicomponents'];
-rcxMain.config.kanjiinfo = new Array(rcxDict.prototype.numList.length / 2);
-for (let i = 0; i * 2 < rcxDict.prototype.numList.length; i++) {
-  rcxMain.config.kanjiinfo[i] = localStorage[rcxDict.prototype.numList[i * 2]];
+rcxMain.config.kanjiinfo = new Array(REF_ABBREVIATIONS.length / 2);
+for (let i = 0; i * 2 < REF_ABBREVIATIONS.length; i++) {
+  rcxMain.config.kanjiinfo[i] = localStorage[REF_ABBREVIATIONS[i * 2]];
 }

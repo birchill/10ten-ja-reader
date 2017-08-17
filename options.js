@@ -33,7 +33,7 @@ function fillVals() {
     document.optform.kanjicomponents.checked = true;
   else document.optform.kanjicomponents.checked = false;
 
-  numList = browser.extension.getBackgroundPage().rcxDict.prototype.numList;
+  numList = browser.extension.getBackgroundPage().REF_ABBREVIATIONS;
 
   for (i = 0; i * 2 < numList.length; i++) {
     document.getElementById(numList[i * 2]).checked =
@@ -79,9 +79,9 @@ function getVals() {
   localStorage['kanjicomponents'] = document.optform.kanjicomponents.checked;
 
   var kanjiinfoarray = new Array(
-    browser.extension.getBackgroundPage().rcxDict.prototype.numList.length / 2
+    browser.extension.getBackgroundPage().REF_ABBREVIATIONS.length / 2
   );
-  numList = browser.extension.getBackgroundPage().rcxDict.prototype.numList;
+  numList = browser.extension.getBackgroundPage().REF_ABBREVIATIONS;
   for (i = 0; i * 2 < numList.length; i++) {
     localStorage[numList[i * 2]] = document.getElementById(
       numList[i * 2]
