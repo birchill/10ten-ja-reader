@@ -443,8 +443,8 @@ rcxDict.prototype = {
         ? this.deinflect(input)
         : [{ word: input, type: 0xff, reason: null }];
 
-      for (i = 0; i < trys.length; i++) {
-        u = trys[i];
+      for (let i = 0; i < trys.length; i++) {
+        const u = trys[i];
         var ix = cache[u.word];
         if (!ix) {
           ix = this.find(index, u.word + ',');
@@ -502,6 +502,7 @@ rcxDict.prototype = {
 
             longestMatch = Math.max(longestMatch, inputLengths[input.length]);
 
+            let r;
             if (trys[i].reason) {
               r = `&lt; ${trys[i].reason}`;
               if (showInf) {
