@@ -4,16 +4,16 @@
   "version": "0.0.1",
   "description": "A port of rikaikun to Web Extensions. Translate Japanese by hovering over words.",
   "icons": { "48": "images/icon48.png",
-        "128": "images/icon128.png"},
+             "128": "images/icon128.png" },
   "permissions": [
     "tabs",
     "clipboardWrite"
   ],
   "background": {
-    "page": "background.html",
-    "persistent": true
+    "page": "background.html"
   },
   "browser_action": {
+    "browser_style": true,
     "default_icon": "images/ba.png"
   },
   "options_ui": {
