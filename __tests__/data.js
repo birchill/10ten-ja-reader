@@ -8,13 +8,12 @@ describe('Dictionary', () => {
     fetch.resetMocks();
   });
 
-  it('loads', () => {
+  it('loads', async () => {
     fetch.mockResponse('× [ばつ] /(n,uk) x-mark (used to indicate an incorrect answer in a test, etc.)/impossibility/futility/uselessness/');
 
     const dict = new Dictionary(true /* doNames */);
 
-    return dict.loaded.then(() => {
-      // Nothing to check
-    });
+    await dict.loaded;
+    // Nothing to check
   });
 });

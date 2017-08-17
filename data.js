@@ -69,6 +69,7 @@ const SEMIVOICED_KATAKANA_TO_HIRAGANA = [
   0x3071, 0x3074, 0x3077, 0x307a, 0x307d
 ];
 
+// FIXME: Make this a Map instead
 // prettier-ignore
 const REF_ABBREVIATIONS = [
   /*
@@ -96,6 +97,7 @@ const REF_ABBREVIATIONS = [
 ];
 
 class Dictionary {
+  // FIXME: Make this take an options bag instead of a bool
   constructor(loadNames) {
     this.config = {};
 
