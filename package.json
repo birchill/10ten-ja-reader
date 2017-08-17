@@ -1,0 +1,35 @@
+{
+  "name": "rikaichamp",
+  "version": "1.0.0",
+  "description": "A port of rikaikun to Web Extensions. Translate Japanese by hovering over words.",
+  "main": "rikaichamp.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/birtles/rikaichamp.git"
+  },
+  "keywords": [
+    "rikaichan",
+    "rikaikun",
+    "japanese",
+    "dictionary",
+    "translation"
+  ],
+  "author": "Brian Birtles",
+  "bugs": {
+    "url": "https://github.com/birtles/rikaichamp/issues"
+  },
+  "homepage": "https://github.com/birtles/rikaichamp#readme",
+  "devDependencies": {
+    "jest": "^20.0.4",
+    "jest-fetch-mock": "^1.2.1"
+  },
+  "jest": {
+    "automock": false,
+    "setupFiles": [
+      "./setupJest.js"
+    ]
+  }
+}

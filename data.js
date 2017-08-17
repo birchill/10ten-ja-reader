@@ -971,3 +971,5 @@ rcxDict.prototype = {
     return b.join('');
   },
 };
+
+module.exports = rcxDict;
