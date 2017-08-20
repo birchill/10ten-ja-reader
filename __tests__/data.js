@@ -29,7 +29,9 @@ describe('Dictionary', () => {
 
   it('finds an exact match', async () => {
     const result = await sharedDict.wordSearch('蛋白質');
-    console.log(result);
+    expect(result.matchLen).toBe(3); // 3 characters long
+    expect(result.data.length).toBeGreaterThanOrEqual(1);
+    expect(result.data[0][0]).toMatch(/protein/);
   });
 
   // TODO: Test that variant spelling with katakana matches
