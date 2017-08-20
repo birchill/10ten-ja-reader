@@ -277,7 +277,7 @@ class Dictionary {
     return r;
   }
 
-  wordSearch(input, doNames, max) {
+  async wordSearch(input, doNames, max) {
     let [word, inputLengths] = this.normalizeInput(input);
 
     let maxResults = doNames
@@ -287,22 +287,22 @@ class Dictionary {
       maxResults = Math.min(maxResults, max);
     }
 
-    return this._getDictAndIndex(doNames).then(dictAndIndex => {
-      let [dict, index] = dictAndIndex;
+    const [dict, index] = await this._getDictAndIndex(doNames);
 
-      const result = this._lookupInput(
-        word,
-        inputLengths,
-        dict,
-        index,
-        maxResults,
-        !doNames
-      );
-      if (result && doNames) {
-        result.names = 1;
-      }
-      return result;
-    });
+    const result = this._lookupInput(
+      word,
+      inputLengths,
+      dict,
+      index,
+      maxResults,
+      !doNames
+    );
+
+    if (result && doNames) {
+      result.names = 1;
+    }
+
+    return result;
   }
 
   // half & full-width katakana to hiragana conversion
