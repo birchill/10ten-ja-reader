@@ -29,14 +29,42 @@ describe('Dictionary', () => {
 
   it('finds an exact match', async () => {
     const result = await sharedDict.wordSearch('蛋白質');
+
     expect(result.matchLen).toBe(3); // 3 characters long
     expect(result.data.length).toBeGreaterThanOrEqual(1);
     expect(result.data[0][0]).toMatch(/protein/);
   });
 
-  // TODO: Test that variant spelling with katakana matches
-  // TODO: Test that variant spelling with hiragana matches
-  // TODO: Test that variant spelling with all hiragana matches
+  it('finds a match partially using katakana', async () => {
+    const result = await sharedDict.wordSearch('タンパク質');
+    expect(result.matchLen).toBe(5);
+  });
+
+  it('finds a match partially using half-width katakana', async () => {
+    const result = await sharedDict.wordSearch('ﾀﾝﾊﾟｸ質');
+    expect(result.matchLen).toBe(6);
+  });
+
+  it('finds a match partially using hiragana', async () => {
+    const result = await sharedDict.wordSearch('たんぱく質');
+    expect(result.matchLen).toBe(5);
+  });
+
+  it('finds a match fully using katakana', async () => {
+    const result = await sharedDict.wordSearch('タンパクシツ');
+    expect(result.matchLen).toBe(6);
+  });
+
+  it('finds a match fully using half-width katakana', async () => {
+    const result = await sharedDict.wordSearch('ﾀﾝﾊﾟｸｼﾂ');
+    expect(result.matchLen).toBe(7);
+  });
+
+  it('finds a match fully using hiragana', async () => {
+    const result = await sharedDict.wordSearch('たんぱくしつ');
+    expect(result.matchLen).toBe(6);
+  });
+
   // TODO: Test that component also matches
   // TODO: Find a match with trailing characters
   // TODO: Test input normalization

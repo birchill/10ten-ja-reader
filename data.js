@@ -288,7 +288,6 @@ class Dictionary {
     }
 
     const [dict, index] = await this._getDictAndIndex(doNames);
-
     const result = this._lookupInput(
       word,
       inputLengths,
