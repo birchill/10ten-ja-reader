@@ -96,6 +96,9 @@ const REF_ABBREVIATIONS = [
   'U',  'Unicode',
 ];
 
+const WORDS_MAX_ENTRIES = 7;
+const NAMES_MAX_ENTRIES = 20;
+
 class Dictionary {
   // FIXME: Make this take an options bag instead of a bool
   constructor(loadNames) {
@@ -186,40 +189,40 @@ class Dictionary {
 
   ///
 
-  loadDIF() {
+  async loadDIF() {
     this.difReasons = [];
     this.difRules = [];
     this.difExact = [];
 
-    return this.fileReadArray(
+    const buffer = await this.fileReadArray(
       browser.extension.getURL('data/deinflect.dat')
-    ).then(buffer => {
-      var prevLen = -1;
-      var g, o;
+    );
 
-      // i = 1: skip header
-      for (var i = 1; i < buffer.length; ++i) {
-        var f = buffer[i].split('\t');
+    var prevLen = -1;
+    var g, o;
 
-        if (f.length == 1) {
-          this.difReasons.push(f[0]);
-        } else if (f.length == 4) {
-          o = {};
-          o.from = f[0];
-          o.to = f[1];
-          o.type = f[2];
-          o.reason = f[3];
+    // i = 1: skip header
+    for (var i = 1; i < buffer.length; ++i) {
+      var f = buffer[i].split('\t');
 
-          if (prevLen != o.from.length) {
-            prevLen = o.from.length;
-            g = [];
-            g.flen = prevLen;
-            this.difRules.push(g);
-          }
-          g.push(o);
+      if (f.length == 1) {
+        this.difReasons.push(f[0]);
+      } else if (f.length == 4) {
+        o = {};
+        o.from = f[0];
+        o.to = f[1];
+        o.type = f[2];
+        o.reason = f[3];
+
+        if (prevLen != o.from.length) {
+          prevLen = o.from.length;
+          g = [];
+          g.flen = prevLen;
+          this.difRules.push(g);
         }
+        g.push(o);
       }
-    });
+    }
   }
 
   deinflect(word) {
@@ -280,9 +283,7 @@ class Dictionary {
   async wordSearch(input, doNames, max) {
     let [word, inputLengths] = this.normalizeInput(input);
 
-    let maxResults = doNames
-      ? 20 /* Should be this.config.namax */
-      : 7 /* Should be this.config.wmax */;
+    let maxResults = doNames ? NAMES_MAX_ENTRIES : WORDS_MAX_ENTRIES;
     if (max > 0) {
       maxResults = Math.min(maxResults, max);
     }
@@ -362,14 +363,13 @@ class Dictionary {
     return [result, inputLengths];
   }
 
-  _getDictAndIndex(doNames) {
+  async _getDictAndIndex(doNames) {
     if (doNames) {
-      return this.loadNames().then(() => {
-        return [this.nameDict, this.nameIndex];
-      });
+      await this.loadNames();
+      return [this.nameDict, this.nameIndex];
     }
 
-    return Promise.resolve([this.wordDict, this.wordIndex]);
+    return [this.wordDict, this.wordIndex];
   }
 
   // Looks for dictionary entries in |dict| (using |index|) that match some
