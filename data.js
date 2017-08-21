@@ -106,7 +106,7 @@ class Dictionary {
 
     const dictionaryLoaded = this.loadDictionary();
     const namesLoaded = loadNames ? this.loadNames() : Promise.resolve();
-    const difLoaded = this.loadDIF();
+    const difLoaded = this.loadDeinflectData();
 
     this.loaded = Promise.all([dictionaryLoaded, namesLoaded, difLoaded]);
   }
@@ -187,97 +187,104 @@ class Dictionary {
     return Promise.all(readPromises);
   }
 
-  ///
-
-  async loadDIF() {
-    this.difReasons = [];
-    this.difRules = [];
-    this.difExact = [];
+  async loadDeinflectData() {
+    this.deinflectReasons = [];
+    this.deinflectRules = [];
 
     const buffer = await this.fileReadArray(
       browser.extension.getURL('data/deinflect.dat')
     );
 
-    var prevLen = -1;
-    var g, o;
-
-    // i = 1: skip header
-    for (var i = 1; i < buffer.length; ++i) {
-      var f = buffer[i].split('\t');
-
-      if (f.length == 1) {
-        this.difReasons.push(f[0]);
-      } else if (f.length == 4) {
-        o = {};
-        o.from = f[0];
-        o.to = f[1];
-        o.type = f[2];
-        o.reason = f[3];
-
-        if (prevLen != o.from.length) {
-          prevLen = o.from.length;
-          g = [];
-          g.flen = prevLen;
-          this.difRules.push(g);
-        }
-        g.push(o);
+    // We group rules whose 'from' parts have equal length together
+    let prevLen = -1;
+    let ruleGroup;
+    buffer.forEach((line, index) => {
+      // Skip header
+      if (index === 0) {
+        return;
       }
-    }
+
+      const fields = line.split('\t');
+
+      if (fields.length === 1) {
+        this.deinflectReasons.push(fields[0]);
+      } else if (fields.length === 4) {
+        const rule = {};
+        rule.from = fields[0];
+        rule.to = fields[1];
+        rule.type = fields[2];
+        rule.reason = fields[3];
+
+        if (prevLen !== rule.from.length) {
+          prevLen = rule.from.length;
+          ruleGroup = [];
+          ruleGroup.fromLen = prevLen;
+          this.deinflectRules.push(ruleGroup);
+        }
+        ruleGroup.push(rule);
+      }
+    });
   }
 
+  // Returns an array possible deinflected versions of |word| using the form:
+  //
+  // [ { word: <deinflected word>,
+  //     reason: <a string describing the relationship of |word| to its
+  //              de-inflected version, e.g. 'past'>,
+  //     type: a bitfield describing the type of the de-inflected word
+  //           (e.g. group 5 verb) } ]
+  //
   deinflect(word) {
-    var r = [];
-    var have = [];
-    var o;
+    const result = [];
+    const resultIndex = [];
 
-    o = {};
-    o.word = word;
-    o.type = 0xff;
-    o.reason = '';
-    r.push(o);
-    have[word] = 0;
+    const original = {};
+    original.word = word;
+    original.type = 0xff;
+    original.reason = '';
+    result.push(original);
+    resultIndex[word] = 0;
 
-    var i, j, k;
-
-    i = 0;
+    let i = 0;
     do {
-      word = r[i].word;
-      var wordLen = word.length;
-      var type = r[i].type;
+      const word = result[i].word;
+      const type = result[i].type;
 
-      for (j = 0; j < this.difRules.length; ++j) {
-        var g = this.difRules[j];
-        if (g.flen <= wordLen) {
-          var end = word.substr(-g.flen);
-          for (k = 0; k < g.length; ++k) {
-            var rule = g[k];
-            if (type & rule.type && end == rule.from) {
-              var newWord =
+      for (let ruleGroup of this.deinflectRules) {
+        if (ruleGroup.fromLen <= word.length) {
+          const ending = word.substr(-ruleGroup.fromLen);
+
+          for (let rule of ruleGroup) {
+            if (type & rule.type && ending === rule.from) {
+              const newWord =
                 word.substr(0, word.length - rule.from.length) + rule.to;
               if (newWord.length <= 1) {
                 continue;
               }
-              o = {};
-              if (have[newWord]) {
-                o = r[have[newWord]];
-                o.type |= rule.type >> 8;
+
+              const candidate = {};
+              if (resultIndex[newWord]) {
+                candidate = result[resultIndex[newWord]];
+                candidate.type |= rule.type >> 8;
                 continue;
               }
-              have[newWord] = r.length;
-              o.reason = this.difReasons[rule.reason];
-              if (r[i].reason.length) {
-                o.reason += ` &lt; ${r[i].reason}`;
+              resultIndex[newWord] = result.length;
+
+              candidate.reason = this.deinflectReasons[rule.reason];
+              if (result[i].reason.length) {
+                candidate.reason += ` &lt; ${result[i].reason}`;
               }
-              o.type = rule.type >> 8;
-              o.word = newWord;
-              r.push(o);
+              candidate.type = rule.type >> 8;
+              candidate.word = newWord;
+
+              result.push(candidate);
             }
           }
         }
       }
-    } while (++i < r.length);
+    } while (++i < result.length);
 
-    return r;
+    return result;
   }
 
   async wordSearch(input, doNames, max) {
@@ -414,7 +421,6 @@ class Dictionary {
           }
           ix = ix.split(',');
           cache[u.word] = ix;
-        } else {
         }
 
         for (let j = 1; j < ix.length; ++j) {

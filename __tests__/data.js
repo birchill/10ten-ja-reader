@@ -65,10 +65,33 @@ describe('Dictionary', () => {
     expect(result.matchLen).toBe(6);
   });
 
-  // TODO: Test that component also matches
-  // TODO: Find a match with trailing characters
-  // TODO: Test input normalization
-  // TODO: Test de-inflection
+  it('finds a partial match', async () => {
+    const result = await sharedDict.wordSearch('蛋白質は');
+    expect(result.matchLen).toBe(3);
+  });
+
+  it('reports character lengths for half-width katakana normalization',
+    () =>
+  {
+    const result = sharedDict.normalizeInput('ｶﾞｰﾃﾞﾝ');
+    expect(result).toEqual([ 'がーでん', [ 0, 2, 3, 5, 6 ] ]);
+  });
+
+  it('performs de-inflection', () =>
+  {
+    const result = sharedDict.deinflect('走ります');
+    const match = result.find(candidate => candidate.word === '走る');
+    expect(match).toEqual({ reason: 'polite', type: 2, word: '走る' });
+  });
+
+  it('performs de-inflection recursively', () =>
+  {
+    const result = sharedDict.deinflect('踊りたくなかった');
+    const match = result.find(candidate => candidate.word === '踊る');
+    expect(match).toEqual({ reason: '-tai &lt; negative &lt; past',
+                            type: 2, word: '踊る' });
+  });
+
   // TODO: Test names dictionary handling
   //       e.g. create a new Dictionary specifying 'false' for doNames but then
   //       do a work lookup where 'doNames' is true.
