@@ -827,37 +827,6 @@ class Dictionary {
     return b.join('');
   }
 
-  makeHtmlForRuby(entry) {
-    var e;
-    var b;
-    var c, s, t;
-    var i, j, n;
-
-    if (entry == null) return '';
-
-    b = [];
-
-    s = t = '';
-
-    if (entry.title) {
-      b.push('<div class="w-title">' + entry.title + '</div>');
-    }
-
-    for (i = 0; i < entry.data.length; ++i) {
-      e = entry.data[i][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
-      if (!e) continue;
-
-      s = e[3];
-      t = s.replace(/\//g, '; ');
-      if (/* !this.config.wpos */ false) t = t.replace(/^\([^)]+\)\s*/, '');
-      if (/* !this.config.wpop */ false) t = t.replace('; (P)', '');
-      t = '<span class="w-def">' + t + '</span><br/>\n';
-    }
-    b.push(t);
-
-    return b.join('');
-  }
-
   makeText(entry, max) {
     var e;
     var b;
