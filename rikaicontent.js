@@ -154,7 +154,6 @@ var rcxContent = {
       popup.style.left = '0px';
       popup.style.display = '';
 
-      bbo = window;
       var pW = popup.offsetWidth;
       var pH = popup.offsetHeight;
 
@@ -666,9 +665,8 @@ var rcxContent = {
     lastSelEnd = selEndList;
     lastRo = ro;
     browser.runtime.sendMessage(
-      { type: 'xsearch', text, dictOption: String(dictOption) },
-      rcxContent.processEntry
-    );
+      { type: 'xsearch', text, dictOption: String(dictOption) }
+    ).then(rcxContent.processEntry);
 
     return 1;
   },
@@ -708,10 +706,8 @@ var rcxContent = {
       tdata.prevSelView = doc.defaultView;
     }
 
-    browser.runtime.sendMessage(
-      { type: 'makehtml', entry: e },
-      rcxContent.processHtml
-    );
+    browser.runtime.sendMessage({ type: 'makehtml', entry: e })
+      .then(rcxContent.processHtml);
   },
 
   processHtml: function(html) {
@@ -774,6 +770,9 @@ var rcxContent = {
     }
 
     var range = doc.createRange();
+    // XXX This sometimes errors with:
+    // IndexSizeError: Index or size is negative or greater than the allowed
+    // amount
     range.setStart(rp, ro);
     range.setEnd(selEnd.node, offset);
 

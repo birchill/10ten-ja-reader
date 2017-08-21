@@ -2,27 +2,20 @@ browser.browserAction.onClicked.addListener(rcxMain.inlineToggle);
 browser.tabs.onActivated.addListener(activeInfo =>
   rcxMain.onTabSelect(activeInfo.tabId)
 );
-browser.runtime.onMessage.addListener(function(request, sender, response) {
+browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   switch (request.type) {
     case 'enable?':
       rcxMain.onTabSelect(sender.tab.id);
       break;
     case 'xsearch':
-      rcxMain.search(request.text, request.dictOption).then(result => {
-        response(result);
-      });
-      return true; /* Needed to ensure |response| is valid */
+      return rcxMain.search(request.text, request.dictOption);
     case 'resetDict':
       rcxMain.resetDict();
       break;
     case 'translate':
-      rcxMain.dict.translate(request.title).then(result => {
-        response(result);
-      });
-      break;
+      return rcxMain.dict.translate(request.title);
     case 'makehtml':
-      var html = rcxMain.dict.makeHtml(request.entry);
-      response(html);
+      sendResponse(rcxMain.dict.makeHtml(request.entry));
       break;
     case 'switchOnlyReading':
       if (rcxMain.config.onlyreading == 'true')
