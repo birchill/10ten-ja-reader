@@ -1,3 +1,6 @@
 [submodule "__tests__/mocha"]
 	path = __tests__/mocha
 	url = https://github.com/mochajs/mocha.git
+[submodule "__tests__/chai"]
+	path = __tests__/chai
+	url = https://github.com/chaijs/chai.git

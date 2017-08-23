@@ -3,6 +3,7 @@
 <title>Tests for rikaicontent.js</title>
 <link href="mocha/mocha.css" rel="stylesheet">
 <script src="mocha/mocha.js"></script>
+<script src="chai/chai.js"></script>
 
 <!-- Mocks: these need to be defined before we load rikaicontent.js -->
 <script>
@@ -26,13 +27,12 @@ browser.runtime.sendMessage({ type: 'enable?' });
 <div id="mocha"></div>
 
 <script>
-mocha.setup('tdd');
+mocha.setup('bdd');
+const assert = chai.assert;
 
-suite('rcxContent', () => {
-  suite('injection', () => {
-    test('should exist', () => {
-      assert.isObject(window.rcxContent);
-    });
+describe('rcxContent', () => {
+  it('should exist', () => {
+    assert.exists(window.rcxContent);
   });
 });
 
