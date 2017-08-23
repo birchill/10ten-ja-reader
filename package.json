@@ -23,6 +23,8 @@
   },
   "homepage": "https://github.com/birtles/rikaichamp#readme",
   "devDependencies": {
-    "jest": "^20.0.4"
-  }
+    "jest": "^20.0.4",
+    "slimerjs": "git+https://github.com/birtles/slimerjs.git"
+  },
+  "dependencies": {}
 }

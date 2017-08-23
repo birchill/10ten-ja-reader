@@ -1,0 +1,41 @@
+<!doctype html>
+<meta charset=utf-8>
+<title>Tests for rikaicontent.js</title>
+<link href="mocha/mocha.css" rel="stylesheet">
+<script src="mocha/mocha.js"></script>
+
+<!-- Mocks: these need to be defined before we load rikaicontent.js -->
+<script>
+const browser = {
+  runtime: {
+    sendMessage: msg => {
+      console.log(`Got message ${msg.type}`);
+    },
+    onMessage: {
+      addListener: fn => {
+        console.log(`Got listener ${fn}`);
+      },
+    },
+  },
+};
+browser.runtime.sendMessage({ type: 'enable?' });
+</script>
+<script src="../rikaicontent.js"></script>
+
+<body>
+<div id="mocha"></div>
+
+<script>
+mocha.setup('tdd');
+
+suite('rcxContent', () => {
+  suite('injection', () => {
+    test('should exist', () => {
+      assert.isObject(window.rcxContent);
+    });
+  });
+});
+
+mocha.run();
+</script>
+</body>

@@ -1,0 +1,3 @@
+[submodule "__tests__/mocha"]
+	path = __tests__/mocha
+	url = https://github.com/mochajs/mocha.git
