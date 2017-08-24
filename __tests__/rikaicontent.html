@@ -10,11 +10,11 @@
 const browser = {
   runtime: {
     sendMessage: msg => {
-      console.log(`Got message ${msg.type}`);
+      // Probably should log this somewhere I guess...
     },
     onMessage: {
       addListener: fn => {
-        console.log(`Got listener ${fn}`);
+        // Probably should do something with this...
       },
     },
   },
