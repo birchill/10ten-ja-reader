@@ -11,7 +11,7 @@ TODO:
       when loaded directly in a browser.
 - [ ] Get the output to be reflected back when running from the command line
       including correctly reporting errors.
-- [ ] Drop `__tests__/rikaicontent.js` at this point
+- [x] Drop `__tests__/rikaicontent.js` at this point
 - [ ] Setup `package.json` to run these tests
    - [ ] Get Jest to ignore them (might need a jest config JSON file)
    - [ ] Stick an extra `MOZ_HEADLESS=1 slimerjs __tests__/rikaicontent.js`

@@ -11,11 +11,13 @@ const url = system.args[1];
 
   if (!url) {
     console.log('Usage: slimerjs slimerjs-test-runner.js <url>');
-    return slimer.exit(255);
+    return slimer.exit(1);
   }
 
   const page = require('webpage').create();
+
   page.onConsoleMessage = msg => console.log(msg);
+
   page.onError = (msg, traces) => {
     const stack = traces.reduce(
       (stack, trace) => `${stack} `
@@ -28,15 +30,32 @@ const url = system.args[1];
     return slimer.exit(1);
   };
 
+  page.onInitialized = function() {
+    page.injectJs('mocha-shim.js');
+  };
+
+  page.onCallback = message => {
+
+    if (message && 'testRunStarted' in message) {
+      if (message.testRunStarted === 0) {
+        console.log('Error: mocha.run() was called with no tests');
+        return slimer.exit(1);
+      }
+    }
+
+    if (message && message.testRunEnded) {
+      console.log(`Finished with ${message.testRunEnded.failures} failures.`);
+      page.close();
+      slimer.exit(message.testRunEnded.failures);
+    }
+  };
+
   page.open(url)
-      .then(function(status){
-          if (status === 'success') {
-              console.log(`The title of the page is, '${page.title}'`);
-          }
-          else {
-              console.log('Sorry, the page could not be loaded');
-          }
+      .then(status => {
+        if (status !== 'success') {
+          console.log('Error: the page could not be loaded');
           page.close();
-          slimer.exit();
+          slimer.exit(1);
+        }
       });
 }());
