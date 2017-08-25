@@ -3,6 +3,12 @@
 Port of rikaikun (which is a port of rikaichan (which is a port of rikaiXUL)) to
 Web Extensions.
 
+## Development
+
+`
+git clone --recursive https://github.com/birtles/rikaichamp.git
+`
+
 ## Testing
 
 TODO:
