@@ -9,12 +9,12 @@ TODO:
 
 - [x] Get an assertion library and check that __tests__/rikaicontent.html passes
       when loaded directly in a browser.
-- [ ] Get the output to be reflected back when running from the command line
+- [x] Get the output to be reflected back when running from the command line
       including correctly reporting errors.
 - [x] Drop `__tests__/rikaicontent.js` at this point
-- [ ] Setup `package.json` to run these tests
-   - [ ] Get Jest to ignore them (might need a jest config JSON file)
-   - [ ] Stick an extra `MOZ_HEADLESS=1 slimerjs __tests__/rikaicontent.js`
+- [x] Setup `package.json` to run these tests
+   - [x] Get Jest to ignore them (might need a jest config JSON file)
+   - [x] Stick an extra `MOZ_HEADLESS=1 slimerjs __tests__/rikaicontent.js`
          command in there.
 - [ ] Get all this to work on Travis
     - [ ] Make travis install latest Firefox
@@ -24,7 +24,7 @@ TODO:
 For debugging something like the following should work:
 
 `
-./node_modules/.bin/slimerjs utils/slimerjs-test-runner.js __tests__/rikaicontent.html  --debug=true -jsconsole
+./node_modules/.bin/slimerjs utils/slimerjs-test-runner.js __tests__/rikaicontent.html --debug=true
 `
 
 Regular running:

@@ -4,7 +4,7 @@
   "description": "A port of rikaikun to Web Extensions. Translate Japanese by hovering over words.",
   "main": "rikaichamp.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest; MOZ_HEADLESS=1 slimerjs utils/slimerjs-test-runner.js __tests__/rikaicontent.html"
   },
   "repository": {
     "type": "git",
@@ -26,5 +26,11 @@
     "jest": "^20.0.4",
     "slimerjs": "git+https://github.com/birtles/slimerjs.git"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/mocha/",
+      "/chai/"
+    ]
+  }
 }
