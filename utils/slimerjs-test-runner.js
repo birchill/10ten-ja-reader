@@ -4,6 +4,8 @@
 const system = require('system');
 const url = system.args[1];
 
+const LOAD_TIMEOUT = 10 * 1000; // 10s
+
 // Since exit() is async, we wrap everything in a function that we can early
 // return from.
 
@@ -15,6 +17,7 @@ const url = system.args[1];
   }
 
   const page = require('webpage').create();
+  let runStarted = false;
 
   page.onConsoleMessage = msg => console.log(msg);
 
@@ -30,7 +33,15 @@ const url = system.args[1];
     return slimer.exit(1);
   };
 
+  let initialized = false;
   page.onInitialized = function() {
+    if (!initialized) {
+      initialized = true;
+      page.evaluate(function() {
+        console.log(`Running tests with UA: ${navigator.userAgent}`);
+      });
+    }
+
     page.injectJs('mocha-shim.js');
   };
 
@@ -41,6 +52,7 @@ const url = system.args[1];
         console.log('Error: mocha.run() was called with no tests');
         return slimer.exit(1);
       }
+      runStarted = true;
     }
 
     if (message && message.testRunEnded) {
@@ -57,5 +69,15 @@ const url = system.args[1];
           page.close();
           slimer.exit(1);
         }
+
+        var loadTimeout = config.loadTimeout || 10000
+        setTimeout(function() {
+          if (!runStarted) {
+            console.log('Error: tests have not started running within'
+                        + `${LOAD_TIMEOUT / 1000}s`);
+            page.close();
+            slimer.exit(1);
+          }
+        }, LOAD_TIMEOUT)
       });
 }());
