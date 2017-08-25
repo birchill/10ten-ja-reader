@@ -3,8 +3,3 @@ node_js:
   - stable
 addons:
   firefox: latest-nightly
-script:
-  - which firefox
-  - firefox --version
-  - which firefox-bin
-  - firefox-bin --version

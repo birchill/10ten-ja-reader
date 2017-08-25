@@ -17,7 +17,7 @@ TODO:
    - [x] Stick an extra `MOZ_HEADLESS=1 slimerjs __tests__/rikaicontent.js`
          command in there.
 - [ ] Get all this to work on Travis
-    - [ ] Make travis install latest Firefox
+    - [x] Make travis install latest Firefox
 
 ### Debugging
 
