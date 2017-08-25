@@ -1,5 +1,15 @@
 (function(){
 
+  Object.defineProperty(window, 'mocha', {
+    get: function() { return undefined },
+    set: function(m) {
+      delete window.mocha;
+      window.mocha = m;
+      shimMocha(m);
+    },
+    configurable: true
+  });
+
   function shimMocha(m) {
 
     const origRun = m.run;
@@ -15,16 +25,17 @@
       }
       return m.runner;
     };
-  }
 
-  Object.defineProperty(window, 'mocha', {
-    get: function() { return undefined },
-    set: function(m) {
-      shimMocha(m);
-      delete window.mocha;
-      window.mocha = m;
-    },
-    configurable: true
-  });
+    // Force reporter to 'spec'
+    const origSetup = m.setup;
+    m.setup = function(opts) {
+      if (typeof opts === 'string') {
+        opts = { ui: opts };
+      } else if (typeof opts !== 'object') {
+        opts = {};
+      }
+      return origSetup.call(mocha, Object.assign(opts, { reporter: 'spec' }));
+    }
+  }
 
 }());
