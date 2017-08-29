@@ -134,6 +134,13 @@ interface WordSearchResult extends LookupResult {
   names?: boolean;
 }
 
+// Temporary declarations until we actually import these modules
+declare namespace rcxMain.config {
+  let kanjicomponents: string;
+  let kanjiinfo: string[];
+  let onlyreading: string;
+}
+
 class Dictionary {
   loaded: Promise<any>;
   nameDict: string;
@@ -681,7 +688,7 @@ class Dictionary {
         entry.misc['S'] +
         '</td>' +
         '</tr></table>';
-      if (rcxMain.config.kanjicomponents == 'true') {
+      if (rcxMain.config.kanjicomponents === 'true') {
         k = this.radData[bn].split('\t');
         box +=
           '<table class="k-bbox-tb">' +
@@ -724,10 +731,10 @@ class Dictionary {
       nums = '';
       j = 0;
 
-      kanjiinfo = rcxMain.config.kanjiinfo;
+      const kanjiinfo = rcxMain.config.kanjiinfo;
       for (i = 0; i * 2 < REF_ABBREVIATIONS.length; i++) {
         c = REF_ABBREVIATIONS[i * 2];
-        if (kanjiinfo[i] == 'true') {
+        if (kanjiinfo[i] === 'true') {
           s = entry.misc[c];
           c = ' class="k-mix-td' + (j ^= 1) + '"';
           nums +=
@@ -856,8 +863,6 @@ class Dictionary {
 
         s = e[3];
         t = s.replace(/\//g, '; ');
-        if (/* !this.config.wpos */ false) t = t.replace(/^\([^)]+\)\s*/, '');
-        if (/* !this.config.wpop */ false) t = t.replace('; (P)', '');
         if (rcxMain.config.onlyreading == 'false') {
           t = '<br/><span class="w-def">' + t + '</span><br/>';
         } else {
@@ -918,8 +923,6 @@ class Dictionary {
         }
 
         t = e[3].replace(/\//g, '; ');
-        if (false /* !this.config.wpos */) t = t.replace(/^\([^)]+\)\s*/, '');
-        if (false /* !this.config.wpop */) t = t.replace('; (P)', '');
         b.push('\t' + t + '\n');
       }
     }
