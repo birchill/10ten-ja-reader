@@ -118,10 +118,30 @@ interface CandidateWord {
   type: number;
 }
 
+interface LookupResult {
+  // Array of matches. Each match is a tuple array containing a dictionary entry
+  // and a reason string.
+  data: [string, string][];
+  // True if greater than `maxResults` entries were found.
+  more: boolean;
+  // The length of the longest match using the lengths supplied in
+  // `inputLengths`.
+  matchLen: number;
+}
+
+interface WordSearchResult extends LookupResult {
+  // Set and true if the search included the names dictionary.
+  names?: boolean;
+}
+
 class Dictionary {
   loaded: Promise<any>;
   nameDict: string;
   nameIndex: string;
+  wordDict: string;
+  wordIndex: string;
+  kanjiData: string;
+  radData: string;
   deinflectReasons: string[];
   deinflectRules: DeinflectRuleGroup[];
 
@@ -310,7 +330,7 @@ class Dictionary {
     return result;
   }
 
-  async wordSearch(input, doNames, max) {
+  async wordSearch(input, doNames, max): Promise<WordSearchResult | null> {
     let [word, inputLengths] = this.normalizeInput(input);
 
     let maxResults = doNames ? NAMES_MAX_ENTRIES : WORDS_MAX_ENTRIES;
@@ -319,7 +339,7 @@ class Dictionary {
     }
 
     const [dict, index] = await this._getDictAndIndex(doNames);
-    const result = this._lookupInput(
+    const result: WordSearchResult = this._lookupInput(
       word,
       inputLengths,
       dict,
@@ -329,7 +349,7 @@ class Dictionary {
     );
 
     if (result && doNames) {
-      result.names = 1;
+      result.names = true;
     }
 
     return result;
@@ -408,23 +428,24 @@ class Dictionary {
   //
   // e.g. if |input| is '子犬は' then the entry for '子犬' will match but
   // '犬' will not.
-  //
-  // Returns an object of the form:
-  //
-  //   { data: [ array of matches ],
-  //     more: < set and true if greater than |maxResults| entries were found,
-  //     matchLen: the length of the longest match using the lengths supplied
-  //               in |inputLengths| }
-  //
-  // or null if no matches were found.
-  _lookupInput(input, inputLengths, dict, index, maxResults, deinflect) {
+  _lookupInput(
+    input,
+    inputLengths,
+    dict,
+    index,
+    maxResults,
+    deinflect
+  ): LookupResult | null {
     let count = 0;
     let longestMatch = 0;
     let cache = [];
     let have = [];
 
-    let result = {};
-    result.data = [];
+    let result: LookupResult = {
+      data: [],
+      more: false,
+      matchLen: 0,
+    };
 
     while (input.length > 0) {
       var showInf = count != 0;
@@ -482,7 +503,7 @@ class Dictionary {
 
           if (ok) {
             if (count >= maxResults) {
-              result.more = 1;
+              result.more = true;
               break;
             }
 
@@ -746,7 +767,7 @@ class Dictionary {
 
         // the next two lines re-process the entries that contain separate
         // search key and spelling due to mixed hiragana/katakana spelling
-        e3 = e[3].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
+        const e3 = e[3].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
         if (e3) e = e3;
 
         if (s != e[3]) {
