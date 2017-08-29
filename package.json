@@ -24,7 +24,8 @@
   "homepage": "https://github.com/birtles/rikaichamp#readme",
   "devDependencies": {
     "jest": "^20.0.4",
-    "slimerjs": "git+https://github.com/birtles/slimerjs.git"
+    "slimerjs": "git+https://github.com/birtles/slimerjs.git",
+    "web-ext-types": "github:michael-zapata/web-ext-types"
   },
   "dependencies": {
     "typescript": "^2.4.2"
