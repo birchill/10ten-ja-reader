@@ -26,7 +26,9 @@
     "jest": "^20.0.4",
     "slimerjs": "git+https://github.com/birtles/slimerjs.git"
   },
-  "dependencies": {},
+  "dependencies": {
+    "typescript": "^2.4.2"
+  },
   "jest": {
     "testPathIgnorePatterns": [
       "/mocha/",

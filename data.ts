@@ -100,39 +100,61 @@ const REF_ABBREVIATIONS = [
 const WORDS_MAX_ENTRIES = 7;
 const NAMES_MAX_ENTRIES = 20;
 
-class Dictionary {
-  // FIXME: Make this take an options bag instead of a bool
-  constructor(loadNames) {
-    this.config = {};
+interface DeinflectRule {
+  from: string;
+  to: string;
+  type: number;
+  reason: number;
+}
+type DeinflectRuleGroup = Array<DeinflectRule> & { fromLen?: number };
 
+interface CandidateWord {
+  // The de-inflected candidate word
+  word: string;
+  // A string describing the relationship of |word| to its de-inflected version,
+  // e.g. 'past'
+  reason: string;
+  // A bitfield describing the type of the de-inflected word (e.g. group 5 verb)
+  type: number;
+}
+
+class Dictionary {
+  loaded: Promise<any>;
+  nameDict: string;
+  nameIndex: string;
+  deinflectReasons: string[];
+  deinflectRules: DeinflectRuleGroup[];
+
+  // FIXME: Make this take an options bag instead of a bool
+  constructor(loadNames: boolean) {
     const dictionaryLoaded = this.loadDictionary();
     const namesLoaded = loadNames ? this.loadNames() : Promise.resolve();
-    const difLoaded = this.loadDeinflectData();
+    const deinflectLoaded = this.loadDeinflectData();
 
-    this.loaded = Promise.all([dictionaryLoaded, namesLoaded, difLoaded]);
+    this.loaded = Promise.all<any>([
+      dictionaryLoaded,
+      namesLoaded,
+      deinflectLoaded,
+    ]);
   }
 
-  setConfig(c) {
-    this.config = c;
-  }
-
-  fileRead(url) {
+  fileRead(url): Promise<string> {
     return fetch(url).then(response => response.text());
   }
 
-  fileReadArray(name) {
+  fileReadArray(name): Promise<string[]> {
     return this.fileRead(name).then(text =>
       text.split('\n').filter(line => line.length)
     );
   }
 
-  find(data, text) {
+  find(data, text): string | null {
     const tlen = text.length;
-    var beg = 0;
-    var end = data.length - 1;
-    var i;
-    var mi;
-    var mis;
+    let beg = 0;
+    let end = data.length - 1;
+    let i;
+    let mi;
+    let mis;
 
     while (beg < end) {
       mi = (beg + end) >> 1;
@@ -143,6 +165,7 @@ class Dictionary {
       else if (text > mis) beg = data.indexOf('\n', mi + 1) + 1;
       else return data.substring(i, data.indexOf('\n', mi + 1));
     }
+
     return null;
   }
 
@@ -150,6 +173,7 @@ class Dictionary {
     if (this.nameDict && this.nameIndex) {
       return Promise.resolve();
     }
+
     const readNameDict = this.fileRead(
       browser.extension.getURL('data/names.dat')
     ).then(text => {
@@ -160,12 +184,13 @@ class Dictionary {
     ).then(text => {
       this.nameIndex = text;
     });
+
     return Promise.all([readNameDict, readNameIndex]);
   }
 
   // Note: These are mostly flat text files; loaded as one continous string to
   // reduce memory use
-  loadDictionary() {
+  loadDictionary(): Promise<any> {
     const dataFiles = {
       wordDict: 'dict.dat',
       wordIndex: 'dict.idx',
@@ -197,8 +222,8 @@ class Dictionary {
     );
 
     // We group rules whose 'from' parts have equal length together
-    let prevLen = -1;
-    let ruleGroup;
+    let prevLen: number = -1;
+    let ruleGroup: DeinflectRuleGroup;
     buffer.forEach((line, index) => {
       // Skip header
       if (index === 0) {
@@ -210,11 +235,12 @@ class Dictionary {
       if (fields.length === 1) {
         this.deinflectReasons.push(fields[0]);
       } else if (fields.length === 4) {
-        const rule = {};
-        rule.from = fields[0];
-        rule.to = fields[1];
-        rule.type = fields[2];
-        rule.reason = fields[3];
+        const rule: DeinflectRule = {
+          from: fields[0],
+          to: fields[1],
+          type: parseInt(fields[2]),
+          reason: parseInt(fields[3]),
+        };
 
         if (prevLen !== rule.from.length) {
           prevLen = rule.from.length;
@@ -227,22 +253,16 @@ class Dictionary {
     });
   }
 
-  // Returns an array possible deinflected versions of |word| using the form:
-  //
-  // [ { word: <deinflected word>,
-  //     reason: <a string describing the relationship of |word| to its
-  //              de-inflected version, e.g. 'past'>,
-  //     type: a bitfield describing the type of the de-inflected word
-  //           (e.g. group 5 verb) } ]
-  //
-  deinflect(word) {
-    const result = [];
-    const resultIndex = [];
+  // Returns an array of possible de-inflected versions of |word|.
+  deinflect(word): CandidateWord[] {
+    const result: Array<CandidateWord> = [];
+    const resultIndex: { [index: string]: number } = {};
 
-    const original = {};
-    original.word = word;
-    original.type = 0xff;
-    original.reason = '';
+    const original: CandidateWord = {
+      word,
+      type: 0xff,
+      reason: '',
+    };
     result.push(original);
     resultIndex[word] = 0;
 
@@ -263,20 +283,22 @@ class Dictionary {
                 continue;
               }
 
-              const candidate = {};
               if (resultIndex[newWord]) {
-                candidate = result[resultIndex[newWord]];
+                const candidate = result[resultIndex[newWord]];
                 candidate.type |= rule.type >> 8;
                 continue;
               }
               resultIndex[newWord] = result.length;
 
-              candidate.reason = this.deinflectReasons[rule.reason];
+              let reason: string = this.deinflectReasons[rule.reason];
               if (result[i].reason.length) {
-                candidate.reason += ` &lt; ${result[i].reason}`;
+                reason += ` &lt; ${result[i].reason}`;
               }
-              candidate.type = rule.type >> 8;
-              candidate.word = newWord;
+              const candidate: CandidateWord = {
+                reason,
+                type: rule.type >> 8,
+                word: newWord,
+              };
 
               result.push(candidate);
             }
@@ -324,7 +346,7 @@ class Dictionary {
   //   [ "がーでん", [ 0, 2, 3, 5, 6 ] ]
   //
   // Returns [ normalized input, array with length mapping ]
-  normalizeInput(input) {
+  normalizeInput(input: string) {
     let inputLengths = [0];
     let previous = 0;
     let result = '';
