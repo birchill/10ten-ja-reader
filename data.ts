@@ -696,6 +696,7 @@ class Dictionary {
           k[0] +
           '</td>' +
           '<td class="k-bbox-1b">' +
+          // XXX: The following is sometimes not found
           k[2] +
           '</td>' +
           '<td class="k-bbox-1b">' +
