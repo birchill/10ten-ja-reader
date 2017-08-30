@@ -23,14 +23,27 @@
   },
   "homepage": "https://github.com/birtles/rikaichamp#readme",
   "devDependencies": {
+    "@types/jest": "^20.0.8",
     "jest": "^20.0.4",
     "slimerjs": "git+https://github.com/birtles/slimerjs.git",
+    "ts-jest": "^20.0.13",
     "web-ext-types": "github:michael-zapata/web-ext-types"
   },
   "dependencies": {
     "typescript": "^2.4.2"
   },
   "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "./node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(tsx?|jsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json",
+      "jsx"
+    ],
     "testPathIgnorePatterns": [
       "/mocha/",
       "/chai/"

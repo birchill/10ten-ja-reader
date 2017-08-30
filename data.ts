@@ -930,6 +930,11 @@ class Dictionary {
   }
 }
 
+declare interface Module {
+  exports: any;
+}
+declare let module: Module;
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = Dictionary;
 }

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "typeRoots": ["node_modules/web-ext-types"]
+    "typeRoots": ["@types","node_modules/web-ext-types"]
   },
   "files": [
     "data.ts"
