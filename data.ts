@@ -177,15 +177,15 @@ class Dictionary {
 
   // Does a binary search of a linefeed delimited string, |data|, for |text|.
   find(data, text): string | null {
-    const tlen = text.length;
-    let start = 0;
-    let end = data.length - 1;
+    const tlen: number = text.length;
+    let start: number = 0;
+    let end: number = data.length - 1;
 
     while (start < end) {
-      const midpoint = (start + end) >> 1;
-      const i = data.lastIndexOf('\n', midpoint) + 1;
+      const midpoint: number = (start + end) >> 1;
+      const i: number = data.lastIndexOf('\n', midpoint) + 1;
 
-      const candidate = data.substr(i, tlen);
+      const candidate: string = data.substr(i, tlen);
       if (text < candidate) end = i - 1;
       else if (text > candidate) start = data.indexOf('\n', midpoint + 1) + 1;
       else return data.substring(i, data.indexOf('\n', midpoint + 1));
