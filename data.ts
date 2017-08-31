@@ -175,22 +175,20 @@ class Dictionary {
     );
   }
 
+  // Does a binary search of a linefeed delimited string, |data|, for |text|.
   find(data, text): string | null {
     const tlen = text.length;
-    let beg = 0;
+    let start = 0;
     let end = data.length - 1;
-    let i;
-    let mi;
-    let mis;
 
-    while (beg < end) {
-      mi = (beg + end) >> 1;
-      i = data.lastIndexOf('\n', mi) + 1;
+    while (start < end) {
+      const midpoint = (start + end) >> 1;
+      const i = data.lastIndexOf('\n', midpoint) + 1;
 
-      mis = data.substr(i, tlen);
-      if (text < mis) end = i - 1;
-      else if (text > mis) beg = data.indexOf('\n', mi + 1) + 1;
-      else return data.substring(i, data.indexOf('\n', mi + 1));
+      const candidate = data.substr(i, tlen);
+      if (text < candidate) end = i - 1;
+      else if (text > candidate) start = data.indexOf('\n', midpoint + 1) + 1;
+      else return data.substring(i, data.indexOf('\n', midpoint + 1));
     }
 
     return null;
@@ -931,7 +929,7 @@ class Dictionary {
   }
 }
 
-declare interface Module {
+interface Module {
   exports: any;
 }
 declare let module: Module;
