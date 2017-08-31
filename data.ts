@@ -100,6 +100,10 @@ const REF_ABBREVIATIONS = [
 const WORDS_MAX_ENTRIES = 7;
 const NAMES_MAX_ENTRIES = 20;
 
+interface DictionaryOptions {
+  loadNames: boolean;
+}
+
 interface DeinflectRule {
   from: string;
   to: string;
@@ -152,10 +156,11 @@ class Dictionary {
   deinflectReasons: string[];
   deinflectRules: DeinflectRuleGroup[];
 
-  // FIXME: Make this take an options bag instead of a bool
-  constructor(loadNames: boolean) {
+  constructor(options: DictionaryOptions) {
     const dictionaryLoaded = this.loadDictionary();
-    const namesLoaded = loadNames ? this.loadNames() : Promise.resolve();
+    const namesLoaded = options.loadNames
+                        ? this.loadNames()
+                        : Promise.resolve();
     const deinflectLoaded = this.loadDeinflectData();
 
     this.loaded = Promise.all<any>([

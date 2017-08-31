@@ -52,7 +52,7 @@ var rcxMain = {
 
   loadDictionary: function() {
     if (!this.dict) {
-      this.dict = new Dictionary(this.haveNames /* && !this.cfg.nadelay*/);
+      this.dict = new Dictionary({ loadNames: this.haveNames });
     }
     return this.dict.loaded;
   },

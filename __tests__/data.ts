@@ -19,7 +19,7 @@ window.fetch = jest.fn().mockImplementation(url =>
 );
 
 // Common dictionary instance to save loading each time
-const sharedDict = new Dictionary(true /* doNames */);
+const sharedDict = new Dictionary({ loadNames: true });
 
 describe('Dictionary', () => {
   it('loads', async () => {
@@ -93,7 +93,7 @@ describe('Dictionary', () => {
   });
 
   // TODO: Test names dictionary handling
-  //       e.g. create a new Dictionary specifying 'false' for doNames but then
+  //       e.g. create a new Dictionary specifying 'false' for loadNames but then
   //       do a work lookup where 'doNames' is true.
   //       e.g.(2) do a work look up where 'doNames' is true and check we
   //       *don't* match names
