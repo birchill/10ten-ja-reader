@@ -1,3 +1,4 @@
+// @format
 const fs = require('fs');
 
 const Dictionary = require('../data');
@@ -6,16 +7,17 @@ const Dictionary = require('../data');
 global.browser = { extension: { getURL: jest.fn(url => url) } };
 
 // Mock fetch
-window.fetch = jest.fn().mockImplementation(url =>
-  new Promise((resolve, reject) => {
-    fs.readFile(`${__dirname}/../${url}`, function (err, data) {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve({ text: () => data.toString() });
-    });
-  })
+window.fetch = jest.fn().mockImplementation(
+  url =>
+    new Promise((resolve, reject) => {
+      fs.readFile(`${__dirname}/../${url}`, function(err, data) {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve({ text: () => data.toString() });
+      });
+    })
 );
 
 // Common dictionary instance to save loading each time
@@ -70,26 +72,34 @@ describe('Dictionary', () => {
     expect(result.matchLen).toBe(3);
   });
 
-  it('reports character lengths for half-width katakana normalization',
-    () =>
-  {
+  it('reports character lengths for half-width katakana normalization', () => {
     const result = sharedDict.normalizeInput('ｶﾞｰﾃﾞﾝ');
-    expect(result).toEqual([ 'がーでん', [ 0, 2, 3, 5, 6 ] ]);
+    expect(result).toEqual(['がーでん', [0, 2, 3, 5, 6]]);
   });
 
-  it('performs de-inflection', () =>
-  {
+  it('performs de-inflection', () => {
     const result = sharedDict.deinflect('走ります');
     const match = result.find(candidate => candidate.word === '走る');
     expect(match).toEqual({ reason: 'polite', type: 2, word: '走る' });
   });
 
-  it('performs de-inflection recursively', () =>
-  {
+  it('performs de-inflection recursively', () => {
     const result = sharedDict.deinflect('踊りたくなかった');
     const match = result.find(candidate => candidate.word === '踊る');
-    expect(match).toEqual({ reason: '-tai &lt; negative &lt; past',
-                            type: 2, word: '踊る' });
+    expect(match).toEqual({
+      reason: '-tai &lt; negative &lt; past',
+      type: 2,
+      word: '踊る',
+    });
+  });
+
+  it('translates sentences', async () => {
+    const result = await sharedDict.translate('期間限定発売 秋の膳');
+    expect(result.textLen).toBe(10); // 10 characters including the space
+    expect(result.data.length).toBe(6);
+    expect(result.more).toBe(false);
+    const kana = result.data.map(word => word[0].match(/(?:\[(.*?)\])/)[1]).join('');
+    expect(kana).toBe('きかんげんていはつばいあきのぜん');
   });
 
   // TODO: Test names dictionary handling

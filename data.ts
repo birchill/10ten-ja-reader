@@ -138,6 +138,15 @@ interface WordSearchResult extends LookupResult {
   names?: boolean;
 }
 
+interface TranslateResult {
+  // As with LookupResult.
+  data: [string, string][];
+  // Length of text matched.
+  textLen: number;
+  // True if greater than WORDS_MAX_ENTRIES were found.
+  more: boolean;
+}
+
 // Temporary declarations until we actually import these modules
 declare namespace rcxMain.config {
   let kanjicomponents: string;
@@ -555,35 +564,36 @@ class Dictionary {
     return result;
   }
 
-  async translate(text) {
-    var e, o;
-    var skip;
+  async translate(text): Promise<TranslateResult> | null {
+    const result: TranslateResult = {
+      data: [],
+      textLen: text.length,
+      more: false,
+    };
 
-    o = {};
-    o.data = [];
-    o.textLen = text.length;
-
+    let skip: number;
     while (text.length > 0) {
-      e = await this.wordSearch(text, false, 1);
-      if (e && e.data) {
-        if (o.data.length >= 7 /* this.config.wmax */) {
-          o.more = 1;
+      const searchResult = await this.wordSearch(text, false, 1);
+      if (searchResult && searchResult.data) {
+        if (result.data.length >= WORDS_MAX_ENTRIES) {
+          result.more = true;
           break;
         }
-        o.data.push(e.data[0]);
-        skip = e.matchLen;
+        // Just take first match
+        result.data.push(searchResult.data[0]);
+        skip = searchResult.matchLen;
       } else {
         skip = 1;
       }
       text = text.substr(skip, text.length - skip);
     }
 
-    if (o.data.length == 0) {
+    if (result.data.length === 0) {
       return null;
     }
 
-    o.textLen -= text.length;
-    return o;
+    result.textLen -= text.length;
+    return result;
   }
 
   kanjiSearch(kanji) {

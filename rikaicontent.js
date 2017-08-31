@@ -1020,12 +1020,10 @@ var rcxContent = {
       return;
     }
 
-    if (true /*this.cfg.title*/) {
-      if (typeof ev.target.title == 'string' && ev.target.title.length) {
-        tdata.title = ev.target.title;
-      } else if (typeof ev.target.alt == 'string' && ev.target.alt.length) {
-        tdata.title = ev.target.alt;
-      }
+    if (typeof ev.target.title == 'string' && ev.target.title.length) {
+      tdata.title = ev.target.title;
+    } else if (typeof ev.target.alt == 'string' && ev.target.alt.length) {
+      tdata.title = ev.target.alt;
     }
 
     // FF3
