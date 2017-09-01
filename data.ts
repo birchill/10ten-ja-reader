@@ -168,8 +168,8 @@ class Dictionary {
   constructor(options: DictionaryOptions) {
     const dictionaryLoaded = this.loadDictionary();
     const namesLoaded = options.loadNames
-                        ? this.loadNames()
-                        : Promise.resolve();
+      ? this.loadNames()
+      : Promise.resolve();
     const deinflectLoaded = this.loadDeinflectData();
 
     this.loaded = Promise.all<any>([
