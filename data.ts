@@ -147,6 +147,23 @@ interface TranslateResult {
   more: boolean;
 }
 
+interface KanjiEntry {
+  // The kanji itself
+  kanji: string;
+  // Key-value pairs with the key is usually 1~2 uppercase characters
+  // indicating the reference, and the string is usually a number or sequence
+  // indicating the index of the character in said reference.
+  misc: { [ref: string]: string };
+  // On-yomi and kun-komi
+  onkun: string;
+  // Name readings
+  nanori: string;
+  // Radicals
+  bushumei: string;
+  // English
+  eigo: string;
+}
+
 // Temporary declarations until we actually import these modules
 declare namespace rcxMain.config {
   let kanjicomponents: string;
@@ -596,44 +613,43 @@ class Dictionary {
     return result;
   }
 
-  kanjiSearch(kanji) {
+  kanjiSearch(kanji): KanjiEntry | null {
+    const codepoint = kanji.charCodeAt(0);
+    if (codepoint < 0x3000) return null;
+
+    const dictEntry = this.find(this.kanjiData, kanji);
+    if (!dictEntry) return null;
+
+    const fields = dictEntry.split('|');
+    if (fields.length != 6) return null;
+
+    // Separate space-separated lists with an ideographic comma (、) and space
+    const separateWithComma = str => str.replace(/\s+/g, '\u3001 ');
+    const entry: KanjiEntry = {
+      kanji: fields[0],
+      misc: {},
+      onkun: separateWithComma(fields[2]),
+      nanori: separateWithComma(fields[3]),
+      bushumei: separateWithComma(fields[4]),
+      eigo: fields[5],
+    };
+
+    // Store hex-representation
     const hex = '0123456789ABCDEF';
-    var kde;
-    var entry;
-    var a, b;
-    var i;
-
-    i = kanji.charCodeAt(0);
-    if (i < 0x3000) return null;
-
-    kde = this.find(this.kanjiData, kanji);
-    if (!kde) return null;
-
-    a = kde.split('|');
-    if (a.length != 6) return null;
-
-    entry = {};
-    entry.kanji = a[0];
-
-    entry.misc = {};
     entry.misc['U'] =
-      hex[(i >>> 12) & 15] +
-      hex[(i >>> 8) & 15] +
-      hex[(i >>> 4) & 15] +
-      hex[i & 15];
+      hex[(codepoint >>> 12) & 15] +
+      hex[(codepoint >>> 8) & 15] +
+      hex[(codepoint >>> 4) & 15] +
+      hex[codepoint & 15];
 
-    b = a[1].split(' ');
-    for (i = 0; i < b.length; ++i) {
-      if (b[i].match(/^([A-Z]+)(.*)/)) {
+    // Parse other kanji references
+    const refs = fields[1].split(' ');
+    for (let i = 0; i < refs.length; ++i) {
+      if (refs[i].match(/^([A-Z]+)(.*)/)) {
         if (!entry.misc[RegExp.$1]) entry.misc[RegExp.$1] = RegExp.$2;
         else entry.misc[RegExp.$1] += ' ' + RegExp.$2;
       }
     }
-
-    entry.onkun = a[2].replace(/\s+/g, '\u3001 ');
-    entry.nanori = a[3].replace(/\s+/g, '\u3001 ');
-    entry.bushumei = a[4].replace(/\s+/g, '\u3001 ');
-    entry.eigo = a[5];
 
     return entry;
   }
