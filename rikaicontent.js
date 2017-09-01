@@ -1,3 +1,4 @@
+// @format
 /*
 
   Rikai champ
@@ -664,9 +665,9 @@ var rcxContent = {
 
     lastSelEnd = selEndList;
     lastRo = ro;
-    browser.runtime.sendMessage(
-      { type: 'xsearch', text, dictOption: String(dictOption) }
-    ).then(rcxContent.processEntry);
+    browser.runtime
+      .sendMessage({ type: 'xsearch', text, dictOption: String(dictOption) })
+      .then(rcxContent.processEntry);
 
     return 1;
   },
@@ -706,7 +707,8 @@ var rcxContent = {
       tdata.prevSelView = doc.defaultView;
     }
 
-    browser.runtime.sendMessage({ type: 'makehtml', entry: e })
+    browser.runtime
+      .sendMessage({ type: 'makehtml', entry: e })
       .then(rcxContent.processHtml);
   },
 
@@ -1057,6 +1059,13 @@ var rcxContent = {
         this.clearHi();
         this.hidePopup();
       }
+    }
+  },
+
+  makeHtmlFromEntry: function(entry) {
+    const result = document.createDocumentFragment();
+    if (!entry) {
+      return result;
     }
   },
 };
