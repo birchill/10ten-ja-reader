@@ -34,6 +34,47 @@ describe('rcxContent', () => {
   it('should exist', () => {
     assert.exists(window.rcxContent);
   });
+
+  it('should format kanji entries', () => {
+    const entry = {
+      kanji: '士',
+      misc: {
+        U: '58EB',
+        B: '33',
+        G: '4',
+        S: '3',
+        F: '526',
+        N: '1160',
+        V: '1117',
+        H: '3405',
+        DK: '2129',
+        L: '319',
+        IN: '572',
+        E: '494',
+        P: '4-3-2',
+        I: '3p0.1',
+        Y: 'shi4',
+      },
+      onkun: 'シ',
+      nanori: 'お、 ま',
+      bushumei: 'さむらい',
+      eigo: 'gentleman, samurai, samurai radical (no. 33)',
+    };
+
+    const result = window.rcxContent.makeHtmlFromEntry(entry);
+    console.log(result);
+    assert.instanceOf(result, DocumentFragment);
+    assert.strictEqual(result.childElementCount, 1,
+                       'Should have one child element');
+
+    const resultAsHtml = result.firstElementChild.outerHTML;
+
+    // prettier-ignore
+    /*
+    assert.strictEqual(resultAsHtml,
+      '<table class="k-main-tb"><tr><td valign="top"><table class="k-abox-tb"><tr><td class="k-abox-r">radical<br/>延 33</td><td class="k-abox-g">grade<br/>4</td></tr><tr><td class="k-abox-f">freq<br/>526</td><td class="k-abox-s">strokes<br/>3</td></tr></table><table class="k-bbox-tb"><tr><td class="k-bbox-1a">延</td><td class="k-bbox-1b">undefined</td><td class="k-bbox-1b">undefined</td></tr><tr><td class="k-bbox-0a">士</td><td class="k-bbox-0b">undefined</td><td class="k-bbox-0b">undefined</td></tr></table><span class="k-kanji">士</span><br/><div class="k-eigo">gentleman, samurai, samurai radical (no. 33)</div><div class="k-yomi">シ<br/><span class="k-yomi-ti">名乗り</span> お、ま<br/><span class="k-yomi-ti">部首名</span> さむらい</div></td></tr><tr><td><table class="k-mix-tb"><tr><td class="k-mix-td1">Halpern</td><td class="k-mix-td1">3405</td></tr><tr><td class="k-mix-td0">Heisig</td><td class="k-mix-td0">319</td></tr><tr><td class="k-mix-td1">Henshall</td><td class="k-mix-td1">494</td></tr><tr><td class="k-mix-td0">Kanji Learners Dictionary</td><td class="k-mix-td0">2129</td></tr><tr><td class="k-mix-td1">Nelson</td><td class="k-mix-td1">1160</td></tr><tr><td class="k-mix-td0">New Nelson</td><td class="k-mix-td0">1117</td></tr><tr><td class="k-mix-td1">PinYin</td><td class="k-mix-td1">shi4</td></tr><tr><td class="k-mix-td0">Skip Pattern</td><td class="k-mix-td0">4-3-2</td></tr><tr><td class="k-mix-td1">Tuttle Kanji &amp; Kana</td><td class="k-mix-td1">572</td></tr><tr><td class="k-mix-td0">Tuttle Kanji Dictionary</td><td class="k-mix-td0">3p0.1</td></tr><tr><td class="k-mix-td1">Unicode</td><td class="k-mix-td1">58EB</td></tr></table></td></tr></table>');
+      */
+  });
 });
 
 mocha.run();

@@ -505,8 +505,7 @@ var rcxContent = {
   // XPath expression which evaluates to text nodes
   // tells rikaichamp which text to translate
   // expression to get all text nodes that are not in (RP or RT) elements
-  textNodeExpr:
-    'descendant-or-self::text()[not(parent::rp) and not(ancestor::rt)]',
+  textNodeExpr: 'descendant-or-self::text()[not(parent::rp) and not(ancestor::rt)]',
 
   // XPath expression which evaluates to a boolean. If it evaluates to true
   // then rikaichamp will not start looking for text in this text node
@@ -1067,6 +1066,13 @@ var rcxContent = {
     if (!entry) {
       return result;
     }
+
+    const table = document.createElement('table');
+    table.classList.add('k-main-tb');
+
+    result.appendChild(table);
+
+    return result;
   },
 };
 
