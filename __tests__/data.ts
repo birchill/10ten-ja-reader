@@ -104,10 +104,64 @@ describe('Dictionary', () => {
     expect(kana).toBe('きかんげんていはつばいあきのぜん');
   });
 
+  it('looks up kanji', () => {
+    const result = sharedDict.kanjiSearch('峠');
+    expect(result).toEqual({
+      kanji: '峠',
+      misc: {
+        U: '5CE0',
+        B: '46',
+        G: '8',
+        S: '9',
+        F: '1941',
+        N: '1416',
+        V: '1464',
+        H: '358',
+        DK: '265',
+        L: '773',
+        IN: '1351',
+        E: '1663',
+        P: '1-3-6',
+        I: '3o6.3',
+      },
+      onkun: 'とうげ',
+      nanori: '',
+      bushumei: '',
+      eigo: 'mountain peak, mountain pass, climax, crest, (kokuji)',
+    });
+  });
+
+  it('looks up kanji with nanori and bushumei', () => {
+    const result = sharedDict.kanjiSearch('士');
+    expect(result).toEqual({
+      kanji: '士',
+      misc: {
+        U: '58EB',
+        B: '33',
+        G: '4',
+        S: '3',
+        F: '526',
+        N: '1160',
+        V: '1117',
+        H: '3405',
+        DK: '2129',
+        L: '319',
+        IN: '572',
+        E: '494',
+        P: '4-3-2',
+        I: '3p0.1',
+        Y: 'shi4',
+      },
+      onkun: 'シ',
+      nanori: 'お、 ま',
+      bushumei: 'さむらい',
+      eigo: 'gentleman, samurai, samurai radical (no. 33)',
+    });
+  });
+
   // TODO: Test names dictionary handling
   //       e.g. create a new Dictionary specifying 'false' for loadNames but then
   //       do a work lookup where 'doNames' is true.
   //       e.g.(2) do a work look up where 'doNames' is true and check we
   //       *don't* match names
-  // TODO: Test kanji lookup
 });
