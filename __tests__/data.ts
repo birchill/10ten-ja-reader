@@ -98,7 +98,9 @@ describe('Dictionary', () => {
     expect(result.textLen).toBe(10); // 10 characters including the space
     expect(result.data.length).toBe(6);
     expect(result.more).toBe(false);
-    const kana = result.data.map(word => word[0].match(/(?:\[(.*?)\])/)[1]).join('');
+    const kana = result.data
+      .map(word => word[0].match(/(?:\[(.*?)\])/)[1])
+      .join('');
     expect(kana).toBe('きかんげんていはつばいあきのぜん');
   });
 
