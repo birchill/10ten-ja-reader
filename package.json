@@ -1,13 +1,11 @@
 {
   "name": "rikaichamp",
   "version": "1.0.0",
-  "description":
-    "A port of rikaikun to Web Extensions. Translate Japanese by hovering over words.",
+  "description": "A port of rikaikun to Web Extensions. Translate Japanese by hovering over words.",
   "main": "rikaichamp.js",
   "scripts": {
     "prepare": "tsc",
-    "test":
-      "jest; MOZ_HEADLESS=1 slimerjs utils/slimerjs-test-runner.js __tests__/rikaicontent.html"
+    "test": "jest; MOZ_HEADLESS=1 slimerjs utils/slimerjs-test-runner.js __tests__/rikaicontent.html"
   },
   "repository": {
     "type": "git",
@@ -40,8 +38,17 @@
       "^.+\\.tsx?$": "./node_modules/ts-jest/preprocessor.js"
     },
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(tsx?|jsx?)$",
-    "moduleFileExtensions": ["ts", "tsx", "js", "json", "jsx"],
-    "testPathIgnorePatterns": ["/mocha/", "/chai/"]
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json",
+      "jsx"
+    ],
+    "testPathIgnorePatterns": [
+      "/mocha/",
+      "/chai/"
+    ]
   },
   "prettier": {
     "singleQuote": true,
