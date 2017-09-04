@@ -33,11 +33,9 @@ function fillVals() {
     document.optform.kanjicomponents.checked = true;
   else document.optform.kanjicomponents.checked = false;
 
-  numList = browser.extension.getBackgroundPage().REF_ABBREVIATIONS;
-
-  for (i = 0; i * 2 < numList.length; i++) {
-    document.getElementById(numList[i * 2]).checked =
-      localStorage[numList[i * 2]] == 'true' ? true : false;
+  const abbreviations = browser.extension.getBackgroundPage().REF_ABBREVIATIONS;
+  for (let abbrev of Object.keys(abbreviations)) {
+    document.getElementById(abbrev).checked = localStorage[abbrev] === 'true';
   }
 
   store = localStorage['lineEnding'];
@@ -78,15 +76,11 @@ function getVals() {
   localStorage['disablekeys'] = document.optform.disablekeys.checked;
   localStorage['kanjicomponents'] = document.optform.kanjicomponents.checked;
 
-  var kanjiinfoarray = new Array(
-    browser.extension.getBackgroundPage().REF_ABBREVIATIONS.length / 2
-  );
-  numList = browser.extension.getBackgroundPage().REF_ABBREVIATIONS;
-  for (i = 0; i * 2 < numList.length; i++) {
-    localStorage[numList[i * 2]] = document.getElementById(
-      numList[i * 2]
-    ).checked;
-    kanjiinfoarray[i] = localStorage[numList[i * 2]];
+  const kanjiInfo = {};
+  const abbreviations = browser.extension.getBackgroundPage().REF_ABBREVIATIONS;
+  for (let abbrev of Object.keys(abbreviations)) {
+    localStorage[abbrev] = document.getElementById(abbrev).checked;
+    kanjiInfo[abbrev] = localStorage[abbrev];
   }
 
   localStorage['lineEnding'] = document.optform.lineEnding.value;
@@ -124,7 +118,7 @@ function getVals() {
     localStorage['showOnKey'];
   browser.extension.getBackgroundPage().rcxMain.config.kanjicomponents =
     localStorage['kanjicomponents'];
-  browser.extension.getBackgroundPage().rcxMain.config.kanjiinfo = kanjiinfoarray;
+  browser.extension.getBackgroundPage().rcxMain.config.kanjiinfo = kanjiInfo;
   browser.extension.getBackgroundPage().rcxMain.config.lineEnding =
     localStorage['lineEnding'];
   browser.extension.getBackgroundPage().rcxMain.config.copySeparator =
@@ -133,13 +127,5 @@ function getVals() {
     localStorage['maxClipCopyEntries'];
 }
 window.onload = fillVals;
-
-/*function clicktab(tab) {
-  selectedtab = document.getElementById(tab);
-  // change format of all tabs to deselected
-  // change format of selected tab to selected
-  // hide all tab contents
-  // show selected tab contents
-}*/
 
 document.querySelector('#submit').addEventListener('click', getVals);
