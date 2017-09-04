@@ -127,6 +127,7 @@ describe('Dictionary', () => {
       onkun: 'とうげ',
       nanori: '',
       bushumei: '',
+      radical: '山',
       eigo: 'mountain peak, mountain pass, climax, crest, (kokuji)',
     });
   });
@@ -155,6 +156,7 @@ describe('Dictionary', () => {
       onkun: 'シ',
       nanori: 'お、 ま',
       bushumei: 'さむらい',
+      radical: '士',
       eigo: 'gentleman, samurai, samurai radical (no. 33)',
     });
   });

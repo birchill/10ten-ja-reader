@@ -505,7 +505,8 @@ var rcxContent = {
   // XPath expression which evaluates to text nodes
   // tells rikaichamp which text to translate
   // expression to get all text nodes that are not in (RP or RT) elements
-  textNodeExpr: 'descendant-or-self::text()[not(parent::rp) and not(ancestor::rt)]',
+  textNodeExpr:
+    'descendant-or-self::text()[not(parent::rp) and not(ancestor::rt)]',
 
   // XPath expression which evaluates to a boolean. If it evaluates to true
   // then rikaichamp will not start looking for text in this text node
@@ -1061,16 +1062,198 @@ var rcxContent = {
     }
   },
 
-  makeHtmlFromEntry: function(entry) {
-    const result = document.createDocumentFragment();
+  makeHtmlForEntry: function(entry) {
     if (!entry) {
-      return result;
+      return null;
     }
 
+    if (entry.kanji) {
+      return this.makeHtmlForKanji(entry);
+    }
+
+    return null;
+  },
+
+  makeHtmlForKanji: function(entry) {
+    // (This is all just temporary. Long term we need to either use some sort of
+    // templating system, or, if we can tidy up the markup enough by using more
+    // modern CSS instead of relying on <br> elements etc., we might be able to
+    // continue using the DOM API directly.)
+    const result = document.createDocumentFragment();
+
+    // Containing table
     const table = document.createElement('table');
     table.classList.add('k-main-tb');
+    result.append(table);
 
-    result.appendChild(table);
+    // Top row
+    const topRow = document.createElement('tr');
+    table.append(topRow);
+    const topCell = document.createElement('td');
+    topRow.append(topCell);
+    topCell.setAttribute('valign', 'top');
+
+    // Summary information
+    const summaryTable = document.createElement('table');
+    topCell.append(summaryTable);
+    summaryTable.classList.add('k-abox-tb');
+
+    const summaryFirstRow = document.createElement('tr');
+    summaryTable.append(summaryFirstRow);
+
+    const radicalCell = document.createElement('td');
+    summaryFirstRow.append(radicalCell);
+    radicalCell.classList.add('k-abox-r');
+    radicalCell.append('radical');
+    radicalCell.append(document.createElement('br'));
+    radicalCell.append(entry.radical);
+
+    // TODO: Kanji components
+
+    const gradeCell = document.createElement('td');
+    summaryFirstRow.append(gradeCell);
+    gradeCell.classList.add('k-abox-g');
+    gradeCell.append('grade');
+    gradeCell.append(document.createElement('br'));
+    let grade = document.createDocumentFragment();
+    switch (entry.misc.G) {
+      case 8:
+        grade.append('general');
+        grade.append(document.createElement('br'));
+        grade.append('use');
+        break;
+      case 9:
+        grade.append('name');
+        grade.append(document.createElement('br'));
+        grade.append('use');
+        break;
+      default:
+        if (isNaN(entry.misc.G)) {
+          grade.append('-');
+        } else {
+          grade.append('grade');
+          grade.append(document.createElement('br'));
+          grade.append(entry.misc.G);
+        }
+        break;
+    }
+    gradeCell.append(grade);
+
+    const summarySecondRow = document.createElement('tr');
+    summaryTable.append(summarySecondRow);
+
+    const frequencyCell = document.createElement('td');
+    summarySecondRow.append(frequencyCell);
+    frequencyCell.classList.add('k-abox-f');
+    frequencyCell.append('freq');
+    frequencyCell.append(document.createElement('br'));
+    frequencyCell.append(entry.misc.F || '-');
+
+    const strokesCell = document.createElement('td');
+    summarySecondRow.append(strokesCell);
+    strokesCell.classList.add('k-abox-s');
+    strokesCell.append('strokes');
+    strokesCell.append(document.createElement('br'));
+    strokesCell.append(entry.misc.S);
+
+    // The kanji itself
+    const kanjiSpan = document.createElement('span');
+    kanjiSpan.classList.add('k-kanji');
+    kanjiSpan.append(entry.kanji);
+    topCell.append(kanjiSpan);
+    topCell.append(document.createElement('br'));
+
+    // English
+    const englishDiv = document.createElement('div');
+    englishDiv.classList.add('k-eigo');
+    englishDiv.append(entry.eigo);
+    topCell.append(englishDiv);
+
+    // <table class="k-main-tb">
+    //   <tr>
+    //     <td valign="top">
+    //       <table class="k-abox-tb">
+    //         <tr>
+    //           <td class="k-abox-r">radical<br/>士 33</td>
+    //           <td class="k-abox-g">grade<br/>4</td>
+    //         </tr>
+    //         <tr>
+    //           <td class="k-abox-f">freq<br/>526</td>
+    //           <td class="k-abox-s">strokes<br/>3</td>
+    //         </tr>
+    //       </table>
+    //       <table class="k-bbox-tb">
+    //         <tr>
+    //           <td class="k-bbox-1a">延</td>
+    //           <td class="k-bbox-1b">undefined</td>
+    //           <td class="k-bbox-1b">undefined</td>
+    //         </tr>
+    //         <tr>
+    //            <td class="k-bbox-0a">士</td>
+    //            <td class="k-bbox-0b">undefined</td>
+    //            <td class="k-bbox-0b">undefined</td>
+    //         </tr>
+    //       </table>
+    //       <span class="k-kanji">士</span><br/>
+    //       <div class="k-eigo">gentleman, samurai, samurai radical (no. 33)</div>
+    //       <div class="k-yomi">
+    //         シ<br/>
+    //         <span class="k-yomi-ti">名乗り</span> お、ま<br/>
+    //         <span class="k-yomi-ti">部首名</span> さむらい
+    //       </div>
+    //     </td>
+    //   </tr>
+    //   <tr>
+    //     <td>
+    //       <table class="k-mix-tb">
+    //         <tr>
+    //           <td class="k-mix-td1">Halpern</td>
+    //           <td class="k-mix-td1">3405</td>
+    //         </tr>
+    //         <tr>
+    //           <td class="k-mix-td0">Heisig</td>
+    //           <td class="k-mix-td0">319</td>
+    //         </tr>
+    //         <tr>
+    //           <td class="k-mix-td1">Henshall</td>
+    //           <td class="k-mix-td1">494</td>
+    //         </tr>
+    //         <tr>
+    //           <td class="k-mix-td0">Kanji Learners Dictionary</td>
+    //           <td class="k-mix-td0">2129</td>
+    //         </tr>
+    //         <tr>
+    //           <td class="k-mix-td1">Nelson</td>
+    //           <td class="k-mix-td1">1160</td>
+    //         </tr>
+    //         <tr>
+    //           <td class="k-mix-td0">New Nelson</td>
+    //           <td class="k-mix-td0">1117</td>
+    //         </tr>
+    //         <tr>
+    //           <td class="k-mix-td1">PinYin</td>
+    //           <td class="k-mix-td1">shi4</td>
+    //         </tr>
+    //         <tr>
+    //           <td class="k-mix-td0">Skip Pattern</td>
+    //           <td class="k-mix-td0">4-3-2</td>
+    //         </tr>
+    //         <tr>
+    //           <td class="k-mix-td1">Tuttle Kanji &amp; Kana</td>
+    //           <td class="k-mix-td1">572</td>
+    //         </tr>
+    //         <tr>
+    //           <td class="k-mix-td0">Tuttle Kanji Dictionary</td>
+    //           <td class="k-mix-td0">3p0.1</td>
+    //         </tr>
+    //         <tr>
+    //           <td class="k-mix-td1">Unicode</td>
+    //           <td class="k-mix-td1">58EB</td>
+    //         </tr>
+    //       </table>
+    //     </td>
+    //   </tr>
+    // </table>
 
     return result;
   },

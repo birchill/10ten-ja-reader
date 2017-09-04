@@ -159,7 +159,8 @@ interface KanjiEntry {
   // Name readings
   nanori: string;
   // Radicals
-  bushumei: string;
+  bushumei: string; // Pronunciation of the radical (in kana)
+  radical: string; // Radical as unicode character
   // English
   eigo: string;
 }
@@ -196,11 +197,11 @@ class Dictionary {
     ]);
   }
 
-  fileRead(url): Promise<string> {
+  fileRead(url: string): Promise<string> {
     return fetch(url).then(response => response.text());
   }
 
-  fileReadArray(name): Promise<string[]> {
+  fileReadArray(name: string): Promise<string[]> {
     return this.fileRead(name).then(text =>
       text.split('\n').filter(line => line.length)
     );
@@ -257,7 +258,11 @@ class Dictionary {
     const readPromises = [];
     for (const key in dataFiles) {
       if (dataFiles.hasOwnProperty(key)) {
-        const readPromise = this.fileRead(
+        const reader: (url: string) => Promise<any> =
+          key === 'radData'
+          ? this.fileReadArray.bind(this)
+          : this.fileRead.bind(this);
+        const readPromise = reader(
           browser.extension.getURL(`data/${dataFiles[key]}`)
         ).then(text => {
           this[key] = text;
@@ -631,6 +636,7 @@ class Dictionary {
       onkun: separateWithComma(fields[2]),
       nanori: separateWithComma(fields[3]),
       bushumei: separateWithComma(fields[4]),
+      radical: '', // Fill in later
       eigo: fields[5],
     };
 
@@ -650,6 +656,9 @@ class Dictionary {
         else entry.misc[RegExp.$1] += ' ' + RegExp.$2;
       }
     }
+
+    // Fill in radical
+    entry.radical = this.radData[Number(entry.misc.B) - 1].charAt(0);
 
     return entry;
   }
