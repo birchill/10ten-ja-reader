@@ -167,6 +167,8 @@ interface KanjiEntry {
   // order in which they should be presented, and the full name of the reference
   // corresponding to each abbreviation.
   miscDisplay: { abbrev: string; name: string }[];
+  // Kanji components
+  components?: { radical: string; yomi: string; english: string }[];
   // On-yomi and kun-komi
   onkun: string[];
   // Name readings
@@ -192,7 +194,7 @@ class Dictionary {
   wordDict: string;
   wordIndex: string;
   kanjiData: string;
-  radData: string;
+  radData: string[];
   deinflectReasons: string[];
   deinflectRules: DeinflectRuleGroup[];
 
@@ -694,6 +696,31 @@ class Dictionary {
 
     // Fill in radical
     entry.radical = this.radData[Number(entry.misc.B) - 1].charAt(0);
+
+    // Kanji components
+    if (options && options.includeKanjiComponents) {
+      entry.components = [];
+
+      const addRadicalFromRow = (row: string) => {
+        const fields: string[] = row.split('\t');
+        if (fields.length >= 4) {
+          entry.components.push({
+            radical: fields[0],
+            yomi: fields[2],
+            english: fields[3],
+          });
+        }
+      };
+
+      addRadicalFromRow(this.radData[Number(entry.misc.B) - 1]);
+      this.radData.forEach((row: string, index: number) => {
+        if (index === Number(entry.misc.B) - 1 ||
+            row.indexOf(entry.kanji) === -1) {
+          return;
+        }
+        addRadicalFromRow(row);
+      });
+    }
 
     return entry;
   }

@@ -246,6 +246,47 @@ describe('Dictionary', () => {
     });
   });
 
+  it('looks up kanji with kanji components', () => {
+    const options = {
+      includedReferences: new Set(['H', 'U']),
+      includeKanjiComponents: true,
+    };
+    const result = sharedDict.kanjiSearch('鯖', options);
+    expect(result).toEqual({
+      kanji: '鯖',
+      misc: {
+        B: '195',
+        L: '2820',
+        N: '5301',
+        P: '1-11-8',
+        U: '9BD6',
+        S: '19',
+        V: '6883',
+        Y: 'qing1  zheng1',
+      },
+      miscDisplay: [
+        { abbrev: 'H', name: 'Halpern' },
+        { abbrev: 'U', name: 'Unicode' }
+      ],
+      components: [
+        { radical: '魚', yomi: 'うお', english: 'fish' },
+        { radical: '二', yomi: 'に', english: 'two' },
+        { radical: '亠', yomi: 'なべぶた', english: 'lid' },
+        { radical: '土', yomi: 'つち', english: 'earth' },
+        { radical: '月', yomi: 'つき', english: 'moon' },
+        { radical: '田', yomi: 'た', english: 'rice field' },
+        { radical: '青', yomi: 'あお', english: 'blue' },
+        { radical: '灬', yomi: 'れっか', english: 'fire' },
+      ],
+      onkun: ['セイ','ショウ','さば'],
+      nanori: [],
+      bushumei: [],
+      radical: '魚',
+      eigo: 'mackerel',
+    });
+  });
+
+
   // TODO: Test kanji components
 
   // TODO: Test names dictionary handling
