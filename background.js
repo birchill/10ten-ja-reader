@@ -58,8 +58,8 @@ if (initStorage('v0.8.92', true)) {
   initStorage('disablekeys', 'false');
   initStorage('kanjicomponents', 'true');
 
-  for (let abbrev of Object.keys(REF_ABBREVIATIONS)) {
-    initStorage(abbrev, 'true');
+  for (let ref of REF_ABBREVIATIONS) {
+    initStorage(ref.abbrev, 'true');
   }
 
   // v0.8.92
@@ -99,6 +99,6 @@ rcxMain.config.disablekeys = localStorage['disablekeys'];
 rcxMain.config.showOnKey = localStorage['showOnKey'];
 rcxMain.config.kanjicomponents = localStorage['kanjicomponents'];
 rcxMain.config.kanjiinfo = {};
-for (let abbrev of Object.keys(REF_ABBREVIATIONS)) {
-  rcxMain.config.kanjiInfo[abbrev] = localStorage[abbrev];
+for (let ref of REF_ABBREVIATIONS) {
+  rcxMain.config.kanjiinfo[ref.abbrev] = localStorage[ref.abbrev];
 }

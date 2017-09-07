@@ -1106,15 +1106,13 @@ var rcxContent = {
     radicalCell.classList.add('k-abox-r');
     radicalCell.append('radical');
     radicalCell.append(document.createElement('br'));
-    radicalCell.append(entry.radical);
+    radicalCell.append(`${entry.radical} ${entry.misc.B}`);
 
     // TODO: Kanji components
 
     const gradeCell = document.createElement('td');
     summaryFirstRow.append(gradeCell);
     gradeCell.classList.add('k-abox-g');
-    gradeCell.append('grade');
-    gradeCell.append(document.createElement('br'));
     let grade = document.createDocumentFragment();
     switch (entry.misc.G) {
       case 8:
@@ -1169,91 +1167,81 @@ var rcxContent = {
     englishDiv.append(entry.eigo);
     topCell.append(englishDiv);
 
-    // <table class="k-main-tb">
-    //   <tr>
-    //     <td valign="top">
-    //       <table class="k-abox-tb">
-    //         <tr>
-    //           <td class="k-abox-r">radical<br/>士 33</td>
-    //           <td class="k-abox-g">grade<br/>4</td>
-    //         </tr>
-    //         <tr>
-    //           <td class="k-abox-f">freq<br/>526</td>
-    //           <td class="k-abox-s">strokes<br/>3</td>
-    //         </tr>
-    //       </table>
-    //       <table class="k-bbox-tb">
-    //         <tr>
-    //           <td class="k-bbox-1a">延</td>
-    //           <td class="k-bbox-1b">undefined</td>
-    //           <td class="k-bbox-1b">undefined</td>
-    //         </tr>
-    //         <tr>
-    //            <td class="k-bbox-0a">士</td>
-    //            <td class="k-bbox-0b">undefined</td>
-    //            <td class="k-bbox-0b">undefined</td>
-    //         </tr>
-    //       </table>
-    //       <span class="k-kanji">士</span><br/>
-    //       <div class="k-eigo">gentleman, samurai, samurai radical (no. 33)</div>
-    //       <div class="k-yomi">
-    //         シ<br/>
-    //         <span class="k-yomi-ti">名乗り</span> お、ま<br/>
-    //         <span class="k-yomi-ti">部首名</span> さむらい
-    //       </div>
-    //     </td>
-    //   </tr>
-    //   <tr>
-    //     <td>
-    //       <table class="k-mix-tb">
-    //         <tr>
-    //           <td class="k-mix-td1">Halpern</td>
-    //           <td class="k-mix-td1">3405</td>
-    //         </tr>
-    //         <tr>
-    //           <td class="k-mix-td0">Heisig</td>
-    //           <td class="k-mix-td0">319</td>
-    //         </tr>
-    //         <tr>
-    //           <td class="k-mix-td1">Henshall</td>
-    //           <td class="k-mix-td1">494</td>
-    //         </tr>
-    //         <tr>
-    //           <td class="k-mix-td0">Kanji Learners Dictionary</td>
-    //           <td class="k-mix-td0">2129</td>
-    //         </tr>
-    //         <tr>
-    //           <td class="k-mix-td1">Nelson</td>
-    //           <td class="k-mix-td1">1160</td>
-    //         </tr>
-    //         <tr>
-    //           <td class="k-mix-td0">New Nelson</td>
-    //           <td class="k-mix-td0">1117</td>
-    //         </tr>
-    //         <tr>
-    //           <td class="k-mix-td1">PinYin</td>
-    //           <td class="k-mix-td1">shi4</td>
-    //         </tr>
-    //         <tr>
-    //           <td class="k-mix-td0">Skip Pattern</td>
-    //           <td class="k-mix-td0">4-3-2</td>
-    //         </tr>
-    //         <tr>
-    //           <td class="k-mix-td1">Tuttle Kanji &amp; Kana</td>
-    //           <td class="k-mix-td1">572</td>
-    //         </tr>
-    //         <tr>
-    //           <td class="k-mix-td0">Tuttle Kanji Dictionary</td>
-    //           <td class="k-mix-td0">3p0.1</td>
-    //         </tr>
-    //         <tr>
-    //           <td class="k-mix-td1">Unicode</td>
-    //           <td class="k-mix-td1">58EB</td>
-    //         </tr>
-    //       </table>
-    //     </td>
-    //   </tr>
-    // </table>
+    // Readings
+    const yomiDiv = document.createElement('div');
+    yomiDiv.classList.add('k-yomi');
+    topCell.append(yomiDiv);
+
+    // Readings come in the form:
+    //
+    //  ヨ、 あた.える、 あずか.る、 くみ.する、 ともに
+    //
+    // We want to take the bit after the '.' and wrap it in a span with an
+    // appropriate class.
+    entry.onkun.forEach((reading, index) => {
+      if (index !== 0) {
+        yomiDiv.append('\u3001');
+      }
+      const highlightIndex = reading.indexOf('.');
+      if (highlightIndex === -1) {
+        yomiDiv.append(reading);
+      } else {
+        yomiDiv.append(reading.substr(0, highlightIndex));
+        const highlightSpan = document.createElement('span');
+        highlightSpan.classList.add('k-yomi-hi');
+        highlightSpan.append(reading.substr(highlightIndex+1));
+        yomiDiv.append(highlighSpan);
+      }
+    });
+
+    // Optional readings
+    if (entry.nanori.length) {
+      const nanoriLabelSpan = document.createElement('span');
+      nanoriLabelSpan.classList.add('k-yomi-ti');
+      nanoriLabelSpan.append('名乗り');
+      yomiDiv.append(document.createElement('br'),
+                     nanoriLabelSpan, ` ${entry.nanori.join('\u3001')}`);
+    }
+
+    if (entry.bushumei) {
+      const bushumeiLabelSpan = document.createElement('span');
+      bushumeiLabelSpan.classList.add('k-yomi-ti');
+      bushumeiLabelSpan.append('部首名');
+      yomiDiv.append(document.createElement('br'),
+                     bushumeiLabelSpan, ` ${entry.bushumei.join('\u3001')}`);
+    }
+
+    // Reference row
+    const referenceRow = document.createElement('tr');
+    table.append(referenceRow);
+    const referenceCell = document.createElement('td');
+    referenceRow.append(referenceCell);
+    const referenceTable = document.createElement('table');
+    referenceTable.classList.add('k-mix-tb');
+    referenceCell.append(referenceTable);
+
+    let toggle = 0;
+    for (let ref of entry.miscDisplay) {
+      const value = entry.misc[ref.abbrev];
+      if (!value) {
+        continue;
+      }
+
+      const row = document.createElement('tr');
+      referenceTable.append(row);
+
+      const className = `k-mix-td${toggle ^= 1}`;
+
+      const nameCell = document.createElement('td');
+      nameCell.classList.add(className);
+      nameCell.append(ref.name);
+      row.append(nameCell);
+
+      const valueCell = document.createElement('td');
+      valueCell.classList.add(className);
+      valueCell.append(value);
+      row.append(valueCell);
+    }
 
     return result;
   },

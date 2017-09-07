@@ -70,7 +70,7 @@ const SEMIVOICED_KATAKANA_TO_HIRAGANA = [
   0x3071, 0x3074, 0x3077, 0x307a, 0x307d
 ];
 
-const REF_ABBREVIATIONS = {
+const REF_ABBREVIATIONS = [
   /*
   C: 'Classical Radical',
   DR: 'Father Joseph De Roo Index',
@@ -82,18 +82,18 @@ const REF_ABBREVIATIONS = {
   K: 'Gakken Kanji Dictionary Index',
   W: 'Korean Reading',
   */
-  H: 'Halpern',
-  L: 'Heisig',
-  E: 'Henshall',
-  DK: 'Kanji Learners Dictionary',
-  N: 'Nelson',
-  V: 'New Nelson',
-  Y: 'PinYin',
-  P: 'Skip Pattern',
-  IN: 'Tuttle Kanji &amp; Kana',
-  I: 'Tuttle Kanji Dictionary',
-  U: 'Unicode',
-};
+  { abbrev: 'H', name: 'Halpern' },
+  { abbrev: 'L', name: 'Heisig' },
+  { abbrev: 'E', name: 'Henshall' },
+  { abbrev: 'DK', name: 'Kanji Learners Dictionary' },
+  { abbrev: 'N', name: 'Nelson' },
+  { abbrev: 'V', name: 'New Nelson' },
+  { abbrev: 'Y', name: 'PinYin' },
+  { abbrev: 'P', name: 'Skip Pattern' },
+  { abbrev: 'IN', name: 'Tuttle Kanji & Kana' },
+  { abbrev: 'I', name: 'Tuttle Kanji Dictionary' },
+  { abbrev: 'U', name: 'Unicode' },
+];
 
 const WORDS_MAX_ENTRIES = 7;
 const NAMES_MAX_ENTRIES = 20;
@@ -145,6 +145,15 @@ interface TranslateResult {
   more: boolean;
 }
 
+interface KanjiSearchOptions {
+  // Lists the references that should be included in KanjiEntry.misc.
+  includedReferences: Set<string>;
+
+  // Set to true if the components that make up the kanji should be returned in
+  // the result.
+  includeKanjiComponents: boolean;
+}
+
 interface KanjiEntry {
   // The kanji itself
   kanji: string;
@@ -153,17 +162,17 @@ interface KanjiEntry {
   // which is typically a number or sequence indicating the index of the
   // character in said reference, and a 'reference' field with the full name of
   // the reference.
-  //
-  // We only pass the full name of the reference along because we don't have
-  // a proper build step yet that would let us bundle up REF_ABBREVIATIONS in
-  // both the content script and the background script.
-  misc: { [abbrev: string]: { value: string; ref: string } };
+  misc: { [abbrev: string]: string };
+  // An array that defines which entries in 'misc' should be displayed, the
+  // order in which they should be presented, and the full name of the reference
+  // corresponding to each abbreviation.
+  miscDisplay: { abbrev: string; name: string }[];
   // On-yomi and kun-komi
-  onkun: string;
+  onkun: string[];
   // Name readings
-  nanori: string;
+  nanori: string[];
   // Radicals
-  bushumei: string; // Pronunciation of the radical (in kana)
+  bushumei: string[]; // Pronunciation of the radical (in kana)
   radical: string; // Radical as unicode character
   // English
   eigo: string;
@@ -622,7 +631,7 @@ class Dictionary {
     return result;
   }
 
-  kanjiSearch(kanji): KanjiEntry | null {
+  kanjiSearch(kanji: string, options?: KanjiSearchOptions): KanjiEntry | null {
     const codepoint = kanji.charCodeAt(0);
     if (codepoint < 0x3000) return null;
 
@@ -633,45 +642,58 @@ class Dictionary {
     if (fields.length != 6) return null;
 
     // Separate space-separated lists with an ideographic comma (、) and space
-    const separateWithComma = str => str.replace(/\s+/g, '\u3001 ');
+    const splitWords = str => {
+      const result = str.split(' ');
+      // split() has this odd behavior where:
+      //
+      //   ''.split('') => []
+      //
+      // but:
+      //
+      //   ''.split(' ') => [ '' ]
+      //
+      return result.length === 1 && result[0].trim() === '' ? [] : result;
+    };
     const entry: KanjiEntry = {
       kanji: fields[0],
       misc: {},
-      onkun: separateWithComma(fields[2]),
-      nanori: separateWithComma(fields[3]),
-      bushumei: separateWithComma(fields[4]),
+      miscDisplay: [],
+      onkun: splitWords(fields[2]),
+      nanori: splitWords(fields[3]),
+      bushumei: splitWords(fields[4]),
       radical: '', // Fill in later
       eigo: fields[5],
     };
 
     // Store hex-representation
     const hex = '0123456789ABCDEF';
-    entry.misc['U'] = {
-      value:
-        hex[(codepoint >>> 12) & 15] +
-        hex[(codepoint >>> 8) & 15] +
-        hex[(codepoint >>> 4) & 15] +
-        hex[codepoint & 15],
-      ref: REF_ABBREVIATIONS['U'],
-    };
+    entry.misc['U'] =
+      hex[(codepoint >>> 12) & 15] +
+      hex[(codepoint >>> 8) & 15] +
+      hex[(codepoint >>> 4) & 15] +
+      hex[codepoint & 15];
 
     // Parse other kanji references
     const refs = fields[1].split(' ');
     for (let i = 0; i < refs.length; ++i) {
       if (refs[i].match(/^([A-Z]+)(.*)/)) {
         if (!entry.misc[RegExp.$1]) {
-          entry.misc[RegExp.$1] = {
-            value: RegExp.$2,
-            ref: REF_ABBREVIATIONS[RegExp.$1],
-          };
+          entry.misc[RegExp.$1] = RegExp.$2;
         } else {
-          entry.misc[RegExp.$1].value += `  ${RegExp.$2}`;
+          entry.misc[RegExp.$1] += `  ${RegExp.$2}`;
         }
       }
     }
 
+    // Fill in display order and information for other kanji references
+    for (let ref of REF_ABBREVIATIONS) {
+      if (!options || options.includedReferences.has(ref.abbrev)) {
+        entry.miscDisplay.push(ref);
+      }
+    }
+
     // Fill in radical
-    entry.radical = this.radData[Number(entry.misc.B.value) - 1].charAt(0);
+    entry.radical = this.radData[Number(entry.misc.B) - 1].charAt(0);
 
     return entry;
   }
@@ -693,23 +715,24 @@ class Dictionary {
       var k;
       var nums;
 
-      yomi = entry.onkun.replace(
-        /\.([^\u3001]+)/g,
-        '<span class="k-yomi-hi">$1</span>'
-      );
+      yomi = entry.onkun
+        .map(str =>
+          str.replace(/\.([^\u3001]+)/g, '<span class="k-yomi-hi">$1</span>')
+        )
+        .join('、');
       if (entry.nanori.length) {
         yomi +=
           '<br/><span class="k-yomi-ti">\u540D\u4E57\u308A</span> ' +
-          entry.nanori;
+          entry.nanori.join('、');
       }
       if (entry.bushumei.length) {
         yomi +=
           '<br/><span class="k-yomi-ti">\u90E8\u9996\u540D</span> ' +
-          entry.bushumei;
+          entry.bushumei.join('、');
       }
 
-      bn = entry.misc['B'].value - 1;
-      k = entry.misc['G'].value;
+      bn = entry.misc['B'] - 1;
+      k = entry.misc['G'];
       switch (k) {
         case 8:
           k = 'general<br/>use';
@@ -733,10 +756,10 @@ class Dictionary {
         '</td>' +
         '</tr><tr>' +
         '<td class="k-abox-f">freq<br/>' +
-        (entry.misc['F'].value ? entry.misc['F'].value : '-') +
+        (entry.misc['F'] ? entry.misc['F'] : '-') +
         '</td>' +
         '<td class="k-abox-s">strokes<br/>' +
-        entry.misc['S'].value +
+        entry.misc['S'] +
         '</td>' +
         '</tr></table>';
       if (rcxMain.config.kanjicomponents === 'true') {
@@ -784,13 +807,12 @@ class Dictionary {
       j = 0;
 
       const kanjiinfo = rcxMain.config.kanjiinfo;
-      for (let abbrev of Object.keys(REF_ABBREVIATIONS)) {
-        const refName = REF_ABBREVIATIONS[abbrev];
-        if (kanjiinfo[abbrev] === 'true') {
-          const refValue = entry.misc[abbrev].value;
+      for (let ref of REF_ABBREVIATIONS) {
+        if (kanjiinfo[ref.abbrev] === 'true') {
+          const refValue = entry.misc[ref.abbrev];
           const classAttr = ' class="k-mix-td' + (j ^= 1) + '"';
           nums +=
-            `<tr><td ${classAttr}>${refName}</td><td ${classAttr}>` +
+            `<tr><td ${classAttr}>${ref.name}</td><td ${classAttr}>` +
             `${refValue || '-'}</td></tr>`;
         }
       }
@@ -943,10 +965,9 @@ class Dictionary {
         b.push('\u90E8\u9996\u540D\t' + entry.bushumei + '\n');
       }
 
-      for (let abbrev of Object.keys(REF_ABBREVIATIONS)) {
-        const refName = REF_ABBREVIATIONS[abbrev];
-        const refValue = entry.misc[abbrev].value;
-        b.push(refName.replace('&amp;', '&') + `\t${refValue || '-'}\n`);
+      for (let ref of REF_ABBREVIATIONS) {
+        const refValue = entry.misc[ref.abbrev];
+        b.push(`${ref.name}\t${refValue || '-'}\n`);
       }
     } else {
       if (max > entry.data.length) max = entry.data.length;

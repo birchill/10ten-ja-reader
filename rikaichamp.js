@@ -218,9 +218,21 @@ var rcxMain = {
   nextDict: '3',
 
   search: function(text, dictOption) {
+    const kanjiReferences = new Set(
+      Object.entries(rcxMain.config.kanjiinfo)
+        .filter((abbrev, setting) => setting === 'true')
+        .map((abbrev, setting) => abbrev)
+    );
+    const kanjiSearchOptions = {
+      includedReferences: kanjiReferences,
+      includeKanjiComponents: rcxMain.config.kanjicomponents === 'true',
+    };
+
     switch (dictOption) {
       case this.forceKanji:
-        return Promise.resolve(this.dict.kanjiSearch(text.charAt(0)));
+        return Promise.resolve(
+          this.dict.kanjiSearch(text.charAt(0), kanjiSearchOptions)
+        );
 
       case this.defaultDict:
         this.showMode = 0;
@@ -234,7 +246,9 @@ var rcxMain = {
     const searchCurrentDict = text => {
       switch (this.showMode) {
         case this.kanjiN:
-          return Promise.resolve(this.dict.kanjiSearch(text.charAt(0)));
+          return Promise.resolve(
+            this.dict.kanjiSearch(text.charAt(0), kanjiSearchOptions)
+          );
         case this.namesN:
           return this.dict.wordSearch(text, true);
       }

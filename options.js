@@ -34,8 +34,9 @@ function fillVals() {
   else document.optform.kanjicomponents.checked = false;
 
   const abbreviations = browser.extension.getBackgroundPage().REF_ABBREVIATIONS;
-  for (let abbrev of Object.keys(abbreviations)) {
-    document.getElementById(abbrev).checked = localStorage[abbrev] === 'true';
+  for (let ref of abbreviations) {
+    document.getElementById(ref.abbrev).checked =
+      localStorage[ref.abbrev] === 'true';
   }
 
   store = localStorage['lineEnding'];
@@ -78,9 +79,9 @@ function getVals() {
 
   const kanjiInfo = {};
   const abbreviations = browser.extension.getBackgroundPage().REF_ABBREVIATIONS;
-  for (let abbrev of Object.keys(abbreviations)) {
-    localStorage[abbrev] = document.getElementById(abbrev).checked;
-    kanjiInfo[abbrev] = localStorage[abbrev];
+  for (let ref of abbreviations) {
+    localStorage[ref.abbrev] = document.getElementById(ref.abbrev).checked;
+    kanjiInfo[ref.abbrev] = localStorage[ref.abbrev];
   }
 
   localStorage['lineEnding'] = document.optform.lineEnding.value;

@@ -39,25 +39,38 @@ describe('rcxContent', () => {
     const entry = {
       kanji: '士',
       misc: {
-        U: '58EB',
         B: '33',
-        G: '4',
-        S: '3',
-        F: '526',
-        N: '1160',
-        V: '1117',
-        H: '3405',
         DK: '2129',
-        L: '319',
-        IN: '572',
         E: '494',
-        P: '4-3-2',
+        F: '526',
+        G: '4',
+        H: '3405',
         I: '3p0.1',
+        IN: '572',
+        L: '319',
+        N: '1160',
+        P: '4-3-2',
+        S: '3',
+        U: '58EB',
+        V: '1117',
         Y: 'shi4',
       },
-      onkun: 'シ',
-      nanori: 'お、 ま',
-      bushumei: 'さむらい',
+      miscDisplay: [
+        { abbrev: 'H', name: 'Halpern' },
+        { abbrev: 'L', name: 'Heisig' },
+        { abbrev: 'E', name: 'Henshall' },
+        { abbrev: 'DK', name: 'Kanji Learners Dictionary' },
+        { abbrev: 'N', name: 'Nelson' },
+        { abbrev: 'V', name: 'New Nelson' },
+        { abbrev: 'Y', name: 'PinYin' },
+        { abbrev: 'P', name: 'Skip Pattern' },
+        { abbrev: 'IN', name: 'Tuttle Kanji & Kana' },
+        { abbrev: 'I', name: 'Tuttle Kanji Dictionary' },
+        { abbrev: 'U', name: 'Unicode' },
+      ],
+      onkun: ['シ'],
+      nanori: ['お', 'ま'],
+      bushumei: ['さむらい'],
       radical: '士',
       eigo: 'gentleman, samurai, samurai radical (no. 33)',
     };
@@ -68,14 +81,14 @@ describe('rcxContent', () => {
                        'Should have one child element');
 
     const resultAsHtml = result.firstElementChild.outerHTML;
-    console.log(resultAsHtml);
 
     // prettier-ignore
-    /*
     assert.strictEqual(resultAsHtml,
-      '<table class="k-main-tb"><tr><td valign="top"><table class="k-abox-tb"><tr><td class="k-abox-r">radical<br>士 33</td><td class="k-abox-g">grade<br>4</td></tr><tr><td class="k-abox-f">freq<br>526</td><td class="k-abox-s">strokes<br>3</td></tr></table><table class="k-bbox-tb"><tr><td class="k-bbox-1a">延</td><td class="k-bbox-1b">undefined</td><td class="k-bbox-1b">undefined</td></tr><tr><td class="k-bbox-0a">士</td><td class="k-bbox-0b">undefined</td><td class="k-bbox-0b">undefined</td></tr></table><span class="k-kanji">士</span><br><div class="k-eigo">gentleman, samurai, samurai radical (no. 33)</div><div class="k-yomi">シ<br><span class="k-yomi-ti">名乗り</span> お、ま<br><span class="k-yomi-ti">部首名</span> さむらい</div></td></tr><tr><td><table class="k-mix-tb"><tr><td class="k-mix-td1">Halpern</td><td class="k-mix-td1">3405</td></tr><tr><td class="k-mix-td0">Heisig</td><td class="k-mix-td0">319</td></tr><tr><td class="k-mix-td1">Henshall</td><td class="k-mix-td1">494</td></tr><tr><td class="k-mix-td0">Kanji Learners Dictionary</td><td class="k-mix-td0">2129</td></tr><tr><td class="k-mix-td1">Nelson</td><td class="k-mix-td1">1160</td></tr><tr><td class="k-mix-td0">New Nelson</td><td class="k-mix-td0">1117</td></tr><tr><td class="k-mix-td1">PinYin</td><td class="k-mix-td1">shi4</td></tr><tr><td class="k-mix-td0">Skip Pattern</td><td class="k-mix-td0">4-3-2</td></tr><tr><td class="k-mix-td1">Tuttle Kanji &amp; Kana</td><td class="k-mix-td1">572</td></tr><tr><td class="k-mix-td0">Tuttle Kanji Dictionary</td><td class="k-mix-td0">3p0.1</td></tr><tr><td class="k-mix-td1">Unicode</td><td class="k-mix-td1">58EB</td></tr></table></td></tr></table>');
-      */
+      '<table class="k-main-tb"><tr><td valign="top"><table class="k-abox-tb"><tr><td class="k-abox-r">radical<br>士 33</td><td class="k-abox-g">grade<br>4</td></tr><tr><td class="k-abox-f">freq<br>526</td><td class="k-abox-s">strokes<br>3</td></tr></table><span class="k-kanji">士</span><br><div class="k-eigo">gentleman, samurai, samurai radical (no. 33)</div><div class="k-yomi">シ<br><span class="k-yomi-ti">名乗り</span> お、ま<br><span class="k-yomi-ti">部首名</span> さむらい</div></td></tr><tr><td><table class="k-mix-tb"><tr><td class="k-mix-td1">Halpern</td><td class="k-mix-td1">3405</td></tr><tr><td class="k-mix-td0">Heisig</td><td class="k-mix-td0">319</td></tr><tr><td class="k-mix-td1">Henshall</td><td class="k-mix-td1">494</td></tr><tr><td class="k-mix-td0">Kanji Learners Dictionary</td><td class="k-mix-td0">2129</td></tr><tr><td class="k-mix-td1">Nelson</td><td class="k-mix-td1">1160</td></tr><tr><td class="k-mix-td0">New Nelson</td><td class="k-mix-td0">1117</td></tr><tr><td class="k-mix-td1">PinYin</td><td class="k-mix-td1">shi4</td></tr><tr><td class="k-mix-td0">Skip Pattern</td><td class="k-mix-td0">4-3-2</td></tr><tr><td class="k-mix-td1">Tuttle Kanji &amp; Kana</td><td class="k-mix-td1">572</td></tr><tr><td class="k-mix-td0">Tuttle Kanji Dictionary</td><td class="k-mix-td0">3p0.1</td></tr><tr><td class="k-mix-td1">Unicode</td><td class="k-mix-td1">58EB</td></tr></table></td></tr></table>');
   });
+
+  // TODO: Test above with a character with multiple readings
+  // TODO: Test above with kanji components
 });
 
 mocha.run();
