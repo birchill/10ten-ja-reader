@@ -220,8 +220,8 @@ var rcxMain = {
   search: function(text, dictOption) {
     const kanjiReferences = new Set(
       Object.entries(rcxMain.config.kanjiinfo)
-        .filter((abbrev, setting) => setting === 'true')
-        .map((abbrev, setting) => abbrev)
+        .filter(([abbrev, setting]) => setting === 'true')
+        .map(([abbrev, setting]) => abbrev)
     );
     const kanjiSearchOptions = {
       includedReferences: kanjiReferences,

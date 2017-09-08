@@ -99,7 +99,7 @@ var rcxContent = {
     return null;
   },
 
-  showPopup: function(text, elem, x, y, looseWidth) {
+  showPopup: function(textOrHtml, elem, x, y, looseWidth) {
     const topdoc = window.document;
 
     if (isNaN(x) || isNaN(y)) x = y = 0;
@@ -138,16 +138,27 @@ var rcxContent = {
     if (rcxContent.getContentType(topdoc) == 'text/plain') {
       var df = document.createDocumentFragment();
       df.appendChild(
-        document.createElementNS('http://www.w3.org/1999/xhtml', 'span')
+        document.createElement('span')
       );
-      df.firstChild.innerHTML = text;
+      if (typeof textOrHtml === 'string') {
+        df.firstChild.innerHTML = textOrHtml;
+      } else {
+        df.firstChild.append(textOrHtml);
+      }
 
       while (popup.firstChild) {
         popup.removeChild(popup.firstChild);
       }
       popup.appendChild(df.firstChild);
     } else {
-      popup.innerHTML = text;
+      if (typeof textOrHtml === 'string') {
+        popup.innerHTML = textOrHtml;
+      } else {
+        while (popup.firstChild) {
+          popup.firstChild.remove();
+        }
+        popup.append(textOrHtml);
+      }
     }
 
     if (elem) {
@@ -160,15 +171,7 @@ var rcxContent = {
 
       // guess!
       if (pW <= 0) pW = 200;
-      if (pH <= 0) {
-        pH = 0;
-        var j = 0;
-        while ((j = text.indexOf('<br/>', j)) != -1) {
-          j += 5;
-          pH += 22;
-        }
-        pH += 25;
-      }
+      console.assert(pH > 0, `Got ${pH} for popup height`);
 
       if (this.altView == 1) {
         x = window.scrollX;
@@ -707,9 +710,13 @@ var rcxContent = {
       tdata.prevSelView = doc.defaultView;
     }
 
-    browser.runtime
-      .sendMessage({ type: 'makehtml', entry: e })
-      .then(rcxContent.processHtml);
+    if (e.kanji) {
+      rcxContent.processHtml(rcxContent.makeHtmlForEntry(e));
+    } else {
+      browser.runtime
+        .sendMessage({ type: 'makehtml', entry: e })
+        .then(rcxContent.processHtml);
+    }
   },
 
   processHtml: function(html) {
@@ -808,10 +815,14 @@ var rcxContent = {
 
     this.lastFound = [e];
 
-    browser.runtime.sendMessage(
-      { type: 'makehtml', entry: e },
-      rcxContent.processHtml
-    );
+    if (e.kanji) {
+      rcxContent.processHtml(rcxContent.makeHtmlForEntry(e));
+    } else {
+      browser.runtime.sendMessage(
+        { type: 'makehtml', entry: e },
+        rcxContent.processHtml
+      );
+    }
   },
 
   getFirstTextChild: function(node) {
@@ -1215,7 +1226,7 @@ var rcxContent = {
         const highlightSpan = document.createElement('span');
         highlightSpan.classList.add('k-yomi-hi');
         highlightSpan.append(reading.substr(highlightIndex+1));
-        yomiDiv.append(highlighSpan);
+        yomiDiv.append(highlightSpan);
       }
     });
 
