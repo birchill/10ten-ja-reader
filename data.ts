@@ -714,8 +714,10 @@ class Dictionary {
 
       addRadicalFromRow(this.radData[Number(entry.misc.B) - 1]);
       this.radData.forEach((row: string, index: number) => {
-        if (index === Number(entry.misc.B) - 1 ||
-            row.indexOf(entry.kanji) === -1) {
+        if (
+          index === Number(entry.misc.B) - 1 ||
+          row.indexOf(entry.kanji) === -1
+        ) {
           return;
         }
         addRadicalFromRow(row);

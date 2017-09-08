@@ -87,8 +87,53 @@ describe('rcxContent', () => {
       '<table class="k-main-tb"><tr><td valign="top"><table class="k-abox-tb"><tr><td class="k-abox-r">radical<br>士 33</td><td class="k-abox-g">grade<br>4</td></tr><tr><td class="k-abox-f">freq<br>526</td><td class="k-abox-s">strokes<br>3</td></tr></table><span class="k-kanji">士</span><br><div class="k-eigo">gentleman, samurai, samurai radical (no. 33)</div><div class="k-yomi">シ<br><span class="k-yomi-ti">名乗り</span> お、ま<br><span class="k-yomi-ti">部首名</span> さむらい</div></td></tr><tr><td><table class="k-mix-tb"><tr><td class="k-mix-td1">Halpern</td><td class="k-mix-td1">3405</td></tr><tr><td class="k-mix-td0">Heisig</td><td class="k-mix-td0">319</td></tr><tr><td class="k-mix-td1">Henshall</td><td class="k-mix-td1">494</td></tr><tr><td class="k-mix-td0">Kanji Learners Dictionary</td><td class="k-mix-td0">2129</td></tr><tr><td class="k-mix-td1">Nelson</td><td class="k-mix-td1">1160</td></tr><tr><td class="k-mix-td0">New Nelson</td><td class="k-mix-td0">1117</td></tr><tr><td class="k-mix-td1">PinYin</td><td class="k-mix-td1">shi4</td></tr><tr><td class="k-mix-td0">Skip Pattern</td><td class="k-mix-td0">4-3-2</td></tr><tr><td class="k-mix-td1">Tuttle Kanji &amp; Kana</td><td class="k-mix-td1">572</td></tr><tr><td class="k-mix-td0">Tuttle Kanji Dictionary</td><td class="k-mix-td0">3p0.1</td></tr><tr><td class="k-mix-td1">Unicode</td><td class="k-mix-td1">58EB</td></tr></table></td></tr></table>');
   });
 
+  it('should format kanji entries with components', () => {
+    const entry = {
+      kanji: '鯖',
+      misc: {
+        B: '195',
+        L: '2820',
+        N: '5301',
+        P: '1-11-8',
+        U: '9BD6',
+        S: '19',
+        V: '6883',
+        Y: 'qing1  zheng1',
+      },
+      miscDisplay: [
+        { abbrev: 'H', name: 'Halpern' },
+        { abbrev: 'U', name: 'Unicode' }
+      ],
+      components: [
+        { radical: '魚', yomi: 'うお', english: 'fish' },
+        { radical: '二', yomi: 'に', english: 'two' },
+        { radical: '亠', yomi: 'なべぶた', english: 'lid' },
+        { radical: '土', yomi: 'つち', english: 'earth' },
+        { radical: '月', yomi: 'つき', english: 'moon' },
+        { radical: '田', yomi: 'た', english: 'rice field' },
+        { radical: '青', yomi: 'あお', english: 'blue' },
+        { radical: '灬', yomi: 'れっか', english: 'fire' },
+      ],
+      onkun: ['セイ','ショウ','さば'],
+      nanori: [],
+      bushumei: [],
+      radical: '魚',
+      eigo: 'mackerel',
+    };
+
+    const result = window.rcxContent.makeHtmlForEntry(entry);
+    assert.instanceOf(result, DocumentFragment);
+    assert.strictEqual(result.childElementCount, 1,
+                       'Should have one child element');
+
+    const resultAsHtml = result.firstElementChild.outerHTML;
+
+    // prettier-ignore
+    assert.strictEqual(resultAsHtml,
+      '<table class="k-main-tb"><tr><td valign="top"><table class="k-abox-tb"><tr><td class="k-abox-r">radical<br>魚 195</td><td class="k-abox-g">-</td></tr><tr><td class="k-abox-f">freq<br>-</td><td class="k-abox-s">strokes<br>19</td></tr></table><table class="k-bbox-tb"><tr><td class="k-bbox-1a">魚</td><td class="k-bbox-1b">うお</td><td class="k-bbox-1b">fish</td></tr><tr><td class="k-bbox-0a">二</td><td class="k-bbox-0b">に</td><td class="k-bbox-0b">two</td></tr><tr><td class="k-bbox-1a">亠</td><td class="k-bbox-1b">なべぶた</td><td class="k-bbox-1b">lid</td></tr><tr><td class="k-bbox-0a">土</td><td class="k-bbox-0b">つち</td><td class="k-bbox-0b">earth</td></tr><tr><td class="k-bbox-1a">月</td><td class="k-bbox-1b">つき</td><td class="k-bbox-1b">moon</td></tr><tr><td class="k-bbox-0a">田</td><td class="k-bbox-0b">た</td><td class="k-bbox-0b">rice field</td></tr><tr><td class="k-bbox-1a">青</td><td class="k-bbox-1b">あお</td><td class="k-bbox-1b">blue</td></tr><tr><td class="k-bbox-0a">灬</td><td class="k-bbox-0b">れっか</td><td class="k-bbox-0b">fire</td></tr></table><span class="k-kanji">鯖</span><br><div class="k-eigo">mackerel</div><div class="k-yomi">セイ、ショウ、さば</div></td></tr><tr><td><table class="k-mix-tb"><tr><td class="k-mix-td1">Halpern</td><td class="k-mix-td1">-</td></tr><tr><td class="k-mix-td0">Unicode</td><td class="k-mix-td0">9BD6</td></tr></table></td></tr></table>');
+  });
+
   // TODO: Test above with a character with multiple readings
-  // TODO: Test above with kanji components
 });
 
 mocha.run();

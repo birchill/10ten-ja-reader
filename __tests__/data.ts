@@ -266,7 +266,7 @@ describe('Dictionary', () => {
       },
       miscDisplay: [
         { abbrev: 'H', name: 'Halpern' },
-        { abbrev: 'U', name: 'Unicode' }
+        { abbrev: 'U', name: 'Unicode' },
       ],
       components: [
         { radical: '魚', yomi: 'うお', english: 'fish' },
@@ -278,16 +278,13 @@ describe('Dictionary', () => {
         { radical: '青', yomi: 'あお', english: 'blue' },
         { radical: '灬', yomi: 'れっか', english: 'fire' },
       ],
-      onkun: ['セイ','ショウ','さば'],
+      onkun: ['セイ', 'ショウ', 'さば'],
       nanori: [],
       bushumei: [],
       radical: '魚',
       eigo: 'mackerel',
     });
   });
-
-
-  // TODO: Test kanji components
 
   // TODO: Test names dictionary handling
   //       e.g. create a new Dictionary specifying 'false' for loadNames but then

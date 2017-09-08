@@ -1108,7 +1108,32 @@ var rcxContent = {
     radicalCell.append(document.createElement('br'));
     radicalCell.append(`${entry.radical} ${entry.misc.B}`);
 
-    // TODO: Kanji components
+    // Kanji components
+    if (entry.components) {
+      const componentsTable = document.createElement('table');
+      componentsTable.classList.add('k-bbox-tb');
+      topCell.append(componentsTable);
+
+      entry.components.forEach((component, index) => {
+        const row = document.createElement('tr');
+        componentsTable.append(row);
+
+        const radicalCell = document.createElement('td');
+        row.append(radicalCell);
+        radicalCell.classList.add(`k-bbox-${(index + 1) % 2}a`);
+        radicalCell.append(component.radical);
+
+        const readingCell = document.createElement('td');
+        row.append(readingCell);
+        readingCell.classList.add(`k-bbox-${(index + 1) % 2}b`);
+        readingCell.append(component.yomi);
+
+        const englishCell = document.createElement('td');
+        row.append(englishCell);
+        englishCell.classList.add(`k-bbox-${(index + 1) % 2}b`);
+        englishCell.append(component.english);
+      });
+    }
 
     const gradeCell = document.createElement('td');
     summaryFirstRow.append(gradeCell);
@@ -1203,7 +1228,7 @@ var rcxContent = {
                      nanoriLabelSpan, ` ${entry.nanori.join('\u3001')}`);
     }
 
-    if (entry.bushumei) {
+    if (entry.bushumei.length) {
       const bushumeiLabelSpan = document.createElement('span');
       bushumeiLabelSpan.classList.add('k-yomi-ti');
       bushumeiLabelSpan.append('部首名');
@@ -1222,10 +1247,7 @@ var rcxContent = {
 
     let toggle = 0;
     for (let ref of entry.miscDisplay) {
-      const value = entry.misc[ref.abbrev];
-      if (!value) {
-        continue;
-      }
+      const value = entry.misc[ref.abbrev] || '-';
 
       const row = document.createElement('tr');
       referenceTable.append(row);
