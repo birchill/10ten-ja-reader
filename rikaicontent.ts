@@ -46,6 +46,31 @@
 
 */
 
+interface Window {
+  rikaichamp: any;
+}
+
+interface ParentNode {
+  append (... nodes: (Node | string)[]): void;
+}
+
+interface ChildNode {
+  remove(): void;
+}
+
+interface CaretPosition {
+  readonly offsetNode: Node;
+  readonly offset: number;
+}
+
+interface Document {
+  caretPositionFromPoint(x: number, y: number): CaretPosition | null;
+}
+
+interface FakeTextNode extends Node {
+  data: string;
+}
+
 var rcxContent = {
   dictCount: 3,
   altView: 0,
@@ -99,14 +124,16 @@ var rcxContent = {
     return null;
   },
 
-  showPopup: function(textOrHtml, elem, x, y, looseWidth) {
+  showPopup: function(textOrHtml: string|DocumentFragment,
+    elem?: Element, x?: number, y?: number,
+    looseWidth?: boolean) {
     const topdoc = window.document;
 
     if (isNaN(x) || isNaN(y)) x = y = 0;
 
     var popup = topdoc.getElementById('rikaichamp-window');
     if (!popup) {
-      var css = topdoc.createElementNS('http://www.w3.org/1999/xhtml', 'link');
+      var css = topdoc.createElement('link');
       css.setAttribute('rel', 'stylesheet');
       css.setAttribute('type', 'text/css');
       var cssdoc = window.rikaichamp.config.css;
@@ -117,7 +144,7 @@ var rcxContent = {
       css.setAttribute('id', 'rikaichamp-css');
       topdoc.getElementsByTagName('head')[0].appendChild(css);
 
-      popup = topdoc.createElementNS('http://www.w3.org/1999/xhtml', 'div');
+      popup = topdoc.createElement('div');
       popup.setAttribute('id', 'rikaichamp-window');
       topdoc.documentElement.appendChild(popup);
 
@@ -135,33 +162,34 @@ var rcxContent = {
     popup.style.height = 'auto';
     popup.style.maxWidth = looseWidth ? '' : '600px';
 
-    if (rcxContent.getContentType(topdoc) == 'text/plain') {
+    if (rcxContent.getContentType(topdoc) === 'text/plain') {
       var df = document.createDocumentFragment();
       df.appendChild(
         document.createElement('span')
       );
       if (typeof textOrHtml === 'string') {
-        df.firstChild.innerHTML = textOrHtml;
+        df.firstElementChild.innerHTML = textOrHtml;
       } else {
-        df.firstChild.append(textOrHtml);
+        df.firstElementChild.append(textOrHtml);
       }
 
       while (popup.firstChild) {
-        popup.removeChild(popup.firstChild);
+        (<Element|CharacterData>popup.firstChild).remove();
       }
-      popup.appendChild(df.firstChild);
+      popup.append(df.firstElementChild);
     } else {
       if (typeof textOrHtml === 'string') {
         popup.innerHTML = textOrHtml;
       } else {
         while (popup.firstChild) {
-          popup.firstChild.remove();
+          (<Element|CharacterData>popup.firstChild).remove();
         }
         popup.append(textOrHtml);
       }
     }
 
-    if (elem) {
+    // TODO: Make all this work with SVG elements too
+    if (elem instanceof HTMLElement) {
       popup.style.top = '-1000px';
       popup.style.left = '0px';
       popup.style.display = '';
@@ -179,20 +207,22 @@ var rcxContent = {
       } else if (this.altView == 2) {
         x = window.innerWidth - (pW + 20) + window.scrollX;
         y = window.innerHeight - (pH + 20) + window.scrollY;
-      } else if (elem instanceof window.HTMLOptionElement) {
+      } else if (elem instanceof HTMLOptionElement) {
         // FIXME: This probably doesn't actually work
         // these things are always on z-top, so go sideways
 
         x = 0;
         y = 0;
 
-        var p = elem;
+        let p: HTMLElement = elem;
         while (p) {
           x += p.offsetLeft;
           y += p.offsetTop;
-          p = p.offsetParent;
+          p = p.offsetParent as HTMLElement;
         }
-        if (elem.offsetTop > elem.parentNode.clientHeight) y -= elem.offsetTop;
+        if (elem.offsetTop > (<HTMLElement>elem.parentNode).clientHeight) {
+          y -= elem.offsetTop;
+        }
 
         if (x + popup.offsetWidth > window.innerWidth) {
           // too much to the right, go left
@@ -200,7 +230,7 @@ var rcxContent = {
           if (x < 0) x = 0;
         } else {
           // use SELECT's width
-          x += elem.parentNode.offsetWidth + 5;
+          x += (<HTMLElement>elem.parentNode).offsetWidth + 5;
         }
       } else {
         // go left if necessary
@@ -291,7 +321,7 @@ var rcxContent = {
   lastFound: null,
 
   configPage: function() {
-    window.openDialog(
+    window.open(
       'chrome://rikaichamp/content/prefs.xul',
       '',
       'chrome,centerscreen'
@@ -403,7 +433,7 @@ var rcxContent = {
     if (this.isVisible()) {
       this.clearHi();
     }
-    mDown = true;
+    this.mDown = true;
 
     // If we click outside of a text box then we set
     // oldCaret to -1 as an indicator not to restore position
@@ -423,7 +453,7 @@ var rcxContent = {
     if (ev.button != 0) {
       return;
     }
-    mDown = false;
+    this.mDown = false;
   },
 
   onKeyUp: function(ev) {
@@ -431,8 +461,8 @@ var rcxContent = {
   },
 
   unicodeInfo: function(c) {
-    hex = '0123456789ABCDEF';
-    u = c.charCodeAt(0);
+    const hex = '0123456789ABCDEF';
+    const u = c.charCodeAt(0);
     return (
       c +
       ' U' +
@@ -566,13 +596,11 @@ var rcxContent = {
       rangeParent.nodeName === 'TEXTAREA' ||
       rangeParent.nodeName === 'INPUT'
     ) {
-      var endIndex = Math.min(rangeParent.data.length, offset + maxLength);
+      const endIndex = Math.min(rangeParent.data.length, offset + maxLength);
       return rangeParent.value.substring(offset, endIndex);
     }
 
     var text = '';
-
-    var endIndex;
 
     var xpathExpr = rangeParent.ownerDocument.createExpression(
       this.textNodeExpr,
@@ -594,7 +622,7 @@ var rcxContent = {
       return '';
     }
 
-    endIndex = Math.min(rangeParent.data.length, offset + maxLength);
+    const endIndex = Math.min(rangeParent.data.length, offset + maxLength);
     text += rangeParent.data.substring(offset, endIndex);
     selEndList.push({ node: rangeParent, offset: endIndex });
 
@@ -666,8 +694,8 @@ var rcxContent = {
     var selEndList = [];
     var text = this.getTextFromRange(rp, ro, selEndList, 13 /*maxlength*/);
 
-    lastSelEnd = selEndList;
-    lastRo = ro;
+    this.lastSelEnd = selEndList;
+    this.lastRo = ro;
     browser.runtime
       .sendMessage({ type: 'xsearch', text, dictOption: String(dictOption) })
       .then(rcxContent.processEntry);
@@ -676,9 +704,9 @@ var rcxContent = {
   },
 
   processEntry: function(e) {
-    tdata = window.rikaichamp;
-    ro = lastRo;
-    selEndList = lastSelEnd;
+    const tdata = window.rikaichamp;
+    const ro = rcxContent.lastRo;
+    const selEndList = rcxContent.lastSelEnd;
 
     if (!e) {
       rcxContent.hidePopup();
@@ -691,12 +719,12 @@ var rcxContent = {
     tdata.uofsNext = e.matchLen;
     tdata.uofs = ro - tdata.prevRangeOfs;
 
-    rp = tdata.prevRangeNode;
+    const rp = tdata.prevRangeNode;
     // don't try to highlight form elements
     if (
       rp &&
       ((tdata.config.highlight == 'true' &&
-        !this.mDown &&
+        !rcxContent.mDown &&
         !('form' in tdata.prevTarget)) ||
         ('form' in tdata.prevTarget && tdata.config.textboxhl == 'true'))
     ) {
@@ -720,7 +748,7 @@ var rcxContent = {
   },
 
   processHtml: function(html) {
-    tdata = window.rikaichamp;
+    const tdata = window.rikaichamp;
     rcxContent.showPopup(html, tdata.prevTarget, tdata.popX, tdata.popY, false);
     return 1;
   },
@@ -792,10 +820,9 @@ var rcxContent = {
   },
 
   showTitle: function(tdata) {
-    browser.runtime.sendMessage(
-      { type: 'translate', title: tdata.title },
-      rcxContent.processTitle
-    );
+    browser.runtime
+      .sendMessage({ type: 'translate', title: tdata.title })
+      .then(rcxContent.processTitle);
   },
 
   processTitle: function(e) {
@@ -818,10 +845,9 @@ var rcxContent = {
     if (e.kanji) {
       rcxContent.processHtml(rcxContent.makeHtmlForEntry(e));
     } else {
-      browser.runtime.sendMessage(
-        { type: 'makehtml', entry: e },
-        rcxContent.processHtml
-      );
+      browser.runtime
+        .sendMessage({ type: 'makehtml', entry: e })
+        .then(rcxContent.processHtml);
     }
   },
 
@@ -848,7 +874,7 @@ var rcxContent = {
     fake.scrollTop = real.scrollTop;
     fake.scrollLeft = real.scrollLeft;
     fake.style.position = 'absolute';
-    fake.style.zIndex = 7777;
+    fake.style.zIndex = '7777';
     fake.style.top = realRect.top + 'px';
     fake.style.left = realRect.left + 'px';
 
@@ -897,6 +923,11 @@ var rcxContent = {
     var position = document.caretPositionFromPoint(ev.clientX, ev.clientY);
     var rp = position.offsetNode;
     var ro = position.offset;
+
+    function isTextNode(node: Node): node is CharacterData|FakeTextNode {
+      return (<CharacterData>node).data !== undefined;
+    }
+
     // Put this in a try catch so that an exception here doesn't prevent editing
     // due to div.
     try {
@@ -910,7 +941,7 @@ var rcxContent = {
       if (fake) {
         // At the end of a line, don't do anything or you just get beginning of
         // next line
-        if (rp.data && rp.data.length == ro) {
+        if (isTextNode(rp) && rp.data.length === ro) {
           document.body.removeChild(fake);
           return;
         }
@@ -924,7 +955,7 @@ var rcxContent = {
 
       // If the range offset is equal to the node data length
       // Then we have the second case and need to correct.
-      if (rp.data && ro == rp.data.length) {
+      if (isTextNode(rp) && ro === rp.data.length) {
         // A special exception is the WBR tag which is inline but doesn't
         // contain text.
         if (rp.nextSibling && rp.nextSibling.nodeName == 'WBR') {
@@ -935,7 +966,7 @@ var rcxContent = {
         } else if (rcxContent.isInline(ev.target)) {
           if (
             rp.parentNode !== ev.target &&
-            !(fake && rp.parentNode.innerText == ev.target.value)
+            !(fake && (<HTMLElement>rp.parentNode).innerText === ev.target.value)
           ) {
             rp = ev.target.firstChild;
             ro = 0;
@@ -974,7 +1005,7 @@ var rcxContent = {
       // we give the text area data so it can act normal
       if (fake) {
         rp = ev.target;
-        rp.data = rp.value;
+        (<FakeTextNode>rp).data = (<HTMLTextAreaElement|HTMLInputElement>rp).value;
       }
 
       if (ev.target == tdata.prevTarget && this.isVisible()) {
@@ -1006,7 +1037,7 @@ var rcxContent = {
 
     var delay = !!ev.noDelay ? 1 : window.rikaichamp.config.popupDelay;
 
-    if (rp && rp.data && ro < rp.data.length) {
+    if (isTextNode(rp) && ro < rp.data.length) {
       this.forceKanji = ev.shiftKey ? 1 : 0;
       tdata.popX = ev.clientX;
       tdata.popY = ev.clientY;
@@ -1281,7 +1312,7 @@ var rcxContent = {
 };
 
 // Event Listeners
-browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+browser.runtime.onMessage.addListener(function(request) {
   switch (request.type) {
     case 'enable':
       rcxContent.enableTab();
@@ -1300,6 +1331,7 @@ browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       console.error(`Unrecognized request ${JSON.stringify(request)}`);
       break;
   }
+  return false;
 });
 
 // When a page first loads, checks to see if it should enable script

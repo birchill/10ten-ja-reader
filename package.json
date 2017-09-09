@@ -31,7 +31,7 @@
     "web-ext-types": "github:michael-zapata/web-ext-types"
   },
   "dependencies": {
-    "typescript": "^2.4.2"
+    "typescript": "^2.5.2"
   },
   "jest": {
     "transform": {

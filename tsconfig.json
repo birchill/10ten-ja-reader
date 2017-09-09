@@ -4,6 +4,7 @@
     "typeRoots": ["@types","node_modules/web-ext-types"]
   },
   "files": [
-    "data.ts"
+    "data.ts",
+    "rikaicontent.ts"
   ]
 }
