@@ -51,7 +51,7 @@ interface Window {
 }
 
 interface ParentNode {
-  append (... nodes: (Node | string)[]): void;
+  append(...nodes: (Node | string)[]): void;
 }
 
 interface ChildNode {
@@ -124,9 +124,13 @@ var rcxContent = {
     return null;
   },
 
-  showPopup: function(textOrHtml: string|DocumentFragment,
-    elem?: Element, x?: number, y?: number,
-    looseWidth?: boolean) {
+  showPopup: function(
+    textOrHtml: string | DocumentFragment,
+    elem?: Element,
+    x?: number,
+    y?: number,
+    looseWidth?: boolean
+  ) {
     const topdoc = window.document;
 
     if (isNaN(x) || isNaN(y)) x = y = 0;
@@ -164,9 +168,7 @@ var rcxContent = {
 
     if (rcxContent.getContentType(topdoc) === 'text/plain') {
       var df = document.createDocumentFragment();
-      df.appendChild(
-        document.createElement('span')
-      );
+      df.appendChild(document.createElement('span'));
       if (typeof textOrHtml === 'string') {
         df.firstElementChild.innerHTML = textOrHtml;
       } else {
@@ -174,7 +176,7 @@ var rcxContent = {
       }
 
       while (popup.firstChild) {
-        (<Element|CharacterData>popup.firstChild).remove();
+        (<Element | CharacterData>popup.firstChild).remove();
       }
       popup.append(df.firstElementChild);
     } else {
@@ -182,7 +184,7 @@ var rcxContent = {
         popup.innerHTML = textOrHtml;
       } else {
         while (popup.firstChild) {
-          (<Element|CharacterData>popup.firstChild).remove();
+          (<Element | CharacterData>popup.firstChild).remove();
         }
         popup.append(textOrHtml);
       }
@@ -924,7 +926,7 @@ var rcxContent = {
     var rp = position.offsetNode;
     var ro = position.offset;
 
-    function isTextNode(node: Node): node is CharacterData|FakeTextNode {
+    function isTextNode(node: Node): node is CharacterData | FakeTextNode {
       return (<CharacterData>node).data !== undefined;
     }
 
@@ -966,7 +968,9 @@ var rcxContent = {
         } else if (rcxContent.isInline(ev.target)) {
           if (
             rp.parentNode !== ev.target &&
-            !(fake && (<HTMLElement>rp.parentNode).innerText === ev.target.value)
+            !(
+              fake && (<HTMLElement>rp.parentNode).innerText === ev.target.value
+            )
           ) {
             rp = ev.target.firstChild;
             ro = 0;
@@ -1005,7 +1009,9 @@ var rcxContent = {
       // we give the text area data so it can act normal
       if (fake) {
         rp = ev.target;
-        (<FakeTextNode>rp).data = (<HTMLTextAreaElement|HTMLInputElement>rp).value;
+        (<FakeTextNode>rp).data = (<
+          | HTMLTextAreaElement
+          | HTMLInputElement>rp).value;
       }
 
       if (ev.target == tdata.prevTarget && this.isVisible()) {
@@ -1256,7 +1262,7 @@ var rcxContent = {
         yomiDiv.append(reading.substr(0, highlightIndex));
         const highlightSpan = document.createElement('span');
         highlightSpan.classList.add('k-yomi-hi');
-        highlightSpan.append(reading.substr(highlightIndex+1));
+        highlightSpan.append(reading.substr(highlightIndex + 1));
         yomiDiv.append(highlightSpan);
       }
     });
@@ -1266,16 +1272,22 @@ var rcxContent = {
       const nanoriLabelSpan = document.createElement('span');
       nanoriLabelSpan.classList.add('k-yomi-ti');
       nanoriLabelSpan.append('名乗り');
-      yomiDiv.append(document.createElement('br'),
-                     nanoriLabelSpan, ` ${entry.nanori.join('\u3001')}`);
+      yomiDiv.append(
+        document.createElement('br'),
+        nanoriLabelSpan,
+        ` ${entry.nanori.join('\u3001')}`
+      );
     }
 
     if (entry.bushumei.length) {
       const bushumeiLabelSpan = document.createElement('span');
       bushumeiLabelSpan.classList.add('k-yomi-ti');
       bushumeiLabelSpan.append('部首名');
-      yomiDiv.append(document.createElement('br'),
-                     bushumeiLabelSpan, ` ${entry.bushumei.join('\u3001')}`);
+      yomiDiv.append(
+        document.createElement('br'),
+        bushumeiLabelSpan,
+        ` ${entry.bushumei.join('\u3001')}`
+      );
     }
 
     // Reference row
@@ -1294,7 +1306,7 @@ var rcxContent = {
       const row = document.createElement('tr');
       referenceTable.append(row);
 
-      const className = `k-mix-td${toggle ^= 1}`;
+      const className = `k-mix-td${(toggle ^= 1)}`;
 
       const nameCell = document.createElement('td');
       nameCell.classList.add(className);
