@@ -180,6 +180,7 @@ describe('rcxContent:text search', () => {
       );
 
     assertRangeEqual(result, textNode, 1, textNode, 5);
+    assert.strictEqual(result.toString(), 'いうえお');
   });
 
   it('should find a range in a div when the point is part-way through a character', () => {
@@ -193,6 +194,83 @@ describe('rcxContent:text search', () => {
       );
 
     assertRangeEqual(result, textNode, 0, textNode, 5);
+    assert.strictEqual(result.toString(), 'あいうえお');
+  });
+
+  it('should find a text in an inline sibling', () => {
+    testDiv.append('あい');
+    const span = document.createElement('span');
+    span.append('うえ');
+    testDiv.append(span);
+    testDiv.append('お');
+    const firstTextNode = testDiv.firstChild;
+    const lastTextNode = testDiv.lastChild;
+    const bbox = getBboxForOffset(firstTextNode, 0);
+
+    const result =
+      rcxContent.getRangeOrTextAtPoint(
+        { x: bbox.right, y: bbox.top + bbox.height / 2 }
+      );
+
+    assertRangeEqual(result, firstTextNode, 1, lastTextNode, 1);
+    assert.strictEqual(result.toString(), 'いうえお');
+  });
+
+  it('should NOT find a text in a block sibling', () => {
+    testDiv.append('あい');
+    const innerDiv = document.createElement('div');
+    innerDiv.append('うえ');
+    testDiv.append(innerDiv);
+    testDiv.append('お');
+    const firstTextNode = testDiv.firstChild;
+    const bbox = getBboxForOffset(firstTextNode, 0);
+
+    const result =
+      rcxContent.getRangeOrTextAtPoint(
+        { x: bbox.right, y: bbox.top + bbox.height / 2 }
+      );
+
+    assertRangeEqual(result, firstTextNode, 1, firstTextNode, 2);
+    assert.strictEqual(result.toString(), 'い');
+  });
+
+  it('should find a text in a cousin for an inline node', () => {
+  });
+
+  it('should NOT find a text in a cousin for a block node', () => {
+  });
+
+  it('moves onto the next node if we are at the end of the current one', () => {
+  });
+
+  it('should ignore non-Japanese characters', () => {
+  });
+
+  it('should stop at non-Japanese characters', () => {
+  });
+
+  it('should stop at the maximum number of characters', () => {
+  });
+
+  it('should skip leading whitespace', () => {
+  });
+
+  it('should skip content in ruby elements', () => {
+  });
+
+  it('should find text in input elements', () => {
+  });
+
+  it('should find text in textarea elements', () => {
+  });
+
+  it('should pull the text out of a title attribute', () => {
+  });
+
+  it('should use the last result if there\'s no result but we haven\'t moved far', () => {
+  });
+
+  it('should NOT use the last result if there\'s no result and we\'ve moved far', () => {
   });
 });
 

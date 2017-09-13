@@ -1150,14 +1150,43 @@ var rcxContent = {
 
     this.currCaretPosition = position;
 
-    function isTextNode(node: Node): node is CharacterData | FakeTextNode {
+    function isTextNode(node: Node): node is CharacterData {
       return node && (<CharacterData>node).data !== undefined;
     }
 
     if (position && isTextNode(position.offsetNode)) {
       const result = new Range();
       result.setStart(position.offsetNode, position.offset);
-      result.setEnd(position.offsetNode, position.offsetNode.data.length);
+
+      // Get the ancestor node for all inline nodes
+      let inlineAncestor = position.offsetNode.parentElement;
+      while (
+        getComputedStyle(inlineAncestor).display === 'inline' &&
+        inlineAncestor.parentElement
+      ) {
+        inlineAncestor = inlineAncestor.parentElement;
+      }
+
+      // Setup a treewalker starting at the current node
+      const treeWalker = document.createNodeIterator(
+        inlineAncestor,
+        NodeFilter.SHOW_TEXT
+      );
+      while (treeWalker.nextNode() !== position.offsetNode);
+
+      // Find last text node
+      let endNode: Node = position.offsetNode;
+      let endOffset: number = position.offsetNode.data.length;
+      let node: CharacterData = <CharacterData>treeWalker.nextNode();
+      while (node &&
+             (node.parentElement === inlineAncestor ||
+              getComputedStyle(node.parentElement).display === 'inline')) {
+        endNode = node;
+        endOffset = node.data.length;
+        node = <CharacterData>treeWalker.nextNode();
+      }
+      result.setEnd(endNode, endOffset);
+
       return result;
     }
 
@@ -1165,9 +1194,6 @@ var rcxContent = {
     // TODO: If the offset is at the end of node's text content, try the next sibling
     // (first see if we can write failing tests for the above)
     // TODO: Skip over rt / rp tags (and others?)
-
-    // (I guess we will need to remember which node we ended up using so
-    //  we can make an appropriate Selection object later?)
 
     // If we got a text node and there is text in range (i.e. we're not at the
     // end of it, look it up.
