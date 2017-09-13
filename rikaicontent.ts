@@ -900,19 +900,18 @@ var rcxContent = {
     return realO;
   },
 
-  onMouseMove: function(ev) {
+  onMouseMove: function(ev: MouseEvent) {
     rcxContent.lastPos.x = ev.clientX;
     rcxContent.lastPos.y = ev.clientY;
     rcxContent.lastTarget = ev.target;
     rcxContent.tryUpdatePopup(ev);
   },
-  tryUpdatePopup: function(ev) {
-    var altGraph = ev.getModifierState && ev.getModifierState('AltGraph');
 
+  tryUpdatePopup: function(ev) {
     if (
       (window.rikaichamp.config.showOnKey.includes('Alt') &&
         !ev.altKey &&
-        !altGraph) ||
+        !ev.getModifierState('AltGraph')) ||
       (window.rikaichamp.config.showOnKey.includes('Ctrl') && !ev.ctrlKey)
     ) {
       this.clearHi();
@@ -920,14 +919,30 @@ var rcxContent = {
       return;
     }
 
+    // TODO: I'm currently in the process of completely rewriting this.
+    // As far as I can tell there are three things we need to do:
+    // (1) Find the text string under the cursor for looking up
+    // (2) Highlighting the longest matched substring
+    // (3) Positioning the popup so that it fits on the screen and doesn't
+    //     overlap the highlighted text.
+    const textAtPoint = this.getRangeOrTextAtPoint({
+      x: ev.clientX,
+      y: ev.clientY,
+    });
+    if (textAtPoint instanceof Range) {
+      console.log(`Got range ${textAtPoint.toString()}`);
+    } else if (typeof textAtPoint === 'string') {
+      console.log(`Got text ${textAtPoint}`);
+    }
+
     var fake;
     var tdata = window.rikaichamp; // per-tab data
     var position = document.caretPositionFromPoint(ev.clientX, ev.clientY);
-    var rp = position.offsetNode;
-    var ro = position.offset;
+    var rp = position ? position.offsetNode : null;
+    var ro = position ? position.offset : null;
 
     function isTextNode(node: Node): node is CharacterData | FakeTextNode {
-      return (<CharacterData>node).data !== undefined;
+      return node && (<CharacterData>node).data !== undefined;
     }
 
     // Put this in a try catch so that an exception here doesn't prevent editing
@@ -1108,6 +1123,88 @@ var rcxContent = {
         this.hidePopup();
       }
     }
+  },
+
+  currCaretPosition: null,
+  currRangeOrTextResult: '',
+
+  getRangeOrTextAtPoint: function(point: {
+    x: number;
+    y: number;
+  }): Range | string | null {
+    const position: CaretPosition = document.caretPositionFromPoint(
+      point.x,
+      point.y
+    );
+
+    // TODO: Special handling for text area and input?
+    // (Is this only needed for highlighting?)
+
+    if (
+      this.currentCaretPosition &&
+      position.offsetNode === this.currCaretPosition.offsetNode &&
+      position.offset === this.currentCaretPosition.offset
+    ) {
+      return this.currRangeOrTextResult;
+    }
+
+    this.currCaretPosition = position;
+
+    function isTextNode(node: Node): node is CharacterData | FakeTextNode {
+      return node && (<CharacterData>node).data !== undefined;
+    }
+
+    if (position && isTextNode(position.offsetNode)) {
+      const result = new Range();
+      result.setStart(position.offsetNode, position.offset);
+      result.setEnd(position.offsetNode, position.offsetNode.data.length);
+      return result;
+    }
+
+    // TODO: If the offsetNode is not a text node, try looking for one amongst the descendents
+    // TODO: If the offset is at the end of node's text content, try the next sibling
+    // (first see if we can write failing tests for the above)
+    // TODO: Skip over rt / rp tags (and others?)
+
+    // (I guess we will need to remember which node we ended up using so
+    //  we can make an appropriate Selection object later?)
+
+    // If we got a text node and there is text in range (i.e. we're not at the
+    // end of it, look it up.
+
+    // Otherwise, see if the target has a 'title' attribute we can look up
+    // (We'll need the target element to be passed in for this? Or should we
+    // just call getElementAtPoint? And walk up the chain until we find one
+    // with a title?)
+    // Also, for each element, look for an 'alt' attribute,
+    // or the text of an <option> (needed?), or the selected
+    // text of a select
+    // --- in this case we'll need to return some flag indicating
+    //     that the text was not something you can normally select
+    //     so that we know to translate everything in range
+    //     and not just the bit under the cursor
+
+    // If none of that works but the position is not far from the
+    // the last time we got called, then just return currText
+    // (and that last value of said flag)
+
+    // Factor in the manual offset from the "next word" feature?
+    // Or would returning the text here be enough?
+
+    // TODO: If we're in a rp or rt element ignore?
+
+    // TODO: Skip leading whitespace
+    // TODO: Return if the character is not in the range of Japanese characters
+
+    // TODO: If we're in <input> or <textarea>, just read out the
+    // text up to maxLength (hard-coded to 13 it seems)
+
+    // TODO: Check we're in a text node (we should have ensured that above?)
+    // TODO: Keep iterating over inline siblings and parents to get enough text
+    //       (I think getComputedStyle(elem).display should be enough to determine
+    //        if something is inline. Not sure 'inline-block' or 'contents' etc. matter)
+    //       Note that I think the rule is if *you* are a text node or display:inline
+    //       then it's ok to go up to your parent and look at its siblings.
   },
 
   makeHtmlForEntry: function(entry) {

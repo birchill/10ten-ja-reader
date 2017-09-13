@@ -136,6 +136,66 @@ describe('rcxContent', () => {
   // TODO: Test above with a character with multiple readings
 });
 
+function assertRangeEqual(range, startContainer, startOffset,
+                                 endContainer, endOffset) {
+  assert.instanceOf(range, Range, 'Should have a range object');
+  assert.strictEqual(range.startContainer, startContainer,
+                     'startContainer node should match');
+  assert.strictEqual(range.startOffset, startOffset,
+                     'startOffset should match');
+  assert.strictEqual(range.endContainer, endContainer,
+                     'endContainer node should match');
+  assert.strictEqual(range.endOffset, endOffset,
+                     'endOffset should match');
+}
+
+function getBboxForOffset(node, start) {
+  const range = new Range();
+  range.setStart(node, start);
+  range.setEnd(node, start+1);
+  return range.getBoundingClientRect();
+}
+
+describe('rcxContent:text search', () => {
+  let testDiv;
+
+  beforeEach(() => {
+    testDiv = document.createElement('div');
+    testDiv.setAttribute('id', 'test-div');
+    document.body.append(testDiv);
+  });
+
+  afterEach(() => {
+    document.getElementById('test-div').remove();
+  });
+
+  it('should find a range in a div', () => {
+    testDiv.append('あいうえお');
+    const textNode = testDiv.firstChild;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result =
+      rcxContent.getRangeOrTextAtPoint(
+        { x: bbox.right, y: bbox.top + bbox.height / 2 }
+      );
+
+    assertRangeEqual(result, textNode, 1, textNode, 5);
+  });
+
+  it('should find a range in a div when the point is part-way through a character', () => {
+    testDiv.append('あいうえお');
+    const textNode = testDiv.firstChild;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result =
+      rcxContent.getRangeOrTextAtPoint(
+        { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 }
+      );
+
+    assertRangeEqual(result, textNode, 0, textNode, 5);
+  });
+});
+
 mocha.run();
 </script>
 </body>
