@@ -197,12 +197,8 @@ describe('rcxContent:text search', () => {
     assert.strictEqual(result.toString(), 'あいうえお');
   });
 
-  it('should find a text in an inline sibling', () => {
-    testDiv.append('あい');
-    const span = document.createElement('span');
-    span.append('うえ');
-    testDiv.append(span);
-    testDiv.append('お');
+  it('should find text in an inline sibling', () => {
+    testDiv.innerHTML = 'あい<span>うえ</span>お';
     const firstTextNode = testDiv.firstChild;
     const lastTextNode = testDiv.lastChild;
     const bbox = getBboxForOffset(firstTextNode, 0);
@@ -216,12 +212,8 @@ describe('rcxContent:text search', () => {
     assert.strictEqual(result.toString(), 'いうえお');
   });
 
-  it('should NOT find a text in a block sibling', () => {
-    testDiv.append('あい');
-    const innerDiv = document.createElement('div');
-    innerDiv.append('うえ');
-    testDiv.append(innerDiv);
-    testDiv.append('お');
+  it('should NOT find text in a block sibling', () => {
+    testDiv.innerHTML = 'あい<div>うえ</div>お';
     const firstTextNode = testDiv.firstChild;
     const bbox = getBboxForOffset(firstTextNode, 0);
 
@@ -234,10 +226,23 @@ describe('rcxContent:text search', () => {
     assert.strictEqual(result.toString(), 'い');
   });
 
-  it('should find a text in a cousin for an inline node', () => {
+  it('should find text in a cousin for an inline node', () => {
+    testDiv.innerHTML =
+      '<span><span>あい</span></span>う<span>え<span>お</span></span>';
+    const firstTextNode = testDiv.firstChild.firstChild.firstChild;
+    const lastTextNode = testDiv.lastChild.lastChild.firstChild;
+    const bbox = getBboxForOffset(firstTextNode, 0);
+
+    const result =
+      rcxContent.getRangeOrTextAtPoint(
+        { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 }
+      );
+
+    assertRangeEqual(result, firstTextNode, 0, lastTextNode, 1);
+    assert.strictEqual(result.toString(), 'あいうえお');
   });
 
-  it('should NOT find a text in a cousin for a block node', () => {
+  it('should NOT find text in a cousin for a block node', () => {
   });
 
   it('moves onto the next node if we are at the end of the current one', () => {
@@ -271,6 +276,12 @@ describe('rcxContent:text search', () => {
   });
 
   it('should NOT use the last result if there\'s no result and we\'ve moved far', () => {
+  });
+
+  it('should find text in SVG content', () => {
+  });
+
+  it('should find text in nested SVG tspans', () => {
   });
 });
 
