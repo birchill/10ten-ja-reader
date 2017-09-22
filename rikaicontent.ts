@@ -96,6 +96,8 @@ var rcxContent = {
   defaultDict: 2,
   nextDict: 3,
 
+  MAX_LENGTH: 13,
+
   // Adds the listeners and stuff.
   enableTab: function() {
     if (!window.rikaichamp) {
@@ -944,7 +946,7 @@ var rcxContent = {
     const textAtPoint = this.getTextAtPoint({
       x: ev.clientX,
       y: ev.clientY,
-    });
+    }, this.MAX_LENGTH);
     if (textAtPoint instanceof Range) {
       console.log(`Got range ${textAtPoint.toString()}`);
     } else if (typeof textAtPoint === 'string') {
@@ -1147,7 +1149,7 @@ var rcxContent = {
   getTextAtPoint: function(point: {
     x: number;
     y: number;
-  }): GetTextResult | null {
+  }, maxLength?: number): GetTextResult | null {
     const position: CaretPosition = document.caretPositionFromPoint(
       point.x,
       point.y
@@ -1226,14 +1228,26 @@ var rcxContent = {
           /[^\u25cb\u3004-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/;
 
         const nodeText = node.data.substr(offset);
-        const textEnd = nodeText.search(nonJapaneseOrDelimiter);
+        let textEnd = nodeText.search(nonJapaneseOrDelimiter);
+
+        if (typeof maxLength === 'number' && maxLength >= 0) {
+          const maxEnd = maxLength - result.text.length;
+          if (textEnd === -1) {
+            // The >= here is important since it means that if the node has
+            // exactly enough characters to reach the maxLength then we will
+            // stop walking the tree at this point.
+            textEnd = node.data.length - offset >= maxEnd ? maxEnd : -1;
+          } else {
+            textEnd = Math.min(textEnd, maxEnd);
+          }
+        }
 
         if (textEnd === 0) {
-          // The text node begins with disallowed characters.
+          // There are no characters here for us.
           break;
         } else if (textEnd !== -1) {
           // The text node has disallowed characters mid-way through. Return up
-          // to that point.
+          // to that point or maxLength, whichever comes first.
           result.text += nodeText.substr(0, textEnd);
           result.rangeEnds.push({ container: node, offset: offset + textEnd });
           break;

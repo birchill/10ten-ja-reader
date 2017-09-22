@@ -342,6 +342,99 @@ describe('rcxContent:text search', () => {
   });
 
   it('should stop at the maximum number of characters', () => {
+    testDiv.append('あいうえお');
+    const textNode = testDiv.firstChild;
+    const bbox = getBboxForOffset(textNode, 1);
+
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bbox.left, y: bbox.top + bbox.height / 2 },
+        3
+      );
+
+    assertTextResultEqual(result, 'いうえ', textNode, 1, textNode, 4);
+  });
+
+  it('should stop at the maximum number of characters even when navigating siblings', () => {
+    testDiv.innerHTML = 'あい<span>うえ</span>お';
+    const firstTextNode = testDiv.firstChild;
+    const middleTextNode = testDiv.childNodes[1].firstChild;
+    const bbox = getBboxForOffset(firstTextNode, 0);
+
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bbox.right, y: bbox.top + bbox.height / 2 },
+        2
+      );
+
+    assertTextResultEqual(result, 'いう',
+                          firstTextNode, 1,
+                          firstTextNode, 2,
+                          middleTextNode, 1);
+  });
+
+  it('should stop at the maximum number of characters even that lines up exactly with the end of a text node', () => {
+    testDiv.innerHTML = 'あい<span>うえ</span>お';
+    const firstTextNode = testDiv.firstChild;
+    const middleTextNode = testDiv.childNodes[1].firstChild;
+    const bbox = getBboxForOffset(firstTextNode, 0);
+
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bbox.right, y: bbox.top + bbox.height / 2 },
+        3
+      );
+
+    assertTextResultEqual(result, 'いうえ',
+                          firstTextNode, 1,
+                          firstTextNode, 2,
+                          middleTextNode, 2);
+  });
+
+  it('should stop at the maximum number of characters even when it is zero', () => {
+    testDiv.append('あいうえお');
+    const textNode = testDiv.firstChild;
+    const bbox = getBboxForOffset(textNode, 1);
+
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bbox.left, y: bbox.top + bbox.height / 2 },
+        0
+      );
+
+    assert.strictEqual(result, null);
+  });
+
+  it('should stop at the maximum number of characters if it comes before the end of the Japanese text', () => {
+    testDiv.append('あいうabc');
+    const textNode = testDiv.firstChild;
+    const bbox = getBboxForOffset(textNode, 1);
+
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bbox.left, y: bbox.top + bbox.height / 2 },
+        1
+      );
+
+    assertTextResultEqual(result, 'い',
+                          textNode, 1,
+                          textNode, 2);
+  });
+
+  it('should stop at the end of the Japanese text if it comes before the maximum number of characters', () => {
+    testDiv.append('あいうabc');
+    const textNode = testDiv.firstChild;
+    const bbox = getBboxForOffset(textNode, 1);
+
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bbox.left, y: bbox.top + bbox.height / 2 },
+        3
+      );
+
+    assertTextResultEqual(result, 'いう',
+                          textNode, 1,
+                          textNode, 3);
   });
 
   it('should skip leading whitespace', () => {
