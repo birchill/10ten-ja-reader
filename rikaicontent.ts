@@ -1307,17 +1307,9 @@ var rcxContent = {
     // TODO: If we're in a rp or rt element ignore?
 
     // TODO: Skip leading whitespace
-    // TODO: Return if the character is not in the range of Japanese characters
 
     // TODO: If we're in <input> or <textarea>, just read out the
-    // text up to maxLength (hard-coded to 13 it seems)
-
-    // TODO: Check we're in a text node (we should have ensured that above?)
-    // TODO: Keep iterating over inline siblings and parents to get enough text
-    //       (I think getComputedStyle(elem).display should be enough to determine
-    //        if something is inline. Not sure 'inline-block' or 'contents' etc. matter)
-    //       Note that I think the rule is if *you* are a text node or display:inline
-    //       then it's ok to go up to your parent and look at its siblings.
+    // text up to maxLength
   },
 
   makeHtmlForEntry: function(entry) {
