@@ -422,6 +422,9 @@ class Dictionary {
   //   [ "がーでん", [ 0, 2, 3, 5, 6 ] ]
   //
   // Returns [ normalized input, array with length mapping ]
+  //
+  // TODO: Translate this range https://en.wikipedia.org/wiki/Enclosed_Ideographic_Supplement
+  // TODO: Translate the first part of this range: https://en.wikipedia.org/wiki/CJK_Compatibility
   normalizeInput(input: string) {
     let inputLengths = [0];
     let previous = 0;

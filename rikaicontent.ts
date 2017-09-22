@@ -71,6 +71,22 @@ interface FakeTextNode extends Node {
   data: string;
 }
 
+// Either end of a Range object
+interface RangeEndpoint {
+  container: Node;
+  offset: number;
+}
+
+interface GetTextResult {
+  text: string;
+  // Contains the node and offset where the selection starts. This will be null
+  // if, for example, the result is the text from an element's title attribute.
+  rangeStart?: RangeEndpoint;
+  // Contains the node and offset for each the text containing node in the
+  // maximum selected range.
+  rangeEnds: RangeEndpoint[];
+}
+
 var rcxContent = {
   dictCount: 3,
   altView: 0,
@@ -925,7 +941,7 @@ var rcxContent = {
     // (2) Highlighting the longest matched substring
     // (3) Positioning the popup so that it fits on the screen and doesn't
     //     overlap the highlighted text.
-    const textAtPoint = this.getRangeOrTextAtPoint({
+    const textAtPoint = this.getTextAtPoint({
       x: ev.clientX,
       y: ev.clientY,
     });
@@ -1125,13 +1141,13 @@ var rcxContent = {
     }
   },
 
-  currCaretPosition: null,
-  currRangeOrTextResult: '',
+  currentCaretPosition: null,
+  currentTextAtPoint: null,
 
-  getRangeOrTextAtPoint: function(point: {
+  getTextAtPoint: function(point: {
     x: number;
     y: number;
-  }): Range | string | null {
+  }): GetTextResult | null {
     const position: CaretPosition = document.caretPositionFromPoint(
       point.x,
       point.y
@@ -1141,22 +1157,29 @@ var rcxContent = {
     // (Is this only needed for highlighting?)
 
     if (
+      position &&
       this.currentCaretPosition &&
-      position.offsetNode === this.currCaretPosition.offsetNode &&
+      position.offsetNode === this.currentCaretPosition.offsetNode &&
       position.offset === this.currentCaretPosition.offset
     ) {
-      return this.currRangeOrTextResult;
+      return this.currentTextAtPoint;
     }
 
-    this.currCaretPosition = position;
+    this.currentCaretPosition = position;
 
     function isTextNode(node: Node): node is CharacterData {
       return node && (<CharacterData>node).data !== undefined;
     }
 
     if (position && isTextNode(position.offsetNode)) {
-      const result = new Range();
-      result.setStart(position.offsetNode, position.offset);
+      let result = {
+        text: '',
+        rangeStart: {
+          container: position.offsetNode,
+          offset: position.offset,
+        },
+        rangeEnds: [],
+      };
 
       // Get the ancestor node for all inline nodes
       let inlineAncestor = position.offsetNode.parentElement;
@@ -1174,21 +1197,71 @@ var rcxContent = {
       );
       while (treeWalker.nextNode() !== position.offsetNode);
 
-      // Find last text node
-      let endNode: Node = position.offsetNode;
-      let endOffset: number = position.offsetNode.data.length;
-      let node: CharacterData = <CharacterData>treeWalker.nextNode();
-      while (node &&
-             (node.parentElement === inlineAncestor ||
-              getComputedStyle(node.parentElement).display === 'inline')) {
-        endNode = node;
-        endOffset = node.data.length;
+      let node: CharacterData = position.offsetNode;
+      let offset: number = position.offset;
+      do {
+        // Search for non-Japanese text (or a delimiter of some sort even if it
+        // is "Japanese" in the sense of being full-width).
+        //
+        // * U+25CB is 'white circle' often used to represent a blank
+        //   (U+3007 is an ideographic zero that is also sometimes used for this
+        //   purpose, but this is included in the U+3001~U+30FF range.)
+        // * U+3000~U+30FF is ideographic punctuation but we skip U+3000
+        //   (ideographic space), U+3001 (、 ideographic comma), U+3002
+        //   (。 ideographic full stop), and U+3003 (〃 ditto mark) since these
+        //   are typically only going to delimit words.
+        // * U+3041~U+309F is the hiragana range
+        // * U+30A0~U+30FF is the katakana range
+        // * U+3400~U+4DBF is the CJK Unified Ideographs Extension A block (rare
+        //   kanji)
+        // * U+4E00~U+9FFF is the CJK Unified Ideographs block ("the kanji")
+        // * U+F900~U+FAFF is the CJK Compatibility Ideographs block (random odd
+        //   kanji, because standards)
+        // * U+FF61~U+FF65 is some halfwidth ideographic symbols, e.g. ｡ but we
+        //   skip them (although previus rikai-tachi included them) since
+        //   they're mostly going to be delimiters
+        // * U+FF66~U+FF9F is halfwidth katakana
+        //
+        const nonJapaneseOrDelimiter =
+          /[^\u25cb\u3004-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/;
+
+        const nodeText = node.data.substr(offset);
+        const textEnd = nodeText.search(nonJapaneseOrDelimiter);
+
+        if (textEnd === 0) {
+          // The text node begins with disallowed characters.
+          break;
+        } else if (textEnd !== -1) {
+          // The text node has disallowed characters mid-way through. Return up
+          // to that point.
+          result.text += nodeText.substr(0, textEnd);
+          result.rangeEnds.push({ container: node, offset: offset + textEnd });
+          break;
+        }
+
+        // The whole text node is allowed characters, keep going.
+        result.text += nodeText;
+        result.rangeEnds.push({ container: node, offset: node.data.length });
         node = <CharacterData>treeWalker.nextNode();
+        offset = 0;
+      } while (
+        node &&
+        (node.parentElement === inlineAncestor ||
+          getComputedStyle(node.parentElement).display === 'inline')
+      );
+
+      // Check if we didn't find any suitable characters
+      if (!result.rangeEnds.length) {
+        result = null;
       }
-      result.setEnd(endNode, endOffset);
+
+      this.currentTextAtPoint = result;
 
       return result;
     }
+
+    this.currentTextAtPoint = null;
+    return null;
 
     // TODO: If the offsetNode is not a text node, try looking for one amongst the descendents
     // TODO: If the offset is at the end of node's text content, try the next sibling
