@@ -152,14 +152,20 @@ function assertTextResultEqual(result, text, startContainer, startOffset,
                        `rangeEnds #${i + 1} offset should match`);
   }
 
-  // Consistency check -- not sure what we should do once we get to ruby text
-  // since in that case the result text and range text will differ.
+  // Consistency check
   const range = new Range();
   range.setStart(result.rangeStart.container, result.rangeStart.offset);
   const lastEndpoint = result.rangeEnds[result.rangeEnds.length - 1];
   range.setEnd(lastEndpoint.container, lastEndpoint.offset);
 
-  assert.strictEqual(range.toString(), text);
+  // If we have ruby text then the range string won't match the text passed so
+  // just skip this check.
+  const containsRuby = node => node &&
+                               node.nodeType === Node.ELEMENT_NODE &&
+                               node.querySelector('ruby');
+  if (!containsRuby(range.commonAncestorContainer)) {
+    assert.strictEqual(range.toString(), text);
+  }
 }
 
 function getBboxForOffset(node, start) {
@@ -490,6 +496,63 @@ describe('rcxContent:text search', () => {
   });
 
   it('should skip content in ruby elements', () => {
+    // This is a rather complicated example including rp tags, nested ruby,
+    // whitespace in rp elements, and trailing punctuation.
+    testDiv.innerHTML
+      = '<ruby>仙<rp> (<rt>せん<rp>) </rp>台<rp>（<rt>だい<rp>）</ruby>の<ruby><ruby>牧<rt>ぼく</ruby><rt>まき</ruby><ruby><ruby>場<rt>じょう</ruby><rt>ば</ruby>です。';
+    const firstTextNode = testDiv.firstChild.firstChild;
+    const daiNode = testDiv.firstChild.childNodes[4];
+    const noNode = testDiv.childNodes[1];
+    const bokuNode = testDiv.childNodes[2].firstChild.firstChild;
+    const jouNode = testDiv.childNodes[3].firstChild.firstChild;
+    const desuNode = testDiv.lastChild;
+    const bbox = getBboxForOffset(firstTextNode, 0);
+
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bbox.left, y: bbox.top + bbox.height / 2 }
+      );
+
+    assertTextResultEqual(result, '仙台の牧場です',
+                          firstTextNode, 0,
+                          firstTextNode, 1,
+                          daiNode, 1,
+                          noNode, 1,
+                          bokuNode, 1,
+                          jouNode, 1,
+                          desuNode, 2);
+  });
+
+  it('should return the rt text if it is positioned over an rt element', () => {
+    testDiv.innerHTML = '<ruby>仙<rt>せん</rt>台<rt>だい</ruby>';
+    const senNode = testDiv.firstChild.childNodes[1].firstChild;
+    const bbox = getBboxForOffset(senNode, 0);
+
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bbox.left, y: bbox.top + bbox.height / 2 }
+      );
+
+    assertTextResultEqual(result, 'せん',
+                          senNode, 0,
+                          senNode, 2);
+  });
+
+  it('should return the rt text if it is positioned over a child of an rt element', () => {
+    testDiv.innerHTML = '<ruby>仙<rt><b>せ</b>ん</rt>台<rt>だい</ruby>';
+    const seNode = testDiv.firstChild.childNodes[1].firstChild.firstChild;
+    const nNode = testDiv.firstChild.childNodes[1].lastChild;
+    const bbox = getBboxForOffset(seNode, 0);
+
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bbox.left, y: bbox.top + bbox.height / 2 }
+      );
+
+    assertTextResultEqual(result, 'せん',
+                          seNode, 0,
+                          seNode, 1,
+                          nNode, 1);
   });
 
   it('should find text in input elements', () => {

@@ -1178,19 +1178,42 @@ var rcxContent = {
     }
 
     if (position && isTextNode(position.offsetNode)) {
+      const isRubyAnnotationElement =
+        (element: Element) => {
+          const tag = element.tagName.toLowerCase();
+          return tag === 'rp' || tag === 'rt';
+        };
+
       // Get the ancestor node for all inline nodes
       let inlineAncestor = position.offsetNode.parentElement;
+      let display = getComputedStyle(inlineAncestor).display;
       while (
-        getComputedStyle(inlineAncestor).display === 'inline' &&
+        (display === 'inline' || display === 'ruby') &&
+        !isRubyAnnotationElement(inlineAncestor) &&
         inlineAncestor.parentElement
       ) {
         inlineAncestor = inlineAncestor.parentElement;
+        display = getComputedStyle(inlineAncestor).display;
+      }
+
+      // Skip ruby annotation elements when traversing. However, don't do that
+      // if the inline ancestor is itself a ruby annotation element or else
+      // we'll never be able to find the starting point within the tree walker.
+      let filter;
+      if (!isRubyAnnotationElement(inlineAncestor)) {
+        filter = {
+          acceptNode: node =>
+            isRubyAnnotationElement(node.parentElement)
+              ? NodeFilter.FILTER_REJECT
+              : NodeFilter.FILTER_ACCEPT,
+        };
       }
 
       // Setup a treewalker starting at the current node
       const treeWalker = document.createNodeIterator(
         inlineAncestor,
-        NodeFilter.SHOW_TEXT
+        NodeFilter.SHOW_TEXT,
+        filter,
       );
       while (treeWalker.nextNode() !== position.offsetNode);
 
@@ -1207,6 +1230,7 @@ var rcxContent = {
         node = <CharacterData>treeWalker.nextNode();
         offset = 0;
       } while (node);
+      // (This should probably not traverse block siblings but oh well)
 
       if (!node) {
         return null;
@@ -1277,11 +1301,13 @@ var rcxContent = {
         result.text += nodeText;
         result.rangeEnds.push({ container: node, offset: node.data.length });
         node = <CharacterData>treeWalker.nextNode();
+        display = node ? getComputedStyle(node.parentElement).display : '';
         offset = 0;
       } while (
         node &&
         (node.parentElement === inlineAncestor ||
-          getComputedStyle(node.parentElement).display === 'inline')
+          display === 'inline' ||
+          display === 'ruby')
       );
 
       // Check if we didn't find any suitable characters
@@ -1296,14 +1322,6 @@ var rcxContent = {
 
     this.currentTextAtPoint = null;
     return null;
-
-    // TODO: If the offsetNode is not a text node, try looking for one amongst the descendents
-    // TODO: If the offset is at the end of node's text content, try the next sibling
-    // (first see if we can write failing tests for the above)
-    // TODO: Skip over rt / rp tags (and others?)
-
-    // If we got a text node and there is text in range (i.e. we're not at the
-    // end of it, look it up.
 
     // Otherwise, see if the target has a 'title' attribute we can look up
     // (We'll need the target element to be passed in for this? Or should we
