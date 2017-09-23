@@ -438,6 +438,55 @@ describe('rcxContent:text search', () => {
   });
 
   it('should skip leading whitespace', () => {
+    testDiv.append('  　\tあいうえお');
+    const textNode = testDiv.firstChild;
+    const bbox = getBboxForOffset(textNode, 1);
+
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bbox.right, y: bbox.top + bbox.height / 2 },
+        3
+      );
+
+    assertTextResultEqual(result, 'あいう',
+                          textNode, 4,
+                          textNode, 7);
+  });
+
+  it('should skip empty nodes', () => {
+    testDiv.innerHTML = '<span></span>あい<span></span>うえお';
+    const firstEmptyNode = testDiv.firstChild;
+    const firstTextNode = testDiv.childNodes[1];
+    const lastTextNode = testDiv.lastChild;
+    const bbox = firstEmptyNode.getBoundingClientRect();
+
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bbox.right, y: bbox.top + bbox.height / 2 }
+      );
+
+    assertTextResultEqual(result, 'あいうえお',
+                          firstTextNode, 0,
+                          firstTextNode, 2,
+                          lastTextNode, 3);
+  });
+
+  it('should skip leading whitespace only nodes', () => {
+    testDiv.innerHTML = '<span>  　</span>　あい<span></span>うえお';
+    const whitespaceOnlyTextNode = testDiv.firstChild.firstChild;
+    const firstRealTextNode = testDiv.childNodes[1];
+    const lastTextNode = testDiv.lastChild;
+    const bbox = getBboxForOffset(whitespaceOnlyTextNode, 1);
+
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bbox.right, y: bbox.top + bbox.height / 2 }
+      );
+
+    assertTextResultEqual(result, 'あいうえお',
+                          firstRealTextNode, 1,
+                          firstRealTextNode, 3,
+                          lastTextNode, 3);
   });
 
   it('should skip content in ruby elements', () => {

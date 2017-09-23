@@ -943,14 +943,15 @@ var rcxContent = {
     // (2) Highlighting the longest matched substring
     // (3) Positioning the popup so that it fits on the screen and doesn't
     //     overlap the highlighted text.
-    const textAtPoint = this.getTextAtPoint({
-      x: ev.clientX,
-      y: ev.clientY,
-    }, this.MAX_LENGTH);
-    if (textAtPoint instanceof Range) {
-      console.log(`Got range ${textAtPoint.toString()}`);
-    } else if (typeof textAtPoint === 'string') {
-      console.log(`Got text ${textAtPoint}`);
+    const textAtPoint = this.getTextAtPoint(
+      {
+        x: ev.clientX,
+        y: ev.clientY,
+      },
+      this.MAX_LENGTH
+    );
+    if (textAtPoint) {
+      console.log(`Got '${textAtPoint.text}'`);
     }
 
     var fake;
@@ -1146,10 +1147,13 @@ var rcxContent = {
   currentCaretPosition: null,
   currentTextAtPoint: null,
 
-  getTextAtPoint: function(point: {
-    x: number;
-    y: number;
-  }, maxLength?: number): GetTextResult | null {
+  getTextAtPoint: function(
+    point: {
+      x: number;
+      y: number;
+    },
+    maxLength?: number
+  ): GetTextResult | null {
     const position: CaretPosition = document.caretPositionFromPoint(
       point.x,
       point.y
@@ -1174,15 +1178,6 @@ var rcxContent = {
     }
 
     if (position && isTextNode(position.offsetNode)) {
-      let result = {
-        text: '',
-        rangeStart: {
-          container: position.offsetNode,
-          offset: position.offset,
-        },
-        rangeEnds: [],
-      };
-
       // Get the ancestor node for all inline nodes
       let inlineAncestor = position.offsetNode.parentElement;
       while (
@@ -1199,8 +1194,34 @@ var rcxContent = {
       );
       while (treeWalker.nextNode() !== position.offsetNode);
 
+      // Look for start, skipping any initial whitespace
       let node: CharacterData = position.offsetNode;
       let offset: number = position.offset;
+      do {
+        const nodeText = node.data.substr(offset);
+        const textStart = nodeText.search(/\S/);
+        if (textStart !== -1) {
+          offset += textStart;
+          break;
+        }
+        node = <CharacterData>treeWalker.nextNode();
+        offset = 0;
+      } while (node);
+
+      if (!node) {
+        return null;
+      }
+
+      let result = {
+        text: '',
+        rangeStart: {
+          container: node,
+          offset: offset,
+        },
+        rangeEnds: [],
+      };
+
+      // Look for range ends
       do {
         // Search for non-Japanese text (or a delimiter of some sort even if it
         // is "Japanese" in the sense of being full-width).
@@ -1224,8 +1245,7 @@ var rcxContent = {
         //   they're mostly going to be delimiters
         // * U+FF66~U+FF9F is halfwidth katakana
         //
-        const nonJapaneseOrDelimiter =
-          /[^\u25cb\u3004-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/;
+        const nonJapaneseOrDelimiter = /[^\u25cb\u3004-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/;
 
         const nodeText = node.data.substr(offset);
         let textEnd = nodeText.search(nonJapaneseOrDelimiter);
@@ -1303,10 +1323,6 @@ var rcxContent = {
 
     // Factor in the manual offset from the "next word" feature?
     // Or would returning the text here be enough?
-
-    // TODO: If we're in a rp or rt element ignore?
-
-    // TODO: Skip leading whitespace
 
     // TODO: If we're in <input> or <textarea>, just read out the
     // text up to maxLength
