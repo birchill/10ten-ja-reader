@@ -1,6 +1,6 @@
-# Rikai champ!
+# Rikaichamp!
 
-Port of rikaikun (which is a port of rikaichan (which is a port of rikaiXUL)) to
+Port of rikaikun (which is a port of rikaichan, which is a port of rikaiXUL) to
 Web Extensions.
 
 ## Development
@@ -9,6 +9,21 @@ Web Extensions.
 git clone --recursive https://github.com/birtles/rikaichamp.git
 npm install
 `
+
+## Running
+
+For manual testing you can use
+
+`
+npm install -g web-ext
+web-ext run --bc --start-url https://www.asahi.com/ -p default
+`
+
+The `--bc` just brings up the browser console immediately so you can check for
+any warnings produced at startup.
+
+The `-p default` is so you can use your regular browsing profile which is useful
+if you want to test, for example, Twitter or Facebook.
 
 ## Testing
 
