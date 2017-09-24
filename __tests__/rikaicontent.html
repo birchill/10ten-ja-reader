@@ -181,6 +181,10 @@ describe('rcxContent:text search', () => {
   beforeEach(() => {
     testDiv = document.createElement('div');
     testDiv.setAttribute('id', 'test-div');
+    // Stick the div at the top as if the div is offscreen,
+    // caretPositionFromPoint won't work
+    testDiv.style.position = 'absolute';
+    testDiv.style.top = '0px';
     document.body.append(testDiv);
   });
 
