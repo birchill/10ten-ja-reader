@@ -1178,11 +1178,10 @@ var rcxContent = {
     }
 
     if (position && isTextNode(position.offsetNode)) {
-      const isRubyAnnotationElement =
-        (element: Element) => {
-          const tag = element.tagName.toLowerCase();
-          return tag === 'rp' || tag === 'rt';
-        };
+      const isRubyAnnotationElement = (element: Element) => {
+        const tag = element.tagName.toLowerCase();
+        return tag === 'rp' || tag === 'rt';
+      };
 
       // Get the ancestor node for all inline nodes
       let inlineAncestor = position.offsetNode.parentElement;
@@ -1213,7 +1212,7 @@ var rcxContent = {
       const treeWalker = document.createNodeIterator(
         inlineAncestor,
         NodeFilter.SHOW_TEXT,
-        filter,
+        filter
       );
       while (treeWalker.nextNode() !== position.offsetNode);
 

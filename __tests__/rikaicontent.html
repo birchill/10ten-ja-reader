@@ -183,7 +183,7 @@ describe('rcxContent:text search', () => {
     testDiv.setAttribute('id', 'test-div');
     // Stick the div at the top as if the div is offscreen,
     // caretPositionFromPoint won't work
-    testDiv.style.position = 'absolute';
+    testDiv.style.position = 'fixed';
     testDiv.style.top = '0px';
     document.body.append(testDiv);
   });
@@ -559,6 +559,42 @@ describe('rcxContent:text search', () => {
                           nNode, 1);
   });
 
+  it('should find text in SVG content', () => {
+    testDiv.innerHTML = '<svg><text y="1em">あいうえお</text></svg>';
+    const textNode = testDiv.firstChild.firstChild.firstChild;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bbox.right, y: bbox.top + bbox.height / 2 }
+      );
+
+    assertTextResultEqual(result, 'いうえお',
+                          textNode, 1,
+                          textNode, 5);
+  });
+
+  it('should find text in nested SVG elements', () => {
+    testDiv.innerHTML = '<svg><text y="1em">あ<tspan><tspan id=inner-tspan>いう</tspan></tspan>え<a id=inner-a>お</a></text></svg>';
+    const firstTextNode = testDiv.firstChild.firstChild.firstChild;
+    const innerTspan = testDiv.querySelector('#inner-tspan').firstChild;
+    const middleTextNode = testDiv.firstChild.firstChild.childNodes[2];
+    const innerA = testDiv.querySelector('#inner-a').firstChild;
+    const bbox = getBboxForOffset(firstTextNode, 0);
+
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bbox.left + 1, y: bbox.top + bbox.height / 2 }
+      );
+
+    assertTextResultEqual(result, 'あいうえお',
+                          firstTextNode, 0,
+                          firstTextNode, 1,
+                          innerTspan, 2,
+                          middleTextNode, 1,
+                          innerA, 1);
+  });
+
   it('should find text in input elements', () => {
   });
 
@@ -572,12 +608,6 @@ describe('rcxContent:text search', () => {
   });
 
   it('should NOT use the last result if there\'s no result and we\'ve moved far', () => {
-  });
-
-  it('should find text in SVG content', () => {
-  });
-
-  it('should find text in nested SVG tspans', () => {
   });
 });
 
