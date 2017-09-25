@@ -67,6 +67,10 @@ interface Document {
   caretPositionFromPoint(x: number, y: number): CaretPosition | null;
 }
 
+interface NodeIterator {
+  readonly referenceNode?: Node;
+}
+
 interface FakeTextNode extends Node {
   data: string;
 }
@@ -1174,7 +1178,7 @@ var rcxContent = {
     this.currentCaretPosition = position;
 
     function isTextNode(node: Node): node is CharacterData {
-      return node && (<CharacterData>node).data !== undefined;
+      return node && node.nodeType === Node.TEXT_NODE;
     }
 
     if (position && isTextNode(position.offsetNode)) {
@@ -1214,7 +1218,14 @@ var rcxContent = {
         NodeFilter.SHOW_TEXT,
         filter
       );
-      while (treeWalker.nextNode() !== position.offsetNode);
+      while (treeWalker.referenceNode !== position.offsetNode &&
+             treeWalker.nextNode());
+
+      if (treeWalker.referenceNode !== position.offsetNode) {
+        console.error('Could not find node in tree');
+        console.log(position.offsetNode);
+        return null;
+      }
 
       // Look for start, skipping any initial whitespace
       let node: CharacterData = position.offsetNode;
