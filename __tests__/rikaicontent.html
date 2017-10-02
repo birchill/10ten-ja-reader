@@ -152,6 +152,14 @@ function assertTextResultEqual(result, text, startContainer, startOffset,
                        `rangeEnds #${i + 1} offset should match`);
   }
 
+  // We want to check that a suitable Range object would produce the same text
+  // but we don't create Range objects when the target is an <input> or
+  // <textarea> node.
+  if (result.rangeStart.container instanceof HTMLInputElement ||
+      result.rangeStart.container instanceof HTMLTextAreaElement) {
+    return;
+  }
+
   // Consistency check
   const range = new Range();
   range.setStart(result.rangeStart.container, result.rangeStart.offset);
@@ -596,9 +604,44 @@ describe('rcxContent:text search', () => {
   });
 
   it('should find text in input elements', () => {
+    testDiv.innerHTML = '<input type="text" value="あいうえお">';
+    const inputNode = testDiv.firstChild;
+
+    // There doesn't seem to be any API for getting the character offsets inside
+    // an <input> or <textarea> element so we just grab the bbox of the
+    // element itself and guess where the second character would be.
+    //
+    // We're at the mercy of available fonts and UA stylesheets here but
+    // hopefully we just set styles and so on until we get close enough on all
+    // the platforms we care about.
+    inputNode.style.padding = '0px';
+    inputNode.style.fontSize = '10px';
+    const bbox = inputNode.getBoundingClientRect();
+
+    const result =
+      rcxContent.getTextAtPoint(
+        // Just guess here...
+        { x: bbox.left + 20, y: bbox.top + bbox.height / 2 }
+      );
+
+    assertTextResultEqual(result, 'いうえお',
+                          inputNode, 1,
+                          inputNode, 5);
+  });
+
+  it('should NOT find text in input[type=password] elements', () => {
   });
 
   it('should find text in textarea elements', () => {
+  });
+
+  it('should skip leading whitespace in input/textarea elements', () => {
+  });
+
+  it('should only return Japanese characters from input/textarea elements', () => {
+  });
+
+  it('should not return the maximum number of characters from input/textarea elements', () => {
   });
 
   it('should pull the text out of a title attribute', () => {

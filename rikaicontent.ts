@@ -1163,9 +1163,6 @@ var rcxContent = {
       point.y
     );
 
-    // TODO: Special handling for text area and input?
-    // (Is this only needed for highlighting?)
-
     if (
       position &&
       this.currentCaretPosition &&
@@ -1179,6 +1176,17 @@ var rcxContent = {
 
     function isTextNode(node: Node): node is CharacterData {
       return node && node.nodeType === Node.TEXT_NODE;
+    }
+
+    function isTextInputNode(
+      node: Node
+    ): node is HTMLInputElement | HTMLTextAreaElement {
+      return (
+        node &&
+        node.nodeType === Node.ELEMENT_NODE &&
+        ((<Element>node).tagName === 'INPUT' ||
+          (<Element>node).tagName === 'TEXTAREA')
+      );
     }
 
     if (position && isTextNode(position.offsetNode)) {
@@ -1218,8 +1226,10 @@ var rcxContent = {
         NodeFilter.SHOW_TEXT,
         filter
       );
-      while (treeWalker.referenceNode !== position.offsetNode &&
-             treeWalker.nextNode());
+      while (
+        treeWalker.referenceNode !== position.offsetNode &&
+        treeWalker.nextNode()
+      );
 
       if (treeWalker.referenceNode !== position.offsetNode) {
         console.error('Could not find node in tree');
@@ -1328,6 +1338,41 @@ var rcxContent = {
       this.currentTextAtPoint = result;
 
       return result;
+    } else if (position && isTextInputNode(position.offsetNode)) {
+      // Previous rikai-tachi would handle this case by synthesizing an overlay
+      // element. That introduces a fair bit of complexity, but then again I'm
+      // pretty sure using the separate selection API for these nodes and trying
+      // to position the pop-up correctly is also going to be complex.
+      let len = position.offsetNode.value.length - position.offset;
+      if (typeof maxLength === 'number' && maxLength >= 0) {
+        len = Math.min(len, maxLength);
+      }
+
+      if (!len) {
+        this.currentTextAtPoint = null;
+        return null;
+      }
+
+      const start = position.offset;
+      const end = start + len;
+
+      let result = {
+        text: position.offsetNode.value.substring(start, end),
+        rangeStart: {
+          container: position.offsetNode,
+          offset: start,
+        },
+        rangeEnds: [
+          {
+            container: position.offsetNode,
+            offset: end,
+          },
+        ],
+      };
+      return result;
+
+      // TODO: Skip whitespace
+      // TODO: Find end of Japanese text
     }
 
     this.currentTextAtPoint = null;
