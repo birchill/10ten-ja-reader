@@ -89,6 +89,9 @@ interface GetTextResult {
   // Contains the node and offset for each the text containing node in the
   // maximum selected range.
   rangeEnds: RangeEndpoint[];
+  // True if this range relies on a synthesized overlay element such as we use
+  // for textual <input> and <textarea> elements.
+  usesOverlay?: boolean;
 }
 
 var rcxContent = {
@@ -887,6 +890,26 @@ var rcxContent = {
       .iterateNext();
   },
 
+  _synthesizeOverlay: (elem: HTMLInputElement | HTMLTextAreaElement) => {
+    const overlay = document.createElement('div');
+    overlay.append(elem.value);
+    overlay.style.cssText = getComputedStyle(elem).cssText;
+    overlay.scrollTop = elem.scrollTop;
+    overlay.scrollLeft = elem.scrollLeft;
+
+    const bbox = elem.getBoundingClientRect();
+    overlay.style.position = 'absolute';
+    overlay.style.top = bbox.top + 'px';
+    overlay.style.left = bbox.left + 'px';
+    overlay.style.zIndex = parseInt(getComputedStyle(elem).zIndex) + 1 + '';
+
+    // By making the overlay use display:block we prevent getTextAtPoint from
+    // reading outside its contents.
+    overlay.style.display = 'block';
+
+    return overlay;
+  },
+
   makeFake: function(real) {
     var fake = document.createElement('div');
     var realRect = real.getBoundingClientRect();
@@ -1174,9 +1197,16 @@ var rcxContent = {
 
     this.currentCaretPosition = position;
 
-    function isTextNode(node: Node): node is CharacterData {
-      return node && node.nodeType === Node.TEXT_NODE;
-    }
+    // Assign position parameters to local variables so we can update them
+    // (CaretPosition.offsetNode is readonly).
+    let startNode = position.offsetNode;
+    const startOffset = position.offset;
+
+    // If we have a textual <input> node or a <textarea> we synthesize an
+    // overlay element and use that for selection. Although <input> and
+    // <textarea> have their own special selection API, being able to use
+    // the same handling as we do for TextNodes reduces a lot of redundant
+    // handling, particularly when it comes to positioning the pop-up.
 
     function isTextInputNode(
       node: Node
@@ -1189,14 +1219,41 @@ var rcxContent = {
       );
     }
 
-    if (position && isTextNode(position.offsetNode)) {
+    let usesOverlay: boolean = false;
+    if (position && isTextInputNode(startNode)) {
+      usesOverlay = true;
+      const canReuseOverlay: boolean =
+        this.currentTextAtPoint &&
+        this.currentTextAtPoint.usesOverlay &&
+        this.currentCaretPosition.offsetNode === startNode;
+
+      if (canReuseOverlay) {
+        startNode = this.currentTextAtPoint.rangeStart.container;
+      } else {
+        const overlay = this._synthesizeOverlay(startNode);
+        if (document.body) {
+          document.body.appendChild(overlay);
+        } else {
+          document.documentElement.appendChild(overlay);
+        }
+        startNode = overlay.firstChild;
+      }
+    }
+
+    // Handle text nodes
+
+    function isTextNode(node: Node): node is CharacterData {
+      return node && node.nodeType === Node.TEXT_NODE;
+    }
+
+    if (position && isTextNode(startNode)) {
       const isRubyAnnotationElement = (element: Element) => {
         const tag = element.tagName.toLowerCase();
         return tag === 'rp' || tag === 'rt';
       };
 
       // Get the ancestor node for all inline nodes
-      let inlineAncestor = position.offsetNode.parentElement;
+      let inlineAncestor = startNode.parentElement;
       let display = getComputedStyle(inlineAncestor).display;
       while (
         (display === 'inline' || display === 'ruby') &&
@@ -1226,20 +1283,18 @@ var rcxContent = {
         NodeFilter.SHOW_TEXT,
         filter
       );
-      while (
-        treeWalker.referenceNode !== position.offsetNode &&
-        treeWalker.nextNode()
-      );
+      while (treeWalker.referenceNode !== startNode && treeWalker.nextNode());
 
-      if (treeWalker.referenceNode !== position.offsetNode) {
+      if (treeWalker.referenceNode !== startNode) {
         console.error('Could not find node in tree');
-        console.log(position.offsetNode);
+        console.log(startNode);
+        this.currentTextAtPoint = null;
         return null;
       }
 
       // Look for start, skipping any initial whitespace
-      let node: CharacterData = position.offsetNode;
-      let offset: number = position.offset;
+      let node: CharacterData = startNode;
+      let offset: number = startOffset;
       do {
         const nodeText = node.data.substr(offset);
         const textStart = nodeText.search(/\S/);
@@ -1253,6 +1308,7 @@ var rcxContent = {
       // (This should probably not traverse block siblings but oh well)
 
       if (!node) {
+        this.currentTextAtPoint = null;
         return null;
       }
 
@@ -1336,43 +1392,7 @@ var rcxContent = {
       }
 
       this.currentTextAtPoint = result;
-
       return result;
-    } else if (position && isTextInputNode(position.offsetNode)) {
-      // Previous rikai-tachi would handle this case by synthesizing an overlay
-      // element. That introduces a fair bit of complexity, but then again I'm
-      // pretty sure using the separate selection API for these nodes and trying
-      // to position the pop-up correctly is also going to be complex.
-      let len = position.offsetNode.value.length - position.offset;
-      if (typeof maxLength === 'number' && maxLength >= 0) {
-        len = Math.min(len, maxLength);
-      }
-
-      if (!len) {
-        this.currentTextAtPoint = null;
-        return null;
-      }
-
-      const start = position.offset;
-      const end = start + len;
-
-      let result = {
-        text: position.offsetNode.value.substring(start, end),
-        rangeStart: {
-          container: position.offsetNode,
-          offset: start,
-        },
-        rangeEnds: [
-          {
-            container: position.offsetNode,
-            offset: end,
-          },
-        ],
-      };
-      return result;
-
-      // TODO: Skip whitespace
-      // TODO: Find end of Japanese text
     }
 
     this.currentTextAtPoint = null;

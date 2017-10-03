@@ -152,14 +152,6 @@ function assertTextResultEqual(result, text, startContainer, startOffset,
                        `rangeEnds #${i + 1} offset should match`);
   }
 
-  // We want to check that a suitable Range object would produce the same text
-  // but we don't create Range objects when the target is an <input> or
-  // <textarea> node.
-  if (result.rangeStart.container instanceof HTMLInputElement ||
-      result.rangeStart.container instanceof HTMLTextAreaElement) {
-    return;
-  }
-
   // Consistency check
   const range = new Range();
   range.setStart(result.rangeStart.container, result.rangeStart.offset);
@@ -612,8 +604,8 @@ describe('rcxContent:text search', () => {
     // element itself and guess where the second character would be.
     //
     // We're at the mercy of available fonts and UA stylesheets here but
-    // hopefully we just set styles and so on until we get close enough on all
-    // the platforms we care about.
+    // hopefully we can just set styles and so on until we get close enough on
+    // all the platforms we care about.
     inputNode.style.padding = '0px';
     inputNode.style.fontSize = '10px';
     const bbox = inputNode.getBoundingClientRect();
@@ -624,12 +616,44 @@ describe('rcxContent:text search', () => {
         { x: bbox.left + 20, y: bbox.top + bbox.height / 2 }
       );
 
+    // Sanity check the overlay element
+    assert.exists(result.rangeStart, 'Should have start range');
+    const overlay = result.rangeStart.container;
+    assert.exists(overlay, 'Should have start range element');
+    assert.strictEqual(overlay.nodeType, Node.TEXT_NODE,
+                       'Should point to overlay text node');
+    assert.strictEqual(overlay.parentNode.tagName, 'DIV',
+                       'Overlay should be a div');
+
     assertTextResultEqual(result, 'いうえお',
-                          inputNode, 1,
-                          inputNode, 5);
+                          overlay, 1,
+                          overlay, 5);
+  });
+
+  it('should NOT read beyond the bounds of the input element', () => {
+    testDiv.innerHTML = '<div><input type="text" value="あいう" style="display:inline">えお</div>';
+    const inputNode = testDiv.firstChild.firstChild;
+
+    inputNode.style.padding = '0px';
+    inputNode.style.fontSize = '10px';
+    const bbox = inputNode.getBoundingClientRect();
+
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bbox.left + 20, y: bbox.top + bbox.height / 2 }
+      );
+
+    const overlay = result.rangeStart.container;
+
+    assertTextResultEqual(result, 'いう',
+                          overlay, 1,
+                          overlay, 3);
   });
 
   it('should NOT find text in input[type=password] elements', () => {
+  });
+
+  it('should NOT find text in input[type=range] elements', () => {
   });
 
   it('should find text in textarea elements', () => {
@@ -642,6 +666,12 @@ describe('rcxContent:text search', () => {
   });
 
   it('should not return the maximum number of characters from input/textarea elements', () => {
+  });
+
+  it('should re-use the same overlay element when possible', () => {
+  });
+
+  it('should drop the overlay element when another node is selected', () => {
   });
 
   it('should pull the text out of a title attribute', () => {
