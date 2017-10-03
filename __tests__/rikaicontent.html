@@ -631,7 +631,7 @@ describe('rcxContent:text search', () => {
   });
 
   it('should NOT read beyond the bounds of the input element', () => {
-    testDiv.innerHTML = '<div><input type="text" value="あいう" style="display:inline">えお</div>';
+    testDiv.innerHTML = '<div><input type="text" value="あいう">えお</div>';
     const inputNode = testDiv.firstChild.firstChild;
 
     inputNode.style.padding = '0px';
@@ -651,9 +651,21 @@ describe('rcxContent:text search', () => {
   });
 
   it('should NOT find text in input[type=password] elements', () => {
-  });
+    testDiv.innerHTML = '<input type="password" value="あいうえお">';
+    const inputNode = testDiv.firstChild;
 
-  it('should NOT find text in input[type=range] elements', () => {
+    inputNode.style.padding = '0px';
+    inputNode.style.fontSize = '10px';
+    const bbox = inputNode.getBoundingClientRect();
+
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bbox.left + 20, y: bbox.top + bbox.height / 2 }
+      );
+    console.log(result);
+
+    assert.strictEqual(result, null,
+                       'Should not get a result for a password field');
   });
 
   it('should find text in textarea elements', () => {

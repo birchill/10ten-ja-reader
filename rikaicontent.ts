@@ -1211,10 +1211,19 @@ var rcxContent = {
     function isTextInputNode(
       node: Node
     ): node is HTMLInputElement | HTMLTextAreaElement {
+      const allowedInputTypes = [
+        'button',
+        'email',
+        'search',
+        'submit',
+        'text',
+        'url',
+      ];
       return (
         node &&
         node.nodeType === Node.ELEMENT_NODE &&
-        ((<Element>node).tagName === 'INPUT' ||
+        (((<Element>node).tagName === 'INPUT' &&
+          allowedInputTypes.includes((<Element>node).type)) ||
           (<Element>node).tagName === 'TEXTAREA')
       );
     }
