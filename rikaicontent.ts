@@ -89,9 +89,6 @@ interface GetTextResult {
   // Contains the node and offset for each the text containing node in the
   // maximum selected range.
   rangeEnds: RangeEndpoint[];
-  // True if this range relies on a synthesized overlay element such as we use
-  // for textual <input> and <textarea> elements.
-  usesOverlay?: boolean;
 }
 
 var rcxContent = {
@@ -312,7 +309,17 @@ var rcxContent = {
 
   clearHi: function() {
     var tdata = window.rikaichamp;
-    if (!tdata || !tdata.prevSelView) return;
+    if (!tdata) {
+      return;
+    }
+
+    tdata.currentTextAtPoint = null;
+    tdata.currentCaretPosition = null;
+
+    if (!tdata.prevSelView) {
+      return;
+    }
+
     if (tdata.prevSelView.closed) {
       tdata.prevSelView = null;
       return;
@@ -890,7 +897,7 @@ var rcxContent = {
       .iterateNext();
   },
 
-  _synthesizeOverlay: (elem: HTMLInputElement | HTMLTextAreaElement) => {
+  makeFake: (elem: HTMLInputElement | HTMLTextAreaElement) => {
     const overlay = document.createElement('div');
     overlay.append(elem.value);
     overlay.style.cssText = getComputedStyle(elem).cssText;
@@ -901,31 +908,14 @@ var rcxContent = {
     overlay.style.position = 'absolute';
     overlay.style.top = bbox.top + 'px';
     overlay.style.left = bbox.left + 'px';
-    overlay.style.zIndex = parseInt(getComputedStyle(elem).zIndex) + 1 + '';
 
-    // By making the overlay use display:block we prevent getTextAtPoint from
-    // reading outside its contents.
-    overlay.style.display = 'block';
+    let zIndex = parseInt(getComputedStyle(elem).zIndex);
+    if (!Number.isInteger(zIndex)) {
+      zIndex = 0;
+    }
+    overlay.style.zIndex = zIndex + 1 + '';
 
     return overlay;
-  },
-
-  makeFake: function(real) {
-    var fake = document.createElement('div');
-    var realRect = real.getBoundingClientRect();
-    fake.innerText = real.value;
-    fake.style.cssText = document.defaultView.getComputedStyle(
-      real,
-      ''
-    ).cssText;
-    fake.scrollTop = real.scrollTop;
-    fake.scrollLeft = real.scrollLeft;
-    fake.style.position = 'absolute';
-    fake.style.zIndex = '7777';
-    fake.style.top = realRect.top + 'px';
-    fake.style.left = realRect.left + 'px';
-
-    return fake;
   },
 
   getTotalOffset: function(parent, tNode, offset) {
@@ -1197,16 +1187,9 @@ var rcxContent = {
 
     this.currentCaretPosition = position;
 
-    // Assign position parameters to local variables so we can update them
-    // (CaretPosition.offsetNode is readonly).
-    let startNode = position.offsetNode;
-    const startOffset = position.offset;
-
-    // If we have a textual <input> node or a <textarea> we synthesize an
-    // overlay element and use that for selection. Although <input> and
-    // <textarea> have their own special selection API, being able to use
-    // the same handling as we do for TextNodes reduces a lot of redundant
-    // handling, particularly when it comes to positioning the pop-up.
+    // If we have a textual <input> node or a <textarea> we synthesize a
+    // text node and use that for finding text since it allows us to re-use
+    // the same handling for text nodes and 'value' attributes.
 
     function isTextInputNode(
       node: Node
@@ -1228,25 +1211,9 @@ var rcxContent = {
       );
     }
 
-    let usesOverlay: boolean = false;
-    if (position && isTextInputNode(startNode)) {
-      usesOverlay = true;
-      const canReuseOverlay: boolean =
-        this.currentTextAtPoint &&
-        this.currentTextAtPoint.usesOverlay &&
-        this.currentCaretPosition.offsetNode === startNode;
-
-      if (canReuseOverlay) {
-        startNode = this.currentTextAtPoint.rangeStart.container;
-      } else {
-        const overlay = this._synthesizeOverlay(startNode);
-        if (document.body) {
-          document.body.appendChild(overlay);
-        } else {
-          document.documentElement.appendChild(overlay);
-        }
-        startNode = overlay.firstChild;
-      }
+    let startNode: Node | null = position ? position.offsetNode : null;
+    if (isTextInputNode(startNode)) {
+      startNode = document.createTextNode(startNode.value);
     }
 
     // Handle text nodes
@@ -1255,22 +1222,27 @@ var rcxContent = {
       return node && node.nodeType === Node.TEXT_NODE;
     }
 
-    if (position && isTextNode(startNode)) {
-      const isRubyAnnotationElement = (element: Element) => {
+    if (isTextNode(startNode)) {
+      const isRubyAnnotationElement = (element?: Element) => {
+        if (!element) {
+          return false;
+        }
+
         const tag = element.tagName.toLowerCase();
         return tag === 'rp' || tag === 'rt';
       };
 
+      const isInline = (element?: Element) =>
+        element &&
+        ['inline', 'ruby'].includes(getComputedStyle(element).display);
+
       // Get the ancestor node for all inline nodes
       let inlineAncestor = startNode.parentElement;
-      let display = getComputedStyle(inlineAncestor).display;
       while (
-        (display === 'inline' || display === 'ruby') &&
-        !isRubyAnnotationElement(inlineAncestor) &&
-        inlineAncestor.parentElement
+        isInline(inlineAncestor) &&
+        !isRubyAnnotationElement(inlineAncestor)
       ) {
         inlineAncestor = inlineAncestor.parentElement;
-        display = getComputedStyle(inlineAncestor).display;
       }
 
       // Skip ruby annotation elements when traversing. However, don't do that
@@ -1288,7 +1260,7 @@ var rcxContent = {
 
       // Setup a treewalker starting at the current node
       const treeWalker = document.createNodeIterator(
-        inlineAncestor,
+        inlineAncestor || startNode,
         NodeFilter.SHOW_TEXT,
         filter
       );
@@ -1303,7 +1275,7 @@ var rcxContent = {
 
       // Look for start, skipping any initial whitespace
       let node: CharacterData = startNode;
-      let offset: number = startOffset;
+      let offset: number = position.offset;
       do {
         const nodeText = node.data.substr(offset);
         const textStart = nodeText.search(/\S/);
@@ -1324,7 +1296,9 @@ var rcxContent = {
       let result = {
         text: '',
         rangeStart: {
-          container: node,
+          // If we're operating on a synthesized text node, use the actual
+          // start node.
+          container: node === startNode ? position.offsetNode : node,
           offset: offset,
         },
         rangeEnds: [],
@@ -1359,6 +1333,10 @@ var rcxContent = {
         const nodeText = node.data.substr(offset);
         let textEnd = nodeText.search(nonJapaneseOrDelimiter);
 
+        // If we're operating on a synthesized text node, return the actual
+        // underlying node.
+        const actualNode = node === startNode ? position.offsetNode : node;
+
         if (typeof maxLength === 'number' && maxLength >= 0) {
           const maxEnd = maxLength - result.text.length;
           if (textEnd === -1) {
@@ -1378,21 +1356,25 @@ var rcxContent = {
           // The text node has disallowed characters mid-way through. Return up
           // to that point or maxLength, whichever comes first.
           result.text += nodeText.substr(0, textEnd);
-          result.rangeEnds.push({ container: node, offset: offset + textEnd });
+          result.rangeEnds.push({
+            container: actualNode,
+            offset: offset + textEnd,
+          });
           break;
         }
 
         // The whole text node is allowed characters, keep going.
         result.text += nodeText;
-        result.rangeEnds.push({ container: node, offset: node.data.length });
+        result.rangeEnds.push({
+          container: actualNode,
+          offset: node.data.length,
+        });
         node = <CharacterData>treeWalker.nextNode();
-        display = node ? getComputedStyle(node.parentElement).display : '';
         offset = 0;
       } while (
         node &&
-        (node.parentElement === inlineAncestor ||
-          display === 'inline' ||
-          display === 'ruby')
+        inlineAncestor &&
+        (node.parentElement === inlineAncestor || isInline(node.parentElement))
       );
 
       // Check if we didn't find any suitable characters
