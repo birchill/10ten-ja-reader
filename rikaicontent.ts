@@ -1223,7 +1223,7 @@ var rcxContent = {
         node &&
         node.nodeType === Node.ELEMENT_NODE &&
         (((<Element>node).tagName === 'INPUT' &&
-          allowedInputTypes.includes((<Element>node).type)) ||
+          allowedInputTypes.includes((<HTMLInputElement>node).type)) ||
           (<Element>node).tagName === 'TEXTAREA')
       );
     }
