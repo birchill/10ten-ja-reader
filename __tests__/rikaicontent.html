@@ -139,6 +139,14 @@ describe('rcxContent', () => {
 function assertTextResultEqual(result, text, startContainer, startOffset,
                                ...endpoints) {
   assert.strictEqual(result.text, text, 'Result text should match');
+
+  // Title only case
+  if (!startContainer) {
+    assert.isNull(result.rangeStart, 'rangeStart should be null');
+    assert.strictEqual(result.rangeEnds.length, 0, 'rangeEnd should be empty');
+    return;
+  }
+
   assert.strictEqual(result.rangeStart.container, startContainer,
                      'rangeStart container node should match');
   assert.strictEqual(result.rangeStart.offset, startOffset,
@@ -621,7 +629,7 @@ describe('rcxContent:text search', () => {
     const result =
       rcxContent.getTextAtPoint(
         // Just guess here...
-        { x: bbox.left + 20, y: bbox.top + bbox.height / 2 }
+        { x: bbox.left + 10, y: bbox.top + bbox.height / 2 }
       );
 
     assertTextResultEqual(result, 'いうえお',
@@ -639,7 +647,7 @@ describe('rcxContent:text search', () => {
 
     const result =
       rcxContent.getTextAtPoint(
-        { x: bbox.left + 20, y: bbox.top + bbox.height / 2 }
+        { x: bbox.left + 10, y: bbox.top + bbox.height / 2 }
       );
 
     assertTextResultEqual(result, 'いう',
@@ -683,6 +691,18 @@ describe('rcxContent:text search', () => {
   });
 
   it('should pull the text out of a title attribute', () => {
+    testDiv.innerHTML = '<img src="" title="あいうえお">';
+    const imgNode = testDiv.firstChild;
+    imgNode.style.width = '200px';
+    imgNode.style.height = '200px';
+    const bbox = imgNode.getBoundingClientRect();
+
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 }
+      );
+
+    assertTextResultEqual(result, 'あいうえお');
   });
 
   it('should use the last result if there\'s no result but we haven\'t moved far', () => {

@@ -1387,29 +1387,26 @@ var rcxContent = {
     }
 
     this.currentTextAtPoint = null;
+
+    const elem = document.elementFromPoint(point.x, point.y);
+    if (
+      elem &&
+      elem instanceof HTMLElement &&
+      (<HTMLElement>elem).title.length
+    ) {
+      return {
+        text: (<HTMLElement>elem).title,
+        rangeStart: null,
+        rangeEnds: [],
+      };
+    }
+
     return null;
 
-    // Otherwise, see if the target has a 'title' attribute we can look up
-    // (We'll need the target element to be passed in for this? Or should we
-    // just call getElementAtPoint? And walk up the chain until we find one
-    // with a title?)
-    // Also, for each element, look for an 'alt' attribute,
-    // or the text of an <option> (needed?), or the selected
-    // text of a select
-    // --- in this case we'll need to return some flag indicating
-    //     that the text was not something you can normally select
-    //     so that we know to translate everything in range
-    //     and not just the bit under the cursor
+    // TODO: If we didn't find any text but the position is not far from the
+    // the last time we got called, then just return the last result
 
-    // If none of that works but the position is not far from the
-    // the last time we got called, then just return currText
-    // (and that last value of said flag)
-
-    // Factor in the manual offset from the "next word" feature?
-    // Or would returning the text here be enough?
-
-    // TODO: If we're in <input> or <textarea>, just read out the
-    // text up to maxLength
+    // TODO: Factor in the manual offset from the "next word" feature?
   },
 
   makeHtmlForEntry: function(entry) {
