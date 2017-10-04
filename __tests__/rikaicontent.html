@@ -665,6 +665,21 @@ describe('rcxContent:text search', () => {
   });
 
   it('should find text in textarea elements', () => {
+    testDiv.innerHTML = '<textarea>あいうえお</textarea>';
+    const textAreaNode = testDiv.firstChild;
+
+    textAreaNode.style.padding = '0px';
+    textAreaNode.style.fontSize = '10px';
+    const bbox = textAreaNode.getBoundingClientRect();
+
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bbox.left + 10, y: 5 }
+      );
+
+    assertTextResultEqual(result, 'いうえお',
+                          textAreaNode, 1,
+                          textAreaNode, 5);
   });
 
   it('should pull the text out of a title attribute', () => {
