@@ -1259,17 +1259,16 @@ var rcxContent = {
       }
     }
 
-    // We only cache the result for text nodes so if we haven't got a result
-    // yet, clear the cached result.
-
-    this.currentTextAtPoint = null;
-
     // Otherwise just pull whatever text we can off the element
 
     const elem = document.elementFromPoint(point.x, point.y);
     if (elem) {
       const text = this.getTextFromRandomElement(elem);
       if (text) {
+        // We only cache the result for text nodes so if we haven't got a result
+        // yet, clear the cached result.
+        this.currentTextAtPoint = null;
+
         return {
           text,
           rangeStart: null,
@@ -1278,9 +1277,20 @@ var rcxContent = {
       }
     }
 
-    // TODO: If we didn't find any text but the position is not far from the
-    // the last time we got called, then just return the last result
+    // We haven't found anything, but if the cursor hasn't moved far we should
+    // just re-use the last result so the user doesn't have try to keep the
+    // mouse over the text precisely in order to read the result.
 
+    if (this.currentTextAtPoint) {
+      const dx = this.currentTextAtPoint.point.x - point.x;
+      const dy = this.currentTextAtPoint.point.y - point.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 4) {
+        return this.currentTextAtPoint.result;
+      }
+    }
+
+    this.currentTextAtPoint = null;
     return null;
   },
 

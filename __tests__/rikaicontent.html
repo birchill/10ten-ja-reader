@@ -420,7 +420,7 @@ describe('rcxContent:text search', () => {
   it('should stop at the maximum number of characters even when it is zero', () => {
     testDiv.append('あいうえお');
     const textNode = testDiv.firstChild;
-    const bbox = getBboxForOffset(textNode, 1);
+    const bbox = getBboxForOffset(textNode, 2);
 
     const result =
       rcxContent.getTextAtPoint(
@@ -706,9 +706,46 @@ describe('rcxContent:text search', () => {
   });
 
   it('should use the last result if there\'s no result but we haven\'t moved far', () => {
+    testDiv.append('abcdefあいうえお');
+    const textNode = testDiv.firstChild;
+
+    // Fetch once
+    const bboxJP = getBboxForOffset(textNode, 6);
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bboxJP.left, y: bboxJP.top + bboxJP.height / 2 }
+      );
+    assertTextResultEqual(result, 'あいうえお', textNode, 6, textNode, 11);
+
+    // Fetch again
+    const bboxEN = getBboxForOffset(textNode, 5);
+    const secondResult = 
+      rcxContent.getTextAtPoint(
+        { x: bboxEN.left + bboxEN.width / 2, y: bboxEN.top + bboxEN.height / 2 }
+      );
+    assert.strictEqual(result, secondResult,
+      'Should get the same result object');
   });
 
   it('should NOT use the last result if there\'s no result and we\'ve moved far', () => {
+    testDiv.append('abcdefあいうえお');
+    const textNode = testDiv.firstChild;
+
+    // Fetch once
+    const bboxJP = getBboxForOffset(textNode, 6);
+    const result =
+      rcxContent.getTextAtPoint(
+        { x: bboxJP.left, y: bboxJP.top + bboxJP.height / 2 }
+      );
+    assertTextResultEqual(result, 'あいうえお', textNode, 6, textNode, 11);
+
+    // Fetch again
+    const bboxEN = getBboxForOffset(textNode, 0);
+    const secondResult = 
+      rcxContent.getTextAtPoint(
+        { x: bboxEN.left + bboxEN.width / 2, y: bboxEN.top + bboxEN.height / 2 }
+      );
+    assert.strictEqual(secondResult, null);
   });
 });
 
