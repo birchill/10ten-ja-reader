@@ -629,7 +629,7 @@ describe('rcxContent:text search', () => {
     const result =
       rcxContent.getTextAtPoint(
         // Just guess here...
-        { x: bbox.left + 10, y: bbox.top + bbox.height / 2 }
+        { x: bbox.left + 15, y: bbox.top + bbox.height / 2 }
       );
 
     assertTextResultEqual(result, 'いうえお',
@@ -647,7 +647,7 @@ describe('rcxContent:text search', () => {
 
     const result =
       rcxContent.getTextAtPoint(
-        { x: bbox.left + 10, y: bbox.top + bbox.height / 2 }
+        { x: bbox.left + 15, y: bbox.top + bbox.height / 2 }
       );
 
     assertTextResultEqual(result, 'いう',
