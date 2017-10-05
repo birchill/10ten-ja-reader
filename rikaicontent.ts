@@ -1444,9 +1444,25 @@ var rcxContent = {
   },
 
   getTextFromRandomElement: function(elem: Element): string | null {
-    if (elem instanceof HTMLElement && (<HTMLElement>elem).title.length) {
-      return (<HTMLElement>elem).title;
+    if (typeof (<any>elem).title === 'string' && (<any>elem).title.length) {
+      return (<any>elem).title;
     }
+
+    if (typeof (<any>elem).alt === 'string' && (<any>elem).alt.length) {
+      return (<any>elem).alt;
+    }
+
+    if (elem.nodeName === 'OPTION') {
+      return (<HTMLOptionElement>elem).text;
+    }
+
+    const isSelectElement = (elem: Element): elem is HTMLSelectElement =>
+      elem.nodeName === 'SELECT';
+    if (isSelectElement(elem)) {
+      return elem.options[elem.selectedIndex].text;
+    }
+
+    return null;
   },
 
   makeHtmlForEntry: function(entry) {
