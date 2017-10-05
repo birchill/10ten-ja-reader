@@ -91,6 +91,12 @@ interface GetTextResult {
   rangeEnds: RangeEndpoint[];
 }
 
+interface CachedGetTextResult {
+  result: GetTextResult;
+  position: CaretPosition;
+  point: { x: number; y: number };
+}
+
 var rcxContent = {
   dictCount: 3,
   altView: 0,
@@ -314,7 +320,6 @@ var rcxContent = {
     }
 
     tdata.currentTextAtPoint = null;
-    tdata.currentCaretPosition = null;
 
     if (!tdata.prevSelView) {
       return;
@@ -1161,7 +1166,6 @@ var rcxContent = {
     }
   },
 
-  currentCaretPosition: null,
   currentTextAtPoint: null,
 
   getTextAtPoint: function(
@@ -1178,14 +1182,13 @@ var rcxContent = {
 
     if (
       position &&
-      this.currentCaretPosition &&
-      position.offsetNode === this.currentCaretPosition.offsetNode &&
-      position.offset === this.currentCaretPosition.offset
+      this.currentTextAtPoint &&
+      this.currentTextAtPoint.position &&
+      position.offsetNode === this.currentTextAtPoint.position.offsetNode &&
+      position.offset === this.currentTextAtPoint.position.offset
     ) {
-      return this.currentTextAtPoint;
+      return this.currentTextAtPoint.result;
     }
-
-    this.currentCaretPosition = position;
 
     // If we have a textual <input> node or a <textarea> we synthesize a
     // text node and use that for finding text since it allows us to re-use
@@ -1247,7 +1250,11 @@ var rcxContent = {
           result.rangeEnds[0].container = position.offsetNode;
         }
 
-        this.currentTextAtPoint = result;
+        this.currentTextAtPoint = {
+          result,
+          position,
+          point,
+        };
         return result;
       }
     }
