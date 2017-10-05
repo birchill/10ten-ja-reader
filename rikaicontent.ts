@@ -75,28 +75,6 @@ interface FakeTextNode extends Node {
   data: string;
 }
 
-// Either end of a Range object
-interface RangeEndpoint {
-  container: Node;
-  offset: number;
-}
-
-interface GetTextResult {
-  text: string;
-  // Contains the node and offset where the selection starts. This will be null
-  // if, for example, the result is the text from an element's title attribute.
-  rangeStart?: RangeEndpoint;
-  // Contains the node and offset for each the text containing node in the
-  // maximum selected range.
-  rangeEnds: RangeEndpoint[];
-}
-
-interface CachedGetTextResult {
-  result: GetTextResult;
-  position?: CaretPosition;
-  point: { x: number; y: number };
-}
-
 var rcxContent = {
   dictCount: 3,
   altView: 0,
@@ -318,8 +296,6 @@ var rcxContent = {
     if (!tdata) {
       return;
     }
-
-    tdata.currentTextAtPoint = null;
 
     if (!tdata.prevSelView) {
       return;
@@ -777,13 +753,9 @@ var rcxContent = {
       tdata.prevSelView = doc.defaultView;
     }
 
-    if (e.kanji) {
-      rcxContent.processHtml(rcxContent.makeHtmlForEntry(e));
-    } else {
-      browser.runtime
-        .sendMessage({ type: 'makehtml', entry: e })
-        .then(rcxContent.processHtml);
-    }
+    browser.runtime
+      .sendMessage({ type: 'makehtml', entry: e })
+      .then(rcxContent.processHtml);
   },
 
   processHtml: function(html) {
@@ -881,13 +853,9 @@ var rcxContent = {
 
     this.lastFound = [e];
 
-    if (e.kanji) {
-      rcxContent.processHtml(rcxContent.makeHtmlForEntry(e));
-    } else {
-      browser.runtime
-        .sendMessage({ type: 'makehtml', entry: e })
-        .then(rcxContent.processHtml);
-    }
+    browser.runtime
+      .sendMessage({ type: 'makehtml', entry: e })
+      .then(rcxContent.processHtml);
   },
 
   getFirstTextChild: function(node) {
@@ -957,23 +925,6 @@ var rcxContent = {
       this.clearHi();
       this.hidePopup();
       return;
-    }
-
-    // TODO: I'm currently in the process of completely rewriting this.
-    // As far as I can tell there are three things we need to do:
-    // (1) Find the text string under the cursor for looking up
-    // (2) Highlighting the longest matched substring
-    // (3) Positioning the popup so that it fits on the screen and doesn't
-    //     overlap the highlighted text.
-    const textAtPoint = this.getTextAtPoint(
-      {
-        x: ev.clientX,
-        y: ev.clientY,
-      },
-      this.MAX_LENGTH
-    );
-    if (textAtPoint) {
-      console.log(`Got '${textAtPoint.text}'`);
     }
 
     var fake;
@@ -1166,9 +1117,113 @@ var rcxContent = {
     }
   },
 
-  currentTextAtPoint: null,
+};
 
-  getTextAtPoint: function(
+// TODO: Document this and move to a shared definitions file.
+// Currently this only includes properties we are actually using. The idea being
+// that we might later separate out a client-side subset and only pass that to
+// the content process.
+interface RikaiConfig {
+  showOnKey: string;
+}
+
+// Either end of a Range object
+interface RangeEndpoint {
+  container: Node;
+  offset: number;
+}
+
+interface GetTextResult {
+  text: string;
+  // Contains the node and offset where the selection starts. This will be null
+  // if, for example, the result is the text from an element's title attribute.
+  rangeStart?: RangeEndpoint;
+  // Contains the node and offset for each the text containing node in the
+  // maximum selected range.
+  rangeEnds: RangeEndpoint[];
+}
+
+interface CachedGetTextResult {
+  result: GetTextResult;
+  position?: CaretPosition;
+  point: { x: number; y: number };
+}
+
+class RikaiContent {
+  static MAX_LENGTH = 13;
+  readonly config: RikaiConfig;
+  currentTextAtPoint?: CachedGetTextResult = null;
+
+  constructor(config) {
+    this.config = config;
+
+    this.onMouseMove = this.onMouseMove.bind(this);
+    window.addEventListener('mousemove', this.onMouseMove);
+  }
+
+  detach() {
+    window.removeEventListener('mousemove', this.onMouseMove);
+
+    // TODO: We might need something like the following although I'm not sure
+    // what it does yet and why clearHighlight is not sufficient.
+    /*
+    const cssElem = document.getElementById('rikaichamp-css');
+    if (cssElem) {
+      cssElem.remove();
+    }
+    const windowElem = document.getElementById('rikaichamp-window');
+    if (windowElem) {
+      windowElem.remove();
+    }
+     */
+
+    this.clearHighlight();
+  }
+
+  clearHighlight() {
+    this.currentTextAtPoint = null;
+  }
+
+  onMouseMove(ev: MouseEvent) {
+    this.tryToUpdatePopup(ev);
+  }
+
+  tryToUpdatePopup(ev: MouseEvent) {
+    if (
+      (this.config.showOnKey.includes('Alt') &&
+        !ev.altKey &&
+        !ev.getModifierState('AltGraph')) ||
+      (this.config.showOnKey.includes('Ctrl') && !ev.ctrlKey)
+    ) {
+      this.clearHighlight();
+      return;
+    }
+
+    const previousTextAtPoint = this.currentTextAtPoint
+      ? this.currentTextAtPoint.result
+      : null;
+    const textAtPoint = this.getTextAtPoint(
+      {
+        x: ev.clientX,
+        y: ev.clientY,
+      },
+      RikaiContent.MAX_LENGTH
+    );
+    if (previousTextAtPoint === textAtPoint) {
+      return;
+    }
+
+    if (!textAtPoint) {
+      this.clearHighlight();
+      return;
+    }
+
+    if (textAtPoint) {
+      console.log(`Got '${textAtPoint.text}'`);
+    }
+  }
+
+  getTextAtPoint(
     point: {
       x: number;
       y: number;
@@ -1295,9 +1350,9 @@ var rcxContent = {
 
     this.currentTextAtPoint = null;
     return null;
-  },
+  }
 
-  getTextFromTextNode: function(
+  getTextFromTextNode(
     startNode: CharacterData,
     startOffset: number,
     point: {
@@ -1461,9 +1516,9 @@ var rcxContent = {
     }
 
     return result;
-  },
+  }
 
-  getTextFromRandomElement: function(elem: Element): string | null {
+  getTextFromRandomElement(elem: Element): string | null {
     if (typeof (<any>elem).title === 'string' && (<any>elem).title.length) {
       return (<any>elem).title;
     }
@@ -1483,9 +1538,9 @@ var rcxContent = {
     }
 
     return null;
-  },
+  }
 
-  makeHtmlForEntry: function(entry) {
+  makeHtmlForEntry(entry) {
     if (!entry) {
       return null;
     }
@@ -1495,9 +1550,9 @@ var rcxContent = {
     }
 
     return null;
-  },
+  }
 
-  makeHtmlForKanji: function(entry) {
+  makeHtmlForKanji(entry) {
     // (This is all just temporary. Long term we need to either use some sort of
     // templating system, or, if we can tidy up the markup enough by using more
     // modern CSS instead of relying on <br> elements etc., we might be able to
@@ -1695,18 +1750,34 @@ var rcxContent = {
     }
 
     return result;
-  },
-};
+  }
+}
+
+let rikaiContent: RikaiContent | null = null;
 
 // Event Listeners
-browser.runtime.onMessage.addListener(function(request) {
+browser.runtime.onMessage.addListener(request => {
   switch (request.type) {
     case 'enable':
       rcxContent.enableTab();
       window.rikaichamp.config = request.config;
+
+      if (rikaiContent) {
+        rikaiContent.detach();
+        rikaiContent = null;
+      }
+
+      rikaiContent = new RikaiContent(request.config);
       break;
+
     case 'disable':
       rcxContent.disableTab();
+
+      if (rikaiContent) {
+        rikaiContent.detach();
+        rikaiContent = null;
+      }
+
       break;
     case 'showPopup':
       // Don't show the popup on all the iframes, only the topmost window

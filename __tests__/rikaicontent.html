@@ -19,7 +19,6 @@ const browser = {
     },
   },
 };
-browser.runtime.sendMessage({ type: 'enable?' });
 </script>
 <script src="../rikaicontent.js"></script>
 
@@ -30,9 +29,18 @@ browser.runtime.sendMessage({ type: 'enable?' });
 mocha.setup('bdd');
 const assert = chai.assert;
 
-describe('rcxContent', () => {
-  it('should exist', () => {
-    assert.exists(window.rcxContent);
+describe('rikaiContent', () => {
+  let subject;
+
+  beforeEach(() => {
+    const config = {
+      showOnKey: '',
+    };
+    subject = new RikaiContent(config);
+  });
+
+  afterEach(() => {
+    subject.detach();
   });
 
   it('should format kanji entries', () => {
@@ -75,7 +83,7 @@ describe('rcxContent', () => {
       eigo: 'gentleman, samurai, samurai radical (no. 33)',
     };
 
-    const result = window.rcxContent.makeHtmlForEntry(entry);
+    const result = subject.makeHtmlForEntry(entry);
     assert.instanceOf(result, DocumentFragment);
     assert.strictEqual(result.childElementCount, 1,
                        'Should have one child element');
@@ -121,7 +129,7 @@ describe('rcxContent', () => {
       eigo: 'mackerel',
     };
 
-    const result = window.rcxContent.makeHtmlForEntry(entry);
+    const result = subject.makeHtmlForEntry(entry);
     assert.instanceOf(result, DocumentFragment);
     assert.strictEqual(result.childElementCount, 1,
                        'Should have one child element');
@@ -191,10 +199,16 @@ function getBboxForOffset(node, start) {
   return range.getBoundingClientRect();
 }
 
-describe('rcxContent:text search', () => {
+describe('rikaiContent:text search', () => {
   let testDiv;
+  let subject;
 
   beforeEach(() => {
+    const config = {
+      showOnKey: '',
+    };
+    subject = new RikaiContent(config);
+
     testDiv = document.createElement('div');
     testDiv.setAttribute('id', 'test-div');
     // Stick the div at the top as if the div is offscreen,
@@ -206,6 +220,7 @@ describe('rcxContent:text search', () => {
 
   afterEach(() => {
     document.getElementById('test-div').remove();
+    subject.detach();
   });
 
   it('should find a range in a div', () => {
@@ -214,7 +229,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.right, y: bbox.top + bbox.height / 2 }
       );
 
@@ -227,7 +242,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 }
       );
 
@@ -242,7 +257,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.right, y: bbox.top + bbox.height / 2 }
       );
 
@@ -259,7 +274,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.right, y: bbox.top + bbox.height / 2 }
       );
 
@@ -276,7 +291,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 }
       );
 
@@ -295,7 +310,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(firstTextNode, 1);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.right, y: bbox.top + bbox.height / 2 }
       );
 
@@ -308,7 +323,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 }
       );
 
@@ -321,7 +336,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(textNode, 3);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left, y: bbox.top + bbox.height / 2 }
       );
 
@@ -334,7 +349,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(textNode, 2);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left, y: bbox.top + bbox.height / 2 }
       );
 
@@ -347,7 +362,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 }
       );
 
@@ -360,7 +375,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left, y: bbox.top + bbox.height / 2 }
       );
 
@@ -373,7 +388,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(textNode, 1);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left, y: bbox.top + bbox.height / 2 },
         3
       );
@@ -388,7 +403,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.right, y: bbox.top + bbox.height / 2 },
         2
       );
@@ -406,7 +421,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.right, y: bbox.top + bbox.height / 2 },
         3
       );
@@ -423,7 +438,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(textNode, 2);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left, y: bbox.top + bbox.height / 2 },
         0
       );
@@ -437,7 +452,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(textNode, 1);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left, y: bbox.top + bbox.height / 2 },
         1
       );
@@ -453,7 +468,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(textNode, 1);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left, y: bbox.top + bbox.height / 2 },
         3
       );
@@ -469,7 +484,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(textNode, 1);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.right, y: bbox.top + bbox.height / 2 },
         3
       );
@@ -487,7 +502,7 @@ describe('rcxContent:text search', () => {
     const bbox = firstEmptyNode.getBoundingClientRect();
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.right, y: bbox.top + bbox.height / 2 }
       );
 
@@ -505,7 +520,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(whitespaceOnlyTextNode, 1);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.right, y: bbox.top + bbox.height / 2 }
       );
 
@@ -529,7 +544,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left, y: bbox.top + bbox.height / 2 }
       );
 
@@ -549,7 +564,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(senNode, 0);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left, y: bbox.top + bbox.height / 2 }
       );
 
@@ -565,7 +580,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(seNode, 0);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left, y: bbox.top + bbox.height / 2 }
       );
 
@@ -581,7 +596,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.right, y: bbox.top + bbox.height / 2 }
       );
 
@@ -599,7 +614,7 @@ describe('rcxContent:text search', () => {
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left + 1, y: bbox.top + bbox.height / 2 }
       );
 
@@ -627,7 +642,7 @@ describe('rcxContent:text search', () => {
     const bbox = inputNode.getBoundingClientRect();
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         // Just guess here...
         { x: bbox.left + 15, y: bbox.top + bbox.height / 2 }
       );
@@ -646,7 +661,7 @@ describe('rcxContent:text search', () => {
     const bbox = inputNode.getBoundingClientRect();
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left + 15, y: bbox.top + bbox.height / 2 }
       );
 
@@ -664,7 +679,7 @@ describe('rcxContent:text search', () => {
     const bbox = inputNode.getBoundingClientRect();
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left + 20, y: bbox.top + bbox.height / 2 }
       );
 
@@ -681,7 +696,7 @@ describe('rcxContent:text search', () => {
     const bbox = textAreaNode.getBoundingClientRect();
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left + 10, y: 5 }
       );
 
@@ -698,7 +713,7 @@ describe('rcxContent:text search', () => {
     const bbox = imgNode.getBoundingClientRect();
 
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 }
       );
 
@@ -712,15 +727,15 @@ describe('rcxContent:text search', () => {
     // Fetch once
     const bboxJP = getBboxForOffset(textNode, 6);
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bboxJP.left, y: bboxJP.top + bboxJP.height / 2 }
       );
     assertTextResultEqual(result, 'あいうえお', textNode, 6, textNode, 11);
 
     // Fetch again
     const bboxEN = getBboxForOffset(textNode, 5);
-    const secondResult = 
-      rcxContent.getTextAtPoint(
+    const secondResult =
+      subject.getTextAtPoint(
         { x: bboxEN.left + bboxEN.width / 2, y: bboxEN.top + bboxEN.height / 2 }
       );
     assert.strictEqual(result, secondResult,
@@ -734,15 +749,15 @@ describe('rcxContent:text search', () => {
     // Fetch once
     const bboxJP = getBboxForOffset(textNode, 6);
     const result =
-      rcxContent.getTextAtPoint(
+      subject.getTextAtPoint(
         { x: bboxJP.left, y: bboxJP.top + bboxJP.height / 2 }
       );
     assertTextResultEqual(result, 'あいうえお', textNode, 6, textNode, 11);
 
     // Fetch again
     const bboxEN = getBboxForOffset(textNode, 0);
-    const secondResult = 
-      rcxContent.getTextAtPoint(
+    const secondResult =
+      subject.getTextAtPoint(
         { x: bboxEN.left + bboxEN.width / 2, y: bboxEN.top + bboxEN.height / 2 }
       );
     assert.strictEqual(secondResult, null);
