@@ -1257,25 +1257,24 @@ var rcxContent = {
 
     this.currentTextAtPoint = null;
 
-    const elem = document.elementFromPoint(point.x, point.y);
-    if (
-      elem &&
-      elem instanceof HTMLElement &&
-      (<HTMLElement>elem).title.length
-    ) {
-      return {
-        text: (<HTMLElement>elem).title,
-        rangeStart: null,
-        rangeEnds: [],
-      };
-    }
+    // Otherwise just pull whatever text we can off the element
 
-    return null;
+    const elem = document.elementFromPoint(point.x, point.y);
+    if (elem) {
+      const text = this.getTextFromRandomElement(elem);
+      if (text) {
+        return {
+          text,
+          rangeStart: null,
+          rangeEnds: [],
+        };
+      }
+    }
 
     // TODO: If we didn't find any text but the position is not far from the
     // the last time we got called, then just return the last result
 
-    // TODO: Factor in the manual offset from the "next word" feature?
+    return null;
   },
 
   getTextFromTextNode: function(
@@ -1287,6 +1286,8 @@ var rcxContent = {
     },
     maxLength?: number
   ): GetTextResult | null {
+    // TODO: Factor in the manual offset from the "next word" feature?
+
     const isRubyAnnotationElement = (element?: Element) => {
       if (!element) {
         return false;
@@ -1440,6 +1441,12 @@ var rcxContent = {
     }
 
     return result;
+  },
+
+  getTextFromRandomElement: function(elem: Element): string | null {
+    if (elem instanceof HTMLElement && (<HTMLElement>elem).title.length) {
+      return (<HTMLElement>elem).title;
+    }
   },
 
   makeHtmlForEntry: function(entry) {
