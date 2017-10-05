@@ -1194,9 +1194,9 @@ var rcxContent = {
     // text node and use that for finding text since it allows us to re-use
     // the same handling for text nodes and 'value' attributes.
 
-    function isTextInputNode(
+    const isTextInputNode = (
       node?: Node
-    ): node is HTMLInputElement | HTMLTextAreaElement {
+    ): node is HTMLInputElement | HTMLTextAreaElement => {
       const allowedInputTypes = [
         'button',
         'email',
@@ -1212,7 +1212,7 @@ var rcxContent = {
           allowedInputTypes.includes((<HTMLInputElement>node).type)) ||
           (<Element>node).tagName === 'TEXTAREA')
       );
-    }
+    };
 
     let startNode: Node | null = position ? position.offsetNode : null;
     if (isTextInputNode(startNode)) {
@@ -1221,9 +1221,9 @@ var rcxContent = {
 
     // Try handling as a text node
 
-    function isTextNode(node: Node): node is CharacterData {
+    const isTextNode = (node: Node): node is CharacterData => {
       return node && node.nodeType === Node.TEXT_NODE;
-    }
+    };
 
     if (isTextNode(startNode)) {
       const result = this.getTextFromTextNode(
