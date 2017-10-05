@@ -93,7 +93,7 @@ interface GetTextResult {
 
 interface CachedGetTextResult {
   result: GetTextResult;
-  position: CaretPosition;
+  position?: CaretPosition;
   point: { x: number; y: number };
 }
 
@@ -1265,15 +1265,18 @@ var rcxContent = {
     if (elem) {
       const text = this.getTextFromRandomElement(elem);
       if (text) {
-        // We only cache the result for text nodes so if we haven't got a result
-        // yet, clear the cached result.
-        this.currentTextAtPoint = null;
-
-        return {
+        const result = {
           text,
           rangeStart: null,
           rangeEnds: [],
         };
+        this.currentTextAtPoint = {
+          result,
+          position: null,
+          point,
+        };
+
+        return result;
       }
     }
 
