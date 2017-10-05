@@ -1192,7 +1192,7 @@ var rcxContent = {
     // the same handling for text nodes and 'value' attributes.
 
     function isTextInputNode(
-      node: Node
+      node?: Node
     ): node is HTMLInputElement | HTMLTextAreaElement {
       const allowedInputTypes = [
         'button',
@@ -1216,175 +1216,44 @@ var rcxContent = {
       startNode = document.createTextNode(startNode.value);
     }
 
-    // Handle text nodes
+    // Try handling as a text node
 
     function isTextNode(node: Node): node is CharacterData {
       return node && node.nodeType === Node.TEXT_NODE;
     }
 
     if (isTextNode(startNode)) {
-      const isRubyAnnotationElement = (element?: Element) => {
-        if (!element) {
-          return false;
-        }
-
-        const tag = element.tagName.toLowerCase();
-        return tag === 'rp' || tag === 'rt';
-      };
-
-      const isInline = (element?: Element) =>
-        element &&
-        ['inline', 'ruby'].includes(getComputedStyle(element).display);
-
-      // Get the ancestor node for all inline nodes
-      let inlineAncestor = startNode.parentElement;
-      while (
-        isInline(inlineAncestor) &&
-        !isRubyAnnotationElement(inlineAncestor)
-      ) {
-        inlineAncestor = inlineAncestor.parentElement;
-      }
-
-      // Skip ruby annotation elements when traversing. However, don't do that
-      // if the inline ancestor is itself a ruby annotation element or else
-      // we'll never be able to find the starting point within the tree walker.
-      let filter;
-      if (!isRubyAnnotationElement(inlineAncestor)) {
-        filter = {
-          acceptNode: node =>
-            isRubyAnnotationElement(node.parentElement)
-              ? NodeFilter.FILTER_REJECT
-              : NodeFilter.FILTER_ACCEPT,
-        };
-      }
-
-      // Setup a treewalker starting at the current node
-      const treeWalker = document.createNodeIterator(
-        inlineAncestor || startNode,
-        NodeFilter.SHOW_TEXT,
-        filter
+      const result = this.getTextFromTextNode(
+        startNode,
+        position.offset,
+        point,
+        maxLength
       );
-      while (treeWalker.referenceNode !== startNode && treeWalker.nextNode());
-
-      if (treeWalker.referenceNode !== startNode) {
-        console.error('Could not find node in tree');
-        console.log(startNode);
-        this.currentTextAtPoint = null;
-        return null;
-      }
-
-      // Look for start, skipping any initial whitespace
-      let node: CharacterData = startNode;
-      let offset: number = position.offset;
-      do {
-        const nodeText = node.data.substr(offset);
-        const textStart = nodeText.search(/\S/);
-        if (textStart !== -1) {
-          offset += textStart;
-          break;
-        }
-        node = <CharacterData>treeWalker.nextNode();
-        offset = 0;
-      } while (node);
-      // (This should probably not traverse block siblings but oh well)
-
-      if (!node) {
-        this.currentTextAtPoint = null;
-        return null;
-      }
-
-      let result = {
-        text: '',
-        rangeStart: {
-          // If we're operating on a synthesized text node, use the actual
-          // start node.
-          container: node === startNode ? position.offsetNode : node,
-          offset: offset,
-        },
-        rangeEnds: [],
-      };
-
-      // Look for range ends
-      do {
-        // Search for non-Japanese text (or a delimiter of some sort even if it
-        // is "Japanese" in the sense of being full-width).
-        //
-        // * U+25CB is 'white circle' often used to represent a blank
-        //   (U+3007 is an ideographic zero that is also sometimes used for this
-        //   purpose, but this is included in the U+3001~U+30FF range.)
-        // * U+3000~U+30FF is ideographic punctuation but we skip U+3000
-        //   (ideographic space), U+3001 (、 ideographic comma), U+3002
-        //   (。 ideographic full stop), and U+3003 (〃 ditto mark) since these
-        //   are typically only going to delimit words.
-        // * U+3041~U+309F is the hiragana range
-        // * U+30A0~U+30FF is the katakana range
-        // * U+3400~U+4DBF is the CJK Unified Ideographs Extension A block (rare
-        //   kanji)
-        // * U+4E00~U+9FFF is the CJK Unified Ideographs block ("the kanji")
-        // * U+F900~U+FAFF is the CJK Compatibility Ideographs block (random odd
-        //   kanji, because standards)
-        // * U+FF61~U+FF65 is some halfwidth ideographic symbols, e.g. ｡ but we
-        //   skip them (although previus rikai-tachi included them) since
-        //   they're mostly going to be delimiters
-        // * U+FF66~U+FF9F is halfwidth katakana
-        //
-        const nonJapaneseOrDelimiter = /[^\u25cb\u3004-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/;
-
-        const nodeText = node.data.substr(offset);
-        let textEnd = nodeText.search(nonJapaneseOrDelimiter);
-
-        // If we're operating on a synthesized text node, return the actual
-        // underlying node.
-        const actualNode = node === startNode ? position.offsetNode : node;
-
-        if (typeof maxLength === 'number' && maxLength >= 0) {
-          const maxEnd = maxLength - result.text.length;
-          if (textEnd === -1) {
-            // The >= here is important since it means that if the node has
-            // exactly enough characters to reach the maxLength then we will
-            // stop walking the tree at this point.
-            textEnd = node.data.length - offset >= maxEnd ? maxEnd : -1;
-          } else {
-            textEnd = Math.min(textEnd, maxEnd);
-          }
+      if (result) {
+        // If we synthesized a text node, substitute the original node back in.
+        if (startNode !== position.offsetNode) {
+          console.assert(
+            result.rangeStart.container === startNode,
+            'When using a synthesized text node the range should start' +
+              ' from that node'
+          );
+          console.assert(
+            result.rangeEnds.length === 1 &&
+              result.rangeEnds[0].container === startNode,
+            'When using a synthesized text node there should be a single' +
+              ' range end using the synthesized node'
+          );
+          result.rangeStart.container = position.offsetNode;
+          result.rangeEnds[0].container = position.offsetNode;
         }
 
-        if (textEnd === 0) {
-          // There are no characters here for us.
-          break;
-        } else if (textEnd !== -1) {
-          // The text node has disallowed characters mid-way through. Return up
-          // to that point or maxLength, whichever comes first.
-          result.text += nodeText.substr(0, textEnd);
-          result.rangeEnds.push({
-            container: actualNode,
-            offset: offset + textEnd,
-          });
-          break;
-        }
-
-        // The whole text node is allowed characters, keep going.
-        result.text += nodeText;
-        result.rangeEnds.push({
-          container: actualNode,
-          offset: node.data.length,
-        });
-        node = <CharacterData>treeWalker.nextNode();
-        offset = 0;
-      } while (
-        node &&
-        inlineAncestor &&
-        (node.parentElement === inlineAncestor || isInline(node.parentElement))
-      );
-
-      // Check if we didn't find any suitable characters
-      if (!result.rangeEnds.length) {
-        result = null;
+        this.currentTextAtPoint = result;
+        return result;
       }
-
-      this.currentTextAtPoint = result;
-      return result;
     }
+
+    // We only cache the result for text nodes so if we haven't got a result
+    // yet, clear the cached result.
 
     this.currentTextAtPoint = null;
 
@@ -1407,6 +1276,170 @@ var rcxContent = {
     // the last time we got called, then just return the last result
 
     // TODO: Factor in the manual offset from the "next word" feature?
+  },
+
+  getTextFromTextNode: function(
+    startNode: CharacterData,
+    startOffset: number,
+    point: {
+      x: number;
+      y: number;
+    },
+    maxLength?: number
+  ): GetTextResult | null {
+    const isRubyAnnotationElement = (element?: Element) => {
+      if (!element) {
+        return false;
+      }
+
+      const tag = element.tagName.toLowerCase();
+      return tag === 'rp' || tag === 'rt';
+    };
+
+    const isInline = (element?: Element) =>
+      element && ['inline', 'ruby'].includes(getComputedStyle(element).display);
+
+    // Get the ancestor node for all inline nodes
+    let inlineAncestor = startNode.parentElement;
+    while (
+      isInline(inlineAncestor) &&
+      !isRubyAnnotationElement(inlineAncestor)
+    ) {
+      inlineAncestor = inlineAncestor.parentElement;
+    }
+
+    // Skip ruby annotation elements when traversing. However, don't do that
+    // if the inline ancestor is itself a ruby annotation element or else
+    // we'll never be able to find the starting point within the tree walker.
+    let filter;
+    if (!isRubyAnnotationElement(inlineAncestor)) {
+      filter = {
+        acceptNode: node =>
+          isRubyAnnotationElement(node.parentElement)
+            ? NodeFilter.FILTER_REJECT
+            : NodeFilter.FILTER_ACCEPT,
+      };
+    }
+
+    // Setup a treewalker starting at the current node
+    const treeWalker = document.createNodeIterator(
+      inlineAncestor || startNode,
+      NodeFilter.SHOW_TEXT,
+      filter
+    );
+    while (treeWalker.referenceNode !== startNode && treeWalker.nextNode());
+
+    if (treeWalker.referenceNode !== startNode) {
+      console.error('Could not find node in tree');
+      console.log(startNode);
+      return null;
+    }
+
+    // Look for start, skipping any initial whitespace
+    let node: CharacterData = startNode;
+    let offset: number = startOffset;
+    do {
+      const nodeText = node.data.substr(offset);
+      const textStart = nodeText.search(/\S/);
+      if (textStart !== -1) {
+        offset += textStart;
+        break;
+      }
+      node = <CharacterData>treeWalker.nextNode();
+      offset = 0;
+    } while (node);
+    // (This should probably not traverse block siblings but oh well)
+
+    if (!node) {
+      return null;
+    }
+
+    let result = {
+      text: '',
+      rangeStart: {
+        // If we're operating on a synthesized text node, use the actual
+        // start node.
+        container: node,
+        offset: offset,
+      },
+      rangeEnds: [],
+    };
+
+    // Look for range ends
+    do {
+      // Search for non-Japanese text (or a delimiter of some sort even if it
+      // is "Japanese" in the sense of being full-width).
+      //
+      // * U+25CB is 'white circle' often used to represent a blank
+      //   (U+3007 is an ideographic zero that is also sometimes used for this
+      //   purpose, but this is included in the U+3001~U+30FF range.)
+      // * U+3000~U+30FF is ideographic punctuation but we skip U+3000
+      //   (ideographic space), U+3001 (、 ideographic comma), U+3002
+      //   (。 ideographic full stop), and U+3003 (〃 ditto mark) since these
+      //   are typically only going to delimit words.
+      // * U+3041~U+309F is the hiragana range
+      // * U+30A0~U+30FF is the katakana range
+      // * U+3400~U+4DBF is the CJK Unified Ideographs Extension A block (rare
+      //   kanji)
+      // * U+4E00~U+9FFF is the CJK Unified Ideographs block ("the kanji")
+      // * U+F900~U+FAFF is the CJK Compatibility Ideographs block (random odd
+      //   kanji, because standards)
+      // * U+FF61~U+FF65 is some halfwidth ideographic symbols, e.g. ｡ but we
+      //   skip them (although previus rikai-tachi included them) since
+      //   they're mostly going to be delimiters
+      // * U+FF66~U+FF9F is halfwidth katakana
+      //
+      const nonJapaneseOrDelimiter = /[^\u25cb\u3004-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/;
+
+      const nodeText = node.data.substr(offset);
+      let textEnd = nodeText.search(nonJapaneseOrDelimiter);
+
+      if (typeof maxLength === 'number' && maxLength >= 0) {
+        const maxEnd = maxLength - result.text.length;
+        if (textEnd === -1) {
+          // The >= here is important since it means that if the node has
+          // exactly enough characters to reach the maxLength then we will
+          // stop walking the tree at this point.
+          textEnd = node.data.length - offset >= maxEnd ? maxEnd : -1;
+        } else {
+          textEnd = Math.min(textEnd, maxEnd);
+        }
+      }
+
+      if (textEnd === 0) {
+        // There are no characters here for us.
+        break;
+      } else if (textEnd !== -1) {
+        // The text node has disallowed characters mid-way through. Return up
+        // to that point or maxLength, whichever comes first.
+        result.text += nodeText.substr(0, textEnd);
+        result.rangeEnds.push({
+          container: node,
+          offset: offset + textEnd,
+        });
+        break;
+      }
+
+      // The whole text node is allowed characters, keep going.
+      result.text += nodeText;
+      result.rangeEnds.push({
+        container: node,
+        offset: node.data.length,
+      });
+      node = <CharacterData>treeWalker.nextNode();
+      offset = 0;
+    } while (
+      node &&
+      inlineAncestor &&
+      (node.parentElement === inlineAncestor || isInline(node.parentElement))
+    );
+
+    // Check if we didn't find any suitable characters
+    if (!result.rangeEnds.length) {
+      result = null;
+    }
+
+    return result;
   },
 
   makeHtmlForEntry: function(entry) {
