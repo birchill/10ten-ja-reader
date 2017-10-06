@@ -1116,7 +1116,6 @@ var rcxContent = {
       }
     }
   },
-
 };
 
 // TODO: Document this and move to a shared definitions file.
@@ -1188,7 +1187,7 @@ class RikaiContent {
     this.tryToUpdatePopup(ev);
   }
 
-  tryToUpdatePopup(ev: MouseEvent) {
+  async tryToUpdatePopup(ev: MouseEvent) {
     if (
       (this.config.showOnKey.includes('Alt') &&
         !ev.altKey &&
@@ -1209,6 +1208,13 @@ class RikaiContent {
       },
       RikaiContent.MAX_LENGTH
     );
+    console.assert(
+      (!textAtPoint && !this.currentTextAtPoint) ||
+        (this.currentTextAtPoint &&
+          textAtPoint === this.currentTextAtPoint.result),
+      'Should have updated currentTextAtPoint'
+    );
+
     if (previousTextAtPoint === textAtPoint) {
       return;
     }
@@ -1218,8 +1224,48 @@ class RikaiContent {
       return;
     }
 
-    if (textAtPoint) {
-      console.log(`Got '${textAtPoint.text}'`);
+    const wordLookup: boolean = textAtPoint.rangeStart !== null;
+
+    let message;
+    if (wordLookup) {
+      message = {
+        type: 'xsearch',
+        text: textAtPoint.text,
+        // TODO: Replace these numbers (both here and at the endpoint) with
+        // descriptive strings.
+        dictOption: ev.shiftKey
+          ? '1' // forceKanji
+          : '2', // defaultDict
+      };
+    } else {
+      message = {
+        type: 'translate',
+        title: textAtPoint.text,
+      };
+    }
+
+    const searchResult = await browser.runtime.sendMessage(message);
+
+    // Check if we have triggered a new query or been disabled in the meantime.
+    if (
+      !this.currentTextAtPoint ||
+      textAtPoint !== this.currentTextAtPoint.result
+    ) {
+      return;
+    }
+
+    if (!searchResult) {
+      this.clearHighlight();
+      return;
+    }
+
+    if (wordLookup) {
+      // Kanji entries don't include a matchLen field
+      const matchLen = searchResult.matchLen || 1;
+      this.highlightText(textAtPoint, matchLen);
+      this.showWord(searchResult);
+    } else {
+      this.showTranslation(searchResult);
     }
   }
 
@@ -1538,6 +1584,20 @@ class RikaiContent {
     }
 
     return null;
+  }
+
+  highlightText(textAtPoint: GetTextResult, matchLen: number) {
+    // TODO (There are a number of conditions to check here, e.g. if the mouse
+    // is down or not.)
+    console.log(`Will highlight ${matchLen} chars`);
+  }
+
+  showWord(searchResult) {
+    // TODO
+  }
+
+  showTranslation(searchResult) {
+    // TODO
   }
 
   makeHtmlForEntry(entry) {
