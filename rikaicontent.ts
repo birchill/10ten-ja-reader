@@ -1621,7 +1621,7 @@ class RikaiContent {
       const node: HTMLInputElement | HTMLTextAreaElement =
         textAtPoint.rangeStart.container;
       const start = textAtPoint.rangeStart.offset;
-      const end = textAtPoint.rangeEnds[0].offset;
+      const end = start + matchLen;
 
       node.setSelectionRange(start, end);
       this._selectedText = node.value.substring(start, end);
