@@ -749,7 +749,7 @@ var rcxContent = {
         rcxContent.hidePopup();
         return 0;
       }
-      rcxContent.highlightMatch(doc, rp, ro, e.matchLen, selEndList, tdata);
+      // rcxContent.highlightMatch(doc, rp, ro, e.matchLen, selEndList, tdata);
       tdata.prevSelView = doc.defaultView;
     }
 
@@ -1148,13 +1148,36 @@ interface CachedGetTextResult {
   point: { x: number; y: number };
 }
 
+const isTextInputNode = (
+  node?: Node
+): node is HTMLInputElement | HTMLTextAreaElement => {
+  const allowedInputTypes = [
+    'button',
+    'email',
+    'search',
+    'submit',
+    'text',
+    'url',
+  ];
+  return (
+    node &&
+    node.nodeType === Node.ELEMENT_NODE &&
+    (((<Element>node).tagName === 'INPUT' &&
+      allowedInputTypes.includes((<HTMLInputElement>node).type)) ||
+      (<Element>node).tagName === 'TEXTAREA')
+  );
+};
+
 class RikaiContent {
   static MAX_LENGTH = 13;
-  readonly config: RikaiConfig;
-  currentTextAtPoint?: CachedGetTextResult = null;
+
+  readonly _config: RikaiConfig;
+  _currentTextAtPoint?: CachedGetTextResult = null;
+  _selectedWindow?: Window = null;
+  _selectedText?: string = null;
 
   constructor(config) {
-    this.config = config;
+    this._config = config;
 
     this.onMouseMove = this.onMouseMove.bind(this);
     window.addEventListener('mousemove', this.onMouseMove);
@@ -1179,27 +1202,23 @@ class RikaiContent {
     this.clearHighlight();
   }
 
-  clearHighlight() {
-    this.currentTextAtPoint = null;
-  }
-
   onMouseMove(ev: MouseEvent) {
     this.tryToUpdatePopup(ev);
   }
 
   async tryToUpdatePopup(ev: MouseEvent) {
     if (
-      (this.config.showOnKey.includes('Alt') &&
+      (this._config.showOnKey.includes('Alt') &&
         !ev.altKey &&
         !ev.getModifierState('AltGraph')) ||
-      (this.config.showOnKey.includes('Ctrl') && !ev.ctrlKey)
+      (this._config.showOnKey.includes('Ctrl') && !ev.ctrlKey)
     ) {
       this.clearHighlight();
       return;
     }
 
-    const previousTextAtPoint = this.currentTextAtPoint
-      ? this.currentTextAtPoint.result
+    const previousTextAtPoint = this._currentTextAtPoint
+      ? this._currentTextAtPoint.result
       : null;
     const textAtPoint = this.getTextAtPoint(
       {
@@ -1209,10 +1228,10 @@ class RikaiContent {
       RikaiContent.MAX_LENGTH
     );
     console.assert(
-      (!textAtPoint && !this.currentTextAtPoint) ||
-        (this.currentTextAtPoint &&
-          textAtPoint === this.currentTextAtPoint.result),
-      'Should have updated currentTextAtPoint'
+      (!textAtPoint && !this._currentTextAtPoint) ||
+        (this._currentTextAtPoint &&
+          textAtPoint === this._currentTextAtPoint.result),
+      'Should have updated _currentTextAtPoint'
     );
 
     if (previousTextAtPoint === textAtPoint) {
@@ -1248,8 +1267,8 @@ class RikaiContent {
 
     // Check if we have triggered a new query or been disabled in the meantime.
     if (
-      !this.currentTextAtPoint ||
-      textAtPoint !== this.currentTextAtPoint.result
+      !this._currentTextAtPoint ||
+      textAtPoint !== this._currentTextAtPoint.result
     ) {
       return;
     }
@@ -1283,37 +1302,17 @@ class RikaiContent {
 
     if (
       position &&
-      this.currentTextAtPoint &&
-      this.currentTextAtPoint.position &&
-      position.offsetNode === this.currentTextAtPoint.position.offsetNode &&
-      position.offset === this.currentTextAtPoint.position.offset
+      this._currentTextAtPoint &&
+      this._currentTextAtPoint.position &&
+      position.offsetNode === this._currentTextAtPoint.position.offsetNode &&
+      position.offset === this._currentTextAtPoint.position.offset
     ) {
-      return this.currentTextAtPoint.result;
+      return this._currentTextAtPoint.result;
     }
 
     // If we have a textual <input> node or a <textarea> we synthesize a
     // text node and use that for finding text since it allows us to re-use
     // the same handling for text nodes and 'value' attributes.
-
-    const isTextInputNode = (
-      node?: Node
-    ): node is HTMLInputElement | HTMLTextAreaElement => {
-      const allowedInputTypes = [
-        'button',
-        'email',
-        'search',
-        'submit',
-        'text',
-        'url',
-      ];
-      return (
-        node &&
-        node.nodeType === Node.ELEMENT_NODE &&
-        (((<Element>node).tagName === 'INPUT' &&
-          allowedInputTypes.includes((<HTMLInputElement>node).type)) ||
-          (<Element>node).tagName === 'TEXTAREA')
-      );
-    };
 
     let startNode: Node | null = position ? position.offsetNode : null;
     if (isTextInputNode(startNode)) {
@@ -1351,7 +1350,7 @@ class RikaiContent {
           result.rangeEnds[0].container = position.offsetNode;
         }
 
-        this.currentTextAtPoint = {
+        this._currentTextAtPoint = {
           result,
           position,
           point,
@@ -1371,7 +1370,7 @@ class RikaiContent {
           rangeStart: null,
           rangeEnds: [],
         };
-        this.currentTextAtPoint = {
+        this._currentTextAtPoint = {
           result,
           position: null,
           point,
@@ -1385,16 +1384,16 @@ class RikaiContent {
     // just re-use the last result so the user doesn't have try to keep the
     // mouse over the text precisely in order to read the result.
 
-    if (this.currentTextAtPoint) {
-      const dx = this.currentTextAtPoint.point.x - point.x;
-      const dy = this.currentTextAtPoint.point.y - point.y;
+    if (this._currentTextAtPoint) {
+      const dx = this._currentTextAtPoint.point.x - point.x;
+      const dy = this._currentTextAtPoint.point.y - point.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
       if (dist < 4) {
-        return this.currentTextAtPoint.result;
+        return this._currentTextAtPoint.result;
       }
     }
 
-    this.currentTextAtPoint = null;
+    this._currentTextAtPoint = null;
     return null;
   }
 
@@ -1587,9 +1586,96 @@ class RikaiContent {
   }
 
   highlightText(textAtPoint: GetTextResult, matchLen: number) {
-    // TODO (There are a number of conditions to check here, e.g. if the mouse
-    // is down or not.)
-    console.log(`Will highlight ${matchLen} chars`);
+    // TODO: Check config.highlight is true
+    // TODO: Record when the mouse is down and don't highlight in that case
+    //       (I guess that would interfere with selecting)
+    // TODO: Handle the textboxhl pref to turn off highlighting in form
+    //       elements?
+
+    this._selectedWindow =
+      textAtPoint.rangeStart.container.ownerDocument.defaultView;
+
+    // Check that the window wasn't closed since we started the lookup
+    if (this._selectedWindow.closed) {
+      this.clearHighlight();
+      return;
+    }
+
+    // Check if there is already something selected in the page that is *not*
+    // what we selected. If there is, leave it alone.
+    const selection = this._selectedWindow.getSelection();
+    if (selection.toString() && selection.toString() !== this._selectedText) {
+      this._selectedText = null;
+      return;
+    }
+
+    // Handle textarea/input selection separately since those elements have
+    // a different selection API.
+    if (isTextInputNode(textAtPoint.rangeStart.container)) {
+      // TODO: Text box caret position restoration handling
+      //       Does this initially get set on each mousedown event? That seems
+      //       a bit excessive. And what about if the text box is selected when
+      //       we start the tool?
+      //       Need -- update the caret position if we're in the same text box
+
+      const node: HTMLInputElement | HTMLTextAreaElement =
+        textAtPoint.rangeStart.container;
+      const start = textAtPoint.rangeStart.offset;
+      const end = textAtPoint.rangeEnds[0].offset;
+
+      node.setSelectionRange(start, end);
+      this._selectedText = node.value.substring(start, end);
+    } else {
+      // TODO: Text area selection restoration handling
+
+      const startNode = textAtPoint.rangeStart.container;
+      const startOffset = textAtPoint.rangeStart.offset;
+      let endNode = startNode;
+      let endOffset = startOffset;
+
+      let currentLen = 0;
+      for (
+        let i = 0;
+        currentLen < matchLen && i < textAtPoint.rangeEnds.length;
+        i++
+      ) {
+        const initialOffset = i == 0 ? startOffset : 0;
+        endNode = textAtPoint.rangeEnds[i].container;
+        const len = Math.min(
+          textAtPoint.rangeEnds[i].offset - initialOffset,
+          matchLen - currentLen
+        );
+        endOffset = initialOffset + len;
+        currentLen += len;
+      }
+
+      const range = startNode.ownerDocument.createRange();
+      range.setStart(startNode, startOffset);
+      range.setEnd(endNode, endOffset);
+
+      const selection = this._selectedWindow.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      this._selectedText = selection.toString();
+    }
+  }
+
+  clearHighlight() {
+    this._currentTextAtPoint = null;
+
+    if (this._selectedWindow && !this._selectedWindow.closed) {
+      // TODO: Text input handling
+      const selection = this._selectedWindow.getSelection();
+      if (
+        !selection.toString() ||
+        selection.toString() === this._selectedText
+      ) {
+        selection.removeAllRanges();
+      }
+    }
+
+    this._selectedWindow = null;
+    this._selectedText = null;
   }
 
   showWord(searchResult) {
