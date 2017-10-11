@@ -249,6 +249,34 @@ describe('rikaiContent:text search', () => {
     assertTextResultEqual(result, 'あいうえお', textNode, 0, textNode, 5);
   });
 
+  it('should NOT find a range in a div when the point is a long way away (but caretPositionFromPoint lands us in the wrong place)', () => {
+    // Create two divs so we can select the parent div between them
+    const div1 = document.createElement('div');
+    div1.append('あいうえお');
+
+    const div2 = document.createElement('div');
+    div2.append('あいうえお');
+
+    testDiv.append(div1);
+    testDiv.append(div2);
+
+    // Create some space between them
+    div1.style.marginBottom = '20px';
+
+    // Find the space between them
+    const bbox = div1.getBoundingClientRect();
+    const pointToTest = { x: bbox.left, y: bbox.bottom + 10 };
+    assert.strictEqual(
+      document.elementFromPoint(pointToTest.x, pointToTest.y),
+      testDiv,
+    );
+
+    const result = subject.getTextAtPoint(pointToTest);
+
+    assert.strictEqual(result, null);
+    document.body.padding = '0px';
+  });
+
   it('should find text in an inline sibling', () => {
     testDiv.innerHTML = 'あい<span>うえ</span>お';
     const firstTextNode = testDiv.firstChild;

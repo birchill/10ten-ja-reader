@@ -1168,6 +1168,22 @@ const isTextInputNode = (
   );
 };
 
+const isInclusiveAncestor = (ancestor: Element, testNode?: Node): boolean => {
+  if (!testNode) {
+    return false;
+  }
+
+  let node = testNode;
+  do {
+    if (node === ancestor) {
+      return true;
+    }
+    node = node.parentElement;
+  } while (node);
+
+  return false;
+};
+
 class RikaiContent {
   static MAX_LENGTH = 13;
 
@@ -1427,6 +1443,19 @@ class RikaiContent {
       !isRubyAnnotationElement(inlineAncestor)
     ) {
       inlineAncestor = inlineAncestor.parentElement;
+    }
+
+    // Check that our ancestor is, in fact, an ancestor of the point we're
+    // looking at. (Sometimes caretPositionFromPoint can be too helpful and can
+    // choose an element far away.)
+    if (
+      inlineAncestor &&
+      !isInclusiveAncestor(
+        inlineAncestor,
+        document.elementFromPoint(point.x, point.y)
+      )
+    ) {
+      return null;
     }
 
     // Skip ruby annotation elements when traversing. However, don't do that
