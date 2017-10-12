@@ -1631,11 +1631,8 @@ class RikaiContent {
   }
 
   highlightText(textAtPoint: GetTextResult, matchLen: number) {
-    // TODO: Check config.highlight is true
     // TODO: Record when the mouse is down and don't highlight in that case
     //       (I guess that would interfere with selecting)
-    // TODO: Handle the textboxhl pref to turn off highlighting in form
-    //       elements? (Better still, just drop that pref)
 
     this._selectedWindow =
       textAtPoint.rangeStart.container.ownerDocument.defaultView;
