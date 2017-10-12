@@ -71,6 +71,14 @@ interface NodeIterator {
   readonly referenceNode?: Node;
 }
 
+interface HTMLInputElement {
+  selectionDirection: string;
+}
+
+interface HTMLTextAreaElement {
+  selectionDirection: string;
+}
+
 interface FakeTextNode extends Node {
   data: string;
 }
@@ -1189,8 +1197,16 @@ class RikaiContent {
 
   readonly _config: RikaiConfig;
   _currentTextAtPoint?: CachedGetTextResult = null;
+
+  // Highlight tracking
   _selectedWindow?: Window = null;
   _selectedText?: string = null;
+  _selectedTextBox?: {
+    node: HTMLInputElement | HTMLTextAreaElement;
+    previousStart: number;
+    previousEnd: number;
+    previousDirection: string;
+  } = null;
 
   constructor(config) {
     this._config = config;
@@ -1619,7 +1635,7 @@ class RikaiContent {
     // TODO: Record when the mouse is down and don't highlight in that case
     //       (I guess that would interfere with selecting)
     // TODO: Handle the textboxhl pref to turn off highlighting in form
-    //       elements?
+    //       elements? (Better still, just drop that pref)
 
     this._selectedWindow =
       textAtPoint.rangeStart.container.ownerDocument.defaultView;
@@ -1652,10 +1668,38 @@ class RikaiContent {
       const start = textAtPoint.rangeStart.offset;
       const end = start + matchLen;
 
+      // If we were previously interacting with a different text box, restore
+      // its range.
+      if (this._selectedTextBox && node !== this._selectedTextBox.node) {
+        this._selectedTextBox.node.blur();
+        this._restoreTextBoxSelection();
+      }
+
+      // If we were not already interacting with this text box, store its
+      // existing range and focus it.
+      if (!this._selectedTextBox || node !== this._selectedTextBox.node) {
+        node.focus();
+        this._selectedTextBox = {
+          node,
+          previousStart: node.selectionStart,
+          previousEnd: node.selectionEnd,
+          previousDirection: node.selectionDirection,
+        };
+      }
+
+      // Clear any other selection happenning in the page.
+      selection.removeAllRanges();
+
       node.setSelectionRange(start, end);
       this._selectedText = node.value.substring(start, end);
     } else {
-      // TODO: Text area selection restoration handling
+      // If we were previously interacting with a text box, restore its range
+      // and blur it.
+      if (this._selectedTextBox) {
+        this._selectedTextBox.node.blur();
+        this._restoreTextBoxSelection();
+        this._selectedTextBox = null;
+      }
 
       const startNode = textAtPoint.rangeStart.container;
       const startOffset = textAtPoint.rangeStart.offset;
@@ -1693,7 +1737,6 @@ class RikaiContent {
     this._currentTextAtPoint = null;
 
     if (this._selectedWindow && !this._selectedWindow.closed) {
-      // TODO: Text input handling
       const selection = this._selectedWindow.getSelection();
       if (
         !selection.toString() ||
@@ -1701,10 +1744,22 @@ class RikaiContent {
       ) {
         selection.removeAllRanges();
       }
+
+      this._restoreTextBoxSelection();
     }
 
     this._selectedWindow = null;
     this._selectedText = null;
+    this._selectedTextBox = null;
+  }
+
+  _restoreTextBoxSelection() {
+    if (this._selectedTextBox) {
+      const textBox = this._selectedTextBox.node;
+      textBox.selectionStart = this._selectedTextBox.previousStart;
+      textBox.selectionEnd = this._selectedTextBox.previousEnd;
+      textBox.selectionDirection = this._selectedTextBox.previousDirection;
+    }
   }
 
   showWord(searchResult) {

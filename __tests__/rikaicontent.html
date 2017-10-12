@@ -792,6 +792,46 @@ describe('rikaiContent:text search', () => {
   });
 });
 
+describe('rikaiContent:highlighting', () => {
+  let testDiv;
+  let subject;
+
+  beforeEach(() => {
+    const config = {
+      showOnKey: '',
+    };
+    subject = new RikaiContent(config);
+
+    testDiv = document.createElement('div');
+    testDiv.setAttribute('id', 'test-div');
+    // Stick the div at the top as if the div is offscreen,
+    // caretPositionFromPoint won't work
+    testDiv.style.position = 'fixed';
+    testDiv.style.top = '0px';
+    document.body.append(testDiv);
+  });
+
+  afterEach(() => {
+    document.getElementById('test-div').remove();
+    subject.detach();
+  });
+
+  it('should highlight text in a textbox', () => {
+    testDiv.innerHTML = '<input type="text" value="あいうえお">';
+    const textBox = testDiv.firstChild;
+    const range = {
+      text: 'いうえお',
+      rangeStart: { container: textBox, offset: 1 },
+      rangeEnds: [ { container: textBox, offset: 5 } ],
+    };
+
+    subject.highlightText(range, 3);
+
+    assert.strictEqual(textBox.selectionStart, 1);
+    assert.strictEqual(textBox.selectionEnd, 4);
+  });
+});
+
 mocha.run();
 </script>
 </body>
