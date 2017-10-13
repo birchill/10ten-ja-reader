@@ -87,7 +87,7 @@ describe('Dictionary', () => {
     const result = sharedDict.deinflect('踊りたくなかった');
     const match = result.find(candidate => candidate.word === '踊る');
     expect(match).toEqual({
-      reason: '-tai &lt; negative &lt; past',
+      reason: '-tai < negative < past',
       type: 2,
       word: '踊る',
     });

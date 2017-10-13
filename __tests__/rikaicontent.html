@@ -29,6 +29,12 @@ const browser = {
 mocha.setup('bdd');
 const assert = chai.assert;
 
+function innerHTMLFromFragment(fragment) {
+  const div = document.createElement('div');
+  div.append(fragment);
+  return div.innerHTML;
+}
+
 describe('rikaiContent', () => {
   let subject;
 
@@ -83,7 +89,7 @@ describe('rikaiContent', () => {
       eigo: 'gentleman, samurai, samurai radical (no. 33)',
     };
 
-    const result = subject.makeHtmlForEntry(entry);
+    const result = subject.makeHtmlForResult(entry);
     assert.instanceOf(result, DocumentFragment);
     assert.strictEqual(result.childElementCount, 1,
                        'Should have one child element');
@@ -128,7 +134,7 @@ describe('rikaiContent', () => {
       eigo: 'mackerel',
     };
 
-    const result = subject.makeHtmlForEntry(entry);
+    const result = subject.makeHtmlForResult(entry);
     assert.instanceOf(result, DocumentFragment);
     assert.strictEqual(result.childElementCount, 1,
                        'Should have one child element');
@@ -143,23 +149,15 @@ describe('rikaiContent', () => {
     const entry = {
       data: [
         [ '走る [はしる] /(v5r,vi) to run/to travel (movement of vehicles)/to hurry to/to retreat (from battle)/to take flight/to run away from home/to elope/to tend heavily toward/(P)/',
-          '&lt; past' ]
+          '< past' ]
       ],
       more: false,
       matchLen: 3,
     };
 
-    const result = subject.makeHtmlForEntry(entry);
-    /*
-    assert.instanceOf(result, DocumentFragment);
-    assert.strictEqual(result.childElementCount, 1,
-                       'Should have one child element');
-
-    const resultAsHtml = result.firstElementChild.outerHTML;
-
-    assert.strictEqual(resultAsHtml,
-      '<span class="w-kanji">走る</span> &#32; <span class="w-kana">はしる</span> <span class="w-conj">(&lt; past)</span><br/><span class="w-def">(v5r,vi) to run; to travel (movement of vehicles); to hurry to; to retreat (from battle); to take flight; to run away from home; to elope; to tend heavily toward; (P)</span><br/>');
-      */
+    const result = subject.makeHtmlForResult(entry);
+    assert.strictEqual(innerHTMLFromFragment(result),
+      '<span class="w-kanji">走る</span><span class="w-kana">はしる</span><span class="w-conj">(&lt; past)</span><br><span class="w-def">(v5r,vi) to run; to travel (movement of vehicles); to hurry to; to retreat (from battle); to take flight; to run away from home; to elope; to tend heavily toward; (P)</span><br>');
   });
 
   it('should format multiple word entries', () => {
@@ -172,7 +170,7 @@ describe('rikaiContent', () => {
       matchLen: 3
     };
 
-    const result = subject.makeHtmlForEntry(entry);
+    const result = subject.makeHtmlForResult(entry);
     /*
     assert.instanceOf(result, DocumentFragment);
     assert.strictEqual(result.childElementCount, 1,
@@ -195,7 +193,7 @@ describe('rikaiContent', () => {
       matchLen: 3
     };
 
-    const result = subject.makeHtmlForEntry(entry);
+    const result = subject.makeHtmlForResult(entry);
     /*
     assert.instanceOf(result, DocumentFragment);
     assert.strictEqual(result.childElementCount, 1,
@@ -221,7 +219,7 @@ describe('rikaiContent', () => {
       matchLen: 1
     };
 
-    const result = subject.makeHtmlForEntry(entry);
+    const result = subject.makeHtmlForResult(entry);
     /*
     assert.instanceOf(result, DocumentFragment);
     assert.strictEqual(result.childElementCount, 1,
@@ -234,7 +232,7 @@ describe('rikaiContent', () => {
       */
   });
 
-  it('should format word entries when there are more to show and which have a title', () => {
+  it('should format translate entries when there are more to show and which have a title', () => {
     const entry = {
       data:
       [ [ '韓国 [からくに] /(n,arch) China/Korea/', null ],
@@ -252,7 +250,7 @@ describe('rikaiContent', () => {
       title: '韓国、中国との通貨スワップ延長合意を発表',
     };
 
-    const result = subject.makeHtmlForEntry(entry);
+    const result = subject.makeHtmlForResult(entry);
     /*
     assert.instanceOf(result, DocumentFragment);
     assert.strictEqual(result.childElementCount, 1,
@@ -276,7 +274,7 @@ describe('rikaiContent', () => {
       names: true
     };
 
-    const result = subject.makeHtmlForEntry(entry);
+    const result = subject.makeHtmlForResult(entry);
     /*
     assert.instanceOf(result, DocumentFragment);
     assert.strictEqual(result.childElementCount, 1,
@@ -297,7 +295,7 @@ describe('rikaiContent', () => {
       names: true
     };
 
-    const result = subject.makeHtmlForEntry(entry);
+    const result = subject.makeHtmlForResult(entry);
     /*
     assert.instanceOf(result, DocumentFragment);
     assert.strictEqual(result.childElementCount, 1,
@@ -318,7 +316,7 @@ describe('rikaiContent', () => {
       names: true
     };
 
-    const result = subject.makeHtmlForEntry(entry);
+    const result = subject.makeHtmlForResult(entry);
     /*
     assert.instanceOf(result, DocumentFragment);
     assert.strictEqual(result.childElementCount, 1,

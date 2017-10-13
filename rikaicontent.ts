@@ -1767,19 +1767,97 @@ class RikaiContent {
     // TODO
   }
 
-  makeHtmlForEntry(entry) {
-    if (!entry) {
+  makeHtmlForResult(result?: SearchResult): DocumentFragment | null {
+    if (!result) {
       return null;
     }
 
-    if (entry.kanji) {
-      return this.makeHtmlForKanji(entry);
+    const isKanjiEntry = (result: SearchResult): result is KanjiEntry =>
+      (result as KanjiEntry).kanji !== undefined;
+
+    if (isKanjiEntry(result)) {
+      return this.makeHtmlForKanji(result);
     }
 
-    return null;
+    if (result.names) {
+      return this.makeHtmlForNames(result);
+    }
+
+    return this.makeHtmlForWords(result);
   }
 
-  makeHtmlForKanji(entry) {
+  makeHtmlForWords(lookupResult: LookupResult): DocumentFragment {
+    const result = document.createDocumentFragment();
+
+    // Entries
+    for (const [entry, reason] of lookupResult.data) {
+      // Parse the entry which has the format:
+      //
+      //   仔クジラ [こくじら] /(n) whale calf/
+      //
+      // Or without kana reading:
+      //
+      //   あっさり /(adv,adv-to,vs,on-mim) easily/readily/quickly/(P)/
+      //
+      const matches = entry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
+      if (!matches) {
+        continue;
+      }
+
+      const [kanji, kana, definition] = matches.slice(1);
+
+      // TODO: Merge entries with same starting kanji
+
+      const kanjiSpan = document.createElement('span');
+      result.append(kanjiSpan);
+      kanjiSpan.classList.add('w-kanji');
+      kanjiSpan.append(kanji);
+
+      if (kana) {
+        // TODO: Previous rikaitachi would put three spaces in between the kanji
+        // and kana spans but we should just use CSS to do this.
+        const kanaSpan = document.createElement('span');
+        result.append(kanaSpan);
+        kanaSpan.classList.add('w-kana');
+        kanaSpan.append(kana);
+      }
+
+      if (reason) {
+        // TODO: Add space before this span too.
+        const reasonSpan = document.createElement('span');
+        result.append(reasonSpan);
+        reasonSpan.classList.add('w-conj');
+        reasonSpan.append(`(${reason})`);
+      }
+
+      // TODO: Respect onlyreading setting
+
+      // TODO: Do this with CSS
+      result.append(document.createElement('br'));
+      const definitionSpan = document.createElement('span');
+      result.append(definitionSpan);
+      definitionSpan.classList.add('w-def');
+      definitionSpan.append(definition.replace(/\//g, '; '));
+      // TODO: Do this with CSS
+      result.append(document.createElement('br'));
+    }
+
+    // TODO: More ... handling
+
+    /*
+      '<span class="w-kanji">走る</span> &#32; <span class="w-kana">はしる</span> <span class="w-conj">(&lt; past)</span><br/><span class="w-def">(v5r,vi) to run; to travel (movement of vehicles); to hurry to; to retreat (from battle); to take flight; to run away from home; to elope; to tend heavily toward; (P)</span><br/>');
+      */
+
+    return result;
+  }
+
+  makeHtmlForNames(lookupResult: LookupResult): DocumentFragment {
+    const result = document.createDocumentFragment();
+    // TODO
+    return result;
+  }
+
+  makeHtmlForKanji(entry: KanjiEntry): DocumentFragment {
     // (This is all just temporary. Long term we need to either use some sort of
     // templating system, or, if we can tidy up the markup enough by using more
     // modern CSS instead of relying on <br> elements etc., we might be able to
@@ -1845,18 +1923,18 @@ class RikaiContent {
     gradeCell.classList.add('k-abox-g');
     let grade = document.createDocumentFragment();
     switch (entry.misc.G) {
-      case 8:
+      case '8':
         grade.append('general');
         grade.append(document.createElement('br'));
         grade.append('use');
         break;
-      case 9:
+      case '9':
         grade.append('name');
         grade.append(document.createElement('br'));
         grade.append('use');
         break;
       default:
-        if (isNaN(entry.misc.G)) {
+        if (isNaN(parseInt(entry.misc.G))) {
           grade.append('-');
         } else {
           grade.append('grade');
