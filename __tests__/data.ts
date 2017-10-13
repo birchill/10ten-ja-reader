@@ -288,7 +288,7 @@ describe('Dictionary', () => {
 
   // TODO: Test names dictionary handling
   //       e.g. create a new Dictionary specifying 'false' for loadNames but then
-  //       do a work lookup where 'doNames' is true.
-  //       e.g.(2) do a work look up where 'doNames' is true and check we
+  //       do a word lookup where 'doNames' is true.
+  //       e.g.(2) do a word look up where 'doNames' is true and check we
   //       *don't* match names
 });
