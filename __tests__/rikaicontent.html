@@ -41,6 +41,7 @@ describe('rikaiContent', () => {
   beforeEach(() => {
     const config = {
       showOnKey: '',
+      onlyReading: false,
     };
     subject = new RikaiContent(config);
   });
@@ -175,7 +176,7 @@ describe('rikaiContent', () => {
       '<span class="w-kanji">韓国語</span><span class="w-kana">かんこくご</span><br><span class="w-def">(n) Korean (language)</span><br><span class="w-kanji">韓国</span><span class="w-kana">からくに</span><br><span class="w-def">(n,arch) China; Korea</span><br><span class="w-kanji">韓国</span><span class="w-kana">かんこく</span><br><span class="w-def">(n) (South) Korea</span><br>');
   });
 
-  it('should respect the \'onlyreading\' setting when formatting word entries', () => {
+  it('should respect the \'onlyReading\' setting when formatting word entries', () => {
     const entry = {
       data:
        [ [ '韓国語 [かんこくご] /(n) Korean (language)/', null ],
@@ -185,16 +186,14 @@ describe('rikaiContent', () => {
       matchLen: 3
     };
 
-    const result = subject.makeHtmlForResult(entry);
-    /*
-    assert.instanceOf(result, DocumentFragment);
-    assert.strictEqual(result.childElementCount, 1,
-                       'Should have one child element');
+    const oldConfig = subject.config;
+    subject.config = { ...oldConfig, onlyReading: true };
 
-    const resultAsHtml = result.firstElementChild.outerHTML;
-    assert.strictEqual(resultAsHtml,
-      '<span class="w-kanji">韓国語</span> &#32; <span class="w-kana">かんこくご</span><br/><span class="w-kanji">韓国</span> &#32; <span class="w-kana">からくに</span><br/><span class="w-kanji">韓国</span> &#32; <span class="w-kana">かんこく</span><br/>');
-      */
+    const result = subject.makeHtmlForResult(entry);
+    subject.config = oldConfig;
+
+    assert.strictEqual(innerHTMLFromFragment(result),
+      '<span class="w-kanji">韓国語</span><span class="w-kana">かんこくご</span><br><span class="w-kanji">韓国</span><span class="w-kana">からくに</span><br><span class="w-kanji">韓国</span><span class="w-kana">かんこく</span><br>');
   });
 
   it('should combine entries with matching kanji and definitions when formatting words', () => {

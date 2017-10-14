@@ -133,7 +133,7 @@ interface KanjiSearchOptions {
 declare namespace rcxMain.config {
   let kanjicomponents: string;
   let kanjiinfo: { [ref: string]: string };
-  let onlyreading: string;
+  let onlyReading: boolean;
 }
 
 class Dictionary {
@@ -911,7 +911,7 @@ class Dictionary {
 
         s = e[3];
         t = s.replace(/\//g, '; ');
-        if (rcxMain.config.onlyreading == 'false') {
+        if (!rcxMain.config.onlyReading) {
           t = '<br/><span class="w-def">' + t + '</span><br/>';
         } else {
           t = '<br/>';

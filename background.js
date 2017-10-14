@@ -18,10 +18,10 @@ browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       sendResponse(rcxMain.dict.makeHtml(request.entry));
       break;
     case 'switchOnlyReading':
-      if (rcxMain.config.onlyreading == 'true')
-        rcxMain.config.onlyreading = 'false';
-      else rcxMain.config.onlyreading = 'true';
-      localStorage['onlyreading'] = rcxMain.config.onlyreading;
+      if (rcxMain.config.onlyReading)
+        rcxMain.config.onlyReading = false;
+      else rcxMain.config.onlyReading = true;
+      localStorage['onlyReading'] = rcxMain.config.onlyReading;
       break;
     case 'copyToClip':
       rcxMain.copyToClip(sender.tab, request.entry);
@@ -41,16 +41,16 @@ if (initStorage('v0.8.92', true)) {
   initStorage('textboxhl', false);
 
   // v0.8.6
-  initStorage('onlyreading', false);
+  initStorage('onlyReading', false);
   // v0.8.8
   if (localStorage['highlight'] == 'yes') localStorage['highlight'] = 'true';
   if (localStorage['highlight'] == 'no') localStorage['highlight'] = 'false';
   if (localStorage['textboxhl'] == 'yes') localStorage['textboxhl'] = 'true';
   if (localStorage['textboxhl'] == 'no') localStorage['textboxhl'] = 'false';
-  if (localStorage['onlyreading'] == 'yes')
-    localStorage['onlyreading'] = 'true';
-  if (localStorage['onlyreading'] == 'no')
-    localStorage['onlyreading'] = 'false';
+  if (localStorage['onlyReading'] === 'yes')
+    localStorage['onlyReading'] = 'true';
+  if (localStorage['onlyReading'] === 'no')
+    localStorage['onlyReading'] = 'false';
   initStorage('copySeparator', 'tab');
   initStorage('maxClipCopyEntries', '7');
   initStorage('lineEnding', 'n');
@@ -89,7 +89,7 @@ rcxMain.config = {};
 rcxMain.config.css = localStorage['popupcolor'];
 rcxMain.config.highlight = localStorage['highlight'];
 rcxMain.config.textboxhl = localStorage['textboxhl'];
-rcxMain.config.onlyreading = localStorage['onlyreading'];
+rcxMain.config.onlyReading = localStorage['onlyReading'] == 'true';
 rcxMain.config.copySeparator = localStorage['copySeparator'];
 rcxMain.config.maxClipCopyEntries = localStorage['maxClipCopyEntries'];
 rcxMain.config.lineEnding = localStorage['lineEnding'];

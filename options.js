@@ -15,9 +15,9 @@ function fillVals() {
     document.optform.textboxhl.checked = true;
   else document.optform.textboxhl.checked = false;
 
-  if (localStorage['onlyreading'] == 'true')
-    document.optform.onlyreading.checked = true;
-  else document.optform.onlyreading.checked = false;
+  if (localStorage['onlyReading'] == 'true')
+    document.optform.onlyReading.checked = true;
+  else document.optform.onlyReading.checked = false;
 
   if (localStorage['minihelp'] == 'true')
     document.optform.minihelp.checked = true;
@@ -72,7 +72,7 @@ function getVals() {
   localStorage['popupcolor'] = document.optform.popupcolor.value;
   localStorage['highlight'] = document.optform.highlighttext.checked;
   localStorage['textboxhl'] = document.optform.textboxhl.checked;
-  localStorage['onlyreading'] = document.optform.onlyreading.checked;
+  localStorage['onlyReading'] = document.optform.onlyReading.checked;
   localStorage['minihelp'] = document.optform.minihelp.checked;
   localStorage['disablekeys'] = document.optform.disablekeys.checked;
   localStorage['kanjicomponents'] = document.optform.kanjicomponents.checked;
@@ -108,8 +108,8 @@ function getVals() {
     localStorage['highlight'];
   browser.extension.getBackgroundPage().rcxMain.config.textboxhl =
     localStorage['textboxhl'];
-  browser.extension.getBackgroundPage().rcxMain.config.onlyreading =
-    localStorage['onlyreading'];
+  browser.extension.getBackgroundPage().rcxMain.config.onlyReading =
+    localStorage['onlyReading'] == 'true';
   browser.extension.getBackgroundPage().rcxMain.config.minihelp =
     localStorage['minihelp'];
   browser.extension.getBackgroundPage().rcxMain.config.popupDelay = popupDelay;

@@ -1132,6 +1132,7 @@ var rcxContent = {
 // the content process.
 interface RikaiConfig {
   showOnKey: string;
+  onlyReading: boolean;
 }
 
 // Either end of a Range object
@@ -1195,7 +1196,7 @@ const isInclusiveAncestor = (ancestor: Element, testNode?: Node): boolean => {
 class RikaiContent {
   static MAX_LENGTH = 13;
 
-  readonly _config: RikaiConfig;
+  _config: RikaiConfig;
   _currentTextAtPoint?: CachedGetTextResult = null;
 
   // Highlight tracking
@@ -1213,6 +1214,14 @@ class RikaiContent {
 
     this.onMouseMove = this.onMouseMove.bind(this);
     window.addEventListener('mousemove', this.onMouseMove);
+  }
+
+  get config() {
+    return { ...this._config };
+  }
+
+  set config(config) {
+    this._config = config;
   }
 
   detach() {
@@ -1830,14 +1839,15 @@ class RikaiContent {
         reasonSpan.append(`(${reason})`);
       }
 
-      // TODO: Respect onlyreading setting
+      if (!this._config.onlyReading) {
+        // TODO: Do this with CSS
+        result.append(document.createElement('br'));
+        const definitionSpan = document.createElement('span');
+        result.append(definitionSpan);
+        definitionSpan.classList.add('w-def');
+        definitionSpan.append(definition.replace(/\//g, '; '));
+      }
 
-      // TODO: Do this with CSS
-      result.append(document.createElement('br'));
-      const definitionSpan = document.createElement('span');
-      result.append(definitionSpan);
-      definitionSpan.classList.add('w-def');
-      definitionSpan.append(definition.replace(/\//g, '; '));
       // TODO: Do this with CSS
       result.append(document.createElement('br'));
     }
@@ -2068,11 +2078,10 @@ browser.runtime.onMessage.addListener(request => {
       window.rikaichamp.config = request.config;
 
       if (rikaiContent) {
-        rikaiContent.detach();
-        rikaiContent = null;
+        rikaiContent.config = request.config;
+      } else {
+        rikaiContent = new RikaiContent(request.config);
       }
-
-      rikaiContent = new RikaiContent(request.config);
       break;
 
     case 'disable':
