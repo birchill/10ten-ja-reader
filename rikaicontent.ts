@@ -1326,9 +1326,13 @@ class RikaiContent {
       this.highlightText(textAtPoint, matchLen);
       this.showPopup(searchResult);
     } else {
-      // TODO: Set title from textAtPoint.text but limited to
-      // searchResult.textLen, and with '...' appended if we truncated.
-      const title = textAtPoint.text;
+      let title = textAtPoint.text.substr(
+        0,
+        (searchResult as TranslateResult).textLen
+      );
+      if (textAtPoint.text.length > (searchResult as TranslateResult).textLen) {
+        title += '...';
+      }
       this.showPopup(searchResult, title);
     }
   }
