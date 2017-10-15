@@ -1919,7 +1919,100 @@ class RikaiContent {
 
   makeHtmlForNames(result: LookupResult): DocumentFragment {
     const fragment = document.createDocumentFragment();
-    // TODO
+
+    const titleDiv = document.createElement('div');
+    fragment.append(titleDiv);
+    titleDiv.classList.add('w-title');
+    titleDiv.append('Names Dictionary');
+
+    // Pre-process entries
+    interface DisplayEntry {
+      names: { kanji?: string, kana: string}[];
+      definition: string;
+    }
+    const entries: DisplayEntry[] = [];
+    for (const [dictEntry] of result.data) {
+      // See makeHtmlForWords for an explanation of the format here
+      const matches = dictEntry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
+      if (!matches) {
+        continue;
+      }
+      let [kanjiKana, kana, definition] = matches.slice(1);
+
+      // Sometimes for names when we have a mix of katakana and hiragana we
+      // actually have the same format in the definition field, e.g.
+      //
+      //   あか組４ [あかぐみふぉー] /あか組４ [あかぐみフォー] /Akagumi Four (h)//
+      //
+      // So we try reprocessing the definition field using the same regex.
+      const rematch = definition.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
+      if (rematch) {
+        [kanjiKana, kana, definition] = rematch.slice(1);
+      }
+      const name = kana ? { kanji: kanjiKana, kana } : { kanji: undefined, kana : kanjiKana };
+
+      // Combine with previous entry if the definitions match.
+      const prevEntry = entries.length ? entries[entries.length - 1] : null;
+      if (prevEntry && prevEntry.definition === definition) {
+        prevEntry.names.push(name);
+        continue;
+      }
+
+      entries.push({
+        names: [ name ],
+        definition,
+      });
+    }
+
+    const namesTable = document.createElement('table');
+    fragment.append(namesTable);
+    namesTable.classList.add('w-na-tb');
+
+    // TODO: Rewrite this using modern CSS
+    // (I'm just trying to match the original for now.)
+    const theRow = document.createElement('tr');
+    namesTable.append(theRow);
+
+    const theCell = document.createElement('td');
+    theRow.append(theCell);
+
+    // TODO: If there are more than four entries, split them into two columns
+    // (You should see the code to do this in the original...)
+
+    for (const entry of entries) {
+      for (const name of entry.names) {
+        if (name.kanji) {
+          const kanjiSpan = document.createElement('span');
+          theCell.append(kanjiSpan);
+          kanjiSpan.classList.add('w-kanji');
+          kanjiSpan.append(name.kanji);
+        }
+
+        // TODO: Put a space between kanji and kana fields using CSS
+        const kanaSpan = document.createElement('span');
+        theCell.append(kanaSpan);
+        kanaSpan.classList.add('w-kana');
+        kanaSpan.append(name.kana);
+
+        // TODO: Do this with CSS
+        theCell.append(document.createElement('br'));
+      }
+
+      const definitionSpan = document.createElement('span');
+      theCell.append(definitionSpan);
+      definitionSpan.classList.add('w-def');
+      definitionSpan.append(entry.definition.replace(/\//g, '; '));
+
+      // TODO: Do this with CSS
+      theCell.append(document.createElement('br'));
+    }
+
+    if (result.more) {
+      theCell.append('...');
+      // TODO: Do this with CSS
+      theCell.append(document.createElement('br'));
+    }
+
     return fragment;
   }
 
