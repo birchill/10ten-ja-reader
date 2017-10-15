@@ -1927,7 +1927,7 @@ class RikaiContent {
 
     // Pre-process entries
     interface DisplayEntry {
-      names: { kanji?: string, kana: string}[];
+      names: { kanji?: string; kana: string }[];
       definition: string;
     }
     const entries: DisplayEntry[] = [];
@@ -1949,7 +1949,9 @@ class RikaiContent {
       if (rematch) {
         [kanjiKana, kana, definition] = rematch.slice(1);
       }
-      const name = kana ? { kanji: kanjiKana, kana } : { kanji: undefined, kana : kanjiKana };
+      const name = kana
+        ? { kanji: kanjiKana, kana }
+        : { kanji: undefined, kana: kanjiKana };
 
       // Combine with previous entry if the definitions match.
       const prevEntry = entries.length ? entries[entries.length - 1] : null;
@@ -1959,7 +1961,7 @@ class RikaiContent {
       }
 
       entries.push({
-        names: [ name ],
+        names: [name],
         definition,
       });
     }
