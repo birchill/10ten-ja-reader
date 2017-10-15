@@ -211,16 +211,8 @@ describe('rikaiContent', () => {
     };
 
     const result = subject.makeHtmlForResult(entry);
-    /*
-    assert.instanceOf(result, DocumentFragment);
-    assert.strictEqual(result.childElementCount, 1,
-                       'Should have one child element');
-
-    const resultAsHtml = result.firstElementChild.outerHTML;
-
-    assert.strictEqual(resultAsHtml,
-      '<span class="w-kanji">東</span> &#32; <span class="w-kana">ひがし</span><br/><span class="w-def">(n) east; (P)</span><br/><span class="w-kanji">東</span> &#32; <span class="w-kana">ひむかし</span>、 <span class="w-kana">ひんがし</span><br/><span class="w-def">(n,ok) east; (P)</span><br/><span class="w-kanji">東</span> &#32; <span class="w-kana">あずま</span><br/><span class="w-def">(n,arch,abbr) east; eastern Japan; six-stringed Japanese zither; my spouse</span><br/><span class="w-kanji">東</span> &#32; <span class="w-kana">あづま</span><br/><span class="w-def">(n,arch,abbr,ok) east; eastern Japan; six-stringed Japanese zither; my spouse</span><br/>');
-      */
+    assert.strictEqual(innerHTMLFromFragment(result),
+      '<span class="w-kanji">東</span><span class="w-kana">ひがし</span><br><span class="w-def">(n) east; (P)</span><br><span class="w-kanji">東</span><span class="w-kana">ひむかし</span>、 <span class="w-kana">ひんがし</span><br><span class="w-def">(n,ok) east; (P)</span><br><span class="w-kanji">東</span><span class="w-kana">あずま</span><br><span class="w-def">(n,arch,abbr) east; eastern Japan; six-stringed Japanese zither; my spouse</span><br><span class="w-kanji">東</span><span class="w-kana">あづま</span><br><span class="w-def">(n,arch,abbr,ok) east; eastern Japan; six-stringed Japanese zither; my spouse</span><br>');
   });
 
   it('should format translate entries when there are more to show and which have a title', () => {
@@ -250,7 +242,7 @@ describe('rikaiContent', () => {
     const resultAsHtml = result.firstElementChild.outerHTML;
 
     assert.strictEqual(resultAsHtml,
-      '<div class="w-title">韓国、中国との通貨スワップ延長合意を発表</div><span class="w-kanji">韓国</span> &#32; <span class="w-kana">からくに</span><br/><span class="w-def">(n,arch) China; Korea</span><br/><span class="w-kanji">中国</span> &#32; <span class="w-kana">ちゅうごく</span><br/><span class="w-def">(n) China; South-west most region of Honshu; middle of a country; the Hiroshima area</span><br/><span class="w-kanji">殿</span> &#32; <span class="w-kana">との</span><br/><span class="w-def">(n) feudal lord; mansion; palace</span><br/><span class="w-kanji">通貨</span> &#32; <span class="w-kana">つうか</span><br/><span class="w-def">(n,adj-no) currency; (P)</span><br/><span class="w-kana">スワップ</span><br/><span class="w-def">(n,vs) swap; (P)</span><br/><span class="w-kanji">延長</span> &#32; <span class="w-kana">えんちょう</span><br/><span class="w-def">(n,vs) extension; elongation; prolongation; lengthening; Enchou era (923.4.11-931.4.26); (P)</span><br/><span class="w-kanji">合意</span> &#32; <span class="w-kana">ごうい</span><br/><span class="w-def">(n,vs,adj-no) agreement; consent; mutual understanding; (P)</span><br/>...<br/>');
+      '<div class="w-title">韓国、中国との通貨スワップ延長合意を発表</div><span class="w-kanji">韓国</span><span class="w-kana">からくに</span><br><span class="w-def">(n,arch) China; Korea</span><br><span class="w-kanji">中国</span><span class="w-kana">ちゅうごく</span><br><span class="w-def">(n) China; South-west most region of Honshu; middle of a country; the Hiroshima area</span><br><span class="w-kanji">殿</span><span class="w-kana">との</span><br><span class="w-def">(n) feudal lord; mansion; palace</span><br><span class="w-kanji">通貨</span><span class="w-kana">つうか</span><br><span class="w-def">(n,adj-no) currency; (P)</span><br><span class="w-kana">スワップ</span><br><span class="w-def">(n,vs) swap; (P)</span><br><span class="w-kanji">延長</span><span class="w-kana">えんちょう</span><br><span class="w-def">(n,vs) extension; elongation; prolongation; lengthening; Enchou era (923.4.11-931.4.26); (P)</span><br><span class="w-kanji">合意</span><span class="w-kana">ごうい</span><br><span class="w-def">(n,vs,adj-no) agreement; consent; mutual understanding; (P)</span><br>...<br>');
       */
   });
 
@@ -274,7 +266,7 @@ describe('rikaiContent', () => {
     const resultAsHtml = result.firstElementChild.outerHTML;
 
     assert.strictEqual(resultAsHtml,
-      '<div class="w-title">Names Dictionary</div><table class="w-na-tb"><tr><td><span class="w-kanji">中野</span> &#32; <span class="w-kana">なかの</span><br/> <span class="w-def">Nakano (p,s)</span><br/><span class="w-kanji">中野</span> &#32; <span class="w-kana">なかのざき</span><br/> <span class="w-def">Nakanozaki (s)</span><br/></td><td><span class="w-kanji">中</span> &#32; <span class="w-kana">あたり</span><br/> <span class="w-def">Atari (f,s)</span><br/>...<br/></td></tr></table>');
+      '<div class="w-title">Names Dictionary</div><table class="w-na-tb"><tr><td><span class="w-kanji">中野</span><span class="w-kana">なかの</span><br> <span class="w-def">Nakano (p,s)</span><br><span class="w-kanji">中野</span><span class="w-kana">なかのざき</span><br> <span class="w-def">Nakanozaki (s)</span><br></td><td><span class="w-kanji">中</span><span class="w-kana">あたり</span><br> <span class="w-def">Atari (f,s)</span><br>...<br></td></tr></table>');
       */
   });
 
@@ -295,7 +287,7 @@ describe('rikaiContent', () => {
     const resultAsHtml = result.firstElementChild.outerHTML;
 
     assert.strictEqual(resultAsHtml,
-      '<div class="w-title">Names Dictionary</div><table class="w-na-tb"><tr><td><span class="w-kanji">あか組４</span> &#32; <span class="w-kana">あかぐみフォー</span><br/> <span class="w-def">Akagumi Four (h)</span><br/></td></tr></table>');
+      '<div class="w-title">Names Dictionary</div><table class="w-na-tb"><tr><td><span class="w-kanji">あか組４</span><span class="w-kana">あかぐみフォー</span><br> <span class="w-def">Akagumi Four (h)</span><br></td></tr></table>');
       */
   });
 
@@ -316,7 +308,7 @@ describe('rikaiContent', () => {
     const resultAsHtml = result.firstElementChild.outerHTML;
 
     assert.strictEqual(resultAsHtml,
-      '<div class="w-title">Names Dictionary</div><table class="w-na-tb"><tr><td><span class="w-kana">あがさ</span><br/> <span class="w-def">Agasa (f)</span><br/></td></tr></table>');
+      '<div class="w-title">Names Dictionary</div><table class="w-na-tb"><tr><td><span class="w-kana">あがさ</span><br> <span class="w-def">Agasa (f)</span><br></td></tr></table>');
       */
   });
 });

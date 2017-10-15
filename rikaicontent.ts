@@ -1795,76 +1795,106 @@ class RikaiContent {
     return this.makeHtmlForWords(result);
   }
 
-  makeHtmlForWords(lookupResult: LookupResult): DocumentFragment {
-    const result = document.createDocumentFragment();
+  makeHtmlForWords(result: LookupResult): DocumentFragment {
+    const fragment = document.createDocumentFragment();
 
-    // Entries
-    for (const [entry, reason] of lookupResult.data) {
-      // Parse the entry which has the format:
-      //
-      //   仔クジラ [こくじら] /(n) whale calf/
-      //
-      // Or without kana reading:
-      //
-      //   あっさり /(adv,adv-to,vs,on-mim) easily/readily/quickly/(P)/
-      //
-      const matches = entry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
+    // Pre-process entries, parsing them and combining them when the kanji and
+    // definition match.
+    //
+    // Each dictionary entry has the format:
+    //
+    //   仔クジラ [こくじら] /(n) whale calf/
+    //
+    // Or without kana reading:
+    //
+    //   あっさり /(adv,adv-to,vs,on-mim) easily/readily/quickly/(P)/
+    //
+    interface DisplayEntry {
+      kanjiKana: string;
+      kana: string[];
+      definition: string;
+      reason: string;
+    };
+    const entries: DisplayEntry[] = [];
+    for (const [dictEntry, reason] of result.data) {
+      const matches = dictEntry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
       if (!matches) {
         continue;
       }
+      const [kanjiKana, kana, definition] = matches.slice(1);
 
-      const [kanji, kana, definition] = matches.slice(1);
+      // Combine with previous entry if both kanji and definition match.
+      const prevEntry = entries.length ? entries[entries.length - 1] : null;
+      if (prevEntry &&
+          prevEntry.kanjiKana === kanjiKana &&
+          prevEntry.definition === definition) {
+        if (kana) {
+          prevEntry.kana.push(kana);
+        }
+        continue;
+      }
 
-      // TODO: Merge entries with same starting kanji
-
-      const kanjiSpan = document.createElement('span');
-      result.append(kanjiSpan);
-      kanjiSpan.classList.add('w-kanji');
-      kanjiSpan.append(kanji);
-
+      const entry = {
+        kanjiKana,
+        kana: [],
+        definition,
+        reason,
+      };
       if (kana) {
-        // TODO: Previous rikaitachi would put three spaces in between the kanji
-        // and kana spans but we should just use CSS to do this.
+        entry.kana.push(kana);
+      }
+      entries.push(entry);
+    }
+
+    for (const entry of entries) {
+      const kanjiSpan = document.createElement('span');
+      fragment.append(kanjiSpan);
+      kanjiSpan.classList.add('w-kanji');
+      kanjiSpan.append(entry.kanjiKana);
+
+      // TODO: Previous rikai-tachi would put three spaces in between the
+      // kanji and kana spans but we should just use CSS to do this.
+
+      for (const kana of entry.kana) {
+        if (fragment.lastElementChild.classList.contains('w-kana')) {
+          fragment.append('、 ');
+        }
         const kanaSpan = document.createElement('span');
-        result.append(kanaSpan);
+        fragment.append(kanaSpan);
         kanaSpan.classList.add('w-kana');
         kanaSpan.append(kana);
       }
 
-      if (reason) {
+      if (entry.reason) {
         // TODO: Add space before this span too.
         const reasonSpan = document.createElement('span');
-        result.append(reasonSpan);
+        fragment.append(reasonSpan);
         reasonSpan.classList.add('w-conj');
-        reasonSpan.append(`(${reason})`);
+        reasonSpan.append(`(${entry.reason})`);
       }
 
       if (!this._config.onlyReading) {
         // TODO: Do this with CSS
-        result.append(document.createElement('br'));
+        fragment.append(document.createElement('br'));
         const definitionSpan = document.createElement('span');
-        result.append(definitionSpan);
+        fragment.append(definitionSpan);
         definitionSpan.classList.add('w-def');
-        definitionSpan.append(definition.replace(/\//g, '; '));
+        definitionSpan.append(entry.definition.replace(/\//g, '; '));
       }
 
       // TODO: Do this with CSS
-      result.append(document.createElement('br'));
+      fragment.append(document.createElement('br'));
     }
 
     // TODO: More ... handling
 
-    /*
-      '<span class="w-kanji">走る</span> &#32; <span class="w-kana">はしる</span> <span class="w-conj">(&lt; past)</span><br/><span class="w-def">(v5r,vi) to run; to travel (movement of vehicles); to hurry to; to retreat (from battle); to take flight; to run away from home; to elope; to tend heavily toward; (P)</span><br/>');
-      */
-
-    return result;
+    return fragment;
   }
 
-  makeHtmlForNames(lookupResult: LookupResult): DocumentFragment {
-    const result = document.createDocumentFragment();
+  makeHtmlForNames(result: LookupResult): DocumentFragment {
+    const fragment = document.createDocumentFragment();
     // TODO
-    return result;
+    return fragment;
   }
 
   makeHtmlForKanji(entry: KanjiEntry): DocumentFragment {
@@ -1872,12 +1902,12 @@ class RikaiContent {
     // templating system, or, if we can tidy up the markup enough by using more
     // modern CSS instead of relying on <br> elements etc., we might be able to
     // continue using the DOM API directly.)
-    const result = document.createDocumentFragment();
+    const fragment = document.createDocumentFragment();
 
     // Containing table
     const table = document.createElement('table');
     table.classList.add('k-main-tb');
-    result.append(table);
+    fragment.append(table);
 
     // Top row
     const topRow = document.createElement('tr');
@@ -2064,7 +2094,7 @@ class RikaiContent {
       row.append(valueCell);
     }
 
-    return result;
+    return fragment;
   }
 }
 
