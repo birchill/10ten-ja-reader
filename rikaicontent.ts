@@ -1304,7 +1304,9 @@ class RikaiContent {
       };
     }
 
-    const searchResult = await browser.runtime.sendMessage(message);
+    const searchResult: SearchResult = await browser.runtime.sendMessage(
+      message
+    );
 
     // Check if we have triggered a new query or been disabled in the meantime.
     if (
@@ -1320,12 +1322,14 @@ class RikaiContent {
     }
 
     if (wordLookup) {
-      // Kanji entries don't include a matchLen field
-      const matchLen = searchResult.matchLen || 1;
+      const matchLen = (searchResult as WordSearchResult).matchLen || 1;
       this.highlightText(textAtPoint, matchLen);
-      this.showWord(searchResult);
+      this.showPopup(searchResult);
     } else {
-      this.showTranslation(searchResult);
+      // TODO: Set title from textAtPoint.text but limited to
+      // searchResult.textLen, and with '...' appended if we truncated.
+      const title = textAtPoint.text;
+      this.showPopup(searchResult, title);
     }
   }
 
@@ -1768,15 +1772,14 @@ class RikaiContent {
     }
   }
 
-  showWord(searchResult) {
+  showPopup(searchResult: SearchResult, title?: string) {
     // TODO
   }
 
-  showTranslation(searchResult) {
-    // TODO
-  }
-
-  makeHtmlForResult(result?: SearchResult): DocumentFragment | null {
+  makeHtmlForResult(
+    result?: SearchResult,
+    title?: string
+  ): DocumentFragment | null {
     if (!result) {
       return null;
     }
@@ -1788,15 +1791,28 @@ class RikaiContent {
       return this.makeHtmlForKanji(result);
     }
 
-    if (result.names) {
+    const isNamesEntry = (result: SearchResult): result is WordSearchResult =>
+      (result as WordSearchResult).names !== undefined;
+
+    if (isNamesEntry(result)) {
       return this.makeHtmlForNames(result);
     }
 
-    return this.makeHtmlForWords(result);
+    return this.makeHtmlForWords(result, title);
   }
 
-  makeHtmlForWords(result: LookupResult): DocumentFragment {
+  makeHtmlForWords(
+    result: WordSearchResult | TranslateResult,
+    title?: string
+  ): DocumentFragment {
     const fragment = document.createDocumentFragment();
+
+    if (title) {
+      const titleDiv = document.createElement('div');
+      fragment.append(titleDiv);
+      titleDiv.classList.add('w-title');
+      titleDiv.append(title);
+    }
 
     // Pre-process entries, parsing them and combining them when the kanji and
     // definition match.
@@ -1814,7 +1830,7 @@ class RikaiContent {
       kana: string[];
       definition: string;
       reason: string;
-    };
+    }
     const entries: DisplayEntry[] = [];
     for (const [dictEntry, reason] of result.data) {
       const matches = dictEntry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
@@ -1825,9 +1841,11 @@ class RikaiContent {
 
       // Combine with previous entry if both kanji and definition match.
       const prevEntry = entries.length ? entries[entries.length - 1] : null;
-      if (prevEntry &&
-          prevEntry.kanjiKana === kanjiKana &&
-          prevEntry.definition === definition) {
+      if (
+        prevEntry &&
+        prevEntry.kanjiKana === kanjiKana &&
+        prevEntry.definition === definition
+      ) {
         if (kana) {
           prevEntry.kana.push(kana);
         }
@@ -1849,7 +1867,7 @@ class RikaiContent {
     for (const entry of entries) {
       const kanjiSpan = document.createElement('span');
       fragment.append(kanjiSpan);
-      kanjiSpan.classList.add('w-kanji');
+      kanjiSpan.classList.add(entry.kana.length ? 'w-kanji' : 'w-kana');
       kanjiSpan.append(entry.kanjiKana);
 
       // TODO: Previous rikai-tachi would put three spaces in between the
@@ -1886,7 +1904,11 @@ class RikaiContent {
       fragment.append(document.createElement('br'));
     }
 
-    // TODO: More ... handling
+    if (result.more) {
+      fragment.append('...');
+      // TODO: Do this with CSS
+      fragment.append(document.createElement('br'));
+    }
 
     return fragment;
   }

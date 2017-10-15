@@ -233,17 +233,9 @@ describe('rikaiContent', () => {
       title: '韓国、中国との通貨スワップ延長合意を発表',
     };
 
-    const result = subject.makeHtmlForResult(entry);
-    /*
-    assert.instanceOf(result, DocumentFragment);
-    assert.strictEqual(result.childElementCount, 1,
-                       'Should have one child element');
-
-    const resultAsHtml = result.firstElementChild.outerHTML;
-
-    assert.strictEqual(resultAsHtml,
+    const result = subject.makeHtmlForResult(entry, entry.title);
+    assert.strictEqual(innerHTMLFromFragment(result),
       '<div class="w-title">韓国、中国との通貨スワップ延長合意を発表</div><span class="w-kanji">韓国</span><span class="w-kana">からくに</span><br><span class="w-def">(n,arch) China; Korea</span><br><span class="w-kanji">中国</span><span class="w-kana">ちゅうごく</span><br><span class="w-def">(n) China; South-west most region of Honshu; middle of a country; the Hiroshima area</span><br><span class="w-kanji">殿</span><span class="w-kana">との</span><br><span class="w-def">(n) feudal lord; mansion; palace</span><br><span class="w-kanji">通貨</span><span class="w-kana">つうか</span><br><span class="w-def">(n,adj-no) currency; (P)</span><br><span class="w-kana">スワップ</span><br><span class="w-def">(n,vs) swap; (P)</span><br><span class="w-kanji">延長</span><span class="w-kana">えんちょう</span><br><span class="w-def">(n,vs) extension; elongation; prolongation; lengthening; Enchou era (923.4.11-931.4.26); (P)</span><br><span class="w-kanji">合意</span><span class="w-kana">ごうい</span><br><span class="w-def">(n,vs,adj-no) agreement; consent; mutual understanding; (P)</span><br>...<br>');
-      */
   });
 
   it('should format name entries', () => {

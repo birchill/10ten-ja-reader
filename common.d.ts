@@ -42,8 +42,6 @@ interface KanjiEntry {
   eigo: string;
 }
 
-type SearchResult = KanjiEntry | WordSearchResult;
-
 interface TranslateResult {
   // As with LookupResult.
   data: [string, string][];
@@ -52,3 +50,5 @@ interface TranslateResult {
   // True if greater than WORDS_MAX_ENTRIES were found.
   more: boolean;
 }
+
+type SearchResult = KanjiEntry | WordSearchResult | TranslateResult;
