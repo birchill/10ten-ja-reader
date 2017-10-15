@@ -263,16 +263,8 @@ describe('rikaiContent', () => {
     };
 
     const result = subject.makeHtmlForResult(entry);
-    /*
-    assert.instanceOf(result, DocumentFragment);
-    assert.strictEqual(result.childElementCount, 1,
-                       'Should have one child element');
-
-    const resultAsHtml = result.firstElementChild.outerHTML;
-
-    assert.strictEqual(resultAsHtml,
-      '<div class="w-title">Names Dictionary</div><table class="w-na-tb"><tr><td><span class="w-kanji">あか組４</span><span class="w-kana">あかぐみフォー</span><br> <span class="w-def">Akagumi Four (h)</span><br></td></tr></table>');
-      */
+    assert.strictEqual(innerHTMLFromFragment(result),
+      '<div class="w-title">Names Dictionary</div><table class="w-na-tb"><tr><td><span class="w-kanji">あか組４</span><span class="w-kana">あかぐみフォー</span><br><span class="w-def">Akagumi Four (h)</span><br></td></tr></table>');
   });
 
   it('should format name entries without a separate reading field', () => {
