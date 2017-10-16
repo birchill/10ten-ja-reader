@@ -1671,12 +1671,6 @@ class RikaiContent {
     // Handle textarea/input selection separately since those elements have
     // a different selection API.
     if (isTextInputNode(textAtPoint.rangeStart.container)) {
-      // TODO: Text box caret position restoration handling
-      //       Does this initially get set on each mousedown event? That seems
-      //       a bit excessive. And what about if the text box is selected when
-      //       we start the tool?
-      //       Need -- update the caret position if we're in the same text box
-
       const node: HTMLInputElement | HTMLTextAreaElement =
         textAtPoint.rangeStart.container;
       const start = textAtPoint.rangeStart.offset;
@@ -1874,9 +1868,6 @@ class RikaiContent {
       kanjiSpan.classList.add(entry.kana.length ? 'w-kanji' : 'w-kana');
       kanjiSpan.append(entry.kanjiKana);
 
-      // TODO: Previous rikai-tachi would put three spaces in between the
-      // kanji and kana spans but we should just use CSS to do this.
-
       for (const kana of entry.kana) {
         if (fragment.lastElementChild.classList.contains('w-kana')) {
           fragment.append('、 ');
@@ -1888,7 +1879,6 @@ class RikaiContent {
       }
 
       if (entry.reason) {
-        // TODO: Add space before this span too.
         const reasonSpan = document.createElement('span');
         fragment.append(reasonSpan);
         reasonSpan.classList.add('w-conj');
@@ -1970,8 +1960,6 @@ class RikaiContent {
     fragment.append(namesTable);
     namesTable.classList.add('w-na-tb');
 
-    // TODO: Rewrite this using modern CSS
-    // (I'm just trying to match the original for now.)
     const theRow = document.createElement('tr');
     namesTable.append(theRow);
 
@@ -1990,7 +1978,6 @@ class RikaiContent {
           kanjiSpan.append(name.kanji);
         }
 
-        // TODO: Put a space between kanji and kana fields using CSS
         const kanaSpan = document.createElement('span');
         theCell.append(kanaSpan);
         kanaSpan.classList.add('w-kana');
