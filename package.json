@@ -47,7 +47,8 @@
     ],
     "testPathIgnorePatterns": [
       "/mocha/",
-      "/chai/"
+      "/chai/",
+      ".*?-tests.js"
     ]
   },
   "prettier": {

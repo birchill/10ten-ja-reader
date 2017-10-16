@@ -1,0 +1,69 @@
+<!doctype html>
+<meta charset=utf-8>
+<title>Generated popup content inspector</title>
+<link href="../css/popup-blue.css" rel="stylesheet">
+<style>
+#rikaichamp-window.stack {
+  /* I tried really hard to do this with CSS grid, I really did */
+  position: static;
+  width: -moz-fit-content;
+  width: fit-content;
+  vertical-align: middle;
+}
+.label {
+  margin-top: 10px;
+  margin-bottom: 3px;
+}
+</style>
+<script>
+const browser = {
+  runtime: {
+    sendMessage: msg => { },
+    onMessage: {
+      addListener: fn => { },
+    },
+  },
+};
+</script>
+<script src="../rikaicontent.js"></script>
+<script>
+const config = {
+  showOnKey: '',
+  onlyReading: false,
+};
+rikaiContent = new RikaiContent(config);
+</script>
+<body>
+<div id=container></div>
+<script src="html-tests.js"></script>
+<script>
+const container = document.getElementById('container');
+
+for (const test of htmlTests) {
+  let oldConfig = rikaiContent.config;
+  if (test.extraConfig) {
+    rikaiContent.config = { ...oldConfig, ...test.extraConfig };
+  }
+
+  const popup =
+    rikaiContent.makeHtmlForResult(test.searchResult, test.searchResult.title);
+  if (test.extraConfig) {
+    rikaiContent.config = oldConfig;
+  }
+
+  const toTitle = str => str.charAt(0).toUpperCase() + str.slice(1);
+
+  const label = document.createElement('div');
+  label.classList.add('label');
+  label.append(toTitle(`${test.description}:`));
+  container.append(label);
+
+  const popupWindow = document.createElement('div');
+  popupWindow.setAttribute('id', 'rikaichamp-window');
+  popupWindow.classList.add('stack');
+  popupWindow.append(popup);
+  container.append(popupWindow);
+}
+</script>
+</div>
+</body>
