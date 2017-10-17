@@ -1,4 +1,3 @@
-// @format
 /*
 
   Rikai champ
@@ -768,7 +767,7 @@ var rcxContent = {
 
   processHtml: function(html) {
     const tdata = window.rikaichamp;
-    rcxContent.showPopup(html, tdata.prevTarget, tdata.popX, tdata.popY, false);
+    // rcxContent.showPopup(html, tdata.prevTarget, tdata.popX, tdata.popY, false);
     return 1;
   },
 
@@ -1126,15 +1125,6 @@ var rcxContent = {
   },
 };
 
-// TODO: Document this and move to a shared definitions file.
-// Currently this only includes properties we are actually using. The idea being
-// that we might later separate out a client-side subset and only pass that to
-// the content process.
-interface RikaiConfig {
-  showOnKey: string;
-  onlyReading: boolean;
-}
-
 // Either end of a Range object
 interface RangeEndpoint {
   container: Node;
@@ -1196,7 +1186,7 @@ const isInclusiveAncestor = (ancestor: Element, testNode?: Node): boolean => {
 class RikaiContent {
   static MAX_LENGTH = 13;
 
-  _config: RikaiConfig;
+  _config: Config;
   _currentTextAtPoint?: CachedGetTextResult = null;
 
   // Highlight tracking
@@ -1227,20 +1217,16 @@ class RikaiContent {
   detach() {
     window.removeEventListener('mousemove', this.onMouseMove);
 
-    // TODO: We might need something like the following although I'm not sure
-    // what it does yet and why clearHighlight is not sufficient.
-    /*
+    this.clearHighlight();
+
     const cssElem = document.getElementById('rikaichamp-css');
     if (cssElem) {
       cssElem.remove();
     }
-    const windowElem = document.getElementById('rikaichamp-window');
-    if (windowElem) {
-      windowElem.remove();
+    const popup = document.getElementById('rikaichamp-window');
+    if (popup) {
+      popup.remove();
     }
-     */
-
-    this.clearHighlight();
   }
 
   onMouseMove(ev: MouseEvent) {
@@ -1324,7 +1310,10 @@ class RikaiContent {
     if (wordLookup) {
       const matchLen = (searchResult as WordSearchResult).matchLen || 1;
       this.highlightText(textAtPoint, matchLen);
-      this.showPopup(searchResult);
+      this.showPopup(searchResult, null, ev.target as Element, {
+        x: ev.clientX,
+        y: ev.clientY,
+      });
     } else {
       let title = textAtPoint.text.substr(
         0,
@@ -1333,7 +1322,10 @@ class RikaiContent {
       if (textAtPoint.text.length > (searchResult as TranslateResult).textLen) {
         title += '...';
       }
-      this.showPopup(searchResult, title);
+      this.showPopup(searchResult, title, ev.target as Element, {
+        x: ev.clientX,
+        y: ev.clientY,
+      });
     }
   }
 
@@ -1754,6 +1746,11 @@ class RikaiContent {
       }
 
       this._restoreTextBoxSelection();
+
+      const popup = document.getElementById('rikaichamp-window');
+      if (popup) {
+        popup.style.display = 'none';
+      }
     }
 
     this._selectedWindow = null;
@@ -1770,8 +1767,124 @@ class RikaiContent {
     }
   }
 
-  showPopup(searchResult: SearchResult, title?: string) {
-    // TODO
+  showPopup(
+    searchResult: SearchResult,
+    title?: string,
+    referenceElement?: Element,
+    referencePosition?: { x: number; y: number }
+  ) {
+    const fragment = this.makeHtmlForResult(searchResult);
+    if (!fragment) {
+      this.clearHighlight();
+      return;
+    }
+
+    const doc: Document = this._selectedWindow.document;
+
+    let popup = doc.getElementById('rikaichamp-window');
+    // If there is an existing popup, clear it.
+    if (popup) {
+      while (popup.firstChild) {
+        (<Element | CharacterData>popup.firstChild).remove();
+      }
+      // Restore display property if it was hidden.
+      popup.style.display = '';
+      // Otherwise, make a new popup element.
+    } else {
+      // Add <style> element with popup CSS
+      // (One day I hope Web Components might less us scope this now
+      // that scoped stylesheets are dead.)
+      const css = doc.createElement('link');
+      css.setAttribute('rel', 'stylesheet');
+      css.setAttribute('type', 'text/css');
+      const cssdoc = this._config.css;
+      css.setAttribute(
+        'href',
+        browser.extension.getURL(`css/popup-${cssdoc}.css`)
+      );
+      css.setAttribute('id', 'rikaichamp-css');
+      const head = doc.head || doc.documentElement;
+      head.appendChild(css);
+
+      // Add the popup div
+      popup = doc.createElement('div');
+      popup.setAttribute('id', 'rikaichamp-window');
+
+      // TODO: Move this to the stylesheet
+      popup.style.width = 'auto';
+      popup.style.height = 'auto';
+      popup.style.maxWidth = '600px';
+
+      doc.documentElement.append(popup);
+
+      // Previous rikai-tachi added a double-click listener here that
+      // would hide the popup but how can you ever click it if it
+      // updates on mousemove? Maybe a previous version had another way
+      // of triggering it?
+    }
+
+    // TODO: Handling of text/plain documents
+
+    popup.append(fragment);
+
+    // Position the popup
+    const popupWidth = popup.offsetWidth || 200;
+    const popupHeight = popup.offsetHeight;
+
+    // TODO: altView handling
+    // TODO: option element handling
+    // TODO: SVG document handling
+
+    const getRefCoord = coord =>
+      referencePosition && !isNaN(parseInt(referencePosition[coord]))
+        ? parseInt(referencePosition[coord])
+        : 0;
+    let popupX = getRefCoord('x');
+    let popupY = getRefCoord('y');
+
+    if (referenceElement) {
+      // Horizontal position: Go left if necessary
+      //
+      // (We should never be too far left since popupX, if set to
+      // something non-zero,  is coming from a mouse event which should
+      // be positive.)
+      if (popupX + popupWidth > window.innerWidth - 20) {
+        popupX = window.innerWidth - popupWidth - 20;
+        if (popupX < 0) popupX = 0;
+      }
+
+      // Vertical position: Position below the mouse cursor
+      let verticalAdjust = 25;
+
+      // If the element has a title, then there will probably be
+      // a tooltip that we shouldn't cover up.
+      if ((referenceElement as any).title) {
+        verticalAdjust += 20;
+      }
+
+      // Check if we are too close to the bottom
+      if (
+        popupY + verticalAdjust + popupHeight >
+        this._selectedWindow.innerHeight
+      ) {
+        // We are, try going up instead...
+        const topIfWeGoUp = popupY - popupHeight - 30;
+        if (topIfWeGoUp >= 0) {
+          verticalAdjust = popupY - topIfWeGoUp;
+        }
+        // If can't go up, we should still go down to prevent blocking
+        // the cursor.
+      }
+
+      popupY += verticalAdjust;
+
+      // Adjust for scroll position
+      popupX += this._selectedWindow.scrollX;
+      popupY += this._selectedWindow.scrollY;
+    }
+
+    popup.style.left = `${popupX}px`;
+    popup.style.top = `${popupY}px`;
   }
 
   makeHtmlForResult(

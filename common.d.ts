@@ -1,5 +1,14 @@
 // Common definitions shared between the content and backend prats.
 
+interface Config {
+  showOnKey: string;
+  // True if only the reading (and not the definition) should be shown.
+  onlyReading: boolean;
+  // The name of the CSS file to use, e.g. 'blue' for
+  // 'css/popup-blue.css'.
+  css: string;
+}
+
 interface LookupResult {
   // Array of matches. Each match is a tuple array containing a dictionary entry
   // and a reason string.
