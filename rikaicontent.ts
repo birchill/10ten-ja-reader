@@ -1773,6 +1773,10 @@ class RikaiContent {
     referenceElement?: Element,
     referencePosition?: { x: number; y: number }
   ) {
+    if (!this._selectedWindow || this._selectedWindow.closed) {
+      return;
+    }
+
     const fragment = this.makeHtmlForResult(searchResult);
     if (!fragment) {
       this.clearHighlight();
@@ -1870,7 +1874,7 @@ class RikaiContent {
         // We are, try going up instead...
         const topIfWeGoUp = popupY - popupHeight - 30;
         if (topIfWeGoUp >= 0) {
-          verticalAdjust = popupY - topIfWeGoUp;
+          verticalAdjust = topIfWeGoUp - popupY;
         }
         // If can't go up, we should still go down to prevent blocking
         // the cursor.
