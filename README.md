@@ -15,7 +15,12 @@ npm install
 For manual testing you can use
 
 ```
-npm install -g web-ext
+npm start
+```
+
+Which will run:
+
+```
 web-ext run --bc --start-url __tests__/playground.html
 ```
 
