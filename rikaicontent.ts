@@ -1746,16 +1746,17 @@ class RikaiContent {
       }
 
       this._restoreTextBoxSelection();
-
-      const popup = document.getElementById('rikaichamp-window');
-      if (popup) {
-        popup.style.display = 'none';
-      }
     }
 
     this._selectedWindow = null;
     this._selectedText = null;
     this._selectedTextBox = null;
+
+    // Hide popup
+    const popup = document.getElementById('rikaichamp-window');
+    if (popup) {
+      popup.style.display = 'none';
+    }
   }
 
   _restoreTextBoxSelection() {
@@ -1773,17 +1774,15 @@ class RikaiContent {
     referenceElement?: Element,
     referencePosition?: { x: number; y: number }
   ) {
-    if (!this._selectedWindow || this._selectedWindow.closed) {
-      return;
-    }
-
     const fragment = this.makeHtmlForResult(searchResult);
     if (!fragment) {
       this.clearHighlight();
       return;
     }
 
-    const doc: Document = this._selectedWindow.document;
+    const doc: Document = referenceElement
+      ? referenceElement.ownerDocument
+      : window.document;
 
     let popup = doc.getElementById('rikaichamp-window');
     // If there is an existing popup, clear it.
