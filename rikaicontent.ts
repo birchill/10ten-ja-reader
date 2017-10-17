@@ -1851,8 +1851,8 @@ class RikaiContent {
       // (We should never be too far left since popupX, if set to
       // something non-zero,  is coming from a mouse event which should
       // be positive.)
-      if (popupX + popupWidth > window.innerWidth - 20) {
-        popupX = window.innerWidth - popupWidth - 20;
+      if (popupX + popupWidth > doc.defaultView.innerWidth - 20) {
+        popupX = doc.defaultView.innerWidth - popupWidth - 20;
         if (popupX < 0) popupX = 0;
       }
 
@@ -1868,7 +1868,7 @@ class RikaiContent {
       // Check if we are too close to the bottom
       if (
         popupY + verticalAdjust + popupHeight >
-        this._selectedWindow.innerHeight
+        doc.defaultView.innerHeight
       ) {
         // We are, try going up instead...
         const topIfWeGoUp = popupY - popupHeight - 30;
@@ -1882,8 +1882,8 @@ class RikaiContent {
       popupY += verticalAdjust;
 
       // Adjust for scroll position
-      popupX += this._selectedWindow.scrollX;
-      popupY += this._selectedWindow.scrollY;
+      popupX += doc.defaultView.scrollX;
+      popupY += doc.defaultView.scrollY;
     }
 
     popup.style.left = `${popupX}px`;
