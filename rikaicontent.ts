@@ -1832,8 +1832,6 @@ class RikaiContent {
       // of triggering it?
     }
 
-    // TODO: Handling of text/plain documents
-
     popup.append(fragment);
 
     // Position the popup
@@ -1841,7 +1839,6 @@ class RikaiContent {
     const popupHeight = popup.offsetHeight;
 
     // TODO: altView handling
-    // TODO: option element handling
     // TODO: SVG document handling
 
     const getRefCoord = coord =>
