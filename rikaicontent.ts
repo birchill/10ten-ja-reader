@@ -1618,6 +1618,12 @@ class RikaiContent {
   }
 
   getTextFromRandomElement(elem: Element): string | null {
+    // Don't return anything for an iframe since this script will run inside the
+    // iframe's contents as well.
+    if (elem.nodeName === 'IFRAME') {
+      return null;
+    }
+
     if (typeof (<any>elem).title === 'string' && (<any>elem).title.length) {
       return (<any>elem).title;
     }
