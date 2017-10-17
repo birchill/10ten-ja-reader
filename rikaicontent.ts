@@ -2187,7 +2187,7 @@ class RikaiContent {
     summaryFirstRow.append(gradeCell);
     gradeCell.classList.add('k-abox-g');
     let grade = document.createDocumentFragment();
-    switch (entry.misc.G) {
+    switch (entry.misc.G || '') {
       case '8':
         grade.append('general');
         grade.append(document.createElement('br'));
