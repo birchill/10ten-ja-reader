@@ -14,9 +14,6 @@ browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       break;
     case 'translate':
       return rcxMain.dict.translate(request.title);
-    case 'makehtml':
-      sendResponse(rcxMain.dict.makeHtml(request.entry));
-      break;
     case 'switchOnlyReading':
       if (rcxMain.config.onlyReading)
         rcxMain.config.onlyReading = false;
