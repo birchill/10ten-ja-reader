@@ -1195,7 +1195,12 @@ class RikaiContent {
   static MAX_LENGTH = 13;
 
   _config: Config;
+
+  // Lookup tracking (so we can avoid redundant work and so we can re-render)
   _currentTextAtPoint?: CachedGetTextResult = null;
+  _currentSearchResult?: SearchResult = null;
+  _currentTarget?: Element = null;
+  _currentTitle?: string = null;
 
   // Highlight tracking
   _selectedWindow?: Window = null;
@@ -1207,11 +1212,21 @@ class RikaiContent {
     previousDirection: string;
   } = null;
 
+  // Key tracking
+  _keysDown: Set<string> = new Set();
+
+  // Popup adjustments
+  _popupTopAdjust: number = 0;
+
   constructor(config) {
     this._config = config;
 
     this.onMouseMove = this.onMouseMove.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
     window.addEventListener('mousemove', this.onMouseMove);
+    window.addEventListener('keydown', this.onKeyDown);
+    window.addEventListener('keyup', this.onKeyUp);
   }
 
   get config() {
@@ -1224,6 +1239,8 @@ class RikaiContent {
 
   detach() {
     window.removeEventListener('mousemove', this.onMouseMove);
+    window.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener('keyup', this.onKeyUp);
 
     this.clearHighlight();
 
@@ -1246,17 +1263,51 @@ class RikaiContent {
     this.tryToUpdatePopup(ev);
   }
 
-  async tryToUpdatePopup(ev: MouseEvent) {
-    if (
-      (this._config.showOnKey.includes('Alt') &&
-        !ev.altKey &&
-        !ev.getModifierState('AltGraph')) ||
-      (this._config.showOnKey.includes('Ctrl') && !ev.ctrlKey)
-    ) {
-      this.clearHighlight();
+  onKeyDown(ev: KeyboardEvent) {
+    // If we got shift in combination with something else, ignore.
+    if (ev.shiftKey && ev.key !== 'Shift') {
       return;
     }
 
+    // If we've already processed this key, ignore.
+    // (We could just use 'keypress' except it doesn't fire for 'Shift' etc.
+    // which we need to handle.)
+    if (this._keysDown.has(ev.key)) {
+      return;
+    }
+
+    // If we're not visible we should ignore any keystrokes.
+    if (!this.isVisible()) {
+      return;
+    }
+
+    switch (ev.key) {
+      case 'j':
+        this._popupTopAdjust += 20;
+        this.showPopup();
+        break;
+
+      case 'k':
+        this._popupTopAdjust -= 20;
+        this.showPopup();
+        break;
+    }
+
+    this._keysDown.add(ev.key);
+
+    ev.preventDefault();
+  }
+
+  onKeyUp(ev: KeyboardEvent) {
+    this._keysDown.delete(ev.key);
+  }
+
+  isVisible(): boolean {
+    const popup = document.getElementById('rikaichamp-window');
+    return popup && !popup.classList.contains('hidden');
+  }
+
+  async tryToUpdatePopup(ev: MouseEvent) {
     const previousTextAtPoint = this._currentTextAtPoint
       ? this._currentTextAtPoint.result
       : null;
@@ -1323,10 +1374,13 @@ class RikaiContent {
     if (wordLookup) {
       const matchLen = (searchResult as WordSearchResult).matchLen || 1;
       this.highlightText(textAtPoint, matchLen);
-      this.showPopup(searchResult, null, ev.target as Element, {
-        x: ev.clientX,
-        y: ev.clientY,
-      });
+    }
+
+    this._currentSearchResult = searchResult;
+    this._currentTarget = ev.target as Element;
+
+    if (wordLookup) {
+      this._currentTitle = null;
     } else {
       let title = textAtPoint.text.substr(
         0,
@@ -1335,11 +1389,10 @@ class RikaiContent {
       if (textAtPoint.text.length > (searchResult as TranslateResult).textLen) {
         title += '...';
       }
-      this.showPopup(searchResult, title, ev.target as Element, {
-        x: ev.clientX,
-        y: ev.clientY,
-      });
+      this._currentTitle = title;
     }
+
+    this.showPopup();
   }
 
   getTextAtPoint(
@@ -1754,6 +1807,9 @@ class RikaiContent {
 
   clearHighlight() {
     this._currentTextAtPoint = null;
+    this._currentSearchResult = null;
+    this._currentTarget = null;
+    this._currentTitle = null;
 
     if (this._selectedWindow && !this._selectedWindow.closed) {
       const selection = this._selectedWindow.getSelection();
@@ -1787,20 +1843,18 @@ class RikaiContent {
     }
   }
 
-  showPopup(
-    searchResult: SearchResult,
-    title?: string,
-    referenceElement?: Element,
-    referencePosition?: { x: number; y: number }
-  ) {
-    const fragment = this.makeHtmlForResult(searchResult);
+  showPopup() {
+    const referencePosition = this._currentTextAtPoint ? this._currentTextAtPoint.point : null;
+
+    const fragment =
+      this.makeHtmlForResult(this._currentSearchResult, this._currentTitle);
     if (!fragment) {
       this.clearHighlight();
       return;
     }
 
-    const doc: Document = referenceElement
-      ? referenceElement.ownerDocument
+    const doc: Document = this._currentTarget
+      ? this._currentTarget.ownerDocument
       : window.document;
     const isSvg = doc.documentElement.namespaceURI === SVG_NS;
 
@@ -1868,7 +1922,7 @@ class RikaiContent {
     let popupX = getRefCoord('x');
     let popupY = getRefCoord('y');
 
-    if (referenceElement) {
+    if (this._currentTarget) {
       // Horizontal position: Go left if necessary
       //
       // (We should never be too far left since popupX, if set to
@@ -1884,9 +1938,13 @@ class RikaiContent {
 
       // If the element has a title, then there will probably be
       // a tooltip that we shouldn't cover up.
-      if ((referenceElement as any).title) {
+      if ((this._currentTarget as any).title) {
         verticalAdjust += 20;
       }
+
+      // Include any manual adjustment before checking if we are within the
+      // bounds.
+      verticalAdjust += this._popupTopAdjust;
 
       // Check if we are too close to the bottom
       if (popupY + verticalAdjust + popupHeight > doc.defaultView.innerHeight) {
