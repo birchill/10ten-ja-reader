@@ -9,6 +9,13 @@ interface Config {
   css: string;
 }
 
+declare const enum DictMode {
+  Same,
+  ForceKanji,
+  Default,
+  NextDict,
+}
+
 interface LookupResult {
   // Array of matches. Each match is a tuple array containing a dictionary entry
   // and a reason string.

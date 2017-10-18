@@ -212,10 +212,10 @@ var rcxMain = {
     this.showMode = 0;
   },
 
-  sameDict: '0',
-  forceKanji: '1',
-  defaultDict: '2',
-  nextDict: '3',
+  sameDict: 0,
+  forceKanji: 1,
+  defaultDict: 2,
+  nextDict: 3,
 
   search: function(text, dictOption) {
     const kanjiReferences = new Set(

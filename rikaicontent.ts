@@ -1260,7 +1260,11 @@ class RikaiContent {
   }
 
   onMouseMove(ev: MouseEvent) {
-    this.tryToUpdatePopup(ev);
+    this.tryToUpdatePopup(
+      { x: ev.clientX, y: ev.clientY },
+      ev.target as Element,
+      ev.shiftKey ? DictMode.ForceKanji : DictMode.Default
+    );
   }
 
   onKeyDown(ev: KeyboardEvent) {
@@ -1282,6 +1286,19 @@ class RikaiContent {
     }
 
     switch (ev.key) {
+      case 'Shift': // shift
+      case 'Enter': // enter
+        {
+          if (this._currentTextAtPoint && this._currentTarget) {
+            this.tryToUpdatePopup(
+              this._currentTextAtPoint.point,
+              this._currentTarget,
+              DictMode.NextDict
+            );
+          }
+        }
+        break;
+
       case 'j':
         this._popupTopAdjust += 20;
         this.showPopup();
@@ -1307,17 +1324,15 @@ class RikaiContent {
     return popup && !popup.classList.contains('hidden');
   }
 
-  async tryToUpdatePopup(ev: MouseEvent) {
+  async tryToUpdatePopup(
+    point: { x: number; y: number },
+    target: Element,
+    dictOption: DictMode
+  ) {
     const previousTextAtPoint = this._currentTextAtPoint
       ? this._currentTextAtPoint.result
       : null;
-    const textAtPoint = this.getTextAtPoint(
-      {
-        x: ev.clientX,
-        y: ev.clientY,
-      },
-      RikaiContent.MAX_LENGTH
-    );
+    const textAtPoint = this.getTextAtPoint(point, RikaiContent.MAX_LENGTH);
     console.assert(
       (!textAtPoint && !this._currentTextAtPoint) ||
         (this._currentTextAtPoint &&
@@ -1325,7 +1340,16 @@ class RikaiContent {
       'Should have updated _currentTextAtPoint'
     );
 
-    if (previousTextAtPoint === textAtPoint) {
+    if (
+      previousTextAtPoint === textAtPoint &&
+      // This following line is not strictly correct. If the previous dictionary
+      // mode was 'ForceKanji' and now it's 'Default' we shouldn't return early.
+      // To fix that we'd need to store the previous dictionary mode. Basically
+      // this whole DictMode approach is pretty awful and we should just make
+      // the client aware of which dictionary it's looking at and manage state
+      // here.
+      (dictOption === DictMode.Same || dictOptionMode.Default)
+    ) {
       return;
     }
 
@@ -1341,11 +1365,7 @@ class RikaiContent {
       message = {
         type: 'xsearch',
         text: textAtPoint.text,
-        // TODO: Replace these numbers (both here and at the endpoint) with
-        // descriptive strings.
-        dictOption: ev.shiftKey
-          ? '1' // forceKanji
-          : '2', // defaultDict
+        dictOption,
       };
     } else {
       message = {
@@ -1377,7 +1397,7 @@ class RikaiContent {
     }
 
     this._currentSearchResult = searchResult;
-    this._currentTarget = ev.target as Element;
+    this._currentTarget = target;
 
     if (wordLookup) {
       this._currentTitle = null;
@@ -1844,10 +1864,14 @@ class RikaiContent {
   }
 
   showPopup() {
-    const referencePosition = this._currentTextAtPoint ? this._currentTextAtPoint.point : null;
+    const referencePosition = this._currentTextAtPoint
+      ? this._currentTextAtPoint.point
+      : null;
 
-    const fragment =
-      this.makeHtmlForResult(this._currentSearchResult, this._currentTitle);
+    const fragment = this.makeHtmlForResult(
+      this._currentSearchResult,
+      this._currentTitle
+    );
     if (!fragment) {
       this.clearHighlight();
       return;
