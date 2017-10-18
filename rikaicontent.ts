@@ -1183,6 +1183,14 @@ const isInclusiveAncestor = (ancestor: Element, testNode?: Node): boolean => {
   return false;
 };
 
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+const isForeignObjectElement = (
+  elem?: Element
+): elem is SVGForeignObjectElement =>
+  elem.namespaceURI === SVG_NS &&
+  elem.nodeName.toUpperCase() === 'FOREIGNOBJECT';
+
 class RikaiContent {
   static MAX_LENGTH = 13;
 
@@ -1225,7 +1233,12 @@ class RikaiContent {
     }
     const popup = document.getElementById('rikaichamp-window');
     if (popup) {
-      popup.remove();
+      // If we are in an SVG document, remove the wrapping <foreignObject>.
+      if (isForeignObjectElement(popup.parentElement)) {
+        popup.parentElement.remove();
+      } else {
+        popup.remove();
+      }
     }
   }
 
@@ -1761,7 +1774,7 @@ class RikaiContent {
     // Hide popup
     const popup = document.getElementById('rikaichamp-window');
     if (popup) {
-      popup.style.display = 'none';
+      popup.classList.add('hidden');
     }
   }
 
@@ -1789,6 +1802,7 @@ class RikaiContent {
     const doc: Document = referenceElement
       ? referenceElement.ownerDocument
       : window.document;
+    const isSvg = doc.documentElement.namespaceURI === SVG_NS;
 
     let popup = doc.getElementById('rikaichamp-window');
     // If there is an existing popup, clear it.
@@ -1797,33 +1811,40 @@ class RikaiContent {
         (<Element | CharacterData>popup.firstChild).remove();
       }
       // Restore display property if it was hidden.
-      popup.style.display = '';
+      popup.classList.remove('hidden');
       // Otherwise, make a new popup element.
     } else {
+      // For SVG documents we put both the <link> and <div> inside
+      // a <foreignObject>. This saves us messing about with xml-stylesheet
+      // processing instructions.
+      let wrapperElement = null;
+      if (isSvg) {
+        const foreignObject = doc.createElementNS(SVG_NS, 'foreignObject');
+        foreignObject.setAttribute('width', '600');
+        foreignObject.setAttribute('height', '100%');
+        doc.documentElement.append(foreignObject);
+        wrapperElement = foreignObject;
+      }
+
       // Add <style> element with popup CSS
       // (One day I hope Web Components might less us scope this now
       // that scoped stylesheets are dead.)
-      const css = doc.createElement('link');
-      css.setAttribute('rel', 'stylesheet');
-      css.setAttribute('type', 'text/css');
       const cssdoc = this._config.css;
-      css.setAttribute(
-        'href',
-        browser.extension.getURL(`css/popup-${cssdoc}.css`)
-      );
-      css.setAttribute('id', 'rikaichamp-css');
-      const head = doc.head || doc.documentElement;
-      head.appendChild(css);
+      const cssHref = browser.extension.getURL(`css/popup-${cssdoc}.css`);
+      const link = doc.createElement('link');
+      link.setAttribute('rel', 'stylesheet');
+      link.setAttribute('type', 'text/css');
+      link.setAttribute('href', cssHref);
+      link.setAttribute('id', 'rikaichamp-css');
+
+      const linkContainer = wrapperElement || doc.head || doc.documentElement;
+      linkContainer.appendChild(link);
 
       // Add the popup div
       popup = doc.createElement('div');
       popup.setAttribute('id', 'rikaichamp-window');
 
-      // TODO: Move this to the stylesheet
-      popup.style.width = 'auto';
-      popup.style.height = 'auto';
-      popup.style.maxWidth = '600px';
-
+      const popupContainer = wrapperElement || doc.documentElement;
       doc.documentElement.append(popup);
 
       // Previous rikai-tachi added a double-click listener here that
@@ -1839,7 +1860,6 @@ class RikaiContent {
     const popupHeight = popup.offsetHeight;
 
     // TODO: altView handling
-    // TODO: SVG document handling
 
     const getRefCoord = coord =>
       referencePosition && !isNaN(parseInt(referencePosition[coord]))
@@ -1869,10 +1889,7 @@ class RikaiContent {
       }
 
       // Check if we are too close to the bottom
-      if (
-        popupY + verticalAdjust + popupHeight >
-        doc.defaultView.innerHeight
-      ) {
+      if (popupY + verticalAdjust + popupHeight > doc.defaultView.innerHeight) {
         // We are, try going up instead...
         const topIfWeGoUp = popupY - popupHeight - 30;
         if (topIfWeGoUp >= 0) {
@@ -1889,8 +1906,31 @@ class RikaiContent {
       popupY += doc.defaultView.scrollY;
     }
 
-    popup.style.left = `${popupX}px`;
-    popup.style.top = `${popupY}px`;
+    // This is only needed because Edge's WebIDL definitions are wrong
+    // (they have documentElement as having type HTMLElement)
+    const isSVGSVGElement = (elem?: Element): elem is SVGSVGElement =>
+      elem.namespaceURI === SVG_NS && elem.nodeName.toUpperCase() === 'SVG';
+    // Likewise here :(
+
+    if (
+      isSvg &&
+      isSVGSVGElement(doc.documentElement) &&
+      isForeignObjectElement(popup.parentElement)
+    ) {
+      // Set the x/y attributes on the <foreignObject> wrapper after converting
+      // to document space.
+      const svg: SVGSVGElement = doc.documentElement;
+      const wrapper: SVGForeignObjectElement = popup.parentElement;
+      const transform = svg.createSVGTransformFromMatrix(
+        svg.getScreenCTM().inverse()
+      );
+      wrapper.x.baseVal.value = popupX;
+      wrapper.y.baseVal.value = popupY;
+      wrapper.transform.baseVal.initialize(transform);
+    } else {
+      popup.style.left = `${popupX}px`;
+      popup.style.top = `${popupY}px`;
+    }
   }
 
   makeHtmlForResult(
@@ -2331,9 +2371,6 @@ let rikaiContent: RikaiContent | null = null;
 browser.runtime.onMessage.addListener(request => {
   switch (request.type) {
     case 'enable':
-      rcxContent.enableTab();
-      window.rikaichamp.config = request.config;
-
       if (rikaiContent) {
         rikaiContent.config = request.config;
       } else {
@@ -2342,8 +2379,6 @@ browser.runtime.onMessage.addListener(request => {
       break;
 
     case 'disable':
-      rcxContent.disableTab();
-
       if (rikaiContent) {
         rikaiContent.detach();
         rikaiContent = null;
@@ -2353,7 +2388,7 @@ browser.runtime.onMessage.addListener(request => {
     case 'showPopup':
       // Don't show the popup on all the iframes, only the topmost window
       if (self === top) {
-        rcxContent.showPopup(request.text);
+        // TODO
       }
       break;
     default:
