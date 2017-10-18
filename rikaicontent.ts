@@ -1348,7 +1348,7 @@ class RikaiContent {
       // this whole DictMode approach is pretty awful and we should just make
       // the client aware of which dictionary it's looking at and manage state
       // here.
-      (dictOption === DictMode.Same || dictOptionMode.Default)
+      (dictOption === DictMode.Same || dictOption === DictMode.Default)
     ) {
       return;
     }
