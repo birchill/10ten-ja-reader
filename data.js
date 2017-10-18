@@ -577,6 +577,8 @@ if (0) {
 					else entry.misc[RegExp.$1] += ' ' + RegExp.$2;
 			}
 		}
+		//format heisig keyword additions prettily
+		entry.misc['L'] = entry.misc['L'].replace(/[:_]/g, ' ');
 
 		entry.onkun = a[2].replace(/\s+/g, '\u3001 ');
 		entry.nanori = a[3].replace(/\s+/g, '\u3001 ');
