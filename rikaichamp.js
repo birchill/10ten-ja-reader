@@ -64,70 +64,16 @@ var rcxMain = {
     rcxMain._onTabSelect(tabId);
   },
   _onTabSelect: function(tabId) {
-    if (this.enabled == 1)
+    if (!this.enabled) {
+      return;
+    }
+
+    rcxMain.config.ready.then(() => {
       browser.tabs.sendMessage(tabId, {
         type: 'enable',
-        config: rcxMain.config,
+        config: rcxMain.config.contentConfig,
       });
-  },
-
-  savePrep: function(clip, entry) {
-    var me, mk;
-    var text;
-    var i;
-    var f;
-    var e;
-
-    f = entry;
-    if (!f || f.length == 0) return null;
-
-    if (clip) {
-      // save to clipboard
-      me = rcxMain.config.maxClipCopyEntries;
-    }
-
-    if (!this.fromLB) mk = 1;
-
-    text = '';
-    for (i = 0; i < f.length; ++i) {
-      e = f[i];
-      if (e.kanji) {
-        text += this.dict.makeText(e, 1);
-      } else {
-        if (me <= 0) continue;
-        text += this.dict.makeText(e, me);
-        me -= e.data.length;
-      }
-    }
-
-    if (rcxMain.config.lineEnding == 'rn') text = text.replace(/\n/g, '\r\n');
-    else if (rcxMain.config.lineEnding == 'r') text = text.replace(/\n/g, '\r');
-    if (rcxMain.config.copySeparator != 'tab') {
-      if (rcxMain.config.copySeparator == 'comma')
-        return text.replace(/\t/g, ',');
-      if (rcxMain.config.copySeparator == 'space')
-        return text.replace(/\t/g, ' ');
-    }
-
-    return text;
-  },
-
-  // Needs entirely new implementation and dependent on savePrep
-  copyToClip: function(tab, entry) {
-    var text;
-
-    if ((text = this.savePrep(1, entry)) != null) {
-      document.oncopy = function(event) {
-        event.clipboardData.setData('Text', text);
-        event.preventDefault();
-      };
-      document.execCommand('Copy');
-      document.oncopy = undefined;
-      browser.tabs.sendMessage(tab.id, {
-        type: 'showPopup',
-        text: 'Copied to clipboard.',
-      });
-    }
+    });
   },
 
   miniHelp:
@@ -145,28 +91,28 @@ var rcxMain = {
 
   // Function which enables the inline mode of rikaichamp
   // Unlike rikaichan there is no lookup bar so this is the only enable.
-  inlineEnable: function(tab, mode) {
-    this.loadDictionary().then(() => {
+  inlineEnable: function(tab) {
+    Promise.all([ this.loadDictionary(), rcxMain.config.ready ]).then(() => {
       // Send message to current tab to add listeners and create stuff
       browser.tabs.sendMessage(tab.id, {
         type: 'enable',
-        config: rcxMain.config,
+        config: rcxMain.config.contentConfig,
       });
       this.enabled = 1;
 
-      if (mode == 1) {
-        if (rcxMain.config.minihelp == 'true') {
-          browser.tabs.sendMessage(tab.id, {
-            type: 'showPopup',
-            text: rcxMain.miniHelp,
-          });
-        } else {
-          browser.tabs.sendMessage(tab.id, {
-            type: 'showPopup',
-            text: 'Rikai champ enabled!',
-          });
-        }
+      /*
+      if (rcxMain.config.minihelp == 'true') {
+        browser.tabs.sendMessage(tab.id, {
+          type: 'showPopup',
+          text: rcxMain.miniHelp,
+        });
+      } else {
+        browser.tabs.sendMessage(tab.id, {
+          type: 'showPopup',
+          text: 'Rikaichamp enabled!',
+        });
       }
+      */
       browser.browserAction.setBadgeBackgroundColor({
         color: [255, 0, 0, 255],
       });
@@ -175,7 +121,7 @@ var rcxMain = {
   },
 
   // This function diables
-  inlineDisable: function(tab, mode) {
+  inlineDisable: function(tab) {
     // Delete dictionary object after we implement it
     delete this.dict;
 
@@ -195,22 +141,17 @@ var rcxMain = {
   },
 
   inlineToggle: function(tab) {
-    if (rcxMain.enabled) rcxMain.inlineDisable(tab, 1);
-    else rcxMain.inlineEnable(tab, 1);
+    if (rcxMain.enabled) {
+      rcxMain.inlineDisable(tab);
+    } else {
+      rcxMain.inlineEnable(tab);
+    }
   },
 
   kanjiN: 1,
   namesN: 2,
 
   showMode: 0,
-
-  nextDict: function() {
-    this.showMode = (this.showMode + 1) % this.dictCount;
-  },
-
-  resetDict: function() {
-    this.showMode = 0;
-  },
 
   sameDict: 0,
   forceKanji: 1,
@@ -219,13 +160,13 @@ var rcxMain = {
 
   search: function(text, dictOption) {
     const kanjiReferences = new Set(
-      Object.entries(rcxMain.config.kanjiinfo)
-        .filter(([abbrev, setting]) => setting === 'true')
+      Object.entries(rcxMain.config.kanjiReferences)
+        .filter(([abbrev, setting]) => setting)
         .map(([abbrev, setting]) => abbrev)
     );
     const kanjiSearchOptions = {
       includedReferences: kanjiReferences,
-      includeKanjiComponents: rcxMain.config.kanjicomponents === 'true',
+      includeKanjiComponents: rcxMain.config.showKanjiComponents,
     };
 
     switch (dictOption) {
@@ -270,22 +211,3 @@ var rcxMain = {
     })(text, this);
   },
 };
-
-/*
-  2E80 - 2EFF CJK Radicals Supplement
-  2F00 - 2FDF Kangxi Radicals
-  2FF0 - 2FFF Ideographic Description
-p 3000 - 303F CJK Symbols and Punctuation
-x 3040 - 309F Hiragana
-x 30A0 - 30FF Katakana
-  3190 - 319F Kanbun
-  31F0 - 31FF Katakana Phonetic Extensions
-  3200 - 32FF Enclosed CJK Letters and Months
-  3300 - 33FF CJK Compatibility
-x 3400 - 4DBF CJK Unified Ideographs Extension A
-x 4E00 - 9FFF CJK Unified Ideographs
-x F900 - FAFF CJK Compatibility Ideographs
-p FF00 - FFEF Halfwidth and Fullwidth Forms
-x FF66 - FF9D Katakana half-width
-
-*/

@@ -131,7 +131,7 @@ const htmlTests = [
       '<span class="w-kanji">東</span><span class="w-kana">ひがし</span><br><span class="w-def">(n) east; (P)</span><br><span class="w-kanji">東</span><span class="w-kana">ひむかし</span>、 <span class="w-kana">ひんがし</span><br><span class="w-def">(n,ok) east; (P)</span><br><span class="w-kanji">東</span><span class="w-kana">あずま</span><br><span class="w-def">(n,arch,abbr) east; eastern Japan; six-stringed Japanese zither; my spouse</span><br><span class="w-kanji">東</span><span class="w-kana">あづま</span><br><span class="w-def">(n,arch,abbr,ok) east; eastern Japan; six-stringed Japanese zither; my spouse</span><br>',
   },
   {
-    description: "a word search result with the 'onlyReading' setting in place",
+    description: "a word search result with the 'readingOnly' setting in place",
     searchResult: {
       data: [
         ['韓国語 [かんこくご] /(n) Korean (language)/', null],
@@ -142,7 +142,7 @@ const htmlTests = [
       matchLen: 3,
     },
     extraConfig: {
-      onlyReading: true,
+      readingOnly: true,
     },
     html:
       '<span class="w-kanji">韓国語</span><span class="w-kana">かんこくご</span><br><span class="w-kanji">韓国</span><span class="w-kana">からくに</span><br><span class="w-kanji">韓国</span><span class="w-kana">かんこく</span><br>',

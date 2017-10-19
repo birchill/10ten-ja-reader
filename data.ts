@@ -129,13 +129,6 @@ interface KanjiSearchOptions {
   includeKanjiComponents: boolean;
 }
 
-// Temporary declarations until we actually import these modules
-declare namespace rcxMain.config {
-  let kanjicomponents: string;
-  let kanjiinfo: { [ref: string]: string };
-  let onlyReading: boolean;
-}
-
 class Dictionary {
   loaded: Promise<any>;
   nameDict: string;

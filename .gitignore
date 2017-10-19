@@ -1,4 +1,6 @@
 node_modules
 coverage
+config.js
 data.js
+options.js
 rikaicontent.js

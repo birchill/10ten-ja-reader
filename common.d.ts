@@ -1,12 +1,8 @@
-// Common definitions shared between the content and backend prats.
+// Common definitions shared between the content and backend parts.
 
-interface Config {
-  showOnKey: string;
+interface ContentConfig {
   // True if only the reading (and not the definition) should be shown.
-  onlyReading: boolean;
-  // The name of the CSS file to use, e.g. 'blue' for
-  // 'css/popup-blue.css'.
-  css: string;
+  readingOnly: boolean;
 }
 
 declare const enum DictMode {

@@ -5,40 +5,8 @@
   font-size: 10pt;
 }
 
-#tabs {
-}
-
-.tab {
-  float: left;
-  display: inline;
-  padding: 5px;
-  margin-left: 3px;
-  background-color: #eee;
-  border: 1px solid #999;
-  border-bottom: 0px;
-  font-style: italic;
-  color: #ccc;
-}
-
-.active-tab {
-  font-style: normal;
-  color: #000;
-}
-
-.selected-tab {
-  font-style: normal;
-  color: #000;
-  font-weight: bold;
-  background-color: #dde;
-}
-
-.tabContent.hide { display: none; }
-
 #options {
-  clear: both;
-  background-color: #dde;
   padding: 10px;
-  border: 1px solid black;
 }
 
 #options p, #options form {

@@ -5,7 +5,9 @@
   },
   "files": [
     "common.d.ts",
+    "config.ts",
     "data.ts",
+    "options.ts",
     "rikaicontent.ts"
   ]
 }

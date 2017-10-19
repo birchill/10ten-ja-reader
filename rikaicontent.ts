@@ -1194,7 +1194,7 @@ const isForeignObjectElement = (
 class RikaiContent {
   static MAX_LENGTH = 13;
 
-  _config: Config;
+  _config: ContentConfig;
 
   // Lookup tracking (so we can avoid redundant work and so we can re-render)
   _currentTextAtPoint?: CachedGetTextResult = null;
@@ -1234,6 +1234,9 @@ class RikaiContent {
   }
 
   set config(config) {
+    // TODO: We should probably check which keys have changed and regenerate
+    // the pop-up if needed but currently you need to change tabs to tweak
+    // the config so the popup probably won't be showing anyway.
     this._config = config;
   }
 
@@ -1288,14 +1291,12 @@ class RikaiContent {
     switch (ev.key) {
       case 'Shift': // shift
       case 'Enter': // enter
-        {
-          if (this._currentTextAtPoint && this._currentTarget) {
-            this.tryToUpdatePopup(
-              this._currentTextAtPoint.point,
-              this._currentTarget,
-              DictMode.NextDict
-            );
-          }
+        if (this._currentTextAtPoint && this._currentTarget) {
+          this.tryToUpdatePopup(
+            this._currentTextAtPoint.point,
+            this._currentTarget,
+            DictMode.NextDict
+          );
         }
         break;
 
@@ -1307,6 +1308,20 @@ class RikaiContent {
       case 'k':
         this._popupTopAdjust -= 20;
         this.showPopup();
+        break;
+
+      case 'd':
+        browser.runtime.sendMessage({ type: 'toggleDefinition' });
+        // We'll eventually get notified of the config change but we just change
+        // it here now so we can update the popup immediately.
+        this.config.readingOnly = !this.config.readingOnly;
+        if (this._currentTextAtPoint && this._currentTarget) {
+          this.tryToUpdatePopup(
+            this._currentTextAtPoint.point,
+            this._currentTarget,
+            DictMode.Same
+          );
+        }
         break;
     }
 
@@ -1340,6 +1355,9 @@ class RikaiContent {
       'Should have updated _currentTextAtPoint'
     );
 
+    // TODO: This is not right --- it will make us skip updating when toggling
+    // the "hide definitions" mode. We should split this method in two and only
+    // call the second half in that case.
     if (
       previousTextAtPoint === textAtPoint &&
       // This following line is not strictly correct. If the previous dictionary
@@ -1907,7 +1925,7 @@ class RikaiContent {
       // Add <style> element with popup CSS
       // (One day I hope Web Components might less us scope this now
       // that scoped stylesheets are dead.)
-      const cssdoc = this._config.css;
+      const cssdoc = 'blue';
       const cssHref = browser.extension.getURL(`css/popup-${cssdoc}.css`);
       const link = doc.createElement('link');
       link.setAttribute('rel', 'stylesheet');
@@ -2126,7 +2144,7 @@ class RikaiContent {
         reasonSpan.append(`(${entry.reason})`);
       }
 
-      if (!this._config.onlyReading) {
+      if (!this._config.readingOnly) {
         // TODO: Do this with CSS
         fragment.append(document.createElement('br'));
         const definitionSpan = document.createElement('span');
