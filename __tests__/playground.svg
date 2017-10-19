@@ -1,0 +1,13 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100"
+  width="100%" height="100%">
+  <text x="150" y="1em" text-anchor="middle">SVGへようこそ</text>
+  <defs>
+    <path id="path" d="M 50,50 C 100,0 200,100 250,50"/>
+  </defs>
+  <g transform="translate(0 50)">
+    <text text-anchor="middle">
+      <textPath href="#path"
+        startOffset="50%">こういう面白い効果でも朝飯前</textPath>
+    </text>
+  </g>
+</svg>
