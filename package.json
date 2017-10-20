@@ -1,8 +1,7 @@
 {
   "name": "rikaichamp",
   "version": "0.0.1",
-  "description": "A port of rikaikun to Web Extensions. Translate Japanese by hovering over words.",
-  "main": "rikaichamp.js",
+  "description": "Translate Japanese by hovering over words.",
   "scripts": {
     "prepare": "tsc",
     "test": "jest; MOZ_HEADLESS=1 slimerjs utils/slimerjs-test-runner.js __tests__/rikaicontent.html",
