@@ -603,7 +603,8 @@ if (0) {
 		'W',	'Korean Reading',
 */
 		'H',	'Halpern',
-		'L',	'Heisig 5th',
+		'L',	'Heisig 5th Edition',
+		'LF',	'Heisig 6th Edition',
 		'E',	'Henshall',
 		'DK',	'Kanji Learners Dictionary',
 		'N',	'Nelson',
