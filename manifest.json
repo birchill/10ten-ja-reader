@@ -2,6 +2,11 @@
   "manifest_version": 2,
   "name": "rikaichamp",
   "version": "0.0.1",
+  "applications": {
+    "gecko": {
+      "id": "{59812185-ea92-4cca-8ab7-cfcacee81281}"
+    }
+  },
   "description": "Translate Japanese by hovering over words.",
   "icons": { "48": "images/rikaichamp-blue.svg",
              "96": "images/rikaichamp-blue.svg",
