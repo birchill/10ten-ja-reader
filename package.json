@@ -1,11 +1,14 @@
 {
   "name": "rikaichamp",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Translate Japanese by hovering over words.",
   "scripts": {
     "prepare": "tsc",
     "test": "jest; MOZ_HEADLESS=1 slimerjs utils/slimerjs-test-runner.js __tests__/rikaicontent.html",
-    "start": "web-ext run --bc --start-url __tests__/playground.html"
+    "start": "web-ext run --bc --start-url __tests__/playground.html",
+    "publish": "mkdir -p publish; cp -r *.js *.html manifest.json css images data publish",
+    "lint": "web-ext lint --source-dir publish",
+    "build": "web-ext build --source-dir publish --overwrite-dest"
   },
   "repository": {
     "type": "git",

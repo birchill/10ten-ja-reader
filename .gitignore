@@ -1,5 +1,7 @@
-node_modules
 coverage
+node_modules
+publish
+web-ext-articles
 config.js
 data.js
 options.js
