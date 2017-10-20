@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "rikaichamp",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "applications": {
     "gecko": {
       "id": "{59812185-ea92-4cca-8ab7-cfcacee81281}"
