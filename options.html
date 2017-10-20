@@ -5,68 +5,85 @@
     <link rel="stylesheet" type="text/css" href="css/options.css" />
   </head>
   <body>
-    <div id=rikaichamp_options>
+    <div id=rikaichamp_options class=panel>
       <form id=optform name=optform>
-        <div id=options>
-          <h1>General</h1>
-          <p>
-            <input type=checkbox id=readingOnly name=readingOnly>
-            <label for=readingOnly>Hide definitions and show only
-              reading</label>
-          </p>
-          <div id=keycon class=tabContent>
-          <h1>Keyboard</h1>
-            <strong>Keys when popup is visible</strong><br><br>
-            <table cellspacing=5>
+        <div class="panel-section panel-section-header">
+          <div class=text-section-header>General</div>
+        </div>
+        <div class="panel-section panel-section-formElements browser-style">
+          <input type=checkbox id=readingOnly name=readingOnly
+          class="panel-formElements-item">
+          <label for=readingOnly>Hide definitions and show only
+            reading</label>
+        </div>
+        <div class="panel-section panel-section-header">
+          <div class=text-section-header>Keyboard</div>
+        </div>
+        <div class="panel-section panel-section-formElements">
+          <p>Keys when popup is visible</p>
+          <table cellspacing=5>
             <tr><td>Shift/Enter&nbsp;&nbsp;</td>
                 <td>Switch dictionaries</td></tr>
             <tr><td>J/K</td><td>Move popup down/up</td></tr>
             <tr><td>D</td><td>Hide/show definitions</td></tr>
-            </table>
+          </table>
+        </div>
+        <div id=kanjicon>
+          <div class="panel-section panel-section-header">
+            <div class=text-section-header>Kanji dictionary</div>
           </div>
-          <div id=kanjicon class=tabContent>
-          <h1>Kanji Dictionary</h1>
-            <p>
-            <strong>Displayed information:</strong><br><br>
+          <div class="panel-section panel-section-formElements panel-section-list browser-style">
+            <div class="panel-list-item browser-style">
               <input type=checkbox id=showKanjiComponents
                 name=showKanjiComponents>
-              <label for=showKanjiComponents>Kanji Components</label>
-              <br>
+              <label for=showKanjiComponents>Kanji components</label>
+            </div>
+            <div class="panel-list-item browser-style">
               <input type=checkbox id=H name=H>
               <label for=H>Halpern</label>
-              <br>
+            </div>
+            <div class="panel-list-item browser-style">
               <input type=checkbox id=L name=L>
               <label for=L>Heisig</label>
-              <br>
+            </div>
+            <div class="panel-list-item browser-style">
               <input type=checkbox id=E name=E>
               <label for=E>Henshall</label>
-              <br>
+            </div>
+            <div class="panel-list-item browser-style">
               <input type=checkbox id=DK name=DK>
               <label for=DK>Kanji Learners Dictionary</label>
-              <br>
+            </div>
+            <div class="panel-list-item browser-style">
               <input type=checkbox id=N name=N>
               <label for=N>Nelson</label>
-              <br>
+            </div>
+            <div class="panel-list-item browser-style">
               <input type=checkbox id=V name=V>
               <label for=V>New Nelson</label>
-              <br>
+            </div>
+            <div class="panel-list-item browser-style">
               <input type=checkbox id=Y name=Y>
               <label for=Y>PinYin</label>
-              <br>
+            </div>
+            <div class="panel-list-item browser-style">
               <input type=checkbox id=P name=P>
               <label for=P>Skip Pattern</label>
-              <br>
+            </div>
+            <div class="panel-list-item browser-style">
               <input type=checkbox id=IN name=IN>
               <label for=IN>Tuttle Kanji &amp; Kana</label>
-              <br>
+            </div>
+            <div class="panel-list-item browser-style">
               <input type=checkbox id=I name=I>
               <label for=I>Tuttle Kanji Dictionary</label>
-              <br>
+            </div>
+            <div class="panel-list-item browser-style">
               <input type=checkbox id=U name=U>
               <label for=U>Unicode</label>
-              <br>
-            </p>
+            </div>
           </div>
+        </div>
       </form>
     </div>
   </body>

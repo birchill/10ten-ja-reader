@@ -48,7 +48,7 @@ var rcxMain = {
   haveNames: true,
   dictCount: 3,
   altView: 0,
-  enabled: 0,
+  enabled: false,
 
   loadDictionary: function() {
     if (!this.dict) {
@@ -92,13 +92,16 @@ var rcxMain = {
   // Function which enables the inline mode of rikaichamp
   // Unlike rikaichan there is no lookup bar so this is the only enable.
   inlineEnable: function(tab) {
+    browser.browserAction.setTitle({ title: 'Rikaichamp loading...' });
+    browser.browserAction.setIcon({ path: 'images/rikaichamp-loading.svg' });
+
     Promise.all([ this.loadDictionary(), rcxMain.config.ready ]).then(() => {
       // Send message to current tab to add listeners and create stuff
       browser.tabs.sendMessage(tab.id, {
         type: 'enable',
         config: rcxMain.config.contentConfig,
       });
-      this.enabled = 1;
+      this.enabled = true;
 
       /*
       if (rcxMain.config.minihelp == 'true') {
@@ -113,21 +116,20 @@ var rcxMain = {
         });
       }
       */
-      browser.browserAction.setBadgeBackgroundColor({
-        color: [255, 0, 0, 255],
-      });
-      browser.browserAction.setBadgeText({ text: 'On' });
+      browser.browserAction.setTitle({ title: 'Rikaichamp enabled' });
+      browser.browserAction.setIcon({ path: 'images/rikaichamp-blue.svg' });
     });
   },
 
   // This function diables
   inlineDisable: function(tab) {
+    // TODO: Drop this?
     // Delete dictionary object after we implement it
     delete this.dict;
 
-    this.enabled = 0;
-    browser.browserAction.setBadgeBackgroundColor({ color: [0, 0, 0, 0] });
-    browser.browserAction.setBadgeText({ text: '' });
+    this.enabled = false;
+    browser.browserAction.setTitle({ title: 'Rikaichamp disabled' });
+    browser.browserAction.setIcon({ path: 'images/rikaichamp-disabled.svg' });
 
     // Send a disable message to all browsers
     var windows = browser.windows.getAll({ populate: true }, function(windows) {
