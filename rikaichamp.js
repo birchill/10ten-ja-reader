@@ -103,19 +103,6 @@ var rcxMain = {
       });
       this.enabled = true;
 
-      /*
-      if (rcxMain.config.minihelp == 'true') {
-        browser.tabs.sendMessage(tab.id, {
-          type: 'showPopup',
-          text: rcxMain.miniHelp,
-        });
-      } else {
-        browser.tabs.sendMessage(tab.id, {
-          type: 'showPopup',
-          text: 'Rikaichamp enabled!',
-        });
-      }
-      */
       browser.browserAction.setTitle({ title: 'Rikaichamp enabled' });
       browser.browserAction.setIcon({ path: 'images/rikaichamp-blue.svg' });
     });
@@ -123,10 +110,6 @@ var rcxMain = {
 
   // This function diables
   inlineDisable: function(tab) {
-    // TODO: Drop this?
-    // Delete dictionary object after we implement it
-    delete this.dict;
-
     this.enabled = false;
     browser.browserAction.setTitle({ title: 'Rikaichamp disabled' });
     browser.browserAction.setIcon({ path: 'images/rikaichamp-disabled.svg' });
