@@ -8,6 +8,7 @@
     "config.ts",
     "data.ts",
     "options.ts",
+    "rikaichamp.ts",
     "rikaicontent.ts"
   ]
 }

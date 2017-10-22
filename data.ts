@@ -328,7 +328,7 @@ class Dictionary {
     return result;
   }
 
-  async wordSearch(input, doNames, max): Promise<WordSearchResult | null> {
+  async wordSearch(input, doNames, max = 0): Promise<WordSearchResult | null> {
     let [word, inputLengths] = this.normalizeInput(input);
 
     let maxResults = doNames ? NAMES_MAX_ENTRIES : WORDS_MAX_ENTRIES;
