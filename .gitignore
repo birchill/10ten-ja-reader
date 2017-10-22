@@ -2,6 +2,7 @@ coverage
 node_modules
 publish
 web-ext-articles
+background.js
 config.js
 data.js
 options.js
