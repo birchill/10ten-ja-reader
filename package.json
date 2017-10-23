@@ -37,7 +37,10 @@
     "web-ext": "^2.2.2"
   },
   "jest": {
-    "roots": ["src","__tests__"],
+    "roots": [
+      "src",
+      "__tests__"
+    ],
     "transform": {
       "^.+\\.tsx?$": "./node_modules/ts-jest/preprocessor.js"
     },
