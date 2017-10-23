@@ -1,9 +1,4 @@
 coverage
 node_modules
-publish
-web-ext-articles
-config.js
-data.js
-options.js
-rikaichamp.js
-rikaicontent.js
+web-ext-artifacts
+extension/*.js

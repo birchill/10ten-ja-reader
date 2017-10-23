@@ -1,14 +1,10 @@
 {
   "compilerOptions": {
+    "outDir": "extension",
     "target": "es2017",
     "typeRoots": ["@types","node_modules/web-ext-types"]
   },
-  "files": [
-    "common.d.ts",
-    "config.ts",
-    "data.ts",
-    "options.ts",
-    "rikaichamp.ts",
-    "rikaicontent.ts"
+  "include": [
+    "src/*"
   ]
 }
