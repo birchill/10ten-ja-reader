@@ -18,7 +18,14 @@ async function fillVals() {
   // TODO: Use REF_ABBREVIATIONS to generate the HTML for options.html too.
 }
 
-window.onload = fillVals;
+window.onload = () => {
+  fillVals();
+  config.addChangeListener(fillVals);
+};
+
+window.onunload = () => {
+  config.removeChangeListener(fillVals);
+};
 
 document.getElementById('readingOnly').addEventListener('click', evt => {
   config.readingOnly = (evt.target as HTMLInputElement).checked;

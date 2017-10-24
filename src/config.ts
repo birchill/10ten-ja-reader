@@ -6,15 +6,17 @@ interface Settings {
   kanjiReferences?: KanjiReferenceFlags;
 }
 
-type ContentChangeCallback = (config: ContentConfig) => void;
+type ChangeCallback = (changes: object) => void;
 
 class Config {
   _settings: Settings = {};
   _readPromise: Promise<void>;
-  _onContentChange?: ContentChangeCallback;
+  _changeListeners: ChangeCallback[] = [];
 
   constructor() {
     this._readPromise = this._readSettings();
+    this.onChange = this.onChange.bind(this);
+    browser.storage.onChanged.addListener(this.onChange);
   }
 
   async _readSettings() {
@@ -31,17 +33,28 @@ class Config {
     return this._readPromise;
   }
 
-  // TODO: Call this periodically (each time rikaichamp is enabled?) so that if
-  // settings change on another device and get synced, we update them locally.
-  async refreshSettings() {
-    this._readPromise = this._readSettings();
+  onChange(changes, areaName) {
+    if (areaName !== 'sync') {
+      return;
+    }
+    for (const listener of this._changeListeners) {
+      listener(changes);
+    }
   }
 
-  // TODO: Make this take multiple listeners and then make the options page
-  // listen so it can update the "hide definition" text box when we change it
-  // from content.
-  set onContentChange(callback: ContentChangeCallback) {
-    this._onContentChange = callback;
+  addChangeListener(callback: ChangeCallback) {
+    if (this._changeListeners.indexOf(callback) !== -1) {
+      return;
+    }
+    this._changeListeners.push(callback);
+  }
+
+  removeChangeListener(callback: ChangeCallback) {
+    const index = this._changeListeners.indexOf(callback);
+    if (index === -1) {
+      return;
+    }
+    this._changeListeners.splice(index, 1);
   }
 
   // readingOnly: Defaults to false
@@ -60,9 +73,6 @@ class Config {
 
     this._settings.readingOnly = value;
     browser.storage.sync.set({ readingOnly: value });
-    if (this._onContentChange) {
-      this._onContentChange(this.contentConfig);
-    }
   }
 
   toggleReadingOnly() {
@@ -112,4 +122,12 @@ class Config {
       readingOnly: this.readingOnly,
     };
   }
+}
+
+interface Module {
+  exports: any;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = Config;
 }

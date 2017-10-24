@@ -1,4 +1,3 @@
-// @format
 const fs = require('fs');
 
 const Dictionary = require('../src/data');

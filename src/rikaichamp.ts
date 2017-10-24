@@ -55,9 +55,10 @@ class App {
 
   constructor() {
     this._config = new Config();
-    this._config.onContentChange = config => {
-      this.updateConfig(config);
-    };
+    this._config.addChangeListener(() => {
+      // TODO: Ignore changes that aren't part of contentConfig
+      this.updateConfig(this._config.contentConfig);
+    });
 
     browser.tabs.onActivated.addListener(activeInfo => {
       this.onTabSelect(activeInfo.tabId);
@@ -122,7 +123,7 @@ class App {
     });
   }
 
-  updateConfig(config) {
+  updateConfig(config: ContentConfig) {
     if (!this._enabled) {
       return;
     }
