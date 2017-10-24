@@ -28,7 +28,19 @@ The `--bc` just brings up the browser console immediately so you can check for
 any warnings produced at startup.
 
 Add `-p default` if you want to use your regular browsing profile so you can
-easily test sites that require a login such as Twitter and Facebook.
+easily test sites that require a login such as Twitter and Facebook. e.g.
+
+
+```
+npm start -- -p default
+```
+
+Likewise, if `web-ext` is bringing up the wrong version of Firefox or can't find it, you can specify to use, e.g. Nightly using `-f nightly`. e.g.
+
+
+```
+npm start -- -f nightly
+```
 
 ## Testing
 
