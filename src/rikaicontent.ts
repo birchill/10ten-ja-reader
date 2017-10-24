@@ -276,6 +276,9 @@ class RikaiContent {
           this.showPopup();
         }
         break;
+
+      default:
+        return;
     }
 
     this._keysDown.add(ev.key);
