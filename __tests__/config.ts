@@ -86,9 +86,43 @@ class MockStorageArea {
   }
 }
 
+global.REF_ABBREVIATIONS = [
+  { abbrev: 'H', name: 'Halpern' },
+  { abbrev: 'L', name: 'Heisig' },
+  { abbrev: 'E', name: 'Henshall' },
+  { abbrev: 'DK', name: 'Kanji Learners Dictionary' },
+  { abbrev: 'N', name: 'Nelson' },
+  { abbrev: 'V', name: 'New Nelson' },
+  { abbrev: 'Y', name: 'PinYin' },
+  { abbrev: 'P', name: 'Skip Pattern' },
+  { abbrev: 'IN', name: 'Tuttle Kanji & Kana' },
+  { abbrev: 'I', name: 'Tuttle Kanji Dictionary' },
+  { abbrev: 'U', name: 'Unicode' },
+];
+
 describe('Config', () => {
   beforeEach(() => {
     global.browser = { storage: new MockStorage() };
+  });
+
+  it('returns the default settings', () => {
+    const config = new Config();
+
+    expect(config.readingOnly).toEqual(false);
+    expect(config.showKanjiComponents).toEqual(true);
+    expect(config.kanjiReferences).toEqual({
+      H: true,
+      L: true,
+      E: true,
+      DK: true,
+      N: true,
+      V: true,
+      Y: true,
+      P: true,
+      IN: true,
+      I: true,
+      U: true,
+    });
   });
 
   it('reports changes to all listeners', async () => {
@@ -108,7 +142,9 @@ describe('Config', () => {
 
     await new Promise(function checkForChanges(resolve) {
       if (receivedChanges1.length + receivedChanges2.length < 4) {
-        setImmediate(() => { checkForChanges(resolve); });
+        setImmediate(() => {
+          checkForChanges(resolve);
+        });
       } else {
         resolve();
       }
