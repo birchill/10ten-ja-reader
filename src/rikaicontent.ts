@@ -199,6 +199,7 @@ class RikaiContent {
     window.removeEventListener('keyup', this.onKeyUp);
 
     this.clearHighlight();
+    this._selectedTextBox = null;
 
     const cssElem = document.getElementById('rikaichamp-css');
     if (cssElem) {
