@@ -1,6 +1,6 @@
 /*
 
-  Rikai champ
+  Rikaichamp
   by Brian Birtles
   https://github.com/birtles/rikaichamp
 
@@ -811,12 +811,23 @@ class RikaiContent {
         selection.removeAllRanges();
       }
 
-      this._restoreTextBoxSelection();
+      if (this._selectedTextBox) {
+        const textBox = this._selectedTextBox.node;
+        // If we are currently focussed on this textbox then we probably don't
+        // want to restore the selection since that could make the text box
+        // scroll back to the previous selection and we don't want to do that
+        // just because we didn't find a match for the current word. Instead,
+        // just collapse the selection.
+        if (document.activeElement === textBox) {
+          textBox.selectionEnd = textBox.selectionStart;
+        } else {
+          this._restoreTextBoxSelection();
+        }
+      }
     }
 
     this._selectedWindow = null;
     this._selectedText = null;
-    this._selectedTextBox = null;
 
     // Hide popup
     const popup = document.getElementById('rikaichamp-window');
