@@ -970,6 +970,10 @@ class RikaiContent {
     popup.append(fragment);
 
     // Position the popup
+    // TODO: Often, the first time the popup is created, the following returns
+    // an overly wide size (roughly the document innerWidth - scroll bar
+    // width). This causes us to initially end up positioning the popup on the
+    // far left. We should detect this case and do something (wait a frame?)
     const popupWidth = popup.offsetWidth || 200;
     const popupHeight = popup.offsetHeight;
 
@@ -986,11 +990,13 @@ class RikaiContent {
       // Horizontal position: Go left if necessary
       //
       // (We should never be too far left since popupX, if set to
-      // something non-zero,  is coming from a mouse event which should
+      // something non-zero, is coming from a mouse event which should
       // be positive.)
       if (popupX + popupWidth > doc.defaultView.innerWidth - 20) {
         popupX = doc.defaultView.innerWidth - popupWidth - 20;
-        if (popupX < 0) popupX = 0;
+        if (popupX < 0) {
+          popupX = 0;
+        }
       }
 
       // Vertical position: Position below the mouse cursor
@@ -1028,7 +1034,6 @@ class RikaiContent {
     // (they have documentElement as having type HTMLElement)
     const isSVGSVGElement = (elem?: Element): elem is SVGSVGElement =>
       elem.namespaceURI === SVG_NS && elem.nodeName.toUpperCase() === 'SVG';
-    // Likewise here :(
 
     if (
       isSvg &&
