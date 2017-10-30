@@ -1,10 +1,10 @@
 {
   "name": "rikaichamp",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Translate Japanese by hovering over words.",
   "scripts": {
     "prepare": "tsc",
-    "pack": "web-ext build --source-dir extension --overwrite-dest",
+    "prepack": "web-ext build --source-dir extension --overwrite-dest",
     "test": "web-ext lint --source-dir extension && jest && MOZ_HEADLESS=1 slimerjs utils/slimerjs-test-runner.js __tests__/rikaicontent.html",
     "start": "web-ext run --source-dir extension --bc --start-url __tests__/playground.html",
     "precommit": "lint-staged",
