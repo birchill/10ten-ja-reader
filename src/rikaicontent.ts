@@ -136,6 +136,16 @@ const isInclusiveAncestor = (ancestor: Element, testNode?: Node): boolean => {
   return false;
 };
 
+interface Focusable {
+  focus();
+}
+
+// Both HTMLElement and SVGElement interfaces have a focus() method but I guess
+// Edge doesn't currently support focus() on SVGElement so we just duck-type
+// this.
+const isFocusable = (element?: any): element is Focusable =>
+  element && typeof element.focus === 'function' && element.focus.length === 0;
+
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 const isForeignObjectElement = (
@@ -163,6 +173,7 @@ class RikaiContent {
     previousStart: number;
     previousEnd: number;
     previousDirection: string;
+    previousFocus?: Element;
   } = null;
 
   // Key tracking
@@ -175,9 +186,11 @@ class RikaiContent {
     this._config = config;
 
     this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     window.addEventListener('mousemove', this.onMouseMove);
+    window.addEventListener('mousedown', this.onMouseDown);
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('keyup', this.onKeyUp);
   }
@@ -195,10 +208,11 @@ class RikaiContent {
 
   detach() {
     window.removeEventListener('mousemove', this.onMouseMove);
+    window.removeEventListener('mousedown', this.onMouseDown);
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('keyup', this.onKeyUp);
 
-    this.clearHighlight();
+    this.clearHighlight(null);
     this._selectedTextBox = null;
 
     const cssElem = document.getElementById('rikaichamp-css');
@@ -224,6 +238,16 @@ class RikaiContent {
     );
   }
 
+  onMouseDown(ev: MouseEvent) {
+    if (!this._selectedTextBox) {
+      return;
+    }
+
+    if (ev.target === this._selectedTextBox.node) {
+      this._selectedTextBox.previousFocus = ev.target as Element;
+    }
+  }
+
   onKeyDown(ev: KeyboardEvent) {
     // If we got shift in combination with something else, ignore.
     if (ev.shiftKey && ev.key !== 'Shift') {
@@ -239,6 +263,15 @@ class RikaiContent {
 
     // If we're not visible we should ignore any keystrokes.
     if (!this.isVisible()) {
+      return;
+    }
+
+    // If the user explicitly focused the current text box, ignore any
+    // keystrokes.
+    if (
+      this._selectedTextBox &&
+      this._selectedTextBox.node === this._selectedTextBox.previousFocus
+    ) {
       return;
     }
 
@@ -326,7 +359,7 @@ class RikaiContent {
     }
 
     if (!textAtPoint) {
-      this.clearHighlight();
+      this.clearHighlight(target);
       return;
     }
 
@@ -359,7 +392,7 @@ class RikaiContent {
     }
 
     if (!searchResult) {
-      this.clearHighlight();
+      this.clearHighlight(target);
       return;
     }
 
@@ -712,7 +745,7 @@ class RikaiContent {
 
     // Check that the window wasn't closed since we started the lookup
     if (this._selectedWindow.closed) {
-      this.clearHighlight();
+      this.clearHighlight(null);
       return;
     }
 
@@ -735,19 +768,24 @@ class RikaiContent {
       // If we were previously interacting with a different text box, restore
       // its range.
       if (this._selectedTextBox && node !== this._selectedTextBox.node) {
-        this._selectedTextBox.node.blur();
         this._restoreTextBoxSelection();
       }
 
       // If we were not already interacting with this text box, store its
       // existing range and focus it.
       if (!this._selectedTextBox || node !== this._selectedTextBox.node) {
+        // Transfer the previous focus, if we have one, otherwise use the
+        // currently focused element in the document.
+        const previousFocus = this._selectedTextBox
+          ? this._selectedTextBox.previousFocus
+          : document.activeElement;
         node.focus();
         this._selectedTextBox = {
           node,
           previousStart: node.selectionStart,
           previousEnd: node.selectionEnd,
           previousDirection: node.selectionDirection,
+          previousFocus,
         };
       }
 
@@ -759,11 +797,7 @@ class RikaiContent {
     } else {
       // If we were previously interacting with a text box, restore its range
       // and blur it.
-      if (this._selectedTextBox) {
-        this._selectedTextBox.node.blur();
-        this._restoreTextBoxSelection();
-        this._selectedTextBox = null;
-      }
+      this._clearTextBoxSelection(null);
 
       const startNode = textAtPoint.rangeStart.container;
       const startOffset = textAtPoint.rangeStart.offset;
@@ -797,7 +831,7 @@ class RikaiContent {
     }
   }
 
-  clearHighlight() {
+  clearHighlight(currentElement?: Element) {
     this._currentTextAtPoint = null;
     this._currentSearchResult = null;
     this._currentTarget = null;
@@ -812,19 +846,7 @@ class RikaiContent {
         selection.removeAllRanges();
       }
 
-      if (this._selectedTextBox) {
-        const textBox = this._selectedTextBox.node;
-        // If we are currently focussed on this textbox then we probably don't
-        // want to restore the selection since that could make the text box
-        // scroll back to the previous selection and we don't want to do that
-        // just because we didn't find a match for the current word. Instead,
-        // just collapse the selection.
-        if (document.activeElement === textBox) {
-          textBox.selectionEnd = textBox.selectionStart;
-        } else {
-          this._restoreTextBoxSelection();
-        }
-      }
+      this._clearTextBoxSelection(currentElement);
     }
 
     this._selectedWindow = null;
@@ -837,13 +859,44 @@ class RikaiContent {
     }
   }
 
-  _restoreTextBoxSelection() {
-    if (this._selectedTextBox) {
-      const textBox = this._selectedTextBox.node;
-      textBox.selectionStart = this._selectedTextBox.previousStart;
-      textBox.selectionEnd = this._selectedTextBox.previousEnd;
-      textBox.selectionDirection = this._selectedTextBox.previousDirection;
+  _clearTextBoxSelection(currentElement?: Element) {
+    if (!this._selectedTextBox) {
+      return;
     }
+
+    const textBox = this._selectedTextBox.node;
+
+    // If we are currently interacting with this textbox then, just because
+    // we didn't find a match for the current text, we still don't want to
+    // restore the selection since that could make the text box scroll back
+    // to the previous selection. Instead, just collapse the selection.
+    if (currentElement === textBox) {
+      textBox.selectionEnd = textBox.selectionStart;
+    } else {
+      this._restoreTextBoxSelection();
+
+      if (
+        isFocusable(this._selectedTextBox.previousFocus) &&
+        this._selectedTextBox.previousFocus !== textBox
+      ) {
+        // First blur the text box since some Elements' focus() method does
+        // nothing.
+        this._selectedTextBox.node.blur();
+        this._selectedTextBox.previousFocus.focus();
+      }
+      this._selectedTextBox = null;
+    }
+  }
+
+  _restoreTextBoxSelection() {
+    if (!this._selectedTextBox) {
+      return;
+    }
+
+    const textBox = this._selectedTextBox.node;
+    textBox.selectionStart = this._selectedTextBox.previousStart;
+    textBox.selectionEnd = this._selectedTextBox.previousEnd;
+    textBox.selectionDirection = this._selectedTextBox.previousDirection;
   }
 
   showPopup() {
@@ -856,7 +909,7 @@ class RikaiContent {
       this._currentTitle
     );
     if (!fragment) {
-      this.clearHighlight();
+      this.clearHighlight(this._currentTarget);
       return;
     }
 
