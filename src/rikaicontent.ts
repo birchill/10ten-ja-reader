@@ -154,6 +154,27 @@ const isForeignObjectElement = (
   elem.namespaceURI === SVG_NS &&
   elem.nodeName.toUpperCase() === 'FOREIGNOBJECT';
 
+// lib.d.ts definitions are out of date and don't support the options object
+// (TypeScript issue #18136, will be fixed in TypeScript 2.7)
+interface HTMLLinkElement {
+  addEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    useCapture?: boolean | AddEventListenerOptions
+  ): void;
+}
+
+const styleSheetLoad = (link: HTMLLinkElement): Promise<void> =>
+  new Promise(resolve => {
+    link.addEventListener(
+      'load',
+      () => {
+        resolve();
+      },
+      { once: true }
+    );
+  });
+
 class RikaiContent {
   static MAX_LENGTH = 13;
 
@@ -899,7 +920,7 @@ class RikaiContent {
     textBox.selectionDirection = this._selectedTextBox.previousDirection;
   }
 
-  showPopup() {
+  async showPopup() {
     const referencePosition = this._currentTextAtPoint
       ? this._currentTextAtPoint.point
       : null;
@@ -954,6 +975,10 @@ class RikaiContent {
       const linkContainer = wrapperElement || doc.head || doc.documentElement;
       linkContainer.appendChild(link);
 
+      // Wait for the stylesheet to load so we can get a reliable width for the
+      // popup and position it correctly.
+      await styleSheetLoad(link);
+
       // Add the popup div
       popup = doc.createElement('div');
       popup.setAttribute('id', 'rikaichamp-window');
@@ -970,14 +995,8 @@ class RikaiContent {
     popup.append(fragment);
 
     // Position the popup
-    // TODO: Often, the first time the popup is created, the following returns
-    // an overly wide size (roughly the document innerWidth - scroll bar
-    // width). This causes us to initially end up positioning the popup on the
-    // far left. We should detect this case and do something (wait a frame?)
     const popupWidth = popup.offsetWidth || 200;
     const popupHeight = popup.offsetHeight;
-
-    // TODO: altView handling
 
     const getRefCoord = coord =>
       referencePosition && !isNaN(parseInt(referencePosition[coord]))
