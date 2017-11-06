@@ -6,7 +6,8 @@
   "scripts": {
     "format": "prettier --config .prettierrc --write extension/*.js",
     "lint": "eslint extension/*.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "update-db": "node utils/update-db"
   },
   "repository": {
     "type": "git",
@@ -25,10 +26,12 @@
   },
   "homepage": "https://github.com/melink14/rikaikun#readme",
   "devDependencies": {
-    "eslint": "^7.5.0",
+    "byline": "^5.0.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
+    "eslint": "^7.5.0",
+    "iconv-lite": "^0.4.19",
     "prettier": "^2.0.5"
   }
 }
