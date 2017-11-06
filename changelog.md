@@ -1,6 +1,7 @@
 ## 0.0.7 (not yet released)
 
 * Fixed incorrect positioning of pop-up on initial display.
+* Updated word dictionary to 2017-11-05 snapshot.
 
 ## 0.0.6 (2017-10-30)
 
