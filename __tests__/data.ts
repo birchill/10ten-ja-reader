@@ -95,10 +95,13 @@ describe('Dictionary', () => {
   it('translates sentences', async () => {
     const result = await sharedDict.translate('期間限定発売 秋の膳');
     expect(result.textLen).toBe(10); // 10 characters including the space
-    expect(result.data.length).toBe(6);
+    expect(result.data.length).toBe(5);
     expect(result.more).toBe(false);
     const kana = result.data
-      .map(word => word[0].match(/(?:\[(.*?)\])/)[1])
+      .map(word => {
+        const matches = word[0].match(/^(.+?)\s+(?:\[(.*?)\])?/);
+        return matches[2] || matches[1];
+      })
       .join('');
     expect(kana).toBe('きかんげんていはつばいあきのぜん');
   });

@@ -175,9 +175,13 @@ class Dictionary {
       const i: number = data.lastIndexOf('\n', midpoint) + 1;
 
       const candidate: string = data.substr(i, tlen);
-      if (text < candidate) end = i - 1;
-      else if (text > candidate) start = data.indexOf('\n', midpoint + 1) + 1;
-      else return data.substring(i, data.indexOf('\n', midpoint + 1));
+      if (text < candidate) {
+        end = i - 1;
+      } else if (text > candidate) {
+        start = data.indexOf('\n', midpoint + 1) + 1;
+      } else {
+        return data.substring(i, data.indexOf('\n', midpoint + 1));
+      }
     }
 
     return null;
