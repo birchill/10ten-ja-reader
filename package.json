@@ -1,6 +1,6 @@
 {
   "name": "rikaichamp",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Translate Japanese by hovering over words.",
   "scripts": {
     "prepare": "tsc",
