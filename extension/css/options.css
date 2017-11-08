@@ -5,11 +5,11 @@
   font-size: 10pt;
 }
 
-#options {
-  padding: 10px;
-}
-
-#options p, #options form {
-  margin: 0;
-  padding: 0;
+.panel-section-grid {
+  display: grid;
+  width: 100%;
+  max-width: 800px;
+  grid-template-columns: repeat(auto-fit, 200px);
+  grid-column-gap: 1em;
+  padding: 16px;
 }
