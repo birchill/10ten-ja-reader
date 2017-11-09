@@ -39,7 +39,7 @@
   "dependencies": {
     "husky": "^0.14.3",
     "lint-staged": "^4.3.0",
-    "typescript": "^2.5.2",
+    "typescript": "^2.6.1",
     "web-ext": "^2.2.2"
   },
   "jest": {
