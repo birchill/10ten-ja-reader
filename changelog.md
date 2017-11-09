@@ -1,6 +1,6 @@
 ## 0.0.8 (not yet released)
 
-* Added option to disable text highlighting (thanks to @nanaya)
+* Added option to disable text highlighting (thanks to [@nanaya](https://github.com/nanaya))
 
 ## 0.0.7 (2017-11-06)
 
