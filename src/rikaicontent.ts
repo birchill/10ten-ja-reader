@@ -202,9 +202,6 @@ class RikaiContent {
   // Key tracking
   _keysDown: Set<string> = new Set();
 
-  // Popup adjustments
-  _popupTopAdjust: number = 0;
-
   constructor(config) {
     this._config = config;
 
@@ -307,20 +304,6 @@ class RikaiContent {
             this._currentTarget,
             DictMode.NextDict
           );
-        }
-        break;
-
-      case 'j':
-        this._popupTopAdjust += 20;
-        if (this._currentSearchResult) {
-          this.showPopup();
-        }
-        break;
-
-      case 'k':
-        this._popupTopAdjust -= 20;
-        if (this._currentSearchResult) {
-          this.showPopup();
         }
         break;
 
@@ -1032,10 +1015,6 @@ class RikaiContent {
       if ((this._currentTarget as any).title) {
         verticalAdjust += 20;
       }
-
-      // Include any manual adjustment before checking if we are within the
-      // bounds.
-      verticalAdjust += this._popupTopAdjust;
 
       // Check if we are too close to the bottom
       if (popupY + verticalAdjust + popupHeight > doc.defaultView.innerHeight) {
