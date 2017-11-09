@@ -1,4 +1,8 @@
-## 0.0.7 (not yet released)
+## 0.0.8 (not yet released)
+
+* Added option to disable text highlighting (thanks to @nanaya)
+
+## 0.0.7 (2017-11-06)
 
 * Fixed incorrect positioning of pop-up on initial display.
 * Updated word dictionary to 2017-11-05 snapshot.
