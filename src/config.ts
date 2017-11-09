@@ -15,6 +15,7 @@ type KanjiReferenceFlags = { [abbrev: string]: boolean };
 interface Settings {
   readingOnly?: boolean;
   keys?: KeyboardKeys;
+  noTextHighlight?: boolean;
   showKanjiComponents?: boolean;
   kanjiReferences?: KanjiReferenceFlags;
 }
@@ -113,6 +114,24 @@ class Config {
     browser.storage.sync.set({ keys: this._settings.keys as any });
   }
 
+  // noTextHighlight: Defaults to false
+
+  get noTextHighlight(): boolean {
+    return !!this._settings.noTextHighlight;
+  }
+
+  set noTextHighlight(value: boolean) {
+    if (
+      typeof this._settings.noTextHighlight !== 'undefined' &&
+      this._settings.noTextHighlight === value
+    ) {
+      return;
+    }
+
+    this._settings.noTextHighlight = value;
+    browser.storage.sync.set({ noTextHighlight: value });
+  }
+
   // showKanjiComponents: Defaults to true
 
   get showKanjiComponents(): boolean {
@@ -155,6 +174,7 @@ class Config {
     return {
       readingOnly: this.readingOnly,
       keys: this.keys,
+      noTextHighlight: this.noTextHighlight,
     };
   }
 }
