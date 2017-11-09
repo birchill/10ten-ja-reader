@@ -5,7 +5,7 @@
 //   FoxClocks problem where, when you install the FoxClocks add-on on a new
 //   computer it sets all the settings to their default values before a sync
 //   happens so then all other synchronized computers end up having their
-//   settings reset to their default values.
+//   settings reset to their default values.)
 //
 // * Provides a snapshot of all options with their default values filled-in for
 //   passing to the content process.
