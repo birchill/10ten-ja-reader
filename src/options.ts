@@ -9,6 +9,7 @@ async function fillVals() {
 
   const optform = document.getElementById('optform') as HTMLFormElement;
   optform.readingOnly.checked = config.readingOnly;
+  optform.noTextHighlight.checked = config.noTextHighlight;
   optform.showKanjiComponents.checked = config.showKanjiComponents;
 
   for (const [abbrev, setting] of Object.entries(config.kanjiReferences)) {
@@ -31,6 +32,10 @@ document.getElementById('readingOnly').addEventListener('click', evt => {
   config.readingOnly = (evt.target as HTMLInputElement).checked;
 });
 
+document.getElementById('noTextHighlight').addEventListener('click', evt => {
+  config.noTextHighlight = (evt.target as HTMLInputElement).checked;
+});
+
 document
   .getElementById('showKanjiComponents')
   .addEventListener('click', evt => {
@@ -40,7 +45,7 @@ document
 for (const ref of Object.keys(config.kanjiReferences)) {
   document.getElementById(ref).addEventListener('click', evt => {
     config.updateKanjiReferences({
-      [ref]: (evt.target as HTMLInputElement).checked
+      [ref]: (evt.target as HTMLInputElement).checked,
     });
   });
 }

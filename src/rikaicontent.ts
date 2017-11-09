@@ -763,6 +763,10 @@ class RikaiContent {
     // TODO: Record when the mouse is down and don't highlight in that case
     //       (I guess that would interfere with selecting)
 
+    if (this._config.noTextHighlight) {
+      return;
+    }
+
     this._selectedWindow =
       textAtPoint.rangeStart.container.ownerDocument.defaultView;
 

@@ -19,6 +19,9 @@ interface ContentConfig {
   // by KeyboardEvent.key). The array may be empty in which case the action is
   // not possible via keyboard.
   keys: KeyboardKeys;
+
+  // Prevents highlighting text on hover
+  noTextHighlight: boolean;
 }
 
 declare const enum DictMode {
