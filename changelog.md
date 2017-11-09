@@ -1,6 +1,8 @@
 ## 0.0.8 (not yet released)
 
 * Added option to disable text highlighting (thanks to [@nanaya](https://github.com/nanaya))
+* Dropped ability to adjust vertical position of pop-up using j/k. Please let me
+  know if you used this feature and I'll add it back!
 
 ## 0.0.7 (2017-11-06)
 
