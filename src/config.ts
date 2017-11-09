@@ -110,7 +110,7 @@ class Config {
       ...existingSettings,
       ...keys,
     };
-    browser.storage.sync.set({ keys: this._settings.keys });
+    browser.storage.sync.set({ keys: this._settings.keys as any });
   }
 
   // showKanjiComponents: Defaults to true
