@@ -295,30 +295,24 @@ class RikaiContent {
       return;
     }
 
-    switch (ev.key) {
-      case 'Shift': // shift
-      case 'Enter': // enter
-        if (this._currentTextAtPoint && this._currentTarget) {
-          this.tryToUpdatePopup(
-            this._currentTextAtPoint.point,
-            this._currentTarget,
-            DictMode.NextDict
-          );
-        }
-        break;
-
-      case 'd':
-        browser.runtime.sendMessage({ type: 'toggleDefinition' });
-        // We'll eventually get notified of the config change but we just change
-        // it here now so we can update the popup immediately.
-        this._config.readingOnly = !this.config.readingOnly;
-        if (this._currentSearchResult) {
-          this.showPopup();
-        }
-        break;
-
-      default:
-        return;
+    if (this._config.keys.nextDictionary.includes(ev.key)) {
+      if (this._currentTextAtPoint && this._currentTarget) {
+        this.tryToUpdatePopup(
+          this._currentTextAtPoint.point,
+          this._currentTarget,
+          DictMode.NextDict
+        );
+      }
+    } else if (this._config.keys.toggleDefinition.includes(ev.key)) {
+      browser.runtime.sendMessage({ type: 'toggleDefinition' });
+      // We'll eventually get notified of the config change but we just change
+      // it here now so we can update the popup immediately.
+      this._config.readingOnly = !this.config.readingOnly;
+      if (this._currentSearchResult) {
+        this.showPopup();
+      }
+    } else {
+      return;
     }
 
     this._keysDown.add(ev.key);
