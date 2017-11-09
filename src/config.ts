@@ -1,7 +1,20 @@
+// This is a wrapper about the browser.sync.settings API which provides
+// following important features:
+//
+// * Only options that are explicitly set get saved. (This prevents the
+//   FoxClocks problem where, when you install the FoxClocks add-on on a new
+//   computer it sets all the settings to their default values before a sync
+//   happens so then all other synchronized computers end up having their
+//   settings reset to their default values.
+//
+// * Provides a snapshot of all options with their default values filled-in for
+//   passing to the content process.
+
 type KanjiReferenceFlags = { [abbrev: string]: boolean };
 
 interface Settings {
   readingOnly?: boolean;
+  keys?: KeyboardKeys;
   showKanjiComponents?: boolean;
   kanjiReferences?: KanjiReferenceFlags;
 }
@@ -79,6 +92,27 @@ class Config {
     this.readingOnly = !this._settings.readingOnly;
   }
 
+  // keys
+
+  get keys(): KeyboardKeys {
+    const DEFAULT_KEYS: KeyboardKeys = {
+      toggleDefinition: ['d'],
+      nextDictionary: ['Shift', 'Enter'],
+    };
+
+    const setValues = this._settings.keys || {};
+    return { ...DEFAULT_KEYS, ...setValues };
+  }
+
+  updateKeys(keys: KeyboardKeys) {
+    const existingSettings = this._settings.keys || {};
+    this._settings.keys = {
+      ...existingSettings,
+      ...keys,
+    };
+    browser.storage.sync.set({ keys: this._settings.keys });
+  }
+
   // showKanjiComponents: Defaults to true
 
   get showKanjiComponents(): boolean {
@@ -120,6 +154,7 @@ class Config {
   get contentConfig(): ContentConfig {
     return {
       readingOnly: this.readingOnly,
+      keys: this.keys,
     };
   }
 }

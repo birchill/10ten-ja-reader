@@ -1,8 +1,24 @@
 // Common definitions shared between the content and backend parts.
 
+// Keyboard shortcut keys. Each of these is an array of keycodes (as reported
+// by KeyboardEvent.key). The array may be empty in which case the action is
+// effectively disabled.
+interface KeyboardKeys {
+  // The key(s) to toggle display of the definition vs reading-only.
+  toggleDefinition: string[];
+
+  // The key(s) to cycle through the available dictionaries.
+  nextDictionary: string[];
+}
+
 interface ContentConfig {
   // True if only the reading (and not the definition) should be shown.
   readingOnly: boolean;
+
+  // Keyboard shortcut keys. Each of these is an array of keycodes (as reported
+  // by KeyboardEvent.key). The array may be empty in which case the action is
+  // not possible via keyboard.
+  keys: KeyboardKeys;
 }
 
 declare const enum DictMode {

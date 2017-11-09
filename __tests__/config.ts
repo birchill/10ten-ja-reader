@@ -109,6 +109,10 @@ describe('Config', () => {
     const config = new Config();
 
     expect(config.readingOnly).toEqual(false);
+    expect(config.keys).toEqual({
+      toggleDefinition: ['d'],
+      nextDictionary: ['Shift', 'Enter'],
+    });
     expect(config.showKanjiComponents).toEqual(true);
     expect(config.kanjiReferences).toEqual({
       H: true,
