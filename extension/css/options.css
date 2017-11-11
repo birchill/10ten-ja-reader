@@ -20,3 +20,11 @@
   grid-column-gap: 1em;
   padding: 16px;
 }
+
+.key-grid {
+  display: grid;
+  grid-template-columns: minmax(12em, auto) 1fr;
+}
+.key > label {
+  margin-right: 1em;
+}

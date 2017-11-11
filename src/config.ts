@@ -14,7 +14,7 @@ type KanjiReferenceFlags = { [abbrev: string]: boolean };
 
 interface Settings {
   readingOnly?: boolean;
-  keys?: KeyboardKeys;
+  keys?: Partial<KeyboardKeys>;
   noTextHighlight?: boolean;
   showKanjiComponents?: boolean;
   kanjiReferences?: KanjiReferenceFlags;
@@ -22,10 +22,40 @@ interface Settings {
 
 type ChangeCallback = (changes: object) => void;
 
+// A single key description. We use this definition for storing the default keys
+// since it allows storing as an array (so we can determine the order the
+// options are displayed in) and storing a description along with each key.
+interface KeySetting {
+  name: keyof KeyboardKeys;
+  keys: string[];
+  description: string;
+}
+
 class Config {
   _settings: Settings = {};
   _readPromise: Promise<void>;
   _changeListeners: ChangeCallback[] = [];
+
+  DEFAULT_KEY_SETTINGS: KeySetting[] = [
+    {
+      name: 'nextDictionary',
+      keys: ['Shift', 'Enter'],
+      description: 'Switch dictionaries',
+    },
+    {
+      name: 'toggleDefinition',
+      keys: ['d'],
+      description: 'Toggle definition',
+    },
+  ];
+
+  DEFAULT_KEYS: KeyboardKeys = this.DEFAULT_KEY_SETTINGS.reduce(
+    (defaultKeys, setting) => {
+      defaultKeys[setting.name] = setting.keys;
+      return defaultKeys;
+    },
+    {}
+  ) as KeyboardKeys;
 
   constructor() {
     this._readPromise = this._readSettings();
@@ -96,16 +126,11 @@ class Config {
   // keys
 
   get keys(): KeyboardKeys {
-    const DEFAULT_KEYS: KeyboardKeys = {
-      toggleDefinition: ['d'],
-      nextDictionary: ['Shift', 'Enter'],
-    };
-
     const setValues = this._settings.keys || {};
-    return { ...DEFAULT_KEYS, ...setValues };
+    return { ...this.DEFAULT_KEYS, ...setValues };
   }
 
-  updateKeys(keys: KeyboardKeys) {
+  updateKeys(keys: Partial<KeyboardKeys>) {
     const existingSettings = this._settings.keys || {};
     this._settings.keys = {
       ...existingSettings,
