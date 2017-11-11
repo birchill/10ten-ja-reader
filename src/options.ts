@@ -8,8 +8,8 @@ async function fillVals() {
   await config.ready;
 
   const optform = document.getElementById('optform') as HTMLFormElement;
-  optform.readingOnly.checked = config.readingOnly;
-  optform.noTextHighlight.checked = config.noTextHighlight;
+  optform.showDefinitions.checked = !config.readingOnly;
+  optform.highlightText.checked = !config.noTextHighlight;
   optform.showKanjiComponents.checked = config.showKanjiComponents;
 
   for (const [abbrev, setting] of Object.entries(config.kanjiReferences)) {
@@ -28,12 +28,12 @@ window.onunload = () => {
   config.removeChangeListener(fillVals);
 };
 
-document.getElementById('readingOnly').addEventListener('click', evt => {
-  config.readingOnly = (evt.target as HTMLInputElement).checked;
+document.getElementById('showDefinitions').addEventListener('click', evt => {
+  config.readingOnly = !(evt.target as HTMLInputElement).checked;
 });
 
-document.getElementById('noTextHighlight').addEventListener('click', evt => {
-  config.noTextHighlight = (evt.target as HTMLInputElement).checked;
+document.getElementById('highlightText').addEventListener('click', evt => {
+  config.noTextHighlight = !(evt.target as HTMLInputElement).checked;
 });
 
 document
