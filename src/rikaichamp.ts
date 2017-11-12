@@ -220,3 +220,28 @@ class App {
 }
 
 window.rcxMain = new App();
+
+window.addEventListener('message', event => {
+  if (event.origin !== window.location.origin) {
+    return;
+  }
+
+  if (typeof event.data !== 'object' || typeof event.data.type !== 'string') {
+    console.error('Unexpected message format');
+    return;
+  }
+
+  switch (event.data.type) {
+    case 'updateKeys':
+      console.assert(
+        typeof event.data.keys === 'object',
+        '`keys` should be an object'
+      );
+      window.rcxMain.config.updateKeys(event.data.keys);
+      break;
+
+    default:
+      console.error(`Unexpected message: ${event.data.type}`);
+      break;
+  }
+});

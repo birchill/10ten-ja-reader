@@ -25,11 +25,20 @@ function completeForm() {
         const checkedKeys = document.querySelectorAll(
           `input[type=checkbox].key-${setting.name}:checked`
         );
-        config.updateKeys({
-          [setting.name]: Array.from(checkedKeys).map(
-            checkbox => (checkbox as HTMLInputElement).dataset.key
-          ),
-        });
+        // We need to use postMessage so that the Array is cloned into the
+        // background page's compartment.
+        const backgroundWindow = browser.extension.getBackgroundPage();
+        backgroundWindow.postMessage(
+          {
+            type: 'updateKeys',
+            keys: {
+              [setting.name]: Array.from(checkedKeys).map(
+                checkbox => (checkbox as HTMLInputElement).dataset.key
+              ),
+            },
+          },
+          window.location.origin
+        );
       });
 
       const keyLabel = document.createElement('label');
