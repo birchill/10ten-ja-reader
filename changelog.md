@@ -1,4 +1,8 @@
-## 0.0.8 (not yet released)
+## 0.0.9 (not yet released)
+
+* (Nothing yet)
+
+## 0.0.8 (2017-11-13)
 
 * Added option to disable text highlighting (thanks to [@nanaya](https://github.com/nanaya))
 * Added option to disable individual keyboard shortcuts
