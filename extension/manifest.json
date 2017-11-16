@@ -13,6 +13,7 @@
              "96": "images/rikaichamp-blue.svg",
              "128": "images/rikaichamp-blue.svg" },
   "permissions": [
+    "contextMenus",
     "tabs",
     "storage"
   ],

@@ -52,6 +52,7 @@ class App {
   _haveNames: boolean = true;
   _dictCount: number = 3;
   _enabled: boolean = false;
+  _menuId?: number | string = null;
 
   constructor() {
     this._config = new Config();
@@ -65,6 +66,14 @@ class App {
     });
     browser.browserAction.onClicked.addListener(tab => {
       this.toggle(tab);
+    });
+    this._menuId = browser.contextMenus.create({
+      id: 'context-toggle',
+      type: 'checkbox',
+      title: 'Enable Rikaichamp',
+      command: '_execute_browser_action',
+      contexts: ['all'],
+      checked: false,
     });
     browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
       switch (request.type) {
@@ -109,6 +118,9 @@ class App {
   enableTab(tab) {
     browser.browserAction.setTitle({ title: 'Rikaichamp loading...' });
     browser.browserAction.setIcon({ path: 'images/rikaichamp-loading.svg' });
+    if (this._menuId) {
+      browser.contextMenus.update(this._menuId, { checked: true });
+    }
 
     Promise.all([this.loadDictionary(), this._config.ready]).then(() => {
       // Send message to current tab to add listeners and create stuff
@@ -141,6 +153,9 @@ class App {
     this._enabled = false;
     browser.browserAction.setTitle({ title: 'Rikaichamp disabled' });
     browser.browserAction.setIcon({ path: 'images/rikaichamp-disabled.svg' });
+    if (this._menuId) {
+      browser.contextMenus.update(this._menuId, { checked: false });
+    }
 
     browser.windows.getAll({ populate: true }).then(windows => {
       for (const win of windows) {
