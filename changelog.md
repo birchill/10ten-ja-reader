@@ -3,6 +3,8 @@
 * Added "Enable Rikaichamp" to the context menu (can be disabled from the
   options).
 * Added Alt+R as a shortcut key for enabling/disabling Rikaichamp.
+* Made the extension remember if it was enabled across browser restarts
+  (hopefully).
 
 ## 0.0.8 (2017-11-13)
 
