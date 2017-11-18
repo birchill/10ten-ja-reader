@@ -15,6 +15,7 @@ type KanjiReferenceFlags = { [abbrev: string]: boolean };
 interface Settings {
   readingOnly?: boolean;
   keys?: Partial<KeyboardKeys>;
+  contextMenuEnable?: boolean;
   noTextHighlight?: boolean;
   showKanjiComponents?: boolean;
   kanjiReferences?: KanjiReferenceFlags;
@@ -123,7 +124,7 @@ class Config {
     this.readingOnly = !this._settings.readingOnly;
   }
 
-  // keys
+  // keys: Defaults are defined by DEFAULT_KEYS
 
   get keys(): KeyboardKeys {
     const setValues = this._settings.keys || {};
@@ -137,6 +138,27 @@ class Config {
       ...keys,
     };
     browser.storage.sync.set({ keys: this._settings.keys as any });
+  }
+
+  // contextMenuEnable: Defaults to true
+
+  get contextMenuEnable(): boolean {
+    return (
+      typeof this._settings.contextMenuEnable === 'undefined' ||
+      this._settings.contextMenuEnable
+    );
+  }
+
+  set contextMenuEnable(value: boolean) {
+    if (
+      typeof this._settings.contextMenuEnable !== 'undefined' &&
+      this._settings.contextMenuEnable === value
+    ) {
+      return;
+    }
+
+    this._settings.contextMenuEnable = value;
+    browser.storage.sync.set({ contextMenuEnable: value });
   }
 
   // noTextHighlight: Defaults to false

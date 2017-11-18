@@ -74,6 +74,12 @@ function completeForm() {
   });
 
   document
+    .getElementById('contextMenuEnable')
+    .addEventListener('click', evt => {
+      config.contextMenuEnable = (evt.target as HTMLInputElement).checked;
+    });
+
+  document
     .getElementById('showKanjiComponents')
     .addEventListener('click', evt => {
       config.showKanjiComponents = (evt.target as HTMLInputElement).checked;
@@ -86,6 +92,7 @@ async function fillVals() {
   const optform = document.getElementById('optform') as HTMLFormElement;
   optform.showDefinitions.checked = !config.readingOnly;
   optform.highlightText.checked = !config.noTextHighlight;
+  optform.contextMenuEnable.checked = config.contextMenuEnable;
   optform.showKanjiComponents.checked = config.showKanjiComponents;
 
   for (const [setting, keys] of Object.entries(config.keys)) {

@@ -56,7 +56,16 @@ class App {
 
   constructor() {
     this._config = new Config();
-    this._config.addChangeListener(() => {
+
+    this._config.addChangeListener(changes => {
+      if (changes.hasOwnProperty('contextMenuEnable')) {
+        if ((changes as any).contextMenuEnable.newValue) {
+          this.addContextMenu();
+        } else {
+          this.removeContextMenu();
+        }
+      }
+
       // TODO: Ignore changes that aren't part of contentConfig
       this.updateConfig(this._config.contentConfig);
     });
@@ -66,14 +75,6 @@ class App {
     });
     browser.browserAction.onClicked.addListener(tab => {
       this.toggle(tab);
-    });
-    this._menuId = browser.contextMenus.create({
-      id: 'context-toggle',
-      type: 'checkbox',
-      title: 'Enable Rikaichamp',
-      command: '_execute_browser_action',
-      contexts: ['all'],
-      checked: false,
     });
     browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
       switch (request.type) {
@@ -88,6 +89,13 @@ class App {
           this._config.toggleReadingOnly();
           break;
       }
+    });
+
+    this._config.ready.then(() => {
+      if (!this._config.contextMenuEnable) {
+        return;
+      }
+      this.addContextMenu();
     });
   }
 
@@ -172,6 +180,35 @@ class App {
     } else {
       this.enableTab(tab);
     }
+  }
+
+  addContextMenu() {
+    if (this._menuId) {
+      return;
+    }
+
+    this._menuId = browser.contextMenus.create({
+      id: 'context-toggle',
+      type: 'checkbox',
+      title: 'Enable Rikaichamp',
+      command: '_execute_browser_action',
+      contexts: ['all'],
+      checked: this._enabled,
+    });
+  }
+
+  async removeContextMenu() {
+    if (!this._menuId) {
+      return;
+    }
+
+    try {
+      await browser.contextMenus.remove(this._menuId);
+    } catch (e) {
+      console.error(`Failed to remove context error: ${e}`);
+    }
+
+    this._menuId = null;
   }
 
   _kanjiN: number = 1;
