@@ -97,6 +97,25 @@ class App {
       }
       this.addContextMenu();
     });
+
+    // See if we were enabled on the last run
+    browser.storage.local
+      .get('enabled')
+      .then(getResult => {
+        return getResult &&
+          getResult.hasOwnProperty('enabled') &&
+          getResult.enabled
+          ? browser.tabs.getCurrent()
+          : null;
+      })
+      .then(currentTab => {
+        if (currentTab) {
+          this.enableTab(currentTab);
+        }
+      })
+      .catch(err => {
+        // Ignore
+      });
   }
 
   get config(): Config {
@@ -137,6 +156,7 @@ class App {
         config: this._config.contentConfig,
       });
       this._enabled = true;
+      browser.storage.local.set({ enabled: true });
 
       browser.browserAction.setTitle({ title: 'Rikaichamp enabled' });
       browser.browserAction.setIcon({ path: 'images/rikaichamp-blue.svg' });
@@ -159,6 +179,9 @@ class App {
 
   disableAll() {
     this._enabled = false;
+    browser.storage.local.remove('enabled').catch(() => {
+      /* Ignore */
+    });
     browser.browserAction.setTitle({ title: 'Rikaichamp disabled' });
     browser.browserAction.setIcon({ path: 'images/rikaichamp-disabled.svg' });
     if (this._menuId) {
@@ -205,7 +228,7 @@ class App {
     try {
       await browser.contextMenus.remove(this._menuId);
     } catch (e) {
-      console.error(`Failed to remove context error: ${e}`);
+      console.error(`Failed to remove context menu: ${e}`);
     }
 
     this._menuId = null;
