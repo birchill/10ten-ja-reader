@@ -1,11 +1,13 @@
 ## 0.0.9 (not yet released)
 
-* (Nothing yet)
+* Added "Enable Rikaichamp" to the context menu (can be disabled from the
+  options).
+* Added Alt+R as a shortcut key for enabling/disabling Rikaichamp.
 
 ## 0.0.8 (2017-11-13)
 
-* Added option to disable text highlighting (thanks to [@nanaya](https://github.com/nanaya))
-* Added option to disable individual keyboard shortcuts
+* Added option to disable text highlighting (thanks to [@nanaya](https://github.com/nanaya)).
+* Added option to disable individual keyboard shortcuts.
 * Dropped ability to adjust vertical position of pop-up using j/k. Please let me
   know if you used this feature and I'll add it back!
 * Updated word dictionary to 2017-11-12 snapshot.
