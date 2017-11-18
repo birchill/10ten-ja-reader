@@ -5,6 +5,7 @@
 * Added Alt+R as a shortcut key for enabling/disabling Rikaichamp.
 * Made the extension remember if it was enabled across browser restarts
   (hopefully).
+* Updated word dictionary to 2017-11-17 snapshot.
 
 ## 0.0.8 (2017-11-13)
 
