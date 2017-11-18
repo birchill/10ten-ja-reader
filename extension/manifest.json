@@ -38,5 +38,13 @@
   ],
   "web_accessible_resources": [
     "css/popup-blue.css"
-  ]
+  ],
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Alt+R"
+      },
+      "description": "Toggle Rikaichamp on/off"
+    }
+  }
 }
