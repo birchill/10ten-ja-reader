@@ -1,10 +1,14 @@
-## 0.0.9 (not yet released)
+## 0.0.10 (not yet released)
+
+(nothing yet)
+
+## 0.0.9 (2017-11-18)
 
 * Added "Enable Rikaichamp" to the context menu (can be disabled from the
   options).
 * Added Alt+R as a shortcut key for enabling/disabling Rikaichamp.
-* Made the extension remember if it was enabled across browser restarts
-  (hopefully).
+* ~~Made the extension remember if it was enabled across browser restarts
+  (hopefully).~~ (It turns out this didn't work)
 * Updated word dictionary to 2017-11-17 snapshot.
 
 ## 0.0.8 (2017-11-13)
