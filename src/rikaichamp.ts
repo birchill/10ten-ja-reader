@@ -105,12 +105,12 @@ class App {
         return getResult &&
           getResult.hasOwnProperty('enabled') &&
           getResult.enabled
-          ? browser.tabs.getCurrent()
-          : null;
+          ? browser.tabs.query({ currentWindow: true, active: true })
+          : [];
       })
-      .then(currentTab => {
-        if (currentTab) {
-          this.enableTab(currentTab);
+      .then(tabs => {
+        if (tabs && tabs.length) {
+          this.enableTab(tabs[0]);
         }
       })
       .catch(err => {
