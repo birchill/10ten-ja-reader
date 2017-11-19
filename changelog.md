@@ -1,4 +1,8 @@
-## 0.0.10 (not yet released)
+## 0.0.11 (not yet released)
+
+(nothing yet)
+
+## 0.0.10 (2017-11-19)
 
 * Made the extension remember if it was enabled across browser restarts (this
   time for sure).
