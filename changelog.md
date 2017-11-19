@@ -1,6 +1,8 @@
 ## 0.0.10 (not yet released)
 
-(nothing yet)
+* Made the extension remember if it was enabled across browser restarts (this
+  time for sure).
+* Added a description of the Alt+R shortcut key to the options page.
 
 ## 0.0.9 (2017-11-18)
 
