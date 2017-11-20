@@ -31,10 +31,12 @@
   border-radius: 5px; 
   box-shadow: 2px 2px 1px rgba(100, 100, 100, 0.25);
   transition: opacity 0.05s;
+  pointer-events: none;
 }
 
 #rikaichamp-window.hidden {
-  /* Make the popup stick around for a fraction of a second longer before hiding
+  /*
+   * Make the popup stick around for a fraction of a second longer before hiding
    */
   transition-delay: 0.15s;
   opacity: 0;
