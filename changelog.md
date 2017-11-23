@@ -1,6 +1,9 @@
 ## 0.0.11 (not yet released)
 
-(nothing yet)
+* Fixed hidden popup from interfering with page contents.
+* Make popup now show when the mouse is moving at high speed.
+* Possibly improved popup fadeout performance.
+* Make rikaichamp a little more thorough about cleaning up after itself.
 
 ## 0.0.10 (2017-11-19)
 
