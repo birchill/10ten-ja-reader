@@ -1,4 +1,8 @@
-## 0.0.11 (not yet released)
+## 0.0.12 (not yet released)
+
+(nothing yet)
+
+## 0.0.11 (2017-11-23)
 
 * Fixed hidden popup from interfering with page contents.
 * Make popup now show when the mouse is moving at high speed.
