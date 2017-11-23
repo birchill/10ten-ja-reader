@@ -202,6 +202,14 @@ class RikaiContent {
   // Key tracking
   _keysDown: Set<string> = new Set();
 
+  // Mouse tracking
+  static MOUSE_SPEED_SAMPLES = 2;
+  static MOUSE_SPEED_THRESHOLD = 0.2;
+  _mouseSpeedRollingSum: number = 0;
+  _mouseSpeeds: number[] = [];
+  _previousMousePosition?: { x: number; y: number } = null;
+  _previousMouseMoveTime: number = null;
+
   constructor(config) {
     this._config = config;
 
@@ -251,11 +259,38 @@ class RikaiContent {
   }
 
   onMouseMove(ev: MouseEvent) {
-    this.tryToUpdatePopup(
-      { x: ev.clientX, y: ev.clientY },
-      ev.target as Element,
-      ev.shiftKey ? DictMode.ForceKanji : DictMode.Default
-    );
+    const now = performance.now();
+    let averageSpeed = 0;
+
+    if (this._previousMousePosition && this._previousMouseMoveTime) {
+      const distance = Math.sqrt(
+        Math.pow(ev.clientX - this._previousMousePosition.x, 2) +
+          Math.pow(ev.clientY - this._previousMousePosition.y, 2)
+      );
+      const speed = distance / (now - this._previousMouseMoveTime);
+
+      this._mouseSpeeds.push(speed);
+      this._mouseSpeedRollingSum += speed;
+
+      if (this._mouseSpeeds.length > RikaiContent.MOUSE_SPEED_SAMPLES) {
+        this._mouseSpeedRollingSum -= this._mouseSpeeds.shift();
+      }
+
+      averageSpeed = this._mouseSpeedRollingSum / this._mouseSpeeds.length;
+    }
+
+    this._previousMousePosition = { x: ev.clientX, y: ev.clientY };
+    this._previousMouseMoveTime = now;
+
+    if (averageSpeed < RikaiContent.MOUSE_SPEED_THRESHOLD) {
+      this.tryToUpdatePopup(
+        { x: ev.clientX, y: ev.clientY },
+        ev.target as Element,
+        ev.shiftKey ? DictMode.ForceKanji : DictMode.Default
+      );
+    } else {
+      this.clearHighlight(ev.target as Element);
+    }
   }
 
   onMouseDown(ev: MouseEvent) {
