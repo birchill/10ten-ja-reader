@@ -4,6 +4,7 @@
 * Make popup now show when the mouse is moving at high speed.
 * Possibly improved popup fadeout performance.
 * Make rikaichamp a little more thorough about cleaning up after itself.
+* Updated word dictionary to 2017-11-22 snapshot.
 
 ## 0.0.10 (2017-11-19)
 
