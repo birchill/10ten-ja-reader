@@ -243,18 +243,24 @@ class RikaiContent {
     this.clearHighlight(null);
     this._selectedTextBox = null;
 
-    const cssElem = document.getElementById('rikaichamp-css');
-    if (cssElem) {
+    // On at least one occassion I've seen an old window element hanging around.
+    // Not sure why this happenned yet but for now let's just be sure to
+    // completely remove ourselves.
+    let cssElem = document.getElementById('rikaichamp-css');
+    while (cssElem) {
       cssElem.remove();
+      cssElem = document.getElementById('rikaichamp-css');
     }
-    const popup = document.getElementById('rikaichamp-window');
-    if (popup) {
+
+    let popup = document.getElementById('rikaichamp-window');
+    while (popup) {
       // If we are in an SVG document, remove the wrapping <foreignObject>.
       if (isForeignObjectElement(popup.parentElement)) {
         popup.parentElement.remove();
       } else {
         popup.remove();
       }
+      popup = document.getElementById('rikaichamp-window');
     }
   }
 
