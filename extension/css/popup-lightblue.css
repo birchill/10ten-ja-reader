@@ -1,8 +1,7 @@
 /* this is to reset almost everything under the popup to a sane value */
 
-#rikaichamp-window, #rikaichamp-window * { 
-  width: auto;
-  height: auto;
+#rikaichamp-window, #rikaichamp-window * {
+  max-width: 600px;
   background: transparent;
   color: #000000;
   border: none !important;
@@ -20,16 +19,28 @@
   visibility: visible;
 }
 
-#rikaichamp-window { 
+#rikaichamp-window {
   position: absolute;
-  z-index: 99992;
-  border: 1px solid #D0D0D0 !important;
-  padding: 4px;
+  /* asahi.com puts z-index: 1000000 on its banner ads. We go one better. */
+  z-index: 1000001;
+  padding: 6px;
   background: #E6F4FF;
   top: 5px; 
   left: 5px;
   min-width: 100px;
   border-radius: 5px; 
+  box-shadow: 2px 2px 1px rgba(100, 100, 100, 0.25);
+  transition: opacity 0.05s;
+  will-change: opacity;
+  pointer-events: none;
+}
+
+#rikaichamp-window.hidden {
+  /*
+   * Make the popup stick around for a fraction of a second longer before hiding
+   */
+  transition-delay: 0.15s;
+  opacity: 0;
 }
 
 /* used for word definitions */

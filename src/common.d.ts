@@ -1,4 +1,4 @@
-// Common definitions shared between the content and backend parts.
+﻿// Common definitions shared between the content and backend parts.
 
 // Keyboard shortcut keys. Each of these is an array of keycodes (as reported
 // by KeyboardEvent.key). The array may be empty in which case the action is
@@ -22,6 +22,8 @@ interface ContentConfig {
 
   // Prevents highlighting text on hover
   noTextHighlight: boolean;
+
+  popupStyle: string;
 }
 
 declare const enum DictMode {

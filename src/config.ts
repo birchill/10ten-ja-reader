@@ -1,4 +1,4 @@
-// This is a wrapper about the browser.sync.settings API which provides
+﻿// This is a wrapper about the browser.sync.settings API which provides
 // following important features:
 //
 // * Only options that are explicitly set get saved. (This prevents the
@@ -19,6 +19,7 @@ interface Settings {
   noTextHighlight?: boolean;
   showKanjiComponents?: boolean;
   kanjiReferences?: KanjiReferenceFlags;
+  popupStyle?: string;
 }
 
 type ChangeCallback = (changes: object) => void;
@@ -140,26 +141,49 @@ class Config {
     browser.storage.sync.set({ keys: this._settings.keys as any });
   }
 
-  // contextMenuEnable: Defaults to true
+  // popupStyle: Defaults to blue
 
-  get contextMenuEnable(): boolean {
+  get popupStyle(): string {
     return (
-      typeof this._settings.contextMenuEnable === 'undefined' ||
-      this._settings.contextMenuEnable
+      typeof this._settings.popupStyle === 'undefined' ?
+      "blue" : this._settings.popupStyle
     );
   }
 
-  set contextMenuEnable(value: boolean) {
+  set popupStyle(value: string) {
     if (
-      typeof this._settings.contextMenuEnable !== 'undefined' &&
-      this._settings.contextMenuEnable === value
+      typeof this._settings.popupStyle !== 'undefined' &&
+      this._settings.popupStyle === value
     ) {
       return;
     }
 
-    this._settings.contextMenuEnable = value;
-    browser.storage.sync.set({ contextMenuEnable: value });
+    this._settings.popupStyle = value;
+    browser.storage.sync.set({ popupStyle: value });
   }
+
+
+// contextMenuEnable: Defaults to true
+
+get contextMenuEnable(): boolean {
+  return (
+    typeof this._settings.contextMenuEnable === 'undefined' ||
+    this._settings.contextMenuEnable
+  );
+}
+
+set contextMenuEnable(value: boolean) {
+  if (
+    typeof this._settings.contextMenuEnable !== 'undefined' &&
+    this._settings.contextMenuEnable === value
+  ) {
+    return;
+  }
+
+  this._settings.contextMenuEnable = value;
+  browser.storage.sync.set({ contextMenuEnable: value });
+}
+
 
   // noTextHighlight: Defaults to false
 
@@ -222,6 +246,7 @@ class Config {
       readingOnly: this.readingOnly,
       keys: this.keys,
       noTextHighlight: this.noTextHighlight,
+      popupStyle: this.popupStyle,
     };
   }
 }
