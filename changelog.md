@@ -1,6 +1,6 @@
 ## 0.0.12 (not yet released)
 
-(nothing yet)
+* Add popup style selection to settings panel
 
 ## 0.0.11 (2017-11-23)
 
