@@ -1,4 +1,4 @@
-﻿// This is a wrapper about the browser.sync.settings API which provides
+// This is a wrapper about the browser.sync.settings API which provides
 // following important features:
 //
 // * Only options that are explicitly set get saved. (This prevents the
@@ -144,10 +144,9 @@ class Config {
   // popupStyle: Defaults to blue
 
   get popupStyle(): string {
-    return (
-      typeof this._settings.popupStyle === 'undefined' ?
-      "blue" : this._settings.popupStyle
-    );
+    return typeof this._settings.popupStyle === 'undefined'
+      ? 'blue'
+      : this._settings.popupStyle;
   }
 
   set popupStyle(value: string) {
@@ -162,28 +161,26 @@ class Config {
     browser.storage.sync.set({ popupStyle: value });
   }
 
+  // contextMenuEnable: Defaults to true
 
-// contextMenuEnable: Defaults to true
-
-get contextMenuEnable(): boolean {
-  return (
-    typeof this._settings.contextMenuEnable === 'undefined' ||
-    this._settings.contextMenuEnable
-  );
-}
-
-set contextMenuEnable(value: boolean) {
-  if (
-    typeof this._settings.contextMenuEnable !== 'undefined' &&
-    this._settings.contextMenuEnable === value
-  ) {
-    return;
+  get contextMenuEnable(): boolean {
+    return (
+      typeof this._settings.contextMenuEnable === 'undefined' ||
+      this._settings.contextMenuEnable
+    );
   }
 
-  this._settings.contextMenuEnable = value;
-  browser.storage.sync.set({ contextMenuEnable: value });
-}
+  set contextMenuEnable(value: boolean) {
+    if (
+      typeof this._settings.contextMenuEnable !== 'undefined' &&
+      this._settings.contextMenuEnable === value
+    ) {
+      return;
+    }
 
+    this._settings.contextMenuEnable = value;
+    browser.storage.sync.set({ contextMenuEnable: value });
+  }
 
   // noTextHighlight: Defaults to false
 
