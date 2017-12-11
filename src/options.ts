@@ -1,4 +1,4 @@
-﻿interface Window {
+interface Window {
   rcxMain: { config: Config };
 }
 
@@ -85,11 +85,9 @@ function completeForm() {
       config.showKanjiComponents = (evt.target as HTMLInputElement).checked;
     });
 
-    document
-      .getElementById('popupStyle')
-      .addEventListener('click', evt => {
-        config.popupStyle = (evt.target as HTMLInputElement).value;
-      });
+  document.getElementById('popupStyle').addEventListener('click', evt => {
+    config.popupStyle = (evt.target as HTMLInputElement).value;
+  });
 }
 
 async function fillVals() {
