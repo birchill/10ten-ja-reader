@@ -1,4 +1,4 @@
-﻿/*
+/*
 
   Rikaichamp
   by Brian Birtles
@@ -988,8 +988,7 @@ class RikaiContent {
       // Add <style> element with popup CSS
       // (One day I hope Web Components might less us scope this now
       // that scoped stylesheets are dead.)
-      const cssdoc = this._config.popupStyle; //'blue';
-      const cssHref = browser.extension.getURL(`css/popup-${cssdoc}.css`);
+      const cssHref = browser.extension.getURL('css/popup.css');
       const link = doc.createElement('link');
       link.setAttribute('rel', 'stylesheet');
       link.setAttribute('type', 'text/css');
@@ -1006,6 +1005,7 @@ class RikaiContent {
       // Add the popup div
       popup = doc.createElement('div');
       popup.setAttribute('id', 'rikaichamp-window');
+      popup.classList.add(`-${this._config.popupStyle}`);
 
       const popupContainer = wrapperElement || doc.documentElement;
       doc.documentElement.append(popup);

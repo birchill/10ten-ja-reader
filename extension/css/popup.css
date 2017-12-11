@@ -1,0 +1,569 @@
+/* this is to reset almost everything under the popup to a sane value */
+
+#rikaichamp-window, #rikaichamp-window * {
+  max-width: 600px;
+  background: transparent;
+  border: none !important;
+  border-spacing: 0px;
+  margin: 0px;
+  padding: 0px;
+  letter-spacing: normal;
+  text-align: left;
+  text-decoration: none;
+  text-indent: 0px;
+  text-transform: none;
+  white-space: normal;
+  word-spacing: normal;
+  font: normal 14px sans-serif;
+  visibility: visible;
+}
+
+#rikaichamp-window {
+  position: absolute;
+  /* asahi.com puts z-index: 1000000 on its banner ads. We go one better. */
+  z-index: 1000001;
+  padding: 6px;
+  top: 5px; 
+  left: 5px;
+  min-width: 100px;
+  border-radius: 5px; 
+  box-shadow: 2px 2px 1px rgba(100, 100, 100, 0.25);
+  transition: opacity 0.05s;
+  will-change: opacity;
+  pointer-events: none;
+}
+
+#rikaichamp-window.hidden {
+  /*
+   * Make the popup stick around for a fraction of a second longer before hiding
+   */
+  transition-delay: 0.15s;
+  opacity: 0;
+}
+
+/* used for word definitions */
+
+#rikaichamp-window .w-kanji {
+  font-size: 18px;
+  margin-right: 0.7em;
+}
+
+#rikaichamp-window .w-kana {
+  font-size: 18px;
+  margin-right: 0.3em;
+}
+
+#rikaichamp-window .w-conj {
+  color: #FFE0A0;
+  font-size: 12px;
+}
+
+#rikaichamp-window .w-def {
+  font-size: 13px;
+}
+
+#rikaichamp-window .w-title {
+  font-size: 10px;
+  padding: 2px;
+}
+
+#rikaichamp-window .w-na-tb td {
+  vertical-align: top;
+  padding-right: 0.8em;
+}
+
+/* used for kanji information */
+
+#rikaichamp-window .k-main-tb {
+  width: 300px;
+}
+
+#rikaichamp-window .k-kanji {
+  font-family: serif;
+  font-size: 48px;
+  color: #B7E7FF;
+}
+
+#rikaichamp-window .k-eigo {
+  font-size: 12px;
+}
+
+/* kanji: readings */
+
+#rikaichamp-window .k-yomi {
+  font-size: 14px;
+  margin: 4px 0px;
+}
+
+#rikaichamp-window .k-yomi-hi {
+  border: 1px solid red;
+}
+
+#rikaichamp-window .k-yomi-ti {
+  font-size: 11px;
+}
+
+/* kanji radical, grade, freq, strokes box */
+
+#rikaichamp-window .k-abox-tb {
+  width: 120px;
+  margin-bottom: 4px;
+  float: right;
+  clear: right;
+}
+
+#rikaichamp-window .k-abox-r {
+  font-size: 12px;
+  text-align: center;
+  padding: 1px 4px;
+}
+
+#rikaichamp-window .k-abox-g {
+  font-size: 12px;
+  text-align: center;
+  padding: 1px 4px;
+}
+
+#rikaichamp-window .k-abox-f {
+  font-size: 12px;
+  text-align: center;
+  padding: 1px 4px;
+}
+
+#rikaichamp-window .k-abox-s {
+  font-size: 12px;
+  text-align: center;
+  padding: 1px 4px;
+}
+
+/* kanji components box */
+
+#rikaichamp-window .k-bbox-tb {
+  width: 120px;
+  margin-bottom: 4px;
+  float: right;
+  clear: right;
+}
+
+#rikaichamp-window .k-bbox-0a {
+  vertical-align: top;
+  font-size: 11px;
+  padding: 1px 3px;
+}
+
+#rikaichamp-window .k-bbox-0b {
+  vertical-align: top;
+  font-size: 11px;
+  padding: 1px 3px;
+}
+
+#rikaichamp-window .k-bbox-1a {
+  vertical-align: top;
+  font-size: 11px;
+  padding: 1px 3px;
+}
+
+#rikaichamp-window .k-bbox-1b {
+  vertical-align: top;
+  font-size: 11px;
+  padding: 1px 3px;
+}
+
+
+/* kanji: misc index */
+
+#rikaichamp-window .k-mix-tb {
+  width: 100%
+}
+
+#rikaichamp-window .k-mix-td0,
+#rikaichamp-window .k-mix-td1 {
+  font-size: 12px;
+}
+
+
+/* manual query */
+
+#rikaichamp-window .q-tb td {
+}
+
+#rikaichamp-window .q-w {
+  border-right: 1px dotted #B0B0B0 !important;
+  padding: 0px 2px;
+  vertical-align: top;
+  min-width: 300px;
+}
+
+#rikaichamp-window .q-k {
+  padding: 0px 2px;
+  vertical-align: top;
+}
+
+/*
+ * Theme - blue
+ */
+
+#rikaichamp-window.-blue, #rikaichamp-window.-blue * {
+  color: white;
+}
+
+#rikaichamp-window.-blue {
+  background: #5C73B8;
+}
+
+#rikaichamp-window.-blue .w-kanji {
+  color: #B7E7FF;
+}
+
+#rikaichamp-window.-blue .w-conj {
+  color: #FFE0A0;
+}
+
+#rikaichamp-window.-blue .w-title {
+  background: #4C63A8;
+  color: #FFFFFF;
+}
+
+#rikaichamp-window.-blue .k-kanji {
+  color: #B7E7FF;
+}
+
+#rikaichamp-window.-blue .w-kana {
+  color: #C0FFC0;
+}
+
+#rikaichamp-window.-blue .k-yomi {
+  color: #C0FFC0;
+}
+
+#rikaichamp-window.-blue .k-yomi-hi {
+  color: #A0D0FF;
+}
+
+#rikaichamp-window.-blue .k-yomi-ti {
+  color: #E7FFE7;
+}
+
+#rikaichamp-window.-blue .k-abox-r {
+  background: #5A70B5;
+  color: #FFFFFF;
+}
+
+#rikaichamp-window.-blue .k-abox-g {
+  background: #4C63A8;
+  color: #B7E7FF;
+}
+
+#rikaichamp-window.-blue .k-abox-f {
+  background: #4C63A8;
+  color: #B7E7FF;
+}
+
+#rikaichamp-window.-blue .k-abox-s {
+  background: #5A70B5;
+  color: #FFFFFF;
+}
+
+#rikaichamp-window.-blue .k-bbox-0a {
+  background: #5A70B5;
+  color: #FFFFFF;
+}
+
+#rikaichamp-window.-blue .k-bbox-0b {
+  background: #5A70B5;
+  color: #FFFFFF;
+}
+
+#rikaichamp-window.-blue .k-bbox-1a {
+  background: #4C63A8;
+  color: #B7E7FF;
+}
+
+#rikaichamp-window.-blue .k-bbox-1b {
+  background: #4C63A8;
+  color: #B7E7FF;
+}
+
+#rikaichamp-window.-blue .k-mix-td0 {
+  background: #5A70B5;
+  color: #B7E7FF;
+}
+
+#rikaichamp-window.-blue .k-mix-td1 {
+  background: #4C63A8;
+  color: #FFFFFF;
+}
+
+/*
+ * Theme - black
+ */
+
+#rikaichamp-window.-black, #rikaichamp-window.-black * {
+  color: white;
+}
+
+#rikaichamp-window.-black {
+  background: #000000;
+}
+
+#rikaichamp-window.-black .w-kanji {
+  color: #7070E0;
+}
+
+#rikaichamp-window.-black .w-kana {
+  color: #20A020;
+}
+
+#rikaichamp-window.-black .w-conj {
+  color: #A0A0A0;
+}
+
+#rikaichamp-window.-black .w-title {
+  background: #303030;
+  color: #E0E0E0;
+}
+
+#rikaichamp-window.-black .k-kanji {
+  color: #FFFFFF;
+}
+
+#rikaichamp-window.-black .k-yomi {
+  color: #20A020;
+}
+
+#rikaichamp-window.-black .k-yomi-hi {
+  color: #7070E0;
+}
+
+#rikaichamp-window.-black .k-yomi-ti {
+  color: #E0E0E0;
+}
+
+#rikaichamp-window.-black .k-abox-r {
+  background: #505050;
+  color: #E0E0E0;
+}
+
+#rikaichamp-window.-black .k-abox-g {
+  background: #303030;
+  color: #F0F0F0;
+}
+
+#rikaichamp-window.-black .k-abox-f {
+  background: #303030;
+  color: #F0F0F0;
+}
+
+#rikaichamp-window.-black .k-abox-s {
+  background: #505050;
+  color: #E0E0E0;
+}
+
+#rikaichamp-window.-black .k-bbox-0a {
+  background: #505050;
+  color: #E0E0E0;
+}
+
+#rikaichamp-window.-black .k-bbox-0b {
+  background: #505050;
+  color: #E0E0E0;
+}
+
+#rikaichamp-window.-black .k-bbox-1a {
+  background: #303030;
+  color: #F0F0F0;
+}
+
+#rikaichamp-window.-black .k-bbox-1b {
+  background: #303030;
+  color: #F0F0F0;
+}
+
+#rikaichamp-window.-black .k-mix-td0 {
+  background: #505050;
+  color: #F0F0F0;
+}
+
+#rikaichamp-window.-black .k-mix-td1 {
+  background: #303030;
+  color: #E0E0E0;
+}
+
+/*
+ * Theme - lightblue
+ */
+
+#rikaichamp-window.-lightblue, #rikaichamp-window.-lightblue * {
+  color: black;
+}
+
+#rikaichamp-window.-lightblue {
+  background: #E6F4FF;
+}
+
+#rikaichamp-window.-lightblue .w-kanji {
+  color: #3082BF;
+}
+
+#rikaichamp-window.-lightblue .w-kana {
+  color: #00B366;
+}
+
+#rikaichamp-window.-lightblue .w-conj {
+  color: #808080;
+}
+
+#rikaichamp-window.-lightblue .w-title {
+  background: #BFE4FF;
+  color: #000000;
+}
+
+#rikaichamp-window.-lightblue .k-kanji {
+  color: #000000;
+}
+
+#rikaichamp-window.-lightblue .k-yomi {
+  color: #00B366;
+}
+
+#rikaichamp-window.-lightblue .k-yomi-hi {
+  color: #00868B;
+}
+
+#rikaichamp-window.-lightblue .k-yomi-ti {
+  color: #000000;
+}
+
+#rikaichamp-window.-lightblue .k-abox-r {
+  background: #DFF1FF;
+  color: #003D6B;
+}
+
+#rikaichamp-window.-lightblue .k-abox-g {
+  background: #FFFFFF;
+  color: #003D6B;
+}
+
+#rikaichamp-window.-lightblue .k-abox-f {
+  background: #FFFFFF;
+  color: #003D6B;
+}
+
+#rikaichamp-window.-lightblue .k-abox-s {
+  background: #DFF1FF;
+  color: #003D6B;
+}
+
+#rikaichamp-window.-lightblue .k-bbox-0a {
+  background: #DFF1FF;
+  color: #003D6B;
+}
+
+#rikaichamp-window.-lightblue .k-bbox-0b {
+  background: #DFF1FF;
+  color: #003D6B;
+}
+
+#rikaichamp-window.-lightblue .k-bbox-1a,
+#rikaichamp-window.-lightblue .k-bbox-1b {
+  background: #FFFFFF;
+  color: #003D6B;
+}
+
+#rikaichamp-window.-lightblue .k-mix-td0 {
+  background: #DFF1FF;
+  color: #003D6B;
+}
+
+#rikaichamp-window.-lightblue .k-mix-td1 {
+  background: #FFFFFF;
+  color: #003D6B;
+}
+
+/*
+ * Theme - yellow
+ */
+
+#rikaichamp-window.-yellow, #rikaichamp-window.-yellow * {
+  color: black;
+}
+
+#rikaichamp-window.-yellow {
+  color: #111;
+  background: #FFFFBF;
+}
+
+#rikaichamp-window.-yellow .w-kanji {
+  color: #7070E0;
+}
+
+#rikaichamp-window.-yellow .w-kana {
+  color: #20A020;
+}
+
+#rikaichamp-window.-yellow .w-conj {
+  color: #A0A0A0;
+}
+
+#rikaichamp-window.-yellow .w-title {
+  background: #F0F0B0;
+  color: #000000;
+}
+
+#rikaichamp-window.-yellow .k-kanji {
+  color: #000000;
+}
+
+#rikaichamp-window.-yellow .k-yomi {
+  color: #20A020;
+}
+
+#rikaichamp-window.-yellow .k-yomi-hi {
+  color: #CD5C5C;
+}
+
+#rikaichamp-window.-yellow .k-yomi-ti {
+  color: #000000;
+}
+
+#rikaichamp-window.-yellow .k-abox-r {
+  background: #FFFFE6;
+  color: #000000;
+}
+
+#rikaichamp-window.-yellow .k-abox-g {
+  background: #F7F7D0;
+  color: #000000;
+}
+
+#rikaichamp-window.-yellow .k-abox-f {
+  background: #F7F7D0;
+  color: #000000;
+}
+
+#rikaichamp-window.-yellow .k-abox-s {
+  background: #5A70B5;
+  color: #FFFFFF;
+}
+
+#rikaichamp-window.-yellow .k-bbox-0a,
+#rikaichamp-window.-yellow .k-bbox-0b {
+  background: #FFFFE6;
+  color: #000000;
+}
+
+#rikaichamp-window.-yellow .k-bbox-1a,
+#rikaichamp-window.-yellow .k-bbox-1b {
+  background: #F7F7D0;
+  color: #000000;
+}
+
+#rikaichamp-window.-yellow .k-mix-td0 {
+  background: #FFFFE6;
+  color: #000000;
+}
+
+#rikaichamp-window.-yellow .k-mix-td1 {
+  background: #F7F7D0;
+  color: #000000;
+}
