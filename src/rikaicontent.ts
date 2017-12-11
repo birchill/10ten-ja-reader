@@ -228,6 +228,15 @@ class RikaiContent {
   }
 
   set config(config) {
+    // Update the style of the popup
+    if (config.popupStyle !== this._config.popupStyle) {
+      const popup = document.getElementById('rikaichamp-window');
+      if (popup) {
+        popup.classList.remove(`-${this._config.popupStyle}`);
+        popup.classList.add(`-${config.popupStyle}`);
+      }
+    }
+
     // TODO: We should probably check which keys have changed and regenerate
     // the pop-up if needed but currently you need to change tabs to tweak
     // the config so the popup probably won't be showing anyway.
