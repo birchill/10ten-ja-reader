@@ -23,6 +23,7 @@ interface ContentConfig {
   // Prevents highlighting text on hover
   noTextHighlight: boolean;
 
+  // The theme in use, e.g. 'blue'.
   popupStyle: string;
 }
 
