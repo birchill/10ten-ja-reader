@@ -84,6 +84,10 @@ function completeForm() {
     .addEventListener('click', evt => {
       config.showKanjiComponents = (evt.target as HTMLInputElement).checked;
     });
+
+  document.getElementById('popupStyle').addEventListener('click', evt => {
+    config.popupStyle = (evt.target as HTMLInputElement).value;
+  });
 }
 
 async function fillVals() {
@@ -94,6 +98,7 @@ async function fillVals() {
   optform.highlightText.checked = !config.noTextHighlight;
   optform.contextMenuEnable.checked = config.contextMenuEnable;
   optform.showKanjiComponents.checked = config.showKanjiComponents;
+  optform.popupStyle.value = config.popupStyle;
 
   for (const [setting, keys] of Object.entries(config.keys)) {
     const checkboxes = document.querySelectorAll(

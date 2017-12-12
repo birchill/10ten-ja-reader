@@ -19,6 +19,7 @@ interface Settings {
   noTextHighlight?: boolean;
   showKanjiComponents?: boolean;
   kanjiReferences?: KanjiReferenceFlags;
+  popupStyle?: string;
 }
 
 type ChangeCallback = (changes: object) => void;
@@ -140,6 +141,26 @@ class Config {
     browser.storage.sync.set({ keys: this._settings.keys as any });
   }
 
+  // popupStyle: Defaults to blue
+
+  get popupStyle(): string {
+    return typeof this._settings.popupStyle === 'undefined'
+      ? 'blue'
+      : this._settings.popupStyle;
+  }
+
+  set popupStyle(value: string) {
+    if (
+      typeof this._settings.popupStyle !== 'undefined' &&
+      this._settings.popupStyle === value
+    ) {
+      return;
+    }
+
+    this._settings.popupStyle = value;
+    browser.storage.sync.set({ popupStyle: value });
+  }
+
   // contextMenuEnable: Defaults to true
 
   get contextMenuEnable(): boolean {
@@ -222,6 +243,7 @@ class Config {
       readingOnly: this.readingOnly,
       keys: this.keys,
       noTextHighlight: this.noTextHighlight,
+      popupStyle: this.popupStyle,
     };
   }
 }

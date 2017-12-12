@@ -114,6 +114,7 @@ describe('Config', () => {
       nextDictionary: ['Shift', 'Enter'],
     });
     expect(config.contextMenuEnable).toEqual(true);
+    expect(config.popupStyle).toEqual('blue');
     expect(config.noTextHighlight).toEqual(false);
     expect(config.showKanjiComponents).toEqual(true);
     expect(config.kanjiReferences).toEqual({

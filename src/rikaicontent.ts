@@ -228,6 +228,15 @@ class RikaiContent {
   }
 
   set config(config) {
+    // Update the style of the popup
+    if (config.popupStyle !== this._config.popupStyle) {
+      const popup = document.getElementById('rikaichamp-window');
+      if (popup) {
+        popup.classList.remove(`-${this._config.popupStyle}`);
+        popup.classList.add(`-${config.popupStyle}`);
+      }
+    }
+
     // TODO: We should probably check which keys have changed and regenerate
     // the pop-up if needed but currently you need to change tabs to tweak
     // the config so the popup probably won't be showing anyway.
@@ -988,8 +997,7 @@ class RikaiContent {
       // Add <style> element with popup CSS
       // (One day I hope Web Components might less us scope this now
       // that scoped stylesheets are dead.)
-      const cssdoc = 'blue';
-      const cssHref = browser.extension.getURL(`css/popup-${cssdoc}.css`);
+      const cssHref = browser.extension.getURL('css/popup.css');
       const link = doc.createElement('link');
       link.setAttribute('rel', 'stylesheet');
       link.setAttribute('type', 'text/css');
@@ -1006,6 +1014,7 @@ class RikaiContent {
       // Add the popup div
       popup = doc.createElement('div');
       popup.setAttribute('id', 'rikaichamp-window');
+      popup.classList.add(`-${this._config.popupStyle}`);
 
       const popupContainer = wrapperElement || doc.documentElement;
       doc.documentElement.append(popup);
