@@ -5,6 +5,33 @@ interface Window {
 const config = browser.extension.getBackgroundPage().rcxMain.config;
 
 function completeForm() {
+  const popupStyleSelect = document.getElementById('popupstyle-select');
+  const themes = ['blue', 'lightblue', 'black', 'yellow'];
+
+  for (const theme of themes) {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'radio');
+    input.setAttribute('name', 'popupStyle');
+    input.setAttribute('value', theme);
+    input.setAttribute('id', `popupstyle-${theme}`);
+    popupStyleSelect.appendChild(input);
+
+    input.addEventListener('click', () => {
+      config.popupStyle = theme;
+    });
+
+    const label = document.createElement('label');
+    label.setAttribute('for', `popupstyle-${theme}`);
+    label.innerHTML = `
+<div id=rikaichamp-window class="popup-preview -${theme}"
+  style="display: inline-block">
+  <span class="w-kanji">理解</span>
+  <span class="w-kana">りかい</span><br>
+  <span class="w-def">(n,vs) understanding</span>
+</div>`;
+    popupStyleSelect.appendChild(label);
+  }
+
   const grid = document.getElementById('key-grid');
 
   for (const setting of config.DEFAULT_KEY_SETTINGS) {
@@ -84,10 +111,6 @@ function completeForm() {
     .addEventListener('click', evt => {
       config.showKanjiComponents = (evt.target as HTMLInputElement).checked;
     });
-
-  document.getElementById('popupStyle').addEventListener('click', evt => {
-    config.popupStyle = (evt.target as HTMLInputElement).value;
-  });
 }
 
 async function fillVals() {

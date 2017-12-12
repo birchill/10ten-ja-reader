@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="chrome://browser/content/extension.css">
     -->
     <link rel="stylesheet" type="text/css" href="css/options.css">
+    <link rel="stylesheet" type="text/css" href="css/popup.css">
   </head>
   <body>
     <div id=rikaichamp_options class=panel>
@@ -27,16 +28,13 @@
             class=panel-formElements-item>
           <label for=contextMenuEnable class=panel-formElements-item>Show
             &ldquo;Enable Rikaichamp&rdquo; in context menu</label>
-
-            <label for=popupStyle class=panel-formElements-item>Popup style: &nbsp;
-            <select id=popupStyle name=popupStyle
-            class=panel-formElements-item style="display:inline-block">
-             <option value="blue">Blue</option>
-             <option value="lightblue">Light blue</option>
-             <option value="black">Black</option>
-             <option value="yellow">Yellow</option>
-           </select>
-           </label>
+        </div>
+        <div class="panel-section panel-section-header">
+          <div class=text-section-header>Theme</div>
+        </div>
+        <div class="panel-section panel-section-formElements">
+          <fieldset class=popupstyle-select id=popupstyle-select>
+          </fieldset>
         </div>
         <div class="panel-section panel-section-header">
           <div class=text-section-header>Keyboard</div>

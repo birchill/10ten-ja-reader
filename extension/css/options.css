@@ -21,6 +21,44 @@
   padding: 16px;
 }
 
+fieldset {
+  border: none;
+}
+
+.popupstyle-select {
+  display: flex;
+  width: 100%;
+}
+
+.popupstyle-select > input[type=radio] {
+  display: none;
+}
+
+.popupstyle-select > label {
+  border: 1px solid transparent;
+  transition: border-color 0.3s, opacity 0.3s;
+  padding: 0.5em;
+  flex: 1;
+  text-align: center;
+}
+
+.popupstyle-select > input[type=radio]:checked + label {
+  border-color: grey;
+  background: lightgrey;
+}
+
+.popupstyle-select > input[type=radio]:not(:checked) + label {
+  opacity: 0.5;
+}
+.popupstyle-select > input[type=radio]:not(:checked) + label:hover,
+.popupstyle-select > input[type=radio]:not(:checked) + label:active {
+  opacity: 1;
+}
+
+#rikaichamp-window.popup-preview {
+  position: static;
+}
+
 .key-grid {
   display: grid;
   grid-template-columns: minmax(12em, auto) 1fr;
