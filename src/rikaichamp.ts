@@ -66,6 +66,13 @@ class App {
         }
       }
 
+      if (this._enabled && changes.hasOwnProperty('popupStyle')) {
+        const popupStyle = (changes as any).popupStyle.newValue;
+        browser.browserAction.setIcon({
+          path: `images/rikaichamp-${popupStyle}.svg`,
+        });
+      }
+
       // TODO: Ignore changes that aren't part of contentConfig
       this.updateConfig(this._config.contentConfig);
     });
@@ -159,7 +166,9 @@ class App {
       browser.storage.local.set({ enabled: true });
 
       browser.browserAction.setTitle({ title: 'Rikaichamp enabled' });
-      browser.browserAction.setIcon({ path: 'images/rikaichamp-blue.svg' });
+      browser.browserAction.setIcon({
+        path: `images/rikaichamp-${this._config.popupStyle}.svg`,
+      });
     });
   }
 
