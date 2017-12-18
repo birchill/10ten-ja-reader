@@ -1,6 +1,8 @@
 ## 0.0.12 (not yet released)
 
-* Add popup style selection to settings panel
+* Add popup style selection to settings panel (thanks to [@kikaxa](https://github.com/kikaxa)).
+* Fixed a bug where the popup would not appear correctly when dealing with pages
+  with mismatched encodings.
 
 ## 0.0.11 (2017-11-23)
 
