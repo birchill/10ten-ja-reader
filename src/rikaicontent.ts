@@ -274,6 +274,11 @@ class RikaiContent {
   }
 
   onMouseMove(ev: MouseEvent) {
+    // Ignore mouse events while buttons are being pressed.
+    if (ev.buttons) {
+      return;
+    }
+
     const now = performance.now();
     let averageSpeed = 0;
 
@@ -309,13 +314,14 @@ class RikaiContent {
   }
 
   onMouseDown(ev: MouseEvent) {
-    if (!this._selectedTextBox) {
-      return;
-    }
-
-    if (ev.target === this._selectedTextBox.node) {
+    // If we are changing focus to the textbox where we are highlighting text,
+    // then update the previous focus so that we know to ignore keystrokes here.
+    if (this._selectedTextBox && ev.target === this._selectedTextBox.node) {
       this._selectedTextBox.previousFocus = ev.target as Element;
     }
+
+    // Clear the highlight since it inteferes with selection.
+    this.clearHighlight(ev.target as Element);
   }
 
   onKeyDown(ev: KeyboardEvent) {
