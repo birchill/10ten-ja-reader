@@ -3,6 +3,7 @@
 * Add popup style selection to settings panel (thanks to [@kikaxa](https://github.com/kikaxa)).
 * Fixed a bug where the popup would not appear correctly when dealing with pages
   with mismatched encodings.
+* Disabled the popup while selecting text.
 
 ## 0.0.11 (2017-11-23)
 
