@@ -279,8 +279,8 @@ class RikaiContent {
 
     if (this._previousMousePosition && this._previousMouseMoveTime) {
       const distance = Math.sqrt(
-        Math.pow(ev.clientX - this._previousMousePosition.x, 2) +
-          Math.pow(ev.clientY - this._previousMousePosition.y, 2)
+        Math.pow(ev.pageX - this._previousMousePosition.x, 2) +
+          Math.pow(ev.pageY - this._previousMousePosition.y, 2)
       );
       const speed = distance / (now - this._previousMouseMoveTime);
 
@@ -294,7 +294,7 @@ class RikaiContent {
       averageSpeed = this._mouseSpeedRollingSum / this._mouseSpeeds.length;
     }
 
-    this._previousMousePosition = { x: ev.clientX, y: ev.clientY };
+    this._previousMousePosition = { x: ev.pageX, y: ev.pageY };
     this._previousMouseMoveTime = now;
 
     if (averageSpeed < RikaiContent.MOUSE_SPEED_THRESHOLD) {
