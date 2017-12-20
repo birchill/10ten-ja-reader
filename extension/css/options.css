@@ -57,6 +57,7 @@ fieldset {
 
 #rikaichamp-window.popup-preview {
   position: static;
+  display: inline-block;
 }
 
 .key-grid {

@@ -22,14 +22,28 @@ function completeForm() {
 
     const label = document.createElement('label');
     label.setAttribute('for', `popupstyle-${theme}`);
-    label.innerHTML = `
-<div id=rikaichamp-window class="popup-preview -${theme}"
-  style="display: inline-block">
-  <span class="w-kanji">理解</span>
-  <span class="w-kana">りかい</span><br>
-  <span class="w-def">(n,vs) understanding</span>
-</div>`;
     popupStyleSelect.appendChild(label);
+
+    const popupPreview = document.createElement('div');
+    popupPreview.setAttribute('id', 'rikaichamp-window');
+    popupPreview.classList.add('popup-preview');
+    popupPreview.classList.add(`-${theme}`);
+    label.appendChild(popupPreview);
+
+    const spanKanji = document.createElement('span');
+    spanKanji.classList.add('w-kanji');
+    spanKanji.textContent = '理解';
+    popupPreview.appendChild(spanKanji);
+
+    const spanKana = document.createElement('span');
+    spanKana.classList.add('w-kana');
+    spanKana.textContent = 'かな';
+    popupPreview.appendChild(spanKana);
+
+    const spanDef = document.createElement('span');
+    spanDef.classList.add('w-def');
+    spanDef.textContent = '(n,vs) understanding';
+    popupPreview.appendChild(spanDef);
   }
 
   const grid = document.getElementById('key-grid');
