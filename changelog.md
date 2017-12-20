@@ -1,4 +1,8 @@
-## 0.0.12 (not yet released)
+## 0.0.13 (not released yet)
+
+(nothing yet)
+
+## 0.0.12 (2017-12-20)
 
 * Add popup style selection to settings panel (thanks to [@kikaxa](https://github.com/kikaxa)).
 * Fixed a bug where the popup would not appear correctly when dealing with pages
