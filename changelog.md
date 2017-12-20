@@ -4,7 +4,7 @@
 * Fixed a bug where the popup would not appear correctly when dealing with pages
   with mismatched encodings.
 * Disabled the popup while selecting text.
-* Updated word dictionary to 2017-12-19 snapshot.
+* Updated word and names dictionaries to 2017-12-19 snapshot.
 
 ## 0.0.11 (2017-11-23)
 
