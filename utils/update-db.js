@@ -124,34 +124,55 @@ class DictParser extends Transform {
   }
 }
 
-const parser = new DictParser();
-
-http
-  .get('http://ftp.monash.edu/pub/nihongo/edict.gz', res => {
-    res
-      .pipe(zlib.createGunzip())
-      .pipe(iconv.decodeStream('euc-jp'))
-      .pipe(iconv.encodeStream('utf-8'))
-      .pipe(new LineStream())
-      .pipe(parser)
-      .pipe(
-        fs.createWriteStream(
-          path.join(__dirname, '..', 'extension', 'data', 'dict.dat')
-        )
-      )
-      .on('error', err => {
-        console.log(`Error: ${err}`);
+const parseEdict = (url, dataFile, indexFile) => {
+  const parser = new DictParser();
+  return new Promise((resolve, reject) => {
+    http
+      .get(url, res => {
+        res
+          .pipe(zlib.createGunzip())
+          .pipe(iconv.decodeStream('euc-jp'))
+          .pipe(iconv.encodeStream('utf-8'))
+          .pipe(new LineStream())
+          .pipe(parser)
+          .pipe(
+            fs.createWriteStream(
+              path.join(__dirname, '..', 'extension', 'data', dataFile)
+            )
+          )
+          .on('error', err => {
+            reject(err);
+          })
+          .on('close', () => {
+            console.log('Writing index...');
+            const indexStream = fs.createWriteStream(
+              path.join(__dirname, '..', 'extension', 'data', indexFile)
+            );
+            parser.printIndex(indexStream);
+            indexStream.end();
+            resolve();
+          });
       })
-      .on('close', () => {
-        console.log('Writing index...');
-        const indexStream = fs.createWriteStream(
-          path.join(__dirname, '..', 'extension', 'data', 'dict.idx')
-        );
-        parser.printIndex(indexStream);
-        indexStream.end();
-        console.log('Done.');
+      .on('error', err => {
+        reject(`Connection error: ${err}`);
       });
+  });
+};
+
+console.log('Fetching word dictionary...');
+
+parseEdict('http://ftp.monash.edu/pub/nihongo/edict.gz', 'dict.dat', 'dict.idx')
+  .then(() => {
+    console.log('Fetching names dictionary...');
+    return parseEdict(
+      'http://ftp.monash.edu/pub/nihongo/enamdict.gz',
+      'names.dat',
+      'names.idx'
+    );
   })
-  .on('error', err => {
-    console.log(`Connection error: ${err}`);
+  .then(() => {
+    console.log('Done.');
+  })
+  .catch(err => {
+    console.log(`Error: '${err}'`);
   });
