@@ -514,6 +514,26 @@ class RikaiContent {
     };
 
     if (isTextNode(startNode)) {
+      // Due to line wrapping etc. sometimes caretPositionFromPoint can return
+      // a point far away from the cursor.
+      //
+      // We don't need to do this for synthesized text nodes, however, since we
+      // assume we'll be within their bounds.
+      const distanceResult = this.getDistanceFromTextNode(
+        startNode,
+        position.offset,
+        point
+      );
+      if (distanceResult) {
+        // If we're more than about three characters away, don't show the
+        // pop-up.
+        const { distance, glyphExtent } = distanceResult;
+        if (distance > glyphExtent * 3) {
+          this._currentTextAtPoint = null;
+          return null;
+        }
+      }
+
       const result = this.getTextFromTextNode(
         startNode,
         position.offset,
@@ -583,6 +603,58 @@ class RikaiContent {
 
     this._currentTextAtPoint = null;
     return null;
+  }
+
+  getDistanceFromTextNode(
+    startNode: CharacterData,
+    startOffset: number,
+    point: {
+      x: number;
+      y: number;
+    }
+  ): { distance: number; glyphExtent: number } | null {
+    // Ignore synthesized text nodes.
+    if (!startNode.parentElement) {
+      return null;
+    }
+
+    // Ignore SVG content (it doesn't normally need distance checking, and
+    // getBoundingClientRect is unreliable for SVG content due to bugs like bug
+    // 1426594).
+    if (startNode.parentElement.namespaceURI === SVG_NS) {
+      return null;
+    }
+
+    // Ignore vertical writing. This is temporary until Mozilla bug 1159309 is
+    // fixed.
+    const computedStyle = getComputedStyle(startNode.parentElement);
+    if (computedStyle.writingMode !== 'horizontal-tb') {
+      return null;
+    }
+
+    // Get bbox of first character in range (since that's where we select from).
+    const range = new Range();
+    range.setStart(startNode, startOffset);
+    range.setEnd(startNode, startOffset + 1);
+    const bbox = range.getBoundingClientRect();
+
+    // Find the distance from the cursor to the closest edge of that character
+    // since if we have a large font size the two distances could be quite
+    // different.
+    const xDist = Math.min(
+      Math.abs(point.x - bbox.left),
+      Math.abs(point.x - bbox.right)
+    );
+    const yDist = Math.min(
+      Math.abs(point.y - bbox.top),
+      Math.abs(point.y - bbox.bottom)
+    );
+
+    const distance = Math.sqrt(xDist * xDist + yDist * yDist);
+    const glyphExtent = Math.sqrt(
+      bbox.width * bbox.width + bbox.height * bbox.height
+    );
+    return { distance, glyphExtent };
   }
 
   getTextFromTextNode(

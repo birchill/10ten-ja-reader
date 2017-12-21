@@ -198,7 +198,19 @@ describe('rikaiContent:text search', () => {
     const result = subject.getTextAtPoint(pointToTest);
 
     assert.strictEqual(result, null);
-    document.body.padding = '0px';
+  });
+
+  it('should NOT find a range in a div when the point is a long way away due to line wrapping', () => {
+    testDiv.style.width = '300px';
+    testDiv.style.paddingRight = '100px';
+    testDiv.textContent = '何故かと云うとこの二三年京都には地震とか辻風とか火事とか饑饉とか云う災いがつづいて起こったそこで洛中のさびれ方は一通りでない旧記によると仏像や';
+
+    const bbox = testDiv.getBoundingClientRect();
+    const pointToTest = { x: 305, y: bbox.top + 5 };
+
+    const result = subject.getTextAtPoint(pointToTest);
+
+    assert.strictEqual(result, null);
   });
 
   it('should find text in an inline sibling', () => {
