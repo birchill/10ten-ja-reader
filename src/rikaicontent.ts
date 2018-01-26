@@ -998,26 +998,30 @@ class RikaiContent {
 
     const textBox = this._selectedTextBox.node;
 
-    // If we are currently interacting with this textbox then, just because
-    // we didn't find a match for the current text, we still don't want to
-    // restore the selection since that could make the text box scroll back
-    // to the previous selection. Instead, just collapse the selection.
-    if (currentElement === textBox) {
-      textBox.selectionEnd = textBox.selectionStart;
-    } else {
-      this._restoreTextBoxSelection();
+    // Store the previous scroll position so we can restore it, if need be.
+    const { scrollTop, scrollLeft } = textBox;
 
-      if (
-        isFocusable(this._selectedTextBox.previousFocus) &&
-        this._selectedTextBox.previousFocus !== textBox
-      ) {
-        // First blur the text box since some Elements' focus() method does
-        // nothing.
-        this._selectedTextBox.node.blur();
-        this._selectedTextBox.previousFocus.focus();
-      }
-      this._selectedTextBox = null;
+    this._restoreTextBoxSelection();
+
+    // If we are still interacting with the textBox, make sure to maintain its
+    // scroll position (rather than jumping back to wherever the restored
+    // selection is just because we didn't find a match).
+    if (currentElement === textBox) {
+      textBox.scrollLeft = scrollLeft;
+      textBox.scrollTop = scrollLeft;
+      // Otherwise, if we only focussed the textbox in order to highlight text,
+      // restore the previous focus.
+    } else if (
+      isFocusable(this._selectedTextBox.previousFocus) &&
+      this._selectedTextBox.previousFocus !== textBox
+    ) {
+      // First blur the text box since some Elements' focus() method does
+      // nothing.
+      this._selectedTextBox.node.blur();
+      this._selectedTextBox.previousFocus.focus();
     }
+
+    this._selectedTextBox = null;
   }
 
   _restoreTextBoxSelection() {
