@@ -1,6 +1,8 @@
 ## 0.0.13 (not released yet)
 
-(nothing yet)
+* (Hopefully) fixed text box handling, especially scroll restoration.
+* Made pop-up not show up when the mouse if far from the target word.
+* Updated word and names dictionaries to 2017-01-28 snapshot.
 
 ## 0.0.12 (2017-12-20)
 
