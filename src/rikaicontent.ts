@@ -504,6 +504,11 @@ class RikaiContent {
 
     let startNode: Node | null = position ? position.offsetNode : null;
     if (isTextInputNode(startNode)) {
+      // If we selected the end of the text, skip it.
+      if (position.offset === startNode.value.length) {
+        this._currentTextAtPoint = null;
+        return null;
+      }
       startNode = document.createTextNode(startNode.value);
     }
 
@@ -739,6 +744,10 @@ class RikaiContent {
         offset += textStart;
         break;
       }
+      // Curiously with our synthesized text nodes, the next node can sometimes
+      // be the same node. We only tend to reach that case, however, when our
+      // offset corresponds to the end of the text so we just detect that case
+      // earlier on and don't bother checking it here.
       node = <CharacterData>treeWalker.nextNode();
       offset = 0;
     } while (node);
@@ -921,11 +930,21 @@ class RikaiContent {
         };
       }
 
+      // Store the current scroll range so we can restore it.
+      const { scrollTop, scrollLeft } = node;
+
       // Clear any other selection happenning in the page.
       selection.removeAllRanges();
 
       node.setSelectionRange(start, end);
       this._selectedText = node.value.substring(start, end);
+
+      // Restore the scroll range. We need to do this on the next tick or else
+      // something else (not sure what) will clobber it.
+      requestAnimationFrame(() => {
+        node.scrollLeft = scrollLeft;
+        node.scrollTop = scrollTop;
+      });
     } else {
       // If we were previously interacting with a text box, restore its range
       // and blur it.
@@ -1007,11 +1026,17 @@ class RikaiContent {
     // scroll position (rather than jumping back to wherever the restored
     // selection is just because we didn't find a match).
     if (currentElement === textBox) {
-      textBox.scrollLeft = scrollLeft;
-      textBox.scrollTop = scrollLeft;
-      // Otherwise, if we only focussed the textbox in order to highlight text,
-      // restore the previous focus.
-    } else if (
+      // As before, we need to restore this in the next tick or else it will get
+      // clobbered.
+      requestAnimationFrame(() => {
+        textBox.scrollLeft = scrollLeft;
+        textBox.scrollTop = scrollTop;
+      });
+    }
+
+    // Otherwise, if we only focussed the textbox in order to highlight text,
+    // restore the previous focus.
+    if (
       isFocusable(this._selectedTextBox.previousFocus) &&
       this._selectedTextBox.previousFocus !== textBox
     ) {

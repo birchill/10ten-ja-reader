@@ -669,6 +669,22 @@ describe('rikaiContent:text search', () => {
                           textAreaNode, 5);
   });
 
+  it('should NOT report results in textarea elements when the mouse is far away', () => {
+    testDiv.innerHTML = '<textarea cols=80>あいうえお</textarea>';
+    const textAreaNode = testDiv.firstChild;
+
+    textAreaNode.style.padding = '0px';
+    textAreaNode.style.fontSize = '10px';
+    const bbox = textAreaNode.getBoundingClientRect();
+
+    const result =
+      subject.getTextAtPoint(
+        { x: bbox.right - 10, y: 5 }
+      );
+
+    assert.strictEqual(result, null);
+  });
+
   it('should pull the text out of a title attribute', () => {
     testDiv.innerHTML = '<img src="" title="あいうえお">';
     const imgNode = testDiv.firstChild;
