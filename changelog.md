@@ -1,4 +1,8 @@
-## 0.0.13 (not released yet)
+## 0.0.14 (not released yet)
+
+(nothing yet)
+
+## 0.0.13 (2018-01-28)
 
 * (Hopefully) fixed text box handling, especially scroll restoration.
 * Made pop-up not show up when the mouse if far from the target word.
