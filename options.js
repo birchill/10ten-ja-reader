@@ -6,6 +6,8 @@ function fillVals() {
 			break;
 		}
 	}
+
+	document.optform.popupLocation.selectedIndex = localStorage['popupLocation'];
 	
 	if (localStorage['highlight'] == 'true')
 		document.optform.highlighttext.checked = true;
@@ -105,6 +107,7 @@ function getVals() {
 		localStorage['popupDelay'] = "150";
 	}
 	localStorage['showOnKey'] = document.optform.showOnKey.value;
+	localStorage['popupLocation'] = document.optform.popupLocation.value;
 
 	chrome.extension.getBackgroundPage().rcxMain.config.css = localStorage["popupcolor"];
 	chrome.extension.getBackgroundPage().rcxMain.config.highlight = localStorage["highlight"];
@@ -119,7 +122,7 @@ function getVals() {
 	chrome.extension.getBackgroundPage().rcxMain.config.lineEnding = localStorage["lineEnding"];
 	chrome.extension.getBackgroundPage().rcxMain.config.copySeparator = localStorage["copySeparator"];
 	chrome.extension.getBackgroundPage().rcxMain.config.maxClipCopyEntries = localStorage["maxClipCopyEntries"];
-
+	chrome.extension.getBackgroundPage().rcxMain.config.popupLocation = localStorage["popupLocation"];
 }
 window.onload = fillVals;
 
