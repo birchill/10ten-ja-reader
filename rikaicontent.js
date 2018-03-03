@@ -1037,14 +1037,11 @@ chrome.runtime.onMessage.addListener(
 				break;
 			case 'disable':
 				rcxContent.disableTab();
-				console.log("disable");
 				break;
 			case 'showPopup':
-				console.log("showPopup");
 				rcxContent.showPopup(request.text);
 				break;
 			default:
-				console.log(request);
 		}
 	}
 );
