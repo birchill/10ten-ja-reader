@@ -39,20 +39,61 @@
 
 */
 
-function rcxDict(loadNames) {
-	this.loadDictionary();
-	if (loadNames) this.loadNames();
-	this.loadDIF();
+function rcxDict() {
+
 }
 
 rcxDict.prototype = {
 	config: {},
 
-	setConfig: function(c) {
+	init: function (loadNames) {
+		var started = +new Date();
+
+		var promises = [
+			this.loadDictionary(loadNames),
+			this.loadDIF()
+		];
+
+		return Promise.all(promises)
+			.then(function () {
+				var ended = +new Date();
+				console.log('rcxDict main then in ' + (ended - started));
+			});
+	},
+
+	setConfig: function (c) {
 		this.config = c;
 	},
 
 	//
+
+	fileReadAsync: function (url, asArray) {
+		return new Promise(function prom(resolve, reject) {
+			var req = new XMLHttpRequest();
+
+			req.onreadystatechange = function () {
+
+				if (req.readyState === 4) {
+
+					if (!asArray) {
+						resolve(req.responseText);
+					}
+					else {
+						var array = req.responseText.split('\n')
+							.filter(function removeBlanks(o) {
+								return o && o.length > 0
+							});
+
+						resolve(array);
+					}
+				}
+			};
+
+			req.open("GET", url, true);
+			req.send(null);
+
+		});
+	},
 
 	fileRead: function(url, charset) {
 		var req = new XMLHttpRequest();
@@ -99,14 +140,41 @@ rcxDict.prototype = {
 		this.nameIndex = this.fileRead(chrome.extension.getURL("data/names.idx"));
 	},
 
+	loadFileToTarget: function (file, isArray, target) {
+		var url = chrome.extension.getURL('data/' + file);
+
+		return this.fileReadAsync(url, isArray).then(function (data) {
+			this[target] = data;
+			console.log('async read complete for ' + target);
+		}.bind(this));
+	},
+
+
 	//	Note: These are mostly flat text files; loaded as one continous string to reduce memory use
-	loadDictionary: function() {
+	loadDictionary: function (includeNames) {
 		/* this.wordDict = this.fileRead(rcxWordDict.datURI, rcxWordDict.datCharset);
 		this.wordIndex = this.fileRead(rcxWordDict.idxURI, rcxWordDict.idxCharset); */
-		this.wordDict = this.fileRead(chrome.extension.getURL("data/dict.dat"));
-		this.wordIndex = this.fileRead(chrome.extension.getURL("data/dict.idx"));
-		this.kanjiData = this.fileRead(chrome.extension.getURL("data/kanji.dat"), 'UTF-8');
-		this.radData = this.fileReadArray(chrome.extension.getURL("data/radicals.dat"), 'UTF-8'); 
+
+		var promises = [
+			this.loadFileToTarget('dict.dat', false, 'wordDict'),
+			this.loadFileToTarget('dict.idx', false, 'wordIndex'),
+			this.loadFileToTarget('kanji.dat', false, 'kanjiData'),
+			this.loadFileToTarget('radicals.dat', true, 'radData')
+		];
+
+		if (includeNames) {
+			promises.push(this.loadFileToTarget('names.dat', false, 'nameDict'));
+			promises.push(this.loadFileToTarget('names.idx', false, 'nameIndex'));
+
+		}
+
+		return Promise.all(promises);
+
+
+		// this.wordDict = this.fileRead(chrome.extension.getURL("data/dict.dat"));
+		// this.wordIndex = this.fileRead(chrome.extension.getURL("data/dict.idx"));
+		// this.kanjiData = this.fileRead(chrome.extension.getURL("data/kanji.dat"), 'UTF-8');
+		// this.radData = this.fileReadArray(chrome.extension.getURL("data/radicals.dat"), 'UTF-8'); 
 
 		//	this.test_kanji();
 	},
@@ -198,33 +266,37 @@ if (0) {
 		this.difRules = [];
 		this.difExact = [];
 
-		var buffer = this.fileReadArray(chrome.extension.getURL("data/deinflect.dat"), 'UTF-8');
-		var prevLen = -1;
-		var g, o;
+		/* asArray */
+		return this.fileReadAsync(chrome.extension.getURL("data/deinflect.dat"), true)
+			.then(function (buffer) {
+				var prevLen = -1;
+				var g, o;
 
-		// i = 1: skip header
-		for (var i = 1; i < buffer.length; ++i) {
-			var f = buffer[i].split('\t');
+				// i = 1: skip header
+				for (var i = 1; i < buffer.length; ++i) {
+					var f = buffer[i].split('\t');
 
-			if (f.length == 1) {
-				this.difReasons.push(f[0]);
-			}
-			else if (f.length == 4) {
-				o = {};
-				o.from = f[0];
-				o.to = f[1];
-				o.type = f[2];
-				o.reason = f[3];
+					if (f.length == 1) {
+						this.difReasons.push(f[0]);
+					}
+					else if (f.length == 4) {
+						o = {};
+						o.from = f[0];
+						o.to = f[1];
+						o.type = f[2];
+						o.reason = f[3];
 
-				if (prevLen != o.from.length) {
-					prevLen = o.from.length;
-					g = [];
-					g.flen = prevLen;
-					this.difRules.push(g);
+						if (prevLen != o.from.length) {
+							prevLen = o.from.length;
+							g = [];
+							g.flen = prevLen;
+							this.difRules.push(g);
+						}
+						g.push(o);
+					}
 				}
-				g.push(o);
-			}
-		}
+			}.bind(this));
+
 	},
 
 	deinflect: function(word) {
