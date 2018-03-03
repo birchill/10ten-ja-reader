@@ -1032,18 +1032,14 @@ chrome.runtime.onMessage.addListener(
 			case 'enable':
 				rcxContent.enableTab();
 				window.rikaichan.config = request.config;
-				console.log("enable");
 				break;
 			case 'disable':
 				rcxContent.disableTab();
-				console.log("disable");
 				break;
 			case 'showPopup':
-				console.log("showPopup");
 				rcxContent.showPopup(request.text);
 				break;
 			default:
-				console.log(request);
 		}
 	}
 );
