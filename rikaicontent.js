@@ -50,7 +50,7 @@ var rcxContent = {
 	nextDict: 3,
 	
 	//Adds the listeners and stuff.
-	enableTab: function() {
+	enableTab: function(config) {
 		if (window.rikaichan == null) {
 			window.rikaichan = {};
 			window.addEventListener('mousemove', this.onMouseMove, false);
@@ -59,6 +59,8 @@ var rcxContent = {
 			window.addEventListener('mousedown', this.onMouseDown, false);
 			window.addEventListener('mouseup', this.onMouseUp, false);
 		}
+		window.rikaichan.config = config;
+		this.altView = parseInt(config.popupLocation);
 	},
 	
 	//Removes the listeners and stuff
@@ -1030,8 +1032,7 @@ chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
 		switch(request.type) {
 			case 'enable':
-				rcxContent.enableTab();
-				window.rikaichan.config = request.config;
+				rcxContent.enableTab(request.config);
 				console.log("enable");
 				break;
 			case 'disable':
