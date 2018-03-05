@@ -850,9 +850,9 @@ var rcxContent = {
 
 		var fake;
 		var tdata = window.rikaichan; // per-tab data
-		var range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
-		var rp = range.startContainer;
-		var ro = range.startOffset;
+		var range;
+		var rp;
+		var ro;
 		// Put this in a try catch so that an exception here doesn't prevent editing due to div.
 		try {
 			if(ev.target.nodeName == 'TEXTAREA' || ev.target.nodeName == 'INPUT') {
@@ -861,6 +861,10 @@ var rcxContent = {
 				fake.scrollTop = ev.target.scrollTop;
 				fake.scrollLeft = ev.target.scrollLeft;
 			}
+			// Calculate range and friends here after we've made our fake textarea/input divs.
+			range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
+			rp = range.startContainer;
+			ro = range.startOffset;
 			
 			if(fake) {
 				// At the end of a line, don't do anything or you just get beginning of next line
