@@ -32,7 +32,7 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*", "ftp://*/*", "file:///*"],
-      "js": ["rikaicontent.js"],
+      "js": ["browser-polyfill.js","rikaicontent.js"],
       "all_frames": true
     }
   ],

@@ -1,4 +1,8 @@
 coverage
 node_modules
 web-ext-artifacts
-extension/*.js
+extension/config.js
+extension/data.js
+extension/options.js
+extension/rikaichamp.js
+extension/rikaicontent.js
