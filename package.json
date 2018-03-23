@@ -4,9 +4,9 @@
   "description": "Translate Japanese by hovering over words.",
   "scripts": {
     "prepare": "tsc",
-    "prepack": "web-ext build --source-dir extension --overwrite-dest",
-    "test": "web-ext lint --source-dir extension && jest && MOZ_HEADLESS=1 slimerjs utils/slimerjs-test-runner.js __tests__/rikaicontent.html",
-    "start": "web-ext run --source-dir extension --bc --start-url __tests__/playground.html",
+    "prepack": "web-ext build --overwrite-dest",
+    "test": "web-ext lint && jest && MOZ_HEADLESS=1 slimerjs utils/slimerjs-test-runner.js __tests__/rikaicontent.html",
+    "start": "web-ext run --bc --start-url __tests__/playground.html",
     "precommit": "lint-staged",
     "lint": "web-ext lint --source-dir extension",
     "update-db": "node utils/update-db"
@@ -41,6 +41,9 @@
     "lint-staged": "^4.3.0",
     "typescript": "^2.6.1",
     "web-ext": "^2.5.0"
+  },
+  "webExt": {
+    "sourceDir": "extension"
   },
   "jest": {
     "roots": [
