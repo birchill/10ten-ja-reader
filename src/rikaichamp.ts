@@ -68,9 +68,20 @@ class App {
 
       if (this._enabled && changes.hasOwnProperty('popupStyle')) {
         const popupStyle = (changes as any).popupStyle.newValue;
-        browser.browserAction.setIcon({
-          path: `images/rikaichamp-${popupStyle}.svg`,
-        });
+        browser.browserAction
+          .setIcon({
+            path: `images/rikaichamp-${popupStyle}.svg`,
+          })
+          .catch(() => {
+            // Assume we're on Chrome and it still can't handle SVGs
+            browser.browserAction.setIcon({
+              path: {
+                16: `images/rikaichamp-${popupStyle}-16.png`,
+                32: `images/rikaichamp-${popupStyle}-32.png`,
+                48: `images/rikaichamp-${popupStyle}-48.png`,
+              },
+            });
+          });
       }
 
       // TODO: Ignore changes that aren't part of contentConfig
@@ -151,7 +162,13 @@ class App {
 
   enableTab(tab) {
     browser.browserAction.setTitle({ title: 'Rikaichamp loading...' });
-    browser.browserAction.setIcon({ path: 'images/rikaichamp-loading.svg' });
+    browser.browserAction
+      .setIcon({ path: 'images/rikaichamp-loading.svg' })
+      .catch(() => {
+        // Chrome can't handle SVGs but that also means it can't handle
+        // animated icons without major hackery involving canvas.
+        // Just leave the disabled icon in place until we finish loading.
+      });
     if (this._menuId) {
       browser.contextMenus.update(this._menuId, { checked: true });
     }
@@ -166,9 +183,20 @@ class App {
       browser.storage.local.set({ enabled: true });
 
       browser.browserAction.setTitle({ title: 'Rikaichamp enabled' });
-      browser.browserAction.setIcon({
-        path: `images/rikaichamp-${this._config.popupStyle}.svg`,
-      });
+      browser.browserAction
+        .setIcon({
+          path: `images/rikaichamp-${this._config.popupStyle}.svg`,
+        })
+        .catch(() => {
+          // Assume we're on Chrome and it still can't handle SVGs
+          browser.browserAction.setIcon({
+            path: {
+              16: `images/rikaichamp-${this._config.popupStyle}-16.png`,
+              32: `images/rikaichamp-${this._config.popupStyle}-32.png`,
+              48: `images/rikaichamp-${this._config.popupStyle}-48.png`,
+            },
+          });
+        });
     });
   }
 
@@ -192,7 +220,20 @@ class App {
       /* Ignore */
     });
     browser.browserAction.setTitle({ title: 'Rikaichamp disabled' });
-    browser.browserAction.setIcon({ path: 'images/rikaichamp-disabled.svg' });
+    browser.browserAction
+      .setIcon({
+        path: `images/rikaichamp-disabled.svg`,
+      })
+      .catch(() => {
+        // Assume we're on Chrome and it still can't handle SVGs
+        browser.browserAction.setIcon({
+          path: {
+            16: `images/rikaichamp-disabled-16.png`,
+            32: `images/rikaichamp-disabled-32.png`,
+            48: `images/rikaichamp-disabled-48.png`,
+          },
+        });
+      });
     if (this._menuId) {
       browser.contextMenus.update(this._menuId, { checked: false });
     }
@@ -219,14 +260,19 @@ class App {
       return;
     }
 
-    this._menuId = browser.contextMenus.create({
-      id: 'context-toggle',
-      type: 'checkbox',
-      title: 'Enable Rikaichamp',
-      command: '_execute_browser_action',
-      contexts: ['all'],
-      checked: this._enabled,
-    });
+    try {
+      this._menuId = browser.contextMenus.create({
+        id: 'context-toggle',
+        type: 'checkbox',
+        title: 'Enable Rikaichamp',
+        command: '_execute_browser_action',
+        contexts: ['all'],
+        checked: this._enabled,
+      });
+    } catch (e) {
+      // TODO: Chrome doesn't support the 'command' member so if we got an
+      // exception, assume that's it and try the old-fashioned way.
+    }
   }
 
   async removeContextMenu() {

@@ -483,10 +483,18 @@ class RikaiContent {
     },
     maxLength?: number
   ): GetTextResult | null {
-    const position: CaretPosition = document.caretPositionFromPoint(
-      point.x,
-      point.y
-    );
+    let position: CaretPosition;
+    if (document.caretPositionFromPoint) {
+      position = document.caretPositionFromPoint(point.x, point.y);
+    } else {
+      const range = document.caretRangeFromPoint(point.x, point.y);
+      position = range
+        ? {
+            offsetNode: range.startContainer,
+            offset: range.startOffset,
+          }
+        : null;
+    }
 
     if (
       position &&
@@ -640,7 +648,7 @@ class RikaiContent {
     // Get bbox of first character in range (since that's where we select from).
     const range = new Range();
     range.setStart(startNode, startOffset);
-    range.setEnd(startNode, startOffset + 1);
+    range.setEnd(startNode, Math.min(startOffset + 1, startNode.length));
     const bbox = range.getBoundingClientRect();
 
     // Find the distance from the cursor to the closest edge of that character

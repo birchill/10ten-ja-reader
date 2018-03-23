@@ -9,20 +9,23 @@
     }
   },
   "description": "Translate Japanese by hovering over words.",
-  "icons": { "48": "images/rikaichamp-blue.svg",
-             "96": "images/rikaichamp-blue.svg",
-             "128": "images/rikaichamp-blue.svg" },
-  "permissions": [
-    "contextMenus",
-    "tabs",
-    "storage"
-  ],
+  "icons": {
+    "16": "images/rikaichamp-blue-16.png",
+    "48": "images/rikaichamp-blue-48.png",
+    "96": "images/rikaichamp-blue-96.png",
+    "128": "images/rikaichamp-blue-128.png"
+  },
+  "permissions": ["contextMenus", "tabs", "storage"],
   "background": {
     "page": "background.html"
   },
   "browser_action": {
     "browser_style": false,
-    "default_icon": "images/rikaichamp-disabled.svg",
+    "default_icon": {
+      "16": "images/rikaichamp-disabled-16.png",
+      "32": "images/rikaichamp-disabled-32.png",
+      "48": "images/rikaichamp-disabled-48.png"
+    },
     "default_title": "Rikaichamp disabled"
   },
   "options_ui": {
@@ -32,13 +35,11 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*", "ftp://*/*", "file:///*"],
-      "js": ["browser-polyfill.js","rikaicontent.js"],
+      "js": ["browser-polyfill.js", "rikaicontent.js"],
       "all_frames": true
     }
   ],
-  "web_accessible_resources": [
-    "css/popup.css"
-  ],
+  "web_accessible_resources": ["css/popup.css"],
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
