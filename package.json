@@ -28,19 +28,19 @@
   },
   "homepage": "https://github.com/birtles/rikaichamp#readme",
   "devDependencies": {
-    "@types/jest": "^20.0.8",
+    "@types/jest": "^22.2.3",
     "byline": "^5.0.0",
-    "iconv-lite": "^0.4.19",
-    "jest": "^20.0.4",
+    "iconv-lite": "^0.4.23",
+    "jest": "^22.4.3",
     "slimerjs": "git+https://github.com/birtles/slimerjs.git",
-    "ts-jest": "^20.0.13",
+    "ts-jest": "^22.4.5",
     "web-ext-types": "github:michael-zapata/web-ext-types"
   },
   "dependencies": {
     "husky": "^0.14.3",
-    "lint-staged": "^4.3.0",
-    "typescript": "^2.6.1",
-    "web-ext": "^2.5.0"
+    "lint-staged": "^7.1.0",
+    "typescript": "^2.8.3",
+    "web-ext": "^2.6.0"
   },
   "webExt": {
     "sourceDir": "extension"
