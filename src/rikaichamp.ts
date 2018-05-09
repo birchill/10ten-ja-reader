@@ -153,10 +153,15 @@ class App {
     }
 
     this._config.ready.then(() => {
-      browser.tabs.sendMessage(tabId, {
-        type: 'enable',
-        config: this._config.contentConfig,
-      });
+      browser.tabs
+        .sendMessage(tabId, {
+          type: 'enable',
+          config: this._config.contentConfig,
+        })
+        .catch(() => {
+          /* Some tabs don't have the content script so just ignore
+         * connection failures here. */
+        });
     });
   }
 
@@ -175,10 +180,15 @@ class App {
 
     Promise.all([this.loadDictionary(), this._config.ready]).then(() => {
       // Send message to current tab to add listeners and create stuff
-      browser.tabs.sendMessage(tab.id, {
-        type: 'enable',
-        config: this._config.contentConfig,
-      });
+      browser.tabs
+        .sendMessage(tab.id, {
+          type: 'enable',
+          config: this._config.contentConfig,
+        })
+        .catch(() => {
+          /* Some tabs don't have the content script so just ignore
+           * connection failures here. */
+        });
       this._enabled = true;
       browser.storage.local.set({ enabled: true });
 
@@ -205,13 +215,20 @@ class App {
       return;
     }
 
-    browser.windows.getAll({ populate: true }).then(windows => {
-      for (const win of windows) {
-        for (const tab of win.tabs) {
-          browser.tabs.sendMessage(tab.id, { type: 'enable', config });
+    browser.windows
+      .getAll({ populate: true, windowTypes: ['normal'] })
+      .then(windows => {
+        for (const win of windows) {
+          for (const tab of win.tabs) {
+            browser.tabs
+              .sendMessage(tab.id, { type: 'enable', config })
+              .catch(() => {
+                /* Some tabs don't have the content script so just ignore
+                 * connection failures here. */
+              });
+          }
         }
-      }
-    });
+      });
   }
 
   disableAll() {
@@ -238,13 +255,18 @@ class App {
       browser.contextMenus.update(this._menuId, { checked: false });
     }
 
-    browser.windows.getAll({ populate: true }).then(windows => {
-      for (const win of windows) {
-        for (const tab of win.tabs) {
-          browser.tabs.sendMessage(tab.id, { type: 'disable' });
+    browser.windows
+      .getAll({ populate: true, windowTypes: ['normal'] })
+      .then(windows => {
+        for (const win of windows) {
+          for (const tab of win.tabs) {
+            browser.tabs.sendMessage(tab.id, { type: 'disable' }).catch(() => {
+              /* Some tabs don't have the content script so just ignore
+               * connection failures here. */
+            });
+          }
         }
-      }
-    });
+      });
   }
 
   toggle(tab) {

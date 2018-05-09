@@ -1685,4 +1685,10 @@ browser.runtime.onMessage.addListener(request => {
 });
 
 // When a page first loads, checks to see if it should enable script
-browser.runtime.sendMessage({ type: 'enable?' });
+//
+// Note that the background script might not have been initialized yet in which
+// case this will fail. However, presumably once the background script has
+// initialized it will call us if we need to be enabled.
+browser.runtime.sendMessage({ type: 'enable?' }).catch(() => {
+  /* Ignore */
+});
