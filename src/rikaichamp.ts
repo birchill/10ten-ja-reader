@@ -52,7 +52,7 @@ class App {
   _haveNames: boolean = true;
   _dictCount: number = 3;
   _enabled: boolean = false;
-  _menuId?: number | string = null;
+  _menuId: number | string | null = null;
 
   constructor() {
     this._config = new Config();
@@ -94,20 +94,46 @@ class App {
     browser.browserAction.onClicked.addListener(tab => {
       this.toggle(tab);
     });
-    browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
-      switch (request.type) {
-        case 'enable?':
-          this.onTabSelect(sender.tab.id);
-          break;
-        case 'xsearch':
-          return this.search(request.text, request.dictOption);
-        case 'translate':
-          return this._dict.translate(request.title);
-        case 'toggleDefinition':
-          this._config.toggleReadingOnly();
-          break;
+    browser.runtime.onMessage.addListener(
+      (request: any, sender: browser.runtime.MessageSender) => {
+        if (typeof request.type !== 'string') {
+          return;
+        }
+
+        switch (request.type) {
+          case 'enable?':
+            if (sender.tab && typeof sender.tab.id === 'number') {
+              this.onTabSelect(sender.tab.id);
+            } else {
+              console.error('No sender tab in enable? request');
+            }
+            break;
+          case 'xsearch':
+            if (
+              typeof request.text === 'string' &&
+              typeof request.dictOption === 'number'
+            ) {
+              return this.search(
+                request.text as string,
+                request.dictOption as DictMode
+              );
+            }
+            console.error(
+              `Unrecognized xsearch request: ${JSON.stringify(request)}`
+            );
+            break;
+          case 'translate':
+            if (this._dict) {
+              return this._dict.translate(request.title);
+            }
+            console.error('Dictionary not initialized in translate request');
+            break;
+          case 'toggleDefinition':
+            this._config.toggleReadingOnly();
+            break;
+        }
       }
-    });
+    );
 
     this._config.ready.then(() => {
       if (!this._config.contextMenuEnable) {
@@ -147,7 +173,7 @@ class App {
     return this._dict.loaded;
   }
 
-  onTabSelect(tabId) {
+  onTabSelect(tabId: number) {
     if (!this._enabled) {
       return;
     }
@@ -165,7 +191,9 @@ class App {
     });
   }
 
-  enableTab(tab) {
+  enableTab(tab: browser.tabs.Tab) {
+    console.assert(typeof tab.id === 'number', `Unexpected tab ID: ${tab.id}`);
+
     browser.browserAction.setTitle({ title: 'Rikaichamp loading...' });
     browser.browserAction
       .setIcon({ path: 'images/rikaichamp-loading.svg' })
@@ -181,7 +209,7 @@ class App {
     Promise.all([this.loadDictionary(), this._config.ready]).then(() => {
       // Send message to current tab to add listeners and create stuff
       browser.tabs
-        .sendMessage(tab.id, {
+        .sendMessage(tab.id!, {
           type: 'enable',
           config: this._config.contentConfig,
         })
@@ -219,9 +247,14 @@ class App {
       .getAll({ populate: true, windowTypes: ['normal'] })
       .then(windows => {
         for (const win of windows) {
-          for (const tab of win.tabs) {
+          console.assert(typeof win.tabs !== 'undefined');
+          for (const tab of win.tabs!) {
+            console.assert(
+              typeof tab.id === 'number',
+              `Unexpected tab id: ${tab.id}`
+            );
             browser.tabs
-              .sendMessage(tab.id, { type: 'enable', config })
+              .sendMessage(tab.id!, { type: 'enable', config })
               .catch(() => {
                 /* Some tabs don't have the content script so just ignore
                  * connection failures here. */
@@ -259,8 +292,13 @@ class App {
       .getAll({ populate: true, windowTypes: ['normal'] })
       .then(windows => {
         for (const win of windows) {
-          for (const tab of win.tabs) {
-            browser.tabs.sendMessage(tab.id, { type: 'disable' }).catch(() => {
+          console.assert(typeof win.tabs !== 'undefined');
+          for (const tab of win.tabs!) {
+            console.assert(
+              typeof tab.id === 'number',
+              `Unexpected tab id: ${tab.id}`
+            );
+            browser.tabs.sendMessage(tab.id!, { type: 'disable' }).catch(() => {
               /* Some tabs don't have the content script so just ignore
                * connection failures here. */
             });
@@ -269,7 +307,7 @@ class App {
       });
   }
 
-  toggle(tab) {
+  toggle(tab: browser.tabs.Tab) {
     if (this._enabled) {
       this.disableAll();
     } else {
@@ -316,6 +354,11 @@ class App {
   _showMode: number = 0;
 
   search(text: string, dictOption: DictMode) {
+    if (!this._dict) {
+      console.error('Dictionary not initialized in search');
+      return;
+    }
+
     const kanjiReferences = new Set(
       Object.entries(this._config.kanjiReferences)
         .filter(([abbrev, setting]) => setting)
@@ -347,16 +390,19 @@ class App {
       switch (this._showMode) {
         case this._kanjiN:
           return Promise.resolve(
-            this._dict.kanjiSearch(text.charAt(0), kanjiSearchOptions)
+            this._dict!.kanjiSearch(text.charAt(0), kanjiSearchOptions)
           );
         case this._namesN:
-          return this._dict.wordSearch(text, true);
+          return this._dict!.wordSearch(text, true);
       }
-      return this._dict.wordSearch(text, false);
+      return this._dict!.wordSearch(text, false);
     };
 
     const originalMode = this._showMode;
-    return (function loopOverDictionaries(text, self) {
+    return (function loopOverDictionaries(
+      text,
+      self
+    ): Promise<SearchResult | null> {
       return searchCurrentDict(text).then(result => {
         if (result) {
           return result;

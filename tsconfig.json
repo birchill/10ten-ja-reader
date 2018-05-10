@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
+    "noImplicitAny": true,
     "outDir": "extension",
+    "strictNullChecks": true,
     "target": "es2017",
-    "typeRoots": ["@types","node_modules/web-ext-types"]
+    "typeRoots": ["@types","node_modules/web-ext-types","src/common.d.ts"]
   },
   "include": [
     "src/*"

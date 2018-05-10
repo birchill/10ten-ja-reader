@@ -56,7 +56,7 @@ class Config {
       defaultKeys[setting.name] = setting.keys;
       return defaultKeys;
     },
-    {}
+    {} as Partial<KeyboardKeys>
   ) as KeyboardKeys;
 
   constructor() {
@@ -79,7 +79,7 @@ class Config {
     return this._readPromise;
   }
 
-  onChange(changes, areaName) {
+  onChange(changes: object, areaName: string) {
     if (areaName !== 'sync') {
       return;
     }
@@ -218,7 +218,7 @@ class Config {
 
   get kanjiReferences(): KanjiReferenceFlags {
     const setValues = this._settings.kanjiReferences || {};
-    const result = {};
+    const result: KanjiReferenceFlags = {};
     for (const ref of REF_ABBREVIATIONS) {
       result[ref.abbrev] =
         typeof setValues[ref.abbrev] === 'undefined' || setValues[ref.abbrev];

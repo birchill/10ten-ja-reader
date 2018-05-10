@@ -70,10 +70,6 @@ interface NodeIterator {
   readonly referenceNode?: Node;
 }
 
-interface HTMLInputElement {
-  selectionDirection: string;
-}
-
 interface HTMLTextAreaElement {
   selectionDirection: string;
 }
@@ -88,7 +84,7 @@ interface GetTextResult {
   text: string;
   // Contains the node and offset where the selection starts. This will be null
   // if, for example, the result is the text from an element's title attribute.
-  rangeStart?: RangeEndpoint;
+  rangeStart: RangeEndpoint | null;
   // Contains the node and offset for each the text containing node in the
   // maximum selected range.
   rangeEnds: RangeEndpoint[];
@@ -96,12 +92,12 @@ interface GetTextResult {
 
 interface CachedGetTextResult {
   result: GetTextResult;
-  position?: CaretPosition;
+  position: CaretPosition | null;
   point: { x: number; y: number };
 }
 
 const isTextInputNode = (
-  node?: Node
+  node: Node | null
 ): node is HTMLInputElement | HTMLTextAreaElement => {
   const allowedInputTypes = [
     'button',
@@ -112,7 +108,7 @@ const isTextInputNode = (
     'url',
   ];
   return (
-    node &&
+    !!node &&
     node.nodeType === Node.ELEMENT_NODE &&
     (((<Element>node).tagName === 'INPUT' &&
       allowedInputTypes.includes((<HTMLInputElement>node).type)) ||
@@ -125,7 +121,7 @@ const isInclusiveAncestor = (ancestor: Element, testNode?: Node): boolean => {
     return false;
   }
 
-  let node = testNode;
+  let node: Node | null = testNode;
   do {
     if (node === ancestor) {
       return true;
@@ -137,7 +133,7 @@ const isInclusiveAncestor = (ancestor: Element, testNode?: Node): boolean => {
 };
 
 interface Focusable {
-  focus();
+  focus(): void;
 }
 
 // Both HTMLElement and SVGElement interfaces have a focus() method but I guess
@@ -149,8 +145,9 @@ const isFocusable = (element?: any): element is Focusable =>
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 const isForeignObjectElement = (
-  elem?: Element
+  elem: Element | null
 ): elem is SVGForeignObjectElement =>
+  !!elem &&
   elem.namespaceURI === SVG_NS &&
   elem.nodeName.toUpperCase() === 'FOREIGNOBJECT';
 
@@ -183,21 +180,21 @@ class RikaiContent {
   _config: ContentConfig;
 
   // Lookup tracking (so we can avoid redundant work and so we can re-render)
-  _currentTextAtPoint?: CachedGetTextResult = null;
-  _currentSearchResult?: SearchResult = null;
-  _currentTarget?: Element = null;
-  _currentTitle?: string = null;
+  _currentTextAtPoint: CachedGetTextResult | null = null;
+  _currentSearchResult: SearchResult | null = null;
+  _currentTarget: Element | null = null;
+  _currentTitle: string | null = null;
 
   // Highlight tracking
-  _selectedWindow?: Window = null;
-  _selectedText?: string = null;
-  _selectedTextBox?: {
+  _selectedWindow: Window | null = null;
+  _selectedText: string | null = null;
+  _selectedTextBox: {
     node: HTMLInputElement | HTMLTextAreaElement;
-    previousStart: number;
-    previousEnd: number;
-    previousDirection: string;
+    previousStart: number | null;
+    previousEnd: number | null;
+    previousDirection: string | null;
     previousFocus?: Element;
-  } = null;
+  } | null = null;
 
   // Key tracking
   _keysDown: Set<string> = new Set();
@@ -207,10 +204,10 @@ class RikaiContent {
   static MOUSE_SPEED_THRESHOLD = 0.2;
   _mouseSpeedRollingSum: number = 0;
   _mouseSpeeds: number[] = [];
-  _previousMousePosition?: { x: number; y: number } = null;
-  _previousMouseMoveTime: number = null;
+  _previousMousePosition: { x: number; y: number } | null = null;
+  _previousMouseMoveTime: number | null = null;
 
-  constructor(config) {
+  constructor(config: ContentConfig) {
     this._config = config;
 
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -293,7 +290,7 @@ class RikaiContent {
       this._mouseSpeedRollingSum += speed;
 
       if (this._mouseSpeeds.length > RikaiContent.MOUSE_SPEED_SAMPLES) {
-        this._mouseSpeedRollingSum -= this._mouseSpeeds.shift();
+        this._mouseSpeedRollingSum -= this._mouseSpeeds.shift()!;
       }
 
       averageSpeed = this._mouseSpeedRollingSum / this._mouseSpeeds.length;
@@ -382,7 +379,7 @@ class RikaiContent {
 
   isVisible(): boolean {
     const popup = document.getElementById('rikaichamp-window');
-    return popup && !popup.classList.contains('hidden');
+    return !!popup && !popup.classList.contains('hidden');
   }
 
   async tryToUpdatePopup(
@@ -396,7 +393,7 @@ class RikaiContent {
     const textAtPoint = this.getTextAtPoint(point, RikaiContent.MAX_LENGTH);
     console.assert(
       (!textAtPoint && !this._currentTextAtPoint) ||
-        (this._currentTextAtPoint &&
+        (!!this._currentTextAtPoint &&
           textAtPoint === this._currentTextAtPoint.result),
       'Should have updated _currentTextAtPoint'
     );
@@ -483,7 +480,7 @@ class RikaiContent {
     },
     maxLength?: number
   ): GetTextResult | null {
-    let position: CaretPosition;
+    let position: CaretPosition | null;
     if (document.caretPositionFromPoint) {
       position = document.caretPositionFromPoint(point.x, point.y);
     } else {
@@ -513,7 +510,7 @@ class RikaiContent {
     let startNode: Node | null = position ? position.offsetNode : null;
     if (isTextInputNode(startNode)) {
       // If we selected the end of the text, skip it.
-      if (position.offset === startNode.value.length) {
+      if (position!.offset === startNode.value.length) {
         this._currentTextAtPoint = null;
         return null;
       }
@@ -522,8 +519,8 @@ class RikaiContent {
 
     // Try handling as a text node
 
-    const isTextNode = (node: Node): node is CharacterData => {
-      return node && node.nodeType === Node.TEXT_NODE;
+    const isTextNode = (node: Node | null): node is CharacterData => {
+      return !!node && node.nodeType === Node.TEXT_NODE;
     };
 
     if (isTextNode(startNode)) {
@@ -534,7 +531,7 @@ class RikaiContent {
       // assume we'll be within their bounds.
       const distanceResult = this.getDistanceFromTextNode(
         startNode,
-        position.offset,
+        position!.offset,
         point
       );
       if (distanceResult) {
@@ -549,15 +546,19 @@ class RikaiContent {
 
       const result = this.getTextFromTextNode(
         startNode,
-        position.offset,
+        position!.offset,
         point,
         maxLength
       );
       if (result) {
+        console.assert(
+          !!result.rangeStart,
+          'The range start should be set when getting text from a text node'
+        );
         // If we synthesized a text node, substitute the original node back in.
-        if (startNode !== position.offsetNode) {
+        if (startNode !== position!.offsetNode) {
           console.assert(
-            result.rangeStart.container === startNode,
+            result.rangeStart!.container === startNode,
             'When using a synthesized text node the range should start' +
               ' from that node'
           );
@@ -567,13 +568,13 @@ class RikaiContent {
             'When using a synthesized text node there should be a single' +
               ' range end using the synthesized node'
           );
-          result.rangeStart.container = position.offsetNode;
-          result.rangeEnds[0].container = position.offsetNode;
+          result.rangeStart!.container = position!.offsetNode;
+          result.rangeEnds[0].container = position!.offsetNode;
         }
 
         this._currentTextAtPoint = {
           result,
-          position,
+          position: position!,
           point,
         };
         return result;
@@ -586,7 +587,7 @@ class RikaiContent {
     if (elem) {
       const text = this.getTextFromRandomElement(elem);
       if (text) {
-        const result = {
+        const result: GetTextResult = {
           text,
           rangeStart: null,
           rangeEnds: [],
@@ -681,7 +682,7 @@ class RikaiContent {
   ): GetTextResult | null {
     // TODO: Factor in the manual offset from the "next word" feature?
 
-    const isRubyAnnotationElement = (element?: Element) => {
+    const isRubyAnnotationElement = (element: Element | null) => {
       if (!element) {
         return false;
       }
@@ -690,8 +691,9 @@ class RikaiContent {
       return tag === 'rp' || tag === 'rt';
     };
 
-    const isInline = (element?: Element) =>
-      element && ['inline', 'ruby'].includes(getComputedStyle(element).display);
+    const isInline = (element: Element | null) =>
+      element &&
+      ['inline', 'ruby'].includes(getComputedStyle(element).display!);
 
     // Get the ancestor node for all inline nodes
     let inlineAncestor = startNode.parentElement;
@@ -699,7 +701,7 @@ class RikaiContent {
       isInline(inlineAncestor) &&
       !isRubyAnnotationElement(inlineAncestor)
     ) {
-      inlineAncestor = inlineAncestor.parentElement;
+      inlineAncestor = inlineAncestor!.parentElement;
     }
 
     // Check that our ancestor is, in fact, an ancestor of the point we're
@@ -718,7 +720,7 @@ class RikaiContent {
     // Skip ruby annotation elements when traversing. However, don't do that
     // if the inline ancestor is itself a ruby annotation element or else
     // we'll never be able to find the starting point within the tree walker.
-    let filter;
+    let filter: NodeFilter | undefined;
     if (!isRubyAnnotationElement(inlineAncestor)) {
       filter = {
         acceptNode: node =>
@@ -765,7 +767,7 @@ class RikaiContent {
       return null;
     }
 
-    let result = {
+    let result: GetTextResult | null = {
       text: '',
       rangeStart: {
         // If we're operating on a synthesized text node, use the actual
@@ -885,7 +887,7 @@ class RikaiContent {
     // TODO: Record when the mouse is down and don't highlight in that case
     //       (I guess that would interfere with selecting)
 
-    if (this._config.noTextHighlight) {
+    if (this._config.noTextHighlight || !textAtPoint.rangeStart) {
       return;
     }
 
@@ -990,7 +992,7 @@ class RikaiContent {
     }
   }
 
-  clearHighlight(currentElement?: Element) {
+  clearHighlight(currentElement: Element | null) {
     this._currentTextAtPoint = null;
     this._currentSearchResult = null;
     this._currentTarget = null;
@@ -1018,7 +1020,7 @@ class RikaiContent {
     }
   }
 
-  _clearTextBoxSelection(currentElement?: Element) {
+  _clearTextBoxSelection(currentElement: Element | null) {
     if (!this._selectedTextBox) {
       return;
     }
@@ -1146,9 +1148,9 @@ class RikaiContent {
     const popupWidth = popup.offsetWidth || 200;
     const popupHeight = popup.offsetHeight;
 
-    const getRefCoord = coord =>
-      referencePosition && !isNaN(parseInt(referencePosition[coord]))
-        ? parseInt(referencePosition[coord])
+    const getRefCoord = (coord: 'x' | 'y'): number =>
+      referencePosition && !isNaN(parseInt(referencePosition[coord] as any))
+        ? parseInt(referencePosition[coord] as any)
         : 0;
     let popupX = getRefCoord('x');
     let popupY = getRefCoord('y');
@@ -1195,8 +1197,10 @@ class RikaiContent {
 
     // This is only needed because Edge's WebIDL definitions are wrong
     // (they have documentElement as having type HTMLElement)
-    const isSVGSVGElement = (elem?: Element): elem is SVGSVGElement =>
-      elem.namespaceURI === SVG_NS && elem.nodeName.toUpperCase() === 'SVG';
+    const isSVGSVGElement = (elem: Element | null): elem is SVGSVGElement =>
+      !!elem &&
+      elem.namespaceURI === SVG_NS &&
+      elem.nodeName.toUpperCase() === 'SVG';
 
     if (
       isSvg &&
@@ -1207,12 +1211,13 @@ class RikaiContent {
       // to document space.
       const svg: SVGSVGElement = doc.documentElement;
       const wrapper: SVGForeignObjectElement = popup.parentElement;
-      const transform = svg.createSVGTransformFromMatrix(
-        svg.getScreenCTM().inverse()
-      );
       wrapper.x.baseVal.value = popupX;
       wrapper.y.baseVal.value = popupY;
-      wrapper.transform.baseVal.initialize(transform);
+      const ctm = svg.getScreenCTM();
+      if (ctm) {
+        const transform = svg.createSVGTransformFromMatrix(ctm.inverse());
+        wrapper.transform.baseVal.initialize(transform);
+      }
     } else {
       popup.style.left = `${popupX}px`;
       popup.style.top = `${popupY}px`;
@@ -1220,8 +1225,8 @@ class RikaiContent {
   }
 
   makeHtmlForResult(
-    result?: SearchResult,
-    title?: string
+    result: SearchResult | null,
+    title: string | null
   ): DocumentFragment | null {
     if (!result) {
       return null;
@@ -1246,7 +1251,7 @@ class RikaiContent {
 
   makeHtmlForWords(
     result: WordSearchResult | TranslateResult,
-    title?: string
+    title: string | null
   ): DocumentFragment {
     const fragment = document.createDocumentFragment();
 
@@ -1272,7 +1277,7 @@ class RikaiContent {
       kanjiKana: string;
       kana: string[];
       definition: string;
-      reason: string;
+      reason: string | null;
     }
     const entries: DisplayEntry[] = [];
     for (const [dictEntry, reason] of result.data) {
@@ -1295,7 +1300,7 @@ class RikaiContent {
         continue;
       }
 
-      const entry = {
+      const entry: DisplayEntry = {
         kanjiKana,
         kana: [],
         definition,
@@ -1314,7 +1319,7 @@ class RikaiContent {
       kanjiSpan.append(entry.kanjiKana);
 
       for (const kana of entry.kana) {
-        if (fragment.lastElementChild.classList.contains('w-kana')) {
+        if (fragment.lastElementChild!.classList.contains('w-kana')) {
           fragment.append('、 ');
         }
         const kanaSpan = document.createElement('span');
@@ -1654,9 +1659,17 @@ class RikaiContent {
 let rikaiContent: RikaiContent | null = null;
 
 // Event Listeners
-browser.runtime.onMessage.addListener(request => {
+browser.runtime.onMessage.addListener((request: any) => {
+  if (typeof request.type !== 'string') {
+    return;
+  }
+
   switch (request.type) {
     case 'enable':
+      console.assert(
+        typeof request.config === 'object',
+        'No config object provided with enable message'
+      );
       if (rikaiContent) {
         rikaiContent.config = request.config;
       } else {

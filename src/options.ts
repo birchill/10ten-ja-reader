@@ -5,7 +5,7 @@ interface Window {
 const config = browser.extension.getBackgroundPage().rcxMain.config;
 
 function completeForm() {
-  const popupStyleSelect = document.getElementById('popupstyle-select');
+  const popupStyleSelect = document.getElementById('popupstyle-select')!;
   const themes = ['blue', 'lightblue', 'black', 'yellow'];
 
   for (const theme of themes) {
@@ -46,7 +46,7 @@ function completeForm() {
     popupPreview.appendChild(spanDef);
   }
 
-  const grid = document.getElementById('key-grid');
+  const grid = document.getElementById('key-grid')!;
 
   for (const setting of config.DEFAULT_KEY_SETTINGS) {
     const keyBlock = document.createElement('div');
@@ -99,32 +99,34 @@ function completeForm() {
   // TODO: Use REF_ABBREVIATIONS to generate the HTML for options.html too.
 
   for (const ref of Object.keys(config.kanjiReferences)) {
-    document.getElementById(ref).addEventListener('click', evt => {
+    document.getElementById(ref)!.addEventListener('click', evt => {
       config.updateKanjiReferences({
         [ref]: (evt.target as HTMLInputElement).checked,
       });
     });
   }
 
-  document.getElementById('showDefinitions').addEventListener('click', evt => {
+  document.getElementById('showDefinitions')!.addEventListener('click', evt => {
     config.readingOnly = !(evt.target as HTMLInputElement).checked;
   });
 
-  document.getElementById('highlightText').addEventListener('click', evt => {
+  document.getElementById('highlightText')!.addEventListener('click', evt => {
     config.noTextHighlight = !(evt.target as HTMLInputElement).checked;
   });
 
-  document
-    .getElementById('contextMenuEnable')
-    .addEventListener('click', evt => {
+  document.getElementById('contextMenuEnable')!.addEventListener(
+    'click',
+    evt => {
       config.contextMenuEnable = (evt.target as HTMLInputElement).checked;
-    });
+    }
+  );
 
-  document
-    .getElementById('showKanjiComponents')
-    .addEventListener('click', evt => {
+  document.getElementById('showKanjiComponents')!.addEventListener(
+    'click',
+    evt => {
       config.showKanjiComponents = (evt.target as HTMLInputElement).checked;
-    });
+    }
+  );
 }
 
 async function fillVals() {

@@ -108,14 +108,21 @@ interface DeinflectRule {
   type: number;
   reason: number;
 }
-type DeinflectRuleGroup = Array<DeinflectRule> & { fromLen?: number };
+type DeinflectRuleGroup = Array<DeinflectRule> & { fromLen: number };
+
+// Helper to initialize a new DeinflectRuleGroup
+const createDeinflectRuleGroup = (fromLen: number): DeinflectRuleGroup => {
+  const result: any = [];
+  result.fromLen = fromLen;
+  return result as DeinflectRuleGroup;
+};
 
 interface CandidateWord {
   // The de-inflected candidate word
   word: string;
-  // A string describing the relationship of |word| to its de-inflected version,
+  // An optional string describing the relationship of |word| to its de-inflected version,
   // e.g. 'past'
-  reason: string;
+  reason: string | null;
   // A bitfield describing the type of the de-inflected word (e.g. group 5 verb)
   type: number;
 }
@@ -165,7 +172,7 @@ class Dictionary {
   }
 
   // Does a binary search of a linefeed delimited string, |data|, for |text|.
-  find(data, text): string | null {
+  find(data: string, text: string): string | null {
     const tlen: number = text.length;
     let start: number = 0;
     let end: number = data.length - 1;
@@ -209,7 +216,7 @@ class Dictionary {
   // Note: These are mostly flat text files; loaded as one continous string to
   // reduce memory use
   loadDictionary(): Promise<any> {
-    const dataFiles = {
+    const dataFiles: { [key: string]: string } = {
       wordDict: 'dict.dat',
       wordIndex: 'dict.idx',
       kanjiData: 'kanji.dat',
@@ -219,14 +226,15 @@ class Dictionary {
     const readPromises = [];
     for (const key in dataFiles) {
       if (dataFiles.hasOwnProperty(key)) {
-        const reader: (url: string) => Promise<any> =
+        const reader: (url: string) => Promise<string | string[]> =
           key === 'radData'
             ? this.fileReadArray.bind(this)
             : this.fileRead.bind(this);
         const readPromise = reader(
           browser.extension.getURL(`data/${dataFiles[key]}`)
         ).then(text => {
-          this[key] = text;
+          // TODO: Make the following typesafe
+          this[key as keyof Dictionary] = text;
         });
         readPromises.push(readPromise);
       }
@@ -266,8 +274,7 @@ class Dictionary {
 
         if (prevLen !== rule.from.length) {
           prevLen = rule.from.length;
-          ruleGroup = [];
-          ruleGroup.fromLen = prevLen;
+          ruleGroup = createDeinflectRuleGroup(prevLen);
           this.deinflectRules.push(ruleGroup);
         }
         ruleGroup.push(rule);
@@ -276,7 +283,7 @@ class Dictionary {
   }
 
   // Returns an array of possible de-inflected versions of |word|.
-  deinflect(word): CandidateWord[] {
+  deinflect(word: string): CandidateWord[] {
     const result: Array<CandidateWord> = [];
     const resultIndex: { [index: string]: number } = {};
 
@@ -313,7 +320,7 @@ class Dictionary {
               resultIndex[newWord] = result.length;
 
               let reason: string = this.deinflectReasons[rule.reason];
-              if (result[i].reason.length) {
+              if (result[i].reason && result[i].reason!.length) {
                 reason += ` < ${result[i].reason}`;
               }
               const candidate: CandidateWord = {
@@ -332,7 +339,11 @@ class Dictionary {
     return result;
   }
 
-  async wordSearch(input, doNames, max = 0): Promise<WordSearchResult | null> {
+  async wordSearch(
+    input: string,
+    doNames: boolean,
+    max = 0
+  ): Promise<WordSearchResult | null> {
     let [word, inputLengths] = this.normalizeInput(input);
 
     let maxResults = doNames ? NAMES_MAX_ENTRIES : WORDS_MAX_ENTRIES;
@@ -341,7 +352,7 @@ class Dictionary {
     }
 
     const [dict, index] = await this._getDictAndIndex(doNames);
-    const result: WordSearchResult = this._lookupInput(
+    const result: WordSearchResult | null = this._lookupInput(
       word,
       inputLengths,
       dict,
@@ -371,7 +382,7 @@ class Dictionary {
   //
   // TODO: Translate this range https://en.wikipedia.org/wiki/Enclosed_Ideographic_Supplement
   // TODO: Translate the first part of this range: https://en.wikipedia.org/wiki/CJK_Compatibility
-  normalizeInput(input: string) {
+  normalizeInput(input: string): [string, number[]] {
     let inputLengths = [0];
     let previous = 0;
     let result = '';
@@ -418,7 +429,7 @@ class Dictionary {
     return [result, inputLengths];
   }
 
-  async _getDictAndIndex(doNames) {
+  async _getDictAndIndex(doNames: boolean) {
     if (doNames) {
       await this.loadNames();
       return [this.nameDict, this.nameIndex];
@@ -434,17 +445,17 @@ class Dictionary {
   // e.g. if |input| is '子犬は' then the entry for '子犬' will match but
   // '犬' will not.
   _lookupInput(
-    input,
-    inputLengths,
-    dict,
-    index,
-    maxResults,
-    deinflect
+    input: string,
+    inputLengths: number[],
+    dict: string,
+    index: string,
+    maxResults: number,
+    deinflect: boolean
   ): LookupResult | null {
-    let count = 0;
-    let longestMatch = 0;
-    let cache = [];
-    let have = [];
+    let count: number = 0;
+    let longestMatch: number = 0;
+    let cache: { [index: string]: number[] } = {};
+    let have: Set<number> = new Set();
 
     let result: LookupResult = {
       data: [],
@@ -453,28 +464,28 @@ class Dictionary {
     };
 
     while (input.length > 0) {
-      var showInf = count != 0;
+      const showInf: boolean = count != 0;
       // TODO: Split inflection handling out into a separate method
-      const trys = deinflect
+      const candidates = deinflect
         ? this.deinflect(input)
         : [{ word: input, type: 0xff, reason: null }];
 
-      for (let i = 0; i < trys.length; i++) {
-        const u = trys[i];
-        var ix = cache[u.word];
+      for (let i = 0; i < candidates.length; i++) {
+        const candidate: CandidateWord = candidates[i];
+        let ix: number[] | undefined = cache[candidate.word];
         if (!ix) {
-          ix = this.find(index, u.word + ',');
-          if (!ix) {
-            cache[u.word] = [];
+          const lookupResult = this.find(index, candidate.word + ',');
+          if (!lookupResult) {
+            cache[candidate.word] = [];
             continue;
           }
-          ix = ix.split(',');
-          cache[u.word] = ix;
+          ix = lookupResult.split(',').map(Number);
+          cache[candidate.word] = ix;
         }
 
         for (let j = 1; j < ix.length; ++j) {
-          var ofs = ix[j];
-          if (have[ofs]) {
+          const ofs = ix[j];
+          if (have.has(ofs)) {
             continue;
           }
 
@@ -493,7 +504,7 @@ class Dictionary {
 
             var w;
             var x = dentry.split(/[,()]/);
-            var y = u.type;
+            var y = candidate.type;
             var z = Math.min(x.length - 1, 10);
             for (; z >= 0; --z) {
               w = x[z];
@@ -512,14 +523,14 @@ class Dictionary {
               break;
             }
 
-            have[ofs] = 1;
+            have.add(ofs);
             ++count;
 
             longestMatch = Math.max(longestMatch, inputLengths[input.length]);
 
             let r;
-            if (trys[i].reason) {
-              r = `< ${trys[i].reason}`;
+            if (candidates[i].reason) {
+              r = `< ${candidates[i].reason}`;
               if (showInf) {
                 r += ` < ${input}`;
               }
@@ -550,7 +561,7 @@ class Dictionary {
     return result;
   }
 
-  async translate(text): Promise<TranslateResult> | null {
+  async translate(text: string): Promise<TranslateResult | null> {
     const result: TranslateResult = {
       data: [],
       textLen: text.length,
@@ -593,7 +604,7 @@ class Dictionary {
     if (fields.length != 6) return null;
 
     // Separate space-separated lists with an ideographic comma (、) and space
-    const splitWords = str => {
+    const splitWords = (str: string) => {
       const result = str.split(' ');
       // split() has this odd behavior where:
       //
@@ -653,7 +664,7 @@ class Dictionary {
       const addRadicalFromRow = (row: string) => {
         const fields: string[] = row.split('\t');
         if (fields.length >= 4) {
-          entry.components.push({
+          entry.components!.push({
             radical: fields[0],
             yomi: fields[2],
             english: fields[3],
@@ -674,51 +685,6 @@ class Dictionary {
     }
 
     return entry;
-  }
-
-  makeText(entry, max) {
-    var e;
-    var b;
-    var i, j;
-    var t;
-
-    if (entry == null) return '';
-
-    b = [];
-
-    if (entry.kanji) {
-      b.push(entry.kanji + '\n');
-      b.push((entry.eigo.length ? entry.eigo : '-') + '\n');
-
-      b.push(entry.onkun.replace(/\.([^\u3001]+)/g, '\uFF08$1\uFF09') + '\n');
-      if (entry.nanori.length) {
-        b.push('\u540D\u4E57\u308A\t' + entry.nanori + '\n');
-      }
-      if (entry.bushumei.length) {
-        b.push('\u90E8\u9996\u540D\t' + entry.bushumei + '\n');
-      }
-
-      for (let ref of REF_ABBREVIATIONS) {
-        const refValue = entry.misc[ref.abbrev];
-        b.push(`${ref.name}\t${refValue || '-'}\n`);
-      }
-    } else {
-      if (max > entry.data.length) max = entry.data.length;
-      for (i = 0; i < max; ++i) {
-        e = entry.data[i][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
-        if (!e) continue;
-
-        if (e[2]) {
-          b.push(e[1] + '\t' + e[2]);
-        } else {
-          b.push(e[1]);
-        }
-
-        t = e[3].replace(/\//g, '; ');
-        b.push('\t' + t + '\n');
-      }
-    }
-    return b.join('');
   }
 }
 
