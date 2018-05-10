@@ -9,9 +9,7 @@
 <script>
 const browser = {
   runtime: {
-    sendMessage: msg => {
-      // Probably should log this somewhere I guess...
-    },
+    sendMessage: msg => new Promise(resolve => resolve),
     onMessage: {
       addListener: fn => {
         // Probably should do something with this...
