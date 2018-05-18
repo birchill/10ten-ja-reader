@@ -37,7 +37,7 @@ function completeForm() {
 
     const spanKana = document.createElement('span');
     spanKana.classList.add('w-kana');
-    spanKana.textContent = 'かな';
+    spanKana.textContent = 'りかい';
     popupPreview.appendChild(spanKana);
 
     const spanDef = document.createElement('span');
