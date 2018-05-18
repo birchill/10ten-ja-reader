@@ -33,7 +33,7 @@
     "iconv-lite": "^0.4.23",
     "jest": "^22.4.3",
     "slimerjs": "git+https://github.com/birtles/slimerjs.git",
-    "ts-jest": "^22.4.5",
+    "ts-jest": "^22.4.6",
     "web-ext-types": "github:michael-zapata/web-ext-types"
   },
   "dependencies": {
