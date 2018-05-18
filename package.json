@@ -32,7 +32,7 @@
     "byline": "^5.0.0",
     "iconv-lite": "^0.4.23",
     "jest": "^22.4.3",
-    "slimerjs": "git+https://github.com/birtles/slimerjs.git",
+    "slimerjs": "git+https://github.com/birtles/slimerjs.git#64c4521471d3e0dfd727b6de0a250b1879a058a0",
     "ts-jest": "^22.4.6",
     "web-ext-types": "github:michael-zapata/web-ext-types"
   },
