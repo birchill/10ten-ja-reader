@@ -132,6 +132,10 @@ const isInclusiveAncestor = (ancestor: Element, testNode?: Node): boolean => {
   return false;
 };
 
+const isSvgDoc = (doc: Document): boolean => {
+  return doc.documentElement.namespaceURI === SVG_NS;
+};
+
 interface Focusable {
   focus(): void;
 }
@@ -205,6 +209,9 @@ class RikaiContent {
   _mouseSpeeds: number[] = [];
   _previousMousePosition: { x: number; y: number } | null = null;
   _previousMouseMoveTime: number | null = null;
+
+  // Content
+  _popupPromise: Promise<HTMLElement> | undefined;
 
   constructor(config: ContentConfig) {
     this._config = config;
@@ -1086,60 +1093,8 @@ class RikaiContent {
     const doc: Document = this._currentTarget
       ? this._currentTarget.ownerDocument
       : window.document;
-    const isSvg = doc.documentElement.namespaceURI === SVG_NS;
 
-    let popup = doc.getElementById('rikaichamp-window');
-    // If there is an existing popup, clear it.
-    if (popup) {
-      while (popup.firstChild) {
-        (<Element | CharacterData>popup.firstChild).remove();
-      }
-      // Restore display property if it was hidden.
-      popup.classList.remove('hidden');
-      // Otherwise, make a new popup element.
-    } else {
-      // For SVG documents we put both the <link> and <div> inside
-      // a <foreignObject>. This saves us messing about with xml-stylesheet
-      // processing instructions.
-      let wrapperElement = null;
-      if (isSvg) {
-        const foreignObject = doc.createElementNS(SVG_NS, 'foreignObject');
-        foreignObject.setAttribute('width', '600');
-        foreignObject.setAttribute('height', '100%');
-        doc.documentElement.append(foreignObject);
-        wrapperElement = foreignObject;
-      }
-
-      // Add <style> element with popup CSS
-      // (One day I hope Web Components might less us scope this now
-      // that scoped stylesheets are dead.)
-      const cssHref = browser.extension.getURL('css/popup.css');
-      const link = doc.createElement('link');
-      link.setAttribute('rel', 'stylesheet');
-      link.setAttribute('type', 'text/css');
-      link.setAttribute('href', cssHref);
-      link.setAttribute('id', 'rikaichamp-css');
-
-      const linkContainer = wrapperElement || doc.head || doc.documentElement;
-      linkContainer.appendChild(link);
-
-      // Wait for the stylesheet to load so we can get a reliable width for the
-      // popup and position it correctly.
-      await styleSheetLoad(link);
-
-      // Add the popup div
-      popup = doc.createElement('div');
-      popup.setAttribute('id', 'rikaichamp-window');
-      popup.classList.add(`-${this._config.popupStyle}`);
-
-      const popupContainer = wrapperElement || doc.documentElement;
-      doc.documentElement.append(popup);
-
-      // Previous rikai-tachi added a double-click listener here that
-      // would hide the popup but how can you ever click it if it
-      // updates on mousemove? Maybe a previous version had another way
-      // of triggering it?
-    }
+    const popup = await this.getEmptyPopupElem(doc);
 
     popup.append(fragment);
 
@@ -1202,7 +1157,7 @@ class RikaiContent {
       elem.nodeName.toUpperCase() === 'SVG';
 
     if (
-      isSvg &&
+      isSvgDoc(doc) &&
       isSVGSVGElement(doc.documentElement) &&
       isForeignObjectElement(popup.parentElement)
     ) {
@@ -1221,6 +1176,77 @@ class RikaiContent {
       popup.style.left = `${popupX}px`;
       popup.style.top = `${popupY}px`;
     }
+  }
+
+  async getEmptyPopupElem(doc: Document): Promise<HTMLElement> {
+    const popup = doc.getElementById('rikaichamp-window');
+
+    // If there is an existing popup, clear it.
+    if (popup) {
+      while (popup.firstChild) {
+        (<Element | CharacterData>popup.firstChild).remove();
+      }
+      // Restore display property if it was hidden.
+      popup.classList.remove('hidden');
+      return Promise.resolve(popup);
+    }
+
+    // Otherwise, make a new popup element.
+    //
+    // Be sure not to create more than one, however.
+    if (this._popupPromise) {
+      return this._popupPromise;
+    }
+
+    this._popupPromise = new Promise(async resolve => {
+      // For SVG documents we put both the <link> and <div> inside
+      // a <foreignObject>. This saves us messing about with xml-stylesheet
+      // processing instructions.
+      let wrapperElement = null;
+      if (isSvgDoc(doc)) {
+        const foreignObject = doc.createElementNS(SVG_NS, 'foreignObject');
+        foreignObject.setAttribute('width', '600');
+        foreignObject.setAttribute('height', '100%');
+        doc.documentElement.append(foreignObject);
+        wrapperElement = foreignObject;
+      }
+
+      // Add <style> element with popup CSS
+      // (One day I hope Web Components might less us scope this now
+      // that scoped stylesheets are dead.)
+      const cssHref = browser.extension.getURL('css/popup.css');
+      const link = doc.createElement('link');
+      link.setAttribute('rel', 'stylesheet');
+      link.setAttribute('type', 'text/css');
+      link.setAttribute('href', cssHref);
+      link.setAttribute('id', 'rikaichamp-css');
+
+      const linkContainer = wrapperElement || doc.head || doc.documentElement;
+      linkContainer.appendChild(link);
+
+      // Wait for the stylesheet to load so we can get a reliable width for the
+      // popup and position it correctly.
+      await styleSheetLoad(link);
+
+      // Add the popup div
+      const popup = doc.createElement('div');
+      popup.setAttribute('id', 'rikaichamp-window');
+      popup.classList.add(`-${this._config.popupStyle}`);
+
+      const popupContainer = wrapperElement || doc.documentElement;
+      doc.documentElement.append(popup);
+
+      // Previous rikai-tachi added a double-click listener here that
+      // would hide the popup but how can you ever click it if it
+      // updates on mousemove? Maybe a previous version had another way
+      // of triggering it?
+
+      this._popupPromise = undefined;
+
+      resolve(popup);
+    });
+
+    return this._popupPromise;
   }
 
   makeHtmlForResult(
