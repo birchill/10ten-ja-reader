@@ -165,11 +165,10 @@ const styleSheetLoad = (link: HTMLLinkElement): Promise<void> =>
   new Promise(resolve => {
     link.addEventListener(
       'load',
-      // We can't just pass |resolve| directly here because TypeScript doesn't
-      // like it.
-      () => {
-        resolve();
-      },
+      // The typings for addEventListener seem to end up expecting an
+      // EventListenerObject and don't allow just a regular function.
+      // Anyway, this is fine.
+      <any>resolve,
       { once: true }
     );
   });
