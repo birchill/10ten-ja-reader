@@ -1682,14 +1682,8 @@ browser.runtime.onMessage.addListener((request: any) => {
         rikaiContent.detach();
         rikaiContent = null;
       }
+      break;
 
-      break;
-    case 'showPopup':
-      // Don't show the popup on all the iframes, only the topmost window
-      if (self === top) {
-        // TODO
-      }
-      break;
     default:
       console.error(`Unrecognized request ${JSON.stringify(request)}`);
       break;
