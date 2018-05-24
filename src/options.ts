@@ -1,5 +1,9 @@
-interface Window {
-  rcxMain: { config: Config };
+import Config from './config';
+
+declare global {
+  interface Window {
+    rcxMain: { config: Config };
+  }
 }
 
 const config = browser.extension.getBackgroundPage().rcxMain.config;
@@ -114,19 +118,17 @@ function completeForm() {
     config.noTextHighlight = !(evt.target as HTMLInputElement).checked;
   });
 
-  document.getElementById('contextMenuEnable')!.addEventListener(
-    'click',
-    evt => {
+  document
+    .getElementById('contextMenuEnable')!
+    .addEventListener('click', evt => {
       config.contextMenuEnable = (evt.target as HTMLInputElement).checked;
-    }
-  );
+    });
 
-  document.getElementById('showKanjiComponents')!.addEventListener(
-    'click',
-    evt => {
+  document
+    .getElementById('showKanjiComponents')!
+    .addEventListener('click', evt => {
       config.showKanjiComponents = (evt.target as HTMLInputElement).checked;
-    }
-  );
+    });
 }
 
 async function fillVals() {

@@ -1,6 +1,6 @@
 /*
 
-  Rikai champ
+  Rikaichamp
   by Brian Birtles
   https://github.com/birtles/rikaichamp
 
@@ -44,6 +44,15 @@
   when modifying any of the files. - Jon
 
 */
+
+import Config from './config';
+import Dictionary from './data';
+
+declare global {
+  interface Window {
+    rcxMain: { config: Config };
+  }
+}
 
 class App {
   _config: Config;

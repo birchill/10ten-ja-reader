@@ -18,29 +18,11 @@ For manual testing you can use
 npm start
 ```
 
-Which will run:
+Then load the `__tests__/playground.html` test file. (Ultimately this should
+become automatic but `web-ext-webpack-plugin` needs this feature still.)
 
-```
-web-ext run --bc --start-url __tests__/playground.html
-```
-
-The `--bc` just brings up the browser console immediately so you can check for
-any warnings produced at startup.
-
-Add `-p default` if you want to use your regular browsing profile so you can
-easily test sites that require a login such as Twitter and Facebook. e.g.
-
-
-```
-npm start -- -p default
-```
-
-Likewise, if `web-ext` is bringing up the wrong version of Firefox or can't find it, you can specify to use, e.g. Nightly using `-f nightly`. e.g.
-
-
-```
-npm start -- -f nightly
-```
+I should really make this allow specifying the version of Firefox / profile to
+use too.
 
 ## Testing
 
@@ -53,7 +35,7 @@ the unit tests and browser tests separately:
 
 ```
 ./node_modules/.bin/jest
-firefox __tests__/rikaicontent.html
+firefox __tests__/content.html
 ```
 
 ### Debugging SlimerJS test runs
@@ -61,7 +43,7 @@ firefox __tests__/rikaicontent.html
 For debugging SlimerJS something like the following should work:
 
 ```
-SLIMERJSLAUNCHER=/opt/firefox/firefox ./node_modules/.bin/slimerjs utils/slimerjs-test-runner.js __tests__/rikaicontent.html --debug=true
+SLIMERJSLAUNCHER=/opt/firefox/firefox ./node_modules/.bin/slimerjs utils/slimerjs-test-runner.js __tests__/content.html --debug=true
 ```
 
 That's assuming that you have a nightly build at `/opt/firefox/firefox`. If
@@ -72,5 +54,5 @@ you can check which version is being used.
 Regular running:
 
 ```
-MOZ_HEADLESS=1 SLIMERJSLAUNCHER=/opt/firefox/firefox ./node_modules/.bin/slimerjs utils/slimerjs-test-runner.js __tests__/rikaicontent.html
+MOZ_HEADLESS=1 SLIMERJSLAUNCHER=/opt/firefox/firefox ./node_modules/.bin/slimerjs utils/slimerjs-test-runner.js __tests__/content.html
 ```

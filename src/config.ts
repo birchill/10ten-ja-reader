@@ -10,6 +10,8 @@
 // * Provides a snapshot of all options with their default values filled-in for
 //   passing to the content process.
 
+import { REF_ABBREVIATIONS } from './data';
+
 type KanjiReferenceFlags = { [abbrev: string]: boolean };
 
 interface Settings {
@@ -33,7 +35,7 @@ interface KeySetting {
   description: string;
 }
 
-class Config {
+export class Config {
   _settings: Settings = {};
   _readPromise: Promise<void>;
   _changeListeners: ChangeCallback[] = [];
@@ -248,10 +250,4 @@ class Config {
   }
 }
 
-interface Module {
-  exports: any;
-}
-
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = Config;
-}
+export default Config;

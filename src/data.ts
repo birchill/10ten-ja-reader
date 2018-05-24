@@ -70,7 +70,7 @@ const SEMIVOICED_KATAKANA_TO_HIRAGANA = [
   0x3071, 0x3074, 0x3077, 0x307a, 0x307d
 ];
 
-const REF_ABBREVIATIONS = [
+export const REF_ABBREVIATIONS = [
   /*
   C: 'Classical Radical',
   DR: 'Father Joseph De Roo Index',
@@ -136,7 +136,7 @@ interface KanjiSearchOptions {
   includeKanjiComponents: boolean;
 }
 
-class Dictionary {
+export class Dictionary {
   loaded: Promise<any>;
   nameDict: string;
   nameIndex: string;
@@ -688,11 +688,4 @@ class Dictionary {
   }
 }
 
-interface Module {
-  exports: any;
-}
-declare let module: Module;
-
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = Dictionary;
-}
+export default Dictionary;

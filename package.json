@@ -3,12 +3,13 @@
   "version": "0.0.14",
   "description": "Translate Japanese by hovering over words.",
   "scripts": {
-    "prepare": "tsc",
+    "prepare": "webpack",
+    "build": "webpack",
     "prepack": "web-ext build --overwrite-dest",
-    "test": "web-ext lint && jest && MOZ_HEADLESS=1 slimerjs utils/slimerjs-test-runner.js __tests__/rikaicontent.html",
-    "start": "web-ext run --bc --start-url __tests__/playground.html",
+    "test": "web-ext lint && jest && MOZ_HEADLESS=1 slimerjs utils/slimerjs-test-runner.js __tests__/content.html",
+    "start": "webpack -w",
     "precommit": "lint-staged",
-    "lint": "web-ext lint --source-dir extension",
+    "lint": "web-ext lint",
     "update-db": "node utils/update-db"
   },
   "repository": {
@@ -31,16 +32,21 @@
     "@types/jest": "^22.2.3",
     "byline": "^5.0.0",
     "iconv-lite": "^0.4.23",
-    "jest": "^22.4.3",
+    "jest": "^22.4.4",
     "slimerjs": "git+https://github.com/birtles/slimerjs.git#64c4521471d3e0dfd727b6de0a250b1879a058a0",
+    "source-map-loader": "^0.2.3",
     "ts-jest": "^22.4.6",
-    "web-ext-types": "github:michael-zapata/web-ext-types"
+    "ts-loader": "^4.3.0",
+    "web-ext-types": "github:michael-zapata/web-ext-types",
+    "web-ext-webpack-plugin": "github:hiikezoe/web-ext-webpack-plugin",
+    "webpack": "^4.8.3",
+    "webpack-cli": "^2.1.4"
   },
   "dependencies": {
     "husky": "^0.14.3",
-    "lint-staged": "^7.1.0",
+    "lint-staged": "^7.1.2",
     "typescript": "^2.8.3",
-    "web-ext": "^2.6.0"
+    "web-ext": "^2.7.0"
   },
   "webExt": {
     "sourceDir": "extension"
@@ -64,6 +70,7 @@
     "testPathIgnorePatterns": [
       "/mocha/",
       "/chai/",
+      "content-loader.ts",
       ".*?-tests.js"
     ]
   },

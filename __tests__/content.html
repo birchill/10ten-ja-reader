@@ -1,11 +1,11 @@
 <!doctype html>
 <meta charset=utf-8>
-<title>Tests for rikaicontent.js</title>
+<title>Tests for content script</title>
 <link href="mocha/mocha.css" rel="stylesheet">
 <script src="mocha/mocha.js"></script>
 <script src="chai/chai.js"></script>
 
-<!-- Mocks: these need to be defined before we load rikaicontent.js -->
+<!-- Mocks: these need to be defined before we load the content script -->
 <script>
 const browser = {
   runtime: {
@@ -18,7 +18,7 @@ const browser = {
   },
 };
 </script>
-<script src="../extension/rikaicontent.js"></script>
+<script src="../extension/content-loader.js"></script>
 <script src="html-tests.js"></script>
 
 <body>

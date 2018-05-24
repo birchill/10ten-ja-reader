@@ -1,8 +1,11 @@
 coverage
 node_modules
 web-ext-artifacts
-extension/config.js
-extension/data.js
-extension/options.js
-extension/rikaichamp.js
-extension/rikaicontent.js
+extension/content-loader.js
+extension/content-loader.js.map
+extension/rikaichamp-background.js
+extension/rikaichamp-background.js.map
+extension/rikaichamp-content.js
+extension/rikaichamp-content.js.map
+extension/rikaichamp-options.js
+extension/rikaichamp-options.js.map

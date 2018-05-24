@@ -45,33 +45,35 @@
 
 */
 
-interface Window {
-  rikaichamp: any;
-}
+declare global {
+  interface Window {
+    rikaichamp: any;
+  }
 
-interface ParentNode {
-  append(...nodes: (Node | string)[]): void;
-}
+  interface ParentNode {
+    append(...nodes: (Node | string)[]): void;
+  }
 
-interface ChildNode {
-  remove(): void;
-}
+  interface ChildNode {
+    remove(): void;
+  }
 
-interface CaretPosition {
-  readonly offsetNode: Node;
-  readonly offset: number;
-}
+  interface CaretPosition {
+    readonly offsetNode: Node;
+    readonly offset: number;
+  }
 
-interface Document {
-  caretPositionFromPoint(x: number, y: number): CaretPosition | null;
-}
+  interface Document {
+    caretPositionFromPoint(x: number, y: number): CaretPosition | null;
+  }
 
-interface NodeIterator {
-  readonly referenceNode?: Node;
-}
+  interface NodeIterator {
+    readonly referenceNode?: Node;
+  }
 
-interface HTMLTextAreaElement {
-  selectionDirection: string;
+  interface HTMLTextAreaElement {
+    selectionDirection: string;
+  }
 }
 
 // Either end of a Range object
@@ -177,7 +179,7 @@ const styleSheetLoad = (link: HTMLLinkElement): Promise<void> =>
     );
   });
 
-class RikaiContent {
+export class RikaiContent {
   static MAX_LENGTH = 13;
 
   _config: ContentConfig;
@@ -1557,7 +1559,10 @@ class RikaiContent {
         grade.append('use');
         break;
       default:
-        if (isNaN(parseInt(entry.misc.G))) {
+        if (
+          typeof entry.misc.G === 'undefined' ||
+          isNaN(parseInt(entry.misc.G))
+        ) {
           grade.append('-');
         } else {
           grade.append('grade');
@@ -1724,3 +1729,5 @@ browser.runtime.onMessage.addListener((request: any) => {
 browser.runtime.sendMessage({ type: 'enable?' }).catch(() => {
   /* Ignore */
 });
+
+export default RikaiContent;

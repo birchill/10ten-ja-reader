@@ -1,7 +1,7 @@
 <!doctype html>
 <meta charset=utf-8>
 <title>Generated popup content inspector</title>
-<link href="../css/popup-blue.css" rel="stylesheet">
+<link href="../extension/css/popup.css" rel="stylesheet">
 <style>
 #rikaichamp-window.stack {
   /* I tried really hard to do this with CSS grid, I really did */
@@ -18,20 +18,22 @@
 <script>
 const browser = {
   runtime: {
-    sendMessage: msg => { },
+    sendMessage: msg => new Promise(resolve => resolve),
     onMessage: {
-      addListener: fn => { },
+      addListener: fn => {
+        // Probably should do something with this...
+      },
     },
   },
 };
 </script>
-<script src="../rikaicontent.js"></script>
+<script src="../extension/content-loader.js"></script>
 <script>
 const config = {
   showOnKey: '',
   onlyReading: false,
 };
-rikaiContent = new RikaiContent(config);
+const rikaiContent = new RikaiContent(config);
 </script>
 <body>
 <div id=container></div>
@@ -45,8 +47,10 @@ for (const test of htmlTests) {
     rikaiContent.config = { ...oldConfig, ...test.extraConfig };
   }
 
-  const popup =
-    rikaiContent.makeHtmlForResult(test.searchResult, test.searchResult.title);
+  const popup = rikaiContent.makeHtmlForResult(
+    test.searchResult,
+    test.searchResult.title || undefined
+  );
   if (test.extraConfig) {
     rikaiContent.config = oldConfig;
   }
@@ -61,6 +65,7 @@ for (const test of htmlTests) {
   const popupWindow = document.createElement('div');
   popupWindow.setAttribute('id', 'rikaichamp-window');
   popupWindow.classList.add('stack');
+  popupWindow.classList.add('-blue');
   popupWindow.append(popup);
   container.append(popupWindow);
 }

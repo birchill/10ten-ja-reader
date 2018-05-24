@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const Dictionary = require('../src/data');
+import Dictionary from '../src/data';
 
 // Mock browser.extension.getURL
 global.browser = { extension: { getURL: jest.fn(url => url) } };

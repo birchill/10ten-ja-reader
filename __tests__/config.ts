@@ -1,4 +1,4 @@
-const Config = require('../src/config');
+import Config from '../src/config';
 
 class MockStorage {
   onChanged = new MockOnChanged();
