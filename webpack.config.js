@@ -1,19 +1,9 @@
 const path = require('path');
 const WebExtWebpackPlugin = require('web-ext-webpack-plugin');
 
-module.exports = {
+const commonConfig = {
   // No need for uglification etc.
   mode: 'development',
-  entry: {
-    'extension/rikaichamp-content': './src/content.ts',
-    'extension/rikaichamp-background': './src/background.ts',
-    'extension/rikaichamp-options': './src/options.ts',
-    '__tests__/content-loader': './__tests__/content-loader.ts',
-  },
-  output: {
-    path: path.resolve(__dirname),
-    filename: '[name].js',
-  },
   devtool: 'source-map',
   module: {
     rules: [
@@ -28,6 +18,23 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js'],
   },
+};
+
+const commonExtConfig = {
+  ...commonConfig,
+  entry: {
+    'rikaichamp-content': './src/content.ts',
+    'rikaichamp-background': './src/background.ts',
+    'rikaichamp-options': './src/options.ts',
+  },
+  output: {
+    path: path.resolve(__dirname, 'extension'),
+    filename: '[name].js',
+  },
+};
+
+const firefoxConfig = {
+  ...commonExtConfig,
   plugins: [
     new WebExtWebpackPlugin({
       // web-ext-webpack-plugin doesn't actually support 'browserConsole' or
@@ -38,3 +45,16 @@ module.exports = {
     }),
   ],
 };
+
+const testConfig = {
+  ...commonConfig,
+  entry: {
+    'content-loader': './__tests__/content-loader.ts',
+  },
+  output: {
+    path: path.resolve(__dirname, '__tests__'),
+    filename: '[name].js',
+  },
+};
+
+module.exports = [firefoxConfig, testConfig];
