@@ -70,7 +70,7 @@
     "testPathIgnorePatterns": [
       "/mocha/",
       "/chai/",
-      "content-loader.ts",
+      "content-loader.[tj]s",
       ".*?-tests.js"
     ]
   },
