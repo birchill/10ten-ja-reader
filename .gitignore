@@ -1,8 +1,8 @@
 coverage
 node_modules
 web-ext-artifacts
-extension/content-loader.js
-extension/content-loader.js.map
+__tests__/content-loader.js
+__tests__/content-loader.js.map
 extension/rikaichamp-background.js
 extension/rikaichamp-background.js.map
 extension/rikaichamp-content.js

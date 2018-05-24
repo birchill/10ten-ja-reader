@@ -5,15 +5,13 @@ module.exports = {
   // No need for uglification etc.
   mode: 'development',
   entry: {
-    'rikaichamp-content': './src/content.ts',
-    // XXX Bundle browser-polyfill into the above
-    'rikaichamp-background': './src/background.ts',
-    // XXX Bundle browser-polyfill into the below
-    'rikaichamp-options': './src/options.ts',
-    'content-loader': './__tests__/content-loader.ts',
+    'extension/rikaichamp-content': './src/content.ts',
+    'extension/rikaichamp-background': './src/background.ts',
+    'extension/rikaichamp-options': './src/options.ts',
+    '__tests__/content-loader': './__tests__/content-loader.ts',
   },
   output: {
-    path: path.resolve(__dirname, 'extension'),
+    path: path.resolve(__dirname),
     filename: '[name].js',
   },
   devtool: 'source-map',
