@@ -37,8 +37,6 @@ const firefoxConfig = {
   ...commonExtConfig,
   plugins: [
     new WebExtWebpackPlugin({
-      // web-ext-webpack-plugin doesn't actually support 'browserConsole' or
-      // 'startUrl' yet, but hopefully it will one day.
       browserConsole: true,
       startUrl: ['__tests__/playground.html'],
       sourceDir: path.resolve(__dirname, 'extension'),

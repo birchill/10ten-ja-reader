@@ -18,12 +18,6 @@ For manual testing you can use
 npm start
 ```
 
-Then load the `__tests__/playground.html` test file. (Ultimately this should
-become automatic but `web-ext-webpack-plugin` needs this feature still.)
-
-I should really make this allow specifying the version of Firefox / profile to
-use too.
-
 ## Testing
 
 `
