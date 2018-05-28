@@ -45,6 +45,8 @@
 
 */
 
+import '../manifest.json.src';
+
 import Config from './config';
 import Dictionary from './data';
 

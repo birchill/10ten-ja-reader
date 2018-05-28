@@ -13,6 +13,20 @@ const commonConfig = {
         exclude: /node_modules/,
       },
       { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
+      {
+        test: /\.src$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name]',
+            },
+          },
+          {
+            loader: "webpack-preprocessor?definitions=['svgicons']",
+          },
+        ],
+      },
     ],
   },
   resolve: {
