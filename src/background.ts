@@ -46,6 +46,7 @@
 */
 
 import '../manifest.json.src';
+import '../html/background.html.src';
 
 import Config from './config';
 import Dictionary from './data';

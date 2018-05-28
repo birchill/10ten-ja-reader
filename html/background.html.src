@@ -1,7 +1,10 @@
+<!doctype html>
 <html>
   <head>
     <meta charset=utf-8>
+    <!--#if usepolyfill-->
     <script src="browser-polyfill.js"></script>
+    <!--#endif-->
     <script src="rikaichamp-background.js"></script>
   </head>
 </html>

@@ -1,3 +1,5 @@
+import '../html/options.html.src';
+
 import Config from './config';
 
 declare global {

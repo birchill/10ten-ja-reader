@@ -3,7 +3,9 @@ node_modules
 web-ext-artifacts
 __tests__/content-loader.js
 __tests__/content-loader.js.map
+extension/background.html
 extension/manifest.json
+extension/options.html
 extension/rikaichamp-background.js
 extension/rikaichamp-background.js.map
 extension/rikaichamp-content.js
