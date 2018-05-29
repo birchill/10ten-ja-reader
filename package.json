@@ -5,6 +5,7 @@
   "scripts": {
     "prepare": "webpack",
     "build": "webpack",
+    "build:chrome": "webpack --env.target=chrome",
     "prepack": "web-ext build --overwrite-dest",
     "test": "web-ext lint && jest && MOZ_HEADLESS=1 slimerjs utils/slimerjs-test-runner.js __tests__/content.html",
     "start": "webpack -w",
@@ -31,6 +32,7 @@
   "devDependencies": {
     "@types/jest": "^22.2.3",
     "byline": "^5.0.0",
+    "copy-webpack-plugin": "^4.5.1",
     "file-loader": "^1.1.11",
     "iconv-lite": "^0.4.23",
     "jest": "^22.4.4",
@@ -51,7 +53,7 @@
     "web-ext": "^2.7.0"
   },
   "webExt": {
-    "sourceDir": "extension"
+    "sourceDir": "dist-firefox"
   },
   "jest": {
     "roots": [
