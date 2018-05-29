@@ -92,7 +92,7 @@ const chromeConfig = {
       'css/*',
       'images/*',
       'data/*',
-      { from: 'lib/browser-polyfill.js*', to: '.' },
+      { from: 'lib/browser-polyfill.js*', to: '[name].[ext]' },
     ]),
   ],
 };
