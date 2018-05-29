@@ -40,7 +40,9 @@ const getPreprocessorConfig = (...features) => ({
       },
     },
     {
-      loader: `webpack-preprocessor?definitions=['${features.join(',')}']`,
+      loader:
+        'webpack-preprocessor?' +
+        features.map(feature => `definitions[]=${feature}`).join(','),
     },
   ],
 });
@@ -57,7 +59,11 @@ const firefoxConfig = {
     ...commonExtConfig.module,
     rules: extendArray(
       commonExtConfig.module.rules,
-      getPreprocessorConfig('svgicons')
+      getPreprocessorConfig(
+        'supports_svg_icons',
+        'supports_browser_style',
+        'supports_applications_field'
+      )
     ),
   },
   output: {
@@ -80,7 +86,7 @@ const chromeConfig = {
     ...commonExtConfig.module,
     rules: extendArray(
       commonExtConfig.module.rules,
-      getPreprocessorConfig('usepolyfill')
+      getPreprocessorConfig('use_polyfill')
     ),
   },
   output: {

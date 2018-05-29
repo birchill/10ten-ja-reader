@@ -3,13 +3,15 @@
   "name": "Rikaichamp",
   "author": "Brian Birtles",
   "version": "0.0.14",
+  /*#if supports_applications_field*/
   "applications": {
     "gecko": {
       "id": "{59812185-ea92-4cca-8ab7-cfcacee81281}"
     }
   },
+  /*#endif*/
   "description": "Translate Japanese by hovering over words.",
-  /*#if svgicons*/
+  /*#if supports_svg_icons*/
   "icons": {
     "16": "images/rikaichamp-blue.svg",
     "48": "images/rikaichamp-blue.svg",
@@ -29,8 +31,10 @@
     "page": "background.html"
   },
   "browser_action": {
+    /*#if supports_browser_style*/
     "browser_style": false,
-    /*#if svgicons*/
+    /*#endif*/
+    /*#if supports_svg_icons*/
     "default_icon": "images/rikaichamp-disabled.svg",
     /*#else*/
     "default_icon": {
@@ -42,13 +46,15 @@
     "default_title": "Rikaichamp disabled"
   },
   "options_ui": {
+    /*#if supports_browser_style*/
     "browser_style": true,
+    /*#endif*/
     "page": "options.html"
   },
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*", "ftp://*/*", "file:///*"],
-      /*#if usepolyfill*/
+      /*#if use_polyfill*/
       "js": ["browser-polyfill.js", "rikaichamp-content.js"],
       /*#else*/
       "js": ["rikaichamp-content.js"],
