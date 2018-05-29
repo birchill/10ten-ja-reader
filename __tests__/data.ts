@@ -9,7 +9,7 @@ global.browser = { extension: { getURL: jest.fn(url => url) } };
 window.fetch = jest.fn().mockImplementation(
   url =>
     new Promise((resolve, reject) => {
-      fs.readFile(`${__dirname}/../extension/${url}`, function(err, data) {
+      fs.readFile(`${__dirname}/../${url}`, function(err, data) {
         if (err) {
           reject(err);
           return;
