@@ -9,6 +9,7 @@
     "prepack": "web-ext build --overwrite-dest",
     "test": "web-ext lint && jest && MOZ_HEADLESS=1 slimerjs utils/slimerjs-test-runner.js __tests__/content.html",
     "start": "webpack -w",
+    "start:chrome": "webpack -w --env.target=chrome",
     "precommit": "lint-staged",
     "lint": "web-ext lint",
     "update-db": "node utils/update-db"
