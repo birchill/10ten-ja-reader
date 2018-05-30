@@ -87,7 +87,7 @@ interface GetTextResult {
   // Contains the node and offset where the selection starts. This will be null
   // if, for example, the result is the text from an element's title attribute.
   rangeStart: RangeEndpoint | null;
-  // Contains the node and offset for each the text containing node in the
+  // Contains the node and offset for each text-containing node in the
   // maximum selected range.
   rangeEnds: RangeEndpoint[];
 }
@@ -701,7 +701,9 @@ export class RikaiContent {
 
     const isInline = (element: Element | null) =>
       element &&
-      ['inline', 'ruby'].includes(getComputedStyle(element).display!);
+      ['inline', 'ruby', 'ruby-base', 'ruby-text'].includes(
+        getComputedStyle(element).display!
+      );
 
     // Get the ancestor node for all inline nodes
     let inlineAncestor = startNode.parentElement;

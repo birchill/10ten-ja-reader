@@ -108,7 +108,8 @@ function assertTextResultEqual(result, text, startContainer, startOffset,
   // just skip this check.
   const containsRuby = node => node &&
                                node.nodeType === Node.ELEMENT_NODE &&
-                               node.querySelector('ruby');
+                               (node.tagName === 'RUBY' ||
+                                node.querySelector('ruby'));
   if (!containsRuby(range.commonAncestorContainer)) {
     assert.strictEqual(range.toString(), text);
   }
@@ -518,6 +519,46 @@ describe('rikaiContent:text search', () => {
                           bokuNode, 1,
                           jouNode, 1,
                           desuNode, 2);
+  });
+
+  it('should return the ruby base text when rb elements are used', () => {
+    testDiv.innerHTML = '<ruby><rb>振</rb><rp>(</rp><rt>ふ</rt><rp>)</rp>り<rb>仮</rb><rp>(</rp><rt>が</rt><rp>)</rp><rb>名</rb><rp>(</rp><rt>な</rt><rp>)</rp></ruby>';
+    const fuNode = testDiv.firstChild.firstChild.firstChild;
+    const riNode = testDiv.firstChild.childNodes[4];
+    const gaNode = testDiv.firstChild.childNodes[5].firstChild;
+    const naNode = testDiv.firstChild.childNodes[9].firstChild;
+    const bbox = getBboxForOffset(fuNode, 0);
+
+    const result =
+      subject.getTextAtPoint(
+        { x: bbox.left, y: bbox.top + bbox.height / 2 }
+      );
+    assertTextResultEqual(result, '振り仮名',
+                          fuNode, 0,
+                          fuNode, 1,
+                          riNode, 1,
+                          gaNode, 1,
+                          naNode, 1);
+  });
+
+  it('should return the ruby base text even across different ruby elements', () => {
+    testDiv.innerHTML = '<ruby><rb>振</rb><rp>(</rp><rt>ふ</rt><rp>)</rp>り</ruby><ruby><rb>仮</rb><rp>(</rp><rt>が</rt><rp>)</rp><rb>名</rb><rp>(</rp><rt>な</rt><rp>)</rp></ruby>';
+    const fuNode = testDiv.firstChild.firstChild.firstChild;
+    const riNode = testDiv.firstChild.childNodes[4];
+    const gaNode = testDiv.childNodes[1].firstChild.firstChild;
+    const naNode = testDiv.childNodes[1].childNodes[4].firstChild;
+    const bbox = getBboxForOffset(fuNode, 0);
+
+    const result =
+      subject.getTextAtPoint(
+        { x: bbox.left, y: bbox.top + bbox.height / 2 }
+      );
+    assertTextResultEqual(result, '振り仮名',
+                          fuNode, 0,
+                          fuNode, 1,
+                          riNode, 1,
+                          gaNode, 1,
+                          naNode, 1);
   });
 
   it('should return the rt text if it is positioned over an rt element', () => {
