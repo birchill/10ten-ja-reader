@@ -1,6 +1,6 @@
 ## 0.0.14 (not released yet)
 
-* Fixed text selection when `&lt;rb&gt;` elements are used ([#37](https://github.com/birtles/rikaichamp/issues/37)).
+* Fixed text selection when `<rb>` elements are used ([#37](https://github.com/birtles/rikaichamp/issues/37)).
 
 ## 0.0.13 (2018-01-28)
 
