@@ -1,6 +1,9 @@
 ## 0.0.14 (not released yet)
 
 * Fixed text selection when `<rb>` elements are used ([#37](https://github.com/birtles/rikaichamp/issues/37)).
+* Fixed one case where the rikaichamp popup might get stuck.
+* Minor tweak to options page.
+* Improved bundling of scripts using webpack.
 
 ## 0.0.13 (2018-01-28)
 
