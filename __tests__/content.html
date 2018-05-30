@@ -165,7 +165,7 @@ describe('rikaiContent:text search', () => {
 
     const result =
       subject.getTextAtPoint(
-        { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 }
+        { x: bbox.left + bbox.width / 2 - 1, y: bbox.top + bbox.height / 2 }
       );
 
     assertTextResultEqual(result, 'あいうえお', textNode, 0, textNode, 5);
@@ -254,7 +254,7 @@ describe('rikaiContent:text search', () => {
 
     const result =
       subject.getTextAtPoint(
-        { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 }
+        { x: bbox.left + bbox.width / 2 - 1, y: bbox.top + bbox.height / 2 }
       );
 
     assertTextResultEqual(result, 'あいうえお',
@@ -286,7 +286,7 @@ describe('rikaiContent:text search', () => {
 
     const result =
       subject.getTextAtPoint(
-        { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 }
+        { x: bbox.left + bbox.width / 2 - 1, y: bbox.top + bbox.height / 2 }
       );
 
     assertTextResultEqual(result, 'あい', textNode, 0, textNode, 2);
@@ -325,7 +325,7 @@ describe('rikaiContent:text search', () => {
 
     const result =
       subject.getTextAtPoint(
-        { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 }
+        { x: bbox.left + bbox.width / 2 - 1, y: bbox.top + bbox.height / 2 }
       );
 
     assertTextResultEqual(result, 'あい', textNode, 0, textNode, 2);
@@ -559,7 +559,7 @@ describe('rikaiContent:text search', () => {
 
     const result =
       subject.getTextAtPoint(
-        { x: bbox.right, y: bbox.top + bbox.height / 2 }
+        { x: bbox.right + 1, y: bbox.top + bbox.height / 2 }
       );
 
     assertTextResultEqual(result, 'いうえお',
