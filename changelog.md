@@ -1,4 +1,8 @@
-## 0.0.14 (not released yet)
+## 0.0.15 (2018-06-01)
+
+* (Nothing yet)
+
+## 0.0.14 (2018-06-01)
 
 * Improved ruby handling: Fixed text selection when `<rb>` elements are used
   ([#37](https://github.com/birtles/rikaichamp/issues/37)).
