@@ -11,6 +11,7 @@
 * Stability: Fixed one case where the rikaichamp popup might get stuck.
 * Minor tweak to options page.
 * Improved bundling of scripts using webpack.
+* Updated word and names dictionaries to 2017-05-31 snapshot.
 
 ## 0.0.13 (2018-01-28)
 
