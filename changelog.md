@@ -5,6 +5,7 @@
 * Improved grammar reporting:
   * Fixed the reported inflection of passive godan verbs
     ([#36](https://github.com/birtles/rikaichamp/issues/36)).
+  * Added support for reporting causative passives.
   * Fixed deinflection of させる for verbs ending in す (e.g.
     起こさせる→起こす).
 * Stability: Fixed one case where the rikaichamp popup might get stuck.

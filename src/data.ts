@@ -397,6 +397,13 @@ export class Dictionary {
               let reason: string = this.deinflectReasons[rule.reason];
               if (result[i].reason && result[i].reason!.length) {
                 reason += ` < ${result[i].reason}`;
+                // This is a bit hacky but the alternative is to add the
+                // full-form causative passive inflections to the deinflection
+                // dictionary and then try to merge the results.
+                reason = reason.replace(
+                  'causative < potential or passive',
+                  'causative passive'
+                );
               }
               const candidate: CandidateWord = {
                 reason,

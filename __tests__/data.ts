@@ -105,6 +105,87 @@ describe('Dictionary', () => {
     expect(match[1]).toEqual('< potential < polite');
   });
 
+  it('chooses the right de-inflection for causative and passives', async () => {
+    // su-verb -- される ending is passive
+    let result = await sharedDict.wordSearch('起こされる');
+    let match = result.data.find(
+      ([item, reason]) => item.indexOf('[おこす]') !== -1
+    );
+    expect(match[1]).toEqual('< passive');
+
+    // su-verb -- させる ending is causative
+    result = await sharedDict.wordSearch('起こさせる');
+    match = result.data.find(
+      ([item, reason]) => item.indexOf('[おこす]') !== -1
+    );
+    expect(match[1]).toEqual('< causative');
+  });
+
+  it('chooses the right de-inflection for causative passive', async () => {
+    const pairs = [
+      ['待たせられる', 'まつ'],
+      ['待たされる', 'まつ'],
+      ['買わせられる', 'かう'],
+      ['買わされる', 'かう'],
+      ['焼かせられる', 'やく'],
+      ['焼かされる', 'やく'],
+      ['泳がせられる', 'およぐ'],
+      ['泳がされる', 'およぐ'],
+      ['死なせられる', 'しぬ'],
+      ['死なされる', 'しぬ'],
+      ['遊ばせられる', 'あそぶ'],
+      ['遊ばされる', 'あそぶ'],
+      ['読ませられる', 'よむ'],
+      ['読まされる', 'よむ'],
+      ['走らせられる', 'はしる'],
+      ['走らされる', 'はしる'],
+    ];
+
+    for (const [inflected, plain] of pairs) {
+      const result = await sharedDict.wordSearch(inflected);
+      const match = result.data.find(
+        ([item, reason]) => item.indexOf(`[${plain}]`) !== -1
+      );
+      expect(match[1]).toEqual('< causative passive');
+    }
+
+    // Check for the exceptions:
+    //
+    // (1) su-verbs: causative passive is させられる only, される is passive
+    let result = await sharedDict.wordSearch('起こさせられる');
+    let match = result.data.find(
+      ([item, reason]) => item.indexOf('[おこす]') !== -1
+    );
+    expect(match[1]).toEqual('< causative passive');
+
+    result = await sharedDict.wordSearch('起こされる');
+    match = result.data.find(
+      ([item, reason]) => item.indexOf('[おこす]') !== -1
+    );
+    expect(match[1]).toEqual('< passive');
+
+    // (2) ichidan verbs
+    result = await sharedDict.wordSearch('食べさせられる');
+    match = result.data.find(
+      ([item, reason]) => item.indexOf('[たべる]') !== -1
+    );
+    expect(match[1]).toEqual('< causative passive');
+
+    // (4) kuru verbs
+    result = await sharedDict.wordSearch('来させられる');
+    match = result.data.find(([item, reason]) => item.indexOf('[くる]') !== -1);
+    expect(match[1]).toEqual('< causative passive');
+
+    result = await sharedDict.wordSearch('こさせられる');
+    match = result.data.find(([item, reason]) => item.indexOf('[くる]') !== -1);
+    expect(match[1]).toEqual('< causative passive');
+
+    // Check combinations
+    result = await sharedDict.wordSearch('買わされませんでした');
+    match = result.data.find(([item, reason]) => item.indexOf('[かう]') !== -1);
+    expect(match[1]).toEqual('< causative passive < polite past negative');
+  });
+
   it('performs de-inflection recursively', () => {
     const result = sharedDict.deinflect('踊りたくなかった');
     const match = result.find(candidate => candidate.word === '踊る');
