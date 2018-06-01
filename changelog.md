@@ -1,7 +1,13 @@
 ## 0.0.14 (not released yet)
 
-* Fixed text selection when `<rb>` elements are used ([#37](https://github.com/birtles/rikaichamp/issues/37)).
-* Fixed one case where the rikaichamp popup might get stuck.
+* Improved ruby handling: Fixed text selection when `<rb>` elements are used
+  ([#37](https://github.com/birtles/rikaichamp/issues/37)).
+* Improved grammar reporting:
+  * Fixed the reported inflection of passive godan verbs
+    ([#36](https://github.com/birtles/rikaichamp/issues/36)).
+  * Fixed deinflection of させる for verbs ending in す (e.g.
+    起こさせる→起こす).
+* Stability: Fixed one case where the rikaichamp popup might get stuck.
 * Minor tweak to options page.
 * Improved bundling of scripts using webpack.
 

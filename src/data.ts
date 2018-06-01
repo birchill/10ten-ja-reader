@@ -102,9 +102,66 @@ interface DictionaryOptions {
   loadNames: boolean;
 }
 
+const enum WordType {
+  IchidanVerb = 1 << 0, // i.e. ru-verbs
+  GodanVerb = 1 << 1, // i.e. u-verbs
+  IAdj = 1 << 2,
+  KuruVerb = 1 << 3,
+  SuruVerb = 1 << 4,
+}
+
 interface DeinflectRule {
   from: string;
   to: string;
+  // Unlike the type in the CandidateWord, this is a 16-bit integer where the
+  // lower 8 bits represent the from type while the upper 8 bits represent to
+  // to type(s).
+  //
+  // For example, 遊びすぎる would match the びすぎる→ぶ rule where the from
+  // type is an ichidan/ru-verb while the to type is a godan/u-verb.
+  //
+  // The type for this rule is calculated as follows:
+  //
+  //   from-type = WordType.IchidanVerb = 1 << 0 = 00000001
+  //   to-type   = WordType.GodanVerb   = 1 << 1 = 00000010
+  //   type      = [to-type] [from-type]
+  //             = 00000010 00000001
+  //               \______/ \______/
+  //                  to      from
+  //             = 513
+  //
+  // When the from type accepts anything BUT one of the above word types (e.g.
+  // a verb stem), the highest bit is set. For example, consider the
+  // deinflection rule that allows 食べ (imperative) to be de-inflected to
+  // 食べる: べ→べる.
+  //
+  // In this case, the to type is an ichidan/ru-verb, while the from type is
+  // basically anything but NOT the result of any other deinflection (since they
+  // never produce verb stems). For this case the highest bit of the from-type
+  // is set so that it does NOT match any of the existing word types but it DOES
+  // match when we compare with 0xff (the mask we use for the initial input).
+  //
+  // i.e. from-type = 10000000
+  //      to-type   = WordType.IchidanVerb = 1
+  //      type      = 00000001 10000000
+  //                = 384
+  //
+  // Note that the to-type is a bitfield since multiple possible word types can
+  // be produced.
+  //
+  // For example, for the rule ませんでした→る the deinflected word could be an
+  // ichidan/ru-verb (e.g. 食べる) but it could also be the special verb 来る
+  // (when it is written in hiragana a different rule will match). As a result,
+  // the to-type needs to represent both of these possibilities.
+  //
+  // i.e. to-type   = WordType.IchidanVerb & WordType.KuruVerb
+  //                = 00000001 & 00001000
+  //                = 00001001
+  //      from-type = Verb stem (i.e. anything but one of the WordTypes)
+  //                = 10000000
+  //      type      = 00001001 10000000
+  //                = 2432
+  //
   type: number;
   reason: number;
 }
@@ -120,10 +177,16 @@ const createDeinflectRuleGroup = (fromLen: number): DeinflectRuleGroup => {
 interface CandidateWord {
   // The de-inflected candidate word
   word: string;
-  // An optional string describing the relationship of |word| to its de-inflected version,
-  // e.g. 'past'
+  // An optional string describing the relationship of |word| to its
+  // de-inflected version, e.g. 'past'
   reason: string | null;
-  // A bitfield describing the type of the de-inflected word (e.g. group 5 verb)
+  // For a de-inflected word, this is a bitfield comprised of flags from the
+  // WordType enum describing the possible types of word this could represent
+  // (e.g. godan verb, i-adj). If a word looked up in the dictionary does not
+  // match this type, it should be ignored since the deinflection is not valid
+  // in that case.
+  //
+  // See the extended notes for DeinflectRule.rule.
   type: number;
 }
 
@@ -289,6 +352,8 @@ export class Dictionary {
 
     const original: CandidateWord = {
       word,
+      // Initially we don't know what type of word we have so we set the type
+      // mask to match all rules.
       type: 0xff,
       reason: '',
     };
@@ -300,11 +365,11 @@ export class Dictionary {
       const word = result[i].word;
       const type = result[i].type;
 
-      for (let ruleGroup of this.deinflectRules) {
+      for (const ruleGroup of this.deinflectRules) {
         if (ruleGroup.fromLen <= word.length) {
           const ending = word.substr(-ruleGroup.fromLen);
 
-          for (let rule of ruleGroup) {
+          for (const rule of ruleGroup) {
             if (type & rule.type && ending === rule.from) {
               const newWord =
                 word.substr(0, word.length - rule.from.length) + rule.to;
@@ -312,10 +377,20 @@ export class Dictionary {
                 continue;
               }
 
+              // If we already have a candidate for this word with the same
+              // to type(s), expand the possible reasons.
+              //
+              // If the to type(s) differ, then we'll add a separate candidate
+              // and just hope that when we go to match against dictionary words
+              // we'll filter out the mismatching one(s).
               if (resultIndex[newWord]) {
                 const candidate = result[resultIndex[newWord]];
-                candidate.type |= rule.type >> 8;
-                continue;
+                if (candidate.type === rule.type >> 8) {
+                  candidate.reason = `${
+                    this.deinflectReasons[rule.reason]
+                  } or ${candidate.reason}`;
+                  continue;
+                }
               }
               resultIndex[newWord] = result.length;
 
@@ -341,7 +416,7 @@ export class Dictionary {
 
   async wordSearch(
     input: string,
-    doNames: boolean,
+    doNames: boolean = false,
     max = 0
   ): Promise<WordSearchResult | null> {
     let [word, inputLengths] = this.normalizeInput(input);
@@ -492,29 +567,56 @@ export class Dictionary {
           var dentry = dict.substring(ofs, dict.indexOf('\n', ofs));
           var ok = true;
 
+          // The first candidate is the full string, anything after that is
+          // a possible deinflection.
+          //
+          // The deinflection code, however, doesn't know anything about the
+          // actual words. It just produces possible deinflections along with
+          // a type that says what kind of a word (e.g. godan verb, i-adjective
+          // etc.) it must be in order for that deinflection to be valid.
+          //
+          // So, if we have a possible deinflection, we need to check that it
+          // matches the kind of word we looked up.
           if (i > 0) {
-            // > 0 a de-inflected word
+            // Parse the word kind information from the entry:
+            //
+            // Example entries:
+            //
+            //   /(io) (v5r) to finish/to close/
+            //   /(v5r) to finish/to close/(P)/
+            //   /(aux-v,v1) to begin to/(P)/
+            //   /(adj-na,exp,int) thank you/many thanks/
+            //   /(adj-i) shrill/
 
-            // ex:
-            // /(io) (v5r) to finish/to close/
-            // /(v5r) to finish/to close/(P)/
-            // /(aux-v,v1) to begin to/(P)/
-            // /(adj-na,exp,int) thank you/many thanks/
-            // /(adj-i) shrill/
+            const fragments = dentry.split(/[,()]/);
 
-            var w;
-            var x = dentry.split(/[,()]/);
-            var y = candidate.type;
-            var z = Math.min(x.length - 1, 10);
-            for (; z >= 0; --z) {
-              w = x[z];
-              if (y & 1 && w == 'v1') break;
-              if (y & 4 && w == 'adj-i') break;
-              if (y & 2 && w.substr(0, 2) == 'v5') break;
-              if (y & 16 && w.substr(0, 3) == 'vs-') break;
-              if (y & 8 && w == 'vk') break;
+            // Start at the end and go backwards. I don't know why.
+            let fragmentIndex = Math.min(fragments.length - 1, 10);
+            for (; fragmentIndex >= 0; --fragmentIndex) {
+              const fragment = fragments[fragmentIndex];
+              if (candidate.type & WordType.IchidanVerb && fragment == 'v1') {
+                break;
+              }
+              if (
+                candidate.type & WordType.GodanVerb &&
+                fragment.substr(0, 2) == 'v5'
+              ) {
+                break;
+              }
+              if (candidate.type & WordType.IAdj && fragment == 'adj-i') {
+                break;
+              }
+              if (candidate.type & WordType.KuruVerb && fragment == 'vk') {
+                break;
+              }
+              if (
+                candidate.type & WordType.SuruVerb &&
+                fragment.substr(0, 3) == 'vs-'
+              ) {
+                break;
+              }
             }
-            ok = z != -1;
+            ok = fragmentIndex != -1;
           }
 
           if (ok) {
@@ -528,17 +630,15 @@ export class Dictionary {
 
             longestMatch = Math.max(longestMatch, inputLengths[input.length]);
 
-            let r;
-            if (candidates[i].reason) {
-              r = `< ${candidates[i].reason}`;
+            let reason: string | null = null;
+            if (candidate.reason) {
+              reason = `< ${candidate.reason}`;
               if (showInf) {
-                r += ` < ${input}`;
+                reason += ` < ${input}`;
               }
-            } else {
-              r = null;
             }
 
-            result.data.push([dentry, r]);
+            result.data.push([dentry, reason]);
           }
         } // for j < ix.length
 

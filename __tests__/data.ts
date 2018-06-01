@@ -82,6 +82,29 @@ describe('Dictionary', () => {
     expect(match).toEqual({ reason: 'polite', type: 2, word: '走る' });
   });
 
+  it('chooses the right de-inflection for potential and passives', async () => {
+    // Ichidan/ru-verb -- られる ending could be potential or passive
+    let result = await sharedDict.wordSearch('止められます');
+    let match = result.data.find(
+      ([item, reason]) => item.indexOf('[とめる]') !== -1
+    );
+    expect(match[1]).toEqual('< potential or passive < polite');
+
+    // Godan/u-verb -- られる ending is passive
+    result = await sharedDict.wordSearch('止まられます');
+    match = result.data.find(
+      ([item, reason]) => item.indexOf('[とまる]') !== -1
+    );
+    expect(match[1]).toEqual('< passive < polite');
+
+    // Godan/u-verb -- れる ending is potential
+    result = await sharedDict.wordSearch('止まれます');
+    match = result.data.find(
+      ([item, reason]) => item.indexOf('[とまる]') !== -1
+    );
+    expect(match[1]).toEqual('< potential < polite');
+  });
+
   it('performs de-inflection recursively', () => {
     const result = sharedDict.deinflect('踊りたくなかった');
     const match = result.find(candidate => candidate.word === '踊る');
