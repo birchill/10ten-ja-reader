@@ -137,7 +137,7 @@ const parseEdict = (url, dataFile, indexFile) => {
           .pipe(parser)
           .pipe(
             fs.createWriteStream(
-              path.join(__dirname, '..', 'extension', 'data', dataFile)
+              path.join(__dirname, '..', 'data', dataFile)
             )
           )
           .on('error', err => {
@@ -146,7 +146,7 @@ const parseEdict = (url, dataFile, indexFile) => {
           .on('close', () => {
             console.log('Writing index...');
             const indexStream = fs.createWriteStream(
-              path.join(__dirname, '..', 'extension', 'data', indexFile)
+              path.join(__dirname, '..', 'data', indexFile)
             );
             parser.printIndex(indexStream);
             indexStream.end();
