@@ -205,12 +205,20 @@ export class RikaiContent {
   _keysDown: Set<string> = new Set();
 
   // Mouse tracking
+  //
+  // We don't show the popup when the mouse is moving at speed because it's
+  // mostly distracting and introduces unnecessary work.
   static MOUSE_SPEED_SAMPLES = 2;
   static MOUSE_SPEED_THRESHOLD = 0.2;
   _mouseSpeedRollingSum: number = 0;
   _mouseSpeeds: number[] = [];
   _previousMousePosition: { x: number; y: number } | null = null;
   _previousMouseMoveTime: number | null = null;
+  // We disable this feature by default and only turn it on once we've
+  // established that we have a sufficiently precise timer. If
+  // privacy.resistFingerprinting is enabled then the timer won't be precise
+  // enough for us to test the speed of the mouse.
+  _hidePopupWhenMovingAtSpeed: boolean = false;
 
   // Content
   _popupPromise: Promise<HTMLElement> | undefined;
@@ -226,6 +234,8 @@ export class RikaiContent {
     window.addEventListener('mousedown', this.onMouseDown);
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('keyup', this.onKeyUp);
+
+    this.testTimerPrecision();
   }
 
   get config() {
@@ -278,10 +288,54 @@ export class RikaiContent {
     }
   }
 
+  async testTimerPrecision() {
+    const waitALittle = async () =>
+      new Promise(resolve => setTimeout(resolve, 10));
+
+    // If performance.now() returns different times at least three out of five
+    // times then we can assume that we're not doing timer clamping of the sort
+    // that would confuse our speed calculations.
+    const numSamples: number = 5;
+    const samples: number[] = [];
+    samples.push(performance.now());
+    for (let i = 1; i < numSamples; i++) {
+      await waitALittle();
+      samples.push(performance.now());
+    }
+
+    const context: { same: number; previous?: number } = { same: 0 };
+    const { same: identicalPairs } = samples.reduce(
+      (context, current) => ({
+        same: current === context.previous ? context.same + 1 : context.same,
+        previous: current,
+      }),
+      context
+    );
+
+    this._hidePopupWhenMovingAtSpeed = identicalPairs < 2;
+  }
+
   onMouseMove(ev: MouseEvent) {
     // Ignore mouse events while buttons are being pressed.
     if (ev.buttons) {
       return;
+    }
+
+    if (this.shouldThrottlePopup(ev)) {
+      this.clearHighlight(ev.target as Element);
+      return;
+    }
+
+    this.tryToUpdatePopup(
+      { x: ev.clientX, y: ev.clientY },
+      ev.target as Element,
+      ev.shiftKey ? DictMode.ForceKanji : DictMode.Default
+    );
+  }
+
+  shouldThrottlePopup(ev: MouseEvent) {
+    if (this._hidePopupWhenMovingAtSpeed) {
+      return false;
     }
 
     const now = performance.now();
@@ -307,15 +361,7 @@ export class RikaiContent {
     this._previousMousePosition = { x: ev.pageX, y: ev.pageY };
     this._previousMouseMoveTime = now;
 
-    if (averageSpeed < RikaiContent.MOUSE_SPEED_THRESHOLD) {
-      this.tryToUpdatePopup(
-        { x: ev.clientX, y: ev.clientY },
-        ev.target as Element,
-        ev.shiftKey ? DictMode.ForceKanji : DictMode.Default
-      );
-    } else {
-      this.clearHighlight(ev.target as Element);
-    }
+    return averageSpeed >= RikaiContent.MOUSE_SPEED_THRESHOLD;
   }
 
   onMouseDown(ev: MouseEvent) {

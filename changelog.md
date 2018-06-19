@@ -1,6 +1,7 @@
-## 0.0.15 (2018-06-01)
+## 0.0.15 (not yet released)
 
-* (Nothing yet)
+* Made the extension continue to work when the timer precision is reduced
+  ([#35](https://github.com/birtles/rikaichamp/issues/35)).
 
 ## 0.0.14 (2018-06-01)
 
