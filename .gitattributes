@@ -1,1 +1,1 @@
-extension/data/*.dat text eol=lf
+data/*.dat text eol=lf
