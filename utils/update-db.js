@@ -94,6 +94,11 @@ class DictParser extends Transform {
     // Try to parse first part of entry
     const matches = line.match(/^(.+?)\s+(?:\[(.*?)\])?/);
     if (matches === null) {
+      console.log(`Failed to parse line: ${line}`);
+      callback(null, null);
+      return;
+    } else if (matches[0] === '　？？？ ') {
+      console.log(`Skipping misplaced header line: ${line}`);
       callback(null, null);
       return;
     }
