@@ -2,6 +2,7 @@
 
 * Made the extension continue to work when the timer precision is reduced
   ([#35](https://github.com/birtles/rikaichamp/issues/35)).
+* Updated word and names dictionaries to 2018-06-21 snapshot.
 
 ## 0.0.14 (2018-06-01)
 
