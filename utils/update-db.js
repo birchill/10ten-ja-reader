@@ -80,15 +80,16 @@ class DictParser extends Transform {
 
     // Skip the header
     if (this._firstLine) {
+      this._firstLine = false;
       const header = line.match(/\/Created: (.*?)\//);
       if (header) {
+        callback(null, null);
+        return;
         console.log(`Parsing dictionary created: ${header[1]}`);
-      } else {
-        console.log('Parsing dictionary data (failed to parse header)');
       }
-      this._firstLine = false;
-      callback(null, null);
-      return;
+      console.log(
+        'Failed to parse header. Maybe the header is in the wrong place?'
+      );
     }
 
     // Try to parse first part of entry
@@ -141,9 +142,7 @@ const parseEdict = (url, dataFile, indexFile) => {
           .pipe(new LineStream())
           .pipe(parser)
           .pipe(
-            fs.createWriteStream(
-              path.join(__dirname, '..', 'data', dataFile)
-            )
+            fs.createWriteStream(path.join(__dirname, '..', 'data', dataFile))
           )
           .on('error', err => {
             reject(err);
