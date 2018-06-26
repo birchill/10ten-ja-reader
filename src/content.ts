@@ -695,6 +695,9 @@ export class RikaiContent {
 
     // Ignore vertical writing. This is temporary until Mozilla bug 1159309 is
     // fixed.
+    //
+    // Update: Bug 1159309 has been fixed in Firefox 61. However, we should
+    // probably wait until that reaches ESR (July 2019) before removing this.
     const computedStyle = getComputedStyle(startNode.parentElement);
     if (computedStyle.writingMode !== 'horizontal-tb') {
       return null;
