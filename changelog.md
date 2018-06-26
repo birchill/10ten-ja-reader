@@ -1,6 +1,7 @@
 ## 0.0.16 (not yet released)
 
-(Nothing yet)
+* Hopefully fixed the issue where the extension would sometimes stop working
+  ([#17](https://github.com/birtles/rikaichamp/issues/17)).
 
 ## 0.0.15 (2018-06-22)
 
