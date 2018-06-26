@@ -209,7 +209,7 @@ export class RikaiContent {
   // We don't show the popup when the mouse is moving at speed because it's
   // mostly distracting and introduces unnecessary work.
   static MOUSE_SPEED_SAMPLES = 2;
-  static MOUSE_SPEED_THRESHOLD = 0.2;
+  static MOUSE_SPEED_THRESHOLD = 0.5;
   _mouseSpeedRollingSum: number = 0;
   _mouseSpeeds: number[] = [];
   _previousMousePosition: { x: number; y: number } | null = null;
@@ -334,19 +334,42 @@ export class RikaiContent {
   }
 
   shouldThrottlePopup(ev: MouseEvent) {
-    if (this._hidePopupWhenMovingAtSpeed) {
+    if (!this._hidePopupWhenMovingAtSpeed) {
       return false;
     }
 
-    const now = performance.now();
     let averageSpeed = 0;
 
     if (this._previousMousePosition && this._previousMouseMoveTime) {
+      // If the events are backed up their times might be equal. Likewise, if
+      // the events are more than a couple of animation frames apart either the
+      // mouse stopped, or the system is backed up and the OS can't even
+      // dispatch the events.
+      //
+      // In either case we should:
+      //
+      // - Update the previous mouse position and time so that when we get the
+      //   *next* event we can accurately measure the speed.
+      //
+      // - Not throttle the popup since for some content we might always be
+      //   backed up (YouTube with browser console open seems particularly bad)
+      //   and its safer to just allow the popup in this case rather than risk
+      //   permanently hiding it.
+      //
+      if (
+        ev.timeStamp === this._previousMouseMoveTime ||
+        ev.timeStamp - this._previousMouseMoveTime > 32
+      ) {
+        this._previousMousePosition = { x: ev.pageX, y: ev.pageY };
+        this._previousMouseMoveTime = ev.timeStamp;
+        return false;
+      }
+
       const distance = Math.sqrt(
         Math.pow(ev.pageX - this._previousMousePosition.x, 2) +
           Math.pow(ev.pageY - this._previousMousePosition.y, 2)
       );
-      const speed = distance / (now - this._previousMouseMoveTime);
+      const speed = distance / (ev.timeStamp - this._previousMouseMoveTime);
 
       this._mouseSpeeds.push(speed);
       this._mouseSpeedRollingSum += speed;
@@ -359,7 +382,7 @@ export class RikaiContent {
     }
 
     this._previousMousePosition = { x: ev.pageX, y: ev.pageY };
-    this._previousMouseMoveTime = now;
+    this._previousMouseMoveTime = ev.timeStamp;
 
     return averageSpeed >= RikaiContent.MOUSE_SPEED_THRESHOLD;
   }
