@@ -2,6 +2,7 @@
 
 * Hopefully fixed the issue where the extension would sometimes stop working
   ([#17](https://github.com/birtles/rikaichamp/issues/17)).
+* Updated word and names dictionaries to 2018-06-27 snapshot.
 
 ## 0.0.15 (2018-06-22)
 
