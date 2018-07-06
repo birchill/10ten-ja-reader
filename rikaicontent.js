@@ -410,12 +410,8 @@ var rcxContent = {
 
 		this.keysDown[ev.keyCode] = 1;
 
-		if (!shouldPreventDefault) {
-			return;
-		}
-
 		// don't eat shift if in this mode
-		if (true/*!this.cfg.nopopkeys*/) {
+		if (shouldPreventDefault) {
 			ev.preventDefault();
 		}
 	},
