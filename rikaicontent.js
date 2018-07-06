@@ -350,6 +350,7 @@ var rcxContent = {
 		if (window.rikaichan.config.disablekeys == 'true' && (ev.keyCode != 16)) return;
 
 		var i;
+		var shouldPreventDefault = true;
 
 		switch (ev.keyCode) {
 		case 16:	// shift
@@ -367,7 +368,11 @@ var rcxContent = {
 			this.show(ev.currentTarget.rikaichan, this.sameDict);
 			break;
 		case 67:	// c
-			chrome.extension.sendMessage({"type":"copyToClip", "entry":rcxContent.lastFound});
+			if (ev.ctrlKey) {
+				shouldPreventDefault = false;
+			} else {
+				chrome.extension.sendMessage({"type":"copyToClip", "entry":rcxContent.lastFound});
+			}
 			break;
 		case 66:	// b
 			var ofs = ev.currentTarget.rikaichan.uofs;
@@ -406,7 +411,7 @@ var rcxContent = {
 		this.keysDown[ev.keyCode] = 1;
 
 		// don't eat shift if in this mode
-		if (true/*!this.cfg.nopopkeys*/) {
+		if (shouldPreventDefault) {
 			ev.preventDefault();
 		}
 	},
