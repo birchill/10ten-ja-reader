@@ -181,6 +181,9 @@ class App {
       })
       .then(tabs => {
         if (tabs && tabs.length) {
+          bugsnagClient.leaveBreadcrumb(
+            'Loading because we were enabled on the previous run'
+          );
           this.enableTab(tabs[0]);
         }
       })
@@ -214,7 +217,7 @@ class App {
         })
         .catch(() => {
           /* Some tabs don't have the content script so just ignore
-         * connection failures here. */
+           * connection failures here. */
         });
     });
   }
@@ -363,6 +366,7 @@ class App {
     if (this._enabled) {
       this.disableAll();
     } else {
+      bugsnagClient.leaveBreadcrumb('Enabling tab from toggle');
       this.enableTab(tab);
     }
   }
