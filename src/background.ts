@@ -48,6 +48,8 @@
 import '../manifest.json.src';
 import '../html/background.html.src';
 
+import bugsnag from 'bugsnag-js';
+
 import Config from './config';
 import Dictionary from './data';
 
@@ -56,6 +58,19 @@ declare global {
     rcxMain: { config: Config };
   }
 }
+
+const bugsnagClient = bugsnag({
+  apiKey: 'e707c9ae84265d122b019103641e6462',
+  autoBreadcrumbs: false,
+  autoCaptureSessions: false,
+  collectUserIp: false,
+  consoleBreadcrumbsEnabled: true,
+  logger: null,
+});
+
+browser.management.getSelf().then(info => {
+  bugsnagClient.config.appVersion = info.version;
+});
 
 class App {
   _config: Config;
@@ -178,11 +193,12 @@ class App {
     return this._config;
   }
 
-  loadDictionary() {
+  async loadDictionary(): Promise<void> {
     if (!this._dict) {
       this._dict = new Dictionary({ loadNames: this._haveNames });
     }
-    return this._dict.loaded;
+    await this._dict.loaded;
+    bugsnagClient.leaveBreadcrumb('Loaded dictionary successfully');
   }
 
   onTabSelect(tabId: number) {
@@ -218,36 +234,60 @@ class App {
       browser.contextMenus.update(this._menuId, { checked: true });
     }
 
-    Promise.all([this.loadDictionary(), this._config.ready]).then(() => {
-      // Send message to current tab to add listeners and create stuff
-      browser.tabs
-        .sendMessage(tab.id!, {
-          type: 'enable',
-          config: this._config.contentConfig,
-        })
-        .catch(() => {
-          /* Some tabs don't have the content script so just ignore
-           * connection failures here. */
-        });
-      this._enabled = true;
-      browser.storage.local.set({ enabled: true });
-
-      browser.browserAction.setTitle({ title: 'Rikaichamp enabled' });
-      browser.browserAction
-        .setIcon({
-          path: `images/rikaichamp-${this._config.popupStyle}.svg`,
-        })
-        .catch(() => {
-          // Assume we're on Chrome and it still can't handle SVGs
-          browser.browserAction.setIcon({
-            path: {
-              16: `images/rikaichamp-${this._config.popupStyle}-16.png`,
-              32: `images/rikaichamp-${this._config.popupStyle}-32.png`,
-              48: `images/rikaichamp-${this._config.popupStyle}-48.png`,
-            },
+    Promise.all([this.loadDictionary(), this._config.ready])
+      .then(() => {
+        // Send message to current tab to add listeners and create stuff
+        browser.tabs
+          .sendMessage(tab.id!, {
+            type: 'enable',
+            config: this._config.contentConfig,
+          })
+          .catch(() => {
+            /* Some tabs don't have the content script so just ignore
+             * connection failures here. */
           });
+        this._enabled = true;
+        browser.storage.local.set({ enabled: true });
+
+        browser.browserAction.setTitle({ title: 'Rikaichamp enabled' });
+        browser.browserAction
+          .setIcon({
+            path: `images/rikaichamp-${this._config.popupStyle}.svg`,
+          })
+          .catch(() => {
+            // Assume we're on Chrome and it still can't handle SVGs
+            browser.browserAction.setIcon({
+              path: {
+                16: `images/rikaichamp-${this._config.popupStyle}-16.png`,
+                32: `images/rikaichamp-${this._config.popupStyle}-32.png`,
+                48: `images/rikaichamp-${this._config.popupStyle}-48.png`,
+              },
+            });
+          });
+      })
+      .catch(e => {
+        bugsnagClient.notify(e || '(No error)', { severity: 'error' });
+
+        browser.browserAction.setTitle({
+          title: 'Error loading dictionary. Please try again.',
         });
-    });
+        browser.browserAction
+          .setIcon({
+            path: 'images/rikaichamp-error.svg',
+          })
+          .catch(() => {
+            browser.browserAction.setIcon({
+              path: {
+                16: 'images/rikaichamp-error-16.png',
+                32: 'images/rikaichamp-error-32.png',
+                48: 'images/rikaichamp-error-48.png',
+              },
+            });
+          });
+        if (this._menuId) {
+          browser.contextMenus.update(this._menuId, { checked: false });
+        }
+      });
   }
 
   updateConfig(config: ContentConfig) {
