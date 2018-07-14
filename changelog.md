@@ -1,6 +1,8 @@
 ## 0.0.17 (Not yet released)
 
-* Nothing yet
+* Added diagnostic error reporting for failures to load the dictionary.
+  Attempting to fix the issue with Rikaichamp getting stuck loading
+  ([#45](https://github.com/birtles/rikaichamp/issues/45)).
 
 ## 0.0.16 (2018-06-28)
 
