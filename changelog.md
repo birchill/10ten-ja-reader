@@ -3,6 +3,7 @@
 * Added diagnostic error reporting for failures to load the dictionary.
   Attempting to fix the issue with Rikaichamp getting stuck loading
   ([#45](https://github.com/birtles/rikaichamp/issues/45)).
+* Updated word and names dictionaries to 2018-07-13 snapshot.
 
 ## 0.0.16 (2018-06-28)
 
