@@ -1,4 +1,8 @@
-## 0.0.17 (Not yet released)
+## 0.0.18 (not yet released)
+
+(Nothing yet)
+
+## 0.0.17 (2018-07-14)
 
 * Added diagnostic error reporting for failures to load the dictionary.
   Attempting to fix the issue with Rikaichamp getting stuck loading
