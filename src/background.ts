@@ -133,6 +133,7 @@ class App {
               this.onTabSelect(sender.tab.id);
             } else {
               console.error('No sender tab in enable? request');
+              bugsnagClient.leaveBreadcrumb('No sender tab in enable? request');
             }
             break;
           case 'xsearch':
@@ -148,12 +149,24 @@ class App {
             console.error(
               `Unrecognized xsearch request: ${JSON.stringify(request)}`
             );
+            bugsnagClient.notify(
+              `Unrecognized xsearch request: ${JSON.stringify(request)}`,
+              {
+                severity: 'warning',
+              }
+            );
             break;
           case 'translate':
             if (this._dict) {
               return this._dict.translate(request.title);
             }
             console.error('Dictionary not initialized in translate request');
+            bugsnagClient.notify(
+              'Dictionary not initialized in translate request',
+              {
+                severity: 'warning',
+              }
+            );
             break;
           case 'toggleDefinition':
             this._config.toggleReadingOnly();
@@ -400,6 +413,9 @@ class App {
       await browser.contextMenus.remove(this._menuId);
     } catch (e) {
       console.error(`Failed to remove context menu: ${e}`);
+      bugsnagClient.notify(`Failed to remove context menu: ${e}`, {
+        severity: 'warning',
+      });
     }
 
     this._menuId = null;
@@ -412,6 +428,9 @@ class App {
   search(text: string, dictOption: DictMode) {
     if (!this._dict) {
       console.error('Dictionary not initialized in search');
+      bugsnagClient.notify('Dictionary not initialized in search', {
+        severity: 'warning',
+      });
       return;
     }
 
@@ -482,6 +501,12 @@ window.addEventListener('message', event => {
 
   if (typeof event.data !== 'object' || typeof event.data.type !== 'string') {
     console.error('Unexpected message format');
+    bugsnagClient.notify(
+      `Unexpected message format: ${JSON.stringify(event)}`,
+      {
+        severity: 'error',
+      }
+    );
     return;
   }
 
@@ -496,6 +521,9 @@ window.addEventListener('message', event => {
 
     default:
       console.error(`Unexpected message: ${event.data.type}`);
+      bugsnagClient.notify(`Unexpected message ${event.data.type}`, {
+        severity: 'error',
+      });
       break;
   }
 });

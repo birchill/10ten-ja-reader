@@ -114,7 +114,7 @@ interface DeinflectRule {
   from: string;
   to: string;
   // Unlike the type in the CandidateWord, this is a 16-bit integer where the
-  // lower 8 bits represent the from type while the upper 8 bits represent to
+  // lower 8 bits represent the from type while the upper 8 bits represent the
   // to type(s).
   //
   // For example, 遊びすぎる would match the びすぎる→ぶ rule where the from
@@ -257,7 +257,7 @@ export class Dictionary {
     return null;
   }
 
-  loadNames() {
+  loadNames(): Promise<any> {
     if (this.nameDict && this.nameIndex) {
       return Promise.resolve();
     }
