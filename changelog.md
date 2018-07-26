@@ -1,6 +1,10 @@
 ## 0.0.18 (not yet released)
 
-(Nothing yet)
+* Added more diagnostics to try to narrow down the cause of Rikaichamp
+  occasionally getting stuck loading
+  ([#45](https://github.com/birtles/rikaichamp/issues/45)).
+* Fixed handling of full-width tilde.
+* Updated word and names dictionaries to 2018-07-25 snapshot.
 
 ## 0.0.17 (2018-07-14)
 
