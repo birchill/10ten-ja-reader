@@ -512,6 +512,8 @@ export class Dictionary {
   }
 
   async _getDictAndIndex(doNames: boolean) {
+    await this.loaded;
+
     if (doNames) {
       await this.loadNames();
       return [this.nameDict, this.nameIndex];
