@@ -1,4 +1,8 @@
-## 0.0.18 (not yet released)
+## 0.0.19 (not yet released)
+
+(Nothing yet)
+
+## 0.0.18 (2018-07-26)
 
 * Added more diagnostics to try to narrow down the cause of Rikaichamp
   occasionally getting stuck loading
