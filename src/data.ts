@@ -513,8 +513,8 @@ export class Dictionary {
           result = result.slice(0, -1);
           c = SEMIVOICED_KATAKANA_TO_HIRAGANA[previous - 0xff8a];
         }
-      } else if (c == 0xff5e) {
-        // ignore ～
+      } else if (c == 0xff5e && i > 0) {
+        // ignore ～ (but only if it's in the middle/end of a word)
         previous = 0;
         continue;
       }

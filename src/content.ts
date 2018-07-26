@@ -879,12 +879,13 @@ export class RikaiContent {
       // * U+4E00~U+9FFF is the CJK Unified Ideographs block ("the kanji")
       // * U+F900~U+FAFF is the CJK Compatibility Ideographs block (random odd
       //   kanji, because standards)
+      // * U+FF5E is full-width tilde ～ (not 〜 which is a wave dash)
       // * U+FF61~U+FF65 is some halfwidth ideographic symbols, e.g. ｡ but we
       //   skip them (although previus rikai-tachi included them) since
       //   they're mostly going to be delimiters
       // * U+FF66~U+FF9F is halfwidth katakana
       //
-      const nonJapaneseOrDelimiter = /[^\u25cb\u3004-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/;
+      const nonJapaneseOrDelimiter = /[^\u25cb\u3004-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff5e\uff66-\uff9f]/;
 
       const nodeText = node.data.substr(offset);
       let textEnd = nodeText.search(nonJapaneseOrDelimiter);

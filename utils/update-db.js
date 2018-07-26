@@ -54,7 +54,7 @@ const normalizeEntry = entry => {
         result = result.slice(0, -1);
         c = SEMIVOICED_KATAKANA_TO_HIRAGANA[previous - 0xff8a];
       }
-    } else if (c == 0xff5e) {
+    } else if (c == 0xff5e && i > 0) {
       // ignore ～
       previous = 0;
       continue;
