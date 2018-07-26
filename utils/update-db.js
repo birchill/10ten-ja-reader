@@ -83,9 +83,9 @@ class DictParser extends Transform {
       this._firstLine = false;
       const header = line.match(/\/Created: (.*?)\//);
       if (header) {
+        console.log(`Parsing dictionary created: ${header[1]}`);
         callback(null, null);
         return;
-        console.log(`Parsing dictionary created: ${header[1]}`);
       }
       console.log(
         'Failed to parse header. Maybe the header is in the wrong place?'
