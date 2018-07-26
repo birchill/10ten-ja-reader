@@ -211,7 +211,10 @@ class App {
 
   async loadDictionary(): Promise<void> {
     if (!this._dict) {
-      this._dict = new Dictionary({ loadNames: this._haveNames });
+      this._dict = new Dictionary({
+        loadNames: this._haveNames,
+        bugsnag: bugsnagClient,
+      });
     }
     await this._dict.loaded;
     bugsnagClient.leaveBreadcrumb('Loaded dictionary successfully');

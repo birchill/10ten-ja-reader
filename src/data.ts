@@ -46,6 +46,8 @@
 
 */
 
+import { Bugsnag } from 'bugsnag-js';
+
 // Katakana -> Hiragana conversion tables
 
 // prettier-ignore
@@ -100,6 +102,7 @@ const NAMES_MAX_ENTRIES = 20;
 
 interface DictionaryOptions {
   loadNames: boolean;
+  bugsnag?: Bugsnag.Client;
 }
 
 const enum WordType {
@@ -209,8 +212,11 @@ export class Dictionary {
   radData: string[];
   deinflectReasons: string[];
   deinflectRules: DeinflectRuleGroup[];
+  bugsnag?: Bugsnag.Client;
 
   constructor(options: DictionaryOptions) {
+    this.bugsnag = options.bugsnag;
+
     const dictionaryLoaded = this.loadDictionary();
     const namesLoaded = options.loadNames
       ? this.loadNames()
@@ -225,7 +231,19 @@ export class Dictionary {
   }
 
   fileRead(url: string): Promise<string> {
-    return fetch(url).then(response => response.text());
+    return fetch(url)
+      .then(response => {
+        if (this.bugsnag) {
+          this.bugsnag.leaveBreadcrumb(`Loaded: ${url}`);
+        }
+        return response.text();
+      })
+      .catch(e => {
+        if (this.bugsnag) {
+          this.bugsnag.leaveBreadcrumb(`Failed to load: ${url}`);
+        }
+        throw e;
+      });
   }
 
   fileReadArray(name: string): Promise<string[]> {
