@@ -69,7 +69,8 @@ const bugsnagClient = bugsnag({
 });
 
 browser.management.getSelf().then(info => {
-  bugsnagClient.config.appVersion = info.version;
+  // bugsnag-ts typings don't seem to help here
+  (bugsnagClient.app as any).version = info.version;
 });
 
 class App {
