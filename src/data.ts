@@ -298,20 +298,18 @@ export class Dictionary {
     };
 
     const readPromises = [];
-    for (const key in dataFiles) {
-      if (dataFiles.hasOwnProperty(key)) {
-        const reader: (url: string) => Promise<string | string[]> =
-          key === 'radData'
-            ? this.fileReadArray.bind(this)
-            : this.fileRead.bind(this);
-        const readPromise = reader(
-          browser.extension.getURL(`data/${dataFiles[key]}`)
-        ).then(text => {
+    for (const [key, file] of Object.entries(dataFiles)) {
+      const reader: (url: string) => Promise<string | string[]> =
+        key === 'radData'
+          ? this.fileReadArray.bind(this)
+          : this.fileRead.bind(this);
+      const readPromise = reader(browser.extension.getURL(`data/${file}`)).then(
+        text => {
           // TODO: Make the following typesafe
           this[key as keyof Dictionary] = text;
-        });
-        readPromises.push(readPromise);
-      }
+        }
+      );
+      readPromises.push(readPromise);
     }
 
     return Promise.all(readPromises);
