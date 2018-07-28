@@ -217,14 +217,9 @@ export class Dictionary {
     this.bugsnag = options.bugsnag;
 
     const dictionaryLoaded = this.loadDictionary();
-    const namesLoaded = this.loadNames();
     const deinflectLoaded = this.loadDeinflectData();
 
-    this.loaded = Promise.all<any>([
-      dictionaryLoaded,
-      namesLoaded,
-      deinflectLoaded,
-    ]);
+    this.loaded = Promise.all<any>([dictionaryLoaded, deinflectLoaded]);
   }
 
   fileRead(url: string): Promise<string> {
@@ -272,27 +267,14 @@ export class Dictionary {
     return null;
   }
 
-  loadNames(): Promise<any> {
-    const readNameDict = this.fileRead(
-      browser.extension.getURL('data/names.dat')
-    ).then(text => {
-      this.nameDict = text;
-    });
-    const readNameIndex = this.fileRead(
-      browser.extension.getURL('data/names.idx')
-    ).then(text => {
-      this.nameIndex = text;
-    });
-
-    return Promise.all([readNameDict, readNameIndex]);
-  }
-
   // Note: These are mostly flat text files; loaded as one continous string to
   // reduce memory use
   loadDictionary(): Promise<any> {
     const dataFiles: { [key: string]: string } = {
       wordDict: 'dict.dat',
       wordIndex: 'dict.idx',
+      nameDict: 'names.dat',
+      nameIndex: 'names.idx',
       kanjiData: 'kanji.dat',
       radData: 'radicals.dat',
     };
