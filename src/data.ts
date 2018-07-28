@@ -101,7 +101,6 @@ const WORDS_MAX_ENTRIES = 7;
 const NAMES_MAX_ENTRIES = 20;
 
 interface DictionaryOptions {
-  loadNames: boolean;
   bugsnag?: Bugsnag.Client;
 }
 
@@ -218,9 +217,7 @@ export class Dictionary {
     this.bugsnag = options.bugsnag;
 
     const dictionaryLoaded = this.loadDictionary();
-    const namesLoaded = options.loadNames
-      ? this.loadNames()
-      : Promise.resolve();
+    const namesLoaded = this.loadNames();
     const deinflectLoaded = this.loadDeinflectData();
 
     this.loaded = Promise.all<any>([
@@ -276,10 +273,6 @@ export class Dictionary {
   }
 
   loadNames(): Promise<any> {
-    if (this.nameDict && this.nameIndex) {
-      return Promise.resolve();
-    }
-
     const readNameDict = this.fileRead(
       browser.extension.getURL('data/names.dat')
     ).then(text => {
@@ -533,7 +526,6 @@ export class Dictionary {
     await this.loaded;
 
     if (doNames) {
-      await this.loadNames();
       return [this.nameDict, this.nameIndex];
     }
 

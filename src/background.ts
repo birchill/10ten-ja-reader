@@ -76,7 +76,6 @@ class App {
   _config: Config;
   _dict?: Dictionary;
 
-  _haveNames: boolean = true;
   _dictCount: number = 3;
   _enabled: boolean = false;
   _menuId: number | string | null = null;
@@ -211,10 +210,7 @@ class App {
 
   async loadDictionary(): Promise<void> {
     if (!this._dict) {
-      this._dict = new Dictionary({
-        loadNames: this._haveNames,
-        bugsnag: bugsnagClient,
-      });
+      this._dict = new Dictionary({ bugsnag: bugsnagClient });
     }
     await this._dict.loaded;
     bugsnagClient.leaveBreadcrumb('Loaded dictionary successfully');
