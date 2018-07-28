@@ -1,6 +1,8 @@
 ## 0.0.19 (not yet released)
 
-(Nothing yet)
+* Added even more diagnostics to dictionary loading.
+* Simplified dictionary loading somewhat.
+* Updated word and names dictionaries to 2018-07-27 snapshot.
 
 ## 0.0.18 (2018-07-26)
 
