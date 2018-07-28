@@ -226,13 +226,19 @@ export class Dictionary {
     return fetch(url)
       .then(response => {
         if (this.bugsnag) {
-          this.bugsnag.leaveBreadcrumb(`Loaded: ${url}`);
+          // Bugsnag only gives us 30 characters for the breadcrumb but its the
+          // end of the url we really want to record.
+          const prefix = 'Loaded: ';
+          const urlStart = Math.max(0, url.length - (30 - prefix.length - 1));
+          this.bugsnag.leaveBreadcrumb(prefix + '…' + url.substring(urlStart));
         }
         return response.text();
       })
       .catch(e => {
         if (this.bugsnag) {
-          this.bugsnag.leaveBreadcrumb(`Failed to load: ${url}`);
+          const prefix = 'Failed: ';
+          const urlStart = Math.max(0, url.length - (30 - prefix.length - 1));
+          this.bugsnag.leaveBreadcrumb(prefix + '…' + url.substring(urlStart));
         }
         throw e;
       });
