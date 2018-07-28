@@ -1,4 +1,8 @@
-## 0.0.19 (not yet released)
+## 0.0.20 (not yet released)
+
+(Nothing yet)
+
+## 0.0.19 (2018-07-28)
 
 * Added even more diagnostics to dictionary loading.
 * Simplified dictionary loading somewhat.
