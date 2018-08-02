@@ -301,11 +301,11 @@ describe('Dictionary', () => {
         { abbrev: 'I', name: 'Tuttle Kanji Dictionary' },
         { abbrev: 'U', name: 'Unicode' },
       ],
-      onkun: ['シ'],
+      onkun: ['シ', 'さむらい'],
       nanori: ['お', 'ま'],
       bushumei: ['さむらい'],
       radical: '士',
-      eigo: 'gentleman, samurai, samurai radical (no. 33)',
+      eigo: 'gentleman, scholar, samurai, samurai radical (no. 33)',
     });
   });
 
@@ -362,6 +362,7 @@ describe('Dictionary', () => {
       kanji: '鯖',
       misc: {
         B: '195',
+        I: '11a8.6',
         L: '2820',
         N: '5301',
         P: '1-11-8',
