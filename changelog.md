@@ -1,6 +1,6 @@
 ## 0.0.20 (not yet released)
 
-(Nothing yet)
+* Updated word, names, and kanji(!) dictionaries to 2018-08-01 snapshot.
 
 ## 0.0.19 (2018-07-28)
 
