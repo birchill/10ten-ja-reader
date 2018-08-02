@@ -4,7 +4,8 @@ const zlib = require('zlib');
 const path = require('path');
 const iconv = require('iconv-lite');
 const LineStream = require('byline').LineStream;
-const { Transform } = require('stream');
+const CombinedStream = require('combined-stream2');
+const { Transform, Writable } = require('stream');
 
 // prettier-ignore
 const HANKAKU_KATAKANA_TO_HIRAGANA = [
@@ -27,6 +28,23 @@ const VOICED_KATAKANA_TO_HIRAGANA = [
 const SEMIVOICED_KATAKANA_TO_HIRAGANA = [
   0x3071, 0x3074, 0x3077, 0x307a, 0x307d
 ];
+
+const SUPPORTED_REF_TYPES = new Set([
+  'B',
+  'H',
+  'L',
+  'E',
+  'D', // We'll manually filter this down to DK later
+  'N',
+  'V',
+  'Y',
+  'P',
+  'I', // I and IN
+  // Not really supported, just here to make the diff smaller
+  'S',
+  'G',
+  'F',
+]);
 
 const normalizeEntry = entry => {
   let previous = 0;
@@ -165,6 +183,164 @@ const parseEdict = (url, dataFile, indexFile) => {
   });
 };
 
+class KanjiDictParser extends Writable {
+  constructor(options) {
+    super(options);
+    this._index = {};
+  }
+
+  _write(data, encoding, callback) {
+    const line = data.toString('utf8');
+
+    // Skip the header
+    if (line.startsWith('# ')) {
+      const header = line.match(/^# (\S*).*?\/(\d{4}-\d{2}-\d{2})\/$/);
+      if (header) {
+        console.log(`Parsing ${header[1]} dictionary from ${header[2]}`);
+        callback();
+        return;
+      }
+      console.log(`Failed to parse header: ${line}`);
+    }
+
+    // Data file format
+    //
+    // <kanji> <reference codes> <readings> [T1 <name readings>] [T2 <bushumei>] <meanings>
+    //
+    // <kanji> - Single char (but could be non-BMP so need to be careful what JS
+    //           methods we use to test for a char)
+    // <reference codes> - Space separated, typically one uppercase ASCII
+    //                     letter following by a sequence of ASCII letters and
+    //                     numbers, ending in a number.
+    //                     Should have at least a B<digit>+ field representing
+    //                     the radical. Rikaichamp assumes that will be there so
+    //                     we should assert if an entry is missing one.
+    // <readings> - Space separated, just the characters themselves.
+    // <meanings> - Space separated, each meaning is wrapped in {}.
+    //              We should assert if there is a | in any of these as it will
+    //              confuse the output.
+    //              (Also a comma could confuse it too. Would mean we should
+    //              switch to ; as a separator in that case.)
+    //
+    // e.g. 士|3B4E U58eb B33 G4 S3 F526 J1 N1160 V1117 H3405 DP4213 DK2129 DL2877 L319 DN341 K301 O41 DO59 MN5638 MP3.0279 E494 IN572 DA581 DS410 DF1173 DH521 DT441 DC386 DJ755 DG393 DM325 P4-3-2 I3p0.1 Q4010.0 DR1472 Yshi4 Wsa シ さむらい T1 お ま T2 さむらい {gentleman} {scholar} {samurai} {samurai radical (no. 33)}
+    //
+    // So basically, the only way to know if we've gone from <reference codes>
+    // to <readings> is to check the actual codepoints being used. Ugh.
+    //
+    // Note that we also have some odd entries like:
+    //
+    //   𡑮 .=.=== U2146E B32 S16
+    //   𡗗 X253E U215D7 B37 S5 Ypeng3
+    //   𢦏 .=.=== U2298F B62 S6 Yzai1 {to cut} {wound} {hurt}
+    //   𢈘 .=.=== U22218 B53 S9 N1510 DP3845 ロク しか か
+    //
+    // (Yes, including the trailing spaces too.)
+    //
+    // Output pieces:
+    //  - Kanji
+    //  - Reference codes
+    //  - Readings
+    //  - Name readings
+    //  - Bushumei
+    //  - Meanings, command separated
+    // (All | delimited)
+    const matches = line.match(
+      /^(\S+) (?:.=.=== )?((?:[\x21-\x7a]+ )+)((?:[\x80-\uffff.\-]+ )+)?(?:T1 ((?:[\x80-\uffff.\-]+ )+))?(?:T2 ((?:[\x80-\uffff.\-]+ )+))?((?:\{[^\}]+\} ?)*)?$/
+    );
+    if (matches === null) {
+      console.log(`Failed to parse line: ${line}`);
+      callback(null);
+      return;
+    }
+
+    // Trim references
+    const refs = matches[2].trim().split(' ');
+    const refsToKeep = [];
+    let hasB = false;
+    for (const ref of refs) {
+      if (ref.length && SUPPORTED_REF_TYPES.has(ref[0])) {
+        // Special case Dx types since we only support DK types
+        if (ref[0] === 'D' && ref.slice(0, 2) !== 'DK') {
+          continue;
+        }
+        if (ref[0] === 'B') {
+          hasB = true;
+        }
+        refsToKeep.push(ref);
+      }
+    }
+    if (!hasB) {
+      throw new Error(`No radical reference found for ${line}`);
+    }
+    matches[2] = refsToKeep.join(' ');
+
+    // Prepare meanings
+    if (matches[6]) {
+      const meanings = matches[6].trim().split('} {');
+      if (meanings.length) {
+        meanings[0] = meanings[0].slice(1);
+        const end = meanings.length - 1;
+        meanings[end] = meanings[end].slice(0, -1);
+      }
+      // Check for embedded |. That's the separator we use in the output so if
+      // it also occurs in the meaning things are not going to end well.
+      const hasEmbeddedPipe = meanings.some(meaning => meaning.includes('|'));
+      if (hasEmbeddedPipe) {
+        throw new Error(`Got meaning with embedded "|": ${line}`);
+      }
+      // Join with ; if some of the entries have commas
+      const hasEmbeddedCommas = meanings.some(meaning => meaning.includes(','));
+      matches[6] = meanings.join(hasEmbeddedCommas ? '; ' : ', ');
+    }
+
+    this._index[matches[1]] = matches
+      .slice(2)
+      .map(part => (part ? part.trim() : ''))
+      .join('|');
+
+    callback();
+  }
+
+  printDict(stream) {
+    for (const entry of Object.keys(this._index).sort()) {
+      stream.write(`${entry}|${this._index[entry]}\n`);
+    }
+  }
+}
+
+const parseKanjiDic = async (sources, dataFile) => {
+  const parser = new KanjiDictParser();
+
+  const readFile = (url, encoding) =>
+    new Promise((resolve, reject) => {
+      http
+        .get(url, res => {
+          res
+            .pipe(zlib.createGunzip())
+            .pipe(iconv.decodeStream(encoding))
+            .pipe(iconv.encodeStream('utf-8'))
+            .pipe(new LineStream())
+            .on('end', resolve)
+            .pipe(parser, { end: false });
+        })
+        .on('error', err => {
+          throw Error(`Connection error: ${err}`);
+        });
+    });
+
+  const input = CombinedStream.create();
+  for (const source of sources) {
+    await readFile(source.url, source.encoding);
+  }
+
+  parser.end();
+
+  const output = fs.createWriteStream(
+    path.join(__dirname, '..', 'data', dataFile)
+  );
+  parser.printDict(output);
+};
+
 console.log('Fetching word dictionary...');
 
 parseEdict('http://ftp.monash.edu/pub/nihongo/edict.gz', 'dict.dat', 'dict.idx')
@@ -174,6 +350,26 @@ parseEdict('http://ftp.monash.edu/pub/nihongo/edict.gz', 'dict.dat', 'dict.idx')
       'http://ftp.monash.edu/pub/nihongo/enamdict.gz',
       'names.dat',
       'names.idx'
+    );
+  })
+  .then(() => {
+    console.log('Fetching kanji dictionaries...');
+    return parseKanjiDic(
+      [
+        {
+          url: 'http://ftp.monash.edu.au/pub/nihongo/kanjidic.gz',
+          encoding: 'euc-jp',
+        },
+        {
+          url: 'http://ftp.monash.edu.au/pub/nihongo/kanjd212.gz',
+          encoding: 'euc-jp',
+        },
+        {
+          url: 'http://ftp.monash.edu.au/pub/nihongo/kanjd213u.gz',
+          encoding: 'utf-8',
+        },
+      ],
+      'kanji.dat'
     );
   })
   .then(() => {
