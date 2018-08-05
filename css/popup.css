@@ -69,9 +69,14 @@
   padding: 2px;
 }
 
-#rikaichamp-window .w-na-tb td {
-  vertical-align: top;
-  padding-right: 0.8em;
+#rikaichamp-window .w-name-table.-multicol {
+  column-count: 2;
+  column-gap: 1em;
+}
+
+#rikaichamp-window .w-name-table.-multicol .entry {
+  /* Avoid column breaks within an entry */
+  display: table;
 }
 
 /* used for kanji information */

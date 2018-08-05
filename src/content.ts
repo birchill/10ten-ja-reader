@@ -1508,50 +1508,53 @@ export class RikaiContent {
       });
     }
 
-    const namesTable = document.createElement('table');
+    const namesTable = document.createElement('div');
     fragment.append(namesTable);
-    namesTable.classList.add('w-na-tb');
+    namesTable.classList.add('w-name-table');
 
-    const theRow = document.createElement('tr');
-    namesTable.append(theRow);
-
-    const theCell = document.createElement('td');
-    theRow.append(theCell);
-
-    // TODO: If there are more than four entries, split them into two columns
-    // (You should see the code to do this in the original...)
+    if (entries.length > 4) {
+      namesTable.classList.add('-multicol');
+    }
 
     for (const entry of entries) {
+      const entryDiv = document.createElement('div');
+      entryDiv.classList.add('entry');
+
+      const entryTitleDiv = document.createElement('div');
+      entryTitleDiv.classList.add('title');
+      entryDiv.append(entryTitleDiv);
+
       for (const name of entry.names) {
+        const entryHeadingDiv = document.createElement('div');
+        entryHeadingDiv.classList.add('heading');
+
         if (name.kanji) {
           const kanjiSpan = document.createElement('span');
-          theCell.append(kanjiSpan);
+          entryHeadingDiv.append(kanjiSpan);
           kanjiSpan.classList.add('w-kanji');
           kanjiSpan.append(name.kanji);
         }
 
         const kanaSpan = document.createElement('span');
-        theCell.append(kanaSpan);
+        entryHeadingDiv.append(kanaSpan);
         kanaSpan.classList.add('w-kana');
         kanaSpan.append(name.kana);
 
-        // TODO: Do this with CSS
-        theCell.append(document.createElement('br'));
+        entryTitleDiv.append(entryHeadingDiv);
       }
 
-      const definitionSpan = document.createElement('span');
-      theCell.append(definitionSpan);
+      const definitionSpan = document.createElement('div');
+      entryDiv.append(definitionSpan);
       definitionSpan.classList.add('w-def');
       definitionSpan.append(entry.definition.replace(/\//g, '; '));
 
-      // TODO: Do this with CSS
-      theCell.append(document.createElement('br'));
+      namesTable.append(entryDiv);
     }
 
     if (result.more) {
-      theCell.append('...');
-      // TODO: Do this with CSS
-      theCell.append(document.createElement('br'));
+      const moreDiv = document.createElement('div');
+      moreDiv.append('...');
+      namesTable.append(moreDiv);
     }
 
     return fragment;
