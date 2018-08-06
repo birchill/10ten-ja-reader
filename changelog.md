@@ -1,6 +1,7 @@
 ## 0.0.20 (not yet released)
 
-* Updated word, names, and kanji(!) dictionaries to 2018-08-01 snapshot.
+* Made names display in two columns when necessary.
+* Updated word, names, and **kanji** dictionaries to 2018-08-01 snapshot.
 
 ## 0.0.19 (2018-07-28)
 
