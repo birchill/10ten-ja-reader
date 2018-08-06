@@ -188,7 +188,7 @@ const htmlTests = [
       names: true,
     },
     html:
-      '<div class="w-title">Names Dictionary</div><table class="w-na-tb"><tr><td><span class="w-kanji">中野</span><span class="w-kana">なかの</span><br><span class="w-def">Nakano (p,s)</span><br><span class="w-kanji">中野</span><span class="w-kana">なかのざき</span><br><span class="w-def">Nakanozaki (s)</span><br><span class="w-kanji">中</span><span class="w-kana">あたり</span><br><span class="w-def">Atari (f,s)</span><br>...<br></td></tr></table>',
+      '<div class="w-title">Names Dictionary</div><div class="w-name-table"><div class="entry"><div class="title"><div class="heading"><span class="w-kanji">中野</span><span class="w-kana">なかの</span></div></div><div class="w-def">Nakano (p,s)</div></div><div class="entry"><div class="title"><div class="heading"><span class="w-kanji">中野</span><span class="w-kana">なかのざき</span></div></div><div class="w-def">Nakanozaki (s)</div></div><div class="entry"><div class="title"><div class="heading"><span class="w-kanji">中</span><span class="w-kana">あたり</span></div></div><div class="w-def">Atari (f,s)</div></div><div>...</div></div>',
   },
   {
     description: 'a name search result with a nested definition',
@@ -199,7 +199,7 @@ const htmlTests = [
       names: true,
     },
     html:
-      '<div class="w-title">Names Dictionary</div><table class="w-na-tb"><tr><td><span class="w-kanji">あか組４</span><span class="w-kana">あかぐみフォー</span><br><span class="w-def">Akagumi Four (h)</span><br></td></tr></table>',
+      '<div class="w-title">Names Dictionary</div><div class="w-name-table"><div class="entry"><div class="title"><div class="heading"><span class="w-kanji">あか組４</span><span class="w-kana">あかぐみフォー</span></div></div><div class="w-def">Akagumi Four (h)</div></div></div>',
   },
   {
     description: 'a name search result without a separate reading',
@@ -210,6 +210,6 @@ const htmlTests = [
       names: true,
     },
     html:
-      '<div class="w-title">Names Dictionary</div><table class="w-na-tb"><tr><td><span class="w-kana">あがさ</span><br><span class="w-def">Agasa (f)</span><br></td></tr></table>',
+      '<div class="w-title">Names Dictionary</div><div class="w-name-table"><div class="entry"><div class="title"><div class="heading"><span class="w-kana">あがさ</span></div></div><div class="w-def">Agasa (f)</div></div></div>',
   },
 ];
