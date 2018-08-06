@@ -222,30 +222,47 @@ export class Dictionary {
     this.loaded = Promise.all<any>([dictionaryLoaded, deinflectLoaded]);
   }
 
-  fileRead(url: string): Promise<string> {
-    return fetch(url)
-      .then(response => {
+  async readFile(url: string): Promise<string> {
+    let attempts = 0;
+
+    // Bugsnag only gives us 30 characters for the breadcrumb but its the
+    // end of the url we really want to record.
+    const makeBreadcrumb = (prefix: string, url: string): string => {
+      const urlStart = Math.max(0, url.length - (30 - prefix.length - 1));
+      return prefix + '…' + url.substring(urlStart);
+    };
+
+    while (true) {
+      try {
+        const response = await fetch(url);
+        const responseText = response.text();
         if (this.bugsnag) {
-          // Bugsnag only gives us 30 characters for the breadcrumb but its the
-          // end of the url we really want to record.
-          const prefix = 'Loaded: ';
-          const urlStart = Math.max(0, url.length - (30 - prefix.length - 1));
-          this.bugsnag.leaveBreadcrumb(prefix + '…' + url.substring(urlStart));
+          this.bugsnag.leaveBreadcrumb(makeBreadcrumb('Loaded: ', url));
         }
-        return response.text();
-      })
-      .catch(e => {
+        return responseText;
+      } catch (e) {
         if (this.bugsnag) {
-          const prefix = 'Failed: ';
-          const urlStart = Math.max(0, url.length - (30 - prefix.length - 1));
-          this.bugsnag.leaveBreadcrumb(prefix + '…' + url.substring(urlStart));
+          this.bugsnag.leaveBreadcrumb(
+            makeBreadcrumb(`Failed(#${attempts}): `, url)
+          );
         }
-        throw e;
-      });
+
+        if (++attempts >= 3) {
+          throw e;
+        }
+
+        // Wait for a (probably) increasing interval before trying again
+        const intervalToWait = Math.round(Math.random() * attempts * 800);
+        console.log(
+          `Failed to load ${url}. Trying again in ${intervalToWait}ms`
+        );
+        await new Promise(resolve => setTimeout(resolve, intervalToWait));
+      }
+    }
   }
 
-  fileReadArray(name: string): Promise<string[]> {
-    return this.fileRead(name).then(text =>
+  readFileIntoArray(name: string): Promise<string[]> {
+    return this.readFile(name).then(text =>
       text.split('\n').filter(line => line.length)
     );
   }
@@ -289,8 +306,8 @@ export class Dictionary {
     for (const [key, file] of Object.entries(dataFiles)) {
       const reader: (url: string) => Promise<string | string[]> =
         key === 'radData'
-          ? this.fileReadArray.bind(this)
-          : this.fileRead.bind(this);
+          ? this.readFileIntoArray.bind(this)
+          : this.readFile.bind(this);
       const readPromise = reader(browser.extension.getURL(`data/${file}`)).then(
         text => {
           // TODO: Make the following typesafe
@@ -307,7 +324,7 @@ export class Dictionary {
     this.deinflectReasons = [];
     this.deinflectRules = [];
 
-    const buffer = await this.fileReadArray(
+    const buffer = await this.readFileIntoArray(
       browser.extension.getURL('data/deinflect.dat')
     );
 
