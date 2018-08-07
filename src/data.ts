@@ -247,11 +247,12 @@ export class Dictionary {
       } catch (e) {
         if (this.bugsnag) {
           this.bugsnag.leaveBreadcrumb(
-            makeBreadcrumb(`Failed(#${attempts}): `, url)
+            makeBreadcrumb(`Failed(#${attempts + 1}): `, url)
           );
         }
 
         if (++attempts >= 3) {
+          console.error(`Failed to load ${url} after ${attempts} attempts`);
           throw e;
         }
 
