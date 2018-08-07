@@ -3,7 +3,7 @@
 * Hopefully made loading data files more robust to reduce the likelihood of
   errors on startup.
 * Made names display in two columns when necessary.
-* Updated word, names, and **kanji** dictionaries to 2018-08-01 snapshot.
+* Updated word, names, and **kanji** dictionaries to 2018-08-06 snapshot.
 
 ## 0.0.19 (2018-07-28)
 
