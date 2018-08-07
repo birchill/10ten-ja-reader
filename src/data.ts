@@ -232,6 +232,10 @@ export class Dictionary {
       return prefix + '…' + url.substring(urlStart);
     };
 
+    if (this.bugsnag) {
+      this.bugsnag.leaveBreadcrumb(makeBreadcrumb(`Loading: `, url));
+    }
+
     while (true) {
       try {
         const response = await fetch(url);
