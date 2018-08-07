@@ -1,4 +1,8 @@
-## 0.0.20 (not yet released)
+## 0.0.21 (not yet released)
+
+(Nothing yet)
+
+## 0.0.20 (2018-08-07)
 
 * Hopefully made loading data files more robust to reduce the likelihood of
   errors on startup.
