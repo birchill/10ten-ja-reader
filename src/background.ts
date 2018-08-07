@@ -213,7 +213,16 @@ class App {
     if (!this._dict) {
       this._dict = new Dictionary({ bugsnag: bugsnagClient });
     }
-    await this._dict.loaded;
+
+    try {
+      await this._dict.loaded;
+    } catch (e) {
+      // If we fail loading the dictionary, make sure to reset it so we can try
+      // again!
+      this._dict = undefined;
+      throw e;
+    }
+
     bugsnagClient.leaveBreadcrumb('Loaded dictionary successfully');
   }
 
