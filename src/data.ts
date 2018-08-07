@@ -252,7 +252,7 @@ export class Dictionary {
         }
 
         // Wait for a (probably) increasing interval before trying again
-        const intervalToWait = Math.round(Math.random() * attempts * 800);
+        const intervalToWait = Math.round(Math.random() * attempts * 1000);
         console.log(
           `Failed to load ${url}. Trying again in ${intervalToWait}ms`
         );
@@ -292,32 +292,39 @@ export class Dictionary {
 
   // Note: These are mostly flat text files; loaded as one continous string to
   // reduce memory use
-  loadDictionary(): Promise<any> {
-    const dataFiles: { [key: string]: string } = {
-      wordDict: 'dict.dat',
-      wordIndex: 'dict.idx',
-      nameDict: 'names.dat',
-      nameIndex: 'names.idx',
-      kanjiData: 'kanji.dat',
-      radData: 'radicals.dat',
+  async loadDictionary(): Promise<void> {
+    type fileEntry = { key: keyof Dictionary; file: string };
+    const dataFiles: Array<fileEntry> = [
+      { key: 'wordDict', file: 'dict.dat' },
+      { key: 'wordIndex', file: 'dict.idx' },
+      { key: 'nameDict', file: 'names.dat' },
+      { key: 'nameIndex', file: 'names.idx' },
+      { key: 'kanjiData', file: 'kanji.dat' },
+      { key: 'radData', file: 'radicals.dat' },
+    ];
+
+    const readBatch = (files: Array<fileEntry>): Promise<any> => {
+      const readPromises = [];
+      for (const { key, file } of files) {
+        const reader: (url: string) => Promise<string | string[]> =
+          key === 'radData'
+            ? this.readFileIntoArray.bind(this)
+            : this.readFile.bind(this);
+        const readPromise = reader(
+          browser.extension.getURL(`data/${file}`)
+        ).then(text => {
+          this[key] = text;
+        });
+        readPromises.push(readPromise);
+      }
+
+      return Promise.all(readPromises);
     };
 
-    const readPromises = [];
-    for (const [key, file] of Object.entries(dataFiles)) {
-      const reader: (url: string) => Promise<string | string[]> =
-        key === 'radData'
-          ? this.readFileIntoArray.bind(this)
-          : this.readFile.bind(this);
-      const readPromise = reader(browser.extension.getURL(`data/${file}`)).then(
-        text => {
-          // TODO: Make the following typesafe
-          this[key as keyof Dictionary] = text;
-        }
-      );
-      readPromises.push(readPromise);
-    }
-
-    return Promise.all(readPromises);
+    // Batch into two groups to reduce contention
+    const midpoint = Math.floor(dataFiles.length / 2);
+    await readBatch(dataFiles.slice(0, midpoint));
+    await readBatch(dataFiles.slice(midpoint));
   }
 
   async loadDeinflectData() {
