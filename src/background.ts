@@ -244,7 +244,7 @@ class App {
     });
   }
 
-  enableTab(tab: browser.tabs.Tab) {
+  async enableTab(tab: browser.tabs.Tab) {
     console.assert(typeof tab.id === 'number', `Unexpected tab ID: ${tab.id}`);
 
     browser.browserAction.setTitle({ title: 'Rikaichamp loading...' });
@@ -259,60 +259,80 @@ class App {
       browser.contextMenus.update(this._menuId, { checked: true });
     }
 
-    Promise.all([this.loadDictionary(), this._config.ready])
-      .then(() => {
-        // Send message to current tab to add listeners and create stuff
-        browser.tabs
-          .sendMessage(tab.id!, {
-            type: 'enable',
-            config: this._config.contentConfig,
-          })
-          .catch(() => {
-            /* Some tabs don't have the content script so just ignore
-             * connection failures here. */
-          });
-        this._enabled = true;
-        browser.storage.local.set({ enabled: true });
-
-        browser.browserAction.setTitle({ title: 'Rikaichamp enabled' });
-        browser.browserAction
-          .setIcon({
-            path: `images/rikaichamp-${this._config.popupStyle}.svg`,
-          })
-          .catch(() => {
-            // Assume we're on Chrome and it still can't handle SVGs
-            browser.browserAction.setIcon({
-              path: {
-                16: `images/rikaichamp-${this._config.popupStyle}-16.png`,
-                32: `images/rikaichamp-${this._config.popupStyle}-32.png`,
-                48: `images/rikaichamp-${this._config.popupStyle}-48.png`,
-              },
-            });
-          });
-      })
-      .catch(e => {
-        bugsnagClient.notify(e || '(No error)', { severity: 'error' });
-
-        browser.browserAction.setTitle({
-          title: 'Error loading dictionary. Please try again.',
+    let timeoutId: number | undefined;
+    try {
+      timeoutId = setTimeout(() => {
+        console.warn('Rikaichamp took more than 10 seconds to load');
+        bugsnagClient.notify('Took more than 10 seconds to load', {
+          severity: 'warning',
         });
-        browser.browserAction
-          .setIcon({
-            path: 'images/rikaichamp-error.svg',
-          })
-          .catch(() => {
-            browser.browserAction.setIcon({
-              path: {
-                16: 'images/rikaichamp-error-16.png',
-                32: 'images/rikaichamp-error-32.png',
-                48: 'images/rikaichamp-error-48.png',
-              },
-            });
+      }, 10 * 1000);
+
+      await Promise.all([this.loadDictionary(), this._config.ready]);
+
+      clearTimeout(timeoutId);
+      timeoutId = undefined;
+
+      // Send message to current tab to add listeners and create stuff
+      browser.tabs
+        .sendMessage(tab.id!, {
+          type: 'enable',
+          config: this._config.contentConfig,
+        })
+        .catch(() => {
+          /* Some tabs don't have the content script so just ignore
+           * connection failures here. */
+        });
+      this._enabled = true;
+      browser.storage.local.set({ enabled: true });
+
+      browser.browserAction.setTitle({ title: 'Rikaichamp enabled' });
+      browser.browserAction
+        .setIcon({
+          path: `images/rikaichamp-${this._config.popupStyle}.svg`,
+        })
+        .catch(() => {
+          // Assume we're on Chrome and it still can't handle SVGs
+          browser.browserAction.setIcon({
+            path: {
+              16: `images/rikaichamp-${this._config.popupStyle}-16.png`,
+              32: `images/rikaichamp-${this._config.popupStyle}-32.png`,
+              48: `images/rikaichamp-${this._config.popupStyle}-48.png`,
+            },
           });
-        if (this._menuId) {
-          browser.contextMenus.update(this._menuId, { checked: false });
-        }
+        });
+    } catch (e) {
+      if (typeof timeoutId === 'number') {
+        clearTimeout(timeoutId);
+        timeoutId = undefined;
+      }
+
+      bugsnagClient.notify(e || '(No error)', { severity: 'error' });
+
+      browser.browserAction.setTitle({
+        title: 'Error loading dictionary. Please try again.',
       });
+      browser.browserAction
+        .setIcon({
+          path: 'images/rikaichamp-error.svg',
+        })
+        .catch(() => {
+          browser.browserAction.setIcon({
+            path: {
+              16: 'images/rikaichamp-error-16.png',
+              32: 'images/rikaichamp-error-32.png',
+              48: 'images/rikaichamp-error-48.png',
+            },
+          });
+        });
+
+      // Reset internal state so we can try again
+      this._dict = undefined;
+
+      if (this._menuId) {
+        browser.contextMenus.update(this._menuId, { checked: false });
+      }
+    }
   }
 
   updateConfig(config: ContentConfig) {
