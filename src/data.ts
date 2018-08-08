@@ -240,7 +240,7 @@ export class Dictionary {
       // We seem to occasionally hit loads that never finish (particularly on
       // Linux and particularly on startup / upgrade). Set a timeout so that
       // we can at least abort and try again.
-      const TIMEOUT_MS = 7 * 1000;
+      const TIMEOUT_MS = 4 * 1000;
       let timeoutId: number | undefined;
 
       try {
@@ -271,7 +271,7 @@ export class Dictionary {
             }
             throw new Error(`Load of ${url} timed out.`);
           }
-        }, TIMEOUT_MS);
+        }, TIMEOUT_MS * (attempts + 1));
 
         const response = await fetch(url, requestOptions);
         const responseText = await response.text();
