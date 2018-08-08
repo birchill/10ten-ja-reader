@@ -244,19 +244,36 @@ export class Dictionary {
       let timeoutId: number | undefined;
 
       try {
-        const controller = new AbortController();
-        const signal = controller.signal;
+        let controller: AbortController | undefined;
+        let requestOptions: RequestInit | undefined;
+        // It turns out some people are still using Firefox 56. :/
+        if (AbortController) {
+          controller = new AbortController();
+          requestOptions = { signal: controller.signal };
+        }
 
         timeoutId = setTimeout(() => {
-          console.error(`Load of ${url} timed out. Aborting.`);
-          if (this.bugsnag) {
-            this.bugsnag.leaveBreadcrumb(makeBreadcrumb('Aborting: ', url));
-          }
-          controller.abort();
           timeoutId = undefined;
+          if (controller) {
+            console.error(`Load of ${url} timed out. Aborting.`);
+            if (this.bugsnag) {
+              this.bugsnag.leaveBreadcrumb(makeBreadcrumb('Aborting: ', url));
+            }
+            controller.abort();
+          } else {
+            // TODO: This error doesn't actually propagate and do anything
+            // useful yet. But for now at least it means Firefox 56 doesn't
+            // break altogether.
+            if (this.bugsnag) {
+              this.bugsnag.notify('[Pre FF57] Load timed out', {
+                severity: 'error',
+              });
+            }
+            throw new Error(`Load of ${url} timed out.`);
+          }
         }, TIMEOUT_MS);
 
-        const response = await fetch(url, { signal });
+        const response = await fetch(url, requestOptions);
         const responseText = await response.text();
 
         clearTimeout(timeoutId);

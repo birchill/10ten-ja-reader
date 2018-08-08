@@ -1,6 +1,7 @@
 ## 0.0.22 (not yet released)
 
-* Nothing yet
+* Added temporary workaround for users of Firefox <56 (but seriously, please
+  upgrade your Firefox).
 
 ## 0.0.21 (2018-08-08)
 
