@@ -1,4 +1,8 @@
-## 0.0.22 (not yet released)
+## 0.0.23 (not yet released)
+
+(Nothing yet)
+
+## 0.0.22 (2018-08-08)
 
 * Added temporary workaround for users of Firefox <56 (but seriously, please
   upgrade your Firefox).
