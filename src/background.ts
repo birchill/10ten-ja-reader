@@ -262,11 +262,11 @@ class App {
     let timeoutId: number | undefined;
     try {
       timeoutId = setTimeout(() => {
-        console.warn('Rikaichamp took more than 10 seconds to load');
-        bugsnagClient.notify('Took more than 10 seconds to load', {
+        console.warn('Rikaichamp took more than 30 seconds to load');
+        bugsnagClient.notify('Took more than 30 seconds to load', {
           severity: 'warning',
         });
-      }, 10 * 1000);
+      }, 30 * 1000);
 
       await Promise.all([this.loadDictionary(), this._config.ready]);
 
