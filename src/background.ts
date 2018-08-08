@@ -259,19 +259,8 @@ class App {
       browser.contextMenus.update(this._menuId, { checked: true });
     }
 
-    let timeoutId: number | undefined;
     try {
-      timeoutId = setTimeout(() => {
-        console.warn('Rikaichamp took more than 30 seconds to load');
-        bugsnagClient.notify('Took more than 30 seconds to load', {
-          severity: 'warning',
-        });
-      }, 30 * 1000);
-
       await Promise.all([this.loadDictionary(), this._config.ready]);
-
-      clearTimeout(timeoutId);
-      timeoutId = undefined;
 
       // Send message to current tab to add listeners and create stuff
       browser.tabs
@@ -302,11 +291,6 @@ class App {
           });
         });
     } catch (e) {
-      if (typeof timeoutId === 'number') {
-        clearTimeout(timeoutId);
-        timeoutId = undefined;
-      }
-
       bugsnagClient.notify(e || '(No error)', { severity: 'error' });
 
       browser.browserAction.setTitle({
