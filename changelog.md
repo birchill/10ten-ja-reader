@@ -1,8 +1,10 @@
 ## 0.0.21 (not yet released)
 
-(Nothing yet)
+* Added timeout handling to deal with file loads that seem to never end
+  (particularly on Linux and on startup / upgrade).
+* Made it possible to recover from load errors.
 
-## 0.0.20 (2018-08-07)
+## 0.0.20 (released on 2018-08-07 but disabled moments later)
 
 * Hopefully made loading data files more robust to reduce the likelihood of
   errors on startup.
