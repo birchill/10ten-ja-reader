@@ -237,14 +237,39 @@ export class Dictionary {
     }
 
     while (true) {
+      // We seem to occasionally hit loads that never finish (particularly on
+      // Linux and particularly on startup / upgrade). Set a timeout so that
+      // we can at least abort and try again.
+      const TIMEOUT_MS = 7 * 1000;
+      let timeoutId: number | undefined;
+
       try {
-        const response = await fetch(url);
-        const responseText = response.text();
+        const controller = new AbortController();
+        const signal = controller.signal;
+
+        timeoutId = setTimeout(() => {
+          console.error(`Load of ${url} timed out. Aborting.`);
+          if (this.bugsnag) {
+            this.bugsnag.leaveBreadcrumb(makeBreadcrumb('Aborting: ', url));
+          }
+          controller.abort();
+          timeoutId = undefined;
+        }, TIMEOUT_MS);
+
+        const response = await fetch(url, { signal });
+        const responseText = await response.text();
+
+        clearTimeout(timeoutId);
         if (this.bugsnag) {
           this.bugsnag.leaveBreadcrumb(makeBreadcrumb('Loaded: ', url));
         }
+
         return responseText;
       } catch (e) {
+        if (typeof timeoutId === 'number') {
+          clearTimeout(timeoutId);
+        }
+
         if (this.bugsnag) {
           this.bugsnag.leaveBreadcrumb(
             makeBreadcrumb(`Failed(#${attempts + 1}): `, url)
