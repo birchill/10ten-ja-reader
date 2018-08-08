@@ -246,8 +246,8 @@ export class Dictionary {
       try {
         let controller: AbortController | undefined;
         let requestOptions: RequestInit | undefined;
-        // It turns out some people are still using Firefox 56. :/
-        if (AbortController) {
+        // It turns out some people are still using Firefox < 57. :/
+        if (typeof AbortController === 'function') {
           controller = new AbortController();
           requestOptions = { signal: controller.signal };
         }
