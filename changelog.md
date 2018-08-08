@@ -1,4 +1,8 @@
-## 0.0.23 (not yet released)
+## 0.0.24 (not yet released)
+
+(Nothing yet)
+
+## 0.0.23 (2018-08-08!)
 
 * Properly fixed pre-Firefox 57 installs.
 * Tweaked timeout for file reads so it is initially shorters.
