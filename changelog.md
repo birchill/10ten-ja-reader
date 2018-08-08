@@ -1,6 +1,9 @@
 ## 0.0.23 (not yet released)
 
-(Nothing yet)
+* Properly fixed pre-Firefox 57 installs.
+* Tweaked timeout for file reads so it is initially shorters.
+* Tweaked diagnostics for longer loads.
+* Updated dictionaries to 2018-08-07 snapshot.
 
 ## 0.0.22 (2018-08-08)
 
