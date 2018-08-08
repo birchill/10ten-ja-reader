@@ -1,4 +1,8 @@
-## 0.0.21 (not yet released)
+## 0.0.22 (not yet released)
+
+* Nothing yet
+
+## 0.0.21 (2018-08-08)
 
 * Added timeout handling to deal with file loads that seem to never end
   (particularly on Linux and on startup / upgrade).
