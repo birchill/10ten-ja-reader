@@ -90,7 +90,14 @@ function completeForm() {
 
       const keyLabel = document.createElement('label');
       keyLabel.setAttribute('for', `key-${setting.name}-${key}`);
-      keyLabel.textContent = key;
+
+      // We need to add an extra span inside in order to be able to get
+      // consistent layout when using older versions of extensions.css that put
+      // the checkbox in a pseudo.
+      const keyLabelSpan = document.createElement('span');
+      keyLabelSpan.textContent = key;
+      keyLabel.appendChild(keyLabelSpan);
+
       keyBlock.appendChild(keyLabel);
     }
 
