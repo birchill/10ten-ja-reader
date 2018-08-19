@@ -10,6 +10,10 @@ declare global {
 
 const config = browser.extension.getBackgroundPage().rcxMain.config;
 
+const canConfigureCommands =
+  typeof (browser.commands as any).update === 'function' &&
+  typeof (browser.commands as any).reset === 'function';
+
 function completeForm() {
   const popupStyleSelect = document.getElementById('popupstyle-select')!;
   const themes = ['blue', 'lightblue', 'black', 'yellow'];
@@ -50,6 +54,11 @@ function completeForm() {
     spanDef.classList.add('w-def');
     spanDef.textContent = '(n,vs) understanding';
     popupPreview.appendChild(spanDef);
+  }
+
+  const hotkeys = document.querySelectorAll('input[type=text].hotkey');
+  for (const hotkey of hotkeys) {
+    (hotkey as HTMLInputElement).disabled = !canConfigureCommands;
   }
 
   const grid = document.getElementById('key-grid')!;

@@ -95,13 +95,33 @@ fieldset {
   background: white;
 }
 .key label span {
-  border: 1px solid black;
+  border: 1px solid #909090;
+  border-bottom-color: grey;
+  border-bottom-width: 3px;
   /* For text boxes, we let browser styles define the border color */
 }
 .key input[type=text] {
-  padding-left: auto;
-  padding-right: auto;
-  min-width: 4em;
+  border-bottom-width: 3px !important;
+  /*
+   * We'd like to make this 4em or so but, as discussed below, since we can't
+   * actually centre the text in the textbox, we make it a bit more narrow so it
+   * doesn't look quite so silly.
+   */
+  width: 4em;
+
+  /*
+   * Hide the caret
+   */
+  color: transparent;
+  text-shadow: 0 0 0 black;
+}
+.key input[type=text]:disabled:hover {
+  /*
+   * We shouldn't need this but extensions.css 'disabled' selector is broken.
+   *
+   * See: https://bugzilla.mozilla.org/show_bug.cgi?id=1484501
+   */
+  border-color: #b1b1b1;
 }
 /*
  * When the textbox is in a chrome page, it gets an extra inner div as anonymous
@@ -111,6 +131,8 @@ fieldset {
  * Actually... this doesn't work. It looks like Web Extensions are not allowed
  * to style anonymous content so there is no way for us to override the styles
  * set by extensions.css which _is_ allowed to style it.
+ *
+ * See https://bugzilla.mozilla.org/show_bug.cgi?id=1484502
  */
 .key input[type=text] > .anonymous-div {
   text-align: center;
@@ -128,6 +150,7 @@ fieldset {
 .key input[type=checkbox]:not(:checked) + label span {
   opacity: 0.6;
   border-style: dashed;
+  border-bottom-style: solid;
 }
 .key-description {
   padding: .5rem;
