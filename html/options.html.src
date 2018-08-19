@@ -49,7 +49,8 @@
               <label for=toggle-ctrl><span>Ctrl</span></label>
               <input type=checkbox id=toggle-shift>
               <label for=toggle-shift><span>Shift</span></label>
-              <input size=1 type=text value=R disabled class=hotkey>
+              <input size=1 type=text value=R disabled class=hotkey
+                id=toggle-key>
             </div>
             <div class=key-description>Toggle Rikaichamp on/off</div>
             <!--
