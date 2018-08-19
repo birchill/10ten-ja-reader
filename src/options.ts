@@ -15,6 +15,47 @@ const canConfigureCommands =
   typeof (browser.commands as any).reset === 'function';
 
 function completeForm() {
+  addPopupStyleSelect();
+
+  const hotkeys = document.querySelectorAll('input[type=text].hotkey');
+  for (const hotkey of hotkeys) {
+    (hotkey as HTMLInputElement).disabled = !canConfigureCommands;
+  }
+
+  addPopupKeys();
+
+  // TODO: Use REF_ABBREVIATIONS to generate the HTML for options.html too.
+
+  for (const ref of Object.keys(config.kanjiReferences)) {
+    document.getElementById(ref)!.addEventListener('click', evt => {
+      config.updateKanjiReferences({
+        [ref]: (evt.target as HTMLInputElement).checked,
+      });
+    });
+  }
+
+  document.getElementById('showDefinitions')!.addEventListener('click', evt => {
+    config.readingOnly = !(evt.target as HTMLInputElement).checked;
+  });
+
+  document.getElementById('highlightText')!.addEventListener('click', evt => {
+    config.noTextHighlight = !(evt.target as HTMLInputElement).checked;
+  });
+
+  document
+    .getElementById('contextMenuEnable')!
+    .addEventListener('click', evt => {
+      config.contextMenuEnable = (evt.target as HTMLInputElement).checked;
+    });
+
+  document
+    .getElementById('showKanjiComponents')!
+    .addEventListener('click', evt => {
+      config.showKanjiComponents = (evt.target as HTMLInputElement).checked;
+    });
+}
+
+function addPopupStyleSelect() {
   const popupStyleSelect = document.getElementById('popupstyle-select')!;
   const themes = ['blue', 'lightblue', 'black', 'yellow'];
 
@@ -55,12 +96,9 @@ function completeForm() {
     spanDef.textContent = '(n,vs) understanding';
     popupPreview.appendChild(spanDef);
   }
+}
 
-  const hotkeys = document.querySelectorAll('input[type=text].hotkey');
-  for (const hotkey of hotkeys) {
-    (hotkey as HTMLInputElement).disabled = !canConfigureCommands;
-  }
-
+function addPopupKeys() {
   const grid = document.getElementById('key-grid')!;
 
   for (const setting of config.DEFAULT_KEY_SETTINGS) {
@@ -117,36 +155,6 @@ function completeForm() {
     keyDescription.textContent = setting.description;
     grid.appendChild(keyDescription);
   }
-
-  // TODO: Use REF_ABBREVIATIONS to generate the HTML for options.html too.
-
-  for (const ref of Object.keys(config.kanjiReferences)) {
-    document.getElementById(ref)!.addEventListener('click', evt => {
-      config.updateKanjiReferences({
-        [ref]: (evt.target as HTMLInputElement).checked,
-      });
-    });
-  }
-
-  document.getElementById('showDefinitions')!.addEventListener('click', evt => {
-    config.readingOnly = !(evt.target as HTMLInputElement).checked;
-  });
-
-  document.getElementById('highlightText')!.addEventListener('click', evt => {
-    config.noTextHighlight = !(evt.target as HTMLInputElement).checked;
-  });
-
-  document
-    .getElementById('contextMenuEnable')!
-    .addEventListener('click', evt => {
-      config.contextMenuEnable = (evt.target as HTMLInputElement).checked;
-    });
-
-  document
-    .getElementById('showKanjiComponents')!
-    .addEventListener('click', evt => {
-      config.showKanjiComponents = (evt.target as HTMLInputElement).checked;
-    });
 }
 
 async function fillVals() {
