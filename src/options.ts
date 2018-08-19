@@ -16,17 +16,11 @@ const canConfigureCommands =
   typeof (browser.commands as any).reset === 'function';
 
 function completeForm() {
+  // Pop-up
   addPopupStyleSelect();
 
-  // Disable any controls associated with configuring browser.commands if the
-  // necessary APIs are not available.
-  const browserCommandControls = document.querySelectorAll(
-    '.key.command input'
-  );
-  for (const control of browserCommandControls) {
-    (control as HTMLInputElement).disabled = !canConfigureCommands;
-  }
-
+  // Keyboard
+  configureCommands();
   addPopupKeys();
 
   // TODO: Use REF_ABBREVIATIONS to generate the HTML for options.html too.
@@ -100,6 +94,46 @@ function addPopupStyleSelect() {
     spanDef.classList.add('w-def');
     spanDef.textContent = '(n,vs) understanding';
     popupPreview.appendChild(spanDef);
+  }
+}
+
+function configureCommands() {
+  // Disable any controls associated with configuring browser.commands if the
+  // necessary APIs are not available.
+  const browserCommandControls = document.querySelectorAll(
+    '.key.command input'
+  );
+  for (const control of browserCommandControls) {
+    (control as HTMLInputElement).disabled = !canConfigureCommands;
+  }
+
+  const getToggleShortcut = (): string => {
+    const getControl = (part: string): HTMLInputElement => {
+      return document.getElementById(`toggle-${part}`) as HTMLInputElement;
+    };
+
+    const params: CommandParams = {
+      alt: getControl('alt').checked,
+      ctrl: getControl('ctrl').checked,
+      shift: getControl('shift').checked,
+      key: getControl('key').value,
+    };
+
+    return Command.fromParams(params).toString();
+  };
+
+  const toggleKeyCheckboxes = document.querySelectorAll(
+    '.command input[type=checkbox][id^=toggle-]'
+  );
+  for (const checkbox of toggleKeyCheckboxes) {
+    checkbox.addEventListener('click', evt => {
+      try {
+        const shortcut = getToggleShortcut();
+        config.toggleKey = shortcut;
+      } catch (e) {
+        // XXX Display error on form
+      }
+    });
   }
 }
 
