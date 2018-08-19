@@ -42,15 +42,14 @@
         </div>
         <div class="panel-section panel-section-formElements">
           <div class="panel-section key-grid">
-            <div class="key browser-style">
+            <div class="key command browser-style">
               <input type=checkbox id=toggle-alt>
               <label for=toggle-alt><span>Alt</span></label>
               <input type=checkbox id=toggle-ctrl>
               <label for=toggle-ctrl><span>Ctrl</span></label>
               <input type=checkbox id=toggle-shift>
               <label for=toggle-shift><span>Shift</span></label>
-              <input size=1 type=text value=R disabled class=hotkey
-                id=toggle-key>
+              <input size=1 type=text value=R disabled id=toggle-key>
             </div>
             <div class=key-description>Toggle Rikaichamp on/off</div>
             <!--

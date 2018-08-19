@@ -18,9 +18,13 @@ const canConfigureCommands =
 function completeForm() {
   addPopupStyleSelect();
 
-  const hotkeys = document.querySelectorAll('input[type=text].hotkey');
-  for (const hotkey of hotkeys) {
-    (hotkey as HTMLInputElement).disabled = !canConfigureCommands;
+  // Disable any controls associated with configuring browser.commands if the
+  // necessary APIs are not available.
+  const browserCommandControls = document.querySelectorAll(
+    '.key.command input'
+  );
+  for (const control of browserCommandControls) {
+    (control as HTMLInputElement).disabled = !canConfigureCommands;
   }
 
   addPopupKeys();
