@@ -16,6 +16,7 @@ type KanjiReferenceFlags = { [abbrev: string]: boolean };
 
 interface Settings {
   readingOnly?: boolean;
+  toggleKey?: string;
   keys?: Partial<KeyboardKeys>;
   contextMenuEnable?: boolean;
   noTextHighlight?: boolean;
@@ -125,6 +126,38 @@ export class Config {
 
   toggleReadingOnly() {
     this.readingOnly = !this._settings.readingOnly;
+  }
+
+  // toggleKey: Default is 'Alt+R'
+  //
+  // Note that we'd like to derive this default from the manifest but,
+  // as far as I can tell, browser.commands.getAll() won't necessarily give us
+  // what's in the manifest. That is, if we update the command, it will give us
+  // the updated value instead.
+  //
+  // As a result, we don't really have a way of determining the true default
+  // programmatically, so we just hard-code the value here and hope it mathces
+  // the manifest.
+  //
+  // While this could be an array value, it complicates the options form if we
+  // have to deal with that, so for now we just allow a single shortcut.
+
+  get toggleKey(): string {
+    return typeof this._settings.toggleKey === 'undefined'
+      ? 'Alt+R'
+      : this._settings.toggleKey;
+  }
+
+  set toggleKey(value: string) {
+    if (
+      typeof this._settings.toggleKey !== 'undefined' &&
+      this._settings.toggleKey === value
+    ) {
+      return;
+    }
+
+    this._settings.toggleKey = value;
+    browser.storage.sync.set({ toggleKey: value });
   }
 
   // keys: Defaults are defined by DEFAULT_KEYS

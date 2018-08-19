@@ -1,6 +1,7 @@
 import '../html/options.html.src';
 
 import Config from './config';
+import { Command, CommandParams } from './commands';
 
 declare global {
   interface Window {
@@ -166,6 +167,18 @@ async function fillVals() {
   optform.contextMenuEnable.checked = config.contextMenuEnable;
   optform.showKanjiComponents.checked = config.showKanjiComponents;
   optform.popupStyle.value = config.popupStyle;
+
+  try {
+    const toggleCommand = Command.fromString(config.toggleKey);
+    const getToggleControl = (part: string): HTMLInputElement =>
+      document.getElementById(`toggle-${part}`) as HTMLInputElement;
+    getToggleControl('alt').checked = toggleCommand.alt;
+    getToggleControl('ctrl').checked = toggleCommand.ctrl;
+    getToggleControl('shift').checked = toggleCommand.shift;
+    getToggleControl('key').value = toggleCommand.key;
+  } catch (e) {
+    // TODO: Tell bugsnag about this
+  }
 
   for (const [setting, keys] of Object.entries(config.keys)) {
     const checkboxes = document.querySelectorAll(

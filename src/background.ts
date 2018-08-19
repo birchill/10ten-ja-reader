@@ -111,6 +111,22 @@ class App {
           });
       }
 
+      if (
+        changes.hasOwnProperty('toggleKey') &&
+        typeof (browser.commands as any).update === 'function'
+      ) {
+        console.log(
+          `Got change to toggleKey: ${(changes as any).toggleKey.newValue}`
+        );
+        /*
+        browser.commands.update({
+          name: '_execute_browser_action',
+          shortcut: this._config.toggleKey.newValue,
+          // XXX Do we need to set the description here?
+        });
+         */
+      }
+
       // TODO: Ignore changes that aren't part of contentConfig
       this.updateConfig(this._config.contentConfig);
     });
@@ -180,6 +196,8 @@ class App {
         return;
       }
       this.addContextMenu();
+      // XXX Update the toggleKey command if it differs from what is currently
+      // set.
     });
 
     // See if we were enabled on the last run
