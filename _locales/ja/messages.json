@@ -1,0 +1,18 @@
+{
+  "extension_description": {
+    "message": "マウスを合わせるだけで、日英辞書を引く。",
+    "description": "Description of the what the extension does."
+  },
+  "command_toggle_description": {
+    "message": "Rikaichampオン・オフを切り替える",
+    "description": "Explanation of toolbar button to turn Rikaichamp on or off"
+  },
+  "command_toggle_disabled": {
+    "message": "Rikaichamp オフ",
+    "description": "Tooltip for toolbar button when disabled."
+  },
+  "prefs_general_heading": {
+    "message": "一般",
+    "description": "Heading for common preferences."
+  }
+}

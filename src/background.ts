@@ -398,7 +398,9 @@ class App {
     browser.storage.local.remove('enabled').catch(() => {
       /* Ignore */
     });
-    browser.browserAction.setTitle({ title: 'Rikaichamp disabled' });
+    browser.browserAction.setTitle({
+      title: browser.i18n.getMessage('command_toggle_disabled'),
+    });
     browser.browserAction
       .setIcon({
         path: `images/rikaichamp-disabled.svg`,

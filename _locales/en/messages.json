@@ -1,0 +1,18 @@
+{
+  "extension_description": {
+    "message": "Translate Japanese by hovering over words.",
+    "description": "Description of the what the extension does."
+  },
+  "command_toggle_description": {
+    "message": "Toggle Rikaichamp on/off",
+    "description": "Tooltip for toolbar button to turn Rikaichamp on or off"
+  },
+  "command_toggle_disabled": {
+    "message": "Rikaichamp disabled",
+    "description": "Tooltip for toolbar button when disabled."
+  },
+  "prefs_general_heading": {
+    "message": "General",
+    "description": "Heading for common preferences."
+  }
+}

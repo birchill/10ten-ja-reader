@@ -10,7 +10,8 @@
     }
   },
   /*#endif*/
-  "description": "Translate Japanese by hovering over words.",
+  "description": "__MSG_extension_description__",
+  "default_locale": "en",
   /*#if supports_svg_icons*/
   "icons": {
     "16": "images/rikaichamp-blue.svg",
@@ -43,7 +44,7 @@
       "48": "images/rikaichamp-disabled-48.png"
     },
     /*#endif*/
-    "default_title": "Rikaichamp disabled"
+    "default_title": "__MSG_command_toggle_disabled__"
   },
   "options_ui": {
     /*#if supports_browser_style*/
@@ -72,7 +73,7 @@
       "suggested_key": {
         "default": "Alt+R"
       },
-      "description": "Toggle Rikaichamp on/off"
+      "description": "__MSG_command_toggle_description__"
     }
   }
 }

@@ -71,7 +71,7 @@ const firefoxConfig = {
     filename: '[name].js',
   },
   plugins: [
-    new CopyWebpackPlugin(['css/*', 'images/*', 'data/*']),
+    new CopyWebpackPlugin(['css/*', 'images/*', 'data/*', '_locales/**/*']),
     new WebExtWebpackPlugin({
       browserConsole: true,
       startUrl: ['__tests__/playground.html'],
