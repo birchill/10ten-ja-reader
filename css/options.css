@@ -161,3 +161,19 @@ fieldset {
   padding-block-start: 0.8rem;
   padding-inline-start: 1.5rem;
 }
+.key-description .icon {
+  display: inline-block;
+  vertical-align: top;
+  margin-top: -0.25rem;
+  margin-left: 0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.key-description .icon.-warning {
+  background-image: url("/images/warning-yellow.svg");
+}
+.key-description .icon.-error {
+  background-image: url("/images/warning-red.svg");
+}

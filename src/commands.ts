@@ -81,17 +81,17 @@ export class Command {
 
     const parts = value.split('+');
     if (!parts.length || parts.length > 3) {
-      throw new Error(`Could not parse command string: ${value}`);
+      throw new Error(`Could not parse command string: ${value}.`);
     }
 
     const key = parts[parts.length - 1];
     if (!key.length) {
-      throw new Error(`Invalid command string: ${value}. Key is empty`);
+      throw new Error(`Invalid command string: ${value}. Key is empty.`);
     }
 
     if (!isValidKey(key)) {
       throw new Error(
-        `Invalid command string: ${value}. Key '${key}' is not allowed`
+        `Invalid command string: ${value}. Key '${key}' is not allowed.`
       );
     }
 
@@ -100,7 +100,7 @@ export class Command {
       (parts.length < 2 || !PRIMARY_MODIFIER_KEYS.includes(parts[0]))
     ) {
       throw new Error(
-        `Invalid command string: ${value}. A modifier must be specified unless using a function key`
+        `Invalid command string: ${value}. A modifier must be specified unless using a function key.`
       );
     }
 
@@ -110,7 +110,7 @@ export class Command {
         throw new Error(
           `Invalid command string: ${value}. Modifier ${
             parts[0]
-          } is not allowed`
+          } is not allowed.`
         );
       }
       modifier = parts[0] as PrimaryModifier;
@@ -122,7 +122,7 @@ export class Command {
         throw new Error(
           `Invalid command string: ${value}. Secondary modifier ${
             parts[1]
-          } is not allowed`
+          } is not allowed.`
         );
       }
       secondaryModifier = parts[1] as SecondaryModifier;
@@ -135,23 +135,23 @@ export class Command {
     if (MEDIA_KEYS.includes(params.key)) {
       if (params.alt || params.ctrl || params.shift) {
         throw new Error(
-          `Invalid command: Cannot specify modifiers and media keys`
+          `Invalid command: Cannot specify modifiers and media keys.`
         );
       }
       return new Command(params.key);
     }
 
     if (!params.key.length) {
-      throw new Error(`Invalid command. Key is empty`);
+      throw new Error(`Invalid command. Key is empty.`);
     }
 
     if (!isValidKey(params.key)) {
-      throw new Error(`Invalid command. Key '${params.key}' is not allowed`);
+      throw new Error(`Invalid command. Key '${params.key}' is not allowed.`);
     }
 
     if (!isFunctionKey(params.key) && !(params.alt || params.ctrl)) {
       throw new Error(
-        `Invalid command. A modifier must be specified unless using a function key`
+        `Invalid command. A modifier must be specified unless using a function key.`
       );
     }
 

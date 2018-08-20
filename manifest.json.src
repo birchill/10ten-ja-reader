@@ -62,7 +62,11 @@
       "all_frames": true
     }
   ],
-  "web_accessible_resources": ["css/popup.css"],
+  "web_accessible_resources": [
+    "css/popup.css",
+    "images/warning-red.svg",
+    "images/warning-yellow.svg"
+  ],
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {

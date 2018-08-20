@@ -127,11 +127,17 @@ function configureCommands() {
   );
   for (const checkbox of toggleKeyCheckboxes) {
     checkbox.addEventListener('click', evt => {
+      const icon = document.getElementById('toggle-key-icon')!;
       try {
         const shortcut = getToggleShortcut();
         config.toggleKey = shortcut;
+        icon.classList.remove('-warning');
+        icon.classList.remove('-error');
+        icon.removeAttribute('title');
       } catch (e) {
-        // XXX Display error on form
+        icon.classList.remove('-warning');
+        icon.classList.add('-error');
+        icon.setAttribute('title', e.message);
       }
     });
   }

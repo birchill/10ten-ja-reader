@@ -51,7 +51,10 @@
               <label for=toggle-shift><span>Shift</span></label>
               <input size=1 type=text value=R disabled id=toggle-key>
             </div>
-            <div class=key-description>Toggle Rikaichamp on/off</div>
+            <div class="key-description">
+              Toggle Rikaichamp on/off
+              <div class="icon" id=toggle-key-icon></div>
+            </div>
             <!--
             <div class="key browser-style">
               <input type=checkbox id=show-alt>
