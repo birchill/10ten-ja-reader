@@ -102,12 +102,7 @@ fieldset {
 }
 .key input[type=text] {
   border-bottom-width: 3px !important;
-  /*
-   * We'd like to make this 4em or so but, as discussed below, since we can't
-   * actually centre the text in the textbox, we make it a bit more narrow so it
-   * doesn't look quite so silly.
-   */
-  width: 4em;
+  width: 6em;
 
   /*
    * Hide the caret

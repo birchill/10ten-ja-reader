@@ -107,6 +107,10 @@ function configureCommands() {
     (control as HTMLInputElement).disabled = !canConfigureCommands;
   }
 
+  if (!canConfigureCommands) {
+    return;
+  }
+
   const getToggleShortcut = (): string => {
     const getControl = (part: string): HTMLInputElement => {
       return document.getElementById(`toggle-${part}`) as HTMLInputElement;
@@ -122,25 +126,55 @@ function configureCommands() {
     return Command.fromParams(params).toString();
   };
 
+  type WarningState = 'ok' | 'warning' | 'error';
+  const setWarning = (state: WarningState, message?: string) => {
+    const icon = document.getElementById('toggle-key-icon')!;
+    icon.classList.toggle('-warning', state === 'warning');
+    icon.classList.toggle('-error', state === 'error');
+    if (message) {
+      icon.setAttribute('title', message);
+    } else {
+      icon.removeAttribute('title');
+    }
+  };
+
+  const updateToggleKey = () => {
+    try {
+      const shortcut = getToggleShortcut();
+      config.toggleKey = shortcut;
+      setWarning('ok');
+    } catch (e) {
+      setWarning('error', e.message);
+    }
+  };
+
   const toggleKeyCheckboxes = document.querySelectorAll(
     '.command input[type=checkbox][id^=toggle-]'
   );
   for (const checkbox of toggleKeyCheckboxes) {
-    checkbox.addEventListener('click', evt => {
-      const icon = document.getElementById('toggle-key-icon')!;
-      try {
-        const shortcut = getToggleShortcut();
-        config.toggleKey = shortcut;
-        icon.classList.remove('-warning');
-        icon.classList.remove('-error');
-        icon.removeAttribute('title');
-      } catch (e) {
-        icon.classList.remove('-warning');
-        icon.classList.add('-error');
-        icon.setAttribute('title', e.message);
-      }
-    });
+    checkbox.addEventListener('click', updateToggleKey);
   }
+
+  const toggleKeyTextbox = document.getElementById(
+    'toggle-key'
+  ) as HTMLInputElement;
+  toggleKeyTextbox.addEventListener('keypress', evt => {
+    if (evt.key.length === 1) {
+      toggleKeyTextbox.value = evt.key.toUpperCase();
+    } else {
+      toggleKeyTextbox.value = evt.key;
+    }
+    evt.preventDefault();
+    updateToggleKey();
+  });
+
+  toggleKeyTextbox.addEventListener('compositionstart', evt => {
+    toggleKeyTextbox.value = '';
+  });
+  toggleKeyTextbox.addEventListener('compositionend', evt => {
+    toggleKeyTextbox.value = toggleKeyTextbox.value.toUpperCase();
+    updateToggleKey();
+  });
 }
 
 function addPopupKeys() {
