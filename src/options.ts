@@ -22,6 +22,7 @@ function completeForm() {
   // Keyboard
   configureCommands();
   addPopupKeys();
+  translateCtrlKeys();
 
   // TODO: Use REF_ABBREVIATIONS to generate the HTML for options.html too.
 
@@ -233,6 +234,20 @@ function addPopupKeys() {
     keyDescription.classList.add('key-description');
     keyDescription.textContent = setting.description;
     grid.appendChild(keyDescription);
+  }
+}
+
+function translateCtrlKeys() {
+  const isMac = /^Mac/i.test(navigator.platform);
+  if (!isMac) {
+    return;
+  }
+
+  const keyLabels = document.querySelectorAll('.key > label > span');
+  for (const label of keyLabels) {
+    if (label.textContent === 'Ctrl') {
+      label.textContent = '⌘';
+    }
   }
 }
 
