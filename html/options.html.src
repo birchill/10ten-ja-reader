@@ -58,11 +58,11 @@
             <!--
             <div class="key browser-style">
               <input type=checkbox id=show-alt>
-              <label for=toggle-alt><span>Alt</span></label>
+              <label for=show-alt><span>Alt</span></label>
               <input type=checkbox id=show-ctrl>
-              <label for=toggle-ctrl><span>Ctrl</span></label>
+              <label for=show-ctrl><span>Ctrl</span></label>
               <input type=checkbox id=show-shift>
-              <label for=toggle-shift><span>Shift</span></label>
+              <label for=show-shift><span>Shift</span></label>
             </div>
             <div class=key-description>
               Show pop-up
