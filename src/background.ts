@@ -115,16 +115,10 @@ class App {
         changes.hasOwnProperty('toggleKey') &&
         typeof (browser.commands as any).update === 'function'
       ) {
-        console.log(
-          `Got change to toggleKey: ${(changes as any).toggleKey.newValue}`
-        );
-        /*
-        browser.commands.update({
+        (browser.commands as any).update({
           name: '_execute_browser_action',
-          shortcut: this._config.toggleKey.newValue,
-          // XXX Do we need to set the description here?
+          shortcut: (changes as any).toggleKey.newValue,
         });
-         */
       }
 
       // TODO: Ignore changes that aren't part of contentConfig
@@ -192,12 +186,32 @@ class App {
     );
 
     this._config.ready.then(() => {
-      if (!this._config.contextMenuEnable) {
-        return;
+      if (this._config.contextMenuEnable) {
+        this.addContextMenu();
       }
-      this.addContextMenu();
-      // XXX Update the toggleKey command if it differs from what is currently
-      // set.
+
+      // I'm not sure if this can actually happen, but just in case, update the
+      // toggleKey command if it differs from what is currently set.
+      if (typeof (browser.commands as any).update === 'function') {
+        const getToggleCommand = async (): Promise<browser.commands.Command | null> => {
+          const commands = await browser.commands.getAll();
+          for (const command of commands) {
+            if (command.name === '_execute_browser_action') {
+              return command;
+            }
+          }
+          return null;
+        };
+
+        getToggleCommand().then((command: browser.commands.Command | null) => {
+          if (command && command.shortcut !== this._config.toggleKey) {
+            (browser.commands as any).update({
+              name: '_execute_browser_action',
+              shortcut: this._config.toggleKey,
+            });
+          }
+        });
+      }
     });
 
     // See if we were enabled on the last run
