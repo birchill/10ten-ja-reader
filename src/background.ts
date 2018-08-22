@@ -115,10 +115,19 @@ class App {
         changes.hasOwnProperty('toggleKey') &&
         typeof (browser.commands as any).update === 'function'
       ) {
-        (browser.commands as any).update({
-          name: '_execute_browser_action',
-          shortcut: (changes as any).toggleKey.newValue,
-        });
+        try {
+          (browser.commands as any).update({
+            name: '_execute_browser_action',
+            shortcut: (changes as any).toggleKey.newValue,
+          });
+        } catch (e) {
+          // XXX Bugsnag
+          console.log(
+            `Failed to update toggle key to ${
+              (changes as any).toggleKey.newValue
+            }`
+          );
+        }
       }
 
       // TODO: Ignore changes that aren't part of contentConfig
@@ -205,10 +214,17 @@ class App {
 
         getToggleCommand().then((command: browser.commands.Command | null) => {
           if (command && command.shortcut !== this._config.toggleKey) {
-            (browser.commands as any).update({
-              name: '_execute_browser_action',
-              shortcut: this._config.toggleKey,
-            });
+            try {
+              (browser.commands as any).update({
+                name: '_execute_browser_action',
+                shortcut: this._config.toggleKey,
+              });
+            } catch (e) {
+              console.log(
+                `Failed to update toggle key to ${this._config.toggleKey}`
+              );
+              // XXX Tell bugsnag
+            }
           }
         });
       }
