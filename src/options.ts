@@ -112,7 +112,7 @@ function configureCommands() {
     return;
   }
 
-  const getToggleShortcut = (): string => {
+  const getToggleShortcut = (): Command => {
     const getControl = (part: string): HTMLInputElement => {
       return document.getElementById(`toggle-${part}`) as HTMLInputElement;
     };
@@ -124,28 +124,16 @@ function configureCommands() {
       key: getControl('key').value,
     };
 
-    return Command.fromParams(params).toString();
-  };
-
-  type WarningState = 'ok' | 'warning' | 'error';
-  const setWarning = (state: WarningState, message?: string) => {
-    const icon = document.getElementById('toggle-key-icon')!;
-    icon.classList.toggle('-warning', state === 'warning');
-    icon.classList.toggle('-error', state === 'error');
-    if (message) {
-      icon.setAttribute('title', message);
-    } else {
-      icon.removeAttribute('title');
-    }
+    return Command.fromParams(params);
   };
 
   const updateToggleKey = () => {
     try {
       const shortcut = getToggleShortcut();
-      config.toggleKey = shortcut;
-      setWarning('ok');
+      config.toggleKey = shortcut.toString();
+      showToggleCommandSupport(shortcut);
     } catch (e) {
-      setWarning('error', e.message);
+      setToggleKeyWarningState('error', e.message);
     }
   };
 
@@ -176,6 +164,52 @@ function configureCommands() {
     toggleKeyTextbox.value = toggleKeyTextbox.value.toUpperCase();
     updateToggleKey();
   });
+}
+
+type WarningState = 'ok' | 'warning' | 'error';
+
+function setToggleKeyWarningState(state: WarningState, message?: string) {
+  const icon = document.getElementById('toggle-key-icon')!;
+  icon.classList.toggle('-warning', state === 'warning');
+  icon.classList.toggle('-error', state === 'error');
+  if (message) {
+    icon.setAttribute('title', message);
+  } else {
+    icon.removeAttribute('title');
+  }
+}
+
+function getFirefoxMajorVersion(): number | null {
+  const matches = navigator.userAgent.match(/Firefox\/(\d+)/);
+  if (matches === null || matches.length < 2) {
+    return null;
+  }
+
+  const majorVersion = parseInt(matches[1]);
+  return majorVersion === 0 ? null : majorVersion;
+}
+
+function showToggleCommandSupport(command: Command) {
+  // Key sequences with a secondary modifier other than Shift are only
+  // supported prior to Firefox 63. Show a warning or error depending on
+  // whether or not we are prior to Firefox 63.
+  if (!command.usesExpandedModifierSet()) {
+    setToggleKeyWarningState('ok');
+    return;
+  }
+
+  const firefoxMajorVersion = getFirefoxMajorVersion();
+  if (firefoxMajorVersion !== null && firefoxMajorVersion < 63) {
+    setToggleKeyWarningState(
+      'error',
+      'Combining Alt and Ctrl is not supported in this version of Firefox'
+    );
+  } else {
+    setToggleKeyWarningState(
+      'warning',
+      'Combining Alt and Ctrl is not supported in earlier versions of Firefox (prior to 63)'
+    );
+  }
 }
 
 function addPopupKeys() {
@@ -269,6 +303,7 @@ async function fillVals() {
     getToggleControl('ctrl').checked = toggleCommand.ctrl;
     getToggleControl('shift').checked = toggleCommand.shift;
     getToggleControl('key').value = toggleCommand.key;
+    showToggleCommandSupport(toggleCommand);
   } catch (e) {
     const backgroundWindow = browser.extension.getBackgroundPage();
     backgroundWindow.postMessage(

@@ -121,18 +121,18 @@ describe('Command', () => {
     }
   });
 
-  it('recognizes which commands are valid prior to Firefox 63', () => {
+  it('recognizes which commands use the expanded modifier set', () => {
     const tests = [
-      { input: { alt: true, key: 'T' }, expected: true },
-      { input: { alt: true, shift: true, key: 'T' }, expected: true },
-      { input: { alt: true, ctrl: true, key: 'T' }, expected: false },
-      { input: { ctrl: true, shift: true, key: 'T' }, expected: true },
-      { input: { key: 'F11' }, expected: true },
+      { input: { alt: true, key: 'T' }, expected: false },
+      { input: { alt: true, shift: true, key: 'T' }, expected: false },
+      { input: { alt: true, ctrl: true, key: 'T' }, expected: true },
+      { input: { ctrl: true, shift: true, key: 'T' }, expected: false },
+      { input: { key: 'F11' }, expected: false },
     ];
 
     for (const test of tests) {
       const command = Command.fromParams(test.input);
-      expect(command.isValidPreFirefox63()).toEqual(test.expected);
+      expect(command.usesExpandedModifierSet()).toEqual(test.expected);
     }
   });
 });
