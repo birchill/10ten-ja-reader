@@ -270,7 +270,14 @@ async function fillVals() {
     getToggleControl('shift').checked = toggleCommand.shift;
     getToggleControl('key').value = toggleCommand.key;
   } catch (e) {
-    // TODO: Tell bugsnag about this
+    const backgroundWindow = browser.extension.getBackgroundPage();
+    backgroundWindow.postMessage(
+      {
+        type: 'reportWarning',
+        message: `Unable to parse toggleKey: ${config.toggleKey}`,
+      },
+      window.location.origin
+    );
   }
 
   for (const [setting, keys] of Object.entries(config.keys)) {

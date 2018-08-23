@@ -121,12 +121,11 @@ class App {
             shortcut: (changes as any).toggleKey.newValue,
           });
         } catch (e) {
-          // XXX Bugsnag
-          console.log(
-            `Failed to update toggle key to ${
-              (changes as any).toggleKey.newValue
-            }`
-          );
+          const message = `Failed to update toggle key to ${
+            (changes as any).toggleKey.newValue
+          }`;
+          console.error(message);
+          bugsnagClient.notify(message, { severity: 'warning' });
         }
       }
 
@@ -220,10 +219,11 @@ class App {
                 shortcut: this._config.toggleKey,
               });
             } catch (e) {
-              console.log(
-                `Failed to update toggle key to ${this._config.toggleKey}`
-              );
-              // XXX Tell bugsnag
+              const message = `On startup, failed to update toggle key to ${
+                this._config.toggleKey
+              }`;
+              console.error(message);
+              bugsnagClient.notify(message, { severity: 'warning' });
             }
           }
         });
@@ -578,6 +578,14 @@ window.addEventListener('message', event => {
         '`keys` should be an object'
       );
       window.rcxMain.config.updateKeys(event.data.keys);
+      break;
+
+    case 'reportWarning':
+      console.assert(
+        typeof event.data.message === 'string',
+        '`message` should be a string'
+      );
+      bugsnagClient.notify(event.data.message, { severity: 'warning' });
       break;
 
     default:
