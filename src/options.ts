@@ -20,6 +20,9 @@ function completeForm() {
   if (isFirefox()) {
     document.documentElement.classList.add('firefox');
   }
+  if (isChrome()) {
+    document.documentElement.classList.add('chrome');
+  }
 
   // Pop-up
   addPopupStyleSelect();
@@ -198,6 +201,13 @@ function setToggleKeyWarningState(state: WarningState, message?: string) {
 
 function isFirefox(): boolean {
   return navigator.userAgent.indexOf('Firefox/') !== -1;
+}
+
+function isChrome(): boolean {
+  return (
+    navigator.userAgent.indexOf('Chrome/') !== -1 ||
+    navigator.userAgent.indexOf('Chromium/') !== -1
+  );
 }
 
 function getFirefoxMajorVersion(): number | null {

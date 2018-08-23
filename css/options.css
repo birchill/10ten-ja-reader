@@ -6,6 +6,13 @@
 }
 
 /*
+ * Chrome's embedded options page seems to make the window too narrow.
+ */
+:root.chrome {
+  min-width: 700px;
+}
+
+/*
  * If we are using Firefox's browser styles for headings, drop the extra margin
  * we'd otherwise add for headings.
  */
