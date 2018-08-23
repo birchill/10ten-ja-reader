@@ -1,3 +1,19 @@
+/*
+ * Reproduce some styles from Firefox's browser_styles for other browsers' sake
+ */
+:root:not(.firefox) * {
+  box-sizing: border-box;
+}
+
+/*
+ * If we are using Firefox's browser styles for headings, drop the extra margin
+ * we'd otherwise add for headings.
+ */
+:root.firefox h2 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 #rikaichamp_options,
 #rikaichamp_options td {
   padding: 0 10px;
@@ -29,7 +45,7 @@
   max-width: 1000px;
   grid-template-columns: repeat(auto-fill, 250px);
   grid-column-gap: 1em;
-  padding: 16px;
+  margin: 16px;
 }
 
 fieldset {

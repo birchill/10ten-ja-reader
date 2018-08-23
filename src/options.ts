@@ -16,6 +16,11 @@ const canConfigureCommands =
   typeof (browser.commands as any).reset === 'function';
 
 function completeForm() {
+  // Basic styles
+  if (isFirefox()) {
+    document.documentElement.classList.add('firefox');
+  }
+
   // Pop-up
   addPopupStyleSelect();
 
@@ -189,6 +194,10 @@ function setToggleKeyWarningState(state: WarningState, message?: string) {
   } else {
     icon.removeAttribute('title');
   }
+}
+
+function isFirefox(): boolean {
+  return navigator.userAgent.indexOf('Firefox/') !== -1;
 }
 
 function getFirefoxMajorVersion(): number | null {

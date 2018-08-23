@@ -13,7 +13,7 @@
     <div id=rikaichamp_options class=panel>
       <form id=optform name=optform>
         <div class="panel-section panel-section-header">
-          <div class=text-section-header>General</div>
+          <h2 class=text-section-header>General</h2>
         </div>
         <div class="panel-section panel-section-formElements browser-style">
           <div class="browser-style checkbox-row">
@@ -31,14 +31,14 @@
           </div>
         </div>
         <div class="panel-section panel-section-header">
-          <div class=text-section-header>Theme</div>
+          <h2 class=text-section-header>Theme</h2>
         </div>
         <div class="panel-section panel-section-formElements">
           <fieldset class=popupstyle-select id=popupstyle-select>
           </fieldset>
         </div>
         <div class="panel-section panel-section-header">
-          <div class=text-section-header>Keyboard</div>
+          <h2 class=text-section-header>Keyboard</h2>
         </div>
         <div class="panel-section panel-section-formElements">
           <div class="panel-section key-grid">
@@ -76,7 +76,7 @@
         </div>
         <div id=kanjicon>
           <div class="panel-section panel-section-header">
-            <div class=text-section-header>Kanji dictionary</div>
+            <h2 class=text-section-header>Kanji dictionary</h2>
           </div>
           <div class="panel-section panel-section-grid panel-section-list browser-style">
             <div class="browser-style checkbox-row">
