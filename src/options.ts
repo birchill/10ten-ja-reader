@@ -1,7 +1,7 @@
 import '../html/options.html.src';
 
 import Config from './config';
-import { Command, CommandParams } from './commands';
+import { Command, CommandParams, isValidKey } from './commands';
 
 declare global {
   interface Window {
@@ -147,12 +147,24 @@ function configureCommands() {
   const toggleKeyTextbox = document.getElementById(
     'toggle-key'
   ) as HTMLInputElement;
-  toggleKeyTextbox.addEventListener('keypress', evt => {
+  toggleKeyTextbox.addEventListener('keydown', evt => {
+    let key = evt.key;
     if (evt.key.length === 1) {
-      toggleKeyTextbox.value = evt.key.toUpperCase();
-    } else {
-      toggleKeyTextbox.value = evt.key;
+      key = key.toUpperCase();
     }
+
+    if (!isValidKey(key)) {
+      // Most printable keys are one character in length so make sure we don't
+      // allow the default action of adding them to the text input. For other
+      // keys we don't handle though (e.g. Tab) we probably want to allow the
+      // default action.
+      if (evt.key.length === 1) {
+        evt.preventDefault();
+      }
+      return;
+    }
+
+    toggleKeyTextbox.value = key;
     evt.preventDefault();
     updateToggleKey();
   });

@@ -42,7 +42,7 @@ const SPECIAL_KEYS = [
 
 const isFunctionKey = (key: string): boolean => /^F([1-9]|(1[0-2]))$/.test(key);
 
-const isValidKey = (key: string): boolean =>
+export const isValidKey = (key: string): boolean =>
   /^[A-Z0-9]$/.test(key) || isFunctionKey(key) || SPECIAL_KEYS.includes(key);
 
 type PrimaryModifier = 'Ctrl' | 'Alt';
