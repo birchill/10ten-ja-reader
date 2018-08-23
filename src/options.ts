@@ -22,7 +22,7 @@ function completeForm() {
   // Keyboard
   configureCommands();
   addPopupKeys();
-  translateCtrlKeys();
+  translateKeys();
 
   // TODO: Use REF_ABBREVIATIONS to generate the HTML for options.html too.
 
@@ -271,7 +271,7 @@ function addPopupKeys() {
   }
 }
 
-function translateCtrlKeys() {
+function translateKeys() {
   const isMac = /^Mac/i.test(navigator.platform);
   if (!isMac) {
     return;
@@ -281,6 +281,8 @@ function translateCtrlKeys() {
   for (const label of keyLabels) {
     if (label.textContent === 'Ctrl') {
       label.textContent = '⌘';
+    } else if (label.textContent === 'Alt') {
+      label.textContent = 'Option';
     }
   }
 }
