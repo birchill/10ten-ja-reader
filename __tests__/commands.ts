@@ -120,4 +120,19 @@ describe('Command', () => {
       }).toThrow();
     }
   });
+
+  it('recognizes which commands are valid prior to Firefox 63', () => {
+    const tests = [
+      { input: { alt: true, key: 'T' }, expected: true },
+      { input: { alt: true, shift: true, key: 'T' }, expected: true },
+      { input: { alt: true, ctrl: true, key: 'T' }, expected: false },
+      { input: { ctrl: true, shift: true, key: 'T' }, expected: true },
+      { input: { key: 'F11' }, expected: true },
+    ];
+
+    for (const test of tests) {
+      const command = Command.fromParams(test.input);
+      expect(command.isValidPreFirefox63()).toEqual(test.expected);
+    }
+  });
 });

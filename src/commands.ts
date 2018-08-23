@@ -221,6 +221,12 @@ export class Command {
 
     return parts.join('+');
   }
+
+  // Prior to Firefox 63, the second modifier could only be Shift.
+  // See https://bugzilla.mozilla.org/show_bug.cgi?id=1364784
+  isValidPreFirefox63(): boolean {
+    return !this._secondaryModifier || this._secondaryModifier === 'Shift';
+  }
 }
 
 export default Command;
