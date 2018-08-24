@@ -1,6 +1,7 @@
 ## 0.0.24 (not yet released)
 
-(Nothing yet)
+* Made the hotkey for enabling Rikaichamp configurable
+* Various tweaks to option page styling
 
 ## 0.0.23 (2018-08-08!)
 
