@@ -2,6 +2,7 @@ import '../html/options.html.src';
 
 import Config from './config';
 import { Command, CommandParams, isValidKey } from './commands';
+import { translateDoc } from './l10n';
 
 declare global {
   interface Window {
@@ -33,6 +34,9 @@ function completeForm() {
   translateKeys();
 
   // TODO: Use REF_ABBREVIATIONS to generate the HTML for options.html too.
+
+  // l10n
+  translateDoc();
 
   for (const ref of Object.keys(config.kanjiReferences)) {
     document.getElementById(ref)!.addEventListener('click', evt => {

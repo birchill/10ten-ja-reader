@@ -11,7 +11,7 @@
     "message": "Rikaichamp オフ",
     "description": "Tooltip for toolbar button when disabled."
   },
-  "prefs_general_heading": {
+  "options_general_heading": {
     "message": "一般",
     "description": "Heading for common preferences."
   }

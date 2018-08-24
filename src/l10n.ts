@@ -1,0 +1,36 @@
+// The following code is based __very__ heavily on
+// https://github.com/piroor/webextensions-lib-l10n
+
+const updateString = (fullKey: string): string =>
+  fullKey.replace(/__MSG_(.+?)__/g, matched => {
+    const key = matched.slice(6, -2);
+    return browser.i18n.getMessage(key) || matched;
+  });
+
+export function translateDoc() {
+  const texts = document.evaluate(
+    'descendant::text()[contains(self::text(), "__MSG_")]',
+    document,
+    null,
+    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+    null
+  );
+  for (let i = 0, maxi = texts.snapshotLength; i < maxi; i++) {
+    const text = texts.snapshotItem(i);
+    text.nodeValue = updateString(text.nodeValue || '');
+  }
+
+  const attributes = document.evaluate(
+    'descendant::*/attribute::*[contains(., "__MSG_")]',
+    document,
+    null,
+    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+    null
+  );
+  for (let i = 0, maxi = attributes.snapshotLength; i < maxi; i++) {
+    const attribute = attributes.snapshotItem(i) as Attr;
+    attribute.value = updateString(attribute.value);
+  }
+}
+
+export default translateDoc;

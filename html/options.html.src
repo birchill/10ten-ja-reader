@@ -13,21 +13,22 @@
     <div id=rikaichamp_options class=panel>
       <form id=optform name=optform>
         <div class="panel-section panel-section-header">
-          <h2 class=text-section-header>General</h2>
+          <h2 class=text-section-header>__MSG_options_general_heading__</h2>
         </div>
         <div class="panel-section panel-section-formElements browser-style">
           <div class="browser-style checkbox-row">
             <input type=checkbox id=highlightText name=highlightText>
-            <label for=highlightText>Highlight matched text</label>
+            <label for=highlightText
+              >__MSG_options_highlight_matched_text__</label>
           </div>
           <div class="browser-style checkbox-row">
             <input type=checkbox id=contextMenuEnable name=contextMenuEnable>
-            <label for=contextMenuEnable>Show
-              &ldquo;Enable Rikaichamp&rdquo; in context menu</label>
+            <label for=contextMenuEnable
+              >__MSG_options_show_context_menu_item__</label>
           </div>
         </div>
         <div class="panel-section panel-section-header">
-          <h2 class=text-section-header>Popup style</h2>
+          <h2 class=text-section-header>__MSG_options_popup_style_heading__</h2>
         </div>
         <div class="panel-section panel-section-formElements">
           <fieldset>

@@ -456,7 +456,7 @@ class App {
       this._menuId = browser.contextMenus.create({
         id: 'context-toggle',
         type: 'checkbox',
-        title: 'Enable Rikaichamp',
+        title: browser.i18n.getMessage('menu_enable_extension'),
         command: '_execute_browser_action',
         contexts: ['all'],
         checked: this._enabled,

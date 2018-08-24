@@ -11,8 +11,22 @@
     "message": "Rikaichamp disabled",
     "description": "Tooltip for toolbar button when disabled."
   },
-  "prefs_general_heading": {
+  "menu_enable_extension": {
+    "message": "Enable Rikaichamp",
+    "description": "Context menu item to enable the extension."
+  },
+  "options_general_heading": {
     "message": "General",
     "description": "Heading for common preferences."
+  },
+  "options_highlight_matched_text": {
+    "message": "Highlight matched text"
+  },
+  "options_show_context_menu_item": {
+    "message": "Show “Enable Rikaichamp” in context menu",
+    "description": "Option to enable context menu item with label `menu_enable_extension`"
+  },
+  "options_popup_style_heading": {
+    "message": "Popup style"
   }
 }
