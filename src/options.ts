@@ -25,7 +25,7 @@ function completeForm() {
   }
 
   // Pop-up
-  addPopupStyleSelect();
+  renderPopupStyleSelect();
 
   // Keyboard
   configureCommands();
@@ -42,10 +42,6 @@ function completeForm() {
     });
   }
 
-  document.getElementById('showDefinitions')!.addEventListener('click', evt => {
-    config.readingOnly = !(evt.target as HTMLInputElement).checked;
-  });
-
   document.getElementById('highlightText')!.addEventListener('click', evt => {
     config.noTextHighlight = !(evt.target as HTMLInputElement).checked;
   });
@@ -56,6 +52,11 @@ function completeForm() {
       config.contextMenuEnable = (evt.target as HTMLInputElement).checked;
     });
 
+  document.getElementById('showDefinitions')!.addEventListener('click', evt => {
+    config.readingOnly = !(evt.target as HTMLInputElement).checked;
+    renderPopupStyleSelect();
+  });
+
   document
     .getElementById('showKanjiComponents')!
     .addEventListener('click', evt => {
@@ -63,8 +64,11 @@ function completeForm() {
     });
 }
 
-function addPopupStyleSelect() {
+function renderPopupStyleSelect() {
   const popupStyleSelect = document.getElementById('popupstyle-select')!;
+  while (popupStyleSelect.firstChild) {
+    (popupStyleSelect.firstChild as any).remove();
+  }
   const themes = ['blue', 'lightblue', 'black', 'yellow'];
 
   for (const theme of themes) {
@@ -101,7 +105,11 @@ function addPopupStyleSelect() {
 
     const spanDef = document.createElement('span');
     spanDef.classList.add('w-def');
-    spanDef.textContent = '(n,vs) understanding';
+    let definition = '(n,vs)';
+    if (!config.readingOnly) {
+      definition += ' understanding';
+    }
+    spanDef.textContent = definition;
     popupPreview.appendChild(spanDef);
   }
 }
