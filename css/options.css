@@ -121,7 +121,14 @@ fieldset {
   border: 1px solid #909090;
   border-bottom-color: grey;
   border-bottom-width: 3px;
-  /* For text boxes, we let browser styles define the border color */
+}
+/*
+ * For text boxes, we let browser_styles define the border color
+ *
+ * (But we only have browser_style on Firefox at the moment.)
+ */
+:root:not(.firefox) .key input[type=text] {
+  border: 1px solid #909090;
 }
 .key input[type=text] {
   border-bottom-width: 3px !important;
@@ -133,12 +140,12 @@ fieldset {
   color: transparent;
   text-shadow: 0 0 0 black;
 }
-.key input[type=text]:disabled:hover {
-  /*
-   * We shouldn't need this but extensions.css 'disabled' selector is broken.
-   *
-   * See: https://bugzilla.mozilla.org/show_bug.cgi?id=1484501
-   */
+/*
+ * We shouldn't need this but extensions.css 'disabled' selector is broken.
+ *
+ * See: https://bugzilla.mozilla.org/show_bug.cgi?id=1484501
+ */
+:root.firefox .key input[type=text]:disabled:hover {
   border-color: #b1b1b1;
 }
 /*

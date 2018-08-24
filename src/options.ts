@@ -16,7 +16,7 @@ const canConfigureCommands =
   typeof (browser.commands as any).reset === 'function';
 
 function completeForm() {
-  // Basic styles
+  // UA-specific styles
   if (isFirefox()) {
     document.documentElement.classList.add('firefox');
   }

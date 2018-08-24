@@ -34,7 +34,10 @@
           <h2 class=text-section-header>Theme</h2>
         </div>
         <div class="panel-section panel-section-formElements">
-          <fieldset class=popupstyle-select id=popupstyle-select>
+          <fieldset>
+            <!-- Extra div because Chrome can't do flex in fieldset -->
+            <div class=popupstyle-select id=popupstyle-select>
+            </div>
           </fieldset>
         </div>
         <div class="panel-section panel-section-header">
