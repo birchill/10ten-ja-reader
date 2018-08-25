@@ -1,4 +1,4 @@
-import { Command, CommandParams } from '../src/commands';
+import { Command } from '../src/commands';
 
 describe('Command', () => {
   type Expected = {
