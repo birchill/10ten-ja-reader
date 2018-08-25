@@ -30,6 +30,7 @@ function completeForm() {
 
   // Keyboard
   configureCommands();
+  configureHoldKeys();
   addPopupKeys();
   translateKeys();
 
@@ -66,6 +67,17 @@ function completeForm() {
     .addEventListener('click', evt => {
       config.showKanjiComponents = (evt.target as HTMLInputElement).checked;
     });
+}
+
+function isFirefox(): boolean {
+  return navigator.userAgent.indexOf('Firefox/') !== -1;
+}
+
+function isChrome(): boolean {
+  return (
+    navigator.userAgent.indexOf('Chrome/') !== -1 ||
+    navigator.userAgent.indexOf('Chromium/') !== -1
+  );
 }
 
 function renderPopupStyleSelect() {
@@ -211,17 +223,6 @@ function setToggleKeyWarningState(state: WarningState, message?: string) {
   }
 }
 
-function isFirefox(): boolean {
-  return navigator.userAgent.indexOf('Firefox/') !== -1;
-}
-
-function isChrome(): boolean {
-  return (
-    navigator.userAgent.indexOf('Chrome/') !== -1 ||
-    navigator.userAgent.indexOf('Chromium/') !== -1
-  );
-}
-
 function getFirefoxMajorVersion(): number | null {
   const matches = navigator.userAgent.match(/Firefox\/(\d+)/);
   if (matches === null || matches.length < 2) {
@@ -252,6 +253,32 @@ function showToggleCommandSupport(command: Command) {
       'warning',
       browser.i18n.getMessage('error_ctrl_alt_warning')
     );
+  }
+}
+
+function configureHoldKeys() {
+  const checkboxes = document.querySelectorAll(
+    '.holdkeys input[type=checkbox][id^=show-]'
+  );
+
+  const getHoldKeysValue = (): string | null => {
+    const parts: Array<string> = [];
+
+    for (const checkbox of checkboxes) {
+      if ((checkbox as HTMLInputElement).checked) {
+        parts.push((checkbox as HTMLInputElement).value);
+      }
+    }
+    if (!parts.length) {
+      return null;
+    }
+    return parts.join('+');
+  };
+
+  for (const checkbox of checkboxes) {
+    checkbox.addEventListener('click', () => {
+      config.holdKeys = getHoldKeysValue();
+    });
   }
 }
 
@@ -357,6 +384,17 @@ async function fillVals() {
         message: `Unable to parse toggleKey: ${config.toggleKey}`,
       },
       window.location.origin
+    );
+  }
+
+  const holdKeyParts: Array<string> =
+    typeof config.holdKeys === 'string' ? config.holdKeys.split('+') : [];
+  const holdKeyCheckboxes = document.querySelectorAll(
+    '.holdkeys input[type=checkbox][id^=show-]'
+  );
+  for (const checkbox of holdKeyCheckboxes) {
+    (checkbox as HTMLInputElement).checked = holdKeyParts.includes(
+      (checkbox as HTMLInputElement).value
     );
   }
 

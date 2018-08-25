@@ -59,20 +59,18 @@
               __MSG_command_toggle_description__
               <div class="icon" id=toggle-key-icon></div>
             </div>
-            <!--
-            <div class="key browser-style">
-              <input type=checkbox id=show-alt>
+            <div class="key holdkeys browser-style">
+              <input type=checkbox id=show-alt value=Alt>
               <label for=show-alt><span>Alt</span></label>
-              <input type=checkbox id=show-ctrl>
+              <input type=checkbox id=show-ctrl value=Ctrl>
               <label for=show-ctrl><span>Ctrl</span></label>
-              <input type=checkbox id=show-shift>
+              <input type=checkbox id=show-shift value=Shift>
               <label for=show-shift><span>Shift</span></label>
             </div>
             <div class=key-description>
-              __MSG_hover_key_description__
-              <p><em>__MSG_options_hover_key_explanation__</em></p>
+              __MSG_options_hold_keys_description__
+              <p><em>__MSG_options_hold_keys_explanation__</em></p>
             </div>
-            -->
           </div>
           <p>__MSG_options_popup_keys_subheading__</p>
           <div class="panel-section key-grid" id=key-grid></div>

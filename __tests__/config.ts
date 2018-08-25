@@ -110,6 +110,7 @@ describe('Config', () => {
 
     expect(config.readingOnly).toEqual(false);
     expect(config.toggleKey).toEqual('Alt+R');
+    expect(config.holdKeys).toEqual(null);
     expect(config.keys).toEqual({
       toggleDefinition: ['d'],
       nextDictionary: ['Shift', 'Enter'],

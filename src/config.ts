@@ -17,6 +17,7 @@ type KanjiReferenceFlags = { [abbrev: string]: boolean };
 interface Settings {
   readingOnly?: boolean;
   toggleKey?: string;
+  holdKeys?: string;
   keys?: Partial<KeyboardKeys>;
   contextMenuEnable?: boolean;
   noTextHighlight?: boolean;
@@ -136,7 +137,7 @@ export class Config {
   // the updated value instead.
   //
   // As a result, we don't really have a way of determining the true default
-  // programmatically, so we just hard-code the value here and hope it mathces
+  // programmatically, so we just hard-code the value here and hope it matches
   // the manifest.
   //
   // While this could be an array value, it complicates the options form if we
@@ -158,6 +159,32 @@ export class Config {
 
     this._settings.toggleKey = value;
     browser.storage.sync.set({ toggleKey: value });
+  }
+
+  // holdKeys: Defaults to null
+
+  get holdKeys(): string | null {
+    return typeof this._settings.holdKeys === 'string'
+      ? this._settings.holdKeys
+      : null;
+  }
+
+  set holdKeys(value: string | null) {
+    if (
+      (typeof this._settings.holdKeys !== 'undefined' &&
+        this._settings.holdKeys === value) ||
+      (typeof this._settings.holdKeys === 'undefined' && value === null)
+    ) {
+      return;
+    }
+
+    if (value === null) {
+      browser.storage.sync.remove('holdKeys');
+      delete this._settings.holdKeys;
+    } else {
+      browser.storage.sync.set({ holdKeys: value });
+      this._settings.holdKeys = value;
+    }
   }
 
   // keys: Defaults are defined by DEFAULT_KEYS
