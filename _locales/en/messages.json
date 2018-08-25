@@ -27,6 +27,84 @@
     "description": "Option to enable context menu item with label `menu_enable_extension`"
   },
   "options_popup_style_heading": {
-    "message": "Popup style"
+    "message": "Popup style",
+    "description": "Heading for options to configure popup display"
+  },
+  "options_show_definitions": {
+    "message": "Show definitions"
+  },
+  "options_keyboard_heading": {
+    "message": "Keyboard",
+    "description": "Heading for options to configure keyboard commands"
+  },
+  "options_hover_key_description": {
+    "message": "Only show popup while these keys are pressed",
+    "description": "Typically Rikaichamp shows the popup whenever it is active, but if these keys are configured the popup while only show while they are held down"
+  },
+  "options_hover_key_explanation": {
+    "message": "If no keys are selected, the popup will display whenever Rikaichamp is enabled.",
+    "description": "This is supplementary explanation to options_hover_key_description"
+  },
+  "options_popup_keys_subheading": {
+    "message": "Popup keys"
+  },
+  "options_kanji_dictionary_heading": {
+    "message": "Kanji dictionary",
+    "description": "Heading for options to configure what information is displayed from the kanji dictionary"
+  },
+  "options_kanji_components": {
+    "message": "Kanji components",
+    "description": "Option to define if radicals are displayed or not"
+  },
+  "error_loading_dictionary": {
+    "message": "Error loading dictionary. Please try again.",
+    "description": "Tooltip shown when the dictionary fails to load"
+  },
+  "error_ctrl_alt_unsupported": {
+    "message": "Combining Alt and Ctrl is not supported in this version of Firefox",
+    "description": "Tooltip displayed when the user attempts to set a hotkey combination including both Ctrl and Alt in a version of Firefox prior to 63"
+  },
+  "error_ctrl_alt_warning": {
+    "message": "Combining Alt and Ctrl is not supported in earlier versions of Firefox (prior to 63)",
+    "description": "Tooltip displayed when the user attempts to set a hotkey combination including both Ctrl and Alt in a version of Firefox later than 63"
+  },
+  "error_command_could_not_parse": {
+    "message": "Could not parse command $command$",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "Ctrl+T "
+      }
+    }
+  },
+  "error_command_has_no_key": {
+    "message": "Must specify a key"
+  },
+  "error_command_key_is_not_allowed": {
+    "message": "Key '$key$' is not allowed",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Enter"
+      }
+    }
+  },
+  "error_command_is_missing_modifier_key": {
+    "message": "A modifier must be specified unless using a function key"
+  },
+  "error_command_disallowed_modifier_key": {
+    "message": "Modifier '$modifier$' is not allowed",
+    "placeholders": {
+      "modifier": {
+        "content": "$1",
+        "example": "Meta"
+      }
+    }
+  },
+  "error_command_media_key_with_modifier_key": {
+    "message": "Cannot specify modifiers and media keys"
+  },
+  "error_command_too_many_modifiers": {
+    "message": "Too many modifiers"
   }
 }

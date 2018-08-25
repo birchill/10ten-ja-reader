@@ -245,12 +245,12 @@ function showToggleCommandSupport(command: Command) {
   if (firefoxMajorVersion !== null && firefoxMajorVersion < 63) {
     setToggleKeyWarningState(
       'error',
-      'Combining Alt and Ctrl is not supported in this version of Firefox'
+      browser.i18n.getMessage('error_ctrl_alt_unsupported')
     );
   } else {
     setToggleKeyWarningState(
       'warning',
-      'Combining Alt and Ctrl is not supported in earlier versions of Firefox (prior to 63)'
+      browser.i18n.getMessage('error_ctrl_alt_warning')
     );
   }
 }

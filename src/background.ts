@@ -342,7 +342,7 @@ class App {
       bugsnagClient.notify(e || '(No error)', { severity: 'error' });
 
       browser.browserAction.setTitle({
-        title: 'Error loading dictionary. Please try again.',
+        title: browser.i18n.getMessage('error_loading_dictionary'),
       });
       browser.browserAction
         .setIcon({

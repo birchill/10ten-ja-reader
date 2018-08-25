@@ -81,17 +81,19 @@ export class Command {
 
     const parts = value.split('+');
     if (!parts.length || parts.length > 3) {
-      throw new Error(`Could not parse command string: ${value}.`);
+      throw new Error(
+        browser.i18n.getMessage('error_command_could_not_parse', value)
+      );
     }
 
     const key = parts[parts.length - 1];
     if (!key.length) {
-      throw new Error(`Invalid command string: ${value}. Key is empty.`);
+      throw new Error(browser.i18n.getMessage('error_command_has_no_key'));
     }
 
     if (!isValidKey(key)) {
       throw new Error(
-        `Invalid command string: ${value}. Key '${key}' is not allowed.`
+        browser.i18n.getMessage('error_command_key_is_not_allowed', key)
       );
     }
 
@@ -100,7 +102,7 @@ export class Command {
       (parts.length < 2 || !PRIMARY_MODIFIER_KEYS.includes(parts[0]))
     ) {
       throw new Error(
-        `Invalid command string: ${value}. A modifier must be specified unless using a function key.`
+        browser.i18n.getMessage('error_command_is_missing_modifier_key')
       );
     }
 
@@ -108,9 +110,10 @@ export class Command {
     if (parts.length > 1) {
       if (!PRIMARY_MODIFIER_KEYS.includes(parts[0])) {
         throw new Error(
-          `Invalid command string: ${value}. Modifier ${
+          browser.i18n.getMessage(
+            'error_command_disallowed_modifier_key',
             parts[0]
-          } is not allowed.`
+          )
         );
       }
       modifier = parts[0] as PrimaryModifier;
@@ -120,9 +123,10 @@ export class Command {
     if (parts.length > 2) {
       if (!SECONDARY_MODIFIER_KEYS.includes(parts[1])) {
         throw new Error(
-          `Invalid command string: ${value}. Secondary modifier ${
+          browser.i18n.getMessage(
+            'error_command_disallowed_modifier_key',
             parts[1]
-          } is not allowed.`
+          )
         );
       }
       secondaryModifier = parts[1] as SecondaryModifier;
@@ -135,23 +139,25 @@ export class Command {
     if (MEDIA_KEYS.includes(params.key)) {
       if (params.alt || params.ctrl || params.shift) {
         throw new Error(
-          `Invalid command: Cannot specify modifiers and media keys.`
+          browser.i18n.getMessage('error_command_media_key_with_modifier_key')
         );
       }
       return new Command(params.key);
     }
 
     if (!params.key.length) {
-      throw new Error(`Invalid command. Key is empty.`);
+      throw new Error(browser.i18n.getMessage('error_command_has_no_key'));
     }
 
     if (!isValidKey(params.key)) {
-      throw new Error(`Invalid command. Key '${params.key}' is not allowed.`);
+      throw new Error(
+        browser.i18n.getMessage('error_command_key_is_not_allowed', params.key)
+      );
     }
 
     if (!isFunctionKey(params.key) && !(params.alt || params.ctrl)) {
       throw new Error(
-        `Invalid command. A modifier must be specified unless using a function key.`
+        browser.i18n.getMessage('error_command_is_missing_modifier_key')
       );
     }
 
@@ -161,7 +167,9 @@ export class Command {
       params.ctrl ? 1 : 0,
     ].reduce((value, currentValue) => currentValue + value);
     if (modifierCount > 2) {
-      throw new Error('Invalid command. Too many modifiers.');
+      throw new Error(
+        browser.i18n.getMessage('error_command_too_many_modifiers')
+      );
     }
 
     let modifier: PrimaryModifier | undefined;

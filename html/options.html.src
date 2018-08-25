@@ -38,11 +38,11 @@
           </fieldset>
           <div class="browser-style checkbox-row">
             <input type=checkbox id=showDefinitions name=showDefinitions>
-            <label for=showDefinitions>Show definitions</label>
+            <label for=showDefinitions>__MSG_options_show_definitions__</label>
           </div>
         </div>
         <div class="panel-section panel-section-header">
-          <h2 class=text-section-header>Keyboard</h2>
+          <h2 class=text-section-header>__MSG_options_keyboard_heading__</h2>
         </div>
         <div class="panel-section panel-section-formElements">
           <div class="panel-section key-grid">
@@ -56,7 +56,7 @@
               <input size=1 type=text value=R disabled id=toggle-key>
             </div>
             <div class="key-description">
-              Toggle Rikaichamp on/off
+              __MSG_command_toggle_description__
               <div class="icon" id=toggle-key-icon></div>
             </div>
             <!--
@@ -69,24 +69,24 @@
               <label for=show-shift><span>Shift</span></label>
             </div>
             <div class=key-description>
-              Show pop-up
-              <p><em>If nothing is selected, the pop-up will display whenever
-                Rikaichamp is enabled.</em></p>
+              __MSG_hover_key_description__
+              <p><em>__MSG_options_hover_key_explanation__</em></p>
             </div>
             -->
           </div>
-          <p>Pop-up keys:</p>
+          <p>__MSG_options_popup_keys_subheading__</p>
           <div class="panel-section key-grid" id=key-grid></div>
         </div>
         <div id=kanjicon>
           <div class="panel-section panel-section-header">
-            <h2 class=text-section-header>Kanji dictionary</h2>
+            <h2
+              class=text-section-header>__MSG_options_kanji_dictionary_heading__</h2>
           </div>
           <div class="panel-section panel-section-grid panel-section-list browser-style">
             <div class="browser-style checkbox-row">
               <input type=checkbox id=showKanjiComponents
                 name=showKanjiComponents>
-              <label for=showKanjiComponents>Kanji components</label>
+              <label for=showKanjiComponents>__MSG_options_kanji_components__</label>
             </div>
             <div class="browser-style checkbox-row">
               <input type=checkbox id=H name=H>
@@ -102,7 +102,7 @@
             </div>
             <div class="browser-style checkbox-row">
               <input type=checkbox id=DK name=DK>
-              <label for=DK>Kanji Learners Dictionary</label>
+              <label for=DK>Kanji Learner's Dictionary</label>
             </div>
             <div class="browser-style checkbox-row">
               <input type=checkbox id=N name=N>
