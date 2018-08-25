@@ -374,6 +374,7 @@ export class Dictionary {
     await readBatch(dataFiles.slice(midpoint));
   }
 
+  // TODO: Localize deinflect reason strings
   async loadDeinflectData() {
     this.deinflectReasons = [];
     this.deinflectRules = [];

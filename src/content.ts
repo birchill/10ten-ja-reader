@@ -1465,7 +1465,7 @@ export class RikaiContent {
     const titleDiv = document.createElement('div');
     fragment.append(titleDiv);
     titleDiv.classList.add('w-title');
-    titleDiv.append('Names Dictionary');
+    titleDiv.append(browser.i18n.getMessage('content_names_dictionary'));
 
     // Pre-process entries
     interface DisplayEntry {
@@ -1590,7 +1590,7 @@ export class RikaiContent {
     const radicalCell = document.createElement('td');
     summaryFirstRow.append(radicalCell);
     radicalCell.classList.add('k-abox-r');
-    radicalCell.append('radical');
+    radicalCell.append(browser.i18n.getMessage('content_kanji_radical_label'));
     radicalCell.append(document.createElement('br'));
     radicalCell.append(`${entry.radical} ${entry.misc.B}`);
 
@@ -1627,14 +1627,12 @@ export class RikaiContent {
     let grade = document.createDocumentFragment();
     switch (entry.misc.G || '') {
       case '8':
-        grade.append('general');
-        grade.append(document.createElement('br'));
-        grade.append('use');
+        grade.append(
+          browser.i18n.getMessage('content_kanji_grade_general_use')
+        );
         break;
       case '9':
-        grade.append('name');
-        grade.append(document.createElement('br'));
-        grade.append('use');
+        grade.append(browser.i18n.getMessage('content_kanji_grade_name_use'));
         break;
       default:
         if (
@@ -1643,7 +1641,7 @@ export class RikaiContent {
         ) {
           grade.append('-');
         } else {
-          grade.append('grade');
+          grade.append(browser.i18n.getMessage('content_kanji_grade_label'));
           grade.append(document.createElement('br'));
           grade.append(entry.misc.G);
         }
@@ -1657,14 +1655,16 @@ export class RikaiContent {
     const frequencyCell = document.createElement('td');
     summarySecondRow.append(frequencyCell);
     frequencyCell.classList.add('k-abox-f');
-    frequencyCell.append('freq');
+    frequencyCell.append(
+      browser.i18n.getMessage('content_kanji_frequency_label')
+    );
     frequencyCell.append(document.createElement('br'));
     frequencyCell.append(entry.misc.F || '-');
 
     const strokesCell = document.createElement('td');
     summarySecondRow.append(strokesCell);
     strokesCell.classList.add('k-abox-s');
-    strokesCell.append('strokes');
+    strokesCell.append(browser.i18n.getMessage('content_kanji_strokes_label'));
     strokesCell.append(document.createElement('br'));
     strokesCell.append(entry.misc.S);
 

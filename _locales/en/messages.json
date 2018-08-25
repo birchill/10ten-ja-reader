@@ -15,6 +15,34 @@
     "message": "Enable Rikaichamp",
     "description": "Context menu item to enable the extension."
   },
+  "content_names_dictionary": {
+    "message": "Names Dictionary",
+    "description": "The title used at the top of the popup when showing the names dictionary"
+  },
+  "content_kanji_radical_label": {
+    "message": "radical",
+    "description": "The title given to the box showing radical information"
+  },
+  "content_kanji_grade_label": {
+    "message": "grade",
+    "description": "The title given to the box showing kanji grade"
+  },
+  "content_kanji_grade_general_use": {
+    "message": "general use",
+    "description": "Label for kanji marked as general use"
+  },
+  "content_kanji_grade_name_use": {
+    "message": "name use",
+    "description": "Label for kanji marked as name use"
+  },
+  "content_kanji_frequency_label": {
+    "message": "freq",
+    "description": "The title given to the box showing frequency information"
+  },
+  "content_kanji_strokes_label": {
+    "message": "strokes",
+    "description": "The title given to the box showing stroke count information"
+  },
   "options_general_heading": {
     "message": "General",
     "description": "Heading for common preferences."

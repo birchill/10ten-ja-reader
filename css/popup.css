@@ -128,6 +128,8 @@
   font-size: 12px;
   text-align: center;
   padding: 1px 4px;
+  /* Needed to make "name use" and "general use" break */
+  max-width: 40px;
 }
 
 #rikaichamp-window .k-abox-f {
