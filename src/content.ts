@@ -428,6 +428,7 @@ export class RikaiContent {
           this._currentTarget,
           DictMode.Default
         );
+        ev.preventDefault();
       }
       return;
     }
