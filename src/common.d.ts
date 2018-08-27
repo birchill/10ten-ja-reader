@@ -16,7 +16,7 @@ interface ContentConfig {
   readingOnly: boolean;
 
   // Modifier keys which must be held down in order for the pop-up to shown.
-  holdKeys: Set<'Alt' | 'Ctrl'>;
+  holdToShowKeys: Set<'Alt' | 'Ctrl'>;
 
   // Keyboard shortcut keys. Each of these is an array of keycodes (as reported
   // by KeyboardEvent.key). The array may be empty in which case the action is

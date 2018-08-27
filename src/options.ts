@@ -30,7 +30,7 @@ function completeForm() {
 
   // Keyboard
   configureCommands();
-  configureHoldKeys();
+  configureHoldToShowKeys();
   addPopupKeys();
   translateKeys();
 
@@ -256,12 +256,12 @@ function showToggleCommandSupport(command: Command) {
   }
 }
 
-function configureHoldKeys() {
+function configureHoldToShowKeys() {
   const checkboxes = document.querySelectorAll(
-    '.holdkeys input[type=checkbox][id^=show-]'
+    '.holdtoshowkeys input[type=checkbox][id^=show-]'
   );
 
-  const getHoldKeysValue = (): string | null => {
+  const getHoldToShowKeysValue = (): string | null => {
     const parts: Array<string> = [];
 
     for (const checkbox of checkboxes) {
@@ -277,7 +277,7 @@ function configureHoldKeys() {
 
   for (const checkbox of checkboxes) {
     checkbox.addEventListener('click', () => {
-      config.holdKeys = getHoldKeysValue();
+      config.holdToShowKeys = getHoldToShowKeysValue();
     });
   }
 }
@@ -388,9 +388,11 @@ async function fillVals() {
   }
 
   const holdKeyParts: Array<string> =
-    typeof config.holdKeys === 'string' ? config.holdKeys.split('+') : [];
+    typeof config.holdToShowKeys === 'string'
+      ? config.holdToShowKeys.split('+')
+      : [];
   const holdKeyCheckboxes = document.querySelectorAll(
-    '.holdkeys input[type=checkbox][id^=show-]'
+    '.holdtoshowkeys input[type=checkbox][id^=show-]'
   );
   for (const checkbox of holdKeyCheckboxes) {
     (checkbox as HTMLInputElement).checked = holdKeyParts.includes(

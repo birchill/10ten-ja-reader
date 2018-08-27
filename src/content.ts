@@ -321,15 +321,16 @@ export class RikaiContent {
       return;
     }
 
-    // Check if any required "hold keys" are held. We do this before checking
-    // throttling since that can be expensive and when this is configured,
-    // typically the user will have Rikaichamp more-or-less permanently enabled
-    // so we don't want to add unnecessary latency to regular mouse events.
-    if (!this.areHoldKeysDown(ev)) {
+    // Check if any required "hold to show keys" are held. We do this before
+    // checking throttling since that can be expensive and when this is
+    // configured, typically the user will have Rikaichamp more-or-less
+    // permanently enabled so we don't want to add unnecessary latency to
+    // regular mouse events.
+    if (!this.areHoldToShowKeysDown(ev)) {
       this.clearHighlight(ev.target as Element);
       // Nevertheless, we still want to set the current position information so
-      // that if the user presses the hold keys later we can show the popup
-      // immediately.
+      // that if the user presses the hold-to-show keys later we can show the
+      // popup immediately.
       this._currentTarget = ev.target as Element;
       // XXX We should probably split 'point' out into a separate member.
       this._currentTextAtPoint = {
@@ -418,8 +419,9 @@ export class RikaiContent {
   }
 
   onKeyDown(ev: KeyboardEvent) {
-    // If the user pressed the hold key combination, show the popup if possible.
-    if (this.isHoldKeyMatch(ev)) {
+    // If the user pressed the hold-to-show key combination, show the popup if
+    // possible.
+    if (this.isHoldToShowKeysMatch(ev)) {
       if (this._currentTextAtPoint && this._currentTarget) {
         this.tryToUpdatePopup(
           this._currentTextAtPoint.point,
@@ -485,9 +487,9 @@ export class RikaiContent {
     this._keysDown.delete(ev.key);
   }
 
-  // Test if an incoming keyboard event matches the hold key sequence
-  isHoldKeyMatch(ev: KeyboardEvent): boolean {
-    if (!this._config.holdKeys.size) {
+  // Test if an incoming keyboard event matches the hold-to-show key sequence
+  isHoldToShowKeysMatch(ev: KeyboardEvent): boolean {
+    if (!this._config.holdToShowKeys.size) {
       return false;
     }
 
@@ -496,21 +498,21 @@ export class RikaiContent {
       return false;
     }
 
-    return this.areHoldKeysDown(ev);
+    return this.areHoldToShowKeysDown(ev);
   }
 
-  // Test if hold keys are set for a given a UI event
-  areHoldKeysDown(ev: MouseEvent | KeyboardEvent): boolean {
-    if (!this._config.holdKeys.size) {
+  // Test if hold-to-show keys are set for a given a UI event
+  areHoldToShowKeysDown(ev: MouseEvent | KeyboardEvent): boolean {
+    if (!this._config.holdToShowKeys.size) {
       return true;
     }
 
-    // Check if all the configured hold keys are pressed down
+    // Check if all the configured hold-to-show keys are pressed down
     const isAltGraph = ev.getModifierState('AltGraph');
-    if (this._config.holdKeys.has('Alt') && !ev.altKey && !isAltGraph) {
+    if (this._config.holdToShowKeys.has('Alt') && !ev.altKey && !isAltGraph) {
       return false;
     }
-    if (this._config.holdKeys.has('Ctrl') && !ev.ctrlKey) {
+    if (this._config.holdToShowKeys.has('Ctrl') && !ev.ctrlKey) {
       return false;
     }
 

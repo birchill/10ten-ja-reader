@@ -59,15 +59,15 @@
               __MSG_command_toggle_description__
               <div class="icon" id=toggle-key-icon></div>
             </div>
-            <div class="key holdkeys browser-style">
+            <div class="key holdtoshowkeys browser-style">
               <input type=checkbox id=show-alt value=Alt>
               <label for=show-alt><span>Alt</span></label>
               <input type=checkbox id=show-ctrl value=Ctrl>
               <label for=show-ctrl><span>Ctrl</span></label>
             </div>
             <div class=key-description>
-              __MSG_options_hold_keys_description__
-              <p><em>__MSG_options_hold_keys_explanation__</em></p>
+              __MSG_options_hold_to_show_keys_description__
+              <p><em>__MSG_options_hold_to_show_keys_explanation__</em></p>
             </div>
           </div>
           <p>__MSG_options_popup_keys_subheading__</p>

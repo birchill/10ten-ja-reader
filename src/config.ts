@@ -17,7 +17,7 @@ type KanjiReferenceFlags = { [abbrev: string]: boolean };
 interface Settings {
   readingOnly?: boolean;
   toggleKey?: string;
-  holdKeys?: string;
+  holdToShowKeys?: string;
   keys?: Partial<KeyboardKeys>;
   contextMenuEnable?: boolean;
   noTextHighlight?: boolean;
@@ -161,29 +161,29 @@ export class Config {
     browser.storage.sync.set({ toggleKey: value });
   }
 
-  // holdKeys: Defaults to null
+  // holdToShowKeys: Defaults to null
 
-  get holdKeys(): string | null {
-    return typeof this._settings.holdKeys === 'string'
-      ? this._settings.holdKeys
+  get holdToShowKeys(): string | null {
+    return typeof this._settings.holdToShowKeys === 'string'
+      ? this._settings.holdToShowKeys
       : null;
   }
 
-  set holdKeys(value: string | null) {
+  set holdToShowKeys(value: string | null) {
     if (
-      (typeof this._settings.holdKeys !== 'undefined' &&
-        this._settings.holdKeys === value) ||
-      (typeof this._settings.holdKeys === 'undefined' && value === null)
+      (typeof this._settings.holdToShowKeys !== 'undefined' &&
+        this._settings.holdToShowKeys === value) ||
+      (typeof this._settings.holdToShowKeys === 'undefined' && value === null)
     ) {
       return;
     }
 
     if (value === null) {
-      browser.storage.sync.remove('holdKeys');
-      delete this._settings.holdKeys;
+      browser.storage.sync.remove('holdToShowKeys');
+      delete this._settings.holdToShowKeys;
     } else {
-      browser.storage.sync.set({ holdKeys: value });
-      this._settings.holdKeys = value;
+      browser.storage.sync.set({ holdToShowKeys: value });
+      this._settings.holdToShowKeys = value;
     }
   }
 
@@ -303,8 +303,10 @@ export class Config {
   get contentConfig(): ContentConfig {
     return {
       readingOnly: this.readingOnly,
-      holdKeys: new Set<'Ctrl' | 'Alt'>(
-        this.holdKeys ? (this.holdKeys.split('+') as Array<'Ctrl' | 'Alt'>) : []
+      holdToShowKeys: new Set<'Ctrl' | 'Alt'>(
+        this.holdToShowKeys
+          ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)
+          : []
       ),
       keys: this.keys,
       noTextHighlight: this.noTextHighlight,

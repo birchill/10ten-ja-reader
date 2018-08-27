@@ -65,13 +65,13 @@
     "message": "Keyboard",
     "description": "Heading for options to configure keyboard commands"
   },
-  "options_hold_keys_description": {
-    "message": "Show popup",
+  "options_hold_to_show_keys_description": {
+    "message": "Hold to show popup",
     "description": "Typically Rikaichamp shows the popup whenever it is active, but if these keys are configured the popup while only show while they are held down"
   },
-  "options_hold_keys_explanation": {
+  "options_hold_to_show_keys_explanation": {
     "message": "The popup will only be shown while these keys are held down. If no keys are selected, the popup will be displayed whenever Rikaichamp is enabled.",
-    "description": "This is supplementary explanation to options_hover_key_description"
+    "description": "This is supplementary explanation to options_hold_to_show_keys_explanation"
   },
   "options_popup_keys_subheading": {
     "message": "Popup keys"
