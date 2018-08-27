@@ -244,7 +244,7 @@ export class RikaiContent {
 
   set config(config) {
     // Update the style of the popup
-    if (config.popupStyle !== this._config.popupStyle) {
+    if (this._config && config.popupStyle !== this._config.popupStyle) {
       const popup = document.getElementById('rikaichamp-window');
       if (popup) {
         popup.classList.remove(`-${this._config.popupStyle}`);
@@ -318,6 +318,25 @@ export class RikaiContent {
   onMouseMove(ev: MouseEvent) {
     // Ignore mouse events while buttons are being pressed.
     if (ev.buttons) {
+      return;
+    }
+
+    // Check if any required "hold keys" are held. We do this before checking
+    // throttling since that can be expensive and when this is configured,
+    // typically the user will have Rikaichamp more-or-less permanently enabled
+    // so we don't want to add unnecessary latency to regular mouse events.
+    if (!this.areHoldKeysDown(ev)) {
+      this.clearHighlight(ev.target as Element);
+      // Nevertheless, we still want to set the current position information so
+      // that if the user presses the hold keys later we can show the popup
+      // immediately.
+      this._currentTarget = ev.target as Element;
+      // XXX We should probably split 'point' out into a separate member.
+      this._currentTextAtPoint = {
+        result: { text: '', rangeStart: null, rangeEnds: [] },
+        position: null,
+        point: { x: ev.clientX, y: ev.clientY },
+      };
       return;
     }
 
@@ -399,6 +418,18 @@ export class RikaiContent {
   }
 
   onKeyDown(ev: KeyboardEvent) {
+    // If the user pressed the hold key combination, show the popup if possible.
+    if (this.isHoldKeyMatch(ev)) {
+      if (this._currentTextAtPoint && this._currentTarget) {
+        this.tryToUpdatePopup(
+          this._currentTextAtPoint.point,
+          this._currentTarget,
+          DictMode.Default
+        );
+      }
+      return;
+    }
+
     // If we got shift in combination with something else, ignore.
     if (ev.shiftKey && ev.key !== 'Shift') {
       return;
@@ -452,6 +483,38 @@ export class RikaiContent {
 
   onKeyUp(ev: KeyboardEvent) {
     this._keysDown.delete(ev.key);
+  }
+
+  // Test if an incoming keyboard event matches the hold key sequence
+  isHoldKeyMatch(ev: KeyboardEvent): boolean {
+    if (!this._config.holdKeys.size) {
+      return false;
+    }
+
+    // Check if it is a modifier at all
+    if (!['Alt', 'AltGraph', 'Control'].includes(ev.key)) {
+      return false;
+    }
+
+    return this.areHoldKeysDown(ev);
+  }
+
+  // Test if hold keys are set for a given a UI event
+  areHoldKeysDown(ev: MouseEvent | KeyboardEvent): boolean {
+    if (!this._config.holdKeys.size) {
+      return true;
+    }
+
+    // Check if all the configured hold keys are pressed down
+    const isAltGraph = ev.getModifierState('AltGraph');
+    if (this._config.holdKeys.has('Alt') && !ev.altKey && !isAltGraph) {
+      return false;
+    }
+    if (this._config.holdKeys.has('Ctrl') && !ev.ctrlKey) {
+      return false;
+    }
+
+    return true;
   }
 
   isVisible(): boolean {

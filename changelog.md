@@ -1,7 +1,10 @@
 ## 0.0.24 (not yet released)
 
 * Made the hotkey for enabling Rikaichamp configurable
-* Various tweaks to option page styling
+  ([#30](https://github.com/birtles/rikaichamp/issues/30)).
+* Introduced hold-to-display hotkey
+  ([#33](https://github.com/birtles/rikaichamp/issues/33)).
+* Various tweaks to option page styling.
 
 ## 0.0.23 (2018-08-08!)
 

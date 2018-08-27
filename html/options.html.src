@@ -64,8 +64,6 @@
               <label for=show-alt><span>Alt</span></label>
               <input type=checkbox id=show-ctrl value=Ctrl>
               <label for=show-ctrl><span>Ctrl</span></label>
-              <input type=checkbox id=show-shift value=Shift>
-              <label for=show-shift><span>Shift</span></label>
             </div>
             <div class=key-description>
               __MSG_options_hold_keys_description__
