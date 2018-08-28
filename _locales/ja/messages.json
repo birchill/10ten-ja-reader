@@ -1,6 +1,6 @@
 {
   "extension_description": {
-    "message": "マウスを合わせるだけで、日英辞書を引く。",
+    "message": "マウスを合わせるで、日英辞書を引く。",
     "description": "Description of the what the extension does."
   },
   "command_toggle_description": {
@@ -11,9 +11,129 @@
     "message": "Rikaichamp オフ",
     "description": "Tooltip for toolbar button when disabled."
   },
+  "menu_enable_extension": {
+    "message": "Rikaichampを有効にする",
+    "description": "Context menu item to enable the extension."
+  },
+  "content_names_dictionary": {
+    "message": "名字辞典",
+    "description": "The title used at the top of the popup when showing the names dictionary"
+  },
+  "content_kanji_radical_label": {
+    "message": "部首",
+    "description": "The title given to the box showing radical information"
+  },
+  "content_kanji_grade_label": {
+    "message": "レベル",
+    "description": "The title given to the box showing kanji grade"
+  },
+  "content_kanji_grade_general_use": {
+    "message": "一般用",
+    "description": "Label for kanji marked as general use"
+  },
+  "content_kanji_grade_name_use": {
+    "message": "人名用",
+    "description": "Label for kanji marked as name use"
+  },
+  "content_kanji_frequency_label": {
+    "message": "頻度",
+    "description": "The title given to the box showing frequency information"
+  },
+  "content_kanji_strokes_label": {
+    "message": "画数",
+    "description": "The title given to the box showing stroke count information"
+  },
   "options_general_heading": {
     "message": "一般",
     "description": "Heading for common preferences."
+  },
+  "options_highlight_matched_text": {
+    "message": "照合される文字列をハイライト"
+  },
+  "options_show_context_menu_item": {
+    "message": "コンテキストメニューに「Rikaichampを有効する」を表示",
+    "description": "Option to enable context menu item with label `menu_enable_extension`"
+  },
+  "options_popup_style_heading": {
+    "message": "ポップアップ",
+    "description": "Heading for options to configure popup display"
+  },
+  "options_show_definitions": {
+    "message": "定義を表示"
+  },
+  "options_keyboard_heading": {
+    "message": "キーボード",
+    "description": "Heading for options to configure keyboard commands"
+  },
+  "options_hold_to_show_keys_description": {
+    "message": "押しながらポップアップを表示する",
+    "description": "Typically Rikaichamp shows the popup whenever it is active, but if these keys are configured the popup while only show while they are held down"
+  },
+  "options_hold_to_show_keys_explanation": {
+    "message": "ボタンを押しながら、マウスをテキストに合わせるとポップアップが表示されます。ボタンが選択されていない場合、ポップアップが常に表示されます。",
+    "description": "This is supplementary explanation to options_hold_to_show_keys_explanation"
+  },
+  "options_popup_keys_subheading": {
+    "message": "ポップアップキー"
+  },
+  "options_kanji_dictionary_heading": {
+    "message": "漢字辞典",
+    "description": "Heading for options to configure what information is displayed from the kanji dictionary"
+  },
+  "options_kanji_components": {
+    "message": "漢字構成",
+    "description": "Option to define if radicals are displayed or not"
+  },
+  "error_loading_dictionary": {
+    "message": "辞書の読み込みが失敗しました。もう一度有効してみてください。",
+    "description": "Tooltip shown when the dictionary fails to load"
+  },
+  "error_ctrl_alt_unsupported": {
+    "message": "ご利用中のFirefoxバージョンではAltとCtrlの組み合わせが対応されていません",
+    "description": "Tooltip displayed when the user attempts to set a hotkey combination including both Ctrl and Alt in a version of Firefox prior to 63"
+  },
+  "error_ctrl_alt_warning": {
+    "message": "Firefox 63より古いバージョンでは、AltとCtrlの組み合わせが対応されていません",
+    "description": "Tooltip displayed when the user attempts to set a hotkey combination including both Ctrl and Alt in a version of Firefox later than 63"
+  },
+  "error_command_could_not_parse": {
+    "message": "「$command$」の構文解析が失敗しました",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "Ctrl+T "
+      }
+    }
+  },
+  "error_command_has_no_key": {
+    "message": "キーを設定してください"
+  },
+  "error_command_key_is_not_allowed": {
+    "message": "「$key$」というキーが利用できません",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Enter"
+      }
+    }
+  },
+  "error_command_is_missing_modifier_key": {
+    "message": "機能キーまたメディアキーの利用以外の場合、修飾キーも設定してください"
+  },
+  "error_command_disallowed_modifier_key": {
+    "message": "「$modifier$」という修飾キーの利用はできません",
+    "placeholders": {
+      "modifier": {
+        "content": "$1",
+        "example": "Meta"
+      }
+    }
+  },
+  "error_command_media_key_with_modifier_key": {
+    "message": "メディアキーと修飾キーとの組み合わせが利用できません"
+  },
+  "error_command_too_many_modifiers": {
+    "message": "設定された修飾キーが多すぎます"
   },
   "deinflect_polite_past_negative": {
     "message": "否定過去丁寧形"
