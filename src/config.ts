@@ -34,7 +34,7 @@ type ChangeCallback = (changes: object) => void;
 interface KeySetting {
   name: keyof KeyboardKeys;
   keys: string[];
-  description: string;
+  l10nKey: string;
 }
 
 export class Config {
@@ -46,12 +46,12 @@ export class Config {
     {
       name: 'nextDictionary',
       keys: ['Shift', 'Enter'],
-      description: 'Switch dictionaries',
+      l10nKey: 'options_popup_switch_dictionaries',
     },
     {
       name: 'toggleDefinition',
       keys: ['d'],
-      description: 'Toggle definition',
+      l10nKey: 'options_popup_toggle_definition',
     },
   ];
 

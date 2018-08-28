@@ -76,6 +76,12 @@
   "options_popup_keys_subheading": {
     "message": "Popup keys"
   },
+  "options_popup_switch_dictionaries": {
+    "message": "Switch dictionaries"
+  },
+  "options_popup_toggle_definition": {
+    "message": "Toggle definition"
+  },
   "options_kanji_dictionary_heading": {
     "message": "Kanji dictionary",
     "description": "Heading for options to configure what information is displayed from the kanji dictionary"

@@ -76,6 +76,12 @@
   "options_popup_keys_subheading": {
     "message": "ポップアップキー"
   },
+  "options_popup_switch_dictionaries": {
+    "message": "辞書を切り替える"
+  },
+  "options_popup_toggle_definition": {
+    "message": "定義の表示・非表示を切り替える"
+  },
   "options_kanji_dictionary_heading": {
     "message": "漢字辞典",
     "description": "Heading for options to configure what information is displayed from the kanji dictionary"

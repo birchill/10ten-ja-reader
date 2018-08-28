@@ -336,7 +336,7 @@ function addPopupKeys() {
 
     const keyDescription = document.createElement('div');
     keyDescription.classList.add('key-description');
-    keyDescription.textContent = setting.description;
+    keyDescription.textContent = browser.i18n.getMessage(setting.l10nKey);
     grid.appendChild(keyDescription);
   }
 }
