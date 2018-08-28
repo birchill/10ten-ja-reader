@@ -1,4 +1,4 @@
-const enum DeinflectReason {
+export const enum DeinflectReason {
   PolitePastNegative,
   PoliteNegative,
   PoliteVolitional,
@@ -32,7 +32,7 @@ const enum DeinflectReason {
 export const deinflectL10NKeys: { [key: number]: string } = {
   [DeinflectReason.PolitePastNegative]: 'deinflect_polite_past_negative',
   [DeinflectReason.PoliteNegative]: 'deinflect_polite_negative',
-  [DeinflectReason.PoliteVolitional]: 'deinflect_polite volitional',
+  [DeinflectReason.PoliteVolitional]: 'deinflect_polite_volitional',
   [DeinflectReason.Chau]: 'deinflect_chau',
   [DeinflectReason.Sugiru]: 'deinflect_sugiru',
   [DeinflectReason.Nasai]: 'deinflect_nasai',
@@ -58,38 +58,6 @@ export const deinflectL10NKeys: { [key: number]: string } = {
   [DeinflectReason.Adv]: 'deinflect_adv',
   [DeinflectReason.Noun]: 'deinflect_noun',
   [DeinflectReason.ImperativeNegative]: 'deinflect_imperative_negative',
-};
-
-// TODO: Localize deinflect reason strings
-const deinflectReasons: { [key: number]: string } = {
-  [DeinflectReason.PolitePastNegative]: 'polite past negative',
-  [DeinflectReason.PoliteNegative]: 'polite negative',
-  [DeinflectReason.PoliteVolitional]: 'polite volitional',
-  [DeinflectReason.Chau]: '-chau',
-  [DeinflectReason.Sugiru]: '-sugiru',
-  [DeinflectReason.Nasai]: '-nasai',
-  [DeinflectReason.PolitePast]: 'polite past',
-  [DeinflectReason.Tara]: '-tara',
-  [DeinflectReason.Tari]: '-tari',
-  [DeinflectReason.Causative]: 'causative',
-  [DeinflectReason.PotentialOrPassive]: 'potential or passive',
-  [DeinflectReason.Sou]: '-sou',
-  [DeinflectReason.Tai]: '-tai',
-  [DeinflectReason.Polite]: 'polite',
-  [DeinflectReason.Past]: 'past',
-  [DeinflectReason.Negative]: 'negative',
-  [DeinflectReason.Passive]: 'passive',
-  [DeinflectReason.Ba]: '-ba',
-  [DeinflectReason.Volitional]: 'volitional',
-  [DeinflectReason.Potential]: 'potential',
-  [DeinflectReason.CausativePassive]: 'causative passive',
-  [DeinflectReason.Te]: '-te',
-  [DeinflectReason.Zu]: '-zu',
-  [DeinflectReason.Imperative]: 'imperative',
-  [DeinflectReason.MasuStem]: 'masu stem',
-  [DeinflectReason.Adv]: 'adv',
-  [DeinflectReason.Noun]: 'noun',
-  [DeinflectReason.ImperativeNegative]: 'imperative negative',
 };
 
 const deinflectRuleData: Array<[string, string, number, number]> = [
@@ -498,9 +466,13 @@ function getDeinflectRuleGroups() {
 export interface CandidateWord {
   // The de-inflected candidate word
   word: string;
-  // An optional string describing the relationship of |word| to its
-  // de-inflected version, e.g. 'past'
-  reason: string | null;
+  // An optional sequence of reasons describing the how |word| was derived
+  // from the original input string.
+  //
+  // Each array is a sequence of rules applied in turn.
+  // There may be multiple arrays when multiple sequences of rules were applied
+  // to produce word.
+  reasons: Array<Array<DeinflectReason>>;
   // For a de-inflected word, this is a bitfield comprised of flags from the
   // WordType enum describing the possible types of word this could represent
   // (e.g. godan verb, i-adj). If a word looked up in the dictionary does not
@@ -522,7 +494,7 @@ export function deinflect(word: string): CandidateWord[] {
     // Initially we don't know what type of word we have so we set the type
     // mask to match all rules.
     type: 0xff,
-    reason: '',
+    reasons: [],
   };
   result.push(original);
   resultIndex[word] = 0;
@@ -553,27 +525,36 @@ export function deinflect(word: string): CandidateWord[] {
             if (resultIndex[newWord]) {
               const candidate = result[resultIndex[newWord]];
               if (candidate.type === rule.type >> 8) {
-                candidate.reason = `${deinflectReasons[rule.reason]} or ${
-                  candidate.reason
-                }`;
+                candidate.reasons.unshift([rule.reason]);
                 continue;
               }
             }
             resultIndex[newWord] = result.length;
 
-            let reason: string = deinflectReasons[rule.reason];
-            if (result[i].reason && result[i].reason!.length) {
-              reason += ` < ${result[i].reason}`;
+            // Deep clone multidimensional array
+            const reasons = [];
+            for (const array of result[i].reasons) {
+              reasons.push(Array.from(array));
+            }
+            if (reasons.length) {
+              const firstReason = reasons[0];
               // This is a bit hacky but the alternative is to add the
               // full-form causative passive inflections to the deinflection
               // dictionary and then try to merge the results.
-              reason = reason.replace(
-                'causative < potential or passive',
-                'causative passive'
-              );
+              if (
+                rule.reason === DeinflectReason.Causative &&
+                firstReason.length &&
+                firstReason[0] === DeinflectReason.PotentialOrPassive
+              ) {
+                firstReason.splice(0, 1, DeinflectReason.CausativePassive);
+              } else {
+                firstReason.unshift(rule.reason);
+              }
+            } else {
+              reasons.push([rule.reason]);
             }
             const candidate: CandidateWord = {
-              reason,
+              reasons,
               type: rule.type >> 8,
               word: newWord,
             };

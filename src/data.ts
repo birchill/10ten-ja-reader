@@ -46,7 +46,7 @@
 */
 
 import { Bugsnag } from 'bugsnag-js';
-import { deinflect, CandidateWord } from './deinflect';
+import { deinflect, deinflectL10NKeys, CandidateWord } from './deinflect';
 
 // Katakana -> Hiragana conversion tables
 
@@ -418,7 +418,7 @@ export class Dictionary {
       // TODO: Split inflection handling out into a separate method
       const candidates: Array<CandidateWord> = deinflectWord
         ? deinflect(input)
-        : [{ word: input, type: 0xff, reason: null }];
+        : [{ word: input, type: 0xff, reasons: [] }];
 
       for (let i = 0; i < candidates.length; i++) {
         const candidate: CandidateWord = candidates[i];
@@ -506,8 +506,18 @@ export class Dictionary {
             longestMatch = Math.max(longestMatch, inputLengths[input.length]);
 
             let reason: string | null = null;
-            if (candidate.reason) {
-              reason = `< ${candidate.reason}`;
+            if (candidate.reasons.length) {
+              reason =
+                '< ' +
+                candidate.reasons
+                  .map(reasonList =>
+                    reasonList
+                      .map(reason =>
+                        browser.i18n.getMessage(deinflectL10NKeys[reason])
+                      )
+                      .join(' < ')
+                  )
+                  .join(' or ');
               if (showInf) {
                 reason += ` < ${input}`;
               }
