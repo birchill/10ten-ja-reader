@@ -1,4 +1,3 @@
-// @format
 /*
 
   Rikai champ
@@ -47,6 +46,7 @@
 */
 
 import { Bugsnag } from 'bugsnag-js';
+import { deinflect, CandidateWord } from './deinflect';
 
 // Katakana -> Hiragana conversion tables
 
@@ -112,86 +112,6 @@ const enum WordType {
   SuruVerb = 1 << 4,
 }
 
-interface DeinflectRule {
-  from: string;
-  to: string;
-  // Unlike the type in the CandidateWord, this is a 16-bit integer where the
-  // lower 8 bits represent the from type while the upper 8 bits represent the
-  // to type(s).
-  //
-  // For example, 遊びすぎる would match the びすぎる→ぶ rule where the from
-  // type is an ichidan/ru-verb while the to type is a godan/u-verb.
-  //
-  // The type for this rule is calculated as follows:
-  //
-  //   from-type = WordType.IchidanVerb = 1 << 0 = 00000001
-  //   to-type   = WordType.GodanVerb   = 1 << 1 = 00000010
-  //   type      = [to-type] [from-type]
-  //             = 00000010 00000001
-  //               \______/ \______/
-  //                  to      from
-  //             = 513
-  //
-  // When the from type accepts anything BUT one of the above word types (e.g.
-  // a verb stem), the highest bit is set. For example, consider the
-  // deinflection rule that allows 食べ (imperative) to be de-inflected to
-  // 食べる: べ→べる.
-  //
-  // In this case, the to type is an ichidan/ru-verb, while the from type is
-  // basically anything but NOT the result of any other deinflection (since they
-  // never produce verb stems). For this case the highest bit of the from-type
-  // is set so that it does NOT match any of the existing word types but it DOES
-  // match when we compare with 0xff (the mask we use for the initial input).
-  //
-  // i.e. from-type = 10000000
-  //      to-type   = WordType.IchidanVerb = 1
-  //      type      = 00000001 10000000
-  //                = 384
-  //
-  // Note that the to-type is a bitfield since multiple possible word types can
-  // be produced.
-  //
-  // For example, for the rule ませんでした→る the deinflected word could be an
-  // ichidan/ru-verb (e.g. 食べる) but it could also be the special verb 来る
-  // (when it is written in hiragana a different rule will match). As a result,
-  // the to-type needs to represent both of these possibilities.
-  //
-  // i.e. to-type   = WordType.IchidanVerb & WordType.KuruVerb
-  //                = 00000001 & 00001000
-  //                = 00001001
-  //      from-type = Verb stem (i.e. anything but one of the WordTypes)
-  //                = 10000000
-  //      type      = 00001001 10000000
-  //                = 2432
-  //
-  type: number;
-  reason: number;
-}
-type DeinflectRuleGroup = Array<DeinflectRule> & { fromLen: number };
-
-// Helper to initialize a new DeinflectRuleGroup
-const createDeinflectRuleGroup = (fromLen: number): DeinflectRuleGroup => {
-  const result: any = [];
-  result.fromLen = fromLen;
-  return result as DeinflectRuleGroup;
-};
-
-interface CandidateWord {
-  // The de-inflected candidate word
-  word: string;
-  // An optional string describing the relationship of |word| to its
-  // de-inflected version, e.g. 'past'
-  reason: string | null;
-  // For a de-inflected word, this is a bitfield comprised of flags from the
-  // WordType enum describing the possible types of word this could represent
-  // (e.g. godan verb, i-adj). If a word looked up in the dictionary does not
-  // match this type, it should be ignored since the deinflection is not valid
-  // in that case.
-  //
-  // See the extended notes for DeinflectRule.rule.
-  type: number;
-}
-
 interface KanjiSearchOptions {
   // Lists the references that should be included in KanjiEntry.misc.
   includedReferences: Set<string>;
@@ -209,17 +129,11 @@ export class Dictionary {
   wordIndex: string;
   kanjiData: string;
   radData: string[];
-  deinflectReasons: string[];
-  deinflectRules: DeinflectRuleGroup[];
   bugsnag?: Bugsnag.Client;
 
   constructor(options: DictionaryOptions) {
     this.bugsnag = options.bugsnag;
-
-    const dictionaryLoaded = this.loadDictionary();
-    const deinflectLoaded = this.loadDeinflectData();
-
-    this.loaded = Promise.all<any>([dictionaryLoaded, deinflectLoaded]);
+    this.loaded = this.loadDictionary();
   }
 
   async readFile(url: string): Promise<string> {
@@ -374,122 +288,6 @@ export class Dictionary {
     await readBatch(dataFiles.slice(midpoint));
   }
 
-  // TODO: Localize deinflect reason strings
-  async loadDeinflectData() {
-    this.deinflectReasons = [];
-    this.deinflectRules = [];
-
-    const buffer = await this.readFileIntoArray(
-      browser.extension.getURL('data/deinflect.dat')
-    );
-
-    // We group rules whose 'from' parts have equal length together
-    let prevLen: number = -1;
-    let ruleGroup: DeinflectRuleGroup;
-    buffer.forEach((line, index) => {
-      // Skip header
-      if (index === 0) {
-        return;
-      }
-
-      const fields = line.split('\t');
-
-      if (fields.length === 1) {
-        this.deinflectReasons.push(fields[0]);
-      } else if (fields.length === 4) {
-        const rule: DeinflectRule = {
-          from: fields[0],
-          to: fields[1],
-          type: parseInt(fields[2]),
-          reason: parseInt(fields[3]),
-        };
-
-        if (prevLen !== rule.from.length) {
-          prevLen = rule.from.length;
-          ruleGroup = createDeinflectRuleGroup(prevLen);
-          this.deinflectRules.push(ruleGroup);
-        }
-        ruleGroup.push(rule);
-      }
-    });
-  }
-
-  // Returns an array of possible de-inflected versions of |word|.
-  deinflect(word: string): CandidateWord[] {
-    const result: Array<CandidateWord> = [];
-    const resultIndex: { [index: string]: number } = {};
-
-    const original: CandidateWord = {
-      word,
-      // Initially we don't know what type of word we have so we set the type
-      // mask to match all rules.
-      type: 0xff,
-      reason: '',
-    };
-    result.push(original);
-    resultIndex[word] = 0;
-
-    let i = 0;
-    do {
-      const word = result[i].word;
-      const type = result[i].type;
-
-      for (const ruleGroup of this.deinflectRules) {
-        if (ruleGroup.fromLen <= word.length) {
-          const ending = word.substr(-ruleGroup.fromLen);
-
-          for (const rule of ruleGroup) {
-            if (type & rule.type && ending === rule.from) {
-              const newWord =
-                word.substr(0, word.length - rule.from.length) + rule.to;
-              if (newWord.length <= 1) {
-                continue;
-              }
-
-              // If we already have a candidate for this word with the same
-              // to type(s), expand the possible reasons.
-              //
-              // If the to type(s) differ, then we'll add a separate candidate
-              // and just hope that when we go to match against dictionary words
-              // we'll filter out the mismatching one(s).
-              if (resultIndex[newWord]) {
-                const candidate = result[resultIndex[newWord]];
-                if (candidate.type === rule.type >> 8) {
-                  candidate.reason = `${
-                    this.deinflectReasons[rule.reason]
-                  } or ${candidate.reason}`;
-                  continue;
-                }
-              }
-              resultIndex[newWord] = result.length;
-
-              let reason: string = this.deinflectReasons[rule.reason];
-              if (result[i].reason && result[i].reason!.length) {
-                reason += ` < ${result[i].reason}`;
-                // This is a bit hacky but the alternative is to add the
-                // full-form causative passive inflections to the deinflection
-                // dictionary and then try to merge the results.
-                reason = reason.replace(
-                  'causative < potential or passive',
-                  'causative passive'
-                );
-              }
-              const candidate: CandidateWord = {
-                reason,
-                type: rule.type >> 8,
-                word: newWord,
-              };
-
-              result.push(candidate);
-            }
-          }
-        }
-      }
-    } while (++i < result.length);
-
-    return result;
-  }
-
   async wordSearch(
     input: string,
     doNames: boolean = false,
@@ -591,7 +389,7 @@ export class Dictionary {
   }
 
   // Looks for dictionary entries in |dict| (using |index|) that match some
-  // portion of |input| after de-inflecting it (if |deinflect| is true).
+  // portion of |input| after de-inflecting it (if |deinflectWord| is true).
   // Only entries that match from the beginning of |input| are checked.
   //
   // e.g. if |input| is '子犬は' then the entry for '子犬' will match but
@@ -602,7 +400,7 @@ export class Dictionary {
     dict: string,
     index: string,
     maxResults: number,
-    deinflect: boolean
+    deinflectWord: boolean
   ): LookupResult | null {
     let count: number = 0;
     let longestMatch: number = 0;
@@ -618,8 +416,8 @@ export class Dictionary {
     while (input.length > 0) {
       const showInf: boolean = count != 0;
       // TODO: Split inflection handling out into a separate method
-      const candidates = deinflect
-        ? this.deinflect(input)
+      const candidates: Array<CandidateWord> = deinflectWord
+        ? deinflect(input)
         : [{ word: input, type: 0xff, reason: null }];
 
       for (let i = 0; i < candidates.length; i++) {

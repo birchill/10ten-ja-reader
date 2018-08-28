@@ -76,12 +76,6 @@ describe('Dictionary', () => {
     expect(result).toEqual(['がーでん', [0, 2, 3, 5, 6]]);
   });
 
-  it('performs de-inflection', () => {
-    const result = sharedDict.deinflect('走ります');
-    const match = result.find(candidate => candidate.word === '走る');
-    expect(match).toEqual({ reason: 'polite', type: 2, word: '走る' });
-  });
-
   it('chooses the right de-inflection for potential and passives', async () => {
     // Ichidan/ru-verb -- られる ending could be potential or passive
     let result = await sharedDict.wordSearch('止められます');
@@ -184,16 +178,6 @@ describe('Dictionary', () => {
     result = await sharedDict.wordSearch('買わされませんでした');
     match = result.data.find(([item, reason]) => item.indexOf('[かう]') !== -1);
     expect(match[1]).toEqual('< causative passive < polite past negative');
-  });
-
-  it('performs de-inflection recursively', () => {
-    const result = sharedDict.deinflect('踊りたくなかった');
-    const match = result.find(candidate => candidate.word === '踊る');
-    expect(match).toEqual({
-      reason: '-tai < negative < past',
-      type: 2,
-      word: '踊る',
-    });
   });
 
   it('translates sentences', async () => {
