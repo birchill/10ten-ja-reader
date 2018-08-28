@@ -14,5 +14,89 @@
   "options_general_heading": {
     "message": "一般",
     "description": "Heading for common preferences."
+  },
+  "deinflect_polite_past_negative": {
+    "message": "否定過去丁寧形"
+  },
+  "deinflect_polite_negative": {
+    "message": "否定丁寧形"
+  },
+  "deinflect_polite volitional": {
+    "message": "意向丁寧形"
+  },
+  "deinflect_chau": {
+    "message": "ちゃう形"
+  },
+  "deinflect_sugiru": {
+    "message": "すぎる形"
+  },
+  "deinflect_nasai": {
+    "message": "なさい形"
+  },
+  "deinflect_polite_past": {
+    "message": "過去丁寧形"
+  },
+  "deinflect_tara": {
+    "message": "たら形"
+  },
+  "deinflect_tari": {
+    "message": "たり形"
+  },
+  "deinflect_causative": {
+    "message": "使役形"
+  },
+  "deinflect_potential_or_passive": {
+    "message": "可能形・受身形"
+  },
+  "deinflect_sou": {
+    "message": "そう形"
+  },
+  "deinflect_tai": {
+    "message": "たい形"
+  },
+  "deinflect_polite": {
+    "message": "丁寧形"
+  },
+  "deinflect_past": {
+    "message": "過去形"
+  },
+  "deinflect_negative": {
+    "message": "否定形"
+  },
+  "deinflect_passive": {
+    "message": "受身形"
+  },
+  "deinflect_ba": {
+    "message": "ば形"
+  },
+  "deinflect_volitional": {
+    "message": "意向形"
+  },
+  "deinflect_potential": {
+    "message": "可能形"
+  },
+  "deinflect_causative_passive": {
+    "message": "使役受身形"
+  },
+  "deinflect_te": {
+    "message": "て形"
+  },
+  "deinflect_zu": {
+    "message": "ず形"
+  },
+  "deinflect_imperative": {
+    "message": "命令形"
+  },
+  "deinflect_masu_stem": {
+    "message": "連用形"
+  },
+  "deinflect_adv": {
+    "message": "副詞"
+  },
+  "deinflect_noun": {
+    "message": "名詞"
+  },
+  "deinflect_imperative_negative": {
+    "message": "否定命令形"
   }
 }

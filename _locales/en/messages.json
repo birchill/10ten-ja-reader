@@ -134,5 +134,89 @@
   },
   "error_command_too_many_modifiers": {
     "message": "Too many modifiers"
+  },
+  "deinflect_polite_past_negative": {
+    "message": "polite past negative"
+  },
+  "deinflect_polite_negative": {
+    "message": "polite negative"
+  },
+  "deinflect_polite volitional": {
+    "message": "polite volitional"
+  },
+  "deinflect_chau": {
+    "message": "-chau"
+  },
+  "deinflect_sugiru": {
+    "message": "-sugiru"
+  },
+  "deinflect_nasai": {
+    "message": "-nasai"
+  },
+  "deinflect_polite_past": {
+    "message": "polite past"
+  },
+  "deinflect_tara": {
+    "message": "-tara"
+  },
+  "deinflect_tari": {
+    "message": "-tari"
+  },
+  "deinflect_causative": {
+    "message": "causative"
+  },
+  "deinflect_potential_or_passive": {
+    "message": "potential or passive"
+  },
+  "deinflect_sou": {
+    "message": "-sou"
+  },
+  "deinflect_tai": {
+    "message": "-tai"
+  },
+  "deinflect_polite": {
+    "message": "polite"
+  },
+  "deinflect_past": {
+    "message": "past"
+  },
+  "deinflect_negative": {
+    "message": "negative"
+  },
+  "deinflect_passive": {
+    "message": "passive"
+  },
+  "deinflect_ba": {
+    "message": "-ba"
+  },
+  "deinflect_volitional": {
+    "message": "volitional"
+  },
+  "deinflect_potential": {
+    "message": "potential"
+  },
+  "deinflect_causative_passive": {
+    "message": "causative passive"
+  },
+  "deinflect_te": {
+    "message": "-te"
+  },
+  "deinflect_zu": {
+    "message": "-zu"
+  },
+  "deinflect_imperative": {
+    "message": "imperative"
+  },
+  "deinflect_masu_stem": {
+    "message": "masu stem"
+  },
+  "deinflect_adv": {
+    "message": "adv"
+  },
+  "deinflect_noun": {
+    "message": "noun"
+  },
+  "deinflect_imperative_negative": {
+    "message": "imperative negative"
   }
 }

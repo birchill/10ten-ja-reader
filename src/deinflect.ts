@@ -29,6 +29,37 @@ const enum DeinflectReason {
   ImperativeNegative,
 }
 
+export const deinflectL10NKeys: { [key: number]: string } = {
+  [DeinflectReason.PolitePastNegative]: 'deinflect_polite_past_negative',
+  [DeinflectReason.PoliteNegative]: 'deinflect_polite_negative',
+  [DeinflectReason.PoliteVolitional]: 'deinflect_polite volitional',
+  [DeinflectReason.Chau]: 'deinflect_chau',
+  [DeinflectReason.Sugiru]: 'deinflect_sugiru',
+  [DeinflectReason.Nasai]: 'deinflect_nasai',
+  [DeinflectReason.PolitePast]: 'deinflect_polite_past',
+  [DeinflectReason.Tara]: 'deinflect_tara',
+  [DeinflectReason.Tari]: 'deinflect_tari',
+  [DeinflectReason.Causative]: 'deinflect_causative',
+  [DeinflectReason.PotentialOrPassive]: 'deinflect_potential_or_passive',
+  [DeinflectReason.Sou]: 'deinflect_sou',
+  [DeinflectReason.Tai]: 'deinflect_tai',
+  [DeinflectReason.Polite]: 'deinflect_polite',
+  [DeinflectReason.Past]: 'deinflect_past',
+  [DeinflectReason.Negative]: 'deinflect_negative',
+  [DeinflectReason.Passive]: 'deinflect_passive',
+  [DeinflectReason.Ba]: 'deinflect_ba',
+  [DeinflectReason.Volitional]: 'deinflect_volitional',
+  [DeinflectReason.Potential]: 'deinflect_potential',
+  [DeinflectReason.CausativePassive]: 'deinflect_causative_passive',
+  [DeinflectReason.Te]: 'deinflect_te',
+  [DeinflectReason.Zu]: 'deinflect_zu',
+  [DeinflectReason.Imperative]: 'deinflect_imperative',
+  [DeinflectReason.MasuStem]: 'deinflect_masu_stem',
+  [DeinflectReason.Adv]: 'deinflect_adv',
+  [DeinflectReason.Noun]: 'deinflect_noun',
+  [DeinflectReason.ImperativeNegative]: 'deinflect_imperative_negative',
+};
+
 // TODO: Localize deinflect reason strings
 const deinflectReasons: { [key: number]: string } = {
   [DeinflectReason.PolitePastNegative]: 'polite past negative',
