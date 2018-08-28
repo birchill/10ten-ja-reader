@@ -95,7 +95,6 @@ interface GetTextResult {
 interface CachedGetTextResult {
   result: GetTextResult;
   position: CaretPosition | null;
-  point: { x: number; y: number };
 }
 
 const isTextInputNode = (
@@ -186,6 +185,7 @@ export class RikaiContent {
 
   // Lookup tracking (so we can avoid redundant work and so we can re-render)
   _currentTextAtPoint: CachedGetTextResult | null = null;
+  _currentPoint: { x: number; y: number } | null = null;
   _currentSearchResult: SearchResult | null = null;
   _currentTarget: Element | null = null;
   _currentTitle: string | null = null;
@@ -332,12 +332,7 @@ export class RikaiContent {
       // that if the user presses the hold-to-show keys later we can show the
       // popup immediately.
       this._currentTarget = ev.target as Element;
-      // XXX We should probably split 'point' out into a separate member.
-      this._currentTextAtPoint = {
-        result: { text: '', rangeStart: null, rangeEnds: [] },
-        position: null,
-        point: { x: ev.clientX, y: ev.clientY },
-      };
+      this._currentPoint = { x: ev.clientX, y: ev.clientY };
       return;
     }
 
@@ -422,9 +417,9 @@ export class RikaiContent {
     // If the user pressed the hold-to-show key combination, show the popup if
     // possible.
     if (this.isHoldToShowKeysMatch(ev)) {
-      if (this._currentTextAtPoint && this._currentTarget) {
+      if (this._currentPoint && this._currentTarget) {
         this.tryToUpdatePopup(
-          this._currentTextAtPoint.point,
+          this._currentPoint,
           this._currentTarget,
           DictMode.Default
         );
@@ -460,9 +455,9 @@ export class RikaiContent {
     }
 
     if (this._config.keys.nextDictionary.includes(ev.key)) {
-      if (this._currentTextAtPoint && this._currentTarget) {
+      if (this._currentPoint && this._currentTarget) {
         this.tryToUpdatePopup(
-          this._currentTextAtPoint.point,
+          this._currentPoint,
           this._currentTarget,
           DictMode.NextDict
         );
@@ -719,11 +714,8 @@ export class RikaiContent {
           result.rangeEnds[0].container = position!.offsetNode;
         }
 
-        this._currentTextAtPoint = {
-          result,
-          position: position!,
-          point,
-        };
+        this._currentTextAtPoint = { result, position: position! };
+        this._currentPoint = point;
         return result;
       }
     }
@@ -739,11 +731,8 @@ export class RikaiContent {
           rangeStart: null,
           rangeEnds: [],
         };
-        this._currentTextAtPoint = {
-          result,
-          position: null,
-          point,
-        };
+        this._currentTextAtPoint = { result, position: null };
+        this._currentPoint = point;
 
         return result;
       }
@@ -753,9 +742,9 @@ export class RikaiContent {
     // just re-use the last result so the user doesn't have try to keep the
     // mouse over the text precisely in order to read the result.
 
-    if (this._currentTextAtPoint) {
-      const dx = this._currentTextAtPoint.point.x - point.x;
-      const dy = this._currentTextAtPoint.point.y - point.y;
+    if (this._currentTextAtPoint && this._currentPoint) {
+      const dx = this._currentPoint.x - point.x;
+      const dy = this._currentPoint.y - point.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
       if (dist < 4) {
         return this._currentTextAtPoint.result;
@@ -1147,6 +1136,7 @@ export class RikaiContent {
 
   clearHighlight(currentElement: Element | null) {
     this._currentTextAtPoint = null;
+    this._currentPoint = null;
     this._currentSearchResult = null;
     this._currentTarget = null;
     this._currentTitle = null;
@@ -1224,9 +1214,7 @@ export class RikaiContent {
   }
 
   async showPopup() {
-    const referencePosition = this._currentTextAtPoint
-      ? this._currentTextAtPoint.point
-      : null;
+    const referencePosition = this._currentPoint ? this._currentPoint : null;
 
     const fragment = this.makeHtmlForResult(
       this._currentSearchResult,
