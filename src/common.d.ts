@@ -16,7 +16,9 @@ interface ContentConfig {
   readingOnly: boolean;
 
   // Modifier keys which must be held down in order for the pop-up to shown.
-  holdToShowKeys: Set<'Alt' | 'Ctrl'>;
+  //
+  // This should be a Set but Chrome can't send Sets by sendMessage :(
+  holdToShowKeys: Array<'Alt' | 'Ctrl'>;
 
   // Keyboard shortcut keys. Each of these is an array of keycodes (as reported
   // by KeyboardEvent.key). The array may be empty in which case the action is

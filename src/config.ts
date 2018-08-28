@@ -303,11 +303,9 @@ export class Config {
   get contentConfig(): ContentConfig {
     return {
       readingOnly: this.readingOnly,
-      holdToShowKeys: new Set<'Ctrl' | 'Alt'>(
-        this.holdToShowKeys
-          ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)
-          : []
-      ),
+      holdToShowKeys: this.holdToShowKeys
+        ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)
+        : [],
       keys: this.keys,
       noTextHighlight: this.noTextHighlight,
       popupStyle: this.popupStyle,

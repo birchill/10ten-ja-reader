@@ -490,7 +490,7 @@ export class RikaiContent {
 
   // Test if an incoming keyboard event matches the hold-to-show key sequence
   isHoldToShowKeysMatch(ev: KeyboardEvent): boolean {
-    if (!this._config.holdToShowKeys.size) {
+    if (!this._config.holdToShowKeys.length) {
       return false;
     }
 
@@ -504,16 +504,20 @@ export class RikaiContent {
 
   // Test if hold-to-show keys are set for a given a UI event
   areHoldToShowKeysDown(ev: MouseEvent | KeyboardEvent): boolean {
-    if (!this._config.holdToShowKeys.size) {
+    if (!this._config.holdToShowKeys.length) {
       return true;
     }
 
     // Check if all the configured hold-to-show keys are pressed down
     const isAltGraph = ev.getModifierState('AltGraph');
-    if (this._config.holdToShowKeys.has('Alt') && !ev.altKey && !isAltGraph) {
+    if (
+      this._config.holdToShowKeys.includes('Alt') &&
+      !ev.altKey &&
+      !isAltGraph
+    ) {
       return false;
     }
-    if (this._config.holdToShowKeys.has('Ctrl') && !ev.ctrlKey) {
+    if (this._config.holdToShowKeys.includes('Ctrl') && !ev.ctrlKey) {
       return false;
     }
 
