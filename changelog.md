@@ -4,7 +4,9 @@
   ([#30](https://github.com/birtles/rikaichamp/issues/30)).
 * Introduced hold-to-display hotkey
   ([#33](https://github.com/birtles/rikaichamp/issues/33)).
+* Localized UI into Japanese.
 * Various tweaks to option page styling.
+* Updated dictionaries to 2018-08-28 snapshot.
 
 ## 0.0.23 (2018-08-08!)
 
