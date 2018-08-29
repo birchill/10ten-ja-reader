@@ -1,4 +1,8 @@
-## 0.0.24 (not yet released)
+## 0.0.25 (not yet released)
+
+(Nothing yet)
+
+## 0.0.24 (2018-08-29)
 
 * Made the hotkey for enabling Rikaichamp configurable
   ([#30](https://github.com/birtles/rikaichamp/issues/30)).
