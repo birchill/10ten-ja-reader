@@ -19,6 +19,25 @@ git clone --recursive https://github.com/birtles/rikaichamp.git
 npm install
 ```
 
+The install step above will build the add-on and put the output in
+`dist-firefox`. To build again you can use:
+
+```
+npm run build
+```
+
+Or to build the Chrome version:
+
+```
+npm run build:chrome
+```
+
+Or to build and package:
+
+```
+npm run prepack
+```
+
 ## Running
 
 For manual testing you can use
@@ -29,9 +48,9 @@ npm start
 
 ## Testing
 
-`
+```
 npm test
-`
+```
 
 If you have trouble running the SlimerJS tests using the above, you can just run
 the unit tests and browser tests separately:
