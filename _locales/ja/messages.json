@@ -1,6 +1,6 @@
 {
   "extension_description": {
-    "message": "マウスを合わせるで、日英辞書を引く。",
+    "message": "単語の上にマウスのカーソルを合わせたら日英辞書を引く。",
     "description": "Description of the what the extension does."
   },
   "command_toggle_description": {
@@ -16,7 +16,7 @@
     "description": "Context menu item to enable the extension."
   },
   "content_names_dictionary": {
-    "message": "名字辞典",
+    "message": "人名辞典",
     "description": "The title used at the top of the popup when showing the names dictionary"
   },
   "content_kanji_radical_label": {
@@ -95,11 +95,11 @@
     "description": "Tooltip shown when the dictionary fails to load"
   },
   "error_ctrl_alt_unsupported": {
-    "message": "ご利用中のFirefoxバージョンではAltとCtrlの組み合わせが対応されていません",
+    "message": "ご利用中のFirefoxバージョンはAltとCtrlの組み合わせに対応していません",
     "description": "Tooltip displayed when the user attempts to set a hotkey combination including both Ctrl and Alt in a version of Firefox prior to 63"
   },
   "error_ctrl_alt_warning": {
-    "message": "Firefox 63より古いバージョンでは、AltとCtrlの組み合わせが対応されていません",
+    "message": "Firefox 63より古いバージョンでは、AltとCtrlの組み合わせに対応していません",
     "description": "Tooltip displayed when the user attempts to set a hotkey combination including both Ctrl and Alt in a version of Firefox later than 63"
   },
   "error_command_could_not_parse": {
@@ -115,7 +115,7 @@
     "message": "キーを設定してください"
   },
   "error_command_key_is_not_allowed": {
-    "message": "「$key$」というキーが利用できません",
+    "message": "「$key$」というキーは利用できません",
     "placeholders": {
       "key": {
         "content": "$1",
@@ -127,7 +127,7 @@
     "message": "機能キーまたメディアキーの利用以外の場合、修飾キーも設定してください"
   },
   "error_command_disallowed_modifier_key": {
-    "message": "「$modifier$」という修飾キーの利用はできません",
+    "message": "「$modifier$」という修飾キーは利用できません",
     "placeholders": {
       "modifier": {
         "content": "$1",
@@ -136,7 +136,7 @@
     }
   },
   "error_command_media_key_with_modifier_key": {
-    "message": "メディアキーと修飾キーとの組み合わせが利用できません"
+    "message": "メディアキーと修飾キーとの組み合わせは利用できません"
   },
   "error_command_too_many_modifiers": {
     "message": "設定された修飾キーが多すぎます"
