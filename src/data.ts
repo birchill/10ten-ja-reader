@@ -422,25 +422,33 @@ export class Dictionary {
 
       for (let i = 0; i < candidates.length; i++) {
         const candidate: CandidateWord = candidates[i];
-        let ix: number[] | undefined = cache[candidate.word];
-        if (!ix) {
+        let offsets: number[] | undefined = cache[candidate.word];
+        if (!offsets) {
           const lookupResult = this.find(index, candidate.word + ',');
           if (!lookupResult) {
             cache[candidate.word] = [];
             continue;
           }
-          ix = lookupResult.split(',').map(Number);
-          cache[candidate.word] = ix;
+          offsets = lookupResult
+            .split(',')
+            .slice(1)
+            .map(Number);
+          cache[candidate.word] = offsets;
         }
 
-        for (let j = 1; j < ix.length; ++j) {
-          const ofs = ix[j];
-          if (have.has(ofs)) {
+        // We temporarily store the set of entries for the current candidate
+        // in a separate array since we want to sort them by priority before
+        // adding them to the result array.
+        type EntryType = [string, string | null];
+        const entries: Array<EntryType> = [];
+
+        for (const offset of offsets) {
+          if (have.has(offset)) {
             continue;
           }
 
-          var dentry = dict.substring(ofs, dict.indexOf('\n', ofs));
-          var ok = true;
+          const entry = dict.substring(offset, dict.indexOf('\n', offset));
+          let ok = true;
 
           // The first candidate is the full string, anything after that is
           // a possible deinflection.
@@ -463,7 +471,7 @@ export class Dictionary {
             //   /(adj-na,exp,int) thank you/many thanks/
             //   /(adj-i) shrill/
 
-            const fragments = dentry.split(/[,()]/);
+            const fragments = entry.split(/[,()]/);
 
             // Start at the end and go backwards. I don't know why.
             let fragmentIndex = Math.min(fragments.length - 1, 10);
@@ -500,7 +508,7 @@ export class Dictionary {
               break;
             }
 
-            have.add(ofs);
+            have.add(offset);
             ++count;
 
             longestMatch = Math.max(longestMatch, inputLengths[input.length]);
@@ -523,9 +531,17 @@ export class Dictionary {
               }
             }
 
-            result.data.push([dentry, reason]);
+            entries.push([entry, reason]);
           }
-        } // for j < ix.length
+        } // for offset of offsets
+
+        // Sort and add preliminary results
+        const isCommon = (entry: EntryType): boolean =>
+          entry[0].endsWith('/(P)/');
+        entries.sort((a: EntryType, b: EntryType): number => {
+          return Number(isCommon(b)) - Number(isCommon(a));
+        });
+        result.data.push(...entries);
 
         if (count >= maxResults) {
           break;

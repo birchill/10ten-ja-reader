@@ -274,6 +274,12 @@ describe('Dictionary', () => {
     }
   });
 
+  it('orders words be priority', async () => {
+    const result = await sharedDict.wordSearch('認める');
+    expect(result.data[0][0]).toEqual(expect.stringContaining('[みとめる]'));
+    expect(result.data[1][0]).toEqual(expect.stringContaining('[したためる]'));
+  });
+
   it('translates sentences', async () => {
     const result = await sharedDict.translate('期間限定発売 秋の膳');
     expect(result.textLen).toBe(10); // 10 characters including the space

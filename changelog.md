@@ -1,6 +1,8 @@
 ## 0.0.25 (not yet released)
 
 * Fixed Japanese localization thanks to [@piroor](https://github.com/piroor).
+* Fixed ordering of entries so that more common entries appear first
+  ([#26](https://github.com/birtles/rikaichamp/issues/26)).
 * Added parsing for とく・どく forms
   ([#51](https://github.com/birtles/rikaichamp/issues/51)).
 
