@@ -30,6 +30,8 @@ global.browser = {
           return 'causative';
         case 'deinflect_potential_or_passive':
           return 'potential or passive';
+        case 'deinflect_toku':
+          return '-te oku';
         case 'deinflect_sou':
           return '-sou';
         case 'deinflect_tai':
@@ -244,6 +246,32 @@ describe('Dictionary', () => {
     result = await sharedDict.wordSearch('買わされませんでした');
     match = result.data.find(([item, reason]) => item.indexOf('[かう]') !== -1);
     expect(match[1]).toEqual('< causative passive < polite past negative');
+  });
+
+  it('chooses the right de-inflection for -te oku', async () => {
+    const pairs = [
+      ['焼いとく', '焼く'],
+      ['急いどく', '急ぐ'],
+      ['きとく', '来る'],
+      ['来とく', '来る'],
+      ['しとく', 'する'],
+      ['話しとく', '話す'],
+      ['買っとく', '買う'],
+      ['待っとく', '待つ'],
+      ['帰っとく', '帰る'],
+      ['死んどく', '死ぬ'],
+      ['遊んどく', '遊ぶ'],
+      ['読んどく', '読む'],
+      ['読んどきます', '読む'],
+    ];
+
+    for (const [inflected, plain] of pairs) {
+      const result = await sharedDict.wordSearch(inflected);
+      const match = result.data.find(
+        ([item, reason]) => item.indexOf(`${plain}`) !== -1
+      );
+      expect(match[1]).toEqual(expect.stringMatching(/^< -te oku/));
+    }
   });
 
   it('translates sentences', async () => {

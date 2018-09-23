@@ -177,6 +177,9 @@
   "deinflect_sou": {
     "message": "-sou"
   },
+  "deinflect_toku": {
+    "message": "-te oku"
+  },
   "deinflect_tai": {
     "message": "-tai"
   },

@@ -1,6 +1,8 @@
 ## 0.0.25 (not yet released)
 
-(Nothing yet)
+* Fixed Japanese localization thanks to [@piroor](https://github.com/piroor).
+* Added parsing for とく・どく forms
+  ([#51](https://github.com/birtles/rikaichamp/issues/51)).
 
 ## 0.0.24 (2018-08-29)
 
