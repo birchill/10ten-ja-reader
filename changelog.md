@@ -5,6 +5,7 @@
   ([#26](https://github.com/birtles/rikaichamp/issues/26)).
 * Added parsing for とく・どく forms
   ([#51](https://github.com/birtles/rikaichamp/issues/51)).
+* Updated dictionaries to 2018-09-26 snapshot.
 
 ## 0.0.24 (2018-08-29)
 
