@@ -1,4 +1,8 @@
-## 0.0.25 (not yet released)
+## 0.0.26 (not yet released)
+
+(Nothing yet)
+
+## 0.0.25 (2018-09-27)
 
 * Fixed Japanese localization thanks to [@piroor](https://github.com/piroor).
 * Fixed ordering of entries so that more common entries appear first
