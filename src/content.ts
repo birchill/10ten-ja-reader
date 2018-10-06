@@ -1800,17 +1800,33 @@ export class RikaiContent {
 
     let toggle = 0;
     for (let ref of entry.miscDisplay) {
-      const value = entry.misc[ref.abbrev] || '-';
+      let value = entry.misc[ref.abbrev] || '-';
 
       const row = document.createElement('tr');
       referenceTable.append(row);
 
       const className = `k-mix-td${(toggle ^= 1)}`;
 
+      const isKanKen = ref.name === 'Kanji Kentei';
+      const name = isKanKen
+        ? browser.i18n.getMessage('content_kanji_kentei_label')
+        : ref.name;
+
       const nameCell = document.createElement('td');
       nameCell.classList.add(className);
-      nameCell.append(ref.name);
+      nameCell.append(name);
       row.append(nameCell);
+
+      if (isKanKen) {
+        if (value.endsWith('.5')) {
+          value = browser.i18n.getMessage(
+            'content_kanji_kentei_level_pre',
+            value.substring(0, 1)
+          );
+        } else {
+          value = browser.i18n.getMessage('content_kanji_kentei_level', value);
+        }
+      }
 
       const valueCell = document.createElement('td');
       valueCell.classList.add(className);

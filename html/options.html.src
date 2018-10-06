@@ -97,6 +97,10 @@
               <label for=E>Henshall</label>
             </div>
             <div class="browser-style checkbox-row">
+              <input type=checkbox id=KK name=KK>
+              <label for=KK>Kanji Kentei</label>
+            </div>
+            <div class="browser-style checkbox-row">
               <input type=checkbox id=DK name=DK>
               <label for=DK>Kanji Learner's Dictionary</label>
             </div>

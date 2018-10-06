@@ -43,6 +43,28 @@
     "message": "画数",
     "description": "The title given to the box showing stroke count information"
   },
+  "content_kanji_kentei_label": {
+    "message": "漢字検定",
+    "description": "Label for kanji kentei"
+  },
+  "content_kanji_kentei_level": {
+    "message": "$level$級",
+    "placeholders": {
+      "level": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "content_kanji_kentei_level_pre": {
+    "message": "準$level$級",
+    "placeholders": {
+      "level": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "options_general_heading": {
     "message": "一般",
     "description": "Heading for common preferences."

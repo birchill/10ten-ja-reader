@@ -1,6 +1,6 @@
 ## 0.0.26 (not yet released)
 
-(Nothing yet)
+* Added Kanji kentei levels to kanji popup
 
 ## 0.0.25 (2018-09-27)
 

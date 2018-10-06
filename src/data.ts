@@ -87,6 +87,7 @@ export const REF_ABBREVIATIONS = [
   { abbrev: 'H', name: 'Halpern' },
   { abbrev: 'L', name: 'Heisig' },
   { abbrev: 'E', name: 'Henshall' },
+  { abbrev: 'KK', name: 'Kanji Kentei' },
   { abbrev: 'DK', name: 'Kanji Learners Dictionary' },
   { abbrev: 'N', name: 'Nelson' },
   { abbrev: 'V', name: 'New Nelson' },
