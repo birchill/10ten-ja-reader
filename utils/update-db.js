@@ -6,6 +6,7 @@ const iconv = require('iconv-lite');
 const LineStream = require('byline').LineStream;
 const CombinedStream = require('combined-stream2');
 const { Transform, Writable } = require('stream');
+const loadKanKen = require('./read-kanken');
 
 // prettier-ignore
 const HANKAKU_KATAKANA_TO_HIRAGANA = [
@@ -185,6 +186,9 @@ class KanjiDictParser extends Writable {
   constructor(options) {
     super(options);
     this._index = {};
+    if (options && options.kanKenData) {
+      this.kanKenData = options.kanKenData;
+    }
   }
 
   _write(data, encoding, callback) {
@@ -270,6 +274,12 @@ class KanjiDictParser extends Writable {
     if (!hasB) {
       throw new Error(`No radical reference found for ${line}`);
     }
+
+    // Merge 漢検 data
+    if (this.kanKenData && this.kanKenData.has(matches[1])) {
+      refsToKeep.push(`KK${this.kanKenData.get(matches[1])}`);
+    }
+
     matches[2] = refsToKeep.join(' ');
 
     // Prepare meanings
@@ -307,7 +317,11 @@ class KanjiDictParser extends Writable {
 }
 
 const parseKanjiDic = async (sources, dataFile) => {
-  const parser = new KanjiDictParser();
+  const kanKenData = await loadKanKen(
+    path.join(__dirname, '..', 'data', '漢検.txt')
+  );
+
+  const parser = new KanjiDictParser({ kanKenData });
 
   const readFile = (url, encoding) =>
     new Promise((resolve, reject) => {

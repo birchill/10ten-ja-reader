@@ -56,6 +56,4 @@ const loadKanKen = file => {
   });
 };
 
-loadKanKen(path.join(__dirname, '..', 'data', '漢検.txt')).then(map => {
-  console.log(map.size);
-});
+module.exports = loadKanKen;
