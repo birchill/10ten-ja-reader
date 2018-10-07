@@ -62,11 +62,11 @@
   padding-top: 6px;
 }
 
-#rikaichamp-window .wordlist > *:last-child {
+#rikaichamp-window .wordlist > .entry:last-child {
   padding-bottom: 6px;
 }
 
-#rikaichamp-window .entry * {
+#rikaichamp-window .entry, #rikaichamp-window .entry * {
   line-height: 1.2;
 }
 
