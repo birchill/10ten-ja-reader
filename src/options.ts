@@ -109,15 +109,19 @@ function renderPopupStyleSelect() {
     popupPreview.classList.add(`-${theme}`);
     label.appendChild(popupPreview);
 
+    const entry = document.createElement('div');
+    entry.classList.add('entry');
+    popupPreview.appendChild(entry);
+
     const spanKanji = document.createElement('span');
     spanKanji.classList.add('w-kanji');
     spanKanji.textContent = '理解';
-    popupPreview.appendChild(spanKanji);
+    entry.appendChild(spanKanji);
 
     const spanKana = document.createElement('span');
     spanKana.classList.add('w-kana');
     spanKana.textContent = 'りかい';
-    popupPreview.appendChild(spanKana);
+    entry.appendChild(spanKana);
 
     const spanDef = document.createElement('span');
     spanDef.classList.add('w-def');
@@ -126,7 +130,7 @@ function renderPopupStyleSelect() {
       definition += ' understanding';
     }
     spanDef.textContent = definition;
-    popupPreview.appendChild(spanDef);
+    entry.appendChild(spanDef);
   }
 }
 

@@ -53,6 +53,11 @@ export class Config {
       keys: ['d'],
       l10nKey: 'options_popup_toggle_definition',
     },
+    {
+      name: 'startCopy',
+      keys: ['c'],
+      l10nKey: 'options_popup_start_copy',
+    },
   ];
 
   DEFAULT_KEYS: KeyboardKeys = this.DEFAULT_KEY_SETTINGS.reduce(

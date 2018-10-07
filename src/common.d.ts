@@ -9,6 +9,9 @@ interface KeyboardKeys {
 
   // The key(s) to cycle through the available dictionaries.
   nextDictionary: string[];
+
+  // The key(s) to entry copy mode.
+  startCopy: string[];
 }
 
 interface ContentConfig {

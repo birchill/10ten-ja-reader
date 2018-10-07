@@ -104,6 +104,9 @@
   "options_popup_toggle_definition": {
     "message": "Toggle definition"
   },
+  "options_popup_start_copy": {
+    "message": "Enter copy mode"
+  },
   "options_kanji_dictionary_heading": {
     "message": "Kanji dictionary",
     "description": "Heading for options to configure what information is displayed from the kanji dictionary"

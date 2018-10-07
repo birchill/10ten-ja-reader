@@ -67,18 +67,11 @@ const rikaiContent = new RikaiContent(config);
 const container = document.getElementById('container');
 
 for (const test of htmlTests) {
-  let oldConfig = rikaiContent.config;
-  if (test.extraConfig) {
-    rikaiContent.config = { ...oldConfig, ...test.extraConfig };
-  }
-
-  const popup = rikaiContent.makeHtmlForResult(
+  const popup = rikaiContent._renderPopup(
     test.searchResult,
-    test.searchResult.title || undefined
+    test.searchResult.title || null,
+    { showDefinitions: !test.extraConfig || !test.extraConfig.readingOnly }
   );
-  if (test.extraConfig) {
-    rikaiContent.config = oldConfig;
-  }
 
   const toTitle = str => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -91,6 +84,42 @@ for (const test of htmlTests) {
   popupWindow.setAttribute('id', 'rikaichamp-window');
   popupWindow.classList.add('stack');
   popupWindow.classList.add('-blue');
+  popupWindow.append(popup);
+  container.append(popupWindow);
+}
+
+/*
+ * Highlight tests
+ */
+
+const highlightTest = {
+  data: [
+    ['韓国語 [かんこくご] /(n) Korean (language)/', 'conj'],
+    ['韓国 [からくに] /(n,arch) China/Korea/', null],
+    ['韓国 [かんこく] /(n) (South) Korea/', null],
+  ],
+  more: true,
+  matchLen: 3,
+};
+
+const themes = ['blue', 'lightblue', 'black', 'yellow'];
+
+for (const theme of themes) {
+  const popup = rikaiContent._renderPopup(highlightTest, null, {
+    showDefinitions: true,
+    copyMode: true,
+    copyIndex: 0,
+  });
+
+  const label = document.createElement('div');
+  label.classList.add('label');
+  label.append(`Theme: ${theme}`);
+  container.append(label);
+
+  const popupWindow = document.createElement('div');
+  popupWindow.setAttribute('id', 'rikaichamp-window');
+  popupWindow.classList.add('stack');
+  popupWindow.classList.add(`-${theme}`);
   popupWindow.append(popup);
   container.append(popupWindow);
 }

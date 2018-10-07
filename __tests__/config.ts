@@ -115,6 +115,7 @@ describe('Config', () => {
     expect(config.keys).toEqual({
       toggleDefinition: ['d'],
       nextDictionary: ['Shift', 'Enter'],
+      startCopy: ['c'],
     });
     expect(config.contextMenuEnable).toEqual(true);
     expect(config.popupStyle).toEqual('blue');

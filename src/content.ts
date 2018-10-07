@@ -45,6 +45,8 @@
 
 */
 
+import { renderPopup } from './popup';
+
 declare global {
   interface Window {
     rikaichamp: any;
@@ -220,6 +222,10 @@ export class RikaiContent {
   // enough for us to test the speed of the mouse.
   _hidePopupWhenMovingAtSpeed: boolean = false;
 
+  // Copy support
+  _copyMode: boolean = false;
+  _copyIndex: number = 0;
+
   // Content
   _popupPromise: Promise<HTMLElement> | undefined;
 
@@ -266,6 +272,7 @@ export class RikaiContent {
 
     this.clearHighlight(null);
     this._selectedTextBox = null;
+    this._copyMode = false;
 
     // On at least one occassion I've seen an old window element hanging around.
     // Not sure why this happenned yet but for now let's just be sure to
@@ -433,13 +440,6 @@ export class RikaiContent {
       return;
     }
 
-    // If we've already processed this key, ignore.
-    // (We could just use 'keypress' except it doesn't fire for 'Shift' etc.
-    // which we need to handle.)
-    if (this._keysDown.has(ev.key)) {
-      return;
-    }
-
     // If we're not visible we should ignore any keystrokes.
     if (!this.isVisible()) {
       return;
@@ -470,6 +470,31 @@ export class RikaiContent {
       if (this._currentSearchResult) {
         this.showPopup();
       }
+    } else if (
+      this._config.keys.startCopy.includes(ev.key) &&
+      this._currentPoint &&
+      this._currentTarget
+    ) {
+      if (this._copyMode) {
+        this._copyIndex++;
+      } else {
+        this._copyMode = true;
+        this._copyIndex = 0;
+      }
+      this.tryToUpdatePopup(
+        this._currentPoint,
+        this._currentTarget,
+        DictMode.Same,
+        { forceUpdate: true }
+      );
+    } else if (this._copyMode && ev.key === 'Escape') {
+      this._copyMode = false;
+      this.tryToUpdatePopup(
+        this._currentPoint!,
+        this._currentTarget!,
+        DictMode.Same,
+        { forceUpdate: true }
+      );
     } else {
       return;
     }
@@ -527,7 +552,8 @@ export class RikaiContent {
   async tryToUpdatePopup(
     point: { x: number; y: number },
     target: Element,
-    dictOption: DictMode
+    dictOption: DictMode,
+    options?: { forceUpdate: boolean }
   ) {
     const previousTextAtPoint = this._currentTextAtPoint
       ? this._currentTextAtPoint.result
@@ -540,17 +566,22 @@ export class RikaiContent {
       'Should have updated _currentTextAtPoint'
     );
 
-    if (
-      previousTextAtPoint === textAtPoint &&
-      // This following line is not strictly correct. If the previous dictionary
-      // mode was 'ForceKanji' and now it's 'Default' we shouldn't return early.
-      // To fix that we'd need to store the previous dictionary mode. Basically
-      // this whole DictMode approach is pretty awful and we should just make
-      // the client aware of which dictionary it's looking at and manage state
-      // here.
-      (dictOption === DictMode.Same || dictOption === DictMode.Default)
-    ) {
-      return;
+    if (!options || !options.forceUpdate) {
+      if (
+        previousTextAtPoint === textAtPoint &&
+        // This following line is not strictly correct. If the previous
+        // dictionary mode was 'ForceKanji' and now it's 'Default' we shouldn't
+        // return early.  To fix that we'd need to store the previous dictionary
+        // mode. Basically this whole DictMode approach is pretty awful and we
+        // should just make the client aware of which dictionary it's looking at
+        // and manage state here.
+        (dictOption === DictMode.Same || dictOption === DictMode.Default)
+      ) {
+        return;
+      }
+
+      // The text or dictionary has changed so break out of copy mode
+      this._copyMode = false;
     }
 
     if (!textAtPoint) {
@@ -1140,6 +1171,7 @@ export class RikaiContent {
     this._currentSearchResult = null;
     this._currentTarget = null;
     this._currentTitle = null;
+    this._copyMode = false;
 
     if (this._selectedWindow && !this._selectedWindow.closed) {
       const selection = this._selectedWindow.getSelection();
@@ -1214,13 +1246,7 @@ export class RikaiContent {
   }
 
   async showPopup() {
-    const referencePosition = this._currentPoint ? this._currentPoint : null;
-
-    const fragment = this.makeHtmlForResult(
-      this._currentSearchResult,
-      this._currentTitle
-    );
-    if (!fragment) {
+    if (!this._currentSearchResult) {
       this.clearHighlight(this._currentTarget);
       return;
     }
@@ -1231,18 +1257,25 @@ export class RikaiContent {
 
     const popup = await this.getEmptyPopupElem(doc);
 
-    popup.append(fragment);
+    popup.append(
+      renderPopup(this._currentSearchResult!, this._currentTitle, {
+        showDefinitions: !this._config.readingOnly,
+        copyMode: this._copyMode,
+        copyIndex: this._copyIndex,
+      })
+    );
 
     // Position the popup
-    const popupWidth = popup.offsetWidth || 200;
-    const popupHeight = popup.offsetHeight;
-
+    const referencePosition = this._currentPoint ? this._currentPoint : null;
     const getRefCoord = (coord: 'x' | 'y'): number =>
       referencePosition && !isNaN(parseInt(referencePosition[coord] as any))
         ? parseInt(referencePosition[coord] as any)
         : 0;
+
     let popupX = getRefCoord('x');
     let popupY = getRefCoord('y');
+    const popupWidth = popup.offsetWidth || 200;
+    const popupHeight = popup.offsetHeight;
 
     if (this._currentTarget) {
       // Horizontal position: Go left if necessary
@@ -1384,458 +1417,8 @@ export class RikaiContent {
     return this._popupPromise;
   }
 
-  makeHtmlForResult(
-    result: SearchResult | null,
-    title: string | null
-  ): DocumentFragment | null {
-    if (!result) {
-      return null;
-    }
-
-    const isKanjiEntry = (result: SearchResult): result is KanjiEntry =>
-      (result as KanjiEntry).kanji !== undefined;
-
-    if (isKanjiEntry(result)) {
-      return this.makeHtmlForKanji(result);
-    }
-
-    const isNamesEntry = (result: SearchResult): result is WordSearchResult =>
-      (result as WordSearchResult).names !== undefined;
-
-    if (isNamesEntry(result)) {
-      return this.makeHtmlForNames(result);
-    }
-
-    return this.makeHtmlForWords(result, title);
-  }
-
-  makeHtmlForWords(
-    result: WordSearchResult | TranslateResult,
-    title: string | null
-  ): DocumentFragment {
-    const fragment = document.createDocumentFragment();
-
-    if (title) {
-      const titleDiv = document.createElement('div');
-      fragment.append(titleDiv);
-      titleDiv.classList.add('w-title');
-      titleDiv.append(title);
-    }
-
-    // Pre-process entries, parsing them and combining them when the kanji and
-    // definition match.
-    //
-    // Each dictionary entry has the format:
-    //
-    //   仔クジラ [こくじら] /(n) whale calf/
-    //
-    // Or without kana reading:
-    //
-    //   あっさり /(adv,adv-to,vs,on-mim) easily/readily/quickly/(P)/
-    //
-    interface DisplayEntry {
-      kanjiKana: string;
-      kana: string[];
-      definition: string;
-      reason: string | null;
-    }
-    const entries: DisplayEntry[] = [];
-    for (const [dictEntry, reason] of result.data) {
-      const matches = dictEntry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
-      if (!matches) {
-        continue;
-      }
-      const [kanjiKana, kana, definition] = matches.slice(1);
-
-      // Combine with previous entry if both kanji and definition match.
-      const prevEntry = entries.length ? entries[entries.length - 1] : null;
-      if (
-        prevEntry &&
-        prevEntry.kanjiKana === kanjiKana &&
-        prevEntry.definition === definition
-      ) {
-        if (kana) {
-          prevEntry.kana.push(kana);
-        }
-        continue;
-      }
-
-      const entry: DisplayEntry = {
-        kanjiKana,
-        kana: [],
-        definition,
-        reason,
-      };
-      if (kana) {
-        entry.kana.push(kana);
-      }
-      entries.push(entry);
-    }
-
-    for (const entry of entries) {
-      const kanjiSpan = document.createElement('span');
-      fragment.append(kanjiSpan);
-      kanjiSpan.classList.add(entry.kana.length ? 'w-kanji' : 'w-kana');
-      kanjiSpan.append(entry.kanjiKana);
-
-      for (const kana of entry.kana) {
-        if (fragment.lastElementChild!.classList.contains('w-kana')) {
-          fragment.append('、 ');
-        }
-        const kanaSpan = document.createElement('span');
-        fragment.append(kanaSpan);
-        kanaSpan.classList.add('w-kana');
-        kanaSpan.append(kana);
-      }
-
-      if (entry.reason) {
-        const reasonSpan = document.createElement('span');
-        fragment.append(reasonSpan);
-        reasonSpan.classList.add('w-conj');
-        reasonSpan.append(`(${entry.reason})`);
-      }
-
-      if (!this._config.readingOnly) {
-        // TODO: Do this with CSS
-        fragment.append(document.createElement('br'));
-        const definitionSpan = document.createElement('span');
-        fragment.append(definitionSpan);
-        definitionSpan.classList.add('w-def');
-        definitionSpan.append(entry.definition.replace(/\//g, '; '));
-      }
-
-      // TODO: Do this with CSS
-      fragment.append(document.createElement('br'));
-    }
-
-    if (result.more) {
-      fragment.append('...');
-      // TODO: Do this with CSS
-      fragment.append(document.createElement('br'));
-    }
-
-    return fragment;
-  }
-
-  makeHtmlForNames(result: LookupResult): DocumentFragment {
-    const fragment = document.createDocumentFragment();
-
-    const titleDiv = document.createElement('div');
-    fragment.append(titleDiv);
-    titleDiv.classList.add('w-title');
-    titleDiv.append(browser.i18n.getMessage('content_names_dictionary'));
-
-    // Pre-process entries
-    interface DisplayEntry {
-      names: { kanji?: string; kana: string }[];
-      definition: string;
-    }
-    const entries: DisplayEntry[] = [];
-    for (const [dictEntry] of result.data) {
-      // See makeHtmlForWords for an explanation of the format here
-      const matches = dictEntry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
-      if (!matches) {
-        continue;
-      }
-      let [kanjiKana, kana, definition] = matches.slice(1);
-
-      // Sometimes for names when we have a mix of katakana and hiragana we
-      // actually have the same format in the definition field, e.g.
-      //
-      //   あか組４ [あかぐみふぉー] /あか組４ [あかぐみフォー] /Akagumi Four (h)//
-      //
-      // So we try reprocessing the definition field using the same regex.
-      const rematch = definition.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
-      if (rematch) {
-        [kanjiKana, kana, definition] = rematch.slice(1);
-      }
-      const name = kana
-        ? { kanji: kanjiKana, kana }
-        : { kanji: undefined, kana: kanjiKana };
-
-      // Combine with previous entry if the definitions match.
-      const prevEntry = entries.length ? entries[entries.length - 1] : null;
-      if (prevEntry && prevEntry.definition === definition) {
-        prevEntry.names.push(name);
-        continue;
-      }
-
-      entries.push({
-        names: [name],
-        definition,
-      });
-    }
-
-    const namesTable = document.createElement('div');
-    fragment.append(namesTable);
-    namesTable.classList.add('w-name-table');
-
-    if (entries.length > 4) {
-      namesTable.classList.add('-multicol');
-    }
-
-    for (const entry of entries) {
-      const entryDiv = document.createElement('div');
-      entryDiv.classList.add('entry');
-
-      const entryTitleDiv = document.createElement('div');
-      entryTitleDiv.classList.add('title');
-      entryDiv.append(entryTitleDiv);
-
-      for (const name of entry.names) {
-        const entryHeadingDiv = document.createElement('div');
-        entryHeadingDiv.classList.add('heading');
-
-        if (name.kanji) {
-          const kanjiSpan = document.createElement('span');
-          entryHeadingDiv.append(kanjiSpan);
-          kanjiSpan.classList.add('w-kanji');
-          kanjiSpan.append(name.kanji);
-        }
-
-        const kanaSpan = document.createElement('span');
-        entryHeadingDiv.append(kanaSpan);
-        kanaSpan.classList.add('w-kana');
-        kanaSpan.append(name.kana);
-
-        entryTitleDiv.append(entryHeadingDiv);
-      }
-
-      const definitionSpan = document.createElement('div');
-      entryDiv.append(definitionSpan);
-      definitionSpan.classList.add('w-def');
-      definitionSpan.append(entry.definition.replace(/\//g, '; '));
-
-      namesTable.append(entryDiv);
-    }
-
-    if (result.more) {
-      const moreDiv = document.createElement('div');
-      moreDiv.append('...');
-      namesTable.append(moreDiv);
-    }
-
-    return fragment;
-  }
-
-  makeHtmlForKanji(entry: KanjiEntry): DocumentFragment {
-    // (This is all just temporary. Long term we need to either use some sort of
-    // templating system, or, if we can tidy up the markup enough by using more
-    // modern CSS instead of relying on <br> elements etc., we might be able to
-    // continue using the DOM API directly.)
-    const fragment = document.createDocumentFragment();
-
-    // Containing table
-    const table = document.createElement('table');
-    table.classList.add('k-main-tb');
-    fragment.append(table);
-
-    // Top row
-    const topRow = document.createElement('tr');
-    table.append(topRow);
-    const topCell = document.createElement('td');
-    topRow.append(topCell);
-    topCell.setAttribute('valign', 'top');
-
-    // Summary information
-    const summaryTable = document.createElement('table');
-    topCell.append(summaryTable);
-    summaryTable.classList.add('k-abox-tb');
-
-    const summaryFirstRow = document.createElement('tr');
-    summaryTable.append(summaryFirstRow);
-
-    const radicalCell = document.createElement('td');
-    summaryFirstRow.append(radicalCell);
-    radicalCell.classList.add('k-abox-r');
-    radicalCell.append(browser.i18n.getMessage('content_kanji_radical_label'));
-    radicalCell.append(document.createElement('br'));
-    radicalCell.append(`${entry.radical} ${entry.misc.B}`);
-
-    // Kanji components
-    if (entry.components) {
-      const componentsTable = document.createElement('table');
-      componentsTable.classList.add('k-bbox-tb');
-      topCell.append(componentsTable);
-
-      entry.components.forEach((component, index) => {
-        const row = document.createElement('tr');
-        componentsTable.append(row);
-
-        const radicalCell = document.createElement('td');
-        row.append(radicalCell);
-        radicalCell.classList.add(`k-bbox-${(index + 1) % 2}a`);
-        radicalCell.append(component.radical);
-
-        const readingCell = document.createElement('td');
-        row.append(readingCell);
-        readingCell.classList.add(`k-bbox-${(index + 1) % 2}b`);
-        readingCell.append(component.yomi);
-
-        const englishCell = document.createElement('td');
-        row.append(englishCell);
-        englishCell.classList.add(`k-bbox-${(index + 1) % 2}b`);
-        englishCell.append(component.english);
-      });
-    }
-
-    const gradeCell = document.createElement('td');
-    summaryFirstRow.append(gradeCell);
-    gradeCell.classList.add('k-abox-g');
-    let grade = document.createDocumentFragment();
-    switch (entry.misc.G || '') {
-      case '8':
-        grade.append(
-          browser.i18n.getMessage('content_kanji_grade_general_use')
-        );
-        break;
-      case '9':
-        grade.append(browser.i18n.getMessage('content_kanji_grade_name_use'));
-        break;
-      default:
-        if (
-          typeof entry.misc.G === 'undefined' ||
-          isNaN(parseInt(entry.misc.G))
-        ) {
-          grade.append('-');
-        } else {
-          grade.append(browser.i18n.getMessage('content_kanji_grade_label'));
-          grade.append(document.createElement('br'));
-          grade.append(entry.misc.G);
-        }
-        break;
-    }
-    gradeCell.append(grade);
-
-    const summarySecondRow = document.createElement('tr');
-    summaryTable.append(summarySecondRow);
-
-    const frequencyCell = document.createElement('td');
-    summarySecondRow.append(frequencyCell);
-    frequencyCell.classList.add('k-abox-f');
-    frequencyCell.append(
-      browser.i18n.getMessage('content_kanji_frequency_label')
-    );
-    frequencyCell.append(document.createElement('br'));
-    frequencyCell.append(entry.misc.F || '-');
-
-    const strokesCell = document.createElement('td');
-    summarySecondRow.append(strokesCell);
-    strokesCell.classList.add('k-abox-s');
-    strokesCell.append(browser.i18n.getMessage('content_kanji_strokes_label'));
-    strokesCell.append(document.createElement('br'));
-    strokesCell.append(entry.misc.S);
-
-    // The kanji itself
-    const kanjiSpan = document.createElement('span');
-    kanjiSpan.classList.add('k-kanji');
-    kanjiSpan.append(entry.kanji);
-    topCell.append(kanjiSpan);
-    topCell.append(document.createElement('br'));
-
-    // English
-    const englishDiv = document.createElement('div');
-    englishDiv.classList.add('k-eigo');
-    englishDiv.append(entry.eigo);
-    topCell.append(englishDiv);
-
-    // Readings
-    const yomiDiv = document.createElement('div');
-    yomiDiv.classList.add('k-yomi');
-    topCell.append(yomiDiv);
-
-    // Readings come in the form:
-    //
-    //  ヨ、 あた.える、 あずか.る、 くみ.する、 ともに
-    //
-    // We want to take the bit after the '.' and wrap it in a span with an
-    // appropriate class.
-    entry.onkun.forEach((reading, index) => {
-      if (index !== 0) {
-        yomiDiv.append('\u3001');
-      }
-      const highlightIndex = reading.indexOf('.');
-      if (highlightIndex === -1) {
-        yomiDiv.append(reading);
-      } else {
-        yomiDiv.append(reading.substr(0, highlightIndex));
-        const highlightSpan = document.createElement('span');
-        highlightSpan.classList.add('k-yomi-hi');
-        highlightSpan.append(reading.substr(highlightIndex + 1));
-        yomiDiv.append(highlightSpan);
-      }
-    });
-
-    // Optional readings
-    if (entry.nanori.length) {
-      const nanoriLabelSpan = document.createElement('span');
-      nanoriLabelSpan.classList.add('k-yomi-ti');
-      nanoriLabelSpan.append('名乗り');
-      yomiDiv.append(
-        document.createElement('br'),
-        nanoriLabelSpan,
-        ` ${entry.nanori.join('\u3001')}`
-      );
-    }
-
-    if (entry.bushumei.length) {
-      const bushumeiLabelSpan = document.createElement('span');
-      bushumeiLabelSpan.classList.add('k-yomi-ti');
-      bushumeiLabelSpan.append('部首名');
-      yomiDiv.append(
-        document.createElement('br'),
-        bushumeiLabelSpan,
-        ` ${entry.bushumei.join('\u3001')}`
-      );
-    }
-
-    // Reference row
-    const referenceRow = document.createElement('tr');
-    table.append(referenceRow);
-    const referenceCell = document.createElement('td');
-    referenceRow.append(referenceCell);
-    const referenceTable = document.createElement('table');
-    referenceTable.classList.add('k-mix-tb');
-    referenceCell.append(referenceTable);
-
-    let toggle = 0;
-    for (let ref of entry.miscDisplay) {
-      let value = entry.misc[ref.abbrev] || '-';
-
-      const row = document.createElement('tr');
-      referenceTable.append(row);
-
-      const className = `k-mix-td${(toggle ^= 1)}`;
-
-      const isKanKen = ref.name === 'Kanji Kentei';
-      const name = isKanKen
-        ? browser.i18n.getMessage('content_kanji_kentei_label')
-        : ref.name;
-
-      const nameCell = document.createElement('td');
-      nameCell.classList.add(className);
-      nameCell.append(name);
-      row.append(nameCell);
-
-      if (isKanKen) {
-        if (value.endsWith('.5')) {
-          value = browser.i18n.getMessage(
-            'content_kanji_kentei_level_pre',
-            value.substring(0, 1)
-          );
-        } else {
-          value = browser.i18n.getMessage('content_kanji_kentei_level', value);
-        }
-      }
-
-      const valueCell = document.createElement('td');
-      valueCell.classList.add(className);
-      valueCell.append(value);
-      row.append(valueCell);
-    }
-
-    return fragment;
-  }
+  // Expose the renderPopup callback so that we can test it
+  _renderPopup = renderPopup;
 }
 
 let rikaiContent: RikaiContent | null = null;

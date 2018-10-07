@@ -104,6 +104,9 @@
   "options_popup_toggle_definition": {
     "message": "定義の表示・非表示を切り替える"
   },
+  "options_popup_start_copy": {
+    "message": "コピーモードを有効にする"
+  },
   "options_kanji_dictionary_heading": {
     "message": "漢字辞典",
     "description": "Heading for options to configure what information is displayed from the kanji dictionary"

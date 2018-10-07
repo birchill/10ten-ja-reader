@@ -24,7 +24,7 @@
   position: absolute;
   /* asahi.com puts z-index: 1000000 on its banner ads. We go one better. */
   z-index: 1000001;
-  padding: 6px;
+  padding: 0px;
   top: 5px;
   left: 5px;
   min-width: 100px;
@@ -45,6 +45,31 @@
 
 /* used for word definitions */
 
+#rikaichamp-window .wordlist {
+  display: flex;
+  flex-direction: column;
+}
+
+#rikaichamp-window .entry,
+#rikaichamp-window .more,
+#rikaichamp-window .copy {
+  margin-top: 3px;
+  margin-bottom: 3px;
+  padding: 3px 8px;
+}
+
+#rikaichamp-window .wordlist > .entry:first-child {
+  padding-top: 6px;
+}
+
+#rikaichamp-window .wordlist > *:last-child {
+  padding-bottom: 6px;
+}
+
+#rikaichamp-window .entry * {
+  line-height: 1.2;
+}
+
 #rikaichamp-window .w-kanji {
   font-size: 18px;
   margin-right: 0.7em;
@@ -64,25 +89,53 @@
   font-size: 13px;
 }
 
-#rikaichamp-window .w-title {
-  font-size: 10px;
-  padding: 2px;
+#rikaichamp-window .entry.-selected {
+  background: rgba(255,255,206);
+  border-radius: 2px;
 }
 
-#rikaichamp-window .w-name-table.-multicol {
+#rikaichamp-window .entry.-selected .w-kanji {
+  color: #4C63A8;
+}
+
+#rikaichamp-window .entry.-selected .w-kana {
+  color: #029902;
+}
+
+#rikaichamp-window .entry.-selected .w-def {
+  color: rgb(0,0,50);
+}
+
+#rikaichamp-window .entry.-selected .w-conj {
+  color: #ff6300;
+}
+
+#rikaichamp-window .title {
+  font-size: 10px;
+  padding: 10px 10px 6px;
+  border-radius: 5px 5px 0 0;
+  margin-bottom: 3px;
+}
+
+#rikaichamp-window .name-table {
+  padding-bottom: 6px;
+}
+
+#rikaichamp-window .name-table.-multicol {
   column-count: 2;
   column-gap: 1em;
 }
 
-#rikaichamp-window .w-name-table.-multicol .entry {
+#rikaichamp-window .name-table.-multicol .entry {
   /* Avoid column breaks within an entry */
   display: table;
 }
 
 /* used for kanji information */
 
-#rikaichamp-window .k-main-tb {
+#rikaichamp-window .kanji-table {
   width: 300px;
+  padding: 6px 10px;
 }
 
 #rikaichamp-window .k-kanji {
@@ -184,6 +237,11 @@
   width: 100%
 }
 
+#rikaichamp-window .k-mix-tb > tr > td {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
 #rikaichamp-window .k-mix-td0,
 #rikaichamp-window .k-mix-td1 {
   font-size: 12px;
@@ -208,6 +266,25 @@
 }
 
 /*
+ * keyboard keys
+ */
+
+#rikaichamp-window .copy {
+  background: rgba(255,255,255,0.2);
+}
+
+#rikaichamp-window .copy kbd {
+  color: rgb(10,10,10);
+  font-size: .8rem;
+  font-family: monospace;
+  height: 1.2rem;
+  padding: .2rem;
+  border-radius: .2rem;
+  background: white;
+  border: 1px solid #909090 !important;
+}
+
+/*
  * Theme - blue
  */
 
@@ -227,7 +304,7 @@
   color: #FFE0A0;
 }
 
-#rikaichamp-window.-blue .w-title {
+#rikaichamp-window.-blue .title {
   background: #4C63A8;
   color: #FFFFFF;
 }
@@ -326,7 +403,11 @@
   color: #A0A0A0;
 }
 
-#rikaichamp-window.-black .w-title {
+#rikaichamp-window.-black .entry.-selected .w-kanji {
+  color: #7070E0;
+}
+
+#rikaichamp-window.-black .title {
   background: #303030;
   color: #E0E0E0;
 }
@@ -421,7 +502,7 @@
   color: #808080;
 }
 
-#rikaichamp-window.-lightblue .w-title {
+#rikaichamp-window.-lightblue .title {
   background: #BFE4FF;
   color: #000000;
 }
@@ -513,7 +594,19 @@
   color: #A0A0A0;
 }
 
-#rikaichamp-window.-yellow .w-title {
+#rikaichamp-window.-yellow .entry.-selected {
+  background: #d4edf9;
+}
+
+#rikaichamp-window.-yellow .entry.-selected .w-kanji {
+  color: #7070E0;
+}
+
+#rikaichamp-window.-yellow .entry.-selected .w-kana {
+  color: #20A020;
+}
+
+#rikaichamp-window.-yellow .title {
   background: #F0F0B0;
   color: #000000;
 }
