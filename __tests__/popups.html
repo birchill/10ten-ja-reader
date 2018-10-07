@@ -66,7 +66,39 @@ const rikaiContent = new RikaiContent(config);
 <script>
 const container = document.getElementById('container');
 
-for (const test of htmlTests) {
+const tests = htmlTests;
+tests.push({
+  description: 'a multicol name search result',
+  searchResult: {
+    data: [
+      ['日本 [にっぽん] /(s) Nippon/', null],
+      ['日本 [につぽん] /(s) Nitsupon/', null],
+      ['日本 [にほん] /(s) Nihon/', null],
+      ['日本 [ひのもと] /(s) Hinomoto/', null],
+      ['日本 [ひもと] /(u) Himoto/', null],
+      ['日本 [やまと] /(s) Yamato/', null],
+      ['日本 [やまとの] /(s) Yamatono/', null],
+      ['日 [あきら] /(g) Akira/', null],
+      ['日 [くさなぎ] /(s) Kusanagi/', null],
+      ['日 [くさやなぎ] /(s) Kusayanagi/', null],
+      ['日 [じつ] /(g) Jitsu/', null],
+      ['日 [たかにち] /(s) Takanichi/', null],
+      ['日 [たちもり] /(s) Tachimori/', null],
+      ['日 [にち] /(p) Nichi/', null],
+      ['日 [にちれん] /(u) Nichiren/', null],
+      ['日 [にっ] /(p) Ni/', null],
+      ['日 [にっしゅう] /(g) Nisshuu/', null],
+      ['日 [ひ] /(p) Hi/', null],
+      ['日 [ひかる] /(f) Hikaru/', null],
+      ['日 [ひさき] /(s) Hisaki/', null],
+    ],
+    more: true,
+    matchLen: 2,
+    names: true,
+  },
+});
+
+for (const test of tests) {
   const popup = rikaiContent._renderPopup(
     test.searchResult,
     test.searchResult.title || null,

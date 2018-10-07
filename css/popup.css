@@ -131,6 +131,14 @@
   display: table;
 }
 
+#rikaichamp-window .name-table .entry {
+  /*
+   * Something goes funny with the margins in multicol so that the entries
+   * no longer line up.
+   */
+  margin-top: 0;
+}
+
 /* used for kanji information */
 
 #rikaichamp-window .kanji-table {
