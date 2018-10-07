@@ -92,12 +92,7 @@ function renderWordEntries(
   }
 
   let index = 0;
-  const selectedIndex =
-    !!options.copyMode &&
-    typeof options.copyIndex !== 'undefined' &&
-    entries.length
-      ? options.copyIndex % entries.length
-      : -1;
+  const selectedIndex = getSelectedIndex(options, entries.length);
   for (const entry of entries) {
     const entryDiv = document.createElement('div');
     container.append(entryDiv);
@@ -216,12 +211,7 @@ function renderNamesEntries(
   }
 
   let index = 0;
-  const selectedIndex =
-    !!options.copyMode &&
-    typeof options.copyIndex !== 'undefined' &&
-    entries.length
-      ? options.copyIndex % entries.length
-      : -1;
+  const selectedIndex = getSelectedIndex(options, entries.length);
   for (const entry of entries) {
     const entryDiv = document.createElement('div');
     entryDiv.classList.add('entry');
@@ -273,6 +263,14 @@ function renderNamesEntries(
   }
 
   return container;
+}
+
+function getSelectedIndex(options: PopupOptions, numEntries: number) {
+  return !!options.copyMode &&
+    typeof options.copyIndex !== 'undefined' &&
+    numEntries
+    ? options.copyIndex % numEntries
+    : -1;
 }
 
 function renderCopyInstructions(): HTMLElement {
