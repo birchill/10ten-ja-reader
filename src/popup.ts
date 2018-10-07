@@ -20,7 +20,7 @@ export function renderPopup(
     (result as WordSearchResult).names !== undefined;
 
   if (isNamesEntry(result)) {
-    return renderNamesEntries(result);
+    return renderNamesEntries(result, options);
   }
 
   return renderWordEntries(result, title, options);
@@ -149,18 +149,16 @@ function renderWordEntries(
   }
 
   if (options.copyMode) {
-    const copyDiv = document.createElement('div');
-    copyDiv.classList.add('copy');
-    // XXX Generate this from the passed-in values
-    copyDiv.innerHTML =
-      'Copy: <kbd>e</kbd> = entry, <kbd>w</kbd> = word, <kbd>f</kbd> = fields, <kbd>Esc</kbd> = cancel';
-    container.append(copyDiv);
+    container.append(renderCopyInstructions());
   }
 
   return container;
 }
 
-function renderNamesEntries(result: LookupResult): HTMLElement {
+function renderNamesEntries(
+  result: LookupResult,
+  options: PopupOptions
+): HTMLElement {
   const container = document.createElement('div');
 
   const titleDiv = document.createElement('div');
@@ -217,9 +215,20 @@ function renderNamesEntries(result: LookupResult): HTMLElement {
     namesTable.classList.add('-multicol');
   }
 
+  let index = 0;
+  const selectedIndex =
+    !!options.copyMode &&
+    typeof options.copyIndex !== 'undefined' &&
+    entries.length
+      ? options.copyIndex % entries.length
+      : -1;
   for (const entry of entries) {
     const entryDiv = document.createElement('div');
     entryDiv.classList.add('entry');
+    if (index === selectedIndex) {
+      entryDiv.classList.add('-selected');
+    }
+    index++;
 
     const entryTitleDiv = document.createElement('div');
     entryTitleDiv.classList.add('w-title');
@@ -259,7 +268,19 @@ function renderNamesEntries(result: LookupResult): HTMLElement {
     namesTable.append(moreDiv);
   }
 
+  if (options.copyMode) {
+    container.append(renderCopyInstructions());
+  }
+
   return container;
+}
+
+function renderCopyInstructions(): HTMLElement {
+  const copyDiv = document.createElement('div');
+  copyDiv.classList.add('copy');
+  copyDiv.innerHTML =
+    'Copy: <kbd>e</kbd> = entry, <kbd>w</kbd> = word, <kbd>f</kbd> = fields, <kbd>Esc</kbd> = cancel';
+  return copyDiv;
 }
 
 function renderKanjiEntry(entry: KanjiEntry): HTMLElement {
