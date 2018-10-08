@@ -151,6 +151,12 @@
   font-size: 48px;
 }
 
+#rikaichamp-window .kanji-table.-copy .k-kanji {
+  background: rgba(255,255,206);
+  border-radius: 2px;
+  color: #4C63A8;
+}
+
 #rikaichamp-window .k-eigo {
   font-size: 12px;
 }
@@ -424,6 +430,10 @@
   color: #FFFFFF;
 }
 
+#rikaichamp-window.-black .kanji-table.-copy .k-kanji {
+  color: #7070E0;
+}
+
 #rikaichamp-window.-black .k-yomi {
   color: #20A020;
 }
@@ -621,6 +631,11 @@
 
 #rikaichamp-window.-yellow .k-kanji {
   color: #000000;
+}
+
+#rikaichamp-window.-yellow .kanji-table.-copy .k-kanji {
+  background: #d4edf9;
+  color: #7070E0;
 }
 
 #rikaichamp-window.-yellow .k-yomi {

@@ -8,12 +8,12 @@ export function renderPopup(
   result: SearchResult,
   title: string | null,
   options: PopupOptions
-): HTMLElement {
+): HTMLElement | DocumentFragment {
   const isKanjiEntry = (result: SearchResult): result is KanjiEntry =>
     (result as KanjiEntry).kanji !== undefined;
 
   if (isKanjiEntry(result)) {
-    return renderKanjiEntry(result);
+    return renderKanjiEntry(result, options);
   }
 
   const isNamesEntry = (result: SearchResult): result is WordSearchResult =>
@@ -273,18 +273,35 @@ function getSelectedIndex(options: PopupOptions, numEntries: number) {
     : -1;
 }
 
-function renderCopyInstructions(): HTMLElement {
+function renderCopyInstructions(
+  options: { kanji: boolean } = { kanji: false }
+): HTMLElement {
   const copyDiv = document.createElement('div');
   copyDiv.classList.add('copy');
-  copyDiv.innerHTML =
-    'Copy: <kbd>e</kbd> = entry, <kbd>w</kbd> = word, <kbd>f</kbd> = fields, <kbd>Esc</kbd> = cancel';
+  if (options.kanji) {
+    copyDiv.innerHTML =
+      'Copy: <kbd>e</kbd> = entry, <kbd>w</kbd> = kanji, <kbd>f</kbd> = fields, <kbd>Esc</kbd> = cancel';
+  } else {
+    copyDiv.innerHTML =
+      'Copy: <kbd>e</kbd> = entry, <kbd>w</kbd> = word, <kbd>f</kbd> = fields, <kbd>Esc</kbd> = cancel';
+  }
   return copyDiv;
 }
 
-function renderKanjiEntry(entry: KanjiEntry): HTMLElement {
-  // Containing table
+function renderKanjiEntry(
+  entry: KanjiEntry,
+  options: PopupOptions
+): HTMLElement | DocumentFragment {
+  const container = document.createDocumentFragment();
+
+  // Main table
   const table = document.createElement('table');
+  container.append(table);
   table.classList.add('kanji-table');
+
+  if (options.copyMode) {
+    table.classList.add('-copy');
+  }
 
   // Top row
   const topRow = document.createElement('tr');
@@ -488,7 +505,11 @@ function renderKanjiEntry(entry: KanjiEntry): HTMLElement {
     row.append(valueCell);
   }
 
-  return table;
+  if (options.copyMode) {
+    container.append(renderCopyInstructions({ kanji: true }));
+  }
+
+  return container;
 }
 
 export default renderPopup;

@@ -124,36 +124,87 @@ for (const test of tests) {
  * Highlight tests
  */
 
-const highlightTest = {
-  data: [
-    ['韓国語 [かんこくご] /(n) Korean (language)/', 'conj'],
-    ['韓国 [からくに] /(n,arch) China/Korea/', null],
-    ['韓国 [かんこく] /(n) (South) Korea/', null],
-  ],
-  more: true,
-  matchLen: 3,
-};
+const highlightTests = [
+  {
+    description: 'word list',
+    data: [
+      ['韓国語 [かんこくご] /(n) Korean (language)/', 'conj'],
+      ['韓国 [からくに] /(n,arch) China/Korea/', null],
+      ['韓国 [かんこく] /(n) (South) Korea/', null],
+    ],
+    more: true,
+    matchLen: 3,
+  },
+  {
+    description: 'kanji entry',
+    kanji: '士',
+    misc: {
+      B: '33',
+      DK: '2129',
+      E: '494',
+      F: '526',
+      G: '4',
+      H: '3405',
+      I: '3p0.1',
+      IN: '572',
+      KK: '10',
+      L: '319',
+      N: '1160',
+      P: '4-3-2',
+      S: '3',
+      U: '58EB',
+      V: '1117',
+      Y: 'shi4',
+    },
+    miscDisplay: [
+      { abbrev: 'H', name: 'Halpern' },
+      { abbrev: 'L', name: 'Heisig' },
+      { abbrev: 'E', name: 'Henshall' },
+      { abbrev: 'DK', name: 'Kanji Learners Dictionary' },
+      { abbrev: 'KK', name: 'Kanji Kentei' },
+      { abbrev: 'N', name: 'Nelson' },
+      { abbrev: 'V', name: 'New Nelson' },
+      { abbrev: 'Y', name: 'PinYin' },
+      { abbrev: 'P', name: 'Skip Pattern' },
+      { abbrev: 'IN', name: 'Tuttle Kanji & Kana' },
+      { abbrev: 'I', name: 'Tuttle Kanji Dictionary' },
+      { abbrev: 'U', name: 'Unicode' },
+    ],
+    onkun: ['シ'],
+    nanori: ['お', 'ま'],
+    bushumei: ['さむらい'],
+    radical: '士',
+    eigo: 'gentleman, samurai, samurai radical (no. 33)',
+  },
+];
 
 const themes = ['blue', 'lightblue', 'black', 'yellow'];
 
-for (const theme of themes) {
-  const popup = rikaiContent._renderPopup(highlightTest, null, {
-    showDefinitions: true,
-    copyMode: true,
-    copyIndex: 0,
-  });
-
+for (const test of highlightTests) {
   const label = document.createElement('div');
   label.classList.add('label');
-  label.append(`Theme: ${theme}`);
+  label.append(`【${test.description}】`);
   container.append(label);
 
-  const popupWindow = document.createElement('div');
-  popupWindow.setAttribute('id', 'rikaichamp-window');
-  popupWindow.classList.add('stack');
-  popupWindow.classList.add(`-${theme}`);
-  popupWindow.append(popup);
-  container.append(popupWindow);
+  for (const theme of themes) {
+    const popup = rikaiContent._renderPopup(test, null, {
+      showDefinitions: true,
+      copyMode: true,
+      copyIndex: 0,
+    });
+
+    const label = document.createElement('div');
+    label.classList.add('label');
+    label.append(`Theme: ${theme}`);
+    container.append(label);
+
+    const popupWindow = document.createElement('div');
+    popupWindow.setAttribute('id', 'rikaichamp-window');
+    popupWindow.classList.add('stack');
+    popupWindow.classList.add(`-${theme}`);
+    popupWindow.append(popup);
+    container.append(popupWindow);
+  }
 }
 </script>
 </div>
