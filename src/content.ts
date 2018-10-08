@@ -471,6 +471,9 @@ export class RikaiContent {
         this.showPopup();
       }
     } else if (
+      !ev.ctrlKey &&
+      !ev.altKey &&
+      !ev.metaKey &&
       this._config.keys.startCopy.includes(ev.key) &&
       this._currentPoint &&
       this._currentTarget
