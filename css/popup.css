@@ -151,6 +151,11 @@
   font-size: 48px;
 }
 
+#rikaichamp-window .kanji-table.-copy {
+  width: auto;
+  min-width: 300px;
+}
+
 #rikaichamp-window .kanji-table.-copy .k-kanji {
   background: rgba(255,255,206);
   border-radius: 2px;
@@ -178,34 +183,15 @@
 
 /* kanji radical, grade, freq, strokes box */
 
-#rikaichamp-window .k-abox-tb {
-  width: 120px;
+#rikaichamp-window .summary-box {
+  display: grid;
+  grid-template-columns: 60px 60px;
   margin-bottom: 4px;
   float: right;
   clear: right;
 }
 
-#rikaichamp-window .k-abox-r {
-  font-size: 12px;
-  text-align: center;
-  padding: 1px 4px;
-}
-
-#rikaichamp-window .k-abox-g {
-  font-size: 12px;
-  text-align: center;
-  padding: 1px 4px;
-  /* Needed to make "name use" and "general use" break */
-  max-width: 40px;
-}
-
-#rikaichamp-window .k-abox-f {
-  font-size: 12px;
-  text-align: center;
-  padding: 1px 4px;
-}
-
-#rikaichamp-window .k-abox-s {
+#rikaichamp-window .summary-box > .cell {
   font-size: 12px;
   text-align: center;
   padding: 1px 4px;
@@ -247,36 +233,17 @@
 
 /* kanji: misc index */
 
-#rikaichamp-window .k-mix-tb {
+#rikaichamp-window .references {
+  display: grid;
+  grid-template-columns: auto 50px;
   width: 100%
 }
 
-#rikaichamp-window .k-mix-tb > tr > td {
+#rikaichamp-window .references > .name,
+#rikaichamp-window .references > .value {
+  font-size: 12px;
   padding-left: 2px;
   padding-right: 2px;
-}
-
-#rikaichamp-window .k-mix-td0,
-#rikaichamp-window .k-mix-td1 {
-  font-size: 12px;
-}
-
-
-/* manual query */
-
-#rikaichamp-window .q-tb td {
-}
-
-#rikaichamp-window .q-w {
-  border-right: 1px dotted #B0B0B0 !important;
-  padding: 0px 2px;
-  vertical-align: top;
-  min-width: 300px;
-}
-
-#rikaichamp-window .q-k {
-  padding: 0px 2px;
-  vertical-align: top;
 }
 
 /*
@@ -343,24 +310,15 @@
   color: #E7FFE7;
 }
 
-#rikaichamp-window.-blue .k-abox-r {
+#rikaichamp-window.-blue .summary-box > .cell {
   background: #5A70B5;
   color: #FFFFFF;
 }
 
-#rikaichamp-window.-blue .k-abox-g {
+#rikaichamp-window.-blue .summary-box > .cell:nth-child(5n+2),
+#rikaichamp-window.-blue .summary-box > .cell:nth-child(5n+3) {
   background: #4C63A8;
   color: #B7E7FF;
-}
-
-#rikaichamp-window.-blue .k-abox-f {
-  background: #4C63A8;
-  color: #B7E7FF;
-}
-
-#rikaichamp-window.-blue .k-abox-s {
-  background: #5A70B5;
-  color: #FFFFFF;
 }
 
 #rikaichamp-window.-blue .k-bbox-0a {
@@ -383,12 +341,14 @@
   color: #B7E7FF;
 }
 
-#rikaichamp-window.-blue .k-mix-td0 {
+#rikaichamp-window.-blue .references > .name,
+#rikaichamp-window.-blue .references > .value {
   background: #5A70B5;
   color: #B7E7FF;
 }
 
-#rikaichamp-window.-blue .k-mix-td1 {
+#rikaichamp-window.-blue .references > .name:nth-child(4n+3),
+#rikaichamp-window.-blue .references > .value:nth-child(4n+4) {
   background: #4C63A8;
   color: #FFFFFF;
 }
@@ -446,24 +406,15 @@
   color: #E0E0E0;
 }
 
-#rikaichamp-window.-black .k-abox-r {
+#rikaichamp-window.-black .summary-box > .cell {
   background: #505050;
   color: #E0E0E0;
 }
 
-#rikaichamp-window.-black .k-abox-g {
+#rikaichamp-window.-black .summary-box > .cell:nth-child(5n+2),
+#rikaichamp-window.-black .summary-box > .cell:nth-child(5n+3) {
   background: #303030;
   color: #F0F0F0;
-}
-
-#rikaichamp-window.-black .k-abox-f {
-  background: #303030;
-  color: #F0F0F0;
-}
-
-#rikaichamp-window.-black .k-abox-s {
-  background: #505050;
-  color: #E0E0E0;
 }
 
 #rikaichamp-window.-black .k-bbox-0a {
@@ -486,12 +437,14 @@
   color: #F0F0F0;
 }
 
-#rikaichamp-window.-black .k-mix-td0 {
+#rikaichamp-window.-black .references > .name,
+#rikaichamp-window.-black .references > .value {
   background: #505050;
   color: #F0F0F0;
 }
 
-#rikaichamp-window.-black .k-mix-td1 {
+#rikaichamp-window.-black .references > .name:nth-of-type(4n+3),
+#rikaichamp-window.-black .references > .value:nth-of-type(4n+4) {
   background: #303030;
   color: #E0E0E0;
 }
@@ -541,23 +494,14 @@
   color: #000000;
 }
 
-#rikaichamp-window.-lightblue .k-abox-r {
+#rikaichamp-window.-lightblue .summary-box > .cell {
   background: #DFF1FF;
   color: #003D6B;
 }
 
-#rikaichamp-window.-lightblue .k-abox-g {
+#rikaichamp-window.-lightblue .summary-box > .cell:nth-child(5n+2),
+#rikaichamp-window.-lightblue .summary-box > .cell:nth-child(5n+3) {
   background: #FFFFFF;
-  color: #003D6B;
-}
-
-#rikaichamp-window.-lightblue .k-abox-f {
-  background: #FFFFFF;
-  color: #003D6B;
-}
-
-#rikaichamp-window.-lightblue .k-abox-s {
-  background: #DFF1FF;
   color: #003D6B;
 }
 
@@ -577,12 +521,14 @@
   color: #003D6B;
 }
 
-#rikaichamp-window.-lightblue .k-mix-td0 {
+#rikaichamp-window.-lightblue .references > .name,
+#rikaichamp-window.-lightblue .references > .value {
   background: #DFF1FF;
   color: #003D6B;
 }
 
-#rikaichamp-window.-lightblue .k-mix-td1 {
+#rikaichamp-window.-lightblue .references > .name:nth-of-type(4n+3),
+#rikaichamp-window.-lightblue .references > .value:nth-of-type(4n+4) {
   background: #FFFFFF;
   color: #003D6B;
 }
@@ -650,24 +596,15 @@
   color: #000000;
 }
 
-#rikaichamp-window.-yellow .k-abox-r {
+#rikaichamp-window.-yellow .summary-box > .cell {
   background: #FFFFE6;
   color: #000000;
 }
 
-#rikaichamp-window.-yellow .k-abox-g {
+#rikaichamp-window.-yellow .summary-box > .cell:nth-child(5n+2),
+#rikaichamp-window.-yellow .summary-box > .cell:nth-child(5n+3) {
   background: #F7F7D0;
   color: #000000;
-}
-
-#rikaichamp-window.-yellow .k-abox-f {
-  background: #F7F7D0;
-  color: #000000;
-}
-
-#rikaichamp-window.-yellow .k-abox-s {
-  background: #5A70B5;
-  color: #FFFFFF;
 }
 
 #rikaichamp-window.-yellow .k-bbox-0a,
@@ -682,12 +619,14 @@
   color: #000000;
 }
 
-#rikaichamp-window.-yellow .k-mix-td0 {
+#rikaichamp-window.-yellow .references > .name,
+#rikaichamp-window.-yellow .references > .value {
   background: #FFFFE6;
-  color: #000000;
+  color: black;
 }
 
-#rikaichamp-window.-yellow .k-mix-td1 {
+#rikaichamp-window.-yellow .references > .name:nth-of-type(4n+3),
+#rikaichamp-window.-yellow .references > .value:nth-of-type(4n+4) {
   background: #F7F7D0;
-  color: #000000;
+  color: black;
 }

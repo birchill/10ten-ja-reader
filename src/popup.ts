@@ -295,7 +295,7 @@ function renderKanjiEntry(
   const container = document.createDocumentFragment();
 
   // Main table
-  const table = document.createElement('table');
+  const table = document.createElement('div');
   container.append(table);
   table.classList.add('kanji-table');
 
@@ -303,58 +303,21 @@ function renderKanjiEntry(
     table.classList.add('-copy');
   }
 
-  // Top row
-  const topRow = document.createElement('tr');
-  table.append(topRow);
-  const topCell = document.createElement('td');
-  topRow.append(topCell);
-  topCell.setAttribute('valign', 'top');
-
   // Summary information
-  const summaryTable = document.createElement('table');
-  topCell.append(summaryTable);
-  summaryTable.classList.add('k-abox-tb');
+  const summaryTable = document.createElement('div');
+  table.append(summaryTable);
+  summaryTable.classList.add('summary-box');
 
-  const summaryFirstRow = document.createElement('tr');
-  summaryTable.append(summaryFirstRow);
-
-  const radicalCell = document.createElement('td');
-  summaryFirstRow.append(radicalCell);
-  radicalCell.classList.add('k-abox-r');
+  const radicalCell = document.createElement('div');
+  summaryTable.append(radicalCell);
+  radicalCell.classList.add('cell');
   radicalCell.append(browser.i18n.getMessage('content_kanji_radical_label'));
   radicalCell.append(document.createElement('br'));
   radicalCell.append(`${entry.radical} ${entry.misc.B}`);
 
-  // Kanji components
-  if (entry.components) {
-    const componentsTable = document.createElement('table');
-    componentsTable.classList.add('k-bbox-tb');
-    topCell.append(componentsTable);
-
-    entry.components.forEach((component, index) => {
-      const row = document.createElement('tr');
-      componentsTable.append(row);
-
-      const radicalCell = document.createElement('td');
-      row.append(radicalCell);
-      radicalCell.classList.add(`k-bbox-${(index + 1) % 2}a`);
-      radicalCell.append(component.radical);
-
-      const readingCell = document.createElement('td');
-      row.append(readingCell);
-      readingCell.classList.add(`k-bbox-${(index + 1) % 2}b`);
-      readingCell.append(component.yomi);
-
-      const englishCell = document.createElement('td');
-      row.append(englishCell);
-      englishCell.classList.add(`k-bbox-${(index + 1) % 2}b`);
-      englishCell.append(component.english);
-    });
-  }
-
-  const gradeCell = document.createElement('td');
-  summaryFirstRow.append(gradeCell);
-  gradeCell.classList.add('k-abox-g');
+  const gradeCell = document.createElement('div');
+  summaryTable.append(gradeCell);
+  gradeCell.classList.add('cell');
   let grade = document.createDocumentFragment();
   switch (entry.misc.G || '') {
     case '8':
@@ -378,42 +341,66 @@ function renderKanjiEntry(
   }
   gradeCell.append(grade);
 
-  const summarySecondRow = document.createElement('tr');
-  summaryTable.append(summarySecondRow);
-
-  const frequencyCell = document.createElement('td');
-  summarySecondRow.append(frequencyCell);
-  frequencyCell.classList.add('k-abox-f');
+  const frequencyCell = document.createElement('div');
+  summaryTable.append(frequencyCell);
+  frequencyCell.classList.add('cell');
   frequencyCell.append(
     browser.i18n.getMessage('content_kanji_frequency_label')
   );
   frequencyCell.append(document.createElement('br'));
   frequencyCell.append(entry.misc.F || '-');
 
-  const strokesCell = document.createElement('td');
-  summarySecondRow.append(strokesCell);
-  strokesCell.classList.add('k-abox-s');
+  const strokesCell = document.createElement('div');
+  summaryTable.append(strokesCell);
+  strokesCell.classList.add('cell');
   strokesCell.append(browser.i18n.getMessage('content_kanji_strokes_label'));
   strokesCell.append(document.createElement('br'));
   strokesCell.append(entry.misc.S);
+
+  // Kanji components
+  if (entry.components) {
+    const componentsTable = document.createElement('table');
+    componentsTable.classList.add('k-bbox-tb');
+    table.append(componentsTable);
+
+    entry.components.forEach((component, index) => {
+      const row = document.createElement('tr');
+      componentsTable.append(row);
+
+      const radicalCell = document.createElement('td');
+      row.append(radicalCell);
+      radicalCell.classList.add(`k-bbox-${(index + 1) % 2}a`);
+      radicalCell.append(component.radical);
+
+      const readingCell = document.createElement('td');
+      row.append(readingCell);
+      readingCell.classList.add(`k-bbox-${(index + 1) % 2}b`);
+      readingCell.append(component.yomi);
+
+      const englishCell = document.createElement('td');
+      row.append(englishCell);
+      englishCell.classList.add(`k-bbox-${(index + 1) % 2}b`);
+      englishCell.append(component.english);
+    });
+  }
 
   // The kanji itself
   const kanjiSpan = document.createElement('span');
   kanjiSpan.classList.add('k-kanji');
   kanjiSpan.append(entry.kanji);
-  topCell.append(kanjiSpan);
-  topCell.append(document.createElement('br'));
+  table.append(kanjiSpan);
+  table.append(document.createElement('br'));
 
   // English
   const englishDiv = document.createElement('div');
   englishDiv.classList.add('k-eigo');
   englishDiv.append(entry.eigo);
-  topCell.append(englishDiv);
+  table.append(englishDiv);
 
   // Readings
   const yomiDiv = document.createElement('div');
   yomiDiv.classList.add('k-yomi');
-  topCell.append(yomiDiv);
+  table.append(yomiDiv);
 
   // Readings come in the form:
   //
@@ -461,32 +448,23 @@ function renderKanjiEntry(
   }
 
   // Reference row
-  const referenceRow = document.createElement('tr');
-  table.append(referenceRow);
-  const referenceCell = document.createElement('td');
-  referenceRow.append(referenceCell);
-  const referenceTable = document.createElement('table');
-  referenceTable.classList.add('k-mix-tb');
-  referenceCell.append(referenceTable);
+  const referenceTable = document.createElement('div');
+  referenceTable.classList.add('references');
+  table.append(referenceTable);
 
   let toggle = 0;
   for (let ref of entry.miscDisplay) {
     let value = entry.misc[ref.abbrev] || '-';
-
-    const row = document.createElement('tr');
-    referenceTable.append(row);
-
-    const className = `k-mix-td${(toggle ^= 1)}`;
 
     const isKanKen = ref.name === 'Kanji Kentei';
     const name = isKanKen
       ? browser.i18n.getMessage('content_kanji_kentei_label')
       : ref.name;
 
-    const nameCell = document.createElement('td');
-    nameCell.classList.add(className);
+    const nameCell = document.createElement('div');
+    nameCell.classList.add('name');
     nameCell.append(name);
-    row.append(nameCell);
+    referenceTable.append(nameCell);
 
     if (isKanKen) {
       if (value.endsWith('.5')) {
@@ -499,10 +477,10 @@ function renderKanjiEntry(
       }
     }
 
-    const valueCell = document.createElement('td');
-    valueCell.classList.add(className);
+    const valueCell = document.createElement('div');
+    valueCell.classList.add('value');
     valueCell.append(value);
-    row.append(valueCell);
+    referenceTable.append(valueCell);
   }
 
   if (options.copyMode) {

@@ -42,6 +42,12 @@ const browser = {
           return "freq";
         case "content_kanji_strokes_label":
           return "strokes";
+        case "content_kanji_kentei_label":
+          return "Kanji Kentei Level";
+        case "content_kanji_kentei_level":
+          return "10";
+        case "content_kanji_kentei_level_pre":
+          return "Pre-2";
         default:
           return 'Unrecognized string ID';
       }
@@ -143,7 +149,7 @@ const highlightTests = [
       DK: '2129',
       E: '494',
       F: '526',
-      G: '4',
+      G: '8',
       H: '3405',
       I: '3p0.1',
       IN: '572',
