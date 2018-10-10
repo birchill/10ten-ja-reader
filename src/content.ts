@@ -46,6 +46,7 @@
 */
 
 import { renderPopup } from './popup';
+import { query, QueryResult } from './query';
 
 declare global {
   interface Window {
@@ -188,7 +189,7 @@ export class RikaiContent {
   // Lookup tracking (so we can avoid redundant work and so we can re-render)
   _currentTextAtPoint: CachedGetTextResult | null = null;
   _currentPoint: { x: number; y: number } | null = null;
-  _currentSearchResult: SearchResult | null = null;
+  _currentSearchResult: QueryResult | null = null;
   _currentTarget: Element | null = null;
   _currentTitle: string | null = null;
 
@@ -484,6 +485,8 @@ export class RikaiContent {
         this._copyMode = true;
         this._copyIndex = 0;
       }
+      // XXX Should this just call showPopup()?
+      // (If so we can drop the forceUpdate handling)
       this.tryToUpdatePopup(
         this._currentPoint,
         this._currentTarget,
@@ -492,6 +495,7 @@ export class RikaiContent {
       );
     } else if (this._copyMode && ev.key === 'Escape') {
       this._copyMode = false;
+      // XXX Should this just call showPopup()?
       this.tryToUpdatePopup(
         this._currentPoint!,
         this._currentTarget!,
@@ -555,7 +559,7 @@ export class RikaiContent {
   async tryToUpdatePopup(
     point: { x: number; y: number },
     target: Element,
-    dictOption: DictMode,
+    dictMode: DictMode,
     options?: { forceUpdate: boolean }
   ) {
     const previousTextAtPoint = this._currentTextAtPoint
@@ -578,7 +582,7 @@ export class RikaiContent {
         // mode. Basically this whole DictMode approach is pretty awful and we
         // should just make the client aware of which dictionary it's looking at
         // and manage state here.
-        (dictOption === DictMode.Same || dictOption === DictMode.Default)
+        (dictMode === DictMode.Same || dictMode === DictMode.Default)
       ) {
         return;
       }
@@ -592,25 +596,10 @@ export class RikaiContent {
       return;
     }
 
-    const wordLookup: boolean = textAtPoint.rangeStart !== null;
-
-    let message;
-    if (wordLookup) {
-      message = {
-        type: 'xsearch',
-        text: textAtPoint.text,
-        dictOption,
-      };
-    } else {
-      message = {
-        type: 'translate',
-        title: textAtPoint.text,
-      };
-    }
-
-    const searchResult: SearchResult = await browser.runtime.sendMessage(
-      message
-    );
+    const queryResult = await query(textAtPoint.text, {
+      dictMode,
+      wordLookup: textAtPoint.rangeStart !== null,
+    });
 
     // Check if we have triggered a new query or been disabled in the meantime.
     if (
@@ -620,31 +609,17 @@ export class RikaiContent {
       return;
     }
 
-    if (!searchResult) {
+    if (!queryResult) {
       this.clearHighlight(target);
       return;
     }
 
-    if (wordLookup) {
-      const matchLen = (searchResult as WordSearchResult).matchLen || 1;
-      this.highlightText(textAtPoint, matchLen);
+    if (queryResult.matchLen) {
+      this.highlightText(textAtPoint, queryResult.matchLen);
     }
 
-    this._currentSearchResult = searchResult;
+    this._currentSearchResult = queryResult;
     this._currentTarget = target;
-
-    if (wordLookup) {
-      this._currentTitle = null;
-    } else {
-      let title = textAtPoint.text.substr(
-        0,
-        (searchResult as TranslateResult).textLen
-      );
-      if (textAtPoint.text.length > (searchResult as TranslateResult).textLen) {
-        title += '...';
-      }
-      this._currentTitle = title;
-    }
 
     this.showPopup();
   }
@@ -1173,7 +1148,6 @@ export class RikaiContent {
     this._currentPoint = null;
     this._currentSearchResult = null;
     this._currentTarget = null;
-    this._currentTitle = null;
     this._copyMode = false;
 
     if (this._selectedWindow && !this._selectedWindow.closed) {
@@ -1261,7 +1235,7 @@ export class RikaiContent {
     const popup = await this.getEmptyPopupElem(doc);
 
     popup.append(
-      renderPopup(this._currentSearchResult!, this._currentTitle, {
+      renderPopup(this._currentSearchResult!, {
         showDefinitions: !this._config.readingOnly,
         copyMode: this._copyMode,
         copyIndex: this._copyIndex,

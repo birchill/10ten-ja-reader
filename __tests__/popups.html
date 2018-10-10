@@ -72,42 +72,9 @@ const rikaiContent = new RikaiContent(config);
 <script>
 const container = document.getElementById('container');
 
-const tests = htmlTests;
-tests.push({
-  description: 'a multicol name search result',
-  searchResult: {
-    data: [
-      ['日本 [にっぽん] /(s) Nippon/', null],
-      ['日本 [につぽん] /(s) Nitsupon/', null],
-      ['日本 [にほん] /(s) Nihon/', null],
-      ['日本 [ひのもと] /(s) Hinomoto/', null],
-      ['日本 [ひもと] /(u) Himoto/', null],
-      ['日本 [やまと] /(s) Yamato/', null],
-      ['日本 [やまとの] /(s) Yamatono/', null],
-      ['日 [あきら] /(g) Akira/', null],
-      ['日 [くさなぎ] /(s) Kusanagi/', null],
-      ['日 [くさやなぎ] /(s) Kusayanagi/', null],
-      ['日 [じつ] /(g) Jitsu/', null],
-      ['日 [たかにち] /(s) Takanichi/', null],
-      ['日 [たちもり] /(s) Tachimori/', null],
-      ['日 [にち] /(p) Nichi/', null],
-      ['日 [にちれん] /(u) Nichiren/', null],
-      ['日 [にっ] /(p) Ni/', null],
-      ['日 [にっしゅう] /(g) Nisshuu/', null],
-      ['日 [ひ] /(p) Hi/', null],
-      ['日 [ひかる] /(f) Hikaru/', null],
-      ['日 [ひさき] /(s) Hisaki/', null],
-    ],
-    more: true,
-    matchLen: 2,
-    names: true,
-  },
-});
-
-for (const test of tests) {
+for (const test of htmlTests) {
   const popup = rikaiContent._renderPopup(
-    test.searchResult,
-    test.searchResult.title || null,
+    test.queryResult,
     { showDefinitions: !test.extraConfig || !test.extraConfig.readingOnly }
   );
 
@@ -126,61 +93,78 @@ for (const test of tests) {
   container.append(popupWindow);
 }
 
-/*
- * Highlight tests
- */
-
 const highlightTests = [
   {
-    description: 'word list',
-    data: [
-      ['韓国語 [かんこくご] /(n) Korean (language)/', 'conj'],
-      ['韓国 [からくに] /(n,arch) China/Korea/', null],
-      ['韓国 [かんこく] /(n) (South) Korea/', null],
-    ],
-    more: true,
-    matchLen: 3,
+    description: 'Word list',
+    queryResult: {
+      data: [
+        {
+          kanjiKana: '韓国語',
+          kana: ['かんこくご'],
+          definition: '(n) Korean (language)',
+          reason: null,
+        },
+        {
+          kanjiKana: '韓国',
+          kana: ['からくに'],
+          definition: '(n,arch) China/Korea',
+          reason: null,
+        },
+        {
+          kanjiKana: '韓国',
+          kana: ['かんこく'],
+          definition: '(n) (South) Korea',
+          reason: null,
+        },
+      ],
+      more: false,
+      matchLen: 3,
+    },
   },
   {
-    description: 'kanji entry',
-    kanji: '士',
-    misc: {
-      B: '33',
-      DK: '2129',
-      E: '494',
-      F: '526',
-      G: '8',
-      H: '3405',
-      I: '3p0.1',
-      IN: '572',
-      KK: '10',
-      L: '319',
-      N: '1160',
-      P: '4-3-2',
-      S: '3',
-      U: '58EB',
-      V: '1117',
-      Y: 'shi4',
+    description: 'Kanji entry',
+    queryResult: {
+      data: {
+        kanji: '士',
+        misc: {
+          B: '33',
+          DK: '2129',
+          E: '494',
+          F: '526',
+          G: '8',
+          H: '3405',
+          I: '3p0.1',
+          IN: '572',
+          KK: '10',
+          L: '319',
+          N: '1160',
+          P: '4-3-2',
+          S: '3',
+          U: '58EB',
+          V: '1117',
+          Y: 'shi4',
+        },
+        miscDisplay: [
+          { abbrev: 'H', name: 'Halpern' },
+          { abbrev: 'L', name: 'Heisig' },
+          { abbrev: 'E', name: 'Henshall' },
+          { abbrev: 'DK', name: 'Kanji Learners Dictionary' },
+          { abbrev: 'KK', name: 'Kanji Kentei' },
+          { abbrev: 'N', name: 'Nelson' },
+          { abbrev: 'V', name: 'New Nelson' },
+          { abbrev: 'Y', name: 'PinYin' },
+          { abbrev: 'P', name: 'Skip Pattern' },
+          { abbrev: 'IN', name: 'Tuttle Kanji & Kana' },
+          { abbrev: 'I', name: 'Tuttle Kanji Dictionary' },
+          { abbrev: 'U', name: 'Unicode' },
+        ],
+        onkun: ['シ'],
+        nanori: ['お', 'ま'],
+        bushumei: ['さむらい'],
+        radical: '士',
+        eigo: 'gentleman, samurai, samurai radical (no. 33)',
+      },
     },
-    miscDisplay: [
-      { abbrev: 'H', name: 'Halpern' },
-      { abbrev: 'L', name: 'Heisig' },
-      { abbrev: 'E', name: 'Henshall' },
-      { abbrev: 'DK', name: 'Kanji Learners Dictionary' },
-      { abbrev: 'KK', name: 'Kanji Kentei' },
-      { abbrev: 'N', name: 'Nelson' },
-      { abbrev: 'V', name: 'New Nelson' },
-      { abbrev: 'Y', name: 'PinYin' },
-      { abbrev: 'P', name: 'Skip Pattern' },
-      { abbrev: 'IN', name: 'Tuttle Kanji & Kana' },
-      { abbrev: 'I', name: 'Tuttle Kanji Dictionary' },
-      { abbrev: 'U', name: 'Unicode' },
-    ],
-    onkun: ['シ'],
-    nanori: ['お', 'ま'],
-    bushumei: ['さむらい'],
-    radical: '士',
-    eigo: 'gentleman, samurai, samurai radical (no. 33)',
   },
 ];
 
@@ -193,7 +177,7 @@ for (const test of highlightTests) {
   container.append(label);
 
   for (const theme of themes) {
-    const popup = rikaiContent._renderPopup(test, null, {
+    const popup = rikaiContent._renderPopup(test.queryResult, {
       showDefinitions: true,
       copyMode: true,
       copyIndex: 0,

@@ -1,3 +1,5 @@
+import { NameEntry, QueryResult, WordEntry } from './query';
+
 interface PopupOptions {
   showDefinitions: boolean;
   copyMode?: boolean;
@@ -5,30 +7,36 @@ interface PopupOptions {
 }
 
 export function renderPopup(
-  result: SearchResult,
-  title: string | null,
+  result: QueryResult,
   options: PopupOptions
 ): HTMLElement | DocumentFragment {
-  const isKanjiEntry = (result: SearchResult): result is KanjiEntry =>
-    (result as KanjiEntry).kanji !== undefined;
+  const isKanjiData = (data: typeof result.data): data is KanjiEntry =>
+    (data as KanjiEntry).kanji !== undefined;
 
-  if (isKanjiEntry(result)) {
-    return renderKanjiEntry(result, options);
+  if (isKanjiData(result.data)) {
+    return renderKanjiEntry(result.data, options);
   }
 
-  const isNamesEntry = (result: SearchResult): result is WordSearchResult =>
-    (result as WordSearchResult).names !== undefined;
-
-  if (isNamesEntry(result)) {
-    return renderNamesEntries(result, options);
+  if (result.names) {
+    return renderNamesEntries(
+      result.data as Array<NameEntry>,
+      result.more,
+      options
+    );
   }
 
-  return renderWordEntries(result, title, options);
+  return renderWordEntries(
+    result.data as Array<WordEntry>,
+    result.title,
+    result.more,
+    options
+  );
 }
 
 function renderWordEntries(
-  result: WordSearchResult | TranslateResult,
+  entries: Array<WordEntry>,
   title: string | null,
+  more: boolean,
   options: PopupOptions
 ): HTMLElement {
   const container = document.createElement('div');
@@ -39,56 +47,6 @@ function renderWordEntries(
     container.append(titleDiv);
     titleDiv.classList.add('title');
     titleDiv.append(title);
-  }
-
-  // Pre-process entries, parsing them and combining them when the kanji and
-  // definition match.
-  //
-  // Each dictionary entry has the format:
-  //
-  //   仔クジラ [こくじら] /(n) whale calf/
-  //
-  // Or without kana reading:
-  //
-  //   あっさり /(adv,adv-to,vs,on-mim) easily/readily/quickly/(P)/
-  //
-  interface DisplayEntry {
-    kanjiKana: string;
-    kana: string[];
-    definition: string;
-    reason: string | null;
-  }
-  const entries: DisplayEntry[] = [];
-  for (const [dictEntry, reason] of result.data) {
-    const matches = dictEntry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
-    if (!matches) {
-      continue;
-    }
-    const [kanjiKana, kana, definition] = matches.slice(1);
-
-    // Combine with previous entry if both kanji and definition match.
-    const prevEntry = entries.length ? entries[entries.length - 1] : null;
-    if (
-      prevEntry &&
-      prevEntry.kanjiKana === kanjiKana &&
-      prevEntry.definition === definition
-    ) {
-      if (kana) {
-        prevEntry.kana.push(kana);
-      }
-      continue;
-    }
-
-    const entry: DisplayEntry = {
-      kanjiKana,
-      kana: [],
-      definition,
-      reason,
-    };
-    if (kana) {
-      entry.kana.push(kana);
-    }
-    entries.push(entry);
   }
 
   let index = 0;
@@ -136,7 +94,7 @@ function renderWordEntries(
     }
   }
 
-  if (result.more) {
+  if (more) {
     const moreDiv = document.createElement('div');
     moreDiv.classList.add('more');
     moreDiv.append('...');
@@ -151,7 +109,8 @@ function renderWordEntries(
 }
 
 function renderNamesEntries(
-  result: LookupResult,
+  entries: Array<NameEntry>,
+  more: boolean,
   options: PopupOptions
 ): HTMLElement {
   const container = document.createElement('div');
@@ -160,47 +119,6 @@ function renderNamesEntries(
   container.append(titleDiv);
   titleDiv.classList.add('title');
   titleDiv.append(browser.i18n.getMessage('content_names_dictionary'));
-
-  // Pre-process entries
-  interface DisplayEntry {
-    names: { kanji?: string; kana: string }[];
-    definition: string;
-  }
-  const entries: DisplayEntry[] = [];
-  for (const [dictEntry] of result.data) {
-    // See renderWordEntries for an explanation of the format here
-    const matches = dictEntry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
-    if (!matches) {
-      continue;
-    }
-    let [kanjiKana, kana, definition] = matches.slice(1);
-
-    // Sometimes for names when we have a mix of katakana and hiragana we
-    // actually have the same format in the definition field, e.g.
-    //
-    //   あか組４ [あかぐみふぉー] /あか組４ [あかぐみフォー] /Akagumi Four (h)//
-    //
-    // So we try reprocessing the definition field using the same regex.
-    const rematch = definition.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
-    if (rematch) {
-      [kanjiKana, kana, definition] = rematch.slice(1);
-    }
-    const name = kana
-      ? { kanji: kanjiKana, kana }
-      : { kanji: undefined, kana: kanjiKana };
-
-    // Combine with previous entry if the definitions match.
-    const prevEntry = entries.length ? entries[entries.length - 1] : null;
-    if (prevEntry && prevEntry.definition === definition) {
-      prevEntry.names.push(name);
-      continue;
-    }
-
-    entries.push({
-      names: [name],
-      definition,
-    });
-  }
 
   const namesTable = document.createElement('div');
   container.append(namesTable);
@@ -251,7 +169,7 @@ function renderNamesEntries(
     namesTable.append(entryDiv);
   }
 
-  if (result.more) {
+  if (more) {
     const moreDiv = document.createElement('div');
     moreDiv.classList.add('more');
     moreDiv.append('...');
@@ -452,8 +370,7 @@ function renderKanjiEntry(
   referenceTable.classList.add('references');
   table.append(referenceTable);
 
-  let toggle = 0;
-  for (let ref of entry.miscDisplay) {
+  for (const ref of entry.miscDisplay) {
     let value = entry.misc[ref.abbrev] || '-';
 
     const isKanKen = ref.name === 'Kanji Kentei';
