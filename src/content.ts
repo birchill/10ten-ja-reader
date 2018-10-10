@@ -476,8 +476,7 @@ export class RikaiContent {
       !ev.altKey &&
       !ev.metaKey &&
       this._config.keys.startCopy.includes(ev.key) &&
-      this._currentPoint &&
-      this._currentTarget
+      this._currentSearchResult
     ) {
       if (this._copyMode) {
         this._copyIndex++;
@@ -485,23 +484,10 @@ export class RikaiContent {
         this._copyMode = true;
         this._copyIndex = 0;
       }
-      // XXX Should this just call showPopup()?
-      // (If so we can drop the forceUpdate handling)
-      this.tryToUpdatePopup(
-        this._currentPoint,
-        this._currentTarget,
-        DictMode.Same,
-        { forceUpdate: true }
-      );
+      this.showPopup();
     } else if (this._copyMode && ev.key === 'Escape') {
       this._copyMode = false;
-      // XXX Should this just call showPopup()?
-      this.tryToUpdatePopup(
-        this._currentPoint!,
-        this._currentTarget!,
-        DictMode.Same,
-        { forceUpdate: true }
-      );
+      this.showPopup();
     } else {
       return;
     }
@@ -559,8 +545,7 @@ export class RikaiContent {
   async tryToUpdatePopup(
     point: { x: number; y: number },
     target: Element,
-    dictMode: DictMode,
-    options?: { forceUpdate: boolean }
+    dictMode: DictMode
   ) {
     const previousTextAtPoint = this._currentTextAtPoint
       ? this._currentTextAtPoint.result
@@ -573,23 +558,21 @@ export class RikaiContent {
       'Should have updated _currentTextAtPoint'
     );
 
-    if (!options || !options.forceUpdate) {
-      if (
-        previousTextAtPoint === textAtPoint &&
-        // This following line is not strictly correct. If the previous
-        // dictionary mode was 'ForceKanji' and now it's 'Default' we shouldn't
-        // return early.  To fix that we'd need to store the previous dictionary
-        // mode. Basically this whole DictMode approach is pretty awful and we
-        // should just make the client aware of which dictionary it's looking at
-        // and manage state here.
-        (dictMode === DictMode.Same || dictMode === DictMode.Default)
-      ) {
-        return;
-      }
-
-      // The text or dictionary has changed so break out of copy mode
-      this._copyMode = false;
+    if (
+      previousTextAtPoint === textAtPoint &&
+      // This following line is not strictly correct. If the previous
+      // dictionary mode was 'ForceKanji' and now it's 'Default' we shouldn't
+      // return early.  To fix that we'd need to store the previous dictionary
+      // mode. Basically this whole DictMode approach is pretty awful and we
+      // should just make the client aware of which dictionary it's looking at
+      // and manage state here.
+      (dictMode === DictMode.Same || dictMode === DictMode.Default)
+    ) {
+      return;
     }
+
+    // The text or dictionary has changed so break out of copy mode
+    this._copyMode = false;
 
     if (!textAtPoint) {
       this.clearHighlight(target);
