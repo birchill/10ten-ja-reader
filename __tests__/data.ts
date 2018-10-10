@@ -274,7 +274,7 @@ describe('Dictionary', () => {
     }
   });
 
-  it('orders words be priority', async () => {
+  it('orders words by priority', async () => {
     const result = await sharedDict.wordSearch('認める');
     expect(result.data[0][0]).toEqual(expect.stringContaining('[みとめる]'));
     expect(result.data[1][0]).toEqual(expect.stringContaining('[したためる]'));
@@ -483,9 +483,10 @@ describe('Dictionary', () => {
     });
   });
 
-  // TODO: Test names dictionary handling
-  //       e.g. create a new Dictionary specifying 'false' for loadNames but then
-  //       do a word lookup where 'doNames' is true.
-  //       e.g.(2) do a word look up where 'doNames' is true and check we
-  //       *don't* match names
+  it('looks up names', async () => {
+    const result = await sharedDict.wordSearch('あか組４', true);
+    expect(result.data[0][0]).toEqual(
+      'あか組４ [あかぐみフォー] /(h) Akagumi Four/'
+    );
+  });
 });
