@@ -110,6 +110,14 @@
   color: #ff6300;
 }
 
+#rikaichamp-window .entry.-flash {
+  animation: flash 0.5s;
+}
+
+@keyframes flash {
+  from { background: white; color: white }
+}
+
 #rikaichamp-window .title {
   font-size: 10px;
   padding: 10px 10px 6px;
@@ -160,6 +168,10 @@
   background: rgba(255,255,206);
   border-radius: 2px;
   color: #4C63A8;
+}
+
+#rikaichamp-window .kanji-table.-flash .k-kanji {
+  animation: flash 0.5s;
 }
 
 #rikaichamp-window .k-eigo {

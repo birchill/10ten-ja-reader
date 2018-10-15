@@ -1,8 +1,16 @@
 import { NameEntry, QueryResult, WordEntry } from './query';
 
+export const enum CopyState {
+  Inactive,
+  Active,
+  FinishCopyWord,
+  FinishCopyTabDelimited,
+  FinishCopyEntry,
+}
+
 interface PopupOptions {
   showDefinitions: boolean;
-  copyMode?: boolean;
+  copyState?: CopyState;
   copyIndex?: number;
 }
 
@@ -45,7 +53,9 @@ function renderWordEntries(
 
     entryDiv.classList.add('entry');
     if (index === selectedIndex) {
-      entryDiv.classList.add('-selected');
+      entryDiv.classList.add(
+        options.copyState === CopyState.Active ? '-selected' : '-flash'
+      );
     }
     index++;
 
@@ -89,7 +99,7 @@ function renderWordEntries(
     container.append(moreDiv);
   }
 
-  if (options.copyMode) {
+  if (options.copyState === CopyState.Active) {
     container.append(renderCopyInstructions());
   }
 
@@ -122,7 +132,9 @@ function renderNamesEntries(
     const entryDiv = document.createElement('div');
     entryDiv.classList.add('entry');
     if (index === selectedIndex) {
-      entryDiv.classList.add('-selected');
+      entryDiv.classList.add(
+        options.copyState === CopyState.Active ? '-selected' : '-flash'
+      );
     }
     index++;
 
@@ -164,7 +176,7 @@ function renderNamesEntries(
     namesTable.append(moreDiv);
   }
 
-  if (options.copyMode) {
+  if (options.copyState === CopyState.Active) {
     container.append(renderCopyInstructions());
   }
 
@@ -172,7 +184,8 @@ function renderNamesEntries(
 }
 
 function getSelectedIndex(options: PopupOptions, numEntries: number) {
-  return !!options.copyMode &&
+  return typeof options.copyState !== 'undefined' &&
+    options.copyState !== CopyState.Inactive &&
     typeof options.copyIndex !== 'undefined' &&
     numEntries
     ? options.copyIndex % numEntries
@@ -205,8 +218,10 @@ function renderKanjiEntry(
   container.append(table);
   table.classList.add('kanji-table');
 
-  if (options.copyMode) {
+  if (options.copyState === CopyState.Active) {
     table.classList.add('-copy');
+  } else if (options.copyState !== CopyState.Inactive) {
+    table.classList.add('-flash');
   }
 
   // Summary information
@@ -388,7 +403,7 @@ function renderKanjiEntry(
     referenceTable.append(valueCell);
   }
 
-  if (options.copyMode) {
+  if (options.copyState === CopyState.Active) {
     container.append(renderCopyInstructions({ kanji: true }));
   }
 

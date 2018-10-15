@@ -45,7 +45,7 @@
 
 */
 
-import { renderPopup } from './popup';
+import { renderPopup, CopyState } from './popup';
 import { query, QueryResult, WordEntry } from './query';
 
 declare global {
@@ -1223,7 +1223,7 @@ export class RikaiContent {
     textBox.selectionDirection = this._selectedTextBox.previousDirection;
   }
 
-  async showPopup() {
+  async showPopup(copyState?: CopyState) {
     if (!this._currentSearchResult) {
       this.clearHighlight(this._currentTarget);
       return;
@@ -1234,11 +1234,11 @@ export class RikaiContent {
       : window.document;
 
     const popup = await this.getEmptyPopupElem(doc);
-
     popup.append(
       renderPopup(this._currentSearchResult!, {
         showDefinitions: !this._config.readingOnly,
-        copyMode: this._copyMode,
+        copyState:
+          copyState || (this._copyMode ? CopyState.Active : CopyState.Inactive),
         copyIndex: this._copyIndex,
       })
     );
@@ -1411,6 +1411,8 @@ export class RikaiContent {
       searchResult.data.length <= this._copyIndex
     ) {
       console.error('Copy index out of bounds');
+      this._copyMode = false;
+      this.showPopup();
       return;
     }
 
@@ -1439,6 +1441,9 @@ export class RikaiContent {
       console.log('Failed to write to clipboard');
       console.log(e);
     }
+
+    this._copyMode = false;
+    this.showPopup(CopyState.FinishCopyWord);
   }
 
   // Expose the renderPopup callback so that we can test it
