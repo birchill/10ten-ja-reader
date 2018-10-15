@@ -10,27 +10,15 @@ export function renderPopup(
   result: QueryResult,
   options: PopupOptions
 ): HTMLElement | DocumentFragment {
-  const isKanjiData = (data: typeof result.data): data is KanjiEntry =>
-    (data as KanjiEntry).kanji !== undefined;
-
-  if (isKanjiData(result.data)) {
+  if (result.type === 'kanji') {
     return renderKanjiEntry(result.data, options);
   }
 
-  if (result.names) {
-    return renderNamesEntries(
-      result.data as Array<NameEntry>,
-      result.more,
-      options
-    );
+  if (result.type === 'names') {
+    return renderNamesEntries(result.data, result.more, options);
   }
 
-  return renderWordEntries(
-    result.data as Array<WordEntry>,
-    result.title,
-    result.more,
-    options
-  );
+  return renderWordEntries(result.data, result.title, result.more, options);
 }
 
 function renderWordEntries(

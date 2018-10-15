@@ -12,29 +12,44 @@ export interface WordEntry {
   reason: string | null;
 }
 
+export interface WordsResult {
+  type: 'words';
+  title: string | null;
+  data: Array<WordEntry>;
+  matchLen: number | null;
+  more: boolean;
+}
+
 export interface NameEntry {
   names: { kanji?: string; kana: string }[];
   definition: string;
 }
 
-export interface QueryResult {
-  title: string | null;
-  data: KanjiEntry | Array<WordEntry> | Array<NameEntry>;
-  names: boolean;
+export interface NamesResult {
+  type: 'names';
+  data: Array<NameEntry>;
   matchLen: number | null;
   more: boolean;
 }
+
+export interface KanjiResult {
+  type: 'kanji';
+  data: KanjiEntry;
+  matchLen: 1;
+}
+
+export type QueryResult = WordsResult | NamesResult | KanjiResult;
+
+const isKanjiResult = (result: SearchResult): result is KanjiEntry =>
+  (result as KanjiEntry).kanji !== undefined;
+
+const isNamesResult = (result: SearchResult): result is WordSearchResult =>
+  (result as WordSearchResult).names !== undefined;
 
 export interface QueryOptions {
   dictMode: DictMode;
   wordLookup: boolean;
 }
-
-const isKanjiEntry = (result: SearchResult): result is KanjiEntry =>
-  (result as KanjiEntry).kanji !== undefined;
-
-const isNamesEntry = (result: SearchResult): result is WordSearchResult =>
-  (result as WordSearchResult).names !== undefined;
 
 // XXX Add a wrapper for this that memoizes when dictMode is Default
 
@@ -57,43 +72,45 @@ export async function query(
   }
 
   const searchResult: SearchResult = await browser.runtime.sendMessage(message);
-
   if (!searchResult) {
     return null;
   }
 
-  let title: string | null = null;
-  if (!options.wordLookup) {
-    title = text.substr(0, (searchResult as TranslateResult).textLen);
-    if (text.length > (searchResult as TranslateResult).textLen) {
-      title += '...';
-    }
-  }
-
-  let names = false;
-  let data: KanjiEntry | Array<WordEntry> | Array<NameEntry>;
-  if (isKanjiEntry(searchResult)) {
-    data = searchResult;
-  } else if (isNamesEntry(searchResult)) {
-    data = parseNameEntries(searchResult);
-    names = true;
-  } else {
-    data = parseWordEntries(searchResult);
+  if (isKanjiResult(searchResult)) {
+    return {
+      type: 'kanji',
+      data: searchResult,
+      matchLen: 1,
+    };
   }
 
   let matchLen: number | null = null;
   if (options.wordLookup) {
     matchLen = (searchResult as WordSearchResult).matchLen || 1;
   }
+  const more = !!searchResult.more;
 
-  const more =
-    searchResult.hasOwnProperty('more') &&
-    !!(searchResult as LookupResult).more;
+  if (isNamesResult(searchResult)) {
+    return {
+      type: 'names',
+      data: parseNameEntries(searchResult),
+      matchLen,
+      more,
+    };
+  }
+
+  let title: string | null = null;
+  if (!options.wordLookup) {
+    title = text.substr(0, searchResult.textLen);
+    if (text.length > searchResult.textLen) {
+      title += '...';
+    }
+  }
 
   return {
+    type: 'words',
     title,
-    data,
-    names,
+    data: parseWordEntries(searchResult),
     matchLen,
     more,
   };

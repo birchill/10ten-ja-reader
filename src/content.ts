@@ -46,7 +46,7 @@
 */
 
 import { renderPopup } from './popup';
-import { query, QueryResult } from './query';
+import { query, QueryResult, WordEntry } from './query';
 
 declare global {
   interface Window {
@@ -76,6 +76,20 @@ declare global {
 
   interface HTMLTextAreaElement {
     selectionDirection: string;
+  }
+
+  /*
+   * Clipboard API
+   *
+   * (This is only a tiny subset of the API based on what is needed here.)
+   */
+
+  interface Clipboard extends EventTarget {
+    writeText(data: string): Promise<void>;
+  }
+
+  interface Navigator {
+    readonly clipboard: Clipboard;
   }
 }
 
@@ -441,6 +455,11 @@ export class RikaiContent {
       return;
     }
 
+    // Likewise, ignore other modifiers.
+    if (ev.ctrlKey || ev.altKey || ev.metaKey) {
+      return;
+    }
+
     // If we're not visible we should ignore any keystrokes.
     if (!this.isVisible()) {
       return;
@@ -472,9 +491,6 @@ export class RikaiContent {
         this.showPopup();
       }
     } else if (
-      !ev.ctrlKey &&
-      !ev.altKey &&
-      !ev.metaKey &&
       this._config.keys.startCopy.includes(ev.key) &&
       this._currentSearchResult
     ) {
@@ -488,6 +504,8 @@ export class RikaiContent {
     } else if (this._copyMode && ev.key === 'Escape') {
       this._copyMode = false;
       this.showPopup();
+    } else if (this._copyMode && ev.key === 'w') {
+      this.copyWord();
     } else {
       return;
     }
@@ -1375,6 +1393,52 @@ export class RikaiContent {
     });
 
     return this._popupPromise;
+  }
+
+  async copyWord() {
+    console.assert(
+      this._copyMode,
+      'Should be in copy mode when copying a word'
+    );
+
+    if (!this._currentSearchResult) {
+      return;
+    }
+
+    const searchResult = this._currentSearchResult;
+    if (
+      (searchResult.type === 'words' || searchResult.type === 'names') &&
+      searchResult.data.length <= this._copyIndex
+    ) {
+      console.error('Copy index out of bounds');
+      return;
+    }
+
+    let toCopy: string;
+    switch (searchResult.type) {
+      case 'words':
+        toCopy = searchResult.data[this._copyIndex].kanjiKana;
+        break;
+
+      case 'names':
+        toCopy = searchResult.data[this._copyIndex].names
+          .map(name => name.kanji || name.kana)
+          .join(', ');
+        break;
+
+      case 'kanji':
+        toCopy = searchResult.data.kanji;
+        break;
+    }
+
+    try {
+      await navigator.clipboard.writeText(toCopy!);
+      // XXX Show success message and highlight entry
+    } catch (e) {
+      // XXX Use same error handling as above
+      console.log('Failed to write to clipboard');
+      console.log(e);
+    }
   }
 
   // Expose the renderPopup callback so that we can test it

@@ -2,6 +2,7 @@ const htmlTests = [
   {
     description: 'a kanji entry',
     queryResult: {
+      type: 'kanji',
       data: {
         kanji: '士',
         misc: {
@@ -45,6 +46,7 @@ const htmlTests = [
   {
     description: 'a kanji entry with components',
     queryResult: {
+      type: 'kanji',
       data: {
         kanji: '鯖',
         misc: {
@@ -82,6 +84,7 @@ const htmlTests = [
   {
     description: 'a word search result',
     queryResult: {
+      type: 'words',
       data: [
         {
           kanjiKana: '走る',
@@ -98,6 +101,7 @@ const htmlTests = [
   {
     description: 'a word search result with multiple entries',
     queryResult: {
+      type: 'words',
       data: [
         {
           kanjiKana: '韓国語',
@@ -125,6 +129,7 @@ const htmlTests = [
   {
     description: 'a word search result with overlapping entries',
     queryResult: {
+      type: 'words',
       data: [
         {
           kanjiKana: '東',
@@ -166,6 +171,7 @@ const htmlTests = [
   {
     description: "a word search result with the 'readingOnly' setting in place",
     queryResult: {
+      type: 'words',
       data: [
         {
           kanjiKana: '韓国語',
@@ -196,6 +202,7 @@ const htmlTests = [
   {
     description: 'a translate result',
     queryResult: {
+      type: 'words',
       data: [
         {
           kanjiKana: '韓国',
@@ -251,6 +258,7 @@ const htmlTests = [
   {
     description: 'a name search result',
     queryResult: {
+      type: 'names',
       data: [
         {
           names: [{ kanji: '中野', kana: 'なかの' }],
@@ -274,6 +282,7 @@ const htmlTests = [
   {
     description: 'a name search result with a nested definition',
     queryResult: {
+      type: 'names',
       data: [
         {
           names: [{ kanji: 'あか組４', kana: 'あかぐみフォー' }],
@@ -288,6 +297,7 @@ const htmlTests = [
   {
     description: 'a name search result without a separate reading',
     queryResult: {
+      type: 'names',
       data: [
         {
           names: [{ kana: 'あがさ' }],
@@ -302,6 +312,7 @@ const htmlTests = [
   {
     description: 'a multicol name search result',
     queryResult: {
+      type: 'names',
       data: [
         {
           names: [{ kanji: '日本', kana: 'にっぽん' }],
