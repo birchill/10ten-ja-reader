@@ -45,7 +45,7 @@
 
 */
 
-import { renderPopup, CopyState } from './popup';
+import { renderPopup, CopyState, CopyTarget, PopupOptions } from './popup';
 import { query, QueryResult, WordEntry } from './query';
 
 declare global {
@@ -1223,7 +1223,7 @@ export class RikaiContent {
     textBox.selectionDirection = this._selectedTextBox.previousDirection;
   }
 
-  async showPopup(copyState?: CopyState) {
+  async showPopup(options?: Partial<PopupOptions>) {
     if (!this._currentSearchResult) {
       this.clearHighlight(this._currentTarget);
       return;
@@ -1233,15 +1233,15 @@ export class RikaiContent {
       ? this._currentTarget.ownerDocument
       : window.document;
 
+    const popupOptions: PopupOptions = {
+      showDefinitions: !this._config.readingOnly,
+      copyState: this._copyMode ? CopyState.Active : CopyState.Inactive,
+      copyIndex: this._copyIndex,
+      ...options,
+    };
+
     const popup = await this.getEmptyPopupElem(doc);
-    popup.append(
-      renderPopup(this._currentSearchResult!, {
-        showDefinitions: !this._config.readingOnly,
-        copyState:
-          copyState || (this._copyMode ? CopyState.Active : CopyState.Inactive),
-        copyIndex: this._copyIndex,
-      })
-    );
+    popup.append(renderPopup(this._currentSearchResult!, popupOptions));
 
     // Position the popup
     const referencePosition = this._currentPoint ? this._currentPoint : null;
@@ -1443,7 +1443,10 @@ export class RikaiContent {
     }
 
     this._copyMode = false;
-    this.showPopup(CopyState.FinishCopyWord);
+    this.showPopup({
+      copyState: CopyState.Finished,
+      copyTarget: CopyTarget.Word,
+    });
   }
 
   // Expose the renderPopup callback so that we can test it

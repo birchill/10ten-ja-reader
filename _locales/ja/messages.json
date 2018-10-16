@@ -15,6 +15,18 @@
     "message": "Rikaichampを有効にする",
     "description": "Context menu item to enable the extension."
   },
+  "content_copied_entry": {
+    "message": "項目をコピーしました",
+    "description": "Overlay shown after copying an entry to the clipboard."
+  },
+  "content_copied_fields": {
+    "message": "フィールドをコピーしました",
+    "description": "Overlay shown after copying entry as a tab-delimited fields to the clipboard."
+  },
+  "content_copied_word": {
+    "message": "単語をコピーしました",
+    "description": "Overlay shown after copying a word to the clipboard."
+  },
   "content_names_dictionary": {
     "message": "人名辞典",
     "description": "The title used at the top of the popup when showing the names dictionary"

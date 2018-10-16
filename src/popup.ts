@@ -3,15 +3,22 @@ import { NameEntry, QueryResult, WordEntry } from './query';
 export const enum CopyState {
   Inactive,
   Active,
-  FinishCopyWord,
-  FinishCopyTabDelimited,
-  FinishCopyEntry,
+  Finished,
 }
 
-interface PopupOptions {
+export const enum CopyTarget {
+  Entry,
+  TabDelimited,
+  Word,
+}
+
+export interface PopupOptions {
   showDefinitions: boolean;
   copyState?: CopyState;
+  // Set when copyState === CopyState.Active or CopyState.Finished
   copyIndex?: number;
+  // Set when copyState === CopyState.Finished
+  copyTarget?: CopyTarget;
 }
 
 export function renderPopup(
@@ -99,8 +106,9 @@ function renderWordEntries(
     container.append(moreDiv);
   }
 
-  if (options.copyState === CopyState.Active) {
-    container.append(renderCopyInstructions());
+  const copyDetails = renderCopyDetails(options.copyState, options.copyTarget);
+  if (copyDetails) {
+    container.append(copyDetails);
   }
 
   return container;
@@ -176,8 +184,9 @@ function renderNamesEntries(
     namesTable.append(moreDiv);
   }
 
-  if (options.copyState === CopyState.Active) {
-    container.append(renderCopyInstructions());
+  const copyDetails = renderCopyDetails(options.copyState, options.copyTarget);
+  if (copyDetails) {
+    container.append(copyDetails);
   }
 
   return container;
@@ -190,21 +199,6 @@ function getSelectedIndex(options: PopupOptions, numEntries: number) {
     numEntries
     ? options.copyIndex % numEntries
     : -1;
-}
-
-function renderCopyInstructions(
-  options: { kanji: boolean } = { kanji: false }
-): HTMLElement {
-  const copyDiv = document.createElement('div');
-  copyDiv.classList.add('copy');
-  if (options.kanji) {
-    copyDiv.innerHTML =
-      'Copy: <kbd>e</kbd> = entry, <kbd>w</kbd> = kanji, <kbd>f</kbd> = fields, <kbd>Esc</kbd> = cancel';
-  } else {
-    copyDiv.innerHTML =
-      'Copy: <kbd>e</kbd> = entry, <kbd>w</kbd> = word, <kbd>f</kbd> = fields, <kbd>Esc</kbd> = cancel';
-  }
-  return copyDiv;
 }
 
 function renderKanjiEntry(
@@ -220,8 +214,8 @@ function renderKanjiEntry(
 
   if (options.copyState === CopyState.Active) {
     table.classList.add('-copy');
-  } else if (options.copyState !== CopyState.Inactive) {
-    table.classList.add('-flash');
+  } else if (options.copyState === CopyState.Finished) {
+    table.classList.add('-finished');
   }
 
   // Summary information
@@ -403,11 +397,65 @@ function renderKanjiEntry(
     referenceTable.append(valueCell);
   }
 
-  if (options.copyState === CopyState.Active) {
-    container.append(renderCopyInstructions({ kanji: true }));
+  const copyDetails = renderCopyDetails(options.copyState, options.copyTarget, {
+    kanji: true,
+  });
+  if (copyDetails) {
+    container.append(copyDetails);
   }
 
   return container;
+}
+
+function renderCopyDetails(
+  copyState?: CopyState,
+  copyTarget?: CopyTarget,
+  options: { kanji: boolean } = { kanji: false }
+): HTMLElement | null {
+  if (typeof copyState === 'undefined' || copyState === CopyState.Inactive) {
+    return null;
+  }
+
+  const copyDiv = document.createElement('div');
+  copyDiv.classList.add('copy');
+
+  const keysDiv = document.createElement('div');
+  keysDiv.classList.add('keys');
+  copyDiv.append(keysDiv);
+  if (options.kanji) {
+    keysDiv.innerHTML =
+      'Copy: <kbd>e</kbd> = entry, <kbd>w</kbd> = kanji, <kbd>f</kbd> = fields, <kbd>Esc</kbd> = cancel';
+  } else {
+    keysDiv.innerHTML =
+      'Copy: <kbd>e</kbd> = entry, <kbd>w</kbd> = word, <kbd>f</kbd> = fields, <kbd>Esc</kbd> = cancel';
+  }
+
+  if (copyState === CopyState.Finished && typeof copyTarget !== 'undefined') {
+    copyDiv.classList.add('-finished');
+    copyDiv.append(renderCopyStatus(getCopiedString(copyTarget)));
+  }
+
+  return copyDiv;
+}
+
+function getCopiedString(target: CopyTarget): string {
+  switch (target) {
+    case CopyTarget.Entry:
+      return browser.i18n.getMessage('content_copied_entry');
+
+    case CopyTarget.TabDelimited:
+      return browser.i18n.getMessage('content_copied_fields');
+
+    case CopyTarget.Word:
+      return browser.i18n.getMessage('content_copied_word');
+  }
+}
+
+function renderCopyStatus(message: string): HTMLElement {
+  const status = document.createElement('div');
+  status.classList.add('status');
+  status.innerText = message;
+  return status;
 }
 
 export default renderPopup;

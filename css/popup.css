@@ -33,6 +33,7 @@
   transition: opacity 0.05s;
   will-change: opacity;
   pointer-events: none;
+  contain: all;
 }
 
 #rikaichamp-window.hidden {
@@ -51,8 +52,7 @@
 }
 
 #rikaichamp-window .entry,
-#rikaichamp-window .more,
-#rikaichamp-window .copy {
+#rikaichamp-window .more {
   margin-top: 3px;
   margin-bottom: 3px;
   padding: 3px 8px;
@@ -159,7 +159,8 @@
   font-size: 48px;
 }
 
-#rikaichamp-window .kanji-table.-copy {
+#rikaichamp-window .kanji-table.-copy,
+#rikaichamp-window .kanji-table.-finished {
   width: auto;
   min-width: 300px;
 }
@@ -170,7 +171,7 @@
   color: #4C63A8;
 }
 
-#rikaichamp-window .kanji-table.-flash .k-kanji {
+#rikaichamp-window .kanji-table.-finished .k-kanji {
   animation: flash 0.5s;
 }
 
@@ -259,14 +260,23 @@
 }
 
 /*
- * keyboard keys
+ * Keyboard keys
  */
 
 #rikaichamp-window .copy {
+  margin-top: 3px;
+  position: relative;
+  width: 100%;
+  max-height: 3em;
+}
+
+#rikaichamp-window .copy > .keys,
+#rikaichamp-window .copy > .status {
+  padding: 5px 8px 5px;
   background: rgba(255,255,255,0.2);
 }
 
-#rikaichamp-window .copy kbd {
+#rikaichamp-window .copy > .keys kbd {
   color: rgb(10,10,10);
   font-size: .8rem;
   font-family: monospace;
@@ -275,6 +285,38 @@
   border-radius: .2rem;
   background: white;
   border: 1px solid #909090 !important;
+}
+
+#rikaichamp-window .copy > .status {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+}
+
+#rikaichamp-window .copy.-finished > .keys {
+  animation: fade-out 0.4s linear forwards;
+}
+
+#rikaichamp-window .copy.-finished > .status {
+  opacity: 0;
+  animation: fade-in 0.4s linear forwards, fade-out 0.3s 0.9s forwards;
+}
+
+#rikaichamp-window .copy.-finished {
+  animation: roll-up 0.3s 1s forwards;
+}
+
+@keyframes fade-out {
+  to { opacity: 0; }
+}
+
+@keyframes fade-in {
+  to { opacity: 1; }
+}
+
+@keyframes roll-up {
+  to { max-height: 0; }
 }
 
 /*

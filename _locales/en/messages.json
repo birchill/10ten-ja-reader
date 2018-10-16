@@ -15,6 +15,18 @@
     "message": "Enable Rikaichamp",
     "description": "Context menu item to enable the extension."
   },
+  "content_copied_entry": {
+    "message": "Copied entry",
+    "description": "Overlay shown after copying an entry to the clipboard."
+  },
+  "content_copied_fields": {
+    "message": "Copied fields",
+    "description": "Overlay shown after copying entry as a tab-delimited fields to the clipboard."
+  },
+  "content_copied_word": {
+    "message": "Copied word",
+    "description": "Overlay shown after copying a word to the clipboard."
+  },
   "content_names_dictionary": {
     "message": "Names Dictionary",
     "description": "The title used at the top of the popup when showing the names dictionary"
