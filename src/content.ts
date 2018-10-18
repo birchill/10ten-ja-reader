@@ -491,6 +491,7 @@ export class RikaiContent {
         this.showPopup();
       }
     } else if (
+      navigator.clipboard &&
       this._config.keys.startCopy.includes(ev.key) &&
       this._currentSearchResult
     ) {
@@ -1406,11 +1407,14 @@ export class RikaiContent {
     }
 
     const searchResult = this._currentSearchResult;
-    if (
-      (searchResult.type === 'words' || searchResult.type === 'names') &&
-      searchResult.data.length <= this._copyIndex
-    ) {
-      console.error('Copy index out of bounds');
+
+    let copyIndex = this._copyIndex;
+    if (searchResult.type === 'words' || searchResult.type === 'names') {
+      copyIndex = copyIndex % searchResult.data.length;
+    }
+
+    if (copyIndex < 0) {
+      console.error('Bad copy index');
       this._copyMode = false;
       this.showPopup();
       return;
@@ -1419,11 +1423,11 @@ export class RikaiContent {
     let toCopy: string;
     switch (searchResult.type) {
       case 'words':
-        toCopy = searchResult.data[this._copyIndex].kanjiKana;
+        toCopy = searchResult.data[copyIndex].kanjiKana;
         break;
 
       case 'names':
-        toCopy = searchResult.data[this._copyIndex].names
+        toCopy = searchResult.data[copyIndex].names
           .map(name => name.kanji || name.kana)
           .join(', ');
         break;
