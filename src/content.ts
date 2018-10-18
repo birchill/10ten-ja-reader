@@ -1433,18 +1433,18 @@ export class RikaiContent {
         break;
     }
 
+    let copyState = CopyState.Finished;
     try {
       await navigator.clipboard.writeText(toCopy!);
-      // XXX Show success message and highlight entry
     } catch (e) {
-      // XXX Use same error handling as above
+      copyState = CopyState.Error;
       console.log('Failed to write to clipboard');
       console.log(e);
     }
 
     this._copyMode = false;
     this.showPopup({
-      copyState: CopyState.Finished,
+      copyState,
       copyTarget: CopyTarget.Word,
     });
   }

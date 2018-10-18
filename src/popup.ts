@@ -4,6 +4,7 @@ export const enum CopyState {
   Inactive,
   Active,
   Finished,
+  Error,
 }
 
 export const enum CopyTarget {
@@ -15,7 +16,7 @@ export const enum CopyTarget {
 export interface PopupOptions {
   showDefinitions: boolean;
   copyState?: CopyState;
-  // Set when copyState === CopyState.Active or CopyState.Finished
+  // Set when copyState !== CopyState.Inactive
   copyIndex?: number;
   // Set when copyState === CopyState.Finished
   copyTarget?: CopyTarget;
@@ -214,7 +215,10 @@ function renderKanjiEntry(
 
   if (options.copyState === CopyState.Active) {
     table.classList.add('-copy');
-  } else if (options.copyState === CopyState.Finished) {
+  } else if (
+    options.copyState === CopyState.Finished ||
+    options.copyState === CopyState.Error
+  ) {
     table.classList.add('-finished');
   }
 
@@ -433,6 +437,11 @@ function renderCopyDetails(
   if (copyState === CopyState.Finished && typeof copyTarget !== 'undefined') {
     copyDiv.classList.add('-finished');
     copyDiv.append(renderCopyStatus(getCopiedString(copyTarget)));
+  } else if (copyState === CopyState.Error) {
+    copyDiv.classList.add('-error');
+    copyDiv.append(
+      renderCopyStatus(browser.i18n.getMessage('content_copy_error'))
+    );
   }
 
   return copyDiv;

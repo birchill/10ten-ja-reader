@@ -292,9 +292,11 @@
   left: 0;
   top: 0;
   width: 100%;
+  box-sizing: border-box;
 }
 
-#rikaichamp-window .copy.-finished > .keys {
+#rikaichamp-window .copy.-finished > .keys,
+#rikaichamp-window .copy.-error > .keys {
   animation: fade-out 0.4s linear forwards;
 }
 
@@ -317,6 +319,16 @@
 
 @keyframes roll-up {
   to { max-height: 0; }
+}
+
+#rikaichamp-window .copy.-error > .status {
+  opacity: 0;
+  animation: fade-in 0.4s linear forwards;
+}
+
+#rikaichamp-window .copy.-error > .status {
+  background: rgba(255, 204, 204, 0.8);
+  color: #b43e3e;
 }
 
 /*

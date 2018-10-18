@@ -27,6 +27,10 @@
     "message": "Copied word",
     "description": "Overlay shown after copying a word to the clipboard."
   },
+  "content_copy_error": {
+    "message": "Failed to copy to clipboard",
+    "description": "Message shown in overlay when we couldn't copy to the clipboard"
+  },
   "content_names_dictionary": {
     "message": "Names Dictionary",
     "description": "The title used at the top of the popup when showing the names dictionary"

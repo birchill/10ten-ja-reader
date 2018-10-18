@@ -27,6 +27,10 @@
     "message": "単語をコピーしました",
     "description": "Overlay shown after copying a word to the clipboard."
   },
+  "content_copy_error": {
+    "message": "コピーが失敗しました",
+    "description": "Message shown in overlay when we couldn't copy to the clipboard"
+  },
   "content_names_dictionary": {
     "message": "人名辞典",
     "description": "The title used at the top of the popup when showing the names dictionary"
