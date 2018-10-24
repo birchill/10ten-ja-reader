@@ -46,7 +46,7 @@
 */
 
 import { renderPopup, CopyState, CopyTarget, PopupOptions } from './popup';
-import { query, QueryResult, WordEntry } from './query';
+import { query, QueryResult, WordEntry, NameEntry } from './query';
 
 declare global {
   interface Window {
@@ -194,6 +194,11 @@ const styleSheetLoad = (link: HTMLLinkElement): Promise<void> =>
       { once: true }
     );
   });
+
+type TaggedEntry =
+  | { type: 'word'; data: WordEntry }
+  | { type: 'name'; data: NameEntry }
+  | { type: 'kanji'; data: KanjiEntry };
 
 export class RikaiContent {
   static MAX_LENGTH = 13;
@@ -507,6 +512,8 @@ export class RikaiContent {
       this.showPopup();
     } else if (this._copyMode && ev.key === 'w') {
       this.copyWord();
+    } else if (this._copyMode && ev.key === 'e') {
+      this.copyEntry();
     } else {
       return;
     }
@@ -1397,13 +1404,99 @@ export class RikaiContent {
   }
 
   async copyWord() {
+    const entry = this.getCopyEntry();
+    if (!entry) {
+      return;
+    }
+
+    let toCopy: string;
+    switch (entry.type) {
+      case 'word':
+        toCopy = entry.data.kanjiKana;
+        break;
+
+      case 'name':
+        toCopy = entry.data.names
+          .map(name => name.kanji || name.kana)
+          .join(', ');
+        break;
+
+      case 'kanji':
+        toCopy = entry.data.kanji;
+        break;
+    }
+
+    await this.copyString(toCopy!, CopyTarget.Word);
+  }
+
+  async copyEntry() {
+    const entry = this.getCopyEntry();
+    if (!entry) {
+      return;
+    }
+
+    let toCopy: string;
+    switch (entry.type) {
+      case 'word':
+        toCopy = entry.data.kanjiKana;
+        if (entry.data.kana.length) {
+          toCopy += ` [${entry.data.kana.join('; ')}]`;
+        }
+        toCopy += ' ' + entry.data.definition.replace(/\//g, '; ');
+        break;
+
+      case 'name':
+        toCopy = entry.data.names
+          .map(
+            name => (name.kanji ? `${name.kanji} [${name.kana}]` : name.kana)
+          )
+          .join(', ');
+        toCopy += ' ' + entry.data.definition.replace(/\//g, '; ');
+        break;
+
+      case 'kanji':
+        toCopy = entry.data.kanji;
+        if (entry.data.onkun.length) {
+          toCopy += ` [${entry.data.onkun.join(`、`)}]`;
+        }
+        if (entry.data.nanori.length) {
+          toCopy += ` (${entry.data.nanori.join(`、`)})`;
+        }
+        toCopy += ` ${entry.data.eigo}`;
+        const radicalLabel = browser.i18n.getMessage(
+          'content_kanji_radical_label'
+        );
+        toCopy += `; ${radicalLabel}: ${entry.data.radical}`;
+        if (entry.data.bushumei.length) {
+          toCopy += ` (${entry.data.bushumei.join(`、`)})`;
+        }
+        // We don't bother with the kanji components for now.
+        //
+        // I'm not even sure if we need the references. Would it be enough to
+        // only include them only in the tab-delimited case?
+        if (entry.data.miscDisplay.length) {
+          const refs: Array<string> = [];
+          for (const ref of entry.data.miscDisplay) {
+            if (entry.data.misc.hasOwnProperty(ref.abbrev)) {
+              refs.push(`${ref.name}: ${entry.data.misc[ref.abbrev]}`);
+            }
+          }
+          toCopy += `; ${refs.join('; ')}`;
+        }
+        break;
+    }
+
+    await this.copyString(toCopy!, CopyTarget.Entry);
+  }
+
+  private getCopyEntry(): TaggedEntry | null {
     console.assert(
       this._copyMode,
-      'Should be in copy mode when copying a word'
+      'Should be in copy mode when copying an entry'
     );
 
     if (!this._currentSearchResult) {
-      return;
+      return null;
     }
 
     const searchResult = this._currentSearchResult;
@@ -1417,29 +1510,25 @@ export class RikaiContent {
       console.error('Bad copy index');
       this._copyMode = false;
       this.showPopup();
-      return;
+      return null;
     }
 
-    let toCopy: string;
     switch (searchResult.type) {
       case 'words':
-        toCopy = searchResult.data[copyIndex].kanjiKana;
-        break;
+        return { type: 'word', data: searchResult.data[copyIndex] };
 
       case 'names':
-        toCopy = searchResult.data[copyIndex].names
-          .map(name => name.kanji || name.kana)
-          .join(', ');
-        break;
+        return { type: 'name', data: searchResult.data[copyIndex] };
 
       case 'kanji':
-        toCopy = searchResult.data.kanji;
-        break;
+        return { type: 'kanji', data: searchResult.data };
     }
+  }
 
+  private async copyString(message: string, copyTarget: CopyTarget) {
     let copyState = CopyState.Finished;
     try {
-      await navigator.clipboard.writeText(toCopy!);
+      await navigator.clipboard.writeText(message);
     } catch (e) {
       copyState = CopyState.Error;
       console.log('Failed to write to clipboard');
@@ -1449,7 +1538,7 @@ export class RikaiContent {
     this._copyMode = false;
     this.showPopup({
       copyState,
-      copyTarget: CopyTarget.Word,
+      copyTarget,
     });
   }
 
