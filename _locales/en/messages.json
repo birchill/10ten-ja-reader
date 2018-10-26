@@ -20,7 +20,7 @@
     "description": "Overlay shown after copying an entry to the clipboard."
   },
   "content_copied_fields": {
-    "message": "Copied fields",
+    "message": "Copied tab-delimited fields",
     "description": "Overlay shown after copying entry as a tab-delimited fields to the clipboard."
   },
   "content_copied_word": {
