@@ -514,6 +514,8 @@ export class RikaiContent {
       this.copyWord();
     } else if (this._copyMode && ev.key === 'e') {
       this.copyEntry();
+    } else if (this._copyMode && ev.key === 't') {
+      this.copyFields();
     } else {
       return;
     }
@@ -1487,6 +1489,48 @@ export class RikaiContent {
     }
 
     await this.copyString(toCopy!, CopyTarget.Entry);
+  }
+
+  async copyFields() {
+    const entry = this.getCopyEntry();
+    if (!entry) {
+      return;
+    }
+
+    let toCopy: string;
+    switch (entry.type) {
+      case 'word':
+        toCopy = entry.data.kanjiKana;
+        toCopy += `\t${entry.data.kana.join('; ')}`;
+        toCopy += `\t${entry.data.definition.replace(/\//g, '; ')}`;
+        break;
+
+      case 'name':
+        {
+          const definition = entry.data.definition.replace(/\//g, '; ');
+          toCopy = entry.data.names
+            .map(name => `${name.kanji || ''}\t${name.kana}\t${definition}`)
+            .join('\n');
+        }
+        break;
+
+      case 'kanji':
+        toCopy = entry.data.kanji;
+        toCopy += `\t${entry.data.onkun.join(`、`)}`;
+        toCopy += `\t${entry.data.nanori.join(`、`)}`;
+        toCopy += `\t${entry.data.eigo}`;
+        toCopy += `\t${entry.data.radical}`;
+        toCopy += `\t${entry.data.bushumei.join(`、`)}`;
+        for (const ref of entry.data.miscDisplay) {
+          const refText = entry.data.misc.hasOwnProperty(ref.abbrev)
+            ? `${ref.abbrev}${entry.data.misc[ref.abbrev]}`
+            : '';
+          toCopy += `\t${refText}`;
+        }
+        break;
+    }
+
+    await this.copyString(toCopy!, CopyTarget.TabDelimited);
   }
 
   private getCopyEntry(): TaggedEntry | null {
