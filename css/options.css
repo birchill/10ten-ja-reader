@@ -48,7 +48,7 @@
    *   https://stackoverflow.com/questions/44869250/responsive-multi-column-list-with-column-order
    */
   display: grid;
-  width: 100%;
+  width: 95%;
   max-width: 1000px;
   grid-template-columns: repeat(auto-fill, 250px);
   grid-column-gap: 1em;
