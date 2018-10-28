@@ -60,4 +60,14 @@ describe('deinflect', () => {
       word: '食べる',
     });
   });
+
+  it('deinflects ki to kuru', () => {
+    const result = deinflect('き');
+    const match = result.find(candidate => candidate.word === 'くる');
+    expect(match).toEqual({
+      reasons: [[DeinflectReason.MasuStem]],
+      type: 8,
+      word: 'くる',
+    });
+  });
 });
