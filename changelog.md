@@ -4,6 +4,9 @@
 * Added support for parsing ぬ verbs
   ([#56](https://github.com/birtles/rikaichamp/issues/56))
   thanks to [@ispedals](https://github.com/ispedals).
+* Added deinflecting き → 来る
+  ([#59](https://github.com/birtles/rikaichamp/issues/59))
+  thanks to [@ispedals](https://github.com/ispedals).
 
 ## 0.0.25 (2018-09-27)
 
