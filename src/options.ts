@@ -290,6 +290,15 @@ function addPopupKeys() {
   const grid = document.getElementById('key-grid')!;
 
   for (const setting of config.DEFAULT_KEY_SETTINGS) {
+    // Don't show the copy entry if the clipboard API is not available
+    if (
+      setting.name === 'startCopy' &&
+      (!navigator.clipboard ||
+        typeof navigator.clipboard.writeText !== 'function')
+    ) {
+      continue;
+    }
+
     const keyBlock = document.createElement('div');
     keyBlock.classList.add('key');
     keyBlock.classList.add('browser-style');
