@@ -426,13 +426,49 @@ function renderCopyDetails(
   const keysDiv = document.createElement('div');
   keysDiv.classList.add('keys');
   copyDiv.append(keysDiv);
+
+  keysDiv.append(browser.i18n.getMessage('content_copy_keys_label') + ' ');
+
+  const entryKey = document.createElement('kbd');
+  entryKey.append('e');
+  keysDiv.append(
+    entryKey,
+    ' = ' + browser.i18n.getMessage('content_copy_keys_entry_label')
+  );
+
+  keysDiv.append(', ');
+
+  const fieldsKey = document.createElement('kbd');
+  fieldsKey.append('t');
+  keysDiv.append(
+    fieldsKey,
+    ' = ' + browser.i18n.getMessage('content_copy_keys_fields_label')
+  );
+
+  keysDiv.append(', ');
+
+  const wordKey = document.createElement('kbd');
+  wordKey.append('w');
   if (options.kanji) {
-    keysDiv.innerHTML =
-      'Copy: <kbd>e</kbd> = entry, <kbd>w</kbd> = kanji, <kbd>f</kbd> = fields, <kbd>Esc</kbd> = cancel';
+    keysDiv.append(
+      wordKey,
+      ' = ' + browser.i18n.getMessage('content_copy_keys_kanji_label')
+    );
   } else {
-    keysDiv.innerHTML =
-      'Copy: <kbd>e</kbd> = entry, <kbd>w</kbd> = word, <kbd>f</kbd> = fields, <kbd>Esc</kbd> = cancel';
+    keysDiv.append(
+      wordKey,
+      ' = ' + browser.i18n.getMessage('content_copy_keys_word_label')
+    );
   }
+
+  keysDiv.append(', ');
+
+  const nextKey = document.createElement('kbd');
+  nextKey.append('c');
+  keysDiv.append(
+    nextKey,
+    ' = ' + browser.i18n.getMessage('content_copy_keys_next_label')
+  );
 
   if (copyState === CopyState.Finished && typeof copyTarget !== 'undefined') {
     copyDiv.classList.add('-finished');

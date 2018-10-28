@@ -15,6 +15,30 @@
     "message": "Rikaichampを有効にする",
     "description": "Context menu item to enable the extension."
   },
+  "content_copy_keys_label": {
+    "message": "コピー:",
+    "description": "Label at start of row describing keys for copying information to the clipboard"
+  },
+  "content_copy_keys_entry_label": {
+    "message": "項目",
+    "description": "Label for key to copy a dictionary entry to the clipboard"
+  },
+  "content_copy_keys_fields_label": {
+    "message": "タブ区切り",
+    "description": "Label for key to copy a tab-separated set of fields to the clipboard"
+  },
+  "content_copy_keys_word_label": {
+    "message": "単語",
+    "description": "Label for key to copy a word to the clipboard"
+  },
+  "content_copy_keys_kanji_label": {
+    "message": "漢字",
+    "description": "Label for key to copy a single kanji character to the clipboard"
+  },
+  "content_copy_keys_next_label": {
+    "message": "次",
+    "description": "Label for key to move the copy highlight to the next entry"
+  },
   "content_copied_entry": {
     "message": "項目をコピーしました",
     "description": "Overlay shown after copying an entry to the clipboard."
