@@ -361,6 +361,7 @@ const deinflectRuleData: Array<[string, string, number, number]> = [
   ['え', 'える', 384, DeinflectReason.MasuStem],
   ['き', 'きる', 384, DeinflectReason.MasuStem],
   ['き', 'く', 640, DeinflectReason.MasuStem],
+  ['き', 'くる', 2176, DeinflectReason.MasuStem],
   ['ぎ', 'ぎる', 384, DeinflectReason.MasuStem],
   ['ぎ', 'ぐ', 640, DeinflectReason.MasuStem],
   ['く', 'い', 1152, DeinflectReason.Adv],
