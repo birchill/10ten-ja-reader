@@ -1245,6 +1245,7 @@ export class RikaiContent {
 
     const popupOptions: PopupOptions = {
       showDefinitions: !this._config.readingOnly,
+      copyKey: this._config.keys.startCopy[0] || '',
       copyState: this._copyMode ? CopyState.Active : CopyState.Inactive,
       copyIndex: this._copyIndex,
       ...options,

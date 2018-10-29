@@ -73,6 +73,11 @@ const browser = {
 const config = {
   readingOnly: false,
   holdToShowKeys: [],
+  keys: {
+    toggleDefinition: ['d'],
+    nextDictionary: ['Shift', 'Enter'],
+    startCopy: ['c'],
+  },
   noTextHighlight: false,
   popupStyle: 'blue',
 };
@@ -193,6 +198,7 @@ for (const test of highlightTests) {
   for (const theme of themes) {
     const popup = rikaiContent._renderPopup(test.queryResult, {
       showDefinitions: true,
+      copyKey: 'c',
       copyState: 1,
       copyIndex: 0,
     });

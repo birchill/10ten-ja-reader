@@ -15,6 +15,7 @@ export const enum CopyTarget {
 
 export interface PopupOptions {
   showDefinitions: boolean;
+  copyKey: string;
   copyState?: CopyState;
   // Set when copyState !== CopyState.Inactive
   copyIndex?: number;
@@ -107,7 +108,11 @@ function renderWordEntries(
     container.append(moreDiv);
   }
 
-  const copyDetails = renderCopyDetails(options.copyState, options.copyTarget);
+  const copyDetails = renderCopyDetails(
+    options.copyKey,
+    options.copyState,
+    options.copyTarget
+  );
   if (copyDetails) {
     container.append(copyDetails);
   }
@@ -185,7 +190,11 @@ function renderNamesEntries(
     namesTable.append(moreDiv);
   }
 
-  const copyDetails = renderCopyDetails(options.copyState, options.copyTarget);
+  const copyDetails = renderCopyDetails(
+    options.copyKey,
+    options.copyState,
+    options.copyTarget
+  );
   if (copyDetails) {
     container.append(copyDetails);
   }
@@ -401,9 +410,14 @@ function renderKanjiEntry(
     referenceTable.append(valueCell);
   }
 
-  const copyDetails = renderCopyDetails(options.copyState, options.copyTarget, {
-    kanji: true,
-  });
+  const copyDetails = renderCopyDetails(
+    options.copyKey,
+    options.copyState,
+    options.copyTarget,
+    {
+      kanji: true,
+    }
+  );
   if (copyDetails) {
     container.append(copyDetails);
   }
@@ -412,6 +426,7 @@ function renderKanjiEntry(
 }
 
 function renderCopyDetails(
+  copyKey: string,
   copyState?: CopyState,
   copyTarget?: CopyTarget,
   options: { kanji: boolean } = { kanji: false }
@@ -464,7 +479,7 @@ function renderCopyDetails(
   keysDiv.append(', ');
 
   const nextKey = document.createElement('kbd');
-  nextKey.append('c');
+  nextKey.append(copyKey);
   keysDiv.append(
     nextKey,
     ' = ' + browser.i18n.getMessage('content_copy_keys_next_label')
