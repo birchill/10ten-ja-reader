@@ -147,6 +147,18 @@
   "options_popup_start_copy": {
     "message": "コピーモードを有効にする"
   },
+  "options_popup_copy_entry": {
+    "message": "項目をコピーする"
+  },
+  "options_popup_copy_fields": {
+    "message": "タブ区切りフィールドをコピーする"
+  },
+  "options_popup_copy_word_kanji": {
+    "message": "単語又は漢字をコピーする"
+  },
+  "options_popup_copy_next": {
+    "message": "次の項目を選択する"
+  },
   "options_kanji_dictionary_heading": {
     "message": "漢字辞典",
     "description": "Heading for options to configure what information is displayed from the kanji dictionary"

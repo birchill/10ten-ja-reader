@@ -350,6 +350,39 @@ function addPopupKeys() {
     const keyDescription = document.createElement('div');
     keyDescription.classList.add('key-description');
     keyDescription.textContent = browser.i18n.getMessage(setting.l10nKey);
+
+    // Copy keys has an extended description.
+    if (setting.name === 'startCopy') {
+      const copyKeyList = document.createElement('ul');
+      copyKeyList.classList.add('key-list');
+
+      // XXX Move these copy key definitions somewhere central
+      const copyKeys = [
+        { key: 'e', id: 'options_popup_copy_entry' },
+        { key: 't', id: 'options_popup_copy_fields' },
+        { key: 'w', id: 'options_popup_copy_word_kanji' },
+        // We just show the first key here. This matches what we show in the
+        // pop-up too.
+        { key: setting.keys[0], id: 'options_popup_copy_next' },
+      ];
+
+      for (const copyKey of copyKeys) {
+        const item = document.createElement('li');
+        item.classList.add('key');
+
+        const keyLabel = document.createElement('label');
+        const keySpan = document.createElement('span');
+        keySpan.append(copyKey.key);
+        keyLabel.append(keySpan);
+        item.append(keyLabel);
+        item.append(browser.i18n.getMessage(copyKey.id));
+
+        copyKeyList.appendChild(item);
+      }
+
+      keyDescription.appendChild(copyKeyList);
+    }
+
     grid.appendChild(keyDescription);
   }
 }

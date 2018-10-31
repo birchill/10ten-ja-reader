@@ -147,6 +147,18 @@
   "options_popup_start_copy": {
     "message": "Enter copy mode"
   },
+  "options_popup_copy_entry": {
+    "message": "Copy entry"
+  },
+  "options_popup_copy_fields": {
+    "message": "Copy tab-separated fields"
+  },
+  "options_popup_copy_word_kanji": {
+    "message": "Copy word or kanji"
+  },
+  "options_popup_copy_next": {
+    "message": "Highlight next entry"
+  },
   "options_kanji_dictionary_heading": {
     "message": "Kanji dictionary",
     "description": "Heading for options to configure what information is displayed from the kanji dictionary"
