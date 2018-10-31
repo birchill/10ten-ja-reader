@@ -111,7 +111,7 @@ function renderWordEntries(
   const copyDetails = renderCopyDetails(
     options.copyKey,
     options.copyState,
-    options.copyTarget
+    typeof options.copyTarget !== 'undefined' ? options.copyTarget : undefined
   );
   if (copyDetails) {
     container.append(copyDetails);
@@ -193,7 +193,7 @@ function renderNamesEntries(
   const copyDetails = renderCopyDetails(
     options.copyKey,
     options.copyState,
-    options.copyTarget
+    typeof options.copyTarget !== 'undefined' ? options.copyTarget : undefined
   );
   if (copyDetails) {
     container.append(copyDetails);
@@ -413,7 +413,7 @@ function renderKanjiEntry(
   const copyDetails = renderCopyDetails(
     options.copyKey,
     options.copyState,
-    options.copyTarget,
+    typeof options.copyTarget !== 'undefined' ? options.copyTarget : undefined,
     {
       kanji: true,
     }
