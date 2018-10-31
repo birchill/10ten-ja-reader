@@ -223,9 +223,6 @@ export class RikaiContent {
     previousFocus?: Element;
   } | null = null;
 
-  // Key tracking
-  _keysDown: Set<string> = new Set();
-
   // Mouse tracking
   //
   // We don't show the popup when the mouse is moving at speed because it's
@@ -255,11 +252,9 @@ export class RikaiContent {
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
-    this.onKeyUp = this.onKeyUp.bind(this);
     window.addEventListener('mousemove', this.onMouseMove);
     window.addEventListener('mousedown', this.onMouseDown);
     window.addEventListener('keydown', this.onKeyDown);
-    window.addEventListener('keyup', this.onKeyUp);
 
     this.testTimerPrecision();
   }
@@ -288,7 +283,6 @@ export class RikaiContent {
     window.removeEventListener('mousemove', this.onMouseMove);
     window.removeEventListener('mousedown', this.onMouseDown);
     window.removeEventListener('keydown', this.onKeyDown);
-    window.removeEventListener('keyup', this.onKeyUp);
 
     this.clearHighlight(null);
     this._selectedTextBox = null;
@@ -460,11 +454,6 @@ export class RikaiContent {
       return;
     }
 
-    // Likewise, ignore other modifiers.
-    if (ev.ctrlKey || ev.altKey || ev.metaKey) {
-      return;
-    }
-
     // If we're not visible we should ignore any keystrokes.
     if (!this.isVisible()) {
       return;
@@ -497,6 +486,10 @@ export class RikaiContent {
       }
     } else if (
       navigator.clipboard &&
+      // It's important we _don't_ enter copy mode when the Ctrl key is being
+      // pressed since otherwise if the user simply wants to copy the selected
+      // text by pressing Ctrl+C they will end up entering copy mode.
+      !ev.ctrlKey &&
       this._config.keys.startCopy.includes(ev.key) &&
       this._currentSearchResult
     ) {
@@ -520,13 +513,7 @@ export class RikaiContent {
       return;
     }
 
-    this._keysDown.add(ev.key);
-
     ev.preventDefault();
-  }
-
-  onKeyUp(ev: KeyboardEvent) {
-    this._keysDown.delete(ev.key);
   }
 
   // Test if an incoming keyboard event matches the hold-to-show key sequence
