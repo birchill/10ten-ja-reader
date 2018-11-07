@@ -255,7 +255,7 @@ export class RikaiContent {
     this.onKeyDown = this.onKeyDown.bind(this);
     window.addEventListener('mousemove', this.onMouseMove);
     window.addEventListener('mousedown', this.onMouseDown);
-    window.addEventListener('keydown', this.onKeyDown);
+    window.addEventListener('keydown', this.onKeyDown, { capture: true });
 
     this.testTimerPrecision();
   }
@@ -533,6 +533,7 @@ export class RikaiContent {
       return;
     }
 
+    ev.stopPropagation();
     ev.preventDefault();
   }
 
