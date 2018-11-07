@@ -1,4 +1,10 @@
 import { NameEntry, QueryResult, WordEntry } from './query';
+import {
+  CopyKeys,
+  CopyType,
+  CopyKanjiKeyStrings,
+  CopyNextKeyStrings,
+} from './copy-keys';
 
 export const enum CopyState {
   Inactive,
@@ -7,20 +13,14 @@ export const enum CopyState {
   Error,
 }
 
-export const enum CopyTarget {
-  Entry,
-  TabDelimited,
-  Word,
-}
-
 export interface PopupOptions {
   showDefinitions: boolean;
-  copyKey: string;
+  copyNextKey: string;
   copyState?: CopyState;
   // Set when copyState !== CopyState.Inactive
   copyIndex?: number;
   // Set when copyState === CopyState.Finished
-  copyTarget?: CopyTarget;
+  copyType?: CopyType;
 }
 
 export function renderPopup(
@@ -109,9 +109,9 @@ function renderWordEntries(
   }
 
   const copyDetails = renderCopyDetails(
-    options.copyKey,
+    options.copyNextKey,
     options.copyState,
-    typeof options.copyTarget !== 'undefined' ? options.copyTarget : undefined
+    typeof options.copyType !== 'undefined' ? options.copyType : undefined
   );
   if (copyDetails) {
     container.append(copyDetails);
@@ -191,9 +191,9 @@ function renderNamesEntries(
   }
 
   const copyDetails = renderCopyDetails(
-    options.copyKey,
+    options.copyNextKey,
     options.copyState,
-    typeof options.copyTarget !== 'undefined' ? options.copyTarget : undefined
+    typeof options.copyType !== 'undefined' ? options.copyType : undefined
   );
   if (copyDetails) {
     container.append(copyDetails);
@@ -411,9 +411,9 @@ function renderKanjiEntry(
   }
 
   const copyDetails = renderCopyDetails(
-    options.copyKey,
+    options.copyNextKey,
     options.copyState,
-    typeof options.copyTarget !== 'undefined' ? options.copyTarget : undefined,
+    typeof options.copyType !== 'undefined' ? options.copyType : undefined,
     {
       kanji: true,
     }
@@ -426,9 +426,9 @@ function renderKanjiEntry(
 }
 
 function renderCopyDetails(
-  copyKey: string,
+  copyNextKey: string,
   copyState?: CopyState,
-  copyTarget?: CopyTarget,
+  copyType?: CopyType,
   options: { kanji: boolean } = { kanji: false }
 ): HTMLElement | null {
   if (typeof copyState === 'undefined' || copyState === CopyState.Inactive) {
@@ -444,50 +444,32 @@ function renderCopyDetails(
 
   keysDiv.append(browser.i18n.getMessage('content_copy_keys_label') + ' ');
 
-  const entryKey = document.createElement('kbd');
-  entryKey.append('e');
-  keysDiv.append(
-    entryKey,
-    ' = ' + browser.i18n.getMessage('content_copy_keys_entry_label')
+  const copyKeys: Array<{ key: string; l10nKey: string }> = CopyKeys.map(
+    ({ key, type, popupString }) => {
+      if (type === CopyType.Word && options.kanji) {
+        return { key, l10nKey: CopyKanjiKeyStrings.popupString };
+      } else {
+        return { key, l10nKey: popupString };
+      }
+    }
   );
+  copyKeys.push({
+    key: copyNextKey,
+    l10nKey: CopyNextKeyStrings.popupString,
+  });
 
-  keysDiv.append(', ');
-
-  const fieldsKey = document.createElement('kbd');
-  fieldsKey.append('t');
-  keysDiv.append(
-    fieldsKey,
-    ' = ' + browser.i18n.getMessage('content_copy_keys_fields_label')
-  );
-
-  keysDiv.append(', ');
-
-  const wordKey = document.createElement('kbd');
-  wordKey.append('w');
-  if (options.kanji) {
-    keysDiv.append(
-      wordKey,
-      ' = ' + browser.i18n.getMessage('content_copy_keys_kanji_label')
-    );
-  } else {
-    keysDiv.append(
-      wordKey,
-      ' = ' + browser.i18n.getMessage('content_copy_keys_word_label')
-    );
+  for (const copyKey of copyKeys) {
+    const keyElem = document.createElement('kbd');
+    keyElem.append(copyKey.key);
+    keysDiv.append(keyElem, ' = ' + browser.i18n.getMessage(copyKey.l10nKey));
+    if (copyKey.key !== copyNextKey) {
+      keysDiv.append(', ');
+    }
   }
 
-  keysDiv.append(', ');
-
-  const nextKey = document.createElement('kbd');
-  nextKey.append(copyKey);
-  keysDiv.append(
-    nextKey,
-    ' = ' + browser.i18n.getMessage('content_copy_keys_next_label')
-  );
-
-  if (copyState === CopyState.Finished && typeof copyTarget !== 'undefined') {
+  if (copyState === CopyState.Finished && typeof copyType !== 'undefined') {
     copyDiv.classList.add('-finished');
-    copyDiv.append(renderCopyStatus(getCopiedString(copyTarget)));
+    copyDiv.append(renderCopyStatus(getCopiedString(copyType)));
   } else if (copyState === CopyState.Error) {
     copyDiv.classList.add('-error');
     copyDiv.append(
@@ -498,15 +480,15 @@ function renderCopyDetails(
   return copyDiv;
 }
 
-function getCopiedString(target: CopyTarget): string {
+function getCopiedString(target: CopyType): string {
   switch (target) {
-    case CopyTarget.Entry:
+    case CopyType.Entry:
       return browser.i18n.getMessage('content_copied_entry');
 
-    case CopyTarget.TabDelimited:
+    case CopyType.TabDelimited:
       return browser.i18n.getMessage('content_copied_fields');
 
-    case CopyTarget.Word:
+    case CopyType.Word:
       return browser.i18n.getMessage('content_copied_word');
   }
 }

@@ -358,12 +358,12 @@ function addPopupKeys() {
 
       // XXX Move these copy key definitions somewhere central
       const copyKeys = [
-        { key: 'e', id: 'options_popup_copy_entry' },
-        { key: 't', id: 'options_popup_copy_fields' },
-        { key: 'w', id: 'options_popup_copy_word_kanji' },
+        { key: 'e', l10nKey: 'options_popup_copy_entry' },
+        { key: 't', l10nKey: 'options_popup_copy_fields' },
+        { key: 'w', l10nKey: 'options_popup_copy_word_kanji' },
         // We just show the first key here. This matches what we show in the
         // pop-up too.
-        { key: setting.keys[0], id: 'options_popup_copy_next' },
+        { key: setting.keys[0], l10nKey: 'options_popup_copy_next' },
       ];
 
       for (const copyKey of copyKeys) {
@@ -375,7 +375,7 @@ function addPopupKeys() {
         keySpan.append(copyKey.key);
         keyLabel.append(keySpan);
         item.append(keyLabel);
-        item.append(browser.i18n.getMessage(copyKey.id));
+        item.append(browser.i18n.getMessage(copyKey.l10nKey));
 
         copyKeyList.appendChild(item);
       }

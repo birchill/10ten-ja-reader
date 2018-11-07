@@ -45,7 +45,8 @@
 
 */
 
-import { renderPopup, CopyState, CopyTarget, PopupOptions } from './popup';
+import { CopyKeys, CopyType } from './copy-keys';
+import { renderPopup, CopyState, PopupOptions } from './popup';
 import { query, QueryResult, WordEntry, NameEntry } from './query';
 
 declare global {
@@ -503,12 +504,31 @@ export class RikaiContent {
     } else if (this._copyMode && ev.key === 'Escape') {
       this._copyMode = false;
       this.showPopup();
-    } else if (this._copyMode && ev.key === 'w') {
-      this.copyWord();
-    } else if (this._copyMode && ev.key === 'e') {
-      this.copyEntry();
-    } else if (this._copyMode && ev.key === 't') {
-      this.copyFields();
+    } else if (this._copyMode) {
+      let copyType: CopyType | undefined;
+      for (const copyKey of CopyKeys) {
+        if (ev.key === copyKey.key) {
+          copyType = copyKey.type;
+          break;
+        }
+      }
+
+      if (typeof copyType === 'undefined') {
+        // Unrecognized key -- make sure not to call preventDefault()
+        return;
+      }
+
+      switch (copyType) {
+        case CopyType.Entry:
+          this.copyEntry();
+          break;
+        case CopyType.TabDelimited:
+          this.copyFields();
+          break;
+        case CopyType.Word:
+          this.copyWord();
+          break;
+      }
     } else {
       return;
     }
@@ -1232,7 +1252,7 @@ export class RikaiContent {
 
     const popupOptions: PopupOptions = {
       showDefinitions: !this._config.readingOnly,
-      copyKey: this._config.keys.startCopy[0] || '',
+      copyNextKey: this._config.keys.startCopy[0] || '',
       copyState: this._copyMode ? CopyState.Active : CopyState.Inactive,
       copyIndex: this._copyIndex,
       ...options,
@@ -1416,7 +1436,7 @@ export class RikaiContent {
         break;
     }
 
-    await this.copyString(toCopy!, CopyTarget.Word);
+    await this.copyString(toCopy!, CopyType.Word);
   }
 
   async copyEntry() {
@@ -1476,7 +1496,7 @@ export class RikaiContent {
         break;
     }
 
-    await this.copyString(toCopy!, CopyTarget.Entry);
+    await this.copyString(toCopy!, CopyType.Entry);
   }
 
   async copyFields() {
@@ -1518,7 +1538,7 @@ export class RikaiContent {
         break;
     }
 
-    await this.copyString(toCopy!, CopyTarget.TabDelimited);
+    await this.copyString(toCopy!, CopyType.TabDelimited);
   }
 
   private getCopyEntry(): TaggedEntry | null {
@@ -1557,7 +1577,7 @@ export class RikaiContent {
     }
   }
 
-  private async copyString(message: string, copyTarget: CopyTarget) {
+  private async copyString(message: string, copyType: CopyType) {
     let copyState = CopyState.Finished;
     try {
       await navigator.clipboard.writeText(message);
@@ -1568,10 +1588,7 @@ export class RikaiContent {
     }
 
     this._copyMode = false;
-    this.showPopup({
-      copyState,
-      copyTarget,
-    });
+    this.showPopup({ copyState, copyType });
   }
 
   // Expose the renderPopup callback so that we can test it
