@@ -143,6 +143,9 @@ function parseNameEntries(
       ? { kanji: kanjiKana, kana }
       : { kanji: undefined, kana: kanjiKana };
 
+    // Replace / separators in definition with ;
+    definition = definition.replace(/\//g, '; ');
+
     // Combine with previous entry if the definitions match.
     const prevEntry = result.length ? result[result.length - 1] : null;
     if (prevEntry && prevEntry.definition === definition) {
@@ -179,7 +182,10 @@ function parseWordEntries(
     if (!matches) {
       continue;
     }
-    const [kanjiKana, kana, definition] = matches.slice(1);
+    let [kanjiKana, kana, definition] = matches.slice(1);
+
+    // Replace / separators in definition with ;
+    definition = definition.replace(/\//g, '; ');
 
     // Combine with previous entry if both kanji and definition match.
     const prevEntry = result.length ? result[result.length - 1] : null;

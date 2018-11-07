@@ -90,7 +90,7 @@ const htmlTests = [
           kanjiKana: '走る',
           kana: ['はしる'],
           definition:
-            '(v5r,vi) to run/to travel (movement of vehicles)/to hurry to/to retreat (from battle)/to take flight/to run away from home/to elope/to tend heavily toward/(P)/',
+            '(v5r,vi) to run; to travel (movement of vehicles); to hurry to; to retreat (from battle); to take flight; to run away from home; to elope; to tend heavily toward; (P); ',
           reason: '< past',
         },
       ],
@@ -112,7 +112,7 @@ const htmlTests = [
         {
           kanjiKana: '韓国',
           kana: ['からくに'],
-          definition: '(n,arch) China/Korea',
+          definition: '(n,arch) China; Korea',
           reason: null,
         },
         {
@@ -134,33 +134,33 @@ const htmlTests = [
         {
           kanjiKana: '東',
           kana: ['ひがし'],
-          definition: '(n) east/(P)',
+          definition: '(n) east; (P)',
           reason: null,
         },
         {
           kanjiKana: '東',
           kana: ['ひむかし'],
-          definition: '(n,ok) east/(P)',
+          definition: '(n,ok) east; (P)',
           reason: null,
         },
         {
           kanjiKana: '東',
           kana: ['ひんがし'],
-          definition: '(n,ok) east/(P)',
+          definition: '(n,ok) east; (P)',
           reason: null,
         },
         {
           kanjiKana: '東',
           kana: ['あずま'],
           definition:
-            '(n,arch,abbr) east/eastern Japan/six-stringed Japanese zither/my spouse',
+            '(n,arch,abbr) east; eastern Japan; six-stringed Japanese zither; my spouse',
           reason: null,
         },
         {
           kanjiKana: '東',
           kana: ['あづま'],
           definition:
-            '(n,arch,abbr,ok) east/eastern Japan/six-stringed Japanese zither/my spouse',
+            '(n,arch,abbr,ok) east; eastern Japan; six-stringed Japanese zither; my spouse',
           reason: null,
         },
       ],
@@ -182,7 +182,7 @@ const htmlTests = [
         {
           kanjiKana: '韓国',
           kana: ['からくに'],
-          definition: '(n,arch) China/Korea',
+          definition: '(n,arch) China; Korea',
           reason: null,
         },
         {
@@ -207,46 +207,46 @@ const htmlTests = [
         {
           kanjiKana: '韓国',
           kana: ['からくに'],
-          definition: '(n,arch) China/Korea',
+          definition: '(n,arch) China; Korea',
           reason: null,
         },
         {
           kanjiKana: '中国',
           kana: ['ちゅうごく'],
           definition:
-            '(n) China/South-west most region of Honshu/middle of a country/the Hiroshima area',
+            '(n) China; South-west most region of Honshu; middle of a country; the Hiroshima area',
           reason: null,
         },
         {
           kanjiKana: '殿',
           kana: ['との'],
-          definition: '(n) feudal lord/mansion/palace',
+          definition: '(n) feudal lord; mansion; palace',
           reason: null,
         },
         {
           kanjiKana: '通貨',
           kana: ['つうか'],
-          definition: '(n,adj-no) currency/(P)',
+          definition: '(n,adj-no) currency; (P)',
           reason: null,
         },
         {
           kanjiKana: 'スワップ',
           kana: [],
-          definition: '(n,vs) swap/(P)',
+          definition: '(n,vs) swap; (P)',
           reason: null,
         },
         {
           kanjiKana: '延長',
           kana: ['えんちょう'],
           definition:
-            '(n,vs) extension/elongation/prolongation/lengthening/Enchou era (923.4.11-931.4.26)/(P)',
+            '(n,vs) extension; elongation; prolongation; lengthening; Enchou era (923.4.11-931.4.26); (P)',
           reason: null,
         },
         {
           kanjiKana: '合意',
           kana: ['ごうい'],
           definition:
-            '(n,vs,adj-no) agreement/consent/mutual understanding/(P)',
+            '(n,vs,adj-no) agreement; consent; mutual understanding; (P)',
           reason: null,
         },
       ],

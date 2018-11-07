@@ -97,7 +97,7 @@ function renderWordEntries(
       const definitionSpan = document.createElement('span');
       entryDiv.append(definitionSpan);
       definitionSpan.classList.add('w-def');
-      definitionSpan.append(entry.definition.replace(/\//g, '; '));
+      definitionSpan.append(entry.definition);
     }
   }
 
@@ -178,7 +178,7 @@ function renderNamesEntries(
     const definitionSpan = document.createElement('div');
     entryDiv.append(definitionSpan);
     definitionSpan.classList.add('w-def');
-    definitionSpan.append(entry.definition.replace(/\//g, '; '));
+    definitionSpan.append(entry.definition);
 
     namesTable.append(entryDiv);
   }

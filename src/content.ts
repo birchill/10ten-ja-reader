@@ -1453,7 +1453,7 @@ export class RikaiContent {
         if (entry.data.kana.length) {
           toCopy += ` [${entry.data.kana.join('; ')}]`;
         }
-        toCopy += ' ' + entry.data.definition.replace(/\//g, '; ');
+        toCopy += ' ' + entry.data.definition;
         break;
 
       case 'name':
@@ -1462,7 +1462,7 @@ export class RikaiContent {
             name => (name.kanji ? `${name.kanji} [${name.kana}]` : name.kana)
           )
           .join(', ');
-        toCopy += ' ' + entry.data.definition.replace(/\//g, '; ');
+        toCopy += ' ' + entry.data.definition;
         break;
 
       case 'kanji':
