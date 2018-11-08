@@ -101,4 +101,34 @@ describe('deinflect', () => {
     const match = result.find(candidate => candidate.word == 'もどく');
     expect(match).toBeUndefined();
   });
+
+  it('deinflects other irregular verbs', () => {
+    const cases = [
+      ['請うた', '請う'],
+      ['乞うた', '乞う'],
+      ['恋うた', '恋う'],
+      ['こうた', 'こう'],
+      ['問うた', '問う'],
+      ['とうた', 'とう'],
+      ['負うた', '負う'],
+      ['おうた', 'おう'],
+      ['沿うた', '沿う'],
+      ['添うた', '添う'],
+      ['副うた', '副う'],
+      ['そうた', 'そう'],
+      ['厭うた', '厭う'],
+      ['いとうた', 'いとう'],
+      ['のたもうた', 'のたまう'],
+    ];
+
+    for (const [inflected, plain] of cases) {
+      const result = deinflect(inflected);
+      const match = result.find(candidate => candidate.word == plain);
+      expect(match).toEqual({
+        reasons: [[DeinflectReason.Past]],
+        type: 2,
+        word: plain,
+      });
+    }
+  });
 });
