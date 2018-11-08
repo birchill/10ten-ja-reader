@@ -1,5 +1,7 @@
 ## 0.0.26 (not yet released)
 
+* Added support for copying entries to the clipboard..
+  Press 'c' when the popup is displayed then follow the on-scren prompts.
 * Added Kanji kentei levels to kanji popup
 * Added support for parsing ぬ verbs
   ([#56](https://github.com/birtles/rikaichamp/issues/56))
