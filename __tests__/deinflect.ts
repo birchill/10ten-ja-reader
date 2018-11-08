@@ -81,6 +81,8 @@ describe('deinflect', () => {
       ['いって', 'いく', DeinflectReason.Te, 2],
       ['いったり', 'いく', DeinflectReason.Tari, 2],
       ['いったら', 'いく', DeinflectReason.Tara, 2],
+      ['逝った', '逝く', DeinflectReason.Past, 2],
+      ['往った', '往く', DeinflectReason.Past, 2],
     ];
 
     for (const [inflected, plain, reason, type] of cases) {
