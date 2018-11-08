@@ -483,7 +483,7 @@ export class Dictionary {
               }
               if (
                 candidate.type & WordType.GodanVerb &&
-                fragment.substr(0, 2) == 'v5'
+                (fragment.substr(0, 2) == 'v5' || fragment.substr(0, 2) == 'v4')
               ) {
                 break;
               }

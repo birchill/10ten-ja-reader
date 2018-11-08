@@ -274,6 +274,11 @@ describe('Dictionary', () => {
     }
   });
 
+  it('looks up irregular Yodan verbs', async () => {
+    const result = await sharedDict.wordSearch('のたもうた');
+    expect(result.data[0][0]).toEqual(expect.stringContaining('[のたまう]'));
+  });
+
   it('orders words by priority', async () => {
     const result = await sharedDict.wordSearch('認める');
     expect(result.data[0][0]).toEqual(expect.stringContaining('[みとめる]'));
