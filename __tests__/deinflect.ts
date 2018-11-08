@@ -70,4 +70,29 @@ describe('deinflect', () => {
       word: 'くる',
     });
   });
+
+  it('deinflects irregular forms of 行く', () => {
+    const cases = [
+      ['行った', '行く', DeinflectReason.Past, 2],
+      ['行って', '行く', DeinflectReason.Te, 2],
+      ['いった', 'いく', DeinflectReason.Past, 2],
+      ['いって', 'いく', DeinflectReason.Te, 2],
+    ];
+
+    for (const [inflected, plain, reason, type] of cases) {
+      const result = deinflect(inflected);
+      const match = result.find(candidate => candidate.word == plain);
+      expect(match).toEqual({
+        reasons: [[reason]],
+        type,
+        word: plain,
+      });
+    }
+  });
+
+  it('does NOT deinflect other verbs ending in く like 行く', () => {
+    const result = deinflect('もどって');
+    const match = result.find(candidate => candidate.word == 'もどく');
+    expect(match).toBeUndefined();
+  });
 });
