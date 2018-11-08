@@ -1,7 +1,8 @@
 ## 0.0.26 (not yet released)
 
-* Added support for copying entries to the clipboard..
+* Added support for copying entries to the clipboard.
   Press 'c' when the popup is displayed then follow the on-scren prompts.
+  ([#50](https://github.com/birtles/rikaichamp/issues/50))
 * Added Kanji kentei levels to kanji popup
 * Added support for parsing ぬ verbs
   ([#56](https://github.com/birtles/rikaichamp/issues/56))
@@ -9,6 +10,9 @@
 * Added deinflecting き → 来る
   ([#59](https://github.com/birtles/rikaichamp/issues/59))
   thanks to [@ispedals](https://github.com/ispedals).
+* Added support for looking up various conjugated irregular verbs and
+  Yodan verbs and improved lookup for regular verbs
+  ([#58](https://github.com/birtles/rikaichamp/issues/58)).
 
 ## 0.0.25 (2018-09-27)
 
