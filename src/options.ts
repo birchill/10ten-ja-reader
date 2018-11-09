@@ -2,6 +2,7 @@ import '../html/options.html.src';
 
 import Config from './config';
 import { Command, CommandParams, isValidKey } from './commands';
+import { CopyKeys, CopyNextKeyStrings } from './copy-keys';
 import { translateDoc } from './l10n';
 
 declare global {
@@ -356,15 +357,15 @@ function addPopupKeys() {
       const copyKeyList = document.createElement('ul');
       copyKeyList.classList.add('key-list');
 
-      // XXX Move these copy key definitions somewhere central
-      const copyKeys = [
-        { key: 'e', l10nKey: 'options_popup_copy_entry' },
-        { key: 't', l10nKey: 'options_popup_copy_fields' },
-        { key: 'w', l10nKey: 'options_popup_copy_word_kanji' },
+      const copyKeys: Array<{ key: string; l10nKey: string }> = CopyKeys.map(
+        ({ key, optionsString }) => ({ key, l10nKey: optionsString })
+      );
+      copyKeys.push({
         // We just show the first key here. This matches what we show in the
         // pop-up too.
-        { key: setting.keys[0], l10nKey: 'options_popup_copy_next' },
-      ];
+        key: setting.keys[0],
+        l10nKey: CopyNextKeyStrings.optionsString,
+      });
 
       for (const copyKey of copyKeys) {
         const item = document.createElement('li');
