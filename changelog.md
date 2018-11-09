@@ -13,6 +13,7 @@
 * Added support for looking up various conjugated irregular verbs and
   Yodan verbs and improved lookup for regular verbs
   ([#58](https://github.com/birtles/rikaichamp/issues/58)).
+* Updated dictionaries to 2018-11-08 snapshot.
 
 ## 0.0.25 (2018-09-27)
 
