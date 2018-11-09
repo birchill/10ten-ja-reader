@@ -34,6 +34,7 @@ type ChangeCallback = (changes: object) => void;
 interface KeySetting {
   name: keyof KeyboardKeys;
   keys: string[];
+  enabledKeys: string[];
   l10nKey: string;
 }
 
@@ -46,27 +47,22 @@ export class Config {
     {
       name: 'nextDictionary',
       keys: ['Shift', 'Enter'],
+      enabledKeys: ['Shift', 'Enter'],
       l10nKey: 'options_popup_switch_dictionaries',
     },
     {
       name: 'toggleDefinition',
       keys: ['d'],
+      enabledKeys: [],
       l10nKey: 'options_popup_toggle_definition',
     },
     {
       name: 'startCopy',
       keys: ['c'],
+      enabledKeys: ['c'],
       l10nKey: 'options_popup_start_copy',
     },
   ];
-
-  DEFAULT_KEYS: KeyboardKeys = this.DEFAULT_KEY_SETTINGS.reduce(
-    (defaultKeys, setting) => {
-      defaultKeys[setting.name] = setting.keys;
-      return defaultKeys;
-    },
-    {} as Partial<KeyboardKeys>
-  ) as KeyboardKeys;
 
   constructor() {
     this._readPromise = this._readSettings();
@@ -192,11 +188,20 @@ export class Config {
     }
   }
 
-  // keys: Defaults are defined by DEFAULT_KEYS
+  // keys: Defaults are defined by DEFAULT_KEY_SETTINGS, and particularly the
+  // enabledKeys member.
 
   get keys(): KeyboardKeys {
     const setValues = this._settings.keys || {};
-    return { ...this.DEFAULT_KEYS, ...setValues };
+    const defaultEnabledKeys: KeyboardKeys = this.DEFAULT_KEY_SETTINGS.reduce(
+      (defaultKeys, setting) => {
+        defaultKeys[setting.name] = setting.enabledKeys;
+        return defaultKeys;
+      },
+      {} as Partial<KeyboardKeys>
+    ) as KeyboardKeys;
+
+    return { ...defaultEnabledKeys, ...setValues };
   }
 
   updateKeys(keys: Partial<KeyboardKeys>) {
