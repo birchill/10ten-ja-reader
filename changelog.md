@@ -13,6 +13,10 @@
 * Added support for looking up various conjugated irregular verbs and
   Yodan verbs and improved lookup for regular verbs
   ([#58](https://github.com/birtles/rikaichamp/issues/58)).
+* Made the 'Toggle definitions' key (<kbd>d</kbd>) be disabled by
+  default ([#57](https://github.com/birtles/rikaichamp/issues/57)).
+  If you use this key, you will need to re-enable it from the extension options
+  page.
 * Updated dictionaries to 2018-11-08 snapshot.
 
 ## 0.0.25 (2018-09-27)
