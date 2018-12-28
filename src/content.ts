@@ -1392,8 +1392,6 @@ export class RikaiContent {
       const popup = doc.createElement('div');
       popup.setAttribute('id', 'rikaichamp-window');
       popup.classList.add(`-${this._config.popupStyle}`);
-
-      const popupContainer = wrapperElement || doc.documentElement;
       doc.documentElement.append(popup);
 
       // Previous rikai-tachi added a double-click listener here that

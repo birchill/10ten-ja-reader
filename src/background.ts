@@ -261,7 +261,10 @@ class App {
       this.toggle(tab);
     });
     browser.runtime.onMessage.addListener(
-      (request: any, sender: browser.runtime.MessageSender) => {
+      (
+        request: any,
+        sender: browser.runtime.MessageSender
+      ): void | Promise<any> => {
         if (typeof request.type !== 'string') {
           return;
         }

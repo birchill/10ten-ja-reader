@@ -1,5 +1,3 @@
-const fs = require('fs');
-
 import { deinflect, DeinflectReason } from './deinflect';
 
 describe('deinflect', () => {
