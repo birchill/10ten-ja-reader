@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
     "moduleResolution": "node",
     "noImplicitAny": true,
     "outDir": "extension",

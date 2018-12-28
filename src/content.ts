@@ -54,31 +54,6 @@ declare global {
     rikaichamp: any;
   }
 
-  interface ParentNode {
-    append(...nodes: (Node | string)[]): void;
-  }
-
-  interface ChildNode {
-    remove(): void;
-  }
-
-  interface CaretPosition {
-    readonly offsetNode: Node;
-    readonly offset: number;
-  }
-
-  interface Document {
-    caretPositionFromPoint(x: number, y: number): CaretPosition | null;
-  }
-
-  interface NodeIterator {
-    readonly referenceNode?: Node;
-  }
-
-  interface HTMLTextAreaElement {
-    selectionDirection: string;
-  }
-
   /*
    * Clipboard API
    *
@@ -100,6 +75,12 @@ interface RangeEndpoint {
   offset: number;
 }
 
+// Basically CaretPosition but without getClientRect()
+interface CursorPosition {
+  readonly offset: number;
+  readonly offsetNode: Node;
+}
+
 export interface GetTextResult {
   text: string;
   // Contains the node and offset where the selection starts. This will be null
@@ -112,7 +93,7 @@ export interface GetTextResult {
 
 interface CachedGetTextResult {
   result: GetTextResult;
-  position: CaretPosition | null;
+  position: CursorPosition | null;
 }
 
 const isTextInputNode = (
@@ -135,7 +116,10 @@ const isTextInputNode = (
   );
 };
 
-const isInclusiveAncestor = (ancestor: Element, testNode?: Node): boolean => {
+const isInclusiveAncestor = (
+  ancestor: Element,
+  testNode?: Node | null
+): boolean => {
   if (!testNode) {
     return false;
   }
@@ -221,7 +205,7 @@ export class RikaiContent {
     previousStart: number | null;
     previousEnd: number | null;
     previousDirection: string | null;
-    previousFocus?: Element;
+    previousFocus: Element | null;
   } | null = null;
 
   // Mouse tracking
@@ -650,7 +634,7 @@ export class RikaiContent {
     },
     maxLength?: number
   ): GetTextResult | null {
-    let position: CaretPosition | null;
+    let position: CursorPosition | null;
     if (document.caretPositionFromPoint) {
       position = document.caretPositionFromPoint(point.x, point.y);
     } else {
@@ -1061,8 +1045,7 @@ export class RikaiContent {
       return;
     }
 
-    this._selectedWindow =
-      textAtPoint.rangeStart.container.ownerDocument.defaultView;
+    this._selectedWindow = textAtPoint.rangeStart.container.ownerDocument!.defaultView!;
 
     // Check that the window wasn't closed since we started the lookup
     if (this._selectedWindow.closed) {
@@ -1151,7 +1134,7 @@ export class RikaiContent {
         currentLen += len;
       }
 
-      const range = startNode.ownerDocument.createRange();
+      const range = startNode.ownerDocument!.createRange();
       range.setStart(startNode, startOffset);
       range.setEnd(endNode, endOffset);
 
@@ -1248,7 +1231,7 @@ export class RikaiContent {
     }
 
     const doc: Document = this._currentTarget
-      ? this._currentTarget.ownerDocument
+      ? this._currentTarget.ownerDocument!
       : window.document;
 
     const popupOptions: PopupOptions = {
@@ -1280,8 +1263,8 @@ export class RikaiContent {
       // (We should never be too far left since popupX, if set to
       // something non-zero, is coming from a mouse event which should
       // be positive.)
-      if (popupX + popupWidth > doc.defaultView.innerWidth - 20) {
-        popupX = doc.defaultView.innerWidth - popupWidth - 20;
+      if (popupX + popupWidth > doc.defaultView!.innerWidth - 20) {
+        popupX = doc.defaultView!.innerWidth - popupWidth - 20;
         if (popupX < 0) {
           popupX = 0;
         }
@@ -1297,7 +1280,10 @@ export class RikaiContent {
       }
 
       // Check if we are too close to the bottom
-      if (popupY + verticalAdjust + popupHeight > doc.defaultView.innerHeight) {
+      if (
+        popupY + verticalAdjust + popupHeight >
+        doc.defaultView!.innerHeight
+      ) {
         // We are, try going up instead...
         const topIfWeGoUp = popupY - popupHeight - 30;
         if (topIfWeGoUp >= 0) {
@@ -1310,8 +1296,8 @@ export class RikaiContent {
       popupY += verticalAdjust;
 
       // Adjust for scroll position
-      popupX += doc.defaultView.scrollX;
-      popupY += doc.defaultView.scrollY;
+      popupX += doc.defaultView!.scrollX;
+      popupY += doc.defaultView!.scrollY;
     }
 
     // This is only needed because Edge's WebIDL definitions are wrong
