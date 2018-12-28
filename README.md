@@ -1,5 +1,7 @@
 # Rikaichamp!
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/birtles/rikaichamp.svg)](https://greenkeeper.io/)
+
 Look up Japanese words with the hover of a mouse.
 
 Rikaichamp is a port of rikaikun, which is a port of rikaichan, which is a port
