@@ -13,7 +13,6 @@
     "test": "npm run lint && npm run test:unit && npm run test:browser",
     "start": "webpack -w",
     "start:chrome": "webpack -w --env.target=chrome",
-    "precommit": "lint-staged",
     "update-db": "node utils/update-db"
   },
   "repository": {
@@ -83,6 +82,11 @@
       "json",
       "jsx"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
     "*.ts": [
