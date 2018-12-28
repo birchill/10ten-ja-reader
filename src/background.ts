@@ -57,6 +57,127 @@ declare global {
   interface Window {
     rcxMain: { config: Config };
   }
+
+  // Recent versions of Firefox use "menus" but in order to support
+  // Chrome and we use "contextMenus".
+  namespace browser.contextMenus {
+    type ContextType =
+      | 'all'
+      | 'audio'
+      | 'bookmarks'
+      | 'browser_action'
+      | 'editable'
+      | 'frame'
+      | 'image'
+      | 'link'
+      | 'page'
+      | 'page_action'
+      | 'password'
+      | 'selection'
+      | 'tab'
+      | 'tools_menu'
+      | 'video';
+
+    type ItemType = 'normal' | 'checkbox' | 'radio' | 'separator';
+
+    type OnClickData = {
+      bookmarkId?: string;
+      checked?: boolean;
+      editable: boolean;
+      frameId?: number;
+      frameUrl?: string;
+      linkText?: string;
+      linkUrl?: string;
+      mediaType?: string;
+      menuItemId: number | string;
+      modifiers: string[];
+      pageUrl?: string;
+      parentMenuItemId?: number | string;
+      selectionText?: string;
+      srcUrl?: string;
+      targetElementId?: number;
+      wasChecked?: boolean;
+    };
+
+    type Tab = {
+      active: boolean;
+      audible?: boolean;
+      autoDiscardable?: boolean;
+      cookieStoreId?: string;
+      discarded?: boolean;
+      favIconUrl?: string;
+      height?: number;
+      hidden: boolean;
+      highlighted: boolean;
+      id?: number;
+      incognito: boolean;
+      index: number;
+      isArticle: boolean;
+      isInReaderMode: boolean;
+      lastAccessed: number;
+      mutedInfo?: MutedInfo;
+      openerTabId?: number;
+      pinned: boolean;
+      selected: boolean;
+      sessionId?: string;
+      status?: string;
+      title?: string;
+      url?: string;
+      width?: number;
+      windowId: number;
+    };
+
+    type MutedInfoReason = 'capture' | 'extension' | 'user';
+    type MutedInfo = {
+      muted: boolean;
+      extensionId?: string;
+      reason: MutedInfoReason;
+    };
+
+    function create(
+      createProperties: {
+        checked?: boolean;
+        command?:
+          | '_execute_browser_action'
+          | '_execute_page_action'
+          | '_execute_sidebar_action';
+        contexts?: ContextType[];
+        documentUrlPatterns?: string[];
+        enabled?: boolean;
+        icons?: object;
+        id?: string;
+        onclick?: (info: OnClickData, tab: Tab) => void;
+        parentId?: number | string;
+        targetUrlPatterns?: string[];
+        title?: string;
+        type?: ItemType;
+        visible?: boolean;
+      },
+      callback?: () => void
+    ): number | string;
+
+    function remove(menuItemId: number | string): Promise<void>;
+
+    function update(
+      id: number | string,
+      updateProperties: {
+        checked?: boolean;
+        command?:
+          | '_execute_browser_action'
+          | '_execute_page_action'
+          | '_execute_sidebar_action';
+        contexts?: ContextType[];
+        documentUrlPatterns?: string[];
+        enabled?: boolean;
+        onclick?: (info: OnClickData, tab: Tab) => void;
+        parentId?: number | string;
+        targetUrlPatterns?: string[];
+        title?: string;
+        type?: ItemType;
+        visible?: boolean;
+      }
+    ): Promise<void>;
+  }
 }
 
 const bugsnagClient = bugsnag({

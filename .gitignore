@@ -1,7 +1,7 @@
 coverage
 node_modules
 web-ext-artifacts
-__tests__/content-loader.js
-__tests__/content-loader.js.map
+tests/content-loader.js
+tests/content-loader.js.map
 dist-chrome
 dist-firefox

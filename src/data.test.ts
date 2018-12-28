@@ -1,12 +1,11 @@
-const fs = require('fs');
+import { readFile } from 'fs';
+import { Dictionary } from './data';
 
-import Dictionary from '../src/data';
-
-// Mock browser.extension.getURL
+// Mock browser.extension.getURL and browser.i18n.getMessage
 global.browser = {
   extension: { getURL: jest.fn(url => url) },
   i18n: {
-    getMessage: id => {
+    getMessage: (id: string) => {
       switch (id) {
         case 'deinflect_polite_past_negative':
           return 'polite past negative';
@@ -77,7 +76,7 @@ global.browser = {
 window.fetch = jest.fn().mockImplementation(
   url =>
     new Promise((resolve, reject) => {
-      fs.readFile(`${__dirname}/../${url}`, function(err, data) {
+      readFile(`${__dirname}/../${url}`, function(err, data) {
         if (err) {
           reject(err);
           return;
@@ -88,7 +87,7 @@ window.fetch = jest.fn().mockImplementation(
 );
 
 // Common dictionary instance to save loading each time
-const sharedDict = new Dictionary({ loadNames: true });
+const sharedDict = new Dictionary({});
 
 describe('Dictionary', () => {
   it('loads', async () => {
@@ -99,44 +98,44 @@ describe('Dictionary', () => {
   it('finds an exact match', async () => {
     const result = await sharedDict.wordSearch('蛋白質');
 
-    expect(result.matchLen).toBe(3); // 3 characters long
-    expect(result.data.length).toBeGreaterThanOrEqual(1);
-    expect(result.data[0][0]).toMatch(/protein/);
+    expect(result!.matchLen).toBe(3); // 3 characters long
+    expect(result!.data.length).toBeGreaterThanOrEqual(1);
+    expect(result!.data[0][0]).toMatch(/protein/);
   });
 
   it('finds a match partially using katakana', async () => {
     const result = await sharedDict.wordSearch('タンパク質');
-    expect(result.matchLen).toBe(5);
+    expect(result!.matchLen).toBe(5);
   });
 
   it('finds a match partially using half-width katakana', async () => {
     const result = await sharedDict.wordSearch('ﾀﾝﾊﾟｸ質');
-    expect(result.matchLen).toBe(6);
+    expect(result!.matchLen).toBe(6);
   });
 
   it('finds a match partially using hiragana', async () => {
     const result = await sharedDict.wordSearch('たんぱく質');
-    expect(result.matchLen).toBe(5);
+    expect(result!.matchLen).toBe(5);
   });
 
   it('finds a match fully using katakana', async () => {
     const result = await sharedDict.wordSearch('タンパクシツ');
-    expect(result.matchLen).toBe(6);
+    expect(result!.matchLen).toBe(6);
   });
 
   it('finds a match fully using half-width katakana', async () => {
     const result = await sharedDict.wordSearch('ﾀﾝﾊﾟｸｼﾂ');
-    expect(result.matchLen).toBe(7);
+    expect(result!.matchLen).toBe(7);
   });
 
   it('finds a match fully using hiragana', async () => {
     const result = await sharedDict.wordSearch('たんぱくしつ');
-    expect(result.matchLen).toBe(6);
+    expect(result!.matchLen).toBe(6);
   });
 
   it('finds a partial match', async () => {
     const result = await sharedDict.wordSearch('蛋白質は');
-    expect(result.matchLen).toBe(3);
+    expect(result!.matchLen).toBe(3);
   });
 
   it('reports character lengths for half-width katakana normalization', () => {
@@ -147,40 +146,30 @@ describe('Dictionary', () => {
   it('chooses the right de-inflection for potential and passives', async () => {
     // Ichidan/ru-verb -- られる ending could be potential or passive
     let result = await sharedDict.wordSearch('止められます');
-    let match = result.data.find(
-      ([item, reason]) => item.indexOf('[とめる]') !== -1
-    );
-    expect(match[1]).toEqual('< potential or passive < polite');
+    let match = result!.data.find(([item]) => item.indexOf('[とめる]') !== -1);
+    expect(match![1]).toEqual('< potential or passive < polite');
 
     // Godan/u-verb -- られる ending is passive
     result = await sharedDict.wordSearch('止まられます');
-    match = result.data.find(
-      ([item, reason]) => item.indexOf('[とまる]') !== -1
-    );
-    expect(match[1]).toEqual('< passive < polite');
+    match = result!.data.find(([item]) => item.indexOf('[とまる]') !== -1);
+    expect(match![1]).toEqual('< passive < polite');
 
     // Godan/u-verb -- れる ending is potential
     result = await sharedDict.wordSearch('止まれます');
-    match = result.data.find(
-      ([item, reason]) => item.indexOf('[とまる]') !== -1
-    );
-    expect(match[1]).toEqual('< potential < polite');
+    match = result!.data.find(([item]) => item.indexOf('[とまる]') !== -1);
+    expect(match![1]).toEqual('< potential < polite');
   });
 
   it('chooses the right de-inflection for causative and passives', async () => {
     // su-verb -- される ending is passive
     let result = await sharedDict.wordSearch('起こされる');
-    let match = result.data.find(
-      ([item, reason]) => item.indexOf('[おこす]') !== -1
-    );
-    expect(match[1]).toEqual('< passive');
+    let match = result!.data.find(([item]) => item.indexOf('[おこす]') !== -1);
+    expect(match![1]).toEqual('< passive');
 
     // su-verb -- させる ending is causative
     result = await sharedDict.wordSearch('起こさせる');
-    match = result.data.find(
-      ([item, reason]) => item.indexOf('[おこす]') !== -1
-    );
-    expect(match[1]).toEqual('< causative');
+    match = result!.data.find(([item]) => item.indexOf('[おこす]') !== -1);
+    expect(match![1]).toEqual('< causative');
   });
 
   it('chooses the right de-inflection for causative passive', async () => {
@@ -205,47 +194,43 @@ describe('Dictionary', () => {
 
     for (const [inflected, plain] of pairs) {
       const result = await sharedDict.wordSearch(inflected);
-      const match = result.data.find(
-        ([item, reason]) => item.indexOf(`[${plain}]`) !== -1
+      const match = result!.data.find(
+        ([item]) => item.indexOf(`[${plain}]`) !== -1
       );
-      expect(match[1]).toEqual('< causative passive');
+      expect(match![1]).toEqual('< causative passive');
     }
 
     // Check for the exceptions:
     //
     // (1) su-verbs: causative passive is させられる only, される is passive
     let result = await sharedDict.wordSearch('起こさせられる');
-    let match = result.data.find(
-      ([item, reason]) => item.indexOf('[おこす]') !== -1
-    );
-    expect(match[1]).toEqual('< causative passive');
+    let match = result!.data.find(([item]) => item.indexOf('[おこす]') !== -1);
+    expect(match![1]).toEqual('< causative passive');
 
     result = await sharedDict.wordSearch('起こされる');
-    match = result.data.find(
-      ([item, reason]) => item.indexOf('[おこす]') !== -1
-    );
-    expect(match[1]).toEqual('< passive');
+    match = result!.data.find(([item]) => item.indexOf('[おこす]') !== -1);
+    expect(match![1]).toEqual('< passive');
 
     // (2) ichidan verbs
     result = await sharedDict.wordSearch('食べさせられる');
-    match = result.data.find(
-      ([item, reason]) => item.indexOf('[たべる]') !== -1
-    );
-    expect(match[1]).toEqual('< causative passive');
+    match = result!.data.find(([item]) => item.indexOf('[たべる]') !== -1);
+    expect(match![1]).toEqual('< causative passive');
 
     // (4) kuru verbs
     result = await sharedDict.wordSearch('来させられる');
-    match = result.data.find(([item, reason]) => item.indexOf('[くる]') !== -1);
-    expect(match[1]).toEqual('< causative passive');
+    match = result!.data.find(([item]) => item.indexOf('[くる]') !== -1);
+    expect(match![1]).toEqual('< causative passive');
 
     result = await sharedDict.wordSearch('こさせられる');
-    match = result.data.find(([item, reason]) => item.indexOf('[くる]') !== -1);
-    expect(match[1]).toEqual('< causative passive');
+    match = result!.data.find(([item]) => item.indexOf('[くる]') !== -1);
+    expect(match![1]).toEqual('< causative passive');
 
     // Check combinations
     result = await sharedDict.wordSearch('買わされませんでした');
-    match = result.data.find(([item, reason]) => item.indexOf('[かう]') !== -1);
-    expect(match[1]).toEqual('< causative passive < polite past negative');
+    match = result!.data.find(
+      ([item, reason]) => item.indexOf('[かう]') !== -1
+    );
+    expect(match![1]).toEqual('< causative passive < polite past negative');
   });
 
   it('chooses the right de-inflection for -te oku', async () => {
@@ -267,33 +252,33 @@ describe('Dictionary', () => {
 
     for (const [inflected, plain] of pairs) {
       const result = await sharedDict.wordSearch(inflected);
-      const match = result.data.find(
-        ([item, reason]) => item.indexOf(`${plain}`) !== -1
+      const match = result!.data.find(
+        ([item]) => item.indexOf(`${plain}`) !== -1
       );
-      expect(match[1]).toEqual(expect.stringMatching(/^< -te oku/));
+      expect(match![1]).toEqual(expect.stringMatching(/^< -te oku/));
     }
   });
 
   it('looks up irregular Yodan verbs', async () => {
     const result = await sharedDict.wordSearch('のたもうた');
-    expect(result.data[0][0]).toEqual(expect.stringContaining('[のたまう]'));
+    expect(result!.data[0][0]).toEqual(expect.stringContaining('[のたまう]'));
   });
 
   it('orders words by priority', async () => {
     const result = await sharedDict.wordSearch('認める');
-    expect(result.data[0][0]).toEqual(expect.stringContaining('[みとめる]'));
-    expect(result.data[1][0]).toEqual(expect.stringContaining('[したためる]'));
+    expect(result!.data[0][0]).toEqual(expect.stringContaining('[みとめる]'));
+    expect(result!.data[1][0]).toEqual(expect.stringContaining('[したためる]'));
   });
 
   it('translates sentences', async () => {
     const result = await sharedDict.translate('期間限定発売 秋の膳');
-    expect(result.textLen).toBe(10); // 10 characters including the space
-    expect(result.data.length).toBe(5);
-    expect(result.more).toBe(false);
-    const kana = result.data
+    expect(result!.textLen).toBe(10); // 10 characters including the space
+    expect(result!.data.length).toBe(5);
+    expect(result!.more).toBe(false);
+    const kana = result!.data
       .map(word => {
         const matches = word[0].match(/^(.+?)\s+(?:\[(.*?)\])?/);
-        return matches[2] || matches[1];
+        return matches![2] || matches![1];
       })
       .join('');
     expect(kana).toBe('きかんげんていはつばいあきのぜん');
@@ -490,7 +475,7 @@ describe('Dictionary', () => {
 
   it('looks up names', async () => {
     const result = await sharedDict.wordSearch('あか組４', true);
-    expect(result.data[0][0]).toEqual(
+    expect(result!.data[0][0]).toEqual(
       'あか組４ [あかぐみフォー] /(h) Akagumi Four/'
     );
   });

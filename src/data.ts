@@ -167,7 +167,7 @@ export class Dictionary {
           requestOptions = { signal: controller.signal };
         }
 
-        timeoutId = setTimeout(() => {
+        timeoutId = window.setTimeout(() => {
           timeoutId = undefined;
           if (controller) {
             console.error(`Load of ${url} timed out. Aborting.`);

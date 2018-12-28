@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-import { deinflect, DeinflectReason } from '../src/deinflect';
+import { deinflect, DeinflectReason } from './deinflect';
 
 describe('deinflect', () => {
   it('performs de-inflection', () => {
@@ -41,7 +41,7 @@ describe('deinflect', () => {
     ];
 
     for (const [inflected, plain, type] of cases) {
-      const result = deinflect(inflected);
+      const result = deinflect(inflected as string);
       const match = result.find(candidate => candidate.word == plain);
       expect(match).toEqual({
         reasons: [[DeinflectReason.Negative]],
@@ -86,7 +86,7 @@ describe('deinflect', () => {
     ];
 
     for (const [inflected, plain, reason, type] of cases) {
-      const result = deinflect(inflected);
+      const result = deinflect(inflected as string);
       const match = result.find(candidate => candidate.word == plain);
       expect(match).toEqual({
         reasons: [[reason]],

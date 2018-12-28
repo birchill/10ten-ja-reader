@@ -7,7 +7,7 @@
     "build": "webpack",
     "build:chrome": "webpack --env.target=chrome",
     "prepack": "web-ext build --overwrite-dest",
-    "test": "web-ext lint && jest && MOZ_HEADLESS=1 slimerjs utils/slimerjs-test-runner.js __tests__/content.html",
+    "test": "web-ext lint && jest && karma start --single-run",
     "start": "webpack -w",
     "start:chrome": "webpack -w --env.target=chrome",
     "precommit": "lint-staged",
@@ -30,14 +30,22 @@
   },
   "homepage": "https://github.com/birtles/rikaichamp#readme",
   "devDependencies": {
+    "@types/chai": "^4.1.7",
     "@types/jest": "^22.2.3",
+    "@types/mocha": "^5.2.5",
     "byline": "^5.0.0",
+    "chai": "^4.2.0",
     "combined-stream2": "^1.1.2",
     "copy-webpack-plugin": "^4.5.1",
     "file-loader": "^1.1.11",
     "iconv-lite": "^0.4.23",
     "jest": "^22.4.4",
-    "slimerjs": "git+https://github.com/birtles/slimerjs.git#64c4521471d3e0dfd727b6de0a250b1879a058a0",
+    "karma": "^3.1.4",
+    "karma-chai": "^0.1.0",
+    "karma-firefox-launcher": "^1.1.0",
+    "karma-mocha": "^1.3.0",
+    "karma-webpack": "^3.0.5",
+    "mocha": "^5.2.0",
     "source-map-loader": "^0.2.3",
     "ts-jest": "^22.4.6",
     "ts-loader": "^4.3.0",
@@ -59,25 +67,18 @@
   },
   "jest": {
     "roots": [
-      "src",
-      "__tests__"
+      "src"
     ],
     "transform": {
-      "^.+\\.tsx?$": "./node_modules/ts-jest/preprocessor.js"
+      "^.+\\.tsx?$": "ts-jest"
     },
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(tsx?|jsx?)$",
+    "testRegex": ".test.ts$",
     "moduleFileExtensions": [
       "ts",
       "tsx",
       "js",
       "json",
       "jsx"
-    ],
-    "testPathIgnorePatterns": [
-      "/mocha/",
-      "/chai/",
-      "content-loader.[tj]s",
-      ".*?-tests.js"
     ]
   },
   "lint-staged": {

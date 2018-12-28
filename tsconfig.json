@@ -5,9 +5,9 @@
     "outDir": "extension",
     "strictNullChecks": true,
     "target": "es2017",
-    "typeRoots": ["@types","node_modules/web-ext-types","src/common.d.ts"]
+    "typeRoots": ["node_modules/@types","node_modules/web-ext-types","src/common.d.ts"]
   },
   "include": [
-    "src/*"
+    "./src/*"
   ]
 }

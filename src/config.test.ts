@@ -1,4 +1,12 @@
-import Config from '../src/config';
+import Config from './config';
+
+type StorageName = 'sync' | 'local';
+type StorageChange = {
+  oldValue?: any;
+  newValue?: any;
+};
+type ChangeDict = { [field: string]: StorageChange };
+type Listener = (changes: ChangeDict, areaName: StorageName) => void;
 
 class MockStorage {
   onChanged = new MockOnChanged();
@@ -6,16 +14,16 @@ class MockStorage {
 }
 
 class MockOnChanged {
-  _listeners = [];
+  _listeners: Array<Listener> = [];
 
-  addListener(listener) {
+  addListener(listener: Listener) {
     if (this._listeners.indexOf(listener) !== -1) {
       return;
     }
     this._listeners.push(listener);
   }
 
-  removeListener(listener) {
+  removeListener(listener: Listener) {
     const index = this._listeners.indexOf(listener);
     if (index === -1) {
       return;
@@ -23,30 +31,34 @@ class MockOnChanged {
     this._listeners.splice(index, 1);
   }
 
-  _onChange(changes, areaName) {
+  _onChange(changes: ChangeDict, areaName: StorageName) {
     for (const listener of this._listeners) {
       listener(changes, areaName);
     }
   }
 }
 
-class MockStorageArea {
-  _storage = {};
-  _onChanged;
-  _areaName;
+type StorageDict = { [key: string]: any };
 
-  constructor(onChanged, areaName) {
+class MockStorageArea {
+  _storage: StorageDict = {};
+  _onChanged: MockOnChanged;
+  _areaName: StorageName;
+
+  constructor(onChanged: MockOnChanged, areaName: StorageName) {
     this._onChanged = onChanged;
     this._areaName = areaName;
   }
 
-  get(param) {
+  get(
+    param: string | Array<string> | { [key: string]: any } | null
+  ): Promise<any> {
     if (param === undefined || param === null) {
       return Promise.resolve(this._storage);
     }
 
     if (Array.isArray(param)) {
-      const result = {};
+      const result: StorageDict = {};
       for (const field of param) {
         result[field] = this._storage[field];
       }
@@ -54,7 +66,7 @@ class MockStorageArea {
     }
 
     if (typeof param === 'object') {
-      const result = {};
+      const result: StorageDict = {};
       for (const field of Object.keys(param)) {
         result[field] = this._storage[field] || param[field];
       }
@@ -64,8 +76,8 @@ class MockStorageArea {
     return Promise.reject('Unexpected param type');
   }
 
-  set(obj) {
-    const changes = {};
+  set(obj: StorageDict) {
+    const changes: ChangeDict = {};
     for (const field of Object.keys(obj)) {
       changes[field] = {};
       if (typeof this._storage[field] !== 'undefined') {
@@ -138,8 +150,8 @@ describe('Config', () => {
   });
 
   it('reports changes to all listeners', async () => {
-    const receivedChanges1 = [];
-    const receivedChanges2 = [];
+    const receivedChanges1: Array<ChangeDict> = [];
+    const receivedChanges2: Array<ChangeDict> = [];
 
     const config = new Config();
     config.addChangeListener(change => {

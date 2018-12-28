@@ -1,4 +1,4 @@
-import { Command } from '../src/commands';
+import { Command } from './commands';
 
 describe('Command', () => {
   type Expected = {

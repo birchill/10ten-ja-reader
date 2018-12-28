@@ -74,7 +74,7 @@ const firefoxConfig = {
     new CopyWebpackPlugin(['css/*', 'images/*', 'data/*', '_locales/**/*']),
     new WebExtWebpackPlugin({
       browserConsole: true,
-      startUrl: ['__tests__/playground.html'],
+      startUrl: ['tests/playground.html'],
       sourceDir: path.resolve(__dirname, 'dist-firefox'),
     }),
   ],
@@ -108,10 +108,10 @@ const testConfig = {
   ...commonConfig,
   name: 'tests',
   entry: {
-    'content-loader': './__tests__/content-loader.ts',
+    'content-loader': './tests/content-loader.ts',
   },
   output: {
-    path: path.resolve(__dirname, '__tests__'),
+    path: path.resolve(__dirname, 'tests'),
     filename: '[name].js',
   },
 };

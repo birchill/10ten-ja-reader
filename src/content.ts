@@ -100,7 +100,7 @@ interface RangeEndpoint {
   offset: number;
 }
 
-interface GetTextResult {
+export interface GetTextResult {
   text: string;
   // Contains the node and offset where the selection starts. This will be null
   // if, for example, the result is the text from an element's title attribute.

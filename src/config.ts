@@ -26,7 +26,12 @@ interface Settings {
   popupStyle?: string;
 }
 
-type ChangeCallback = (changes: object) => void;
+type StorageChange = {
+  oldValue?: any;
+  newValue?: any;
+};
+type ChangeDict = { [field: string]: StorageChange };
+type ChangeCallback = (changes: ChangeDict) => void;
 
 // A single key description. We use this definition for storing the default keys
 // since it allows storing as an array (so we can determine the order the
@@ -84,7 +89,7 @@ export class Config {
     return this._readPromise;
   }
 
-  onChange(changes: object, areaName: string) {
+  onChange(changes: ChangeDict, areaName: string) {
     if (areaName !== 'sync') {
       return;
     }

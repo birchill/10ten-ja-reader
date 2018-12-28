@@ -1,104 +1,23 @@
-<!doctype html>
-<meta charset=utf-8>
-<title>Tests for content script</title>
-<link href="mocha/mocha.css" rel="stylesheet">
-<script src="mocha/mocha.js"></script>
-<script src="chai/chai.js"></script>
+import { assert } from 'chai';
+import { browser } from './browser-polyfill';
+(window as any).browser = browser;
 
-<!-- Mocks: these need to be defined before we load the content script -->
-<script>
-const browser = {
-  runtime: {
-    sendMessage: msg => new Promise(resolve => resolve),
-    onMessage: {
-      addListener: fn => {
-        // Probably should do something with this...
-      },
-    },
-  },
-  i18n: {
-    getMessage: id => {
-      switch (id) {
-        case 'content_names_dictionary':
-          return 'Names Dictionary';
-        case "content_kanji_radical_label":
-          return "radical";
-        case "content_kanji_grade_label":
-          return "grade";
-        case "content_kanji_grade_general_use":
-          return "general use";
-        case "content_kanji_grade_name_use":
-          return "name use";
-        case "content_kanji_frequency_label":
-          return "freq";
-        case "content_kanji_strokes_label":
-          return "strokes";
-        default:
-          return 'Unrecognized string ID';
-      }
-    }
-  },
-};
-</script>
-<script src="content-loader.js"></script>
-<script src="html-tests.js"></script>
+import { RikaiContent, GetTextResult } from '../src/content';
 
-<body>
-<div id="mocha"></div>
-
-<script>
 mocha.setup('bdd');
-const assert = chai.assert;
-
-function innerHTMLFromFragment(fragment) {
-  const div = document.createElement('div');
-  div.append(fragment);
-  return div.innerHTML;
-}
-
-// Disabled for now since the HTML we're producing is in flux and it's not clear
-// that this is all that valuable any more. It was originally introduced when
-// I was rewriting the HTML output to make sure I didn't unintentionally change
-// it. For now, though, checking the output of popups.html should be enough.
-/*
-describe('rikaiContent:HTML generation', () => {
-  let subject;
-
-  beforeEach(() => {
-    const config = {
-      readingOnly: false,
-      holdToShowKeys: [],
-      noTextHighlight: false,
-      popupStyle: 'blue',
-    };
-    subject = new RikaiContent(config);
-  });
-
-  afterEach(() => {
-    subject.detach();
-  });
-
-  for (const test of htmlTests) {
-    it(`should format ${test.description}`, () => {
-      const result = subject._renderPopup(
-        test.searchResult,
-        test.searchResult.title,
-        { showDefinitions: !test.extraConfig || !test.extraConfig.readingOnly }
-      );
-
-      assert.strictEqual(innerHTMLFromFragment(result), test.html);
-    });
-  }
-});
-*/
 
 function assertTextResultEqual(
-  result,
-  text,
-  startContainer,
-  startOffset,
-  ...endpoints
+  result: GetTextResult | null,
+  text: string,
+  startContainer?: Node,
+  startOffset?: number,
+  ...endpoints: Array<any>
 ) {
+  assert.isNotNull(result, 'Result should not be null');
+  if (result === null) {
+    return;
+  }
+
   assert.strictEqual(result.text, text, 'Result text should match');
 
   // Title only case
@@ -108,13 +27,15 @@ function assertTextResultEqual(
     return;
   }
 
+  assert.isNotNull(result.rangeStart, 'rangeStart should NOT be null');
+
   assert.strictEqual(
-    result.rangeStart.container,
+    result.rangeStart!.container,
     startContainer,
     'rangeStart container node should match'
   );
   assert.strictEqual(
-    result.rangeStart.offset,
+    result.rangeStart!.offset,
     startOffset,
     'rangeStart offset should match'
   );
@@ -140,30 +61,31 @@ function assertTextResultEqual(
   // but we don't create Range objects when the target is an <input> or
   // <textarea> node.
   if (
-    result.rangeStart.container instanceof HTMLInputElement ||
-    result.rangeStart.container instanceof HTMLTextAreaElement
+    result.rangeStart!.container instanceof HTMLInputElement ||
+    result.rangeStart!.container instanceof HTMLTextAreaElement
   ) {
     return;
   }
 
   // Consistency check
   const range = new Range();
-  range.setStart(result.rangeStart.container, result.rangeStart.offset);
+  range.setStart(result.rangeStart!.container, result.rangeStart!.offset);
   const lastEndpoint = result.rangeEnds[result.rangeEnds.length - 1];
   range.setEnd(lastEndpoint.container, lastEndpoint.offset);
 
   // If we have ruby text then the range string won't match the text passed so
   // just skip this check.
-  const containsRuby = node =>
+  const containsRuby = (node?: Node) =>
     node &&
     node.nodeType === Node.ELEMENT_NODE &&
-    (node.tagName === 'RUBY' || node.querySelector('ruby'));
+    ((node as Element).tagName === 'RUBY' ||
+      (node as Element).querySelector('ruby'));
   if (!containsRuby(range.commonAncestorContainer)) {
     assert.strictEqual(range.toString(), text);
   }
 }
 
-function getBboxForOffset(node, start) {
+function getBboxForOffset(node: Node, start: number) {
   const range = new Range();
   range.setStart(node, start);
   range.setEnd(node, start + 1);
@@ -171,12 +93,20 @@ function getBboxForOffset(node, start) {
 }
 
 describe('rikaiContent:text search', () => {
-  let testDiv;
-  let subject;
+  let testDiv: HTMLDivElement;
+  let subject: RikaiContent;
 
   beforeEach(() => {
     const config = {
-      showOnKey: '',
+      readingOnly: false,
+      holdToShowKeys: [],
+      keys: {
+        toggleDefinition: ['d'],
+        nextDictionary: ['Shift'],
+        startCopy: ['c'],
+      },
+      noTextHighlight: false,
+      popupStyle: 'blue',
     };
     subject = new RikaiContent(config);
 
@@ -190,13 +120,13 @@ describe('rikaiContent:text search', () => {
   });
 
   afterEach(() => {
-    document.getElementById('test-div').remove();
+    document.getElementById('test-div')!.remove();
     subject.detach();
   });
 
   it('should find a range in a div', () => {
     testDiv.append('あいうえお');
-    const textNode = testDiv.firstChild;
+    const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = subject.getTextAtPoint({
@@ -209,7 +139,7 @@ describe('rikaiContent:text search', () => {
 
   it('should find a range in a div when the point is part-way through a character', () => {
     testDiv.append('あいうえお');
-    const textNode = testDiv.firstChild;
+    const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = subject.getTextAtPoint({
@@ -263,9 +193,9 @@ describe('rikaiContent:text search', () => {
 
   it('should find text in an inline sibling', () => {
     testDiv.innerHTML = 'あい<span>うえ</span>お';
-    const firstTextNode = testDiv.firstChild;
-    const middleTextNode = testDiv.childNodes[1].firstChild;
-    const lastTextNode = testDiv.lastChild;
+    const firstTextNode = testDiv.firstChild as Text;
+    const middleTextNode = testDiv.childNodes[1].firstChild as Text;
+    const lastTextNode = testDiv.lastChild as Text;
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = subject.getTextAtPoint({
@@ -289,7 +219,7 @@ describe('rikaiContent:text search', () => {
 
   it('should NOT find text in a block sibling', () => {
     testDiv.innerHTML = 'あい<div>うえ</div>お';
-    const firstTextNode = testDiv.firstChild;
+    const firstTextNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = subject.getTextAtPoint({
@@ -303,10 +233,10 @@ describe('rikaiContent:text search', () => {
   it('should find text in a cousin for an inline node', () => {
     testDiv.innerHTML =
       '<span><span>あい</span></span>う<span>え<span>お</span></span>';
-    const firstTextNode = testDiv.firstChild.firstChild.firstChild;
-    const secondTextNode = testDiv.childNodes[1];
-    const thirdTextNode = testDiv.lastChild.firstChild;
-    const lastTextNode = testDiv.lastChild.lastChild.firstChild;
+    const firstTextNode = testDiv.firstChild!.firstChild!.firstChild as Text;
+    const secondTextNode = testDiv.childNodes[1] as Text;
+    const thirdTextNode = testDiv.lastChild!.firstChild as Text;
+    const lastTextNode = testDiv.lastChild!.lastChild!.firstChild as Text;
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = subject.getTextAtPoint({
@@ -332,8 +262,8 @@ describe('rikaiContent:text search', () => {
 
   it('moves onto the next node if we are at the end of the current one', () => {
     testDiv.innerHTML = '<span>あい</span><span>うえお</span>';
-    const firstTextNode = testDiv.firstChild.firstChild;
-    const lastTextNode = testDiv.lastChild.firstChild;
+    const firstTextNode = testDiv.firstChild!.firstChild as Text;
+    const lastTextNode = testDiv.lastChild!.firstChild as Text;
     const bbox = getBboxForOffset(firstTextNode, 1);
 
     const result = subject.getTextAtPoint({
@@ -346,7 +276,7 @@ describe('rikaiContent:text search', () => {
 
   it('should ignore non-Japanese characters', () => {
     testDiv.append('あいabc');
-    const textNode = testDiv.firstChild;
+    const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = subject.getTextAtPoint({
@@ -359,7 +289,7 @@ describe('rikaiContent:text search', () => {
 
   it('should ignore non-Japanese characters when starting mid node', () => {
     testDiv.append('abcあいdef');
-    const textNode = testDiv.firstChild;
+    const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 3);
 
     const result = subject.getTextAtPoint({
@@ -372,7 +302,7 @@ describe('rikaiContent:text search', () => {
 
   it('should ignore non-Japanese characters even if the first character is such', () => {
     testDiv.append('abcあい');
-    const textNode = testDiv.firstChild;
+    const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 2);
 
     const result = subject.getTextAtPoint({
@@ -385,7 +315,7 @@ describe('rikaiContent:text search', () => {
 
   it('should stop at full-width delimiters', () => {
     testDiv.append('あい。');
-    const textNode = testDiv.firstChild;
+    const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = subject.getTextAtPoint({
@@ -398,7 +328,7 @@ describe('rikaiContent:text search', () => {
 
   it('should include halfwidth katakana, rare kanji, compatibility kanji etc.', () => {
     testDiv.append('ｷﾞﾝｺｳ㘆豈');
-    const textNode = testDiv.firstChild;
+    const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = subject.getTextAtPoint({
@@ -411,7 +341,7 @@ describe('rikaiContent:text search', () => {
 
   it('should stop at the maximum number of characters', () => {
     testDiv.append('あいうえお');
-    const textNode = testDiv.firstChild;
+    const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 1);
 
     const result = subject.getTextAtPoint(
@@ -424,8 +354,8 @@ describe('rikaiContent:text search', () => {
 
   it('should stop at the maximum number of characters even when navigating siblings', () => {
     testDiv.innerHTML = 'あい<span>うえ</span>お';
-    const firstTextNode = testDiv.firstChild;
-    const middleTextNode = testDiv.childNodes[1].firstChild;
+    const firstTextNode = testDiv.firstChild as Text;
+    const middleTextNode = testDiv.childNodes[1].firstChild as Text;
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = subject.getTextAtPoint(
@@ -447,8 +377,8 @@ describe('rikaiContent:text search', () => {
 
   it('should stop at the maximum number of characters even that lines up exactly with the end of a text node', () => {
     testDiv.innerHTML = 'あい<span>うえ</span>お';
-    const firstTextNode = testDiv.firstChild;
-    const middleTextNode = testDiv.childNodes[1].firstChild;
+    const firstTextNode = testDiv.firstChild as Text;
+    const middleTextNode = testDiv.childNodes[1].firstChild as Text;
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = subject.getTextAtPoint(
@@ -470,7 +400,7 @@ describe('rikaiContent:text search', () => {
 
   it('should stop at the maximum number of characters even when it is zero', () => {
     testDiv.append('あいうえお');
-    const textNode = testDiv.firstChild;
+    const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 2);
 
     const result = subject.getTextAtPoint(
@@ -483,7 +413,7 @@ describe('rikaiContent:text search', () => {
 
   it('should stop at the maximum number of characters if it comes before the end of the Japanese text', () => {
     testDiv.append('あいうabc');
-    const textNode = testDiv.firstChild;
+    const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 1);
 
     const result = subject.getTextAtPoint(
@@ -496,7 +426,7 @@ describe('rikaiContent:text search', () => {
 
   it('should stop at the end of the Japanese text if it comes before the maximum number of characters', () => {
     testDiv.append('あいうabc');
-    const textNode = testDiv.firstChild;
+    const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 1);
 
     const result = subject.getTextAtPoint(
@@ -509,7 +439,7 @@ describe('rikaiContent:text search', () => {
 
   it('should skip leading whitespace', () => {
     testDiv.append('  　\tあいうえお');
-    const textNode = testDiv.firstChild;
+    const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 1);
 
     const result = subject.getTextAtPoint(
@@ -522,9 +452,9 @@ describe('rikaiContent:text search', () => {
 
   it('should skip empty nodes', () => {
     testDiv.innerHTML = '<span></span>あい<span></span>うえお';
-    const firstEmptyNode = testDiv.firstChild;
-    const firstTextNode = testDiv.childNodes[1];
-    const lastTextNode = testDiv.lastChild;
+    const firstEmptyNode = testDiv.firstChild as HTMLSpanElement;
+    const firstTextNode = testDiv.childNodes[1] as Text;
+    const lastTextNode = testDiv.lastChild as Text;
     const bbox = firstEmptyNode.getBoundingClientRect();
 
     const result = subject.getTextAtPoint({
@@ -546,9 +476,9 @@ describe('rikaiContent:text search', () => {
 
   it('should skip leading whitespace only nodes', () => {
     testDiv.innerHTML = '<span>  　</span>　あい<span></span>うえお';
-    const whitespaceOnlyTextNode = testDiv.firstChild.firstChild;
-    const firstRealTextNode = testDiv.childNodes[1];
-    const lastTextNode = testDiv.lastChild;
+    const whitespaceOnlyTextNode = testDiv.firstChild!.firstChild as Text;
+    const firstRealTextNode = testDiv.childNodes[1] as Text;
+    const lastTextNode = testDiv.lastChild as Text;
     const bbox = getBboxForOffset(whitespaceOnlyTextNode, 1);
 
     const result = subject.getTextAtPoint({
@@ -573,12 +503,12 @@ describe('rikaiContent:text search', () => {
     // whitespace in rp elements, and trailing punctuation.
     testDiv.innerHTML =
       '<ruby>仙<rp> (<rt>せん<rp>) </rp>台<rp>（<rt>だい<rp>）</ruby>の<ruby><ruby>牧<rt>ぼく</ruby><rt>まき</ruby><ruby><ruby>場<rt>じょう</ruby><rt>ば</ruby>です。';
-    const firstTextNode = testDiv.firstChild.firstChild;
-    const daiNode = testDiv.firstChild.childNodes[4];
+    const firstTextNode = testDiv.firstChild!.firstChild as Text;
+    const daiNode = testDiv.firstChild!.childNodes[4] as Text;
     const noNode = testDiv.childNodes[1];
-    const bokuNode = testDiv.childNodes[2].firstChild.firstChild;
-    const jouNode = testDiv.childNodes[3].firstChild.firstChild;
-    const desuNode = testDiv.lastChild;
+    const bokuNode = testDiv.childNodes[2].firstChild!.firstChild as Text;
+    const jouNode = testDiv.childNodes[3].firstChild!.firstChild as Text;
+    const desuNode = testDiv.lastChild as Text;
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = subject.getTextAtPoint({
@@ -609,10 +539,10 @@ describe('rikaiContent:text search', () => {
   it('should return the ruby base text when rb elements are used', () => {
     testDiv.innerHTML =
       '<ruby><rb>振</rb><rp>(</rp><rt>ふ</rt><rp>)</rp>り<rb>仮</rb><rp>(</rp><rt>が</rt><rp>)</rp><rb>名</rb><rp>(</rp><rt>な</rt><rp>)</rp></ruby>';
-    const fuNode = testDiv.firstChild.firstChild.firstChild;
-    const riNode = testDiv.firstChild.childNodes[4];
-    const gaNode = testDiv.firstChild.childNodes[5].firstChild;
-    const naNode = testDiv.firstChild.childNodes[9].firstChild;
+    const fuNode = testDiv.firstChild!.firstChild!.firstChild as Text;
+    const riNode = testDiv.firstChild!.childNodes[4] as Text;
+    const gaNode = testDiv.firstChild!.childNodes[5].firstChild as Text;
+    const naNode = testDiv.firstChild!.childNodes[9].firstChild as Text;
     const bbox = getBboxForOffset(fuNode, 0);
 
     const result = subject.getTextAtPoint({
@@ -638,10 +568,10 @@ describe('rikaiContent:text search', () => {
   it('should return the ruby base text even across different ruby elements', () => {
     testDiv.innerHTML =
       '<ruby><rb>振</rb><rp>(</rp><rt>ふ</rt><rp>)</rp>り</ruby><ruby><rb>仮</rb><rp>(</rp><rt>が</rt><rp>)</rp><rb>名</rb><rp>(</rp><rt>な</rt><rp>)</rp></ruby>';
-    const fuNode = testDiv.firstChild.firstChild.firstChild;
-    const riNode = testDiv.firstChild.childNodes[4];
-    const gaNode = testDiv.childNodes[1].firstChild.firstChild;
-    const naNode = testDiv.childNodes[1].childNodes[4].firstChild;
+    const fuNode = testDiv.firstChild!.firstChild!.firstChild as Text;
+    const riNode = testDiv.firstChild!.childNodes[4] as Text;
+    const gaNode = testDiv.childNodes[1].firstChild!.firstChild as Text;
+    const naNode = testDiv.childNodes[1].childNodes[4].firstChild as Text;
     const bbox = getBboxForOffset(fuNode, 0);
 
     const result = subject.getTextAtPoint({
@@ -666,7 +596,7 @@ describe('rikaiContent:text search', () => {
 
   it('should return the rt text if it is positioned over an rt element', () => {
     testDiv.innerHTML = '<ruby>仙<rt>せん</rt>台<rt>だい</ruby>';
-    const senNode = testDiv.firstChild.childNodes[1].firstChild;
+    const senNode = testDiv.firstChild!.childNodes[1].firstChild as Text;
     const bbox = getBboxForOffset(senNode, 0);
 
     const result = subject.getTextAtPoint({
@@ -679,8 +609,9 @@ describe('rikaiContent:text search', () => {
 
   it('should return the rt text if it is positioned over a child of an rt element', () => {
     testDiv.innerHTML = '<ruby>仙<rt><b>せ</b>ん</rt>台<rt>だい</ruby>';
-    const seNode = testDiv.firstChild.childNodes[1].firstChild.firstChild;
-    const nNode = testDiv.firstChild.childNodes[1].lastChild;
+    const seNode = testDiv.firstChild!.childNodes[1].firstChild!
+      .firstChild as Text;
+    const nNode = testDiv.firstChild!.childNodes[1].lastChild as Text;
     const bbox = getBboxForOffset(seNode, 0);
 
     const result = subject.getTextAtPoint({
@@ -693,7 +624,7 @@ describe('rikaiContent:text search', () => {
 
   it('should find text in SVG content', () => {
     testDiv.innerHTML = '<svg><text y="1em">あいうえお</text></svg>';
-    const textNode = testDiv.firstChild.firstChild.firstChild;
+    const textNode = testDiv.firstChild!.firstChild!.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = subject.getTextAtPoint({
@@ -707,10 +638,12 @@ describe('rikaiContent:text search', () => {
   it('should find text in nested SVG elements', () => {
     testDiv.innerHTML =
       '<svg><text y="1em">あ<tspan><tspan id=inner-tspan>いう</tspan></tspan>え<a id=inner-a>お</a></text></svg>';
-    const firstTextNode = testDiv.firstChild.firstChild.firstChild;
-    const innerTspan = testDiv.querySelector('#inner-tspan').firstChild;
-    const middleTextNode = testDiv.firstChild.firstChild.childNodes[2];
-    const innerA = testDiv.querySelector('#inner-a').firstChild;
+    const firstTextNode = testDiv.firstChild!.firstChild!.firstChild as Text;
+    const innerTspan = testDiv.querySelector('#inner-tspan')!
+      .firstChild as Text;
+    const middleTextNode = testDiv.firstChild!.firstChild!
+      .childNodes[2] as Text;
+    const innerA = testDiv.querySelector('#inner-a')!.firstChild as Text;
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = subject.getTextAtPoint({
@@ -736,7 +669,7 @@ describe('rikaiContent:text search', () => {
 
   it('should find text in input elements', () => {
     testDiv.innerHTML = '<input type="text" value="あいうえお">';
-    const inputNode = testDiv.firstChild;
+    const inputNode = testDiv.firstChild as HTMLInputElement;
 
     // There doesn't seem to be any API for getting the character offsets inside
     // an <input> or <textarea> element so we just grab the bbox of the
@@ -759,7 +692,7 @@ describe('rikaiContent:text search', () => {
 
   it('should NOT read beyond the bounds of the input element', () => {
     testDiv.innerHTML = '<div><input type="text" value="あいう">えお</div>';
-    const inputNode = testDiv.firstChild.firstChild;
+    const inputNode = testDiv.firstChild!.firstChild as HTMLInputElement;
 
     inputNode.style.padding = '0px';
     inputNode.style.fontSize = '10px';
@@ -775,7 +708,7 @@ describe('rikaiContent:text search', () => {
 
   it('should NOT find text in input[type=password] elements', () => {
     testDiv.innerHTML = '<input type="password" value="あいうえお">';
-    const inputNode = testDiv.firstChild;
+    const inputNode = testDiv.firstChild as HTMLInputElement;
 
     inputNode.style.padding = '0px';
     inputNode.style.fontSize = '10px';
@@ -795,7 +728,7 @@ describe('rikaiContent:text search', () => {
 
   it('should find text in textarea elements', () => {
     testDiv.innerHTML = '<textarea>あいうえお</textarea>';
-    const textAreaNode = testDiv.firstChild;
+    const textAreaNode = testDiv.firstChild as HTMLTextAreaElement;
 
     textAreaNode.style.padding = '0px';
     textAreaNode.style.fontSize = '10px';
@@ -808,7 +741,7 @@ describe('rikaiContent:text search', () => {
 
   it('should NOT report results in textarea elements when the mouse is far away', () => {
     testDiv.innerHTML = '<textarea cols=80>あいうえお</textarea>';
-    const textAreaNode = testDiv.firstChild;
+    const textAreaNode = testDiv.firstChild as HTMLTextAreaElement;
 
     textAreaNode.style.padding = '0px';
     textAreaNode.style.fontSize = '10px';
@@ -821,7 +754,7 @@ describe('rikaiContent:text search', () => {
 
   it('should pull the text out of a title attribute', () => {
     testDiv.innerHTML = '<img src="" title="あいうえお">';
-    const imgNode = testDiv.firstChild;
+    const imgNode = testDiv.firstChild as HTMLImageElement;
     imgNode.style.width = '200px';
     imgNode.style.height = '200px';
     const bbox = imgNode.getBoundingClientRect();
@@ -836,7 +769,7 @@ describe('rikaiContent:text search', () => {
 
   it("should use the last result if there's no result but we haven't moved far", () => {
     testDiv.append('abcdefあいうえお');
-    const textNode = testDiv.firstChild;
+    const textNode = testDiv.firstChild as Text;
 
     // Fetch once
     const bboxJP = getBboxForOffset(textNode, 6);
@@ -861,7 +794,7 @@ describe('rikaiContent:text search', () => {
 
   it("should NOT use the last result if there's no result and we've moved far", () => {
     testDiv.append('abcdefあいうえお');
-    const textNode = testDiv.firstChild;
+    const textNode = testDiv.firstChild as Text;
 
     // Fetch once
     const bboxJP = getBboxForOffset(textNode, 6);
@@ -882,12 +815,20 @@ describe('rikaiContent:text search', () => {
 });
 
 describe('rikaiContent:highlighting', () => {
-  let testDiv;
-  let subject;
+  let testDiv: HTMLDivElement;
+  let subject: RikaiContent;
 
   beforeEach(() => {
     const config = {
-      showOnKey: '',
+      readingOnly: false,
+      holdToShowKeys: [],
+      keys: {
+        toggleDefinition: ['d'],
+        nextDictionary: ['Shift'],
+        startCopy: ['c'],
+      },
+      noTextHighlight: false,
+      popupStyle: 'blue',
     };
     subject = new RikaiContent(config);
 
@@ -901,13 +842,13 @@ describe('rikaiContent:highlighting', () => {
   });
 
   afterEach(() => {
-    document.getElementById('test-div').remove();
+    document.getElementById('test-div')!.remove();
     subject.detach();
   });
 
   it('should highlight text in a textbox', () => {
     testDiv.innerHTML = '<input type="text" value="あいうえお">';
-    const textBox = testDiv.firstChild;
+    const textBox = testDiv.firstChild as HTMLInputElement;
     const range = {
       text: 'いうえお',
       rangeStart: { container: textBox, offset: 1 },
@@ -922,5 +863,3 @@ describe('rikaiContent:highlighting', () => {
 });
 
 mocha.run();
-</script>
-</body>
