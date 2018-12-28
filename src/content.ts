@@ -1243,6 +1243,15 @@ export class RikaiContent {
     };
 
     const popup = await this.getEmptyPopupElem(doc);
+
+    // Although we checked that we had a _currentSearchResult previously, the
+    // first time we run we might still need to create the popup element which
+    // might be blocked on waiting for the stylesheet to load. In the interim
+    // _currentSearchResult could be cleared so check it again.
+    if (!this._currentSearchResult) {
+      return;
+    }
+
     popup.append(renderPopup(this._currentSearchResult!, popupOptions));
 
     // Position the popup
