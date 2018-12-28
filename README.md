@@ -55,11 +55,11 @@ npm test
 Unit tests only:
 
 ```
-./node_modules/.bin/jest
+npm run test:unit
 ```
 
 Browser-based tests only:
 
 ```
-./node_modules/.bin/karma start
+npm run test:browser
 ```
