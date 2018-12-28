@@ -1,4 +1,8 @@
-## 0.0.27 (not yet released)
+## 0.0.28 (not yet released)
+
+(Nothing yet)
+
+## 0.0.27 (2018-12-28)
 
 * Fixed highlighting so it works correctly with faux-ruby as used on renshuu.org
   and Japanese learners' stack exchange
