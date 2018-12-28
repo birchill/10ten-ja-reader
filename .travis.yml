@@ -1,5 +1,0 @@
-language: node_js
-node_js:
-  - stable
-addons:
-  firefox: "59.0" # https://github.com/laurentj/slimerjs/issues/694
