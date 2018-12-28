@@ -667,6 +667,24 @@ describe('rikaiContent:text search', () => {
     );
   });
 
+  it('should treat rb elements elements as inline regardless of their computed style', () => {
+    // Based on the markup in renshuu.org
+    testDiv.innerHTML =
+      '<div><ruby style="display:inline-table"><rb style="display:table-row-group"><span>引</span></rb><rt style="display:table-header-group">ひ</rt></ruby><ruby style="display:inline-table"><rb style="display:table-row-group">く</rb><rt style="display:table-header-group">&nbsp;</rt></ruby></div>';
+    const hiNode = testDiv.firstChild!.firstChild!.firstChild!.firstChild!
+      .firstChild as Text;
+    const kuNode = testDiv.firstChild!.childNodes[1].firstChild!
+      .firstChild as Text;
+    const bbox = getBboxForOffset(hiNode, 0);
+
+    const result = subject.getTextAtPoint({
+      x: bbox.left,
+      y: bbox.top + bbox.height / 2,
+    });
+
+    assertTextResultEqual(result, '引く', hiNode, 0, hiNode, 1, kuNode, 1);
+  });
+
   it('should find text in input elements', () => {
     testDiv.innerHTML = '<input type="text" value="あいうえお">';
     const inputNode = testDiv.firstChild as HTMLInputElement;

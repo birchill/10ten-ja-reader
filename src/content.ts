@@ -844,9 +844,13 @@ export class RikaiContent {
 
     const isInline = (element: Element | null) =>
       element &&
-      ['inline', 'ruby', 'ruby-base', 'ruby-text'].includes(
-        getComputedStyle(element).display!
-      );
+      // We always treat <rb> and <ruby> tags as inline regardless of the
+      // styling since sites like renshuu.org do faux-ruby styling where they
+      // give these elements styles like 'display: table-row-group'.
+      (['RB', 'RUBY'].includes(element.tagName) ||
+        ['inline', 'ruby', 'ruby-base', 'ruby-text'].includes(
+          getComputedStyle(element).display!
+        ));
 
     // Get the ancestor node for all inline nodes
     let inlineAncestor = startNode.parentElement;

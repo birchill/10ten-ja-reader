@@ -1,6 +1,7 @@
 ## 0.0.27 (not yet released)
 
-Nothing yet.
+* Fixed highlighting so it works correctly with faux-ruby as used on renshuu.org
+  ([#67](https://github.com/birtles/rikaichamp/issues/67))
 
 ## 0.0.26 (2018-11-09)
 
