@@ -5,6 +5,7 @@
   ([#67](https://github.com/birtles/rikaichamp/issues/67))
 * Fixed result trimming so that it sorts by priority before trimming
   ([#70](https://github.com/birtles/rikaichamp/issues/70))
+* Updated dictionaries to 2018-12-27 snapshot.
 
 ## 0.0.26 (2018-11-09)
 
