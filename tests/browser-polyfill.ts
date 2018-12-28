@@ -24,6 +24,24 @@ export const browser = {
           return 'freq';
         case 'content_kanji_strokes_label':
           return 'strokes';
+        case 'content_kanji_kentei_label':
+          return 'Kanji Kentei Level';
+        case 'content_kanji_kentei_level':
+          return '10';
+        case 'content_kanji_kentei_level_pre':
+          return 'Pre-2';
+        case 'content_copy_keys_label':
+          return 'Copy:';
+        case 'content_copy_keys_entry_label':
+          return 'entry';
+        case 'content_copy_keys_fields_label':
+          return 'tab-separated';
+        case 'content_copy_keys_word_label':
+          return 'word';
+        case 'content_copy_keys_kanji_label':
+          return 'kanji';
+        case 'content_copy_keys_next_label':
+          return 'next';
         default:
           return 'Unrecognized string ID';
       }

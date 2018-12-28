@@ -1,3 +1,6 @@
+import { browser } from './browser-polyfill';
+(window as any).browser = browser;
+
 import { RikaiContent } from '../src/content';
 
 declare global {
