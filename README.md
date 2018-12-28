@@ -1,5 +1,6 @@
 # Rikaichamp!
 
+[![CircleCI](https://circleci.com/gh/birtles/rikaichamp.svg?style=svg)](https://circleci.com/gh/birtles/rikaichamp)
 [![Greenkeeper badge](https://badges.greenkeeper.io/birtles/rikaichamp.svg)](https://greenkeeper.io/)
 
 Look up Japanese words with the hover of a mouse.
