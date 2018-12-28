@@ -504,11 +504,6 @@ export class Dictionary {
           }
 
           if (ok) {
-            if (count >= maxResults) {
-              result.more = true;
-              break;
-            }
-
             have.add(offset);
             ++count;
 
@@ -536,7 +531,7 @@ export class Dictionary {
           }
         } // for offset of offsets
 
-        // Sort and add preliminary results
+        // Sort preliminary results
         const isCommon = (entry: EntryType): boolean =>
           entry[0].endsWith('/(P)/');
         entries.sort(
@@ -544,6 +539,14 @@ export class Dictionary {
             return Number(isCommon(b)) - Number(isCommon(a));
           }
         );
+
+        // Trim to max results AFTER sorting (so that we make sure to favor
+        // common words in the trimmed result).
+        if (count >= maxResults) {
+          result.more = true;
+          entries.splice(entries.length - count + maxResults);
+        }
+
         result.data.push(...entries);
 
         if (count >= maxResults) {

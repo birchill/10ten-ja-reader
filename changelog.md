@@ -1,7 +1,10 @@
 ## 0.0.27 (not yet released)
 
 * Fixed highlighting so it works correctly with faux-ruby as used on renshuu.org
+  and Japanese learners' stack exchange
   ([#67](https://github.com/birtles/rikaichamp/issues/67))
+* Fixed result trimming so that it sorts by priority before trimming
+  ([#70](https://github.com/birtles/rikaichamp/issues/70))
 
 ## 0.0.26 (2018-11-09)
 

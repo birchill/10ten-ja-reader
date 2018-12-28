@@ -270,6 +270,25 @@ describe('Dictionary', () => {
     expect(result!.data[1][0]).toEqual(expect.stringContaining('[したためる]'));
   });
 
+  it('orders words by priority before truncating the list', async () => {
+    const result = await sharedDict.wordSearch('せんしゅ', false, 5);
+    // There should be at least the following common entries that match:
+    //
+    // - 先取
+    // - 船主
+    // - 選手
+    //
+    // If we trim the list before sorting, however, we'll fail to include 選手.
+    expect(
+      result!.data
+        .map(row => row[0])
+        .some(entry => entry.indexOf('選手') !== -1)
+    ).toBeTruthy();
+
+    // Check that we still respect the max-length limit though
+    expect(result!.data).toHaveLength(5);
+  });
+
   it('translates sentences', async () => {
     const result = await sharedDict.translate('期間限定発売 秋の膳');
     expect(result!.textLen).toBe(10); // 10 characters including the space
