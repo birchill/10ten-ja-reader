@@ -48,7 +48,7 @@
 import '../manifest.json.src';
 import '../html/background.html.src';
 
-import bugsnag from 'bugsnag-js';
+import bugsnag from '@bugsnag/js';
 
 import Config from './config';
 import Dictionary from './data';

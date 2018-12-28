@@ -45,7 +45,7 @@
 
 */
 
-import { Bugsnag } from 'bugsnag-js';
+import { Bugsnag } from '@bugsnag/js';
 import { deinflect, deinflectL10NKeys, CandidateWord } from './deinflect';
 
 // Katakana -> Hiragana conversion tables
@@ -539,9 +539,11 @@ export class Dictionary {
         // Sort and add preliminary results
         const isCommon = (entry: EntryType): boolean =>
           entry[0].endsWith('/(P)/');
-        entries.sort((a: EntryType, b: EntryType): number => {
-          return Number(isCommon(b)) - Number(isCommon(a));
-        });
+        entries.sort(
+          (a: EntryType, b: EntryType): number => {
+            return Number(isCommon(b)) - Number(isCommon(a));
+          }
+        );
         result.data.push(...entries);
 
         if (count >= maxResults) {
