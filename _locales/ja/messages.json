@@ -59,6 +59,42 @@
     "message": "人名辞典",
     "description": "The title used at the top of the popup when showing the names dictionary"
   },
+  "content_names_tag_surname": {
+    "message": "姓"
+  },
+  "content_names_tag_place": {
+    "message": "地名"
+  },
+  "content_names_tag_person": {
+    "message": "人名"
+  },
+  "content_names_tag_given": {
+    "message": "名"
+  },
+  "content_names_tag_female": {
+    "message": "女"
+  },
+  "content_names_tag_male": {
+    "message": "男"
+  },
+  "content_names_tag_full": {
+    "message": "姓名"
+  },
+  "content_names_tag_product": {
+    "message": "品名"
+  },
+  "content_names_tag_company": {
+    "message": "社名"
+  },
+  "content_names_tag_org": {
+    "message": "組織"
+  },
+  "content_names_tag_station": {
+    "message": "駅"
+  },
+  "content_names_tag_work": {
+    "message": "作品"
+  },
   "content_kanji_radical_label": {
     "message": "部首",
     "description": "The title given to the box showing radical information"

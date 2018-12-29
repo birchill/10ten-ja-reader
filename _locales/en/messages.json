@@ -59,6 +59,42 @@
     "message": "Names Dictionary",
     "description": "The title used at the top of the popup when showing the names dictionary"
   },
+  "content_names_tag_surname": {
+    "message": "surname"
+  },
+  "content_names_tag_place": {
+    "message": "place"
+  },
+  "content_names_tag_person": {
+    "message": "person"
+  },
+  "content_names_tag_given": {
+    "message": "given"
+  },
+  "content_names_tag_female": {
+    "message": "female"
+  },
+  "content_names_tag_male": {
+    "message": "male"
+  },
+  "content_names_tag_full": {
+    "message": "full name"
+  },
+  "content_names_tag_product": {
+    "message": "product"
+  },
+  "content_names_tag_company": {
+    "message": "company"
+  },
+  "content_names_tag_org": {
+    "message": "org"
+  },
+  "content_names_tag_station": {
+    "message": "station"
+  },
+  "content_names_tag_work": {
+    "message": "work"
+  },
   "content_kanji_radical_label": {
     "message": "radical",
     "description": "The title given to the box showing radical information"
