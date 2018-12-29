@@ -5,6 +5,8 @@
 // eventually store the records as actually JS(ON) objects) but there will still
 // probably be some pre-processing on the content side to coalesce records etc.
 
+import { NameTag, getTagForDictKey } from './name-tags';
+
 export interface WordEntry {
   kanjiKana: string;
   kana: string[];
@@ -18,21 +20,6 @@ export interface WordsResult {
   data: Array<WordEntry>;
   matchLen: number | null;
   more: boolean;
-}
-
-export const enum NameTag {
-  Surname,
-  Place, // Place name
-  Person, // Person name, either given or surname, as-yet unclassified
-  Given, // Given name, as-yet not classified by sex
-  Female, // Female given name
-  Male, // Male given name
-  Full, // Full (usually family plus given) name of a particular person
-  Product, // Product name
-  Company, // Company name
-  Org, // Organization name
-  Station, // Station name
-  Work, // Work of literature, art, film, etc.
 }
 
 export interface NameDefinition {
@@ -206,28 +193,14 @@ function parseNameDefinition(definition: string): NameDefinition {
 }
 
 function parseNameTags(tags: Array<string>): Array<NameTag> | null {
-  const tagMapping: { [tag: string]: NameTag } = {
-    s: NameTag.Surname,
-    p: NameTag.Place,
-    u: NameTag.Person,
-    g: NameTag.Given,
-    f: NameTag.Female,
-    m: NameTag.Male,
-    h: NameTag.Full,
-    pr: NameTag.Product,
-    c: NameTag.Company,
-    o: NameTag.Org,
-    st: NameTag.Station,
-    wk: NameTag.Work,
-  };
-
   const result: Array<NameTag> = [];
 
-  for (const tag of tags) {
-    if (!tagMapping.hasOwnProperty(tag)) {
+  for (const dictKey of tags) {
+    const tag = getTagForDictKey(dictKey);
+    if (typeof tag === 'undefined') {
       return null;
     }
-    result.push(tagMapping[tag]);
+    result.push(tag);
   }
 
   return result;
