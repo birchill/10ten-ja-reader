@@ -453,7 +453,19 @@ export class RikaiContent {
       return;
     }
 
-    if (this._config.keys.nextDictionary.includes(ev.key)) {
+    // Make an upper-case version of the list of keys so that we can do
+    // a case-insensitive comparison. This is so that the keys continue to work
+    // even when the user has Caps Lock on.
+    const toUpper = (keys: string[]): string[] =>
+      keys.map(key => key.toUpperCase());
+    let { nextDictionary, toggleDefinition, startCopy } = this._config.keys;
+    [nextDictionary, toggleDefinition, startCopy] = [
+      toUpper(nextDictionary),
+      toUpper(toggleDefinition),
+      toUpper(startCopy),
+    ];
+
+    if (nextDictionary.includes(ev.key.toUpperCase())) {
       if (this._currentPoint && this._currentTarget) {
         this.tryToUpdatePopup(
           this._currentPoint,
@@ -461,7 +473,7 @@ export class RikaiContent {
           DictMode.NextDict
         );
       }
-    } else if (this._config.keys.toggleDefinition.includes(ev.key)) {
+    } else if (toggleDefinition.includes(ev.key.toUpperCase())) {
       browser.runtime.sendMessage({ type: 'toggleDefinition' });
       // We'll eventually get notified of the config change but we just change
       // it here now so we can update the popup immediately.
@@ -475,7 +487,7 @@ export class RikaiContent {
       // pressed since otherwise if the user simply wants to copy the selected
       // text by pressing Ctrl+C they will end up entering copy mode.
       !ev.ctrlKey &&
-      this._config.keys.startCopy.includes(ev.key) &&
+      startCopy.includes(ev.key.toUpperCase()) &&
       this._currentSearchResult
     ) {
       if (this._copyMode) {
@@ -491,7 +503,7 @@ export class RikaiContent {
     } else if (this._copyMode) {
       let copyType: CopyType | undefined;
       for (const copyKey of CopyKeys) {
-        if (ev.key === copyKey.key) {
+        if (ev.key.toUpperCase() === copyKey.key.toUpperCase()) {
           copyType = copyKey.type;
           break;
         }
