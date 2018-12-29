@@ -178,7 +178,7 @@ function renderNamesEntries(
     const definitionSpan = document.createElement('div');
     entryDiv.append(definitionSpan);
     definitionSpan.classList.add('w-def');
-    definitionSpan.append(entry.definition);
+    definitionSpan.append(entry.definition.text);
 
     namesTable.append(entryDiv);
   }

@@ -20,9 +20,29 @@ export interface WordsResult {
   more: boolean;
 }
 
+export const enum NameTag {
+  Surname,
+  Place, // Place name
+  Person, // Person name, either given or surname, as-yet unclassified
+  Given, // Given name, as-yet not classified by sex
+  Female, // Female given name
+  Male, // Male given name
+  Full, // Full (usually family plus given) name of a particular person
+  Product, // Product name
+  Company, // Company name
+  Org, // Organization name
+  Station, // Station name
+  Work, // Work of literature, art, film, etc.
+}
+
+export interface NameDefinition {
+  tags: Array<NameTag>;
+  text: string;
+}
+
 export interface NameEntry {
   names: { kanji?: string; kana: string }[];
-  definition: string;
+  definition: NameDefinition;
 }
 
 export interface NamesResult {
@@ -116,10 +136,11 @@ export async function query(
   };
 }
 
-function parseNameEntries(
+export function parseNameEntries(
   wordSearchResult: WordSearchResult
 ): Array<NameEntry> {
   const result: Array<NameEntry> = [];
+  let prevDefinitionText: string | undefined;
 
   for (const [dictEntry] of wordSearchResult.data) {
     // See parseWordEntries for an explanation of the format here
@@ -127,7 +148,7 @@ function parseNameEntries(
     if (!matches) {
       continue;
     }
-    let [kanjiKana, kana, definition] = matches.slice(1);
+    let [kanjiKana, kana, definitionText] = matches.slice(1);
 
     // Sometimes for names when we have a mix of katakana and hiragana we
     // actually have the same format in the definition field, e.g.
@@ -135,28 +156,78 @@ function parseNameEntries(
     //  あか組４ [あかぐみふぉー] /あか組４ [あかぐみフォー] /Akagumi Four (h)//
     //
     // So we try reprocessing the definition field using the same regex.
-    const rematch = definition.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
+    const rematch = definitionText.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
     if (rematch) {
-      [kanjiKana, kana, definition] = rematch.slice(1);
+      [kanjiKana, kana, definitionText] = rematch.slice(1);
     }
     const name = kana
       ? { kanji: kanjiKana, kana }
       : { kanji: undefined, kana: kanjiKana };
 
-    // Replace / separators in definition with ;
-    definition = definition.replace(/\//g, '; ');
-
     // Combine with previous entry if the definitions match.
     const prevEntry = result.length ? result[result.length - 1] : null;
-    if (prevEntry && prevEntry.definition === definition) {
+    if (prevEntry && prevDefinitionText === definitionText) {
       prevEntry.names.push(name);
       continue;
     }
+    prevDefinitionText = definitionText;
 
     result.push({
       names: [name],
-      definition,
+      definition: parseNameDefinition(definitionText),
     });
+  }
+
+  return result;
+}
+
+function parseNameDefinition(definition: string): NameDefinition {
+  const result = {
+    tags: [],
+    text: definition.replace(/\//g, '; '),
+  };
+
+  const matches = definition.match(/^(?:\(([a-z,]+)\)\s+)?(.*)/);
+  if (matches === null) {
+    return result;
+  }
+
+  const [, tagText, text] = matches;
+  if (!tagText) {
+    return result;
+  }
+
+  const tags = parseNameTags(tagText.split(','));
+  if (!tags) {
+    return result;
+  }
+
+  return { tags, text: text.replace(/\//g, '; ') };
+}
+
+function parseNameTags(tags: Array<string>): Array<NameTag> | null {
+  const tagMapping: { [tag: string]: NameTag } = {
+    s: NameTag.Surname,
+    p: NameTag.Place,
+    u: NameTag.Person,
+    g: NameTag.Given,
+    f: NameTag.Female,
+    m: NameTag.Male,
+    h: NameTag.Full,
+    pr: NameTag.Product,
+    c: NameTag.Company,
+    o: NameTag.Org,
+    st: NameTag.Station,
+    wk: NameTag.Work,
+  };
+
+  const result: Array<NameTag> = [];
+
+  for (const tag of tags) {
+    if (!tagMapping.hasOwnProperty(tag)) {
+      return null;
+    }
+    result.push(tagMapping[tag]);
   }
 
   return result;

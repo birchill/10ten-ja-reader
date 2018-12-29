@@ -1525,7 +1525,8 @@ export class RikaiContent {
 
       case 'name':
         {
-          const definition = entry.data.definition.replace(/\//g, '; ');
+          // XXX Format tags
+          const definition = entry.data.definition.text;
           toCopy = entry.data.names
             .map(name => `${name.kanji || ''}\t${name.kana}\t${definition}`)
             .join('\n');

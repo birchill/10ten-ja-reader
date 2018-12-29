@@ -262,13 +262,25 @@ const htmlTests = [
       data: [
         {
           names: [{ kanji: '中野', kana: 'なかの' }],
-          definition: 'Nakano (p,s)',
+          definition: {
+            tags: [2, 0],
+            text: 'Nakano',
+          },
         },
         {
           names: [{ kanji: '中野', kana: 'なかのざき' }],
-          definition: 'Nakanozaki (s)',
+          definition: {
+            tags: [0],
+            text: 'Nakanozaki',
+          },
         },
-        { names: [{ kanji: '中', kana: 'あたり' }], definition: 'Atari (f,s)' },
+        {
+          names: [{ kanji: '中', kana: 'あたり' }],
+          definition: {
+            tags: [4, 0],
+            text: 'Atari',
+          },
+        },
       ],
       more: true,
       matchLen: 2,
@@ -286,7 +298,10 @@ const htmlTests = [
       data: [
         {
           names: [{ kanji: 'あか組４', kana: 'あかぐみフォー' }],
-          definition: 'Akagumi Four (h)',
+          definition: {
+            tags: [6],
+            text: 'Akagumi Four',
+          },
         },
       ],
       more: false,
@@ -301,7 +316,10 @@ const htmlTests = [
       data: [
         {
           names: [{ kana: 'あがさ' }],
-          definition: 'Agasa (f)',
+          definition: {
+            tags: [4],
+            text: 'Agasa',
+          },
         },
       ],
       more: false,
@@ -316,60 +334,84 @@ const htmlTests = [
       data: [
         {
           names: [{ kanji: '日本', kana: 'にっぽん' }],
-          definition: '(s) Nippon',
+          definition: { tags: [0], text: 'Nippon' },
         },
         {
           names: [{ kanji: '日本', kana: 'につぽん' }],
-          definition: '(s) Nitsupon',
+          definition: { tags: [0], text: 'Nitsupon' },
         },
-        { names: [{ kanji: '日本', kana: 'にほん' }], definition: '(s) Nihon' },
+        {
+          names: [{ kanji: '日本', kana: 'にほん' }],
+          definition: { tags: [0], text: 'Nihon' },
+        },
         {
           names: [{ kanji: '日本', kana: 'ひのもと' }],
-          definition: '(s) Hinomoto',
+          definition: { tags: [0], text: 'Hinomoto' },
         },
         {
           names: [{ kanji: '日本', kana: 'ひもと' }],
-          definition: '(u) Himoto',
+          definition: { tags: [2], text: 'Himoto' },
         },
         {
           names: [{ kanji: '日本', kana: 'やまと' }],
-          definition: '(s) Yamato',
+          definition: { tags: [0], text: 'Yamato' },
         },
         {
           names: [{ kanji: '日本', kana: 'やまとの' }],
-          definition: '(s) Yamatono',
+          definition: { tags: [0], text: 'Yamatono' },
         },
-        { names: [{ kanji: '日', kana: 'あきら' }], definition: '(g) Akira' },
+        {
+          names: [{ kanji: '日', kana: 'あきら' }],
+          definition: { tags: [3], text: 'Akira' },
+        },
         {
           names: [{ kanji: '日', kana: 'くさなぎ' }],
-          definition: '(s) Kusanagi',
+          definition: { tags: [0], text: 'Kusanagi' },
         },
         {
           names: [{ kanji: '日', kana: 'くさやなぎ' }],
-          definition: '(s) Kusayanagi',
+          definition: { tags: [0], text: 'Kusayanagi' },
         },
-        { names: [{ kanji: '日', kana: 'じつ' }], definition: '(g) Jitsu' },
+        {
+          names: [{ kanji: '日', kana: 'じつ' }],
+          definition: { tags: [3], text: 'Jitsu' },
+        },
         {
           names: [{ kanji: '日', kana: 'たかにち' }],
-          definition: '(s) Takanichi',
+          definition: { tags: [0], text: 'Takanichi' },
         },
         {
           names: [{ kanji: '日', kana: 'たちもり' }],
-          definition: '(s) Tachimori',
+          definition: { tags: [0], text: 'Tachimori' },
         },
-        { names: [{ kanji: '日', kana: 'にち' }], definition: '(p) Nichi' },
+        {
+          names: [{ kanji: '日', kana: 'にち' }],
+          definition: { tags: [1], text: 'Nichi' },
+        },
         {
           names: [{ kanji: '日', kana: 'にちれん' }],
-          definition: '(u) Nichiren',
+          definition: { tags: [2], text: 'Nichiren' },
         },
-        { names: [{ kanji: '日', kana: 'にっ' }], definition: '(p) Ni' },
+        {
+          names: [{ kanji: '日', kana: 'にっ' }],
+          definition: { tags: [1], text: 'Ni' },
+        },
         {
           names: [{ kanji: '日', kana: 'にっしゅう' }],
-          definition: '(g) Nisshuu',
+          definition: { tags: [3], text: 'Nisshuu' },
         },
-        { names: [{ kanji: '日', kana: 'ひ' }], definition: '(p) Hi' },
-        { names: [{ kanji: '日', kana: 'ひかる' }], definition: '(f) Hikaru' },
-        { names: [{ kanji: '日', kana: 'ひさき' }], definition: '(s) Hisaki' },
+        {
+          names: [{ kanji: '日', kana: 'ひ' }],
+          definition: { tags: [1], text: 'Hi' },
+        },
+        {
+          names: [{ kanji: '日', kana: 'ひかる' }],
+          definition: { tags: [4], text: 'Hikaru' },
+        },
+        {
+          names: [{ kanji: '日', kana: 'ひさき' }],
+          definition: { tags: [0], text: 'Hisaki' },
+        },
       ],
       more: true,
       matchLen: 2,
