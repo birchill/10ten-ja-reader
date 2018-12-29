@@ -89,6 +89,21 @@
   font-size: 13px;
 }
 
+#rikaichamp-window .w-def .tag {
+  font-size: 10px;
+  border-radius: 3px;
+  margin-left: 0.5em;
+  padding: 0px 3px;
+}
+
+#rikaichamp-window .w-def .tag-female {
+  background: rgba(255,100,100,0.5);
+}
+
+#rikaichamp-window .w-def .tag-male {
+  background: rgba(100,100,255,0.5);
+}
+
 #rikaichamp-window .entry.-selected {
   background: rgba(255,255,206);
   border-radius: 2px;
@@ -351,6 +366,10 @@
   color: #FFE0A0;
 }
 
+#rikaichamp-window.-blue .w-def .tag {
+  border: 1px solid rgba(255,255,255,0.5) !important;
+}
+
 #rikaichamp-window.-blue .title {
   background: #4C63A8;
   color: #FFFFFF;
@@ -441,6 +460,10 @@
 
 #rikaichamp-window.-black .w-conj {
   color: #A0A0A0;
+}
+
+#rikaichamp-window.-black .w-def .tag {
+  border: 1px solid rgba(255,255,255,0.5) !important;
 }
 
 #rikaichamp-window.-black .entry.-selected .w-kanji {
@@ -539,6 +562,10 @@
   color: #808080;
 }
 
+#rikaichamp-window.-lightblue .w-def .tag {
+  border: 1px solid rgba(0,0,0,0.5) !important;
+}
+
 #rikaichamp-window.-lightblue .title {
   background: #BFE4FF;
   color: #000000;
@@ -622,6 +649,10 @@
 
 #rikaichamp-window.-yellow .w-conj {
   color: #A0A0A0;
+}
+
+#rikaichamp-window.-yellow .w-def .tag {
+  border: 1px solid rgba(0,0,0,0.5) !important;
 }
 
 #rikaichamp-window.-yellow .entry.-selected {
