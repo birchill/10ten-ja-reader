@@ -1,10 +1,11 @@
-import { NameEntry, QueryResult, WordEntry } from './query';
+import { NameDefinition, NameEntry, QueryResult, WordEntry } from './query';
 import {
   CopyKeys,
   CopyType,
   CopyKanjiKeyStrings,
   CopyNextKeyStrings,
 } from './copy-keys';
+import { getKeyForTag } from './name-tags';
 
 export const enum CopyState {
   Inactive,
@@ -175,10 +176,7 @@ function renderNamesEntries(
       entryTitleDiv.append(entryHeadingDiv);
     }
 
-    const definitionSpan = document.createElement('div');
-    entryDiv.append(definitionSpan);
-    definitionSpan.classList.add('w-def');
-    definitionSpan.append(entry.definition.text);
+    entryDiv.append(renderNameDefinition(entry.definition));
 
     namesTable.append(entryDiv);
   }
@@ -200,6 +198,32 @@ function renderNamesEntries(
   }
 
   return container;
+}
+
+function renderNameDefinition(definition: NameDefinition): HTMLDivElement {
+  const definitionSpan = document.createElement('div');
+  definitionSpan.classList.add('w-def');
+  definitionSpan.append(definition.text);
+
+  for (const tag of definition.tags) {
+    const tagKey = getKeyForTag(tag);
+    if (!tagKey) {
+      continue;
+    }
+
+    const tagText = browser.i18n.getMessage(`content_names_tag_${tagKey}`);
+    if (!tagText) {
+      continue;
+    }
+
+    const tagSpan = document.createElement('span');
+    tagSpan.classList.add('tag');
+    tagSpan.classList.add(`tag-${tagKey}`);
+    tagSpan.append(tagText);
+    definitionSpan.append(tagSpan);
+  }
+
+  return definitionSpan;
 }
 
 function getSelectedIndex(options: PopupOptions, numEntries: number) {

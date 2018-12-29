@@ -12,6 +12,30 @@ export const browser = {
       switch (id) {
         case 'content_names_dictionary':
           return 'Names Dictionary';
+        case 'content_names_tag_surname':
+          return 'surname';
+        case 'content_names_tag_place':
+          return 'place';
+        case 'content_names_tag_person':
+          return 'person';
+        case 'content_names_tag_given':
+          return 'given';
+        case 'content_names_tag_female':
+          return 'female';
+        case 'content_names_tag_male':
+          return 'male';
+        case 'content_names_tag_full':
+          return 'full name';
+        case 'content_names_tag_product':
+          return 'product';
+        case 'content_names_tag_company':
+          return 'company';
+        case 'content_names_tag_org':
+          return 'org';
+        case 'content_names_tag_station':
+          return 'station';
+        case 'content_names_tag_work':
+          return 'work';
         case 'content_kanji_radical_label':
           return 'radical';
         case 'content_kanji_grade_label':

@@ -1,4 +1,5 @@
-import { NameTag, parseNameEntries } from './query';
+import { NameTag } from './name-tags';
+import { parseNameEntries } from './query';
 
 describe('parseNameEntries', () => {
   it('parses name entries', async () => {
