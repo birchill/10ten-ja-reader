@@ -57,6 +57,68 @@ for (const test of htmlTests) {
   container.append(popupWindow);
 }
 
+const themes = ['blue', 'lightblue', 'black', 'yellow'];
+
+// Name tag test
+
+const nameTagTest = {
+  type: 'names',
+  data: [
+    {
+      names: [{ kanji: '中野', kana: 'なかの' }],
+      definition: {
+        tags: [0, 1, 2],
+        text: 'Nakano',
+      },
+    },
+    {
+      names: [{ kanji: '中野', kana: 'なかのざき' }],
+      definition: {
+        tags: [3, 4, 5],
+        text: 'Nakanozaki',
+      },
+    },
+    {
+      names: [{ kanji: '中', kana: 'あたり' }],
+      definition: {
+        tags: [6, 7, 8],
+        text: 'Atari',
+      },
+    },
+  ],
+  more: false,
+  matchLen: 2,
+  names: true,
+};
+
+{
+  const label = document.createElement('div');
+  label.classList.add('label');
+  label.append('【Name tags】');
+  container.append(label);
+
+  for (const theme of themes) {
+    const popup = rikaiContent._renderPopup(
+      nameTagTest,
+      { showDefinitions: true },
+    );
+
+    const label = document.createElement('div');
+    label.classList.add('label');
+    label.append(`Theme: ${theme}`);
+    container.append(label);
+
+    const popupWindow = document.createElement('div');
+    popupWindow.setAttribute('id', 'rikaichamp-window');
+    popupWindow.classList.add('stack');
+    popupWindow.classList.add(`-${theme}`);
+    popupWindow.append(popup);
+    container.append(popupWindow);
+  }
+}
+
+// Highlight tests
+
 const highlightTests = [
   {
     description: 'Word list',
@@ -133,8 +195,6 @@ const highlightTests = [
     },
   },
 ];
-
-const themes = ['blue', 'lightblue', 'black', 'yellow'];
 
 for (const test of highlightTests) {
   const label = document.createElement('div');
