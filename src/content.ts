@@ -48,6 +48,7 @@
 import { CopyKeys, CopyType } from './copy-keys';
 import { renderPopup, CopyState, PopupOptions } from './popup';
 import { query, QueryResult, WordEntry, NameEntry } from './query';
+import { serializeTags } from './name-tags';
 
 declare global {
   interface Window {
@@ -1471,7 +1472,13 @@ export class RikaiContent {
             name => (name.kanji ? `${name.kanji} [${name.kana}]` : name.kana)
           )
           .join(', ');
-        toCopy += ' ' + entry.data.definition;
+
+        const { text, tags } = entry.data.definition;
+        let tagsText = serializeTags(tags);
+        if (tagsText) {
+          tagsText = `(${tagsText}) `;
+        }
+        toCopy += ` ${tagsText}${text}`;
         break;
 
       case 'kanji':
@@ -1525,10 +1532,15 @@ export class RikaiContent {
 
       case 'name':
         {
-          // XXX Format tags
-          const definition = entry.data.definition.text;
+          const { text, tags } = entry.data.definition;
+          let tagsText = serializeTags(tags);
+          if (tagsText) {
+            tagsText = `(${tagsText}) `;
+          }
           toCopy = entry.data.names
-            .map(name => `${name.kanji || ''}\t${name.kana}\t${definition}`)
+            .map(
+              name => `${name.kanji || ''}\t${name.kana}\t${tagsText}${text}`
+            )
             .join('\n');
         }
         break;

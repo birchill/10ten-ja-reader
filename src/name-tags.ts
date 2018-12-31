@@ -40,9 +40,12 @@ const tagMap = new Map<NameTag, NameTagEntry>(
   nameTags.map(entry => [entry.tag, entry] as [NameTag, NameTagEntry])
 );
 
-export function getKeyForTag(tag: NameTag): string | undefined {
-  const result = tagMap.get(tag);
-  return result ? result.key : undefined;
+export function getKeyForTag(tag: NameTag): string {
+  return tagMap.get(tag)!.key;
+}
+
+export function getDictKeyForTag(tag: NameTag): string {
+  return tagMap.get(tag)!.dictKey;
 }
 
 const dictKeyToTagMap = new Map<string, NameTag>(
@@ -51,4 +54,9 @@ const dictKeyToTagMap = new Map<string, NameTag>(
 
 export function getTagForDictKey(dictKey: string): NameTag | undefined {
   return dictKeyToTagMap.get(dictKey);
+}
+
+// Serialize an array of NameTags using the corresponding dict keys
+export function serializeTags(tags: Array<NameTag>): string {
+  return tags.map(getDictKeyForTag).join(',');
 }

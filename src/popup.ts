@@ -207,10 +207,6 @@ function renderNameDefinition(definition: NameDefinition): HTMLDivElement {
 
   for (const tag of definition.tags) {
     const tagKey = getKeyForTag(tag);
-    if (!tagKey) {
-      continue;
-    }
-
     const tagText = browser.i18n.getMessage(`content_names_tag_${tagKey}`);
     if (!tagText) {
       continue;
