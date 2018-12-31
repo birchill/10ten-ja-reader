@@ -1,4 +1,8 @@
-## 0.0.28 (not yet released)
+## 0.0.29 (not yet released)
+
+(Nothing yet)
+
+## 0.0.28 (2018-12-31
 
 * Added more user-friendly display of annotations for the names dictionary
   ([#64](https://github.com/birtles/rikaichamp/issues/64))
