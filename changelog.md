@@ -1,6 +1,8 @@
 ## 0.0.28 (not yet released)
 
-* Made pop-up key handling work even when CapsLock is on.
+* Added more user-friendly display of annotations for the names dictionary
+  ([#64](https://github.com/birtles/rikaichamp/issues/64))
+* Made pop-up key handling work even when CapsLock is on
   ([#72](https://github.com/birtles/rikaichamp/issues/72))
 
 ## 0.0.27 (2018-12-28)
