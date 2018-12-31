@@ -4,6 +4,7 @@
   ([#64](https://github.com/birtles/rikaichamp/issues/64))
 * Made pop-up key handling work even when CapsLock is on
   ([#72](https://github.com/birtles/rikaichamp/issues/72))
+* Updated dictionaries to 2018-12-30 snapshot.
 
 ## 0.0.27 (2018-12-28)
 
