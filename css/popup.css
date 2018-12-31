@@ -113,6 +113,11 @@
   border-radius: 2px;
 }
 
+#rikaichamp-window .entry.-selected .w-def .tag {
+  color: black;
+  border-color: rgba(0,0,0,0.3) !important;
+}
+
 #rikaichamp-window .entry.-selected .w-kanji {
   color: #4C63A8;
 }

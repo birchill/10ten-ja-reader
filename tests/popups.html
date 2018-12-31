@@ -149,6 +149,24 @@ const highlightTests = [
     },
   },
   {
+    description: 'Name entry',
+    queryResult: {
+      type: 'names',
+      data: [
+        {
+          names: [{ kanji: '中野', kana: 'なかの' }],
+          definition: {
+            tags: [0, 4, 5],
+            text: 'Nakano',
+          },
+        },
+      ],
+      more: false,
+      matchLen: 2,
+      names: true,
+    }
+  },
+  {
     description: 'Kanji entry',
     queryResult: {
       type: 'kanji',
