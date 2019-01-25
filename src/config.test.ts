@@ -99,6 +99,7 @@ class MockStorageArea {
 }
 
 global.REF_ABBREVIATIONS = [
+  { abbrev: 'CO', name: 'Conning' },
   { abbrev: 'H', name: 'Halpern' },
   { abbrev: 'L', name: 'Heisig' },
   { abbrev: 'E', name: 'Henshall' },
@@ -134,6 +135,7 @@ describe('Config', () => {
     expect(config.noTextHighlight).toEqual(false);
     expect(config.showKanjiComponents).toEqual(true);
     expect(config.kanjiReferences).toEqual({
+      CO: true,
       H: true,
       L: true,
       E: true,

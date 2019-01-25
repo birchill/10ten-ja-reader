@@ -84,6 +84,7 @@ export const REF_ABBREVIATIONS = [
   K: 'Gakken Kanji Dictionary Index',
   W: 'Korean Reading',
   */
+  { abbrev: 'CO', name: 'Conning' },
   { abbrev: 'H', name: 'Halpern' },
   { abbrev: 'L', name: 'Heisig' },
   { abbrev: 'E', name: 'Henshall' },

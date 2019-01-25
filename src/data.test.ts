@@ -309,6 +309,7 @@ describe('Dictionary', () => {
       kanji: '峠',
       misc: {
         B: '46',
+        CO: '969',
         DK: '265',
         E: '1663',
         F: '1941',
@@ -325,6 +326,7 @@ describe('Dictionary', () => {
         V: '1464',
       },
       miscDisplay: [
+        { abbrev: 'CO', name: 'Conning' },
         { abbrev: 'H', name: 'Halpern' },
         { abbrev: 'L', name: 'Heisig' },
         { abbrev: 'E', name: 'Henshall' },
@@ -349,6 +351,7 @@ describe('Dictionary', () => {
   it('looks up kanji with nanori and bushumei', () => {
     const options = {
       includedReferences: new Set([
+        'CO',
         'H',
         'L',
         'E',
@@ -368,6 +371,7 @@ describe('Dictionary', () => {
       kanji: '士',
       misc: {
         B: '33',
+        CO: '350',
         DK: '2129',
         E: '494',
         F: '526',
@@ -385,6 +389,7 @@ describe('Dictionary', () => {
         Y: 'shi4',
       },
       miscDisplay: [
+        { abbrev: 'CO', name: 'Conning' },
         { abbrev: 'H', name: 'Halpern' },
         { abbrev: 'L', name: 'Heisig' },
         { abbrev: 'E', name: 'Henshall' },
@@ -411,6 +416,7 @@ describe('Dictionary', () => {
       kanji: '与',
       misc: {
         B: '1',
+        CO: '858',
         DK: '2138',
         E: '1873',
         F: '308',
@@ -428,6 +434,7 @@ describe('Dictionary', () => {
         Y: 'yu3  yu4',
       },
       miscDisplay: [
+        { abbrev: 'CO', name: 'Conning' },
         { abbrev: 'H', name: 'Halpern' },
         { abbrev: 'L', name: 'Heisig' },
         { abbrev: 'E', name: 'Henshall' },

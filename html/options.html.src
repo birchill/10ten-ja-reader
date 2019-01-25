@@ -132,6 +132,10 @@
               <input type=checkbox id=U name=U>
               <label for=U>Unicode</label>
             </div>
+			<div class="browser-style checkbox-row">
+              <input type=checkbox id=CO name=CO>
+              <label for=CO>Conning</label>
+            </div>
           </div>
         </div>
       </form>
