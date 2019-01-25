@@ -1,5 +1,7 @@
 ## 0.0.29 (not yet released)
 
+* Added kanji references for Conning's 'The Kodansha Kanji Learner's Course'
+  thanks to [@Kala-J](https://github.com/Kala-J).
 * Make the kanji view show the traditional radical (not the Nelson radical)
 
 ## 0.0.28 (2018-12-31
