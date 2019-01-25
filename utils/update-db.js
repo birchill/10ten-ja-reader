@@ -31,7 +31,8 @@ const SEMIVOICED_KATAKANA_TO_HIRAGANA = [
 ];
 
 const SUPPORTED_REF_TYPES = new Set([
-  'B',
+  'B', // Nelson radical or traditional radical if same
+  'C', // Traditional radical when they differ
   'H',
   'L',
   'E',
@@ -212,7 +213,7 @@ class KanjiDictParser extends Writable {
     // <kanji> - Single char (but could be non-BMP so need to be careful what JS
     //           methods we use to test for a char)
     // <reference codes> - Space separated, typically one uppercase ASCII
-    //                     letter following by a sequence of ASCII letters and
+    //                     letter followed by a sequence of ASCII letters and
     //                     numbers, ending in a number.
     //                     Should have at least a B<digit>+ field representing
     //                     the radical. Rikaichamp assumes that will be there so
@@ -224,7 +225,7 @@ class KanjiDictParser extends Writable {
     //              (Also a comma could confuse it too. Would mean we should
     //              switch to ; as a separator in that case.)
     //
-    // e.g. 士|3B4E U58eb B33 G4 S3 F526 J1 N1160 V1117 H3405 DP4213 DK2129 DL2877 L319 DN341 K301 O41 DO59 MN5638 MP3.0279 E494 IN572 DA581 DS410 DF1173 DH521 DT441 DC386 DJ755 DG393 DM325 P4-3-2 I3p0.1 Q4010.0 DR1472 Yshi4 Wsa シ さむらい T1 お ま T2 さむらい {gentleman} {scholar} {samurai} {samurai radical (no. 33)}
+    // e.g. 士 3B4E U58eb B33 G4 S3 F526 J1 N1160 V1117 H3405 DP4213 DK2129 DL2877 L319 DN341 K301 O41 DO59 MN5638 MP3.0279 E494 IN572 DA581 DS410 DF1173 DH521 DT441 DC386 DJ755 DG393 DM325 P4-3-2 I3p0.1 Q4010.0 DR1472 Yshi4 Wsa シ さむらい T1 お ま T2 さむらい {gentleman} {scholar} {samurai} {samurai radical (no. 33)}
     //
     // So basically, the only way to know if we've gone from <reference codes>
     // to <readings> is to check the actual codepoints being used. Ugh.
@@ -236,7 +237,7 @@ class KanjiDictParser extends Writable {
     //   𢦏 .=.=== U2298F B62 S6 Yzai1 {to cut} {wound} {hurt}
     //   𢈘 .=.=== U22218 B53 S9 N1510 DP3845 ロク しか か
     //
-    // (Yes, including the trailing spaces too.)
+    // (Yes, including the leading spaces too.)
     //
     // Output pieces:
     //  - Kanji
@@ -258,7 +259,7 @@ class KanjiDictParser extends Writable {
     // Trim references
     const refs = matches[2].trim().split(' ');
     const refsToKeep = [];
-    let hasB = false;
+    let hasRadical = false;
     for (const ref of refs) {
       if (ref.length && SUPPORTED_REF_TYPES.has(ref[0])) {
         // Special case Dx types since we only support DK types
@@ -266,12 +267,12 @@ class KanjiDictParser extends Writable {
           continue;
         }
         if (ref[0] === 'B') {
-          hasB = true;
+          hasRadical = true;
         }
         refsToKeep.push(ref);
       }
     }
-    if (!hasB) {
+    if (!hasRadical) {
       throw new Error(`No radical reference found for ${line}`);
     }
 

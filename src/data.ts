@@ -662,7 +662,11 @@ export class Dictionary {
     }
 
     // Fill in radical
-    entry.radical = this.radData[Number(entry.misc.B) - 1].charAt(0);
+    const radicalNumber = entry.misc.C
+      ? // C will only be specified when it differs from the Nelson radical.
+        Number(entry.misc.C) - 1
+      : Number(entry.misc.B) - 1;
+    entry.radical = this.radData[radicalNumber].charAt(0);
 
     // Kanji components
     if (options && options.includeKanjiComponents) {

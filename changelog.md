@@ -1,6 +1,6 @@
 ## 0.0.29 (not yet released)
 
-(Nothing yet)
+* Make the kanji view show the traditional radical (not the Nelson radical)
 
 ## 0.0.28 (2018-12-31
 

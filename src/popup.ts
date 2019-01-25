@@ -261,7 +261,7 @@ function renderKanjiEntry(
   radicalCell.classList.add('cell');
   radicalCell.append(browser.i18n.getMessage('content_kanji_radical_label'));
   radicalCell.append(document.createElement('br'));
-  radicalCell.append(`${entry.radical} ${entry.misc.B}`);
+  radicalCell.append(`${entry.radical} ${entry.misc.C || entry.misc.B}`);
 
   const gradeCell = document.createElement('div');
   summaryTable.append(gradeCell);
