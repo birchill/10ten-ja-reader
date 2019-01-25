@@ -13,21 +13,21 @@ class ConningParser extends Writable {
 
   _write(data, encoding, callback) {
     const line = data.toString('utf8');
-	
-	// Split into number and associated kanji
-	const lineData = line.split(',');
-	
-	// Parse out entries
+
+    // Split into number and associated kanji
+    const lineData = line.split(',');
+
+    // Parse out entries
     if (lineData.length != 2) {
       callback(new Error('Improperly formatted input file'));
       return;
     }
-	
-	this._currentNumber = lineData[0];
-	for (const entry of lineData[1].split(' ')) {
-	  this._entries.set(entry, this._currentNumber);
-	  this._stats[this._currentNumber]++;
-	}
+
+    this._currentNumber = lineData[0];
+    for (const entry of lineData[1].split(' ')) {
+      this._entries.set(entry, this._currentNumber);
+      this._stats[this._currentNumber]++;
+    }
 
     callback(null);
   }

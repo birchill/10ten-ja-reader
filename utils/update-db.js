@@ -191,9 +191,9 @@ class KanjiDictParser extends Writable {
     if (options && options.kanKenData) {
       this.kanKenData = options.kanKenData;
     }
-	if (options && options.conningData) {
-		this.conningData = options.conningData;
-	}
+    if (options && options.conningData) {
+      this.conningData = options.conningData;
+    }
   }
 
   _write(data, encoding, callback) {
@@ -284,8 +284,8 @@ class KanjiDictParser extends Writable {
     if (this.kanKenData && this.kanKenData.has(matches[1])) {
       refsToKeep.push(`KK${this.kanKenData.get(matches[1])}`);
     }
-	
-	// Merge Conning data
+
+    // Merge Conning data
     if (this.conningData && this.conningData.has(matches[1])) {
       refsToKeep.push(`CO${this.conningData.get(matches[1])}`);
     }
@@ -330,7 +330,7 @@ const parseKanjiDic = async (sources, dataFile) => {
   const kanKenData = await loadKanKen(
     path.join(__dirname, '..', 'data', '漢検.txt')
   );
-  
+
   const conningData = await loadConning(
     path.join(__dirname, '..', 'data', 'conning.txt')
   );
@@ -347,7 +347,10 @@ const parseKanjiDic = async (sources, dataFile) => {
             .pipe(iconv.encodeStream('utf-8'))
             .pipe(new LineStream())
             .on('end', resolve)
-            .pipe(parser, { end: false });
+            .pipe(
+              parser,
+              { end: false }
+            );
         })
         .on('error', err => {
           throw Error(`Connection error: ${err}`);

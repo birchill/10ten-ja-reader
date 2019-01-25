@@ -3,90 +3,98 @@
   <head>
     <meta charset=utf-8>
     <title>Rikaichamp options</title>
-    <!--
     <link rel="stylesheet" type="text/css" href="chrome://browser/content/extension.css">
-    -->
-    <link rel="stylesheet" type="text/css" href="css/options.css">
-    <link rel="stylesheet" type="text/css" href="css/popup.css">
+    <link rel="stylesheet" type="text/css" href="../css/options.css">
+    <link rel="stylesheet" type="text/css" href="../css/popup.css">
   </head>
   <body>
     <div id=rikaichamp_options class=panel>
       <form id=optform name=optform>
         <div class="panel-section panel-section-header">
-          <h2 class=text-section-header>__MSG_options_general_heading__</h2>
+          <h2 class=text-section-header>General</h2>
         </div>
         <div class="panel-section panel-section-formElements browser-style">
           <div class="browser-style checkbox-row">
             <input type=checkbox id=highlightText name=highlightText>
-            <label for=highlightText
-              >__MSG_options_highlight_matched_text__</label>
+            <label for=highlightText>Highlight matched text</label>
           </div>
           <div class="browser-style checkbox-row">
             <input type=checkbox id=contextMenuEnable name=contextMenuEnable>
-            <label for=contextMenuEnable
-              >__MSG_options_show_context_menu_item__</label>
+            <label for=contextMenuEnable>Show
+              &ldquo;Enable Rikaichamp&rdquo; in context menu</label>
           </div>
         </div>
         <div class="panel-section panel-section-header">
-          <h2 class=text-section-header>__MSG_options_popup_style_heading__</h2>
+          <h2 class=text-section-header>Popup style</h2>
         </div>
         <div class="panel-section panel-section-formElements">
           <fieldset>
-            <!-- Extra div because Chrome can't do flex in fieldset -->
             <div class=popupstyle-select id=popupstyle-select>
             </div>
           </fieldset>
           <div class="browser-style checkbox-row">
             <input type=checkbox id=showDefinitions name=showDefinitions>
-            <label for=showDefinitions>__MSG_options_show_definitions__</label>
+            <label for=showDefinitions>Show definitions</label>
           </div>
         </div>
         <div class="panel-section panel-section-header">
-          <h2 class=text-section-header>__MSG_options_keyboard_heading__</h2>
+          <h2 class=text-section-header>Keyboard</h2>
         </div>
         <div class="panel-section panel-section-formElements">
           <div class="panel-section key-grid">
-            <div class="key command browser-style">
+            <div class="key browser-style">
               <input type=checkbox id=toggle-alt>
               <label for=toggle-alt><span>Alt</span></label>
               <input type=checkbox id=toggle-ctrl>
               <label for=toggle-ctrl><span>Ctrl</span></label>
               <input type=checkbox id=toggle-shift>
               <label for=toggle-shift><span>Shift</span></label>
-              <input size=1 type=text value=R disabled id=toggle-key>
+              <input size=1 type=text value=R disabled class=hotkey
+                id=toggle-key>
             </div>
             <div class="key-description">
-              __MSG_command_toggle_description__
-              <div class="icon" id=toggle-key-icon></div>
+              Toggle Rikaichamp on/off
+              <div class="icon -warning" id=toggle-key-icon></div>
             </div>
-            <div class="key holdtoshowkeys browser-style">
-              <input type=checkbox id=show-alt value=Alt>
-              <label for=show-alt><span>Alt</span></label>
-              <input type=checkbox id=show-ctrl value=Ctrl>
-              <label for=show-ctrl><span>Ctrl</span></label>
+            <div class="key browser-style">
+              <input type=checkbox id=show-alt>
+              <label for=toggle-alt><span>Alt</span></label>
+              <input type=checkbox id=show-ctrl>
+              <label for=toggle-ctrl><span>Ctrl</span></label>
+              <input type=checkbox id=show-shift>
+              <label for=toggle-shift><span>Shift</span></label>
             </div>
             <div class=key-description>
-              __MSG_options_hold_to_show_keys_description__
-              <p><em>__MSG_options_hold_to_show_keys_explanation__</em></p>
+              Show pop-up
+              <p><em>If nothing is selected, the pop-up will display whenever
+                Rikaichamp is enabled.</em></p>
             </div>
           </div>
-          <p>__MSG_options_popup_keys_subheading__</p>
-          <div class="panel-section key-grid" id=key-grid></div>
+          <p>Pop-up keys:</p>
+          <div class="panel-section key-grid" id=key-grid>
+            <div class="key browser-style">
+              <input type=checkbox id=key-x name=key-x data-key=x>
+              <label for=key-x><span>x</span></label>
+            </div>
+            <div class=key-description>Key description</div>
+            <div class="key browser-style">
+              <input type=checkbox id=key-y name=key-y data-key=y>
+              <label for=key-y><span>y</span></label>
+              <input type=checkbox id=key-z name=key-z data-key=z>
+              <label for=key-z><span>z</span></label>
+            </div>
+            <div class=key-description>Key description</div>
+          </div>
         </div>
         <div id=kanjicon>
           <div class="panel-section panel-section-header">
-            <h2
-              class=text-section-header>__MSG_options_kanji_dictionary_heading__</h2>
+            <h2 class=text-section-header>Kanji dictionary</h2>
           </div>
           <div class="panel-section panel-section-grid panel-section-list browser-style">
             <div class="browser-style checkbox-row">
               <input type=checkbox id=showKanjiComponents
                 name=showKanjiComponents>
-              <label for=showKanjiComponents>__MSG_options_kanji_components__</label>
-            </div>
-            <div class="browser-style checkbox-row">
-              <input type=checkbox id=CO name=CO>
-              <label for=CO>Conning</label>
+              <label for=showKanjiComponents>Kanji components</label>
             </div>
             <div class="browser-style checkbox-row">
               <input type=checkbox id=H name=H>
@@ -101,12 +109,8 @@
               <label for=E>Henshall</label>
             </div>
             <div class="browser-style checkbox-row">
-              <input type=checkbox id=KK name=KK>
-              <label for=KK>Kanji Kentei</label>
-            </div>
-            <div class="browser-style checkbox-row">
               <input type=checkbox id=DK name=DK>
-              <label for=DK>Kanji Learner's Dictionary</label>
+              <label for=DK>Kanji Learners Dictionary</label>
             </div>
             <div class="browser-style checkbox-row">
               <input type=checkbox id=N name=N>
@@ -141,8 +145,5 @@
       </form>
     </div>
   </body>
-  <!--#if use_polyfill-->
-  <script src="browser-polyfill.js"></script>
-  <!--#endif-->
-  <script src="rikaichamp-options.js"></script>
+  <script src="options.js"></script>
 </html>
