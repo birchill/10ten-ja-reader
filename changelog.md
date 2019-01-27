@@ -1,4 +1,8 @@
-## 0.0.29 (not yet released)
+## 0.0.30 (Not yet released)
+
+(Nothing yet)
+
+## 0.0.29 (2019-01-27)
 
 * Added kanji references for Conning's 'The Kodansha Kanji Learner's Course'
   thanks to [@Kala-J](https://github.com/Kala-J).
@@ -8,7 +12,7 @@
 * Kanji components are now included when copying a kanji entry to the clipboard
 * Updated dictionaries to 2019-01-26 snapshot.
 
-## 0.0.28 (2018-12-31
+## 0.0.28 (2018-12-31)
 
 * Added more user-friendly display of annotations for the names dictionary
   ([#64](https://github.com/birtles/rikaichamp/issues/64))
