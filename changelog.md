@@ -6,6 +6,7 @@
   The Nelson radical will be shown in the references section in cases where it
   differs.
 * Kanji components are now included when copying a kanji entry to the clipboard
+* Updated dictionaries to 2019-01-26 snapshot.
 
 ## 0.0.28 (2018-12-31
 
