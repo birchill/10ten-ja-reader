@@ -99,6 +99,10 @@
     "message": "部首",
     "description": "The title given to the box showing radical information"
   },
+  "content_kanji_components_label": {
+    "message": "構成",
+    "description": "The label to give to kanji components when copying a kanji entry"
+  },
   "content_kanji_grade_label": {
     "message": "レベル",
     "description": "The title given to the box showing kanji grade"

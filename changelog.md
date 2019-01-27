@@ -5,6 +5,7 @@
 * Make the kanji view show the traditional radical (not the Nelson radical).
   The Nelson radical will be shown in the references section in cases where it
   differs.
+* Kanji components are now included when copying a kanji entry to the clipboard
 
 ## 0.0.28 (2018-12-31
 

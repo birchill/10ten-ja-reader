@@ -1497,10 +1497,18 @@ export class RikaiContent {
         if (entry.data.bushumei.length) {
           toCopy += ` (${entry.data.bushumei.join(`、`)})`;
         }
-        // We don't bother with the kanji components for now.
-        //
-        // I'm not even sure if we need the references. Would it be enough to
-        // only include them only in the tab-delimited case?
+        if (entry.data.components && entry.data.components.length) {
+          const componentsLabel = browser.i18n.getMessage(
+            'content_kanji_components_label'
+          );
+          let components: Array<string> = [];
+          for (const component of entry.data.components) {
+            components.push(
+              `${component.radical} ${component.yomi} ${component.english}`
+            );
+          }
+          toCopy += `; ${componentsLabel}: ${components.join(', ')}`;
+        }
         if (entry.data.miscDisplay.length) {
           const refs: Array<string> = [];
           for (const ref of entry.data.miscDisplay) {
@@ -1552,6 +1560,13 @@ export class RikaiContent {
         toCopy += `\t${entry.data.eigo}`;
         toCopy += `\t${entry.data.radical}`;
         toCopy += `\t${entry.data.bushumei.join(`、`)}`;
+        if (entry.data.components) {
+          let components = '';
+          for (const component of entry.data.components) {
+            components += component.radical;
+          }
+          toCopy += `\t${components}`;
+        }
         for (const ref of entry.data.miscDisplay) {
           const refText = entry.data.misc.hasOwnProperty(ref.abbrev)
             ? `${ref.abbrev}${entry.data.misc[ref.abbrev]}`
