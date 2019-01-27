@@ -291,7 +291,7 @@ export class Config {
     browser.storage.sync.set({ showKanjiComponents: value });
   }
 
-  // kanjiReferences: Defaults to true for all items in REF_ABBREVIATION
+  // kanjiReferences: Defaults to true for all items in REF_ABBREVIATIONS
 
   get kanjiReferences(): KanjiReferenceFlags {
     const setValues = this._settings.kanjiReferences || {};

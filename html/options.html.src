@@ -113,6 +113,10 @@
               <label for=N>Nelson</label>
             </div>
             <div class="browser-style checkbox-row">
+              <input type=checkbox id=NR name=NR>
+              <label for=NR>Nelson Radical</label>
+            </div>
+            <div class="browser-style checkbox-row">
               <input type=checkbox id=V name=V>
               <label for=V>New Nelson</label>
             </div>

@@ -74,7 +74,6 @@ const SEMIVOICED_KATAKANA_TO_HIRAGANA = [
 
 export const REF_ABBREVIATIONS = [
   /*
-  C: 'Classical Radical',
   DR: 'Father Joseph De Roo Index',
   DO: 'P.G. O\'Neill Index',
   O: 'P.G. O\'Neill Japanese Names Index',
@@ -91,6 +90,7 @@ export const REF_ABBREVIATIONS = [
   { abbrev: 'KK', name: 'Kanji Kentei' },
   { abbrev: 'DK', name: 'Kanji Learners Dictionary' },
   { abbrev: 'N', name: 'Nelson' },
+  { abbrev: 'NR', name: 'Nelson Radical' },
   { abbrev: 'V', name: 'New Nelson' },
   { abbrev: 'Y', name: 'PinYin' },
   { abbrev: 'P', name: 'Skip Pattern' },
@@ -658,16 +658,28 @@ export class Dictionary {
     // Fill in display order and information for other kanji references
     for (let ref of REF_ABBREVIATIONS) {
       if (!options || options.includedReferences.has(ref.abbrev)) {
+        // For the Nelson radical, only add it if it differs from the classical
+        // radical (which is only specified when it differs).
+        if (ref.abbrev === 'NR' && !entry.misc.C) {
+          continue;
+        }
+
         entry.miscDisplay.push(ref);
       }
     }
 
     // Fill in radical
+    const nelsonRadicalNumber = Number(entry.misc.B) - 1;
     const radicalNumber = entry.misc.C
-      ? // C will only be specified when it differs from the Nelson radical.
-        Number(entry.misc.C) - 1
-      : Number(entry.misc.B) - 1;
+      ? Number(entry.misc.C) - 1
+      : nelsonRadicalNumber;
     entry.radical = this.radData[radicalNumber].charAt(0);
+
+    // Add character version of Nelson radical too, if needed
+    if (entry.misc.C) {
+      const nelsonRadical = this.radData[nelsonRadicalNumber].charAt(0);
+      entry.misc.NR = `${nelsonRadical} ${entry.misc.B}`;
+    }
 
     // Kanji components
     if (options && options.includeKanjiComponents) {
@@ -684,12 +696,9 @@ export class Dictionary {
         }
       };
 
-      addRadicalFromRow(this.radData[Number(entry.misc.B) - 1]);
+      addRadicalFromRow(this.radData[nelsonRadicalNumber]);
       this.radData.forEach((row: string, index: number) => {
-        if (
-          index === Number(entry.misc.B) - 1 ||
-          row.indexOf(entry.kanji) === -1
-        ) {
+        if (index === nelsonRadicalNumber || row.indexOf(entry.kanji) === -1) {
           return;
         }
         addRadicalFromRow(row);
