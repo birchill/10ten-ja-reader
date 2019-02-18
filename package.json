@@ -49,7 +49,7 @@
     "karma-webpack": "^3.0.5",
     "mocha": "^5.2.0",
     "source-map-loader": "^0.2.4",
-    "ts-jest": "^23.10.5",
+    "ts-jest": "^24.0.0",
     "ts-loader": "^5.3.2",
     "web-ext-types": "github:michael-zapata/web-ext-types",
     "web-ext-webpack-plugin": "github:hiikezoe/web-ext-webpack-plugin",
