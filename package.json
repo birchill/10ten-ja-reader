@@ -58,7 +58,7 @@
     "webpack-preprocessor": "^0.1.12"
   },
   "dependencies": {
-    "@bugsnag/js": "^5.1.0",
+    "@bugsnag/js": "^6.0.0",
     "husky": "^1.2.1",
     "lint-staged": "^8.1.0",
     "typescript": "^3.2.2",
