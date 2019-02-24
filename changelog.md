@@ -2,6 +2,10 @@
 
 * Fixed looking up of entries where the reading is in Katakana
   ([#84](https://github.com/birtles/rikaichamp/issues/84))
+* Reworked handling of keystrokes when a textbox is in use.
+  Hopefully Rikaichamp listens to keystrokes when you expect it to and ignores
+  them when you don't.
+  ([#20](https://github.com/birtles/rikaichamp/issues/20))
 
 ## 0.0.29 (2019-01-27)
 
