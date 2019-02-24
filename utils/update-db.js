@@ -133,8 +133,11 @@ class DictParser extends Transform {
     const mainEntry = normalizeEntry(matches[1]);
     addOrUpdateEntry(mainEntry);
 
-    if (matches.length > 2 && matches[2] && matches[2] !== mainEntry) {
-      addOrUpdateEntry(matches[2]);
+    if (matches.length > 2 && matches[2]) {
+      const subEntry = normalizeEntry(matches[2]);
+      if (subEntry !== mainEntry) {
+        addOrUpdateEntry(subEntry);
+      }
     }
 
     this._length += line.length + 1;
