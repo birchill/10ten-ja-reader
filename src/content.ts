@@ -245,6 +245,7 @@ export class RikaiContent {
     window.addEventListener('mousemove', this.onMouseMove);
     window.addEventListener('mousedown', this.onMouseDown);
     window.addEventListener('keydown', this.onKeyDown, { capture: true });
+    window.addEventListener('focus', this.onFocus);
 
     this.testTimerPrecision();
   }
@@ -555,6 +556,9 @@ export class RikaiContent {
     // If we focussed on a text box, assume we want to type in it and ignore
     // keystrokes until we get another mousemove.
     this._typingMode = !!ev.target && isTextInputNode(ev.target as Node);
+    if (!this._typingMode) {
+      this.clearHighlight(this._currentTarget);
+    }
   }
 
   // Test if an incoming keyboard event matches the hold-to-show key sequence
