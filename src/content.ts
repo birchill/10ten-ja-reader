@@ -224,6 +224,9 @@ export class RikaiContent {
   // privacy.resistFingerprinting is enabled then the timer won't be precise
   // enough for us to test the speed of the mouse.
   _hidePopupWhenMovingAtSpeed: boolean = false;
+  // Used to try to detect when we are typing so we know when to ignore key
+  // events.
+  _typingMode: boolean = false;
 
   // Copy support
   _copyMode: boolean = false;
@@ -238,6 +241,7 @@ export class RikaiContent {
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.onFocus = this.onFocus.bind(this);
     window.addEventListener('mousemove', this.onMouseMove);
     window.addEventListener('mousedown', this.onMouseDown);
     window.addEventListener('keydown', this.onKeyDown, { capture: true });
@@ -269,6 +273,7 @@ export class RikaiContent {
     window.removeEventListener('mousemove', this.onMouseMove);
     window.removeEventListener('mousedown', this.onMouseDown);
     window.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener('focus', this.onFocus);
 
     this.clearHighlight(null);
     this._selectedTextBox = null;
@@ -323,6 +328,8 @@ export class RikaiContent {
   }
 
   onMouseMove(ev: MouseEvent) {
+    this._typingMode = false;
+
     // Ignore mouse events while buttons are being pressed.
     if (ev.buttons) {
       return;
@@ -416,7 +423,7 @@ export class RikaiContent {
       this._selectedTextBox.previousFocus = ev.target as Element;
     }
 
-    // Clear the highlight since it inteferes with selection.
+    // Clear the highlight since it interferes with selection.
     this.clearHighlight(ev.target as Element);
   }
 
@@ -437,20 +444,20 @@ export class RikaiContent {
 
     // If we got shift in combination with something else, ignore.
     if (ev.shiftKey && ev.key !== 'Shift') {
+      this._typingMode = true;
       return;
     }
 
     // If we're not visible we should ignore any keystrokes.
     if (!this.isVisible()) {
+      this._typingMode = true;
       return;
     }
 
-    // If the user explicitly focused the current text box, ignore any
-    // keystrokes.
-    if (
-      this._selectedTextBox &&
-      this._selectedTextBox.node === this._selectedTextBox.previousFocus
-    ) {
+    // If we're focussed on a textbox and in typing mode, listen to keystrokes.
+    const textBoxInFocus =
+      document.activeElement && isTextInputNode(document.activeElement);
+    if (textBoxInFocus && this._typingMode) {
       return;
     }
 
@@ -527,11 +534,27 @@ export class RikaiContent {
           break;
       }
     } else {
+      // If we are focussed on a textbox and the keystroke wasn't a rikaichamp
+      // one, enter typing mode and hide the pop-up.
+      if (textBoxInFocus) {
+        this.clearHighlight(this._currentTarget);
+        this._typingMode = true;
+      }
       return;
     }
 
+    // If we got this far, we must have handled the key stroke so we should
+    // break out of typing mode.
+    this._typingMode = false;
+
     ev.stopPropagation();
     ev.preventDefault();
+  }
+
+  onFocus(ev: FocusEvent) {
+    // If we focussed on a text box, assume we want to type in it and ignore
+    // keystrokes until we get another mousemove.
+    this._typingMode = !!ev.target && isTextInputNode(ev.target as Node);
   }
 
   // Test if an incoming keyboard event matches the hold-to-show key sequence
