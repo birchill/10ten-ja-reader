@@ -10,7 +10,8 @@
 	
 	"permissions": [
 		"tabs",
-		"clipboardWrite"
+		"clipboardWrite",
+		"storage"
 	],
 
 	"background": {

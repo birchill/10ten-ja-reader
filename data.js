@@ -658,7 +658,7 @@ if (0) {
 		return entry;
 	},
 
-	numList: [
+	kanjiInfoLabelList: [
 /*
 		'C', 	'Classical Radical',
 		'DR',	'Father Joseph De Roo Index',
@@ -753,12 +753,12 @@ if (0) {
 			j = 0;
 
 			kanjiinfo = rcxMain.config.kanjiinfo;
-			for (i = 0; i*2 < this.numList.length; i++) {
-				c = this.numList[i*2];
+			for (i = 0; i*2 < this.kanjiInfoLabelList.length; i++) {
+				c = this.kanjiInfoLabelList[i*2];
 				if (kanjiinfo[i] == 'true') {
 					s = entry.misc[c];
 					c = ' class="k-mix-td' + (j ^= 1) + '"';
-					nums += '<tr><td' + c + '>' + this.numList[i*2 + 1] + '</td><td' + c + '>' + (s ? s : '-') + '</td></tr>';
+					nums += '<tr><td' + c + '>' + this.kanjiInfoLabelList[i*2 + 1] + '</td><td' + c + '>' + (s ? s : '-') + '</td></tr>';
 				}
 			}
 			if (nums.length) nums = '<table class="k-mix-tb">' + nums + '</table>';
@@ -935,11 +935,11 @@ if (0) {
 				b.push('\u90E8\u9996\u540D\t' + entry.bushumei + '\n');
 			}
 
-			for (i = 0; i < this.numList.length; i += 2) {
-				e = this.numList[i];
+			for (i = 0; i < this.kanjiInfoLabelList.length; i += 2) {
+				e = this.kanjiInfoLabelList[i];
 				if (/* this.config.kdisp[e] */1 == 1) {
 					j = entry.misc[e];
-					b.push(this.numList[i + 1].replace('&amp;', '&') + '\t' + (j ? j : '-') + '\n');
+					b.push(this.kanjiInfoLabelList[i + 1].replace('&amp;', '&') + '\t' + (j ? j : '-') + '\n');
 				}
 			}
 		}
