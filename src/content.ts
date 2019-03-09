@@ -241,11 +241,11 @@ export class RikaiContent {
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
-    this.onFocus = this.onFocus.bind(this);
+    this.onFocusIn = this.onFocusIn.bind(this);
     window.addEventListener('mousemove', this.onMouseMove);
     window.addEventListener('mousedown', this.onMouseDown);
     window.addEventListener('keydown', this.onKeyDown, { capture: true });
-    window.addEventListener('focus', this.onFocus);
+    window.addEventListener('focusin', this.onFocusIn);
 
     this.testTimerPrecision();
   }
@@ -274,7 +274,7 @@ export class RikaiContent {
     window.removeEventListener('mousemove', this.onMouseMove);
     window.removeEventListener('mousedown', this.onMouseDown);
     window.removeEventListener('keydown', this.onKeyDown);
-    window.removeEventListener('focus', this.onFocus);
+    window.removeEventListener('focusin', this.onFocusIn);
 
     this.clearHighlight(null);
     this._selectedTextBox = null;
@@ -552,11 +552,11 @@ export class RikaiContent {
     ev.preventDefault();
   }
 
-  onFocus(ev: FocusEvent) {
+  onFocusIn(ev: FocusEvent) {
     // If we focussed on a text box, assume we want to type in it and ignore
     // keystrokes until we get another mousemove.
     this._typingMode = !!ev.target && isTextInputNode(ev.target as Node);
-    if (!this._typingMode) {
+    if (this._typingMode) {
       this.clearHighlight(this._currentTarget);
     }
   }
