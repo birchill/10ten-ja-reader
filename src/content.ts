@@ -117,6 +117,34 @@ const isTextInputNode = (
   );
 };
 
+const nodeOrParentElement = (node: Node): Element | null =>
+  node.nodeType !== Node.ELEMENT_NODE ? node.parentElement : (node as Element);
+
+const isContentEditableNode = (node: Node | null): boolean => {
+  if (!node) {
+    return false;
+  }
+
+  const nodeOrParent = nodeOrParentElement(node);
+  if (!(nodeOrParent instanceof HTMLElement)) {
+    return false;
+  }
+
+  let currentNode: HTMLElement | null = nodeOrParent as HTMLElement;
+  while (currentNode) {
+    if (currentNode.contentEditable === 'true') {
+      return true;
+    } else if (currentNode.contentEditable === 'false') {
+      return false;
+    }
+    currentNode = currentNode.parentElement;
+  }
+  return false;
+};
+
+const isEditableNode = (node: Node | null): boolean =>
+  isTextInputNode(node) || isContentEditableNode(node);
+
 const isInclusiveAncestor = (
   ancestor: Element,
   testNode?: Node | null
@@ -206,8 +234,10 @@ export class RikaiContent {
     previousStart: number | null;
     previousEnd: number | null;
     previousDirection: string | null;
-    previousFocus: Element | null;
   } | null = null;
+  _previousFocus: Element | null;
+  _previousSelection: { node: Node; offset: number } | null;
+  _ignoreFocusEvent: boolean = false;
 
   // Mouse tracking
   //
@@ -449,9 +479,10 @@ export class RikaiContent {
       return;
     }
 
-    // If we're focussed on a textbox and in typing mode, listen to keystrokes.
+    // If we're focussed on a text-editable node and in typing mode, listen to
+    // keystrokes.
     const textBoxInFocus =
-      document.activeElement && isTextInputNode(document.activeElement);
+      document.activeElement && isEditableNode(document.activeElement);
     if (textBoxInFocus && this._typingMode) {
       return;
     }
@@ -555,24 +586,22 @@ export class RikaiContent {
   }
 
   onFocusIn(ev: FocusEvent) {
-    // If we focussed on a text box, assume we want to type in it and ignore
-    // keystrokes until we get another mousemove.
-    this._typingMode = !!ev.target && isTextInputNode(ev.target as Node);
-
-    // Detect if this focus is simply us restoring focus or if we actually
-    // deliberately focussed this element.
-    const restoringFocus =
-      this._selectedTextBox &&
-      ev.target === this._selectedTextBox.previousFocus;
-
-    // Update the previous focus accordingly.
-    if (!restoringFocus && this._selectedTextBox) {
-      this._selectedTextBox.previousFocus = ev.target as Element;
+    if (this._ignoreFocusEvent) {
+      return;
     }
 
-    // If we entered typing mode and we aren't simply restoring the focus
-    // after leaving a textbox, then clear the highlight.
-    if (this._typingMode && !restoringFocus) {
+    // If we focussed on a text box, assume we want to type in it and ignore
+    // keystrokes until we get another mousemove.
+    this._typingMode = !!ev.target && isEditableNode(ev.target as Node);
+
+    // Update the previous focus.
+    if (!this._previousFocus || this._previousFocus !== ev.target) {
+      this._previousFocus = ev.target as Element;
+      this.storeSelection(this._previousFocus.ownerDocument!.defaultView!);
+    }
+
+    // If we entered typing mode clear the highlight.
+    if (this._typingMode) {
       this.clearHighlight(this._currentTarget);
     }
   }
@@ -1112,9 +1141,21 @@ export class RikaiContent {
     }
 
     // Check if there is already something selected in the page that is *not*
-    // what we selected. If there is, leave it alone.
+    // what we selected. If there is we generally want to leave it alone unless
+    // it's a selection in a contenteditable node---in that case we want to
+    // store and restore it to mimic the behavior of textboxes.
     const selection = selectedWindow.getSelection();
-    if (selection.toString() && selection.toString() !== this._selectedText) {
+    if (isContentEditableNode(selection.anchorNode)) {
+      if (
+        !this._previousSelection &&
+        selection.toString() !== this._selectedText
+      ) {
+        this.storeSelection(selectedWindow);
+      }
+    } else if (
+      selection.toString() &&
+      selection.toString() !== this._selectedText
+    ) {
       this._selectedText = null;
       return;
     }
@@ -1135,18 +1176,27 @@ export class RikaiContent {
       // If we were not already interacting with this text box, store its
       // existing range and focus it.
       if (!this._selectedTextBox || node !== this._selectedTextBox.node) {
-        // Transfer the previous focus, if we have one, otherwise use the
-        // currently focused element in the document.
-        const previousFocus = this._selectedTextBox
-          ? this._selectedTextBox.previousFocus
-          : document.activeElement;
+        // Record the original focus if we haven't already, so that we can
+        // restore it.
+        if (!this._previousFocus) {
+          this._previousFocus = document.activeElement;
+        }
+
+        // I haven't found a suitable way of detecting changes in focus due to
+        // the user actually selecting a field (which we want to reflect when we
+        // go to restore the focus) and changes in focus due to our focus
+        // management so for now we just use this terribly hacky approach to
+        // filter out our focus events.
+        console.assert(!this._ignoreFocusEvent);
+        this._ignoreFocusEvent = true;
         node.focus();
+        this._ignoreFocusEvent = false;
+
         this._selectedTextBox = {
           node,
           previousStart: node.selectionStart,
           previousEnd: node.selectionEnd,
           previousDirection: node.selectionDirection,
-          previousFocus,
         };
       }
 
@@ -1213,11 +1263,16 @@ export class RikaiContent {
 
     if (this._selectedWindow && !this._selectedWindow.closed) {
       const selection = this._selectedWindow.getSelection();
+      // Clear the selection if it's something we made.
       if (
         !selection.toString() ||
         selection.toString() === this._selectedText
       ) {
-        selection.removeAllRanges();
+        if (this._previousSelection) {
+          this.restoreSelection();
+        } else {
+          selection.removeAllRanges();
+        }
       }
 
       this._clearTextBoxSelection(currentElement);
@@ -1231,6 +1286,37 @@ export class RikaiContent {
     if (popup) {
       popup.classList.add('hidden');
     }
+  }
+
+  storeSelection(selectedWindow: Window) {
+    const selection = selectedWindow.getSelection();
+    if (isContentEditableNode(selection.anchorNode)) {
+      // We don't actually store the full selection, basically because we're
+      // lazy. Remembering the cursor position is hopefully good enough for
+      // now anyway.
+      this._previousSelection = {
+        node: selection.anchorNode,
+        offset: selection.anchorOffset,
+      };
+    } else {
+      this._previousSelection = null;
+    }
+  }
+
+  restoreSelection() {
+    if (!this._previousSelection) {
+      return;
+    }
+
+    const { node, offset } = this._previousSelection;
+    const range = node.ownerDocument!.createRange();
+    range.setStart(node, offset);
+    range.setEnd(node, offset);
+
+    const selection = node.ownerDocument!.defaultView!.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    this._previousSelection = null;
   }
 
   _clearTextBoxSelection(currentElement: Element | null) {
@@ -1261,20 +1347,23 @@ export class RikaiContent {
     // previous focus.
     //
     // (We need to do this even if currentElement === textBox since we'll lose
-    // the previousFocus when we reset _selectedTextBox and we if we don't
+    // the previous focus when we reset _selectedTextBox and we if we don't
     // restore the focus now, when we next go to set previousFocus we'll end up
     // using `textBox` instead.)
-    if (
-      isFocusable(this._selectedTextBox.previousFocus) &&
-      this._selectedTextBox.previousFocus !== textBox
-    ) {
+    if (isFocusable(this._previousFocus) && this._previousFocus !== textBox) {
       // First blur the text box since some Elements' focus() method does
       // nothing.
       this._selectedTextBox.node.blur();
-      this._selectedTextBox.previousFocus.focus();
+
+      // Very hacky approach to filtering out our own focus handling.
+      console.assert(!this._ignoreFocusEvent);
+      this._ignoreFocusEvent = true;
+      this._previousFocus.focus();
+      this._ignoreFocusEvent = false;
     }
 
     this._selectedTextBox = null;
+    this._previousFocus = null;
   }
 
   _restoreTextBoxSelection() {
