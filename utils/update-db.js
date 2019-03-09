@@ -111,6 +111,7 @@ class DictParser extends Transform {
       console.log(
         'Failed to parse header. Maybe the header is in the wrong place?'
       );
+      console.log(`Got ${line}`);
     }
 
     // Try to parse first part of entry
