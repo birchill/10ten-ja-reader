@@ -418,12 +418,6 @@ export class RikaiContent {
   }
 
   onMouseDown(ev: MouseEvent) {
-    // If we are changing focus to the textbox where we are highlighting text,
-    // then update the previous focus so that we know to ignore keystrokes here.
-    if (this._selectedTextBox && ev.target === this._selectedTextBox.node) {
-      this._selectedTextBox.previousFocus = ev.target as Element;
-    }
-
     // Clear the highlight since it interferes with selection.
     this.clearHighlight(ev.target as Element);
   }
@@ -462,6 +456,23 @@ export class RikaiContent {
       return;
     }
 
+    if (this.handleKey(ev.key, ev.ctrlKey)) {
+      // We handled the key stroke so we should break out of typing mode.
+      this._typingMode = false;
+
+      ev.stopPropagation();
+      ev.preventDefault();
+    } else if (textBoxInFocus) {
+      // If we are focussed on a textbox and the keystroke wasn't a rikaichamp
+      // one, enter typing mode and hide the pop-up.
+      if (textBoxInFocus) {
+        this.clearHighlight(this._currentTarget);
+        this._typingMode = true;
+      }
+    }
+  }
+
+  handleKey(key: string, ctrlKeyPressed: boolean): boolean {
     // Make an upper-case version of the list of keys so that we can do
     // a case-insensitive comparison. This is so that the keys continue to work
     // even when the user has Caps Lock on.
@@ -474,7 +485,9 @@ export class RikaiContent {
       toUpper(startCopy),
     ];
 
-    if (nextDictionary.includes(ev.key.toUpperCase())) {
+    const upperKey = key.toUpperCase();
+
+    if (nextDictionary.includes(upperKey)) {
       if (this._currentPoint && this._currentTarget) {
         this.tryToUpdatePopup(
           this._currentPoint,
@@ -482,7 +495,7 @@ export class RikaiContent {
           DictMode.NextDict
         );
       }
-    } else if (toggleDefinition.includes(ev.key.toUpperCase())) {
+    } else if (toggleDefinition.includes(upperKey)) {
       browser.runtime.sendMessage({ type: 'toggleDefinition' });
       // We'll eventually get notified of the config change but we just change
       // it here now so we can update the popup immediately.
@@ -495,8 +508,8 @@ export class RikaiContent {
       // It's important we _don't_ enter copy mode when the Ctrl key is being
       // pressed since otherwise if the user simply wants to copy the selected
       // text by pressing Ctrl+C they will end up entering copy mode.
-      !ev.ctrlKey &&
-      startCopy.includes(ev.key.toUpperCase()) &&
+      !ctrlKeyPressed &&
+      startCopy.includes(upperKey) &&
       this._currentSearchResult
     ) {
       if (this._copyMode) {
@@ -506,21 +519,21 @@ export class RikaiContent {
         this._copyIndex = 0;
       }
       this.showPopup();
-    } else if (this._copyMode && ev.key === 'Escape') {
+    } else if (this._copyMode && key === 'Escape') {
       this._copyMode = false;
       this.showPopup();
     } else if (this._copyMode) {
       let copyType: CopyType | undefined;
       for (const copyKey of CopyKeys) {
-        if (ev.key.toUpperCase() === copyKey.key.toUpperCase()) {
+        if (upperKey === copyKey.key.toUpperCase()) {
           copyType = copyKey.type;
           break;
         }
       }
 
       if (typeof copyType === 'undefined') {
-        // Unrecognized key -- make sure not to call preventDefault()
-        return;
+        // Unrecognized key
+        return false;
       }
 
       switch (copyType) {
@@ -535,28 +548,31 @@ export class RikaiContent {
           break;
       }
     } else {
-      // If we are focussed on a textbox and the keystroke wasn't a rikaichamp
-      // one, enter typing mode and hide the pop-up.
-      if (textBoxInFocus) {
-        this.clearHighlight(this._currentTarget);
-        this._typingMode = true;
-      }
-      return;
+      return false;
     }
 
-    // If we got this far, we must have handled the key stroke so we should
-    // break out of typing mode.
-    this._typingMode = false;
-
-    ev.stopPropagation();
-    ev.preventDefault();
+    return true;
   }
 
   onFocusIn(ev: FocusEvent) {
     // If we focussed on a text box, assume we want to type in it and ignore
     // keystrokes until we get another mousemove.
     this._typingMode = !!ev.target && isTextInputNode(ev.target as Node);
-    if (this._typingMode) {
+
+    // Detect if this focus is simply us restoring focus or if we actually
+    // deliberately focussed this element.
+    const restoringFocus =
+      this._selectedTextBox &&
+      ev.target === this._selectedTextBox.previousFocus;
+
+    // Update the previous focus accordingly.
+    if (!restoringFocus && this._selectedTextBox) {
+      this._selectedTextBox.previousFocus = ev.target as Element;
+    }
+
+    // If we entered typing mode and we aren't simply restoring the focus
+    // after leaving a textbox, then clear the highlight.
+    if (this._typingMode && !restoringFocus) {
       this.clearHighlight(this._currentTarget);
     }
   }
@@ -1082,24 +1098,22 @@ export class RikaiContent {
   }
 
   highlightText(textAtPoint: GetTextResult, matchLen: number) {
-    // TODO: Record when the mouse is down and don't highlight in that case
-    //       (I guess that would interfere with selecting)
-
     if (this._config.noTextHighlight || !textAtPoint.rangeStart) {
       return;
     }
 
-    this._selectedWindow = textAtPoint.rangeStart.container.ownerDocument!.defaultView!;
+    const selectedWindow = textAtPoint.rangeStart.container.ownerDocument!
+      .defaultView!;
 
     // Check that the window wasn't closed since we started the lookup
-    if (this._selectedWindow.closed) {
+    if (!selectedWindow || selectedWindow.closed) {
       this.clearHighlight(null);
       return;
     }
 
     // Check if there is already something selected in the page that is *not*
     // what we selected. If there is, leave it alone.
-    const selection = this._selectedWindow.getSelection();
+    const selection = selectedWindow.getSelection();
     if (selection.toString() && selection.toString() !== this._selectedText) {
       this._selectedText = null;
       return;
@@ -1108,8 +1122,7 @@ export class RikaiContent {
     // Handle textarea/input selection separately since those elements have
     // a different selection API.
     if (isTextInputNode(textAtPoint.rangeStart.container)) {
-      const node: HTMLInputElement | HTMLTextAreaElement =
-        textAtPoint.rangeStart.container;
+      const node = textAtPoint.rangeStart.container;
       const start = textAtPoint.rangeStart.offset;
       const end = start + matchLen;
 
@@ -1140,11 +1153,12 @@ export class RikaiContent {
       // Store the current scroll range so we can restore it.
       const { scrollTop, scrollLeft } = node;
 
-      // Clear any other selection happenning in the page.
+      // Clear any other selection happening in the page.
       selection.removeAllRanges();
 
       node.setSelectionRange(start, end);
       this._selectedText = node.value.substring(start, end);
+      this._selectedWindow = selectedWindow;
 
       // Restore the scroll range. We need to do this on the next tick or else
       // something else (not sure what) will clobber it.
@@ -1182,10 +1196,11 @@ export class RikaiContent {
       range.setStart(startNode, startOffset);
       range.setEnd(endNode, endOffset);
 
-      const selection = this._selectedWindow.getSelection();
+      const selection = selectedWindow.getSelection();
       selection.removeAllRanges();
       selection.addRange(range);
       this._selectedText = selection.toString();
+      this._selectedWindow = selectedWindow;
     }
   }
 
@@ -1242,8 +1257,13 @@ export class RikaiContent {
       });
     }
 
-    // Otherwise, if we only focussed the textbox in order to highlight text,
-    // restore the previous focus.
+    // If we only focussed the textbox in order to highlight text, restore the
+    // previous focus.
+    //
+    // (We need to do this even if currentElement === textBox since we'll lose
+    // the previousFocus when we reset _selectedTextBox and we if we don't
+    // restore the focus now, when we next go to set previousFocus we'll end up
+    // using `textBox` instead.)
     if (
       isFocusable(this._selectedTextBox.previousFocus) &&
       this._selectedTextBox.previousFocus !== textBox
