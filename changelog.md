@@ -1,4 +1,8 @@
-## 0.0.30 (Not yet released)
+## 0.0.31 (Not yet released)
+
+(Nothing yet)
+
+## 0.0.30 (2019-03-12)
 
 * Fixed looking up of entries where the reading is in Katakana
   ([#84](https://github.com/birtles/rikaichamp/issues/84))
