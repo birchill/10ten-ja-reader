@@ -6,6 +6,7 @@
   Hopefully Rikaichamp listens to keystrokes when you expect it to and ignores
   them when you don't.
   ([#20](https://github.com/birtles/rikaichamp/issues/20))
+* Updated dictionaries to 2019-03-11 snapshot.
 
 ## 0.0.29 (2019-01-27)
 
