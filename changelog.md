@@ -1,4 +1,8 @@
-## 0.0.31 (Not yet released)
+## 0.0.32 (Not yet released)
+
+(Nothing yet)
+
+## 0.0.31 (2019-04-03)
 
 * Updated dictionaries to 2019-04-02 snapshot (to include 令和).
 
