@@ -1,6 +1,6 @@
 ## 0.0.31 (Not yet released)
 
-(Nothing yet)
+* Updated dictionaries to 2019-04-02 snapshot (to include 令和).
 
 ## 0.0.30 (2019-03-12)
 
