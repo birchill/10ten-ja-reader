@@ -40,7 +40,7 @@
     "combined-stream2": "^1.1.2",
     "copy-webpack-plugin": "^5.0.0",
     "file-loader": "^4.0.0",
-    "iconv-lite": "^0.4.24",
+    "iconv-lite": "^0.5.0",
     "jest": "^23.6.0",
     "karma": "^4.0.1",
     "karma-chai": "^0.1.0",
