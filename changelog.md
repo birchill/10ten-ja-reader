@@ -2,6 +2,7 @@
 
 * Added support for displaying romaji (off by default)
   ([#23](https://github.com/birtles/rikaichamp/issues/23))
+* Updated dictionaries to 2019-07-05 snapshot.
 
 ## 0.0.31 (2019-04-03)
 
