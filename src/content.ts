@@ -1145,6 +1145,13 @@ export class RikaiContent {
     // it's a selection in a contenteditable node---in that case we want to
     // store and restore it to mimic the behavior of textboxes.
     const selection = selectedWindow.getSelection();
+    if (!selection) {
+      // If there is no selection, we're probably dealing with an iframe that
+      // has now become display:none.
+      this.clearHighlight(null);
+      return;
+    }
+
     if (isContentEditableNode(selection.anchorNode)) {
       if (
         !this._previousSelection &&
@@ -1247,9 +1254,11 @@ export class RikaiContent {
       range.setEnd(endNode, endOffset);
 
       const selection = selectedWindow.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(range);
-      this._selectedText = selection.toString();
+      // (We checked for the case of selection being null above so it should be
+      // ok to assume it is non-null here.)
+      selection!.removeAllRanges();
+      selection!.addRange(range);
+      this._selectedText = selection!.toString();
       this._selectedWindow = selectedWindow;
     }
   }
@@ -1265,8 +1274,8 @@ export class RikaiContent {
       const selection = this._selectedWindow.getSelection();
       // Clear the selection if it's something we made.
       if (
-        !selection.toString() ||
-        selection.toString() === this._selectedText
+        selection &&
+        (!selection.toString() || selection.toString() === this._selectedText)
       ) {
         if (this._previousSelection) {
           this.restoreSelection();
@@ -1290,12 +1299,12 @@ export class RikaiContent {
 
   storeSelection(selectedWindow: Window) {
     const selection = selectedWindow.getSelection();
-    if (isContentEditableNode(selection.anchorNode)) {
+    if (selection && isContentEditableNode(selection.anchorNode)) {
       // We don't actually store the full selection, basically because we're
       // lazy. Remembering the cursor position is hopefully good enough for
       // now anyway.
       this._previousSelection = {
-        node: selection.anchorNode,
+        node: selection.anchorNode!,
         offset: selection.anchorOffset,
       };
     } else {
@@ -1314,8 +1323,10 @@ export class RikaiContent {
     range.setEnd(node, offset);
 
     const selection = node.ownerDocument!.defaultView!.getSelection();
-    selection.removeAllRanges();
-    selection.addRange(range);
+    if (selection) {
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
     this._previousSelection = null;
   }
 
@@ -1604,8 +1615,8 @@ export class RikaiContent {
 
       case 'name':
         toCopy = entry.data.names
-          .map(
-            name => (name.kanji ? `${name.kanji} [${name.kana}]` : name.kana)
+          .map(name =>
+            name.kanji ? `${name.kanji} [${name.kana}]` : name.kana
           )
           .join(', ');
 

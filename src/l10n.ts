@@ -17,7 +17,9 @@ export function translateDoc() {
   );
   for (let i = 0, maxi = texts.snapshotLength; i < maxi; i++) {
     const text = texts.snapshotItem(i);
-    text.nodeValue = getString(text.nodeValue || '');
+    if (text) {
+      text.nodeValue = getString(text.nodeValue || '');
+    }
   }
 
   const attributes = document.evaluate(
@@ -29,7 +31,9 @@ export function translateDoc() {
   );
   for (let i = 0, maxi = attributes.snapshotLength; i < maxi; i++) {
     const attribute = attributes.snapshotItem(i) as Attr;
-    attribute.value = getString(attribute.value);
+    if (attribute) {
+      attribute.value = getString(attribute.value);
+    }
   }
 }
 
