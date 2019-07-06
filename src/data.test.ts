@@ -138,11 +138,6 @@ describe('Dictionary', () => {
     expect(result!.matchLen).toBe(3);
   });
 
-  it('reports character lengths for half-width katakana normalization', () => {
-    const result = sharedDict.normalizeInput('ｶﾞｰﾃﾞﾝ');
-    expect(result).toEqual(['がーでん', [0, 2, 3, 5, 6]]);
-  });
-
   it('chooses the right de-inflection for potential and passives', async () => {
     // Ichidan/ru-verb -- られる ending could be potential or passive
     let result = await sharedDict.wordSearch('止められます');
