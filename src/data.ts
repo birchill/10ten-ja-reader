@@ -276,7 +276,7 @@ export class Dictionary {
         const readPromise = reader(
           browser.extension.getURL(`data/${file}`)
         ).then(text => {
-          this[key] = text;
+          (this[key] as string | string[]) = text;
         });
         readPromises.push(readPromise);
       }
@@ -535,11 +535,9 @@ export class Dictionary {
         // Sort preliminary results
         const isCommon = (entry: EntryType): boolean =>
           entry[0].endsWith('/(P)/');
-        entries.sort(
-          (a: EntryType, b: EntryType): number => {
-            return Number(isCommon(b)) - Number(isCommon(a));
-          }
-        );
+        entries.sort((a: EntryType, b: EntryType): number => {
+          return Number(isCommon(b)) - Number(isCommon(a));
+        });
 
         // Trim to max results AFTER sorting (so that we make sure to favor
         // common words in the trimmed result).
