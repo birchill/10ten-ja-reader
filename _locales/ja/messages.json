@@ -163,6 +163,9 @@
   "options_show_definitions": {
     "message": "定義を表示"
   },
+  "options_show_romaji": {
+    "message": "ローマ字を表示"
+  },
   "options_keyboard_heading": {
     "message": "キーボード",
     "description": "Heading for options to configure keyboard commands"

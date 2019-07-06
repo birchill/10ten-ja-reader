@@ -124,6 +124,7 @@ describe('Config', () => {
     const config = new Config();
 
     expect(config.readingOnly).toEqual(false);
+    expect(config.showRomaji).toEqual(false);
     expect(config.toggleKey).toEqual('Alt+R');
     expect(config.holdToShowKeys).toEqual(null);
     expect(config.keys).toEqual({

@@ -48,6 +48,7 @@
 import { Bugsnag } from '@bugsnag/js';
 import { deinflect, deinflectL10NKeys, CandidateWord } from './deinflect';
 import { normalizeInput } from './conversion';
+import { toRomaji } from './romaji';
 
 export const REF_ABBREVIATIONS = [
   /*
@@ -267,11 +268,17 @@ export class Dictionary {
     await readBatch(dataFiles.slice(midpoint));
   }
 
-  async wordSearch(
-    input: string,
-    doNames: boolean = false,
-    max = 0
-  ): Promise<WordSearchResult | null> {
+  async wordSearch({
+    input,
+    doNames = false,
+    max = 0,
+    includeRomaji = false,
+  }: {
+    input: string;
+    doNames?: boolean;
+    max?: number;
+    includeRomaji?: boolean;
+  }): Promise<WordSearchResult | null> {
     let [word, inputLengths] = normalizeInput(input);
 
     let maxResults = doNames ? NAMES_MAX_ENTRIES : WORDS_MAX_ENTRIES;
@@ -280,14 +287,15 @@ export class Dictionary {
     }
 
     const [dict, index] = await this._getDictAndIndex(doNames);
-    const result: WordSearchResult | null = this._lookupInput(
-      word,
+    const result: WordSearchResult | null = this._lookupInput({
+      input: word,
       inputLengths,
       dict,
       index,
       maxResults,
-      !doNames
-    );
+      deinflectWord: !doNames,
+      includeRomaji,
+    });
 
     if (result && doNames) {
       result.names = true;
@@ -312,14 +320,23 @@ export class Dictionary {
   //
   // e.g. if |input| is '子犬は' then the entry for '子犬' will match but
   // '犬' will not.
-  _lookupInput(
-    input: string,
-    inputLengths: number[],
-    dict: string,
-    index: string,
-    maxResults: number,
-    deinflectWord: boolean
-  ): LookupResult | null {
+  _lookupInput({
+    input,
+    inputLengths,
+    dict,
+    index,
+    maxResults,
+    deinflectWord,
+    includeRomaji,
+  }: {
+    input: string;
+    inputLengths: number[];
+    dict: string;
+    index: string;
+    maxResults: number;
+    deinflectWord: boolean;
+    includeRomaji: boolean;
+  }): LookupResult | null {
     let count: number = 0;
     let longestMatch: number = 0;
     let cache: { [index: string]: number[] } = {};
@@ -357,7 +374,7 @@ export class Dictionary {
         // We temporarily store the set of entries for the current candidate
         // in a separate array since we want to sort them by priority before
         // adding them to the result array.
-        type EntryType = [string, string | null];
+        type EntryType = [string, string | null, string | null];
         const entries: Array<EntryType> = [];
 
         for (const offset of offsets) {
@@ -444,7 +461,20 @@ export class Dictionary {
               }
             }
 
-            entries.push([entry, reason]);
+            // This is really really bad. We duplicate this logic
+            // (imperfectly) in both content script and background script.
+            // This will also change soon, hopefully, however so for now it
+            // should be sufficient to prove this feature.
+            let romaji = null;
+            if (includeRomaji) {
+              const matches = entry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
+              if (matches) {
+                const kana = matches[2] || matches[1];
+                romaji = toRomaji(kana);
+              }
+            }
+
+            entries.push([entry, reason, romaji]);
           }
         } // for offset of offsets
 
@@ -483,7 +513,13 @@ export class Dictionary {
     return result;
   }
 
-  async translate(text: string): Promise<TranslateResult | null> {
+  async translate({
+    text,
+    includeRomaji = false,
+  }: {
+    text: string;
+    includeRomaji?: boolean;
+  }): Promise<TranslateResult | null> {
     const result: TranslateResult = {
       data: [],
       textLen: text.length,
@@ -492,7 +528,12 @@ export class Dictionary {
 
     let skip: number;
     while (text.length > 0) {
-      const searchResult = await this.wordSearch(text, false, 1);
+      const searchResult = await this.wordSearch({
+        input: text,
+        doNames: false,
+        max: 1,
+        includeRomaji,
+      });
       if (searchResult && searchResult.data) {
         if (result.data.length >= WORDS_MAX_ENTRIES) {
           result.more = true;

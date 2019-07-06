@@ -16,6 +16,7 @@ type KanjiReferenceFlags = { [abbrev: string]: boolean };
 
 interface Settings {
   readingOnly?: boolean;
+  showRomaji?: boolean;
   toggleKey?: string;
   holdToShowKeys?: string;
   keys?: Partial<KeyboardKeys>;
@@ -133,6 +134,24 @@ export class Config {
 
   toggleReadingOnly() {
     this.readingOnly = !this._settings.readingOnly;
+  }
+
+  // showRomaji: Defaults to false
+
+  get showRomaji(): boolean {
+    return !!this._settings.showRomaji;
+  }
+
+  set showRomaji(value: boolean) {
+    if (
+      typeof this._settings.showRomaji !== 'undefined' &&
+      this._settings.showRomaji === value
+    ) {
+      return;
+    }
+
+    this._settings.showRomaji = value;
+    browser.storage.sync.set({ showRomaji: value });
   }
 
   // toggleKey: Default is 'Alt+R'

@@ -10,6 +10,7 @@ import { NameTag, getTagForDictKey } from './name-tags';
 export interface WordEntry {
   kanjiKana: string;
   kana: string[];
+  romaji: string[];
   definition: string;
   reason: string | null;
 }
@@ -221,7 +222,7 @@ function parseWordEntries(
   //   あっさり /(adv,adv-to,vs,on-mim) easily/readily/quickly/(P)/
   //
   const result: Array<WordEntry> = [];
-  for (const [dictEntry, reason] of searchResult.data) {
+  for (const [dictEntry, reason, romaji] of searchResult.data) {
     const matches = dictEntry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
     if (!matches) {
       continue;
@@ -241,17 +242,24 @@ function parseWordEntries(
       if (kana) {
         prevEntry.kana.push(kana);
       }
+      if (romaji) {
+        prevEntry.romaji.push(romaji);
+      }
       continue;
     }
 
     const entry: WordEntry = {
       kanjiKana,
       kana: [],
+      romaji: [],
       definition,
       reason,
     };
     if (kana) {
       entry.kana.push(kana);
+    }
+    if (romaji) {
+      entry.romaji.push(romaji);
     }
     result.push(entry);
   }

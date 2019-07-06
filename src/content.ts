@@ -1610,6 +1610,9 @@ export class RikaiContent {
         if (entry.data.kana.length) {
           toCopy += ` [${entry.data.kana.join('; ')}]`;
         }
+        if (entry.data.romaji.length) {
+          toCopy += ` (${entry.data.romaji.join(', ')})`;
+        }
         toCopy += ' ' + entry.data.definition;
         break;
 
@@ -1682,6 +1685,9 @@ export class RikaiContent {
       case 'word':
         toCopy = entry.data.kanjiKana;
         toCopy += `\t${entry.data.kana.join('; ')}`;
+        if (entry.data.romaji.length) {
+          toCopy += `\t${entry.data.romaji.join('; ')}`;
+        }
         toCopy += `\t${entry.data.definition.replace(/\//g, '; ')}`;
         break;
 

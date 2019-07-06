@@ -163,6 +163,9 @@
   "options_show_definitions": {
     "message": "Show definitions"
   },
+  "options_show_romaji": {
+    "message": "Show romaji"
+  },
   "options_keyboard_heading": {
     "message": "Keyboard",
     "description": "Heading for options to configure keyboard commands"

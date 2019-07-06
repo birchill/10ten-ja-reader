@@ -87,6 +87,16 @@ function renderWordEntries(
       kanaSpan.append(kana);
     }
 
+    for (const romaji of entry.romaji) {
+      if (headingDiv.lastElementChild!.classList.contains('w-romaji')) {
+        headingDiv.append(', ');
+      }
+      const romajiSpan = document.createElement('span');
+      headingDiv.append(romajiSpan);
+      romajiSpan.classList.add('w-romaji');
+      romajiSpan.append(romaji);
+    }
+
     if (entry.reason) {
       const reasonSpan = document.createElement('span');
       headingDiv.append(reasonSpan);

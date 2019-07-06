@@ -300,7 +300,10 @@ class App {
             break;
           case 'translate':
             if (this._dict) {
-              return this._dict.translate(request.title);
+              return this._dict.translate({
+                text: request.title,
+                includeRomaji: this._config.showRomaji,
+              });
             }
             console.error('Dictionary not initialized in translate request');
             bugsnagClient.notify(
@@ -343,9 +346,7 @@ class App {
                 shortcut: this._config.toggleKey,
               });
             } catch (e) {
-              const message = `On startup, failed to update toggle key to ${
-                this._config.toggleKey
-              }`;
+              const message = `On startup, failed to update toggle key to ${this._config.toggleKey}`;
               console.error(message);
               bugsnagClient.notify(message, { severity: 'warning' });
             }
@@ -623,8 +624,8 @@ class App {
 
     const kanjiReferences = new Set(
       Object.entries(this._config.kanjiReferences)
-        .filter(([abbrev, setting]) => setting)
-        .map(([abbrev, setting]) => abbrev)
+        .filter(([, /*abbrev*/ setting]) => setting)
+        .map(([abbrev /*setting*/]) => abbrev)
     );
     const kanjiSearchOptions = {
       includedReferences: kanjiReferences,
@@ -655,9 +656,17 @@ class App {
             this._dict!.kanjiSearch(text.charAt(0), kanjiSearchOptions)
           );
         case this._namesN:
-          return this._dict!.wordSearch(text, true);
+          return this._dict!.wordSearch({
+            input: text,
+            doNames: true,
+            includeRomaji: false,
+          });
       }
-      return this._dict!.wordSearch(text, false);
+      return this._dict!.wordSearch({
+        input: text,
+        doNames: false,
+        includeRomaji: this._config.showRomaji,
+      });
     };
 
     const originalMode = this._showMode;

@@ -43,9 +43,11 @@ declare const enum DictMode {
 }
 
 interface LookupResult {
-  // Array of matches. Each match is a tuple array containing a dictionary entry
-  // and an optional reason string.
-  data: [string, string | null][];
+  // Array of matches. Each match is a tuple array containing:
+  // - a dictionary entry,
+  // - an optional reason string,
+  // - an optional romaji transliteration
+  data: [string, string | null, string | null][];
   // True if greater than `maxResults` entries were found.
   more: boolean;
   // The length of the longest match using the lengths supplied in
@@ -86,7 +88,7 @@ interface KanjiEntry {
 
 interface TranslateResult {
   // As with LookupResult.
-  data: [string, string | null][];
+  data: [string, string | null, string | null][];
   // Length of text matched.
   textLen: number;
   // True if greater than WORDS_MAX_ENTRIES were found.

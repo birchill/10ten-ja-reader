@@ -63,6 +63,11 @@ function completeForm() {
     renderPopupStyleSelect();
   });
 
+  document.getElementById('showRomaji')!.addEventListener('click', evt => {
+    config.showRomaji = (evt.target as HTMLInputElement).checked;
+    renderPopupStyleSelect();
+  });
+
   document
     .getElementById('showKanjiComponents')!
     .addEventListener('click', evt => {
@@ -123,6 +128,13 @@ function renderPopupStyleSelect() {
     spanKana.classList.add('w-kana');
     spanKana.textContent = 'りかい';
     entry.appendChild(spanKana);
+
+    if (config.showRomaji) {
+      const spanRomaji = document.createElement('span');
+      spanRomaji.classList.add('w-romaji');
+      spanRomaji.textContent = 'rikai';
+      entry.appendChild(spanRomaji);
+    }
 
     const spanDef = document.createElement('span');
     spanDef.classList.add('w-def');

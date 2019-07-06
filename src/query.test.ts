@@ -6,7 +6,7 @@ describe('parseNameEntries', () => {
     // This is simply the entry that was a line 1000 when I wrote the test.
     // There's nothing particularly special about it.
     const searchResult: WordSearchResult = {
-      data: [['いたち /(f) Itachi/', null]],
+      data: [['いたち /(f) Itachi/', null, null]],
       names: true,
       more: false,
       matchLen: 3,
@@ -24,9 +24,9 @@ describe('parseNameEntries', () => {
   it('merges entries with the same definition', async () => {
     const searchResult: WordSearchResult = {
       data: [
-        ['いぶ喜 [いぶき] /(f) Ibuki/', null],
-        ['いぶ希 [いぶき] /(f) Ibuki/', null],
-        ['いぶ記 [いぶき] /(f) Ibuki/', null],
+        ['いぶ喜 [いぶき] /(f) Ibuki/', null, null],
+        ['いぶ希 [いぶき] /(f) Ibuki/', null, null],
+        ['いぶ記 [いぶき] /(f) Ibuki/', null, null],
       ],
       names: true,
       more: true,
@@ -50,8 +50,8 @@ describe('parseNameEntries', () => {
     const searchResult: WordSearchResult = {
       data: [
         // These two have different definitions so they won't be merged
-        ['阿我田 [あがた] /(s) Agata/', null],
-        ['阿方 [あがた] /(p,s) Agata/', null],
+        ['阿我田 [あがた] /(s) Agata/', null, null],
+        ['阿方 [あがた] /(p,s) Agata/', null, null],
       ],
       names: true,
       more: false,
@@ -76,7 +76,7 @@ describe('parseNameEntries', () => {
 
   it('parses all known tags', async () => {
     const searchResult: WordSearchResult = {
-      data: [['てすと /(s,p,u,g,f,m,h,pr,c,o,st,wk) Test/', null]],
+      data: [['てすと /(s,p,u,g,f,m,h,pr,c,o,st,wk) Test/', null, null]],
       names: true,
       more: false,
       matchLen: 3,
@@ -109,7 +109,7 @@ describe('parseNameEntries', () => {
 
   it('handles an entry with an unrecognized tag', async () => {
     const searchResult: WordSearchResult = {
-      data: [['てすと /(yer) Test/', null]],
+      data: [['てすと /(yer) Test/', null, null]],
       names: true,
       more: false,
       matchLen: 3,
@@ -126,7 +126,7 @@ describe('parseNameEntries', () => {
 
   it('handles an entry without any tags', async () => {
     const searchResult: WordSearchResult = {
-      data: [['てすと /Test/', null]],
+      data: [['てすと /Test/', null, null]],
       names: true,
       more: false,
       matchLen: 3,
@@ -143,7 +143,9 @@ describe('parseNameEntries', () => {
 
   it('reformats slashes', async () => {
     const searchResult: WordSearchResult = {
-      data: [['シェフェール /(u) Schaeffer/Schefer/Scheffer/Schoffer/', null]],
+      data: [
+        ['シェフェール /(u) Schaeffer/Schefer/Scheffer/Schoffer/', null, null],
+      ],
       names: true,
       more: false,
       matchLen: 3,
@@ -166,6 +168,7 @@ describe('parseNameEntries', () => {
       data: [
         [
           'シーボルト /(p,s) (ignore) Seabold/Siebold ((Philipp Franz Balthasar von) Siebold, scientific explorer of Japan)/',
+          null,
           null,
         ],
       ],

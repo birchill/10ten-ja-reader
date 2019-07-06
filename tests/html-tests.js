@@ -89,6 +89,7 @@ const htmlTests = [
         {
           kanjiKana: '走る',
           kana: ['はしる'],
+          romaji: [],
           definition:
             '(v5r,vi) to run; to travel (movement of vehicles); to hurry to; to retreat (from battle); to take flight; to run away from home; to elope; to tend heavily toward; (P); ',
           reason: '< past',
@@ -106,18 +107,21 @@ const htmlTests = [
         {
           kanjiKana: '韓国語',
           kana: ['かんこくご'],
+          romaji: [],
           definition: '(n) Korean (language)',
           reason: null,
         },
         {
           kanjiKana: '韓国',
           kana: ['からくに'],
+          romaji: [],
           definition: '(n,arch) China; Korea',
           reason: null,
         },
         {
           kanjiKana: '韓国',
           kana: ['かんこく'],
+          romaji: [],
           definition: '(n) (South) Korea',
           reason: null,
         },
@@ -134,24 +138,28 @@ const htmlTests = [
         {
           kanjiKana: '東',
           kana: ['ひがし'],
+          romaji: [],
           definition: '(n) east; (P)',
           reason: null,
         },
         {
           kanjiKana: '東',
           kana: ['ひむかし'],
+          romaji: [],
           definition: '(n,ok) east; (P)',
           reason: null,
         },
         {
           kanjiKana: '東',
           kana: ['ひんがし'],
+          romaji: [],
           definition: '(n,ok) east; (P)',
           reason: null,
         },
         {
           kanjiKana: '東',
           kana: ['あずま'],
+          romaji: [],
           definition:
             '(n,arch,abbr) east; eastern Japan; six-stringed Japanese zither; my spouse',
           reason: null,
@@ -159,6 +167,7 @@ const htmlTests = [
         {
           kanjiKana: '東',
           kana: ['あづま'],
+          romaji: [],
           definition:
             '(n,arch,abbr,ok) east; eastern Japan; six-stringed Japanese zither; my spouse',
           reason: null,
@@ -176,18 +185,21 @@ const htmlTests = [
         {
           kanjiKana: '韓国語',
           kana: ['かんこくご'],
+          romaji: [],
           definition: '(n) Korean (language)',
           reason: null,
         },
         {
           kanjiKana: '韓国',
           kana: ['からくに'],
+          romaji: [],
           definition: '(n,arch) China; Korea',
           reason: null,
         },
         {
           kanjiKana: '韓国',
           kana: ['かんこく'],
+          romaji: [],
           definition: '(n) (South) Korea',
           reason: null,
         },
@@ -207,12 +219,14 @@ const htmlTests = [
         {
           kanjiKana: '韓国',
           kana: ['からくに'],
+          romaji: [],
           definition: '(n,arch) China; Korea',
           reason: null,
         },
         {
           kanjiKana: '中国',
           kana: ['ちゅうごく'],
+          romaji: [],
           definition:
             '(n) China; South-west most region of Honshu; middle of a country; the Hiroshima area',
           reason: null,
@@ -220,24 +234,28 @@ const htmlTests = [
         {
           kanjiKana: '殿',
           kana: ['との'],
+          romaji: [],
           definition: '(n) feudal lord; mansion; palace',
           reason: null,
         },
         {
           kanjiKana: '通貨',
           kana: ['つうか'],
+          romaji: [],
           definition: '(n,adj-no) currency; (P)',
           reason: null,
         },
         {
           kanjiKana: 'スワップ',
           kana: [],
+          romaji: [],
           definition: '(n,vs) swap; (P)',
           reason: null,
         },
         {
           kanjiKana: '延長',
           kana: ['えんちょう'],
+          romaji: [],
           definition:
             '(n,vs) extension; elongation; prolongation; lengthening; Enchou era (923.4.11-931.4.26); (P)',
           reason: null,
@@ -245,6 +263,7 @@ const htmlTests = [
         {
           kanjiKana: '合意',
           kana: ['ごうい'],
+          romaji: [],
           definition:
             '(n,vs,adj-no) agreement; consent; mutual understanding; (P)',
           reason: null,

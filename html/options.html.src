@@ -40,6 +40,10 @@
             <input type=checkbox id=showDefinitions name=showDefinitions>
             <label for=showDefinitions>__MSG_options_show_definitions__</label>
           </div>
+          <div class="browser-style checkbox-row">
+            <input type=checkbox id=showRomaji name=showRomaji>
+            <label for=showRomaji>__MSG_options_show_romaji__</label>
+          </div>
         </div>
         <div class="panel-section panel-section-header">
           <h2 class=text-section-header>__MSG_options_keyboard_heading__</h2>
