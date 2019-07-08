@@ -87,14 +87,17 @@ function renderWordEntries(
       kanaSpan.append(kana);
     }
 
-    for (const romaji of entry.romaji) {
-      if (headingDiv.lastElementChild!.classList.contains('w-romaji')) {
-        headingDiv.append(', ');
-      }
+    if (entry.romaji.length) {
       const romajiSpan = document.createElement('span');
       headingDiv.append(romajiSpan);
       romajiSpan.classList.add('w-romaji');
-      romajiSpan.append(romaji);
+      for (const romaji of entry.romaji) {
+        if (romajiSpan.textContent) {
+          romajiSpan.textContent += `, ${romaji}`;
+        } else {
+          romajiSpan.textContent = romaji;
+        }
+      }
     }
 
     if (entry.reason) {
