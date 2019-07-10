@@ -1,4 +1,3 @@
-const argv = require('argv');
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WebExtWebpackPlugin = require('web-ext-webpack-plugin');
