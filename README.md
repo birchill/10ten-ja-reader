@@ -43,10 +43,16 @@ npm run prepack
 
 ## Running
 
-For manual testing you can use
+For manual testing you can use:
 
 ```
 npm start
+```
+
+To use a specific version of Firefox (e.g. Nightly):
+
+```
+npm start -- --firefox nightly
 ```
 
 ## Testing

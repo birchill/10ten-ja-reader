@@ -1,6 +1,21 @@
+const argv = require('argv');
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WebExtWebpackPlugin = require('web-ext-webpack-plugin');
+
+// Look for a --firefox <path> argument
+const firefoxIndex = process.argv.indexOf('--firefox');
+const firefox =
+  firefoxIndex !== -1 && firefoxIndex < process.argv.length - 1
+    ? process.argv[firefoxIndex + 1]
+    : undefined;
+
+// Likewise for firefoxProfile
+const firefoxProfileIndex = process.argv.indexOf('--firefoxProfile');
+const firefoxProfile =
+  firefoxProfileIndex !== -1 && firefoxProfileIndex < process.argv.length - 1
+    ? process.argv[firefoxProfileIndex + 1]
+    : undefined;
 
 const commonConfig = {
   // No need for uglification etc.
@@ -73,6 +88,8 @@ const firefoxConfig = {
   plugins: [
     new CopyWebpackPlugin(['css/*', 'images/*', 'data/*', '_locales/**/*']),
     new WebExtWebpackPlugin({
+      firefox,
+      firefoxProfile,
       browserConsole: true,
       startUrl: ['tests/playground.html'],
       sourceDir: path.resolve(__dirname, 'dist-firefox'),
