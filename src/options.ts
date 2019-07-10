@@ -119,21 +119,24 @@ function renderPopupStyleSelect() {
     entry.classList.add('entry');
     popupPreview.appendChild(entry);
 
+    const headingDiv = document.createElement('div');
+    entry.append(headingDiv);
+
     const spanKanji = document.createElement('span');
     spanKanji.classList.add('w-kanji');
     spanKanji.textContent = '理解';
-    entry.appendChild(spanKanji);
+    headingDiv.appendChild(spanKanji);
 
     const spanKana = document.createElement('span');
     spanKana.classList.add('w-kana');
     spanKana.textContent = 'りかい';
-    entry.appendChild(spanKana);
+    headingDiv.appendChild(spanKana);
 
     if (config.showRomaji) {
       const spanRomaji = document.createElement('span');
       spanRomaji.classList.add('w-romaji');
       spanRomaji.textContent = 'rikai';
-      entry.appendChild(spanRomaji);
+      headingDiv.appendChild(spanRomaji);
     }
 
     const spanDef = document.createElement('span');

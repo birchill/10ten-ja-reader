@@ -85,6 +85,10 @@
   margin-right: 0.3em;
 }
 
+#rikaichamp-window .w-kana + .w-romaji {
+  margin-left: 0.3em;
+}
+
 #rikaichamp-window .w-conj {
   color: #FFE0A0;
   font-size: 12px;

@@ -188,18 +188,23 @@ function completeForm() {
         popupPreview.classList.add('popup-preview');
         popupPreview.classList.add(`-${theme}`);
         label.appendChild(popupPreview);
+        const entry = document.createElement('div');
+        entry.classList.add('entry');
+        popupPreview.appendChild(entry);
+        const headingDiv = document.createElement('div');
+        entry.append(headingDiv);
         const spanKanji = document.createElement('span');
         spanKanji.classList.add('w-kanji');
         spanKanji.textContent = '理解';
-        popupPreview.appendChild(spanKanji);
+        headingDiv.appendChild(spanKanji);
         const spanKana = document.createElement('span');
         spanKana.classList.add('w-kana');
         spanKana.textContent = 'りかい';
-        popupPreview.appendChild(spanKana);
+        headingDiv.appendChild(spanKana);
         const spanDef = document.createElement('span');
         spanDef.classList.add('w-def');
         spanDef.textContent = '(n,vs) understanding';
-        popupPreview.appendChild(spanDef);
+        entry.appendChild(spanDef);
     }
     const grid = document.getElementById('key-grid');
     for (const setting of config.DEFAULT_KEY_SETTINGS) {

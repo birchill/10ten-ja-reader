@@ -61,6 +61,7 @@ fieldset {
 
 .popupstyle-select {
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
   margin-bottom: 1rem;
 }
@@ -75,6 +76,7 @@ fieldset {
   padding: 0.5em;
   flex: 1;
   text-align: center;
+  min-width: 200px;
 }
 
 .popupstyle-select > input[type=radio]:checked + label {
@@ -93,6 +95,7 @@ fieldset {
 #rikaichamp-window.popup-preview {
   position: static;
   display: inline-block;
+  min-width: 180px;
 }
 
 .key-grid {
