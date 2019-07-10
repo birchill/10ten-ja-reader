@@ -1,4 +1,8 @@
-## 0.0.32 (Not yet released)
+## 0.0.33 (Not yet released)
+
+* Nothing yet
+
+## 0.0.32 (2019-07-10)
 
 * Added support for displaying romaji (off by default)
   ([#23](https://github.com/birtles/rikaichamp/issues/23))
