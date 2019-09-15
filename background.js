@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener(
 				var e = rcxMain.search(request.text, request.dictOption);
 				response(e);
 				break;
-			/*			case 'nextDict':
+		/*  case 'nextDict':
 							console.log('nextDict');
 							rcxMain.nextDict();
 							break;*/
