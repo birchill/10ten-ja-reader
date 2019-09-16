@@ -1,7 +1,7 @@
 
 //Todo: Update config
 //TOdo: add the second tobi addition
-// Get the current options
+// Get the current options.
 function get_options() {
 	//Todo: Order these.
 
