@@ -52,7 +52,7 @@ function get_options() {
 
     for (i = 0; i*2 < kanjiInfoLabelList.length; i++) {
         // Need to get every other element in the storage, so this funky math was added.
-        // We have abbreviations and values.
+        // We have abbreviations and values..
 
         document.getElementById(kanjiInfoLabelList[i*2]).checked = items.kanjiInfo[kanjiInfoLabelList[i*2]] == 'true' ? true : false;
     }
