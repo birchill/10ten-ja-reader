@@ -3,7 +3,7 @@
 //TOdo: add the second tobi addition
 // Get the current options.
 function get_options() {
-	//Todo: Order these..
+	//Todo: Order these
 
 	var getItems = ["popupcolor","highlight","textboxhl","onlyreading",
 		"minihelp","disablekeys", "kanjicomponents","lineEnding", "copySeparator",
@@ -21,128 +21,29 @@ function get_options() {
 
 			document.optform.popupLocation.selectedIndex = items.popupLocation;
 			document.optform.highlighttext.checked = items.highlight;
+			document.optform.textboxhl.checked = items.textboxhl;
+			document.optform.onlyreading.checked = items.onlyreading;
+			document.optform.minihelp.checked = items.minihelp;
+			document.optform.disablekeys.checked = items.disablekeys;
+			document.optform.kanjicomponents.checked = items.kanjicomponents;
+			document.optform.popupDelay.value = items.popupDelay;
 
 
-			document.optform.textboxhl.checked = items['textboxhl'] == 'true';
+			kanjiInfoLabelList = chrome.extension.getBackgroundPage().rcxDict.prototype.kanjiInfoLabelList;
 
-			if (items['onlyreading'] == 'true')
-				document.optform.onlyreading.checked = true;
-			else
-				document.optform.onlyreading.checked = false;
+			for (i = 0; i*2 < kanjiInfoLabelList.length; i++) {
+				// Need to get every other element in the storage, so this funky math was added.
+				// We have abbreviations and values..
 
-			if (items['minihelp'] == 'true')
-				document.optform.minihelp.checked = true;
-			else
-				document.optform.minihelp.checked = false;
-
-			document.optform.popupDelay.value = items["popupDelay"];
-
-			if (items['disablekeys'] == 'true')
-				document.optform.disablekeys.checked = true;
-			else
-				document.optform.disablekeys.checked = false;
-
-			if (items['kanjicomponents'] == 'true')
-				document.optform.kanjicomponents.checked = true;
-			else
-				document.optform.kanjicomponents.checked = false;
-
-
-	kanjiInfoLabelList = chrome.extension.getBackgroundPage().rcxDict.prototype.kanjiInfoLabelList;
-
-	for (i = 0; i*2 < kanjiInfoLabelList.length; i++) {
-		// Need to get every other element in the storage, so this funky math was added.
-		// We have abbreviations and values..
-
-		document.getElementById(kanjiInfoLabelList[i*2]).checked = items.kanjiInfo[kanjiInfoLabelList[i*2]] == 'true' ? true : false;
-	}
+				document.getElementById(kanjiInfoLabelList[i*2]).checked = items.kanjiInfo[kanjiInfoLabelList[i*2]] //== 'true' ? true : false;
+			}
 
 	for(var i=0; i < document.optform.lineEnding.length; ++i) {
 		if(document.optform.lineEnding[i].value === items.lineEnding) {
 //Todo: Update config
 //TOdo: add the second tobi addition
 // Get the current options
-			function get_options() {
-				//Todo: Order these.
-
-				var getItems = ["popupcolor","highlight","textboxhl","onlyreading",
-					"minihelp","disablekeys", "kanjicomponents","lineEnding", "copySeparator",
-					"maxClipCopyEntries","popupDelay",
-					"showOnKey","popupLocation","kanjiInfo"];
-				chrome.storage.sync.get(getItems,
-					function(items) {
-
-						for(var i=0; i < document.optform.popupcolor.length; ++i) {
-							if(document.optform.popupcolor[i].value == items['popupcolor']) {
-								document.optform.popupcolor[i].selected = true;
-								break;
-							}
-						}
-
-						document.optform.popupLocation.selectedIndex = items.popupLocation;
-						document.optform.highlighttext.checked = items.highlight;
-
-
-						document.optform.textboxhl.checked = items['textboxhl'] == 'true';
-
-						if (items['onlyreading'] == 'true')
-							document.optform.onlyreading.checked = true;
-						else
-							document.optform.onlyreading.checked = false;
-
-						if (items['minihelp'] == 'true')
-							document.optform.minihelp.checked = true;
-						else
-							document.optform.minihelp.checked = false;
-
-						document.optform.popupDelay.value = items["popupDelay"];
-
-						if (items['disablekeys'] == 'true')
-							document.optform.disablekeys.checked = true;
-						else
-							document.optform.disablekeys.checked = false;
-
-						if (items['kanjicomponents'] == 'true')
-							document.optform.kanjicomponents.checked = true;
-						else
-							document.optform.kanjicomponents.checked = false;
-
-
-						kanjiInfoLabelList = chrome.extension.getBackgroundPage().rcxDict.prototype.kanjiInfoLabelList;
-
-						for (i = 0; i*2 < kanjiInfoLabelList.length; i++) {
-							// Need to get every other element in the storage, so this funky math was added.
-							// We have abbreviations and values..
-
-							document.getElementById(kanjiInfoLabelList[i*2]).checked = items.kanjiInfo[kanjiInfoLabelList[i*2]] == 'true' ? true : false;
-						}
-
-						for(var i=0; i < document.optform.lineEnding.length; ++i) {
-							if(document.optform.lineEnding[i].value === items.lineEnding) {
-								document.optform.lineEnding[i].selected = true;
-								break;
-							}
-						}
-
-						for(var i=0; i < document.optform.copySeparator.length; ++i) {
-							if(document.optform.copySeparator[i].value === items.copySeparator) {
-								document.optform.copySeparator[i].selected = true;
-								break;
-							}
-						}
-
-						document.optform.maxClipCopyEntries.value = parseInt(items.maxClipCopyEntries);
-
-						for(var i = 0; i < document.optform.showOnKey.length; ++i) {
-							if (document.optform.showOnKey[i].value === items.showOnKey) {
-								document.optform.showOnKey[i].checked = true;
-								break;
-							}
-						}
-
-					});
-			}
-
+		
 
 // Get the user input
 			function save_options() {
@@ -260,68 +161,6 @@ function get_options() {
 		});
 }
 
-
-// Get the user input
-function save_options() {
-	//Todo: Add Ordering of variables
-	var popupcolor = document.optform.popupcolor.value;
-	var highlight = document.optform.highlighttext.checked;
-	var textboxhl = document.optform.textboxhl.checked;
-	var onlyreading = document.optform.onlyreading.checked;
-	var minihelp = document.optform.minihelp.checked;
-	var disablekeys = document.optform.disablekeys.checked;
-	var kanjicomponents = document.optform.kanjicomponents.checked;
-	var lineEnding = document.optform.lineEnding.value;
-	var copySeparator = document.optform.copySeparator.value;
-	var maxClipCopyEntries = document.optform.maxClipCopyEntries.value;
-	var popupDelay = getPopUpDelay();
-	var popupLocation =document.optform.popupLocation.value;
-	var showOnKey = document.optform.showOnKey.value;
-	var kanjiInfoObject = {};
-	var kanjiInfoLabelList = chrome.extension.getBackgroundPage().rcxDict.prototype.kanjiInfoLabelList;
-	var kanjiinfoarray = new Array(kanjiInfoLabelList.length/2);
-
-	// Setting Kanji values
-	for (i = 0; i*2 < kanjiInfoLabelList.length; i++) {
-		kanjiInfoObject[kanjiInfoLabelList[i * 2]] = document.getElementById(kanjiInfoLabelList[i * 2]).checked;
-		kanjiinfoarray[i] = kanjiInfoObject[kanjiInfoLabelList[i * 2]];
-	}
-
-	chrome.storage.sync.set({
-		// Saving General options
-		"popupcolor": popupcolor,
-		"highlight": highlight,
-		"textboxhl": textboxhl,
-		"onlyreading": onlyreading,
-		"minihelp": minihelp,
-		"disablekeys": disablekeys,
-		"kanjicomponents": kanjicomponents,
-		"kanjiInfo":kanjiInfoObject,
-		"popupLocation":popupLocation,
-		// Saving Copy to Clipboard settings
-		"lineEnding": lineEnding,
-		"copySeparator": copySeparator,
-		"maxClipCopyEntries": maxClipCopyEntries,
-		"popupDelay": popupDelay,
-		"showOnKey":showOnKey
-	});
-
-	chrome.extension.getBackgroundPage().rcxMain.config.css = popupcolor;
-	chrome.extension.getBackgroundPage().rcxMain.config.highlight = highlight;
-	chrome.extension.getBackgroundPage().rcxMain.config.textboxhl = textboxhl;
-	chrome.extension.getBackgroundPage().rcxMain.config.onlyreading = onlyreading;
-	chrome.extension.getBackgroundPage().rcxMain.config.minihelp = minihelp;
-	chrome.extension.getBackgroundPage().rcxMain.config.popupDelay = popupDelay;
-	chrome.extension.getBackgroundPage().rcxMain.config.disablekeys = disablekeys;
-	chrome.extension.getBackgroundPage().rcxMain.config.showOnKey = showOnKey;
-	chrome.extension.getBackgroundPage().rcxMain.config.kanjicomponents = kanjicomponents;
-	chrome.extension.getBackgroundPage().rcxMain.config.kanjiinfo = kanjiinfoarray;
-	chrome.extension.getBackgroundPage().rcxMain.config.lineEnding = lineEnding;
-	chrome.extension.getBackgroundPage().rcxMain.config.copySeparator = copySeparator;
-	chrome.extension.getBackgroundPage().rcxMain.config.maxClipCopyEntries = maxClipCopyEntries;
-	chrome.extension.getBackgroundPage().rcxMain.config.popupLocation = popupLocation;
-
-}
 
 
 function getPopUpDelay(){
