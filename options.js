@@ -3,7 +3,7 @@
 //TOdo: add the second tobi addition
 // Get the current options.
 function get_options() {
-	//Todo: Order these.
+	//Todo: Order these..
 
 	var getItems = ["popupcolor","highlight","textboxhl","onlyreading",
 		"minihelp","disablekeys", "kanjicomponents","lineEnding", "copySeparator",
