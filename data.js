@@ -645,11 +645,15 @@ if (0) {
 		b = a[1].split(' ');
 		for (i = 0; i < b.length; ++i) {
 			if (b[i].match(/^([A-Z]+)(.*)/)) {
-				if (!entry.misc[RegExp.$1]) entry.misc[RegExp.$1] = RegExp.$2;
-					else entry.misc[RegExp.$1] += ' ' + RegExp.$2;
+				if (!entry.misc[RegExp.$1]) 
+					entry.misc[RegExp.$1] = RegExp.$2;
+				else 
+					entry.misc[RegExp.$1] += ' ' + RegExp.$2;
+				//format heisig keyword additions prettily
+				if(RegExp.$1.startsWith('L'))
+					entry.misc[RegExp.$1] = entry.misc[RegExp.$1].replace(/[:_]/g, ' ');
 			}
 		}
-
 		entry.onkun = a[2].replace(/\s+/g, '\u3001 ');
 		entry.nanori = a[3].replace(/\s+/g, '\u3001 ');
 		entry.bushumei = a[4].replace(/\s+/g, '\u3001 ');
@@ -671,7 +675,8 @@ if (0) {
 		'W',	'Korean Reading',
 */
 		'H',	'Halpern',
-		'L',	'Heisig',
+		'L',	'Heisig 5th Edition',
+		'LF',	'Heisig 6th Edition',
 		'E',	'Henshall',
 		'DK',	'Kanji Learners Dictionary',
 		'N',	'Nelson',
