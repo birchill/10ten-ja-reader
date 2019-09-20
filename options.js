@@ -6,6 +6,8 @@ function fillVals() {
 			break;
 		}
 	}
+
+	document.optform.popupLocation.selectedIndex = localStorage['popupLocation'];
 	
 	if (localStorage['highlight'] == 'true')
 		document.optform.highlighttext.checked = true;
@@ -26,6 +28,8 @@ function fillVals() {
 		document.optform.minihelp.checked = true;
 	else
 		document.optform.minihelp.checked = false;
+
+	document.optform.popupDelay.value = localStorage["popupDelay"];
 
 	if (localStorage['disablekeys'] == 'true')
 		document.optform.disablekeys.checked = true;
@@ -61,6 +65,14 @@ function fillVals() {
 
 	document.optform.maxClipCopyEntries.value = parseInt(localStorage['maxClipCopyEntries']);
 
+	store = localStorage['showOnKey'];
+	for(var i = 0; i < document.optform.showOnKey.length; ++i) {
+		if (document.optform.showOnKey[i].value === store) {
+			document.optform.showOnKey[i].checked = true;
+			break;
+		}
+	}
+
 }
 
 function getVals() {
@@ -83,19 +95,34 @@ function getVals() {
 	localStorage['copySeparator'] = document.optform.copySeparator.value;
 	localStorage['maxClipCopyEntries'] = document.optform.maxClipCopyEntries.value;
 
+	var popupDelay;
+	try {
+		popupDelay = parseInt(document.optform.popupDelay.value);
+		if (!isFinite(popupDelay)) {
+			throw Error('infinite');
+		}
+		localStorage['popupDelay'] = document.optform.popupDelay.value;
+	} catch (err) {
+		popupDelay = 150;
+		localStorage['popupDelay'] = "150";
+	}
+	localStorage['showOnKey'] = document.optform.showOnKey.value;
+	localStorage['popupLocation'] = document.optform.popupLocation.value;
 
 	chrome.extension.getBackgroundPage().rcxMain.config.css = localStorage["popupcolor"];
 	chrome.extension.getBackgroundPage().rcxMain.config.highlight = localStorage["highlight"];
 	chrome.extension.getBackgroundPage().rcxMain.config.textboxhl = localStorage["textboxhl"];
 	chrome.extension.getBackgroundPage().rcxMain.config.onlyreading = localStorage["onlyreading"];
 	chrome.extension.getBackgroundPage().rcxMain.config.minihelp = localStorage["minihelp"];
+	chrome.extension.getBackgroundPage().rcxMain.config.popupDelay = popupDelay;
 	chrome.extension.getBackgroundPage().rcxMain.config.disablekeys = localStorage["disablekeys"];
+	chrome.extension.getBackgroundPage().rcxMain.config.showOnKey = localStorage["showOnKey"];
 	chrome.extension.getBackgroundPage().rcxMain.config.kanjicomponents = localStorage["kanjicomponents"];
 	chrome.extension.getBackgroundPage().rcxMain.config.kanjiinfo = kanjiinfoarray;
 	chrome.extension.getBackgroundPage().rcxMain.config.lineEnding = localStorage["lineEnding"];
 	chrome.extension.getBackgroundPage().rcxMain.config.copySeparator = localStorage["copySeparator"];
 	chrome.extension.getBackgroundPage().rcxMain.config.maxClipCopyEntries = localStorage["maxClipCopyEntries"];
-
+	chrome.extension.getBackgroundPage().rcxMain.config.popupLocation = localStorage["popupLocation"];
 }
 window.onload = fillVals;
 
