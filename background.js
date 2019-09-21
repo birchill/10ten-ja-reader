@@ -17,10 +17,10 @@ chrome.runtime.onMessage.addListener(
 				var e = rcxMain.search(request.text, request.dictOption);
 				response(e);
 				break;
-			/*  case 'nextDict':
-								console.log('nextDict');
-								rcxMain.nextDict();
-								break;*/
+			/**  case 'nextDict':
+			 console.log('nextDict');
+			 rcxMain.nextDict();
+			 break;*/
 			case 'resetDict':
 				console.log('resetDict');
 				rcxMain.resetDict();
@@ -76,40 +76,10 @@ rcxMain.config = {};
 /** Get option data from cloud. */
 chrome.storage.sync.get(optionsList,
 	function (items) {
-		fillRcxValsFromLocalStoreCloudAndDefaultValues(items)
-		saveOptionsToCloudStorage()
+		fillRcxValsFromLocalStoreCloudAndDefaultValues(items);
+		saveOptionsToCloudStorage();
+	})
 
-/**
- * Saves options to Google Chrome Cloud storage
- * https://developer.chrome.com/storage
- * @author Deshaun (From Dev Color)
- * @param None
- * @return None
- */
-function saveOptionsToCloudStorage() {
-
-	chrome.storage.sync.set({
-		// Saving General options
-		"copySeparator": rcxMain.config.copySeparator,
-		"disablekeys": rcxMain.config.disablekeys,
-		"highlight": rcxMain.config.highlight,
-		"kanjicomponents": rcxMain.config.kanjicomponents,
-		//Todo: Package contents of Kanji info object to store in cloud
-		"kanjiInfo":kanjiInfoObject,
-		"lineEnding": rcxMain.config.lineEnding,
-		"maxClipCopyEntries": rcxMain.config.maxClipCopyEntries,
-		"minihelp": rcxMain.config.minihelp,
-		"onlyreading": rcxMain.config.onlyreading,
-		"popupcolor": rcxMain.config.popupcolor,
-		"popupDelay": rcxMain.config.popupDelay,
-		"popupLocation":rcxMain.config.popupLocation,
-		"textboxhl": rcxMain.config.textboxhl,
-
-		// Saving Copy to Clipboard settings
-		"showOnKey":rcxMain.config.showOnKey
-	});
-
-}
 
 /**
  * Initializes the localStorage for the given key.
@@ -179,33 +149,32 @@ function fillRcxValsFromLocalStoreCloudAndDefaultValues(items) {
 			localStorage['onlyreading'] = "false";
 	}
 
-		//Todo: Need to Organize these options in alphabetical order.
-		/** Set Copy Separator Option value */
-		if (items.copySeparator) {
-			rcxMain.config.copySeparator = items.copySeparator;
-		}
-
-		if (localStorage["copySeparator"]) {
-			rcxMain.config.copySeparator = localStorage["copySeparator"];
-		}
-
-		if (!rcxMain.config.copySeparator) {
-			rcxMain.config.copySeparator = "tab"
-		}
-		echo(rcxMain.config.copySeparator);
-
-		/** Set Disable Keys option value */
-		if (items.disablekeys) {
-			rcxMain.config.disablekeys = items.disablekeys;
-		}
-
-		if (localStorage["disablekeys"]) {
-			rcxMain.config.disablekeys = localStorage["disablekeys"];
-		}
-
-		if (!rcxMain.config.disablekeys)
-			rcxMain.config.disablekeys = "false"
+	//Todo: Need to Organize these options in alphabetical order.
+	/** Set Copy Separator Option value */
+	if (items.copySeparator) {
+		rcxMain.config.copySeparator = items.copySeparator;
 	}
+
+	if (localStorage["copySeparator"]) {
+		rcxMain.config.copySeparator = localStorage["copySeparator"];
+	}
+
+	if (!rcxMain.config.copySeparator) {
+		rcxMain.config.copySeparator = "tab"
+	}
+	echo(rcxMain.config.copySeparator);
+
+	/** Set Disable Keys option value */
+	if (items.disablekeys) {
+		rcxMain.config.disablekeys = items.disablekeys;
+	}
+
+	if (localStorage["disablekeys"]) {
+		rcxMain.config.disablekeys = localStorage["disablekeys"];
+	}
+
+	if (!rcxMain.config.disablekeys)
+		rcxMain.config.disablekeys = "false"
 
 	/** Set highlight option value */
 	if (items.highlight) {
@@ -372,3 +341,34 @@ function fillRcxValsFromLocalStoreCloudAndDefaultValues(items) {
 	}
 }
 
+/**
+ * Saves options to Google Chrome Cloud storage
+ * https://developer.chrome.com/storage
+ * @author Deshaun (From Dev Color)
+ * @param None
+ * @return None
+ */
+function saveOptionsToCloudStorage() {
+
+	chrome.storage.sync.set({
+		// Saving General options
+		"copySeparator": rcxMain.config.copySeparator,
+		"disablekeys": rcxMain.config.disablekeys,
+		"highlight": rcxMain.config.highlight,
+		"kanjicomponents": rcxMain.config.kanjicomponents,
+		//Todo: Package contents of Kanji info object to store in cloud
+		"kanjiInfo": kanjiInfoObject,
+		"lineEnding": rcxMain.config.lineEnding,
+		"maxClipCopyEntries": rcxMain.config.maxClipCopyEntries,
+		"minihelp": rcxMain.config.minihelp,
+		"onlyreading": rcxMain.config.onlyreading,
+		"popupcolor": rcxMain.config.popupcolor,
+		"popupDelay": rcxMain.config.popupDelay,
+		"popupLocation": rcxMain.config.popupLocation,
+		"textboxhl": rcxMain.config.textboxhl,
+
+		// Saving Copy to Clipboard settings
+		"showOnKey": rcxMain.config.showOnKey
+	});
+
+}

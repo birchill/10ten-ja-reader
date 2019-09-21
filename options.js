@@ -1,10 +1,10 @@
 //TODO: A FEW COMMENTS WOULDN'T HURT THIS CLASS
 function getOptions() {
 	chrome.storage.sync.get(optionsList,
-		function(items) {
+		function (items) {
 
-			for(var i=0; i < document.optform.popupcolor.length; ++i) {
-				if(document.optform.popupcolor[i].value == items['popupcolor']) {
+			for (var i = 0; i < document.optform.popupcolor.length; ++i) {
+				if (document.optform.popupcolor[i].value == items['popupcolor']) {
 					document.optform.popupcolor[i].selected = true;
 					break;
 				}
@@ -21,35 +21,35 @@ function getOptions() {
 
 			kanjiInfoLabelList = chrome.extension.getBackgroundPage().rcxDict.prototype.kanjiInfoLabelList;
 
-			for (i = 0; i*2 < kanjiInfoLabelList.length; i++) {
+			for (i = 0; i * 2 < kanjiInfoLabelList.length; i++) {
 				// Need to get every other element in the storage, so this funky math was added.
 				// We have abbreviations and values..
 
-				document.getElementById(kanjiInfoLabelList[i*2]).checked = items.kanjiInfo[kanjiInfoLabelList[i*2]] //== 'true' ? true : false;
+				document.getElementById(kanjiInfoLabelList[i * 2]).checked = items.kanjiInfo[kanjiInfoLabelList[i * 2]] //== 'true' ? true : false;
 			}
 
-			for(var i=0; i < document.optform.lineEnding.length; ++i) {
-				if(document.optform.lineEnding[i].value === items.lineEnding) {
-				document.optform.lineEnding[i].selected = true;
-				break;
+			for (var i = 0; i < document.optform.lineEnding.length; ++i) {
+				if (document.optform.lineEnding[i].value === items.lineEnding) {
+					document.optform.lineEnding[i].selected = true;
+					break;
+				}
 			}
-	}
 
-	for(var i=0; i < document.optform.copySeparator.length; ++i) {
-		if(document.optform.copySeparator[i].value === items.copySeparator) {
-			document.optform.copySeparator[i].selected = true;
-			break;
-		}
-	}
+			for (var i = 0; i < document.optform.copySeparator.length; ++i) {
+				if (document.optform.copySeparator[i].value === items.copySeparator) {
+					document.optform.copySeparator[i].selected = true;
+					break;
+				}
+			}
 
-	document.optform.maxClipCopyEntries.value = parseInt(items.maxClipCopyEntries);
+			document.optform.maxClipCopyEntries.value = parseInt(items.maxClipCopyEntries);
 
-	for(var i = 0; i < document.optform.showOnKey.length; ++i) {
-		if (document.optform.showOnKey[i].value === items.showOnKey) {
-			document.optform.showOnKey[i].checked = true;
-			break;
-		}
-	}
+			for (var i = 0; i < document.optform.showOnKey.length; ++i) {
+				if (document.optform.showOnKey[i].value === items.showOnKey) {
+					document.optform.showOnKey[i].checked = true;
+					break;
+				}
+			}
 
 		});
 }
@@ -67,13 +67,13 @@ function saveOptions() {
 	var copySeparator = document.optform.copySeparator.value;
 	var maxClipCopyEntries = document.optform.maxClipCopyEntries.value;
 	var popupDelay = getPopUpDelay();
-	var popupLocation =document.optform.popupLocation.value;
+	var popupLocation = document.optform.popupLocation.value;
 	var showOnKey = document.optform.showOnKey.value;
 	var kanjiInfoObject = {};
-	var kanjiinfoarray = new Array(kanjiInfoLabelList.length/2);
+	var kanjiinfoarray = new Array(kanjiInfoLabelList.length / 2);
 
 	// Setting Kanji values
-	for (i = 0; i*2 < kanjiInfoLabelList.length; i++) {
+	for (i = 0; i * 2 < kanjiInfoLabelList.length; i++) {
 		kanjiInfoObject[kanjiInfoLabelList[i * 2]] = document.getElementById(kanjiInfoLabelList[i * 2]).checked;
 		kanjiinfoarray[i] = kanjiInfoObject[kanjiInfoLabelList[i * 2]];
 	}
@@ -87,15 +87,15 @@ function saveOptions() {
 		"minihelp": minihelp,
 		"disablekeys": disablekeys,
 		"kanjicomponents": kanjicomponents,
-		"kanjiInfo":kanjiInfoObject,
-		"popupLocation":popupLocation,
+		"kanjiInfo": kanjiInfoObject,
+		"popupLocation": popupLocation,
 
 		// Saving Copy to Clipboard settings
 		"lineEnding": lineEnding,
 		"copySeparator": copySeparator,
 		"maxClipCopyEntries": maxClipCopyEntries,
 		"popupDelay": popupDelay,
-		"showOnKey":showOnKey
+		"showOnKey": showOnKey
 	});
 
 	chrome.extension.getBackgroundPage().rcxMain.config.css = popupcolor;
@@ -115,7 +115,7 @@ function saveOptions() {
 
 }
 
-function getPopUpDelay(){
+function getPopUpDelay() {
 	var popupDelay;
 	try {
 		popupDelay = parseInt(document.optform.popupDelay.value);
