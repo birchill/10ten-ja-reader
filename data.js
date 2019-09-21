@@ -379,6 +379,13 @@ if (0) {
 		for (i = 0; i < word.length; ++i) {
 			u = v = word.charCodeAt(i);
 
+			// Skip Zero-width non-joiner used in Google Docs between every
+			// character.
+			if (u == 8204) {
+				p = 0;
+				continue;
+			}
+			
 			if (u <= 0x3000) break;
 
 			// full-width katakana to hiragana
