@@ -753,7 +753,7 @@ var rcxContent = {
 
 		if(window.rikaichan.config.ttsEnabled == 'true') {
 			var text = sel.toString();
-			if(typeof text === 'string' && text.length > 0) {
+			if(text.length > 0) {
 				//console.log("Sending playTTS " + text);
 				chrome.extension.sendMessage({"type": "playTTS", "text": text});
 			}
