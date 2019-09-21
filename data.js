@@ -437,7 +437,7 @@ if (0) {
 		else {
 			dict = this.wordDict;
 			index = this.wordIndex;
-			maxTrim = 7;//this.config.wmax;
+			maxTrim = rcxMain.config.maxDictEntries;
 		}
 
 		if (max != null) maxTrim = max;
@@ -500,7 +500,6 @@ if (0) {
                     if (ok) {
                         if (count >= maxTrim) {
 							entry.more = 1;
-							break;
 						}
 
 						have[ofs] = 1;
@@ -645,11 +644,15 @@ if (0) {
 		b = a[1].split(' ');
 		for (i = 0; i < b.length; ++i) {
 			if (b[i].match(/^([A-Z]+)(.*)/)) {
-				if (!entry.misc[RegExp.$1]) entry.misc[RegExp.$1] = RegExp.$2;
-					else entry.misc[RegExp.$1] += ' ' + RegExp.$2;
+				if (!entry.misc[RegExp.$1]) 
+					entry.misc[RegExp.$1] = RegExp.$2;
+				else 
+					entry.misc[RegExp.$1] += ' ' + RegExp.$2;
+				//format heisig keyword additions prettily
+				if(RegExp.$1.startsWith('L'))
+					entry.misc[RegExp.$1] = entry.misc[RegExp.$1].replace(/[:_]/g, ' ');
 			}
 		}
-
 		entry.onkun = a[2].replace(/\s+/g, '\u3001 ');
 		entry.nanori = a[3].replace(/\s+/g, '\u3001 ');
 		entry.bushumei = a[4].replace(/\s+/g, '\u3001 ');
@@ -671,7 +674,8 @@ if (0) {
 		'W',	'Korean Reading',
 */
 		'H',	'Halpern',
-		'L',	'Heisig',
+		'L',	'Heisig 5th Edition',
+		'LF',	'Heisig 6th Edition',
 		'E',	'Henshall',
 		'DK',	'Kanji Learners Dictionary',
 		'N',	'Nelson',
@@ -832,7 +836,12 @@ if (0) {
 			var pK = '';
 			var k;
 
-			for (i = 0; i < entry.data.length; ++i) {
+			if (!entry.index)
+				entry.index = 0;
+
+			if (entry.index != 0) b.push('<span class="small-info">... (\'j\' for more)</span><br/>');
+
+			for (i = entry.index; i < Math.min((rcxMain.config.maxDictEntries + entry.index), entry.data.length); ++i) {
 				e = entry.data[i][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
 				if (!e) continue;
 
@@ -875,7 +884,7 @@ if (0) {
 				}
 			}
 			b.push(t);
-			if (entry.more) b.push('...<br/>');
+			if (entry.more && (entry.index < (entry.data.length - rcxMain.config.maxDictEntries))) b.push('<span class="small-info">... (\'k\' for more)</span><br/>');
 		}
 
 		return b.join('');

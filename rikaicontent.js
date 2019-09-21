@@ -314,6 +314,8 @@ var rcxContent = {
 		tdata.selText = null;
 	},
 	
+	// Array used for storing the last popup content shown, useful for easily
+	// operating on the value after rendering (for copying for example).
 	lastFound: null,
 
 	configPage: function() {
@@ -350,6 +352,8 @@ var rcxContent = {
 		if (window.rikaichan.config.disablekeys == 'true' && (ev.keyCode != 16)) return;
 
 		var i;
+		var shouldPreventDefault = true;
+		var maxDictEntries = window.rikaichan.config.maxDictEntries;
 
 		switch (ev.keyCode) {
 		case 16:	// shift
@@ -357,6 +361,40 @@ var rcxContent = {
 			//this.showMode = (this.showMode + 1) % this.dictCount;
 			//chrome.extension.sendMessage({"type":"nextDict"});
 			this.show(ev.currentTarget.rikaichan, this.nextDict);
+			break;
+		case 74:	// j
+			// reverse cycle through definitions if > max (maxDictEntries)
+			e = this.lastFound[0];
+			if (e.data.length < maxDictEntries)
+				break;
+			if (!e.index) {
+				e.index = 0;
+			}
+			if (e.index > 0) {
+				e.index -= 1;
+			} else {
+				e.index = e.data.length - maxDictEntries;
+			}
+
+			chrome.extension.sendMessage({"type":"makehtml", "entry":e}, rcxContent.processHtml);
+			this.lastFound = [e];
+			break;
+		case 75:	// k
+			// forward cycle through definitions if > max (maxDictEntries)
+			e = this.lastFound[0];
+			if (e.data.length < maxDictEntries) {
+				break;
+			}
+			if (!e.index) {
+				e.index = 0;
+			}
+			if (e.index >= (e.data.length - maxDictEntries)) {
+				e.index = 0;
+			} else {
+				e.index += 1;
+			}
+			chrome.extension.sendMessage({"type":"makehtml", "entry":e}, rcxContent.processHtml);
+			this.lastFound = [e];
 			break;
 		case 27:	// esc
 			this.hidePopup();
@@ -367,7 +405,11 @@ var rcxContent = {
 			this.show(ev.currentTarget.rikaichan, this.sameDict);
 			break;
 		case 67:	// c
-			chrome.extension.sendMessage({"type":"copyToClip", "entry":rcxContent.lastFound});
+			if (ev.ctrlKey) {
+				shouldPreventDefault = false;
+			} else {
+				chrome.extension.sendMessage({"type":"copyToClip", "entry":rcxContent.lastFound});
+			}
 			break;
 		case 66:	// b
 			var ofs = ev.currentTarget.rikaichan.uofs;
@@ -406,7 +448,7 @@ var rcxContent = {
 		this.keysDown[ev.keyCode] = 1;
 
 		// don't eat shift if in this mode
-		if (true/*!this.cfg.nopopkeys*/) {
+		if (shouldPreventDefault) {
 			ev.preventDefault();
 		}
 	},

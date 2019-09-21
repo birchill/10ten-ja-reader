@@ -51,7 +51,7 @@ chrome.runtime.onMessage.addListener(
 		}
 	});
 	
-if(initStorage("v0.8.92", true)) {
+if(initStorage("v0.9.93", true)) {
 	// v0.7
 	initStorage("popupcolor", "blue");
 	initStorage("highlight", true);
@@ -93,11 +93,9 @@ if(initStorage("v0.8.92", true)) {
 	initStorage("showOnKey", "");
 
 
-	// v???
+	// v0.9.?? TODO(melink14): Pick a version.
 	initStorage("ttsEnabled", "false");
-	if (localStorage['ttsEnabled'] == "yes") {
-		initStorage("ttsEnabled", "true");
-	}
+	initStorage("maxDictEntries", 7);
 }
 
 /** 
@@ -125,6 +123,7 @@ rcxMain.config.textboxhl = localStorage["textboxhl"];
 rcxMain.config.onlyreading = localStorage["onlyreading"];
 rcxMain.config.copySeparator = localStorage["copySeparator"];
 rcxMain.config.maxClipCopyEntries = localStorage["maxClipCopyEntries"];
+rcxMain.config.maxDictEntries = parseInt(localStorage["maxDictEntries"]);
 rcxMain.config.lineEnding = localStorage["lineEnding"];
 rcxMain.config.minihelp = localStorage["minihelp"];
 rcxMain.config.popupDelay = parseInt(localStorage["popupDelay"]);
