@@ -89,6 +89,7 @@ if(initStorage("v0.9.93", true)) {
 	initStorage("popupDelay", "150");
 	initStorage("showOnKey", "");
 
+	// v0.9.?? TODO(melink14): Pick a version.
 	initStorage("maxDictEntries", 7);
 }
 
