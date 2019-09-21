@@ -437,7 +437,7 @@ if (0) {
 		else {
 			dict = this.wordDict;
 			index = this.wordIndex;
-			maxTrim = 7;//this.config.wmax;
+			maxTrim = rcxMain.config.maxDictEntries;
 		}
 
 		if (max != null) maxTrim = max;
@@ -500,7 +500,6 @@ if (0) {
                     if (ok) {
                         if (count >= maxTrim) {
 							entry.more = 1;
-							break;
 						}
 
 						have[ofs] = 1;
@@ -837,7 +836,12 @@ if (0) {
 			var pK = '';
 			var k;
 
-			for (i = 0; i < entry.data.length; ++i) {
+			if (!entry.index)
+				entry.index = 0;
+
+			if (entry.index != 0) b.push('<span class="small-info">... (\'j\' for more)</span><br/>');
+
+			for (i = entry.index; i < Math.min((rcxMain.config.maxDictEntries + entry.index), entry.data.length); ++i) {
 				e = entry.data[i][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
 				if (!e) continue;
 
@@ -880,7 +884,7 @@ if (0) {
 				}
 			}
 			b.push(t);
-			if (entry.more) b.push('...<br/>');
+			if (entry.more && (entry.index < (entry.data.length - rcxMain.config.maxDictEntries))) b.push('<span class="small-info">... (\'k\' for more)</span><br/>');
 		}
 
 		return b.join('');
