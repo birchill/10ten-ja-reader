@@ -88,6 +88,8 @@ if(initStorage("v0.8.92", true)) {
     // v0.8.92
 	initStorage("popupDelay", "150");
 	initStorage("showOnKey", "");
+
+	initStorage("maxDictEntries", "7");
 }
 
 /** 
@@ -115,6 +117,7 @@ rcxMain.config.textboxhl = localStorage["textboxhl"];
 rcxMain.config.onlyreading = localStorage["onlyreading"];
 rcxMain.config.copySeparator = localStorage["copySeparator"];
 rcxMain.config.maxClipCopyEntries = localStorage["maxClipCopyEntries"];
+rcxMain.config.maxDictEntries = localStorage["maxDictEntries"];
 rcxMain.config.lineEnding = localStorage["lineEnding"];
 rcxMain.config.minihelp = localStorage["minihelp"];
 rcxMain.config.popupDelay = parseInt(localStorage["popupDelay"]);
