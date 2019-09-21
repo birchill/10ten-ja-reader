@@ -839,7 +839,7 @@ if (0) {
 			if (!entry.index)
 				entry.index = 0;
 
-			if (entry.index != 0) b.push('...<br/>');
+			if (entry.index != 0) b.push('<span class="small-info">... (\'j\' for more)</span><br/>');
 
 			for (i = entry.index; i < Math.min((rcxMain.config.maxDictEntries + entry.index), entry.data.length); ++i) {
 				e = entry.data[i][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
@@ -884,7 +884,7 @@ if (0) {
 				}
 			}
 			b.push(t);
-			if (entry.more && (entry.index < (entry.data.length - rcxMain.config.maxDictEntries))) b.push('...<br/>');
+			if (entry.more && (entry.index < (entry.data.length - rcxMain.config.maxDictEntries))) b.push('<span class="small-info">... (\'k\' for more)</span><br/>');
 		}
 
 		return b.join('');
