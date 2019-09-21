@@ -65,53 +65,51 @@ function saveOptions() {
 	var kanjicomponents = document.optform.kanjicomponents.checked;
 	var lineEnding = document.optform.lineEnding.value;
 	var copySeparator = document.optform.copySeparator.value;
-	var maxClipCopyEntries = document.optform.maxClipCopyEntries.value;
+	var maxClipCopyEntries = parseInt(document.optform.maxClipCopyEntries.value);
 	var popupDelay = getPopUpDelay();
 	var popupLocation = document.optform.popupLocation.value;
 	var showOnKey = document.optform.showOnKey.value;
 	var kanjiInfoObject = {};
-	var kanjiinfoarray = new Array(kanjiInfoLabelList.length / 2);
 
 	// Setting Kanji values
 	for (i = 0; i * 2 < kanjiInfoLabelList.length; i++) {
 		kanjiInfoObject[kanjiInfoLabelList[i * 2]] = document.getElementById(kanjiInfoLabelList[i * 2]).checked;
-		kanjiinfoarray[i] = kanjiInfoObject[kanjiInfoLabelList[i * 2]];
 	}
 
 	chrome.storage.sync.set({
 		// Saving General options
-		"popupcolor": popupcolor,
-		"highlight": highlight,
-		"textboxhl": textboxhl,
-		"onlyreading": onlyreading,
-		"minihelp": minihelp,
 		"disablekeys": disablekeys,
+		"highlight": highlight,
 		"kanjicomponents": kanjicomponents,
 		"kanjiInfo": kanjiInfoObject,
+		"minihelp": minihelp,
+		"onlyreading": onlyreading,
+		"popupcolor": popupcolor,
+		"popupDelay": popupDelay,
 		"popupLocation": popupLocation,
+		"showOnKey": showOnKey,
+		"textboxhl": textboxhl,
 
 		// Saving Copy to Clipboard settings
-		"lineEnding": lineEnding,
 		"copySeparator": copySeparator,
-		"maxClipCopyEntries": maxClipCopyEntries,
-		"popupDelay": popupDelay,
-		"showOnKey": showOnKey
+		"lineEnding": lineEnding,
+		"maxClipCopyEntries": maxClipCopyEntries
 	});
 
-	chrome.extension.getBackgroundPage().rcxMain.config.css = popupcolor;
-	chrome.extension.getBackgroundPage().rcxMain.config.highlight = highlight;
-	chrome.extension.getBackgroundPage().rcxMain.config.textboxhl = textboxhl;
-	chrome.extension.getBackgroundPage().rcxMain.config.onlyreading = onlyreading;
-	chrome.extension.getBackgroundPage().rcxMain.config.minihelp = minihelp;
-	chrome.extension.getBackgroundPage().rcxMain.config.popupDelay = popupDelay;
-	chrome.extension.getBackgroundPage().rcxMain.config.disablekeys = disablekeys;
-	chrome.extension.getBackgroundPage().rcxMain.config.showOnKey = showOnKey;
-	chrome.extension.getBackgroundPage().rcxMain.config.kanjicomponents = kanjicomponents;
-	chrome.extension.getBackgroundPage().rcxMain.config.kanjiinfo = kanjiinfoarray;
-	chrome.extension.getBackgroundPage().rcxMain.config.lineEnding = lineEnding;
 	chrome.extension.getBackgroundPage().rcxMain.config.copySeparator = copySeparator;
+	chrome.extension.getBackgroundPage().rcxMain.config.popupcolor = popupcolor;
+	chrome.extension.getBackgroundPage().rcxMain.config.disablekeys = disablekeys;
+	chrome.extension.getBackgroundPage().rcxMain.config.highlight = highlight;
+	chrome.extension.getBackgroundPage().rcxMain.config.kanjicomponents = kanjicomponents;
+	chrome.extension.getBackgroundPage().rcxMain.config.kanjiinfo = kanjiInfoObject;
+	chrome.extension.getBackgroundPage().rcxMain.config.lineEnding = lineEnding;
 	chrome.extension.getBackgroundPage().rcxMain.config.maxClipCopyEntries = maxClipCopyEntries;
+	chrome.extension.getBackgroundPage().rcxMain.config.minihelp = minihelp;
+	chrome.extension.getBackgroundPage().rcxMain.config.onlyreading = onlyreading;
+	chrome.extension.getBackgroundPage().rcxMain.config.popupDelay = popupDelay;
 	chrome.extension.getBackgroundPage().rcxMain.config.popupLocation = popupLocation;
+	chrome.extension.getBackgroundPage().rcxMain.config.showOnKey = showOnKey;
+	chrome.extension.getBackgroundPage().rcxMain.config.textboxhl = textboxhl;
 
 }
 

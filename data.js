@@ -733,7 +733,7 @@ rcxDict.prototype = {
 				'<td class="k-abox-f">freq<br/>' + (entry.misc['F'] ? entry.misc['F'] : '-') + '</td>' +
 				'<td class="k-abox-s">strokes<br/>' + entry.misc['S'] + '</td>' +
 				'</tr></table>';
-			if (rcxMain.config.kanjicomponents == 'true') {
+			if (rcxMain.config.kanjicomponents) {
 				k = this.radData[bn].split('\t');
 				box += '<table class="k-bbox-tb">' +
 					'<tr><td class="k-bbox-1a">' + k[0] + '</td>' +
@@ -759,7 +759,7 @@ rcxDict.prototype = {
 			kanjiinfo = rcxMain.config.kanjiinfo;
 			for (i = 0; i*2 < this.kanjiInfoLabelList.length; i++) {
 				c = this.kanjiInfoLabelList[i*2];
-				if (kanjiinfo[i] == 'true') {
+				if (kanjiinfo[c]) {
 					s = entry.misc[c];
 					c = ' class="k-mix-td' + (j ^= 1) + '"';
 					nums += '<tr><td' + c + '>' + this.kanjiInfoLabelList[i*2 + 1] + '</td><td' + c + '>' + (s ? s : '-') + '</td></tr>';
@@ -871,7 +871,7 @@ rcxDict.prototype = {
 				t = s.replace(/\//g, '; ');
 				if (/* !this.config.wpos */false) t = t.replace(/^\([^)]+\)\s*/, '');
 				if (/* !this.config.wpop */false) t = t.replace('; (P)', '');
-				if (rcxMain.config.onlyreading == 'false') {
+				if (!rcxMain.config.onlyreading) {
 					t = '<br/><span class="w-def">' + t + '</span><br/>';
 				}
 				else {
