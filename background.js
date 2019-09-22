@@ -41,6 +41,10 @@ chrome.runtime.onMessage.addListener(
 				console.log('copyToClip');
 				rcxMain.copyToClip(sender.tab, request.entry);
 				break;
+			case 'playTTS':
+				console.log('playTTS');
+				TTS.prototype.play(request.text);
+				break;
 			default:
 				console.log(request);
 		}
@@ -63,7 +67,9 @@ var optionsList = [
 	"popupDelay",
 	"popupLocation",
 	"textboxhl",
-	"showOnKey"];
+	"ttsEnabled",
+	"showOnKey",
+];
 
 /** Get option data from cloud and initialize into memory. */
 chrome.storage.sync.get(optionsList,
@@ -111,6 +117,7 @@ function initializeConfigFromCloudOrLocalStorageOrDefaults(cloudStorage) {
 	initConfig('popupLocation', 0);
 	initConfig('showOnKey', '');
 	initConfig('textboxhl', false);
+	initConfig('ttsEnabled', false);
 
 	/**
 	 * Set kanjiInfo option values 
@@ -152,6 +159,7 @@ function saveOptionsToCloudStorage() {
 		"popupLocation": rcxMain.config.popupLocation,
 		"showOnKey": rcxMain.config.showOnKey,
 		"textboxhl": rcxMain.config.textboxhl,
+		"ttsEnabled": rcxMain.config.ttsEnabled,
 
 		// Saving Copy to Clipboard settings
 		"copySeparator": rcxMain.config.copySeparator,

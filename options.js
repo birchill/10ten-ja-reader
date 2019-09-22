@@ -20,6 +20,7 @@ function populateFormFromCloudStorage() {
 			document.optform.popupDelay.value = cloudStorage.popupDelay;
 			document.optform.popupLocation.selectedIndex = cloudStorage.popupLocation;
 			document.optform.textboxhl.checked = cloudStorage.textboxhl;
+			document.optform.ttsEnabled.checked = cloudStorage.ttsEnabled;
 
 			// Single select option groups
 			for (var i = 0; i < document.optform.copySeparator.length; ++i) {
@@ -80,6 +81,7 @@ function saveOptions() {
 	var popupLocation = document.optform.popupLocation.value;
 	var showOnKey = document.optform.showOnKey.value;
 	var textboxhl = document.optform.textboxhl.checked;
+	var ttsEnabled = document.optform.ttsEnabled.checked;
 	
 	var kanjiInfoObject = {};
 	// Setting Kanji values
@@ -100,6 +102,7 @@ function saveOptions() {
 		"popupLocation": popupLocation,
 		"showOnKey": showOnKey,
 		"textboxhl": textboxhl,
+		"ttsEnabled": ttsEnabled,
 
 		// Saving Copy to Clipboard settings
 		"copySeparator": copySeparator,
@@ -122,6 +125,7 @@ function saveOptions() {
 	chrome.extension.getBackgroundPage().rcxMain.config.popupLocation = popupLocation;
 	chrome.extension.getBackgroundPage().rcxMain.config.showOnKey = showOnKey;
 	chrome.extension.getBackgroundPage().rcxMain.config.textboxhl = textboxhl;
+	chrome.extension.getBackgroundPage().rcxMain.config.ttsEnabled = ttsEnabled;
 
 }
 

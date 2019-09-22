@@ -727,7 +727,7 @@ var rcxContent = {
 	},
 
 	highlightMatch: function (doc, rp, ro, matchLen, selEndList, tdata) {
-	    var sel = doc.defaultView.getSelection();
+		var sel = doc.defaultView.getSelection();
 	    
 		// If selEndList is empty then we're dealing with a textarea/input situation
 		if (selEndList.length === 0) { 
@@ -792,6 +792,14 @@ var rcxContent = {
 		sel.removeAllRanges();
 		sel.addRange(range);
 		tdata.selText = sel.toString();
+
+		if(window.rikaichan.config.ttsEnabled) {
+			var text = sel.toString();
+			if(text.length > 0) {
+				//console.log("Sending playTTS " + text);
+				chrome.extension.sendMessage({"type": "playTTS", "text": text});
+			}
+		}
 	},
 
 	showTitle: function(tdata) {
