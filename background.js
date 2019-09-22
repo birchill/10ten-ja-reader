@@ -103,6 +103,7 @@ function initializeConfigFromCloudOrLocalStorageOrDefaults(cloudStorage) {
 	initConfig('kanjicomponents', true);
 	initConfig('lineEnding', 'n');
 	initConfig('maxClipCopyEntries', 7);
+	initConfig('maxDictEntries', 7);
 	initConfig('minihelp', true);
 	initConfig('onlyreading', false);
 	initConfig('popupcolor', 'blue');
@@ -143,6 +144,7 @@ function saveOptionsToCloudStorage() {
 		"highlight": rcxMain.config.highlight,
 		"kanjicomponents": rcxMain.config.kanjicomponents,
 		"kanjiInfo": rcxMain.config.kanjiInfo,
+		"maxDictEntries": rcxMain.config.maxDictEntries,
 		"minihelp": rcxMain.config.minihelp,
 		"onlyreading": rcxMain.config.onlyreading,
 		"popupcolor": rcxMain.config.popupcolor,

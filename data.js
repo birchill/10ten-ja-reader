@@ -379,6 +379,13 @@ rcxDict.prototype = {
 		for (i = 0; i < word.length; ++i) {
 			u = v = word.charCodeAt(i);
 
+			// Skip Zero-width non-joiner used in Google Docs between every
+			// character.
+			if (u == 8204) {
+				p = 0;
+				continue;
+			}
+			
 			if (u <= 0x3000) break;
 
 			// full-width katakana to hiragana
@@ -437,7 +444,7 @@ rcxDict.prototype = {
 		else {
 			dict = this.wordDict;
 			index = this.wordIndex;
-			maxTrim = 7;//this.config.wmax;
+			maxTrim = rcxMain.config.maxDictEntries;
 		}
 
 		if (max != null) maxTrim = max;
@@ -500,7 +507,6 @@ rcxDict.prototype = {
 					if (ok) {
 						if (count >= maxTrim) {
 							entry.more = 1;
-							break;
 						}
 
 						have[ofs] = 1;
@@ -836,7 +842,12 @@ rcxDict.prototype = {
 			var pK = '';
 			var k;
 
-			for (i = 0; i < entry.data.length; ++i) {
+			if (!entry.index)
+				entry.index = 0;
+
+			if (entry.index != 0) b.push('<span class="small-info">... (\'j\' for more)</span><br/>');
+
+			for (i = entry.index; i < Math.min((rcxMain.config.maxDictEntries + entry.index), entry.data.length); ++i) {
 				e = entry.data[i][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
 				if (!e) continue;
 
@@ -879,7 +890,7 @@ rcxDict.prototype = {
 				}
 			}
 			b.push(t);
-			if (entry.more) b.push('...<br/>');
+			if (entry.more && (entry.index < (entry.data.length - rcxMain.config.maxDictEntries))) b.push('<span class="small-info">... (\'k\' for more)</span><br/>');
 		}
 
 		return b.join('');
