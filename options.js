@@ -1,79 +1,88 @@
-//TODO: A FEW COMMENTS WOULDN'T HURT THIS CLASS
-function getOptions() {
+/**
+ * Retrieves saved options from chrome.storage.sync and populates form
+ * elements.
+ * TODO: Perhaps using form map data, we can set these directly.
+ */
+function populateFormFromCloudStorage() {
 	chrome.storage.sync.get(optionsList,
-		function (items) {
+		function (cloudStorage) {
 
-			for (var i = 0; i < document.optform.popupcolor.length; ++i) {
-				if (document.optform.popupcolor[i].value == items['popupcolor']) {
-					document.optform.popupcolor[i].selected = true;
-					break;
-				}
-			}
+			// Simple values
+			document.optform.disablekeys.checked = cloudStorage.disablekeys;
+			document.optform.highlighttext.checked = cloudStorage.highlight;
+			document.optform.kanjicomponents.checked = cloudStorage.kanjicomponents;
+			document.optform.maxClipCopyEntries.value = cloudStorage.maxClipCopyEntries;
+			document.optform.minihelp.checked = cloudStorage.minihelp;
+			document.optform.onlyreading.checked = cloudStorage.onlyreading;
+			document.optform.popupDelay.value = cloudStorage.popupDelay;
+			document.optform.popupLocation.selectedIndex = cloudStorage.popupLocation;
+			document.optform.textboxhl.checked = cloudStorage.textboxhl;
 
-			document.optform.popupLocation.selectedIndex = items.popupLocation;
-			document.optform.highlighttext.checked = items.highlight;
-			document.optform.textboxhl.checked = items.textboxhl;
-			document.optform.onlyreading.checked = items.onlyreading;
-			document.optform.minihelp.checked = items.minihelp;
-			document.optform.disablekeys.checked = items.disablekeys;
-			document.optform.kanjicomponents.checked = items.kanjicomponents;
-			document.optform.popupDelay.value = items.popupDelay;
-
-			kanjiInfoLabelList = chrome.extension.getBackgroundPage().rcxDict.prototype.kanjiInfoLabelList;
-
-			for (i = 0; i * 2 < kanjiInfoLabelList.length; i++) {
-				// Need to get every other element in the storage, so this funky math was added.
-				// We have abbreviations and values..
-
-				document.getElementById(kanjiInfoLabelList[i * 2]).checked = items.kanjiInfo[kanjiInfoLabelList[i * 2]] //== 'true' ? true : false;
-			}
-
-			for (var i = 0; i < document.optform.lineEnding.length; ++i) {
-				if (document.optform.lineEnding[i].value === items.lineEnding) {
-					document.optform.lineEnding[i].selected = true;
-					break;
-				}
-			}
-
+			// Single select option groups
 			for (var i = 0; i < document.optform.copySeparator.length; ++i) {
-				if (document.optform.copySeparator[i].value === items.copySeparator) {
+				if (document.optform.copySeparator[i].value === cloudStorage.copySeparator) {
 					document.optform.copySeparator[i].selected = true;
 					break;
 				}
 			}
 
-			document.optform.maxClipCopyEntries.value = parseInt(items.maxClipCopyEntries);
+			for (var i = 0; i < document.optform.lineEnding.length; ++i) {
+				if (document.optform.lineEnding[i].value === cloudStorage.lineEnding) {
+					document.optform.lineEnding[i].selected = true;
+					break;
+				}
+			}
+
+			for (var i = 0; i < document.optform.popupcolor.length; ++i) {
+				if (document.optform.popupcolor[i].value == cloudStorage['popupcolor']) {
+					document.optform.popupcolor[i].selected = true;
+					break;
+				}
+			}
 
 			for (var i = 0; i < document.optform.showOnKey.length; ++i) {
-				if (document.optform.showOnKey[i].value === items.showOnKey) {
+				if (document.optform.showOnKey[i].value === cloudStorage.showOnKey) {
 					document.optform.showOnKey[i].checked = true;
 					break;
 				}
 			}
 
+			// Kanji Info check boxes created dynamically from whatever info is available.
+			var kanjiInfoLabelList = chrome.extension.getBackgroundPage().rcxDict.prototype.kanjiInfoLabelList;
+			for (var i = 0; i < kanjiInfoLabelList.length; i +=2 ) {
+				// Need to get every other element in the storage, so increment by 2.
+				// We have abbreviation and full names. We use the abbrevations as form IDs.
+				document.getElementById(kanjiInfoLabelList[i]).checked =
+						cloudStorage.kanjiInfo[kanjiInfoLabelList[i]];
+			}
+
 		});
 }
 
+/**
+ * Collects all options from form fields and updates in memory
+ * config object as well as saves to cloud storage.
+ * String values from form are converted to number/boolean if appropriate.
+ */
 function saveOptions() {
-	//Todo: Add Ordering of variables
-	var popupcolor = document.optform.popupcolor.value;
-	var highlight = document.optform.highlighttext.checked;
-	var textboxhl = document.optform.textboxhl.checked;
-	var onlyreading = document.optform.onlyreading.checked;
-	var minihelp = document.optform.minihelp.checked;
+	var copySeparator = document.optform.copySeparator.value;
 	var disablekeys = document.optform.disablekeys.checked;
+	var highlight = document.optform.highlighttext.checked;
 	var kanjicomponents = document.optform.kanjicomponents.checked;
 	var lineEnding = document.optform.lineEnding.value;
-	var copySeparator = document.optform.copySeparator.value;
 	var maxClipCopyEntries = parseInt(document.optform.maxClipCopyEntries.value);
+	var minihelp = document.optform.minihelp.checked;
+	var onlyreading = document.optform.onlyreading.checked;
+	var popupcolor = document.optform.popupcolor.value;
 	var popupDelay = getPopUpDelay();
 	var popupLocation = document.optform.popupLocation.value;
 	var showOnKey = document.optform.showOnKey.value;
+	var textboxhl = document.optform.textboxhl.checked;
+	
 	var kanjiInfoObject = {};
-
 	// Setting Kanji values
-	for (i = 0; i * 2 < kanjiInfoLabelList.length; i++) {
-		kanjiInfoObject[kanjiInfoLabelList[i * 2]] = document.getElementById(kanjiInfoLabelList[i * 2]).checked;
+	for (var i = 0; i < kanjiInfoLabelList.length; i +=2 ) {
+		kanjiInfoObject[kanjiInfoLabelList[i]] = document.getElementById(kanjiInfoLabelList[i]).checked;
 	}
 
 	chrome.storage.sync.set({
@@ -96,8 +105,8 @@ function saveOptions() {
 		"maxClipCopyEntries": maxClipCopyEntries
 	});
 
+	// TODO: Inline this above and call saveOptionsToCloudStorage.
 	chrome.extension.getBackgroundPage().rcxMain.config.copySeparator = copySeparator;
-	chrome.extension.getBackgroundPage().rcxMain.config.popupcolor = popupcolor;
 	chrome.extension.getBackgroundPage().rcxMain.config.disablekeys = disablekeys;
 	chrome.extension.getBackgroundPage().rcxMain.config.highlight = highlight;
 	chrome.extension.getBackgroundPage().rcxMain.config.kanjicomponents = kanjicomponents;
@@ -106,6 +115,7 @@ function saveOptions() {
 	chrome.extension.getBackgroundPage().rcxMain.config.maxClipCopyEntries = maxClipCopyEntries;
 	chrome.extension.getBackgroundPage().rcxMain.config.minihelp = minihelp;
 	chrome.extension.getBackgroundPage().rcxMain.config.onlyreading = onlyreading;
+	chrome.extension.getBackgroundPage().rcxMain.config.popupcolor = popupcolor;
 	chrome.extension.getBackgroundPage().rcxMain.config.popupDelay = popupDelay;
 	chrome.extension.getBackgroundPage().rcxMain.config.popupLocation = popupLocation;
 	chrome.extension.getBackgroundPage().rcxMain.config.showOnKey = showOnKey;
@@ -126,7 +136,7 @@ function getPopUpDelay() {
 	return popupDelay;
 }
 
-window.onload = getOptions;
+window.onload = populateFormFromCloudStorage;
 document.querySelector('#submit').addEventListener('click', saveOptions);
 
 
