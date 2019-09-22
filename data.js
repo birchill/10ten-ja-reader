@@ -651,8 +651,10 @@ rcxDict.prototype = {
 		b = a[1].split(' ');
 		for (i = 0; i < b.length; ++i) {
 			if (b[i].match(/^([A-Z]+)(.*)/)) {
-				if (!entry.misc[RegExp.$1]) entry.misc[RegExp.$1] = RegExp.$2;
-				else entry.misc[RegExp.$1] += ' ' + RegExp.$2;
+				if (!entry.misc[RegExp.$1])
+					entry.misc[RegExp.$1] = RegExp.$2;
+				else
+					entry.misc[RegExp.$1] += ' ' + RegExp.$2;
 				//format heisig keyword additions prettily
 				if(RegExp.$1.startsWith('L'))
 					entry.misc[RegExp.$1] = entry.misc[RegExp.$1].replace(/[:_]/g, ' ');
