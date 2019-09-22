@@ -764,7 +764,7 @@ rcxDict.prototype = {
 			nums = '';
 			j = 0;
 
-			kanjiInfo = rcxMain.config.kanjIinfo;
+			kanjiInfo = rcxMain.config.kanjiInfo;
 			for (i = 0; i*2 < this.kanjiInfoLabelList.length; i++) {
 				c = this.kanjiInfoLabelList[i*2];
 				if (kanjiInfo[c]) {

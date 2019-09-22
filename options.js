@@ -1,3 +1,6 @@
+// Alias kanjiInfoLabelList for convenience.
+var kanjiInfoLabelList = chrome.extension.getBackgroundPage().rcxDict.prototype.kanjiInfoLabelList;
+
 /**
  * Retrieves saved options from chrome.storage.sync and populates form
  * elements.
@@ -48,7 +51,6 @@ function populateFormFromCloudStorage() {
 			}
 
 			// Kanji Info check boxes created dynamically from whatever info is available.
-			var kanjiInfoLabelList = chrome.extension.getBackgroundPage().rcxDict.prototype.kanjiInfoLabelList;
 			for (var i = 0; i < kanjiInfoLabelList.length; i +=2 ) {
 				// Need to get every other element in the storage, so increment by 2.
 				// We have abbreviation and full names. We use the abbrevations as form IDs.
