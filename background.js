@@ -67,7 +67,9 @@ var optionsList = [
 	"popupDelay",
 	"popupLocation",
 	"textboxhl",
-	"showOnKey"];
+	"ttsEnabled",
+	"showOnKey",
+];
 
 /** Get option data from cloud and initialize into memory. */
 chrome.storage.sync.get(optionsList,
