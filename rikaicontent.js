@@ -793,7 +793,7 @@ var rcxContent = {
 		sel.addRange(range);
 		tdata.selText = sel.toString();
 
-		if(window.rikaichan.config.ttsEnabled == 'true') {
+		if(window.rikaichan.config.ttsEnabled) {
 			var text = sel.toString();
 			if(text.length > 0) {
 				//console.log("Sending playTTS " + text);
