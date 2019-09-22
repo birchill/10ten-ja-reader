@@ -1,4 +1,3 @@
-
 function TTS() {
 	this.last_time = new Date().valueOf();
 	this.previous_text = null;
