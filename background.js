@@ -112,22 +112,22 @@ function initializeConfigFromCloudOrLocalStorageOrDefaults(cloudStorage) {
 	initConfig('textboxhl', false);
 
 	/**
-	 * Set kanjiinfo option values 
+	 * Set kanjiInfo option values 
 	 * Check each key in case there are new types of info to be added to the 
 	 * config. TODO: Consider a solution that doesn't require this loop.
 	 */
-	rcxMain.config.kanjiinfo = {};
+	rcxMain.config.kanjiInfo = {};
 	var kanjiInfoLabelList = rcxDict.prototype.kanjiInfoLabelList;
 	for (i = 0; i < kanjiInfoLabelList.length; i+=2) {
 		var kanjiInfoKey = kanjiInfoLabelList[i];
-		if (cloudStorage.kanjiinfo[kanjiInfoKey]) {
-			rcxMain.config.kanjiinfo[kanjiInfoKey] =
-					cloudStorage.kanjiinfo[kanjiInfoKey];
+		if (cloudStorage.kanjiInfo && cloudStorage.kanjiInfo[kanjiInfoKey]) {
+			rcxMain.config.kanjiInfo[kanjiInfoKey] =
+					cloudStorage.kanjiInfo[kanjiInfoKey];
 		} else if (localStorage[kanjiInfoKey]) {
-			rcxMain.config.kanjiinfo[kanjiInfoKey] =
+			rcxMain.config.kanjiInfo[kanjiInfoKey] =
 					normalizeStringValue(localStorage[kanjiInfoKey]);
 		} else {
-			rcxMain.config.kanjiinfo[kanjiInfoKey] = true;
+			rcxMain.config.kanjiInfo[kanjiInfoKey] = true;
 		}
 	}
 }
@@ -167,7 +167,7 @@ function saveOptionsToCloudStorage() {
  */
 function normalizeStringValue(value) {
 	var maybeNumber = parseInt(value, 10);
-	if (!isNan(maybeNumber)) return maybeNumber;
+	if (!Number.isNaN(maybeNumber)) return maybeNumber;
 	if (value === 'true' || value === 'false') {
 		return value === 'true' ? true : false;
 	}

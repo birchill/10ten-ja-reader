@@ -756,10 +756,10 @@ rcxDict.prototype = {
 			nums = '';
 			j = 0;
 
-			kanjiinfo = rcxMain.config.kanjiinfo;
+			kanjiInfo = rcxMain.config.kanjIinfo;
 			for (i = 0; i*2 < this.kanjiInfoLabelList.length; i++) {
 				c = this.kanjiInfoLabelList[i*2];
-				if (kanjiinfo[c]) {
+				if (kanjiInfo[c]) {
 					s = entry.misc[c];
 					c = ' class="k-mix-td' + (j ^= 1) + '"';
 					nums += '<tr><td' + c + '>' + this.kanjiInfoLabelList[i*2 + 1] + '</td><td' + c + '>' + (s ? s : '-') + '</td></tr>';

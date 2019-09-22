@@ -4,7 +4,7 @@
  * TODO: Perhaps using form map data, we can set these directly.
  */
 function populateFormFromCloudStorage() {
-	chrome.storage.sync.get(optionsList,
+	chrome.storage.sync.get(chrome.extension.getBackgroundPage().optionsList,
 		function (cloudStorage) {
 
 			// Simple values
@@ -110,7 +110,7 @@ function saveOptions() {
 	chrome.extension.getBackgroundPage().rcxMain.config.disablekeys = disablekeys;
 	chrome.extension.getBackgroundPage().rcxMain.config.highlight = highlight;
 	chrome.extension.getBackgroundPage().rcxMain.config.kanjicomponents = kanjicomponents;
-	chrome.extension.getBackgroundPage().rcxMain.config.kanjiinfo = kanjiInfoObject;
+	chrome.extension.getBackgroundPage().rcxMain.config.kanjiInfo = kanjiInfoObject;
 	chrome.extension.getBackgroundPage().rcxMain.config.lineEnding = lineEnding;
 	chrome.extension.getBackgroundPage().rcxMain.config.maxClipCopyEntries = maxClipCopyEntries;
 	chrome.extension.getBackgroundPage().rcxMain.config.minihelp = minihelp;
