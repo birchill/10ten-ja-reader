@@ -60,7 +60,7 @@ var rcxContent = {
 			window.addEventListener('mouseup', this.onMouseUp, false);
 		}
 		window.rikaichan.config = config;
-		this.altView = parseInt(config.popupLocation);
+		this.altView = config.popupLocation;
 	},
 	
 	//Removes the listeners and stuff
@@ -106,9 +106,9 @@ var rcxContent = {
 			var css = topdoc.createElementNS('http://www.w3.org/1999/xhtml', 'link');
 			css.setAttribute('rel', 'stylesheet');
 			css.setAttribute('type', 'text/css');
-			var cssdoc = window.rikaichan.config.css;
+			var color = window.rikaichan.config.popupcolor;
 			css.setAttribute('href', chrome.extension.getURL('css/popup-' + 
-																cssdoc + '.css'));
+																color + '.css'));
 			css.setAttribute('id', 'rikaichan-css');
 			topdoc.getElementsByTagName('head')[0].appendChild(css);
 
@@ -349,7 +349,7 @@ var rcxContent = {
 		if ((ev.shiftKey) && (ev.keyCode != 16)) return;
 		if (this.keysDown[ev.keyCode]) return;
 		if (!this.isVisible()) return;
-		if (window.rikaichan.config.disablekeys == 'true' && (ev.keyCode != 16)) return;
+		if (window.rikaichan.config.disablekeys && (ev.keyCode != 16)) return;
 
 		var i;
 		var shouldPreventDefault = true;
@@ -705,8 +705,8 @@ var rcxContent = {
 		
 		rp = tdata.prevRangeNode;
 		// don't try to highlight form elements
-		if ((rp) && ((tdata.config.highlight == 'true' && !this.mDown && !('form' in tdata.prevTarget))  || 
-					(('form' in tdata.prevTarget) && tdata.config.textboxhl == 'true'))) {
+		if ((rp) && ((tdata.config.highlight && !this.mDown && !('form' in tdata.prevTarget))  || 
+					(('form' in tdata.prevTarget) && tdata.config.textboxhl))) {
 			var doc = rp.ownerDocument;
 			if (!doc) {
 				rcxContent.clearHi();

@@ -304,7 +304,7 @@ var rcxMain = {
 				this.enabled = 1;
 
 				if (mode == 1) {
-					if (rcxMain.config.minihelp == 'true')
+					if (rcxMain.config.minihelp)
 						chrome.tabs.sendMessage(tab.id, { "type": "showPopup", "text": rcxMain.miniHelp });
 					else
 						chrome.tabs.sendMessage(tab.id, { "type": "showPopup", "text": 'Rikaikun enabled!' });

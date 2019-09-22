@@ -1,9 +1,8 @@
-
 chrome.browserAction.onClicked.addListener(rcxMain.inlineToggle);
 chrome.tabs.onSelectionChanged.addListener(rcxMain.onTabSelect);
 chrome.runtime.onMessage.addListener(
-	function(request, sender, response) {
-		switch(request.type) {
+	function (request, sender, response) {
+		switch (request.type) {
 			case 'enable?':
 				console.log('enable?');
 				rcxMain.onTabSelect(sender.tab.id);
@@ -13,10 +12,10 @@ chrome.runtime.onMessage.addListener(
 				var e = rcxMain.search(request.text, request.dictOption);
 				response(e);
 				break;
-/*			case 'nextDict':
-				console.log('nextDict');
-				rcxMain.nextDict();
-				break;*/
+			/**  case 'nextDict':
+			 console.log('nextDict');
+			 rcxMain.nextDict();
+			 break;*/
 			case 'resetDict':
 				console.log('resetDict');
 				rcxMain.resetDict();
@@ -33,11 +32,10 @@ chrome.runtime.onMessage.addListener(
 				break;
 			case 'switchOnlyReading':
 				console.log('switchOnlyReading');
-				if(rcxMain.config.onlyreading == 'true')
-					rcxMain.config.onlyreading = 'false';
-				else
-					rcxMain.config.onlyreading = 'true';
-				localStorage['onlyreading'] = rcxMain.config.onlyreading;
+				rcxMain.config.onlyreading = !rcxMain.config.onlyreading;
+				chrome.storage.sync.set({
+					'onlyreading': rcxMain.config.onlyreading,
+				});
 				break;
 			case 'copyToClip':
 				console.log('copyToClip');
@@ -46,87 +44,134 @@ chrome.runtime.onMessage.addListener(
 			default:
 				console.log(request);
 		}
-	});
+	}
+);
 	
-if(initStorage("v0.9.93", true)) {
-	// v0.7
-	initStorage("popupcolor", "blue");
-	initStorage("highlight", true);
-	
-	// v0.8
-	// No changes to options
-	
-	// V0.8.5
-	initStorage("textboxhl", false);
+rcxMain.config = {};
 
-	// v0.8.6
-	initStorage("onlyreading", false);
-	// v0.8.8
-	if (localStorage['highlight'] == "yes")
-		localStorage['highlight'] = "true";
-	if (localStorage['highlight'] == "no")
-		localStorage['highlight'] = "false";
-	if (localStorage['textboxhl'] == "yes")
-		localStorage['textboxhl'] = "true";
-	if (localStorage['textboxhl'] == "no")
-		localStorage['textboxhl'] = "false";
-	if (localStorage['onlyreading'] == "yes")
-		localStorage['onlyreading'] = "true";
-	if (localStorage['onlyreading'] == "no")
-		localStorage['onlyreading'] = "false";
-	initStorage("copySeparator", "tab");
-	initStorage("maxClipCopyEntries", "7");
-	initStorage("lineEnding", "n");
-	initStorage("minihelp", "true");
-	initStorage("disablekeys", "false");
-	initStorage("kanjicomponents", "true");
+var optionsList = [
+	"copySeparator",
+	"disablekeys",
+	"highlight",
+	"kanjicomponents",
+	"kanjiInfo",
+	"lineEnding",
+	"maxClipCopyEntries",
+	"minihelp",
+	"onlyreading",
+	"popupcolor",
+	"popupDelay",
+	"popupLocation",
+	"textboxhl",
+	"showOnKey"];
 
-	for (i = 0; i*2 < rcxDict.prototype.numList.length; i++) {
-		initStorage(rcxDict.prototype.numList[i*2], "true")
+/** Get option data from cloud and initialize into memory. */
+chrome.storage.sync.get(optionsList,
+	function (items) {
+		initializeConfigFromCloudOrLocalStorageOrDefaults(items);
+
+		// Save right away incase we initialized from localStorage or defaults.
+		saveOptionsToCloudStorage();
+	})
+
+/**
+ * Initializes config with values from one of the following sources in order:
+ *    1. Cloud Storage, 2. Local Storage, and 3. Default
+ *
+ * @param {Object<string, boolean|number|string>} cloudStorage 
+ *     config values retrieved from cloud storage.
+ */
+function initializeConfigFromCloudOrLocalStorageOrDefaults(cloudStorage) {
+	/**
+	 * Initializes option `key` in `rcxMain.config` from `cloudStorage`, falling
+	 * back to `localStorage` and finally defaulting to `defaultValue`.
+	 * 
+	 * @param {string} key 
+	 * @param {boolean|number|string} defaultValue 
+	 */
+	function initConfig(key, defaultValue) {
+		var currentValue = cloudStorage[key] || normalizeStringValue(localStorage[key]);
+		if (currentValue === undefined) {
+			currentValue = defaultValue;
+		}
+		rcxMain.config[key] = currentValue;
 	}
 
-    // v0.8.92
-	initStorage("popupDelay", "150");
-	initStorage("showOnKey", "");
+	initConfig('copySeparator', 'tab');
+	initConfig('disablekeys', false);
+	initConfig('highlight', true);
+	initConfig('kanjicomponents', true);
+	initConfig('lineEnding', 'n');
+	initConfig('maxClipCopyEntries', 7);
+	initConfig('maxDictEntries', 7);
+	initConfig('minihelp', true);
+	initConfig('onlyreading', false);
+	initConfig('popupcolor', 'blue');
+	initConfig('popupDelay', 150);
+	initConfig('popupLocation', 0);
+	initConfig('showOnKey', '');
+	initConfig('textboxhl', false);
 
-	// v0.9.?? TODO(melink14): Pick a version.
-	initStorage("maxDictEntries", 7);
+	/**
+	 * Set kanjiInfo option values 
+	 * Check each key in case there are new types of info to be added to the 
+	 * config. TODO: Consider a solution that doesn't require this loop.
+	 */
+	rcxMain.config.kanjiInfo = {};
+	var kanjiInfoLabelList = rcxDict.prototype.kanjiInfoLabelList;
+	for (i = 0; i < kanjiInfoLabelList.length; i+=2) {
+		var kanjiInfoKey = kanjiInfoLabelList[i];
+		if (cloudStorage.kanjiInfo && cloudStorage.kanjiInfo[kanjiInfoKey]) {
+			rcxMain.config.kanjiInfo[kanjiInfoKey] =
+					cloudStorage.kanjiInfo[kanjiInfoKey];
+		} else if (localStorage[kanjiInfoKey]) {
+			rcxMain.config.kanjiInfo[kanjiInfoKey] =
+					normalizeStringValue(localStorage[kanjiInfoKey]);
+		} else {
+			rcxMain.config.kanjiInfo[kanjiInfoKey] = true;
+		}
+	}
 }
 
-/** 
-* Initializes the localStorage for the given key. 
-* If the given key is already initialized, nothing happens. 
-* 
-* @author Teo (GD API Guru)
-* @param key The key for which to initialize 
-* @param initialValue Initial value of localStorage on the given key 
-* @return true if a value is assigned or false if nothing happens 
-*/ 
-function initStorage(key, initialValue) {
-  var currentValue = localStorage[key];
-  if (!currentValue) {
-	localStorage[key] = initialValue;
-	return true;
-  }
-  return false;
+/**
+ * Saves options to Google Chrome Cloud storage
+ * https://developer.chrome.com/storage
+ */
+function saveOptionsToCloudStorage() {
+	chrome.storage.sync.set({
+		// Saving General options
+		"disablekeys": rcxMain.config.disablekeys,
+		"highlight": rcxMain.config.highlight,
+		"kanjicomponents": rcxMain.config.kanjicomponents,
+		"kanjiInfo": rcxMain.config.kanjiInfo,
+		"maxDictEntries": rcxMain.config.maxDictEntries,
+		"minihelp": rcxMain.config.minihelp,
+		"onlyreading": rcxMain.config.onlyreading,
+		"popupcolor": rcxMain.config.popupcolor,
+		"popupDelay": rcxMain.config.popupDelay,
+		"popupLocation": rcxMain.config.popupLocation,
+		"showOnKey": rcxMain.config.showOnKey,
+		"textboxhl": rcxMain.config.textboxhl,
+
+		// Saving Copy to Clipboard settings
+		"copySeparator": rcxMain.config.copySeparator,
+		"lineEnding": rcxMain.config.lineEnding,
+		"maxClipCopyEntries": rcxMain.config.maxClipCopyEntries
+	});
 }
 
-rcxMain.config = {};
-rcxMain.config.css = localStorage["popupcolor"];
-rcxMain.config.highlight = localStorage["highlight"];
-rcxMain.config.textboxhl = localStorage["textboxhl"];
-rcxMain.config.onlyreading = localStorage["onlyreading"];
-rcxMain.config.copySeparator = localStorage["copySeparator"];
-rcxMain.config.maxClipCopyEntries = localStorage["maxClipCopyEntries"];
-rcxMain.config.maxDictEntries = parseInt(localStorage["maxDictEntries"]);
-rcxMain.config.lineEnding = localStorage["lineEnding"];
-rcxMain.config.minihelp = localStorage["minihelp"];
-rcxMain.config.popupDelay = parseInt(localStorage["popupDelay"]);
-rcxMain.config.disablekeys = localStorage["disablekeys"];
-rcxMain.config.showOnKey = localStorage["showOnKey"];
-rcxMain.config.kanjicomponents = localStorage["kanjicomponents"];
-rcxMain.config.kanjiinfo = new Array(rcxDict.prototype.numList.length/2);
-for (i = 0; i*2 < rcxDict.prototype.numList.length; i++) {
-	rcxMain.config.kanjiinfo[i] = localStorage[rcxDict.prototype.numList[i*2]];
+/**
+ * For a given string representation `value` of a boolean, integer or string,
+ * returns the same value coerced to the proper type.
+ * 
+ * @param {string} value
+ * @returns {boolean|number|string}
+ */
+function normalizeStringValue(value) {
+	var maybeNumber = parseInt(value, 10);
+	if (!Number.isNaN(maybeNumber)) return maybeNumber;
+	if (value === 'true' || value === 'false') {
+		return value === 'true' ? true : false;
+	}
+	return value;
 }
-
