@@ -1,16 +1,23 @@
+/**
+ * Helper class for Japanese Text To Speech.
+ */
 function TTS() {
-	this.last_time = new Date().valueOf();
-	this.previous_text = null;
+	this.lastTime = new Date().valueOf();
+	this.previousText = null;
 }
 
 TTS.prototype = {
-	play: function(text) {
-		let now = new Date().valueOf();
-		let limit = this.last_time + 1000; 
-		if(text != this.previous_text || now > limit) {
+	/**
+	 * 
+	 * @param {string} text 
+	 */
+	play(text) {
+		const now = new Date().valueOf();
+		const limit = this.lastTime + 1000; 
+		if(text != this.previousText || now > limit) {
 			console.log("tts.speak(" + text + ")");
 			window.speechSynthesis.cancel();
-			let u = new SpeechSynthesisUtterance();
+			const u = new SpeechSynthesisUtterance();
 			u.text = text;
 			u.lang = 'ja-JP';
 			window.speechSynthesis.speak(u);
