@@ -128,7 +128,7 @@ function initializeConfigFromCloudOrLocalStorageOrDefaults(cloudStorage) {
 	var kanjiInfoLabelList = rcxDict.prototype.kanjiInfoLabelList;
 	for (i = 0; i < kanjiInfoLabelList.length; i+=2) {
 		var kanjiInfoKey = kanjiInfoLabelList[i];
-		if (cloudStorage.kanjiInfo && cloudStorage.kanjiInfo[kanjiInfoKey]) {
+		if (cloudStorage.kanjiInfo && cloudStorage.kanjiInfo[kanjiInfoKey] !== undefined) {
 			rcxMain.config.kanjiInfo[kanjiInfoKey] =
 					cloudStorage.kanjiInfo[kanjiInfoKey];
 		} else if (localStorage[kanjiInfoKey]) {
