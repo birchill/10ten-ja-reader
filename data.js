@@ -547,7 +547,7 @@ rcxDict.prototype = {
 		while (text.length > 0) {
 			e = this.wordSearch(text, false, 1);
 			if (e != null) {
-				if (o.data.length >= 7/* this.config.wmax */) {
+				if (o.data.length >= rcxMain.config.maxDictEntries) {
 					o.more = 1;
 					break;
 				}
@@ -608,7 +608,7 @@ rcxDict.prototype = {
 		}
 		else {
 			e.names = 0;
-			max = 7;//this.config.wmax;
+			max = rcxMain.config.maxDictEntries;
 			d = this.wordDict;
 		}
 
