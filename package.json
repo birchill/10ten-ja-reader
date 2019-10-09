@@ -33,7 +33,7 @@
   "homepage": "https://github.com/birtles/rikaichamp#readme",
   "devDependencies": {
     "@types/chai": "^4.2.3",
-    "@types/jest": "^24.0.0",
+    "@types/jest": "^24.0.18",
     "@types/mocha": "^5.2.5",
     "byline": "^5.0.0",
     "chai": "^4.2.0",
