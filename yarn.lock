@@ -153,6 +153,14 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@birchill/hikibiki-sync@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-sync/-/hikibiki-sync-1.0.1.tgz#afe5366eeeb66d361d799c8650577c761a2b481e"
+  integrity sha512-dEnSia+iFmLYx3iIb3qJBk1T0rOtoZbijkdIz8SdrkiIJiUo897w1auijncmLJogQemYyrTRSpgFVJObSEzHvA==
+  dependencies:
+    deep-equal "^1.1.0"
+    dexie "^3.0.0-alpha.8"
+
 "@bugsnag/browser@^6.4.1":
   version "6.4.1"
   resolved "https://registry.yarnpkg.com/@bugsnag/browser/-/browser-6.4.1.tgz#6e959e687a6cb722c994336be69546ff721bf9db"
@@ -2977,7 +2985,7 @@ deep-eql@^3.0.1:
   dependencies:
     type-detect "^4.0.0"
 
-deep-equal@^1.0.0:
+deep-equal@^1.0.0, deep-equal@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.1.0.tgz#3103cdf8ab6d32cf4a8df7865458f2b8d33f3745"
   integrity sha512-ZbfWJq/wN1Z273o7mUSjILYqehAktR2NVoSrOukDkU9kg2v/Uv89yU4Cvz8seJeAmtN5oqiefKq8FPuXOboqLw==
@@ -3123,6 +3131,11 @@ detect-newline@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/detect-newline/-/detect-newline-2.1.0.tgz#f41f1c10be4b00e87b5f13da680759f2c5bfd3e2"
   integrity sha1-9B8cEL5LAOh7XxPaaAdZ8sW/0+I=
+
+dexie@^3.0.0-alpha.8:
+  version "3.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.0.0-alpha.8.tgz#f4cd733c0c120816a73a6eac2157131af3bc7dd3"
+  integrity sha512-fujc1ZETUyJ7b0w7JzG4PK1wQca58BQbR7Gb3xaf+fWGrLm/uxfmB/k/FpHoGHHxCh3+v5lvB3XQG3ANoownNg==
 
 di@^0.0.1:
   version "0.0.1"

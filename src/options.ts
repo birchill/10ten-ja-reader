@@ -1,17 +1,17 @@
 import '../html/options.html.src';
 
-import Config from './config';
+import { RikaiBackground } from './background';
 import { Command, CommandParams, isValidKey } from './commands';
 import { CopyKeys, CopyNextKeyStrings } from './copy-keys';
 import { translateDoc } from './l10n';
 
 declare global {
   interface Window {
-    rcxMain: { config: Config };
+    rcBackground: RikaiBackground;
   }
 }
 
-const config = browser.extension.getBackgroundPage().rcxMain.config;
+const config = browser.extension.getBackgroundPage().rcBackground.config;
 
 const canConfigureCommands =
   typeof (browser.commands as any).update === 'function' &&

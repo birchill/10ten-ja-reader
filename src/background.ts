@@ -49,134 +49,17 @@ import '../manifest.json.src';
 import '../html/background.html.src';
 
 import bugsnag from '@bugsnag/js';
+import { DatabaseState, KanjiDatabase } from '@birchill/hikibiki-sync';
 
 import Config from './config';
 import Dictionary from './data';
 
+// Minimum amount of time to wait before checking for database updates.
+const UPDATE_THRESHOLD_MS = 12 * 60 * 60 * 1000;
+
 declare global {
   interface Window {
-    rcxMain: { config: Config };
-  }
-
-  // Recent versions of Firefox use "menus" but in order to support
-  // Chrome and we use "contextMenus".
-  namespace browser.contextMenus {
-    type ContextType =
-      | 'all'
-      | 'audio'
-      | 'bookmarks'
-      | 'browser_action'
-      | 'editable'
-      | 'frame'
-      | 'image'
-      | 'link'
-      | 'page'
-      | 'page_action'
-      | 'password'
-      | 'selection'
-      | 'tab'
-      | 'tools_menu'
-      | 'video';
-
-    type ItemType = 'normal' | 'checkbox' | 'radio' | 'separator';
-
-    type OnClickData = {
-      bookmarkId?: string;
-      checked?: boolean;
-      editable: boolean;
-      frameId?: number;
-      frameUrl?: string;
-      linkText?: string;
-      linkUrl?: string;
-      mediaType?: string;
-      menuItemId: number | string;
-      modifiers: string[];
-      pageUrl?: string;
-      parentMenuItemId?: number | string;
-      selectionText?: string;
-      srcUrl?: string;
-      targetElementId?: number;
-      wasChecked?: boolean;
-    };
-
-    type Tab = {
-      active: boolean;
-      audible?: boolean;
-      autoDiscardable?: boolean;
-      cookieStoreId?: string;
-      discarded?: boolean;
-      favIconUrl?: string;
-      height?: number;
-      hidden: boolean;
-      highlighted: boolean;
-      id?: number;
-      incognito: boolean;
-      index: number;
-      isArticle: boolean;
-      isInReaderMode: boolean;
-      lastAccessed: number;
-      mutedInfo?: MutedInfo;
-      openerTabId?: number;
-      pinned: boolean;
-      selected: boolean;
-      sessionId?: string;
-      status?: string;
-      title?: string;
-      url?: string;
-      width?: number;
-      windowId: number;
-    };
-
-    type MutedInfoReason = 'capture' | 'extension' | 'user';
-    type MutedInfo = {
-      muted: boolean;
-      extensionId?: string;
-      reason: MutedInfoReason;
-    };
-
-    function create(
-      createProperties: {
-        checked?: boolean;
-        command?:
-          | '_execute_browser_action'
-          | '_execute_page_action'
-          | '_execute_sidebar_action';
-        contexts?: ContextType[];
-        documentUrlPatterns?: string[];
-        enabled?: boolean;
-        icons?: object;
-        id?: string;
-        onclick?: (info: OnClickData, tab: Tab) => void;
-        parentId?: number | string;
-        targetUrlPatterns?: string[];
-        title?: string;
-        type?: ItemType;
-        visible?: boolean;
-      },
-      callback?: () => void
-    ): number | string;
-
-    function remove(menuItemId: number | string): Promise<void>;
-
-    function update(
-      id: number | string,
-      updateProperties: {
-        checked?: boolean;
-        command?:
-          | '_execute_browser_action'
-          | '_execute_page_action'
-          | '_execute_sidebar_action';
-        contexts?: ContextType[];
-        documentUrlPatterns?: string[];
-        enabled?: boolean;
-        onclick?: (info: OnClickData, tab: Tab) => void;
-        parentId?: number | string;
-        targetUrlPatterns?: string[];
-        title?: string;
-        type?: ItemType;
-        visible?: boolean;
-      }
-    ): Promise<void>;
+    rcBackground: RikaiBackground;
   }
 }
 
@@ -194,9 +77,10 @@ browser.management.getSelf().then(info => {
   (bugsnagClient.app as any).version = info.version;
 });
 
-class App {
+export class RikaiBackground {
   _config: Config;
   _dict?: Dictionary;
+  private kanjiDb: KanjiDatabase;
 
   _dictCount: number = 3;
   _enabled: boolean = false;
@@ -204,6 +88,7 @@ class App {
 
   constructor() {
     this._config = new Config();
+    this.kanjiDb = new KanjiDatabase();
 
     this._config.addChangeListener(changes => {
       if (changes.hasOwnProperty('contextMenuEnable')) {
@@ -397,6 +282,39 @@ class App {
     }
 
     bugsnagClient.leaveBreadcrumb('Loaded dictionary successfully');
+  }
+
+  async maybeDownloadData() {
+    await this.kanjiDb.ready;
+
+    // Even if the database is not empty, check if it needs an update.
+    if (this.kanjiDb.state === DatabaseState.Ok) {
+      let lastUpdateKanjiDb: number | null = null;
+      try {
+        const getResult = await browser.storage.local.get('lastUpdateKanjiDb');
+        lastUpdateKanjiDb =
+          typeof getResult.lastUpdateKanjiDb === 'number'
+            ? getResult.lastUpdateKanjiDb
+            : null;
+      } catch (e) {
+        // Ignore
+      }
+
+      // If we updated within the minimum window then we're done.
+      if (
+        lastUpdateKanjiDb &&
+        Date.now() - lastUpdateKanjiDb < UPDATE_THRESHOLD_MS
+      ) {
+        return;
+      }
+    }
+
+    // TODO: Set up things to watch how this goes and update buttons etc.
+    try {
+      await this.kanjiDb.update();
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   onTabSelect(tabId: number) {
@@ -688,7 +606,11 @@ class App {
   }
 }
 
-window.rcxMain = new App();
+window.rcBackground = new RikaiBackground();
+
+browser.runtime.onInstalled.addListener(() => {
+  window.rcBackground.maybeDownloadData();
+});
 
 window.addEventListener('message', event => {
   if (event.origin !== window.location.origin) {
@@ -712,7 +634,7 @@ window.addEventListener('message', event => {
         typeof event.data.keys === 'object',
         '`keys` should be an object'
       );
-      window.rcxMain.config.updateKeys(event.data.keys);
+      window.rcBackground.config.updateKeys(event.data.keys);
       break;
 
     case 'reportWarning':
