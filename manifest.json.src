@@ -6,7 +6,8 @@
   /*#if supports_applications_field*/
   "applications": {
     "gecko": {
-      "id": "{59812185-ea92-4cca-8ab7-cfcacee81281}"
+      "id": "{59812185-ea92-4cca-8ab7-cfcacee81281}",
+      "strict_min_version": "65.0"
     }
   },
   /*#endif*/
