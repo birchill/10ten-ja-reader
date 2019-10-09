@@ -27,7 +27,13 @@
     "128": "images/rikaichamp-blue-128.png"
   },
   /*#endif*/
-  "permissions": ["clipboardWrite", "contextMenus", "tabs", "storage"],
+  "permissions": [
+    "clipboardWrite",
+    "contextMenus",
+    "storage",
+    "tabs",
+    "unlimitedStorage"
+  ],
   "background": {
     "page": "background.html"
   },
