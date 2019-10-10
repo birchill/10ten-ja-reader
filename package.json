@@ -3,7 +3,6 @@
   "version": "0.0.33",
   "description": "Translate Japanese by hovering over words.",
   "scripts": {
-    "prepare": "webpack",
     "build": "webpack",
     "build:chrome": "webpack --env.target=chrome",
     "prepack": "web-ext build --overwrite-dest",
