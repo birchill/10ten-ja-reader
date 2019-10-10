@@ -299,12 +299,16 @@ export class RikaiBackground {
       } catch (e) {
         // Ignore
       }
+      bugsnagClient.leaveBreadcrumb(
+        `Got last update time of ${lastUpdateKanjiDb}`
+      );
 
       // If we updated within the minimum window then we're done.
       if (
         lastUpdateKanjiDb &&
         Date.now() - lastUpdateKanjiDb < UPDATE_THRESHOLD_MS
       ) {
+        bugsnagClient.leaveBreadcrumb('Downloaded data is up-to-date');
         return;
       }
     }
@@ -312,7 +316,11 @@ export class RikaiBackground {
     // TODO: Set up things to watch how this goes and update buttons etc.
     try {
       await this.kanjiDb.update();
+      bugsnagClient.leaveBreadcrumb('Successfully updated kanji database');
     } catch (e) {
+      bugsnagClient.notify(e || '(Error updating kanji database)', {
+        severity: 'error',
+      });
       console.log(e);
     }
   }

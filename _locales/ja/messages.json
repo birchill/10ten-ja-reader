@@ -7,9 +7,33 @@
     "message": "Rikaichampオン・オフを切り替える",
     "description": "Explanation of toolbar button to turn Rikaichamp on or off"
   },
+  "command_toggle_enabled": {
+    "message": "Rikaichamp オン",
+    "description": "Tooltip for toolbar button when enabled."
+  },
   "command_toggle_disabled": {
     "message": "Rikaichamp オフ",
     "description": "Tooltip for toolbar button when disabled."
+  },
+  "command_toggle_loading": {
+    "message": "Rikaichamp ロード中...",
+    "description": "Tooltip for toolbar button when loading."
+  },
+  "command_toggle_checking": {
+    "message": "辞書データの更新を確認中...",
+    "description": "Tooltip for toolbar button when checking for updates."
+  },
+  "command_toggle_downloading": {
+    "message": "辞書データを読み込み中...",
+    "description": "Tooltip for toolbar button when downloading updates."
+  },
+  "command_toggle_updating": {
+    "message": "辞書データを適用中...",
+    "description": "Tooltip for toolbar button when applying updates."
+  },
+  "command_toggle_update_error": {
+    "message": "辞書データの更新を失敗しました",
+    "description": "Tooltip for toolbar button when we failed to update."
   },
   "menu_enable_extension": {
     "message": "Rikaichampを有効にする",

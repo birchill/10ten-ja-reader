@@ -7,9 +7,33 @@
     "message": "Toggle Rikaichamp on/off",
     "description": "Tooltip for toolbar button to turn Rikaichamp on or off"
   },
+  "command_toggle_enabled": {
+    "message": "Rikaichamp enabled",
+    "description": "Tooltip for toolbar button when enabled."
+  },
   "command_toggle_disabled": {
     "message": "Rikaichamp disabled",
     "description": "Tooltip for toolbar button when disabled."
+  },
+  "command_toggle_loading": {
+    "message": "Rikaichamp loading...",
+    "description": "Tooltip for toolbar button when loading."
+  },
+  "command_toggle_checking": {
+    "message": "Checking updated dictionary data...",
+    "description": "Tooltip for toolbar button when checking for updates."
+  },
+  "command_toggle_downloading": {
+    "message": "Downloading updated dictionary data...",
+    "description": "Tooltip for toolbar button when downloading updates."
+  },
+  "command_toggle_updating": {
+    "message": "Applying updated dictionary data...",
+    "description": "Tooltip for toolbar button when applying updates."
+  },
+  "command_toggle_update_error": {
+    "message": "Failed to update dictionary data",
+    "description": "Tooltip for toolbar button when we failed to update."
   },
   "menu_enable_extension": {
     "message": "Enable Rikaichamp",
