@@ -1,7 +1,7 @@
-import { DatabaseState, UpdateState } from '@birchill/hikibiki-sync';
+import { UpdateState } from '@birchill/hikibiki-sync';
 
 // We will eventually drop this once we move everything to IDB
-const enum FlatFileDatabaseState {
+export const enum FlatFileDatabaseState {
   Ok,
   Loading,
   Error,
@@ -11,10 +11,7 @@ interface BrowserActionState {
   popupStyle: string;
   enabled: boolean;
   flatFileDbState: FlatFileDatabaseState;
-  kanjiDb: {
-    dbState: DatabaseState;
-    updateState: UpdateState;
-  };
+  kanjiDb: { updateState: UpdateState };
 }
 
 export function updateBrowserAction({
@@ -24,7 +21,7 @@ export function updateBrowserAction({
   kanjiDb,
 }: BrowserActionState) {
   let iconFilename = 'disabled';
-  let titleStringId = 'command_toggle_disbled';
+  let titleStringId = 'command_toggle_disabled';
 
   // First choose the base icon type / text
   if (enabled) {
@@ -56,7 +53,8 @@ export function updateBrowserAction({
     case 'downloading':
       // We only have progress variants for the Ok, disabled, and loading styles.
       if ([popupStyle, 'disabled', 'loading'].includes(iconFilename)) {
-        iconFilename += '-' + Math.round(kanjiDb.updateState.progress * 100);
+        iconFilename +=
+          '-' + Math.round(kanjiDb.updateState.progress * 10) * 10;
       }
       titleStringId = 'command_toggle_downloading';
       break;
@@ -94,11 +92,10 @@ export function updateBrowserAction({
 
   // Add a warning overlay and update the string if there was an error
   if (kanjiDb.updateState.state === 'error') {
-    browser.browserAction.setBadgeText('!');
-    browser.browserAction.setBadgeTextColor('black');
-    browser.browserAction.setBadgeBackgroundColor('yellow');
+    browser.browserAction.setBadgeText({ text: '!' });
+    browser.browserAction.setBadgeBackgroundColor({ color: 'yellow' });
     titleStringId = 'command_toggle_error';
   } else {
-    browser.browserAction.setBadgeText('');
+    browser.browserAction.setBadgeText({ text: '' });
   }
 }

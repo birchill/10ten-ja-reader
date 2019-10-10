@@ -51,6 +51,7 @@ import '../html/background.html.src';
 import bugsnag from '@bugsnag/js';
 import { DatabaseState, KanjiDatabase } from '@birchill/hikibiki-sync';
 
+import { updateBrowserAction, FlatFileDatabaseState } from './browser-action';
 import Config from './config';
 import Dictionary from './data';
 
@@ -81,6 +82,8 @@ export class RikaiBackground {
   _config: Config;
   _dict?: Dictionary;
   private kanjiDb: KanjiDatabase;
+  // TODO: This is only temporary until move the other databases to IDB
+  private flatFileDbState: FlatFileDatabaseState = FlatFileDatabaseState.Ok;
 
   _dictCount: number = 3;
   _enabled: boolean = false;
@@ -89,6 +92,15 @@ export class RikaiBackground {
   constructor() {
     this._config = new Config();
     this.kanjiDb = new KanjiDatabase();
+
+    this.kanjiDb.onChange = () => {
+      updateBrowserAction({
+        popupStyle: this._config.popupStyle,
+        enabled: this._enabled,
+        flatFileDbState: this.flatFileDbState,
+        kanjiDb: this.kanjiDb,
+      });
+    };
 
     this._config.addChangeListener(changes => {
       if (changes.hasOwnProperty('contextMenuEnable')) {
@@ -101,20 +113,12 @@ export class RikaiBackground {
 
       if (this._enabled && changes.hasOwnProperty('popupStyle')) {
         const popupStyle = (changes as any).popupStyle.newValue;
-        browser.browserAction
-          .setIcon({
-            path: `images/rikaichamp-${popupStyle}.svg`,
-          })
-          .catch(() => {
-            // Assume we're on Chrome and it still can't handle SVGs
-            browser.browserAction.setIcon({
-              path: {
-                16: `images/rikaichamp-${popupStyle}-16.png`,
-                32: `images/rikaichamp-${popupStyle}-32.png`,
-                48: `images/rikaichamp-${popupStyle}-48.png`,
-              },
-            });
-          });
+        updateBrowserAction({
+          popupStyle,
+          enabled: true,
+          flatFileDbState: this.flatFileDbState,
+          kanjiDb: this.kanjiDb,
+        });
       }
 
       if (
@@ -273,13 +277,16 @@ export class RikaiBackground {
     }
 
     try {
+      this.flatFileDbState = FlatFileDatabaseState.Loading;
       await this._dict.loaded;
     } catch (e) {
+      this.flatFileDbState = FlatFileDatabaseState.Error;
       // If we fail loading the dictionary, make sure to reset it so we can try
       // again!
       this._dict = undefined;
       throw e;
     }
+    this.flatFileDbState = FlatFileDatabaseState.Ok;
 
     bugsnagClient.leaveBreadcrumb('Loaded dictionary successfully');
   }
@@ -313,9 +320,9 @@ export class RikaiBackground {
       }
     }
 
-    // TODO: Set up things to watch how this goes and update buttons etc.
     try {
       await this.kanjiDb.update();
+      // TODO: Update the last updated time here
       bugsnagClient.leaveBreadcrumb('Successfully updated kanji database');
     } catch (e) {
       bugsnagClient.notify(e || '(Error updating kanji database)', {
@@ -346,17 +353,19 @@ export class RikaiBackground {
   async enableTab(tab: browser.tabs.Tab) {
     console.assert(typeof tab.id === 'number', `Unexpected tab ID: ${tab.id}`);
 
-    browser.browserAction.setTitle({ title: 'Rikaichamp loading...' });
-    browser.browserAction
-      .setIcon({ path: 'images/rikaichamp-loading.svg' })
-      .catch(() => {
-        // Chrome can't handle SVGs but that also means it can't handle
-        // animated icons without major hackery involving canvas.
-        // Just leave the disabled icon in place until we finish loading.
-      });
+    updateBrowserAction({
+      popupStyle: this._config.popupStyle,
+      enabled: true,
+      flatFileDbState: FlatFileDatabaseState.Loading,
+      kanjiDb: this.kanjiDb,
+    });
+
     if (this._menuId) {
       browser.contextMenus.update(this._menuId, { checked: true });
     }
+
+    // TODO: Try updating the database here, once we correctly skip when it's
+    // recent.
 
     try {
       await Promise.all([this.loadDictionary(), this._config.ready]);
@@ -374,40 +383,21 @@ export class RikaiBackground {
       this._enabled = true;
       browser.storage.local.set({ enabled: true });
 
-      browser.browserAction.setTitle({ title: 'Rikaichamp enabled' });
-      browser.browserAction
-        .setIcon({
-          path: `images/rikaichamp-${this._config.popupStyle}.svg`,
-        })
-        .catch(() => {
-          // Assume we're on Chrome and it still can't handle SVGs
-          browser.browserAction.setIcon({
-            path: {
-              16: `images/rikaichamp-${this._config.popupStyle}-16.png`,
-              32: `images/rikaichamp-${this._config.popupStyle}-32.png`,
-              48: `images/rikaichamp-${this._config.popupStyle}-48.png`,
-            },
-          });
-        });
+      updateBrowserAction({
+        popupStyle: this._config.popupStyle,
+        enabled: true,
+        flatFileDbState: this.flatFileDbState,
+        kanjiDb: this.kanjiDb,
+      });
     } catch (e) {
       bugsnagClient.notify(e || '(No error)', { severity: 'error' });
 
-      browser.browserAction.setTitle({
-        title: browser.i18n.getMessage('error_loading_dictionary'),
+      updateBrowserAction({
+        popupStyle: this._config.popupStyle,
+        enabled: true,
+        flatFileDbState: this.flatFileDbState,
+        kanjiDb: this.kanjiDb,
       });
-      browser.browserAction
-        .setIcon({
-          path: 'images/rikaichamp-error.svg',
-        })
-        .catch(() => {
-          browser.browserAction.setIcon({
-            path: {
-              16: 'images/rikaichamp-error-16.png',
-              32: 'images/rikaichamp-error-32.png',
-              48: 'images/rikaichamp-error-48.png',
-            },
-          });
-        });
 
       // Reset internal state so we can try again
       this._dict = undefined;
