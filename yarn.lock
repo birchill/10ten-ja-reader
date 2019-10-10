@@ -160,23 +160,23 @@
   dependencies:
     dexie "^3.0.0-alpha.8"
 
-"@bugsnag/browser@^6.4.1":
-  version "6.4.1"
-  resolved "https://registry.yarnpkg.com/@bugsnag/browser/-/browser-6.4.1.tgz#6e959e687a6cb722c994336be69546ff721bf9db"
-  integrity sha512-dpNrD0ghigSh21mbR7GlfFrLJdtbpgmCWnNSHhSR1AOqsdl82ZGitsb6tPwmTTLatCFrFiptLkGjKBhkGLI3DA==
+"@bugsnag/browser@^6.4.2":
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/@bugsnag/browser/-/browser-6.4.2.tgz#b7c44178ec8fdb2eb45e7dfd6c26c251623d8999"
+  integrity sha512-Tfw6uAls5JqrfVjv27w2fgj/I7OlI6P9YDfRaM1Fmb/etaIdxBuyl4q3nl1qYKmLWCO12tq8oNZjCUZGYsh/Dg==
 
-"@bugsnag/js@^6.4.1":
-  version "6.4.1"
-  resolved "https://registry.yarnpkg.com/@bugsnag/js/-/js-6.4.1.tgz#ae5eb64cbef334228114b5c0e888f97c789cd02b"
-  integrity sha512-1JME0OOkVup35YHJ8MHDOwN6lK+7ftwSld0oWkehLMRLjteWhoSg57XqMYsbSFK0IAbOrWdlTiL6ceU/lNeu6A==
+"@bugsnag/js@^6.4.2":
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/@bugsnag/js/-/js-6.4.2.tgz#e636ba292d1dd93b214a9a79f8b64c16fd18dd1b"
+  integrity sha512-Gq7iVaQako88zJ32UjgExriZlbztdiehRyKvJsNadg4x8UQnqbtj4/6bWKunsXDfLa6L8kfIg/voQpaiK+RVmA==
   dependencies:
-    "@bugsnag/browser" "^6.4.1"
-    "@bugsnag/node" "^6.4.1"
+    "@bugsnag/browser" "^6.4.2"
+    "@bugsnag/node" "^6.4.2"
 
-"@bugsnag/node@^6.4.1":
-  version "6.4.1"
-  resolved "https://registry.yarnpkg.com/@bugsnag/node/-/node-6.4.1.tgz#8771c04c7bf4a07da255d48e9755c07013a88ca4"
-  integrity sha512-ncVPJtg16hp4kMsDwbqGRRCX3wUwjyPfoiCx73qLDmuuthFYBKq7qLZCHjWSQ5/6rm/8ahF6TFa4JEnaZXb3qQ==
+"@bugsnag/node@^6.4.2":
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/@bugsnag/node/-/node-6.4.2.tgz#0ca3b155066f213d4bb7d331f0bdcc09ee2b275c"
+  integrity sha512-Z2IU8+edZQbZGRtyhqvObSWiYLbP9xC/agFLepGEDCipVapRfO+8isDwFGU1autb693wz71m3jBewV+2Vn9nVg==
   dependencies:
     byline "^5.0.0"
     error-stack-parser "^2.0.2"
@@ -10676,10 +10676,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^3.6.3:
-  version "3.6.3"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.6.3.tgz#fea942fabb20f7e1ca7164ff626f1a9f3f70b4da"
-  integrity sha512-N7bceJL1CtRQ2RiG0AQME13ksR7DiuQh/QehubYcghzv20tnh+MQnQIuJddTmsbqYj+dztchykemz0zFzlvdQw==
+typescript@^3.6.4:
+  version "3.6.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.6.4.tgz#b18752bb3792bc1a0281335f7f6ebf1bbfc5b91d"
+  integrity sha512-unoCll1+l+YK4i4F8f22TaNVPRHcD9PA3yCuZ8g5e0qGqlVlJ/8FSateOLLSagn+Yg5+ZwuPkL8LFUc0Jcvksg==
 
 uglify-js@^3.1.4:
   version "3.6.1"

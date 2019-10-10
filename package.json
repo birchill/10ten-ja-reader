@@ -58,10 +58,10 @@
   },
   "dependencies": {
     "@birchill/hikibiki-sync": "^1.0.2",
-    "@bugsnag/js": "^6.4.1",
+    "@bugsnag/js": "^6.4.2",
     "husky": "^3.0.8",
     "lint-staged": "^9.4.2",
-    "typescript": "^3.6.3",
+    "typescript": "^3.6.4",
     "web-ext": "^3.2.0"
   },
   "webExt": {
