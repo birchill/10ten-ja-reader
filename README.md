@@ -19,26 +19,26 @@ Twitter: [@rikaichamp](https://twitter.com/rikaichamp)
 
 ```
 git clone https://github.com/birtles/rikaichamp.git
-npm install
+yarn install
 ```
 
 The install step above will build the add-on and put the output in
 `dist-firefox`. To build again you can use:
 
 ```
-npm run build
+yarn build
 ```
 
 Or to build the Chrome version:
 
 ```
-npm run build:chrome
+yarn build:chrome
 ```
 
 Or to build and package:
 
 ```
-npm run prepack
+yarn prepack
 ```
 
 ## Running
@@ -46,29 +46,29 @@ npm run prepack
 For manual testing you can use:
 
 ```
-npm start
+yarn start
 ```
 
 To use a specific version of Firefox (e.g. Nightly):
 
 ```
-npm start -- --firefox nightly
+yarn start --firefox nightly
 ```
 
 ## Testing
 
 ```
-npm test
+yarn test
 ```
 
 Unit tests only:
 
 ```
-npm run test:unit
+yarn test:unit
 ```
 
 Browser-based tests only:
 
 ```
-npm run test:browser
+yarn test:browser
 ```
