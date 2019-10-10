@@ -153,12 +153,11 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@birchill/hikibiki-sync@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-sync/-/hikibiki-sync-1.0.1.tgz#afe5366eeeb66d361d799c8650577c761a2b481e"
-  integrity sha512-dEnSia+iFmLYx3iIb3qJBk1T0rOtoZbijkdIz8SdrkiIJiUo897w1auijncmLJogQemYyrTRSpgFVJObSEzHvA==
+"@birchill/hikibiki-sync@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-sync/-/hikibiki-sync-1.0.2.tgz#b143d472f654ae9d555c36df45848e829cec908c"
+  integrity sha512-dL9WypLC9GMDHYGDabQe8a4AFPp9FqkXb7wsOdAtPFMksf/Ft2BactKCABFvwjuoH29U54I2MM77LkxNneIhgA==
   dependencies:
-    deep-equal "^1.1.0"
     dexie "^3.0.0-alpha.8"
 
 "@bugsnag/browser@^6.4.1":
@@ -2985,7 +2984,7 @@ deep-eql@^3.0.1:
   dependencies:
     type-detect "^4.0.0"
 
-deep-equal@^1.0.0, deep-equal@^1.1.0:
+deep-equal@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.1.0.tgz#3103cdf8ab6d32cf4a8df7865458f2b8d33f3745"
   integrity sha512-ZbfWJq/wN1Z273o7mUSjILYqehAktR2NVoSrOukDkU9kg2v/Uv89yU4Cvz8seJeAmtN5oqiefKq8FPuXOboqLw==
