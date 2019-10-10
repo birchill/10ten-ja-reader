@@ -322,7 +322,9 @@ export class RikaiBackground {
 
     try {
       await this.kanjiDb.update();
-      // TODO: Update the last updated time here
+      await browser.storage.local.set({
+        lastUpdateKanjiDb: new Date().getTime(),
+      });
       bugsnagClient.leaveBreadcrumb('Successfully updated kanji database');
     } catch (e) {
       bugsnagClient.notify(e || '(Error updating kanji database)', {
@@ -364,11 +366,13 @@ export class RikaiBackground {
       browser.contextMenus.update(this._menuId, { checked: true });
     }
 
-    // TODO: Try updating the database here, once we correctly skip when it's
-    // recent.
-
     try {
       await Promise.all([this.loadDictionary(), this._config.ready]);
+
+      // Trigger download but don't wait on it. We don't block on this because
+      // we currently only download the kanji data and we don't need it to be
+      // downloaded before we can do something useful.
+      this.maybeDownloadData();
 
       // Send message to current tab to add listeners and create stuff
       browser.tabs
