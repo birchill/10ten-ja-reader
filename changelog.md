@@ -1,6 +1,6 @@
-## 0.0.33 (Not yet released)
+## 0.1.0 (Not yet released)
 
-* Nothing yet
+* Make kanji dictionary always updated and not loaded into memory.
 
 ## 0.0.32 (2019-07-10)
 
