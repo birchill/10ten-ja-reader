@@ -153,12 +153,12 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@birchill/hikibiki-sync@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-sync/-/hikibiki-sync-1.0.3.tgz#cb253732bb402b2ac40e02387442320222e59cd1"
-  integrity sha512-Cdio4sQwkNw00hREZuzDkbcGrt1VCGHezCuPmHIxgJPScVBt4GZZ2IGDCjL1w/e0YtgCO7KXx7zMxGR2JoU5Ww==
+"@birchill/hikibiki-sync@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-sync/-/hikibiki-sync-1.0.4.tgz#a55ed9c31dc998ed63a460f338b6e4e9d988a94b"
+  integrity sha512-tvGRJPbynT93ql7wLZlSHzWnXYV+pvCzm0nVWo/EJp5ucpW8NxmvRSnOAwaSByl8JOltwKr0XXtA1KX/oPdZPQ==
   dependencies:
-    dexie "^3.0.0-alpha.8"
+    dexie "^3.0.0-beta.1"
 
 "@bugsnag/browser@^6.4.2":
   version "6.4.2"
@@ -3131,10 +3131,10 @@ detect-newline@^2.1.0:
   resolved "https://registry.yarnpkg.com/detect-newline/-/detect-newline-2.1.0.tgz#f41f1c10be4b00e87b5f13da680759f2c5bfd3e2"
   integrity sha1-9B8cEL5LAOh7XxPaaAdZ8sW/0+I=
 
-dexie@^3.0.0-alpha.8:
-  version "3.0.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.0.0-alpha.8.tgz#f4cd733c0c120816a73a6eac2157131af3bc7dd3"
-  integrity sha512-fujc1ZETUyJ7b0w7JzG4PK1wQca58BQbR7Gb3xaf+fWGrLm/uxfmB/k/FpHoGHHxCh3+v5lvB3XQG3ANoownNg==
+dexie@^3.0.0-beta.1:
+  version "3.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.0.0-beta.1.tgz#fcd75ca08c8be2c34b25b563b7617d9cf97a3c96"
+  integrity sha512-gT65LlB31mVMsGFoTQyS+A/osPQMvICzwy/kySVcabNnGYNU0RVtx8TR5tCWm6qvF76QBt/NNcwS4Iju4tRCYw==
 
 di@^0.0.1:
   version "0.0.1"

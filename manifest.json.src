@@ -70,7 +70,6 @@
       "all_frames": true
     }
   ],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';",
   "web_accessible_resources": [
     "css/popup.css",
     "images/warning-red.svg",
