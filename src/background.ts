@@ -52,17 +52,18 @@ import bugsnag from '@bugsnag/js';
 import { DatabaseState, KanjiDatabase } from '@birchill/hikibiki-sync';
 
 import { updateBrowserAction, FlatFileDatabaseState } from './browser-action';
-import Config from './config';
-import Dictionary from './data';
+import { Config } from './config';
+import { Dictionary } from './data';
 
+//
 // Minimum amount of time to wait before checking for database updates.
+//
+
 const UPDATE_THRESHOLD_MS = 12 * 60 * 60 * 1000;
 
-declare global {
-  interface Window {
-    rcBackground: RikaiBackground;
-  }
-}
+//
+// Setup bugsnag
+//
 
 const bugsnagClient = bugsnag({
   apiKey: 'e707c9ae84265d122b019103641e6462',
@@ -78,11 +79,17 @@ browser.management.getSelf().then(info => {
   (bugsnagClient.app as any).version = info.version;
 });
 
+declare global {
+  interface Window {
+    rcBackground: RikaiBackground;
+  }
+}
+
 export class RikaiBackground {
   _config: Config;
   _dict?: Dictionary;
   private kanjiDb: KanjiDatabase;
-  // TODO: This is only temporary until move the other databases to IDB
+  // TODO: This is temporary until we move the other databases to IDB
   private flatFileDbState: FlatFileDatabaseState = FlatFileDatabaseState.Ok;
 
   _dictCount: number = 3;

@@ -1,4 +1,4 @@
-import Config from './config';
+import { Config } from './config';
 
 type StorageName = 'sync' | 'local';
 type StorageChange = {

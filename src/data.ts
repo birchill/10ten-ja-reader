@@ -663,5 +663,3 @@ export class Dictionary {
     return entry;
   }
 }
-
-export default Dictionary;
