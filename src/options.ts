@@ -1,5 +1,7 @@
 import '../html/options.html.src';
 
+import { DatabaseState } from '@birchill/hikibiki-sync';
+
 import { DbStateUpdatedMessage } from './background';
 import { Config, DEFAULT_KEY_SETTINGS } from './config';
 import { Command, CommandParams, isValidKey } from './commands';
@@ -490,7 +492,11 @@ window.onunload = () => {
 };
 
 function updateDatabaseSummary(evt: DbStateUpdatedMessage) {
-  console.log(JSON.stringify(evt));
+  updateDatabaseBlurb(evt);
+  updateDatabaseStatus(evt);
+}
+
+function updateDatabaseBlurb(evt: DbStateUpdatedMessage) {
   const blurb = document.querySelector('.db-summary-blurb')!;
   empty(blurb);
 
@@ -533,6 +539,162 @@ function updateDatabaseSummary(evt: DbStateUpdatedMessage) {
       },
     ])
   );
+}
+
+function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
+  const { databaseState, updateState, versions } = evt;
+
+  const status = document.querySelector('.db-summary-status')!;
+  empty(status);
+
+  switch (updateState.state) {
+    case 'idle': {
+      const versionDiv = document.createElement('div');
+      versionDiv.classList.add('db-summary-version');
+
+      if (databaseState === DatabaseState.Empty) {
+        versionDiv.append(browser.i18n.getMessage('options_no_database'));
+      } else {
+        const { major, minor, patch } = versions.kanjidb!;
+
+        const versionNumberDiv = document.createElement('div');
+        const versionString = browser.i18n.getMessage(
+          'options_kanji_db_version',
+          `${major}.${minor}.${patch}`
+        );
+        versionNumberDiv.append(versionString);
+        versionDiv.append(versionNumberDiv);
+
+        if (updateState.lastCheck) {
+          const lastCheckDiv = document.createElement('div');
+          const lastCheckString = browser.i18n.getMessage(
+            'options_last_database_check',
+            formatDate(updateState.lastCheck)
+          );
+          lastCheckDiv.append(lastCheckString);
+          versionDiv.append(lastCheckDiv);
+        }
+      }
+
+      status.append(versionDiv);
+
+      const updateDiv = document.createElement('div');
+      updateDiv.classList.add('db-summary-button');
+
+      // TODO: Actually listen to the button
+      const updateButton = document.createElement('button');
+      updateButton.classList.add('browser-style');
+      updateButton.setAttribute('type', 'button');
+      updateButton.textContent = browser.i18n.getMessage(
+        'options_update_check_button_label'
+      );
+      updateDiv.append(updateButton);
+
+      status.append(updateDiv);
+      break;
+    }
+
+    case 'checking': {
+      const versionDiv = document.createElement('div');
+      versionDiv.classList.add('db-summary-version');
+      versionDiv.append(
+        browser.i18n.getMessage('options_checking_for_updates')
+      );
+      status.append(versionDiv);
+
+      const cancelDiv = document.createElement('div');
+      cancelDiv.classList.add('db-summary-button');
+
+      // TODO: Actually listen to the button
+      const cancelButton = document.createElement('button');
+      cancelButton.classList.add('browser-style');
+      cancelButton.setAttribute('type', 'button');
+      cancelButton.textContent = browser.i18n.getMessage(
+        'options_cancel_update_button_label'
+      );
+      cancelDiv.append(cancelButton);
+
+      status.append(cancelDiv);
+      break;
+    }
+
+    /*
+    case 'downloading': {
+      const { major, minor, patch } = updateState.downloadVersion;
+      const { progress } = updateState;
+      const dbLabel =
+        updateState.dbName === 'kanjidb' ? 'kanji data' : 'radical data';
+      const label = `Downloading ${dbLabel} version ${major}.${minor}.${patch} (${Math.round(
+        progress * 100
+      )}%)`;
+      return (
+        <div class="flex">
+          <div class="flex-grow mr-8">
+            <ProgressBar
+              id="update-progress"
+              max={100}
+              value={progress * 100}
+              label={`${label}…`}
+            />
+          </div>
+          <button class={buttonStyles} type="button" onClick={props.onCancel}>
+            Cancel
+          </button>
+        </div>
+      );
+    }
+
+    case 'updatingdb': {
+      const { major, minor, patch } = updateState.downloadVersion;
+      const dbLabel =
+        updateState.dbName === 'kanjidb'
+          ? 'kanji database'
+          : 'radical database';
+      const label = `Updating ${dbLabel} to version ${major}.${minor}.${patch}`;
+      return (
+        <div class="flex">
+          <div class="flex-grow mr-8">
+            <ProgressBar id="update-progress" label={`${label}…`} />
+          </div>
+          <button class={disabledButtonStyles} type="button" disabled>
+            Cancel
+          </button>
+        </div>
+      );
+    }
+
+    case 'error':
+      return (
+        <div class="flex error bg-red-100 p-8 rounded border border-orange-1000">
+          <div class="flex-grow mr-8">
+            Update failed: {updateState.error.message}
+            {updateState.nextRetry ? (
+              <Fragment>
+                <br />
+                Retrying <CountDown deadline={updateState.nextRetry} />.
+              </Fragment>
+            ) : null}
+          </div>
+          <div>
+            <button class={buttonStyles} type="button" onClick={props.onUpdate}>
+              Retry
+            </button>
+          </div>
+        </div>
+      );
+
+    case 'offline':
+      return (
+        <div class="flex error bg-orange-100 p-8 rounded border border-orange-1000">
+          <div class="flex-grow mr-8">
+            Could not check for updates because this device is currently
+            offline. An update will be performed once the device is online
+            again.
+          </div>
+        </div>
+      );
+  */
+  }
 }
 
 function empty(elem: Element) {
@@ -581,4 +743,13 @@ function linkify(
   }
 
   return result;
+}
+
+// Our special date formatting that is a simplified ISO 8601 in local time
+// without seconds.
+function formatDate(date: Date): string {
+  const pad = (n: number) => (n < 10 ? '0' + n : n);
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+    date.getDate()
+  )} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
