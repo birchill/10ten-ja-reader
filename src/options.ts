@@ -1,7 +1,7 @@
 import '../html/options.html.src';
 
 import { RikaiBackground } from './background';
-import { DEFAULT_KEY_SETTINGS } from './config';
+import { Config, DEFAULT_KEY_SETTINGS } from './config';
 import { Command, CommandParams, isValidKey } from './commands';
 import { CopyKeys, CopyNextKeyStrings } from './copy-keys';
 import { translateDoc } from './l10n';
@@ -12,7 +12,7 @@ declare global {
   }
 }
 
-const config = browser.extension.getBackgroundPage().rcBackground.config;
+const config = new Config();
 
 const canConfigureCommands =
   typeof (browser.commands as any).update === 'function' &&
@@ -333,20 +333,11 @@ function addPopupKeys() {
         const checkedKeys = document.querySelectorAll(
           `input[type=checkbox].key-${setting.name}:checked`
         );
-        // We need to use postMessage so that the Array is cloned into the
-        // background page's compartment.
-        const backgroundWindow = browser.extension.getBackgroundPage();
-        backgroundWindow.postMessage(
-          {
-            type: 'updateKeys',
-            keys: {
-              [setting.name]: Array.from(checkedKeys).map(
-                checkbox => (checkbox as HTMLInputElement).dataset.key
-              ),
-            },
-          },
-          window.location.origin
-        );
+        config.updateKeys({
+          [setting.name]: Array.from(checkedKeys).map(
+            checkbox => (checkbox as HTMLInputElement).dataset.key
+          ),
+        });
       });
 
       const keyLabel = document.createElement('label');
@@ -420,9 +411,7 @@ function translateKeys() {
   }
 }
 
-async function fillVals() {
-  await config.ready;
-
+function fillVals() {
   const optform = document.getElementById('optform') as HTMLFormElement;
   optform.showDefinitions.checked = !config.readingOnly;
   optform.highlightText.checked = !config.noTextHighlight;
@@ -479,7 +468,8 @@ async function fillVals() {
   }
 }
 
-window.onload = () => {
+window.onload = async () => {
+  await config.ready;
   completeForm();
   fillVals();
   config.addChangeListener(fillVals);

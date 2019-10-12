@@ -638,14 +638,6 @@ window.addEventListener('message', event => {
   }
 
   switch (event.data.type) {
-    case 'updateKeys':
-      console.assert(
-        typeof event.data.keys === 'object',
-        '`keys` should be an object'
-      );
-      window.rcBackground.config.updateKeys(event.data.keys);
-      break;
-
     case 'reportWarning':
       console.assert(
         typeof event.data.message === 'string',
