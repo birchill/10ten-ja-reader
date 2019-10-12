@@ -1,7 +1,7 @@
 import { UpdateState } from '@birchill/hikibiki-sync';
 
 // We will eventually drop this once we move everything to IDB
-export const enum FlatFileDatabaseState {
+export const enum FlatFileDictState {
   Ok,
   Loading,
   Error,
@@ -10,14 +10,14 @@ export const enum FlatFileDatabaseState {
 interface BrowserActionState {
   popupStyle: string;
   enabled: boolean;
-  flatFileDbState: FlatFileDatabaseState;
+  flatFileDictState: FlatFileDictState;
   kanjiDb: { updateState: UpdateState };
 }
 
 export function updateBrowserAction({
   popupStyle,
   enabled,
-  flatFileDbState,
+  flatFileDictState,
   kanjiDb,
 }: BrowserActionState) {
   let iconFilename = 'disabled';
@@ -25,18 +25,18 @@ export function updateBrowserAction({
 
   // First choose the base icon type / text
   if (enabled) {
-    switch (flatFileDbState) {
-      case FlatFileDatabaseState.Ok:
+    switch (flatFileDictState) {
+      case FlatFileDictState.Ok:
         iconFilename = popupStyle;
         titleStringId = 'command_toggle_enabled';
         break;
 
-      case FlatFileDatabaseState.Loading:
+      case FlatFileDictState.Loading:
         iconFilename = 'loading';
         titleStringId = 'command_toggle_loading';
         break;
 
-      case FlatFileDatabaseState.Error:
+      case FlatFileDictState.Error:
         iconFilename = 'error';
         titleStringId = 'error_loading_dictionary';
         break;

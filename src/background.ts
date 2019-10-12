@@ -51,7 +51,7 @@ import '../html/background.html.src';
 import bugsnag from '@bugsnag/js';
 import { DatabaseState, KanjiDatabase } from '@birchill/hikibiki-sync';
 
-import { updateBrowserAction, FlatFileDatabaseState } from './browser-action';
+import { updateBrowserAction, FlatFileDictState } from './browser-action';
 import { Config } from './config';
 import { Dictionary } from './data';
 
@@ -80,30 +80,35 @@ browser.management.getSelf().then(info => {
 });
 
 export class RikaiBackground {
-  _config: Config;
-  _dict?: Dictionary;
+  private config: Config;
   private kanjiDb: KanjiDatabase;
-  // TODO: This is temporary until we move the other databases to IDB
-  private flatFileDbState: FlatFileDatabaseState = FlatFileDatabaseState.Ok;
 
-  _dictCount: number = 3;
-  _enabled: boolean = false;
-  _menuId: number | string | null = null;
+  private flatFileDict?: Dictionary;
+  // TODO: This is temporary until we move the other databases to IDB
+  private flatFileDictState: FlatFileDictState = FlatFileDictState.Ok;
+
+  private dictCount: number = 3;
+  private enabled: boolean = false;
+  private menuId: number | string | null = null;
+
+  private kanjiDictIndex: number = 1;
+  private nameDictIndex: number = 2;
+  private showMode: number = 0;
 
   constructor() {
-    this._config = new Config();
+    this.config = new Config();
     this.kanjiDb = new KanjiDatabase();
 
     this.kanjiDb.onChange = () => {
       updateBrowserAction({
-        popupStyle: this._config.popupStyle,
-        enabled: this._enabled,
-        flatFileDbState: this.flatFileDbState,
+        popupStyle: this.config.popupStyle,
+        enabled: this.enabled,
+        flatFileDictState: this.flatFileDictState,
         kanjiDb: this.kanjiDb,
       });
     };
 
-    this._config.addChangeListener(changes => {
+    this.config.addChangeListener(changes => {
       if (changes.hasOwnProperty('contextMenuEnable')) {
         if ((changes as any).contextMenuEnable.newValue) {
           this.addContextMenu();
@@ -112,12 +117,12 @@ export class RikaiBackground {
         }
       }
 
-      if (this._enabled && changes.hasOwnProperty('popupStyle')) {
+      if (this.enabled && changes.hasOwnProperty('popupStyle')) {
         const popupStyle = (changes as any).popupStyle.newValue;
         updateBrowserAction({
           popupStyle,
           enabled: true,
-          flatFileDbState: this.flatFileDbState,
+          flatFileDictState: this.flatFileDictState,
           kanjiDb: this.kanjiDb,
         });
       }
@@ -141,7 +146,7 @@ export class RikaiBackground {
       }
 
       // TODO: Ignore changes that aren't part of contentConfig
-      this.updateConfig(this._config.contentConfig);
+      this.updateConfig(this.config.contentConfig);
     });
 
     browser.tabs.onActivated.addListener(activeInfo => {
@@ -189,10 +194,10 @@ export class RikaiBackground {
             );
             break;
           case 'translate':
-            if (this._dict) {
-              return this._dict.translate({
+            if (this.flatFileDict) {
+              return this.flatFileDict.translate({
                 text: request.title,
-                includeRomaji: this._config.showRomaji,
+                includeRomaji: this.config.showRomaji,
               });
             }
             console.error('Dictionary not initialized in translate request');
@@ -204,7 +209,7 @@ export class RikaiBackground {
             );
             break;
           case 'toggleDefinition':
-            this._config.toggleReadingOnly();
+            this.config.toggleReadingOnly();
             break;
 
           case 'reportWarning':
@@ -218,8 +223,8 @@ export class RikaiBackground {
       }
     );
 
-    this._config.ready.then(() => {
-      if (this._config.contextMenuEnable) {
+    this.config.ready.then(() => {
+      if (this.config.contextMenuEnable) {
         this.addContextMenu();
       }
 
@@ -237,14 +242,14 @@ export class RikaiBackground {
         };
 
         getToggleCommand().then((command: browser.commands.Command | null) => {
-          if (command && command.shortcut !== this._config.toggleKey) {
+          if (command && command.shortcut !== this.config.toggleKey) {
             try {
               (browser.commands as any).update({
                 name: '_execute_browser_action',
-                shortcut: this._config.toggleKey,
+                shortcut: this.config.toggleKey,
               });
             } catch (e) {
-              const message = `On startup, failed to update toggle key to ${this._config.toggleKey}`;
+              const message = `On startup, failed to update toggle key to ${this.config.toggleKey}`;
               console.error(message);
               bugsnagClient.notify(message, { severity: 'warning' });
             }
@@ -276,26 +281,22 @@ export class RikaiBackground {
       });
   }
 
-  get config(): Config {
-    return this._config;
-  }
-
   async loadDictionary(): Promise<void> {
-    if (!this._dict) {
-      this._dict = new Dictionary({ bugsnag: bugsnagClient });
+    if (!this.flatFileDict) {
+      this.flatFileDict = new Dictionary({ bugsnag: bugsnagClient });
     }
 
     try {
-      this.flatFileDbState = FlatFileDatabaseState.Loading;
-      await this._dict.loaded;
+      this.flatFileDictState = FlatFileDictState.Loading;
+      await this.flatFileDict.loaded;
     } catch (e) {
-      this.flatFileDbState = FlatFileDatabaseState.Error;
+      this.flatFileDictState = FlatFileDictState.Error;
       // If we fail loading the dictionary, make sure to reset it so we can try
       // again!
-      this._dict = undefined;
+      this.flatFileDict = undefined;
       throw e;
     }
-    this.flatFileDbState = FlatFileDatabaseState.Ok;
+    this.flatFileDictState = FlatFileDictState.Ok;
 
     bugsnagClient.leaveBreadcrumb('Loaded dictionary successfully');
   }
@@ -344,15 +345,15 @@ export class RikaiBackground {
   }
 
   onTabSelect(tabId: number) {
-    if (!this._enabled) {
+    if (!this.enabled) {
       return;
     }
 
-    this._config.ready.then(() => {
+    this.config.ready.then(() => {
       browser.tabs
         .sendMessage(tabId, {
           type: 'enable',
-          config: this._config.contentConfig,
+          config: this.config.contentConfig,
         })
         .catch(() => {
           /* Some tabs don't have the content script so just ignore
@@ -365,18 +366,18 @@ export class RikaiBackground {
     console.assert(typeof tab.id === 'number', `Unexpected tab ID: ${tab.id}`);
 
     updateBrowserAction({
-      popupStyle: this._config.popupStyle,
+      popupStyle: this.config.popupStyle,
       enabled: true,
-      flatFileDbState: FlatFileDatabaseState.Loading,
+      flatFileDictState: FlatFileDictState.Loading,
       kanjiDb: this.kanjiDb,
     });
 
-    if (this._menuId) {
-      browser.contextMenus.update(this._menuId, { checked: true });
+    if (this.menuId) {
+      browser.contextMenus.update(this.menuId, { checked: true });
     }
 
     try {
-      await Promise.all([this.loadDictionary(), this._config.ready]);
+      await Promise.all([this.loadDictionary(), this.config.ready]);
 
       // Trigger download but don't wait on it. We don't block on this because
       // we currently only download the kanji data and we don't need it to be
@@ -387,42 +388,42 @@ export class RikaiBackground {
       browser.tabs
         .sendMessage(tab.id!, {
           type: 'enable',
-          config: this._config.contentConfig,
+          config: this.config.contentConfig,
         })
         .catch(() => {
           /* Some tabs don't have the content script so just ignore
            * connection failures here. */
         });
-      this._enabled = true;
+      this.enabled = true;
       browser.storage.local.set({ enabled: true });
 
       updateBrowserAction({
-        popupStyle: this._config.popupStyle,
+        popupStyle: this.config.popupStyle,
         enabled: true,
-        flatFileDbState: this.flatFileDbState,
+        flatFileDictState: this.flatFileDictState,
         kanjiDb: this.kanjiDb,
       });
     } catch (e) {
       bugsnagClient.notify(e || '(No error)', { severity: 'error' });
 
       updateBrowserAction({
-        popupStyle: this._config.popupStyle,
+        popupStyle: this.config.popupStyle,
         enabled: true,
-        flatFileDbState: this.flatFileDbState,
+        flatFileDictState: this.flatFileDictState,
         kanjiDb: this.kanjiDb,
       });
 
       // Reset internal state so we can try again
-      this._dict = undefined;
+      this.flatFileDict = undefined;
 
-      if (this._menuId) {
-        browser.contextMenus.update(this._menuId, { checked: false });
+      if (this.menuId) {
+        browser.contextMenus.update(this.menuId, { checked: false });
       }
     }
   }
 
   updateConfig(config: ContentConfig) {
-    if (!this._enabled) {
+    if (!this.enabled) {
       return;
     }
 
@@ -448,7 +449,7 @@ export class RikaiBackground {
   }
 
   disableAll() {
-    this._enabled = false;
+    this.enabled = false;
     browser.storage.local.remove('enabled').catch(() => {
       /* Ignore */
     });
@@ -469,8 +470,8 @@ export class RikaiBackground {
           },
         });
       });
-    if (this._menuId) {
-      browser.contextMenus.update(this._menuId, { checked: false });
+    if (this.menuId) {
+      browser.contextMenus.update(this.menuId, { checked: false });
     }
 
     browser.windows
@@ -493,7 +494,7 @@ export class RikaiBackground {
   }
 
   toggle(tab: browser.tabs.Tab) {
-    if (this._enabled) {
+    if (this.enabled) {
       this.disableAll();
     } else {
       bugsnagClient.leaveBreadcrumb('Enabling tab from toggle');
@@ -502,18 +503,18 @@ export class RikaiBackground {
   }
 
   addContextMenu() {
-    if (this._menuId) {
+    if (this.menuId) {
       return;
     }
 
     try {
-      this._menuId = browser.contextMenus.create({
+      this.menuId = browser.contextMenus.create({
         id: 'context-toggle',
         type: 'checkbox',
         title: browser.i18n.getMessage('menu_enable_extension'),
         command: '_execute_browser_action',
         contexts: ['all'],
-        checked: this._enabled,
+        checked: this.enabled,
       });
     } catch (e) {
       // TODO: Chrome doesn't support the 'command' member so if we got an
@@ -522,12 +523,12 @@ export class RikaiBackground {
   }
 
   async removeContextMenu() {
-    if (!this._menuId) {
+    if (!this.menuId) {
       return;
     }
 
     try {
-      await browser.contextMenus.remove(this._menuId);
+      await browser.contextMenus.remove(this.menuId);
     } catch (e) {
       console.error(`Failed to remove context menu: ${e}`);
       bugsnagClient.notify(`Failed to remove context menu: ${e}`, {
@@ -535,15 +536,11 @@ export class RikaiBackground {
       });
     }
 
-    this._menuId = null;
+    this.menuId = null;
   }
 
-  _kanjiN: number = 1;
-  _namesN: number = 2;
-  _showMode: number = 0;
-
   search(text: string, dictOption: DictMode) {
-    if (!this._dict) {
+    if (!this.flatFileDict) {
       console.error('Dictionary not initialized in search');
       bugsnagClient.notify('Dictionary not initialized in search', {
         severity: 'warning',
@@ -552,53 +549,53 @@ export class RikaiBackground {
     }
 
     const kanjiReferences = new Set(
-      Object.entries(this._config.kanjiReferences)
+      Object.entries(this.config.kanjiReferences)
         .filter(([, /*abbrev*/ setting]) => setting)
         .map(([abbrev /*setting*/]) => abbrev)
     );
     const kanjiSearchOptions = {
       includedReferences: kanjiReferences,
-      includeKanjiComponents: this._config.showKanjiComponents,
+      includeKanjiComponents: this.config.showKanjiComponents,
     };
 
     switch (dictOption) {
       case DictMode.ForceKanji:
         return Promise.resolve(
-          this._dict.kanjiSearch(text.charAt(0), kanjiSearchOptions)
+          this.flatFileDict.kanjiSearch(text.charAt(0), kanjiSearchOptions)
         );
 
       case DictMode.Default:
-        this._showMode = 0;
+        this.showMode = 0;
         break;
 
       case DictMode.NextDict:
-        this._showMode = (this._showMode + 1) % this._dictCount;
+        this.showMode = (this.showMode + 1) % this.dictCount;
         break;
     }
 
     const searchCurrentDict: (text: string) => Promise<SearchResult | null> = (
       text: string
     ) => {
-      switch (this._showMode) {
-        case this._kanjiN:
+      switch (this.showMode) {
+        case this.kanjiDictIndex:
           return Promise.resolve(
-            this._dict!.kanjiSearch(text.charAt(0), kanjiSearchOptions)
+            this.flatFileDict!.kanjiSearch(text.charAt(0), kanjiSearchOptions)
           );
-        case this._namesN:
-          return this._dict!.wordSearch({
+        case this.nameDictIndex:
+          return this.flatFileDict!.wordSearch({
             input: text,
             doNames: true,
             includeRomaji: false,
           });
       }
-      return this._dict!.wordSearch({
+      return this.flatFileDict!.wordSearch({
         input: text,
         doNames: false,
-        includeRomaji: this._config.showRomaji,
+        includeRomaji: this.config.showRomaji,
       });
     };
 
-    const originalMode = this._showMode;
+    const originalMode = this.showMode;
     return (function loopOverDictionaries(
       text,
       self
@@ -607,8 +604,8 @@ export class RikaiBackground {
         if (result) {
           return result;
         }
-        self._showMode = (self._showMode + 1) % self._dictCount;
-        if (self._showMode === originalMode) {
+        self.showMode = (self.showMode + 1) % self.dictCount;
+        if (self.showMode === originalMode) {
           return null;
         }
         return loopOverDictionaries(text, self);
