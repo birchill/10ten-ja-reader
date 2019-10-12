@@ -49,9 +49,15 @@ import '../manifest.json.src';
 import '../html/background.html.src';
 
 import bugsnag from '@bugsnag/js';
-import { DatabaseState, KanjiDatabase } from '@birchill/hikibiki-sync';
+import {
+  DatabaseState,
+  DatabaseVersion,
+  KanjiDatabase,
+  UpdateState,
+} from '@birchill/hikibiki-sync';
 
 import { updateBrowserAction, FlatFileDictState } from './browser-action';
+import { toCloneableUpdateState } from './cloneable-update-state';
 import { Config } from './config';
 import { Dictionary } from './data';
 
@@ -88,6 +94,19 @@ browser.management.getSelf().then(info => {
   }
 });
 
+const dbListeners: Array<browser.runtime.Port> = [];
+
+export interface KanjiDatabaseState {
+  databaseState: DatabaseState;
+  updateState: UpdateState;
+  versions: ResolvedDbVersions;
+}
+
+export interface ResolvedDbVersions {
+  kanjidb: DatabaseVersion | null;
+  bushudb: DatabaseVersion | null;
+}
+
 export class RikaiBackground {
   private config: Config;
   private kanjiDb: KanjiDatabase;
@@ -115,6 +134,33 @@ export class RikaiBackground {
         flatFileDictState: this.flatFileDictState,
         kanjiDb: this.kanjiDb,
       });
+
+      if (
+        dbListeners.length &&
+        typeof this.kanjiDb.dbVersions.kanjidb !== 'undefined' &&
+        typeof this.kanjiDb.dbVersions.bushudb !== 'undefined'
+      ) {
+        const databaseState = {
+          databaseState: this.kanjiDb.state,
+          updateState: toCloneableUpdateState(this.kanjiDb.updateState),
+          versions: this.kanjiDb.dbVersions as ResolvedDbVersions,
+        };
+
+        for (const listener of dbListeners) {
+          try {
+            listener.postMessage({
+              type: 'dbstateupdated',
+              databaseState,
+            });
+          } catch (e) {
+            console.log('Error posting message');
+            console.log(e);
+            bugsnagClient.notify(e || '(Error updating kanji database)', {
+              severity: 'error',
+            });
+          }
+        }
+      }
     };
 
     this.config.addChangeListener(changes => {
@@ -628,4 +674,14 @@ const rcBackground = new RikaiBackground();
 
 browser.runtime.onInstalled.addListener(() => {
   rcBackground.maybeDownloadData();
+});
+
+browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
+  dbListeners.push(port);
+  port.onDisconnect.addListener(() => {
+    const index = dbListeners.indexOf(port);
+    if (index !== -1) {
+      dbListeners.splice(index, 1);
+    }
+  });
 });

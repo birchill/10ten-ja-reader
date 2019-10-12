@@ -457,13 +457,28 @@ function fillVals() {
   }
 }
 
+let browserPort: browser.runtime.Port | undefined;
+
 window.onload = async () => {
   await config.ready;
   completeForm();
   fillVals();
   config.addChangeListener(fillVals);
+
+  // Listen to changes to the database.
+  browserPort = browser.runtime.connect();
+  browserPort.onMessage.addListener(updateDatabaseSummary);
 };
 
 window.onunload = () => {
   config.removeChangeListener(fillVals);
+  if (browserPort) {
+    browserPort.disconnect();
+    browserPort = undefined;
+  }
 };
+
+function updateDatabaseSummary(evt: any) {
+  console.log(JSON.stringify(evt));
+  // TODO (incl. typing for the parameter)
+}
