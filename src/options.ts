@@ -1,6 +1,7 @@
 import '../html/options.html.src';
 
 import { RikaiBackground } from './background';
+import { DEFAULT_KEY_SETTINGS } from './config';
 import { Command, CommandParams, isValidKey } from './commands';
 import { CopyKeys, CopyNextKeyStrings } from './copy-keys';
 import { translateDoc } from './l10n';
@@ -305,7 +306,7 @@ function configureHoldToShowKeys() {
 function addPopupKeys() {
   const grid = document.getElementById('key-grid')!;
 
-  for (const setting of config.DEFAULT_KEY_SETTINGS) {
+  for (const setting of DEFAULT_KEY_SETTINGS) {
     // Don't show the copy entry if the clipboard API is not available
     if (
       setting.name === 'startCopy' &&

@@ -44,31 +44,31 @@ interface KeySetting {
   l10nKey: string;
 }
 
+export const DEFAULT_KEY_SETTINGS: KeySetting[] = [
+  {
+    name: 'nextDictionary',
+    keys: ['Shift', 'Enter'],
+    enabledKeys: ['Shift', 'Enter'],
+    l10nKey: 'options_popup_switch_dictionaries',
+  },
+  {
+    name: 'toggleDefinition',
+    keys: ['d'],
+    enabledKeys: [],
+    l10nKey: 'options_popup_toggle_definition',
+  },
+  {
+    name: 'startCopy',
+    keys: ['c'],
+    enabledKeys: ['c'],
+    l10nKey: 'options_popup_start_copy',
+  },
+];
+
 export class Config {
   _settings: Settings = {};
   _readPromise: Promise<void>;
   _changeListeners: ChangeCallback[] = [];
-
-  DEFAULT_KEY_SETTINGS: KeySetting[] = [
-    {
-      name: 'nextDictionary',
-      keys: ['Shift', 'Enter'],
-      enabledKeys: ['Shift', 'Enter'],
-      l10nKey: 'options_popup_switch_dictionaries',
-    },
-    {
-      name: 'toggleDefinition',
-      keys: ['d'],
-      enabledKeys: [],
-      l10nKey: 'options_popup_toggle_definition',
-    },
-    {
-      name: 'startCopy',
-      keys: ['c'],
-      enabledKeys: ['c'],
-      l10nKey: 'options_popup_start_copy',
-    },
-  ];
 
   constructor() {
     this._readPromise = this._readSettings();
@@ -217,7 +217,7 @@ export class Config {
 
   get keys(): KeyboardKeys {
     const setValues = this._settings.keys || {};
-    const defaultEnabledKeys: KeyboardKeys = this.DEFAULT_KEY_SETTINGS.reduce(
+    const defaultEnabledKeys: KeyboardKeys = DEFAULT_KEY_SETTINGS.reduce(
       (defaultKeys, setting) => {
         defaultKeys[setting.name] = setting.enabledKeys;
         return defaultKeys;
