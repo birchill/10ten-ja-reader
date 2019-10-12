@@ -3,6 +3,7 @@
   "name": "Rikaichamp",
   "author": "Brian Birtles",
   "version": "0.1.0",
+  "version_name": "0.1.0 alpha",
   /*#if supports_applications_field*/
   "applications": {
     "gecko": {
