@@ -152,9 +152,11 @@ export class RikaiBackground {
     browser.tabs.onActivated.addListener(activeInfo => {
       this.onTabSelect(activeInfo.tabId);
     });
+
     browser.browserAction.onClicked.addListener(tab => {
       this.toggle(tab);
     });
+
     browser.runtime.onMessage.addListener(
       (
         request: any,
@@ -173,6 +175,7 @@ export class RikaiBackground {
               bugsnagClient.leaveBreadcrumb('No sender tab in enable? request');
             }
             break;
+
           case 'xsearch':
             if (
               typeof request.text === 'string' &&
@@ -193,6 +196,7 @@ export class RikaiBackground {
               }
             );
             break;
+
           case 'translate':
             if (this.flatFileDict) {
               return this.flatFileDict.translate({
@@ -208,6 +212,7 @@ export class RikaiBackground {
               }
             );
             break;
+
           case 'toggleDefinition':
             this.config.toggleReadingOnly();
             break;
@@ -450,12 +455,15 @@ export class RikaiBackground {
 
   disableAll() {
     this.enabled = false;
+
     browser.storage.local.remove('enabled').catch(() => {
       /* Ignore */
     });
+
     browser.browserAction.setTitle({
       title: browser.i18n.getMessage('command_toggle_disabled'),
     });
+
     browser.browserAction
       .setIcon({
         path: `images/rikaichamp-disabled.svg`,
@@ -470,6 +478,7 @@ export class RikaiBackground {
           },
         });
       });
+
     if (this.menuId) {
       browser.contextMenus.update(this.menuId, { checked: false });
     }
