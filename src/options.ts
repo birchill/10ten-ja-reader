@@ -14,10 +14,6 @@ declare global {
 
 const config = new Config();
 
-const canConfigureCommands =
-  typeof (browser.commands as any).update === 'function' &&
-  typeof (browser.commands as any).reset === 'function';
-
 function completeForm() {
   // UA-specific styles
   if (isFirefox()) {
@@ -154,6 +150,10 @@ function renderPopupStyleSelect() {
 function configureCommands() {
   // Disable any controls associated with configuring browser.commands if the
   // necessary APIs are not available.
+  const canConfigureCommands =
+    typeof (browser.commands as any).update === 'function' &&
+    typeof (browser.commands as any).reset === 'function';
+
   const browserCommandControls = document.querySelectorAll(
     '.key.command input'
   );
