@@ -56,7 +56,10 @@ import {
 } from '@birchill/hikibiki-sync';
 
 import { updateBrowserAction, FlatFileDictState } from './browser-action';
-import { toCloneableUpdateState } from './cloneable-update-state';
+import {
+  CloneableUpdateState,
+  toCloneableUpdateState,
+} from './cloneable-update-state';
 import { Config } from './config';
 import { Dictionary } from './data';
 
@@ -230,6 +233,13 @@ kanjiDb.onChange = () => {
   notifyUpdatedDbState();
 };
 
+export interface DbStateUpdatedMessage {
+  type: 'dbstateupdated';
+  databaseState: DatabaseState;
+  updateState: CloneableUpdateState;
+  versions: ResolvedDbVersions;
+}
+
 function notifyUpdatedDbState(specifiedListener?: browser.runtime.Port) {
   if (!dbListeners.length) {
     return;
@@ -242,7 +252,8 @@ function notifyUpdatedDbState(specifiedListener?: browser.runtime.Port) {
     return;
   }
 
-  const databaseState = {
+  const message: DbStateUpdatedMessage = {
+    type: 'dbstateupdated',
     databaseState: kanjiDb.state,
     updateState: toCloneableUpdateState(kanjiDb.updateState),
     versions: kanjiDb.dbVersions as ResolvedDbVersions,
@@ -254,10 +265,7 @@ function notifyUpdatedDbState(specifiedListener?: browser.runtime.Port) {
     }
 
     try {
-      listener.postMessage({
-        type: 'dbstateupdated',
-        databaseState,
-      });
+      listener.postMessage(message);
     } catch (e) {
       console.log('Error posting message');
       console.log(e);

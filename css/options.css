@@ -28,6 +28,15 @@
   font-size: 10pt;
 }
 
+#rikaichamp_options a {
+  color: #0996f8;
+  text-decoration-style: dotted;
+}
+
+#rikaichamp_options a:visited {
+  color: #0996f8;
+}
+
 .checkbox-row {
   display: flex;
   flex-direction: row;
@@ -216,4 +225,28 @@ fieldset {
   list-style: none;
   margin-top: 0.5em;
   margin-bottom: 0.5em;
+}
+
+.panel-section-db-summary {
+  padding: 16px;
+  display: block;
+}
+
+.panel-section-db-summary > :not(:first-child) {
+  margin-top: 16px;
+}
+
+.panel-section-db-summary > .db-summary-status {
+  display: flex;
+  flex-direction: row;
+}
+
+.panel-section-db-summary .db-summary-version {
+  flex-grow: 1;
+  margin-end: 16px;
+  font-style: italic;
+}
+
+.panel-section-db-summary .db-summary-button {
+  align-self: flex-end;
 }

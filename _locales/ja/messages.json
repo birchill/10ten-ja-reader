@@ -230,6 +230,32 @@
     "message": "漢字辞典",
     "description": "Heading for options to configure what information is displayed from the kanji dictionary"
   },
+  "options_kanji_data_source_no_version": {
+    "message": "使用しているデータにKANJIDICのデータが含まれております。",
+    "description": "Attribution of kanji source data when no version is available. The keyword KANJIDIC must appear so that it can be link-ified to point to the corresponding home page."
+  },
+  "options_kanji_data_source_with_version": {
+    "message": "使用しているデータに$generated$に生成されたKANJIDICバージョン$version$のデータが含まれております。",
+    "description": "Attribution of kanji source data when version information is available. The keyword KANJIDIC must appear so that it can be link-ified to point to the corresponding home page.",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "2019-282"
+      },
+      "generated": {
+        "content": "$2",
+        "example": "2019-10-19"
+      }
+    }
+  },
+  "options_kanji_license": {
+    "message": "KANJIDICのデータはElectronic Dictionary Research and Development Group (EDRDG)の所有権であり、EDRDGのライセンスに準拠して使用しております。",
+    "description": "Description of license terms. The keywords 'Electronic Dictionary Research and Development Group' and options_kanji_license_keyword must appear so they can be linkified. IT SHOULD BEGIN WITH APPROPRIATE SPACE IN LANGUAGES THAT SEPARATE SENTENCES WITH WHITESPACE."
+  },
+  "options_kanji_license_keyword": {
+    "message": "ライセンス",
+    "description": "The keyword in options_kanji_license to link to the license"
+  },
   "options_kanji_components": {
     "message": "漢字構成",
     "description": "Option to define if radicals are displayed or not"

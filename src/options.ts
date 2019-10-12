@@ -1,5 +1,6 @@
 import '../html/options.html.src';
 
+import { DbStateUpdatedMessage } from './background';
 import { Config, DEFAULT_KEY_SETTINGS } from './config';
 import { Command, CommandParams, isValidKey } from './commands';
 import { CopyKeys, CopyNextKeyStrings } from './copy-keys';
@@ -78,9 +79,7 @@ function isChrome(): boolean {
 
 function renderPopupStyleSelect() {
   const popupStyleSelect = document.getElementById('popupstyle-select')!;
-  while (popupStyleSelect.firstChild) {
-    (popupStyleSelect.firstChild as any).remove();
-  }
+  empty(popupStyleSelect);
   const themes = ['blue', 'lightblue', 'black', 'yellow'];
 
   for (const theme of themes) {
@@ -459,6 +458,14 @@ function fillVals() {
 
 let browserPort: browser.runtime.Port | undefined;
 
+function isDbStateUpdatedMessage(evt: unknown): evt is DbStateUpdatedMessage {
+  return (
+    typeof evt === 'object' &&
+    typeof (evt as any).type === 'string' &&
+    (evt as any).type === 'dbstateupdated'
+  );
+}
+
 window.onload = async () => {
   await config.ready;
   completeForm();
@@ -467,7 +474,11 @@ window.onload = async () => {
 
   // Listen to changes to the database.
   browserPort = browser.runtime.connect();
-  browserPort.onMessage.addListener(updateDatabaseSummary);
+  browserPort.onMessage.addListener((evt: unknown) => {
+    if (isDbStateUpdatedMessage(evt)) {
+      updateDatabaseSummary(evt);
+    }
+  });
 };
 
 window.onunload = () => {
@@ -478,6 +489,96 @@ window.onunload = () => {
   }
 };
 
-function updateDatabaseSummary(evt: any) {
-  // TODO (incl. typing for the parameter)
+function updateDatabaseSummary(evt: DbStateUpdatedMessage) {
+  console.log(JSON.stringify(evt));
+  const blurb = document.querySelector('.db-summary-blurb')!;
+  empty(blurb);
+
+  const { kanjidb: kanjiDbVersion } = evt.versions;
+  let attribution: string;
+  if (kanjiDbVersion) {
+    attribution = browser.i18n.getMessage(
+      'options_kanji_data_source_with_version',
+      [kanjiDbVersion.databaseVersion, kanjiDbVersion.dateOfCreation]
+    );
+  } else {
+    attribution = browser.i18n.getMessage(
+      'options_kanji_data_source_no_version'
+    );
+  }
+
+  blurb.append(
+    linkify(attribution, [
+      {
+        keyword: 'KANJIDIC',
+        href: 'https://www.edrdg.org/wiki/index.php/KANJIDIC_Project',
+      },
+    ])
+  );
+
+  const license = browser.i18n.getMessage('options_kanji_license');
+  const licenseKeyword = browser.i18n.getMessage(
+    'options_kanji_license_keyword'
+  );
+
+  blurb.append(
+    linkify(license, [
+      {
+        keyword: 'Electronic Dictionary Research and Development Group',
+        href: 'https://www.edrdg.org/',
+      },
+      {
+        keyword: licenseKeyword,
+        href: 'https://www.edrdg.org/edrdg/licence.html',
+      },
+    ])
+  );
+}
+
+function empty(elem: Element) {
+  while (elem.firstChild) {
+    (elem.firstChild as any).remove();
+  }
+}
+
+function linkify(
+  source: string,
+  replacements: Array<{ keyword: string; href: string }>
+): DocumentFragment {
+  const matchedReplacements: Array<{
+    index: number;
+    keyword: string;
+    href: string;
+  }> = [];
+
+  for (const replacement of replacements) {
+    const index = source.indexOf(replacement.keyword);
+    if (index !== -1) {
+      matchedReplacements.push({ index, ...replacement });
+    }
+  }
+  matchedReplacements.sort((a, b) => a.index - b.index);
+
+  const result = new DocumentFragment();
+  let position = 0;
+
+  for (const replacement of matchedReplacements) {
+    if (position < replacement.index) {
+      result.append(source.substring(position, replacement.index));
+    }
+
+    const link = document.createElement('a');
+    link.href = replacement.href;
+    link.target = '_blank';
+    link.textContent = replacement.keyword;
+    result.append(link);
+
+    position = replacement.index + replacement.keyword.length;
+  }
+
+  if (position < source.length) {
+    result.append(source.substring(position, source.length));
+  }
+
+  return result;
 }
