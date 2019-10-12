@@ -59,7 +59,7 @@ import { Dictionary } from './data';
 // Minimum amount of time to wait before checking for database updates.
 //
 
-const UPDATE_THRESHOLD_MS = 12 * 60 * 60 * 1000;
+const UPDATE_THRESHOLD_MS = 12 * 60 * 60 * 1000; // 12 hours
 
 //
 // Setup bugsnag
@@ -77,6 +77,9 @@ const bugsnagClient = bugsnag({
 browser.management.getSelf().then(info => {
   // bugsnag-ts typings don't seem to help here
   (bugsnagClient.app as any).version = info.version;
+  if (info.installType === 'development') {
+    (bugsnagClient.app as any).releaseStage = 'development';
+  }
 });
 
 export class RikaiBackground {
