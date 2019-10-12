@@ -479,6 +479,5 @@ window.onunload = () => {
 };
 
 function updateDatabaseSummary(evt: any) {
-  console.log(JSON.stringify(evt));
   // TODO (incl. typing for the parameter)
 }
