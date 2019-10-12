@@ -79,12 +79,6 @@ browser.management.getSelf().then(info => {
   (bugsnagClient.app as any).version = info.version;
 });
 
-declare global {
-  interface Window {
-    rcBackground: RikaiBackground;
-  }
-}
-
 export class RikaiBackground {
   _config: Config;
   _dict?: Dictionary;
@@ -211,6 +205,14 @@ export class RikaiBackground {
             break;
           case 'toggleDefinition':
             this._config.toggleReadingOnly();
+            break;
+
+          case 'reportWarning':
+            console.assert(
+              typeof request.message === 'string',
+              '`message` should be a string'
+            );
+            bugsnagClient.notify(request.message, { severity: 'warning' });
             break;
         }
       }
@@ -615,42 +617,8 @@ export class RikaiBackground {
   }
 }
 
-window.rcBackground = new RikaiBackground();
+const rcBackground = new RikaiBackground();
 
 browser.runtime.onInstalled.addListener(() => {
-  window.rcBackground.maybeDownloadData();
-});
-
-window.addEventListener('message', event => {
-  if (event.origin !== window.location.origin) {
-    return;
-  }
-
-  if (typeof event.data !== 'object' || typeof event.data.type !== 'string') {
-    console.error('Unexpected message format');
-    bugsnagClient.notify(
-      `Unexpected message format: ${JSON.stringify(event)}`,
-      {
-        severity: 'error',
-      }
-    );
-    return;
-  }
-
-  switch (event.data.type) {
-    case 'reportWarning':
-      console.assert(
-        typeof event.data.message === 'string',
-        '`message` should be a string'
-      );
-      bugsnagClient.notify(event.data.message, { severity: 'warning' });
-      break;
-
-    default:
-      console.error(`Unexpected message: ${event.data.type}`);
-      bugsnagClient.notify(`Unexpected message ${event.data.type}`, {
-        severity: 'error',
-      });
-      break;
-  }
+  rcBackground.maybeDownloadData();
 });

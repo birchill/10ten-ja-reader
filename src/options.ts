@@ -1,16 +1,9 @@
 import '../html/options.html.src';
 
-import { RikaiBackground } from './background';
 import { Config, DEFAULT_KEY_SETTINGS } from './config';
 import { Command, CommandParams, isValidKey } from './commands';
 import { CopyKeys, CopyNextKeyStrings } from './copy-keys';
 import { translateDoc } from './l10n';
-
-declare global {
-  interface Window {
-    rcBackground: RikaiBackground;
-  }
-}
 
 const config = new Config();
 
@@ -429,14 +422,10 @@ function fillVals() {
     getToggleControl('key').value = toggleCommand.key;
     showToggleCommandSupport(toggleCommand);
   } catch (e) {
-    const backgroundWindow = browser.extension.getBackgroundPage();
-    backgroundWindow.postMessage(
-      {
-        type: 'reportWarning',
-        message: `Unable to parse toggleKey: ${config.toggleKey}`,
-      },
-      window.location.origin
-    );
+    browser.runtime.sendMessage({
+      type: 'reportWarning',
+      message: `Unable to parse toggleKey: ${config.toggleKey}`,
+    });
   }
 
   const holdKeyParts: Array<string> =
