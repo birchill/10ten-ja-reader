@@ -464,20 +464,12 @@ export class RikaiBackground {
       title: browser.i18n.getMessage('command_toggle_disabled'),
     });
 
-    browser.browserAction
-      .setIcon({
-        path: `images/rikaichamp-disabled.svg`,
-      })
-      .catch(() => {
-        // Assume we're on Chrome and it still can't handle SVGs
-        browser.browserAction.setIcon({
-          path: {
-            16: `images/rikaichamp-disabled-16.png`,
-            32: `images/rikaichamp-disabled-32.png`,
-            48: `images/rikaichamp-disabled-48.png`,
-          },
-        });
-      });
+    updateBrowserAction({
+      popupStyle: this.config.popupStyle,
+      enabled: this.enabled,
+      flatFileDictState: this.flatFileDictState,
+      kanjiDb: this.kanjiDb,
+    });
 
     if (this.menuId) {
       browser.contextMenus.update(this.menuId, { checked: false });
