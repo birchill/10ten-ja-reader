@@ -52,14 +52,14 @@
     "ts-loader": "^6.2.0",
     "web-ext-types": "github:michael-zapata/web-ext-types",
     "web-ext-webpack-plugin": "github:hiikezoe/web-ext-webpack-plugin",
-    "webpack": "^4.41.0",
+    "webpack": "^4.41.1",
     "webpack-cli": "^3.3.9",
     "webpack-preprocessor": "^0.1.12"
   },
   "dependencies": {
     "@birchill/hikibiki-sync": "^1.1.0",
     "@bugsnag/js": "^6.4.2",
-    "husky": "^3.0.8",
+    "husky": "^3.0.9",
     "lint-staged": "^9.4.2",
     "typescript": "^3.6.4",
     "web-ext": "^3.2.0"
