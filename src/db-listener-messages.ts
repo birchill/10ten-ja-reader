@@ -29,14 +29,19 @@ export const notifyDbStateUpdated = ({
 export type DbStateUpdatedMessage = ReturnType<typeof notifyDbStateUpdated>;
 
 export const updateDb = () => ({
-  type: 'update',
+  type: 'updatedb',
 });
 
 export const cancelDbUpdate = () => ({
-  type: 'cancelupdate',
+  type: 'cancelupdatedb',
+});
+
+export const deleteDb = () => ({
+  type: 'deletedb',
 });
 
 export type DbListenerMessage =
   | ReturnType<typeof notifyDbStateUpdated>
   | ReturnType<typeof updateDb>
-  | ReturnType<typeof cancelDbUpdate>;
+  | ReturnType<typeof cancelDbUpdate>
+  | ReturnType<typeof deleteDb>;

@@ -5,7 +5,12 @@ import { DatabaseState } from '@birchill/hikibiki-sync';
 import { Config, DEFAULT_KEY_SETTINGS } from './config';
 import { Command, CommandParams, isValidKey } from './commands';
 import { CopyKeys, CopyNextKeyStrings } from './copy-keys';
-import { DbStateUpdatedMessage } from './db-listener-messages';
+import {
+  DbStateUpdatedMessage,
+  cancelDbUpdate,
+  deleteDb,
+  updateDb,
+} from './db-listener-messages';
 import { translateDoc } from './l10n';
 
 const config = new Config();
@@ -66,6 +71,20 @@ function completeForm() {
     .addEventListener('click', evt => {
       config.showKanjiComponents = (evt.target as HTMLInputElement).checked;
     });
+
+  browser.management.getSelf().then(info => {
+    if (info.installType === 'development') {
+      (document.querySelector('.db-admin') as HTMLElement).style.display =
+        'block';
+      document
+        .getElementById('deleteDatabase')!
+        .addEventListener('click', evt => {
+          if (browserPort) {
+            browserPort.postMessage(deleteDb());
+          }
+        });
+    }
+  });
 }
 
 function isFirefox(): boolean {
@@ -765,7 +784,7 @@ function triggerDatabaseUpdate() {
     return;
   }
 
-  browserPort.postMessage({ type: 'updatedb' });
+  browserPort.postMessage(updateDb());
 }
 
 function cancelDatabaseUpdate() {
@@ -773,5 +792,5 @@ function cancelDatabaseUpdate() {
     return;
   }
 
-  browserPort.postMessage({ type: 'cancelupdatedb' });
+  browserPort.postMessage(cancelDbUpdate());
 }

@@ -279,3 +279,11 @@ fieldset {
 .panel-section-db-summary .db-summary-button {
   align-self: flex-end;
 }
+
+.panel-section-db-summary .db-admin {
+  background: #fee;
+  border: 1px solid #700;
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: #700;
+}

@@ -330,6 +330,10 @@ browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
       case 'cancelupdatedb':
         kanjiDb.cancelUpdate();
         break;
+
+      case 'deletedb':
+        kanjiDb.destroy();
+        break;
     }
   });
 
