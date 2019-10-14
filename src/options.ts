@@ -2,10 +2,10 @@ import '../html/options.html.src';
 
 import { DatabaseState } from '@birchill/hikibiki-sync';
 
-import { DbStateUpdatedMessage } from './background';
 import { Config, DEFAULT_KEY_SETTINGS } from './config';
 import { Command, CommandParams, isValidKey } from './commands';
 import { CopyKeys, CopyNextKeyStrings } from './copy-keys';
+import { DbStateUpdatedMessage } from './db-listener-messages';
 import { translateDoc } from './l10n';
 
 const config = new Config();
@@ -669,7 +669,6 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
   switch (updateState.state) {
     case 'idle':
     case 'error': {
-      // TODO: Actually listen to the button
       const updateButton = document.createElement('button');
       updateButton.classList.add('browser-style');
       updateButton.setAttribute('type', 'button');
@@ -678,6 +677,7 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
           ? 'options_update_check_button_label'
           : 'options_update_retry_button_label'
       );
+      updateButton.addEventListener('click', triggerDatabaseUpdate);
       buttonDiv.append(updateButton);
       break;
     }
@@ -685,7 +685,6 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
     case 'checking':
     case 'downloading':
     case 'updatingdb': {
-      // TODO: Actually listen to the button
       const cancelButton = document.createElement('button');
       cancelButton.classList.add('browser-style');
       cancelButton.setAttribute('type', 'button');
@@ -694,6 +693,8 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
       );
       if (updateState.state === 'updatingdb') {
         cancelButton.disabled = true;
+      } else {
+        cancelButton.addEventListener('click', cancelDatabaseUpdate);
       }
       buttonDiv.append(cancelButton);
       break;
@@ -758,4 +759,20 @@ function formatDate(date: Date): string {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
     date.getDate()
   )} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function triggerDatabaseUpdate() {
+  if (!browserPort) {
+    return;
+  }
+
+  browserPort.postMessage({ type: 'updatedb' });
+}
+
+function cancelDatabaseUpdate() {
+  if (!browserPort) {
+    return;
+  }
+
+  browserPort.postMessage({ type: 'cancelupdatedb' });
 }

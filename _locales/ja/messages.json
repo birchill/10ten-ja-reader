@@ -335,8 +335,8 @@
     }
   },
   "options_offline_explanation": {
-    "message": "Update failed: $errormessage$",
-    "description": "この端末は只今オフラインになっているため、更新の確認ができませんでした。オフラインになりましたら、更新確認を行います。"
+    "message": "この端末は只今オフラインになっているため、更新の確認ができませんでした。オフラインになりましたら、更新確認を行います。",
+    "description": "Message shown when the system is offline so updates cannot be performed"
   },
   "options_update_check_button_label": {
     "message": "更新を確認",

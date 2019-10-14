@@ -335,8 +335,8 @@
     }
   },
   "options_offline_explanation": {
-    "message": "Update failed: $errormessage$",
-    "description": "Could not check for updates because this device is currently offline. An update will be performed once the device is online."
+    "message": "Could not check for updates because this device is currently offline. An update will be performed once the device is online.",
+    "description": "Message shown when the system is offline so updates cannot be performed"
   },
   "options_update_check_button_label": {
     "message": "Check for updates",

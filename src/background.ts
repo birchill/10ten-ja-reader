@@ -49,19 +49,16 @@ import '../manifest.json.src';
 import '../html/background.html.src';
 
 import bugsnag from '@bugsnag/js';
-import {
-  DatabaseState,
-  DatabaseVersion,
-  KanjiDatabase,
-} from '@birchill/hikibiki-sync';
+import { DatabaseState, KanjiDatabase } from '@birchill/hikibiki-sync';
 
 import { updateBrowserAction, FlatFileDictState } from './browser-action';
-import {
-  CloneableUpdateState,
-  toCloneableUpdateState,
-} from './cloneable-update-state';
 import { Config } from './config';
 import { Dictionary } from './data';
+import {
+  notifyDbStateUpdated,
+  DbListenerMessage,
+  ResolvedDbVersions,
+} from './db-listener-messages';
 
 //
 // Minimum amount of time to wait before checking for database updates.
@@ -217,11 +214,6 @@ config.ready.then(() => {
 const kanjiDb = new KanjiDatabase();
 const dbListeners: Array<browser.runtime.Port> = [];
 
-interface ResolvedDbVersions {
-  kanjidb: DatabaseVersion | null;
-  bushudb: DatabaseVersion | null;
-}
-
 kanjiDb.onChange = () => {
   updateBrowserAction({
     popupStyle: config.popupStyle,
@@ -232,13 +224,6 @@ kanjiDb.onChange = () => {
 
   notifyUpdatedDbState();
 };
-
-export interface DbStateUpdatedMessage {
-  type: 'dbstateupdated';
-  databaseState: DatabaseState;
-  updateState: CloneableUpdateState;
-  versions: ResolvedDbVersions;
-}
 
 async function notifyUpdatedDbState(specifiedListener?: browser.runtime.Port) {
   if (!dbListeners.length) {
@@ -252,12 +237,11 @@ async function notifyUpdatedDbState(specifiedListener?: browser.runtime.Port) {
     return;
   }
 
-  const message: DbStateUpdatedMessage = {
-    type: 'dbstateupdated',
+  const message = notifyDbStateUpdated({
     databaseState: kanjiDb.state,
-    updateState: toCloneableUpdateState(kanjiDb.updateState),
+    updateState: kanjiDb.updateState,
     versions: kanjiDb.dbVersions as ResolvedDbVersions,
-  };
+  });
 
   // The lastCheck field in the updateState we get back from the database will
   // only be set if we did a check this session. It is _not_ a stored value.
@@ -332,6 +316,23 @@ async function maybeDownloadData() {
 browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
   dbListeners.push(port);
   notifyUpdatedDbState(port);
+
+  port.onMessage.addListener((evt: unknown) => {
+    if (!isDbListenerMessage(evt)) {
+      return;
+    }
+
+    switch (evt.type) {
+      case 'updatedb':
+        kanjiDb.update();
+        break;
+
+      case 'cancelupdatedb':
+        kanjiDb.cancelUpdate();
+        break;
+    }
+  });
+
   port.onDisconnect.addListener(() => {
     const index = dbListeners.indexOf(port);
     if (index !== -1) {
@@ -339,6 +340,10 @@ browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
     }
   });
 });
+
+function isDbListenerMessage(evt: unknown): evt is DbListenerMessage {
+  return typeof evt === 'object' && typeof (evt as any).type === 'string';
+}
 
 //
 // Flat-file (legacy) dictionary
