@@ -153,10 +153,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@birchill/hikibiki-sync@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-sync/-/hikibiki-sync-1.0.4.tgz#a55ed9c31dc998ed63a460f338b6e4e9d988a94b"
-  integrity sha512-tvGRJPbynT93ql7wLZlSHzWnXYV+pvCzm0nVWo/EJp5ucpW8NxmvRSnOAwaSByl8JOltwKr0XXtA1KX/oPdZPQ==
+"@birchill/hikibiki-sync@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-sync/-/hikibiki-sync-1.1.0.tgz#c6f8f3e2b2718f0fed4151b9cbd514a1c3c73fce"
+  integrity sha512-4ILOSY5ZtuJEjywD8mYnOr9SsI+mBJ7tYwIX1pgwv/IG4tg4GOiBgr9mq8S2OoimoCpufwBuIcDSmFt2SoQHsg==
   dependencies:
     dexie "^3.0.0-beta.1"
 

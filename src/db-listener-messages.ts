@@ -2,9 +2,8 @@ import {
   DatabaseState,
   DatabaseVersion,
   UpdateState,
+  toCloneableUpdateState,
 } from '@birchill/hikibiki-sync';
-
-import { toCloneableUpdateState } from './cloneable-update-state';
 
 export interface ResolvedDbVersions {
   kanjidb: DatabaseVersion | null;
