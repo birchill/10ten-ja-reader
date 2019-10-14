@@ -240,7 +240,7 @@ export interface DbStateUpdatedMessage {
   versions: ResolvedDbVersions;
 }
 
-function notifyUpdatedDbState(specifiedListener?: browser.runtime.Port) {
+async function notifyUpdatedDbState(specifiedListener?: browser.runtime.Port) {
   if (!dbListeners.length) {
     return;
   }
@@ -258,6 +258,16 @@ function notifyUpdatedDbState(specifiedListener?: browser.runtime.Port) {
     updateState: toCloneableUpdateState(kanjiDb.updateState),
     versions: kanjiDb.dbVersions as ResolvedDbVersions,
   };
+
+  // The lastCheck field in the updateState we get back from the database will
+  // only be set if we did a check this session. It is _not_ a stored value.
+  // So, if it is not set, use the value we store instead.
+  if (message.updateState.lastCheck === null) {
+    const getResult = await browser.storage.local.get('lastUpdateKanjiDb');
+    if (typeof getResult.lastUpdateKanjiDb === 'number') {
+      message.updateState.lastCheck = new Date(getResult.lastUpdateKanjiDb);
+    }
+  }
 
   for (const listener of dbListeners) {
     if (specifiedListener && listener !== specifiedListener) {
