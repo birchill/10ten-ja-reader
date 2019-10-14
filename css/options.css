@@ -241,9 +241,21 @@ fieldset {
   flex-direction: row;
 }
 
-.panel-section-db-summary .db-summary-version {
+.panel-section-db-summary .db-summary-info {
   flex-grow: 1;
   margin-end: 16px;
+}
+
+.panel-section-db-summary .db-summary-info.-italic {
+  font-style: italic;
+}
+
+.panel-section-db-summary .db-summary-info .progress {
+  display: block;
+}
+
+.panel-section-db-summary .db-summary-info .label {
+  display: block;
   font-style: italic;
 }
 

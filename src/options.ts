@@ -547,14 +547,17 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
   const status = document.querySelector('.db-summary-status')!;
   empty(status);
 
+  // Fill out the info part
+
+  const infoDiv = document.createElement('div');
+  infoDiv.classList.add('db-summary-info');
+
   switch (updateState.state) {
     case 'idle': {
-      const versionDiv = document.createElement('div');
-      versionDiv.classList.add('db-summary-version');
-
       if (databaseState === DatabaseState.Empty) {
-        versionDiv.append(browser.i18n.getMessage('options_no_database'));
+        infoDiv.append(browser.i18n.getMessage('options_no_database'));
       } else {
+        infoDiv.classList.add('-italic');
         const { major, minor, patch } = versions.kanjidb!;
 
         const versionNumberDiv = document.createElement('div');
@@ -563,7 +566,7 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
           `${major}.${minor}.${patch}`
         );
         versionNumberDiv.append(versionString);
-        versionDiv.append(versionNumberDiv);
+        infoDiv.append(versionNumberDiv);
 
         if (updateState.lastCheck) {
           const lastCheckDiv = document.createElement('div');
@@ -572,39 +575,116 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
             formatDate(updateState.lastCheck)
           );
           lastCheckDiv.append(lastCheckString);
-          versionDiv.append(lastCheckDiv);
+          infoDiv.append(lastCheckDiv);
         }
       }
+      break;
+    }
 
-      status.append(versionDiv);
+    case 'checking': {
+      infoDiv.append(browser.i18n.getMessage('options_checking_for_updates'));
+      break;
+    }
 
-      const updateDiv = document.createElement('div');
-      updateDiv.classList.add('db-summary-button');
+    case 'downloading':
+    case 'updatingdb': {
+      const progressElem = document.createElement('progress');
+      progressElem.classList.add('progress');
+      if (updateState.state === 'downloading') {
+        progressElem.max = 100;
+        progressElem.value = updateState.progress * 100;
+      }
+      progressElem.id = 'kanjidb-progress';
+      infoDiv.append(progressElem);
 
+      const labelElem = document.createElement('label');
+      labelElem.classList.add('label');
+      labelElem.htmlFor = 'kanjidb-progress';
+
+      const dbLabel = browser.i18n.getMessage(
+        updateState.dbName === 'kanjidb'
+          ? 'options_kanji_data_name'
+          : 'options_bushu_data_name'
+      );
+
+      const { major, minor, patch } = updateState.downloadVersion;
+      const versionString = `${major}.${minor}.${patch}`;
+
+      if (updateState.state === 'downloading') {
+        const progressAsPercent = Math.round(updateState.progress * 100);
+        labelElem.textContent = browser.i18n.getMessage(
+          'options_downloading_data',
+          [dbLabel, versionString, String(progressAsPercent)]
+        );
+      } else {
+        labelElem.textContent = browser.i18n.getMessage(
+          'options_updating_data',
+          [dbLabel, versionString]
+        );
+      }
+
+      infoDiv.append(labelElem);
+      break;
+    }
+
+    case 'error': {
+      // TODO: Error styling
+      infoDiv.classList.add('-error');
+
+      const messageDiv = document.createElement('div');
+      const errorMessage = browser.i18n.getMessage(
+        'options_db_update_error',
+        updateState.error.message
+      );
+      messageDiv.append(errorMessage);
+      infoDiv.append(messageDiv);
+
+      if (updateState.nextRetry) {
+        const nextRetryDiv = document.createElement('div');
+        const nextRetryString = browser.i18n.getMessage(
+          'options_db_update_next_retry',
+          formatDate(updateState.nextRetry)
+        );
+        nextRetryDiv.append(nextRetryString);
+        infoDiv.append(nextRetryDiv);
+      }
+      break;
+    }
+
+    case 'offline':
+      infoDiv.classList.add('-warning');
+      // TODO: We should probably should the version if the database is not
+      // empty.
+      infoDiv.append(browser.i18n.getMessage('options_offline_explanation'));
+      break;
+  }
+
+  status.append(infoDiv);
+
+  // Add the action button info any
+
+  const buttonDiv = document.createElement('div');
+  buttonDiv.classList.add('db-summary-button');
+
+  switch (updateState.state) {
+    case 'idle':
+    case 'error': {
       // TODO: Actually listen to the button
       const updateButton = document.createElement('button');
       updateButton.classList.add('browser-style');
       updateButton.setAttribute('type', 'button');
       updateButton.textContent = browser.i18n.getMessage(
-        'options_update_check_button_label'
+        updateState.state === 'idle'
+          ? 'options_update_check_button_label'
+          : 'options_update_retry_button_label'
       );
-      updateDiv.append(updateButton);
-
-      status.append(updateDiv);
+      buttonDiv.append(updateButton);
       break;
     }
 
-    case 'checking': {
-      const versionDiv = document.createElement('div');
-      versionDiv.classList.add('db-summary-version');
-      versionDiv.append(
-        browser.i18n.getMessage('options_checking_for_updates')
-      );
-      status.append(versionDiv);
-
-      const cancelDiv = document.createElement('div');
-      cancelDiv.classList.add('db-summary-button');
-
+    case 'checking':
+    case 'downloading':
+    case 'updatingdb': {
       // TODO: Actually listen to the button
       const cancelButton = document.createElement('button');
       cancelButton.classList.add('browser-style');
@@ -612,89 +692,15 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
       cancelButton.textContent = browser.i18n.getMessage(
         'options_cancel_update_button_label'
       );
-      cancelDiv.append(cancelButton);
-
-      status.append(cancelDiv);
+      if (updateState.state === 'updatingdb') {
+        cancelButton.disabled = true;
+      }
+      buttonDiv.append(cancelButton);
       break;
     }
-
-    /*
-    case 'downloading': {
-      const { major, minor, patch } = updateState.downloadVersion;
-      const { progress } = updateState;
-      const dbLabel =
-        updateState.dbName === 'kanjidb' ? 'kanji data' : 'radical data';
-      const label = `Downloading ${dbLabel} version ${major}.${minor}.${patch} (${Math.round(
-        progress * 100
-      )}%)`;
-      return (
-        <div class="flex">
-          <div class="flex-grow mr-8">
-            <ProgressBar
-              id="update-progress"
-              max={100}
-              value={progress * 100}
-              label={`${label}…`}
-            />
-          </div>
-          <button class={buttonStyles} type="button" onClick={props.onCancel}>
-            Cancel
-          </button>
-        </div>
-      );
-    }
-
-    case 'updatingdb': {
-      const { major, minor, patch } = updateState.downloadVersion;
-      const dbLabel =
-        updateState.dbName === 'kanjidb'
-          ? 'kanji database'
-          : 'radical database';
-      const label = `Updating ${dbLabel} to version ${major}.${minor}.${patch}`;
-      return (
-        <div class="flex">
-          <div class="flex-grow mr-8">
-            <ProgressBar id="update-progress" label={`${label}…`} />
-          </div>
-          <button class={disabledButtonStyles} type="button" disabled>
-            Cancel
-          </button>
-        </div>
-      );
-    }
-
-    case 'error':
-      return (
-        <div class="flex error bg-red-100 p-8 rounded border border-orange-1000">
-          <div class="flex-grow mr-8">
-            Update failed: {updateState.error.message}
-            {updateState.nextRetry ? (
-              <Fragment>
-                <br />
-                Retrying <CountDown deadline={updateState.nextRetry} />.
-              </Fragment>
-            ) : null}
-          </div>
-          <div>
-            <button class={buttonStyles} type="button" onClick={props.onUpdate}>
-              Retry
-            </button>
-          </div>
-        </div>
-      );
-
-    case 'offline':
-      return (
-        <div class="flex error bg-orange-100 p-8 rounded border border-orange-1000">
-          <div class="flex-grow mr-8">
-            Could not check for updates because this device is currently
-            offline. An update will be performed once the device is online
-            again.
-          </div>
-        </div>
-      );
-  */
   }
+
+  status.append(buttonDiv);
 }
 
 function empty(elem: Element) {

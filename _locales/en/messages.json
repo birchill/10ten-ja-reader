@@ -280,13 +280,71 @@
       }
     }
   },
+  "options_checking_for_updates": {
+    "message": "Checking for updates…",
+    "description": "Label while we are checking for updates"
+  },
+  "options_kanji_data_name": {
+    "message": "kanji data",
+    "description": "The name for the kanji database data set"
+  },
+  "options_bushu_data_name": {
+    "message": "radical data",
+    "description": "The name for the bushu database data set"
+  },
+  "options_downloading_data": {
+    "message": "Downloading $datatype$ version $version$ ($progress$%)…",
+    "description": "Label while we are downloading updates",
+    "placeholders": {
+      "datatype": {
+        "content": "$1",
+        "example": "kanji data"
+      },
+      "version": {
+        "content": "$2",
+        "example": "1.0.3"
+      },
+      "progress": {
+        "content": "$3",
+        "example": "60"
+      }
+    }
+  },
+  "options_updating_data": {
+    "message": "Updating $datatype$ to version $version$…",
+    "description": "Label while we are applying updates",
+    "placeholders": {
+      "datatype": {
+        "content": "$1",
+        "example": "kanji data"
+      },
+      "version": {
+        "content": "$2",
+        "example": "1.0.3"
+      }
+    }
+  },
+  "options_db_update_error": {
+    "message": "Update failed: $errormessage$",
+    "description": "Label when we failed to update the data for some reason",
+    "placeholders": {
+      "errormessage": {
+        "content": "$1",
+        "example": "Version file not found"
+      }
+    }
+  },
+  "options_offline_explanation": {
+    "message": "Update failed: $errormessage$",
+    "description": "Could not check for updates because this device is currently offline. An update will be performed once the device is online."
+  },
   "options_update_check_button_label": {
     "message": "Check for updates",
     "description": "Label for the button to check for database updates"
   },
-  "options_checking_for_updates": {
-    "message": "Checking for updates…",
-    "description": "Label while we are checking for updates"
+  "options_update_retry_button_label": {
+    "message": "Retry",
+    "description": "Label for the button to retry the database update after a failure"
   },
   "options_cancel_update_button_label": {
     "message": "Cancel",

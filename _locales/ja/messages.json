@@ -280,13 +280,71 @@
       }
     }
   },
+  "options_checking_for_updates": {
+    "message": "更新確認中…",
+    "description": "Label while we are checking for updates"
+  },
+  "options_kanji_data_name": {
+    "message": "漢字データ",
+    "description": "The name for the kanji database data set"
+  },
+  "options_bushu_data_name": {
+    "message": "部首データ",
+    "description": "The name for the bushu database data set"
+  },
+  "options_downloading_data": {
+    "message": "$datatype$バージョン$version$を読み込み中 ($progress$%)…",
+    "description": "Label while we are downloading updates",
+    "placeholders": {
+      "datatype": {
+        "content": "$1",
+        "example": "kanji data"
+      },
+      "version": {
+        "content": "$2",
+        "example": "1.0.3"
+      },
+      "progress": {
+        "content": "$3",
+        "example": "60"
+      }
+    }
+  },
+  "options_updating_data": {
+    "message": "$datatype$バージョン$version$を適用中…",
+    "description": "Label while we are applying updates",
+    "placeholders": {
+      "datatype": {
+        "content": "$1",
+        "example": "kanji data"
+      },
+      "version": {
+        "content": "$2",
+        "example": "1.0.3"
+      }
+    }
+  },
+  "options_db_update_error": {
+    "message": "更新失敗しました。「$errormessage$」",
+    "description": "Label when we failed to update the data for some reason",
+    "placeholders": {
+      "errormessage": {
+        "content": "$1",
+        "example": "Version file not found"
+      }
+    }
+  },
+  "options_offline_explanation": {
+    "message": "Update failed: $errormessage$",
+    "description": "この端末は只今オフラインになっているため、更新の確認ができませんでした。オフラインになりましたら、更新確認を行います。"
+  },
   "options_update_check_button_label": {
     "message": "更新を確認",
     "description": "Label for the button to check for database updates"
   },
-  "options_checking_for_updates": {
-    "message": "更新確認中…",
-    "description": "Label while we are checking for updates"
+  "options_update_retry_button_label": {
+    "message": "再試行",
+    "description": "Label for the button to retry the database update after a failure"
   },
   "options_cancel_update_button_label": {
     "message": "キャンセル",
