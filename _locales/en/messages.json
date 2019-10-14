@@ -334,6 +334,16 @@
       }
     }
   },
+  "options_db_update_next_retry": {
+    "message": "Retrying at $nextretry$",
+    "description": "Label used when there is a scheduled retry",
+    "placeholders": {
+      "nextretry": {
+        "content": "$1",
+        "example": "2019-10-14 17:44"
+      }
+    }
+  },
   "options_offline_explanation": {
     "message": "Could not check for updates because this device is currently offline. An update will be performed once the device is online.",
     "description": "Message shown when the system is offline so updates cannot be performed"

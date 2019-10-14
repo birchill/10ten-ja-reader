@@ -334,6 +334,16 @@
       }
     }
   },
+  "options_db_update_next_retry": {
+    "message": "$nextretry$に再試行予定",
+    "description": "Label used when there is a scheduled retry",
+    "placeholders": {
+      "nextretry": {
+        "content": "$1",
+        "example": "2019-10-14 17:44"
+      }
+    }
+  },
   "options_offline_explanation": {
     "message": "この端末は只今オフラインになっているため、更新の確認ができませんでした。オフラインになりましたら、更新確認を行います。",
     "description": "Message shown when the system is offline so updates cannot be performed"

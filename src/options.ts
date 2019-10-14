@@ -546,6 +546,8 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
 
   const status = document.querySelector('.db-summary-status')!;
   empty(status);
+  status.classList.remove('-error');
+  status.classList.remove('-warning');
 
   // Fill out the info part
 
@@ -628,8 +630,7 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
     }
 
     case 'error': {
-      // TODO: Error styling
-      infoDiv.classList.add('-error');
+      status.classList.add('-error');
 
       const messageDiv = document.createElement('div');
       const errorMessage = browser.i18n.getMessage(
@@ -652,9 +653,7 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
     }
 
     case 'offline':
-      infoDiv.classList.add('-warning');
-      // TODO: We should probably should the version if the database is not
-      // empty.
+      status.classList.add('-warning');
       infoDiv.append(browser.i18n.getMessage('options_offline_explanation'));
       break;
   }

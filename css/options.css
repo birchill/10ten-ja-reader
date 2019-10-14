@@ -241,6 +241,22 @@ fieldset {
   flex-direction: row;
 }
 
+.panel-section-db-summary > .db-summary-status.-error {
+  background: #fee;
+  border: 1px solid #700;
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: #700;
+}
+
+.panel-section-db-summary > .db-summary-status.-warning {
+  background: #FFFFBF;
+  border: 1px solid #730;
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: #730;
+}
+
 .panel-section-db-summary .db-summary-info {
   flex-grow: 1;
   margin-end: 16px;
@@ -252,6 +268,7 @@ fieldset {
 
 .panel-section-db-summary .db-summary-info .progress {
   display: block;
+  margin-bottom: 4px;
 }
 
 .panel-section-db-summary .db-summary-info .label {
