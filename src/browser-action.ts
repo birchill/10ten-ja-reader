@@ -1,4 +1,4 @@
-import { UpdateState } from '@birchill/hikibiki-sync';
+import { UpdateState } from '@birchill/hikibiki-data';
 
 // We will eventually drop this once we move everything to IDB
 export const enum FlatFileDictState {

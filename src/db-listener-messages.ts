@@ -3,7 +3,7 @@ import {
   DatabaseVersion,
   UpdateState,
   toCloneableUpdateState,
-} from '@birchill/hikibiki-sync';
+} from '@birchill/hikibiki-data';
 
 export interface ResolvedDbVersions {
   kanjidb: DatabaseVersion | null;

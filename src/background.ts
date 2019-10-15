@@ -49,7 +49,7 @@ import '../manifest.json.src';
 import '../html/background.html.src';
 
 import bugsnag from '@bugsnag/js';
-import { DatabaseState, KanjiDatabase } from '@birchill/hikibiki-sync';
+import { DatabaseState, KanjiDatabase } from '@birchill/hikibiki-data';
 
 import { updateBrowserAction, FlatFileDictState } from './browser-action';
 import { Config } from './config';

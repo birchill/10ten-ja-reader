@@ -1,6 +1,6 @@
 import '../html/options.html.src';
 
-import { DatabaseState } from '@birchill/hikibiki-sync';
+import { DatabaseState } from '@birchill/hikibiki-data';
 
 import { Config, DEFAULT_KEY_SETTINGS } from './config';
 import { Command, CommandParams, isValidKey } from './commands';
