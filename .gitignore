@@ -6,3 +6,4 @@ tests/content-loader.js.map
 dist-chrome
 dist-firefox
 dist-thunderbird
+yarn-error.log
