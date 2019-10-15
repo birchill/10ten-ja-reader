@@ -46,7 +46,9 @@ export function updateBrowserAction({
   // Next determine if we need to overlay any additional information.
   switch (kanjiDb.updateState.state) {
     case 'checking':
-      iconFilename += '-indeterminate';
+      // Technically the '-indeterminate' icon would be more correct here but
+      // using '-0' instead leads to less flicker.
+      iconFilename += '-0';
       titleStringId = 'command_toggle_checking';
       break;
 
