@@ -602,21 +602,18 @@ function search(text: string, dictOption: DictMode) {
   };
 
   const originalMode = showIndex;
-  return (function loopOverDictionaries(
-    text,
-    self
-  ): Promise<SearchResult | null> {
+  return (function loopOverDictionaries(text): Promise<SearchResult | null> {
     return searchCurrentDict(text).then(result => {
       if (result) {
         return result;
       }
-      self.showIndex = (self.showIndex + 1) % self.dictCount;
-      if (self.showIndex === originalMode) {
+      showIndex = (showIndex + 1) % dictCount;
+      if (showIndex === originalMode) {
         return null;
       }
-      return loopOverDictionaries(text, self);
+      return loopOverDictionaries(text);
     });
-  })(text, this);
+  })(text);
 }
 
 //
