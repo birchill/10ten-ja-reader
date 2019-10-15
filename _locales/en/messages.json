@@ -20,15 +20,15 @@
     "description": "Tooltip for toolbar button when loading."
   },
   "command_toggle_checking": {
-    "message": "Checking updated dictionary data...",
+    "message": "Checking for updated dictionary data...",
     "description": "Tooltip for toolbar button when checking for updates."
   },
   "command_toggle_downloading": {
-    "message": "Downloading updated dictionary data...",
+    "message": "Downloading dictionary data...",
     "description": "Tooltip for toolbar button when downloading updates."
   },
   "command_toggle_updating": {
-    "message": "Applying updated dictionary data...",
+    "message": "Applying dictionary data...",
     "description": "Tooltip for toolbar button when applying updates."
   },
   "command_toggle_update_error": {

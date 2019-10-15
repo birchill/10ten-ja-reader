@@ -53,8 +53,7 @@ export function updateBrowserAction({
     case 'downloading':
       // We only have progress variants for the Ok, disabled, and loading styles.
       if ([popupStyle, 'disabled', 'loading'].includes(iconFilename)) {
-        iconFilename +=
-          '-' + Math.round(kanjiDb.updateState.progress * 10) * 10;
+        iconFilename += '-' + Math.round(kanjiDb.updateState.progress * 5) * 20;
       }
       titleStringId = 'command_toggle_downloading';
       break;
