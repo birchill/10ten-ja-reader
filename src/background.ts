@@ -213,8 +213,18 @@ config.ready.then(() => {
 
 const kanjiDb = new KanjiDatabase();
 const dbListeners: Array<browser.runtime.Port> = [];
+let wasUpdateInError: boolean = false;
 
 kanjiDb.onChange = () => {
+  // Report any update errors
+  if (!wasUpdateInError && kanjiDb.updateState.state === 'error') {
+    const { name, message } = kanjiDb.updateState.error;
+    bugsnagClient.notify(`${name}: ${message}`, {
+      severity: 'error',
+    });
+  }
+  wasUpdateInError = kanjiDb.updateState.state === 'error';
+
   updateBrowserAction({
     popupStyle: config.popupStyle,
     enabled,
@@ -222,10 +232,10 @@ kanjiDb.onChange = () => {
     kanjiDb,
   });
 
-  notifyUpdatedDbState();
+  notifyDbListeners();
 };
 
-async function notifyUpdatedDbState(specifiedListener?: browser.runtime.Port) {
+async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
   if (!dbListeners.length) {
     return;
   }
@@ -263,7 +273,7 @@ async function notifyUpdatedDbState(specifiedListener?: browser.runtime.Port) {
     } catch (e) {
       console.log('Error posting message');
       console.log(e);
-      bugsnagClient.notify(e || '(Error updating kanji database)', {
+      bugsnagClient.notify(e || '(Error posting message update message)', {
         severity: 'error',
       });
     }
@@ -315,7 +325,7 @@ async function maybeDownloadData() {
 
 browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
   dbListeners.push(port);
-  notifyUpdatedDbState(port);
+  notifyDbListeners(port);
 
   port.onMessage.addListener((evt: unknown) => {
     if (!isDbListenerMessage(evt)) {
