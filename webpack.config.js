@@ -86,7 +86,7 @@ const firefoxConfig = {
     filename: '[name].js',
   },
   plugins: [
-    new CopyWebpackPlugin(['css/*', 'images/*', 'data/*', '_locales/**/*']),
+    new CopyWebpackPlugin(['css/*', 'images/*.svg', 'data/*', '_locales/**/*']),
     new WebExtWebpackPlugin({
       firefox,
       firefoxProfile,
