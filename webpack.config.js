@@ -74,6 +74,7 @@ const firefoxConfig = {
     rules: extendArray(
       commonExtConfig.module.rules,
       getPreprocessorConfig(
+        'supports_alpha_version',
         'supports_svg_icons',
         'supports_browser_style',
         'supports_applications_field'
