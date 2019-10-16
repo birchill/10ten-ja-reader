@@ -45,6 +45,8 @@
 
 */
 
+import { KanjiResult } from '@birchill/hikibiki-data';
+
 import { CopyKeys, CopyType } from './copy-keys';
 import { renderPopup, CopyState, PopupOptions } from './popup';
 import { query, QueryResult, WordEntry, NameEntry } from './query';
@@ -212,7 +214,7 @@ const styleSheetLoad = (link: HTMLLinkElement): Promise<void> =>
 type TaggedEntry =
   | { type: 'word'; data: WordEntry }
   | { type: 'name'; data: NameEntry }
-  | { type: 'kanji'; data: KanjiEntry };
+  | { type: 'kanji'; data: KanjiResult };
 
 export class RikaiContent {
   static MAX_LENGTH = 13;
@@ -1590,7 +1592,7 @@ export class RikaiContent {
         break;
 
       case 'kanji':
-        toCopy = entry.data.kanji;
+        toCopy = entry.data.c;
         break;
     }
 
@@ -1632,41 +1634,48 @@ export class RikaiContent {
         break;
 
       case 'kanji':
-        toCopy = entry.data.kanji;
-        if (entry.data.onkun.length) {
-          toCopy += ` [${entry.data.onkun.join(`、`)}]`;
-        }
-        if (entry.data.nanori.length) {
-          toCopy += ` (${entry.data.nanori.join(`、`)})`;
-        }
-        toCopy += ` ${entry.data.eigo}`;
-        const radicalLabel = browser.i18n.getMessage(
-          'content_kanji_radical_label'
-        );
-        toCopy += `; ${radicalLabel}: ${entry.data.radical}`;
-        if (entry.data.bushumei.length) {
-          toCopy += ` (${entry.data.bushumei.join(`、`)})`;
-        }
-        if (entry.data.components && entry.data.components.length) {
-          const componentsLabel = browser.i18n.getMessage(
-            'content_kanji_components_label'
+        {
+          const { c, r, m, rad, comp } = entry.data;
+
+          toCopy = c;
+          const commonReadings = [
+            ...(r.on ? r.on : []),
+            ...(r.kun ? r.kun : []),
+          ].join('、');
+          if (commonReadings) {
+            toCopy += ` [${commonReadings}]`;
+          }
+          if (r.na && r.na.length) {
+            toCopy += ` (${r.na.join(`、`)})`;
+          }
+          toCopy += ` ${m.join(', ')}`;
+          const radicalLabel = browser.i18n.getMessage(
+            'content_kanji_radical_label'
           );
-          let components: Array<string> = [];
-          for (const component of entry.data.components) {
-            components.push(
-              `${component.radical} ${component.yomi} ${component.english}`
+          toCopy += `; ${radicalLabel}: ${rad.b || rad.k}（${rad.na.join(
+            '、'
+          )}）`;
+          // TODO: Localize 'from' here.
+          if (rad.base) {
+            toCopy += ` from ${rad.base.b || rad.base.k}（${rad.base.na.join(
+              '、'
+            )}）`;
+          }
+          if (comp.length) {
+            const componentsLabel = browser.i18n.getMessage(
+              'content_kanji_components_label'
             );
-          }
-          toCopy += `; ${componentsLabel}: ${components.join(', ')}`;
-        }
-        if (entry.data.miscDisplay.length) {
-          const refs: Array<string> = [];
-          for (const ref of entry.data.miscDisplay) {
-            if (entry.data.misc.hasOwnProperty(ref.abbrev)) {
-              refs.push(`${ref.name}: ${entry.data.misc[ref.abbrev]}`);
+            let components: Array<string> = [];
+            for (const component of comp) {
+              components.push(
+                `${component.c} ${component.na.join('、')} (${component.m.join(
+                  ', '
+                )})`
+              );
             }
+            toCopy += `; ${componentsLabel}: ${components.join(', ')}`;
           }
-          toCopy += `; ${refs.join('; ')}`;
+          // TODO: Export references
         }
         break;
     }
@@ -1707,24 +1716,24 @@ export class RikaiContent {
         break;
 
       case 'kanji':
-        toCopy = entry.data.kanji;
-        toCopy += `\t${entry.data.onkun.join(`、`)}`;
-        toCopy += `\t${entry.data.nanori.join(`、`)}`;
-        toCopy += `\t${entry.data.eigo}`;
-        toCopy += `\t${entry.data.radical}`;
-        toCopy += `\t${entry.data.bushumei.join(`、`)}`;
-        if (entry.data.components) {
-          let components = '';
-          for (const component of entry.data.components) {
-            components += component.radical;
+        {
+          const { c, r, m, rad, comp } = entry.data;
+
+          toCopy = c;
+          const commonReadings = [
+            ...(r.on ? r.on : []),
+            ...(r.kun ? r.kun : []),
+          ].join('、');
+          toCopy += `\t${commonReadings}`;
+          toCopy += `\t${(r.na || []).join(`、`)}`;
+          toCopy += `\t${m.join(', ')}`;
+          toCopy += `\t${rad.b || rad.k}`;
+          toCopy += `\t${rad.na.join(`、`)}`;
+          if (comp.length) {
+            const components = comp.map(comp => comp.c).join('');
+            toCopy += `\t${components}`;
           }
-          toCopy += `\t${components}`;
-        }
-        for (const ref of entry.data.miscDisplay) {
-          const refText = entry.data.misc.hasOwnProperty(ref.abbrev)
-            ? `${ref.abbrev}${entry.data.misc[ref.abbrev]}`
-            : '';
-          toCopy += `\t${refText}`;
+          // TODO: Export references
         }
         break;
     }

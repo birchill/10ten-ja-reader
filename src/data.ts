@@ -92,15 +92,6 @@ const enum WordType {
   SuruVerb = 1 << 4,
 }
 
-interface KanjiSearchOptions {
-  // Lists the references that should be included in KanjiEntry.misc.
-  includedReferences: Set<string>;
-
-  // Set to true if the components that make up the kanji should be returned in
-  // the result.
-  includeKanjiComponents: boolean;
-}
-
 export class Dictionary {
   loaded: Promise<any>;
   nameDict: string;
@@ -554,112 +545,5 @@ export class Dictionary {
 
     result.textLen -= text.length;
     return result;
-  }
-
-  kanjiSearch(kanji: string, options?: KanjiSearchOptions): KanjiEntry | null {
-    const codepoint = kanji.charCodeAt(0);
-    if (codepoint < 0x3000) return null;
-
-    const dictEntry = this.find(this.kanjiData, kanji);
-    if (!dictEntry) return null;
-
-    const fields = dictEntry.split('|');
-    if (fields.length != 6) return null;
-
-    // Separate space-separated lists with an ideographic comma (、) and space
-    const splitWords = (str: string) => {
-      const result = str.split(' ');
-      // split() has this odd behavior where:
-      //
-      //   ''.split('') => []
-      //
-      // but:
-      //
-      //   ''.split(' ') => [ '' ]
-      //
-      return result.length === 1 && result[0].trim() === '' ? [] : result;
-    };
-    const entry: KanjiEntry = {
-      kanji: fields[0],
-      misc: {},
-      miscDisplay: [],
-      onkun: splitWords(fields[2]),
-      nanori: splitWords(fields[3]),
-      bushumei: splitWords(fields[4]),
-      radical: '', // Fill in later
-      eigo: fields[5],
-    };
-
-    // Store hex-representation
-    const hex = '0123456789ABCDEF';
-    entry.misc['U'] =
-      hex[(codepoint >>> 12) & 15] +
-      hex[(codepoint >>> 8) & 15] +
-      hex[(codepoint >>> 4) & 15] +
-      hex[codepoint & 15];
-
-    // Parse other kanji references
-    const refs = fields[1].split(' ');
-    for (let i = 0; i < refs.length; ++i) {
-      if (refs[i].match(/^([A-Z]+)(.*)/)) {
-        if (!entry.misc[RegExp.$1]) {
-          entry.misc[RegExp.$1] = RegExp.$2;
-        } else {
-          entry.misc[RegExp.$1] += `  ${RegExp.$2}`;
-        }
-      }
-    }
-
-    // Fill in display order and information for other kanji references
-    for (let ref of REF_ABBREVIATIONS) {
-      if (!options || options.includedReferences.has(ref.abbrev)) {
-        // For the Nelson radical, only add it if it differs from the classical
-        // radical (which is only specified when it differs).
-        if (ref.abbrev === 'NR' && !entry.misc.C) {
-          continue;
-        }
-
-        entry.miscDisplay.push(ref);
-      }
-    }
-
-    // Fill in radical
-    const nelsonRadicalNumber = Number(entry.misc.B) - 1;
-    const radicalNumber = entry.misc.C
-      ? Number(entry.misc.C) - 1
-      : nelsonRadicalNumber;
-    entry.radical = this.radData[radicalNumber].charAt(0);
-
-    // Add character version of Nelson radical too, if needed
-    if (entry.misc.C) {
-      const nelsonRadical = this.radData[nelsonRadicalNumber].charAt(0);
-      entry.misc.NR = `${nelsonRadical} ${entry.misc.B}`;
-    }
-
-    // Kanji components
-    if (options && options.includeKanjiComponents) {
-      entry.components = [];
-
-      const addRadicalFromRow = (row: string) => {
-        const fields: string[] = row.split('\t');
-        if (fields.length >= 4) {
-          entry.components!.push({
-            radical: fields[0],
-            yomi: fields[2],
-            english: fields[3],
-          });
-        }
-      };
-
-      addRadicalFromRow(this.radData[nelsonRadicalNumber]);
-      this.radData.forEach((row: string, index: number) => {
-        if (index === nelsonRadicalNumber || row.indexOf(entry.kanji) === -1) {
-          return;
-        }
-        addRadicalFromRow(row);
-      });
-    }
-
-    return entry;
   }
 }

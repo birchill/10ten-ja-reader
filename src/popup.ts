@@ -1,3 +1,5 @@
+import { KanjiResult } from '@birchill/hikibiki-data';
+
 import { NameDefinition, NameEntry, QueryResult, WordEntry } from './query';
 import {
   CopyKeys,
@@ -245,7 +247,7 @@ function getSelectedIndex(options: PopupOptions, numEntries: number) {
 }
 
 function renderKanjiEntry(
-  entry: KanjiEntry,
+  entry: KanjiResult,
   options: PopupOptions
 ): HTMLElement | DocumentFragment {
   const container = document.createDocumentFragment();
@@ -274,29 +276,26 @@ function renderKanjiEntry(
   radicalCell.classList.add('cell');
   radicalCell.append(browser.i18n.getMessage('content_kanji_radical_label'));
   radicalCell.append(document.createElement('br'));
-  radicalCell.append(`${entry.radical} ${entry.misc.C || entry.misc.B}`);
+  radicalCell.append(`${entry.rad.b || entry.rad.k} ${entry.rad.x}`);
 
   const gradeCell = document.createElement('div');
   summaryTable.append(gradeCell);
   gradeCell.classList.add('cell');
   let grade = document.createDocumentFragment();
-  switch (entry.misc.G || '') {
-    case '8':
+  switch (entry.misc.gr || 0) {
+    case 8:
       grade.append(browser.i18n.getMessage('content_kanji_grade_general_use'));
       break;
-    case '9':
+    case 9:
       grade.append(browser.i18n.getMessage('content_kanji_grade_name_use'));
       break;
     default:
-      if (
-        typeof entry.misc.G === 'undefined' ||
-        isNaN(parseInt(entry.misc.G))
-      ) {
+      if (typeof entry.misc.gr === 'undefined') {
         grade.append('-');
       } else {
         grade.append(browser.i18n.getMessage('content_kanji_grade_label'));
         grade.append(document.createElement('br'));
-        grade.append(entry.misc.G);
+        grade.append(String(entry.misc.gr));
       }
       break;
   }
@@ -309,53 +308,54 @@ function renderKanjiEntry(
     browser.i18n.getMessage('content_kanji_frequency_label')
   );
   frequencyCell.append(document.createElement('br'));
-  frequencyCell.append(entry.misc.F || '-');
+  frequencyCell.append(String(entry.misc.freq) || '-');
 
   const strokesCell = document.createElement('div');
   summaryTable.append(strokesCell);
   strokesCell.classList.add('cell');
   strokesCell.append(browser.i18n.getMessage('content_kanji_strokes_label'));
   strokesCell.append(document.createElement('br'));
-  strokesCell.append(entry.misc.S);
+  strokesCell.append(String(entry.misc.sc));
 
   // Kanji components
-  if (entry.components) {
+  if (entry.comp.length) {
     const componentsTable = document.createElement('table');
     componentsTable.classList.add('k-bbox-tb');
     table.append(componentsTable);
 
-    entry.components.forEach((component, index) => {
+    for (const [index, component] of entry.comp.entries()) {
       const row = document.createElement('tr');
       componentsTable.append(row);
 
       const radicalCell = document.createElement('td');
       row.append(radicalCell);
       radicalCell.classList.add(`k-bbox-${(index + 1) % 2}a`);
-      radicalCell.append(component.radical);
+      radicalCell.append(component.c);
 
       const readingCell = document.createElement('td');
       row.append(readingCell);
       readingCell.classList.add(`k-bbox-${(index + 1) % 2}b`);
-      readingCell.append(component.yomi);
+      readingCell.append(component.na.join('、'));
 
       const englishCell = document.createElement('td');
       row.append(englishCell);
       englishCell.classList.add(`k-bbox-${(index + 1) % 2}b`);
-      englishCell.append(component.english);
-    });
+      englishCell.append(component.m.join(', '));
+    }
   }
 
   // The kanji itself
   const kanjiSpan = document.createElement('span');
   kanjiSpan.classList.add('k-kanji');
-  kanjiSpan.append(entry.kanji);
+  kanjiSpan.append(entry.c);
   table.append(kanjiSpan);
   table.append(document.createElement('br'));
 
   // English
+  // TODO: Rename this and the class name
   const englishDiv = document.createElement('div');
   englishDiv.classList.add('k-eigo');
-  englishDiv.append(entry.eigo);
+  englishDiv.append(entry.m.join(', '));
   table.append(englishDiv);
 
   // Readings
@@ -363,16 +363,23 @@ function renderKanjiEntry(
   yomiDiv.classList.add('k-yomi');
   table.append(yomiDiv);
 
-  // Readings come in the form:
+  if (entry.r.on && entry.r.on.length) {
+    yomiDiv.append(entry.r.on.join('、'));
+  }
+
+  // Kun readings sometimes have a . in them separating the initial part that
+  // represents the kanji, from the okurigana.
   //
-  //  ヨ、 あた.える、 あずか.る、 くみ.する、 ともに
+  // e.g. あた.える
   //
   // We want to take the bit after the '.' and wrap it in a span with an
   // appropriate class.
-  entry.onkun.forEach((reading, index) => {
-    if (index !== 0) {
-      yomiDiv.append('\u3001');
+  let hasPrecedingEntries = entry.r.on && entry.r.on.length !== 0;
+  for (const reading of entry.r.kun || []) {
+    if (hasPrecedingEntries) {
+      yomiDiv.append('、');
     }
+
     const highlightIndex = reading.indexOf('.');
     if (highlightIndex === -1) {
       yomiDiv.append(reading);
@@ -383,28 +390,20 @@ function renderKanjiEntry(
       highlightSpan.append(reading.substr(highlightIndex + 1));
       yomiDiv.append(highlightSpan);
     }
-  });
+
+    hasPrecedingEntries = true;
+  }
 
   // Optional readings
-  if (entry.nanori.length) {
+  if (entry.r.na && entry.r.na.length) {
     const nanoriLabelSpan = document.createElement('span');
     nanoriLabelSpan.classList.add('k-yomi-ti');
+    // TODO: Localize
     nanoriLabelSpan.append('名乗り');
     yomiDiv.append(
       document.createElement('br'),
       nanoriLabelSpan,
-      ` ${entry.nanori.join('\u3001')}`
-    );
-  }
-
-  if (entry.bushumei.length) {
-    const bushumeiLabelSpan = document.createElement('span');
-    bushumeiLabelSpan.classList.add('k-yomi-ti');
-    bushumeiLabelSpan.append('部首名');
-    yomiDiv.append(
-      document.createElement('br'),
-      bushumeiLabelSpan,
-      ` ${entry.bushumei.join('\u3001')}`
+      ` ${entry.r.na.join('\u3001')}`
     );
   }
 
@@ -413,7 +412,11 @@ function renderKanjiEntry(
   referenceTable.classList.add('references');
   table.append(referenceTable);
 
-  for (const ref of entry.miscDisplay) {
+  // TODO: Export references
+  // (Need to be handle the fact that 漢検 and JLPT data are in the misc field
+  // while the rest are in the refs field.)
+  /*
+  for (const ref of entry.refs.entries()) {
     let value = entry.misc[ref.abbrev] || '-';
 
     const isKanKen = ref.name === 'Kanji Kentei';
@@ -442,6 +445,7 @@ function renderKanjiEntry(
     valueCell.append(value);
     referenceTable.append(valueCell);
   }
+  */
 
   const copyDetails = renderCopyDetails(
     options.copyNextKey,

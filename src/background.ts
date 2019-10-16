@@ -49,7 +49,11 @@ import '../manifest.json.src';
 import '../html/background.html.src';
 
 import bugsnag from '@bugsnag/js';
-import { DatabaseState, KanjiDatabase } from '@birchill/hikibiki-data';
+import {
+  DatabaseState,
+  KanjiDatabase,
+  KanjiResult,
+} from '@birchill/hikibiki-data';
 
 import { updateBrowserAction, FlatFileDictState } from './browser-action';
 import { Config } from './config';
@@ -568,21 +572,9 @@ function search(text: string, dictOption: DictMode) {
     return;
   }
 
-  const kanjiReferences = new Set(
-    Object.entries(config.kanjiReferences)
-      .filter(([, /*abbrev*/ setting]) => setting)
-      .map(([abbrev /*setting*/]) => abbrev)
-  );
-  const kanjiSearchOptions = {
-    includedReferences: kanjiReferences,
-    includeKanjiComponents: config.showKanjiComponents,
-  };
-
   switch (dictOption) {
     case DictMode.ForceKanji:
-      return Promise.resolve(
-        flatFileDict.kanjiSearch(text.charAt(0), kanjiSearchOptions)
-      );
+      return searchKanji(text.charAt(0));
 
     case DictMode.Default:
       showIndex = 0;
@@ -598,9 +590,7 @@ function search(text: string, dictOption: DictMode) {
   ) => {
     switch (showIndex) {
       case kanjiDictIndex:
-        return Promise.resolve(
-          flatFileDict!.kanjiSearch(text.charAt(0), kanjiSearchOptions)
-        );
+        return searchKanji(text.charAt(0));
       case nameDictIndex:
         return flatFileDict!.wordSearch({
           input: text,
@@ -628,6 +618,51 @@ function search(text: string, dictOption: DictMode) {
       return loopOverDictionaries(text);
     });
   })(text);
+}
+
+async function searchKanji(kanji: string): Promise<KanjiResult | null> {
+  // Pre-check (might not be needed anymore)
+  const codepoint = kanji.charCodeAt(0);
+  if (codepoint < 0x3000) {
+    return null;
+  }
+
+  let result;
+  try {
+    result = await kanjiDb.getKanji([kanji]);
+  } catch (e) {
+    console.error(e);
+    bugsnagClient.notify(e || '(Error looking up kanji)', {
+      severity: 'error',
+    });
+    return null;
+  }
+
+  if (!result.length) {
+    return null;
+  }
+
+  if (result.length > 1) {
+    bugsnagClient.notify(`Got more than one result for ${kanji}`, {
+      severity: 'warning',
+    });
+  }
+
+  // TODO: Work out if we should filter references here or not.
+  // TODO: Likewise for components.
+  //
+  // For reference the existing code for this...
+  // const kanjiReferences = new Set(
+  //   Object.entries(config.kanjiReferences)
+  //     .filter(([, /*abbrev*/ setting]) => setting)
+  //     .map(([abbrev /*setting*/]) => abbrev)
+  // );
+  // const kanjiSearchOptions = {
+  //   includedReferences: kanjiReferences,
+  //   includeKanjiComponents: config.showKanjiComponents,
+  // };
+
+  return result[0];
 }
 
 //

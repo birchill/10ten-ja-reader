@@ -1,11 +1,13 @@
+import { KanjiResult } from '@birchill/hikibiki-data';
+
+import { NameTag, getTagForDictKey } from './name-tags';
+
 // Currently the background process will parse out the kanji data before
 // returning it but not the word/name data. Who knows why.
 //
 // Ultimately all parsing should happen in the background process (since we'll
-// eventually store the records as actually JS(ON) objects) but there will still
+// eventually store the records as actual JS(ON) objects) but there will still
 // probably be some pre-processing on the content side to coalesce records etc.
-
-import { NameTag, getTagForDictKey } from './name-tags';
 
 export interface WordEntry {
   kanjiKana: string;
@@ -15,7 +17,7 @@ export interface WordEntry {
   reason: string | null;
 }
 
-export interface WordsResult {
+export interface WordsQueryResult {
   type: 'words';
   title: string | null;
   data: Array<WordEntry>;
@@ -33,23 +35,26 @@ export interface NameEntry {
   definition: NameDefinition;
 }
 
-export interface NamesResult {
+export interface NamesQueryResult {
   type: 'names';
   data: Array<NameEntry>;
   matchLen: number | null;
   more: boolean;
 }
 
-export interface KanjiResult {
+export interface KanjiQueryResult {
   type: 'kanji';
-  data: KanjiEntry;
+  data: KanjiResult;
   matchLen: 1;
 }
 
-export type QueryResult = WordsResult | NamesResult | KanjiResult;
+export type QueryResult =
+  | WordsQueryResult
+  | NamesQueryResult
+  | KanjiQueryResult;
 
-const isKanjiResult = (result: SearchResult): result is KanjiEntry =>
-  (result as KanjiEntry).kanji !== undefined;
+const isKanjiResult = (result: SearchResult): result is KanjiResult =>
+  (result as KanjiResult).c !== undefined;
 
 const isNamesResult = (result: SearchResult): result is WordSearchResult =>
   (result as WordSearchResult).names !== undefined;
