@@ -235,6 +235,10 @@ kanjiDb.onChange = () => {
   notifyDbListeners();
 };
 
+kanjiDb.onWarning = (message: string) => {
+  bugsnagClient.notify(message, { severity: 'warning' });
+};
+
 async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
   if (!dbListeners.length) {
     return;
