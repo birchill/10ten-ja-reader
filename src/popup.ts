@@ -308,7 +308,7 @@ function renderKanjiEntry(
     browser.i18n.getMessage('content_kanji_frequency_label')
   );
   frequencyCell.append(document.createElement('br'));
-  frequencyCell.append(String(entry.misc.freq) || '-');
+  frequencyCell.append(entry.misc.freq ? String(entry.misc.freq) : '-');
 
   const strokesCell = document.createElement('div');
   summaryTable.append(strokesCell);
