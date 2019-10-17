@@ -517,6 +517,11 @@
   color: #7070E0;
 }
 
+#rikaichamp-window.-black .kanji-table .components .-radical * {
+  background: #505050;
+  color: #E0E0E0;
+}
+
 #rikaichamp-window.-black .k-yomi {
   color: #20A020;
 }
@@ -532,32 +537,6 @@
 #rikaichamp-window.-black .summary-box > .cell {
   background: #505050;
   color: #E0E0E0;
-}
-
-#rikaichamp-window.-black .summary-box > .cell:nth-child(5n+2),
-#rikaichamp-window.-black .summary-box > .cell:nth-child(5n+3) {
-  background: #303030;
-  color: #F0F0F0;
-}
-
-#rikaichamp-window.-black .k-bbox-0a {
-  background: #505050;
-  color: #E0E0E0;
-}
-
-#rikaichamp-window.-black .k-bbox-0b {
-  background: #505050;
-  color: #E0E0E0;
-}
-
-#rikaichamp-window.-black .k-bbox-1a {
-  background: #303030;
-  color: #F0F0F0;
-}
-
-#rikaichamp-window.-black .k-bbox-1b {
-  background: #303030;
-  color: #F0F0F0;
 }
 
 #rikaichamp-window.-black .references > .name,
@@ -610,6 +589,11 @@
   color: #000000;
 }
 
+#rikaichamp-window.-lightblue .kanji-table .components .-radical * {
+  background: #DFF1FF;
+  color: #003D6B;
+}
+
 #rikaichamp-window.-lightblue .k-yomi {
   color: #00B366;
 }
@@ -620,33 +604,6 @@
 
 #rikaichamp-window.-lightblue .k-yomi-ti {
   color: #000000;
-}
-
-#rikaichamp-window.-lightblue .summary-box > .cell {
-  background: #DFF1FF;
-  color: #003D6B;
-}
-
-#rikaichamp-window.-lightblue .summary-box > .cell:nth-child(5n+2),
-#rikaichamp-window.-lightblue .summary-box > .cell:nth-child(5n+3) {
-  background: #FFFFFF;
-  color: #003D6B;
-}
-
-#rikaichamp-window.-lightblue .k-bbox-0a {
-  background: #DFF1FF;
-  color: #003D6B;
-}
-
-#rikaichamp-window.-lightblue .k-bbox-0b {
-  background: #DFF1FF;
-  color: #003D6B;
-}
-
-#rikaichamp-window.-lightblue .k-bbox-1a,
-#rikaichamp-window.-lightblue .k-bbox-1b {
-  background: #FFFFFF;
-  color: #003D6B;
 }
 
 #rikaichamp-window.-lightblue .references > .name,
@@ -718,6 +675,11 @@
   color: #7070E0;
 }
 
+#rikaichamp-window.-yellow .kanji-table .components .-radical * {
+  background: #FFFFE6;
+  color: #000000;
+}
+
 #rikaichamp-window.-yellow .k-yomi {
   color: #20A020;
 }
@@ -727,29 +689,6 @@
 }
 
 #rikaichamp-window.-yellow .k-yomi-ti {
-  color: #000000;
-}
-
-#rikaichamp-window.-yellow .summary-box > .cell {
-  background: #FFFFE6;
-  color: #000000;
-}
-
-#rikaichamp-window.-yellow .summary-box > .cell:nth-child(5n+2),
-#rikaichamp-window.-yellow .summary-box > .cell:nth-child(5n+3) {
-  background: #F7F7D0;
-  color: #000000;
-}
-
-#rikaichamp-window.-yellow .k-bbox-0a,
-#rikaichamp-window.-yellow .k-bbox-0b {
-  background: #FFFFE6;
-  color: #000000;
-}
-
-#rikaichamp-window.-yellow .k-bbox-1a,
-#rikaichamp-window.-yellow .k-bbox-1b {
-  background: #F7F7D0;
   color: #000000;
 }
 

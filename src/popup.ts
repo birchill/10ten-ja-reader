@@ -290,7 +290,7 @@ function renderKanjiEntry(
     const componentsTable = document.createElement('table');
     componentsDiv.append(componentsTable);
 
-    for (const [index, component] of entry.comp.entries()) {
+    for (const component of entry.comp) {
       const row = document.createElement('tr');
       componentsTable.append(row);
 
@@ -301,19 +301,16 @@ function renderKanjiEntry(
       const radicalCell = document.createElement('td');
       row.append(radicalCell);
       radicalCell.classList.add('char');
-      radicalCell.classList.add(`k-bbox-${(index + 1) % 2}a`);
       radicalCell.append(component.c);
 
       const readingCell = document.createElement('td');
       row.append(readingCell);
-      readingCell.classList.add(`k-bbox-${(index + 1) % 2}b`);
       readingCell.classList.add('reading');
       readingCell.append(component.na.join('、'));
 
       const meaningCell = document.createElement('td');
       row.append(meaningCell);
       meaningCell.classList.add('meaning');
-      meaningCell.classList.add(`k-bbox-${(index + 1) % 2}b`);
       meaningCell.append(component.m.join(', '));
     }
   }
