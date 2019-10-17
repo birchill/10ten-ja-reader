@@ -188,29 +188,78 @@
   padding: 6px 10px;
 }
 
-#rikaichamp-window .k-kanji {
-  font-family: serif;
-  font-size: 48px;
-}
-
 #rikaichamp-window .kanji-table.-copy,
 #rikaichamp-window .kanji-table.-finished {
   width: auto;
   min-width: 300px;
 }
 
-#rikaichamp-window .kanji-table.-copy .k-kanji {
+
+/* top part of the kanji table */
+
+#rikaichamp-window .kanji-table .top-part {
+  display: flex;
+  margin-top: 6px;
+  margin-bottom: 12px;
+}
+
+/* kanji: character itself */
+
+#rikaichamp-window .kanji-table .kanji {
+  flex-grow: 1;
+  max-width: 2em;
+
+  line-height: 1;
+  font-size: 56px;
+
+  font-family: serif;
+}
+
+#rikaichamp-window .kanji-table.-copy .kanji {
   background: rgba(255,255,206);
   border-radius: 2px;
   color: #4C63A8;
 }
 
-#rikaichamp-window .kanji-table.-finished .k-kanji {
+#rikaichamp-window .kanji-table.-finished .kanji {
   animation: flash 0.5s;
 }
 
-#rikaichamp-window .k-eigo {
-  font-size: 12px;
+/* kanji: components */
+
+#rikaichamp-window .kanji-table .components {
+  flex-grow: 1;
+  margin-inline-start: 12px;
+}
+
+#rikaichamp-window .kanji-table .components {
+  border-collapse: collapse;
+}
+
+#rikaichamp-window .kanji-table .components .char,
+#rikaichamp-window .kanji-table .components .reading,
+#rikaichamp-window .kanji-table .components .meaning {
+  vertical-align: top;
+  font-size: 11px;
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+#rikaichamp-window .kanji-table .components .reading {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+#rikaichamp-window .kanji-table .components .-radical .char {
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+#rikaichamp-window .kanji-table .components .-radical .meaning {
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
 }
 
 /* kanji: readings */
@@ -228,24 +277,14 @@
   font-size: 11px;
 }
 
-/* kanji radical, grade, freq, strokes box */
+/* kanji grade, freq, strokes */
 
-#rikaichamp-window .summary-box {
-  display: grid;
-  grid-template-columns: 60px 60px;
-  margin-bottom: 4px;
-  float: right;
-  clear: right;
-}
-
-#rikaichamp-window .summary-box > .cell {
-  font-size: 12px;
-  text-align: center;
-  padding: 1px 4px;
+#rikaichamp-window .kanji-table .meanings {
+  font-size: 13px;
+  margin-bottom: 6px;
 }
 
 #rikaichamp-window .kanji-table > .misc {
-  font-size: 11px;
   display: flex;
   margin-bottom: 8px;
 }
@@ -263,7 +302,7 @@
 #rikaichamp-window .kanji-table > .misc .strokes span,
 #rikaichamp-window .kanji-table > .misc .freq span,
 #rikaichamp-window .kanji-table > .misc .grade span {
-  font-size: 12px;
+  font-size: 13px;
 }
 
 #rikaichamp-window .kanji-table > .misc .freq .denom {
@@ -277,40 +316,6 @@
   margin-right: 6px;
   fill: currentcolor;
 }
-
-/* kanji components box */
-
-#rikaichamp-window .k-bbox-tb {
-  width: 120px;
-  margin-bottom: 4px;
-  float: right;
-  clear: right;
-}
-
-#rikaichamp-window .k-bbox-0a {
-  vertical-align: top;
-  font-size: 11px;
-  padding: 1px 3px;
-}
-
-#rikaichamp-window .k-bbox-0b {
-  vertical-align: top;
-  font-size: 11px;
-  padding: 1px 3px;
-}
-
-#rikaichamp-window .k-bbox-1a {
-  vertical-align: top;
-  font-size: 11px;
-  padding: 1px 3px;
-}
-
-#rikaichamp-window .k-bbox-1b {
-  vertical-align: top;
-  font-size: 11px;
-  padding: 1px 3px;
-}
-
 
 /* kanji: misc index */
 
@@ -428,7 +433,12 @@
   color: #FFFFFF;
 }
 
-#rikaichamp-window.-blue .k-kanji {
+#rikaichamp-window.-blue .kanji-table .kanji {
+  color: #B7E7FF;
+}
+
+#rikaichamp-window.-blue .kanji-table .components .-radical * {
+  background: #4C63A8;
   color: #B7E7FF;
 }
 
@@ -447,37 +457,6 @@
 
 #rikaichamp-window.-blue .k-yomi-ti {
   color: #E7FFE7;
-}
-
-#rikaichamp-window.-blue .summary-box > .cell {
-  background: #5A70B5;
-  color: #FFFFFF;
-}
-
-#rikaichamp-window.-blue .summary-box > .cell:nth-child(5n+2),
-#rikaichamp-window.-blue .summary-box > .cell:nth-child(5n+3) {
-  background: #4C63A8;
-  color: #B7E7FF;
-}
-
-#rikaichamp-window.-blue .k-bbox-0a {
-  background: #5A70B5;
-  color: #FFFFFF;
-}
-
-#rikaichamp-window.-blue .k-bbox-0b {
-  background: #5A70B5;
-  color: #FFFFFF;
-}
-
-#rikaichamp-window.-blue .k-bbox-1a {
-  background: #4C63A8;
-  color: #B7E7FF;
-}
-
-#rikaichamp-window.-blue .k-bbox-1b {
-  background: #4C63A8;
-  color: #B7E7FF;
 }
 
 #rikaichamp-window.-blue .references > .name,
@@ -530,11 +509,11 @@
   color: #E0E0E0;
 }
 
-#rikaichamp-window.-black .k-kanji {
+#rikaichamp-window.-black .kanji-table .kanji {
   color: #FFFFFF;
 }
 
-#rikaichamp-window.-black .kanji-table.-copy .k-kanji {
+#rikaichamp-window.-black .kanji-table.-copy .kanji {
   color: #7070E0;
 }
 
@@ -627,7 +606,7 @@
   color: #000000;
 }
 
-#rikaichamp-window.-lightblue .k-kanji {
+#rikaichamp-window.-lightblue .kanji-table .kanji {
   color: #000000;
 }
 
@@ -730,11 +709,11 @@
   color: #000000;
 }
 
-#rikaichamp-window.-yellow .k-kanji {
+#rikaichamp-window.-yellow .kanji-table .kanji {
   color: #000000;
 }
 
-#rikaichamp-window.-yellow .kanji-table.-copy .k-kanji {
+#rikaichamp-window.-yellow .kanji-table.-copy .kanji {
   background: #d4edf9;
   color: #7070E0;
 }

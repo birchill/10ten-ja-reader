@@ -266,51 +266,57 @@ function renderKanjiEntry(
     table.classList.add('-finished');
   }
 
-  // Summary information
-  const summaryTable = document.createElement('div');
-  table.append(summaryTable);
-  summaryTable.classList.add('summary-box');
+  // Top part
+  const topPart = document.createElement('div');
+  topPart.classList.add('top-part');
+  table.append(topPart);
+
+  // The kanji itself
+  const kanjiDiv = document.createElement('div');
+  kanjiDiv.classList.add('kanji');
+  kanjiDiv.append(entry.c);
+  topPart.append(kanjiDiv);
 
   // Kanji components
+  const componentsDiv = document.createElement('div');
+  componentsDiv.classList.add('components');
+  topPart.append(componentsDiv);
+
+  // Kanji components
+  //
+  // TODO: Make sure we show the radical
+  // TODO: Show the base radical too
   if (entry.comp.length) {
     const componentsTable = document.createElement('table');
-    componentsTable.classList.add('k-bbox-tb');
-    table.append(componentsTable);
+    componentsDiv.append(componentsTable);
 
     for (const [index, component] of entry.comp.entries()) {
       const row = document.createElement('tr');
       componentsTable.append(row);
 
+      if (component.c === entry.rad.b || component.c === entry.rad.k) {
+        row.classList.add('-radical');
+      }
+
       const radicalCell = document.createElement('td');
       row.append(radicalCell);
+      radicalCell.classList.add('char');
       radicalCell.classList.add(`k-bbox-${(index + 1) % 2}a`);
       radicalCell.append(component.c);
 
       const readingCell = document.createElement('td');
       row.append(readingCell);
       readingCell.classList.add(`k-bbox-${(index + 1) % 2}b`);
+      readingCell.classList.add('reading');
       readingCell.append(component.na.join('、'));
 
-      const englishCell = document.createElement('td');
-      row.append(englishCell);
-      englishCell.classList.add(`k-bbox-${(index + 1) % 2}b`);
-      englishCell.append(component.m.join(', '));
+      const meaningCell = document.createElement('td');
+      row.append(meaningCell);
+      meaningCell.classList.add('meaning');
+      meaningCell.classList.add(`k-bbox-${(index + 1) % 2}b`);
+      meaningCell.append(component.m.join(', '));
     }
   }
-
-  // The kanji itself
-  const kanjiSpan = document.createElement('span');
-  kanjiSpan.classList.add('k-kanji');
-  kanjiSpan.append(entry.c);
-  table.append(kanjiSpan);
-  table.append(document.createElement('br'));
-
-  // English
-  // TODO: Rename this and the class name
-  const englishDiv = document.createElement('div');
-  englishDiv.classList.add('k-eigo');
-  englishDiv.append(entry.m.join(', '));
-  table.append(englishDiv);
 
   // Readings
   const yomiDiv = document.createElement('div');
@@ -361,6 +367,13 @@ function renderKanjiEntry(
     );
   }
 
+  // English
+  const meaningsDiv = document.createElement('div');
+  meaningsDiv.classList.add('meanings');
+  meaningsDiv.append(entry.m.join(', '));
+  table.append(meaningsDiv);
+
+  // Misc info
   table.append(renderMiscRow(entry));
 
   // Reference row
