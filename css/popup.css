@@ -33,7 +33,7 @@
   transition: opacity 0.05s;
   will-change: opacity;
   pointer-events: none;
-  contain: all;
+  contain: content;
 }
 
 #rikaichamp-window.hidden {
@@ -242,6 +242,40 @@
   font-size: 12px;
   text-align: center;
   padding: 1px 4px;
+}
+
+#rikaichamp-window .kanji-table > .misc {
+  font-size: 11px;
+  display: flex;
+  margin-bottom: 8px;
+}
+
+#rikaichamp-window .kanji-table > .misc > * {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+
+#rikaichamp-window .kanji-table > .misc > :not(:first-child) {
+  margin-left: 6px;
+}
+
+#rikaichamp-window .kanji-table > .misc .strokes span,
+#rikaichamp-window .kanji-table > .misc .freq span,
+#rikaichamp-window .kanji-table > .misc .grade span {
+  font-size: 12px;
+}
+
+#rikaichamp-window .kanji-table > .misc .freq .denom {
+  font-size: 9px;
+}
+
+#rikaichamp-window .kanji-table > .misc .svgicon {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  fill: currentcolor;
 }
 
 /* kanji components box */

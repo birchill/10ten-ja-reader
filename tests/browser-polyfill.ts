@@ -8,7 +8,7 @@ export const browser = {
     },
   },
   i18n: {
-    getMessage: (id: string) => {
+    getMessage: (id: string, replacements?: Array<string>) => {
       switch (id) {
         case 'content_names_dictionary':
           return 'Names Dictionary';
@@ -39,15 +39,17 @@ export const browser = {
         case 'content_kanji_radical_label':
           return 'radical';
         case 'content_kanji_grade_label':
-          return 'grade';
+          return `Grade ${replacements ? replacements[0] : '?'}`;
         case 'content_kanji_grade_general_use':
-          return 'general use';
+          return 'General use';
         case 'content_kanji_grade_name_use':
-          return 'name use';
+          return 'Name use';
         case 'content_kanji_frequency_label':
-          return 'freq';
+          return 'Freq. ';
         case 'content_kanji_strokes_label':
-          return 'strokes';
+          return `${replacements ? replacements[0] : '?'} strokes`;
+        case 'content_kanji_strokes_label':
+          return '1 stroke';
         case 'content_kanji_kentei_label':
           return 'Kanji Kentei Level';
         case 'content_kanji_kentei_level':

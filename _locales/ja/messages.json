@@ -131,8 +131,18 @@
     "message": "レベル",
     "description": "The title given to the box showing kanji grade"
   },
+  "content_kanji_grade_label": {
+    "message": "$grade$年生",
+    "description": "The label for kanji in grades 1 - 6",
+    "placeholders": {
+      "grade": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
   "content_kanji_grade_general_use": {
-    "message": "一般用",
+    "message": "常用",
     "description": "Label for kanji marked as general use"
   },
   "content_kanji_grade_name_use": {
@@ -140,12 +150,22 @@
     "description": "Label for kanji marked as name use"
   },
   "content_kanji_frequency_label": {
-    "message": "頻度",
-    "description": "The title given to the box showing frequency information"
+    "message": "頻度 ",
+    "description": "The prefix to the xxx / 2,500 frequency information"
   },
   "content_kanji_strokes_label": {
-    "message": "画数",
-    "description": "The title given to the box showing stroke count information"
+    "message": "$strokes$画",
+    "description": "The description of the number of strokes",
+    "placeholders": {
+      "strokes": {
+        "content": "$1",
+        "example": "7"
+      }
+    }
+  },
+  "content_kanji_strokes_label_1": {
+    "message": "1画",
+    "description": "The description of the number of strokes when there is exactly 1 stroke"
   },
   "content_kanji_kentei_label": {
     "message": "漢字検定",

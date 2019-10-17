@@ -271,52 +271,6 @@ function renderKanjiEntry(
   table.append(summaryTable);
   summaryTable.classList.add('summary-box');
 
-  const radicalCell = document.createElement('div');
-  summaryTable.append(radicalCell);
-  radicalCell.classList.add('cell');
-  radicalCell.append(browser.i18n.getMessage('content_kanji_radical_label'));
-  radicalCell.append(document.createElement('br'));
-  radicalCell.append(`${entry.rad.b || entry.rad.k} ${entry.rad.x}`);
-
-  const gradeCell = document.createElement('div');
-  summaryTable.append(gradeCell);
-  gradeCell.classList.add('cell');
-  let grade = document.createDocumentFragment();
-  switch (entry.misc.gr || 0) {
-    case 8:
-      grade.append(browser.i18n.getMessage('content_kanji_grade_general_use'));
-      break;
-    case 9:
-      grade.append(browser.i18n.getMessage('content_kanji_grade_name_use'));
-      break;
-    default:
-      if (typeof entry.misc.gr === 'undefined') {
-        grade.append('-');
-      } else {
-        grade.append(browser.i18n.getMessage('content_kanji_grade_label'));
-        grade.append(document.createElement('br'));
-        grade.append(String(entry.misc.gr));
-      }
-      break;
-  }
-  gradeCell.append(grade);
-
-  const frequencyCell = document.createElement('div');
-  summaryTable.append(frequencyCell);
-  frequencyCell.classList.add('cell');
-  frequencyCell.append(
-    browser.i18n.getMessage('content_kanji_frequency_label')
-  );
-  frequencyCell.append(document.createElement('br'));
-  frequencyCell.append(entry.misc.freq ? String(entry.misc.freq) : '-');
-
-  const strokesCell = document.createElement('div');
-  summaryTable.append(strokesCell);
-  strokesCell.classList.add('cell');
-  strokesCell.append(browser.i18n.getMessage('content_kanji_strokes_label'));
-  strokesCell.append(document.createElement('br'));
-  strokesCell.append(String(entry.misc.sc));
-
   // Kanji components
   if (entry.comp.length) {
     const componentsTable = document.createElement('table');
@@ -407,6 +361,8 @@ function renderKanjiEntry(
     );
   }
 
+  table.append(renderMiscRow(entry));
+
   // Reference row
   const referenceTable = document.createElement('div');
   referenceTable.classList.add('references');
@@ -460,6 +416,157 @@ function renderKanjiEntry(
   }
 
   return container;
+}
+
+function renderMiscRow(entry: KanjiResult): HTMLElement {
+  // Misc information row
+  const miscInfoDiv = document.createElement('div');
+  miscInfoDiv.classList.add('misc');
+
+  // Strokes
+  const strokesDiv = document.createElement('div');
+  strokesDiv.classList.add('strokes');
+  strokesDiv.append(renderBrush());
+  const strokeCount = document.createElement('span');
+  strokeCount.textContent =
+    entry.misc.sc === 1
+      ? browser.i18n.getMessage('content_kanji_strokes_label_1')
+      : browser.i18n.getMessage('content_kanji_strokes_label', [
+          String(entry.misc.sc),
+        ]);
+  strokesDiv.append(strokeCount);
+  miscInfoDiv.append(strokesDiv);
+
+  // Frequency
+  const frequencyDiv = document.createElement('div');
+  frequencyDiv.classList.add('freq');
+  frequencyDiv.append(renderFrequency(entry.misc.freq));
+  const frequency = document.createElement('span');
+  if (entry.misc.freq) {
+    frequency.textContent =
+      browser.i18n.getMessage('content_kanji_frequency_label') +
+      ` ${entry.misc.freq}`;
+    const denominator = document.createElement('span');
+    denominator.classList.add('denom');
+    denominator.append(' / 2,500');
+    frequency.append(denominator);
+  } else {
+    frequency.textContent = '-';
+  }
+  frequencyDiv.append(frequency);
+  miscInfoDiv.append(frequencyDiv);
+
+  // Grade
+  const gradeDiv = document.createElement('div');
+  gradeDiv.classList.add('grade');
+  gradeDiv.append(renderUser());
+  const grade = document.createElement('span');
+  switch (entry.misc.gr || 0) {
+    case 8:
+      grade.append(browser.i18n.getMessage('content_kanji_grade_general_use'));
+      break;
+    case 9:
+      grade.append(browser.i18n.getMessage('content_kanji_grade_name_use'));
+      break;
+    default:
+      if (typeof entry.misc.gr === 'undefined') {
+        grade.append('-');
+      } else {
+        grade.append(
+          browser.i18n.getMessage('content_kanji_grade_label', [
+            String(entry.misc.gr),
+          ])
+        );
+      }
+      break;
+  }
+  gradeDiv.append(grade);
+  miscInfoDiv.append(gradeDiv);
+
+  return miscInfoDiv;
+}
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+let brushSvg: SVGElement | undefined;
+function renderBrush(): SVGElement {
+  if (!brushSvg) {
+    brushSvg = document.createElementNS(SVG_NS, 'svg');
+    brushSvg.classList.add('svgicon');
+    brushSvg.style.opacity = '0.5';
+    brushSvg.setAttribute('viewBox', '0 0 90 90');
+
+    const path = document.createElementNS(SVG_NS, 'path');
+    path.setAttribute(
+      'd',
+      'M80 11c-2-2-5-2-7 0L22 58l12 12 46-52c2-2 2-5 0-7zM11 82c11 0 17-3 20-11L21 61c-12 6-3 14-10 21z'
+    );
+    brushSvg.append(path);
+  }
+
+  return brushSvg;
+}
+
+function renderFrequency(frequency: number | undefined): SVGElement {
+  const freqSvg = document.createElementNS(SVG_NS, 'svg');
+  freqSvg.classList.add('svgicon');
+  freqSvg.setAttribute('viewBox', '0 0 8 8');
+
+  const rect1 = document.createElementNS(SVG_NS, 'rect');
+  rect1.setAttribute('x', '0');
+  rect1.setAttribute('y', '5');
+  rect1.setAttribute('width', '2');
+  rect1.setAttribute('height', '3');
+  rect1.setAttribute('rx', '0.5');
+  rect1.setAttribute('ry', '0.5');
+  if (!frequency) {
+    rect1.setAttribute('opacity', '0.5');
+  }
+  freqSvg.append(rect1);
+
+  const rect2 = document.createElementNS(SVG_NS, 'rect');
+  rect2.setAttribute('x', '3');
+  rect2.setAttribute('y', '3');
+  rect2.setAttribute('width', '2');
+  rect2.setAttribute('height', '5');
+  rect2.setAttribute('rx', '0.5');
+  rect2.setAttribute('ry', '0.5');
+  if (!frequency || frequency >= (2500 * 2) / 3) {
+    rect2.setAttribute('opacity', '0.5');
+  }
+  freqSvg.append(rect2);
+
+  const rect3 = document.createElementNS(SVG_NS, 'rect');
+  rect3.setAttribute('x', '6');
+  rect3.setAttribute('width', '2');
+  rect3.setAttribute('height', '8');
+  rect3.setAttribute('rx', '0.5');
+  rect3.setAttribute('ry', '0.5');
+  if (!frequency || frequency >= 2500 / 3) {
+    rect3.setAttribute('opacity', '0.5');
+  }
+  freqSvg.append(rect3);
+
+  return freqSvg;
+}
+
+let userSvg: SVGElement | undefined;
+function renderUser(): SVGElement {
+  if (!userSvg) {
+    userSvg = document.createElementNS(SVG_NS, 'svg');
+    userSvg.classList.add('svgicon');
+    userSvg.style.opacity = '0.5';
+    userSvg.setAttribute('viewBox', '0 0 8 8');
+
+    const path = document.createElementNS(SVG_NS, 'path');
+    path.setAttribute(
+      'd',
+      'M4 8C1.93 8 .25 7.73.25 7.25V7c0-.9.69-1.39 1.02-1.55.33-.16 1.04-.38 1.34-.57L3 4.62s0-.04 0 0v-.37a2.62 2.62 0 0 1-.44-1.05c-.15.05-.33-.14-.4-.42-.07-.27-.01-.52.13-.56h.02l-.06-.82c0-.21-.03-.39.23-.76.27-.36.5-.22.5-.22s.17-.18.32-.26c.16-.08.54-.28 1.24-.07.69.2.96.3 1.13 1.1.1.46.07.8.04 1.03h.02c.14.03.2.29.12.56-.07.27-.24.46-.38.43-.1.44-.24.75-.47 1.04v.37c0-.01 0 0 0 0s.08.07.37.26c.3.2 1.02.41 1.35.57.32.16 1 .69 1.03 1.55v.25C7.75 7.73 6.07 8 4 8z'
+    );
+    userSvg.append(path);
+  }
+
+  return userSvg;
 }
 
 function renderCopyDetails(

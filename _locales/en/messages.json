@@ -128,24 +128,40 @@
     "description": "The label to give to kanji components when copying a kanji entry"
   },
   "content_kanji_grade_label": {
-    "message": "grade",
-    "description": "The title given to the box showing kanji grade"
+    "message": "Grade $grade$",
+    "description": "The label for kanji in grades 1 - 6",
+    "placeholders": {
+      "grade": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
   },
   "content_kanji_grade_general_use": {
-    "message": "general use",
+    "message": "General use",
     "description": "Label for kanji marked as general use"
   },
   "content_kanji_grade_name_use": {
-    "message": "name use",
+    "message": "Name use",
     "description": "Label for kanji marked as name use"
   },
   "content_kanji_frequency_label": {
-    "message": "freq",
-    "description": "The title given to the box showing frequency information"
+    "message": "Freq. ",
+    "description": "The prefix to the xxx / 2,500 frequency information"
   },
   "content_kanji_strokes_label": {
-    "message": "strokes",
-    "description": "The title given to the box showing stroke count information"
+    "message": "$strokes$ strokes",
+    "description": "The description of the number of strokes",
+    "placeholders": {
+      "strokes": {
+        "content": "$1",
+        "example": "7"
+      }
+    }
+  },
+  "content_kanji_strokes_label_1": {
+    "message": "1 stroke",
+    "description": "The description of the number of strokes when there is exactly 1 stroke"
   },
   "content_kanji_kentei_label": {
     "message": "Kanji Kentei Level",
