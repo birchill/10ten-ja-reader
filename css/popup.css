@@ -282,10 +282,12 @@
 
 #rikaichamp-window .kanji-table > .misc {
   display: flex;
+  justify-content: space-between;
+  padding-left: 0.5em;
+  padding-right: 1em;
 }
 
 #rikaichamp-window .kanji-table > .misc > * {
-  flex-grow: 1;
   display: flex;
   align-items: center;
 }
@@ -315,17 +317,27 @@
 /* kanji: references */
 
 #rikaichamp-window .references {
-  margin-top: 8px;
+  margin-top: 12px;
   display: grid;
-  grid-template-columns: auto 50px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-column-gap: .5em;
   width: 100%
 }
 
-#rikaichamp-window .references > .name,
-#rikaichamp-window .references > .value {
+#rikaichamp-window .references .ref {
+  display: flex;
+  padding: 2px 1em;
+  border-radius: .5em;
+  justify-content: space-between;
+}
+
+#rikaichamp-window .references .name,
+#rikaichamp-window .references .value {
   font-size: 12px;
-  padding-left: 2px;
-  padding-right: 2px;
+}
+
+#rikaichamp-window .references .value {
+  margin-left: .5em;
 }
 
 /*
@@ -463,16 +475,14 @@
   color: #E7FFE7;
 }
 
-#rikaichamp-window.-blue .references > .name,
-#rikaichamp-window.-blue .references > .value {
-  background: #5A70B5;
-  color: #B7E7FF;
+#rikaichamp-window.-blue .references .ref:nth-of-type(4n),
+#rikaichamp-window.-blue .references .ref:nth-of-type(4n+3) {
+  background: #4C63A8;
 }
 
-#rikaichamp-window.-blue .references > .name:nth-child(4n+3),
-#rikaichamp-window.-blue .references > .value:nth-child(4n+4) {
-  background: #4C63A8;
-  color: #FFFFFF;
+#rikaichamp-window.-blue .references .ref:nth-of-type(4n) *,
+#rikaichamp-window.-blue .references .ref:nth-of-type(4n+3) * {
+  color: #B7E7FF;
 }
 
 /*
@@ -547,15 +557,13 @@
   color: #E0E0E0;
 }
 
-#rikaichamp-window.-black .references > .name,
-#rikaichamp-window.-black .references > .value {
+#rikaichamp-window.-black .references .ref:nth-of-type(4n),
+#rikaichamp-window.-black .references .ref:nth-of-type(4n+3) {
   background: #505050;
-  color: #F0F0F0;
 }
 
-#rikaichamp-window.-black .references > .name:nth-of-type(4n+3),
-#rikaichamp-window.-black .references > .value:nth-of-type(4n+4) {
-  background: #303030;
+#rikaichamp-window.-black .references .ref:nth-of-type(4n) *,
+#rikaichamp-window.-black .references .ref:nth-of-type(4n+3) * {
   color: #E0E0E0;
 }
 
@@ -622,15 +630,13 @@
   color: #000000;
 }
 
-#rikaichamp-window.-lightblue .references > .name,
-#rikaichamp-window.-lightblue .references > .value {
+#rikaichamp-window.-lightblue .references .ref:nth-of-type(4n),
+#rikaichamp-window.-lightblue .references .ref:nth-of-type(4n+3) {
   background: #DFF1FF;
-  color: #003D6B;
 }
 
-#rikaichamp-window.-lightblue .references > .name:nth-of-type(4n+3),
-#rikaichamp-window.-lightblue .references > .value:nth-of-type(4n+4) {
-  background: #FFFFFF;
+#rikaichamp-window.-lightblue .references .ref:nth-of-type(4n) *,
+#rikaichamp-window.-lightblue .references .ref:nth-of-type(4n+3) * {
   color: #003D6B;
 }
 
@@ -712,14 +718,12 @@
   color: #000000;
 }
 
-#rikaichamp-window.-yellow .references > .name,
-#rikaichamp-window.-yellow .references > .value {
+#rikaichamp-window.-yellow .references .ref:nth-of-type(4n),
+#rikaichamp-window.-yellow .references .ref:nth-of-type(4n+3) {
   background: #FFFFE6;
-  color: black;
 }
 
-#rikaichamp-window.-yellow .references > .name:nth-of-type(4n+3),
-#rikaichamp-window.-yellow .references > .value:nth-of-type(4n+4) {
-  background: #F7F7D0;
-  color: black;
+#rikaichamp-window.-yellow .references .ref:nth-of-type(4n) *,
+#rikaichamp-window.-yellow .references .ref:nth-of-type(4n+3) * {
+  color: #000000;
 }

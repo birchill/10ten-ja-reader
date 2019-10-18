@@ -665,15 +665,19 @@ function renderReferences(
         break;
     }
 
-    const nameCell = document.createElement('div');
-    nameCell.classList.add('name');
-    nameCell.append(ref.short || ref.full);
-    referenceTable.append(nameCell);
+    const referenceCell = document.createElement('div');
+    referenceCell.classList.add('ref');
+    referenceTable.append(referenceCell);
 
-    const valueCell = document.createElement('div');
-    valueCell.classList.add('value');
-    valueCell.append(value);
-    referenceTable.append(valueCell);
+    const nameSpan = document.createElement('span');
+    nameSpan.classList.add('name');
+    nameSpan.append(ref.short || ref.full);
+    referenceCell.append(nameSpan);
+
+    const valueSpan = document.createElement('span');
+    valueSpan.classList.add('value');
+    valueSpan.append(value);
+    referenceCell.append(valueSpan);
   }
 
   return referenceTable;
