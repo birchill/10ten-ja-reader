@@ -18,6 +18,12 @@ interface ContentConfig {
   // True if only the reading (and not the definition) should be shown.
   readingOnly: boolean;
 
+  // References to show in the kanji view.
+  kanjiReferences: Array<import('./refs').ReferenceAbbreviation>;
+
+  // True if the components of the kanji should be shown alongside it.
+  showKanjiComponents: boolean;
+
   // Modifier keys which must be held down in order for the pop-up to shown.
   //
   // This should be a Set but Chrome can't send Sets by sendMessage :(

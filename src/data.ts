@@ -50,33 +50,6 @@ import { deinflect, deinflectL10NKeys, CandidateWord } from './deinflect';
 import { normalizeInput } from './conversion';
 import { toRomaji } from './romaji';
 
-export const REF_ABBREVIATIONS = [
-  /*
-  DR: 'Father Joseph De Roo Index',
-  DO: 'P.G. O\'Neill Index',
-  O: 'P.G. O\'Neill Japanese Names Index',
-  Q: 'Four Corner Code',
-  MN: 'Morohashi Daikanwajiten Index',
-  MP: 'Morohashi Daikanwajiten Volume/Page',
-  K: 'Gakken Kanji Dictionary Index',
-  W: 'Korean Reading',
-  */
-  { abbrev: 'CO', name: 'Conning' },
-  { abbrev: 'H', name: 'Halpern' },
-  { abbrev: 'L', name: 'Heisig' },
-  { abbrev: 'E', name: 'Henshall' },
-  { abbrev: 'KK', name: 'Kanji Kentei' },
-  { abbrev: 'DK', name: 'Kanji Learners Dictionary' },
-  { abbrev: 'N', name: 'Nelson' },
-  { abbrev: 'NR', name: 'Nelson Radical' },
-  { abbrev: 'V', name: 'New Nelson' },
-  { abbrev: 'Y', name: 'PinYin' },
-  { abbrev: 'P', name: 'Skip Pattern' },
-  { abbrev: 'IN', name: 'Tuttle Kanji & Kana' },
-  { abbrev: 'I', name: 'Tuttle Kanji Dictionary' },
-  { abbrev: 'U', name: 'Unicode' },
-];
-
 const WORDS_MAX_ENTRIES = 7;
 const NAMES_MAX_ENTRIES = 20;
 

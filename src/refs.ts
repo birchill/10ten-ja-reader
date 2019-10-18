@@ -1,4 +1,4 @@
-export const SUPPORTED_REFERENCES = [
+const SUPPORTED_REFERENCES = [
   // The radical for the kanji (number and character, from rad field)
   'radical',
   // Nelson radical (from rad field)
@@ -42,6 +42,18 @@ export const SUPPORTED_REFERENCES = [
 
 export type ReferenceAbbreviation = typeof SUPPORTED_REFERENCES[number];
 
+export function getSupportedReferences({
+  lang,
+}: {
+  lang?: string;
+}): ReadonlyArray<ReferenceAbbreviation> {
+  if (!lang || lang === 'fr') {
+    return SUPPORTED_REFERENCES;
+  }
+
+  return SUPPORTED_REFERENCES.filter(ref => ref !== 'maniette');
+}
+
 const REFERENCE_ABBREV_MAPPING: {
   [key: string]: ReferenceAbbreviation;
 } = {
@@ -60,21 +72,12 @@ const REFERENCE_ABBREV_MAPPING: {
   U: 'unicode',
 } as const;
 
-// Takes an array of older-style reference abbreviations (e.g. 'E' for Henshall)
-// and converts them to the new ones. It also adds new ones that are on by
-// default -- namely radical.
-export function convertReferences(
-  refs: ReadonlyArray<string>
-): Array<ReferenceAbbreviation> {
-  const result: Array<ReferenceAbbreviation> = ['radical'];
-
-  for (const ref of refs) {
-    if (REFERENCE_ABBREV_MAPPING.hasOwnProperty(ref)) {
-      result.push(REFERENCE_ABBREV_MAPPING[ref]);
-    }
-  }
-
-  return result;
+export function convertLegacyReference(
+  ref: string
+): ReferenceAbbreviation | undefined {
+  return REFERENCE_ABBREV_MAPPING.hasOwnProperty(ref)
+    ? REFERENCE_ABBREV_MAPPING[ref]
+    : undefined;
 }
 
 type LocalizedReferences = 'radical' | 'kk' | 'jlpt' | 'unicode';

@@ -12,6 +12,7 @@ import {
   updateDb,
 } from './db-listener-messages';
 import { translateDoc } from './l10n';
+import { getReferenceNames, getSupportedReferences } from './refs';
 
 const config = new Config();
 
@@ -33,18 +34,11 @@ function completeForm() {
   addPopupKeys();
   translateKeys();
 
-  // TODO: Use REF_ABBREVIATIONS to generate the HTML for options.html too.
+  // Kanji
+  createKanjiReferences();
 
   // l10n
   translateDoc();
-
-  for (const ref of Object.keys(config.kanjiReferences)) {
-    document.getElementById(ref)!.addEventListener('click', evt => {
-      config.updateKanjiReferences({
-        [ref]: (evt.target as HTMLInputElement).checked,
-      });
-    });
-  }
 
   document.getElementById('highlightText')!.addEventListener('click', evt => {
     config.noTextHighlight = !(evt.target as HTMLInputElement).checked;
@@ -424,6 +418,38 @@ function translateKeys() {
   }
 }
 
+function createKanjiReferences() {
+  const container = document.getElementById(
+    'kanji-reference-list'
+  ) as HTMLDivElement;
+
+  const referenceNames = getReferenceNames({ lang: 'en' });
+  for (const { ref, full } of referenceNames) {
+    const rowDiv = document.createElement('div');
+    rowDiv.classList.add('browser-style');
+    rowDiv.classList.add('checkbox-row');
+
+    const checkbox = document.createElement('input');
+    checkbox.setAttribute('type', 'checkbox');
+    checkbox.setAttribute('id', `ref-${ref}`);
+    checkbox.setAttribute('name', ref);
+    checkbox.addEventListener('click', evt => {
+      config.updateKanjiReferences({
+        [ref]: (evt.target as HTMLInputElement).checked,
+      });
+    });
+
+    rowDiv.append(checkbox);
+
+    const label = document.createElement('label');
+    label.setAttribute('for', `ref-${ref}`);
+    label.textContent = full;
+    rowDiv.append(label);
+
+    container.append(rowDiv);
+  }
+}
+
 function fillVals() {
   const optform = document.getElementById('optform') as HTMLFormElement;
   optform.showDefinitions.checked = !config.readingOnly;
@@ -472,8 +498,12 @@ function fillVals() {
     }
   }
 
-  for (const [abbrev, setting] of Object.entries(config.kanjiReferences)) {
-    (document.getElementById(abbrev) as HTMLInputElement).checked = setting;
+  const enabledReferences = new Set(config.kanjiReferences);
+  for (const ref of getSupportedReferences({ lang: 'en' })) {
+    const checkbox = document.getElementById(`ref-${ref}`) as HTMLInputElement;
+    if (checkbox) {
+      checkbox.checked = enabledReferences.has(ref);
+    }
   }
 }
 

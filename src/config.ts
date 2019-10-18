@@ -10,9 +10,27 @@
 // * Provides a snapshot of all options with their default values filled-in for
 //   passing to the content process.
 
-import { REF_ABBREVIATIONS } from './data';
+import {
+  ReferenceAbbreviation,
+  convertLegacyReference,
+  getSupportedReferences,
+} from './refs';
 
-type KanjiReferenceFlags = { [abbrev: string]: boolean };
+// We represent the set of references that have been turned on as a series
+// of true or false values.
+//
+// It might seem like it's sufficient to just store the _set_ values (or
+// vice-versa) but that complicates matters when we introduce a new reference
+// type or change the default value of an existing reference type. Currently all
+// references as enabled by default, but we may wish to add a new reference type
+// that is disabled by default, or conditionally enabled by default (e.g. if we
+// find data for JLPT Nx levels, we might want to only enable it if the user has
+// already got the existing JLPT data enabled).
+//
+// By recording the references that have actually been changed by the user as
+// being either enabled or disabled we capture the user's intention more
+// accurately. Anything not set should use the default setting.
+type KanjiReferenceFlagsV2 = { [key in ReferenceAbbreviation]?: boolean };
 
 interface Settings {
   readingOnly?: boolean;
@@ -23,7 +41,7 @@ interface Settings {
   contextMenuEnable?: boolean;
   noTextHighlight?: boolean;
   showKanjiComponents?: boolean;
-  kanjiReferences?: KanjiReferenceFlags;
+  kanjiReferencesV2?: KanjiReferenceFlagsV2;
   popupStyle?: string;
 }
 
@@ -84,6 +102,30 @@ export class Config {
       settings = {};
     }
     this._settings = settings;
+    await this.upgradeSettings();
+  }
+
+  async upgradeSettings() {
+    // If we have old kanji reference settings but not new ones, upgrade them.
+    if (
+      this._settings.hasOwnProperty('kanjiReferences') &&
+      !this._settings.kanjiReferencesV2
+    ) {
+      const newSettings: KanjiReferenceFlagsV2 = {};
+      const existingSettings: { [key: string]: boolean } = (this
+        ._settings as any).kanjiReferences;
+      for (const [ref, enabled] of Object(existingSettings).entries()) {
+        const newRef = convertLegacyReference(ref);
+        if (newRef) {
+          newSettings[newRef] = enabled;
+        }
+      }
+
+      this._settings.kanjiReferencesV2 = newSettings;
+      await browser.storage.sync.set({
+        kanjiReferencesV2: newSettings,
+      });
+    }
   }
 
   get ready(): Promise<void> {
@@ -310,26 +352,27 @@ export class Config {
     browser.storage.sync.set({ showKanjiComponents: value });
   }
 
-  // kanjiReferences: Defaults to true for all items in REF_ABBREVIATIONS
+  // kanjiReferences: Defaults to true for all supported references
 
-  get kanjiReferences(): KanjiReferenceFlags {
-    const setValues = this._settings.kanjiReferences || {};
-    const result: KanjiReferenceFlags = {};
-    for (const ref of REF_ABBREVIATIONS) {
-      result[ref.abbrev] =
-        typeof setValues[ref.abbrev] === 'undefined' || setValues[ref.abbrev];
+  get kanjiReferences(): Array<ReferenceAbbreviation> {
+    const setValues = this._settings.kanjiReferencesV2 || {};
+    const result: Array<ReferenceAbbreviation> = [];
+    for (const ref of getSupportedReferences({ lang: 'en' })) {
+      if (typeof setValues[ref] === 'undefined' || setValues[ref]) {
+        result.push(ref);
+      }
     }
     return result;
   }
 
-  updateKanjiReferences(value: KanjiReferenceFlags) {
-    const existingSettings = this._settings.kanjiReferences || {};
-    this._settings.kanjiReferences = {
+  updateKanjiReferences(updatedReferences: KanjiReferenceFlagsV2) {
+    const existingSettings = this._settings.kanjiReferencesV2 || {};
+    this._settings.kanjiReferencesV2 = {
       ...existingSettings,
-      ...value,
+      ...updatedReferences,
     };
     browser.storage.sync.set({
-      kanjiReferences: this._settings.kanjiReferences,
+      kanjiReferencesV2: this._settings.kanjiReferencesV2,
     });
   }
 
@@ -337,6 +380,8 @@ export class Config {
   get contentConfig(): ContentConfig {
     return {
       readingOnly: this.readingOnly,
+      kanjiReferences: this.kanjiReferences,
+      showKanjiComponents: this.showKanjiComponents,
       holdToShowKeys: this.holdToShowKeys
         ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)
         : [],
