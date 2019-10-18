@@ -18,6 +18,7 @@ export const enum CopyState {
 
 export interface PopupOptions {
   showDefinitions: boolean;
+  showKanjiComponents?: boolean;
   copyNextKey: string;
   copyState?: CopyState;
   // Set when copyState !== CopyState.Inactive
@@ -278,41 +279,11 @@ function renderKanjiEntry(
   topPart.append(kanjiDiv);
 
   // Kanji components
-  const componentsDiv = document.createElement('div');
-  componentsDiv.classList.add('components');
-  topPart.append(componentsDiv);
-
-  // Kanji components
-  //
-  // TODO: Make sure we show the radical
-  // TODO: Show the base radical too
-  if (entry.comp.length) {
-    const componentsTable = document.createElement('table');
-    componentsDiv.append(componentsTable);
-
-    for (const component of entry.comp) {
-      const row = document.createElement('tr');
-      componentsTable.append(row);
-
-      if (component.c === entry.rad.b || component.c === entry.rad.k) {
-        row.classList.add('-radical');
-      }
-
-      const radicalCell = document.createElement('td');
-      row.append(radicalCell);
-      radicalCell.classList.add('char');
-      radicalCell.append(component.c);
-
-      const readingCell = document.createElement('td');
-      row.append(readingCell);
-      readingCell.classList.add('reading');
-      readingCell.append(component.na.join('、'));
-
-      const meaningCell = document.createElement('td');
-      row.append(meaningCell);
-      meaningCell.classList.add('meaning');
-      meaningCell.append(component.m.join(', '));
-    }
+  if (
+    typeof options.showKanjiComponents === 'undefined' ||
+    options.showKanjiComponents
+  ) {
+    topPart.append(renderKanjiComponents(entry));
   }
 
   // Readings
@@ -426,6 +397,95 @@ function renderKanjiEntry(
   }
 
   return container;
+}
+
+function renderKanjiComponents(entry: KanjiResult): HTMLElement {
+  const componentsDiv = document.createElement('div');
+  componentsDiv.classList.add('components');
+
+  const componentsTable = document.createElement('table');
+  componentsDiv.append(componentsTable);
+
+  // The radical row is special. It has special highlighting and we also show
+  // the base radical, if any.
+  const addRadicalRow = () => {
+    const { rad } = entry;
+
+    const row = document.createElement('tr');
+    row.classList.add('-radical');
+    componentsTable.append(row);
+
+    const radicalCell = document.createElement('td');
+    row.append(radicalCell);
+    radicalCell.classList.add('char');
+    radicalCell.append((rad.b || rad.k)!);
+    radicalCell.lang = 'ja';
+
+    const readingCell = document.createElement('td');
+    row.append(readingCell);
+    readingCell.classList.add('reading');
+    readingCell.append(rad.na.join('、'));
+    radicalCell.lang = 'ja';
+
+    const meaningCell = document.createElement('td');
+    row.append(meaningCell);
+    meaningCell.classList.add('meaning');
+    meaningCell.append(rad.m.join(', '));
+
+    if (rad.base) {
+      const baseRow = document.createElement('tr');
+      baseRow.classList.add('-baseradical');
+      componentsTable.append(baseRow);
+
+      const baseChar = (rad.base.b || rad.base.k)!;
+      const baseReadings = rad.base.na.join('、');
+      const fromText = browser.i18n.getMessage('content_kanji_base_radical', [
+        baseChar,
+        baseReadings,
+      ]);
+
+      const baseCell = document.createElement('td');
+      baseCell.setAttribute('colspan', '3');
+      baseCell.innerText = fromText;
+      baseRow.append(baseCell);
+    }
+  };
+
+  // Typically, the radical will also be one of the components, but in case it's
+  // not (the data is frequently hand-edited, after all), make sure we add it
+  // first.
+  if (
+    !entry.comp.some(comp => comp.c === entry.rad.b || comp.c === entry.rad.k)
+  ) {
+    addRadicalRow();
+  }
+
+  for (const component of entry.comp) {
+    if (component.c === entry.rad.b || component.c === entry.rad.k) {
+      addRadicalRow();
+      continue;
+    }
+
+    const row = document.createElement('tr');
+    componentsTable.append(row);
+
+    const radicalCell = document.createElement('td');
+    row.append(radicalCell);
+    radicalCell.classList.add('char');
+    radicalCell.append(component.c);
+
+    const readingCell = document.createElement('td');
+    row.append(readingCell);
+    readingCell.classList.add('reading');
+    readingCell.append(component.na.join('、'));
+
+    const meaningCell = document.createElement('td');
+    row.append(meaningCell);
+    meaningCell.classList.add('meaning');
+    meaningCell.append(component.m.join(', '));
+  }
+
+  return componentsDiv;
 }
 
 function renderMiscRow(entry: KanjiResult): HTMLElement {

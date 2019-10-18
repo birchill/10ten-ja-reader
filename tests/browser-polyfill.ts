@@ -38,6 +38,10 @@ export const browser = {
           return 'work';
         case 'content_kanji_radical_label':
           return 'radical';
+        case 'content_kanji_base_radical':
+          return `from ${replacements ? replacements[0] : '?'} (${
+            replacements ? replacements[1] : '?'
+          })`;
         case 'content_kanji_grade_label':
           return `Grade ${replacements ? replacements[0] : '?'}`;
         case 'content_kanji_grade_general_use':

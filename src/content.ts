@@ -1655,11 +1655,15 @@ export class RikaiContent {
           toCopy += `; ${radicalLabel}: ${rad.b || rad.k}（${rad.na.join(
             '、'
           )}）`;
-          // TODO: Localize 'from' here.
           if (rad.base) {
-            toCopy += ` from ${rad.base.b || rad.base.k}（${rad.base.na.join(
-              '、'
-            )}）`;
+            const baseChar = (rad.base.b || rad.base.k)!;
+            const baseReadings = rad.base.na.join('、');
+            toCopy +=
+              ' ' +
+              browser.i18n.getMessage('content_kanji_base_radical', [
+                baseChar,
+                baseReadings,
+              ]);
           }
           if (comp.length) {
             const componentsLabel = browser.i18n.getMessage(

@@ -123,6 +123,20 @@
     "message": "部首",
     "description": "The title given to the box showing radical information"
   },
+  "content_kanji_base_radical": {
+    "message": "部 $char$ ($readings$)",
+    "description": "The string used to describe the base radical",
+    "placeholders": {
+      "char": {
+        "content": "$1",
+        "example": "⾡"
+      },
+      "readings": {
+        "content": "$2",
+        "example": "しんにょう、しんにゅう"
+      }
+    }
+  },
   "content_kanji_components_label": {
     "message": "構成",
     "description": "The label to give to kanji components when copying a kanji entry"
