@@ -184,18 +184,10 @@
 /* used for kanji information */
 
 #rikaichamp-window .kanji-table {
-  width: 300px;
   padding: 6px 10px;
 }
 
-#rikaichamp-window .kanji-table.-copy,
-#rikaichamp-window .kanji-table.-finished {
-  width: auto;
-  min-width: 300px;
-}
-
-
-/* top part of the kanji table */
+/* kanji: top part of the kanji table */
 
 #rikaichamp-window .kanji-table .top-part {
   display: flex;
@@ -267,7 +259,8 @@
 
 #rikaichamp-window .kanji-table .readings {
   font-size: 14px;
-  margin: 4px 0px;
+  margin-top: 4px;
+  margin-bottom: 10px;
 }
 
 #rikaichamp-window .kanji-table .okurigana {
@@ -278,16 +271,17 @@
   font-size: 11px;
 }
 
-/* kanji grade, freq, strokes */
+/* kanji: meanings */
 
 #rikaichamp-window .kanji-table .meanings {
-  font-size: 13px;
-  margin-bottom: 6px;
+  font-size: 14px;
+  margin-bottom: 10px;
 }
+
+/* kanji: grade, freq, strokes */
 
 #rikaichamp-window .kanji-table > .misc {
   display: flex;
-  margin-bottom: 8px;
 }
 
 #rikaichamp-window .kanji-table > .misc > * {
@@ -297,7 +291,7 @@
 }
 
 #rikaichamp-window .kanji-table > .misc > :not(:first-child) {
-  margin-left: 6px;
+  margin-left: 12px;
 }
 
 #rikaichamp-window .kanji-table > .misc .strokes span,
@@ -318,7 +312,7 @@
   fill: currentcolor;
 }
 
-/* kanji: misc index */
+/* kanji: references */
 
 #rikaichamp-window .references {
   display: grid;
