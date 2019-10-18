@@ -287,54 +287,7 @@ function renderKanjiEntry(
   }
 
   // Readings
-  const readingsDiv = document.createElement('div');
-  readingsDiv.classList.add('readings');
-  table.append(readingsDiv);
-
-  if (entry.r.on && entry.r.on.length) {
-    readingsDiv.append(entry.r.on.join('、'));
-  }
-
-  // Kun readings sometimes have a . in them separating the initial part that
-  // represents the kanji, from the okurigana.
-  //
-  // e.g. あた.える
-  //
-  // We want to take the bit after the '.' and wrap it in a span with an
-  // appropriate class.
-  let hasPrecedingEntries = entry.r.on && entry.r.on.length !== 0;
-  for (const reading of entry.r.kun || []) {
-    if (hasPrecedingEntries) {
-      readingsDiv.append('、');
-    }
-
-    const highlightIndex = reading.indexOf('.');
-    if (highlightIndex === -1) {
-      readingsDiv.append(reading);
-    } else {
-      readingsDiv.append(reading.substr(0, highlightIndex));
-      const okuriganaSpan = document.createElement('span');
-      okuriganaSpan.classList.add('okurigana');
-      okuriganaSpan.append(reading.substr(highlightIndex + 1));
-      readingsDiv.append(okuriganaSpan);
-    }
-
-    hasPrecedingEntries = true;
-  }
-
-  // Name readings
-  if (entry.r.na && entry.r.na.length) {
-    const nanoriLabelSpan = document.createElement('span');
-    nanoriLabelSpan.classList.add('nanorilabel');
-    nanoriLabelSpan.append(
-      browser.i18n.getMessage('content_kanji_nanori_label')
-    );
-    readingsDiv.append(
-      document.createElement('br'),
-      nanoriLabelSpan,
-      ` ${entry.r.na.join('、')}`
-    );
-  }
+  table.append(renderReadings(entry));
 
   // English
   const meaningsDiv = document.createElement('div');
@@ -488,6 +441,59 @@ function renderKanjiComponents(entry: KanjiResult): HTMLElement {
   }
 
   return componentsDiv;
+}
+
+function renderReadings(entry: KanjiResult): HTMLElement {
+  // Readings
+  const readingsDiv = document.createElement('div');
+  readingsDiv.classList.add('readings');
+
+  if (entry.r.on && entry.r.on.length) {
+    readingsDiv.append(entry.r.on.join('、'));
+  }
+
+  // Kun readings sometimes have a . in them separating the initial part that
+  // represents the kanji, from the okurigana.
+  //
+  // e.g. あた.える
+  //
+  // We want to take the bit after the '.' and wrap it in a span with an
+  // appropriate class.
+  let hasPrecedingEntries = entry.r.on && entry.r.on.length !== 0;
+  for (const reading of entry.r.kun || []) {
+    if (hasPrecedingEntries) {
+      readingsDiv.append('、');
+    }
+
+    const highlightIndex = reading.indexOf('.');
+    if (highlightIndex === -1) {
+      readingsDiv.append(reading);
+    } else {
+      readingsDiv.append(reading.substr(0, highlightIndex));
+      const okuriganaSpan = document.createElement('span');
+      okuriganaSpan.classList.add('okurigana');
+      okuriganaSpan.append(reading.substr(highlightIndex + 1));
+      readingsDiv.append(okuriganaSpan);
+    }
+
+    hasPrecedingEntries = true;
+  }
+
+  // Name readings
+  if (entry.r.na && entry.r.na.length) {
+    const nanoriLabelSpan = document.createElement('span');
+    nanoriLabelSpan.classList.add('nanorilabel');
+    nanoriLabelSpan.append(
+      browser.i18n.getMessage('content_kanji_nanori_label')
+    );
+    readingsDiv.append(
+      document.createElement('br'),
+      nanoriLabelSpan,
+      ` ${entry.r.na.join('、')}`
+    );
+  }
+
+  return readingsDiv;
 }
 
 function renderMiscRow(entry: KanjiResult): HTMLElement {
