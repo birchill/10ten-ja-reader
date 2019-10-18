@@ -114,7 +114,7 @@ export class Config {
       const newSettings: KanjiReferenceFlagsV2 = {};
       const existingSettings: { [key: string]: boolean } = (this
         ._settings as any).kanjiReferences;
-      for (const [ref, enabled] of Object(existingSettings).entries()) {
+      for (const [ref, enabled] of Object.entries(existingSettings)) {
         const newRef = convertLegacyReference(ref);
         if (newRef) {
           newSettings[newRef] = enabled;

@@ -73,6 +73,14 @@ class MockStorageArea {
       return Promise.resolve(result);
     }
 
+    if (typeof param === 'string') {
+      const result: StorageDict = {};
+      if (this._storage.hasOwnProperty(param)) {
+        result[param] = this._storage[param];
+      }
+      return Promise.resolve(result);
+    }
+
     return Promise.reject('Unexpected param type');
   }
 
@@ -174,5 +182,50 @@ describe('Config', () => {
       { showKanjiComponents: { newValue: false } },
       { showKanjiComponents: { oldValue: false, newValue: true } },
     ]);
+  });
+
+  it('upgrades reference settings', async () => {
+    await browser.storage.sync.set({
+      kanjiReferences: {
+        E: true,
+        U: true,
+        P: false,
+        L: false,
+        Y: true,
+      },
+    });
+
+    const config = new Config();
+
+    await config.ready;
+
+    expect(config.kanjiReferences).toEqual([
+      'radical',
+      'nelson_r',
+      'kk',
+      'jlpt',
+      'unicode',
+      'conning',
+      'halpern_njecd',
+      'halpern_kkld_2ed',
+      'henshall',
+      'sh_kk2',
+      'busy_people',
+      'kanji_in_context',
+      'kodansha_compact',
+      'nelson_c',
+      'nelson_n',
+      'sh_desc',
+    ]);
+
+    const setReferences = await browser.storage.sync.get('kanjiReferencesV2');
+    expect(setReferences).toEqual({
+      kanjiReferencesV2: {
+        unicode: true,
+        heisig6: false,
+        henshall: true,
+        skip: false,
+      },
+    });
   });
 });
