@@ -206,19 +206,15 @@
 /* kanji: character itself */
 
 #rikaichamp-window .kanji-table .kanji {
-  flex-grow: 1;
-  max-width: 2em;
-
   line-height: 1;
   font-size: 56px;
-
   font-family: serif;
+  margin-inline-end: 0.5em;
 }
 
 #rikaichamp-window .kanji-table.-copy .kanji {
   background: rgba(255,255,206);
   border-radius: 2px;
-  color: #4C63A8;
 }
 
 #rikaichamp-window .kanji-table.-finished .kanji {
@@ -425,6 +421,10 @@
   color: #B7E7FF;
 }
 
+#rikaichamp-window.-blue .kanji-table.-copy .kanji {
+  color: #4C63A8;
+}
+
 #rikaichamp-window.-blue .w-conj {
   color: #FFE0A0;
 }
@@ -600,6 +600,10 @@
 
 #rikaichamp-window.-lightblue .kanji-table .kanji {
   color: #000000;
+}
+
+#rikaichamp-window.-lightblue .kanji-table.-copy .kanji {
+  color: #003D6B;
 }
 
 #rikaichamp-window.-lightblue .kanji-table .components .-radical * {
