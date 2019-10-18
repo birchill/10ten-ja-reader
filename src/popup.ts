@@ -287,12 +287,12 @@ function renderKanjiEntry(
   }
 
   // Readings
-  const yomiDiv = document.createElement('div');
-  yomiDiv.classList.add('k-yomi');
-  table.append(yomiDiv);
+  const readingsDiv = document.createElement('div');
+  readingsDiv.classList.add('readings');
+  table.append(readingsDiv);
 
   if (entry.r.on && entry.r.on.length) {
-    yomiDiv.append(entry.r.on.join('、'));
+    readingsDiv.append(entry.r.on.join('、'));
   }
 
   // Kun readings sometimes have a . in them separating the initial part that
@@ -305,31 +305,31 @@ function renderKanjiEntry(
   let hasPrecedingEntries = entry.r.on && entry.r.on.length !== 0;
   for (const reading of entry.r.kun || []) {
     if (hasPrecedingEntries) {
-      yomiDiv.append('、');
+      readingsDiv.append('、');
     }
 
     const highlightIndex = reading.indexOf('.');
     if (highlightIndex === -1) {
-      yomiDiv.append(reading);
+      readingsDiv.append(reading);
     } else {
-      yomiDiv.append(reading.substr(0, highlightIndex));
-      const highlightSpan = document.createElement('span');
-      highlightSpan.classList.add('k-yomi-hi');
-      highlightSpan.append(reading.substr(highlightIndex + 1));
-      yomiDiv.append(highlightSpan);
+      readingsDiv.append(reading.substr(0, highlightIndex));
+      const okuriganaSpan = document.createElement('span');
+      okuriganaSpan.classList.add('okurigana');
+      okuriganaSpan.append(reading.substr(highlightIndex + 1));
+      readingsDiv.append(okuriganaSpan);
     }
 
     hasPrecedingEntries = true;
   }
 
-  // Optional readings
+  // Name readings
   if (entry.r.na && entry.r.na.length) {
     const nanoriLabelSpan = document.createElement('span');
-    nanoriLabelSpan.classList.add('k-yomi-ti');
+    nanoriLabelSpan.classList.add('nanorilabel');
     nanoriLabelSpan.append(
       browser.i18n.getMessage('content_kanji_nanori_label')
     );
-    yomiDiv.append(
+    readingsDiv.append(
       document.createElement('br'),
       nanoriLabelSpan,
       ` ${entry.r.na.join('、')}`

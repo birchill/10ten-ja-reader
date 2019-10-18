@@ -269,16 +269,16 @@
 
 /* kanji: readings */
 
-#rikaichamp-window .k-yomi {
+#rikaichamp-window .kanji-table .readings {
   font-size: 14px;
   margin: 4px 0px;
 }
 
-#rikaichamp-window .k-yomi-hi {
+#rikaichamp-window .kanji-table .okurigana {
   border: 1px solid red;
 }
 
-#rikaichamp-window .k-yomi-ti {
+#rikaichamp-window .kanji-table .nanorilabel {
   font-size: 11px;
 }
 
@@ -456,15 +456,15 @@
   color: #C0FFC0;
 }
 
-#rikaichamp-window.-blue .k-yomi {
+#rikaichamp-window.-blue .kanji-table .readings {
   color: #C0FFC0;
 }
 
-#rikaichamp-window.-blue .k-yomi-hi {
+#rikaichamp-window.-blue .kanji-table .okurigana {
   color: #A0D0FF;
 }
 
-#rikaichamp-window.-blue .k-yomi-ti {
+#rikaichamp-window.-blue .kanji-table .nanorilabel {
   color: #E7FFE7;
 }
 
@@ -535,15 +535,15 @@
   color: #E0E0E0;
 }
 
-#rikaichamp-window.-black .k-yomi {
+#rikaichamp-window.-black .kanji-table .readings {
   color: #20A020;
 }
 
-#rikaichamp-window.-black .k-yomi-hi {
+#rikaichamp-window.-black .kanji-table .okurigana {
   color: #7070E0;
 }
 
-#rikaichamp-window.-black .k-yomi-ti {
+#rikaichamp-window.-black .kanji-table .nanorilabel {
   color: #E0E0E0;
 }
 
@@ -611,15 +611,15 @@
   color: #003D6B;
 }
 
-#rikaichamp-window.-lightblue .k-yomi {
+#rikaichamp-window.-lightblue .kanji-table .readings {
   color: #00B366;
 }
 
-#rikaichamp-window.-lightblue .k-yomi-hi {
+#rikaichamp-window.-lightblue .kanji-table .okurigana {
   color: #00868B;
 }
 
-#rikaichamp-window.-lightblue .k-yomi-ti {
+#rikaichamp-window.-lightblue .kanji-table .nanorilabel {
   color: #000000;
 }
 
@@ -701,15 +701,15 @@
   color: #000000;
 }
 
-#rikaichamp-window.-yellow .k-yomi {
+#rikaichamp-window.-yellow .kanji-table .readings {
   color: #20A020;
 }
 
-#rikaichamp-window.-yellow .k-yomi-hi {
+#rikaichamp-window.-yellow .kanji-table .okurigana {
   color: #CD5C5C;
 }
 
-#rikaichamp-window.-yellow .k-yomi-ti {
+#rikaichamp-window.-yellow .kanji-table .nanorilabel {
   color: #000000;
 }
 
