@@ -98,23 +98,6 @@ class MockStorageArea {
   }
 }
 
-global.REF_ABBREVIATIONS = [
-  { abbrev: 'CO', name: 'Conning' },
-  { abbrev: 'H', name: 'Halpern' },
-  { abbrev: 'L', name: 'Heisig' },
-  { abbrev: 'E', name: 'Henshall' },
-  { abbrev: 'KK', name: 'Kanji Kentei' },
-  { abbrev: 'DK', name: 'Kanji Learners Dictionary' },
-  { abbrev: 'N', name: 'Nelson' },
-  { abbrev: 'NR', name: 'Nelson Radical' },
-  { abbrev: 'V', name: 'New Nelson' },
-  { abbrev: 'Y', name: 'PinYin' },
-  { abbrev: 'P', name: 'Skip Pattern' },
-  { abbrev: 'IN', name: 'Tuttle Kanji & Kana' },
-  { abbrev: 'I', name: 'Tuttle Kanji Dictionary' },
-  { abbrev: 'U', name: 'Unicode' },
-];
-
 describe('Config', () => {
   beforeEach(() => {
     global.browser = { storage: new MockStorage() };
@@ -136,22 +119,26 @@ describe('Config', () => {
     expect(config.popupStyle).toEqual('blue');
     expect(config.noTextHighlight).toEqual(false);
     expect(config.showKanjiComponents).toEqual(true);
-    expect(config.kanjiReferences).toEqual({
-      CO: true,
-      H: true,
-      L: true,
-      E: true,
-      KK: true,
-      DK: true,
-      N: true,
-      NR: true,
-      V: true,
-      Y: true,
-      P: true,
-      IN: true,
-      I: true,
-      U: true,
-    });
+    expect(config.kanjiReferences).toEqual([
+      'radical',
+      'nelson_r',
+      'kk',
+      'jlpt',
+      'unicode',
+      'conning',
+      'halpern_njecd',
+      'halpern_kkld_2ed',
+      'heisig6',
+      'henshall',
+      'sh_kk2',
+      'busy_people',
+      'kanji_in_context',
+      'kodansha_compact',
+      'nelson_c',
+      'nelson_n',
+      'skip',
+      'sh_desc',
+    ]);
   });
 
   it('reports changes to all listeners', async () => {
