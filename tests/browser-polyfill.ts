@@ -74,6 +74,14 @@ export const browser = {
           return 'kanji';
         case 'content_copy_keys_next_label':
           return 'next';
+        case 'ref_label_radical':
+          return 'Radical';
+        case 'ref_label_kk':
+          return 'Kanji Kentei';
+        case 'ref_label_jlpt':
+          return 'JLPT';
+        case 'ref_label_unicode':
+          return 'Unicode';
         default:
           return 'Unrecognized string ID';
       }

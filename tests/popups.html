@@ -19,6 +19,8 @@
 <script>
 const config = {
   readingOnly: false,
+  kanjiReferences: ['radical', 'nelson_r', 'kk', 'unicode', 'henshall'],
+  showKanjiComponents: true,
   holdToShowKeys: [],
   keys: {
     toggleDefinition: ['d'],
@@ -38,10 +40,10 @@ const rikaiContent = new RikaiContent(config);
 const container = document.getElementById('container');
 
 for (const test of htmlTests) {
-  const popup = rikaiContent._renderPopup(
-    test.queryResult,
-    { showDefinitions: !test.extraConfig || !test.extraConfig.readingOnly }
-  );
+  const popup = rikaiContent._renderPopup(test.queryResult, {
+    ...config,
+    showDefinitions: !test.extraConfig || !test.extraConfig.readingOnly,
+  });
 
   const toTitle = str => str.charAt(0).toUpperCase() + str.slice(1);
 

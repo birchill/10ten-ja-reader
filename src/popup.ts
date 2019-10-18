@@ -1,6 +1,5 @@
 import { KanjiResult } from '@birchill/hikibiki-data';
 
-import { NameDefinition, NameEntry, QueryResult, WordEntry } from './query';
 import {
   CopyKeys,
   CopyType,
@@ -8,6 +7,8 @@ import {
   CopyNextKeyStrings,
 } from './copy-keys';
 import { getKeyForTag } from './name-tags';
+import { NameDefinition, NameEntry, QueryResult, WordEntry } from './query';
+import { getReferenceNames, ReferenceAbbreviation } from './refs';
 
 export const enum CopyState {
   Inactive,
@@ -18,6 +19,7 @@ export const enum CopyState {
 
 export interface PopupOptions {
   showDefinitions: boolean;
+  kanjiReferences: Array<ReferenceAbbreviation>;
   showKanjiComponents?: boolean;
   copyNextKey: string;
   copyState?: CopyState;
@@ -299,45 +301,9 @@ function renderKanjiEntry(
   table.append(renderMiscRow(entry));
 
   // Reference row
-  const referenceTable = document.createElement('div');
-  referenceTable.classList.add('references');
-  table.append(referenceTable);
+  table.append(renderReferences(entry, options));
 
-  // TODO: Export references
-  // (Need to be handle the fact that 漢検 and JLPT data are in the misc field
-  // while the rest are in the refs field.)
-  /*
-  for (const ref of entry.refs.entries()) {
-    let value = entry.misc[ref.abbrev] || '-';
-
-    const isKanKen = ref.name === 'Kanji Kentei';
-    const name = isKanKen
-      ? browser.i18n.getMessage('content_kanji_kentei_label')
-      : ref.name;
-
-    const nameCell = document.createElement('div');
-    nameCell.classList.add('name');
-    nameCell.append(name);
-    referenceTable.append(nameCell);
-
-    if (isKanKen) {
-      if (value.endsWith('.5')) {
-        value = browser.i18n.getMessage(
-          'content_kanji_kentei_level_pre',
-          value.substring(0, 1)
-        );
-      } else {
-        value = browser.i18n.getMessage('content_kanji_kentei_level', value);
-      }
-    }
-
-    const valueCell = document.createElement('div');
-    valueCell.classList.add('value');
-    valueCell.append(value);
-    referenceTable.append(valueCell);
-  }
-  */
-
+  // Copy details
   const copyDetails = renderCopyDetails(
     options.copyNextKey,
     options.copyState,
@@ -645,6 +611,85 @@ function renderUser(): SVGElement {
   }
 
   return userSvg;
+}
+
+function renderReferences(
+  entry: KanjiResult,
+  options: PopupOptions
+): HTMLElement {
+  const referenceTable = document.createElement('div');
+  referenceTable.classList.add('references');
+
+  const referenceNames = getReferenceNames({
+    lang: 'en',
+    selectedRefs: options.kanjiReferences,
+  });
+
+  for (const ref of referenceNames) {
+    let value: string;
+    switch (ref.ref) {
+      case 'radical':
+        {
+          const { rad } = entry;
+          const radChar = rad.base ? rad.base.b || rad.base.k : rad.b || rad.k;
+          value = `${rad.x} ${radChar}`;
+        }
+        break;
+
+      case 'nelson_r':
+        if (!entry.rad.nelson) {
+          continue;
+        }
+        value = `${entry.rad.nelson} ${String.fromCodePoint(
+          entry.rad.nelson + 0x2eff
+        )}`;
+        break;
+
+      case 'kk':
+        value = renderKanKen(entry.misc.kk);
+        break;
+
+      case 'jlpt':
+        value = entry.misc.jlpt ? String(entry.misc.jlpt) : '-';
+        break;
+
+      case 'unicode':
+        value = `U+${entry.c
+          .codePointAt(0)!
+          .toString(16)
+          .toUpperCase()}`;
+        break;
+
+      default:
+        value = entry.refs[ref.ref] ? String(entry.refs[ref.ref]) : '-';
+        break;
+    }
+
+    const nameCell = document.createElement('div');
+    nameCell.classList.add('name');
+    nameCell.append(ref.short || ref.full);
+    referenceTable.append(nameCell);
+
+    const valueCell = document.createElement('div');
+    valueCell.classList.add('value');
+    valueCell.append(value);
+    referenceTable.append(valueCell);
+  }
+
+  return referenceTable;
+}
+
+function renderKanKen(level: number | undefined): string {
+  if (!level) {
+    return '—';
+  }
+  if (level === 15) {
+    return browser.i18n.getMessage('content_kanji_kentei_level_pre', ['1']);
+  }
+  if (level === 25) {
+    return browser.i18n.getMessage('content_kanji_kentei_level_pre', ['2']);
+  }
+  return browser.i18n.getMessage('content_kanji_kentei_level', [String(level)]);
 }
 
 function renderCopyDetails(

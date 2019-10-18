@@ -1402,6 +1402,8 @@ export class RikaiContent {
 
     const popupOptions: PopupOptions = {
       showDefinitions: !this._config.readingOnly,
+      kanjiReferences: this._config.kanjiReferences,
+      showKanjiComponents: this._config.showKanjiComponents,
       copyNextKey: this._config.keys.startCopy[0] || '',
       copyState: this._copyMode ? CopyState.Active : CopyState.Inactive,
       copyIndex: this._copyIndex,

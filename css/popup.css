@@ -315,6 +315,7 @@
 /* kanji: references */
 
 #rikaichamp-window .references {
+  margin-top: 8px;
   display: grid;
   grid-template-columns: auto 50px;
   width: 100%
