@@ -648,20 +648,6 @@ async function searchKanji(kanji: string): Promise<KanjiResult | null> {
     });
   }
 
-  // TODO: Work out if we should filter references here or not.
-  // TODO: Likewise for components.
-  //
-  // For reference the existing code for this...
-  // const kanjiReferences = new Set(
-  //   Object.entries(config.kanjiReferences)
-  //     .filter(([, /*abbrev*/ setting]) => setting)
-  //     .map(([abbrev /*setting*/]) => abbrev)
-  // );
-  // const kanjiSearchOptions = {
-  //   includedReferences: kanjiReferences,
-  //   includeKanjiComponents: config.showKanjiComponents,
-  // };
-
   return result[0];
 }
 
