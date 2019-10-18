@@ -326,12 +326,13 @@ function renderKanjiEntry(
   if (entry.r.na && entry.r.na.length) {
     const nanoriLabelSpan = document.createElement('span');
     nanoriLabelSpan.classList.add('k-yomi-ti');
-    // TODO: Localize
-    nanoriLabelSpan.append('名乗り');
+    nanoriLabelSpan.append(
+      browser.i18n.getMessage('content_kanji_nanori_label')
+    );
     yomiDiv.append(
       document.createElement('br'),
       nanoriLabelSpan,
-      ` ${entry.r.na.join('\u3001')}`
+      ` ${entry.r.na.join('、')}`
     );
   }
 

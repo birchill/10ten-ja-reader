@@ -42,6 +42,8 @@ export const browser = {
           return `from ${replacements ? replacements[0] : '?'} (${
             replacements ? replacements[1] : '?'
           })`;
+        case 'content_kanji_nanori_label':
+          return 'Names (名乗り)';
         case 'content_kanji_grade_label':
           return `Grade ${replacements ? replacements[0] : '?'}`;
         case 'content_kanji_grade_general_use':

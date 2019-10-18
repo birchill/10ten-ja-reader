@@ -137,6 +137,10 @@
       }
     }
   },
+  "content_kanji_nanori_label": {
+    "message": "Names (名乗り)",
+    "description": "Label given to name readings"
+  },
   "content_kanji_components_label": {
     "message": "components",
     "description": "The label to give to kanji components when copying a kanji entry"
