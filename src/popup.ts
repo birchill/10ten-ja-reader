@@ -406,7 +406,8 @@ function renderKanjiComponents(entry: KanjiResult): HTMLElement {
   const componentsTable = document.createElement('table');
   componentsDiv.append(componentsTable);
 
-  // The radical row is special. It has special highlighting and we also show
+  // The radical row is special. It has special highlighting, we show all
+  // readings and meanings (not just the first of each), and we also show
   // the base radical, if any.
   const addRadicalRow = () => {
     const { rad } = entry;
@@ -477,12 +478,12 @@ function renderKanjiComponents(entry: KanjiResult): HTMLElement {
     const readingCell = document.createElement('td');
     row.append(readingCell);
     readingCell.classList.add('reading');
-    readingCell.append(component.na.join('、'));
+    readingCell.append(component.na.length ? component.na[0] : '-');
 
     const meaningCell = document.createElement('td');
     row.append(meaningCell);
     meaningCell.classList.add('meaning');
-    meaningCell.append(component.m.join(', '));
+    meaningCell.append(component.m.length ? component.m[0] : '-');
   }
 
   return componentsDiv;
