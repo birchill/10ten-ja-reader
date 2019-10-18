@@ -203,6 +203,22 @@
       }
     }
   },
+  "ref_label_radical": {
+    "message": "Radical",
+    "description": "The label used when presenting radical numbers"
+  },
+  "ref_label_kk": {
+    "message": "Kanji Kentei",
+    "description": "The label used when presenting Kanji Kentei levels"
+  },
+  "ref_label_jlpt": {
+    "message": "JLPT",
+    "description": "The label used when presenting the level the kanji appears in in the old JLPT system"
+  },
+  "ref_label_unicode": {
+    "message": "Unicode",
+    "description": "The label used when presenting the Unicode codepoint of the kanji"
+  },
   "options_general_heading": {
     "message": "General",
     "description": "Heading for common preferences."
