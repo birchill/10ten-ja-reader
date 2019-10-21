@@ -1,4 +1,4 @@
-import { getEntryToCopy, getFieldsToCopy } from './copy-text';
+import { getEntryToCopy, getFieldsToCopy, getWordToCopy } from './copy-text';
 import { NameTag } from './name-tags';
 
 // Mock browser.i18n.getMessage
@@ -32,6 +32,74 @@ global.browser = {
     },
   },
 };
+
+describe('getWordToCopy', () => {
+  it('copies a word from a word search', async () => {
+    expect(
+      getWordToCopy({
+        type: 'word',
+        data: {
+          kanjiKana: '理解',
+          kana: ['りかい'],
+          romaji: ['rikai'],
+          definition: 'Understand',
+          reason: null,
+        },
+      })
+    ).toEqual('理解');
+  });
+
+  it('copies names from a name search', async () => {
+    expect(
+      getWordToCopy({
+        type: 'name',
+        data: {
+          names: [
+            { kanji: 'いぶ喜', kana: 'いぶき' },
+            { kanji: 'いぶ希', kana: 'いぶき' },
+            { kanji: 'いぶ記', kana: 'いぶき' },
+          ],
+          definition: { tags: [NameTag.Female], text: 'Ibuki' },
+        },
+      })
+    ).toEqual('いぶ喜, いぶ希, いぶ記');
+  });
+
+  it('copies kanji from a kanji search', async () => {
+    expect(
+      getWordToCopy({
+        type: 'kanji',
+        data: {
+          c: '士',
+          r: {
+            on: ['シ'],
+            kun: ['さむらい'],
+            na: ['お', 'ま'],
+          },
+          m: ['gentleman', 'scholar', 'samurai', 'samurai radical (no. 33)'],
+          rad: {
+            x: 33,
+            b: '⼠',
+            k: '士',
+            na: ['さむらい'],
+            m: ['gentleman', 'scholar', 'samurai'],
+            m_lang: 'en',
+          },
+          refs: {},
+          misc: {
+            sc: 3,
+            gr: 4,
+            freq: 526,
+            jlpt: 1,
+            kk: 7,
+          },
+          m_lang: 'en',
+          comp: [],
+        },
+      })
+    ).toEqual('士');
+  });
+});
 
 describe('getEntryToCopy', () => {
   it('prepares text from word search results', () => {
