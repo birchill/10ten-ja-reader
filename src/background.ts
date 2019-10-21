@@ -749,28 +749,29 @@ function onTabSelect(tabId: number) {
 
 browser.runtime.onInstalled.addListener(maybeDownloadData);
 
-browser.runtime.onStartup.addListener(async () => {
-  await maybeDownloadData();
+browser.runtime.onStartup.addListener(maybeDownloadData);
 
-  // See if we were enabled on the last run
-  browser.storage.local
-    .get('enabled')
-    .then(getResult => {
-      return getResult &&
-        getResult.hasOwnProperty('enabled') &&
-        getResult.enabled
-        ? browser.tabs.query({ currentWindow: true, active: true })
-        : [];
-    })
-    .then(tabs => {
-      if (tabs && tabs.length) {
-        bugsnagClient.leaveBreadcrumb(
-          'Loading because we were enabled on the previous run'
-        );
-        enableTab(tabs[0]);
-      }
-    })
-    .catch(err => {
-      // Ignore
+// See if we were enabled on the last run
+//
+// We don't do this in onStartup because that won't run when the add-on is
+// reloaded and we want to re-enable ourselves in that case too.
+(async function() {
+  const getEnabledResult = await browser.storage.local.get('enabled');
+  const wasEnabled =
+    getEnabledResult &&
+    getEnabledResult.hasOwnProperty('enabled') &&
+    getEnabledResult.enabled;
+
+  if (wasEnabled) {
+    const tabs = await browser.tabs.query({
+      currentWindow: true,
+      active: true,
     });
-});
+    if (tabs && tabs.length) {
+      bugsnagClient.leaveBreadcrumb(
+        'Loading because we were enabled on the previous run'
+      );
+      enableTab(tabs[0]);
+    }
+  }
+})();
