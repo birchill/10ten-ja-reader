@@ -181,10 +181,11 @@
   margin-top: 0;
 }
 
-/* used for kanji information */
+/* Kanji display */
 
 #rikaichamp-window .kanji-table {
-  padding: 10px 14px;
+  max-width: 450px;
+  padding: 8px 14px;
 }
 
 /* kanji: top part of the kanji table */
@@ -295,6 +296,7 @@
 }
 
 #rikaichamp-window .kanji-table > .misc > *:nth-child(2) {
+  flex-grow: 1.5;
   justify-content: center;
 }
 
