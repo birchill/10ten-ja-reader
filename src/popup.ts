@@ -8,7 +8,7 @@ import {
 } from './copy-keys';
 import { getKeyForTag } from './name-tags';
 import { NameDefinition, NameEntry, QueryResult, WordEntry } from './query';
-import { getReferenceNames, ReferenceAbbreviation } from './refs';
+import { getSelectedReferenceLabels, ReferenceAbbreviation } from './refs';
 
 export const enum CopyState {
   Inactive,
@@ -620,11 +620,7 @@ function renderReferences(
   const referenceTable = document.createElement('div');
   referenceTable.classList.add('references');
 
-  const referenceNames = getReferenceNames({
-    lang: 'en',
-    selectedRefs: options.kanjiReferences,
-  });
-
+  const referenceNames = getSelectedReferenceLabels(options.kanjiReferences);
   for (const ref of referenceNames) {
     let value: string;
     switch (ref.ref) {

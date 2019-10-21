@@ -13,7 +13,7 @@
 import {
   ReferenceAbbreviation,
   convertLegacyReference,
-  getSupportedReferences,
+  getReferencesForLang,
 } from './refs';
 
 // We represent the set of references that have been turned on as a series
@@ -360,7 +360,7 @@ export class Config {
   get kanjiReferences(): Array<ReferenceAbbreviation> {
     const setValues = this._settings.kanjiReferencesV2 || {};
     const result: Array<ReferenceAbbreviation> = [];
-    for (const ref of getSupportedReferences({ lang: 'en' })) {
+    for (const ref of getReferencesForLang('en')) {
       if (typeof setValues[ref] === 'undefined' || setValues[ref]) {
         result.push(ref);
       }

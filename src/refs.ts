@@ -42,15 +42,7 @@ const SUPPORTED_REFERENCES = [
 
 export type ReferenceAbbreviation = typeof SUPPORTED_REFERENCES[number];
 
-export function getSupportedReferences({
-  lang,
-}: {
-  lang?: string;
-}): ReadonlyArray<ReferenceAbbreviation> {
-  if (!lang || lang === 'fr') {
-    return SUPPORTED_REFERENCES;
-  }
-
+export function getReferencesForLang(lang: string) {
   return SUPPORTED_REFERENCES.filter(ref => ref !== 'maniette');
 }
 
@@ -85,9 +77,10 @@ type NotLocalizedReferences = Exclude<
   ReferenceAbbreviation,
   LocalizedReferences
 >;
+type ReferenceLabel = { full: string; short?: string };
 
 const REFERENCE_LABELS: {
-  [key in NotLocalizedReferences]: { full: string; short?: string };
+  [key in NotLocalizedReferences]: ReferenceLabel;
 } = {
   nelson_r: { full: 'Nelson radical' },
   conning: {
@@ -134,72 +127,64 @@ const REFERENCE_LABELS: {
   },
 } as const;
 
-// Returns an array matching reference abbreviations to suitable names.
+// Get an array matching reference abbreviations to suitable names.
 //
-// It turns an array, not a map or object, since we try to preserve the same
-// order of references everywhere we present them.
+// These two methods return an array, not a map or object, since we try to
+// preserve the same order of references everywhere we present them.
 //
-// For the localized ones (radical, JLPT, kk, unicode), looks up the appropriate
-// string. For the others, returns a fixed string. (This way we keep complete
-// string keys--not concatenated strings--in the source so we can readily
-// determine which strings are in use.)
-//
-// The 'lang' option is used to filter out reference types that are only
-// available in certain languages.
-//
-// The 'selectedRefs' is used to only return labels for the specified references
-// so the client can just iterate over the result.
-export function getReferenceNames({
-  lang,
-  selectedRefs,
-}: {
-  lang?: string;
-  selectedRefs?: ReadonlyArray<ReferenceAbbreviation>;
-}): Array<{ ref: ReferenceAbbreviation; full: string; short?: string }> {
-  const result: Array<{
-    ref: ReferenceAbbreviation;
-    full: string;
-    short?: string;
-  }> = [];
-  const selectedRefsSet = new Set<ReferenceAbbreviation>(selectedRefs || []);
+// For the localized ones (radical, JLPT, kk, unicode), we look up the
+// appropriate string. For the others, we return a fixed string. (This way we
+// keep complete string keys--not concatenated strings--in the source so we can
+// readily determine which strings are in use.)
+
+type ReferenceAndLabel = { ref: ReferenceAbbreviation } & ReferenceLabel;
+
+export function getReferenceLabelsForLang(
+  lang: string
+): Array<ReferenceAndLabel> {
+  const result: Array<ReferenceAndLabel> = [];
+
+  for (const ref of SUPPORTED_REFERENCES) {
+    if (lang !== 'fr' && ref === 'maniette') {
+      continue;
+    }
+    result.push({ ref, ...getLabelForReference(ref) });
+  }
+
+  return result;
+}
+
+export function getSelectedReferenceLabels(
+  selectedRefs: ReadonlyArray<ReferenceAbbreviation>
+): Array<ReferenceAndLabel> {
+  const result: Array<ReferenceAndLabel> = [];
+  const selectedRefsSet = new Set<ReferenceAbbreviation>(selectedRefs);
 
   for (const ref of SUPPORTED_REFERENCES) {
     if (selectedRefs && !selectedRefsSet.has(ref)) {
       continue;
     }
-
-    switch (ref) {
-      case 'radical':
-        result.push({
-          ref,
-          full: browser.i18n.getMessage('ref_label_radical'),
-        });
-        break;
-
-      case 'kk':
-        result.push({ ref, full: browser.i18n.getMessage('ref_label_kk') });
-        break;
-
-      case 'jlpt':
-        result.push({ ref, full: browser.i18n.getMessage('ref_label_jlpt') });
-        break;
-
-      case 'unicode':
-        result.push({
-          ref,
-          full: browser.i18n.getMessage('ref_label_unicode'),
-        });
-        break;
-
-      default:
-        // Skip maniette unless we are dealing with French
-        if (lang && lang !== 'fr' && ref === 'maniette') {
-          continue;
-        }
-        result.push({ ref, ...REFERENCE_LABELS[ref] });
-        break;
-    }
+    result.push({ ref, ...getLabelForReference(ref) });
   }
 
   return result;
+}
+
+function getLabelForReference(ref: ReferenceAbbreviation): ReferenceLabel {
+  switch (ref) {
+    case 'radical':
+      return { full: browser.i18n.getMessage('ref_label_radical') };
+
+    case 'kk':
+      return { full: browser.i18n.getMessage('ref_label_kk') };
+
+    case 'jlpt':
+      return { full: browser.i18n.getMessage('ref_label_jlpt') };
+
+    case 'unicode':
+      return { full: browser.i18n.getMessage('ref_label_unicode') };
+
+    default:
+      return REFERENCE_LABELS[ref];
+  }
 }

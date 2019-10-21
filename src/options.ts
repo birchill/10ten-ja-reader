@@ -12,7 +12,7 @@ import {
   updateDb,
 } from './db-listener-messages';
 import { translateDoc } from './l10n';
-import { getReferenceNames, getSupportedReferences } from './refs';
+import { getReferenceLabelsForLang, getReferencesForLang } from './refs';
 
 const config = new Config();
 
@@ -423,7 +423,7 @@ function createKanjiReferences() {
     'kanji-reference-list'
   ) as HTMLDivElement;
 
-  const referenceNames = getReferenceNames({ lang: 'en' });
+  const referenceNames = getReferenceLabelsForLang('en');
   for (const { ref, full } of referenceNames) {
     const rowDiv = document.createElement('div');
     rowDiv.classList.add('browser-style');
@@ -499,7 +499,7 @@ function fillVals() {
   }
 
   const enabledReferences = new Set(config.kanjiReferences);
-  for (const ref of getSupportedReferences({ lang: 'en' })) {
+  for (const ref of getReferencesForLang('en')) {
     const checkbox = document.getElementById(`ref-${ref}`) as HTMLInputElement;
     if (checkbox) {
       checkbox.checked = enabledReferences.has(ref);
