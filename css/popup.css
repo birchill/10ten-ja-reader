@@ -184,7 +184,7 @@
 /* used for kanji information */
 
 #rikaichamp-window .kanji-table {
-  padding: 6px 10px;
+  padding: 10px 14px;
 }
 
 /* kanji: top part of the kanji table */
@@ -282,18 +282,24 @@
 
 #rikaichamp-window .kanji-table > .misc {
   display: flex;
-  justify-content: space-between;
-  padding-left: 0.5em;
-  padding-right: 1em;
 }
 
 #rikaichamp-window .kanji-table > .misc > * {
   display: flex;
+  flex: 1 1 0px;
   align-items: center;
 }
 
 #rikaichamp-window .kanji-table > .misc > :not(:first-child) {
   margin-left: 12px;
+}
+
+#rikaichamp-window .kanji-table > .misc > *:nth-child(2) {
+  justify-content: center;
+}
+
+#rikaichamp-window .kanji-table > .misc > *:nth-child(3) {
+  justify-content: end;
 }
 
 #rikaichamp-window .kanji-table > .misc .strokes span,
@@ -317,16 +323,19 @@
 /* kanji: references */
 
 #rikaichamp-window .references {
+  --bg-overhang: 8px;
   margin-top: 12px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(2, minmax(200px, 1fr));
   grid-column-gap: .5em;
-  width: 100%
+  margin-left: calc(-1 * var(--bg-overhang));
+  margin-right: calc(-1 * var(--bg-overhang));
+  width: calc(100% + 2 * var(--bg-overhang));
 }
 
 #rikaichamp-window .references .ref {
   display: flex;
-  padding: 2px 1em;
+  padding: 2px var(--bg-overhang);
   border-radius: .5em;
   justify-content: space-between;
 }

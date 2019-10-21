@@ -301,7 +301,9 @@ function renderKanjiEntry(
   table.append(renderMiscRow(entry));
 
   // Reference row
-  table.append(renderReferences(entry, options));
+  if (options.kanjiReferences && options.kanjiReferences.length) {
+    table.append(renderReferences(entry, options));
+  }
 
   // Copy details
   const copyDetails = renderCopyDetails(
