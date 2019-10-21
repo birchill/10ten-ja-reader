@@ -161,7 +161,7 @@ export function getSelectedReferenceLabels(
   const selectedRefsSet = new Set<ReferenceAbbreviation>(selectedRefs);
 
   for (const ref of SUPPORTED_REFERENCES) {
-    if (selectedRefs && !selectedRefsSet.has(ref)) {
+    if (!selectedRefsSet.has(ref)) {
       continue;
     }
     result.push({ ref, ...getLabelForReference(ref) });
