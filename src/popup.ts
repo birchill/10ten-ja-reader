@@ -288,14 +288,14 @@ function renderKanjiEntry(
     topPart.append(renderKanjiComponents(entry));
   }
 
-  // Readings
-  table.append(renderReadings(entry));
-
   // English
   const meaningsDiv = document.createElement('div');
   meaningsDiv.classList.add('meanings');
   meaningsDiv.append(entry.m.join(', '));
   table.append(meaningsDiv);
+
+  // Readings
+  table.append(renderReadings(entry));
 
   // Misc info
   table.append(renderMiscRow(entry));
