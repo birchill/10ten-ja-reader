@@ -153,17 +153,17 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@bugsnag/browser@^6.4.2":
-  version "6.4.2"
-  resolved "https://registry.yarnpkg.com/@bugsnag/browser/-/browser-6.4.2.tgz#b7c44178ec8fdb2eb45e7dfd6c26c251623d8999"
-  integrity sha512-Tfw6uAls5JqrfVjv27w2fgj/I7OlI6P9YDfRaM1Fmb/etaIdxBuyl4q3nl1qYKmLWCO12tq8oNZjCUZGYsh/Dg==
+"@bugsnag/browser@^6.4.3":
+  version "6.4.3"
+  resolved "https://registry.yarnpkg.com/@bugsnag/browser/-/browser-6.4.3.tgz#2f11163aa513e14215d3e409e713f90c9bb7aa33"
+  integrity sha512-BE87ikYMRmA9/1hg9v9ESukEaiOO6/rWbByGbonwjTRgK+hccQZXqF/9Uy7BtjNVuQVuhx0WTKp8pfw+s4r7QQ==
 
-"@bugsnag/js@^6.4.2":
-  version "6.4.2"
-  resolved "https://registry.yarnpkg.com/@bugsnag/js/-/js-6.4.2.tgz#e636ba292d1dd93b214a9a79f8b64c16fd18dd1b"
-  integrity sha512-Gq7iVaQako88zJ32UjgExriZlbztdiehRyKvJsNadg4x8UQnqbtj4/6bWKunsXDfLa6L8kfIg/voQpaiK+RVmA==
+"@bugsnag/js@^6.4.3":
+  version "6.4.3"
+  resolved "https://registry.yarnpkg.com/@bugsnag/js/-/js-6.4.3.tgz#6439c8b1f3fdae45a09f6f525a2e22999b8d0329"
+  integrity sha512-w/VjJbao+B9PCwxTypD35LPRWA96HUf30FzXSha7uXojVihQpCAycVrVp9nM/1UYFY7THnvwlw9C1SIQNlc/HQ==
   dependencies:
-    "@bugsnag/browser" "^6.4.2"
+    "@bugsnag/browser" "^6.4.3"
     "@bugsnag/node" "^6.4.2"
 
 "@bugsnag/node@^6.4.2":
