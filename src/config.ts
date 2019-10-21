@@ -132,10 +132,13 @@ export class Config {
     return this._readPromise;
   }
 
-  onChange(changes: ChangeDict, areaName: string) {
+  async onChange(changes: ChangeDict, areaName: string) {
     if (areaName !== 'sync') {
       return;
     }
+    // Re-read settings in case the changes were made by a different instance of
+    // this class.
+    await this._readSettings();
     for (const listener of this._changeListeners) {
       listener(changes);
     }
