@@ -34,7 +34,7 @@ const SUPPORTED_REFERENCES = [
   'nelson_c',
   // The New Nelson Japanese-English Character Dictionary
   'nelson_n',
-  // Halpern's SKIP (System  of  Kanji  Indexing  by  Patterns)
+  // Halpern's SKIP (System of Kanji Indexing by Patterns)
   'skip',
   // Descriptor codes for The Kanji Dictionary
   'sh_desc',

@@ -83,6 +83,16 @@ export const DEFAULT_KEY_SETTINGS: KeySetting[] = [
   },
 ];
 
+// The following references were added to Rikaichamp in a later version and so
+// we turn them off by default to avoid overwhelming users with too many
+// references.
+const OFF_BY_DEFAULT_REFERENCES: Set<ReferenceAbbreviation> = new Set([
+  'busy_people',
+  'kanji_in_context',
+  'kodansha_compact',
+  'maniette',
+]);
+
 export class Config {
   _settings: Settings = {};
   _readPromise: Promise<void>;
@@ -355,13 +365,18 @@ export class Config {
     browser.storage.sync.set({ showKanjiComponents: value });
   }
 
-  // kanjiReferences: Defaults to true for all supported references
+  // kanjiReferences: Defaults to true for all but a few references
+  // that were added more recently.
 
   get kanjiReferences(): Array<ReferenceAbbreviation> {
     const setValues = this._settings.kanjiReferencesV2 || {};
     const result: Array<ReferenceAbbreviation> = [];
     for (const ref of getReferencesForLang('en')) {
-      if (typeof setValues[ref] === 'undefined' || setValues[ref]) {
+      if (typeof setValues[ref] === 'undefined') {
+        if (!OFF_BY_DEFAULT_REFERENCES.has(ref)) {
+          result.push(ref);
+        }
+      } else if (setValues[ref]) {
         result.push(ref);
       }
     }
