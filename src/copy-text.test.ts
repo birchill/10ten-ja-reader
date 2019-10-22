@@ -55,86 +55,99 @@ describe('getEntryToCopy', () => {
 
   it('prepares text from kanji search results', () => {
     expect(
-      getEntryToCopy({
-        type: 'kanji',
-        data: {
-          c: '抜',
-          r: {
-            on: ['バツ', 'ハツ', 'ハイ'],
-            kun: ['ぬ.く', 'ぬ.ける', 'ぬ.かす', 'ぬ.かる'],
-            na: ['ぬき'],
-          },
-          m: ['slip out', 'extract'],
-          rad: {
-            x: 64,
-            b: '⺘',
-            k: '扌',
-            na: ['てへん'],
-            m: ['hand'],
-            m_lang: 'en',
-            base: {
-              b: '⼿',
-              k: '手',
-              na: ['て'],
-              m: ['hand'],
-              m_lang: 'en',
+      getEntryToCopy(
+        {
+          type: 'kanji',
+          data: {
+            c: '抜',
+            r: {
+              on: ['バツ', 'ハツ', 'ハイ'],
+              kun: ['ぬ.く', 'ぬ.ける', 'ぬ.かす', 'ぬ.かる'],
+              na: ['ぬき'],
             },
-          },
-          refs: {
-            nelson_c: 1854,
-            nelson_n: 2093,
-            halpern_njecd: 246,
-            halpern_kkld: 183,
-            halpern_kkld_2ed: 219,
-            heisig: 705,
-            heisig6: 761,
-            henshall: 1708,
-            sh_kk: 1713,
-            sh_kk2: 1830,
-            kanji_in_context: 769,
-            kodansha_compact: 864,
-            skip: '1-3-4',
-            sh_desc: '3c4.10',
-            conning: 1951,
-          },
-          misc: {
-            sc: 7,
-            gr: 8,
-            freq: 726,
-            jlpt: 2,
-            kk: 4,
-          },
-          comp: [
-            {
-              c: '⼇',
-              na: ['なべぶた', 'けいさん', 'けいさんかんむり'],
-              m: ['lid'],
-              m_lang: 'en',
-            },
-            {
-              c: '⼜',
-              na: ['また'],
-              m: ['or again', 'furthermore', 'on the other hand'],
-              m_lang: 'en',
-            },
-            {
-              c: '⼡',
-              na: ['ふゆがしら', 'のまたかんむり', 'のまた', 'ちかんむり'],
-              m: ['winter'],
-              m_lang: 'en',
-            },
-            {
-              c: '⺘',
+            m: ['slip out', 'extract'],
+            rad: {
+              x: 64,
+              b: '⺘',
+              k: '扌',
               na: ['てへん'],
               m: ['hand'],
               m_lang: 'en',
+              base: {
+                b: '⼿',
+                k: '手',
+                na: ['て'],
+                m: ['hand'],
+                m_lang: 'en',
+              },
             },
-          ],
-          m_lang: 'en',
+            refs: {
+              nelson_c: 1854,
+              nelson_n: 2093,
+              halpern_njecd: 246,
+              halpern_kkld: 183,
+              halpern_kkld_2ed: 219,
+              heisig: 705,
+              heisig6: 761,
+              henshall: 1708,
+              sh_kk: 1713,
+              sh_kk2: 1830,
+              kanji_in_context: 769,
+              kodansha_compact: 864,
+              skip: '1-3-4',
+              sh_desc: '3c4.10',
+              conning: 1951,
+            },
+            misc: {
+              sc: 7,
+              gr: 8,
+              freq: 726,
+              jlpt: 2,
+              kk: 4,
+            },
+            comp: [
+              {
+                c: '⼇',
+                na: ['なべぶた', 'けいさん', 'けいさんかんむり'],
+                m: ['lid'],
+                m_lang: 'en',
+              },
+              {
+                c: '⼜',
+                na: ['また'],
+                m: ['or again', 'furthermore', 'on the other hand'],
+                m_lang: 'en',
+              },
+              {
+                c: '⼡',
+                na: ['ふゆがしら', 'のまたかんむり', 'のまた', 'ちかんむり'],
+                m: ['winter'],
+                m_lang: 'en',
+              },
+              {
+                c: '⺘',
+                na: ['てへん'],
+                m: ['hand'],
+                m_lang: 'en',
+              },
+            ],
+            m_lang: 'en',
+          },
         },
-      })
+        {
+          showKanjiComponents: true,
+          // TODO: Test radical, nelson_r, kk, jlpt, unicode here
+          kanjiReferences: [
+            'nelson_c',
+            'henshall',
+            'conning',
+            'skip',
+            'busy_people',
+          ],
+        }
+      )
     ).toEqual(
-      '抜 [バツ、ハツ、ハイ、ぬ.く、ぬ.ける、ぬ.かす、ぬ.かる] (ぬき) slip out, extract; radical: ⺘（てへん） from ⼿ (て); components: ⼇ (なべぶた, lid), ⼜ (また, or again), ⼡ (ふゆがしら, winter), ⺘ (てへん, hand)'
+      '抜 [バツ、ハツ、ハイ、ぬ.く、ぬ.ける、ぬ.かす、ぬ.かる] (ぬき) slip out, extract; radical: ⺘（てへん） from ⼿ (て); components: ⼇ (なべぶた, lid), ⼜ (また, or again), ⼡ (ふゆがしら, winter), ⺘ (てへん, hand); Conning 1951; Henshall 1708; Japanese for Busy People -; Classic Nelson 1854; SKIP 1-3-4'
     );
   });
 });

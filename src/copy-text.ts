@@ -2,7 +2,7 @@ import { KanjiResult } from '@birchill/hikibiki-data';
 
 import { serializeTags } from './name-tags';
 import { WordEntry, NameEntry } from './query';
-import { ReferenceAbbreviation } from './refs';
+import { getSelectedReferenceLabels, ReferenceAbbreviation } from './refs';
 
 export type Entry =
   | { type: 'word'; data: WordEntry }
@@ -68,7 +68,7 @@ export function getEntryToCopy(
 
     case 'kanji':
       {
-        const { c, r, m, rad, comp } = entry.data;
+        const { c, r, m, rad, comp, refs } = entry.data;
 
         result = c;
         const readings = getKanjiReadings(entry.data);
@@ -109,19 +109,19 @@ export function getEntryToCopy(
           }
           result += `; ${componentsLabel}: ${components.join(', ')}`;
         }
-        // TODO: Export references
+
+        if (kanjiReferences.length) {
+          const labels = getSelectedReferenceLabels(kanjiReferences);
+          for (const label of labels) {
+            result += `; ${label.short || label.full} ${refs[label.ref] ||
+              '-'}`;
+          }
+        }
       }
       break;
   }
 
   return result!;
-}
-
-function getKanjiReadings(kanji: KanjiResult): string {
-  return [
-    ...(kanji.r.on ? kanji.r.on : []),
-    ...(kanji.r.kun ? kanji.r.kun : []),
-  ].join('、');
 }
 
 export function getFieldsToCopy(entry: Entry): string {
@@ -171,4 +171,11 @@ export function getFieldsToCopy(entry: Entry): string {
   }
 
   return result!;
+}
+
+function getKanjiReadings(kanji: KanjiResult): string {
+  return [
+    ...(kanji.r.on ? kanji.r.on : []),
+    ...(kanji.r.kun ? kanji.r.kun : []),
+  ].join('、');
 }
