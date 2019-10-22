@@ -133,7 +133,16 @@ export function getEntryToCopy(
   return result!;
 }
 
-export function getFieldsToCopy(entry: Entry): string {
+export function getFieldsToCopy(
+  entry: Entry,
+  {
+    kanjiReferences = [] as Array<ReferenceAbbreviation>,
+    showKanjiComponents = true,
+  }: {
+    kanjiReferences?: Array<ReferenceAbbreviation>;
+    showKanjiComponents?: boolean;
+  } = {}
+): string {
   let result: string;
 
   switch (entry.type) {
@@ -161,20 +170,40 @@ export function getFieldsToCopy(entry: Entry): string {
 
     case 'kanji':
       {
-        const { c, r, m, rad, comp } = entry.data;
+        const { c, r, m, comp } = entry.data;
 
         result = c;
         const readings = getKanjiReadings(entry.data);
         result += `\t${readings}`;
         result += `\t${(r.na || []).join(`、`)}`;
         result += `\t${m.join(', ')}`;
-        result += `\t${rad.b || rad.k}`;
-        result += `\t${rad.na.join(`、`)}`;
-        if (comp.length) {
+        if (showKanjiComponents) {
           const components = comp.map(comp => comp.c).join('');
           result += `\t${components}`;
         }
-        // TODO: Export references
+        if (kanjiReferences.length) {
+          const labels = getSelectedReferenceLabels(kanjiReferences);
+          for (const label of labels) {
+            // For some common types we don't produce the label
+            switch (label.ref) {
+              case 'radical':
+              case 'unicode':
+              case 'nelson_r':
+                // All the above types also either always exist (radical,
+                // unicode) or if they don't exist we want to produce an empty
+                // value (not '-').
+                result += '\t' + getReferenceValue(entry.data, label.ref);
+                break;
+
+              default:
+                result += `\t${label.short || label.full} ${getReferenceValue(
+                  entry.data,
+                  label.ref
+                ) || '-'}`;
+                break;
+            }
+          }
+        }
       }
       break;
   }

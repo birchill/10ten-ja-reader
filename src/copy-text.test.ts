@@ -1,4 +1,4 @@
-import { getEntryToCopy } from './copy-text';
+import { getEntryToCopy, getFieldsToCopy } from './copy-text';
 import { NameTag } from './name-tags';
 
 // Mock browser.i18n.getMessage
@@ -164,6 +164,143 @@ describe('getEntryToCopy', () => {
       )
     ).toEqual(
       '抜 [バツ、ハツ、ハイ、ぬ.く、ぬ.ける、ぬ.かす、ぬ.かる] (ぬき) slip out, extract; radical: ⺘（てへん） from ⼿ (て); components: ⼇ (なべぶた, lid), ⼜ (また, or again), ⼡ (ふゆがしら, winter), ⺘ (てへん, hand); Radical 64 ⼿; Kanji Kentei 4; JLPT 2; Unicode U+629C; Conning 1951; Henshall 1708; Japanese for Busy People -; Classic Nelson 1854; SKIP 1-3-4'
+    );
+  });
+});
+
+describe('getFieldsToCopy', () => {
+  it('prepares text from word search results', () => {
+    expect(
+      getFieldsToCopy({
+        type: 'word',
+        data: {
+          kanjiKana: '韓国語',
+          kana: ['かんこくご'],
+          romaji: ['kankokugo'],
+          definition: '(n) Korean (language)',
+          reason: null,
+        },
+      })
+    ).toEqual('韓国語\tかんこくご\tkankokugo\t(n) Korean (language)');
+  });
+
+  it('prepares text from name search results', () => {
+    expect(
+      getFieldsToCopy({
+        type: 'name',
+        data: {
+          names: [
+            { kanji: 'いぶ喜', kana: 'いぶき' },
+            { kanji: 'いぶ希', kana: 'いぶき' },
+            { kanji: 'いぶ記', kana: 'いぶき' },
+          ],
+          definition: { tags: [NameTag.Female], text: 'Ibuki' },
+        },
+      })
+    ).toEqual(
+      'いぶ喜\tいぶき\t(f) Ibuki\nいぶ希\tいぶき\t(f) Ibuki\nいぶ記\tいぶき\t(f) Ibuki'
+    );
+  });
+
+  it('prepares text from kanji search results', () => {
+    expect(
+      getFieldsToCopy(
+        {
+          type: 'kanji',
+          data: {
+            c: '抜',
+            r: {
+              on: ['バツ', 'ハツ', 'ハイ'],
+              kun: ['ぬ.く', 'ぬ.ける', 'ぬ.かす', 'ぬ.かる'],
+              na: ['ぬき'],
+            },
+            m: ['slip out', 'extract'],
+            rad: {
+              x: 64,
+              b: '⺘',
+              k: '扌',
+              na: ['てへん'],
+              m: ['hand'],
+              m_lang: 'en',
+              base: {
+                b: '⼿',
+                k: '手',
+                na: ['て'],
+                m: ['hand'],
+                m_lang: 'en',
+              },
+            },
+            refs: {
+              nelson_c: 1854,
+              nelson_n: 2093,
+              halpern_njecd: 246,
+              halpern_kkld: 183,
+              halpern_kkld_2ed: 219,
+              heisig: 705,
+              heisig6: 761,
+              henshall: 1708,
+              sh_kk: 1713,
+              sh_kk2: 1830,
+              kanji_in_context: 769,
+              kodansha_compact: 864,
+              skip: '1-3-4',
+              sh_desc: '3c4.10',
+              conning: 1951,
+            },
+            misc: {
+              sc: 7,
+              gr: 8,
+              freq: 726,
+              jlpt: 2,
+              kk: 4,
+            },
+            comp: [
+              {
+                c: '⼇',
+                na: ['なべぶた', 'けいさん', 'けいさんかんむり'],
+                m: ['lid'],
+                m_lang: 'en',
+              },
+              {
+                c: '⼜',
+                na: ['また'],
+                m: ['or again', 'furthermore', 'on the other hand'],
+                m_lang: 'en',
+              },
+              {
+                c: '⼡',
+                na: ['ふゆがしら', 'のまたかんむり', 'のまた', 'ちかんむり'],
+                m: ['winter'],
+                m_lang: 'en',
+              },
+              {
+                c: '⺘',
+                na: ['てへん'],
+                m: ['hand'],
+                m_lang: 'en',
+              },
+            ],
+            m_lang: 'en',
+          },
+        },
+        {
+          showKanjiComponents: true,
+          kanjiReferences: [
+            'radical',
+            'nelson_r',
+            'kk',
+            'jlpt',
+            'unicode',
+            'nelson_c',
+            'henshall',
+            'conning',
+            'skip',
+            'busy_people',
+          ],
+        }
+      )
+    ).toEqual(
+      '抜\tバツ、ハツ、ハイ、ぬ.く、ぬ.ける、ぬ.かす、ぬ.かる\tぬき\tslip out, extract\t⼇⼜⼡⺘\t64 ⼿\t\tKanji Kentei 4\tJLPT 2\tU+629C\tConning 1951\tHenshall 1708\tJapanese for Busy People -\tClassic Nelson 1854\tSKIP 1-3-4'
     );
   });
 });
