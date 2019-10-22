@@ -71,12 +71,9 @@ export function getEntryToCopy(
         const { c, r, m, rad, comp } = entry.data;
 
         result = c;
-        const commonReadings = [
-          ...(r.on ? r.on : []),
-          ...(r.kun ? r.kun : []),
-        ].join('、');
-        if (commonReadings) {
-          result += ` [${commonReadings}]`;
+        const readings = getKanjiReadings(entry.data);
+        if (readings) {
+          result += ` [${readings}]`;
         }
         if (r.na && r.na.length) {
           result += ` (${r.na.join(`、`)})`;
@@ -120,6 +117,13 @@ export function getEntryToCopy(
   return result!;
 }
 
+function getKanjiReadings(kanji: KanjiResult): string {
+  return [
+    ...(kanji.r.on ? kanji.r.on : []),
+    ...(kanji.r.kun ? kanji.r.kun : []),
+  ].join('、');
+}
+
 export function getFieldsToCopy(entry: Entry): string {
   let result: string;
 
@@ -151,11 +155,8 @@ export function getFieldsToCopy(entry: Entry): string {
         const { c, r, m, rad, comp } = entry.data;
 
         result = c;
-        const commonReadings = [
-          ...(r.on ? r.on : []),
-          ...(r.kun ? r.kun : []),
-        ].join('、');
-        result += `\t${commonReadings}`;
+        const readings = getKanjiReadings(entry.data);
+        result += `\t${readings}`;
         result += `\t${(r.na || []).join(`、`)}`;
         result += `\t${m.join(', ')}`;
         result += `\t${rad.b || rad.k}`;

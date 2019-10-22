@@ -576,7 +576,10 @@ export class RikaiContent {
 
       switch (copyType) {
         case CopyType.Entry:
-          textToCopy = getEntryToCopy(copyEntry);
+          textToCopy = getEntryToCopy(copyEntry, {
+            kanjiReferences: this._config.kanjiReferences,
+            showKanjiComponents: this._config.showKanjiComponents,
+          });
           break;
 
         case CopyType.TabDelimited:
