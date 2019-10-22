@@ -98,7 +98,7 @@ const htmlTests = [
     },
   },
   {
-    description: 'a kanji entry with a base kanji',
+    description: 'a kanji entry with a base radical',
     queryResult: {
       type: 'kanji',
       data: {

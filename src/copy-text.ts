@@ -1,7 +1,8 @@
 import { KanjiResult } from '@birchill/hikibiki-data';
 
-import { WordEntry, NameEntry } from './query';
 import { serializeTags } from './name-tags';
+import { WordEntry, NameEntry } from './query';
+import { ReferenceAbbreviation } from './refs';
 
 export type Entry =
   | { type: 'word'; data: WordEntry }
@@ -28,7 +29,16 @@ export function getWordToCopy(entry: Entry): string {
   return result!;
 }
 
-export function getEntryToCopy(entry: Entry): string {
+export function getEntryToCopy(
+  entry: Entry,
+  {
+    kanjiReferences = [] as Array<ReferenceAbbreviation>,
+    showKanjiComponents = true,
+  }: {
+    kanjiReferences?: Array<ReferenceAbbreviation>;
+    showKanjiComponents?: boolean;
+  } = {}
+): string {
   let result: string;
 
   switch (entry.type) {
@@ -88,16 +98,16 @@ export function getEntryToCopy(entry: Entry): string {
               baseReadings,
             ]);
         }
-        if (comp.length) {
+        if (showKanjiComponents && comp.length) {
           const componentsLabel = browser.i18n.getMessage(
             'content_kanji_components_label'
           );
           let components: Array<string> = [];
           for (const component of comp) {
             components.push(
-              `${component.c} ${component.na.join('、')} (${component.m.join(
-                ', '
-              )})`
+              `${component.c} (${
+                component.na.length ? component.na[0] + ', ' : ''
+              }${component.m.length ? component.m[0] : ''})`
             );
           }
           result += `; ${componentsLabel}: ${components.join(', ')}`;
