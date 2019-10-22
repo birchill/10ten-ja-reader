@@ -1,3 +1,5 @@
+import { KanjiResult } from '@birchill/hikibiki-data';
+
 const SUPPORTED_REFERENCES = [
   // The radical for the kanji (number and character, from rad field)
   'radical',
@@ -187,4 +189,53 @@ function getLabelForReference(ref: ReferenceAbbreviation): ReferenceLabel {
     default:
       return REFERENCE_LABELS[ref];
   }
+}
+
+export function getReferenceValue(
+  entry: KanjiResult,
+  ref: ReferenceAbbreviation
+): string {
+  switch (ref) {
+    case 'radical': {
+      const { rad } = entry;
+      const radChar = rad.base ? rad.base.b || rad.base.k : rad.b || rad.k;
+      return `${rad.x} ${radChar}`;
+    }
+
+    case 'nelson_r':
+      if (!entry.rad.nelson) {
+        return '';
+      }
+      return `${entry.rad.nelson} ${String.fromCodePoint(
+        entry.rad.nelson + 0x2eff
+      )}`;
+
+    case 'kk':
+      return renderKanKen(entry.misc.kk);
+
+    case 'jlpt':
+      return entry.misc.jlpt ? String(entry.misc.jlpt) : '';
+
+    case 'unicode':
+      return `U+${entry.c
+        .codePointAt(0)!
+        .toString(16)
+        .toUpperCase()}`;
+
+    default:
+      return entry.refs[ref] ? String(entry.refs[ref]) : '';
+  }
+}
+
+function renderKanKen(level: number | undefined): string {
+  if (!level) {
+    return '—';
+  }
+  if (level === 15) {
+    return browser.i18n.getMessage('content_kanji_kentei_level_pre', ['1']);
+  }
+  if (level === 25) {
+    return browser.i18n.getMessage('content_kanji_kentei_level_pre', ['2']);
+  }
+  return browser.i18n.getMessage('content_kanji_kentei_level', [String(level)]);
 }

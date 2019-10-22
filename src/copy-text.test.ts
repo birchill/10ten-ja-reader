@@ -14,6 +14,18 @@ global.browser = {
           return 'components';
         case 'content_kanji_radical_label':
           return 'radical';
+        case 'content_kanji_kentei_level_pre':
+          return `Pre-${replacements ? replacements[0] : '?'}`;
+        case 'content_kanji_kentei_level':
+          return `${replacements ? replacements[0] : '?'}`;
+        case 'ref_label_radical':
+          return 'Radical';
+        case 'ref_label_kk':
+          return 'Kanji Kentei';
+        case 'ref_label_jlpt':
+          return 'JLPT';
+        case 'ref_label_unicode':
+          return 'Unicode';
         default:
           return 'Unrecognized string ID';
       }
@@ -136,8 +148,12 @@ describe('getEntryToCopy', () => {
         },
         {
           showKanjiComponents: true,
-          // TODO: Test radical, nelson_r, kk, jlpt, unicode here
           kanjiReferences: [
+            'radical',
+            'nelson_r',
+            'kk',
+            'jlpt',
+            'unicode',
             'nelson_c',
             'henshall',
             'conning',
@@ -147,7 +163,7 @@ describe('getEntryToCopy', () => {
         }
       )
     ).toEqual(
-      '抜 [バツ、ハツ、ハイ、ぬ.く、ぬ.ける、ぬ.かす、ぬ.かる] (ぬき) slip out, extract; radical: ⺘（てへん） from ⼿ (て); components: ⼇ (なべぶた, lid), ⼜ (また, or again), ⼡ (ふゆがしら, winter), ⺘ (てへん, hand); Conning 1951; Henshall 1708; Japanese for Busy People -; Classic Nelson 1854; SKIP 1-3-4'
+      '抜 [バツ、ハツ、ハイ、ぬ.く、ぬ.ける、ぬ.かす、ぬ.かる] (ぬき) slip out, extract; radical: ⺘（てへん） from ⼿ (て); components: ⼇ (なべぶた, lid), ⼜ (また, or again), ⼡ (ふゆがしら, winter), ⺘ (てへん, hand); Radical 64 ⼿; Kanji Kentei 4; JLPT 2; Unicode U+629C; Conning 1951; Henshall 1708; Japanese for Busy People -; Classic Nelson 1854; SKIP 1-3-4'
     );
   });
 });

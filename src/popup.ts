@@ -8,7 +8,11 @@ import {
 } from './copy-keys';
 import { getKeyForTag } from './name-tags';
 import { NameDefinition, NameEntry, QueryResult, WordEntry } from './query';
-import { getSelectedReferenceLabels, ReferenceAbbreviation } from './refs';
+import {
+  getReferenceValue,
+  getSelectedReferenceLabels,
+  ReferenceAbbreviation,
+} from './refs';
 
 export const enum CopyState {
   Inactive,
@@ -624,43 +628,8 @@ function renderReferences(
 
   const referenceNames = getSelectedReferenceLabels(options.kanjiReferences);
   for (const ref of referenceNames) {
-    let value: string;
-    switch (ref.ref) {
-      case 'radical':
-        {
-          const { rad } = entry;
-          const radChar = rad.base ? rad.base.b || rad.base.k : rad.b || rad.k;
-          value = `${rad.x} ${radChar}`;
-        }
-        break;
-
-      case 'nelson_r':
-        if (!entry.rad.nelson) {
-          continue;
-        }
-        value = `${entry.rad.nelson} ${String.fromCodePoint(
-          entry.rad.nelson + 0x2eff
-        )}`;
-        break;
-
-      case 'kk':
-        value = renderKanKen(entry.misc.kk);
-        break;
-
-      case 'jlpt':
-        value = entry.misc.jlpt ? String(entry.misc.jlpt) : '-';
-        break;
-
-      case 'unicode':
-        value = `U+${entry.c
-          .codePointAt(0)!
-          .toString(16)
-          .toUpperCase()}`;
-        break;
-
-      default:
-        value = entry.refs[ref.ref] ? String(entry.refs[ref.ref]) : '-';
-        break;
+    if (ref.ref === 'nelson_r' && !entry.rad.nelson) {
+      continue;
     }
 
     const referenceCell = document.createElement('div');
@@ -672,6 +641,7 @@ function renderReferences(
     nameSpan.append(ref.short || ref.full);
     referenceCell.append(nameSpan);
 
+    const value = getReferenceValue(entry, ref.ref) || '-';
     const valueSpan = document.createElement('span');
     valueSpan.classList.add('value');
     valueSpan.append(value);
@@ -679,19 +649,6 @@ function renderReferences(
   }
 
   return referenceTable;
-}
-
-function renderKanKen(level: number | undefined): string {
-  if (!level) {
-    return '—';
-  }
-  if (level === 15) {
-    return browser.i18n.getMessage('content_kanji_kentei_level_pre', ['1']);
-  }
-  if (level === 25) {
-    return browser.i18n.getMessage('content_kanji_kentei_level_pre', ['2']);
-  }
-  return browser.i18n.getMessage('content_kanji_kentei_level', [String(level)]);
 }
 
 function renderCopyDetails(

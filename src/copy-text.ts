@@ -2,7 +2,11 @@ import { KanjiResult } from '@birchill/hikibiki-data';
 
 import { serializeTags } from './name-tags';
 import { WordEntry, NameEntry } from './query';
-import { getSelectedReferenceLabels, ReferenceAbbreviation } from './refs';
+import {
+  getReferenceValue,
+  getSelectedReferenceLabels,
+  ReferenceAbbreviation,
+} from './refs';
 
 export type Entry =
   | { type: 'word'; data: WordEntry }
@@ -68,7 +72,7 @@ export function getEntryToCopy(
 
     case 'kanji':
       {
-        const { c, r, m, rad, comp, refs } = entry.data;
+        const { c, r, m, rad, comp } = entry.data;
 
         result = c;
         const readings = getKanjiReadings(entry.data);
@@ -113,8 +117,13 @@ export function getEntryToCopy(
         if (kanjiReferences.length) {
           const labels = getSelectedReferenceLabels(kanjiReferences);
           for (const label of labels) {
-            result += `; ${label.short || label.full} ${refs[label.ref] ||
-              '-'}`;
+            if (label.ref === 'nelson_r' && !rad.nelson) {
+              continue;
+            }
+            result += `; ${label.short || label.full} ${getReferenceValue(
+              entry.data,
+              label.ref
+            ) || '-'}`;
           }
         }
       }
