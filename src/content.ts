@@ -47,8 +47,13 @@
 
 import { CopyKeys, CopyType } from './copy-keys';
 import { renderPopup, CopyState, PopupOptions } from './popup';
-import { query, QueryResult, WordEntry, NameEntry } from './query';
-import { serializeTags } from './name-tags';
+import { query, QueryResult } from './query';
+import {
+  getEntryToCopy,
+  getFieldsToCopy,
+  getWordToCopy,
+  Entry as CopyEntry,
+} from './copy-text';
 
 declare global {
   interface Window {
@@ -208,11 +213,6 @@ const styleSheetLoad = (link: HTMLLinkElement): Promise<void> =>
       { once: true }
     );
   });
-
-type TaggedEntry =
-  | { type: 'word'; data: WordEntry }
-  | { type: 'name'; data: NameEntry }
-  | { type: 'kanji'; data: KanjiEntry };
 
 export class RikaiContent {
   static MAX_LENGTH = 13;
@@ -567,17 +567,34 @@ export class RikaiContent {
         return false;
       }
 
+      const copyEntry = this.getCopyEntry();
+      if (!copyEntry) {
+        return true;
+      }
+
+      let textToCopy: string;
+
       switch (copyType) {
         case CopyType.Entry:
-          this.copyEntry();
+          textToCopy = getEntryToCopy(copyEntry, {
+            kanjiReferences: this._config.kanjiReferences,
+            showKanjiComponents: this._config.showKanjiComponents,
+          });
           break;
+
         case CopyType.TabDelimited:
-          this.copyFields();
+          textToCopy = getFieldsToCopy(copyEntry, {
+            kanjiReferences: this._config.kanjiReferences,
+            showKanjiComponents: this._config.showKanjiComponents,
+          });
           break;
+
         case CopyType.Word:
-          this.copyWord();
+          textToCopy = getWordToCopy(copyEntry);
           break;
       }
+
+      this.copyString(textToCopy!, copyType);
     } else {
       return false;
     }
@@ -1400,6 +1417,8 @@ export class RikaiContent {
 
     const popupOptions: PopupOptions = {
       showDefinitions: !this._config.readingOnly,
+      kanjiReferences: this._config.kanjiReferences,
+      showKanjiComponents: this._config.showKanjiComponents,
       copyNextKey: this._config.keys.startCopy[0] || '',
       copyState: this._copyMode ? CopyState.Active : CopyState.Inactive,
       copyIndex: this._copyIndex,
@@ -1571,168 +1590,7 @@ export class RikaiContent {
     return this._popupPromise;
   }
 
-  async copyWord() {
-    const entry = this.getCopyEntry();
-    if (!entry) {
-      return;
-    }
-
-    let toCopy: string;
-    switch (entry.type) {
-      case 'word':
-        toCopy = entry.data.kanjiKana;
-        break;
-
-      case 'name':
-        toCopy = entry.data.names
-          .map(name => name.kanji || name.kana)
-          .join(', ');
-        break;
-
-      case 'kanji':
-        toCopy = entry.data.kanji;
-        break;
-    }
-
-    await this.copyString(toCopy!, CopyType.Word);
-  }
-
-  async copyEntry() {
-    const entry = this.getCopyEntry();
-    if (!entry) {
-      return;
-    }
-
-    let toCopy: string;
-    switch (entry.type) {
-      case 'word':
-        toCopy = entry.data.kanjiKana;
-        if (entry.data.kana.length) {
-          toCopy += ` [${entry.data.kana.join('; ')}]`;
-        }
-        if (entry.data.romaji.length) {
-          toCopy += ` (${entry.data.romaji.join(', ')})`;
-        }
-        toCopy += ' ' + entry.data.definition;
-        break;
-
-      case 'name':
-        toCopy = entry.data.names
-          .map(name =>
-            name.kanji ? `${name.kanji} [${name.kana}]` : name.kana
-          )
-          .join(', ');
-
-        const { text, tags } = entry.data.definition;
-        let tagsText = serializeTags(tags);
-        if (tagsText) {
-          tagsText = `(${tagsText}) `;
-        }
-        toCopy += ` ${tagsText}${text}`;
-        break;
-
-      case 'kanji':
-        toCopy = entry.data.kanji;
-        if (entry.data.onkun.length) {
-          toCopy += ` [${entry.data.onkun.join(`、`)}]`;
-        }
-        if (entry.data.nanori.length) {
-          toCopy += ` (${entry.data.nanori.join(`、`)})`;
-        }
-        toCopy += ` ${entry.data.eigo}`;
-        const radicalLabel = browser.i18n.getMessage(
-          'content_kanji_radical_label'
-        );
-        toCopy += `; ${radicalLabel}: ${entry.data.radical}`;
-        if (entry.data.bushumei.length) {
-          toCopy += ` (${entry.data.bushumei.join(`、`)})`;
-        }
-        if (entry.data.components && entry.data.components.length) {
-          const componentsLabel = browser.i18n.getMessage(
-            'content_kanji_components_label'
-          );
-          let components: Array<string> = [];
-          for (const component of entry.data.components) {
-            components.push(
-              `${component.radical} ${component.yomi} ${component.english}`
-            );
-          }
-          toCopy += `; ${componentsLabel}: ${components.join(', ')}`;
-        }
-        if (entry.data.miscDisplay.length) {
-          const refs: Array<string> = [];
-          for (const ref of entry.data.miscDisplay) {
-            if (entry.data.misc.hasOwnProperty(ref.abbrev)) {
-              refs.push(`${ref.name}: ${entry.data.misc[ref.abbrev]}`);
-            }
-          }
-          toCopy += `; ${refs.join('; ')}`;
-        }
-        break;
-    }
-
-    await this.copyString(toCopy!, CopyType.Entry);
-  }
-
-  async copyFields() {
-    const entry = this.getCopyEntry();
-    if (!entry) {
-      return;
-    }
-
-    let toCopy: string;
-    switch (entry.type) {
-      case 'word':
-        toCopy = entry.data.kanjiKana;
-        toCopy += `\t${entry.data.kana.join('; ')}`;
-        if (entry.data.romaji.length) {
-          toCopy += `\t${entry.data.romaji.join('; ')}`;
-        }
-        toCopy += `\t${entry.data.definition.replace(/\//g, '; ')}`;
-        break;
-
-      case 'name':
-        {
-          const { text, tags } = entry.data.definition;
-          let tagsText = serializeTags(tags);
-          if (tagsText) {
-            tagsText = `(${tagsText}) `;
-          }
-          toCopy = entry.data.names
-            .map(
-              name => `${name.kanji || ''}\t${name.kana}\t${tagsText}${text}`
-            )
-            .join('\n');
-        }
-        break;
-
-      case 'kanji':
-        toCopy = entry.data.kanji;
-        toCopy += `\t${entry.data.onkun.join(`、`)}`;
-        toCopy += `\t${entry.data.nanori.join(`、`)}`;
-        toCopy += `\t${entry.data.eigo}`;
-        toCopy += `\t${entry.data.radical}`;
-        toCopy += `\t${entry.data.bushumei.join(`、`)}`;
-        if (entry.data.components) {
-          let components = '';
-          for (const component of entry.data.components) {
-            components += component.radical;
-          }
-          toCopy += `\t${components}`;
-        }
-        for (const ref of entry.data.miscDisplay) {
-          const refText = entry.data.misc.hasOwnProperty(ref.abbrev)
-            ? `${ref.abbrev}${entry.data.misc[ref.abbrev]}`
-            : '';
-          toCopy += `\t${refText}`;
-        }
-        break;
-    }
-
-    await this.copyString(toCopy!, CopyType.TabDelimited);
-  }
-
-  private getCopyEntry(): TaggedEntry | null {
+  private getCopyEntry(): CopyEntry | null {
     console.assert(
       this._copyMode,
       'Should be in copy mode when copying an entry'

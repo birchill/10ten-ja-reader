@@ -49,136 +49,30 @@ import '../manifest.json.src';
 import '../html/background.html.src';
 
 import bugsnag from '@bugsnag/js';
+import {
+  DatabaseState,
+  KanjiDatabase,
+  KanjiResult,
+} from '@birchill/hikibiki-data';
 
-import Config from './config';
-import Dictionary from './data';
+import { updateBrowserAction, FlatFileDictState } from './browser-action';
+import { Config } from './config';
+import { Dictionary } from './data';
+import {
+  notifyDbStateUpdated,
+  DbListenerMessage,
+  ResolvedDbVersions,
+} from './db-listener-messages';
 
-declare global {
-  interface Window {
-    rcxMain: { config: Config };
-  }
+//
+// Minimum amount of time to wait before checking for database updates.
+//
 
-  // Recent versions of Firefox use "menus" but in order to support
-  // Chrome and we use "contextMenus".
-  namespace browser.contextMenus {
-    type ContextType =
-      | 'all'
-      | 'audio'
-      | 'bookmarks'
-      | 'browser_action'
-      | 'editable'
-      | 'frame'
-      | 'image'
-      | 'link'
-      | 'page'
-      | 'page_action'
-      | 'password'
-      | 'selection'
-      | 'tab'
-      | 'tools_menu'
-      | 'video';
+const UPDATE_THRESHOLD_MS = 12 * 60 * 60 * 1000; // 12 hours
 
-    type ItemType = 'normal' | 'checkbox' | 'radio' | 'separator';
-
-    type OnClickData = {
-      bookmarkId?: string;
-      checked?: boolean;
-      editable: boolean;
-      frameId?: number;
-      frameUrl?: string;
-      linkText?: string;
-      linkUrl?: string;
-      mediaType?: string;
-      menuItemId: number | string;
-      modifiers: string[];
-      pageUrl?: string;
-      parentMenuItemId?: number | string;
-      selectionText?: string;
-      srcUrl?: string;
-      targetElementId?: number;
-      wasChecked?: boolean;
-    };
-
-    type Tab = {
-      active: boolean;
-      audible?: boolean;
-      autoDiscardable?: boolean;
-      cookieStoreId?: string;
-      discarded?: boolean;
-      favIconUrl?: string;
-      height?: number;
-      hidden: boolean;
-      highlighted: boolean;
-      id?: number;
-      incognito: boolean;
-      index: number;
-      isArticle: boolean;
-      isInReaderMode: boolean;
-      lastAccessed: number;
-      mutedInfo?: MutedInfo;
-      openerTabId?: number;
-      pinned: boolean;
-      selected: boolean;
-      sessionId?: string;
-      status?: string;
-      title?: string;
-      url?: string;
-      width?: number;
-      windowId: number;
-    };
-
-    type MutedInfoReason = 'capture' | 'extension' | 'user';
-    type MutedInfo = {
-      muted: boolean;
-      extensionId?: string;
-      reason: MutedInfoReason;
-    };
-
-    function create(
-      createProperties: {
-        checked?: boolean;
-        command?:
-          | '_execute_browser_action'
-          | '_execute_page_action'
-          | '_execute_sidebar_action';
-        contexts?: ContextType[];
-        documentUrlPatterns?: string[];
-        enabled?: boolean;
-        icons?: object;
-        id?: string;
-        onclick?: (info: OnClickData, tab: Tab) => void;
-        parentId?: number | string;
-        targetUrlPatterns?: string[];
-        title?: string;
-        type?: ItemType;
-        visible?: boolean;
-      },
-      callback?: () => void
-    ): number | string;
-
-    function remove(menuItemId: number | string): Promise<void>;
-
-    function update(
-      id: number | string,
-      updateProperties: {
-        checked?: boolean;
-        command?:
-          | '_execute_browser_action'
-          | '_execute_page_action'
-          | '_execute_sidebar_action';
-        contexts?: ContextType[];
-        documentUrlPatterns?: string[];
-        enabled?: boolean;
-        onclick?: (info: OnClickData, tab: Tab) => void;
-        parentId?: number | string;
-        targetUrlPatterns?: string[];
-        title?: string;
-        type?: ItemType;
-        visible?: boolean;
-      }
-    ): Promise<void>;
-  }
-}
+//
+// Setup bugsnag
+//
 
 const bugsnagClient = bugsnag({
   apiKey: 'e707c9ae84265d122b019103641e6462',
@@ -192,542 +86,692 @@ const bugsnagClient = bugsnag({
 browser.management.getSelf().then(info => {
   // bugsnag-ts typings don't seem to help here
   (bugsnagClient.app as any).version = info.version;
+  // version_name is a Chrome-only thing but Chrome doesn't allow alpha
+  // characters in the version number (Firefox does) so we stick the "alpha"
+  // "beta" designation in the name.
+  if ((info as any).versionName) {
+    (bugsnagClient.app as any).version = (info as any).versionName;
+  }
+  if (info.installType === 'development') {
+    (bugsnagClient.app as any).releaseStage = 'development';
+  }
 });
 
-class App {
-  _config: Config;
-  _dict?: Dictionary;
+//
+// Setup config
+//
 
-  _dictCount: number = 3;
-  _enabled: boolean = false;
-  _menuId: number | string | null = null;
+const config = new Config();
 
-  constructor() {
-    this._config = new Config();
+config.addChangeListener(changes => {
+  // Add / remove context menu as needed
+  if (changes.hasOwnProperty('contextMenuEnable')) {
+    if ((changes as any).contextMenuEnable.newValue) {
+      addContextMenu();
+    } else {
+      removeContextMenu();
+    }
+  }
 
-    this._config.addChangeListener(changes => {
-      if (changes.hasOwnProperty('contextMenuEnable')) {
-        if ((changes as any).contextMenuEnable.newValue) {
-          this.addContextMenu();
-        } else {
-          this.removeContextMenu();
+  // Update pop-up style as needed
+  if (enabled && changes.hasOwnProperty('popupStyle')) {
+    const popupStyle = (changes as any).popupStyle.newValue;
+    updateBrowserAction({
+      popupStyle,
+      enabled: true,
+      flatFileDictState,
+      kanjiDb,
+    });
+  }
+
+  // Update toggle key
+  if (
+    changes.hasOwnProperty('toggleKey') &&
+    typeof (browser.commands as any).update === 'function'
+  ) {
+    try {
+      (browser.commands as any).update({
+        name: '_execute_browser_action',
+        shortcut: (changes as any).toggleKey.newValue,
+      });
+    } catch (e) {
+      const message = `Failed to update toggle key to ${
+        (changes as any).toggleKey.newValue
+      }`;
+      console.error(message);
+      bugsnagClient.notify(message, { severity: 'warning' });
+    }
+  }
+
+  // Tell the content scripts about any changes
+  //
+  // TODO: Ignore changes that aren't part of contentConfig
+  updateConfig(config.contentConfig);
+});
+
+async function updateConfig(config: ContentConfig) {
+  if (!enabled) {
+    return;
+  }
+
+  const windows = await browser.windows.getAll({
+    populate: true,
+    windowTypes: ['normal'],
+  });
+
+  for (const win of windows) {
+    console.assert(typeof win.tabs !== 'undefined');
+    for (const tab of win.tabs!) {
+      console.assert(
+        typeof tab.id === 'number',
+        `Unexpected tab id: ${tab.id}`
+      );
+      browser.tabs
+        .sendMessage(tab.id!, { type: 'enable', config })
+        .catch(() => {
+          /* Some tabs don't have the content script so just ignore
+           * connection failures here. */
+        });
+    }
+  }
+}
+
+config.ready.then(() => {
+  if (config.contextMenuEnable) {
+    addContextMenu();
+  }
+
+  // I'm not sure if this can actually happen, but just in case, update the
+  // toggleKey command if it differs from what is currently set.
+  if (typeof (browser.commands as any).update === 'function') {
+    const getToggleCommand = async (): Promise<browser.commands.Command | null> => {
+      const commands = await browser.commands.getAll();
+      for (const command of commands) {
+        if (command.name === '_execute_browser_action') {
+          return command;
         }
       }
+      return null;
+    };
 
-      if (this._enabled && changes.hasOwnProperty('popupStyle')) {
-        const popupStyle = (changes as any).popupStyle.newValue;
-        browser.browserAction
-          .setIcon({
-            path: `images/rikaichamp-${popupStyle}.svg`,
-          })
-          .catch(() => {
-            // Assume we're on Chrome and it still can't handle SVGs
-            browser.browserAction.setIcon({
-              path: {
-                16: `images/rikaichamp-${popupStyle}-16.png`,
-                32: `images/rikaichamp-${popupStyle}-32.png`,
-                48: `images/rikaichamp-${popupStyle}-48.png`,
-              },
-            });
-          });
-      }
-
-      if (
-        changes.hasOwnProperty('toggleKey') &&
-        typeof (browser.commands as any).update === 'function'
-      ) {
+    getToggleCommand().then((command: browser.commands.Command | null) => {
+      if (command && command.shortcut !== config.toggleKey) {
         try {
           (browser.commands as any).update({
             name: '_execute_browser_action',
-            shortcut: (changes as any).toggleKey.newValue,
+            shortcut: config.toggleKey,
           });
         } catch (e) {
-          const message = `Failed to update toggle key to ${
-            (changes as any).toggleKey.newValue
-          }`;
+          const message = `On startup, failed to update toggle key to ${config.toggleKey}`;
           console.error(message);
           bugsnagClient.notify(message, { severity: 'warning' });
         }
       }
-
-      // TODO: Ignore changes that aren't part of contentConfig
-      this.updateConfig(this._config.contentConfig);
     });
+  }
+});
 
-    browser.tabs.onActivated.addListener(activeInfo => {
-      this.onTabSelect(activeInfo.tabId);
+//
+// Kanji database
+//
+
+const kanjiDb = new KanjiDatabase();
+const dbListeners: Array<browser.runtime.Port> = [];
+let wasUpdateInError: boolean = false;
+
+kanjiDb.onChange = () => {
+  // Report any update errors
+  if (!wasUpdateInError && kanjiDb.updateState.state === 'error') {
+    const { name, message } = kanjiDb.updateState.error;
+    bugsnagClient.notify(`${name}: ${message}`, {
+      severity: 'error',
     });
-    browser.browserAction.onClicked.addListener(tab => {
-      this.toggle(tab);
-    });
-    browser.runtime.onMessage.addListener(
-      (
-        request: any,
-        sender: browser.runtime.MessageSender
-      ): void | Promise<any> => {
-        if (typeof request.type !== 'string') {
-          return;
-        }
+  }
+  wasUpdateInError = kanjiDb.updateState.state === 'error';
 
-        switch (request.type) {
-          case 'enable?':
-            if (sender.tab && typeof sender.tab.id === 'number') {
-              this.onTabSelect(sender.tab.id);
-            } else {
-              console.error('No sender tab in enable? request');
-              bugsnagClient.leaveBreadcrumb('No sender tab in enable? request');
-            }
-            break;
-          case 'xsearch':
-            if (
-              typeof request.text === 'string' &&
-              typeof request.dictOption === 'number'
-            ) {
-              return this.search(
-                request.text as string,
-                request.dictOption as DictMode
-              );
-            }
-            console.error(
-              `Unrecognized xsearch request: ${JSON.stringify(request)}`
-            );
-            bugsnagClient.notify(
-              `Unrecognized xsearch request: ${JSON.stringify(request)}`,
-              {
-                severity: 'warning',
-              }
-            );
-            break;
-          case 'translate':
-            if (this._dict) {
-              return this._dict.translate({
-                text: request.title,
-                includeRomaji: this._config.showRomaji,
-              });
-            }
-            console.error('Dictionary not initialized in translate request');
-            bugsnagClient.notify(
-              'Dictionary not initialized in translate request',
-              {
-                severity: 'warning',
-              }
-            );
-            break;
-          case 'toggleDefinition':
-            this._config.toggleReadingOnly();
-            break;
-        }
-      }
-    );
+  updateBrowserAction({
+    popupStyle: config.popupStyle,
+    enabled,
+    flatFileDictState,
+    kanjiDb,
+  });
 
-    this._config.ready.then(() => {
-      if (this._config.contextMenuEnable) {
-        this.addContextMenu();
-      }
+  notifyDbListeners();
+};
 
-      // I'm not sure if this can actually happen, but just in case, update the
-      // toggleKey command if it differs from what is currently set.
-      if (typeof (browser.commands as any).update === 'function') {
-        const getToggleCommand = async (): Promise<browser.commands.Command | null> => {
-          const commands = await browser.commands.getAll();
-          for (const command of commands) {
-            if (command.name === '_execute_browser_action') {
-              return command;
-            }
-          }
-          return null;
-        };
+kanjiDb.onWarning = (message: string) => {
+  bugsnagClient.notify(message, { severity: 'warning' });
+};
 
-        getToggleCommand().then((command: browser.commands.Command | null) => {
-          if (command && command.shortcut !== this._config.toggleKey) {
-            try {
-              (browser.commands as any).update({
-                name: '_execute_browser_action',
-                shortcut: this._config.toggleKey,
-              });
-            } catch (e) {
-              const message = `On startup, failed to update toggle key to ${this._config.toggleKey}`;
-              console.error(message);
-              bugsnagClient.notify(message, { severity: 'warning' });
-            }
-          }
-        });
-      }
-    });
-
-    // See if we were enabled on the last run
-    browser.storage.local
-      .get('enabled')
-      .then(getResult => {
-        return getResult &&
-          getResult.hasOwnProperty('enabled') &&
-          getResult.enabled
-          ? browser.tabs.query({ currentWindow: true, active: true })
-          : [];
-      })
-      .then(tabs => {
-        if (tabs && tabs.length) {
-          bugsnagClient.leaveBreadcrumb(
-            'Loading because we were enabled on the previous run'
-          );
-          this.enableTab(tabs[0]);
-        }
-      })
-      .catch(err => {
-        // Ignore
-      });
+async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
+  if (!dbListeners.length) {
+    return;
   }
 
-  get config(): Config {
-    return this._config;
+  if (
+    typeof kanjiDb.dbVersions.kanjidb === 'undefined' ||
+    typeof kanjiDb.dbVersions.bushudb === 'undefined'
+  ) {
+    return;
   }
 
-  async loadDictionary(): Promise<void> {
-    if (!this._dict) {
-      this._dict = new Dictionary({ bugsnag: bugsnagClient });
+  const message = notifyDbStateUpdated({
+    databaseState: kanjiDb.state,
+    updateState: kanjiDb.updateState,
+    versions: kanjiDb.dbVersions as ResolvedDbVersions,
+  });
+
+  // The lastCheck field in the updateState we get back from the database will
+  // only be set if we did a check this session. It is _not_ a stored value.
+  // So, if it is not set, use the value we store instead.
+  if (message.updateState.lastCheck === null) {
+    const getResult = await browser.storage.local.get('lastUpdateKanjiDb');
+    if (typeof getResult.lastUpdateKanjiDb === 'number') {
+      message.updateState.lastCheck = new Date(getResult.lastUpdateKanjiDb);
+    }
+  }
+
+  for (const listener of dbListeners) {
+    if (specifiedListener && listener !== specifiedListener) {
+      continue;
     }
 
     try {
-      await this._dict.loaded;
+      listener.postMessage(message);
     } catch (e) {
-      // If we fail loading the dictionary, make sure to reset it so we can try
-      // again!
-      this._dict = undefined;
-      throw e;
-    }
-
-    bugsnagClient.leaveBreadcrumb('Loaded dictionary successfully');
-  }
-
-  onTabSelect(tabId: number) {
-    if (!this._enabled) {
-      return;
-    }
-
-    this._config.ready.then(() => {
-      browser.tabs
-        .sendMessage(tabId, {
-          type: 'enable',
-          config: this._config.contentConfig,
-        })
-        .catch(() => {
-          /* Some tabs don't have the content script so just ignore
-           * connection failures here. */
-        });
-    });
-  }
-
-  async enableTab(tab: browser.tabs.Tab) {
-    console.assert(typeof tab.id === 'number', `Unexpected tab ID: ${tab.id}`);
-
-    browser.browserAction.setTitle({ title: 'Rikaichamp loading...' });
-    browser.browserAction
-      .setIcon({ path: 'images/rikaichamp-loading.svg' })
-      .catch(() => {
-        // Chrome can't handle SVGs but that also means it can't handle
-        // animated icons without major hackery involving canvas.
-        // Just leave the disabled icon in place until we finish loading.
-      });
-    if (this._menuId) {
-      browser.contextMenus.update(this._menuId, { checked: true });
-    }
-
-    try {
-      await Promise.all([this.loadDictionary(), this._config.ready]);
-
-      // Send message to current tab to add listeners and create stuff
-      browser.tabs
-        .sendMessage(tab.id!, {
-          type: 'enable',
-          config: this._config.contentConfig,
-        })
-        .catch(() => {
-          /* Some tabs don't have the content script so just ignore
-           * connection failures here. */
-        });
-      this._enabled = true;
-      browser.storage.local.set({ enabled: true });
-
-      browser.browserAction.setTitle({ title: 'Rikaichamp enabled' });
-      browser.browserAction
-        .setIcon({
-          path: `images/rikaichamp-${this._config.popupStyle}.svg`,
-        })
-        .catch(() => {
-          // Assume we're on Chrome and it still can't handle SVGs
-          browser.browserAction.setIcon({
-            path: {
-              16: `images/rikaichamp-${this._config.popupStyle}-16.png`,
-              32: `images/rikaichamp-${this._config.popupStyle}-32.png`,
-              48: `images/rikaichamp-${this._config.popupStyle}-48.png`,
-            },
-          });
-        });
-    } catch (e) {
-      bugsnagClient.notify(e || '(No error)', { severity: 'error' });
-
-      browser.browserAction.setTitle({
-        title: browser.i18n.getMessage('error_loading_dictionary'),
-      });
-      browser.browserAction
-        .setIcon({
-          path: 'images/rikaichamp-error.svg',
-        })
-        .catch(() => {
-          browser.browserAction.setIcon({
-            path: {
-              16: 'images/rikaichamp-error-16.png',
-              32: 'images/rikaichamp-error-32.png',
-              48: 'images/rikaichamp-error-48.png',
-            },
-          });
-        });
-
-      // Reset internal state so we can try again
-      this._dict = undefined;
-
-      if (this._menuId) {
-        browser.contextMenus.update(this._menuId, { checked: false });
-      }
-    }
-  }
-
-  updateConfig(config: ContentConfig) {
-    if (!this._enabled) {
-      return;
-    }
-
-    browser.windows
-      .getAll({ populate: true, windowTypes: ['normal'] })
-      .then(windows => {
-        for (const win of windows) {
-          console.assert(typeof win.tabs !== 'undefined');
-          for (const tab of win.tabs!) {
-            console.assert(
-              typeof tab.id === 'number',
-              `Unexpected tab id: ${tab.id}`
-            );
-            browser.tabs
-              .sendMessage(tab.id!, { type: 'enable', config })
-              .catch(() => {
-                /* Some tabs don't have the content script so just ignore
-                 * connection failures here. */
-              });
-          }
-        }
-      });
-  }
-
-  disableAll() {
-    this._enabled = false;
-    browser.storage.local.remove('enabled').catch(() => {
-      /* Ignore */
-    });
-    browser.browserAction.setTitle({
-      title: browser.i18n.getMessage('command_toggle_disabled'),
-    });
-    browser.browserAction
-      .setIcon({
-        path: `images/rikaichamp-disabled.svg`,
-      })
-      .catch(() => {
-        // Assume we're on Chrome and it still can't handle SVGs
-        browser.browserAction.setIcon({
-          path: {
-            16: `images/rikaichamp-disabled-16.png`,
-            32: `images/rikaichamp-disabled-32.png`,
-            48: `images/rikaichamp-disabled-48.png`,
-          },
-        });
-      });
-    if (this._menuId) {
-      browser.contextMenus.update(this._menuId, { checked: false });
-    }
-
-    browser.windows
-      .getAll({ populate: true, windowTypes: ['normal'] })
-      .then(windows => {
-        for (const win of windows) {
-          console.assert(typeof win.tabs !== 'undefined');
-          for (const tab of win.tabs!) {
-            console.assert(
-              typeof tab.id === 'number',
-              `Unexpected tab id: ${tab.id}`
-            );
-            browser.tabs.sendMessage(tab.id!, { type: 'disable' }).catch(() => {
-              /* Some tabs don't have the content script so just ignore
-               * connection failures here. */
-            });
-          }
-        }
-      });
-  }
-
-  toggle(tab: browser.tabs.Tab) {
-    if (this._enabled) {
-      this.disableAll();
-    } else {
-      bugsnagClient.leaveBreadcrumb('Enabling tab from toggle');
-      this.enableTab(tab);
-    }
-  }
-
-  addContextMenu() {
-    if (this._menuId) {
-      return;
-    }
-
-    try {
-      this._menuId = browser.contextMenus.create({
-        id: 'context-toggle',
-        type: 'checkbox',
-        title: browser.i18n.getMessage('menu_enable_extension'),
-        command: '_execute_browser_action',
-        contexts: ['all'],
-        checked: this._enabled,
-      });
-    } catch (e) {
-      // TODO: Chrome doesn't support the 'command' member so if we got an
-      // exception, assume that's it and try the old-fashioned way.
-    }
-  }
-
-  async removeContextMenu() {
-    if (!this._menuId) {
-      return;
-    }
-
-    try {
-      await browser.contextMenus.remove(this._menuId);
-    } catch (e) {
-      console.error(`Failed to remove context menu: ${e}`);
-      bugsnagClient.notify(`Failed to remove context menu: ${e}`, {
-        severity: 'warning',
+      console.log('Error posting message');
+      console.log(e);
+      bugsnagClient.notify(e || '(Error posting message update message)', {
+        severity: 'error',
       });
     }
-
-    this._menuId = null;
-  }
-
-  _kanjiN: number = 1;
-  _namesN: number = 2;
-  _showMode: number = 0;
-
-  search(text: string, dictOption: DictMode) {
-    if (!this._dict) {
-      console.error('Dictionary not initialized in search');
-      bugsnagClient.notify('Dictionary not initialized in search', {
-        severity: 'warning',
-      });
-      return;
-    }
-
-    const kanjiReferences = new Set(
-      Object.entries(this._config.kanjiReferences)
-        .filter(([, /*abbrev*/ setting]) => setting)
-        .map(([abbrev /*setting*/]) => abbrev)
-    );
-    const kanjiSearchOptions = {
-      includedReferences: kanjiReferences,
-      includeKanjiComponents: this._config.showKanjiComponents,
-    };
-
-    switch (dictOption) {
-      case DictMode.ForceKanji:
-        return Promise.resolve(
-          this._dict.kanjiSearch(text.charAt(0), kanjiSearchOptions)
-        );
-
-      case DictMode.Default:
-        this._showMode = 0;
-        break;
-
-      case DictMode.NextDict:
-        this._showMode = (this._showMode + 1) % this._dictCount;
-        break;
-    }
-
-    const searchCurrentDict: (text: string) => Promise<SearchResult | null> = (
-      text: string
-    ) => {
-      switch (this._showMode) {
-        case this._kanjiN:
-          return Promise.resolve(
-            this._dict!.kanjiSearch(text.charAt(0), kanjiSearchOptions)
-          );
-        case this._namesN:
-          return this._dict!.wordSearch({
-            input: text,
-            doNames: true,
-            includeRomaji: false,
-          });
-      }
-      return this._dict!.wordSearch({
-        input: text,
-        doNames: false,
-        includeRomaji: this._config.showRomaji,
-      });
-    };
-
-    const originalMode = this._showMode;
-    return (function loopOverDictionaries(
-      text,
-      self
-    ): Promise<SearchResult | null> {
-      return searchCurrentDict(text).then(result => {
-        if (result) {
-          return result;
-        }
-        self._showMode = (self._showMode + 1) % self._dictCount;
-        if (self._showMode === originalMode) {
-          return null;
-        }
-        return loopOverDictionaries(text, self);
-      });
-    })(text, this);
   }
 }
 
-window.rcxMain = new App();
+async function maybeDownloadData() {
+  await kanjiDb.ready;
 
-window.addEventListener('message', event => {
-  if (event.origin !== window.location.origin) {
-    return;
-  }
-
-  if (typeof event.data !== 'object' || typeof event.data.type !== 'string') {
-    console.error('Unexpected message format');
-    bugsnagClient.notify(
-      `Unexpected message format: ${JSON.stringify(event)}`,
-      {
-        severity: 'error',
-      }
+  // Even if the database is not empty, check if it needs an update.
+  if (kanjiDb.state === DatabaseState.Ok) {
+    let lastUpdateKanjiDb: number | null = null;
+    try {
+      const getResult = await browser.storage.local.get('lastUpdateKanjiDb');
+      lastUpdateKanjiDb =
+        typeof getResult.lastUpdateKanjiDb === 'number'
+          ? getResult.lastUpdateKanjiDb
+          : null;
+    } catch (e) {
+      // Ignore
+    }
+    bugsnagClient.leaveBreadcrumb(
+      `Got last update time of ${lastUpdateKanjiDb}`
     );
+
+    // If we updated within the minimum window then we're done.
+    if (
+      lastUpdateKanjiDb &&
+      Date.now() - lastUpdateKanjiDb < UPDATE_THRESHOLD_MS
+    ) {
+      bugsnagClient.leaveBreadcrumb('Downloaded data is up-to-date');
+      return;
+    }
+  }
+
+  try {
+    await kanjiDb.update();
+    await browser.storage.local.set({
+      lastUpdateKanjiDb: new Date().getTime(),
+    });
+    bugsnagClient.leaveBreadcrumb('Successfully updated kanji database');
+  } catch (e) {
+    bugsnagClient.notify(e || '(Error updating kanji database)', {
+      severity: 'error',
+    });
+    console.log(e);
+  }
+}
+
+browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
+  dbListeners.push(port);
+  notifyDbListeners(port);
+
+  port.onMessage.addListener((evt: unknown) => {
+    if (!isDbListenerMessage(evt)) {
+      return;
+    }
+
+    switch (evt.type) {
+      case 'updatedb':
+        kanjiDb.update();
+        break;
+
+      case 'cancelupdatedb':
+        kanjiDb.cancelUpdate();
+        break;
+
+      case 'deletedb':
+        kanjiDb.destroy();
+        break;
+    }
+  });
+
+  port.onDisconnect.addListener(() => {
+    const index = dbListeners.indexOf(port);
+    if (index !== -1) {
+      dbListeners.splice(index, 1);
+    }
+  });
+});
+
+function isDbListenerMessage(evt: unknown): evt is DbListenerMessage {
+  return typeof evt === 'object' && typeof (evt as any).type === 'string';
+}
+
+//
+// Flat-file (legacy) dictionary
+//
+
+let flatFileDict: Dictionary | undefined = undefined;
+// TODO: This is temporary until we move the other databases to IDB
+let flatFileDictState = FlatFileDictState.Ok;
+
+async function loadDictionary(): Promise<void> {
+  if (!flatFileDict) {
+    flatFileDict = new Dictionary({ bugsnag: bugsnagClient });
+  }
+
+  try {
+    flatFileDictState = FlatFileDictState.Loading;
+    await flatFileDict.loaded;
+  } catch (e) {
+    flatFileDictState = FlatFileDictState.Error;
+    // If we fail loading the dictionary, make sure to reset it so we can try
+    // again!
+    flatFileDict = undefined;
+    throw e;
+  }
+  flatFileDictState = FlatFileDictState.Ok;
+
+  bugsnagClient.leaveBreadcrumb('Loaded dictionary successfully');
+}
+
+//
+// Context menu
+//
+
+let menuId: number | string | null = null;
+
+function addContextMenu() {
+  if (menuId) {
     return;
   }
 
-  switch (event.data.type) {
-    case 'updateKeys':
-      console.assert(
-        typeof event.data.keys === 'object',
-        '`keys` should be an object'
-      );
-      window.rcxMain.config.updateKeys(event.data.keys);
-      break;
+  try {
+    menuId = browser.contextMenus.create({
+      id: 'context-toggle',
+      type: 'checkbox',
+      title: browser.i18n.getMessage('menu_enable_extension'),
+      command: '_execute_browser_action',
+      contexts: ['all'],
+      checked: enabled,
+    });
+  } catch (e) {
+    // TODO: Chrome doesn't support the 'command' member so if we got an
+    // exception, assume that's it and try the old-fashioned way.
+  }
+}
 
-    case 'reportWarning':
-      console.assert(
-        typeof event.data.message === 'string',
-        '`message` should be a string'
-      );
-      bugsnagClient.notify(event.data.message, { severity: 'warning' });
-      break;
+async function removeContextMenu() {
+  if (!menuId) {
+    return;
+  }
 
-    default:
-      console.error(`Unexpected message: ${event.data.type}`);
-      bugsnagClient.notify(`Unexpected message ${event.data.type}`, {
-        severity: 'error',
+  try {
+    await browser.contextMenus.remove(menuId);
+  } catch (e) {
+    console.error(`Failed to remove context menu: ${e}`);
+    bugsnagClient.notify(`Failed to remove context menu: ${e}`, {
+      severity: 'warning',
+    });
+  }
+
+  menuId = null;
+}
+
+//
+// Tab toggling
+//
+
+let enabled: boolean = false;
+
+async function enableTab(tab: browser.tabs.Tab) {
+  console.assert(typeof tab.id === 'number', `Unexpected tab ID: ${tab.id}`);
+
+  updateBrowserAction({
+    popupStyle: config.popupStyle,
+    enabled: true,
+    flatFileDictState: FlatFileDictState.Loading,
+    kanjiDb,
+  });
+
+  if (menuId) {
+    browser.contextMenus.update(menuId, { checked: true });
+  }
+
+  try {
+    await Promise.all([loadDictionary(), config.ready]);
+
+    // Trigger download but don't wait on it. We don't block on this because
+    // we currently only download the kanji data and we don't need it to be
+    // downloaded before we can do something useful.
+    maybeDownloadData();
+
+    // Send message to current tab to add listeners and create stuff
+    browser.tabs
+      .sendMessage(tab.id!, {
+        type: 'enable',
+        config: config.contentConfig,
+      })
+      .catch(() => {
+        /* Some tabs don't have the content script so just ignore
+         * connection failures here. */
       });
+    enabled = true;
+    browser.storage.local.set({ enabled: true });
+
+    updateBrowserAction({
+      popupStyle: config.popupStyle,
+      enabled: true,
+      flatFileDictState,
+      kanjiDb,
+    });
+  } catch (e) {
+    bugsnagClient.notify(e || '(No error)', { severity: 'error' });
+
+    updateBrowserAction({
+      popupStyle: config.popupStyle,
+      enabled: true,
+      flatFileDictState,
+      kanjiDb,
+    });
+
+    // Reset internal state so we can try again
+    flatFileDict = undefined;
+
+    if (menuId) {
+      browser.contextMenus.update(menuId, { checked: false });
+    }
+  }
+}
+
+async function disableAll() {
+  enabled = false;
+
+  browser.storage.local.remove('enabled').catch(() => {
+    /* Ignore */
+  });
+
+  browser.browserAction.setTitle({
+    title: browser.i18n.getMessage('command_toggle_disabled'),
+  });
+
+  updateBrowserAction({
+    popupStyle: config.popupStyle,
+    enabled,
+    flatFileDictState,
+    kanjiDb,
+  });
+
+  if (menuId) {
+    browser.contextMenus.update(menuId, { checked: false });
+  }
+
+  const windows = await browser.windows.getAll({
+    populate: true,
+    windowTypes: ['normal'],
+  });
+  for (const win of windows) {
+    console.assert(typeof win.tabs !== 'undefined');
+    for (const tab of win.tabs!) {
+      console.assert(
+        typeof tab.id === 'number',
+        `Unexpected tab id: ${tab.id}`
+      );
+      browser.tabs.sendMessage(tab.id!, { type: 'disable' }).catch(() => {
+        /* Some tabs don't have the content script so just ignore
+         * connection failures here. */
+      });
+    }
+  }
+}
+
+function toggle(tab: browser.tabs.Tab) {
+  if (enabled) {
+    disableAll();
+  } else {
+    bugsnagClient.leaveBreadcrumb('Enabling tab from toggle');
+    enableTab(tab);
+  }
+}
+
+//
+// Search
+//
+
+let dictCount: number = 3;
+let kanjiDictIndex: number = 1;
+let nameDictIndex: number = 2;
+let showIndex: number = 0;
+
+function search(text: string, dictOption: DictMode) {
+  if (!flatFileDict) {
+    console.error('Dictionary not initialized in search');
+    bugsnagClient.notify('Dictionary not initialized in search', {
+      severity: 'warning',
+    });
+    return;
+  }
+
+  switch (dictOption) {
+    case DictMode.ForceKanji:
+      return searchKanji(text.charAt(0));
+
+    case DictMode.Default:
+      showIndex = 0;
+      break;
+
+    case DictMode.NextDict:
+      showIndex = (showIndex + 1) % dictCount;
       break;
   }
+
+  const searchCurrentDict: (text: string) => Promise<SearchResult | null> = (
+    text: string
+  ) => {
+    switch (showIndex) {
+      case kanjiDictIndex:
+        return searchKanji(text.charAt(0));
+      case nameDictIndex:
+        return flatFileDict!.wordSearch({
+          input: text,
+          doNames: true,
+          includeRomaji: false,
+        });
+    }
+    return flatFileDict!.wordSearch({
+      input: text,
+      doNames: false,
+      includeRomaji: config.showRomaji,
+    });
+  };
+
+  const originalMode = showIndex;
+  return (function loopOverDictionaries(text): Promise<SearchResult | null> {
+    return searchCurrentDict(text).then(result => {
+      if (result) {
+        return result;
+      }
+      showIndex = (showIndex + 1) % dictCount;
+      if (showIndex === originalMode) {
+        return null;
+      }
+      return loopOverDictionaries(text);
+    });
+  })(text);
+}
+
+async function searchKanji(kanji: string): Promise<KanjiResult | null> {
+  // Pre-check (might not be needed anymore)
+  const codepoint = kanji.charCodeAt(0);
+  if (codepoint < 0x3000) {
+    return null;
+  }
+
+  let result;
+  try {
+    result = await kanjiDb.getKanji([kanji]);
+  } catch (e) {
+    console.error(e);
+    bugsnagClient.notify(e || '(Error looking up kanji)', {
+      severity: 'error',
+    });
+    return null;
+  }
+
+  if (!result.length) {
+    return null;
+  }
+
+  if (result.length > 1) {
+    bugsnagClient.notify(`Got more than one result for ${kanji}`, {
+      severity: 'warning',
+    });
+  }
+
+  return result[0];
+}
+
+//
+// Browser event handlers
+//
+
+browser.tabs.onActivated.addListener(activeInfo => {
+  onTabSelect(activeInfo.tabId);
 });
+
+browser.browserAction.onClicked.addListener(toggle);
+
+browser.runtime.onMessage.addListener(
+  (
+    request: any,
+    sender: browser.runtime.MessageSender
+  ): void | Promise<any> => {
+    if (typeof request.type !== 'string') {
+      return;
+    }
+
+    switch (request.type) {
+      case 'enable?':
+        if (sender.tab && typeof sender.tab.id === 'number') {
+          onTabSelect(sender.tab.id);
+        } else {
+          console.error('No sender tab in enable? request');
+          bugsnagClient.leaveBreadcrumb('No sender tab in enable? request');
+        }
+        break;
+
+      case 'xsearch':
+        if (
+          typeof request.text === 'string' &&
+          typeof request.dictOption === 'number'
+        ) {
+          return search(request.text as string, request.dictOption as DictMode);
+        }
+        console.error(
+          `Unrecognized xsearch request: ${JSON.stringify(request)}`
+        );
+        bugsnagClient.notify(
+          `Unrecognized xsearch request: ${JSON.stringify(request)}`,
+          {
+            severity: 'warning',
+          }
+        );
+        break;
+
+      case 'translate':
+        if (flatFileDict) {
+          return flatFileDict.translate({
+            text: request.title,
+            includeRomaji: config.showRomaji,
+          });
+        }
+        console.error('Dictionary not initialized in translate request');
+        bugsnagClient.notify(
+          'Dictionary not initialized in translate request',
+          {
+            severity: 'warning',
+          }
+        );
+        break;
+
+      case 'toggleDefinition':
+        config.toggleReadingOnly();
+        break;
+
+      case 'reportWarning':
+        console.assert(
+          typeof request.message === 'string',
+          '`message` should be a string'
+        );
+        bugsnagClient.notify(request.message, { severity: 'warning' });
+        break;
+    }
+  }
+);
+
+function onTabSelect(tabId: number) {
+  if (!enabled) {
+    return;
+  }
+
+  config.ready.then(() => {
+    browser.tabs
+      .sendMessage(tabId, {
+        type: 'enable',
+        config: config.contentConfig,
+      })
+      .catch(() => {
+        /* Some tabs don't have the content script so just ignore
+         * connection failures here. */
+      });
+  });
+}
+
+browser.runtime.onInstalled.addListener(maybeDownloadData);
+
+browser.runtime.onStartup.addListener(maybeDownloadData);
+
+// See if we were enabled on the last run
+//
+// We don't do this in onStartup because that won't run when the add-on is
+// reloaded and we want to re-enable ourselves in that case too.
+(async function() {
+  const getEnabledResult = await browser.storage.local.get('enabled');
+  const wasEnabled =
+    getEnabledResult &&
+    getEnabledResult.hasOwnProperty('enabled') &&
+    getEnabledResult.enabled;
+
+  if (wasEnabled) {
+    const tabs = await browser.tabs.query({
+      currentWindow: true,
+      active: true,
+    });
+    if (tabs && tabs.length) {
+      bugsnagClient.leaveBreadcrumb(
+        'Loading because we were enabled on the previous run'
+      );
+      enableTab(tabs[0]);
+    }
+  }
+})();

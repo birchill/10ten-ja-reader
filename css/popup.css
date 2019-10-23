@@ -33,7 +33,7 @@
   transition: opacity 0.05s;
   will-change: opacity;
   pointer-events: none;
-  contain: all;
+  contain: content;
 }
 
 #rikaichamp-window.hidden {
@@ -181,116 +181,174 @@
   margin-top: 0;
 }
 
-/* used for kanji information */
+/* Kanji display */
 
 #rikaichamp-window .kanji-table {
-  width: 300px;
-  padding: 6px 10px;
+  max-width: 450px;
+  padding: 8px 14px;
 }
 
-#rikaichamp-window .k-kanji {
+/* kanji: top part of the kanji table */
+
+#rikaichamp-window .kanji-table .top-part {
+  display: flex;
+  margin-top: 6px;
+  margin-bottom: 12px;
+}
+
+/* kanji: character itself */
+
+#rikaichamp-window .kanji-table .kanji {
+  line-height: 1;
+  font-size: 56px;
   font-family: serif;
-  font-size: 48px;
+  margin-inline-end: 0.5em;
 }
 
-#rikaichamp-window .kanji-table.-copy,
-#rikaichamp-window .kanji-table.-finished {
-  width: auto;
-  min-width: 300px;
-}
-
-#rikaichamp-window .kanji-table.-copy .k-kanji {
+#rikaichamp-window .kanji-table.-copy .kanji {
   background: rgba(255,255,206);
   border-radius: 2px;
-  color: #4C63A8;
 }
 
-#rikaichamp-window .kanji-table.-finished .k-kanji {
+#rikaichamp-window .kanji-table.-finished .kanji {
   animation: flash 0.5s;
 }
 
-#rikaichamp-window .k-eigo {
-  font-size: 12px;
+/* kanji: components */
+
+#rikaichamp-window .kanji-table .components {
+  flex-grow: 1;
+  margin-inline-start: 12px;
+}
+
+#rikaichamp-window .kanji-table .components {
+  border-collapse: collapse;
+}
+
+#rikaichamp-window .kanji-table .components .char,
+#rikaichamp-window .kanji-table .components .reading,
+#rikaichamp-window .kanji-table .components .meaning,
+#rikaichamp-window .kanji-table .components .-baseradical td {
+  vertical-align: top;
+  font-size: 11px;
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+#rikaichamp-window .kanji-table .components .reading {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+#rikaichamp-window .kanji-table .components .-radical .char {
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+#rikaichamp-window .kanji-table .components .-radical .meaning {
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+#rikaichamp-window .kanji-table .components .-baseradical td {
+  font-style: italic;
 }
 
 /* kanji: readings */
 
-#rikaichamp-window .k-yomi {
+#rikaichamp-window .kanji-table .readings {
   font-size: 14px;
-  margin: 4px 0px;
+  margin-top: 4px;
+  margin-bottom: 10px;
 }
 
-#rikaichamp-window .k-yomi-hi {
+#rikaichamp-window .kanji-table .okurigana {
   border: 1px solid red;
 }
 
-#rikaichamp-window .k-yomi-ti {
+#rikaichamp-window .kanji-table .nanorilabel {
   font-size: 11px;
 }
 
-/* kanji radical, grade, freq, strokes box */
+/* kanji: meanings */
 
-#rikaichamp-window .summary-box {
-  display: grid;
-  grid-template-columns: 60px 60px;
-  margin-bottom: 4px;
-  float: right;
-  clear: right;
+#rikaichamp-window .kanji-table .meanings {
+  font-size: 14px;
+  margin-bottom: 10px;
 }
 
-#rikaichamp-window .summary-box > .cell {
-  font-size: 12px;
-  text-align: center;
-  padding: 1px 4px;
+/* kanji: grade, freq, strokes */
+
+#rikaichamp-window .kanji-table > .misc {
+  display: flex;
 }
 
-/* kanji components box */
-
-#rikaichamp-window .k-bbox-tb {
-  width: 120px;
-  margin-bottom: 4px;
-  float: right;
-  clear: right;
+#rikaichamp-window .kanji-table > .misc > * {
+  display: flex;
+  flex: 1 1 0px;
+  align-items: baseline;
 }
 
-#rikaichamp-window .k-bbox-0a {
-  vertical-align: top;
-  font-size: 11px;
-  padding: 1px 3px;
+#rikaichamp-window .kanji-table > .misc > :not(:first-child) {
+  margin-left: 12px;
 }
 
-#rikaichamp-window .k-bbox-0b {
-  vertical-align: top;
-  font-size: 11px;
-  padding: 1px 3px;
+#rikaichamp-window .kanji-table > .misc > *:nth-child(2) {
+  flex-grow: 1.5;
+  justify-content: center;
 }
 
-#rikaichamp-window .k-bbox-1a {
-  vertical-align: top;
-  font-size: 11px;
-  padding: 1px 3px;
+#rikaichamp-window .kanji-table > .misc > *:nth-child(3) {
+  justify-content: end;
 }
 
-#rikaichamp-window .k-bbox-1b {
-  vertical-align: top;
-  font-size: 11px;
-  padding: 1px 3px;
+#rikaichamp-window .kanji-table > .misc .strokes span,
+#rikaichamp-window .kanji-table > .misc .freq span,
+#rikaichamp-window .kanji-table > .misc .grade span {
+  font-size: 13px;
 }
 
+#rikaichamp-window .kanji-table > .misc .freq .denom {
+  font-size: 9px;
+}
 
-/* kanji: misc index */
+#rikaichamp-window .kanji-table > .misc .svgicon {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  fill: currentcolor;
+}
+
+/* kanji: references */
 
 #rikaichamp-window .references {
+  --bg-overhang: 8px;
+  margin-top: 12px;
   display: grid;
-  grid-template-columns: auto 50px;
-  width: 100%
+  grid-template-columns: repeat(2, minmax(200px, 1fr));
+  grid-column-gap: .5em;
+  margin-left: calc(-1 * var(--bg-overhang));
+  margin-right: calc(-1 * var(--bg-overhang));
+  width: calc(100% + 2 * var(--bg-overhang));
 }
 
-#rikaichamp-window .references > .name,
-#rikaichamp-window .references > .value {
+#rikaichamp-window .references .ref {
+  display: flex;
+  padding: 2px var(--bg-overhang);
+  border-radius: .5em;
+  justify-content: space-between;
+}
+
+#rikaichamp-window .references .name,
+#rikaichamp-window .references .value {
   font-size: 12px;
-  padding-left: 2px;
-  padding-right: 2px;
+}
+
+#rikaichamp-window .references .value {
+  margin-left: .5em;
 }
 
 /*
@@ -381,6 +439,10 @@
   color: #B7E7FF;
 }
 
+#rikaichamp-window.-blue .kanji-table.-copy .kanji {
+  color: #4C63A8;
+}
+
 #rikaichamp-window.-blue .w-conj {
   color: #FFE0A0;
 }
@@ -394,7 +456,16 @@
   color: #FFFFFF;
 }
 
-#rikaichamp-window.-blue .k-kanji {
+#rikaichamp-window.-blue .kanji-table .kanji {
+  color: #B7E7FF;
+}
+
+#rikaichamp-window.-blue .kanji-table .components .-radical * {
+  background: #4C63A8;
+  color: #B7E7FF;
+}
+
+#rikaichamp-window.-blue .kanji-table .components .-baseradical td {
   color: #B7E7FF;
 }
 
@@ -403,59 +474,24 @@
   color: #C0FFC0;
 }
 
-#rikaichamp-window.-blue .k-yomi {
+#rikaichamp-window.-blue .kanji-table .readings {
   color: #C0FFC0;
 }
 
-#rikaichamp-window.-blue .k-yomi-hi {
+#rikaichamp-window.-blue .kanji-table .okurigana {
   color: #A0D0FF;
 }
 
-#rikaichamp-window.-blue .k-yomi-ti {
+#rikaichamp-window.-blue .kanji-table .nanorilabel {
   color: #E7FFE7;
 }
 
-#rikaichamp-window.-blue .summary-box > .cell {
-  background: #5A70B5;
-  color: #FFFFFF;
-}
-
-#rikaichamp-window.-blue .summary-box > .cell:nth-child(5n+2),
-#rikaichamp-window.-blue .summary-box > .cell:nth-child(5n+3) {
+#rikaichamp-window.-blue .references .ref.-highlight {
   background: #4C63A8;
+}
+
+#rikaichamp-window.-blue .references .ref.-highlight * {
   color: #B7E7FF;
-}
-
-#rikaichamp-window.-blue .k-bbox-0a {
-  background: #5A70B5;
-  color: #FFFFFF;
-}
-
-#rikaichamp-window.-blue .k-bbox-0b {
-  background: #5A70B5;
-  color: #FFFFFF;
-}
-
-#rikaichamp-window.-blue .k-bbox-1a {
-  background: #4C63A8;
-  color: #B7E7FF;
-}
-
-#rikaichamp-window.-blue .k-bbox-1b {
-  background: #4C63A8;
-  color: #B7E7FF;
-}
-
-#rikaichamp-window.-blue .references > .name,
-#rikaichamp-window.-blue .references > .value {
-  background: #5A70B5;
-  color: #B7E7FF;
-}
-
-#rikaichamp-window.-blue .references > .name:nth-child(4n+3),
-#rikaichamp-window.-blue .references > .value:nth-child(4n+4) {
-  background: #4C63A8;
-  color: #FFFFFF;
 }
 
 /*
@@ -496,23 +532,32 @@
   color: #E0E0E0;
 }
 
-#rikaichamp-window.-black .k-kanji {
+#rikaichamp-window.-black .kanji-table .kanji {
   color: #FFFFFF;
 }
 
-#rikaichamp-window.-black .kanji-table.-copy .k-kanji {
+#rikaichamp-window.-black .kanji-table.-copy .kanji {
   color: #7070E0;
 }
 
-#rikaichamp-window.-black .k-yomi {
+#rikaichamp-window.-black .kanji-table .components .-radical * {
+  background: #505050;
+  color: #E0E0E0;
+}
+
+#rikaichamp-window.-black .kanji-table .components .-baseradical td {
+  color: #E0E0E0;
+}
+
+#rikaichamp-window.-black .kanji-table .readings {
   color: #20A020;
 }
 
-#rikaichamp-window.-black .k-yomi-hi {
+#rikaichamp-window.-black .kanji-table .okurigana {
   color: #7070E0;
 }
 
-#rikaichamp-window.-black .k-yomi-ti {
+#rikaichamp-window.-black .kanji-table .nanorilabel {
   color: #E0E0E0;
 }
 
@@ -521,41 +566,11 @@
   color: #E0E0E0;
 }
 
-#rikaichamp-window.-black .summary-box > .cell:nth-child(5n+2),
-#rikaichamp-window.-black .summary-box > .cell:nth-child(5n+3) {
-  background: #303030;
-  color: #F0F0F0;
-}
-
-#rikaichamp-window.-black .k-bbox-0a {
+#rikaichamp-window.-black .references .ref.-highlight {
   background: #505050;
-  color: #E0E0E0;
 }
 
-#rikaichamp-window.-black .k-bbox-0b {
-  background: #505050;
-  color: #E0E0E0;
-}
-
-#rikaichamp-window.-black .k-bbox-1a {
-  background: #303030;
-  color: #F0F0F0;
-}
-
-#rikaichamp-window.-black .k-bbox-1b {
-  background: #303030;
-  color: #F0F0F0;
-}
-
-#rikaichamp-window.-black .references > .name,
-#rikaichamp-window.-black .references > .value {
-  background: #505050;
-  color: #F0F0F0;
-}
-
-#rikaichamp-window.-black .references > .name:nth-of-type(4n+3),
-#rikaichamp-window.-black .references > .value:nth-of-type(4n+4) {
-  background: #303030;
+#rikaichamp-window.-black .references .ref.-highlight * {
   color: #E0E0E0;
 }
 
@@ -593,58 +608,40 @@
   color: #000000;
 }
 
-#rikaichamp-window.-lightblue .k-kanji {
+#rikaichamp-window.-lightblue .kanji-table .kanji {
   color: #000000;
 }
 
-#rikaichamp-window.-lightblue .k-yomi {
+#rikaichamp-window.-lightblue .kanji-table.-copy .kanji {
+  color: #003D6B;
+}
+
+#rikaichamp-window.-lightblue .kanji-table .components .-radical * {
+  background: #DFF1FF;
+  color: #003D6B;
+}
+
+#rikaichamp-window.-lightblue .kanji-table .components .-baseradical td {
+  color: #003D6B;
+}
+
+#rikaichamp-window.-lightblue .kanji-table .readings {
   color: #00B366;
 }
 
-#rikaichamp-window.-lightblue .k-yomi-hi {
+#rikaichamp-window.-lightblue .kanji-table .okurigana {
   color: #00868B;
 }
 
-#rikaichamp-window.-lightblue .k-yomi-ti {
+#rikaichamp-window.-lightblue .kanji-table .nanorilabel {
   color: #000000;
 }
 
-#rikaichamp-window.-lightblue .summary-box > .cell {
+#rikaichamp-window.-lightblue .references .ref.-highlight {
   background: #DFF1FF;
-  color: #003D6B;
 }
 
-#rikaichamp-window.-lightblue .summary-box > .cell:nth-child(5n+2),
-#rikaichamp-window.-lightblue .summary-box > .cell:nth-child(5n+3) {
-  background: #FFFFFF;
-  color: #003D6B;
-}
-
-#rikaichamp-window.-lightblue .k-bbox-0a {
-  background: #DFF1FF;
-  color: #003D6B;
-}
-
-#rikaichamp-window.-lightblue .k-bbox-0b {
-  background: #DFF1FF;
-  color: #003D6B;
-}
-
-#rikaichamp-window.-lightblue .k-bbox-1a,
-#rikaichamp-window.-lightblue .k-bbox-1b {
-  background: #FFFFFF;
-  color: #003D6B;
-}
-
-#rikaichamp-window.-lightblue .references > .name,
-#rikaichamp-window.-lightblue .references > .value {
-  background: #DFF1FF;
-  color: #003D6B;
-}
-
-#rikaichamp-window.-lightblue .references > .name:nth-of-type(4n+3),
-#rikaichamp-window.-lightblue .references > .value:nth-of-type(4n+4) {
-  background: #FFFFFF;
+#rikaichamp-window.-lightblue .references .ref.-highlight * {
   color: #003D6B;
 }
 
@@ -696,58 +693,40 @@
   color: #000000;
 }
 
-#rikaichamp-window.-yellow .k-kanji {
+#rikaichamp-window.-yellow .kanji-table .kanji {
   color: #000000;
 }
 
-#rikaichamp-window.-yellow .kanji-table.-copy .k-kanji {
+#rikaichamp-window.-yellow .kanji-table.-copy .kanji {
   background: #d4edf9;
   color: #7070E0;
 }
 
-#rikaichamp-window.-yellow .k-yomi {
+#rikaichamp-window.-yellow .kanji-table .components .-radical * {
+  background: #FFFFE6;
+  color: #000000;
+}
+
+#rikaichamp-window.-yellow .kanji-table .components .-baseradical td {
+  color: #000000;
+}
+
+#rikaichamp-window.-yellow .kanji-table .readings {
   color: #20A020;
 }
 
-#rikaichamp-window.-yellow .k-yomi-hi {
+#rikaichamp-window.-yellow .kanji-table .okurigana {
   color: #CD5C5C;
 }
 
-#rikaichamp-window.-yellow .k-yomi-ti {
+#rikaichamp-window.-yellow .kanji-table .nanorilabel {
   color: #000000;
 }
 
-#rikaichamp-window.-yellow .summary-box > .cell {
+#rikaichamp-window.-yellow .references .ref.-highlight {
   background: #FFFFE6;
+}
+
+#rikaichamp-window.-yellow .references .ref.-highlight * {
   color: #000000;
-}
-
-#rikaichamp-window.-yellow .summary-box > .cell:nth-child(5n+2),
-#rikaichamp-window.-yellow .summary-box > .cell:nth-child(5n+3) {
-  background: #F7F7D0;
-  color: #000000;
-}
-
-#rikaichamp-window.-yellow .k-bbox-0a,
-#rikaichamp-window.-yellow .k-bbox-0b {
-  background: #FFFFE6;
-  color: #000000;
-}
-
-#rikaichamp-window.-yellow .k-bbox-1a,
-#rikaichamp-window.-yellow .k-bbox-1b {
-  background: #F7F7D0;
-  color: #000000;
-}
-
-#rikaichamp-window.-yellow .references > .name,
-#rikaichamp-window.-yellow .references > .value {
-  background: #FFFFE6;
-  color: black;
-}
-
-#rikaichamp-window.-yellow .references > .name:nth-of-type(4n+3),
-#rikaichamp-window.-yellow .references > .value:nth-of-type(4n+4) {
-  background: #F7F7D0;
-  color: black;
 }

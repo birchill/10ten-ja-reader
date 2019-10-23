@@ -3,6 +3,7 @@ import { browser } from './browser-polyfill';
 (window as any).browser = browser;
 
 import { RikaiContent, GetTextResult } from '../src/content';
+import { ReferenceAbbreviation } from '../src/refs';
 
 mocha.setup('bdd');
 
@@ -99,6 +100,8 @@ describe('rikaiContent:text search', () => {
   beforeEach(() => {
     const config = {
       readingOnly: false,
+      kanjiReferences: ['kk'] as Array<ReferenceAbbreviation>,
+      showKanjiComponents: true,
       holdToShowKeys: [],
       keys: {
         toggleDefinition: ['d'],
@@ -839,6 +842,8 @@ describe('rikaiContent:highlighting', () => {
   beforeEach(() => {
     const config = {
       readingOnly: false,
+      kanjiReferences: ['kk'] as Array<ReferenceAbbreviation>,
+      showKanjiComponents: true,
       holdToShowKeys: [],
       keys: {
         toggleDefinition: ['d'],

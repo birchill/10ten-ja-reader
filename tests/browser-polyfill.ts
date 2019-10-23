@@ -8,7 +8,7 @@ export const browser = {
     },
   },
   i18n: {
-    getMessage: (id: string) => {
+    getMessage: (id: string, replacements?: Array<string>) => {
       switch (id) {
         case 'content_names_dictionary':
           return 'Names Dictionary';
@@ -38,16 +38,24 @@ export const browser = {
           return 'work';
         case 'content_kanji_radical_label':
           return 'radical';
+        case 'content_kanji_base_radical':
+          return `from ${replacements ? replacements[0] : '?'} (${
+            replacements ? replacements[1] : '?'
+          })`;
+        case 'content_kanji_nanori_label':
+          return 'Names (名乗り)';
         case 'content_kanji_grade_label':
-          return 'grade';
+          return `Grade ${replacements ? replacements[0] : '?'}`;
         case 'content_kanji_grade_general_use':
-          return 'general use';
+          return 'General use';
         case 'content_kanji_grade_name_use':
-          return 'name use';
+          return 'Name use';
         case 'content_kanji_frequency_label':
-          return 'freq';
+          return 'Freq. ';
         case 'content_kanji_strokes_label':
-          return 'strokes';
+          return `${replacements ? replacements[0] : '?'} strokes`;
+        case 'content_kanji_strokes_label':
+          return '1 stroke';
         case 'content_kanji_kentei_label':
           return 'Kanji Kentei Level';
         case 'content_kanji_kentei_level':
@@ -66,6 +74,14 @@ export const browser = {
           return 'kanji';
         case 'content_copy_keys_next_label':
           return 'next';
+        case 'ref_label_radical':
+          return 'Radical';
+        case 'ref_label_kk':
+          return 'Kanji Kentei';
+        case 'ref_label_jlpt':
+          return 'JLPT';
+        case 'ref_label_unicode':
+          return 'Unicode';
         default:
           return 'Unrecognized string ID';
       }

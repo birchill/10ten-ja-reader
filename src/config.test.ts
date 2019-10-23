@@ -1,4 +1,4 @@
-import Config from './config';
+import { Config } from './config';
 
 type StorageName = 'sync' | 'local';
 type StorageChange = {
@@ -73,6 +73,14 @@ class MockStorageArea {
       return Promise.resolve(result);
     }
 
+    if (typeof param === 'string') {
+      const result: StorageDict = {};
+      if (this._storage.hasOwnProperty(param)) {
+        result[param] = this._storage[param];
+      }
+      return Promise.resolve(result);
+    }
+
     return Promise.reject('Unexpected param type');
   }
 
@@ -98,23 +106,6 @@ class MockStorageArea {
   }
 }
 
-global.REF_ABBREVIATIONS = [
-  { abbrev: 'CO', name: 'Conning' },
-  { abbrev: 'H', name: 'Halpern' },
-  { abbrev: 'L', name: 'Heisig' },
-  { abbrev: 'E', name: 'Henshall' },
-  { abbrev: 'KK', name: 'Kanji Kentei' },
-  { abbrev: 'DK', name: 'Kanji Learners Dictionary' },
-  { abbrev: 'N', name: 'Nelson' },
-  { abbrev: 'NR', name: 'Nelson Radical' },
-  { abbrev: 'V', name: 'New Nelson' },
-  { abbrev: 'Y', name: 'PinYin' },
-  { abbrev: 'P', name: 'Skip Pattern' },
-  { abbrev: 'IN', name: 'Tuttle Kanji & Kana' },
-  { abbrev: 'I', name: 'Tuttle Kanji Dictionary' },
-  { abbrev: 'U', name: 'Unicode' },
-];
-
 describe('Config', () => {
   beforeEach(() => {
     global.browser = { storage: new MockStorage() };
@@ -136,22 +127,23 @@ describe('Config', () => {
     expect(config.popupStyle).toEqual('blue');
     expect(config.noTextHighlight).toEqual(false);
     expect(config.showKanjiComponents).toEqual(true);
-    expect(config.kanjiReferences).toEqual({
-      CO: true,
-      H: true,
-      L: true,
-      E: true,
-      KK: true,
-      DK: true,
-      N: true,
-      NR: true,
-      V: true,
-      Y: true,
-      P: true,
-      IN: true,
-      I: true,
-      U: true,
-    });
+    expect(config.kanjiReferences).toEqual([
+      'radical',
+      'nelson_r',
+      'kk',
+      'jlpt',
+      'unicode',
+      'conning',
+      'halpern_njecd',
+      'halpern_kkld_2ed',
+      'heisig6',
+      'henshall',
+      'sh_kk2',
+      'nelson_c',
+      'nelson_n',
+      'skip',
+      'sh_desc',
+    ]);
   });
 
   it('reports changes to all listeners', async () => {
@@ -187,5 +179,47 @@ describe('Config', () => {
       { showKanjiComponents: { newValue: false } },
       { showKanjiComponents: { oldValue: false, newValue: true } },
     ]);
+  });
+
+  it('upgrades reference settings', async () => {
+    await browser.storage.sync.set({
+      kanjiReferences: {
+        E: true,
+        U: true,
+        P: false,
+        L: false,
+        Y: true,
+      },
+    });
+
+    const config = new Config();
+
+    await config.ready;
+
+    expect(config.kanjiReferences).toEqual([
+      'radical',
+      'nelson_r',
+      'kk',
+      'jlpt',
+      'unicode',
+      'conning',
+      'halpern_njecd',
+      'halpern_kkld_2ed',
+      'henshall',
+      'sh_kk2',
+      'nelson_c',
+      'nelson_n',
+      'sh_desc',
+    ]);
+
+    const setReferences = await browser.storage.sync.get('kanjiReferencesV2');
+    expect(setReferences).toEqual({
+      kanjiReferencesV2: {
+        unicode: true,
+        heisig6: false,
+        henshall: true,
+        skip: false,
+      },
+    });
   });
 });

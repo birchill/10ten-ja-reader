@@ -2,11 +2,17 @@
   "manifest_version": 2,
   "name": "Rikaichamp",
   "author": "Brian Birtles",
-  "version": "0.0.33",
+  /*#if supports_alpha_version*/
+  "version": "0.1.0pre",
+  /*#else*/
+  "version": "0.1.0",
+  "version_name": "0.1.0 alpha",
+  /*#endif*/
   /*#if supports_applications_field*/
   "applications": {
     "gecko": {
-      "id": "{59812185-ea92-4cca-8ab7-cfcacee81281}"
+      "id": "{59812185-ea92-4cca-8ab7-cfcacee81281}",
+      "strict_min_version": "65.0"
     }
   },
   /*#endif*/
@@ -27,7 +33,13 @@
     "128": "images/rikaichamp-blue-128.png"
   },
   /*#endif*/
-  "permissions": ["clipboardWrite", "contextMenus", "tabs", "storage"],
+  "permissions": [
+    "clipboardWrite",
+    "contextMenus",
+    "storage",
+    "tabs",
+    "unlimitedStorage"
+  ],
   "background": {
     "page": "background.html"
   },

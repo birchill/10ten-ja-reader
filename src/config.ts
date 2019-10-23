@@ -10,9 +10,27 @@
 // * Provides a snapshot of all options with their default values filled-in for
 //   passing to the content process.
 
-import { REF_ABBREVIATIONS } from './data';
+import {
+  ReferenceAbbreviation,
+  convertLegacyReference,
+  getReferencesForLang,
+} from './refs';
 
-type KanjiReferenceFlags = { [abbrev: string]: boolean };
+// We represent the set of references that have been turned on as a series
+// of true or false values.
+//
+// It might seem like it's sufficient to just store the _set_ values (or
+// vice-versa) but that complicates matters when we introduce a new reference
+// type or change the default value of an existing reference type. Currently all
+// references as enabled by default, but we may wish to add a new reference type
+// that is disabled by default, or conditionally enabled by default (e.g. if we
+// find data for JLPT Nx levels, we might want to only enable it if the user has
+// already got the existing JLPT data enabled).
+//
+// By recording the references that have actually been changed by the user as
+// being either enabled or disabled we capture the user's intention more
+// accurately. Anything not set should use the default setting.
+type KanjiReferenceFlagsV2 = { [key in ReferenceAbbreviation]?: boolean };
 
 interface Settings {
   readingOnly?: boolean;
@@ -23,7 +41,7 @@ interface Settings {
   contextMenuEnable?: boolean;
   noTextHighlight?: boolean;
   showKanjiComponents?: boolean;
-  kanjiReferences?: KanjiReferenceFlags;
+  kanjiReferencesV2?: KanjiReferenceFlagsV2;
   popupStyle?: string;
 }
 
@@ -44,31 +62,41 @@ interface KeySetting {
   l10nKey: string;
 }
 
+export const DEFAULT_KEY_SETTINGS: KeySetting[] = [
+  {
+    name: 'nextDictionary',
+    keys: ['Shift', 'Enter'],
+    enabledKeys: ['Shift', 'Enter'],
+    l10nKey: 'options_popup_switch_dictionaries',
+  },
+  {
+    name: 'toggleDefinition',
+    keys: ['d'],
+    enabledKeys: [],
+    l10nKey: 'options_popup_toggle_definition',
+  },
+  {
+    name: 'startCopy',
+    keys: ['c'],
+    enabledKeys: ['c'],
+    l10nKey: 'options_popup_start_copy',
+  },
+];
+
+// The following references were added to Rikaichamp in a later version and so
+// we turn them off by default to avoid overwhelming users with too many
+// references.
+const OFF_BY_DEFAULT_REFERENCES: Set<ReferenceAbbreviation> = new Set([
+  'busy_people',
+  'kanji_in_context',
+  'kodansha_compact',
+  'maniette',
+]);
+
 export class Config {
   _settings: Settings = {};
   _readPromise: Promise<void>;
   _changeListeners: ChangeCallback[] = [];
-
-  DEFAULT_KEY_SETTINGS: KeySetting[] = [
-    {
-      name: 'nextDictionary',
-      keys: ['Shift', 'Enter'],
-      enabledKeys: ['Shift', 'Enter'],
-      l10nKey: 'options_popup_switch_dictionaries',
-    },
-    {
-      name: 'toggleDefinition',
-      keys: ['d'],
-      enabledKeys: [],
-      l10nKey: 'options_popup_toggle_definition',
-    },
-    {
-      name: 'startCopy',
-      keys: ['c'],
-      enabledKeys: ['c'],
-      l10nKey: 'options_popup_start_copy',
-    },
-  ];
 
   constructor() {
     this._readPromise = this._readSettings();
@@ -84,16 +112,43 @@ export class Config {
       settings = {};
     }
     this._settings = settings;
+    await this.upgradeSettings();
+  }
+
+  async upgradeSettings() {
+    // If we have old kanji reference settings but not new ones, upgrade them.
+    if (
+      this._settings.hasOwnProperty('kanjiReferences') &&
+      !this._settings.kanjiReferencesV2
+    ) {
+      const newSettings: KanjiReferenceFlagsV2 = {};
+      const existingSettings: { [key: string]: boolean } = (this
+        ._settings as any).kanjiReferences;
+      for (const [ref, enabled] of Object.entries(existingSettings)) {
+        const newRef = convertLegacyReference(ref);
+        if (newRef) {
+          newSettings[newRef] = enabled;
+        }
+      }
+
+      this._settings.kanjiReferencesV2 = newSettings;
+      await browser.storage.sync.set({
+        kanjiReferencesV2: newSettings,
+      });
+    }
   }
 
   get ready(): Promise<void> {
     return this._readPromise;
   }
 
-  onChange(changes: ChangeDict, areaName: string) {
+  async onChange(changes: ChangeDict, areaName: string) {
     if (areaName !== 'sync') {
       return;
     }
+    // Re-read settings in case the changes were made by a different instance of
+    // this class.
+    await this._readSettings();
     for (const listener of this._changeListeners) {
       listener(changes);
     }
@@ -217,7 +272,7 @@ export class Config {
 
   get keys(): KeyboardKeys {
     const setValues = this._settings.keys || {};
-    const defaultEnabledKeys: KeyboardKeys = this.DEFAULT_KEY_SETTINGS.reduce(
+    const defaultEnabledKeys: KeyboardKeys = DEFAULT_KEY_SETTINGS.reduce(
       (defaultKeys, setting) => {
         defaultKeys[setting.name] = setting.enabledKeys;
         return defaultKeys;
@@ -310,26 +365,32 @@ export class Config {
     browser.storage.sync.set({ showKanjiComponents: value });
   }
 
-  // kanjiReferences: Defaults to true for all items in REF_ABBREVIATIONS
+  // kanjiReferences: Defaults to true for all but a few references
+  // that were added more recently.
 
-  get kanjiReferences(): KanjiReferenceFlags {
-    const setValues = this._settings.kanjiReferences || {};
-    const result: KanjiReferenceFlags = {};
-    for (const ref of REF_ABBREVIATIONS) {
-      result[ref.abbrev] =
-        typeof setValues[ref.abbrev] === 'undefined' || setValues[ref.abbrev];
+  get kanjiReferences(): Array<ReferenceAbbreviation> {
+    const setValues = this._settings.kanjiReferencesV2 || {};
+    const result: Array<ReferenceAbbreviation> = [];
+    for (const ref of getReferencesForLang('en')) {
+      if (typeof setValues[ref] === 'undefined') {
+        if (!OFF_BY_DEFAULT_REFERENCES.has(ref)) {
+          result.push(ref);
+        }
+      } else if (setValues[ref]) {
+        result.push(ref);
+      }
     }
     return result;
   }
 
-  updateKanjiReferences(value: KanjiReferenceFlags) {
-    const existingSettings = this._settings.kanjiReferences || {};
-    this._settings.kanjiReferences = {
+  updateKanjiReferences(updatedReferences: KanjiReferenceFlagsV2) {
+    const existingSettings = this._settings.kanjiReferencesV2 || {};
+    this._settings.kanjiReferencesV2 = {
       ...existingSettings,
-      ...value,
+      ...updatedReferences,
     };
     browser.storage.sync.set({
-      kanjiReferences: this._settings.kanjiReferences,
+      kanjiReferencesV2: this._settings.kanjiReferencesV2,
     });
   }
 
@@ -337,6 +398,8 @@ export class Config {
   get contentConfig(): ContentConfig {
     return {
       readingOnly: this.readingOnly,
+      kanjiReferences: this.kanjiReferences,
+      showKanjiComponents: this.showKanjiComponents,
       holdToShowKeys: this.holdToShowKeys
         ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)
         : [],
@@ -346,5 +409,3 @@ export class Config {
     };
   }
 }
-
-export default Config;

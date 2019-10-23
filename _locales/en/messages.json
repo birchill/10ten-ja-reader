@@ -7,9 +7,33 @@
     "message": "Toggle Rikaichamp on/off",
     "description": "Tooltip for toolbar button to turn Rikaichamp on or off"
   },
+  "command_toggle_enabled": {
+    "message": "Rikaichamp enabled",
+    "description": "Tooltip for toolbar button when enabled."
+  },
   "command_toggle_disabled": {
     "message": "Rikaichamp disabled",
     "description": "Tooltip for toolbar button when disabled."
+  },
+  "command_toggle_loading": {
+    "message": "Rikaichamp loading...",
+    "description": "Tooltip for toolbar button when loading."
+  },
+  "command_toggle_checking": {
+    "message": "Checking for updated dictionary data...",
+    "description": "Tooltip for toolbar button when checking for updates."
+  },
+  "command_toggle_downloading": {
+    "message": "Downloading dictionary data...",
+    "description": "Tooltip for toolbar button when downloading updates."
+  },
+  "command_toggle_updating": {
+    "message": "Applying dictionary data...",
+    "description": "Tooltip for toolbar button when applying updates."
+  },
+  "command_toggle_update_error": {
+    "message": "Failed to update dictionary data",
+    "description": "Tooltip for toolbar button when we failed to update."
   },
   "menu_enable_extension": {
     "message": "Enable Rikaichamp",
@@ -99,29 +123,63 @@
     "message": "radical",
     "description": "The title given to the box showing radical information"
   },
+  "content_kanji_base_radical": {
+    "message": "from $char$ ($readings$)",
+    "description": "The string used to describe the base radical",
+    "placeholders": {
+      "char": {
+        "content": "$1",
+        "example": "⾡"
+      },
+      "readings": {
+        "content": "$2",
+        "example": "しんにょう、しんにゅう"
+      }
+    }
+  },
+  "content_kanji_nanori_label": {
+    "message": "Names (名乗り)",
+    "description": "Label given to name readings"
+  },
   "content_kanji_components_label": {
     "message": "components",
     "description": "The label to give to kanji components when copying a kanji entry"
   },
   "content_kanji_grade_label": {
-    "message": "grade",
-    "description": "The title given to the box showing kanji grade"
+    "message": "Grade $grade$",
+    "description": "The label for kanji in grades 1 - 6",
+    "placeholders": {
+      "grade": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
   },
   "content_kanji_grade_general_use": {
-    "message": "general use",
+    "message": "General use",
     "description": "Label for kanji marked as general use"
   },
   "content_kanji_grade_name_use": {
-    "message": "name use",
+    "message": "Name use",
     "description": "Label for kanji marked as name use"
   },
   "content_kanji_frequency_label": {
-    "message": "freq",
-    "description": "The title given to the box showing frequency information"
+    "message": "Freq. ",
+    "description": "The prefix to the xxx / 2,500 frequency information"
   },
   "content_kanji_strokes_label": {
-    "message": "strokes",
-    "description": "The title given to the box showing stroke count information"
+    "message": "$strokes$ strokes",
+    "description": "The description of the number of strokes",
+    "placeholders": {
+      "strokes": {
+        "content": "$1",
+        "example": "7"
+      }
+    }
+  },
+  "content_kanji_strokes_label_1": {
+    "message": "1 stroke",
+    "description": "The description of the number of strokes when there is exactly 1 stroke"
   },
   "content_kanji_kentei_label": {
     "message": "Kanji Kentei Level",
@@ -144,6 +202,26 @@
         "example": "2"
       }
     }
+  },
+  "ref_label_radical": {
+    "message": "Radical",
+    "description": "The label used when presenting radical numbers"
+  },
+  "ref_label_nelson_r": {
+    "message": "Radical (Nelson)",
+    "description": "The label used when presenting Nelson's revised radical numbers. This should generally be a label that will sort directly after ref_label_radical when using String.localCompare."
+  },
+  "ref_label_kk": {
+    "message": "Kanji Kentei",
+    "description": "The label used when presenting Kanji Kentei levels"
+  },
+  "ref_label_jlpt": {
+    "message": "JLPT",
+    "description": "The label used when presenting the level the kanji appears in in the old JLPT system"
+  },
+  "ref_label_unicode": {
+    "message": "Unicode",
+    "description": "The label used when presenting the Unicode codepoint of the kanji"
   },
   "options_general_heading": {
     "message": "General",
@@ -205,6 +283,136 @@
   "options_kanji_dictionary_heading": {
     "message": "Kanji dictionary",
     "description": "Heading for options to configure what information is displayed from the kanji dictionary"
+  },
+  "options_kanji_data_source_no_version": {
+    "message": "Includes data from KANJIDIC.",
+    "description": "Attribution of kanji source data when no version is available. The keyword KANJIDIC must appear so that it can be link-ified to point to the corresponding home page."
+  },
+  "options_kanji_data_source_with_version": {
+    "message": "Includes data from KANJIDIC version $version$ generated on $generated$.",
+    "description": "Attribution of kanji source data when version information is available. The keyword KANJIDIC must appear so that it can be link-ified to point to the corresponding home page.",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "2019-282"
+      },
+      "generated": {
+        "content": "$2",
+        "example": "2019-10-19"
+      }
+    }
+  },
+  "options_kanji_license": {
+    "message": " This data is the property of the Electronic Dictionary Research and Development Group, and is used in conformance with the Group's licence.",
+    "description": "Description of license terms. The keywords 'Electronic Dictionary Research and Development Group' and options_kanji_license_keyword must appear so they can be linkified. IT SHOULD BEGIN WITH APPROPRIATE SPACE IN LANGUAGES THAT SEPARATE SENTENCES WITH WHITESPACE."
+  },
+  "options_kanji_license_keyword": {
+    "message": "licence",
+    "description": "The keyword in options_kanji_license to link to the license"
+  },
+  "options_kanji_db_version": {
+    "message": "Version $version$",
+    "description": "The version of the database",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "1.0.3"
+      }
+    }
+  },
+  "options_no_database": {
+    "message": "No database",
+    "description": "Label when the database has not yet been downloaded"
+  },
+  "options_last_database_check": {
+    "message": "Last check $lastcheck$",
+    "description": "Status to show when we last checked for an update",
+    "placeholders": {
+      "lastcheck": {
+        "content": "$1",
+        "example": "2019-10-12"
+      }
+    }
+  },
+  "options_checking_for_updates": {
+    "message": "Checking for updates…",
+    "description": "Label while we are checking for updates"
+  },
+  "options_kanji_data_name": {
+    "message": "kanji data",
+    "description": "The name for the kanji database data set"
+  },
+  "options_bushu_data_name": {
+    "message": "radical data",
+    "description": "The name for the bushu database data set"
+  },
+  "options_downloading_data": {
+    "message": "Downloading $datatype$ version $version$ ($progress$%)…",
+    "description": "Label while we are downloading updates",
+    "placeholders": {
+      "datatype": {
+        "content": "$1",
+        "example": "kanji data"
+      },
+      "version": {
+        "content": "$2",
+        "example": "1.0.3"
+      },
+      "progress": {
+        "content": "$3",
+        "example": "60"
+      }
+    }
+  },
+  "options_updating_data": {
+    "message": "Updating $datatype$ to version $version$…",
+    "description": "Label while we are applying updates",
+    "placeholders": {
+      "datatype": {
+        "content": "$1",
+        "example": "kanji data"
+      },
+      "version": {
+        "content": "$2",
+        "example": "1.0.3"
+      }
+    }
+  },
+  "options_db_update_error": {
+    "message": "Update failed: $errormessage$",
+    "description": "Label when we failed to update the data for some reason",
+    "placeholders": {
+      "errormessage": {
+        "content": "$1",
+        "example": "Version file not found"
+      }
+    }
+  },
+  "options_db_update_next_retry": {
+    "message": "Retrying at $nextretry$",
+    "description": "Label used when there is a scheduled retry",
+    "placeholders": {
+      "nextretry": {
+        "content": "$1",
+        "example": "2019-10-14 17:44"
+      }
+    }
+  },
+  "options_offline_explanation": {
+    "message": "Could not check for updates because this device is currently offline. An update will be performed once the device is online.",
+    "description": "Message shown when the system is offline so updates cannot be performed"
+  },
+  "options_update_check_button_label": {
+    "message": "Check for updates",
+    "description": "Label for the button to check for database updates"
+  },
+  "options_update_retry_button_label": {
+    "message": "Retry",
+    "description": "Label for the button to retry the database update after a failure"
+  },
+  "options_cancel_update_button_label": {
+    "message": "Cancel",
+    "description": "Label for the button to cancel a database update"
   },
   "options_kanji_components": {
     "message": "Kanji components",

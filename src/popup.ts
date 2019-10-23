@@ -1,4 +1,5 @@
-import { NameDefinition, NameEntry, QueryResult, WordEntry } from './query';
+import { KanjiResult } from '@birchill/hikibiki-data';
+
 import {
   CopyKeys,
   CopyType,
@@ -6,6 +7,12 @@ import {
   CopyNextKeyStrings,
 } from './copy-keys';
 import { getKeyForTag } from './name-tags';
+import { NameDefinition, NameEntry, QueryResult, WordEntry } from './query';
+import {
+  getReferenceValue,
+  getSelectedReferenceLabels,
+  ReferenceAbbreviation,
+} from './refs';
 
 export const enum CopyState {
   Inactive,
@@ -16,6 +23,8 @@ export const enum CopyState {
 
 export interface PopupOptions {
   showDefinitions: boolean;
+  kanjiReferences: Array<ReferenceAbbreviation>;
+  showKanjiComponents?: boolean;
   copyNextKey: string;
   copyState?: CopyState;
   // Set when copyState !== CopyState.Inactive
@@ -245,7 +254,7 @@ function getSelectedIndex(options: PopupOptions, numEntries: number) {
 }
 
 function renderKanjiEntry(
-  entry: KanjiEntry,
+  entry: KanjiResult,
   options: PopupOptions
 ): HTMLElement | DocumentFragment {
   const container = document.createDocumentFragment();
@@ -264,185 +273,43 @@ function renderKanjiEntry(
     table.classList.add('-finished');
   }
 
-  // Summary information
-  const summaryTable = document.createElement('div');
-  table.append(summaryTable);
-  summaryTable.classList.add('summary-box');
-
-  const radicalCell = document.createElement('div');
-  summaryTable.append(radicalCell);
-  radicalCell.classList.add('cell');
-  radicalCell.append(browser.i18n.getMessage('content_kanji_radical_label'));
-  radicalCell.append(document.createElement('br'));
-  radicalCell.append(`${entry.radical} ${entry.misc.C || entry.misc.B}`);
-
-  const gradeCell = document.createElement('div');
-  summaryTable.append(gradeCell);
-  gradeCell.classList.add('cell');
-  let grade = document.createDocumentFragment();
-  switch (entry.misc.G || '') {
-    case '8':
-      grade.append(browser.i18n.getMessage('content_kanji_grade_general_use'));
-      break;
-    case '9':
-      grade.append(browser.i18n.getMessage('content_kanji_grade_name_use'));
-      break;
-    default:
-      if (
-        typeof entry.misc.G === 'undefined' ||
-        isNaN(parseInt(entry.misc.G))
-      ) {
-        grade.append('-');
-      } else {
-        grade.append(browser.i18n.getMessage('content_kanji_grade_label'));
-        grade.append(document.createElement('br'));
-        grade.append(entry.misc.G);
-      }
-      break;
-  }
-  gradeCell.append(grade);
-
-  const frequencyCell = document.createElement('div');
-  summaryTable.append(frequencyCell);
-  frequencyCell.classList.add('cell');
-  frequencyCell.append(
-    browser.i18n.getMessage('content_kanji_frequency_label')
-  );
-  frequencyCell.append(document.createElement('br'));
-  frequencyCell.append(entry.misc.F || '-');
-
-  const strokesCell = document.createElement('div');
-  summaryTable.append(strokesCell);
-  strokesCell.classList.add('cell');
-  strokesCell.append(browser.i18n.getMessage('content_kanji_strokes_label'));
-  strokesCell.append(document.createElement('br'));
-  strokesCell.append(entry.misc.S);
-
-  // Kanji components
-  if (entry.components) {
-    const componentsTable = document.createElement('table');
-    componentsTable.classList.add('k-bbox-tb');
-    table.append(componentsTable);
-
-    entry.components.forEach((component, index) => {
-      const row = document.createElement('tr');
-      componentsTable.append(row);
-
-      const radicalCell = document.createElement('td');
-      row.append(radicalCell);
-      radicalCell.classList.add(`k-bbox-${(index + 1) % 2}a`);
-      radicalCell.append(component.radical);
-
-      const readingCell = document.createElement('td');
-      row.append(readingCell);
-      readingCell.classList.add(`k-bbox-${(index + 1) % 2}b`);
-      readingCell.append(component.yomi);
-
-      const englishCell = document.createElement('td');
-      row.append(englishCell);
-      englishCell.classList.add(`k-bbox-${(index + 1) % 2}b`);
-      englishCell.append(component.english);
-    });
-  }
+  // Top part
+  const topPart = document.createElement('div');
+  topPart.classList.add('top-part');
+  table.append(topPart);
 
   // The kanji itself
-  const kanjiSpan = document.createElement('span');
-  kanjiSpan.classList.add('k-kanji');
-  kanjiSpan.append(entry.kanji);
-  table.append(kanjiSpan);
-  table.append(document.createElement('br'));
+  const kanjiDiv = document.createElement('div');
+  kanjiDiv.classList.add('kanji');
+  kanjiDiv.append(entry.c);
+  topPart.append(kanjiDiv);
+
+  // Kanji components
+  if (
+    typeof options.showKanjiComponents === 'undefined' ||
+    options.showKanjiComponents
+  ) {
+    topPart.append(renderKanjiComponents(entry));
+  }
 
   // English
-  const englishDiv = document.createElement('div');
-  englishDiv.classList.add('k-eigo');
-  englishDiv.append(entry.eigo);
-  table.append(englishDiv);
+  const meaningsDiv = document.createElement('div');
+  meaningsDiv.classList.add('meanings');
+  meaningsDiv.append(entry.m.join(', '));
+  table.append(meaningsDiv);
 
   // Readings
-  const yomiDiv = document.createElement('div');
-  yomiDiv.classList.add('k-yomi');
-  table.append(yomiDiv);
+  table.append(renderReadings(entry));
 
-  // Readings come in the form:
-  //
-  //  ヨ、 あた.える、 あずか.る、 くみ.する、 ともに
-  //
-  // We want to take the bit after the '.' and wrap it in a span with an
-  // appropriate class.
-  entry.onkun.forEach((reading, index) => {
-    if (index !== 0) {
-      yomiDiv.append('\u3001');
-    }
-    const highlightIndex = reading.indexOf('.');
-    if (highlightIndex === -1) {
-      yomiDiv.append(reading);
-    } else {
-      yomiDiv.append(reading.substr(0, highlightIndex));
-      const highlightSpan = document.createElement('span');
-      highlightSpan.classList.add('k-yomi-hi');
-      highlightSpan.append(reading.substr(highlightIndex + 1));
-      yomiDiv.append(highlightSpan);
-    }
-  });
-
-  // Optional readings
-  if (entry.nanori.length) {
-    const nanoriLabelSpan = document.createElement('span');
-    nanoriLabelSpan.classList.add('k-yomi-ti');
-    nanoriLabelSpan.append('名乗り');
-    yomiDiv.append(
-      document.createElement('br'),
-      nanoriLabelSpan,
-      ` ${entry.nanori.join('\u3001')}`
-    );
-  }
-
-  if (entry.bushumei.length) {
-    const bushumeiLabelSpan = document.createElement('span');
-    bushumeiLabelSpan.classList.add('k-yomi-ti');
-    bushumeiLabelSpan.append('部首名');
-    yomiDiv.append(
-      document.createElement('br'),
-      bushumeiLabelSpan,
-      ` ${entry.bushumei.join('\u3001')}`
-    );
-  }
+  // Misc info
+  table.append(renderMiscRow(entry));
 
   // Reference row
-  const referenceTable = document.createElement('div');
-  referenceTable.classList.add('references');
-  table.append(referenceTable);
-
-  for (const ref of entry.miscDisplay) {
-    let value = entry.misc[ref.abbrev] || '-';
-
-    const isKanKen = ref.name === 'Kanji Kentei';
-    const name = isKanKen
-      ? browser.i18n.getMessage('content_kanji_kentei_label')
-      : ref.name;
-
-    const nameCell = document.createElement('div');
-    nameCell.classList.add('name');
-    nameCell.append(name);
-    referenceTable.append(nameCell);
-
-    if (isKanKen) {
-      if (value.endsWith('.5')) {
-        value = browser.i18n.getMessage(
-          'content_kanji_kentei_level_pre',
-          value.substring(0, 1)
-        );
-      } else {
-        value = browser.i18n.getMessage('content_kanji_kentei_level', value);
-      }
-    }
-
-    const valueCell = document.createElement('div');
-    valueCell.classList.add('value');
-    valueCell.append(value);
-    referenceTable.append(valueCell);
+  if (options.kanjiReferences && options.kanjiReferences.length) {
+    table.append(renderReferences(entry, options));
   }
 
+  // Copy details
   const copyDetails = renderCopyDetails(
     options.copyNextKey,
     options.copyState,
@@ -456,6 +323,363 @@ function renderKanjiEntry(
   }
 
   return container;
+}
+
+function renderKanjiComponents(entry: KanjiResult): HTMLElement {
+  const componentsDiv = document.createElement('div');
+  componentsDiv.classList.add('components');
+
+  const componentsTable = document.createElement('table');
+  componentsDiv.append(componentsTable);
+
+  // The radical row is special. It has special highlighting, we show all
+  // readings and meanings (not just the first of each), and we also show
+  // the base radical, if any.
+  const addRadicalRow = () => {
+    const { rad } = entry;
+
+    const row = document.createElement('tr');
+    row.classList.add('-radical');
+    componentsTable.append(row);
+
+    const radicalCell = document.createElement('td');
+    row.append(radicalCell);
+    radicalCell.classList.add('char');
+    radicalCell.append((rad.b || rad.k)!);
+    radicalCell.lang = 'ja';
+
+    const readingCell = document.createElement('td');
+    row.append(readingCell);
+    readingCell.classList.add('reading');
+    readingCell.append(rad.na.join('、'));
+    radicalCell.lang = 'ja';
+
+    const meaningCell = document.createElement('td');
+    row.append(meaningCell);
+    meaningCell.classList.add('meaning');
+    meaningCell.append(rad.m.join(', '));
+
+    if (rad.base) {
+      const baseRow = document.createElement('tr');
+      baseRow.classList.add('-baseradical');
+      componentsTable.append(baseRow);
+
+      const baseChar = (rad.base.b || rad.base.k)!;
+      const baseReadings = rad.base.na.join('、');
+      const fromText = browser.i18n.getMessage('content_kanji_base_radical', [
+        baseChar,
+        baseReadings,
+      ]);
+
+      const baseCell = document.createElement('td');
+      baseCell.setAttribute('colspan', '3');
+      baseCell.innerText = fromText;
+      baseRow.append(baseCell);
+    }
+  };
+
+  // Typically, the radical will also be one of the components, but in case it's
+  // not (the data is frequently hand-edited, after all), make sure we add it
+  // first.
+  if (
+    !entry.comp.some(comp => comp.c === entry.rad.b || comp.c === entry.rad.k)
+  ) {
+    addRadicalRow();
+  }
+
+  for (const component of entry.comp) {
+    if (component.c === entry.rad.b || component.c === entry.rad.k) {
+      addRadicalRow();
+      continue;
+    }
+
+    const row = document.createElement('tr');
+    componentsTable.append(row);
+
+    const radicalCell = document.createElement('td');
+    row.append(radicalCell);
+    radicalCell.classList.add('char');
+    radicalCell.append(component.c);
+
+    const readingCell = document.createElement('td');
+    row.append(readingCell);
+    readingCell.classList.add('reading');
+    readingCell.append(component.na.length ? component.na[0] : '-');
+
+    const meaningCell = document.createElement('td');
+    row.append(meaningCell);
+    meaningCell.classList.add('meaning');
+    meaningCell.append(component.m.length ? component.m[0] : '-');
+  }
+
+  return componentsDiv;
+}
+
+function renderReadings(entry: KanjiResult): HTMLElement {
+  // Readings
+  const readingsDiv = document.createElement('div');
+  readingsDiv.classList.add('readings');
+
+  if (entry.r.on && entry.r.on.length) {
+    readingsDiv.append(entry.r.on.join('、'));
+  }
+
+  // Kun readings sometimes have a . in them separating the initial part that
+  // represents the kanji, from the okurigana.
+  //
+  // e.g. あた.える
+  //
+  // We want to take the bit after the '.' and wrap it in a span with an
+  // appropriate class.
+  let hasPrecedingEntries = entry.r.on && entry.r.on.length !== 0;
+  for (const reading of entry.r.kun || []) {
+    if (hasPrecedingEntries) {
+      readingsDiv.append('、');
+    }
+
+    const highlightIndex = reading.indexOf('.');
+    if (highlightIndex === -1) {
+      readingsDiv.append(reading);
+    } else {
+      readingsDiv.append(reading.substr(0, highlightIndex));
+      const okuriganaSpan = document.createElement('span');
+      okuriganaSpan.classList.add('okurigana');
+      okuriganaSpan.append(reading.substr(highlightIndex + 1));
+      readingsDiv.append(okuriganaSpan);
+    }
+
+    hasPrecedingEntries = true;
+  }
+
+  // Name readings
+  if (entry.r.na && entry.r.na.length) {
+    const nanoriLabelSpan = document.createElement('span');
+    nanoriLabelSpan.classList.add('nanorilabel');
+    nanoriLabelSpan.append(
+      browser.i18n.getMessage('content_kanji_nanori_label')
+    );
+    readingsDiv.append(
+      document.createElement('br'),
+      nanoriLabelSpan,
+      ` ${entry.r.na.join('、')}`
+    );
+  }
+
+  return readingsDiv;
+}
+
+function renderMiscRow(entry: KanjiResult): HTMLElement {
+  // Misc information row
+  const miscInfoDiv = document.createElement('div');
+  miscInfoDiv.classList.add('misc');
+
+  // Strokes
+  const strokesDiv = document.createElement('div');
+  strokesDiv.classList.add('strokes');
+  strokesDiv.append(renderBrush());
+  const strokeCount = document.createElement('span');
+  strokeCount.textContent =
+    entry.misc.sc === 1
+      ? browser.i18n.getMessage('content_kanji_strokes_label_1')
+      : browser.i18n.getMessage('content_kanji_strokes_label', [
+          String(entry.misc.sc),
+        ]);
+  strokesDiv.append(strokeCount);
+  miscInfoDiv.append(strokesDiv);
+
+  // Frequency
+  const frequencyDiv = document.createElement('div');
+  frequencyDiv.classList.add('freq');
+  frequencyDiv.append(renderFrequency(entry.misc.freq));
+  const frequency = document.createElement('span');
+  if (entry.misc.freq) {
+    frequency.textContent =
+      browser.i18n.getMessage('content_kanji_frequency_label') +
+      ` ${entry.misc.freq}`;
+    const denominator = document.createElement('span');
+    denominator.classList.add('denom');
+    denominator.append(' / 2,500');
+    frequency.append(denominator);
+  } else {
+    frequency.textContent = '-';
+  }
+  frequencyDiv.append(frequency);
+  miscInfoDiv.append(frequencyDiv);
+
+  // Grade
+  const gradeDiv = document.createElement('div');
+  gradeDiv.classList.add('grade');
+  gradeDiv.append(renderUser());
+  const grade = document.createElement('span');
+  switch (entry.misc.gr || 0) {
+    case 8:
+      grade.append(browser.i18n.getMessage('content_kanji_grade_general_use'));
+      break;
+    case 9:
+      grade.append(browser.i18n.getMessage('content_kanji_grade_name_use'));
+      break;
+    default:
+      if (typeof entry.misc.gr === 'undefined') {
+        grade.append('-');
+      } else {
+        grade.append(
+          browser.i18n.getMessage('content_kanji_grade_label', [
+            String(entry.misc.gr),
+          ])
+        );
+      }
+      break;
+  }
+  gradeDiv.append(grade);
+  miscInfoDiv.append(gradeDiv);
+
+  return miscInfoDiv;
+}
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+let brushSvg: SVGElement | undefined;
+function renderBrush(): SVGElement {
+  if (!brushSvg) {
+    brushSvg = document.createElementNS(SVG_NS, 'svg');
+    brushSvg.classList.add('svgicon');
+    brushSvg.style.opacity = '0.5';
+    brushSvg.setAttribute('viewBox', '0 0 90 90');
+
+    const path = document.createElementNS(SVG_NS, 'path');
+    path.setAttribute(
+      'd',
+      'M80 11c-2-2-5-2-7 0L22 58l12 12 46-52c2-2 2-5 0-7zM11 82c11 0 17-3 20-11L21 61c-12 6-3 14-10 21z'
+    );
+    brushSvg.append(path);
+  }
+
+  return brushSvg;
+}
+
+function renderFrequency(frequency: number | undefined): SVGElement {
+  const freqSvg = document.createElementNS(SVG_NS, 'svg');
+  freqSvg.classList.add('svgicon');
+  freqSvg.setAttribute('viewBox', '0 0 8 8');
+
+  const rect1 = document.createElementNS(SVG_NS, 'rect');
+  rect1.setAttribute('x', '0');
+  rect1.setAttribute('y', '5');
+  rect1.setAttribute('width', '2');
+  rect1.setAttribute('height', '3');
+  rect1.setAttribute('rx', '0.5');
+  rect1.setAttribute('ry', '0.5');
+  if (!frequency) {
+    rect1.setAttribute('opacity', '0.5');
+  }
+  freqSvg.append(rect1);
+
+  const rect2 = document.createElementNS(SVG_NS, 'rect');
+  rect2.setAttribute('x', '3');
+  rect2.setAttribute('y', '3');
+  rect2.setAttribute('width', '2');
+  rect2.setAttribute('height', '5');
+  rect2.setAttribute('rx', '0.5');
+  rect2.setAttribute('ry', '0.5');
+  if (!frequency || frequency >= (2500 * 2) / 3) {
+    rect2.setAttribute('opacity', '0.5');
+  }
+  freqSvg.append(rect2);
+
+  const rect3 = document.createElementNS(SVG_NS, 'rect');
+  rect3.setAttribute('x', '6');
+  rect3.setAttribute('width', '2');
+  rect3.setAttribute('height', '8');
+  rect3.setAttribute('rx', '0.5');
+  rect3.setAttribute('ry', '0.5');
+  if (!frequency || frequency >= 2500 / 3) {
+    rect3.setAttribute('opacity', '0.5');
+  }
+  freqSvg.append(rect3);
+
+  return freqSvg;
+}
+
+let userSvg: SVGElement | undefined;
+function renderUser(): SVGElement {
+  if (!userSvg) {
+    userSvg = document.createElementNS(SVG_NS, 'svg');
+    userSvg.classList.add('svgicon');
+    userSvg.style.opacity = '0.5';
+    userSvg.setAttribute('viewBox', '0 0 8 8');
+
+    const path = document.createElementNS(SVG_NS, 'path');
+    path.setAttribute(
+      'd',
+      'M4 8C1.93 8 .25 7.73.25 7.25V7c0-.9.69-1.39 1.02-1.55.33-.16 1.04-.38 1.34-.57L3 4.62s0-.04 0 0v-.37a2.62 2.62 0 0 1-.44-1.05c-.15.05-.33-.14-.4-.42-.07-.27-.01-.52.13-.56h.02l-.06-.82c0-.21-.03-.39.23-.76.27-.36.5-.22.5-.22s.17-.18.32-.26c.16-.08.54-.28 1.24-.07.69.2.96.3 1.13 1.1.1.46.07.8.04 1.03h.02c.14.03.2.29.12.56-.07.27-.24.46-.38.43-.1.44-.24.75-.47 1.04v.37c0-.01 0 0 0 0s.08.07.37.26c.3.2 1.02.41 1.35.57.32.16 1 .69 1.03 1.55v.25C7.75 7.73 6.07 8 4 8z'
+    );
+    userSvg.append(path);
+  }
+
+  return userSvg;
+}
+
+function renderReferences(
+  entry: KanjiResult,
+  options: PopupOptions
+): HTMLElement {
+  const referenceTable = document.createElement('div');
+  referenceTable.classList.add('references');
+
+  const referenceNames = getSelectedReferenceLabels(options.kanjiReferences);
+  let numReferences = 0;
+  for (const ref of referenceNames) {
+    if (ref.ref === 'nelson_r' && !entry.rad.nelson) {
+      continue;
+    }
+
+    const referenceCell = document.createElement('div');
+    referenceCell.classList.add('ref');
+    referenceTable.append(referenceCell);
+
+    const nameSpan = document.createElement('span');
+    nameSpan.classList.add('name');
+    nameSpan.append(ref.short || ref.full);
+    referenceCell.append(nameSpan);
+
+    const value = getReferenceValue(entry, ref.ref) || '-';
+    const valueSpan = document.createElement('span');
+    valueSpan.classList.add('value');
+    valueSpan.append(value);
+    referenceCell.append(valueSpan);
+    numReferences++;
+  }
+
+  // The layout we want is something in-between what CSS grid and CSS multicol
+  // can do. See:
+  //
+  //   https://twitter.com/brianskold/status/1186198347184398336
+  //
+  // In the stylesheet we make let the table flow horizontally, but then here
+  // where we know the number of rows, we update it to produce the desired
+  // vertical flow.
+  if (numReferences > 1) {
+    referenceTable.style.gridAutoFlow = 'column';
+    referenceTable.style.gridTemplateRows = `repeat(${Math.ceil(
+      numReferences / 2
+    )}, minmax(min-content, max-content))`;
+  }
+
+  // Now we go through and toggle the styles to get the desired alternating
+  // effect.
+  //
+  // We can't easily use nth-child voodoo here because we need to
+  // handle unbalanced columns etc. We also can't easily do this in the loop
+  // where we generate the cells because we don't know how many references we
+  // will generate at that point.
+  for (const [index, cell] of [...referenceTable.children].entries()) {
+    const row = index % Math.ceil(numReferences / 2);
+    if (row % 2 === 0) {
+      cell.classList.add('-highlight');
+    }
+  }
+
+  return referenceTable;
 }
 
 function renderCopyDetails(

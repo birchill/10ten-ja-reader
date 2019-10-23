@@ -82,67 +82,21 @@
             <h2
               class=text-section-header>__MSG_options_kanji_dictionary_heading__</h2>
           </div>
-          <div class="panel-section panel-section-grid panel-section-list browser-style">
-            <div class="browser-style checkbox-row">
-              <input type=checkbox id=showKanjiComponents
-                name=showKanjiComponents>
-              <label for=showKanjiComponents>__MSG_options_kanji_components__</label>
+          <div class="panel-section panel-section-db-summary">
+            <div class="db-summary-blurb">
             </div>
-            <div class="browser-style checkbox-row">
-              <input type=checkbox id=CO name=CO>
-              <label for=CO>Conning</label>
+            <div class="db-summary-status">
             </div>
-            <div class="browser-style checkbox-row">
-              <input type=checkbox id=H name=H>
-              <label for=H>Halpern</label>
+            <div class="db-admin" style="display: none">
+              <span>Database testing features: </span>
+              <button class="browser-style" id="deleteDatabase">Delete database</button>
             </div>
-            <div class="browser-style checkbox-row">
-              <input type=checkbox id=L name=L>
-              <label for=L>Heisig</label>
-            </div>
-            <div class="browser-style checkbox-row">
-              <input type=checkbox id=E name=E>
-              <label for=E>Henshall</label>
-            </div>
-            <div class="browser-style checkbox-row">
-              <input type=checkbox id=KK name=KK>
-              <label for=KK>Kanji Kentei</label>
-            </div>
-            <div class="browser-style checkbox-row">
-              <input type=checkbox id=DK name=DK>
-              <label for=DK>Kanji Learner's Dictionary</label>
-            </div>
-            <div class="browser-style checkbox-row">
-              <input type=checkbox id=N name=N>
-              <label for=N>Nelson</label>
-            </div>
-            <div class="browser-style checkbox-row">
-              <input type=checkbox id=NR name=NR>
-              <label for=NR>Nelson Radical</label>
-            </div>
-            <div class="browser-style checkbox-row">
-              <input type=checkbox id=V name=V>
-              <label for=V>New Nelson</label>
-            </div>
-            <div class="browser-style checkbox-row">
-              <input type=checkbox id=Y name=Y>
-              <label for=Y>PinYin</label>
-            </div>
-            <div class="browser-style checkbox-row">
-              <input type=checkbox id=P name=P>
-              <label for=P>Skip Pattern</label>
-            </div>
-            <div class="browser-style checkbox-row">
-              <input type=checkbox id=IN name=IN>
-              <label for=IN>Tuttle Kanji &amp; Kana</label>
-            </div>
-            <div class="browser-style checkbox-row">
-              <input type=checkbox id=I name=I>
-              <label for=I>Tuttle Kanji Dictionary</label>
-            </div>
-            <div class="browser-style checkbox-row">
-              <input type=checkbox id=U name=U>
-              <label for=U>Unicode</label>
+            <div class="db-summary-controls panel-section-grid panel-section-list browser-style" id=kanji-reference-list>
+              <div class="browser-style checkbox-row">
+                <input type=checkbox id=showKanjiComponents
+                  name=showKanjiComponents>
+                <label for=showKanjiComponents>__MSG_options_kanji_components__</label>
+              </div>
             </div>
           </div>
         </div>

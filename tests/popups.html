@@ -19,6 +19,8 @@
 <script>
 const config = {
   readingOnly: false,
+  kanjiReferences: ['radical', 'nelson_r', 'kk', 'unicode', 'henshall'],
+  showKanjiComponents: true,
   holdToShowKeys: [],
   keys: {
     toggleDefinition: ['d'],
@@ -38,10 +40,10 @@ const rikaiContent = new RikaiContent(config);
 const container = document.getElementById('container');
 
 for (const test of htmlTests) {
-  const popup = rikaiContent._renderPopup(
-    test.queryResult,
-    { showDefinitions: !test.extraConfig || !test.extraConfig.readingOnly }
-  );
+  const popup = rikaiContent._renderPopup(test.queryResult, {
+    ...config,
+    showDefinitions: !test.extraConfig || !test.extraConfig.readingOnly,
+  });
 
   const toTitle = str => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -175,44 +177,47 @@ const highlightTests = [
     queryResult: {
       type: 'kanji',
       data: {
-        kanji: '士',
-        misc: {
-          B: '33',
-          DK: '2129',
-          E: '494',
-          F: '526',
-          G: '8',
-          H: '3405',
-          I: '3p0.1',
-          IN: '572',
-          KK: '10',
-          L: '319',
-          N: '1160',
-          P: '4-3-2',
-          S: '3',
-          U: '58EB',
-          V: '1117',
-          Y: 'shi4',
+        c: '士',
+        r: {
+          on: ['シ'],
+          kun: ['さむらい'],
+          na: ['お', 'ま'],
         },
-        miscDisplay: [
-          { abbrev: 'H', name: 'Halpern' },
-          { abbrev: 'L', name: 'Heisig' },
-          { abbrev: 'E', name: 'Henshall' },
-          { abbrev: 'DK', name: 'Kanji Learners Dictionary' },
-          { abbrev: 'KK', name: 'Kanji Kentei' },
-          { abbrev: 'N', name: 'Nelson' },
-          { abbrev: 'V', name: 'New Nelson' },
-          { abbrev: 'Y', name: 'PinYin' },
-          { abbrev: 'P', name: 'Skip Pattern' },
-          { abbrev: 'IN', name: 'Tuttle Kanji & Kana' },
-          { abbrev: 'I', name: 'Tuttle Kanji Dictionary' },
-          { abbrev: 'U', name: 'Unicode' },
-        ],
-        onkun: ['シ'],
-        nanori: ['お', 'ま'],
-        bushumei: ['さむらい'],
-        radical: '士',
-        eigo: 'gentleman, samurai, samurai radical (no. 33)',
+        m: ['gentleman', 'scholar', 'samurai', 'samurai radical (no. 33)'],
+        rad: {
+          x: 33,
+          b: '⼠',
+          k: '士',
+          na: ['さむらい'],
+          m: ['gentleman', 'scholar', 'samurai'],
+          m_lang: 'en',
+        },
+        refs: {
+          nelson_c: 1160,
+          nelson_n: 1117,
+          halpern_njecd: 3405,
+          halpern_kkld: 2129,
+          halpern_kkld_2ed: 2877,
+          heisig: 319,
+          heisig6: 341,
+          henshall: 494,
+          sh_kk: 572,
+          sh_kk2: 581,
+          kanji_in_context: 755,
+          kodansha_compact: 393,
+          skip: '4-3-2',
+          sh_desc: '3p0.1',
+          conning: 350,
+        },
+        misc: {
+          sc: 3,
+          gr: 4,
+          freq: 526,
+          jlpt: 1,
+          kk: 7,
+        },
+        m_lang: 'en',
+        comp: [],
       },
     },
   },
