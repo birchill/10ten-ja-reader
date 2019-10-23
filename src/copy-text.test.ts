@@ -20,6 +20,8 @@ global.browser = {
           return `${replacements ? replacements[0] : '?'}`;
         case 'ref_label_radical':
           return 'Radical';
+        case 'ref_label_nelson_r':
+          return 'Radical (Nelson)';
         case 'ref_label_kk':
           return 'Kanji Kentei';
         case 'ref_label_jlpt':
@@ -231,7 +233,7 @@ describe('getEntryToCopy', () => {
         }
       )
     ).toEqual(
-      '抜 [バツ、ハツ、ハイ、ぬ.く、ぬ.ける、ぬ.かす、ぬ.かる] (ぬき) slip out, extract; radical: ⺘（てへん） from ⼿ (て); components: ⼇ (なべぶた, lid), ⼜ (また, or again), ⼡ (ふゆがしら, winter), ⺘ (てへん, hand); Radical 64 ⼿; Kanji Kentei 4; JLPT 2; Unicode U+629C; Conning 1951; Henshall 1708; Japanese for Busy People -; Classic Nelson 1854; SKIP 1-3-4'
+      '抜 [バツ、ハツ、ハイ、ぬ.く、ぬ.ける、ぬ.かす、ぬ.かる] (ぬき) slip out, extract; radical: ⺘（てへん） from ⼿ (て); components: ⼇ (なべぶた, lid), ⼜ (また, or again), ⼡ (ふゆがしら, winter), ⺘ (てへん, hand); Classic Nelson 1854; Conning 1951; Henshall 1708; Japanese for Busy People -; JLPT 2; Kanji Kentei 4; Radical 64 ⼿; SKIP 1-3-4; Unicode U+629C'
     );
   });
 });
@@ -368,7 +370,7 @@ describe('getFieldsToCopy', () => {
         }
       )
     ).toEqual(
-      '抜\tバツ、ハツ、ハイ、ぬ.く、ぬ.ける、ぬ.かす、ぬ.かる\tぬき\tslip out, extract\t⼇⼜⼡⺘\t64 ⼿\t\tKanji Kentei 4\tJLPT 2\tU+629C\tConning 1951\tHenshall 1708\tJapanese for Busy People -\tClassic Nelson 1854\tSKIP 1-3-4'
+      '抜\tバツ、ハツ、ハイ、ぬ.く、ぬ.ける、ぬ.かす、ぬ.かる\tぬき\tslip out, extract\t⼇⼜⼡⺘\tClassic Nelson 1854\tConning 1951\tHenshall 1708\tJapanese for Busy People -\tJLPT 2\tKanji Kentei 4\t64 ⼿\t\tSKIP 1-3-4\tU+629C'
     );
   });
 });

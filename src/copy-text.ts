@@ -191,7 +191,8 @@ export function getFieldsToCopy(
               case 'nelson_r':
                 // All the above types also either always exist (radical,
                 // unicode) or if they don't exist we want to produce an empty
-                // value (not '-').
+                // value (not '-') hence why we don't include the ... || '-'
+                // from the next block.
                 result += '\t' + getReferenceValue(entry.data, label.ref);
                 break;
 

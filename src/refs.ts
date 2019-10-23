@@ -74,23 +74,31 @@ export function convertLegacyReference(
     : undefined;
 }
 
-type LocalizedReferences = 'radical' | 'kk' | 'jlpt' | 'unicode';
+type LocalizedReferences = 'radical' | 'nelson_r' | 'kk' | 'jlpt' | 'unicode';
 type NotLocalizedReferences = Exclude<
   ReferenceAbbreviation,
   LocalizedReferences
 >;
 type ReferenceLabel = { full: string; short?: string };
 
+// Note that when adding or modifying labels here, it is important that the full
+// and short versions sort roughly the same so that they appear to be in
+// alphabetical order in both the popup (where we use the short form) and
+// options page (where we use the long form).
+//
+// We sort by the short label, where available, which enables, for example,
+// showing an initial "The" in the long label but still sorting by the short
+// label (which does not include the "The"). Such exceptions aside, however, the
+// full and short versions should generally start with the same first few words.
 const REFERENCE_LABELS: {
   [key in NotLocalizedReferences]: ReferenceLabel;
 } = {
-  nelson_r: { full: 'Nelson radical' },
   conning: {
     full: "Conning - Kodansha Kanji Learner's Course",
     short: 'Conning',
   },
   sh_kk2: {
-    full: 'Hadamitzky - Tuttle Kanji & Kana (2011)',
+    full: 'Kanji & Kana (Hadamitzky, Tuttle, 2011)',
     short: 'Kanji & Kana',
   },
   halpern_njecd: {
@@ -98,7 +106,7 @@ const REFERENCE_LABELS: {
     short: 'Halpern',
   },
   halpern_kkld_2ed: {
-    full: "Halpern - Kodansha Kanji Learner's Dictionary (2nd ed.)",
+    full: "Kanji Learner's Dictionary (Halpbern, Kodansha, 2nd ed.)",
     short: "Kanji Learner's Dictionary",
   },
   heisig6: { full: 'Heisig - Rembering the Kanji (6th ed.)', short: 'Heisig' },
@@ -109,7 +117,7 @@ const REFERENCE_LABELS: {
   busy_people: { full: 'Japanese for Busy People' },
   kanji_in_context: { full: 'Kanji in Context' },
   kodansha_compact: {
-    full: 'Kodansha Compact Kanji Guide',
+    full: 'Compact Kanji Guide (Kodansha)',
     short: 'Compact Kanji Guide',
   },
   maniette: { full: 'Les Kanjis dans la tete' },
@@ -124,8 +132,8 @@ const REFERENCE_LABELS: {
   },
   skip: { full: 'SKIP' },
   sh_desc: {
-    full: 'Spahn - The Kanji Dictionary',
-    short: 'The Kanji Dictionary',
+    full: 'The Kanji Dictionary (Spahn)',
+    short: 'Kanji Dictionary',
   },
 } as const;
 
@@ -153,6 +161,9 @@ export function getReferenceLabelsForLang(
     result.push({ ref, ...getLabelForReference(ref) });
   }
 
+  // Sort by short version first since this is what will be shown in the pop-up.
+  result.sort((a, b) => (a.short || a.full).localeCompare(b.short || b.full));
+
   return result;
 }
 
@@ -169,6 +180,9 @@ export function getSelectedReferenceLabels(
     result.push({ ref, ...getLabelForReference(ref) });
   }
 
+  // Sort by short version first since this is what will be shown in the pop-up.
+  result.sort((a, b) => (a.short || a.full).localeCompare(b.short || b.full));
+
   return result;
 }
 
@@ -176,6 +190,9 @@ function getLabelForReference(ref: ReferenceAbbreviation): ReferenceLabel {
   switch (ref) {
     case 'radical':
       return { full: browser.i18n.getMessage('ref_label_radical') };
+
+    case 'nelson_r':
+      return { full: browser.i18n.getMessage('ref_label_nelson_r') };
 
     case 'kk':
       return { full: browser.i18n.getMessage('ref_label_kk') };

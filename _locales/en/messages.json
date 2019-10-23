@@ -207,6 +207,10 @@
     "message": "Radical",
     "description": "The label used when presenting radical numbers"
   },
+  "ref_label_nelson_r": {
+    "message": "Radical (Nelson)",
+    "description": "The label used when presenting Nelson's revised radical numbers. This should generally be a label that will sort directly after ref_label_radical when using String.localCompare."
+  },
   "ref_label_kk": {
     "message": "Kanji Kentei",
     "description": "The label used when presenting Kanji Kentei levels"
