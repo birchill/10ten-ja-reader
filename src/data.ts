@@ -71,8 +71,6 @@ export class Dictionary {
   nameIndex: string;
   wordDict: string;
   wordIndex: string;
-  kanjiData: string;
-  radData: string[];
   bugsnag?: Bugsnag.Client;
 
   constructor(options: DictionaryOptions) {
@@ -204,18 +202,12 @@ export class Dictionary {
       { key: 'wordIndex', file: 'dict.idx' },
       { key: 'nameDict', file: 'names.dat' },
       { key: 'nameIndex', file: 'names.idx' },
-      { key: 'kanjiData', file: 'kanji.dat' },
-      { key: 'radData', file: 'radicals.dat' },
     ];
 
     const readBatch = (files: Array<fileEntry>): Promise<any> => {
       const readPromises = [];
       for (const { key, file } of files) {
-        const reader: (url: string) => Promise<string | string[]> =
-          key === 'radData'
-            ? this.readFileIntoArray.bind(this)
-            : this.readFile.bind(this);
-        const readPromise = reader(
+        const readPromise = this.readFile(
           browser.extension.getURL(`data/${file}`)
         ).then(text => {
           (this[key] as string | string[]) = text;
