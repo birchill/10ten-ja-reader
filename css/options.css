@@ -49,18 +49,11 @@
 }
 
 .panel-section-grid {
-  /*
-   * This actually messes up the ordering but it turns out what we want to do is
-   * not possible with CSS Grid (like pretty much everything I've ever tried to
-   * do with CSS Grid).
-   *
-   *   https://stackoverflow.com/questions/44869250/responsive-multi-column-list-with-column-order
-   */
   display: grid;
   width: 95%;
-  max-width: 1000px;
-  grid-template-columns: repeat(auto-fill, 250px);
+  grid-template-columns: repeat(2, minmax(250px, 1fr));
   grid-column-gap: 1em;
+  grid-auto-flow: column;
   margin: 16px;
 }
 

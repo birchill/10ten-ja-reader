@@ -448,6 +448,16 @@ function createKanjiReferences() {
 
     container.append(rowDiv);
   }
+
+  // We want to match the arrangement of references when they are displayed,
+  // that is, in a vertically flowing grid. See comments where we generate the
+  // popup styles for more explanation.
+  //
+  // We need to add 1 to the number of references, however, to accommodate the
+  // "Kanji components" item.
+  container.style.gridTemplateRows = `repeat(${Math.ceil(
+    (referenceNames.length + 1) / 2
+  )}, minmax(min-content, max-content))`;
 }
 
 function fillVals() {
