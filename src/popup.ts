@@ -627,6 +627,7 @@ function renderReferences(
   referenceTable.classList.add('references');
 
   const referenceNames = getSelectedReferenceLabels(options.kanjiReferences);
+  let numReferences = 0;
   for (const ref of referenceNames) {
     if (ref.ref === 'nelson_r' && !entry.rad.nelson) {
       continue;
@@ -646,6 +647,36 @@ function renderReferences(
     valueSpan.classList.add('value');
     valueSpan.append(value);
     referenceCell.append(valueSpan);
+    numReferences++;
+  }
+
+  // The layout we want is something in-between what CSS grid and CSS multicol
+  // can do. See:
+  //
+  //   https://twitter.com/brianskold/status/1186198347184398336
+  //
+  // In the stylesheet we make let the table flow horizontally, but then here
+  // where we know the number of rows, we update it to produce the desired
+  // vertical flow.
+  if (numReferences > 1) {
+    referenceTable.style.gridAutoFlow = 'column';
+    referenceTable.style.gridTemplateRows = `repeat(${Math.ceil(
+      numReferences / 2
+    )}, minmax(min-content, max-content))`;
+  }
+
+  // Now we go through and toggle the styles to get the desired alternating
+  // effect.
+  //
+  // We can't easily use nth-child voodoo here because we need to
+  // handle unbalanced columns etc. We also can't easily do this in the loop
+  // where we generate the cells because we don't know how many references we
+  // will generate at that point.
+  for (const [index, cell] of [...referenceTable.children].entries()) {
+    const row = index % Math.ceil(numReferences / 2);
+    if (row % 2 === 0) {
+      cell.classList.add('-highlight');
+    }
   }
 
   return referenceTable;
