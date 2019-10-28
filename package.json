@@ -49,7 +49,7 @@
     "mocha": "^6.2.2",
     "source-map-loader": "^0.2.4",
     "ts-jest": "^24.1.0",
-    "ts-loader": "^6.2.0",
+    "ts-loader": "^6.2.1",
     "web-ext-types": "github:michael-zapata/web-ext-types",
     "web-ext-webpack-plugin": "github:hiikezoe/web-ext-webpack-plugin",
     "webpack": "^4.41.2",
