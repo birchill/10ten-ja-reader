@@ -53,7 +53,7 @@
     "web-ext-types": "github:michael-zapata/web-ext-types",
     "web-ext-webpack-plugin": "github:hiikezoe/web-ext-webpack-plugin",
     "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.9",
+    "webpack-cli": "^3.3.10",
     "webpack-preprocessor": "^0.1.12"
   },
   "dependencies": {
