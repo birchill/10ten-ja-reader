@@ -57,7 +57,7 @@
     "webpack-preprocessor": "^0.1.12"
   },
   "dependencies": {
-    "@birchill/hikibiki-data": "^1.2.2",
+    "@birchill/hikibiki-data": "^1.2.3",
     "@bugsnag/js": "^6.4.3",
     "husky": "^3.0.9",
     "lint-staged": "^9.4.2",
