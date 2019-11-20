@@ -131,6 +131,7 @@ describe('Config', () => {
       'radical',
       'nelson_r',
       'kk',
+      'py',
       'jlpt',
       'unicode',
       'conning',
@@ -200,6 +201,7 @@ describe('Config', () => {
       'radical',
       'nelson_r',
       'kk',
+      'py',
       'jlpt',
       'unicode',
       'conning',
@@ -218,6 +220,7 @@ describe('Config', () => {
         unicode: true,
         heisig6: false,
         henshall: true,
+        py: true,
         skip: false,
       },
     });
