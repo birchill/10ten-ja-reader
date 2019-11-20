@@ -7,6 +7,8 @@ const SUPPORTED_REFERENCES = [
   'nelson_r',
   // Kanji kentei (from misc field)
   'kk',
+  // Pinyin reading
+  'py',
   // JLPT level (from misc field)
   'jlpt',
   // Unicode codepoint (generated)
@@ -64,6 +66,7 @@ const REFERENCE_ABBREV_MAPPING: {
   IN: 'sh_kk2',
   I: 'sh_desc',
   U: 'unicode',
+  Y: 'py',
 } as const;
 
 export function convertLegacyReference(
@@ -130,6 +133,7 @@ const REFERENCE_LABELS: {
     full: 'New Nelson Japanese-English Character Dictionary',
     short: 'New Nelson',
   },
+  py: { full: 'Pinyin' },
   skip: { full: 'SKIP' },
   sh_desc: {
     full: 'The Kanji Dictionary (Spahn)',
@@ -200,6 +204,9 @@ function getLabelForReference(ref: ReferenceAbbreviation): ReferenceLabel {
     case 'jlpt':
       return { full: browser.i18n.getMessage('ref_label_jlpt') };
 
+    case 'py':
+      return { full: browser.i18n.getMessage('ref_label_py') };
+
     case 'unicode':
       return { full: browser.i18n.getMessage('ref_label_unicode') };
 
@@ -232,6 +239,9 @@ export function getReferenceValue(
 
     case 'jlpt':
       return entry.misc.jlpt ? String(entry.misc.jlpt) : '';
+
+    case 'py':
+      return entry.r.py ? entry.r.py.join(', ') : '';
 
     case 'unicode':
       return `U+${entry.c

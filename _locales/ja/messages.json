@@ -219,6 +219,10 @@
     "message": "日本語能力試験",
     "description": "The label used when presenting the level the kanji appears in in the old JLPT system"
   },
+  "ref_label_py": {
+    "message": "ピン音",
+    "description": "The label used when present the Pinyin reading"
+  },
   "ref_label_unicode": {
     "message": "Unicode",
     "description": "The label used when presenting the Unicode codepoint of the kanji"
