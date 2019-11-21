@@ -220,6 +220,19 @@ fieldset {
   margin-bottom: 0.5em;
 }
 
+.dict-lang #lang {
+  width: 10em;
+}
+
+.dict-lang .note {
+  margin-top: 1em;
+  padding: 1em 2em;
+  background: hsl(45, 100%, 96%);
+  border: 1px solid hsl(43, 77%, 27%);
+  border-radius: 8px;
+  color: hsl(43, 77%, 27%);
+}
+
 .panel-section-db-summary {
   padding: 16px;
   display: block;

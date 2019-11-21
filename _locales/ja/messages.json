@@ -284,6 +284,12 @@
   "options_popup_copy_next": {
     "message": "次の項目を選択する"
   },
+  "options_dictionary_language_heading": {
+    "message": "辞書の言語"
+  },
+  "options_warning_language_is_kanji_only": {
+    "message": "この設定は現在漢字辞典のみに適用されます。"
+  },
   "options_kanji_dictionary_heading": {
     "message": "漢字辞典",
     "description": "Heading for options to configure what information is displayed from the kanji dictionary"

@@ -284,6 +284,12 @@
   "options_popup_copy_next": {
     "message": "Highlight next entry"
   },
+  "options_dictionary_language_heading": {
+    "message": "Dictionary language"
+  },
+  "options_warning_language_is_kanji_only": {
+    "message": "This setting currently only applies to the kanji dictionary."
+  },
   "options_kanji_dictionary_heading": {
     "message": "Kanji dictionary",
     "description": "Heading for options to configure what information is displayed from the kanji dictionary"

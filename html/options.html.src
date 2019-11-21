@@ -77,6 +77,13 @@
           <p>__MSG_options_popup_keys_subheading__</p>
           <div class="panel-section key-grid" id=key-grid></div>
         </div>
+        <div class="panel-section panel-section-header">
+          <h2 class=text-section-header>__MSG_options_dictionary_language_heading__</h2>
+        </div>
+        <div class="panel-section panel-section-formElements dict-lang">
+          <select id=lang name=lang class=browser-style></select>
+          <div class=note>__MSG_options_warning_language_is_kanji_only__</div>
+        </div>
         <div id=kanjicon>
           <div class="panel-section panel-section-header">
             <h2

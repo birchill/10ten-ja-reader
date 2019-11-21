@@ -5,6 +5,7 @@ import { DatabaseState } from '@birchill/hikibiki-data';
 import { Config, DEFAULT_KEY_SETTINGS } from './config';
 import { Command, CommandParams, isValidKey } from './commands';
 import { CopyKeys, CopyNextKeyStrings } from './copy-keys';
+import { dbLanguageNames } from './db-languages';
 import {
   DbStateUpdatedMessage,
   cancelDbUpdate,
@@ -33,6 +34,9 @@ function completeForm() {
   configureHoldToShowKeys();
   addPopupKeys();
   translateKeys();
+
+  // Language
+  fillInLanguages();
 
   // Kanji
   createKanjiReferences();
@@ -371,9 +375,13 @@ function addPopupKeys() {
       const copyKeyList = document.createElement('ul');
       copyKeyList.classList.add('key-list');
 
-      const copyKeys: Array<{ key: string; l10nKey: string }> = CopyKeys.map(
-        ({ key, optionsString }) => ({ key, l10nKey: optionsString })
-      );
+      const copyKeys: Array<{
+        key: string;
+        l10nKey: string;
+      }> = CopyKeys.map(({ key, optionsString }) => ({
+        key,
+        l10nKey: optionsString,
+      }));
       copyKeys.push({
         // We just show the first key here. This matches what we show in the
         // pop-up too.
@@ -415,6 +423,17 @@ function translateKeys() {
     } else if (label.textContent === 'Alt') {
       label.textContent = 'Option';
     }
+  }
+}
+
+function fillInLanguages() {
+  const select = document.querySelector('select#lang') as HTMLSelectElement;
+
+  for (const [id, title] of dbLanguageNames) {
+    const option = document.createElement('option');
+    option.value = id;
+    option.append(title);
+    select.append(option);
   }
 }
 
