@@ -278,31 +278,35 @@ function renderKanjiEntry(
   topPart.classList.add('top-part');
   table.append(topPart);
 
-  // The kanji itself
+  // -- The kanji itself
   const kanjiDiv = document.createElement('div');
   kanjiDiv.classList.add('kanji');
   kanjiDiv.append(entry.c);
   topPart.append(kanjiDiv);
 
-  // Kanji components
+  // -- Top-right part
+  const topRightPart = document.createElement('div');
+  topPart.append(topRightPart);
+
+  // -- -- Readings
+  topRightPart.append(renderReadings(entry));
+
+  // -- -- English
+  const meaningsDiv = document.createElement('div');
+  meaningsDiv.classList.add('meanings');
+  meaningsDiv.append(entry.m.join(', '));
+  topRightPart.append(meaningsDiv);
+
+  // -- -- Misc info
+  topRightPart.append(renderMiscRow(entry));
+
+  // -- -- Kanji components
   if (
     typeof options.showKanjiComponents === 'undefined' ||
     options.showKanjiComponents
   ) {
-    topPart.append(renderKanjiComponents(entry));
+    topRightPart.append(renderKanjiComponents(entry));
   }
-
-  // English
-  const meaningsDiv = document.createElement('div');
-  meaningsDiv.classList.add('meanings');
-  meaningsDiv.append(entry.m.join(', '));
-  table.append(meaningsDiv);
-
-  // Readings
-  table.append(renderReadings(entry));
-
-  // Misc info
-  table.append(renderMiscRow(entry));
 
   // Reference row
   if (options.kanjiReferences && options.kanjiReferences.length) {
@@ -495,10 +499,10 @@ function renderMiscRow(entry: KanjiResult): HTMLElement {
   if (entry.misc.freq) {
     frequency.textContent =
       browser.i18n.getMessage('content_kanji_frequency_label') +
-      ` ${entry.misc.freq}`;
+      ` ${entry.misc.freq.toLocaleString()}`;
     const denominator = document.createElement('span');
     denominator.classList.add('denom');
-    denominator.append(' / 2,500');
+    denominator.append(` / ${Number(2500).toLocaleString()}`);
     frequency.append(denominator);
   } else {
     frequency.textContent = '-';

@@ -196,13 +196,19 @@
   margin-bottom: 12px;
 }
 
+#rikaichamp-window .kanji-table .top-part > *:nth-child(2) {
+  flex-grow: 1;
+}
+
 /* kanji: character itself */
 
 #rikaichamp-window .kanji-table .kanji {
   line-height: 1;
-  font-size: 56px;
+  font-size: 60px;
   font-family: serif;
-  margin-inline-end: 0.5em;
+  text-align: center;
+  margin-inline-end: 20px;
+  padding-top: 0.1em;
 }
 
 #rikaichamp-window .kanji-table.-copy .kanji {
@@ -214,14 +220,79 @@
   animation: flash 0.5s;
 }
 
+/* kanji: readings */
+
+#rikaichamp-window .kanji-table .readings {
+  font-size: 14px;
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
+
+#rikaichamp-window .kanji-table .okurigana {
+  border: 1px solid red;
+}
+
+#rikaichamp-window .kanji-table .nanorilabel {
+  font-size: 11px;
+}
+
+/* kanji: meanings */
+
+#rikaichamp-window .kanji-table .meanings {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* kanji: grade, freq, strokes */
+
+#rikaichamp-window .kanji-table .misc {
+  display: flex;
+  min-width: 26em;
+}
+
+#rikaichamp-window .kanji-table .misc > * {
+  display: flex;
+  flex: 1 1 0px;
+  align-items: baseline;
+}
+
+#rikaichamp-window .kanji-table .misc > :not(:first-child) {
+  margin-left: 12px;
+}
+
+#rikaichamp-window .kanji-table .misc > *:nth-child(2) {
+  flex-grow: 1.5;
+  justify-content: center;
+}
+
+#rikaichamp-window .kanji-table .misc > *:nth-child(3) {
+  justify-content: end;
+}
+
+#rikaichamp-window .kanji-table .misc .strokes span,
+#rikaichamp-window .kanji-table .misc .freq span,
+#rikaichamp-window .kanji-table .misc .grade span {
+  font-size: 13px;
+}
+
+#rikaichamp-window .kanji-table .misc .freq .denom {
+  font-size: 9px;
+}
+
+#rikaichamp-window .kanji-table .misc .svgicon {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  fill: currentcolor;
+}
+
 /* kanji: components */
 
 #rikaichamp-window .kanji-table .components {
-  flex-grow: 1;
-  margin-inline-start: 12px;
-}
-
-#rikaichamp-window .kanji-table .components {
+  margin-block-start: 10px;
+  /* Subtract the padding at the start of the row so the text lines up */
+  margin-inline-start: -1em;
   border-collapse: collapse;
 }
 
@@ -254,72 +325,6 @@
 
 #rikaichamp-window .kanji-table .components .-baseradical td {
   font-style: italic;
-}
-
-/* kanji: readings */
-
-#rikaichamp-window .kanji-table .readings {
-  font-size: 14px;
-  margin-top: 4px;
-  margin-bottom: 10px;
-}
-
-#rikaichamp-window .kanji-table .okurigana {
-  border: 1px solid red;
-}
-
-#rikaichamp-window .kanji-table .nanorilabel {
-  font-size: 11px;
-}
-
-/* kanji: meanings */
-
-#rikaichamp-window .kanji-table .meanings {
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-
-/* kanji: grade, freq, strokes */
-
-#rikaichamp-window .kanji-table > .misc {
-  display: flex;
-}
-
-#rikaichamp-window .kanji-table > .misc > * {
-  display: flex;
-  flex: 1 1 0px;
-  align-items: baseline;
-}
-
-#rikaichamp-window .kanji-table > .misc > :not(:first-child) {
-  margin-left: 12px;
-}
-
-#rikaichamp-window .kanji-table > .misc > *:nth-child(2) {
-  flex-grow: 1.5;
-  justify-content: center;
-}
-
-#rikaichamp-window .kanji-table > .misc > *:nth-child(3) {
-  justify-content: end;
-}
-
-#rikaichamp-window .kanji-table > .misc .strokes span,
-#rikaichamp-window .kanji-table > .misc .freq span,
-#rikaichamp-window .kanji-table > .misc .grade span {
-  font-size: 13px;
-}
-
-#rikaichamp-window .kanji-table > .misc .freq .denom {
-  font-size: 9px;
-}
-
-#rikaichamp-window .kanji-table > .misc .svgicon {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  margin-right: 6px;
-  fill: currentcolor;
 }
 
 /* kanji: references */
