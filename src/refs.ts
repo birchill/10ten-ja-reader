@@ -1,4 +1,5 @@
 import { KanjiResult } from '@birchill/hikibiki-data';
+import { DbLanguageId } from './db-languages';
 
 const SUPPORTED_REFERENCES = [
   // The radical for the kanji (number and character, from rad field)
@@ -46,8 +47,11 @@ const SUPPORTED_REFERENCES = [
 
 export type ReferenceAbbreviation = typeof SUPPORTED_REFERENCES[number];
 
-export function getReferencesForLang(lang: string) {
-  return SUPPORTED_REFERENCES.filter(ref => ref !== 'maniette');
+export function getReferencesForLang(lang: DbLanguageId) {
+  if (lang !== 'fr') {
+    return SUPPORTED_REFERENCES.filter(ref => ref !== 'maniette');
+  }
+  return SUPPORTED_REFERENCES;
 }
 
 const REFERENCE_ABBREV_MAPPING: {
