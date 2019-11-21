@@ -370,7 +370,7 @@ describe('getFieldsToCopy', () => {
         }
       )
     ).toEqual(
-      '抜\tバツ、ハツ、ハイ、ぬ.く、ぬ.ける、ぬ.かす、ぬ.かる\tぬき\tslip out, extract\t⼇⼜⼡⺘\tClassic Nelson 1854\tConning 1951\tHenshall 1708\tJapanese for Busy People -\tJLPT 2\tKanji Kentei 4\t64 ⼿\t\tSKIP 1-3-4\tU+629C'
+      '抜\tバツ、ハツ、ハイ、ぬ.く、ぬ.ける、ぬ.かす、ぬ.かる\tぬき\tslip out, extract\t⼇⼜⼡⺘\tClassic Nelson 1854\tConning 1951\tHenshall 1708\tJapanese for Busy People -\tJLPT 2\tKanji Kentei 4\t64 ⼿\t64 ⼿\tSKIP 1-3-4\tU+629C'
     );
   });
 });

@@ -633,7 +633,13 @@ function renderReferences(
   const referenceNames = getSelectedReferenceLabels(options.kanjiReferences);
   let numReferences = 0;
   for (const ref of referenceNames) {
-    if (ref.ref === 'nelson_r' && !entry.rad.nelson) {
+    // Don't show the Nelson radical if it's the same as the regular radical
+    // (in which case it will be empty) and we're showing the regular radical.
+    if (
+      ref.ref === 'nelson_r' &&
+      !entry.rad.nelson &&
+      options.kanjiReferences.includes('radical')
+    ) {
       continue;
     }
 

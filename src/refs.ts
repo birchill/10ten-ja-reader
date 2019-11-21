@@ -220,19 +220,22 @@ export function getReferenceValue(
   ref: ReferenceAbbreviation
 ): string {
   switch (ref) {
+    case 'nelson_r': {
+      // If the Nelson radical is empty, it means it's the same as the regular
+      // radical so we should fall through to that branch.
+      if (entry.rad.nelson) {
+        return `${entry.rad.nelson} ${String.fromCodePoint(
+          entry.rad.nelson + 0x2eff
+        )}`;
+      }
+      // Fall through
+    }
+
     case 'radical': {
       const { rad } = entry;
       const radChar = rad.base ? rad.base.b || rad.base.k : rad.b || rad.k;
       return `${rad.x} ${radChar}`;
     }
-
-    case 'nelson_r':
-      if (!entry.rad.nelson) {
-        return '';
-      }
-      return `${entry.rad.nelson} ${String.fromCodePoint(
-        entry.rad.nelson + 0x2eff
-      )}`;
 
     case 'kk':
       return renderKanKen(entry.misc.kk);

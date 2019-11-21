@@ -117,7 +117,11 @@ export function getEntryToCopy(
         if (kanjiReferences.length) {
           const labels = getSelectedReferenceLabels(kanjiReferences);
           for (const label of labels) {
-            if (label.ref === 'nelson_r' && !rad.nelson) {
+            if (
+              label.ref === 'nelson_r' &&
+              !rad.nelson &&
+              kanjiReferences.includes('radical')
+            ) {
               continue;
             }
             result += `; ${label.short || label.full} ${getReferenceValue(
