@@ -5,7 +5,7 @@ import { DatabaseState } from '@birchill/hikibiki-data';
 import { Config, DEFAULT_KEY_SETTINGS } from './config';
 import { Command, CommandParams, isValidKey } from './commands';
 import { CopyKeys, CopyNextKeyStrings } from './copy-keys';
-import { dbLanguageNames } from './db-languages';
+import { dbLanguageNames, isDbLanguageId } from './db-languages';
 import {
   DbStateUpdatedMessage,
   cancelDbUpdate,
@@ -428,13 +428,26 @@ function translateKeys() {
 
 function fillInLanguages() {
   const select = document.querySelector('select#lang') as HTMLSelectElement;
+  const currentValue = config.dictLang;
 
   for (const [id, title] of dbLanguageNames) {
     const option = document.createElement('option');
     option.value = id;
+    if (id === currentValue) {
+      option.selected = true;
+    }
     option.append(title);
     select.append(option);
   }
+
+  select.addEventListener('change', () => {
+    if (!isDbLanguageId(select.value)) {
+      // TODO: It would be nice to report to bugsnag here
+      console.error(`Got unexpected language code: ${select.value}`);
+      return;
+    }
+    config.dictLang = select.value;
+  });
 }
 
 function createKanjiReferences() {

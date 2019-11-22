@@ -8,3 +8,7 @@ export const dbLanguageNames: Map<DbLanguageId, string> = new Map([
   ['es', 'Español'],
   ['pt', 'Português'],
 ]);
+
+export function isDbLanguageId(id: string): id is DbLanguageId {
+  return dbLanguages.includes(id as DbLanguageId);
+}
