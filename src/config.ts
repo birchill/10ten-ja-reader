@@ -99,11 +99,17 @@ export class Config {
   private _settings: Settings = {};
   private _readPromise: Promise<void>;
   private _changeListeners: ChangeCallback[] = [];
+  private _previousDefaultLang: DbLanguageId;
 
   constructor() {
     this._readPromise = this._readSettings();
+    this._previousDefaultLang = this.getDefaultLang();
+
     this.onChange = this.onChange.bind(this);
     browser.storage.onChanged.addListener(this.onChange);
+
+    this.onLanguageChange = this.onLanguageChange.bind(this);
+    window.addEventListener('languagechange', this.onLanguageChange);
   }
 
   async _readSettings() {
@@ -148,11 +154,45 @@ export class Config {
     if (areaName !== 'sync') {
       return;
     }
+
     // Re-read settings in case the changes were made by a different instance of
     // this class.
     await this._readSettings();
+
+    // Fill in default setting values
+    const updatedChanges: ChangeDict = { ...changes };
+    for (const key of Object.keys(updatedChanges)) {
+      switch (key) {
+        case 'dictLang':
+          updatedChanges.dictLang = { ...changes.dictLang };
+          if (!updatedChanges.dictLang.newValue) {
+            updatedChanges.dictLang.newValue = this.dictLang;
+          }
+          if (!updatedChanges.dictLang.oldValue) {
+            updatedChanges.dictLang.oldValue = this._previousDefaultLang;
+          }
+          break;
+
+        // Following is just the set of properties we know we actually inspect
+        // the `newValue` of. We don't have a convenient means of fetching the
+        // default value to fill in the oldValue, but we don't currently need
+        // it either.
+        case 'popupStyle':
+        case 'contextMenuEnable':
+        case 'toggleKey':
+          updatedChanges[key] = { ...changes[key] };
+          if (
+            typeof updatedChanges[key].newValue === 'undefined' ||
+            updatedChanges[key].newValue === null
+          ) {
+            updatedChanges[key].newValue = this[key];
+          }
+          break;
+      }
+    }
+
     for (const listener of this._changeListeners) {
-      listener(changes);
+      listener(updatedChanges);
     }
   }
 
@@ -357,17 +397,23 @@ export class Config {
   // dbLanguages, or 'en' otherwise.
 
   get dictLang(): DbLanguageId {
+    return this.useDefaultLang()
+      ? this.getDefaultLang()
+      : this._settings.dictLang!;
+  }
+
+  private useDefaultLang(): boolean {
     // Check that the language that is set is valid. It might be invalid if we
     // deprecated a language or we synced a value from a newer version of the
-    // add-on.
+    // extension.
     if (this._settings.dictLang) {
       const availableLanguages = new Set(dbLanguages);
       if (availableLanguages.has(this._settings.dictLang)) {
-        return this._settings.dictLang;
+        return false;
       }
     }
 
-    return this.getDefaultLang();
+    return true;
   }
 
   private getDefaultLang(): DbLanguageId {
@@ -399,6 +445,24 @@ export class Config {
     } else {
       browser.storage.sync.set({ dictLang: value });
       this._settings.dictLang = value;
+    }
+  }
+
+  onLanguageChange() {
+    // If the user's accept-languages setting changed AND we are basing the
+    // dictLang value on that we should notify listeners of the change.
+    if (!this.useDefaultLang()) {
+      return;
+    }
+
+    const newValue = this.getDefaultLang();
+    if (this._previousDefaultLang !== newValue) {
+      const oldValue = this._previousDefaultLang;
+      this._previousDefaultLang = newValue;
+      const changes: ChangeDict = { dictLang: { newValue, oldValue } };
+      for (const listener of this._changeListeners) {
+        listener(changes);
+      }
     }
   }
 

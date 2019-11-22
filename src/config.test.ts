@@ -268,8 +268,70 @@ describe('Config', () => {
     // Unsupported value
     config.dictLang = 'yer' as DbLanguageId;
     expect(config.dictLang).toEqual('en');
+  });
 
-    // TODO: Test when the accept-languages is changed (need to register for
-    // languagechange events for this)
+  it('reports changes to default dictLang setting', async () => {
+    languageGetter.mockReturnValue(['en']);
+    const config = new Config();
+
+    const listenForNextChange = () =>
+      new Promise<ChangeDict>(resolve => {
+        config.addChangeListener(function reportChange(change) {
+          config.removeChangeListener(reportChange);
+          resolve(change);
+        });
+      });
+
+    const listenForNoChange = () =>
+      new Promise((resolve, reject) => {
+        config.addChangeListener(changes => {
+          reject(new Error(`Got change: ${JSON.stringify(changes)}`));
+        });
+
+        let tries = 10;
+        (function wait() {
+          if (--tries) {
+            setImmediate(wait);
+          } else {
+            resolve();
+          }
+        })();
+      });
+
+    const languageChangeEvent = new Event('languagechange');
+
+    // Check that changing the language produces an event
+    languageGetter.mockReturnValue(['es', 'en']);
+    let nextChangePromise = listenForNextChange();
+    window.dispatchEvent(languageChangeEvent);
+    let nextChange = await nextChangePromise;
+    expect(nextChange).toEqual({
+      dictLang: { oldValue: 'en', newValue: 'es' },
+    });
+    expect(config.dictLang).toEqual('es');
+
+    // Check that a change that doesn't effect the value is ignored
+    languageGetter.mockReturnValue(['da', 'es', 'en']);
+    let noChangePromise = listenForNoChange();
+    window.dispatchEvent(languageChangeEvent);
+    await noChangePromise;
+    expect(config.dictLang).toEqual('es');
+
+    // Override the language so that we no longer depend on the user's
+    // accept-languages setting.
+    nextChangePromise = listenForNextChange();
+    config.dictLang = 'pt';
+    nextChange = await nextChangePromise;
+    expect(nextChange).toEqual({
+      dictLang: { oldValue: 'es', newValue: 'pt' },
+    });
+
+    // Check that we don't report a change if the user's accept-language changes
+    // now.
+    languageGetter.mockReturnValue(['en']);
+    noChangePromise = listenForNoChange();
+    window.dispatchEvent(languageChangeEvent);
+    await noChangePromise;
+    expect(config.dictLang).toEqual('pt');
   });
 });
