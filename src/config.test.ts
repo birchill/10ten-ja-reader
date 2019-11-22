@@ -1,4 +1,5 @@
 import { Config } from './config';
+import { DbLanguageId } from './db-languages';
 
 type StorageName = 'sync' | 'local';
 type StorageChange = {
@@ -104,14 +105,30 @@ class MockStorageArea {
 
     return Promise.resolve();
   }
+
+  remove(keys: string | Array<string>): Promise<void> {
+    if (Array.isArray(keys)) {
+      for (const key of keys) {
+        delete this._storage[key];
+      }
+    } else {
+      delete this._storage[keys];
+    }
+
+    return Promise.resolve();
+  }
 }
 
 describe('Config', () => {
+  let languageGetter: jest.SpyInstance<readonly string[], []>;
+
   beforeEach(() => {
     global.browser = { storage: new MockStorage() };
+    languageGetter = jest.spyOn(window.navigator, 'languages', 'get');
   });
 
   it('returns the default settings', () => {
+    languageGetter.mockReturnValue(['ro', 'fr-CA', 'en']);
     const config = new Config();
 
     expect(config.readingOnly).toEqual(false);
@@ -126,6 +143,7 @@ describe('Config', () => {
     expect(config.contextMenuEnable).toEqual(true);
     expect(config.popupStyle).toEqual('blue');
     expect(config.noTextHighlight).toEqual(false);
+    expect(config.dictLang).toEqual('fr');
     expect(config.showKanjiComponents).toEqual(true);
     expect(config.kanjiReferences).toEqual([
       'radical',
@@ -224,5 +242,34 @@ describe('Config', () => {
         skip: false,
       },
     });
+  });
+
+  it('handles changes to dictLang setting', () => {
+    languageGetter.mockReturnValue(['ro', 'fr-CA', 'en']);
+    const config = new Config();
+
+    // Default value
+    expect(config.dictLang).toEqual('fr');
+
+    // Explicitly override
+    config.dictLang = 'pt';
+    expect(config.dictLang).toEqual('pt');
+
+    // Revert to default
+    config.dictLang = 'fr';
+    languageGetter.mockReturnValue(['es', 'en']);
+    // ... Should reflect updated default
+    expect(config.dictLang).toEqual('es');
+
+    // No supported default language
+    languageGetter.mockReturnValue(['da']);
+    expect(config.dictLang).toEqual('en');
+
+    // Unsupported value
+    config.dictLang = 'yer' as DbLanguageId;
+    expect(config.dictLang).toEqual('en');
+
+    // TODO: Test when the accept-languages is changed (need to register for
+    // languagechange events for this)
   });
 });

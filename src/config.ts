@@ -10,6 +10,7 @@
 // * Provides a snapshot of all options with their default values filled-in for
 //   passing to the content process.
 
+import { dbLanguages, DbLanguageId } from './db-languages';
 import {
   ReferenceAbbreviation,
   convertLegacyReference,
@@ -40,6 +41,7 @@ interface Settings {
   keys?: Partial<KeyboardKeys>;
   contextMenuEnable?: boolean;
   noTextHighlight?: boolean;
+  dictLang?: DbLanguageId;
   showKanjiComponents?: boolean;
   kanjiReferencesV2?: KanjiReferenceFlagsV2;
   popupStyle?: string;
@@ -94,9 +96,9 @@ const OFF_BY_DEFAULT_REFERENCES: Set<ReferenceAbbreviation> = new Set([
 ]);
 
 export class Config {
-  _settings: Settings = {};
-  _readPromise: Promise<void>;
-  _changeListeners: ChangeCallback[] = [];
+  private _settings: Settings = {};
+  private _readPromise: Promise<void>;
+  private _changeListeners: ChangeCallback[] = [];
 
   constructor() {
     this._readPromise = this._readSettings();
@@ -349,6 +351,55 @@ export class Config {
 
     this._settings.noTextHighlight = value;
     browser.storage.sync.set({ noTextHighlight: value });
+  }
+
+  // dictLang: Defaults to the first match from navigator.languages found in
+  // dbLanguages, or 'en' otherwise.
+
+  get dictLang(): DbLanguageId {
+    // Check that the language that is set is valid. It might be invalid if we
+    // deprecated a language or we synced a value from a newer version of the
+    // add-on.
+    if (this._settings.dictLang) {
+      const availableLanguages = new Set(dbLanguages);
+      if (availableLanguages.has(this._settings.dictLang)) {
+        return this._settings.dictLang;
+      }
+    }
+
+    return this.getDefaultLang();
+  }
+
+  private getDefaultLang(): DbLanguageId {
+    const availableLanguages = new Set(dbLanguages);
+    for (const lang of navigator.languages) {
+      const langCode = lang.split('-')[0];
+      if (availableLanguages.has(langCode as DbLanguageId)) {
+        return langCode as DbLanguageId;
+      }
+    }
+
+    return 'en';
+  }
+
+  set dictLang(value: DbLanguageId) {
+    if (this._settings.dictLang === value) {
+      return;
+    }
+
+    // Note that we don't need to check that `valud` is valid since TypeScript
+    // does that for us.
+
+    // If the value to set matches the default we clear the setting. This is so
+    // that if we later support one of the user's more preferred languages we
+    // can update them automatically.
+    if (value === this.getDefaultLang()) {
+      browser.storage.sync.remove('dictLang');
+      delete this._settings.dictLang;
+    } else {
+      browser.storage.sync.set({ dictLang: value });
+      this._settings.dictLang = value;
+    }
   }
 
   // showKanjiComponents: Defaults to true
