@@ -143,6 +143,19 @@ config.addChangeListener(changes => {
     }
   }
 
+  // Update dictionary language
+  if (changes.hasOwnProperty('dictLang')) {
+    kanjiDb
+      .setPreferredLang((changes as any).dictLang.newValue)
+      .then(() => {
+        kanjiDb.update();
+      })
+      .catch(err => {
+        console.error(err);
+        bugsnagClient.notify(err, { severity: 'error' });
+      });
+  }
+
   // Tell the content scripts about any changes
   //
   // TODO: Ignore changes that aren't part of contentConfig
@@ -290,6 +303,15 @@ async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
 
 async function maybeDownloadData() {
   await kanjiDb.ready;
+
+  // Set initial language
+  await config.ready;
+  try {
+    await kanjiDb.setPreferredLang(config.dictLang);
+  } catch (e) {
+    console.error(e);
+    bugsnagClient.notify(e, { severity: 'error' });
+  }
 
   // Even if the database is not empty, check if it needs an update.
   if (kanjiDb.state === DatabaseState.Ok) {
