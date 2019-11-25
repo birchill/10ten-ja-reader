@@ -591,6 +591,24 @@ window.onload = async () => {
   browserPort = browser.runtime.connect();
   browserPort.onMessage.addListener((evt: unknown) => {
     if (isDbStateUpdatedMessage(evt)) {
+      // For Runtime.Port.postMessage Chrome appears to serialize objects using
+      // JSON serialization (not structured cloned). As a result, any Date
+      // objects will be transformed into strings.
+      //
+      // Ideally we'd introduce a new type for these deserialized objects that
+      // converts `Date` to `Date | string` but that is likely to take a full
+      // day of TypeScript wrestling so instead we just manually reach into
+      // this object and convert the fields known to be possibly contain dates
+      // into dates.
+      if (typeof evt.updateState.lastCheck === 'string') {
+        evt.updateState.lastCheck = new Date(evt.updateState.lastCheck);
+      }
+      if (typeof (evt.updateState as any).nextRetry === 'string') {
+        (evt.updateState as any).nextRetry = new Date(
+          (evt.updateState as any).nextRetry
+        );
+      }
+
       updateDatabaseSummary(evt);
     }
   });
