@@ -99,7 +99,7 @@
               <button class="browser-style" id="deleteDatabase">Delete database</button>
             </div>
             <div class="db-summary-controls panel-section-grid panel-section-list browser-style" id=kanji-reference-list>
-              <div class="browser-style checkbox-row">
+              <div class="browser-style checkbox-row static">
                 <input type=checkbox id=showKanjiComponents
                   name=showKanjiComponents>
                 <label for=showKanjiComponents>__MSG_options_kanji_components__</label>

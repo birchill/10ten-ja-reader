@@ -459,7 +459,14 @@ function createKanjiReferences() {
     'kanji-reference-list'
   ) as HTMLDivElement;
 
-  const referenceNames = getReferenceLabelsForLang('en');
+  // Remove any non-static entries
+  for (const child of Array.from(container.children)) {
+    if (!child.classList.contains('static')) {
+      child.remove();
+    }
+  }
+
+  const referenceNames = getReferenceLabelsForLang(config.dictLang);
   for (const { ref, full } of referenceNames) {
     const rowDiv = document.createElement('div');
     rowDiv.classList.add('browser-style');
@@ -545,7 +552,7 @@ function fillVals() {
   }
 
   const enabledReferences = new Set(config.kanjiReferences);
-  for (const ref of getReferencesForLang('en')) {
+  for (const ref of getReferencesForLang(config.dictLang)) {
     const checkbox = document.getElementById(`ref-${ref}`) as HTMLInputElement;
     if (checkbox) {
       checkbox.checked = enabledReferences.has(ref);
@@ -563,11 +570,18 @@ function isDbStateUpdatedMessage(evt: unknown): evt is DbStateUpdatedMessage {
   );
 }
 
+function updateFormFromConfig() {
+  // If the language changes, the set of references we should show might also
+  // change.
+  createKanjiReferences();
+  fillVals();
+}
+
 window.onload = async () => {
   await config.ready;
   completeForm();
   fillVals();
-  config.addChangeListener(fillVals);
+  config.addChangeListener(updateFormFromConfig);
 
   // Listen to changes to the database.
   browserPort = browser.runtime.connect();
@@ -579,7 +593,7 @@ window.onload = async () => {
 };
 
 window.onunload = () => {
-  config.removeChangeListener(fillVals);
+  config.removeChangeListener(updateFormFromConfig);
   if (browserPort) {
     browserPort.disconnect();
     browserPort = undefined;

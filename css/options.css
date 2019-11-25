@@ -245,6 +245,7 @@ fieldset {
 .panel-section-db-summary > .db-summary-status {
   display: flex;
   flex-direction: row;
+  min-height: 3em;
 }
 
 .panel-section-db-summary > .db-summary-status.-error {

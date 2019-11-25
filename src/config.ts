@@ -486,7 +486,7 @@ export class Config {
   get kanjiReferences(): Array<ReferenceAbbreviation> {
     const setValues = this._settings.kanjiReferencesV2 || {};
     const result: Array<ReferenceAbbreviation> = [];
-    for (const ref of getReferencesForLang('en')) {
+    for (const ref of getReferencesForLang(this.dictLang)) {
       if (typeof setValues[ref] === 'undefined') {
         if (!OFF_BY_DEFAULT_REFERENCES.has(ref)) {
           result.push(ref);
