@@ -374,6 +374,10 @@ browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
       case 'deletedb':
         kanjiDb.destroy();
         break;
+
+      case 'reporterror':
+        bugsnagClient.notify(evt.message);
+        break;
     }
   });
 

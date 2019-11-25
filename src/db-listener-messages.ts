@@ -19,7 +19,7 @@ export const notifyDbStateUpdated = ({
   updateState: UpdateState;
   versions: ResolvedDbVersions;
 }) => ({
-  type: 'dbstateupdated',
+  type: <const>'dbstateupdated',
   databaseState,
   updateState: toCloneableUpdateState(updateState),
   versions,
@@ -28,19 +28,25 @@ export const notifyDbStateUpdated = ({
 export type DbStateUpdatedMessage = ReturnType<typeof notifyDbStateUpdated>;
 
 export const updateDb = () => ({
-  type: 'updatedb',
+  type: <const>'updatedb',
 });
 
 export const cancelDbUpdate = () => ({
-  type: 'cancelupdatedb',
+  type: <const>'cancelupdatedb',
 });
 
 export const deleteDb = () => ({
-  type: 'deletedb',
+  type: <const>'deletedb',
+});
+
+export const reportError = (message: string) => ({
+  type: <const>'reporterror',
+  message,
 });
 
 export type DbListenerMessage =
   | ReturnType<typeof notifyDbStateUpdated>
   | ReturnType<typeof updateDb>
   | ReturnType<typeof cancelDbUpdate>
-  | ReturnType<typeof deleteDb>;
+  | ReturnType<typeof deleteDb>
+  | ReturnType<typeof reportError>;

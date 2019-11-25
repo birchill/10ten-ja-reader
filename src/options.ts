@@ -10,6 +10,7 @@ import {
   DbStateUpdatedMessage,
   cancelDbUpdate,
   deleteDb,
+  reportError,
   updateDb,
 } from './db-listener-messages';
 import { translateDoc } from './l10n';
@@ -442,8 +443,11 @@ function fillInLanguages() {
 
   select.addEventListener('change', () => {
     if (!isDbLanguageId(select.value)) {
-      // TODO: It would be nice to report to bugsnag here
-      console.error(`Got unexpected language code: ${select.value}`);
+      const msg = `Got unexpected language code: ${select.value}`;
+      if (browserPort) {
+        browserPort.postMessage(reportError(msg));
+      }
+      console.error(msg);
       return;
     }
     config.dictLang = select.value;
