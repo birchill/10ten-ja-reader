@@ -9225,6 +9225,11 @@ semver-diff@^2.0.0:
   dependencies:
     semver "^5.0.3"
 
+semver-parser@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/semver-parser/-/semver-parser-3.0.4.tgz#4dbd9af66343f926e64c28ef7a941be7a7e757ea"
+  integrity sha512-Le/VDJdVI9Al8FV/ImlPwzSYoMu3HgATN+hvMz3CcgXOpiYBQgRoEnuELzTkNFES5bxkyJbUFtFDWyXudB/RRA==
+
 "semver@2 || 3 || 4 || 5", semver@^5.0.3, semver@^5.1.0, semver@^5.3.0, semver@^5.4.1, semver@^5.5, semver@^5.5.0, semver@^5.5.1, semver@^5.6.0, semver@^5.7.0:
   version "5.7.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.7.1.tgz#a954f931aeba508d307bbf069eff0c01c96116f7"
