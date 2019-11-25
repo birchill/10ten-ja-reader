@@ -181,10 +181,6 @@
     "message": "1 stroke",
     "description": "The description of the number of strokes when there is exactly 1 stroke"
   },
-  "content_kanji_kentei_label": {
-    "message": "Kanji Kentei Level",
-    "description": "Label for kanji kentei"
-  },
   "content_kanji_kentei_level": {
     "message": "$level$",
     "placeholders": {

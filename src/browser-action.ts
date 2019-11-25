@@ -64,6 +64,17 @@ export function updateBrowserAction({
       iconFilename += '-indeterminate';
       titleStringId = 'command_toggle_updating';
       break;
+
+    case 'error':
+      // An error updating the dictionary is a pretty low-priority message
+      // so we only set it if there's nothing more important to say.
+      if (
+        titleStringId === 'command_toggle_disabled' ||
+        titleStringId === 'command_toggle_enabled'
+      ) {
+        titleStringId = 'command_toggle_update_error';
+      }
+      break;
   }
 
   // Set the icon
