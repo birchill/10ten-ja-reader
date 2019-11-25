@@ -226,7 +226,7 @@ fieldset {
 
 .dict-lang .note {
   margin-top: 1em;
-  padding: 1em 2em;
+  padding: 8px 16px;
   background: hsl(45, 100%, 96%);
   border: 1px solid hsl(43, 77%, 27%);
   border-radius: 8px;
@@ -257,11 +257,11 @@ fieldset {
 }
 
 .panel-section-db-summary > .db-summary-status.-warning {
-  background: #FFFFBF;
-  border: 1px solid #730;
-  border-radius: 8px;
   padding: 8px 16px;
-  color: #730;
+  background: hsl(45, 100%, 96%);
+  border: 1px solid hsl(43, 77%, 27%);
+  border-radius: 8px;
+  color: hsl(43, 77%, 27%);
 }
 
 .panel-section-db-summary .db-summary-info {
