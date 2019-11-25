@@ -67,9 +67,6 @@ export function updateBrowserAction({
   }
 
   // Set the icon
-  browser.browserAction.setTitle({
-    title: browser.i18n.getMessage(titleStringId),
-  });
   browser.browserAction
     .setIcon({
       path: `images/rikaichamp-${iconFilename}.svg`,
@@ -99,4 +96,9 @@ export function updateBrowserAction({
   } else {
     browser.browserAction.setBadgeText({ text: '' });
   }
+
+  // Set the caption
+  browser.browserAction.setTitle({
+    title: browser.i18n.getMessage(titleStringId),
+  });
 }
