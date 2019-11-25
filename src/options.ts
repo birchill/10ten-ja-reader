@@ -429,14 +429,10 @@ function translateKeys() {
 
 function fillInLanguages() {
   const select = document.querySelector('select#lang') as HTMLSelectElement;
-  const currentValue = config.dictLang;
 
   for (const [id, title] of dbLanguageNames) {
     const option = document.createElement('option');
     option.value = id;
-    if (id === currentValue) {
-      option.selected = true;
-    }
     option.append(title);
     select.append(option);
   }
@@ -551,6 +547,13 @@ function fillVals() {
     }
   }
 
+  const langSelect = document.querySelector('select#lang') as HTMLSelectElement;
+  const langOptions = langSelect.querySelectorAll('option');
+  const dictLang = config.dictLang;
+  for (const option of langOptions) {
+    option.selected = option.value === dictLang;
+  }
+
   const enabledReferences = new Set(config.kanjiReferences);
   for (const ref of getReferencesForLang(config.dictLang)) {
     const checkbox = document.getElementById(`ref-${ref}`) as HTMLInputElement;
@@ -572,7 +575,8 @@ function isDbStateUpdatedMessage(evt: unknown): evt is DbStateUpdatedMessage {
 
 function updateFormFromConfig() {
   // If the language changes, the set of references we should show might also
-  // change.
+  // change. We need to do this before calling `fillVals` since that will take
+  // care of ticking the right boxes.
   createKanjiReferences();
   fillVals();
 }
