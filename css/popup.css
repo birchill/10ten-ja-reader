@@ -251,22 +251,13 @@
 }
 
 #rikaichamp-window .kanji-table .misc > * {
+  flex-grow: 1;
   display: flex;
-  flex: 1 1 0px;
   align-items: baseline;
 }
 
 #rikaichamp-window .kanji-table .misc > :not(:first-child) {
   margin-left: 12px;
-}
-
-#rikaichamp-window .kanji-table .misc > *:nth-child(2) {
-  flex-grow: 1.5;
-  justify-content: center;
-}
-
-#rikaichamp-window .kanji-table .misc > *:nth-child(3) {
-  justify-content: end;
 }
 
 #rikaichamp-window .kanji-table .misc .strokes span,
