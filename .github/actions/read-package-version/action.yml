@@ -3,9 +3,9 @@ description: 'Read the version from package.json and return it along with other 
 outputs:
   version:
     description: 'The package version'
-  firefoxPackageName:
+  firefox_package_name:
     description: 'The name of the Firefox package, e.g. rikaichamp-0.1.0pre5.zip'
-  chromePackageName:
+  chrome_package_name:
     description: 'The name of the Chrome package, e.g. rikaichamp-0.1.0.zip'
   prerelease:
     description: 'Whether or not this version is a pre-release version'
