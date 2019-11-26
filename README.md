@@ -73,3 +73,15 @@ Browser-based tests only:
 ```
 yarn test:browser
 ```
+
+## Releasing
+
+```
+yarn version --new-version 1.2.3
+# or for a pre-release version
+yarn version --new-version 1.2.3pre1
+
+# Then...
+git push
+git push --tags
+```
