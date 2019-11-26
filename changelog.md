@@ -1,6 +1,7 @@
 ## 0.1.0 (Not yet released)
 
-* Make kanji dictionary always updated and not loaded into memory.
+* Made kanji dictionary always updated and not loaded into memory.
+* Updated word and name dictionaries to 2019-11-25 snapshot.
 
 ## 0.0.32 (2019-07-10)
 
