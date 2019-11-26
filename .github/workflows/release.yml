@@ -78,4 +78,4 @@ jobs:
           asset_content_type: application/zip
 
       - name: Show Release URL
-        run: echo "View and publish the release at: ${{ steps.create_release.outputs.html_url }}"
+        run: echo "View and publish the release at ${{ steps.create_release.outputs.html_url }}"
