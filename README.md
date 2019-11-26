@@ -38,7 +38,8 @@ yarn build:chrome
 Or to build and package:
 
 ```
-yarn prepack
+yarn package
+yarn package:chrome # Chrome version
 ```
 
 ## Running

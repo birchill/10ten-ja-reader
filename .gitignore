@@ -1,10 +1,11 @@
 coverage
 node_modules
-web-ext-artifacts
 tests/content-loader.js
 tests/content-loader.js.map
 dist-chrome
+dist-chrome-package
 dist-firefox
+dist-firefox-package
 dist-src
 dist-thunderbird
 yarn-error.log

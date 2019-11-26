@@ -49,7 +49,7 @@ jobs:
 
       - run:
           name: Verify build
-          command: yarn prepack
+          command: yarn package
 
       - run:
           name: Verify Chrome config
