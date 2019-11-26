@@ -1,0 +1,27 @@
+name: Automated tests
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+    - name: Build
+      run: |
+        yarn install
+        yarn build
+        yarn build:chrome
+    - name: Lint
+      run: yarn lint
+    - name: Test
+      env:
+        CI: true
+      run: |
+        yarn test:unit
+        yarn test:browser
+    - name: Package
+      run: yarn package
