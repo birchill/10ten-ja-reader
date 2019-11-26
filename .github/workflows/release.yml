@@ -17,12 +17,14 @@ jobs:
         with:
           node-version: '10.x'
 
-      - name: Build assets
+      - name: Run tests
         run: |
           yarn install
+          yarn test
+
+      - name: Build assets
+        run: |
           yarn package
-          yarn package:chrome
-          yarn zip-src
 
       - name: Read package version
         id: read_package_version
@@ -31,7 +33,7 @@ jobs:
       - name: Debug reading package version
         run: echo "Got package version ${{ steps.read_package_version.outputs.version }} (prerelease ${{ steps.read_package_version.outputs.prerelease }})"
 
-      - name: Create Release
+      - name: Create release
         id: create_release
         uses: actions/create-release@v1.0.0
         env:

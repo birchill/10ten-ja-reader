@@ -17,13 +17,10 @@ jobs:
         yarn install
         yarn build
         yarn build:chrome
-    - name: Lint
-      run: yarn lint
     - name: Test
       env:
         CI: true
       run: |
-        yarn test:unit
-        yarn test:browser
+        yarn test
     - name: Package
       run: yarn package
