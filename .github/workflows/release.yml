@@ -29,7 +29,7 @@ jobs:
         uses: ./.github/actions/read-package-version
 
       - name: Debug reading package version
-        run: echo "Got package version ${{ steps.read_package_version.outputs.version }} (prerelease: ${{ steps.read_package_version.outputs.prerelease }})"
+        run: echo "Got package version ${{ steps.read_package_version.outputs.version }} (prerelease ${{ steps.read_package_version.outputs.prerelease }})"
 
       - name: Create Release
         id: create_release
