@@ -2,7 +2,12 @@
   "manifest_version": 2,
   "name": "Rikaichamp",
   "author": "Brian Birtles",
-  "version": "undefined.undefined.undefined",
+  /*#if supports_alpha_version*/
+  "version": "0.1.0pre4",
+  /*#else*/
+  "version": "0.1.0",
+  "version_name": "0.1.0-pre4",
+  /*#endif*/
   /*#if supports_applications_field*/
   "applications": {
     "gecko": {
