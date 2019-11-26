@@ -1,6 +1,6 @@
 # Rikaichamp!
 
-[![CircleCI](https://circleci.com/gh/birtles/rikaichamp.svg?style=svg)](https://circleci.com/gh/birtles/rikaichamp)
+![](https://github.com/birtles/rikaichamp/workflows/Automated%20tests/badge.svg)
 https://api.dependabot.com/badges/status?host=github&repo=birtles/rikaichamp
 
 Look up Japanese words with the hover of a mouse.
