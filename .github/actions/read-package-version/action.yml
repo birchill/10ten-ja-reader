@@ -1,0 +1,10 @@
+name: 'Read package version'
+description: 'Read the version from package.json and return it along with pre-release status'
+outputs:
+  version:
+    description: 'The package version'
+  prerelease:
+    description: 'Whether or not this version is a pre-release version'
+runs:
+  using: 'node12'
+  main: 'index.js'

@@ -1,0 +1,54 @@
+name: Release
+on:
+  push:
+    tags:
+    - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+
+      - name: Build assets
+        run: |
+          yarn install
+          yarn package
+          yarn package:chrome
+          yarn zip-src
+
+      - name: Read package version
+        id: read_package_version
+        uses: ./.github/actions/read-package-version
+
+      - name: Debug reading package version
+        run: echo "Got package version ${{ steps.read_package_version.outputs.version }} (prerelease: ${{ steps.read_package_version.outputs.prerelease }})"
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: ${{ steps.read_package_version.outputs.prerelease }}
+
+      - name: Upload Firefox package
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist-firefox-package/rikaichamp-${{ steps.read_package_version.outputs.version }}.zip
+          asset_name: rikaichamp-${{ steps.read_package_version.outputs.version }}.zip
+          asset_content_type: application/zip
