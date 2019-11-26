@@ -17,7 +17,12 @@ function main() {
   console.log(`  Version in package.json: ${packageJson.version}`);
 
   // Parse it
-  const { major, minor, patch, pre } = parseSemVer(originalVersionString);
+  const { major, minor, patch, pre, matches } =
+    parseSemVer(originalVersionString);
+  if (!matches) {
+    console.error(`Could not parse version ${originalVersionString}`);
+    process.exit(1);
+  }
 
   // Generate updated version info
   const versionInfo = pre
