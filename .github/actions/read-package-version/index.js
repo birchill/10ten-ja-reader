@@ -27,11 +27,11 @@ try {
 
   const firefoxPackageName = `rikaichamp-${major}.${minor}.${patch}${pre}.zip`;
   console.log(`Firefox package name: ${firefoxPackageName}`);
-  core.setOutput('firefoxPackageName', firefoxPackageName);
+  core.setOutput('firefox_package_name', firefoxPackageName);
 
   const chromePackageName = `rikaichamp-${major}.${minor}.${patch}.zip`;
   console.log(`Chrome package name: ${chromePackageName}`);
-  core.setOutput('chromePackageName', chromePackageName);
+  core.setOutput('chrome_package_name', chromePackageName);
 
   console.log(`Pre-release status: ${!!pre}`);
   core.setOutput('prerelease', !!pre);
