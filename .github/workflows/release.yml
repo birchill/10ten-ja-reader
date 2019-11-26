@@ -54,8 +54,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist-firefox-package/rikaichamp-${{ steps.read_package_version.outputs.firefoxPackageName }}.zip
-          asset_name: rikaichamp-${{ steps.read_package_version.outputs.firefoxPackageName }}.zip
+          asset_path: ./dist-firefox-package/${{ steps.read_package_version.outputs.firefoxPackageName }}
+          asset_name: ${{ steps.read_package_version.outputs.firefoxPackageName }}
           asset_content_type: application/zip
 
       - name: Upload Chrome asset
@@ -65,8 +65,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist-chrome-package/rikaichamp-${{ steps.read_package_version.outputs.chromePackageName }}.zip
-          asset_name: rikaichamp-${{ steps.read_package_version.outputs.chromePackageName }}.zip
+          asset_path: ./dist-chrome-package/${{ steps.read_package_version.outputs.chromePackageName }}
+          asset_name: ${{ steps.read_package_version.outputs.chromePackageName }}
           asset_content_type: application/zip
 
       - name: Upload source ZIP
