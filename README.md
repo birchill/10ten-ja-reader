@@ -78,10 +78,16 @@ yarn test:browser
 
 ```
 yarn version --new-version 1.2.3
-# or for a pre-release version
-yarn version --new-version 1.2.3pre1
+# or for a pre-release version (NOTE: The 'dash' is important!)
+yarn version --new-version 1.2.3-pre1
 
 # Then...
-git push
-git push --tags
+git push --follow-refs origin master
+```
+
+If you want to bump the version _without_ triggering a new release use:
+
+```
+# NOTE: untested
+yarn version --new-version 1.2.3 --no-git-tag-version
 ```
