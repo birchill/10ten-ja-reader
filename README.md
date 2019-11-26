@@ -82,7 +82,7 @@ yarn version --new-version 1.2.3
 yarn version --new-version 1.2.3-pre1
 
 # Then...
-git push --follow-refs origin master
+git push --follow-tags origin master
 ```
 
 If you want to bump the version _without_ triggering a new release use:
