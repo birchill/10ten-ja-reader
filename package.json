@@ -1,6 +1,6 @@
 {
   "name": "rikaichamp",
-  "version": "0.1.0-alpha",
+  "version": "0.1.0-alpha1",
   "description": "Translate Japanese by hovering over words.",
   "scripts": {
     "build": "webpack",
@@ -73,12 +73,20 @@
     "sourceDir": "dist-firefox"
   },
   "jest": {
-    "roots": ["src"],
+    "roots": [
+      "src"
+    ],
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
     "testRegex": ".test.ts$",
-    "moduleFileExtensions": ["ts", "tsx", "js", "json", "jsx"]
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json",
+      "jsx"
+    ]
   },
   "husky": {
     "hooks": {
@@ -86,7 +94,10 @@
     }
   },
   "lint-staged": {
-    "*.ts": ["prettier --write", "git add"]
+    "*.ts": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "prettier": {
     "singleQuote": true,
