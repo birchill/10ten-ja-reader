@@ -16,12 +16,17 @@ try {
     process.exit(1);
   }
 
-  console.log(`Version is: ${version}`);
+  console.log(`Version is: ${versionString}`);
   core.setOutput('version', versionString);
 
-  const { major, minor, patch, pre } = parseSemVer(versionString);
-  core.setOutput('prerelease', !!pre);
+  const { major, minor, patch, pre, matches } = parseSemVer(versionString);
+  if (!matches) {
+    core.setFailed(`Could not parse version: ${versionString}`);
+    process.exit(1);
+  }
+
   console.log(`Pre-release status: ${!!pre}`);
+  core.setOutput('prerelease', !!pre);
 } catch (error) {
   core.setFailed(error.message);
 }
