@@ -17,7 +17,7 @@ jobs:
         yarn install
         yarn build
         yarn build:chrome
-    - name: Test
+    - name: Run tests
       env:
         CI: true
       run: |

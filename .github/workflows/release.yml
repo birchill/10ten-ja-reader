@@ -20,6 +20,7 @@ jobs:
       - name: Run tests
         run: |
           yarn install
+          yarn build
           yarn test
 
       - name: Build assets
@@ -44,7 +45,7 @@ jobs:
           draft: true
           prerelease: ${{ steps.read_package_version.outputs.prerelease }}
 
-      - name: Upload Firefox package
+      - name: Upload Firefox asset
         id: upload_release_asset
         uses: actions/upload-release-asset@v1.0.1
         env:
