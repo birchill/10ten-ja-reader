@@ -3,10 +3,10 @@
   "name": "Rikaichamp",
   "author": "Brian Birtles",
   /*#if supports_alpha_version*/
-  "version": "0.1.0pre4",
+  "version": "0.1.0pre5",
   /*#else*/
   "version": "0.1.0",
-  "version_name": "0.1.0-pre4",
+  "version_name": "0.1.0-pre5",
   /*#endif*/
   /*#if supports_applications_field*/
   "applications": {
