@@ -26,6 +26,8 @@ jobs:
       - name: Build assets
         run: |
           yarn package
+          yarn package:chrome
+          yarn zip-src
 
       - name: Read package version
         id: read_package_version
@@ -52,6 +54,28 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist-firefox-package/rikaichamp-${{ steps.read_package_version.outputs.version }}.zip
-          asset_name: rikaichamp-${{ steps.read_package_version.outputs.version }}.zip
+          asset_path: ./dist-firefox-package/rikaichamp-${{ steps.read_package_version.outputs.firefoxPackageName }}.zip
+          asset_name: rikaichamp-${{ steps.read_package_version.outputs.firefoxPackageName }}.zip
+          asset_content_type: application/zip
+
+      - name: Upload Chrome asset
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist-chrome-package/rikaichamp-${{ steps.read_package_version.outputs.chromePackageName }}.zip
+          asset_name: rikaichamp-${{ steps.read_package_version.outputs.chromePackageName }}.zip
+          asset_content_type: application/zip
+
+      - name: Upload source ZIP
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist-src/rikaichamp-${{ steps.read_package_version.outputs.version }}-src.zip
+          asset_name: rikaichamp-${{ steps.read_package_version.outputs.version }}-src.zip
           asset_content_type: application/zip

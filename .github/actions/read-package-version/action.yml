@@ -1,8 +1,12 @@
 name: 'Read package version'
-description: 'Read the version from package.json and return it along with pre-release status'
+description: 'Read the version from package.json and return it along with other useful information'
 outputs:
   version:
     description: 'The package version'
+  firefoxPackageName:
+    description: 'The name of the Firefox package, e.g. rikaichamp-0.1.0pre5.zip'
+  chromePackageName:
+    description: 'The name of the Chrome package, e.g. rikaichamp-0.1.0.zip'
   prerelease:
     description: 'Whether or not this version is a pre-release version'
 runs:

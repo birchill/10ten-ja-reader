@@ -25,6 +25,14 @@ try {
     process.exit(1);
   }
 
+  const firefoxPackageName = `rikaichamp-${major}.${minor}.${patch}${pre}.zip`;
+  console.log(`Firefox package name: ${firefoxPackageName}`);
+  core.setOutput('firefoxPackageName', firefoxPackageName);
+
+  const chromePackageName = `rikaichamp-${major}.${minor}.${patch}.zip`;
+  console.log(`Chrome package name: ${chromePackageName}`);
+  core.setOutput('chromePackageName', chromePackageName);
+
   console.log(`Pre-release status: ${!!pre}`);
   core.setOutput('prerelease', !!pre);
 } catch (error) {
