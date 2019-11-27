@@ -84,14 +84,16 @@ const bugsnagClient = bugsnag({
 });
 
 browser.management.getSelf().then(info => {
-  // bugsnag-ts typings don't seem to help here
-  (bugsnagClient.app as any).version = info.version;
+  let rikaiVersion = info.version;
   // version_name is a Chrome-only thing but Chrome doesn't allow alpha
   // characters in the version number (Firefox does) so we stick the "alpha"
   // "beta" designation in the name.
   if ((info as any).versionName) {
-    (bugsnagClient.app as any).version = (info as any).versionName;
+    rikaiVersion = (info as any).versionName;
   }
+
+  // bugsnag-ts typings don't seem to help here
+  (bugsnagClient.app as any).version = rikaiVersion;
   if (info.installType === 'development') {
     (bugsnagClient.app as any).releaseStage = 'development';
   }
