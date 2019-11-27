@@ -52,7 +52,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./dist-firefox-package/${{ steps.read_package_version.outputs.firefox_package_name }}
-          asset_name: ${{ steps.read_package_version.outputs.firefox_package_name }}
+          asset_name: rikaichamp-${{ steps.read_package_version.outputs.version }}-firefox.zip
           asset_content_type: application/zip
 
       - name: Upload Chrome asset
@@ -63,7 +63,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./dist-chrome-package/${{ steps.read_package_version.outputs.chrome_package_name }}
-          asset_name: ${{ steps.read_package_version.outputs.chrome_package_name }}
+          asset_name: rikaichamp-${{ steps.read_package_version.outputs.version }}-chrome.zip
           asset_content_type: application/zip
 
       - name: Upload source ZIP
