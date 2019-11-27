@@ -25,7 +25,8 @@ try {
     process.exit(1);
   }
 
-  const firefoxPackageName = `rikaichamp-${major}.${minor}.${patch}${pre}.zip`;
+  const firefoxPackageName = `rikaichamp-${major}.${minor}.${patch}${pre ||
+    ''}.zip`;
   console.log(`Firefox package name: ${firefoxPackageName}`);
   core.setOutput('firefox_package_name', firefoxPackageName);
 
