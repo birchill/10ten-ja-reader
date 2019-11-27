@@ -1,5 +1,6 @@
 ## 0.1.3 (not yet released)
 
+* Updated database interaction to better handle initial language setting.
 * Added logging to various database interactions.
 
 ## 0.1.2 (2019-11-27)
