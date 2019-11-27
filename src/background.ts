@@ -147,10 +147,19 @@ config.addChangeListener(changes => {
 
   // Update dictionary language
   if (changes.hasOwnProperty('dictLang')) {
+    const newLang = (changes as any).dictLang.newValue;
+    bugsnagClient.leaveBreadcrumb(
+      `Changing language of kanji database to ${newLang}.`
+    );
+
     kanjiDb
-      .setPreferredLang((changes as any).dictLang.newValue)
+      .setPreferredLang(newLang)
       .then(() => {
+        bugsnagClient.leaveBreadcrumb(
+          `Changed language of kanji database to ${newLang}. Running initial update...`
+        );
         kanjiDb.update();
+        bugsnagClient.leaveBreadcrumb('Successfully updated kanji database.');
       })
       .catch(err => {
         console.error(err);
@@ -309,7 +318,13 @@ async function maybeDownloadData() {
   // Set initial language
   await config.ready;
   try {
+    bugsnagClient.leaveBreadcrumb(
+      `Setting initial language of kanji database to ${config.dictLang}.`
+    );
     await kanjiDb.setPreferredLang(config.dictLang);
+    bugsnagClient.leaveBreadcrumb(
+      `Successfully set language to ${config.dictLang}.`
+    );
   } catch (e) {
     console.error(e);
     bugsnagClient.notify(e, { severity: 'error' });
@@ -342,6 +357,7 @@ async function maybeDownloadData() {
   }
 
   try {
+    bugsnagClient.leaveBreadcrumb('Updating kanji database...');
     await kanjiDb.update();
     await browser.storage.local.set({
       lastUpdateKanjiDb: new Date().getTime(),
@@ -366,14 +382,26 @@ browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
 
     switch (evt.type) {
       case 'updatedb':
-        kanjiDb.update();
+        try {
+          bugsnagClient.leaveBreadcrumb(
+            'Running manual update of kanji database...'
+          );
+          kanjiDb.update();
+          bugsnagClient.leaveBreadcrumb('Successfully updated kanji database');
+        } catch (e) {
+          bugsnagClient.notify(e || '(Error updating kanji database)', {
+            severity: 'error',
+          });
+        }
         break;
 
       case 'cancelupdatedb':
+        bugsnagClient.leaveBreadcrumb('Manually canceling database update');
         kanjiDb.cancelUpdate();
         break;
 
       case 'deletedb':
+        bugsnagClient.leaveBreadcrumb('Manually deleting database');
         kanjiDb.destroy();
         break;
 

@@ -1,4 +1,8 @@
-## 0.1.0 (Not yet released)
+## 0.1.3 (not yet released)
+
+* Added logging to various database interactions.
+
+## 0.1.2 (2019-11-27)
 
 * Made kanji dictionary always updated and not loaded into memory.
 * Updated word and name dictionaries to 2019-11-25 snapshot.
