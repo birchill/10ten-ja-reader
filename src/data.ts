@@ -193,7 +193,7 @@ export class Dictionary {
     return null;
   }
 
-  // Note: These are mostly flat text files; loaded as one continous string to
+  // Note: These are mostly flat text files; loaded as one continuous string to
   // reduce memory use
   async loadDictionary(): Promise<void> {
     type fileEntry = { key: keyof Dictionary; file: string };
