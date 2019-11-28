@@ -1666,7 +1666,7 @@ browser.runtime.onMessage.addListener((request: any) => {
 });
 
 function removeRikaichampContent() {
-  // On at least one occassion I've seen an old window element hanging around.
+  // On at least one occasion I've seen an old window element hanging around.
   // Not sure why this happened yet but for now let's just be sure to
   // completely remove ourselves.
   let cssElem = document.getElementById('rikaichamp-css');
