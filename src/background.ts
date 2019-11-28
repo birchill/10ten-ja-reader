@@ -159,6 +159,11 @@ config.addChangeListener(changes => {
           `Changed language of kanji database to ${newLang}. Running initial update...`
         );
         kanjiDb.update();
+        return browser.storage.local.set({
+          lastUpdateKanjiDb: new Date().getTime(),
+        });
+      })
+      .then(() => {
         bugsnagClient.leaveBreadcrumb('Successfully updated kanji database.');
       })
       .catch(err => {
@@ -246,10 +251,20 @@ let wasUpdateInError: boolean = false;
 kanjiDb.onChange = () => {
   // Report any update errors
   if (!wasUpdateInError && kanjiDb.updateState.state === 'error') {
-    const { name, message } = kanjiDb.updateState.error;
-    bugsnagClient.notify(`${name}: ${message}`, {
-      severity: 'error',
-    });
+    if (
+      kanjiDb.updateState.error?.name === 'DownloadError' &&
+      kanjiDb.updateState.retryIntervalMs
+    ) {
+      bugsnagClient.leaveBreadcrumb(
+        `Download error: ${kanjiDb.updateState.error.message}.` +
+          ` Retrying in ${kanjiDb.updateState.retryIntervalMs}ms.`
+      );
+    } else {
+      const { name, message } = kanjiDb.updateState.error;
+      bugsnagClient.notify(`${name}: ${message}`, {
+        severity: 'error',
+      });
+    }
   }
   wasUpdateInError = kanjiDb.updateState.state === 'error';
 
@@ -313,7 +328,15 @@ async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
 }
 
 async function maybeDownloadData() {
-  await kanjiDb.ready;
+  try {
+    await kanjiDb.ready;
+  } catch (e) {
+    console.error(e);
+    bugsnagClient.notify(e || '(Error initializing database)', {
+      severity: 'error',
+    });
+    return;
+  }
 
   // Set initial language
   await config.ready;
@@ -364,6 +387,10 @@ async function maybeDownloadData() {
     });
     bugsnagClient.leaveBreadcrumb('Successfully updated kanji database');
   } catch (e) {
+    if (e?.name === 'DownloadError') {
+      // Ignore download errors since we will automatically retry these.
+      return;
+    }
     bugsnagClient.notify(e || '(Error updating kanji database)', {
       severity: 'error',
     });
