@@ -243,9 +243,9 @@ function initKanjiDb(): KanjiDatabase {
     // Report any new errors
 
     if (!wasDbInError && result.state === DatabaseState.Unavailable) {
-      bugsnagClient.notify('Database unavailable', {
-        severity: 'info',
-      });
+      const err = new Error('Database unavailable');
+      err.name = 'DatabaseUnavailableError';
+      bugsnagClient.notify(err, { severity: 'info' });
     }
     wasDbInError = result.state === DatabaseState.Unavailable;
 
