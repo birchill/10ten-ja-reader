@@ -1,4 +1,8 @@
-## 0.1.4 (not yet released)
+## 0.1.5 (not yet released)
+
+* Make sure asynchronous download errors are handled correctly.
+
+## 0.1.4 (2019-11-29)
 
 * Better handle the case where IndexedDB is unavailable
   ([#148](https://github.com/birtles/rikaichamp/issues/148))
