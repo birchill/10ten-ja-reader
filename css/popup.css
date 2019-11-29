@@ -246,7 +246,6 @@
 
 #rikaichamp-window .kanji-table .misc {
   display: flex;
-  min-width: 26em;
 }
 
 #rikaichamp-window .kanji-table .misc > * {

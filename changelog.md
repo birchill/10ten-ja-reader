@@ -2,6 +2,8 @@
 
 * Better handle the case where IndexedDB is unavailable
   ([#148](https://github.com/birtles/rikaichamp/issues/148))
+* Fix some cases where the content in the kanji window wraps
+  ([#149](https://github.com/birtles/rikaichamp/issues/149))
 
 ## 0.1.3 (2019-11-27)
 
