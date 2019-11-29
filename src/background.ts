@@ -726,6 +726,13 @@ async function searchKanji(kanji: string): Promise<KanjiResult | null> {
     return null;
   }
 
+  if (
+    kanjiDb.state === DatabaseState.Empty ||
+    kanjiDb.state === DatabaseState.Unavailable
+  ) {
+    return null;
+  }
+
   let result;
   try {
     result = await kanjiDb.getKanji([kanji]);
