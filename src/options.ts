@@ -598,7 +598,7 @@ window.onload = async () => {
       // Ideally we'd introduce a new type for these deserialized objects that
       // converts `Date` to `Date | string` but that is likely to take a full
       // day of TypeScript wrestling so instead we just manually reach into
-      // this object and convert the fields known to be possibly contain dates
+      // this object and convert the fields known to possibly contain dates
       // into dates.
       if (typeof evt.updateState.lastCheck === 'string') {
         evt.updateState.lastCheck = new Date(evt.updateState.lastCheck);
