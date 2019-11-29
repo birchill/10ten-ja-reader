@@ -1,4 +1,4 @@
-## 0.1.5 (not yet released)
+## 0.1.5 (2019-11-29)
 
 * Make sure asynchronous download errors are handled correctly.
 
