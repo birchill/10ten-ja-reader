@@ -330,6 +330,10 @@
     "message": "No database",
     "description": "Label when the database has not yet been downloaded"
   },
+  "options_database_unavailable": {
+    "message": "Database storage unavailable",
+    "description": "Label when IndexedDB is unusable"
+  },
   "options_last_database_check": {
     "message": "Last check $lastcheck$",
     "description": "Status to show when we last checked for an update",

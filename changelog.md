@@ -1,4 +1,9 @@
-## 0.1.3 (not yet released)
+## 0.1.4 (not yet released)
+
+* Better handle the case where IndexedDB is unavailable
+  ([#148](https://github.com/birtles/rikaichamp/issues/148))
+
+## 0.1.3 (2019-11-27)
 
 * Updated database interaction to better handle initial language setting.
 * Added logging to various database interactions.

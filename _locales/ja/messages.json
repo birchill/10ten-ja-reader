@@ -330,6 +330,10 @@
     "message": "データベースがありません",
     "description": "Label when the database has not yet been downloaded"
   },
+  "options_database_unavailable": {
+    "message": "データベースストレージ利用不可",
+    "description": "Label when IndexedDB is unusable"
+  },
   "options_last_database_check": {
     "message": "更新確認時刻 $lastcheck$",
     "description": "Status to show when we last checked for an update",

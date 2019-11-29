@@ -689,6 +689,9 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
     case 'idle': {
       if (databaseState === DatabaseState.Empty) {
         infoDiv.append(browser.i18n.getMessage('options_no_database'));
+      } else if (databaseState === DatabaseState.Unavailable) {
+        status.classList.add('-error');
+        infoDiv.append(browser.i18n.getMessage('options_database_unavailable'));
       } else {
         infoDiv.classList.add('-italic');
         const { major, minor, patch } = versions.kanjidb!;
@@ -791,7 +794,7 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
 
   status.append(infoDiv);
 
-  // Add the action button info any
+  // Add the action button info if any
 
   const buttonDiv = document.createElement('div');
   buttonDiv.classList.add('db-summary-button');
@@ -803,7 +806,8 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
       updateButton.classList.add('browser-style');
       updateButton.setAttribute('type', 'button');
       updateButton.textContent = browser.i18n.getMessage(
-        updateState.state === 'idle'
+        updateState.state === 'idle' &&
+          databaseState !== DatabaseState.Unavailable
           ? 'options_update_check_button_label'
           : 'options_update_retry_button_label'
       );

@@ -152,24 +152,12 @@ config.addChangeListener(changes => {
       `Changing language of kanji database to ${newLang}.`
     );
 
-    kanjiDb
-      .setPreferredLang(newLang)
-      .then(() => {
-        bugsnagClient.leaveBreadcrumb(
-          `Changed language of kanji database to ${newLang}. Running initial update...`
-        );
-        kanjiDb.update();
-        return browser.storage.local.set({
-          lastUpdateKanjiDb: new Date().getTime(),
-        });
-      })
-      .then(() => {
-        bugsnagClient.leaveBreadcrumb('Successfully updated kanji database.');
-      })
-      .catch(err => {
-        console.error(err);
-        bugsnagClient.notify(err, { severity: 'error' });
-      });
+    kanjiDb.setPreferredLang(newLang).then(() => {
+      bugsnagClient.leaveBreadcrumb(
+        `Changed language of kanji database to ${newLang}. Running initial update...`
+      );
+      return updateKanjiDb();
+    });
   }
 
   // Tell the content scripts about any changes
@@ -244,43 +232,59 @@ config.ready.then(() => {
 // Kanji database
 //
 
-const kanjiDb = new KanjiDatabase();
-const dbListeners: Array<browser.runtime.Port> = [];
-let wasUpdateInError: boolean = false;
+let kanjiDb = initKanjiDb();
 
-kanjiDb.onChange = () => {
-  // Report any update errors
-  if (!wasUpdateInError && kanjiDb.updateState.state === 'error') {
-    if (
-      kanjiDb.updateState.error?.name === 'DownloadError' &&
-      kanjiDb.updateState.retryIntervalMs
-    ) {
-      bugsnagClient.leaveBreadcrumb(
-        `Download error: ${kanjiDb.updateState.error.message}.` +
-          ` Retrying in ${kanjiDb.updateState.retryIntervalMs}ms.`
-      );
-    } else {
-      const { name, message } = kanjiDb.updateState.error;
-      bugsnagClient.notify(`${name}: ${message}`, {
-        severity: 'error',
+function initKanjiDb(): KanjiDatabase {
+  const result = new KanjiDatabase();
+  let wasDbInError: boolean = false;
+  let wasUpdateInError: boolean = false;
+
+  result.onChange = () => {
+    // Report any new errors
+
+    if (!wasDbInError && result.state === DatabaseState.Unavailable) {
+      bugsnagClient.notify('Database unavailable', {
+        severity: 'info',
       });
     }
-  }
-  wasUpdateInError = kanjiDb.updateState.state === 'error';
+    wasDbInError = result.state === DatabaseState.Unavailable;
 
-  updateBrowserAction({
-    popupStyle: config.popupStyle,
-    enabled,
-    flatFileDictState,
-    kanjiDb,
-  });
+    if (!wasUpdateInError && result.updateState.state === 'error') {
+      if (
+        result.updateState.error?.name === 'DownloadError' &&
+        result.updateState.retryIntervalMs
+      ) {
+        bugsnagClient.leaveBreadcrumb(
+          `Download error: ${result.updateState.error.message}.` +
+            ` Retrying in ${result.updateState.retryIntervalMs}ms.`
+        );
+      } else {
+        const { name, message } = result.updateState.error;
+        bugsnagClient.notify(`${name}: ${message}`, {
+          severity: 'error',
+        });
+      }
+    }
+    wasUpdateInError = result.updateState.state === 'error';
 
-  notifyDbListeners();
-};
+    updateBrowserAction({
+      popupStyle: config.popupStyle,
+      enabled,
+      flatFileDictState,
+      kanjiDb: result,
+    });
 
-kanjiDb.onWarning = (message: string) => {
-  bugsnagClient.notify(message, { severity: 'warning' });
-};
+    notifyDbListeners();
+  };
+
+  result.onWarning = (message: string) => {
+    bugsnagClient.notify(message, { severity: 'warning' });
+  };
+
+  return result;
+}
+
+const dbListeners: Array<browser.runtime.Port> = [];
 
 async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
   if (!dbListeners.length) {
@@ -338,6 +342,10 @@ async function maybeDownloadData() {
     return;
   }
 
+  if (kanjiDb.state === DatabaseState.Unavailable) {
+    return;
+  }
+
   // Set initial language
   await config.ready;
   try {
@@ -379,6 +387,16 @@ async function maybeDownloadData() {
     }
   }
 
+  updateKanjiDb();
+}
+
+async function updateKanjiDb() {
+  await kanjiDb.ready;
+
+  if (kanjiDb.state === DatabaseState.Unavailable) {
+    return;
+  }
+
   try {
     bugsnagClient.leaveBreadcrumb('Updating kanji database...');
     await kanjiDb.update();
@@ -391,10 +409,11 @@ async function maybeDownloadData() {
       // Ignore download errors since we will automatically retry these.
       return;
     }
+
+    console.log(e);
     bugsnagClient.notify(e || '(Error updating kanji database)', {
       severity: 'error',
     });
-    console.log(e);
   }
 }
 
@@ -409,16 +428,13 @@ browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
 
     switch (evt.type) {
       case 'updatedb':
-        try {
-          bugsnagClient.leaveBreadcrumb(
-            'Running manual update of kanji database...'
-          );
-          kanjiDb.update();
-          bugsnagClient.leaveBreadcrumb('Successfully updated kanji database');
-        } catch (e) {
-          bugsnagClient.notify(e || '(Error updating kanji database)', {
-            severity: 'error',
+        if (kanjiDb.state === DatabaseState.Unavailable) {
+          kanjiDb.destroy().then(() => {
+            kanjiDb = initKanjiDb();
+            maybeDownloadData();
           });
+        } else {
+          updateKanjiDb();
         }
         break;
 
