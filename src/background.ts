@@ -74,6 +74,14 @@ const UPDATE_THRESHOLD_MS = 12 * 60 * 60 * 1000; // 12 hours
 // Setup bugsnag
 //
 
+const getExtensionInstallId = (): string => {
+  try {
+    return new URL(browser.runtime.getURL('yer')).host;
+  } catch (e) {
+    return 'unknown';
+  }
+};
+
 const bugsnagClient = bugsnag({
   apiKey: 'e707c9ae84265d122b019103641e6462',
   autoBreadcrumbs: false,
@@ -81,6 +89,7 @@ const bugsnagClient = bugsnag({
   collectUserIp: false,
   consoleBreadcrumbsEnabled: true,
   logger: null,
+  user: { id: getExtensionInstallId() },
 });
 
 browser.management.getSelf().then(info => {
