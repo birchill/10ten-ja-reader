@@ -1,3 +1,7 @@
+## 0.1.6 (2019-11-29)
+
+* Avoid looking up database when it is unavailable.
+
 ## 0.1.5 (2019-11-29)
 
 * Make sure asynchronous download errors are handled correctly.
