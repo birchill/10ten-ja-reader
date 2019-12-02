@@ -88,6 +88,5 @@ git push --follow-tags
 If you want to bump the version _without_ triggering a new release use:
 
 ```
-# NOTE: untested
 yarn version --new-version 1.2.3 --no-git-tag-version
 ```

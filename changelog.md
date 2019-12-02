@@ -1,3 +1,7 @@
+## 0.1.7 (not yet released)
+
+(Nothing yet)
+
 ## 0.1.6 (2019-11-29)
 
 * Avoid looking up database when it is unavailable.
