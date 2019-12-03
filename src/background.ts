@@ -49,6 +49,7 @@ import '../manifest.json.src';
 import '../html/background.html.src';
 
 import bugsnag from '@bugsnag/js';
+import { Bugsnag } from '@bugsnag/js';
 import {
   DatabaseState,
   KanjiDatabase,
@@ -86,6 +87,20 @@ const bugsnagClient = bugsnag({
   apiKey: 'e707c9ae84265d122b019103641e6462',
   autoBreadcrumbs: false,
   autoCaptureSessions: false,
+  beforeSend: (report: Bugsnag.Report) => {
+    // Due to Firefox bug 1561911
+    // (https://bugzilla.mozilla.org/show_bug.cgi?id=1561911)
+    // we can get spurious unhandledrejections when using streams.
+    // Until that bug is fixed, we filter them out here.
+    if (
+      report.errorClass === 'DownloadError' &&
+      (report as any)._handledState?.unhandled
+    ) {
+      return false;
+    }
+
+    return true;
+  },
   collectUserIp: false,
   consoleBreadcrumbsEnabled: true,
   logger: null,
@@ -259,6 +274,7 @@ function initKanjiDb(): KanjiDatabase {
     wasDbInError = result.state === DatabaseState.Unavailable;
 
     if (!wasUpdateInError && result.updateState.state === 'error') {
+      // Leave a breadcrumb for all download errors
       if (
         result.updateState.error?.name === 'DownloadError' &&
         result.updateState.retryIntervalMs
@@ -267,6 +283,33 @@ function initKanjiDb(): KanjiDatabase {
           `Download error: ${result.updateState.error.message}.` +
             ` Retrying in ${result.updateState.retryIntervalMs}ms.`
         );
+      }
+
+      // We don't want to report all download errors since the auto-retry
+      // behavior will mean we get too many. Also, we don't care about
+      // intermittent failures for users on flaky network connections.
+      //
+      // However, if a lot of clients are failing multiple times to fetch
+      // a particular resource, we want to know.
+      //
+      // The auto-retry behavior is controlled by the hikibiki-data package
+      // but we happen to know that after each failure it doubles the interval
+      // up to a certain point. So if we simply log the download error where the
+      // retry interval is between 1min and 2min that should mean we only report
+      // one error per failed resource.
+      if (result.updateState.error?.name === 'DownloadError') {
+        const { retryIntervalMs } = result.updateState;
+        if (
+          retryIntervalMs &&
+          retryIntervalMs >= 60 * 1000 &&
+          retryIntervalMs < 120 * 1000
+        ) {
+          const { name, message } = result.updateState.error;
+          bugsnagClient.notify(`${name}: ${message}`, {
+            severity: 'warning',
+          });
+        }
+        // Otherwise, ignore.
       } else {
         const { name, message } = result.updateState.error;
         bugsnagClient.notify(`${name}: ${message}`, {
