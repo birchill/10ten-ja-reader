@@ -1,6 +1,6 @@
-## 0.1.7 (not yet released)
+## 0.1.7 (2019-12-03)
 
-(Nothing yet)
+* Improve error handling and reporting for download errors.
 
 ## 0.1.6 (2019-11-29)
 
