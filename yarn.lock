@@ -158,10 +158,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@birchill/hikibiki-data@^1.3.5":
-  version "1.3.5"
-  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-1.3.5.tgz#845f6ab345dc08b78b9c14cc7ee752ea5446f03b"
-  integrity sha512-Vb93vk05YbYYiiaDvHdsMAma1vvJK6f7bV1deSw5HTKpFDtN9LhDB+gyVAQDMO+DLbnH1O2gynwbvZByj1o7UQ==
+"@birchill/hikibiki-data@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-1.4.0.tgz#fedf71dccf792fee7ca0fe91e9a9e37ea4666dee"
+  integrity sha512-5R7dJwec1YLhXQm4OSGRnHRr479tZr2TkLdHFmkZhHwdlaHMg+5G6JmGiZ6u7SO5msDnw8iopGNhOnp9vKnwGw==
   dependencies:
     "@birchill/json-equalish" "^1.0.1"
     dexie "^3.0.0-beta.1"

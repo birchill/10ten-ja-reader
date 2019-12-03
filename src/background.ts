@@ -99,6 +99,18 @@ const bugsnagClient = bugsnag({
       return false;
     }
 
+    if (report.errorClass === 'DownloadError') {
+      if (
+        report.originalError &&
+        typeof report.originalError.url !== 'undefined'
+      ) {
+        // Group by URL and error code
+        report.groupingHash =
+          String(report.originalError.code) + report.originalError.url;
+        report.request.url = report.originalError.url;
+      }
+    }
+
     return true;
   },
   collectUserIp: false,
@@ -304,17 +316,13 @@ function initKanjiDb(): KanjiDatabase {
           retryIntervalMs >= 60 * 1000 &&
           retryIntervalMs < 120 * 1000
         ) {
-          const { name, message } = result.updateState.error;
-          bugsnagClient.notify(`${name}: ${message}`, {
+          bugsnagClient.notify(result.updateState.error, {
             severity: 'warning',
           });
         }
         // Otherwise, ignore.
       } else {
-        const { name, message } = result.updateState.error;
-        bugsnagClient.notify(`${name}: ${message}`, {
-          severity: 'error',
-        });
+        bugsnagClient.notify(result.updateState.error, { severity: 'error' });
       }
     }
     wasUpdateInError = result.updateState.state === 'error';
