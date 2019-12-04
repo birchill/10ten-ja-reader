@@ -1,6 +1,6 @@
 {
   "name": "rikaichamp",
-  "version": "0.1.7",
+  "version": "0.1.8-pre1",
   "description": "Translate Japanese by hovering over words.",
   "scripts": {
     "build": "webpack",
