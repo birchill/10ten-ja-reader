@@ -1,3 +1,7 @@
+## 0.1.8 (2019-12-04)
+
+* Make failed downloads resume from most recent failure.
+
 ## 0.1.7 (2019-12-03)
 
 * Improve error handling and reporting for download errors.
