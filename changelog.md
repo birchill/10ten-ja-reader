@@ -1,3 +1,7 @@
+## 0.1.9 (not yet released)
+
+* Switch to using idb instead of dexie.
+
 ## 0.1.8 (2019-12-04)
 
 * Make failed downloads resume from most recent failure.

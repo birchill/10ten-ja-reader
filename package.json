@@ -1,6 +1,6 @@
 {
   "name": "rikaichamp",
-  "version": "0.1.8",
+  "version": "0.1.9-pre1",
   "description": "Translate Japanese by hovering over words.",
   "scripts": {
     "build": "webpack",
@@ -63,7 +63,7 @@
     "webpack-preprocessor": "^0.1.12"
   },
   "dependencies": {
-    "@birchill/hikibiki-data": "^1.4.1",
+    "@birchill/hikibiki-data": "^1.5.1",
     "@bugsnag/js": "^6.4.3",
     "husky": "^3.1.0",
     "lint-staged": "^9.5.0",

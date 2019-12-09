@@ -158,13 +158,13 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@birchill/hikibiki-data@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-1.4.1.tgz#d2f751b47e4c9aa391daa667c82a62e7ede9defd"
-  integrity sha512-aFgdKmfaPENU51I3urRr/x4FeD0YrsaSzQXbhbEniZtVsp8r6rGBF7lD+AiEm0iTfTsE5ECh1j4FHSf4tZpRwA==
+"@birchill/hikibiki-data@^1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-1.5.1.tgz#6ca9aa4551d1f2a1f1c8e245ea1d2ea6688fccdc"
+  integrity sha512-zfAhiIzOvdhWNUJn3WZy5efMLfLaKd6tH02yaIRuYQc8NXlJuJ0yEC+va8DJIyxFDqUWtKNRrOC5OVrRY0RDug==
   dependencies:
     "@birchill/json-equalish" "^1.0.1"
-    dexie "^3.0.0-beta.1"
+    idb "^4.0.5"
 
 "@birchill/json-equalish@^1.0.1":
   version "1.0.1"
@@ -3175,11 +3175,6 @@ detect-newline@^2.1.0:
   resolved "https://registry.yarnpkg.com/detect-newline/-/detect-newline-2.1.0.tgz#f41f1c10be4b00e87b5f13da680759f2c5bfd3e2"
   integrity sha1-9B8cEL5LAOh7XxPaaAdZ8sW/0+I=
 
-dexie@^3.0.0-beta.1:
-  version "3.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.0.0-beta.1.tgz#fcd75ca08c8be2c34b25b563b7617d9cf97a3c96"
-  integrity sha512-gT65LlB31mVMsGFoTQyS+A/osPQMvICzwy/kySVcabNnGYNU0RVtx8TR5tCWm6qvF76QBt/NNcwS4Iju4tRCYw==
-
 di@^0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/di/-/di-0.0.1.tgz#806649326ceaa7caa3306d75d985ea2748ba913c"
@@ -5228,6 +5223,11 @@ iconv-lite@^0.5.0:
   integrity sha512-NnEhI9hIEKHOzJ4f697DMz9IQEXr/MMJ5w64vN2/4Ai+wRnvV7SBrL0KLoRlwaKVghOc7LQ5YkPLuX146b6Ydw==
   dependencies:
     safer-buffer ">= 2.1.2 < 3"
+
+idb@^4.0.5:
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/idb/-/idb-4.0.5.tgz#23b930fbb0abce391e939c35b7b31a669e74041f"
+  integrity sha512-P+Fk9HT2h1DhXoE1YNK183SY+CRh2GHNh28de94sGwhe0bUA75JJeVJWt3SenE5p0BXK7maflIq29dl6UZHrFw==
 
 ieee754@^1.1.4:
   version "1.1.13"
