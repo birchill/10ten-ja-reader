@@ -1,3 +1,7 @@
+## 0.1.11 (2019-12-10)
+
+* Add even more logging
+
 ## 0.1.10 (2019-12-10)
 
 * Add some more logging

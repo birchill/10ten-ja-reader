@@ -322,7 +322,9 @@ function initKanjiDb(): KanjiDatabase {
         }
         // Otherwise, ignore.
       } else {
-        bugsnagClient.notify(result.updateState.error, { severity: 'error' });
+        bugsnagClient.notify(result.updateState.error || '(Empty error)', {
+          severity: 'error',
+        });
       }
     }
     wasUpdateInError = result.updateState.state === 'error';
