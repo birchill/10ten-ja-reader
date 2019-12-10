@@ -1,6 +1,7 @@
 ## 0.1.9 (not yet released)
 
 * Switch to using idb instead of dexie.
+* Update word and name dictionaries to 2019-12-09 snapshot.
 
 ## 0.1.8 (2019-12-04)
 
