@@ -1,4 +1,8 @@
-## 0.1.9 (not yet released)
+## 0.1.10 (2019-12-10)
+
+* Add some more logging
+
+## 0.1.9 (2019-12-10)
 
 * Switch to using idb instead of dexie.
 * Update word and name dictionaries to 2019-12-09 snapshot.
