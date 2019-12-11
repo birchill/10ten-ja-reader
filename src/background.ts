@@ -281,14 +281,6 @@ function initKanjiDb(): KanjiDatabase {
     if (!wasDbUnavailable && result.state === DatabaseState.Unavailable) {
       const err = new Error('Database unavailable');
       err.name = 'DatabaseUnavailableError';
-      try {
-        const hasUnlimitedStorage = await browser.permissions.contains({
-          permissions: ['unlimitedStorage'],
-        });
-        console.log(`hasUnlimitedStorage: ${hasUnlimitedStorage}`);
-      } catch (e) {
-        console.log('Failed to query permissions');
-      }
       bugsnagClient.notify(err, { severity: 'info' });
     }
     wasDbUnavailable = result.state === DatabaseState.Unavailable;
