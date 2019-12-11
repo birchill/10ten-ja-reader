@@ -1,6 +1,7 @@
 ## 0.1.12 (not yet released)
 
 * Avoid reporting update errors twice
+* Try to make updating more robust
 
 ## 0.1.11 (2019-12-10)
 
