@@ -1,3 +1,7 @@
+## 0.1.12 (not yet released)
+
+* Avoid reporting update errors twice
+
 ## 0.1.11 (2019-12-10)
 
 * Add even more logging

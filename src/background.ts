@@ -329,6 +329,9 @@ function initKanjiDb(): KanjiDatabase {
     }
     wasUpdateInError = result.updateState.state === 'error';
 
+    // TODO: Update the lastUpdateKanjiDb value here when we successfully
+    // complete an update (and not in updateKanjiDb).
+
     updateBrowserAction({
       popupStyle: config.popupStyle,
       enabled,
@@ -467,15 +470,17 @@ async function updateKanjiDb() {
     });
     bugsnagClient.leaveBreadcrumb('Successfully updated kanji database');
   } catch (e) {
+    // No need to report these errors since they will be reported when we
+    // get notified via the onChange callback.
     if (e?.name === 'DownloadError') {
-      // Ignore download errors since we will automatically retry these.
-      return;
+      bugsnagClient.leaveBreadcrumb(
+        'Aborting updating kanji database due to DownloadError'
+      );
+    } else {
+      bugsnagClient.leaveBreadcrumb(
+        'Aborting updating kanji database due to other error'
+      );
     }
-
-    console.log(e);
-    bugsnagClient.notify(e || '(Error updating kanji database)', {
-      severity: 'error',
-    });
   }
 }
 
