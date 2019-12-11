@@ -429,7 +429,7 @@ export class Config {
   }
 
   set dictLang(value: DbLanguageId) {
-    if (this._settings.dictLang === value) {
+    if (this._settings.dictLang && this._settings.dictLang === value) {
       return;
     }
 
