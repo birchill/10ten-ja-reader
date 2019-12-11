@@ -273,9 +273,9 @@ let kanjiDb = initKanjiDb();
 function initKanjiDb(): KanjiDatabase {
   const result = new KanjiDatabase();
   let wasDbInError: boolean = false;
-  let wasUpdateInError: boolean = false;
+  let prevUpdateState: string = '';
 
-  result.onChange = () => {
+  result.onChange = async () => {
     // Report any new errors
 
     if (!wasDbInError && result.state === DatabaseState.Unavailable) {
@@ -285,7 +285,7 @@ function initKanjiDb(): KanjiDatabase {
     }
     wasDbInError = result.state === DatabaseState.Unavailable;
 
-    if (!wasUpdateInError && result.updateState.state === 'error') {
+    if (prevUpdateState !== 'error' && result.updateState.state === 'error') {
       // Leave a breadcrumb for all download errors
       if (
         result.updateState.error?.name === 'DownloadError' &&
@@ -327,10 +327,22 @@ function initKanjiDb(): KanjiDatabase {
         });
       }
     }
-    wasUpdateInError = result.updateState.state === 'error';
 
-    // TODO: Update the lastUpdateKanjiDb value here when we successfully
-    // complete an update (and not in updateKanjiDb).
+    // If we succeeded in updating the database, update the last update time.
+    // Note that since the update might happen asynchronously, we need to do
+    // this here and not just in updateKanjiDb (although we also need to do it
+    // there in case the update is a no-op).
+    if (
+      prevUpdateState !== 'updatingdb' &&
+      result.updateState.state === 'idle'
+    ) {
+      await browser.storage.local.set({
+        lastUpdateKanjiDb: new Date().getTime(),
+      });
+      bugsnagClient.leaveBreadcrumb('Successfully updated kanji database');
+    }
+
+    prevUpdateState = result.updateState.state;
 
     updateBrowserAction({
       popupStyle: config.popupStyle,
