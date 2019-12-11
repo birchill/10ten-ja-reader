@@ -272,18 +272,26 @@ let kanjiDb = initKanjiDb();
 
 function initKanjiDb(): KanjiDatabase {
   const result = new KanjiDatabase();
-  let wasDbInError: boolean = false;
+  let wasDbUnavailable: boolean = false;
   let prevUpdateState: string = '';
 
   result.onChange = async () => {
     // Report any new errors
 
-    if (!wasDbInError && result.state === DatabaseState.Unavailable) {
+    if (!wasDbUnavailable && result.state === DatabaseState.Unavailable) {
       const err = new Error('Database unavailable');
       err.name = 'DatabaseUnavailableError';
+      try {
+        const hasUnlimitedStorage = await browser.permissions.contains({
+          permissions: ['unlimitedStorage'],
+        });
+        console.log(`hasUnlimitedStorage: ${hasUnlimitedStorage}`);
+      } catch (e) {
+        console.log('Failed to query permissions');
+      }
       bugsnagClient.notify(err, { severity: 'info' });
     }
-    wasDbInError = result.state === DatabaseState.Unavailable;
+    wasDbUnavailable = result.state === DatabaseState.Unavailable;
 
     if (prevUpdateState !== 'error' && result.updateState.state === 'error') {
       // Leave a breadcrumb for all download errors
