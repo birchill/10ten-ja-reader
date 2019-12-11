@@ -510,6 +510,9 @@ browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
         if (kanjiDb.state === DatabaseState.Unavailable) {
           kanjiDb.destroy().then(() => {
             kanjiDb = initKanjiDb();
+            bugsnagClient.leaveBreadcrumb(
+              'Manually triggering database update'
+            );
             maybeDownloadData();
           });
         } else {
@@ -642,7 +645,14 @@ async function enableTab(tab: browser.tabs.Tab) {
     // Trigger download but don't wait on it. We don't block on this because
     // we currently only download the kanji data and we don't need it to be
     // downloaded before we can do something useful.
-    maybeDownloadData();
+    bugsnagClient.leaveBreadcrumb(
+      'Triggering database update from enableTab...'
+    );
+    maybeDownloadData().then(() => {
+      bugsnagClient.leaveBreadcrumb(
+        'Finished triggering database update from enableTab'
+      );
+    });
 
     // Send message to current tab to add listeners and create stuff
     browser.tabs
@@ -932,9 +942,23 @@ function onTabSelect(tabId: number) {
   });
 }
 
-browser.runtime.onInstalled.addListener(maybeDownloadData);
+browser.runtime.onInstalled.addListener(async () => {
+  bugsnagClient.leaveBreadcrumb(
+    'Running maybeDownloadData from onInstalled...'
+  );
+  await maybeDownloadData();
+  bugsnagClient.leaveBreadcrumb(
+    'Finished running maybeDownloadData from onInstalled'
+  );
+});
 
-browser.runtime.onStartup.addListener(maybeDownloadData);
+browser.runtime.onStartup.addListener(async () => {
+  bugsnagClient.leaveBreadcrumb('Running maybeDownloadData from onStartup...');
+  await maybeDownloadData();
+  bugsnagClient.leaveBreadcrumb(
+    'Finished running maybeDownloadData from onStartup'
+  );
+});
 
 // See if we were enabled on the last run
 //
