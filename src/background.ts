@@ -336,9 +336,16 @@ function initKanjiDb(): KanjiDatabase {
       prevUpdateState !== 'updatingdb' &&
       result.updateState.state === 'idle'
     ) {
-      await browser.storage.local.set({
-        lastUpdateKanjiDb: new Date().getTime(),
-      });
+      await browser.storage.local
+        .set({
+          lastUpdateKanjiDb: new Date().getTime(),
+        })
+        .catch(() => {
+          bugsnagClient.notify(
+            'Failed to update stored value of lastUpdateKanjiDb',
+            { severity: 'warning' }
+          );
+        });
       bugsnagClient.leaveBreadcrumb('Successfully updated kanji database');
     }
 
@@ -385,9 +392,20 @@ async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
   // only be set if we did a check this session. It is _not_ a stored value.
   // So, if it is not set, use the value we store instead.
   if (message.updateState.lastCheck === null) {
-    const getResult = await browser.storage.local.get('lastUpdateKanjiDb');
-    if (typeof getResult.lastUpdateKanjiDb === 'number') {
-      message.updateState.lastCheck = new Date(getResult.lastUpdateKanjiDb);
+    try {
+      const getResult = await browser.storage.local.get('lastUpdateKanjiDb');
+      if (typeof getResult.lastUpdateKanjiDb === 'number') {
+        message.updateState.lastCheck = new Date(getResult.lastUpdateKanjiDb);
+      }
+    } catch (e) {
+      // Extension storage can sometimes randomly fail with 'An unexpected error
+      // occurred'. Ignore, but log it.
+      bugsnagClient.notify(
+        'Failed to fetch stored value of lastUpdateKanjiDb',
+        {
+          severity: 'warning',
+        }
+      );
     }
   }
 
@@ -477,9 +495,19 @@ async function updateKanjiDb() {
   try {
     bugsnagClient.leaveBreadcrumb('Updating kanji database...');
     await kanjiDb.update();
-    await browser.storage.local.set({
-      lastUpdateKanjiDb: new Date().getTime(),
-    });
+
+    // Extension storage can randomly fail with "An unexpected error occurred".
+    try {
+      await browser.storage.local.set({
+        lastUpdateKanjiDb: new Date().getTime(),
+      });
+    } catch (e) {
+      bugsnagClient.notify(
+        'Failed to update stored value of lastUpdateKanjiDb',
+        { severity: 'warning' }
+      );
+    }
+
     bugsnagClient.leaveBreadcrumb('Successfully updated kanji database');
   } catch (e) {
     // No need to report these errors since they will be reported when we
@@ -666,7 +694,11 @@ async function enableTab(tab: browser.tabs.Tab) {
          * connection failures here. */
       });
     enabled = true;
-    browser.storage.local.set({ enabled: true });
+    browser.storage.local.set({ enabled: true }).catch(() => {
+      bugsnagClient.notify('Failed to update stored value of enabled', {
+        severity: 'warning',
+      });
+    });
 
     updateBrowserAction({
       popupStyle: config.popupStyle,
@@ -966,7 +998,16 @@ browser.runtime.onStartup.addListener(async () => {
 // We don't do this in onStartup because that won't run when the add-on is
 // reloaded and we want to re-enable ourselves in that case too.
 (async function() {
-  const getEnabledResult = await browser.storage.local.get('enabled');
+  let getEnabledResult;
+  try {
+    getEnabledResult = await browser.storage.local.get('enabled');
+  } catch (e) {
+    // If extension storage fails. Just ignore.
+    bugsnagClient.notify('Failed to fetch stored value of enabled', {
+      severity: 'warning',
+    });
+    return;
+  }
   const wasEnabled =
     getEnabledResult &&
     getEnabledResult.hasOwnProperty('enabled') &&

@@ -1,3 +1,7 @@
+## 0.1.14 (2019-12-12)
+
+* Add more robust handling of extension storage
+
 ## 0.1.13 (2019-12-12)
 
 * Yet more database logging
