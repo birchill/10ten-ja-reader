@@ -489,6 +489,7 @@ async function updateKanjiDb() {
         'Aborting updating kanji database due to DownloadError'
       );
     } else {
+      console.log(e);
       bugsnagClient.leaveBreadcrumb(
         'Aborting updating kanji database due to other error'
       );
