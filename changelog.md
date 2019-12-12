@@ -1,6 +1,7 @@
 ## 0.1.14 (2019-12-12)
 
 * Add more robust handling of extension storage
+* Make browser action warning less noisy
 
 ## 0.1.13 (2019-12-12)
 
