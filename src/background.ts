@@ -464,7 +464,7 @@ async function maybeDownloadData() {
     }
   }
 
-  updateKanjiDb();
+  await updateKanjiDb();
 }
 
 async function updateKanjiDb() {
