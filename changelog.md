@@ -1,3 +1,7 @@
+## 0.1.13 (2019-12-12)
+
+* Yet more database logging
+
 ## 0.1.12 (2019-12-11)
 
 * Avoid reporting update errors twice

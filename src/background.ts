@@ -271,7 +271,7 @@ config.ready.then(() => {
 let kanjiDb = initKanjiDb();
 
 function initKanjiDb(): KanjiDatabase {
-  const result = new KanjiDatabase();
+  const result = new KanjiDatabase({ verbose: true });
   let wasDbUnavailable: boolean = false;
   let prevUpdateState: string = '';
 
