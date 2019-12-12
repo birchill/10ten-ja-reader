@@ -1,4 +1,4 @@
-import { UpdateState } from '@birchill/hikibiki-data';
+import { UpdateState, DatabaseState } from '@birchill/hikibiki-data';
 
 // We will eventually drop this once we move everything to IDB
 export const enum FlatFileDictState {
@@ -11,7 +11,7 @@ interface BrowserActionState {
   popupStyle: string;
   enabled: boolean;
   flatFileDictState: FlatFileDictState;
-  kanjiDb: { updateState: UpdateState };
+  kanjiDb: { state: DatabaseState; updateState: UpdateState };
 }
 
 export function updateBrowserAction({
@@ -89,7 +89,10 @@ export function updateBrowserAction({
     });
 
   // Add a warning overlay and update the string if there was an error
-  if (kanjiDb.updateState.state === 'error') {
+  if (
+    kanjiDb.updateState.state === 'error' &&
+    kanjiDb.state !== DatabaseState.Ok
+  ) {
     browser.browserAction.setBadgeText({ text: '!' });
     browser.browserAction.setBadgeBackgroundColor({ color: 'yellow' });
     titleStringId = 'command_toggle_update_error';
