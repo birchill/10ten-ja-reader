@@ -1,4 +1,4 @@
-## 0.1.15 (not yet released)
+## 0.1.15 (2019-12-23)
 
 * Made database handling (hopefully) more robust
 
