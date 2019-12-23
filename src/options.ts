@@ -673,12 +673,12 @@ function updateDatabaseBlurb(evt: DbStateUpdatedMessage) {
 }
 
 function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
-  const { databaseState, updateState, versions } = evt;
+  const { databaseState, updateState } = evt;
 
-  const status = document.querySelector('.db-summary-status')!;
-  empty(status);
-  status.classList.remove('-error');
-  status.classList.remove('-warning');
+  const statusElem = document.querySelector('.db-summary-status')!;
+  empty(statusElem);
+  statusElem.classList.remove('-error');
+  statusElem.classList.remove('-warning');
 
   // Fill out the info part
 
@@ -686,36 +686,9 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
   infoDiv.classList.add('db-summary-info');
 
   switch (updateState.state) {
-    case 'idle': {
-      if (databaseState === DatabaseState.Empty) {
-        infoDiv.append(browser.i18n.getMessage('options_no_database'));
-      } else if (databaseState === DatabaseState.Unavailable) {
-        status.classList.add('-error');
-        infoDiv.append(browser.i18n.getMessage('options_database_unavailable'));
-      } else {
-        infoDiv.classList.add('-italic');
-        const { major, minor, patch } = versions.kanjidb!;
-
-        const versionNumberDiv = document.createElement('div');
-        const versionString = browser.i18n.getMessage(
-          'options_kanji_db_version',
-          `${major}.${minor}.${patch}`
-        );
-        versionNumberDiv.append(versionString);
-        infoDiv.append(versionNumberDiv);
-
-        if (updateState.lastCheck) {
-          const lastCheckDiv = document.createElement('div');
-          const lastCheckString = browser.i18n.getMessage(
-            'options_last_database_check',
-            formatDate(updateState.lastCheck)
-          );
-          lastCheckDiv.append(lastCheckString);
-          infoDiv.append(lastCheckDiv);
-        }
-      }
+    case 'idle':
+      updateIdleStateSummary(evt, statusElem, infoDiv);
       break;
-    }
 
     case 'checking': {
       infoDiv.append(browser.i18n.getMessage('options_checking_for_updates'));
@@ -762,37 +735,9 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
       infoDiv.append(labelElem);
       break;
     }
-
-    case 'error': {
-      status.classList.add('-error');
-
-      const messageDiv = document.createElement('div');
-      const errorMessage = browser.i18n.getMessage(
-        'options_db_update_error',
-        updateState.error.message
-      );
-      messageDiv.append(errorMessage);
-      infoDiv.append(messageDiv);
-
-      if (updateState.nextRetry) {
-        const nextRetryDiv = document.createElement('div');
-        const nextRetryString = browser.i18n.getMessage(
-          'options_db_update_next_retry',
-          formatDate(updateState.nextRetry)
-        );
-        nextRetryDiv.append(nextRetryString);
-        infoDiv.append(nextRetryDiv);
-      }
-      break;
-    }
-
-    case 'offline':
-      status.classList.add('-warning');
-      infoDiv.append(browser.i18n.getMessage('options_offline_explanation'));
-      break;
   }
 
-  status.append(infoDiv);
+  statusElem.append(infoDiv);
 
   // Add the action button info if any
 
@@ -800,8 +745,9 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
   buttonDiv.classList.add('db-summary-button');
 
   switch (updateState.state) {
-    case 'idle':
-    case 'error': {
+    case 'idle': {
+      // We should probably skip this when we are offline, but for now it
+      // doesn't really matter.
       const updateButton = document.createElement('button');
       updateButton.classList.add('browser-style');
       updateButton.setAttribute('type', 'button');
@@ -835,7 +781,76 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
     }
   }
 
-  status.append(buttonDiv);
+  statusElem.append(buttonDiv);
+}
+
+function updateIdleStateSummary(
+  evt: DbStateUpdatedMessage,
+  statusElem: Element,
+  infoDiv: HTMLDivElement
+) {
+  const { databaseState, updateState, updateError } = evt;
+
+  if (!!updateError && updateError.name === 'OfflineError') {
+    statusElem.classList.add('-warning');
+    infoDiv.append(browser.i18n.getMessage('options_offline_explanation'));
+    return;
+  }
+
+  if (!!updateError && updateError.name !== 'AbortError') {
+    statusElem.classList.add('-error');
+
+    const messageDiv = document.createElement('div');
+    const errorMessage = browser.i18n.getMessage(
+      'options_db_update_error',
+      updateError.message
+    );
+    messageDiv.append(errorMessage);
+    infoDiv.append(messageDiv);
+
+    if (updateError.nextRetry) {
+      const nextRetryDiv = document.createElement('div');
+      const nextRetryString = browser.i18n.getMessage(
+        'options_db_update_next_retry',
+        formatDate(updateError.nextRetry)
+      );
+      nextRetryDiv.append(nextRetryString);
+      infoDiv.append(nextRetryDiv);
+    }
+    return;
+  }
+
+  if (databaseState === DatabaseState.Empty) {
+    infoDiv.append(browser.i18n.getMessage('options_no_database'));
+    return;
+  }
+
+  if (databaseState === DatabaseState.Unavailable) {
+    statusElem.classList.add('-error');
+    infoDiv.append(browser.i18n.getMessage('options_database_unavailable'));
+    return;
+  }
+
+  infoDiv.classList.add('-italic');
+  const { major, minor, patch } = evt.versions.kanjidb!;
+
+  const versionNumberDiv = document.createElement('div');
+  const versionString = browser.i18n.getMessage(
+    'options_kanji_db_version',
+    `${major}.${minor}.${patch}`
+  );
+  versionNumberDiv.append(versionString);
+  infoDiv.append(versionNumberDiv);
+
+  if (updateState.lastCheck) {
+    const lastCheckDiv = document.createElement('div');
+    const lastCheckString = browser.i18n.getMessage(
+      'options_last_database_check',
+      formatDate(updateState.lastCheck)
+    );
+    lastCheckDiv.append(lastCheckString);
+    infoDiv.append(lastCheckDiv);
+  }
 }
 
 function empty(elem: Element) {

@@ -2,7 +2,7 @@ import {
   DatabaseState,
   DatabaseVersion,
   UpdateState,
-  toCloneableUpdateState,
+  UpdateErrorState,
 } from '@birchill/hikibiki-data';
 
 export interface ResolvedDbVersions {
@@ -13,15 +13,18 @@ export interface ResolvedDbVersions {
 export const notifyDbStateUpdated = ({
   databaseState,
   updateState,
+  updateError,
   versions,
 }: {
   databaseState: DatabaseState;
   updateState: UpdateState;
+  updateError?: UpdateErrorState;
   versions: ResolvedDbVersions;
 }) => ({
   type: <const>'dbstateupdated',
   databaseState,
-  updateState: toCloneableUpdateState(updateState),
+  updateState,
+  updateError,
   versions,
 });
 

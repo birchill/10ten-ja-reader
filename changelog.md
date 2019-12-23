@@ -1,3 +1,7 @@
+## 0.1.15 (not yet released)
+
+* Made database handling (hopefully) more robust
+
 ## 0.1.14 (2019-12-12)
 
 * Add more robust handling of extension storage

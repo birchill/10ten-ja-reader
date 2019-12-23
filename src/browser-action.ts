@@ -1,4 +1,8 @@
-import { UpdateState, DatabaseState } from '@birchill/hikibiki-data';
+import {
+  DatabaseState,
+  UpdateErrorState,
+  UpdateState,
+} from '@birchill/hikibiki-data';
 
 // We will eventually drop this once we move everything to IDB
 export const enum FlatFileDictState {
@@ -12,6 +16,7 @@ interface BrowserActionState {
   enabled: boolean;
   flatFileDictState: FlatFileDictState;
   kanjiDb: { state: DatabaseState; updateState: UpdateState };
+  updateError?: UpdateErrorState;
 }
 
 export function updateBrowserAction({
@@ -19,6 +24,7 @@ export function updateBrowserAction({
   enabled,
   flatFileDictState,
   kanjiDb,
+  updateError,
 }: BrowserActionState) {
   let iconFilename = 'disabled';
   let titleStringId = 'command_toggle_disabled';
@@ -88,10 +94,12 @@ export function updateBrowserAction({
       });
     });
 
-  // Add a warning overlay and update the string if there was an error
+  // Add a warning overlay and update the string if there was a fatal
+  // update error.
   if (
-    kanjiDb.updateState.state === 'error' &&
-    kanjiDb.state !== DatabaseState.Ok
+    kanjiDb.state !== DatabaseState.Ok &&
+    !!updateError &&
+    updateError.name !== 'AbortError'
   ) {
     browser.browserAction.setBadgeText({ text: '!' });
     browser.browserAction.setBadgeBackgroundColor({ color: 'yellow' });

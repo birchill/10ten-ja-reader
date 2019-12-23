@@ -54,6 +54,10 @@ import {
   DatabaseState,
   KanjiDatabase,
   KanjiResult,
+  toUpdateErrorState,
+  UpdateErrorState,
+  updateWithRetry,
+  cancelUpdateWithRetry,
 } from '@birchill/hikibiki-data';
 
 import { updateBrowserAction, FlatFileDictState } from './browser-action';
@@ -64,6 +68,7 @@ import {
   DbListenerMessage,
   ResolvedDbVersions,
 } from './db-listener-messages';
+import { debounce } from './debounce';
 
 //
 // Minimum amount of time to wait before checking for database updates.
@@ -159,6 +164,7 @@ config.addChangeListener(changes => {
       enabled: true,
       flatFileDictState,
       kanjiDb,
+      updateError: lastUpdateError,
     });
   }
 
@@ -273,11 +279,8 @@ let kanjiDb = initKanjiDb();
 function initKanjiDb(): KanjiDatabase {
   const result = new KanjiDatabase({ verbose: true });
   let wasDbUnavailable: boolean = false;
-  let prevUpdateState: string = '';
 
-  result.onChange = async () => {
-    // Report any new errors
-
+  result.addChangeListener(async () => {
     if (!wasDbUnavailable && result.state === DatabaseState.Unavailable) {
       const err = new Error('Database unavailable');
       err.name = 'DatabaseUnavailableError';
@@ -285,81 +288,8 @@ function initKanjiDb(): KanjiDatabase {
     }
     wasDbUnavailable = result.state === DatabaseState.Unavailable;
 
-    if (prevUpdateState !== 'error' && result.updateState.state === 'error') {
-      // Leave a breadcrumb for all download errors
-      if (
-        result.updateState.error?.name === 'DownloadError' &&
-        result.updateState.retryIntervalMs
-      ) {
-        bugsnagClient.leaveBreadcrumb(
-          `Download error: ${result.updateState.error.message}.` +
-            ` Retrying in ${result.updateState.retryIntervalMs}ms.`
-        );
-      }
-
-      // We don't want to report all download errors since the auto-retry
-      // behavior will mean we get too many. Also, we don't care about
-      // intermittent failures for users on flaky network connections.
-      //
-      // However, if a lot of clients are failing multiple times to fetch
-      // a particular resource, we want to know.
-      //
-      // The auto-retry behavior is controlled by the hikibiki-data package
-      // but we happen to know that after each failure it doubles the interval
-      // up to a certain point. So if we simply log the download error where the
-      // retry interval is between 1min and 2min that should mean we only report
-      // one error per failed resource.
-      if (result.updateState.error?.name === 'DownloadError') {
-        const { retryIntervalMs } = result.updateState;
-        if (
-          retryIntervalMs &&
-          retryIntervalMs >= 60 * 1000 &&
-          retryIntervalMs < 120 * 1000
-        ) {
-          bugsnagClient.notify(result.updateState.error, {
-            severity: 'warning',
-          });
-        }
-        // Otherwise, ignore.
-      } else {
-        bugsnagClient.notify(result.updateState.error || '(Empty error)', {
-          severity: 'error',
-        });
-      }
-    }
-
-    // If we succeeded in updating the database, update the last update time.
-    // Note that since the update might happen asynchronously, we need to do
-    // this here and not just in updateKanjiDb (although we also need to do it
-    // there in case the update is a no-op).
-    if (
-      prevUpdateState !== 'updatingdb' &&
-      result.updateState.state === 'idle'
-    ) {
-      await browser.storage.local
-        .set({
-          lastUpdateKanjiDb: new Date().getTime(),
-        })
-        .catch(() => {
-          bugsnagClient.notify(
-            'Failed to update stored value of lastUpdateKanjiDb',
-            { severity: 'warning' }
-          );
-        });
-      bugsnagClient.leaveBreadcrumb('Successfully updated kanji database');
-    }
-
-    prevUpdateState = result.updateState.state;
-
-    updateBrowserAction({
-      popupStyle: config.popupStyle,
-      enabled,
-      flatFileDictState,
-      kanjiDb: result,
-    });
-
-    notifyDbListeners();
-  };
+    updateDbStatus();
+  });
 
   result.onWarning = (message: string) => {
     bugsnagClient.notify(message, { severity: 'warning' });
@@ -385,6 +315,7 @@ async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
   const message = notifyDbStateUpdated({
     databaseState: kanjiDb.state,
     updateState: kanjiDb.updateState,
+    updateError: lastUpdateError,
     versions: kanjiDb.dbVersions as ResolvedDbVersions,
   });
 
@@ -425,6 +356,20 @@ async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
     }
   }
 }
+
+// Debounce notifications since often we'll get an notification that the update
+// state has been updated quickly followed by a call to updateWithRetry's
+// error callback providing the latest error.
+const updateDbStatus = debounce(async () => {
+  await notifyDbListeners();
+  updateBrowserAction({
+    popupStyle: config.popupStyle,
+    enabled,
+    flatFileDictState,
+    kanjiDb,
+    updateError: lastUpdateError,
+  });
+}, 0);
 
 async function maybeDownloadData() {
   try {
@@ -485,44 +430,67 @@ async function maybeDownloadData() {
   await updateKanjiDb();
 }
 
-async function updateKanjiDb() {
+let lastUpdateError: UpdateErrorState | undefined;
+
+async function updateKanjiDb({
+  forceUpdate = false,
+}: { forceUpdate?: boolean } = {}) {
   await kanjiDb.ready;
 
   if (kanjiDb.state === DatabaseState.Unavailable) {
     return;
   }
 
-  try {
-    bugsnagClient.leaveBreadcrumb('Updating kanji database...');
-    await kanjiDb.update();
+  updateWithRetry({
+    db: kanjiDb,
+    forceUpdate,
+    onUpdateComplete: async () => {
+      bugsnagClient.leaveBreadcrumb('Successfully updated kanji database');
 
-    // Extension storage can randomly fail with "An unexpected error occurred".
-    try {
-      await browser.storage.local.set({
-        lastUpdateKanjiDb: new Date().getTime(),
-      });
-    } catch (e) {
-      bugsnagClient.notify(
-        'Failed to update stored value of lastUpdateKanjiDb',
-        { severity: 'warning' }
-      );
-    }
+      lastUpdateError = undefined;
+      updateDbStatus();
 
-    bugsnagClient.leaveBreadcrumb('Successfully updated kanji database');
-  } catch (e) {
-    // No need to report these errors since they will be reported when we
-    // get notified via the onChange callback.
-    if (e?.name === 'DownloadError') {
-      bugsnagClient.leaveBreadcrumb(
-        'Aborting updating kanji database due to DownloadError'
-      );
-    } else {
-      console.log(e);
-      bugsnagClient.leaveBreadcrumb(
-        'Aborting updating kanji database due to other error'
-      );
-    }
-  }
+      // Extension storage can randomly fail with "An unexpected error occurred".
+      try {
+        await browser.storage.local.set({
+          lastUpdateKanjiDb: new Date().getTime(),
+        });
+      } catch (e) {
+        bugsnagClient.notify(
+          'Failed to update stored value of lastUpdateKanjiDb',
+          { severity: 'warning' }
+        );
+      }
+    },
+    onUpdateError: params => {
+      const { error, nextRetry, retryCount } = params;
+      if (nextRetry) {
+        const diffInMs = nextRetry.getTime() - Date.now();
+        bugsnagClient.leaveBreadcrumb(
+          `Kanji database update encountered ${error.name} error. Retrying in ${diffInMs}ms.`
+        );
+
+        // We don't want to report all download errors since the auto-retry
+        // behavior will mean we get too many. Also, we don't care about
+        // intermittent failures for users on flaky network connections.
+        //
+        // However, if a lot of clients are failing multiple times to fetch
+        // a particular resource, we want to know.
+        if (retryCount === 5) {
+          bugsnagClient.notify(error, { severity: 'warning' });
+        }
+      } else if (error.name !== 'AbortError' && error.name !== 'OfflineError') {
+        bugsnagClient.notify(error, { severity: 'error' });
+      } else {
+        bugsnagClient.leaveBreadcrumb(
+          `Kanji database update encountered ${error.name} error`
+        );
+      }
+
+      lastUpdateError = toUpdateErrorState(params);
+      updateDbStatus();
+    },
+  });
 }
 
 browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
@@ -545,13 +513,13 @@ browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
             maybeDownloadData();
           });
         } else {
-          updateKanjiDb();
+          updateKanjiDb({ forceUpdate: true });
         }
         break;
 
       case 'cancelupdatedb':
         bugsnagClient.leaveBreadcrumb('Manually canceling database update');
-        kanjiDb.cancelUpdate();
+        cancelUpdateWithRetry(kanjiDb);
         break;
 
       case 'deletedb':
@@ -662,6 +630,7 @@ async function enableTab(tab: browser.tabs.Tab) {
     enabled: true,
     flatFileDictState: FlatFileDictState.Loading,
     kanjiDb,
+    updateError: lastUpdateError,
   });
 
   if (menuId) {
@@ -705,6 +674,7 @@ async function enableTab(tab: browser.tabs.Tab) {
       enabled: true,
       flatFileDictState,
       kanjiDb,
+      updateError: lastUpdateError,
     });
   } catch (e) {
     bugsnagClient.notify(e || '(No error)', { severity: 'error' });
@@ -714,6 +684,7 @@ async function enableTab(tab: browser.tabs.Tab) {
       enabled: true,
       flatFileDictState,
       kanjiDb,
+      updateError: lastUpdateError,
     });
 
     // Reset internal state so we can try again
@@ -741,6 +712,7 @@ async function disableAll() {
     enabled,
     flatFileDictState,
     kanjiDb,
+    updateError: lastUpdateError,
   });
 
   if (menuId) {
