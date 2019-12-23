@@ -96,7 +96,7 @@ const bugsnagClient = bugsnag({
     // Due to Firefox bug 1561911
     // (https://bugzilla.mozilla.org/show_bug.cgi?id=1561911)
     // we can get spurious unhandledrejections when using streams.
-    // Until that bug is fixed, we filter them out here.
+    // Until the fix for that bug is in ESR, we filter them out here.
     if (
       report.errorClass === 'DownloadError' &&
       (report as any)._handledState?.unhandled
@@ -104,16 +104,20 @@ const bugsnagClient = bugsnag({
       return false;
     }
 
-    if (report.errorClass === 'DownloadError') {
-      if (
-        report.originalError &&
-        typeof report.originalError.url !== 'undefined'
-      ) {
-        // Group by URL and error code
-        report.groupingHash =
-          String(report.originalError.code) + report.originalError.url;
-        report.request.url = report.originalError.url;
-      }
+    if (
+      report.errorClass === 'DownloadError' &&
+      report.originalError &&
+      typeof report.originalError.url !== 'undefined'
+    ) {
+      // Group by URL and error code
+      report.groupingHash =
+        String(report.originalError.code) + report.originalError.url;
+      report.request.url = report.originalError.url;
+    }
+
+    if (report.errorClass === 'ExtensionStorageError' && report.originalError) {
+      const { key, action } = report.originalError;
+      report.groupingHash = `${action}:${key}`;
     }
 
     return true;
@@ -139,6 +143,31 @@ browser.management.getSelf().then(info => {
     (bugsnagClient.app as any).releaseStage = 'development';
   }
 });
+
+//
+// Define error type for better grouping
+//
+
+class ExtensionStorageError extends Error {
+  key: string;
+  action: 'set' | 'get';
+
+  constructor(
+    { key, action }: { key: string; action: 'set' | 'get' },
+    ...params: any[]
+  ) {
+    super(...params);
+    Object.setPrototypeOf(this, ExtensionStorageError.prototype);
+
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, ExtensionStorageError);
+    }
+
+    this.name = 'ExtensionStorageError';
+    this.key = key;
+    this.action = action;
+  }
+}
 
 //
 // Setup config
@@ -332,10 +361,8 @@ async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
       // Extension storage can sometimes randomly fail with 'An unexpected error
       // occurred'. Ignore, but log it.
       bugsnagClient.notify(
-        'Failed to fetch stored value of lastUpdateKanjiDb',
-        {
-          severity: 'warning',
-        }
+        new ExtensionStorageError({ key: 'lastUpdateKanjiDb', action: 'get' }),
+        { severity: 'warning' }
       );
     }
   }
@@ -457,7 +484,10 @@ async function updateKanjiDb({
         });
       } catch (e) {
         bugsnagClient.notify(
-          'Failed to update stored value of lastUpdateKanjiDb',
+          new ExtensionStorageError({
+            key: 'lastUpdateKanjiDb',
+            action: 'set',
+          }),
           { severity: 'warning' }
         );
       }
@@ -664,9 +694,10 @@ async function enableTab(tab: browser.tabs.Tab) {
       });
     enabled = true;
     browser.storage.local.set({ enabled: true }).catch(() => {
-      bugsnagClient.notify('Failed to update stored value of enabled', {
-        severity: 'warning',
-      });
+      bugsnagClient.notify(
+        new ExtensionStorageError({ key: 'enabled', action: 'set' }),
+        { severity: 'warning' }
+      );
     });
 
     updateBrowserAction({
@@ -975,9 +1006,10 @@ browser.runtime.onStartup.addListener(async () => {
     getEnabledResult = await browser.storage.local.get('enabled');
   } catch (e) {
     // If extension storage fails. Just ignore.
-    bugsnagClient.notify('Failed to fetch stored value of enabled', {
-      severity: 'warning',
-    });
+    bugsnagClient.notify(
+      new ExtensionStorageError({ key: 'enabled', action: 'get' }),
+      { severity: 'warning' }
+    );
     return;
   }
   const wasEnabled =
