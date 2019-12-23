@@ -90,7 +90,6 @@ const firefoxConfig = {
     new WebExtWebpackPlugin({
       firefox,
       firefoxProfile,
-      browserConsole: true,
       startUrl: ['tests/playground.html'],
       sourceDir: path.resolve(__dirname, 'dist-firefox'),
     }),
