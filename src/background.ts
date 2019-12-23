@@ -69,6 +69,7 @@ import {
   ResolvedDbVersions,
 } from './db-listener-messages';
 import { debounce } from './debounce';
+import { requestIdleCallbackPromise } from './request-idle-callback';
 
 //
 // Minimum amount of time to wait before checking for database updates.
@@ -303,28 +304,79 @@ config.ready.then(() => {
 // Kanji database
 //
 
-let kanjiDb = initKanjiDb();
+// We make sure this is always set to _something_ even if it is an unavailable
+// database.
+//
+// This ensures we don't need to constantly check if it set or not and saves us
+// having TWO different states representing an unavailable database. That is:
+//
+// a) typeof kanjiDb === 'undefined' OR
+// b) kanjiDb.state === DatabaseState.Unavailable
+//
+// By doing this we only ever need to check for (b) and that is also covered
+// by the kanjiDbInitialized Promise below which will reject for an unavailable
+// database.
+let kanjiDb: KanjiDatabase;
 
-function initKanjiDb(): KanjiDatabase {
-  const result = new KanjiDatabase({ verbose: true });
-  let wasDbUnavailable: boolean = false;
-
-  result.addChangeListener(async () => {
-    if (!wasDbUnavailable && result.state === DatabaseState.Unavailable) {
-      const err = new Error('Database unavailable');
-      err.name = 'DatabaseUnavailableError';
-      bugsnagClient.notify(err, { severity: 'info' });
-    }
-    wasDbUnavailable = result.state === DatabaseState.Unavailable;
-
-    updateDbStatus();
+// Debounce notifications since often we'll get a notification that the update
+// state has been updated quickly followed by a call to updateWithRetry's
+// error callback providing the latest error.
+const updateDbStatus = debounce(async () => {
+  await notifyDbListeners();
+  updateBrowserAction({
+    popupStyle: config.popupStyle,
+    enabled,
+    flatFileDictState,
+    kanjiDb,
+    updateError: lastUpdateError,
   });
+}, 0);
 
-  result.onWarning = (message: string) => {
-    bugsnagClient.notify(message, { severity: 'warning' });
-  };
+// This Promise will resolve once we have finished trying to open the database.
+// It will reject if the database is unavailable.
+let kanjiDbInitialized: Promise<KanjiDatabase>;
 
-  return result;
+initKanjiDb();
+
+function initKanjiDb() {
+  kanjiDbInitialized = new Promise(async (resolve, reject) => {
+    let retryCount = 0;
+    while (true) {
+      if (kanjiDb) {
+        try {
+          await kanjiDb.destroy();
+        } catch (e) {
+          console.log('Failed to destroy previous database');
+        }
+      }
+
+      kanjiDb = new KanjiDatabase({ verbose: true });
+
+      kanjiDb.addChangeListener(updateDbStatus);
+      kanjiDb.onWarning = (message: string) => {
+        bugsnagClient.notify(message, { severity: 'warning' });
+      };
+
+      try {
+        await kanjiDb.ready;
+        resolve(kanjiDb);
+        return;
+      } catch (e) {
+        if (retryCount >= 3) {
+          const err = new Error('Database unavailable');
+          err.name = 'DatabaseUnavailableError';
+          bugsnagClient.notify(err, { severity: 'info' });
+          reject(e);
+          return;
+        }
+        retryCount++;
+        console.log(
+          `Failed to open database. Retrying shortly (attempt: ${retryCount})...`
+        );
+        await requestIdleCallbackPromise({ timeout: 1000 });
+      }
+    }
+  });
 }
 
 const dbListeners: Array<browser.runtime.Port> = [];
@@ -384,32 +436,10 @@ async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
   }
 }
 
-// Debounce notifications since often we'll get an notification that the update
-// state has been updated quickly followed by a call to updateWithRetry's
-// error callback providing the latest error.
-const updateDbStatus = debounce(async () => {
-  await notifyDbListeners();
-  updateBrowserAction({
-    popupStyle: config.popupStyle,
-    enabled,
-    flatFileDictState,
-    kanjiDb,
-    updateError: lastUpdateError,
-  });
-}, 0);
-
 async function maybeDownloadData() {
   try {
-    await kanjiDb.ready;
-  } catch (e) {
-    console.error(e);
-    bugsnagClient.notify(e || '(Error initializing database)', {
-      severity: 'error',
-    });
-    return;
-  }
-
-  if (kanjiDb.state === DatabaseState.Unavailable) {
+    await kanjiDbInitialized;
+  } catch (_) {
     return;
   }
 
@@ -462,9 +492,9 @@ let lastUpdateError: UpdateErrorState | undefined;
 async function updateKanjiDb({
   forceUpdate = false,
 }: { forceUpdate?: boolean } = {}) {
-  await kanjiDb.ready;
-
-  if (kanjiDb.state === DatabaseState.Unavailable) {
+  try {
+    await kanjiDbInitialized;
+  } catch (_) {
     return;
   }
 
@@ -535,13 +565,17 @@ browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
     switch (evt.type) {
       case 'updatedb':
         if (kanjiDb.state === DatabaseState.Unavailable) {
-          kanjiDb.destroy().then(() => {
-            kanjiDb = initKanjiDb();
-            bugsnagClient.leaveBreadcrumb(
-              'Manually triggering database update'
-            );
-            maybeDownloadData();
-          });
+          initKanjiDb();
+          kanjiDbInitialized
+            .then(() => {
+              bugsnagClient.leaveBreadcrumb(
+                'Manually triggering database update'
+              );
+              maybeDownloadData();
+            })
+            .catch(() => {
+              /* Ignore */
+            });
         } else {
           updateKanjiDb({ forceUpdate: true });
         }
@@ -851,10 +885,13 @@ async function searchKanji(kanji: string): Promise<KanjiResult | null> {
     return null;
   }
 
-  if (
-    kanjiDb.state === DatabaseState.Empty ||
-    kanjiDb.state === DatabaseState.Unavailable
-  ) {
+  try {
+    await kanjiDbInitialized;
+  } catch (_) {
+    return null;
+  }
+
+  if (kanjiDb.state === DatabaseState.Empty) {
     return null;
   }
 
