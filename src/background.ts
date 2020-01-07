@@ -364,9 +364,9 @@ function initKanjiDb() {
         return;
       } catch (e) {
         if (retryCount >= 3) {
-          const err = new Error('Database unavailable');
-          err.name = 'DatabaseUnavailableError';
-          bugsnagClient.notify(err, { severity: 'info' });
+          console.log(
+            'Giving up opening database. Likely in permanent private browsing mode.'
+          );
           reject(e);
           return;
         }
