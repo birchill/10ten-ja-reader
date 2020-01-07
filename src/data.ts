@@ -305,7 +305,7 @@ export class Dictionary {
     };
 
     while (input.length > 0) {
-      const showInf: boolean = count != 0;
+      const showInflections: boolean = count != 0;
       // TODO: Split inflection handling out into a separate method
       const candidates: Array<CandidateWord> = deinflectWord
         ? deinflect(input)
@@ -412,7 +412,7 @@ export class Dictionary {
                       .join(' < ')
                   )
                   .join(' or ');
-              if (showInf) {
+              if (showInflections) {
                 reason += ` < ${input}`;
               }
             }
@@ -458,7 +458,10 @@ export class Dictionary {
       if (count >= maxResults) {
         break;
       }
-      input = input.substr(0, input.length - 1);
+
+      // Shorten input, but don't split a ようおん (e.g. きゃ).
+      const lengthToShorten = endsInYoon(input) ? 2 : 1;
+      input = input.substr(0, input.length - lengthToShorten);
     } // while input.length > 0
 
     if (!result.data.length) {
@@ -511,4 +514,29 @@ export class Dictionary {
     result.textLen -= text.length;
     return result;
   }
+}
+
+// きしちにひみりぎじびぴ
+const yoonStart = [
+  0x304d,
+  0x3057,
+  0x3061,
+  0x306b,
+  0x3072,
+  0x307f,
+  0x308a,
+  0x304e,
+  0x3058,
+  0x3073,
+  0x3074,
+];
+// ゃゅょ
+const smallY = [0x3083, 0x3085, 0x3087];
+
+function endsInYoon(input: string): boolean {
+  return (
+    input.length > 1 &&
+    smallY.includes(input.charCodeAt(input.length - 1)) &&
+    yoonStart.includes(input.charCodeAt(input.length - 2))
+  );
 }

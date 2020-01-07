@@ -142,6 +142,15 @@ describe('Dictionary', () => {
     expect(result!.matchLen).toBe(3);
   });
 
+  it('does not split yo-on', async () => {
+    const result = await sharedDict.wordSearch({ input: 'ローマじゃない' });
+    // This should NOT match ローマ字
+    expect(result!.matchLen).toBe(3);
+    expect(
+      result!.data.some(([item]) => item.indexOf('ローマ字') !== -1)
+    ).toBeFalsy();
+  });
+
   it('chooses the right de-inflection for potential and passives', async () => {
     // Ichidan/ru-verb -- られる ending could be potential or passive
     let result = await sharedDict.wordSearch({ input: '止められます' });

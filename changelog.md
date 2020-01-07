@@ -1,3 +1,9 @@
+## 0.1.16 (not yet released)
+
+* Made dictionary matching not split up yo-on like じゃ
+  ([#49](https://github.com/birtles/rikaichamp/issues/49))
+* Tightened up error reporting
+
 ## 0.1.15 (2019-12-23)
 
 * Made database handling (hopefully) more robust
