@@ -3,6 +3,7 @@
 * Made dictionary matching not split up yo-on like じゃ
   ([#49](https://github.com/birtles/rikaichamp/issues/49))
 * Tightened up error reporting
+* Updated word and name dictionaries to 2020-01-06 snapshot.
 
 ## 0.1.15 (2019-12-23)
 
