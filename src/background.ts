@@ -165,6 +165,7 @@ class ExtensionStorageError extends Error {
     }
 
     this.name = 'ExtensionStorageError';
+    this.message = `Failed to ${action} '${key}'`;
     this.key = key;
     this.action = action;
   }
