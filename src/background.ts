@@ -378,6 +378,11 @@ function initKanjiDb() {
       }
     }
   });
+
+  kanjiDbInitialized.catch(() => {
+    // Make sure we attach some sort of error handler to this just to avoid
+    // spurious unhandledrejections being reported.
+  });
 }
 
 const dbListeners: Array<browser.runtime.Port> = [];
