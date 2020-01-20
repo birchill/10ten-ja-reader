@@ -36,7 +36,7 @@
   "devDependencies": {
     "@actions/core": "^1.2.1",
     "@types/chai": "^4.2.7",
-    "@types/jest": "^24.0.25",
+    "@types/jest": "^24.9.0",
     "@types/mocha": "^5.2.7",
     "archiver": "^3.1.1",
     "byline": "^5.0.0",
