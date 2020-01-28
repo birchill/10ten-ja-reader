@@ -142,6 +142,19 @@ describe('Dictionary', () => {
     expect(result!.matchLen).toBe(3);
   });
 
+  it('finds a match with ー', async () => {
+    let result = await sharedDict.wordSearch({ input: '頑張ろー' });
+    expect(result!.matchLen).toBe(4);
+    result = await sharedDict.wordSearch({ input: 'そーゆー' });
+    expect(result!.matchLen).toBe(4);
+    result = await sharedDict.wordSearch({ input: '食べよー' });
+    expect(result!.matchLen).toBe(4);
+    result = await sharedDict.wordSearch({ input: 'おはよー' });
+    expect(result!.matchLen).toBe(4);
+    result = await sharedDict.wordSearch({ input: '行こー' });
+    expect(result!.matchLen).toBe(3);
+  });
+
   it('does not split yo-on', async () => {
     const result = await sharedDict.wordSearch({ input: 'ローマじゃない' });
     // This should NOT match ローマ字

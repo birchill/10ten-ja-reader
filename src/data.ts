@@ -243,7 +243,7 @@ export class Dictionary {
     }
 
     const [dict, index] = await this._getDictAndIndex(doNames);
-    const result: WordSearchResult | null = this._lookupInput({
+    let result = this._lookupInput({
       input: word,
       inputLengths,
       dict,
@@ -253,11 +253,77 @@ export class Dictionary {
       includeRomaji,
     });
 
-    if (result && doNames) {
-      result.names = true;
+    result = this.tryReplacingChoonpu({
+      input: word,
+      inputLengths,
+      dict,
+      index,
+      maxResults,
+      deinflectWord: !doNames,
+      includeRomaji,
+      existingResult: result,
+    });
+
+    const wordSearchResult: WordSearchResult | null = result;
+    if (wordSearchResult && doNames) {
+      wordSearchResult.names = true;
     }
 
-    return result;
+    return wordSearchResult;
+  }
+
+  tryReplacingChoonpu({
+    input,
+    inputLengths,
+    dict,
+    index,
+    maxResults,
+    deinflectWord,
+    includeRomaji,
+    existingResult,
+  }: {
+    input: string;
+    inputLengths: number[];
+    dict: string;
+    index: string;
+    maxResults: number;
+    deinflectWord: boolean;
+    includeRomaji: boolean;
+    existingResult: LookupResult | null;
+  }): LookupResult | null {
+    if (input.indexOf('ー') === -1) {
+      return existingResult;
+    }
+
+    // We don't deal with おー meaning おお. Technically the pronunciation is
+    // different. おお as in 大阪 is pronounced as two distinct お sounds,
+    // unlike おう which is pronounced as 長音. Still some people do write
+    // オーサカ but it's rare enough that we simply don't deal with it yet.
+    const barLessWord = input
+      .replace(/(おこそとほもよろをうくすつぬふむゆる|)ー/g, '$1う')
+      .replace(/(あかさたなはまやらわ|)ー/g, '$1あ')
+      .replace(/(いきしちにひみり|)ー/g, '$1あ')
+      .replace(/(えけせてねへめれ|)ー/g, '$1え');
+    if (barLessWord === input) {
+      return existingResult;
+    }
+
+    // Since we are just doing single-character replacement, the
+    // `inputLengths` should not change.
+    const barLessResult: WordSearchResult | null = this._lookupInput({
+      input: barLessWord,
+      inputLengths,
+      dict,
+      index,
+      maxResults,
+      deinflectWord,
+      includeRomaji,
+    });
+
+    return !existingResult ||
+      (barLessResult && barLessResult.matchLen > existingResult.matchLen)
+      ? barLessResult
+      : existingResult;
   }
 
   async _getDictAndIndex(doNames: boolean) {
