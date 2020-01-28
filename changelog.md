@@ -1,4 +1,9 @@
-## 0.1.16 (not yet released)
+## 0.1.17 (not yet released)
+
+* Made dictionary matching recognize ー in 頑張ろー and そーゆー etc.
+  ([#174](https://github.com/birtles/rikaichamp/issues/174))
+
+## 0.1.16 (2020-01-07)
 
 * Made dictionary matching not split up yo-on like じゃ
   ([#49](https://github.com/birtles/rikaichamp/issues/49))
