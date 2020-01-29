@@ -2,6 +2,8 @@
 
 * Made dictionary matching recognize ー in 頑張ろー and そーゆー etc.
   ([#174](https://github.com/birtles/rikaichamp/issues/174))
+* Added matching for continous forms such as 食べている and 食べてた
+  ([#73](https://github.com/birtles/rikaichamp/issues/73))
 
 ## 0.1.16 (2020-01-07)
 
