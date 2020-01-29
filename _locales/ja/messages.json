@@ -565,5 +565,8 @@
   },
   "deinflect_imperative_negative": {
     "message": "否定命令形"
+  },
+  "deinflect_continuous": {
+    "message": "進行形"
   }
 }

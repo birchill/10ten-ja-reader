@@ -64,7 +64,7 @@ describe('deinflect', () => {
     const match = result.find(candidate => candidate.word === 'くる');
     expect(match).toEqual({
       reasons: [[DeinflectReason.MasuStem]],
-      type: 8,
+      type: 0,
       word: 'くる',
     });
   });
@@ -128,5 +128,97 @@ describe('deinflect', () => {
         word: plain,
       });
     }
+  });
+
+  it('deinflects the continuous form', () => {
+    const cases: Array<[
+      string,
+      string,
+      number,
+      Array<DeinflectReason> | undefined
+    ]> = [
+      // U-verbs
+      ['戻っている', '戻る', 2, undefined],
+      ['戻ってる', '戻る', 2, undefined],
+      ['歩いている', '歩く', 2, undefined],
+      ['歩いてる', '歩く', 2, undefined],
+      ['泳いでいる', '泳ぐ', 2, undefined],
+      ['泳いでる', '泳ぐ', 2, undefined],
+      ['話している', '話す', 2, undefined],
+      ['話してる', '話す', 2, undefined],
+      ['死んでいる', '死ぬ', 2, undefined],
+      ['死んでる', '死ぬ', 2, undefined],
+      ['飼っている', '飼う', 2, undefined],
+      ['飼ってる', '飼う', 2, undefined],
+      ['放っている', '放つ', 2, undefined],
+      ['放ってる', '放つ', 2, undefined],
+      ['遊んでいる', '遊ぶ', 2, undefined],
+      ['遊んでる', '遊ぶ', 2, undefined],
+      ['歩んでいる', '歩む', 2, undefined],
+      ['歩んでる', '歩む', 2, undefined],
+      // Ru-verbs
+      ['食べている', '食べる', 9, undefined],
+      ['食べてる', '食べる', 9, undefined],
+      // Special verbs
+      ['している', 'する', 16, undefined],
+      ['してる', 'する', 16, undefined],
+      ['来ている', '来る', 9, undefined],
+      ['来てる', '来る', 9, undefined],
+      ['きている', 'くる', 8, undefined],
+      ['きてる', 'くる', 8, undefined],
+      // Combinations
+      [
+        '戻っています',
+        '戻る',
+        2,
+        [DeinflectReason.Continuous, DeinflectReason.Polite],
+      ],
+      [
+        '戻ってます',
+        '戻る',
+        2,
+        [DeinflectReason.Continuous, DeinflectReason.Polite],
+      ],
+      [
+        '戻っていない',
+        '戻る',
+        2,
+        [DeinflectReason.Continuous, DeinflectReason.Negative],
+      ],
+      [
+        '戻ってない',
+        '戻る',
+        2,
+        [DeinflectReason.Continuous, DeinflectReason.Negative],
+      ],
+      [
+        '戻っていた',
+        '戻る',
+        2,
+        [DeinflectReason.Continuous, DeinflectReason.Past],
+      ],
+      [
+        '戻ってた',
+        '戻る',
+        2,
+        [DeinflectReason.Continuous, DeinflectReason.Past],
+      ],
+    ];
+
+    for (let [inflected, plain, type, reasons] of cases) {
+      const result = deinflect(inflected);
+      const match = result.find(candidate => candidate.word == plain);
+      expect(match).toEqual({
+        reasons: reasons ? [reasons] : [[DeinflectReason.Continuous]],
+        type,
+        word: plain,
+      });
+    }
+
+    // Check we don't get false positives
+    const result = deinflect('食べて');
+    const match = result.find(candidate => candidate.word == '食べる');
+    expect(match).toBeDefined();
+    expect(match!.reasons).not.toContainEqual([DeinflectReason.Continuous]);
   });
 });
