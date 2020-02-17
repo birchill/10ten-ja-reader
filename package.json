@@ -68,7 +68,7 @@
     "husky": "^4.2.3",
     "lint-staged": "^10.0.7",
     "typescript": "^3.7.5",
-    "web-ext": "^4.0.0"
+    "web-ext": "^4.1.0"
   },
   "webExt": {
     "sourceDir": "dist-firefox"
