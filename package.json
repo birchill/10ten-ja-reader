@@ -58,7 +58,7 @@
     "ts-loader": "^6.2.1",
     "web-ext-types": "github:michael-zapata/web-ext-types",
     "web-ext-webpack-plugin": "github:hiikezoe/web-ext-webpack-plugin",
-    "webpack": "^4.41.5",
+    "webpack": "^4.41.6",
     "webpack-cli": "^3.3.10",
     "webpack-preprocessor": "^0.1.12"
   },
