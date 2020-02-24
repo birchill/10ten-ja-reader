@@ -233,7 +233,7 @@ export class RikaiContent {
     node: HTMLInputElement | HTMLTextAreaElement;
     previousStart: number | null;
     previousEnd: number | null;
-    previousDirection: string | null;
+    previousDirection: 'forward' | 'backward' | 'none' | null;
   } | null = null;
   _previousFocus: Element | null;
   _previousSelection: { node: Node; offset: number } | null;
