@@ -54,7 +54,7 @@
     "mocha": "^7.0.1",
     "semver-parser": "^3.0.4",
     "source-map-loader": "^0.2.4",
-    "ts-jest": "^25.2.0",
+    "ts-jest": "^25.2.1",
     "ts-loader": "^6.2.1",
     "web-ext-types": "github:michael-zapata/web-ext-types",
     "web-ext-webpack-plugin": "github:hiikezoe/web-ext-webpack-plugin",
