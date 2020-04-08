@@ -46,14 +46,15 @@
 */
 
 import { CopyKeys, CopyType } from './copy-keys';
-import { renderPopup, CopyState, PopupOptions } from './popup';
-import { query, QueryResult } from './query';
 import {
   getEntryToCopy,
   getFieldsToCopy,
   getWordToCopy,
   Entry as CopyEntry,
 } from './copy-text';
+import { renderPopup, CopyState, PopupOptions } from './popup';
+import { query, QueryResult } from './query';
+import { isEraName } from './years';
 
 declare global {
   interface Window {
@@ -95,6 +96,8 @@ export interface GetTextResult {
   // Contains the node and offset for each text-containing node in the
   // maximum selected range.
   rangeEnds: RangeEndpoint[];
+  // Extra metadata we parsed in the process
+  meta?: { era: string; year: number };
 }
 
 interface CachedGetTextResult {
@@ -788,6 +791,7 @@ export class RikaiContent {
         point,
         maxLength
       );
+
       if (result) {
         console.assert(
           !!result.rangeStart,
@@ -915,8 +919,6 @@ export class RikaiContent {
     },
     maxLength?: number
   ): GetTextResult | null {
-    // TODO: Factor in the manual offset from the "next word" feature?
-
     const isRubyAnnotationElement = (element: Element | null) => {
       if (!element) {
         return false;
@@ -1019,35 +1021,53 @@ export class RikaiContent {
       rangeEnds: [],
     };
 
+    // Search for non-Japanese text (or a delimiter of some sort even if it
+    // is "Japanese" in the sense of being full-width).
+    //
+    // * U+25CB is 'white circle' often used to represent a blank
+    //   (U+3007 is an ideographic zero that is also sometimes used for this
+    //   purpose, but this is included in the U+3001~U+30FF range.)
+    // * U+3000~U+30FF is ideographic punctuation but we skip U+3000
+    //   (ideographic space), U+3001 (、 ideographic comma), U+3002
+    //   (。 ideographic full stop), and U+3003 (〃 ditto mark) since these
+    //   are typically only going to delimit words.
+    // * U+3041~U+309F is the hiragana range
+    // * U+30A0~U+30FF is the katakana range
+    // * U+3400~U+4DBF is the CJK Unified Ideographs Extension A block (rare
+    //   kanji)
+    // * U+4E00~U+9FFF is the CJK Unified Ideographs block ("the kanji")
+    // * U+F900~U+FAFF is the CJK Compatibility Ideographs block (random odd
+    //   kanji, because standards)
+    // * U+FF5E is full-width tilde ～ (not 〜 which is a wave dash)
+    // * U+FF61~U+FF65 is some halfwidth ideographic symbols, e.g. ｡ but we
+    //   skip them (although previus rikai-tachi included them) since
+    //   they're mostly going to be delimiters
+    // * U+FF66~U+FF9F is halfwidth katakana
+    //
+    const nonJapaneseOrDelimiter = /[^\u25cb\u3004-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff5e\uff66-\uff9f]/;
+
+    // If we detect a Japanese era, however, we allow a different set of
+    // characters.
+    let eraName = '';
+    const nonEraCharacter = /[^\s0-9０-９年]/;
+
     // Look for range ends
     do {
-      // Search for non-Japanese text (or a delimiter of some sort even if it
-      // is "Japanese" in the sense of being full-width).
-      //
-      // * U+25CB is 'white circle' often used to represent a blank
-      //   (U+3007 is an ideographic zero that is also sometimes used for this
-      //   purpose, but this is included in the U+3001~U+30FF range.)
-      // * U+3000~U+30FF is ideographic punctuation but we skip U+3000
-      //   (ideographic space), U+3001 (、 ideographic comma), U+3002
-      //   (。 ideographic full stop), and U+3003 (〃 ditto mark) since these
-      //   are typically only going to delimit words.
-      // * U+3041~U+309F is the hiragana range
-      // * U+30A0~U+30FF is the katakana range
-      // * U+3400~U+4DBF is the CJK Unified Ideographs Extension A block (rare
-      //   kanji)
-      // * U+4E00~U+9FFF is the CJK Unified Ideographs block ("the kanji")
-      // * U+F900~U+FAFF is the CJK Compatibility Ideographs block (random odd
-      //   kanji, because standards)
-      // * U+FF5E is full-width tilde ～ (not 〜 which is a wave dash)
-      // * U+FF61~U+FF65 is some halfwidth ideographic symbols, e.g. ｡ but we
-      //   skip them (although previus rikai-tachi included them) since
-      //   they're mostly going to be delimiters
-      // * U+FF66~U+FF9F is halfwidth katakana
-      //
-      const nonJapaneseOrDelimiter = /[^\u25cb\u3004-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff5e\uff66-\uff9f]/;
-
       const nodeText = node.data.substr(offset);
-      let textEnd = nodeText.search(nonJapaneseOrDelimiter);
+      let textEnd = eraName
+        ? nodeText.search(nonEraCharacter)
+        : nodeText.search(nonJapaneseOrDelimiter);
+
+      // Check if we have an era name and, if it is, re-find the end
+      // for this text node.
+      if (!eraName && textEnd >= 0) {
+        const currentText = result.text + nodeText.substr(0, textEnd);
+        if (isEraName(currentText)) {
+          eraName = currentText;
+          const endOfEra = nodeText.substr(textEnd).search(nonEraCharacter);
+          textEnd = endOfEra === -1 ? -1 : textEnd + endOfEra;
+        }
+      }
 
       if (typeof maxLength === 'number' && maxLength >= 0) {
         const maxEnd = maxLength - result.text.length;
@@ -1063,15 +1083,19 @@ export class RikaiContent {
 
       if (textEnd === 0) {
         // There are no characters here for us.
+        //
+        // Make sure to fill out any necessary metadata however.
+        result.meta = extractGetTextMetadata(eraName, result.text);
         break;
       } else if (textEnd !== -1) {
-        // The text node has disallowed characters mid-way through. Return up
-        // to that point or maxLength, whichever comes first.
+        // The text node has disallowed characters mid-way through so
+        // return up to that point.
         result.text += nodeText.substr(0, textEnd);
         result.rangeEnds.push({
           container: node,
           offset: offset + textEnd,
         });
+        result.meta = extractGetTextMetadata(eraName, result.text);
         break;
       }
 
@@ -1695,5 +1719,26 @@ function removeRikaichampContent() {
 browser.runtime.sendMessage({ type: 'enable?' }).catch(() => {
   /* Ignore */
 });
+
+function extractGetTextMetadata(
+  era: string,
+  text: string
+): GetTextResult['meta'] | undefined {
+  if (!era) {
+    return undefined;
+  }
+
+  const matches = text.match(/[0-9０-９]+/);
+  if (!matches) {
+    return undefined;
+  }
+
+  // Convert full-width to half-width
+  const num = matches[0].replace(/[０-９]/g, ch =>
+    String.fromCharCode(ch.charCodeAt(0) - 0xfee0)
+  );
+
+  return { era, year: parseInt(num, 10) };
+}
 
 export default RikaiContent;

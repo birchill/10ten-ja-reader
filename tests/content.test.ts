@@ -342,6 +342,139 @@ describe('rikaiContent:text search', () => {
     assertTextResultEqual(result, 'ｷﾞﾝｺｳ㘆豈', textNode, 0, textNode, 7);
   });
 
+  it('should include the year when recognizing years', () => {
+    testDiv.append('平成56年に');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result = subject.getTextAtPoint({
+      x: bbox.left,
+      y: bbox.top + bbox.height / 2,
+    });
+
+    assertTextResultEqual(result, '平成56年', textNode, 0, textNode, 5);
+    assert.deepEqual(result!.meta, { era: '平成', year: 56 });
+  });
+
+  it('should include the year when recognizing years (full-width)', () => {
+    testDiv.append('平成５６年に');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result = subject.getTextAtPoint({
+      x: bbox.left,
+      y: bbox.top + bbox.height / 2,
+    });
+
+    assertTextResultEqual(result, '平成５６年', textNode, 0, textNode, 5);
+    assert.deepEqual(result!.meta, { era: '平成', year: 56 });
+  });
+
+  it('should include the year when recognizing years and there are spaces', () => {
+    // Some publishers like to put spaces around stuffs
+    testDiv.append('平成 56 年に');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result = subject.getTextAtPoint({
+      x: bbox.left,
+      y: bbox.top + bbox.height / 2,
+    });
+
+    assertTextResultEqual(result, '平成 56 年', textNode, 0, textNode, 7);
+    assert.deepEqual(result!.meta, { era: '平成', year: 56 });
+  });
+
+  it('should include the year when recognizing years and there is no 年', () => {
+    // Who knows, someone might try this...
+    testDiv.append('平成56に');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result = subject.getTextAtPoint({
+      x: bbox.left,
+      y: bbox.top + bbox.height / 2,
+    });
+
+    assertTextResultEqual(result, '平成56', textNode, 0, textNode, 4);
+    assert.deepEqual(result!.meta, { era: '平成', year: 56 });
+  });
+
+  it('should include the year when recognizing years and the numbers are in a separate span', () => {
+    testDiv.innerHTML = '平成<span>56</span>年に';
+    const firstTextNode = testDiv.firstChild as Text;
+    const middleTextNode = testDiv.childNodes[1].firstChild as Text;
+    const lastTextNode = testDiv.childNodes[2] as Text;
+    const bbox = getBboxForOffset(firstTextNode, 0);
+
+    const result = subject.getTextAtPoint({
+      x: bbox.left,
+      y: bbox.top + bbox.height / 2,
+    });
+
+    assertTextResultEqual(
+      result,
+      '平成56年',
+      firstTextNode,
+      0,
+      firstTextNode,
+      2,
+      middleTextNode,
+      2,
+      lastTextNode,
+      1
+    );
+    assert.deepEqual(result!.meta, { era: '平成', year: 56 });
+  });
+
+  it('should include the year when recognizing years and the numbers are in a separate span and there is whitespace too', () => {
+    testDiv.innerHTML = '平成 <span> 56年に</span>';
+    const firstTextNode = testDiv.firstChild as Text;
+    const middleTextNode = testDiv.childNodes[1].firstChild as Text;
+    const bbox = getBboxForOffset(firstTextNode, 0);
+
+    const result = subject.getTextAtPoint({
+      x: bbox.left,
+      y: bbox.top + bbox.height / 2,
+    });
+
+    assertTextResultEqual(
+      result,
+      '平成  56年',
+      firstTextNode,
+      0,
+      firstTextNode,
+      3,
+      middleTextNode,
+      4
+    );
+    assert.deepEqual(result!.meta, { era: '平成', year: 56 });
+  });
+
+  it('should include the year when recognizing years and era description finishes exactly at the end of a span', () => {
+    testDiv.innerHTML = '平成<span>56年</span>に';
+    const firstTextNode = testDiv.firstChild as Text;
+    const middleTextNode = testDiv.childNodes[1].firstChild as Text;
+    const bbox = getBboxForOffset(firstTextNode, 0);
+
+    const result = subject.getTextAtPoint({
+      x: bbox.left,
+      y: bbox.top + bbox.height / 2,
+    });
+
+    assertTextResultEqual(
+      result,
+      '平成56年',
+      firstTextNode,
+      0,
+      firstTextNode,
+      2,
+      middleTextNode,
+      3
+    );
+    assert.deepEqual(result!.meta, { era: '平成', year: 56 });
+  });
+
   it('should stop at the maximum number of characters', () => {
     testDiv.append('あいうえお');
     const textNode = testDiv.firstChild as Text;
