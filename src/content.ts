@@ -52,6 +52,7 @@ import {
   getWordToCopy,
   Entry as CopyEntry,
 } from './copy-text';
+import { SelectionMeta } from './meta';
 import { renderPopup, CopyState, PopupOptions } from './popup';
 import { query, QueryResult } from './query';
 import { isEraName } from './years';
@@ -97,7 +98,7 @@ export interface GetTextResult {
   // maximum selected range.
   rangeEnds: RangeEndpoint[];
   // Extra metadata we parsed in the process
-  meta?: { era: string; year: number };
+  meta?: SelectionMeta;
 }
 
 interface CachedGetTextResult {
@@ -206,7 +207,7 @@ interface HTMLLinkElement {
 }
 
 const styleSheetLoad = (link: HTMLLinkElement): Promise<void> =>
-  new Promise(resolve => {
+  new Promise((resolve) => {
     link.addEventListener(
       'load',
       // The typings for addEventListener seem to end up expecting an
@@ -318,7 +319,7 @@ export class RikaiContent {
 
   async testTimerPrecision() {
     const waitALittle = async () =>
-      new Promise(resolve => setTimeout(resolve, 10));
+      new Promise((resolve) => setTimeout(resolve, 10));
 
     // If performance.now() returns different times at least three out of five
     // times then we can assume that we're not doing timer clamping of the sort
@@ -493,7 +494,7 @@ export class RikaiContent {
     // a case-insensitive comparison. This is so that the keys continue to work
     // even when the user has Caps Lock on.
     const toUpper = (keys: string[]): string[] =>
-      keys.map(key => key.toUpperCase());
+      keys.map((key) => key.toUpperCase());
     let { nextDictionary, toggleDefinition, startCopy } = this._config.keys;
     [nextDictionary, toggleDefinition, startCopy] = [
       toUpper(nextDictionary),
@@ -966,7 +967,7 @@ export class RikaiContent {
     let filter: NodeFilter | undefined;
     if (!isRubyAnnotationElement(inlineAncestor)) {
       filter = {
-        acceptNode: node =>
+        acceptNode: (node) =>
           isRubyAnnotationElement(node.parentElement)
             ? NodeFilter.FILTER_REJECT
             : NodeFilter.FILTER_ACCEPT,
@@ -1103,9 +1104,6 @@ export class RikaiContent {
 
       if (textEnd === 0) {
         // There are no characters here for us.
-        //
-        // Make sure to fill out any necessary metadata however.
-        result.meta = extractGetTextMetadata(eraName, result.text);
         break;
       } else if (textEnd !== -1) {
         // The text node has disallowed characters mid-way through so
@@ -1115,7 +1113,6 @@ export class RikaiContent {
           container: node,
           offset: offset + textEnd,
         });
-        result.meta = extractGetTextMetadata(eraName, result.text);
         break;
       }
 
@@ -1136,6 +1133,10 @@ export class RikaiContent {
     // Check if we didn't find any suitable characters
     if (!result.rangeEnds.length) {
       result = null;
+    }
+
+    if (result && eraName) {
+      result.meta = extractGetTextMetadata(eraName, result.text);
     }
 
     return result;
@@ -1448,6 +1449,7 @@ export class RikaiContent {
       copyNextKey: this._config.keys.startCopy[0] || '',
       copyState: this._copyMode ? CopyState.Active : CopyState.Inactive,
       copyIndex: this._copyIndex,
+      meta: this._currentTextAtPoint?.result.meta,
       ...options,
     };
 
@@ -1567,7 +1569,7 @@ export class RikaiContent {
       return this._popupPromise;
     }
 
-    this._popupPromise = new Promise(async resolve => {
+    this._popupPromise = new Promise(async (resolve) => {
       // For SVG documents we put both the <link> and <div> inside
       // a <foreignObject>. This saves us messing about with xml-stylesheet
       // processing instructions.
@@ -1743,7 +1745,7 @@ browser.runtime.sendMessage({ type: 'enable?' }).catch(() => {
 function extractGetTextMetadata(
   era: string,
   text: string
-): GetTextResult['meta'] | undefined {
+): SelectionMeta | undefined {
   if (!era) {
     return undefined;
   }
@@ -1754,7 +1756,7 @@ function extractGetTextMetadata(
   }
 
   // Convert full-width to half-width
-  const num = matches[0].replace(/[０-９]/g, ch =>
+  const num = matches[0].replace(/[０-９]/g, (ch) =>
     String.fromCharCode(ch.charCodeAt(0) - 0xfee0)
   );
 

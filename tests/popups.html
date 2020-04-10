@@ -250,6 +250,58 @@ for (const test of highlightTests) {
     container.append(popupWindow);
   }
 }
+
+// Year tests
+
+const yearQueryResult = {
+  type: 'words',
+  data: [
+    {
+      kanjiKana: '令和',
+      kana: ['れいわ'],
+      romaji: [],
+      definition: 'Reiwa',
+      reason: null,
+    },
+  ],
+  more: false,
+  matchLen: 2,
+};
+
+const yearTests = [
+  {
+    description: 'Regular year',
+    config: { showDefinitions: true, meta: { era: '令和', year: 2 } },
+  },
+  {
+    description: 'Gannen',
+    config: { showDefinitions: true, meta: { era: '令和', year: 0 } },
+  },
+];
+
+for (const test of yearTests) {
+  const label = document.createElement('div');
+  label.classList.add('label');
+  label.append(`【${test.description}】`);
+  container.append(label);
+
+  for (const theme of themes) {
+    const popup = rikaiContent._renderPopup(yearQueryResult, test.config);
+
+    const label = document.createElement('div');
+    label.classList.add('label');
+    label.append(`Theme: ${theme}`);
+    container.append(label);
+
+    const popupWindow = document.createElement('div');
+    popupWindow.setAttribute('id', 'rikaichamp-window');
+    popupWindow.classList.add('stack');
+    popupWindow.classList.add(`-${theme}`);
+    popupWindow.append(popup);
+    container.append(popupWindow);
+  }
+}
+
 </script>
 </div>
 </body>

@@ -1,4 +1,10 @@
-const yearMap = new Map([
+export type EraInfo = {
+  reading: string;
+  start: number;
+  yomi: string;
+};
+
+const yearMap = new Map<string, EraInfo>([
   ['大化', { reading: 'たいか', start: 645, yomi: 'Taika' }],
   ['白雉', { reading: 'はくち', start: 650, yomi: 'Hakuchi' }],
   ['朱鳥', { reading: 'しゅちょう', start: 686, yomi: 'Shuchō' }],
@@ -263,4 +269,8 @@ const yearMap = new Map([
 
 export function isEraName(text: string): boolean {
   return yearMap.has(text);
+}
+
+export function getEraInfo(text: string): EraInfo | undefined {
+  return yearMap.get(text);
 }

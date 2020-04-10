@@ -418,6 +418,35 @@
 }
 
 /*
+ * Meta information
+ */
+
+#rikaichamp-window .wordlist .meta {
+  margin-top: 8px;
+  margin-bottom: 3px;
+  padding: 3px 8px;
+  display: flex;
+  align-items: baseline;
+  background: rgba(255,255,255,0.2);
+}
+
+#rikaichamp-window .wordlist .meta .era,
+#rikaichamp-window .wordlist .meta .era ruby,
+#rikaichamp-window .wordlist .meta .equals,
+#rikaichamp-window .wordlist .meta .seireki {
+  font-size: 22px;
+}
+
+#rikaichamp-window .wordlist .meta .era rt {
+  font-size: 12px;
+}
+
+#rikaichamp-window .wordlist .meta .equals {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+/*
  * Theme - blue
  */
 
@@ -486,6 +515,15 @@
 
 #rikaichamp-window.-blue .references .ref.-highlight * {
   color: #B7E7FF;
+}
+
+#rikaichamp-window.-blue .meta .era,
+#rikaichamp-window.-blue .meta .era * {
+  color: #B7E7FF;
+}
+
+#rikaichamp-window.-blue .meta .seireki {
+  color: #C0FFC0;
 }
 
 /*
@@ -568,6 +606,15 @@
   color: #E0E0E0;
 }
 
+#rikaichamp-window.-black .meta .era,
+#rikaichamp-window.-black .meta .era * {
+  color: #7070E0;
+}
+
+#rikaichamp-window.-black .meta .seireki {
+  color: #20A020;
+}
+
 /*
  * Theme - lightblue
  */
@@ -637,6 +684,15 @@
 
 #rikaichamp-window.-lightblue .references .ref.-highlight * {
   color: #003D6B;
+}
+
+#rikaichamp-window.-lightblue .meta .era,
+#rikaichamp-window.-lightblue .meta .era * {
+  color: #003D6B;
+}
+
+#rikaichamp-window.-lightblue .meta .seireki {
+  color: #00B366;
 }
 
 /*
@@ -723,4 +779,13 @@
 
 #rikaichamp-window.-yellow .references .ref.-highlight * {
   color: #000000;
+}
+
+#rikaichamp-window.-yellow .meta .era,
+#rikaichamp-window.-yellow .meta .era * {
+  color: #7070E0;
+}
+
+#rikaichamp-window.-yellow .meta .seireki {
+  color: #20A020;
 }

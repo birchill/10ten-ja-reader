@@ -6,6 +6,7 @@ import {
   CopyKanjiKeyStrings,
   CopyNextKeyStrings,
 } from './copy-keys';
+import { SelectionMeta } from './meta';
 import { getKeyForTag } from './name-tags';
 import { NameDefinition, NameEntry, QueryResult, WordEntry } from './query';
 import {
@@ -13,6 +14,7 @@ import {
   getSelectedReferenceLabels,
   ReferenceAbbreviation,
 } from './refs';
+import { EraInfo, getEraInfo } from './years';
 
 export const enum CopyState {
   Inactive,
@@ -31,6 +33,7 @@ export interface PopupOptions {
   copyIndex?: number;
   // Set when copyState === CopyState.Finished
   copyType?: CopyType;
+  meta?: SelectionMeta;
 }
 
 export function renderPopup(
@@ -62,6 +65,13 @@ function renderWordEntries(
     container.append(titleDiv);
     titleDiv.classList.add('title');
     titleDiv.append(title);
+  }
+
+  if (options.meta) {
+    const eraInfo = getEraInfo(options.meta.era);
+    if (eraInfo) {
+      container.append(renderEraInfo(options.meta, eraInfo));
+    }
   }
 
   let index = 0;
@@ -141,6 +151,51 @@ function renderWordEntries(
   }
 
   return container;
+}
+
+function renderEraInfo(meta: SelectionMeta, eraInfo: EraInfo): HTMLElement {
+  const metaDiv = document.createElement('div');
+  metaDiv.classList.add('meta');
+
+  const eraSpan = document.createElement('span');
+  eraSpan.classList.add('era');
+
+  const rubyBase = document.createElement('ruby');
+  rubyBase.append(meta.era);
+
+  const rpOpen = document.createElement('rp');
+  rpOpen.append('(');
+  rubyBase.append(rpOpen);
+
+  const rubyText = document.createElement('rt');
+  rubyText.append(eraInfo.reading);
+  rubyBase.append(rubyText);
+
+  const rpClose = document.createElement('rp');
+  rpClose.append(')');
+  rubyBase.append(rpClose);
+  eraSpan.append(rubyBase);
+
+  if (meta.year === 0) {
+    eraSpan.append('元年');
+  } else {
+    eraSpan.append(`${meta.year}年`);
+  }
+  metaDiv.append(eraSpan);
+
+  const equalsSpan = document.createElement('span');
+  equalsSpan.classList.add('equals');
+  equalsSpan.append('=');
+  metaDiv.append(equalsSpan);
+
+  const seirekiSpan = document.createElement('span');
+  seirekiSpan.classList.add('seireki');
+  const seireki =
+    meta.year === 0 ? eraInfo.start : meta.year - 1 + eraInfo.start;
+  seirekiSpan.append(`${seireki}年`);
+  metaDiv.append(seirekiSpan);
+
+  return metaDiv;
 }
 
 function renderNamesEntries(
@@ -386,7 +441,7 @@ function renderKanjiComponents(entry: KanjiResult): HTMLElement {
   // not (the data is frequently hand-edited, after all), make sure we add it
   // first.
   if (
-    !entry.comp.some(comp => comp.c === entry.rad.b || comp.c === entry.rad.k)
+    !entry.comp.some((comp) => comp.c === entry.rad.b || comp.c === entry.rad.k)
   ) {
     addRadicalRow();
   }
