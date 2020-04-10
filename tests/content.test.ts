@@ -475,6 +475,20 @@ describe('rikaiContent:text search', () => {
     assert.deepEqual(result!.meta, { era: '昭和', year: 56 });
   });
 
+  it('should recognize 元年 after an era name', () => {
+    testDiv.append('令和元年');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result = subject.getTextAtPoint({
+      x: bbox.left,
+      y: bbox.top + bbox.height / 2,
+    });
+
+    assertTextResultEqual(result, '令和元年', textNode, 0, textNode, 4);
+    assert.deepEqual(result!.meta, { era: '令和', year: 0 });
+  });
+
   it('should stop at the maximum number of characters', () => {
     testDiv.append('あいうえお');
     const textNode = testDiv.firstChild as Text;

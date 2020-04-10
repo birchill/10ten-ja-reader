@@ -1069,6 +1069,25 @@ export class RikaiContent {
         }
       }
 
+      // Check for the special case of <era>元年.
+      //
+      // We don't handle the case where the text is split across nodes or where
+      // there is whitespace between the era and 元年 because we don't expect
+      // that to be too common (and for this case the dictionary entry will
+      // probably give the start of the era anyway).
+      if (!eraName) {
+        const currentText =
+          result.text +
+          nodeText.substr(0, textEnd === -1 ? undefined : textEnd);
+        const gannen = currentText.indexOf('元年');
+        if (gannen > 0) {
+          const gannenEra = currentText.substring(0, gannen).trim();
+          if (isEraName(gannenEra)) {
+            result.meta = { era: gannenEra, year: 0 };
+          }
+        }
+      }
+
       if (typeof maxLength === 'number' && maxLength >= 0) {
         const maxEnd = maxLength - result.text.length;
         if (textEnd === -1) {
