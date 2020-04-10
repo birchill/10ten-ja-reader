@@ -706,7 +706,13 @@ export class RikaiContent {
     }
 
     if (queryResult.matchLen) {
-      this.highlightText(textAtPoint, queryResult.matchLen);
+      // Adjust matchLen if we are highlighting something meta so we cover the
+      // whole matched range.
+      let matchLen = queryResult.matchLen;
+      if (textAtPoint.meta) {
+        matchLen = Math.max(matchLen, textAtPoint.text.length);
+      }
+      this.highlightText(textAtPoint, matchLen);
     }
 
     this._currentSearchResult = queryResult;
