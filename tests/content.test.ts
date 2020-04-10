@@ -343,7 +343,7 @@ describe('rikaiContent:text search', () => {
   });
 
   it('should include the year when recognizing years', () => {
-    testDiv.append('平成56年に');
+    testDiv.append('昭和56年に');
     const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 0);
 
@@ -352,12 +352,12 @@ describe('rikaiContent:text search', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, '平成56年', textNode, 0, textNode, 5);
-    assert.deepEqual(result!.meta, { era: '平成', year: 56 });
+    assertTextResultEqual(result, '昭和56年', textNode, 0, textNode, 5);
+    assert.deepEqual(result!.meta, { era: '昭和', year: 56 });
   });
 
   it('should include the year when recognizing years (full-width)', () => {
-    testDiv.append('平成５６年に');
+    testDiv.append('昭和５６年に');
     const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 0);
 
@@ -366,13 +366,13 @@ describe('rikaiContent:text search', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, '平成５６年', textNode, 0, textNode, 5);
-    assert.deepEqual(result!.meta, { era: '平成', year: 56 });
+    assertTextResultEqual(result, '昭和５６年', textNode, 0, textNode, 5);
+    assert.deepEqual(result!.meta, { era: '昭和', year: 56 });
   });
 
   it('should include the year when recognizing years and there are spaces', () => {
     // Some publishers like to put spaces around stuffs
-    testDiv.append('平成 56 年に');
+    testDiv.append('昭和 56 年に');
     const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 0);
 
@@ -381,13 +381,13 @@ describe('rikaiContent:text search', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, '平成 56 年', textNode, 0, textNode, 7);
-    assert.deepEqual(result!.meta, { era: '平成', year: 56 });
+    assertTextResultEqual(result, '昭和 56 年', textNode, 0, textNode, 7);
+    assert.deepEqual(result!.meta, { era: '昭和', year: 56 });
   });
 
   it('should include the year when recognizing years and there is no 年', () => {
     // Who knows, someone might try this...
-    testDiv.append('平成56に');
+    testDiv.append('昭和56に');
     const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 0);
 
@@ -396,12 +396,12 @@ describe('rikaiContent:text search', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, '平成56', textNode, 0, textNode, 4);
-    assert.deepEqual(result!.meta, { era: '平成', year: 56 });
+    assertTextResultEqual(result, '昭和56', textNode, 0, textNode, 4);
+    assert.deepEqual(result!.meta, { era: '昭和', year: 56 });
   });
 
   it('should include the year when recognizing years and the numbers are in a separate span', () => {
-    testDiv.innerHTML = '平成<span>56</span>年に';
+    testDiv.innerHTML = '昭和<span>56</span>年に';
     const firstTextNode = testDiv.firstChild as Text;
     const middleTextNode = testDiv.childNodes[1].firstChild as Text;
     const lastTextNode = testDiv.childNodes[2] as Text;
@@ -414,7 +414,7 @@ describe('rikaiContent:text search', () => {
 
     assertTextResultEqual(
       result,
-      '平成56年',
+      '昭和56年',
       firstTextNode,
       0,
       firstTextNode,
@@ -424,11 +424,11 @@ describe('rikaiContent:text search', () => {
       lastTextNode,
       1
     );
-    assert.deepEqual(result!.meta, { era: '平成', year: 56 });
+    assert.deepEqual(result!.meta, { era: '昭和', year: 56 });
   });
 
   it('should include the year when recognizing years and the numbers are in a separate span and there is whitespace too', () => {
-    testDiv.innerHTML = '平成 <span> 56年に</span>';
+    testDiv.innerHTML = '昭和 <span> 56年に</span>';
     const firstTextNode = testDiv.firstChild as Text;
     const middleTextNode = testDiv.childNodes[1].firstChild as Text;
     const bbox = getBboxForOffset(firstTextNode, 0);
@@ -440,7 +440,7 @@ describe('rikaiContent:text search', () => {
 
     assertTextResultEqual(
       result,
-      '平成  56年',
+      '昭和  56年',
       firstTextNode,
       0,
       firstTextNode,
@@ -448,11 +448,11 @@ describe('rikaiContent:text search', () => {
       middleTextNode,
       4
     );
-    assert.deepEqual(result!.meta, { era: '平成', year: 56 });
+    assert.deepEqual(result!.meta, { era: '昭和', year: 56 });
   });
 
   it('should include the year when recognizing years and era description finishes exactly at the end of a span', () => {
-    testDiv.innerHTML = '平成<span>56年</span>に';
+    testDiv.innerHTML = '昭和<span>56年</span>に';
     const firstTextNode = testDiv.firstChild as Text;
     const middleTextNode = testDiv.childNodes[1].firstChild as Text;
     const bbox = getBboxForOffset(firstTextNode, 0);
@@ -464,7 +464,7 @@ describe('rikaiContent:text search', () => {
 
     assertTextResultEqual(
       result,
-      '平成56年',
+      '昭和56年',
       firstTextNode,
       0,
       firstTextNode,
@@ -472,7 +472,7 @@ describe('rikaiContent:text search', () => {
       middleTextNode,
       3
     );
-    assert.deepEqual(result!.meta, { era: '平成', year: 56 });
+    assert.deepEqual(result!.meta, { era: '昭和', year: 56 });
   });
 
   it('should stop at the maximum number of characters', () => {
