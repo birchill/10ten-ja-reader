@@ -1053,37 +1053,38 @@ export class RikaiContent {
 
     // Look for range ends
     do {
-      const nodeText = node.data.substr(offset);
+      const nodeText = node.data.substring(offset);
       let textEnd = eraName
         ? nodeText.search(nonEraCharacter)
         : nodeText.search(nonJapaneseOrDelimiter);
 
-      // Check if we have an era name and, if it is, re-find the end
-      // for this text node.
-      if (!eraName && textEnd >= 0) {
-        const currentText = result.text + nodeText.substr(0, textEnd);
-        if (isEraName(currentText)) {
-          eraName = currentText;
-          const endOfEra = nodeText.substr(textEnd).search(nonEraCharacter);
-          textEnd = endOfEra === -1 ? -1 : textEnd + endOfEra;
-        }
-      }
-
-      // Check for the special case of <era>元年.
-      //
-      // We don't handle the case where the text is split across nodes or where
-      // there is whitespace between the era and 元年 because we don't expect
-      // that to be too common (and for this case the dictionary entry will
-      // probably give the start of the era anyway).
+      // Check for a Japanese era since we use different delimiters in that
+      // case.
       if (!eraName) {
         const currentText =
           result.text +
-          nodeText.substr(0, textEnd === -1 ? undefined : textEnd);
-        const gannen = currentText.indexOf('元年');
-        if (gannen > 0) {
-          const gannenEra = currentText.substring(0, gannen).trim();
-          if (isEraName(gannenEra)) {
-            result.meta = { era: gannenEra, year: 0 };
+          nodeText.substring(0, textEnd === -1 ? undefined : textEnd);
+
+        // If we hit a delimiter but the existing text is an era name, we should
+        // re-find the end of this text node.
+        if (textEnd >= 0 && isEraName(currentText)) {
+          eraName = currentText;
+          const endOfEra = nodeText.substring(textEnd).search(nonEraCharacter);
+          textEnd = endOfEra === -1 ? -1 : textEnd + endOfEra;
+        } else {
+          // Otherwise, check for the special case of <era>元年.
+          //
+          // Note that for this case we don't handle the case where the text is
+          // split across nodes or where there is whitespace between the era and
+          // 元年 because we don't expect that to be too common (and for this
+          // case the dictionary entry will probably give the start of the era
+          // anyway).
+          const gannen = currentText.indexOf('元年');
+          if (gannen > 0) {
+            const gannenEra = currentText.substring(0, gannen).trim();
+            if (isEraName(gannenEra)) {
+              result.meta = { era: gannenEra, year: 0 };
+            }
           }
         }
       }
@@ -1109,7 +1110,7 @@ export class RikaiContent {
       } else if (textEnd !== -1) {
         // The text node has disallowed characters mid-way through so
         // return up to that point.
-        result.text += nodeText.substr(0, textEnd);
+        result.text += nodeText.substring(0, textEnd);
         result.rangeEnds.push({
           container: node,
           offset: offset + textEnd,
