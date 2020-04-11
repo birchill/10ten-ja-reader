@@ -6,4 +6,6 @@ export type SelectionMeta = {
   // 0 here represents that the matched text used 元年 (equivalent to 1 but we
   // might want to display it differently).
   year: number;
+  // The length of the text that matched
+  matchLen: number;
 };

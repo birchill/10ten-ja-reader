@@ -706,11 +706,10 @@ export class RikaiContent {
     }
 
     if (queryResult.matchLen) {
-      // Adjust matchLen if we are highlighting something meta so we cover the
-      // whole matched range.
+      // Adjust matchLen if we are highlighting something meta.
       let matchLen = queryResult.matchLen;
       if (textAtPoint.meta) {
-        matchLen = Math.max(matchLen, textAtPoint.text.length);
+        matchLen = Math.max(textAtPoint.meta.matchLen, textAtPoint.text.length);
       }
       this.highlightText(textAtPoint, matchLen);
     }
@@ -1760,7 +1759,9 @@ function extractGetTextMetadata(text: string): SelectionMeta | undefined {
     );
   }
 
-  return { era, year };
+  const matchLen = matches.index + matches[0].length;
+
+  return { era, year, matchLen };
 }
 
 export default RikaiContent;
