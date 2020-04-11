@@ -489,6 +489,30 @@ describe('rikaiContent:text search', () => {
     assert.deepEqual(result!.meta, { era: '令和', year: 0 });
   });
 
+  it('should recognize 元年 after an era name even with interleaving whitespace and spans', () => {
+    testDiv.innerHTML = '昭和　<span>元年</span>';
+    const firstTextNode = testDiv.firstChild as Text;
+    const spanTextNode = testDiv.childNodes[1].firstChild as Text;
+    const bbox = getBboxForOffset(firstTextNode, 0);
+
+    const result = subject.getTextAtPoint({
+      x: bbox.left,
+      y: bbox.top + bbox.height / 2,
+    });
+
+    assertTextResultEqual(
+      result,
+      '昭和　元年',
+      firstTextNode,
+      0,
+      firstTextNode,
+      3,
+      spanTextNode,
+      2
+    );
+    assert.deepEqual(result!.meta, { era: '昭和', year: 0 });
+  });
+
   it('should stop at the maximum number of characters', () => {
     testDiv.append('あいうえお');
     const textNode = testDiv.firstChild as Text;

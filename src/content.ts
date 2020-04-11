@@ -1055,19 +1055,18 @@ export class RikaiContent {
 
     // If we detect a Japanese era, however, we allow a different set of
     // characters.
-    let eraName = '';
-    const nonEraCharacter = /[^\s0-9０-９年]/;
+    const nonEraCharacter = /[^\s0-9０-９元年]/;
+
+    let textDelimeter = nonJapaneseOrDelimiter;
 
     // Look for range ends
     do {
       const nodeText = node.data.substring(offset);
-      let textEnd = eraName
-        ? nodeText.search(nonEraCharacter)
-        : nodeText.search(nonJapaneseOrDelimiter);
+      let textEnd = nodeText.search(textDelimeter);
 
-      // Check for a Japanese era since we use different delimiters in that
+      // Check for a Japanese era since we use different end delimiters in that
       // case.
-      if (!eraName) {
+      if (textDelimeter === nonJapaneseOrDelimiter) {
         const currentText =
           result.text +
           nodeText.substring(0, textEnd === -1 ? undefined : textEnd);
@@ -1075,24 +1074,9 @@ export class RikaiContent {
         // If we hit a delimiter but the existing text is an era name, we should
         // re-find the end of this text node.
         if (textEnd >= 0 && isEraName(currentText)) {
-          eraName = currentText;
-          const endOfEra = nodeText.substring(textEnd).search(nonEraCharacter);
+          textDelimeter = nonEraCharacter;
+          const endOfEra = nodeText.substring(textEnd).search(textDelimeter);
           textEnd = endOfEra === -1 ? -1 : textEnd + endOfEra;
-        } else {
-          // Otherwise, check for the special case of <era>元年.
-          //
-          // Note that for this case we don't handle the case where the text is
-          // split across nodes or where there is whitespace between the era and
-          // 元年 because we don't expect that to be too common (and for this
-          // case the dictionary entry will probably give the start of the era
-          // anyway).
-          const gannen = currentText.indexOf('元年');
-          if (gannen > 0) {
-            const gannenEra = currentText.substring(0, gannen).trim();
-            if (isEraName(gannenEra)) {
-              result.meta = { era: gannenEra, year: 0 };
-            }
-          }
         }
       }
 
@@ -1141,8 +1125,8 @@ export class RikaiContent {
       result = null;
     }
 
-    if (result && eraName) {
-      result.meta = extractGetTextMetadata(eraName, result.text);
+    if (result) {
+      result.meta = extractGetTextMetadata(result.text);
     }
 
     return result;
@@ -1748,25 +1732,35 @@ browser.runtime.sendMessage({ type: 'enable?' }).catch(() => {
   /* Ignore */
 });
 
-function extractGetTextMetadata(
-  era: string,
-  text: string
-): SelectionMeta | undefined {
-  if (!era) {
+// This is a bit complicated because for a numeric year we don't require the
+// 年 but for 元年 we do. i.e. '令和2' is valid but '令和元' is not.
+const yearRegex = /(?:([0-9０-９]+)\s*年?|(?:元\s*年))/;
+
+function extractGetTextMetadata(text: string): SelectionMeta | undefined {
+  // Look for a year
+  const matches = yearRegex.exec(text);
+  if (!matches || matches.index === 0) {
     return undefined;
   }
 
-  const matches = text.match(/[0-9０-９]+/);
-  if (!matches) {
+  // Look for an era
+  const era = text.substring(0, matches.index).trim();
+  if (!isEraName(era)) {
     return undefined;
   }
 
-  // Convert full-width to half-width
-  const num = matches[0].replace(/[０-９]/g, (ch) =>
-    String.fromCharCode(ch.charCodeAt(0) - 0xfee0)
-  );
+  // Parse year
+  let year = 0;
+  if (typeof matches[1] !== 'undefined') {
+    year = parseInt(
+      matches[1].replace(/[０-９]/g, (ch) =>
+        String.fromCharCode(ch.charCodeAt(0) - 0xfee0)
+      ),
+      10
+    );
+  }
 
-  return { era, year: parseInt(num, 10) };
+  return { era, year };
 }
 
 export default RikaiContent;
