@@ -53,6 +53,7 @@ import {
   Entry as CopyEntry,
 } from './copy-text';
 import { SelectionMeta } from './meta';
+import { kanjiToNumber } from './numbers';
 import { renderPopup, CopyState, PopupOptions } from './popup';
 import { query, QueryResult } from './query';
 import { isEraName } from './years';
@@ -1054,18 +1055,17 @@ export class RikaiContent {
 
     // If we detect a Japanese era, however, we allow a different set of
     // characters.
-    const nonEraCharacter = /[^\s0-9０-９元年]/;
-
-    let textDelimeter = nonJapaneseOrDelimiter;
+    const nonEraCharacter = /[^\s0-9０-９一二三四五六七八九十百元年]/;
+    let textDelimiter = nonJapaneseOrDelimiter;
 
     // Look for range ends
     do {
       const nodeText = node.data.substring(offset);
-      let textEnd = nodeText.search(textDelimeter);
+      let textEnd = nodeText.search(textDelimiter);
 
       // Check for a Japanese era since we use different end delimiters in that
       // case.
-      if (textDelimeter === nonJapaneseOrDelimiter) {
+      if (textDelimiter === nonJapaneseOrDelimiter) {
         const currentText =
           result.text +
           nodeText.substring(0, textEnd === -1 ? undefined : textEnd);
@@ -1073,8 +1073,8 @@ export class RikaiContent {
         // If we hit a delimiter but the existing text is an era name, we should
         // re-find the end of this text node.
         if (textEnd >= 0 && isEraName(currentText)) {
-          textDelimeter = nonEraCharacter;
-          const endOfEra = nodeText.substring(textEnd).search(textDelimeter);
+          textDelimiter = nonEraCharacter;
+          const endOfEra = nodeText.substring(textEnd).search(textDelimiter);
           textEnd = endOfEra === -1 ? -1 : textEnd + endOfEra;
         }
       }
@@ -1733,7 +1733,7 @@ browser.runtime.sendMessage({ type: 'enable?' }).catch(() => {
 
 // This is a bit complicated because for a numeric year we don't require the
 // 年 but for 元年 we do. i.e. '令和2' is valid but '令和元' is not.
-const yearRegex = /(?:([0-9０-９]+)\s*年?|(?:元\s*年))/;
+const yearRegex = /(?:([0-9０-９一二三四五六七八九十百]+)\s*年?|(?:元\s*年))/;
 
 function extractGetTextMetadata(text: string): SelectionMeta | undefined {
   // Look for a year
@@ -1749,14 +1749,24 @@ function extractGetTextMetadata(text: string): SelectionMeta | undefined {
   }
 
   // Parse year
-  let year = 0;
+  let year: number | null = 0;
   if (typeof matches[1] !== 'undefined') {
-    year = parseInt(
-      matches[1].replace(/[０-９]/g, (ch) =>
-        String.fromCharCode(ch.charCodeAt(0) - 0xfee0)
-      ),
-      10
-    );
+    // If it's a character in the CJK block, parse as a kanji number
+    const firstCharCode = matches[1].charCodeAt(0);
+    if (firstCharCode >= 0x4e00 && firstCharCode <= 0x9fff) {
+      year = kanjiToNumber(matches[1]);
+    } else {
+      year = parseInt(
+        matches[1].replace(/[０-９]/g, (ch) =>
+          String.fromCharCode(ch.charCodeAt(0) - 0xfee0)
+        ),
+        10
+      );
+    }
+  }
+
+  if (year === null) {
+    return undefined;
   }
 
   const matchLen = matches.index + matches[0].length;

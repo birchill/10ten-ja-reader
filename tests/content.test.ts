@@ -513,6 +513,20 @@ describe('rikaiContent:text search', () => {
     assert.deepEqual(result!.meta, { era: '昭和', year: 0, matchLen: 5 });
   });
 
+  it('should recognize kanji year numbers when recognizing years', () => {
+    testDiv.append('昭和五十六年に');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result = subject.getTextAtPoint({
+      x: bbox.left,
+      y: bbox.top + bbox.height / 2,
+    });
+
+    assertTextResultEqual(result, '昭和五十六年に', textNode, 0, textNode, 7);
+    assert.deepEqual(result!.meta, { era: '昭和', year: 56, matchLen: 6 });
+  });
+
   it('should stop at the maximum number of characters', () => {
     testDiv.append('あいうえお');
     const textNode = testDiv.firstChild as Text;
