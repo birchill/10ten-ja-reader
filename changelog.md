@@ -1,5 +1,8 @@
 ## 0.1.17 (not yet released)
 
+* Added support for recognizing and converting Japanese era years
+  昭和５６年、令和元年、平成三十一年 etc.
+  ([#202](https://github.com/birtles/rikaichamp/issues/202))
 * Made dictionary matching recognize ー in 頑張ろー and そーゆー etc.
   ([#174](https://github.com/birtles/rikaichamp/issues/174))
 * Added matching for continous forms such as 食べている and 食べてた
