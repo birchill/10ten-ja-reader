@@ -7,6 +7,7 @@
   ([#174](https://github.com/birtles/rikaichamp/issues/174))
 * Added matching for continous forms such as 食べている and 食べてた
   ([#73](https://github.com/birtles/rikaichamp/issues/73))
+* Updated word and name dictionaries to 2020-04-12 snapshot.
 
 ## 0.1.16 (2020-01-07)
 
