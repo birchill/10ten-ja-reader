@@ -1,4 +1,8 @@
-## 0.1.17 (not yet released)
+## 0.1.18 (Not yet released)
+
+(Nothing yet)
+
+## 0.1.17 (2020-04-31)
 
 * Added support for recognizing and converting Japanese era years
   昭和５６年、令和元年、平成三十一年 etc.
