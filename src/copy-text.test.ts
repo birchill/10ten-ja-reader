@@ -97,6 +97,7 @@ describe('getWordToCopy', () => {
           },
           m_lang: 'en',
           comp: [],
+          cf: [],
         },
       })
     ).toEqual('士');
@@ -214,6 +215,7 @@ describe('getEntryToCopy', () => {
               },
             ],
             m_lang: 'en',
+            cf: [],
           },
         },
         {
@@ -351,6 +353,7 @@ describe('getFieldsToCopy', () => {
               },
             ],
             m_lang: 'en',
+            cf: [],
           },
         },
         {
