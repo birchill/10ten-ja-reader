@@ -455,7 +455,14 @@ export class RikaiContent {
     }
 
     // If we got shift in combination with something else, ignore.
-    if (ev.shiftKey && ev.key !== 'Shift') {
+    //
+    // We need to allow shift by itself because it is used for switching
+    // dictionaries. However, if the user presses, Cmd + Shift + 3, for example,
+    // we should ignore the last two keystrokes.
+    if (
+      ev.shiftKey &&
+      (ev.ctrlKey || ev.altKey || ev.metaKey || ev.key !== 'Shift')
+    ) {
       this._typingMode = true;
       return;
     }
