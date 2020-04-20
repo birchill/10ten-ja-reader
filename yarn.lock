@@ -368,23 +368,23 @@
   resolved "https://registry.yarnpkg.com/@birchill/json-equalish/-/json-equalish-1.0.1.tgz#499bb527b2fdd256cc1867e4eb9fa2d889bf0ef9"
   integrity sha512-lcAqizP4Nw0IFLvyaAAGN7rrWxo1vJfMv69GByiwHJ0WgdzZkwngUT7DaXg/SvN2Dv4k7feVJKFzIWMLBRlFjg==
 
-"@bugsnag/browser@^6.5.2":
-  version "6.5.2"
-  resolved "https://registry.yarnpkg.com/@bugsnag/browser/-/browser-6.5.2.tgz#3f8f911dd739d2ace056fd5a38d5d25283ca4bfc"
-  integrity sha512-XFKKorJc92ivLnlHHhLiPvkP03tZ5y7n0Z2xO6lOU7t+jWF5YapgwqQAda/TWvyYO38B/baWdnOpWMB3QmjhkA==
+"@bugsnag/browser@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@bugsnag/browser/-/browser-7.0.0.tgz#c0897815fcd440d3556c0586ac5d1a60db341cef"
+  integrity sha512-EElLeBuWNRCRsLibyvYZaVJUdseNiRLP8UBp6vBr6tsug3MEtKfQgG4kkA+NIfZnStC10tzPfThJz2o76Qbj+Q==
 
-"@bugsnag/js@^6.5.2":
-  version "6.5.2"
-  resolved "https://registry.yarnpkg.com/@bugsnag/js/-/js-6.5.2.tgz#810383aa7a2246639041bb9031ab316432959527"
-  integrity sha512-4ibw624fM5+Y/WSuo3T/MsJVtslsPV8X0MxFuRxdvpKVUXX216d8hN8E/bG4hr7aipqQOGhBYDqSzeL2wgmh0Q==
+"@bugsnag/js@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@bugsnag/js/-/js-7.0.0.tgz#fe9ce205b9f571df1a31ccc7a713ccfe87947e86"
+  integrity sha512-gwDCsYL8ROh3ZdQxsoHgFG6LiGzZ3SbXrC1P7pQIl3SDxBH4SQSBFIPMgrHxPG+8xZJPaC+08eFCA4dKkywMwQ==
   dependencies:
-    "@bugsnag/browser" "^6.5.2"
-    "@bugsnag/node" "^6.5.2"
+    "@bugsnag/browser" "^7.0.0"
+    "@bugsnag/node" "^7.0.0"
 
-"@bugsnag/node@^6.5.2":
-  version "6.5.2"
-  resolved "https://registry.yarnpkg.com/@bugsnag/node/-/node-6.5.2.tgz#7bc2d0d1c7a682784be388404ab728a80b7ae2b9"
-  integrity sha512-KQ1twKoOttMCYsHv7OXUVsommVcrk6RGQ5YoZGlTbREhccbzsvjbiXPKiY31Qc7OXKvaJwSXhnOKrQTpRleFUg==
+"@bugsnag/node@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@bugsnag/node/-/node-7.0.0.tgz#99102cf4092c27aae5ed0b771293f5089540ebc6"
+  integrity sha512-YmedKskqv9yfxf3FH8P8UPQncyg0YCWbhcvPVAIw/g/Bbl/5EJjMjcFt5TNZWg94p1IRnXyll5vBL+KErCvOVA==
   dependencies:
     byline "^5.0.0"
     error-stack-parser "^2.0.2"

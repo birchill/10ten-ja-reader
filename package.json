@@ -65,7 +65,7 @@
   },
   "dependencies": {
     "@birchill/hikibiki-data": "^2.4.0",
-    "@bugsnag/js": "^6.5.2",
+    "@bugsnag/js": "^7.0.0",
     "husky": "^4.2.5",
     "lint-staged": "^10.1.6",
     "typescript": "^3.8.3",
