@@ -302,7 +302,7 @@ export class Dictionary {
     const barLessWord = input
       .replace(/([おこそとほもよろをうくすつぬふむゆる])ー/g, '$1う')
       .replace(/([あかさたなはまやらわ])ー/g, '$1あ')
-      .replace(/([いきしちにひみり])ー/g, '$1あ')
+      .replace(/([いきしちにひみり])ー/g, '$1い')
       .replace(/([えけせてねへめれ])ー/g, '$1え');
     if (barLessWord === input) {
       return existingResult;
