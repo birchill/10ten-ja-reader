@@ -153,6 +153,17 @@ describe('Dictionary', () => {
     expect(result!.matchLen).toBe(4);
     result = await sharedDict.wordSearch({ input: '行こー' });
     expect(result!.matchLen).toBe(3);
+
+    // A bug was matching input 'クリスチーナ' to entry 'クリスチアナ'
+    result = await sharedDict.wordSearch({
+      input: 'クリスチーナ',
+      doNames: true,
+    });
+    let christiannaRegex = /クリスチアナ/g;
+    let didFindChristiana = result!.data
+        .map((entry) => christiannaRegex.test(entry[0]))
+        .reduce((matchEntryA, matchEntryB) => matchEntryA || matchEntryB);
+    expect(didFindChristiana).toBe(false);
   });
 
   it('does not split yo-on', async () => {
