@@ -48,8 +48,7 @@
 import '../manifest.json.src';
 import '../html/background.html.src';
 
-import bugsnag from '@bugsnag/js';
-import { Bugsnag } from '@bugsnag/js';
+import Bugsnag, { Event as BugsnagEvent } from '@bugsnag/browser';
 import {
   DatabaseState,
   KanjiDatabase,
@@ -89,60 +88,59 @@ const getExtensionInstallId = (): string => {
   }
 };
 
-const bugsnagClient = bugsnag({
+let releaseStage = 'production';
+
+browser.management.getSelf().then((info) => {
+  if (info.installType === 'development') {
+    releaseStage = 'development';
+  }
+});
+
+const manifest = browser.runtime.getManifest();
+
+const bugsnagClient = Bugsnag.start({
   apiKey: 'e707c9ae84265d122b019103641e6462',
-  autoBreadcrumbs: false,
-  autoCaptureSessions: false,
-  beforeSend: (report: Bugsnag.Report) => {
+  appVersion: manifest.version_name || manifest.version,
+  autoTrackSessions: false,
+  collectUserIp: false,
+  enabledBreadcrumbTypes: ['log', 'error'],
+  logger: null,
+  onError: (event: BugsnagEvent) => {
     // Due to Firefox bug 1561911
     // (https://bugzilla.mozilla.org/show_bug.cgi?id=1561911)
     // we can get spurious unhandledrejections when using streams.
     // Until the fix for that bug is in ESR, we filter them out here.
-    if (
-      report.errorClass === 'DownloadError' &&
-      (report as any)._handledState?.unhandled
-    ) {
+    if (event.errors[0].errorClass === 'DownloadError' && event.unhandled) {
       return false;
     }
 
+    // Fix up grouping
     if (
-      report.errorClass === 'DownloadError' &&
-      report.originalError &&
-      typeof report.originalError.url !== 'undefined'
+      event.errors[0].errorClass === 'DownloadError' &&
+      event.originalError &&
+      typeof event.originalError.url !== 'undefined'
     ) {
       // Group by URL and error code
-      report.groupingHash =
-        String(report.originalError.code) + report.originalError.url;
-      report.request.url = report.originalError.url;
+      event.groupingHash =
+        String(event.originalError.code) + event.originalError.url;
+      event.request.url = event.originalError.url;
     }
 
-    if (report.errorClass === 'ExtensionStorageError' && report.originalError) {
-      const { key, action } = report.originalError;
-      report.groupingHash = `${action}:${key}`;
+    if (
+      event.errors[0].errorClass === 'ExtensionStorageError' &&
+      event.originalError
+    ) {
+      const { key, action } = event.originalError;
+      event.groupingHash = `${action}:${key}`;
     }
+
+    // Update release stage here since we can only fetch this async but
+    // bugsnag doesn't allow updating the instance after initializing.
+    event.app.releaseStage = releaseStage;
 
     return true;
   },
-  collectUserIp: false,
-  consoleBreadcrumbsEnabled: true,
-  logger: null,
   user: { id: getExtensionInstallId() },
-});
-
-browser.management.getSelf().then(info => {
-  let rikaiVersion = info.version;
-  // version_name is a Chrome-only thing but Chrome doesn't allow alpha
-  // characters in the version number (Firefox does) so we stick the "alpha"
-  // "beta" designation in the name.
-  if ((info as any).versionName) {
-    rikaiVersion = (info as any).versionName;
-  }
-
-  // bugsnag-ts typings don't seem to help here
-  (bugsnagClient.app as any).version = rikaiVersion;
-  if (info.installType === 'development') {
-    (bugsnagClient.app as any).releaseStage = 'development';
-  }
 });
 
 //
@@ -177,7 +175,7 @@ class ExtensionStorageError extends Error {
 
 const config = new Config();
 
-config.addChangeListener(changes => {
+config.addChangeListener((changes) => {
   // Add / remove context menu as needed
   if (changes.hasOwnProperty('contextMenuEnable')) {
     if ((changes as any).contextMenuEnable.newValue) {
@@ -214,19 +212,21 @@ config.addChangeListener(changes => {
         (changes as any).toggleKey.newValue
       }`;
       console.error(message);
-      bugsnagClient.notify(message, { severity: 'warning' });
+      Bugsnag.notify(message, (event) => {
+        event.severity = 'warning';
+      });
     }
   }
 
   // Update dictionary language
   if (changes.hasOwnProperty('dictLang')) {
     const newLang = (changes as any).dictLang.newValue;
-    bugsnagClient.leaveBreadcrumb(
+    Bugsnag.leaveBreadcrumb(
       `Changing language of kanji database to ${newLang}.`
     );
 
     kanjiDb.setPreferredLang(newLang).then(() => {
-      bugsnagClient.leaveBreadcrumb(
+      Bugsnag.leaveBreadcrumb(
         `Changed language of kanji database to ${newLang}. Running initial update...`
       );
       return updateKanjiDb();
@@ -294,7 +294,9 @@ config.ready.then(() => {
         } catch (e) {
           const message = `On startup, failed to update toggle key to ${config.toggleKey}`;
           console.error(message);
-          bugsnagClient.notify(message, { severity: 'warning' });
+          Bugsnag.notify(message, (event) => {
+            event.severity = 'warning';
+          });
         }
       }
     });
@@ -355,7 +357,9 @@ function initKanjiDb() {
 
       kanjiDb.addChangeListener(updateDbStatus);
       kanjiDb.onWarning = (message: string) => {
-        bugsnagClient.notify(message, { severity: 'warning' });
+        Bugsnag.notify(message, (event) => {
+          event.severity = 'warning';
+        });
       };
 
       try {
@@ -418,9 +422,11 @@ async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
     } catch (e) {
       // Extension storage can sometimes randomly fail with 'An unexpected error
       // occurred'. Ignore, but log it.
-      bugsnagClient.notify(
+      Bugsnag.notify(
         new ExtensionStorageError({ key: 'lastUpdateKanjiDb', action: 'get' }),
-        { severity: 'warning' }
+        (event) => {
+          event.severity = 'warning';
+        }
       );
     }
   }
@@ -435,9 +441,7 @@ async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
     } catch (e) {
       console.log('Error posting message');
       console.log(e);
-      bugsnagClient.notify(e || '(Error posting message update message)', {
-        severity: 'error',
-      });
+      Bugsnag.notify(e || '(Error posting message update message)');
     }
   }
 }
@@ -452,16 +456,14 @@ async function maybeDownloadData() {
   // Set initial language
   await config.ready;
   try {
-    bugsnagClient.leaveBreadcrumb(
+    Bugsnag.leaveBreadcrumb(
       `Setting initial language of kanji database to ${config.dictLang}.`
     );
     await kanjiDb.setPreferredLang(config.dictLang);
-    bugsnagClient.leaveBreadcrumb(
-      `Successfully set language to ${config.dictLang}.`
-    );
+    Bugsnag.leaveBreadcrumb(`Successfully set language to ${config.dictLang}.`);
   } catch (e) {
     console.error(e);
-    bugsnagClient.notify(e, { severity: 'error' });
+    Bugsnag.notify(e);
   }
 
   // Even if the database is not empty, check if it needs an update.
@@ -476,16 +478,14 @@ async function maybeDownloadData() {
     } catch (e) {
       // Ignore
     }
-    bugsnagClient.leaveBreadcrumb(
-      `Got last update time of ${lastUpdateKanjiDb}`
-    );
+    Bugsnag.leaveBreadcrumb(`Got last update time of ${lastUpdateKanjiDb}`);
 
     // If we updated within the minimum window then we're done.
     if (
       lastUpdateKanjiDb &&
       Date.now() - lastUpdateKanjiDb < UPDATE_THRESHOLD_MS
     ) {
-      bugsnagClient.leaveBreadcrumb('Downloaded data is up-to-date');
+      Bugsnag.leaveBreadcrumb('Downloaded data is up-to-date');
       return;
     }
   }
@@ -508,7 +508,7 @@ async function updateKanjiDb({
     db: kanjiDb,
     forceUpdate,
     onUpdateComplete: async () => {
-      bugsnagClient.leaveBreadcrumb('Successfully updated kanji database');
+      Bugsnag.leaveBreadcrumb('Successfully updated kanji database');
 
       lastUpdateError = undefined;
       updateDbStatus();
@@ -519,20 +519,22 @@ async function updateKanjiDb({
           lastUpdateKanjiDb: new Date().getTime(),
         });
       } catch (e) {
-        bugsnagClient.notify(
+        Bugsnag.notify(
           new ExtensionStorageError({
             key: 'lastUpdateKanjiDb',
             action: 'set',
           }),
-          { severity: 'warning' }
+          (event) => {
+            event.severity = 'warning';
+          }
         );
       }
     },
-    onUpdateError: params => {
+    onUpdateError: (params) => {
       const { error, nextRetry, retryCount } = params;
       if (nextRetry) {
         const diffInMs = nextRetry.getTime() - Date.now();
-        bugsnagClient.leaveBreadcrumb(
+        Bugsnag.leaveBreadcrumb(
           `Kanji database update encountered ${error.name} error. Retrying in ${diffInMs}ms.`
         );
 
@@ -543,12 +545,14 @@ async function updateKanjiDb({
         // However, if a lot of clients are failing multiple times to fetch
         // a particular resource, we want to know.
         if (retryCount === 5) {
-          bugsnagClient.notify(error, { severity: 'warning' });
+          Bugsnag.notify(error, (event) => {
+            event.severity = 'warning';
+          });
         }
       } else if (error.name !== 'AbortError' && error.name !== 'OfflineError') {
-        bugsnagClient.notify(error, { severity: 'error' });
+        Bugsnag.notify(error);
       } else {
-        bugsnagClient.leaveBreadcrumb(
+        Bugsnag.leaveBreadcrumb(
           `Kanji database update encountered ${error.name} error`
         );
       }
@@ -574,9 +578,7 @@ browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
           initKanjiDb();
           kanjiDbInitialized
             .then(() => {
-              bugsnagClient.leaveBreadcrumb(
-                'Manually triggering database update'
-              );
+              Bugsnag.leaveBreadcrumb('Manually triggering database update');
               maybeDownloadData();
             })
             .catch(() => {
@@ -588,17 +590,17 @@ browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
         break;
 
       case 'cancelupdatedb':
-        bugsnagClient.leaveBreadcrumb('Manually canceling database update');
+        Bugsnag.leaveBreadcrumb('Manually canceling database update');
         cancelUpdateWithRetry(kanjiDb);
         break;
 
       case 'deletedb':
-        bugsnagClient.leaveBreadcrumb('Manually deleting database');
+        Bugsnag.leaveBreadcrumb('Manually deleting database');
         kanjiDb.destroy();
         break;
 
       case 'reporterror':
-        bugsnagClient.notify(evt.message);
+        Bugsnag.notify(evt.message);
         break;
     }
   });
@@ -640,7 +642,7 @@ async function loadDictionary(): Promise<void> {
   }
   flatFileDictState = FlatFileDictState.Ok;
 
-  bugsnagClient.leaveBreadcrumb('Loaded dictionary successfully');
+  Bugsnag.leaveBreadcrumb('Loaded dictionary successfully');
 }
 
 //
@@ -678,8 +680,8 @@ async function removeContextMenu() {
     await browser.contextMenus.remove(menuId);
   } catch (e) {
     console.error(`Failed to remove context menu: ${e}`);
-    bugsnagClient.notify(`Failed to remove context menu: ${e}`, {
-      severity: 'warning',
+    Bugsnag.notify(`Failed to remove context menu: ${e}`, (event) => {
+      event.severity = 'warning';
     });
   }
 
@@ -713,11 +715,9 @@ async function enableTab(tab: browser.tabs.Tab) {
     // Trigger download but don't wait on it. We don't block on this because
     // we currently only download the kanji data and we don't need it to be
     // downloaded before we can do something useful.
-    bugsnagClient.leaveBreadcrumb(
-      'Triggering database update from enableTab...'
-    );
+    Bugsnag.leaveBreadcrumb('Triggering database update from enableTab...');
     maybeDownloadData().then(() => {
-      bugsnagClient.leaveBreadcrumb(
+      Bugsnag.leaveBreadcrumb(
         'Finished triggering database update from enableTab'
       );
     });
@@ -734,9 +734,11 @@ async function enableTab(tab: browser.tabs.Tab) {
       });
     enabled = true;
     browser.storage.local.set({ enabled: true }).catch(() => {
-      bugsnagClient.notify(
+      Bugsnag.notify(
         new ExtensionStorageError({ key: 'enabled', action: 'set' }),
-        { severity: 'warning' }
+        (event) => {
+          event.severity = 'warning';
+        }
       );
     });
 
@@ -748,7 +750,7 @@ async function enableTab(tab: browser.tabs.Tab) {
       updateError: lastUpdateError,
     });
   } catch (e) {
-    bugsnagClient.notify(e || '(No error)', { severity: 'error' });
+    Bugsnag.notify(e || '(No error)');
 
     updateBrowserAction({
       popupStyle: config.popupStyle,
@@ -813,7 +815,7 @@ function toggle(tab: browser.tabs.Tab) {
   if (enabled) {
     disableAll();
   } else {
-    bugsnagClient.leaveBreadcrumb('Enabling tab from toggle');
+    Bugsnag.leaveBreadcrumb('Enabling tab from toggle');
     enableTab(tab);
   }
 }
@@ -830,8 +832,8 @@ let showIndex: number = 0;
 function search(text: string, dictOption: DictMode) {
   if (!flatFileDict) {
     console.error('Dictionary not initialized in search');
-    bugsnagClient.notify('Dictionary not initialized in search', {
-      severity: 'warning',
+    Bugsnag.notify('Dictionary not initialized in search', (event) => {
+      event.severity = 'warning';
     });
     return;
   }
@@ -871,7 +873,7 @@ function search(text: string, dictOption: DictMode) {
 
   const originalMode = showIndex;
   return (function loopOverDictionaries(text): Promise<SearchResult | null> {
-    return searchCurrentDict(text).then(result => {
+    return searchCurrentDict(text).then((result) => {
       if (result) {
         return result;
       }
@@ -906,9 +908,7 @@ async function searchKanji(kanji: string): Promise<KanjiResult | null> {
     result = await kanjiDb.getKanji([kanji]);
   } catch (e) {
     console.error(e);
-    bugsnagClient.notify(e || '(Error looking up kanji)', {
-      severity: 'error',
-    });
+    Bugsnag.notify(e || '(Error looking up kanji)');
     return null;
   }
 
@@ -917,8 +917,8 @@ async function searchKanji(kanji: string): Promise<KanjiResult | null> {
   }
 
   if (result.length > 1) {
-    bugsnagClient.notify(`Got more than one result for ${kanji}`, {
-      severity: 'warning',
+    Bugsnag.notify(`Got more than one result for ${kanji}`, (event) => {
+      event.severity = 'warning';
     });
   }
 
@@ -929,7 +929,7 @@ async function searchKanji(kanji: string): Promise<KanjiResult | null> {
 // Browser event handlers
 //
 
-browser.tabs.onActivated.addListener(activeInfo => {
+browser.tabs.onActivated.addListener((activeInfo) => {
   onTabSelect(activeInfo.tabId);
 });
 
@@ -950,7 +950,7 @@ browser.runtime.onMessage.addListener(
           onTabSelect(sender.tab.id);
         } else {
           console.error('No sender tab in enable? request');
-          bugsnagClient.leaveBreadcrumb('No sender tab in enable? request');
+          Bugsnag.leaveBreadcrumb('No sender tab in enable? request');
         }
         break;
 
@@ -964,10 +964,10 @@ browser.runtime.onMessage.addListener(
         console.error(
           `Unrecognized xsearch request: ${JSON.stringify(request)}`
         );
-        bugsnagClient.notify(
+        Bugsnag.notify(
           `Unrecognized xsearch request: ${JSON.stringify(request)}`,
-          {
-            severity: 'warning',
+          (event) => {
+            event.severity = 'warning';
           }
         );
         break;
@@ -980,10 +980,10 @@ browser.runtime.onMessage.addListener(
           });
         }
         console.error('Dictionary not initialized in translate request');
-        bugsnagClient.notify(
+        Bugsnag.notify(
           'Dictionary not initialized in translate request',
-          {
-            severity: 'warning',
+          (event) => {
+            event.severity = 'warning';
           }
         );
         break;
@@ -997,7 +997,9 @@ browser.runtime.onMessage.addListener(
           typeof request.message === 'string',
           '`message` should be a string'
         );
-        bugsnagClient.notify(request.message, { severity: 'warning' });
+        Bugsnag.notify(request.message, (event) => {
+          event.severity = 'warning';
+        });
         break;
     }
   }
@@ -1022,36 +1024,34 @@ function onTabSelect(tabId: number) {
 }
 
 browser.runtime.onInstalled.addListener(async () => {
-  bugsnagClient.leaveBreadcrumb(
-    'Running maybeDownloadData from onInstalled...'
-  );
+  Bugsnag.leaveBreadcrumb('Running maybeDownloadData from onInstalled...');
   await maybeDownloadData();
-  bugsnagClient.leaveBreadcrumb(
+  Bugsnag.leaveBreadcrumb(
     'Finished running maybeDownloadData from onInstalled'
   );
 });
 
 browser.runtime.onStartup.addListener(async () => {
-  bugsnagClient.leaveBreadcrumb('Running maybeDownloadData from onStartup...');
+  Bugsnag.leaveBreadcrumb('Running maybeDownloadData from onStartup...');
   await maybeDownloadData();
-  bugsnagClient.leaveBreadcrumb(
-    'Finished running maybeDownloadData from onStartup'
-  );
+  Bugsnag.leaveBreadcrumb('Finished running maybeDownloadData from onStartup');
 });
 
 // See if we were enabled on the last run
 //
 // We don't do this in onStartup because that won't run when the add-on is
 // reloaded and we want to re-enable ourselves in that case too.
-(async function() {
+(async function () {
   let getEnabledResult;
   try {
     getEnabledResult = await browser.storage.local.get('enabled');
   } catch (e) {
     // If extension storage fails. Just ignore.
-    bugsnagClient.notify(
+    Bugsnag.notify(
       new ExtensionStorageError({ key: 'enabled', action: 'get' }),
-      { severity: 'warning' }
+      (event) => {
+        event.severity = 'warning';
+      }
     );
     return;
   }
@@ -1066,7 +1066,7 @@ browser.runtime.onStartup.addListener(async () => {
       active: true,
     });
     if (tabs && tabs.length) {
-      bugsnagClient.leaveBreadcrumb(
+      Bugsnag.leaveBreadcrumb(
         'Loading because we were enabled on the previous run'
       );
       enableTab(tabs[0]);

@@ -45,7 +45,7 @@
 
 */
 
-import { Bugsnag } from '@bugsnag/js';
+import { Client as BugsnagClient } from '@bugsnag/browser';
 import { deinflect, deinflectL10NKeys, CandidateWord } from './deinflect';
 import { normalizeInput } from './conversion';
 import { toRomaji } from './romaji';
@@ -54,7 +54,11 @@ const WORDS_MAX_ENTRIES = 7;
 const NAMES_MAX_ENTRIES = 20;
 
 interface DictionaryOptions {
-  bugsnag?: Bugsnag.Client;
+  // Although the v7 API of bugsnag-js can operate on a singleton client we
+  // still need to pass this in so that we can avoid trying to call bugsnag
+  // when running unit tests (and trying to do so would trigger errors because
+  // we failed to call start anyway).
+  bugsnag?: BugsnagClient;
 }
 
 const enum WordType {
@@ -71,7 +75,7 @@ export class Dictionary {
   nameIndex: string;
   wordDict: string;
   wordIndex: string;
-  bugsnag?: Bugsnag.Client;
+  bugsnag?: BugsnagClient;
 
   constructor(options: DictionaryOptions) {
     this.bugsnag = options.bugsnag;
@@ -121,9 +125,7 @@ export class Dictionary {
             // useful yet. But for now at least it means Firefox 56 doesn't
             // break altogether.
             if (this.bugsnag) {
-              this.bugsnag.notify('[Pre FF57] Load timed out', {
-                severity: 'error',
-              });
+              this.bugsnag.notify('[Pre FF57] Load timed out');
             }
             throw new Error(`Load of ${url} timed out.`);
           }
@@ -159,14 +161,14 @@ export class Dictionary {
         console.log(
           `Failed to load ${url}. Trying again in ${intervalToWait}ms`
         );
-        await new Promise(resolve => setTimeout(resolve, intervalToWait));
+        await new Promise((resolve) => setTimeout(resolve, intervalToWait));
       }
     }
   }
 
   readFileIntoArray(name: string): Promise<string[]> {
-    return this.readFile(name).then(text =>
-      text.split('\n').filter(line => line.length)
+    return this.readFile(name).then((text) =>
+      text.split('\n').filter((line) => line.length)
     );
   }
 
@@ -209,7 +211,7 @@ export class Dictionary {
       for (const { key, file } of files) {
         const readPromise = this.readFile(
           browser.extension.getURL(`data/${file}`)
-        ).then(text => {
+        ).then((text) => {
           (this[key] as string | string[]) = text;
         });
         readPromises.push(readPromise);
@@ -386,10 +388,7 @@ export class Dictionary {
             cache[candidate.word] = [];
             continue;
           }
-          offsets = lookupResult
-            .split(',')
-            .slice(1)
-            .map(Number);
+          offsets = lookupResult.split(',').slice(1).map(Number);
           cache[candidate.word] = offsets;
         }
 
@@ -470,9 +469,9 @@ export class Dictionary {
               reason =
                 '< ' +
                 candidate.reasons
-                  .map(reasonList =>
+                  .map((reasonList) =>
                     reasonList
-                      .map(reason =>
+                      .map((reason) =>
                         browser.i18n.getMessage(deinflectL10NKeys[reason])
                       )
                       .join(' < ')
