@@ -52,7 +52,7 @@
     "karma-mocha": "^2.0.0",
     "karma-webpack": "^4.0.2",
     "mocha": "^7.1.1",
-    "prettier": "^2.0.4",
+    "prettier": "^2.0.5",
     "semver-parser": "^3.0.4",
     "source-map-loader": "^0.2.4",
     "ts-jest": "^25.4.0",
