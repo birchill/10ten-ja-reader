@@ -3,7 +3,7 @@ import { Dictionary } from './data';
 
 // Mock browser.extension.getURL and browser.i18n.getMessage
 global.browser = {
-  extension: { getURL: jest.fn(url => url) },
+  extension: { getURL: jest.fn((url) => url) },
   i18n: {
     getMessage: (id: string) => {
       switch (id) {
@@ -74,9 +74,9 @@ global.browser = {
 
 // Mock fetch
 window.fetch = jest.fn().mockImplementation(
-  url =>
+  (url) =>
     new Promise((resolve, reject) => {
-      readFile(`${__dirname}/../${url}`, function(err, data) {
+      readFile(`${__dirname}/../${url}`, function (err, data) {
         if (err) {
           reject(err);
           return;
@@ -159,10 +159,10 @@ describe('Dictionary', () => {
       input: 'クリスチーナ',
       doNames: true,
     });
-    let christiannaRegex = /クリスチアナ/g;
-    let didFindChristiana = result!.data
-        .map((entry) => christiannaRegex.test(entry[0]))
-        .reduce((matchEntryA, matchEntryB) => matchEntryA || matchEntryB);
+    let christianaRegex = /クリスチアナ/g;
+    let didFindChristiana = result!.data.some((entry) =>
+      christianaRegex.test(entry[0])
+    );
     expect(didFindChristiana).toBe(false);
   });
 
@@ -317,8 +317,8 @@ describe('Dictionary', () => {
     // If we trim the list before sorting, however, we'll fail to include 選手.
     expect(
       result!.data
-        .map(row => row[0])
-        .some(entry => entry.indexOf('選手') !== -1)
+        .map((row) => row[0])
+        .some((entry) => entry.indexOf('選手') !== -1)
     ).toBeTruthy();
 
     // Check that we still respect the max-length limit though
@@ -331,7 +331,7 @@ describe('Dictionary', () => {
     expect(result!.data.length).toBe(5);
     expect(result!.more).toBe(false);
     const kana = result!.data
-      .map(word => {
+      .map((word) => {
         const matches = word[0].match(/^(.+?)\s+(?:\[(.*?)\])?/);
         return matches![2] || matches![1];
       })
