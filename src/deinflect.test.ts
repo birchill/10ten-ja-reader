@@ -3,7 +3,7 @@ import { deinflect, DeinflectReason } from './deinflect';
 describe('deinflect', () => {
   it('performs de-inflection', () => {
     const result = deinflect('走ります');
-    const match = result.find(candidate => candidate.word === '走る');
+    const match = result.find((candidate) => candidate.word === '走る');
     expect(match).toEqual({
       reasons: [[DeinflectReason.Polite]],
       type: 2,
@@ -13,13 +13,23 @@ describe('deinflect', () => {
 
   it('performs de-inflection recursively', () => {
     const result = deinflect('踊りたくなかった');
-    const match = result.find(candidate => candidate.word === '踊る');
+    const match = result.find((candidate) => candidate.word === '踊る');
     expect(match).toEqual({
       reasons: [
         [DeinflectReason.Tai, DeinflectReason.Negative, DeinflectReason.Past],
       ],
       type: 2,
       word: '踊る',
+    });
+  });
+
+  it('deinflects -masu stem forms', () => {
+    const result = deinflect('食べ');
+    const match = result.find((candidate) => candidate.word === '食べる');
+    expect(match).toEqual({
+      reasons: [[DeinflectReason.MasuStem]],
+      type: 1,
+      word: '食べる',
     });
   });
 
@@ -40,7 +50,7 @@ describe('deinflect', () => {
 
     for (const [inflected, plain, type] of cases) {
       const result = deinflect(inflected as string);
-      const match = result.find(candidate => candidate.word == plain);
+      const match = result.find((candidate) => candidate.word == plain);
       expect(match).toEqual({
         reasons: [[DeinflectReason.Negative]],
         type: type,
@@ -51,7 +61,7 @@ describe('deinflect', () => {
 
   it('recursively deinflects -nu', () => {
     const result = deinflect('食べられぬ');
-    const match = result.find(candidate => candidate.word === '食べる');
+    const match = result.find((candidate) => candidate.word === '食べる');
     expect(match).toEqual({
       reasons: [[DeinflectReason.PotentialOrPassive, DeinflectReason.Negative]],
       type: 9,
@@ -61,10 +71,10 @@ describe('deinflect', () => {
 
   it('deinflects ki to kuru', () => {
     const result = deinflect('き');
-    const match = result.find(candidate => candidate.word === 'くる');
+    const match = result.find((candidate) => candidate.word === 'くる');
     expect(match).toEqual({
       reasons: [[DeinflectReason.MasuStem]],
-      type: 0,
+      type: 8,
       word: 'くる',
     });
   });
@@ -85,7 +95,7 @@ describe('deinflect', () => {
 
     for (const [inflected, plain, reason, type] of cases) {
       const result = deinflect(inflected as string);
-      const match = result.find(candidate => candidate.word == plain);
+      const match = result.find((candidate) => candidate.word == plain);
       expect(match).toEqual({
         reasons: [[reason]],
         type,
@@ -96,7 +106,7 @@ describe('deinflect', () => {
 
   it('does NOT deinflect other verbs ending in く like 行く', () => {
     const result = deinflect('もどって');
-    const match = result.find(candidate => candidate.word == 'もどく');
+    const match = result.find((candidate) => candidate.word == 'もどく');
     expect(match).toBeUndefined();
   });
 
@@ -121,7 +131,7 @@ describe('deinflect', () => {
 
     for (const [inflected, plain] of cases) {
       const result = deinflect(inflected);
-      const match = result.find(candidate => candidate.word == plain);
+      const match = result.find((candidate) => candidate.word == plain);
       expect(match).toEqual({
         reasons: [[DeinflectReason.Past]],
         type: 2,
@@ -207,7 +217,7 @@ describe('deinflect', () => {
 
     for (let [inflected, plain, type, reasons] of cases) {
       const result = deinflect(inflected);
-      const match = result.find(candidate => candidate.word == plain);
+      const match = result.find((candidate) => candidate.word == plain);
       expect(match).toEqual({
         reasons: reasons ? [reasons] : [[DeinflectReason.Continuous]],
         type,
@@ -217,7 +227,7 @@ describe('deinflect', () => {
 
     // Check we don't get false positives
     const result = deinflect('食べて');
-    const match = result.find(candidate => candidate.word == '食べる');
+    const match = result.find((candidate) => candidate.word == '食べる');
     expect(match).toBeDefined();
     expect(match!.reasons).not.toContainEqual([DeinflectReason.Continuous]);
   });

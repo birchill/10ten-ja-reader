@@ -454,56 +454,56 @@ const deinflectRuleData: Array<[string, string, number, number]> = [
   ['んで', 'ぬ', 640, DeinflectReason.Te],
   ['んで', 'ぶ', 640, DeinflectReason.Te],
   ['んで', 'む', 640, DeinflectReason.Te],
-  ['い', 'いる', 128, DeinflectReason.MasuStem],
-  ['い', 'う', 128, DeinflectReason.MasuStem],
+  ['い', 'いる', 384, DeinflectReason.MasuStem],
+  ['い', 'う', 640, DeinflectReason.MasuStem],
   ['い', 'る', 2176, DeinflectReason.Imperative],
   ['え', 'う', 640, DeinflectReason.Imperative],
-  ['え', 'える', 128, DeinflectReason.MasuStem],
-  ['き', 'きる', 128, DeinflectReason.MasuStem],
-  ['き', 'く', 128, DeinflectReason.MasuStem],
-  ['き', 'くる', 128, DeinflectReason.MasuStem],
-  ['ぎ', 'ぎる', 128, DeinflectReason.MasuStem],
-  ['ぎ', 'ぐ', 128, DeinflectReason.MasuStem],
+  ['え', 'える', 384, DeinflectReason.MasuStem],
+  ['き', 'きる', 384, DeinflectReason.MasuStem],
+  ['き', 'く', 640, DeinflectReason.MasuStem],
+  ['き', 'くる', 2176, DeinflectReason.MasuStem],
+  ['ぎ', 'ぎる', 384, DeinflectReason.MasuStem],
+  ['ぎ', 'ぐ', 640, DeinflectReason.MasuStem],
   ['く', 'い', 1152, DeinflectReason.Adv],
   ['け', 'く', 640, DeinflectReason.Imperative],
-  ['け', 'ける', 128, DeinflectReason.MasuStem],
+  ['け', 'ける', 384, DeinflectReason.MasuStem],
   ['げ', 'ぐ', 640, DeinflectReason.Imperative],
-  ['げ', 'げる', 128, DeinflectReason.MasuStem],
+  ['げ', 'げる', 384, DeinflectReason.MasuStem],
   ['さ', 'い', 1152, DeinflectReason.Noun],
-  ['し', 'す', 128, DeinflectReason.MasuStem],
-  ['じ', 'じる', 128, DeinflectReason.MasuStem],
+  ['し', 'す', 640, DeinflectReason.MasuStem],
+  ['じ', 'じる', 384, DeinflectReason.MasuStem],
   ['ず', 'る', 2432, DeinflectReason.Zu],
   ['せ', 'す', 640, DeinflectReason.Imperative],
-  ['せ', 'せる', 128, DeinflectReason.MasuStem],
-  ['ぜ', 'ぜる', 128, DeinflectReason.MasuStem],
+  ['せ', 'せる', 384, DeinflectReason.MasuStem],
+  ['ぜ', 'ぜる', 384, DeinflectReason.MasuStem],
   ['た', 'る', 2432, DeinflectReason.Past],
-  ['ち', 'ちる', 128, DeinflectReason.MasuStem],
-  ['ち', 'つ', 128, DeinflectReason.MasuStem],
+  ['ち', 'ちる', 384, DeinflectReason.MasuStem],
+  ['ち', 'つ', 640, DeinflectReason.MasuStem],
   ['て', 'つ', 640, DeinflectReason.Imperative],
-  ['て', 'てる', 128, DeinflectReason.MasuStem],
+  ['て', 'てる', 384, DeinflectReason.MasuStem],
   ['て', 'る', 2432, DeinflectReason.Te],
-  ['で', 'でる', 128, DeinflectReason.MasuStem],
+  ['で', 'でる', 384, DeinflectReason.MasuStem],
   ['な', '', 7040, DeinflectReason.ImperativeNegative],
-  ['に', 'にる', 128, DeinflectReason.MasuStem],
-  ['に', 'ぬ', 128, DeinflectReason.MasuStem],
+  ['に', 'にる', 384, DeinflectReason.MasuStem],
+  ['に', 'ぬ', 640, DeinflectReason.MasuStem],
   ['ぬ', 'る', 2432, DeinflectReason.Negative],
   ['ね', 'ぬ', 640, DeinflectReason.Imperative],
-  ['ね', 'ねる', 128, DeinflectReason.MasuStem],
-  ['ひ', 'ひる', 128, DeinflectReason.MasuStem],
-  ['び', 'びる', 128, DeinflectReason.MasuStem],
-  ['び', 'ぶ', 128, DeinflectReason.MasuStem],
-  ['へ', 'へる', 128, DeinflectReason.MasuStem],
+  ['ね', 'ねる', 384, DeinflectReason.MasuStem],
+  ['ひ', 'ひる', 384, DeinflectReason.MasuStem],
+  ['び', 'びる', 384, DeinflectReason.MasuStem],
+  ['び', 'ぶ', 640, DeinflectReason.MasuStem],
+  ['へ', 'へる', 384, DeinflectReason.MasuStem],
   ['べ', 'ぶ', 640, DeinflectReason.Imperative],
-  ['べ', 'べる', 128, DeinflectReason.MasuStem],
-  ['み', 'みる', 128, DeinflectReason.MasuStem],
-  ['み', 'む', 128, DeinflectReason.MasuStem],
+  ['べ', 'べる', 384, DeinflectReason.MasuStem],
+  ['み', 'みる', 384, DeinflectReason.MasuStem],
+  ['み', 'む', 640, DeinflectReason.MasuStem],
   ['め', 'む', 640, DeinflectReason.Imperative],
-  ['め', 'める', 128, DeinflectReason.MasuStem],
+  ['め', 'める', 384, DeinflectReason.MasuStem],
   ['よ', 'る', 384, DeinflectReason.Imperative],
-  ['り', 'りる', 128, DeinflectReason.MasuStem],
-  ['り', 'る', 128, DeinflectReason.MasuStem],
+  ['り', 'りる', 384, DeinflectReason.MasuStem],
+  ['り', 'る', 640, DeinflectReason.MasuStem],
   ['れ', 'る', 640, DeinflectReason.Imperative],
-  ['れ', 'れる', 128, DeinflectReason.MasuStem],
+  ['れ', 'れる', 384, DeinflectReason.MasuStem],
   ['ろ', 'る', 384, DeinflectReason.Imperative],
 ];
 
@@ -528,15 +528,15 @@ interface DeinflectRule {
   //             = 513
   //
   // When the from type accepts anything BUT one of the above word types (e.g.
-  // a verb stem), the highest bit is set. For example, consider the
-  // deinflection rule that allows 食べ (imperative) to be de-inflected to
-  // 食べる: べ→べる.
+  // a verb stem), the highest bit is set.
   //
-  // In this case, the to-type is an ichidan/ru-verb, while the from type is
-  // basically anything but NOT the result of any other deinflection (since they
-  // never produce verb stems). For this case the highest bit of the from-type
-  // is set so that it does NOT match any of the existing word types but it DOES
-  // match when we compare with 0xff (the mask we use for the initial input).
+  // For example, consider the deinflection rule that allows 食べ (imperative)
+  // to be de-inflected to 食べる: べ→べる. In this case, the to-type is an
+  // ichidan/ru-verb, while the from type is basically anything but NOT the
+  // result of any other deinflection (since they never produce verb stems). For
+  // this case the highest bit of the from-type is set so that it does NOT match
+  // any of the existing word types but it DOES match when we compare with 0xff
+  // (the mask we use for the initial input).
   //
   // i.e. from-type = 10000000
   //      to-type   = WordType.IchidanVerb = 1
@@ -628,8 +628,25 @@ export function deinflect(word: string): CandidateWord[] {
 
   let i = 0;
   do {
-    const word = result[i].word;
-    const type = result[i].type;
+    const thisCandidate = result[i];
+
+    // Don't deinflect masu-stem results any further since they should already
+    // be the plain form.
+    //
+    // Without this we would take something like 食べて, try deinflecting it as
+    // a masu stem into 食べてる and then try de-inflecting it as a continuous
+    // form. However, we should just stop immediately after de-inflecting to
+    // the plain form.
+    if (
+      thisCandidate.reasons.length === 1 &&
+      thisCandidate.reasons[0].length === 1 &&
+      thisCandidate.reasons[0][0] === DeinflectReason.MasuStem
+    ) {
+      continue;
+    }
+
+    const word = thisCandidate.word;
+    const type = thisCandidate.type;
 
     for (const ruleGroup of ruleGroups) {
       if (ruleGroup.fromLen <= word.length) {
@@ -660,7 +677,7 @@ export function deinflect(word: string): CandidateWord[] {
 
             // Deep clone multidimensional array
             const reasons = [];
-            for (const array of result[i].reasons) {
+            for (const array of thisCandidate.reasons) {
               reasons.push(Array.from(array));
             }
             if (reasons.length) {
