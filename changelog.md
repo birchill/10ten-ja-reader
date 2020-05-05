@@ -2,6 +2,9 @@
 
 * Ignore <kbd>Shift</kbd> when combined with other modifier keys
   ([#235](https://github.com/birtles/rikaichamp/issues/235))
+* Fixed a bug in handling ー after an い sound
+  ([#246](https://github.com/birtles/rikaichamp/issues/246))
+  thanks to [@claudiofreitas](https://github.com/claudiofreitas).
 
 ## 0.1.17 (2020-04-31)
 
