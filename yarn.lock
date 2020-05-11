@@ -9710,10 +9710,10 @@ semver-diff@^3.1.1:
   dependencies:
     semver "^6.3.0"
 
-semver-parser@^3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/semver-parser/-/semver-parser-3.0.4.tgz#4dbd9af66343f926e64c28ef7a941be7a7e757ea"
-  integrity sha512-Le/VDJdVI9Al8FV/ImlPwzSYoMu3HgATN+hvMz3CcgXOpiYBQgRoEnuELzTkNFES5bxkyJbUFtFDWyXudB/RRA==
+semver-parser@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/semver-parser/-/semver-parser-3.0.5.tgz#c1fd051a26dd1b2e373bce0d902003355be087a5"
+  integrity sha512-lL0HLwNEw9rMRykAXqmAjoGyv7GLR3OGqYIVr+KCGw1AEMQNT45JTlEaPEdcZpOC4mhO9bDjey7+bJLvUfq+Sw==
 
 semver-regex@^2.0.0:
   version "2.0.0"
