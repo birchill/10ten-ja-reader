@@ -1,4 +1,4 @@
-import { kanaToHiragana } from './conversion';
+import { normalizeKana } from './conversion';
 
 // Convert using a modified Hepburn-ish romajification
 
@@ -206,7 +206,7 @@ const maxReplacementLength = Math.max(
 const replacementMap = new Map(replacements);
 
 export function toRomaji(kana: string): string {
-  const [hiragana] = kanaToHiragana(kana);
+  const [hiragana] = normalizeKana(kana);
   let result = '';
 
   // Special handling for っ so we can handle すっっっっっっごく high-tension

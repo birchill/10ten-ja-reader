@@ -7,6 +7,8 @@
   thanks to [@claudiofreitas](https://github.com/claudiofreitas)
 * Fixed regression to recognizing -masu stem forms
   ([#245](https://github.com/birtles/rikaichamp/issues/245))
+* Fixed recognizing decomposed forms
+  ([#264](https://github.com/birtles/rikaichamp/issues/264))
 
 ## 0.1.17 (2020-04-31)
 
