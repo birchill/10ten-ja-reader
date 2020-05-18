@@ -1,4 +1,8 @@
-## 0.1.18 (Not yet released)
+## 0.1.19 (Not yet released)
+
+(Nothing yet)
+
+## 0.1.18 (2020-05-18)
 
 * Ignore <kbd>Shift</kbd> when combined with other modifier keys
   ([#235](https://github.com/birtles/rikaichamp/issues/235))
