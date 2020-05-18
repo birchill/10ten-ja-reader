@@ -68,7 +68,7 @@
     "@bugsnag/js": "^7.0.2",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.4",
-    "typescript": "^3.8.3",
+    "typescript": "^3.9.2",
     "web-ext": "^4.2.0"
   },
   "webExt": {
