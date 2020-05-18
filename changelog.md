@@ -9,6 +9,7 @@
   ([#245](https://github.com/birtles/rikaichamp/issues/245))
 * Fixed recognizing decomposed forms
   ([#264](https://github.com/birtles/rikaichamp/issues/264))
+* Updated word and name dictionaries to 2020-05-17 snapshot.
 
 ## 0.1.17 (2020-04-31)
 
