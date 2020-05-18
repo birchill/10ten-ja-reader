@@ -401,10 +401,10 @@
   resolved "https://registry.yarnpkg.com/@bugsnag/browser/-/browser-7.0.1.tgz#2a74ad98ff0288b6282f667a6bfe2910d26c70f9"
   integrity sha512-UbgX17kMWOz43h4Cm9ZZDotxPWTQYd7LToSVBYVxsaI7RZCk3ci8r/ws1uoGwAsmuUfObcvQR2dYzAYRVer4EA==
 
-"@bugsnag/js@^7.0.1":
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/@bugsnag/js/-/js-7.0.1.tgz#f1603e1b40b3844903d6260f53870b520223d988"
-  integrity sha512-tReGOFCDUG1kWCNQ9AvCkVHnL015wYYAsg4XGK1hkdUIUoJk7qL8kuDRjpIe7x3vtOYi12IxZbI9mnzGiK8AsA==
+"@bugsnag/js@^7.0.2":
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/@bugsnag/js/-/js-7.0.2.tgz#8029e2e82102884da99b63a66339f22b0c76411d"
+  integrity sha512-ZeShkcs/gP9FS9ffwL9dr3c/bq+y/NcOUomcfOAV7u1BRWn3sCeBOHiChoL3polXteqkQ5G5BKq/KRUW9Lqm8w==
   dependencies:
     "@bugsnag/browser" "^7.0.1"
     "@bugsnag/node" "^7.0.1"
