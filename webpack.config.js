@@ -86,7 +86,9 @@ const firefoxConfig = {
     filename: '[name].js',
   },
   plugins: [
-    new CopyWebpackPlugin(['css/*', 'images/*.svg', 'data/*', '_locales/**/*']),
+    new CopyWebpackPlugin({
+      patterns: ['css/*', 'images/*.svg', 'data/*', '_locales/**/*'],
+    }),
     new WebExtWebpackPlugin({
       firefox,
       firefoxProfile,
@@ -110,13 +112,15 @@ const chromeConfig = {
     filename: '[name].js',
   },
   plugins: [
-    new CopyWebpackPlugin([
-      'css/*',
-      'images/*',
-      'data/*',
-      '_locales/**/*',
-      { from: 'lib/browser-polyfill.js*', to: '[name].[ext]' },
-    ]),
+    new CopyWebpackPlugin({
+      patterns: [
+        'css/*',
+        'images/*',
+        'data/*',
+        '_locales/**/*',
+        { from: 'lib/browser-polyfill.js*', to: '[name].[ext]' },
+      ],
+    }),
   ],
 };
 
