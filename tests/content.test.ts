@@ -1069,5 +1069,3 @@ describe('rikaiContent:highlighting', () => {
     assert.strictEqual(textBox.selectionEnd, 4);
   });
 });
-
-mocha.run();
