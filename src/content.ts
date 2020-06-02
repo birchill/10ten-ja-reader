@@ -717,7 +717,7 @@ export class RikaiContent {
       // Adjust matchLen if we are highlighting something meta.
       let matchLen = queryResult.matchLen;
       if (textAtPoint.meta) {
-        matchLen = Math.max(textAtPoint.meta.matchLen, textAtPoint.text.length);
+        matchLen = Math.max(textAtPoint.meta.matchLen, matchLen);
       }
       this.highlightText(textAtPoint, matchLen);
     }
@@ -1041,10 +1041,22 @@ export class RikaiContent {
     // * U+25CB is 'white circle' often used to represent a blank
     //   (U+3007 is an ideographic zero that is also sometimes used for this
     //   purpose, but this is included in the U+3001~U+30FF range.)
-    // * U+3000~U+30FF is ideographic punctuation but we skip U+3000
-    //   (ideographic space), U+3001 (、 ideographic comma), U+3002
-    //   (。 ideographic full stop), and U+3003 (〃 ditto mark) since these
-    //   are typically only going to delimit words.
+    // * U+3000~U+30FF is ideographic punctuation but we skip:
+    //
+    //    U+3000 (ideographic space),
+    //    U+3001 (、 ideographic comma),
+    //    U+3002 (。 ideographic full stop),
+    //    U+3003 (〃 ditto mark),
+    //    U+3008,U+3009 (〈〉),
+    //    U+300A,U+300B (《》),
+    //    U+300C,U+300D (「」 corner brackets for quotations),
+    //                  [ENAMDICT actually uses this in one entry,
+    //                  "ウィリアム「バッファロービル」コーディ", but I think we
+    //                  can live without being able to recognize that)
+    //    U+300E,U+300F (『 』), and
+    //    U+3010,U+3011 (【 】),
+    //
+    //   since these are typically only going to delimit words.
     // * U+3041~U+309F is the hiragana range
     // * U+30A0~U+30FF is the katakana range
     // * U+3400~U+4DBF is the CJK Unified Ideographs Extension A block (rare
@@ -1058,7 +1070,7 @@ export class RikaiContent {
     //   they're mostly going to be delimiters
     // * U+FF66~U+FF9F is halfwidth katakana
     //
-    const nonJapaneseOrDelimiter = /[^\u25cb\u3004-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff5e\uff66-\uff9f]/;
+    const nonJapaneseOrDelimiter = /[^\u25cb\u3004-\u3007\u3011-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff5e\uff66-\uff9f]/;
 
     // If we detect a Japanese era, however, we allow a different set of
     // characters.

@@ -527,6 +527,20 @@ describe('rikaiContent:text search', () => {
     assert.deepEqual(result!.meta, { era: '昭和', year: 56, matchLen: 6 });
   });
 
+  it('should stop at delimeters (even when matching years)', () => {
+    testDiv.append('昭和三大馬鹿査定」発言に');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result = subject.getTextAtPoint({
+      x: bbox.left,
+      y: bbox.top + bbox.height / 2,
+    });
+
+    assertTextResultEqual(result, '昭和三大馬鹿査定', textNode, 0, textNode, 8);
+    assert.deepEqual(result!.meta, { era: '昭和', year: 3, matchLen: 3 });
+  });
+
   it('should stop at the maximum number of characters', () => {
     testDiv.append('あいうえお');
     const textNode = testDiv.firstChild as Text;
