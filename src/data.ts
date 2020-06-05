@@ -302,10 +302,10 @@ export class Dictionary {
     // unlike おう which is pronounced as 長音. Still some people do write
     // オーサカ but it's rare enough that we simply don't deal with it yet.
     const barLessWord = input
-      .replace(/([おこそとほもよろをうくすつぬふむゆる])ー/g, '$1う')
-      .replace(/([あかさたなはまやらわ])ー/g, '$1あ')
-      .replace(/([いきしちにひみり])ー/g, '$1い')
-      .replace(/([えけせてねへめれ])ー/g, '$1え');
+      .replace(/([おこごそぞとどほぼぽもよょろをうくぐすずつづぬふむゆゅる])ー/g, '$1う')
+      .replace(/([あかがさざただなはばぱまやゃらわ])ー/g, '$1あ')
+      .replace(/([いきぎしじちぢにひびぴみり])ー/g, '$1い')
+      .replace(/([えけげせぜてでねへべぺめれ])ー/g, '$1え');
     if (barLessWord === input) {
       return existingResult;
     }
