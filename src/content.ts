@@ -1610,7 +1610,7 @@ export class RikaiContent {
       // Add the popup div
       const popup = doc.createElement('div');
       popup.setAttribute('id', 'rikaichamp-window');
-      popup.setAttribute('lang', 'ja-JP');
+      popup.setAttribute('lang', 'ja');
       popup.classList.add(`-${this._config.popupStyle}`);
       doc.documentElement.append(popup);
 
