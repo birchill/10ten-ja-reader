@@ -67,7 +67,7 @@
     "@birchill/hikibiki-data": "^3.0.0",
     "@bugsnag/js": "^7.1.1",
     "husky": "^4.2.5",
-    "lint-staged": "^10.2.9",
+    "lint-staged": "^10.2.10",
     "typescript": "^3.9.5",
     "web-ext": "^4.2.0"
   },
