@@ -65,6 +65,9 @@ export const deinflectL10NKeys: { [key: number]: string } = {
 };
 
 const deinflectRuleData: Array<[string, string, number, number]> = [
+  ['いらっしゃいませんでした', 'いらっしゃる', 640, DeinflectReason.PolitePastNegative],
+  ['おっしゃいませんでした', 'おっしゃる', 640, DeinflectReason.PolitePastNegative],
+  ['仰いませんでした', '仰る', 640, DeinflectReason.PolitePastNegative],
   ['くありませんでした', 'い', 1152, DeinflectReason.PolitePastNegative],
   ['いませんでした', 'う', 640, DeinflectReason.PolitePastNegative],
   ['きませんでした', 'く', 640, DeinflectReason.PolitePastNegative],
@@ -212,6 +215,12 @@ const deinflectRuleData: Array<[string, string, number, number]> = [
   ['副うたり', '副う', 640, DeinflectReason.Tari],
   ['厭うたら', '厭う', 640, DeinflectReason.Tara],
   ['厭うたり', '厭う', 640, DeinflectReason.Tari],
+  ['いらっしゃいました', 'いらっしゃる', 640, DeinflectReason.PolitePast],
+  ['おっしゃいました', 'おっしゃる', 640, DeinflectReason.PolitePast],
+  ['仰いました', '仰る', 640, DeinflectReason.PolitePast],
+  ['いらっしゃいます', 'いらっしゃる', 640, DeinflectReason.Polite],
+  ['おっしゃいます', 'おっしゃる', 640, DeinflectReason.Polite],
+  ['仰います', '仰る', 640, DeinflectReason.Polite],
   ['いそう', 'う', 640, DeinflectReason.Sou],
   ['いたい', 'う', 516, DeinflectReason.Tai],
   ['いたら', 'く', 640, DeinflectReason.Tara],
@@ -454,6 +463,9 @@ const deinflectRuleData: Array<[string, string, number, number]> = [
   ['んで', 'ぬ', 640, DeinflectReason.Te],
   ['んで', 'ぶ', 640, DeinflectReason.Te],
   ['んで', 'む', 640, DeinflectReason.Te],
+  ['いらっしゃい', 'いらっしゃる', 640, DeinflectReason.MasuStem],
+  ['おっしゃい', 'おっしゃる', 640, DeinflectReason.MasuStem],
+  ['仰い', '仰る', 640, DeinflectReason.MasuStem],
   ['い', 'いる', 384, DeinflectReason.MasuStem],
   ['い', 'う', 640, DeinflectReason.MasuStem],
   ['い', 'る', 2176, DeinflectReason.Imperative],
