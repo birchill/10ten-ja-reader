@@ -1,6 +1,18 @@
 ## 0.1.19 (Not yet released)
 
-(Nothing yet)
+* Fixed recognition of irregular verbs いらっしゃいます and おっしゃいます
+  ([#303](https://github.com/birtles/rikaichamp/issues/303))
+  thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
+* Fixed mis-recognition of くれる and くさせる
+  ([#301](https://github.com/birtles/rikaichamp/issues/301))
+  thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
+* Fixed recognition of ー (長音符) after ゛゜ and ゃゅょ (e.g. じーちゃん)
+  thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
+* Added language attribute to popup window so we default to Japanese characters
+  even on Chinese language pages
+  thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
+* Fixed selection range when matching years
+  ([#286](https://github.com/birtles/rikaichamp/issues/286))
 
 ## 0.1.18 (2020-05-18)
 
