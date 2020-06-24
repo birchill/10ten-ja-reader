@@ -1,4 +1,8 @@
-## 0.1.19 (Not yet released)
+## 0.1.20 (Not yet released)
+
+(Nothing yet)
+
+## 0.1.19 (2020-06-24)
 
 * Fixed recognition of irregular verbs いらっしゃいます and おっしゃいます
   ([#303](https://github.com/birtles/rikaichamp/issues/303))
