@@ -13,6 +13,7 @@
   thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
 * Fixed selection range when matching years
   ([#286](https://github.com/birtles/rikaichamp/issues/286))
+* Updated word and name dictionaries to 2020-06-23 snapshot
 
 ## 0.1.18 (2020-05-18)
 
