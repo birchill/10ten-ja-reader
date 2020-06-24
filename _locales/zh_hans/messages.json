@@ -138,7 +138,7 @@
     }
   },
   "content_kanji_nanori_label": {
-    "message": "作人名时的读法",
+    "message": "人名读法",
     "description": "Label given to name readings"
   },
   "content_kanji_components_label": {
@@ -253,49 +253,49 @@
     "description": "Typically Rikaichamp shows the popup whenever it is active, but if these keys are configured the popup while only show while they are held down"
   },
   "options_hold_to_show_keys_explanation": {
-    "message": "The popup will only be shown while these keys are held down. If no keys are selected, the popup will be displayed whenever Rikaichamp is enabled.",
+    "message": "在这里选择按键，按住这些按键时划词，才会显示 Rikaichamp 窗口。如果不选择任何按键，只要在 Rikaichamp 已启用时划词，就会显示窗口。",
     "description": "This is supplementary explanation to options_hold_to_show_keys_explanation"
   },
   "options_popup_keys_subheading": {
-    "message": "Popup keys"
+    "message": "窗口控制键"
   },
   "options_popup_switch_dictionaries": {
-    "message": "Switch dictionaries"
+    "message": "切换词典"
   },
   "options_popup_toggle_definition": {
-    "message": "Toggle definition"
+    "message": "显示/隐藏释义"
   },
   "options_popup_start_copy": {
-    "message": "Enter copy mode"
+    "message": "进入复制模式"
   },
   "options_popup_copy_entry": {
-    "message": "Copy entry"
+    "message": "复制词条"
   },
   "options_popup_copy_fields": {
-    "message": "Copy tab-separated fields"
+    "message": "复制以制表符分隔的内容"
   },
   "options_popup_copy_word_kanji": {
-    "message": "Copy word or kanji"
+    "message": "复制词语或汉字"
   },
   "options_popup_copy_next": {
-    "message": "Highlight next entry"
+    "message": "高亮显示下一个词条"
   },
   "options_dictionary_language_heading": {
-    "message": "Dictionary language"
+    "message": "词典语言"
   },
   "options_warning_language_is_kanji_only": {
-    "message": "This setting currently only applies to the kanji dictionary."
+    "message": "本设定目前只对汉字词典有效。"
   },
   "options_kanji_dictionary_heading": {
-    "message": "Kanji dictionary",
+    "message": "汉字词典",
     "description": "Heading for options to configure what information is displayed from the kanji dictionary"
   },
   "options_kanji_data_source_no_version": {
-    "message": "Includes data from KANJIDIC.",
+    "message": "本词典含有来自 KANJIDIC 的资料。",
     "description": "Attribution of kanji source data when no version is available. The keyword KANJIDIC must appear so that it can be link-ified to point to the corresponding home page."
   },
   "options_kanji_data_source_with_version": {
-    "message": "Includes data from KANJIDIC version $version$ generated on $generated$.",
+    "message": "本词典含有来自 KANJIDIC 版本 $version$ 的资料，生成于 $generated$。",
     "description": "Attribution of kanji source data when version information is available. The keyword KANJIDIC must appear so that it can be link-ified to point to the corresponding home page.",
     "placeholders": {
       "version": {
@@ -309,15 +309,15 @@
     }
   },
   "options_kanji_license": {
-    "message": " This data is the property of the Electronic Dictionary Research and Development Group, and is used in conformance with the Group's licence.",
+    "message": "这些资料的所有权属于电子词典研究与开发小组（Electronic Dictionary Research and Development Group），Rikaichamp 在 EDRDG 的许可协议的约束下使用它们。",
     "description": "Description of license terms. The keywords 'Electronic Dictionary Research and Development Group' and options_kanji_license_keyword must appear so they can be linkified. IT SHOULD BEGIN WITH APPROPRIATE SPACE IN LANGUAGES THAT SEPARATE SENTENCES WITH WHITESPACE."
   },
   "options_kanji_license_keyword": {
-    "message": "licence",
+    "message": "许可协议",
     "description": "The keyword in options_kanji_license to link to the license"
   },
   "options_kanji_db_version": {
-    "message": "Version $version$",
+    "message": "版本 $version$",
     "description": "The version of the database",
     "placeholders": {
       "version": {
@@ -327,15 +327,15 @@
     }
   },
   "options_no_database": {
-    "message": "No database",
+    "message": "没有数据库",
     "description": "Label when the database has not yet been downloaded"
   },
   "options_database_unavailable": {
-    "message": "Database storage unavailable",
+    "message": "数据库存储不可用",
     "description": "Label when IndexedDB is unusable"
   },
   "options_last_database_check": {
-    "message": "Last check $lastcheck$",
+    "message": "上次检查更新 $lastcheck$",
     "description": "Status to show when we last checked for an update",
     "placeholders": {
       "lastcheck": {
@@ -345,19 +345,19 @@
     }
   },
   "options_checking_for_updates": {
-    "message": "Checking for updates…",
+    "message": "正在检查更新……",
     "description": "Label while we are checking for updates"
   },
   "options_kanji_data_name": {
-    "message": "kanji data",
+    "message": "汉字数据库",
     "description": "The name for the kanji database data set"
   },
   "options_bushu_data_name": {
-    "message": "radical data",
+    "message": "部首数据库",
     "description": "The name for the bushu database data set"
   },
   "options_downloading_data": {
-    "message": "Downloading $datatype$ version $version$ ($progress$%)…",
+    "message": "正在下载$datatype$，版本 $version$（$progress$%）……",
     "description": "Label while we are downloading updates",
     "placeholders": {
       "datatype": {
@@ -375,7 +375,7 @@
     }
   },
   "options_updating_data": {
-    "message": "Updating $datatype$ to version $version$…",
+    "message": "正在安装$datatype$的更新版本 $version$……",
     "description": "Label while we are applying updates",
     "placeholders": {
       "datatype": {
@@ -389,7 +389,7 @@
     }
   },
   "options_db_update_error": {
-    "message": "Update failed: $errormessage$",
+    "message": "更新失败：$errormessage$",
     "description": "Label when we failed to update the data for some reason",
     "placeholders": {
       "errormessage": {
@@ -399,7 +399,7 @@
     }
   },
   "options_db_update_next_retry": {
-    "message": "Retrying at $nextretry$",
+    "message": "计划于 $nextretry$ 重试",
     "description": "Label used when there is a scheduled retry",
     "placeholders": {
       "nextretry": {
@@ -409,39 +409,39 @@
     }
   },
   "options_offline_explanation": {
-    "message": "Could not check for updates because this device is currently offline. An update will be performed once the device is online.",
+    "message": "无法检查更新，因为没有连接到互联网。一旦设备联网，Rikaichamp 会再次检查更新。",
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
   "options_update_check_button_label": {
-    "message": "Check for updates",
+    "message": "检查更新",
     "description": "Label for the button to check for database updates"
   },
   "options_update_retry_button_label": {
-    "message": "Retry",
+    "message": "重试",
     "description": "Label for the button to retry the database update after a failure"
   },
   "options_cancel_update_button_label": {
-    "message": "Cancel",
+    "message": "取消",
     "description": "Label for the button to cancel a database update"
   },
   "options_kanji_components": {
-    "message": "Kanji components",
+    "message": "汉字部件",
     "description": "Option to define if radicals are displayed or not"
   },
   "error_loading_dictionary": {
-    "message": "Error loading dictionary. Please try again.",
+    "message": "词典加载失败，请重试。",
     "description": "Tooltip shown when the dictionary fails to load"
   },
   "error_ctrl_alt_unsupported": {
-    "message": "Combining Alt and Ctrl is not supported in this version of Firefox",
+    "message": "当前版本的 Firefox 不支持设置同时按下 Alt 和 Ctrl 的组合键",
     "description": "Tooltip displayed when the user attempts to set a hotkey combination including both Ctrl and Alt in a version of Firefox prior to 63"
   },
   "error_ctrl_alt_warning": {
-    "message": "Combining Alt and Ctrl is not supported in earlier versions of Firefox (prior to 63)",
+    "message": "较早版本（低于 63）的 Firefox 不支持设置同时按下 Alt 和 Ctrl 的组合键",
     "description": "Tooltip displayed when the user attempts to set a hotkey combination including both Ctrl and Alt in a version of Firefox later than 63"
   },
   "error_command_could_not_parse": {
-    "message": "Could not parse command $command$",
+    "message": "无法解析命令 $command$",
     "placeholders": {
       "command": {
         "content": "$1",
@@ -450,10 +450,10 @@
     }
   },
   "error_command_has_no_key": {
-    "message": "Must specify a key"
+    "message": "必须指定按键"
   },
   "error_command_key_is_not_allowed": {
-    "message": "Key '$key$' is not allowed",
+    "message": "按键 '$key$' 不可用",
     "placeholders": {
       "key": {
         "content": "$1",
@@ -462,10 +462,10 @@
     }
   },
   "error_command_is_missing_modifier_key": {
-    "message": "A modifier must be specified unless using a function key"
+    "message": "必须使用一个修饰键，除非使用功能键（F1-F12）。"
   },
   "error_command_disallowed_modifier_key": {
-    "message": "Modifier '$modifier$' is not allowed",
+    "message": "修饰键 '$modifier$' 不能使用",
     "placeholders": {
       "modifier": {
         "content": "$1",
@@ -474,19 +474,19 @@
     }
   },
   "error_command_media_key_with_modifier_key": {
-    "message": "Cannot specify modifiers and media keys"
+    "message": "不能同时使用修饰键和多媒体按键"
   },
   "error_command_too_many_modifiers": {
-    "message": "Too many modifiers"
+    "message": "过多的修饰键"
   },
   "deinflect_polite_past_negative": {
-    "message": "polite past negative"
+    "message": "敬语 过去形 否定形"
   },
   "deinflect_polite_negative": {
-    "message": "polite negative"
+    "message": "敬语 否定形"
   },
   "deinflect_polite_volitional": {
-    "message": "polite volitional"
+    "message": "敬语 意志形"
   },
   "deinflect_chau": {
     "message": "-chau"
@@ -498,7 +498,7 @@
     "message": "-nasai"
   },
   "deinflect_polite_past": {
-    "message": "polite past"
+    "message": "敬语 过去形"
   },
   "deinflect_tara": {
     "message": "-tara"
