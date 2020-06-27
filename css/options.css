@@ -37,6 +37,22 @@
   color: #0996f8;
 }
 
+/*
+ * extensions.css sets buttons to have height: 24px which means if they wrap
+ * the label extends outside the button itself.
+ *
+ * In general we don't want these buttons to wrap, but if they do we should make
+ * them look nice.
+ */
+#rikaichamp_options button.browser-style {
+  /* Don't wrap buttons */
+  white-space: nowrap;
+  /* If they do wrap, however, make them look nice */
+  height: auto;
+  min-height: 24px;
+  text-align: center;
+}
+
 .checkbox-row {
   display: flex;
   flex-direction: row;
