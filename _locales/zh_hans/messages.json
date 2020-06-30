@@ -489,84 +489,84 @@
     "message": "敬语 意志形"
   },
   "deinflect_chau": {
-    "message": "-chau"
+    "message": "-ちゃう"
   },
   "deinflect_sugiru": {
-    "message": "-sugiru"
+    "message": "-過ぎる"
   },
   "deinflect_nasai": {
-    "message": "-nasai"
+    "message": "-なさい"
   },
   "deinflect_polite_past": {
     "message": "敬语 过去形"
   },
   "deinflect_tara": {
-    "message": "-tara"
+    "message": "-たら"
   },
   "deinflect_tari": {
-    "message": "-tari"
+    "message": "-たり"
   },
   "deinflect_causative": {
-    "message": "causative"
+    "message": "使役形"
   },
   "deinflect_potential_or_passive": {
-    "message": "potential or passive"
+    "message": "可能或被动形"
   },
   "deinflect_sou": {
-    "message": "-sou"
+    "message": "-そう"
   },
   "deinflect_toku": {
-    "message": "-te oku"
+    "message": "-て おく"
   },
   "deinflect_tai": {
-    "message": "-tai"
+    "message": "-たい"
   },
   "deinflect_polite": {
-    "message": "polite"
+    "message": "敬语"
   },
   "deinflect_past": {
-    "message": "past"
+    "message": "过去形"
   },
   "deinflect_negative": {
-    "message": "negative"
+    "message": "否定形"
   },
   "deinflect_passive": {
-    "message": "passive"
+    "message": "被动形"
   },
   "deinflect_ba": {
-    "message": "-ba"
+    "message": "-ば"
   },
   "deinflect_volitional": {
-    "message": "volitional"
+    "message": "意志形"
   },
   "deinflect_potential": {
-    "message": "potential"
+    "message": "可能形"
   },
   "deinflect_causative_passive": {
-    "message": "causative passive"
+    "message": "使役被动形"
   },
   "deinflect_te": {
-    "message": "-te"
+    "message": "-て"
   },
   "deinflect_zu": {
-    "message": "-zu"
+    "message": "-ず"
   },
   "deinflect_imperative": {
-    "message": "imperative"
+    "message": "命令形"
   },
   "deinflect_masu_stem": {
-    "message": "masu stem"
+    "message": "连用形"
   },
   "deinflect_adv": {
-    "message": "adv"
+    "message": "副词化"
   },
   "deinflect_noun": {
-    "message": "noun"
+    "message": "名词化"
   },
   "deinflect_imperative_negative": {
-    "message": "imperative negative"
+    "message": "否定命令形"
   },
   "deinflect_continuous": {
-    "message": "continuous"
+    "message": "现在进行形"
   }
 }
