@@ -1,6 +1,9 @@
 ## 0.1.20 (Not yet released)
 
-(Nothing yet)
+* Added Chinese (simplified) localization
+  thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
+* Added recognition of ん as a negative form (分からん, 知らん etc.)
+  thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
 
 ## 0.1.19 (2020-06-24)
 
