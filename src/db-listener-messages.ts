@@ -1,13 +1,13 @@
 import {
   DatabaseState,
-  DatabaseVersion,
+  DataVersion,
   UpdateState,
   UpdateErrorState,
 } from '@birchill/hikibiki-data';
 
-export interface ResolvedDbVersions {
-  kanjidb: DatabaseVersion | null;
-  bushudb: DatabaseVersion | null;
+export interface ResolvedDataVersions {
+  kanji: DataVersion | null;
+  radicals: DataVersion | null;
 }
 
 export const notifyDbStateUpdated = ({
@@ -19,7 +19,7 @@ export const notifyDbStateUpdated = ({
   databaseState: DatabaseState;
   updateState: UpdateState;
   updateError?: UpdateErrorState;
-  versions: ResolvedDbVersions;
+  versions: ResolvedDataVersions;
 }) => ({
   type: <const>'dbstateupdated',
   databaseState,

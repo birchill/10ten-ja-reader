@@ -45,39 +45,41 @@ function completeForm() {
   // l10n
   translateDoc();
 
-  document.getElementById('highlightText')!.addEventListener('click', evt => {
+  document.getElementById('highlightText')!.addEventListener('click', (evt) => {
     config.noTextHighlight = !(evt.target as HTMLInputElement).checked;
   });
 
   document
     .getElementById('contextMenuEnable')!
-    .addEventListener('click', evt => {
+    .addEventListener('click', (evt) => {
       config.contextMenuEnable = (evt.target as HTMLInputElement).checked;
     });
 
-  document.getElementById('showDefinitions')!.addEventListener('click', evt => {
-    config.readingOnly = !(evt.target as HTMLInputElement).checked;
-    renderPopupStyleSelect();
-  });
+  document
+    .getElementById('showDefinitions')!
+    .addEventListener('click', (evt) => {
+      config.readingOnly = !(evt.target as HTMLInputElement).checked;
+      renderPopupStyleSelect();
+    });
 
-  document.getElementById('showRomaji')!.addEventListener('click', evt => {
+  document.getElementById('showRomaji')!.addEventListener('click', (evt) => {
     config.showRomaji = (evt.target as HTMLInputElement).checked;
     renderPopupStyleSelect();
   });
 
   document
     .getElementById('showKanjiComponents')!
-    .addEventListener('click', evt => {
+    .addEventListener('click', (evt) => {
       config.showKanjiComponents = (evt.target as HTMLInputElement).checked;
     });
 
-  browser.management.getSelf().then(info => {
+  browser.management.getSelf().then((info) => {
     if (info.installType === 'development') {
       (document.querySelector('.db-admin') as HTMLElement).style.display =
         'block';
       document
         .getElementById('deleteDatabase')!
-        .addEventListener('click', evt => {
+        .addEventListener('click', (evt) => {
           if (browserPort) {
             browserPort.postMessage(deleteDb());
           }
@@ -212,7 +214,7 @@ function configureCommands() {
   const toggleKeyTextbox = document.getElementById(
     'toggle-key'
   ) as HTMLInputElement;
-  toggleKeyTextbox.addEventListener('keydown', evt => {
+  toggleKeyTextbox.addEventListener('keydown', (evt) => {
     let key = evt.key;
     if (evt.key.length === 1) {
       key = key.toUpperCase();
@@ -234,10 +236,10 @@ function configureCommands() {
     updateToggleKey();
   });
 
-  toggleKeyTextbox.addEventListener('compositionstart', evt => {
+  toggleKeyTextbox.addEventListener('compositionstart', (evt) => {
     toggleKeyTextbox.value = '';
   });
-  toggleKeyTextbox.addEventListener('compositionend', evt => {
+  toggleKeyTextbox.addEventListener('compositionend', (evt) => {
     toggleKeyTextbox.value = toggleKeyTextbox.value.toUpperCase();
     updateToggleKey();
   });
@@ -341,13 +343,13 @@ function addPopupKeys() {
       keyInput.dataset.key = key;
       keyBlock.appendChild(keyInput);
 
-      keyInput.addEventListener('click', evt => {
+      keyInput.addEventListener('click', (evt) => {
         const checkedKeys = document.querySelectorAll(
           `input[type=checkbox].key-${setting.name}:checked`
         );
         config.updateKeys({
           [setting.name]: Array.from(checkedKeys).map(
-            checkbox => (checkbox as HTMLInputElement).dataset.key
+            (checkbox) => (checkbox as HTMLInputElement).dataset.key
           ),
         });
       });
@@ -472,7 +474,7 @@ function createKanjiReferences() {
     checkbox.setAttribute('type', 'checkbox');
     checkbox.setAttribute('id', `ref-${ref}`);
     checkbox.setAttribute('name', ref);
-    checkbox.addEventListener('click', evt => {
+    checkbox.addEventListener('click', (evt) => {
       config.updateKanjiReferences({
         [ref]: (evt.target as HTMLInputElement).checked,
       });
@@ -631,12 +633,15 @@ function updateDatabaseBlurb(evt: DbStateUpdatedMessage) {
   const blurb = document.querySelector('.db-summary-blurb')!;
   empty(blurb);
 
-  const { kanjidb: kanjiDbVersion } = evt.versions;
+  const { kanji: kanjiDataVersion } = evt.versions;
   let attribution: string;
-  if (kanjiDbVersion) {
+  if (kanjiDataVersion) {
     attribution = browser.i18n.getMessage(
       'options_kanji_data_source_with_version',
-      [kanjiDbVersion.databaseVersion, kanjiDbVersion.dateOfCreation]
+      [
+        kanjiDataVersion.databaseVersion ?? 'n/a',
+        kanjiDataVersion.dateOfCreation,
+      ]
     );
   } else {
     attribution = browser.i18n.getMessage(
@@ -703,15 +708,15 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
         progressElem.max = 100;
         progressElem.value = updateState.progress * 100;
       }
-      progressElem.id = 'kanjidb-progress';
+      progressElem.id = 'kanji-progress';
       infoDiv.append(progressElem);
 
       const labelElem = document.createElement('label');
       labelElem.classList.add('label');
-      labelElem.htmlFor = 'kanjidb-progress';
+      labelElem.htmlFor = 'kanji-progress';
 
       const dbLabel = browser.i18n.getMessage(
-        updateState.dbName === 'kanjidb'
+        updateState.series === 'kanji'
           ? 'options_kanji_data_name'
           : 'options_bushu_data_name'
       );
@@ -832,7 +837,7 @@ function updateIdleStateSummary(
   }
 
   infoDiv.classList.add('-italic');
-  const { major, minor, patch } = evt.versions.kanjidb!;
+  const { major, minor, patch } = evt.versions.kanji!;
 
   const versionNumberDiv = document.createElement('div');
   const versionString = browser.i18n.getMessage(

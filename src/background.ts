@@ -51,7 +51,7 @@ import '../html/background.html.src';
 import Bugsnag, { Event as BugsnagEvent } from '@bugsnag/browser';
 import {
   DatabaseState,
-  KanjiDatabase,
+  JpdictDatabase,
   KanjiResult,
   toUpdateErrorState,
   UpdateErrorState,
@@ -65,7 +65,7 @@ import { Dictionary } from './data';
 import {
   notifyDbStateUpdated,
   DbListenerMessage,
-  ResolvedDbVersions,
+  ResolvedDataVersions,
 } from './db-listener-messages';
 import { debounce } from './debounce';
 import { requestIdleCallbackPromise } from './request-idle-callback';
@@ -319,7 +319,7 @@ config.ready.then(() => {
 // By doing this we only ever need to check for (b) and that is also covered
 // by the kanjiDbInitialized Promise below which will reject for an unavailable
 // database.
-let kanjiDb: KanjiDatabase;
+let kanjiDb: JpdictDatabase;
 
 // Debounce notifications since often we'll get a notification that the update
 // state has been updated quickly followed by a call to updateWithRetry's
@@ -337,7 +337,7 @@ const updateDbStatus = debounce(async () => {
 
 // This Promise will resolve once we have finished trying to open the database.
 // It will reject if the database is unavailable.
-let kanjiDbInitialized: Promise<KanjiDatabase>;
+let kanjiDbInitialized: Promise<JpdictDatabase>;
 
 initKanjiDb();
 
@@ -353,7 +353,7 @@ function initKanjiDb() {
         }
       }
 
-      kanjiDb = new KanjiDatabase({ verbose: true });
+      kanjiDb = new JpdictDatabase({ verbose: true });
 
       kanjiDb.addChangeListener(updateDbStatus);
       kanjiDb.onWarning = (message: string) => {
@@ -397,8 +397,8 @@ async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
   }
 
   if (
-    typeof kanjiDb.dbVersions.kanjidb === 'undefined' ||
-    typeof kanjiDb.dbVersions.bushudb === 'undefined'
+    typeof kanjiDb.dataVersions.kanji === 'undefined' ||
+    typeof kanjiDb.dataVersions.radicals === 'undefined'
   ) {
     return;
   }
@@ -407,7 +407,7 @@ async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
     databaseState: kanjiDb.state,
     updateState: kanjiDb.updateState,
     updateError: lastUpdateError,
-    versions: kanjiDb.dbVersions as ResolvedDbVersions,
+    versions: kanjiDb.dataVersions as ResolvedDataVersions,
   });
 
   // The lastCheck field in the updateState we get back from the database will

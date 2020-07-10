@@ -383,10 +383,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@birchill/hikibiki-data@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-3.0.0.tgz#064dff36d665c19e8495eac35e262a7a63e0bc8d"
-  integrity sha512-i2xIe1A+8jgp2T3GmCSp6/Eyi56IBjbCPu84boNpcQ1+Hl5JAROtAvHyo/M92GJiEagtgAou6mfe5/ieRbV6aQ==
+"@birchill/hikibiki-data@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-4.0.1.tgz#6e0ba67530dca5f7f292fde777bfe20d48c5e355"
+  integrity sha512-Jyjl7bGlfjB/oWlEOnB45tY9Qjsn3gmHrLpEgZm6pP4jldmk2flAgcAyKCaoXVRrNMs5PktJbSdHw7xIwkrvVg==
   dependencies:
     "@birchill/json-equalish" "^1.0.1"
     idb "^5.0.0"
@@ -9060,7 +9060,7 @@ wcwidth@^1.0.0:
   version "1.0.0"
   resolved "https://codeload.github.com/birtles/web-ext-webpack-plugin/tar.gz/50b0985e8dc4d61dd8c9dda6512b2bc54b97e4dd"
   dependencies:
-    web-ext "4.3.0"
+    web-ext "2.7.0"
 
 web-ext@4.3.0, web-ext@^4.3.0:
   version "4.3.0"
