@@ -235,6 +235,21 @@
   font-size: 11px;
 }
 
+/* kanji: meta */
+
+#rikaichamp-window .kanji-table .meta {
+  margin-left: -5px;
+  margin-bottom: 4px;
+}
+
+#rikaichamp-window .kanji-table .meta .tag {
+  font-size: 12px;
+  border: 1px solid currentcolor !important;
+  border-radius: 3px;
+  padding: 2px;
+  margin: 2px;
+}
+
 /* kanji: meanings */
 
 #rikaichamp-window .kanji-table .meanings {

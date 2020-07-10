@@ -267,6 +267,61 @@ const htmlTests = [
     },
   },
   {
+    description: 'a kanji entry with meta tags',
+    queryResult: {
+      type: 'kanji',
+      data: {
+        c: '蟐',
+        r: { kun: ['もみ'], on: ['ジョウ'] },
+        m: ['toad', 'mantis'],
+        rad: {
+          x: 142,
+          b: '⾍',
+          k: '虫',
+          na: ['むし'],
+          m: ['insect', 'bug', 'temper'],
+          m_lang: 'en',
+        },
+        refs: { skip: '1-6-11', sh_desc: '6d11.4', nelson_n: 5374 },
+        misc: { sc: 17, meta: ['phantom kanji', 'kokuji'] },
+        comp: [
+          {
+            c: '⼍',
+            na: ['わかんむり'],
+            m: ['crown shaped wa'],
+            m_lang: 'en',
+            k: '冖',
+          },
+          { c: '⼝', na: ['くち'], m: ['mouth'], m_lang: 'en', k: '口' },
+          {
+            c: '⼱',
+            na: ['はば'],
+            m: ['towel', 'hanging scroll', 'width'],
+            m_lang: 'en',
+            k: '巾',
+          },
+          {
+            c: '⾍',
+            na: ['むし'],
+            m: ['insect', 'bug', 'temper'],
+            m_lang: 'en',
+            k: '虫',
+          },
+          {
+            c: '⺌',
+            na: ['しょうがしら', 'しょうかんむり', 'しょう', 'なおがしら'],
+            m: ['little', 'small'],
+            m_lang: 'en',
+            k: '小',
+          },
+        ],
+        m_lang: 'en',
+        cf: [],
+      },
+      matchLen: 1,
+    },
+  },
+  {
     description: 'a word search result',
     queryResult: {
       type: 'words',

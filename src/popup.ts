@@ -346,6 +346,11 @@ function renderKanjiEntry(
   // -- -- Readings
   topRightPart.append(renderReadings(entry));
 
+  // -- -- Meta
+  if (entry.misc.meta) {
+    topRightPart.append(renderMeta(entry.misc.meta));
+  }
+
   // -- -- English
   const meaningsDiv = document.createElement('div');
   meaningsDiv.classList.add('meanings');
@@ -525,6 +530,20 @@ function renderReadings(entry: KanjiResult): HTMLElement {
   }
 
   return readingsDiv;
+}
+
+function renderMeta(meta: Array<string>): HTMLElement {
+  const metaDiv = document.createElement('div');
+  metaDiv.classList.add('meta');
+
+  for (const tag of meta) {
+    const span = document.createElement('span');
+    span.classList.add('tag');
+    span.textContent = tag;
+    metaDiv.append(span);
+  }
+
+  return metaDiv;
 }
 
 function renderMiscRow(entry: KanjiResult): HTMLElement {
