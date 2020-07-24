@@ -15,15 +15,15 @@ chrome.runtime.onMessage.addListener(
 			/**  case 'nextDict':
 			 console.log('nextDict');
 			 rcxMain.nextDict();
-			 break;*/
+			 break; */
 			case 'resetDict':
 				console.log('resetDict');
 				rcxMain.resetDict();
 				break;
 			case 'translate':
 				console.log('translate');
-				var e = rcxMain.dict.translate(request.title);
-				response(e);
+				var translate = rcxMain.dict.translate(request.title);
+				response(translate);
 				break;
 			case 'makehtml':
 				console.log('makehtml');
@@ -34,7 +34,7 @@ chrome.runtime.onMessage.addListener(
 				console.log('switchOnlyReading');
 				rcxMain.config.onlyreading = !rcxMain.config.onlyreading;
 				chrome.storage.sync.set({
-					'onlyreading': rcxMain.config.onlyreading,
+					onlyreading: rcxMain.config.onlyreading
 				});
 				break;
 			case 'copyToClip':
@@ -50,25 +50,25 @@ chrome.runtime.onMessage.addListener(
 		}
 	}
 );
-	
+
 rcxMain.config = {};
 
 var optionsList = [
-	"copySeparator",
-	"disablekeys",
-	"highlight",
-	"kanjicomponents",
-	"kanjiInfo",
-	"lineEnding",
-	"maxClipCopyEntries",
-	"minihelp",
-	"onlyreading",
-	"popupcolor",
-	"popupDelay",
-	"popupLocation",
-	"textboxhl",
-	"ttsEnabled",
-	"showOnKey",
+	'copySeparator',
+	'disablekeys',
+	'highlight',
+	'kanjicomponents',
+	'kanjiInfo',
+	'lineEnding',
+	'maxClipCopyEntries',
+	'minihelp',
+	'onlyreading',
+	'popupcolor',
+	'popupDelay',
+	'popupLocation',
+	'textboxhl',
+	'ttsEnabled',
+	'showOnKey'
 ];
 
 /** Get option data from cloud and initialize into memory. */
@@ -78,24 +78,24 @@ chrome.storage.sync.get(optionsList,
 
 		// Save right away incase we initialized from localStorage or defaults.
 		saveOptionsToCloudStorage();
-	})
+	});
 
 /**
  * Initializes config with values from one of the following sources in order:
  *    1. Cloud Storage, 2. Local Storage, and 3. Default
  *
- * @param {Object<string, boolean|number|string>} cloudStorage 
+ * @param {Object<string, boolean|number|string>} cloudStorage
  *     config values retrieved from cloud storage.
  */
-function initializeConfigFromCloudOrLocalStorageOrDefaults(cloudStorage) {
+function initializeConfigFromCloudOrLocalStorageOrDefaults (cloudStorage) {
 	/**
 	 * Initializes option `key` in `rcxMain.config` from `cloudStorage`, falling
 	 * back to `localStorage` and finally defaulting to `defaultValue`.
-	 * 
-	 * @param {string} key 
-	 * @param {boolean|number|string} defaultValue 
+	 *
+	 * @param {string} key
+	 * @param {boolean|number|string} defaultValue
 	 */
-	function initConfig(key, defaultValue) {
+	function initConfig (key, defaultValue) {
 		var currentValue = cloudStorage[key] || normalizeStringValue(localStorage[key]);
 		if (currentValue === undefined) {
 			currentValue = defaultValue;
@@ -120,13 +120,13 @@ function initializeConfigFromCloudOrLocalStorageOrDefaults(cloudStorage) {
 	initConfig('ttsEnabled', false);
 
 	/**
-	 * Set kanjiInfo option values 
-	 * Check each key in case there are new types of info to be added to the 
+	 * Set kanjiInfo option values
+	 * Check each key in case there are new types of info to be added to the
 	 * config. TODO: Consider a solution that doesn't require this loop.
 	 */
 	rcxMain.config.kanjiInfo = {};
 	var kanjiInfoLabelList = rcxDict.prototype.kanjiInfoLabelList;
-	for (i = 0; i < kanjiInfoLabelList.length; i+=2) {
+	for (var i = 0; i < kanjiInfoLabelList.length; i += 2) {
 		var kanjiInfoKey = kanjiInfoLabelList[i];
 		if (cloudStorage.kanjiInfo && cloudStorage.kanjiInfo[kanjiInfoKey] !== undefined) {
 			rcxMain.config.kanjiInfo[kanjiInfoKey] =
@@ -144,42 +144,42 @@ function initializeConfigFromCloudOrLocalStorageOrDefaults(cloudStorage) {
  * Saves options to Google Chrome Cloud storage
  * https://developer.chrome.com/storage
  */
-function saveOptionsToCloudStorage() {
+function saveOptionsToCloudStorage () {
 	chrome.storage.sync.set({
 		// Saving General options
-		"disablekeys": rcxMain.config.disablekeys,
-		"highlight": rcxMain.config.highlight,
-		"kanjicomponents": rcxMain.config.kanjicomponents,
-		"kanjiInfo": rcxMain.config.kanjiInfo,
-		"maxDictEntries": rcxMain.config.maxDictEntries,
-		"minihelp": rcxMain.config.minihelp,
-		"onlyreading": rcxMain.config.onlyreading,
-		"popupcolor": rcxMain.config.popupcolor,
-		"popupDelay": rcxMain.config.popupDelay,
-		"popupLocation": rcxMain.config.popupLocation,
-		"showOnKey": rcxMain.config.showOnKey,
-		"textboxhl": rcxMain.config.textboxhl,
-		"ttsEnabled": rcxMain.config.ttsEnabled,
+		disablekeys: rcxMain.config.disablekeys,
+		highlight: rcxMain.config.highlight,
+		kanjicomponents: rcxMain.config.kanjicomponents,
+		kanjiInfo: rcxMain.config.kanjiInfo,
+		maxDictEntries: rcxMain.config.maxDictEntries,
+		minihelp: rcxMain.config.minihelp,
+		onlyreading: rcxMain.config.onlyreading,
+		popupcolor: rcxMain.config.popupcolor,
+		popupDelay: rcxMain.config.popupDelay,
+		popupLocation: rcxMain.config.popupLocation,
+		showOnKey: rcxMain.config.showOnKey,
+		textboxhl: rcxMain.config.textboxhl,
+		ttsEnabled: rcxMain.config.ttsEnabled,
 
 		// Saving Copy to Clipboard settings
-		"copySeparator": rcxMain.config.copySeparator,
-		"lineEnding": rcxMain.config.lineEnding,
-		"maxClipCopyEntries": rcxMain.config.maxClipCopyEntries
+		copySeparator: rcxMain.config.copySeparator,
+		lineEnding: rcxMain.config.lineEnding,
+		maxClipCopyEntries: rcxMain.config.maxClipCopyEntries
 	});
 }
 
 /**
  * For a given string representation `value` of a boolean, integer or string,
  * returns the same value coerced to the proper type.
- * 
+ *
  * @param {string} value
  * @returns {boolean|number|string}
  */
-function normalizeStringValue(value) {
+function normalizeStringValue (value) {
 	var maybeNumber = parseInt(value, 10);
 	if (!Number.isNaN(maybeNumber)) return maybeNumber;
 	if (value === 'true' || value === 'false') {
-		return value === 'true' ? true : false;
+		return value === 'true';
 	}
 	return value;
 }
