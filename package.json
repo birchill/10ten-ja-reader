@@ -1,0 +1,34 @@
+{
+  "name": "rikaikun",
+  "version": "0.10.1",
+  "description": "Chrome extension that provides Japanese to English translations when hovering over words.",
+  "private": true,
+  "scripts": {
+    "format": "prettier --config .prettierrc --write extension/*.js",
+    "lint": "eslint extension/*.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/melink14/rikaikun.git"
+  },
+  "keywords": [
+    "Japanese",
+    "chrome",
+    "extension",
+    "javascript"
+  ],
+  "author": "melink14",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/melink14/rikaikun/issues"
+  },
+  "homepage": "https://github.com/melink14/rikaikun#readme",
+  "devDependencies": {
+    "eslint": "^7.5.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.0.5"
+  }
+}

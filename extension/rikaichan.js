@@ -3,7 +3,7 @@
 	Rikaikun
 	Copyright (C) 2010 Erek Speed
 	http://code.google.com/p/rikaikun/
-	
+
 	---
 
 	Originally based on Rikaichan 1.07
@@ -38,14 +38,14 @@
 	when modifying any of the files. - Jon
 
 */
-var rcxMain = {
-	haveNames: true,
-//	canDoNames: false,
-	dictCount: 3,
-	altView: 0,
-	enabled: 0,
+const rcxMain = {
+  haveNames: true,
+  //	canDoNames: false,
+  dictCount: 3,
+  altView: 0,
+  enabled: 0,
 
-/*
+  /*
     onLoad: function() { rcxMain._onLoad(); },
 	_onLoad: function() {
 		try {
@@ -57,7 +57,7 @@ var rcxMain = {
 		}
 	},
 */
-/*
+  /*
 	//Switch this over to local storage method for chrome.  Have to make a UI.
 	loadPrefs: function() {
 		try {
@@ -157,12 +157,12 @@ var rcxMain = {
 	},
 */
 
-	loadDictionary: function() {	
-		this.dict = new rcxDict();
-		return this.dict.init(this.haveNames/* && !this.cfg.nadelay*/);
-		//this.dict.setConfig(this.dconfig);
-	},
-/*
+  loadDictionary: function () {
+    this.dict = new RcxDict();
+    return this.dict.init(this.haveNames /* && !this.cfg.nadelay*/);
+    // this.dict.setConfig(this.dconfig);
+  },
+  /*
 	showDownload: function() {
 		const url = 'http://rikaichan.mozdev.org/welcome.html';
 
@@ -203,209 +203,220 @@ var rcxMain = {
 
 */
 
-	// The callback for onSelectionChanged
-	// Just sends a message to the tab to enable itself if it hasn't
-	// already
-	onTabSelect: function(tabId) { rcxMain._onTabSelect(tabId); },
-	_onTabSelect: function(tabId) {
+  // The callback for onSelectionChanged
+  // Just sends a message to the tab to enable itself if it hasn't
+  // already
+  onTabSelect: function (tabId) {
+    rcxMain._onTabSelect(tabId);
+  },
+  _onTabSelect: function (tabId) {
+    if (this.enabled == 1)
+      chrome.tabs.sendMessage(tabId, {
+        type: 'enable',
+        config: rcxMain.config,
+      });
+  },
 
-		if ((this.enabled == 1))
-			chrome.tabs.sendMessage(tabId, {"type":"enable", "config":rcxMain.config});
-	},
+  savePrep: function (clip, entry) {
+    let me;
+    let text;
+    let i;
+    let e;
 
-	savePrep: function(clip, entry) {
-		var me, mk;
-		var text;
-		var i;
-		var f;
-		var e;
+    const f = entry;
+    if (!f || f.length == 0) return null;
 
-		f = entry;
-		if ((!f) || (f.length == 0)) return null;
-
-		if (clip) { // save to clipboard
-			me = rcxMain.config.maxClipCopyEntries;
-			//mk = this.cfg.smaxck; // something related to the number of kanji in the look-up bar
-		}
-		/*else { // save to file
+    if (clip) {
+      // save to clipboard
+      me = rcxMain.config.maxClipCopyEntries;
+      // mk = this.cfg.smaxck; // something related to the number of kanji in the look-up bar
+    }
+    /* else { // save to file
 			me = this.cfg.smaxfe;
 			//mk = this.cfg.smaxfk;
 		}*/
 
-		if (!this.fromLB) mk = 1;
+    text = '';
+    for (i = 0; i < f.length; ++i) {
+      e = f[i];
+      if (e.kanji) {
+        // if (mk-- <= 0) continue
+        text += this.dict.makeText(e, 1);
+      } else {
+        if (me <= 0) continue;
+        text += this.dict.makeText(e, me);
+        me -= e.data.length;
+      }
+    }
 
-		text = '';
-		for (i = 0; i < f.length; ++i) {
-			e = f[i];
-			if (e.kanji) {
-				//if (mk-- <= 0) continue
-				text += this.dict.makeText(e, 1);
-			}
-			else {
-				if (me <= 0) continue;
-				text += this.dict.makeText(e, me);
-				me -= e.data.length;
-			}
-		}
+    if (rcxMain.config.lineEnding == 'rn') text = text.replace(/\n/g, '\r\n');
+    else if (rcxMain.config.lineEnding == 'r') text = text.replace(/\n/g, '\r');
+    if (rcxMain.config.copySeparator != 'tab') {
+      if (rcxMain.config.copySeparator == 'comma')
+        return text.replace(/\t/g, ',');
+      if (rcxMain.config.copySeparator == 'space')
+        return text.replace(/\t/g, ' ');
+    }
 
-		if (rcxMain.config.lineEnding == "rn") text = text.replace(/\n/g, '\r\n');
-			else if (rcxMain.config.lineEnding == "r") text = text.replace(/\n/g, '\r');
-		if (rcxMain.config.copySeparator != "tab") {
-			if (rcxMain.config.copySeparator == "comma")
-				return text.replace(/\t/g, ",");
-			if (rcxMain.config.copySeparator == "space")
-				return text.replace(/\t/g, " ");
-		}
+    return text;
+  },
 
-		return text;
-	},
+  // Needs entirely new implementation and dependent on savePrep
+  copyToClip: function (tab, entry) {
+    let text;
 
-// Needs entirely new implementation and dependent on savePrep
-	copyToClip: function(tab, entry) {
-		var text;
+    if ((text = this.savePrep(1, entry)) != null) {
+      document.oncopy = function (event) {
+        event.clipboardData.setData('Text', text);
+        event.preventDefault();
+      };
+      document.execCommand('Copy');
+      document.oncopy = undefined;
+      chrome.tabs.sendMessage(tab.id, {
+        type: 'showPopup',
+        text: 'Copied to clipboard.',
+      });
+    }
+  },
 
-		if ((text = this.savePrep(1, entry)) != null) {
-			document.oncopy = function(event) {
-				event.clipboardData.setData("Text", text);
-				event.preventDefault();
-			};
-			document.execCommand("Copy");
-			document.oncopy = undefined;
-			chrome.tabs.sendMessage(tab.id, {"type":"showPopup", "text":'Copied to clipboard.'});
-		}
-	},
+  miniHelp:
+    '<span style="font-weight:bold">Rikaikun enabled!</span><br><br>' +
+    '<table cellspacing=5>' +
+    '<tr><td>A</td><td>Alternate popup location</td></tr>' +
+    '<tr><td>Y</td><td>Move popup location down</td></tr>' +
+    '<tr><td>C</td><td>Copy to clipboard</td></tr>' +
+    '<tr><td>D</td><td>Hide/show definitions</td></tr>' +
+    '<tr><td>Shift/Enter&nbsp;&nbsp;</td><td>Switch dictionaries</td></tr>' +
+    '<tr><td>B</td><td>Previous character</td></tr>' +
+    '<tr><td>M</td><td>Next character</td></tr>' +
+    '<tr><td>N</td><td>Next word</td></tr>' +
+    '<tr><td>J</td><td>Scroll back definitions</td></tr>' +
+    '<tr><td>K</td><td>Scroll forward definitions</td></tr>' +
+    '</table>',
 
-	miniHelp:
-		'<span style="font-weight:bold">Rikaikun enabled!</span><br><br>' +
-		'<table cellspacing=5>' +
-		'<tr><td>A</td><td>Alternate popup location</td></tr>' +
-		'<tr><td>Y</td><td>Move popup location down</td></tr>' +
-		'<tr><td>C</td><td>Copy to clipboard</td></tr>' +
-		'<tr><td>D</td><td>Hide/show definitions</td></tr>' +
-		'<tr><td>Shift/Enter&nbsp;&nbsp;</td><td>Switch dictionaries</td></tr>' +
-		'<tr><td>B</td><td>Previous character</td></tr>' +
-		'<tr><td>M</td><td>Next character</td></tr>' +
-		'<tr><td>N</td><td>Next word</td></tr>' +
-		'<tr><td>J</td><td>Scroll back definitions</td></tr>' +
-		'<tr><td>K</td><td>Scroll forward definitions</td></tr>' +
-		'</table>',
-		
-/* 			'<tr><td>C</td><td>Copy to clipboard</td></tr>' +
+  /* 			'<tr><td>C</td><td>Copy to clipboard</td></tr>' +
 		'<tr><td>S</td><td>Save to file</td></tr>' + */
 
-	// Function which enables the inline mode of rikaikun
-	// Unlike rikaichan there is no lookup bar so this is the only enable.
-	inlineEnable: function(tab, mode) {
-		if (!this.dict) {
-			//	var time = (new Date()).getTime();
-			this.loadDictionary().then(function () {
-				// Send message to current tab to add listeners and create stuff
-				chrome.tabs.sendMessage(tab.id, { "type": "enable", "config": rcxMain.config });
-				this.enabled = 1;
+  // Function which enables the inline mode of rikaikun
+  // Unlike rikaichan there is no lookup bar so this is the only enable.
+  inlineEnable: function (tab, mode) {
+    if (!this.dict) {
+      //	var time = (new Date()).getTime();
+      this.loadDictionary()
+        .then(
+          function () {
+            // Send message to current tab to add listeners and create stuff
+            chrome.tabs.sendMessage(tab.id, {
+              type: 'enable',
+              config: rcxMain.config,
+            });
+            this.enabled = 1;
 
-				if (mode == 1) {
-					if (rcxMain.config.minihelp)
-						chrome.tabs.sendMessage(tab.id, { "type": "showPopup", "text": rcxMain.miniHelp });
-					else
-						chrome.tabs.sendMessage(tab.id, { "type": "showPopup", "text": 'Rikaikun enabled!' });
-				}
-				chrome.browserAction.setBadgeBackgroundColor({ "color": [255, 0, 0, 255] });
-				chrome.browserAction.setBadgeText({ "text": "On" });
+            if (mode == 1) {
+              if (rcxMain.config.minihelp)
+                chrome.tabs.sendMessage(tab.id, {
+                  type: 'showPopup',
+                  text: rcxMain.miniHelp,
+                });
+              else
+                chrome.tabs.sendMessage(tab.id, {
+                  type: 'showPopup',
+                  text: 'Rikaikun enabled!',
+                });
+            }
+            chrome.browserAction.setBadgeBackgroundColor({
+              color: [255, 0, 0, 255],
+            });
+            chrome.browserAction.setBadgeText({ text: 'On' });
+          }.bind(this)
+        )
+        .catch(function (err) {
+          alert('Error loading dictionary: ' + err);
+        });
 
-			}.bind(this)).catch(function(err){
-				alert('Error loading dictionary: ' + err);
-			});
+      //	time = (((new Date()).getTime() - time) / 1000).toFixed(2);
+    }
+  },
 
-			//	time = (((new Date()).getTime() - time) / 1000).toFixed(2);
-		}
-	},
+  // This function diables
+  inlineDisable: function () {
+    // Delete dictionary object after we implement it
+    delete this.dict;
 
-	// This function diables 
-	inlineDisable: function(tab, mode) {
-		// Delete dictionary object after we implement it
-		delete this.dict;
-		
-		this.enabled = 0;
-		chrome.browserAction.setBadgeBackgroundColor({"color":[0,0,0,0]});
-		chrome.browserAction.setBadgeText({"text":""});
+    this.enabled = 0;
+    chrome.browserAction.setBadgeBackgroundColor({ color: [0, 0, 0, 0] });
+    chrome.browserAction.setBadgeText({ text: '' });
 
-		// Send a disable message to all browsers
-		var windows = chrome.windows.getAll({"populate":true}, 
-			function(windows) {
-				for (var i =0; i < windows.length; ++i) {
-					var tabs = windows[i].tabs;
-					for ( var j = 0; j < tabs.length; ++j) {
-						chrome.tabs.sendMessage(tabs[j].id, {"type":"disable"});
-					}
-				}
-			});
-	},
+    // Send a disable message to all browsers
+    chrome.windows.getAll({ populate: true }, function (windows) {
+      for (let i = 0; i < windows.length; ++i) {
+        const tabs = windows[i].tabs;
+        for (let j = 0; j < tabs.length; ++j) {
+          chrome.tabs.sendMessage(tabs[j].id, { type: 'disable' });
+        }
+      }
+    });
+  },
 
-	inlineToggle: function(tab) {
-		if (rcxMain.enabled) rcxMain.inlineDisable(tab, 1);
-			else rcxMain.inlineEnable(tab, 1);
-	},
-	
-	kanjiN: 1,
-	namesN: 2,
+  inlineToggle: function (tab) {
+    if (rcxMain.enabled) rcxMain.inlineDisable(tab, 1);
+    else rcxMain.inlineEnable(tab, 1);
+  },
 
-	showMode: 0,
+  kanjiN: 1,
+  namesN: 2,
 
-	nextDict: function() {
-		this.showMode = (this.showMode + 1) % this.dictCount;
-	},
+  showMode: 0,
 
-	resetDict: function() {
-		this.showMode = 0;
-	},
-	
-	sameDict: '0',
-	forceKanji: '1',
-	defaultDict: '2',
-	nextDict: '3',
+  nextDict: function () {
+    this.showMode = (this.showMode + 1) % this.dictCount;
+  },
 
-	search: function(text, dictOption) {
+  resetDict: function () {
+    this.showMode = 0;
+  },
 
-		switch (dictOption) {
-		case this.forceKanji:
-			var e = this.dict.kanjiSearch(text.charAt(0));
-			return e;
-			break;
-		case this.defaultDict:
-			this.showMode = 0;
-			break;
-		case this.nextDict:
-			this.showMode = (this.showMode + 1) % this.dictCount;
-			break;
-		}
-		
-		var m = this.showMode;
-		var e = null;
+  sameDict: '0',
+  forceKanji: '1',
+  defaultDict: '2',
+  nextDict: '3',
 
-		do {
-			switch (this.showMode) {
-			case 0:
-				e = this.dict.wordSearch(text, false);
-				break;
-			case this.kanjiN:
-				e = this.dict.kanjiSearch(text.charAt(0));
-				break;
-			case this.namesN:
-				e = this.dict.wordSearch(text, true);
-				break;
-			}
-			if (e) break;
-			this.showMode = (this.showMode + 1) % this.dictCount;
-		} while (this.showMode != m);
-		
-		return e;
-	}
-	
-	
+  search: function (text, dictOption) {
+    switch (dictOption) {
+      case this.forceKanji:
+        const e = this.dict.kanjiSearch(text.charAt(0));
+        return e;
+        break;
+      case this.defaultDict:
+        this.showMode = 0;
+        break;
+      case this.nextDict:
+        this.showMode = (this.showMode + 1) % this.dictCount;
+        break;
+    }
 
+    const m = this.showMode;
+    let e = null;
+
+    do {
+      switch (this.showMode) {
+        case 0:
+          e = this.dict.wordSearch(text, false);
+          break;
+        case this.kanjiN:
+          e = this.dict.kanjiSearch(text.charAt(0));
+          break;
+        case this.namesN:
+          e = this.dict.wordSearch(text, true);
+          break;
+      }
+      if (e) break;
+      this.showMode = (this.showMode + 1) % this.dictCount;
+    } while (this.showMode != m);
+
+    return e;
+  },
 };
-
-
 
 /*
 	2E80 - 2EFF	CJK Radicals Supplement
