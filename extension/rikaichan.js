@@ -38,7 +38,7 @@
 	when modifying any of the files. - Jon
 
 */
-const rcxMain = {
+window.rcxMain = {
   haveNames: true,
   //	canDoNames: false,
   dictCount: 3,
