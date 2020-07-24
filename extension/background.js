@@ -123,7 +123,7 @@ function initializeConfigFromCloudOrLocalStorageOrDefaults(cloudStorage) {
    * config. TODO: Consider a solution that doesn't require this loop.
    */
   rcxMain.config.kanjiInfo = {};
-  const kanjiInfoLabelList = rcxDict.prototype.kanjiInfoLabelList;
+  const kanjiInfoLabelList = RcxDict.prototype.kanjiInfoLabelList;
   for (i = 0; i < kanjiInfoLabelList.length; i += 2) {
     const kanjiInfoKey = kanjiInfoLabelList[i];
     if (cloudStorage.kanjiInfo && cloudStorage.kanjiInfo[kanjiInfoKey]) {

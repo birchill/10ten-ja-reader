@@ -1,5 +1,5 @@
 // Alias kanjiInfoLabelList for convenience.
-const kanjiInfoLabelList = chrome.extension.getBackgroundPage().rcxDict
+const kanjiInfoLabelList = chrome.extension.getBackgroundPage().RcxDict
   .prototype.kanjiInfoLabelList;
 
 /**
