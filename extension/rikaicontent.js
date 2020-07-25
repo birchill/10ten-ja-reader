@@ -417,7 +417,11 @@ const rcxContent = {
         this.show(ev.currentTarget.rikaichan, this.sameDict);
         break;
       case 67: // c
-        if (ev.ctrlKey) {
+        // CTRL on Windows and CMD (metaKey) on Mac are used for OS copy and
+        // thus should prevent the definition copy.
+        // `metaKey` is the '⊞ Windows' key on Windows but that probably won't
+        // matter.
+        if (ev.ctrlKey || ev.metaKey) {
           shouldPreventDefault = false;
         } else {
           chrome.extension.sendMessage({
