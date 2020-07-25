@@ -373,7 +373,7 @@ const parseKanjiDic = async (sources, dataFile) => {
   parser.end();
 
   const output = fs.createWriteStream(
-    path.join(__dirname, '..', 'data', dataFile)
+    path.join(__dirname, '..', 'extension', 'data', dataFile)
   );
   parser.printDict(output);
 };
