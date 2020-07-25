@@ -4,7 +4,6 @@ const zlib = require('zlib');
 const path = require('path');
 const iconv = require('iconv-lite');
 const LineStream = require('byline').LineStream;
-const CombinedStream = require('combined-stream2');
 const { Transform, Writable } = require('stream');
 
 // prettier-ignore
@@ -46,12 +45,12 @@ const SUPPORTED_REF_TYPES = new Set([
   'F',
 ]);
 
-const normalizeEntry = entry => {
+const normalizeEntry = (entry) => {
   let previous = 0;
   let result = '';
 
   for (let i = 0; i < entry.length; ++i) {
-    let originalChar = entry.charCodeAt(i);
+    const originalChar = entry.charCodeAt(i);
     let c = originalChar;
 
     // full-width katakana to hiragana
@@ -85,7 +84,14 @@ const normalizeEntry = entry => {
   return result;
 };
 
+/**
+ * Parses word and name dictionaries.
+ */
 class DictParser extends Transform {
+  /**
+   * Pass options as per Transform.
+   * @param {Object} options
+   */
   constructor(options) {
     super(options);
     this._firstLine = true;
@@ -93,6 +99,12 @@ class DictParser extends Transform {
     this._index = {};
   }
 
+  /**
+   * transforms data
+   * @param {*} data
+   * @param {*} encoding
+   * @param {*} callback
+   */
   _transform(data, encoding, callback) {
     const line = data.toString('utf8');
 
@@ -122,7 +134,7 @@ class DictParser extends Transform {
       return;
     }
 
-    const addOrUpdateEntry = entry => {
+    const addOrUpdateEntry = (entry) => {
       if (this._index.hasOwnProperty(entry)) {
         this._index[entry].push(this._length);
       } else {
@@ -144,6 +156,10 @@ class DictParser extends Transform {
     callback(null, data + '\n');
   }
 
+  /**
+   * Prints the index for given stream.
+   * @param {WriteStream} stream
+   */
   printIndex(stream) {
     for (const entry of Object.keys(this._index).sort()) {
       stream.write(`${entry},${this._index[entry].join()}\n`);
@@ -155,7 +171,7 @@ const parseEdict = (url, dataFile, indexFile) => {
   const parser = new DictParser();
   return new Promise((resolve, reject) => {
     http
-      .get(url, res => {
+      .get(url, (res) => {
         res
           .pipe(zlib.createGunzip())
           .pipe(iconv.decodeStream('euc-jp'))
@@ -167,7 +183,7 @@ const parseEdict = (url, dataFile, indexFile) => {
               path.join(__dirname, '..', 'extension', 'data', dataFile)
             )
           )
-          .on('error', err => {
+          .on('error', (err) => {
             reject(err);
           })
           .on('close', () => {
@@ -180,18 +196,31 @@ const parseEdict = (url, dataFile, indexFile) => {
             resolve();
           });
       })
-      .on('error', err => {
-        reject(`Connection error: ${err}`);
+      .on('error', (err) => {
+        reject(new Error(`Connection error: ${err}`));
       });
   });
 };
 
+/**
+ * Handles parsing of KanjiDict format.
+ */
 class KanjiDictParser extends Writable {
+  /**
+   * Construct as per Writable.
+   * @param {Object} options
+   */
   constructor(options) {
     super(options);
     this._index = {};
   }
 
+  /**
+   * Write the data.
+   * @param {*} data
+   * @param {*} encoding
+   * @param {*} callback
+   */
   _write(data, encoding, callback) {
     const line = data.toString('utf8');
 
@@ -287,23 +316,29 @@ class KanjiDictParser extends Writable {
       }
       // Check for embedded |. That's the separator we use in the output so if
       // it also occurs in the meaning things are not going to end well.
-      const hasEmbeddedPipe = meanings.some(meaning => meaning.includes('|'));
+      const hasEmbeddedPipe = meanings.some((meaning) => meaning.includes('|'));
       if (hasEmbeddedPipe) {
         throw new Error(`Got meaning with embedded "|": ${line}`);
       }
       // Join with ; if some of the entries have commas
-      const hasEmbeddedCommas = meanings.some(meaning => meaning.includes(','));
+      const hasEmbeddedCommas = meanings.some((meaning) =>
+        meaning.includes(',')
+      );
       matches[6] = meanings.join(hasEmbeddedCommas ? '; ' : ', ');
     }
 
     this._index[matches[1]] = matches
       .slice(2)
-      .map(part => (part ? part.trim() : ''))
+      .map((part) => (part ? part.trim() : ''))
       .join('|');
 
     callback();
   }
 
+  /**
+   * Print the dictionary files
+   * @param {fs.WriteStream} stream
+   */
   printDict(stream) {
     for (const entry of Object.keys(this._index).sort()) {
       stream.write(`${entry}|${this._index[entry]}\n`);
@@ -317,7 +352,7 @@ const parseKanjiDic = async (sources, dataFile) => {
   const readFile = (url, encoding) =>
     new Promise((resolve, reject) => {
       http
-        .get(url, res => {
+        .get(url, (res) => {
           res
             .pipe(zlib.createGunzip())
             .pipe(iconv.decodeStream(encoding))
@@ -326,12 +361,11 @@ const parseKanjiDic = async (sources, dataFile) => {
             .on('end', resolve)
             .pipe(parser, { end: false });
         })
-        .on('error', err => {
+        .on('error', (err) => {
           throw Error(`Connection error: ${err}`);
         });
     });
 
-  const input = CombinedStream.create();
   for (const source of sources) {
     await readFile(source.url, source.encoding);
   }
@@ -378,6 +412,6 @@ parseEdict('http://ftp.monash.edu/pub/nihongo/edict.gz', 'dict.dat', 'dict.idx')
   .then(() => {
     console.log('Done.');
   })
-  .catch(err => {
+  .catch((err) => {
     console.log(`Error: '${err}'`);
   });
