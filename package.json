@@ -27,7 +27,6 @@
   "homepage": "https://github.com/melink14/rikaikun#readme",
   "devDependencies": {
     "byline": "^5.0.0",
-    "combined-stream2": "^1.1.2",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
