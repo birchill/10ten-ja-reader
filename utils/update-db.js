@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2020 Brian Birtles <https://github.com/birtles>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 const fs = require('fs');
 const http = require('http');
 const zlib = require('zlib');
