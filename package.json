@@ -31,7 +31,7 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint": "^7.5.0",
-    "iconv-lite": "^0.4.19",
+    "iconv-lite": "^0.6.2",
     "prettier": "^2.0.5"
   }
 }
