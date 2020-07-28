@@ -4,8 +4,12 @@
   "description": "Chrome extension that provides Japanese to English translations when hovering over words.",
   "private": true,
   "scripts": {
-    "format": "prettier --config .prettierrc --write extension/*.js",
-    "lint": "eslint extension/*.js",
+    "eslint": "eslint **/*.js",
+    "fix": "npm run prettier:format --silent ; npm run eslint --silent -- --fix",
+    "lint": "npm run eslint --silent; npm run prettier:check --silent",
+    "prettier:base": "prettier --config .prettierrc **/*.{css,html,js}",
+    "prettier:check": "npm run prettier:base --silent -- --check",
+    "prettier:format": "npm run prettier:base --silent -- --write",
     "test": "echo \"Error: no test specified\" && exit 1",
     "update-db": "node utils/update-db"
   },
@@ -14,13 +18,13 @@
     "url": "git+https://github.com/melink14/rikaikun.git"
   },
   "keywords": [
-    "Japanese",
+    "japanese",
     "chrome",
     "extension",
     "javascript"
   ],
   "author": "melink14",
-  "license": "GPL-2.0",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/melink14/rikaikun/issues"
   },

@@ -1,47 +1,46 @@
 #rikaikun_options,
 #rikaikun_options td {
-	padding: 0 10px;
-	font-family: sans-serif;
-	font-size: 10pt;
-}
-
-#tabs {
+  padding: 0 10px;
+  font-family: sans-serif;
+  font-size: 10pt;
 }
 
 .tab {
-	float: left;
-	display: inline;
-	padding: 5px;
-	margin-left: 3px;
-	background-color: #eee;
-	border: 1px solid #999;
-	border-bottom: 0px;
-	font-style: italic;
-	color: #ccc;
+  display: inline;
+  padding: 5px;
+  margin-left: 3px;
+  background-color: #eee;
+  border: 1px solid #999;
+  border-bottom: 0px;
+  font-style: italic;
+  color: #ccc;
 }
 
 .active-tab {
-	font-style: normal;
-	color: #000;
+  font-style: normal;
+  color: #000;
 }
 
 .selected-tab {
-	font-style: normal;
-	color: #000;
-	font-weight: bold;
-	background-color: #dde;
+  font-style: normal;
+  color: #000;
+  font-weight: bold;
+  background-color: #dde;
 }
 
-.tabContent.hide { display: none; }
+.tabContent.hide {
+  display: none;
+}
 
 #options {
-	clear: both;
-	background-color: #dde;
-	padding: 10px;
-	border: 1px solid black;
+  clear: both;
+  background-color: #dde;
+  padding: 10px;
+  border: 1px solid black;
 }
 
-#options p, #options form {
-	margin: 0;
-	padding: 0;
+#options p,
+#options form {
+  margin: 0;
+  padding: 0;
 }
