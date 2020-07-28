@@ -33,22 +33,26 @@ const SEMIVOICED_KATAKANA_TO_HIRAGANA = [
   0x3071, 0x3074, 0x3077, 0x307a, 0x307d
 ];
 
-const SUPPORTED_REF_TYPES = new Set([
+// List of reference types that we copy to the kanji DB file.
+// See http://www.edrdg.org/wiki/index.php/KANJIDIC_Project#Content_.26_Format
+const SUPPORTED_REF_TYPES = [
   'B',
   'H',
   'L',
   'E',
-  'D', // We'll manually filter this down to DK later
+  'DK',
+  'DN',
   'N',
   'V',
   'Y',
   'P',
-  'I', // I and IN
+  'I',
+  'IN',
   // Not really supported, just here to make the diff smaller
   'S',
   'G',
   'F',
-]);
+];
 
 const normalizeEntry = (entry) => {
   let previous = 0;
@@ -242,6 +246,8 @@ class KanjiDictParser extends Writable {
 
     // Data file format
     //
+    // See http://www.edrdg.org/wiki/index.php/KANJIDIC_Project#Content_.26_Format
+    //
     // <kanji> <reference codes> <readings> [T1 <name readings>] [T2 <bushumei>] <meanings>
     //
     // <kanji> - Single char (but could be non-BMP so need to be careful what JS
@@ -295,11 +301,10 @@ class KanjiDictParser extends Writable {
     const refsToKeep = [];
     let hasB = false;
     for (const ref of refs) {
-      if (ref.length && SUPPORTED_REF_TYPES.has(ref[0])) {
-        // Special case Dx types since we only support DK types
-        if (ref[0] === 'D' && ref.slice(0, 2) !== 'DK') {
-          continue;
-        }
+      if (
+        ref.length &&
+        SUPPORTED_REF_TYPES.some((supportedRef) => ref.startsWith(supportedRef))
+      ) {
         if (ref[0] === 'B') {
           hasB = true;
         }

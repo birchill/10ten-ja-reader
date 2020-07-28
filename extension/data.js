@@ -774,7 +774,7 @@ if (0) {
     'Halpern',
     'L',
     'Heisig 5th Edition',
-    'LF',
+    'DN',
     'Heisig 6th Edition',
     'E',
     'Henshall',
