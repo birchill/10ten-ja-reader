@@ -279,6 +279,13 @@ class KanjiDictParser extends Writable {
     //
     // (Yes, including the trailing spaces too.)
     //
+    // Kokuji (Japan created kanji) are usually denoted with parentheses in the
+    // meaning section ( '{(kokuji)}' ) but in three entries nested curly braces
+    // are used instead:
+    //
+    //   𪃹 .=.=== U2A0F9 B196 S20 じない {thrush} {{kokuji}}
+    //
+    //
     // Output pieces:
     //  - Kanji
     //  - Reference codes
@@ -288,7 +295,7 @@ class KanjiDictParser extends Writable {
     //  - Meanings, command separated
     // (All | delimited)
     const matches = line.match(
-      /^(\S+) (?:.=.=== )?((?:[\x21-\x7a]+ )+)((?:[\x80-\uffff.\-]+ )+)?(?:T1 ((?:[\x80-\uffff.\-]+ )+))?(?:T2 ((?:[\x80-\uffff.\-]+ )+))?((?:\{[^\}]+\} ?)*)?$/
+      /^(\S+) (?:.=.=== )?((?:[\x21-\x7a]+ )+)((?:[\x80-\uffff.\-]+ )+)?(?:T1 ((?:[\x80-\uffff.\-]+ )+))?(?:T2 ((?:[\x80-\uffff.\-]+ )+))?((?:\{.+\} ?)*)?$/
     );
     if (matches === null) {
       console.log(`Failed to parse line: ${line}`);
