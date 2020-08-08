@@ -1,45 +1,40 @@
 {
-	"manifest_version": 2,
+  "manifest_version": 2,
 
-	"name": "rikaikun",
-	"version": "0.10.1",
+  "name": "rikaikun",
+  "version": "0.10.1",
 
-	"description": "A port of rikaichan for chrome. Translate Japanese by hovering over words.",
-	"icons": { "48": "images/icon48.png",
-		"128": "images/icon128.png"},
+  "description": "A port of rikaichan for chrome. Translate Japanese by hovering over words.",
+  "icons": { "48": "images/icon48.png", "128": "images/icon128.png" },
 
-	"permissions": [
-		"tabs",
-		"clipboardWrite",
-		"storage"
-	],
+  "permissions": ["tabs", "clipboardWrite", "storage"],
 
-	"background": {
-		"page": "background.html",
-		"persistent": true
-	},
+  "background": {
+    "page": "background.html",
+    "persistent": true
+  },
 
-	"browser_action": {
-		"default_icon": "images/ba.png"
-	},
+  "browser_action": {
+    "default_icon": "images/ba.png"
+  },
 
-	"options_ui": {
-		"page": "options.html",
-		"open_in_tab": false
-	},
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
 
-	"content_scripts": [
-		{
-			"matches": ["http://*/*", "https://*/*", "ftp://*/*", "file:///*"],
-			"js": ["rikaicontent.js"],
-			"all_frames":true
-		}
-	],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*", "ftp://*/*", "file:///*"],
+      "js": ["rikaicontent.js"],
+      "all_frames": true
+    }
+  ],
 
-	"web_accessible_resources": [
-		"css/popup-black.css",
-		"css/popup-blue.css",
-		"css/popup-lightblue.css",
-		"css/popup-yellow.css"
-	]
+  "web_accessible_resources": [
+    "css/popup-black.css",
+    "css/popup-blue.css",
+    "css/popup-lightblue.css",
+    "css/popup-yellow.css"
+  ]
 }

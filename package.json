@@ -7,7 +7,7 @@
     "eslint": "eslint **/*.js",
     "fix": "npm run prettier:format --silent ; npm run eslint --silent -- --fix",
     "lint": "npm run eslint --silent; npm run prettier:check --silent",
-    "prettier:base": "prettier --config .prettierrc **/*.{css,html,js}",
+    "prettier:base": "prettier --config .prettierrc **/*.{css,html,js,json}",
     "prettier:check": "npm run prettier:base --silent -- --check",
     "prettier:format": "npm run prettier:base --silent -- --write",
     "test": "echo \"Error: no test specified\" && exit 1",
