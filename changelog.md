@@ -6,7 +6,8 @@
   thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
 * Added recognition for slightly longer matches
   ([#319](https://github.com/birtles/rikaichamp/issues/319))
-* Added formatting for phantom kanji and kokuji kanji metadata.
+* Added formatting for phantom kanji and kokuji kanji metadata
+* Updated word and name dictionaries to 2020-08-10 snapshot
 
 ## 0.1.19 (2020-06-24)
 
