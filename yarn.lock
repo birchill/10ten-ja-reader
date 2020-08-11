@@ -9044,7 +9044,7 @@ wcwidth@^1.0.0:
 
 "web-ext-webpack-plugin@github:birtles/web-ext-webpack-plugin":
   version "1.0.0"
-  resolved "https://codeload.github.com/birtles/web-ext-webpack-plugin/tar.gz/317ad5c62ccc7dae4b441eece927dd28223c0ec4"
+  resolved "https://codeload.github.com/birtles/web-ext-webpack-plugin/tar.gz/0601c9ed52ba765574913ad5536e0f9e88c502a8"
   dependencies:
     web-ext "^5.0.0"
 
