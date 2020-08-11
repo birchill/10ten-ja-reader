@@ -1,4 +1,8 @@
-## 0.1.20 (Not yet released)
+## 0.1.21 (Not yet released)
+
+(Nothing yet)
+
+## 0.1.20 (2020-08-11)
 
 * Added Chinese (simplified) localization
   thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
