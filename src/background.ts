@@ -453,8 +453,17 @@ async function maybeDownloadData() {
     return;
   }
 
+  try {
+    await config.ready;
+  } catch (e) {
+    // We don't actually handle this error at the moment since we are still
+    // trying to determine what causes it.
+    Bugsnag.leaveBreadcrumb('Failed to read config');
+    console.error(e);
+    throw e;
+  }
+
   // Set initial language
-  await config.ready;
   try {
     Bugsnag.leaveBreadcrumb(
       `Setting initial language of kanji database to ${config.dictLang}.`

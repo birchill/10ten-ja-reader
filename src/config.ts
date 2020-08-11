@@ -140,9 +140,17 @@ export class Config {
       }
 
       this._settings.kanjiReferencesV2 = newSettings;
-      await browser.storage.sync.set({
-        kanjiReferencesV2: newSettings,
-      });
+      try {
+        await browser.storage.sync.set({
+          kanjiReferencesV2: newSettings,
+        });
+      } catch (_) {
+        // If we failed to store the upgraded settings that's fine since at
+        // least the in-memory version of the settings has been upgraded.
+        // We'll try upgrading the stored settings next time we're loaded
+        // anyway.
+        console.error('Failed to upgrade kanji references settings');
+      }
     }
   }
 
