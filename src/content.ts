@@ -220,7 +220,14 @@ const styleSheetLoad = (link: HTMLLinkElement): Promise<void> =>
   });
 
 export class RikaiContent {
-  static MAX_LENGTH = 13;
+  // This should be enough for most (but not all) entries for now.
+  //
+  // See https://github.com/birtles/rikaichamp/issues/319#issuecomment-655545971
+  // for a snapshot of the entry lengths by frequency.
+  //
+  // Once we have switched all databases to IndexedDB, we should investigate the
+  // performance impact of increasing this further.
+  static MAX_LENGTH = 16;
 
   _config: ContentConfig;
 
