@@ -13,6 +13,15 @@
   },
   "ignorePatterns": "dist",
   "rules": {
+    "valid-jsdoc": [
+      "error",
+      {
+        "requireParamDescription": false,
+        "requireReturnDescription": false,
+        "requireReturn": false,
+        "prefer": { "return": "returns" }
+      }
+    ],
     "linebreak-style": ["error", "unix"],
     "node/no-unpublished-import": "off",
     "@typescript-eslint/no-var-requires": "off",

@@ -93,12 +93,11 @@ const normalizeEntry = (entry) => {
   return result;
 };
 
-/**
- * Parses word and name dictionaries.
- */
+/** Parses word and name dictionaries. */
 class DictParser extends Transform {
   /**
    * Pass options as per Transform.
+   *
    * @param {Object} options
    */
   constructor(options) {
@@ -109,10 +108,11 @@ class DictParser extends Transform {
   }
 
   /**
-   * transforms data
-   * @param {*} data
-   * @param {*} encoding
-   * @param {*} callback
+   * Transforms data
+   *
+   * @param {any} data
+   * @param {any} encoding
+   * @param {any} callback
    */
   _transform(data, encoding, callback) {
     const line = data.toString('utf8');
@@ -167,6 +167,7 @@ class DictParser extends Transform {
 
   /**
    * Prints the index for given stream.
+   *
    * @param {WriteStream} stream
    */
   printIndex(stream) {
@@ -211,12 +212,11 @@ const parseEdict = (url, dataFile, indexFile) => {
   });
 };
 
-/**
- * Handles parsing of KanjiDict format.
- */
+/** Handles parsing of KanjiDict format. */
 class KanjiDictParser extends Writable {
   /**
    * Construct as per Writable.
+   *
    * @param {Object} options
    */
   constructor(options) {
@@ -226,9 +226,10 @@ class KanjiDictParser extends Writable {
 
   /**
    * Write the data.
-   * @param {*} data
-   * @param {*} encoding
-   * @param {*} callback
+   *
+   * @param {any} data
+   * @param {any} encoding
+   * @param {any} callback
    */
   _write(data, encoding, callback) {
     const line = data.toString('utf8');
@@ -354,6 +355,7 @@ class KanjiDictParser extends Writable {
 
   /**
    * Print the dictionary files
+   *
    * @param {fs.WriteStream} stream
    */
   printDict(stream) {

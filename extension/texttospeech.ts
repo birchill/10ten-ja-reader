@@ -1,6 +1,4 @@
-/**
- * Helper class for Japanese Text To Speech.
- */
+/** Helper class for Japanese Text To Speech. */
 function TTS() {
   this.lastTime = new Date().valueOf();
   this.previousText = null;
@@ -9,6 +7,7 @@ function TTS() {
 TTS.prototype = {
   /**
    * Plays text-to-speech audio for given Japanese text.
+   *
    * @param {string} text
    */
   play(text) {

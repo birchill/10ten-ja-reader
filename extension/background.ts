@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
       const e = rcxMain.search(request.text, request.dictOption);
       response(e);
       break;
-    /**  case 'nextDict':
+    /*  case 'nextDict':
 			 console.log('nextDict');
 			 rcxMain.nextDict();
 			 break;*/
@@ -79,10 +79,11 @@ chrome.storage.sync.get(optionsList, function (items) {
 
 /**
  * Initializes config with values from one of the following sources in order:
- *    1. Cloud Storage, 2. Local Storage, and 3. Default
  *
- * @param {Object<string, boolean|number|string>} cloudStorage
- *     config values retrieved from cloud storage.
+ * 1. Cloud Storage, 2. Local Storage, and 3. Default
+ *
+ * @param {Object<string, boolean | number | string>} cloudStorage Config
+ *     values retrieved from cloud storage.
  */
 function initializeConfigFromCloudOrLocalStorageOrDefaults(cloudStorage) {
   /**
@@ -90,7 +91,7 @@ function initializeConfigFromCloudOrLocalStorageOrDefaults(cloudStorage) {
    * back to `localStorage` and finally defaulting to `defaultValue`.
    *
    * @param {string} key
-   * @param {boolean|number|string} defaultValue
+   * @param {boolean | number | string} defaultValue
    */
   function initConfig(key, defaultValue) {
     let currentValue =
@@ -119,6 +120,7 @@ function initializeConfigFromCloudOrLocalStorageOrDefaults(cloudStorage) {
 
   /**
    * Set kanjiInfo option values
+   *
    * Check each key in case there are new types of info to be added to the
    * config. TODO: Consider a solution that doesn't require this loop.
    */
@@ -172,7 +174,7 @@ function saveOptionsToCloudStorage() {
  * returns the same value coerced to the proper type.
  *
  * @param {string} value
- * @return {boolean|number|string}
+ * @returns {boolean | number | string}
  */
 function normalizeStringValue(value) {
   const maybeNumber = parseInt(value, 10);
