@@ -37,7 +37,7 @@
     "@actions/core": "^1.2.4",
     "@types/chai": "^4.2.12",
     "@types/jest": "^26.0.9",
-    "@types/mocha": "^8.0.1",
+    "@types/mocha": "^8.0.3",
     "archiver": "^5.0.0",
     "byline": "^5.0.0",
     "chai": "^4.2.0",
