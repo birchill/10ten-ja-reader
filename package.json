@@ -54,7 +54,7 @@
     "mocha": "^8.1.1",
     "prettier": "^2.0.5",
     "semver-parser": "^3.0.5",
-    "source-map-loader": "^1.0.1",
+    "source-map-loader": "^1.0.2",
     "ts-jest": "^25.5.1",
     "ts-loader": "^8.0.2",
     "web-ext-types": "github:michael-zapata/web-ext-types",
