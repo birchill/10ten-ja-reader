@@ -9,7 +9,7 @@
     "eslint": "eslint **/*.ts",
     "fix": "npm run prettier:format --silent ; gts fix",
     "lint": "gts check; npm run prettier:check --silent",
-    "prettier:base": "prettier --config .prettierrc.js **/*.{css,html,ts,json}",
+    "prettier:base": "prettier --config .prettierrc.js .",
     "prettier:check": "npm run prettier:base --silent -- --check",
     "prettier:format": "npm run prettier:base --silent -- --write",
     "test": "echo \"Error: no test specified\" && exit 1",
