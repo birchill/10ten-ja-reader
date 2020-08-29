@@ -12,9 +12,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
       response(e);
       break;
     /*  case 'nextDict':
-			 console.log('nextDict');
-			 rcxMain.nextDict();
-			 break;*/
+       console.log('nextDict');
+       rcxMain.nextDict();
+       break;*/
     case 'resetDict':
       console.log('resetDict');
       rcxMain.resetDict();

@@ -332,7 +332,7 @@ const rcxContent = {
     rcxContent._onKeyDown(ev);
   },
   _onKeyDown: function (ev) {
-    //		this.status("keyCode=" + ev.keyCode + ' charCode=' + ev.charCode + ' detail=' + ev.detail);
+    //    this.status("keyCode=" + ev.keyCode + ' charCode=' + ev.charCode + ' detail=' + ev.detail);
 
     if (
       window.rikaichan.config.showOnKey !== '' &&
@@ -1004,7 +1004,7 @@ const rcxContent = {
         ro = this.getTotalOffset(rp.parentNode, rp, ro);
       }
 
-      /*   		console.log( "offset: " + ro + " parentContainer: " +  rp.nodeName +
+      /*       console.log( "offset: " + ro + " parentContainer: " +  rp.nodeName +
         " total size: " + (rp.data?rp.data.length:"") + " target: " + ev.target.nodeName +
         " parentparent: " + rp.parentNode.nodeName); */
 
@@ -1088,7 +1088,7 @@ const rcxContent = {
       return;
     }
 
-    /*  		if ((rp) && (rp.nodeType != Node.TEXT_NODE) && !('form' in rp)) {
+    /*      if ((rp) && (rp.nodeType != Node.TEXT_NODE) && !('form' in rp)) {
       rp = null;
       ro = -1;
     }  */

@@ -23,6 +23,7 @@
       }
     ],
     "linebreak-style": ["error", "unix"],
+    "no-tabs": "error",
     "node/no-unpublished-import": "off",
     "@typescript-eslint/no-var-requires": "off",
     // TODO(espeed): Remove these and fix errors.

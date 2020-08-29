@@ -1,41 +1,41 @@
 ﻿/*
 
-	Rikaikun
-	Copyright (C) 2010 Erek Speed
-	http://code.google.com/p/rikaikun/
+  Rikaikun
+  Copyright (C) 2010 Erek Speed
+  http://code.google.com/p/rikaikun/
 
-	---
+  ---
 
-	Originally based on Rikaichan 1.07
-	by Jonathan Zarate
-	http://www.polarcloud.com/
+  Originally based on Rikaichan 1.07
+  by Jonathan Zarate
+  http://www.polarcloud.com/
 
-	---
+  ---
 
-	Originally based on RikaiXUL 0.4 by Todd Rudick
-	http://www.rikai.com/
-	http://rikaixul.mozdev.org/
+  Originally based on RikaiXUL 0.4 by Todd Rudick
+  http://www.rikai.com/
+  http://rikaixul.mozdev.org/
 
-	---
+  ---
 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	(at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-	---
+  ---
 
-	Please do not change or remove any of the copyrights or links to web pages
-	when modifying any of the files. - Jon
+  Please do not change or remove any of the copyrights or links to web pages
+  when modifying any of the files. - Jon
 
 */
 
@@ -146,12 +146,12 @@ RcxDict.prototype = {
     );
   },
 
-  //	Note: These are mostly flat text files; loaded as one continous string to
-  //	reduce memory use
+  //  Note: These are mostly flat text files; loaded as one continous string to
+  //  reduce memory use
   loadDictionary: function (includeNames) {
     /* this.wordDict = this.fileRead(rcxWordDict.datURI,
-		rcxWordDict.datCharset); this.wordIndex = this.fileRead(rcxWordDict.idxURI,
-		rcxWordDict.idxCharset); */
+    rcxWordDict.datCharset); this.wordIndex = this.fileRead(rcxWordDict.idxURI,
+    rcxWordDict.idxCharset); */
 
     const promises = [
       this.loadFileToTarget('dict.dat', false, 'wordDict'),
@@ -174,84 +174,84 @@ RcxDict.prototype = {
     // this.fileReadArray(chrome.extension.getURL("data/radicals.dat"),
     // 'UTF-8');
 
-    //	this.test_kanji();
+    //  this.test_kanji();
   },
   /*
-	test_kanji: function() {
-		let a = this.kanjiData.split('\n');
+  test_kanji: function() {
+    let a = this.kanjiData.split('\n');
 
-		alert('begin test. a.length=' + a.length);
-		let start = (new Date()).getTime();
-		for (let i = 0; i < a.length; ++i) {
-			if (!this.kanjiSearch(a[i].charAt(0))) {
-				alert('error @' + i + ': ' + a[i]);
-				return;
-			}
-			alert('time = ' + ((new Date()).getTime() - start));
-		},
-	*/
+    alert('begin test. a.length=' + a.length);
+    let start = (new Date()).getTime();
+    for (let i = 0; i < a.length; ++i) {
+      if (!this.kanjiSearch(a[i].charAt(0))) {
+        alert('error @' + i + ': ' + a[i]);
+        return;
+      }
+      alert('time = ' + ((new Date()).getTime() - start));
+    },
+  */
 
   /*
-	test_index: function() {
-		let ixF = this.fileRead('chrome://rikaichan/content/dict.idx', 'EUC-JP');
-		let ixA = ixF.split('\n');
+  test_index: function() {
+    let ixF = this.fileRead('chrome://rikaichan/content/dict.idx', 'EUC-JP');
+    let ixA = ixF.split('\n');
 
-		while ((ixA.length > 0) && (ixA[ixA.length - 1].length === 0)) ixA.pop();
+    while ((ixA.length > 0) && (ixA[ixA.length - 1].length === 0)) ixA.pop();
 
-//		alert('length=' + ixA.length + ' / ' + ixF.length);
+//    alert('length=' + ixA.length + ' / ' + ixF.length);
 if (0) {
-		let timeA = (new Date()).getTime();
-		for (let i = ixA.length - 1; i >= 0; --i) {
-			if ((i & 0xFF) === 0) window.status = 'A: ' + i;
-			let s = ixA[i];
-			let r = this.binSearchX(ixA, s.substr(0, s.indexOf(',') + 1));
-			if ((r === -1) || (ixA[r] !== s)) {
-					alert('A failed: ' + s);
-					return;
-				}
-			}
-			timeA = ((new Date()).getTime() - timeA) / 1000;
+    let timeA = (new Date()).getTime();
+    for (let i = ixA.length - 1; i >= 0; --i) {
+      if ((i & 0xFF) === 0) window.status = 'A: ' + i;
+      let s = ixA[i];
+      let r = this.binSearchX(ixA, s.substr(0, s.indexOf(',') + 1));
+      if ((r === -1) || (ixA[r] !== s)) {
+          alert('A failed: ' + s);
+          return;
+        }
+      }
+      timeA = ((new Date()).getTime() - timeA) / 1000;
 
-		let timeF = (new Date()).getTime();
-		for (let i = ixA.length - 1; i >= 0; --i) {
-			if ((i & 0xFF) === 0) window.status = 'F: ' + i;
-			let s = ixA[i];
-			let r = this.find(ixF, s.substr(0, s.indexOf(',') + 1));
-			if (r !== s) {
-					alert('F failed: ' + s);
-					return;
-				}
-			timeF = ((new Date()).getTime() - timeF) / 1000;
+    let timeF = (new Date()).getTime();
+    for (let i = ixA.length - 1; i >= 0; --i) {
+      if ((i & 0xFF) === 0) window.status = 'F: ' + i;
+      let s = ixA[i];
+      let r = this.find(ixF, s.substr(0, s.indexOf(',') + 1));
+      if (r !== s) {
+          alert('F failed: ' + s);
+          return;
+        }
+      timeF = ((new Date()).getTime() - timeF) / 1000;
 
-		let timeX = (new Date()).getTime();
+    let timeX = (new Date()).getTime();
 if (0) {
-		for (let i = ixA.length - 1; i >= 0; --i) {
-			if ((i & 0xFF) === 0) window.status = 'X: ' + i;
-			let s = ixA[i];
+    for (let i = ixA.length - 1; i >= 0; --i) {
+      if ((i & 0xFF) === 0) window.status = 'X: ' + i;
+      let s = ixA[i];
 
-			let w = s.substr(0, s.indexOf(',') + 1);
-			let j = 0;
-			r = '';
-			if (ixF.substr(0, w.length) === w) {
-					r = ixF.substr(0, ixF.indexOf('\n'));
-				}
-				else {
-					w = '\n' + w;
-					j = ixF.indexOf(w);
-				if (j !== -1) r = ixF.substring(j + 1, ixF.indexOf('\n', j + 1));
-				}
+      let w = s.substr(0, s.indexOf(',') + 1);
+      let j = 0;
+      r = '';
+      if (ixF.substr(0, w.length) === w) {
+          r = ixF.substr(0, ixF.indexOf('\n'));
+        }
+        else {
+          w = '\n' + w;
+          j = ixF.indexOf(w);
+        if (j !== -1) r = ixF.substring(j + 1, ixF.indexOf('\n', j + 1));
+        }
 
-			if (r !== s) {
-					alert('X failed:\n[' + s + ']\n[' + r + ']');
-					return;
-				}
-			}
-			timeX = ((new Date()).getTime() - timeX) / 1000;
+      if (r !== s) {
+          alert('X failed:\n[' + s + ']\n[' + r + ']');
+          return;
+        }
+      }
+      timeX = ((new Date()).getTime() - timeX) / 1000;
 
-			alert('A=' + timeA + ' / F=' + timeF + ' / X=' + timeX);
-		},
+      alert('A=' + timeA + ' / F=' + timeF + ' / X=' + timeX);
+    },
 
-	*/
+  */
 
   loadDIF: function () {
     this.difReasons = [];
@@ -629,7 +629,7 @@ if (0) {
           o.more = 1;
           break;
         }
-        //				o.data = o.data.concat(e.data);
+        //        o.data = o.data.concat(e.data);
         o.data.push(e.data[0]);
         skip = e.matchLen;
       } else {
@@ -760,16 +760,16 @@ if (0) {
 
   kanjiInfoLabelList: [
     /*
-				'C', 	'Classical Radical',
-				'DR',	'Father Joseph De Roo Index',
-				'DO',	'P.G. O\'Neill Index',
-				'O', 	'P.G. O\'Neill Japanese Names Index',
-				'Q', 	'Four Corner Code',
-				'MN',	'Morohashi Daikanwajiten Index',
-				'MP',	'Morohashi Daikanwajiten Volume/Page',
-				'K',	'Gakken Kanji Dictionary Index',
-				'W',	'Korean Reading',
-		*/
+        'C',   'Classical Radical',
+        'DR',  'Father Joseph De Roo Index',
+        'DO',  'P.G. O\'Neill Index',
+        'O',   'P.G. O\'Neill Japanese Names Index',
+        'Q',   'Four Corner Code',
+        'MN',  'Morohashi Daikanwajiten Index',
+        'MP',  'Morohashi Daikanwajiten Volume/Page',
+        'K',  'Gakken Kanji Dictionary Index',
+        'W',  'Korean Reading',
+    */
     'H',
     'Halpern',
     'L',
@@ -1021,10 +1021,10 @@ if (0) {
         if (!e) continue;
 
         /*
-					e[1] = kanji/kana
-					e[2] = kana
-					e[3] = definition
-				*/
+          e[1] = kanji/kana
+          e[2] = kana
+          e[3] = definition
+        */
 
         if (s !== e[3]) {
           b.push(t);
