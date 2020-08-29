@@ -4,6 +4,7 @@
     "browser": true,
     "webextensions": true
   },
+  "plugins": ["eslint-plugin-tsdoc", "sort-imports-es6-autofix"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly",
@@ -13,17 +14,10 @@
   },
   "ignorePatterns": "dist",
   "rules": {
-    "valid-jsdoc": [
-      "error",
-      {
-        "requireParamDescription": false,
-        "requireReturnDescription": false,
-        "requireReturn": false,
-        "prefer": { "return": "returns" }
-      }
-    ],
+    "tsdoc/syntax": "error",
     "linebreak-style": ["error", "unix"],
     "no-tabs": "error",
+    "sort-imports-es6-autofix/sort-imports-es6": "error",
     "node/no-unpublished-import": "off",
     "@typescript-eslint/no-var-requires": "off",
     // TODO(espeed): Remove these and fix errors.
@@ -41,5 +35,14 @@
     "no-dupe-keys": "off",
     "no-unreachable": "off",
     "no-extra-boolean-cast": "off"
-  }
+  },
+  "overrides": [
+    {
+      // TODO(espeed): Tighten this as files get cleaned up.
+      "files": ["extension/*.ts"],
+      "rules": {
+        "tsdoc/syntax": "off"
+      }
+    }
+  ]
 }

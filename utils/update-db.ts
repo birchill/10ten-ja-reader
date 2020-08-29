@@ -3,13 +3,18 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-const fs = require('fs');
-const http = require('http');
-const zlib = require('zlib');
-const path = require('path');
-const iconv = require('iconv-lite');
-const LineStream = require('byline').LineStream;
-const { Transform, Writable } = require('stream');
+import { LineStream } from 'byline';
+import {
+  Transform,
+  TransformCallback,
+  Writable,
+  WritableOptions,
+} from 'stream';
+import fs, { WriteStream } from 'fs';
+import http from 'http';
+import iconv from 'iconv-lite';
+import path from 'path';
+import zlib from 'zlib';
 
 // prettier-ignore
 const HANKAKU_KATAKANA_TO_HIRAGANA = [
@@ -54,7 +59,7 @@ const SUPPORTED_REF_TYPES = [
   'F',
 ];
 
-const normalizeEntry = (entry) => {
+const normalizeEntry = (entry: string) => {
   let previous = 0;
   let result = '';
 
@@ -95,31 +100,25 @@ const normalizeEntry = (entry) => {
 
 /** Parses word and name dictionaries. */
 class DictParser extends Transform {
-  /**
-   * Pass options as per Transform.
-   *
-   * @param {Object} options
-   */
-  constructor(options) {
+  #firstLine = true;
+  #length = 0;
+  #index: Record<string, Array<number>> = {};
+  /** Pass options as per Transform. */
+  constructor(options?: {}) {
     super(options);
-    this._firstLine = true;
-    this._length = 0;
-    this._index = {};
   }
 
   /**
    * Transforms data
    *
-   * @param {any} data
-   * @param {any} encoding
-   * @param {any} callback
+   * @override
    */
-  _transform(data, encoding, callback) {
+  _transform(data: Buffer, encoding: string, callback: TransformCallback) {
     const line = data.toString('utf8');
 
     // Skip the header
-    if (this._firstLine) {
-      this._firstLine = false;
+    if (this.#firstLine) {
+      this.#firstLine = false;
       const header = line.match(/\/Created: (.*?)\//);
       if (header) {
         console.log(`Parsing dictionary created: ${header[1]}`);
@@ -143,11 +142,11 @@ class DictParser extends Transform {
       return;
     }
 
-    const addOrUpdateEntry = (entry) => {
-      if (this._index.hasOwnProperty(entry)) {
-        this._index[entry].push(this._length);
+    const addOrUpdateEntry = (entry: string) => {
+      if (this.#index.hasOwnProperty(entry)) {
+        this.#index[entry].push(this.#length);
       } else {
-        this._index[entry] = [this._length];
+        this.#index[entry] = [this.#length];
       }
     };
 
@@ -161,23 +160,19 @@ class DictParser extends Transform {
       }
     }
 
-    this._length += line.length + 1;
+    this.#length += line.length + 1;
     callback(null, data + '\n');
   }
 
-  /**
-   * Prints the index for given stream.
-   *
-   * @param {WriteStream} stream
-   */
-  printIndex(stream) {
-    for (const entry of Object.keys(this._index).sort()) {
-      stream.write(`${entry},${this._index[entry].join()}\n`);
+  /** Prints the index for given stream. */
+  printIndex(stream: WriteStream) {
+    for (const entry of Object.keys(this.#index).sort()) {
+      stream.write(`${entry},${this.#index[entry].join()}\n`);
     }
   }
 }
 
-const parseEdict = (url, dataFile, indexFile) => {
+const parseEdict = (url: string, dataFile: string, indexFile: string) => {
   const parser = new DictParser();
   return new Promise((resolve, reject) => {
     http
@@ -214,25 +209,23 @@ const parseEdict = (url, dataFile, indexFile) => {
 
 /** Handles parsing of KanjiDict format. */
 class KanjiDictParser extends Writable {
-  /**
-   * Construct as per Writable.
-   *
-   * @param {Object} options
-   */
-  constructor(options) {
+  #index: Record<string, string> = {};
+  /** Construct as per Writable. */
+  constructor(options?: WritableOptions) {
     super(options);
-    this._index = {};
   }
 
   /**
    * Write the data.
    *
-   * @param {any} data
-   * @param {any} encoding
-   * @param {any} callback
+   * @override
    */
-  _write(data, encoding, callback) {
-    const line = data.toString('utf8');
+  _write(
+    chunk: Buffer,
+    encoding: string,
+    callback: (error?: Error | null) => void
+  ) {
+    const line = chunk.toString('utf8');
 
     // Skip the header
     if (line.startsWith('# ')) {
@@ -345,7 +338,7 @@ class KanjiDictParser extends Writable {
       matches[6] = meanings.join(hasEmbeddedCommas ? '; ' : ', ');
     }
 
-    this._index[matches[1]] = matches
+    this.#index[matches[1]] = matches
       .slice(2)
       .map((part) => (part ? part.trim() : ''))
       .join('|');
@@ -353,22 +346,21 @@ class KanjiDictParser extends Writable {
     callback();
   }
 
-  /**
-   * Print the dictionary files
-   *
-   * @param {fs.WriteStream} stream
-   */
-  printDict(stream) {
-    for (const entry of Object.keys(this._index).sort()) {
-      stream.write(`${entry}|${this._index[entry]}\n`);
+  /** Print the dictionary files */
+  printDict(stream: fs.WriteStream) {
+    for (const entry of Object.keys(this.#index).sort()) {
+      stream.write(`${entry}|${this.#index[entry]}\n`);
     }
   }
 }
 
-const parseKanjiDic = async (sources, dataFile) => {
+const parseKanjiDic = async (
+  sources: { url: string; encoding: string }[],
+  dataFile: string
+) => {
   const parser = new KanjiDictParser();
 
-  const readFile = (url, encoding) =>
+  const readFile = (url: string, encoding: string) =>
     new Promise((resolve, reject) => {
       http
         .get(url, (res) => {
