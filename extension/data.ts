@@ -743,9 +743,9 @@ if (0) {
         } else {
           entry.misc[RegExp.$1] += ' ' + RegExp.$2;
         }
-        // format heisig keyword additions prettily
-        if (RegExp.$1.startsWith('L')) {
-          entry.misc[RegExp.$1] = entry.misc[RegExp.$1].replace(/[:_]/g, ' ');
+        // Replace ':' delimiter with proper spaces for Heisig keywords.
+        if (RegExp.$1.startsWith('L') || RegExp.$1.startsWith('DN')) {
+          entry.misc[RegExp.$1] = entry.misc[RegExp.$1].replace(/[:]/g, ' ');
         }
       }
     }
