@@ -4,14 +4,16 @@
   "description": "Chrome extension that provides Japanese to English translations when hovering over words.",
   "private": true,
   "scripts": {
-    "eslint": "eslint **/*.js",
-    "fix": "npm run prettier:format --silent ; npm run eslint --silent -- --fix",
-    "lint": "npm run eslint --silent; npm run prettier:check --silent",
-    "prettier:base": "prettier --config .prettierrc **/*.{css,html,js,json}",
+    "build": "webpack --mode production",
+    "clean": "gts clean",
+    "eslint": "eslint **/*.ts",
+    "fix": "npm run prettier:format --silent ; gts fix",
+    "lint": "gts check; npm run prettier:check --silent",
+    "prettier:base": "prettier --config .prettierrc.js **/*.{css,html,ts,json}",
     "prettier:check": "npm run prettier:base --silent -- --check",
     "prettier:format": "npm run prettier:base --silent -- --write",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "update-db": "node utils/update-db"
+    "update-db": "ts-node --log-error utils/update-db"
   },
   "repository": {
     "type": "git",
@@ -30,12 +32,19 @@
   },
   "homepage": "https://github.com/melink14/rikaikun#readme",
   "devDependencies": {
+    "@types/chrome": "0.0.122",
+    "@types/copy-webpack-plugin": "^6.0.0",
+    "@types/node": "^13.13.15",
     "byline": "^5.0.0",
-    "eslint-config-google": "^0.14.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-prettier": "^3.1.4",
+    "copy-webpack-plugin": "^6.0.3",
     "eslint": "^7.7.0",
+    "gts": "^2.0.2",
     "iconv-lite": "^0.6.2",
-    "prettier": "^2.1.1"
+    "prettier": "^2.1.1",
+    "ts-loader": "^8.0.3",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.2",
+    "webpack": "^5.0.0-beta.28",
+    "webpack-cli": "^3.3.12"
   }
 }
