@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/birtles/rikaichamp#readme",
   "devDependencies": {
-    "@actions/core": "^1.2.4",
+    "@actions/core": "^1.2.5",
     "@types/chai": "^4.2.12",
     "@types/jest": "^26.0.10",
     "@types/mocha": "^8.0.3",
