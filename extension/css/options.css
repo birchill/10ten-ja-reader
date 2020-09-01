@@ -1,31 +1,31 @@
 #rikaikun_options,
 #rikaikun_options td {
-  padding: 0 10px;
   font-family: sans-serif;
   font-size: 10pt;
+  padding: 0 10px;
 }
 
 .tab {
-  display: inline;
-  padding: 5px;
-  margin-left: 3px;
   background-color: #eee;
   border: 1px solid #999;
-  border-bottom: 0px;
-  font-style: italic;
+  border-bottom: 0;
   color: #ccc;
+  display: inline;
+  font-style: italic;
+  margin-left: 3px;
+  padding: 5px;
 }
 
 .active-tab {
-  font-style: normal;
   color: #000;
+  font-style: normal;
 }
 
 .selected-tab {
-  font-style: normal;
-  color: #000;
-  font-weight: bold;
   background-color: #dde;
+  color: #000;
+  font-style: normal;
+  font-weight: bold;
 }
 
 .tabContent.hide {
@@ -33,10 +33,10 @@
 }
 
 #options {
-  clear: both;
   background-color: #dde;
-  padding: 10px;
   border: 1px solid black;
+  clear: both;
+  padding: 10px;
 }
 
 #options p,
