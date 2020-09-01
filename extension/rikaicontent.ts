@@ -117,6 +117,7 @@ const rcxContent = {
 
       popup = topdoc.createElementNS('http://www.w3.org/1999/xhtml', 'div');
       popup.setAttribute('id', 'rikaichan-window');
+      popup.setAttribute('lang', 'ja');
       topdoc.documentElement.appendChild(popup);
 
       popup.addEventListener(
