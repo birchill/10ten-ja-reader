@@ -1,6 +1,8 @@
 # Changelog
+
 Starting with 1.0.0 rikaikun uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html) to
 consistently version releases as follows:
+
 - Major: Minimum required chrome version advances.
 - Minor: New user visible feature added. (contains feat commits)
 - Patch: Bug fix to previous feature. (contains only fix commits)
