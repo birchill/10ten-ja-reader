@@ -12,10 +12,12 @@ consistently version releases as follows:
 ### Features
 
 - **dict:** Handle 'meanings' that contain curly braces. ([47cd179](https://github.com/melink14/rikaikun/commit/47cd179d6d1461f7162cb24184e613f33ca08973)), closes [#191](https://github.com/melink14/rikaikun/issues/191)
+- **dict:** Update word and name dictionaries to 2020-08-31 snapshots. ([4801377](https://github.com/melink14/rikaikun/commit/4801377fd265356dab087c28dfc54697be336a02)), closes [#49](https://github.com/melink14/rikaikun/issues/49)
 
 ### Bug Fixes
 
 - **ui:** Don't trigger 'copy' command if Mac CMD key is also held down. ([63e409f](https://github.com/melink14/rikaikun/commit/63e409fa6b1cd61273c214bcf47cf1ec250ed680)), closes [#178](https://github.com/melink14/rikaikun/issues/178)
+- **ui:** Add `lang="ja"` to rikaikun content HTML so that Chrome uses Japanese fonts to render it always ([ef48b7c](https://github.com/melink14/rikaikun/commit/ef48b7c954a5af78e9a3cac1245c5e014e3d7d84)), closes [#220](https://github.com/melink14/rikaikun/issues/220)
 
 ## [0.10.1](https://github.com/melink14/rikaikun/compare/v0.10.0...v0.10.1) (2019-09-24)
 
