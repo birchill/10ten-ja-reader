@@ -46,7 +46,7 @@ const UPDATE_THRESHOLD_MS = 12 * 60 * 60 * 1000; // 12 hours
 // Worker setup
 //
 
-const jpdictWorker = new Worker('./jpdict-worker', { type: 'module' });
+const jpdictWorker = new Worker('./rikaichamp-jpdict', { type: 'module' });
 
 jpdictWorker.onmessageerror = (evt: MessageEvent) => {
   console.log(`Worker error: ${JSON.stringify(evt)}`);
