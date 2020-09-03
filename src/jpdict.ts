@@ -236,31 +236,15 @@ export async function searchNames(
 
   // XXX Need to handle ー expansion
 
-  // XXX Needs to combine definitions when they match.
-  //     e.g. when searching on いぶき.
-  //     Should this happen here? In hikibiki-data? On the content process?
-  //     How should it affect the max value?
-  //     -- Current thinking: Do it here so we can integrate with the max number
-  //        of records (and because clients like hikibiki may not want this
-  //        grouping)
-  //        - Augment the name result with k_more?: boolean which indicates we
-  //          truncated the number of kanji names
-  //        - Limit the number of kanji names to 5
-  //        - Display as:
-  //           いぶ喜、いぶ希、いぶ記、いぶ貴、
-  //           いぶ輝… いぶき  Ibuki (fem.)
-  //        - Count the whole thing as one entry for the purposes of finding the
-  //          max number of entries? Or count it as two?
-  //        - Build up a separate map from text description to index in array
-  //          and use that to merge subsequent entries?
-  //        - Splice array after adding everything for the current level?
-
   let result: NameSearchResult = {
     type: 'names',
     data: [],
     more: false,
     matchLen: 0,
   };
+
+  // Recording the position of existing entries for grouping purposes
+  let existingItems = new Map<string, number>();
 
   let currentString = normalized;
   let longestMatch = 0;
@@ -279,8 +263,40 @@ export async function searchNames(
       longestMatch = Math.max(longestMatch, inputLengths[currentString.length]);
     }
 
-    const toAdd = Math.min(NAMES_MAX_ENTRIES - names.length, names.length);
-    result.data.push(...names.slice(0, toAdd));
+    for (const name of names) {
+      // We group together entries where the kana readings and translation
+      // details are all equal.
+      const nameContents =
+        name.r.join('-') +
+        '#' +
+        name.tr
+          .map(
+            (tr) =>
+              `${(tr.type || []).join(',')}-${tr.det.join(',')}${
+                tr.cf ? '-' + tr.cf.join(',') : ''
+              }`
+          )
+          .join(';');
+
+      // Check for an existing entry to combine with
+      const existingIndex = existingItems.get(nameContents);
+      if (typeof existingIndex !== 'undefined') {
+        const existingEntry = result.data[existingIndex];
+        if (name.k) {
+          if (!existingEntry.k) {
+            existingEntry.k = [];
+          }
+          existingEntry.k.push(...name.k);
+        }
+      } else {
+        result.data.push(name);
+        existingItems.set(nameContents, result.data.length - 1);
+      }
+
+      if (result.data.length >= NAMES_MAX_ENTRIES) {
+        break;
+      }
+    }
 
     if (result.data.length >= NAMES_MAX_ENTRIES) {
       break;

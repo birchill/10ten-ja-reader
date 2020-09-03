@@ -237,10 +237,15 @@ function renderNamesEntries(
     entryTitleDiv.classList.add('w-title');
     entryDiv.append(entryTitleDiv);
 
-    // XXX Put … after list of kanji when k_more is set
-
     if (entry.k) {
-      const kanji = entry.k.join('、');
+      const MAX_KANJI = 5;
+      const trimKanji = entry.k.length > MAX_KANJI;
+      const kanjiToDisplay = trimKanji ? entry.k.slice(0, MAX_KANJI) : entry.k;
+      let kanji = kanjiToDisplay.join('、');
+      if (trimKanji) {
+        kanji += '…';
+      }
+
       const kanjiSpan = document.createElement('span');
       entryTitleDiv.append(kanjiSpan);
       kanjiSpan.classList.add('w-kanji');
@@ -253,7 +258,6 @@ function renderNamesEntries(
     kanaSpan.classList.add('w-kana');
     kanaSpan.append(kana);
 
-    // XXX Need to do this part still.
     const definitionBlock = document.createElement('div');
     definitionBlock.classList.add('w-def');
     for (const tr of entry.tr) {
