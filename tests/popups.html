@@ -68,30 +68,23 @@ const nameTagTest = {
   type: 'names',
   data: [
     {
-      names: [{ kanji: '中野', kana: 'なかの' }],
-      definition: {
-        tags: [0, 1, 2],
-        text: 'Nakano',
-      },
+      k: ['中野'],
+      r: ['なかの'],
+      tr: [{ type: ['place', 'surname'], det: ['Nakano'] }],
     },
     {
-      names: [{ kanji: '中野', kana: 'なかのざき' }],
-      definition: {
-        tags: [3, 4, 5],
-        text: 'Nakanozaki',
-      },
+      k: ['中野'],
+      r: ['なかのざき'],
+      tr: [{ type: ['surname'], det: ['Nakanozaki'] }],
     },
     {
-      names: [{ kanji: '中', kana: 'あたり' }],
-      definition: {
-        tags: [6, 7, 8],
-        text: 'Atari',
-      },
+      k: ['中'],
+      r: ['あたり'],
+      tr: [{ type: ['fem', 'surname'], det: ['Atari'] }],
     },
   ],
   more: false,
   matchLen: 2,
-  names: true,
 };
 
 {
@@ -160,11 +153,9 @@ const highlightTests = [
       type: 'names',
       data: [
         {
-          names: [{ kanji: '中野', kana: 'なかの' }],
-          definition: {
-            tags: [0, 4, 5],
-            text: 'Nakano',
-          },
+          k: ['中野'],
+          r: ['なかの'],
+          tr: [{ type: ['surname', 'fem', 'masc'], det: ['Nakano'] }],
         },
       ],
       more: false,

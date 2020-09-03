@@ -1,6 +1,6 @@
 export const browser = {
   runtime: {
-    sendMessage: () => new Promise(resolve => resolve),
+    sendMessage: () => new Promise((resolve) => resolve),
     onMessage: {
       addListener: () => {
         // Probably should do something with this...
@@ -16,15 +16,15 @@ export const browser = {
           return 'surname';
         case 'content_names_tag_place':
           return 'place';
-        case 'content_names_tag_person':
+        case 'content_names_tag_unclass':
           return 'person';
         case 'content_names_tag_given':
           return 'given';
-        case 'content_names_tag_female':
+        case 'content_names_tag_fem':
           return 'female';
-        case 'content_names_tag_male':
+        case 'content_names_tag_masc':
           return 'male';
-        case 'content_names_tag_full':
+        case 'content_names_tag_person':
           return 'full name';
         case 'content_names_tag_product':
           return 'product';
@@ -36,6 +36,8 @@ export const browser = {
           return 'station';
         case 'content_names_tag_work':
           return 'work';
+        case 'content_names_tag_ok':
+          return 'old';
         case 'content_kanji_radical_label':
           return 'radical';
         case 'content_kanji_base_radical':
