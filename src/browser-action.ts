@@ -55,17 +55,16 @@ export function updateBrowserAction({
       break;
 
     case 'downloading':
+    case 'updatingdb':
       // We only have progress variants for the Ok, disabled, and loading styles.
       if ([popupStyle, 'disabled', 'loading'].includes(iconFilename)) {
         iconFilename +=
           '-' + Math.round(jpdictState.updateState.progress * 5) * 20;
       }
-      titleStringId = 'command_toggle_downloading';
-      break;
-
-    case 'updatingdb':
-      iconFilename += '-indeterminate';
-      titleStringId = 'command_toggle_updating';
+      titleStringId =
+        jpdictState.updateState.state === 'downloading'
+          ? 'command_toggle_downloading'
+          : 'command_toggle_updating';
       break;
   }
 
