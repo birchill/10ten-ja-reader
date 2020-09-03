@@ -829,7 +829,10 @@ function updateIdleStateSummary(
     return;
   }
 
-  if (databaseState.state === DataSeriesState.Empty) {
+  if (
+    databaseState.state === DataSeriesState.Initializing ||
+    databaseState.state === DataSeriesState.Empty
+  ) {
     infoDiv.append(browser.i18n.getMessage('options_no_database'));
     return;
   }
@@ -841,7 +844,7 @@ function updateIdleStateSummary(
   }
 
   infoDiv.classList.add('-italic');
-  const { major, minor, patch } = evt.state.kanji.version!;
+  const { major, minor, patch } = databaseState.version!;
 
   const versionNumberDiv = document.createElement('div');
   const versionString = browser.i18n.getMessage(

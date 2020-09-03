@@ -46,7 +46,7 @@ const UPDATE_THRESHOLD_MS = 12 * 60 * 60 * 1000; // 12 hours
 // Worker setup
 //
 
-const jpdictWorker = new Worker('./rikaichamp-jpdict', { type: 'module' });
+const jpdictWorker = new Worker('./rikaichamp-jpdict.js', { type: 'module' });
 
 jpdictWorker.onmessageerror = (evt: MessageEvent) => {
   console.log(`Worker error: ${JSON.stringify(evt)}`);
@@ -83,7 +83,7 @@ export async function initDb({
           // It is _not_ a stored value.  So, if it is not set, use the value we
           // stored instead.
           const state = { ...evt.data.state };
-          if (state.updateState.lastCheck !== null) {
+          if (state.updateState.lastCheck === null) {
             state.updateState.lastCheck = await getLastUpdateTime();
           } else {
             maybeSetLastUpdateTime(state.updateState.lastCheck.getTime());
