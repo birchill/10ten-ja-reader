@@ -293,39 +293,68 @@
     "message": "Kanji dictionary",
     "description": "Heading for options to configure what information is displayed from the kanji dictionary"
   },
-  "options_kanji_data_source_no_version": {
-    "message": "Includes data from KANJIDIC.",
-    "description": "Attribution of kanji source data when no version is available. The keyword KANJIDIC must appear so that it can be link-ified to point to the corresponding home page."
+  "options_dictionary_data_heading": {
+    "message": "Dictionary data"
   },
-  "options_kanji_data_source_with_version": {
-    "message": "Includes data from KANJIDIC version $version$ generated on $generated$.",
-    "description": "Attribution of kanji source data when version information is available. The keyword KANJIDIC must appear so that it can be link-ified to point to the corresponding home page.",
+  "options_data_source": {
+    "message": "Includes data from KANJIDIC and JMnedict/ENAMDICT.",
+    "description": "Attribute of source data. Both the strings 'KANJIDIC' and 'JMnedict/ENAMDICT' must appear so that they can be link-ified to the corresponding project home pages."
+  },
+  "options_edrdg_license": {
+    "message": " This data is the property of the Electronic Dictionary Research and Development Group, and is used in conformance with the Group's licence.",
+    "description": "Description of license terms. The keywords 'Electronic Dictionary Research and Development Group' and options_edrdg_license_keyword must appear so they can be linkified. IT SHOULD BEGIN WITH APPROPRIATE SPACE IN LANGUAGES THAT SEPARATE SENTENCES WITH WHITESPACE."
+  },
+  "options_edrdg_license_keyword": {
+    "message": "licence",
+    "description": "The keyword in options_edrdg_license to link to the license"
+  },
+  "options_kanji_data_title": {
+    "message": "Kanji data v$version$",
+    "description": "The kanji data series title and version",
     "placeholders": {
       "version": {
         "content": "$1",
+        "example": "2.0.0"
+      }
+    }
+  },
+  "options_name_data_title": {
+    "message": "Name data v$version$",
+    "description": "The name data series title and version",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "2.0.0"
+      }
+    }
+  },
+  "options_data_series_version_and_date": {
+    "message": "Based on $source$ $version$ from $generated$.",
+    "placeholders": {
+      "source": {
+        "content": "$1",
+        "example": "KANJIDIC"
+      },
+      "version": {
+        "content": "$2",
         "example": "2019-282"
       },
       "generated": {
-        "content": "$2",
+        "content": "$3",
         "example": "2019-10-19"
       }
     }
   },
-  "options_kanji_license": {
-    "message": " This data is the property of the Electronic Dictionary Research and Development Group, and is used in conformance with the Group's licence.",
-    "description": "Description of license terms. The keywords 'Electronic Dictionary Research and Development Group' and options_kanji_license_keyword must appear so they can be linkified. IT SHOULD BEGIN WITH APPROPRIATE SPACE IN LANGUAGES THAT SEPARATE SENTENCES WITH WHITESPACE."
-  },
-  "options_kanji_license_keyword": {
-    "message": "licence",
-    "description": "The keyword in options_kanji_license to link to the license"
-  },
-  "options_kanji_db_version": {
-    "message": "Version $version$",
-    "description": "The version of the database",
+  "options_data_series_date_only": {
+    "message": "Based on $source$ from $generated$.",
     "placeholders": {
-      "version": {
+      "source": {
         "content": "$1",
-        "example": "1.0.3"
+        "example": "KANJIDIC"
+      },
+      "generated": {
+        "content": "$2",
+        "example": "2019-10-19"
       }
     }
   },
@@ -359,6 +388,10 @@
     "message": "radical data",
     "description": "The name for the bushu database data set"
   },
+  "options_name_data_name": {
+    "message": "name data",
+    "description": "The name for the name database data set"
+  },
   "options_downloading_data": {
     "message": "Downloading $datatype$ version $version$ ($progress$%)…",
     "description": "Label while we are downloading updates",
@@ -378,7 +411,7 @@
     }
   },
   "options_updating_data": {
-    "message": "Updating $datatype$ to version $version$…",
+    "message": "Updating $datatype$ to version $version$ ($progress$%)…",
     "description": "Label while we are applying updates",
     "placeholders": {
       "datatype": {
@@ -388,6 +421,10 @@
       "version": {
         "content": "$2",
         "example": "1.0.3"
+      },
+      "progress": {
+        "content": "$3",
+        "example": "60"
       }
     }
   },

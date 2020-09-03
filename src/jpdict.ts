@@ -84,7 +84,10 @@ export async function initDb({
           // stored instead.
           const state = { ...evt.data.state };
           if (state.updateState.lastCheck === null) {
-            state.updateState.lastCheck = await getLastUpdateTime();
+            const lastUpdateTime = await getLastUpdateTime();
+            if (lastUpdateTime) {
+              state.updateState.lastCheck = new Date(lastUpdateTime);
+            }
           } else {
             maybeSetLastUpdateTime(state.updateState.lastCheck.getTime());
           }

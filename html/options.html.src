@@ -84,27 +84,28 @@
           <select id=lang name=lang class=browser-style></select>
           <div class=note>__MSG_options_warning_language_is_kanji_only__</div>
         </div>
-        <div id=kanjicon>
-          <div class="panel-section panel-section-header">
-            <h2
-              class=text-section-header>__MSG_options_kanji_dictionary_heading__</h2>
+        <div class="panel-section panel-section-header">
+          <h2
+            class=text-section-header>__MSG_options_kanji_dictionary_heading__</h2>
+        </div>
+        <div class="db-summary-controls panel-section-grid panel-section-list browser-style" id=kanji-reference-list>
+          <div class="browser-style checkbox-row static">
+            <input type=checkbox id=showKanjiComponents
+              name=showKanjiComponents>
+            <label for=showKanjiComponents>__MSG_options_kanji_components__</label>
           </div>
-          <div class="panel-section panel-section-db-summary">
-            <div class="db-summary-blurb">
-            </div>
-            <div class="db-summary-status">
-            </div>
-            <div class="db-admin" style="display: none">
-              <span>Database testing features: </span>
-              <button class="browser-style" id="deleteDatabase">Delete database</button>
-            </div>
-            <div class="db-summary-controls panel-section-grid panel-section-list browser-style" id=kanji-reference-list>
-              <div class="browser-style checkbox-row static">
-                <input type=checkbox id=showKanjiComponents
-                  name=showKanjiComponents>
-                <label for=showKanjiComponents>__MSG_options_kanji_components__</label>
-              </div>
-            </div>
+        </div>
+        <div class="panel-section panel-section-header">
+          <h2 class=text-section-header>__MSG_options_dictionary_data_heading__</h2>
+        </div>
+        <div class="panel-section panel-section-db-summary">
+          <div class="db-summary-blurb">
+          </div>
+          <div class="db-summary-status">
+          </div>
+          <div class="db-admin" style="display: none">
+            <span>Database testing features: </span>
+            <button class="browser-style" id="deleteDatabase">Delete database</button>
           </div>
         </div>
       </form>

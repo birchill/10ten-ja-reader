@@ -1,6 +1,12 @@
 import '../html/options.html.src';
 
-import { DataSeriesState } from '@birchill/hikibiki-data';
+import {
+  allDataSeries,
+  allMajorDataSeries,
+  DataSeries,
+  DataSeriesState,
+  MajorDataSeries,
+} from '@birchill/hikibiki-data';
 
 import { Config, DEFAULT_KEY_SETTINGS } from './config';
 import { Command, CommandParams, isValidKey } from './commands';
@@ -635,34 +641,23 @@ function updateDatabaseBlurb(evt: DbStateUpdatedMessage) {
   const blurb = document.querySelector('.db-summary-blurb')!;
   empty(blurb);
 
-  const kanjiDataVersion = evt.state.kanji.version;
-  let attribution: string;
-  if (kanjiDataVersion) {
-    attribution = browser.i18n.getMessage(
-      'options_kanji_data_source_with_version',
-      [
-        kanjiDataVersion.databaseVersion ?? 'n/a',
-        kanjiDataVersion.dateOfCreation,
-      ]
-    );
-  } else {
-    attribution = browser.i18n.getMessage(
-      'options_kanji_data_source_no_version'
-    );
-  }
-
+  const attribution = browser.i18n.getMessage('options_data_source');
   blurb.append(
     linkify(attribution, [
       {
         keyword: 'KANJIDIC',
         href: 'https://www.edrdg.org/wiki/index.php/KANJIDIC_Project',
       },
+      {
+        keyword: 'JMnedict/ENAMDICT',
+        href: 'http://www.edrdg.org/enamdict/enamdict_doc.html',
+      },
     ])
   );
 
-  const license = browser.i18n.getMessage('options_kanji_license');
+  const license = browser.i18n.getMessage('options_edrdg_license');
   const licenseKeyword = browser.i18n.getMessage(
-    'options_kanji_license_keyword'
+    'options_edrdg_license_keyword'
   );
 
   blurb.append(
@@ -681,7 +676,6 @@ function updateDatabaseBlurb(evt: DbStateUpdatedMessage) {
 
 function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
   const { updateState } = evt.state;
-  const databaseState = evt.state.kanji;
 
   const statusElem = document.querySelector('.db-summary-status')!;
   empty(statusElem);
@@ -690,62 +684,60 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
 
   // Fill out the info part
 
-  const infoDiv = document.createElement('div');
-  infoDiv.classList.add('db-summary-info');
-
   switch (updateState.state) {
     case 'idle':
-      updateIdleStateSummary(evt, statusElem, infoDiv);
+      updateIdleStateSummary(evt, statusElem);
       break;
 
     case 'checking': {
+      const infoDiv = document.createElement('div');
+      infoDiv.classList.add('db-summary-info');
       infoDiv.append(browser.i18n.getMessage('options_checking_for_updates'));
+      statusElem.append(infoDiv);
       break;
     }
 
     case 'downloading':
     case 'updatingdb': {
+      const infoDiv = document.createElement('div');
+      infoDiv.classList.add('db-summary-info');
       const progressElem = document.createElement('progress');
       progressElem.classList.add('progress');
-      if (updateState.state === 'downloading') {
-        progressElem.max = 100;
-        progressElem.value = updateState.progress * 100;
-      }
-      progressElem.id = 'kanji-progress';
+      progressElem.max = 100;
+      progressElem.value = updateState.progress * 100;
+      progressElem.id = 'update-progress';
       infoDiv.append(progressElem);
 
       const labelElem = document.createElement('label');
       labelElem.classList.add('label');
-      labelElem.htmlFor = 'kanji-progress';
+      labelElem.htmlFor = 'update-progress';
 
-      const dbLabel = browser.i18n.getMessage(
-        updateState.series === 'kanji'
-          ? 'options_kanji_data_name'
-          : 'options_bushu_data_name'
-      );
+      const labels: { [series in DataSeries]: string } = {
+        kanji: 'options_kanji_data_name',
+        radicals: 'options_bushu_data_name',
+        names: 'options_name_data_name',
+      };
+      const dbLabel = browser.i18n.getMessage(labels[updateState.series]);
 
       const { major, minor, patch } = updateState.downloadVersion;
       const versionString = `${major}.${minor}.${patch}`;
 
-      if (updateState.state === 'downloading') {
-        const progressAsPercent = Math.round(updateState.progress * 100);
-        labelElem.textContent = browser.i18n.getMessage(
-          'options_downloading_data',
-          [dbLabel, versionString, String(progressAsPercent)]
-        );
-      } else {
-        labelElem.textContent = browser.i18n.getMessage(
-          'options_updating_data',
-          [dbLabel, versionString]
-        );
-      }
+      const progressAsPercent = Math.round(updateState.progress * 100);
+      const key =
+        updateState.state === 'downloading'
+          ? 'options_downloading_data'
+          : 'options_updating_data';
+      labelElem.textContent = browser.i18n.getMessage(key, [
+        dbLabel,
+        versionString,
+        String(progressAsPercent),
+      ]);
 
       infoDiv.append(labelElem);
+      statusElem.append(infoDiv);
       break;
     }
   }
-
-  statusElem.append(infoDiv);
 
   // Add the action button info if any
 
@@ -759,14 +751,27 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
       const updateButton = document.createElement('button');
       updateButton.classList.add('browser-style');
       updateButton.setAttribute('type', 'button');
+      const isUnavailable = allDataSeries.some(
+        (series) => evt.state[series].state === DataSeriesState.Unavailable
+      );
       updateButton.textContent = browser.i18n.getMessage(
-        updateState.state === 'idle' &&
-          databaseState.state !== DataSeriesState.Unavailable
+        updateState.state === 'idle' && !isUnavailable
           ? 'options_update_check_button_label'
           : 'options_update_retry_button_label'
       );
       updateButton.addEventListener('click', triggerDatabaseUpdate);
       buttonDiv.append(updateButton);
+
+      if (updateState.lastCheck) {
+        const lastCheckDiv = document.createElement('div');
+        lastCheckDiv.classList.add('last-check');
+        const lastCheckString = browser.i18n.getMessage(
+          'options_last_database_check',
+          formatDate(updateState.lastCheck)
+        );
+        lastCheckDiv.append(lastCheckString);
+        buttonDiv.append(lastCheckDiv);
+      }
       break;
     }
 
@@ -794,20 +799,23 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
 
 function updateIdleStateSummary(
   evt: DbStateUpdatedMessage,
-  statusElem: Element,
-  infoDiv: HTMLDivElement
+  statusElem: Element
 ) {
-  const { updateState, updateError } = evt.state;
+  const { updateError } = evt.state;
   const databaseState = evt.state.kanji;
 
   if (!!updateError && updateError.name === 'OfflineError') {
-    statusElem.classList.add('-warning');
+    const infoDiv = document.createElement('div');
+    infoDiv.classList.add('db-summary-info');
     infoDiv.append(browser.i18n.getMessage('options_offline_explanation'));
+    statusElem.classList.add('-warning');
+    statusElem.append(infoDiv);
     return;
   }
 
   if (!!updateError && updateError.name !== 'AbortError') {
-    statusElem.classList.add('-error');
+    const infoDiv = document.createElement('div');
+    infoDiv.classList.add('db-summary-info');
 
     const messageDiv = document.createElement('div');
     const errorMessage = browser.i18n.getMessage(
@@ -826,6 +834,9 @@ function updateIdleStateSummary(
       nextRetryDiv.append(nextRetryString);
       infoDiv.append(nextRetryDiv);
     }
+
+    statusElem.classList.add('-error');
+    statusElem.append(infoDiv);
     return;
   }
 
@@ -833,35 +844,67 @@ function updateIdleStateSummary(
     databaseState.state === DataSeriesState.Initializing ||
     databaseState.state === DataSeriesState.Empty
   ) {
+    const infoDiv = document.createElement('div');
+    infoDiv.classList.add('db-summary-info');
     infoDiv.append(browser.i18n.getMessage('options_no_database'));
+    statusElem.append(infoDiv);
     return;
   }
 
   if (databaseState.state === DataSeriesState.Unavailable) {
-    statusElem.classList.add('-error');
+    const infoDiv = document.createElement('div');
+    infoDiv.classList.add('db-summary-info');
     infoDiv.append(browser.i18n.getMessage('options_database_unavailable'));
+    statusElem.classList.add('-error');
+    statusElem.append(infoDiv);
     return;
   }
 
-  infoDiv.classList.add('-italic');
-  const { major, minor, patch } = databaseState.version!;
+  for (const series of allMajorDataSeries) {
+    const versionDiv = document.createElement('div');
+    versionDiv.classList.add('db-summary-version');
 
-  const versionNumberDiv = document.createElement('div');
-  const versionString = browser.i18n.getMessage(
-    'options_kanji_db_version',
-    `${major}.${minor}.${patch}`
-  );
-  versionNumberDiv.append(versionString);
-  infoDiv.append(versionNumberDiv);
-
-  if (updateState.lastCheck) {
-    const lastCheckDiv = document.createElement('div');
-    const lastCheckString = browser.i18n.getMessage(
-      'options_last_database_check',
-      formatDate(updateState.lastCheck)
+    const { major, minor, patch } = evt.state[series].version!;
+    const titleDiv = document.createElement('div');
+    titleDiv.classList.add('title');
+    const titleKeys: { [series in MajorDataSeries]: string } = {
+      kanji: 'options_kanji_data_title',
+      names: 'options_name_data_title',
+    };
+    const titleString = browser.i18n.getMessage(
+      titleKeys[series],
+      `${major}.${minor}.${patch}`
     );
-    lastCheckDiv.append(lastCheckString);
-    infoDiv.append(lastCheckDiv);
+    titleDiv.append(titleString);
+    versionDiv.append(titleDiv);
+
+    const sourceDiv = document.createElement('div');
+    sourceDiv.classList.add('db-source-version');
+
+    const sourceNames: { [series in MajorDataSeries]: string } = {
+      kanji: 'KANJIDIC',
+      names: 'JMnedict/ENAMDICT',
+    };
+    const sourceName = sourceNames[series];
+
+    const { databaseVersion, dateOfCreation } = evt.state[series].version!;
+
+    let sourceString;
+    if (databaseVersion && databaseVersion !== 'n/a') {
+      sourceString = browser.i18n.getMessage(
+        'options_data_series_version_and_date',
+        [sourceName, databaseVersion, dateOfCreation]
+      );
+    } else {
+      sourceString = browser.i18n.getMessage('options_data_series_date_only', [
+        sourceName,
+        dateOfCreation,
+      ]);
+    }
+    sourceDiv.append(sourceString);
+    versionDiv.append(sourceDiv);
+
+    statusElem.append(versionDiv);
   }
 }
 
@@ -900,6 +943,7 @@ function linkify(
     const link = document.createElement('a');
     link.href = replacement.href;
     link.target = '_blank';
+    link.rel = 'noopener';
     link.textContent = replacement.keyword;
     result.append(link);
 

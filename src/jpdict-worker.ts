@@ -230,12 +230,12 @@ function doDbStateNotification() {
   }
 
   // Merge update states to show the current / latest update
-  const lastCheck = new Date(
-    Math.max.apply(
-      null,
-      allMajorDataSeries.map((series) => db![series].updateState.lastCheck)
-    )
+  const latestCheckAsNumber = Math.max.apply(
+    null,
+    allMajorDataSeries.map((series) => db![series].updateState.lastCheck)
   );
+  const lastCheck =
+    latestCheckAsNumber !== 0 ? new Date(latestCheckAsNumber) : null;
 
   const updateState = currentUpdate
     ? db[currentUpdate.series].updateState

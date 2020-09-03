@@ -262,6 +262,7 @@ fieldset {
   display: flex;
   flex-direction: row;
   min-height: 3em;
+  gap: 20px;
 }
 
 .panel-section-db-summary > .db-summary-status.-error {
@@ -280,9 +281,16 @@ fieldset {
   color: hsl(43, 77%, 27%);
 }
 
+.panel-section-db-summary .db-summary-version {
+  flex-grow: 1;
+}
+
+.panel-section-db-summary .db-summary-version .db-source-version {
+  color: #777;
+}
+
 .panel-section-db-summary .db-summary-info {
   flex-grow: 1;
-  margin-end: 16px;
 }
 
 .panel-section-db-summary .db-summary-info.-italic {
@@ -301,6 +309,11 @@ fieldset {
 
 .panel-section-db-summary .db-summary-button {
   align-self: flex-end;
+}
+
+.panel-section-db-summary .last-check {
+  font-style: italic;
+  font-size: 11px;
 }
 
 .panel-section-db-summary .db-admin {
