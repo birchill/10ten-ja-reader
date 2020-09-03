@@ -65,6 +65,7 @@
   },
   "dependencies": {
     "@birchill/hikibiki-data": "^6.0.0",
+    "@birchill/kana-to-hiragana": "^1.0.0",
     "@bugsnag/js": "^7.3.3",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.13",

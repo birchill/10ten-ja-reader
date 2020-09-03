@@ -6,28 +6,7 @@ const iconv = require('iconv-lite');
 const LineStream = require('byline').LineStream;
 const CombinedStream = require('combined-stream2');
 const { Transform, Writable } = require('stream');
-
-// prettier-ignore
-const HANKAKU_KATAKANA_TO_HIRAGANA = [
-  0x30fb, 0x3092, 0x3041, 0x3043, 0x3045, 0x3047, 0x3049, 0x3083, 0x3085,
-  0x3087, 0x3063, 0x30fc, 0x3042, 0x3044, 0x3046, 0x3048, 0x304a, 0x304b,
-  0x304d, 0x304f, 0x3051, 0x3053, 0x3055, 0x3057, 0x3059, 0x305b, 0x305d,
-  0x305f, 0x3061, 0x3064, 0x3066, 0x3068, 0x306a, 0x306b, 0x306c, 0x306d,
-  0x306e, 0x306f, 0x3072, 0x3075, 0x3078, 0x307b, 0x307e, 0x307f, 0x3080,
-  0x3081, 0x3082, 0x3084, 0x3086, 0x3088, 0x3089, 0x308a, 0x308b, 0x308c,
-  0x308d, 0x308f, 0x3093,
-];
-// prettier-ignore
-const VOICED_KATAKANA_TO_HIRAGANA = [
-  0x30f4, 0xff74, 0xff75, 0x304c, 0x304e, 0x3050, 0x3052, 0x3054, 0x3056,
-  0x3058, 0x305a, 0x305c, 0x305e, 0x3060, 0x3062, 0x3065, 0x3067, 0x3069,
-  0xff85, 0xff86, 0xff87, 0xff88, 0xff89, 0x3070, 0x3073, 0x3076, 0x3079,
-  0x307c,
-];
-// prettier-ignore
-const SEMIVOICED_KATAKANA_TO_HIRAGANA = [
-  0x3071, 0x3074, 0x3077, 0x307a, 0x307d
-];
+const kanaToHiragana = require('@birchill/kana-to-hiragana');
 
 const SUPPORTED_REF_TYPES = new Set([
   'B', // Nelson radical or traditional radical if same
@@ -46,45 +25,6 @@ const SUPPORTED_REF_TYPES = new Set([
   'G',
   'F',
 ]);
-
-const normalizeEntry = entry => {
-  let previous = 0;
-  let result = '';
-
-  for (let i = 0; i < entry.length; ++i) {
-    let originalChar = entry.charCodeAt(i);
-    let c = originalChar;
-
-    // full-width katakana to hiragana
-    if (c >= 0x30a1 && c <= 0x30f6 || c === 0x30fd || c === 0x30fe) {
-      c -= 0x60;
-    } else if (c >= 0xff65 && c <= 0xff9d) {
-      // half-width katakana to hiragana
-      c = HANKAKU_KATAKANA_TO_HIRAGANA[c - 0xff65];
-    } else if (c == 0xff9e) {
-      // voiced (used in half-width katakana) to hiragana
-      if (previous >= 0xff73 && previous <= 0xff8e) {
-        result = result.slice(0, -1);
-        c = VOICED_KATAKANA_TO_HIRAGANA[previous - 0xff73];
-      }
-    } else if (c == 0xff9f) {
-      // semi-voiced (used in half-width katakana) to hiragana
-      if (previous >= 0xff8a && previous <= 0xff8e) {
-        result = result.slice(0, -1);
-        c = SEMIVOICED_KATAKANA_TO_HIRAGANA[previous - 0xff8a];
-      }
-    } else if (c == 0xff5e && i > 0) {
-      // ignore ～
-      previous = 0;
-      continue;
-    }
-
-    result += String.fromCharCode(c);
-    previous = originalChar;
-  }
-
-  return result;
-};
 
 class DictParser extends Transform {
   constructor(options) {
@@ -132,11 +72,11 @@ class DictParser extends Transform {
       }
     };
 
-    const mainEntry = normalizeEntry(matches[1]);
+    const [mainEntry] = kanaToHiragana(matches[1]);
     addOrUpdateEntry(mainEntry);
 
     if (matches.length > 2 && matches[2]) {
-      const subEntry = normalizeEntry(matches[2]);
+      const [subEntry] = kanaToHiragana(matches[2]);
       if (subEntry !== mainEntry) {
         addOrUpdateEntry(subEntry);
       }
