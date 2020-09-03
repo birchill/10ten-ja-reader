@@ -1,5 +1,4 @@
 import { getEntryToCopy, getFieldsToCopy, getWordToCopy } from './copy-text';
-import { NameTag } from './name-tags';
 
 // Mock browser.i18n.getMessage
 global.browser = {
@@ -56,12 +55,10 @@ describe('getWordToCopy', () => {
       getWordToCopy({
         type: 'name',
         data: {
-          names: [
-            { kanji: 'いぶ喜', kana: 'いぶき' },
-            { kanji: 'いぶ希', kana: 'いぶき' },
-            { kanji: 'いぶ記', kana: 'いぶき' },
-          ],
-          definition: { tags: [NameTag.Female], text: 'Ibuki' },
+          id: 1,
+          k: ['いぶ喜', 'いぶ希', 'いぶ記'],
+          r: ['いぶき'],
+          tr: [{ type: ['fem'], det: ['Ibuki'] }],
         },
       })
     ).toEqual('いぶ喜, いぶ希, いぶ記');
@@ -125,15 +122,13 @@ describe('getEntryToCopy', () => {
       getEntryToCopy({
         type: 'name',
         data: {
-          names: [
-            { kanji: 'いぶ喜', kana: 'いぶき' },
-            { kanji: 'いぶ希', kana: 'いぶき' },
-            { kanji: 'いぶ記', kana: 'いぶき' },
-          ],
-          definition: { tags: [NameTag.Female], text: 'Ibuki' },
+          id: 1,
+          k: ['いぶ喜', 'いぶ希', 'いぶ記'],
+          r: ['いぶき'],
+          tr: [{ type: ['fem'], det: ['Ibuki'] }],
         },
       })
-    ).toEqual('いぶ喜 [いぶき], いぶ希 [いぶき], いぶ記 [いぶき] (f) Ibuki');
+    ).toEqual('いぶ喜, いぶ希, いぶ記 [いぶき] (fem) Ibuki');
   });
 
   it('prepares text from kanji search results', () => {
@@ -261,16 +256,14 @@ describe('getFieldsToCopy', () => {
       getFieldsToCopy({
         type: 'name',
         data: {
-          names: [
-            { kanji: 'いぶ喜', kana: 'いぶき' },
-            { kanji: 'いぶ希', kana: 'いぶき' },
-            { kanji: 'いぶ記', kana: 'いぶき' },
-          ],
-          definition: { tags: [NameTag.Female], text: 'Ibuki' },
+          id: 1,
+          k: ['いぶ喜', 'いぶ希', 'いぶ記'],
+          r: ['いぶき'],
+          tr: [{ type: ['fem'], det: ['Ibuki'] }],
         },
       })
     ).toEqual(
-      'いぶ喜\tいぶき\t(f) Ibuki\nいぶ希\tいぶき\t(f) Ibuki\nいぶ記\tいぶき\t(f) Ibuki'
+      'いぶ喜\tいぶき\t(fem) Ibuki\nいぶ希\tいぶき\t(fem) Ibuki\nいぶ記\tいぶき\t(fem) Ibuki'
     );
   });
 

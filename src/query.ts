@@ -1,13 +1,6 @@
-import { KanjiResult } from '@birchill/hikibiki-data';
-
-import { NameTag, getTagForDictKey } from './name-tags';
-
-// Currently the background process will parse out the kanji data before
-// returning it but not the word/name data. Who knows why.
-//
-// Ultimately all parsing should happen in the background process (since we'll
-// eventually store the records as actual JS(ON) objects) but there will still
-// probably be some pre-processing on the content side to coalesce records etc.
+// Currently the background process will return structured data for kanji and
+// names data but not for word data (we're still in the processing of doing
+// that).
 
 export interface WordEntry {
   kanjiKana: string;
@@ -25,39 +18,10 @@ export interface WordsQueryResult {
   more: boolean;
 }
 
-export interface NameDefinition {
-  tags: Array<NameTag>;
-  text: string;
-}
-
-export interface NameEntry {
-  names: { kanji?: string; kana: string }[];
-  definition: NameDefinition;
-}
-
-export interface NamesQueryResult {
-  type: 'names';
-  data: Array<NameEntry>;
-  matchLen: number | null;
-  more: boolean;
-}
-
-export interface KanjiQueryResult {
-  type: 'kanji';
-  data: KanjiResult;
-  matchLen: 1;
-}
-
 export type QueryResult =
   | WordsQueryResult
-  | NamesQueryResult
-  | KanjiQueryResult;
-
-const isKanjiResult = (result: SearchResult): result is KanjiResult =>
-  (result as KanjiResult).c !== undefined;
-
-const isNamesResult = (result: SearchResult): result is WordSearchResult =>
-  (result as WordSearchResult).names !== undefined;
+  | NameSearchResult
+  | KanjiSearchResult;
 
 export interface QueryOptions {
   dictMode: DictMode;
@@ -89,31 +53,18 @@ export async function query(
     return null;
   }
 
-  if (isKanjiResult(searchResult)) {
-    return {
-      type: 'kanji',
-      data: searchResult,
-      matchLen: 1,
-    };
+  if (searchResult.type === 'kanji' || searchResult.type === 'names') {
+    return searchResult;
   }
 
   let matchLen: number | null = null;
-  if (options.wordLookup) {
-    matchLen = (searchResult as WordSearchResult).matchLen || 1;
+  if (searchResult.type === 'words') {
+    matchLen = searchResult.matchLen || 1;
   }
   const more = !!searchResult.more;
 
-  if (isNamesResult(searchResult)) {
-    return {
-      type: 'names',
-      data: parseNameEntries(searchResult),
-      matchLen,
-      more,
-    };
-  }
-
   let title: string | null = null;
-  if (!options.wordLookup) {
+  if (searchResult.type === 'translate') {
     title = text.substr(0, searchResult.textLen);
     if (text.length > searchResult.textLen) {
       title += '...';
@@ -129,91 +80,8 @@ export async function query(
   };
 }
 
-export function parseNameEntries(
-  wordSearchResult: WordSearchResult
-): Array<NameEntry> {
-  const result: Array<NameEntry> = [];
-  let prevDefinitionText: string | undefined;
-
-  for (const [dictEntry] of wordSearchResult.data) {
-    // See parseWordEntries for an explanation of the format here
-    const matches = dictEntry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
-    if (!matches) {
-      continue;
-    }
-    let [kanjiKana, kana, definitionText] = matches.slice(1);
-
-    // Sometimes for names when we have a mix of katakana and hiragana we
-    // actually have the same format in the definition field, e.g.
-    //
-    //  あか組４ [あかぐみふぉー] /あか組４ [あかぐみフォー] /Akagumi Four (h)//
-    //
-    // So we try reprocessing the definition field using the same regex.
-    const rematch = definitionText.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
-    if (rematch) {
-      [kanjiKana, kana, definitionText] = rematch.slice(1);
-    }
-    const name = kana
-      ? { kanji: kanjiKana, kana }
-      : { kanji: undefined, kana: kanjiKana };
-
-    // Combine with previous entry if the definitions match.
-    const prevEntry = result.length ? result[result.length - 1] : null;
-    if (prevEntry && prevDefinitionText === definitionText) {
-      prevEntry.names.push(name);
-      continue;
-    }
-    prevDefinitionText = definitionText;
-
-    result.push({
-      names: [name],
-      definition: parseNameDefinition(definitionText),
-    });
-  }
-
-  return result;
-}
-
-function parseNameDefinition(definition: string): NameDefinition {
-  const result = {
-    tags: [],
-    text: definition.replace(/\//g, '; '),
-  };
-
-  const matches = definition.match(/^(?:\(([a-z,]+)\)\s+)?(.*)/);
-  if (matches === null) {
-    return result;
-  }
-
-  const [, tagText, text] = matches;
-  if (!tagText) {
-    return result;
-  }
-
-  const tags = parseNameTags(tagText.split(','));
-  if (!tags) {
-    return result;
-  }
-
-  return { tags, text: text.replace(/\//g, '; ') };
-}
-
-function parseNameTags(tags: Array<string>): Array<NameTag> | null {
-  const result: Array<NameTag> = [];
-
-  for (const dictKey of tags) {
-    const tag = getTagForDictKey(dictKey);
-    if (typeof tag === 'undefined') {
-      return null;
-    }
-    result.push(tag);
-  }
-
-  return result;
-}
-
 function parseWordEntries(
-  searchResult: WordSearchResult | TranslateResult
+  searchResult: RawWordSearchResult | RawTranslateResult
 ): Array<WordEntry> {
   // Parse entries, parsing them and combining them when the kanji and
   // definition match.

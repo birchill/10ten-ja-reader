@@ -48,25 +48,36 @@ declare const enum DictMode {
   NextDict,
 }
 
-interface LookupResult {
+interface NameSearchResult {
+  type: 'names';
+  data: Array<import('@birchill/hikibiki-data').NameResult>;
+  // The length of the longest match in the original input string.
+  matchLen: number | null;
+  // True if greater than `maxResults` entries were found.
+  more: boolean;
+}
+
+interface KanjiSearchResult {
+  type: 'kanji';
+  data: import('@birchill/hikibiki-data').KanjiResult;
+  matchLen: 1;
+}
+
+interface RawWordSearchResult {
+  type: 'words';
   // Array of matches. Each match is a tuple array containing:
   // - a dictionary entry,
   // - an optional reason string,
   // - an optional romaji transliteration
   data: [string, string | null, string | null][];
+  // The length of the longest match in the original input string.
+  matchLen: number;
   // True if greater than `maxResults` entries were found.
   more: boolean;
-  // The length of the longest match using the lengths supplied in
-  // `inputLengths`.
-  matchLen: number;
 }
 
-interface WordSearchResult extends LookupResult {
-  // Set and true if the search included the names dictionary.
-  names?: boolean;
-}
-
-interface TranslateResult {
+interface RawTranslateResult {
+  type: 'translate';
   // As with LookupResult.
   data: [string, string | null, string | null][];
   // Length of text matched.
@@ -76,6 +87,7 @@ interface TranslateResult {
 }
 
 type SearchResult =
-  | import('@birchill/hikibiki-data').KanjiResult
-  | WordSearchResult
-  | TranslateResult;
+  | KanjiSearchResult
+  | NameSearchResult
+  | RawWordSearchResult
+  | RawTranslateResult;

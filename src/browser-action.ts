@@ -1,8 +1,6 @@
-import {
-  DatabaseState,
-  UpdateErrorState,
-  UpdateState,
-} from '@birchill/hikibiki-data';
+import { DataSeriesState, allMajorDataSeries } from '@birchill/hikibiki-data';
+
+import { JpdictState } from './jpdict';
 
 // We will eventually drop this once we move everything to IDB
 export const enum FlatFileDictState {
@@ -15,16 +13,14 @@ interface BrowserActionState {
   popupStyle: string;
   enabled: boolean;
   flatFileDictState: FlatFileDictState;
-  kanjiDb: { state: DatabaseState; updateState: UpdateState };
-  updateError?: UpdateErrorState;
+  jpdictState: JpdictState;
 }
 
 export function updateBrowserAction({
   popupStyle,
   enabled,
   flatFileDictState,
-  kanjiDb,
-  updateError,
+  jpdictState,
 }: BrowserActionState) {
   let iconFilename = 'disabled';
   let titleStringId = 'command_toggle_disabled';
@@ -50,7 +46,7 @@ export function updateBrowserAction({
   }
 
   // Next determine if we need to overlay any additional information.
-  switch (kanjiDb.updateState.state) {
+  switch (jpdictState.updateState.state) {
     case 'checking':
       // Technically the '-indeterminate' icon would be more correct here but
       // using '-0' instead leads to less flicker.
@@ -61,7 +57,8 @@ export function updateBrowserAction({
     case 'downloading':
       // We only have progress variants for the Ok, disabled, and loading styles.
       if ([popupStyle, 'disabled', 'loading'].includes(iconFilename)) {
-        iconFilename += '-' + Math.round(kanjiDb.updateState.progress * 5) * 20;
+        iconFilename +=
+          '-' + Math.round(jpdictState.updateState.progress * 5) * 20;
       }
       titleStringId = 'command_toggle_downloading';
       break;
@@ -96,10 +93,13 @@ export function updateBrowserAction({
 
   // Add a warning overlay and update the string if there was a fatal
   // update error.
+  const hasNotOkDatabase = allMajorDataSeries.some(
+    (series) => jpdictState[series].state !== DataSeriesState.Ok
+  );
   if (
-    kanjiDb.state !== DatabaseState.Ok &&
-    !!updateError &&
-    updateError.name !== 'AbortError'
+    hasNotOkDatabase &&
+    !!jpdictState.updateError &&
+    jpdictState.updateError.name !== 'AbortError'
   ) {
     browser.browserAction.setBadgeText({ text: '!' });
     browser.browserAction.setBadgeBackgroundColor({ color: 'yellow' });

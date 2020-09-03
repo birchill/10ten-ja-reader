@@ -1,31 +1,8 @@
-import {
-  DatabaseState,
-  DataVersion,
-  UpdateState,
-  UpdateErrorState,
-} from '@birchill/hikibiki-data';
+import { JpdictState } from './jpdict';
 
-export interface ResolvedDataVersions {
-  kanji: DataVersion | null;
-  radicals: DataVersion | null;
-}
-
-export const notifyDbStateUpdated = ({
-  databaseState,
-  updateState,
-  updateError,
-  versions,
-}: {
-  databaseState: DatabaseState;
-  updateState: UpdateState;
-  updateError?: UpdateErrorState;
-  versions: ResolvedDataVersions;
-}) => ({
+export const notifyDbStateUpdated = (state: JpdictState) => ({
   type: <const>'dbstateupdated',
-  databaseState,
-  updateState,
-  updateError,
-  versions,
+  state,
 });
 
 export type DbStateUpdatedMessage = ReturnType<typeof notifyDbStateUpdated>;

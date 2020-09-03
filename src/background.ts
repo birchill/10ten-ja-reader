@@ -49,15 +49,7 @@ import '../manifest.json.src';
 import '../html/background.html.src';
 
 import Bugsnag, { Event as BugsnagEvent } from '@bugsnag/browser';
-import {
-  DatabaseState,
-  JpdictDatabase,
-  KanjiResult,
-  toUpdateErrorState,
-  UpdateErrorState,
-  updateWithRetry,
-  cancelUpdateWithRetry,
-} from '@birchill/hikibiki-data';
+import { DataSeriesState } from '@birchill/hikibiki-data';
 
 import { updateBrowserAction, FlatFileDictState } from './browser-action';
 import { Config } from './config';
@@ -65,16 +57,17 @@ import { Dictionary } from './data';
 import {
   notifyDbStateUpdated,
   DbListenerMessage,
-  ResolvedDataVersions,
 } from './db-listener-messages';
-import { debounce } from './debounce';
-import { requestIdleCallbackPromise } from './request-idle-callback';
-
-//
-// Minimum amount of time to wait before checking for database updates.
-//
-
-const UPDATE_THRESHOLD_MS = 12 * 60 * 60 * 1000; // 12 hours
+import { ExtensionStorageError } from './extension-storage-error';
+import {
+  JpdictState,
+  cancelUpdateDb,
+  deleteDb,
+  initDb,
+  updateDb,
+  searchKanji,
+  searchNames,
+} from './jpdict';
 
 //
 // Setup bugsnag
@@ -144,32 +137,6 @@ const bugsnagClient = Bugsnag.start({
 });
 
 //
-// Define error type for better grouping
-//
-
-class ExtensionStorageError extends Error {
-  key: string;
-  action: 'set' | 'get';
-
-  constructor(
-    { key, action }: { key: string; action: 'set' | 'get' },
-    ...params: any[]
-  ) {
-    super(...params);
-    Object.setPrototypeOf(this, ExtensionStorageError.prototype);
-
-    if (typeof Error.captureStackTrace === 'function') {
-      Error.captureStackTrace(this, ExtensionStorageError);
-    }
-
-    this.name = 'ExtensionStorageError';
-    this.message = `Failed to ${action} '${key}'`;
-    this.key = key;
-    this.action = action;
-  }
-}
-
-//
 // Setup config
 //
 
@@ -192,8 +159,7 @@ config.addChangeListener((changes) => {
       popupStyle,
       enabled: true,
       flatFileDictState,
-      kanjiDb,
-      updateError: lastUpdateError,
+      jpdictState,
     });
   }
 
@@ -221,16 +187,8 @@ config.addChangeListener((changes) => {
   // Update dictionary language
   if (changes.hasOwnProperty('dictLang')) {
     const newLang = (changes as any).dictLang.newValue;
-    Bugsnag.leaveBreadcrumb(
-      `Changing language of kanji database to ${newLang}.`
-    );
-
-    kanjiDb.setPreferredLang(newLang).then(() => {
-      Bugsnag.leaveBreadcrumb(
-        `Changed language of kanji database to ${newLang}. Running initial update...`
-      );
-      return updateKanjiDb();
-    });
+    Bugsnag.leaveBreadcrumb(`Changing language of database to ${newLang}.`);
+    updateDb({ lang: newLang, force: true });
   }
 
   // Tell the content scripts about any changes
@@ -304,308 +262,80 @@ config.ready.then(() => {
 });
 
 //
-// Kanji database
+// Jpdict database
 //
 
-// We make sure this is always set to _something_ even if it is an unavailable
-// database.
-//
-// This ensures we don't need to constantly check if it set or not and saves us
-// having TWO different states representing an unavailable database. That is:
-//
-// a) typeof kanjiDb === 'undefined' OR
-// b) kanjiDb.state === DatabaseState.Unavailable
-//
-// By doing this we only ever need to check for (b) and that is also covered
-// by the kanjiDbInitialized Promise below which will reject for an unavailable
-// database.
-let kanjiDb: JpdictDatabase;
+let jpdictState: JpdictState = {
+  kanji: {
+    state: DataSeriesState.Initializing,
+    version: null,
+  },
+  radicals: {
+    state: DataSeriesState.Initializing,
+    version: null,
+  },
+  names: {
+    state: DataSeriesState.Initializing,
+    version: null,
+  },
+  updateState: { state: 'idle', lastCheck: null },
+};
 
-// Debounce notifications since often we'll get a notification that the update
-// state has been updated quickly followed by a call to updateWithRetry's
-// error callback providing the latest error.
-const updateDbStatus = debounce(async () => {
-  await notifyDbListeners();
+async function initJpDict() {
+  await config.ready;
+  initDb({ lang: config.dictLang, onUpdate: onDbStatusUpdated });
+}
+
+function onDbStatusUpdated(state: JpdictState) {
+  jpdictState = state;
+
   updateBrowserAction({
     popupStyle: config.popupStyle,
     enabled,
     flatFileDictState,
-    kanjiDb,
-    updateError: lastUpdateError,
-  });
-}, 0);
-
-// This Promise will resolve once we have finished trying to open the database.
-// It will reject if the database is unavailable.
-let kanjiDbInitialized: Promise<JpdictDatabase>;
-
-initKanjiDb();
-
-function initKanjiDb() {
-  kanjiDbInitialized = new Promise(async (resolve, reject) => {
-    let retryCount = 0;
-    while (true) {
-      if (kanjiDb) {
-        try {
-          await kanjiDb.destroy();
-        } catch (e) {
-          console.log('Failed to destroy previous database');
-        }
-      }
-
-      kanjiDb = new JpdictDatabase({ verbose: true });
-
-      kanjiDb.addChangeListener(updateDbStatus);
-      kanjiDb.onWarning = (message: string) => {
-        Bugsnag.notify(message, (event) => {
-          event.severity = 'warning';
-        });
-      };
-
-      try {
-        await kanjiDb.ready;
-        resolve(kanjiDb);
-        return;
-      } catch (e) {
-        if (retryCount >= 3) {
-          console.log(
-            'Giving up opening database. Likely in permanent private browsing mode.'
-          );
-          reject(e);
-          return;
-        }
-        retryCount++;
-        console.log(
-          `Failed to open database. Retrying shortly (attempt: ${retryCount})...`
-        );
-        await requestIdleCallbackPromise({ timeout: 1000 });
-      }
-    }
+    jpdictState: state,
   });
 
-  kanjiDbInitialized.catch(() => {
-    // Make sure we attach some sort of error handler to this just to avoid
-    // spurious unhandledrejections being reported.
-  });
+  notifyDbListeners();
 }
+
+//
+// Listeners
+//
 
 const dbListeners: Array<browser.runtime.Port> = [];
 
-async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
-  if (!dbListeners.length) {
-    return;
-  }
-
-  if (
-    typeof kanjiDb.dataVersions.kanji === 'undefined' ||
-    typeof kanjiDb.dataVersions.radicals === 'undefined'
-  ) {
-    return;
-  }
-
-  const message = notifyDbStateUpdated({
-    databaseState: kanjiDb.state,
-    updateState: kanjiDb.updateState,
-    updateError: lastUpdateError,
-    versions: kanjiDb.dataVersions as ResolvedDataVersions,
-  });
-
-  // The lastCheck field in the updateState we get back from the database will
-  // only be set if we did a check this session. It is _not_ a stored value.
-  // So, if it is not set, use the value we store instead.
-  if (message.updateState.lastCheck === null) {
-    try {
-      const getResult = await browser.storage.local.get('lastUpdateKanjiDb');
-      if (typeof getResult.lastUpdateKanjiDb === 'number') {
-        message.updateState.lastCheck = new Date(getResult.lastUpdateKanjiDb);
-      }
-    } catch (e) {
-      // Extension storage can sometimes randomly fail with 'An unexpected error
-      // occurred'. Ignore, but log it.
-      Bugsnag.notify(
-        new ExtensionStorageError({ key: 'lastUpdateKanjiDb', action: 'get' }),
-        (event) => {
-          event.severity = 'warning';
-        }
-      );
-    }
-  }
-
-  for (const listener of dbListeners) {
-    if (specifiedListener && listener !== specifiedListener) {
-      continue;
-    }
-
-    try {
-      listener.postMessage(message);
-    } catch (e) {
-      console.log('Error posting message');
-      console.log(e);
-      Bugsnag.notify(e || '(Error posting message update message)');
-    }
-  }
-}
-
-async function maybeDownloadData() {
-  try {
-    await kanjiDbInitialized;
-  } catch (_) {
-    return;
-  }
-
-  try {
-    await config.ready;
-  } catch (e) {
-    // We don't actually handle this error at the moment since we are still
-    // trying to determine what causes it.
-    Bugsnag.leaveBreadcrumb('Failed to read config');
-    console.error(e);
-    throw e;
-  }
-
-  // Set initial language
-  try {
-    Bugsnag.leaveBreadcrumb(
-      `Setting initial language of kanji database to ${config.dictLang}.`
-    );
-    await kanjiDb.setPreferredLang(config.dictLang);
-    Bugsnag.leaveBreadcrumb(`Successfully set language to ${config.dictLang}.`);
-  } catch (e) {
-    console.error(e);
-    Bugsnag.notify(e);
-  }
-
-  // Even if the database is not empty, check if it needs an update.
-  if (kanjiDb.state === DatabaseState.Ok) {
-    let lastUpdateKanjiDb: number | null = null;
-    try {
-      const getResult = await browser.storage.local.get('lastUpdateKanjiDb');
-      lastUpdateKanjiDb =
-        typeof getResult.lastUpdateKanjiDb === 'number'
-          ? getResult.lastUpdateKanjiDb
-          : null;
-    } catch (e) {
-      // Ignore
-    }
-    Bugsnag.leaveBreadcrumb(`Got last update time of ${lastUpdateKanjiDb}`);
-
-    // If we updated within the minimum window then we're done.
-    if (
-      lastUpdateKanjiDb &&
-      Date.now() - lastUpdateKanjiDb < UPDATE_THRESHOLD_MS
-    ) {
-      Bugsnag.leaveBreadcrumb('Downloaded data is up-to-date');
-      return;
-    }
-  }
-
-  await updateKanjiDb();
-}
-
-let lastUpdateError: UpdateErrorState | undefined;
-
-async function updateKanjiDb({
-  forceUpdate = false,
-}: { forceUpdate?: boolean } = {}) {
-  try {
-    await kanjiDbInitialized;
-  } catch (_) {
-    return;
-  }
-
-  updateWithRetry({
-    db: kanjiDb,
-    forceUpdate,
-    onUpdateComplete: async () => {
-      Bugsnag.leaveBreadcrumb('Successfully updated kanji database');
-
-      lastUpdateError = undefined;
-      updateDbStatus();
-
-      // Extension storage can randomly fail with "An unexpected error occurred".
-      try {
-        await browser.storage.local.set({
-          lastUpdateKanjiDb: new Date().getTime(),
-        });
-      } catch (e) {
-        Bugsnag.notify(
-          new ExtensionStorageError({
-            key: 'lastUpdateKanjiDb',
-            action: 'set',
-          }),
-          (event) => {
-            event.severity = 'warning';
-          }
-        );
-      }
-    },
-    onUpdateError: (params) => {
-      const { error, nextRetry, retryCount } = params;
-      if (nextRetry) {
-        const diffInMs = nextRetry.getTime() - Date.now();
-        Bugsnag.leaveBreadcrumb(
-          `Kanji database update encountered ${error.name} error. Retrying in ${diffInMs}ms.`
-        );
-
-        // We don't want to report all download errors since the auto-retry
-        // behavior will mean we get too many. Also, we don't care about
-        // intermittent failures for users on flaky network connections.
-        //
-        // However, if a lot of clients are failing multiple times to fetch
-        // a particular resource, we want to know.
-        if (retryCount === 5) {
-          Bugsnag.notify(error, (event) => {
-            event.severity = 'warning';
-          });
-        }
-      } else if (error.name !== 'AbortError' && error.name !== 'OfflineError') {
-        Bugsnag.notify(error);
-      } else {
-        Bugsnag.leaveBreadcrumb(
-          `Kanji database update encountered ${error.name} error`
-        );
-      }
-
-      lastUpdateError = toUpdateErrorState(params);
-      updateDbStatus();
-    },
-  });
+function isDbListenerMessage(evt: unknown): evt is DbListenerMessage {
+  return typeof evt === 'object' && typeof (evt as any).type === 'string';
 }
 
 browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
   dbListeners.push(port);
+
+  // Push initial state to new listener
   notifyDbListeners(port);
 
-  port.onMessage.addListener((evt: unknown) => {
+  port.onMessage.addListener(async (evt: unknown) => {
     if (!isDbListenerMessage(evt)) {
       return;
     }
 
     switch (evt.type) {
       case 'updatedb':
-        if (kanjiDb.state === DatabaseState.Unavailable) {
-          initKanjiDb();
-          kanjiDbInitialized
-            .then(() => {
-              Bugsnag.leaveBreadcrumb('Manually triggering database update');
-              maybeDownloadData();
-            })
-            .catch(() => {
-              /* Ignore */
-            });
-        } else {
-          updateKanjiDb({ forceUpdate: true });
-        }
+        await config.ready;
+
+        Bugsnag.leaveBreadcrumb('Manually triggering database update');
+        updateDb({ lang: config.dictLang, force: true });
         break;
 
       case 'cancelupdatedb':
         Bugsnag.leaveBreadcrumb('Manually canceling database update');
-        cancelUpdateWithRetry(kanjiDb);
+        cancelUpdateDb();
         break;
 
       case 'deletedb':
         Bugsnag.leaveBreadcrumb('Manually deleting database');
-        kanjiDb.destroy();
+        deleteDb();
         break;
 
       case 'reporterror':
@@ -622,8 +352,26 @@ browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
   });
 });
 
-function isDbListenerMessage(evt: unknown): evt is DbListenerMessage {
-  return typeof evt === 'object' && typeof (evt as any).type === 'string';
+async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
+  if (!dbListeners.length) {
+    return;
+  }
+
+  const message = notifyDbStateUpdated(jpdictState);
+
+  for (const listener of dbListeners) {
+    if (specifiedListener && listener !== specifiedListener) {
+      continue;
+    }
+
+    try {
+      listener.postMessage(message);
+    } catch (e) {
+      console.log('Error posting message');
+      console.log(e);
+      Bugsnag.notify(e || '(Error posting message update message)');
+    }
+  }
 }
 
 //
@@ -710,8 +458,7 @@ async function enableTab(tab: browser.tabs.Tab) {
     popupStyle: config.popupStyle,
     enabled: true,
     flatFileDictState: FlatFileDictState.Loading,
-    kanjiDb,
-    updateError: lastUpdateError,
+    jpdictState,
   });
 
   if (menuId) {
@@ -721,15 +468,8 @@ async function enableTab(tab: browser.tabs.Tab) {
   try {
     await Promise.all([loadDictionary(), config.ready]);
 
-    // Trigger download but don't wait on it. We don't block on this because
-    // we currently only download the kanji data and we don't need it to be
-    // downloaded before we can do something useful.
     Bugsnag.leaveBreadcrumb('Triggering database update from enableTab...');
-    maybeDownloadData().then(() => {
-      Bugsnag.leaveBreadcrumb(
-        'Finished triggering database update from enableTab'
-      );
-    });
+    initJpDict();
 
     // Send message to current tab to add listeners and create stuff
     browser.tabs
@@ -755,8 +495,7 @@ async function enableTab(tab: browser.tabs.Tab) {
       popupStyle: config.popupStyle,
       enabled: true,
       flatFileDictState,
-      kanjiDb,
-      updateError: lastUpdateError,
+      jpdictState,
     });
   } catch (e) {
     Bugsnag.notify(e || '(No error)');
@@ -765,8 +504,7 @@ async function enableTab(tab: browser.tabs.Tab) {
       popupStyle: config.popupStyle,
       enabled: true,
       flatFileDictState,
-      kanjiDb,
-      updateError: lastUpdateError,
+      jpdictState,
     });
 
     // Reset internal state so we can try again
@@ -793,8 +531,7 @@ async function disableAll() {
     popupStyle: config.popupStyle,
     enabled,
     flatFileDictState,
-    kanjiDb,
-    updateError: lastUpdateError,
+    jpdictState,
   });
 
   if (menuId) {
@@ -867,15 +604,10 @@ function search(text: string, dictOption: DictMode) {
       case kanjiDictIndex:
         return searchKanji(text.charAt(0));
       case nameDictIndex:
-        return flatFileDict!.wordSearch({
-          input: text,
-          doNames: true,
-          includeRomaji: false,
-        });
+        return searchNames(text);
     }
     return flatFileDict!.wordSearch({
       input: text,
-      doNames: false,
       includeRomaji: config.showRomaji,
     });
   };
@@ -893,45 +625,6 @@ function search(text: string, dictOption: DictMode) {
       return loopOverDictionaries(text);
     });
   })(text);
-}
-
-async function searchKanji(kanji: string): Promise<KanjiResult | null> {
-  // Pre-check (might not be needed anymore)
-  const codepoint = kanji.charCodeAt(0);
-  if (codepoint < 0x3000) {
-    return null;
-  }
-
-  try {
-    await kanjiDbInitialized;
-  } catch (_) {
-    return null;
-  }
-
-  if (kanjiDb.state === DatabaseState.Empty) {
-    return null;
-  }
-
-  let result;
-  try {
-    result = await kanjiDb.getKanji([kanji]);
-  } catch (e) {
-    console.error(e);
-    Bugsnag.notify(e || '(Error looking up kanji)');
-    return null;
-  }
-
-  if (!result.length) {
-    return null;
-  }
-
-  if (result.length > 1) {
-    Bugsnag.notify(`Got more than one result for ${kanji}`, (event) => {
-      event.severity = 'warning';
-    });
-  }
-
-  return result[0];
 }
 
 //
@@ -1032,18 +725,14 @@ function onTabSelect(tabId: number) {
   });
 }
 
-browser.runtime.onInstalled.addListener(async () => {
-  Bugsnag.leaveBreadcrumb('Running maybeDownloadData from onInstalled...');
-  await maybeDownloadData();
-  Bugsnag.leaveBreadcrumb(
-    'Finished running maybeDownloadData from onInstalled'
-  );
+browser.runtime.onInstalled.addListener(() => {
+  Bugsnag.leaveBreadcrumb('Running initJpDict from onInstalled...');
+  initJpDict();
 });
 
-browser.runtime.onStartup.addListener(async () => {
-  Bugsnag.leaveBreadcrumb('Running maybeDownloadData from onStartup...');
-  await maybeDownloadData();
-  Bugsnag.leaveBreadcrumb('Finished running maybeDownloadData from onStartup');
+browser.runtime.onStartup.addListener(() => {
+  Bugsnag.leaveBreadcrumb('Running initJpDict from onStartup...');
+  initJpDict();
 });
 
 // See if we were enabled on the last run

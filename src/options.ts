@@ -1,6 +1,6 @@
 import '../html/options.html.src';
 
-import { DatabaseState } from '@birchill/hikibiki-data';
+import { DataSeriesState } from '@birchill/hikibiki-data';
 
 import { Config, DEFAULT_KEY_SETTINGS } from './config';
 import { Command, CommandParams, isValidKey } from './commands';
@@ -236,10 +236,10 @@ function configureCommands() {
     updateToggleKey();
   });
 
-  toggleKeyTextbox.addEventListener('compositionstart', (evt) => {
+  toggleKeyTextbox.addEventListener('compositionstart', () => {
     toggleKeyTextbox.value = '';
   });
-  toggleKeyTextbox.addEventListener('compositionend', (evt) => {
+  toggleKeyTextbox.addEventListener('compositionend', () => {
     toggleKeyTextbox.value = toggleKeyTextbox.value.toUpperCase();
     updateToggleKey();
   });
@@ -602,12 +602,14 @@ window.onload = async () => {
       // day of TypeScript wrestling so instead we just manually reach into
       // this object and convert the fields known to possibly contain dates
       // into dates.
-      if (typeof evt.updateState.lastCheck === 'string') {
-        evt.updateState.lastCheck = new Date(evt.updateState.lastCheck);
+      if (typeof evt.state.updateState.lastCheck === 'string') {
+        evt.state.updateState.lastCheck = new Date(
+          evt.state.updateState.lastCheck
+        );
       }
-      if (typeof (evt.updateState as any).nextRetry === 'string') {
-        (evt.updateState as any).nextRetry = new Date(
-          (evt.updateState as any).nextRetry
+      if (typeof (evt.state.updateState as any).nextRetry === 'string') {
+        (evt.state.updateState as any).nextRetry = new Date(
+          (evt.state.updateState as any).nextRetry
         );
       }
 
@@ -633,7 +635,7 @@ function updateDatabaseBlurb(evt: DbStateUpdatedMessage) {
   const blurb = document.querySelector('.db-summary-blurb')!;
   empty(blurb);
 
-  const { kanji: kanjiDataVersion } = evt.versions;
+  const kanjiDataVersion = evt.state.kanji.version;
   let attribution: string;
   if (kanjiDataVersion) {
     attribution = browser.i18n.getMessage(
@@ -678,7 +680,8 @@ function updateDatabaseBlurb(evt: DbStateUpdatedMessage) {
 }
 
 function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
-  const { databaseState, updateState } = evt;
+  const { updateState } = evt.state;
+  const databaseState = evt.state.kanji;
 
   const statusElem = document.querySelector('.db-summary-status')!;
   empty(statusElem);
@@ -758,7 +761,7 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
       updateButton.setAttribute('type', 'button');
       updateButton.textContent = browser.i18n.getMessage(
         updateState.state === 'idle' &&
-          databaseState !== DatabaseState.Unavailable
+          databaseState.state !== DataSeriesState.Unavailable
           ? 'options_update_check_button_label'
           : 'options_update_retry_button_label'
       );
@@ -794,7 +797,8 @@ function updateIdleStateSummary(
   statusElem: Element,
   infoDiv: HTMLDivElement
 ) {
-  const { databaseState, updateState, updateError } = evt;
+  const { updateState, updateError } = evt.state;
+  const databaseState = evt.state.kanji;
 
   if (!!updateError && updateError.name === 'OfflineError') {
     statusElem.classList.add('-warning');
@@ -825,19 +829,19 @@ function updateIdleStateSummary(
     return;
   }
 
-  if (databaseState === DatabaseState.Empty) {
+  if (databaseState.state === DataSeriesState.Empty) {
     infoDiv.append(browser.i18n.getMessage('options_no_database'));
     return;
   }
 
-  if (databaseState === DatabaseState.Unavailable) {
+  if (databaseState.state === DataSeriesState.Unavailable) {
     statusElem.classList.add('-error');
     infoDiv.append(browser.i18n.getMessage('options_database_unavailable'));
     return;
   }
 
   infoDiv.classList.add('-italic');
-  const { major, minor, patch } = evt.versions.kanji!;
+  const { major, minor, patch } = evt.state.kanji.version!;
 
   const versionNumberDiv = document.createElement('div');
   const versionString = browser.i18n.getMessage(

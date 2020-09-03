@@ -1,4 +1,8 @@
-import { KanjiResult } from '@birchill/hikibiki-data';
+import {
+  KanjiResult,
+  NameResult,
+  NameTranslation,
+} from '@birchill/hikibiki-data';
 
 import {
   CopyKeys,
@@ -7,8 +11,7 @@ import {
   CopyNextKeyStrings,
 } from './copy-keys';
 import { SelectionMeta } from './meta';
-import { getKeyForTag } from './name-tags';
-import { NameDefinition, NameEntry, QueryResult, WordEntry } from './query';
+import { QueryResult, WordEntry } from './query';
 import {
   getReferenceValue,
   getSelectedReferenceLabels,
@@ -199,7 +202,7 @@ function renderEraInfo(meta: SelectionMeta, eraInfo: EraInfo): HTMLElement {
 }
 
 function renderNamesEntries(
-  entries: Array<NameEntry>,
+  entries: Array<NameResult>,
   more: boolean,
   options: PopupOptions
 ): HTMLElement {
@@ -234,26 +237,32 @@ function renderNamesEntries(
     entryTitleDiv.classList.add('w-title');
     entryDiv.append(entryTitleDiv);
 
-    for (const name of entry.names) {
-      const entryHeadingDiv = document.createElement('div');
-      entryHeadingDiv.classList.add('heading');
+    // XXX Put … after list of kanji when k_more is set
 
-      if (name.kanji) {
-        const kanjiSpan = document.createElement('span');
-        entryHeadingDiv.append(kanjiSpan);
-        kanjiSpan.classList.add('w-kanji');
-        kanjiSpan.append(name.kanji);
-      }
-
-      const kanaSpan = document.createElement('span');
-      entryHeadingDiv.append(kanaSpan);
-      kanaSpan.classList.add('w-kana');
-      kanaSpan.append(name.kana);
-
-      entryTitleDiv.append(entryHeadingDiv);
+    if (entry.k) {
+      const kanji = entry.k.join('、');
+      const kanjiSpan = document.createElement('span');
+      entryTitleDiv.append(kanjiSpan);
+      kanjiSpan.classList.add('w-kanji');
+      kanjiSpan.append(kanji);
     }
 
-    entryDiv.append(renderNameDefinition(entry.definition));
+    const kana = entry.r.join('、');
+    const kanaSpan = document.createElement('span');
+    entryTitleDiv.append(kanaSpan);
+    kanaSpan.classList.add('w-kana');
+    kanaSpan.append(kana);
+
+    // XXX Need to do this part still.
+    const definitionBlock = document.createElement('div');
+    definitionBlock.classList.add('w-def');
+    for (const tr of entry.tr) {
+      if (definitionBlock.children.length) {
+        definitionBlock.append('; ');
+      }
+      definitionBlock.append(renderNameTranslation(tr));
+    }
+    entryDiv.append(definitionBlock);
 
     namesTable.append(entryDiv);
   }
@@ -277,21 +286,19 @@ function renderNamesEntries(
   return container;
 }
 
-function renderNameDefinition(definition: NameDefinition): HTMLDivElement {
-  const definitionSpan = document.createElement('div');
-  definitionSpan.classList.add('w-def');
-  definitionSpan.append(definition.text);
+function renderNameTranslation(tr: NameTranslation): HTMLSpanElement {
+  const definitionSpan = document.createElement('span');
+  definitionSpan.append(tr.det.join(', '));
 
-  for (const tag of definition.tags) {
-    const tagKey = getKeyForTag(tag);
-    const tagText = browser.i18n.getMessage(`content_names_tag_${tagKey}`);
+  for (const tag of tr.type || []) {
+    const tagText = browser.i18n.getMessage(`content_names_tag_${tag}`);
     if (!tagText) {
       continue;
     }
 
     const tagSpan = document.createElement('span');
     tagSpan.classList.add('tag');
-    tagSpan.classList.add(`tag-${tagKey}`);
+    tagSpan.classList.add(`tag-${tag}`);
     tagSpan.append(tagText);
     definitionSpan.append(tagSpan);
   }

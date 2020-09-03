@@ -1,7 +1,6 @@
-import { KanjiResult } from '@birchill/hikibiki-data';
+import { KanjiResult, NameResult } from '@birchill/hikibiki-data';
 
-import { serializeTags } from './name-tags';
-import { WordEntry, NameEntry } from './query';
+import { WordEntry } from './query';
 import {
   getReferenceValue,
   getSelectedReferenceLabels,
@@ -10,7 +9,7 @@ import {
 
 export type Entry =
   | { type: 'word'; data: WordEntry }
-  | { type: 'name'; data: NameEntry }
+  | { type: 'name'; data: NameResult }
   | { type: 'kanji'; data: KanjiResult };
 
 export function getWordToCopy(entry: Entry): string {
@@ -22,7 +21,7 @@ export function getWordToCopy(entry: Entry): string {
       break;
 
     case 'name':
-      result = entry.data.names.map(name => name.kanji || name.kana).join(', ');
+      result = (entry.data.k || entry.data.r).join(', ');
       break;
 
     case 'kanji':
@@ -58,16 +57,19 @@ export function getEntryToCopy(
       break;
 
     case 'name':
-      result = entry.data.names
-        .map(name => (name.kanji ? `${name.kanji} [${name.kana}]` : name.kana))
-        .join(', ');
+      result = entry.data.k
+        ? `${entry.data.k.join(', ')} [${entry.data.r.join(', ')}]`
+        : entry.data.r.join(', ');
 
-      const { text, tags } = entry.data.definition;
-      let tagsText = serializeTags(tags);
-      if (tagsText) {
-        tagsText = `(${tagsText}) `;
+      for (const [i, tr] of entry.data.tr.entries()) {
+        if (i) {
+          result += '; ';
+        }
+        if (tr.type) {
+          result += ` (${tr.type.join(', ')})`;
+        }
+        result += ' ' + tr.det.join(', ');
       }
-      result += ` ${tagsText}${text}`;
       break;
 
     case 'kanji':
@@ -124,10 +126,9 @@ export function getEntryToCopy(
             ) {
               continue;
             }
-            result += `; ${label.short || label.full} ${getReferenceValue(
-              entry.data,
-              label.ref
-            ) || '-'}`;
+            result += `; ${label.short || label.full} ${
+              getReferenceValue(entry.data, label.ref) || '-'
+            }`;
           }
         }
       }
@@ -161,14 +162,25 @@ export function getFieldsToCopy(
 
     case 'name':
       {
-        const { text, tags } = entry.data.definition;
-        let tagsText = serializeTags(tags);
-        if (tagsText) {
-          tagsText = `(${tagsText}) `;
+        let definition = '';
+        for (const [i, tr] of entry.data.tr.entries()) {
+          if (i) {
+            definition += '; ';
+          }
+          if (tr.type) {
+            definition += `(${tr.type.join(', ')}) `;
+          }
+          definition += tr.det.join(', ');
         }
-        result = entry.data.names
-          .map(name => `${name.kanji || ''}\t${name.kana}\t${tagsText}${text}`)
-          .join('\n');
+
+        // Split each kanji name out into a separate row
+        result = '';
+        for (const [i, kanji] of (entry.data.k || ['']).entries()) {
+          if (i) {
+            result += '\n';
+          }
+          result += `${kanji}\t${entry.data.r.join(', ')}\t${definition}`;
+        }
       }
       break;
 
@@ -182,7 +194,7 @@ export function getFieldsToCopy(
         result += `\t${(r.na || []).join(`、`)}`;
         result += `\t${m.join(', ')}`;
         if (showKanjiComponents) {
-          const components = comp.map(comp => comp.c).join('');
+          const components = comp.map((comp) => comp.c).join('');
           result += `\t${components}`;
         }
         if (kanjiReferences.length) {
@@ -201,10 +213,9 @@ export function getFieldsToCopy(
                 break;
 
               default:
-                result += `\t${label.short || label.full} ${getReferenceValue(
-                  entry.data,
-                  label.ref
-                ) || '-'}`;
+                result += `\t${label.short || label.full} ${
+                  getReferenceValue(entry.data, label.ref) || '-'
+                }`;
                 break;
             }
           }

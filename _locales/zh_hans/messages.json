@@ -89,19 +89,19 @@
   "content_names_tag_place": {
     "message": "地名"
   },
-  "content_names_tag_person": {
+  "content_names_tag_unclass": {
     "message": "人物"
   },
   "content_names_tag_given": {
     "message": "名字"
   },
-  "content_names_tag_female": {
+  "content_names_tag_fem": {
     "message": "女性"
   },
-  "content_names_tag_male": {
+  "content_names_tag_masc": {
     "message": "男性"
   },
-  "content_names_tag_full": {
+  "content_names_tag_person": {
     "message": "全名"
   },
   "content_names_tag_product": {

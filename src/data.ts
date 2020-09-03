@@ -49,9 +49,9 @@ import { Client as BugsnagClient } from '@bugsnag/browser';
 import { deinflect, deinflectL10NKeys, CandidateWord } from './deinflect';
 import { normalizeInput } from './conversion';
 import { toRomaji } from './romaji';
+import { endsInYoon } from './yoon';
 
 const WORDS_MAX_ENTRIES = 7;
-const NAMES_MAX_ENTRIES = 20;
 
 interface DictionaryOptions {
   // Although the v7 API of bugsnag-js can operate on a singleton client we
@@ -71,8 +71,6 @@ const enum WordType {
 
 export class Dictionary {
   loaded: Promise<any>;
-  nameDict: string;
-  nameIndex: string;
   wordDict: string;
   wordIndex: string;
   bugsnag?: BugsnagClient;
@@ -202,8 +200,6 @@ export class Dictionary {
     const dataFiles: Array<fileEntry> = [
       { key: 'wordDict', file: 'dict.dat' },
       { key: 'wordIndex', file: 'dict.idx' },
-      { key: 'nameDict', file: 'names.dat' },
-      { key: 'nameIndex', file: 'names.idx' },
     ];
 
     const readBatch = (files: Array<fileEntry>): Promise<any> => {
@@ -228,50 +224,48 @@ export class Dictionary {
 
   async wordSearch({
     input,
-    doNames = false,
     max = 0,
     includeRomaji = false,
   }: {
     input: string;
-    doNames?: boolean;
     max?: number;
     includeRomaji?: boolean;
-  }): Promise<WordSearchResult | null> {
+  }): Promise<RawWordSearchResult | null> {
     let [word, inputLengths] = normalizeInput(input);
 
-    let maxResults = doNames ? NAMES_MAX_ENTRIES : WORDS_MAX_ENTRIES;
+    let maxResults = WORDS_MAX_ENTRIES;
     if (max > 0) {
       maxResults = Math.min(maxResults, max);
     }
 
-    const [dict, index] = await this._getDictAndIndex(doNames);
+    await this.loaded;
+
     let result = this._lookupInput({
       input: word,
       inputLengths,
-      dict,
-      index,
+      // XXX Drop these two params
+      dict: this.wordDict,
+      index: this.wordIndex,
       maxResults,
-      deinflectWord: !doNames,
+      // XXX Drop this param
+      deinflectWord: true,
       includeRomaji,
     });
 
     result = this.tryReplacingChoonpu({
       input: word,
       inputLengths,
-      dict,
-      index,
+      // XXX Drop these two params
+      dict: this.wordDict,
+      index: this.wordIndex,
       maxResults,
-      deinflectWord: !doNames,
+      // XXX Drop this param
+      deinflectWord: true,
       includeRomaji,
       existingResult: result,
     });
 
-    const wordSearchResult: WordSearchResult | null = result;
-    if (wordSearchResult && doNames) {
-      wordSearchResult.names = true;
-    }
-
-    return wordSearchResult;
+    return result;
   }
 
   tryReplacingChoonpu({
@@ -291,8 +285,8 @@ export class Dictionary {
     maxResults: number;
     deinflectWord: boolean;
     includeRomaji: boolean;
-    existingResult: LookupResult | null;
-  }): LookupResult | null {
+    existingResult: RawWordSearchResult | null;
+  }): RawWordSearchResult | null {
     if (input.indexOf('ー') === -1) {
       return existingResult;
     }
@@ -315,7 +309,7 @@ export class Dictionary {
 
     // Since we are just doing single-character replacement, the
     // `inputLengths` should not change.
-    const barLessResult: WordSearchResult | null = this._lookupInput({
+    const barLessResult: RawWordSearchResult | null = this._lookupInput({
       input: barLessWord,
       inputLengths,
       dict,
@@ -329,16 +323,6 @@ export class Dictionary {
       (barLessResult && barLessResult.matchLen > existingResult.matchLen)
       ? barLessResult
       : existingResult;
-  }
-
-  async _getDictAndIndex(doNames: boolean) {
-    await this.loaded;
-
-    if (doNames) {
-      return [this.nameDict, this.nameIndex];
-    }
-
-    return [this.wordDict, this.wordIndex];
   }
 
   // Looks for dictionary entries in |dict| (using |index|) that match some
@@ -363,13 +347,14 @@ export class Dictionary {
     maxResults: number;
     deinflectWord: boolean;
     includeRomaji: boolean;
-  }): LookupResult | null {
+  }): RawWordSearchResult | null {
     let count: number = 0;
     let longestMatch: number = 0;
     let cache: { [index: string]: number[] } = {};
     let have: Set<number> = new Set();
 
-    let result: LookupResult = {
+    let result: RawWordSearchResult = {
+      type: 'words',
       data: [],
       more: false,
       matchLen: 0,
@@ -546,8 +531,9 @@ export class Dictionary {
   }: {
     text: string;
     includeRomaji?: boolean;
-  }): Promise<TranslateResult | null> {
-    const result: TranslateResult = {
+  }): Promise<RawTranslateResult | null> {
+    const result: RawTranslateResult = {
+      type: 'translate',
       data: [],
       textLen: text.length,
       more: false,
@@ -557,7 +543,6 @@ export class Dictionary {
     while (text.length > 0) {
       const searchResult = await this.wordSearch({
         input: text,
-        doNames: false,
         max: 1,
         includeRomaji,
       });
@@ -582,29 +567,4 @@ export class Dictionary {
     result.textLen -= text.length;
     return result;
   }
-}
-
-// きしちにひみりぎじびぴ
-const yoonStart = [
-  0x304d,
-  0x3057,
-  0x3061,
-  0x306b,
-  0x3072,
-  0x307f,
-  0x308a,
-  0x304e,
-  0x3058,
-  0x3073,
-  0x3074,
-];
-// ゃゅょ
-const smallY = [0x3083, 0x3085, 0x3087];
-
-function endsInYoon(input: string): boolean {
-  return (
-    input.length > 1 &&
-    smallY.includes(input.charCodeAt(input.length - 1)) &&
-    yoonStart.includes(input.charCodeAt(input.length - 2))
-  );
 }

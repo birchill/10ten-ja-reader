@@ -153,17 +153,6 @@ describe('Dictionary', () => {
     expect(result!.matchLen).toBe(4);
     result = await sharedDict.wordSearch({ input: '行こー' });
     expect(result!.matchLen).toBe(3);
-
-    // A bug was matching input 'クリスチーナ' to entry 'クリスチアナ'
-    result = await sharedDict.wordSearch({
-      input: 'クリスチーナ',
-      doNames: true,
-    });
-    let christianaRegex = /クリスチアナ/g;
-    let didFindChristiana = result!.data.some((entry) =>
-      christianaRegex.test(entry[0])
-    );
-    expect(didFindChristiana).toBe(false);
   });
 
   it('does not split yo-on', async () => {
@@ -305,7 +294,6 @@ describe('Dictionary', () => {
   it('orders words by priority before truncating the list', async () => {
     const result = await sharedDict.wordSearch({
       input: 'せんしゅ',
-      doNames: false,
       max: 5,
     });
     // There should be at least the following common entries that match:
@@ -337,15 +325,5 @@ describe('Dictionary', () => {
       })
       .join('');
     expect(kana).toBe('きかんげんていはつばいあきのぜん');
-  });
-
-  it('looks up names', async () => {
-    const result = await sharedDict.wordSearch({
-      input: 'あか組４',
-      doNames: true,
-    });
-    expect(result!.data[0][0]).toEqual(
-      'あか組４ [あかぐみフォー] /(h) Akagumi Four/'
-    );
   });
 });

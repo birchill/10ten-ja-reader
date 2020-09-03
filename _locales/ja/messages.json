@@ -89,19 +89,19 @@
   "content_names_tag_place": {
     "message": "地名"
   },
-  "content_names_tag_person": {
+  "content_names_tag_unclass": {
     "message": "人名"
   },
   "content_names_tag_given": {
     "message": "名"
   },
-  "content_names_tag_female": {
+  "content_names_tag_fem": {
     "message": "女"
   },
-  "content_names_tag_male": {
+  "content_names_tag_masc": {
     "message": "男"
   },
-  "content_names_tag_full": {
+  "content_names_tag_person": {
     "message": "姓名"
   },
   "content_names_tag_product": {
@@ -118,6 +118,9 @@
   },
   "content_names_tag_work": {
     "message": "作品"
+  },
+  "content_names_tag_ok": {
+    "message": "旧"
   },
   "content_kanji_radical_label": {
     "message": "部首",

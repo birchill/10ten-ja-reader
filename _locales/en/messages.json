@@ -89,19 +89,19 @@
   "content_names_tag_place": {
     "message": "place"
   },
-  "content_names_tag_person": {
+  "content_names_tag_unclass": {
     "message": "person"
   },
   "content_names_tag_given": {
     "message": "given"
   },
-  "content_names_tag_female": {
+  "content_names_tag_fem": {
     "message": "female"
   },
-  "content_names_tag_male": {
+  "content_names_tag_masc": {
     "message": "male"
   },
-  "content_names_tag_full": {
+  "content_names_tag_person": {
     "message": "full name"
   },
   "content_names_tag_product": {
@@ -118,6 +118,9 @@
   },
   "content_names_tag_work": {
     "message": "work"
+  },
+  "content_names_tag_ok": {
+    "message": "old"
   },
   "content_kanji_radical_label": {
     "message": "radical",
