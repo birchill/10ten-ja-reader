@@ -1,6 +1,11 @@
-## 0.1.21 (Not yet released)
+## 0.2.0 (Not yet released)
 
-(Nothing yet)
+* Made names data be downloaded out-of-band. As a result names data is
+  updated weekly and does not consume memory.
+* Made display of names prioritize entries that match the selected text more
+  closely (e.g. katakana entries are presented first when the text is katakana).
+* Fixed the display of multiple annotations for name data.
+* Added recognition for a variety of composed characters (e.g. ㋕㌀㋿ ).
 
 ## 0.1.20 (2020-08-11)
 
