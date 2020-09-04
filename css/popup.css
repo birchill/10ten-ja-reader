@@ -94,7 +94,8 @@
   font-size: 12px;
 }
 
-#rikaichamp-window .w-def {
+#rikaichamp-window .w-def,
+#rikaichamp-window .w-def > * {
   font-size: 13px;
 }
 
@@ -136,7 +137,8 @@
   color: #029902;
 }
 
-#rikaichamp-window .entry.-selected .w-def {
+#rikaichamp-window .entry.-selected .w-def,
+#rikaichamp-window .entry.-selected .w-def > * {
   color: rgb(0,0,50);
 }
 
