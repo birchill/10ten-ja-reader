@@ -238,7 +238,7 @@ function renderNamesEntries(
     entryDiv.append(entryTitleDiv);
 
     if (entry.k) {
-      const MAX_KANJI = 5;
+      const MAX_KANJI = 15;
       const trimKanji = entry.k.length > MAX_KANJI;
       const kanjiToDisplay = trimKanji ? entry.k.slice(0, MAX_KANJI) : entry.k;
       let kanji = kanjiToDisplay.join('、');
