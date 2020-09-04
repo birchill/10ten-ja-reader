@@ -6,7 +6,7 @@ const iconv = require('iconv-lite');
 const LineStream = require('byline').LineStream;
 const CombinedStream = require('combined-stream2');
 const { Transform, Writable } = require('stream');
-const kanaToHiragana = require('@birchill/kana-to-hiragana');
+const { kanaToHiragana } = require('@birchill/normal-jp');
 
 const SUPPORTED_REF_TYPES = new Set([
   'B', // Nelson radical or traditional radical if same
@@ -72,11 +72,11 @@ class DictParser extends Transform {
       }
     };
 
-    const [mainEntry] = kanaToHiragana(matches[1]);
+    const mainEntry = kanaToHiragana(matches[1].normalize());
     addOrUpdateEntry(mainEntry);
 
     if (matches.length > 2 && matches[2]) {
-      const [subEntry] = kanaToHiragana(matches[2]);
+      const subEntry = kanaToHiragana(matches[2].normalize());
       if (subEntry !== mainEntry) {
         addOrUpdateEntry(subEntry);
       }

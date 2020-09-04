@@ -54,10 +54,6 @@ describe('toRomaji', () => {
     expect(toRomaji('ハロー')).toEqual('haro-');
   });
 
-  it('converts half-width katakana', () => {
-    expect(toRomaji('ｶﾞｰﾃﾞﾝﾊﾟｰﾃｨｰ')).toEqual('ga-denpa-ti-');
-  });
-
   it('preserves other characters as-is (as-are?)', () => {
     expect(toRomaji('AえいBびーCしー！')).toEqual('AeiBbi-Cshi-！');
   });

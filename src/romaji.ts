@@ -1,4 +1,4 @@
-import { kanaToHiragana } from '@birchill/kana-to-hiragana';
+import { kanaToHiragana } from '@birchill/normal-jp';
 
 // Convert using a modified Hepburn-ish romajification
 
@@ -206,7 +206,10 @@ const maxReplacementLength = Math.max(
 const replacementMap = new Map(replacements);
 
 export function toRomaji(kana: string): string {
-  const [hiragana] = kanaToHiragana(kana);
+  // We don't currently convert half-width katakana simply because we're not
+  // expecting to encounter it. If we do, we can use toNormalize for that.
+  const hiragana = kanaToHiragana(kana);
+
   let result = '';
 
   // Special handling for っ so we can handle すっっっっっっごく high-tension
