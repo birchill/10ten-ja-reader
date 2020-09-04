@@ -130,14 +130,6 @@ console.log('Fetching word dictionary...');
 
 parseEdict('http://ftp.monash.edu/pub/nihongo/edict.gz', 'dict.dat', 'dict.idx')
   .then(() => {
-    console.log('Fetching names dictionary...');
-    return parseEdict(
-      'http://ftp.monash.edu/pub/nihongo/enamdict.gz',
-      'names.dat',
-      'names.idx'
-    );
-  })
-  .then(() => {
     console.log('Done.');
   })
   .catch(err => {
