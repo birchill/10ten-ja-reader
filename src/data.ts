@@ -46,6 +46,8 @@
 */
 
 import { Client as BugsnagClient } from '@bugsnag/browser';
+import { kanaToHiragana } from '@birchill/normal-jp';
+
 import { deinflect, deinflectL10NKeys, CandidateWord } from './deinflect';
 import { normalizeInput } from './conversion';
 import { toRomaji } from './romaji';
@@ -232,6 +234,7 @@ export class Dictionary {
     includeRomaji?: boolean;
   }): Promise<RawWordSearchResult | null> {
     let [word, inputLengths] = normalizeInput(input);
+    word = kanaToHiragana(word);
 
     let maxResults = WORDS_MAX_ENTRIES;
     if (max > 0) {

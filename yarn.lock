@@ -375,12 +375,13 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@birchill/hikibiki-data@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-6.0.0.tgz#573b1572a484cb6bdf17ab4052edecd568b4f79d"
-  integrity sha512-Zmf1T34IEtAdOFteL67Mv3fMDw0w3S3bfdUGTRVseQYK90LIBZhpqE7HHRHazyp9QsIphZqniT5Iqx/rbHfTrQ==
+"@birchill/hikibiki-data@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-6.1.0.tgz#3898e229a7aa904e6ce5d0b467898fd928b9bc1c"
+  integrity sha512-m1f8guc1fQYiyTbSnTAMU+D19GdSjKfccAEy5Z537D6YBvxos6NUh4DZdwnSVZrikYwqzqAIE2g54DY1dg7jIg==
   dependencies:
     "@birchill/json-equalish" "^1.0.1"
+    "@birchill/normal-jp" "^1.0.0"
     idb "^5.0.0"
 
 "@birchill/json-equalish@^1.0.1":

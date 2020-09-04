@@ -262,7 +262,7 @@ function renderNamesEntries(
     definitionBlock.classList.add('w-def');
     for (const tr of entry.tr) {
       if (definitionBlock.children.length) {
-        definitionBlock.append('; ');
+        definitionBlock.append(' ');
       }
       definitionBlock.append(renderNameTranslation(tr));
     }
