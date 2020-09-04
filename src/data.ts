@@ -246,24 +246,14 @@ export class Dictionary {
     let result = this._lookupInput({
       input: word,
       inputLengths,
-      // XXX Drop these two params
-      dict: this.wordDict,
-      index: this.wordIndex,
       maxResults,
-      // XXX Drop this param
-      deinflectWord: true,
       includeRomaji,
     });
 
     result = this.tryReplacingChoonpu({
       input: word,
       inputLengths,
-      // XXX Drop these two params
-      dict: this.wordDict,
-      index: this.wordIndex,
       maxResults,
-      // XXX Drop this param
-      deinflectWord: true,
       includeRomaji,
       existingResult: result,
     });
@@ -274,19 +264,13 @@ export class Dictionary {
   tryReplacingChoonpu({
     input,
     inputLengths,
-    dict,
-    index,
     maxResults,
-    deinflectWord,
     includeRomaji,
     existingResult,
   }: {
     input: string;
     inputLengths: number[];
-    dict: string;
-    index: string;
     maxResults: number;
-    deinflectWord: boolean;
     includeRomaji: boolean;
     existingResult: RawWordSearchResult | null;
   }): RawWordSearchResult | null {
@@ -315,10 +299,7 @@ export class Dictionary {
     const barLessResult: RawWordSearchResult | null = this._lookupInput({
       input: barLessWord,
       inputLengths,
-      dict,
-      index,
       maxResults,
-      deinflectWord,
       includeRomaji,
     });
 
@@ -329,7 +310,7 @@ export class Dictionary {
   }
 
   // Looks for dictionary entries in |dict| (using |index|) that match some
-  // portion of |input| after de-inflecting it (if |deinflectWord| is true).
+  // portion of |input| after de-inflecting it.
   // Only entries that match from the beginning of |input| are checked.
   //
   // e.g. if |input| is '子犬は' then the entry for '子犬' will match but
@@ -337,18 +318,12 @@ export class Dictionary {
   _lookupInput({
     input,
     inputLengths,
-    dict,
-    index,
     maxResults,
-    deinflectWord,
     includeRomaji,
   }: {
     input: string;
     inputLengths: number[];
-    dict: string;
-    index: string;
     maxResults: number;
-    deinflectWord: boolean;
     includeRomaji: boolean;
   }): RawWordSearchResult | null {
     let count: number = 0;
@@ -366,15 +341,13 @@ export class Dictionary {
     while (input.length > 0) {
       const showInflections: boolean = count != 0;
       // TODO: Split inflection handling out into a separate method
-      const candidates: Array<CandidateWord> = deinflectWord
-        ? deinflect(input)
-        : [{ word: input, type: 0xff, reasons: [] }];
+      const candidates: Array<CandidateWord> = deinflect(input);
 
       for (let i = 0; i < candidates.length; i++) {
         const candidate: CandidateWord = candidates[i];
         let offsets: number[] | undefined = cache[candidate.word];
         if (!offsets) {
-          const lookupResult = this.find(index, candidate.word + ',');
+          const lookupResult = this.find(this.wordIndex, candidate.word + ',');
           if (!lookupResult) {
             cache[candidate.word] = [];
             continue;
@@ -394,7 +367,10 @@ export class Dictionary {
             continue;
           }
 
-          const entry = dict.substring(offset, dict.indexOf('\n', offset));
+          const entry = this.wordDict.substring(
+            offset,
+            this.wordDict.indexOf('\n', offset)
+          );
           let ok = true;
 
           // The first candidate is the full string, anything after that is
