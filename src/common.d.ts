@@ -52,7 +52,7 @@ interface NameSearchResult {
   type: 'names';
   data: Array<import('@birchill/hikibiki-data').NameResult>;
   // The length of the longest match in the original input string.
-  matchLen: number | null;
+  matchLen: number;
   // True if greater than `maxResults` entries were found.
   more: boolean;
 }

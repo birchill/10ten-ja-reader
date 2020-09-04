@@ -9,6 +9,7 @@ import {
   getNames,
 } from '@birchill/hikibiki-data';
 
+import { replaceChoonpu } from './choon';
 import { normalizeInput } from './conversion';
 import { ExtensionStorageError } from './extension-storage-error';
 import { JpdictWorkerMessage } from './jpdict-worker-messages';
@@ -238,8 +239,43 @@ export async function searchNames(
 ): Promise<NameSearchResult | null> {
   let [normalized, inputLengths] = normalizeInput(input);
 
-  // XXX Need to handle ー expansion
+  let result = await doNameSearch({ input: normalized, inputLengths });
 
+  // If the input string has ー in it, try expanding it and re-querying.
+  const expanded = choonExpandedVariation(normalized);
+  if (expanded) {
+    const expandedResult = await doNameSearch({
+      input: expanded,
+      inputLengths,
+    });
+
+    if (
+      !result ||
+      (expandedResult && expandedResult.matchLen > result.matchLen)
+    ) {
+      result = expandedResult;
+    }
+  }
+
+  return result;
+}
+
+function choonExpandedVariation(input: string): string | null {
+  if (input.indexOf('ー') === -1) {
+    return null;
+  }
+
+  const expanded = replaceChoonpu(input);
+  return expanded !== input ? expanded : null;
+}
+
+async function doNameSearch({
+  input,
+  inputLengths,
+}: {
+  input: string;
+  inputLengths: Array<number>;
+}): Promise<NameSearchResult | null> {
   let result: NameSearchResult = {
     type: 'names',
     data: [],
@@ -247,10 +283,10 @@ export async function searchNames(
     matchLen: 0,
   };
 
-  // Recording the position of existing entries for grouping purposes
+  // Record the position of existing entries for grouping purposes
   let existingItems = new Map<string, number>();
 
-  let currentString = normalized;
+  let currentString = input;
   let longestMatch = 0;
 
   while (currentString.length > 0) {
