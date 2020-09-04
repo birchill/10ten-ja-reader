@@ -1066,6 +1066,12 @@ export class RikaiContent {
     //   since these are typically only going to delimit words.
     // * U+3041~U+309F is the hiragana range
     // * U+30A0~U+30FF is the katakana range
+    // * U+3220~U+3247 is various enclosed characters like ㈵
+    // * U+3280~U+32B0 is various enclosed characters like ㊞
+    // * U+32D0~U+32FF is various enclosed characters like ㋐ and ㋿.
+    // * U+3300~U+3370 is various shorthand characters from the CJK
+    //   compatibility block like ㍍
+    // * U+337B~U+337F is various era names and ㍿
     // * U+3400~U+4DBF is the CJK Unified Ideographs Extension A block (rare
     //   kanji)
     // * U+4E00~U+9FFF is the CJK Unified Ideographs block ("the kanji")
@@ -1073,11 +1079,11 @@ export class RikaiContent {
     //   kanji, because standards)
     // * U+FF5E is full-width tilde ～ (not 〜 which is a wave dash)
     // * U+FF61~U+FF65 is some halfwidth ideographic symbols, e.g. ｡ but we
-    //   skip them (although previus rikai-tachi included them) since
+    //   skip them (although previous rikai-tachi included them) since
     //   they're mostly going to be delimiters
     // * U+FF66~U+FF9F is halfwidth katakana
     //
-    const nonJapaneseOrDelimiter = /[^\u25cb\u3004-\u3007\u3011-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff5e\uff66-\uff9f]/;
+    const nonJapaneseOrDelimiter = /[^\u25cb\u3004-\u3007\u3011-\u30ff\u3220-\u3247\u3280-\u32b0\u32d0-\u32ff\u3300-\u3370\u337b-\u337f\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff5e\uff66-\uff9f]/;
 
     // If we detect a Japanese era, however, we allow a different set of
     // characters.

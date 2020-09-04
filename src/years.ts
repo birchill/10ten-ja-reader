@@ -261,10 +261,15 @@ const yearMap = new Map<string, EraInfo>([
   ['元治', { reading: 'げんじ', start: 1864, yomi: 'Genji' }],
   ['慶応', { reading: 'けいおう', start: 1865, yomi: 'Keiō' }],
   ['明治', { reading: 'めいじ', start: 1868, yomi: 'Meiji' }],
+  ['㍾', { reading: 'めいじ', start: 1868, yomi: 'Meiji' }],
   ['大正', { reading: 'たいしょう', start: 1912, yomi: 'Taishō' }],
+  ['㍽', { reading: 'たいしょう', start: 1912, yomi: 'Taishō' }],
   ['昭和', { reading: 'しょうわ', start: 1926, yomi: 'Shōwa' }],
+  ['㍼', { reading: 'しょうわ', start: 1926, yomi: 'Shōwa' }],
   ['平成', { reading: 'へいせい', start: 1989, yomi: 'Heisei' }],
+  ['㍻', { reading: 'へいせい', start: 1989, yomi: 'Heisei' }],
   ['令和', { reading: 'れいわ', start: 2019, yomi: 'Reiwa' }],
+  ['㋿', { reading: 'れいわ', start: 2019, yomi: 'Reiwa' }],
 ]);
 
 export function isEraName(text: string): boolean {
