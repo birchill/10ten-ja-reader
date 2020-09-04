@@ -1,8 +1,6 @@
 import { JpdictState } from './jpdict';
 
-export const queryState = () => ({
-  type: 'querystate',
-});
+export const queryState = () => ({ type: 'querystate' });
 
 export const updateDb = ({
   lang,
@@ -16,17 +14,18 @@ export const updateDb = ({
   force,
 });
 
-export const cancelDbUpdate = () => ({
-  type: 'cancelupdate',
-});
+export const cancelDbUpdate = () => ({ type: 'cancelupdate' });
 
-export const deleteDb = () => ({
-  type: 'delete',
-});
+export const deleteDb = () => ({ type: 'delete' });
 
 export const notifyDbStateUpdated = (state: JpdictState) => ({
   type: 'dbstateupdated',
   state,
+});
+
+export const notifyDbUpdateComplete = (lastCheck: Date | null) => ({
+  type: 'dbupdatecomplete',
+  lastCheck,
 });
 
 export const notifyError = ({
@@ -47,4 +46,5 @@ export type JpdictWorkerMessage =
   | ReturnType<typeof cancelDbUpdate>
   | ReturnType<typeof deleteDb>
   | ReturnType<typeof notifyDbStateUpdated>
+  | ReturnType<typeof notifyDbUpdateComplete>
   | ReturnType<typeof notifyError>;

@@ -88,13 +88,16 @@ export async function initDb({
             if (lastUpdateTime) {
               state.updateState.lastCheck = new Date(lastUpdateTime);
             }
-          } else {
-            maybeSetLastUpdateTime(state.updateState.lastCheck.getTime());
           }
 
           onUpdate(evt.data.state);
         }
         break;
+
+      case 'dbupdatecomplete':
+        if (evt.data.lastCheck) {
+          setLastUpdateTime(evt.data.lastCheck.getTime());
+        }
 
       case 'error':
         Bugsnag.notify(evt.data.message, (event) => {
@@ -143,24 +146,21 @@ async function getLastUpdateTime(): Promise<number | null> {
   return null;
 }
 
-// Cache the last stored update time so we can avoid looking it up each time.
-let lastUpdateTime: number | null;
-
-async function maybeSetLastUpdateTime(time: number) {
-  if (!lastUpdateTime) {
-    lastUpdateTime = await getLastUpdateTime();
-  }
-
-  if (lastUpdateTime && lastUpdateTime >= time) {
-    return;
-  }
-
-  lastUpdateTime = time;
-
+async function setLastUpdateTime(time: Date | null) {
   // Extension storage can randomly fail with "An unexpected error occurred".
   try {
-    await browser.storage.local.set({
-      lastDbUpdateTime: time,
+    if (time) {
+      await browser.storage.local.set({
+        lastDbUpdateTime: time.getTime(),
+      });
+    } else {
+      await browser.storage.local.remove('lastDbUpdateTime');
+    }
+
+    // Try to remove any old value we stored so we don't end up using it
+    // accidentally.
+    browser.storage.local.remove('lastUpdateKanjiDb').catch(() => {
+      /* Ignore */
     });
   } catch (e) {
     Bugsnag.notify(
@@ -185,6 +185,7 @@ export function cancelUpdateDb() {
 
 export function deleteDb() {
   jpdictWorker.postMessage(messages.deleteDb());
+  setLastUpdateTime(null);
 }
 
 export async function searchKanji(

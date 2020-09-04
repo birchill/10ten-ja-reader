@@ -13,6 +13,7 @@ import {
 import { JpdictState } from './jpdict';
 import {
   notifyDbStateUpdated,
+  notifyDbUpdateComplete,
   notifyError,
   JpdictWorkerMessage,
 } from './jpdict-worker-messages';
@@ -193,6 +194,7 @@ async function updateAllSeries({
       currentUpdate.series = 'names';
     } else {
       currentUpdate = undefined;
+      self.postMessage(notifyDbUpdateComplete(getLatestCheckTime(db!)));
       return;
     }
 
@@ -230,13 +232,7 @@ function doDbStateNotification() {
   }
 
   // Merge update states to show the current / latest update
-  const latestCheckAsNumber = Math.max.apply(
-    null,
-    allMajorDataSeries.map((series) => db![series].updateState.lastCheck)
-  );
-  const lastCheck =
-    latestCheckAsNumber !== 0 ? new Date(latestCheckAsNumber) : null;
-
+  const lastCheck = getLatestCheckTime(db!);
   const updateState = currentUpdate
     ? db[currentUpdate.series].updateState
     : { state: <const>'idle', lastCheck };
@@ -264,4 +260,13 @@ function doDbStateNotification() {
     console.log('Error posting message');
     console.log(e);
   }
+}
+
+function getLatestCheckTime(db: JpdictDatabase): Date | null {
+  const latestCheckAsNumber = Math.max.apply(
+    null,
+    allMajorDataSeries.map((series) => db[series].updateState.lastCheck)
+  );
+
+  return latestCheckAsNumber !== 0 ? new Date(latestCheckAsNumber) : null;
 }
