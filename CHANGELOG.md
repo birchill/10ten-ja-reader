@@ -87,7 +87,7 @@ Fixed various bugs. Added text fields and button capability. By default, it does
 
 Small bug fix and improved options screen. Still only has 2 options, but looks nice.
 
-# 0.8
+## 0.8
 
 Fixed a few instances where rikaikun wouldn't detect the beginning of a word.
 Changed icons.
