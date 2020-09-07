@@ -375,13 +375,13 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@birchill/hikibiki-data@^6.2.0":
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-6.2.0.tgz#dfa9be04fa11151345481ba976e73c4cfa0a9580"
-  integrity sha512-53Sim0IoPlxjMoRo7urD58d1F/+FuPYJ13iol/ZwWEY7Tskr2bIYqfAq3S6cD0fh+OcXvf4msaLfLFWOtrDsFA==
+"@birchill/hikibiki-data@^6.2.1":
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-6.2.1.tgz#0aa4690020cbfab9ae17a5654d098d7fb2299476"
+  integrity sha512-CXgxno4eeuEwxQ4hY1nUimQTttgZLRpwkgKtrbTHBQ6tt7zYcp9eBsDZsq66cnZz2OzwNY8zcq6XfKhfM7TAVA==
   dependencies:
     "@birchill/json-equalish" "^1.0.1"
-    "@birchill/normal-jp" "^1.0.0"
+    "@birchill/normal-jp" "^1.1.0"
     idb "^5.0.0"
 
 "@birchill/json-equalish@^1.0.1":
@@ -389,10 +389,10 @@
   resolved "https://registry.yarnpkg.com/@birchill/json-equalish/-/json-equalish-1.0.1.tgz#499bb527b2fdd256cc1867e4eb9fa2d889bf0ef9"
   integrity sha512-lcAqizP4Nw0IFLvyaAAGN7rrWxo1vJfMv69GByiwHJ0WgdzZkwngUT7DaXg/SvN2Dv4k7feVJKFzIWMLBRlFjg==
 
-"@birchill/normal-jp@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.0.0.tgz#22e9144f30e83fd2269e123a40db9761d0385fc5"
-  integrity sha512-oWgXQtTe195sUJ0nwubS0oKNtNopZ4vblP5QX19bnbWyb/WThE3y+E0kBbchq43T38YELcH1YsYbcyW1q+maWw==
+"@birchill/normal-jp@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.1.0.tgz#df727099368d1cd861ace927d6e1375b59d04c69"
+  integrity sha512-pZBgRxVne3jS0zjbU6aj4sVsKEb5Y6A1ZE4aReBKufMnPzZCMhmewg8Wi3Kbwm4PJilWg7bCLwy1LYNVEpbBeA==
 
 "@bugsnag/browser@^7.3.3":
   version "7.3.3"
