@@ -6,6 +6,7 @@
   closely (e.g. katakana entries are presented first when the text is katakana).
 * Fixed the display of multiple annotations for name data.
 * Added recognition for a variety of composed characters (e.g. ㋕㌀㋿ ).
+* Improved expansion of ー so that now オーサカ is recognized.
 
 ## 0.1.20 (2020-08-11)
 

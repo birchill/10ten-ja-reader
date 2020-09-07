@@ -153,6 +153,8 @@ describe('Dictionary', () => {
     expect(result!.matchLen).toBe(4);
     result = await sharedDict.wordSearch({ input: '行こー' });
     expect(result!.matchLen).toBe(3);
+    result = await sharedDict.wordSearch({ input: 'オーサカ' });
+    expect(result!.matchLen).toBe(4);
   });
 
   it('does not split yo-on', async () => {

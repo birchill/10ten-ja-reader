@@ -46,10 +46,9 @@
 */
 
 import { Client as BugsnagClient } from '@bugsnag/browser';
-import { kanaToHiragana } from '@birchill/normal-jp';
+import { expandChoon, kanaToHiragana } from '@birchill/normal-jp';
 
 import { deinflect, deinflectL10NKeys, CandidateWord } from './deinflect';
-import { replaceChoonpu } from './choon';
 import { normalizeInput } from './conversion';
 import { toRomaji } from './romaji';
 import { endsInYoon } from './yoon';
@@ -244,59 +243,23 @@ export class Dictionary {
 
     await this.loaded;
 
-    let result = this._lookupInput({
-      input: word,
-      inputLengths,
-      maxResults,
-      includeRomaji,
-    });
+    const candidateWords = [word, ...expandChoon(word)];
 
-    result = this.tryReplacingChoonpu({
-      input: word,
-      inputLengths,
-      maxResults,
-      includeRomaji,
-      existingResult: result,
-    });
+    let result: RawWordSearchResult | null = null;
+    for (const candidate of candidateWords) {
+      const thisResult = this._lookupInput({
+        input: candidate,
+        inputLengths,
+        maxResults,
+        includeRomaji,
+      });
+
+      if (!result || (thisResult && thisResult.matchLen > result.matchLen)) {
+        result = thisResult;
+      }
+    }
 
     return result;
-  }
-
-  tryReplacingChoonpu({
-    input,
-    inputLengths,
-    maxResults,
-    includeRomaji,
-    existingResult,
-  }: {
-    input: string;
-    inputLengths: number[];
-    maxResults: number;
-    includeRomaji: boolean;
-    existingResult: RawWordSearchResult | null;
-  }): RawWordSearchResult | null {
-    if (input.indexOf('ー') === -1) {
-      return existingResult;
-    }
-
-    const barLessWord = replaceChoonpu(input);
-    if (barLessWord === input) {
-      return existingResult;
-    }
-
-    // Since we are just doing single-character replacement, the
-    // `inputLengths` should not change.
-    const barLessResult: RawWordSearchResult | null = this._lookupInput({
-      input: barLessWord,
-      inputLengths,
-      maxResults,
-      includeRomaji,
-    });
-
-    return !existingResult ||
-      (barLessResult && barLessResult.matchLen > existingResult.matchLen)
-      ? barLessResult
-      : existingResult;
   }
 
   // Looks for dictionary entries in |dict| (using |index|) that match some

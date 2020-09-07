@@ -8,8 +8,8 @@ import {
   getKanji,
   getNames,
 } from '@birchill/hikibiki-data';
+import { expandChoon } from '@birchill/normal-jp';
 
-import { replaceChoonpu } from './choon';
 import { normalizeInput } from './conversion';
 import { ExtensionStorageError } from './extension-storage-error';
 import { JpdictWorkerMessage } from './jpdict-worker-messages';
@@ -239,34 +239,20 @@ export async function searchNames(
 ): Promise<NameSearchResult | null> {
   let [normalized, inputLengths] = normalizeInput(input);
 
-  let result = await doNameSearch({ input: normalized, inputLengths });
+  // Setup a list of strings to try that includes all the possible expansions of
+  // ー characters.
+  const candidates = [normalized, ...expandChoon(normalized)];
 
-  // If the input string has ー in it, try expanding it and re-querying.
-  const expanded = choonExpandedVariation(normalized);
-  if (expanded) {
-    const expandedResult = await doNameSearch({
-      input: expanded,
-      inputLengths,
-    });
+  let result: NameSearchResult | null = null;
+  for (const candidate of candidates) {
+    let thisResult = await doNameSearch({ input: candidate, inputLengths });
 
-    if (
-      !result ||
-      (expandedResult && expandedResult.matchLen > result.matchLen)
-    ) {
-      result = expandedResult;
+    if (!result || (thisResult && thisResult.matchLen > result.matchLen)) {
+      result = thisResult;
     }
   }
 
   return result;
-}
-
-function choonExpandedVariation(input: string): string | null {
-  if (input.indexOf('ー') === -1) {
-    return null;
-  }
-
-  const expanded = replaceChoonpu(input);
-  return expanded !== input ? expanded : null;
 }
 
 async function doNameSearch({
