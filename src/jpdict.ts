@@ -147,12 +147,12 @@ async function getLastUpdateTime(): Promise<number | null> {
   return null;
 }
 
-async function setLastUpdateTime(time: Date | null) {
+async function setLastUpdateTime(time: number | null) {
   // Extension storage can randomly fail with "An unexpected error occurred".
   try {
     if (time) {
       await browser.storage.local.set({
-        lastDbUpdateTime: time.getTime(),
+        lastDbUpdateTime: time,
       });
     } else {
       await browser.storage.local.remove('lastDbUpdateTime');
