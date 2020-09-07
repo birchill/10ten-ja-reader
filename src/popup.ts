@@ -51,11 +51,18 @@ export function renderPopup(
     return renderNamesEntries(result.data, result.more, options);
   }
 
-  return renderWordEntries(result.data, result.title, result.more, options);
+  return renderWordEntries(
+    result.data,
+    result.name,
+    result.title,
+    result.more,
+    options
+  );
 }
 
 function renderWordEntries(
   entries: Array<WordEntry>,
+  name: NameResult | undefined,
   title: string | null,
   more: boolean,
   options: PopupOptions
@@ -75,6 +82,10 @@ function renderWordEntries(
     if (eraInfo) {
       container.append(renderEraInfo(options.meta, eraInfo));
     }
+  }
+
+  if (name) {
+    container.append(renderBonusName(name));
   }
 
   let index = 0;
@@ -201,6 +212,15 @@ function renderEraInfo(meta: SelectionMeta, eraInfo: EraInfo): HTMLElement {
   return metaDiv;
 }
 
+function renderBonusName(name: NameResult): HTMLElement {
+  const container = document.createElement('div');
+  container.classList.add('bonus-name');
+
+  container.append(renderName(name));
+
+  return container;
+}
+
 function renderNamesEntries(
   entries: Array<NameResult>,
   more: boolean,
@@ -224,49 +244,13 @@ function renderNamesEntries(
   let index = 0;
   const selectedIndex = getSelectedIndex(options, entries.length);
   for (const entry of entries) {
-    const entryDiv = document.createElement('div');
-    entryDiv.classList.add('entry');
+    const entryDiv = renderName(entry);
     if (index === selectedIndex) {
       entryDiv.classList.add(
         options.copyState === CopyState.Active ? '-selected' : '-flash'
       );
     }
     index++;
-
-    const entryTitleDiv = document.createElement('div');
-    entryTitleDiv.classList.add('w-title');
-    entryDiv.append(entryTitleDiv);
-
-    if (entry.k) {
-      const MAX_KANJI = 15;
-      const trimKanji = entry.k.length > MAX_KANJI;
-      const kanjiToDisplay = trimKanji ? entry.k.slice(0, MAX_KANJI) : entry.k;
-      let kanji = kanjiToDisplay.join('、');
-      if (trimKanji) {
-        kanji += '…';
-      }
-
-      const kanjiSpan = document.createElement('span');
-      entryTitleDiv.append(kanjiSpan);
-      kanjiSpan.classList.add('w-kanji');
-      kanjiSpan.append(kanji);
-    }
-
-    const kana = entry.r.join('、');
-    const kanaSpan = document.createElement('span');
-    entryTitleDiv.append(kanaSpan);
-    kanaSpan.classList.add('w-kana');
-    kanaSpan.append(kana);
-
-    const definitionBlock = document.createElement('div');
-    definitionBlock.classList.add('w-def');
-    for (const tr of entry.tr) {
-      if (definitionBlock.children.length) {
-        definitionBlock.append(' ');
-      }
-      definitionBlock.append(renderNameTranslation(tr));
-    }
-    entryDiv.append(definitionBlock);
 
     namesTable.append(entryDiv);
   }
@@ -288,6 +272,48 @@ function renderNamesEntries(
   }
 
   return container;
+}
+
+function renderName(entry: NameResult): HTMLElement {
+  const entryDiv = document.createElement('div');
+  entryDiv.classList.add('entry');
+
+  const entryTitleDiv = document.createElement('div');
+  entryTitleDiv.classList.add('w-title');
+  entryDiv.append(entryTitleDiv);
+
+  if (entry.k) {
+    const MAX_KANJI = 15;
+    const trimKanji = entry.k.length > MAX_KANJI;
+    const kanjiToDisplay = trimKanji ? entry.k.slice(0, MAX_KANJI) : entry.k;
+    let kanji = kanjiToDisplay.join('、');
+    if (trimKanji) {
+      kanji += '…';
+    }
+
+    const kanjiSpan = document.createElement('span');
+    entryTitleDiv.append(kanjiSpan);
+    kanjiSpan.classList.add('w-kanji');
+    kanjiSpan.append(kanji);
+  }
+
+  const kana = entry.r.join('、');
+  const kanaSpan = document.createElement('span');
+  entryTitleDiv.append(kanaSpan);
+  kanaSpan.classList.add('w-kana');
+  kanaSpan.append(kana);
+
+  const definitionBlock = document.createElement('div');
+  definitionBlock.classList.add('w-def');
+  for (const tr of entry.tr) {
+    if (definitionBlock.children.length) {
+      definitionBlock.append(' ');
+    }
+    definitionBlock.append(renderNameTranslation(tr));
+  }
+  entryDiv.append(definitionBlock);
+
+  return entryDiv;
 }
 
 function renderNameTranslation(tr: NameTranslation): HTMLSpanElement {

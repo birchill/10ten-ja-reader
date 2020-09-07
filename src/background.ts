@@ -606,7 +606,7 @@ function search(text: string, dictOption: DictMode) {
       case nameDictIndex:
         return searchNames(text);
     }
-    return flatFileDict!.wordSearch({
+    return wordSearch({
       input: text,
       includeRomaji: config.showRomaji,
     });
@@ -625,6 +625,30 @@ function search(text: string, dictOption: DictMode) {
       return loopOverDictionaries(text);
     });
   })(text);
+}
+
+async function wordSearch(params: {
+  input: string;
+  max?: number;
+  includeRomaji?: boolean;
+}): Promise<RawWordSearchResult | null> {
+  console.assert(
+    flatFileDict,
+    'We should have checked we have a dictionary before calling this'
+  );
+
+  const result = await flatFileDict!.wordSearch(params);
+
+  // Check for a longer match in the names dictionary
+  if (result) {
+    const nameResult = await searchNames(params.input);
+    if (nameResult && nameResult.matchLen > result.matchLen) {
+      result.name = nameResult.data[0];
+      result.matchLen = nameResult.matchLen;
+    }
+  }
+
+  return result;
 }
 
 //

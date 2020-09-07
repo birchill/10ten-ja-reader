@@ -4,9 +4,13 @@
   updated weekly and does not consume memory.
 * Made display of names prioritize entries that match the selected text more
   closely (e.g. katakana entries are presented first when the text is katakana).
-* Fixed the display of multiple annotations for name data.
+* Fixed the display of multiple annotations for name data
+  ([#201](https://github.com/birtles/rikaichamp/issues/201)).
 * Added recognition for a variety of composed characters (e.g. ㋕㌀㋿ ).
 * Improved expansion of ー so that now オーサカ is recognized.
+* Made the word list display the first match from the names dictionary if it has
+  longer length than any of the matches from the word dictionary
+  ([#256](https://github.com/birtles/rikaichamp/issues/256)).
 
 ## 0.1.20 (2020-08-11)
 

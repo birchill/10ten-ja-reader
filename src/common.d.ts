@@ -70,6 +70,8 @@ interface RawWordSearchResult {
   // - an optional reason string,
   // - an optional romaji transliteration
   data: [string, string | null, string | null][];
+  // If we found a longer match in the names dictionary we return that here.
+  name?: import('@birchill/hikibiki-data').NameResult;
   // The length of the longest match in the original input string.
   matchLen: number;
   // True if greater than `maxResults` entries were found.

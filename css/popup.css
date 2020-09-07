@@ -436,6 +436,16 @@
 }
 
 /*
+ * Bonus name
+ */
+
+#rikaichamp-window .wordlist .bonus-name {
+  margin-top: 8px;
+  margin-bottom: 3px;
+  background: rgba(255,255,255,0.2);
+}
+
+/*
  * Meta information
  */
 
