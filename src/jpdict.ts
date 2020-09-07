@@ -54,7 +54,38 @@ jpdictWorker.onmessageerror = (evt: MessageEvent) => {
   Bugsnag.notify(`Worker error: ${JSON.stringify(evt)}`);
 };
 
-let kanjiDbLang = 'en';
+// Local state tracking
+//
+// We track some state locally because we want to avoid querying the database
+// when it is being updated since this can block for several seconds.
+
+let dbState: JpdictState = {
+  kanji: {
+    state: DataSeriesState.Initializing,
+    version: null,
+  },
+  radicals: {
+    state: DataSeriesState.Initializing,
+    version: null,
+  },
+  names: {
+    state: DataSeriesState.Initializing,
+    version: null,
+  },
+  updateState: { state: 'idle', lastCheck: null },
+};
+
+function kanjiDbLang(): string {
+  return dbState.kanji.version?.lang ?? 'en';
+}
+
+function isNamesDbAvailable(): boolean {
+  return (
+    dbState.names.state === DataSeriesState.Ok &&
+    (dbState.updateState.state === 'idle' ||
+      dbState.updateState.series !== 'names')
+  );
+}
 
 //
 // Public API
@@ -75,9 +106,6 @@ export async function initDb({
     switch ((evt.data as JpdictWorkerMessage).type) {
       case 'dbstateupdated':
         {
-          // Update the local language setting cache
-          kanjiDbLang = evt.data.state.kanji.dataVersion?.lang ?? 'en';
-
           // Fill out the lastCheck field in the updateState.
           //
           // This value will only be set if we already did a check this session.
@@ -90,8 +118,9 @@ export async function initDb({
               state.updateState.lastCheck = new Date(lastUpdateTime);
             }
           }
+          dbState = state;
 
-          onUpdate(evt.data.state);
+          onUpdate(state);
         }
         break;
 
@@ -208,7 +237,7 @@ export async function searchKanji(
   try {
     result = await getKanji({
       kanji: [kanji],
-      lang: kanjiDbLang,
+      lang: kanjiDbLang(),
       logWarningMessage,
     });
   } catch (e) {
@@ -262,6 +291,10 @@ async function doNameSearch({
   input: string;
   inputLengths: Array<number>;
 }): Promise<NameSearchResult | null> {
+  if (!isNamesDbAvailable()) {
+    return null;
+  }
+
   let result: NameSearchResult = {
     type: 'names',
     data: [],

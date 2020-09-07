@@ -217,6 +217,7 @@ function cancelUpdate() {
   }
 
   cancelUpdateWithRetry({ db: db!, series: currentUpdate.series });
+  currentUpdate = undefined;
 }
 
 function doDbStateNotification() {

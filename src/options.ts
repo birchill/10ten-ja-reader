@@ -802,7 +802,7 @@ function updateIdleStateSummary(
   statusElem: Element
 ) {
   const { updateError } = evt.state;
-  const databaseState = evt.state.kanji;
+  const kanjiDbState = evt.state.kanji;
 
   if (!!updateError && updateError.name === 'OfflineError') {
     const infoDiv = document.createElement('div');
@@ -841,8 +841,8 @@ function updateIdleStateSummary(
   }
 
   if (
-    databaseState.state === DataSeriesState.Initializing ||
-    databaseState.state === DataSeriesState.Empty
+    kanjiDbState.state === DataSeriesState.Initializing ||
+    kanjiDbState.state === DataSeriesState.Empty
   ) {
     const infoDiv = document.createElement('div');
     infoDiv.classList.add('db-summary-info');
@@ -851,7 +851,7 @@ function updateIdleStateSummary(
     return;
   }
 
-  if (databaseState.state === DataSeriesState.Unavailable) {
+  if (kanjiDbState.state === DataSeriesState.Unavailable) {
     const infoDiv = document.createElement('div');
     infoDiv.classList.add('db-summary-info');
     infoDiv.append(browser.i18n.getMessage('options_database_unavailable'));
@@ -861,10 +861,15 @@ function updateIdleStateSummary(
   }
 
   for (const series of allMajorDataSeries) {
+    const versionInfo = evt.state[series].version;
+    if (!versionInfo) {
+      continue;
+    }
+
     const versionDiv = document.createElement('div');
     versionDiv.classList.add('db-summary-version');
 
-    const { major, minor, patch } = evt.state[series].version!;
+    const { major, minor, patch } = versionInfo;
     const titleDiv = document.createElement('div');
     titleDiv.classList.add('title');
     const titleKeys: { [series in MajorDataSeries]: string } = {
@@ -887,7 +892,7 @@ function updateIdleStateSummary(
     };
     const sourceName = sourceNames[series];
 
-    const { databaseVersion, dateOfCreation } = evt.state[series].version!;
+    const { databaseVersion, dateOfCreation } = versionInfo;
 
     let sourceString;
     if (databaseVersion && databaseVersion !== 'n/a') {
