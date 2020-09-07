@@ -87,6 +87,13 @@ function isNamesDbAvailable(): boolean {
   );
 }
 
+// We also need to track the lastUpdateTime locally. That's because if
+// we tried to read it from extension storage when we get worker messages,
+// because the API is async, on Chrome we can get situations where we actually
+// end up apply the database state messages in the wrong order.
+
+let lastUpdateTime: number | null = null;
+
 //
 // Public API
 //
@@ -98,7 +105,7 @@ export async function initDb({
   lang: string;
   onUpdate: (status: JpdictState) => void;
 }) {
-  const lastUpdateTime = await getLastUpdateTime();
+  lastUpdateTime = await getLastUpdateTime();
   Bugsnag.leaveBreadcrumb(`Got last update time of ${lastUpdateTime}`);
 
   // Register the listener
@@ -112,11 +119,8 @@ export async function initDb({
           // It is _not_ a stored value.  So, if it is not set, use the value we
           // stored instead.
           const state = { ...evt.data.state };
-          if (state.updateState.lastCheck === null) {
-            const lastUpdateTime = await getLastUpdateTime();
-            if (lastUpdateTime) {
-              state.updateState.lastCheck = new Date(lastUpdateTime);
-            }
+          if (state.updateState.lastCheck === null && lastUpdateTime) {
+            state.updateState.lastCheck = new Date(lastUpdateTime);
           }
           dbState = state;
 
@@ -177,6 +181,9 @@ async function getLastUpdateTime(): Promise<number | null> {
 }
 
 async function setLastUpdateTime(time: number | null) {
+  // Make sure to update the local version too.
+  lastUpdateTime = time;
+
   // Extension storage can randomly fail with "An unexpected error occurred".
   try {
     if (time) {
