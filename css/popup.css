@@ -172,7 +172,8 @@
 
 #rikaichamp-window .name-table.-multicol .entry {
   /* Avoid column breaks within an entry */
-  display: table;
+  page-break-inside: avoid;
+  break-inside: avoid;
 }
 
 #rikaichamp-window .name-table .entry {
