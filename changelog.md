@@ -11,6 +11,7 @@
 * Made the word list display the first match from the names dictionary if it has
   longer length than any of the matches from the word dictionary
   ([#256](https://github.com/birtles/rikaichamp/issues/256)).
+* Updated word dictionary to 2020-09-06 snapshot
 
 ## 0.1.20 (2020-08-11)
 
