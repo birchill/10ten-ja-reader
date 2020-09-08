@@ -1,4 +1,8 @@
-## 0.2.0 (Not yet released)
+## 0.2.1 (Not yet released)
+
+(Nothing yet)
+
+## 0.2.0 (2020-09-08)
 
 * Made names data be downloaded out-of-band. As a result names data is
   updated weekly and does not consume memory.
