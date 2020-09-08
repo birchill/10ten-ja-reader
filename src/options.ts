@@ -650,7 +650,7 @@ function updateDatabaseBlurb(evt: DbStateUpdatedMessage) {
       },
       {
         keyword: 'JMnedict/ENAMDICT',
-        href: 'http://www.edrdg.org/enamdict/enamdict_doc.html',
+        href: 'https://www.edrdg.org/enamdict/enamdict_doc.html',
       },
     ])
   );
