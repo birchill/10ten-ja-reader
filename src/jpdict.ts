@@ -134,9 +134,12 @@ export async function initDb({
         }
 
       case 'error':
-        Bugsnag.notify(evt.data.message, (event) => {
-          event.severity = evt.data.severity;
-        });
+        Bugsnag.notify(
+          evt.data.error || '(Unrecognized error from jpdict worker)',
+          (event) => {
+            event.severity = evt.data.severity;
+          }
+        );
         break;
     }
   };

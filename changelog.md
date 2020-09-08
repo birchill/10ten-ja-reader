@@ -1,6 +1,6 @@
-## 0.2.2 (Not yet released)
+## 0.2.2 (2020-09-08)
 
-(Nothing yet)
+* Fixed error reporting.
 
 ## 0.2.1 (2020-09-08)
 
