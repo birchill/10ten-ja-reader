@@ -1,6 +1,6 @@
 import { JpdictState } from './jpdict';
 
-export const queryState = () => ({ type: 'querystate' });
+export const queryState = () => ({ type: <const>'querystate' });
 
 export const updateDb = ({
   lang,
@@ -9,33 +9,33 @@ export const updateDb = ({
   lang: string;
   force: boolean;
 }) => ({
-  type: 'update',
+  type: <const>'update',
   lang,
   force,
 });
 
-export const cancelDbUpdate = () => ({ type: 'cancelupdate' });
+export const cancelDbUpdate = () => ({ type: <const>'cancelupdate' });
 
-export const deleteDb = () => ({ type: 'delete' });
+export const deleteDb = () => ({ type: <const>'delete' });
 
 export const notifyDbStateUpdated = (state: JpdictState) => ({
-  type: 'dbstateupdated',
+  type: <const>'dbstateupdated',
   state,
 });
 
 export const notifyDbUpdateComplete = (lastCheck: Date | null) => ({
-  type: 'dbupdatecomplete',
+  type: <const>'dbupdatecomplete',
   lastCheck,
 });
 
 export const notifyError = ({
   error,
-  severity = 'error',
+  severity = <const>'error',
 }: {
   error: string | Error;
   severity?: 'error' | 'warning' | 'breadcrumb';
 }) => ({
-  type: 'error',
+  type: <const>'error',
   error,
   severity,
 });

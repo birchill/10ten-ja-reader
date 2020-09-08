@@ -110,7 +110,8 @@ export async function initDb({
 
   // Register the listener
   jpdictWorker.onmessage = async (evt: MessageEvent) => {
-    switch ((evt.data as JpdictWorkerMessage).type) {
+    const message = evt.data as JpdictWorkerMessage;
+    switch (message.type) {
       case 'dbstateupdated':
         {
           // Fill out the lastCheck field in the updateState.
@@ -118,7 +119,7 @@ export async function initDb({
           // This value will only be set if we already did a check this session.
           // It is _not_ a stored value.  So, if it is not set, use the value we
           // stored instead.
-          const state = { ...evt.data.state };
+          const state = { ...message.state };
           if (state.updateState.lastCheck === null && lastUpdateTime) {
             state.updateState.lastCheck = new Date(lastUpdateTime);
           }
@@ -129,17 +130,22 @@ export async function initDb({
         break;
 
       case 'dbupdatecomplete':
-        if (evt.data.lastCheck) {
-          setLastUpdateTime(evt.data.lastCheck.getTime());
+        if (message.lastCheck) {
+          setLastUpdateTime(message.lastCheck.getTime());
         }
+        break;
 
       case 'error':
-        Bugsnag.notify(
-          evt.data.error || '(Unrecognized error from jpdict worker)',
-          (event) => {
-            event.severity = evt.data.severity;
-          }
-        );
+        if (message.severity === 'breadcrumb') {
+          Bugsnag.leaveBreadcrumb(String(message.error));
+        } else {
+          Bugsnag.notify(
+            message.error || '(Unrecognized error from jpdict worker)',
+            (event) => {
+              event.severity = message.severity as 'error' | 'warning';
+            }
+          );
+        }
         break;
     }
   };
