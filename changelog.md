@@ -1,4 +1,8 @@
-## 0.2.1 (Not yet released)
+## 0.2.2 (Not yet released)
+
+(Nothing yet)
+
+## 0.2.1 (2020-09-08)
 
 * Fixed a bug that would cause name data not to be immediately downloaded when
   updating.
