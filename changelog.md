@@ -1,6 +1,7 @@
 ## 0.2.1 (Not yet released)
 
-(Nothing yet)
+* Fixed a bug that would cause name data not to be immediately downloaded when
+  updating.
 
 ## 0.2.0 (2020-09-08)
 

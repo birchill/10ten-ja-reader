@@ -154,27 +154,23 @@ export async function initDb({
 }
 
 async function getLastUpdateTime(): Promise<number | null> {
-  const keysToTry = ['lastDbUpdateTime', 'lastUpdateKanjiDb'];
-
-  for (const key of keysToTry) {
-    try {
-      const getResult = await browser.storage.local.get(key);
-      if (typeof getResult[key] === 'number') {
-        return getResult[key] as number;
-      }
-    } catch (_) {
-      // Extension storage can sometimes randomly fail with 'An unexpected error
-      // occurred'. Ignore, but log it.
-      Bugsnag.notify(
-        new ExtensionStorageError({
-          key,
-          action: 'get',
-        }),
-        (event) => {
-          event.severity = 'warning';
-        }
-      );
+  try {
+    const getResult = await browser.storage.local.get('lastDbUpdateTime');
+    if (typeof getResult.lastDbUpdateTime === 'number') {
+      return getResult.lastDbUpdateTime as number;
     }
+  } catch (_) {
+    // Extension storage can sometimes randomly fail with 'An unexpected error
+    // occurred'. Ignore, but log it.
+    Bugsnag.notify(
+      new ExtensionStorageError({
+        key: 'lastDbUpdateTime',
+        action: 'get',
+      }),
+      (event) => {
+        event.severity = 'warning';
+      }
+    );
   }
 
   return null;
