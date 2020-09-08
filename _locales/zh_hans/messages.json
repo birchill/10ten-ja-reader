@@ -291,11 +291,11 @@
     "description": "Heading for options to configure what information is displayed from the kanji dictionary"
   },
   "options_dictionary_data_heading": {
-    "message": "Dictionary data"
+    "message": "词典数据"
   },
   "options_data_source": {
-    "message": "本词典含有来自 KANJIDIC 的资料。",
-    "description": "Attribution of kanji source data when no version is available. The keyword KANJIDIC must appear so that it can be link-ified to point to the corresponding home page."
+    "message": "本词典含有来自 KANJIDIC 和 JMnedict/ENAMDICT 的资料。",
+    "description": "Attribute of source data. Both the strings 'KANJIDIC' and 'JMnedict/ENAMDICT' must appear so that they can be link-ified to the corresponding project home pages."
   },
   "options_edrdg_license": {
     "message": "这些资料的所有权属于电子词典研究与开发小组（Electronic Dictionary Research and Development Group），Rikaichamp 在 EDRDG 的许可协议的约束下使用它们。",
@@ -306,7 +306,7 @@
     "description": "The keyword in options_edrdg_license to link to the license"
   },
   "options_kanji_data_title": {
-    "message": "Kanji data v$version$",
+    "message": "汉字数据版本 v$version$",
     "description": "The kanji data series title and version",
     "placeholders": {
       "version": {
@@ -316,7 +316,7 @@
     }
   },
   "options_name_data_title": {
-    "message": "Name data v$version$",
+    "message": "名字数据版本 v$version$",
     "description": "The name data series title and version",
     "placeholders": {
       "version": {
@@ -326,7 +326,7 @@
     }
   },
   "options_data_series_version_and_date": {
-    "message": "Based on $source$ $version$ from $generated$.",
+    "message": "基于 $source$ 版本 $version$，生成于 $generated$。",
     "placeholders": {
       "source": {
         "content": "$1",
@@ -343,7 +343,7 @@
     }
   },
   "options_data_series_date_only": {
-    "message": "Based on $source$ from $generated$.",
+    "message": "基于 $source$ 资料，生成于 $generated$。",
     "placeholders": {
       "source": {
         "content": "$1",
@@ -386,7 +386,7 @@
     "description": "The name for the bushu database data set"
   },
   "options_name_data_name": {
-    "message": "name data",
+    "message": "名字数据库",
     "description": "The name for the name database data set"
   },
   "options_downloading_data": {
