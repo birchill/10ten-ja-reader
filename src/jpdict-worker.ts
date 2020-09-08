@@ -130,19 +130,18 @@ async function updateAllSeries({
     currentUpdate = undefined;
   }
 
-  const onUpdateError = (params: {
-    series: DataSeries;
+  const onUpdateError = (series: DataSeries) => (params: {
     error: Error;
     nextRetry?: Date;
     retryCount?: number;
   }) => {
-    const { series, error, nextRetry, retryCount } = params;
+    const { error, nextRetry, retryCount } = params;
     if (nextRetry) {
       const diffInMs = nextRetry.getTime() - Date.now();
       self.postMessage(
         notifyError({
           error: `Encountered ${error.name} error updating ${series} database. Retrying in ${diffInMs}ms.`,
-          severity: 'warning',
+          severity: 'breadcrumb',
         })
       );
 
@@ -160,7 +159,7 @@ async function updateAllSeries({
     } else {
       self.postMessage(
         notifyError({
-          error: `Kanji database update encountered ${error.name} error`,
+          error: `Database update for ${series} database encountered ${error.name} error`,
           severity: 'breadcrumb',
         })
       );
@@ -204,7 +203,7 @@ async function updateAllSeries({
       lang,
       forceUpdate: forceUpdate || wasForcedUpdate,
       onUpdateComplete: runNextUpdate,
-      onUpdateError,
+      onUpdateError: onUpdateError(currentUpdate.series),
     });
   };
 
