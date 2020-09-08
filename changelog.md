@@ -1,4 +1,8 @@
-## 0.2.3 (Not yet released)
+## 0.2.4 (Not yet released)
+
+(Nothing yet)
+
+## 0.2.3 (2020-09-08)
 
 * Really fix error reporting.
 
