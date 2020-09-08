@@ -239,6 +239,13 @@ export async function searchKanji(
     return null;
   }
 
+  if (
+    dbState.kanji.state !== DataSeriesState.Ok ||
+    dbState.radicals.state !== DataSeriesState.Ok
+  ) {
+    return null;
+  }
+
   const logWarningMessage = (message: string) => {
     Bugsnag.notify(message, (event) => {
       event.severity = 'warning';
@@ -278,6 +285,10 @@ const NAMES_MAX_ENTRIES = 20;
 export async function searchNames(
   input: string
 ): Promise<NameSearchResult | null> {
+  if (!isNamesDbAvailable()) {
+    return null;
+  }
+
   let [normalized, inputLengths] = normalizeInput(input);
 
   // Setup a list of strings to try that includes all the possible expansions of
@@ -303,10 +314,6 @@ async function doNameSearch({
   input: string;
   inputLengths: Array<number>;
 }): Promise<NameSearchResult | null> {
-  if (!isNamesDbAvailable()) {
-    return null;
-  }
-
   let result: NameSearchResult = {
     type: 'names',
     data: [],
