@@ -290,39 +290,68 @@
     "message": "汉字词典",
     "description": "Heading for options to configure what information is displayed from the kanji dictionary"
   },
-  "options_kanji_data_source_no_version": {
+  "options_dictionary_data_heading": {
+    "message": "Dictionary data"
+  },
+  "options_data_source": {
     "message": "本词典含有来自 KANJIDIC 的资料。",
     "description": "Attribution of kanji source data when no version is available. The keyword KANJIDIC must appear so that it can be link-ified to point to the corresponding home page."
   },
-  "options_kanji_data_source_with_version": {
-    "message": "本词典含有来自 KANJIDIC 版本 $version$ 的资料，生成于 $generated$。",
-    "description": "Attribution of kanji source data when version information is available. The keyword KANJIDIC must appear so that it can be link-ified to point to the corresponding home page.",
+  "options_edrdg_license": {
+    "message": "这些资料的所有权属于电子词典研究与开发小组（Electronic Dictionary Research and Development Group），Rikaichamp 在 EDRDG 的许可协议的约束下使用它们。",
+    "description": "Description of license terms. The keywords 'Electronic Dictionary Research and Development Group' and options_edrdg_license_keyword must appear so they can be linkified. IT SHOULD BEGIN WITH APPROPRIATE SPACE IN LANGUAGES THAT SEPARATE SENTENCES WITH WHITESPACE."
+  },
+  "options_edrdg_license_keyword": {
+    "message": "许可协议",
+    "description": "The keyword in options_edrdg_license to link to the license"
+  },
+  "options_kanji_data_title": {
+    "message": "Kanji data v$version$",
+    "description": "The kanji data series title and version",
     "placeholders": {
       "version": {
         "content": "$1",
+        "example": "2.0.0"
+      }
+    }
+  },
+  "options_name_data_title": {
+    "message": "Name data v$version$",
+    "description": "The name data series title and version",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "2.0.0"
+      }
+    }
+  },
+  "options_data_series_version_and_date": {
+    "message": "Based on $source$ $version$ from $generated$.",
+    "placeholders": {
+      "source": {
+        "content": "$1",
+        "example": "KANJIDIC"
+      },
+      "version": {
+        "content": "$2",
         "example": "2019-282"
       },
       "generated": {
-        "content": "$2",
+        "content": "$3",
         "example": "2019-10-19"
       }
     }
   },
-  "options_kanji_license": {
-    "message": "这些资料的所有权属于电子词典研究与开发小组（Electronic Dictionary Research and Development Group），Rikaichamp 在 EDRDG 的许可协议的约束下使用它们。",
-    "description": "Description of license terms. The keywords 'Electronic Dictionary Research and Development Group' and options_kanji_license_keyword must appear so they can be linkified. IT SHOULD BEGIN WITH APPROPRIATE SPACE IN LANGUAGES THAT SEPARATE SENTENCES WITH WHITESPACE."
-  },
-  "options_kanji_license_keyword": {
-    "message": "许可协议",
-    "description": "The keyword in options_kanji_license to link to the license"
-  },
-  "options_kanji_db_version": {
-    "message": "版本 $version$",
-    "description": "The version of the database",
+  "options_data_series_date_only": {
+    "message": "Based on $source$ from $generated$.",
     "placeholders": {
-      "version": {
+      "source": {
         "content": "$1",
-        "example": "1.0.3"
+        "example": "KANJIDIC"
+      },
+      "generated": {
+        "content": "$2",
+        "example": "2019-10-19"
       }
     }
   },
@@ -356,6 +385,10 @@
     "message": "部首数据库",
     "description": "The name for the bushu database data set"
   },
+  "options_name_data_name": {
+    "message": "name data",
+    "description": "The name for the name database data set"
+  },
   "options_downloading_data": {
     "message": "正在下载$datatype$，版本 $version$（$progress$%）……",
     "description": "Label while we are downloading updates",
@@ -375,7 +408,7 @@
     }
   },
   "options_updating_data": {
-    "message": "正在安装$datatype$的更新版本 $version$……",
+    "message": "正在安装$datatype$的更新版本 $version$（$progress$%）……",
     "description": "Label while we are applying updates",
     "placeholders": {
       "datatype": {
@@ -385,6 +418,10 @@
       "version": {
         "content": "$2",
         "example": "1.0.3"
+      },
+      "progress": {
+        "content": "$3",
+        "example": "60"
       }
     }
   },
