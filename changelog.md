@@ -1,4 +1,8 @@
-## 0.2.5 (Not yet released)
+## 0.2.6 (Not yet released)
+
+(Nothing yet)
+
+## 0.2.5 (2020-09-09)
 
 * Updated Chinese (simplified) localization.
 * Made name preview feature show up to three results.
