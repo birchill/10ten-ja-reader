@@ -59,6 +59,7 @@ describe('getWordToCopy', () => {
           k: ['いぶ喜', 'いぶ希', 'いぶ記'],
           r: ['いぶき'],
           tr: [{ type: ['fem'], det: ['Ibuki'] }],
+          matchLen: 3,
         },
       })
     ).toEqual('いぶ喜, いぶ希, いぶ記');
@@ -126,6 +127,7 @@ describe('getEntryToCopy', () => {
           k: ['いぶ喜', 'いぶ希', 'いぶ記'],
           r: ['いぶき'],
           tr: [{ type: ['fem'], det: ['Ibuki'] }],
+          matchLen: 3,
         },
       })
     ).toEqual('いぶ喜, いぶ希, いぶ記 [いぶき] (fem) Ibuki');
@@ -260,6 +262,7 @@ describe('getFieldsToCopy', () => {
           k: ['いぶ喜', 'いぶ希', 'いぶ記'],
           r: ['いぶき'],
           tr: [{ type: ['fem'], det: ['Ibuki'] }],
+          matchLen: 3,
         },
       })
     ).toEqual(

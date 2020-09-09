@@ -1,4 +1,4 @@
-import { KanjiResult, NameResult } from '@birchill/hikibiki-data';
+import { KanjiResult } from '@birchill/hikibiki-data';
 
 import { WordEntry } from './query';
 import {

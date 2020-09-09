@@ -1,8 +1,4 @@
-import {
-  KanjiResult,
-  NameResult,
-  NameTranslation,
-} from '@birchill/hikibiki-data';
+import { KanjiResult, NameTranslation } from '@birchill/hikibiki-data';
 
 import {
   CopyKeys,
@@ -53,7 +49,8 @@ export function renderPopup(
 
   return renderWordEntries(
     result.data,
-    result.name,
+    result.names,
+    result.moreNames,
     result.title,
     result.more,
     options
@@ -62,7 +59,8 @@ export function renderPopup(
 
 function renderWordEntries(
   entries: Array<WordEntry>,
-  name: NameResult | undefined,
+  names: Array<NameResult> | undefined,
+  moreNames: boolean | undefined,
   title: string | null,
   more: boolean,
   options: PopupOptions
@@ -84,8 +82,8 @@ function renderWordEntries(
     }
   }
 
-  if (name) {
-    container.append(renderBonusName(name));
+  if (names) {
+    container.append(renderBonusNames(names, moreNames));
   }
 
   let index = 0;
@@ -212,11 +210,23 @@ function renderEraInfo(meta: SelectionMeta, eraInfo: EraInfo): HTMLElement {
   return metaDiv;
 }
 
-function renderBonusName(name: NameResult): HTMLElement {
+function renderBonusNames(
+  names: Array<NameResult>,
+  moreNames?: boolean
+): HTMLElement {
   const container = document.createElement('div');
   container.classList.add('bonus-name');
 
-  container.append(renderName(name));
+  for (const name of names) {
+    container.append(renderName(name));
+  }
+
+  if (moreNames) {
+    const moreSpan = document.createElement('span');
+    moreSpan.classList.add('more');
+    moreSpan.append('…');
+    container.append(moreSpan);
+  }
 
   return container;
 }

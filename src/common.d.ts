@@ -48,9 +48,13 @@ declare const enum DictMode {
   NextDict,
 }
 
+type NameResult = import('@birchill/hikibiki-data').NameResult & {
+  matchLen: number;
+};
+
 interface NameSearchResult {
   type: 'names';
-  data: Array<import('@birchill/hikibiki-data').NameResult>;
+  data: Array<NameResult>;
   // The length of the longest match in the original input string.
   matchLen: number;
   // True if greater than `maxResults` entries were found.
@@ -70,8 +74,12 @@ interface RawWordSearchResult {
   // - an optional reason string,
   // - an optional romaji transliteration
   data: [string, string | null, string | null][];
-  // If we found a longer match in the names dictionary we return that here.
-  name?: import('@birchill/hikibiki-data').NameResult;
+  // If we found longer matches in the names dictionary we return the longest
+  // ones here, here up to the first 3 results.
+  names?: Array<NameResult>;
+  // If there were more than 3 names with a longer length, we indicate that
+  // here.
+  moreNames?: boolean;
   // The length of the longest match in the original input string.
   matchLen: number;
   // True if greater than `maxResults` entries were found.

@@ -282,9 +282,13 @@ export async function searchKanji(
 
 const NAMES_MAX_ENTRIES = 20;
 
-export async function searchNames(
-  input: string
-): Promise<NameSearchResult | null> {
+export async function searchNames({
+  input,
+  minLength,
+}: {
+  input: string;
+  minLength?: number;
+}): Promise<NameSearchResult | null> {
   if (!isNamesDbAvailable()) {
     return null;
   }
@@ -297,7 +301,11 @@ export async function searchNames(
 
   let result: NameSearchResult | null = null;
   for (const candidate of candidates) {
-    let thisResult = await doNameSearch({ input: candidate, inputLengths });
+    let thisResult = await doNameSearch({
+      input: candidate,
+      inputLengths,
+      minInputLength: minLength,
+    });
 
     if (!result || (thisResult && thisResult.matchLen > result.matchLen)) {
       result = thisResult;
@@ -310,9 +318,11 @@ export async function searchNames(
 async function doNameSearch({
   input,
   inputLengths,
+  minInputLength,
 }: {
   input: string;
   inputLengths: Array<number>;
+  minInputLength?: number;
 }): Promise<NameSearchResult | null> {
   let result: NameSearchResult = {
     type: 'names',
@@ -328,6 +338,11 @@ async function doNameSearch({
   let longestMatch = 0;
 
   while (currentString.length > 0) {
+    const currentInputLength = inputLengths[currentString.length];
+    if (minInputLength && minInputLength > currentInputLength) {
+      break;
+    }
+
     let names: Array<NameResult>;
     try {
       names = await getNames(currentString);
@@ -338,7 +353,7 @@ async function doNameSearch({
     }
 
     if (names.length) {
-      longestMatch = Math.max(longestMatch, inputLengths[currentString.length]);
+      longestMatch = Math.max(longestMatch, currentInputLength);
     }
 
     for (const name of names) {
@@ -367,7 +382,7 @@ async function doNameSearch({
           existingEntry.k.push(...name.k);
         }
       } else {
-        result.data.push(name);
+        result.data.push({ ...name, matchLen: currentInputLength });
         existingItems.set(nameContents, result.data.length - 1);
       }
 

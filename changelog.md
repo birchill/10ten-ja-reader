@@ -1,6 +1,7 @@
 ## 0.2.5 (Not yet released)
 
-(Nothing yet)
+* Updated Chinese (simplified) localization.
+* Made name preview feature show up to three results.
 
 ## 0.2.4 (2020-09-08)
 

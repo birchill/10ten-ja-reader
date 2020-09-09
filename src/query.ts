@@ -1,5 +1,3 @@
-import { NameResult } from '@birchill/hikibiki-data';
-
 // Currently the background process will return structured data for kanji and
 // names data but not for word data (we're still in the processing of doing
 // that).
@@ -16,7 +14,8 @@ export interface WordsQueryResult {
   type: 'words';
   title: string | null;
   data: Array<WordEntry>;
-  name?: NameResult;
+  names?: Array<NameResult>;
+  moreNames?: boolean;
   matchLen: number | null;
   more: boolean;
 }
@@ -74,12 +73,18 @@ export async function query(
     }
   }
 
-  const name = searchResult.type === 'words' ? searchResult.name : undefined;
+  let names: Array<NameResult> | undefined;
+  let moreNames: boolean | undefined;
+  if (searchResult.type === 'words') {
+    names = searchResult.names;
+    moreNames = searchResult.moreNames;
+  }
 
   return {
     type: 'words',
     title,
-    name,
+    names,
+    moreNames,
     data: parseWordEntries(searchResult),
     matchLen,
     more,

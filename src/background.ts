@@ -604,7 +604,7 @@ function search(text: string, dictOption: DictMode) {
       case kanjiDictIndex:
         return searchKanji(text.charAt(0));
       case nameDictIndex:
-        return searchNames(text);
+        return searchNames({ input: text });
     }
     return wordSearch({
       input: text,
@@ -641,9 +641,29 @@ async function wordSearch(params: {
 
   // Check for a longer match in the names dictionary
   if (result) {
-    const nameResult = await searchNames(params.input);
-    if (nameResult && nameResult.matchLen > result.matchLen) {
-      result.name = nameResult.data[0];
+    const nameResult = await searchNames({
+      input: params.input,
+      minLength: result.matchLen + 1,
+    });
+    if (nameResult) {
+      const names: Array<NameResult> = [];
+
+      // Add up to three results provided they are all are as long as the
+      // longest match.
+      for (const [i, name] of nameResult.data.entries()) {
+        if (name.matchLen < nameResult.matchLen) {
+          break;
+        }
+
+        if (i > 2) {
+          result.moreNames = true;
+          break;
+        }
+
+        names.push(name);
+      }
+
+      result.names = names;
       result.matchLen = nameResult.matchLen;
     }
   }
