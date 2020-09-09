@@ -2,6 +2,7 @@
 
 * Updated Chinese (simplified) localization.
 * Made name preview feature show up to three results.
+* Updated word dictionary to 2020-09-08 snapshot.
 
 ## 0.2.4 (2020-09-08)
 
