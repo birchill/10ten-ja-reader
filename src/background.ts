@@ -59,6 +59,7 @@ import {
   DbListenerMessage,
 } from './db-listener-messages';
 import { ExtensionStorageError } from './extension-storage-error';
+import { isHiragana } from './is-hiragana';
 import {
   JpdictState,
   cancelUpdateDb,
@@ -639,8 +640,20 @@ async function wordSearch(params: {
 
   const result = await flatFileDict!.wordSearch(params);
 
-  // Check for a longer match in the names dictionary
-  if (result) {
+  // Check for a longer match in the names dictionary, but only if the existing
+  // match has some non-hiragana characters in it.
+  //
+  // The names dictionary contains mostly entries with at least some kanji or
+  // katakana but it also contains entries that are solely hiragana (e.g.
+  // はなこ without any corresponding kanji). Generally we only want to show
+  // a name preview if it matches on some kanji or katakana as otherwise it's
+  // likely to be a false positive.
+  //
+  // It should be enough to check if the existing match from the words
+  // dictionary is hiragana-only because it's uncommon we'll find a longer match
+  // in the names dictionary that _starts_ with hiragana but has kanji/katakana
+  // later.
+  if (result && !isHiragana(params.input.substring(0, result.matchLen))) {
     const nameResult = await searchNames({
       input: params.input,
       minLength: result.matchLen + 1,

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["dom", "dom.iterable", "webworker"],
+    "lib": ["dom", "dom.iterable", "es2017", "webworker"],
     "moduleResolution": "node",
     "noImplicitAny": true,
     "noImplicitReturns": true,
