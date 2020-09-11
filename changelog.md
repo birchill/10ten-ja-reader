@@ -5,6 +5,7 @@
 * Made the name dictionary results show up first when there is a match there but
   none in the word dictionary
   ([#374](https://github.com/birtles/rikaichamp/issues/374)).
+* Updated word dictionary to 2020-09-09 snapshot.
 
 ## 0.2.5 (2020-09-09)
 
