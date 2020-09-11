@@ -1,4 +1,8 @@
-## 0.2.6 (Not yet released)
+## 0.2.7 (Not yet released)
+
+(Nothing yet)
+
+## 0.2.6 (2020-09-11)
 
 * Made name preview not show up for hiragana-only matches
   ([#372](https://github.com/birtles/rikaichamp/issues/372)).
