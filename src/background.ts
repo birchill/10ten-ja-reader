@@ -577,18 +577,16 @@ const enum DictType {
   Names,
 }
 
-// When when the user explicitly cycles through the dictionaries, however, we
-// should show kanji before names (since that's the existing behavior that users
-// are used to).
+// The order in which we cycle/search through dictionaries.
 const defaultOrder: Array<DictType> = [
   DictType.Words,
   DictType.Kanji,
   DictType.Names,
 ];
 
-// In some cases where we don't find a match in the word dictionary but find
-// a good match in the name dictionary, we want to show that before kanji
-// entries.
+// In some cases, however, where we don't find a match in the word dictionary
+// but find a good match in the name dictionary, we want to show that before
+// kanji entries so we use a different order.
 const preferNamesOrder: Array<DictType> = [DictType.Names, DictType.Kanji];
 
 let currentDict: DictType = DictType.Words;
