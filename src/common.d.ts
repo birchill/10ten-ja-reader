@@ -42,7 +42,6 @@ interface ContentConfig {
 }
 
 declare const enum DictMode {
-  Same,
   ForceKanji,
   Default,
   NextDict,

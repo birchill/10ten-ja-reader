@@ -2,6 +2,9 @@
 
 * Made name preview not show up for hiragana-only matches
   ([#372](https://github.com/birtles/rikaichamp/issues/372)).
+* Made the name dictionary results show up first when there is a match there but
+  none in the word dictionary
+  ([#374](https://github.com/birtles/rikaichamp/issues/374)).
 
 ## 0.2.5 (2020-09-09)
 

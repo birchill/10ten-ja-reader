@@ -685,11 +685,9 @@ export class RikaiContent {
       previousTextAtPoint === textAtPoint &&
       // This following line is not strictly correct. If the previous
       // dictionary mode was 'ForceKanji' and now it's 'Default' we shouldn't
-      // return early.  To fix that we'd need to store the previous dictionary
-      // mode. Basically this whole DictMode approach is pretty awful and we
-      // should just make the client aware of which dictionary it's looking at
-      // and manage state here.
-      (dictMode === DictMode.Same || dictMode === DictMode.Default)
+      // return early.  To fix that, however, we'd need to store the previous
+      // dictionary mode.
+      dictMode === DictMode.Default
     ) {
       return;
     }

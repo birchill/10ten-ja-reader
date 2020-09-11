@@ -571,18 +571,39 @@ function toggle(tab: browser.tabs.Tab) {
 // Search
 //
 
-let dictCount: number = 3;
-let kanjiDictIndex: number = 1;
-let nameDictIndex: number = 2;
-let showIndex: number = 0;
+const enum DictType {
+  Words,
+  Kanji,
+  Names,
+}
 
-function search(text: string, dictOption: DictMode) {
+// When when the user explicitly cycles through the dictionaries, however, we
+// should show kanji before names (since that's the existing behavior that users
+// are used to).
+const defaultOrder: Array<DictType> = [
+  DictType.Words,
+  DictType.Kanji,
+  DictType.Names,
+];
+
+// In some cases where we don't find a match in the word dictionary but find
+// a good match in the name dictionary, we want to show that before kanji
+// entries.
+const preferNamesOrder: Array<DictType> = [DictType.Names, DictType.Kanji];
+
+let currentDict: DictType = DictType.Words;
+let preferNames: boolean = false;
+
+async function search(
+  text: string,
+  dictOption: DictMode
+): Promise<SearchResult | null> {
   if (!flatFileDict) {
     console.error('Dictionary not initialized in search');
     Bugsnag.notify('Dictionary not initialized in search', (event) => {
       event.severity = 'warning';
     });
-    return;
+    return null;
   }
 
   switch (dictOption) {
@@ -590,42 +611,79 @@ function search(text: string, dictOption: DictMode) {
       return searchKanji(text.charAt(0));
 
     case DictMode.Default:
-      showIndex = 0;
+      currentDict = DictType.Words;
+      preferNames = false;
       break;
 
     case DictMode.NextDict:
-      showIndex = (showIndex + 1) % dictCount;
+      const cycleOrder = preferNames ? preferNamesOrder : defaultOrder;
+      currentDict =
+        cycleOrder[(cycleOrder.indexOf(currentDict) + 1) % cycleOrder.length];
       break;
   }
 
-  const searchCurrentDict: (text: string) => Promise<SearchResult | null> = (
-    text: string
-  ) => {
-    switch (showIndex) {
-      case kanjiDictIndex:
-        return searchKanji(text.charAt(0));
-      case nameDictIndex:
-        return searchNames({ input: text });
-    }
-    return wordSearch({
-      input: text,
-      includeRomaji: config.showRomaji,
-    });
+  const hasGoodNameMatch = async () => {
+    const nameMatch = await searchNames({ input: text });
+    // We could further refine this condition by checking that:
+    //
+    //   !isHiragana(text.substring(0, nameMatch.matchLen))
+    //
+    // However, we only call this when we have no match in the words dictionary,
+    // meaning we only have the name and kanji dictionaries left. The kanji
+    // dictionary presumably is not going to match on an all-hiragana key anyway
+    // so it's probably fine to prefer the name dictionary even if it's an
+    // all-hiragana match.
+    return nameMatch && nameMatch.matchLen > 1;
   };
 
-  const originalMode = showIndex;
-  return (function loopOverDictionaries(text): Promise<SearchResult | null> {
-    return searchCurrentDict(text).then((result) => {
-      if (result) {
-        return result;
-      }
-      showIndex = (showIndex + 1) % dictCount;
-      if (showIndex === originalMode) {
-        return null;
-      }
-      return loopOverDictionaries(text);
-    });
-  })(text);
+  const originalDict = currentDict;
+  do {
+    let result: SearchResult | null = null;
+    switch (currentDict) {
+      case DictType.Words:
+        result = await wordSearch({
+          input: text,
+          includeRomaji: config.showRomaji,
+        });
+        break;
+
+      case DictType.Kanji:
+        result = await searchKanji(text.charAt(0));
+        break;
+
+      case DictType.Names:
+        result = await searchNames({ input: text });
+        break;
+    }
+
+    if (result) {
+      return result;
+    }
+
+    // If we just looked up the words dictionary and didn't find a match,
+    // consider if we should switch to prioritizing the names dictionary.
+    if (
+      dictOption === DictMode.Default &&
+      !preferNames &&
+      currentDict === DictType.Words &&
+      (await hasGoodNameMatch())
+    ) {
+      preferNames = true;
+      currentDict = preferNamesOrder[0];
+      // (We've potentially created an infinite loop here since we've switched
+      // to a cycle order that excludes the word dictionary which may be the
+      // originalDict -- hence the loop termination condition will never be
+      // true. However, we know that we have a names match so we should always
+      // end up returning something.)
+    } else {
+      // Otherwise just try the next dictionary.
+      const cycleOrder = preferNames ? preferNamesOrder : defaultOrder;
+      currentDict =
+        cycleOrder[(cycleOrder.indexOf(currentDict) + 1) % cycleOrder.length];
+    }
+  } while (originalDict !== currentDict);
+
+  return null;
 }
 
 async function wordSearch(params: {
