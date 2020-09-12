@@ -4,7 +4,7 @@
   "name": "rikaikun",
   "version": "1.0.0",
 
-  "description": "A port of rikaichan for chrome. Translate Japanese by hovering over words.",
+  "description": "rikaikun helps you to read Japanese web pages by showing the reading and English definition of Japanese words when you hover over them.",
   "icons": { "48": "images/icon48.png", "128": "images/icon128.png" },
 
   "permissions": ["tabs", "clipboardWrite", "storage"],
