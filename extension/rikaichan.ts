@@ -40,168 +40,14 @@
 */
 window.rcxMain = {
   haveNames: true,
-  //  canDoNames: false,
   dictCount: 3,
   altView: 0,
   enabled: 0,
 
-  /*
-    onLoad: function() { rcxMain._onLoad(); },
-  _onLoad: function() {
-    try {
-      //this.loadPrefs();
-      //this.haveNames = this.canDoNames = (typeof(rcxNamesDict) != 'undefined');
-    }
-    catch (ex) {
-      alert('Exception in onLoad: ' + ex);
-    }
-  },
-*/
-  /*
-  //Switch this over to local storage method for chrome.  Have to make a UI.
-  loadPrefs: function() {
-    try {
-        var pb = this.getPrefBranch();
-      var xm = ['cm', 'tm'];
-      var i;
-      var a, b, c;
-
-      this.cfg = {};
-      for (i = 0; i < rcxCfgList.length; ++i) {
-        b = rcxCfgList[i];
-        switch (b[0]) {
-        case 0:
-          this.cfg[b[1]] = pb.getIntPref(b[1]);
-          break;
-        case 1:
-          this.cfg[b[1]] = pb.getCharPref(b[1]);
-          break;
-        case 2:
-          this.cfg[b[1]] = pb.getBoolPref(b[1]);
-          break;
-        }
-      }
-
-      this.dictCount = 3;
-      this.canDoNames = this.haveNames;
-      if (!this.haveNames) this.cfg.dictorder = 0;
-      switch (this.cfg.dictorder) {
-      case 0:
-        this.canDoNames = false;
-        this.dictCount = 2;
-      case 1:
-        this.kanjiN = 1;
-        this.namesN = 2;
-        break;
-      case 2:
-        this.kanjiN = 2;
-        this.namesN = 1;
-        break;
-      }
-
-      for (i = 1; i >= 0; --i) {
-        c = xm[i];
-        try {
-          a = !this.cfg[c + 'toggle'];
-          b = !this.cfg[c + 'lbar'];
-          document.getElementById('rikaichan-toggle-' + c).hidden = a;
-          document.getElementById('rikaichan-lbar-' + c).hidden = b;
-          document.getElementById('rikaichan-separator-' + xm[i]).hidden = a || b;
-        }
-        catch (ex) {
-          //  alert('unable to set menu: c=' + c + ' ex=' + ex)
-        }
-      }
-
-      switch (this.cfg.ssep) {
-      case 'Tab':
-        this.cfg.ssep = '\t';
-        break;
-      case 'Comma':
-        this.cfg.ssep = ',';
-        break;
-      case 'Space':
-        this.cfg.ssep = ' ';
-        break;
-      }
-
-      this.cfg.css = (this.cfg.css.indexOf('/') == -1) ? ('chrome://rikaichan/skin/popup-' + this.cfg.css + '.css') : this.cfg.css;
-      if (!this.isTB) {
-        for (i = 0; i < gBrowser.browsers.length; ++i) {
-          c = gBrowser.browsers[i].contentDocument.getElementById('rikaichan-css');
-          if (c) c.setAttribute('href', this.cfg.css);
-        }
-      }
-
-      c = { };
-      c.kdisp = [];
-      a = pb.getCharPref('kindex').split(',');
-      for (i = 0; i < a.length; ++i) {
-        c.kdisp[a[i]] = 1;
-      }
-      c.wmax = this.cfg.wmax;
-      c.wpop = this.cfg.wpop;
-      c.wpos = this.cfg.wpos;
-      c.namax = this.cfg.namax;
-      this.dconfig = c;
-      if (this.dict) this.dict.setConfig(c);
-
-      if (this.isTB) this.cfg.enmode = 0;
-
-      b = document.getElementById('rikaichan-status');
-      if (b) b.hidden = (this.cfg.sticon == 0);
-    }
-    catch (ex) {
-      alert('Exception in LoadPrefs: ' + ex);
-    }
-  },
-*/
-
   loadDictionary: function () {
     this.dict = new RcxDict();
-    return this.dict.init(this.haveNames /* && !this.cfg.nadelay*/);
-    // this.dict.setConfig(this.dconfig);
+    return this.dict.init(this.haveNames);
   },
-  /*
-  showDownload: function() {
-    const url = 'http://rikaichan.mozdev.org/welcome.html';
-
-    try {
-      var u = '';
-
-      if (this.version != null) {
-        u += 'rv=' + this.version + '&';
-      }
-      if ((typeof(rcxWordDict) != 'undefined') && (rcxWordDict.version != null)) {
-        u += 'wv=' + rcxWordDict.version + '&';
-      }
-      if ((typeof(rcxNamesDict) != 'undefined') && (rcxNamesDict.version != null)) {
-        u += 'nv=' + rcxNamesDict.version + '&';
-      }
-      if (u.length) u = url + '?' + u;
-        else u = url;
-
-      if (this.isTB) {
-        Components.classes['@mozilla.org/messenger;1'].createInstance()
-          .QueryInterface(Components.interfaces.nsIMessenger)
-          .launchExternalURL(u);
-      }
-      else {
-        var w = window.open(u, 'rcxdict');
-        if (w) w.focus();
-      }
-    }
-    catch (ex) {
-      if (typeof(rcxWordDict) == 'undefined') {
-        alert('[rikaichan] Please install a dictionary file from ' + url);
-      }
-      else {
-        alert('[rikaichan] There was an error while opening ' + url);
-      }
-    }
-  },
-
-*/
 
   // The callback for onSelectionChanged
   // Just sends a message to the tab to enable itself if it hasn't
@@ -229,18 +75,12 @@ window.rcxMain = {
     if (clip) {
       // save to clipboard
       me = rcxMain.config.maxClipCopyEntries;
-      // mk = this.cfg.smaxck; // something related to the number of kanji in the look-up bar
     }
-    /* else { // save to file
-      me = this.cfg.smaxfe;
-      //mk = this.cfg.smaxfk;
-    }*/
 
     text = '';
     for (i = 0; i < f.length; ++i) {
       e = f[i];
       if (e.kanji) {
-        // if (mk-- <= 0) continue
         text += this.dict.makeText(e, 1);
       } else {
         if (me <= 0) continue;
@@ -261,7 +101,6 @@ window.rcxMain = {
     return text;
   },
 
-  // Needs entirely new implementation and dependent on savePrep
   copyToClip: function (tab, entry) {
     let text;
 
@@ -294,14 +133,10 @@ window.rcxMain = {
     '<tr><td>K</td><td>Scroll forward definitions</td></tr>' +
     '</table>',
 
-  /*       '<tr><td>C</td><td>Copy to clipboard</td></tr>' +
-    '<tr><td>S</td><td>Save to file</td></tr>' + */
-
   // Function which enables the inline mode of rikaikun
   // Unlike rikaichan there is no lookup bar so this is the only enable.
   inlineEnable: function (tab, mode) {
     if (!this.dict) {
-      //  var time = (new Date()).getTime();
       this.loadDictionary()
         .then(
           function () {
@@ -333,14 +168,11 @@ window.rcxMain = {
         .catch(function (err) {
           alert('Error loading dictionary: ' + err);
         });
-
-      //  time = (((new Date()).getTime() - time) / 1000).toFixed(2);
     }
   },
 
-  // This function diables
+  // This function disables rikaikun in all tabs.
   inlineDisable: function () {
-    // Delete dictionary object after we implement it
     delete this.dict;
 
     this.enabled = 0;
@@ -419,6 +251,8 @@ window.rcxMain = {
 };
 
 /*
+  Useful Japanese unicode ranges but melink14 doesn't know
+  what p and x mean.
   2E80 - 2EFF  CJK Radicals Supplement
   2F00 - 2FDF  Kangxi Radicals
   2FF0 - 2FFF  Ideographic Description

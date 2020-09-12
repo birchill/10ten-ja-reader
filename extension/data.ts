@@ -39,10 +39,7 @@
 
 */
 
-/**
- * Exposes abstraction over dictionary files allowing letious searches and
- * lookups.
- */
+/** Exposes abstraction over dictionary files allowing searches and lookups. */
 function RcxDict() {}
 
 RcxDict.prototype = {
@@ -99,7 +96,7 @@ RcxDict.prototype = {
 
   fileReadArray: function (name, charset) {
     const a = this.fileRead(name, charset).split('\n');
-    // Is this just in case there is blank shit in the file.  It was writtin
+    // Is this just in case there is blank shit in the file.  It was written
     // by Jon though.
     // I suppose this is more robust
     while (a.length > 0 && a[a.length - 1].length === 0) a.pop();
@@ -146,13 +143,9 @@ RcxDict.prototype = {
     );
   },
 
-  //  Note: These are mostly flat text files; loaded as one continous string to
+  //  Note: These are mostly flat text files; loaded as one continuous string to
   //  reduce memory use
   loadDictionary: function (includeNames) {
-    /* this.wordDict = this.fileRead(rcxWordDict.datURI,
-    rcxWordDict.datCharset); this.wordIndex = this.fileRead(rcxWordDict.idxURI,
-    rcxWordDict.idxCharset); */
-
     const promises = [
       this.loadFileToTarget('dict.dat', false, 'wordDict'),
       this.loadFileToTarget('dict.idx', false, 'wordIndex'),
@@ -166,92 +159,7 @@ RcxDict.prototype = {
     }
 
     return Promise.all(promises);
-
-    // this.wordDict = this.fileRead(chrome.extension.getURL("data/dict.dat"));
-    // this.wordIndex = this.fileRead(chrome.extension.getURL("data/dict.idx"));
-    // this.kanjiData = this.fileRead(chrome.extension.getURL("data/kanji.dat"),
-    // 'UTF-8'); this.radData =
-    // this.fileReadArray(chrome.extension.getURL("data/radicals.dat"),
-    // 'UTF-8');
-
-    //  this.test_kanji();
   },
-  /*
-  test_kanji: function() {
-    let a = this.kanjiData.split('\n');
-
-    alert('begin test. a.length=' + a.length);
-    let start = (new Date()).getTime();
-    for (let i = 0; i < a.length; ++i) {
-      if (!this.kanjiSearch(a[i].charAt(0))) {
-        alert('error @' + i + ': ' + a[i]);
-        return;
-      }
-      alert('time = ' + ((new Date()).getTime() - start));
-    },
-  */
-
-  /*
-  test_index: function() {
-    let ixF = this.fileRead('chrome://rikaichan/content/dict.idx', 'EUC-JP');
-    let ixA = ixF.split('\n');
-
-    while ((ixA.length > 0) && (ixA[ixA.length - 1].length === 0)) ixA.pop();
-
-//    alert('length=' + ixA.length + ' / ' + ixF.length);
-if (0) {
-    let timeA = (new Date()).getTime();
-    for (let i = ixA.length - 1; i >= 0; --i) {
-      if ((i & 0xFF) === 0) window.status = 'A: ' + i;
-      let s = ixA[i];
-      let r = this.binSearchX(ixA, s.substr(0, s.indexOf(',') + 1));
-      if ((r === -1) || (ixA[r] !== s)) {
-          alert('A failed: ' + s);
-          return;
-        }
-      }
-      timeA = ((new Date()).getTime() - timeA) / 1000;
-
-    let timeF = (new Date()).getTime();
-    for (let i = ixA.length - 1; i >= 0; --i) {
-      if ((i & 0xFF) === 0) window.status = 'F: ' + i;
-      let s = ixA[i];
-      let r = this.find(ixF, s.substr(0, s.indexOf(',') + 1));
-      if (r !== s) {
-          alert('F failed: ' + s);
-          return;
-        }
-      timeF = ((new Date()).getTime() - timeF) / 1000;
-
-    let timeX = (new Date()).getTime();
-if (0) {
-    for (let i = ixA.length - 1; i >= 0; --i) {
-      if ((i & 0xFF) === 0) window.status = 'X: ' + i;
-      let s = ixA[i];
-
-      let w = s.substr(0, s.indexOf(',') + 1);
-      let j = 0;
-      r = '';
-      if (ixF.substr(0, w.length) === w) {
-          r = ixF.substr(0, ixF.indexOf('\n'));
-        }
-        else {
-          w = '\n' + w;
-          j = ixF.indexOf(w);
-        if (j !== -1) r = ixF.substring(j + 1, ixF.indexOf('\n', j + 1));
-        }
-
-      if (r !== s) {
-          alert('X failed:\n[' + s + ']\n[' + r + ']');
-          return;
-        }
-      }
-      timeX = ((new Date()).getTime() - timeX) / 1000;
-
-      alert('A=' + timeA + ' / F=' + timeF + ' / X=' + timeX);
-    },
-
-  */
 
   loadDIF: function () {
     this.difReasons = [];
@@ -332,8 +240,6 @@ if (0) {
                 o = r[have[newWord]];
                 o.type |= rule.type >> 8;
 
-                // o.reason += ' / ' + r[i].reason + ' ' +
-                // this.difReasons[rule.reason]; o.debug += ' @ ' + rule.debug;
                 continue;
               }
               have[newWord] = r.length;
@@ -343,7 +249,6 @@ if (0) {
               else o.reason = this.difReasons[rule.reason];
               o.type = rule.type >> 8;
               o.word = newWord;
-              // o.debug = r[i].debug + ' $ ' + rule.debug;
               r.push(o);
             }
           }
@@ -629,7 +534,6 @@ if (0) {
           o.more = 1;
           break;
         }
-        //        o.data = o.data.concat(e.data);
         o.data.push(e.data[0]);
         skip = e.matchLen;
       } else {
@@ -1055,8 +959,7 @@ if (0) {
 
         s = e[3];
         t = s.replace(/\//g, '; ');
-        // if (/* !this.config.wpos */false) t = t.replace(/^\([^)]+\)\s*/, '');
-        // if (/* !this.config.wpop */false) t = t.replace('; (P)', '');
+
         if (!rcxMain.config.onlyreading) {
           t = '<br/><span class="w-def">' + t + '</span><br/>';
         } else {
@@ -1096,8 +999,6 @@ if (0) {
 
       s = e[3];
       t = s.replace(/\//g, '; ');
-      // if (/* !this.config.wpos */false) t = t.replace(/^\([^)]+\)\s*/, '');
-      // if (/* !this.config.wpop */false) t = t.replace('; (P)', '');
       t = '<span class="w-def">' + t + '</span><br/>\n';
     }
     b.push(t);
@@ -1150,8 +1051,6 @@ if (0) {
         }
 
         t = e[3].replace(/\//g, '; ');
-        // if (false/* !this.config.wpos */) t = t.replace(/^\([^)]+\)\s*/, '');
-        // if (false/* !this.config.wpop */) t = t.replace('; (P)', '');
         b.push('\t' + t + '\n');
       }
     }

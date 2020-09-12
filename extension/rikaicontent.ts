@@ -128,13 +128,6 @@ const rcxContent = {
         },
         true
       );
-
-      /* if (this.cfg.resizedoc) {
-        if ((topdoc.body.clientHeight < 1024) && (topdoc.body.style.minHeight == '')) {
-          topdoc.body.style.minHeight = '1024px';
-          topdoc.body.style.overflow = 'auto';
-        }
-      } */
     }
 
     popup.style.width = 'auto';
@@ -207,27 +200,7 @@ const rcxContent = {
           // use SELECT's width
           x += elem.parentNode.offsetWidth + 5;
         }
-
-        /*
-        // in some cases (ex: google.co.jp), ebo doesn't add the width of the scroller (?), so use SELECT's width
-        const epbo = elem.ownerDocument.getBoxObjectFor(elem.parentNode);
-
-        const ebo = elem.ownerDocument.getBoxObjectFor(elem);
-        x = ebo.screenX - bbo.screenX;
-        y = ebo.screenY - bbo.screenY;
-
-        if (x > (window.innerWidth - (x + epbo.width))) {
-          x = (x - popup.offsetWidth - 5);
-          if (x < 0) x = 0;
-        }
-        else {
-          x += epbo.width + 5;
-        }
-*/
       } else {
-        // x -= bbo.screenX;
-        // y -= bbo.screenY;
-
         // go left if necessary
         if (x + pW > window.innerWidth - 20) {
           x = window.innerWidth - pW - 20;
@@ -333,14 +306,11 @@ const rcxContent = {
     rcxContent._onKeyDown(ev);
   },
   _onKeyDown: function (ev) {
-    //    this.status("keyCode=" + ev.keyCode + ' charCode=' + ev.charCode + ' detail=' + ev.detail);
-
     if (
       window.rikaichan.config.showOnKey !== '' &&
       (ev.altKey || ev.ctrlKey || ev.key == 'AltGraph')
     ) {
       if (this.lastTarget !== null) {
-        // console.log(ev);
         const myEv = {
           clientX: this.lastPos.x,
           clientY: this.lastPos.y,
@@ -366,8 +336,6 @@ const rcxContent = {
     switch (ev.keyCode) {
       case 16: // shift
       case 13: // enter
-        // this.showMode = (this.showMode + 1) % this.dictCount;
-        // chrome.extension.sendMessage({"type":"nextDict"});
         this.show(ev.currentTarget.rikaichan, this.nextDict);
         break;
       case 74: // j
@@ -435,9 +403,8 @@ const rcxContent = {
         let ofs = ev.currentTarget.rikaichan.uofs;
         for (i = 50; i > 0; --i) {
           ev.currentTarget.rikaichan.uofs = --ofs;
-          // chrome.extension.sendMessage({"type":"resetDict"});
-          // this.showMode = 0;
           if (this.show(ev.currentTarget.rikaichan, this.defaultDict) >= 0) {
+            // TODO: Figure out if this should be changed as per ancient comment.
             if (ofs >= ev.currentTarget.rikaichan.uofs) break; // ! change later
           }
         }
@@ -452,8 +419,6 @@ const rcxContent = {
         for (i = 50; i > 0; --i) {
           ev.currentTarget.rikaichan.uofs +=
             ev.currentTarget.rikaichan.uofsNext;
-          // chrome.extension.sendMessage({"type":"resetDict"});
-          // this.showMode = 0;
           if (this.show(ev.currentTarget.rikaichan, this.defaultDict) >= 0)
             break;
         }
@@ -857,7 +822,6 @@ const rcxContent = {
     if (window.rikaichan.config.ttsEnabled) {
       const text = sel.toString();
       if (text.length > 0) {
-        // console.log("Sending playTTS " + text);
         chrome.extension.sendMessage({ type: 'playTTS', text: text });
       }
     }
@@ -892,22 +856,6 @@ const rcxContent = {
       rcxContent.processHtml
     );
   },
-  /*
-  inRange: function (event) {
-    let selection = event.view.getSelection();
-    if ((selection.rangeCount === 0) || (!event.rangeParent)) return false;
-    let newRange = event.view.document.createRange();
-    newRange.setStart(event.rangeParent, event.rangeOffset);
-    newRange.setEnd(event.rangeParent, event.rangeOffset);
-
-    let curRange = selection.getRangeAt(0);
-    if (newRange.compareBoundaryPoints(Range.START_TO_START, curRange) > -1 &&
-      newRange.compareBoundaryPoints(Range.END_TO_END, curRange) < 0)
-      return true;
-    else return false;
-  },
-
-*/
 
   getFirstTextChild: function (node) {
     return document
@@ -1005,10 +953,6 @@ const rcxContent = {
         ro = this.getTotalOffset(rp.parentNode, rp, ro);
       }
 
-      /*       console.log( "offset: " + ro + " parentContainer: " +  rp.nodeName +
-        " total size: " + (rp.data?rp.data.length:"") + " target: " + ev.target.nodeName +
-        " parentparent: " + rp.parentNode.nodeName); */
-
       // This is to account for bugs in caretRangeFromPoint
       // It includes the fact that it returns text nodes over non text nodes
       // and also the fact that it miss the first character of inline nodes.
@@ -1089,11 +1033,6 @@ const rcxContent = {
       return;
     }
 
-    /*      if ((rp) && (rp.nodeType != Node.TEXT_NODE) && !('form' in rp)) {
-      rp = null;
-      ro = -1;
-    }  */
-
     tdata.prevTarget = ev.target;
     tdata.prevRangeNode = rp;
     tdata.prevRangeOfs = ro;
@@ -1130,7 +1069,8 @@ const rcxContent = {
       return;
     }
 
-    if (true /* this.cfg.title*/) {
+    // TODO: Consider making title translations configurable.
+    if (true) {
       if (typeof ev.target.title == 'string' && ev.target.title.length) {
         tdata.title = ev.target.title;
       } else if (typeof ev.target.alt == 'string' && ev.target.alt.length) {
