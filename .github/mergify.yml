@@ -1,0 +1,10 @@
+pull_request_rules:
+  - name: Automatic merge when Github conditions pass
+    conditions:
+      - base=master
+      - label!=work-in-progress
+    actions:
+      merge:
+        method: squash
+        strict: smart+fasttrack
+        commit_message: title+body
