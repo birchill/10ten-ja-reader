@@ -1,6 +1,7 @@
 pull_request_rules:
   - name: Automatic merge when Github conditions pass
     conditions:
+      - '#approved-reviews-by>=1'
       - base=master
       - label!=work-in-progress
     actions:
@@ -8,3 +9,7 @@ pull_request_rules:
         method: squash
         strict: smart+fasttrack
         commit_message: title+body
+  - name: Ignore Dependabot pull requests
+    conditions:
+      - author~=^dependabot(|-preview)\[bot\]$
+    actions: {}
