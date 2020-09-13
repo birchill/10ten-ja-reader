@@ -1,15 +1,21 @@
 pull_request_rules:
   - name: Automatic merge when Github conditions pass
     conditions:
+      # Also covered by Github protections but this reduces noise from mergify.
       - '#approved-reviews-by>=1'
+      # Don't try to merge stacked pull requests into non merged parents.
       - base=master
-      - label!=work-in-progress
+      # Allow individuals to opt out of mergify on high churn PRs
+      - label!=WIP
+      # Allow marking a PR as expecting changes while also approving
+      - label!='changes requested'
+      # Don't run on PRs by dependabot (or users with dependabot in their name)
+      - author~=^(?:(?!dependabot).)*$
     actions:
       merge:
+        # Each PR is one commit, but may have extras added during review so squash.
         method: squash
+        # Will update PRs before merging but will start with PRs that don't need updating.
         strict: smart+fasttrack
+        # Uses original PR title and body for squashed commit message.
         commit_message: title+body
-  - name: Ignore Dependabot pull requests
-    conditions:
-      - author~=^dependabot(|-preview)\[bot\]$
-    actions: {}
