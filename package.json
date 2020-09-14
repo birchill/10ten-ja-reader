@@ -38,7 +38,7 @@
     "@types/chai": "^4.2.12",
     "@types/jest": "^26.0.13",
     "@types/mocha": "^8.0.3",
-    "archiver": "^5.0.0",
+    "archiver": "^5.0.2",
     "byline": "^5.0.0",
     "chai": "^4.2.0",
     "combined-stream2": "^1.1.2",
