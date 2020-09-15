@@ -23,7 +23,7 @@ jobs:
             }
           owner: ${{ github.event.repository.owner.login }}
           repo: ${{ github.event.repository.name }}
-          pullrequest: ${{ github.event.pull_request_review_comment.pull_request.number }}
+          pullrequest: ${{ github.event.pull_request.number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run:
