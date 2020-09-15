@@ -3,8 +3,7 @@ const kanjiInfoLabelList = chrome.extension.getBackgroundPage().RcxDict
   .prototype.kanjiInfoLabelList;
 
 /**
- * Retrieves saved options from chrome.storage.sync and populates form
- * elements.
+ * Retrieves saved options from chrome.storage.sync and populates form elements.
  *
  * TODO: Perhaps using form map data, we can set these directly.
  */
