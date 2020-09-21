@@ -70,7 +70,7 @@
     "husky": "^4.3.0",
     "lint-staged": "^10.3.0",
     "typescript": "^3.9.7",
-    "web-ext": "^5.0.0"
+    "web-ext": "^5.1.0"
   },
   "webExt": {
     "sourceDir": "dist-firefox"
