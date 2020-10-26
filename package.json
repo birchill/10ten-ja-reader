@@ -56,7 +56,7 @@
     "semver-parser": "^3.0.5",
     "source-map-loader": "^1.1.1",
     "ts-jest": "^25.5.1",
-    "ts-loader": "^8.0.5",
+    "ts-loader": "^8.0.7",
     "web-ext-types": "github:michael-zapata/web-ext-types",
     "web-ext-webpack-plugin": "github:birtles/web-ext-webpack-plugin",
     "webpack": "^4.44.2",
