@@ -31,7 +31,10 @@ async function main() {
     );
     for (const key of keys) {
       if (index.has(key)) {
-        index.set(key, index.get(key)!.concat(charOffset));
+        const offsets = index.get(key)!;
+        if (!offsets.includes(charOffset)) {
+          index.set(key, offsets.concat(charOffset));
+        }
       } else {
         index.set(key, [charOffset]);
       }
