@@ -1,6 +1,7 @@
-const path = require('path');
+import * as path from 'path';
+import { Config } from 'karma';
 
-module.exports = config => {
+module.exports = (config: Config) => {
   config.set({
     basePath: 'tests',
     files: ['*.test.ts'],
@@ -19,6 +20,7 @@ module.exports = config => {
         rules: [{ test: /\.ts$/, use: 'ts-loader' }],
       },
     },
+    webpackMiddleware: {},
     frameworks: ['mocha', 'chai'],
     browsers: ['FirefoxHeadless'],
     plugins: [
