@@ -1,3 +1,4 @@
+import { kanaToHiragana } from '@birchill/normal-jp';
 import * as https from 'https';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -13,10 +14,29 @@ async function main() {
   const data = await readJsonRecords(currentVersion);
   console.log(`Read ${data.size} records.`);
 
-  // Write data to a file
+  // Write data to a file, sorted by ID, generating an index from the various
+  // headwords to the corresponding character offset at the same time.
+  const ids = [...data.keys()].sort();
+  const index = new Map<string, Array<number>>();
+  let charOffset = 0;
+
   const dataFilePath = path.join(__dirname, '..', 'data', 'words.ljson');
   const dataStream = fs.createWriteStream(dataFilePath);
-  for (const record of data.values()) {
+  for (const id of ids) {
+    const record = data.get(id)!;
+
+    // Add / update index entries
+    const keys = [...(record as any).r, ...((record as any).k || [])].map(
+      kanaToHiragana
+    );
+    for (const key of keys) {
+      if (index.has(key)) {
+        index.set(key, index.get(key)!.concat(charOffset));
+      } else {
+        index.set(key, [charOffset]);
+      }
+    }
+
     // Trim down the record a bit, dropping fields we don't use
     delete record.id;
     for (const sense of (record as any).s) {
@@ -24,12 +44,24 @@ async function main() {
       delete sense.ant;
     }
 
-    dataStream.write(JSON.stringify(record) + '\n');
+    const line = JSON.stringify(record) + '\n';
+    charOffset += line.length;
+
+    dataStream.write(line);
   }
+  dataStream.end();
   console.log(`Wrote ${dataFilePath}.`);
 
-  // XXX Generate an index for each of the kanji / reading keys
-  // XXX Write out the index file
+  // Write index, sorted by key
+  const indexFilePath = path.join(__dirname, '..', 'data', 'words.idx');
+  const indexStream = fs.createWriteStream(indexFilePath);
+  const sortedKeys = [...index.keys()].sort();
+  for (const key of sortedKeys) {
+    const lineNumbers = index.get(key)!;
+    indexStream.write(`${key},${lineNumbers.join(',')}\n`);
+  }
+  indexStream.end();
+  console.log(`Wrote ${indexFilePath}.`);
 }
 
 main()
