@@ -1,0 +1,12 @@
+phrase:
+  project_id: 4cbdf1daf41ca3843803ab087dd141bb
+  push:
+    sources:
+    - file: ./_locales/<locale_name>/messages.json
+      params:
+        file_format: json
+  pull:
+    targets:
+    - file: ./_locales/<locale_name>/messages.json
+      params:
+        file_format: json
