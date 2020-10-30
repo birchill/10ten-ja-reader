@@ -103,8 +103,12 @@ describe('Dictionary', () => {
 
     expect(result!.matchLen).toBe(3); // 3 characters long
     expect(result!.data.length).toBeGreaterThanOrEqual(1);
-    expect(result!.data[0][0]).toMatch(/protein/);
-    expect(result!.data[0][2]).toMatch(/tanpakushitsu/);
+    expect(result!.data[0].entry.s).toContainEqual({
+      g: [{ str: 'protein' }],
+      match: true,
+      pos: ['n'],
+    });
+    expect(result!.data[0].romaji).toMatch(/tanpakushitsu/);
   });
 
   it('finds a match partially using katakana', async () => {
@@ -157,31 +161,47 @@ describe('Dictionary', () => {
     expect(result!.matchLen).toBe(4);
   });
 
+  const hasEntryWithKanji = (
+    result: WordSearchResult,
+    kanji: string
+  ): boolean => {
+    return result.data.some(
+      ({ entry }) => entry.k && entry.k.some((k) => k.ent === kanji)
+    );
+  };
+
   it('does not split yo-on', async () => {
     const result = await sharedDict.wordSearch({ input: 'ローマじゃない' });
     // This should NOT match ローマ字
     expect(result!.matchLen).toBe(3);
-    expect(
-      result!.data.some(([item]) => item.indexOf('ローマ字') !== -1)
-    ).toBeFalsy();
+    expect(hasEntryWithKanji(result!, 'ローマ字')).toBeFalsy();
   });
+
+  const getMatchWithKana = (
+    result: WordSearchResult,
+    kana: string
+  ): WordMatch | undefined => {
+    return result.data.find(({ entry }) => entry.r.some((r) => r.ent === kana));
+  };
 
   it('chooses the right de-inflection for potential and passives', async () => {
     // Ichidan/ru-verb -- られる ending could be potential or passive
     let result = await sharedDict.wordSearch({ input: '止められます' });
-    let match = result!.data.find(([item]) => item.indexOf('[とめる]') !== -1);
-    expect(match![1]).toEqual('< potential or passive < polite');
+    let match = getMatchWithKana(result!, 'とめる');
+    expect(match!.reason).toEqual('< potential or passive < polite');
 
     // Godan/u-verb -- られる ending is passive
     result = await sharedDict.wordSearch({ input: '止まられます' });
-    match = result!.data.find(([item]) => item.indexOf('[とまる]') !== -1);
-    expect(match![1]).toEqual('< passive < polite');
+    match = getMatchWithKana(result!, 'とまる');
+    expect(match!.reason).toEqual('< passive < polite');
 
     // Godan/u-verb -- れる ending is potential
     result = await sharedDict.wordSearch({ input: '止まれます' });
-    match = result!.data.find(([item]) => item.indexOf('[とまる]') !== -1);
-    expect(match![1]).toEqual('< potential < polite');
+    match = getMatchWithKana(result!, 'とまる');
+    expect(match!.reason).toEqual('< potential < polite');
   });
+
+  // TODO: Convert the rest of these tests
 
   it('chooses the right de-inflection for causative and passives', async () => {
     // su-verb -- される ending is passive

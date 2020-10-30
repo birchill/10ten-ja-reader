@@ -216,7 +216,7 @@ export function toRomaji(kana: string): string {
   // expressions.
   //
   // (This will probably never appear in any dictionary entries, but in the
-  // interests of making this function a little more general use we handle it
+  // interests of making this function a little more general-use we handle it
   // anyway.)
   let explosiveness = 0;
 

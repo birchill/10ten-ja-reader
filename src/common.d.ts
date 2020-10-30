@@ -66,13 +66,16 @@ interface KanjiSearchResult {
   matchLen: 1;
 }
 
-interface RawWordSearchResult {
+interface WordMatch {
+  // TODO: Use definitions from hikibiki-data once we update it
+  entry: import('./word-result').WordResult;
+  reason?: string;
+  romaji?: string;
+}
+
+interface WordSearchResult {
   type: 'words';
-  // Array of matches. Each match is a tuple array containing:
-  // - a dictionary entry,
-  // - an optional reason string,
-  // - an optional romaji transliteration
-  data: [string, string | null, string | null][];
+  data: Array<WordMatch>;
   // If we found longer matches in the names dictionary we return the longest
   // ones here, here up to the first 3 results.
   names?: Array<NameResult>;
@@ -85,10 +88,9 @@ interface RawWordSearchResult {
   more: boolean;
 }
 
-interface RawTranslateResult {
+interface TranslateResult {
   type: 'translate';
-  // As with LookupResult.
-  data: [string, string | null, string | null][];
+  data: Array<WordMatch>;
   // Length of text matched.
   textLen: number;
   // True if greater than WORDS_MAX_ENTRIES were found.
@@ -98,5 +100,5 @@ interface RawTranslateResult {
 type SearchResult =
   | KanjiSearchResult
   | NameSearchResult
-  | RawWordSearchResult
-  | RawTranslateResult;
+  | WordSearchResult
+  | TranslateResult;
