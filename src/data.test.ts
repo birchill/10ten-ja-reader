@@ -1,5 +1,6 @@
 import { readFile } from 'fs';
 import { Dictionary } from './data';
+import { WordResult } from './word-result';
 
 // Mock browser.extension.getURL and browser.i18n.getMessage
 global.browser = {
@@ -201,18 +202,16 @@ describe('Dictionary', () => {
     expect(match!.reason).toEqual('< potential < polite');
   });
 
-  // TODO: Convert the rest of these tests
-
   it('chooses the right de-inflection for causative and passives', async () => {
     // su-verb -- される ending is passive
     let result = await sharedDict.wordSearch({ input: '起こされる' });
-    let match = result!.data.find(([item]) => item.indexOf('[おこす]') !== -1);
-    expect(match![1]).toEqual('< passive');
+    let match = getMatchWithKana(result!, 'おこす');
+    expect(match!.reason).toEqual('< passive');
 
     // su-verb -- させる ending is causative
     result = await sharedDict.wordSearch({ input: '起こさせる' });
-    match = result!.data.find(([item]) => item.indexOf('[おこす]') !== -1);
-    expect(match![1]).toEqual('< causative');
+    match = getMatchWithKana(result!, 'おこす');
+    expect(match!.reason).toEqual('< causative');
   });
 
   it('chooses the right de-inflection for causative passive', async () => {
@@ -237,44 +236,51 @@ describe('Dictionary', () => {
 
     for (const [inflected, plain] of pairs) {
       const result = await sharedDict.wordSearch({ input: inflected });
-      const match = result!.data.find(
-        ([item]) => item.indexOf(`[${plain}]`) !== -1
-      );
-      expect(match![1]).toEqual('< causative passive');
+      const match = getMatchWithKana(result!, plain);
+      expect(match!.reason).toEqual('< causative passive');
     }
 
     // Check for the exceptions:
     //
     // (1) su-verbs: causative passive is させられる only, される is passive
     let result = await sharedDict.wordSearch({ input: '起こさせられる' });
-    let match = result!.data.find(([item]) => item.indexOf('[おこす]') !== -1);
-    expect(match![1]).toEqual('< causative passive');
+    let match = getMatchWithKana(result!, 'おこす');
+    expect(match!.reason).toEqual('< causative passive');
 
     result = await sharedDict.wordSearch({ input: '起こされる' });
-    match = result!.data.find(([item]) => item.indexOf('[おこす]') !== -1);
-    expect(match![1]).toEqual('< passive');
+    match = getMatchWithKana(result!, 'おこす');
+    expect(match!.reason).toEqual('< passive');
 
     // (2) ichidan verbs
     result = await sharedDict.wordSearch({ input: '食べさせられる' });
-    match = result!.data.find(([item]) => item.indexOf('[たべる]') !== -1);
-    expect(match![1]).toEqual('< causative passive');
+    match = getMatchWithKana(result!, 'たべる');
+    expect(match!.reason).toEqual('< causative passive');
 
     // (4) kuru verbs
     result = await sharedDict.wordSearch({ input: '来させられる' });
-    match = result!.data.find(([item]) => item.indexOf('[くる]') !== -1);
-    expect(match![1]).toEqual('< causative passive');
+    match = getMatchWithKana(result!, 'くる');
+    expect(match!.reason).toEqual('< causative passive');
 
     result = await sharedDict.wordSearch({ input: 'こさせられる' });
-    match = result!.data.find(([item]) => item.indexOf('[くる]') !== -1);
-    expect(match![1]).toEqual('< causative passive');
+    match = getMatchWithKana(result!, 'くる');
+    expect(match!.reason).toEqual('< causative passive');
 
     // Check combinations
     result = await sharedDict.wordSearch({ input: '買わされませんでした' });
-    match = result!.data.find(
-      ([item, reason]) => item.indexOf('[かう]') !== -1
-    );
-    expect(match![1]).toEqual('< causative passive < polite past negative');
+    match = getMatchWithKana(result!, 'かう');
+    expect(match!.reason).toEqual('< causative passive < polite past negative');
   });
+
+  const getMatchWithKanjiOrKana = (
+    result: WordSearchResult,
+    toMatch: string
+  ): WordMatch | undefined => {
+    return result.data.find(
+      ({ entry }) =>
+        (entry.k && entry.k.some((k) => k.ent === toMatch)) ||
+        entry.r.some((r) => r.ent === toMatch)
+    );
+  };
 
   it('chooses the right de-inflection for -te oku', async () => {
     const pairs = [
@@ -295,22 +301,25 @@ describe('Dictionary', () => {
 
     for (const [inflected, plain] of pairs) {
       const result = await sharedDict.wordSearch({ input: inflected });
-      const match = result!.data.find(
-        ([item]) => item.indexOf(`${plain}`) !== -1
-      );
-      expect(match![1]).toEqual(expect.stringMatching(/^< -te oku/));
+      const match = getMatchWithKanjiOrKana(result!, plain);
+      expect(match!.reason).toEqual(expect.stringMatching(/^< -te oku/));
     }
   });
 
   it('looks up irregular Yodan verbs', async () => {
     const result = await sharedDict.wordSearch({ input: 'のたもうた' });
-    expect(result!.data[0][0]).toEqual(expect.stringContaining('[のたまう]'));
+    expect(getMatchWithKana(result!, 'のたまう')).toBeDefined();
   });
+
+  const getKana = (entry: WordResult): Array<string> =>
+    entry.r.map((r) => r.ent);
+
+  // TODO: Fix the rest of these tests
 
   it('orders words by priority', async () => {
     const result = await sharedDict.wordSearch({ input: '認める' });
-    expect(result!.data[0][0]).toEqual(expect.stringContaining('[みとめる]'));
-    expect(result!.data[1][0]).toEqual(expect.stringContaining('[したためる]'));
+    expect(getKana(result!.data[0].entry)).toContain('みとめる');
+    expect(getKana(result!.data[1].entry)).toContain('したためる');
   });
 
   it('orders words by priority before truncating the list', async () => {
