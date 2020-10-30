@@ -51,6 +51,9 @@ import { expandChoon, kanaToHiragana } from '@birchill/normal-jp';
 import { deinflect, deinflectL10NKeys, CandidateWord } from './deinflect';
 import { normalizeInput } from './conversion';
 import { toRomaji } from './romaji';
+import { toWordResult, RawWordRecord } from './raw-word-record';
+import { sortMatchesByPriority } from './word-match-sorting';
+import { PartOfSpeech } from './word-result';
 import { endsInYoon } from './yoon';
 
 const WORDS_MAX_ENTRIES = 7;
@@ -82,146 +85,18 @@ export class Dictionary {
     this.loaded = this.loadDictionary();
   }
 
-  async readFile(url: string): Promise<string> {
-    let attempts = 0;
-
-    // Bugsnag only gives us 30 characters for the breadcrumb but its the
-    // end of the url we really want to record.
-    const makeBreadcrumb = (prefix: string, url: string): string => {
-      const urlStart = Math.max(0, url.length - (30 - prefix.length - 1));
-      return prefix + '…' + url.substring(urlStart);
-    };
-
-    if (this.bugsnag) {
-      this.bugsnag.leaveBreadcrumb(makeBreadcrumb(`Loading: `, url));
-    }
-
-    while (true) {
-      // We seem to occasionally hit loads that never finish (particularly on
-      // Linux and particularly on startup / upgrade). Set a timeout so that
-      // we can at least abort and try again.
-      const TIMEOUT_MS = 4 * 1000;
-      let timeoutId: number | undefined;
-
-      try {
-        let controller: AbortController | undefined;
-        let requestOptions: RequestInit | undefined;
-        // It turns out some people are still using Firefox < 57. :/
-        if (typeof AbortController === 'function') {
-          controller = new AbortController();
-          requestOptions = { signal: controller.signal };
-        }
-
-        timeoutId = window.setTimeout(() => {
-          timeoutId = undefined;
-          if (controller) {
-            console.error(`Load of ${url} timed out. Aborting.`);
-            if (this.bugsnag) {
-              this.bugsnag.leaveBreadcrumb(makeBreadcrumb('Aborting: ', url));
-            }
-            controller.abort();
-          } else {
-            // TODO: This error doesn't actually propagate and do anything
-            // useful yet. But for now at least it means Firefox 56 doesn't
-            // break altogether.
-            if (this.bugsnag) {
-              this.bugsnag.notify('[Pre FF57] Load timed out');
-            }
-            throw new Error(`Load of ${url} timed out.`);
-          }
-        }, TIMEOUT_MS * (attempts + 1));
-
-        const response = await fetch(url, requestOptions);
-        const responseText = await response.text();
-
-        clearTimeout(timeoutId);
-        if (this.bugsnag) {
-          this.bugsnag.leaveBreadcrumb(makeBreadcrumb('Loaded: ', url));
-        }
-
-        return responseText;
-      } catch (e) {
-        if (typeof timeoutId === 'number') {
-          clearTimeout(timeoutId);
-        }
-
-        if (this.bugsnag) {
-          this.bugsnag.leaveBreadcrumb(
-            makeBreadcrumb(`Failed(#${attempts + 1}): `, url)
-          );
-        }
-
-        if (++attempts >= 3) {
-          console.error(`Failed to load ${url} after ${attempts} attempts`);
-          throw e;
-        }
-
-        // Wait for a (probably) increasing interval before trying again
-        const intervalToWait = Math.round(Math.random() * attempts * 1000);
-        console.log(
-          `Failed to load ${url}. Trying again in ${intervalToWait}ms`
-        );
-        await new Promise((resolve) => setTimeout(resolve, intervalToWait));
-      }
-    }
-  }
-
-  readFileIntoArray(name: string): Promise<string[]> {
-    return this.readFile(name).then((text) =>
-      text.split('\n').filter((line) => line.length)
+  // Note: These are flat text files; loaded as one continuous string to reduce
+  // memory use
+  private async loadDictionary(): Promise<void> {
+    // Read in series to reduce contention
+    this.wordDict = await readFileWithAutoRetry(
+      browser.extension.getURL('data/words.ljson'),
+      this.bugsnag
     );
-  }
-
-  // Does a binary search of a linefeed delimited string, |data|, for |text|.
-  find(data: string, text: string): string | null {
-    const tlen: number = text.length;
-    let start: number = 0;
-    let end: number = data.length - 1;
-
-    while (start < end) {
-      const midpoint: number = (start + end) >> 1;
-      const i: number = data.lastIndexOf('\n', midpoint) + 1;
-
-      const candidate: string = data.substr(i, tlen);
-      if (text < candidate) {
-        end = i - 1;
-      } else if (text > candidate) {
-        start = data.indexOf('\n', midpoint + 1) + 1;
-      } else {
-        return data.substring(i, data.indexOf('\n', midpoint + 1));
-      }
-    }
-
-    return null;
-  }
-
-  // Note: These are mostly flat text files; loaded as one continuous string to
-  // reduce memory use
-  async loadDictionary(): Promise<void> {
-    type fileEntry = { key: keyof Dictionary; file: string };
-    const dataFiles: Array<fileEntry> = [
-      { key: 'wordDict', file: 'dict.dat' },
-      { key: 'wordIndex', file: 'dict.idx' },
-    ];
-
-    const readBatch = (files: Array<fileEntry>): Promise<any> => {
-      const readPromises = [];
-      for (const { key, file } of files) {
-        const readPromise = this.readFile(
-          browser.extension.getURL(`data/${file}`)
-        ).then((text) => {
-          (this[key] as string | string[]) = text;
-        });
-        readPromises.push(readPromise);
-      }
-
-      return Promise.all(readPromises);
-    };
-
-    // Batch into two groups to reduce contention
-    const midpoint = Math.floor(dataFiles.length / 2);
-    await readBatch(dataFiles.slice(0, midpoint));
-    await readBatch(dataFiles.slice(midpoint));
+    this.wordIndex = await readFileWithAutoRetry(
+      browser.extension.getURL('data/words.idx'),
+      this.bugsnag
+    );
   }
 
   async wordSearch({
@@ -232,7 +107,7 @@ export class Dictionary {
     input: string;
     max?: number;
     includeRomaji?: boolean;
-  }): Promise<RawWordSearchResult | null> {
+  }): Promise<WordSearchResult | null> {
     let [word, inputLengths] = normalizeInput(input);
     word = kanaToHiragana(word);
 
@@ -245,9 +120,9 @@ export class Dictionary {
 
     const candidateWords = [word, ...expandChoon(word)];
 
-    let result: RawWordSearchResult | null = null;
+    let result: WordSearchResult | null = null;
     for (const candidate of candidateWords) {
-      const thisResult = this._lookupInput({
+      const thisResult = this.lookupInput({
         input: candidate,
         inputLengths,
         maxResults,
@@ -268,7 +143,7 @@ export class Dictionary {
   //
   // e.g. if |input| is '子犬は' then the entry for '子犬' will match but
   // '犬' will not.
-  _lookupInput({
+  private lookupInput({
     input,
     inputLengths,
     maxResults,
@@ -278,13 +153,13 @@ export class Dictionary {
     inputLengths: number[];
     maxResults: number;
     includeRomaji: boolean;
-  }): RawWordSearchResult | null {
+  }): WordSearchResult | null {
     let count: number = 0;
     let longestMatch: number = 0;
     let cache: { [index: string]: number[] } = {};
     let have: Set<number> = new Set();
 
-    let result: RawWordSearchResult = {
+    let result: WordSearchResult = {
       type: 'words',
       data: [],
       more: false,
@@ -293,14 +168,16 @@ export class Dictionary {
 
     while (input.length > 0) {
       const showInflections: boolean = count != 0;
-      // TODO: Split inflection handling out into a separate method
       const candidates: Array<CandidateWord> = deinflect(input);
 
       for (let i = 0; i < candidates.length; i++) {
         const candidate: CandidateWord = candidates[i];
         let offsets: number[] | undefined = cache[candidate.word];
         if (!offsets) {
-          const lookupResult = this.find(this.wordIndex, candidate.word + ',');
+          const lookupResult = findLineStartingWith({
+            source: this.wordIndex,
+            text: candidate.word + ',',
+          });
           if (!lookupResult) {
             cache[candidate.word] = [];
             continue;
@@ -309,22 +186,19 @@ export class Dictionary {
           cache[candidate.word] = offsets;
         }
 
-        // We temporarily store the set of entries for the current candidate
+        // We temporarily store the set of matches for the current candidate
         // in a separate array since we want to sort them by priority before
         // adding them to the result array.
-        type EntryType = [string, string | null, string | null];
-        const entries: Array<EntryType> = [];
+        const matches: Array<WordMatch> = [];
 
         for (const offset of offsets) {
           if (have.has(offset)) {
             continue;
           }
 
-          const entry = this.wordDict.substring(
-            offset,
-            this.wordDict.indexOf('\n', offset)
-          );
-          let ok = true;
+          const entry = JSON.parse(
+            this.wordDict.substring(offset, this.wordDict.indexOf('\n', offset))
+          ) as RawWordRecord;
 
           // The first candidate is the full string, anything after that is
           // a possible deinflection.
@@ -336,104 +210,52 @@ export class Dictionary {
           //
           // So, if we have a possible deinflection, we need to check that it
           // matches the kind of word we looked up.
-          if (i > 0) {
-            // Parse the word kind information from the entry:
-            //
-            // Example entries:
-            //
-            //   /(io) (v5r) to finish/to close/
-            //   /(v5r) to finish/to close/(P)/
-            //   /(aux-v,v1) to begin to/(P)/
-            //   /(adj-na,exp,int) thank you/many thanks/
-            //   /(adj-i) shrill/
-
-            const fragments = entry.split(/[,()]/);
-
-            // Start at the end and go backwards. I don't know why.
-            let fragmentIndex = Math.min(fragments.length - 1, 10);
-            for (; fragmentIndex >= 0; --fragmentIndex) {
-              const fragment = fragments[fragmentIndex];
-              if (candidate.type & WordType.IchidanVerb && fragment == 'v1') {
-                break;
-              }
-              if (
-                candidate.type & WordType.GodanVerb &&
-                (fragment.substr(0, 2) == 'v5' || fragment.substr(0, 2) == 'v4')
-              ) {
-                break;
-              }
-              if (candidate.type & WordType.IAdj && fragment == 'adj-i') {
-                break;
-              }
-              if (candidate.type & WordType.KuruVerb && fragment == 'vk') {
-                break;
-              }
-              if (
-                candidate.type & WordType.SuruVerb &&
-                fragment.substr(0, 3) == 'vs-'
-              ) {
-                break;
-              }
-            }
-            ok = fragmentIndex != -1;
+          if (i > 0 && !entryMatchesType(entry, candidate.type)) {
+            continue;
           }
 
-          if (ok) {
-            have.add(offset);
-            ++count;
+          have.add(offset);
+          ++count;
 
-            longestMatch = Math.max(longestMatch, inputLengths[input.length]);
+          longestMatch = Math.max(longestMatch, inputLengths[input.length]);
 
-            let reason: string | null = null;
-            if (candidate.reasons.length) {
-              reason =
-                '< ' +
-                candidate.reasons
-                  .map((reasonList) =>
-                    reasonList
-                      .map((reason) =>
-                        browser.i18n.getMessage(deinflectL10NKeys[reason])
-                      )
-                      .join(' < ')
-                  )
-                  .join(' or ');
-              if (showInflections) {
-                reason += ` < ${input}`;
-              }
+          let reason: string | undefined;
+          if (candidate.reasons.length) {
+            reason =
+              '< ' +
+              candidate.reasons
+                .map((reasonList) =>
+                  reasonList
+                    .map((reason) =>
+                      browser.i18n.getMessage(deinflectL10NKeys[reason])
+                    )
+                    .join(' < ')
+                )
+                .join(' or ');
+            if (showInflections) {
+              reason += ` < ${input}`;
             }
-
-            // This is really really bad. We duplicate this logic
-            // (imperfectly) in both content script and background script.
-            // This will also change soon, hopefully, however so for now it
-            // should be sufficient to prove this feature.
-            let romaji = null;
-            if (includeRomaji) {
-              const matches = entry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
-              if (matches) {
-                const kana = matches[2] || matches[1];
-                romaji = toRomaji(kana);
-              }
-            }
-
-            entries.push([entry, reason, romaji]);
           }
+
+          let romaji: string | undefined;
+          if (includeRomaji) {
+            romaji = entry.r.map(toRomaji).join(', ');
+          }
+
+          matches.push({ entry: toWordResult(entry), reason, romaji });
         } // for offset of offsets
 
         // Sort preliminary results
-        const isCommon = (entry: EntryType): boolean =>
-          entry[0].endsWith('/(P)/');
-        entries.sort((a: EntryType, b: EntryType): number => {
-          return Number(isCommon(b)) - Number(isCommon(a));
-        });
+        sortMatchesByPriority(matches);
 
         // Trim to max results AFTER sorting (so that we make sure to favor
         // common words in the trimmed result).
         if (count >= maxResults) {
           result.more = true;
-          entries.splice(entries.length - count + maxResults);
+          matches.splice(matches.length - count + maxResults);
         }
 
-        result.data.push(...entries);
+        result.data.push(...matches);
 
         if (count >= maxResults) {
           break;
@@ -463,8 +285,8 @@ export class Dictionary {
   }: {
     text: string;
     includeRomaji?: boolean;
-  }): Promise<RawTranslateResult | null> {
-    const result: RawTranslateResult = {
+  }): Promise<TranslateResult | null> {
+    const result: TranslateResult = {
       type: 'translate',
       data: [],
       textLen: text.length,
@@ -499,4 +321,158 @@ export class Dictionary {
     result.textLen -= text.length;
     return result;
   }
+}
+
+async function readFileWithAutoRetry(
+  url: string,
+  bugsnag?: BugsnagClient
+): Promise<string> {
+  let attempts = 0;
+
+  // Bugsnag only gives us 30 characters for the breadcrumb but its the
+  // end of the url we really want to record.
+  const makeBreadcrumb = (prefix: string, url: string): string => {
+    const urlStart = Math.max(0, url.length - (30 - prefix.length - 1));
+    return prefix + '…' + url.substring(urlStart);
+  };
+
+  if (bugsnag) {
+    bugsnag.leaveBreadcrumb(makeBreadcrumb(`Loading: `, url));
+  }
+
+  while (true) {
+    // We seem to occasionally hit loads that never finish (particularly on
+    // Linux and particularly on startup / upgrade). Set a timeout so that
+    // we can at least abort and try again.
+    const TIMEOUT_MS = 4 * 1000;
+    let timeoutId: number | undefined;
+
+    try {
+      let controller: AbortController | undefined;
+      let requestOptions: RequestInit | undefined;
+      // It turns out some people are still using Firefox < 57. :/
+      if (typeof AbortController === 'function') {
+        controller = new AbortController();
+        requestOptions = { signal: controller.signal };
+      }
+
+      timeoutId = window.setTimeout(() => {
+        timeoutId = undefined;
+        if (controller) {
+          console.error(`Load of ${url} timed out. Aborting.`);
+          if (bugsnag) {
+            bugsnag.leaveBreadcrumb(makeBreadcrumb('Aborting: ', url));
+          }
+          controller.abort();
+        } else {
+          // TODO: This error doesn't actually propagate and do anything
+          // useful yet. But for now at least it means Firefox 56 doesn't
+          // break altogether.
+          if (bugsnag) {
+            bugsnag.notify('[Pre FF57] Load timed out');
+          }
+          throw new Error(`Load of ${url} timed out.`);
+        }
+      }, TIMEOUT_MS * (attempts + 1));
+
+      const response = await fetch(url, requestOptions);
+      const responseText = await response.text();
+
+      clearTimeout(timeoutId);
+      if (bugsnag) {
+        bugsnag.leaveBreadcrumb(makeBreadcrumb('Loaded: ', url));
+      }
+
+      return responseText;
+    } catch (e) {
+      if (typeof timeoutId === 'number') {
+        clearTimeout(timeoutId);
+      }
+
+      if (bugsnag) {
+        bugsnag.leaveBreadcrumb(
+          makeBreadcrumb(`Failed(#${attempts + 1}): `, url)
+        );
+      }
+
+      if (++attempts >= 3) {
+        console.error(`Failed to load ${url} after ${attempts} attempts`);
+        throw e;
+      }
+
+      // Wait for a (probably) increasing interval before trying again
+      const intervalToWait = Math.round(Math.random() * attempts * 1000);
+      console.log(`Failed to load ${url}. Trying again in ${intervalToWait}ms`);
+      await new Promise((resolve) => setTimeout(resolve, intervalToWait));
+    }
+  }
+}
+
+// Does a binary search of a linefeed delimited string, |data|, for |text|.
+function findLineStartingWith({
+  source,
+  text,
+}: {
+  source: string;
+  text: string;
+}): string | null {
+  const tlen: number = text.length;
+  let start: number = 0;
+  let end: number = source.length - 1;
+
+  while (start < end) {
+    const midpoint: number = (start + end) >> 1;
+    const i: number = source.lastIndexOf('\n', midpoint) + 1;
+
+    const candidate: string = source.substr(i, tlen);
+    if (text < candidate) {
+      end = i - 1;
+    } else if (text > candidate) {
+      start = source.indexOf('\n', midpoint + 1) + 1;
+    } else {
+      return source.substring(i, source.indexOf('\n', midpoint + 1));
+    }
+  }
+
+  return null;
+}
+
+// Tests if a given entry matches the type of a generated deflection
+function entryMatchesType(entry: RawWordRecord, type: number): boolean {
+  const hasMatchingSense = (test: (pos: PartOfSpeech) => boolean) =>
+    entry.s.some((sense) => sense.pos?.some(test));
+
+  if (
+    type & WordType.IchidanVerb &&
+    hasMatchingSense((pos) => pos.startsWith('v1'))
+  ) {
+    return true;
+  }
+
+  if (
+    type & WordType.GodanVerb &&
+    hasMatchingSense((pos) => pos.startsWith('v5') || pos.startsWith('v4'))
+  ) {
+    return true;
+  }
+
+  if (
+    type & WordType.IAdj &&
+    hasMatchingSense((pos) => pos.startsWith('adj-i'))
+  ) {
+    return true;
+  }
+
+  if (type & WordType.KuruVerb && hasMatchingSense((pos) => pos === 'vk')) {
+    return true;
+  }
+
+  if (
+    type & WordType.SuruVerb &&
+    hasMatchingSense((pos) => pos.startsWith('vs-'))
+  ) {
+    return true;
+  }
+
+  return false;
 }
