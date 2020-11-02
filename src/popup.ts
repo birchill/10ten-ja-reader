@@ -112,7 +112,7 @@ function renderWordEntries(
       headingDiv.append(kanjiSpan);
     }
 
-    const matchingKana = entry.entry.r.filter((r) => r.match);
+    const matchingKana = entry.entry.r.filter((r) => r.match).map((r) => r.ent);
     if (matchingKana.length) {
       const kanaSpan = document.createElement('span');
       kanaSpan.classList.add('w-kana');
