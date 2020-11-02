@@ -1,3 +1,5 @@
+/// <reference lib="es2019.array" />
+
 import { readFile } from 'fs';
 import { Dictionary } from './data';
 import { WordResult } from './word-result';
@@ -314,13 +316,14 @@ describe('Dictionary', () => {
   const getKana = (entry: WordResult): Array<string> =>
     entry.r.map((r) => r.ent);
 
-  // TODO: Fix the rest of these tests
-
   it('orders words by priority', async () => {
     const result = await sharedDict.wordSearch({ input: '認める' });
     expect(getKana(result!.data[0].entry)).toContain('みとめる');
     expect(getKana(result!.data[1].entry)).toContain('したためる');
   });
+
+  const getKanji = (entry: WordResult): Array<string> =>
+    entry.k ? entry.k.map((k) => k.ent) : [];
 
   it('orders words by priority before truncating the list', async () => {
     const result = await sharedDict.wordSearch({
@@ -334,11 +337,9 @@ describe('Dictionary', () => {
     // - 選手
     //
     // If we trim the list before sorting, however, we'll fail to include 選手.
-    expect(
-      result!.data
-        .map((row) => row[0])
-        .some((entry) => entry.indexOf('選手') !== -1)
-    ).toBeTruthy();
+    expect(result!.data.map((match) => getKanji(match.entry)).flat()).toContain(
+      '選手'
+    );
 
     // Check that we still respect the max-length limit though
     expect(result!.data).toHaveLength(5);
@@ -349,12 +350,7 @@ describe('Dictionary', () => {
     expect(result!.textLen).toBe(10); // 10 characters including the space
     expect(result!.data.length).toBe(5);
     expect(result!.more).toBe(false);
-    const kana = result!.data
-      .map((word) => {
-        const matches = word[0].match(/^(.+?)\s+(?:\[(.*?)\])?/);
-        return matches![2] || matches![1];
-      })
-      .join('');
+    const kana = result!.data.map((match) => match.entry.r[0].ent).join('');
     expect(kana).toBe('きかんげんていはつばいあきのぜん');
   });
 });
