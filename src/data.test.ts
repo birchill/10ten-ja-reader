@@ -1,5 +1,3 @@
-/// <reference lib="es2019.array" />
-
 import { readFile } from 'fs';
 import { Dictionary } from './data';
 import { WordResult } from './word-result';
@@ -337,9 +335,10 @@ describe('Dictionary', () => {
     // - 選手
     //
     // If we trim the list before sorting, however, we'll fail to include 選手.
-    expect(result!.data.map((match) => getKanji(match.entry)).flat()).toContain(
-      '選手'
-    );
+    const allKanji = result!.data
+      .map((match) => getKanji(match.entry))
+      .reduce((acc, val) => acc.concat(val), []);
+    expect(allKanji).toContain('選手');
 
     // Check that we still respect the max-length limit though
     expect(result!.data).toHaveLength(5);
