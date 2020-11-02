@@ -40,11 +40,23 @@ describe('getWordToCopy', () => {
       getWordToCopy({
         type: 'word',
         data: {
-          kanjiKana: '理解',
-          kana: ['りかい'],
+          entry: {
+            k: [{ ent: '理解', match: true, p: ['i1', 'n1', 'nf02'] }],
+            r: [{ ent: 'りかい', match: true, p: ['i1', 'n1', 'nf02'], a: 1 }],
+            s: [
+              {
+                pos: ['n', 'vs'],
+                g: [
+                  { str: 'understanding' },
+                  { str: 'comprehension' },
+                  { str: 'appreciation' },
+                  { str: 'sympathy' },
+                ],
+                match: true,
+              },
+            ],
+          },
           romaji: ['rikai'],
-          definition: 'Understand',
-          reason: null,
         },
       })
     ).toEqual('理解');
@@ -108,11 +120,12 @@ describe('getEntryToCopy', () => {
       getEntryToCopy({
         type: 'word',
         data: {
-          kanjiKana: '韓国語',
-          kana: ['かんこくご'],
+          entry: {
+            k: [{ ent: '韓国語', p: ['s1'], match: true }],
+            r: [{ ent: 'かんこくご', p: ['s1'], a: 0, match: true }],
+            s: [{ pos: ['n'], g: [{ str: 'Korean (language)' }], match: true }],
+          },
           romaji: ['kankokugo'],
-          definition: '(n) Korean (language)',
-          reason: null,
         },
       })
     ).toEqual('韓国語 [かんこくご] (kankokugo) (n) Korean (language)');
@@ -243,14 +256,30 @@ describe('getFieldsToCopy', () => {
       getFieldsToCopy({
         type: 'word',
         data: {
-          kanjiKana: '韓国語',
-          kana: ['かんこくご'],
-          romaji: ['kankokugo'],
-          definition: '(n) Korean (language)',
-          reason: null,
+          entry: {
+            k: [{ ent: '韓国', match: true, p: ['n1', 'nf01'] }],
+            r: [{ ent: 'かんこく', match: true, p: ['n1', 'nf01'], a: 0 }],
+            s: [
+              {
+                pos: ['n', 'adj-no'],
+                g: [{ str: 'South Korea' }, { str: 'Republic of Korea' }],
+                misc: ['abbr'],
+                match: true,
+              },
+              {
+                pos: ['n', 'adj-no'],
+                g: [{ str: 'Korean Empire (1897-1910)' }],
+                misc: ['abbr'],
+                match: true,
+              },
+            ],
+          },
+          romaji: ['kankoku'],
         },
       })
-    ).toEqual('韓国語\tかんこくご\tkankokugo\t(n) Korean (language)');
+    ).toEqual(
+      '韓国\tかんこく\tkankoku\t(1) (n,adj-no) South Korea; Republic of Korea (2) (n,adj-no) Korean Empire (1897-1910)'
+    );
   });
 
   it('prepares text from name search results', () => {

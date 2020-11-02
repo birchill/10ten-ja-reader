@@ -1,6 +1,6 @@
 import { KanjiResult } from '@birchill/hikibiki-data';
 
-import { WordEntry } from './query';
+import { ExtendedSense } from './word-result';
 import {
   getReferenceValue,
   getSelectedReferenceLabels,
@@ -8,7 +8,7 @@ import {
 } from './refs';
 
 export type Entry =
-  | { type: 'word'; data: WordEntry }
+  | { type: 'word'; data: WordMatch }
   | { type: 'name'; data: NameResult }
   | { type: 'kanji'; data: KanjiResult };
 
@@ -17,7 +17,9 @@ export function getWordToCopy(entry: Entry): string {
 
   switch (entry.type) {
     case 'word':
-      result = entry.data.kanjiKana;
+      result = (entry.data.entry.k || entry.data.entry.r)
+        .map((entry) => entry.ent)
+        .join(', ');
       break;
 
     case 'name':
@@ -46,14 +48,18 @@ export function getEntryToCopy(
 
   switch (entry.type) {
     case 'word':
-      result = entry.data.kanjiKana;
-      if (entry.data.kana.length) {
-        result += ` [${entry.data.kana.join('; ')}]`;
+      {
+        result = entry.data.entry.k
+          ? `${entry.data.entry.k
+              .map((k) => k.ent)
+              .join(', ')} [${entry.data.entry.r.map((r) => r.ent).join(', ')}]`
+          : entry.data.entry.r.join(', ');
+        if (entry.data.romaji?.length) {
+          result += ` (${entry.data.romaji.join(', ')})`;
+        }
+
+        result += ' ' + serializeDefinition(entry.data.entry);
       }
-      if (entry.data.romaji.length) {
-        result += ` (${entry.data.romaji.join(', ')})`;
-      }
-      result += ' ' + entry.data.definition;
       break;
 
     case 'name':
@@ -138,6 +144,32 @@ export function getEntryToCopy(
   return result!;
 }
 
+function serializeDefinition(entry: WordMatch['entry']): string {
+  const senses = entry.s;
+  if (senses.length > 1) {
+    return senses
+      .map((sense, index) => `(${index + 1}) ${serializeSense(sense)}`)
+      .join(' ');
+  } else {
+    return serializeSense(senses[0]);
+  }
+}
+
+function serializeSense(sense: ExtendedSense): string {
+  let result = '';
+
+  result += sense.pos ? `(${sense.pos.join(',')}) ` : '';
+  result += sense.g.map((g) => g.str).join('; ');
+  // TODO: gloss type
+  // TODO: field
+  // TODO: misc
+  // TODO: dial
+  // TODO: inf
+  // TODO: lsrc?
+
+  return result;
+}
+
 export function getFieldsToCopy(
   entry: Entry,
   {
@@ -152,12 +184,15 @@ export function getFieldsToCopy(
 
   switch (entry.type) {
     case 'word':
-      result = entry.data.kanjiKana;
-      result += `\t${entry.data.kana.join('; ')}`;
-      if (entry.data.romaji.length) {
-        result += `\t${entry.data.romaji.join('; ')}`;
+      result = entry.data.entry.k
+        ? entry.data.entry.k.map((k) => k.ent).join('; ')
+        : '';
+      result += '\t' + entry.data.entry.r.map((r) => r.ent).join('; ');
+      if (entry.data.romaji?.length) {
+        result += '\t' + entry.data.romaji.join('; ');
       }
-      result += `\t${entry.data.definition.replace(/\//g, '; ')}`;
+
+      result += '\t' + serializeDefinition(entry.data.entry);
       break;
 
     case 'name':
