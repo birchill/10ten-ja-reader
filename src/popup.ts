@@ -7,7 +7,7 @@ import {
   CopyNextKeyStrings,
 } from './copy-keys';
 import { SelectionMeta } from './meta';
-import { QueryResult, WordEntry } from './query';
+import { QueryResult } from './query';
 import {
   getReferenceValue,
   getSelectedReferenceLabels,
@@ -58,10 +58,10 @@ export function renderPopup(
 }
 
 function renderWordEntries(
-  entries: Array<WordEntry>,
+  entries: Array<WordMatch>,
   names: Array<NameResult> | undefined,
   moreNames: boolean | undefined,
-  title: string | null,
+  title: string | undefined,
   more: boolean,
   options: PopupOptions
 ): HTMLElement {
@@ -103,32 +103,28 @@ function renderWordEntries(
     const headingDiv = document.createElement('div');
     entryDiv.append(headingDiv);
 
-    const kanjiSpan = document.createElement('span');
-    headingDiv.append(kanjiSpan);
-    kanjiSpan.classList.add(entry.kana.length ? 'w-kanji' : 'w-kana');
-    kanjiSpan.append(entry.kanjiKana);
-
-    for (const kana of entry.kana) {
-      if (headingDiv.lastElementChild!.classList.contains('w-kana')) {
-        headingDiv.append('、 ');
-      }
-      const kanaSpan = document.createElement('span');
-      headingDiv.append(kanaSpan);
-      kanaSpan.classList.add('w-kana');
-      kanaSpan.append(kana);
+    const matchingKanji =
+      entry.entry.k?.filter((k) => k.match).map((k) => k.ent) || [];
+    if (matchingKanji.length) {
+      const kanjiSpan = document.createElement('span');
+      kanjiSpan.classList.add('w-kanji');
+      kanjiSpan.append(matchingKanji.join('、 '));
+      headingDiv.append(kanjiSpan);
     }
 
-    if (entry.romaji.length) {
+    const matchingKana = entry.entry.r.filter((r) => r.match);
+    if (matchingKana.length) {
+      const kanaSpan = document.createElement('span');
+      kanaSpan.classList.add('w-kana');
+      kanaSpan.append(matchingKana.join('、 '));
+      headingDiv.append(kanaSpan);
+    }
+
+    if (entry.romaji?.length) {
       const romajiSpan = document.createElement('span');
-      headingDiv.append(romajiSpan);
       romajiSpan.classList.add('w-romaji');
-      for (const romaji of entry.romaji) {
-        if (romajiSpan.textContent) {
-          romajiSpan.textContent += `, ${romaji}`;
-        } else {
-          romajiSpan.textContent = romaji;
-        }
-      }
+      romajiSpan.append(entry.romaji.join(', '));
+      headingDiv.append(romajiSpan);
     }
 
     if (entry.reason) {
@@ -142,7 +138,10 @@ function renderWordEntries(
       const definitionSpan = document.createElement('span');
       entryDiv.append(definitionSpan);
       definitionSpan.classList.add('w-def');
-      definitionSpan.append(entry.definition);
+      // TODO: This is very very placeholder until we fill this out properly
+      definitionSpan.append(
+        entry.entry.s.map((s) => s.g.map((g) => g.str).join('; ')).join(' // ')
+      );
     }
   }
 
