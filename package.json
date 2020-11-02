@@ -95,7 +95,19 @@
       "js",
       "json",
       "jsx"
-    ]
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsConfig": {
+          "lib": [
+            "dom",
+            "dom.iterable",
+            "es2017",
+            "es2019.array"
+          ]
+        }
+      }
+    }
   },
   "husky": {
     "hooks": {

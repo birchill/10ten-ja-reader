@@ -9,7 +9,7 @@
 export function sortMatchesByPriority(
   results: Array<WordMatch>
 ): Array<WordMatch> {
-  results.sort((a, b) => getPriority(a) - getPriority(b));
+  results.sort((a, b) => getPriority(b) - getPriority(a));
   return results;
 }
 
