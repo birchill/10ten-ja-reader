@@ -278,7 +278,7 @@ describe('getFieldsToCopy', () => {
         },
       })
     ).toEqual(
-      '韓国\tかんこく\tkankoku\t(1) (n,adj-no) South Korea; Republic of Korea (2) (n,adj-no) Korean Empire (1897-1910)'
+      '韓国\tかんこく\tkankoku\t(1) (n,adj-no) (abbr) South Korea; Republic of Korea (2) (n,adj-no) (abbr) Korean Empire (1897-1910)'
     );
   });
 

@@ -1,6 +1,6 @@
 import { KanjiResult } from '@birchill/hikibiki-data';
 
-import { ExtendedSense } from './word-result';
+import { Dialect, ExtendedSense, GlossType, LangSource } from './word-result';
 import {
   getReferenceValue,
   getSelectedReferenceLabels,
@@ -155,19 +155,64 @@ function serializeDefinition(entry: WordMatch['entry']): string {
   }
 }
 
+// TODO: Localize this
+const glossTypes: { [type in GlossType]: string | undefined } = {
+  [GlossType.Expl]: 'expl.',
+  [GlossType.Lit]: 'lit.',
+  [GlossType.Fig]: 'fig.',
+  [GlossType.None]: undefined,
+};
+
+// Match the formatting in Edict
+const dialects: { [dial in Dialect]: string } = {
+  ho: 'hob:',
+  tsug: 'tsug:',
+  th: 'thb:',
+  na: 'nab:',
+  kt: 'ktb:',
+  ks: 'ksb:',
+  ky: 'kyb:',
+  os: 'osb:',
+  ts: 'tsb:',
+  '9s': 'kyu:',
+  ok: 'rkb:',
+};
+
 function serializeSense(sense: ExtendedSense): string {
   let result = '';
 
   result += sense.pos ? `(${sense.pos.join(',')}) ` : '';
+
+  // Gloss types
+  if (sense.g.some((g) => g.type)) {
+    result +=
+      '(' +
+      sense.g
+        .filter((g) => g.type)
+        .map((g) => glossTypes[g.type!])
+        .join(',') +
+      ') ';
+  }
+
+  result += sense.field ? `(${sense.field.join(',')}) ` : '';
+  result += sense.misc ? `(${sense.misc.join(',')}) ` : '';
+  result += sense.dial
+    ? `(${sense.dial.map((dial) => dialects[dial]).join(',')}) `
+    : '';
+
   result += sense.g.map((g) => g.str).join('; ');
-  // TODO: gloss type
-  // TODO: field
-  // TODO: misc
-  // TODO: dial
-  // TODO: inf
-  // TODO: lsrc?
+
+  result += sense.lsrc
+    ? ` (${sense.lsrc.map(serializeLangSrc).join(', ')})`
+    : '';
+  result += sense.inf ? ` (${sense.inf})` : '';
 
   return result;
+}
+
+function serializeLangSrc(lsrc: LangSource) {
+  const lang = lsrc.wasei ? 'wasei' : lsrc.lang;
+  return (lang ? `${lang}: ` : '') + lsrc.src;
 }
 
 export function getFieldsToCopy(
