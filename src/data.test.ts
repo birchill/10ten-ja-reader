@@ -111,7 +111,7 @@ describe('Dictionary', () => {
       match: true,
       pos: ['n'],
     });
-    expect(result!.data[0].romaji).toMatch(/tanpakushitsu/);
+    expect(result!.data[0].romaji).toContain('tanpakushitsu');
   });
 
   it('finds a match partially using katakana', async () => {
