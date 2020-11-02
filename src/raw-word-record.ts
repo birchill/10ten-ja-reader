@@ -1,3 +1,5 @@
+import { kanaToHiragana } from '@birchill/normal-jp';
+
 import { stripFields } from './strip-fields';
 import {
   ExtendedSense,
@@ -21,17 +23,26 @@ export interface RawWordRecord {
   s: Array<WordSense>;
 }
 
-export function toWordResult(entry: RawWordRecord): WordResult {
+export function toWordResult(
+  entry: RawWordRecord,
+  matchingText: string
+): WordResult {
+  const kanjiMatch =
+    !!entry.k && entry.k.some((k) => kanaToHiragana(k) === matchingText);
+  const kanaMatch =
+    !kanjiMatch && entry.r.some((r) => kanaToHiragana(r) === matchingText);
+
   return {
     k: mergeMeta(entry.k, entry.km, (key, meta) => ({
       ent: key,
       ...meta,
-      match: true,
+      match:
+        (kanjiMatch && kanaToHiragana(key) === matchingText) || !kanjiMatch,
     })),
     r: mergeMeta(entry.r, entry.rm, (key, meta) => ({
       ent: key,
       ...meta,
-      match: true,
+      match: (kanaMatch && kanaToHiragana(key) === matchingText) || !kanaMatch,
     })),
     s: expandSenses(entry.s),
   };
