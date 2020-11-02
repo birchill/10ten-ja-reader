@@ -237,9 +237,9 @@ export class Dictionary {
             }
           }
 
-          let romaji: string | undefined;
+          let romaji: Array<string> | undefined;
           if (includeRomaji) {
-            romaji = entry.r.map(toRomaji).join(', ');
+            romaji = entry.r.map(toRomaji);
           }
 
           matches.push({ entry: toWordResult(entry), reason, romaji });

@@ -1,29 +1,14 @@
-// Currently the background process will return structured data for kanji and
-// names data but not for word data (we're still in the processing of doing
-// that).
-
-export interface WordEntry {
-  kanjiKana: string;
-  kana: string[];
-  romaji: string[];
-  definition: string;
-  reason: string | null;
-}
-
-export interface WordsQueryResult {
-  type: 'words';
-  title: string | null;
-  data: Array<WordEntry>;
-  names?: Array<NameResult>;
-  moreNames?: boolean;
-  matchLen: number | null;
-  more: boolean;
-}
-
 export type QueryResult =
-  | WordsQueryResult
+  | WordSearchOrTranslateResult
   | NameSearchResult
   | KanjiSearchResult;
+
+export interface WordSearchOrTranslateResult
+  extends Omit<WordSearchResult, 'matchLen'> {
+  type: 'words';
+  title?: string;
+  matchLen: number | null;
+}
 
 export interface QueryOptions {
   dictMode: DictMode;
@@ -65,7 +50,7 @@ export async function query(
   }
   const more = !!searchResult.more;
 
-  let title: string | null = null;
+  let title: string | undefined;
   if (searchResult.type === 'translate') {
     title = text.substr(0, searchResult.textLen);
     if (text.length > searchResult.textLen) {
@@ -85,68 +70,8 @@ export async function query(
     title,
     names,
     moreNames,
-    data: parseWordEntries(searchResult),
+    data: searchResult.data,
     matchLen,
     more,
   };
-}
-
-function parseWordEntries(
-  searchResult: RawWordSearchResult | RawTranslateResult
-): Array<WordEntry> {
-  // Parse entries, parsing them and combining them when the kanji and
-  // definition match.
-  //
-  // Each dictionary entry has the format:
-  //
-  //   仔クジラ [こくじら] /(n) whale calf/
-  //
-  // Or without kana reading:
-  //
-  //   あっさり /(adv,adv-to,vs,on-mim) easily/readily/quickly/(P)/
-  //
-  const result: Array<WordEntry> = [];
-  for (const [dictEntry, reason, romaji] of searchResult.data) {
-    const matches = dictEntry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
-    if (!matches) {
-      continue;
-    }
-    let [kanjiKana, kana, definition] = matches.slice(1);
-
-    // Replace / separators in definition with ;
-    definition = definition.replace(/\//g, '; ');
-
-    // Combine with previous entry if both kanji and definition match.
-    const prevEntry = result.length ? result[result.length - 1] : null;
-    if (
-      prevEntry &&
-      prevEntry.kanjiKana === kanjiKana &&
-      prevEntry.definition === definition
-    ) {
-      if (kana) {
-        prevEntry.kana.push(kana);
-      }
-      if (romaji) {
-        prevEntry.romaji.push(romaji);
-      }
-      continue;
-    }
-
-    const entry: WordEntry = {
-      kanjiKana,
-      kana: [],
-      romaji: [],
-      definition,
-      reason,
-    };
-    if (kana) {
-      entry.kana.push(kana);
-    }
-    if (romaji) {
-      entry.romaji.push(romaji);
-    }
-    result.push(entry);
-  }
-
-  return result;
 }

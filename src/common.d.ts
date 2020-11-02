@@ -70,22 +70,22 @@ interface WordMatch {
   // TODO: Use definitions from hikibiki-data once we update it
   entry: import('./word-result').WordResult;
   reason?: string;
-  romaji?: string;
+  romaji?: Array<string>;
 }
 
 interface WordSearchResult {
   type: 'words';
   data: Array<WordMatch>;
+  // The length of the longest match in the original input string.
+  matchLen: number;
+  // True if greater than `maxResults` entries were found.
+  more: boolean;
   // If we found longer matches in the names dictionary we return the longest
   // ones here, here up to the first 3 results.
   names?: Array<NameResult>;
   // If there were more than 3 names with a longer length, we indicate that
   // here.
   moreNames?: boolean;
-  // The length of the longest match in the original input string.
-  matchLen: number;
-  // True if greater than `maxResults` entries were found.
-  more: boolean;
 }
 
 interface TranslateResult {

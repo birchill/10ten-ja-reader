@@ -688,7 +688,7 @@ async function wordSearch(params: {
   input: string;
   max?: number;
   includeRomaji?: boolean;
-}): Promise<RawWordSearchResult | null> {
+}): Promise<WordSearchResult | null> {
   console.assert(
     flatFileDict,
     'We should have checked we have a dictionary before calling this'
