@@ -68,6 +68,7 @@ interface KanjiSearchResult {
 
 interface WordMatch {
   // TODO: Use definitions from hikibiki-data once we update it
+  // TODO(2): Flatten the word result into this
   entry: import('./word-result').WordResult;
   reason?: string;
   romaji?: Array<string>;
