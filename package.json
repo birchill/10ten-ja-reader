@@ -43,7 +43,7 @@
     "chai": "^4.2.0",
     "combined-stream2": "^1.1.2",
     "copy-webpack-plugin": "^6.2.1",
-    "file-loader": "^6.1.1",
+    "file-loader": "^6.2.0",
     "iconv-lite": "^0.6.2",
     "jest": "^25.5.4",
     "karma": "^5.2.3",
