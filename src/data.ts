@@ -242,7 +242,11 @@ export class Dictionary {
             romaji = entry.r.map(toRomaji);
           }
 
-          matches.push({ entry: toWordResult(entry), reason, romaji });
+          matches.push({
+            entry: toWordResult(entry, candidate.word),
+            reason,
+            romaji,
+          });
         } // for offset of offsets
 
         // Sort preliminary results
