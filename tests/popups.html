@@ -286,11 +286,39 @@ const yearQueryResult = {
   type: 'words',
   data: [
     {
-      kanjiKana: '令和',
-      kana: ['れいわ'],
-      romaji: [],
-      definition: 'Reiwa',
-      reason: null,
+      k: [{ ent: '令和', p: ['s1'], match: true }],
+      r: [{ ent: 'れいわ', p: ['s1'], match: true }],
+      s: [
+        { g: [{ str: 'Reiwa era (May 1, 2019-)' }], pos: ['n'], match: true },
+      ],
+    },
+    {
+      k: [{ ent: '令', p: ['n1', 'nf05'], match: true }],
+      r: [{ ent: 'れい', p: ['n1', 'nf05'], a: 1, match: true }],
+      s: [
+        {
+          g: [{ str: 'command' }, { str: 'order' }, { str: 'dictation' }],
+          pos: ['n', 'n-suf'],
+          match: true,
+        },
+        {
+          g: [{ str: 'nth year in the Reiwa era (May 1, 2019-)' }],
+          pos: ['pref'],
+          match: true,
+        },
+      ],
+    },
+    {
+      k: [{ ent: '令', match: true }],
+      r: [{ ent: 'りょう', a: 1, match: true }],
+      s: [
+        {
+          g: [{ str: 'administrative and civil code' }],
+          pos: ['n'],
+          misc: ['arch'],
+          match: true,
+        },
+      ],
     },
   ],
   more: false,
