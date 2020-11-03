@@ -122,25 +122,63 @@ const highlightTests = [
       type: 'words',
       data: [
         {
-          kanjiKana: '韓国語',
-          kana: ['かんこくご'],
-          romaji: [],
-          definition: '(n) Korean (language)',
-          reason: null,
+          k: [{ ent: '韓国語', p: ['s1'], match: true }],
+          r: [{ ent: 'かんこくご', p: ['s1'], a: 0, match: true }],
+          s: [{ g: [{ str: 'Korean (language)' }], pos: ['n'], match: true }],
         },
         {
-          kanjiKana: '韓国',
-          kana: ['からくに'],
-          romaji: [],
-          definition: '(n,arch) China/Korea',
-          reason: null,
+          k: [{ ent: '韓国', p: ['n1', 'nf01'], match: true }],
+          r: [{ ent: 'かんこく', p: ['n1', 'nf01'], a: 0, match: true }],
+          s: [
+            {
+              g: [{ str: 'South Korea' }, { str: 'Republic of Korea' }],
+              pos: ['n', 'adj-no'],
+              misc: ['abbr'],
+              match: true,
+            },
+            {
+              g: [{ str: 'Korean Empire (1897-1910)' }],
+              pos: ['n', 'adj-no'],
+              misc: ['abbr'],
+              match: true,
+            },
+          ],
         },
         {
-          kanjiKana: '韓国',
-          kana: ['かんこく'],
-          romaji: [],
-          definition: '(n) (South) Korea',
-          reason: null,
+          k: [
+            { ent: '唐国', match: false },
+            { ent: '韓国', match: true },
+          ],
+          r: [{ ent: 'からくに', match: true }],
+          s: [
+            {
+              g: [{ str: 'China' }, { str: 'Korea' }],
+              pos: ['n'],
+              misc: ['arch'],
+              match: true,
+            },
+          ],
+        },
+        {
+          k: [
+            { ent: '唐', match: false },
+            { ent: '韓', match: true },
+            { ent: '漢', match: false },
+          ],
+          r: [{ ent: 'から', a: 1, match: true }],
+          s: [
+            {
+              g: [
+                {
+                  str:
+                    'China (sometimes also used in ref. to Korea or other foreign countries)',
+                },
+              ],
+              pos: ['n', 'n-pref'],
+              misc: ['arch'],
+              match: true,
+            },
+          ],
         },
       ],
       more: false,
