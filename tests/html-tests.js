@@ -327,16 +327,68 @@ const htmlTests = [
       type: 'words',
       data: [
         {
-          kanjiKana: '走る',
-          kana: ['はしる'],
-          romaji: [],
-          definition:
-            '(v5r,vi) to run; to travel (movement of vehicles); to hurry to; to retreat (from battle); to take flight; to run away from home; to elope; to tend heavily toward; (P); ',
-          reason: '< past',
+          k: [
+            { ent: '走る', p: ['i1', 'n1', 'nf10'], match: true },
+            { ent: '奔る', match: false },
+            { ent: '趨る', match: false },
+          ],
+          r: [{ ent: 'はしる', p: ['i1', 'n1', 'nf10'], a: 2, match: true }],
+          s: [
+            { g: [{ str: 'to run' }], pos: ['v5r', 'vi'], match: true },
+            {
+              g: [
+                { str: 'to travel (movement of vehicles)' },
+                { str: 'to drive' },
+                { str: 'to flow (e.g. energy)' },
+              ],
+              pos: ['v5r', 'vi'],
+              match: true,
+            },
+            { g: [{ str: 'to hurry to' }], pos: ['v5r', 'vi'], match: true },
+            {
+              g: [
+                { str: 'to retreat (from battle)' },
+                { str: 'to take flight' },
+              ],
+              pos: ['v5r', 'vi'],
+              match: true,
+            },
+            {
+              g: [{ str: 'to run away from home' }],
+              inf: 'esp. 奔る',
+              pos: ['v5r', 'vi'],
+              match: true,
+            },
+            { g: [{ str: 'to elope' }], pos: ['v5r', 'vi'], match: true },
+            {
+              g: [{ str: 'to tend heavily toward' }],
+              inf: 'esp. 趨る',
+              pos: ['v5r', 'vi'],
+              match: true,
+            },
+            {
+              g: [
+                { str: 'to flash' },
+                { str: 'to streak' },
+                { str: 'to shoot through (e.g. pain)' },
+              ],
+              pos: ['v5r', 'vi'],
+              match: true,
+            },
+            {
+              g: [
+                { str: 'to get involved' },
+                { str: 'to take (to something)' },
+                { str: 'to get wrapped up in' },
+              ],
+              pos: ['v5r', 'vi'],
+              match: true,
+            },
+          ],
         },
       ],
       more: false,
-      matchLen: 3,
+      matchLen: 2,
     },
   },
   {
@@ -345,25 +397,63 @@ const htmlTests = [
       type: 'words',
       data: [
         {
-          kanjiKana: '韓国語',
-          kana: ['かんこくご'],
-          romaji: [],
-          definition: '(n) Korean (language)',
-          reason: null,
+          k: [{ ent: '韓国語', p: ['s1'], match: true }],
+          r: [{ ent: 'かんこくご', p: ['s1'], a: 0, match: true }],
+          s: [{ g: [{ str: 'Korean (language)' }], pos: ['n'], match: true }],
         },
         {
-          kanjiKana: '韓国',
-          kana: ['からくに'],
-          romaji: [],
-          definition: '(n,arch) China; Korea',
-          reason: null,
+          k: [{ ent: '韓国', p: ['n1', 'nf01'], match: true }],
+          r: [{ ent: 'かんこく', p: ['n1', 'nf01'], a: 0, match: true }],
+          s: [
+            {
+              g: [{ str: 'South Korea' }, { str: 'Republic of Korea' }],
+              pos: ['n', 'adj-no'],
+              misc: ['abbr'],
+              match: true,
+            },
+            {
+              g: [{ str: 'Korean Empire (1897-1910)' }],
+              pos: ['n', 'adj-no'],
+              misc: ['abbr'],
+              match: true,
+            },
+          ],
         },
         {
-          kanjiKana: '韓国',
-          kana: ['かんこく'],
-          romaji: [],
-          definition: '(n) (South) Korea',
-          reason: null,
+          k: [
+            { ent: '唐国', match: false },
+            { ent: '韓国', match: true },
+          ],
+          r: [{ ent: 'からくに', match: true }],
+          s: [
+            {
+              g: [{ str: 'China' }, { str: 'Korea' }],
+              pos: ['n'],
+              misc: ['arch'],
+              match: true,
+            },
+          ],
+        },
+        {
+          k: [
+            { ent: '唐', match: false },
+            { ent: '韓', match: true },
+            { ent: '漢', match: false },
+          ],
+          r: [{ ent: 'から', a: 1, match: true }],
+          s: [
+            {
+              g: [
+                {
+                  str:
+                    'China (sometimes also used in ref. to Korea or other foreign countries)',
+                },
+              ],
+              pos: ['n', 'n-pref'],
+              misc: ['arch'],
+              match: true,
+            },
+          ],
         },
       ],
       more: false,
@@ -376,41 +466,77 @@ const htmlTests = [
       type: 'words',
       data: [
         {
-          kanjiKana: '東',
-          kana: ['ひがし'],
-          romaji: [],
-          definition: '(n) east; (P)',
-          reason: null,
+          k: [{ ent: '東', p: ['i1', 'n1', 'nf01'], match: true }],
+          r: [
+            {
+              ent: 'ひがし',
+              p: ['i1', 'n1', 'nf01'],
+              a: [{ i: 0 }, { i: 3 }],
+              match: true,
+            },
+            { ent: 'ひむかし', i: ['ok'], match: true },
+            { ent: 'ひんがし', i: ['ok'], a: 0, match: true },
+          ],
+          s: [{ g: [{ str: 'east' }], pos: ['n'], match: true }],
         },
         {
-          kanjiKana: '東',
-          kana: ['ひむかし'],
-          romaji: [],
-          definition: '(n,ok) east; (P)',
-          reason: null,
+          k: [
+            { ent: '東', match: true },
+            { ent: '吾妻', match: false },
+            { ent: '吾嬬', match: false },
+          ],
+          r: [
+            { ent: 'あずま', a: 1, match: true },
+            { ent: 'あづま', i: ['ok'], match: true },
+          ],
+          s: [
+            {
+              g: [
+                {
+                  str:
+                    'eastern Japan (esp. Kamakura or Edo, from perspective of Kyoto or Nara)',
+                },
+                { str: 'eastern provinces' },
+              ],
+              pos: ['n'],
+              misc: ['arch'],
+              match: true,
+            },
+            { g: [{ str: 'east' }], pos: ['n'], misc: ['arch'], match: true },
+            {
+              g: [
+                { str: 'wagon' },
+                { str: 'yamatogoto' },
+                { str: 'six-stringed native Japanese zither', type: 1 },
+              ],
+              pos: ['n'],
+              misc: ['abbr'],
+              match: true,
+            },
+            { g: [{ str: 'my spouse' }], kapp: 6, pos: ['n'], match: true },
+          ],
         },
         {
-          kanjiKana: '東',
-          kana: ['ひんがし'],
-          romaji: [],
-          definition: '(n,ok) east; (P)',
-          reason: null,
-        },
-        {
-          kanjiKana: '東',
-          kana: ['あずま'],
-          romaji: [],
-          definition:
-            '(n,arch,abbr) east; eastern Japan; six-stringed Japanese zither; my spouse',
-          reason: null,
-        },
-        {
-          kanjiKana: '東',
-          kana: ['あづま'],
-          romaji: [],
-          definition:
-            '(n,arch,abbr,ok) east; eastern Japan; six-stringed Japanese zither; my spouse',
-          reason: null,
+          k: [{ ent: '東', match: true }],
+          r: [{ ent: 'トン', match: true }],
+          s: [
+            {
+              g: [{ str: 'east wind tile' }],
+              field: ['mahj'],
+              pos: ['n'],
+              match: true,
+            },
+            {
+              g: [
+                {
+                  str: 'winning hand with a pung (or kong) of east wind tiles',
+                },
+              ],
+              field: ['mahj'],
+              pos: ['n'],
+              match: true,
+            },
+          ],
         },
       ],
       more: false,
@@ -423,25 +549,63 @@ const htmlTests = [
       type: 'words',
       data: [
         {
-          kanjiKana: '韓国語',
-          kana: ['かんこくご'],
-          romaji: [],
-          definition: '(n) Korean (language)',
-          reason: null,
+          k: [{ ent: '韓国語', p: ['s1'], match: true }],
+          r: [{ ent: 'かんこくご', p: ['s1'], a: 0, match: true }],
+          s: [{ g: [{ str: 'Korean (language)' }], pos: ['n'], match: true }],
         },
         {
-          kanjiKana: '韓国',
-          kana: ['からくに'],
-          romaji: [],
-          definition: '(n,arch) China; Korea',
-          reason: null,
+          k: [{ ent: '韓国', p: ['n1', 'nf01'], match: true }],
+          r: [{ ent: 'かんこく', p: ['n1', 'nf01'], a: 0, match: true }],
+          s: [
+            {
+              g: [{ str: 'South Korea' }, { str: 'Republic of Korea' }],
+              pos: ['n', 'adj-no'],
+              misc: ['abbr'],
+              match: true,
+            },
+            {
+              g: [{ str: 'Korean Empire (1897-1910)' }],
+              pos: ['n', 'adj-no'],
+              misc: ['abbr'],
+              match: true,
+            },
+          ],
         },
         {
-          kanjiKana: '韓国',
-          kana: ['かんこく'],
-          romaji: [],
-          definition: '(n) (South) Korea',
-          reason: null,
+          k: [
+            { ent: '唐国', match: false },
+            { ent: '韓国', match: true },
+          ],
+          r: [{ ent: 'からくに', match: true }],
+          s: [
+            {
+              g: [{ str: 'China' }, { str: 'Korea' }],
+              pos: ['n'],
+              misc: ['arch'],
+              match: true,
+            },
+          ],
+        },
+        {
+          k: [
+            { ent: '唐', match: false },
+            { ent: '韓', match: true },
+            { ent: '漢', match: false },
+          ],
+          r: [{ ent: 'から', a: 1, match: true }],
+          s: [
+            {
+              g: [
+                {
+                  str:
+                    'China (sometimes also used in ref. to Korea or other foreign countries)',
+                },
+              ],
+              pos: ['n', 'n-pref'],
+              misc: ['arch'],
+              match: true,
+            },
+          ],
         },
       ],
       more: false,
@@ -454,62 +618,175 @@ const htmlTests = [
   {
     description: 'a translate result',
     queryResult: {
-      type: 'words',
+      type: 'translate',
       data: [
         {
-          kanjiKana: '韓国',
-          kana: ['からくに'],
-          romaji: [],
-          definition: '(n,arch) China; Korea',
-          reason: null,
+          k: [{ ent: '韓国', p: ['n1', 'nf01'], match: true }],
+          r: [{ ent: 'かんこく', p: ['n1', 'nf01'], a: 0, match: true }],
+          s: [
+            {
+              g: [{ str: 'South Korea' }, { str: 'Republic of Korea' }],
+              pos: ['n', 'adj-no'],
+              misc: ['abbr'],
+              match: true,
+            },
+            {
+              g: [{ str: 'Korean Empire (1897-1910)' }],
+              pos: ['n', 'adj-no'],
+              misc: ['abbr'],
+              match: true,
+            },
+          ],
         },
         {
-          kanjiKana: '中国',
-          kana: ['ちゅうごく'],
-          romaji: [],
-          definition:
-            '(n) China; South-west most region of Honshu; middle of a country; the Hiroshima area',
-          reason: null,
+          k: [{ ent: '中国', p: ['n1', 'nf01'], match: true }],
+          r: [
+            { ent: 'ちゅうごく', p: ['n1', 'nf01'], a: 0, match: true },
+            { ent: 'ちゅうこく', match: true },
+          ],
+          s: [
+            { g: [{ str: 'China' }], rapp: 1, pos: ['n'], match: true },
+            {
+              g: [
+                {
+                  str:
+                    'Chūgoku region of western Honshu (incl. Okayama, Hiroshima, Shimane, Tottori and Yamaguchi prefectures)',
+                },
+              ],
+              rapp: 1,
+              pos: ['n'],
+              misc: ['abbr'],
+              match: true,
+            },
+            {
+              g: [{ str: 'central part of a country' }, { str: 'main region' }],
+              pos: ['n'],
+              rapp: 1,
+              match: true,
+            },
+            {
+              g: [
+                { str: 'province of the second lowest rank (ritsuryo system)' },
+              ],
+              pos: ['n'],
+              match: true,
+            },
+          ],
         },
         {
-          kanjiKana: '殿',
-          kana: ['との'],
-          romaji: [],
-          definition: '(n) feudal lord; mansion; palace',
-          reason: null,
+          k: [{ ent: '殿', match: true }],
+          r: [{ ent: 'との', a: 1, match: true }],
+          s: [
+            {
+              g: [{ str: 'feudal lord' }],
+              pos: ['n', 'pn'],
+              misc: ['hon'],
+              match: true,
+            },
+            {
+              g: [{ str: 'mansion' }, { str: 'palace' }],
+              pos: ['n'],
+              misc: ['arch'],
+              match: true,
+            },
+          ],
         },
         {
-          kanjiKana: '通貨',
-          kana: ['つうか'],
-          romaji: [],
-          definition: '(n,adj-no) currency; (P)',
-          reason: null,
+          k: [{ ent: '通貨スワップ', match: true }],
+          r: [{ ent: 'つうかスワップ', match: true }],
+          s: [{ g: [{ str: 'currency swap' }], pos: ['n'], match: true }],
         },
         {
-          kanjiKana: 'スワップ',
-          kana: [],
-          romaji: [],
-          definition: '(n,vs) swap; (P)',
-          reason: null,
+          k: [{ ent: '延長', p: ['i1', 'n1', 'nf02'], match: true }],
+          r: [
+            { ent: 'えんちょう', p: ['i1', 'n1', 'nf02'], a: 0, match: true },
+          ],
+          s: [
+            {
+              g: [
+                { str: 'extension' },
+                { str: 'elongation' },
+                { str: 'prolongation' },
+                { str: 'lengthening' },
+              ],
+              pos: ['n', 'vs'],
+              match: true,
+            },
+            {
+              g: [{ str: 'Enchō era (923.4.11-931.4.26)' }],
+              pos: ['n'],
+              match: true,
+            },
+          ],
         },
         {
-          kanjiKana: '延長',
-          kana: ['えんちょう'],
-          romaji: [],
-          definition:
-            '(n,vs) extension; elongation; prolongation; lengthening; Enchou era (923.4.11-931.4.26); (P)',
-          reason: null,
+          k: [{ ent: '合意', p: ['i1', 'n1', 'nf01'], match: true }],
+          r: [
+            {
+              ent: 'ごうい',
+              p: ['i1', 'n1', 'nf01'],
+              a: [{ i: 1 }, { i: 0 }],
+              match: true,
+            },
+          ],
+          s: [
+            {
+              g: [
+                { str: '(coming to an) agreement' },
+                { str: 'consent' },
+                { str: 'mutual understanding' },
+                { str: 'accord' },
+                { str: 'consensus' },
+              ],
+              pos: ['n', 'vs', 'adj-no'],
+              match: true,
+            },
+          ],
         },
         {
-          kanjiKana: '合意',
-          kana: ['ごうい'],
-          romaji: [],
-          definition:
-            '(n,vs,adj-no) agreement; consent; mutual understanding; (P)',
-          reason: null,
+          k: [],
+          r: [{ ent: 'を', p: ['s1'], match: true }],
+          s: [
+            {
+              g: [{ str: 'indicates direct object of action' }],
+              pos: ['prt'],
+              match: true,
+            },
+            {
+              g: [{ str: 'indicates subject of causative expression' }],
+              pos: ['prt'],
+              match: true,
+            },
+            {
+              g: [{ str: 'indicates an area traversed' }],
+              pos: ['prt'],
+              match: true,
+            },
+            {
+              g: [
+                {
+                  str: 'indicates time (period) over which action takes place',
+                },
+              ],
+              pos: ['prt'],
+              match: true,
+            },
+            {
+              g: [
+                { str: 'indicates point of departure or separation of action' },
+              ],
+              pos: ['prt'],
+              match: true,
+            },
+            {
+              g: [{ str: 'indicates object of desire, like, hate, etc.' }],
+              pos: ['prt'],
+              match: true,
+            },
+          ],
         },
       ],
-      textLen: 17,
+      textLen: 18,
       more: true,
       title: '韓国、中国との通貨スワップ延長合意を発表',
     },
