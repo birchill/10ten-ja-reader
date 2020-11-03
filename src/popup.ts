@@ -135,13 +135,7 @@ function renderWordEntries(
     }
 
     if (options.showDefinitions) {
-      const definitionSpan = document.createElement('span');
-      entryDiv.append(definitionSpan);
-      definitionSpan.classList.add('w-def');
-      // TODO: This is very very placeholder until we fill this out properly
-      definitionSpan.append(
-        entry.s.map((s) => s.g.map((g) => g.str).join('; ')).join(' // ')
-      );
+      entryDiv.append(renderDefinitions(entry, options));
     }
   }
 
@@ -228,6 +222,25 @@ function renderBonusNames(
   }
 
   return container;
+}
+
+function renderDefinitions(entry: WordResult, options: PopupOptions) {
+  const definitionsSpan = document.createElement('span');
+  definitionsSpan.classList.add('w-def');
+
+  if (entry.s.length === 1) {
+    definitionsSpan.append(entry.s[0].g.map((g) => g.str).join('; '));
+  } else {
+    const definitionList = document.createElement('ol');
+    for (const sense of entry.s) {
+      const listItem = document.createElement('li');
+      listItem.append(sense.g.map((g) => g.str).join('; '));
+      definitionList.append(listItem);
+    }
+    definitionsSpan.append(definitionList);
+  }
+
+  return definitionsSpan;
 }
 
 function renderNamesEntries(
