@@ -58,7 +58,7 @@ export function renderPopup(
 }
 
 function renderWordEntries(
-  entries: Array<WordMatch>,
+  entries: Array<WordResult>,
   names: Array<NameResult> | undefined,
   moreNames: boolean | undefined,
   title: string | undefined,
@@ -104,7 +104,7 @@ function renderWordEntries(
     entryDiv.append(headingDiv);
 
     const matchingKanji =
-      entry.entry.k?.filter((k) => k.match).map((k) => k.ent) || [];
+      entry.k?.filter((k) => k.match).map((k) => k.ent) || [];
     if (matchingKanji.length) {
       const kanjiSpan = document.createElement('span');
       kanjiSpan.classList.add('w-kanji');
@@ -112,7 +112,7 @@ function renderWordEntries(
       headingDiv.append(kanjiSpan);
     }
 
-    const matchingKana = entry.entry.r.filter((r) => r.match).map((r) => r.ent);
+    const matchingKana = entry.r.filter((r) => r.match).map((r) => r.ent);
     if (matchingKana.length) {
       const kanaSpan = document.createElement('span');
       kanaSpan.classList.add('w-kana');
@@ -140,7 +140,7 @@ function renderWordEntries(
       definitionSpan.classList.add('w-def');
       // TODO: This is very very placeholder until we fill this out properly
       definitionSpan.append(
-        entry.entry.s.map((s) => s.g.map((g) => g.str).join('; ')).join(' // ')
+        entry.s.map((s) => s.g.map((g) => g.str).join('; ')).join(' // ')
       );
     }
   }

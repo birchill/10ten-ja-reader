@@ -104,7 +104,7 @@ describe('Dictionary', () => {
 
     expect(result!.matchLen).toBe(3); // 3 characters long
     expect(result!.data.length).toBeGreaterThanOrEqual(1);
-    expect(result!.data[0].entry.s).toContainEqual({
+    expect(result!.data[0].s).toContainEqual({
       g: [{ str: 'protein' }],
       match: true,
       pos: ['n'],
@@ -167,7 +167,7 @@ describe('Dictionary', () => {
     kanji: string
   ): boolean => {
     return result.data.some(
-      ({ entry }) => entry.k && entry.k.some((k) => k.ent === kanji)
+      (entry) => entry.k && entry.k.some((k) => k.ent === kanji)
     );
   };
 
@@ -181,8 +181,8 @@ describe('Dictionary', () => {
   const getMatchWithKana = (
     result: WordSearchResult,
     kana: string
-  ): WordMatch | undefined => {
-    return result.data.find(({ entry }) => entry.r.some((r) => r.ent === kana));
+  ): WordResult | undefined => {
+    return result.data.find((entry) => entry.r.some((r) => r.ent === kana));
   };
 
   it('chooses the right de-inflection for potential and passives', async () => {
@@ -274,9 +274,9 @@ describe('Dictionary', () => {
   const getMatchWithKanjiOrKana = (
     result: WordSearchResult,
     toMatch: string
-  ): WordMatch | undefined => {
+  ): WordResult | undefined => {
     return result.data.find(
-      ({ entry }) =>
+      (entry) =>
         (entry.k && entry.k.some((k) => k.ent === toMatch)) ||
         entry.r.some((r) => r.ent === toMatch)
     );
@@ -316,8 +316,8 @@ describe('Dictionary', () => {
 
   it('orders words by priority', async () => {
     const result = await sharedDict.wordSearch({ input: '認める' });
-    expect(getKana(result!.data[0].entry)).toContain('みとめる');
-    expect(getKana(result!.data[1].entry)).toContain('したためる');
+    expect(getKana(result!.data[0])).toContain('みとめる');
+    expect(getKana(result!.data[1])).toContain('したためる');
   });
 
   const getKanji = (entry: WordResult): Array<string> =>
@@ -336,7 +336,7 @@ describe('Dictionary', () => {
     //
     // If we trim the list before sorting, however, we'll fail to include 選手.
     const allKanji = result!.data
-      .map((match) => getKanji(match.entry))
+      .map(getKanji)
       .reduce((acc, val) => acc.concat(val), []);
     expect(allKanji).toContain('選手');
 
@@ -349,7 +349,7 @@ describe('Dictionary', () => {
     expect(result!.textLen).toBe(10); // 10 characters including the space
     expect(result!.data.length).toBe(5);
     expect(result!.more).toBe(false);
-    const kana = result!.data.map((match) => match.entry.r[0].ent).join('');
+    const kana = result!.data.map((match) => match.r[0].ent).join('');
     expect(kana).toBe('きかんげんていはつばいあきのぜん');
   });
 });

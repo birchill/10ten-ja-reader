@@ -23,10 +23,17 @@ export interface RawWordRecord {
   s: Array<WordSense>;
 }
 
-export function toWordResult(
-  entry: RawWordRecord,
-  matchingText: string
-): WordResult {
+export function toWordResult({
+  entry,
+  matchingText,
+  reason,
+  romaji,
+}: {
+  entry: RawWordRecord;
+  matchingText: string;
+  reason?: string;
+  romaji?: Array<string>;
+}): WordResult {
   const kanjiMatch =
     !!entry.k && entry.k.some((k) => kanaToHiragana(k) === matchingText);
   const kanaMatch =
@@ -45,6 +52,8 @@ export function toWordResult(
       match: (kanaMatch && kanaToHiragana(key) === matchingText) || !kanaMatch,
     })),
     s: expandSenses(entry.s),
+    reason,
+    romaji,
   };
 }
 

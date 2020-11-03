@@ -40,22 +40,20 @@ describe('getWordToCopy', () => {
       getWordToCopy({
         type: 'word',
         data: {
-          entry: {
-            k: [{ ent: '理解', match: true, p: ['i1', 'n1', 'nf02'] }],
-            r: [{ ent: 'りかい', match: true, p: ['i1', 'n1', 'nf02'], a: 1 }],
-            s: [
-              {
-                pos: ['n', 'vs'],
-                g: [
-                  { str: 'understanding' },
-                  { str: 'comprehension' },
-                  { str: 'appreciation' },
-                  { str: 'sympathy' },
-                ],
-                match: true,
-              },
-            ],
-          },
+          k: [{ ent: '理解', match: true, p: ['i1', 'n1', 'nf02'] }],
+          r: [{ ent: 'りかい', match: true, p: ['i1', 'n1', 'nf02'], a: 1 }],
+          s: [
+            {
+              pos: ['n', 'vs'],
+              g: [
+                { str: 'understanding' },
+                { str: 'comprehension' },
+                { str: 'appreciation' },
+                { str: 'sympathy' },
+              ],
+              match: true,
+            },
+          ],
           romaji: ['rikai'],
         },
       })
@@ -120,11 +118,9 @@ describe('getEntryToCopy', () => {
       getEntryToCopy({
         type: 'word',
         data: {
-          entry: {
-            k: [{ ent: '韓国語', p: ['s1'], match: true }],
-            r: [{ ent: 'かんこくご', p: ['s1'], a: 0, match: true }],
-            s: [{ pos: ['n'], g: [{ str: 'Korean (language)' }], match: true }],
-          },
+          k: [{ ent: '韓国語', p: ['s1'], match: true }],
+          r: [{ ent: 'かんこくご', p: ['s1'], a: 0, match: true }],
+          s: [{ pos: ['n'], g: [{ str: 'Korean (language)' }], match: true }],
           romaji: ['kankokugo'],
         },
       })
@@ -256,24 +252,22 @@ describe('getFieldsToCopy', () => {
       getFieldsToCopy({
         type: 'word',
         data: {
-          entry: {
-            k: [{ ent: '韓国', match: true, p: ['n1', 'nf01'] }],
-            r: [{ ent: 'かんこく', match: true, p: ['n1', 'nf01'], a: 0 }],
-            s: [
-              {
-                pos: ['n', 'adj-no'],
-                g: [{ str: 'South Korea' }, { str: 'Republic of Korea' }],
-                misc: ['abbr'],
-                match: true,
-              },
-              {
-                pos: ['n', 'adj-no'],
-                g: [{ str: 'Korean Empire (1897-1910)' }],
-                misc: ['abbr'],
-                match: true,
-              },
-            ],
-          },
+          k: [{ ent: '韓国', match: true, p: ['n1', 'nf01'] }],
+          r: [{ ent: 'かんこく', match: true, p: ['n1', 'nf01'], a: 0 }],
+          s: [
+            {
+              pos: ['n', 'adj-no'],
+              g: [{ str: 'South Korea' }, { str: 'Republic of Korea' }],
+              misc: ['abbr'],
+              match: true,
+            },
+            {
+              pos: ['n', 'adj-no'],
+              g: [{ str: 'Korean Empire (1897-1910)' }],
+              misc: ['abbr'],
+              match: true,
+            },
+          ],
           romaji: ['kankoku'],
         },
       })

@@ -2,7 +2,7 @@
 // try to re-use definitions from hikibiki-data once we update it.
 
 // This is our slightly slimmed down version of the `WordResult` produced by
-// hikibiki-data.
+// hikibiki-data, augmented with reason and romaji fields.
 //
 // It represents the subset of fields we use and, most importantly, the
 // subset of fields we make available when reading from the flat file (fallback)
@@ -12,6 +12,8 @@ export interface WordResult {
   k: Array<ExtendedKanjiEntry>;
   r: Array<ExtendedKanaEntry>;
   s: Array<ExtendedSense>;
+  reason?: string;
+  romaji?: Array<string>;
 }
 
 // The main difference between these entries and those defined by hikibiki-data

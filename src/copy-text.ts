@@ -8,7 +8,7 @@ import {
 } from './refs';
 
 export type Entry =
-  | { type: 'word'; data: WordMatch }
+  | { type: 'word'; data: WordResult }
   | { type: 'name'; data: NameResult }
   | { type: 'kanji'; data: KanjiResult };
 
@@ -17,7 +17,7 @@ export function getWordToCopy(entry: Entry): string {
 
   switch (entry.type) {
     case 'word':
-      result = (entry.data.entry.k || entry.data.entry.r)
+      result = (entry.data.k || entry.data.r)
         .map((entry) => entry.ent)
         .join(', ');
       break;
@@ -49,16 +49,16 @@ export function getEntryToCopy(
   switch (entry.type) {
     case 'word':
       {
-        result = entry.data.entry.k
-          ? `${entry.data.entry.k
-              .map((k) => k.ent)
-              .join(', ')} [${entry.data.entry.r.map((r) => r.ent).join(', ')}]`
-          : entry.data.entry.r.join(', ');
+        result = entry.data.k
+          ? `${entry.data.k.map((k) => k.ent).join(', ')} [${entry.data.r
+              .map((r) => r.ent)
+              .join(', ')}]`
+          : entry.data.r.join(', ');
         if (entry.data.romaji?.length) {
           result += ` (${entry.data.romaji.join(', ')})`;
         }
 
-        result += ' ' + serializeDefinition(entry.data.entry);
+        result += ' ' + serializeDefinition(entry.data);
       }
       break;
 
@@ -144,7 +144,7 @@ export function getEntryToCopy(
   return result!;
 }
 
-function serializeDefinition(entry: WordMatch['entry']): string {
+function serializeDefinition(entry: WordResult): string {
   const senses = entry.s;
   if (senses.length > 1) {
     return senses
@@ -229,15 +229,13 @@ export function getFieldsToCopy(
 
   switch (entry.type) {
     case 'word':
-      result = entry.data.entry.k
-        ? entry.data.entry.k.map((k) => k.ent).join('; ')
-        : '';
-      result += '\t' + entry.data.entry.r.map((r) => r.ent).join('; ');
+      result = entry.data.k ? entry.data.k.map((k) => k.ent).join('; ') : '';
+      result += '\t' + entry.data.r.map((r) => r.ent).join('; ');
       if (entry.data.romaji?.length) {
         result += '\t' + entry.data.romaji.join('; ');
       }
 
-      result += '\t' + serializeDefinition(entry.data.entry);
+      result += '\t' + serializeDefinition(entry.data);
       break;
 
     case 'name':
