@@ -2,7 +2,8 @@
 
 /* this is to reset almost everything under the popup to a sane value */
 
-#rikaichamp-window, #rikaichamp-window * {
+#rikaichamp-window,
+#rikaichamp-window * {
   max-width: 600px;
   background: transparent;
   border: none !important;
@@ -66,7 +67,8 @@
   padding-bottom: 6px;
 }
 
-#rikaichamp-window .entry, #rikaichamp-window .entry * {
+#rikaichamp-window .entry,
+#rikaichamp-window .entry * {
   line-height: 1.2;
 }
 
@@ -90,12 +92,21 @@
 }
 
 #rikaichamp-window .w-conj {
-  color: #FFE0A0;
+  color: #ffe0a0;
   font-size: 12px;
 }
 
 #rikaichamp-window .w-def,
 #rikaichamp-window .w-def > * {
+  font-size: 13px;
+}
+
+#rikaichamp-window .w-def ol {
+  padding-left: 1.5em;
+  list-style-type: numeric;
+}
+
+#rikaichamp-window .w-def ol li {
   font-size: 13px;
 }
 
@@ -107,29 +118,29 @@
 }
 
 #rikaichamp-window .w-def .tag-fem {
-  background: rgba(255,100,100,0.5);
+  background: rgba(255, 100, 100, 0.5);
 }
 
 #rikaichamp-window .w-def .tag-masc {
-  background: rgba(0,100,255,0.5);
+  background: rgba(0, 100, 255, 0.5);
 }
 
 #rikaichamp-window .w-def .tag-place {
-  background: rgba(50,200,50,0.6);
+  background: rgba(50, 200, 50, 0.6);
 }
 
 #rikaichamp-window .entry.-selected {
-  background: rgba(255,255,206);
+  background: rgba(255, 255, 206);
   border-radius: 2px;
 }
 
 #rikaichamp-window .entry.-selected .w-def .tag {
   color: black;
-  border-color: rgba(0,0,0,0.3) !important;
+  border-color: rgba(0, 0, 0, 0.3) !important;
 }
 
 #rikaichamp-window .entry.-selected .w-kanji {
-  color: #4C63A8;
+  color: #4c63a8;
 }
 
 #rikaichamp-window .entry.-selected .w-kana,
@@ -139,7 +150,7 @@
 
 #rikaichamp-window .entry.-selected .w-def,
 #rikaichamp-window .entry.-selected .w-def > * {
-  color: rgb(0,0,50);
+  color: rgb(0, 0, 50);
 }
 
 #rikaichamp-window .entry.-selected .w-conj {
@@ -151,7 +162,10 @@
 }
 
 @keyframes flash {
-  from { background: white; color: white }
+  from {
+    background: white;
+    color: white;
+  }
 }
 
 #rikaichamp-window .title {
@@ -214,7 +228,7 @@
 }
 
 #rikaichamp-window .kanji-table.-copy .kanji {
-  background: rgba(255,255,206);
+  background: rgba(255, 255, 206);
   border-radius: 2px;
 }
 
@@ -341,7 +355,7 @@
   margin-top: 12px;
   display: grid;
   grid-template-columns: repeat(2, minmax(200px, 1fr));
-  grid-column-gap: .5em;
+  grid-column-gap: 0.5em;
   margin-left: calc(-1 * var(--bg-overhang));
   margin-right: calc(-1 * var(--bg-overhang));
   width: calc(100% + 2 * var(--bg-overhang));
@@ -350,7 +364,7 @@
 #rikaichamp-window .references .ref {
   display: flex;
   padding: 2px var(--bg-overhang);
-  border-radius: .5em;
+  border-radius: 0.5em;
   justify-content: space-between;
 }
 
@@ -360,7 +374,7 @@
 }
 
 #rikaichamp-window .references .value {
-  margin-left: .5em;
+  margin-left: 0.5em;
 }
 
 /*
@@ -377,16 +391,16 @@
 #rikaichamp-window .copy > .keys,
 #rikaichamp-window .copy > .status {
   padding: 5px 8px 5px;
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 #rikaichamp-window .copy > .keys kbd {
-  color: rgb(10,10,10);
-  font-size: .8rem;
+  color: rgb(10, 10, 10);
+  font-size: 0.8rem;
   font-family: monospace;
   height: 1.2rem;
-  padding: .2rem;
-  border-radius: .2rem;
+  padding: 0.2rem;
+  border-radius: 0.2rem;
   background: white;
   border: 1px solid #909090 !important;
 }
@@ -414,15 +428,21 @@
 }
 
 @keyframes fade-out {
-  to { opacity: 0; }
+  to {
+    opacity: 0;
+  }
 }
 
 @keyframes fade-in {
-  to { opacity: 1; }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes roll-up {
-  to { max-height: 0; }
+  to {
+    max-height: 0;
+  }
 }
 
 #rikaichamp-window .copy.-error > .status {
@@ -442,10 +462,10 @@
 #rikaichamp-window .wordlist .bonus-name {
   margin-top: 8px;
   margin-bottom: 3px;
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
-#rikaichamp-window .wordlist .bonus-name .more  {
+#rikaichamp-window .wordlist .bonus-name .more {
   padding: 0px 8px;
 }
 
@@ -459,7 +479,7 @@
   padding: 3px 8px;
   display: flex;
   align-items: baseline;
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 #rikaichamp-window .wordlist .meta .era,
@@ -482,87 +502,89 @@
  * Theme - blue
  */
 
-#rikaichamp-window.-blue, #rikaichamp-window.-blue * {
+#rikaichamp-window.-blue,
+#rikaichamp-window.-blue * {
   color: white;
 }
 
 #rikaichamp-window.-blue {
-  background: #5C73B8;
+  background: #5c73b8;
 }
 
 #rikaichamp-window.-blue .w-kanji {
-  color: #B7E7FF;
+  color: #b7e7ff;
 }
 
 #rikaichamp-window.-blue .kanji-table.-copy .kanji {
-  color: #4C63A8;
+  color: #4c63a8;
 }
 
 #rikaichamp-window.-blue .w-conj {
-  color: #FFE0A0;
+  color: #ffe0a0;
 }
 
 #rikaichamp-window.-blue .w-def .tag {
-  border: 1px solid rgba(255,255,255,0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
 }
 
 #rikaichamp-window.-blue .title {
-  background: #4C63A8;
-  color: #FFFFFF;
+  background: #4c63a8;
+  color: #ffffff;
 }
 
 #rikaichamp-window.-blue .kanji-table .kanji {
-  color: #B7E7FF;
+  color: #b7e7ff;
 }
 
 #rikaichamp-window.-blue .kanji-table .components .-radical * {
-  background: #4C63A8;
-  color: #B7E7FF;
+  background: #4c63a8;
+  color: #b7e7ff;
 }
 
 #rikaichamp-window.-blue .kanji-table .components .-baseradical td {
-  color: #B7E7FF;
+  color: #b7e7ff;
 }
 
 #rikaichamp-window.-blue .w-kana,
 #rikaichamp-window.-blue .w-romaji {
-  color: #C0FFC0;
+  color: #c0ffc0;
 }
 
 #rikaichamp-window.-blue .kanji-table .readings {
-  color: #C0FFC0;
+  color: #c0ffc0;
 }
 
 #rikaichamp-window.-blue .kanji-table .okurigana {
-  color: #A0D0FF;
+  color: #a0d0ff;
 }
 
 #rikaichamp-window.-blue .kanji-table .nanorilabel {
-  color: #E7FFE7;
+  color: #e7ffe7;
 }
 
 #rikaichamp-window.-blue .references .ref.-highlight {
-  background: #4C63A8;
+  background: #4c63a8;
 }
 
 #rikaichamp-window.-blue .references .ref.-highlight * {
-  color: #B7E7FF;
+  color: #b7e7ff;
 }
 
 #rikaichamp-window.-blue .meta .era,
 #rikaichamp-window.-blue .meta .era * {
-  color: #B7E7FF;
+  color: #b7e7ff;
 }
 
 #rikaichamp-window.-blue .meta .seireki {
-  color: #C0FFC0;
+  color: #c0ffc0;
 }
 
 /*
  * Theme - black
  */
 
-#rikaichamp-window.-black, #rikaichamp-window.-black * {
+#rikaichamp-window.-black,
+#rikaichamp-window.-black * {
   color: white;
 }
 
@@ -571,63 +593,63 @@
 }
 
 #rikaichamp-window.-black .w-kanji {
-  color: #7070E0;
+  color: #7070e0;
 }
 
 #rikaichamp-window.-black .w-kana,
 #rikaichamp-window.-black .w-romaji {
-  color: #20A020;
+  color: #20a020;
 }
 
 #rikaichamp-window.-black .w-conj {
-  color: #A0A0A0;
+  color: #a0a0a0;
 }
 
 #rikaichamp-window.-black .w-def .tag {
-  border: 1px solid rgba(255,255,255,0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
 }
 
 #rikaichamp-window.-black .entry.-selected .w-kanji {
-  color: #7070E0;
+  color: #7070e0;
 }
 
 #rikaichamp-window.-black .title {
   background: #303030;
-  color: #E0E0E0;
+  color: #e0e0e0;
 }
 
 #rikaichamp-window.-black .kanji-table .kanji {
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 #rikaichamp-window.-black .kanji-table.-copy .kanji {
-  color: #7070E0;
+  color: #7070e0;
 }
 
 #rikaichamp-window.-black .kanji-table .components .-radical * {
   background: #505050;
-  color: #E0E0E0;
+  color: #e0e0e0;
 }
 
 #rikaichamp-window.-black .kanji-table .components .-baseradical td {
-  color: #E0E0E0;
+  color: #e0e0e0;
 }
 
 #rikaichamp-window.-black .kanji-table .readings {
-  color: #20A020;
+  color: #20a020;
 }
 
 #rikaichamp-window.-black .kanji-table .okurigana {
-  color: #7070E0;
+  color: #7070e0;
 }
 
 #rikaichamp-window.-black .kanji-table .nanorilabel {
-  color: #E0E0E0;
+  color: #e0e0e0;
 }
 
 #rikaichamp-window.-black .summary-box > .cell {
   background: #505050;
-  color: #E0E0E0;
+  color: #e0e0e0;
 }
 
 #rikaichamp-window.-black .references .ref.-highlight {
@@ -635,37 +657,38 @@
 }
 
 #rikaichamp-window.-black .references .ref.-highlight * {
-  color: #E0E0E0;
+  color: #e0e0e0;
 }
 
 #rikaichamp-window.-black .meta .era,
 #rikaichamp-window.-black .meta .era * {
-  color: #7070E0;
+  color: #7070e0;
 }
 
 #rikaichamp-window.-black .meta .seireki {
-  color: #20A020;
+  color: #20a020;
 }
 
 /*
  * Theme - lightblue
  */
 
-#rikaichamp-window.-lightblue, #rikaichamp-window.-lightblue * {
+#rikaichamp-window.-lightblue,
+#rikaichamp-window.-lightblue * {
   color: black;
 }
 
 #rikaichamp-window.-lightblue {
-  background: #E6F4FF;
+  background: #e6f4ff;
 }
 
 #rikaichamp-window.-lightblue .w-kanji {
-  color: #3082BF;
+  color: #3082bf;
 }
 
 #rikaichamp-window.-lightblue .w-kana,
 #rikaichamp-window.-lightblue .w-romaji {
-  color: #00B366;
+  color: #00b366;
 }
 
 #rikaichamp-window.-lightblue .w-conj {
@@ -673,11 +696,11 @@
 }
 
 #rikaichamp-window.-lightblue .w-def .tag {
-  border: 1px solid rgba(0,0,0,0.3) !important;
+  border: 1px solid rgba(0, 0, 0, 0.3) !important;
 }
 
 #rikaichamp-window.-lightblue .title {
-  background: #BFE4FF;
+  background: #bfe4ff;
   color: #000000;
 }
 
@@ -686,24 +709,24 @@
 }
 
 #rikaichamp-window.-lightblue .kanji-table.-copy .kanji {
-  color: #003D6B;
+  color: #003d6b;
 }
 
 #rikaichamp-window.-lightblue .kanji-table .components .-radical * {
-  background: #DFF1FF;
-  color: #003D6B;
+  background: #dff1ff;
+  color: #003d6b;
 }
 
 #rikaichamp-window.-lightblue .kanji-table .components .-baseradical td {
-  color: #003D6B;
+  color: #003d6b;
 }
 
 #rikaichamp-window.-lightblue .kanji-table .readings {
-  color: #00B366;
+  color: #00b366;
 }
 
 #rikaichamp-window.-lightblue .kanji-table .okurigana {
-  color: #00868B;
+  color: #00868b;
 }
 
 #rikaichamp-window.-lightblue .kanji-table .nanorilabel {
@@ -711,50 +734,51 @@
 }
 
 #rikaichamp-window.-lightblue .references .ref.-highlight {
-  background: #DFF1FF;
+  background: #dff1ff;
 }
 
 #rikaichamp-window.-lightblue .references .ref.-highlight * {
-  color: #003D6B;
+  color: #003d6b;
 }
 
 #rikaichamp-window.-lightblue .meta .era,
 #rikaichamp-window.-lightblue .meta .era * {
-  color: #003D6B;
+  color: #003d6b;
 }
 
 #rikaichamp-window.-lightblue .meta .seireki {
-  color: #00B366;
+  color: #00b366;
 }
 
 /*
  * Theme - yellow
  */
 
-#rikaichamp-window.-yellow, #rikaichamp-window.-yellow * {
+#rikaichamp-window.-yellow,
+#rikaichamp-window.-yellow * {
   color: black;
 }
 
 #rikaichamp-window.-yellow {
   color: #111;
-  background: #FFFFBF;
+  background: #ffffbf;
 }
 
 #rikaichamp-window.-yellow .w-kanji {
-  color: #7070E0;
+  color: #7070e0;
 }
 
 #rikaichamp-window.-yellow .w-kana,
 #rikaichamp-window.-yellow .w-romaji {
-  color: #20A020;
+  color: #20a020;
 }
 
 #rikaichamp-window.-yellow .w-conj {
-  color: #A0A0A0;
+  color: #a0a0a0;
 }
 
 #rikaichamp-window.-yellow .w-def .tag {
-  border: 1px solid rgba(0,0,0,0.3) !important;
+  border: 1px solid rgba(0, 0, 0, 0.3) !important;
 }
 
 #rikaichamp-window.-yellow .entry.-selected {
@@ -762,16 +786,16 @@
 }
 
 #rikaichamp-window.-yellow .entry.-selected .w-kanji {
-  color: #7070E0;
+  color: #7070e0;
 }
 
 #rikaichamp-window.-yellow .entry.-selected .w-kana,
 #rikaichamp-window.-yellow .entry.-selected .w-romaji {
-  color: #20A020;
+  color: #20a020;
 }
 
 #rikaichamp-window.-yellow .title {
-  background: #F0F0B0;
+  background: #f0f0b0;
   color: #000000;
 }
 
@@ -781,11 +805,11 @@
 
 #rikaichamp-window.-yellow .kanji-table.-copy .kanji {
   background: #d4edf9;
-  color: #7070E0;
+  color: #7070e0;
 }
 
 #rikaichamp-window.-yellow .kanji-table .components .-radical * {
-  background: #FFFFE6;
+  background: #ffffe6;
   color: #000000;
 }
 
@@ -794,11 +818,11 @@
 }
 
 #rikaichamp-window.-yellow .kanji-table .readings {
-  color: #20A020;
+  color: #20a020;
 }
 
 #rikaichamp-window.-yellow .kanji-table .okurigana {
-  color: #CD5C5C;
+  color: #cd5c5c;
 }
 
 #rikaichamp-window.-yellow .kanji-table .nanorilabel {
@@ -806,7 +830,7 @@
 }
 
 #rikaichamp-window.-yellow .references .ref.-highlight {
-  background: #FFFFE6;
+  background: #ffffe6;
 }
 
 #rikaichamp-window.-yellow .references .ref.-highlight * {
@@ -815,9 +839,9 @@
 
 #rikaichamp-window.-yellow .meta .era,
 #rikaichamp-window.-yellow .meta .era * {
-  color: #7070E0;
+  color: #7070e0;
 }
 
 #rikaichamp-window.-yellow .meta .seireki {
-  color: #20A020;
+  color: #20a020;
 }
