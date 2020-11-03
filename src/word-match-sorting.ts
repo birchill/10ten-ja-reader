@@ -7,17 +7,17 @@
 // As with Array.prototype.sort, sorts `results` in-place, but returns the
 // result to support chaining.
 export function sortMatchesByPriority(
-  results: Array<WordMatch>
-): Array<WordMatch> {
+  results: Array<WordResult>
+): Array<WordResult> {
   results.sort((a, b) => getPriority(b) - getPriority(a));
   return results;
 }
 
-export function getPriority(match: WordMatch): number {
+export function getPriority(match: WordResult): number {
   const scores: Array<number> = [0];
 
   // Scores from kanji readings
-  for (const k of match.entry.k || []) {
+  for (const k of match.k || []) {
     if (!k.p) {
       continue;
     }
@@ -26,7 +26,7 @@ export function getPriority(match: WordMatch): number {
   }
 
   // Scores from kana readings
-  for (const r of match.entry.r) {
+  for (const r of match.r) {
     if (!r.p) {
       continue;
     }

@@ -189,7 +189,7 @@ export class Dictionary {
         // We temporarily store the set of matches for the current candidate
         // in a separate array since we want to sort them by priority before
         // adding them to the result array.
-        const matches: Array<WordMatch> = [];
+        const matches: Array<WordResult> = [];
 
         for (const offset of offsets) {
           if (have.has(offset)) {
@@ -242,11 +242,14 @@ export class Dictionary {
             romaji = entry.r.map(toRomaji);
           }
 
-          matches.push({
-            entry: toWordResult(entry, candidate.word),
-            reason,
-            romaji,
-          });
+          matches.push(
+            toWordResult({
+              entry,
+              matchingText: candidate.word,
+              reason,
+              romaji,
+            })
+          );
         } // for offset of offsets
 
         // Sort preliminary results

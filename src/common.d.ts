@@ -66,17 +66,11 @@ interface KanjiSearchResult {
   matchLen: 1;
 }
 
-interface WordMatch {
-  // TODO: Use definitions from hikibiki-data once we update it
-  // TODO(2): Flatten the word result into this
-  entry: import('./word-result').WordResult;
-  reason?: string;
-  romaji?: Array<string>;
-}
+type WordResult = import('./word-result').WordResult;
 
 interface WordSearchResult {
   type: 'words';
-  data: Array<WordMatch>;
+  data: Array<WordResult>;
   // The length of the longest match in the original input string.
   matchLen: number;
   // True if greater than `maxResults` entries were found.
@@ -91,7 +85,7 @@ interface WordSearchResult {
 
 interface TranslateResult {
   type: 'translate';
-  data: Array<WordMatch>;
+  data: Array<WordResult>;
   // Length of text matched.
   textLen: number;
   // True if greater than WORDS_MAX_ENTRIES were found.
