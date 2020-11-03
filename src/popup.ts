@@ -13,6 +13,7 @@ import {
   getSelectedReferenceLabels,
   ReferenceAbbreviation,
 } from './refs';
+import { ExtendedSense, PartOfSpeech } from './word-result';
 import { EraInfo, getEraInfo } from './years';
 
 export const enum CopyState {
@@ -135,7 +136,7 @@ function renderWordEntries(
     }
 
     if (options.showDefinitions) {
-      entryDiv.append(renderDefinitions(entry, options));
+      entryDiv.append(renderDefinitions(entry));
     }
   }
 
@@ -224,23 +225,138 @@ function renderBonusNames(
   return container;
 }
 
-function renderDefinitions(entry: WordResult, options: PopupOptions) {
+function renderDefinitions(entry: WordResult) {
   const definitionsSpan = document.createElement('span');
   definitionsSpan.classList.add('w-def');
 
   if (entry.s.length === 1) {
-    definitionsSpan.append(entry.s[0].g.map((g) => g.str).join('; '));
+    definitionsSpan.append(renderSense(entry.s[0]));
   } else {
     const definitionList = document.createElement('ol');
     for (const sense of entry.s) {
       const listItem = document.createElement('li');
-      listItem.append(sense.g.map((g) => g.str).join('; '));
+      listItem.append(renderSense(sense));
       definitionList.append(listItem);
     }
     definitionsSpan.append(definitionList);
   }
 
   return definitionsSpan;
+}
+
+const partOfSpeechLabels: {
+  [pos in PartOfSpeech]: string;
+} = {
+  'adj-f': 'pre-noun adj.',
+  'adj-i': 'i adj.',
+  'adj-ix': 'ii/yoi adj.',
+  'adj-kari': 'kari adj.',
+  'adj-ku': 'ku adj.',
+  'adj-na': 'na adj.',
+  'adj-nari': 'nari adj.',
+  'adj-no': 'no-adj.',
+  'adj-pn': 'pre-noun adj.',
+  'adj-shiku': 'shiku adj.',
+  'adj-t': 'taru adj.',
+  adv: 'adverb',
+  'adv-to': 'adverb to',
+  aux: 'aux.',
+  'aux-adj': 'aux. adj.',
+  'aux-v': 'aux. verb',
+  conj: 'conj.',
+  cop: 'copula',
+  ctr: 'counter',
+  exp: 'exp.',
+  int: 'int.',
+  n: 'noun',
+  'n-adv': 'adv. noun',
+  'n-pr': 'proper noun',
+  'n-pref': 'n-pref',
+  'n-suf': 'n-suf',
+  'n-t': 'n-temp',
+  num: 'numeric',
+  pn: 'pronoun',
+  pref: 'prefix',
+  prt: 'particle',
+  suf: 'suffix',
+  unc: '?',
+  'v-unspec': 'verb',
+  v1: '-ru verb',
+  'v1-s': '-ru verb*',
+  'v2a-s': '-u nidan verb',
+  'v2b-k': '-bu nidan verb (upper)',
+  'v2b-s': '-bu nidan verb (lower)',
+  'v2d-k': '-dzu nidan verb (upper)',
+  'v2d-s': '-dzu nidan verb (lower)',
+  'v2g-k': '-gu nidan verb (upper)',
+  'v2g-s': '-gu nidan verb (lower)',
+  'v2h-k': '-hu/fu nidan verb (upper)',
+  'v2h-s': '-hu/fu nidan verb (lower)',
+  'v2k-k': '-ku nidan verb (upper)',
+  'v2k-s': '-ku nidan verb (lower)',
+  'v2m-k': '-mu nidan verb (upper)',
+  'v2m-s': '-mu nidan verb (lower)',
+  'v2n-s': '-nu nidan verb',
+  'v2r-k': '-ru nidan verb (upper)',
+  'v2r-s': '-ru nidan verb (lower)',
+  'v2s-s': '-su nidan verb',
+  'v2t-k': '-tsu nidan verb (upper)',
+  'v2t-s': '-tsu nidan verb (lower)',
+  'v2w-s': '-u nidan verb + we',
+  'v2y-k': '-yu nidan verb (upper)',
+  'v2y-s': '-yu nidan verb (lower)',
+  'v2z-s': '-zu nidan verb',
+  v4b: '-bu yodan verb',
+  v4g: '-gu yodan verb',
+  v4h: '-hu/fu yodan verb',
+  v4k: '-ku yodan verb',
+  v4m: '-mu yodan verb',
+  v4n: '-nu yodan verb',
+  v4r: '-ru yodan verb',
+  v4s: '-su yodan verb',
+  v4t: '-tsu yodan verb',
+  v5aru: '-aru godan verb',
+  v5b: '-bu verb',
+  v5g: '-gu verb',
+  v5k: '-ku verb',
+  'v5k-s': 'iku/yuku verb',
+  v5m: '-mu verb',
+  v5n: '-nu verb',
+  v5r: '-u verb',
+  'v5r-i': '-u verb*',
+  v5s: '-su verb',
+  v5t: '-tsu verb',
+  v5u: '-u verb',
+  'v5u-s': '-u verb*',
+  v5uru: '-uru verb',
+  vi: 'intrans.',
+  vk: 'kuru verb',
+  vn: '-nu verb*',
+  vr: '-nu (-ri) verb*',
+  vs: '+suru verb',
+  'vs-c': '-su(ru) verb',
+  'vs-i': '-suru verb',
+  'vs-s': '-suru verb*',
+  vt: 'trans.',
+  vz: 'zuru verb',
+};
+
+function renderSense(sense: ExtendedSense): string | DocumentFragment {
+  const glosses = sense.g.map((g) => g.str).join('; ');
+  if (!sense.pos) {
+    return glosses;
+  }
+
+  const posSpan = document.createElement('span');
+  posSpan.classList.add('w-pos', 'tag');
+  posSpan.append(
+    sense.pos.map((pos) => partOfSpeechLabels[pos] || pos).join(', ')
+  );
+
+  const fragment = document.createDocumentFragment();
+  fragment.append(glosses);
+  fragment.append(posSpan);
+  return fragment;
 }
 
 function renderNamesEntries(
