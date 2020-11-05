@@ -106,15 +106,15 @@ export type PartOfSpeech =
 
 // prettier-ignore
 export type FieldType =
-  | 'agric' | 'anat' | 'archeol' | 'archit' | 'art' | 'astron' | 'aviat'
-  | 'baseb' | 'biochem' | 'biol' | 'bot' | 'Buddh' | 'bus' | 'chem' | 'Christn'
-  | 'comp' | 'cryst' | 'ecol' | 'econ' | 'elec' | 'electr' | 'embryo' | 'engr'
-  | 'ent' | 'finc' | 'fish' | 'food' | 'gardn' | 'genet' | 'geogr' | 'geol'
-  | 'geom' | 'go' | 'golf' | 'gramm' | 'grmyth' | 'hanaf' | 'horse' | 'law'
-  | 'ling' | 'logic' | 'MA' | 'mahj' | 'math' | 'mech' | 'med' | 'met' | 'mil'
-  | 'music' | 'paleo' | 'pathol' | 'pharm' | 'phil' | 'photo' | 'physics'
-  | 'physiol' | 'print' | 'psych' | 'Shinto' | 'shogi' | 'sports' | 'stat'
-  | 'sumo' | 'telec' | 'tradem' | 'zool';
+  | 'agric' | 'anat' | 'archeol' | 'archit' | 'art' | 'astron' | 'audvid'
+  | 'aviat' | 'baseb' | 'biochem' | 'biol' | 'bot' | 'Buddh' | 'bus' | 'chem'
+  | 'Christn' | 'comp' | 'cryst' | 'ecol' | 'econ' | 'elec' | 'electr'
+  | 'embryo' | 'engr' | 'ent' | 'finc' | 'fish' | 'food' | 'gardn' | 'genet'
+  | 'geogr' | 'geol' | 'geom' | 'go' | 'golf' | 'gramm' | 'grmyth' | 'hanaf'
+  | 'horse' | 'law' | 'ling' | 'logic' | 'MA' | 'mahj' | 'math' | 'mech'
+  | 'med' | 'met' | 'mil' | 'music' | 'ornith' | 'paleo' | 'pathol' | 'pharm'
+  | 'phil' | 'photo' | 'physics' | 'physiol' | 'print' | 'psych' | 'Shinto'
+  | 'shogi' | 'sports' | 'stat' | 'sumo' | 'telec' | 'tradem' | 'vidg' | 'zool';
 
 // prettier-ignore
 export type MiscType =
