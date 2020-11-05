@@ -34,6 +34,7 @@ import {
 type KanjiReferenceFlagsV2 = { [key in ReferenceAbbreviation]?: boolean };
 
 interface Settings {
+  posDisplay?: PartOfSpeechDisplay;
   readingOnly?: boolean;
   showRomaji?: boolean;
   toggleKey?: string;
@@ -217,6 +218,26 @@ export class Config {
       return;
     }
     this._changeListeners.splice(index, 1);
+  }
+
+  // Part-of-speech display: Defaults to expl
+
+  get posDisplay(): PartOfSpeechDisplay {
+    return typeof this._settings.posDisplay === 'undefined'
+      ? 'expl'
+      : this._settings.posDisplay;
+  }
+
+  set posDisplay(value: PartOfSpeechDisplay) {
+    if (
+      typeof this._settings.readingOnly !== 'undefined' &&
+      this._settings.posDisplay === value
+    ) {
+      return;
+    }
+
+    this._settings.posDisplay = value;
+    browser.storage.sync.set({ posDisplay: value });
   }
 
   // readingOnly: Defaults to false
@@ -520,6 +541,7 @@ export class Config {
   // Get all the options the content process cares about at once
   get contentConfig(): ContentConfig {
     return {
+      posDisplay: this.posDisplay,
       readingOnly: this.readingOnly,
       kanjiReferences: this.kanjiReferences,
       showKanjiComponents: this.showKanjiComponents,

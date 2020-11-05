@@ -1,190 +1,241 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset=utf-8>
+    <meta charset="utf-8" />
     <title>Rikaichamp options</title>
-    <link rel="stylesheet" type="text/css" href="chrome://browser/content/extension.css">
-    <link rel="stylesheet" type="text/css" href="../css/options.css">
-    <link rel="stylesheet" type="text/css" href="../css/popup.css">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="chrome://browser/content/extension.css"
+    />
+    <link rel="stylesheet" type="text/css" href="../css/options.css" />
+    <link rel="stylesheet" type="text/css" href="../css/popup.css" />
   </head>
   <body>
-    <div id=rikaichamp_options class=panel>
-      <form id=optform name=optform>
+    <div id="rikaichamp_options" class="panel">
+      <form id="optform" name="optform">
         <div class="panel-section panel-section-header">
-          <h2 class=text-section-header>General</h2>
+          <h2 class="text-section-header">General</h2>
         </div>
         <div class="panel-section panel-section-formElements browser-style">
           <div class="browser-style checkbox-row">
-            <input type=checkbox id=highlightText name=highlightText>
-            <label for=highlightText>Highlight matched text</label>
+            <input type="checkbox" id="highlightText" name="highlightText" />
+            <label for="highlightText">Highlight matched text</label>
           </div>
           <div class="browser-style checkbox-row">
-            <input type=checkbox id=contextMenuEnable name=contextMenuEnable>
-            <label for=contextMenuEnable>Show
-              &ldquo;Enable Rikaichamp&rdquo; in context menu</label>
+            <input
+              type="checkbox"
+              id="contextMenuEnable"
+              name="contextMenuEnable"
+            />
+            <label for="contextMenuEnable"
+              >Show &ldquo;Enable Rikaichamp&rdquo; in context menu</label
+            >
           </div>
         </div>
         <div class="panel-section panel-section-header">
-          <h2 class=text-section-header>Popup style</h2>
+          <h2 class="text-section-header">Popup style</h2>
         </div>
         <div class="panel-section panel-section-formElements">
           <fieldset>
-            <div class=popupstyle-select id=popupstyle-select>
-            </div>
+            <div class="popupstyle-select" id="popupstyle-select"></div>
           </fieldset>
-          <div class="browser-style checkbox-row">
-            <input type=checkbox id=showDefinitions name=showDefinitions>
-            <label for=showDefinitions>Show definitions</label>
+          <div class="browser-style">
+            <label for="showPos">Part of speech display</label>
+            <select id="showPos" name="showPos" class="browser-style">
+              <option value="expl">
+                Explanation (e.g. &ldquo;-u verb&rdquo;)
+              </option>
+              <option value="code">Code (e.g. &ldquo;v5r&rdquo;)</option>
+              <option value="none">None</option>
+            </select>
           </div>
           <div class="browser-style checkbox-row">
-            <input type=checkbox id=showRomaji name=showRomaji>
-            <label for=showRomaji>Show romaji</label>
+            <input
+              type="checkbox"
+              id="showDefinitions"
+              name="showDefinitions"
+            />
+            <label for="showDefinitions">Show definitions</label>
+          </div>
+          <div class="browser-style checkbox-row">
+            <input type="checkbox" id="showRomaji" name="showRomaji" />
+            <label for="showRomaji">Show romaji</label>
           </div>
         </div>
         <div class="panel-section panel-section-header">
-          <h2 class=text-section-header>Keyboard</h2>
+          <h2 class="text-section-header">Keyboard</h2>
         </div>
         <div class="panel-section panel-section-formElements">
           <div class="panel-section key-grid">
             <div class="key browser-style">
-              <input type=checkbox id=toggle-alt>
-              <label for=toggle-alt><span>Alt</span></label>
-              <input type=checkbox id=toggle-ctrl>
-              <label for=toggle-ctrl><span>Ctrl</span></label>
-              <input type=checkbox id=toggle-shift>
-              <label for=toggle-shift><span>Shift</span></label>
-              <input size=1 type=text value=R disabled class=hotkey
-                id=toggle-key>
+              <input type="checkbox" id="toggle-alt" />
+              <label for="toggle-alt"><span>Alt</span></label>
+              <input type="checkbox" id="toggle-ctrl" />
+              <label for="toggle-ctrl"><span>Ctrl</span></label>
+              <input type="checkbox" id="toggle-shift" />
+              <label for="toggle-shift"><span>Shift</span></label>
+              <input
+                size="1"
+                type="text"
+                value="R"
+                disabled
+                class="hotkey"
+                id="toggle-key"
+              />
             </div>
             <div class="key-description">
               Toggle Rikaichamp on/off
-              <div class="icon -warning" id=toggle-key-icon></div>
+              <div class="icon -warning" id="toggle-key-icon"></div>
             </div>
             <div class="key browser-style">
-              <input type=checkbox id=show-alt>
-              <label for=toggle-alt><span>Alt</span></label>
-              <input type=checkbox id=show-ctrl>
-              <label for=toggle-ctrl><span>Ctrl</span></label>
-              <input type=checkbox id=show-shift>
-              <label for=toggle-shift><span>Shift</span></label>
+              <input type="checkbox" id="show-alt" />
+              <label for="toggle-alt"><span>Alt</span></label>
+              <input type="checkbox" id="show-ctrl" />
+              <label for="toggle-ctrl"><span>Ctrl</span></label>
+              <input type="checkbox" id="show-shift" />
+              <label for="toggle-shift"><span>Shift</span></label>
             </div>
-            <div class=key-description>
+            <div class="key-description">
               Show pop-up
-              <p><em>If nothing is selected, the pop-up will display whenever
-                Rikaichamp is enabled.</em></p>
+              <p>
+                <em
+                  >If nothing is selected, the pop-up will display whenever
+                  Rikaichamp is enabled.</em
+                >
+              </p>
             </div>
           </div>
           <p>Pop-up keys:</p>
-          <div class="panel-section key-grid" id=key-grid>
+          <div class="panel-section key-grid" id="key-grid">
             <div class="key browser-style">
-              <input type=checkbox id=key-x name=key-x data-key=x>
-              <label for=key-x><span>x</span></label>
+              <input type="checkbox" id="key-x" name="key-x" data-key="x" />
+              <label for="key-x"><span>x</span></label>
             </div>
-            <div class=key-description>Key description</div>
+            <div class="key-description">Key description</div>
             <div class="key browser-style">
-              <input type=checkbox id=key-y name=key-y data-key=y>
-              <label for=key-y><span>y</span></label>
-              <input type=checkbox id=key-z name=key-z data-key=z>
-              <label for=key-z><span>z</span></label>
+              <input type="checkbox" id="key-y" name="key-y" data-key="y" />
+              <label for="key-y"><span>y</span></label>
+              <input type="checkbox" id="key-z" name="key-z" data-key="z" />
+              <label for="key-z"><span>z</span></label>
             </div>
-            <div class=key-description>Key description</div>
+            <div class="key-description">Key description</div>
           </div>
         </div>
         <div class="panel-section panel-section-header">
-          <h2 class=text-section-header>Dictionary language</h2>
+          <h2 class="text-section-header">Dictionary language</h2>
         </div>
         <div class="panel-section panel-section-formElements dict-lang">
-          <select id=lang name=lang class=browser-style>
-            <option value=en>English</option>
-            <option value=fr>Français</option>
-            <option value=es>Español</option>
-            <option value=pt>Português</option>
+          <select id="lang" name="lang" class="browser-style">
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="es">Español</option>
+            <option value="pt">Português</option>
           </select>
-          <div class=note>This setting currently only applies to the kanji dictionary.</div>
+          <div class="note">
+            This setting currently only applies to the kanji dictionary.
+          </div>
         </div>
         <div class="panel-section panel-section-header">
-          <h2 class=text-section-header>Kanji dictionary</h2>
+          <h2 class="text-section-header">Kanji dictionary</h2>
         </div>
         <div class="panel-section panel-section-db-summary">
-          <div class="db-summary-controls panel-section-grid panel-section-list browser-style">
+          <div
+            class="db-summary-controls panel-section-grid panel-section-list browser-style"
+          >
             <div class="browser-style checkbox-row">
-              <input type=checkbox id=showKanjiComponents
-                name=showKanjiComponents>
-              <label for=showKanjiComponents>Kanji components</label>
+              <input
+                type="checkbox"
+                id="showKanjiComponents"
+                name="showKanjiComponents"
+              />
+              <label for="showKanjiComponents">Kanji components</label>
             </div>
             <div class="browser-style checkbox-row">
-              <input type=checkbox id=H name=H>
-              <label for=H>Halpern</label>
+              <input type="checkbox" id="H" name="H" />
+              <label for="H">Halpern</label>
             </div>
             <div class="browser-style checkbox-row">
-              <input type=checkbox id=L name=L>
-              <label for=L>Heisig</label>
+              <input type="checkbox" id="L" name="L" />
+              <label for="L">Heisig</label>
             </div>
             <div class="browser-style checkbox-row">
-              <input type=checkbox id=E name=E>
-              <label for=E>Henshall</label>
+              <input type="checkbox" id="E" name="E" />
+              <label for="E">Henshall</label>
             </div>
             <div class="browser-style checkbox-row">
-              <input type=checkbox id=DK name=DK>
-              <label for=DK>Kanji Learners Dictionary</label>
+              <input type="checkbox" id="DK" name="DK" />
+              <label for="DK">Kanji Learners Dictionary</label>
             </div>
             <div class="browser-style checkbox-row">
-              <input type=checkbox id=N name=N>
-              <label for=N>Nelson</label>
+              <input type="checkbox" id="N" name="N" />
+              <label for="N">Nelson</label>
             </div>
             <div class="browser-style checkbox-row">
-              <input type=checkbox id=V name=V>
-              <label for=V>New Nelson</label>
+              <input type="checkbox" id="V" name="V" />
+              <label for="V">New Nelson</label>
             </div>
             <div class="browser-style checkbox-row">
-              <input type=checkbox id=Y name=Y>
-              <label for=Y>PinYin</label>
+              <input type="checkbox" id="Y" name="Y" />
+              <label for="Y">PinYin</label>
             </div>
             <div class="browser-style checkbox-row">
-              <input type=checkbox id=P name=P>
-              <label for=P>Skip Pattern</label>
+              <input type="checkbox" id="P" name="P" />
+              <label for="P">Skip Pattern</label>
             </div>
             <div class="browser-style checkbox-row">
-              <input type=checkbox id=IN name=IN>
-              <label for=IN>Tuttle Kanji &amp; Kana</label>
+              <input type="checkbox" id="IN" name="IN" />
+              <label for="IN">Tuttle Kanji &amp; Kana</label>
             </div>
             <div class="browser-style checkbox-row">
-              <input type=checkbox id=I name=I>
-              <label for=I>Tuttle Kanji Dictionary</label>
+              <input type="checkbox" id="I" name="I" />
+              <label for="I">Tuttle Kanji Dictionary</label>
             </div>
             <div class="browser-style checkbox-row">
-              <input type=checkbox id=U name=U>
-              <label for=U>Unicode</label>
+              <input type="checkbox" id="U" name="U" />
+              <label for="U">Unicode</label>
             </div>
           </div>
         </div>
         <div class="panel-section panel-section-header">
-          <h2 class=text-section-header>Dictionary data</h2>
+          <h2 class="text-section-header">Dictionary data</h2>
         </div>
         <div class="panel-section panel-section-db-summary">
           <div class="db-summary-blurb">
-            Includes data from <a
+            Includes data from
+            <a
               href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project"
-              target="_blank" rel="noopener">KANJIDIC</a>. This data is the property of the <a
-              href="https://www.edrdg.org/" target="_blank" rel="noopener">Electronic
-              Dictionary Research and Development Group</a>, and is used in
-            conformance with the Group's <a
-              href="https://www.edrdg.org/edrdg/licence.html" target="_blank"
-              rel="noopener">licence</a>.
+              target="_blank"
+              rel="noopener"
+              >KANJIDIC</a
+            >. This data is the property of the
+            <a href="https://www.edrdg.org/" target="_blank" rel="noopener"
+              >Electronic Dictionary Research and Development Group</a
+            >, and is used in conformance with the Group's
+            <a
+              href="https://www.edrdg.org/edrdg/licence.html"
+              target="_blank"
+              rel="noopener"
+              >licence</a
+            >.
           </div>
           <div class="db-summary-status">
             <div class="db-summary-version">
               <div class="title">Kanji data v1.0.3</div>
-              <div class="db-source-version">Based on
-                  KANJIDIC 2020-219 from 2020-08-07.</div>
+              <div class="db-source-version">
+                Based on KANJIDIC 2020-219 from 2020-08-07.
+              </div>
             </div>
             <div class="db-summary-version">
               <div class="title">Name data v2.1.1</div>
-              <div class="db-source-version">Based on
-                  JMnedict/ENAMDICT from 2020-08-07.</div>
+              <div class="db-source-version">
+                Based on JMnedict/ENAMDICT from 2020-08-07.
+              </div>
             </div>
             <div class="db-summary-button">
-              <button class="browser-style" type="button">Check for updates</button>
+              <button class="browser-style" type="button">
+                Check for updates
+              </button>
               <div class="last-check">Last check 2019-10-13 17:04.</div>
             </div>
           </div>

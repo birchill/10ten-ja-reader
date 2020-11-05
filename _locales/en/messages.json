@@ -241,6 +241,22 @@
     "message": "Popup style",
     "description": "Heading for options to configure popup display"
   },
+  "options_pos_display_label": {
+    "message": "Part of speech display",
+    "description": "Label for the drop-down list used to configure how part-of-speech tags are displayed"
+  },
+  "options_pos_display_expl": {
+    "message": "Explanation (e.g. “-u verb”)",
+    "description": "Label for configuring short explanations to be shown for part-of-speech. The \"-u verb\" example should correspond to the localized value of pos_label_v5r."
+  },
+  "options_pos_display_code": {
+    "message": "Code (e.g. “v5r”)",
+    "description": "Label for simply display dictionary part-of-speech codes"
+  },
+  "options_pos_display_none": {
+    "message": "None",
+    "description": "Label for hiding part-of-speech labels"
+  },
   "options_show_definitions": {
     "message": "Show definitions"
   },

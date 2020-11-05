@@ -14,7 +14,12 @@ interface KeyboardKeys {
   startCopy: string[];
 }
 
+type PartOfSpeechDisplay = 'expl' | 'code' | 'none';
+
 interface ContentConfig {
+  // Indicates the type of display to use for part-of-speech labels.
+  posDisplay: PartOfSpeechDisplay;
+
   // True if only the reading (and not the definition) should be shown.
   readingOnly: boolean;
 
