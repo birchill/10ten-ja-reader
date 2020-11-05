@@ -158,11 +158,17 @@ function renderPopupStyleSelect() {
 
     const spanDef = document.createElement('span');
     spanDef.classList.add('w-def');
-    let definition = '(n,vs)';
-    if (!config.readingOnly) {
-      definition += ' understanding';
-    }
-    spanDef.textContent = definition;
+    spanDef.append('understanding');
+
+    const posSpan = document.createElement('span');
+    posSpan.classList.add('w-pos', 'tag');
+    posSpan.append(
+      ['n', 'vs']
+        .map((pos) => browser.i18n.getMessage(`pos_label_${pos}`) || pos)
+        .join(', ')
+    );
+    spanDef.append(posSpan);
+
     entry.appendChild(spanDef);
   }
 }
