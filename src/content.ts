@@ -1462,6 +1462,7 @@ export class RikaiContent {
       : window.document;
 
     const popupOptions: PopupOptions = {
+      posDisplay: this._config.posDisplay,
       showDefinitions: !this._config.readingOnly,
       kanjiReferences: this._config.kanjiReferences,
       showKanjiComponents: this._config.showKanjiComponents,

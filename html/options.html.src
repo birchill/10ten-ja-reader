@@ -36,6 +36,14 @@
             <div class=popupstyle-select id=popupstyle-select>
             </div>
           </fieldset>
+          <div class="browser-style">
+            <label for="posDisplay">__MSG_options_pos_display_label__</label>
+            <select id="posDisplay" name="posDisplay" class="browser-style">
+              <option value="expl">__MSG_options_pos_display_expl__</option>
+              <option value="code">__MSG_options_pos_display_code__</option>
+              <option value="none">__MSG_options_pos_display_none__</option>
+            </select>
+          </div>
           <div class="browser-style checkbox-row">
             <input type=checkbox id=showDefinitions name=showDefinitions>
             <label for=showDefinitions>__MSG_options_show_definitions__</label>

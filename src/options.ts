@@ -61,6 +61,12 @@ function completeForm() {
       config.contextMenuEnable = (evt.target as HTMLInputElement).checked;
     });
 
+  document.getElementById('posDisplay')!.addEventListener('input', (evt) => {
+    config.posDisplay = (evt.target as HTMLSelectElement)
+      .value as PartOfSpeechDisplay;
+    renderPopupStyleSelect();
+  });
+
   document
     .getElementById('showDefinitions')!
     .addEventListener('click', (evt) => {
@@ -160,14 +166,24 @@ function renderPopupStyleSelect() {
     spanDef.classList.add('w-def');
     spanDef.append('understanding');
 
-    const posSpan = document.createElement('span');
-    posSpan.classList.add('w-pos', 'tag');
-    posSpan.append(
-      ['n', 'vs']
-        .map((pos) => browser.i18n.getMessage(`pos_label_${pos}`) || pos)
-        .join(', ')
-    );
-    spanDef.append(posSpan);
+    if (config.posDisplay !== 'none') {
+      const posSpan = document.createElement('span');
+      posSpan.classList.add('w-pos', 'tag');
+      switch (config.posDisplay) {
+        case 'expl':
+          posSpan.append(
+            ['n', 'vs']
+              .map((pos) => browser.i18n.getMessage(`pos_label_${pos}`) || pos)
+              .join(', ')
+          );
+          break;
+
+        case 'code':
+          posSpan.append('n, vs');
+          break;
+      }
+      spanDef.append(posSpan);
+    }
 
     entry.appendChild(spanDef);
   }
@@ -515,6 +531,7 @@ function createKanjiReferences() {
 
 function fillVals() {
   const optform = document.getElementById('optform') as HTMLFormElement;
+  optform.posDisplay.value = config.posDisplay;
   optform.showDefinitions.checked = !config.readingOnly;
   optform.highlightText.checked = !config.noTextHighlight;
   optform.contextMenuEnable.checked = config.contextMenuEnable;

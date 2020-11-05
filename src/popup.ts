@@ -24,6 +24,7 @@ export const enum CopyState {
 }
 
 export interface PopupOptions {
+  posDisplay: PartOfSpeechDisplay;
   showDefinitions: boolean;
   kanjiReferences: Array<ReferenceAbbreviation>;
   showKanjiComponents?: boolean;
@@ -136,7 +137,7 @@ function renderWordEntries(
     }
 
     if (options.showDefinitions) {
-      entryDiv.append(renderDefinitions(entry));
+      entryDiv.append(renderDefinitions(entry, options));
     }
   }
 
@@ -225,17 +226,17 @@ function renderBonusNames(
   return container;
 }
 
-function renderDefinitions(entry: WordResult) {
+function renderDefinitions(entry: WordResult, options: PopupOptions) {
   const definitionsSpan = document.createElement('span');
   definitionsSpan.classList.add('w-def');
 
   if (entry.s.length === 1) {
-    definitionsSpan.append(renderSense(entry.s[0]));
+    definitionsSpan.append(renderSense(entry.s[0], options));
   } else {
     const definitionList = document.createElement('ol');
     for (const sense of entry.s) {
       const listItem = document.createElement('li');
-      listItem.append(renderSense(sense));
+      listItem.append(renderSense(sense, options));
       definitionList.append(listItem);
     }
     definitionsSpan.append(definitionList);
@@ -244,23 +245,37 @@ function renderDefinitions(entry: WordResult) {
   return definitionsSpan;
 }
 
-function renderSense(sense: ExtendedSense): string | DocumentFragment {
+function renderSense(
+  sense: ExtendedSense,
+  options: PopupOptions
+): string | DocumentFragment {
   const glosses = sense.g.map((g) => g.str).join('; ');
   if (!sense.pos) {
     return glosses;
   }
 
-  const posSpan = document.createElement('span');
-  posSpan.classList.add('w-pos', 'tag');
-  posSpan.append(
-    sense.pos
-      .map((pos) => browser.i18n.getMessage(`pos_label_${pos}`) || pos)
-      .join(', ')
-  );
-
   const fragment = document.createDocumentFragment();
   fragment.append(glosses);
-  fragment.append(posSpan);
+
+  if (options.posDisplay !== 'none') {
+    const posSpan = document.createElement('span');
+    posSpan.classList.add('w-pos', 'tag');
+    switch (options.posDisplay) {
+      case 'expl':
+        posSpan.append(
+          sense.pos
+            .map((pos) => browser.i18n.getMessage(`pos_label_${pos}`) || pos)
+            .join(', ')
+        );
+        break;
+
+      case 'code':
+        posSpan.append(sense.pos.join(', '));
+        break;
+    }
+    fragment.append(posSpan);
+  }
+
   return fragment;
 }
 
