@@ -48,7 +48,7 @@
     "jest": "^25.5.4",
     "karma": "^5.2.3",
     "karma-chai": "^0.1.0",
-    "karma-firefox-launcher": "^2.0.0",
+    "karma-firefox-launcher": "^2.1.0",
     "karma-mocha": "^2.0.1",
     "karma-webpack": "^4.0.2",
     "mocha": "^8.2.1",
