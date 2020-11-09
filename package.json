@@ -51,7 +51,7 @@
     "karma-firefox-launcher": "^2.0.0",
     "karma-mocha": "^2.0.1",
     "karma-webpack": "^4.0.2",
-    "mocha": "^8.2.0",
+    "mocha": "^8.2.1",
     "prettier": "^2.1.2",
     "semver-parser": "^3.0.5",
     "source-map-loader": "^1.1.2",
