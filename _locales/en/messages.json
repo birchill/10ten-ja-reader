@@ -625,6 +625,38 @@
   "deinflect_continuous": {
     "message": "continuous"
   },
+  "head_info_label_ateji": {
+    "message": "ateji",
+    "description": "Short annotation given to kanji headwords that are ateji (kanji chosen to represent sounds)"
+  },
+  "head_info_label_gikun": {
+    "message": "gikun",
+    "description": "Short annotation given to kana headwords with gikun (meaning as reading) or jukujikun (special kanji reading)"
+  },
+  "head_info_label_iK": {
+    "message": "rare",
+    "description": "Short annotation given to kanji headwords that have rare use of kanji"
+  },
+  "head_info_label_ik": {
+    "message": "rare",
+    "description": "Short annotation given to (mostly?) kana headwords that have rare use of kana"
+  },
+  "head_info_label_io": {
+    "message": "rare",
+    "description": "Short annotation given to kanji headwords that have rare use of okurigana"
+  },
+  "head_info_label_oK": {
+    "message": "old",
+    "description": "Short annotation given to kanji headwords that use out-dated kanji"
+  },
+  "head_info_label_ok": {
+    "message": "old",
+    "description": "Short annotation given to kana headwords that use out-dated kana"
+  },
+  "head_info_label_uK": {
+    "message": "usu. kanji",
+    "description": "Short annotation given to kana headwords that are normally written in kanji alone"
+  },
   "pos_label_adj-f": {
     "message": "pre-noun adj.",
     "description": "Short part-of-speech label shown next to noun or verb entries acting prenominally"

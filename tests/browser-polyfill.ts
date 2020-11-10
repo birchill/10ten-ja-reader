@@ -76,6 +76,22 @@ export const browser = {
           return 'kanji';
         case 'content_copy_keys_next_label':
           return 'next';
+        case 'head_info_label_ateji':
+          return 'ateji';
+        case 'head_info_label_gikun':
+          return 'gikun';
+        case 'head_info_label_iK':
+          return 'rare';
+        case 'head_info_label_ik':
+          return 'rare';
+        case 'head_info_label_io':
+          return 'rare';
+        case 'head_info_label_oK':
+          return 'old';
+        case 'head_info_label_ok':
+          return 'old';
+        case 'head_info_label_uK':
+          return 'usu. kanji';
         case 'ref_label_radical':
           return 'Radical';
         case 'ref_label_kk':

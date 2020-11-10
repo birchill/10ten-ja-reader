@@ -604,5 +604,37 @@
   },
   "deinflect_continuous": {
     "message": "進行形"
+  },
+  "head_info_label_ateji": {
+    "message": "当て字",
+    "description": "Short annotation given to kanji headwords that are ateji (kanji chosen to represent sounds)"
+  },
+  "head_info_label_gikun": {
+    "message": "義訓",
+    "description": "Short annotation given to kana headwords with gikun (meaning as reading) or jukujikun (special kanji reading)"
+  },
+  "head_info_label_iK": {
+    "message": "珍",
+    "description": "Short annotation given to kanji headwords that have rare use of kanji"
+  },
+  "head_info_label_ik": {
+    "message": "珍",
+    "description": "Short annotation given to (mostly?) kana headwords that have rare use of kana"
+  },
+  "head_info_label_io": {
+    "message": "珍",
+    "description": "Short annotation given to kanji headwords that have rare use of okurigana"
+  },
+  "head_info_label_oK": {
+    "message": "古",
+    "description": "Short annotation given to kanji headwords that use out-dated kanji"
+  },
+  "head_info_label_ok": {
+    "message": "古",
+    "description": "Short annotation given to kana headwords that use out-dated kana"
+  },
+  "head_info_label_uK": {
+    "message": "一般漢字",
+    "description": "Short annotation given to kana headwords that are normally written in kanji alone"
   }
 }
