@@ -91,6 +91,12 @@
   margin-left: 0.3em;
 }
 
+#rikaichamp-window .w-kanji .w-head-info,
+#rikaichamp-window .w-kana .w-head-info {
+  margin-left: 0.3em;
+  font-size: 10px;
+}
+
 #rikaichamp-window .w-conj {
   color: #ffe0a0;
   font-size: 12px;

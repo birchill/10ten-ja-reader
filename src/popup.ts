@@ -13,7 +13,7 @@ import {
   getSelectedReferenceLabels,
   ReferenceAbbreviation,
 } from './refs';
-import { ExtendedSense } from './word-result';
+import { ExtendedSense, KanjiInfo, ReadingInfo } from './word-result';
 import { EraInfo, getEraInfo } from './years';
 
 export const enum CopyState {
@@ -105,20 +105,31 @@ function renderWordEntries(
     const headingDiv = document.createElement('div');
     entryDiv.append(headingDiv);
 
-    const matchingKanji =
-      entry.k?.filter((k) => k.match).map((k) => k.ent) || [];
+    const matchingKanji = entry.k?.filter((k) => k.match) || [];
     if (matchingKanji.length) {
       const kanjiSpan = document.createElement('span');
       kanjiSpan.classList.add('w-kanji');
-      kanjiSpan.append(matchingKanji.join('、 '));
+      for (const [i, kanji] of matchingKanji.entries()) {
+        if (i) {
+          kanjiSpan.append('、 ');
+        }
+        kanjiSpan.append(kanji.ent);
+        appendHeadwordInfo(kanji.i, kanjiSpan);
+      }
       headingDiv.append(kanjiSpan);
     }
 
-    const matchingKana = entry.r.filter((r) => r.match).map((r) => r.ent);
+    const matchingKana = entry.r.filter((r) => r.match);
     if (matchingKana.length) {
       const kanaSpan = document.createElement('span');
       kanaSpan.classList.add('w-kana');
-      kanaSpan.append(matchingKana.join('、 '));
+      for (const [i, kana] of matchingKana.entries()) {
+        if (i) {
+          kanaSpan.append('、 ');
+        }
+        kanaSpan.append(kana.ent);
+        appendHeadwordInfo(kana.i, kanaSpan);
+      }
       headingDiv.append(kanaSpan);
     }
 
@@ -224,6 +235,24 @@ function renderBonusNames(
   }
 
   return container;
+}
+
+function appendHeadwordInfo(
+  info: Array<KanjiInfo> | Array<ReadingInfo> | undefined,
+  parent: ParentNode
+) {
+  if (!info || !info.length) {
+    return;
+  }
+
+  for (const i of info) {
+    const span = document.createElement('span');
+    span.classList.add('w-head-info');
+    span.append('(');
+    span.append(browser.i18n.getMessage(`head_info_label_${i}`) || i);
+    span.append(')');
+    parent.append(span);
+  }
 }
 
 function renderDefinitions(entry: WordResult, options: PopupOptions) {
