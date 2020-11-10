@@ -4,7 +4,7 @@
   "description": "Translate Japanese by hovering over words.",
   "scripts": {
     "build": "webpack",
-    "build:chrome": "webpack --env.target=chrome",
+    "build:chrome": "webpack --env target=chrome",
     "lint": "web-ext lint",
     "package": "yarn build && web-ext build --overwrite-dest -a dist-firefox-package",
     "package:chrome": "yarn build:chrome && web-ext build --overwrite-dest -s dist-chrome -a dist-chrome-package",
@@ -12,7 +12,7 @@
     "test:unit": "jest",
     "test:browser": "karma start --single-run",
     "start": "webpack -w",
-    "start:chrome": "webpack -w --env.target=chrome",
+    "start:chrome": "webpack -w --env target=chrome",
     "update-db": "node utils/update-db",
     "version": "node utils/sync-manifest-version && git add manifest.json.src",
     "zip-src": "node utils/zip-src"
