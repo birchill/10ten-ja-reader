@@ -1,3 +1,5 @@
+/// <reference types="../src/common" />
+
 import { assert } from 'chai';
 import { browser } from './browser-polyfill';
 (window as any).browser = browser;
@@ -98,7 +100,8 @@ describe('rikaiContent:text search', () => {
   let subject: RikaiContent;
 
   beforeEach(() => {
-    const config = {
+    const config: ContentConfig = {
+      posDisplay: 'expl',
       readingOnly: false,
       kanjiReferences: ['kk'] as Array<ReferenceAbbreviation>,
       showKanjiComponents: true,
@@ -1039,7 +1042,8 @@ describe('rikaiContent:highlighting', () => {
   let subject: RikaiContent;
 
   beforeEach(() => {
-    const config = {
+    const config: ContentConfig = {
+      posDisplay: 'expl',
       readingOnly: false,
       kanjiReferences: ['kk'] as Array<ReferenceAbbreviation>,
       showKanjiComponents: true,
