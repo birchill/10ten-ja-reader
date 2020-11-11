@@ -12,9 +12,11 @@ errors=0
 mapfile -t messages < <(jq -r 'keys[]' ../_locales/en/messages.json)
 for message in ${messages[@]}; do
   if [[ $(rg ${message} ../{html,src,css} ../*.src | wc -l) == 0 ]];then
-    # content_names_tag_* currently gets a free pass since we programmatically
-    # generate those.
-    if [[ $message != content_names_tag_* ]]; then
+    # content_names_tag_*, pos_label_*, and head_info_label_* currently get a
+    # free pass since we programmatically generate those.
+    if [[ $message != content_names_tag_* && \
+          $message != pos_label_* && \
+          $message != head_info_label_* ]]; then
       echo ${message} has no matches!
       ((errors=errors+1))
     fi
