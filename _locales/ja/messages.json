@@ -1,67 +1,35 @@
 {
-  "extension_description": {
-    "message": "単語の上にマウスのカーソルを合わせたら日英辞書を引く。",
-    "description": "Description of the what the extension does."
+  "command_toggle_checking": {
+    "message": "辞書データの更新を確認中...",
+    "description": "Tooltip for toolbar button when checking for updates."
   },
   "command_toggle_description": {
     "message": "Rikaichampオン・オフを切り替える",
     "description": "Explanation of toolbar button to turn Rikaichamp on or off"
   },
-  "command_toggle_enabled": {
-    "message": "Rikaichamp オン",
-    "description": "Tooltip for toolbar button when enabled."
-  },
   "command_toggle_disabled": {
     "message": "Rikaichamp オフ",
     "description": "Tooltip for toolbar button when disabled."
-  },
-  "command_toggle_loading": {
-    "message": "Rikaichamp ロード中...",
-    "description": "Tooltip for toolbar button when loading."
-  },
-  "command_toggle_checking": {
-    "message": "辞書データの更新を確認中...",
-    "description": "Tooltip for toolbar button when checking for updates."
   },
   "command_toggle_downloading": {
     "message": "辞書データを読み込み中...",
     "description": "Tooltip for toolbar button when downloading updates."
   },
-  "command_toggle_updating": {
-    "message": "辞書データを適用中...",
-    "description": "Tooltip for toolbar button when applying updates."
+  "command_toggle_enabled": {
+    "message": "Rikaichamp オン",
+    "description": "Tooltip for toolbar button when enabled."
+  },
+  "command_toggle_loading": {
+    "message": "Rikaichamp ロード中...",
+    "description": "Tooltip for toolbar button when loading."
   },
   "command_toggle_update_error": {
     "message": "辞書データの更新を失敗しました",
     "description": "Tooltip for toolbar button when we failed to update."
   },
-  "menu_enable_extension": {
-    "message": "Rikaichampを有効にする",
-    "description": "Context menu item to enable the extension."
-  },
-  "content_copy_keys_label": {
-    "message": "コピー:",
-    "description": "Label at start of row describing keys for copying information to the clipboard"
-  },
-  "content_copy_keys_entry_label": {
-    "message": "項目",
-    "description": "Label for key to copy a dictionary entry to the clipboard"
-  },
-  "content_copy_keys_fields_label": {
-    "message": "タブ区切り",
-    "description": "Label for key to copy a tab-separated set of fields to the clipboard"
-  },
-  "content_copy_keys_word_label": {
-    "message": "単語",
-    "description": "Label for key to copy a word to the clipboard"
-  },
-  "content_copy_keys_kanji_label": {
-    "message": "漢字",
-    "description": "Label for key to copy a single kanji character to the clipboard"
-  },
-  "content_copy_keys_next_label": {
-    "message": "次",
-    "description": "Label for key to move the copy highlight to the next entry"
+  "command_toggle_updating": {
+    "message": "辞書データを適用中...",
+    "description": "Tooltip for toolbar button when applying updates."
   },
   "content_copied_entry": {
     "message": "項目をコピーしました",
@@ -79,52 +47,29 @@
     "message": "コピーが失敗しました",
     "description": "Message shown in overlay when we couldn't copy to the clipboard"
   },
-  "content_names_dictionary": {
-    "message": "人名辞典",
-    "description": "The title used at the top of the popup when showing the names dictionary"
+  "content_copy_keys_entry_label": {
+    "message": "項目",
+    "description": "Label for key to copy a dictionary entry to the clipboard"
   },
-  "content_names_tag_surname": {
-    "message": "姓"
+  "content_copy_keys_fields_label": {
+    "message": "タブ区切り",
+    "description": "Label for key to copy a tab-separated set of fields to the clipboard"
   },
-  "content_names_tag_place": {
-    "message": "地名"
+  "content_copy_keys_kanji_label": {
+    "message": "漢字",
+    "description": "Label for key to copy a single kanji character to the clipboard"
   },
-  "content_names_tag_unclass": {
-    "message": "人名"
+  "content_copy_keys_label": {
+    "message": "コピー:",
+    "description": "Label at start of row describing keys for copying information to the clipboard"
   },
-  "content_names_tag_given": {
-    "message": "名"
+  "content_copy_keys_next_label": {
+    "message": "次",
+    "description": "Label for key to move the copy highlight to the next entry"
   },
-  "content_names_tag_fem": {
-    "message": "女"
-  },
-  "content_names_tag_masc": {
-    "message": "男"
-  },
-  "content_names_tag_person": {
-    "message": "姓名"
-  },
-  "content_names_tag_product": {
-    "message": "品名"
-  },
-  "content_names_tag_company": {
-    "message": "社名"
-  },
-  "content_names_tag_org": {
-    "message": "組織"
-  },
-  "content_names_tag_station": {
-    "message": "駅"
-  },
-  "content_names_tag_work": {
-    "message": "作品"
-  },
-  "content_names_tag_ok": {
-    "message": "旧"
-  },
-  "content_kanji_radical_label": {
-    "message": "部首",
-    "description": "The title given to the box showing radical information"
+  "content_copy_keys_word_label": {
+    "message": "単語",
+    "description": "Label for key to copy a word to the clipboard"
   },
   "content_kanji_base_radical": {
     "message": "部 $char$ ($readings$)",
@@ -140,13 +85,17 @@
       }
     }
   },
-  "content_kanji_nanori_label": {
-    "message": "名乗り",
-    "description": "Label given to name readings"
-  },
   "content_kanji_components_label": {
     "message": "構成",
     "description": "The label to give to kanji components when copying a kanji entry"
+  },
+  "content_kanji_frequency_label": {
+    "message": "頻度 ",
+    "description": "The prefix to the xxx / 2,500 frequency information"
+  },
+  "content_kanji_grade_general_use": {
+    "message": "常用",
+    "description": "Label for kanji marked as general use"
   },
   "content_kanji_grade_label": {
     "message": "$grade$年生",
@@ -158,31 +107,9 @@
       }
     }
   },
-  "content_kanji_grade_general_use": {
-    "message": "常用",
-    "description": "Label for kanji marked as general use"
-  },
   "content_kanji_grade_name_use": {
     "message": "人名用",
     "description": "Label for kanji marked as name use"
-  },
-  "content_kanji_frequency_label": {
-    "message": "頻度 ",
-    "description": "The prefix to the xxx / 2,500 frequency information"
-  },
-  "content_kanji_strokes_label": {
-    "message": "$strokes$画",
-    "description": "The description of the number of strokes",
-    "placeholders": {
-      "strokes": {
-        "content": "$1",
-        "example": "7"
-      }
-    }
-  },
-  "content_kanji_strokes_label_1": {
-    "message": "1画",
-    "description": "The description of the number of strokes when there is exactly 1 stroke"
   },
   "content_kanji_kentei_level": {
     "message": "$level$級",
@@ -202,129 +129,274 @@
       }
     }
   },
-  "ref_label_radical": {
+  "content_kanji_nanori_label": {
+    "message": "名乗り",
+    "description": "Label given to name readings"
+  },
+  "content_kanji_radical_label": {
     "message": "部首",
-    "description": "The label used when presenting radical numbers"
+    "description": "The title given to the box showing radical information"
   },
-  "ref_label_nelson_r": {
-    "message": "部首 (Nelson)",
-    "description": "The label used when presenting Nelson's revised radical numbers. This should generally be a label that will sort directly after ref_label_radical when using String.localCompare."
-  },
-  "ref_label_kk": {
-    "message": "漢検",
-    "description": "The label used when presenting Kanji Kentei levels"
-  },
-  "ref_label_jlpt": {
-    "message": "日本語能力試験",
-    "description": "The label used when presenting the level the kanji appears in in the old JLPT system"
-  },
-  "ref_label_py": {
-    "message": "ピン音",
-    "description": "The label used when present the Pinyin reading"
-  },
-  "ref_label_unicode": {
-    "message": "Unicode",
-    "description": "The label used when presenting the Unicode codepoint of the kanji"
-  },
-  "options_general_heading": {
-    "message": "一般",
-    "description": "Heading for common preferences."
-  },
-  "options_highlight_matched_text": {
-    "message": "照合される文字列をハイライト"
-  },
-  "options_show_context_menu_item": {
-    "message": "コンテキストメニューに「Rikaichampを有効する」を表示",
-    "description": "Option to enable context menu item with label `menu_enable_extension`"
-  },
-  "options_popup_style_heading": {
-    "message": "ポップアップ",
-    "description": "Heading for options to configure popup display"
-  },
-  "options_show_definitions": {
-    "message": "定義を表示"
-  },
-  "options_show_romaji": {
-    "message": "ローマ字を表示"
-  },
-  "options_keyboard_heading": {
-    "message": "キーボード",
-    "description": "Heading for options to configure keyboard commands"
-  },
-  "options_hold_to_show_keys_description": {
-    "message": "押しながらポップアップを表示する",
-    "description": "Typically Rikaichamp shows the popup whenever it is active, but if these keys are configured the popup while only show while they are held down"
-  },
-  "options_hold_to_show_keys_explanation": {
-    "message": "ボタンを押しながら、マウスをテキストに合わせるとポップアップが表示されます。ボタンが選択されていない場合、ポップアップが常に表示されます。",
-    "description": "This is supplementary explanation to options_hold_to_show_keys_explanation"
-  },
-  "options_popup_keys_subheading": {
-    "message": "ポップアップキー"
-  },
-  "options_popup_switch_dictionaries": {
-    "message": "辞書を切り替える"
-  },
-  "options_popup_toggle_definition": {
-    "message": "定義の表示・非表示を切り替える"
-  },
-  "options_popup_start_copy": {
-    "message": "コピーモードを有効にする"
-  },
-  "options_popup_copy_entry": {
-    "message": "項目をコピーする"
-  },
-  "options_popup_copy_fields": {
-    "message": "タブ区切りフィールドをコピーする"
-  },
-  "options_popup_copy_word_kanji": {
-    "message": "単語又は漢字をコピーする"
-  },
-  "options_popup_copy_next": {
-    "message": "次の項目を選択する"
-  },
-  "options_dictionary_language_heading": {
-    "message": "辞書の言語"
-  },
-  "options_warning_language_is_kanji_only": {
-    "message": "この設定は現在漢字辞典のみに適用されます。"
-  },
-  "options_kanji_dictionary_heading": {
-    "message": "漢字辞典",
-    "description": "Heading for options to configure what information is displayed from the kanji dictionary"
-  },
-  "options_dictionary_data_heading": {
-    "message": "辞書データ"
-  },
-  "options_data_source": {
-    "message": "使用しているデータにKANJIDICおよびJMnedict/ENAMDICTのデータが含まれております。",
-    "description": "Attribute of source data. Both the strings 'KANJIDIC' and 'JMnedict/ENAMDICT' must appear so that they can be link-ified to the corresponding project home pages."
-  },
-  "options_edrdg_license": {
-    "message": "このデータはElectronic Dictionary Research and Development Group (EDRDG)の所有権であり、EDRDGのライセンスに準拠して使用しております。",
-    "description": "Description of license terms. The keywords 'Electronic Dictionary Research and Development Group' and options_edrdg_license_keyword must appear so they can be linkified. IT SHOULD BEGIN WITH APPROPRIATE SPACE IN LANGUAGES THAT SEPARATE SENTENCES WITH WHITESPACE."
-  },
-  "options_edrdg_license_keyword": {
-    "message": "ライセンス",
-    "description": "The keyword in options_edrdg_license to link to the license"
-  },
-  "options_kanji_data_title": {
-    "message": "漢字データ v$version$",
-    "description": "The kanji data series title and version",
+  "content_kanji_strokes_label": {
+    "message": "$strokes$画",
+    "description": "The description of the number of strokes",
     "placeholders": {
-      "version": {
+      "strokes": {
         "content": "$1",
-        "example": "2.0.0"
+        "example": "7"
       }
     }
   },
-  "options_name_data_title": {
-    "message": "人名データ v$version$",
-    "description": "The name data series title and version",
+  "content_kanji_strokes_label_1": {
+    "message": "1画",
+    "description": "The description of the number of strokes when there is exactly 1 stroke"
+  },
+  "content_names_dictionary": {
+    "message": "人名辞典",
+    "description": "The title used at the top of the popup when showing the names dictionary"
+  },
+  "content_names_tag_company": {
+    "message": "社名"
+  },
+  "content_names_tag_fem": {
+    "message": "女"
+  },
+  "content_names_tag_given": {
+    "message": "名"
+  },
+  "content_names_tag_masc": {
+    "message": "男"
+  },
+  "content_names_tag_ok": {
+    "message": "旧"
+  },
+  "content_names_tag_org": {
+    "message": "組織"
+  },
+  "content_names_tag_person": {
+    "message": "姓名"
+  },
+  "content_names_tag_place": {
+    "message": "地名"
+  },
+  "content_names_tag_product": {
+    "message": "品名"
+  },
+  "content_names_tag_station": {
+    "message": "駅"
+  },
+  "content_names_tag_surname": {
+    "message": "姓"
+  },
+  "content_names_tag_unclass": {
+    "message": "人名"
+  },
+  "content_names_tag_work": {
+    "message": "作品"
+  },
+  "deinflect_adv": {
+    "message": "副詞"
+  },
+  "deinflect_ba": {
+    "message": "ば形"
+  },
+  "deinflect_causative": {
+    "message": "使役形"
+  },
+  "deinflect_causative_passive": {
+    "message": "使役受身形"
+  },
+  "deinflect_chau": {
+    "message": "ちゃう形"
+  },
+  "deinflect_continuous": {
+    "message": "進行形"
+  },
+  "deinflect_imperative": {
+    "message": "命令形"
+  },
+  "deinflect_imperative_negative": {
+    "message": "否定命令形"
+  },
+  "deinflect_masu_stem": {
+    "message": "連用形"
+  },
+  "deinflect_nasai": {
+    "message": "なさい形"
+  },
+  "deinflect_negative": {
+    "message": "否定形"
+  },
+  "deinflect_noun": {
+    "message": "名詞"
+  },
+  "deinflect_passive": {
+    "message": "受身形"
+  },
+  "deinflect_past": {
+    "message": "過去形"
+  },
+  "deinflect_polite": {
+    "message": "丁寧形"
+  },
+  "deinflect_polite_negative": {
+    "message": "否定丁寧形"
+  },
+  "deinflect_polite_past": {
+    "message": "過去丁寧形"
+  },
+  "deinflect_polite_past_negative": {
+    "message": "否定過去丁寧形"
+  },
+  "deinflect_polite_volitional": {
+    "message": "意向丁寧形"
+  },
+  "deinflect_potential": {
+    "message": "可能形"
+  },
+  "deinflect_potential_or_passive": {
+    "message": "可能形・受身形"
+  },
+  "deinflect_sou": {
+    "message": "そう形"
+  },
+  "deinflect_sugiru": {
+    "message": "すぎる形"
+  },
+  "deinflect_tai": {
+    "message": "たい形"
+  },
+  "deinflect_tara": {
+    "message": "たら形"
+  },
+  "deinflect_tari": {
+    "message": "たり形"
+  },
+  "deinflect_te": {
+    "message": "て形"
+  },
+  "deinflect_toku": {
+    "message": "ておく"
+  },
+  "deinflect_volitional": {
+    "message": "意向形"
+  },
+  "deinflect_zu": {
+    "message": "ず形"
+  },
+  "error_command_could_not_parse": {
+    "message": "「$command$」の構文解析が失敗しました",
     "placeholders": {
-      "version": {
+      "command": {
         "content": "$1",
-        "example": "2.0.0"
+        "example": "Ctrl+T "
+      }
+    }
+  },
+  "error_command_disallowed_modifier_key": {
+    "message": "「$modifier$」という修飾キーは利用できません",
+    "placeholders": {
+      "modifier": {
+        "content": "$1",
+        "example": "Meta"
+      }
+    }
+  },
+  "error_command_has_no_key": {
+    "message": "キーを設定してください"
+  },
+  "error_command_is_missing_modifier_key": {
+    "message": "機能キーまたメディアキーの利用以外の場合、修飾キーも設定してください"
+  },
+  "error_command_key_is_not_allowed": {
+    "message": "「$key$」というキーは利用できません",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Enter"
+      }
+    }
+  },
+  "error_command_media_key_with_modifier_key": {
+    "message": "メディアキーと修飾キーとの組み合わせは利用できません"
+  },
+  "error_command_too_many_modifiers": {
+    "message": "設定された修飾キーが多すぎます"
+  },
+  "error_ctrl_alt_unsupported": {
+    "message": "ご利用中のFirefoxバージョンはAltとCtrlの組み合わせに対応していません",
+    "description": "Tooltip displayed when the user attempts to set a hotkey combination including both Ctrl and Alt in a version of Firefox prior to 63"
+  },
+  "error_ctrl_alt_warning": {
+    "message": "Firefox 63より古いバージョンでは、AltとCtrlの組み合わせに対応していません",
+    "description": "Tooltip displayed when the user attempts to set a hotkey combination including both Ctrl and Alt in a version of Firefox later than 63"
+  },
+  "error_loading_dictionary": {
+    "message": "辞書の読み込みが失敗しました。もう一度有効してみてください。",
+    "description": "Tooltip shown when the dictionary fails to load"
+  },
+  "extension_description": {
+    "message": "単語の上にマウスのカーソルを合わせたら日英辞書を引く。",
+    "description": "Description of the what the extension does."
+  },
+  "head_info_label_ateji": {
+    "message": "当て字",
+    "description": "Short annotation given to kanji headwords that are ateji (kanji chosen to represent sounds)"
+  },
+  "head_info_label_gikun": {
+    "message": "義訓",
+    "description": "Short annotation given to kana headwords with gikun (meaning as reading) or jukujikun (special kanji reading)"
+  },
+  "head_info_label_ikana": {
+    "message": "珍",
+    "description": "Short annotation given to (mostly?) kana headwords that have rare use of kana"
+  },
+  "head_info_label_ikanji": {
+    "message": "珍",
+    "description": "Short annotation given to kanji headwords that have rare use of kanji"
+  },
+  "head_info_label_io": {
+    "message": "珍",
+    "description": "Short annotation given to kanji headwords that have rare use of okurigana"
+  },
+  "head_info_label_okana": {
+    "message": "古",
+    "description": "Short annotation given to kana headwords that use out-dated kana"
+  },
+  "head_info_label_okanji": {
+    "message": "古",
+    "description": "Short annotation given to kanji headwords that use out-dated kanji"
+  },
+  "head_info_label_ukanji": {
+    "message": "一般漢字",
+    "description": "Short annotation given to kana headwords that are normally written in kanji alone"
+  },
+  "menu_enable_extension": {
+    "message": "Rikaichampを有効にする",
+    "description": "Context menu item to enable the extension."
+  },
+  "options_bushu_data_name": {
+    "message": "部首データ",
+    "description": "The name for the bushu database data set"
+  },
+  "options_cancel_update_button_label": {
+    "message": "キャンセル",
+    "description": "Label for the button to cancel a database update"
+  },
+  "options_checking_for_updates": {
+    "message": "更新確認中…",
+    "description": "Label while we are checking for updates"
+  },
+  "options_data_series_date_only": {
+    "message": "$generated$に生成された$source$のデータに基づいている。",
+    "placeholders": {
+      "source": {
+        "content": "$1",
+        "example": "KANJIDIC"
+      },
+      "generated": {
+        "content": "$2",
+        "example": "2019-10-19"
       }
     }
   },
@@ -345,84 +417,13 @@
       }
     }
   },
-  "options_data_series_date_only": {
-    "message": "$generated$に生成された$source$のデータに基づいている。",
-    "placeholders": {
-      "source": {
-        "content": "$1",
-        "example": "KANJIDIC"
-      },
-      "generated": {
-        "content": "$2",
-        "example": "2019-10-19"
-      }
-    }
-  },
-  "options_no_database": {
-    "message": "データベースがありません",
-    "description": "Label when the database has not yet been downloaded"
+  "options_data_source": {
+    "message": "使用しているデータにKANJIDICおよびJMnedict/ENAMDICTのデータが含まれております。",
+    "description": "Attribute of source data. Both the strings 'KANJIDIC' and 'JMnedict/ENAMDICT' must appear so that they can be link-ified to the corresponding project home pages."
   },
   "options_database_unavailable": {
     "message": "データベースストレージ利用不可",
     "description": "Label when IndexedDB is unusable"
-  },
-  "options_last_database_check": {
-    "message": "更新確認時刻 $lastcheck$",
-    "description": "Status to show when we last checked for an update",
-    "placeholders": {
-      "lastcheck": {
-        "content": "$1",
-        "example": "2019-10-12"
-      }
-    }
-  },
-  "options_checking_for_updates": {
-    "message": "更新確認中…",
-    "description": "Label while we are checking for updates"
-  },
-  "options_kanji_data_name": {
-    "message": "漢字データ",
-    "description": "The name for the kanji database data set"
-  },
-  "options_bushu_data_name": {
-    "message": "部首データ",
-    "description": "The name for the bushu database data set"
-  },
-  "options_name_data_name": {
-    "message": "人名データ",
-    "description": "The name for the name database data set"
-  },
-  "options_downloading_data": {
-    "message": "$datatype$バージョン$version$を読み込み中 ($progress$%)…",
-    "description": "Label while we are downloading updates",
-    "placeholders": {
-      "datatype": {
-        "content": "$1",
-        "example": "kanji data"
-      },
-      "version": {
-        "content": "$2",
-        "example": "1.0.3"
-      },
-      "progress": {
-        "content": "$3",
-        "example": "60"
-      }
-    }
-  },
-  "options_updating_data": {
-    "message": "$datatype$バージョン$version$を適用中…",
-    "description": "Label while we are applying updates",
-    "placeholders": {
-      "datatype": {
-        "content": "$1",
-        "example": "kanji data"
-      },
-      "version": {
-        "content": "$2",
-        "example": "1.0.3"
-      }
-    }
   },
   "options_db_update_error": {
     "message": "更新失敗しました。「$errormessage$」",
@@ -444,9 +445,148 @@
       }
     }
   },
+  "options_dictionary_data_heading": {
+    "message": "辞書データ"
+  },
+  "options_dictionary_language_heading": {
+    "message": "辞書の言語"
+  },
+  "options_downloading_data": {
+    "message": "$datatype$バージョン$version$を読み込み中 ($progress$%)…",
+    "description": "Label while we are downloading updates",
+    "placeholders": {
+      "datatype": {
+        "content": "$1",
+        "example": "kanji data"
+      },
+      "version": {
+        "content": "$2",
+        "example": "1.0.3"
+      },
+      "progress": {
+        "content": "$3",
+        "example": "60"
+      }
+    }
+  },
+  "options_edrdg_license": {
+    "message": "このデータはElectronic Dictionary Research and Development Group (EDRDG)の所有権であり、EDRDGのライセンスに準拠して使用しております。",
+    "description": "Description of license terms. The keywords 'Electronic Dictionary Research and Development Group' and options_edrdg_license_keyword must appear so they can be linkified. IT SHOULD BEGIN WITH APPROPRIATE SPACE IN LANGUAGES THAT SEPARATE SENTENCES WITH WHITESPACE."
+  },
+  "options_edrdg_license_keyword": {
+    "message": "ライセンス",
+    "description": "The keyword in options_edrdg_license to link to the license"
+  },
+  "options_general_heading": {
+    "message": "一般",
+    "description": "Heading for common preferences."
+  },
+  "options_highlight_matched_text": {
+    "message": "照合される文字列をハイライト"
+  },
+  "options_hold_to_show_keys_description": {
+    "message": "押しながらポップアップを表示する",
+    "description": "Typically Rikaichamp shows the popup whenever it is active, but if these keys are configured the popup while only show while they are held down"
+  },
+  "options_hold_to_show_keys_explanation": {
+    "message": "ボタンを押しながら、マウスをテキストに合わせるとポップアップが表示されます。ボタンが選択されていない場合、ポップアップが常に表示されます。",
+    "description": "This is supplementary explanation to options_hold_to_show_keys_explanation"
+  },
+  "options_kanji_components": {
+    "message": "漢字構成",
+    "description": "Option to define if radicals are displayed or not"
+  },
+  "options_kanji_data_name": {
+    "message": "漢字データ",
+    "description": "The name for the kanji database data set"
+  },
+  "options_kanji_data_title": {
+    "message": "漢字データ v$version$",
+    "description": "The kanji data series title and version",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "2.0.0"
+      }
+    }
+  },
+  "options_kanji_dictionary_heading": {
+    "message": "漢字辞典",
+    "description": "Heading for options to configure what information is displayed from the kanji dictionary"
+  },
+  "options_keyboard_heading": {
+    "message": "キーボード",
+    "description": "Heading for options to configure keyboard commands"
+  },
+  "options_last_database_check": {
+    "message": "更新確認時刻 $lastcheck$",
+    "description": "Status to show when we last checked for an update",
+    "placeholders": {
+      "lastcheck": {
+        "content": "$1",
+        "example": "2019-10-12"
+      }
+    }
+  },
+  "options_name_data_name": {
+    "message": "人名データ",
+    "description": "The name for the name database data set"
+  },
+  "options_name_data_title": {
+    "message": "人名データ v$version$",
+    "description": "The name data series title and version",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "2.0.0"
+      }
+    }
+  },
+  "options_no_database": {
+    "message": "データベースがありません",
+    "description": "Label when the database has not yet been downloaded"
+  },
   "options_offline_explanation": {
     "message": "この端末は只今オフラインになっているため、更新の確認ができませんでした。オフラインになりましたら、更新確認を行います。",
     "description": "Message shown when the system is offline so updates cannot be performed"
+  },
+  "options_popup_copy_entry": {
+    "message": "項目をコピーする"
+  },
+  "options_popup_copy_fields": {
+    "message": "タブ区切りフィールドをコピーする"
+  },
+  "options_popup_copy_next": {
+    "message": "次の項目を選択する"
+  },
+  "options_popup_copy_word_kanji": {
+    "message": "単語又は漢字をコピーする"
+  },
+  "options_popup_keys_subheading": {
+    "message": "ポップアップキー"
+  },
+  "options_popup_start_copy": {
+    "message": "コピーモードを有効にする"
+  },
+  "options_popup_style_heading": {
+    "message": "ポップアップ",
+    "description": "Heading for options to configure popup display"
+  },
+  "options_popup_switch_dictionaries": {
+    "message": "辞書を切り替える"
+  },
+  "options_popup_toggle_definition": {
+    "message": "定義の表示・非表示を切り替える"
+  },
+  "options_show_context_menu_item": {
+    "message": "コンテキストメニューに「Rikaichampを有効する」を表示",
+    "description": "Option to enable context menu item with label `menu_enable_extension`"
+  },
+  "options_show_definitions": {
+    "message": "定義を表示"
+  },
+  "options_show_romaji": {
+    "message": "ローマ字を表示"
   },
   "options_update_check_button_label": {
     "message": "更新を確認",
@@ -456,185 +596,45 @@
     "message": "再試行",
     "description": "Label for the button to retry the database update after a failure"
   },
-  "options_cancel_update_button_label": {
-    "message": "キャンセル",
-    "description": "Label for the button to cancel a database update"
-  },
-  "options_kanji_components": {
-    "message": "漢字構成",
-    "description": "Option to define if radicals are displayed or not"
-  },
-  "error_loading_dictionary": {
-    "message": "辞書の読み込みが失敗しました。もう一度有効してみてください。",
-    "description": "Tooltip shown when the dictionary fails to load"
-  },
-  "error_ctrl_alt_unsupported": {
-    "message": "ご利用中のFirefoxバージョンはAltとCtrlの組み合わせに対応していません",
-    "description": "Tooltip displayed when the user attempts to set a hotkey combination including both Ctrl and Alt in a version of Firefox prior to 63"
-  },
-  "error_ctrl_alt_warning": {
-    "message": "Firefox 63より古いバージョンでは、AltとCtrlの組み合わせに対応していません",
-    "description": "Tooltip displayed when the user attempts to set a hotkey combination including both Ctrl and Alt in a version of Firefox later than 63"
-  },
-  "error_command_could_not_parse": {
-    "message": "「$command$」の構文解析が失敗しました",
+  "options_updating_data": {
+    "message": "$datatype$バージョン$version$を適用中…",
+    "description": "Label while we are applying updates",
     "placeholders": {
-      "command": {
+      "datatype": {
         "content": "$1",
-        "example": "Ctrl+T "
+        "example": "kanji data"
+      },
+      "version": {
+        "content": "$2",
+        "example": "1.0.3"
       }
     }
   },
-  "error_command_has_no_key": {
-    "message": "キーを設定してください"
+  "options_warning_language_is_kanji_only": {
+    "message": "この設定は現在漢字辞典のみに適用されます。"
   },
-  "error_command_key_is_not_allowed": {
-    "message": "「$key$」というキーは利用できません",
-    "placeholders": {
-      "key": {
-        "content": "$1",
-        "example": "Enter"
-      }
-    }
+  "ref_label_jlpt": {
+    "message": "日本語能力試験",
+    "description": "The label used when presenting the level the kanji appears in in the old JLPT system"
   },
-  "error_command_is_missing_modifier_key": {
-    "message": "機能キーまたメディアキーの利用以外の場合、修飾キーも設定してください"
+  "ref_label_kk": {
+    "message": "漢検",
+    "description": "The label used when presenting Kanji Kentei levels"
   },
-  "error_command_disallowed_modifier_key": {
-    "message": "「$modifier$」という修飾キーは利用できません",
-    "placeholders": {
-      "modifier": {
-        "content": "$1",
-        "example": "Meta"
-      }
-    }
+  "ref_label_nelson_r": {
+    "message": "部首 (Nelson)",
+    "description": "The label used when presenting Nelson's revised radical numbers. This should generally be a label that will sort directly after ref_label_radical when using String.localCompare."
   },
-  "error_command_media_key_with_modifier_key": {
-    "message": "メディアキーと修飾キーとの組み合わせは利用できません"
+  "ref_label_py": {
+    "message": "ピン音",
+    "description": "The label used when present the Pinyin reading"
   },
-  "error_command_too_many_modifiers": {
-    "message": "設定された修飾キーが多すぎます"
+  "ref_label_radical": {
+    "message": "部首",
+    "description": "The label used when presenting radical numbers"
   },
-  "deinflect_polite_past_negative": {
-    "message": "否定過去丁寧形"
-  },
-  "deinflect_polite_negative": {
-    "message": "否定丁寧形"
-  },
-  "deinflect_polite_volitional": {
-    "message": "意向丁寧形"
-  },
-  "deinflect_chau": {
-    "message": "ちゃう形"
-  },
-  "deinflect_sugiru": {
-    "message": "すぎる形"
-  },
-  "deinflect_nasai": {
-    "message": "なさい形"
-  },
-  "deinflect_polite_past": {
-    "message": "過去丁寧形"
-  },
-  "deinflect_tara": {
-    "message": "たら形"
-  },
-  "deinflect_tari": {
-    "message": "たり形"
-  },
-  "deinflect_causative": {
-    "message": "使役形"
-  },
-  "deinflect_potential_or_passive": {
-    "message": "可能形・受身形"
-  },
-  "deinflect_sou": {
-    "message": "そう形"
-  },
-  "deinflect_toku": {
-    "message": "ておく"
-  },
-  "deinflect_tai": {
-    "message": "たい形"
-  },
-  "deinflect_polite": {
-    "message": "丁寧形"
-  },
-  "deinflect_past": {
-    "message": "過去形"
-  },
-  "deinflect_negative": {
-    "message": "否定形"
-  },
-  "deinflect_passive": {
-    "message": "受身形"
-  },
-  "deinflect_ba": {
-    "message": "ば形"
-  },
-  "deinflect_volitional": {
-    "message": "意向形"
-  },
-  "deinflect_potential": {
-    "message": "可能形"
-  },
-  "deinflect_causative_passive": {
-    "message": "使役受身形"
-  },
-  "deinflect_te": {
-    "message": "て形"
-  },
-  "deinflect_zu": {
-    "message": "ず形"
-  },
-  "deinflect_imperative": {
-    "message": "命令形"
-  },
-  "deinflect_masu_stem": {
-    "message": "連用形"
-  },
-  "deinflect_adv": {
-    "message": "副詞"
-  },
-  "deinflect_noun": {
-    "message": "名詞"
-  },
-  "deinflect_imperative_negative": {
-    "message": "否定命令形"
-  },
-  "deinflect_continuous": {
-    "message": "進行形"
-  },
-  "head_info_label_ateji": {
-    "message": "当て字",
-    "description": "Short annotation given to kanji headwords that are ateji (kanji chosen to represent sounds)"
-  },
-  "head_info_label_gikun": {
-    "message": "義訓",
-    "description": "Short annotation given to kana headwords with gikun (meaning as reading) or jukujikun (special kanji reading)"
-  },
-  "head_info_label_ikanji": {
-    "message": "珍",
-    "description": "Short annotation given to kanji headwords that have rare use of kanji"
-  },
-  "head_info_label_ikana": {
-    "message": "珍",
-    "description": "Short annotation given to (mostly?) kana headwords that have rare use of kana"
-  },
-  "head_info_label_io": {
-    "message": "珍",
-    "description": "Short annotation given to kanji headwords that have rare use of okurigana"
-  },
-  "head_info_label_okanji": {
-    "message": "古",
-    "description": "Short annotation given to kanji headwords that use out-dated kanji"
-  },
-  "head_info_label_okana": {
-    "message": "古",
-    "description": "Short annotation given to kana headwords that use out-dated kana"
-  },
-  "head_info_label_ukanji": {
-    "message": "一般漢字",
-    "description": "Short annotation given to kana headwords that are normally written in kanji alone"
+  "ref_label_unicode": {
+    "message": "Unicode",
+    "description": "The label used when presenting the Unicode codepoint of the kanji"
   }
 }
