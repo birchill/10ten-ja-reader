@@ -97,6 +97,23 @@
   font-size: 10px;
 }
 
+#rikaichamp-window .w-kanji .svgicon,
+#rikaichamp-window .w-kana .svgicon {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-left: 3px;
+  margin-right: 3px;
+  color: inherit;
+  fill: currentcolor;
+}
+
+#rikaichamp-window .w-kanji .svgicon path,
+#rikaichamp-window .w-kana .svgicon path {
+  color: inherit;
+  fill: currentcolor;
+}
+
 #rikaichamp-window .w-conj {
   color: #ffe0a0;
   font-size: 12px;

@@ -16,6 +16,8 @@ import {
 import { ExtendedSense, KanjiInfo, ReadingInfo } from './word-result';
 import { EraInfo, getEraInfo } from './years';
 
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
 export const enum CopyState {
   Inactive,
   Active,
@@ -115,6 +117,7 @@ function renderWordEntries(
         }
         kanjiSpan.append(kanji.ent);
         appendHeadwordInfo(kanji.i, kanjiSpan);
+        appendPriorityMark(kanji.p, kanjiSpan);
       }
       headingDiv.append(kanjiSpan);
     }
@@ -129,6 +132,7 @@ function renderWordEntries(
         }
         kanaSpan.append(kana.ent);
         appendHeadwordInfo(kana.i, kanaSpan);
+        appendPriorityMark(kana.p, kanaSpan);
       }
       headingDiv.append(kanaSpan);
     }
@@ -270,6 +274,45 @@ function appendHeadwordInfo(
     span.append(')');
     parent.append(span);
   }
+}
+
+function appendPriorityMark(
+  priority: Array<string> | undefined,
+  parent: ParentNode
+) {
+  if (!priority || !priority.length) {
+    return;
+  }
+
+  // These are the ones that are annotated with a (P) in the EDICT file.
+  const highPriorityLabels = ['i1', 'n1', 's1', 's2', 'g1'];
+  let highPriority = false;
+  for (const p of priority) {
+    if (highPriorityLabels.includes(p)) {
+      highPriority = true;
+      break;
+    }
+  }
+
+  parent.append(renderStar(highPriority ? 'full' : 'hollow'));
+}
+
+function renderStar(style: 'full' | 'hollow'): SVGElement {
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.classList.add('svgicon');
+  svg.style.opacity = '0.5';
+  svg.setAttribute('viewBox', '0 0 98.6 93.2');
+
+  const path = document.createElementNS(SVG_NS, 'path');
+  path.setAttribute(
+    'd',
+    style === 'full'
+      ? 'M98 34a4 4 0 00-3-1l-30-4L53 2a4 4 0 00-7 0L33 29 4 33a4 4 0 00-3 6l22 20-6 29a4 4 0 004 5 4 4 0 002 0l26-15 26 15a4 4 0 002 0 4 4 0 004-4 4 4 0 000-1l-6-29 22-20a4 4 0 001-5z'
+      : 'M77 93a4 4 0 004-4 4 4 0 000-1l-6-29 22-20a4 4 0 00-2-6l-30-4L53 2a4 4 0 00-7 0L33 29 4 33a4 4 0 00-3 6l22 20-6 29a4 4 0 004 5 4 4 0 002 0l26-15 26 15a4 4 0 002 0zm-5-12L51 70a4 4 0 00-4 0L27 81l5-22a4 4 0 00-1-4L13 40l23-3a4 4 0 004-2l9-21 10 21a4 4 0 003 2l23 3-17 15a4 4 0 00-1 4z'
+  );
+  svg.append(path);
+
+  return svg;
 }
 
 function renderDefinitions(entry: WordResult, options: PopupOptions) {
@@ -754,8 +797,6 @@ function renderMiscRow(entry: KanjiResult): HTMLElement {
 
   return miscInfoDiv;
 }
-
-const SVG_NS = 'http://www.w3.org/2000/svg';
 
 let brushSvg: SVGElement | undefined;
 function renderBrush(): SVGElement {
