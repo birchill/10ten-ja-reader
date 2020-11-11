@@ -613,11 +613,11 @@
     "message": "義訓",
     "description": "Short annotation given to kana headwords with gikun (meaning as reading) or jukujikun (special kanji reading)"
   },
-  "head_info_label_iK": {
+  "head_info_label_ikanji": {
     "message": "珍",
     "description": "Short annotation given to kanji headwords that have rare use of kanji"
   },
-  "head_info_label_ik": {
+  "head_info_label_ikana": {
     "message": "珍",
     "description": "Short annotation given to (mostly?) kana headwords that have rare use of kana"
   },
@@ -625,15 +625,15 @@
     "message": "珍",
     "description": "Short annotation given to kanji headwords that have rare use of okurigana"
   },
-  "head_info_label_oK": {
+  "head_info_label_okanji": {
     "message": "古",
     "description": "Short annotation given to kanji headwords that use out-dated kanji"
   },
-  "head_info_label_ok": {
+  "head_info_label_okana": {
     "message": "古",
     "description": "Short annotation given to kana headwords that use out-dated kana"
   },
-  "head_info_label_uK": {
+  "head_info_label_ukanji": {
     "message": "一般漢字",
     "description": "Short annotation given to kana headwords that are normally written in kanji alone"
   }

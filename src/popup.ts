@@ -249,7 +249,24 @@ function appendHeadwordInfo(
     const span = document.createElement('span');
     span.classList.add('w-head-info');
     span.append('(');
-    span.append(browser.i18n.getMessage(`head_info_label_${i}`) || i);
+
+    // Some KanjiInfo/RadicalInfo values differ only by case but
+    // addons-linter (as used by webext etc.) does not allow WebExtension i18n
+    // keys to differ by case only.
+    //
+    // I couldn't find the rationale for this, the rule just magically
+    // appears in https://github.com/mozilla/addons-linter/commit/3923b399f8166b59617071730b87048f45122c7e
+    // it seems.
+    const specialKeys: { [k in KanjiInfo | ReadingInfo]?: string } = {
+      iK: 'ikanji',
+      ik: 'ikana',
+      oK: 'okanji',
+      ok: 'okana',
+      uK: 'ukanji',
+    };
+    const key = specialKeys.hasOwnProperty(i) ? specialKeys[i] : i;
+
+    span.append(browser.i18n.getMessage(`head_info_label_${key}`) || i);
     span.append(')');
     parent.append(span);
   }

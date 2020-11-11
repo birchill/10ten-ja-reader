@@ -80,17 +80,17 @@ export const browser = {
           return 'ateji';
         case 'head_info_label_gikun':
           return 'gikun';
-        case 'head_info_label_iK':
+        case 'head_info_label_ikanji':
           return 'rare';
-        case 'head_info_label_ik':
+        case 'head_info_label_ikana':
           return 'rare';
         case 'head_info_label_io':
           return 'rare';
-        case 'head_info_label_oK':
+        case 'head_info_label_okanji':
           return 'old';
-        case 'head_info_label_ok':
+        case 'head_info_label_okana':
           return 'old';
-        case 'head_info_label_uK':
+        case 'head_info_label_ukanji':
           return 'usu. kanji';
         case 'ref_label_radical':
           return 'Radical';
