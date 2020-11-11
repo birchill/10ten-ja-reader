@@ -101,8 +101,9 @@ describe('rikaiContent:text search', () => {
 
   beforeEach(() => {
     const config: ContentConfig = {
-      posDisplay: 'expl',
+      showPriority: true,
       readingOnly: false,
+      posDisplay: 'expl',
       kanjiReferences: ['kk'] as Array<ReferenceAbbreviation>,
       showKanjiComponents: true,
       holdToShowKeys: [],
@@ -1043,8 +1044,9 @@ describe('rikaiContent:highlighting', () => {
 
   beforeEach(() => {
     const config: ContentConfig = {
-      posDisplay: 'expl',
+      showPriority: true,
       readingOnly: false,
+      posDisplay: 'expl',
       kanjiReferences: ['kk'] as Array<ReferenceAbbreviation>,
       showKanjiComponents: true,
       holdToShowKeys: [],

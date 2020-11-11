@@ -61,9 +61,13 @@ function completeForm() {
       config.contextMenuEnable = (evt.target as HTMLInputElement).checked;
     });
 
-  document.getElementById('posDisplay')!.addEventListener('input', (evt) => {
-    config.posDisplay = (evt.target as HTMLSelectElement)
-      .value as PartOfSpeechDisplay;
+  document.getElementById('showPriority')!.addEventListener('click', (evt) => {
+    config.showPriority = (evt.target as HTMLInputElement).checked;
+    renderPopupStyleSelect();
+  });
+
+  document.getElementById('showRomaji')!.addEventListener('click', (evt) => {
+    config.showRomaji = (evt.target as HTMLInputElement).checked;
     renderPopupStyleSelect();
   });
 
@@ -74,8 +78,9 @@ function completeForm() {
       renderPopupStyleSelect();
     });
 
-  document.getElementById('showRomaji')!.addEventListener('click', (evt) => {
-    config.showRomaji = (evt.target as HTMLInputElement).checked;
+  document.getElementById('posDisplay')!.addEventListener('input', (evt) => {
+    config.posDisplay = (evt.target as HTMLSelectElement)
+      .value as PartOfSpeechDisplay;
     renderPopupStyleSelect();
   });
 
@@ -148,11 +153,17 @@ function renderPopupStyleSelect() {
     const spanKanji = document.createElement('span');
     spanKanji.classList.add('w-kanji');
     spanKanji.textContent = '理解';
+    if (config.showPriority) {
+      spanKanji.append(renderStar());
+    }
     headingDiv.appendChild(spanKanji);
 
     const spanKana = document.createElement('span');
     spanKana.classList.add('w-kana');
     spanKana.textContent = 'りかい';
+    if (config.showPriority) {
+      spanKana.append(renderStar());
+    }
     headingDiv.appendChild(spanKana);
 
     if (config.showRomaji) {
@@ -187,6 +198,24 @@ function renderPopupStyleSelect() {
 
     entry.appendChild(spanDef);
   }
+}
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+function renderStar(): SVGElement {
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.classList.add('svgicon');
+  svg.style.opacity = '0.5';
+  svg.setAttribute('viewBox', '0 0 98.6 93.2');
+
+  const path = document.createElementNS(SVG_NS, 'path');
+  path.setAttribute(
+    'd',
+    'M98 34a4 4 0 00-3-1l-30-4L53 2a4 4 0 00-7 0L33 29 4 33a4 4 0 00-3 6l22 20-6 29a4 4 0 004 5 4 4 0 002 0l26-15 26 15a4 4 0 002 0 4 4 0 004-4 4 4 0 000-1l-6-29 22-20a4 4 0 001-5z'
+  );
+  svg.append(path);
+
+  return svg;
 }
 
 function configureCommands() {
@@ -531,8 +560,10 @@ function createKanjiReferences() {
 
 function fillVals() {
   const optform = document.getElementById('optform') as HTMLFormElement;
-  optform.posDisplay.value = config.posDisplay;
+  optform.showPriority.checked = config.showPriority;
+  optform.showRomaji.checked = config.showRomaji;
   optform.showDefinitions.checked = !config.readingOnly;
+  optform.posDisplay.value = config.posDisplay;
   optform.highlightText.checked = !config.noTextHighlight;
   optform.contextMenuEnable.checked = config.contextMenuEnable;
   optform.showKanjiComponents.checked = config.showKanjiComponents;

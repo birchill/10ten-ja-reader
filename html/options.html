@@ -40,15 +40,13 @@
           <fieldset>
             <div class="popupstyle-select" id="popupstyle-select"></div>
           </fieldset>
-          <div class="browser-style">
-            <label for="showPos">Part of speech display</label>
-            <select id="showPos" name="showPos" class="browser-style">
-              <option value="expl">
-                Explanation (e.g. &ldquo;-u verb&rdquo;)
-              </option>
-              <option value="code">Code (e.g. &ldquo;v5r&rdquo;)</option>
-              <option value="none">None</option>
-            </select>
+          <div class="browser-style checkbox-row">
+            <input type="checkbox" id="showPriority" name="showPriority" />
+            <label for="showPriority">Show indicators next to common (★) and somewhat common (☆) words</label>
+          </div>
+          <div class="browser-style checkbox-row">
+            <input type="checkbox" id="showRomaji" name="showRomaji" />
+            <label for="showRomaji">Show romaji</label>
           </div>
           <div class="browser-style checkbox-row">
             <input
@@ -58,9 +56,15 @@
             />
             <label for="showDefinitions">Show definitions</label>
           </div>
-          <div class="browser-style checkbox-row">
-            <input type="checkbox" id="showRomaji" name="showRomaji" />
-            <label for="showRomaji">Show romaji</label>
+          <div class="browser-style">
+            <label for="showPos">Part of speech display</label>
+            <select id="showPos" name="showPos" class="browser-style">
+              <option value="expl">
+                Explanation (e.g. &ldquo;-u verb&rdquo;)
+              </option>
+              <option value="code">Code (e.g. &ldquo;v5r&rdquo;)</option>
+              <option value="none">None</option>
+            </select>
           </div>
         </div>
         <div class="panel-section panel-section-header">

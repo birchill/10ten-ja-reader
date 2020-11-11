@@ -601,6 +601,10 @@
   "options_show_definitions": {
     "message": "Show definitions"
   },
+  "options_show_priority": {
+    "message": "Show indicators next to common (★) and somewhat common (☆) words",
+    "description": "Label for enabling the ★ and ☆ markers next to dictionary headwords to indicate they occur frequently  or somewhat frequently respectively"
+  },
   "options_show_romaji": {
     "message": "Show romaji"
   },
