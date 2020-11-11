@@ -585,6 +585,10 @@
   "options_show_definitions": {
     "message": "定義を表示"
   },
+  "options_show_priority": {
+    "message": "頻度の高い（★）又はある程度の高い（☆）のマーカーを表示",
+    "description": "Label for enabling the ★ and ☆ markers next to dictionary headwords to indicate they occur frequently  or somewhat frequently respectively"
+  },
   "options_show_romaji": {
     "message": "ローマ字を表示"
   },

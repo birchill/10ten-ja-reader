@@ -26,8 +26,9 @@ export const enum CopyState {
 }
 
 export interface PopupOptions {
-  posDisplay: PartOfSpeechDisplay;
+  showPriority: boolean;
   showDefinitions: boolean;
+  posDisplay: PartOfSpeechDisplay;
   kanjiReferences: Array<ReferenceAbbreviation>;
   showKanjiComponents?: boolean;
   copyNextKey: string;
@@ -117,7 +118,9 @@ function renderWordEntries(
         }
         kanjiSpan.append(kanji.ent);
         appendHeadwordInfo(kanji.i, kanjiSpan);
-        appendPriorityMark(kanji.p, kanjiSpan);
+        if (options.showPriority) {
+          appendPriorityMark(kanji.p, kanjiSpan);
+        }
       }
       headingDiv.append(kanjiSpan);
     }
@@ -132,7 +135,9 @@ function renderWordEntries(
         }
         kanaSpan.append(kana.ent);
         appendHeadwordInfo(kana.i, kanaSpan);
-        appendPriorityMark(kana.p, kanaSpan);
+        if (options.showPriority) {
+          appendPriorityMark(kana.p, kanaSpan);
+        }
       }
       headingDiv.append(kanaSpan);
     }

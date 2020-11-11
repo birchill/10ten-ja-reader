@@ -17,11 +17,14 @@ interface KeyboardKeys {
 type PartOfSpeechDisplay = 'expl' | 'code' | 'none';
 
 interface ContentConfig {
-  // Indicates the type of display to use for part-of-speech labels.
-  posDisplay: PartOfSpeechDisplay;
+  // True if we should show indicators next to common words.
+  showPriority: boolean;
 
   // True if only the reading (and not the definition) should be shown.
   readingOnly: boolean;
+
+  // Indicates the type of display to use for part-of-speech labels.
+  posDisplay: PartOfSpeechDisplay;
 
   // References to show in the kanji view.
   kanjiReferences: Array<import('./refs').ReferenceAbbreviation>;

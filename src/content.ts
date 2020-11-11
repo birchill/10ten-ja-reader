@@ -1462,8 +1462,9 @@ export class RikaiContent {
       : window.document;
 
     const popupOptions: PopupOptions = {
-      posDisplay: this._config.posDisplay,
+      showPriority: this._config.showPriority,
       showDefinitions: !this._config.readingOnly,
+      posDisplay: this._config.posDisplay,
       kanjiReferences: this._config.kanjiReferences,
       showKanjiComponents: this._config.showKanjiComponents,
       copyNextKey: this._config.keys.startCopy[0] || '',

@@ -34,9 +34,10 @@ import {
 type KanjiReferenceFlagsV2 = { [key in ReferenceAbbreviation]?: boolean };
 
 interface Settings {
-  posDisplay?: PartOfSpeechDisplay;
-  readingOnly?: boolean;
+  showPriority?: boolean;
   showRomaji?: boolean;
+  readingOnly?: boolean;
+  posDisplay?: PartOfSpeechDisplay;
   toggleKey?: string;
   holdToShowKeys?: string;
   keys?: Partial<KeyboardKeys>;
@@ -220,24 +221,36 @@ export class Config {
     this._changeListeners.splice(index, 1);
   }
 
-  // Part-of-speech display: Defaults to expl
+  // showPriority: Defaults to true
 
-  get posDisplay(): PartOfSpeechDisplay {
-    return typeof this._settings.posDisplay === 'undefined'
-      ? 'expl'
-      : this._settings.posDisplay;
+  get showPriority(): boolean {
+    return (
+      typeof this._settings.showPriority === 'undefined' ||
+      this._settings.showPriority
+    );
   }
 
-  set posDisplay(value: PartOfSpeechDisplay) {
+  set showPriority(value: boolean) {
+    this._settings.showPriority = value;
+    browser.storage.sync.set({ showPriority: value });
+  }
+
+  // showRomaji: Defaults to false
+
+  get showRomaji(): boolean {
+    return !!this._settings.showRomaji;
+  }
+
+  set showRomaji(value: boolean) {
     if (
-      typeof this._settings.readingOnly !== 'undefined' &&
-      this._settings.posDisplay === value
+      typeof this._settings.showRomaji !== 'undefined' &&
+      this._settings.showRomaji === value
     ) {
       return;
     }
 
-    this._settings.posDisplay = value;
-    browser.storage.sync.set({ posDisplay: value });
+    this._settings.showRomaji = value;
+    browser.storage.sync.set({ showRomaji: value });
   }
 
   // readingOnly: Defaults to false
@@ -262,22 +275,24 @@ export class Config {
     this.readingOnly = !this._settings.readingOnly;
   }
 
-  // showRomaji: Defaults to false
+  // Part-of-speech display: Defaults to expl
 
-  get showRomaji(): boolean {
-    return !!this._settings.showRomaji;
+  get posDisplay(): PartOfSpeechDisplay {
+    return typeof this._settings.posDisplay === 'undefined'
+      ? 'expl'
+      : this._settings.posDisplay;
   }
 
-  set showRomaji(value: boolean) {
+  set posDisplay(value: PartOfSpeechDisplay) {
     if (
-      typeof this._settings.showRomaji !== 'undefined' &&
-      this._settings.showRomaji === value
+      typeof this._settings.posDisplay !== 'undefined' &&
+      this._settings.posDisplay === value
     ) {
       return;
     }
 
-    this._settings.showRomaji = value;
-    browser.storage.sync.set({ showRomaji: value });
+    this._settings.posDisplay = value;
+    browser.storage.sync.set({ posDisplay: value });
   }
 
   // toggleKey: Default is 'Alt+R'
@@ -541,8 +556,9 @@ export class Config {
   // Get all the options the content process cares about at once
   get contentConfig(): ContentConfig {
     return {
-      posDisplay: this.posDisplay,
+      showPriority: this.showPriority,
       readingOnly: this.readingOnly,
+      posDisplay: this.posDisplay,
       kanjiReferences: this.kanjiReferences,
       showKanjiComponents: this.showKanjiComponents,
       holdToShowKeys: this.holdToShowKeys
