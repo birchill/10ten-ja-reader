@@ -82,6 +82,11 @@
   margin-right: 0.3em;
 }
 
+#rikaichamp-window .w-kana > .w-heiban {
+  all: inherit;
+  border-top: 1.5px dotted currentcolor !important;
+}
+
 #rikaichamp-window .w-kana > .w-binary {
   all: inherit;
   /* Add a gap below so the border doesn't overlap with the definition */
@@ -164,10 +169,11 @@
 
 #rikaichamp-window .w-def ol {
   padding-left: 1.5em;
-  list-style-type: numeric;
+  list-style-type: numeric !important;
 }
 
 #rikaichamp-window .w-def ol li {
+  list-style-type: numeric !important;
   font-size: 13px;
 }
 
