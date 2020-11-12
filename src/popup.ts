@@ -119,6 +119,7 @@ function renderWordEntries(
     if (matchingKanji.length) {
       const kanjiSpan = document.createElement('span');
       kanjiSpan.classList.add('w-kanji');
+      kanjiSpan.lang = 'ja';
       for (const [i, kanji] of matchingKanji.entries()) {
         if (i) {
           kanjiSpan.append('、 ');
@@ -136,6 +137,7 @@ function renderWordEntries(
     if (matchingKana.length) {
       const kanaSpan = document.createElement('span');
       kanaSpan.classList.add('w-kana');
+      kanaSpan.lang = 'ja';
       for (const [i, kana] of matchingKana.entries()) {
         if (i) {
           kanaSpan.append('、 ');
