@@ -1464,6 +1464,7 @@ export class RikaiContent {
     const popupOptions: PopupOptions = {
       showPriority: this._config.showPriority,
       showDefinitions: !this._config.readingOnly,
+      accentDisplay: this._config.accentDisplay,
       posDisplay: this._config.posDisplay,
       kanjiReferences: this._config.kanjiReferences,
       showKanjiComponents: this._config.showKanjiComponents,

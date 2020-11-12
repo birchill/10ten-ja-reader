@@ -375,6 +375,22 @@
     "message": "Rikaichampを有効にする",
     "description": "Context menu item to enable the extension."
   },
+  "options_accent_display_binary": {
+    "message": "高低表記 ⎾⏋",
+    "description": "Label for displaying the pitch accent using box outlines to show high and low"
+  },
+  "options_accent_display_downstep": {
+    "message": "下げ核 ꜜ",
+    "description": "Label for displaying the pitch accent down-step as a small downward arrow ꜜ"
+  },
+  "options_accent_display_label": {
+    "message": "高低アクセントの表示",
+    "description": "Label for the drop-down list used to configure how pitch accent information is displayed"
+  },
+  "options_accent_display_none": {
+    "message": "なし",
+    "description": "Label for not showing pitch accent information"
+  },
   "options_bushu_data_name": {
     "message": "部首データ",
     "description": "The name for the bushu database data set"

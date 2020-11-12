@@ -82,6 +82,40 @@
   margin-right: 0.3em;
 }
 
+#rikaichamp-window .w-kana > .w-binary {
+  all: inherit;
+  /* Add a gap below so the border doesn't overlap with the definition */
+  display: inline-block;
+  margin-bottom: 0.2em;
+}
+
+#rikaichamp-window .w-kana > .w-binary > * {
+  all: inherit;
+  /* Drop gaps between borders */
+  margin: 0;
+  /* Make room for the borders
+   * (and to compensate for the extra margin we added to the wrapper above) */
+  font-size: 90%;
+}
+
+#rikaichamp-window .w-kana > .w-binary > .h-l {
+  border-top: 1.5px dotted currentcolor !important;
+  border-right: 1.5px dotted currentcolor !important;
+}
+
+#rikaichamp-window .w-kana > .w-binary > .l-h {
+  border-bottom: 1.5px dotted currentcolor !important;
+  border-right: 1.5px dotted currentcolor !important;
+}
+
+#rikaichamp-window .w-kana > .w-binary > .h {
+  border-top: 1.5px dotted currentcolor !important;
+}
+
+#rikaichamp-window .w-kana > .w-binary > .l {
+  border-bottom: 1.5px dotted currentcolor !important;
+}
+
 #rikaichamp-window .w-romaji {
   font-size: 14px;
   margin-right: 0.3em;

@@ -37,6 +37,7 @@ interface Settings {
   showPriority?: boolean;
   showRomaji?: boolean;
   readingOnly?: boolean;
+  accentDisplay?: AccentDisplay;
   posDisplay?: PartOfSpeechDisplay;
   toggleKey?: string;
   holdToShowKeys?: string;
@@ -273,6 +274,26 @@ export class Config {
 
   toggleReadingOnly() {
     this.readingOnly = !this._settings.readingOnly;
+  }
+
+  // Pitch accent display: Defaults to downstep
+
+  get accentDisplay(): AccentDisplay {
+    return typeof this._settings.accentDisplay === 'undefined'
+      ? 'downstep'
+      : this._settings.accentDisplay;
+  }
+
+  set accentDisplay(value: AccentDisplay) {
+    if (
+      typeof this._settings.accentDisplay !== 'undefined' &&
+      this._settings.accentDisplay === value
+    ) {
+      return;
+    }
+
+    this._settings.accentDisplay = value;
+    browser.storage.sync.set({ accentDisplay: value });
   }
 
   // Part-of-speech display: Defaults to expl
@@ -558,6 +579,7 @@ export class Config {
     return {
       showPriority: this.showPriority,
       readingOnly: this.readingOnly,
+      accentDisplay: this.accentDisplay,
       posDisplay: this.posDisplay,
       kanjiReferences: this.kanjiReferences,
       showKanjiComponents: this.showKanjiComponents,

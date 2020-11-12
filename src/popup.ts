@@ -1,4 +1,5 @@
 import { KanjiResult, NameTranslation } from '@birchill/hikibiki-data';
+import { countMora, moraSubstring } from '@birchill/normal-jp';
 
 import {
   CopyKeys,
@@ -13,7 +14,12 @@ import {
   getSelectedReferenceLabels,
   ReferenceAbbreviation,
 } from './refs';
-import { ExtendedSense, KanjiInfo, ReadingInfo } from './word-result';
+import {
+  ExtendedSense,
+  KanjiInfo,
+  ReadingInfo,
+  ExtendedKanaEntry,
+} from './word-result';
 import { EraInfo, getEraInfo } from './years';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -28,6 +34,7 @@ export const enum CopyState {
 export interface PopupOptions {
   showPriority: boolean;
   showDefinitions: boolean;
+  accentDisplay: AccentDisplay;
   posDisplay: PartOfSpeechDisplay;
   kanjiReferences: Array<ReferenceAbbreviation>;
   showKanjiComponents?: boolean;
@@ -133,7 +140,7 @@ function renderWordEntries(
         if (i) {
           kanaSpan.append('、 ');
         }
-        kanaSpan.append(kana.ent);
+        kanaSpan.append(renderKana(kana, options));
         appendHeadwordInfo(kana.i, kanaSpan);
         if (options.showPriority) {
           appendPriorityMark(kana.p, kanaSpan);
@@ -244,6 +251,71 @@ function renderBonusNames(
   }
 
   return container;
+}
+
+function renderKana(
+  kana: ExtendedKanaEntry,
+  options: PopupOptions
+): string | Element {
+  const accents = kana.a;
+  if (
+    options.accentDisplay === 'none' ||
+    typeof accents === 'undefined' ||
+    (Array.isArray(accents) && !accents.length)
+  ) {
+    return kana.ent;
+  }
+
+  const accentPos = typeof accents === 'number' ? accents : accents[0].i;
+
+  if (options.accentDisplay === 'downstep') {
+    return (
+      moraSubstring(kana.ent, 0, accentPos) +
+      'ꜜ' +
+      moraSubstring(kana.ent, accentPos)
+    );
+  }
+
+  // Generate binary pitch display
+  const wrapperSpan = document.createElement('span');
+  wrapperSpan.classList.add('w-binary');
+
+  // Accent position 0 (heiban: LHHHHH) and accent position 1 (atamadata: HLLLL)
+  // are sufficiently similar that we handle them together.
+  if (accentPos === 0 || accentPos === 1) {
+    const len = countMora(kana.ent);
+    const startSpan = document.createElement('span');
+    startSpan.classList.add(accentPos ? 'h-l' : len > 1 ? 'l-h' : 'h');
+    startSpan.textContent = moraSubstring(kana.ent, 0, 1);
+    wrapperSpan.append(startSpan);
+
+    if (len > 1) {
+      const endSpan = document.createElement('span');
+      endSpan.classList.add(accentPos ? 'l' : 'h');
+      endSpan.textContent = moraSubstring(kana.ent, 1);
+      wrapperSpan.append(endSpan);
+    }
+  } else {
+    // Otherwise we have nakadaka (LHHHHL) or odaka (LHHHH)
+    const startSpan = document.createElement('span');
+    startSpan.classList.add('l-h');
+    startSpan.textContent = moraSubstring(kana.ent, 0, 1);
+    wrapperSpan.append(startSpan);
+
+    const middleSpan = document.createElement('span');
+    middleSpan.classList.add('h-l');
+    middleSpan.textContent = moraSubstring(kana.ent, 1, accentPos);
+    wrapperSpan.append(middleSpan);
+
+    if (accentPos < countMora(kana.ent)) {
+      const endSpan = document.createElement('span');
+      endSpan.classList.add('l');
+      endSpan.textContent = moraSubstring(kana.ent, accentPos);
+      wrapperSpan.append(endSpan);
+    }
+  }
+
+  return wrapperSpan;
 }
 
 function appendHeadwordInfo(

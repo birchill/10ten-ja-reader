@@ -14,6 +14,8 @@ interface KeyboardKeys {
   startCopy: string[];
 }
 
+type AccentDisplay = 'downstep' | 'binary' | 'none';
+
 type PartOfSpeechDisplay = 'expl' | 'code' | 'none';
 
 interface ContentConfig {
@@ -22,6 +24,9 @@ interface ContentConfig {
 
   // True if only the reading (and not the definition) should be shown.
   readingOnly: boolean;
+
+  // Indicates the type of display to use for showing pitch accent information.
+  accentDisplay: AccentDisplay;
 
   // Indicates the type of display to use for part-of-speech labels.
   posDisplay: PartOfSpeechDisplay;
