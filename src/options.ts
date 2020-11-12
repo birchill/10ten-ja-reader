@@ -78,6 +78,12 @@ function completeForm() {
       renderPopupStyleSelect();
     });
 
+  document.getElementById('accentDisplay')!.addEventListener('input', (evt) => {
+    config.accentDisplay = (evt.target as HTMLSelectElement)
+      .value as AccentDisplay;
+    renderPopupStyleSelect();
+  });
+
   document.getElementById('posDisplay')!.addEventListener('input', (evt) => {
     config.posDisplay = (evt.target as HTMLSelectElement)
       .value as PartOfSpeechDisplay;
@@ -160,7 +166,36 @@ function renderPopupStyleSelect() {
 
     const spanKana = document.createElement('span');
     spanKana.classList.add('w-kana');
-    spanKana.textContent = 'りかい';
+
+    switch (config.accentDisplay) {
+      case 'downstep':
+        spanKana.textContent = 'りꜜかい';
+        break;
+
+      case 'binary':
+        {
+          const spanWrapper = document.createElement('span');
+          spanWrapper.classList.add('w-binary');
+
+          const spanRi = document.createElement('span');
+          spanRi.classList.add('h-l');
+          spanRi.textContent = 'り';
+          spanWrapper.append(spanRi);
+
+          const spanKai = document.createElement('span');
+          spanKai.classList.add('l');
+          spanKai.textContent = 'かい';
+          spanWrapper.append(spanKai);
+
+          spanKana.append(spanWrapper);
+        }
+        break;
+
+      case 'none':
+        spanKana.textContent = 'りかい';
+        break;
+    }
+
     if (config.showPriority) {
       spanKana.append(renderStar());
     }
@@ -173,30 +208,34 @@ function renderPopupStyleSelect() {
       headingDiv.appendChild(spanRomaji);
     }
 
-    const spanDef = document.createElement('span');
-    spanDef.classList.add('w-def');
-    spanDef.append('understanding');
+    if (!config.readingOnly) {
+      const spanDef = document.createElement('span');
+      spanDef.classList.add('w-def');
+      spanDef.append('understanding');
 
-    if (config.posDisplay !== 'none') {
-      const posSpan = document.createElement('span');
-      posSpan.classList.add('w-pos', 'tag');
-      switch (config.posDisplay) {
-        case 'expl':
-          posSpan.append(
-            ['n', 'vs']
-              .map((pos) => browser.i18n.getMessage(`pos_label_${pos}`) || pos)
-              .join(', ')
-          );
-          break;
+      if (config.posDisplay !== 'none') {
+        const posSpan = document.createElement('span');
+        posSpan.classList.add('w-pos', 'tag');
+        switch (config.posDisplay) {
+          case 'expl':
+            posSpan.append(
+              ['n', 'vs']
+                .map(
+                  (pos) => browser.i18n.getMessage(`pos_label_${pos}`) || pos
+                )
+                .join(', ')
+            );
+            break;
 
-        case 'code':
-          posSpan.append('n, vs');
-          break;
+          case 'code':
+            posSpan.append('n, vs');
+            break;
+        }
+        spanDef.append(posSpan);
       }
-      spanDef.append(posSpan);
-    }
 
-    entry.appendChild(spanDef);
+      entry.appendChild(spanDef);
+    }
   }
 }
 
@@ -563,6 +602,7 @@ function fillVals() {
   optform.showPriority.checked = config.showPriority;
   optform.showRomaji.checked = config.showRomaji;
   optform.showDefinitions.checked = !config.readingOnly;
+  optform.accentDisplay.value = config.accentDisplay;
   optform.posDisplay.value = config.posDisplay;
   optform.highlightText.checked = !config.noTextHighlight;
   optform.contextMenuEnable.checked = config.contextMenuEnable;

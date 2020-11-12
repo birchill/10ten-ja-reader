@@ -103,6 +103,7 @@ describe('rikaiContent:text search', () => {
     const config: ContentConfig = {
       showPriority: true,
       readingOnly: false,
+      accentDisplay: 'downstep',
       posDisplay: 'expl',
       kanjiReferences: ['kk'] as Array<ReferenceAbbreviation>,
       showKanjiComponents: true,
@@ -1046,6 +1047,7 @@ describe('rikaiContent:highlighting', () => {
     const config: ContentConfig = {
       showPriority: true,
       readingOnly: false,
+      accentDisplay: 'downstep',
       posDisplay: 'expl',
       kanjiReferences: ['kk'] as Array<ReferenceAbbreviation>,
       showKanjiComponents: true,

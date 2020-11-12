@@ -375,6 +375,22 @@
     "message": "Enable Rikaichamp",
     "description": "Context menu item to enable the extension."
   },
+  "options_accent_display_binary": {
+    "message": "Binary pitch ⎾⏋",
+    "description": "Label for displaying the pitch accent using box outlines to show high and low"
+  },
+  "options_accent_display_downstep": {
+    "message": "Downstep ꜜ",
+    "description": "Label for displaying the pitch accent down-step as a small downward arrow ꜜ"
+  },
+  "options_accent_display_label": {
+    "message": "Pitch accent display",
+    "description": "Label for the drop-down list used to configure how pitch accent information is displayed"
+  },
+  "options_accent_display_none": {
+    "message": "None",
+    "description": "Label for not showing pitch accent information"
+  },
   "options_bushu_data_name": {
     "message": "radical data",
     "description": "The name for the bushu database data set"
@@ -580,7 +596,7 @@
   },
   "options_pos_display_code": {
     "message": "Code (e.g. “v5r”)",
-    "description": "Label for simply display dictionary part-of-speech codes"
+    "description": "Label for simply displaying dictionary part-of-speech codes"
   },
   "options_pos_display_expl": {
     "message": "Explanation (e.g. “-u verb”)",
