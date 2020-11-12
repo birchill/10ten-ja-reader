@@ -271,11 +271,23 @@ function renderKana(
   const accentPos = typeof accents === 'number' ? accents : accents[0].i;
 
   if (options.accentDisplay === 'downstep') {
-    return (
-      moraSubstring(kana.ent, 0, accentPos) +
-      'ꜜ' +
-      moraSubstring(kana.ent, accentPos)
-    );
+    if (!accentPos) {
+      // accentPos 0 (heiban) is special since there's no accent to show.
+      //
+      // At the same time we want to distinguish between heiban and
+      // "no accent information". So we indicate heiban with a dotted line
+      // across the top instead.
+      const wrapperSpan = document.createElement('span');
+      wrapperSpan.classList.add('w-heiban');
+      wrapperSpan.textContent = kana.ent;
+      return wrapperSpan;
+    } else {
+      return (
+        moraSubstring(kana.ent, 0, accentPos) +
+        'ꜜ' +
+        moraSubstring(kana.ent, accentPos)
+      );
+    }
   }
 
   // Generate binary pitch display
