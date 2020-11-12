@@ -417,18 +417,21 @@ function renderSense(
 ): string | DocumentFragment {
   let glosses = sense.g.map((g) => g.str).join('; ');
 
-  if (sense.inf) {
-    glosses += ` (${sense.inf})`;
-  }
-
-  if (!sense.pos) {
+  if (!sense.inf && !sense.pos) {
     return glosses;
   }
 
   const fragment = document.createDocumentFragment();
   fragment.append(glosses);
 
-  if (options.posDisplay !== 'none') {
+  if (sense.inf) {
+    const infSpan = document.createElement('span');
+    infSpan.classList.add('w-inf');
+    infSpan.textContent = ` (${sense.inf})`;
+    fragment.append(infSpan);
+  }
+
+  if (sense.pos && options.posDisplay !== 'none') {
     const posSpan = document.createElement('span');
     posSpan.classList.add('w-pos', 'tag');
     switch (options.posDisplay) {
