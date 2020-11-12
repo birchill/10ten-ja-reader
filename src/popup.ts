@@ -415,7 +415,12 @@ function renderSense(
   sense: ExtendedSense,
   options: PopupOptions
 ): string | DocumentFragment {
-  const glosses = sense.g.map((g) => g.str).join('; ');
+  let glosses = sense.g.map((g) => g.str).join('; ');
+
+  if (sense.inf) {
+    glosses += ` (${sense.inf})`;
+  }
+
   if (!sense.pos) {
     return glosses;
   }
