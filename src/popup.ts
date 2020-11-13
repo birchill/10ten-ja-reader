@@ -19,6 +19,7 @@ import {
   KanjiInfo,
   ReadingInfo,
   ExtendedKanaEntry,
+  LangSource,
 } from './word-result';
 import { EraInfo, getEraInfo } from './years';
 
@@ -441,6 +442,10 @@ function renderSense(
     fragment.append(infSpan);
   }
 
+  if (sense.lsrc && sense.lsrc.length) {
+    fragment.append(renderLangSources(sense.lsrc));
+  }
+
   if (sense.pos && options.posDisplay !== 'none') {
     const posSpan = document.createElement('span');
     posSpan.classList.add('w-pos', 'tag');
@@ -471,6 +476,48 @@ function renderSense(
   }
 
   return fragment;
+}
+
+function renderLangSources(sources: Array<LangSource>): DocumentFragment {
+  const container = document.createDocumentFragment();
+
+  for (const lsrc of sources) {
+    container.append(' ');
+
+    let prefix = lsrc.wasei
+      ? browser.i18n.getMessage('lang_label_wasei')
+      : undefined;
+    if (!prefix) {
+      prefix =
+        browser.i18n.getMessage(`lang_label_${lsrc.lang || 'en'}`) || lsrc.lang;
+    }
+
+    const wrapperSpan = document.createElement('span');
+    wrapperSpan.classList.add('w-lsrc');
+    wrapperSpan.append('(');
+
+    if (prefix && lsrc.src) {
+      prefix = `${prefix}: `;
+    }
+    if (prefix) {
+      wrapperSpan.append(prefix);
+    }
+
+    if (lsrc.src) {
+      const sourceSpan = document.createElement('span');
+      if (lsrc.lang) {
+        sourceSpan.lang = lsrc.lang;
+      }
+      sourceSpan.textContent = lsrc.src;
+      wrapperSpan.append(sourceSpan);
+    }
+
+    wrapperSpan.append(')');
+
+    container.append(wrapperSpan);
+  }
+
+  return container;
 }
 
 function renderNamesEntries(

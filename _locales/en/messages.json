@@ -647,6 +647,270 @@
     "message": "usu. kanji",
     "description": "Short annotation given to kana headwords that are normally written in kanji alone"
   },
+  "lang_label_af": {
+    "message": "Afrikaans",
+    "description": "Label used to describe senses whose source language is 'af' (Afrikaans)"
+  },
+  "lang_label_ain": {
+    "message": "Ainu",
+    "description": "Label used to describe senses whose source language is 'ain' (Ainu)"
+  },
+  "lang_label_alg": {
+    "message": "Algonquian",
+    "description": "Label used to describe senses whose source language is 'alg' (Algonquian)"
+  },
+  "lang_label_am": {
+    "message": "Amharic",
+    "description": "Label used to describe senses whose source language is 'am' (Amharic)"
+  },
+  "lang_label_ar": {
+    "message": "Arabic",
+    "description": "Label used to describe senses whose source language is 'ar' (Arabic)"
+  },
+  "lang_label_arn": {
+    "message": "Mapuche",
+    "description": "Label used to describe senses whose source language is 'arn' (Mapuche)"
+  },
+  "lang_label_bg": {
+    "message": "Bulgarian",
+    "description": "Label used to describe senses whose source language is 'bg' (Bulgarian)"
+  },
+  "lang_label_bnt": {
+    "message": "Bantu",
+    "description": "Label used to describe senses whose source language is 'bnt' (Bantu)"
+  },
+  "lang_label_bo": {
+    "message": "Tibetan",
+    "description": "Label used to describe senses whose source language is 'bo' (Tibetan)"
+  },
+  "lang_label_br": {
+    "message": "Breton",
+    "description": "Label used to describe senses whose source language is 'br' (Breton)"
+  },
+  "lang_label_chn": {
+    "message": "Chinook",
+    "description": "Label used to describe senses whose source language is 'chn' (Chinook)"
+  },
+  "lang_label_cs": {
+    "message": "Czech",
+    "description": "Label used to describe senses whose source language is 'cs' (Czech)"
+  },
+  "lang_label_da": {
+    "message": "Danish",
+    "description": "Label used to describe senses whose source language is 'da' (Danish)"
+  },
+  "lang_label_de": {
+    "message": "German",
+    "description": "Label used to describe senses whose source language is 'de' (German)"
+  },
+  "lang_label_el": {
+    "message": "Greek",
+    "description": "Label used to describe senses whose source language is 'el' (Greek)"
+  },
+  "lang_label_en": {
+    "message": "English",
+    "description": "Label used to describe senses whose source language is 'en' (English)"
+  },
+  "lang_label_eo": {
+    "message": "Esperanto",
+    "description": "Label used to describe senses whose source language is 'eo' (Esperanto)"
+  },
+  "lang_label_es": {
+    "message": "Spanish",
+    "description": "Label used to describe senses whose source language is 'es' (Spanish)"
+  },
+  "lang_label_et": {
+    "message": "Estonian",
+    "description": "Label used to describe senses whose source language is 'et' (Estonian)"
+  },
+  "lang_label_fa": {
+    "message": "Persian",
+    "description": "Label used to describe senses whose source language is 'fa' (Persian)"
+  },
+  "lang_label_fi": {
+    "message": "Finnish",
+    "description": "Label used to describe senses whose source language is 'fi' (Finnish)"
+  },
+  "lang_label_fil": {
+    "message": "Filipino",
+    "description": "Label used to describe senses whose source language is 'fil' (Filipino)"
+  },
+  "lang_label_fr": {
+    "message": "French",
+    "description": "Label used to describe senses whose source language is 'fr' (French)"
+  },
+  "lang_label_gl": {
+    "message": "Galician",
+    "description": "Label used to describe senses whose source language is 'gl' (Galician)"
+  },
+  "lang_label_grc": {
+    "message": "Ancient Greek",
+    "description": "Label used to describe senses whose source language is 'grc' (Ancient Greek)"
+  },
+  "lang_label_haw": {
+    "message": "Hawaiian",
+    "description": "Label used to describe senses whose source language is 'haw' (Hawaiian)"
+  },
+  "lang_label_he": {
+    "message": "Hebrew",
+    "description": "Label used to describe senses whose source language is 'he' (Hebrew)"
+  },
+  "lang_label_hi": {
+    "message": "Hindi",
+    "description": "Label used to describe senses whose source language is 'hi' (Hindi)"
+  },
+  "lang_label_hr": {
+    "message": "Croatian",
+    "description": "Label used to describe senses whose source language is 'hr' (Croatian)"
+  },
+  "lang_label_hu": {
+    "message": "Hungarian",
+    "description": "Label used to describe senses whose source language is 'hu' (Hungarian)"
+  },
+  "lang_label_id": {
+    "message": "Indonesian",
+    "description": "Label used to describe senses whose source language is 'id' (Indonesian)"
+  },
+  "lang_label_is": {
+    "message": "Icelandic",
+    "description": "Label used to describe senses whose source language is 'is' (Icelandic)"
+  },
+  "lang_label_it": {
+    "message": "Italian",
+    "description": "Label used to describe senses whose source language is 'it' (Italian)"
+  },
+  "lang_label_ka": {
+    "message": "Georgian",
+    "description": "Label used to describe senses whose source language is 'ka' (Georgian)"
+  },
+  "lang_label_km": {
+    "message": "Khmer",
+    "description": "Label used to describe senses whose source language is 'km' (Khmer)"
+  },
+  "lang_label_ko": {
+    "message": "Korean",
+    "description": "Label used to describe senses whose source language is 'ko' (Korean)"
+  },
+  "lang_label_ku": {
+    "message": "Kurdish",
+    "description": "Label used to describe senses whose source language is 'ku' (Kurdish)"
+  },
+  "lang_label_la": {
+    "message": "Latin",
+    "description": "Label used to describe senses whose source language is 'la' (Latin)"
+  },
+  "lang_label_mi": {
+    "message": "Maori",
+    "description": "Label used to describe senses whose source language is 'mi' (Maori)"
+  },
+  "lang_label_ml": {
+    "message": "Malayalam",
+    "description": "Label used to describe senses whose source language is 'ml' (Malayalam)"
+  },
+  "lang_label_mn": {
+    "message": "Mongolian",
+    "description": "Label used to describe senses whose source language is 'mn' (Mongolian)"
+  },
+  "lang_label_mnc": {
+    "message": "Manchu",
+    "description": "Label used to describe senses whose source language is 'mnc' (Manchu)"
+  },
+  "lang_label_mo": {
+    "message": "Moldavian",
+    "description": "Label used to describe senses whose source language is 'mo' (Moldavian)"
+  },
+  "lang_label_ms": {
+    "message": "Malay",
+    "description": "Label used to describe senses whose source language is 'ms' (Malay)"
+  },
+  "lang_label_my": {
+    "message": "Burmese",
+    "description": "Label used to describe senses whose source language is 'my' (Burmese)"
+  },
+  "lang_label_nl": {
+    "message": "Dutch",
+    "description": "Label used to describe senses whose source language is 'nl' (Dutch)"
+  },
+  "lang_label_no": {
+    "message": "Norwegian",
+    "description": "Label used to describe senses whose source language is 'no' (Norwegian)"
+  },
+  "lang_label_pl": {
+    "message": "Polish",
+    "description": "Label used to describe senses whose source language is 'pl' (Polish)"
+  },
+  "lang_label_pt": {
+    "message": "Portuguese",
+    "description": "Label used to describe senses whose source language is 'pt' (Portuguese)"
+  },
+  "lang_label_ro": {
+    "message": "Romanian",
+    "description": "Label used to describe senses whose source language is 'ro' (Romanian)"
+  },
+  "lang_label_ru": {
+    "message": "Russian",
+    "description": "Label used to describe senses whose source language is 'ru' (Russian)"
+  },
+  "lang_label_sa": {
+    "message": "Sanskrit",
+    "description": "Label used to describe senses whose source language is 'sa' (Sanskrit)"
+  },
+  "lang_label_sk": {
+    "message": "Slovak",
+    "description": "Label used to describe senses whose source language is 'sk' (Slovak)"
+  },
+  "lang_label_sl": {
+    "message": "Slovenian",
+    "description": "Label used to describe senses whose source language is 'sl' (Slovenian)"
+  },
+  "lang_label_so": {
+    "message": "Somali",
+    "description": "Label used to describe senses whose source language is 'so' (Somali)"
+  },
+  "lang_label_sv": {
+    "message": "Swedish",
+    "description": "Label used to describe senses whose source language is 'sv' (Swedish)"
+  },
+  "lang_label_sw": {
+    "message": "Swahili",
+    "description": "Label used to describe senses whose source language is 'sw' (Swahili)"
+  },
+  "lang_label_ta": {
+    "message": "Tamil",
+    "description": "Label used to describe senses whose source language is 'ta' (Tamil)"
+  },
+  "lang_label_th": {
+    "message": "Thai",
+    "description": "Label used to describe senses whose source language is 'th' (Thai)"
+  },
+  "lang_label_tr": {
+    "message": "Turkish",
+    "description": "Label used to describe senses whose source language is 'tr' (Turkish)"
+  },
+  "lang_label_ty": {
+    "message": "Tahitian",
+    "description": "Label used to describe senses whose source language is 'ty' (Tahitian)"
+  },
+  "lang_label_ur": {
+    "message": "Urdu",
+    "description": "Label used to describe senses whose source language is 'ur' (Urdu)"
+  },
+  "lang_label_vi": {
+    "message": "Vietnamese",
+    "description": "Label used to describe senses whose source language is 'vi' (Vietnamese)"
+  },
+  "lang_label_wasei": {
+    "message": "wasei",
+    "description": "Label used to describe senses that are Japanese constructions (of English, presumably, as opposed to wasei kango)"
+  },
+  "lang_label_yi": {
+    "message": "Yiddish",
+    "description": "Label used to describe senses whose source language is 'yi' (Yiddish)"
+  },
+  "lang_label_zh": {
+    "message": "Chinese",
+    "description": "Label used to describe senses whose source language is 'zh' (Chinese)"
+  },
   "menu_enable_extension": {
     "message": "Enable Rikaichamp",
     "description": "Context menu item to enable the extension."
