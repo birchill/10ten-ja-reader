@@ -429,13 +429,9 @@ function renderSense(
   sense: ExtendedSense,
   options: PopupOptions
 ): string | DocumentFragment {
-  let glosses = sense.g.map((g) => g.str).join('; ');
-
-  if (!sense.inf && !sense.pos) {
-    return glosses;
-  }
-
   const fragment = document.createDocumentFragment();
+
+  let glosses = sense.g.map((g) => g.str).join('; ');
   fragment.append(glosses);
 
   if (sense.inf) {
@@ -462,6 +458,16 @@ function renderSense(
         break;
     }
     fragment.append(posSpan);
+  }
+
+  if (sense.field && sense.field.length) {
+    for (const field of sense.field) {
+      const fieldSpan = document.createElement('span');
+      fieldSpan.classList.add('w-field', 'tag');
+      fieldSpan.textContent =
+        browser.i18n.getMessage(`field_label_${field}`) || field;
+      fragment.append(fieldSpan);
+    }
   }
 
   return fragment;

@@ -339,6 +339,282 @@
     "message": "Translate Japanese by hovering over words.",
     "description": "Description of the what the extension does."
   },
+  "field_label_Buddh": {
+    "message": "Buddhism",
+    "description": "Label applied to senses with the 'Buddh' field"
+  },
+  "field_label_Christn": {
+    "message": "Christianity",
+    "description": "Label applied to senses with the 'Christn' field"
+  },
+  "field_label_MA": {
+    "message": "martial arts",
+    "description": "Label applied to senses with the 'MA' field"
+  },
+  "field_label_Shinto": {
+    "message": "Shinto",
+    "description": "Label applied to senses with the 'Shinto' field"
+  },
+  "field_label_agric": {
+    "message": "agriculture",
+    "description": "Label applied to senses with the 'agric' field"
+  },
+  "field_label_anat": {
+    "message": "anatomy",
+    "description": "Label applied to senses with the 'anat' field"
+  },
+  "field_label_archeol": {
+    "message": "archeolology",
+    "description": "Label applied to senses with the 'archeol' field"
+  },
+  "field_label_archit": {
+    "message": "architecture",
+    "description": "Label applied to senses with the 'archit' field"
+  },
+  "field_label_art": {
+    "message": "art",
+    "description": "Label applied to senses with the 'art' field"
+  },
+  "field_label_astron": {
+    "message": "astronomy",
+    "description": "Label applied to senses with the 'astron' field"
+  },
+  "field_label_audvid": {
+    "message": "audiovisual",
+    "description": "Label applied to senses with the 'audvid' field"
+  },
+  "field_label_aviat": {
+    "message": "aviation",
+    "description": "Label applied to senses with the 'aviat' field"
+  },
+  "field_label_baseb": {
+    "message": "baseball",
+    "description": "Label applied to senses with the 'baseb' field"
+  },
+  "field_label_biochem": {
+    "message": "biochemistry",
+    "description": "Label applied to senses with the 'biochem' field"
+  },
+  "field_label_biol": {
+    "message": "biology",
+    "description": "Label applied to senses with the 'biol' field"
+  },
+  "field_label_bot": {
+    "message": "botany",
+    "description": "Label applied to senses with the 'bot' field"
+  },
+  "field_label_bus": {
+    "message": "business",
+    "description": "Label applied to senses with the 'bus' field"
+  },
+  "field_label_chem": {
+    "message": "chemistry",
+    "description": "Label applied to senses with the 'chem' field"
+  },
+  "field_label_comp": {
+    "message": "computing",
+    "description": "Label applied to senses with the 'comp' field"
+  },
+  "field_label_cryst": {
+    "message": "crystallography",
+    "description": "Label applied to senses with the 'cryst' field"
+  },
+  "field_label_ecol": {
+    "message": "ecology",
+    "description": "Label applied to senses with the 'ecol' field"
+  },
+  "field_label_econ": {
+    "message": "economics",
+    "description": "Label applied to senses with the 'econ' field"
+  },
+  "field_label_elec": {
+    "message": "electricity",
+    "description": "Label applied to senses with the 'elec' field"
+  },
+  "field_label_electr": {
+    "message": "electronics",
+    "description": "Label applied to senses with the 'electr' field"
+  },
+  "field_label_embryo": {
+    "message": "embryology",
+    "description": "Label applied to senses with the 'embryo' field"
+  },
+  "field_label_engr": {
+    "message": "engineering",
+    "description": "Label applied to senses with the 'engr' field"
+  },
+  "field_label_ent": {
+    "message": "entomology",
+    "description": "Label applied to senses with the 'ent' field"
+  },
+  "field_label_finc": {
+    "message": "finance",
+    "description": "Label applied to senses with the 'finc' field"
+  },
+  "field_label_fish": {
+    "message": "fishing",
+    "description": "Label applied to senses with the 'fish' field"
+  },
+  "field_label_food": {
+    "message": "food",
+    "description": "Label applied to senses with the 'food' field"
+  },
+  "field_label_gardn": {
+    "message": "gardening",
+    "description": "Label applied to senses with the 'gardn' field"
+  },
+  "field_label_genet": {
+    "message": "genetics",
+    "description": "Label applied to senses with the 'genet' field"
+  },
+  "field_label_geogr": {
+    "message": "geography",
+    "description": "Label applied to senses with the 'geogr' field"
+  },
+  "field_label_geol": {
+    "message": "geology",
+    "description": "Label applied to senses with the 'geol' field"
+  },
+  "field_label_geom": {
+    "message": "geometry",
+    "description": "Label applied to senses with the 'geom' field"
+  },
+  "field_label_go": {
+    "message": "Go",
+    "description": "Label applied to senses with the 'go' field"
+  },
+  "field_label_golf": {
+    "message": "golf",
+    "description": "Label applied to senses with the 'golf' field"
+  },
+  "field_label_gramm": {
+    "message": "grammar",
+    "description": "Label applied to senses with the 'gramm' field"
+  },
+  "field_label_grmyth": {
+    "message": "Greek mythology",
+    "description": "Label applied to senses with the 'grmyth' field"
+  },
+  "field_label_hanaf": {
+    "message": "hanafuda",
+    "description": "Label applied to senses with the 'hanaf' field"
+  },
+  "field_label_horse": {
+    "message": "horse racing",
+    "description": "Label applied to senses with the 'horse' field"
+  },
+  "field_label_law": {
+    "message": "law",
+    "description": "Label applied to senses with the 'law' field"
+  },
+  "field_label_ling": {
+    "message": "linguistics",
+    "description": "Label applied to senses with the 'ling' field"
+  },
+  "field_label_logic": {
+    "message": "logic",
+    "description": "Label applied to senses with the 'logic' field"
+  },
+  "field_label_mahj": {
+    "message": "mahjong",
+    "description": "Label applied to senses with the 'mahj' field"
+  },
+  "field_label_math": {
+    "message": "mathematics",
+    "description": "Label applied to senses with the 'math' field"
+  },
+  "field_label_mech": {
+    "message": "mechanical engineering",
+    "description": "Label applied to senses with the 'mech' field"
+  },
+  "field_label_med": {
+    "message": "medicine",
+    "description": "Label applied to senses with the 'med' field"
+  },
+  "field_label_met": {
+    "message": "climate, weather",
+    "description": "Label applied to senses with the 'met' field"
+  },
+  "field_label_mil": {
+    "message": "military",
+    "description": "Label applied to senses with the 'mil' field"
+  },
+  "field_label_music": {
+    "message": "music",
+    "description": "Label applied to senses with the 'music' field"
+  },
+  "field_label_ornith": {
+    "message": "ornithology",
+    "description": "Label applied to senses with the 'ornith' field"
+  },
+  "field_label_paleo": {
+    "message": "paleontology",
+    "description": "Label applied to senses with the 'paleo' field"
+  },
+  "field_label_pathol": {
+    "message": "pathology",
+    "description": "Label applied to senses with the 'pathol' field"
+  },
+  "field_label_pharm": {
+    "message": "pharmacy",
+    "description": "Label applied to senses with the 'pharm' field"
+  },
+  "field_label_phil": {
+    "message": "philosophy",
+    "description": "Label applied to senses with the 'phil' field"
+  },
+  "field_label_photo": {
+    "message": "photography",
+    "description": "Label applied to senses with the 'photo' field"
+  },
+  "field_label_physics": {
+    "message": "physics",
+    "description": "Label applied to senses with the 'physics' field"
+  },
+  "field_label_physiol": {
+    "message": "physiology",
+    "description": "Label applied to senses with the 'physiol' field"
+  },
+  "field_label_print": {
+    "message": "printing",
+    "description": "Label applied to senses with the 'print' field"
+  },
+  "field_label_psych": {
+    "message": "psychology, psychiatry",
+    "description": "Label applied to senses with the 'psych' field"
+  },
+  "field_label_shogi": {
+    "message": "shogi",
+    "description": "Label applied to senses with the 'shogi' field"
+  },
+  "field_label_sports": {
+    "message": "sports",
+    "description": "Label applied to senses with the 'sports' field"
+  },
+  "field_label_stat": {
+    "message": "statistics",
+    "description": "Label applied to senses with the 'stat' field"
+  },
+  "field_label_sumo": {
+    "message": "sumo",
+    "description": "Label applied to senses with the 'sumo' field"
+  },
+  "field_label_telec": {
+    "message": "telecommunications",
+    "description": "Label applied to senses with the 'telec' field"
+  },
+  "field_label_tradem": {
+    "message": "trademark",
+    "description": "Label applied to senses with the 'tradem' field"
+  },
+  "field_label_vidg": {
+    "message": "video games",
+    "description": "Label applied to senses with the 'vidg' field"
+  },
+  "field_label_zool": {
+    "message": "zoology",
+    "description": "Label applied to senses with the 'zool' field"
+  },
   "head_info_label_ateji": {
     "message": "ateji",
     "description": "Short annotation given to kanji headwords that are ateji (kanji chosen to represent sounds)"

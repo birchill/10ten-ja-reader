@@ -196,6 +196,10 @@
   background: rgba(50, 200, 50, 0.6);
 }
 
+#rikaichamp-window .w-def .w-field {
+  background: rgba(50, 200, 50, 0.6);
+}
+
 #rikaichamp-window .entry.-selected {
   background: rgba(255, 255, 206);
   border-radius: 2px;
