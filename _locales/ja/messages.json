@@ -339,6 +339,282 @@
     "message": "単語の上にマウスのカーソルを合わせたら日英辞書を引く。",
     "description": "Description of the what the extension does."
   },
+  "field_label_Buddh": {
+    "message": "仏教",
+    "description": "Label applied to senses with the 'Buddh' field"
+  },
+  "field_label_Christn": {
+    "message": "キリスト教",
+    "description": "Label applied to senses with the 'Christn' field"
+  },
+  "field_label_MA": {
+    "message": "武道",
+    "description": "Label applied to senses with the 'MA' field"
+  },
+  "field_label_Shinto": {
+    "message": "神道",
+    "description": "Label applied to senses with the 'Shinto' field"
+  },
+  "field_label_agric": {
+    "message": "農業",
+    "description": "Label applied to senses with the 'agric' field"
+  },
+  "field_label_anat": {
+    "message": "解剖学",
+    "description": "Label applied to senses with the 'anat' field"
+  },
+  "field_label_archeol": {
+    "message": "考古学",
+    "description": "Label applied to senses with the 'archeol' field"
+  },
+  "field_label_archit": {
+    "message": "建築",
+    "description": "Label applied to senses with the 'archit' field"
+  },
+  "field_label_art": {
+    "message": "美術",
+    "description": "Label applied to senses with the 'art' field"
+  },
+  "field_label_astron": {
+    "message": "天文",
+    "description": "Label applied to senses with the 'astron' field"
+  },
+  "field_label_audvid": {
+    "message": "ＡＶ",
+    "description": "Label applied to senses with the 'audvid' field"
+  },
+  "field_label_aviat": {
+    "message": "航空",
+    "description": "Label applied to senses with the 'aviat' field"
+  },
+  "field_label_baseb": {
+    "message": "野球",
+    "description": "Label applied to senses with the 'baseb' field"
+  },
+  "field_label_biochem": {
+    "message": "生化学",
+    "description": "Label applied to senses with the 'biochem' field"
+  },
+  "field_label_biol": {
+    "message": "生物学",
+    "description": "Label applied to senses with the 'biol' field"
+  },
+  "field_label_bot": {
+    "message": "植物学",
+    "description": "Label applied to senses with the 'bot' field"
+  },
+  "field_label_bus": {
+    "message": "ビジネス",
+    "description": "Label applied to senses with the 'bus' field"
+  },
+  "field_label_chem": {
+    "message": "化学",
+    "description": "Label applied to senses with the 'chem' field"
+  },
+  "field_label_comp": {
+    "message": "コンピューター",
+    "description": "Label applied to senses with the 'comp' field"
+  },
+  "field_label_cryst": {
+    "message": "結晶学",
+    "description": "Label applied to senses with the 'cryst' field"
+  },
+  "field_label_ecol": {
+    "message": "生態学",
+    "description": "Label applied to senses with the 'ecol' field"
+  },
+  "field_label_econ": {
+    "message": "経済",
+    "description": "Label applied to senses with the 'econ' field"
+  },
+  "field_label_elec": {
+    "message": "電気",
+    "description": "Label applied to senses with the 'elec' field"
+  },
+  "field_label_electr": {
+    "message": "電子工学",
+    "description": "Label applied to senses with the 'electr' field"
+  },
+  "field_label_embryo": {
+    "message": "発生学",
+    "description": "Label applied to senses with the 'embryo' field"
+  },
+  "field_label_engr": {
+    "message": "工学",
+    "description": "Label applied to senses with the 'engr' field"
+  },
+  "field_label_ent": {
+    "message": "昆虫学",
+    "description": "Label applied to senses with the 'ent' field"
+  },
+  "field_label_finc": {
+    "message": "金融",
+    "description": "Label applied to senses with the 'finc' field"
+  },
+  "field_label_fish": {
+    "message": "魚釣り",
+    "description": "Label applied to senses with the 'fish' field"
+  },
+  "field_label_food": {
+    "message": "食品",
+    "description": "Label applied to senses with the 'food' field"
+  },
+  "field_label_gardn": {
+    "message": "園芸",
+    "description": "Label applied to senses with the 'gardn' field"
+  },
+  "field_label_genet": {
+    "message": "遺伝学",
+    "description": "Label applied to senses with the 'genet' field"
+  },
+  "field_label_geogr": {
+    "message": "地理学",
+    "description": "Label applied to senses with the 'geogr' field"
+  },
+  "field_label_geol": {
+    "message": "地質学",
+    "description": "Label applied to senses with the 'geol' field"
+  },
+  "field_label_geom": {
+    "message": "幾何学",
+    "description": "Label applied to senses with the 'geom' field"
+  },
+  "field_label_go": {
+    "message": "碁",
+    "description": "Label applied to senses with the 'go' field"
+  },
+  "field_label_golf": {
+    "message": "ゴルフ",
+    "description": "Label applied to senses with the 'golf' field"
+  },
+  "field_label_gramm": {
+    "message": "文法",
+    "description": "Label applied to senses with the 'gramm' field"
+  },
+  "field_label_grmyth": {
+    "message": "ギ神",
+    "description": "Label applied to senses with the 'grmyth' field"
+  },
+  "field_label_hanaf": {
+    "message": "花札",
+    "description": "Label applied to senses with the 'hanaf' field"
+  },
+  "field_label_horse": {
+    "message": "競馬",
+    "description": "Label applied to senses with the 'horse' field"
+  },
+  "field_label_law": {
+    "message": "法学",
+    "description": "Label applied to senses with the 'law' field"
+  },
+  "field_label_ling": {
+    "message": "言語学",
+    "description": "Label applied to senses with the 'ling' field"
+  },
+  "field_label_logic": {
+    "message": "論理",
+    "description": "Label applied to senses with the 'logic' field"
+  },
+  "field_label_mahj": {
+    "message": "麻雀",
+    "description": "Label applied to senses with the 'mahj' field"
+  },
+  "field_label_math": {
+    "message": "数学",
+    "description": "Label applied to senses with the 'math' field"
+  },
+  "field_label_mech": {
+    "message": "機械工学",
+    "description": "Label applied to senses with the 'mech' field"
+  },
+  "field_label_med": {
+    "message": "医学",
+    "description": "Label applied to senses with the 'med' field"
+  },
+  "field_label_met": {
+    "message": "気象",
+    "description": "Label applied to senses with the 'met' field"
+  },
+  "field_label_mil": {
+    "message": "軍事",
+    "description": "Label applied to senses with the 'mil' field"
+  },
+  "field_label_music": {
+    "message": "音楽",
+    "description": "Label applied to senses with the 'music' field"
+  },
+  "field_label_ornith": {
+    "message": "鳥類学",
+    "description": "Label applied to senses with the 'ornith' field"
+  },
+  "field_label_paleo": {
+    "message": "古生物学",
+    "description": "Label applied to senses with the 'paleo' field"
+  },
+  "field_label_pathol": {
+    "message": "病理学",
+    "description": "Label applied to senses with the 'pathol' field"
+  },
+  "field_label_pharm": {
+    "message": "薬学",
+    "description": "Label applied to senses with the 'pharm' field"
+  },
+  "field_label_phil": {
+    "message": "哲学",
+    "description": "Label applied to senses with the 'phil' field"
+  },
+  "field_label_photo": {
+    "message": "撮影",
+    "description": "Label applied to senses with the 'photo' field"
+  },
+  "field_label_physics": {
+    "message": "物理学",
+    "description": "Label applied to senses with the 'physics' field"
+  },
+  "field_label_physiol": {
+    "message": "生理学",
+    "description": "Label applied to senses with the 'physiol' field"
+  },
+  "field_label_print": {
+    "message": "印刷",
+    "description": "Label applied to senses with the 'print' field"
+  },
+  "field_label_psych": {
+    "message": "心理学",
+    "description": "Label applied to senses with the 'psych' field"
+  },
+  "field_label_shogi": {
+    "message": "将棋",
+    "description": "Label applied to senses with the 'shogi' field"
+  },
+  "field_label_sports": {
+    "message": "スポーツ",
+    "description": "Label applied to senses with the 'sports' field"
+  },
+  "field_label_stat": {
+    "message": "統計学",
+    "description": "Label applied to senses with the 'stat' field"
+  },
+  "field_label_sumo": {
+    "message": "相撲",
+    "description": "Label applied to senses with the 'sumo' field"
+  },
+  "field_label_telec": {
+    "message": "通信",
+    "description": "Label applied to senses with the 'telec' field"
+  },
+  "field_label_tradem": {
+    "message": "商標",
+    "description": "Label applied to senses with the 'tradem' field"
+  },
+  "field_label_vidg": {
+    "message": "ゲーム",
+    "description": "Label applied to senses with the 'vidg' field"
+  },
+  "field_label_zool": {
+    "message": "動物学",
+    "description": "Label applied to senses with the 'zool' field"
+  },
   "head_info_label_ateji": {
     "message": "当て字",
     "description": "Short annotation given to kanji headwords that are ateji (kanji chosen to represent sounds)"
