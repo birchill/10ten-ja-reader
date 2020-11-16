@@ -73,17 +73,7 @@
   },
   "content_kanji_base_radical": {
     "message": "从$char$（$readings$）",
-    "description": "The string used to describe the base radical",
-    "placeholders": {
-      "char": {
-        "content": "$1",
-        "example": "⾡"
-      },
-      "readings": {
-        "content": "$2",
-        "example": "しんにょう、しんにゅう"
-      }
-    }
+    "description": "The string used to describe the base radical"
   },
   "content_kanji_components_label": {
     "message": "部件",
@@ -99,35 +89,17 @@
   },
   "content_kanji_grade_label": {
     "message": "$grade$级",
-    "description": "The label for kanji in grades 1 - 6",
-    "placeholders": {
-      "grade": {
-        "content": "$1",
-        "example": "3"
-      }
-    }
+    "description": "The label for kanji in grades 1 - 6"
   },
   "content_kanji_grade_name_use": {
     "message": "人名用字",
     "description": "Label for kanji marked as name use"
   },
   "content_kanji_kentei_level": {
-    "message": "$level$级",
-    "placeholders": {
-      "level": {
-        "content": "$1",
-        "example": "3"
-      }
-    }
+    "message": "$level$级"
   },
   "content_kanji_kentei_level_pre": {
-    "message": "准$level$级",
-    "placeholders": {
-      "level": {
-        "content": "$1",
-        "example": "2"
-      }
-    }
+    "message": "准$level$级"
   },
   "content_kanji_nanori_label": {
     "message": "人名读法",
@@ -139,13 +111,7 @@
   },
   "content_kanji_strokes_label": {
     "message": "$strokes$画",
-    "description": "The description of the number of strokes",
-    "placeholders": {
-      "strokes": {
-        "content": "$1",
-        "example": "7"
-      }
-    }
+    "description": "The description of the number of strokes"
   },
   "content_kanji_strokes_label_1": {
     "message": "1画",
@@ -282,22 +248,10 @@
     "message": "-ず"
   },
   "error_command_could_not_parse": {
-    "message": "无法解析命令 $command$",
-    "placeholders": {
-      "command": {
-        "content": "$1",
-        "example": "Ctrl+T "
-      }
-    }
+    "message": "无法解析命令 $command$"
   },
   "error_command_disallowed_modifier_key": {
-    "message": "修饰键 '$modifier$' 不能使用",
-    "placeholders": {
-      "modifier": {
-        "content": "$1",
-        "example": "Meta"
-      }
-    }
+    "message": "修饰键 '$modifier$' 不能使用"
   },
   "error_command_has_no_key": {
     "message": "必须指定按键"
@@ -306,13 +260,7 @@
     "message": "必须使用一个修饰键，除非使用功能键（F1-F12）。"
   },
   "error_command_key_is_not_allowed": {
-    "message": "按键 '$key$' 不可用",
-    "placeholders": {
-      "key": {
-        "content": "$1",
-        "example": "Enter"
-      }
-    }
+    "message": "按键 '$key$' 不可用"
   },
   "error_command_media_key_with_modifier_key": {
     "message": "不能同时使用修饰键和多媒体按键"
@@ -353,34 +301,10 @@
     "description": "Label while we are checking for updates"
   },
   "options_data_series_date_only": {
-    "message": "基于 $source$ 资料，生成于 $generated$。",
-    "placeholders": {
-      "source": {
-        "content": "$1",
-        "example": "KANJIDIC"
-      },
-      "generated": {
-        "content": "$2",
-        "example": "2019-10-19"
-      }
-    }
+    "message": "基于 $source$ 资料，生成于 $generated$。"
   },
   "options_data_series_version_and_date": {
-    "message": "基于 $source$ 版本 $version$，生成于 $generated$。",
-    "placeholders": {
-      "source": {
-        "content": "$1",
-        "example": "KANJIDIC"
-      },
-      "version": {
-        "content": "$2",
-        "example": "2019-282"
-      },
-      "generated": {
-        "content": "$3",
-        "example": "2019-10-19"
-      }
-    }
+    "message": "基于 $source$ 版本 $version$，生成于 $generated$。"
   },
   "options_data_source": {
     "message": "本词典含有来自 KANJIDIC 和 JMnedict/ENAMDICT 的资料。",
@@ -392,23 +316,11 @@
   },
   "options_db_update_error": {
     "message": "更新失败：$errormessage$",
-    "description": "Label when we failed to update the data for some reason",
-    "placeholders": {
-      "errormessage": {
-        "content": "$1",
-        "example": "Version file not found"
-      }
-    }
+    "description": "Label when we failed to update the data for some reason"
   },
   "options_db_update_next_retry": {
     "message": "计划于 $nextretry$ 重试",
-    "description": "Label used when there is a scheduled retry",
-    "placeholders": {
-      "nextretry": {
-        "content": "$1",
-        "example": "2019-10-14 17:44"
-      }
-    }
+    "description": "Label used when there is a scheduled retry"
   },
   "options_dictionary_data_heading": {
     "message": "词典数据"
@@ -418,21 +330,7 @@
   },
   "options_downloading_data": {
     "message": "正在下载$datatype$，版本 $version$（$progress$%）……",
-    "description": "Label while we are downloading updates",
-    "placeholders": {
-      "datatype": {
-        "content": "$1",
-        "example": "kanji data"
-      },
-      "version": {
-        "content": "$2",
-        "example": "1.0.3"
-      },
-      "progress": {
-        "content": "$3",
-        "example": "60"
-      }
-    }
+    "description": "Label while we are downloading updates"
   },
   "options_edrdg_license": {
     "message": "这些资料的所有权属于电子词典研究与开发小组（Electronic Dictionary Research and Development Group），Rikaichamp 在 EDRDG 的许可协议的约束下使用它们。",
@@ -467,13 +365,7 @@
   },
   "options_kanji_data_title": {
     "message": "汉字数据版本 v$version$",
-    "description": "The kanji data series title and version",
-    "placeholders": {
-      "version": {
-        "content": "$1",
-        "example": "2.0.0"
-      }
-    }
+    "description": "The kanji data series title and version"
   },
   "options_kanji_dictionary_heading": {
     "message": "汉字词典",
@@ -485,13 +377,7 @@
   },
   "options_last_database_check": {
     "message": "上次检查更新 $lastcheck$",
-    "description": "Status to show when we last checked for an update",
-    "placeholders": {
-      "lastcheck": {
-        "content": "$1",
-        "example": "2019-10-12"
-      }
-    }
+    "description": "Status to show when we last checked for an update"
   },
   "options_name_data_name": {
     "message": "名字数据库",
@@ -499,13 +385,7 @@
   },
   "options_name_data_title": {
     "message": "名字数据版本 v$version$",
-    "description": "The name data series title and version",
-    "placeholders": {
-      "version": {
-        "content": "$1",
-        "example": "2.0.0"
-      }
-    }
+    "description": "The name data series title and version"
   },
   "options_no_database": {
     "message": "没有数据库",
@@ -563,21 +443,7 @@
   },
   "options_updating_data": {
     "message": "正在安装$datatype$的更新版本 $version$（$progress$%）……",
-    "description": "Label while we are applying updates",
-    "placeholders": {
-      "datatype": {
-        "content": "$1",
-        "example": "kanji data"
-      },
-      "version": {
-        "content": "$2",
-        "example": "1.0.3"
-      },
-      "progress": {
-        "content": "$3",
-        "example": "60"
-      }
-    }
+    "description": "Label while we are applying updates"
   },
   "options_warning_language_is_kanji_only": {
     "message": "本设定目前只对汉字词典有效。"

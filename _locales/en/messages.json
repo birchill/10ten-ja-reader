@@ -73,17 +73,7 @@
   },
   "content_kanji_base_radical": {
     "message": "from $char$ ($readings$)",
-    "description": "The string used to describe the base radical",
-    "placeholders": {
-      "char": {
-        "content": "$1",
-        "example": "⾡"
-      },
-      "readings": {
-        "content": "$2",
-        "example": "しんにょう、しんにゅう"
-      }
-    }
+    "description": "The string used to describe the base radical"
   },
   "content_kanji_components_label": {
     "message": "components",
@@ -99,35 +89,17 @@
   },
   "content_kanji_grade_label": {
     "message": "Grade $grade$",
-    "description": "The label for kanji in grades 1 - 6",
-    "placeholders": {
-      "grade": {
-        "content": "$1",
-        "example": "3"
-      }
-    }
+    "description": "The label for kanji in grades 1 - 6"
   },
   "content_kanji_grade_name_use": {
     "message": "Name use",
     "description": "Label for kanji marked as name use"
   },
   "content_kanji_kentei_level": {
-    "message": "$level$",
-    "placeholders": {
-      "level": {
-        "content": "$1",
-        "example": "3"
-      }
-    }
+    "message": "$level$"
   },
   "content_kanji_kentei_level_pre": {
-    "message": "Pre-$level$",
-    "placeholders": {
-      "level": {
-        "content": "$1",
-        "example": "2"
-      }
-    }
+    "message": "Pre-$level$"
   },
   "content_kanji_nanori_label": {
     "message": "Names (名乗り)",
@@ -139,13 +111,7 @@
   },
   "content_kanji_strokes_label": {
     "message": "$strokes$ strokes",
-    "description": "The description of the number of strokes",
-    "placeholders": {
-      "strokes": {
-        "content": "$1",
-        "example": "7"
-      }
-    }
+    "description": "The description of the number of strokes"
   },
   "content_kanji_strokes_label_1": {
     "message": "1 stroke",
@@ -329,22 +295,10 @@
     "description": "Label used to describe senses whose dialect is 'tsug' (Tsugaru dialect)"
   },
   "error_command_could_not_parse": {
-    "message": "Could not parse command $command$",
-    "placeholders": {
-      "command": {
-        "content": "$1",
-        "example": "Ctrl+T "
-      }
-    }
+    "message": "Could not parse command $command$"
   },
   "error_command_disallowed_modifier_key": {
-    "message": "Modifier '$modifier$' is not allowed",
-    "placeholders": {
-      "modifier": {
-        "content": "$1",
-        "example": "Meta"
-      }
-    }
+    "message": "Modifier '$modifier$' is not allowed"
   },
   "error_command_has_no_key": {
     "message": "Must specify a key"
@@ -353,13 +307,7 @@
     "message": "A modifier must be specified unless using a function key"
   },
   "error_command_key_is_not_allowed": {
-    "message": "Key '$key$' is not allowed",
-    "placeholders": {
-      "key": {
-        "content": "$1",
-        "example": "Enter"
-      }
-    }
+    "message": "Key '$key$' is not allowed"
   },
   "error_command_media_key_with_modifier_key": {
     "message": "Cannot specify modifiers and media keys"
@@ -660,28 +608,22 @@
     "description": "Label applied to senses with the 'zool' field"
   },
   "gloss_type_label_expl": {
-    "message": "explanation",
-    "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "message": "explanation"
   },
   "gloss_type_label_fig": {
-    "message": "figurative",
-    "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "message": "figurative"
   },
   "gloss_type_label_lit": {
-    "message": "literally",
-    "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "message": "literally"
   },
   "gloss_type_short_expl": {
-    "message": "expl.",
-    "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "message": "expl."
   },
   "gloss_type_short_fig": {
-    "message": "fig.",
-    "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "message": "fig."
   },
   "gloss_type_short_lit": {
-    "message": "lit.",
-    "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "message": "lit."
   },
   "head_info_label_ateji": {
     "message": "ateji",
@@ -690,6 +632,14 @@
   "head_info_label_gikun": {
     "message": "gikun",
     "description": "Short annotation given to kana headwords with gikun (meaning as reading) or jukujikun (special kanji reading)"
+  },
+  "head_info_label_iK": {
+    "message": "rare",
+    "description": "Short annotation given to kanji headwords that have rare use of kanji"
+  },
+  "head_info_label_ik": {
+    "message": "rare",
+    "description": "Short annotation given to (mostly?) kana headwords that have rare use of kana"
   },
   "head_info_label_ikana": {
     "message": "rare",
@@ -703,6 +653,14 @@
     "message": "rare",
     "description": "Short annotation given to kanji headwords that have rare use of okurigana"
   },
+  "head_info_label_oK": {
+    "message": "old",
+    "description": "Short annotation given to kanji headwords that use out-dated kanji"
+  },
+  "head_info_label_ok": {
+    "message": "old",
+    "description": "Short annotation given to kana headwords that use out-dated kana"
+  },
   "head_info_label_okana": {
     "message": "old",
     "description": "Short annotation given to kana headwords that use out-dated kana"
@@ -710,6 +668,10 @@
   "head_info_label_okanji": {
     "message": "old",
     "description": "Short annotation given to kanji headwords that use out-dated kanji"
+  },
+  "head_info_label_uK": {
+    "message": "usu. kanji",
+    "description": "Short annotation given to kana headwords that are normally written in kanji alone"
   },
   "head_info_label_ukanji": {
     "message": "usu. kanji",
@@ -1176,34 +1138,10 @@
     "description": "Label while we are checking for updates"
   },
   "options_data_series_date_only": {
-    "message": "Based on $source$ from $generated$.",
-    "placeholders": {
-      "source": {
-        "content": "$1",
-        "example": "KANJIDIC"
-      },
-      "generated": {
-        "content": "$2",
-        "example": "2019-10-19"
-      }
-    }
+    "message": "Based on $source$ from $generated$."
   },
   "options_data_series_version_and_date": {
-    "message": "Based on $source$ $version$ from $generated$.",
-    "placeholders": {
-      "source": {
-        "content": "$1",
-        "example": "KANJIDIC"
-      },
-      "version": {
-        "content": "$2",
-        "example": "2019-282"
-      },
-      "generated": {
-        "content": "$3",
-        "example": "2019-10-19"
-      }
-    }
+    "message": "Based on $source$ $version$ from $generated$."
   },
   "options_data_source": {
     "message": "Includes data from KANJIDIC and JMnedict/ENAMDICT.",
@@ -1215,23 +1153,11 @@
   },
   "options_db_update_error": {
     "message": "Update failed: $errormessage$",
-    "description": "Label when we failed to update the data for some reason",
-    "placeholders": {
-      "errormessage": {
-        "content": "$1",
-        "example": "Version file not found"
-      }
-    }
+    "description": "Label when we failed to update the data for some reason"
   },
   "options_db_update_next_retry": {
     "message": "Retrying at $nextretry$",
-    "description": "Label used when there is a scheduled retry",
-    "placeholders": {
-      "nextretry": {
-        "content": "$1",
-        "example": "2019-10-14 17:44"
-      }
-    }
+    "description": "Label used when there is a scheduled retry"
   },
   "options_dictionary_data_heading": {
     "message": "Dictionary data"
@@ -1241,21 +1167,7 @@
   },
   "options_downloading_data": {
     "message": "Downloading $datatype$ version $version$ ($progress$%)…",
-    "description": "Label while we are downloading updates",
-    "placeholders": {
-      "datatype": {
-        "content": "$1",
-        "example": "kanji data"
-      },
-      "version": {
-        "content": "$2",
-        "example": "1.0.3"
-      },
-      "progress": {
-        "content": "$3",
-        "example": "60"
-      }
-    }
+    "description": "Label while we are downloading updates"
   },
   "options_edrdg_license": {
     "message": " This data is the property of the Electronic Dictionary Research and Development Group, and is used in conformance with the Group's licence.",
@@ -1290,13 +1202,7 @@
   },
   "options_kanji_data_title": {
     "message": "Kanji data v$version$",
-    "description": "The kanji data series title and version",
-    "placeholders": {
-      "version": {
-        "content": "$1",
-        "example": "2.0.0"
-      }
-    }
+    "description": "The kanji data series title and version"
   },
   "options_kanji_dictionary_heading": {
     "message": "Kanji dictionary",
@@ -1308,13 +1214,7 @@
   },
   "options_last_database_check": {
     "message": "Last check $lastcheck$",
-    "description": "Status to show when we last checked for an update",
-    "placeholders": {
-      "lastcheck": {
-        "content": "$1",
-        "example": "2019-10-12"
-      }
-    }
+    "description": "Status to show when we last checked for an update"
   },
   "options_name_data_name": {
     "message": "name data",
@@ -1322,13 +1222,7 @@
   },
   "options_name_data_title": {
     "message": "Name data v$version$",
-    "description": "The name data series title and version",
-    "placeholders": {
-      "version": {
-        "content": "$1",
-        "example": "2.0.0"
-      }
-    }
+    "description": "The name data series title and version"
   },
   "options_no_database": {
     "message": "No database",
@@ -1368,7 +1262,7 @@
   },
   "options_pos_display_code": {
     "message": "Code (e.g. “v5r”)",
-    "description": "Label for simply displaying dictionary part-of-speech codes"
+    "description": "Label for simply display dictionary part-of-speech codes"
   },
   "options_pos_display_expl": {
     "message": "Explanation (e.g. “-u verb”)",
@@ -1406,21 +1300,7 @@
   },
   "options_updating_data": {
     "message": "Updating $datatype$ to version $version$ ($progress$%)…",
-    "description": "Label while we are applying updates",
-    "placeholders": {
-      "datatype": {
-        "content": "$1",
-        "example": "kanji data"
-      },
-      "version": {
-        "content": "$2",
-        "example": "1.0.3"
-      },
-      "progress": {
-        "content": "$3",
-        "example": "60"
-      }
-    }
+    "description": "Label while we are applying updates"
   },
   "options_warning_language_is_kanji_only": {
     "message": "This setting currently only applies to the kanji dictionary."
