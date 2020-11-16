@@ -383,22 +383,6 @@
     "message": "単語の上にマウスのカーソルを合わせたら日英辞書を引く。",
     "description": "Description of the what the extension does."
   },
-  "field_label_Buddh": {
-    "message": "仏教",
-    "description": "Label applied to senses with the 'Buddh' field"
-  },
-  "field_label_Christn": {
-    "message": "キリスト教",
-    "description": "Label applied to senses with the 'Christn' field"
-  },
-  "field_label_MA": {
-    "message": "武道",
-    "description": "Label applied to senses with the 'MA' field"
-  },
-  "field_label_Shinto": {
-    "message": "神道",
-    "description": "Label applied to senses with the 'Shinto' field"
-  },
   "field_label_agric": {
     "message": "農業",
     "description": "Label applied to senses with the 'agric' field"
@@ -447,6 +431,10 @@
     "message": "植物学",
     "description": "Label applied to senses with the 'bot' field"
   },
+  "field_label_Buddh": {
+    "message": "仏教",
+    "description": "Label applied to senses with the 'Buddh' field"
+  },
   "field_label_bus": {
     "message": "ビジネス",
     "description": "Label applied to senses with the 'bus' field"
@@ -454,6 +442,10 @@
   "field_label_chem": {
     "message": "化学",
     "description": "Label applied to senses with the 'chem' field"
+  },
+  "field_label_Christn": {
+    "message": "キリスト教",
+    "description": "Label applied to senses with the 'Christn' field"
   },
   "field_label_comp": {
     "message": "コンピューター",
@@ -559,6 +551,10 @@
     "message": "論理",
     "description": "Label applied to senses with the 'logic' field"
   },
+  "field_label_MA": {
+    "message": "武道",
+    "description": "Label applied to senses with the 'MA' field"
+  },
   "field_label_mahj": {
     "message": "麻雀",
     "description": "Label applied to senses with the 'mahj' field"
@@ -626,6 +622,10 @@
   "field_label_psych": {
     "message": "心理学",
     "description": "Label applied to senses with the 'psych' field"
+  },
+  "field_label_Shinto": {
+    "message": "神道",
+    "description": "Label applied to senses with the 'Shinto' field"
   },
   "field_label_shogi": {
     "message": "将棋",
@@ -983,10 +983,6 @@
     "message": "Rikaichampを有効にする",
     "description": "Context menu item to enable the extension."
   },
-  "misc_label_X": {
-    "message": "アダルト",
-    "description": "Label used to describe senses with the 'X' (X-rated) annotation"
-  },
   "misc_label_abbr": {
     "message": "略",
     "description": "Label used to describe senses with the 'abbr' (abbrev.) annotation"
@@ -1142,6 +1138,10 @@
   "misc_label_work": {
     "message": "作品",
     "description": "Label used to describe senses with the 'work' (work) annotation"
+  },
+  "misc_label_X": {
+    "message": "アダルト",
+    "description": "Label used to describe senses with the 'X' (X-rated) annotation"
   },
   "misc_label_yoji": {
     "message": "四字熟語",

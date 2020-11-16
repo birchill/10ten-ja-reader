@@ -53,7 +53,10 @@ async function main() {
 
     // Sort keys at root level
     const ordered: { [key: string]: any } = {};
-    for (const key of Object.keys(contents).sort()) {
+    const sortedKeys = Object.keys(contents).sort((a, b) =>
+      a.localeCompare(b, 'en', { sensitivity: 'base' })
+    );
+    for (const key of sortedKeys) {
       ordered[key] = contents[key];
     }
 
