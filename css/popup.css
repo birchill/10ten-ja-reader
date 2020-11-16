@@ -182,6 +182,7 @@
   border-radius: 3px;
   margin-left: 0.5em;
   padding: 0px 3px;
+  white-space: nowrap;
 }
 
 #rikaichamp-window .w-def .tag-fem {
@@ -198,6 +199,10 @@
 
 #rikaichamp-window .w-def .w-field {
   background: rgba(50, 200, 50, 0.6);
+}
+
+#rikaichamp-window .w-def .w-misc {
+  background: rgba(255, 100, 100, 0.5);
 }
 
 #rikaichamp-window .w-def .w-lsrc,

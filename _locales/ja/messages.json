@@ -915,6 +915,170 @@
     "message": "Rikaichampを有効にする",
     "description": "Context menu item to enable the extension."
   },
+  "misc_label_X": {
+    "message": "アダルト",
+    "description": "Label used to describe senses with the 'X' (X-rated) annotation"
+  },
+  "misc_label_abbr": {
+    "message": "略",
+    "description": "Label used to describe senses with the 'abbr' (abbrev.) annotation"
+  },
+  "misc_label_arch": {
+    "message": "古語",
+    "description": "Label used to describe senses with the 'arch' (archaism) annotation"
+  },
+  "misc_label_chn": {
+    "message": "幼稚",
+    "description": "Label used to describe senses with the 'chn' (children) annotation"
+  },
+  "misc_label_col": {
+    "message": "俗語",
+    "description": "Label used to describe senses with the 'col' (colloquialism) annotation"
+  },
+  "misc_label_company": {
+    "message": "社名",
+    "description": "Label used to describe senses with the 'company' (company) annotation"
+  },
+  "misc_label_dated": {
+    "message": "古",
+    "description": "Label used to describe senses with the 'dated' (dated) annotation"
+  },
+  "misc_label_derog": {
+    "message": "軽蔑語",
+    "description": "Label used to describe senses with the 'derog' (derogatory) annotation"
+  },
+  "misc_label_fam": {
+    "message": "身近",
+    "description": "Label used to describe senses with the 'fam' (familiar) annotation"
+  },
+  "misc_label_fem": {
+    "message": "女性",
+    "description": "Label used to describe senses with the 'fem' (female term) annotation"
+  },
+  "misc_label_given": {
+    "message": "名前",
+    "description": "Label used to describe senses with the 'given' (given name) annotation"
+  },
+  "misc_label_hist": {
+    "message": "歴史的",
+    "description": "Label used to describe senses with the 'hist' (historical) annotation"
+  },
+  "misc_label_hon": {
+    "message": "尊敬語",
+    "description": "Label used to describe senses with the 'hon' (honorific) annotation"
+  },
+  "misc_label_hum": {
+    "message": "謙遜語",
+    "description": "Label used to describe senses with the 'hum' (humble) annotation"
+  },
+  "misc_label_id": {
+    "message": "慣用句",
+    "description": "Label used to describe senses with the 'id' (idiomatic) annotation"
+  },
+  "misc_label_joc": {
+    "message": "滑稽",
+    "description": "Label used to describe senses with the 'joc' (jocular) annotation"
+  },
+  "misc_label_litf": {
+    "message": "文語",
+    "description": "Label used to describe senses with the 'litf' (literary) annotation"
+  },
+  "misc_label_m-sl": {
+    "message": "漫画俗語",
+    "description": "Label used to describe senses with the 'm-sl' (manga slang) annotation"
+  },
+  "misc_label_male": {
+    "message": "男性",
+    "description": "Label used to describe senses with the 'male' (male) annotation"
+  },
+  "misc_label_net-sl": {
+    "message": "インターネットスラング",
+    "description": "Label used to describe senses with the 'net-sl' (Internet slang) annotation"
+  },
+  "misc_label_obs": {
+    "message": "廃語",
+    "description": "Label used to describe senses with the 'obs' (obsolete) annotation"
+  },
+  "misc_label_obsc": {
+    "message": "不明",
+    "description": "Label used to describe senses with the 'obsc' (obscure) annotation"
+  },
+  "misc_label_on-mim": {
+    "message": "擬音語",
+    "description": "Label used to describe senses with the 'on-mim' (onomatopoeia) annotation"
+  },
+  "misc_label_organization": {
+    "message": "組織",
+    "description": "Label used to describe senses with the 'organization' (org.) annotation"
+  },
+  "misc_label_person": {
+    "message": "人物",
+    "description": "Label used to describe senses with the 'person' (person) annotation"
+  },
+  "misc_label_place": {
+    "message": "地名",
+    "description": "Label used to describe senses with the 'place' (place) annotation"
+  },
+  "misc_label_poet": {
+    "message": "詩的",
+    "description": "Label used to describe senses with the 'poet' (poetical) annotation"
+  },
+  "misc_label_pol": {
+    "message": "丁寧語",
+    "description": "Label used to describe senses with the 'pol' (polite) annotation"
+  },
+  "misc_label_product": {
+    "message": "商品名",
+    "description": "Label used to describe senses with the 'product' (product) annotation"
+  },
+  "misc_label_proverb": {
+    "message": "ことわざ",
+    "description": "Label used to describe senses with the 'proverb' (proverb) annotation"
+  },
+  "misc_label_quote": {
+    "message": "引用",
+    "description": "Label used to describe senses with the 'quote' (quote) annotation"
+  },
+  "misc_label_rare": {
+    "message": "珍語",
+    "description": "Label used to describe senses with the 'rare' (rare) annotation"
+  },
+  "misc_label_sens": {
+    "message": "センシティブ",
+    "description": "Label used to describe senses with the 'sens' (sensitive) annotation"
+  },
+  "misc_label_sl": {
+    "message": "スラング",
+    "description": "Label used to describe senses with the 'sl' (slang) annotation"
+  },
+  "misc_label_station": {
+    "message": "駅名",
+    "description": "Label used to describe senses with the 'station' (station) annotation"
+  },
+  "misc_label_surname": {
+    "message": "苗字",
+    "description": "Label used to describe senses with the 'surname' (surname) annotation"
+  },
+  "misc_label_uk": {
+    "message": "一般カナ",
+    "description": "Label used to describe senses with the 'uk' (usually kana) annotation"
+  },
+  "misc_label_unclass": {
+    "message": "未分類",
+    "description": "Label used to describe senses with the 'unclass' (unclassified) annotation"
+  },
+  "misc_label_vulg": {
+    "message": "下品",
+    "description": "Label used to describe senses with the 'vulg' (vulgar) annotation"
+  },
+  "misc_label_work": {
+    "message": "作品",
+    "description": "Label used to describe senses with the 'work' (work) annotation"
+  },
+  "misc_label_yoji": {
+    "message": "四字熟語",
+    "description": "Label used to describe senses with the 'yoji' (yojijukugo) annotation"
+  },
   "options_accent_display_binary": {
     "message": "高低表記 ⎾⏋",
     "description": "Label for displaying the pitch accent using box outlines to show high and low"

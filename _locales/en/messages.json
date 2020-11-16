@@ -915,6 +915,170 @@
     "message": "Enable Rikaichamp",
     "description": "Context menu item to enable the extension."
   },
+  "misc_label_X": {
+    "message": "X-rated",
+    "description": "Label used to describe senses with the 'X' (X-rated) annotation"
+  },
+  "misc_label_abbr": {
+    "message": "abbrev.",
+    "description": "Label used to describe senses with the 'abbr' (abbrev.) annotation"
+  },
+  "misc_label_arch": {
+    "message": "archaism",
+    "description": "Label used to describe senses with the 'arch' (archaism) annotation"
+  },
+  "misc_label_chn": {
+    "message": "children",
+    "description": "Label used to describe senses with the 'chn' (children) annotation"
+  },
+  "misc_label_col": {
+    "message": "colloquialism",
+    "description": "Label used to describe senses with the 'col' (colloquialism) annotation"
+  },
+  "misc_label_company": {
+    "message": "company",
+    "description": "Label used to describe senses with the 'company' (company) annotation"
+  },
+  "misc_label_dated": {
+    "message": "dated",
+    "description": "Label used to describe senses with the 'dated' (dated) annotation"
+  },
+  "misc_label_derog": {
+    "message": "derogatory",
+    "description": "Label used to describe senses with the 'derog' (derogatory) annotation"
+  },
+  "misc_label_fam": {
+    "message": "familiar",
+    "description": "Label used to describe senses with the 'fam' (familiar) annotation"
+  },
+  "misc_label_fem": {
+    "message": "female term",
+    "description": "Label used to describe senses with the 'fem' (female term) annotation"
+  },
+  "misc_label_given": {
+    "message": "given name",
+    "description": "Label used to describe senses with the 'given' (given name) annotation"
+  },
+  "misc_label_hist": {
+    "message": "historical",
+    "description": "Label used to describe senses with the 'hist' (historical) annotation"
+  },
+  "misc_label_hon": {
+    "message": "honorific",
+    "description": "Label used to describe senses with the 'hon' (honorific) annotation"
+  },
+  "misc_label_hum": {
+    "message": "humble",
+    "description": "Label used to describe senses with the 'hum' (humble) annotation"
+  },
+  "misc_label_id": {
+    "message": "idiomatic",
+    "description": "Label used to describe senses with the 'id' (idiomatic) annotation"
+  },
+  "misc_label_joc": {
+    "message": "jocular",
+    "description": "Label used to describe senses with the 'joc' (jocular) annotation"
+  },
+  "misc_label_litf": {
+    "message": "literary",
+    "description": "Label used to describe senses with the 'litf' (literary) annotation"
+  },
+  "misc_label_m-sl": {
+    "message": "manga slang",
+    "description": "Label used to describe senses with the 'm-sl' (manga slang) annotation"
+  },
+  "misc_label_male": {
+    "message": "male",
+    "description": "Label used to describe senses with the 'male' (male) annotation"
+  },
+  "misc_label_net-sl": {
+    "message": "Internet slang",
+    "description": "Label used to describe senses with the 'net-sl' (Internet slang) annotation"
+  },
+  "misc_label_obs": {
+    "message": "obsolete",
+    "description": "Label used to describe senses with the 'obs' (obsolete) annotation"
+  },
+  "misc_label_obsc": {
+    "message": "obscure",
+    "description": "Label used to describe senses with the 'obsc' (obscure) annotation"
+  },
+  "misc_label_on-mim": {
+    "message": "onomatopoeia",
+    "description": "Label used to describe senses with the 'on-mim' (onomatopoeia) annotation"
+  },
+  "misc_label_organization": {
+    "message": "org.",
+    "description": "Label used to describe senses with the 'organization' (org.) annotation"
+  },
+  "misc_label_person": {
+    "message": "person",
+    "description": "Label used to describe senses with the 'person' (person) annotation"
+  },
+  "misc_label_place": {
+    "message": "place",
+    "description": "Label used to describe senses with the 'place' (place) annotation"
+  },
+  "misc_label_poet": {
+    "message": "poetical",
+    "description": "Label used to describe senses with the 'poet' (poetical) annotation"
+  },
+  "misc_label_pol": {
+    "message": "polite",
+    "description": "Label used to describe senses with the 'pol' (polite) annotation"
+  },
+  "misc_label_product": {
+    "message": "product",
+    "description": "Label used to describe senses with the 'product' (product) annotation"
+  },
+  "misc_label_proverb": {
+    "message": "proverb",
+    "description": "Label used to describe senses with the 'proverb' (proverb) annotation"
+  },
+  "misc_label_quote": {
+    "message": "quote",
+    "description": "Label used to describe senses with the 'quote' (quote) annotation"
+  },
+  "misc_label_rare": {
+    "message": "rare",
+    "description": "Label used to describe senses with the 'rare' (rare) annotation"
+  },
+  "misc_label_sens": {
+    "message": "sensitive",
+    "description": "Label used to describe senses with the 'sens' (sensitive) annotation"
+  },
+  "misc_label_sl": {
+    "message": "slang",
+    "description": "Label used to describe senses with the 'sl' (slang) annotation"
+  },
+  "misc_label_station": {
+    "message": "station",
+    "description": "Label used to describe senses with the 'station' (station) annotation"
+  },
+  "misc_label_surname": {
+    "message": "surname",
+    "description": "Label used to describe senses with the 'surname' (surname) annotation"
+  },
+  "misc_label_uk": {
+    "message": "usually kana",
+    "description": "Label used to describe senses with the 'uk' (usually kana) annotation"
+  },
+  "misc_label_unclass": {
+    "message": "unclassified",
+    "description": "Label used to describe senses with the 'unclass' (unclassified) annotation"
+  },
+  "misc_label_vulg": {
+    "message": "vulgar",
+    "description": "Label used to describe senses with the 'vulg' (vulgar) annotation"
+  },
+  "misc_label_work": {
+    "message": "work",
+    "description": "Label used to describe senses with the 'work' (work) annotation"
+  },
+  "misc_label_yoji": {
+    "message": "yojijukugo",
+    "description": "Label used to describe senses with the 'yoji' (yojijukugo) annotation"
+  },
   "options_accent_display_binary": {
     "message": "Binary pitch ⎾⏋",
     "description": "Label for displaying the pitch accent using box outlines to show high and low"
