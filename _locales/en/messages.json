@@ -383,22 +383,6 @@
     "message": "Translate Japanese by hovering over words.",
     "description": "Description of the what the extension does."
   },
-  "field_label_Buddh": {
-    "message": "Buddhism",
-    "description": "Label applied to senses with the 'Buddh' field"
-  },
-  "field_label_Christn": {
-    "message": "Christianity",
-    "description": "Label applied to senses with the 'Christn' field"
-  },
-  "field_label_MA": {
-    "message": "martial arts",
-    "description": "Label applied to senses with the 'MA' field"
-  },
-  "field_label_Shinto": {
-    "message": "Shinto",
-    "description": "Label applied to senses with the 'Shinto' field"
-  },
   "field_label_agric": {
     "message": "agriculture",
     "description": "Label applied to senses with the 'agric' field"
@@ -447,6 +431,10 @@
     "message": "botany",
     "description": "Label applied to senses with the 'bot' field"
   },
+  "field_label_Buddh": {
+    "message": "Buddhism",
+    "description": "Label applied to senses with the 'Buddh' field"
+  },
   "field_label_bus": {
     "message": "business",
     "description": "Label applied to senses with the 'bus' field"
@@ -454,6 +442,10 @@
   "field_label_chem": {
     "message": "chemistry",
     "description": "Label applied to senses with the 'chem' field"
+  },
+  "field_label_Christn": {
+    "message": "Christianity",
+    "description": "Label applied to senses with the 'Christn' field"
   },
   "field_label_comp": {
     "message": "computing",
@@ -559,6 +551,10 @@
     "message": "logic",
     "description": "Label applied to senses with the 'logic' field"
   },
+  "field_label_MA": {
+    "message": "martial arts",
+    "description": "Label applied to senses with the 'MA' field"
+  },
   "field_label_mahj": {
     "message": "mahjong",
     "description": "Label applied to senses with the 'mahj' field"
@@ -626,6 +622,10 @@
   "field_label_psych": {
     "message": "psychology, psychiatry",
     "description": "Label applied to senses with the 'psych' field"
+  },
+  "field_label_Shinto": {
+    "message": "Shinto",
+    "description": "Label applied to senses with the 'Shinto' field"
   },
   "field_label_shogi": {
     "message": "shogi",
@@ -983,10 +983,6 @@
     "message": "Enable Rikaichamp",
     "description": "Context menu item to enable the extension."
   },
-  "misc_label_X": {
-    "message": "X-rated",
-    "description": "Label used to describe senses with the 'X' (X-rated) annotation"
-  },
   "misc_label_abbr": {
     "message": "abbrev.",
     "description": "Label used to describe senses with the 'abbr' (abbrev.) annotation"
@@ -1142,6 +1138,10 @@
   "misc_label_work": {
     "message": "work",
     "description": "Label used to describe senses with the 'work' (work) annotation"
+  },
+  "misc_label_X": {
+    "message": "X-rated",
+    "description": "Label used to describe senses with the 'X' (X-rated) annotation"
   },
   "misc_label_yoji": {
     "message": "yojijukugo",
