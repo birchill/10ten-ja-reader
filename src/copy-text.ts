@@ -1,6 +1,13 @@
 import { KanjiResult } from '@birchill/hikibiki-data';
 
-import { Dialect, ExtendedSense, GlossType, LangSource } from './word-result';
+import {
+  Dialect,
+  ExtendedKanjiEntry,
+  ExtendedKanaEntry,
+  ExtendedSense,
+  GlossType,
+  LangSource,
+} from './word-result';
 import {
   getReferenceValue,
   getSelectedReferenceLabels,
@@ -17,9 +24,15 @@ export function getWordToCopy(entry: Entry): string {
 
   switch (entry.type) {
     case 'word':
-      result = (entry.data.k || entry.data.r)
-        .map((entry) => entry.ent)
-        .join(', ');
+      {
+        const headwords =
+          entry.data.k && entry.data.k.length ? entry.data.k : entry.data.r;
+        result = (headwords as Array<ExtendedKanjiEntry | ExtendedKanaEntry>)
+          .map(
+            (entry: ExtendedKanjiEntry | ExtendedKanaEntry): string => entry.ent
+          )
+          .join(', ');
+      }
       break;
 
     case 'name':
@@ -49,11 +62,12 @@ export function getEntryToCopy(
   switch (entry.type) {
     case 'word':
       {
-        result = entry.data.k
-          ? `${entry.data.k.map((k) => k.ent).join(', ')} [${entry.data.r
-              .map((r) => r.ent)
-              .join(', ')}]`
-          : entry.data.r.join(', ');
+        result =
+          entry.data.k && entry.data.k.length
+            ? `${entry.data.k.map((k) => k.ent).join(', ')} [${entry.data.r
+                .map((r) => r.ent)
+                .join(', ')}]`
+            : entry.data.r.map((r) => r.ent).join(', ');
         if (entry.data.romaji?.length) {
           result += ` (${entry.data.romaji.join(', ')})`;
         }
@@ -229,7 +243,10 @@ export function getFieldsToCopy(
 
   switch (entry.type) {
     case 'word':
-      result = entry.data.k ? entry.data.k.map((k) => k.ent).join('; ') : '';
+      result =
+        entry.data.k && entry.data.k.length
+          ? entry.data.k.map((k) => k.ent).join('; ')
+          : '';
       result += '\t' + entry.data.r.map((r) => r.ent).join('; ');
       if (entry.data.romaji?.length) {
         result += '\t' + entry.data.romaji.join('; ');

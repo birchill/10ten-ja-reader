@@ -35,7 +35,7 @@ global.browser = {
 };
 
 describe('getWordToCopy', () => {
-  it('copies a word from a word search', async () => {
+  it('copies a word from a word search', () => {
     expect(
       getWordToCopy({
         type: 'word',
@@ -60,7 +60,34 @@ describe('getWordToCopy', () => {
     ).toEqual('理解');
   });
 
-  it('copies names from a name search', async () => {
+  it('copies a word when the k array is empty', () => {
+    expect(
+      getWordToCopy({
+        type: 'word',
+        data: {
+          k: [],
+          r: [{ ent: 'ホルモン', p: ['g1'], a: 1, match: true }],
+          s: [
+            {
+              g: [{ str: 'hormone' }],
+              pos: ['n', 'adj-no'],
+              lsrc: [{ lang: 'de', src: 'Hormon' }],
+              match: true,
+            },
+            {
+              g: [{ str: "cows' or pigs' offal (entrails)" }],
+              inf: 'from 放る物',
+              pos: ['n', 'adj-no'],
+              dial: ['ks'],
+              match: true,
+            },
+          ],
+        },
+      })
+    ).toEqual('ホルモン');
+  });
+
+  it('copies names from a name search', () => {
     expect(
       getWordToCopy({
         type: 'name',
@@ -75,7 +102,7 @@ describe('getWordToCopy', () => {
     ).toEqual('いぶ喜, いぶ希, いぶ記');
   });
 
-  it('copies kanji from a kanji search', async () => {
+  it('copies kanji from a kanji search', () => {
     expect(
       getWordToCopy({
         type: 'kanji',
@@ -125,6 +152,62 @@ describe('getEntryToCopy', () => {
         },
       })
     ).toEqual('韓国語 [かんこくご] (kankokugo) (n) Korean (language)');
+  });
+
+  it('prepares text and extended metadata from a word search', () => {
+    expect(
+      getEntryToCopy({
+        type: 'word',
+        data: {
+          k: [],
+          r: [{ ent: 'ホルモン', p: ['g1'], a: 1, match: true }],
+          s: [
+            {
+              g: [{ str: 'hormone' }],
+              pos: ['n', 'adj-no'],
+              lsrc: [{ lang: 'de', src: 'Hormon' }],
+              match: true,
+            },
+            {
+              g: [{ str: "cows' or pigs' offal (entrails)" }],
+              inf: 'from 放る物',
+              pos: ['n', 'adj-no'],
+              dial: ['ks'],
+              match: true,
+            },
+          ],
+        },
+      })
+    ).toEqual(
+      "ホルモン (1) (n,adj-no) hormone (de: Hormon) (2) (n,adj-no) (ksb:) cows' or pigs' offal (entrails) (from 放る物)"
+    );
+  });
+
+  it('prepares text from a word search with gloss types', () => {
+    expect(
+      getEntryToCopy({
+        type: 'word',
+        data: {
+          k: [{ ent: '虎嘯', match: true }],
+          r: [{ ent: 'こしょう', a: 0, match: true }],
+          s: [
+            { g: [{ str: "tiger's howling" }], pos: ['n', 'vs'], match: true },
+            {
+              g: [
+                {
+                  str: 'being out and active in the world (of a hero, etc.)',
+                  type: 3,
+                },
+              ],
+              pos: ['n', 'vs'],
+              match: true,
+            },
+          ],
+        },
+      })
+    ).toEqual(
+      "虎嘯 [こしょう] (1) (n,vs) tiger's howling (2) (n,vs) (fig.) being out and active in the world (of a hero, etc.)"
+    );
   });
 
   it('prepares text from name search results', () => {
