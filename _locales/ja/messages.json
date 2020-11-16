@@ -659,6 +659,30 @@
     "message": "動物学",
     "description": "Label applied to senses with the 'zool' field"
   },
+  "gloss_type_label_expl": {
+    "message": "説明",
+    "decsription": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+  },
+  "gloss_type_label_fig": {
+    "message": "比喩的",
+    "decsription": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+  },
+  "gloss_type_label_lit": {
+    "message": "直訳",
+    "decsription": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+  },
+  "gloss_type_short_expl": {
+    "message": "説明",
+    "decsription": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+  },
+  "gloss_type_short_fig": {
+    "message": "比喩的",
+    "decsription": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+  },
+  "gloss_type_short_lit": {
+    "message": "直訳",
+    "decsription": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+  },
   "head_info_label_ateji": {
     "message": "当て字",
     "description": "Short annotation given to kanji headwords that are ateji (kanji chosen to represent sounds)"
