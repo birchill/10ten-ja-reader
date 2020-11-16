@@ -432,6 +432,36 @@ function renderSense(
 ): string | DocumentFragment {
   const fragment = document.createDocumentFragment();
 
+  if (sense.field) {
+    for (const field of sense.field) {
+      const fieldSpan = document.createElement('span');
+      fieldSpan.classList.add('w-field', 'tag');
+      fieldSpan.textContent =
+        browser.i18n.getMessage(`field_label_${field}`) || field;
+      fragment.append(fieldSpan);
+    }
+  }
+
+  if (sense.misc) {
+    for (const misc of sense.misc) {
+      const miscSpan = document.createElement('span');
+      miscSpan.classList.add('w-misc', 'tag');
+      miscSpan.textContent =
+        browser.i18n.getMessage(`misc_label_${misc}`) || misc;
+      fragment.append(miscSpan);
+    }
+  }
+
+  if (sense.dial) {
+    for (const dial of sense.dial) {
+      const dialSpan = document.createElement('span');
+      dialSpan.classList.add('w-dial', 'tag');
+      dialSpan.textContent =
+        browser.i18n.getMessage(`dial_label_${dial}`) || dial;
+      fragment.append(dialSpan);
+    }
+  }
+
   let glosses = sense.g.map((g) => g.str).join('; ');
   fragment.append(glosses);
 
@@ -463,36 +493,6 @@ function renderSense(
         break;
     }
     fragment.append(posSpan);
-  }
-
-  if (sense.field) {
-    for (const field of sense.field) {
-      const fieldSpan = document.createElement('span');
-      fieldSpan.classList.add('w-field', 'tag');
-      fieldSpan.textContent =
-        browser.i18n.getMessage(`field_label_${field}`) || field;
-      fragment.append(fieldSpan);
-    }
-  }
-
-  if (sense.misc) {
-    for (const misc of sense.misc) {
-      const miscSpan = document.createElement('span');
-      miscSpan.classList.add('w-misc', 'tag');
-      miscSpan.textContent =
-        browser.i18n.getMessage(`misc_label_${misc}`) || misc;
-      fragment.append(miscSpan);
-    }
-  }
-
-  if (sense.dial) {
-    for (const dial of sense.dial) {
-      const dialSpan = document.createElement('span');
-      dialSpan.classList.add('w-dial', 'tag');
-      dialSpan.textContent =
-        browser.i18n.getMessage(`dial_label_${dial}`) || dial;
-      fragment.append(dialSpan);
-    }
   }
 
   return fragment;

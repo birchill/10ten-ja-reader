@@ -209,6 +209,13 @@
   background: rgba(255, 100, 100, 0.5);
 }
 
+#rikaichamp-window .w-def .w-field,
+#rikaichamp-window .w-def .w-misc,
+#rikaichamp-window .w-def .w-dial {
+  margin-left: 0em;
+  margin-right: 0.5em;
+}
+
 #rikaichamp-window .w-def .w-lsrc,
 #rikaichamp-window .w-def .w-lsrc * {
   font-size: 12px;
