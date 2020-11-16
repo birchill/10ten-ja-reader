@@ -76,6 +76,10 @@ export const browser = {
           return 'kanji';
         case 'content_copy_keys_next_label':
           return 'next';
+        case 'gloss_type_label_expl':
+          return 'explanation';
+        case 'field_label_mahj':
+          return 'mahjong';
         case 'head_info_label_ateji':
           return 'ateji';
         case 'head_info_label_gikun':
@@ -98,8 +102,16 @@ export const browser = {
           return 'Kanji Kentei';
         case 'ref_label_jlpt':
           return 'JLPT';
+        case 'ref_label_nelson_r':
+          return 'Radical (Nelson)';
         case 'ref_label_unicode':
           return 'Unicode';
+        case 'misc_label_abbr':
+          return 'abbr.';
+        case 'misc_label_arch':
+          return 'archaism';
+        case 'misc_label_hon':
+          return 'honorific';
         case 'pos_label_adj-f':
           return 'pre-noun adj.';
         case 'pos_label_adj-i':
