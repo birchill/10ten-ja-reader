@@ -712,7 +712,7 @@
     "description": "Short annotation given to kanji headwords that use out-dated kanji"
   },
   "head_info_label_ukanji": {
-    "message": "一般漢字",
+    "message": "かな表記が多い",
     "description": "Short annotation given to kana headwords that are normally written in kanji alone"
   },
   "lang_label_af": {
@@ -1124,7 +1124,7 @@
     "description": "Label used to describe senses with the 'surname' (surname) annotation"
   },
   "misc_label_uk": {
-    "message": "一般カナ",
+    "message": "かな表記が多い",
     "description": "Label used to describe senses with the 'uk' (usually kana) annotation"
   },
   "misc_label_unclass": {
@@ -1366,6 +1366,22 @@
   "options_popup_toggle_definition": {
     "message": "定義の表示・非表示を切り替える"
   },
+  "options_pos_display_code": {
+    "message": "辞書コード（例 ：「v5r」）",
+    "description": "Label for simply display dictionary part-of-speech codes"
+  },
+  "options_pos_display_expl": {
+    "message": "説明（例：「五段動詞（ラ行）」）",
+    "description": "Label for configuring short explanations to be shown for part-of-speech. The \"-u verb\" example should correspond to the localized value of pos_label_v5r."
+  },
+  "options_pos_display_label": {
+    "message": "品詞表示",
+    "description": "Label for the drop-down list used to configure how part-of-speech tags are displayed"
+  },
+  "options_pos_display_none": {
+    "message": "なし",
+    "description": "Label for hiding part-of-speech labels"
+  },
   "options_show_context_menu_item": {
     "message": "コンテキストメニューに「Rikaichampを有効する」を表示",
     "description": "Option to enable context menu item with label `menu_enable_extension`"
@@ -1404,6 +1420,126 @@
   },
   "options_warning_language_is_kanji_only": {
     "message": "この設定は現在漢字辞典のみに適用されます。"
+  },
+  "pos_label_adj-f": {
+    "message": "連体",
+    "description": "Short part-of-speech label shown next to noun or verb entries acting prenominally"
+  },
+  "pos_label_adj-i": {
+    "message": "形",
+    "description": "Short part-of-speech label shown next to adjective (keiyoushi) entries"
+  },
+  "pos_label_adj-ix": {
+    "message": "形（よい）",
+    "description": "Short part-of-speech label shown next to adjective (keiyoushi) - yoi/ii class entries"
+  },
+  "pos_label_adj-kari": {
+    "message": "形（カリ）",
+    "description": "Short part-of-speech label shown next to 'kari' adjective (archaic) entries"
+  },
+  "pos_label_adj-ku": {
+    "message": "形（ク）",
+    "description": "Short part-of-speech label shown next to 'ku' adjective (archaic) entries"
+  },
+  "pos_label_adj-na": {
+    "message": "形動",
+    "description": "Short part-of-speech label shown next to adjectival nouns or quasi-adjectives (keiyodoshi) entries"
+  },
+  "pos_label_adj-nari": {
+    "message": "形動（なり）",
+    "description": "Short part-of-speech label shown next to archaic/formal form of na-adjective entries"
+  },
+  "pos_label_adj-no": {
+    "message": "ノ形容",
+    "description": "Short part-of-speech label shown next to nouns which may take the genitive case particle 'no' entries"
+  },
+  "pos_label_adj-pn": {
+    "message": "連体",
+    "description": "Short part-of-speech label shown next to pre-noun adjectival (rentaishi) entries"
+  },
+  "pos_label_adj-shiku": {
+    "message": "形（シク）",
+    "description": "Short part-of-speech label shown next to 'shiku' adjective (archaic) entries"
+  },
+  "pos_label_adj-t": {
+    "message": "形動（タル）",
+    "description": "Short part-of-speech label shown next to 'taru' adjective entries"
+  },
+  "pos_label_adv": {
+    "message": "副",
+    "description": "Short part-of-speech label shown next to adverb (fukushi) entries"
+  },
+  "pos_label_adv-to": {
+    "message": "副ト",
+    "description": "Short part-of-speech label shown next to adverb taking the 'to' particle entries"
+  },
+  "pos_label_conj": {
+    "message": "活用",
+    "description": "Short part-of-speech label shown next to conjunction entries"
+  },
+  "pos_label_exp": {
+    "message": "語句",
+    "description": "Short part-of-speech label shown next to expressions (phrases, clauses, etc.) entries"
+  },
+  "pos_label_n": {
+    "message": "名",
+    "description": "Short part-of-speech label shown next to noun (common) (futsuumeishi) entries"
+  },
+  "pos_label_n-pr": {
+    "message": "固有名詞",
+    "description": "Short part-of-speech label shown next to proper noun entries"
+  },
+  "pos_label_n-suf": {
+    "message": "接尾",
+    "description": "Short part-of-speech label shown next to noun, used as a suffix entries"
+  },
+  "pos_label_n-t": {
+    "message": "時相名詞",
+    "description": "Short part-of-speech label shown next to noun (temporal) (jisoumeishi) entries"
+  },
+  "pos_label_pn": {
+    "message": "代",
+    "description": "Short part-of-speech label shown next to pronoun entries"
+  },
+  "pos_label_prt": {
+    "message": "助詞",
+    "description": "Short part-of-speech label shown next to particle entries"
+  },
+  "pos_label_v-unspec": {
+    "message": "動詞",
+    "description": "Short part-of-speech label shown next to verb unspecified entries"
+  },
+  "pos_label_v2d-k": {
+    "message": "上二段動詞（ダ行）",
+    "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'dzu' ending (archaic) entries"
+  },
+  "pos_label_v2d-s": {
+    "message": "下二段動詞（ダ行）",
+    "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'dzu' ending (archaic) entries"
+  },
+  "pos_label_v2h-k": {
+    "message": "上二段動詞（ハ行）",
+    "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'hu/fu' ending (archaic) entries"
+  },
+  "pos_label_v2h-s": {
+    "message": "下二段動詞（ハ行）",
+    "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'hu/fu' ending (archaic) entries"
+  },
+  "pos_label_v2m-k": {
+    "message": "上二段動詞（マ行）",
+    "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'mu' ending (archaic) entries"
+  },
+  "pos_label_v2m-s": {
+    "message": "下二段動詞（マ行）",
+    "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'mu' ending (archaic) entries"
+  },
+  "pos_label_vi": {
+    "message": "自動",
+    "description": "Short part-of-speech label shown next to intransitive verb entries"
+  },
+  "pos_label_vt": {
+    "message": "他動",
+    "description": "Short part-of-speech label shown next to transitive verb entries"
   },
   "ref_label_jlpt": {
     "message": "日本語能力試験",
