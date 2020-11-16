@@ -39,7 +39,7 @@
     "@actions/core": "^1.2.6",
     "@types/chai": "^4.2.14",
     "@types/jest": "^26.0.15",
-    "@types/karma": "^5.0.0",
+    "@types/karma": "^5.0.1",
     "@types/karma-webpack": "^2.0.7",
     "@types/mocha": "^8.0.3",
     "@types/split2": "^2.1.6",
