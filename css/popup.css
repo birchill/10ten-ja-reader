@@ -202,6 +202,10 @@
 }
 
 #rikaichamp-window .w-def .w-misc {
+  background: rgba(0, 100, 255, 0.5);
+}
+
+#rikaichamp-window .w-def .w-dial {
   background: rgba(255, 100, 100, 0.5);
 }
 

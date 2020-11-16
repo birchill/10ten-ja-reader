@@ -284,6 +284,50 @@
   "deinflect_zu": {
     "message": "-zu"
   },
+  "dial_label_9s": {
+    "message": "Kyushu dialect",
+    "description": "Label used to describe senses whose dialect is '9s' (Kyushu dialect)"
+  },
+  "dial_label_ho": {
+    "message": "Hokkaido dialect",
+    "description": "Label used to describe senses whose dialect is 'ho' (Hokkaido dialect)"
+  },
+  "dial_label_ks": {
+    "message": "Kansai dialect",
+    "description": "Label used to describe senses whose dialect is 'ks' (Kansai dialect)"
+  },
+  "dial_label_kt": {
+    "message": "Kanto dialect",
+    "description": "Label used to describe senses whose dialect is 'kt' (Kanto dialect)"
+  },
+  "dial_label_ky": {
+    "message": "Kyoto dialect",
+    "description": "Label used to describe senses whose dialect is 'ky' (Kyoto dialect)"
+  },
+  "dial_label_na": {
+    "message": "Nagano dialect",
+    "description": "Label used to describe senses whose dialect is 'na' (Nagano dialect)"
+  },
+  "dial_label_ok": {
+    "message": "Ryuukyuu dialect",
+    "description": "Label used to describe senses whose dialect is 'ok' (Ryuukyuu dialect)"
+  },
+  "dial_label_os": {
+    "message": "Osaka dialect",
+    "description": "Label used to describe senses whose dialect is 'os' (Osaka dialect)"
+  },
+  "dial_label_th": {
+    "message": "Tohoku dialect",
+    "description": "Label used to describe senses whose dialect is 'th' (Tohoku dialect)"
+  },
+  "dial_label_ts": {
+    "message": "Tosa dialect",
+    "description": "Label used to describe senses whose dialect is 'ts' (Tosa dialect)"
+  },
+  "dial_label_tsug": {
+    "message": "Tsugaru dialect",
+    "description": "Label used to describe senses whose dialect is 'tsug' (Tsugaru dialect)"
+  },
   "error_command_could_not_parse": {
     "message": "Could not parse command $command$",
     "placeholders": {

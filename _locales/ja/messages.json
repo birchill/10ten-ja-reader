@@ -284,6 +284,50 @@
   "deinflect_zu": {
     "message": "ず形"
   },
+  "dial_label_9s": {
+    "message": "九州弁",
+    "description": "Label used to describe senses whose dialect is '9s' (Kyushu dialect)"
+  },
+  "dial_label_ho": {
+    "message": "北海道弁",
+    "description": "Label used to describe senses whose dialect is 'ho' (Hokkaido dialect)"
+  },
+  "dial_label_ks": {
+    "message": "関西弁",
+    "description": "Label used to describe senses whose dialect is 'ks' (Kansai dialect)"
+  },
+  "dial_label_kt": {
+    "message": "関東弁",
+    "description": "Label used to describe senses whose dialect is 'kt' (Kanto dialect)"
+  },
+  "dial_label_ky": {
+    "message": "京都弁",
+    "description": "Label used to describe senses whose dialect is 'ky' (Kyoto dialect)"
+  },
+  "dial_label_na": {
+    "message": "長野弁",
+    "description": "Label used to describe senses whose dialect is 'na' (Nagano dialect)"
+  },
+  "dial_label_ok": {
+    "message": "沖縄方言",
+    "description": "Label used to describe senses whose dialect is 'ok' (Ryuukyuu dialect)"
+  },
+  "dial_label_os": {
+    "message": "大阪弁",
+    "description": "Label used to describe senses whose dialect is 'os' (Osaka dialect)"
+  },
+  "dial_label_th": {
+    "message": "東北弁",
+    "description": "Label used to describe senses whose dialect is 'th' (Tohoku dialect)"
+  },
+  "dial_label_ts": {
+    "message": "土佐弁",
+    "description": "Label used to describe senses whose dialect is 'ts' (Tosa dialect)"
+  },
+  "dial_label_tsug": {
+    "message": "津軽弁",
+    "description": "Label used to describe senses whose dialect is 'tsug' (Tsugaru dialect)"
+  },
   "error_command_could_not_parse": {
     "message": "「$command$」の構文解析が失敗しました",
     "placeholders": {
