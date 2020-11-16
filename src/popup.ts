@@ -15,11 +15,13 @@ import {
   ReferenceAbbreviation,
 } from './refs';
 import {
-  ExtendedSense,
-  KanjiInfo,
-  ReadingInfo,
   ExtendedKanaEntry,
+  ExtendedSense,
+  Gloss,
+  GlossType,
+  KanjiInfo,
   LangSource,
+  ReadingInfo,
 } from './word-result';
 import { EraInfo, getEraInfo } from './years';
 
@@ -462,8 +464,7 @@ function renderSense(
     }
   }
 
-  let glosses = sense.g.map((g) => g.str).join('; ');
-  fragment.append(glosses);
+  appendGlosses(sense.g, fragment);
 
   if (sense.inf) {
     const infSpan = document.createElement('span');
@@ -496,6 +497,33 @@ function renderSense(
   }
 
   return fragment;
+}
+
+function appendGlosses(glosses: Array<Gloss>, parent: ParentNode) {
+  for (const [i, gloss] of glosses.entries()) {
+    if (i) {
+      parent.append('; ');
+    }
+
+    if (gloss.type) {
+      const typeCode = {
+        [GlossType.Expl]: 'expl',
+        [GlossType.Fig]: 'fig',
+        [GlossType.Lit]: 'lit',
+      }[gloss.type];
+      const typeStr = typeCode
+        ? browser.i18n.getMessage(`gloss_type_label_${typeCode}`)
+        : '';
+      if (typeStr) {
+        const typeSpan = document.createElement('span');
+        typeSpan.classList.add('w-type');
+        typeSpan.textContent = `(${typeStr}) `;
+        parent.append(typeSpan);
+      }
+    }
+
+    parent.append(gloss.str);
+  }
 }
 
 function renderLangSources(sources: Array<LangSource>): DocumentFragment {

@@ -177,6 +177,10 @@
   font-size: 13px;
 }
 
+#rikaichamp-window .w-def .w-type {
+  font-size: 12px;
+}
+
 #rikaichamp-window .w-def .tag {
   font-size: 10px;
   border-radius: 3px;
