@@ -169,11 +169,10 @@ function serializeDefinition(entry: WordResult): string {
   }
 }
 
-// TODO: Localize this
 const glossTypes: { [type in GlossType]: string | undefined } = {
-  [GlossType.Expl]: 'expl.',
-  [GlossType.Lit]: 'lit.',
-  [GlossType.Fig]: 'fig.',
+  [GlossType.Expl]: 'expl',
+  [GlossType.Lit]: 'lit',
+  [GlossType.Fig]: 'fig',
   [GlossType.None]: undefined,
 };
 
@@ -203,7 +202,10 @@ function serializeSense(sense: ExtendedSense): string {
       '(' +
       sense.g
         .filter((g) => g.type)
-        .map((g) => glossTypes[g.type!])
+        .map((g) =>
+          browser.i18n.getMessage(`gloss_type_short_${glossTypes[g.type!]}`)
+        )
+        .filter((message) => message !== 'Unrecognized string ID')
         .join(',') +
       ') ';
   }

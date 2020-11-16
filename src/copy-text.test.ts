@@ -17,6 +17,12 @@ global.browser = {
           return `Pre-${replacements ? replacements[0] : '?'}`;
         case 'content_kanji_kentei_level':
           return `${replacements ? replacements[0] : '?'}`;
+        case 'gloss_type_short_expl':
+          return 'expl.';
+        case 'gloss_type_short_lit':
+          return 'lit.';
+        case 'gloss_type_short_fig':
+          return 'fig.';
         case 'ref_label_radical':
           return 'Radical';
         case 'ref_label_nelson_r':
