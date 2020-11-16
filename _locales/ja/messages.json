@@ -5,7 +5,7 @@
   },
   "command_toggle_description": {
     "message": "Rikaichampオン・オフを切り替える",
-    "description": "Explanation of toolbar button to turn Rikaichamp on or off"
+    "description": "Tooltip for toolbar button to turn Rikaichamp on or off"
   },
   "command_toggle_disabled": {
     "message": "Rikaichamp オフ",
@@ -73,17 +73,7 @@
   },
   "content_kanji_base_radical": {
     "message": "部 $char$ ($readings$)",
-    "description": "The string used to describe the base radical",
-    "placeholders": {
-      "char": {
-        "content": "$1",
-        "example": "⾡"
-      },
-      "readings": {
-        "content": "$2",
-        "example": "しんにょう、しんにゅう"
-      }
-    }
+    "description": "The string used to describe the base radical"
   },
   "content_kanji_components_label": {
     "message": "構成",
@@ -99,35 +89,17 @@
   },
   "content_kanji_grade_label": {
     "message": "$grade$年生",
-    "description": "The label for kanji in grades 1 - 6",
-    "placeholders": {
-      "grade": {
-        "content": "$1",
-        "example": "3"
-      }
-    }
+    "description": "The label for kanji in grades 1 - 6"
   },
   "content_kanji_grade_name_use": {
     "message": "人名用",
     "description": "Label for kanji marked as name use"
   },
   "content_kanji_kentei_level": {
-    "message": "$level$級",
-    "placeholders": {
-      "level": {
-        "content": "$1",
-        "example": "3"
-      }
-    }
+    "message": "$level$級"
   },
   "content_kanji_kentei_level_pre": {
-    "message": "準$level$級",
-    "placeholders": {
-      "level": {
-        "content": "$1",
-        "example": "2"
-      }
-    }
+    "message": "準$level$級"
   },
   "content_kanji_nanori_label": {
     "message": "名乗り",
@@ -139,13 +111,7 @@
   },
   "content_kanji_strokes_label": {
     "message": "$strokes$画",
-    "description": "The description of the number of strokes",
-    "placeholders": {
-      "strokes": {
-        "content": "$1",
-        "example": "7"
-      }
-    }
+    "description": "The description of the number of strokes"
   },
   "content_kanji_strokes_label_1": {
     "message": "1画",
@@ -329,22 +295,10 @@
     "description": "Label used to describe senses whose dialect is 'tsug' (Tsugaru dialect)"
   },
   "error_command_could_not_parse": {
-    "message": "「$command$」の構文解析が失敗しました",
-    "placeholders": {
-      "command": {
-        "content": "$1",
-        "example": "Ctrl+T "
-      }
-    }
+    "message": "「$command$」の構文解析が失敗しました"
   },
   "error_command_disallowed_modifier_key": {
-    "message": "「$modifier$」という修飾キーは利用できません",
-    "placeholders": {
-      "modifier": {
-        "content": "$1",
-        "example": "Meta"
-      }
-    }
+    "message": "「$modifier$」という修飾キーは利用できません"
   },
   "error_command_has_no_key": {
     "message": "キーを設定してください"
@@ -353,13 +307,7 @@
     "message": "機能キーまたメディアキーの利用以外の場合、修飾キーも設定してください"
   },
   "error_command_key_is_not_allowed": {
-    "message": "「$key$」というキーは利用できません",
-    "placeholders": {
-      "key": {
-        "content": "$1",
-        "example": "Enter"
-      }
-    }
+    "message": "「$key$」というキーは利用できません"
   },
   "error_command_media_key_with_modifier_key": {
     "message": "メディアキーと修飾キーとの組み合わせは利用できません"
@@ -382,22 +330,6 @@
   "extension_description": {
     "message": "単語の上にマウスのカーソルを合わせたら日英辞書を引く。",
     "description": "Description of the what the extension does."
-  },
-  "field_label_Buddh": {
-    "message": "仏教",
-    "description": "Label applied to senses with the 'Buddh' field"
-  },
-  "field_label_Christn": {
-    "message": "キリスト教",
-    "description": "Label applied to senses with the 'Christn' field"
-  },
-  "field_label_MA": {
-    "message": "武道",
-    "description": "Label applied to senses with the 'MA' field"
-  },
-  "field_label_Shinto": {
-    "message": "神道",
-    "description": "Label applied to senses with the 'Shinto' field"
   },
   "field_label_agric": {
     "message": "農業",
@@ -447,6 +379,10 @@
     "message": "植物学",
     "description": "Label applied to senses with the 'bot' field"
   },
+  "field_label_Buddh": {
+    "message": "仏教",
+    "description": "Label applied to senses with the 'Buddh' field"
+  },
   "field_label_bus": {
     "message": "ビジネス",
     "description": "Label applied to senses with the 'bus' field"
@@ -454,6 +390,10 @@
   "field_label_chem": {
     "message": "化学",
     "description": "Label applied to senses with the 'chem' field"
+  },
+  "field_label_Christn": {
+    "message": "キリスト教",
+    "description": "Label applied to senses with the 'Christn' field"
   },
   "field_label_comp": {
     "message": "コンピューター",
@@ -559,6 +499,10 @@
     "message": "論理",
     "description": "Label applied to senses with the 'logic' field"
   },
+  "field_label_MA": {
+    "message": "武道",
+    "description": "Label applied to senses with the 'MA' field"
+  },
   "field_label_mahj": {
     "message": "麻雀",
     "description": "Label applied to senses with the 'mahj' field"
@@ -627,6 +571,10 @@
     "message": "心理学",
     "description": "Label applied to senses with the 'psych' field"
   },
+  "field_label_Shinto": {
+    "message": "神道",
+    "description": "Label applied to senses with the 'Shinto' field"
+  },
   "field_label_shogi": {
     "message": "将棋",
     "description": "Label applied to senses with the 'shogi' field"
@@ -660,28 +608,22 @@
     "description": "Label applied to senses with the 'zool' field"
   },
   "gloss_type_label_expl": {
-    "message": "説明",
-    "decsription": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "message": "説明"
   },
   "gloss_type_label_fig": {
-    "message": "比喩的",
-    "decsription": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "message": "比喩的"
   },
   "gloss_type_label_lit": {
-    "message": "直訳",
-    "decsription": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "message": "直訳"
   },
   "gloss_type_short_expl": {
-    "message": "説明",
-    "decsription": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "message": "説明"
   },
   "gloss_type_short_fig": {
-    "message": "比喩的",
-    "decsription": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "message": "比喩的"
   },
   "gloss_type_short_lit": {
-    "message": "直訳",
-    "decsription": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "message": "直訳"
   },
   "head_info_label_ateji": {
     "message": "当て字",
@@ -690,6 +632,14 @@
   "head_info_label_gikun": {
     "message": "義訓",
     "description": "Short annotation given to kana headwords with gikun (meaning as reading) or jukujikun (special kanji reading)"
+  },
+  "head_info_label_iK": {
+    "message": "珍",
+    "description": "Short annotation given to kanji headwords that have rare use of kanji"
+  },
+  "head_info_label_ik": {
+    "message": "珍",
+    "description": "Short annotation given to (mostly?) kana headwords that have rare use of kana"
   },
   "head_info_label_ikana": {
     "message": "珍",
@@ -703,6 +653,14 @@
     "message": "珍",
     "description": "Short annotation given to kanji headwords that have rare use of okurigana"
   },
+  "head_info_label_oK": {
+    "message": "古",
+    "description": "Short annotation given to kanji headwords that use out-dated kanji"
+  },
+  "head_info_label_ok": {
+    "message": "古",
+    "description": "Short annotation given to kana headwords that use out-dated kana"
+  },
   "head_info_label_okana": {
     "message": "古",
     "description": "Short annotation given to kana headwords that use out-dated kana"
@@ -711,8 +669,12 @@
     "message": "古",
     "description": "Short annotation given to kanji headwords that use out-dated kanji"
   },
-  "head_info_label_ukanji": {
+  "head_info_label_uK": {
     "message": "一般漢字",
+    "description": "Short annotation given to kana headwords that are normally written in kanji alone"
+  },
+  "head_info_label_ukanji": {
+    "message": "かな表記が多い",
     "description": "Short annotation given to kana headwords that are normally written in kanji alone"
   },
   "lang_label_af": {
@@ -983,10 +945,6 @@
     "message": "Rikaichampを有効にする",
     "description": "Context menu item to enable the extension."
   },
-  "misc_label_X": {
-    "message": "アダルト",
-    "description": "Label used to describe senses with the 'X' (X-rated) annotation"
-  },
   "misc_label_abbr": {
     "message": "略",
     "description": "Label used to describe senses with the 'abbr' (abbrev.) annotation"
@@ -1128,7 +1086,7 @@
     "description": "Label used to describe senses with the 'surname' (surname) annotation"
   },
   "misc_label_uk": {
-    "message": "一般カナ",
+    "message": "かな表記が多い",
     "description": "Label used to describe senses with the 'uk' (usually kana) annotation"
   },
   "misc_label_unclass": {
@@ -1142,6 +1100,10 @@
   "misc_label_work": {
     "message": "作品",
     "description": "Label used to describe senses with the 'work' (work) annotation"
+  },
+  "misc_label_X": {
+    "message": "アダルト",
+    "description": "Label used to describe senses with the 'X' (X-rated) annotation"
   },
   "misc_label_yoji": {
     "message": "四字熟語",
@@ -1176,34 +1138,10 @@
     "description": "Label while we are checking for updates"
   },
   "options_data_series_date_only": {
-    "message": "$generated$に生成された$source$のデータに基づいている。",
-    "placeholders": {
-      "source": {
-        "content": "$1",
-        "example": "KANJIDIC"
-      },
-      "generated": {
-        "content": "$2",
-        "example": "2019-10-19"
-      }
-    }
+    "message": "$generated$に生成された$source$のデータに基づいている。"
   },
   "options_data_series_version_and_date": {
-    "message": "$generated$に生成された$source$ $version$のデータに基づいている。",
-    "placeholders": {
-      "source": {
-        "content": "$1",
-        "example": "KANJIDIC"
-      },
-      "version": {
-        "content": "$2",
-        "example": "2019-282"
-      },
-      "generated": {
-        "content": "$3",
-        "example": "2019-10-19"
-      }
-    }
+    "message": "$generated$に生成された$source$ $version$のデータに基づいている。"
   },
   "options_data_source": {
     "message": "使用しているデータにKANJIDICおよびJMnedict/ENAMDICTのデータが含まれております。",
@@ -1215,23 +1153,11 @@
   },
   "options_db_update_error": {
     "message": "更新失敗しました。「$errormessage$」",
-    "description": "Label when we failed to update the data for some reason",
-    "placeholders": {
-      "errormessage": {
-        "content": "$1",
-        "example": "Version file not found"
-      }
-    }
+    "description": "Label when we failed to update the data for some reason"
   },
   "options_db_update_next_retry": {
     "message": "$nextretry$に再試行予定",
-    "description": "Label used when there is a scheduled retry",
-    "placeholders": {
-      "nextretry": {
-        "content": "$1",
-        "example": "2019-10-14 17:44"
-      }
-    }
+    "description": "Label used when there is a scheduled retry"
   },
   "options_dictionary_data_heading": {
     "message": "辞書データ"
@@ -1241,21 +1167,7 @@
   },
   "options_downloading_data": {
     "message": "$datatype$バージョン$version$を読み込み中 ($progress$%)…",
-    "description": "Label while we are downloading updates",
-    "placeholders": {
-      "datatype": {
-        "content": "$1",
-        "example": "kanji data"
-      },
-      "version": {
-        "content": "$2",
-        "example": "1.0.3"
-      },
-      "progress": {
-        "content": "$3",
-        "example": "60"
-      }
-    }
+    "description": "Label while we are downloading updates"
   },
   "options_edrdg_license": {
     "message": "このデータはElectronic Dictionary Research and Development Group (EDRDG)の所有権であり、EDRDGのライセンスに準拠して使用しております。",
@@ -1290,13 +1202,7 @@
   },
   "options_kanji_data_title": {
     "message": "漢字データ v$version$",
-    "description": "The kanji data series title and version",
-    "placeholders": {
-      "version": {
-        "content": "$1",
-        "example": "2.0.0"
-      }
-    }
+    "description": "The kanji data series title and version"
   },
   "options_kanji_dictionary_heading": {
     "message": "漢字辞典",
@@ -1308,13 +1214,7 @@
   },
   "options_last_database_check": {
     "message": "更新確認時刻 $lastcheck$",
-    "description": "Status to show when we last checked for an update",
-    "placeholders": {
-      "lastcheck": {
-        "content": "$1",
-        "example": "2019-10-12"
-      }
-    }
+    "description": "Status to show when we last checked for an update"
   },
   "options_name_data_name": {
     "message": "人名データ",
@@ -1322,13 +1222,7 @@
   },
   "options_name_data_title": {
     "message": "人名データ v$version$",
-    "description": "The name data series title and version",
-    "placeholders": {
-      "version": {
-        "content": "$1",
-        "example": "2.0.0"
-      }
-    }
+    "description": "The name data series title and version"
   },
   "options_no_database": {
     "message": "データベースがありません",
@@ -1366,6 +1260,22 @@
   "options_popup_toggle_definition": {
     "message": "定義の表示・非表示を切り替える"
   },
+  "options_pos_display_code": {
+    "message": "辞書コード（例 ：「v5r」）",
+    "description": "Label for simply display dictionary part-of-speech codes"
+  },
+  "options_pos_display_expl": {
+    "message": "説明（例：「五段動詞（ラ行）」）",
+    "description": "Label for configuring short explanations to be shown for part-of-speech. The \"-u verb\" example should correspond to the localized value of pos_label_v5r."
+  },
+  "options_pos_display_label": {
+    "message": "品詞表示",
+    "description": "Label for the drop-down list used to configure how part-of-speech tags are displayed"
+  },
+  "options_pos_display_none": {
+    "message": "なし",
+    "description": "Label for hiding part-of-speech labels"
+  },
   "options_show_context_menu_item": {
     "message": "コンテキストメニューに「Rikaichampを有効する」を表示",
     "description": "Option to enable context menu item with label `menu_enable_extension`"
@@ -1389,21 +1299,131 @@
     "description": "Label for the button to retry the database update after a failure"
   },
   "options_updating_data": {
-    "message": "$datatype$バージョン$version$を適用中…",
-    "description": "Label while we are applying updates",
-    "placeholders": {
-      "datatype": {
-        "content": "$1",
-        "example": "kanji data"
-      },
-      "version": {
-        "content": "$2",
-        "example": "1.0.3"
-      }
-    }
+    "message": "$datatype$バージョン$version$を適用中 ($progress$%)…",
+    "description": "Label while we are applying updates"
   },
   "options_warning_language_is_kanji_only": {
     "message": "この設定は現在漢字辞典のみに適用されます。"
+  },
+  "pos_label_adj-f": {
+    "message": "連体",
+    "description": "Short part-of-speech label shown next to noun or verb entries acting prenominally"
+  },
+  "pos_label_adj-i": {
+    "message": "形",
+    "description": "Short part-of-speech label shown next to adjective (keiyoushi) entries"
+  },
+  "pos_label_adj-ix": {
+    "message": "形（よい）",
+    "description": "Short part-of-speech label shown next to adjective (keiyoushi) - yoi/ii class entries"
+  },
+  "pos_label_adj-kari": {
+    "message": "形（カリ）",
+    "description": "Short part-of-speech label shown next to 'kari' adjective (archaic) entries"
+  },
+  "pos_label_adj-ku": {
+    "message": "形（ク）",
+    "description": "Short part-of-speech label shown next to 'ku' adjective (archaic) entries"
+  },
+  "pos_label_adj-na": {
+    "message": "形動",
+    "description": "Short part-of-speech label shown next to adjectival nouns or quasi-adjectives (keiyodoshi) entries"
+  },
+  "pos_label_adj-nari": {
+    "message": "形動（なり）",
+    "description": "Short part-of-speech label shown next to archaic/formal form of na-adjective entries"
+  },
+  "pos_label_adj-no": {
+    "message": "ノ形容",
+    "description": "Short part-of-speech label shown next to nouns which may take the genitive case particle 'no' entries"
+  },
+  "pos_label_adj-pn": {
+    "message": "連体",
+    "description": "Short part-of-speech label shown next to pre-noun adjectival (rentaishi) entries"
+  },
+  "pos_label_adj-shiku": {
+    "message": "形（シク）",
+    "description": "Short part-of-speech label shown next to 'shiku' adjective (archaic) entries"
+  },
+  "pos_label_adj-t": {
+    "message": "形動（タル）",
+    "description": "Short part-of-speech label shown next to 'taru' adjective entries"
+  },
+  "pos_label_adv": {
+    "message": "副",
+    "description": "Short part-of-speech label shown next to adverb (fukushi) entries"
+  },
+  "pos_label_adv-to": {
+    "message": "副ト",
+    "description": "Short part-of-speech label shown next to adverb taking the 'to' particle entries"
+  },
+  "pos_label_conj": {
+    "message": "活用",
+    "description": "Short part-of-speech label shown next to conjunction entries"
+  },
+  "pos_label_exp": {
+    "message": "語句",
+    "description": "Short part-of-speech label shown next to expressions (phrases, clauses, etc.) entries"
+  },
+  "pos_label_n": {
+    "message": "名",
+    "description": "Short part-of-speech label shown next to noun (common) (futsuumeishi) entries"
+  },
+  "pos_label_n-pr": {
+    "message": "固有名詞",
+    "description": "Short part-of-speech label shown next to proper noun entries"
+  },
+  "pos_label_n-suf": {
+    "message": "接尾",
+    "description": "Short part-of-speech label shown next to noun, used as a suffix entries"
+  },
+  "pos_label_n-t": {
+    "message": "時相名詞",
+    "description": "Short part-of-speech label shown next to noun (temporal) (jisoumeishi) entries"
+  },
+  "pos_label_pn": {
+    "message": "代",
+    "description": "Short part-of-speech label shown next to pronoun entries"
+  },
+  "pos_label_prt": {
+    "message": "助詞",
+    "description": "Short part-of-speech label shown next to particle entries"
+  },
+  "pos_label_v-unspec": {
+    "message": "動詞",
+    "description": "Short part-of-speech label shown next to verb unspecified entries"
+  },
+  "pos_label_v2d-k": {
+    "message": "上二段動詞（ダ行）",
+    "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'dzu' ending (archaic) entries"
+  },
+  "pos_label_v2d-s": {
+    "message": "下二段動詞（ダ行）",
+    "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'dzu' ending (archaic) entries"
+  },
+  "pos_label_v2h-k": {
+    "message": "上二段動詞（ハ行）",
+    "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'hu/fu' ending (archaic) entries"
+  },
+  "pos_label_v2h-s": {
+    "message": "下二段動詞（ハ行）",
+    "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'hu/fu' ending (archaic) entries"
+  },
+  "pos_label_v2m-k": {
+    "message": "上二段動詞（マ行）",
+    "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'mu' ending (archaic) entries"
+  },
+  "pos_label_v2m-s": {
+    "message": "下二段動詞（マ行）",
+    "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'mu' ending (archaic) entries"
+  },
+  "pos_label_vi": {
+    "message": "自動",
+    "description": "Short part-of-speech label shown next to intransitive verb entries"
+  },
+  "pos_label_vt": {
+    "message": "他動",
+    "description": "Short part-of-speech label shown next to transitive verb entries"
   },
   "ref_label_jlpt": {
     "message": "日本語能力試験",
