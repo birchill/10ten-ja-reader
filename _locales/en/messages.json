@@ -661,27 +661,27 @@
   },
   "gloss_type_label_expl": {
     "message": "explanation",
-    "decsription": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
   },
   "gloss_type_label_fig": {
     "message": "figurative",
-    "decsription": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
   },
   "gloss_type_label_lit": {
     "message": "literally",
-    "decsription": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
   },
   "gloss_type_short_expl": {
     "message": "expl.",
-    "decsription": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
   },
   "gloss_type_short_fig": {
     "message": "fig.",
-    "decsription": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
   },
   "gloss_type_short_lit": {
     "message": "lit.",
-    "decsription": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
   },
   "head_info_label_ateji": {
     "message": "ateji",
