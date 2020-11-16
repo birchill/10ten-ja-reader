@@ -485,6 +485,16 @@ function renderSense(
     }
   }
 
+  if (sense.dial) {
+    for (const dial of sense.dial) {
+      const dialSpan = document.createElement('span');
+      dialSpan.classList.add('w-dial', 'tag');
+      dialSpan.textContent =
+        browser.i18n.getMessage(`dial_label_${dial}`) || dial;
+      fragment.append(dialSpan);
+    }
+  }
+
   return fragment;
 }
 
