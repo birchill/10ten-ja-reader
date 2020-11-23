@@ -5,6 +5,7 @@
   "scripts": {
     "build": "webpack",
     "build:chrome": "webpack --env target=chrome",
+    "check-keys": "ts-node utils/check-keys",
     "lint": "web-ext lint",
     "package": "yarn build && web-ext build --overwrite-dest -a dist-firefox-package",
     "package:chrome": "yarn build:chrome && web-ext build --overwrite-dest -s dist-chrome -a dist-chrome-package",
@@ -43,6 +44,7 @@
     "@types/karma-webpack": "^2.0.7",
     "@types/mocha": "^8.0.4",
     "@types/split2": "^2.1.6",
+    "@types/yargs": "^15.0.10",
     "archiver": "^5.0.2",
     "byline": "^5.0.0",
     "chai": "^4.2.0",
@@ -69,7 +71,8 @@
     "web-ext-webpack-plugin": "github:birtles/web-ext-webpack-plugin",
     "webpack": "^4.44.2",
     "webpack-cli": "^4.2.0",
-    "webpack-preprocessor": "^0.1.12"
+    "webpack-preprocessor": "^0.1.12",
+    "yargs": "^16.1.1"
   },
   "dependencies": {
     "@birchill/hikibiki-data": "^6.2.3",
