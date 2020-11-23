@@ -49,7 +49,7 @@
     "byline": "^5.0.0",
     "chai": "^4.2.0",
     "combined-stream2": "^1.1.2",
-    "copy-webpack-plugin": "^6.3.1",
+    "copy-webpack-plugin": "^6.3.2",
     "fast-glob": "^3.2.4",
     "file-loader": "^6.2.0",
     "iconv-lite": "^0.6.2",
