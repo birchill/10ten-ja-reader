@@ -1032,7 +1032,7 @@
     "description": "Label used to describe senses with the 'hon' (honorific) annotation"
   },
   "misc_label_hum": {
-    "message": "謙遜語",
+    "message": "謙譲語",
     "description": "Label used to describe senses with the 'hum' (humble) annotation"
   },
   "misc_label_id": {
@@ -1473,21 +1473,53 @@
     "message": "副ト",
     "description": "Short part-of-speech label shown next to adverb taking the 'to' particle entries"
   },
+  "pos_label_aux": {
+    "message": "助辞",
+    "description": "Short part-of-speech label shown next to auxiliary entries"
+  },
+  "pos_label_aux-adj": {
+    "message": "補助形容",
+    "description": "Short part-of-speech label shown next to auxiliary adjective entries"
+  },
+  "pos_label_aux-v": {
+    "message": "助動",
+    "description": "Short part-of-speech label shown next to auxiliary verb entries"
+  },
   "pos_label_conj": {
-    "message": "活用",
+    "message": "接続",
     "description": "Short part-of-speech label shown next to conjunction entries"
+  },
+  "pos_label_cop": {
+    "message": "繋辞",
+    "description": "Short part-of-speech label shown next to copula entries"
+  },
+  "pos_label_ctr": {
+    "message": "助数詞",
+    "description": "Short part-of-speech label shown next to counter entries"
   },
   "pos_label_exp": {
     "message": "語句",
     "description": "Short part-of-speech label shown next to expressions (phrases, clauses, etc.) entries"
   },
+  "pos_label_int": {
+    "message": "感動詞",
+    "description": "Short part-of-speech label shown next to interjection (kandoushi) entries"
+  },
   "pos_label_n": {
     "message": "名",
     "description": "Short part-of-speech label shown next to noun (common) (futsuumeishi) entries"
   },
+  "pos_label_n-adv": {
+    "message": "副詞的名",
+    "description": "Short part-of-speech label shown next to adverbial noun (fukushitekimeishi) entries"
+  },
   "pos_label_n-pr": {
     "message": "固有名詞",
     "description": "Short part-of-speech label shown next to proper noun entries"
+  },
+  "pos_label_n-pref": {
+    "message": "接頭",
+    "description": "Short part-of-speech label shown next to noun, used as a prefix entries"
   },
   "pos_label_n-suf": {
     "message": "接尾",
@@ -1497,49 +1529,265 @@
     "message": "時相名詞",
     "description": "Short part-of-speech label shown next to noun (temporal) (jisoumeishi) entries"
   },
+  "pos_label_num": {
+    "message": "数詞",
+    "description": "Short part-of-speech label shown next to numeric entries"
+  },
   "pos_label_pn": {
     "message": "代",
     "description": "Short part-of-speech label shown next to pronoun entries"
+  },
+  "pos_label_pref": {
+    "message": "接頭",
+    "description": "Short part-of-speech label shown next to prefix entries"
   },
   "pos_label_prt": {
     "message": "助詞",
     "description": "Short part-of-speech label shown next to particle entries"
   },
+  "pos_label_suf": {
+    "message": "接尾",
+    "description": "Short part-of-speech label shown next to suffix entries"
+  },
+  "pos_label_unc": {
+    "message": "?",
+    "description": "Short part-of-speech label shown next to unclassified entries"
+  },
   "pos_label_v-unspec": {
-    "message": "動詞",
+    "message": "動",
     "description": "Short part-of-speech label shown next to verb unspecified entries"
   },
+  "pos_label_v1": {
+    "message": "動一",
+    "description": "Short part-of-speech label shown next to Ichidan verb entries"
+  },
+  "pos_label_v1-s": {
+    "message": "動一(くれる)",
+    "description": "Short part-of-speech label shown next to Ichidan verb - kureru special class entries"
+  },
+  "pos_label_v2a-s": {
+    "message": "動ア二",
+    "description": "Short part-of-speech label shown next to Nidan verb with 'u' ending (archaic) entries"
+  },
+  "pos_label_v2b-k": {
+    "message": "動バ上二",
+    "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'bu' ending (archaic) entries"
+  },
+  "pos_label_v2b-s": {
+    "message": "動バ下二",
+    "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'bu' ending (archaic) entries"
+  },
   "pos_label_v2d-k": {
-    "message": "上二段動詞（ダ行）",
+    "message": "動ダ上二",
     "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'dzu' ending (archaic) entries"
   },
   "pos_label_v2d-s": {
-    "message": "下二段動詞（ダ行）",
+    "message": "動ダ下二",
     "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'dzu' ending (archaic) entries"
   },
+  "pos_label_v2g-k": {
+    "message": "動ガ上二",
+    "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'gu' ending (archaic) entries"
+  },
+  "pos_label_v2g-s": {
+    "message": "動ガ下二",
+    "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'gu' ending (archaic) entries"
+  },
   "pos_label_v2h-k": {
-    "message": "上二段動詞（ハ行）",
+    "message": "動ハ上二",
     "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'hu/fu' ending (archaic) entries"
   },
   "pos_label_v2h-s": {
-    "message": "下二段動詞（ハ行）",
+    "message": "動ハ下二",
     "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'hu/fu' ending (archaic) entries"
   },
+  "pos_label_v2k-k": {
+    "message": "動カ上二",
+    "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'ku' ending (archaic) entries"
+  },
+  "pos_label_v2k-s": {
+    "message": "動カ下二",
+    "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'ku' ending (archaic) entries"
+  },
   "pos_label_v2m-k": {
-    "message": "上二段動詞（マ行）",
+    "message": "動マ上二",
     "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'mu' ending (archaic) entries"
   },
   "pos_label_v2m-s": {
-    "message": "下二段動詞（マ行）",
+    "message": "動マ下二",
     "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'mu' ending (archaic) entries"
+  },
+  "pos_label_v2n-s": {
+    "message": "動ナ下二",
+    "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'nu' ending (archaic) entries"
+  },
+  "pos_label_v2r-k": {
+    "message": "動ラ上二",
+    "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'ru' ending (archaic) entries"
+  },
+  "pos_label_v2r-s": {
+    "message": "動ラ下二",
+    "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'ru' ending (archaic) entries"
+  },
+  "pos_label_v2s-s": {
+    "message": "動サ下二",
+    "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'su' ending (archaic) entries"
+  },
+  "pos_label_v2t-k": {
+    "message": "動タ上二",
+    "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'tsu' ending (archaic) entries"
+  },
+  "pos_label_v2t-s": {
+    "message": "動タ下二",
+    "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'tsu' ending (archaic) entries"
+  },
+  "pos_label_v2w-s": {
+    "message": "動ワ下二",
+    "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'u' ending and 'we' conjugation (archaic) entries"
+  },
+  "pos_label_v2y-k": {
+    "message": "動ヤ上二",
+    "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'yu' ending (archaic) entries"
+  },
+  "pos_label_v2y-s": {
+    "message": "動ヤ下二",
+    "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'yu' ending (archaic) entries"
+  },
+  "pos_label_v2z-s": {
+    "message": "動ザ下二",
+    "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'zu' ending (archaic) entries"
+  },
+  "pos_label_v4b": {
+    "message": "動バ四",
+    "description": "Short part-of-speech label shown next to Yodan verb with 'bu' ending (archaic) entries"
+  },
+  "pos_label_v4g": {
+    "message": "動ガ四",
+    "description": "Short part-of-speech label shown next to Yodan verb with 'gu' ending (archaic) entries"
+  },
+  "pos_label_v4h": {
+    "message": "動ハ四",
+    "description": "Short part-of-speech label shown next to Yodan verb with 'hu/fu' ending (archaic) entries"
+  },
+  "pos_label_v4k": {
+    "message": "動カ四",
+    "description": "Short part-of-speech label shown next to Yodan verb with 'ku' ending (archaic) entries"
+  },
+  "pos_label_v4m": {
+    "message": "動マ四",
+    "description": "Short part-of-speech label shown next to Yodan verb with 'mu' ending (archaic) entries"
+  },
+  "pos_label_v4n": {
+    "message": "動ナ四",
+    "description": "Short part-of-speech label shown next to Yodan verb with 'nu' ending (archaic) entries"
+  },
+  "pos_label_v4r": {
+    "message": "動ラ四",
+    "description": "Short part-of-speech label shown next to Yodan verb with 'ru' ending (archaic) entries"
+  },
+  "pos_label_v4s": {
+    "message": "動サ四",
+    "description": "Short part-of-speech label shown next to Yodan verb with 'su' ending (archaic) entries"
+  },
+  "pos_label_v4t": {
+    "message": "動タ四",
+    "description": "Short part-of-speech label shown next to Yodan verb with 'tsu' ending (archaic) entries"
+  },
+  "pos_label_v5aru": {
+    "message": "動ラ五変格",
+    "description": "Short part-of-speech label shown next to Godan verb - -aru special class entries"
+  },
+  "pos_label_v5b": {
+    "message": "動バ五",
+    "description": "Short part-of-speech label shown next to Godan verb with 'bu' ending entries"
+  },
+  "pos_label_v5g": {
+    "message": "動ガ五",
+    "description": "Short part-of-speech label shown next to Godan verb with 'gu' ending entries"
+  },
+  "pos_label_v5k": {
+    "message": "動カ五",
+    "description": "Short part-of-speech label shown next to Godan verb with 'ku' ending entries"
+  },
+  "pos_label_v5k-s": {
+    "message": "動カ五変格",
+    "description": "Short part-of-speech label shown next to Godan verb - Iku/Yuku special class entries"
+  },
+  "pos_label_v5m": {
+    "message": "動マ五",
+    "description": "Short part-of-speech label shown next to Godan verb with 'mu' ending entries"
+  },
+  "pos_label_v5n": {
+    "message": "動ナ五",
+    "description": "Short part-of-speech label shown next to Godan verb with 'nu' ending entries"
+  },
+  "pos_label_v5r": {
+    "message": "動ラ五",
+    "description": "Short part-of-speech label shown next to Godan verb with 'ru' ending entries"
+  },
+  "pos_label_v5r-i": {
+    "message": "動ラ五（ラ変）",
+    "description": "Short part-of-speech label shown next to Godan verb with 'ru' ending (irregular verb) entries"
+  },
+  "pos_label_v5s": {
+    "message": "動サ五",
+    "description": "Short part-of-speech label shown next to Godan verb with 'su' ending entries"
+  },
+  "pos_label_v5t": {
+    "message": "動タ五",
+    "description": "Short part-of-speech label shown next to Godan verb with 'tsu' ending entries"
+  },
+  "pos_label_v5u": {
+    "message": "動ア五",
+    "description": "Short part-of-speech label shown next to Godan verb with 'u' ending entries"
+  },
+  "pos_label_v5u-s": {
+    "message": "動ワ五",
+    "description": "Short part-of-speech label shown next to Godan verb with 'u' ending (special class) entries"
+  },
+  "pos_label_v5uru": {
+    "message": "動",
+    "description": "Short part-of-speech label shown next to Godan verb - Uru old class verb (old form of Eru) entries (this doesn't appear to be used)"
   },
   "pos_label_vi": {
     "message": "自動",
     "description": "Short part-of-speech label shown next to intransitive verb entries"
   },
+  "pos_label_vk": {
+    "message": "動カ変",
+    "description": "Short part-of-speech label shown next to Kuru verb - special class entries"
+  },
+  "pos_label_vn": {
+    "message": "動ナ変",
+    "description": "Short part-of-speech label shown next to irregular nu verb entries"
+  },
+  "pos_label_vr": {
+    "message": "動ラ変",
+    "description": "Short part-of-speech label shown next to irregular ru verb, plain form ends with -ri entries"
+  },
+  "pos_label_vs": {
+    "message": "サ変名詞",
+    "description": "Short part-of-speech label shown next to noun or participle which takes the aux. verb suru entries"
+  },
+  "pos_label_vs-c": {
+    "message": "動サ変",
+    "description": "Short part-of-speech label shown next to su verb - precursor to the modern suru entries"
+  },
+  "pos_label_vs-i": {
+    "message": "動サ変",
+    "description": "Short part-of-speech label shown next to suru verb - included entries"
+  },
+  "pos_label_vs-s": {
+    "message": "動サ変",
+    "description": "Short part-of-speech label shown next to suru verb - special class entries"
+  },
   "pos_label_vt": {
     "message": "他動",
     "description": "Short part-of-speech label shown next to transitive verb entries"
+  },
+  "pos_label_vz": {
+    "message": "動一（ずる）",
+    "description": "Short part-of-speech label shown next to Ichidan verb - zuru verb (alternative form of -jiru verbs) entries"
   },
   "ref_label_jlpt": {
     "message": "日本語能力試験",

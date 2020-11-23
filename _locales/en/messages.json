@@ -1766,7 +1766,7 @@
     "description": "Short part-of-speech label shown next to irregular nu verb entries"
   },
   "pos_label_vr": {
-    "message": "-nu (-ri) verb*",
+    "message": "-ru (-ri) verb*",
     "description": "Short part-of-speech label shown next to irregular ru verb, plain form ends with -ri entries"
   },
   "pos_label_vs": {
