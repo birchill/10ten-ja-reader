@@ -766,6 +766,13 @@ function updateDatabaseBlurb(evt: DbStateUpdatedMessage) {
       },
     ])
   );
+
+  const accentAttribution = browser.i18n.getMessage(
+    'options_accent_data_source'
+  );
+  const accentPara = document.createElement('p');
+  accentPara.append(accentAttribution);
+  blurb.append(accentPara);
 }
 
 function updateDatabaseStatus(evt: DbStateUpdatedMessage) {

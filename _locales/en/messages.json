@@ -1147,6 +1147,10 @@
     "message": "yojijukugo",
     "description": "Label used to describe senses with the 'yoji' (yojijukugo) annotation"
   },
+  "options_accent_data_source": {
+    "message": "The pitch accent data was provided by Uros Ozvatic through his free database.",
+    "description": "Attribution for pitch accent data as described here: https://github.com/mifunetoshiro/kanjium"
+  },
   "options_accent_display_binary": {
     "message": "Binary pitch ⎾⏋",
     "description": "Label for displaying the pitch accent using box outlines to show high and low"
