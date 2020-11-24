@@ -155,23 +155,47 @@
     "message": "Names Dictionary",
     "description": "The title used at the top of the popup when showing the names dictionary"
   },
+  "content_names_tag_char": {
+    "message": "character"
+  },
   "content_names_tag_company": {
     "message": "company"
+  },
+  "content_names_tag_creat": {
+    "message": "creature"
+  },
+  "content_names_tag_dei": {
+    "message": "deity"
+  },
+  "content_names_tag_ev": {
+    "message": "event"
   },
   "content_names_tag_fem": {
     "message": "female"
   },
+  "content_names_tag_fict": {
+    "message": "fiction"
+  },
   "content_names_tag_given": {
     "message": "given"
+  },
+  "content_names_tag_leg": {
+    "message": "legend"
   },
   "content_names_tag_masc": {
     "message": "male"
   },
-  "content_names_tag_ok": {
-    "message": "old"
+  "content_names_tag_myth": {
+    "message": "mythology"
+  },
+  "content_names_tag_obj": {
+    "message": "object"
   },
   "content_names_tag_org": {
     "message": "org"
+  },
+  "content_names_tag_oth": {
+    "message": "other"
   },
   "content_names_tag_person": {
     "message": "full name"
@@ -182,6 +206,12 @@
   "content_names_tag_product": {
     "message": "product"
   },
+  "content_names_tag_relig": {
+    "message": "religion"
+  },
+  "content_names_tag_serv": {
+    "message": "service"
+  },
   "content_names_tag_station": {
     "message": "station"
   },
@@ -189,7 +219,7 @@
     "message": "surname"
   },
   "content_names_tag_unclass": {
-    "message": "person"
+    "message": "unclassified"
   },
   "content_names_tag_work": {
     "message": "work"

@@ -1,12 +1,6 @@
 import '../html/options.html.src';
 
-import {
-  allDataSeries,
-  allMajorDataSeries,
-  DataSeries,
-  DataSeriesState,
-  MajorDataSeries,
-} from '@birchill/hikibiki-data';
+import { DataSeriesState } from '@birchill/hikibiki-data';
 
 import { Config, DEFAULT_KEY_SETTINGS } from './config';
 import { Command, CommandParams, isValidKey } from './commands';
@@ -23,6 +17,18 @@ import { translateDoc } from './l10n';
 import { getReferenceLabelsForLang, getReferencesForLang } from './refs';
 
 const config = new Config();
+
+// TODO: Once we support the 'words' data series, drop these Supported*
+// definitions and use allDataSeries, allMajorDataSeries, DataSeries,
+// MajorDataSeries from @birchill/hikibiki-data.
+type SupportedDataSeries = 'kanji' | 'radicals' | 'names';
+type SupportedMajorDataSeries = 'kanji' | 'names';
+const allDataSeries: Array<SupportedDataSeries> = [
+  'kanji',
+  'radicals',
+  'names',
+];
+const allMajorDataSeries: Array<SupportedMajorDataSeries> = ['kanji', 'names'];
 
 function completeForm() {
   // UA-specific styles
@@ -813,12 +819,14 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
       labelElem.classList.add('label');
       labelElem.htmlFor = 'update-progress';
 
-      const labels: { [series in DataSeries]: string } = {
+      const labels: { [series in SupportedDataSeries]: string } = {
         kanji: 'options_kanji_data_name',
         radicals: 'options_bushu_data_name',
         names: 'options_name_data_name',
       };
-      const dbLabel = browser.i18n.getMessage(labels[updateState.series]);
+      const dbLabel = browser.i18n.getMessage(
+        labels[updateState.series as SupportedDataSeries]
+      );
 
       const { major, minor, patch } = updateState.downloadVersion;
       const versionString = `${major}.${minor}.${patch}`;
@@ -973,7 +981,7 @@ function updateIdleStateSummary(
     const { major, minor, patch } = versionInfo;
     const titleDiv = document.createElement('div');
     titleDiv.classList.add('title');
-    const titleKeys: { [series in MajorDataSeries]: string } = {
+    const titleKeys: { [series in SupportedMajorDataSeries]: string } = {
       kanji: 'options_kanji_data_title',
       names: 'options_name_data_title',
     };
@@ -987,7 +995,7 @@ function updateIdleStateSummary(
     const sourceDiv = document.createElement('div');
     sourceDiv.classList.add('db-source-version');
 
-    const sourceNames: { [series in MajorDataSeries]: string } = {
+    const sourceNames: { [series in SupportedMajorDataSeries]: string } = {
       kanji: 'KANJIDIC',
       names: 'JMnedict/ENAMDICT',
     };

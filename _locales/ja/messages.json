@@ -155,23 +155,50 @@
     "message": "人名辞典",
     "description": "The title used at the top of the popup when showing the names dictionary"
   },
+  "content_names_tag_char": {
+    "message": "キャラクター"
+  },
   "content_names_tag_company": {
     "message": "社名"
+  },
+  "content_names_tag_creat": {
+    "message": "生き物"
+  },
+  "content_names_tag_dei": {
+    "message": "神"
+  },
+  "content_names_tag_ev": {
+    "message": "イベント"
   },
   "content_names_tag_fem": {
     "message": "女"
   },
+  "content_names_tag_fict": {
+    "message": "フィクション"
+  },
   "content_names_tag_given": {
     "message": "名"
   },
+  "content_names_tag_leg": {
+    "message": "伝説"
+  },
   "content_names_tag_masc": {
     "message": "男"
+  },
+  "content_names_tag_myth": {
+    "message": "神話"
+  },
+  "content_names_tag_obj": {
+    "message": "オブジェ"
   },
   "content_names_tag_ok": {
     "message": "旧"
   },
   "content_names_tag_org": {
     "message": "組織"
+  },
+  "content_names_tag_oth": {
+    "message": "その他"
   },
   "content_names_tag_person": {
     "message": "姓名"
@@ -181,6 +208,12 @@
   },
   "content_names_tag_product": {
     "message": "品名"
+  },
+  "content_names_tag_relig": {
+    "message": "宗教"
+  },
+  "content_names_tag_serv": {
+    "message": "サービス"
   },
   "content_names_tag_station": {
     "message": "駅"

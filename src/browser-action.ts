@@ -1,4 +1,4 @@
-import { DataSeriesState, allMajorDataSeries } from '@birchill/hikibiki-data';
+import { DataSeriesState } from '@birchill/hikibiki-data';
 
 import { JpdictState } from './jpdict';
 
@@ -92,7 +92,10 @@ export function updateBrowserAction({
 
   // Add a warning overlay and update the string if there was a fatal
   // update error.
-  const hasNotOkDatabase = allMajorDataSeries.some(
+  //
+  // TODO: Replace with allMajorDataSeries once we support words data
+  const supportedMajorDataSeries: Array<'names' | 'kanji'> = ['names', 'kanji'];
+  const hasNotOkDatabase = supportedMajorDataSeries.some(
     (series) => jpdictState[series].state !== DataSeriesState.Ok
   );
   if (

@@ -183,7 +183,7 @@ describe('Config', () => {
     config.showKanjiComponents = false;
     config.showKanjiComponents = true;
 
-    await new Promise(function checkForChanges(resolve) {
+    await new Promise<void>(function checkForChanges(resolve) {
       if (receivedChanges1.length + receivedChanges2.length < 4) {
         setImmediate(() => {
           checkForChanges(resolve);
@@ -286,7 +286,7 @@ describe('Config', () => {
       });
 
     const listenForNoChange = () =>
-      new Promise((resolve, reject) => {
+      new Promise<void>((resolve, reject) => {
         config.addChangeListener((changes) => {
           reject(new Error(`Got change: ${JSON.stringify(changes)}`));
         });
