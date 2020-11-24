@@ -276,11 +276,11 @@ export class Config {
     this.readingOnly = !this._settings.readingOnly;
   }
 
-  // Pitch accent display: Defaults to downstep
+  // Pitch accent display: Defaults to binary
 
   get accentDisplay(): AccentDisplay {
     return typeof this._settings.accentDisplay === 'undefined'
-      ? 'downstep'
+      ? 'binary'
       : this._settings.accentDisplay;
   }
 

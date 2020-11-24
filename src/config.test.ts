@@ -131,8 +131,11 @@ describe('Config', () => {
     languageGetter.mockReturnValue(['ro', 'fr-CA', 'en']);
     const config = new Config();
 
-    expect(config.readingOnly).toEqual(false);
+    expect(config.showPriority).toEqual(true);
     expect(config.showRomaji).toEqual(false);
+    expect(config.readingOnly).toEqual(false);
+    expect(config.accentDisplay).toEqual('binary');
+    expect(config.posDisplay).toEqual('expl');
     expect(config.toggleKey).toEqual('Alt+R');
     expect(config.holdToShowKeys).toEqual(null);
     expect(config.keys).toEqual({
@@ -170,10 +173,10 @@ describe('Config', () => {
     const receivedChanges2: Array<ChangeDict> = [];
 
     const config = new Config();
-    config.addChangeListener(change => {
+    config.addChangeListener((change) => {
       receivedChanges1.push(change);
     });
-    config.addChangeListener(change => {
+    config.addChangeListener((change) => {
       receivedChanges2.push(change);
     });
 
@@ -275,7 +278,7 @@ describe('Config', () => {
     const config = new Config();
 
     const listenForNextChange = () =>
-      new Promise<ChangeDict>(resolve => {
+      new Promise<ChangeDict>((resolve) => {
         config.addChangeListener(function reportChange(change) {
           config.removeChangeListener(reportChange);
           resolve(change);
@@ -284,7 +287,7 @@ describe('Config', () => {
 
     const listenForNoChange = () =>
       new Promise((resolve, reject) => {
-        config.addChangeListener(changes => {
+        config.addChangeListener((changes) => {
           reject(new Error(`Got change: ${JSON.stringify(changes)}`));
         });
 
