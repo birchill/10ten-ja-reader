@@ -1375,8 +1375,8 @@
     "description": "Label for simply display dictionary part-of-speech codes"
   },
   "options_pos_display_expl": {
-    "message": "説明（例：「五段動詞（ラ行）」）",
-    "description": "Label for configuring short explanations to be shown for part-of-speech. The \"-u verb\" example should correspond to the localized value of pos_label_v5r."
+    "message": "説明（例：「動ラ五」）",
+    "description": "Label for configuring short explanations to be shown for part-of-speech. The \"-ru Godan/u-verb\" example should correspond to the localized value of pos_label_v5r."
   },
   "options_pos_display_label": {
     "message": "品詞表示",
