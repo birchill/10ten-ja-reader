@@ -245,7 +245,7 @@
 }
 
 #rikaichamp-window .entry.-selected .w-def,
-#rikaichamp-window .entry.-selected .w-def > * {
+#rikaichamp-window .entry.-selected .w-def * {
   color: rgb(0, 0, 50);
 }
 

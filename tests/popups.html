@@ -99,7 +99,7 @@ const nameTagTest = {
   for (const theme of themes) {
     const popup = rikaiContent._renderPopup(
       nameTagTest,
-      { showDefinitions: true },
+      { ...config, showDefinitions: true },
     );
 
     const label = document.createElement('div');
@@ -263,10 +263,11 @@ for (const test of highlightTests) {
 
   for (const theme of themes) {
     const popup = rikaiContent._renderPopup(test.queryResult, {
+      ...config,
       showDefinitions: true,
       copyNextKey: 'c',
       copyState: 1,
-      copyIndex: 0,
+      copyIndex: 1,
     });
 
     const label = document.createElement('div');
@@ -331,11 +332,11 @@ const yearQueryResult = {
 const yearTests = [
   {
     description: 'Regular year',
-    config: { showDefinitions: true, meta: { era: '令和', year: 2 } },
+    config: { ...config, showDefinitions: true, meta: { era: '令和', year: 2 } },
   },
   {
     description: 'Gannen',
-    config: { showDefinitions: true, meta: { era: '令和', year: 0 } },
+    config: { ...config, showDefinitions: true, meta: { era: '令和', year: 0 } },
   },
 ];
 
