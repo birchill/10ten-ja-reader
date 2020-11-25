@@ -23,7 +23,8 @@ async function main() {
   const dataFilePath = path.join(__dirname, '..', 'data', 'words.ljson');
   const dataStream = fs.createWriteStream(dataFilePath);
   for (const id of ids) {
-    const record = data.get(id)!;
+    // Make ID field nullable so we can delete it later.
+    const record = data.get(id)! as Partial<JsonRecord>;
 
     // Add / update index entries
     const keys = [...(record as any).r, ...((record as any).k || [])].map(
