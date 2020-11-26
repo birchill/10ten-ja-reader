@@ -1,6 +1,7 @@
 ## 0.3.1 (not yet released)
 
-(Nothing yet)
+- Fix an issue with the SVG star being too large when upgrading and the old
+  stylesheet is still in effect.
 
 ## 0.3.0 (2020-11-26)
 

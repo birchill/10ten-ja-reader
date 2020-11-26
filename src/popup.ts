@@ -396,6 +396,15 @@ function renderStar(style: 'full' | 'hollow'): SVGElement {
   svg.classList.add('svgicon');
   svg.style.opacity = '0.5';
   svg.setAttribute('viewBox', '0 0 98.6 93.2');
+  // Set the width/height as attributes too. Even though the stylesheet should
+  // do this, if the user has just upgraded, the new stylesheet won't be applied
+  // to existing pages until they are reloaded.
+  //
+  // Ulimately we should fix this when we move the Rikaichamp popup to shadow
+  // DOM and instantiate the stylesheet there, but for now we just try to limit
+  // the damage from upgrading.
+  svg.setAttribute('width', '12');
+  svg.setAttribute('height', '12');
 
   const path = document.createElementNS(SVG_NS, 'path');
   path.setAttribute(
