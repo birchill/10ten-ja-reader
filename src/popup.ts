@@ -443,6 +443,25 @@ function renderSense(
 ): string | DocumentFragment {
   const fragment = document.createDocumentFragment();
 
+  if (sense.pos && options.posDisplay !== 'none') {
+    const posSpan = document.createElement('span');
+    posSpan.classList.add('w-pos', 'tag');
+    switch (options.posDisplay) {
+      case 'expl':
+        posSpan.append(
+          sense.pos
+            .map((pos) => browser.i18n.getMessage(`pos_label_${pos}`) || pos)
+            .join(', ')
+        );
+        break;
+
+      case 'code':
+        posSpan.append(sense.pos.join(', '));
+        break;
+    }
+    fragment.append(posSpan);
+  }
+
   if (sense.field) {
     for (const field of sense.field) {
       const fieldSpan = document.createElement('span');
@@ -484,25 +503,6 @@ function renderSense(
 
   if (sense.lsrc && sense.lsrc.length) {
     fragment.append(renderLangSources(sense.lsrc));
-  }
-
-  if (sense.pos && options.posDisplay !== 'none') {
-    const posSpan = document.createElement('span');
-    posSpan.classList.add('w-pos', 'tag');
-    switch (options.posDisplay) {
-      case 'expl':
-        posSpan.append(
-          sense.pos
-            .map((pos) => browser.i18n.getMessage(`pos_label_${pos}`) || pos)
-            .join(', ')
-        );
-        break;
-
-      case 'code':
-        posSpan.append(sense.pos.join(', '));
-        break;
-    }
-    fragment.append(posSpan);
   }
 
   return fragment;

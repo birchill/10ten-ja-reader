@@ -213,6 +213,7 @@
   background: rgba(255, 100, 100, 0.5);
 }
 
+#rikaichamp-window .w-def .w-pos,
 #rikaichamp-window .w-def .w-field,
 #rikaichamp-window .w-def .w-misc,
 #rikaichamp-window .w-def .w-dial {
