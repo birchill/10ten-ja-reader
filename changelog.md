@@ -1,4 +1,8 @@
-## 0.3.0 (not yet released)
+## 0.3.1 (not yet released)
+
+(Nothing yet)
+
+## 0.3.0 (2020-11-26)
 
 - Rewrote word definition display to use structured data.
   - Pitch accent information is displayed.
