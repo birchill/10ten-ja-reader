@@ -248,6 +248,9 @@
   "deinflect_imperative_negative": {
     "message": "imperative negative"
   },
+  "deinflect_ki": {
+    "message": "-ki"
+  },
   "deinflect_masu_stem": {
     "message": "masu stem"
   },

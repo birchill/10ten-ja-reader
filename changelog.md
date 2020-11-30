@@ -1,6 +1,8 @@
 ## 0.3.2 (not yet released)
 
-(Nothing yet)
+- Added support for recognizing き inflection of i-adjectives
+  thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
+  ([#435](https://github.com/birtles/rikaichamp/issues/435)).
 
 ## 0.3.1 (2020-11-26)
 

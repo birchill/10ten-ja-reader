@@ -66,7 +66,7 @@ interface DictionaryOptions {
   bugsnag?: BugsnagClient;
 }
 
-const enum WordType {
+export const enum WordType {
   IchidanVerb = 1 << 0, // i.e. ru-verbs
   GodanVerb = 1 << 1, // i.e. u-verbs
   IAdj = 1 << 2,

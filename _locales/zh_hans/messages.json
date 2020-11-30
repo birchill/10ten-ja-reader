@@ -248,6 +248,9 @@
   "deinflect_imperative_negative": {
     "message": "否定命令形"
   },
+  "deinflect_ki": {
+    "message": "连体形"
+  },
   "deinflect_masu_stem": {
     "message": "连用形"
   },

@@ -1,4 +1,5 @@
 import { deinflect, DeinflectReason } from './deinflect';
+import { WordType } from './data';
 
 describe('deinflect', () => {
   it('performs de-inflection', () => {
@@ -79,6 +80,16 @@ describe('deinflect', () => {
     });
   });
 
+  it('deinflects ki ending for i-adj', () => {
+    const result = deinflect('美しき');
+    const match = result.find((candidate) => candidate.word === '美しい');
+    expect(match).toEqual({
+      reasons: [[DeinflectReason.Ki]],
+      type: WordType.IAdj,
+      word: '美しい',
+    });
+  });
+
   it('deinflects irregular forms of 行く', () => {
     const cases = [
       ['行った', '行く', DeinflectReason.Past, 2],
@@ -141,12 +152,9 @@ describe('deinflect', () => {
   });
 
   it('deinflects the continuous form', () => {
-    const cases: Array<[
-      string,
-      string,
-      number,
-      Array<DeinflectReason> | undefined
-    ]> = [
+    const cases: Array<
+      [string, string, number, Array<DeinflectReason> | undefined]
+    > = [
       // U-verbs
       ['戻っている', '戻る', 2, undefined],
       ['戻ってる', '戻る', 2, undefined],

@@ -29,6 +29,7 @@ export const enum DeinflectReason {
   Noun,
   ImperativeNegative,
   Continuous,
+  Ki,
 }
 
 export const deinflectL10NKeys: { [key: number]: string } = {
@@ -62,11 +63,22 @@ export const deinflectL10NKeys: { [key: number]: string } = {
   [DeinflectReason.Noun]: 'deinflect_noun',
   [DeinflectReason.ImperativeNegative]: 'deinflect_imperative_negative',
   [DeinflectReason.Continuous]: 'deinflect_continuous',
+  [DeinflectReason.Ki]: 'deinflect_ki',
 };
 
 const deinflectRuleData: Array<[string, string, number, number]> = [
-  ['いらっしゃいませんでした', 'いらっしゃる', 640, DeinflectReason.PolitePastNegative],
-  ['おっしゃいませんでした', 'おっしゃる', 640, DeinflectReason.PolitePastNegative],
+  [
+    'いらっしゃいませんでした',
+    'いらっしゃる',
+    640,
+    DeinflectReason.PolitePastNegative,
+  ],
+  [
+    'おっしゃいませんでした',
+    'おっしゃる',
+    640,
+    DeinflectReason.PolitePastNegative,
+  ],
   ['いらっしゃいました', 'いらっしゃる', 640, DeinflectReason.PolitePast],
   ['くありませんでした', 'い', 1152, DeinflectReason.PolitePastNegative],
   ['いらっしゃいます', 'いらっしゃる', 640, DeinflectReason.Polite],
@@ -500,6 +512,7 @@ const deinflectRuleData: Array<[string, string, number, number]> = [
   ['き', 'くる', 2176, DeinflectReason.MasuStem],
   ['ぎ', 'ぎる', 384, DeinflectReason.MasuStem],
   ['ぎ', 'ぐ', 640, DeinflectReason.MasuStem],
+  ['き', 'い', 1152, DeinflectReason.Ki],
   ['く', 'い', 1152, DeinflectReason.Adv],
   ['け', 'く', 640, DeinflectReason.Imperative],
   ['け', 'ける', 384, DeinflectReason.MasuStem],
