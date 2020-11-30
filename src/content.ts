@@ -315,7 +315,7 @@ export class RikaiContent {
   detach() {
     window.removeEventListener('mousemove', this.onMouseMove);
     window.removeEventListener('mousedown', this.onMouseDown);
-    window.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener('keydown', this.onKeyDown, { capture: true });
     window.removeEventListener('focusin', this.onFocusIn);
 
     this.clearHighlight(null);

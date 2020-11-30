@@ -3,6 +3,9 @@
 - Added support for recognizing き inflection of i-adjectives
   thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
   ([#435](https://github.com/birtles/rikaichamp/issues/435)).
+- Fixed an issue with keydown listeners not being unregistered causing
+  the "toggle definitions" feature to misbehave
+  ([#439](https://github.com/birtles/rikaichamp/issues/439)).
 
 ## 0.3.1 (2020-11-26)
 
