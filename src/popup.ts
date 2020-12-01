@@ -485,12 +485,23 @@ function renderSense(
   }
 
   if (sense.misc) {
-    for (const misc of sense.misc) {
+    if (
+      previousSense &&
+      previousSense.misc &&
+      JSON.stringify(previousSense.misc) === JSON.stringify(sense.misc)
+    ) {
       const miscSpan = document.createElement('span');
       miscSpan.classList.add('w-misc', 'tag');
-      miscSpan.textContent =
-        browser.i18n.getMessage(`misc_label_${misc}`) || misc;
+      miscSpan.textContent = '〃';
       fragment.append(miscSpan);
+    } else {
+      for (const misc of sense.misc) {
+        const miscSpan = document.createElement('span');
+        miscSpan.classList.add('w-misc', 'tag');
+        miscSpan.textContent =
+          browser.i18n.getMessage(`misc_label_${misc}`) || misc;
+        fragment.append(miscSpan);
+      }
     }
   }
 
