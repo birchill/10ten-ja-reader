@@ -6,6 +6,12 @@
 - Fixed an issue with keydown listeners not being unregistered causing
   the "toggle definitions" feature to misbehave
   ([#439](https://github.com/birtles/rikaichamp/issues/439)).
+- Added a few missing word entries (e.g. 印鑑)
+- Allowed Rikaichamp to recognize characters in the CJK Unified Ideographs
+  Extension B range (e.g. 𠏹沢).
+- Made kanji lookup work for non-BMP characters (e.g. 𠏹)
+- Tweaked name preview feature to match names that start with hiragana
+  (e.g. ほとけ沢)
 
 ## 0.3.1 (2020-11-26)
 
