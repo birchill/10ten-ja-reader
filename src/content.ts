@@ -1080,8 +1080,9 @@ export class RikaiContent {
     //   skip them (although previous rikai-tachi included them) since
     //   they're mostly going to be delimiters
     // * U+FF66~U+FF9F is halfwidth katakana
+    // * U+20000~U+20FFF is CJK Unified Ideographs Extension B (more rare kanji)
     //
-    const nonJapaneseOrDelimiter = /[^\u25cb\u3004-\u3007\u3011-\u30ff\u3220-\u3247\u3280-\u32b0\u32d0-\u32ff\u3300-\u3370\u337b-\u337f\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff5e\uff66-\uff9f]/;
+    const nonJapaneseOrDelimiter = /[^\u25cb\u3004-\u3007\u3011-\u30ff\u3220-\u3247\u3280-\u32b0\u32d0-\u32ff\u3300-\u3370\u337b-\u337f\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff5e\uff66-\uff9f\u{20000}-\u{20fff}]/u;
 
     // If we detect a Japanese era, however, we allow a different set of
     // characters.
