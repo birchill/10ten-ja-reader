@@ -426,10 +426,12 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
     definitionsSpan.append(renderSense(entry.s[0], options));
   } else {
     const definitionList = document.createElement('ol');
+    let previousSense: ExtendedSense | undefined;
     for (const sense of entry.s) {
       const listItem = document.createElement('li');
-      listItem.append(renderSense(sense, options));
+      listItem.append(renderSense(sense, options, previousSense));
       definitionList.append(listItem);
+      previousSense = sense;
     }
     definitionsSpan.append(definitionList);
   }
@@ -439,7 +441,8 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
 
 function renderSense(
   sense: ExtendedSense,
-  options: PopupOptions
+  options: PopupOptions,
+  previousSense?: ExtendedSense
 ): string | DocumentFragment {
   const fragment = document.createDocumentFragment();
 
@@ -448,11 +451,20 @@ function renderSense(
     posSpan.classList.add('w-pos', 'tag');
     switch (options.posDisplay) {
       case 'expl':
-        posSpan.append(
-          sense.pos
-            .map((pos) => browser.i18n.getMessage(`pos_label_${pos}`) || pos)
-            .join(', ')
-        );
+        // Abbreviate repeated explanations because they can be wordy
+        if (
+          previousSense &&
+          previousSense.pos &&
+          JSON.stringify(previousSense.pos) === JSON.stringify(sense.pos)
+        ) {
+          posSpan.append('〃');
+        } else {
+          posSpan.append(
+            sense.pos
+              .map((pos) => browser.i18n.getMessage(`pos_label_${pos}`) || pos)
+              .join(', ')
+          );
+        }
         break;
 
       case 'code':
