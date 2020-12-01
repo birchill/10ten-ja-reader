@@ -646,7 +646,7 @@ async function search(
         break;
 
       case DictType.Kanji:
-        result = await searchKanji(text.charAt(0));
+        result = await searchKanji([...text][0]);
         break;
 
       case DictType.Names:
