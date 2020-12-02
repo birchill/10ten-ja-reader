@@ -13,7 +13,6 @@
   ---
 
   Originally based on Rikaichan 1.07
-  Originally based on Rikaichan 1.07
   by Jonathan Zarate
   http://www.polarcloud.com/
 

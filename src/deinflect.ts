@@ -30,7 +30,6 @@ export const enum DeinflectReason {
   ImperativeNegative,
   Continuous,
   Ki,
-  //
   SuruNoun,
 }
 
