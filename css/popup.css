@@ -77,6 +77,13 @@
   margin-right: 0.7em;
 }
 
+#rikaichamp-window .w-kanji .w-unmatched,
+#rikaichamp-window .w-kanji .w-separator {
+  font-size: inherit;
+  color: inherit;
+  opacity: 0.6;
+}
+
 #rikaichamp-window .w-kana {
   font-size: 18px;
   margin-right: 0.3em;

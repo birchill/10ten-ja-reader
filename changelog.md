@@ -14,6 +14,9 @@
   (e.g. ほとけ沢)
 - Added recognition of full-width alphanumerics (e.g. ８月, Ｂ級グルメ)
   ([#96](https://github.com/birtles/rikaichamp/issues/96))
+- Made all kanji headwords be shown for an entry, not just the matching ones
+  ([#438](https://github.com/birtles/rikaichamp/issues/438)).
+  Non-matching kanji headwords are dimmed.
 
 ## 0.3.1 (2020-11-26)
 

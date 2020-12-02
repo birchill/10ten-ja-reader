@@ -118,19 +118,35 @@ function renderWordEntries(
     const headingDiv = document.createElement('div');
     entryDiv.append(headingDiv);
 
-    const matchingKanji = entry.k?.filter((k) => k.match) || [];
-    if (matchingKanji.length) {
+    // Sort matched kanji entries first
+    const sortedKanji = entry.k
+      ? [...entry.k].sort((a, b) => Number(b.match) - Number(a.match))
+      : [];
+    if (sortedKanji.length) {
       const kanjiSpan = document.createElement('span');
       kanjiSpan.classList.add('w-kanji');
       kanjiSpan.lang = 'ja';
-      for (const [i, kanji] of matchingKanji.entries()) {
+      for (const [i, kanji] of sortedKanji.entries()) {
         if (i) {
-          kanjiSpan.append('、 ');
+          const commaSpan = document.createElement('span');
+          commaSpan.classList.add('w-separator');
+          commaSpan.textContent = '、';
+          kanjiSpan.append(commaSpan);
         }
-        kanjiSpan.append(kanji.ent);
-        appendHeadwordInfo(kanji.i, kanjiSpan);
+
+        let headwordSpan = kanjiSpan;
+        if (!kanji.match) {
+          const dimmedSpan = document.createElement('span');
+          dimmedSpan.classList.add('w-unmatched');
+          kanjiSpan.append(dimmedSpan);
+          headwordSpan = dimmedSpan;
+        }
+
+        headwordSpan.append(kanji.ent);
+
+        appendHeadwordInfo(kanji.i, headwordSpan);
         if (options.showPriority) {
-          appendPriorityMark(kanji.p, kanjiSpan);
+          appendPriorityMark(kanji.p, headwordSpan);
         }
       }
       headingDiv.append(kanjiSpan);
