@@ -157,7 +157,7 @@ const deinflectRuleData: Array<[string, string, number, number]> = [
   ['こられる', 'くる', 2049, DeinflectReason.PotentialOrPassive],
   ['しすぎる', 'す', 4609, DeinflectReason.Sugiru],
   ['しすぎる', 'する', 4097, DeinflectReason.Sugiru],
-  ['しちゃう', 'す', 4609, DeinflectReason.Chau],
+  ['しちゃう', 'す', 4610, DeinflectReason.Chau],
   ['しちゃう', 'する', 4098, DeinflectReason.Chau],
   ['している', 'す', 4609, DeinflectReason.Continuous],
   ['している', 'する', 4097, DeinflectReason.Continuous],
