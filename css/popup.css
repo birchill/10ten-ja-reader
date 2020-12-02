@@ -179,7 +179,7 @@
   font-size: 12px;
 }
 
-/* Give group headings a bit more space. They typically consist of a single tag
+/* Give group headings a bit more space. They typically consist of a series of tags
    which can easily look cramped when there are tags on the line above or below it. */
 #rikaichamp-window .w-def .w-group-head {
   margin-top: 1px;
