@@ -977,8 +977,10 @@ function renderMeta(meta: Array<string>): HTMLElement {
   for (const tag of meta) {
     const span = document.createElement('span');
     span.classList.add('tag');
-    span.lang = 'en';
-    span.textContent = tag;
+    span.lang = getLangTag();
+    span.textContent = browser.i18n.getMessage(
+      `content_kanji_meta_${tag.replace(' ', '_')}`
+    );
     metaDiv.append(span);
   }
 

@@ -129,6 +129,14 @@
       }
     }
   },
+  "content_kanji_meta_kokuji": {
+    "message": "国字",
+    "description": "Meta label for kokuji (kanji originated in Japan)"
+  },
+  "content_kanji_meta_phantom_kanji": {
+    "message": "幽灵汉字",
+    "description": "Meta label for phantom kanji/ghost characters"
+  },
   "content_kanji_nanori_label": {
     "message": "人名读法",
     "description": "Label given to name readings"
