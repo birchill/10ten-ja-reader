@@ -56,7 +56,7 @@ import { SelectionMeta } from './meta';
 import { kanjiToNumber } from './numbers';
 import { renderPopup, CopyState, PopupOptions } from './popup';
 import { query, QueryResult } from './query';
-import { isEraName } from './years';
+import { isEraName, startsWithEraName } from './years';
 
 declare global {
   interface Window {
@@ -1106,7 +1106,7 @@ export class RikaiContent {
 
         // If we hit a delimiter but the existing text is an era name, we should
         // re-find the end of this text node.
-        if (textEnd >= 0 && isEraName(currentText)) {
+        if (textEnd >= 0 && startsWithEraName(currentText)) {
           textDelimiter = nonEraCharacter;
           const endOfEra = nodeText.substring(textEnd).search(textDelimiter);
           textEnd = endOfEra === -1 ? -1 : textEnd + endOfEra;

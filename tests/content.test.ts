@@ -371,7 +371,21 @@ describe('rikaiContent:text search', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, '昭和５６年', textNode, 0, textNode, 5);
+    assertTextResultEqual(result, '昭和５６年に', textNode, 0, textNode, 6);
+    assert.deepEqual(result!.meta, { era: '昭和', year: 56, matchLen: 5 });
+  });
+
+  it('should include the year when recognizing years (mixed full-width and half-width)', () => {
+    testDiv.append('昭和５6年に');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result = subject.getTextAtPoint({
+      x: bbox.left,
+      y: bbox.top + bbox.height / 2,
+    });
+
+    assertTextResultEqual(result, '昭和５6年', textNode, 0, textNode, 5);
     assert.deepEqual(result!.meta, { era: '昭和', year: 56, matchLen: 5 });
   });
 
