@@ -17,6 +17,10 @@
 - Made all kanji headwords be shown for an entry, not just the matching ones
   ([#438](https://github.com/birtles/rikaichamp/issues/438)).
   Non-matching kanji headwords are dimmed.
+- Made Rikaichamp include する in the match range for nouns that take
+  する (`vs` nouns)
+  thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
+  ([#180](https://github.com/birtles/rikaichamp/issues/180))
 
 ## 0.3.1 (2020-11-26)
 
