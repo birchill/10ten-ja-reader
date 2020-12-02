@@ -230,6 +230,10 @@
   "deinflect_adv": {
     "message": "副詞"
   },
+  "deinflect_alternate": {
+    "message": "又は",
+    "description": "Separator to use between de-inflection reasons when there are multiple possibilities"
+  },
   "deinflect_ba": {
     "message": "ば形"
   },

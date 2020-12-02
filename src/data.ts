@@ -231,7 +231,7 @@ export class Dictionary {
                     )
                     .join(' < ')
                 )
-                .join(' or ');
+                .join(browser.i18n.getMessage('deinflect_alternate'));
             if (showInflections) {
               reason += ` < ${input}`;
             }

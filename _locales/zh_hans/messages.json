@@ -227,6 +227,10 @@
   "deinflect_adv": {
     "message": "副词化"
   },
+  "deinflect_alternate": {
+    "message": "或",
+    "description": "Separator to use between de-inflection reasons when there are multiple possibilities"
+  },
   "deinflect_ba": {
     "message": "-ば"
   },

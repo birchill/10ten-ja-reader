@@ -227,6 +227,10 @@
   "deinflect_adv": {
     "message": "adv"
   },
+  "deinflect_alternate": {
+    "message": " or ",
+    "description": "Separator to use between de-inflection reasons when there are multiple possibilities"
+  },
   "deinflect_ba": {
     "message": "-ba"
   },
