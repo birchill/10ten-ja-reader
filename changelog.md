@@ -1,3 +1,7 @@
+## 0.3.3 (not released yet)
+
+(Nothing yet)
+
 ## 0.3.2 (2020-12-03)
 
 - Made all kanji headwords be shown for an entry, not just the matching ones
