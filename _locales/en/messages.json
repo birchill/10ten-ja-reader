@@ -300,6 +300,9 @@
   "deinflect_sugiru": {
     "message": "-sugiru"
   },
+  "deinflect_suru_noun": {
+    "message": "-suru"
+  },
   "deinflect_tai": {
     "message": "-tai"
   },

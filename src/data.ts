@@ -13,6 +13,7 @@
   ---
 
   Originally based on Rikaichan 1.07
+  Originally based on Rikaichan 1.07
   by Jonathan Zarate
   http://www.polarcloud.com/
 
@@ -72,6 +73,7 @@ export const enum WordType {
   IAdj = 1 << 2,
   KuruVerb = 1 << 3,
   SuruVerb = 1 << 4,
+  NounVS = 1 << 5,
 }
 
 export class Dictionary {
@@ -478,6 +480,10 @@ function entryMatchesType(entry: RawWordRecord, type: number): boolean {
     type & WordType.SuruVerb &&
     hasMatchingSense((pos) => pos.startsWith('vs-'))
   ) {
+    return true;
+  }
+
+  if (type & WordType.NounVS && hasMatchingSense((pos) => pos === 'vs')) {
     return true;
   }
 
