@@ -461,21 +461,23 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
         // Group heading
         const groupHeading = document.createElement('p');
         groupHeading.classList.add('w-group-head');
-        if (group.pos) {
-          for (const pos of group.pos) {
-            const posSpan = document.createElement('span');
-            posSpan.classList.add('w-pos', 'tag');
-            posSpan.lang = getLangTag();
-            posSpan.textContent =
-              browser.i18n.getMessage(`pos_label_${pos}`) || pos;
-            groupHeading.append(posSpan);
-          }
-        } else {
+
+        for (const pos of group.pos) {
+          const posSpan = document.createElement('span');
+          posSpan.classList.add('w-pos', 'tag');
+          posSpan.lang = getLangTag();
+          posSpan.textContent =
+            browser.i18n.getMessage(`pos_label_${pos}`) || pos;
+          groupHeading.append(posSpan);
+        }
+
+        if (!group.pos.length) {
           const posSpan = document.createElement('span');
           posSpan.classList.add('w-pos', 'tag');
           posSpan.textContent = '-';
           groupHeading.append(posSpan);
         }
+
         definitionsDiv.append(groupHeading);
 
         // Group items
