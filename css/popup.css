@@ -179,6 +179,19 @@
   font-size: 12px;
 }
 
+/* Give group headings a bit more space. They typically consist of a single tag
+   which can easily look cramped when there are tags on the line above or below it. */
+#rikaichamp-window .w-def .w-group-head {
+  margin-top: 1px;
+  margin-bottom: 3px;
+}
+
+/* Especially when we have group headings amongst other definitions, we want a bit more
+   vertical space before they start. */
+#rikaichamp-window .w-def ol + .w-group-head {
+  margin-top: 5px;
+}
+
 #rikaichamp-window .w-def ol {
   padding-left: 1.5em;
   list-style-type: numeric !important;
