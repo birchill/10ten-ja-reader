@@ -106,6 +106,8 @@ export const browser = {
           return 'Radical (Nelson)';
         case 'ref_label_unicode':
           return 'Unicode';
+        case 'lang_tag':
+          return 'en';
         case 'misc_label_abbr':
           return 'abbr.';
         case 'misc_label_arch':

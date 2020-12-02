@@ -1012,6 +1012,10 @@
     "message": "汉语",
     "description": "Label used to describe senses whose source language is 'zh' (Chinese)"
   },
+  "lang_tag": {
+    "message": "zh-Hans",
+    "description": "The BCP-47 compatible language code used to tag content from this localization"
+  },
   "menu_enable_extension": {
     "message": "启用 Rikaichamp",
     "description": "Context menu item to enable the extension."
