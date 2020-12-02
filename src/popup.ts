@@ -461,14 +461,21 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
         // Group heading
         const groupHeading = document.createElement('p');
         groupHeading.classList.add('w-group-head');
-        const posSpan = document.createElement('span');
-        posSpan.classList.add('w-pos', 'tag');
-        posSpan.lang = getLangTag();
-        posSpan.textContent =
-          group.pos
-            .map((pos) => browser.i18n.getMessage(`pos_label_${pos}`) || pos)
-            .join(', ') || '-';
-        groupHeading.append(posSpan);
+        if (group.pos) {
+          for (const pos of group.pos) {
+            const posSpan = document.createElement('span');
+            posSpan.classList.add('w-pos', 'tag');
+            posSpan.lang = getLangTag();
+            posSpan.textContent =
+              browser.i18n.getMessage(`pos_label_${pos}`) || pos;
+            groupHeading.append(posSpan);
+          }
+        } else {
+          const posSpan = document.createElement('span');
+          posSpan.classList.add('w-pos', 'tag');
+          posSpan.textContent = '-';
+          groupHeading.append(posSpan);
+        }
         definitionsDiv.append(groupHeading);
 
         // Group items
@@ -583,24 +590,22 @@ function renderSense(
 ): string | DocumentFragment {
   const fragment = document.createDocumentFragment();
 
-  if (sense.pos && options.posDisplay !== 'none') {
-    const posSpan = document.createElement('span');
-    posSpan.classList.add('w-pos', 'tag');
-    switch (options.posDisplay) {
-      case 'expl':
-        posSpan.lang = getLangTag();
-        posSpan.append(
-          sense.pos
-            .map((pos) => browser.i18n.getMessage(`pos_label_${pos}`) || pos)
-            .join(', ')
-        );
-        break;
+  if (options.posDisplay !== 'none') {
+    for (const pos of sense.pos || []) {
+      const posSpan = document.createElement('span');
+      posSpan.classList.add('w-pos', 'tag');
+      switch (options.posDisplay) {
+        case 'expl':
+          posSpan.lang = getLangTag();
+          posSpan.append(browser.i18n.getMessage(`pos_label_${pos}`) || pos);
+          break;
 
-      case 'code':
-        posSpan.append(sense.pos.join(', '));
-        break;
+        case 'code':
+          posSpan.append(pos);
+          break;
+      }
+      fragment.append(posSpan);
     }
-    fragment.append(posSpan);
   }
 
   if (sense.field) {
