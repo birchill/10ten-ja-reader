@@ -276,6 +276,20 @@ export function isEraName(text: string): boolean {
   return yearMap.has(text);
 }
 
+export function startsWithEraName(text: string): boolean {
+  const maxEraLength = Math.max(
+    ...Array.from(yearMap.keys()).map((key) => key.length)
+  );
+
+  for (let i = 1; i <= text.length && i <= maxEraLength; i++) {
+    if (yearMap.has(text.substring(0, i))) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 export function getEraInfo(text: string): EraInfo | undefined {
   return yearMap.get(text);
 }

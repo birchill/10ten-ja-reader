@@ -230,6 +230,10 @@
   "deinflect_adv": {
     "message": "副詞"
   },
+  "deinflect_alternate": {
+    "message": "又は",
+    "description": "Separator to use between de-inflection reasons when there are multiple possibilities"
+  },
   "deinflect_ba": {
     "message": "ば形"
   },
@@ -250,6 +254,9 @@
   },
   "deinflect_imperative_negative": {
     "message": "否定命令形"
+  },
+  "deinflect_ki": {
+    "message": "連体形"
   },
   "deinflect_masu_stem": {
     "message": "連用形"
@@ -1011,6 +1018,10 @@
   "lang_label_zh": {
     "message": "中国語",
     "description": "Label used to describe senses whose source language is 'zh' (Chinese)"
+  },
+  "lang_tag": {
+    "message": "ja",
+    "description": "The BCP-47 compatible language code used to tag content from this localization"
   },
   "menu_enable_extension": {
     "message": "Rikaichampを有効にする",

@@ -59,7 +59,6 @@ import {
   DbListenerMessage,
 } from './db-listener-messages';
 import { ExtensionStorageError } from './extension-storage-error';
-import { isHiragana } from './is-hiragana';
 import {
   JpdictState,
   cancelUpdateDb,
@@ -646,7 +645,7 @@ async function search(
         break;
 
       case DictType.Kanji:
-        result = await searchKanji(text.charAt(0));
+        result = await searchKanji([...text][0]);
         break;
 
       case DictType.Names:
@@ -705,11 +704,11 @@ async function wordSearch(params: {
   // a name preview if it matches on some kanji or katakana as otherwise it's
   // likely to be a false positive.
   //
-  // It should be enough to check if the existing match from the words
-  // dictionary is hiragana-only because it's uncommon we'll find a longer match
-  // in the names dictionary that _starts_ with hiragana but has kanji/katakana
-  // later.
-  if (result && !isHiragana(params.input.substring(0, result.matchLen))) {
+  // While it might seem like it would be enough to check if the existing
+  // match from the words dictionary is hiragana-only, we can get cases where
+  // a longer match in the names dictionary _starts_ with hiragana but has
+  // kanji/katakana later, e.g. ほとけ沢.
+  if (result) {
     const nameResult = await searchNames({
       input: params.input,
       minLength: result.matchLen + 1,
@@ -717,10 +716,10 @@ async function wordSearch(params: {
     if (nameResult) {
       const names: Array<NameResult> = [];
 
-      // Add up to three results provided they are all are as long as the
-      // longest match.
+      // Add up to three results provided they have a kanji reading and are all
+      // are as long as the longest match.
       for (const [i, name] of nameResult.data.entries()) {
-        if (name.matchLen < nameResult.matchLen) {
+        if (name.k && name.matchLen < nameResult.matchLen) {
           break;
         }
 

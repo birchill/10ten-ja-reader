@@ -1,4 +1,24 @@
-## 0.3.1 (not yet released)
+## 0.3.2 (not yet released)
+
+- Added support for recognizing き inflection of i-adjectives
+  thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
+  ([#435](https://github.com/birtles/rikaichamp/issues/435))
+- Fixed an issue with keydown listeners not being unregistered causing
+  the "toggle definitions" feature to misbehave
+  ([#439](https://github.com/birtles/rikaichamp/issues/439))
+- Added a few missing word entries (e.g. 印鑑)
+- Allowed Rikaichamp to recognize characters in the CJK Unified Ideographs
+  Extension B range (e.g. 𠏹沢).
+- Made kanji lookup work for non-BMP characters (e.g. 𠏹)
+- Tweaked name preview feature to match names that start with hiragana
+  (e.g. ほとけ沢)
+- Added recognition of full-width alphanumerics (e.g. ８月, Ｂ級グルメ)
+  ([#96](https://github.com/birtles/rikaichamp/issues/96))
+- Made all kanji headwords be shown for an entry, not just the matching ones
+  ([#438](https://github.com/birtles/rikaichamp/issues/438)).
+  Non-matching kanji headwords are dimmed.
+
+## 0.3.1 (2020-11-26)
 
 - Fix an issue with the SVG star being too large when upgrading and the old
   stylesheet is still in effect.

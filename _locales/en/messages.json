@@ -227,6 +227,10 @@
   "deinflect_adv": {
     "message": "adv"
   },
+  "deinflect_alternate": {
+    "message": " or ",
+    "description": "Separator to use between de-inflection reasons when there are multiple possibilities"
+  },
   "deinflect_ba": {
     "message": "-ba"
   },
@@ -247,6 +251,9 @@
   },
   "deinflect_imperative_negative": {
     "message": "imperative negative"
+  },
+  "deinflect_ki": {
+    "message": "-ki"
   },
   "deinflect_masu_stem": {
     "message": "masu stem"
@@ -1008,6 +1015,10 @@
   "lang_label_zh": {
     "message": "Chinese",
     "description": "Label used to describe senses whose source language is 'zh' (Chinese)"
+  },
+  "lang_tag": {
+    "message": "en",
+    "description": "The BCP-47 compatible language code used to tag content from this localization"
   },
   "menu_enable_extension": {
     "message": "Enable Rikaichamp",

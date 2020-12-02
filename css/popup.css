@@ -69,12 +69,24 @@
 
 #rikaichamp-window .entry,
 #rikaichamp-window .entry * {
-  line-height: 1.2;
+  line-height: 1.3;
+}
+
+#rikaichamp-window *:lang(en) {
+  /* Meiryo renders more crisply than Arial on Windows */
+  font-family: Meiryo, sans-serif;
 }
 
 #rikaichamp-window .w-kanji {
   font-size: 18px;
   margin-right: 0.7em;
+}
+
+#rikaichamp-window .w-kanji .w-unmatched,
+#rikaichamp-window .w-kanji .w-separator {
+  font-size: inherit;
+  color: inherit;
+  opacity: 0.6;
 }
 
 #rikaichamp-window .w-kana {

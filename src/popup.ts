@@ -87,6 +87,7 @@ function renderWordEntries(
     const titleDiv = document.createElement('div');
     container.append(titleDiv);
     titleDiv.classList.add('title');
+    titleDiv.lang = 'ja';
     titleDiv.append(title);
   }
 
@@ -118,19 +119,35 @@ function renderWordEntries(
     const headingDiv = document.createElement('div');
     entryDiv.append(headingDiv);
 
-    const matchingKanji = entry.k?.filter((k) => k.match) || [];
-    if (matchingKanji.length) {
+    // Sort matched kanji entries first
+    const sortedKanji = entry.k
+      ? [...entry.k].sort((a, b) => Number(b.match) - Number(a.match))
+      : [];
+    if (sortedKanji.length) {
       const kanjiSpan = document.createElement('span');
       kanjiSpan.classList.add('w-kanji');
       kanjiSpan.lang = 'ja';
-      for (const [i, kanji] of matchingKanji.entries()) {
+      for (const [i, kanji] of sortedKanji.entries()) {
         if (i) {
-          kanjiSpan.append('、 ');
+          const commaSpan = document.createElement('span');
+          commaSpan.classList.add('w-separator');
+          commaSpan.textContent = '、';
+          kanjiSpan.append(commaSpan);
         }
-        kanjiSpan.append(kanji.ent);
-        appendHeadwordInfo(kanji.i, kanjiSpan);
+
+        let headwordSpan = kanjiSpan;
+        if (!kanji.match) {
+          const dimmedSpan = document.createElement('span');
+          dimmedSpan.classList.add('w-unmatched');
+          kanjiSpan.append(dimmedSpan);
+          headwordSpan = dimmedSpan;
+        }
+
+        headwordSpan.append(kanji.ent);
+
+        appendHeadwordInfo(kanji.i, headwordSpan);
         if (options.showPriority) {
-          appendPriorityMark(kanji.p, kanjiSpan);
+          appendPriorityMark(kanji.p, headwordSpan);
         }
       }
       headingDiv.append(kanjiSpan);
@@ -157,6 +174,7 @@ function renderWordEntries(
     if (entry.romaji?.length) {
       const romajiSpan = document.createElement('span');
       romajiSpan.classList.add('w-romaji');
+      romajiSpan.lang = 'ja';
       romajiSpan.append(entry.romaji.join(', '));
       headingDiv.append(romajiSpan);
     }
@@ -164,6 +182,7 @@ function renderWordEntries(
     if (entry.reason) {
       const reasonSpan = document.createElement('span');
       headingDiv.append(reasonSpan);
+      reasonSpan.lang = getLangTag();
       reasonSpan.classList.add('w-conj');
       reasonSpan.append(`(${entry.reason})`);
     }
@@ -195,6 +214,7 @@ function renderWordEntries(
 function renderEraInfo(meta: SelectionMeta, eraInfo: EraInfo): HTMLElement {
   const metaDiv = document.createElement('div');
   metaDiv.classList.add('meta');
+  metaDiv.lang = 'ja';
 
   const eraSpan = document.createElement('span');
   eraSpan.classList.add('era');
@@ -346,6 +366,7 @@ function appendHeadwordInfo(
   for (const i of info) {
     const span = document.createElement('span');
     span.classList.add('w-head-info');
+    span.lang = getLangTag();
     span.append('(');
 
     // Some KanjiInfo/RadicalInfo values differ only by case but
@@ -421,6 +442,8 @@ function renderStar(style: 'full' | 'hollow'): SVGElement {
 function renderDefinitions(entry: WordResult, options: PopupOptions) {
   const definitionsSpan = document.createElement('span');
   definitionsSpan.classList.add('w-def');
+  // Currently all definitions are English
+  definitionsSpan.lang = 'en';
 
   if (entry.s.length === 1) {
     definitionsSpan.append(renderSense(entry.s[0], options));
@@ -451,6 +474,7 @@ function renderSense(
     posSpan.classList.add('w-pos', 'tag');
     switch (options.posDisplay) {
       case 'expl':
+        posSpan.lang = getLangTag();
         // Abbreviate repeated explanations because they can be wordy
         if (
           previousSense &&
@@ -478,6 +502,7 @@ function renderSense(
     for (const field of sense.field) {
       const fieldSpan = document.createElement('span');
       fieldSpan.classList.add('w-field', 'tag');
+      fieldSpan.lang = getLangTag();
       fieldSpan.textContent =
         browser.i18n.getMessage(`field_label_${field}`) || field;
       fragment.append(fieldSpan);
@@ -493,11 +518,13 @@ function renderSense(
       const miscSpan = document.createElement('span');
       miscSpan.classList.add('w-misc', 'tag');
       miscSpan.textContent = '〃';
+      miscSpan.lang = getLangTag();
       fragment.append(miscSpan);
     } else {
       for (const misc of sense.misc) {
         const miscSpan = document.createElement('span');
         miscSpan.classList.add('w-misc', 'tag');
+        miscSpan.lang = getLangTag();
         miscSpan.textContent =
           browser.i18n.getMessage(`misc_label_${misc}`) || misc;
         fragment.append(miscSpan);
@@ -509,6 +536,7 @@ function renderSense(
     for (const dial of sense.dial) {
       const dialSpan = document.createElement('span');
       dialSpan.classList.add('w-dial', 'tag');
+      dialSpan.lang = getLangTag();
       dialSpan.textContent =
         browser.i18n.getMessage(`dial_label_${dial}`) || dial;
       fragment.append(dialSpan);
@@ -520,6 +548,8 @@ function renderSense(
   if (sense.inf) {
     const infSpan = document.createElement('span');
     infSpan.classList.add('w-inf');
+    // Mark inf as Japanese because it often contains Japanese text
+    infSpan.lang = 'ja';
     infSpan.textContent = ` (${sense.inf})`;
     fragment.append(infSpan);
   }
@@ -549,6 +579,7 @@ function appendGlosses(glosses: Array<Gloss>, parent: ParentNode) {
       if (typeStr) {
         const typeSpan = document.createElement('span');
         typeSpan.classList.add('w-type');
+        typeSpan.lang = getLangTag();
         typeSpan.textContent = `(${typeStr}) `;
         parent.append(typeSpan);
       }
@@ -574,6 +605,7 @@ function renderLangSources(sources: Array<LangSource>): DocumentFragment {
 
     const wrapperSpan = document.createElement('span');
     wrapperSpan.classList.add('w-lsrc');
+    wrapperSpan.lang = getLangTag();
     wrapperSpan.append('(');
 
     if (prefix && lsrc.src) {
@@ -610,6 +642,7 @@ function renderNamesEntries(
   const titleDiv = document.createElement('div');
   container.append(titleDiv);
   titleDiv.classList.add('title');
+  titleDiv.lang = getLangTag();
   titleDiv.append(browser.i18n.getMessage('content_names_dictionary'));
 
   const namesTable = document.createElement('div');
@@ -659,6 +692,7 @@ function renderName(entry: NameResult): HTMLElement {
 
   const entryTitleDiv = document.createElement('div');
   entryTitleDiv.classList.add('w-title');
+  entryTitleDiv.lang = 'ja';
   entryDiv.append(entryTitleDiv);
 
   if (entry.k) {
@@ -697,6 +731,8 @@ function renderName(entry: NameResult): HTMLElement {
 
 function renderNameTranslation(tr: NameTranslation): HTMLSpanElement {
   const definitionSpan = document.createElement('span');
+  // ENAMDICT only has English glosses
+  definitionSpan.lang = 'en';
   definitionSpan.append(tr.det.join(', '));
 
   for (const tag of tr.type || []) {
@@ -708,6 +744,7 @@ function renderNameTranslation(tr: NameTranslation): HTMLSpanElement {
     const tagSpan = document.createElement('span');
     tagSpan.classList.add('tag');
     tagSpan.classList.add(`tag-${tag}`);
+    tagSpan.lang = getLangTag();
     tagSpan.append(tagText);
     definitionSpan.append(tagSpan);
   }
@@ -752,6 +789,7 @@ function renderKanjiEntry(
   // -- The kanji itself
   const kanjiDiv = document.createElement('div');
   kanjiDiv.classList.add('kanji');
+  kanjiDiv.lang = 'ja';
   kanjiDiv.append(entry.c);
   topPart.append(kanjiDiv);
 
@@ -767,9 +805,10 @@ function renderKanjiEntry(
     topRightPart.append(renderMeta(entry.misc.meta));
   }
 
-  // -- -- English
+  // -- -- Meanings
   const meaningsDiv = document.createElement('div');
   meaningsDiv.classList.add('meanings');
+  meaningsDiv.lang = entry.m_lang;
   meaningsDiv.append(entry.m.join(', '));
   topRightPart.append(meaningsDiv);
 
@@ -832,16 +871,18 @@ function renderKanjiComponents(entry: KanjiResult): HTMLElement {
     row.append(readingCell);
     readingCell.classList.add('reading');
     readingCell.append(rad.na.join('、'));
-    radicalCell.lang = 'ja';
+    readingCell.lang = 'ja';
 
     const meaningCell = document.createElement('td');
     row.append(meaningCell);
     meaningCell.classList.add('meaning');
+    meaningCell.lang = rad.m_lang;
     meaningCell.append(rad.m.join(', '));
 
     if (rad.base) {
       const baseRow = document.createElement('tr');
       baseRow.classList.add('-baseradical');
+      baseRow.lang = getLangTag();
       componentsTable.append(baseRow);
 
       const baseChar = (rad.base.b || rad.base.k)!;
@@ -879,16 +920,19 @@ function renderKanjiComponents(entry: KanjiResult): HTMLElement {
     const radicalCell = document.createElement('td');
     row.append(radicalCell);
     radicalCell.classList.add('char');
+    radicalCell.lang = 'ja';
     radicalCell.append(component.c);
 
     const readingCell = document.createElement('td');
     row.append(readingCell);
     readingCell.classList.add('reading');
+    readingCell.lang = 'ja';
     readingCell.append(component.na.length ? component.na[0] : '-');
 
     const meaningCell = document.createElement('td');
     row.append(meaningCell);
     meaningCell.classList.add('meaning');
+    meaningCell.lang = component.m_lang;
     meaningCell.append(component.m.length ? component.m[0] : '-');
   }
 
@@ -899,6 +943,7 @@ function renderReadings(entry: KanjiResult): HTMLElement {
   // Readings
   const readingsDiv = document.createElement('div');
   readingsDiv.classList.add('readings');
+  readingsDiv.lang = 'ja';
 
   if (entry.r.on && entry.r.on.length) {
     readingsDiv.append(entry.r.on.join('、'));
@@ -935,6 +980,7 @@ function renderReadings(entry: KanjiResult): HTMLElement {
   if (entry.r.na && entry.r.na.length) {
     const nanoriLabelSpan = document.createElement('span');
     nanoriLabelSpan.classList.add('nanorilabel');
+    nanoriLabelSpan.lang = getLangTag();
     nanoriLabelSpan.append(
       browser.i18n.getMessage('content_kanji_nanori_label')
     );
@@ -955,6 +1001,7 @@ function renderMeta(meta: Array<string>): HTMLElement {
   for (const tag of meta) {
     const span = document.createElement('span');
     span.classList.add('tag');
+    span.lang = 'en';
     span.textContent = tag;
     metaDiv.append(span);
   }
@@ -966,6 +1013,7 @@ function renderMiscRow(entry: KanjiResult): HTMLElement {
   // Misc information row
   const miscInfoDiv = document.createElement('div');
   miscInfoDiv.classList.add('misc');
+  miscInfoDiv.lang = getLangTag();
 
   // Strokes
   const strokesDiv = document.createElement('div');
@@ -1117,6 +1165,7 @@ function renderReferences(
 ): HTMLElement {
   const referenceTable = document.createElement('div');
   referenceTable.classList.add('references');
+  referenceTable.lang = getLangTag();
 
   const referenceNames = getSelectedReferenceLabels(options.kanjiReferences);
   let numReferences = 0;
@@ -1143,6 +1192,9 @@ function renderReferences(
     const value = getReferenceValue(entry, ref.ref) || '-';
     const valueSpan = document.createElement('span');
     valueSpan.classList.add('value');
+    if (ref.ref === 'radical' || ref.ref === 'nelson_r') {
+      valueSpan.lang = 'ja';
+    }
     valueSpan.append(value);
     referenceCell.append(valueSpan);
     numReferences++;
@@ -1192,6 +1244,7 @@ function renderCopyDetails(
 
   const copyDiv = document.createElement('div');
   copyDiv.classList.add('copy');
+  copyDiv.lang = browser.i18n.getMessage('lang_tag');
 
   const keysDiv = document.createElement('div');
   keysDiv.classList.add('keys');
@@ -1253,6 +1306,15 @@ function renderCopyStatus(message: string): HTMLElement {
   status.classList.add('status');
   status.innerText = message;
   return status;
+}
+
+// Cache language tag since we fetch it a lot
+let langTag: string | null = null;
+function getLangTag() {
+  if (langTag === null) {
+    langTag = browser.i18n.getMessage('lang_tag');
+  }
+  return langTag;
 }
 
 export default renderPopup;
