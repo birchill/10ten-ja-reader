@@ -30,6 +30,7 @@ export const enum DeinflectReason {
   ImperativeNegative,
   Continuous,
   Ki,
+  SuruNoun,
 }
 
 export const deinflectL10NKeys: { [key: number]: string } = {
@@ -64,6 +65,7 @@ export const deinflectL10NKeys: { [key: number]: string } = {
   [DeinflectReason.ImperativeNegative]: 'deinflect_imperative_negative',
   [DeinflectReason.Continuous]: 'deinflect_continuous',
   [DeinflectReason.Ki]: 'deinflect_ki',
+  [DeinflectReason.SuruNoun]: 'deinflect_suru_noun',
 };
 
 const deinflectRuleData: Array<[string, string, number, number]> = [
@@ -562,6 +564,7 @@ const deinflectRuleData: Array<[string, string, number, number]> = [
   ['れ', 'る', 640, DeinflectReason.Imperative],
   ['れ', 'れる', 384, DeinflectReason.MasuStem],
   ['ろ', 'る', 384, DeinflectReason.Imperative],
+  ['する', '', 8208, DeinflectReason.SuruNoun],
 ];
 
 interface DeinflectRule {

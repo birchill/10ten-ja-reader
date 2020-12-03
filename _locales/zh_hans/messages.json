@@ -308,6 +308,9 @@
   "deinflect_sugiru": {
     "message": "-過ぎる"
   },
+  "deinflect_suru_noun": {
+    "message": "-する"
+  },
   "deinflect_tai": {
     "message": "-たい"
   },

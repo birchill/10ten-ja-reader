@@ -1,6 +1,9 @@
 ## 0.3.3 (not released yet)
 
-(Nothing yet)
+- Made Rikaichamp include する in the match range for nouns that take
+  する (`vs` nouns)
+  thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
+  ([#180](https://github.com/birtles/rikaichamp/issues/180))
 
 ## 0.3.2 (2020-12-03)
 
