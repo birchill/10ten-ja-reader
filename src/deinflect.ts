@@ -443,7 +443,6 @@ const deinflectRuleData: Array<[string, string, number, number]> = [
   ['して', 'する', 4224, DeinflectReason.Te],
   ['しろ', 'す', 4224, DeinflectReason.Imperative],
   ['しろ', 'する', 4224, DeinflectReason.Imperative],
-  ['する', '', 8208, DeinflectReason.SuruNoun],
   ['せず', 'する', 4224, DeinflectReason.Zu],
   ['せぬ', 'する', 4224, DeinflectReason.Negative],
   ['せん', 'する', 4224, DeinflectReason.Negative],
