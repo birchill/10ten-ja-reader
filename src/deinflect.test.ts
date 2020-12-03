@@ -90,6 +90,16 @@ describe('deinflect', () => {
     });
   });
 
+  it('deinflects vs-c', () => {
+    const result = deinflect('兼した');
+    const match = result.find((candidate) => candidate.word === '兼す');
+    expect(match).toEqual({
+      reasons: [[DeinflectReason.Past]],
+      type: 18,
+      word: '兼す',
+    });
+  });
+
   it('deinflects irregular forms of 行く', () => {
     const cases = [
       ['行った', '行く', DeinflectReason.Past, 2],
