@@ -4,6 +4,9 @@
   する (`vs` nouns)
   thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
   ([#180](https://github.com/birtles/rikaichamp/issues/180))
+- Stop trying to convert years written as a transliteration of
+  digits (e.g. 令和七九年 instead of 令和七十九年)
+  thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
 
 ## 0.3.2 (2020-12-03)
 
