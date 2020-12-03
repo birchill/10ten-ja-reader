@@ -1,113 +1,75 @@
 @charset "UTF-8";
 
-/* this is to reset almost everything under the popup to a sane value */
-
-#rikaichamp-window,
-#rikaichamp-window * {
-  max-width: 600px;
-  background: transparent;
-  border: none !important;
-  border-spacing: 0px;
-  margin: 0px;
-  padding: 0px;
-  letter-spacing: normal;
-  text-align: left;
-  text-decoration: none;
-  text-indent: 0px;
-  text-transform: none;
-  white-space: normal;
-  word-spacing: normal;
-  font: normal 14px sans-serif;
-  visibility: visible;
+*:lang(en) {
+  /* Meiryo renders more crisply than Arial on Windows */
+  font-family: Meiryo, sans-serif;
 }
 
-#rikaichamp-window {
-  position: absolute;
-  /* asahi.com puts z-index: 1000000 on its banner ads. We go one better. */
-  z-index: 1000001;
-  padding: 0px;
-  top: 5px;
-  left: 5px;
-  min-width: 100px;
+.window {
+  max-width: 600px;
+  contain: content;
   border-radius: 5px;
   box-shadow: 2px 2px 1px rgba(100, 100, 100, 0.25);
-  transition: opacity 0.05s;
-  will-change: opacity;
-  pointer-events: none;
-  contain: content;
+  font: normal 14px sans-serif;
 }
 
-#rikaichamp-window.hidden {
-  /*
-   * Make the popup stick around for a fraction of a second longer before hiding
-   */
-  transition-delay: 0.15s;
-  opacity: 0;
+.window.hidden {
+  display: none;
 }
 
-/* used for word definitions */
+/* Word display */
 
-#rikaichamp-window .wordlist {
+.wordlist {
   display: flex;
   flex-direction: column;
 }
 
-#rikaichamp-window .entry,
-#rikaichamp-window .more {
+.entry,
+.more {
   margin-top: 3px;
   margin-bottom: 3px;
   padding: 3px 8px;
 }
 
-#rikaichamp-window .wordlist > .entry:first-child {
+.wordlist > .entry:first-child {
   padding-top: 6px;
 }
 
-#rikaichamp-window .wordlist > .entry:last-child {
+.wordlist > .entry:last-child {
   padding-bottom: 6px;
 }
 
-#rikaichamp-window .entry,
-#rikaichamp-window .entry * {
+.entry,
+.entry * {
   line-height: 1.3;
 }
 
-#rikaichamp-window *:lang(en) {
-  /* Meiryo renders more crisply than Arial on Windows */
-  font-family: Meiryo, sans-serif;
-}
-
-#rikaichamp-window .w-kanji {
+.w-kanji {
   font-size: 18px;
   margin-right: 0.7em;
 }
 
-#rikaichamp-window .w-kanji .w-unmatched,
-#rikaichamp-window .w-kanji .w-separator {
-  font-size: inherit;
-  color: inherit;
+.w-kanji .w-unmatched,
+.w-kanji .w-separator {
   opacity: 0.6;
 }
 
-#rikaichamp-window .w-kana {
+.w-kana {
   font-size: 18px;
   margin-right: 0.3em;
 }
 
-#rikaichamp-window .w-kana > .w-heiban {
-  all: inherit;
+.w-kana > .w-heiban {
   border-top: 1.5px dotted currentcolor !important;
 }
 
-#rikaichamp-window .w-kana > .w-binary {
-  all: inherit;
+.w-kana > .w-binary {
   /* Add a gap below so the border doesn't overlap with the definition */
   display: inline-block;
   margin-bottom: 0.2em;
 }
 
-#rikaichamp-window .w-kana > .w-binary > * {
-  all: inherit;
+.w-kana > .w-binary > * {
   /* Drop gaps between borders */
   margin: 0;
   /* Make room for the borders
@@ -115,85 +77,83 @@
   font-size: 90%;
 }
 
-#rikaichamp-window .w-kana > .w-binary > .h-l {
+.w-kana > .w-binary > .h-l {
   border-top: 1.5px dotted currentcolor !important;
   border-right: 1.5px dotted currentcolor !important;
 }
 
-#rikaichamp-window .w-kana > .w-binary > .l-h {
+.w-kana > .w-binary > .l-h {
   border-bottom: 1.5px dotted currentcolor !important;
   border-right: 1.5px dotted currentcolor !important;
 }
 
-#rikaichamp-window .w-kana > .w-binary > .h {
+.w-kana > .w-binary > .h {
   border-top: 1.5px dotted currentcolor !important;
 }
 
-#rikaichamp-window .w-kana > .w-binary > .l {
+.w-kana > .w-binary > .l {
   border-bottom: 1.5px dotted currentcolor !important;
 }
 
-#rikaichamp-window .w-romaji {
+.w-romaji {
   font-size: 14px;
   margin-right: 0.3em;
 }
 
-#rikaichamp-window .w-kana + .w-romaji {
+.w-kana + .w-romaji {
   margin-left: 0.3em;
 }
 
-#rikaichamp-window .w-kanji .w-head-info,
-#rikaichamp-window .w-kana .w-head-info {
+.w-kanji .w-head-info,
+.w-kana .w-head-info {
   margin-left: 0.3em;
   font-size: 10px;
 }
 
-#rikaichamp-window .w-kanji .svgicon,
-#rikaichamp-window .w-kana .svgicon {
+.w-kanji .svgicon,
+.w-kana .svgicon {
   display: inline-block;
   width: 12px;
   height: 12px;
   margin-left: 3px;
   margin-right: 3px;
-  color: inherit;
   fill: currentcolor;
 }
 
-#rikaichamp-window .w-kanji .svgicon path,
-#rikaichamp-window .w-kana .svgicon path {
-  color: inherit;
+.w-kanji .svgicon path,
+.w-kana .svgicon path {
   fill: currentcolor;
 }
 
-#rikaichamp-window .w-conj {
+.w-conj {
   color: #ffe0a0;
   font-size: 12px;
 }
 
-#rikaichamp-window .w-def,
-#rikaichamp-window .w-def > * {
+.w-def {
   font-size: 13px;
 }
 
-#rikaichamp-window .w-def .w-inf {
+.w-def .w-inf {
   font-size: 12px;
 }
 
-#rikaichamp-window .w-def ol {
+.w-def ol {
   padding-left: 1.5em;
   list-style-type: numeric !important;
+  margin: 0;
 }
 
-#rikaichamp-window .w-def ol li {
+.w-def ol li {
   list-style-type: numeric !important;
   font-size: 13px;
 }
 
-#rikaichamp-window .w-def .w-type {
+.w-def .w-type {
   font-size: 12px;
 }
 
-#rikaichamp-window .w-def .tag {
+.w-def .tag {
   font-size: 10px;
   border-radius: 3px;
   margin-left: 0.5em;
@@ -201,71 +161,71 @@
   white-space: nowrap;
 }
 
-#rikaichamp-window .w-def .tag-fem {
+.w-def .tag-fem {
   background: rgba(255, 100, 100, 0.5);
 }
 
-#rikaichamp-window .w-def .tag-masc {
+.w-def .tag-masc {
   background: rgba(0, 100, 255, 0.5);
 }
 
-#rikaichamp-window .w-def .tag-place {
+.w-def .tag-place {
   background: rgba(50, 200, 50, 0.6);
 }
 
-#rikaichamp-window .w-def .w-field {
+.w-def .w-field {
   background: rgba(50, 200, 50, 0.6);
 }
 
-#rikaichamp-window .w-def .w-misc {
+.w-def .w-misc {
   background: rgba(0, 100, 255, 0.5);
 }
 
-#rikaichamp-window .w-def .w-dial {
+.w-def .w-dial {
   background: rgba(255, 100, 100, 0.5);
 }
 
-#rikaichamp-window .w-def .w-field,
-#rikaichamp-window .w-def .w-misc,
-#rikaichamp-window .w-def .w-dial {
+.w-def .w-field,
+.w-def .w-misc,
+.w-def .w-dial {
   margin-left: 0em;
   margin-right: 0.5em;
 }
 
-#rikaichamp-window .w-def .w-lsrc,
-#rikaichamp-window .w-def .w-lsrc * {
+.w-def .w-lsrc,
+.w-def .w-lsrc * {
   font-size: 12px;
 }
 
-#rikaichamp-window .entry.-selected {
+.window .entry.-selected {
   background: rgba(255, 255, 206);
   border-radius: 2px;
 }
 
-#rikaichamp-window .entry.-selected .w-def .tag {
+.window .entry.-selected .w-def .tag {
   color: black;
   border-color: rgba(0, 0, 0, 0.3) !important;
 }
 
-#rikaichamp-window .entry.-selected .w-kanji {
+.window .entry.-selected .w-kanji {
   color: #4c63a8;
 }
 
-#rikaichamp-window .entry.-selected .w-kana,
-#rikaichamp-window .entry.-selected .w-romaji {
+.window .entry.-selected .w-kana,
+.window .entry.-selected .w-romaji {
   color: #029902;
 }
 
-#rikaichamp-window .entry.-selected .w-def,
-#rikaichamp-window .entry.-selected .w-def * {
+.window .entry.-selected .w-def,
+.window .entry.-selected .w-def * {
   color: rgb(0, 0, 50);
 }
 
-#rikaichamp-window .entry.-selected .w-conj {
+.window .entry.-selected .w-conj {
   color: #ff6300;
 }
 
-#rikaichamp-window .entry.-flash {
+.window .entry.-flash {
   animation: flash 0.5s;
 }
 
@@ -276,29 +236,29 @@
   }
 }
 
-#rikaichamp-window .title {
+.title {
   font-size: 10px;
   padding: 10px 10px 6px;
   border-radius: 5px 5px 0 0;
   margin-bottom: 3px;
 }
 
-#rikaichamp-window .name-table {
+.name-table {
   padding-bottom: 6px;
 }
 
-#rikaichamp-window .name-table.-multicol {
+.name-table.-multicol {
   column-count: 2;
   column-gap: 1em;
 }
 
-#rikaichamp-window .name-table.-multicol .entry {
+.name-table.-multicol .entry {
   /* Avoid column breaks within an entry */
   page-break-inside: avoid;
   break-inside: avoid;
 }
 
-#rikaichamp-window .name-table .entry {
+.name-table .entry {
   /*
    * Something goes funny with the margins in multicol so that the entries
    * no longer line up.
@@ -308,25 +268,25 @@
 
 /* Kanji display */
 
-#rikaichamp-window .kanji-table {
+.kanji-table {
   max-width: 450px;
   padding: 8px 14px;
 }
 
 /* kanji: top part of the kanji table */
 
-#rikaichamp-window .kanji-table .top-part {
+.kanji-table .top-part {
   display: flex;
   margin-bottom: 12px;
 }
 
-#rikaichamp-window .kanji-table .top-part > *:nth-child(2) {
+.kanji-table .top-part > *:nth-child(2) {
   flex-grow: 1;
 }
 
 /* kanji: character itself */
 
-#rikaichamp-window .kanji-table .kanji {
+.kanji-table .kanji {
   line-height: 1;
   font-size: 60px;
   font-family: serif;
@@ -335,39 +295,35 @@
   padding-top: 0.1em;
 }
 
-#rikaichamp-window .kanji-table.-copy .kanji {
+.kanji-table.-copy .kanji {
   background: rgba(255, 255, 206);
   border-radius: 2px;
 }
 
-#rikaichamp-window .kanji-table.-finished .kanji {
+.kanji-table.-finished .kanji {
   animation: flash 0.5s;
 }
 
 /* kanji: readings */
 
-#rikaichamp-window .kanji-table .readings {
+.kanji-table .readings {
   font-size: 14px;
   margin-top: 4px;
   margin-bottom: 10px;
 }
 
-#rikaichamp-window .kanji-table .okurigana {
-  border: 1px solid red;
-}
-
-#rikaichamp-window .kanji-table .nanorilabel {
+.kanji-table .nanorilabel {
   font-size: 11px;
 }
 
 /* kanji: meta */
 
-#rikaichamp-window .kanji-table .meta {
+.kanji-table .meta {
   margin-left: -5px;
   margin-bottom: 4px;
 }
 
-#rikaichamp-window .kanji-table .meta .tag {
+.kanji-table .meta .tag {
   font-size: 12px;
   border: 1px solid currentcolor !important;
   border-radius: 3px;
@@ -377,38 +333,38 @@
 
 /* kanji: meanings */
 
-#rikaichamp-window .kanji-table .meanings {
+.kanji-table .meanings {
   font-size: 14px;
   margin-bottom: 10px;
 }
 
 /* kanji: grade, freq, strokes */
 
-#rikaichamp-window .kanji-table .misc {
+.kanji-table .misc {
   display: flex;
 }
 
-#rikaichamp-window .kanji-table .misc > * {
+.kanji-table .misc > * {
   flex-grow: 1;
   display: flex;
   align-items: baseline;
 }
 
-#rikaichamp-window .kanji-table .misc > :not(:first-child) {
+.kanji-table .misc > :not(:first-child) {
   margin-left: 12px;
 }
 
-#rikaichamp-window .kanji-table .misc .strokes span,
-#rikaichamp-window .kanji-table .misc .freq span,
-#rikaichamp-window .kanji-table .misc .grade span {
+.kanji-table .misc .strokes span,
+.kanji-table .misc .freq span,
+.kanji-table .misc .grade span {
   font-size: 13px;
 }
 
-#rikaichamp-window .kanji-table .misc .freq .denom {
+.kanji-table .misc .freq .denom {
   font-size: 9px;
 }
 
-#rikaichamp-window .kanji-table .misc .svgicon {
+.kanji-table .misc .svgicon {
   display: inline-block;
   width: 12px;
   height: 12px;
@@ -418,17 +374,20 @@
 
 /* kanji: components */
 
-#rikaichamp-window .kanji-table .components {
+.kanji-table .components {
   margin-block-start: 10px;
   /* Subtract the padding at the start of the row so the text lines up */
   margin-inline-start: -1em;
+}
+
+.kanji-table .components table {
   border-collapse: collapse;
 }
 
-#rikaichamp-window .kanji-table .components .char,
-#rikaichamp-window .kanji-table .components .reading,
-#rikaichamp-window .kanji-table .components .meaning,
-#rikaichamp-window .kanji-table .components .-baseradical td {
+.kanji-table .components .char,
+.kanji-table .components .reading,
+.kanji-table .components .meaning,
+.kanji-table .components .-baseradical td {
   vertical-align: top;
   font-size: 11px;
   padding-top: 0.3em;
@@ -437,28 +396,28 @@
   padding-right: 1em;
 }
 
-#rikaichamp-window .kanji-table .components .reading {
+.kanji-table .components .reading {
   padding-left: 0.5em;
   padding-right: 0.5em;
 }
 
-#rikaichamp-window .kanji-table .components .-radical .char {
+.kanji-table .components .-radical .char {
   border-top-left-radius: 0.5rem;
   border-bottom-left-radius: 0.5rem;
 }
 
-#rikaichamp-window .kanji-table .components .-radical .meaning {
+.kanji-table .components .-radical .meaning {
   border-top-right-radius: 0.5rem;
   border-bottom-right-radius: 0.5rem;
 }
 
-#rikaichamp-window .kanji-table .components .-baseradical td {
+.kanji-table .components .-baseradical td {
   font-style: italic;
 }
 
 /* kanji: references */
 
-#rikaichamp-window .references {
+.references {
   --bg-overhang: 8px;
   margin-top: 12px;
   display: grid;
@@ -469,19 +428,19 @@
   width: calc(100% + 2 * var(--bg-overhang));
 }
 
-#rikaichamp-window .references .ref {
+.references .ref {
   display: flex;
   padding: 2px var(--bg-overhang);
   border-radius: 0.5em;
   justify-content: space-between;
 }
 
-#rikaichamp-window .references .name,
-#rikaichamp-window .references .value {
+.references .name,
+.references .value {
   font-size: 12px;
 }
 
-#rikaichamp-window .references .value {
+.references .value {
   margin-left: 0.5em;
 }
 
@@ -489,20 +448,20 @@
  * Keyboard keys
  */
 
-#rikaichamp-window .copy {
+.copy {
   margin-top: 3px;
   position: relative;
   width: 100%;
   max-height: 3em;
 }
 
-#rikaichamp-window .copy > .keys,
-#rikaichamp-window .copy > .status {
+.copy > .keys,
+.copy > .status {
   padding: 5px 8px 5px;
   background: rgba(255, 255, 255, 0.2);
 }
 
-#rikaichamp-window .copy > .keys kbd {
+.copy > .keys kbd {
   color: rgb(10, 10, 10);
   font-size: 0.8rem;
   font-family: monospace;
@@ -513,7 +472,7 @@
   border: 1px solid #909090 !important;
 }
 
-#rikaichamp-window .copy > .status {
+.copy > .status {
   position: absolute;
   left: 0;
   top: 0;
@@ -521,17 +480,17 @@
   box-sizing: border-box;
 }
 
-#rikaichamp-window .copy.-finished > .keys,
-#rikaichamp-window .copy.-error > .keys {
+.copy.-finished > .keys,
+.copy.-error > .keys {
   animation: fade-out 0.4s linear forwards;
 }
 
-#rikaichamp-window .copy.-finished > .status {
+.copy.-finished > .status {
   opacity: 0;
   animation: fade-in 0.4s linear forwards, fade-out 0.3s 0.9s forwards;
 }
 
-#rikaichamp-window .copy.-finished {
+.copy.-finished {
   animation: roll-up 0.3s 1s forwards;
 }
 
@@ -553,12 +512,12 @@
   }
 }
 
-#rikaichamp-window .copy.-error > .status {
+.copy.-error > .status {
   opacity: 0;
   animation: fade-in 0.4s linear forwards;
 }
 
-#rikaichamp-window .copy.-error > .status {
+.copy.-error > .status {
   background: rgba(255, 204, 204, 0.8);
   color: #b43e3e;
 }
@@ -567,13 +526,13 @@
  * Bonus name
  */
 
-#rikaichamp-window .wordlist .bonus-name {
+.wordlist .bonus-name {
   margin-top: 8px;
   margin-bottom: 3px;
   background: rgba(255, 255, 255, 0.2);
 }
 
-#rikaichamp-window .wordlist .bonus-name .more {
+.wordlist .bonus-name .more {
   padding: 0px 8px;
 }
 
@@ -581,7 +540,7 @@
  * Meta information
  */
 
-#rikaichamp-window .wordlist .meta {
+.wordlist .meta {
   margin-top: 8px;
   margin-bottom: 3px;
   padding: 3px 8px;
@@ -590,18 +549,18 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
-#rikaichamp-window .wordlist .meta .era,
-#rikaichamp-window .wordlist .meta .era ruby,
-#rikaichamp-window .wordlist .meta .equals,
-#rikaichamp-window .wordlist .meta .seireki {
+.wordlist .meta .era,
+.wordlist .meta .era ruby,
+.wordlist .meta .equals,
+.wordlist .meta .seireki {
   font-size: 22px;
 }
 
-#rikaichamp-window .wordlist .meta .era rt {
+.wordlist .meta .era rt {
   font-size: 12px;
 }
 
-#rikaichamp-window .wordlist .meta .equals {
+.wordlist .meta .equals {
   padding-left: 5px;
   padding-right: 5px;
 }
@@ -610,80 +569,79 @@
  * Theme - blue
  */
 
-#rikaichamp-window.-blue,
-#rikaichamp-window.-blue * {
+.window.-blue {
   color: white;
 }
 
-#rikaichamp-window.-blue {
+.window.-blue {
   background: #5c73b8;
 }
 
-#rikaichamp-window.-blue .w-kanji {
+.window.-blue .w-kanji {
   color: #b7e7ff;
 }
 
-#rikaichamp-window.-blue .kanji-table.-copy .kanji {
+.window.-blue .kanji-table.-copy .kanji {
   color: #4c63a8;
 }
 
-#rikaichamp-window.-blue .w-conj {
+.window.-blue .w-conj {
   color: #ffe0a0;
 }
 
-#rikaichamp-window.-blue .w-def .tag {
+.window.-blue .w-def .tag {
   border: 1px solid rgba(255, 255, 255, 0.4) !important;
 }
 
-#rikaichamp-window.-blue .title {
+.window.-blue .title {
   background: #4c63a8;
   color: #ffffff;
 }
 
-#rikaichamp-window.-blue .kanji-table .kanji {
+.window.-blue .kanji-table .kanji {
   color: #b7e7ff;
 }
 
-#rikaichamp-window.-blue .kanji-table .components .-radical * {
+.window.-blue .kanji-table .components .-radical * {
   background: #4c63a8;
   color: #b7e7ff;
 }
 
-#rikaichamp-window.-blue .kanji-table .components .-baseradical td {
+.window.-blue .kanji-table .components .-baseradical td {
   color: #b7e7ff;
 }
 
-#rikaichamp-window.-blue .w-kana,
-#rikaichamp-window.-blue .w-romaji {
+.window.-blue .w-kana,
+.window.-blue .w-romaji {
   color: #c0ffc0;
 }
 
-#rikaichamp-window.-blue .kanji-table .readings {
+.window.-blue .kanji-table .readings {
   color: #c0ffc0;
 }
 
-#rikaichamp-window.-blue .kanji-table .okurigana {
+.window.-blue .kanji-table .okurigana {
   color: #a0d0ff;
 }
 
-#rikaichamp-window.-blue .kanji-table .nanorilabel {
+.window.-blue .kanji-table .nanorilabel {
   color: #e7ffe7;
 }
 
-#rikaichamp-window.-blue .references .ref.-highlight {
+.window.-blue .references .ref.-highlight {
   background: #4c63a8;
 }
 
-#rikaichamp-window.-blue .references .ref.-highlight * {
+.window.-blue .references .ref.-highlight * {
   color: #b7e7ff;
 }
 
-#rikaichamp-window.-blue .meta .era,
-#rikaichamp-window.-blue .meta .era * {
+.window.-blue .meta .era,
+.window.-blue .meta .era * {
   color: #b7e7ff;
 }
 
-#rikaichamp-window.-blue .meta .seireki {
+.window.-blue .meta .seireki {
   color: #c0ffc0;
 }
 
@@ -691,89 +649,88 @@
  * Theme - black
  */
 
-#rikaichamp-window.-black,
-#rikaichamp-window.-black * {
+.window.-black {
   color: white;
 }
 
-#rikaichamp-window.-black {
+.window.-black {
   background: #000000;
 }
 
-#rikaichamp-window.-black .w-kanji {
+.window.-black .w-kanji {
   color: #7070e0;
 }
 
-#rikaichamp-window.-black .w-kana,
-#rikaichamp-window.-black .w-romaji {
+.window.-black .w-kana,
+.window.-black .w-romaji {
   color: #20a020;
 }
 
-#rikaichamp-window.-black .w-conj {
+.window.-black .w-conj {
   color: #a0a0a0;
 }
 
-#rikaichamp-window.-black .w-def .tag {
+.window.-black .w-def .tag {
   border: 1px solid rgba(255, 255, 255, 0.4) !important;
 }
 
-#rikaichamp-window.-black .entry.-selected .w-kanji {
+.window.-black .entry.-selected .w-kanji {
   color: #7070e0;
 }
 
-#rikaichamp-window.-black .title {
+.window.-black .title {
   background: #303030;
   color: #e0e0e0;
 }
 
-#rikaichamp-window.-black .kanji-table .kanji {
+.window.-black .kanji-table .kanji {
   color: #ffffff;
 }
 
-#rikaichamp-window.-black .kanji-table.-copy .kanji {
+.window.-black .kanji-table.-copy .kanji {
   color: #7070e0;
 }
 
-#rikaichamp-window.-black .kanji-table .components .-radical * {
+.window.-black .kanji-table .components .-radical * {
   background: #505050;
   color: #e0e0e0;
 }
 
-#rikaichamp-window.-black .kanji-table .components .-baseradical td {
+.window.-black .kanji-table .components .-baseradical td {
   color: #e0e0e0;
 }
 
-#rikaichamp-window.-black .kanji-table .readings {
+.window.-black .kanji-table .readings {
   color: #20a020;
 }
 
-#rikaichamp-window.-black .kanji-table .okurigana {
+.window.-black .kanji-table .okurigana {
   color: #7070e0;
 }
 
-#rikaichamp-window.-black .kanji-table .nanorilabel {
+.window.-black .kanji-table .nanorilabel {
   color: #e0e0e0;
 }
 
-#rikaichamp-window.-black .summary-box > .cell {
+.window.-black .summary-box > .cell {
   background: #505050;
   color: #e0e0e0;
 }
 
-#rikaichamp-window.-black .references .ref.-highlight {
+.window.-black .references .ref.-highlight {
   background: #505050;
 }
 
-#rikaichamp-window.-black .references .ref.-highlight * {
+.window.-black .references .ref.-highlight * {
   color: #e0e0e0;
 }
 
-#rikaichamp-window.-black .meta .era,
-#rikaichamp-window.-black .meta .era * {
+.window.-black .meta .era,
+.window.-black .meta .era * {
   color: #7070e0;
 }
 
-#rikaichamp-window.-black .meta .seireki {
+.window.-black .meta .seireki {
   color: #20a020;
 }
 
@@ -781,80 +738,79 @@
  * Theme - lightblue
  */
 
-#rikaichamp-window.-lightblue,
-#rikaichamp-window.-lightblue * {
+.window.-lightblue {
   color: black;
 }
 
-#rikaichamp-window.-lightblue {
+.window.-lightblue {
   background: #e6f4ff;
 }
 
-#rikaichamp-window.-lightblue .w-kanji {
+.window.-lightblue .w-kanji {
   color: #3082bf;
 }
 
-#rikaichamp-window.-lightblue .w-kana,
-#rikaichamp-window.-lightblue .w-romaji {
+.window.-lightblue .w-kana,
+.window.-lightblue .w-romaji {
   color: #00b366;
 }
 
-#rikaichamp-window.-lightblue .w-conj {
+.window.-lightblue .w-conj {
   color: #808080;
 }
 
-#rikaichamp-window.-lightblue .w-def .tag {
+.window.-lightblue .w-def .tag {
   border: 1px solid rgba(0, 0, 0, 0.3) !important;
 }
 
-#rikaichamp-window.-lightblue .title {
+.window.-lightblue .title {
   background: #bfe4ff;
   color: #000000;
 }
 
-#rikaichamp-window.-lightblue .kanji-table .kanji {
+.window.-lightblue .kanji-table .kanji {
   color: #000000;
 }
 
-#rikaichamp-window.-lightblue .kanji-table.-copy .kanji {
+.window.-lightblue .kanji-table.-copy .kanji {
   color: #003d6b;
 }
 
-#rikaichamp-window.-lightblue .kanji-table .components .-radical * {
+.window.-lightblue .kanji-table .components .-radical * {
   background: #dff1ff;
   color: #003d6b;
 }
 
-#rikaichamp-window.-lightblue .kanji-table .components .-baseradical td {
+.window.-lightblue .kanji-table .components .-baseradical td {
   color: #003d6b;
 }
 
-#rikaichamp-window.-lightblue .kanji-table .readings {
+.window.-lightblue .kanji-table .readings {
   color: #00b366;
 }
 
-#rikaichamp-window.-lightblue .kanji-table .okurigana {
+.window.-lightblue .kanji-table .okurigana {
   color: #00868b;
 }
 
-#rikaichamp-window.-lightblue .kanji-table .nanorilabel {
+.window.-lightblue .kanji-table .nanorilabel {
   color: #000000;
 }
 
-#rikaichamp-window.-lightblue .references .ref.-highlight {
+.window.-lightblue .references .ref.-highlight {
   background: #dff1ff;
 }
 
-#rikaichamp-window.-lightblue .references .ref.-highlight * {
+.window.-lightblue .references .ref.-highlight * {
   color: #003d6b;
 }
 
-#rikaichamp-window.-lightblue .meta .era,
-#rikaichamp-window.-lightblue .meta .era * {
+.window.-lightblue .meta .era,
+.window.-lightblue .meta .era * {
   color: #003d6b;
 }
 
-#rikaichamp-window.-lightblue .meta .seireki {
+.window.-lightblue .meta .seireki {
   color: #00b366;
 }
 
@@ -862,94 +818,93 @@
  * Theme - yellow
  */
 
-#rikaichamp-window.-yellow,
-#rikaichamp-window.-yellow * {
+.window.-yellow {
   color: black;
 }
 
-#rikaichamp-window.-yellow {
+.window.-yellow {
   color: #111;
   background: #ffffbf;
 }
 
-#rikaichamp-window.-yellow .w-kanji {
+.window.-yellow .w-kanji {
   color: #7070e0;
 }
 
-#rikaichamp-window.-yellow .w-kana,
-#rikaichamp-window.-yellow .w-romaji {
+.window.-yellow .w-kana,
+.window.-yellow .w-romaji {
   color: #20a020;
 }
 
-#rikaichamp-window.-yellow .w-conj {
+.window.-yellow .w-conj {
   color: #a0a0a0;
 }
 
-#rikaichamp-window.-yellow .w-def .tag {
+.window.-yellow .w-def .tag {
   border: 1px solid rgba(0, 0, 0, 0.3) !important;
 }
 
-#rikaichamp-window.-yellow .entry.-selected {
+.window.-yellow .entry.-selected {
   background: #d4edf9;
 }
 
-#rikaichamp-window.-yellow .entry.-selected .w-kanji {
+.window.-yellow .entry.-selected .w-kanji {
   color: #7070e0;
 }
 
-#rikaichamp-window.-yellow .entry.-selected .w-kana,
-#rikaichamp-window.-yellow .entry.-selected .w-romaji {
+.window.-yellow .entry.-selected .w-kana,
+.window.-yellow .entry.-selected .w-romaji {
   color: #20a020;
 }
 
-#rikaichamp-window.-yellow .title {
+.window.-yellow .title {
   background: #f0f0b0;
   color: #000000;
 }
 
-#rikaichamp-window.-yellow .kanji-table .kanji {
+.window.-yellow .kanji-table .kanji {
   color: #000000;
 }
 
-#rikaichamp-window.-yellow .kanji-table.-copy .kanji {
+.window.-yellow .kanji-table.-copy .kanji {
   background: #d4edf9;
   color: #7070e0;
 }
 
-#rikaichamp-window.-yellow .kanji-table .components .-radical * {
+.window.-yellow .kanji-table .components .-radical * {
   background: #ffffe6;
   color: #000000;
 }
 
-#rikaichamp-window.-yellow .kanji-table .components .-baseradical td {
+.window.-yellow .kanji-table .components .-baseradical td {
   color: #000000;
 }
 
-#rikaichamp-window.-yellow .kanji-table .readings {
+.window.-yellow .kanji-table .readings {
   color: #20a020;
 }
 
-#rikaichamp-window.-yellow .kanji-table .okurigana {
+.window.-yellow .kanji-table .okurigana {
   color: #cd5c5c;
 }
 
-#rikaichamp-window.-yellow .kanji-table .nanorilabel {
+.window.-yellow .kanji-table .nanorilabel {
   color: #000000;
 }
 
-#rikaichamp-window.-yellow .references .ref.-highlight {
+.window.-yellow .references .ref.-highlight {
   background: #ffffe6;
 }
 
-#rikaichamp-window.-yellow .references .ref.-highlight * {
+.window.-yellow .references .ref.-highlight * {
   color: #000000;
 }
 
-#rikaichamp-window.-yellow .meta .era,
-#rikaichamp-window.-yellow .meta .era * {
+.window.-yellow .meta .era,
+.window.-yellow .meta .era * {
   color: #7070e0;
 }
 
-#rikaichamp-window.-yellow .meta .seireki {
+.window.-yellow .meta .seireki {
   color: #20a020;
 }

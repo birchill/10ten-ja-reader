@@ -17,7 +17,17 @@ module.exports = (config: Config) => {
         modules: [path.join(__dirname, 'node_modules')],
       },
       module: {
-        rules: [{ test: /\.ts$/, use: 'ts-loader' }],
+        rules: [
+          {
+            test: /\.css$/,
+            use: ['css-loader'],
+          },
+          {
+            test: /\.ts$/,
+            use: 'ts-loader',
+            exclude: /node_modules/,
+          },
+        ],
       },
     },
     webpackMiddleware: {},

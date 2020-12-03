@@ -23,6 +23,10 @@ const commonConfig = {
   module: {
     rules: [
       {
+        test: /\.css$/,
+        use: ['css-loader'],
+      },
+      {
         test: /\.ts$/,
         use: 'ts-loader',
         exclude: /node_modules/,
@@ -57,7 +61,7 @@ const getPreprocessorConfig = (...features) => ({
     {
       loader:
         'webpack-preprocessor?' +
-        features.map(feature => `definitions[]=${feature}`).join(','),
+        features.map((feature) => `definitions[]=${feature}`).join(','),
     },
   ],
 });
@@ -88,7 +92,18 @@ const firefoxConfig = {
   },
   plugins: [
     new CopyWebpackPlugin({
-      patterns: ['css/*', 'images/*.svg', 'data/*', '_locales/**/*'],
+      patterns: [
+        // Despite the fact that we inject popup.css directly into the
+        // content script, we still package it as a separate file in the add-on
+        // so that we can load it in the options page.
+        //
+        // One day we might decide to inject popup.css into the options page
+        // script too, but for now we duplicate this content.
+        'css/*',
+        'images/*.svg',
+        'data/*',
+        '_locales/**/*',
+      ],
     }),
     new WebExtWebpackPlugin({
       firefox,

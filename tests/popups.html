@@ -1,368 +1,362 @@
-<!doctype html>
-<meta charset=utf-8>
+<!DOCTYPE html>
+<meta charset="utf-8" />
 <title>Generated popup content inspector</title>
-<link href="../css/popup.css" rel="stylesheet">
+<link href="../css/popup.css" rel="stylesheet" />
 <style>
-#rikaichamp-window.stack {
-  /* I tried really hard to do this with CSS grid, I really did */
-  position: static;
-  width: -moz-fit-content;
-  width: fit-content;
-  vertical-align: middle;
-}
-.label {
-  margin-top: 10px;
-  margin-bottom: 3px;
-}
+  .label {
+    margin-top: 10px;
+    margin-bottom: 3px;
+  }
 </style>
 <script src="content-loader.js"></script>
 <script>
-const config = {
-  showPriority: true,
-  readingOnly: false,
-  accentDisplay: 'binary',
-  posDisplay: 'expl',
-  kanjiReferences: ['radical', 'nelson_r', 'kk', 'unicode', 'henshall'],
-  showKanjiComponents: true,
-  holdToShowKeys: [],
-  keys: {
-    toggleDefinition: ['d'],
-    nextDictionary: ['Shift', 'Enter'],
-    startCopy: ['c'],
-  },
-  noTextHighlight: false,
-  popupStyle: 'blue',
-  showRomaji: false,
-};
-const rikaiContent = new RikaiContent(config);
+  const config = {
+    showPriority: true,
+    readingOnly: false,
+    accentDisplay: 'binary',
+    posDisplay: 'expl',
+    kanjiReferences: ['radical', 'nelson_r', 'kk', 'unicode', 'henshall'],
+    showKanjiComponents: true,
+    holdToShowKeys: [],
+    keys: {
+      toggleDefinition: ['d'],
+      nextDictionary: ['Shift', 'Enter'],
+      startCopy: ['c'],
+    },
+    noTextHighlight: false,
+    popupStyle: 'blue',
+    showRomaji: false,
+  };
+  const rikaiContent = new RikaiContent(config);
 </script>
 <body>
-<div id=container></div>
-<script src="html-tests.js"></script>
-<script>
-const container = document.getElementById('container');
+  <div id="container"></div>
+  <script src="html-tests.js"></script>
+  <script>
+    const container = document.getElementById('container');
 
-for (const test of htmlTests) {
-  const popup = rikaiContent._renderPopup(test.queryResult, {
-    ...config,
-    showDefinitions: !test.extraConfig || !test.extraConfig.readingOnly,
-  });
+    for (const test of htmlTests) {
+      const toTitle = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
-  const toTitle = str => str.charAt(0).toUpperCase() + str.slice(1);
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.append(toTitle(`${test.description}:`));
+      container.append(label);
 
-  const label = document.createElement('div');
-  label.classList.add('label');
-  label.append(toTitle(`${test.description}:`));
-  container.append(label);
+      rikaiContent._renderPopup(test.queryResult, {
+        ...config,
+        container: createPopupContainer(),
+        popupStyle: 'blue',
+        showDefinitions: !test.extraConfig || !test.extraConfig.readingOnly,
+      });
+    }
 
-  const popupWindow = document.createElement('div');
-  popupWindow.setAttribute('id', 'rikaichamp-window');
-  popupWindow.classList.add('stack');
-  popupWindow.classList.add('-blue');
-  popupWindow.append(popup);
-  container.append(popupWindow);
-}
+    const themes = ['blue', 'lightblue', 'black', 'yellow'];
 
-const themes = ['blue', 'lightblue', 'black', 'yellow'];
+    // Name tag test
 
-// Name tag test
+    const nameTagTest = {
+      type: 'names',
+      data: [
+        {
+          k: ['中野'],
+          r: ['なかの'],
+          tr: [{ type: ['place', 'surname'], det: ['Nakano'] }],
+        },
+        {
+          k: ['中野'],
+          r: ['なかのざき'],
+          tr: [{ type: ['surname'], det: ['Nakanozaki'] }],
+        },
+        {
+          k: ['中'],
+          r: ['あたり'],
+          tr: [{ type: ['fem', 'surname'], det: ['Atari'] }],
+        },
+      ],
+      more: false,
+      matchLen: 2,
+    };
 
-const nameTagTest = {
-  type: 'names',
-  data: [
     {
-      k: ['中野'],
-      r: ['なかの'],
-      tr: [{ type: ['place', 'surname'], det: ['Nakano'] }],
-    },
-    {
-      k: ['中野'],
-      r: ['なかのざき'],
-      tr: [{ type: ['surname'], det: ['Nakanozaki'] }],
-    },
-    {
-      k: ['中'],
-      r: ['あたり'],
-      tr: [{ type: ['fem', 'surname'], det: ['Atari'] }],
-    },
-  ],
-  more: false,
-  matchLen: 2,
-};
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.append('【Name tags】');
+      container.append(label);
 
-{
-  const label = document.createElement('div');
-  label.classList.add('label');
-  label.append('【Name tags】');
-  container.append(label);
+      for (const theme of themes) {
+        const label = document.createElement('div');
+        label.classList.add('label');
+        label.append(`Theme: ${theme}`);
+        container.append(label);
 
-  for (const theme of themes) {
-    const popup = rikaiContent._renderPopup(
-      nameTagTest,
-      { ...config, showDefinitions: true },
-    );
+        const popup = rikaiContent._renderPopup(nameTagTest, {
+          ...config,
+          container: createPopupContainer(),
+          popupStyle: theme,
+          showDefinitions: true,
+        });
+      }
+    }
 
-    const label = document.createElement('div');
-    label.classList.add('label');
-    label.append(`Theme: ${theme}`);
-    container.append(label);
+    // Highlight tests
 
-    const popupWindow = document.createElement('div');
-    popupWindow.setAttribute('id', 'rikaichamp-window');
-    popupWindow.classList.add('stack');
-    popupWindow.classList.add(`-${theme}`);
-    popupWindow.append(popup);
-    container.append(popupWindow);
-  }
-}
+    const highlightTests = [
+      {
+        description: 'Word list',
+        queryResult: {
+          type: 'words',
+          data: [
+            {
+              k: [{ ent: '韓国語', p: ['s1'], match: true }],
+              r: [{ ent: 'かんこくご', p: ['s1'], a: 0, match: true }],
+              s: [
+                { g: [{ str: 'Korean (language)' }], pos: ['n'], match: true },
+              ],
+            },
+            {
+              k: [{ ent: '韓国', p: ['n1', 'nf01'], match: true }],
+              r: [{ ent: 'かんこく', p: ['n1', 'nf01'], a: 0, match: true }],
+              s: [
+                {
+                  g: [{ str: 'South Korea' }, { str: 'Republic of Korea' }],
+                  pos: ['n', 'adj-no'],
+                  misc: ['abbr'],
+                  match: true,
+                },
+                {
+                  g: [{ str: 'Korean Empire (1897-1910)' }],
+                  pos: ['n', 'adj-no'],
+                  misc: ['abbr'],
+                  match: true,
+                },
+              ],
+            },
+            {
+              k: [
+                { ent: '唐国', match: false },
+                { ent: '韓国', match: true },
+              ],
+              r: [{ ent: 'からくに', match: true }],
+              s: [
+                {
+                  g: [{ str: 'China' }, { str: 'Korea' }],
+                  pos: ['n'],
+                  misc: ['arch'],
+                  match: true,
+                },
+              ],
+            },
+            {
+              k: [
+                { ent: '唐', match: false },
+                { ent: '韓', match: true },
+                { ent: '漢', match: false },
+              ],
+              r: [{ ent: 'から', a: 1, match: true }],
+              s: [
+                {
+                  g: [
+                    {
+                      str:
+                        'China (sometimes also used in ref. to Korea or other foreign countries)',
+                    },
+                  ],
+                  pos: ['n', 'n-pref'],
+                  misc: ['arch'],
+                  match: true,
+                },
+              ],
+            },
+          ],
+          more: false,
+          matchLen: 3,
+        },
+      },
+      {
+        description: 'Name entry',
+        queryResult: {
+          type: 'names',
+          data: [
+            {
+              k: ['中野'],
+              r: ['なかの'],
+              tr: [{ type: ['surname', 'fem', 'masc'], det: ['Nakano'] }],
+            },
+          ],
+          more: false,
+          matchLen: 2,
+          names: true,
+        },
+      },
+      {
+        description: 'Kanji entry',
+        queryResult: {
+          type: 'kanji',
+          data: {
+            c: '士',
+            r: {
+              on: ['シ'],
+              kun: ['さむらい'],
+              na: ['お', 'ま'],
+            },
+            m: ['gentleman', 'scholar', 'samurai', 'samurai radical (no. 33)'],
+            rad: {
+              x: 33,
+              b: '⼠',
+              k: '士',
+              na: ['さむらい'],
+              m: ['gentleman', 'scholar', 'samurai'],
+              m_lang: 'en',
+            },
+            refs: {
+              nelson_c: 1160,
+              nelson_n: 1117,
+              halpern_njecd: 3405,
+              halpern_kkld: 2129,
+              halpern_kkld_2ed: 2877,
+              heisig: 319,
+              heisig6: 341,
+              henshall: 494,
+              sh_kk: 572,
+              sh_kk2: 581,
+              kanji_in_context: 755,
+              kodansha_compact: 393,
+              skip: '4-3-2',
+              sh_desc: '3p0.1',
+              conning: 350,
+            },
+            misc: {
+              sc: 3,
+              gr: 4,
+              freq: 526,
+              jlpt: 1,
+              kk: 7,
+            },
+            m_lang: 'en',
+            comp: [],
+          },
+        },
+      },
+    ];
 
-// Highlight tests
+    for (const test of highlightTests) {
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.append(`【${test.description}】`);
+      container.append(label);
 
-const highlightTests = [
-  {
-    description: 'Word list',
-    queryResult: {
+      for (const theme of themes) {
+        const label = document.createElement('div');
+        label.classList.add('label');
+        label.append(`Theme: ${theme}`);
+        container.append(label);
+
+        const popup = rikaiContent._renderPopup(test.queryResult, {
+          ...config,
+          container: createPopupContainer(),
+          copyIndex: 1,
+          copyNextKey: 'c',
+          copyState: 1,
+          popupStyle: theme,
+          showDefinitions: true,
+        });
+      }
+    }
+
+    // Year tests
+
+    const yearQueryResult = {
       type: 'words',
       data: [
         {
-          k: [{ ent: '韓国語', p: ['s1'], match: true }],
-          r: [{ ent: 'かんこくご', p: ['s1'], a: 0, match: true }],
-          s: [{ g: [{ str: 'Korean (language)' }], pos: ['n'], match: true }],
-        },
-        {
-          k: [{ ent: '韓国', p: ['n1', 'nf01'], match: true }],
-          r: [{ ent: 'かんこく', p: ['n1', 'nf01'], a: 0, match: true }],
+          k: [{ ent: '令和', p: ['s1'], match: true }],
+          r: [{ ent: 'れいわ', p: ['s1'], match: true }],
           s: [
             {
-              g: [{ str: 'South Korea' }, { str: 'Republic of Korea' }],
-              pos: ['n', 'adj-no'],
-              misc: ['abbr'],
-              match: true,
-            },
-            {
-              g: [{ str: 'Korean Empire (1897-1910)' }],
-              pos: ['n', 'adj-no'],
-              misc: ['abbr'],
+              g: [{ str: 'Reiwa era (May 1, 2019-)' }],
+              pos: ['n'],
               match: true,
             },
           ],
         },
         {
-          k: [
-            { ent: '唐国', match: false },
-            { ent: '韓国', match: true },
-          ],
-          r: [{ ent: 'からくに', match: true }],
+          k: [{ ent: '令', p: ['n1', 'nf05'], match: true }],
+          r: [{ ent: 'れい', p: ['n1', 'nf05'], a: 1, match: true }],
           s: [
             {
-              g: [{ str: 'China' }, { str: 'Korea' }],
+              g: [{ str: 'command' }, { str: 'order' }, { str: 'dictation' }],
+              pos: ['n', 'n-suf'],
+              match: true,
+            },
+            {
+              g: [{ str: 'nth year in the Reiwa era (May 1, 2019-)' }],
+              pos: ['pref'],
+              match: true,
+            },
+          ],
+        },
+        {
+          k: [{ ent: '令', match: true }],
+          r: [{ ent: 'りょう', a: 1, match: true }],
+          s: [
+            {
+              g: [{ str: 'administrative and civil code' }],
               pos: ['n'],
               misc: ['arch'],
               match: true,
             },
           ],
         },
-        {
-          k: [
-            { ent: '唐', match: false },
-            { ent: '韓', match: true },
-            { ent: '漢', match: false },
-          ],
-          r: [{ ent: 'から', a: 1, match: true }],
-          s: [
-            {
-              g: [
-                {
-                  str:
-                    'China (sometimes also used in ref. to Korea or other foreign countries)',
-                },
-              ],
-              pos: ['n', 'n-pref'],
-              misc: ['arch'],
-              match: true,
-            },
-          ],
-        },
-      ],
-      more: false,
-      matchLen: 3,
-    },
-  },
-  {
-    description: 'Name entry',
-    queryResult: {
-      type: 'names',
-      data: [
-        {
-          k: ['中野'],
-          r: ['なかの'],
-          tr: [{ type: ['surname', 'fem', 'masc'], det: ['Nakano'] }],
-        },
       ],
       more: false,
       matchLen: 2,
-      names: true,
-    }
-  },
-  {
-    description: 'Kanji entry',
-    queryResult: {
-      type: 'kanji',
-      data: {
-        c: '士',
-        r: {
-          on: ['シ'],
-          kun: ['さむらい'],
-          na: ['お', 'ま'],
+    };
+
+    const yearTests = [
+      {
+        description: 'Regular year',
+        config: {
+          ...config,
+          showDefinitions: true,
+          meta: { era: '令和', year: 2 },
         },
-        m: ['gentleman', 'scholar', 'samurai', 'samurai radical (no. 33)'],
-        rad: {
-          x: 33,
-          b: '⼠',
-          k: '士',
-          na: ['さむらい'],
-          m: ['gentleman', 'scholar', 'samurai'],
-          m_lang: 'en',
-        },
-        refs: {
-          nelson_c: 1160,
-          nelson_n: 1117,
-          halpern_njecd: 3405,
-          halpern_kkld: 2129,
-          halpern_kkld_2ed: 2877,
-          heisig: 319,
-          heisig6: 341,
-          henshall: 494,
-          sh_kk: 572,
-          sh_kk2: 581,
-          kanji_in_context: 755,
-          kodansha_compact: 393,
-          skip: '4-3-2',
-          sh_desc: '3p0.1',
-          conning: 350,
-        },
-        misc: {
-          sc: 3,
-          gr: 4,
-          freq: 526,
-          jlpt: 1,
-          kk: 7,
-        },
-        m_lang: 'en',
-        comp: [],
       },
-    },
-  },
-];
-
-for (const test of highlightTests) {
-  const label = document.createElement('div');
-  label.classList.add('label');
-  label.append(`【${test.description}】`);
-  container.append(label);
-
-  for (const theme of themes) {
-    const popup = rikaiContent._renderPopup(test.queryResult, {
-      ...config,
-      showDefinitions: true,
-      copyNextKey: 'c',
-      copyState: 1,
-      copyIndex: 1,
-    });
-
-    const label = document.createElement('div');
-    label.classList.add('label');
-    label.append(`Theme: ${theme}`);
-    container.append(label);
-
-    const popupWindow = document.createElement('div');
-    popupWindow.setAttribute('id', 'rikaichamp-window');
-    popupWindow.classList.add('stack');
-    popupWindow.classList.add(`-${theme}`);
-    popupWindow.append(popup);
-    container.append(popupWindow);
-  }
-}
-
-// Year tests
-
-const yearQueryResult = {
-  type: 'words',
-  data: [
-    {
-      k: [{ ent: '令和', p: ['s1'], match: true }],
-      r: [{ ent: 'れいわ', p: ['s1'], match: true }],
-      s: [
-        { g: [{ str: 'Reiwa era (May 1, 2019-)' }], pos: ['n'], match: true },
-      ],
-    },
-    {
-      k: [{ ent: '令', p: ['n1', 'nf05'], match: true }],
-      r: [{ ent: 'れい', p: ['n1', 'nf05'], a: 1, match: true }],
-      s: [
-        {
-          g: [{ str: 'command' }, { str: 'order' }, { str: 'dictation' }],
-          pos: ['n', 'n-suf'],
-          match: true,
+      {
+        description: 'Gannen',
+        config: {
+          ...config,
+          showDefinitions: true,
+          meta: { era: '令和', year: 0 },
         },
-        {
-          g: [{ str: 'nth year in the Reiwa era (May 1, 2019-)' }],
-          pos: ['pref'],
-          match: true,
-        },
-      ],
-    },
-    {
-      k: [{ ent: '令', match: true }],
-      r: [{ ent: 'りょう', a: 1, match: true }],
-      s: [
-        {
-          g: [{ str: 'administrative and civil code' }],
-          pos: ['n'],
-          misc: ['arch'],
-          match: true,
-        },
-      ],
-    },
-  ],
-  more: false,
-  matchLen: 2,
-};
+      },
+    ];
 
-const yearTests = [
-  {
-    description: 'Regular year',
-    config: { ...config, showDefinitions: true, meta: { era: '令和', year: 2 } },
-  },
-  {
-    description: 'Gannen',
-    config: { ...config, showDefinitions: true, meta: { era: '令和', year: 0 } },
-  },
-];
+    for (const test of yearTests) {
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.append(`【${test.description}】`);
+      container.append(label);
 
-for (const test of yearTests) {
-  const label = document.createElement('div');
-  label.classList.add('label');
-  label.append(`【${test.description}】`);
-  container.append(label);
+      for (const theme of themes) {
+        const label = document.createElement('div');
+        label.classList.add('label');
+        label.append(`Theme: ${theme}`);
+        container.append(label);
 
-  for (const theme of themes) {
-    const popup = rikaiContent._renderPopup(yearQueryResult, test.config);
+        rikaiContent._renderPopup(yearQueryResult, {
+          ...test.config,
+          container: createPopupContainer(),
+          popupStyle: theme,
+        });
+      }
+    }
 
-    const label = document.createElement('div');
-    label.classList.add('label');
-    label.append(`Theme: ${theme}`);
-    container.append(label);
-
-    const popupWindow = document.createElement('div');
-    popupWindow.setAttribute('id', 'rikaichamp-window');
-    popupWindow.classList.add('stack');
-    popupWindow.classList.add(`-${theme}`);
-    popupWindow.append(popup);
-    container.append(popupWindow);
-  }
-}
-
-</script>
-</div>
+    function createPopupContainer() {
+      const popupContainer = document.createElement('div');
+      popupContainer.style.width = 'max-content';
+      container.append(popupContainer);
+      return popupContainer;
+    }
+  </script>
 </body>
