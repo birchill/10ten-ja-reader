@@ -54,8 +54,22 @@ import {
 } from './copy-text';
 import { SelectionMeta } from './meta';
 import { kanjiToNumber } from './numbers';
-import { renderPopup, CopyState, PopupOptions } from './popup';
+import {
+  CopyState,
+  hidePopup,
+  isPopupVisible,
+  PopupOptions,
+  removePopup,
+  renderPopup,
+  setPopupStyle,
+} from './popup';
 import { query, QueryResult } from './query';
+import {
+  isForeignObjectElement,
+  isSvgDoc,
+  isSvgSvgElement,
+  SVG_NS,
+} from './svg';
 import { isEraName, startsWithEraName } from './years';
 
 declare global {
@@ -174,10 +188,6 @@ const isInclusiveAncestor = (
   return false;
 };
 
-const isSvgDoc = (doc: Document): boolean => {
-  return doc.documentElement.namespaceURI === SVG_NS;
-};
-
 interface Focusable {
   focus(): void;
 }
@@ -187,37 +197,6 @@ interface Focusable {
 // this.
 const isFocusable = (element?: any): element is Focusable =>
   element && typeof element.focus === 'function' && element.focus.length === 0;
-
-const SVG_NS = 'http://www.w3.org/2000/svg';
-
-const isForeignObjectElement = (
-  elem: Element | null
-): elem is SVGForeignObjectElement =>
-  !!elem &&
-  elem.namespaceURI === SVG_NS &&
-  elem.nodeName.toUpperCase() === 'FOREIGNOBJECT';
-
-// lib.d.ts definitions are out of date and don't support the options object
-// (TypeScript issue #18136, will be fixed in TypeScript 2.7)
-interface HTMLLinkElement {
-  addEventListener(
-    type: string,
-    listener: EventListenerOrEventListenerObject,
-    useCapture?: boolean | AddEventListenerOptions
-  ): void;
-}
-
-const styleSheetLoad = (link: HTMLLinkElement): Promise<void> =>
-  new Promise((resolve) => {
-    link.addEventListener(
-      'load',
-      // The typings for addEventListener seem to end up expecting an
-      // EventListenerObject and don't allow just a regular function.
-      // Anyway, this is fine.
-      <any>resolve,
-      { once: true }
-    );
-  });
 
 export class RikaiContent {
   // This should be enough for most (but not all) entries for now.
@@ -274,9 +253,6 @@ export class RikaiContent {
   _copyMode: boolean = false;
   _copyIndex: number = 0;
 
-  // Content
-  _popupPromise: Promise<HTMLElement> | undefined;
-
   constructor(config: ContentConfig) {
     this._config = config;
 
@@ -299,11 +275,7 @@ export class RikaiContent {
   set config(config) {
     // Update the style of the popup
     if (this._config && config.popupStyle !== this._config.popupStyle) {
-      const popup = document.getElementById('rikaichamp-window');
-      if (popup) {
-        popup.classList.remove(`-${this._config.popupStyle}`);
-        popup.classList.add(`-${config.popupStyle}`);
-      }
+      setPopupStyle(config.popupStyle);
     }
 
     // TODO: We should probably check which keys have changed and regenerate
@@ -322,7 +294,7 @@ export class RikaiContent {
     this._selectedTextBox = null;
     this._copyMode = false;
 
-    removeRikaichampContent();
+    removePopup();
   }
 
   async testTimerPrecision() {
@@ -661,8 +633,7 @@ export class RikaiContent {
   }
 
   isVisible(): boolean {
-    const popup = document.getElementById('rikaichamp-window');
-    return !!popup && !popup.classList.contains('hidden');
+    return isPopupVisible();
   }
 
   async tryToUpdatePopup(
@@ -1357,11 +1328,7 @@ export class RikaiContent {
     this._selectedWindow = null;
     this._selectedText = null;
 
-    // Hide popup
-    const popup = document.getElementById('rikaichamp-window');
-    if (popup) {
-      popup.classList.add('hidden');
-    }
+    hidePopup();
   }
 
   storeSelection(selectedWindow: Window) {
@@ -1455,7 +1422,7 @@ export class RikaiContent {
     textBox.selectionDirection = this._selectedTextBox.previousDirection;
   }
 
-  async showPopup(options?: Partial<PopupOptions>) {
+  showPopup(options?: Partial<PopupOptions>) {
     if (!this._currentSearchResult) {
       this.clearHighlight(this._currentTarget);
       return;
@@ -1466,30 +1433,22 @@ export class RikaiContent {
       : window.document;
 
     const popupOptions: PopupOptions = {
-      showPriority: this._config.showPriority,
-      showDefinitions: !this._config.readingOnly,
       accentDisplay: this._config.accentDisplay,
-      posDisplay: this._config.posDisplay,
-      kanjiReferences: this._config.kanjiReferences,
-      showKanjiComponents: this._config.showKanjiComponents,
+      copyIndex: this._copyIndex,
       copyNextKey: this._config.keys.startCopy[0] || '',
       copyState: this._copyMode ? CopyState.Active : CopyState.Inactive,
-      copyIndex: this._copyIndex,
+      document: doc,
+      kanjiReferences: this._config.kanjiReferences,
       meta: this._currentTextAtPoint?.result.meta,
+      popupStyle: this._config.popupStyle,
+      posDisplay: this._config.posDisplay,
+      showDefinitions: !this._config.readingOnly,
+      showKanjiComponents: this._config.showKanjiComponents,
+      showPriority: this._config.showPriority,
       ...options,
     };
 
-    const popup = await this.getEmptyPopupElem(doc);
-
-    // Although we checked that we had a _currentSearchResult previously, the
-    // first time we run we might still need to create the popup element which
-    // might be blocked on waiting for the stylesheet to load. In the interim
-    // _currentSearchResult could be cleared so check it again.
-    if (!this._currentSearchResult) {
-      return;
-    }
-
-    popup.append(renderPopup(this._currentSearchResult!, popupOptions));
+    const popup = renderPopup(this._currentSearchResult!, popupOptions);
 
     // Position the popup
     const referencePosition = this._currentPoint ? this._currentPoint : null;
@@ -1546,16 +1505,9 @@ export class RikaiContent {
       popupY += doc.defaultView!.scrollY;
     }
 
-    // This is only needed because Edge's WebIDL definitions are wrong
-    // (they have documentElement as having type HTMLElement)
-    const isSVGSVGElement = (elem: Element | null): elem is SVGSVGElement =>
-      !!elem &&
-      elem.namespaceURI === SVG_NS &&
-      elem.nodeName.toUpperCase() === 'SVG';
-
     if (
       isSvgDoc(doc) &&
-      isSVGSVGElement(doc.documentElement) &&
+      isSvgSvgElement(doc.documentElement) &&
       isForeignObjectElement(popup.parentElement)
     ) {
       // Set the x/y attributes on the <foreignObject> wrapper after converting
@@ -1573,75 +1525,6 @@ export class RikaiContent {
       popup.style.left = `${popupX}px`;
       popup.style.top = `${popupY}px`;
     }
-  }
-
-  async getEmptyPopupElem(doc: Document): Promise<HTMLElement> {
-    const popup = doc.getElementById('rikaichamp-window');
-
-    // If there is an existing popup, clear it.
-    if (popup) {
-      while (popup.firstChild) {
-        (<Element | CharacterData>popup.firstChild).remove();
-      }
-      // Restore display property if it was hidden.
-      popup.classList.remove('hidden');
-      return Promise.resolve(popup);
-    }
-
-    // Otherwise, make a new popup element.
-    //
-    // Be sure not to create more than one, however.
-    if (this._popupPromise) {
-      return this._popupPromise;
-    }
-
-    this._popupPromise = new Promise(async (resolve) => {
-      // For SVG documents we put both the <link> and <div> inside
-      // a <foreignObject>. This saves us messing about with xml-stylesheet
-      // processing instructions.
-      let wrapperElement = null;
-      if (isSvgDoc(doc)) {
-        const foreignObject = doc.createElementNS(SVG_NS, 'foreignObject');
-        foreignObject.setAttribute('width', '600');
-        foreignObject.setAttribute('height', '100%');
-        doc.documentElement.append(foreignObject);
-        wrapperElement = foreignObject;
-      }
-
-      // Add <style> element with popup CSS
-      // (One day I hope Web Components might let us scope this now
-      // that scoped stylesheets are dead.)
-      const cssHref = browser.extension.getURL('css/popup.css');
-      const link = doc.createElement('link');
-      link.setAttribute('rel', 'stylesheet');
-      link.setAttribute('type', 'text/css');
-      link.setAttribute('href', cssHref);
-      link.setAttribute('id', 'rikaichamp-css');
-
-      const linkContainer = wrapperElement || doc.head || doc.documentElement;
-      linkContainer.appendChild(link);
-
-      // Wait for the stylesheet to load so we can get a reliable width for the
-      // popup and position it correctly.
-      await styleSheetLoad(link);
-
-      // Add the popup div
-      const popup = doc.createElement('div');
-      popup.setAttribute('id', 'rikaichamp-window');
-      popup.classList.add(`-${this._config.popupStyle}`);
-      doc.documentElement.append(popup);
-
-      // Previous rikai-tachi added a double-click listener here that
-      // would hide the popup but how can you ever click it if it
-      // updates on mousemove? Maybe a previous version had another way
-      // of triggering it?
-
-      this._popupPromise = undefined;
-
-      resolve(popup);
-    });
-
-    return this._popupPromise;
   }
 
   private getCopyEntry(): CopyEntry | null {
@@ -1717,8 +1600,8 @@ browser.runtime.onMessage.addListener((request: any) => {
         rikaiContent.config = request.config;
       } else {
         // When Rikaichamp is upgraded, we can still have the old popup window
-        // and stylesheet hanging around so make sure to clear them.
-        removeRikaichampContent();
+        // hanging around so make sure to clear it.
+        removePopup();
         rikaiContent = new RikaiContent(request.config);
       }
       break;
@@ -1736,28 +1619,6 @@ browser.runtime.onMessage.addListener((request: any) => {
   }
   return false;
 });
-
-function removeRikaichampContent() {
-  // On at least one occasion I've seen an old window element hanging around.
-  // Not sure why this happened yet but for now let's just be sure to
-  // completely remove ourselves.
-  let cssElem = document.getElementById('rikaichamp-css');
-  while (cssElem) {
-    cssElem.remove();
-    cssElem = document.getElementById('rikaichamp-css');
-  }
-
-  let popup = document.getElementById('rikaichamp-window');
-  while (popup) {
-    // If we are in an SVG document, remove the wrapping <foreignObject>.
-    if (isForeignObjectElement(popup.parentElement)) {
-      popup.parentElement.remove();
-    } else {
-      popup.remove();
-    }
-    popup = document.getElementById('rikaichamp-window');
-  }
-}
 
 // When a page first loads, checks to see if it should enable script
 //

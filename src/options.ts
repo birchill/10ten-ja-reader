@@ -150,8 +150,8 @@ function renderPopupStyleSelect() {
     popupStyleSelect.appendChild(label);
 
     const popupPreview = document.createElement('div');
-    popupPreview.setAttribute('id', 'rikaichamp-window');
     popupPreview.classList.add('popup-preview');
+    popupPreview.classList.add('window');
     popupPreview.classList.add(`-${theme}`);
     label.appendChild(popupPreview);
 

@@ -54,6 +54,10 @@ export const browser = {
           return 'Name use';
         case 'content_kanji_frequency_label':
           return 'Freq. ';
+        case 'content_kanji_meta_kokuji':
+          return 'kokuji';
+        case 'content_kanji_meta_phantom_kanji':
+          return 'phantom kanji';
         case 'content_kanji_strokes_label':
           return `${replacements ? replacements[0] : '?'} strokes`;
         case 'content_kanji_strokes_label':

@@ -84,7 +84,7 @@ fieldset {
   margin-bottom: 1rem;
 }
 
-.popupstyle-select > input[type=radio] {
+.popupstyle-select > input[type='radio'] {
   display: none;
 }
 
@@ -97,20 +97,20 @@ fieldset {
   min-width: 200px;
 }
 
-.popupstyle-select > input[type=radio]:checked + label {
+.popupstyle-select > input[type='radio']:checked + label {
   border-color: grey;
   background: lightgrey;
 }
 
-.popupstyle-select > input[type=radio]:not(:checked) + label {
+.popupstyle-select > input[type='radio']:not(:checked) + label {
   opacity: 0.5;
 }
-.popupstyle-select > input[type=radio]:not(:checked) + label:hover,
-.popupstyle-select > input[type=radio]:not(:checked) + label:active {
+.popupstyle-select > input[type='radio']:not(:checked) + label:hover,
+.popupstyle-select > input[type='radio']:not(:checked) + label:active {
   opacity: 1;
 }
 
-#rikaichamp-window.popup-preview {
+.popup-preview {
   position: static;
   display: inline-block;
   min-width: 180px;
@@ -131,12 +131,13 @@ fieldset {
   margin-inline-end: 1em;
   min-width: 2.5em;
 }
-.key label span, .key input[type=text] {
+.key label span,
+.key input[type='text'] {
   font-size: 1rem;
   height: 2.5rem;
-  padding: .5rem;
+  padding: 0.5rem;
   text-align: center;
-  border-radius: .7rem;
+  border-radius: 0.7rem;
   background: white;
 }
 .key label span {
@@ -149,10 +150,10 @@ fieldset {
  *
  * (But we only have browser_style on Firefox at the moment.)
  */
-:root:not(.firefox) .key input[type=text] {
+:root:not(.firefox) .key input[type='text'] {
   border: 1px solid #909090;
 }
-.key input[type=text] {
+.key input[type='text'] {
   border-bottom-width: 3px !important;
   width: 6em;
 
@@ -167,7 +168,7 @@ fieldset {
  *
  * See: https://bugzilla.mozilla.org/show_bug.cgi?id=1484501
  */
-:root.firefox .key input[type=text]:disabled:hover {
+:root.firefox .key input[type='text']:disabled:hover {
   border-color: #b1b1b1;
 }
 /*
@@ -181,10 +182,10 @@ fieldset {
  *
  * See https://bugzilla.mozilla.org/show_bug.cgi?id=1484502
  */
-.key input[type=text] > .anonymous-div {
+.key input[type='text'] > .anonymous-div {
   text-align: center;
 }
-.key input[type=checkbox] {
+.key input[type='checkbox'] {
   /*
    * Drop the margin on checkboxes so they actually line up with the text.
    */
@@ -194,13 +195,13 @@ fieldset {
  * Make unselected checkboxes lighter so it's easier to read the resulting
  * shortcut.
  */
-.key input[type=checkbox]:not(:checked) + label span {
+.key input[type='checkbox']:not(:checked) + label span {
   opacity: 0.6;
   border-style: dashed;
   border-bottom-style: solid;
 }
 .key-description {
-  padding: .5rem;
+  padding: 0.5rem;
   /*
    * This magic number makes the baseline of the first line line-up with the
    * labels on the keys.
@@ -219,10 +220,10 @@ fieldset {
   background-repeat: no-repeat;
 }
 .key-description .icon.-warning {
-  background-image: url("/images/warning-yellow.svg");
+  background-image: url('/images/warning-yellow.svg');
 }
 .key-description .icon.-error {
-  background-image: url("/images/warning-red.svg");
+  background-image: url('/images/warning-red.svg');
 }
 
 .key-list {
