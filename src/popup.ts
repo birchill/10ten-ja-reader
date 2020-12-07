@@ -1,4 +1,8 @@
-import { KanjiResult, NameTranslation } from '@birchill/hikibiki-data';
+import {
+  KanjiResult,
+  MiscType,
+  NameTranslation,
+} from '@birchill/hikibiki-data';
 import { countMora, moraSubstring } from '@birchill/normal-jp';
 
 import {
@@ -644,7 +648,17 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
           groupHeading.append(posSpan);
         }
 
-        if (!group.pos.length) {
+        for (const misc of group.misc) {
+          const miscSpan = document.createElement('span');
+          miscSpan.classList.add('w-misc', 'tag');
+          miscSpan.lang = getLangTag();
+          miscSpan.textContent =
+            browser.i18n.getMessage(`misc_label_${misc}`) || misc;
+          groupHeading.append(miscSpan);
+        }
+
+        // If there is no group heading, just add a '-' placeholder
+        if (!group.pos.length && !group.misc.length) {
           const posSpan = document.createElement('span');
           posSpan.classList.add('w-pos', 'tag');
           posSpan.textContent = '-';
@@ -656,24 +670,20 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
         // Group items
         const definitionList = document.createElement('ol');
         definitionList.start = startIndex;
-        let previousSense: ExtendedSense | undefined;
         for (const sense of group.senses) {
           const listItem = document.createElement('li');
-          listItem.append(renderSense(sense, options, previousSense));
+          listItem.append(renderSense(sense, options));
           definitionList.append(listItem);
-          previousSense = sense;
           startIndex++;
         }
         definitionsDiv.append(definitionList);
       }
     } else {
       const definitionList = document.createElement('ol');
-      let previousSense: ExtendedSense | undefined;
       for (const sense of entry.s) {
         const listItem = document.createElement('li');
-        listItem.append(renderSense(sense, options, previousSense));
+        listItem.append(renderSense(sense, options));
         definitionList.append(listItem);
-        previousSense = sense;
       }
       definitionsDiv.append(definitionList);
     }
@@ -684,6 +694,7 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
 
 interface PosGroup {
   pos: Array<PartOfSpeech>;
+  misc: Array<MiscType>;
   senses: Array<ExtendedSense>;
 }
 
@@ -727,7 +738,7 @@ function groupSenses(senses: Array<ExtendedSense>): Array<PosGroup> {
       // If there was no match, start a new group
       const thisPos = sense.pos && sense.pos.length ? sense.pos[0] : undefined;
       const pos = thisPos ? [thisPos] : [];
-      groups.push({ pos, senses: [dropPos(sense, thisPos)] });
+      groups.push({ pos, misc: [], senses: [dropPos(sense, thisPos)] });
       previousPos = thisPos;
     }
   }
@@ -755,13 +766,37 @@ function groupSenses(senses: Array<ExtendedSense>): Array<PosGroup> {
     }
   }
 
+  // Hoist any common misc readings
+  for (const group of groups) {
+    let commonMisc = group.senses[0].misc;
+    if (!commonMisc) {
+      continue;
+    }
+
+    for (const sense of group.senses.slice(1)) {
+      commonMisc = commonMisc.filter(
+        (misc) => sense.misc && sense.misc.includes(misc)
+      );
+      if (!commonMisc.length) {
+        break;
+      }
+    }
+
+    if (commonMisc.length) {
+      group.misc = commonMisc;
+      group.senses = group.senses.map((sense) => ({
+        ...sense,
+        misc: sense.misc?.filter((misc) => !commonMisc!.includes(misc)),
+      }));
+    }
+  }
+
   return groups;
 }
 
 function renderSense(
   sense: ExtendedSense,
-  options: PopupOptions,
-  previousSense?: ExtendedSense
+  options: PopupOptions
 ): string | DocumentFragment {
   const fragment = document.createDocumentFragment();
 
@@ -795,25 +830,13 @@ function renderSense(
   }
 
   if (sense.misc) {
-    if (
-      previousSense &&
-      previousSense.misc &&
-      JSON.stringify(previousSense.misc) === JSON.stringify(sense.misc)
-    ) {
+    for (const misc of sense.misc) {
       const miscSpan = document.createElement('span');
       miscSpan.classList.add('w-misc', 'tag');
-      miscSpan.textContent = '〃';
       miscSpan.lang = getLangTag();
+      miscSpan.textContent =
+        browser.i18n.getMessage(`misc_label_${misc}`) || misc;
       fragment.append(miscSpan);
-    } else {
-      for (const misc of sense.misc) {
-        const miscSpan = document.createElement('span');
-        miscSpan.classList.add('w-misc', 'tag');
-        miscSpan.lang = getLangTag();
-        miscSpan.textContent =
-          browser.i18n.getMessage(`misc_label_${misc}`) || misc;
-        fragment.append(miscSpan);
-      }
     }
   }
 

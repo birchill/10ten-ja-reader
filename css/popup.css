@@ -141,14 +141,14 @@
 /* Give group headings a bit more space. They typically consist of a series of tags
    which can easily look cramped when there are tags on the line above or below it. */
 .w-def .w-group-head {
-  margin-top: 1px;
+  margin-top: 2px;
   margin-bottom: 3px;
 }
 
 /* Especially when we have group headings amongst other definitions, we want a bit more
    vertical space before they start. */
 .w-def ol + .w-group-head {
-  margin-top: 5px;
+  margin-top: 6px;
 }
 
 .w-def ol {
