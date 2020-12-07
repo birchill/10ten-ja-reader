@@ -10,6 +10,10 @@
 - Stop trying to convert years written as a transliteration of
   digits (e.g. 令和七九年 instead of 令和七十九年)
   thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
+- Moved Rikaichamp popup to an isolated shadow DOM tree so that it should
+  be more robust when used on pages that set styles in ways that conflict
+  with Rikaichamp's styles
+  ([#144](https://github.com/birtles/rikaichamp/issues/144))
 
 ## 0.3.2 (2020-12-03)
 
