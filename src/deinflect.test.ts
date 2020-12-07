@@ -90,6 +90,16 @@ describe('deinflect', () => {
     });
   });
 
+  it('deinflects vs-c', () => {
+    const result = deinflect('兼した');
+    const match = result.find((candidate) => candidate.word === '兼す');
+    expect(match).toEqual({
+      reasons: [[DeinflectReason.Past]],
+      type: 18,
+      word: '兼す',
+    });
+  });
+
   it('deinflects irregular forms of 行く', () => {
     const cases = [
       ['行った', '行く', DeinflectReason.Past, 2],
@@ -162,8 +172,8 @@ describe('deinflect', () => {
       ['歩いてる', '歩く', 2, undefined],
       ['泳いでいる', '泳ぐ', 2, undefined],
       ['泳いでる', '泳ぐ', 2, undefined],
-      ['話している', '話す', 2, undefined],
-      ['話してる', '話す', 2, undefined],
+      ['話している', '話す', 18, undefined],
+      ['話してる', '話す', 18, undefined],
       ['死んでいる', '死ぬ', 2, undefined],
       ['死んでる', '死ぬ', 2, undefined],
       ['飼っている', '飼う', 2, undefined],
