@@ -66,7 +66,8 @@ export function renderPopup(
     popupStyle: options.popupStyle,
   });
 
-  // XXX Use document everywhere
+  // TODO: We should use `options.document` everywhere in this file and in
+  // the other methods too.
 
   switch (result.type) {
     case 'kanji':
