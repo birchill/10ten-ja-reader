@@ -44,7 +44,7 @@
     "@types/karma-webpack": "^2.0.7",
     "@types/mocha": "^8.0.4",
     "@types/split2": "^2.1.6",
-    "@types/yargs": "^15.0.10",
+    "@types/yargs": "^15.0.11",
     "archiver": "^5.1.0",
     "byline": "^5.0.0",
     "chai": "^4.2.0",
