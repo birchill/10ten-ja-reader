@@ -266,6 +266,10 @@
   margin-top: 0;
 }
 
+.name-table .w-def div {
+  margin-bottom: 2px;
+}
+
 /* Kanji display */
 
 .kanji-table {

@@ -868,9 +868,6 @@ function renderName(entry: NameResult): HTMLElement {
   const definitionBlock = document.createElement('div');
   definitionBlock.classList.add('w-def');
   for (const tr of entry.tr) {
-    if (definitionBlock.children.length) {
-      definitionBlock.append(' ');
-    }
     definitionBlock.append(renderNameTranslation(tr));
   }
   entryDiv.append(definitionBlock);
@@ -879,7 +876,7 @@ function renderName(entry: NameResult): HTMLElement {
 }
 
 function renderNameTranslation(tr: NameTranslation): HTMLSpanElement {
-  const definitionSpan = document.createElement('span');
+  const definitionSpan = document.createElement('div');
   // ENAMDICT only has English glosses
   definitionSpan.lang = 'en';
   definitionSpan.append(tr.det.join(', '));
