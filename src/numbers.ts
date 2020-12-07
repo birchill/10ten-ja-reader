@@ -23,6 +23,23 @@ const kanjiToNumberMap = new Map<string, number>([
   ['兆', 1000000000000],
 ]);
 
+function validNumber(c1: number, c2: number): boolean {
+  if (c2 >= 10000 && c1 < c2) {
+    return true;
+  }
+  if (c1 >= 10000 && c2 <= 1000) {
+    return true;
+  }
+  if (c1 >= 100 && c2 < c1 && c2 >= 10 && c2 <= 1000) {
+    return true;
+  }
+  if (c1 === 1 && (c2 === 10 || c2 === 100)) {
+    return false;
+  }
+
+  return c1 < 10 !== c2 < 10;
+}
+
 export function kanjiToNumber(text: string): number | null {
   const stuffs = [...text].map((ch) => kanjiToNumberMap.get(ch));
   if (!stuffs.length || stuffs.some((ch) => typeof ch === 'undefined')) {
@@ -34,6 +51,9 @@ export function kanjiToNumber(text: string): number | null {
 
   while (numbers.length > 1) {
     const [first, second, ...rest] = numbers;
+    if (!validNumber(first, second)) {
+      return null;
+    }
 
     if (second < first) {
       if (rest.some((x) => x > first)) {
