@@ -624,11 +624,18 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
   } else {
     // Try grouping the definitions by part-of-speech.
     const posGroups = options.posDisplay !== 'none' ? groupSenses(entry.s) : [];
-    const largestGroupSize = Math.max(
-      ...posGroups.map((group) => group.senses.length)
-    );
 
-    if (largestGroupSize > 1) {
+    // Determine if the grouping makes sense
+    //
+    // If the group headings make the number of lines used to represent
+    // all the senses (ignoring word wrapping) grow by more than 50%, we should
+    // skip using groups. This will typically be the case where there are no
+    // common parts-of-speech, or at least very few.
+    const linesWithGrouping = posGroups.length + entry.s.length;
+    const linesWithoutGrouping = entry.s.length;
+    const useGroups = linesWithGrouping / linesWithoutGrouping <= 1.5;
+
+    if (useGroups) {
       let startIndex = 1;
       for (const group of posGroups) {
         // Group heading
