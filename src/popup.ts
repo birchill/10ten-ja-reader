@@ -7,6 +7,7 @@ import {
   CopyKanjiKeyStrings,
   CopyNextKeyStrings,
 } from './copy-keys';
+import { groupSenses } from './grouping';
 import { getHash } from './hash';
 import { SelectionMeta } from './meta';
 import { QueryResult } from './query';
@@ -613,24 +614,90 @@ function renderStar(style: 'full' | 'hollow'): SVGElement {
 }
 
 function renderDefinitions(entry: WordResult, options: PopupOptions) {
-  const definitionsSpan = document.createElement('span');
-  definitionsSpan.classList.add('w-def');
-  // Currently all definitions are English
-  definitionsSpan.lang = 'en';
+  const definitionsDiv = document.createElement('div');
+  definitionsDiv.classList.add('w-def');
+  // Currently all definitions are in English
+  definitionsDiv.lang = 'en';
 
   if (entry.s.length === 1) {
-    definitionsSpan.append(renderSense(entry.s[0], options));
+    definitionsDiv.append(renderSense(entry.s[0], options));
   } else {
-    const definitionList = document.createElement('ol');
-    for (const sense of entry.s) {
-      const listItem = document.createElement('li');
-      listItem.append(renderSense(sense, options));
-      definitionList.append(listItem);
+    // Try grouping the definitions by part-of-speech.
+    const posGroups = options.posDisplay !== 'none' ? groupSenses(entry.s) : [];
+
+    // Determine if the grouping makes sense
+    //
+    // If the group headings make the number of lines used to represent
+    // all the senses (ignoring word wrapping) grow by more than 50%, we should
+    // skip using groups. This will typically be the case where there are no
+    // common parts-of-speech, or at least very few.
+    const linesWithGrouping = posGroups.length + entry.s.length;
+    const linesWithoutGrouping = entry.s.length;
+    const useGroups =
+      posGroups.length && linesWithGrouping / linesWithoutGrouping <= 1.5;
+
+    if (useGroups) {
+      let startIndex = 1;
+      for (const group of posGroups) {
+        // Group heading
+        const groupHeading = document.createElement('p');
+        groupHeading.classList.add('w-group-head');
+
+        for (const pos of group.pos) {
+          const posSpan = document.createElement('span');
+          posSpan.classList.add('w-pos', 'tag');
+          if (options.posDisplay === 'expl') {
+            posSpan.lang = getLangTag();
+            posSpan.textContent =
+              browser.i18n.getMessage(`pos_label_${pos}`) || pos;
+          } else {
+            posSpan.textContent = pos;
+          }
+          groupHeading.append(posSpan);
+        }
+
+        for (const misc of group.misc) {
+          const miscSpan = document.createElement('span');
+          miscSpan.classList.add('w-misc', 'tag');
+          miscSpan.lang = getLangTag();
+          miscSpan.textContent =
+            browser.i18n.getMessage(`misc_label_${misc}`) || misc;
+          groupHeading.append(miscSpan);
+        }
+
+        // If there is no group heading, just add a '-' placeholder
+        if (!group.pos.length && !group.misc.length) {
+          const posSpan = document.createElement('span');
+          posSpan.classList.add('w-pos', 'tag');
+          posSpan.textContent = '-';
+          groupHeading.append(posSpan);
+        }
+
+        definitionsDiv.append(groupHeading);
+
+        // Group items
+        const definitionList = document.createElement('ol');
+        definitionList.start = startIndex;
+        for (const sense of group.senses) {
+          const listItem = document.createElement('li');
+          listItem.append(renderSense(sense, options));
+          definitionList.append(listItem);
+          startIndex++;
+        }
+        definitionsDiv.append(definitionList);
+      }
+    } else {
+      const definitionList = document.createElement('ol');
+      for (const sense of entry.s) {
+        const listItem = document.createElement('li');
+        listItem.append(renderSense(sense, options));
+        definitionList.append(listItem);
+      }
+      definitionsDiv.append(definitionList);
     }
-    definitionsSpan.append(definitionList);
   }
 
-  return definitionsSpan;
+  return definitionsDiv;
 }
 
 function renderSense(
@@ -638,6 +705,24 @@ function renderSense(
   options: PopupOptions
 ): string | DocumentFragment {
   const fragment = document.createDocumentFragment();
+
+  if (options.posDisplay !== 'none') {
+    for (const pos of sense.pos || []) {
+      const posSpan = document.createElement('span');
+      posSpan.classList.add('w-pos', 'tag');
+      switch (options.posDisplay) {
+        case 'expl':
+          posSpan.lang = getLangTag();
+          posSpan.append(browser.i18n.getMessage(`pos_label_${pos}`) || pos);
+          break;
+
+        case 'code':
+          posSpan.append(pos);
+          break;
+      }
+      fragment.append(posSpan);
+    }
+  }
 
   if (sense.field) {
     for (const field of sense.field) {
@@ -685,26 +770,6 @@ function renderSense(
 
   if (sense.lsrc && sense.lsrc.length) {
     fragment.append(renderLangSources(sense.lsrc));
-  }
-
-  if (sense.pos && options.posDisplay !== 'none') {
-    const posSpan = document.createElement('span');
-    posSpan.classList.add('w-pos', 'tag');
-    switch (options.posDisplay) {
-      case 'expl':
-        posSpan.lang = getLangTag();
-        posSpan.append(
-          sense.pos
-            .map((pos) => browser.i18n.getMessage(`pos_label_${pos}`) || pos)
-            .join(', ')
-        );
-        break;
-
-      case 'code':
-        posSpan.append(sense.pos.join(', '));
-        break;
-    }
-    fragment.append(posSpan);
   }
 
   return fragment;

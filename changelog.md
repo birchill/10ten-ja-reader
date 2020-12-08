@@ -1,5 +1,8 @@
 ## 0.3.3 (not released yet)
 
+- Moved display of part-of-speech labels to the start of the definition
+  and grouped them when they are repetitive
+  ([#436](https://github.com/birtles/rikaichamp/issues/436))
 - Made Rikaichamp include する in the match range for nouns that take
   する (`vs` nouns)
   thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)

@@ -216,8 +216,6 @@ function renderPopupStyleSelect() {
 
     if (!config.readingOnly) {
       const spanDef = document.createElement('span');
-      spanDef.classList.add('w-def');
-      spanDef.append('understanding');
 
       if (config.posDisplay !== 'none') {
         const posSpan = document.createElement('span');
@@ -239,6 +237,9 @@ function renderPopupStyleSelect() {
         }
         spanDef.append(posSpan);
       }
+
+      spanDef.classList.add('w-def');
+      spanDef.append('understanding');
 
       entry.appendChild(spanDef);
     }
