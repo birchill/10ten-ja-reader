@@ -633,7 +633,8 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
     // common parts-of-speech, or at least very few.
     const linesWithGrouping = posGroups.length + entry.s.length;
     const linesWithoutGrouping = entry.s.length;
-    const useGroups = linesWithGrouping / linesWithoutGrouping <= 1.5;
+    const useGroups =
+      posGroups.length && linesWithGrouping / linesWithoutGrouping <= 1.5;
 
     if (useGroups) {
       let startIndex = 1;
