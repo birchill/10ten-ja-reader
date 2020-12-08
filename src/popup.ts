@@ -645,9 +645,13 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
         for (const pos of group.pos) {
           const posSpan = document.createElement('span');
           posSpan.classList.add('w-pos', 'tag');
-          posSpan.lang = getLangTag();
-          posSpan.textContent =
-            browser.i18n.getMessage(`pos_label_${pos}`) || pos;
+          if (options.posDisplay === 'expl') {
+            posSpan.lang = getLangTag();
+            posSpan.textContent =
+              browser.i18n.getMessage(`pos_label_${pos}`) || pos;
+          } else {
+            posSpan.textContent = pos;
+          }
           groupHeading.append(posSpan);
         }
 
