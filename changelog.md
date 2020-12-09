@@ -1,4 +1,8 @@
-## 0.3.3 (not released yet)
+## 0.3.4 (not released yet)
+
+(Nothing yet)
+
+## 0.3.3 (2020-12-09)
 
 - Moved display of part-of-speech labels to the start of the definition
   and grouped them when they are repetitive
