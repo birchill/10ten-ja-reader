@@ -1116,7 +1116,7 @@
     "description": "Label used to describe senses with the 'obs' (obsolete) annotation"
   },
   "misc_label_obsc": {
-    "message": "不明",
+    "message": "难懂",
     "description": "Label used to describe senses with the 'obsc' (obscure) annotation"
   },
   "misc_label_on-mim": {
