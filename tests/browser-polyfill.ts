@@ -118,37 +118,37 @@ export const browser = {
           return 'archaism';
         case 'misc_label_hon':
           return 'honorific';
-        case 'pos_label_adj-f':
+        case 'pos_label_adj_f':
           return 'pre-noun adj.';
-        case 'pos_label_adj-i':
+        case 'pos_label_adj_i':
           return 'i adj.';
-        case 'pos_label_adj-ix':
+        case 'pos_label_adj_ix':
           return 'ii/yoi adj.';
-        case 'pos_label_adj-kari':
+        case 'pos_label_adj_kari':
           return 'kari adj.';
-        case 'pos_label_adj-ku':
+        case 'pos_label_adj_ku':
           return 'ku adj.';
-        case 'pos_label_adj-na':
+        case 'pos_label_adj_na':
           return 'na adj.';
-        case 'pos_label_adj-nari':
+        case 'pos_label_adj_nari':
           return 'nari adj.';
-        case 'pos_label_adj-no':
+        case 'pos_label_adj_no':
           return 'no-adj.';
-        case 'pos_label_adj-pn':
+        case 'pos_label_adj_pn':
           return 'pre-noun adj.';
-        case 'pos_label_adj-shiku':
+        case 'pos_label_adj_shiku':
           return 'shiku adj.';
-        case 'pos_label_adj-t':
+        case 'pos_label_adj_t':
           return 'taru adj.';
         case 'pos_label_adv':
           return 'adverb';
-        case 'pos_label_adv-to':
+        case 'pos_label_adv_to':
           return 'adverb to';
         case 'pos_label_aux':
           return 'aux.';
-        case 'pos_label_aux-adj':
+        case 'pos_label_aux_adj':
           return 'aux. adj.';
-        case 'pos_label_aux-v':
+        case 'pos_label_aux_v':
           return 'aux. verb';
         case 'pos_label_conj':
           return 'conj.';
@@ -162,15 +162,15 @@ export const browser = {
           return 'int.';
         case 'pos_label_n':
           return 'noun';
-        case 'pos_label_n-adv':
+        case 'pos_label_n_adv':
           return 'adv. noun';
-        case 'pos_label_n-pr':
+        case 'pos_label_n_pr':
           return 'proper noun';
-        case 'pos_label_n-pref':
+        case 'pos_label_n_pref':
           return 'n-pref';
-        case 'pos_label_n-suf':
+        case 'pos_label_n_suf':
           return 'n-suf';
-        case 'pos_label_n-t':
+        case 'pos_label_n_t':
           return 'n-temp';
         case 'pos_label_num':
           return 'numeric';
@@ -184,57 +184,57 @@ export const browser = {
           return 'suffix';
         case 'pos_label_unc':
           return '?';
-        case 'pos_label_v-unspec':
+        case 'pos_label_v_unspec':
           return 'verb';
         case 'pos_label_v1':
           return '-ru verb';
-        case 'pos_label_v1-s':
+        case 'pos_label_v1_s':
           return '-ru verb*';
-        case 'pos_label_v2a-s':
+        case 'pos_label_v2a_s':
           return '-u nidan verb';
-        case 'pos_label_v2b-k':
+        case 'pos_label_v2b_k':
           return '-bu nidan verb (upper)';
-        case 'pos_label_v2b-s':
+        case 'pos_label_v2b_s':
           return '-bu nidan verb (lower)';
-        case 'pos_label_v2d-k':
+        case 'pos_label_v2d_k':
           return '-dzu nidan verb (upper)';
-        case 'pos_label_v2d-s':
+        case 'pos_label_v2d_s':
           return '-dzu nidan verb (lower)';
-        case 'pos_label_v2g-k':
+        case 'pos_label_v2g_k':
           return '-gu nidan verb (upper)';
-        case 'pos_label_v2g-s':
+        case 'pos_label_v2g_s':
           return '-gu nidan verb (lower)';
-        case 'pos_label_v2h-k':
+        case 'pos_label_v2h_k':
           return '-hu/fu nidan verb (upper)';
-        case 'pos_label_v2h-s':
+        case 'pos_label_v2h_s':
           return '-hu/fu nidan verb (lower)';
-        case 'pos_label_v2k-k':
+        case 'pos_label_v2k_k':
           return '-ku nidan verb (upper)';
-        case 'pos_label_v2k-s':
+        case 'pos_label_v2k_s':
           return '-ku nidan verb (lower)';
-        case 'pos_label_v2m-k':
+        case 'pos_label_v2m_k':
           return '-mu nidan verb (upper)';
-        case 'pos_label_v2m-s':
+        case 'pos_label_v2m_s':
           return '-mu nidan verb (lower)';
-        case 'pos_label_v2n-s':
+        case 'pos_label_v2n_s':
           return '-nu nidan verb';
-        case 'pos_label_v2r-k':
+        case 'pos_label_v2r_k':
           return '-ru nidan verb (upper)';
-        case 'pos_label_v2r-s':
+        case 'pos_label_v2r_s':
           return '-ru nidan verb (lower)';
-        case 'pos_label_v2s-s':
+        case 'pos_label_v2s_s':
           return '-su nidan verb';
-        case 'pos_label_v2t-k':
+        case 'pos_label_v2t_k':
           return '-tsu nidan verb (upper)';
-        case 'pos_label_v2t-s':
+        case 'pos_label_v2t_s':
           return '-tsu nidan verb (lower)';
-        case 'pos_label_v2w-s':
+        case 'pos_label_v2w_s':
           return '-u nidan verb + we';
-        case 'pos_label_v2y-k':
+        case 'pos_label_v2y_k':
           return '-yu nidan verb (upper)';
-        case 'pos_label_v2y-s':
+        case 'pos_label_v2y_s':
           return '-yu nidan verb (lower)';
-        case 'pos_label_v2z-s':
+        case 'pos_label_v2z_s':
           return '-zu nidan verb';
         case 'pos_label_v4b':
           return '-bu yodan verb';
@@ -262,7 +262,7 @@ export const browser = {
           return '-gu verb';
         case 'pos_label_v5k':
           return '-ku verb';
-        case 'pos_label_v5k-s':
+        case 'pos_label_v5k_s':
           return 'iku/yuku verb';
         case 'pos_label_v5m':
           return '-mu verb';
@@ -270,7 +270,7 @@ export const browser = {
           return '-nu verb';
         case 'pos_label_v5r':
           return '-u verb';
-        case 'pos_label_v5r-i':
+        case 'pos_label_v5r_i':
           return '-u verb*';
         case 'pos_label_v5s':
           return '-su verb';
@@ -278,7 +278,7 @@ export const browser = {
           return '-tsu verb';
         case 'pos_label_v5u':
           return '-u verb';
-        case 'pos_label_v5u-s':
+        case 'pos_label_v5u_s':
           return '-u verb*';
         case 'pos_label_v5uru':
           return '-uru verb';
@@ -292,11 +292,11 @@ export const browser = {
           return '-nu (-ri) verb*';
         case 'pos_label_vs':
           return '+suru';
-        case 'pos_label_vs-c':
+        case 'pos_label_vs_c':
           return '-su(ru) verb';
-        case 'pos_label_vs-i':
+        case 'pos_label_vs_i':
           return '-suru verb';
-        case 'pos_label_vs-s':
+        case 'pos_label_vs_s':
           return '-suru verb*';
         case 'pos_label_vt':
           return 'trans.';

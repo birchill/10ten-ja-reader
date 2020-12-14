@@ -1099,7 +1099,7 @@
     "message": "literary",
     "description": "Label used to describe senses with the 'litf' (literary) annotation"
   },
-  "misc_label_m-sl": {
+  "misc_label_m_sl": {
     "message": "manga slang",
     "description": "Label used to describe senses with the 'm-sl' (manga slang) annotation"
   },
@@ -1107,7 +1107,7 @@
     "message": "male",
     "description": "Label used to describe senses with the 'male' (male) annotation"
   },
-  "misc_label_net-sl": {
+  "misc_label_net_sl": {
     "message": "Internet slang",
     "description": "Label used to describe senses with the 'net-sl' (Internet slang) annotation"
   },
@@ -1119,7 +1119,7 @@
     "message": "obscure",
     "description": "Label used to describe senses with the 'obsc' (obscure) annotation"
   },
-  "misc_label_on-mim": {
+  "misc_label_on_mim": {
     "message": "onomatopoeia",
     "description": "Label used to describe senses with the 'on-mim' (onomatopoeia) annotation"
   },
@@ -1481,47 +1481,47 @@
   "options_warning_language_is_kanji_only": {
     "message": "This setting currently only applies to the kanji dictionary."
   },
-  "pos_label_adj-f": {
+  "pos_label_adj_f": {
     "message": "pre-noun adj.",
     "description": "Short part-of-speech label shown next to noun or verb entries acting prenominally"
   },
-  "pos_label_adj-i": {
+  "pos_label_adj_i": {
     "message": "i adj.",
     "description": "Short part-of-speech label shown next to adjective (keiyoushi) entries"
   },
-  "pos_label_adj-ix": {
+  "pos_label_adj_ix": {
     "message": "ii/yoi adj.",
     "description": "Short part-of-speech label shown next to adjective (keiyoushi) - yoi/ii class entries"
   },
-  "pos_label_adj-kari": {
+  "pos_label_adj_kari": {
     "message": "kari adj.",
     "description": "Short part-of-speech label shown next to 'kari' adjective (archaic) entries"
   },
-  "pos_label_adj-ku": {
+  "pos_label_adj_ku": {
     "message": "ku adj.",
     "description": "Short part-of-speech label shown next to 'ku' adjective (archaic) entries"
   },
-  "pos_label_adj-na": {
+  "pos_label_adj_na": {
     "message": "na adj.",
     "description": "Short part-of-speech label shown next to adjectival nouns or quasi-adjectives (keiyodoshi) entries"
   },
-  "pos_label_adj-nari": {
+  "pos_label_adj_nari": {
     "message": "nari adj.",
     "description": "Short part-of-speech label shown next to archaic/formal form of na-adjective entries"
   },
-  "pos_label_adj-no": {
+  "pos_label_adj_no": {
     "message": "no-adj.",
     "description": "Short part-of-speech label shown next to nouns which may take the genitive case particle 'no' entries"
   },
-  "pos_label_adj-pn": {
+  "pos_label_adj_pn": {
     "message": "pre-noun adj.",
     "description": "Short part-of-speech label shown next to pre-noun adjectival (rentaishi) entries"
   },
-  "pos_label_adj-shiku": {
+  "pos_label_adj_shiku": {
     "message": "shiku adj.",
     "description": "Short part-of-speech label shown next to 'shiku' adjective (archaic) entries"
   },
-  "pos_label_adj-t": {
+  "pos_label_adj_t": {
     "message": "taru adj.",
     "description": "Short part-of-speech label shown next to 'taru' adjective entries"
   },
@@ -1529,7 +1529,7 @@
     "message": "adverb",
     "description": "Short part-of-speech label shown next to adverb (fukushi) entries"
   },
-  "pos_label_adv-to": {
+  "pos_label_adv_to": {
     "message": "adverb to",
     "description": "Short part-of-speech label shown next to adverb taking the 'to' particle entries"
   },
@@ -1537,11 +1537,11 @@
     "message": "aux.",
     "description": "Short part-of-speech label shown next to auxiliary entries"
   },
-  "pos_label_aux-adj": {
+  "pos_label_aux_adj": {
     "message": "aux. adj.",
     "description": "Short part-of-speech label shown next to auxiliary adjective entries"
   },
-  "pos_label_aux-v": {
+  "pos_label_aux_v": {
     "message": "aux. verb",
     "description": "Short part-of-speech label shown next to auxiliary verb entries"
   },
@@ -1569,23 +1569,23 @@
     "message": "noun",
     "description": "Short part-of-speech label shown next to noun (common) (futsuumeishi) entries"
   },
-  "pos_label_n-adv": {
+  "pos_label_n_adv": {
     "message": "adv. noun",
     "description": "Short part-of-speech label shown next to adverbial noun (fukushitekimeishi) entries"
   },
-  "pos_label_n-pr": {
+  "pos_label_n_pr": {
     "message": "proper noun",
     "description": "Short part-of-speech label shown next to proper noun entries"
   },
-  "pos_label_n-pref": {
+  "pos_label_n_pref": {
     "message": "n-pref",
     "description": "Short part-of-speech label shown next to noun, used as a prefix entries"
   },
-  "pos_label_n-suf": {
+  "pos_label_n_suf": {
     "message": "n-suf",
     "description": "Short part-of-speech label shown next to noun, used as a suffix entries"
   },
-  "pos_label_n-t": {
+  "pos_label_n_t": {
     "message": "n-temp",
     "description": "Short part-of-speech label shown next to noun (temporal) (jisoumeishi) entries"
   },
@@ -1613,7 +1613,7 @@
     "message": "?",
     "description": "Short part-of-speech label shown next to unclassified entries"
   },
-  "pos_label_v-unspec": {
+  "pos_label_v_unspec": {
     "message": "verb",
     "description": "Short part-of-speech label shown next to verb unspecified entries"
   },
@@ -1621,99 +1621,99 @@
     "message": "Ichidan/ru-verb",
     "description": "Short part-of-speech label shown next to Ichidan verb entries"
   },
-  "pos_label_v1-s": {
+  "pos_label_v1_s": {
     "message": "Ichidan/ru-verb (kureru)",
     "description": "Short part-of-speech label shown next to Ichidan verb - kureru special class entries"
   },
-  "pos_label_v2a-s": {
+  "pos_label_v2a_s": {
     "message": "-u Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb with 'u' ending (archaic) entries"
   },
-  "pos_label_v2b-k": {
+  "pos_label_v2b_k": {
     "message": "-bu upper Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'bu' ending (archaic) entries"
   },
-  "pos_label_v2b-s": {
+  "pos_label_v2b_s": {
     "message": "-bu lower Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'bu' ending (archaic) entries"
   },
-  "pos_label_v2d-k": {
+  "pos_label_v2d_k": {
     "message": "-dzu upper Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'dzu' ending (archaic) entries"
   },
-  "pos_label_v2d-s": {
+  "pos_label_v2d_s": {
     "message": "-dzu lower Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'dzu' ending (archaic) entries"
   },
-  "pos_label_v2g-k": {
+  "pos_label_v2g_k": {
     "message": "-gu upper Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'gu' ending (archaic) entries"
   },
-  "pos_label_v2g-s": {
+  "pos_label_v2g_s": {
     "message": "-gu lower Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'gu' ending (archaic) entries"
   },
-  "pos_label_v2h-k": {
+  "pos_label_v2h_k": {
     "message": "-hu/-fu upper Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'hu/fu' ending (archaic) entries"
   },
-  "pos_label_v2h-s": {
+  "pos_label_v2h_s": {
     "message": "-hu/-fu lower Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'hu/fu' ending (archaic) entries"
   },
-  "pos_label_v2k-k": {
+  "pos_label_v2k_k": {
     "message": "-ku upper Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'ku' ending (archaic) entries"
   },
-  "pos_label_v2k-s": {
+  "pos_label_v2k_s": {
     "message": "-ku lower Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'ku' ending (archaic) entries"
   },
-  "pos_label_v2m-k": {
+  "pos_label_v2m_k": {
     "message": "-mu upper Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'mu' ending (archaic) entries"
   },
-  "pos_label_v2m-s": {
+  "pos_label_v2m_s": {
     "message": "-mu lower Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'mu' ending (archaic) entries"
   },
-  "pos_label_v2n-s": {
+  "pos_label_v2n_s": {
     "message": "-nu Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'nu' ending (archaic) entries"
   },
-  "pos_label_v2r-k": {
+  "pos_label_v2r_k": {
     "message": "-ru upper Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'ru' ending (archaic) entries"
   },
-  "pos_label_v2r-s": {
+  "pos_label_v2r_s": {
     "message": "-ru lower Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'ru' ending (archaic) entries"
   },
-  "pos_label_v2s-s": {
+  "pos_label_v2s_s": {
     "message": "-su Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'su' ending (archaic) entries"
   },
-  "pos_label_v2t-k": {
+  "pos_label_v2t_k": {
     "message": "-tsu upper Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'tsu' ending (archaic) entries"
   },
-  "pos_label_v2t-s": {
+  "pos_label_v2t_s": {
     "message": "-tsu upper Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'tsu' ending (archaic) entries"
   },
-  "pos_label_v2w-s": {
+  "pos_label_v2w_s": {
     "message": "-u Nidan verb + we",
     "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'u' ending and 'we' conjugation (archaic) entries"
   },
-  "pos_label_v2y-k": {
+  "pos_label_v2y_k": {
     "message": "-yu upper Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (upper class) with 'yu' ending (archaic) entries"
   },
-  "pos_label_v2y-s": {
+  "pos_label_v2y_s": {
     "message": "-yu lower Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'yu' ending (archaic) entries"
   },
-  "pos_label_v2z-s": {
+  "pos_label_v2z_s": {
     "message": "-zu Nidan verb",
     "description": "Short part-of-speech label shown next to Nidan verb (lower class) with 'zu' ending (archaic) entries"
   },
@@ -1769,7 +1769,7 @@
     "message": "-ku Godan/u-verb",
     "description": "Short part-of-speech label shown next to Godan verb with 'ku' ending entries"
   },
-  "pos_label_v5k-s": {
+  "pos_label_v5k_s": {
     "message": "iku/yuku Godan/u-verb",
     "description": "Short part-of-speech label shown next to Godan verb - Iku/Yuku special class entries"
   },
@@ -1785,7 +1785,7 @@
     "message": "-ru Godan/u-verb",
     "description": "Short part-of-speech label shown next to Godan verb with 'ru' ending entries"
   },
-  "pos_label_v5r-i": {
+  "pos_label_v5r_i": {
     "message": "-ru Godan/u-verb (irr.)",
     "description": "Short part-of-speech label shown next to Godan verb with 'ru' ending (irregular verb) entries"
   },
@@ -1801,7 +1801,7 @@
     "message": "-u Godan/u-verb",
     "description": "Short part-of-speech label shown next to Godan verb with 'u' ending entries"
   },
-  "pos_label_v5u-s": {
+  "pos_label_v5u_s": {
     "message": "-u Godan/u-verb (special)",
     "description": "Short part-of-speech label shown next to Godan verb with 'u' ending (special class) entries"
   },
@@ -1829,15 +1829,15 @@
     "message": "+suru verb",
     "description": "Short part-of-speech label shown next to noun or participle which takes the aux. verb suru entries"
   },
-  "pos_label_vs-c": {
+  "pos_label_vs_c": {
     "message": "-su(ru) verb",
     "description": "Short part-of-speech label shown next to su verb - precursor to the modern suru entries"
   },
-  "pos_label_vs-i": {
+  "pos_label_vs_i": {
     "message": "-suru verb",
     "description": "Short part-of-speech label shown next to suru verb - included entries"
   },
-  "pos_label_vs-s": {
+  "pos_label_vs_s": {
     "message": "-suru verb (special)",
     "description": "Short part-of-speech label shown next to suru verb - special class entries"
   },
