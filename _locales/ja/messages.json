@@ -427,7 +427,7 @@
     "description": "Tooltip displayed when the user attempts to set a hotkey combination including both Ctrl and Alt in a version of Firefox later than 63"
   },
   "error_loading_dictionary": {
-    "message": "辞書の読み込みが失敗しました。もう一度有効してみてください。",
+    "message": "辞書の読み込みが失敗しました。もう一度有効にしてみてください。",
     "description": "Tooltip shown when the dictionary fails to load"
   },
   "extension_description": {
@@ -1442,7 +1442,7 @@
     "description": "Label for hiding part-of-speech labels"
   },
   "options_show_context_menu_item": {
-    "message": "コンテキストメニューに「Rikaichampを有効する」を表示",
+    "message": "コンテキストメニューに「Rikaichampを有効にする」を表示",
     "description": "Option to enable context menu item with label `menu_enable_extension`"
   },
   "options_show_definitions": {
