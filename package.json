@@ -51,7 +51,7 @@
     "combined-stream2": "^1.1.2",
     "copy-webpack-plugin": "^6.4.1",
     "css-loader": "^5.0.1",
-    "fast-glob": "^3.2.4",
+    "fast-glob": "^3.2.5",
     "file-loader": "^6.2.0",
     "iconv-lite": "^0.6.2",
     "jest": "^25.5.4",
