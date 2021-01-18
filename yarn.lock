@@ -855,14 +855,14 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.6.tgz#f4c7ec43e81b319a9815115031709f26987891f0"
   integrity sha512-3c+yGKvVP5Y9TYBEibGNR+kLtijnj7mYrXRg+WpFb2X9xm04g/DXYkfg4hmzJQosc9snFNUPkbYIhu+KAm6jJw==
 
-"@types/karma-webpack@^2.0.7":
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/@types/karma-webpack/-/karma-webpack-2.0.7.tgz#967e7971d8bc3d8da31110f44556842eca3aed85"
-  integrity sha512-8v5+OVjFO+j8YUdbv3cIYIfZJHH2VvUSNqJXDaxnr5sFgv4neMI7D812GFclU2dcjdzicX/qEzfk69ha21453A==
+"@types/karma-webpack@^2.0.8":
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/@types/karma-webpack/-/karma-webpack-2.0.8.tgz#0c6e23d40b83e063b6c94525efc8c47af58cfe0f"
+  integrity sha512-BT09qIvUZR5FNO2W1DsxrpJogZp9+3/LCBB3jjumJg0E1gV6mpcAZu9cTivHfz24l4VQJCVh/jMZioS/leg+Pw==
   dependencies:
     "@types/karma" "*"
     "@types/webpack" "*"
-    "@types/webpack-dev-middleware" "*"
+    "@types/webpack-dev-middleware" "^3"
 
 "@types/karma@*", "@types/karma@^5.0.1":
   version "5.0.1"
@@ -938,10 +938,10 @@
   dependencies:
     source-map "^0.6.1"
 
-"@types/webpack-dev-middleware@*":
-  version "3.7.2"
-  resolved "https://registry.yarnpkg.com/@types/webpack-dev-middleware/-/webpack-dev-middleware-3.7.2.tgz#31030c7cca7f98d56debfd859bb57f9040f0d3c5"
-  integrity sha512-PvETiS//pjVZBK48aJfbxzT7+9LIxanbnk9eXXYUfefGyPdsCkNrMDxRlOVrBvxukXUhD5B6N/pkPMdWrtuFkA==
+"@types/webpack-dev-middleware@^3":
+  version "3.7.3"
+  resolved "https://registry.yarnpkg.com/@types/webpack-dev-middleware/-/webpack-dev-middleware-3.7.3.tgz#2b0aa70b19f30ead7e6ff8c2789d6930e2298c7b"
+  integrity sha512-g6Q1Gom9kGZv8Sme2gNCrxKdxDi68FX3jW4u2Abntx/5ejX1g2tpI95+3ObdXkTHm8XEFpVcmZbmhlcZbVqEeg==
   dependencies:
     "@types/connect" "*"
     "@types/memory-fs" "*"
