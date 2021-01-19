@@ -59,7 +59,7 @@
     "karma-chai": "^0.1.0",
     "karma-firefox-launcher": "^2.1.0",
     "karma-mocha": "^2.0.1",
-    "karma-webpack": "^4.0.2",
+    "karma-webpack": "^5.0.0-alpha.5",
     "mocha": "^8.2.1",
     "prettier": "^2.2.1",
     "semver-parser": "^3.1.0",
