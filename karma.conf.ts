@@ -31,7 +31,7 @@ module.exports = (config: Config) => {
       },
     },
     webpackMiddleware: {},
-    frameworks: ['mocha', 'chai'],
+    frameworks: ['mocha', 'chai', 'webpack'],
     browsers: ['FirefoxHeadless'],
     plugins: [
       require('karma-mocha'),
