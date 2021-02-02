@@ -1,1 +1,2 @@
-data/*.dat text eol=lf
+data/*.idx text eol=lf
+data/*.ljson text eol=lf
