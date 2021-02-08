@@ -47,7 +47,7 @@
     "@types/yargs": "^16.0.0",
     "archiver": "^5.2.0",
     "byline": "^5.0.0",
-    "chai": "^4.2.0",
+    "chai": "^4.3.0",
     "combined-stream2": "^1.1.2",
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.1",
