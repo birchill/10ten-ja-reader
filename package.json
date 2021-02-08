@@ -70,7 +70,7 @@
     "ts-node": "^9.1.1",
     "web-ext-types": "github:michael-zapata/web-ext-types",
     "web-ext-webpack-plugin": "github:birtles/web-ext-webpack-plugin",
-    "webpack": "^5.19.0",
+    "webpack": "^5.21.2",
     "webpack-cli": "^4.5.0",
     "webpack-preprocessor": "^0.1.12",
     "yargs": "^16.2.0"
