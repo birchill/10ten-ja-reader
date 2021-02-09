@@ -9,6 +9,7 @@
     "lint": "web-ext lint",
     "package": "yarn build && web-ext build --overwrite-dest -a dist-firefox-package",
     "package:chrome": "yarn build:chrome && web-ext build --overwrite-dest -s dist-chrome -a dist-chrome-package",
+    "postinstall": "husky install",
     "test": "yarn lint && yarn test:unit && yarn test:browser",
     "test:unit": "jest",
     "test:browser": "karma start --single-run",
@@ -102,11 +103,6 @@
       "json",
       "jsx"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "lint-staged": {
     "*.ts": [
