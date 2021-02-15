@@ -3489,7 +3489,7 @@ finalhandler@1.1.2:
     statuses "~1.5.0"
     unpipe "~1.0.0"
 
-find-up@5.0.0, find-up@^5.0.0:
+find-up@5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/find-up/-/find-up-5.0.0.tgz#4c92819ecb7083561e4f4a240a86be5198f536fc"
   integrity sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==
@@ -5107,10 +5107,10 @@ karma-webpack@^5.0.0:
     minimatch "^3.0.4"
     webpack-merge "^4.1.5"
 
-karma@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/karma/-/karma-6.1.0.tgz#8d9f61252a3f8e935f8456c8df3fa796ca132339"
-  integrity sha512-QmRZ6HdKe6mHd89Az6yb85URRyDbXmn2IBo3lic7cwkkLjDWpjrMJxPAKlwNa5dFM1iHdT+kjtNJM0J5YAH90A==
+karma@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/karma/-/karma-6.1.1.tgz#a7539618cca0f2cbb26d5497120ec31fe340c2a1"
+  integrity sha512-vVDFxFGAsclgmFjZA/qGw5xqWdZIWxVD7xLyCukYUYd5xs/uGzYbXGOT5zOruVBQleKEmXIr4H2hzGCTn+M9Cg==
   dependencies:
     body-parser "^1.19.0"
     braces "^3.0.2"
@@ -6269,13 +6269,6 @@ pkg-dir@^4.2.0:
   integrity sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==
   dependencies:
     find-up "^4.0.0"
-
-pkg-dir@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/pkg-dir/-/pkg-dir-5.0.0.tgz#a02d6aebe6ba133a928f74aec20bafdfe6b8e760"
-  integrity sha512-NPE8TDbzl/3YQYY7CSS228s3g2ollTFnc+Qi3tqmqJp9Vg2ovUpixcJEo2HJScN2Ez+kEaal6y70c0ehqJBJeA==
-  dependencies:
-    find-up "^5.0.0"
 
 please-upgrade-node@^3.2.0:
   version "3.2.0"
