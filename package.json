@@ -64,7 +64,7 @@
     "mocha": "^8.3.0",
     "prettier": "^2.2.1",
     "semver-parser": "^3.1.0",
-    "source-map-loader": "^2.0.0",
+    "source-map-loader": "^2.0.1",
     "split2": "^3.2.2",
     "ts-jest": "^25.5.1",
     "ts-loader": "^8.0.17",
