@@ -43,7 +43,7 @@
     "@types/jest": "^26.0.20",
     "@types/karma": "^6.1.0",
     "@types/karma-webpack": "^2.0.8",
-    "@types/mocha": "^8.2.0",
+    "@types/mocha": "^8.2.1",
     "@types/split2": "^2.1.6",
     "@types/yargs": "^16.0.0",
     "archiver": "^5.2.0",
