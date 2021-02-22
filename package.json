@@ -79,7 +79,7 @@
   "dependencies": {
     "@birchill/hikibiki-data": "^7.0.1",
     "@birchill/normal-jp": "^1.2.1",
-    "@bugsnag/js": "^7.6.0",
+    "@bugsnag/js": "^7.8.0",
     "husky": "^5.1.1",
     "lint-staged": "^10.5.4",
     "typescript": "^4.1.5",
