@@ -923,8 +923,11 @@ export class RikaiContent {
       // We always treat <rb> and <ruby> tags as inline regardless of the
       // styling since sites like renshuu.org do faux-ruby styling where they
       // give these elements styles like 'display: table-row-group'.
+      //
+      // Furthermore, we treat inline-block as inline because YouTube puts
+      // okurigana in a separate inline-block span when using ruby it seems.
       (['RB', 'RUBY'].includes(element.tagName) ||
-        ['inline', 'ruby', 'ruby-base', 'ruby-text'].includes(
+        ['inline', 'inline-block', 'ruby', 'ruby-base', 'ruby-text'].includes(
           getComputedStyle(element).display!
         ));
 
