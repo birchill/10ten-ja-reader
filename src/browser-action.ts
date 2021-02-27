@@ -101,7 +101,11 @@ export function updateBrowserAction({
   if (
     hasNotOkDatabase &&
     !!jpdictState.updateError &&
-    jpdictState.updateError.name !== 'AbortError'
+    jpdictState.updateError.name !== 'AbortError' &&
+    // Don't show quota exceeded errors. If the quota is exceeded, there's not
+    // a lot the user can do about it, and we don't want to bother them with
+    // a constant error signal.
+    jpdictState.updateError.name !== 'QuotaExceededError'
   ) {
     browser.browserAction.setBadgeText({ text: '!' });
     browser.browserAction.setBadgeBackgroundColor({ color: 'yellow' });
