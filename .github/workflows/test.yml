@@ -6,21 +6,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@master
-    - name: Setup node
-      uses: actions/setup-node@v1
-      with:
-        node-version: '10.x'
-    - name: Build
-      run: |
-        yarn install
-        yarn build
-        yarn build:chrome
-    - name: Run tests
-      env:
-        CI: true
-      run: |
-        yarn test
-    - name: Package
-      run: yarn package
+      - name: Checkout code
+        uses: actions/checkout@master
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      - name: Build
+        run: |
+          yarn install
+          yarn build
+          yarn build:chrome
+      - name: Run tests
+        env:
+          CI: true
+        run: |
+          yarn test
+      - name: Package
+        run: yarn package
