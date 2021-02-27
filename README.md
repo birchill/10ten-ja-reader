@@ -53,8 +53,11 @@ yarn start
 To use a specific version of Firefox (e.g. Nightly):
 
 ```
-yarn start --firefox nightly
+yarn start --env firefox=nightly
 ```
+
+Other options include `--env firefoxProfile=<path>`,
+`--env keepProfileChanges`, and `--env profileCreateIfMissing`.
 
 ## Testing
 

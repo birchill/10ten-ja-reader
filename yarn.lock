@@ -8123,13 +8123,13 @@ wcwidth@^1.0.0:
   version "3.2.1"
   resolved "https://codeload.github.com/michael-zapata/web-ext-types/tar.gz/117c1151a6f1b88bf3097cf6e9d0beab4a8c3e6f"
 
-"web-ext-webpack-plugin@github:birtles/web-ext-webpack-plugin":
+"web-ext-webpack-plugin@github:birtles/web-ext-webpack-plugin#0c5ba9872c0c5dd2180924cad5cbfbd6aef1837a":
   version "1.0.0"
-  resolved "https://codeload.github.com/birtles/web-ext-webpack-plugin/tar.gz/0601c9ed52ba765574913ad5536e0f9e88c502a8"
+  resolved "https://codeload.github.com/birtles/web-ext-webpack-plugin/tar.gz/0c5ba9872c0c5dd2180924cad5cbfbd6aef1837a"
   dependencies:
-    web-ext "^5.0.0"
+    web-ext "^5.5.0"
 
-web-ext@^5.0.0, web-ext@^5.5.0:
+web-ext@^5.5.0:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/web-ext/-/web-ext-5.5.0.tgz#3faf280416b8f1eae19fb5c4105a03d08b11ca42"
   integrity sha512-f+NHiYwbTS0X6eSLkBDWoCYkkIJweVazGf4MD8S+kRX/5z40WsYsnRdVWG+p34Z6rCyNvlHHrnO2S1W8WWg7Tw==
