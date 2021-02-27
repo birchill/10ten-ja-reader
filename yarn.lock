@@ -368,14 +368,14 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@birchill/hikibiki-data@^7.0.1":
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-7.0.1.tgz#add7de249101bef145948323a34357beacd22bf2"
-  integrity sha512-E8+0+f1LtZ/IERQblS0drN6vZCxRJrhyITwltAIJ8h9Sk/cKhhm9xKc/6DEJXO5l0JA32cN9O8xd7iRuQwwyhg==
+"@birchill/hikibiki-data@^7.0.2":
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-7.0.2.tgz#76c5beca38a13a1bb59a67c5a7f78f6adeff0831"
+  integrity sha512-jM7U+xReywy/OJ/jEuM8u9NJj4MW1KcQYZuc1S5UUn8mfhSZrrqzQpmsNaBQr+F3cbETM9OBRgjoHeycE2trhg==
   dependencies:
     "@birchill/json-equalish" "^1.0.1"
     "@birchill/normal-jp" "^1.1.3"
-    idb "^5.0.0"
+    idb "^6.0.0"
 
 "@birchill/json-equalish@^1.0.1":
   version "1.0.1"
@@ -4027,10 +4027,10 @@ icss-utils@^5.0.0, icss-utils@^5.1.0:
   resolved "https://registry.yarnpkg.com/icss-utils/-/icss-utils-5.1.0.tgz#c6be6858abd013d768e98366ae47e25d5887b1ae"
   integrity sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==
 
-idb@^5.0.0:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/idb/-/idb-5.0.1.tgz#aad7d045490a3be133885cd0ce15b334a83ce3ac"
-  integrity sha512-jdFnxTvz3JZ5AQP4nAb0x7bnisFNO5KqafsarDn/aehIn84UcVY3z96mq6WiqNe8z7OpZWZ0xG1ORbkwuBp5Mw==
+idb@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/idb/-/idb-6.0.0.tgz#00d6092b948138cf9bebc9dcddc4df8bf60bf0ac"
+  integrity sha512-+M367poGtpzAylX4pwcrZIa7cFQLfNkAOlMMLN2kw/2jGfJP6h+TB/unQNSVYwNtP8XqkLYrfuiVnxLQNP1tjA==
 
 ieee754@^1.1.4:
   version "1.1.13"
@@ -8127,7 +8127,7 @@ wcwidth@^1.0.0:
   version "1.0.0"
   resolved "https://codeload.github.com/birtles/web-ext-webpack-plugin/tar.gz/0c5ba9872c0c5dd2180924cad5cbfbd6aef1837a"
   dependencies:
-    web-ext "^5.5.0"
+    web-ext "^5.0.0"
 
 web-ext@^5.5.0:
   version "5.5.0"
