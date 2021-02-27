@@ -16,12 +16,13 @@ import {
   notifyDbUpdateComplete,
   notifyError,
   JpdictWorkerMessage,
+  leaveBreadcrumb,
 } from './jpdict-worker-messages';
 import { requestIdleCallbackPromise } from './request-idle-callback';
 
 declare var self: DedicatedWorkerGlobalScope;
 
-onmessage = async (evt: MessageEvent) => {
+self.onmessage = async (evt: MessageEvent) => {
   // We seem to get random events here occasionally. Not sure where they come
   // from.
   if (!evt.data) {
@@ -49,6 +50,10 @@ onmessage = async (evt: MessageEvent) => {
       }
       break;
   }
+};
+
+self.onerror = (e) => {
+  self.postMessage(notifyError({ error: e.error }));
 };
 
 let db: JpdictDatabase | undefined;
@@ -139,9 +144,8 @@ async function updateAllSeries({
     if (nextRetry) {
       const diffInMs = nextRetry.getTime() - Date.now();
       self.postMessage(
-        notifyError({
-          error: `Encountered ${error.name} error updating ${series} database. Retrying in ${diffInMs}ms.`,
-          severity: 'breadcrumb',
+        leaveBreadcrumb({
+          message: `Encountered ${error.name} error updating ${series} database. Retrying in ${diffInMs}ms.`,
         })
       );
 
@@ -158,9 +162,8 @@ async function updateAllSeries({
       self.postMessage(notifyError({ error }));
     } else {
       self.postMessage(
-        notifyError({
-          error: `Database update for ${series} database encountered ${error.name} error`,
-          severity: 'breadcrumb',
+        leaveBreadcrumb({
+          message: `Database update for ${series} database encountered ${error.name} error`,
         })
       );
     }
@@ -174,9 +177,8 @@ async function updateAllSeries({
     if (currentUpdate) {
       lastUpdateError = undefined;
       self.postMessage(
-        notifyError({
-          error: `Successfully updated ${currentUpdate.series} database`,
-          severity: 'breadcrumb',
+        leaveBreadcrumb({
+          message: `Successfully updated ${currentUpdate.series} database`,
         })
       );
       doDbStateNotification();

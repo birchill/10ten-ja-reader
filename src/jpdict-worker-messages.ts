@@ -1,5 +1,7 @@
 import { JpdictState } from './jpdict';
 
+import { serializeError } from './serialize-error';
+
 export const queryState = () => ({ type: <const>'querystate' });
 
 export const updateDb = ({
@@ -28,16 +30,21 @@ export const notifyDbUpdateComplete = (lastCheck: Date | null) => ({
   lastCheck,
 });
 
+export const leaveBreadcrumb = ({ message }: { message: string }) => ({
+  type: <const>'breadcrumb',
+  message,
+});
+
 export const notifyError = ({
   error,
   severity = <const>'error',
 }: {
-  error: string | Error;
-  severity?: 'error' | 'warning' | 'breadcrumb';
+  error: Error;
+  severity?: 'error' | 'warning';
 }) => ({
   type: <const>'error',
-  error,
   severity,
+  ...serializeError(error),
 });
 
 export type JpdictWorkerMessage =
@@ -47,4 +54,5 @@ export type JpdictWorkerMessage =
   | ReturnType<typeof deleteDb>
   | ReturnType<typeof notifyDbStateUpdated>
   | ReturnType<typeof notifyDbUpdateComplete>
+  | ReturnType<typeof leaveBreadcrumb>
   | ReturnType<typeof notifyError>;

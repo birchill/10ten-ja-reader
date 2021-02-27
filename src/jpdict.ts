@@ -135,17 +135,17 @@ export async function initDb({
         }
         break;
 
+      case 'breadcrumb':
+        Bugsnag.leaveBreadcrumb(message.message);
+        break;
+
       case 'error':
-        if (message.severity === 'breadcrumb') {
-          Bugsnag.leaveBreadcrumb(String(message.error));
-        } else {
-          Bugsnag.notify(
-            message.error || '(Unrecognized error from jpdict worker)',
-            (event) => {
-              event.severity = message.severity as 'error' | 'warning';
-            }
-          );
-        }
+        Bugsnag.notify(
+          { name: message.name, message: message.message },
+          (event) => {
+            event.severity = message.severity as 'error' | 'warning';
+          }
+        );
         break;
     }
   };
