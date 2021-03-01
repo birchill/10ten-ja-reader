@@ -1,4 +1,8 @@
-## 0.3.4 (not released yet)
+## 0.3.5 (Not released yet)
+
+(Nothing yet)
+
+## 0.3.4 (2021-03-01)
 
 - Made rikaichamp traverse text in `inline-block` elements so that it can
   ready YouTube subtitles with ruby
