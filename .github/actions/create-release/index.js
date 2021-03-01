@@ -16,7 +16,7 @@ async function main() {
     owner,
     repo,
     tag_name: `v${version}`,
-    name: `Release v${version} (test)`,
+    name: `Release v${version}`,
     draft: true,
     prerelease,
     target_commitish: sha,
