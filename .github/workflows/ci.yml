@@ -75,6 +75,9 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build assets
+        env:
+          RELEASE_BUILD: 1
+          BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY }}
         run: |
           yarn package
           yarn package:chrome

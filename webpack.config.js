@@ -1,6 +1,11 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WebExtWebpackPlugin = require('web-ext-webpack-plugin');
+const {
+  BugsnagBuildReporterPlugin,
+  BugsnagSourceMapUploaderPlugin,
+} = require('webpack-bugsnag-plugins');
+const pjson = require('./package.json');
 
 // Look for an --env arguments to pass along when running Firefox
 const env = Object.fromEntries(
@@ -112,6 +117,29 @@ const firefoxConfig = {
     }),
   ],
 };
+
+if (process.env.RELEASE_BUILD && process.env.BUGSNAG_API_KEY) {
+  firefoxConfig.plugins.push(
+    new BugsnagBuildReporterPlugin(
+      {
+        apiKey: process.env.BUGSNAG_API_KEY,
+        appVersion: pjson.version,
+      },
+      {}
+    )
+  );
+  firefoxConfig.plugins.push(
+    new BugsnagSourceMapUploaderPlugin(
+      {
+        apiKey: process.env.BUGSNAG_API_KEY,
+        ignoredBundleExtensions: ['.css', '.json', '.idx', '.svg', '.html'],
+        publicPath: `https://github.com/birtles/rikaichamp/releases/download/v${pjson.version}/`,
+        overwrite: true,
+      },
+      {}
+    )
+  );
+}
 
 const chromeConfig = {
   ...commonExtConfig,
