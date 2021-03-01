@@ -4,15 +4,12 @@ const fs = require('fs');
 const path = require('path');
 
 async function main() {
-  const token = core.getInput('GITHUB_TOKEN');
-  const octokit = github.getOctokit(token);
-
+  const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
   const {
     repo: { owner, repo },
     sha,
   } = github.context;
   const prerelease = core.getInput('prerelease').toLowerCase() === 'true';
-  const version = core.getInput('version').toLowerCase();
 
   const release = await octokit.repos.createRelease({
     owner,
@@ -25,6 +22,7 @@ async function main() {
   });
 
   const root = path.join(__dirname, '..', '..', '..');
+  const version = core.getInput('version').toLowerCase();
 
   // Upload Firefox asset
   const firefoxPackageName = core.getInput('firefox_package_name');
