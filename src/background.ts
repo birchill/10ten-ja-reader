@@ -837,7 +837,18 @@ function onTabSelect(tabId: number) {
   });
 }
 
-browser.runtime.onInstalled.addListener(() => {
+browser.runtime.onInstalled.addListener(async () => {
+  // Request persistent storage permission
+  let persisted = await navigator.storage.persisted();
+  if (!persisted) {
+    persisted = await navigator.storage.persist();
+    if (persisted) {
+      Bugsnag.leaveBreadcrumb('Got persistent storage permission');
+    } else {
+      Bugsnag.leaveBreadcrumb('Failed to get persistent storage permission');
+    }
+  }
+
   Bugsnag.leaveBreadcrumb('Running initJpDict from onInstalled...');
   initJpDict();
 });
