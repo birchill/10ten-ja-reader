@@ -7,7 +7,7 @@ async function main() {
   const {
     repo: { owner, repo },
     sha,
-  } = context;
+  } = github.context;
   const prerelease = core.getInput('prerelease').toLowerCase() === 'true';
   const version = core.getInput('version').toLowerCase();
 
@@ -69,6 +69,7 @@ async function main() {
 
   // Upload raw source files
   for (const file of fs.readdirSync(path.join(root, 'dist-firefox'))) {
+    // Too lazy to import @actions/glob...
     if (!file.startsWith('rikaichamp-') || !file.endsWith('.js')) {
       continue;
     }
