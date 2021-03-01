@@ -10,19 +10,19 @@ async function main() {
     sha,
   } = github.context;
   const prerelease = core.getInput('prerelease').toLowerCase() === 'true';
+  const version = core.getInput('version').toLowerCase();
 
   const release = await octokit.repos.createRelease({
     owner,
     repo,
-    tag_name: process.env.GITHUB_REF,
-    name: `Release ${process.env.GITHUB_REF} (test)`,
+    tag_name: `v${version}`,
+    name: `Release v${version} (test)`,
     draft: true,
     prerelease,
     target_commitish: sha,
   });
 
   const root = path.join(__dirname, '..', '..', '..');
-  const version = core.getInput('version').toLowerCase();
 
   // Upload Firefox asset
   const firefoxPackageName = core.getInput('firefox_package_name');
@@ -80,7 +80,7 @@ async function main() {
       repo,
       release_id: release.data.id,
       name: file,
-      data: fs.readFileSync(file),
+      data: fs.readFileSync(path.join(root, 'dist-firefox', file)),
     });
   }
 
