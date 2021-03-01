@@ -17,7 +17,7 @@ jobs:
 
       - name: Build
         run: |
-          yarn install
+          yarn install --frozen-lockfile
           yarn build
           yarn build:chrome
 
@@ -46,7 +46,7 @@ jobs:
           node-version: '14.x'
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile
 
       - name: Build assets
         run: |
