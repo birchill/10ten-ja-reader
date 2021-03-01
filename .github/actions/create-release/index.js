@@ -4,6 +4,9 @@ const fs = require('fs');
 const path = require('path');
 
 async function main() {
+  const token = core.getInput('GITHUB_TOKEN');
+  const octokit = github.getOctokit(token);
+
   const {
     repo: { owner, repo },
     sha,
@@ -11,7 +14,7 @@ async function main() {
   const prerelease = core.getInput('prerelease').toLowerCase() === 'true';
   const version = core.getInput('version').toLowerCase();
 
-  const release = await github.repos.createRelease({
+  const release = await octokit.repos.createRelease({
     owner,
     repo,
     tag_name: process.env.GITHUB_REF,
@@ -30,7 +33,7 @@ async function main() {
     'dist-firefox-package',
     firefoxPackageName
   );
-  await github.repos.uploadReleaseAsset({
+  await octokit.repos.uploadReleaseAsset({
     owner,
     repo,
     release_id: release.data.id,
@@ -45,7 +48,7 @@ async function main() {
     'dist-firefox-package',
     chromePackageName
   );
-  await github.repos.uploadReleaseAsset({
+  await octokit.repos.uploadReleaseAsset({
     owner,
     repo,
     release_id: release.data.id,
@@ -59,7 +62,7 @@ async function main() {
     'dist-src',
     `rikaichamp-${version}-src.zip`
   );
-  await github.repos.uploadReleaseAsset({
+  await octokit.repos.uploadReleaseAsset({
     owner,
     repo,
     release_id: release.data.id,
@@ -74,7 +77,7 @@ async function main() {
       continue;
     }
 
-    await github.repos.uploadReleaseAsset({
+    await octokit.repos.uploadReleaseAsset({
       owner,
       repo,
       release_id: release.data.id,

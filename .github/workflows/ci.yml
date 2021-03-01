@@ -87,6 +87,8 @@ jobs:
       - name: Create release (experimental new version)
         id: create_release_new
         uses: ./.github/actions/create-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           chrome_package_name: ${{ steps.read_package_version.outputs.chrome_package_name }}
           firefox_package_name: ${{ steps.read_package_version.outputs.firefox_package_name }}
