@@ -55,7 +55,7 @@ jobs:
         uses: ./.github/actions/read-package-version
 
       - name: Create release (experimental new version)
-        id: create_release
+        id: create_release_new
         uses: ./.github/actions/create-release
         with:
           chrome_package_name: ${{ steps.read_package_version.outputs.chrome_package_name }}

@@ -81,6 +81,8 @@ async function main() {
       data: fs.readFileSync(file),
     });
   }
+
+  core.setOutput('url', release.data.html_url);
 }
 
 main().catch((error) => {
