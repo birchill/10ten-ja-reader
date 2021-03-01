@@ -10,5 +10,5 @@ outputs:
   prerelease:
     description: 'Whether or not this version is a pre-release version'
 runs:
-  using: 'node14'
+  using: 'node12'
   main: 'index.js'
