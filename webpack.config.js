@@ -132,6 +132,7 @@ if (process.env.RELEASE_BUILD && process.env.BUGSNAG_API_KEY) {
     new BugsnagSourceMapUploaderPlugin(
       {
         apiKey: process.env.BUGSNAG_API_KEY,
+        appVersion: pjson.version,
         ignoredBundleExtensions: ['.css', '.json', '.idx', '.svg', '.html'],
         publicPath: `https://github.com/birtles/rikaichamp/releases/download/v${pjson.version}/`,
         overwrite: true,
