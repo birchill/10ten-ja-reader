@@ -1,0 +1,21 @@
+name: 'Create release'
+description: 'Creates a Rikaichamp release'
+inputs:
+  chrome_package_name:
+    description: The filename of the Chrome package within the dist-chrome-package folder
+    required: true
+  firefox_package_name:
+    description: The filename of the Firefox package within the dist-firefox-package folder
+    required: true
+  prerelease:
+    description: Whether or not this is a pre-release. Defaults to false.
+    default: false
+  version:
+    description: The version name for this release
+    required: true
+outputs:
+  url:
+    description: 'The release URL'
+runs:
+  using: 'node14'
+  main: 'index.js'
