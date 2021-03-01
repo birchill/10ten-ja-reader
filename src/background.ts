@@ -68,6 +68,7 @@ import {
   searchKanji,
   searchNames,
 } from './jpdict';
+import { shouldRequestPersistentStorage } from './quota-management';
 
 //
 // Setup bugsnag
@@ -840,7 +841,7 @@ function onTabSelect(tabId: number) {
 browser.runtime.onInstalled.addListener(async () => {
   // Request persistent storage permission
   let persisted = await navigator.storage.persisted();
-  if (!persisted) {
+  if (!persisted && (await shouldRequestPersistentStorage())) {
     persisted = await navigator.storage.persist();
     if (persisted) {
       Bugsnag.leaveBreadcrumb('Got persistent storage permission');
