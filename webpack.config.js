@@ -1,6 +1,6 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const WebExtWebpackPlugin = require('web-ext-webpack-plugin');
+const WebExtPlugin = require('web-ext-plugin');
 const {
   BugsnagBuildReporterPlugin,
   BugsnagSourceMapUploaderPlugin,
@@ -107,7 +107,7 @@ const firefoxConfig = {
         '_locales/**/*',
       ],
     }),
-    new WebExtWebpackPlugin({
+    new WebExtPlugin({
       firefox,
       firefoxProfile,
       keepProfileChanges,

@@ -8259,15 +8259,16 @@ wcwidth@^1.0.0:
   dependencies:
     defaults "^1.0.3"
 
+web-ext-plugin@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/web-ext-plugin/-/web-ext-plugin-1.0.0.tgz#ab6af29662839c5ed526c69d1c767806e4890f2a"
+  integrity sha512-BSf89pCgX1+DhaTgc1vpT0bZqu2Gb1ZxrHPEEaNWTQcRFqxXkRtpHNkst5fHockVozDe9FoXnJQNQYP5gb5/Ng==
+  dependencies:
+    web-ext "^5.5.0"
+
 "web-ext-types@github:michael-zapata/web-ext-types":
   version "3.2.1"
   resolved "https://codeload.github.com/michael-zapata/web-ext-types/tar.gz/117c1151a6f1b88bf3097cf6e9d0beab4a8c3e6f"
-
-"web-ext-webpack-plugin@github:birtles/web-ext-webpack-plugin":
-  version "1.0.0"
-  resolved "https://codeload.github.com/birtles/web-ext-webpack-plugin/tar.gz/0c5ba9872c0c5dd2180924cad5cbfbd6aef1837a"
-  dependencies:
-    web-ext "^5.0.0"
 
 web-ext@^5.5.0:
   version "5.5.0"
