@@ -99,7 +99,7 @@ const bugsnagClient = Bugsnag.start({
   collectUserIp: false,
   enabledBreadcrumbTypes: ['log', 'error'],
   logger: null,
-  onError: (event: BugsnagEvent) => {
+  onError: async (event: BugsnagEvent) => {
     // Due to Firefox bug 1561911
     // (https://bugzilla.mozilla.org/show_bug.cgi?id=1561911)
     // we can get spurious unhandledrejections when using streams.
@@ -146,6 +146,16 @@ const bugsnagClient = Bugsnag.start({
           /^moz-extension:\/\/[0-9a-z-]+/,
           basePath
         );
+      }
+    }
+
+    // If we get a QuotaExceededError, report how much disk space was available.
+    if (event.errors[0].errorClass === 'QuotaExceededError') {
+      try {
+        const { quota, usage } = await navigator.storage.estimate();
+        event.addMetadata('storage', { quota, usage });
+      } catch (_e) {
+        console.log('Failed to get storage estimate');
       }
     }
 
