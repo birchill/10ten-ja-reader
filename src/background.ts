@@ -108,18 +108,18 @@ const bugsnagClient = Bugsnag.start({
       return false;
     }
 
-    // Fix up grouping
+    // Group download errors by URL and error code
     if (
       event.errors[0].errorClass === 'DownloadError' &&
       event.originalError &&
       typeof event.originalError.url !== 'undefined'
     ) {
-      // Group by URL and error code
       event.groupingHash =
         String(event.originalError.code) + event.originalError.url;
       event.request.url = event.originalError.url;
     }
 
+    // Group extension errors by action and key
     if (
       event.errors[0].errorClass === 'ExtensionStorageError' &&
       event.originalError
@@ -131,6 +131,23 @@ const bugsnagClient = Bugsnag.start({
     // Update release stage here since we can only fetch this async but
     // bugsnag doesn't allow updating the instance after initializing.
     event.app.releaseStage = releaseStage;
+
+    // Update paths in stack trace so that:
+    //
+    // (a) They are the same across installations of the same version (since
+    //     the installed extension ID in the path differs per installation).
+    // (b) They point to where the source is available publicly.
+    //
+    // TODO: Do the equivalent for Chrome etc.
+    const basePath = `https://github.com/birtles/rikaichamp/releases/download/v${manifest.version}/`;
+    for (const error of event.errors) {
+      for (const frame of error.stacktrace) {
+        frame.file = frame.file.replace(
+          /^moz-extension:\/\/[0-9a-z-]+/,
+          basePath
+        );
+      }
+    }
 
     return true;
   },
