@@ -907,7 +907,7 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
   statusElem.append(buttonDiv);
 }
 
-function updateIdleStateSummary(
+async function updateIdleStateSummary(
   evt: DbStateUpdatedMessage,
   statusElem: Element
 ) {
@@ -928,10 +928,27 @@ function updateIdleStateSummary(
     infoDiv.classList.add('db-summary-info');
 
     const messageDiv = document.createElement('div');
-    const errorMessage = browser.i18n.getMessage(
-      'options_db_update_error',
-      updateError.message
-    );
+    let errorMessage: string | undefined;
+    if (updateError.name === 'QuotaExceededError') {
+      try {
+        const { quota, usage } = await navigator.storage.estimate();
+        if (typeof quota !== 'undefined' && typeof usage !== 'undefined') {
+          errorMessage = browser.i18n.getMessage(
+            'options_db_update_quota_error',
+            [formatSize(quota), formatSize(usage)]
+          );
+        }
+      } catch (_e) {
+        /* Ignore */
+      }
+    }
+
+    if (!errorMessage) {
+      errorMessage = browser.i18n.getMessage(
+        'options_db_update_error',
+        updateError.message
+      );
+    }
     messageDiv.append(errorMessage);
     infoDiv.append(messageDiv);
 
@@ -1079,6 +1096,30 @@ function formatDate(date: Date): string {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
     date.getDate()
   )} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function formatSize(sizeInBytes: number): string {
+  const kilobyte = 1024;
+  const megabyte = kilobyte * 1024;
+  const gigabyte = megabyte * 1024;
+  const terabyte = gigabyte * 1024;
+
+  // We don't bother localizing any of this. Anyone able to make sense of a
+  // file size, can probably understand an English file size prefix.
+  if (sizeInBytes >= terabyte) {
+    return (sizeInBytes / terabyte).toFixed(3) + 'Tb';
+  }
+  if (sizeInBytes >= gigabyte) {
+    return (sizeInBytes / gigabyte).toFixed(2) + 'Gb';
+  }
+  if (sizeInBytes >= megabyte) {
+    return (sizeInBytes / megabyte).toFixed(1) + 'Mb';
+  }
+  if (sizeInBytes >= kilobyte) {
+    return Math.round(sizeInBytes / kilobyte) + 'Kb';
+  }
+
+  return sizeInBytes + ' bytes';
 }
 
 function triggerDatabaseUpdate() {
