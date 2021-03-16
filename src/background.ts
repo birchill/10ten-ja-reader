@@ -100,14 +100,6 @@ const bugsnagClient = Bugsnag.start({
   enabledBreadcrumbTypes: ['log', 'error'],
   logger: null,
   onError: async (event: BugsnagEvent) => {
-    // Due to Firefox bug 1561911
-    // (https://bugzilla.mozilla.org/show_bug.cgi?id=1561911)
-    // we can get spurious unhandledrejections when using streams.
-    // Until the fix for that bug is in ESR, we filter them out here.
-    if (event.errors[0].errorClass === 'DownloadError' && event.unhandled) {
-      return false;
-    }
-
     // Group download errors by URL and error code
     if (
       event.errors[0].errorClass === 'DownloadError' &&
