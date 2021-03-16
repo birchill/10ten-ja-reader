@@ -931,11 +931,19 @@ async function updateIdleStateSummary(
     let errorMessage: string | undefined;
     if (updateError.name === 'QuotaExceededError') {
       try {
-        const { quota, usage } = await navigator.storage.estimate();
-        if (typeof quota !== 'undefined' && typeof usage !== 'undefined') {
+        let { quota } = await navigator.storage.estimate();
+        if (typeof quota !== 'undefined') {
+          // For Firefox, typically origins get a maximum of 20% of the global
+          // limit. When we have unlimitedStorage permission, however, we can
+          // use up to the full amount of the global limit. The storage API,
+          // however, still returns 20% as the quota, so multiplying by 5 will
+          // give the actual quota.
+          if (isFirefox()) {
+            quota *= 5;
+          }
           errorMessage = browser.i18n.getMessage(
             'options_db_update_quota_error',
-            [formatSize(quota), formatSize(usage)]
+            formatSize(quota)
           );
         }
       } catch (_e) {
@@ -964,6 +972,7 @@ async function updateIdleStateSummary(
 
     statusElem.classList.add('-error');
     statusElem.append(infoDiv);
+
     return;
   }
 

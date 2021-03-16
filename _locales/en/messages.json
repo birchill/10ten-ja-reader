@@ -1290,15 +1290,11 @@
     }
   },
   "options_db_update_quota_error": {
-    "message": "Not enough disk space to update database ($usage$ of available $quota$ used)",
+    "message": "Not enough disk space to update database (est. $quota$ available)",
     "description": "Label when we failed to update the data for some reason",
     "placeholders": {
-      "usage": {
-        "content": "$1",
-        "example": "The amount of disk space used, formatted as a file size, e.g. 150Kb, 1.3Mb etc."
-      },
       "quota": {
-        "content": "$2",
+        "content": "$1",
         "example": "The amount of disk space available, formatted as a file size."
       }
     }

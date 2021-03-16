@@ -1293,15 +1293,11 @@
     }
   },
   "options_db_update_quota_error": {
-    "message": "ディスクの空き容量が不足しています。(利用可能 $quota$ の内、現在 $usage$ が利用中)",
+    "message": "ディスクの空き容量が不足しています。(およそ $quota$ 利用可)",
     "description": "Label when we failed to update the data for some reason",
     "placeholders": {
-      "usage": {
-        "content": "$1",
-        "example": "The amount of disk space used, formatted as a file size, e.g. 150Kb, 1.3Mb etc."
-      },
       "quota": {
-        "content": "$2",
+        "content": "$1",
         "example": "The amount of disk space available, formatted as a file size."
       }
     }

@@ -139,7 +139,7 @@ const bugsnagClient = Bugsnag.start({
     // (b) They point to where the source is available publicly.
     //
     // TODO: Do the equivalent for Chrome etc.
-    const basePath = `https://github.com/birtles/rikaichamp/releases/download/v${manifest.version}/`;
+    const basePath = `https://github.com/birtles/rikaichamp/releases/download/v${manifest.version}`;
     for (const error of event.errors) {
       for (const frame of error.stacktrace) {
         frame.file = frame.file.replace(
