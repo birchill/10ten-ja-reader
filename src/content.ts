@@ -52,6 +52,13 @@ import {
   getWordToCopy,
   Entry as CopyEntry,
 } from './copy-text';
+import {
+  isContentEditableNode,
+  isEditableNode,
+  isFocusable,
+  isInclusiveAncestor,
+  isTextInputNode,
+} from './dom-utils';
 import { SelectionMeta } from './meta';
 import { kanjiToNumber } from './numbers';
 import {
@@ -120,83 +127,6 @@ interface CachedGetTextResult {
   result: GetTextResult;
   position: CursorPosition | null;
 }
-
-const isTextInputNode = (
-  node: Node | null
-): node is HTMLInputElement | HTMLTextAreaElement => {
-  const allowedInputTypes = [
-    'button',
-    'email',
-    'search',
-    'submit',
-    'text',
-    'url',
-  ];
-  return (
-    !!node &&
-    node.nodeType === Node.ELEMENT_NODE &&
-    (((<Element>node).tagName === 'INPUT' &&
-      allowedInputTypes.includes((<HTMLInputElement>node).type)) ||
-      (<Element>node).tagName === 'TEXTAREA')
-  );
-};
-
-const nodeOrParentElement = (node: Node): Element | null =>
-  node.nodeType !== Node.ELEMENT_NODE ? node.parentElement : (node as Element);
-
-const isContentEditableNode = (node: Node | null): boolean => {
-  if (!node) {
-    return false;
-  }
-
-  const nodeOrParent = nodeOrParentElement(node);
-  if (!(nodeOrParent instanceof HTMLElement)) {
-    return false;
-  }
-
-  let currentNode: HTMLElement | null = nodeOrParent as HTMLElement;
-  while (currentNode) {
-    if (currentNode.contentEditable === 'true') {
-      return true;
-    } else if (currentNode.contentEditable === 'false') {
-      return false;
-    }
-    currentNode = currentNode.parentElement;
-  }
-  return false;
-};
-
-const isEditableNode = (node: Node | null): boolean =>
-  isTextInputNode(node) || isContentEditableNode(node);
-
-const isInclusiveAncestor = (
-  ancestor: Element,
-  testNode?: Node | null
-): boolean => {
-  if (!testNode) {
-    return false;
-  }
-
-  let node: Node | null = testNode;
-  do {
-    if (node === ancestor) {
-      return true;
-    }
-    node = node.parentElement;
-  } while (node);
-
-  return false;
-};
-
-interface Focusable {
-  focus(): void;
-}
-
-// Both HTMLElement and SVGElement interfaces have a focus() method but I guess
-// Edge doesn't currently support focus() on SVGElement so we just duck-type
-// this.
-const isFocusable = (element?: any): element is Focusable =>
-  element && typeof element.focus === 'function' && element.focus.length === 0;
 
 export class RikaiContent {
   // This should be enough for most (but not all) entries for now.
