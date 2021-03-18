@@ -70,6 +70,7 @@ import {
   renderPopup,
   setPopupStyle,
 } from './popup';
+import { getPopupPosition } from './popup-position';
 import { query, QueryResult } from './query';
 import {
   isForeignObjectElement,
@@ -1357,59 +1358,15 @@ export class RikaiContent {
     const popup = renderPopup(this.currentSearchResult!, popupOptions);
 
     // Position the popup
-    const referencePosition = this.currentPoint ? this.currentPoint : null;
-    const getRefCoord = (coord: 'x' | 'y'): number =>
-      referencePosition && !isNaN(parseInt(referencePosition[coord] as any))
-        ? parseInt(referencePosition[coord] as any)
-        : 0;
-
-    let popupX = getRefCoord('x');
-    let popupY = getRefCoord('y');
-    const popupWidth = popup.offsetWidth || 200;
-    const popupHeight = popup.offsetHeight;
-
-    if (this.currentTarget) {
-      // Horizontal position: Go left if necessary
-      //
-      // (We should never be too far left since popupX, if set to
-      // something non-zero, is coming from a mouse event which should
-      // be positive.)
-      if (popupX + popupWidth > doc.defaultView!.innerWidth - 20) {
-        popupX = doc.defaultView!.innerWidth - popupWidth - 20;
-        if (popupX < 0) {
-          popupX = 0;
-        }
-      }
-
-      // Vertical position: Position below the mouse cursor
-      let verticalAdjust = 25;
-
-      // If the element has a title, then there will probably be
-      // a tooltip that we shouldn't cover up.
-      if ((this.currentTarget as any).title) {
-        verticalAdjust += 20;
-      }
-
-      // Check if we are too close to the bottom
-      if (
-        popupY + verticalAdjust + popupHeight >
-        doc.defaultView!.innerHeight
-      ) {
-        // We are, try going up instead...
-        const topIfWeGoUp = popupY - popupHeight - 30;
-        if (topIfWeGoUp >= 0) {
-          verticalAdjust = topIfWeGoUp - popupY;
-        }
-        // If can't go up, we should still go down to prevent blocking
-        // the cursor.
-      }
-
-      popupY += verticalAdjust;
-
-      // Adjust for scroll position
-      popupX += doc.defaultView!.scrollX;
-      popupY += doc.defaultView!.scrollY;
-    }
+    const { x: popupX, y: popupY } = getPopupPosition({
+      doc,
+      mousePos: this.currentPoint,
+      popupSize: {
+        width: popup.offsetWidth || 200,
+        height: popup.offsetHeight,
+      },
+      targetElem: this.currentTarget,
+    });
 
     if (
       isSvgDoc(doc) &&
