@@ -206,55 +206,54 @@ export class RikaiContent {
   //
   // Once we have switched all databases to IndexedDB, we should investigate the
   // performance impact of increasing this further.
-  static MAX_LENGTH = 16;
+  private static MAX_LENGTH = 16;
 
-  _config: ContentConfig;
+  private config: ContentConfig;
 
   // Lookup tracking (so we can avoid redundant work and so we can re-render)
-  _currentTextAtPoint: CachedGetTextResult | null = null;
-  _currentPoint: { x: number; y: number } | null = null;
-  _currentSearchResult: QueryResult | null = null;
-  _currentTarget: Element | null = null;
-  _currentTitle: string | null = null;
+  private currentTextAtPoint: CachedGetTextResult | null = null;
+  private currentPoint: { x: number; y: number } | null = null;
+  private currentSearchResult: QueryResult | null = null;
+  private currentTarget: Element | null = null;
 
   // Highlight tracking
-  _selectedWindow: Window | null = null;
-  _selectedText: string | null = null;
-  _selectedTextBox: {
+  private selectedWindow: Window | null = null;
+  private selectedText: string | null = null;
+  private selectedTextBox: {
     node: HTMLInputElement | HTMLTextAreaElement;
     previousStart: number | null;
     previousEnd: number | null;
     previousDirection: 'forward' | 'backward' | 'none' | null;
   } | null = null;
-  _previousFocus: Element | null;
-  _previousSelection: { node: Node; offset: number } | null;
-  _ignoreFocusEvent: boolean = false;
+  private previousFocus: Element | null;
+  private previousSelection: { node: Node; offset: number } | null;
+  private ignoreFocusEvent: boolean = false;
 
   // Mouse tracking
   //
   // We don't show the popup when the mouse is moving at speed because it's
   // mostly distracting and introduces unnecessary work.
-  static MOUSE_SPEED_SAMPLES = 2;
-  static MOUSE_SPEED_THRESHOLD = 0.5;
-  _mouseSpeedRollingSum: number = 0;
-  _mouseSpeeds: number[] = [];
-  _previousMousePosition: { x: number; y: number } | null = null;
-  _previousMouseMoveTime: number | null = null;
+  private static MOUSE_SPEED_SAMPLES = 2;
+  private static MOUSE_SPEED_THRESHOLD = 0.5;
+  private mouseSpeedRollingSum: number = 0;
+  private mouseSpeeds: number[] = [];
+  private previousMousePosition: { x: number; y: number } | null = null;
+  private previousMouseMoveTime: number | null = null;
   // We disable this feature by default and only turn it on once we've
   // established that we have a sufficiently precise timer. If
   // privacy.resistFingerprinting is enabled then the timer won't be precise
   // enough for us to test the speed of the mouse.
-  _hidePopupWhenMovingAtSpeed: boolean = false;
+  private hidePopupWhenMovingAtSpeed: boolean = false;
   // Used to try to detect when we are typing so we know when to ignore key
   // events.
-  _typingMode: boolean = false;
+  private typingMode: boolean = false;
 
   // Copy support
-  _copyMode: boolean = false;
-  _copyIndex: number = 0;
+  private copyMode: boolean = false;
+  private copyIndex: number = 0;
 
   constructor(config: ContentConfig) {
-    this._config = config;
+    this.config = config;
 
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -268,20 +267,16 @@ export class RikaiContent {
     this.testTimerPrecision();
   }
 
-  get config() {
-    return { ...this._config };
-  }
-
-  set config(config) {
+  setConfig(config: Readonly<ContentConfig>) {
     // Update the style of the popup
-    if (this._config && config.popupStyle !== this._config.popupStyle) {
+    if (this.config && config.popupStyle !== this.config.popupStyle) {
       setPopupStyle(config.popupStyle);
     }
 
     // TODO: We should probably check which keys have changed and regenerate
     // the pop-up if needed but currently you need to change tabs to tweak
     // the config so the popup probably won't be showing anyway.
-    this._config = config;
+    this.config = { ...config };
   }
 
   detach() {
@@ -291,8 +286,8 @@ export class RikaiContent {
     window.removeEventListener('focusin', this.onFocusIn);
 
     this.clearHighlight(null);
-    this._selectedTextBox = null;
-    this._copyMode = false;
+    this.selectedTextBox = null;
+    this.copyMode = false;
 
     removePopup();
   }
@@ -321,11 +316,11 @@ export class RikaiContent {
       context
     );
 
-    this._hidePopupWhenMovingAtSpeed = identicalPairs < 2;
+    this.hidePopupWhenMovingAtSpeed = identicalPairs < 2;
   }
 
   onMouseMove(ev: MouseEvent) {
-    this._typingMode = false;
+    this.typingMode = false;
 
     // Ignore mouse events while buttons are being pressed.
     if (ev.buttons) {
@@ -342,8 +337,8 @@ export class RikaiContent {
       // Nevertheless, we still want to set the current position information so
       // that if the user presses the hold-to-show keys later we can show the
       // popup immediately.
-      this._currentTarget = ev.target as Element;
-      this._currentPoint = { x: ev.clientX, y: ev.clientY };
+      this.currentTarget = ev.target as Element;
+      this.currentPoint = { x: ev.clientX, y: ev.clientY };
       return;
     }
 
@@ -360,13 +355,13 @@ export class RikaiContent {
   }
 
   shouldThrottlePopup(ev: MouseEvent) {
-    if (!this._hidePopupWhenMovingAtSpeed) {
+    if (!this.hidePopupWhenMovingAtSpeed) {
       return false;
     }
 
     let averageSpeed = 0;
 
-    if (this._previousMousePosition && this._previousMouseMoveTime) {
+    if (this.previousMousePosition && this.previousMouseMoveTime) {
       // If the events are backed up their times might be equal. Likewise, if
       // the events are more than a couple of animation frames apart either the
       // mouse stopped, or the system is backed up and the OS can't even
@@ -383,32 +378,32 @@ export class RikaiContent {
       //   permanently hiding it.
       //
       if (
-        ev.timeStamp === this._previousMouseMoveTime ||
-        ev.timeStamp - this._previousMouseMoveTime > 32
+        ev.timeStamp === this.previousMouseMoveTime ||
+        ev.timeStamp - this.previousMouseMoveTime > 32
       ) {
-        this._previousMousePosition = { x: ev.pageX, y: ev.pageY };
-        this._previousMouseMoveTime = ev.timeStamp;
+        this.previousMousePosition = { x: ev.pageX, y: ev.pageY };
+        this.previousMouseMoveTime = ev.timeStamp;
         return false;
       }
 
       const distance = Math.sqrt(
-        Math.pow(ev.pageX - this._previousMousePosition.x, 2) +
-          Math.pow(ev.pageY - this._previousMousePosition.y, 2)
+        Math.pow(ev.pageX - this.previousMousePosition.x, 2) +
+          Math.pow(ev.pageY - this.previousMousePosition.y, 2)
       );
-      const speed = distance / (ev.timeStamp - this._previousMouseMoveTime);
+      const speed = distance / (ev.timeStamp - this.previousMouseMoveTime);
 
-      this._mouseSpeeds.push(speed);
-      this._mouseSpeedRollingSum += speed;
+      this.mouseSpeeds.push(speed);
+      this.mouseSpeedRollingSum += speed;
 
-      if (this._mouseSpeeds.length > RikaiContent.MOUSE_SPEED_SAMPLES) {
-        this._mouseSpeedRollingSum -= this._mouseSpeeds.shift()!;
+      if (this.mouseSpeeds.length > RikaiContent.MOUSE_SPEED_SAMPLES) {
+        this.mouseSpeedRollingSum -= this.mouseSpeeds.shift()!;
       }
 
-      averageSpeed = this._mouseSpeedRollingSum / this._mouseSpeeds.length;
+      averageSpeed = this.mouseSpeedRollingSum / this.mouseSpeeds.length;
     }
 
-    this._previousMousePosition = { x: ev.pageX, y: ev.pageY };
-    this._previousMouseMoveTime = ev.timeStamp;
+    this.previousMousePosition = { x: ev.pageX, y: ev.pageY };
+    this.previousMouseMoveTime = ev.timeStamp;
 
     return averageSpeed >= RikaiContent.MOUSE_SPEED_THRESHOLD;
   }
@@ -422,10 +417,10 @@ export class RikaiContent {
     // If the user pressed the hold-to-show key combination, show the popup if
     // possible.
     if (this.isHoldToShowKeysMatch(ev)) {
-      if (this._currentPoint && this._currentTarget) {
+      if (this.currentPoint && this.currentTarget) {
         this.tryToUpdatePopup(
-          this._currentPoint,
-          this._currentTarget,
+          this.currentPoint,
+          this.currentTarget,
           DictMode.Default
         );
         ev.preventDefault();
@@ -442,13 +437,13 @@ export class RikaiContent {
       ev.shiftKey &&
       (ev.ctrlKey || ev.altKey || ev.metaKey || ev.key !== 'Shift')
     ) {
-      this._typingMode = true;
+      this.typingMode = true;
       return;
     }
 
     // If we're not visible we should ignore any keystrokes.
     if (!this.isVisible()) {
-      this._typingMode = true;
+      this.typingMode = true;
       return;
     }
 
@@ -456,13 +451,13 @@ export class RikaiContent {
     // keystrokes.
     const textBoxInFocus =
       document.activeElement && isEditableNode(document.activeElement);
-    if (textBoxInFocus && this._typingMode) {
+    if (textBoxInFocus && this.typingMode) {
       return;
     }
 
     if (this.handleKey(ev.key, ev.ctrlKey)) {
       // We handled the key stroke so we should break out of typing mode.
-      this._typingMode = false;
+      this.typingMode = false;
 
       ev.stopPropagation();
       ev.preventDefault();
@@ -470,8 +465,8 @@ export class RikaiContent {
       // If we are focussed on a textbox and the keystroke wasn't a rikaichamp
       // one, enter typing mode and hide the pop-up.
       if (textBoxInFocus) {
-        this.clearHighlight(this._currentTarget);
-        this._typingMode = true;
+        this.clearHighlight(this.currentTarget);
+        this.typingMode = true;
       }
     }
   }
@@ -482,7 +477,7 @@ export class RikaiContent {
     // even when the user has Caps Lock on.
     const toUpper = (keys: string[]): string[] =>
       keys.map((key) => key.toUpperCase());
-    let { nextDictionary, toggleDefinition, startCopy } = this._config.keys;
+    let { nextDictionary, toggleDefinition, startCopy } = this.config.keys;
     [nextDictionary, toggleDefinition, startCopy] = [
       toUpper(nextDictionary),
       toUpper(toggleDefinition),
@@ -492,10 +487,10 @@ export class RikaiContent {
     const upperKey = key.toUpperCase();
 
     if (nextDictionary.includes(upperKey)) {
-      if (this._currentPoint && this._currentTarget) {
+      if (this.currentPoint && this.currentTarget) {
         this.tryToUpdatePopup(
-          this._currentPoint,
-          this._currentTarget,
+          this.currentPoint,
+          this.currentTarget,
           DictMode.NextDict
         );
       }
@@ -503,8 +498,8 @@ export class RikaiContent {
       browser.runtime.sendMessage({ type: 'toggleDefinition' });
       // We'll eventually get notified of the config change but we just change
       // it here now so we can update the popup immediately.
-      this._config.readingOnly = !this.config.readingOnly;
-      if (this._currentSearchResult) {
+      this.config.readingOnly = !this.config.readingOnly;
+      if (this.currentSearchResult) {
         this.showPopup();
       }
     } else if (
@@ -514,19 +509,19 @@ export class RikaiContent {
       // text by pressing Ctrl+C they will end up entering copy mode.
       !ctrlKeyPressed &&
       startCopy.includes(upperKey) &&
-      this._currentSearchResult
+      this.currentSearchResult
     ) {
-      if (this._copyMode) {
-        this._copyIndex++;
+      if (this.copyMode) {
+        this.copyIndex++;
       } else {
-        this._copyMode = true;
-        this._copyIndex = 0;
+        this.copyMode = true;
+        this.copyIndex = 0;
       }
       this.showPopup();
-    } else if (this._copyMode && key === 'Escape') {
-      this._copyMode = false;
+    } else if (this.copyMode && key === 'Escape') {
+      this.copyMode = false;
       this.showPopup();
-    } else if (this._copyMode) {
+    } else if (this.copyMode) {
       let copyType: CopyType | undefined;
       for (const copyKey of CopyKeys) {
         if (upperKey === copyKey.key.toUpperCase()) {
@@ -550,15 +545,15 @@ export class RikaiContent {
       switch (copyType) {
         case CopyType.Entry:
           textToCopy = getEntryToCopy(copyEntry, {
-            kanjiReferences: this._config.kanjiReferences,
-            showKanjiComponents: this._config.showKanjiComponents,
+            kanjiReferences: this.config.kanjiReferences,
+            showKanjiComponents: this.config.showKanjiComponents,
           });
           break;
 
         case CopyType.TabDelimited:
           textToCopy = getFieldsToCopy(copyEntry, {
-            kanjiReferences: this._config.kanjiReferences,
-            showKanjiComponents: this._config.showKanjiComponents,
+            kanjiReferences: this.config.kanjiReferences,
+            showKanjiComponents: this.config.showKanjiComponents,
           });
           break;
 
@@ -576,29 +571,29 @@ export class RikaiContent {
   }
 
   onFocusIn(ev: FocusEvent) {
-    if (this._ignoreFocusEvent) {
+    if (this.ignoreFocusEvent) {
       return;
     }
 
     // If we focussed on a text box, assume we want to type in it and ignore
     // keystrokes until we get another mousemove.
-    this._typingMode = !!ev.target && isEditableNode(ev.target as Node);
+    this.typingMode = !!ev.target && isEditableNode(ev.target as Node);
 
     // Update the previous focus.
-    if (!this._previousFocus || this._previousFocus !== ev.target) {
-      this._previousFocus = ev.target as Element;
-      this.storeSelection(this._previousFocus.ownerDocument!.defaultView!);
+    if (!this.previousFocus || this.previousFocus !== ev.target) {
+      this.previousFocus = ev.target as Element;
+      this.storeSelection(this.previousFocus.ownerDocument!.defaultView!);
     }
 
     // If we entered typing mode clear the highlight.
-    if (this._typingMode) {
-      this.clearHighlight(this._currentTarget);
+    if (this.typingMode) {
+      this.clearHighlight(this.currentTarget);
     }
   }
 
   // Test if an incoming keyboard event matches the hold-to-show key sequence
   isHoldToShowKeysMatch(ev: KeyboardEvent): boolean {
-    if (!this._config.holdToShowKeys.length) {
+    if (!this.config.holdToShowKeys.length) {
       return false;
     }
 
@@ -612,20 +607,20 @@ export class RikaiContent {
 
   // Test if hold-to-show keys are set for a given a UI event
   areHoldToShowKeysDown(ev: MouseEvent | KeyboardEvent): boolean {
-    if (!this._config.holdToShowKeys.length) {
+    if (!this.config.holdToShowKeys.length) {
       return true;
     }
 
     // Check if all the configured hold-to-show keys are pressed down
     const isAltGraph = ev.getModifierState('AltGraph');
     if (
-      this._config.holdToShowKeys.includes('Alt') &&
+      this.config.holdToShowKeys.includes('Alt') &&
       !ev.altKey &&
       !isAltGraph
     ) {
       return false;
     }
-    if (this._config.holdToShowKeys.includes('Ctrl') && !ev.ctrlKey) {
+    if (this.config.holdToShowKeys.includes('Ctrl') && !ev.ctrlKey) {
       return false;
     }
 
@@ -641,14 +636,14 @@ export class RikaiContent {
     target: Element,
     dictMode: DictMode
   ) {
-    const previousTextAtPoint = this._currentTextAtPoint
-      ? this._currentTextAtPoint.result
+    const previousTextAtPoint = this.currentTextAtPoint
+      ? this.currentTextAtPoint.result
       : null;
     const textAtPoint = this.getTextAtPoint(point, RikaiContent.MAX_LENGTH);
     console.assert(
-      (!textAtPoint && !this._currentTextAtPoint) ||
-        (!!this._currentTextAtPoint &&
-          textAtPoint === this._currentTextAtPoint.result),
+      (!textAtPoint && !this.currentTextAtPoint) ||
+        (!!this.currentTextAtPoint &&
+          textAtPoint === this.currentTextAtPoint.result),
       'Should have updated _currentTextAtPoint'
     );
 
@@ -664,7 +659,7 @@ export class RikaiContent {
     }
 
     // The text or dictionary has changed so break out of copy mode
-    this._copyMode = false;
+    this.copyMode = false;
 
     if (!textAtPoint) {
       this.clearHighlight(target);
@@ -678,8 +673,8 @@ export class RikaiContent {
 
     // Check if we have triggered a new query or been disabled in the meantime.
     if (
-      !this._currentTextAtPoint ||
-      textAtPoint !== this._currentTextAtPoint.result
+      !this.currentTextAtPoint ||
+      textAtPoint !== this.currentTextAtPoint.result
     ) {
       return;
     }
@@ -698,8 +693,8 @@ export class RikaiContent {
       this.highlightText(textAtPoint, matchLen);
     }
 
-    this._currentSearchResult = queryResult;
-    this._currentTarget = target;
+    this.currentSearchResult = queryResult;
+    this.currentTarget = target;
 
     this.showPopup();
   }
@@ -726,12 +721,12 @@ export class RikaiContent {
 
     if (
       position &&
-      this._currentTextAtPoint &&
-      this._currentTextAtPoint.position &&
-      position.offsetNode === this._currentTextAtPoint.position.offsetNode &&
-      position.offset === this._currentTextAtPoint.position.offset
+      this.currentTextAtPoint &&
+      this.currentTextAtPoint.position &&
+      position.offsetNode === this.currentTextAtPoint.position.offsetNode &&
+      position.offset === this.currentTextAtPoint.position.offset
     ) {
-      return this._currentTextAtPoint.result;
+      return this.currentTextAtPoint.result;
     }
 
     // If we have a textual <input> node or a <textarea> we synthesize a
@@ -742,7 +737,7 @@ export class RikaiContent {
     if (isTextInputNode(startNode)) {
       // If we selected the end of the text, skip it.
       if (position!.offset === startNode.value.length) {
-        this._currentTextAtPoint = null;
+        this.currentTextAtPoint = null;
         return null;
       }
       startNode = document.createTextNode(startNode.value);
@@ -770,7 +765,7 @@ export class RikaiContent {
         // pop-up.
         const { distance, glyphExtent } = distanceResult;
         if (distance > glyphExtent * 3) {
-          this._currentTextAtPoint = null;
+          this.currentTextAtPoint = null;
           return null;
         }
       }
@@ -804,8 +799,8 @@ export class RikaiContent {
           result.rangeEnds[0].container = position!.offsetNode;
         }
 
-        this._currentTextAtPoint = { result, position: position! };
-        this._currentPoint = point;
+        this.currentTextAtPoint = { result, position: position! };
+        this.currentPoint = point;
         return result;
       }
     }
@@ -821,8 +816,8 @@ export class RikaiContent {
           rangeStart: null,
           rangeEnds: [],
         };
-        this._currentTextAtPoint = { result, position: null };
-        this._currentPoint = point;
+        this.currentTextAtPoint = { result, position: null };
+        this.currentPoint = point;
 
         return result;
       }
@@ -832,16 +827,16 @@ export class RikaiContent {
     // just re-use the last result so the user doesn't have try to keep the
     // mouse over the text precisely in order to read the result.
 
-    if (this._currentTextAtPoint && this._currentPoint) {
-      const dx = this._currentPoint.x - point.x;
-      const dy = this._currentPoint.y - point.y;
+    if (this.currentTextAtPoint && this.currentPoint) {
+      const dx = this.currentPoint.x - point.x;
+      const dy = this.currentPoint.y - point.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
       if (dist < 4) {
-        return this._currentTextAtPoint.result;
+        return this.currentTextAtPoint.result;
       }
     }
 
-    this._currentTextAtPoint = null;
+    this.currentTextAtPoint = null;
     return null;
   }
 
@@ -1168,7 +1163,7 @@ export class RikaiContent {
   }
 
   highlightText(textAtPoint: GetTextResult, matchLen: number) {
-    if (this._config.noTextHighlight || !textAtPoint.rangeStart) {
+    if (this.config.noTextHighlight || !textAtPoint.rangeStart) {
       return;
     }
 
@@ -1195,16 +1190,16 @@ export class RikaiContent {
 
     if (isContentEditableNode(selection.anchorNode)) {
       if (
-        !this._previousSelection &&
-        selection.toString() !== this._selectedText
+        !this.previousSelection &&
+        selection.toString() !== this.selectedText
       ) {
         this.storeSelection(selectedWindow);
       }
     } else if (
       selection.toString() &&
-      selection.toString() !== this._selectedText
+      selection.toString() !== this.selectedText
     ) {
-      this._selectedText = null;
+      this.selectedText = null;
       return;
     }
 
@@ -1217,17 +1212,17 @@ export class RikaiContent {
 
       // If we were previously interacting with a different text box, restore
       // its range.
-      if (this._selectedTextBox && node !== this._selectedTextBox.node) {
+      if (this.selectedTextBox && node !== this.selectedTextBox.node) {
         this._restoreTextBoxSelection();
       }
 
       // If we were not already interacting with this text box, store its
       // existing range and focus it.
-      if (!this._selectedTextBox || node !== this._selectedTextBox.node) {
+      if (!this.selectedTextBox || node !== this.selectedTextBox.node) {
         // Record the original focus if we haven't already, so that we can
         // restore it.
-        if (!this._previousFocus) {
-          this._previousFocus = document.activeElement;
+        if (!this.previousFocus) {
+          this.previousFocus = document.activeElement;
         }
 
         // I haven't found a suitable way of detecting changes in focus due to
@@ -1235,12 +1230,12 @@ export class RikaiContent {
         // go to restore the focus) and changes in focus due to our focus
         // management so for now we just use this terribly hacky approach to
         // filter out our focus events.
-        console.assert(!this._ignoreFocusEvent);
-        this._ignoreFocusEvent = true;
+        console.assert(!this.ignoreFocusEvent);
+        this.ignoreFocusEvent = true;
         node.focus();
-        this._ignoreFocusEvent = false;
+        this.ignoreFocusEvent = false;
 
-        this._selectedTextBox = {
+        this.selectedTextBox = {
           node,
           previousStart: node.selectionStart,
           previousEnd: node.selectionEnd,
@@ -1255,8 +1250,8 @@ export class RikaiContent {
       selection.removeAllRanges();
 
       node.setSelectionRange(start, end);
-      this._selectedText = node.value.substring(start, end);
-      this._selectedWindow = selectedWindow;
+      this.selectedText = node.value.substring(start, end);
+      this.selectedWindow = selectedWindow;
 
       // Restore the scroll range. We need to do this on the next tick or else
       // something else (not sure what) will clobber it.
@@ -1299,26 +1294,26 @@ export class RikaiContent {
       // ok to assume it is non-null here.)
       selection!.removeAllRanges();
       selection!.addRange(range);
-      this._selectedText = selection!.toString();
-      this._selectedWindow = selectedWindow;
+      this.selectedText = selection!.toString();
+      this.selectedWindow = selectedWindow;
     }
   }
 
   clearHighlight(currentElement: Element | null) {
-    this._currentTextAtPoint = null;
-    this._currentPoint = null;
-    this._currentSearchResult = null;
-    this._currentTarget = null;
-    this._copyMode = false;
+    this.currentTextAtPoint = null;
+    this.currentPoint = null;
+    this.currentSearchResult = null;
+    this.currentTarget = null;
+    this.copyMode = false;
 
-    if (this._selectedWindow && !this._selectedWindow.closed) {
-      const selection = this._selectedWindow.getSelection();
+    if (this.selectedWindow && !this.selectedWindow.closed) {
+      const selection = this.selectedWindow.getSelection();
       // Clear the selection if it's something we made.
       if (
         selection &&
-        (!selection.toString() || selection.toString() === this._selectedText)
+        (!selection.toString() || selection.toString() === this.selectedText)
       ) {
-        if (this._previousSelection) {
+        if (this.previousSelection) {
           this.restoreSelection();
         } else {
           selection.removeAllRanges();
@@ -1328,8 +1323,8 @@ export class RikaiContent {
       this._clearTextBoxSelection(currentElement);
     }
 
-    this._selectedWindow = null;
-    this._selectedText = null;
+    this.selectedWindow = null;
+    this.selectedText = null;
 
     hidePopup();
   }
@@ -1340,21 +1335,21 @@ export class RikaiContent {
       // We don't actually store the full selection, basically because we're
       // lazy. Remembering the cursor position is hopefully good enough for
       // now anyway.
-      this._previousSelection = {
+      this.previousSelection = {
         node: selection.anchorNode!,
         offset: selection.anchorOffset,
       };
     } else {
-      this._previousSelection = null;
+      this.previousSelection = null;
     }
   }
 
   restoreSelection() {
-    if (!this._previousSelection) {
+    if (!this.previousSelection) {
       return;
     }
 
-    const { node, offset } = this._previousSelection;
+    const { node, offset } = this.previousSelection;
     const range = node.ownerDocument!.createRange();
     range.setStart(node, offset);
     range.setEnd(node, offset);
@@ -1364,15 +1359,15 @@ export class RikaiContent {
       selection.removeAllRanges();
       selection.addRange(range);
     }
-    this._previousSelection = null;
+    this.previousSelection = null;
   }
 
   _clearTextBoxSelection(currentElement: Element | null) {
-    if (!this._selectedTextBox) {
+    if (!this.selectedTextBox) {
       return;
     }
 
-    const textBox = this._selectedTextBox.node;
+    const textBox = this.selectedTextBox.node;
 
     // Store the previous scroll position so we can restore it, if need be.
     const { scrollTop, scrollLeft } = textBox;
@@ -1398,63 +1393,63 @@ export class RikaiContent {
     // the previous focus when we reset _selectedTextBox and we if we don't
     // restore the focus now, when we next go to set previousFocus we'll end up
     // using `textBox` instead.)
-    if (isFocusable(this._previousFocus) && this._previousFocus !== textBox) {
+    if (isFocusable(this.previousFocus) && this.previousFocus !== textBox) {
       // First blur the text box since some Elements' focus() method does
       // nothing.
-      this._selectedTextBox.node.blur();
+      this.selectedTextBox.node.blur();
 
       // Very hacky approach to filtering out our own focus handling.
-      console.assert(!this._ignoreFocusEvent);
-      this._ignoreFocusEvent = true;
-      this._previousFocus.focus();
-      this._ignoreFocusEvent = false;
+      console.assert(!this.ignoreFocusEvent);
+      this.ignoreFocusEvent = true;
+      this.previousFocus.focus();
+      this.ignoreFocusEvent = false;
     }
 
-    this._selectedTextBox = null;
-    this._previousFocus = null;
+    this.selectedTextBox = null;
+    this.previousFocus = null;
   }
 
   _restoreTextBoxSelection() {
-    if (!this._selectedTextBox) {
+    if (!this.selectedTextBox) {
       return;
     }
 
-    const textBox = this._selectedTextBox.node;
-    textBox.selectionStart = this._selectedTextBox.previousStart;
-    textBox.selectionEnd = this._selectedTextBox.previousEnd;
-    textBox.selectionDirection = this._selectedTextBox.previousDirection;
+    const textBox = this.selectedTextBox.node;
+    textBox.selectionStart = this.selectedTextBox.previousStart;
+    textBox.selectionEnd = this.selectedTextBox.previousEnd;
+    textBox.selectionDirection = this.selectedTextBox.previousDirection;
   }
 
   showPopup(options?: Partial<PopupOptions>) {
-    if (!this._currentSearchResult) {
-      this.clearHighlight(this._currentTarget);
+    if (!this.currentSearchResult) {
+      this.clearHighlight(this.currentTarget);
       return;
     }
 
-    const doc: Document = this._currentTarget
-      ? this._currentTarget.ownerDocument!
+    const doc: Document = this.currentTarget
+      ? this.currentTarget.ownerDocument!
       : window.document;
 
     const popupOptions: PopupOptions = {
-      accentDisplay: this._config.accentDisplay,
-      copyIndex: this._copyIndex,
-      copyNextKey: this._config.keys.startCopy[0] || '',
-      copyState: this._copyMode ? CopyState.Active : CopyState.Inactive,
+      accentDisplay: this.config.accentDisplay,
+      copyIndex: this.copyIndex,
+      copyNextKey: this.config.keys.startCopy[0] || '',
+      copyState: this.copyMode ? CopyState.Active : CopyState.Inactive,
       document: doc,
-      kanjiReferences: this._config.kanjiReferences,
-      meta: this._currentTextAtPoint?.result.meta,
-      popupStyle: this._config.popupStyle,
-      posDisplay: this._config.posDisplay,
-      showDefinitions: !this._config.readingOnly,
-      showKanjiComponents: this._config.showKanjiComponents,
-      showPriority: this._config.showPriority,
+      kanjiReferences: this.config.kanjiReferences,
+      meta: this.currentTextAtPoint?.result.meta,
+      popupStyle: this.config.popupStyle,
+      posDisplay: this.config.posDisplay,
+      showDefinitions: !this.config.readingOnly,
+      showKanjiComponents: this.config.showKanjiComponents,
+      showPriority: this.config.showPriority,
       ...options,
     };
 
-    const popup = renderPopup(this._currentSearchResult!, popupOptions);
+    const popup = renderPopup(this.currentSearchResult!, popupOptions);
 
     // Position the popup
-    const referencePosition = this._currentPoint ? this._currentPoint : null;
+    const referencePosition = this.currentPoint ? this.currentPoint : null;
     const getRefCoord = (coord: 'x' | 'y'): number =>
       referencePosition && !isNaN(parseInt(referencePosition[coord] as any))
         ? parseInt(referencePosition[coord] as any)
@@ -1465,7 +1460,7 @@ export class RikaiContent {
     const popupWidth = popup.offsetWidth || 200;
     const popupHeight = popup.offsetHeight;
 
-    if (this._currentTarget) {
+    if (this.currentTarget) {
       // Horizontal position: Go left if necessary
       //
       // (We should never be too far left since popupX, if set to
@@ -1483,7 +1478,7 @@ export class RikaiContent {
 
       // If the element has a title, then there will probably be
       // a tooltip that we shouldn't cover up.
-      if ((this._currentTarget as any).title) {
+      if ((this.currentTarget as any).title) {
         verticalAdjust += 20;
       }
 
@@ -1532,24 +1527,24 @@ export class RikaiContent {
 
   private getCopyEntry(): CopyEntry | null {
     console.assert(
-      this._copyMode,
+      this.copyMode,
       'Should be in copy mode when copying an entry'
     );
 
-    if (!this._currentSearchResult) {
+    if (!this.currentSearchResult) {
       return null;
     }
 
-    const searchResult = this._currentSearchResult;
+    const searchResult = this.currentSearchResult;
 
-    let copyIndex = this._copyIndex;
+    let copyIndex = this.copyIndex;
     if (searchResult.type === 'words' || searchResult.type === 'names') {
       copyIndex = copyIndex % searchResult.data.length;
     }
 
     if (copyIndex < 0) {
       console.error('Bad copy index');
-      this._copyMode = false;
+      this.copyMode = false;
       this.showPopup();
       return null;
     }
@@ -1576,7 +1571,7 @@ export class RikaiContent {
       console.log(e);
     }
 
-    this._copyMode = false;
+    this.copyMode = false;
     this.showPopup({ copyState, copyType });
   }
 
@@ -1600,7 +1595,7 @@ browser.runtime.onMessage.addListener((request: any) => {
       );
 
       if (rikaiContent) {
-        rikaiContent.config = request.config;
+        rikaiContent.setConfig(request.config);
       } else {
         // When Rikaichamp is upgraded, we can still have the old popup window
         // hanging around so make sure to clear it.
