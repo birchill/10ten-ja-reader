@@ -77,6 +77,7 @@ import {
   isSvgSvgElement,
   SVG_NS,
 } from './svg';
+import { hasReasonableTimerResolution } from './timer-precision';
 import { isEraName, startsWithEraName } from './years';
 
 declare global {
@@ -194,7 +195,11 @@ export class RikaiContent {
     window.addEventListener('keydown', this.onKeyDown, { capture: true });
     window.addEventListener('focusin', this.onFocusIn);
 
-    this.testTimerPrecision();
+    hasReasonableTimerResolution().then((isReasonable) => {
+      if (isReasonable) {
+        this.hidePopupWhenMovingAtSpeed = true;
+      }
+    });
   }
 
   setConfig(config: Readonly<ContentConfig>) {
@@ -220,33 +225,6 @@ export class RikaiContent {
     this.copyMode = false;
 
     removePopup();
-  }
-
-  async testTimerPrecision() {
-    const waitALittle = async () =>
-      new Promise((resolve) => setTimeout(resolve, 10));
-
-    // If performance.now() returns different times at least three out of five
-    // times then we can assume that we're not doing timer clamping of the sort
-    // that would confuse our speed calculations.
-    const numSamples: number = 5;
-    const samples: number[] = [];
-    samples.push(performance.now());
-    for (let i = 1; i < numSamples; i++) {
-      await waitALittle();
-      samples.push(performance.now());
-    }
-
-    const context: { same: number; previous?: number } = { same: 0 };
-    const { same: identicalPairs } = samples.reduce(
-      (context, current) => ({
-        same: current === context.previous ? context.same + 1 : context.same,
-        previous: current,
-      }),
-      context
-    );
-
-    this.hidePopupWhenMovingAtSpeed = identicalPairs < 2;
   }
 
   onMouseMove(ev: MouseEvent) {
