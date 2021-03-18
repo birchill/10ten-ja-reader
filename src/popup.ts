@@ -187,6 +187,13 @@ function resetContainer(
   windowDiv.classList.add('window', `-${popupStyle}`);
   container.shadowRoot!.append(windowDiv);
 
+  // Reset the container position so we can consistently measure the size of
+  // the popup
+  container.style.left = '5px';
+  container.style.top = '5px';
+  container.style.maxWidth = 'initial';
+  container.style.maxHeight = 'initial';
+
   return windowDiv;
 }
 

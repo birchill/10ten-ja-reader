@@ -1,5 +1,7 @@
 ## 0.3.5 (Not released yet)
 
+- Improved popup positioning for vertical text (and hopefully some other
+  situations too).
 - Improved error handling for low disk space situations.
 
 ## 0.3.4 (2021-03-01)

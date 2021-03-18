@@ -1358,7 +1358,12 @@ export class RikaiContent {
     const popup = renderPopup(this.currentSearchResult!, popupOptions);
 
     // Position the popup
-    const { x: popupX, y: popupY } = getPopupPosition({
+    const {
+      x: popupX,
+      y: popupY,
+      constrainWidth,
+      constrainHeight,
+    } = getPopupPosition({
       doc,
       mousePos: this.currentPoint,
       popupSize: {
@@ -1387,6 +1392,8 @@ export class RikaiContent {
     } else {
       popup.style.left = `${popupX}px`;
       popup.style.top = `${popupY}px`;
+      popup.style.maxWidth = constrainWidth ? `${constrainWidth}px` : 'none';
+      popup.style.maxHeight = constrainHeight ? `${constrainHeight}px` : 'none';
     }
   }
 

@@ -8,12 +8,17 @@ export function getPopupPosition({
   mousePos: { x: number; y: number } | null;
   popupSize: { width: number; height: number };
   targetElem: Element | null;
-}): { x: number; y: number } {
+}): {
+  x: number;
+  y: number;
+  constrainWidth: number | null;
+  constrainHeight: number | null;
+} {
   let x = mousePos?.x || 0;
   let y = mousePos?.y || 0;
 
   if (!targetElem) {
-    return { x, y };
+    return { x, y, constrainWidth: null, constrainHeight: null };
   }
 
   const {
@@ -23,43 +28,63 @@ export function getPopupPosition({
     scrollY,
   } = doc.defaultView!;
 
-  // Horizontal position: Go left if necessary
+  // Check for vertical text
+  const isVerticalText =
+    targetElem &&
+    doc
+      .defaultView!.getComputedStyle(targetElem)
+      .writingMode.startsWith('vertical');
+
+  // Inline position: Go back (left or up) if necessary
   //
-  // (We should never be too far left since popupX, if set to
-  // something non-zero, is coming from a mouse event which should
-  // be positive.)
-  if (x + popupSize.width > windowWidth - 20) {
-    x = windowWidth - popupSize.width - 20;
-    if (x < 0) {
-      x = 0;
+  // (We shouldn't need to check the opposite direction since the initial
+  // position, if set to something non-zero, is coming from a mouse event which
+  // should, I believe, be positive.)
+  let inline = isVerticalText ? y : x;
+  const inlinePopupSize = isVerticalText ? popupSize.height : popupSize.width;
+  const inlineWindowSize = isVerticalText ? windowHeight : windowWidth;
+  if (inline + inlinePopupSize > inlineWindowSize - 20) {
+    inline = inlineWindowSize - inlinePopupSize - 20;
+    if (inline < 0) {
+      inline = 0;
     }
   }
 
-  // Vertical position: Position below the mouse cursor
-  let verticalAdjust = 25;
+  // Block position: Position "below" the mouse cursor
+  let blockAdjust = 25;
 
   // If the element has a title, then there will probably be
   // a tooltip that we shouldn't cover up.
   if ((targetElem as HTMLElement).title) {
-    verticalAdjust += 20;
+    blockAdjust += 20;
   }
 
-  // Check if we are too close to the bottom...
-  if (y + verticalAdjust + popupSize.height > windowHeight) {
-    // ...we are, try going up instead.
-    const topIfWeGoUp = y - popupSize.height - 30;
-    if (topIfWeGoUp >= 0) {
-      verticalAdjust = topIfWeGoUp - y;
+  // Check if we are too close to the window edge (bottom / right)...
+  let block = isVerticalText ? x : y;
+  const blockPopupSize = isVerticalText ? popupSize.width : popupSize.height;
+  const blockWindowSize = isVerticalText ? windowWidth : windowHeight;
+  let constrainBlockSize: number | null = null;
+  if (block + blockAdjust + blockPopupSize > blockWindowSize) {
+    // ...we are. See if the other side has more room.
+    const spaceOnThisSide = blockWindowSize - block;
+    const spaceOnOtherSide = block;
+    if (spaceOnOtherSide > spaceOnThisSide) {
+      blockAdjust = Math.max(-blockPopupSize - 25, -block);
+      constrainBlockSize = spaceOnOtherSide - 25;
     }
-    // If we can't go up, we should still go down to prevent blocking
-    // the cursor.
   }
 
-  y += verticalAdjust;
+  block += blockAdjust;
+
+  // De-logicalize before we add the scroll position since that's phyiscal
+  x = isVerticalText ? block : inline;
+  y = isVerticalText ? inline : block;
+  const constrainHeight = !isVerticalText ? constrainBlockSize : null;
+  const constrainWidth = isVerticalText ? constrainBlockSize : null;
 
   // Adjust for scroll position
   x += scrollX;
   y += scrollY;
 
-  return { x, y };
+  return { x, y, constrainWidth, constrainHeight };
 }
