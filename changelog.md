@@ -1,4 +1,8 @@
-## 0.3.5 (Not released yet)
+## 0.3.6 (not released yet)
+
+(Nothing yet)
+
+## 0.3.5 (2021-03-19)
 
 - Improved popup positioning for vertical text (and hopefully some other
   situations too).
