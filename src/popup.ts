@@ -142,6 +142,9 @@ function getDefaultContainer(doc: Document): HTMLElement {
   container.style.left = '5px';
   container.style.minWidth = '100px';
 
+  // Enforce any max-height set on the container.
+  container.style.overflowY = 'hidden';
+
   // Make sure the container too doesn't receive pointer events
   container.style.pointerEvents = 'none';
 

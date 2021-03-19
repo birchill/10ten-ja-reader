@@ -1394,6 +1394,12 @@ export class RikaiContent {
       popup.style.top = `${popupY}px`;
       popup.style.maxWidth = constrainWidth ? `${constrainWidth}px` : 'none';
       popup.style.maxHeight = constrainHeight ? `${constrainHeight}px` : 'none';
+      if (constrainHeight) {
+        popup.style.maskImage =
+          'linear-gradient(to bottom, black 99%, transparent)';
+      } else {
+        popup.style.maskImage = 'none';
+      }
     }
   }
 

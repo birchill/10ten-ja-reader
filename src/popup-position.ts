@@ -70,7 +70,9 @@ export function getPopupPosition({
     const spaceOnOtherSide = block;
     if (spaceOnOtherSide > spaceOnThisSide) {
       blockAdjust = Math.max(-blockPopupSize - 25, -block);
-      constrainBlockSize = spaceOnOtherSide - 25;
+      if (spaceOnOtherSide - 25 < blockPopupSize) {
+        constrainBlockSize = spaceOnOtherSide - 25;
+      }
     }
   }
 
