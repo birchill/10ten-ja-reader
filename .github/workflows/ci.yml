@@ -1,4 +1,4 @@
-name: Test and release
+name: CI
 on: [push, pull_request]
 
 jobs:
@@ -87,7 +87,7 @@ jobs:
         id: read_package_version
         uses: ./.github/actions/read-package-version
 
-      - name: Create release (experimental new version)
+      - name: Create release
         id: create_release
         uses: ./.github/actions/create-release
         env:
