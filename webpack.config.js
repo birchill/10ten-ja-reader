@@ -162,7 +162,7 @@ const chromeConfig = {
         'images/*',
         'data/*',
         '_locales/**/*',
-        { from: 'lib/browser-polyfill.js*', to: '[name].[ext]' },
+        { from: 'lib/browser-polyfill.js*', to: '[name][ext]' },
       ],
     }),
   ],
