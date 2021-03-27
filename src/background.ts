@@ -286,6 +286,10 @@ config.ready.then(() => {
 //
 
 let jpdictState: JpdictState = {
+  words: {
+    state: DataSeriesState.Initializing,
+    version: null,
+  },
   kanji: {
     state: DataSeriesState.Initializing,
     version: null,

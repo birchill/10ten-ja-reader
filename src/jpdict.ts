@@ -21,6 +21,10 @@ import { endsInYoon } from './yoon';
 //
 
 export type JpdictState = {
+  words: {
+    state: DataSeriesState;
+    version: DataVersion | null;
+  };
   kanji: {
     state: DataSeriesState;
     version: DataVersion | null;
@@ -60,6 +64,10 @@ jpdictWorker.onmessageerror = (evt: MessageEvent) => {
 // when it is being updated since this can block for several seconds.
 
 let dbState: JpdictState = {
+  words: {
+    state: DataSeriesState.Initializing,
+    version: null,
+  },
   kanji: {
     state: DataSeriesState.Initializing,
     version: null,
@@ -79,6 +87,8 @@ function kanjiDbLang(): string {
   return dbState.kanji.version?.lang ?? 'en';
 }
 
+// We treat the names dictionary as unavailable when it is being updated
+// because otherwise we can block for seconds waiting to read from it.
 function isNamesDbAvailable(): boolean {
   return (
     dbState.names.state === DataSeriesState.Ok &&
@@ -90,7 +100,7 @@ function isNamesDbAvailable(): boolean {
 // We also need to track the lastUpdateTime locally. That's because if
 // we tried to read it from extension storage when we get worker messages,
 // because the API is async, on Chrome we can get situations where we actually
-// end up apply the database state messages in the wrong order.
+// end up applying the database state messages in the wrong order.
 
 let lastUpdateTime: number | null = null;
 

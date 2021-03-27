@@ -185,6 +185,17 @@ async function updateAllSeries({
     }
 
     // Cycle through data series
+    //
+    // We use the following order:
+    //
+    // 1. Kanji
+    // 2. Names
+    // 3. Words
+    //
+    // Although the words dictionary is the most important one, we already have
+    // the flat-file version available for words so, if we're going to run out
+    // of disk space, it would be good to try and get as much of the other data
+    // in first.
     if (!currentUpdate) {
       currentUpdate = {
         lang,
@@ -193,6 +204,8 @@ async function updateAllSeries({
       };
     } else if (currentUpdate.series === 'kanji') {
       currentUpdate.series = 'names';
+    } else if (currentUpdate.series === 'names') {
+      currentUpdate.series = 'words';
     } else {
       currentUpdate = undefined;
       self.postMessage(notifyDbUpdateComplete(getLatestCheckTime(db!)));
@@ -240,6 +253,10 @@ function doDbStateNotification() {
     : { state: <const>'idle', lastCheck };
 
   const state: JpdictState = {
+    words: {
+      state: db.words.state,
+      version: db.words.version,
+    },
     kanji: {
       state: db.kanji.state,
       version: db.kanji.version,

@@ -1265,8 +1265,8 @@
     }
   },
   "options_data_source": {
-    "message": "使用しているデータにKANJIDICおよびJMnedict/ENAMDICTのデータが含まれております。",
-    "description": "Attribute of source data. Both the strings 'KANJIDIC' and 'JMnedict/ENAMDICT' must appear so that they can be link-ified to the corresponding project home pages."
+    "message": "使用しているデータにJMDict/EDICT、KANJIDICおよびJMnedict/ENAMDICTのデータが含まれております。",
+    "description": "Attribute of source data. The strings 'JMdict/EDICT', 'KANJIDIC' and 'JMnedict/ENAMDICT' must appear so that they can be link-ified to the corresponding project home pages."
   },
   "options_database_unavailable": {
     "message": "データベースストレージ利用不可",
@@ -1489,6 +1489,20 @@
   },
   "options_warning_language_is_kanji_only": {
     "message": "この設定は現在漢字辞典のみに適用されます。"
+  },
+  "options_words_data_name": {
+    "message": "単語データ",
+    "description": "The name for the words database data set"
+  },
+  "options_words_data_title": {
+    "message": "単語データ v$version$",
+    "description": "The word data series title and version",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "2.0.0"
+      }
+    }
   },
   "pos_label_adj_f": {
     "message": "連体",

@@ -1262,8 +1262,8 @@
     }
   },
   "options_data_source": {
-    "message": "Includes data from KANJIDIC and JMnedict/ENAMDICT.",
-    "description": "Attribute of source data. Both the strings 'KANJIDIC' and 'JMnedict/ENAMDICT' must appear so that they can be link-ified to the corresponding project home pages."
+    "message": "Includes data from JMdict/EDICT, KANJIDIC and JMnedict/ENAMDICT.",
+    "description": "Attribute of source data. The strings 'JMdict/EDICT', 'KANJIDIC' and 'JMnedict/ENAMDICT' must appear so that they can be link-ified to the corresponding project home pages."
   },
   "options_database_unavailable": {
     "message": "Database storage unavailable",
@@ -1490,6 +1490,20 @@
   },
   "options_warning_language_is_kanji_only": {
     "message": "This setting currently only applies to the kanji dictionary."
+  },
+  "options_words_data_name": {
+    "message": "word data",
+    "description": "The name for the words database data set"
+  },
+  "options_words_data_title": {
+    "message": "Word data v$version$",
+    "description": "The word data series title and version",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "2.0.0"
+      }
+    }
   },
   "pos_label_adj_f": {
     "message": "pre-noun adj.",
