@@ -282,12 +282,19 @@ fieldset {
   color: hsl(43, 77%, 27%);
 }
 
-.panel-section-db-summary .db-summary-version {
+.panel-section-db-summary .db-summary-version-grid {
   flex-grow: 1;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  grid-template-rows: repeat(2, auto);
+  column-gap: 20px;
+  row-gap: 3px;
 }
 
-.panel-section-db-summary .db-summary-version .db-source-version {
+.panel-section-db-summary .db-source-version {
   color: #777;
+  font-size: 9pt;
 }
 
 .panel-section-db-summary .db-summary-info {
@@ -306,10 +313,6 @@ fieldset {
 .panel-section-db-summary .db-summary-info .label {
   display: block;
   font-style: italic;
-}
-
-.panel-section-db-summary .db-summary-button {
-  align-self: flex-end;
 }
 
 .panel-section-db-summary .last-check {

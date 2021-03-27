@@ -994,18 +994,18 @@ async function updateIdleStateSummary(
     return;
   }
 
+  const gridDiv = document.createElement('div');
+  gridDiv.classList.add('db-summary-version-grid');
+
   for (const series of allMajorDataSeries) {
     const versionInfo = evt.state[series].version;
     if (!versionInfo) {
       continue;
     }
 
-    const versionDiv = document.createElement('div');
-    versionDiv.classList.add('db-summary-version');
-
     const { major, minor, patch } = versionInfo;
     const titleDiv = document.createElement('div');
-    titleDiv.classList.add('title');
+    titleDiv.classList.add('db-source-title');
     const titleKeys: { [series in MajorDataSeries]: string } = {
       kanji: 'options_kanji_data_title',
       names: 'options_name_data_title',
@@ -1016,7 +1016,7 @@ async function updateIdleStateSummary(
       `${major}.${minor}.${patch}`
     );
     titleDiv.append(titleString);
-    versionDiv.append(titleDiv);
+    gridDiv.append(titleDiv);
 
     const sourceDiv = document.createElement('div');
     sourceDiv.classList.add('db-source-version');
@@ -1043,10 +1043,10 @@ async function updateIdleStateSummary(
       ]);
     }
     sourceDiv.append(sourceString);
-    versionDiv.append(sourceDiv);
-
-    statusElem.append(versionDiv);
+    gridDiv.append(sourceDiv);
   }
+
+  statusElem.append(gridDiv);
 }
 
 function empty(elem: Element) {
