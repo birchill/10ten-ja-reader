@@ -1375,6 +1375,24 @@
     "message": "キーボード",
     "description": "Heading for options to configure keyboard commands"
   },
+  "options_lang_warning_always_en": {
+    "message": "単語の場合、英語の定義は常に表示されます。"
+  },
+  "options_lang_warning_change_lang_redownload": {
+    "message": "言語を変更する際、データファイルが再読み込みされます。"
+  },
+  "options_lang_warning_kanji_star_meaning": {
+    "message": "※が付いている言語に漢字データの翻訳はございません。"
+  },
+  "options_lang_warning_names_en_only": {
+    "message": "人名辞典のデータは英語のみとなっております。"
+  },
+  "options_lang_warning_other_lang_when_available": {
+    "message": "英語以外の単語の定義は利用可能な場合のみに表示されます。"
+  },
+  "options_lang_warning_please_note": {
+    "message": "ご了解ください："
+  },
   "options_last_database_check": {
     "message": "更新確認時刻 $lastcheck$",
     "description": "Status to show when we last checked for an update",
