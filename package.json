@@ -79,7 +79,7 @@
     "yargs": "^16.2.0"
   },
   "dependencies": {
-    "@birchill/hikibiki-data": "^7.0.4",
+    "@birchill/hikibiki-data": "^7.0.5",
     "@birchill/normal-jp": "^1.2.1",
     "@bugsnag/js": "^7.9.0",
     "husky": "^6.0.0",
