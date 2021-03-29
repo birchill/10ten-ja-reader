@@ -897,11 +897,7 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
       cancelButton.textContent = browser.i18n.getMessage(
         'options_cancel_update_button_label'
       );
-      if (updateState.state === 'updatingdb') {
-        cancelButton.disabled = true;
-      } else {
-        cancelButton.addEventListener('click', cancelDatabaseUpdate);
-      }
+      cancelButton.addEventListener('click', cancelDatabaseUpdate);
       buttonDiv.append(cancelButton);
       break;
     }
