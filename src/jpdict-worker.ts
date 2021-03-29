@@ -239,6 +239,7 @@ function doDbStateNotification() {
   // reporting anything.
   if (
     !db ||
+    db.words.state === DataSeriesState.Initializing ||
     db.kanji.state === DataSeriesState.Initializing ||
     db.radicals.state === DataSeriesState.Initializing ||
     db.names.state === DataSeriesState.Initializing
