@@ -1005,7 +1005,7 @@ async function updateIdleStateSummary(
       continue;
     }
 
-    const { major, minor, patch } = versionInfo;
+    const { major, minor, patch, lang } = versionInfo;
     const titleDiv = document.createElement('div');
     titleDiv.classList.add('db-source-title');
     const titleKeys: { [series in MajorDataSeries]: string } = {
@@ -1015,7 +1015,7 @@ async function updateIdleStateSummary(
     };
     const titleString = browser.i18n.getMessage(
       titleKeys[series],
-      `${major}.${minor}.${patch}`
+      `${major}.${minor}.${patch} (${lang})`
     );
     titleDiv.append(titleString);
     gridDiv.append(titleDiv);
