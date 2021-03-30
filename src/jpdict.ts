@@ -83,10 +83,6 @@ let dbState: JpdictState = {
   updateState: { state: 'idle', lastCheck: null },
 };
 
-function kanjiDbLang(): string {
-  return dbState.kanji.version?.lang ?? 'en';
-}
-
 // We treat the names dictionary as unavailable when it is being updated
 // because otherwise we can block for seconds waiting to read from it.
 function isNamesDbAvailable(): boolean {
@@ -266,7 +262,7 @@ export async function searchKanji(
   try {
     result = await getKanji({
       kanji: [kanji],
-      lang: kanjiDbLang(),
+      lang: dbState.kanji.version?.lang ?? 'en',
       logWarningMessage,
     });
   } catch (e) {
