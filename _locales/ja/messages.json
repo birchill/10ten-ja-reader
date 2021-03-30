@@ -1375,14 +1375,15 @@
     "message": "キーボード",
     "description": "Heading for options to configure keyboard commands"
   },
+  "options_lang_kanji_only": {
+    "message": "（漢字データのみ）",
+    "decsription": "Annotation added to language labels for languages where only the kanji data has been translated (i.e. but not the word data)"
+  },
   "options_lang_warning_always_en": {
     "message": "単語の場合、英語の定義は常に表示されます。"
   },
   "options_lang_warning_change_lang_redownload": {
     "message": "言語を変更する際、データファイルが再読み込みされます。"
-  },
-  "options_lang_warning_kanji_star_meaning": {
-    "message": "※が付いている言語に漢字データの翻訳はございません。"
   },
   "options_lang_warning_names_en_only": {
     "message": "人名辞典のデータは英語のみとなっております。"
@@ -1392,6 +1393,10 @@
   },
   "options_lang_warning_please_note": {
     "message": "ご了解ください："
+  },
+  "options_lang_words_only": {
+    "message": "（単語データのみ）",
+    "decsription": "Annotation added to language labels for languages where only the word data has been translated (i.e. but not the kanji data)"
   },
   "options_last_database_check": {
     "message": "更新確認時刻 $lastcheck$",

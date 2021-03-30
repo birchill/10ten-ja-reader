@@ -11,11 +11,7 @@ import {
 import { Config, DEFAULT_KEY_SETTINGS } from './config';
 import { Command, CommandParams, isValidKey } from './commands';
 import { CopyKeys, CopyNextKeyStrings } from './copy-keys';
-import {
-  dbLanguageNames,
-  hasKanjiTranslation,
-  isDbLanguageId,
-} from './db-languages';
+import { dbLanguageMeta, isDbLanguageId } from './db-languages';
 import {
   DbStateUpdatedMessage,
   cancelDbUpdate,
@@ -533,8 +529,13 @@ function translateKeys() {
 function fillInLanguages() {
   const select = document.querySelector('select#lang') as HTMLSelectElement;
 
-  for (let [id, title] of dbLanguageNames) {
-    const label = hasKanjiTranslation(id) ? title : `${title} ※`;
+  for (let [id, data] of dbLanguageMeta) {
+    let label = data.name;
+    if (data.hasWords && !data.hasKanji) {
+      label += browser.i18n.getMessage('options_lang_words_only');
+    } else if (!data.hasWords && data.hasKanji) {
+      label += browser.i18n.getMessage('options_lang_kanji_only');
+    }
     const option = document.createElement('option');
     option.value = id;
     option.append(label);

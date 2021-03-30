@@ -1372,14 +1372,15 @@
     "message": "Keyboard",
     "description": "Heading for options to configure keyboard commands"
   },
+  "options_lang_kanji_only": {
+    "message": " (kanji only)",
+    "decsription": "Annotation added to language labels for languages where only the kanji data has been translated (i.e. but not the word data)"
+  },
   "options_lang_warning_always_en": {
     "message": "English word definitions are always shown."
   },
   "options_lang_warning_change_lang_redownload": {
     "message": "Changing the language will cause the corresponding data files to be re-downloaded."
-  },
-  "options_lang_warning_kanji_star_meaning": {
-    "message": "Languages marked with ※ do not have any translations for kanji entries."
   },
   "options_lang_warning_names_en_only": {
     "message": "The names dictionary is only available in English."
@@ -1389,6 +1390,10 @@
   },
   "options_lang_warning_please_note": {
     "message": "Please note that:"
+  },
+  "options_lang_words_only": {
+    "message": " (words only)",
+    "decsription": "Annotation added to language labels for languages where only the word data has been translated (i.e. but not the kanji data)"
   },
   "options_last_database_check": {
     "message": "Last check $lastcheck$",
