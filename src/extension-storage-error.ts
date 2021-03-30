@@ -1,9 +1,9 @@
 export class ExtensionStorageError extends Error {
   key: string;
-  action: 'set' | 'get';
+  action: 'set' | 'get' | 'remove';
 
   constructor(
-    { key, action }: { key: string; action: 'set' | 'get' },
+    { key, action }: { key: string; action: 'set' | 'get' | 'remove' },
     ...params: any[]
   ) {
     super(...params);

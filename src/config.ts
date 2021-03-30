@@ -10,7 +10,10 @@
 // * Provides a snapshot of all options with their default values filled-in for
 //   passing to the content process.
 
+import Bugsnag from '@bugsnag/browser';
+
 import { dbLanguages, DbLanguageId } from './db-languages';
+import { ExtensionStorageError } from './extension-storage-error';
 import {
   ReferenceAbbreviation,
   convertLegacyReference,
@@ -498,17 +501,31 @@ export class Config {
       return;
     }
 
-    // Note that we don't need to check that `valud` is valid since TypeScript
+    // Note that we don't need to check that `value` is valid since TypeScript
     // does that for us.
 
     // If the value to set matches the default we clear the setting. This is so
     // that if we later support one of the user's more preferred languages we
     // can update them automatically.
     if (value === this.getDefaultLang()) {
-      browser.storage.sync.remove('dictLang');
+      browser.storage.sync.remove('dictLang').catch(() => {
+        Bugsnag.notify(
+          new ExtensionStorageError({ key: 'dictLang', action: 'remove' }),
+          (event) => {
+            event.severity = 'warning';
+          }
+        );
+      });
       delete this._settings.dictLang;
     } else {
-      browser.storage.sync.set({ dictLang: value });
+      browser.storage.sync.set({ dictLang: value }).catch(() => {
+        Bugsnag.notify(
+          new ExtensionStorageError({ key: 'dictLang', action: 'set' }),
+          (event) => {
+            event.severity = 'warning';
+          }
+        );
+      });
       this._settings.dictLang = value;
     }
   }
