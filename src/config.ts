@@ -475,10 +475,7 @@ export class Config {
     // deprecated a language or we synced a value from a newer version of the
     // extension.
     if (this._settings.dictLang) {
-      const availableLanguages = new Set(dbLanguages);
-      if (availableLanguages.has(this._settings.dictLang)) {
-        return false;
-      }
+      return !dbLanguages.includes(this._settings.dictLang);
     }
 
     return true;
