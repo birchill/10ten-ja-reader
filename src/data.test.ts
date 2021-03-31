@@ -1,5 +1,7 @@
 import { readFile } from 'fs';
+
 import { Dictionary } from './data';
+import { WordResult, WordSearchResult } from './search-result';
 
 // Mock browser.extension.getURL and browser.i18n.getMessage
 global.browser = {

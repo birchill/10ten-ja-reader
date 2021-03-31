@@ -69,6 +69,7 @@ import {
   searchNames,
 } from './jpdict';
 import { shouldRequestPersistentStorage } from './quota-management';
+import { NameResult, SearchResult, WordSearchResult } from './search-result';
 
 //
 // Setup bugsnag

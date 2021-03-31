@@ -14,6 +14,7 @@ import { normalizeInput } from './conversion';
 import { ExtensionStorageError } from './extension-storage-error';
 import { JpdictWorkerMessage } from './jpdict-worker-messages';
 import * as messages from './jpdict-worker-messages';
+import { KanjiSearchResult, NameSearchResult } from './search-result';
 import { endsInYoon } from './yoon';
 
 //

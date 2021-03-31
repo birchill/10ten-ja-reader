@@ -4,6 +4,8 @@
 // flat file database so it doesn't need to be perfect or even keep in sync
 // with changes to hikibiki-data. It's really just a stop-gap measure.
 
+import { WordResult } from './search-result';
+
 // As with Array.prototype.sort, sorts `results` in-place, but returns the
 // result to support chaining.
 export function sortMatchesByPriority(

@@ -24,6 +24,7 @@ import {
   getSelectedReferenceLabels,
   ReferenceAbbreviation,
 } from './refs';
+import { NameResult, Sense, WordResult } from './search-result';
 import { isForeignObjectElement, isSvgDoc, SVG_NS } from './svg';
 import { EraInfo, getEraInfo } from './years';
 

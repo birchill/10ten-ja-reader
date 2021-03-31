@@ -55,6 +55,7 @@ import { toRomaji } from './romaji';
 import { toWordResult, RawWordRecord } from './raw-word-record';
 import { sortMatchesByPriority } from './word-match-sorting';
 import { endsInYoon } from './yoon';
+import { TranslateResult, WordResult, WordSearchResult } from './search-result';
 
 const WORDS_MAX_ENTRIES = 7;
 

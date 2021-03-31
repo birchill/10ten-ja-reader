@@ -1,5 +1,7 @@
 import { MiscType, PartOfSpeech } from '@birchill/hikibiki-data';
 
+import { Sense } from './search-result';
+
 export interface PosGroup {
   pos: Array<PartOfSpeech>;
   misc: Array<MiscType>;

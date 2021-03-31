@@ -10,6 +10,7 @@ import {
   getSelectedReferenceLabels,
   ReferenceAbbreviation,
 } from './refs';
+import { NameResult, Sense, WordResult } from './search-result';
 
 export type Entry =
   | { type: 'word'; data: WordResult }

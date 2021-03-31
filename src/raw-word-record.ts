@@ -8,9 +8,8 @@ import {
 } from '@birchill/hikibiki-data';
 import { kanaToHiragana } from '@birchill/normal-jp';
 
+import { Sense, WordResult } from './search-result';
 import { stripFields } from './strip-fields';
-
-type ExtendedSense = WordResult['s'][0];
 
 // This type matches the structure of the records in the flat file database
 // (which, incidentally, differ slightly from the data format used by
@@ -78,7 +77,7 @@ function mergeMeta<MetaType extends RawKanjiMeta | RawReadingMeta, MergedType>(
   return result;
 }
 
-function expandSenses(senses: Array<RawWordSense>): Array<ExtendedSense> {
+function expandSenses(senses: Array<RawWordSense>): Array<Sense> {
   return senses.map((sense) => ({
     g: expandGlosses(sense),
     ...stripFields(sense, ['g', 'gt']),

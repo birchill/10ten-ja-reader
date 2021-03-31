@@ -1,3 +1,11 @@
+import {
+  KanjiSearchResult,
+  NameResult,
+  NameSearchResult,
+  SearchResult,
+  WordSearchResult,
+} from './search-result';
+
 export type QueryResult =
   | WordSearchOrTranslateResult
   | NameSearchResult
