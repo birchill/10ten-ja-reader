@@ -104,7 +104,10 @@
       "js",
       "json",
       "jsx"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^idb/with-async-ittr$": "idb/with-async-ittr-cjs"
+    }
   },
   "lint-staged": {
     "*.ts": [
