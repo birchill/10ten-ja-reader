@@ -1,26 +1,29 @@
+import {
+  Gloss,
+  GlossType,
+  GLOSS_TYPE_MAX,
+  RawKanjiMeta,
+  RawReadingMeta,
+  RawWordSense,
+} from '@birchill/hikibiki-data';
 import { kanaToHiragana } from '@birchill/normal-jp';
 
 import { stripFields } from './strip-fields';
-import {
-  ExtendedSense,
-  Gloss,
-  GlossType,
-  KanjiMeta,
-  ReadingMeta,
-  WordSense,
-  WordResult,
-  BITS_PER_GLOSS_TYPE,
-} from './word-result';
 
-// This type matches the structure of the records in the flat file database.
+type ExtendedSense = WordResult['s'][0];
+
+// This type matches the structure of the records in the flat file database
+// (which, incidentally, differ slightly from the data format used by
+// hikibiki-data since, for example, they don't include the ID field).
+//
 // As a result it is only used as part of the fallback mechanism.
 
 export interface RawWordRecord {
   k?: Array<string>;
-  km?: Array<0 | KanjiMeta>;
+  km?: Array<0 | RawKanjiMeta>;
   r: Array<string>;
-  rm?: Array<0 | ReadingMeta>;
-  s: Array<WordSense>;
+  rm?: Array<0 | RawReadingMeta>;
+  s: Array<RawWordSense>;
 }
 
 export function toWordResult({
@@ -57,7 +60,7 @@ export function toWordResult({
   };
 }
 
-function mergeMeta<MetaType extends KanjiMeta | ReadingMeta, MergedType>(
+function mergeMeta<MetaType extends RawKanjiMeta | RawReadingMeta, MergedType>(
   keys: Array<string> | undefined,
   metaArray: Array<0 | MetaType> | undefined,
   merge: (key: string, meta?: MetaType) => MergedType
@@ -75,15 +78,17 @@ function mergeMeta<MetaType extends KanjiMeta | ReadingMeta, MergedType>(
   return result;
 }
 
-function expandSenses(senses: Array<WordSense>): Array<ExtendedSense> {
-  return senses.map((sense, i) => ({
+function expandSenses(senses: Array<RawWordSense>): Array<ExtendedSense> {
+  return senses.map((sense) => ({
     g: expandGlosses(sense),
     ...stripFields(sense, ['g', 'gt']),
     match: true,
   }));
 }
 
-function expandGlosses(sense: WordSense): Array<Gloss> {
+const BITS_PER_GLOSS_TYPE = Math.floor(Math.log2(GLOSS_TYPE_MAX)) + 1;
+
+function expandGlosses(sense: RawWordSense): Array<Gloss> {
   // Helpers to work out the gloss type
   const gt = sense.gt || 0;
   const typeMask = (1 << BITS_PER_GLOSS_TYPE) - 1;

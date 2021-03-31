@@ -1,4 +1,12 @@
-import { KanjiResult, NameTranslation } from '@birchill/hikibiki-data';
+import {
+  Gloss,
+  GlossType,
+  KanjiInfo,
+  KanjiResult,
+  LangSource,
+  NameTranslation,
+  ReadingInfo,
+} from '@birchill/hikibiki-data';
 import { countMora, moraSubstring } from '@birchill/normal-jp';
 
 import {
@@ -17,15 +25,6 @@ import {
   ReferenceAbbreviation,
 } from './refs';
 import { isForeignObjectElement, isSvgDoc, SVG_NS } from './svg';
-import {
-  ExtendedKanaEntry,
-  ExtendedSense,
-  Gloss,
-  GlossType,
-  KanjiInfo,
-  LangSource,
-  ReadingInfo,
-} from './word-result';
 import { EraInfo, getEraInfo } from './years';
 
 import popupStyles from '../css/popup.css';
@@ -472,7 +471,7 @@ function renderBonusNames(
 }
 
 function renderKana(
-  kana: ExtendedKanaEntry,
+  kana: WordResult['r'][0],
   options: PopupOptions
 ): string | Element {
   const accents = kana.a;
@@ -713,7 +712,7 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
 }
 
 function renderSense(
-  sense: ExtendedSense,
+  sense: Sense,
   options: PopupOptions
 ): string | DocumentFragment {
   const fragment = document.createDocumentFragment();

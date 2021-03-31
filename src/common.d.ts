@@ -79,7 +79,14 @@ interface KanjiSearchResult {
   matchLen: 1;
 }
 
-type WordResult = import('./word-result').WordResult;
+type HikibikiWordResult = import('@birchill/hikibiki-data').WordResult;
+
+type WordResult = Omit<HikibikiWordResult, 'id'> & {
+  reason?: string;
+  romaji?: Array<string>;
+};
+
+type Sense = WordResult['s'][0];
 
 interface WordSearchResult {
   type: 'words';

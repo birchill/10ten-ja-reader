@@ -1,13 +1,10 @@
-import { KanjiResult } from '@birchill/hikibiki-data';
-
 import {
   Dialect,
-  ExtendedKanjiEntry,
-  ExtendedKanaEntry,
-  ExtendedSense,
   GlossType,
   LangSource,
-} from './word-result';
+  KanjiResult,
+} from '@birchill/hikibiki-data';
+
 import {
   getReferenceValue,
   getSelectedReferenceLabels,
@@ -19,6 +16,8 @@ export type Entry =
   | { type: 'name'; data: NameResult }
   | { type: 'kanji'; data: KanjiResult };
 
+type Headword = WordResult['k'][0] | WordResult['r'][0];
+
 export function getWordToCopy(entry: Entry): string {
   let result: string;
 
@@ -27,10 +26,8 @@ export function getWordToCopy(entry: Entry): string {
       {
         const headwords =
           entry.data.k && entry.data.k.length ? entry.data.k : entry.data.r;
-        result = (headwords as Array<ExtendedKanjiEntry | ExtendedKanaEntry>)
-          .map(
-            (entry: ExtendedKanjiEntry | ExtendedKanaEntry): string => entry.ent
-          )
+        result = (headwords as Array<Headword>)
+          .map((entry: Headword): string => entry.ent)
           .join(', ');
       }
       break;
@@ -191,7 +188,7 @@ const dialects: { [dial in Dialect]: string } = {
   ok: 'rkb:',
 };
 
-function serializeSense(sense: ExtendedSense): string {
+function serializeSense(sense: Sense): string {
   let result = '';
 
   result += sense.pos ? `(${sense.pos.join(',')}) ` : '';

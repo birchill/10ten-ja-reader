@@ -47,13 +47,13 @@
 
 import { Client as BugsnagClient } from '@bugsnag/browser';
 import { expandChoon, kanaToHiragana } from '@birchill/normal-jp';
+import { PartOfSpeech } from '@birchill/hikibiki-data';
 
 import { deinflect, deinflectL10NKeys, CandidateWord } from './deinflect';
 import { normalizeInput } from './conversion';
 import { toRomaji } from './romaji';
 import { toWordResult, RawWordRecord } from './raw-word-record';
 import { sortMatchesByPriority } from './word-match-sorting';
-import { PartOfSpeech } from './word-result';
 import { endsInYoon } from './yoon';
 
 const WORDS_MAX_ENTRIES = 7;
