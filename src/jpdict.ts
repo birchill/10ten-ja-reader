@@ -1,5 +1,6 @@
 import Bugsnag from '@bugsnag/browser';
 import {
+  DataSeries,
   DataSeriesState,
   DataVersion,
   NameResult,
@@ -84,13 +85,13 @@ let dbState: JpdictState = {
   updateState: { state: 'idle', lastCheck: null },
 };
 
-// We treat the names dictionary as unavailable when it is being updated
-// because otherwise we can block for seconds waiting to read from it.
-function isNamesDbAvailable(): boolean {
+// We treat the names and words dictionaries as unavailable when they are being
+// updated because otherwise we can block for seconds waiting to read from them.
+function isDataSeriesAvailable(series: DataSeries): boolean {
   return (
     dbState.names.state === DataSeriesState.Ok &&
     (dbState.updateState.state === 'idle' ||
-      dbState.updateState.series !== 'names')
+      dbState.updateState.series !== series)
   );
 }
 
@@ -296,7 +297,7 @@ export async function searchNames({
   input: string;
   minLength?: number;
 }): Promise<NameSearchResult | null> {
-  if (!isNamesDbAvailable()) {
+  if (!isDataSeriesAvailable('names')) {
     return null;
   }
 
