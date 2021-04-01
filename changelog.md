@@ -1,6 +1,7 @@
 ## 0.3.6 (not released yet)
 
-(Nothing yet)
+- Made Rikaichamp recognize the full range of characters in CJK Unified
+  Ideographs Extension B so that some more rare kanji are recognized.
 
 ## 0.3.5 (2021-03-19)
 
