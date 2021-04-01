@@ -1,5 +1,4 @@
-import { deinflect, DeinflectReason } from './deinflect';
-import { WordType } from './data';
+import { deinflect, DeinflectReason, WordType } from './deinflect';
 
 describe('deinflect', () => {
   it('performs de-inflection', () => {

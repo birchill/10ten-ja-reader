@@ -9,13 +9,18 @@ import {
   getKanji,
   getNames,
 } from '@birchill/hikibiki-data';
-import { expandChoon } from '@birchill/normal-jp';
+import { expandChoon, kanaToHiragana } from '@birchill/normal-jp';
 
 import { normalizeInput } from './conversion';
 import { ExtensionStorageError } from './extension-storage-error';
 import { JpdictWorkerMessage } from './jpdict-worker-messages';
 import * as messages from './jpdict-worker-messages';
-import { KanjiSearchResult, NameSearchResult } from './search-result';
+import {
+  KanjiSearchResult,
+  NameSearchResult,
+  WordSearchResult,
+} from './search-result';
+import { wordSearch } from './word-search';
 import { endsInYoon } from './yoon';
 
 //
@@ -236,6 +241,46 @@ export function cancelUpdateDb() {
 export function deleteDb() {
   jpdictWorker.postMessage(messages.deleteDb());
   setLastUpdateTime(null);
+}
+
+const WORDS_MAX_ENTRIES = 7;
+
+export async function searchWords({
+  input,
+  max = 0,
+  includeRomaji = false,
+}: {
+  input: string;
+  max?: number;
+  includeRomaji?: boolean;
+}): Promise<WordSearchResult | null> {
+  let [word, inputLengths] = normalizeInput(input);
+  word = kanaToHiragana(word);
+
+  const maxResults =
+    max > 0 ? Math.min(WORDS_MAX_ENTRIES, max) : WORDS_MAX_ENTRIES;
+
+  // Setup a list of strings to try that includes all the possible expansions of
+  // ー characters.
+  const candidateWords = [word, ...expandChoon(word)];
+
+  let result: WordSearchResult | null = null;
+  for (const candidate of candidateWords) {
+    // Try this particular expansion of any choon
+    const thisResult = await wordSearch({
+      input: candidate,
+      inputLengths,
+      maxResults,
+      includeRomaji,
+    });
+
+    // Replace the result if we got a longer match
+    if (!result || (thisResult && thisResult.matchLen > result.matchLen)) {
+      result = thisResult;
+    }
+  }
+
+  return result;
 }
 
 export async function searchKanji(

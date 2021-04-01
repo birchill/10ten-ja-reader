@@ -49,7 +49,12 @@ import { Client as BugsnagClient } from '@bugsnag/browser';
 import { expandChoon, kanaToHiragana } from '@birchill/normal-jp';
 import { PartOfSpeech } from '@birchill/hikibiki-data';
 
-import { deinflect, deinflectL10NKeys, CandidateWord } from './deinflect';
+import {
+  deinflect,
+  deinflectL10NKeys,
+  CandidateWord,
+  WordType,
+} from './deinflect';
 import { normalizeInput } from './conversion';
 import { toRomaji } from './romaji';
 import { toWordResult, RawWordRecord } from './raw-word-record';
@@ -65,15 +70,6 @@ interface DictionaryOptions {
   // when running unit tests (and trying to do so would trigger errors because
   // we failed to call start anyway).
   bugsnag?: BugsnagClient;
-}
-
-export const enum WordType {
-  IchidanVerb = 1 << 0, // i.e. ru-verbs
-  GodanVerb = 1 << 1, // i.e. u-verbs
-  IAdj = 1 << 2,
-  KuruVerb = 1 << 3,
-  SuruVerb = 1 << 4,
-  NounVS = 1 << 5,
 }
 
 export class Dictionary {
@@ -139,8 +135,9 @@ export class Dictionary {
     return result;
   }
 
-  // Looks for dictionary entries in |dict| (using |index|) that match some
-  // portion of |input| after de-inflecting it.
+  // Looks for dictionary entries that match some portion of |input| after
+  // de-inflecting it.
+  //
   // Only entries that match from the beginning of |input| are checked.
   //
   // e.g. if |input| is '子犬は' then the entry for '子犬' will match but

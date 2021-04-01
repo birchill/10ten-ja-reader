@@ -567,6 +567,15 @@ const deinflectRuleData: Array<[string, string, number, number]> = [
   ['する', '', 8208, DeinflectReason.SuruNoun],
 ];
 
+export const enum WordType {
+  IchidanVerb = 1 << 0, // i.e. ru-verbs
+  GodanVerb = 1 << 1, // i.e. u-verbs
+  IAdj = 1 << 2,
+  KuruVerb = 1 << 3,
+  SuruVerb = 1 << 4,
+  NounVS = 1 << 5,
+}
+
 interface DeinflectRule {
   from: string;
   to: string;
