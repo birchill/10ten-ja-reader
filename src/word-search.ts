@@ -1,8 +1,4 @@
-import {
-  getWords,
-  PartOfSpeech,
-  WordResult as HikibikiWordResult,
-} from '@birchill/hikibiki-data';
+import { PartOfSpeech } from '@birchill/hikibiki-data';
 
 import {
   deinflect,
@@ -11,17 +7,26 @@ import {
   WordType,
 } from './deinflect';
 import { toRomaji } from './romaji';
-import { WordResult, WordSearchResult } from './search-result';
+import {
+  DictionaryWordResult,
+  WordResult,
+  WordSearchResult,
+} from './search-result';
 import { endsInYoon } from './yoon';
 
-type PartialWordResult = Omit<HikibikiWordResult, 'id'>;
+export type GetWordsFunction = (params: {
+  input: string;
+  maxResults: number;
+}) => Promise<Array<DictionaryWordResult>>;
 
 export async function wordSearch({
+  getWords,
   input,
   inputLengths,
   maxResults,
   includeRomaji,
 }: {
+  getWords: GetWordsFunction;
   input: string;
   inputLengths: Array<number>;
   maxResults: number;
@@ -44,10 +49,7 @@ export async function wordSearch({
     const candidates: Array<CandidateWord> = deinflect(input);
 
     for (const [candidateIndex, candidate] of candidates.entries()) {
-      let matches = await getWords(input, {
-        matchType: 'exact',
-        limit: maxResults,
-      });
+      let matches = await getWords({ input: candidate.word, maxResults });
 
       // Drop matches we already have in our result
       matches = matches.filter((match) => !have.has(match.id));
@@ -136,7 +138,7 @@ export async function wordSearch({
 }
 
 // Tests if a given entry matches the type of a generated deflection
-function entryMatchesType(entry: PartialWordResult, type: number): boolean {
+function entryMatchesType(entry: DictionaryWordResult, type: number): boolean {
   const hasMatchingSense = (test: (pos: PartOfSpeech) => boolean) =>
     entry.s.some((sense) => sense.pos?.some(test));
 

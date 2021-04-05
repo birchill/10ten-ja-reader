@@ -6,7 +6,9 @@ import type {
 
 // Words
 
-export type WordResult = Omit<HikibikiWordResult, 'id'> & {
+export type DictionaryWordResult = HikibikiWordResult;
+
+export type WordResult = DictionaryWordResult & {
   reason?: string;
   romaji?: Array<string>;
 };

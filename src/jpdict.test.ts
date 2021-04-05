@@ -1,6 +1,13 @@
 import { readFile } from 'fs';
 
-import { Dictionary } from './data';
+class Worker {
+  constructor(_stringUrl: string) {}
+  postMessage(_msg: string) {}
+}
+
+(window as any).Worker = Worker;
+
+import { searchWords, translate } from './jpdict';
 import { WordResult, WordSearchResult } from './search-result';
 
 // Mock browser.extension.getURL and browser.i18n.getMessage
@@ -88,17 +95,9 @@ window.fetch = jest.fn().mockImplementation(
     })
 );
 
-// Common dictionary instance to save loading each time
-const sharedDict = new Dictionary({});
-
-describe('Dictionary', () => {
-  it('loads', async () => {
-    await sharedDict.loaded;
-    // Nothing to check
-  });
-
+describe('searchWords', () => {
   it('finds an exact match', async () => {
-    const result = await sharedDict.wordSearch({
+    const result = await searchWords({
       input: '蛋白質',
       includeRomaji: true,
     });
@@ -114,52 +113,52 @@ describe('Dictionary', () => {
   });
 
   it('finds a match partially using katakana', async () => {
-    const result = await sharedDict.wordSearch({ input: 'タンパク質' });
+    const result = await searchWords({ input: 'タンパク質' });
     expect(result!.matchLen).toBe(5);
   });
 
   it('finds a match partially using half-width katakana', async () => {
-    const result = await sharedDict.wordSearch({ input: 'ﾀﾝﾊﾟｸ質' });
+    const result = await searchWords({ input: 'ﾀﾝﾊﾟｸ質' });
     expect(result!.matchLen).toBe(6);
   });
 
   it('finds a match partially using hiragana', async () => {
-    const result = await sharedDict.wordSearch({ input: 'たんぱく質' });
+    const result = await searchWords({ input: 'たんぱく質' });
     expect(result!.matchLen).toBe(5);
   });
 
   it('finds a match fully using katakana', async () => {
-    const result = await sharedDict.wordSearch({ input: 'タンパクシツ' });
+    const result = await searchWords({ input: 'タンパクシツ' });
     expect(result!.matchLen).toBe(6);
   });
 
   it('finds a match fully using half-width katakana', async () => {
-    const result = await sharedDict.wordSearch({ input: 'ﾀﾝﾊﾟｸｼﾂ' });
+    const result = await searchWords({ input: 'ﾀﾝﾊﾟｸｼﾂ' });
     expect(result!.matchLen).toBe(7);
   });
 
   it('finds a match fully using hiragana', async () => {
-    const result = await sharedDict.wordSearch({ input: 'たんぱくしつ' });
+    const result = await searchWords({ input: 'たんぱくしつ' });
     expect(result!.matchLen).toBe(6);
   });
 
   it('finds a partial match', async () => {
-    const result = await sharedDict.wordSearch({ input: '蛋白質は' });
+    const result = await searchWords({ input: '蛋白質は' });
     expect(result!.matchLen).toBe(3);
   });
 
   it('finds a match with ー', async () => {
-    let result = await sharedDict.wordSearch({ input: '頑張ろー' });
+    let result = await searchWords({ input: '頑張ろー' });
     expect(result!.matchLen).toBe(4);
-    result = await sharedDict.wordSearch({ input: 'そーゆー' });
+    result = await searchWords({ input: 'そーゆー' });
     expect(result!.matchLen).toBe(4);
-    result = await sharedDict.wordSearch({ input: '食べよー' });
+    result = await searchWords({ input: '食べよー' });
     expect(result!.matchLen).toBe(4);
-    result = await sharedDict.wordSearch({ input: 'おはよー' });
+    result = await searchWords({ input: 'おはよー' });
     expect(result!.matchLen).toBe(4);
-    result = await sharedDict.wordSearch({ input: '行こー' });
+    result = await searchWords({ input: '行こー' });
     expect(result!.matchLen).toBe(3);
-    result = await sharedDict.wordSearch({ input: 'オーサカ' });
+    result = await searchWords({ input: 'オーサカ' });
     expect(result!.matchLen).toBe(4);
   });
 
@@ -173,7 +172,7 @@ describe('Dictionary', () => {
   };
 
   it('does not split yo-on', async () => {
-    const result = await sharedDict.wordSearch({ input: 'ローマじゃない' });
+    const result = await searchWords({ input: 'ローマじゃない' });
     // This should NOT match ローマ字
     expect(result!.matchLen).toBe(3);
     expect(hasEntryWithKanji(result!, 'ローマ字')).toBeFalsy();
@@ -188,29 +187,29 @@ describe('Dictionary', () => {
 
   it('chooses the right de-inflection for potential and passives', async () => {
     // Ichidan/ru-verb -- られる ending could be potential or passive
-    let result = await sharedDict.wordSearch({ input: '止められます' });
+    let result = await searchWords({ input: '止められます' });
     let match = getMatchWithKana(result!, 'とめる');
     expect(match!.reason).toEqual('< potential or passive < polite');
 
     // Godan/u-verb -- られる ending is passive
-    result = await sharedDict.wordSearch({ input: '止まられます' });
+    result = await searchWords({ input: '止まられます' });
     match = getMatchWithKana(result!, 'とまる');
     expect(match!.reason).toEqual('< passive < polite');
 
     // Godan/u-verb -- れる ending is potential
-    result = await sharedDict.wordSearch({ input: '止まれます' });
+    result = await searchWords({ input: '止まれます' });
     match = getMatchWithKana(result!, 'とまる');
     expect(match!.reason).toEqual('< potential < polite');
   });
 
   it('chooses the right de-inflection for causative and passives', async () => {
     // su-verb -- される ending is passive
-    let result = await sharedDict.wordSearch({ input: '起こされる' });
+    let result = await searchWords({ input: '起こされる' });
     let match = getMatchWithKana(result!, 'おこす');
     expect(match!.reason).toEqual('< passive');
 
     // su-verb -- させる ending is causative
-    result = await sharedDict.wordSearch({ input: '起こさせる' });
+    result = await searchWords({ input: '起こさせる' });
     match = getMatchWithKana(result!, 'おこす');
     expect(match!.reason).toEqual('< causative');
   });
@@ -236,7 +235,7 @@ describe('Dictionary', () => {
     ];
 
     for (const [inflected, plain] of pairs) {
-      const result = await sharedDict.wordSearch({ input: inflected });
+      const result = await searchWords({ input: inflected });
       const match = getMatchWithKana(result!, plain);
       expect(match!.reason).toEqual('< causative passive');
     }
@@ -244,30 +243,30 @@ describe('Dictionary', () => {
     // Check for the exceptions:
     //
     // (1) su-verbs: causative passive is させられる only, される is passive
-    let result = await sharedDict.wordSearch({ input: '起こさせられる' });
+    let result = await searchWords({ input: '起こさせられる' });
     let match = getMatchWithKana(result!, 'おこす');
     expect(match!.reason).toEqual('< causative passive');
 
-    result = await sharedDict.wordSearch({ input: '起こされる' });
+    result = await searchWords({ input: '起こされる' });
     match = getMatchWithKana(result!, 'おこす');
     expect(match!.reason).toEqual('< passive');
 
     // (2) ichidan verbs
-    result = await sharedDict.wordSearch({ input: '食べさせられる' });
+    result = await searchWords({ input: '食べさせられる' });
     match = getMatchWithKana(result!, 'たべる');
     expect(match!.reason).toEqual('< causative passive');
 
     // (4) kuru verbs
-    result = await sharedDict.wordSearch({ input: '来させられる' });
+    result = await searchWords({ input: '来させられる' });
     match = getMatchWithKana(result!, 'くる');
     expect(match!.reason).toEqual('< causative passive');
 
-    result = await sharedDict.wordSearch({ input: 'こさせられる' });
+    result = await searchWords({ input: 'こさせられる' });
     match = getMatchWithKana(result!, 'くる');
     expect(match!.reason).toEqual('< causative passive');
 
     // Check combinations
-    result = await sharedDict.wordSearch({ input: '買わされませんでした' });
+    result = await searchWords({ input: '買わされませんでした' });
     match = getMatchWithKana(result!, 'かう');
     expect(match!.reason).toEqual('< causative passive < polite past negative');
   });
@@ -301,14 +300,14 @@ describe('Dictionary', () => {
     ];
 
     for (const [inflected, plain] of pairs) {
-      const result = await sharedDict.wordSearch({ input: inflected });
+      const result = await searchWords({ input: inflected });
       const match = getMatchWithKanjiOrKana(result!, plain);
       expect(match!.reason).toEqual(expect.stringMatching(/^< -te oku/));
     }
   });
 
   it('looks up irregular Yodan verbs', async () => {
-    const result = await sharedDict.wordSearch({ input: 'のたもうた' });
+    const result = await searchWords({ input: 'のたもうた' });
     expect(getMatchWithKana(result!, 'のたまう')).toBeDefined();
   });
 
@@ -316,7 +315,7 @@ describe('Dictionary', () => {
     entry.r.map((r) => r.ent);
 
   it('orders words by priority', async () => {
-    const result = await sharedDict.wordSearch({ input: '認める' });
+    const result = await searchWords({ input: '認める' });
     expect(getKana(result!.data[0])).toContain('みとめる');
     expect(getKana(result!.data[1])).toContain('したためる');
   });
@@ -325,7 +324,7 @@ describe('Dictionary', () => {
     entry.k ? entry.k.map((k) => k.ent) : [];
 
   it('orders words by priority before truncating the list', async () => {
-    const result = await sharedDict.wordSearch({
+    const result = await searchWords({
       input: 'せんしゅ',
       max: 5,
     });
@@ -344,9 +343,11 @@ describe('Dictionary', () => {
     // Check that we still respect the max-length limit though
     expect(result!.data).toHaveLength(5);
   });
+});
 
+describe('translate', () => {
   it('translates sentences', async () => {
-    const result = await sharedDict.translate({ text: '期間限定発売 秋の膳' });
+    const result = await translate({ text: '期間限定発売 秋の膳' });
     expect(result!.textLen).toBe(10); // 10 characters including the space
     expect(result!.data.length).toBe(5);
     expect(result!.more).toBe(false);

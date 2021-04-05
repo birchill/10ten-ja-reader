@@ -51,22 +51,23 @@ import '../html/background.html.src';
 import Bugsnag, { Event as BugsnagEvent } from '@bugsnag/browser';
 import { DataSeriesState } from '@birchill/hikibiki-data';
 
-import { updateBrowserAction, FlatFileDictState } from './browser-action';
+import { updateBrowserAction } from './browser-action';
 import { Config } from './config';
-import { Dictionary } from './data';
 import {
   notifyDbStateUpdated,
   DbListenerMessage,
 } from './db-listener-messages';
 import { ExtensionStorageError } from './extension-storage-error';
 import {
-  JpdictState,
+  JpdictStateWithFallback,
   cancelUpdateDb,
   deleteDb,
   initDb,
   updateDb,
   searchKanji,
   searchNames,
+  searchWords,
+  translate,
 } from './jpdict';
 import { shouldRequestPersistentStorage } from './quota-management';
 import { NameResult, SearchResult, WordSearchResult } from './search-result';
@@ -93,7 +94,7 @@ browser.management.getSelf().then((info) => {
 
 const manifest = browser.runtime.getManifest();
 
-const bugsnagClient = Bugsnag.start({
+Bugsnag.start({
   apiKey: 'e707c9ae84265d122b019103641e6462',
   appVersion: manifest.version_name || manifest.version,
   autoTrackSessions: false,
@@ -179,7 +180,6 @@ config.addChangeListener((changes) => {
     updateBrowserAction({
       popupStyle,
       enabled: true,
-      flatFileDictState,
       jpdictState,
     });
   }
@@ -286,10 +286,11 @@ config.ready.then(() => {
 // Jpdict database
 //
 
-let jpdictState: JpdictState = {
+let jpdictState: JpdictStateWithFallback = {
   words: {
     state: DataSeriesState.Initializing,
     version: null,
+    fallbackState: 'unloaded',
   },
   kanji: {
     state: DataSeriesState.Initializing,
@@ -311,13 +312,12 @@ async function initJpDict() {
   initDb({ lang: config.dictLang, onUpdate: onDbStatusUpdated });
 }
 
-function onDbStatusUpdated(state: JpdictState) {
+function onDbStatusUpdated(state: JpdictStateWithFallback) {
   jpdictState = state;
 
   updateBrowserAction({
     popupStyle: config.popupStyle,
     enabled,
-    flatFileDictState,
     jpdictState: state,
   });
 
@@ -400,34 +400,6 @@ async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
 }
 
 //
-// Flat-file (legacy) dictionary
-//
-
-let flatFileDict: Dictionary | undefined = undefined;
-// TODO: This is temporary until we move the other databases to IDB
-let flatFileDictState = FlatFileDictState.Ok;
-
-async function loadDictionary(): Promise<void> {
-  if (!flatFileDict) {
-    flatFileDict = new Dictionary({ bugsnag: bugsnagClient });
-  }
-
-  try {
-    flatFileDictState = FlatFileDictState.Loading;
-    await flatFileDict.loaded;
-  } catch (e) {
-    flatFileDictState = FlatFileDictState.Error;
-    // If we fail loading the dictionary, make sure to reset it so we can try
-    // again!
-    flatFileDict = undefined;
-    throw e;
-  }
-  flatFileDictState = FlatFileDictState.Ok;
-
-  Bugsnag.leaveBreadcrumb('Loaded dictionary successfully');
-}
-
-//
 // Context menu
 //
 
@@ -482,7 +454,6 @@ async function enableTab(tab: browser.tabs.Tab) {
   updateBrowserAction({
     popupStyle: config.popupStyle,
     enabled: true,
-    flatFileDictState: FlatFileDictState.Loading,
     jpdictState,
   });
 
@@ -491,7 +462,7 @@ async function enableTab(tab: browser.tabs.Tab) {
   }
 
   try {
-    await Promise.all([loadDictionary(), config.ready]);
+    await config.ready;
 
     Bugsnag.leaveBreadcrumb('Triggering database update from enableTab...');
     initJpDict();
@@ -519,7 +490,6 @@ async function enableTab(tab: browser.tabs.Tab) {
     updateBrowserAction({
       popupStyle: config.popupStyle,
       enabled: true,
-      flatFileDictState,
       jpdictState,
     });
   } catch (e) {
@@ -528,12 +498,8 @@ async function enableTab(tab: browser.tabs.Tab) {
     updateBrowserAction({
       popupStyle: config.popupStyle,
       enabled: true,
-      flatFileDictState,
       jpdictState,
     });
-
-    // Reset internal state so we can try again
-    flatFileDict = undefined;
 
     if (menuId) {
       browser.contextMenus.update(menuId, { checked: false });
@@ -555,7 +521,6 @@ async function disableAll() {
   updateBrowserAction({
     popupStyle: config.popupStyle,
     enabled,
-    flatFileDictState,
     jpdictState,
   });
 
@@ -620,14 +585,6 @@ async function search(
   text: string,
   dictOption: DictMode
 ): Promise<SearchResult | null> {
-  if (!flatFileDict) {
-    console.error('Dictionary not initialized in search');
-    Bugsnag.notify('Dictionary not initialized in search', (event) => {
-      event.severity = 'warning';
-    });
-    return null;
-  }
-
   switch (dictOption) {
     case DictMode.ForceKanji:
       return searchKanji(text.charAt(0));
@@ -713,12 +670,7 @@ async function wordSearch(params: {
   max?: number;
   includeRomaji?: boolean;
 }): Promise<WordSearchResult | null> {
-  console.assert(
-    flatFileDict,
-    'We should have checked we have a dictionary before calling this'
-  );
-
-  const result = await flatFileDict!.wordSearch(params);
+  const result = await searchWords(params);
 
   // Check for a longer match in the names dictionary, but only if the existing
   // match has some non-hiragana characters in it.
@@ -812,20 +764,10 @@ browser.runtime.onMessage.addListener(
         break;
 
       case 'translate':
-        if (flatFileDict) {
-          return flatFileDict.translate({
-            text: request.title,
-            includeRomaji: config.showRomaji,
-          });
-        }
-        console.error('Dictionary not initialized in translate request');
-        Bugsnag.notify(
-          'Dictionary not initialized in translate request',
-          (event) => {
-            event.severity = 'warning';
-          }
-        );
-        break;
+        return translate({
+          text: request.title,
+          includeRomaji: config.showRomaji,
+        });
 
       case 'toggleDefinition':
         config.toggleReadingOnly();

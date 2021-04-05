@@ -46,6 +46,7 @@ describe('getWordToCopy', () => {
       getWordToCopy({
         type: 'word',
         data: {
+          id: 1,
           k: [{ ent: '理解', match: true, p: ['i1', 'n1', 'nf02'] }],
           r: [{ ent: 'りかい', match: true, p: ['i1', 'n1', 'nf02'], a: 1 }],
           s: [
@@ -71,6 +72,7 @@ describe('getWordToCopy', () => {
       getWordToCopy({
         type: 'word',
         data: {
+          id: 1,
           k: [],
           r: [{ ent: 'ホルモン', p: ['g1'], a: 1, match: true }],
           s: [
@@ -151,6 +153,7 @@ describe('getEntryToCopy', () => {
       getEntryToCopy({
         type: 'word',
         data: {
+          id: 1,
           k: [{ ent: '韓国語', p: ['s1'], match: true }],
           r: [{ ent: 'かんこくご', p: ['s1'], a: 0, match: true }],
           s: [{ pos: ['n'], g: [{ str: 'Korean (language)' }], match: true }],
@@ -165,6 +168,7 @@ describe('getEntryToCopy', () => {
       getEntryToCopy({
         type: 'word',
         data: {
+          id: 1,
           k: [],
           r: [{ ent: 'ホルモン', p: ['g1'], a: 1, match: true }],
           s: [
@@ -194,6 +198,7 @@ describe('getEntryToCopy', () => {
       getEntryToCopy({
         type: 'word',
         data: {
+          id: 1,
           k: [{ ent: '虎嘯', match: true }],
           r: [{ ent: 'こしょう', a: 0, match: true }],
           s: [
@@ -341,6 +346,7 @@ describe('getFieldsToCopy', () => {
       getFieldsToCopy({
         type: 'word',
         data: {
+          id: 1,
           k: [{ ent: '韓国', match: true, p: ['n1', 'nf01'] }],
           r: [{ ent: 'かんこく', match: true, p: ['n1', 'nf01'], a: 0 }],
           s: [

@@ -1,6 +1,6 @@
 import { DataSeriesState } from '@birchill/hikibiki-data';
 
-import { JpdictState } from './jpdict';
+import { JpdictStateWithFallback } from './jpdict';
 
 // We will eventually drop this once we move everything to IDB
 export const enum FlatFileDictState {
@@ -12,14 +12,12 @@ export const enum FlatFileDictState {
 interface BrowserActionState {
   popupStyle: string;
   enabled: boolean;
-  flatFileDictState: FlatFileDictState;
-  jpdictState: JpdictState;
+  jpdictState: JpdictStateWithFallback;
 }
 
 export function updateBrowserAction({
   popupStyle,
   enabled,
-  flatFileDictState,
   jpdictState,
 }: BrowserActionState) {
   let iconFilename = 'disabled';
@@ -27,21 +25,21 @@ export function updateBrowserAction({
 
   // First choose the base icon type / text
   if (enabled) {
-    switch (flatFileDictState) {
-      case FlatFileDictState.Ok:
-        iconFilename = popupStyle;
-        titleStringId = 'command_toggle_enabled';
-        break;
+    const jpdictWords = jpdictState.words.state;
+    const fallbackWords = jpdictState.words.fallbackState;
 
-      case FlatFileDictState.Loading:
-        iconFilename = 'loading';
-        titleStringId = 'command_toggle_loading';
-        break;
-
-      case FlatFileDictState.Error:
-        iconFilename = 'error';
-        titleStringId = 'error_loading_dictionary';
-        break;
+    if (jpdictWords === DataSeriesState.Ok || fallbackWords === 'ok') {
+      iconFilename = popupStyle;
+      titleStringId = 'command_toggle_enabled';
+    } else if (
+      jpdictWords === DataSeriesState.Initializing ||
+      fallbackWords === 'loading'
+    ) {
+      iconFilename = 'loading';
+      titleStringId = 'command_toggle_loading';
+    } else {
+      iconFilename = 'error';
+      titleStringId = 'error_loading_dictionary';
     }
   }
 
