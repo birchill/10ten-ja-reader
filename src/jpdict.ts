@@ -104,7 +104,7 @@ let dbState: JpdictStateWithFallback = {
 // updated because otherwise we can block for seconds waiting to read from them.
 function isDataSeriesAvailable(series: DataSeries): boolean {
   return (
-    dbState.names.state === DataSeriesState.Ok &&
+    dbState[series].state === DataSeriesState.Ok &&
     (dbState.updateState.state === 'idle' ||
       dbState.updateState.series !== series)
   );

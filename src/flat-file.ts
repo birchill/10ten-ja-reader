@@ -435,9 +435,6 @@ export class FlatFileDatabaseLoader {
       case 'error':
         if (evt.willRetry) {
           this.loadState = 'retrying';
-          if (this.rejectLoad) {
-            this.rejectLoad(evt.error);
-          }
         } else {
           this.loadState = 'error';
           // Reset the flat file database so that subsequence calls to load()
@@ -446,6 +443,9 @@ export class FlatFileDatabaseLoader {
           this.flatFileDatabase = undefined;
         }
         this.loadError = evt.error;
+        if (this.rejectLoad) {
+          this.rejectLoad(evt.error);
+        }
         break;
     }
 
