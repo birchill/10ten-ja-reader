@@ -1392,7 +1392,7 @@
     "message": "英語以外の単語の定義は利用可能な場合のみに表示されます。"
   },
   "options_lang_warning_please_note": {
-    "message": "ご了解ください："
+    "message": "ご了承ください："
   },
   "options_lang_warning_temporary_en_fallback": {
     "message": "単語データを更新する途中、英語のデータが一時的に利用されることがあります。"
