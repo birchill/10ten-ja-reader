@@ -109,6 +109,7 @@
               <li>__MSG_options_lang_warning_always_en__</li>
               <li>__MSG_options_lang_warning_names_en_only__</li>
               <li>__MSG_options_lang_warning_change_lang_redownload__</li>
+              <li>__MSG_options_lang_warning_temporary_en_fallback__</li>
             </ul>
           </div>
         </div>
