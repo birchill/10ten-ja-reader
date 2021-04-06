@@ -40,7 +40,7 @@
   "devDependencies": {
     "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
-    "@types/chai": "^4.2.15",
+    "@types/chai": "^4.2.16",
     "@types/jest": "^26.0.20",
     "@types/karma": "^6.1.0",
     "@types/karma-webpack": "^2.0.8",
