@@ -1,6 +1,8 @@
 @charset "UTF-8";
 
-*:lang(en) {
+*:lang(en),
+*:lang(fr),
+*:lang(es) {
   /* Meiryo renders more crisply than Arial on Windows */
   font-family: Meiryo, sans-serif;
 }
@@ -151,6 +153,18 @@
   margin-top: 6px;
 }
 
+.w-def ul {
+  padding-left: 1.5em;
+  margin: 0;
+}
+
+/* Add a little breathing space between native language definitions and
+   subsequent English definitions. */
+.w-def ul + .w-group-head,
+.w-def ul + ol {
+  margin-top: 6px;
+}
+
 .w-def ol {
   padding-left: 1.5em;
   list-style-type: numeric !important;
@@ -160,6 +174,16 @@
 .w-def ol li {
   list-style-type: numeric !important;
   font-size: 13px;
+}
+
+.w-def ul li {
+  list-style-type: circle !important;
+  font-size: 13px;
+}
+
+.w-def.foreign,
+.w-def .foreign {
+  opacity: 0.85;
 }
 
 .w-def .w-type {

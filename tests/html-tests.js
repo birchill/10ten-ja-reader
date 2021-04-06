@@ -616,6 +616,97 @@ const htmlTests = [
     },
   },
   {
+    description: 'a word search result with mixed languages',
+    queryResult: {
+      type: 'words',
+      data: [
+        {
+          id: 1358280,
+          k: [
+            {
+              ent: '食べる',
+              p: ['i1', 'n2', 'nf25'],
+              match: true,
+              matchRange: [0, 3],
+            },
+            { ent: '喰べる', i: ['iK'], match: false },
+          ],
+          r: [{ ent: 'たべる', p: ['i1', 'n2', 'nf25'], a: 2, match: true }],
+          s: [
+            { g: [{ str: 'to eat' }], pos: ['v1', 'vt'], match: true },
+            {
+              g: [
+                { str: 'to live on (e.g. a salary)' },
+                { str: 'to live off' },
+                { str: 'to subsist on' },
+              ],
+              pos: ['v1', 'vt'],
+              match: true,
+            },
+            { g: [{ str: 'manger' }], lang: 'fr', match: true },
+            {
+              g: [
+                { str: 'vivre avec (par ex. un salaire)' },
+                { str: 'vivre de (par ex. ses rentes)' },
+                { str: 'subsister grâce à' },
+              ],
+              lang: 'fr',
+              match: true,
+            },
+          ],
+        },
+        {
+          id: 1956480,
+          k: [
+            { ent: '食', p: ['n1', 'nf07'], match: true, matchRange: [0, 1] },
+          ],
+          r: [
+            {
+              ent: 'しょく',
+              p: ['n1', 'nf07'],
+              a: [{ i: 0 }, { i: 1 }],
+              match: true,
+            },
+            { ent: 'じき', i: ['ok'], match: true },
+            { ent: 'し', i: ['ok'], match: true },
+          ],
+          s: [
+            {
+              g: [{ str: 'food' }, { str: 'foodstuff' }],
+              pos: ['n'],
+              match: true,
+            },
+            {
+              g: [{ str: 'eating' }, { str: 'appetite' }],
+              pos: ['n'],
+              rapp: 1,
+              match: true,
+            },
+            { g: [{ str: 'meal' }], pos: ['n', 'ctr'], rapp: 1, match: true },
+          ],
+        },
+        {
+          id: 2837078,
+          k: [
+            { ent: '食', match: true, matchRange: [0, 1] },
+            { ent: '蝕', match: false },
+          ],
+          r: [{ ent: 'しょく', a: [{ i: 0 }, { i: 1 }], match: true }],
+          s: [
+            {
+              g: [{ str: 'eclipse (solar, lunar, etc.)' }],
+              field: ['astron'],
+              pos: ['n'],
+              match: true,
+            },
+          ],
+        },
+      ],
+      matchLen: 3,
+      more: false,
+    },
+  },
+  {
     description: 'a translate result',
     queryResult: {
       type: 'translate',

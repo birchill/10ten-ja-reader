@@ -101,13 +101,10 @@ describe('rikaiContent:text search', () => {
 
   beforeEach(() => {
     const config: ContentConfig = {
-      showPriority: true,
-      readingOnly: false,
       accentDisplay: 'downstep',
-      posDisplay: 'expl',
-      kanjiReferences: ['kk'] as Array<ReferenceAbbreviation>,
-      showKanjiComponents: true,
+      dictLang: 'en',
       holdToShowKeys: [],
+      kanjiReferences: ['kk'] as Array<ReferenceAbbreviation>,
       keys: {
         toggleDefinition: ['d'],
         nextDictionary: ['Shift'],
@@ -115,6 +112,10 @@ describe('rikaiContent:text search', () => {
       },
       noTextHighlight: false,
       popupStyle: 'blue',
+      posDisplay: 'expl',
+      readingOnly: false,
+      showKanjiComponents: true,
+      showPriority: true,
     };
     subject = new RikaiContent(config);
 
@@ -1088,13 +1089,10 @@ describe('rikaiContent:highlighting', () => {
 
   beforeEach(() => {
     const config: ContentConfig = {
-      showPriority: true,
-      readingOnly: false,
       accentDisplay: 'downstep',
-      posDisplay: 'expl',
-      kanjiReferences: ['kk'] as Array<ReferenceAbbreviation>,
-      showKanjiComponents: true,
+      dictLang: 'en',
       holdToShowKeys: [],
+      kanjiReferences: ['kk'] as Array<ReferenceAbbreviation>,
       keys: {
         toggleDefinition: ['d'],
         nextDictionary: ['Shift'],
@@ -1102,6 +1100,10 @@ describe('rikaiContent:highlighting', () => {
       },
       noTextHighlight: false,
       popupStyle: 'blue',
+      posDisplay: 'expl',
+      readingOnly: false,
+      showPriority: true,
+      showKanjiComponents: true,
     };
     subject = new RikaiContent(config);
 

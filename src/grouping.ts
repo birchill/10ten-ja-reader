@@ -16,7 +16,7 @@ export function groupSenses(senses: Array<Sense>): Array<PosGroup> {
   for (const sense of senses) {
     // Look for a match. Note that a match can be one of two kinds:
     //
-    // a) Where we sense includes the POS we are grouping on
+    // a) Where the sense includes the POS we are grouping on
     // b) Where we currently have a group where there is no POS and the sense
     //    also has no POS.
     if (

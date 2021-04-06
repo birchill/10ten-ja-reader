@@ -591,18 +591,19 @@ export class Config {
   // Get all the options the content process cares about at once
   get contentConfig(): ContentConfig {
     return {
-      showPriority: this.showPriority,
-      readingOnly: this.readingOnly,
       accentDisplay: this.accentDisplay,
-      posDisplay: this.posDisplay,
-      kanjiReferences: this.kanjiReferences,
-      showKanjiComponents: this.showKanjiComponents,
+      dictLang: this.dictLang,
       holdToShowKeys: this.holdToShowKeys
         ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)
         : [],
+      kanjiReferences: this.kanjiReferences,
       keys: this.keys,
       noTextHighlight: this.noTextHighlight,
       popupStyle: this.popupStyle,
+      posDisplay: this.posDisplay,
+      readingOnly: this.readingOnly,
+      showPriority: this.showPriority,
+      showKanjiComponents: this.showKanjiComponents,
     };
   }
 }

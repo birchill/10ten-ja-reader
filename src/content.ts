@@ -1344,6 +1344,7 @@ export class RikaiContent {
       copyIndex: this.copyIndex,
       copyNextKey: this.config.keys.startCopy[0] || '',
       copyState: this.copyMode ? CopyState.Active : CopyState.Inactive,
+      dictLang: this.config.dictLang,
       document: doc,
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentTextAtPoint?.result.meta,

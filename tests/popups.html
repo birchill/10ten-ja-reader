@@ -11,13 +11,9 @@
 <script src="content-loader.js"></script>
 <script>
   const config = {
-    showPriority: true,
-    readingOnly: false,
     accentDisplay: 'binary',
-    posDisplay: 'expl',
-    kanjiReferences: ['radical', 'nelson_r', 'kk', 'unicode', 'henshall'],
-    showKanjiComponents: true,
     holdToShowKeys: [],
+    kanjiReferences: ['radical', 'nelson_r', 'kk', 'unicode', 'henshall'],
     keys: {
       toggleDefinition: ['d'],
       nextDictionary: ['Shift', 'Enter'],
@@ -25,6 +21,10 @@
     },
     noTextHighlight: false,
     popupStyle: 'blue',
+    posDisplay: 'expl',
+    readingOnly: false,
+    showKanjiComponents: true,
+    showPriority: true,
     showRomaji: false,
   };
   const rikaiContent = new RikaiContent(config);
@@ -46,6 +46,7 @@
       rikaiContent._renderPopup(test.queryResult, {
         ...config,
         container: createPopupContainer(),
+        dictLang: test.description.indexOf('language') !== -1 ? 'fr' : undefined,
         popupStyle: 'blue',
         showDefinitions: !test.extraConfig || !test.extraConfig.readingOnly,
       });
