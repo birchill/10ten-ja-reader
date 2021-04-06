@@ -1478,9 +1478,6 @@
       }
     }
   },
-  "options_warning_language_is_kanji_only": {
-    "message": "本设定目前只对汉字词典有效。"
-  },
   "pos_label_adj_f": {
     "message": "连体",
     "description": "Short part-of-speech label shown next to noun or verb entries acting prenominally"
