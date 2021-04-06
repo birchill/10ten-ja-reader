@@ -2,13 +2,6 @@ import { DataSeriesState } from '@birchill/hikibiki-data';
 
 import { JpdictStateWithFallback } from './jpdict';
 
-// We will eventually drop this once we move everything to IDB
-export const enum FlatFileDictState {
-  Ok,
-  Loading,
-  Error,
-}
-
 interface BrowserActionState {
   popupStyle: string;
   enabled: boolean;
@@ -37,6 +30,16 @@ export function updateBrowserAction({
     ) {
       iconFilename = 'loading';
       titleStringId = 'command_toggle_loading';
+    } else if (fallbackWords === 'unloaded') {
+      // If we get this far, we've either failed to load the jpdict database or
+      // we simply haven't got around to populating it yet (e.g. we're still
+      // downloading the other databases).
+      //
+      // However, we won't load the fallback database until the user actually
+      // tries to look something up so we don't know if it's available yet or
+      // not. For now, assume everything is ok.
+      iconFilename = popupStyle;
+      titleStringId = 'command_toggle_enabled';
     } else {
       iconFilename = 'error';
       titleStringId = 'error_loading_dictionary';
