@@ -1383,7 +1383,7 @@
     "message": "単語の場合、英語の定義は常に表示されます。"
   },
   "options_lang_warning_change_lang_redownload": {
-    "message": "言語を変更する際、データファイルが再読み込みされます。"
+    "message": "言語を変更する際、データファイルが再ダウンロードされます。"
   },
   "options_lang_warning_names_en_only": {
     "message": "人名辞典のデータは英語のみとなっております。"
