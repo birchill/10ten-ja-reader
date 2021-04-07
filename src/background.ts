@@ -53,10 +53,12 @@ import { DataSeriesState } from '@birchill/hikibiki-data';
 
 import { updateBrowserAction } from './browser-action';
 import { Config } from './config';
+import { ContentConfig } from './content-config';
 import {
   notifyDbStateUpdated,
   DbListenerMessage,
 } from './db-listener-messages';
+import { DictMode } from './dict-mode';
 import { ExtensionStorageError } from './extension-storage-error';
 import {
   JpdictStateWithFallback,

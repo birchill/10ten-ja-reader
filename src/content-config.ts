@@ -1,9 +1,7 @@
-// Common definitions shared between the content and backend parts.
-
 // Keyboard shortcut keys. Each of these is an array of keycodes (as reported
 // by KeyboardEvent.key). The array may be empty in which case the action is
 // effectively disabled.
-interface KeyboardKeys {
+export interface KeyboardKeys {
   // The key(s) to toggle display of the definition vs reading-only.
   toggleDefinition: string[];
 
@@ -14,11 +12,11 @@ interface KeyboardKeys {
   startCopy: string[];
 }
 
-type AccentDisplay = 'downstep' | 'binary' | 'none';
+export type AccentDisplay = 'downstep' | 'binary' | 'none';
 
-type PartOfSpeechDisplay = 'expl' | 'code' | 'none';
+export type PartOfSpeechDisplay = 'expl' | 'code' | 'none';
 
-interface ContentConfig {
+export interface ContentConfig {
   // Indicates the type of display to use for showing pitch accent information.
   accentDisplay: AccentDisplay;
 
@@ -55,10 +53,4 @@ interface ContentConfig {
 
   // True if we should show indicators next to common words.
   showPriority: boolean;
-}
-
-declare const enum DictMode {
-  ForceKanji,
-  Default,
-  NextDict,
 }

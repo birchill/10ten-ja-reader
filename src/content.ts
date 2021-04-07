@@ -45,6 +45,7 @@
 
 */
 
+import { ContentConfig } from './content-config';
 import { CopyKeys, CopyType } from './copy-keys';
 import {
   getEntryToCopy,
@@ -52,6 +53,7 @@ import {
   getWordToCopy,
   Entry as CopyEntry,
 } from './copy-text';
+import { DictMode } from './dict-mode';
 import {
   isContentEditableNode,
   isEditableNode,

@@ -9,6 +9,7 @@ import {
 } from '@birchill/hikibiki-data';
 
 import { Config, DEFAULT_KEY_SETTINGS } from './config';
+import { AccentDisplay, PartOfSpeechDisplay } from './content-config';
 import { Command, CommandParams, isValidKey } from './commands';
 import { CopyKeys, CopyNextKeyStrings } from './copy-keys';
 import { dbLanguageMeta, isDbLanguageId } from './db-languages';

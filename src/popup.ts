@@ -9,6 +9,7 @@ import {
 } from '@birchill/hikibiki-data';
 import { countMora, moraSubstring } from '@birchill/normal-jp';
 
+import { AccentDisplay, PartOfSpeechDisplay } from './content-config';
 import {
   CopyKeys,
   CopyType,

@@ -15,6 +15,12 @@ import Bugsnag from '@bugsnag/browser';
 import { dbLanguages, DbLanguageId } from './db-languages';
 import { ExtensionStorageError } from './extension-storage-error';
 import {
+  AccentDisplay,
+  ContentConfig,
+  KeyboardKeys,
+  PartOfSpeechDisplay,
+} from './content-config';
+import {
   ReferenceAbbreviation,
   convertLegacyReference,
   getReferencesForLang,

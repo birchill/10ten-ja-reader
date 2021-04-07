@@ -1,9 +1,8 @@
-/// <reference types="../src/common" />
-
 import { assert } from 'chai';
 import { browser } from './browser-polyfill';
 (window as any).browser = browser;
 
+import { ContentConfig } from '../src/content-config';
 import { RikaiContent, GetTextResult } from '../src/content';
 import { ReferenceAbbreviation } from '../src/refs';
 

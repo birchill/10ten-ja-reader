@@ -1,3 +1,4 @@
+import { DictMode } from './dict-mode';
 import {
   KanjiSearchResult,
   NameResult,
