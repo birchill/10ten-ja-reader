@@ -159,9 +159,14 @@ export function getEntryToCopy(
 function serializeDefinition(entry: WordResult): string {
   const senses = entry.s;
   if (senses.length > 1) {
-    return senses
-      .map((sense, index) => `(${index + 1}) ${serializeSense(sense)}`)
-      .join(' ');
+    const nativeSenses = senses
+      .filter((s) => s.lang && s.lang !== 'en')
+      .map((s) => `• ${serializeSense(s)}`);
+    const enSenses = senses
+      .filter((s) => !s.lang || s.lang === 'en')
+      .map((s, index) => `(${index + 1}) ${serializeSense(s)}`);
+
+    return [...nativeSenses, ...enSenses].join(' ');
   } else {
     return serializeSense(senses[0]);
   }
