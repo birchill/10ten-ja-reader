@@ -387,8 +387,19 @@ export class FlatFileDatabaseLoader {
     this.onFlatFileDatabaseUpdated = this.onFlatFileDatabaseUpdated.bind(this);
   }
 
-  // This is really just here so we can retry the load. Typically callers will
-  // just use the 'database' getter.
+  resetIfNotLoaded(): void {
+    if (this.loadState === 'ok') {
+      return;
+    }
+
+    if (this.flatFileDatabase) {
+      this.flatFileDatabase.removeListener(this.onFlatFileDatabaseUpdated);
+      this.flatFileDatabase = undefined;
+    }
+
+    this.loadState = 'unloaded';
+  }
+
   load(): Promise<FlatFileDatabase> {
     if (this.flatFileDatabase && this.loadPromise) {
       return this.loadPromise;

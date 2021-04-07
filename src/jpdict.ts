@@ -190,6 +190,10 @@ export async function initDb({
   };
 
   // Make sure updates to the fallback database loading state are also reported.
+  //
+  // But first, reset any loads that might have errored or hung so that the
+  // user can retry the load by disabling/enabling the add-on.
+  fallbackDatabaseLoader.resetIfNotLoaded();
   fallbackDatabaseLoader.onUpdate = (
     fallbackDatabaseState: FlatFileDatabaseLoadState
   ) => {
