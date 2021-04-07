@@ -282,11 +282,15 @@ export function toDictionaryWordResult({
       ...meta,
       match:
         (kanjiMatch && kanaToHiragana(key) === matchingText) || !kanjiMatch,
+      matchRange:
+        kanaToHiragana(key) === matchingText ? [0, key.length] : undefined,
     })),
     r: mergeMeta(entry.r, entry.rm, (key, meta) => ({
       ent: key,
       ...meta,
       match: (kanaMatch && kanaToHiragana(key) === matchingText) || !kanaMatch,
+      matchRange:
+        kanaToHiragana(key) === matchingText ? [0, key.length] : undefined,
     })),
     s: expandSenses(entry.s),
   };

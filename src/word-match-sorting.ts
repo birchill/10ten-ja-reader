@@ -20,7 +20,7 @@ export function getPriority(result: WordResult): number {
 
   // Scores from kanji readings
   for (const k of result.k || []) {
-    if (!k.p) {
+    if (!k.matchRange || !k.p) {
       continue;
     }
 
@@ -29,7 +29,7 @@ export function getPriority(result: WordResult): number {
 
   // Scores from kana readings
   for (const r of result.r) {
-    if (!r.p) {
+    if (!r.matchRange || !r.p) {
       continue;
     }
 
