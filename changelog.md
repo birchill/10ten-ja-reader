@@ -1,5 +1,20 @@
-## 0.3.6 (not released yet)
+## 0.4.0 (not released yet)
 
+- Switched to using IndexedDB database for looking up words
+
+  - **Non-English definitions are now supported**
+  - Rikaichamp now uses much less memory
+  - All dictionaries are automatically updated weekly by downloading
+    just the changed entries
+  - While the words dictionary is being downloaded or updated, or in
+    case there is an error applying it (e.g. lack of disk space)
+    a fallback English dictionary is used.
+
+    Users who encounter errors due to lack of disk space are encouraged
+    to uninstall and re-install the add-on. That _might_ resolve the
+    issue.
+
+- Various fixes were added the order in which entries are displayed.
 - Made Rikaichamp recognize the full range of characters in CJK Unified
   Ideographs Extension B so that some more rare kanji are recognized.
 
