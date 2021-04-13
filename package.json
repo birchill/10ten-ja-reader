@@ -43,7 +43,7 @@
     "@types/chai": "^4.2.16",
     "@types/jest": "^26.0.20",
     "@types/karma": "^6.1.0",
-    "@types/karma-webpack": "^2.0.8",
+    "@types/karma-webpack": "^2.0.9",
     "@types/mocha": "^8.2.2",
     "@types/split2": "^2.1.6",
     "@types/yargs": "^16.0.1",
