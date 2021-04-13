@@ -81,7 +81,7 @@
   "dependencies": {
     "@birchill/hikibiki-data": "^7.2.1",
     "@birchill/normal-jp": "^1.2.1",
-    "@bugsnag/js": "^7.9.0",
+    "@bugsnag/js": "^7.9.2",
     "husky": "^6.0.0",
     "lint-staged": "^10.5.4",
     "lru_map": "^0.4.1",
