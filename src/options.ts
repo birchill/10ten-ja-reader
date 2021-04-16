@@ -522,6 +522,7 @@ function addPopupKeys() {
 
         const keyLabel = document.createElement('label');
         const keySpan = document.createElement('span');
+        keySpan.classList.add('key-box');
         keySpan.append(copyKey.key);
         keyLabel.append(keySpan);
         item.append(keyLabel);
