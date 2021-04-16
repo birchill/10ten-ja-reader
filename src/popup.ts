@@ -44,7 +44,7 @@ export interface PopupOptions {
   // Set when copyState !== CopyState.Inactive
   copyIndex?: number;
   copyNextKey: string;
-  copyState?: CopyState;
+  copyState: CopyState;
   // Set when copyState === CopyState.Finished
   copyType?: CopyType;
   dictLang?: string;

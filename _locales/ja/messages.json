@@ -1448,6 +1448,12 @@
   "options_popup_keys_subheading": {
     "message": "ポップアップキー"
   },
+  "options_popup_move_popup_down": {
+    "message": "ポップアップを下にずらす"
+  },
+  "options_popup_move_popup_up": {
+    "message": "ポップアップを上にずらす"
+  },
   "options_popup_start_copy": {
     "message": "コピーモードを有効にする"
   },

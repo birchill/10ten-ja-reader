@@ -1,4 +1,11 @@
-## 0.4.0 (not released yet)
+## 0.4.1 (not released yet)
+
+- Adds ability to move the popup window using the <kbd>j</kbd> / <kbd>k</kbd>
+  keys.
+  Disabled by default. Please enable from the options screen.
+  ([#109](https://github.com/birtles/rikaichamp/issues/109))
+
+## 0.4.0 (2021-04-08)
 
 - Switched to using IndexedDB database for looking up words
 

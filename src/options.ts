@@ -441,7 +441,7 @@ function addPopupKeys() {
       keyInput.dataset.key = key;
       keyBlock.appendChild(keyInput);
 
-      keyInput.addEventListener('click', (evt) => {
+      keyInput.addEventListener('click', () => {
         const checkedKeys = document.querySelectorAll(
           `input[type=checkbox].key-${setting.name}:checked`
         );

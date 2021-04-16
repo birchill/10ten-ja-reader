@@ -1,13 +1,112 @@
+export const enum PopupPositionMode {
+  Start,
+  TopLeft = Start,
+  Auto,
+  BottomRight,
+  End = BottomRight,
+}
+
+// Minimum space to leave between the edge of the pop-up and the edge of the
+// window.
+const GUTTER = 5;
+
 export function getPopupPosition({
   doc,
   mousePos,
   popupSize,
+  positionMode,
   targetElem,
 }: {
   doc: Document;
   mousePos: { x: number; y: number } | null;
   popupSize: { width: number; height: number };
+  positionMode: PopupPositionMode;
   targetElem: Element | null;
+}): {
+  x: number;
+  y: number;
+  constrainWidth: number | null;
+  constrainHeight: number | null;
+} {
+  const { scrollX, scrollY } = doc.defaultView!;
+  // Use the clientWidth (as opposed to doc.defaultView.innerWidth) since this
+  // excludes the width of any scrollbars.
+  const {
+    clientWidth: windowWidth,
+    clientHeight: windowHeight,
+  } = doc.documentElement;
+
+  if (positionMode === PopupPositionMode.Auto) {
+    return getAutoPosition({
+      doc,
+      mousePos,
+      popupSize,
+      scrollX,
+      scrollY,
+      targetElem,
+      windowWidth,
+      windowHeight,
+    });
+  }
+
+  const availableWindowHeight = windowHeight - 2 * GUTTER;
+
+  const left = scrollX + GUTTER;
+  const top = scrollY + GUTTER;
+  const right = scrollX + windowWidth - popupSize.width - GUTTER;
+  const bottom =
+    scrollY +
+    windowHeight -
+    Math.min(popupSize.height, availableWindowHeight) -
+    GUTTER;
+
+  // We could calculate a value for constrainHeight as something like:
+  //
+  //   constrainHeight = popupSize.height > availableWindowHeight
+  //                     ? availableWindowHeight
+  //                     : null;
+  //
+  // and we'd get the nice fade effect to show in that case, but it's probably
+  // more useful to NOT constrain it and let the user scroll if the content
+  // overflows the viewport.
+
+  switch (positionMode) {
+    case PopupPositionMode.TopLeft:
+      return {
+        x: left,
+        y: top,
+        constrainWidth: null,
+        constrainHeight: null,
+      };
+
+    case PopupPositionMode.BottomRight:
+      return {
+        x: right,
+        y: bottom,
+        constrainWidth: null,
+        constrainHeight: null,
+      };
+  }
+}
+
+function getAutoPosition({
+  doc,
+  mousePos,
+  popupSize,
+  scrollX,
+  scrollY,
+  targetElem,
+  windowWidth,
+  windowHeight,
+}: {
+  doc: Document;
+  mousePos: { x: number; y: number } | null;
+  popupSize: { width: number; height: number };
+  scrollX: number;
+  scrollY: number;
+  targetElem: Element | null;
+  windowWidth: number;
+  windowHeight: number;
 }): {
   x: number;
   y: number;
@@ -20,13 +119,6 @@ export function getPopupPosition({
   if (!targetElem) {
     return { x, y, constrainWidth: null, constrainHeight: null };
   }
-
-  const {
-    innerWidth: windowWidth,
-    innerHeight: windowHeight,
-    scrollX,
-    scrollY,
-  } = doc.defaultView!;
 
   // Check for vertical text
   const isVerticalText =
@@ -43,8 +135,8 @@ export function getPopupPosition({
   let inline = isVerticalText ? y : x;
   const inlinePopupSize = isVerticalText ? popupSize.height : popupSize.width;
   const inlineWindowSize = isVerticalText ? windowHeight : windowWidth;
-  if (inline + inlinePopupSize > inlineWindowSize - 20) {
-    inline = inlineWindowSize - inlinePopupSize - 20;
+  if (inline + inlinePopupSize > inlineWindowSize - GUTTER) {
+    inline = inlineWindowSize - inlinePopupSize - GUTTER;
     if (inline < 0) {
       inline = 0;
     }

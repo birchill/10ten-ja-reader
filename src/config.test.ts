@@ -141,6 +141,8 @@ describe('Config', () => {
     expect(config.keys).toEqual({
       toggleDefinition: [],
       nextDictionary: ['Shift', 'Enter'],
+      movePopupUp: [],
+      movePopupDown: [],
       startCopy: ['c'],
     });
     expect(config.contextMenuEnable).toEqual(true);

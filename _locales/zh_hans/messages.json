@@ -1445,6 +1445,12 @@
   "options_popup_keys_subheading": {
     "message": "窗口控制键"
   },
+  "options_popup_move_popup_down": {
+    "message": "向下移动弹出窗口 "
+  },
+  "options_popup_move_popup_up": {
+    "message": "向上移动弹出窗口"
+  },
   "options_popup_start_copy": {
     "message": "进入复制模式"
   },

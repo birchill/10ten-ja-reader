@@ -72,7 +72,7 @@ import {
   renderPopup,
   setPopupStyle,
 } from './popup';
-import { getPopupPosition } from './popup-position';
+import { getPopupPosition, PopupPositionMode } from './popup-position';
 import { query, QueryResult } from './query';
 import {
   isForeignObjectElement,
@@ -185,6 +185,9 @@ export class RikaiContent {
   // Copy support
   private copyMode: boolean = false;
   private copyIndex: number = 0;
+
+  // Manual positioning support
+  private popupPositionMode: PopupPositionMode = PopupPositionMode.Auto;
 
   constructor(config: ContentConfig) {
     this.config = config;
@@ -388,11 +391,19 @@ export class RikaiContent {
     // even when the user has Caps Lock on.
     const toUpper = (keys: string[]): string[] =>
       keys.map((key) => key.toUpperCase());
-    let { nextDictionary, toggleDefinition, startCopy } = this.config.keys;
-    [nextDictionary, toggleDefinition, startCopy] = [
-      toUpper(nextDictionary),
-      toUpper(toggleDefinition),
-      toUpper(startCopy),
+    let { keys } = this.config;
+    const [
+      nextDictionary,
+      toggleDefinition,
+      movePopupUp,
+      movePopupDown,
+      startCopy,
+    ] = [
+      toUpper(keys.nextDictionary),
+      toUpper(keys.toggleDefinition),
+      toUpper(keys.movePopupUp),
+      toUpper(keys.movePopupDown),
+      toUpper(keys.startCopy),
     ];
 
     const upperKey = key.toUpperCase();
@@ -410,7 +421,15 @@ export class RikaiContent {
       // We'll eventually get notified of the config change but we just change
       // it here now so we can update the popup immediately.
       this.config.readingOnly = !this.config.readingOnly;
-      if (this.currentSearchResult) {
+      this.showPopup();
+    } else if (movePopupDown.includes(upperKey)) {
+      if (this.popupPositionMode < PopupPositionMode.End) {
+        this.popupPositionMode++;
+        this.showPopup();
+      }
+    } else if (movePopupUp.includes(upperKey)) {
+      if (this.popupPositionMode > PopupPositionMode.Start) {
+        this.popupPositionMode--;
         this.showPopup();
       }
     } else if (
@@ -1331,7 +1350,7 @@ export class RikaiContent {
     textBox.selectionDirection = this.selectedTextBox.previousDirection;
   }
 
-  showPopup(options?: Partial<PopupOptions>) {
+  showPopup(options?: { copyState?: CopyState; copyType?: CopyType }) {
     if (!this.currentSearchResult) {
       this.clearHighlight(this.currentTarget);
       return;
@@ -1345,7 +1364,11 @@ export class RikaiContent {
       accentDisplay: this.config.accentDisplay,
       copyIndex: this.copyIndex,
       copyNextKey: this.config.keys.startCopy[0] || '',
-      copyState: this.copyMode ? CopyState.Active : CopyState.Inactive,
+      copyState:
+        options?.copyState || this.copyMode
+          ? CopyState.Active
+          : CopyState.Inactive,
+      copyType: options?.copyType,
       dictLang: this.config.dictLang,
       document: doc,
       kanjiReferences: this.config.kanjiReferences,
@@ -1355,7 +1378,6 @@ export class RikaiContent {
       showDefinitions: !this.config.readingOnly,
       showKanjiComponents: this.config.showKanjiComponents,
       showPriority: this.config.showPriority,
-      ...options,
     };
 
     const popup = renderPopup(this.currentSearchResult!, popupOptions);
@@ -1369,6 +1391,7 @@ export class RikaiContent {
     } = getPopupPosition({
       doc,
       mousePos: this.currentPoint,
+      positionMode: this.popupPositionMode,
       popupSize: {
         width: popup.offsetWidth || 200,
         height: popup.offsetHeight,

@@ -107,6 +107,8 @@ describe('rikaiContent:text search', () => {
       keys: {
         toggleDefinition: ['d'],
         nextDictionary: ['Shift'],
+        movePopupUp: [],
+        movePopupDown: [],
         startCopy: ['c'],
       },
       noTextHighlight: false,
@@ -1095,6 +1097,8 @@ describe('rikaiContent:highlighting', () => {
       keys: {
         toggleDefinition: ['d'],
         nextDictionary: ['Shift'],
+        movePopupUp: [],
+        movePopupDown: [],
         startCopy: ['c'],
       },
       noTextHighlight: false,

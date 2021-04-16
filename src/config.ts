@@ -90,6 +90,18 @@ export const DEFAULT_KEY_SETTINGS: KeySetting[] = [
     l10nKey: 'options_popup_toggle_definition',
   },
   {
+    name: 'movePopupUp',
+    keys: ['k'],
+    enabledKeys: [],
+    l10nKey: 'options_popup_move_popup_up',
+  },
+  {
+    name: 'movePopupDown',
+    keys: ['j'],
+    enabledKeys: [],
+    l10nKey: 'options_popup_move_popup_down',
+  },
+  {
     name: 'startCopy',
     keys: ['c'],
     enabledKeys: ['c'],
