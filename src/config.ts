@@ -402,16 +402,19 @@ export class Config {
   // keys: Defaults are defined by DEFAULT_KEY_SETTINGS, and particularly the
   // enabledKeys member.
 
+  private getDefaultEnabledKeys(): StoredKeyboardKeys {
+    return DEFAULT_KEY_SETTINGS.reduce<Partial<StoredKeyboardKeys>>(
+      (defaultKeys, setting) => {
+        defaultKeys[setting.name] = setting.enabledKeys;
+        return defaultKeys;
+      },
+      {}
+    ) as StoredKeyboardKeys;
+  }
+
   get keys(): StoredKeyboardKeys {
     const setValues = this._settings.keys || {};
-    const defaultEnabledKeys = DEFAULT_KEY_SETTINGS.reduce<
-      Partial<StoredKeyboardKeys>
-    >((defaultKeys, setting) => {
-      defaultKeys[setting.name] = setting.enabledKeys;
-      return defaultKeys;
-    }, {}) as StoredKeyboardKeys;
-
-    return { ...defaultEnabledKeys, ...setValues };
+    return { ...this.getDefaultEnabledKeys(), ...setValues };
   }
 
   get keysNormalized(): KeyboardKeys {
@@ -432,13 +435,14 @@ export class Config {
     };
   }
 
-  updateKeys(keys: Partial<KeyboardKeys>) {
+  updateKeys(keys: Partial<StoredKeyboardKeys>) {
     const existingSettings = this._settings.keys || {};
     this._settings.keys = {
       ...existingSettings,
       ...keys,
     };
-    browser.storage.sync.set({ keys: this._settings.keys as any });
+
+    browser.storage.sync.set({ keys: this._settings.keys });
   }
 
   // popupStyle: Defaults to blue
