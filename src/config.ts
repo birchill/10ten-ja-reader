@@ -25,6 +25,7 @@ import {
   convertLegacyReference,
   getReferencesForLang,
 } from './refs';
+import { stripFields } from './strip-fields';
 
 // We represent the set of references that have been turned on as a series
 // of true or false values.
@@ -42,6 +43,15 @@ import {
 // accurately. Anything not set should use the default setting.
 type KanjiReferenceFlagsV2 = { [key in ReferenceAbbreviation]?: boolean };
 
+// Although we separate out the keys for moving a pop-up up or down when we
+// report the keys to the content page, we store them as a single setting.
+type StoredKeyboardKeys = Omit<
+  KeyboardKeys,
+  'movePopupUp' | 'movePopupDown'
+> & {
+  movePopupDownOrUp: string[];
+};
+
 interface Settings {
   showPriority?: boolean;
   showRomaji?: boolean;
@@ -50,7 +60,7 @@ interface Settings {
   posDisplay?: PartOfSpeechDisplay;
   toggleKey?: string;
   holdToShowKeys?: string;
-  keys?: Partial<KeyboardKeys>;
+  keys?: Partial<StoredKeyboardKeys>;
   contextMenuEnable?: boolean;
   noTextHighlight?: boolean;
   dictLang?: DbLanguageId;
@@ -70,7 +80,7 @@ type ChangeCallback = (changes: ChangeDict) => void;
 // since it allows storing as an array (so we can determine the order the
 // options are displayed in) and storing a description along with each key.
 interface KeySetting {
-  name: keyof KeyboardKeys;
+  name: keyof StoredKeyboardKeys;
   keys: string[];
   enabledKeys: string[];
   l10nKey: string;
@@ -90,16 +100,10 @@ export const DEFAULT_KEY_SETTINGS: KeySetting[] = [
     l10nKey: 'options_popup_toggle_definition',
   },
   {
-    name: 'movePopupUp',
-    keys: ['k'],
+    name: 'movePopupDownOrUp',
+    keys: ['j,k'],
     enabledKeys: [],
-    l10nKey: 'options_popup_move_popup_up',
-  },
-  {
-    name: 'movePopupDown',
-    keys: ['j'],
-    enabledKeys: [],
-    l10nKey: 'options_popup_move_popup_down',
+    l10nKey: 'options_popup_move_popup_down_or_up',
   },
   {
     name: 'startCopy',
@@ -398,17 +402,34 @@ export class Config {
   // keys: Defaults are defined by DEFAULT_KEY_SETTINGS, and particularly the
   // enabledKeys member.
 
-  get keys(): KeyboardKeys {
+  get keys(): StoredKeyboardKeys {
     const setValues = this._settings.keys || {};
-    const defaultEnabledKeys: KeyboardKeys = DEFAULT_KEY_SETTINGS.reduce(
-      (defaultKeys, setting) => {
-        defaultKeys[setting.name] = setting.enabledKeys;
-        return defaultKeys;
-      },
-      {} as Partial<KeyboardKeys>
-    ) as KeyboardKeys;
+    const defaultEnabledKeys = DEFAULT_KEY_SETTINGS.reduce<
+      Partial<StoredKeyboardKeys>
+    >((defaultKeys, setting) => {
+      defaultKeys[setting.name] = setting.enabledKeys;
+      return defaultKeys;
+    }, {}) as StoredKeyboardKeys;
 
     return { ...defaultEnabledKeys, ...setValues };
+  }
+
+  get keysNormalized(): KeyboardKeys {
+    const storedKeys = this.keys;
+    const [down, up] = this.keys.movePopupDownOrUp
+      .map((key) => key.split(',', 2))
+      .reduce<[Array<string>, Array<string>]>(
+        ([existingDown, existingUp], [down, up]) => [
+          [...existingDown, down],
+          [...existingUp, up],
+        ],
+        [[], []]
+      );
+    return {
+      ...stripFields(storedKeys, ['movePopupDownOrUp']),
+      movePopupDown: down,
+      movePopupUp: up,
+    };
   }
 
   updateKeys(keys: Partial<KeyboardKeys>) {
@@ -615,7 +636,7 @@ export class Config {
         ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)
         : [],
       kanjiReferences: this.kanjiReferences,
-      keys: this.keys,
+      keys: this.keysNormalized,
       noTextHighlight: this.noTextHighlight,
       popupStyle: this.popupStyle,
       posDisplay: this.posDisplay,

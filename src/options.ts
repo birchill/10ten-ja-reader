@@ -458,14 +458,40 @@ function addPopupKeys() {
       // We need to add an extra span inside in order to be able to get
       // consistent layout when using older versions of extensions.css that put
       // the checkbox in a pseudo.
-      const keyLabelSpan = document.createElement('span');
-      keyLabelSpan.textContent = key;
-      keyLabel.appendChild(keyLabelSpan);
+      if (setting.name === 'movePopupDownOrUp') {
+        const [down, up] = key.split(',', 2);
 
-      keyBlock.appendChild(keyLabel);
+        {
+          const downSpan = document.createElement('span');
+          downSpan.classList.add('key-box');
+          downSpan.textContent = down;
+          keyLabel.append(downSpan);
+        }
+
+        {
+          const orSpan = document.createElement('span');
+          orSpan.classList.add('or');
+          orSpan.textContent = '/';
+          keyLabel.append(orSpan);
+        }
+
+        {
+          const upSpan = document.createElement('span');
+          upSpan.classList.add('key-box');
+          upSpan.textContent = up;
+          keyLabel.append(upSpan);
+        }
+      } else {
+        const keyLabelSpan = document.createElement('span');
+        keyLabelSpan.classList.add('key-box');
+        keyLabelSpan.textContent = key;
+        keyLabel.append(keyLabelSpan);
+      }
+
+      keyBlock.append(keyLabel);
     }
 
-    grid.appendChild(keyBlock);
+    grid.append(keyBlock);
 
     const keyDescription = document.createElement('div');
     keyDescription.classList.add('key-description');
@@ -647,13 +673,12 @@ function fillVals() {
   }
 
   for (const [setting, keys] of Object.entries(config.keys)) {
-    const checkboxes = document.querySelectorAll(
+    const checkboxes = document.querySelectorAll<HTMLInputElement>(
       `input[type=checkbox].key-${setting}`
     );
     for (const checkbox of checkboxes) {
-      (checkbox as HTMLInputElement).checked = keys.includes(
-        (checkbox as HTMLInputElement).dataset.key
-      );
+      checkbox.checked =
+        !!checkbox.dataset.key && keys.includes(checkbox.dataset.key);
     }
   }
 

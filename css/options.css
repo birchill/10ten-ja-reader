@@ -120,7 +120,17 @@ fieldset {
   display: grid;
   grid-template-columns: minmax(12em, auto) 1fr;
 }
-.key label span {
+
+.key .key-box {
+  font-size: 1rem;
+  height: 2.5rem;
+  padding: 0.5rem;
+  text-align: center;
+  border-radius: 0.7rem;
+  background: white;
+}
+
+.key label span.key-box {
   /*
    * Make the labels actually sit in the centre of the keys.
    */
@@ -130,21 +140,17 @@ fieldset {
 
   margin-inline-end: 1em;
   min-width: 2.5em;
-}
-.key label span,
-.key input[type='text'] {
-  font-size: 1rem;
-  height: 2.5rem;
-  padding: 0.5rem;
-  text-align: center;
-  border-radius: 0.7rem;
-  background: white;
-}
-.key label span {
+
   border: 1px solid #909090;
   border-bottom-color: grey;
   border-bottom-width: 3px;
 }
+
+.key label .or {
+  margin-inline-start: -0.25em;
+  margin-inline-end: 0.5em;
+}
+
 /*
  * For text boxes, we let browser_styles define the border color
  *
@@ -195,7 +201,7 @@ fieldset {
  * Make unselected checkboxes lighter so it's easier to read the resulting
  * shortcut.
  */
-.key input[type='checkbox']:not(:checked) + label span {
+.key input[type='checkbox']:not(:checked) + label .key-box {
   opacity: 0.6;
   border-style: dashed;
   border-bottom-style: solid;

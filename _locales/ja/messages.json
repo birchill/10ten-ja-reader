@@ -1448,11 +1448,9 @@
   "options_popup_keys_subheading": {
     "message": "ポップアップキー"
   },
-  "options_popup_move_popup_down": {
-    "message": "ポップアップを下にずらす"
-  },
-  "options_popup_move_popup_up": {
-    "message": "ポップアップを上にずらす"
+  "options_popup_move_popup_down_or_up": {
+    "message": "ポップアップを下・上にずらす",
+    "description": "Note that it is important that down comes before up"
   },
   "options_popup_start_copy": {
     "message": "コピーモードを有効にする"

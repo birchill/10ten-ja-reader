@@ -1445,11 +1445,9 @@
   "options_popup_keys_subheading": {
     "message": "Popup keys"
   },
-  "options_popup_move_popup_down": {
-    "message": "Move window down"
-  },
-  "options_popup_move_popup_up": {
-    "message": "Move window up"
+  "options_popup_move_popup_down_or_up": {
+    "message": "Move popup down / up",
+    "description": "Note that it is important that down comes before up"
   },
   "options_popup_start_copy": {
     "message": "Enter copy mode"

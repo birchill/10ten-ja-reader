@@ -72,12 +72,12 @@
           <div class="panel-section key-grid">
             <div class="key command browser-style">
               <input type=checkbox id=toggle-alt>
-              <label for=toggle-alt><span>Alt</span></label>
+              <label for=toggle-alt><span class="key-box">Alt</span></label>
               <input type=checkbox id=toggle-ctrl>
-              <label for=toggle-ctrl><span>Ctrl</span></label>
+              <label for=toggle-ctrl><span class="key-box">Ctrl</span></label>
               <input type=checkbox id=toggle-shift>
-              <label for=toggle-shift><span>Shift</span></label>
-              <input size=1 type=text value=R disabled id=toggle-key>
+              <label for=toggle-shift><span class="key-box">Shift</span></label>
+              <input size=1 type=text value=R disabled id=toggle-key class="key-box">
             </div>
             <div class="key-description">
               __MSG_command_toggle_description__
@@ -85,9 +85,9 @@
             </div>
             <div class="key holdtoshowkeys browser-style">
               <input type=checkbox id=show-alt value=Alt>
-              <label for=show-alt><span>Alt</span></label>
+              <label for=show-alt><span class="key-box">Alt</span></label>
               <input type=checkbox id=show-ctrl value=Ctrl>
-              <label for=show-ctrl><span>Ctrl</span></label>
+              <label for=show-ctrl><span class="key-box">Ctrl</span></label>
             </div>
             <div class=key-description>
               __MSG_options_hold_to_show_keys_description__
