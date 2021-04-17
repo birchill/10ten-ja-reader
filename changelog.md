@@ -1,4 +1,4 @@
-## 0.4.1 (not released yet)
+## 0.5.0 (2021-04-17)
 
 - Adds ability to move the popup window using the <kbd>j</kbd> / <kbd>k</kbd>
   keys.
