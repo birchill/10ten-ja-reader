@@ -62,6 +62,7 @@ import {
   isTextInputNode,
 } from './dom-utils';
 import { SelectionMeta } from './meta';
+import { mod } from './mod';
 import { kanjiToNumber } from './numbers';
 import {
   CopyState,
@@ -423,15 +424,15 @@ export class RikaiContent {
       this.config.readingOnly = !this.config.readingOnly;
       this.showPopup();
     } else if (movePopupDown.includes(upperKey)) {
-      if (this.popupPositionMode < PopupPositionMode.End) {
-        this.popupPositionMode++;
-        this.showPopup();
-      }
+      this.popupPositionMode =
+        (this.popupPositionMode + 1) % (PopupPositionMode.End + 1);
+      this.showPopup();
     } else if (movePopupUp.includes(upperKey)) {
-      if (this.popupPositionMode > PopupPositionMode.Start) {
-        this.popupPositionMode--;
-        this.showPopup();
-      }
+      this.popupPositionMode = mod(
+        this.popupPositionMode - 1,
+        PopupPositionMode.End + 1
+      );
+      this.showPopup();
     } else if (
       navigator.clipboard &&
       // It's important we _don't_ enter copy mode when the Ctrl key is being

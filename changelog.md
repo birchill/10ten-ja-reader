@@ -1,3 +1,7 @@
+## 0.5.1 (2021-04-19)
+
+- Make <kbd>j</kbd> / <kbd>k</kbd> keys wrap-around when they reach the limit.
+
 ## 0.5.0 (2021-04-17)
 
 - Adds ability to move the popup window using the <kbd>j</kbd> / <kbd>k</kbd>
