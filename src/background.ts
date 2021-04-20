@@ -189,6 +189,7 @@ config.addChangeListener((changes) => {
   // Update toggle key
   if (
     changes.hasOwnProperty('toggleKey') &&
+    browser.commands &&
     typeof (browser.commands as any).update === 'function'
   ) {
     try {
@@ -254,7 +255,10 @@ config.ready.then(() => {
 
   // I'm not sure if this can actually happen, but just in case, update the
   // toggleKey command if it differs from what is currently set.
-  if (typeof (browser.commands as any).update === 'function') {
+  if (
+    browser.commands &&
+    typeof (browser.commands as any).update === 'function'
+  ) {
     const getToggleCommand = async (): Promise<browser.commands.Command | null> => {
       const commands = await browser.commands.getAll();
       for (const command of commands) {

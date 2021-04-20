@@ -263,6 +263,7 @@ function configureCommands() {
   // Disable any controls associated with configuring browser.commands if the
   // necessary APIs are not available.
   const canConfigureCommands =
+    browser.commands &&
     typeof (browser.commands as any).update === 'function' &&
     typeof (browser.commands as any).reset === 'function';
 
