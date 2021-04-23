@@ -91,7 +91,7 @@ function initializeConfigFromCloudOrLocalStorageOrDefaults(cloudStorage) {
    */
   function initConfig(key, defaultValue) {
     let currentValue =
-      cloudStorage[key] || normalizeStringValue(localStorage[key]);
+      cloudStorage[key] ?? normalizeStringValue(localStorage[key]);
     if (currentValue === undefined) {
       currentValue = defaultValue;
     }
@@ -124,7 +124,7 @@ function initializeConfigFromCloudOrLocalStorageOrDefaults(cloudStorage) {
   const kanjiInfoLabelList = RcxDict.prototype.kanjiInfoLabelList;
   for (i = 0; i < kanjiInfoLabelList.length; i += 2) {
     const kanjiInfoKey = kanjiInfoLabelList[i];
-    if (cloudStorage.kanjiInfo && cloudStorage.kanjiInfo[kanjiInfoKey]) {
+    if (cloudStorage.kanjiInfo) {
       rcxMain.config.kanjiInfo[kanjiInfoKey] =
         cloudStorage.kanjiInfo[kanjiInfoKey];
     } else if (localStorage[kanjiInfoKey]) {
@@ -137,10 +137,7 @@ function initializeConfigFromCloudOrLocalStorageOrDefaults(cloudStorage) {
   }
 }
 
-/**
- * Saves options to Google Chrome Cloud storage
- * https://developer.chrome.com/storage
- */
+/* Saves options to Google Chrome Cloud storage https://developer.chrome.com/storage */
 function saveOptionsToCloudStorage() {
   chrome.storage.sync.set({
     // Saving General options
