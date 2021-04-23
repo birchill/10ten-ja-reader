@@ -693,6 +693,7 @@
 
 .window.-black {
   color: white;
+  border: 1px #777 solid;
 }
 
 .window.-black {
