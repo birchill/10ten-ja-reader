@@ -31,10 +31,13 @@ export function getPopupPosition({
   const { scrollX, scrollY } = doc.defaultView!;
   // Use the clientWidth (as opposed to doc.defaultView.innerWidth) since this
   // excludes the width of any scrollbars.
-  const {
-    clientWidth: windowWidth,
-    clientHeight: windowHeight,
-  } = doc.documentElement;
+  const windowWidth = doc.documentElement.clientWidth;
+  // For the height, however, we need to be careful because in quirks mode the
+  // body has the viewport height.
+  const windowHeight =
+    doc.compatMode === 'BackCompat'
+      ? doc.body?.clientHeight || doc.defaultView!.innerHeight
+      : doc.documentElement.clientHeight;
 
   if (positionMode === PopupPositionMode.Auto) {
     return getAutoPosition({

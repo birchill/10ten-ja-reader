@@ -1,5 +1,7 @@
 ## Next release
 
+- Fixed popup positioning for documents in quirks mode
+  ([#576](https://github.com/birtles/rikaichamp/issues/576))
 - Added a thin grey border to black popup
   ([#577](https://github.com/birtles/rikaichamp/issues/577))
 
