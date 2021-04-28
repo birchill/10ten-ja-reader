@@ -26,6 +26,7 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*", "ftp://*/*", "file:///*"],
+      "match_about_blank": true,
       "js": ["rikaicontent.js"],
       "all_frames": true
     }
