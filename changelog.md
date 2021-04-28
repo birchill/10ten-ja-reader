@@ -4,6 +4,8 @@
   ([#576](https://github.com/birtles/rikaichamp/issues/576))
 - Added a thin grey border to black popup
   ([#577](https://github.com/birtles/rikaichamp/issues/577))
+- Fixed Rikaichamp not working in certain iframes
+  ([#584](https://github.com/birtles/rikaichamp/issues/584))
 
 ## 0.5.1 (2021-04-19)
 
