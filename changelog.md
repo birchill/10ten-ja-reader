@@ -6,6 +6,7 @@
   ([#577](https://github.com/birtles/rikaichamp/issues/577))
 - Fixed Rikaichamp not working in certain iframes
   ([#584](https://github.com/birtles/rikaichamp/issues/584))
+- Made Rikaichamp be enabled earlier in the document load cycle.
 
 ## 0.5.1 (2021-04-19)
 
