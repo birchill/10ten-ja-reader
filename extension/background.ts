@@ -78,8 +78,8 @@ chrome.storage.sync.get(optionsList, function (items) {
  *
  * 1. Cloud Storage, 2. Local Storage, and 3. Default
  *
- * @param {Object<string, boolean | number | string>} cloudStorage Config
- *     values retrieved from cloud storage.
+ * @param {Object<string, boolean | number | string>} cloudStorage Config values
+ *   retrieved from cloud storage.
  */
 function initializeConfigFromCloudOrLocalStorageOrDefaults(cloudStorage) {
   /**
