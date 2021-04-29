@@ -44,7 +44,7 @@
     "byline": "^5.0.0",
     "copy-webpack-plugin": "^6.3.1",
     "csv-parse": "^4.15.4",
-    "eslint": "^7.19.0",
+    "eslint": "^7.25.0",
     "eslint-plugin-sort-imports-es6-autofix": "^0.5.0",
     "eslint-plugin-tsdoc": "^0.2.7",
     "gts": "^3.1.0",
