@@ -1,5 +1,9 @@
 ## Next release
 
+(Nothing yet)
+
+## 0.5.2 (2021-04-29)
+
 - Fixed popup positioning for documents in quirks mode
   ([#576](https://github.com/birtles/rikaichamp/issues/576))
 - Added a thin grey border to black popup
