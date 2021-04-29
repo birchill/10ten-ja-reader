@@ -42,7 +42,7 @@
     "@types/copy-webpack-plugin": "^8.0.0",
     "@types/node": "^14.14.10",
     "byline": "^5.0.0",
-    "copy-webpack-plugin": "^6.3.1",
+    "copy-webpack-plugin": "^8.1.1",
     "csv-parse": "^4.15.4",
     "eslint": "^7.25.0",
     "eslint-plugin-sort-imports-es6-autofix": "^0.6.0",
