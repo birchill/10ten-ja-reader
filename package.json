@@ -38,7 +38,7 @@
   "homepage": "https://github.com/melink14/rikaikun#readme",
   "devDependencies": {
     "@types/byline": "^4.2.32",
-    "@types/chrome": "0.0.126",
+    "@types/chrome": "0.0.135",
     "@types/copy-webpack-plugin": "^8.0.0",
     "@types/node": "^14.14.10",
     "byline": "^5.0.0",
