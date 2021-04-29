@@ -11,10 +11,10 @@ updates:
       interval: 'daily'
     commit-message:
       prefix: 'chore(deps)'
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
       # Check for updates to GitHub Actions every weekday
-      interval: "daily"
+      interval: 'daily'
     commit-message:
       prefix: 'chore(actions)'
