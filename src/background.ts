@@ -854,16 +854,38 @@ browser.runtime.onStartup.addListener(() => {
     getEnabledResult.hasOwnProperty('enabled') &&
     getEnabledResult.enabled;
 
-  if (wasEnabled) {
+  if (!wasEnabled) {
+    return;
+  }
+
+  // browser.tabs.query sometimes fails with a generic Error with message "An
+  // unexpected error occurred". I don't know why. Maybe it should fail? Maybe
+  // it's a timing thing? Who knows �‍♂️
+  //
+  // For now, we just do a single retry, two seconds later. If that fails,
+  // I suppose the user will just have to manually re-enable the add-on.
+  const tryToEnable = async () => {
     const tabs = await browser.tabs.query({
       currentWindow: true,
       active: true,
     });
+
     if (tabs && tabs.length) {
       Bugsnag.leaveBreadcrumb(
         'Loading because we were enabled on the previous run'
       );
       enableTab(tabs[0]);
     }
+  };
+
+  try {
+    await tryToEnable();
+  } catch (e) {
+    console.log('Failed to re-enable. Will retry in two seconds.');
+    setTimeout(() => {
+      tryToEnable().catch((e) => {
+        console.log('Second attempt to re-enable failed. Giving up.');
+      });
+    }, 2000);
   }
 })();
