@@ -196,6 +196,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Baardman82",
+      "name": "Baardman82",
+      "avatar_url": "https://avatars.githubusercontent.com/u/82510978?v=4",
+      "profile": "https://github.com/Baardman82",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
