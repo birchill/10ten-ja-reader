@@ -186,6 +186,15 @@
           "url": "https://github.com/sdcr/heisig-kanjis"
         }
       ]
+    },
+    {
+      "login": "SamDunlap",
+      "name": "Samuel Dunlap",
+      "avatar_url": "https://avatars.githubusercontent.com/u/59478617?v=4",
+      "profile": "https://github.com/SamDunlap",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
