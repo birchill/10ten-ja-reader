@@ -28,8 +28,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run:
-          "checkLength() { read length; if [ $length -gt 0 ]; then echo ::error ::There are $length unresolved comments; exit 1; fi; }; \
+          "checkLength() { read length; echo \"::set-output name=length::$length\"; if [ $length -gt 0 ]; then echo ::error ::There are $length unresolved comments; exit 1; fi; }; \
           echo '${{ steps.get_comment_resolution_status.outputs.data }}' | \
           jq '.repository.pullRequest.reviewThreads.nodes | map(select(.isResolved | not)) | length' | \
           checkLength"
         name: 'Unresolved Comments Check'
+        id: unresolved_comments_check
+      - name: 'Save Details'
+        run: |
+          mkdir -p ./desc
+          echo 'There are ${{ steps.unresolved_comments_check.outputs.length}} unresolved comments.' > ./desc/DESC
+      - uses: actions/upload-artifact@v2
+        with:
+          name: desc
+          path: desc/
