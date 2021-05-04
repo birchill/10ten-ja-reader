@@ -9,11 +9,6 @@ jobs:
   updatePRStatus:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "${{ toJson(github.event.workflow_run) }}"
-        name: 'workflow_run output'
-      - run: echo "${{ toJson(github.event.workflow) }}"
-        name: 'workflow object output'
-
       - name: 'Set PR Status'
         uses: Sibz/github-status-action@v1
         with:
@@ -21,4 +16,4 @@ jobs:
           context: ${{github.event.workflow_run.name}}
           description: 'Failed with status ${{github.event.workflow_run.conclusion}}'
           state: ${{github.event.workflow_run.conclusion}}
-          sha: ${{github.event.workflow.pull_request.head.sha}}
+          sha: ${{github.event.workflow_run.pull_requests[0].head.sha}}
