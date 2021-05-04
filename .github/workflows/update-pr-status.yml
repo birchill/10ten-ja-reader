@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Set PR Status'
-        uses: Sibz/github-status-action@v1
+        uses: Sibz/github-status-action@v1.1.5
         with:
           authToken: ${{secrets.GITHUB_TOKEN}}
           context: ${{github.event.workflow_run.name}}
