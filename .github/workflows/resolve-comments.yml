@@ -4,6 +4,7 @@ on:
 
 jobs:
   readResolutionStatus:
+    name: 'Ensure no unresolved comments'
     runs-on: ubuntu-latest
     steps:
       - uses: octokit/graphql-action@v2.x
