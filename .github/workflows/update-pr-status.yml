@@ -9,9 +9,9 @@ jobs:
   updatePRStatus:
     runs-on: ubuntu-latest
     steps:
-      - run: "echo '${{github.event.workflow_run}}'"
+      - run: "echo '${{github.event.workflow_run}}' | jq -r 'keys'"
         name: 'workflow_run ouput'
-      - run: "echo '${{github.event.workflow}}'"
+      - run: "echo '${{github.event.workflow}}' | jq -r 'keys'"
         name: 'workflow object output'
 
       - name: 'Set PR Status'
