@@ -39,6 +39,7 @@ jobs:
             var fs = require('fs');
             try{
               return String(fs.readFileSync('./DESC')) + ' Re-run if stale.';
+            }
             catch (err) {
               return 'Pending...'
             }
