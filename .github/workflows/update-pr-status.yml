@@ -16,7 +16,6 @@ jobs:
           context: ${{github.event.workflow_run.name}}
           description:
             'Failed with status ${{github.event.workflow_run.conclusion}} if this is wrong then be sure to
-            double check or rerun jobs or remove label. If you think comments is fun then thats okay to but
-            dont let it stop you'
+            double check or rerun jobs or remove label. Iff'
           state: ${{github.event.workflow_run.conclusion}}
           sha: ${{github.event.workflow_run.pull_requests[0].head.sha}}
