@@ -96,7 +96,7 @@ These are the common scopes used, though feel free to suggest a new one if it ma
 | ui | Used for fixes and features affecting the popup UI. |
 | dict | Used for fixes and features affecting the dictionary data. |
 
-See the (recent) [commit history](https://github.com/melink14/rikaikun/commits/master) for more examples of correctly formatted messages.
+See the (recent) [commit history](https://github.com/melink14/rikaikun/commits/main) for more examples of correctly formatted messages.
 
 ## Coding style
 

@@ -4,7 +4,7 @@ pull_request_rules:
       # Also covered by Github protections but this reduces noise from mergify.
       - '#approved-reviews-by>=1'
       # Don't try to merge stacked pull requests into non merged parents.
-      - base=master
+      - base=main
       # Allow individuals to opt out of mergify on high churn PRs
       - label!=WIP
       # Allow marking a PR as expecting changes while also approving
