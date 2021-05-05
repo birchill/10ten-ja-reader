@@ -438,11 +438,11 @@ const parseKanjiDic = async (
 
 console.log('Fetching word dictionary...');
 
-parseEdict('http://ftp.monash.edu/pub/nihongo/edict.gz', 'dict.dat', 'dict.idx')
+parseEdict('http://ftp.edrdg.org/pub/Nihongo/edict.gz', 'dict.dat', 'dict.idx')
   .then(() => {
     console.log('Fetching names dictionary...');
     return parseEdict(
-      'http://ftp.monash.edu/pub/nihongo/enamdict.gz',
+      'http://ftp.edrdg.org/pub/Nihongo/enamdict.gz',
       'names.dat',
       'names.idx'
     );
@@ -452,16 +452,12 @@ parseEdict('http://ftp.monash.edu/pub/nihongo/edict.gz', 'dict.dat', 'dict.idx')
     return parseKanjiDic(
       [
         {
-          url: 'http://ftp.monash.edu.au/pub/nihongo/kanjidic.gz',
+          url: 'http://www.edrdg.org/kanjidic/kanjidic.gz',
           encoding: 'euc-jp',
         },
         {
-          url: 'http://ftp.monash.edu.au/pub/nihongo/kanjd212.gz',
+          url: 'http://www.edrdg.org/kanjidic/kanjd212.gz',
           encoding: 'euc-jp',
-        },
-        {
-          url: 'http://ftp.monash.edu.au/pub/nihongo/kanjd213u.gz',
-          encoding: 'utf-8',
         },
       ],
       'kanji.dat'
