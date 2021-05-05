@@ -4,7 +4,7 @@ on:
     workflows: ['No unresolved comments']
 
 permissions:
-  checks: write
+  statuses: write
 
 jobs:
   updatePRStatus:
