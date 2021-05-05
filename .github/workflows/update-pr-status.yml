@@ -17,7 +17,7 @@ jobs:
       # Adapted from https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
       - name: 'Download artifact'
         if: github.event.action== 'completed'
-        uses: actions/github-script@v3.1.0
+        uses: actions/github-script@v4.0.2
         with:
           script: |
             var artifacts = await github.actions.listWorkflowRunArtifacts({
@@ -40,7 +40,7 @@ jobs:
         if: github.event.action == 'completed'
       - name: 'Read description'
         if: github.event.action == 'completed'
-        uses: actions/github-script@v3
+        uses: actions/github-script@v4.0.2
         id: read_description
         with:
           script: |
