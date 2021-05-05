@@ -15,7 +15,10 @@ jobs:
       - name: Update dictionaries
         run: |
           npm ci
-          echo update_output=$(npm run update-db) >> $GITHUB_ENV
+          echo 'update_output<<EOF' >> $GITHUB_ENV
+          npm run update-db >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+          git status
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
