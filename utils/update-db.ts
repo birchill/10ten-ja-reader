@@ -176,7 +176,7 @@ class DictParser extends Transform {
 
 const parseEdict = (url: string, dataFile: string, indexFile: string) => {
   const parser = new DictParser();
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     http
       .get(url, (res) => {
         res
