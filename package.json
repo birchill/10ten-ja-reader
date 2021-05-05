@@ -40,7 +40,7 @@
     "@types/byline": "^4.2.32",
     "@types/chrome": "0.0.136",
     "@types/copy-webpack-plugin": "^8.0.0",
-    "@types/node": "^15.0.1",
+    "@types/node": "^15.0.2",
     "byline": "^5.0.0",
     "copy-webpack-plugin": "^8.1.1",
     "csv-parse": "^4.15.4",
