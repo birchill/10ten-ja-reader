@@ -23,7 +23,6 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.RIKAIKUN_BOT_PAT }}
-          committer: rikaikun[bot] <83656842+rikaikun-bot@users.noreply.github.com>
           author: rikaikun[bot] <83656842+rikaikun-bot@users.noreply.github.com>
           push-to-fork: rikaikun-bot/rikaikun
           commit-message: |
