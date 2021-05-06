@@ -49,7 +49,7 @@ window.rcxMain = {
     return this.dict.init(this.haveNames);
   },
 
-  // The callback for onSelectionChanged
+  // The callback for `onActivated`
   // Just sends a message to the tab to enable itself if it hasn't
   // already
   onTabSelect: function (tabId) {

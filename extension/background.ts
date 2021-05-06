@@ -1,5 +1,7 @@
 chrome.browserAction.onClicked.addListener(rcxMain.inlineToggle);
-chrome.tabs.onSelectionChanged.addListener(rcxMain.onTabSelect);
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  rcxMain.onTabSelect(activeInfo.tabId);
+});
 chrome.runtime.onMessage.addListener(function (request, sender, response) {
   switch (request.type) {
     case 'enable?':
