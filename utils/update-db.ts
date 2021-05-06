@@ -382,7 +382,7 @@ interface HeisigDatum {
 
 const loadHeisigData = async (): Promise<Map<string, HeisigDatum>> => {
   const data = await promiseFs.readFile(
-    path.join(__dirname, '..', 'extension', 'data', 'heisig-kanjis.csv')
+    path.join(__dirname, 'heisig-kanjis.csv')
   );
   const records: Map<string, HeisigDatum> = new Map();
   (parse(data, { columns: true, comment: '#' }) as HeisigDatum[]).forEach(
