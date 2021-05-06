@@ -20,6 +20,7 @@
     "sort-imports-es6-autofix/sort-imports-es6": "error",
     "node/no-unpublished-import": "off",
     "@typescript-eslint/no-var-requires": "off",
+    "unicode-bom": "error",
     // TODO(espeed): Remove these and fix errors.
     "no-undef": "off",
     "prefer-arrow-callback": "off",

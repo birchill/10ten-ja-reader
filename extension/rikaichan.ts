@@ -1,4 +1,4 @@
-﻿/*
+/*
 
   Rikaikun
   Copyright (C) 2010 Erek Speed
