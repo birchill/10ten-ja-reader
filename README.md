@@ -10,7 +10,7 @@
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg?style=flat)](https://conventionalcommits.org)
 [![All Contributors](https://img.shields.io/badge/all_contributors-17-orange.svg?style=flat)](#contributors-)
 
-rikaikun helps you to read Japanese web pages by showing the reading and English definition of Japanese words when you hover over them.
+rikaikun is a Chrome extension that helps you to read Japanese web pages by showing the reading and English definition of Japanese words when you hover over them.
 
 ## Table of Contents <!-- omit in toc -->
 
