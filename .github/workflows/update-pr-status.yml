@@ -10,9 +10,9 @@ jobs:
   updatePRStatus:
     runs-on: ubuntu-latest
     steps:
-      - run: echo '::debug::${{ toJson(github.event.workflow_run) }}'
+      - run: echo '::debug::${{ escapeData(toJson(github.event.workflow_run)) }}'
         name: 'workflow_run output'
-      - run: echo '::debug::${{ toJson(github.event.workflow) }}'
+      - run: echo '::debug::${{ escapeData(toJson(github.event.workflow)) }}'
         name: 'workflow object output'
       # Adapted from https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
       - name: 'Download artifact'
