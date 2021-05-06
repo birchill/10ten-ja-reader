@@ -1,6 +1,6 @@
 ## Next release
 
-(Nothing yet)
+- Fixed coloring of kanji components when viewing text documents.
 
 ## 0.5.2 (2021-04-29)
 

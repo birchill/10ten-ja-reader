@@ -644,6 +644,15 @@
   color: #b7e7ff;
 }
 
+/*
+ * There's something odd in Firefox where, when you're viewing a text/plain
+ * document, the .window.-blue { color: white } rule doesn't inherit into the
+ * table so we have to explicitly re-establish the color there.
+ */
+.window.-blue .kanji-table .components table {
+  color: white;
+}
+
 .window.-blue .kanji-table .components .-radical * {
   background: #4c63a8;
   color: #b7e7ff;
@@ -734,6 +743,11 @@
   color: #7070e0;
 }
 
+/* See notes in .window.-blue for why this is necessary. */
+.window.-black .kanji-table .components table {
+  color: white;
+}
+
 .window.-black .kanji-table .components .-radical * {
   background: #505050;
   color: #e0e0e0;
@@ -817,6 +831,13 @@
 
 .window.-lightblue .kanji-table.-copy .kanji {
   color: #003d6b;
+}
+
+/* See notes in .window.-blue for why this is necessary.
+   (Strictly speaking it's not necessary here since we're setting the value to
+   black, but for consistency we do it anyway.) */
+.window.-lightblue .kanji-table .components table {
+  color: black;
 }
 
 .window.-lightblue .kanji-table .components .-radical * {
@@ -912,6 +933,13 @@
 .window.-yellow .kanji-table.-copy .kanji {
   background: #d4edf9;
   color: #7070e0;
+}
+
+/* See notes in .window.-blue for why this is necessary.
+   (Strictly speaking it's not necessary here since we're setting the value to
+   black, but for consistency we do it anyway.) */
+.window.-yellow .kanji-table .components table {
+  color: black;
 }
 
 .window.-yellow .kanji-table .components .-radical * {
