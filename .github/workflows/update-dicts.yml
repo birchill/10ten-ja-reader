@@ -27,9 +27,9 @@ jobs:
           author: rikaikun[bot] <83656842+rikaikun-bot@users.noreply.github.com>
           push-to-fork: rikaikun-bot/rikaikun
           commit-message: |
-            'feat(dict): Update dictionaries'
+            feat(dict): Update dictionaries to latest versions.
             ${{ env.update_output }}
-          title: 'feat(dict): Update dictionaries'
+          title: 'feat(dict): Update dictionaries to latest versions.'
           body: |
             ${{ env.update_output }}
 
