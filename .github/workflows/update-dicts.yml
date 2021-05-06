@@ -28,6 +28,7 @@ jobs:
           push-to-fork: rikaikun-bot/rikaikun
           commit-message: |
             feat(dict): Update dictionaries to latest versions.
+
             ${{ env.update_output }}
           title: 'feat(dict): Update dictionaries to latest versions.'
           body: |
