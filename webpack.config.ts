@@ -52,7 +52,7 @@ const config: webpack.Configuration = {
           // All files in all directories.
           from: '**/*',
           // Keep the same relative file structure.
-          to: '[path][name].[ext]',
+          to: '[path][name][ext]',
           // Exclude typescript files which are compiled by ts-loader.
           globOptions: {
             ignore: ['**/*.ts'],
