@@ -47,6 +47,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
   }
 });
 
+// Clear browser action badge text on first load
+// Chrome preserves last state which is usually 'On'
+chrome.browserAction.setBadgeText({ text: '' });
+
 rcxMain.config = {};
 
 const optionsList = [
