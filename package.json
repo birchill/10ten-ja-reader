@@ -37,7 +37,7 @@
   },
   "homepage": "https://github.com/melink14/rikaikun#readme",
   "devDependencies": {
-    "@semantic-release/changelog": "github:semantic-release/changelog",
+    "@semantic-release/changelog": "^5.0.1",
     "@types/byline": "^4.2.32",
     "@types/chrome": "0.0.137",
     "@types/copy-webpack-plugin": "^8.0.0",
