@@ -1,4 +1,5 @@
 import {
+  groupSenses,
   Gloss,
   GlossType,
   KanjiInfo,
@@ -16,7 +17,6 @@ import {
   CopyKanjiKeyStrings,
   CopyNextKeyStrings,
 } from './copy-keys';
-import { groupSenses } from './grouping';
 import { getHash } from './hash';
 import { SelectionMeta } from './meta';
 import { QueryResult } from './query';
