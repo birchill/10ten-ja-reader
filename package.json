@@ -75,6 +75,7 @@
           "changelogTitle": "# Changelog\n\nStarting with 1.0.0 rikaikun uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html) to\nconsistently version releases as follows:\n\n- Major: Minimum required chrome version advances.\n- Minor: New user visible feature added. (contains feat commits)\n- Patch: Bug fix to previous feature. (contains only fix commits)"
         }
       ],
+      "@semantic-release/npm",
       [
         "@semantic-release/exec",
         {
