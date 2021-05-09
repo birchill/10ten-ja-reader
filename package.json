@@ -38,6 +38,7 @@
   "homepage": "https://github.com/melink14/rikaikun#readme",
   "devDependencies": {
     "@semantic-release/changelog": "^5.0.1",
+    "@semantic-release/exec": "^5.0.0",
     "@types/byline": "^4.2.32",
     "@types/chrome": "0.0.137",
     "@types/copy-webpack-plugin": "^8.0.0",
@@ -68,7 +69,18 @@
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
-      "@semantic-release/changelog"
+      [
+        "@semantic-release/changelog",
+        {
+          "changelogTitle": "# Changelog\n\nStarting with 1.0.0 rikaikun uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html) to\nconsistently version releases as follows:\n\n- Major: Minimum required chrome version advances.\n- Minor: New user visible feature added. (contains feat commits)\n- Patch: Bug fix to previous feature. (contains only fix commits)"
+        }
+      ],
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "npm run fix && npm run lint"
+        }
+      ]
     ],
     "preset": "conventionalcommits",
     "branches": [
