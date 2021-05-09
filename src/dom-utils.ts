@@ -81,3 +81,6 @@ export function isTextInputNode(
       (<Element>node).tagName === 'TEXTAREA')
   );
 }
+
+export const isTextNode = (node: Node | null): node is CharacterData =>
+  !!node && node.nodeType === Node.TEXT_NODE;
