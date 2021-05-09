@@ -43,6 +43,7 @@
     "@types/copy-webpack-plugin": "^8.0.0",
     "@types/node": "^15.0.2",
     "byline": "^5.0.0",
+    "conventional-changelog-conventionalcommits": "^4.6.0",
     "copy-webpack-plugin": "^8.1.1",
     "csv-parse": "^4.15.4",
     "eslint": "^7.25.0",
@@ -69,8 +70,10 @@
       "@semantic-release/release-notes-generator",
       "@semantic-release/changelog"
     ],
+    "preset": "conventionalcommits",
     "branches": [
       "main"
-    ]
+    ],
+    "repositoryUrl": "git@github.com:melink14/rikaikun.git"
   }
 }
