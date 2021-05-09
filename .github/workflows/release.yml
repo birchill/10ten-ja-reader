@@ -16,6 +16,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
@@ -24,5 +25,5 @@ jobs:
         run: npm ci && npm run build
       - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
         run: npx semantic-release ${{ github.event.inputs.dryRun}}
