@@ -79,16 +79,16 @@
       ],
       "@semantic-release/npm",
       [
-        "@semantic-release/exec",
-        {
-          "prepareCmd": "npm run fix && npm run lint"
-        }
-      ],
-      [
         "semantic-release-chrome",
         {
           "asset": "rikaikun_${nextRelease.version}.zip",
           "extensionId": "jipdnfibhldikgcjhfnomkfpcebammhp"
+        }
+      ],
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "npm run fix && npm run lint"
         }
       ],
       [
