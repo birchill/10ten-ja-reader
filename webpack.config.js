@@ -148,7 +148,7 @@ const chromeConfig = {
     ...commonExtConfig.module,
     rules: extendArray(
       commonExtConfig.module.rules,
-      getPreprocessorConfig('use_polyfill')
+      getPreprocessorConfig('supports_chrome_style', 'use_polyfill')
     ),
   },
   output: {

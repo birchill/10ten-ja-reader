@@ -1222,6 +1222,10 @@
     "message": "なし",
     "description": "Label for not showing pitch accent information"
   },
+  "options_browser_commands_alternative": {
+    "message": "お使いになっているブラウザーではこちらでこのショートカットキーを変更していただけません。 chrome://extensions/shortcuts をアクセスし、設定変更を行ってください。",
+    "description": "Descriptive text used for Chrome and other browsers that do not permit configuring extension keys from the extension itself."
+  },
   "options_bushu_data_name": {
     "message": "部首データ",
     "description": "The name for the bushu database data set"

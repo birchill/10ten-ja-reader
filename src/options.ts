@@ -274,6 +274,9 @@ function configureCommands() {
     (control as HTMLInputElement).disabled = !canConfigureCommands;
   }
 
+  document.getElementById('browser-commands-alternative')!.style.display =
+    canConfigureCommands || !isChrome() ? 'none' : 'block';
+
   if (!canConfigureCommands) {
     return;
   }
@@ -440,7 +443,8 @@ function addPopupKeys() {
       keyInput.setAttribute('name', `key-${setting.name}-${key}`);
       keyInput.classList.add(`key-${setting.name}`);
       keyInput.dataset.key = key;
-      keyBlock.appendChild(keyInput);
+      keyBlock.append(keyInput);
+      keyBlock.append(' '); // <-- Mimick the whitespace in the template file
 
       keyInput.addEventListener('click', () => {
         const checkedKeys = document.querySelectorAll(

@@ -57,6 +57,9 @@
     /*#if supports_browser_style*/
     "browser_style": true,
     /*#endif*/
+    /*#if supports_chrome_style*/
+    "chrome_style": true,
+    /*#endif*/
     "page": "options.html"
   },
   "content_scripts": [
