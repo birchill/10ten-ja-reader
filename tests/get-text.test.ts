@@ -836,13 +836,13 @@ describe('getTextAtPoint', () => {
     // hopefully we can just set styles and so on until we get close enough on
     // all the platforms we care about.
     inputNode.style.padding = '0px';
-    inputNode.style.fontSize = '10px';
+    inputNode.style.fontSize = '20px';
     inputNode.style.fontFamily = 'monospace';
     const bbox = inputNode.getBoundingClientRect();
 
     const result = getTextAtPoint(
       // Just guess here...
-      { x: bbox.left + 13.5, y: bbox.top + bbox.height / 2 }
+      { x: bbox.left + 26, y: bbox.top + bbox.height / 2 }
     );
 
     assertTextResultEqual(result, 'いうえお', inputNode, 1, inputNode, 5);
@@ -853,12 +853,12 @@ describe('getTextAtPoint', () => {
     const inputNode = testDiv.firstChild!.firstChild as HTMLInputElement;
 
     inputNode.style.padding = '0px';
-    inputNode.style.fontSize = '10px';
+    inputNode.style.fontSize = '20px';
     inputNode.style.fontFamily = 'monospace';
     const bbox = inputNode.getBoundingClientRect();
 
     const result = getTextAtPoint({
-      x: bbox.left + 13.5,
+      x: bbox.left + 26,
       y: bbox.top + bbox.height / 2,
     });
 
