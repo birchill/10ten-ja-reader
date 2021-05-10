@@ -139,7 +139,7 @@ Bugsnag.start({
     for (const error of event.errors) {
       for (const frame of error.stacktrace) {
         frame.file = frame.file.replace(
-          /^moz-extension:\/\/[0-9a-z-]+/,
+          /^(moz-extension|chrome-extension):\/\/[0-9a-z-]+/,
           basePath
         );
       }
