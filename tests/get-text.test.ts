@@ -711,7 +711,7 @@ describe('getTextAtPoint', () => {
 
     const result = getTextAtPoint({
       x: bbox.left,
-      y: bbox.top + bbox.height / 2,
+      y: bbox.top + bbox.height / 4,
     });
 
     assertTextResultEqual(result, 'せん', senNode, 0, senNode, 2);
@@ -726,7 +726,7 @@ describe('getTextAtPoint', () => {
 
     const result = getTextAtPoint({
       x: bbox.left,
-      y: bbox.top + bbox.height / 2,
+      y: bbox.top + bbox.height / 4,
     });
 
     assertTextResultEqual(result, 'せん', seNode, 0, seNode, 1, nNode, 1);

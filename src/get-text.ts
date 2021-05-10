@@ -60,6 +60,23 @@ export function getTextAtPoint(
       : null;
   }
 
+  // Chrome not only doesn't support caretPositionFromPoint, but also
+  // caretRangeFromPoint doesn't return text input elements. Instead it returns
+  // one of their ancestors.
+  //
+  // Chrome may one day support caretPositionFromPoint with the same buggy
+  // behavior so check if we DIDN'T get a text input element but _should_ have.
+  if (position && !isTextInputNode(position.offsetNode)) {
+    const elemUnderCursor = document.elementFromPoint(point.x, point.y);
+    if (isTextInputNode(elemUnderCursor)) {
+      const offset = getOffsetFromTextInputNode({
+        node: elemUnderCursor,
+        point,
+      });
+      position = offset ? { offset, offsetNode: elemUnderCursor } : null;
+    }
+  }
+
   if (
     position &&
     position.offsetNode === previousResult?.position?.offsetNode &&
@@ -175,6 +192,58 @@ export function getTextAtPoint(
   return null;
 }
 
+function getOffsetFromTextInputNode({
+  node,
+  point,
+}: {
+  node: HTMLInputElement | HTMLTextAreaElement;
+  point: Point;
+}): number | null {
+  // This is only called when the platform APIs failed to give us the correct
+  // result so we need to synthesize an element with the same layout as the
+  // text area, read the text position, then drop it.
+
+  // Create the element
+  const mirrorElement = document.createElement('div');
+  mirrorElement.textContent = node.value;
+
+  // Set its styles to be the same
+  const cs = document.defaultView!.getComputedStyle(node);
+  for (let i = 0; i < cs.length; i++) {
+    const prop = cs.item(i);
+    mirrorElement.style.setProperty(prop, cs.getPropertyValue(prop));
+  }
+
+  // Match the scroll position
+  mirrorElement.scrollTop = node.scrollTop;
+  mirrorElement.scrollLeft = node.scrollLeft;
+
+  // Set its position in the document to be to be the same
+  mirrorElement.style.position = 'absolute';
+  const bbox = node.getBoundingClientRect();
+  mirrorElement.style.top = bbox.top + 'px';
+  mirrorElement.style.left = bbox.left + 'px';
+
+  // Finally, make sure it is on top
+  mirrorElement.style.zIndex = '10000';
+
+  // Read the offset
+  document.documentElement.appendChild(mirrorElement);
+  let result: number | null;
+  if (document.caretPositionFromPoint) {
+    const position = document.caretPositionFromPoint(point.x, point.y);
+    result = position ? position.offset : null;
+  } else {
+    const range = document.caretRangeFromPoint(point.x, point.y);
+    result = range ? range.startOffset : null;
+  }
+
+  // Drop the element
+  mirrorElement.remove();
+
+  return result;
+}
+
 function getDistanceFromTextNode(
   startNode: CharacterData,
   startOffset: number,
@@ -259,12 +328,11 @@ function getTextFromTextNode(
   // Check that our ancestor is, in fact, an ancestor of the point we're
   // looking at. (Sometimes caretPositionFromPoint can be too helpful and can
   // choose an element far away.)
+  const elementAtPoint = document.elementFromPoint(point.x, point.y);
   if (
     inlineAncestor &&
-    !isInclusiveAncestor(
-      inlineAncestor,
-      document.elementFromPoint(point.x, point.y)
-    )
+    elementAtPoint &&
+    !isInclusiveAncestor(inlineAncestor, elementAtPoint)
   ) {
     return null;
   }

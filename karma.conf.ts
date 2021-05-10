@@ -32,12 +32,13 @@ module.exports = (config: Config) => {
     },
     webpackMiddleware: {},
     frameworks: ['mocha', 'chai', 'webpack'],
-    browsers: ['FirefoxHeadless'],
+    browsers: ['FirefoxHeadless', 'ChromeHeadless'],
     plugins: [
       require('karma-mocha'),
       require('karma-chai'),
       require('karma-webpack'),
       require('karma-firefox-launcher'),
+      require('karma-chrome-launcher'),
     ],
   });
 };
