@@ -44,7 +44,15 @@ export async function query(
     };
   }
 
-  const searchResult: SearchResult = await browser.runtime.sendMessage(message);
+  let searchResult: SearchResult | null;
+  try {
+    searchResult = await browser.runtime.sendMessage(message);
+  } catch (e) {
+    console.log(
+      '[rikaichamp] Failed to call query. The page might need to be refreshed.'
+    );
+    searchResult = null;
+  }
   if (!searchResult) {
     return null;
   }

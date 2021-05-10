@@ -400,7 +400,14 @@ export class RikaiContent {
         );
       }
     } else if (toggleDefinition.includes(upperKey)) {
-      browser.runtime.sendMessage({ type: 'toggleDefinition' });
+      try {
+        browser.runtime.sendMessage({ type: 'toggleDefinition' });
+      } catch (e) {
+        console.log(
+          '[rikaichamp] Failed to call toggleDefinition. The page might need to be refreshed.'
+        );
+        return false;
+      }
       // We'll eventually get notified of the config change but we just change
       // it here now so we can update the popup immediately.
       this.config.readingOnly = !this.config.readingOnly;
