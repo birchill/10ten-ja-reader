@@ -1,4 +1,4 @@
-## Next release
+## 0.5.3 (2021-05-10)
 
 - Fixed coloring of kanji components when viewing text documents.
 - Fixed a regression in copy mode meaning the visual indication that it
