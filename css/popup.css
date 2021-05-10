@@ -167,18 +167,20 @@
 
 .w-def ol {
   padding-left: 1.5em;
-  list-style-type: numeric !important;
+  list-style-type: decimal !important;
   margin: 0;
 }
 
 .w-def ol li {
-  list-style-type: numeric !important;
+  list-style-type: decimal !important;
   font-size: 13px;
+  line-height: 1.5;
 }
 
 .w-def ul li {
   list-style-type: circle !important;
   font-size: 13px;
+  line-height: 1.5;
 }
 
 .w-def.foreign,
