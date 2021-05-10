@@ -836,13 +836,16 @@ describe('getTextAtPoint', () => {
     // hopefully we can just set styles and so on until we get close enough on
     // all the platforms we care about.
     inputNode.style.padding = '0px';
-    inputNode.style.fontSize = '20px';
+    inputNode.style.fontSize = '10px';
     inputNode.style.fontFamily = 'monospace';
     const bbox = inputNode.getBoundingClientRect();
 
+    // Chrome and Firefox use different default fonts
+    const offset = isChrome() ? 13 : 15;
+
     const result = getTextAtPoint(
       // Just guess here...
-      { x: bbox.left + 26, y: bbox.top + bbox.height / 2 }
+      { x: bbox.left + offset, y: bbox.top + bbox.height / 2 }
     );
 
     assertTextResultEqual(result, 'いうえお', inputNode, 1, inputNode, 5);
@@ -853,12 +856,15 @@ describe('getTextAtPoint', () => {
     const inputNode = testDiv.firstChild!.firstChild as HTMLInputElement;
 
     inputNode.style.padding = '0px';
-    inputNode.style.fontSize = '20px';
+    inputNode.style.fontSize = '10px';
     inputNode.style.fontFamily = 'monospace';
     const bbox = inputNode.getBoundingClientRect();
 
+    // Chrome and Firefox use different default fonts
+    const offset = isChrome() ? 13 : 15;
+
     const result = getTextAtPoint({
-      x: bbox.left + 26,
+      x: bbox.left + offset,
       y: bbox.top + bbox.height / 2,
     });
 
@@ -1059,4 +1065,11 @@ function getBboxForOffset(node: Node, start: number) {
   range.setStart(node, start);
   range.setEnd(node, start + 1);
   return range.getBoundingClientRect();
+}
+
+function isChrome(): boolean {
+  return (
+    navigator.userAgent.indexOf('Chrome/') !== -1 ||
+    navigator.userAgent.indexOf('Chromium/') !== -1
+  );
 }
