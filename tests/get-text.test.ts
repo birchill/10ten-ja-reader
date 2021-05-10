@@ -841,7 +841,7 @@ describe('getTextAtPoint', () => {
     const bbox = inputNode.getBoundingClientRect();
 
     // Chrome and Firefox use different default fonts
-    const offset = isChrome() ? 13 : 15;
+    const offset = isChrome() ? 12 : 15;
 
     const result = getTextAtPoint(
       // Just guess here...
@@ -861,7 +861,7 @@ describe('getTextAtPoint', () => {
     const bbox = inputNode.getBoundingClientRect();
 
     // Chrome and Firefox use different default fonts
-    const offset = isChrome() ? 13 : 15;
+    const offset = isChrome() ? 12 : 15;
 
     const result = getTextAtPoint({
       x: bbox.left + offset,
