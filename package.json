@@ -83,6 +83,13 @@
         }
       ],
       [
+        "semantic-release-chrome",
+        {
+          "asset": "rikaikun_${nextRelease.version}.zip",
+          "extensionId": "jipdnfibhldikgcjhfnomkfpcebammhp"
+        }
+      ],
+      [
         "@semantic-release/git",
         {
           "assets": [
@@ -91,6 +98,18 @@
             "package.json"
           ],
           "message": "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"
+        }
+      ],
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            {
+              "path": "rikaikun_${nextRelease.version}.zip",
+              "label": "Uploadable Extension"
+            }
+          ],
+          "addReleases": "top"
         }
       ]
     ],
