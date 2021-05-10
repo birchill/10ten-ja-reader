@@ -1,18 +1,77 @@
 # Rikaichamp!
 
 ![](https://github.com/birtles/rikaichamp/workflows/Automated%20tests/badge.svg)
+![Twitter Follow](https://img.shields.io/twitter/follow/rikaichamp)
 
-Look up Japanese words with the hover of a mouse.
+A browser extension to look up Japanese words with the hover of a mouse.
 
-Rikaichamp is a port of rikaikun, which is a port of rikaichan, which is a port
-of rikaiXUL. It aims to be simple, reliable, fast, and up-to-date.
+Forked from Rikaikun in 2017 it includes:
 
-It includes simple installation, an up-to-date dictionary, many many bug fixes
-over its predecessors (e.g. it correctly recognizes the causative passive),
-automated tests and type-checking, and modern API usage (no sync XHR, XPath
-etc.).
+- Pitch accent information
+  ![Screen shot showing pitch accent highlighting](/docs/pitch-accent.png?raw=true 'Pitch accent')
+- Support for non-English dictionaries
+- Dictionaries that update automatically every week by fetching just the updated entries
+  ![Screen shot showing Russian translation](/docs/russian.png?raw=true 'Russian translation')
+- Overhauled dictionary entry display to make it much easier to read
+  ![Screen shot showing how definitions are grouped by part-of-speech](/docs/word-display.png?raw=true 'Some of the features of word display')
+- Automatic translation of Japanese-era years into Gregorian years (e.g. 昭和５６年、令和元年、平成三十一年)
+  ![Screen shot showing translation of 明治四十二年 into 1909年](/docs/year-translation.png?raw=true 'Year translation')
+- Recognition of many more grammatical forms
+  (e.g. vs-c verbs like 兼した,
+  irregular verbs like いらっしゃいます,
+  continuous forms like 食べてた,
+  ん as a negative form like 分からん、知らん,
+  words with ー like じーちゃん、頑張ろー、そーゆー,
+  ぬ verbs,
+  とく・どく forms like 買っとく,
+  causative passive, させる for verbs ending in す e.g. 起こさせる)
+- Automatic preview of name entries when there is a better match in the name dictionary
+  ![Screen shot showing 南硫黄島 being automatically looked up from the names dictionary](/docs/name-dictionary-cross-ref.png?raw=true 'Name dictionary cross-reference')
+- Handling of a much wider range of characters including ㋕, ㌀, ㋿, 𠏹沢, ８月, Ｂ級グルメ, オーサカ
+  ![Screen shot showing recognition of 弾道㋯㋚㋑㋸防衛 (弾道ミサイル防衛)](/docs/encircled-character.png 'Encircled characters')
+  ![Screen shot showing recognition of ㍿ (株式会社)](/docs/kabushiki-gaisha.png 'Composed characters')
+- Completely localized into Japanese (so you can study Japanese while you study Japanese!) and Simplified Chinese
+  ![Screen shot showing various parts-of-speech and other information translated into Japanese](/docs/localized.png 'Localized popup')
+- Better prioritization of more common matches
+- Support for displaying romaji
+- Copy feature that allows selecting which entry and in what format to copy to the clipboard
+  ![Screen shot showing 魅惑的 being selected and the various formats available for copying](/docs/copy-feature.png 'Copy feature')
+- Smarter popup positioning
+- Support for vertical text and SVG text
+- Much lower memory usage (> 90% less)
+- Kanji data for Kanji kentei, Conning references, updated educational levels, heavily reworked kanji components etc.
+  ![Screen shot of kanji view](/docs/kanji-view.png 'Kanji dictionary')
+- Overhauled settings window to make it more intuitive
+  ![Screen shot of options window](/docs/options-window.png 'Options window')
+- Better isolation of styles so that the popup always looks correct
+- Improved handling of ruby text in YouTube
+- Entirely rewritten with static typing, automated tests, and modern API usage (no sync XHR, XPath etc.)
+- Hundreds of other fixes and improvements
 
-Twitter: [@rikaichamp](https://twitter.com/rikaichamp)
+# Usage
+
+By default, you can enable Rikaichamp by either:
+
+- Pressing the toolbar button (you may need to add it to the browser toolbar yourself in some browsers)
+- Pressing <kbd>Alt</kbd>+<kbd>R</kbd>
+- Choosing to enable it from the context menu
+
+Alternatively, a lot of users find it helpful to have Rikaichamp permanently
+enabled but configured to only show the pop-up when either <kbd>Alt</kbd> or
+<kbd>Ctrl</kbd> is pressed.
+
+The other keys are as follows:
+
+| Action                                    | Key                                                 |
+| ----------------------------------------- | --------------------------------------------------- |
+| Switch dictionary (words → kanji → names) | <kbd>Shift</kbd> / <kbd>Enter</kbd>                 |
+| Toggle display of definitions             | <kbd>d</kbd> _(disabled by default)_                |
+| Move the popup up or down                 | <kbd>j</kbd> / <kbd>k</kbd> _(disabled by default)_ |
+| Enter copy mode                           | <kbd>c</kbd>                                        |
+| (Copy mode) Copy entry                    | <kbd>e</kbd>                                        |
+| (Copy mode) Copy tab-separated fields     | <kbd>y</kbd>                                        |
+| (Copy mode) Copy word/kanji               | <kbd>w</kbd>                                        |
+| (Copy mode) Select next entry             | <kbd>c</kbd>                                        |
 
 ## Contributing
 
