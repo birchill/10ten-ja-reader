@@ -1,6 +1,6 @@
 // Alias kanjiInfoLabelList for convenience.
-const kanjiInfoLabelList = chrome.extension.getBackgroundPage().RcxDict
-  .prototype.kanjiInfoLabelList;
+const kanjiInfoLabelList =
+  chrome.extension.getBackgroundPage().RcxDict.prototype.kanjiInfoLabelList;
 
 /**
  * Retrieves saved options from chrome.storage.sync and populates form elements.
@@ -123,18 +123,23 @@ function saveOptions() {
   });
 
   // TODO: Inline this above and call saveOptionsToCloudStorage.
-  chrome.extension.getBackgroundPage().rcxMain.config.copySeparator = copySeparator;
+  chrome.extension.getBackgroundPage().rcxMain.config.copySeparator =
+    copySeparator;
   chrome.extension.getBackgroundPage().rcxMain.config.disablekeys = disablekeys;
   chrome.extension.getBackgroundPage().rcxMain.config.highlight = highlight;
-  chrome.extension.getBackgroundPage().rcxMain.config.kanjicomponents = kanjicomponents;
-  chrome.extension.getBackgroundPage().rcxMain.config.kanjiInfo = kanjiInfoObject;
+  chrome.extension.getBackgroundPage().rcxMain.config.kanjicomponents =
+    kanjicomponents;
+  chrome.extension.getBackgroundPage().rcxMain.config.kanjiInfo =
+    kanjiInfoObject;
   chrome.extension.getBackgroundPage().rcxMain.config.lineEnding = lineEnding;
-  chrome.extension.getBackgroundPage().rcxMain.config.maxClipCopyEntries = maxClipCopyEntries;
+  chrome.extension.getBackgroundPage().rcxMain.config.maxClipCopyEntries =
+    maxClipCopyEntries;
   chrome.extension.getBackgroundPage().rcxMain.config.minihelp = minihelp;
   chrome.extension.getBackgroundPage().rcxMain.config.onlyreading = onlyreading;
   chrome.extension.getBackgroundPage().rcxMain.config.popupcolor = popupcolor;
   chrome.extension.getBackgroundPage().rcxMain.config.popupDelay = popupDelay;
-  chrome.extension.getBackgroundPage().rcxMain.config.popupLocation = popupLocation;
+  chrome.extension.getBackgroundPage().rcxMain.config.popupLocation =
+    popupLocation;
   chrome.extension.getBackgroundPage().rcxMain.config.showOnKey = showOnKey;
   chrome.extension.getBackgroundPage().rcxMain.config.textboxhl = textboxhl;
   chrome.extension.getBackgroundPage().rcxMain.config.ttsEnabled = ttsEnabled;
