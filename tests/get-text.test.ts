@@ -842,7 +842,7 @@ describe('getTextAtPoint', () => {
 
     const result = getTextAtPoint(
       // Just guess here...
-      { x: bbox.left + 15, y: bbox.top + bbox.height / 2 }
+      { x: bbox.left + 13, y: bbox.top + bbox.height / 2 }
     );
 
     assertTextResultEqual(result, 'いうえお', inputNode, 1, inputNode, 5);
@@ -858,7 +858,7 @@ describe('getTextAtPoint', () => {
     const bbox = inputNode.getBoundingClientRect();
 
     const result = getTextAtPoint({
-      x: bbox.left + 15,
+      x: bbox.left + 13,
       y: bbox.top + bbox.height / 2,
     });
 
@@ -871,6 +871,7 @@ describe('getTextAtPoint', () => {
 
     inputNode.style.padding = '0px';
     inputNode.style.fontSize = '10px';
+    inputNode.style.fontFamily = 'monospace';
     const bbox = inputNode.getBoundingClientRect();
 
     const result = getTextAtPoint({
@@ -891,6 +892,7 @@ describe('getTextAtPoint', () => {
 
     textAreaNode.style.padding = '0px';
     textAreaNode.style.fontSize = '10px';
+    textAreaNode.style.fontFamily = 'monospace';
     const bbox = textAreaNode.getBoundingClientRect();
 
     const result = getTextAtPoint({ x: bbox.left + 10, y: 5 });
