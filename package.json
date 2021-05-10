@@ -81,6 +81,17 @@
         {
           "prepareCmd": "npm run fix && npm run lint"
         }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "CHANGELOG.md",
+            "extension/manifest.json",
+            "package.json"
+          ],
+          "message": "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"
+        }
       ]
     ],
     "preset": "conventionalcommits",
