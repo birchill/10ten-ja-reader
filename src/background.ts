@@ -426,8 +426,18 @@ function addContextMenu() {
       checked: enabled,
     });
   } catch (e) {
-    // TODO: Chrome doesn't support the 'command' member so if we got an
+    // Chrome doesn't support the 'command' member so if we got an
     // exception, assume that's it and try the old-fashioned way.
+    menuId = browser.contextMenus.create({
+      id: 'context-toggle',
+      type: 'checkbox',
+      title: browser.i18n.getMessage('menu_enable_extension'),
+      contexts: ['all'],
+      checked: enabled,
+      onclick: (_info, tab) => {
+        toggle(tab);
+      },
+    });
   }
 }
 
