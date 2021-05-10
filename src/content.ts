@@ -884,9 +884,8 @@ export class RikaiContent {
       copyIndex: this.copyIndex,
       copyNextKey: this.config.keys.startCopy[0] || '',
       copyState:
-        options?.copyState || this.copyMode
-          ? CopyState.Active
-          : CopyState.Inactive,
+        options?.copyState ||
+        (this.copyMode ? CopyState.Active : CopyState.Inactive),
       copyType: options?.copyType,
       dictLang: this.config.dictLang,
       document: doc,
