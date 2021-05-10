@@ -837,6 +837,7 @@ describe('getTextAtPoint', () => {
     // all the platforms we care about.
     inputNode.style.padding = '0px';
     inputNode.style.fontSize = '10px';
+    inputNode.style.fontFamily = 'monospace';
     const bbox = inputNode.getBoundingClientRect();
 
     const result = getTextAtPoint(
@@ -853,6 +854,7 @@ describe('getTextAtPoint', () => {
 
     inputNode.style.padding = '0px';
     inputNode.style.fontSize = '10px';
+    inputNode.style.fontFamily = 'monospace';
     const bbox = inputNode.getBoundingClientRect();
 
     const result = getTextAtPoint({
