@@ -19,6 +19,70 @@
         "code",
         "translation"
       ]
+    },
+    {
+      "login": "claudiofreitas",
+      "name": "Claudio Freitas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/212832?v=4",
+      "profile": "https://github.com/claudiofreitas",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Kala-J",
+      "name": "Kala-J",
+      "avatar_url": "https://avatars.githubusercontent.com/u/47021172?v=4",
+      "profile": "https://github.com/Kala-J",
+      "contributions": [
+        "code",
+        "data"
+      ]
+    },
+    {
+      "login": "ispedals",
+      "name": "ispedals",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3164681?v=4",
+      "profile": "https://github.com/ispedals",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "piroor",
+      "name": "YUKI \"Piro\" Hiroshi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/70062?v=4",
+      "profile": "https://piro.sakura.ne.jp/",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "kikaxa",
+      "name": "kikaxa",
+      "avatar_url": "https://avatars.githubusercontent.com/u/96402?v=4",
+      "profile": "https://github.com/kikaxa",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "nanaya",
+      "name": "Edho Arief",
+      "avatar_url": "https://avatars.githubusercontent.com/u/276295?v=4",
+      "profile": "https://nanaya.pro/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "melink14",
+      "name": "Erek Speed",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1176550?v=4",
+      "profile": "https://erekspeed.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
