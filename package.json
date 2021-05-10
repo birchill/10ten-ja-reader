@@ -16,7 +16,6 @@
     "sort-i18n-keys": "ts-node utils/sort-keys",
     "start": "webpack -w",
     "start:chrome": "webpack -w --env target=chrome",
-    "update-db": "node utils/update-db",
     "update-snapshot": "ts-node utils/update-snapshot",
     "version": "node utils/sync-manifest-version && git add manifest.json.src",
     "zip-src": "node utils/zip-src"
