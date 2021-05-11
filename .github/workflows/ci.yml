@@ -81,6 +81,7 @@ jobs:
         run: |
           yarn package
           yarn package:chrome
+          yarn package:edge
           yarn zip-src
 
       - name: Read package version
