@@ -1,6 +1,6 @@
-## 0.5.4 (2021-05-11)
+## 0.5.5 (2021-05-11)
 
-- Nothing of interest. Just fixed some packaging.
+- Fixed release infrastructure and tweaked options page.
 
 ## 0.5.3 (2021-05-10)
 
