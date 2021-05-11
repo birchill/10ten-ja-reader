@@ -85,7 +85,7 @@
     "@birchill/normal-jp": "^1.2.1",
     "@bugsnag/js": "^7.9.2",
     "husky": "^6.0.0",
-    "lint-staged": "^10.5.4",
+    "lint-staged": "^11.0.0",
     "lru_map": "^0.4.1",
     "typescript": "^4.2.4",
     "web-ext": "^6.1.0"
