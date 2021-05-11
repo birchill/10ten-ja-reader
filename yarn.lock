@@ -350,11 +350,6 @@
   resolved "https://registry.yarnpkg.com/@birchill/json-equalish/-/json-equalish-1.1.2.tgz#6547834e6ce2331a969a1aa13c485f19b7428c9f"
   integrity sha512-oXsOtXbuxai0iq8bXZKa0S2AkGEEhigu2WcZUbYwRbv4EtHJvT6jqSg5kNtWeI+6frv7ixIbJbuWP6AbNtj7Sw==
 
-"@birchill/normal-jp@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.2.1.tgz#4f0396da3036fc869c4777b2040f10f1bd7a007f"
-  integrity sha512-xRUHD7aST487YOiSPJtpkUsdN1UlQcYNSGnijNg3XSUbwEkoTN/ZahuMFAO4Hyox4wul1zfDUwqtsDwKncSfAA==
-
 "@birchill/normal-jp@^1.2.2":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.2.2.tgz#38234fbfe9b9f622a815f7ae6ea6cba31f363e41"
