@@ -4,6 +4,8 @@ tests/content-loader.js
 tests/content-loader.js.map
 dist-chrome
 dist-chrome-package
+dist-edge
+dist-edge-package
 dist-firefox
 dist-firefox-package
 dist-src

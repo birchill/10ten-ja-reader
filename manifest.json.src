@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Rikaichamp",
+  "name": "Rikaichamp Japanese dictionary",
   "author": "Brian Birtles",
   "version": "0.5.3",
   /*#if supports_applications_field*/
@@ -13,6 +13,9 @@
   /*#endif*/
   "description": "__MSG_extension_description__",
   "default_locale": "en",
+  /*#if uses_edge_store*/
+  "update_url": "https://edge.microsoft.com/extensionwebstorebase/v1/crx",
+  /*#endif*/
   /*#if supports_svg_icons*/
   "icons": {
     "16": "images/rikaichamp-blue.svg",
@@ -64,7 +67,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*", "ftp://*/*", "file:///*"],
+      "matches": ["http://*/*", "https://*/*", "file:///*"],
       "match_about_blank": true,
       /*#if use_polyfill*/
       "js": ["browser-polyfill.js", "rikaichamp-content.js"],

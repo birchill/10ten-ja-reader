@@ -6,7 +6,6 @@
 }
 
 :root:not(.firefox) .browser-style {
-  appearance: none;
   text-align: left;
   margin-bottom: 6px;
 }
@@ -14,6 +13,10 @@
 :root:not(.firefox) .panel-section-formElements {
   padding-top: 16px;
   padding-bottom: 16px;
+}
+
+:root.chromium:not(.edge) body {
+  min-width: 600px;
 }
 
 /*
@@ -85,6 +88,14 @@
   margin-right: 16px;
 }
 
+/* Edge options window is tiny */
+@media (max-width: 500px) {
+  .panel-section-grid {
+    grid-template-columns: minmax(250px, 1fr);
+    grid-auto-flow: row;
+  }
+}
+
 fieldset {
   border: none;
 }
@@ -99,6 +110,12 @@ fieldset {
   margin-bottom: 1rem;
 }
 
+@media (max-width: 500px) {
+  .popupstyle-select {
+    grid-template-columns: 1fr;
+  }
+}
+
 .popupstyle-select > input[type='radio'] {
   display: none;
 }
@@ -107,7 +124,6 @@ fieldset {
   border: 1px solid transparent;
   transition: border-color 0.3s, opacity 0.3s;
   padding: 0.5em;
-  flex: 1;
   text-align: center;
   min-width: 200px;
 }
@@ -247,6 +263,9 @@ fieldset {
 .key-description .icon.-error {
   background-image: url('/images/warning-red.svg');
 }
+.key-description p {
+  line-height: 1.25;
+}
 
 .key-list {
   margin: 0;
@@ -302,6 +321,7 @@ fieldset {
 .panel-section-db-summary > .db-summary-status {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   min-height: 3em;
   gap: 20px;
 }
@@ -330,6 +350,12 @@ fieldset {
   grid-template-rows: repeat(2, auto);
   column-gap: 20px;
   row-gap: 3px;
+}
+
+@media (max-width: 500px) {
+  .panel-section-db-summary .db-summary-version-grid {
+    column-gap: 5px;
+  }
 }
 
 .panel-section-db-summary .db-source-version {

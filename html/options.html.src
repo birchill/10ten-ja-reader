@@ -83,9 +83,15 @@
               __MSG_command_toggle_description__
               <div class="icon" id=toggle-key-icon></div>
             </div>
+            <!--#if uses_edge_store-->
             <div class="key-extended-explanation" id="browser-commands-alternative">
-              __MSG_options_browser_commands_alternative__
+              __MSG_options_browser_commands_alternative_edge__
             </div>
+            <!--#else-->
+            <div class="key-extended-explanation" id="browser-commands-alternative">
+              __MSG_options_browser_commands_alternative_chrome__
+            </div>
+            <!--#endif-->
             <div class="key holdtoshowkeys browser-style">
               <input type=checkbox id=show-alt value=Alt>
               <label for=show-alt><span class="key-box">Alt</span></label>

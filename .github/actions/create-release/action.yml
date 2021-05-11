@@ -1,6 +1,9 @@
 name: 'Create release'
 description: 'Creates a Rikaichamp release'
 inputs:
+  edge_package_name:
+    description: The filename of the Edge package within the dist-edge-package folder
+    required: true
   chrome_package_name:
     description: The filename of the Chrome package within the dist-chrome-package folder
     required: true

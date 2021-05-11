@@ -30,8 +30,11 @@ function completeForm() {
   if (isFirefox()) {
     document.documentElement.classList.add('firefox');
   }
-  if (isChrome()) {
-    document.documentElement.classList.add('chrome');
+  if (isChromium()) {
+    document.documentElement.classList.add('chromium');
+  }
+  if (isEdge()) {
+    document.documentElement.classList.add('edge');
   }
 
   // Pop-up
@@ -116,11 +119,15 @@ function isFirefox(): boolean {
   return navigator.userAgent.indexOf('Firefox/') !== -1;
 }
 
-function isChrome(): boolean {
+function isChromium(): boolean {
   return (
     navigator.userAgent.indexOf('Chrome/') !== -1 ||
     navigator.userAgent.indexOf('Chromium/') !== -1
   );
+}
+
+function isEdge(): boolean {
+  return navigator.userAgent.indexOf('Edg/') !== -1;
 }
 
 function renderPopupStyleSelect() {
@@ -267,15 +274,14 @@ function configureCommands() {
     typeof (browser.commands as any).update === 'function' &&
     typeof (browser.commands as any).reset === 'function';
 
-  const browserCommandControls = document.querySelectorAll(
-    '.key.command input'
-  );
+  const browserCommandControls =
+    document.querySelectorAll('.key.command input');
   for (const control of browserCommandControls) {
     (control as HTMLInputElement).disabled = !canConfigureCommands;
   }
 
   document.getElementById('browser-commands-alternative')!.style.display =
-    canConfigureCommands || !isChrome() ? 'none' : 'block';
+    canConfigureCommands || !isChromium() ? 'none' : 'block';
 
   if (!canConfigureCommands) {
     return;
@@ -779,8 +785,7 @@ function updateDatabaseBlurb(evt: DbStateUpdatedMessage) {
     linkify(attribution, [
       {
         keyword: 'JMdict/EDICT',
-        href:
-          'https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project',
+        href: 'https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project',
       },
       {
         keyword: 'KANJIDIC',

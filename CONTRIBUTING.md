@@ -64,10 +64,10 @@ yarn package:chrome # Chrome version
 For manual testing you can use:
 
 ```
-yarn start
+yarn start # or yarn start:chrome
 ```
 
-This will run the app using the webpack runner in Firefox with automatic reloading.
+This will run the app using the webpack runner in Firefox (or Chrome) with automatic reloading.
 
 ```
 yarn start --env firefox=nightly
@@ -75,8 +75,6 @@ yarn start --env firefox=nightly
 
 Other options include `--env firefoxProfile=<path>`,
 `--env keepProfileChanges`, and `--env profileCreateIfMissing`.
-
-I haven't worked out yet how to make it run in Chrome. Maybe you can help? �
 
 ## Testing
 

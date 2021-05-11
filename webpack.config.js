@@ -168,6 +168,21 @@ const chromeConfig = {
   ],
 };
 
+const edgeConfig = {
+  ...chromeConfig,
+  module: {
+    ...chromeConfig.module,
+    rules: extendArray(
+      commonExtConfig.module.rules,
+      getPreprocessorConfig('uses_edge_store', 'use_polyfill')
+    ),
+  },
+  output: {
+    path: path.resolve(__dirname, 'dist-edge'),
+    filename: '[name].js',
+  },
+};
+
 const testConfig = {
   ...commonConfig,
   name: 'tests',
@@ -180,10 +195,12 @@ const testConfig = {
   },
 };
 
-module.exports = (env, argv) => {
+module.exports = (env) => {
   let configs = [testConfig];
   if (env && env.target === 'chrome') {
     configs.push({ ...chromeConfig, name: 'extension' });
+  } else if (env && env.target === 'edge') {
+    configs.push({ ...edgeConfig, name: 'extension' });
   } else {
     configs.push({ ...firefoxConfig, name: 'extension' });
   }

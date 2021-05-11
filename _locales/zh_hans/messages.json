@@ -1219,9 +1219,13 @@
     "message": "无",
     "description": "Label for not showing pitch accent information"
   },
-  "options_browser_commands_alternative": {
+  "options_browser_commands_alternative_chrome": {
     "message": "您无法在浏览器中在此处更改此快捷键。 请访问chrome://extensions/shortcuts并更改设置。",
-    "description": "Descriptive text used for Chrome and other browsers that do not permit configuring extension keys from the extension itself."
+    "description": "Descriptive text used for Chrome which does not permit configuring extension keys from the extension itself."
+  },
+  "options_browser_commands_alternative_edge": {
+    "message": "您无法在浏览器中在此处更改此快捷键。 请访问edge://extensions/shortcuts并更改设置。",
+    "description": "Descriptive text used for Edge which does not permit configuring extension keys from the extension itself."
   },
   "options_bushu_data_name": {
     "message": "部首数据库",

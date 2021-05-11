@@ -43,7 +43,7 @@ async function main() {
   const chromePackageName = core.getInput('chrome_package_name');
   const chromePackagePath = path.join(
     root,
-    'dist-firefox-package',
+    'dist-chrome-package',
     chromePackageName
   );
   await octokit.repos.uploadReleaseAsset({
@@ -52,6 +52,17 @@ async function main() {
     release_id: release.data.id,
     name: `rikaichamp-${version}-chrome.zip`,
     data: fs.readFileSync(chromePackagePath),
+  });
+
+  // Upload Edge asset
+  const edgePackageName = core.getInput('edge_package_name');
+  const edgePackagePath = path.join(root, 'dist-edge-package', edgePackageName);
+  await octokit.repos.uploadReleaseAsset({
+    owner,
+    repo,
+    release_id: release.data.id,
+    name: `rikaichamp-${version}-edge.zip`,
+    data: fs.readFileSync(edgePackagePath),
   });
 
   // Upload source asset

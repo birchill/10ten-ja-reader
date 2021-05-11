@@ -138,7 +138,7 @@ Bugsnag.start({
     for (const error of event.errors) {
       for (const frame of error.stacktrace) {
         frame.file = frame.file.replace(
-          /^(moz-extension|chrome-extension):\/\/[0-9a-z-]+/,
+          /^(moz-extension|chrome-extension|extension):\/\/[0-9a-z-]+/,
           basePath
         );
       }
@@ -258,15 +258,16 @@ config.ready.then(() => {
     browser.commands &&
     typeof (browser.commands as any).update === 'function'
   ) {
-    const getToggleCommand = async (): Promise<browser.commands.Command | null> => {
-      const commands = await browser.commands.getAll();
-      for (const command of commands) {
-        if (command.name === '_execute_browser_action') {
-          return command;
+    const getToggleCommand =
+      async (): Promise<browser.commands.Command | null> => {
+        const commands = await browser.commands.getAll();
+        for (const command of commands) {
+          if (command.name === '_execute_browser_action') {
+            return command;
+          }
         }
-      }
-      return null;
-    };
+        return null;
+      };
 
     getToggleCommand().then((command: browser.commands.Command | null) => {
       if (command && command.shortcut !== config.toggleKey) {

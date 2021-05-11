@@ -5,10 +5,12 @@
   "scripts": {
     "build": "webpack",
     "build:chrome": "webpack --env target=chrome",
+    "build:edge": "webpack --env target=edge",
     "check-keys": "ts-node utils/check-keys",
     "lint": "web-ext lint",
     "package": "yarn build && web-ext build --overwrite-dest -a dist-firefox-package",
     "package:chrome": "yarn build:chrome && web-ext build --overwrite-dest -s dist-chrome -a dist-chrome-package",
+    "package:edge": "yarn build:edge && web-ext build --overwrite-dest -s dist-edge -a dist-edge-package",
     "postinstall": "husky install",
     "test": "yarn lint && yarn test:unit && yarn test:browser",
     "test:unit": "jest",

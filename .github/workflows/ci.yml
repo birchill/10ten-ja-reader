@@ -93,6 +93,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          edge_package_name: ${{ steps.read_package_version.outputs.edge_package_name }}
           chrome_package_name: ${{ steps.read_package_version.outputs.chrome_package_name }}
           firefox_package_name: ${{ steps.read_package_version.outputs.firefox_package_name }}
           prerelease: ${{ steps.read_package_version.outputs.prerelease }}
