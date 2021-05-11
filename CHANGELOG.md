@@ -1,3 +1,7 @@
+## 0.5.4 (2021-05-11)
+
+- Nothing of interest. Just fixed some packaging.
+
 ## 0.5.3 (2021-05-10)
 
 - Fixed coloring of kanji components when viewing text documents.
