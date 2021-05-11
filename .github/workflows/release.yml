@@ -32,7 +32,7 @@ jobs:
         run: npx semantic-release ${{ github.event.inputs.dryRun}}
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
-        if: always()
+        if: failure()
         with:
           name: extension_package
           path: rikaikun.zip
