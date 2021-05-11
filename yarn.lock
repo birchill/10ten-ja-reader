@@ -995,10 +995,10 @@
   resolved "https://registry.yarnpkg.com/@types/source-list-map/-/source-list-map-0.1.2.tgz#0078836063ffaf17412349bba364087e0ac02ec9"
   integrity sha512-K5K+yml8LTo9bWJI/rECfIPrGgxdpeNbj+d53lwN4QjW1MCwlkhUms+gtdzigTeUyBr09+u8BwOIY3MXvHdcsA==
 
-"@types/split2@^2.1.6":
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/@types/split2/-/split2-2.1.6.tgz#b095c9e064853824b22c67993d99b066777402b1"
-  integrity sha512-ddaFSOMuy2Rp97l6q/LEteQygvTQJuEZ+SRhxFKR0uXGsdbFDqX/QF2xoGcOqLQ8XV91v01SnAv2vpgihNgW/Q==
+"@types/split2@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@types/split2/-/split2-3.2.0.tgz#a14f5acb1719aca5e6bcd3706f0df5c5b986802b"
+  integrity sha512-Wb9kp2BW5Qs38oyAS36t+wDN9eE6bFt8fpJ0DpYX6R5Og5tY003m8v1H2cEv8bpF9vLpPXago5pgsCgPka8BVQ==
   dependencies:
     "@types/node" "*"
 
