@@ -79,16 +79,22 @@
       ],
       "@semantic-release/npm",
       [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "npm run fix && npm run lint && npm run build"
+        }
+      ],
+      [
         "semantic-release-chrome",
         {
-          "asset": "rikaikun_${nextRelease.version}.zip",
+          "asset": "rikaikun.zip",
           "extensionId": "jipdnfibhldikgcjhfnomkfpcebammhp"
         }
       ],
       [
         "@semantic-release/exec",
         {
-          "prepareCmd": "npm run fix && npm run lint"
+          "prepareCmd": "cp dist/manifest.json extension/manifest.json"
         }
       ],
       [
@@ -107,8 +113,9 @@
         {
           "assets": [
             {
-              "path": "rikaikun_${nextRelease.version}.zip",
-              "label": "Uploadable Extension"
+              "path": "rikaikun.zip",
+              "name": "rikaikun_${nextRelease.gitTag}.zip",
+              "label": "Packaged chrome extension (${nextRelease.gitTag})"
             }
           ],
           "addReleases": "top"

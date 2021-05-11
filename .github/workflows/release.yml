@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: 12
       - name: Install dependencies and build
-        run: npm ci && npm run build
+        run: npm ci
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
