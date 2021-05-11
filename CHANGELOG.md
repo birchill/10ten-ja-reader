@@ -7,6 +7,23 @@ consistently version releases as follows:
 - Minor: New user visible feature added. (contains feat commits)
 - Patch: Bug fix to previous feature. (contains only fix commits)
 
+## [1.1.0](https://github.com/melink14/rikaikun/compare/v1.0.0...v1.1.0) (2021-05-11)
+
+### Features
+
+- **dict:** Update dictionaries ([#451](https://github.com/melink14/rikaikun/issues/451)) ([97e6306](https://github.com/melink14/rikaikun/commit/97e6306a7faabfe2e42f16566c56a768478683df))
+- **dict:** Update dictionaries to latest versions. ([#469](https://github.com/melink14/rikaikun/issues/469)) ([96a6032](https://github.com/melink14/rikaikun/commit/96a6032b445181033f17855ce28274e72e180e5c))
+
+### Bug Fixes
+
+- **manifest:** Edit the manifest description to fit under the character limit ([de5a21a](https://github.com/melink14/rikaikun/commit/de5a21a3a4b05aded0e4e1a13b7943f02ae09f8c))
+- Change manifest.json description to be more descriptive. ([#268](https://github.com/melink14/rikaikun/issues/268)) ([5fb116c](https://github.com/melink14/rikaikun/commit/5fb116c8427c479e926f16250a7bedf858b29890)), closes [#245](https://github.com/melink14/rikaikun/issues/245)
+- Falsy setting values now correctly initialize. ([#408](https://github.com/melink14/rikaikun/issues/408)) ([327eecd](https://github.com/melink14/rikaikun/commit/327eecdb40c06dbd48784d50e0dee1e03f00bc85)), closes [#346](https://github.com/melink14/rikaikun/issues/346)
+- Migrate `onSelectionChanged` to `onActivated` ([#461](https://github.com/melink14/rikaikun/issues/461)) ([d8a0a9d](https://github.com/melink14/rikaikun/commit/d8a0a9dd73f46b914554a3fd1f7afa671cbae8a6)), closes [#153](https://github.com/melink14/rikaikun/issues/153)
+- Remove unneeded tabs permission from manifest. ([#266](https://github.com/melink14/rikaikun/issues/266)) ([d529e62](https://github.com/melink14/rikaikun/commit/d529e624fdbbd7b0f8c250fc2396ac30efddec07)), closes [#152](https://github.com/melink14/rikaikun/issues/152)
+- Reset badge text to empty on extension startup ([#462](https://github.com/melink14/rikaikun/issues/462)) ([b4afd3f](https://github.com/melink14/rikaikun/commit/b4afd3fa07116c9900575aefae2dae7b9065f6d9)), closes [#82](https://github.com/melink14/rikaikun/issues/82)
+- Update manifest.json to allow rikaikun to work in srcdoc iframes. ([#411](https://github.com/melink14/rikaikun/issues/411)) ([093824b](https://github.com/melink14/rikaikun/commit/093824b15cc8e792c01541ae1fa40a1355b28d2f)), closes [#410](https://github.com/melink14/rikaikun/issues/410)
+
 ## [1.0.0](https://github.com/melink14/rikaikun/compare/v0.10.1...v1.0.0) (2020-09-01)
 
 ### Features
