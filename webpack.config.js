@@ -162,6 +162,9 @@ const chromeConfig = {
         'images/*',
         'data/*',
         '_locales/**/*',
+        'icons',
+        // ^ Specifying a folder here means the icons will be placed directly
+        //   in the root folder.
         { from: 'lib/browser-polyfill.js*', to: '[name][ext]' },
       ],
     }),
