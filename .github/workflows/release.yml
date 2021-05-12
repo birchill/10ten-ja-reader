@@ -6,6 +6,12 @@ on:
         description: '-d skips prepare and publish steps'
         required: false
         default: ''
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'extension/data/*'
+      - '!extension/data/deinflect.dat'
 
 jobs:
   release:
