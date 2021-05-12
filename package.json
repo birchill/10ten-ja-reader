@@ -94,7 +94,7 @@
       [
         "@semantic-release/exec",
         {
-          "prepareCmd": "cp dist/manifest.json extension/manifest.json && npm run fix && npm run lint"
+          "prepareCmd": "cp dist/manifest.json extension/manifest.json && npm run fix && npm run lint && npm i"
         }
       ],
       [
