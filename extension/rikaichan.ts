@@ -38,32 +38,47 @@
   when modifying any of the files. - Jon
 
 */
-window.rcxMain = {
-  haveNames: true,
-  dictCount: 3,
-  altView: 0,
-  enabled: 0,
 
-  loadDictionary: function () {
-    this.dict = new RcxDict();
+import { RcxDict, rcxDict } from './data';
+
+class RcxMain {
+  private static instance: RcxMain;
+
+  haveNames = true;
+  dictCount = 3;
+  altView = 0;
+  enabled = 0;
+  dict?: RcxDict;
+  config: {} = {};
+
+  private constructor() {}
+  static create() {
+    if (!RcxMain.instance) {
+      RcxMain.instance = new RcxMain();
+    }
+    return RcxMain.instance;
+  }
+
+  loadDictionary() {
+    this.dict = rcxDict;
     return this.dict.init(this.haveNames);
-  },
+  }
 
   // The callback for `onActivated`
   // Just sends a message to the tab to enable itself if it hasn't
   // already
-  onTabSelect: function (tabId) {
+  onTabSelect(tabId) {
     rcxMain._onTabSelect(tabId);
-  },
-  _onTabSelect: function (tabId) {
+  }
+  _onTabSelect(tabId) {
     if (this.enabled == 1)
       chrome.tabs.sendMessage(tabId, {
         type: 'enable',
-        config: rcxMain.config,
+        config: this.config,
       });
-  },
+  }
 
-  savePrep: function (clip, entry) {
+  savePrep(clip, entry) {
     let me;
     let text;
     let i;
@@ -99,9 +114,9 @@ window.rcxMain = {
     }
 
     return text;
-  },
+  }
 
-  copyToClip: function (tab, entry) {
+  copyToClip(tab, entry) {
     let text;
 
     if ((text = this.savePrep(1, entry)) != null) {
@@ -116,9 +131,9 @@ window.rcxMain = {
         text: 'Copied to clipboard.',
       });
     }
-  },
+  }
 
-  miniHelp:
+  miniHelp =
     '<span style="font-weight:bold">Rikaikun enabled!</span><br><br>' +
     '<table cellspacing=5>' +
     '<tr><td>A</td><td>Alternate popup location</td></tr>' +
@@ -131,11 +146,11 @@ window.rcxMain = {
     '<tr><td>N</td><td>Next word</td></tr>' +
     '<tr><td>J</td><td>Scroll back definitions</td></tr>' +
     '<tr><td>K</td><td>Scroll forward definitions</td></tr>' +
-    '</table>',
+    '</table>';
 
   // Function which enables the inline mode of rikaikun
   // Unlike rikaichan there is no lookup bar so this is the only enable.
-  inlineEnable: function (tab, mode) {
+  inlineEnable(tab, mode) {
     if (!this.dict) {
       this.loadDictionary()
         .then(
@@ -169,10 +184,10 @@ window.rcxMain = {
           alert('Error loading dictionary: ' + err);
         });
     }
-  },
+  }
 
   // This function disables rikaikun in all tabs.
-  inlineDisable: function () {
+  inlineDisable() {
     delete this.dict;
 
     this.enabled = 0;
@@ -188,32 +203,32 @@ window.rcxMain = {
         }
       }
     });
-  },
+  }
 
-  inlineToggle: function (tab) {
+  inlineToggle(tab) {
     if (rcxMain.enabled) rcxMain.inlineDisable(tab, 1);
     else rcxMain.inlineEnable(tab, 1);
-  },
+  }
 
-  kanjiN: 1,
-  namesN: 2,
+  kanjiN = 1;
+  namesN = 2;
 
-  showMode: 0,
+  showMode = 0;
 
-  nextDict: function () {
+  nextDict() {
     this.showMode = (this.showMode + 1) % this.dictCount;
-  },
+  }
 
-  resetDict: function () {
+  resetDict() {
     this.showMode = 0;
-  },
+  }
 
-  sameDict: '0',
-  forceKanji: '1',
-  defaultDict: '2',
-  nextDict: '3',
+  sameDict = '0';
+  forceKanji = '1';
+  defaultDict = '2';
+  nextDict = '3';
 
-  search: function (text, dictOption) {
+  search(text, dictOption) {
     switch (dictOption) {
       case this.forceKanji:
         const e = this.dict.kanjiSearch(text.charAt(0));
@@ -247,8 +262,12 @@ window.rcxMain = {
     } while (this.showMode != m);
 
     return e;
-  },
-};
+  }
+}
+
+const rcxMain = RcxMain.create();
+window['rcxMain'] = rcxMain;
+export { rcxMain };
 
 /*
   Useful Japanese unicode ranges but melink14 doesn't know

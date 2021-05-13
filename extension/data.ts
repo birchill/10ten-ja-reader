@@ -40,12 +40,30 @@
 */
 
 /** Exposes abstraction over dictionary files allowing searches and lookups. */
-function RcxDict() {}
 
-RcxDict.prototype = {
-  config: {},
+import { rcxMain } from './rikaichan';
 
-  init: function (loadNames) {
+class RcxDict {
+  private static instance: RcxDict;
+
+  config: {} = {};
+  nameDict?: string;
+  nameIndex?: string;
+  difReasons: never[];
+  difRules: never[];
+  difExact: never[];
+  radData: string;
+
+  private constructor() {}
+
+  static create() {
+    if (!RcxDict.instance) {
+      RcxDict.instance = new RcxDict();
+    }
+    return RcxDict.instance;
+  }
+
+  init(loadNames) {
     const started = +new Date();
 
     const promises = [this.loadDictionary(loadNames), this.loadDIF()];
@@ -54,15 +72,15 @@ RcxDict.prototype = {
       const ended = +new Date();
       console.log('rcxDict main then in ' + (ended - started));
     });
-  },
+  }
 
-  setConfig: function (c) {
+  setConfig(c) {
     this.config = c;
-  },
+  }
 
   //
 
-  fileReadAsync: function (url, asArray) {
+  fileReadAsync(url, asArray) {
     return new Promise(function prom(resolve) {
       const req = new XMLHttpRequest();
 
@@ -85,25 +103,25 @@ RcxDict.prototype = {
       req.open('GET', url, true);
       req.send(null);
     });
-  },
+  }
 
-  fileRead: function (url) {
+  fileRead(url) {
     const req = new XMLHttpRequest();
     req.open('GET', url, false);
     req.send(null);
     return req.responseText;
-  },
+  }
 
-  fileReadArray: function (name, charset) {
+  fileReadArray(name, charset) {
     const a = this.fileRead(name, charset).split('\n');
     // Is this just in case there is blank shit in the file.  It was written
     // by Jon though.
     // I suppose this is more robust
     while (a.length > 0 && a[a.length - 1].length === 0) a.pop();
     return a;
-  },
+  }
 
-  find: function (data, text) {
+  find(data, text) {
     const tlen = text.length;
     let beg = 0;
     let end = data.length - 1;
@@ -121,18 +139,18 @@ RcxDict.prototype = {
       else return data.substring(i, data.indexOf('\n', mi + 1));
     }
     return null;
-  },
+  }
 
   //
 
-  loadNames: function () {
+  loadNames() {
     if (this.nameDict && this.nameIndex) return;
 
     this.nameDict = this.fileRead(chrome.extension.getURL('data/names.dat'));
     this.nameIndex = this.fileRead(chrome.extension.getURL('data/names.idx'));
-  },
+  }
 
-  loadFileToTarget: function (file, isArray, target) {
+  loadFileToTarget(file, isArray, target) {
     const url = chrome.extension.getURL('data/' + file);
 
     return this.fileReadAsync(url, isArray).then(
@@ -141,11 +159,11 @@ RcxDict.prototype = {
         console.log('async read complete for ' + target);
       }.bind(this)
     );
-  },
+  }
 
   //  Note: These are mostly flat text files; loaded as one continuous string to
   //  reduce memory use
-  loadDictionary: function (includeNames) {
+  loadDictionary(includeNames) {
     const promises = [
       this.loadFileToTarget('dict.dat', false, 'wordDict'),
       this.loadFileToTarget('dict.idx', false, 'wordIndex'),
@@ -159,9 +177,9 @@ RcxDict.prototype = {
     }
 
     return Promise.all(promises);
-  },
+  }
 
-  loadDIF: function () {
+  loadDIF() {
     this.difReasons = [];
     this.difRules = [];
     this.difExact = [];
@@ -200,9 +218,9 @@ RcxDict.prototype = {
         }
       }.bind(this)
     );
-  },
+  }
 
-  deinflect: function (word) {
+  deinflect(word) {
     const r = [];
     const have = [];
     let o;
@@ -257,10 +275,10 @@ RcxDict.prototype = {
     } while (++i < r.length);
 
     return r;
-  },
+  }
 
   // katakana -> hiragana conversion tables
-  ch: [
+  ch: number[] = [
     0x3092, 0x3041, 0x3043, 0x3045, 0x3047, 0x3049, 0x3083, 0x3085, 0x3087,
     0x3063, 0x30fc, 0x3042, 0x3044, 0x3046, 0x3048, 0x304a, 0x304b, 0x304d,
     0x304f, 0x3051, 0x3053, 0x3055, 0x3057, 0x3059, 0x305b, 0x305d, 0x305f,
@@ -268,16 +286,17 @@ RcxDict.prototype = {
     0x306f, 0x3072, 0x3075, 0x3078, 0x307b, 0x307e, 0x307f, 0x3080, 0x3081,
     0x3082, 0x3084, 0x3086, 0x3088, 0x3089, 0x308a, 0x308b, 0x308c, 0x308d,
     0x308f, 0x3093,
-  ],
-  cv: [
+  ];
+
+  cv: number[] = [
     0x30f4, 0xff74, 0xff75, 0x304c, 0x304e, 0x3050, 0x3052, 0x3054, 0x3056,
     0x3058, 0x305a, 0x305c, 0x305e, 0x3060, 0x3062, 0x3065, 0x3067, 0x3069,
     0xff85, 0xff86, 0xff87, 0xff88, 0xff89, 0x3070, 0x3073, 0x3076, 0x3079,
     0x307c,
-  ],
-  cs: [0x3071, 0x3074, 0x3077, 0x307a, 0x307d],
+  ];
+  cs: number[] = [0x3071, 0x3074, 0x3077, 0x307a, 0x307d];
 
-  wordSearch: function (word, doNames, max) {
+  wordSearch(word, doNames, max) {
     let i;
     let u;
     let v;
@@ -444,9 +463,9 @@ RcxDict.prototype = {
 
     entry.matchLen = maxLen;
     return entry;
-  },
+  }
 
-  translate: function (text) {
+  translate(text) {
     let e;
     const o = {};
     let skip;
@@ -475,9 +494,9 @@ RcxDict.prototype = {
 
     o.textLen -= text.length;
     return o;
-  },
+  }
 
-  bruteSearch: function (text, doNames) {
+  bruteSearch(text, doNames) {
     let r;
     let d;
     let j;
@@ -541,9 +560,9 @@ RcxDict.prototype = {
     }
 
     return e.data.length ? e : null;
-  },
+  }
 
-  kanjiSearch: function (kanji) {
+  kanjiSearch(kanji) {
     const hex = '0123456789ABCDEF';
     let i;
 
@@ -587,9 +606,9 @@ RcxDict.prototype = {
     entry.eigo = a[5];
 
     return entry;
-  },
+  }
 
-  kanjiInfoLabelList: [
+  kanjiInfoLabelList: string[] = [
     /*
         'C',   'Classical Radical',
         'DR',  'Father Joseph De Roo Index',
@@ -625,9 +644,9 @@ RcxDict.prototype = {
     'Tuttle Kanji Dictionary',
     'U',
     'Unicode',
-  ],
+  ];
 
-  makeHtml: function (entry) {
+  makeHtml(entry) {
     let e;
     let c;
     let s;
@@ -830,7 +849,7 @@ RcxDict.prototype = {
       }
 
       let pK = '';
-      k = undefined;
+      let k = undefined;
 
       if (!entry.index) {
         entry.index = 0;
@@ -902,9 +921,9 @@ RcxDict.prototype = {
     }
 
     return b.join('');
-  },
+  }
 
-  makeHtmlForRuby: function (entry) {
+  makeHtmlForRuby(entry) {
     let e;
     let s;
     let t;
@@ -931,9 +950,9 @@ RcxDict.prototype = {
     b.push(t);
 
     return b.join('');
-  },
+  }
 
-  makeText: function (entry, max) {
+  makeText(entry, max) {
     let e;
     let i;
     let j;
@@ -982,5 +1001,11 @@ RcxDict.prototype = {
       }
     }
     return b.join('');
-  },
-};
+  }
+}
+
+const rcxDict = RcxDict.create();
+window['rcxDict'] = rcxDict;
+
+export { rcxDict };
+export type { RcxDict };

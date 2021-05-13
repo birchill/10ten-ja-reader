@@ -5,6 +5,11 @@ import CopyPlugin from 'copy-webpack-plugin';
 const srcDir = './extension/';
 
 const config: webpack.Configuration = {
+  // Resolve both Typescript and Javascript modules.
+  resolve: {
+    extensions: ['.ts', '.js'],
+  },
+
   entry: {
     // Included in options.html.
     options: path.join(__dirname, srcDir + 'options.ts'),
@@ -12,10 +17,6 @@ const config: webpack.Configuration = {
     rikaicontent: path.join(__dirname, srcDir + 'rikaicontent.ts'),
     // These are all loaded in the background.html.
     background: path.join(__dirname, srcDir + 'background.ts'),
-    // TODO(espeed): Remove these once they're part of background.js explicitly.
-    data: path.join(__dirname, srcDir + 'data.ts'),
-    rikaichan: path.join(__dirname, srcDir + 'rikaichan.ts'),
-    texttospeech: path.join(__dirname, srcDir + 'texttospeech.ts'),
   },
   // Output to ./dist directory as <entry_name>.js.
   output: {
@@ -28,8 +29,19 @@ const config: webpack.Configuration = {
     // Compiles all extension/*.ts files through ts-loader.
     rules: [
       {
-        test: /extension\/\.ts$/,
-        use: 'ts-loader',
+        // Find all .ts files in the extension subdirectory.
+        test: /\.ts$/,
+        include: [path.resolve(__dirname, 'extension')],
+        use: [
+          {
+            // awesome-typescript-loader supports errorsAsWarnings to allow
+            // gradual migration.
+            loader: 'awesome-typescript-loader',
+            options: {
+              errorsAsWarnings: true,
+            },
+          },
+        ],
       },
     ],
   },
@@ -39,7 +51,7 @@ const config: webpack.Configuration = {
   },
   optimization: {
     // TODO(espeed): Remove after typescript files are cleaned up.
-    emitOnErrors: false,
+    emitOnErrors: true,
     minimize: false,
   },
   plugins: [

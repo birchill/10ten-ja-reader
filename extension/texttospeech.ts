@@ -1,10 +1,19 @@
 /** Helper class for Japanese Text To Speech. */
-function TTS() {
-  this.lastTime = new Date().valueOf();
-  this.previousText = null;
-}
+class TTS {
+  private static instance: TTS;
 
-TTS.prototype = {
+  lastTime = new Date().valueOf();
+  previousText = null;
+
+  private constructor() {}
+
+  static create() {
+    if (!TTS.instance) {
+      TTS.instance = new TTS();
+    }
+    return TTS.instance;
+  }
+
   /**
    * Plays text-to-speech audio for given Japanese text.
    *
@@ -20,10 +29,14 @@ TTS.prototype = {
       u.text = text;
       u.lang = 'ja-JP';
       window.speechSynthesis.speak(u);
-      this.previous_text = text;
-      this.last_time = now;
+      this.previousText = text;
+      this.lastTime = now;
     } else {
       console.log('Ignoring ' + text);
     }
-  },
-};
+  }
+}
+
+const tts = TTS.create();
+
+export { tts };

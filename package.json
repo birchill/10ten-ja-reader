@@ -44,6 +44,7 @@
     "@types/chrome": "0.0.139",
     "@types/copy-webpack-plugin": "^8.0.0",
     "@types/node": "^15.0.3",
+    "awesome-typescript-loader": "^5.2.1",
     "byline": "^5.0.0",
     "conventional-changelog-conventionalcommits": "^4.6.0",
     "copy-webpack-plugin": "^8.1.1",

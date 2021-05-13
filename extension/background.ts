@@ -1,3 +1,7 @@
+import { rcxDict } from './data';
+import { rcxMain } from './rikaichan';
+import { tts } from './texttospeech';
+
 chrome.browserAction.onClicked.addListener(rcxMain.inlineToggle);
 chrome.tabs.onActivated.addListener((activeInfo) => {
   rcxMain.onTabSelect(activeInfo.tabId);
@@ -40,7 +44,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
       break;
     case 'playTTS':
       console.log('playTTS');
-      TTS.prototype.play(request.text);
+      tts.play(request.text);
       break;
     default:
       console.log(request);
@@ -70,6 +74,7 @@ const optionsList = [
   'ttsEnabled',
   'showOnKey',
 ];
+window['optionsList'] = optionsList;
 
 /** Get option data from cloud and initialize into memory. */
 chrome.storage.sync.get(optionsList, function (items) {
@@ -127,8 +132,8 @@ function initializeConfigFromCloudOrLocalStorageOrDefaults(cloudStorage) {
    * config. TODO: Consider a solution that doesn't require this loop.
    */
   rcxMain.config.kanjiInfo = {};
-  const kanjiInfoLabelList = RcxDict.prototype.kanjiInfoLabelList;
-  for (i = 0; i < kanjiInfoLabelList.length; i += 2) {
+  const kanjiInfoLabelList = rcxDict.kanjiInfoLabelList;
+  for (let i = 0; i < kanjiInfoLabelList.length; i += 2) {
     const kanjiInfoKey = kanjiInfoLabelList[i];
     if (cloudStorage.kanjiInfo) {
       rcxMain.config.kanjiInfo[kanjiInfoKey] =

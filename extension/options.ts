@@ -1,6 +1,6 @@
 // Alias kanjiInfoLabelList for convenience.
 const kanjiInfoLabelList =
-  chrome.extension.getBackgroundPage().RcxDict.prototype.kanjiInfoLabelList;
+  chrome.extension.getBackgroundPage().rcxDict.kanjiInfoLabelList;
 
 /**
  * Retrieves saved options from chrome.storage.sync and populates form elements.
