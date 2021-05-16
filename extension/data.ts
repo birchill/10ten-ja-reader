@@ -755,22 +755,21 @@ class RcxDict {
       j = 0;
 
       const kanjiInfo = rcxMain.config.kanjiInfo;
-      for (i = 0; i * 2 < this.kanjiInfoLabelList.length; i++) {
-        c = this.kanjiInfoLabelList[i * 2];
-        if (kanjiInfo[c]) {
-          s = entry.misc[c];
-          c = ' class="k-mix-td' + (j ^= 1) + '"';
-          nums +=
-            '<tr><td' +
-            c +
-            '>' +
-            this.kanjiInfoLabelList[i * 2 + 1] +
-            '</td><td' +
-            c +
-            '>' +
-            (s || '-') +
-            '</td></tr>';
-        }
+      for (const info of kanjiInfo) {
+        if (!info.shouldDisplay) continue;
+        c = info.code;
+        s = entry.misc[c];
+        c = ' class="k-mix-td' + (j ^= 1) + '"';
+        nums +=
+          '<tr><td' +
+          c +
+          '>' +
+          info.name +
+          '</td><td' +
+          c +
+          '>' +
+          (s || '-') +
+          '</td></tr>';
       }
       if (nums.length) nums = '<table class="k-mix-tb">' + nums + '</table>';
 

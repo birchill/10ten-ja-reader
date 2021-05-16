@@ -1,5 +1,5 @@
 {
-  "extends": "./node_modules/gts/",
+  "extends": ["./node_modules/gts/", "plugin:lit/recommended"],
   "env": {
     "browser": true,
     "webextensions": true

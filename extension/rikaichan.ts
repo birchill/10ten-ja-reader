@@ -39,6 +39,7 @@
 
 */
 
+import { Config, getCurrentConfiguration } from './configuration';
 import { RcxDict, rcxDict } from './data';
 
 class RcxMain {
@@ -49,7 +50,7 @@ class RcxMain {
   altView = 0;
   enabled = 0;
   dict?: RcxDict;
-  config: {} = {};
+  config?: Config;
 
   private constructor() {}
   static create() {
@@ -233,7 +234,6 @@ class RcxMain {
       case this.forceKanji:
         const e = this.dict.kanjiSearch(text.charAt(0));
         return e;
-        break;
       case this.defaultDict:
         this.showMode = 0;
         break;
@@ -266,6 +266,27 @@ class RcxMain {
 }
 
 const rcxMain = RcxMain.create();
+
+// TODO(melink14): Change to top level await when ts-node process is
+// easier.
+(async () => {
+  const config = await getCurrentConfiguration();
+  rcxMain.config = config;
+})();
+
+// Update config whenever user changes options.
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== 'sync') return;
+  // This can happen during migrations where we save the new format
+  // before the config initialization has happened.
+  if (rcxMain.config === undefined) return;
+
+  Object.entries(changes).map((change) => {
+    (rcxMain.config[change[0] as keyof Config] as unknown) =
+      change[1]!.newValue;
+  });
+});
+
 window['rcxMain'] = rcxMain;
 export { rcxMain };
 
