@@ -75,15 +75,16 @@ The other keys are as follows:
 
 ## Building
 
-To build from a source package:
+To build from a source package from the [Releases](https://github.com/birtles/rikaichamp/releases) page:
 
 ```
-git checkout https://github.com/birtles/rikaichamp.git
-cd rikaichamp
 export RELEASE_BUILD=1
 yarn install
 yarn build # Firefox package, alternatively use build:chrome for the Chrome package
 ```
+
+Note that versions prior to and including 0.5.5 `yarn install` will try to
+install husky but fail so you will need to run `yarn install --ignore-scripts`.
 
 ## Contributing
 
