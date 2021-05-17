@@ -24,7 +24,7 @@ async function main() {
     zlib: { level: 9 },
   });
 
-  archive.on('warning', err => {
+  archive.on('warning', (err) => {
     if (err.code === 'ENOENT') {
       console.warn('File not found');
       console.warn(err);
@@ -33,11 +33,11 @@ async function main() {
     }
   });
 
-  archive.on('error', function(err) {
+  archive.on('error', function (err) {
     throw err;
   });
 
-  const finishWritePromise = new Promise(resolve => {
+  const finishWritePromise = new Promise((resolve) => {
     archive.on('close', resolve);
   });
 
@@ -60,9 +60,11 @@ async function main() {
   }
 
   const files = [
+    'CONTRIBUTING.md',
     'manifest.json.src',
     'package.json',
     'README.md',
+    'tsconfig.json',
     'webpack.config.js',
     'yarn.lock',
   ];
@@ -79,7 +81,7 @@ async function main() {
 
 async function ensureDir(dir) {
   return new Promise((resolve, reject) => {
-    fs.mkdir(dir, { recursive: true }, err =>
+    fs.mkdir(dir, { recursive: true }, (err) =>
       err && err.code !== 'EEXIST' ? reject(err) : resolve()
     );
   });
@@ -102,7 +104,7 @@ main()
     console.log('Done.');
     process.exit(0);
   })
-  .catch(err => {
+  .catch((err) => {
     console.error(err);
     process.exit(1);
   });
