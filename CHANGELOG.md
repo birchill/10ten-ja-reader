@@ -7,6 +7,13 @@ consistently version releases as follows:
 - Minor: New user visible feature added. (contains feat commits)
 - Patch: Bug fix to previous feature. (contains only fix commits)
 
+## [1.2.0](https://github.com/melink14/rikaikun/compare/v1.1.0...v1.2.0) (2021-05-17)
+
+### Features
+
+- **dict:** Update dictionaries to latest versions. ([#484](https://github.com/melink14/rikaikun/issues/484)) ([1185e74](https://github.com/melink14/rikaikun/commit/1185e74d5181a0469dd2c74b513351edbb2bbf1b))
+- **options:** Improve options rendering and saving ([#480](https://github.com/melink14/rikaikun/issues/480)) ([0d601ae](https://github.com/melink14/rikaikun/commit/0d601ae9254edb300f890b01bbc5a106ce06e6bf)), closes [#164](https://github.com/melink14/rikaikun/issues/164)
+
 ## [1.1.0](https://github.com/melink14/rikaikun/compare/v1.0.0...v1.1.0) (2021-05-11)
 
 ### Features
