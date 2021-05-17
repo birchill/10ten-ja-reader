@@ -428,16 +428,22 @@ function addContextMenu() {
   } catch (e) {
     // Chrome doesn't support the 'command' member so if we got an
     // exception, assume that's it and try the old-fashioned way.
-    menuId = browser.contextMenus.create({
-      id: 'context-toggle',
-      type: 'checkbox',
-      title: browser.i18n.getMessage('menu_enable_extension'),
-      contexts: ['all'],
-      checked: enabled,
-      onclick: (_info, tab) => {
-        toggle(tab);
-      },
-    });
+    try {
+      menuId = browser.contextMenus.create({
+        id: 'context-toggle',
+        type: 'checkbox',
+        title: browser.i18n.getMessage('menu_enable_extension'),
+        contexts: ['all'],
+        checked: enabled,
+        onclick: (_info, tab) => {
+          toggle(tab);
+        },
+      });
+    } catch (_) {
+      // Give up. We're likely on a platform that doesn't support the
+      // contextMenus API such as Firefox for Android.
+      console.info('Could not add context menu');
+    }
   }
 }
 
