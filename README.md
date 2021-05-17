@@ -73,6 +73,18 @@ The other keys are as follows:
 | (Copy mode) Copy word/kanji               | <kbd>w</kbd>                                        |
 | (Copy mode) Select next entry             | <kbd>c</kbd>                                        |
 
+## Building
+
+To build from a source package:
+
+```
+git checkout https://github.com/birtles/rikaichamp.git
+cd rikaichamp
+export RELEASE_BUILD=1
+yarn install
+yarn build # Firefox package, alternatively use build:chrome for the Chrome package
+```
+
 ## Contributing
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md).
