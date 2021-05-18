@@ -23,10 +23,10 @@ Forked from Rikaikun in 2017 it includes:
   <img src="https://raw.githubusercontent.com/birtles/rikaichamp/main/docs/pitch-accent-cropped.png" alt="Screen shot showing pitch accent information" title="Pitch accent information" width="480">
 
 - Support for non-English dictionaries
-- Dictionaries that update automatically every week by fetching just the updated entries
 
   <img src="https://raw.githubusercontent.com/birtles/rikaichamp/main/docs/russian-cropped.png" alt="Screen shot showing Russian translation" title="Russian translation" width="480">
 
+- Dictionaries that update automatically every week by fetching just the updated entries
 - Overhauled dictionary entry display to make it much easier to read
 
   <img src="https://raw.githubusercontent.com/birtles/rikaichamp/main/docs/word-display-cropped.png" alt="Screen shot showing how definitions are grouped by part-of-speech" title="Some of the features of word display" width="640">
