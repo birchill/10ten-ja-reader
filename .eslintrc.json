@@ -5,13 +5,6 @@
     "webextensions": true
   },
   "plugins": ["eslint-plugin-tsdoc", "sort-imports-es6-autofix"],
-  "globals": {
-    "Atomics": "readonly",
-    "SharedArrayBuffer": "readonly",
-    "rcxMain": "readonly",
-    "rcxDict": "readonly",
-    "TTS": "readonly"
-  },
   "ignorePatterns": "dist",
   "rules": {
     "tsdoc/syntax": "error",

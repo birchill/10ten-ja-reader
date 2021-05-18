@@ -43,16 +43,60 @@
 
 import { rcxMain } from './rikaichan';
 
+// Be careful of using directly due to object keys.
+const defaultDictEntryData = {
+  kanji: '',
+  onkun: '',
+  nanori: '',
+  bushumei: '',
+  misc: {} as Record<string, string>,
+  eigo: '',
+  hasNames: false,
+  data: [] as { entry: string; reason?: string }[],
+  hasMore: false,
+  title: '',
+  index: 0,
+  matchLen: 0,
+};
+type DictEntryData = typeof defaultDictEntryData;
+
+interface Deinflection {
+  word: string;
+  type: number;
+  reason: string;
+}
+
+interface DeinflectionRule {
+  /** The conjugated ending which we are deinflecting from. */
+  from: string;
+  /** The original form we are deinflecting to. */
+  to: string;
+  /** An int mask representing the types of words this rule applies to. */
+  typeMask: number;
+  /** An index into the difReason array that describes this inflection. */
+  reasonIndex: number;
+}
+
+/**
+ * Deinflection rules grouped by their from length. This allows trying all rules
+ * of a given length before trying shorter lengths.
+ */
+interface DeinflectionRuleGroup {
+  fromLength: number;
+  rules: DeinflectionRule[];
+}
+
 class RcxDict {
   private static instance: RcxDict;
 
-  config: {} = {};
   nameDict?: string;
   nameIndex?: string;
-  difReasons: never[];
-  difRules: never[];
-  difExact: never[];
-  radData: string;
+  wordDict = '';
+  wordIndex = '';
+  kanjiData = '';
+  radData: string[] = [];
+  difReasons: string[] = [];
+  difRules: DeinflectionRuleGroup[] = [];
 
   private constructor() {}
 
@@ -63,40 +107,40 @@ class RcxDict {
     return RcxDict.instance;
   }
 
-  init(loadNames) {
+  static createDefaultDictEntry(): DictEntryData {
+    // Use JSON parse round trip for deep copy of default data.
+    return JSON.parse(JSON.stringify(defaultDictEntryData));
+  }
+
+  async init(loadNames: boolean) {
     const started = +new Date();
 
-    const promises = [this.loadDictionary(loadNames), this.loadDIF()];
+    await this.loadDictionaries();
+    await this.loadDeinflectionData();
+    if (loadNames) {
+      this.fileReadAsync(chrome.extension.getURL('data/' + 'names.dat')).then(
+        (data) => {
+          this.nameDict = data;
+        }
+      );
+      this.fileReadAsync(chrome.extension.getURL('data/' + 'names.idx')).then(
+        (data) => {
+          this.nameIndex = data;
+        }
+      );
+    }
 
-    return Promise.all(promises).then(function () {
-      const ended = +new Date();
-      console.log('rcxDict main then in ' + (ended - started));
-    });
+    const ended = +new Date();
+    console.log('rcxDict main then in ' + (ended - started));
   }
 
-  setConfig(c) {
-    this.config = c;
-  }
-
-  //
-
-  fileReadAsync(url, asArray) {
+  fileReadAsync(url: string): Promise<string> {
     return new Promise(function prom(resolve) {
       const req = new XMLHttpRequest();
 
       req.onreadystatechange = function () {
         if (req.readyState === 4) {
-          if (!asArray) {
-            resolve(req.responseText);
-          } else {
-            const array = req.responseText
-              .split('\n')
-              .filter(function removeBlanks(o) {
-                return o && o.length > 0;
-              });
-
-            resolve(array);
-          }
+          resolve(req.responseText);
         }
       };
 
@@ -105,15 +149,22 @@ class RcxDict {
     });
   }
 
-  fileRead(url) {
+  async fileReadAsyncAsArray(url: string): Promise<string[]> {
+    const file = await this.fileReadAsync(url);
+    return file.split('\n').filter(function removeBlanks(o) {
+      return o && o.length > 0;
+    });
+  }
+
+  fileRead(url: string) {
     const req = new XMLHttpRequest();
     req.open('GET', url, false);
     req.send(null);
     return req.responseText;
   }
 
-  fileReadArray(name, charset) {
-    const a = this.fileRead(name, charset).split('\n');
+  fileReadArray(name: string) {
+    const a = this.fileRead(name).split('\n');
     // Is this just in case there is blank shit in the file.  It was written
     // by Jon though.
     // I suppose this is more robust
@@ -121,7 +172,76 @@ class RcxDict {
     return a;
   }
 
-  find(data, text) {
+  loadNames() {
+    if (this.nameDict && this.nameIndex) return;
+
+    this.nameDict = this.fileRead(chrome.extension.getURL('data/names.dat'));
+    this.nameIndex = this.fileRead(chrome.extension.getURL('data/names.idx'));
+  }
+
+  //  Note: These are mostly flat text files; loaded as one continuous string to
+  //  reduce memory use
+  loadDictionaries(): Promise<void[]> {
+    const promises = [
+      this.fileReadAsync(chrome.extension.getURL('data/' + 'dict.dat')).then(
+        (data) => {
+          this.wordDict = data;
+        }
+      ),
+      this.fileReadAsync(chrome.extension.getURL('data/' + 'dict.idx')).then(
+        (data) => {
+          this.wordIndex = data;
+        }
+      ),
+      this.fileReadAsync(chrome.extension.getURL('data/' + 'kanji.dat')).then(
+        (data) => {
+          this.kanjiData = data;
+        }
+      ),
+      this.fileReadAsyncAsArray(
+        chrome.extension.getURL('data/' + 'radicals.dat')
+      ).then((data) => {
+        this.radData = data;
+      }),
+    ];
+
+    return Promise.all(promises);
+  }
+
+  async loadDeinflectionData() {
+    const buffer = await this.fileReadAsyncAsArray(
+      chrome.extension.getURL('data/deinflect.dat')
+    );
+    let currentLength = -1;
+    let group: DeinflectionRuleGroup = {
+      fromLength: currentLength,
+      rules: [],
+    };
+    // i = 1: skip header
+    for (let i = 1; i < buffer.length; ++i) {
+      const ruleOrReason = buffer[i].split('\t');
+
+      if (ruleOrReason.length === 1) {
+        this.difReasons.push(ruleOrReason[0]);
+      } else if (ruleOrReason.length === 4) {
+        const o: DeinflectionRule = {
+          from: ruleOrReason[0],
+          to: ruleOrReason[1],
+          typeMask: parseInt(ruleOrReason[2]),
+          reasonIndex: parseInt(ruleOrReason[3]),
+        };
+
+        if (currentLength !== o.from.length) {
+          currentLength = o.from.length;
+          group = { fromLength: currentLength, rules: [] };
+          this.difRules.push(group);
+        }
+        group.rules.push(o);
+      }
+    }
+  }
+
+  find(data: string, text: string): string | null {
     const tlen = text.length;
     let beg = 0;
     let end = data.length - 1;
@@ -141,95 +261,12 @@ class RcxDict {
     return null;
   }
 
-  //
-
-  loadNames() {
-    if (this.nameDict && this.nameIndex) return;
-
-    this.nameDict = this.fileRead(chrome.extension.getURL('data/names.dat'));
-    this.nameIndex = this.fileRead(chrome.extension.getURL('data/names.idx'));
-  }
-
-  loadFileToTarget(file, isArray, target) {
-    const url = chrome.extension.getURL('data/' + file);
-
-    return this.fileReadAsync(url, isArray).then(
-      function (data) {
-        this[target] = data;
-        console.log('async read complete for ' + target);
-      }.bind(this)
-    );
-  }
-
-  //  Note: These are mostly flat text files; loaded as one continuous string to
-  //  reduce memory use
-  loadDictionary(includeNames) {
-    const promises = [
-      this.loadFileToTarget('dict.dat', false, 'wordDict'),
-      this.loadFileToTarget('dict.idx', false, 'wordIndex'),
-      this.loadFileToTarget('kanji.dat', false, 'kanjiData'),
-      this.loadFileToTarget('radicals.dat', true, 'radData'),
-    ];
-
-    if (includeNames) {
-      promises.push(this.loadFileToTarget('names.dat', false, 'nameDict'));
-      promises.push(this.loadFileToTarget('names.idx', false, 'nameIndex'));
-    }
-
-    return Promise.all(promises);
-  }
-
-  loadDIF() {
-    this.difReasons = [];
-    this.difRules = [];
-    this.difExact = [];
-
-    /* asArray */
-    return this.fileReadAsync(
-      chrome.extension.getURL('data/deinflect.dat'),
-      true
-    ).then(
-      function (buffer) {
-        let prevLen = -1;
-        let g;
-        let o;
-
-        // i = 1: skip header
-        for (let i = 1; i < buffer.length; ++i) {
-          const f = buffer[i].split('\t');
-
-          if (f.length === 1) {
-            this.difReasons.push(f[0]);
-          } else if (f.length === 4) {
-            o = {};
-            o.from = f[0];
-            o.to = f[1];
-            o.type = f[2];
-            o.reason = f[3];
-
-            if (prevLen !== o.from.length) {
-              prevLen = o.from.length;
-              g = [];
-              g.flen = prevLen;
-              this.difRules.push(g);
-            }
-            g.push(o);
-          }
-        }
-      }.bind(this)
-    );
-  }
-
-  deinflect(word) {
+  deinflect(word: string) {
     const r = [];
-    const have = [];
+    const have: { [key: string]: number } = {};
     let o;
 
-    o = {};
-    o.word = word;
-    o.type = 0xff;
-    o.reason = '';
-    // o.debug = 'root';
+    o = { word: word, type: 0xff, reason: '' } as Deinflection;
     r.push(o);
     have[word] = 0;
 
@@ -245,27 +282,27 @@ class RcxDict {
 
       for (j = 0; j < this.difRules.length; ++j) {
         const g = this.difRules[j];
-        if (g.flen <= wordLen) {
-          const end = word.substr(-g.flen);
-          for (k = 0; k < g.length; ++k) {
-            const rule = g[k];
-            if (type & rule.type && end === rule.from) {
+        if (g.fromLength <= wordLen) {
+          const end = word.substr(-g.fromLength);
+          for (k = 0; k < g.rules.length; ++k) {
+            const rule = g.rules[k];
+            if (type & rule.typeMask && end === rule.from) {
               const newWord =
                 word.substr(0, word.length - rule.from.length) + rule.to;
               if (newWord.length <= 1) continue;
-              o = {};
+              o = { word: word, type: 0xff, reason: '' } as Deinflection;
               if (have[newWord] !== undefined) {
                 o = r[have[newWord]];
-                o.type |= rule.type >> 8;
+                o.type |= rule.typeMask >> 8;
 
                 continue;
               }
               have[newWord] = r.length;
               if (r[i].reason.length)
                 o.reason =
-                  this.difReasons[rule.reason] + ' &lt; ' + r[i].reason;
-              else o.reason = this.difReasons[rule.reason];
-              o.type = rule.type >> 8;
+                  this.difReasons[rule.reasonIndex] + ' &lt; ' + r[i].reason;
+              else o.reason = this.difReasons[rule.reasonIndex];
+              o.type = rule.typeMask >> 8;
               o.word = newWord;
               r.push(o);
             }
@@ -296,20 +333,27 @@ class RcxDict {
   ];
   cs: number[] = [0x3071, 0x3074, 0x3077, 0x307a, 0x307d];
 
-  wordSearch(word, doNames, max) {
+  wordSearch(
+    word: string,
+    doNames: boolean,
+    max?: number
+  ): DictEntryData | null {
+    if (rcxMain.config == null) {
+      throw new TypeError('rcxMain.config must not be null after init.');
+    }
     let i;
     let u;
     let v;
-    let r;
+    let reason: string;
     let p;
     const trueLen = [0];
-    const entry = {};
+    const entry = RcxDict.createDefaultDictEntry();
 
     // half & full-width katakana to hiragana conversion
     // note: katakana vu is never converted to hiragana
 
     p = 0;
-    r = '';
+    reason = '';
     for (i = 0; i < word.length; ++i) {
       u = v = word.charCodeAt(i);
 
@@ -331,13 +375,13 @@ class RcxDict {
       } else if (u === 0xff9e) {
         // voiced (used in half-width katakana) to hiragana
         if (p >= 0xff73 && p <= 0xff8e) {
-          r = r.substr(0, r.length - 1);
+          reason = reason.substr(0, reason.length - 1);
           u = this.cv[p - 0xff73];
         }
       } else if (u === 0xff9f) {
         // semi-voiced (used in half-width katakana) to hiragana
         if (p >= 0xff8a && p <= 0xff8e) {
-          r = r.substr(0, r.length - 1);
+          reason = reason.substr(0, reason.length - 1);
           u = this.cs[p - 0xff8a];
         }
       } else if (u === 0xff5e) {
@@ -346,18 +390,18 @@ class RcxDict {
         continue;
       }
 
-      r += String.fromCharCode(u);
+      reason += String.fromCharCode(u);
       // need to keep real length because of the half-width semi/voiced
       // conversion
-      trueLen[r.length] = i + 1;
+      trueLen[reason.length] = i + 1;
       p = v;
     }
-    word = r;
+    word = reason;
 
-    let dict;
+    let dict: string;
     let index;
     let maxTrim;
-    const cache = [];
+    const cache: { [key: string]: number[] } = {};
     const have = [];
     let count = 0;
     let maxLen = 0;
@@ -366,10 +410,12 @@ class RcxDict {
       // check: split this
 
       this.loadNames();
-      dict = this.nameDict;
-      index = this.nameIndex;
+      // After loadNames these are guaranteed to not be null so
+      // cast them as strings manually.
+      dict = this.nameDict as string;
+      index = this.nameIndex as string;
       maxTrim = 20; // this.config.namax;
-      entry.names = 1;
+      entry.hasNames = true;
       console.log('doNames');
     } else {
       dict = this.wordDict;
@@ -377,7 +423,7 @@ class RcxDict {
       maxTrim = rcxMain.config.maxDictEntries;
     }
 
-    if (max != null) maxTrim = max;
+    if (max) maxTrim = max;
 
     entry.data = [];
 
@@ -393,16 +439,21 @@ class RcxDict {
 
         let ix = cache[u.word];
         if (!ix) {
-          ix = this.find(index, u.word + ',');
-          if (!ix) {
+          const result = this.find(index, u.word + ',');
+          if (!result) {
             cache[u.word] = [];
             continue;
           }
-          ix = ix.split(',');
+          // The first value in result is the word itself so skip it
+          // and parse the remaining values at integers.
+          ix = result
+            .split(',')
+            .slice(1)
+            .map((offset) => parseInt(offset));
           cache[u.word] = ix;
         }
 
-        for (let j = 1; j < ix.length; ++j) {
+        for (let j = 0; j < ix.length; ++j) {
           const ofs = ix[j];
           if (have[ofs]) continue;
 
@@ -436,21 +487,20 @@ class RcxDict {
           }
           if (ok) {
             if (count >= maxTrim) {
-              entry.more = 1;
+              entry.hasMore = true;
             }
 
             have[ofs] = 1;
             ++count;
             if (maxLen === 0) maxLen = trueLen[word.length];
 
+            let reason: string | undefined;
             if (trys[i].reason) {
-              if (showInf) r = '&lt; ' + trys[i].reason + ' &lt; ' + word;
-              else r = '&lt; ' + trys[i].reason;
-            } else {
-              r = null;
+              if (showInf) reason = '&lt; ' + trys[i].reason + ' &lt; ' + word;
+              else reason = '&lt; ' + trys[i].reason;
             }
 
-            entry.data.push([dentry, r]);
+            entry.data.push({ entry: dentry, reason });
           }
         } // for j < ix.length
         if (count >= maxTrim) break;
@@ -465,19 +515,21 @@ class RcxDict {
     return entry;
   }
 
-  translate(text) {
-    let e;
-    const o = {};
+  translate(text: string): (DictEntryData & { textLen: number }) | null {
+    if (rcxMain.config == null) {
+      throw TypeError('rcxMain.config must not be null after init.');
+    }
+    let e: DictEntryData | null;
+    const o: DictEntryData & {
+      textLen: number;
+    } = { textLen: text.length, ...RcxDict.createDefaultDictEntry() };
     let skip;
-
-    o.data = [];
-    o.textLen = text.length;
 
     while (text.length > 0) {
       e = this.wordSearch(text, false, 1);
       if (e != null) {
         if (o.data.length >= rcxMain.config.maxDictEntries) {
-          o.more = 1;
+          o.hasMore = true;
           break;
         }
         o.data.push(e.data[0]);
@@ -496,73 +548,7 @@ class RcxDict {
     return o;
   }
 
-  bruteSearch(text, doNames) {
-    let r;
-    let d;
-    let j;
-    let wb;
-    let we;
-    let max;
-
-    r = 1;
-    if (text.charAt(0) === ':') {
-      text = text.substr(1, text.length - 1);
-      if (text.charAt(0) !== ':') r = 0;
-    }
-    if (r) {
-      if (text.search(/[\u3000-\uFFFF]/) !== -1) {
-        wb = we = '[\\s\\[\\]]';
-      } else {
-        wb = '[\\)/]\\s*';
-        we = '\\s*[/\\(]';
-      }
-      if (text.charAt(0) === '*') {
-        text = text.substr(1, text.length - 1);
-        wb = '';
-      }
-      if (text.charAt(text.length - 1) === '*') {
-        text = text.substr(0, text.length - 1);
-        we = '';
-      }
-      text =
-        wb +
-        text.replace(/[[\\^$.|?*+()]/g, function (c) {
-          return '\\' + c;
-        }) +
-        we;
-    }
-
-    const e = { data: [], reason: [], kanji: 0, more: 0 };
-
-    if (doNames) {
-      e.names = 1;
-      max = 20; // this.config.namax;
-      this.loadNames();
-      d = this.nameDict;
-    } else {
-      e.names = 0;
-      max = rcxMain.config.maxDictEntries;
-      d = this.wordDict;
-    }
-
-    r = new RegExp(text, 'igm');
-    while (r.test(d)) {
-      if (e.data.length >= max) {
-        e.more = 1;
-        break;
-      }
-      j = d.indexOf('\n', r.lastIndex);
-      e.data.push([
-        d.substring(d.lastIndexOf('\n', r.lastIndex - 1) + 1, j),
-        null,
-      ]);
-      r.lastIndex = j + 1;
-    }
-
-    return e.data.length ? e : null;
-  }
-
-  kanjiSearch(kanji) {
+  kanjiSearch(kanji: string): DictEntryData | null {
     const hex = '0123456789ABCDEF';
     let i;
 
@@ -575,7 +561,7 @@ class RcxDict {
     const a = kde.split('|');
     if (a.length !== 6) return null;
 
-    const entry = {};
+    const entry = RcxDict.createDefaultDictEntry();
     entry.kanji = a[0];
 
     entry.misc = {};
@@ -646,7 +632,12 @@ class RcxDict {
     'Unicode',
   ];
 
-  makeHtml(entry) {
+  // TODO: Entry should be extracted as separate type.
+  makeHtml(entry: DictEntryData | null) {
+    if (rcxMain.config == null) {
+      throw new TypeError('rcxMain.config must not be null after init.');
+    }
+
     let e;
     let c;
     let s;
@@ -680,8 +671,8 @@ class RcxDict {
           entry.bushumei;
       }
 
-      const bn = entry.misc.B - 1;
-      k = entry.misc.G;
+      const bn = parseInt(entry.misc.B) - 1;
+      k = parseInt(entry.misc.G);
       switch (k) {
         case 8:
           k = 'general<br/>use';
@@ -784,14 +775,14 @@ class RcxDict {
 
     s = t = '';
 
-    if (entry.names) {
+    if (entry.hasNames) {
       c = [];
 
       b.push(
         '<div class="w-title">Names Dictionary</div><table class="w-na-tb"><tr><td>'
       );
       for (i = 0; i < entry.data.length; ++i) {
-        e = entry.data[i][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
+        e = entry.data[i].entry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
         if (!e) continue;
 
         // the next two lines re-process the entries that contain separate
@@ -840,7 +831,7 @@ class RcxDict {
       } else {
         b.push(c.join(''));
       }
-      if (entry.more) b.push('...<br/>');
+      if (entry.hasMore) b.push('...<br/>');
       b.push('</td></tr></table>');
     } else {
       if (entry.title) {
@@ -866,7 +857,7 @@ class RcxDict {
         );
         ++i
       ) {
-        e = entry.data[i][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
+        e = entry.data[i].entry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
         if (!e) continue;
 
         /*
@@ -899,8 +890,8 @@ class RcxDict {
         }
         b.push(k);
 
-        if (entry.data[i][1])
-          b.push(' <span class="w-conj">(' + entry.data[i][1] + ')</span>');
+        if (entry.data[i].reason)
+          b.push(' <span class="w-conj">(' + entry.data[i].reason + ')</span>');
 
         s = e[3];
         t = s.replace(/\//g, '; ');
@@ -913,7 +904,7 @@ class RcxDict {
       }
       b.push(t);
       if (
-        entry.more &&
+        entry.hasMore &&
         entry.index < entry.data.length - rcxMain.config.maxDictEntries
       )
         b.push('<span class="small-info">... (\'k\' for more)</span><br/>');
@@ -922,7 +913,7 @@ class RcxDict {
     return b.join('');
   }
 
-  makeHtmlForRuby(entry) {
+  makeHtmlForRuby(entry: DictEntryData | null) {
     let e;
     let s;
     let t;
@@ -939,7 +930,7 @@ class RcxDict {
     }
 
     for (i = 0; i < entry.data.length; ++i) {
-      e = entry.data[i][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
+      e = entry.data[i].entry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
       if (!e) continue;
 
       s = e[3];
@@ -951,7 +942,7 @@ class RcxDict {
     return b.join('');
   }
 
-  makeText(entry, max) {
+  makeText(entry: DictEntryData | null, max: number): string {
     let e;
     let i;
     let j;
@@ -986,7 +977,7 @@ class RcxDict {
     } else {
       if (max > entry.data.length) max = entry.data.length;
       for (i = 0; i < max; ++i) {
-        e = entry.data[i][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
+        e = entry.data[i].entry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
         if (!e) continue;
 
         if (e[2]) {
@@ -1004,7 +995,6 @@ class RcxDict {
 }
 
 const rcxDict = RcxDict.create();
-window['rcxDict'] = rcxDict;
 
 export { rcxDict };
-export type { RcxDict };
+export type { RcxDict, DictEntryData };

@@ -40,7 +40,7 @@
 */
 
 import { Config, getCurrentConfiguration } from './configuration';
-import { RcxDict, rcxDict } from './data';
+import { DictEntryData, RcxDict, rcxDict } from './data';
 
 class RcxMain {
   private static instance: RcxMain;
@@ -243,7 +243,7 @@ class RcxMain {
     }
 
     const m = this.showMode;
-    let e = null;
+    let e: DictEntryData | null = null;
 
     do {
       switch (this.showMode) {

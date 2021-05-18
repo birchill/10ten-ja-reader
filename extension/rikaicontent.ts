@@ -39,6 +39,8 @@
 
 */
 
+import { DictEntryData } from './data';
+
 const rcxContent = {
   dictCount: 3,
   altView: 0,
@@ -288,7 +290,7 @@ const rcxContent = {
 
   // Array used for storing the last popup content shown, useful for easily
   // operating on the value after rendering (for copying for example).
-  lastFound: null,
+  lastFound: null as DictEntryData[] | null,
 
   configPage: function () {
     window.openDialog(
@@ -340,7 +342,7 @@ const rcxContent = {
         break;
       case 74: // j
         // reverse cycle through definitions if > max (maxDictEntries)
-        e = this.lastFound[0];
+        let e = this.lastFound[0];
         if (e.data.length < maxDictEntries) break;
         if (!e.index) {
           e.index = 0;
@@ -709,7 +711,7 @@ const rcxContent = {
     return 1;
   },
 
-  processEntry: function (e) {
+  processEntry: function (e: DictEntryData | null) {
     tdata = window.rikaichan;
     ro = lastRo;
     selEndList = lastSelEnd;
