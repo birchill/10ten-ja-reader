@@ -45,16 +45,25 @@ Forked from Rikaikun in 2017 it includes:
   とく・どく forms like 買っとく,
   causative passive, させる for verbs ending in す e.g. 起こさせる)
 - Automatic preview of name entries when there is a better match in the name dictionary
-  ![Screen shot showing 南硫黄島 being automatically looked up from the names dictionary](/docs/name-dictionary-cross-ref.png?raw=true 'Name dictionary cross-reference')
+
+  <img src="https://raw.githubusercontent.com/birtles/rikaichamp/main/docs/year-translation-cropped.png" alt="Screen shot showing 南硫黄島 being automatically looked up from the names dictionary" title="Name dictionary cross-reference" width="354">
+
 - Handling of a much wider range of characters including ㋕, ㌀, ㋿, 𠏹沢, ８月, Ｂ級グルメ, オーサカ
-  ![Screen shot showing recognition of 弾道㋯㋚㋑㋸防衛 (弾道ミサイル防衛)](/docs/encircled-character.png 'Encircled characters')
-  ![Screen shot showing recognition of ㍿ (株式会社)](/docs/kabushiki-gaisha.png 'Composed characters')
+
+  <img src="https://raw.githubusercontent.com/birtles/rikaichamp/main/docs/encircled-character-cropped.png" alt="Screen shot showing recognition of 弾道㋯㋚㋑㋸防衛 (弾道ミサイル防衛)" title="Encircled characters" width="443">
+
+  <img src="https://raw.githubusercontent.com/birtles/rikaichamp/main/docs/kabushiki-gaisha-cropped.png" alt="Screen shot showing recognition of ㍿ (株式会社)" title="Composed characters" width="464">
+
 - Completely localized into Japanese (so you can study Japanese while you study Japanese!) and Simplified Chinese
-  ![Screen shot showing various parts-of-speech and other information translated into Japanese](/docs/localized.png 'Localized popup')
+
+  <img src="https://raw.githubusercontent.com/birtles/rikaichamp/main/docs/localized-cropped.png" alt="Screen shot showing various parts-of-speech and other information translated into Japanese" title="Localized popup" width="277">
+
 - Better prioritization of more common matches
 - Support for displaying romaji
 - Copy feature that allows selecting which entry and in what format to copy to the clipboard
-  ![Screen shot showing 魅惑的 being selected and the various formats available for copying](/docs/copy-feature.png 'Copy feature')
+
+  <img src="https://raw.githubusercontent.com/birtles/rikaichamp/main/docs/copy-feature-cropped.png" alt="Screen shot showing 魅惑的 being selected and the various formats available for copying" title="Copy feature" width="460">
+
 - Smarter popup positioning
 - Support for vertical text and SVG text
 - Much lower memory usage (> 90% less)
@@ -63,7 +72,9 @@ Forked from Rikaikun in 2017 it includes:
   <img src="https://raw.githubusercontent.com/birtles/rikaichamp/main/docs/kanji-view-cropped.png" alt="Screen shot of kanji view" title="Kanji dictionary" width="389">
 
 - Overhauled settings window to make it more intuitive
-  ![Screen shot of options window](/docs/options-window.png 'Options window')
+
+  <img src="https://raw.githubusercontent.com/birtles/rikaichamp/main/docs/options-window-cropped.png" alt="Screen shot of options window" title="Options window" width="459">
+
 - Better isolation of styles so that the popup always looks correct
 - Improved handling of ruby text in YouTube
 - Entirely rewritten with static typing, automated tests, and modern API usage (no sync XHR, XPath etc.)
