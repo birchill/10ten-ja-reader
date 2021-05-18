@@ -19,17 +19,22 @@ A browser extension to look up Japanese words with the hover of a mouse.
 Forked from Rikaikun in 2017 it includes:
 
 - Pitch accent information
-  ![Screen shot showing pitch accent highlighting](/docs/pitch-accent-cropped.png?raw=true 'Pitch accent')
 
   <img src="https://raw.githubusercontent.com/birtles/rikaichamp/main/docs/pitch-accent-cropped.png" alt="Screen shot showing pitch accent information" title="Pitch accent information" width="480">
 
 - Support for non-English dictionaries
 - Dictionaries that update automatically every week by fetching just the updated entries
-  ![Screen shot showing Russian translation](/docs/russian.png?raw=true 'Russian translation')
+
+  <img src="https://raw.githubusercontent.com/birtles/rikaichamp/main/docs/russian-cropped.png" alt="Screen shot showing Russian translation" title="Russian translation" width="480">
+
 - Overhauled dictionary entry display to make it much easier to read
-  ![Screen shot showing how definitions are grouped by part-of-speech](/docs/word-display.png?raw=true 'Some of the features of word display')
+
+  <img src="https://raw.githubusercontent.com/birtles/rikaichamp/main/docs/word-display-cropped.png" alt="Screen shot showing how definitions are grouped by part-of-speech" title="Some of the features of word display" width="640">
+
 - Automatic translation of Japanese-era years into Gregorian years (e.g. 昭和５６年、令和元年、平成三十一年)
-  ![Screen shot showing translation of 明治四十二年 into 1909年](/docs/year-translation.png?raw=true 'Year translation')
+
+  <img src="https://raw.githubusercontent.com/birtles/rikaichamp/main/docs/year-translation-cropped.png" alt="Screen shot showing translation of 明治四十二年 into 1909年" title="Year translation" width="325">
+
 - Recognition of many more grammatical forms
   (e.g. vs-c verbs like 兼した,
   irregular verbs like いらっしゃいます,
