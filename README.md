@@ -19,7 +19,7 @@ A browser extension to look up Japanese words with the hover of a mouse.
 Forked from Rikaikun in 2017 it includes:
 
 - Pitch accent information
-  ![Screen shot showing pitch accent highlighting](/docs/pitch-accent.png?raw=true 'Pitch accent')
+  ![Screen shot showing pitch accent highlighting](/docs/pitch-accent-cropped.png?raw=true 'Pitch accent')
 - Support for non-English dictionaries
 - Dictionaries that update automatically every week by fetching just the updated entries
   ![Screen shot showing Russian translation](/docs/russian.png?raw=true 'Russian translation')
@@ -51,7 +51,7 @@ Forked from Rikaikun in 2017 it includes:
 - Support for vertical text and SVG text
 - Much lower memory usage (> 90% less)
 - Kanji data for Kanji kentei, Conning references, updated educational levels, heavily reworked kanji components etc.
-  ![Screen shot of kanji view](/docs/kanji-view.png 'Kanji dictionary')
+  ![Screen shot of kanji view](/docs/kanji-view-cropped.png 'Kanji dictionary')
 - Overhauled settings window to make it more intuitive
   ![Screen shot of options window](/docs/options-window.png 'Options window')
 - Better isolation of styles so that the popup always looks correct
