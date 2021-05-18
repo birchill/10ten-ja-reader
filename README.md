@@ -5,6 +5,17 @@
 
 A browser extension to look up Japanese words with the hover of a mouse.
 
+## Table of Contents
+
+- [Features](#features)
+- [Installing](#installing)
+- [Usage](#usage)
+- [Building from source](#building-from-source)
+- [Contributing](#contributing)
+- [Contributors](#contributors)
+
+## Features
+
 Forked from Rikaikun in 2017 it includes:
 
 - Pitch accent information
@@ -48,7 +59,13 @@ Forked from Rikaikun in 2017 it includes:
 - Entirely rewritten with static typing, automated tests, and modern API usage (no sync XHR, XPath etc.)
 - Hundreds of other fixes and improvements
 
-# Usage
+## Installing
+
+- [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/rikaichamp/)
+- [Chrome Web Store](https://chrome.google.com/webstore/detail/pnmaklegiibbioifkmfkgpfnmdehdfan)
+- [Edge Web Store](https://microsoftedge.microsoft.com/addons/detail/rikaichamp-japanese-dicti/cgiogkjpebgfcpcaipiicfeaelpapeig)
+
+## Usage
 
 By default, you can enable Rikaichamp by either:
 
@@ -73,18 +90,28 @@ The other keys are as follows:
 | (Copy mode) Copy word/kanji               | <kbd>w</kbd>                                        |
 | (Copy mode) Select next entry             | <kbd>c</kbd>                                        |
 
-## Building
+## Building from source
 
-To build from a source package from the [Releases](https://github.com/birtles/rikaichamp/releases) page:
+You may also build the add-ons using a source package from the
+[Releases](https://github.com/birtles/rikaichamp/releases) page and running the
+following commands:
 
 ```
 export RELEASE_BUILD=1
 yarn install
-yarn build # Firefox package, alternatively use build:chrome for the Chrome package
+yarn build
 ```
 
-Note that versions prior to and including 0.5.5 `yarn install` will try to
-install husky but fail so you will need to run `yarn install --ignore-scripts`.
+(Note that you may ignore the `.js` files associated with each release.
+These are published simply to provide a public URL for each version of the
+source files to associating stack traces from error reports.)
+
+The above builds the package for **Firefox**.
+Use `yarn build:chrome` to build the Chrome package, or `yarn build:edge` for
+Edge.
+
+**Note:** For versions prior to and including 0.5.5 `yarn install` will try to
+install `husky` but fail so you will need to run `yarn install --ignore-scripts`.
 
 ## Contributing
 
