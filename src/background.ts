@@ -133,7 +133,10 @@ Bugsnag.start({
     //     the installed extension ID in the path differs per installation).
     // (b) They point to where the source is available publicly.
     //
-    // TODO: Do the equivalent for Chrome etc.
+    // Note that this is also necessary because Bugsnag's backend discards stack
+    // frames from extensions.
+    //
+    // See: https://docs.bugsnag.com/platforms/javascript/faq/?#how-can-i-get-error-reports-from-browser-extensions
     const basePath = `https://github.com/birtles/rikaichamp/releases/download/v${manifest.version}`;
     for (const error of event.errors) {
       for (const frame of error.stacktrace) {
