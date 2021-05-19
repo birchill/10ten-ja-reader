@@ -336,10 +336,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@birchill/hikibiki-data@^7.3.1":
-  version "7.3.1"
-  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-7.3.1.tgz#f86d44beb4a0dbcc6298ea93d61dbe839d0da800"
-  integrity sha512-5gltFSDAvxc30cJaleb40Dw76VPVRNOM/tr2bbFnyQyAf4g4TrF/YK512EsNIVQi+b3lGxzQLRSC88X7iME79g==
+"@birchill/hikibiki-data@^7.4.0":
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-7.4.0.tgz#3485eda421ef6b2ddd9c469d51a3ff361683e2cc"
+  integrity sha512-nmIi5KWeFzKlFeBbK4aqMC6b8nKWwhKv0dWyG1CUMrBRDOv76xoK7zdeNjMel1Fj8XZYpk6C/jWHQFB9vbjeRw==
   dependencies:
     "@birchill/json-equalish" "^1.1.2"
     "@birchill/normal-jp" "^1.2.2"

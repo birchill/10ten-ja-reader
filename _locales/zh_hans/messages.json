@@ -495,6 +495,10 @@
     "message": "基督教",
     "description": "Label applied to senses with the 'Christn' field"
   },
+  "field_label_cloth": {
+    "message": "衣服",
+    "description": "Label applied to senses with the 'cloth' field"
+  },
   "field_label_comp": {
     "message": "计算机",
     "description": "Label applied to senses with the 'comp' field"
@@ -670,6 +674,10 @@
   "field_label_psych": {
     "message": "心理学",
     "description": "Label applied to senses with the 'psych' field"
+  },
+  "field_label_rail": {
+    "message": "铁路",
+    "description": "Label applied to senses with the 'rail' field"
   },
   "field_label_Shinto": {
     "message": "神道",
