@@ -120,7 +120,7 @@ following commands:
 ```
 export RELEASE_BUILD=1
 yarn install
-yarn build
+yarn package
 ```
 
 (Note that you may ignore the `.js` files associated with each release.
@@ -128,7 +128,7 @@ These are published simply to provide a public URL for each version of the
 source files to associating stack traces from error reports.)
 
 The above builds the package for **Firefox**.
-Use `yarn build:chrome` to build the Chrome package, or `yarn build:edge` for
+Use `yarn package:chrome` to build the Chrome package, or `yarn package:edge` for
 Edge.
 
 **Note:** For versions prior to and including 0.5.5 `yarn install` will try to
