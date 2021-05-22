@@ -1,4 +1,4 @@
-import { isInclusiveAncestor, isTextInputNode, isTextNode } from './dom-utils';
+import { isTextInputNode, isTextNode } from './dom-utils';
 import { SelectionMeta } from './meta';
 import { kanjiToNumber } from './numbers';
 import { SVG_NS } from './svg';
@@ -326,14 +326,18 @@ function getTextFromTextNode(
     inlineAncestor = inlineAncestor!.parentElement;
   }
 
-  // Check that our ancestor is, in fact, an ancestor of the point we're
-  // looking at. (Sometimes caretPositionFromPoint can be too helpful and can
-  // choose an element far away.)
-  const elementAtPoint = document.elementFromPoint(point.x, point.y);
+  // Check that our ancestor does actually cover the point in question since
+  // sometimes caretPositionFromPoint can be too helpful and can choose an
+  // element far away.
+  //
+  // (We used to simply check that `inlineAncestor` is an inclusive ancestor
+  // of the result of document.elementFromPoint but the following seems like it
+  // should be a bit more robust, especially if caretPositionFromPoint is more
+  // clever than elementFromPoint in locating covered-up text.)
+  const ancestorBbox = inlineAncestor?.getBoundingClientRect();
   if (
-    inlineAncestor &&
-    elementAtPoint &&
-    !isInclusiveAncestor(inlineAncestor, elementAtPoint)
+    ancestorBbox &&
+    !bboxIncludesPoint({ bbox: ancestorBbox, margin: 5, point })
   ) {
     return null;
   }
@@ -594,4 +598,21 @@ function getTextFromRandomElement(elem: Element): string | null {
   }
 
   return null;
+}
+
+function bboxIncludesPoint({
+  bbox,
+  margin = 0,
+  point,
+}: {
+  bbox: DOMRect;
+  margin?: number;
+  point: Point;
+}): boolean {
+  return (
+    bbox.left - margin <= point.x &&
+    bbox.right + margin >= point.x &&
+    bbox.top - margin <= point.y &&
+    bbox.bottom + margin >= point.y
+  );
 }
