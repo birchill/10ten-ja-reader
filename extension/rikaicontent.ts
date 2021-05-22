@@ -290,7 +290,7 @@ const rcxContent = {
 
   // Array used for storing the last popup content shown, useful for easily
   // operating on the value after rendering (for copying for example).
-  lastFound: null as DictEntryData[] | null,
+  lastFound: [] as DictEntryData[],
 
   configPage: function () {
     window.openDialog(
@@ -334,6 +334,7 @@ const rcxContent = {
     let i;
     let shouldPreventDefault = true;
     const maxDictEntries = window.rikaichan.config.maxDictEntries;
+    let e: DictEntryData | null;
 
     switch (ev.keyCode) {
       case 16: // shift
@@ -342,7 +343,7 @@ const rcxContent = {
         break;
       case 74: // j
         // reverse cycle through definitions if > max (maxDictEntries)
-        let e = this.lastFound[0];
+        e = this.lastFound[0];
         if (e.data.length < maxDictEntries) break;
         if (!e.index) {
           e.index = 0;
