@@ -1,3 +1,8 @@
+## 0.5.6 (not released yet)
+
+- Fixed handling of the first character of a text box
+  ([#605](https://github.com/birtles/rikaichamp/issues/605))
+
 ## 0.5.5 (2021-05-11)
 
 - Fixed release infrastructure and tweaked options page.

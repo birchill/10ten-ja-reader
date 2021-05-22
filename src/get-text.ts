@@ -73,7 +73,8 @@ export function getTextAtPoint(
         node: elemUnderCursor,
         point,
       });
-      position = offset ? { offset, offsetNode: elemUnderCursor } : null;
+      position =
+        offset !== null ? { offset, offsetNode: elemUnderCursor } : null;
     }
   }
 
@@ -443,7 +444,8 @@ function getTextFromTextNode(
   // * U+FF66~U+FF9F is halfwidth katakana
   // * U+20000~U+2A6DF is CJK Unified Ideographs Extension B (more rare kanji)
   //
-  const nonJapaneseOrDelimiter = /[^\uff01-\uff5e\u25cb\u3004-\u3007\u3011-\u30ff\u3220-\u3247\u3280-\u32b0\u32d0-\u32ff\u3300-\u3370\u337b-\u337f\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff5e\uff66-\uff9f\u{20000}-\u{2a6df}]/u;
+  const nonJapaneseOrDelimiter =
+    /[^\uff01-\uff5e\u25cb\u3004-\u3007\u3011-\u30ff\u3220-\u3247\u3280-\u32b0\u32d0-\u32ff\u3300-\u3370\u337b-\u337f\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff5e\uff66-\uff9f\u{20000}-\u{2a6df}]/u;
 
   // If we detect a Japanese era, however, we allow a different set of
   // characters.
