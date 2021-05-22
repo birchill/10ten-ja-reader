@@ -171,7 +171,7 @@ const chromeConfig = {
       ],
     }),
     new WebExtPlugin({
-      chromium,
+      chromiumBinary: chromium,
       chromiumProfile,
       keepProfileChanges,
       profileCreateIfMissing,
