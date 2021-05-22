@@ -910,7 +910,7 @@ describe('getTextAtPoint', () => {
     const textAreaNode = testDiv.firstChild as HTMLTextAreaElement;
 
     textAreaNode.style.padding = '0px';
-    textAreaNode.style.fontSize = '10px';
+    textAreaNode.style.fontSize = '20px';
     const bbox = textAreaNode.getBoundingClientRect();
 
     const result = getTextAtPoint({ x: bbox.right - 10, y: 5 });
