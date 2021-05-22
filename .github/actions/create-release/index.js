@@ -12,7 +12,7 @@ async function main() {
   const prerelease = core.getInput('prerelease').toLowerCase() === 'true';
   const version = core.getInput('version').toLowerCase();
 
-  const release = await octokit.repos.createRelease({
+  const release = await octokit.rest.repos.createRelease({
     owner,
     repo,
     tag_name: `v${version}`,
@@ -31,7 +31,7 @@ async function main() {
     'dist-firefox-package',
     firefoxPackageName
   );
-  await octokit.repos.uploadReleaseAsset({
+  await octokit.rest.repos.uploadReleaseAsset({
     owner,
     repo,
     release_id: release.data.id,
@@ -46,7 +46,7 @@ async function main() {
     'dist-chrome-package',
     chromePackageName
   );
-  await octokit.repos.uploadReleaseAsset({
+  await octokit.rest.repos.uploadReleaseAsset({
     owner,
     repo,
     release_id: release.data.id,
@@ -57,7 +57,7 @@ async function main() {
   // Upload Edge asset
   const edgePackageName = core.getInput('edge_package_name');
   const edgePackagePath = path.join(root, 'dist-edge-package', edgePackageName);
-  await octokit.repos.uploadReleaseAsset({
+  await octokit.rest.repos.uploadReleaseAsset({
     owner,
     repo,
     release_id: release.data.id,
@@ -72,7 +72,7 @@ async function main() {
       continue;
     }
 
-    await octokit.repos.uploadReleaseAsset({
+    await octokit.rest.repos.uploadReleaseAsset({
       owner,
       repo,
       release_id: release.data.id,
