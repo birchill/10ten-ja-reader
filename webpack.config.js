@@ -13,6 +13,8 @@ const env = Object.fromEntries(
     .filter((_arg, index, args) => index && args[index - 1] === '--env')
     .map((kv) => (kv.indexOf('=') === -1 ? [kv, true] : kv.split('=')))
 );
+const chromium = env.chromium || undefined;
+const chromiumProfile = env.chromiumProfile || undefined;
 const firefox = env.firefox || undefined;
 const firefoxProfile = env.firefoxProfile || undefined;
 const keepProfileChanges = !!env.keepProfileChanges;
@@ -167,6 +169,15 @@ const chromeConfig = {
         //   in the root folder.
         { from: 'lib/browser-polyfill.js*', to: '[name][ext]' },
       ],
+    }),
+    new WebExtPlugin({
+      chromium,
+      chromiumProfile,
+      keepProfileChanges,
+      profileCreateIfMissing,
+      startUrl: [path.resolve(__dirname, 'tests', 'playground.html')],
+      sourceDir: path.resolve(__dirname, 'dist-chrome'),
+      target: 'chromium',
     }),
   ],
 };
