@@ -171,6 +171,23 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(result, 'うえお', lastTextNode, 0, lastTextNode, 3);
   });
 
+  it('should dig into the content behind covering links', () => {
+    // The following is based very heavily on the structure of article previews
+    // in asahi.com as of 2021-05-22 although nikkei.com is similar
+    testDiv.innerHTML =
+      '<div><a href="/articles/" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1"><span aria-hidden="true" style="display: block; width: 1px; height: 1px; overflow: hidden">あいうえお</span></a><div><div style="position: relative; width: 100%"><h2 style="z-index: auto"><a href="/articles/" id="innerLink">あいうえお</a></h2></div></div>';
+
+    const textNode = testDiv.querySelector('#innerLink')!.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result = getTextAtPoint({
+      x: bbox.right,
+      y: bbox.top + bbox.height / 2,
+    });
+
+    assertTextResultEqual(result, 'いうえお', textNode, 1, textNode, 5);
+  });
+
   it('should ignore non-Japanese characters', () => {
     testDiv.append('あいabc');
     const textNode = testDiv.firstChild as Text;

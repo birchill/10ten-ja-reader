@@ -2,6 +2,8 @@
 
 - Fixed handling of the first character of a text box
   ([#605](https://github.com/birtles/rikaichamp/issues/605))
+- Made Rikaichamp better able to recognize covered-up text such as is used on
+  [asahi.com](https://asahi.com) and [nikkei.com](https://nikkei.com)
 
 ## 0.5.5 (2021-05-11)
 

@@ -47,18 +47,7 @@ export function getTextAtPoint(
   point: Point,
   maxLength?: number
 ): GetTextAtPointResult | null {
-  let position: CursorPosition | null;
-  if (document.caretPositionFromPoint) {
-    position = document.caretPositionFromPoint(point.x, point.y);
-  } else {
-    const range = document.caretRangeFromPoint(point.x, point.y);
-    position = range
-      ? {
-          offsetNode: range.startContainer,
-          offset: range.startOffset,
-        }
-      : null;
-  }
+  let position = carentPositionFromPoint(point);
 
   // Chrome not only doesn't support caretPositionFromPoint, but also
   // caretRangeFromPoint doesn't return text input elements. Instead it returns
@@ -114,47 +103,65 @@ export function getTextAtPoint(
       point
     );
 
+    let closeEnough = true;
     if (distanceResult) {
       // If we're more than about three characters away, don't show the
       // pop-up.
       const { distance, glyphExtent } = distanceResult;
       if (distance > glyphExtent * 3) {
-        previousResult = undefined;
-        return null;
+        closeEnough = false;
       }
     }
 
-    const result = getTextFromTextNode(
-      startNode,
-      position!.offset,
-      point,
-      maxLength
-    );
+    if (closeEnough) {
+      const result = getTextFromTextNode({
+        startNode,
+        startOffset: position!.offset,
+        point,
+        maxLength,
+      });
 
-    if (result) {
-      console.assert(
-        !!result.rangeStart,
-        'The range start should be set when getting text from a text node'
-      );
+      if (result) {
+        console.assert(
+          !!result.rangeStart,
+          'The range start should be set when getting text from a text node'
+        );
 
-      // If we synthesized a text node, substitute the original node back in.
-      if (startNode !== position!.offsetNode) {
-        console.assert(
-          result.rangeStart!.container === startNode,
-          'When using a synthesized text node the range should start' +
-            ' from that node'
-        );
-        console.assert(
-          result.rangeEnds.length === 1 &&
-            result.rangeEnds[0].container === startNode,
-          'When using a synthesized text node there should be a single' +
-            ' range end using the synthesized node'
-        );
-        result.rangeStart!.container = position!.offsetNode;
-        result.rangeEnds[0].container = position!.offsetNode;
+        // If we synthesized a text node, substitute the original node back in.
+        if (startNode !== position!.offsetNode) {
+          console.assert(
+            result.rangeStart!.container === startNode,
+            'When using a synthesized text node the range should start' +
+              ' from that node'
+          );
+          console.assert(
+            result.rangeEnds.length === 1 &&
+              result.rangeEnds[0].container === startNode,
+            'When using a synthesized text node there should be a single' +
+              ' range end using the synthesized node'
+          );
+          result.rangeStart!.container = position!.offsetNode;
+          result.rangeEnds[0].container = position!.offsetNode;
+        }
+
+        previousResult = { point, position: position!, result };
+        return result;
       }
+    }
+  }
 
-      previousResult = { point, position: position!, result };
+  // See if we are dealing with a covering link
+  const parentLink = getParentLink(startNode);
+  if (parentLink) {
+    const result = getTextFromCoveringLink({
+      linkElem: parentLink,
+      originalElem: startNode,
+      point,
+      maxLength,
+    });
+    if (result) {
+      // Don't cache `position` since it's not the position we actually used.
+      previousResult = { point, position: undefined, result };
       return result;
     }
   }
@@ -171,7 +178,6 @@ export function getTextAtPoint(
         rangeEnds: [],
       };
       previousResult = { point, position: undefined, result };
-
       return result;
     }
   }
@@ -191,6 +197,20 @@ export function getTextAtPoint(
 
   previousResult = undefined;
   return null;
+}
+
+function carentPositionFromPoint(point: Point): CursorPosition | null {
+  if (document.caretPositionFromPoint) {
+    return document.caretPositionFromPoint(point.x, point.y);
+  }
+
+  const range = document.caretRangeFromPoint(point.x, point.y);
+  return range
+    ? {
+        offsetNode: range.startContainer,
+        offset: range.startOffset,
+      }
+    : null;
 }
 
 function getOffsetFromTextInputNode({
@@ -289,15 +309,20 @@ function getDistanceFromTextNode(
   return { distance, glyphExtent };
 }
 
-function getTextFromTextNode(
-  startNode: CharacterData,
-  startOffset: number,
+function getTextFromTextNode({
+  startNode,
+  startOffset,
+  point,
+  maxLength,
+}: {
+  startNode: CharacterData;
+  startOffset: number;
   point: {
     x: number;
     y: number;
-  },
-  maxLength?: number
-): GetTextAtPointResult | null {
+  };
+  maxLength?: number;
+}): GetTextAtPointResult | null {
   const isRubyAnnotationElement = (element: Element | null) => {
     if (!element) {
       return false;
@@ -527,6 +552,77 @@ function getTextFromTextNode(
   }
 
   return result;
+}
+
+function getParentLink(node: Node | null): HTMLAnchorElement | null {
+  if (node && node.nodeType === Node.ELEMENT_NODE) {
+    return (node as Element).closest('a');
+  }
+
+  if (isTextNode(node)) {
+    return node.parentElement ? node.parentElement.closest('a') : null;
+  }
+
+  return null;
+}
+
+// Take care of "covering links". "Convering links" is the name we give to the
+// approach used by at least asahi.com and nikkei.com on their homepages where
+// they create a big <a> element and a tiny (1px x 1px) span with the link text
+// and then render the actual link content in a separate layer.
+//
+// Roughly it looks something like the following:
+//
+// <div>
+//   <a> <-- Link to article with abs-pos left/right/top/bottom: 0
+//     <span/> <-- Link text as a 1x1 div
+//   </a>
+//   <div> <!-- Actual link content
+//     <figure/>
+//     <h2><a>Link text again</a></h2>
+//     etc.
+//   </div>
+// </div>
+//
+// If we fail to find any text but are pointing at a link, we should try digging
+// for content underneath the link
+function getTextFromCoveringLink({
+  linkElem,
+  originalElem,
+  point,
+  maxLength,
+}: {
+  linkElem: HTMLAnchorElement;
+  originalElem: Node | null;
+  point: {
+    x: number;
+    y: number;
+  };
+  maxLength?: number;
+}): GetTextAtPointResult | null {
+  // Turn off pointer-events for the covering link
+  const previousPointEvents = linkElem.style.pointerEvents;
+  linkElem.style.pointerEvents = 'none';
+
+  const position = carentPositionFromPoint(point);
+
+  linkElem.style.pointerEvents = previousPointEvents;
+
+  // See if we successfully found a different text node
+  if (
+    !position ||
+    position.offsetNode === originalElem ||
+    !isTextNode(position.offsetNode)
+  ) {
+    return null;
+  }
+
+  return getTextFromTextNode({
+    startNode: position.offsetNode,
+    startOffset: position.offset,
+    point,
+    maxLength,
+  });
 }
 
 // This is a bit complicated because for a numeric year we don't require the
