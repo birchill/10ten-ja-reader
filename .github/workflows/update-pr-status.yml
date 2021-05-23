@@ -45,7 +45,7 @@ jobs:
         with:
           script: |
             var fs = require('fs');
-            return String(fs.readFileSync('./DESC'))
+            return String(fs.readFileSync('./DESC')).trim();
           result-encoding: string
       - name: 'Create description'
         uses: actions/github-script@v4.0.2
