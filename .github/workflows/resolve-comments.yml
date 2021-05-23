@@ -7,22 +7,11 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
 
-permissions:
-  statuses: write
-
 jobs:
   readResolutionStatus:
+    name: 'Check for unresolved comments'
     runs-on: ubuntu-latest
     steps:
-      - name: 'Set PR Status pending'
-        uses: Sibz/github-status-action@v1.1.5
-        with:
-          authToken: ${{ secrets.GITHUB_TOKEN }}
-          context: 'No unresolved comments'
-          description: ''
-          state: 'pending'
-          sha: ${{ github.event.pull_request.head.sha }}
-          target_url: ''
       - uses: octokit/graphql-action@v2.x
         id: get_comment_resolution_status
         with:
