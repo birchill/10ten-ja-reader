@@ -9,9 +9,17 @@ on:
 
 jobs:
   readResolutionStatus:
-    name: 'Ensure no unresolved comments'
     runs-on: ubuntu-latest
     steps:
+      - name: 'Set PR Status pending'
+        uses: Sibz/github-status-action@v1.1.5
+        with:
+          authToken: ${{ secrets.GITHUB_TOKEN }}
+          context: 'No unresolved comments'
+          description: ''
+          state: 'pending'
+          sha: ${{ github.event.pull_request.head.sha }}
+          target_url: ''
       - uses: octokit/graphql-action@v2.x
         id: get_comment_resolution_status
         with:
@@ -33,17 +41,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run:
-          "checkLength() { read length; echo \"::set-output name=length::$length\"; if [ $length -gt 0 ]; then echo ::error ::There are $length unresolved comments; exit 1; fi; }; \
+          "recordLength() { read length; echo \"::set-output name=length::$length\"; }; \
           echo '${{ steps.get_comment_resolution_status.outputs.data }}' | \
           jq '.repository.pullRequest.reviewThreads.nodes | map(select(.isResolved | not)) | length' | \
-          checkLength"
+          recordLength"
         name: 'Unresolved Comments Check'
         id: unresolved_comments_check
       - name: 'Save Details'
         if: always()
         run: |
           mkdir -p ./desc
-          echo 'There are ${{ steps.unresolved_comments_check.outputs.length}} unresolved comments.' > ./desc/DESC
+          echo ${{ steps.unresolved_comments_check.outputs.length}} > ./desc/DESC
       - uses: actions/upload-artifact@v2
         if: always()
         with:

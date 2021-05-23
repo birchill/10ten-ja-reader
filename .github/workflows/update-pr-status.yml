@@ -1,7 +1,9 @@
-name: Update PR status
+name: Update PR unresolved comment status
 on:
   workflow_run:
     workflows: ['No unresolved comments']
+    types:
+      - completed
 
 permissions:
   statuses: write
@@ -17,7 +19,6 @@ jobs:
       #   name: 'workflow object output'
       # Adapted from https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
       - name: 'Download artifact'
-        if: github.event.action== 'completed'
         uses: actions/github-script@v4.0.2
         with:
           script: |
@@ -38,22 +39,34 @@ jobs:
             var fs = require('fs');
             fs.writeFileSync('${{ github.workspace }}/desc.zip', Buffer.from(download.data));
       - run: unzip desc.zip
-        if: github.event.action == 'completed'
-      - name: 'Read description'
-        if: github.event.action == 'completed'
+      - name: 'Read length'
         uses: actions/github-script@v4.0.2
-        id: read_description
+        id: read_length
         with:
           script: |
             var fs = require('fs');
-            return String(fs.readFileSync('./DESC')) + ' Re-run if stale.'
+            return String(fs.readFileSync('./DESC'))
+          result-encoding: string
+      - name: 'Create description'
+        uses: actions/github-script@v4.0.2
+        id: create_description
+        with:
+          script: |
+            return 'There are ${{ steps.read_length.outputs.result }} unresolved comments. Re-run if stale by clicking on "Details".'
+          result-encoding: string
+      - name: 'Create status'
+        uses: actions/github-script@v4.0.2
+        id: create_status
+        with:
+          script: |
+            return ${{ steps.read_length.outputs.result }} == '0' ? 'success' : 'failure'
           result-encoding: string
       - name: 'Set PR Status'
         uses: Sibz/github-status-action@v1.1.5
         with:
           authToken: ${{ secrets.GITHUB_TOKEN }}
           context: ${{ github.event.workflow_run.name }}
-          description: '${{ steps.read_description.outputs.result }}'
-          state: ${{ github.event.workflow_run.conclusion || 'pending' }}
+          description: ${{ steps.create_description.outputs.result }}
+          state: ${{ steps.create_status.outputs.result }}
           sha: ${{ github.event.workflow_run.head_sha }}
           target_url: ${{ github.event.workflow_run.html_url }}
