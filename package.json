@@ -51,7 +51,7 @@
     "awesome-typescript-loader": "^5.2.1",
     "byline": "^5.0.0",
     "conventional-changelog-conventionalcommits": "^4.6.0",
-    "copy-webpack-plugin": "^8.1.1",
+    "copy-webpack-plugin": "^9.0.0",
     "csv-parse": "^4.15.4",
     "eslint": "^7.27.0",
     "eslint-plugin-lit": "^1.4.1",
