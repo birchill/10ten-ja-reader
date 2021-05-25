@@ -2,6 +2,9 @@
 
 - Added support for handling 旧字体 (_kyuujitai_, old characters)
   ([#604](https://github.com/birtles/rikaichamp/issues/604))
+- Added support for converting Japanese era years that use a series
+  of digits (e.g. 昭和二〇年)
+  thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
 
 ## 0.5.7 (2021-05-22)
 
