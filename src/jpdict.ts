@@ -485,6 +485,11 @@ export async function searchNames({
   // ー characters.
   const candidates = [normalized, ...expandChoon(normalized)];
 
+  const toNew = kyuujitaiToShinjitai(normalized);
+  if (toNew !== normalized) {
+    candidates.push(toNew);
+  }
+
   let result: NameSearchResult | null = null;
   for (const candidate of candidates) {
     let thisResult = await doNameSearch({
