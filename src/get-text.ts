@@ -627,7 +627,7 @@ function getTextFromCoveringLink({
 
 // This is a bit complicated because for a numeric year we don't require the
 // 年 but for 元年 we do. i.e. '令和2' is valid but '令和元' is not.
-const yearRegex = /(?:([0-9０-９一二三四五六七八九十百]+)\s*年?|(?:元\s*年))/;
+const yearRegex = /(?:([0-9０-９〇一二三四五六七八九十百]+)\s*年?|(?:元\s*年))/;
 
 function extractGetTextMetadata(text: string): SelectionMeta | undefined {
   // Look for a year

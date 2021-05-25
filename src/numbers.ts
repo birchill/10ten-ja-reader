@@ -1,9 +1,6 @@
 // The following is based heavily on:
 //
 // http://ginstrom.com/scribbles/2009/04/28/converting-kanji-numbers-to-integers-with-python/
-//
-// It is very basic (e.g. doesn't cover 三〇九 etc.) because it is only intended
-// to be used for years with Japanese eras.
 
 const kanjiToNumberMap = new Map<string, number>([
   ['一', 1],
@@ -21,6 +18,19 @@ const kanjiToNumberMap = new Map<string, number>([
   ['万', 10000],
   ['億', 100000000],
   ['兆', 1000000000000],
+]);
+
+const transliterateMap = new Map([
+  ['〇', 0],
+  ['一', 1],
+  ['二', 2],
+  ['三', 3],
+  ['四', 4],
+  ['五', 5],
+  ['六', 6],
+  ['七', 7],
+  ['八', 8],
+  ['九', 9],
 ]);
 
 function validNumber(c1: number, c2: number): boolean {
@@ -41,9 +51,18 @@ function validNumber(c1: number, c2: number): boolean {
 }
 
 export function kanjiToNumber(text: string): number | null {
-  const stuffs = [...text].map((ch) => kanjiToNumberMap.get(ch));
+  let stuffs = [...text].map((ch) => transliterateMap.get(ch));
+  // we check transliterateMap first
+  // because 二二一 would also pass the kanjiToNumberMap check
   if (!stuffs.length || stuffs.some((ch) => typeof ch === 'undefined')) {
-    return null;
+    // may contain 十百千万, or not a number at all
+    stuffs = [...text].map((ch) => kanjiToNumberMap.get(ch));
+    if (!stuffs.length || stuffs.some((ch) => typeof ch === 'undefined')) {
+      return null;
+    }
+  } else {
+    //just transliterate kanji into digits
+    return parseInt(stuffs.join(''));
   }
 
   let numbers = stuffs as Array<number>;
