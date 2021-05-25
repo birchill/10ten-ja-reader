@@ -327,6 +327,12 @@ export async function searchWords({
   // ー characters.
   const candidateWords = [word, ...expandChoon(word)];
 
+  // Try replacing kyuujitai with shinjitai too
+  const toNew = kyuujitaiToShinjitai(word);
+  if (toNew !== word) {
+    candidateWords.push(toNew);
+  }
+
   let result: WordSearchResult | null = null;
   for (const candidate of candidateWords) {
     // Try this particular expansion of any choon
@@ -341,28 +347,6 @@ export async function searchWords({
     // Replace the result if we got a longer match
     if (!result || (thisResult && thisResult.matchLen > result.matchLen)) {
       result = thisResult;
-    }
-  }
-
-  // See if we can replace kyuujitai with shinjitai and get a better result.
-  {
-    const toNew = kyuujitaiToShinjitai(word);
-    // Don't bother re-running the search unless we actually got some
-    // substitutions.
-    if (toNew !== word) {
-      // Don't bother with choon. It's unlikely we'll encounter choon that need
-      // to be expanded alongside 旧字体 unless we're in some really odd content.
-      const newResult = await wordSearch({
-        getWords,
-        input: toNew,
-        inputLengths,
-        maxResults,
-        includeRomaji,
-      });
-
-      if (!result || (newResult && newResult.matchLen > result.matchLen)) {
-        result = newResult;
-      }
     }
   }
 
