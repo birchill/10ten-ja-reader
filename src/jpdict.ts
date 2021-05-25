@@ -10,7 +10,11 @@ import {
   getNames,
   getWords as idbGetWords,
 } from '@birchill/hikibiki-data';
-import { expandChoon, kanaToHiragana } from '@birchill/normal-jp';
+import {
+  expandChoon,
+  kanaToHiragana,
+  kyuujitaiToShinjitai,
+} from '@birchill/normal-jp';
 
 import { normalizeInput } from './conversion';
 import { ExtensionStorageError } from './extension-storage-error';
@@ -337,6 +341,28 @@ export async function searchWords({
     // Replace the result if we got a longer match
     if (!result || (thisResult && thisResult.matchLen > result.matchLen)) {
       result = thisResult;
+    }
+  }
+
+  // See if we can replace kyuujitai with shinjitai and get a better result.
+  {
+    const toNew = kyuujitaiToShinjitai(word);
+    // Don't bother re-running the search unless we actually got some
+    // substitutions.
+    if (toNew !== word) {
+      // Don't bother with choon. It's unlikely we'll encounter choon that need
+      // to be expanded alongside 旧字体 unless we're in some really odd content.
+      const newResult = await wordSearch({
+        getWords,
+        input: toNew,
+        inputLengths,
+        maxResults,
+        includeRomaji,
+      });
+
+      if (!result || (newResult && newResult.matchLen > result.matchLen)) {
+        result = newResult;
+      }
     }
   }
 

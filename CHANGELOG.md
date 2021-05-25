@@ -1,3 +1,8 @@
+## Not yet released
+
+- Added support for handling 旧字体 (_kyuujitai_, old characters)
+  ([#604](https://github.com/birtles/rikaichamp/issues/604))
+
 ## 0.5.7 (2021-05-22)
 
 - Fixed handling of the first character of a text box
