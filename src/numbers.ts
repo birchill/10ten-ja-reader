@@ -1,10 +1,9 @@
 // The following is based heavily on:
 //
 // http://ginstrom.com/scribbles/2009/04/28/converting-kanji-numbers-to-integers-with-python/
-//
-// It is very basic (e.g. doesn't cover 三〇九 etc.) because it is only intended
-// to be used for years with Japanese eras.
 
+// Following are the digits we recognize for numbers that specify powers of 10,
+// e.g. 五十六.
 const kanjiToNumberMap = new Map<string, number>([
   ['一', 1],
   ['二', 2],
@@ -21,6 +20,21 @@ const kanjiToNumberMap = new Map<string, number>([
   ['万', 10000],
   ['億', 100000000],
   ['兆', 1000000000000],
+]);
+
+// Following are the digits we recognize for numbers specified as a series of
+// digits e.g. 五六. We call this a transliterated number.
+const transliterateMap = new Map([
+  ['〇', 0],
+  ['一', 1],
+  ['二', 2],
+  ['三', 3],
+  ['四', 4],
+  ['五', 5],
+  ['六', 6],
+  ['七', 7],
+  ['八', 8],
+  ['九', 9],
 ]);
 
 function validNumber(c1: number, c2: number): boolean {
@@ -41,12 +55,21 @@ function validNumber(c1: number, c2: number): boolean {
 }
 
 export function kanjiToNumber(text: string): number | null {
-  const stuffs = [...text].map((ch) => kanjiToNumberMap.get(ch));
-  if (!stuffs.length || stuffs.some((ch) => typeof ch === 'undefined')) {
+  // Try a transliterated number first since the set of inputs like 二二一 would
+  // also be found in kanjiToNumberMap.
+  let digits = [...text].map((ch) => transliterateMap.get(ch));
+  if (digits.length && !digits.some((ch) => typeof ch === 'undefined')) {
+    return parseInt(digits.join(''), 10);
+  }
+
+  // Otherwise, try processing as a number with powers of ten.
+  digits = [...text].map((ch) => kanjiToNumberMap.get(ch));
+  if (!digits.length || digits.some((ch) => typeof ch === 'undefined')) {
+    // If that failed, it's not something we know how to parse as a number.
     return null;
   }
 
-  let numbers = stuffs as Array<number>;
+  let numbers = digits as Array<number>;
   let result = 0;
 
   while (numbers.length > 1) {

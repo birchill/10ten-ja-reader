@@ -9,7 +9,8 @@ describe('kanjiToNumber', () => {
     expect(kanjiToNumber('五億五万一')).toEqual(500050001);
     expect(kanjiToNumber('五万億五万一')).toEqual(5000000050001);
     expect(kanjiToNumber('五十万億百万一')).toEqual(50000001000001);
-    expect(kanjiToNumber('七二一三五六四九')).toStrictEqual(null);
+    expect(kanjiToNumber('七二一三〇六四九')).toEqual(72130649);
+    expect(kanjiToNumber('七万九千〇五')).toStrictEqual(null);
     expect(kanjiToNumber('七十二百一')).toStrictEqual(null);
     expect(kanjiToNumber('abc')).toStrictEqual(null);
     expect(kanjiToNumber('')).toStrictEqual(null);
