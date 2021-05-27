@@ -51,6 +51,10 @@ In 2018, Firefox killed the extension model that Rikaichan was based on, but oth
 
 Visit rikaikun on the [Chrome Web Store](https://chrome.google.com/webstore/detail/rikaikun/jipdnfibhldikgcjhfnomkfpcebammhp) and click 'Add to Chrome'.
 
+### Via Microsoft Edge Add-ons
+
+Visit rikaikun on [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/rikaikun/ebdggalafggfhdllgohjbpgnmfppdfih) and click 'Get'.
+
 ### As an Unpacked Extension
 
 You can also install rikaikun from the source as an unpacked extension:
