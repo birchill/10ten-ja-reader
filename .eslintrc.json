@@ -1,5 +1,9 @@
 {
-  "extends": ["./node_modules/gts/", "plugin:lit/recommended"],
+  "extends": [
+    "./node_modules/gts/",
+    "plugin:lit/recommended",
+    "plugin:promise/recommended"
+  ],
   "env": {
     "browser": true,
     "webextensions": true
@@ -14,6 +18,7 @@
     "node/no-unpublished-import": "off",
     "@typescript-eslint/no-var-requires": "off",
     "unicode-bom": "error",
+    "promise/prefer-await-to-then": "error",
     // TODO(espeed): Remove these and fix errors.
     "no-undef": "off",
     "prefer-arrow-callback": "off",

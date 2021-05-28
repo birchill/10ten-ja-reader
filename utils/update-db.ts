@@ -458,6 +458,7 @@ parseEdict('http://ftp.edrdg.org/pub/Nihongo/edict.gz', 'dict.dat', 'dict.idx')
   })
   .then(() => {
     console.log('Done.');
+    return undefined;
   })
   .catch((err) => {
     console.log(`Error: '${err}'`);
