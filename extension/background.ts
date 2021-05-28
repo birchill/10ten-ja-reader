@@ -1,14 +1,39 @@
-import { rcxMain } from './rikaichan';
+import { RcxDict } from './data';
+import { RcxMain } from './rikaichan';
+import { configPromise } from './configuration';
 import { tts } from './texttospeech';
 
-chrome.browserAction.onClicked.addListener(rcxMain.inlineToggle);
-chrome.tabs.onActivated.addListener((activeInfo) => {
+/**
+ * Returns a promise for fully initialized RcxMain. Async due to config and
+ * RcxDict initialization.
+ */
+async function createRcxMainPromise(): Promise<RcxMain> {
+  const config = await configPromise;
+  const dict = await RcxDict.create(config);
+  return RcxMain.create(dict, config);
+}
+const rcxMainPromise: Promise<RcxMain> = createRcxMainPromise();
+
+chrome.browserAction.onClicked.addListener(async (tab) => {
+  const rcxMain = await rcxMainPromise;
+  rcxMain.inlineToggle(tab);
+});
+chrome.tabs.onActivated.addListener(async (activeInfo) => {
+  const rcxMain = await rcxMainPromise;
   rcxMain.onTabSelect(activeInfo.tabId);
 });
-chrome.runtime.onMessage.addListener(function (request, sender, response) {
+chrome.runtime.onMessage.addListener(async function (
+  request,
+  sender,
+  response
+) {
+  const rcxMain = await rcxMainPromise;
   switch (request.type) {
     case 'enable?':
       console.log('enable?');
+      if (sender.tab == null) {
+        throw TypeError('sender.tab is always non null here.');
+      }
       rcxMain.onTabSelect(sender.tab.id);
       break;
     case 'xsearch':
@@ -32,9 +57,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
       break;
     case 'switchOnlyReading':
       console.log('switchOnlyReading');
-      rcxMain.config.onlyreading = !rcxMain.config.onlyreading;
       chrome.storage.sync.set({
-        onlyreading: rcxMain.config.onlyreading,
+        onlyreading: !rcxMain.config.onlyreading,
       });
       break;
     case 'copyToClip':

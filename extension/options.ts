@@ -1,32 +1,40 @@
 import 'lit-toast/lit-toast.js';
-import { Config, getCurrentConfiguration } from './configuration';
+import { Config, configPromise } from './configuration';
 import { LitElement, TemplateResult, css, html } from 'lit';
 import { until } from 'lit/directives/until.js';
 
+type OptionEvent = {
+  target: HTMLInputElement;
+  __update: Partial<Config>;
+};
+
 export class OptionsForm extends LitElement {
   private content: Promise<TemplateResult> = this.fetchAndRender();
-
-  private options?: Config;
 
   render() {
     return html`${until(this.content)}<lit-toast></lit-toast>`;
   }
 
-  private updateKanjiInfo(event: { target: HTMLInputElement }) {
-    this.options!.kanjiInfo.find(
+  private updateKanjiInfo(
+    previousKanjiInfo: Config['kanjiInfo'],
+    event: OptionEvent
+  ) {
+    event.__update = { kanjiInfo: previousKanjiInfo };
+    event.__update.kanjiInfo!.find(
       (info) => info.code === event.target.value
     )!.shouldDisplay = event.target.checked;
   }
 
   private async fetchAndRender() {
-    this.options = await getCurrentConfiguration();
+    const options = await configPromise;
+
     return html`
       <div id="rikaikun_options">
         <form
           id="optform"
           name="optform"
-          @change=${() =>
-            chrome.storage.sync.set(this.options!, () => this.showToast())}
+          @change=${(event: OptionEvent) =>
+            chrome.storage.sync.set(event.__update, () => this.showToast())}
         >
           <div id="options">
             <div id="gencon" class="tabContent">
@@ -35,30 +43,30 @@ export class OptionsForm extends LitElement {
                 Popup color:
                 <select
                   class="inputfield"
-                  @change=${(event: { target: HTMLInputElement }) =>
-                    (this.options!.popupcolor = event.target.value)}
+                  @change=${(event: OptionEvent) =>
+                    (event.__update = { popupcolor: event.target.value })}
                 >
                   <option
                     value="blue"
-                    ?selected=${this.options.popupcolor === 'blue'}
+                    ?selected=${options.popupcolor === 'blue'}
                   >
                     Blue
                   </option>
                   <option
                     value="lightblue"
-                    ?selected=${this.options.popupcolor === 'lightblue'}
+                    ?selected=${options.popupcolor === 'lightblue'}
                   >
                     Light Blue
                   </option>
                   <option
                     value="black"
-                    ?selected=${this.options.popupcolor === 'black'}
+                    ?selected=${options.popupcolor === 'black'}
                   >
                     Black
                   </option>
                   <option
                     value="yellow"
-                    ?selected=${this.options.popupcolor === 'yellow'}
+                    ?selected=${options.popupcolor === 'yellow'}
                   >
                     Yellow
                   </option>
@@ -67,11 +75,11 @@ export class OptionsForm extends LitElement {
                 Default popup location:
                 <select
                   class="inputfield"
-                  .selectedIndex=${this.options.popupLocation}
-                  @change=${(event: { target: HTMLInputElement }) =>
-                    (this.options!.popupLocation = parseInt(
-                      event.target.value
-                    ))}
+                  .selectedIndex=${options.popupLocation}
+                  @change=${(event: OptionEvent) =>
+                    (event.__update = {
+                      popupLocation: parseInt(event.target.value),
+                    })}
                 >
                   <option value="0">Cursor</option>
                   <option value="1">Top Left</option>
@@ -80,33 +88,33 @@ export class OptionsForm extends LitElement {
                 <br />
                 <input
                   type="checkbox"
-                  ?checked=${this.options.highlight}
-                  @change=${(event: { target: HTMLInputElement }) =>
-                    (this.options!.highlight = event.target.checked)}
+                  ?checked=${options.highlight}
+                  @change=${(event: OptionEvent) =>
+                    (event.__update = { highlight: event.target.checked })}
                 />
                 Highlight text
                 <br />
                 <input
                   type="checkbox"
-                  ?checked=${this.options.textboxhl}
-                  @change=${(event: { target: HTMLInputElement }) =>
-                    (this.options!.textboxhl = event.target.checked)}
+                  ?checked=${options.textboxhl}
+                  @change=${(event: OptionEvent) =>
+                    (event.__update = { textboxhl: event.target.checked })}
                 />
                 Highlight text inside of text boxes
                 <br />
                 <input
                   type="checkbox"
-                  ?checked=${this.options.onlyreading}
-                  @change=${(event: { target: HTMLInputElement }) =>
-                    (this.options!.onlyreading = event.target.checked)}
+                  ?checked=${options.onlyreading}
+                  @change=${(event: OptionEvent) =>
+                    (event.__update = { onlyreading: event.target.checked })}
                 />
                 Hide definitions and show only reading
                 <br />
                 <input
                   type="checkbox"
-                  ?checked=${this.options.minihelp}
-                  @change=${(event: { target: HTMLInputElement }) =>
-                    (this.options!.minihelp = event.target.checked)}
+                  ?checked=${options.minihelp}
+                  @change=${(event: OptionEvent) =>
+                    (event.__update = { minihelp: event.target.checked })}
                 />
                 Show mini help
                 <br />
@@ -115,9 +123,11 @@ export class OptionsForm extends LitElement {
                 <input
                   type="number"
                   min="1"
-                  value=${this.options.popupDelay}
-                  @change=${(event: { target: HTMLInputElement }) =>
-                    (this.options!.popupDelay = event.target.valueAsNumber)}
+                  value=${options.popupDelay}
+                  @change=${(event: OptionEvent) =>
+                    (event.__update = {
+                      popupDelay: event.target.valueAsNumber,
+                    })}
                 />
                 milliseconds
               </p>
@@ -126,32 +136,32 @@ export class OptionsForm extends LitElement {
               <h1>Keyboard</h1>
               Show popup only on pressed key:<br />
               <div
-                @change=${(event: { target: HTMLInputElement }) =>
-                  (this.options!.showOnKey = event.target.value)}
+                @change=${(event: OptionEvent) =>
+                  (event.__update = { showOnKey: event.target.value })}
               >
                 <input
                   type="radio"
                   name="showOnKey"
                   value=""
-                  ?checked=${this.options.showOnKey === ''}
+                  ?checked=${options.showOnKey === ''}
                 />Not used<br />
                 <input
                   type="radio"
                   name="showOnKey"
                   value="Alt"
-                  ?checked=${this.options.showOnKey === 'Alt'}
+                  ?checked=${options.showOnKey === 'Alt'}
                 />Alt<br />
                 <input
                   type="radio"
                   name="showOnKey"
                   value="Ctrl"
-                  ?checked=${this.options.showOnKey === 'Ctrl'}
+                  ?checked=${options.showOnKey === 'Ctrl'}
                 />Ctrl<br />
                 <input
                   type="radio"
                   name="showOnKey"
                   value="Alt+Ctrl"
-                  ?checked=${this.options.showOnKey === 'Alt+Ctrl'}
+                  ?checked=${options.showOnKey === 'Alt+Ctrl'}
                 />Alt+Ctrl<br />
               </div>
               <br />
@@ -201,9 +211,9 @@ export class OptionsForm extends LitElement {
               <br />
               <input
                 type="checkbox"
-                ?checked=${this.options.disablekeys}
-                @change=${(event: { target: HTMLInputElement }) =>
-                  (this.options!.disablekeys = event.target.checked)}
+                ?checked=${options.disablekeys}
+                @change=${(event: OptionEvent) =>
+                  (event.__update = { disablekeys: event.target.checked })}
               />
               Disable these keys
             </div>
@@ -213,19 +223,22 @@ export class OptionsForm extends LitElement {
                 <strong>Displayed information:</strong><br /><br />
                 <input
                   type="checkbox"
-                  ?checked=${this.options.kanjicomponents}
-                  @change=${(event: { target: HTMLInputElement }) =>
-                    (this.options!.kanjicomponents = event.target.checked)}
+                  ?checked=${options.kanjicomponents}
+                  @change=${(event: OptionEvent) =>
+                    (event.__update = {
+                      kanjicomponents: event.target.checked,
+                    })}
                 />
                 Kanji Components
                 <br />
-                ${this.options.kanjiInfo.map((component) => {
+                ${options.kanjiInfo.map((component) => {
                   return html`
                     <input
                       type="checkbox"
                       value=${component.code}
                       ?checked=${component.shouldDisplay}
-                      @change=${this.updateKanjiInfo}
+                      @change=${(event: OptionEvent) =>
+                        this.updateKanjiInfo(options.kanjiInfo, event)}
                     />
                     ${component.name}
                     <br />
@@ -240,25 +253,19 @@ export class OptionsForm extends LitElement {
                   <td>Line ending:</td>
                   <td>
                     <select
-                      @change=${(event: { target: HTMLInputElement }) =>
-                        (this.options!.lineEnding = event.target.value)}
+                      @change=${(event: OptionEvent) =>
+                        (event.__update = { lineEnding: event.target.value })}
                     >
-                      <option
-                        value="n"
-                        ?selected=${this.options.lineEnding === 'n'}
-                      >
+                      <option value="n" ?selected=${options.lineEnding === 'n'}>
                         Unix (\\n)
                       </option>
                       <option
                         value="rn"
-                        ?selected=${this.options.lineEnding === 'rn'}
+                        ?selected=${options.lineEnding === 'rn'}
                       >
                         Windows (\\r\\n)
                       </option>
-                      <option
-                        value="r"
-                        ?selected=${this.options.lineEnding === 'r'}
-                      >
+                      <option value="r" ?selected=${options.lineEnding === 'r'}>
                         Mac (\\r)
                       </option>
                     </select>
@@ -268,24 +275,26 @@ export class OptionsForm extends LitElement {
                   <td>Field separator:</td>
                   <td>
                     <select
-                      @change=${(event: { target: HTMLInputElement }) =>
-                        (this.options!.copySeparator = event.target.value)}
+                      @change=${(event: OptionEvent) =>
+                        (event.__update = {
+                          copySeparator: event.target.value,
+                        })}
                     >
                       <option
                         value="tab"
-                        ?selected=${this.options.copySeparator === 'tab'}
+                        ?selected=${options.copySeparator === 'tab'}
                       >
                         Tab
                       </option>
                       <option
                         value="comma"
-                        ?selected=${this.options.copySeparator === 'comma'}
+                        ?selected=${options.copySeparator === 'comma'}
                       >
                         Comma
                       </option>
                       <option
                         value="space"
-                        ?selected=${this.options.copySeparator === 'space'}
+                        ?selected=${options.copySeparator === 'space'}
                       >
                         Space
                       </option>
@@ -298,10 +307,11 @@ export class OptionsForm extends LitElement {
                     <input
                       type="number"
                       min="1"
-                      value=${this.options.maxClipCopyEntries}
-                      @change=${(event: { target: HTMLInputElement }) =>
-                        (this.options!.maxClipCopyEntries =
-                          event.target.valueAsNumber)}
+                      value=${options.maxClipCopyEntries}
+                      @change=${(event: OptionEvent) =>
+                        (event.__update = {
+                          maxClipCopyEntries: event.target.valueAsNumber,
+                        })}
                     />
                   </td>
                 </tr>
@@ -311,9 +321,9 @@ export class OptionsForm extends LitElement {
               <h1>Text-To-Speech</h1>
               <input
                 type="checkbox"
-                ?checked=${this.options.ttsEnabled}
-                @change=${(event: { target: HTMLInputElement }) =>
-                  (this.options!.ttsEnabled = event.target.checked)}
+                ?checked=${options.ttsEnabled}
+                @change=${(event: OptionEvent) =>
+                  (event.__update = { ttsEnabled: event.target.checked })}
               />
               Enabled
             </div>

@@ -41,7 +41,7 @@
 
 /** Exposes abstraction over dictionary files allowing searches and lookups. */
 
-import { rcxMain } from './rikaichan';
+import { Config } from './configuration';
 
 // Be careful of using directly due to object keys.
 const defaultDictEntryData = {
@@ -97,12 +97,16 @@ class RcxDict {
   radData: string[] = [];
   difReasons: string[] = [];
   difRules: DeinflectionRuleGroup[] = [];
+  config: Config;
 
-  private constructor() {}
+  private constructor(config: Config) {
+    this.config = config;
+  }
 
-  static create() {
+  static async create(initialConfig: Config) {
     if (!RcxDict.instance) {
-      RcxDict.instance = new RcxDict();
+      RcxDict.instance = new RcxDict(initialConfig);
+      await RcxDict.instance.init(true);
     }
     return RcxDict.instance;
   }
@@ -338,9 +342,6 @@ class RcxDict {
     doNames: boolean,
     max?: number
   ): DictEntryData | null {
-    if (rcxMain.config == null) {
-      throw new TypeError('rcxMain.config must not be null after init.');
-    }
     let i;
     let u;
     let v;
@@ -420,7 +421,7 @@ class RcxDict {
     } else {
       dict = this.wordDict;
       index = this.wordIndex;
-      maxTrim = rcxMain.config.maxDictEntries;
+      maxTrim = this.config.maxDictEntries;
     }
 
     if (max) maxTrim = max;
@@ -516,9 +517,6 @@ class RcxDict {
   }
 
   translate(text: string): (DictEntryData & { textLen: number }) | null {
-    if (rcxMain.config == null) {
-      throw TypeError('rcxMain.config must not be null after init.');
-    }
     let e: DictEntryData | null;
     const o: DictEntryData & {
       textLen: number;
@@ -528,7 +526,7 @@ class RcxDict {
     while (text.length > 0) {
       e = this.wordSearch(text, false, 1);
       if (e != null) {
-        if (o.data.length >= rcxMain.config.maxDictEntries) {
+        if (o.data.length >= this.config.maxDictEntries) {
           o.hasMore = true;
           break;
         }
@@ -634,10 +632,6 @@ class RcxDict {
 
   // TODO: Entry should be extracted as separate type.
   makeHtml(entry: DictEntryData | null) {
-    if (rcxMain.config == null) {
-      throw new TypeError('rcxMain.config must not be null after init.');
-    }
-
     let e;
     let c;
     let s;
@@ -702,7 +696,7 @@ class RcxDict {
         entry.misc.S +
         '</td>' +
         '</tr></table>';
-      if (rcxMain.config.kanjicomponents) {
+      if (this.config.kanjicomponents) {
         k = this.radData[bn].split('\t');
         box +=
           '<table class="k-bbox-tb">' +
@@ -745,7 +739,7 @@ class RcxDict {
       nums = '';
       j = 0;
 
-      const kanjiInfo = rcxMain.config.kanjiInfo;
+      const kanjiInfo = this.config.kanjiInfo;
       for (const info of kanjiInfo) {
         if (!info.shouldDisplay) continue;
         c = info.code;
@@ -851,10 +845,7 @@ class RcxDict {
       for (
         i = entry.index;
         i <
-        Math.min(
-          rcxMain.config.maxDictEntries + entry.index,
-          entry.data.length
-        );
+        Math.min(this.config.maxDictEntries + entry.index, entry.data.length);
         ++i
       ) {
         e = entry.data[i].entry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
@@ -896,7 +887,7 @@ class RcxDict {
         s = e[3];
         t = s.replace(/\//g, '; ');
 
-        if (!rcxMain.config.onlyreading) {
+        if (!this.config.onlyreading) {
           t = '<br/><span class="w-def">' + t + '</span><br/>';
         } else {
           t = '<br/>';
@@ -905,7 +896,7 @@ class RcxDict {
       b.push(t);
       if (
         entry.hasMore &&
-        entry.index < entry.data.length - rcxMain.config.maxDictEntries
+        entry.index < entry.data.length - this.config.maxDictEntries
       )
         b.push('<span class="small-info">... (\'k\' for more)</span><br/>');
     }
@@ -994,7 +985,5 @@ class RcxDict {
   }
 }
 
-const rcxDict = RcxDict.create();
-
-export { rcxDict };
-export type { RcxDict, DictEntryData };
+export { RcxDict };
+export type { DictEntryData };
