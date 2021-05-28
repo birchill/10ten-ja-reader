@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "rikaikun",
   "version": "1.2.1",
-  "description": "rikaikun shows the reading and English definition of Japanese words when you hover over Japanese text in Chrome.",
+  "description": "rikaikun shows the reading and English definition of Japanese words when you hover over Japanese text in the browser.",
   "icons": {
     "48": "images/icon48.png",
     "128": "images/icon128.png"
