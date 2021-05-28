@@ -66,10 +66,11 @@ class RcxMain {
   // The callback for `onActivated`
   // Just sends a message to the tab to enable itself if it hasn't
   // already
-  onTabSelect(tabId) {
+  onTabSelect(tabId: number | undefined) {
+    if (tabId == undefined) return;
     this._onTabSelect(tabId);
   }
-  _onTabSelect(tabId) {
+  _onTabSelect(tabId: number) {
     if (this.enabled == 1)
       chrome.tabs.sendMessage(tabId, {
         type: 'enable',
@@ -77,18 +78,19 @@ class RcxMain {
       });
   }
 
-  savePrep(clip, entry) {
-    let me;
+  // TODO(melink14): This is only called by `copyToClip`; investigate.
+  savePrep(forClipping: boolean, entries: DictEntryData[]) {
+    let maxEntries = this.config.maxDictEntries;
     let text;
     let i;
     let e;
 
-    const f = entry;
+    const f = entries;
     if (!f || f.length == 0) return null;
 
-    if (clip) {
+    if (forClipping) {
       // save to clipboard
-      me = this.config.maxClipCopyEntries;
+      maxEntries = this.config.maxClipCopyEntries;
     }
 
     text = '';
@@ -97,9 +99,9 @@ class RcxMain {
       if (e.kanji) {
         text += this.dict.makeText(e, 1);
       } else {
-        if (me <= 0) continue;
-        text += this.dict.makeText(e, me);
-        me -= e.data.length;
+        if (maxEntries <= 0) continue;
+        text += this.dict.makeText(e, maxEntries);
+        maxEntries -= e.data.length;
       }
     }
 
@@ -113,21 +115,24 @@ class RcxMain {
     return text;
   }
 
-  copyToClip(tab, entry) {
-    let text;
+  copyToClip(tab: chrome.tabs.Tab | undefined, entries: DictEntryData[]) {
+    if (tab?.id == undefined) return;
+    const text = this.savePrep(true, entries);
+    if (text == null) return;
 
-    if ((text = this.savePrep(1, entry)) != null) {
-      document.oncopy = function (event) {
-        event.clipboardData.setData('Text', text);
-        event.preventDefault();
-      };
-      document.execCommand('Copy');
-      document.oncopy = undefined;
-      chrome.tabs.sendMessage(tab.id, {
-        type: 'showPopup',
-        text: 'Copied to clipboard.',
-      });
-    }
+    const copyFunction = function (event: ClipboardEvent) {
+      // TODO(https://github.com/w3c/clipboard-apis/issues/64): Remove `!` when spec is fixed
+      // and typescript types are updated.
+      event.clipboardData!.setData('Text', text);
+      event.preventDefault();
+    };
+    document.addEventListener('copy', copyFunction);
+    document.execCommand('Copy');
+    document.removeEventListener('copy', copyFunction);
+    chrome.tabs.sendMessage(tab.id, {
+      type: 'showPopup',
+      text: 'Copied to clipboard.',
+    });
   }
 
   miniHelp =
@@ -147,9 +152,9 @@ class RcxMain {
 
   // Function which enables the inline mode of rikaikun
   // Unlike rikaichan there is no lookup bar so this is the only enable.
-  inlineEnable(tab, mode) {
+  inlineEnable(tabId: number, mode: number) {
     // Send message to current tab to add listeners and create stuff
-    chrome.tabs.sendMessage(tab.id, {
+    chrome.tabs.sendMessage(tabId, {
       type: 'enable',
       config: this.config,
     });
@@ -157,12 +162,12 @@ class RcxMain {
 
     if (mode == 1) {
       if (this.config.minihelp)
-        chrome.tabs.sendMessage(tab.id, {
+        chrome.tabs.sendMessage(tabId, {
           type: 'showPopup',
           text: this.miniHelp,
         });
       else
-        chrome.tabs.sendMessage(tab.id, {
+        chrome.tabs.sendMessage(tabId, {
           type: 'showPopup',
           text: 'Rikaikun enabled!',
         });
@@ -183,26 +188,25 @@ class RcxMain {
     chrome.windows.getAll({ populate: true }, function (windows) {
       for (let i = 0; i < windows.length; ++i) {
         const tabs = windows[i].tabs;
+        if (tabs == undefined) continue;
         for (let j = 0; j < tabs.length; ++j) {
-          chrome.tabs.sendMessage(tabs[j].id, { type: 'disable' });
+          if (tabs[j].id == undefined) continue;
+          chrome.tabs.sendMessage(tabs[j].id!, { type: 'disable' });
         }
       }
     });
   }
 
-  inlineToggle(tab) {
-    if (this.enabled) this.inlineDisable(tab, 1);
-    else this.inlineEnable(tab, 1);
+  inlineToggle(tab: chrome.tabs.Tab) {
+    if (tab?.id == undefined) return;
+    if (this.enabled) this.inlineDisable();
+    else this.inlineEnable(tab.id, 1);
   }
 
   kanjiN = 1;
   namesN = 2;
 
   showMode = 0;
-
-  nextDict() {
-    this.showMode = (this.showMode + 1) % this.dictCount;
-  }
 
   resetDict() {
     this.showMode = 0;
@@ -213,7 +217,7 @@ class RcxMain {
   defaultDict = '2';
   nextDict = '3';
 
-  search(text, dictOption) {
+  search(text: string, dictOption: string) {
     switch (dictOption) {
       case this.forceKanji:
         const e = this.dict.kanjiSearch(text.charAt(0));
