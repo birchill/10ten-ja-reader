@@ -98,9 +98,13 @@ class RcxContent {
       window.removeEventListener('mouseup', this.onMouseUp, false);
 
       e = document.getElementById('rikaichan-css');
-      if (e?.parentNode) e.parentNode.removeChild(e);
+      if (e?.parentNode) {
+        e.parentNode.removeChild(e);
+      }
       e = document.getElementById('rikaichan-window');
-      if (e?.parentNode) e.parentNode.removeChild(e);
+      if (e?.parentNode) {
+        e.parentNode.removeChild(e);
+      }
 
       this.clearHi();
       delete window.rikaichan;
@@ -127,7 +131,9 @@ class RcxContent {
   ) {
     const topdoc = window.document;
 
-    if (isNaN(x) || isNaN(y)) x = y = 0;
+    if (isNaN(x) || isNaN(y)) {
+      x = y = 0;
+    }
 
     let popup = topdoc.getElementById('rikaichan-window');
     if (!popup) {
@@ -188,7 +194,9 @@ class RcxContent {
       let pH = popup.offsetHeight;
 
       // guess!
-      if (pW <= 0) pW = 200;
+      if (pW <= 0) {
+        pW = 200;
+      }
       if (pH <= 0) {
         pH = 0;
         let j = 0;
@@ -219,13 +227,16 @@ class RcxContent {
           y += p.offsetTop;
           p = p.offsetParent! as HTMLElement;
         }
-        if (elem.offsetTop > (elem.parentNode! as HTMLElement).clientHeight)
+        if (elem.offsetTop > (elem.parentNode! as HTMLElement).clientHeight) {
           y -= elem.offsetTop;
+        }
 
         if (x + popup.offsetWidth > window.innerWidth) {
           // too much to the right, go left
           x -= popup.offsetWidth + 5;
-          if (x < 0) x = 0;
+          if (x < 0) {
+            x = 0;
+          }
         } else {
           // use SELECT's width
           x += (elem.parentNode! as HTMLElement).offsetWidth + 5;
@@ -234,14 +245,18 @@ class RcxContent {
         // go left if necessary
         if (x + pW > window.innerWidth - 20) {
           x = window.innerWidth - pW - 20;
-          if (x < 0) x = 0;
+          if (x < 0) {
+            x = 0;
+          }
         }
 
         // below the mouse
         let v = 25;
 
         // under the popup title
-        if (elem.title && elem.title !== '') v += 20;
+        if (elem.title && elem.title !== '') {
+          v += 20;
+        }
 
         // go up if necessary
         if (y + v + pH > window.innerHeight) {
@@ -252,7 +267,9 @@ class RcxContent {
             // if can't go up, still go down to prevent blocking cursor
             y += v;
           }
-        } else y += v;
+        } else {
+          y += v;
+        }
 
         x += window.scrollX;
         y += window.scrollY;
@@ -282,7 +299,9 @@ class RcxContent {
 
   clearHi() {
     const tdata = window.rikaichan;
-    if (!tdata || !tdata.prevSelView) return;
+    if (!tdata || !tdata.prevSelView) {
+      return;
+    }
     if (tdata.prevSelView.closed) {
       tdata.prevSelView = undefined;
       return;
@@ -296,7 +315,9 @@ class RcxContent {
       // The reason for this is becasue if there's no selection
       // we probably clicked somewhere else and we don't want to
       // bounce back.
-      if (!sel.toString()) tdata.oldTA = undefined;
+      if (!sel.toString()) {
+        tdata.oldTA = undefined;
+      }
 
       // clear all selections
       sel.removeAllRanges();
@@ -348,10 +369,18 @@ class RcxContent {
       }
       return;
     }
-    if (ev.shiftKey && ev.keyCode !== 16) return;
-    if (this.keysDown[ev.keyCode]) return;
-    if (!this.isVisible()) return;
-    if (window.rikaichan!.config!.disablekeys && ev.keyCode !== 16) return;
+    if (ev.shiftKey && ev.keyCode !== 16) {
+      return;
+    }
+    if (this.keysDown[ev.keyCode]) {
+      return;
+    }
+    if (!this.isVisible()) {
+      return;
+    }
+    if (window.rikaichan!.config!.disablekeys && ev.keyCode !== 16) {
+      return;
+    }
 
     let i;
     let shouldPreventDefault = true;
@@ -366,7 +395,9 @@ class RcxContent {
       case 74: // j
         // reverse cycle through definitions if > max (maxDictEntries)
         e = this.lastFound[0];
-        if (e.data.length < maxDictEntries) break;
+        if (e.data.length < maxDictEntries) {
+          break;
+        }
         if (!e.index) {
           e.index = 0;
         }
@@ -433,7 +464,9 @@ class RcxContent {
           rikaichan.uofs = --ofs!;
           if (this.show(rikaichan, this.defaultDict) >= 0) {
             // TODO: Figure out if this should be changed as per ancient comment.
-            if (ofs! >= rikaichan.uofs) break; // ! change later
+            if (ofs! >= rikaichan.uofs) {
+              break;
+            } // ! change later
           }
         }
         break;
@@ -449,7 +482,9 @@ class RcxContent {
         const rikaiData = (ev.currentTarget! as Window).rikaichan!;
         for (i = 50; i > 0; --i) {
           rikaiData.uofs! += rikaiData.uofsNext!;
-          if (this.show(rikaiData, this.defaultDict) >= 0) break;
+          if (this.show(rikaiData, this.defaultDict) >= 0) {
+            break;
+          }
         }
         break;
       case 89: // y
@@ -475,28 +510,39 @@ class RcxContent {
     this._onMouseDown(ev);
   };
   _onMouseDown(ev: MouseEvent) {
-    if (ev.button !== 0) return;
-    if (this.isVisible()) this.clearHi();
+    if (ev.button !== 0) {
+      return;
+    }
+    if (this.isVisible()) {
+      this.clearHi();
+    }
     this.mDown = true;
 
     // If we click outside of a text box then we set
     // oldCaret to -1 as an indicator not to restore position
     // Otherwise, we switch our saved textarea to whereever
     // we just clicked
-    if (!('form' in ev.target!)) window.rikaichan!.oldCaret = -1;
-    else window.rikaichan!.oldTA = ev.target;
+    if (!('form' in ev.target!)) {
+      window.rikaichan!.oldCaret = -1;
+    } else {
+      window.rikaichan!.oldTA = ev.target;
+    }
   }
 
   onMouseUp = (ev: MouseEvent) => {
     this._onMouseUp(ev);
   };
   _onMouseUp(ev: MouseEvent) {
-    if (ev.button !== 0) return;
+    if (ev.button !== 0) {
+      return;
+    }
     this.mDown = false;
   }
 
   onKeyUp = (ev: KeyboardEvent) => {
-    if (this.keysDown[ev.keyCode]) this.keysDown[ev.keyCode] = 0;
+    if (this.keysDown[ev.keyCode]) {
+      this.keysDown[ev.keyCode] = 0;
+    }
   };
 
   unicodeInfo(c: string) {
@@ -635,9 +681,12 @@ class RcxContent {
   getNext(node: Node): Node | null {
     let nextNode;
 
-    if ((nextNode = node.nextSibling) !== null) return nextNode;
-    if ((nextNode = node.parentNode) !== null && this.isInline(nextNode))
+    if ((nextNode = node.nextSibling) !== null) {
+      return nextNode;
+    }
+    if ((nextNode = node.parentNode) !== null && this.isInline(nextNode)) {
       return this.getNext(nextNode);
+    }
 
     return null;
   }
@@ -658,7 +707,9 @@ class RcxContent {
       return pseudoTextNode.value.substring(offset, endIndex);
     }
 
-    if (rangeParent.nodeType !== Node.TEXT_NODE) return '';
+    if (rangeParent.nodeType !== Node.TEXT_NODE) {
+      return '';
+    }
 
     const textRange = rangeParent as Text;
 
@@ -677,8 +728,9 @@ class RcxContent {
         XPathResult.BOOLEAN_TYPE,
         null
       ).booleanValue
-    )
+    ) {
       return '';
+    }
 
     const endIndex = Math.min(textRange.data.length, offset + maxLength);
     text += textRange.data.substring(offset, endIndex);
@@ -690,13 +742,14 @@ class RcxContent {
       (nextNode = this.getNext(nextNode)) !== null &&
       this.isInline(nextNode) &&
       text.length < maxLength
-    )
+    ) {
       text += this.getInlineText(
         nextNode,
         selEndList,
         maxLength - text.length,
         xpathExpr
       );
+    }
 
     return text;
   }
@@ -775,7 +828,9 @@ class RcxContent {
     }
     this.lastFound = [e];
 
-    if (!e.matchLen) e.matchLen = 1;
+    if (!e.matchLen) {
+      e.matchLen = 1;
+    }
     tdata.uofsNext = e.matchLen;
     tdata.uofs = ro - tdata.prevRangeOfs!;
 
@@ -827,7 +882,9 @@ class RcxContent {
           const textNode = rp as HTMLTextAreaElement | HTMLInputElement;
           // If there is already a selected region not caused by
           // rikaikun, leave it alone
-          if (sel.toString() && tdata.selText !== sel.toString()) return;
+          if (sel.toString() && tdata.selText !== sel.toString()) {
+            return;
+          }
 
           // If there is no selected region and the saved
           // textbox is the same as teh current one
@@ -860,15 +917,18 @@ class RcxContent {
     // Special case for leaving a text box to an outside japanese
     // Even if we're not currently in a text area we should save
     // the last one we were in.
-    if (tdata.oldTA && !sel.toString() && tdata.oldCaret! >= 0)
+    if (tdata.oldTA && !sel.toString() && tdata.oldCaret! >= 0) {
       tdata.oldCaret = tdata.oldTA.selectionStart!;
+    }
 
     let selEnd: { node: CharacterData; offset: number };
     let offset = matchLen + ro;
 
     for (let i = 0, len = selEndList.length; i < len; i++) {
       selEnd = selEndList[i];
-      if (offset <= selEnd.offset) break;
+      if (offset <= selEnd.offset) {
+        break;
+      }
       offset -= selEnd.offset;
     }
 
@@ -876,7 +936,9 @@ class RcxContent {
     range.setStart(rp, ro);
     range.setEnd(selEnd!.node, offset);
 
-    if (sel.toString() && tdata.selText !== sel.toString()) return;
+    if (sel.toString() && tdata.selText !== sel.toString()) {
+      return;
+    }
     sel.removeAllRanges();
     sel.addRange(range);
     tdata.selText = sel.toString();
@@ -908,7 +970,9 @@ class RcxContent {
     e.title = tdata.title!.substr(0, e.textLen).replace(/[\x00-\xff]/g, (c) => {
       return '&#' + c.charCodeAt(0) + ';';
     });
-    if (tdata.title!.length > e.textLen) e.title += '...';
+    if (tdata.title!.length > e.textLen) {
+      e.title += '...';
+    }
 
     this.lastFound = [e];
 
@@ -952,7 +1016,9 @@ class RcxContent {
   getTotalOffset(parent: Node, tNode: Node, offset: number) {
     let fChild = parent.firstChild!;
     let realO = offset;
-    if (fChild === tNode) return offset;
+    if (fChild === tNode) {
+      return offset;
+    }
     do {
       let val = 0;
       if (fChild.nodeName === 'BR') {
@@ -1094,19 +1160,27 @@ class RcxContent {
       if (eventTarget === tdata.prevTarget && this.isVisible()) {
         // console.log("exit due to same target");
         if (tdata.title) {
-          if (fake) document.body.removeChild(fake);
+          if (fake) {
+            document.body.removeChild(fake);
+          }
           return;
         }
         if (rp === tdata.prevRangeNode && ro === tdata.prevRangeOfs) {
-          if (fake) document.body.removeChild(fake);
+          if (fake) {
+            document.body.removeChild(fake);
+          }
           return;
         }
       }
 
-      if (fake) document.body.removeChild(fake);
+      if (fake) {
+        document.body.removeChild(fake);
+      }
     } catch (err) {
       console.log(err.message);
-      if (fake) document.body.removeChild(fake);
+      if (fake) {
+        document.body.removeChild(fake);
+      }
       return;
     }
 

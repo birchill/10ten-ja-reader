@@ -73,7 +73,9 @@ async function createNormalizedConfiguration(): Promise<MutableConfig> {
 const configPromise: Promise<MutableConfig> = createNormalizedConfiguration();
 
 chrome.storage.onChanged.addListener(async (changes, area) => {
-  if (area !== 'sync') return;
+  if (area !== 'sync') {
+    return;
+  }
   const config = await configPromise;
 
   Object.entries(changes).map((change) => {

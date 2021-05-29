@@ -67,15 +67,18 @@ class RcxMain {
   // Just sends a message to the tab to enable itself if it hasn't
   // already
   onTabSelect(tabId: number | undefined) {
-    if (tabId === undefined) return;
+    if (tabId === undefined) {
+      return;
+    }
     this._onTabSelect(tabId);
   }
   _onTabSelect(tabId: number) {
-    if (this.enabled === 1)
+    if (this.enabled === 1) {
       chrome.tabs.sendMessage(tabId, {
         type: 'enable',
         config: this.config,
       });
+    }
   }
 
   // TODO(melink14): This is only called by `copyToClip`; investigate.
@@ -86,7 +89,9 @@ class RcxMain {
     let e;
 
     const f = entries;
-    if (!f || f.length === 0) return null;
+    if (!f || f.length === 0) {
+      return null;
+    }
 
     if (forClipping) {
       // save to clipboard
@@ -99,28 +104,39 @@ class RcxMain {
       if (e.kanji) {
         text += this.dict.makeText(e, 1);
       } else {
-        if (maxEntries <= 0) continue;
+        if (maxEntries <= 0) {
+          continue;
+        }
         text += this.dict.makeText(e, maxEntries);
         maxEntries -= e.data.length;
       }
     }
 
-    if (this.config.lineEnding === 'rn') text = text.replace(/\n/g, '\r\n');
-    else if (this.config.lineEnding === 'r') text = text.replace(/\n/g, '\r');
+    if (this.config.lineEnding === 'rn') {
+      text = text.replace(/\n/g, '\r\n');
+    } else if (this.config.lineEnding === 'r') {
+      text = text.replace(/\n/g, '\r');
+    }
     if (this.config.copySeparator !== 'tab') {
-      if (this.config.copySeparator === 'comma')
+      if (this.config.copySeparator === 'comma') {
         return text.replace(/\t/g, ',');
-      if (this.config.copySeparator === 'space')
+      }
+      if (this.config.copySeparator === 'space') {
         return text.replace(/\t/g, ' ');
+      }
     }
 
     return text;
   }
 
   copyToClip(tab: chrome.tabs.Tab | undefined, entries: DictEntryData[]) {
-    if (tab?.id === undefined) return;
+    if (tab?.id === undefined) {
+      return;
+    }
     const text = this.savePrep(true, entries);
-    if (text === null) return;
+    if (text === null) {
+      return;
+    }
 
     const copyFunction = function (event: ClipboardEvent) {
       // TODO(https://github.com/w3c/clipboard-apis/issues/64): Remove `!` when spec is fixed
@@ -163,16 +179,17 @@ class RcxMain {
     this.enabled = 1;
 
     if (mode === 1) {
-      if (this.config.minihelp)
+      if (this.config.minihelp) {
         chrome.tabs.sendMessage(tabId, {
           type: 'showPopup',
           text: this.miniHelp,
         });
-      else
+      } else {
         chrome.tabs.sendMessage(tabId, {
           type: 'showPopup',
           text: 'Rikaikun enabled!',
         });
+      }
     }
     chrome.browserAction.setBadgeBackgroundColor({
       color: [255, 0, 0, 255],
@@ -190,9 +207,13 @@ class RcxMain {
     chrome.windows.getAll({ populate: true }, (windows) => {
       for (let i = 0; i < windows.length; ++i) {
         const tabs = windows[i].tabs;
-        if (tabs === undefined) continue;
+        if (tabs === undefined) {
+          continue;
+        }
         for (let j = 0; j < tabs.length; ++j) {
-          if (tabs[j].id === undefined) continue;
+          if (tabs[j].id === undefined) {
+            continue;
+          }
           chrome.tabs.sendMessage(tabs[j].id!, { type: 'disable' });
         }
       }
@@ -200,9 +221,14 @@ class RcxMain {
   }
 
   inlineToggle(tab: chrome.tabs.Tab) {
-    if (tab?.id === undefined) return;
-    if (this.enabled) this.inlineDisable();
-    else this.inlineEnable(tab.id, 1);
+    if (tab?.id === undefined) {
+      return;
+    }
+    if (this.enabled) {
+      this.inlineDisable();
+    } else {
+      this.inlineEnable(tab.id, 1);
+    }
   }
 
   kanjiN = 1;
@@ -247,7 +273,9 @@ class RcxMain {
           e = this.dict.wordSearch(text, true);
           break;
       }
-      if (e) break;
+      if (e) {
+        break;
+      }
       this.showMode = (this.showMode + 1) % this.dictCount;
     } while (this.showMode !== m);
 

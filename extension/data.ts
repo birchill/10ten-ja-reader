@@ -166,12 +166,16 @@ class RcxDict {
     // Is this just in case there is blank shit in the file.  It was written
     // by Jon though.
     // I suppose this is more robust
-    while (a.length > 0 && a[a.length - 1].length === 0) a.pop();
+    while (a.length > 0 && a[a.length - 1].length === 0) {
+      a.pop();
+    }
     return a;
   }
 
   loadNames() {
-    if (this.nameDict && this.nameIndex) return;
+    if (this.nameDict && this.nameIndex) {
+      return;
+    }
 
     this.nameDict = this.fileRead(chrome.extension.getURL('data/names.dat'));
     this.nameIndex = this.fileRead(chrome.extension.getURL('data/names.idx'));
@@ -235,9 +239,13 @@ class RcxDict {
       i = data.lastIndexOf('\n', mi) + 1;
 
       mis = data.substr(i, tlen);
-      if (text < mis) end = i - 1;
-      else if (text > mis) beg = data.indexOf('\n', mi + 1) + 1;
-      else return data.substring(i, data.indexOf('\n', mi + 1));
+      if (text < mis) {
+        end = i - 1;
+      } else if (text > mis) {
+        beg = data.indexOf('\n', mi + 1) + 1;
+      } else {
+        return data.substring(i, data.indexOf('\n', mi + 1));
+      }
     }
     return null;
   }
@@ -270,7 +278,9 @@ class RcxDict {
             if (type & rule.typeMask && end === rule.from) {
               const newWord =
                 word.substr(0, word.length - rule.from.length) + rule.to;
-              if (newWord.length <= 1) continue;
+              if (newWord.length <= 1) {
+                continue;
+              }
               o = { word: word, type: 0xff, reason: '' } as Deinflection;
               if (have[newWord] !== undefined) {
                 o = r[have[newWord]];
@@ -279,10 +289,12 @@ class RcxDict {
                 continue;
               }
               have[newWord] = r.length;
-              if (r[i].reason.length)
+              if (r[i].reason.length) {
                 o.reason =
                   this.difReasons[rule.reasonIndex] + ' &lt; ' + r[i].reason;
-              else o.reason = this.difReasons[rule.reasonIndex];
+              } else {
+                o.reason = this.difReasons[rule.reasonIndex];
+              }
               o.type = rule.typeMask >> 8;
               o.word = newWord;
               r.push(o);
@@ -342,7 +354,9 @@ class RcxDict {
         continue;
       }
 
-      if (u <= 0x3000) break;
+      if (u <= 0x3000) {
+        break;
+      }
 
       // full-width katakana to hiragana
       if (u >= 0x30a1 && u <= 0x30f3) {
@@ -401,7 +415,9 @@ class RcxDict {
       maxTrim = this.config.maxDictEntries;
     }
 
-    if (max) maxTrim = max;
+    if (max) {
+      maxTrim = max;
+    }
 
     entry.data = [];
 
@@ -409,8 +425,11 @@ class RcxDict {
       const showInf = count !== 0;
       let trys;
 
-      if (doNames) trys = [{ word: word, type: 0xff, reason: null }];
-      else trys = this.deinflect(word);
+      if (doNames) {
+        trys = [{ word: word, type: 0xff, reason: null }];
+      } else {
+        trys = this.deinflect(word);
+      }
 
       for (i = 0; i < trys.length; i++) {
         u = trys[i];
@@ -433,7 +452,9 @@ class RcxDict {
 
         for (let j = 0; j < ix.length; ++j) {
           const ofs = ix[j];
-          if (have[ofs]) continue;
+          if (have[ofs]) {
+            continue;
+          }
 
           const dentry = dict.substring(ofs, dict.indexOf('\n', ofs));
 
@@ -452,14 +473,26 @@ class RcxDict {
             const x = dentry.split(/[,()]/);
             const y = u.type;
             let z = x.length - 1;
-            if (z > 10) z = 10;
+            if (z > 10) {
+              z = 10;
+            }
             for (; z >= 0; --z) {
               w = x[z];
-              if (y & 1 && w === 'v1') break;
-              if (y & 4 && w === 'adj-i') break;
-              if (y & 2 && w.substr(0, 2) === 'v5') break;
-              if (y & 16 && w.substr(0, 3) === 'vs-') break;
-              if (y & 8 && w === 'vk') break;
+              if (y & 1 && w === 'v1') {
+                break;
+              }
+              if (y & 4 && w === 'adj-i') {
+                break;
+              }
+              if (y & 2 && w.substr(0, 2) === 'v5') {
+                break;
+              }
+              if (y & 16 && w.substr(0, 3) === 'vs-') {
+                break;
+              }
+              if (y & 8 && w === 'vk') {
+                break;
+              }
             }
             ok = z !== -1;
           }
@@ -470,24 +503,35 @@ class RcxDict {
 
             have[ofs] = 1;
             ++count;
-            if (maxLen === 0) maxLen = trueLen[word.length];
+            if (maxLen === 0) {
+              maxLen = trueLen[word.length];
+            }
 
             let reason: string | undefined;
             if (trys[i].reason) {
-              if (showInf) reason = '&lt; ' + trys[i].reason + ' &lt; ' + word;
-              else reason = '&lt; ' + trys[i].reason;
+              if (showInf) {
+                reason = '&lt; ' + trys[i].reason + ' &lt; ' + word;
+              } else {
+                reason = '&lt; ' + trys[i].reason;
+              }
             }
 
             entry.data.push({ entry: dentry, reason });
           }
         } // for j < ix.length
-        if (count >= maxTrim) break;
+        if (count >= maxTrim) {
+          break;
+        }
       } // for i < trys.length
-      if (count >= maxTrim) break;
+      if (count >= maxTrim) {
+        break;
+      }
       word = word.substr(0, word.length - 1);
     } // while word.length > 0
 
-    if (entry.data.length === 0) return null;
+    if (entry.data.length === 0) {
+      return null;
+    }
 
     entry.matchLen = maxLen;
     return entry;
@@ -528,13 +572,19 @@ class RcxDict {
     let i;
 
     i = kanji.charCodeAt(0);
-    if (i < 0x3000) return null;
+    if (i < 0x3000) {
+      return null;
+    }
 
     const kde = this.find(this.kanjiData, kanji);
-    if (!kde) return null;
+    if (!kde) {
+      return null;
+    }
 
     const a = kde.split('|');
-    if (a.length !== 6) return null;
+    if (a.length !== 6) {
+      return null;
+    }
 
     const entry = RcxDict.createDefaultDictEntry();
     entry.kanji = a[0];
@@ -617,7 +667,9 @@ class RcxDict {
     let j;
     let n;
 
-    if (entry === null) return '';
+    if (entry === null) {
+      return '';
+    }
 
     const b = [];
 
@@ -718,7 +770,9 @@ class RcxDict {
 
       const kanjiInfo = this.config.kanjiInfo;
       for (const info of kanjiInfo) {
-        if (!info.shouldDisplay) continue;
+        if (!info.shouldDisplay) {
+          continue;
+        }
         c = info.code;
         s = entry.misc[c];
         c = ' class="k-mix-td' + (j ^= 1) + '"';
@@ -733,7 +787,9 @@ class RcxDict {
           (s || '-') +
           '</td></tr>';
       }
-      if (nums.length) nums = '<table class="k-mix-tb">' + nums + '</table>';
+      if (nums.length) {
+        nums = '<table class="k-mix-tb">' + nums + '</table>';
+      }
 
       b.push('<table class="k-main-tb"><tr><td valign="top">');
       b.push(box);
@@ -754,19 +810,23 @@ class RcxDict {
       );
       for (i = 0; i < entry.data.length; ++i) {
         e = entry.data[i].entry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
-        if (!e) continue;
+        if (!e) {
+          continue;
+        }
 
         // the next two lines re-process the entries that contain separate
         // search key and spelling due to mixed hiragana/katakana spelling
         const e3 = e[3].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
-        if (e3) e = e3;
+        if (e3) {
+          e = e3;
+        }
 
         if (s !== e[3]) {
           c.push(t);
           t = '';
         }
 
-        if (e[2])
+        if (e[2]) {
           c.push(
             '<span class="w-kanji">' +
               e[1] +
@@ -774,7 +834,9 @@ class RcxDict {
               e[2] +
               '</span><br/> '
           );
-        else c.push('<span class="w-kana">' + e[1] + '</span><br/> ');
+        } else {
+          c.push('<span class="w-kana">' + e[1] + '</span><br/> ');
+        }
 
         s = e[3];
         console.log('e[1]: ' + e[1]);
@@ -791,8 +853,12 @@ class RcxDict {
         c = c.slice(n, c.length);
         for (i = 0; i < c.length; ++i) {
           if (c[i].indexOf('w-def') !== -1) {
-            if (t !== c[i]) b.push(c[i]);
-            if (i === 0) c.shift();
+            if (t !== c[i]) {
+              b.push(c[i]);
+            }
+            if (i === 0) {
+              c.shift();
+            }
             break;
           }
         }
@@ -802,7 +868,9 @@ class RcxDict {
       } else {
         b.push(c.join(''));
       }
-      if (entry.hasMore) b.push('...<br/>');
+      if (entry.hasMore) {
+        b.push('...<br/>');
+      }
       b.push('</td></tr></table>');
     } else {
       if (entry.title) {
@@ -816,8 +884,9 @@ class RcxDict {
         entry.index = 0;
       }
 
-      if (entry.index !== 0)
+      if (entry.index !== 0) {
         b.push('<span class="small-info">... (\'j\' for more)</span><br/>');
+      }
 
       for (
         i = entry.index;
@@ -826,7 +895,9 @@ class RcxDict {
         ++i
       ) {
         e = entry.data[i].entry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
-        if (!e) continue;
+        if (!e) {
+          continue;
+        }
 
         /*
           e[1] = kanji/kana
@@ -842,15 +913,16 @@ class RcxDict {
         }
 
         if (e[2]) {
-          if (pK === e[1])
+          if (pK === e[1]) {
             k = '\u3001 <span class="w-kana">' + e[2] + '</span>';
-          else
+          } else {
             k +=
               '<span class="w-kanji">' +
               e[1] +
               '</span> &#32; <span class="w-kana">' +
               e[2] +
               '</span>';
+          }
           pK = e[1];
         } else {
           k += '<span class="w-kana">' + e[1] + '</span>';
@@ -858,8 +930,9 @@ class RcxDict {
         }
         b.push(k);
 
-        if (entry.data[i].reason)
+        if (entry.data[i].reason) {
           b.push(' <span class="w-conj">(' + entry.data[i].reason + ')</span>');
+        }
 
         s = e[3];
         t = s.replace(/\//g, '; ');
@@ -874,8 +947,9 @@ class RcxDict {
       if (
         entry.hasMore &&
         entry.index < entry.data.length - this.config.maxDictEntries
-      )
+      ) {
         b.push('<span class="small-info">... (\'k\' for more)</span><br/>');
+      }
     }
 
     return b.join('');
@@ -887,7 +961,9 @@ class RcxDict {
     let t;
     let i;
 
-    if (entry === null) return '';
+    if (entry === null) {
+      return '';
+    }
 
     const b = [];
 
@@ -899,7 +975,9 @@ class RcxDict {
 
     for (i = 0; i < entry.data.length; ++i) {
       e = entry.data[i].entry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
-      if (!e) continue;
+      if (!e) {
+        continue;
+      }
 
       s = e[3];
       t = s.replace(/\//g, '; ');
@@ -916,7 +994,9 @@ class RcxDict {
     let j;
     let t;
 
-    if (entry === null) return '';
+    if (entry === null) {
+      return '';
+    }
 
     const b = [];
 
@@ -943,10 +1023,14 @@ class RcxDict {
         );
       }
     } else {
-      if (max > entry.data.length) max = entry.data.length;
+      if (max > entry.data.length) {
+        max = entry.data.length;
+      }
       for (i = 0; i < max; ++i) {
         e = entry.data[i].entry.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
-        if (!e) continue;
+        if (!e) {
+          continue;
+        }
 
         if (e[2]) {
           b.push(e[1] + '\t' + e[2]);
