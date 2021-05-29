@@ -21,7 +21,6 @@
     "@typescript-eslint/unbound-method": "error",
     // TODO(espeed): Remove these and fix errors.
     "no-case-declarations": "off",
-    "eqeqeq": "off",
     "no-prototype-builtins": "off",
     "no-control-regex": "off"
   },

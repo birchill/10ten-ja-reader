@@ -75,19 +75,19 @@ const normalizeEntry = (entry: string) => {
     } else if (c >= 0xff66 && c <= 0xff9d) {
       // half-width katakana to hiragana
       c = HANKAKU_KATAKANA_TO_HIRAGANA[c - 0xff66];
-    } else if (c == 0xff9e) {
+    } else if (c === 0xff9e) {
       // voiced (used in half-width katakana) to hiragana
       if (previous >= 0xff73 && previous <= 0xff8e) {
         result = result.slice(0, -1);
         c = VOICED_KATAKANA_TO_HIRAGANA[previous - 0xff73];
       }
-    } else if (c == 0xff9f) {
+    } else if (c === 0xff9f) {
       // semi-voiced (used in half-width katakana) to hiragana
       if (previous >= 0xff8a && previous <= 0xff8e) {
         result = result.slice(0, -1);
         c = SEMIVOICED_KATAKANA_TO_HIRAGANA[previous - 0xff8a];
       }
-    } else if (c == 0xff5e) {
+    } else if (c === 0xff5e) {
       // ignore ～
       previous = 0;
       continue;
@@ -313,13 +313,13 @@ class KanjiDictParser extends Writable {
         // Augment Heisig 5th and 6th edition indices with keyword information.
         if (ref.startsWith('L')) {
           const keyword5th = this.#heisigData.get(matches[1])?.keyword_5th_ed;
-          if (keyword5th != null) {
+          if (keyword5th !== undefined) {
             finalRef += `:${keyword5th.replace(/ /g, ':')}`;
           }
         }
         if (ref.startsWith('DN')) {
           const keyword6th = this.#heisigData.get(matches[1])?.keyword_6th_ed;
-          if (keyword6th != null) {
+          if (keyword6th !== undefined) {
             finalRef += `:${keyword6th.replace(/ /g, ':')}`;
           }
         }

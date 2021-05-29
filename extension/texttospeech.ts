@@ -18,7 +18,7 @@ class TTS {
   play(text: string) {
     const now = new Date().valueOf();
     const limit = this.lastTime + 1000;
-    if (text != this.previousText || now > limit) {
+    if (text !== this.previousText || now > limit) {
       console.log('tts.speak(' + text + ')');
       window.speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance();

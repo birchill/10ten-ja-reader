@@ -502,7 +502,7 @@ class RcxDict {
 
     while (text.length > 0) {
       e = this.wordSearch(text, false, 1);
-      if (e != null) {
+      if (e !== null) {
         if (o.data.length >= this.config.maxDictEntries) {
           o.hasMore = true;
           break;
@@ -617,7 +617,7 @@ class RcxDict {
     let j;
     let n;
 
-    if (entry == null) return '';
+    if (entry === null) return '';
 
     const b = [];
 
@@ -887,7 +887,7 @@ class RcxDict {
     let t;
     let i;
 
-    if (entry == null) return '';
+    if (entry === null) return '';
 
     const b = [];
 
@@ -916,7 +916,7 @@ class RcxDict {
     let j;
     let t;
 
-    if (entry == null) return '';
+    if (entry === null) return '';
 
     const b = [];
 

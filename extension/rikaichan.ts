@@ -67,11 +67,11 @@ class RcxMain {
   // Just sends a message to the tab to enable itself if it hasn't
   // already
   onTabSelect(tabId: number | undefined) {
-    if (tabId == undefined) return;
+    if (tabId === undefined) return;
     this._onTabSelect(tabId);
   }
   _onTabSelect(tabId: number) {
-    if (this.enabled == 1)
+    if (this.enabled === 1)
       chrome.tabs.sendMessage(tabId, {
         type: 'enable',
         config: this.config,
@@ -86,7 +86,7 @@ class RcxMain {
     let e;
 
     const f = entries;
-    if (!f || f.length == 0) return null;
+    if (!f || f.length === 0) return null;
 
     if (forClipping) {
       // save to clipboard
@@ -105,20 +105,22 @@ class RcxMain {
       }
     }
 
-    if (this.config.lineEnding == 'rn') text = text.replace(/\n/g, '\r\n');
-    else if (this.config.lineEnding == 'r') text = text.replace(/\n/g, '\r');
-    if (this.config.copySeparator != 'tab') {
-      if (this.config.copySeparator == 'comma') return text.replace(/\t/g, ',');
-      if (this.config.copySeparator == 'space') return text.replace(/\t/g, ' ');
+    if (this.config.lineEnding === 'rn') text = text.replace(/\n/g, '\r\n');
+    else if (this.config.lineEnding === 'r') text = text.replace(/\n/g, '\r');
+    if (this.config.copySeparator !== 'tab') {
+      if (this.config.copySeparator === 'comma')
+        return text.replace(/\t/g, ',');
+      if (this.config.copySeparator === 'space')
+        return text.replace(/\t/g, ' ');
     }
 
     return text;
   }
 
   copyToClip(tab: chrome.tabs.Tab | undefined, entries: DictEntryData[]) {
-    if (tab?.id == undefined) return;
+    if (tab?.id === undefined) return;
     const text = this.savePrep(true, entries);
-    if (text == null) return;
+    if (text === null) return;
 
     const copyFunction = function (event: ClipboardEvent) {
       // TODO(https://github.com/w3c/clipboard-apis/issues/64): Remove `!` when spec is fixed
@@ -160,7 +162,7 @@ class RcxMain {
     });
     this.enabled = 1;
 
-    if (mode == 1) {
+    if (mode === 1) {
       if (this.config.minihelp)
         chrome.tabs.sendMessage(tabId, {
           type: 'showPopup',
@@ -188,9 +190,9 @@ class RcxMain {
     chrome.windows.getAll({ populate: true }, (windows) => {
       for (let i = 0; i < windows.length; ++i) {
         const tabs = windows[i].tabs;
-        if (tabs == undefined) continue;
+        if (tabs === undefined) continue;
         for (let j = 0; j < tabs.length; ++j) {
-          if (tabs[j].id == undefined) continue;
+          if (tabs[j].id === undefined) continue;
           chrome.tabs.sendMessage(tabs[j].id!, { type: 'disable' });
         }
       }
@@ -198,7 +200,7 @@ class RcxMain {
   }
 
   inlineToggle(tab: chrome.tabs.Tab) {
-    if (tab?.id == undefined) return;
+    if (tab?.id === undefined) return;
     if (this.enabled) this.inlineDisable();
     else this.inlineEnable(tab.id, 1);
   }
@@ -247,7 +249,7 @@ class RcxMain {
       }
       if (e) break;
       this.showMode = (this.showMode + 1) % this.dictCount;
-    } while (this.showMode != m);
+    } while (this.showMode !== m);
 
     return e;
   }
