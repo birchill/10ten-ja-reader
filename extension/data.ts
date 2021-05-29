@@ -103,9 +103,9 @@ class RcxDict {
     this.config = config;
   }
 
-  static async create(initialConfig: Config) {
+  static async create(config: Config) {
     if (!RcxDict.instance) {
-      RcxDict.instance = new RcxDict(initialConfig);
+      RcxDict.instance = new RcxDict(config);
       await RcxDict.instance.init();
     }
     return RcxDict.instance;

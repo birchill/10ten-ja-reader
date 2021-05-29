@@ -52,9 +52,9 @@ class RcxMain {
   dict: RcxDict;
   config: Config;
 
-  private constructor(dict: RcxDict, initialConfig: Config) {
+  private constructor(dict: RcxDict, config: Config) {
     this.dict = dict;
-    this.config = initialConfig;
+    this.config = config;
   }
   static create(dict: RcxDict, config: Config) {
     if (!RcxMain.instance) {
