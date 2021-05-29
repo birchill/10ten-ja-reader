@@ -12,10 +12,7 @@
     "outDir": "dist",
     "lib": ["ES2018", "DOM"],
     "esModuleInterop": true,
-    "declaration": false,
-    "noEmitOnError": false,
-    "alwaysStrict": false,
-    "noImplicitUseStrict": true
+    "declaration": false
   },
   "include": ["**/*.ts"]
 }

@@ -16,33 +16,23 @@
     "no-tabs": "error",
     "sort-imports-es6-autofix/sort-imports-es6": "error",
     "node/no-unpublished-import": "off",
-    "@typescript-eslint/no-var-requires": "off",
     "unicode-bom": "error",
     "promise/prefer-await-to-then": "error",
     "@typescript-eslint/unbound-method": "error",
     // TODO(espeed): Remove these and fix errors.
-    "no-undef": "off",
     "prefer-arrow-callback": "off",
     "no-case-declarations": "off",
-    "node/no-unpublished-require": "off",
     "eqeqeq": "off",
     "no-prototype-builtins": "off",
     "no-useless-escape": "off",
     "@typescript-eslint/no-unused-vars": "off",
-    "no-fallthrough": "off",
     "no-control-regex": "off",
     "no-constant-condition": "off",
-    "no-dupe-keys": "off",
-    "no-unreachable": "off",
     "no-extra-boolean-cast": "off"
   },
   "overrides": [
     {
-      // TODO(espeed): Tighten this as files get cleaned up.
       "files": ["**/*.ts", "**/*.js"],
-      "rules": {
-        "tsdoc/syntax": "off"
-      },
       "parserOptions": {
         "project": "./tsconfig.json"
       }

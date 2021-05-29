@@ -45,8 +45,6 @@ const config: webpack.Configuration = {
     outputModule: true,
   },
   optimization: {
-    // TODO(espeed): Remove after typescript files are cleaned up.
-    emitOnErrors: true,
     minimize: false,
   },
   performance: {

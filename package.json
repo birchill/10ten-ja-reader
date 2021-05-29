@@ -18,7 +18,7 @@
     "stylelint:check": "stylelint '**/*.css' '**/*.ts'",
     "stylelint:fix": "npm run stylelint:check --silent -- --fix",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "update-db": "ts-node --log-error utils/update-db"
+    "update-db": "ts-node utils/update-db"
   },
   "repository": {
     "type": "git",

@@ -14,11 +14,7 @@ class TTS {
     return TTS.instance;
   }
 
-  /**
-   * Plays text-to-speech audio for given Japanese text.
-   *
-   * @param {string} text
-   */
+  /** Plays text-to-speech audio for given Japanese text. */
   play(text: string) {
     const now = new Date().valueOf();
     const limit = this.lastTime + 1000;
