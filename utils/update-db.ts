@@ -288,7 +288,7 @@ class KanjiDictParser extends Writable {
     //  - Meanings, command separated
     // (All | delimited)
     const matches = line.match(
-      /^(\S+) (?:.=.=== )?((?:[\x21-\x7a]+ )+)((?:[\x80-\uffff.\-]+ )+)?(?:T1 ((?:[\x80-\uffff.\-]+ )+))?(?:T2 ((?:[\x80-\uffff.\-]+ )+))?((?:\{[^\}]+\} ?)*)?$/
+      /^(\S+) (?:.=.=== )?((?:[\x21-\x7a]+ )+)((?:[\x80-\uffff.-]+ )+)?(?:T1 ((?:[\x80-\uffff.-]+ )+))?(?:T2 ((?:[\x80-\uffff.-]+ )+))?((?:\{[^}]+\} ?)*)?$/
     );
     if (matches === null) {
       console.log(`Failed to parse line: ${line}`);
@@ -401,7 +401,7 @@ const parseKanjiDic = async (
   const parser = new KanjiDictParser({ heisigData: heisigData });
 
   const readFile = (url: string, encoding: string) =>
-    new Promise((resolve, reject) => {
+    new Promise((resolve) => {
       http
         .get(url, (res) => {
           res

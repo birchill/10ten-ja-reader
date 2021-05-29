@@ -184,7 +184,6 @@ class RcxContent {
       popup.style.left = '0px';
       popup.style.display = '';
 
-      const bbo = window;
       let pW = popup.offsetWidth;
       let pH = popup.offsetHeight;
 
@@ -902,6 +901,7 @@ class RcxContent {
       return;
     }
 
+    // TODO(melink14): Why does this replace all characters with HTML escape codes
     e.title = tdata.title!.substr(0, e.textLen).replace(/[\x00-\xff]/g, (c) => {
       return '&#' + c.charCodeAt(0) + ';';
     });
@@ -1114,7 +1114,7 @@ class RcxContent {
     tdata.uofs = 0;
     tdata.uofsNext = 1;
 
-    const delay = !!ev.noDelay ? 1 : window.rikaichan!.config!.popupDelay;
+    const delay = ev.noDelay ? 1 : window.rikaichan!.config!.popupDelay;
 
     if (rp && rp.data && ro < rp.data.length) {
       this.forceKanji = ev.shiftKey ? 1 : 0;
@@ -1122,12 +1122,12 @@ class RcxContent {
       tdata.popY = ev.clientY;
       tdata.timer = window.setTimeout(
         (rangeNode: CharacterData | undefined, rangeOffset: number) => {
-          // TODO(melink14): This is using `ro` directly instead of `rangeOffset`
+          // TODO(melink14): This was using `ro` directly instead of `rangeOffset`
           // do we even need to pass arguments if we can use the closure?
           if (
             !window.rikaichan ||
             rangeNode != window.rikaichan.prevRangeNode ||
-            ro != window.rikaichan.prevRangeOfs
+            rangeOffset != window.rikaichan.prevRangeOfs
           ) {
             return;
           }
@@ -1144,12 +1144,10 @@ class RcxContent {
     }
 
     // TODO: Consider making title translations configurable.
-    if (true) {
-      if (typeof eventTarget.title == 'string' && eventTarget.title.length) {
-        tdata.title = eventTarget.title;
-      } else if (typeof eventTarget.alt == 'string' && eventTarget.alt.length) {
-        tdata.title = eventTarget.alt;
-      }
+    if (typeof eventTarget.title == 'string' && eventTarget.title.length) {
+      tdata.title = eventTarget.title;
+    } else if (typeof eventTarget.alt == 'string' && eventTarget.alt.length) {
+      tdata.title = eventTarget.alt;
     }
 
     // FF3
@@ -1189,7 +1187,7 @@ class RcxContent {
 const rcxContent = new RcxContent();
 
 // Event Listeners
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (request) {
   switch (request.type) {
     case 'enable':
       rcxContent.enableTab(request.config);

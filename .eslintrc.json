@@ -24,11 +24,7 @@
     "no-case-declarations": "off",
     "eqeqeq": "off",
     "no-prototype-builtins": "off",
-    "no-useless-escape": "off",
-    "@typescript-eslint/no-unused-vars": "off",
-    "no-control-regex": "off",
-    "no-constant-condition": "off",
-    "no-extra-boolean-cast": "off"
+    "no-control-regex": "off"
   },
   "overrides": [
     {
