@@ -34,12 +34,7 @@ const config: webpack.Configuration = {
         include: [path.resolve(__dirname, 'extension')],
         use: [
           {
-            // awesome-typescript-loader supports errorsAsWarnings to allow
-            // gradual migration.
-            loader: 'awesome-typescript-loader',
-            options: {
-              errorsAsWarnings: true,
-            },
+            loader: 'ts-loader',
           },
         ],
       },
@@ -53,6 +48,9 @@ const config: webpack.Configuration = {
     // TODO(espeed): Remove after typescript files are cleaned up.
     emitOnErrors: true,
     minimize: false,
+  },
+  performance: {
+    hints: false,
   },
   plugins: [
     // Used to copy static files to output directory.
