@@ -17,5 +17,5 @@
     "alwaysStrict": false,
     "noImplicitUseStrict": true
   },
-  "include": ["extension/**/*.ts", "utils/*.ts", "test/**/*.ts"]
+  "include": ["**/*.ts"]
 }

@@ -39,19 +39,42 @@
 
 */
 
+import { Config } from './configuration';
 import { DictEntryData } from './data';
 
-const rcxContent = {
-  dictCount: 3,
-  altView: 0,
+declare global {
+  interface Window {
+    rikaichan?: Rikaichan;
+  }
+}
+type Rikaichan = {
+  config?: Config;
+  prevTarget?: HTMLElement;
+  popX?: number;
+  popY?: number;
+  prevSelView?: Window;
+  selText?: string;
+  oldTA?: HTMLTextAreaElement | HTMLInputElement;
+  oldCaret?: number;
+  uofs?: number;
+  uofsNext?: number;
+  prevRangeNode?: CharacterData;
+  prevRangeOfs?: number;
+  title?: string;
+  timer?: number;
+};
 
-  sameDict: 0,
-  forceKanji: 0,
-  defaultDict: 2,
-  nextDict: 3,
+class RcxContent {
+  private dictCount = 3;
+  private altView = 0;
+
+  private sameDict = 0;
+  private forceKanji = 0;
+  private defaultDict = 2;
+  private nextDict = 3;
 
   // Adds the listeners and stuff.
-  enableTab: function (config) {
+  enableTab(config: Config) {
     if (window.rikaichan == null) {
       window.rikaichan = {};
       window.addEventListener('mousemove', this.onMouseMove, false);
@@ -62,10 +85,10 @@ const rcxContent = {
     }
     window.rikaichan.config = config;
     this.altView = config.popupLocation;
-  },
+  }
 
   // Removes the listeners and stuff
-  disableTab: function () {
+  disableTab() {
     if (window.rikaichan != null) {
       let e;
       window.removeEventListener('mousemove', this.onMouseMove, false);
@@ -75,29 +98,34 @@ const rcxContent = {
       window.removeEventListener('mouseup', this.onMouseUp, false);
 
       e = document.getElementById('rikaichan-css');
-      if (e) e.parentNode.removeChild(e);
+      if (e?.parentNode) e.parentNode.removeChild(e);
       e = document.getElementById('rikaichan-window');
-      if (e) e.parentNode.removeChild(e);
+      if (e?.parentNode) e.parentNode.removeChild(e);
 
       this.clearHi();
       delete window.rikaichan;
     }
-  },
+  }
 
-  getContentType: function (tDoc) {
+  getContentType(tDoc: Document) {
     const m = tDoc.getElementsByTagName('meta');
     for (const i in m) {
       if (m[i].httpEquiv == 'Content-Type') {
-        let con = m[i].content;
-        con = con.split(';');
+        const con = m[i].content.split(';');
         return con[0];
       }
     }
     return null;
-  },
+  }
 
-  showPopup: function (text, elem, x, y, looseWidth) {
-    topdoc = window.document;
+  showPopup(
+    text: string,
+    elem?: HTMLElement,
+    x = 0,
+    y = 0,
+    looseWidth?: boolean
+  ) {
+    const topdoc = window.document;
 
     if (isNaN(x) || isNaN(y)) x = y = 0;
 
@@ -109,7 +137,7 @@ const rcxContent = {
       );
       css.setAttribute('rel', 'stylesheet');
       css.setAttribute('type', 'text/css');
-      const color = window.rikaichan.config.popupcolor;
+      const color = window.rikaichan!.config!.popupcolor;
       css.setAttribute(
         'href',
         chrome.extension.getURL('css/popup-' + color + '.css')
@@ -124,8 +152,8 @@ const rcxContent = {
 
       popup.addEventListener(
         'dblclick',
-        function (ev) {
-          rcxContent.hidePopup();
+        (ev: Event) => {
+          this.hidePopup();
           ev.stopPropagation();
         },
         true
@@ -136,17 +164,17 @@ const rcxContent = {
     popup.style.height = 'auto';
     popup.style.maxWidth = looseWidth ? '' : '600px';
 
-    if (rcxContent.getContentType(topdoc) == 'text/plain') {
-      const df = document.createDocumentFragment();
-      df.appendChild(
+    if (this.getContentType(topdoc) == 'text/plain') {
+      const docFragment = document.createDocumentFragment();
+      docFragment.appendChild(
         document.createElementNS('http://www.w3.org/1999/xhtml', 'span')
       );
-      df.firstChild.innerHTML = text;
+      (docFragment.firstChild! as HTMLElement).innerHTML = text;
 
       while (popup.firstChild) {
         popup.removeChild(popup.firstChild);
       }
-      popup.appendChild(df.firstChild);
+      popup.appendChild(docFragment.firstChild!);
     } else {
       popup.innerHTML = text;
     }
@@ -156,7 +184,7 @@ const rcxContent = {
       popup.style.left = '0px';
       popup.style.display = '';
 
-      bbo = window;
+      const bbo = window;
       let pW = popup.offsetWidth;
       let pH = popup.offsetHeight;
 
@@ -186,13 +214,14 @@ const rcxContent = {
         x = 0;
         y = 0;
 
-        let p = elem;
+        let p = elem as HTMLElement;
         while (p) {
           x += p.offsetLeft;
           y += p.offsetTop;
-          p = p.offsetParent;
+          p = p.offsetParent! as HTMLElement;
         }
-        if (elem.offsetTop > elem.parentNode.clientHeight) y -= elem.offsetTop;
+        if (elem.offsetTop > (elem.parentNode! as HTMLElement).clientHeight)
+          y -= elem.offsetTop;
 
         if (x + popup.offsetWidth > window.innerWidth) {
           // too much to the right, go left
@@ -200,7 +229,7 @@ const rcxContent = {
           if (x < 0) x = 0;
         } else {
           // use SELECT's width
-          x += elem.parentNode.offsetWidth + 5;
+          x += (elem.parentNode! as HTMLElement).offsetWidth + 5;
         }
       } else {
         // go left if necessary
@@ -237,31 +266,30 @@ const rcxContent = {
     popup.style.left = x + 'px';
     popup.style.top = y + 'px';
     popup.style.display = '';
-  },
+  }
 
-  hidePopup: function () {
+  hidePopup() {
     const popup = document.getElementById('rikaichan-window');
     if (popup) {
       popup.style.display = 'none';
       popup.innerHTML = '';
     }
-    this.title = null;
-  },
+  }
 
-  isVisible: function () {
+  isVisible() {
     const popup = document.getElementById('rikaichan-window');
     return popup && popup.style.display != 'none';
-  },
+  }
 
-  clearHi: function () {
+  clearHi() {
     const tdata = window.rikaichan;
     if (!tdata || !tdata.prevSelView) return;
     if (tdata.prevSelView.closed) {
-      tdata.prevSelView = null;
+      tdata.prevSelView = undefined;
       return;
     }
 
-    const sel = tdata.prevSelView.getSelection();
+    const sel = tdata.prevSelView.getSelection()!;
     // If there is an empty selection or the selection was done by
     // rikaikun then we'll clear it
     if (!sel.toString() || tdata.selText == sel.toString()) {
@@ -269,7 +297,7 @@ const rcxContent = {
       // The reason for this is becasue if there's no selection
       // we probably clicked somewhere else and we don't want to
       // bounce back.
-      if (!sel.toString()) tdata.oldTA = null;
+      if (!sel.toString()) tdata.oldTA = undefined;
 
       // clear all selections
       sel.removeAllRanges();
@@ -279,37 +307,28 @@ const rcxContent = {
       // the cursor was before our lookup
       // if oldCaret is less than 0 it means we clicked outside the box and shouldn't
       // come back
-      if (tdata.oldTA && tdata.oldCaret >= 0) {
-        tdata.oldTA.selectionStart = tdata.oldTA.selectionEnd = tdata.oldCaret;
+      if (tdata.oldTA && tdata.oldCaret! >= 0) {
+        tdata.oldTA.selectionStart = tdata.oldTA.selectionEnd = tdata.oldCaret!;
       }
     }
-    tdata.prevSelView = null;
-    tdata.kanjiChar = null;
-    tdata.selText = null;
-  },
+    tdata.prevSelView = undefined;
+    tdata.selText = undefined;
+  }
 
   // Array used for storing the last popup content shown, useful for easily
   // operating on the value after rendering (for copying for example).
-  lastFound: [] as DictEntryData[],
+  lastFound = [] as DictEntryData[];
 
-  configPage: function () {
-    window.openDialog(
-      'chrome://rikaichan/content/prefs.xul',
-      '',
-      'chrome,centerscreen'
-    );
-  },
+  keysDown: number[] = [];
+  lastPos: { x: number | null; y: number | null } = { x: null, y: null };
+  lastTarget: EventTarget | null = null;
 
-  keysDown: [],
-  lastPos: { x: null, y: null },
-  lastTarget: null,
-
-  onKeyDown: function (ev) {
-    rcxContent._onKeyDown(ev);
-  },
-  _onKeyDown: function (ev) {
+  onKeyDown = (ev: KeyboardEvent) => {
+    this._onKeyDown(ev);
+  };
+  _onKeyDown(ev: KeyboardEvent) {
     if (
-      window.rikaichan.config.showOnKey !== '' &&
+      window.rikaichan!.config!.showOnKey !== '' &&
       (ev.altKey || ev.ctrlKey || ev.key == 'AltGraph')
     ) {
       if (this.lastTarget !== null) {
@@ -320,26 +339,30 @@ const rcxContent = {
           altKey: ev.altKey || ev.key == 'AltGraph',
           ctrlKey: ev.ctrlKey,
           shiftKey: ev.shiftKey,
+          // TODO(melink14): noDelay is not event related; try to pass it in a way
+          // other than adding as an unknown property to event.
           noDelay: true,
         };
-        this.tryUpdatePopup(myEv);
+        this.tryUpdatePopup(
+          myEv as unknown as MouseEvent & { noDelay?: boolean }
+        );
       }
       return;
     }
     if (ev.shiftKey && ev.keyCode != 16) return;
     if (this.keysDown[ev.keyCode]) return;
     if (!this.isVisible()) return;
-    if (window.rikaichan.config.disablekeys && ev.keyCode != 16) return;
+    if (window.rikaichan!.config!.disablekeys && ev.keyCode != 16) return;
 
     let i;
     let shouldPreventDefault = true;
-    const maxDictEntries = window.rikaichan.config.maxDictEntries;
+    const maxDictEntries = window.rikaichan!.config!.maxDictEntries;
     let e: DictEntryData | null;
 
     switch (ev.keyCode) {
       case 16: // shift
       case 13: // enter
-        this.show(ev.currentTarget.rikaichan, this.nextDict);
+        this.show((ev.currentTarget! as Window).rikaichan!, this.nextDict);
         break;
       case 74: // j
         // reverse cycle through definitions if > max (maxDictEntries)
@@ -354,9 +377,9 @@ const rcxContent = {
           e.index = e.data.length - maxDictEntries;
         }
 
-        chrome.extension.sendMessage(
+        chrome.runtime.sendMessage(
           { type: 'makehtml', entry: e },
-          rcxContent.processHtml
+          this.processHtml
         );
         this.lastFound = [e];
         break;
@@ -374,9 +397,9 @@ const rcxContent = {
         } else {
           e.index += 1;
         }
-        chrome.extension.sendMessage(
+        chrome.runtime.sendMessage(
           { type: 'makehtml', entry: e },
-          rcxContent.processHtml
+          this.processHtml
         );
         this.lastFound = [e];
         break;
@@ -386,7 +409,7 @@ const rcxContent = {
         break;
       case 65: // a
         this.altView = (this.altView + 1) % 3;
-        this.show(ev.currentTarget.rikaichan, this.sameDict);
+        this.show((ev.currentTarget! as Window).rikaichan!, this.sameDict);
         break;
       case 67: // c
         // CTRL on Windows and CMD (metaKey) on Mac are used for OS copy and
@@ -396,40 +419,44 @@ const rcxContent = {
         if (ev.ctrlKey || ev.metaKey) {
           shouldPreventDefault = false;
         } else {
-          chrome.extension.sendMessage({
+          chrome.runtime.sendMessage({
             type: 'copyToClip',
-            entry: rcxContent.lastFound,
+            entry: this.lastFound,
           });
         }
         break;
       case 66: // b
-        let ofs = ev.currentTarget.rikaichan.uofs;
+        const rikaichan = (ev.currentTarget! as Window).rikaichan!;
+        // For some reason it claims it can be const even though it's decremented.
+        // eslint-disable-next-line prefer-const
+        let ofs = rikaichan.uofs;
         for (i = 50; i > 0; --i) {
-          ev.currentTarget.rikaichan.uofs = --ofs;
-          if (this.show(ev.currentTarget.rikaichan, this.defaultDict) >= 0) {
+          rikaichan.uofs = --ofs!;
+          if (this.show(rikaichan, this.defaultDict) >= 0) {
             // TODO: Figure out if this should be changed as per ancient comment.
-            if (ofs >= ev.currentTarget.rikaichan.uofs) break; // ! change later
+            if (ofs! >= rikaichan.uofs) break; // ! change later
           }
         }
         break;
       case 68: // d
-        chrome.extension.sendMessage({ type: 'switchOnlyReading' });
-        this.show(ev.currentTarget.rikaichan, this.sameDict);
+        chrome.runtime.sendMessage({ type: 'switchOnlyReading' });
+        this.show((ev.currentTarget! as Window).rikaichan!, this.sameDict);
         break;
-      case 77: // m
-        ev.currentTarget.rikaichan.uofsNext = 1;
-      case 78: // n
+      // @ts-expect-error: Fallthrough here used to share lookup logic with different step length.
+      case 77: // m: move forward one character
+        (ev.currentTarget! as Window).rikaichan!.uofsNext = 1;
+      // Falls through
+      case 78: // n: move forward one word
+        const rikaiData = (ev.currentTarget! as Window).rikaichan!;
         for (i = 50; i > 0; --i) {
-          ev.currentTarget.rikaichan.uofs +=
-            ev.currentTarget.rikaichan.uofsNext;
-          if (this.show(ev.currentTarget.rikaichan, this.defaultDict) >= 0)
-            break;
+          rikaiData.uofs! += rikaiData.uofsNext!;
+          if (this.show(rikaiData, this.defaultDict) >= 0) break;
         }
         break;
       case 89: // y
         this.altView = 0;
-        ev.currentTarget.rikaichan.popY += 20;
-        this.show(ev.currentTarget.rikaichan, this.sameDict);
+        (ev.currentTarget! as Window).rikaichan!.popY! += 20;
+        this.show((ev.currentTarget! as Window).rikaichan!, this.sameDict);
         break;
       default:
         return;
@@ -441,41 +468,41 @@ const rcxContent = {
     if (shouldPreventDefault) {
       ev.preventDefault();
     }
-  },
+  }
 
-  mDown: false,
+  mDown = false;
 
-  onMouseDown: function (ev) {
-    rcxContent._onMouseDown(ev);
-  },
-  _onMouseDown: function (ev) {
+  onMouseDown = (ev: MouseEvent) => {
+    this._onMouseDown(ev);
+  };
+  _onMouseDown(ev: MouseEvent) {
     if (ev.button != 0) return;
     if (this.isVisible()) this.clearHi();
-    mDown = true;
+    this.mDown = true;
 
     // If we click outside of a text box then we set
     // oldCaret to -1 as an indicator not to restore position
     // Otherwise, we switch our saved textarea to whereever
     // we just clicked
-    if (!('form' in ev.target)) window.rikaichan.oldCaret = -1;
-    else window.rikaichan.oldTA = ev.target;
-  },
+    if (!('form' in ev.target!)) window.rikaichan!.oldCaret = -1;
+    else window.rikaichan!.oldTA = ev.target;
+  }
 
-  onMouseUp: function (ev) {
-    rcxContent._onMouseUp(ev);
-  },
-  _onMouseUp: function (ev) {
+  onMouseUp = (ev: MouseEvent) => {
+    this._onMouseUp(ev);
+  };
+  _onMouseUp(ev: MouseEvent) {
     if (ev.button != 0) return;
-    mDown = false;
-  },
+    this.mDown = false;
+  }
 
-  onKeyUp: function (ev) {
-    if (rcxContent.keysDown[ev.keyCode]) rcxContent.keysDown[ev.keyCode] = 0;
-  },
+  onKeyUp = (ev: KeyboardEvent) => {
+    if (this.keysDown[ev.keyCode]) this.keysDown[ev.keyCode] = 0;
+  };
 
-  unicodeInfo: function (c) {
-    hex = '0123456789ABCDEF';
-    u = c.charCodeAt(0);
+  unicodeInfo(c: string) {
+    const hex = '0123456789ABCDEF';
+    const u = c.charCodeAt(0);
     return (
       c +
       ' U' +
@@ -484,12 +511,11 @@ const rcxContent = {
       hex[(u >>> 4) & 15] +
       hex[u & 15]
     );
-  },
+  }
 
-  kanjiN: 1,
-  namesN: 2,
+  namesN = 2;
 
-  inlineNames: {
+  inlineNames = {
     // text node
     '#text': true,
 
@@ -532,32 +558,33 @@ const rcxContent = {
     RB: true,
     RT: true,
     RP: true,
-  },
-  isInline: function (node) {
+  };
+
+  isInline(node: Node) {
     return (
       this.inlineNames.hasOwnProperty(node.nodeName) ||
       // only check styles for elements
       // comments do not have getComputedStyle method
       (document.nodeType == Node.ELEMENT_NODE &&
-        (document.defaultView
-          .getComputedStyle(node, null)
+        (document
+          .defaultView!.getComputedStyle(node as Element, null)
           .getPropertyValue('display') == 'inline' ||
-          document.defaultView
-            .getComputedStyle(node, null)
+          document
+            .defaultView!.getComputedStyle(node as Element, null)
             .getPropertyValue('display') == 'inline-block'))
     );
-  },
+  }
 
   // XPath expression which evaluates to text nodes
   // tells rikaichan which text to translate
   // expression to get all text nodes that are not in (RP or RT) elements
-  textNodeExpr:
-    'descendant-or-self::text()[not(parent::rp) and not(ancestor::rt)]',
+  textNodeExpr =
+    'descendant-or-self::text()[not(parent::rp) and not(ancestor::rt)]';
 
   // XPath expression which evaluates to a boolean. If it evaluates to true
   // then rikaichan will not start looking for text in this text node
   // ignore text in RT elements
-  startElementExpr: 'boolean(parent::rp or ancestor::rt)',
+  startElementExpr = 'boolean(parent::rp or ancestor::rt)';
 
   // Gets text from a node
   // returns a string
@@ -566,35 +593,47 @@ const rcxContent = {
   // maxLength: the maximum length of returned string
   // xpathExpr: an XPath expression, which evaluates to text nodes, will be evaluated
   // relative to "node" argument
-  getInlineText: function (node, selEndList, maxLength, xpathExpr) {
+  getInlineText(
+    node: Node,
+    selEndList: { node: CharacterData; offset: number }[],
+    maxLength: number,
+    xpathExpr: XPathExpression
+  ) {
     let text = '';
     let endIndex;
 
     if (node.nodeName == '#text') {
-      endIndex = Math.min(maxLength, node.data.length);
-      selEndList.push({ node: node, offset: endIndex });
-      return node.data.substring(0, endIndex);
+      const textNode = node as Text;
+      endIndex = Math.min(maxLength, textNode.data.length);
+      selEndList.push({ node: textNode, offset: endIndex });
+      return textNode.data.substring(0, endIndex);
     }
 
+    // The given xpath expression returns text nodes so
+    // we can safely cast to Text at this point.
+    // TODO(melink14): Figure out how to encode that as type
     const result = xpathExpr.evaluate(
       node,
       XPathResult.ORDERED_NODE_ITERATOR_TYPE,
       null
     );
-
-    while (text.length < maxLength && (node = result.iterateNext())) {
-      endIndex = Math.min(node.data.length, maxLength - text.length);
-      text += node.data.substring(0, endIndex);
-      selEndList.push({ node: node, offset: endIndex });
+    let nextNode: Text | null;
+    while (
+      text.length < maxLength &&
+      (nextNode = result.iterateNext() as Text | null)
+    ) {
+      endIndex = Math.min(nextNode.data.length, maxLength - text.length);
+      text += nextNode.data.substring(0, endIndex);
+      selEndList.push({ node: nextNode, offset: endIndex });
     }
 
     return text;
-  },
+  }
 
   // given a node which must not be null,
   // returns either the next sibling or next sibling of the father or
   // next sibling of the fathers father and so on or null
-  getNext: function (node) {
+  getNext(node: Node): Node | null {
     let nextNode;
 
     if ((nextNode = node.nextSibling) != null) return nextNode;
@@ -602,25 +641,36 @@ const rcxContent = {
       return this.getNext(nextNode);
 
     return null;
-  },
+  }
 
-  getTextFromRange: function (rangeParent, offset, selEndList, maxLength) {
+  getTextFromRange(
+    rangeParent: Node,
+    offset: number,
+    selEndList: { node: CharacterData; offset: number }[],
+    maxLength: number
+  ) {
     if (rangeParent.nodeName == 'TEXTAREA' || rangeParent.nodeName == 'INPUT') {
-      const endIndex = Math.min(rangeParent.data.length, offset + maxLength);
-      return rangeParent.value.substring(offset, endIndex);
+      const pseudoTextNode = rangeParent as CharacterData &
+        (HTMLTextAreaElement | HTMLInputElement);
+      const endIndex = Math.min(pseudoTextNode.data.length, offset + maxLength);
+      return pseudoTextNode.value.substring(offset, endIndex);
     }
+
+    if (rangeParent.nodeType != Node.TEXT_NODE) return '';
+
+    const textRange = rangeParent as Text;
 
     let text = '';
 
-    const xpathExpr = rangeParent.ownerDocument.createExpression(
+    const xpathExpr = textRange.ownerDocument!.createExpression(
       this.textNodeExpr,
       null
     );
 
     if (
-      rangeParent.ownerDocument.evaluate(
+      textRange.ownerDocument!.evaluate(
         this.startElementExpr,
-        rangeParent,
+        textRange,
         null,
         XPathResult.BOOLEAN_TYPE,
         null
@@ -628,14 +678,13 @@ const rcxContent = {
     )
       return '';
 
-    if (rangeParent.nodeType != Node.TEXT_NODE) return '';
+    const endIndex = Math.min(textRange.data.length, offset + maxLength);
+    text += textRange.data.substring(offset, endIndex);
+    selEndList.push({ node: textRange, offset: endIndex });
 
-    const endIndex = Math.min(rangeParent.data.length, offset + maxLength);
-    text += rangeParent.data.substring(offset, endIndex);
-    selEndList.push({ node: rangeParent, offset: endIndex });
-
-    let nextNode = rangeParent;
+    let nextNode = textRange as Node | null;
     while (
+      nextNode != null &&
       (nextNode = this.getNext(nextNode)) != null &&
       this.isInline(nextNode) &&
       text.length < maxLength
@@ -648,16 +697,16 @@ const rcxContent = {
       );
 
     return text;
-  },
+  }
 
   // Hack because SelEnd can't be sent in messages
-  lastSelEnd: [],
+  lastSelEnd: { node: CharacterData; offset: number }[] = [];
   // Hack because ro was coming out always 0 for some reason.
-  lastRo: 0,
+  lastRo = 0;
 
-  show: function (tdata, dictOption) {
+  show(tdata: Rikaichan, dictOption: number) {
     const rp = tdata.prevRangeNode;
-    let ro = tdata.prevRangeOfs + tdata.uofs;
+    let ro = tdata.prevRangeOfs! + tdata.uofs!;
     let u;
 
     tdata.uofsNext = 1;
@@ -699,73 +748,81 @@ const rcxContent = {
     }
 
     // selection end data
-    const selEndList = [];
+    const selEndList: { node: CharacterData; offset: number }[] = [];
     const text = this.getTextFromRange(rp, ro, selEndList, 13 /* maxlength*/);
 
-    lastSelEnd = selEndList;
-    lastRo = ro;
-    chrome.extension.sendMessage(
+    this.lastSelEnd = selEndList;
+    this.lastRo = ro;
+    chrome.runtime.sendMessage(
       { type: 'xsearch', text: text, dictOption: String(dictOption) },
-      rcxContent.processEntry
+      this.processEntry
     );
 
     return 1;
-  },
+  }
 
-  processEntry: function (e: DictEntryData | null) {
-    tdata = window.rikaichan;
-    ro = lastRo;
-    selEndList = lastSelEnd;
+  processEntry = (e: DictEntryData | null): void => {
+    const tdata = window.rikaichan!;
+    const ro = this.lastRo;
+    const selEndList = this.lastSelEnd;
 
     if (!e) {
-      rcxContent.hidePopup();
-      rcxContent.clearHi();
-      return -1;
+      this.hidePopup();
+      this.clearHi();
+      return;
     }
-    rcxContent.lastFound = [e];
+    this.lastFound = [e];
 
     if (!e.matchLen) e.matchLen = 1;
     tdata.uofsNext = e.matchLen;
-    tdata.uofs = ro - tdata.prevRangeOfs;
+    tdata.uofs = ro - tdata.prevRangeOfs!;
 
-    rp = tdata.prevRangeNode;
+    const rp = tdata.prevRangeNode;
     // don't try to highlight form elements
     if (
       rp &&
-      ((tdata.config.highlight &&
+      ((tdata.config!.highlight &&
         !this.mDown &&
-        !('form' in tdata.prevTarget)) ||
-        ('form' in tdata.prevTarget && tdata.config.textboxhl))
+        !('form' in tdata.prevTarget!)) ||
+        ('form' in tdata.prevTarget! && tdata.config!.textboxhl))
     ) {
       const doc = rp.ownerDocument;
       if (!doc) {
-        rcxContent.clearHi();
-        rcxContent.hidePopup();
-        return 0;
+        this.clearHi();
+        this.hidePopup();
+        return;
       }
-      rcxContent.highlightMatch(doc, rp, ro, e.matchLen, selEndList, tdata);
-      tdata.prevSelView = doc.defaultView;
+      this.highlightMatch(doc, rp, ro, e.matchLen, selEndList, tdata);
+      tdata.prevSelView! = doc.defaultView!;
     }
 
-    chrome.extension.sendMessage(
+    chrome.runtime.sendMessage(
       { type: 'makehtml', entry: e },
-      rcxContent.processHtml
+      this.processHtml
     );
-  },
+  };
 
-  processHtml: function (html) {
-    tdata = window.rikaichan;
-    rcxContent.showPopup(html, tdata.prevTarget, tdata.popX, tdata.popY, false);
+  processHtml = (html: string) => {
+    const tdata = window.rikaichan!;
+    this.showPopup(html, tdata.prevTarget, tdata.popX, tdata.popY, false);
     return 1;
-  },
+  };
 
-  highlightMatch: function (doc, rp, ro, matchLen, selEndList, tdata) {
-    const sel = doc.defaultView.getSelection();
+  highlightMatch(
+    doc: Document,
+    rp: Node,
+    ro: number,
+    matchLen: number,
+    selEndList: { node: CharacterData; offset: number }[],
+    tdata: Rikaichan
+  ) {
+    const sel = doc.defaultView!.getSelection()!;
 
     // If selEndList is empty then we're dealing with a textarea/input situation
     if (selEndList.length === 0) {
       try {
         if (rp.nodeName == 'TEXTAREA' || rp.nodeName == 'INPUT') {
+          const textNode = rp as HTMLTextAreaElement | HTMLInputElement;
           // If there is already a selected region not caused by
           // rikaikun, leave it alone
           if (sel.toString() && tdata.selText != sel.toString()) return;
@@ -775,23 +832,23 @@ const rcxContent = {
           // then save the current cursor position
           // The second half of the condition let's us place the
           // cursor in another text box without having it jump back
-          if (!sel.toString() && tdata.oldTA == rp) {
-            tdata.oldCaret = rp.selectionStart;
-            tdata.oldTA = rp;
+          if (!sel.toString() && tdata.oldTA! == textNode) {
+            tdata.oldCaret = textNode.selectionStart!;
+            tdata.oldTA = textNode;
           }
-          rp.selectionStart = ro;
-          rp.selectionEnd = matchLen + ro;
+          textNode.selectionStart = ro;
+          textNode.selectionEnd = matchLen + ro;
 
-          tdata.selText = rp.value.substring(ro, matchLen + ro);
+          tdata.selText = textNode.value.substring(ro, matchLen + ro);
         }
       } catch (err) {
         // If there is an error it is probably caused by the input type
         // being not text.  This is the most general way to deal with
         // arbitrary types.
 
-        // we set oldTA to null because we don't want to do weird stuf
+        // we set oldTA to undefined because we don't want to do weird stuff
         // with buttons
-        tdata.oldTA = null;
+        tdata.oldTA = undefined;
         // console.log("invalid input type for selection:" + rp.type);
         console.log(err.message);
       }
@@ -801,10 +858,10 @@ const rcxContent = {
     // Special case for leaving a text box to an outside japanese
     // Even if we're not currently in a text area we should save
     // the last one we were in.
-    if (tdata.oldTA && !sel.toString() && tdata.oldCaret >= 0)
-      tdata.oldCaret = tdata.oldTA.selectionStart;
+    if (tdata.oldTA && !sel.toString() && tdata.oldCaret! >= 0)
+      tdata.oldCaret = tdata.oldTA.selectionStart!;
 
-    let selEnd;
+    let selEnd: { node: CharacterData; offset: number };
     let offset = matchLen + ro;
 
     for (let i = 0, len = selEndList.length; i < len; i++) {
@@ -815,52 +872,50 @@ const rcxContent = {
 
     const range = doc.createRange();
     range.setStart(rp, ro);
-    range.setEnd(selEnd.node, offset);
+    range.setEnd(selEnd!.node, offset);
 
     if (sel.toString() && tdata.selText != sel.toString()) return;
     sel.removeAllRanges();
     sel.addRange(range);
     tdata.selText = sel.toString();
 
-    if (window.rikaichan.config.ttsEnabled) {
+    if (window.rikaichan!.config!.ttsEnabled) {
       const text = sel.toString();
       if (text.length > 0) {
-        chrome.extension.sendMessage({ type: 'playTTS', text: text });
+        chrome.runtime.sendMessage({ type: 'playTTS', text: text });
       }
     }
-  },
+  }
 
-  showTitle: function (tdata) {
-    chrome.extension.sendMessage(
+  showTitle(tdata: Rikaichan) {
+    chrome.runtime.sendMessage(
       { type: 'translate', title: tdata.title },
-      rcxContent.processTitle
+      this.processTitle
     );
-  },
+  }
 
-  processTitle: function (e) {
-    tdata = window.rikaichan;
+  processTitle = (e: DictEntryData & { textLen: number }) => {
+    const tdata = window.rikaichan!;
 
     if (!e) {
-      rcxContent.hidePopup();
+      this.hidePopup();
       return;
     }
 
-    e.title = tdata.title
-      .substr(0, e.textLen)
-      .replace(/[\x00-\xff]/g, function (c) {
-        return '&#' + c.charCodeAt(0) + ';';
-      });
-    if (tdata.title.length > e.textLen) e.title += '...';
+    e.title = tdata.title!.substr(0, e.textLen).replace(/[\x00-\xff]/g, (c) => {
+      return '&#' + c.charCodeAt(0) + ';';
+    });
+    if (tdata.title!.length > e.textLen) e.title += '...';
 
     this.lastFound = [e];
 
-    chrome.extension.sendMessage(
+    chrome.runtime.sendMessage(
       { type: 'makehtml', entry: e },
-      rcxContent.processHtml
+      this.processHtml
     );
-  },
+  };
 
-  getFirstTextChild: function (node) {
+  getFirstTextChild(node: Node) {
     return document
       .evaluate(
         'descendant::text()[not(parent::rp) and not(ancestor::rt)]',
@@ -871,28 +926,28 @@ const rcxContent = {
       )
       .iterateNext();
     //
-  },
+  }
 
-  makeFake: function (real) {
+  makeFake(real: HTMLTextAreaElement | HTMLInputElement) {
     const fake = document.createElement('div');
     const realRect = real.getBoundingClientRect();
     fake.innerText = real.value;
-    fake.style.cssText = document.defaultView.getComputedStyle(
+    fake.style.cssText = document.defaultView!.getComputedStyle(
       real,
       ''
     ).cssText;
     fake.scrollTop = real.scrollTop;
     fake.scrollLeft = real.scrollLeft;
     fake.style.position = 'absolute';
-    fake.style.zIndex = 7777;
+    fake.style.zIndex = '7777';
     fake.style.top = realRect.top + 'px';
     fake.style.left = realRect.left + 'px';
 
     return fake;
-  },
+  }
 
-  getTotalOffset: function (parent, tNode, offset) {
-    let fChild = parent.firstChild;
+  getTotalOffset(parent: Node, tNode: Node, offset: number) {
+    let fChild = parent.firstChild!;
     let realO = offset;
     if (fChild == tNode) return offset;
     do {
@@ -900,28 +955,29 @@ const rcxContent = {
       if (fChild.nodeName == 'BR') {
         val = 1;
       } else {
-        val = fChild.data ? fChild.data.length : 0;
+        const maybeText = fChild as CharacterData;
+        val = maybeText.data ? maybeText.data.length : 0;
       }
       realO += val;
-    } while ((fChild = fChild.nextSibling) != tNode);
+    } while ((fChild = fChild.nextSibling!) != tNode);
 
     return realO;
-  },
+  }
 
-  onMouseMove: function (ev) {
-    rcxContent.lastPos.x = ev.clientX;
-    rcxContent.lastPos.y = ev.clientY;
-    rcxContent.lastTarget = ev.target;
-    rcxContent.tryUpdatePopup(ev);
-  },
-  tryUpdatePopup: function (ev) {
+  onMouseMove = (ev: MouseEvent) => {
+    this.lastPos.x = ev.clientX;
+    this.lastPos.y = ev.clientY;
+    this.lastTarget = ev.target;
+    this.tryUpdatePopup(ev);
+  };
+  tryUpdatePopup(ev: MouseEvent & { noDelay?: boolean }) {
     const altGraph = ev.getModifierState && ev.getModifierState('AltGraph');
 
     if (
-      (window.rikaichan.config.showOnKey.includes('Alt') &&
+      (window.rikaichan!.config!.showOnKey.includes('Alt') &&
         !ev.altKey &&
         !altGraph) ||
-      (window.rikaichan.config.showOnKey.includes('Ctrl') && !ev.ctrlKey)
+      (window.rikaichan!.config!.showOnKey.includes('Ctrl') && !ev.ctrlKey)
     ) {
       this.clearHi();
       this.hidePopup();
@@ -929,22 +985,35 @@ const rcxContent = {
     }
 
     let fake;
-    const tdata = window.rikaichan; // per-tab data
+    const tdata = window.rikaichan!; // per-tab data
     let range;
-    let rp;
-    let ro;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let rp: any;
+    let ro: number;
+    const eventTarget = ev.target as HTMLElement &
+      (HTMLTextAreaElement | HTMLInputElement) &
+      HTMLImageElement &
+      HTMLOptionElement &
+      HTMLSelectElement;
     // Put this in a try catch so that an exception here doesn't prevent editing due to div.
     try {
-      if (ev.target.nodeName == 'TEXTAREA' || ev.target.nodeName == 'INPUT') {
-        fake = rcxContent.makeFake(ev.target);
+      if (
+        eventTarget.nodeName == 'TEXTAREA' ||
+        eventTarget.nodeName == 'INPUT'
+      ) {
+        fake = this.makeFake(
+          eventTarget as HTMLTextAreaElement | HTMLInputElement
+        );
         document.body.appendChild(fake);
-        fake.scrollTop = ev.target.scrollTop;
-        fake.scrollLeft = ev.target.scrollLeft;
+        fake.scrollTop = eventTarget.scrollTop;
+        fake.scrollLeft = eventTarget.scrollLeft;
       }
       // Calculate range and friends here after we've made our fake textarea/input divs.
       range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
-      rp = range.startContainer;
+      const startNode = range.startContainer;
       ro = range.startOffset;
+
+      rp = startNode as CharacterData;
 
       if (fake) {
         // At the end of a line, don't do anything or you just get beginning of next line
@@ -953,7 +1022,7 @@ const rcxContent = {
           return;
         }
         fake.style.display = 'none';
-        ro = this.getTotalOffset(rp.parentNode, rp, ro);
+        ro = this.getTotalOffset(rp.parentNode!, rp, ro);
       }
 
       // This is to account for bugs in caretRangeFromPoint
@@ -971,11 +1040,13 @@ const rcxContent = {
         }
         // If we're to the right of an inline character we can use the target.
         // However, if we're just in a blank spot don't do anything.
-        else if (rcxContent.isInline(ev.target)) {
-          if (rp.parentNode == ev.target);
-          else if (fake && rp.parentNode.innerText == ev.target.value);
-          else {
-            rp = ev.target.firstChild;
+        else if (this.isInline(eventTarget)) {
+          if (rp.parentNode == eventTarget) {
+            // TODO(melink14): Figure out why this is empty
+          } else if (fake && rp.parentNode.innerText == eventTarget.value) {
+            // TODO(melink14): Figure out why this is empty
+          } else {
+            rp = eventTarget.firstChild;
             ro = 0;
           }
         }
@@ -993,18 +1064,18 @@ const rcxContent = {
       // Also, form elements don't seem to fall into this case either.
       if (
         !fake &&
-        !('form' in ev.target) &&
+        !('form' in eventTarget) &&
         rp &&
-        rp.parentNode != ev.target &&
+        rp.parentNode != eventTarget &&
         ro == 1
       ) {
-        rp = rcxContent.getFirstTextChild(ev.target);
+        rp = this.getFirstTextChild(eventTarget);
         ro = 0;
       }
 
       // Otherwise, we're off in nowhere land and we should go home.
       // offset should be 0 or max in this case.
-      else if (!fake && (!rp || rp.parentNode != ev.target)) {
+      else if (!fake && (!rp || rp.parentNode != eventTarget)) {
         rp = null;
         ro = -1;
       }
@@ -1013,11 +1084,11 @@ const rcxContent = {
       // we make rp the text area and keep the offset the same
       // we give the text area data so it can act normal
       if (fake) {
-        rp = ev.target;
+        rp = eventTarget;
         rp.data = rp.value;
       }
 
-      if (ev.target == tdata.prevTarget && this.isVisible()) {
+      if (eventTarget == tdata.prevTarget && this.isVisible()) {
         // console.log("exit due to same target");
         if (tdata.title) {
           if (fake) document.body.removeChild(fake);
@@ -1036,21 +1107,23 @@ const rcxContent = {
       return;
     }
 
-    tdata.prevTarget = ev.target;
+    tdata.prevTarget = eventTarget;
     tdata.prevRangeNode = rp;
     tdata.prevRangeOfs = ro;
-    tdata.title = null;
+    tdata.title = undefined;
     tdata.uofs = 0;
-    this.uofsNext = 1;
+    tdata.uofsNext = 1;
 
-    const delay = !!ev.noDelay ? 1 : window.rikaichan.config.popupDelay;
+    const delay = !!ev.noDelay ? 1 : window.rikaichan!.config!.popupDelay;
 
     if (rp && rp.data && ro < rp.data.length) {
       this.forceKanji = ev.shiftKey ? 1 : 0;
       tdata.popX = ev.clientX;
       tdata.popY = ev.clientY;
-      tdata.timer = setTimeout(
-        function (rangeNode, rangeOffset) {
+      tdata.timer = window.setTimeout(
+        (rangeNode: CharacterData | undefined, rangeOffset: number) => {
+          // TODO(melink14): This is using `ro` directly instead of `rangeOffset`
+          // do we even need to pass arguments if we can use the closure?
           if (
             !window.rikaichan ||
             rangeNode != window.rikaichan.prevRangeNode ||
@@ -1058,11 +1131,9 @@ const rcxContent = {
           ) {
             return;
           }
-          rcxContent.show(
+          this.show(
             tdata,
-            rcxContent.forceKanji
-              ? rcxContent.forceKanji
-              : rcxContent.defaultDict
+            this.forceKanji ? this.forceKanji : this.defaultDict
           );
         },
         delay,
@@ -1074,29 +1145,29 @@ const rcxContent = {
 
     // TODO: Consider making title translations configurable.
     if (true) {
-      if (typeof ev.target.title == 'string' && ev.target.title.length) {
-        tdata.title = ev.target.title;
-      } else if (typeof ev.target.alt == 'string' && ev.target.alt.length) {
-        tdata.title = ev.target.alt;
+      if (typeof eventTarget.title == 'string' && eventTarget.title.length) {
+        tdata.title = eventTarget.title;
+      } else if (typeof eventTarget.alt == 'string' && eventTarget.alt.length) {
+        tdata.title = eventTarget.alt;
       }
     }
 
     // FF3
-    if (ev.target.nodeName == 'OPTION') {
-      tdata.title = ev.target.text;
-    } else if (ev.target.nodeName == 'SELECT') {
-      tdata.title = ev.target.options[ev.target.selectedIndex].text;
+    if (eventTarget.nodeName == 'OPTION') {
+      tdata.title = eventTarget.text;
+    } else if (eventTarget.nodeName == 'SELECT') {
+      tdata.title = eventTarget.options[eventTarget.selectedIndex].text;
     }
 
     if (tdata.title) {
       tdata.popX = ev.clientX;
       tdata.popY = ev.clientY;
-      tdata.timer = setTimeout(
-        function (tdata, title) {
+      tdata.timer = window.setTimeout(
+        (tdata: Rikaichan, title: string | undefined) => {
           if (!window.rikaichan || title !== window.rikaichan.title) {
             return;
           }
-          rcxContent.showTitle(tdata);
+          this.showTitle(tdata);
         },
         delay,
         tdata,
@@ -1104,16 +1175,18 @@ const rcxContent = {
       );
     } else {
       // dont close just because we moved from a valid popup slightly over to a place with nothing
-      const dx = tdata.popX - ev.clientX;
-      const dy = tdata.popY - ev.clientY;
+      const dx = tdata.popX! - ev.clientX;
+      const dy = tdata.popY! - ev.clientY;
       const distance = Math.sqrt(dx * dx + dy * dy);
       if (distance > 4) {
         this.clearHi();
         this.hidePopup();
       }
     }
-  },
-};
+  }
+}
+
+const rcxContent = new RcxContent();
 
 // Event Listeners
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -1132,4 +1205,4 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 });
 
 // When a page first loads, checks to see if it should enable script
-chrome.extension.sendMessage({ type: 'enable?' });
+chrome.runtime.sendMessage({ type: 'enable?' });

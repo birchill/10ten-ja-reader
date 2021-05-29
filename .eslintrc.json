@@ -19,6 +19,7 @@
     "@typescript-eslint/no-var-requires": "off",
     "unicode-bom": "error",
     "promise/prefer-await-to-then": "error",
+    "@typescript-eslint/unbound-method": "error",
     // TODO(espeed): Remove these and fix errors.
     "no-undef": "off",
     "prefer-arrow-callback": "off",
@@ -38,9 +39,12 @@
   "overrides": [
     {
       // TODO(espeed): Tighten this as files get cleaned up.
-      "files": ["extension/*.ts"],
+      "files": ["**/*.ts", "**/*.js"],
       "rules": {
         "tsdoc/syntax": "off"
+      },
+      "parserOptions": {
+        "project": "./tsconfig.json"
       }
     }
   ]

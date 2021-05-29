@@ -3,7 +3,7 @@ class TTS {
   private static instance: TTS;
 
   lastTime = new Date().valueOf();
-  previousText = null;
+  previousText: string | null = null;
 
   private constructor() {}
 
@@ -19,7 +19,7 @@ class TTS {
    *
    * @param {string} text
    */
-  play(text) {
+  play(text: string) {
     const now = new Date().valueOf();
     const limit = this.lastTime + 1000;
     if (text != this.previousText || now > limit) {
