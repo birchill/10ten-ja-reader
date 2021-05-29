@@ -35,7 +35,7 @@ type Config = Readonly<MutableConfig>;
 // Simply wrapper which makes `sync.get` `Promise` based.
 async function getStorage(): Promise<MutableConfig> {
   const config = await new Promise<MutableConfig>((resolve) => {
-    chrome.storage.sync.get(defaultConfig, function (cloudStorage) {
+    chrome.storage.sync.get(defaultConfig, (cloudStorage) => {
       resolve(cloudStorage as MutableConfig);
     });
   });

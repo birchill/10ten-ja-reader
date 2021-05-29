@@ -20,7 +20,6 @@
     "promise/prefer-await-to-then": "error",
     "@typescript-eslint/unbound-method": "error",
     // TODO(espeed): Remove these and fix errors.
-    "prefer-arrow-callback": "off",
     "no-case-declarations": "off",
     "eqeqeq": "off",
     "no-prototype-builtins": "off",

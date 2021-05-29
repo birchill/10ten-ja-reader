@@ -1187,7 +1187,7 @@ class RcxContent {
 const rcxContent = new RcxContent();
 
 // Event Listeners
-chrome.runtime.onMessage.addListener(function (request) {
+chrome.runtime.onMessage.addListener((request) => {
   switch (request.type) {
     case 'enable':
       rcxContent.enableTab(request.config);

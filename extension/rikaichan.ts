@@ -185,7 +185,7 @@ class RcxMain {
     chrome.browserAction.setBadgeText({ text: '' });
 
     // Send a disable message to all browsers
-    chrome.windows.getAll({ populate: true }, function (windows) {
+    chrome.windows.getAll({ populate: true }, (windows) => {
       for (let i = 0; i < windows.length; ++i) {
         const tabs = windows[i].tabs;
         if (tabs == undefined) continue;

@@ -133,7 +133,7 @@ class RcxDict {
   }
 
   fileReadAsync(url: string): Promise<string> {
-    return new Promise(function prom(resolve) {
+    return new Promise((resolve) => {
       const req = new XMLHttpRequest();
 
       req.onreadystatechange = function () {
@@ -149,7 +149,7 @@ class RcxDict {
 
   async fileReadAsyncAsArray(url: string): Promise<string[]> {
     const file = await this.fileReadAsync(url);
-    return file.split('\n').filter(function removeBlanks(o) {
+    return file.split('\n').filter((o) => {
       return o && o.length > 0;
     });
   }

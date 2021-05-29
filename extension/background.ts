@@ -22,11 +22,7 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
   const rcxMain = await rcxMainPromise;
   rcxMain.onTabSelect(activeInfo.tabId);
 });
-chrome.runtime.onMessage.addListener(async function (
-  request,
-  sender,
-  response
-) {
+chrome.runtime.onMessage.addListener(async (request, sender, response) => {
   const rcxMain = await rcxMainPromise;
   switch (request.type) {
     case 'enable?':
