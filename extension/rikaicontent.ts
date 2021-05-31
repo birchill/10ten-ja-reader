@@ -611,7 +611,7 @@ class RcxContent {
 
   isInline(node: Node) {
     return (
-      this.inlineNames.hasOwnProperty(node.nodeName) ||
+      Object.prototype.hasOwnProperty.call(this.inlineNames, node.nodeName) ||
       // only check styles for elements
       // comments do not have getComputedStyle method
       (document.nodeType === Node.ELEMENT_NODE &&
@@ -970,7 +970,8 @@ class RcxContent {
       return;
     }
 
-    // TODO(melink14): Why does this replace all characters with HTML escape codes
+    // TODO(#529): Why does this replace all characters with HTML escape codes
+    // eslint-disable-next-line no-control-regex
     e.title = tdata.title!.substr(0, e.textLen).replace(/[\x00-\xff]/g, (c) => {
       return '&#' + c.charCodeAt(0) + ';';
     });

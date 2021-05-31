@@ -19,10 +19,7 @@
     "unicode-bom": "error",
     "promise/prefer-await-to-then": "error",
     "@typescript-eslint/unbound-method": "error",
-    "curly": "error",
-    // TODO(espeed): Remove these and fix errors.
-    "no-prototype-builtins": "off",
-    "no-control-regex": "off"
+    "curly": "error"
   },
   "overrides": [
     {

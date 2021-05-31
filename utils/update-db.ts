@@ -145,7 +145,7 @@ class DictParser extends Transform {
     }
 
     const addOrUpdateEntry = (entry: string) => {
-      if (this.#index.hasOwnProperty(entry)) {
+      if (Object.prototype.hasOwnProperty.call(this.#index, entry)) {
         this.#index[entry].push(this.#length);
       } else {
         this.#index[entry] = [this.#length];
