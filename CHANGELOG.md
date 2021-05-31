@@ -7,6 +7,13 @@ consistently version releases as follows:
 - Minor: New user visible feature added. (contains feat commits)
 - Patch: Bug fix to previous feature. (contains only fix commits)
 
+### [1.2.2](https://github.com/melink14/rikaikun/compare/v1.2.1...v1.2.2) (2021-05-31)
+
+### Bug Fixes
+
+- **dict:** Update dictionaries to latest versions. ([#533](https://github.com/melink14/rikaikun/issues/533)) ([bf906fa](https://github.com/melink14/rikaikun/commit/bf906fa0b5a8b43516bacdcae16d969e1f8e7710))
+- **manifest:** Remove explicit reference to chrome in the short description ([#511](https://github.com/melink14/rikaikun/issues/511)) ([2dadd4a](https://github.com/melink14/rikaikun/commit/2dadd4a319c74e53bcd95e8d7751a61bea84acf7))
+
 ### [1.2.1](https://github.com/melink14/rikaikun/compare/v1.2.0...v1.2.1) (2021-05-24)
 
 ### Bug Fixes
