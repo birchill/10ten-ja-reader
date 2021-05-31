@@ -455,7 +455,8 @@ class RcxContent {
           });
         }
         break;
-      case 66: // b
+      case 66: {
+        // b
         const rikaichan = (ev.currentTarget! as Window).rikaichan!;
         // For some reason it claims it can be const even though it's decremented.
         // eslint-disable-next-line prefer-const
@@ -470,6 +471,7 @@ class RcxContent {
           }
         }
         break;
+      }
       case 68: // d
         chrome.runtime.sendMessage({ type: 'switchOnlyReading' });
         this.show((ev.currentTarget! as Window).rikaichan!, this.sameDict);
@@ -478,7 +480,8 @@ class RcxContent {
       case 77: // m: move forward one character
         (ev.currentTarget! as Window).rikaichan!.uofsNext = 1;
       // Falls through
-      case 78: // n: move forward one word
+      case 78: {
+        // n: move forward one word
         const rikaiData = (ev.currentTarget! as Window).rikaichan!;
         for (i = 50; i > 0; --i) {
           rikaiData.uofs! += rikaiData.uofsNext!;
@@ -487,6 +490,7 @@ class RcxContent {
           }
         }
         break;
+      }
       case 89: // y
         this.altView = 0;
         (ev.currentTarget! as Window).rikaichan!.popY! += 20;

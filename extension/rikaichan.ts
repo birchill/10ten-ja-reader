@@ -248,8 +248,7 @@ class RcxMain {
   search(text: string, dictOption: string) {
     switch (dictOption) {
       case this.forceKanji:
-        const e = this.dict.kanjiSearch(text.charAt(0));
-        return e;
+        return this.dict.kanjiSearch(text.charAt(0));
       case this.defaultDict:
         this.showMode = 0;
         break;

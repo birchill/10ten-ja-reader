@@ -34,8 +34,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, response) => {
       break;
     case 'xsearch':
       console.log('xsearch');
-      const e = rcxMain.search(request.text, request.dictOption);
-      response(e);
+      response(rcxMain.search(request.text, request.dictOption));
       break;
     case 'resetDict':
       console.log('resetDict');
@@ -43,13 +42,11 @@ chrome.runtime.onMessage.addListener(async (request, sender, response) => {
       break;
     case 'translate':
       console.log('translate');
-      const translateEntry = rcxMain.dict.translate(request.title);
-      response(translateEntry);
+      response(rcxMain.dict.translate(request.title));
       break;
     case 'makehtml':
       console.log('makehtml');
-      const html = rcxMain.dict.makeHtml(request.entry);
-      response(html);
+      response(rcxMain.dict.makeHtml(request.entry));
       break;
     case 'switchOnlyReading':
       console.log('switchOnlyReading');
