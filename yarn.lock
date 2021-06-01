@@ -408,10 +408,10 @@
   resolved "https://registry.yarnpkg.com/@bugsnag/safe-json-stringify/-/safe-json-stringify-6.0.0.tgz#22abdcd83e008c369902976730c34c150148a758"
   integrity sha512-htzFO1Zc57S8kgdRK9mLcPVTW1BY2ijfH7Dk2CeZmspTWKdKqSo1iwmqrq2WtRjFlo8aRZYgLX0wFrDXF/9DLA==
 
-"@bugsnag/source-maps@^1.0.0":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@bugsnag/source-maps/-/source-maps-1.0.1.tgz#0f7f4b9c406b98e5230bc1fc128f57549f748916"
-  integrity sha512-NZ5G3k0t+eIzpSBXHmmyASM3rPlqgmG8Hm2ZX7mtOa3ZwnxjqwtTQwCx/RXOsiFeu4AHwE74cEJ6s7eTONtPgQ==
+"@bugsnag/source-maps@^2.0.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@bugsnag/source-maps/-/source-maps-2.1.0.tgz#4eb08a60564c4ad0142c8c4484548777903d3652"
+  integrity sha512-z3PGk4mkCTDIEfviF0qXCzksOTbrwt/low33avZtb2iBiLEU/S9RwAbzmgMKX7M3FPY3X/YcGbUM8fgFCkdpIA==
   dependencies:
     command-line-args "^5.1.1"
     command-line-usage "^6.1.0"
@@ -8389,12 +8389,12 @@ webidl-conversions@^4.0.2:
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-4.0.2.tgz#a855980b1f0b6b359ba1d5d9fb39ae941faa63ad"
   integrity sha512-YQ+BmxuTgd6UXZW3+ICGfyqRyHXVlD5GtQr5+qjiNW7bF0cqrzX500HVXPBOvgXb5YnzDd+h0zqyv61KUD7+Sg==
 
-webpack-bugsnag-plugins@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/webpack-bugsnag-plugins/-/webpack-bugsnag-plugins-1.6.0.tgz#d395c0815d427532dd2cf84219c00a3dafe63e19"
-  integrity sha512-WZUV/vZfCXSxPYkzsuCzOKzl9+d0xPZLqOwIkzQ8j3az6APn/+XENL4L+cF8kXr1JWBlwOnSFFSOuWEiL5Jgrw==
+webpack-bugsnag-plugins@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/webpack-bugsnag-plugins/-/webpack-bugsnag-plugins-1.7.0.tgz#2f675af2e3c12c65491caa0acfa4142f363132d4"
+  integrity sha512-mIZ+edbuWj5HmZ9TzsPZ4d2jTnG2XZxIPAOyUapubxeIQY9U2EqFPmClxKU+MCfmVc6jrBoGe5WlwTVgdj4yxw==
   dependencies:
-    "@bugsnag/source-maps" "^1.0.0"
+    "@bugsnag/source-maps" "^2.0.0"
     bugsnag-build-reporter "^1.0.3"
     run-parallel-limit "^1.0.6"
 
