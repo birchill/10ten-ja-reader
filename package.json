@@ -91,7 +91,7 @@
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
     "lru_map": "^0.4.1",
-    "typescript": "^4.2.4",
+    "typescript": "^4.3.2",
     "web-ext": "^6.1.0"
   },
   "webExt": {
