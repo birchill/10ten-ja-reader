@@ -1,11 +1,12 @@
-## Not yet released
+## 0.5.8 (2021-06-10)
 
 - Added support for handling 旧字体 (_kyuujitai_, old characters)
   ([#604](https://github.com/birtles/rikaichamp/issues/604))
 - Added support for converting Japanese era years that use a series
   of digits (e.g. 昭和二〇年)
   thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
-- Updated to latest changes to JMDict/JMnedict database (new field types, gloss types, dialects etc.)
+- Updated to latest changes to JMDict/JMnedict database (new field types, gloss
+  types, dialects etc.)
 
 ## 0.5.7 (2021-05-22)
 
