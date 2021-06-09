@@ -176,7 +176,7 @@
     "message": "神"
   },
   "content_names_tag_doc": {
-    "message": "正文"
+    "message": "文书"
   },
   "content_names_tag_ev": {
     "message": "事件"
@@ -191,7 +191,7 @@
     "message": "名字"
   },
   "content_names_tag_group": {
-    "message": "乐队"
+    "message": "团体"
   },
   "content_names_tag_leg": {
     "message": "传说"
@@ -343,7 +343,7 @@
     "description": "Label used to describe senses whose dialect is '9s' (Kyushu dialect)"
   },
   "dial_label_bra": {
-    "message": "巴西方言",
+    "message": "巴西日语",
     "description": "Label used to describe senses whose dialect is 'bra' (Brazilian dialect)"
   },
   "dial_label_ho": {
@@ -790,11 +790,11 @@
     "description": "Short annotation given to kanji headwords that use out-dated kanji"
   },
   "head_info_label_rkanji": {
-    "message": "少用",
+    "message": "少用汉字",
     "description": "Short annotation given to kanji headwords that use rarely-used kanji forms"
   },
   "head_info_label_ukanji": {
-    "message": "多用假名",
+    "message": "多用汉字",
     "description": "Short annotation given to kana headwords that are normally written in kanji alone"
   },
   "lang_label_af": {
@@ -1078,7 +1078,7 @@
     "description": "Label used to describe senses with the 'arch' (archaism) annotation"
   },
   "misc_label_char": {
-    "message": "个性",
+    "message": "角色",
     "description": "Label used to describe senses with the 'char' (character) annotation"
   },
   "misc_label_chn": {
@@ -1110,7 +1110,7 @@
     "description": "Label used to describe senses with the 'derog' (derogatory) annotation"
   },
   "misc_label_doc": {
-    "message": "正文",
+    "message": "文书",
     "description": "Label used to describe senses with the 'doc' (document) annotation"
   },
   "misc_label_ev": {
@@ -1130,7 +1130,7 @@
     "description": "Label used to describe senses with the 'fict' (fiction) annotation"
   },
   "misc_label_form": {
-    "message": "僵硬的",
+    "message": "正式",
     "description": "Label used to describe senses with the 'form' (formal or literary term) annotation"
   },
   "misc_label_given": {
@@ -1138,7 +1138,7 @@
     "description": "Label used to describe senses with the 'given' (given name) annotation"
   },
   "misc_label_group": {
-    "message": "乐队",
+    "message": "团体",
     "description": "Label used to describe senses with the 'group' (musical group, band etc.) annotation"
   },
   "misc_label_hist": {
