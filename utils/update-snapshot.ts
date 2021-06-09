@@ -10,7 +10,7 @@ const BASE_URL = 'https://d907hooix2fo8.cloudfront.net';
 
 async function main() {
   // Download the latest data
-  const currentVersion = await getCurrentVersionInfo(1);
+  const currentVersion = await getCurrentVersionInfo(2);
   const data = await readJsonRecords(currentVersion);
   console.log(`Read ${data.size} records.`);
 

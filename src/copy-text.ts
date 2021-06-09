@@ -176,11 +176,13 @@ const glossTypes: { [type in GlossType]: string | undefined } = {
   [GlossType.Expl]: 'expl',
   [GlossType.Lit]: 'lit',
   [GlossType.Fig]: 'fig',
+  [GlossType.Tm]: 'tm',
   [GlossType.None]: undefined,
 };
 
 // Match the formatting in Edict
 const dialects: { [dial in Dialect]: string } = {
+  bra: 'bra:',
   ho: 'hob:',
   tsug: 'tsug:',
   th: 'thb:',

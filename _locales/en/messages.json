@@ -175,6 +175,9 @@
   "content_names_tag_dei": {
     "message": "deity"
   },
+  "content_names_tag_doc": {
+    "message": "document"
+  },
   "content_names_tag_ev": {
     "message": "event"
   },
@@ -186,6 +189,9 @@
   },
   "content_names_tag_given": {
     "message": "given"
+  },
+  "content_names_tag_group": {
+    "message": "group"
   },
   "content_names_tag_leg": {
     "message": "legend"
@@ -335,6 +341,10 @@
   "dial_label_9s": {
     "message": "Kyushu dialect",
     "description": "Label used to describe senses whose dialect is '9s' (Kyushu dialect)"
+  },
+  "dial_label_bra": {
+    "message": "Brazilian dialect",
+    "description": "Label used to describe senses whose dialect is 'bra' (Brazilian dialect)"
   },
   "dial_label_ho": {
     "message": "Hokkaido dialect",
@@ -671,8 +681,12 @@
     "message": "printing",
     "description": "Label applied to senses with the 'print' field"
   },
+  "field_label_psy": {
+    "message": "psychiatry",
+    "description": "Label applied to senses with the 'psy' field"
+  },
   "field_label_psych": {
-    "message": "psychology, psychiatry",
+    "message": "psychology",
     "description": "Label applied to senses with the 'psych' field"
   },
   "field_label_rail": {
@@ -717,15 +731,19 @@
   },
   "gloss_type_label_expl": {
     "message": "explanation",
-    "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "description": "Short annotation used to represent the expl (explanation) gloss type"
   },
   "gloss_type_label_fig": {
     "message": "figurative",
-    "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "description": "Short annotation used to represent the fig (figurative) gloss type"
   },
   "gloss_type_label_lit": {
     "message": "literally",
-    "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "description": "Short annotation used to represent the lit (literally) gloss type"
+  },
+  "gloss_type_label_tm": {
+    "message": "trademark",
+    "description": "Short annotation used to represent the tm (trademark) gloss type"
   },
   "gloss_type_short_expl": {
     "message": "expl.",
@@ -738,6 +756,10 @@
   "gloss_type_short_lit": {
     "message": "lit.",
     "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+  },
+  "gloss_type_short_tm": {
+    "message": "(tm)",
+    "description": "Short annotation used to represent the tm (trademark) gloss type when copying entries to the clipboard"
   },
   "head_info_label_ateji": {
     "message": "ateji",
@@ -766,6 +788,10 @@
   "head_info_label_okanji": {
     "message": "old",
     "description": "Short annotation given to kanji headwords that use out-dated kanji"
+  },
+  "head_info_label_rkanji": {
+    "message": "rarely-used kanji form",
+    "description": "Short annotation given to kanji headwords that use rarely-used kanji forms"
   },
   "head_info_label_ukanji": {
     "message": "usu. kanji",
@@ -1051,6 +1077,10 @@
     "message": "archaism",
     "description": "Label used to describe senses with the 'arch' (archaism) annotation"
   },
+  "misc_label_char": {
+    "message": "character",
+    "description": "Label used to describe senses with the 'char' (character) annotation"
+  },
   "misc_label_chn": {
     "message": "children",
     "description": "Label used to describe senses with the 'chn' (children) annotation"
@@ -1063,13 +1093,29 @@
     "message": "company",
     "description": "Label used to describe senses with the 'company' (company) annotation"
   },
+  "misc_label_creat": {
+    "message": "creature",
+    "description": "Label used to describe senses with the 'creat' (creature) annotation"
+  },
   "misc_label_dated": {
     "message": "dated",
     "description": "Label used to describe senses with the 'dated' (dated) annotation"
   },
+  "misc_label_dei": {
+    "message": "deity",
+    "description": "Label used to describe senses with the 'dei' (deity) annotation"
+  },
   "misc_label_derog": {
     "message": "derogatory",
     "description": "Label used to describe senses with the 'derog' (derogatory) annotation"
+  },
+  "misc_label_doc": {
+    "message": "document",
+    "description": "Label used to describe senses with the 'doc' (document) annotation"
+  },
+  "misc_label_ev": {
+    "message": "event",
+    "description": "Label used to describe senses with the 'ev' (event) annotation"
   },
   "misc_label_fam": {
     "message": "familiar",
@@ -1079,9 +1125,21 @@
     "message": "female term",
     "description": "Label used to describe senses with the 'fem' (female term) annotation"
   },
+  "misc_label_fict": {
+    "message": "fiction",
+    "description": "Label used to describe senses with the 'fict' (fiction) annotation"
+  },
+  "misc_label_form": {
+    "message": "formal",
+    "description": "Label used to describe senses with the 'form' (formal or literary term) annotation"
+  },
   "misc_label_given": {
     "message": "given name",
     "description": "Label used to describe senses with the 'given' (given name) annotation"
+  },
+  "misc_label_group": {
+    "message": "group",
+    "description": "Label used to describe senses with the 'group' (musical group, band etc.) annotation"
   },
   "misc_label_hist": {
     "message": "historical",
@@ -1103,9 +1161,9 @@
     "message": "jocular",
     "description": "Label used to describe senses with the 'joc' (jocular) annotation"
   },
-  "misc_label_litf": {
-    "message": "literary",
-    "description": "Label used to describe senses with the 'litf' (literary) annotation"
+  "misc_label_leg": {
+    "message": "legend",
+    "description": "Label used to describe senses with the 'leg' (legend) annotation"
   },
   "misc_label_m_sl": {
     "message": "manga slang",
@@ -1115,9 +1173,17 @@
     "message": "male",
     "description": "Label used to describe senses with the 'male' (male) annotation"
   },
+  "misc_label_myth": {
+    "message": "mythology",
+    "description": "Label used to describe senses with the 'myth' (mythology) annotation"
+  },
   "misc_label_net_sl": {
     "message": "Internet slang",
     "description": "Label used to describe senses with the 'net-sl' (Internet slang) annotation"
+  },
+  "misc_label_obj": {
+    "message": "object",
+    "description": "Label used to describe senses with the 'obj' (object) annotation"
   },
   "misc_label_obs": {
     "message": "obsolete",
@@ -1134,6 +1200,10 @@
   "misc_label_organization": {
     "message": "org.",
     "description": "Label used to describe senses with the 'organization' (org.) annotation"
+  },
+  "misc_label_oth": {
+    "message": "other",
+    "description": "Label used to describe senses with the 'oth' (other) annotation"
   },
   "misc_label_person": {
     "message": "person",
@@ -1167,9 +1237,17 @@
     "message": "rare",
     "description": "Label used to describe senses with the 'rare' (rare) annotation"
   },
+  "misc_label_relig": {
+    "message": "religion",
+    "description": "Label used to describe senses with the 'relig' (religion) annotation"
+  },
   "misc_label_sens": {
     "message": "sensitive",
     "description": "Label used to describe senses with the 'sens' (sensitive) annotation"
+  },
+  "misc_label_serv": {
+    "message": "service",
+    "description": "Label used to describe senses with the 'serv' (service) annotation"
   },
   "misc_label_sl": {
     "message": "slang",

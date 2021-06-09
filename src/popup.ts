@@ -577,6 +577,7 @@ function appendHeadwordInfo(
       oK: 'okanji',
       ok: 'okana',
       uK: 'ukanji',
+      rK: 'rkanji',
     };
     const key = specialKeys.hasOwnProperty(i) ? specialKeys[i] : i;
 
@@ -830,6 +831,7 @@ function appendGlosses(glosses: Array<Gloss>, parent: ParentNode) {
         [GlossType.Expl]: 'expl',
         [GlossType.Fig]: 'fig',
         [GlossType.Lit]: 'lit',
+        [GlossType.Tm]: 'tm',
       }[gloss.type];
       const typeStr = typeCode
         ? browser.i18n.getMessage(`gloss_type_label_${typeCode}`)

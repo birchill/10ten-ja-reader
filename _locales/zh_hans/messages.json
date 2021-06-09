@@ -175,6 +175,9 @@
   "content_names_tag_dei": {
     "message": "神"
   },
+  "content_names_tag_doc": {
+    "message": "正文"
+  },
   "content_names_tag_ev": {
     "message": "事件"
   },
@@ -186,6 +189,9 @@
   },
   "content_names_tag_given": {
     "message": "名字"
+  },
+  "content_names_tag_group": {
+    "message": "乐队"
   },
   "content_names_tag_leg": {
     "message": "传说"
@@ -335,6 +341,10 @@
   "dial_label_9s": {
     "message": "九州方言",
     "description": "Label used to describe senses whose dialect is '9s' (Kyushu dialect)"
+  },
+  "dial_label_bra": {
+    "message": "巴西方言",
+    "description": "Label used to describe senses whose dialect is 'bra' (Brazilian dialect)"
   },
   "dial_label_ho": {
     "message": "北海道方言",
@@ -671,6 +681,10 @@
     "message": "印刷",
     "description": "Label applied to senses with the 'print' field"
   },
+  "field_label_psy": {
+    "message": "精神科",
+    "description": "Label applied to senses with the 'psy' field"
+  },
   "field_label_psych": {
     "message": "心理学",
     "description": "Label applied to senses with the 'psych' field"
@@ -717,15 +731,19 @@
   },
   "gloss_type_label_expl": {
     "message": "说明",
-    "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "description": "Short annotation used to represent the expl (explanation) gloss type"
   },
   "gloss_type_label_fig": {
     "message": "比喻",
-    "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "description": "Short annotation used to represent the fig (figurative) gloss type"
   },
   "gloss_type_label_lit": {
     "message": "直译",
-    "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+    "description": "Short annotation used to represent the lit (literally) gloss type"
+  },
+  "gloss_type_label_tm": {
+    "message": "商标",
+    "description": "Short annotation used to represent the tm (trademark) gloss type"
   },
   "gloss_type_short_expl": {
     "message": "说明",
@@ -738,6 +756,10 @@
   "gloss_type_short_lit": {
     "message": "直译",
     "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
+  },
+  "gloss_type_short_tm": {
+    "message": "商标",
+    "description": "Short annotation used to represent the tm (trademark) gloss type when copying entries to the clipboard"
   },
   "head_info_label_ateji": {
     "message": "借字",
@@ -766,6 +788,10 @@
   "head_info_label_okanji": {
     "message": "古",
     "description": "Short annotation given to kanji headwords that use out-dated kanji"
+  },
+  "head_info_label_rkanji": {
+    "message": "少用",
+    "description": "Short annotation given to kanji headwords that use rarely-used kanji forms"
   },
   "head_info_label_ukanji": {
     "message": "多用假名",
@@ -1051,6 +1077,10 @@
     "message": "古",
     "description": "Label used to describe senses with the 'arch' (archaism) annotation"
   },
+  "misc_label_char": {
+    "message": "个性",
+    "description": "Label used to describe senses with the 'char' (character) annotation"
+  },
   "misc_label_chn": {
     "message": "幼稚",
     "description": "Label used to describe senses with the 'chn' (children) annotation"
@@ -1063,13 +1093,29 @@
     "message": "公司",
     "description": "Label used to describe senses with the 'company' (company) annotation"
   },
+  "misc_label_creat": {
+    "message": "生物",
+    "description": "Label used to describe senses with the 'creat' (creature) annotation"
+  },
   "misc_label_dated": {
     "message": "旧",
     "description": "Label used to describe senses with the 'dated' (dated) annotation"
   },
+  "misc_label_dei": {
+    "message": "神",
+    "description": "Label used to describe senses with the 'dei' (deity) annotation"
+  },
   "misc_label_derog": {
     "message": "轻蔑",
     "description": "Label used to describe senses with the 'derog' (derogatory) annotation"
+  },
+  "misc_label_doc": {
+    "message": "正文",
+    "description": "Label used to describe senses with the 'doc' (document) annotation"
+  },
+  "misc_label_ev": {
+    "message": "事件",
+    "description": "Label used to describe senses with the 'ev' (event) annotation"
   },
   "misc_label_fam": {
     "message": "亲近",
@@ -1079,9 +1125,21 @@
     "message": "女性",
     "description": "Label used to describe senses with the 'fem' (female term) annotation"
   },
+  "misc_label_fict": {
+    "message": "虚构作品",
+    "description": "Label used to describe senses with the 'fict' (fiction) annotation"
+  },
+  "misc_label_form": {
+    "message": "僵硬的",
+    "description": "Label used to describe senses with the 'form' (formal or literary term) annotation"
+  },
   "misc_label_given": {
     "message": "名字",
     "description": "Label used to describe senses with the 'given' (given name) annotation"
+  },
+  "misc_label_group": {
+    "message": "乐队",
+    "description": "Label used to describe senses with the 'group' (musical group, band etc.) annotation"
   },
   "misc_label_hist": {
     "message": "历史上",
@@ -1103,9 +1161,9 @@
     "message": "玩笑",
     "description": "Label used to describe senses with the 'joc' (jocular) annotation"
   },
-  "misc_label_litf": {
-    "message": "文语",
-    "description": "Label used to describe senses with the 'litf' (literary) annotation"
+  "misc_label_leg": {
+    "message": "传说",
+    "description": "Label used to describe senses with the 'leg' (legend) annotation"
   },
   "misc_label_m_sl": {
     "message": "漫画俗语",
@@ -1115,9 +1173,17 @@
     "message": "男性",
     "description": "Label used to describe senses with the 'male' (male) annotation"
   },
+  "misc_label_myth": {
+    "message": "神话",
+    "description": "Label used to describe senses with the 'myth' (mythology) annotation"
+  },
   "misc_label_net_sl": {
     "message": "网络语言",
     "description": "Label used to describe senses with the 'net-sl' (Internet slang) annotation"
+  },
+  "misc_label_obj": {
+    "message": "物品",
+    "description": "Label used to describe senses with the 'obj' (object) annotation"
   },
   "misc_label_obs": {
     "message": "死语",
@@ -1134,6 +1200,10 @@
   "misc_label_organization": {
     "message": "组织",
     "description": "Label used to describe senses with the 'organization' (org.) annotation"
+  },
+  "misc_label_oth": {
+    "message": "其他",
+    "description": "Label used to describe senses with the 'oth' (other) annotation"
   },
   "misc_label_person": {
     "message": "人物",
@@ -1167,9 +1237,17 @@
     "message": "少用",
     "description": "Label used to describe senses with the 'rare' (rare) annotation"
   },
+  "misc_label_relig": {
+    "message": "宗教",
+    "description": "Label used to describe senses with the 'relig' (religion) annotation"
+  },
   "misc_label_sens": {
     "message": "敏感",
     "description": "Label used to describe senses with the 'sens' (sensitive) annotation"
+  },
+  "misc_label_serv": {
+    "message": "服务",
+    "description": "Label used to describe senses with the 'serv' (service) annotation"
   },
   "misc_label_sl": {
     "message": "俚语",
