@@ -120,7 +120,7 @@ following commands:
 ```
 export RELEASE_BUILD=1
 yarn install
-yarn package:firefox
+yarn package:firefox # Or `yarn package` for versions 0.5.8 and earlier
 ```
 
 (Note that you may ignore the `.js` files associated with each release.
