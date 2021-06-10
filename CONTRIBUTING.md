@@ -1,6 +1,6 @@
 Hi!
 
-Thank you for offering to contribute! Here are a few tips that might help.
+Thank you so much for offering to contribute! Here are a few tips that might help.
 
 # Table of Contents
 
@@ -16,12 +16,12 @@ Thank you for offering to contribute! Here are a few tips that might help.
 
 - Quality over features. Your code doesn't need to be great (we'll work on it
   together) but we're generally more interested in fixing the basics (faster,
-  more robust, more accurate lookups etc.) than adding half-baked features. When
-  we add a feature, we like to do it properly.
+  more robust, more accurate lookups etc.) than adding half-baked features.
+  When we add a feature, we like to do it properly.
 
 - Options are a refuge for the indecisive 😅. It's tempting to hedge your bets
-  and "just add an option" but we try to avoid that if possible. It makes the
-  add-on harder to maintain and most users will never discover the option.
+  and "just add an option" but we try to avoid that when possible. It makes the
+  extension harder to maintain and most users will never discover the option.
   Instead it's worth working out if there's a different approach that will work
   well for (nearly) everyone. So far we've been pretty successful at doing that.
 
@@ -39,24 +39,19 @@ yarn install
 To build the Firefox version:
 
 ```
-yarn build
+yarn build:firefox
 ```
 
 The output should be in the `dist-firefox` folder.
 
-To build the Chrome version:
+Similarly you can use `yarn build:chrome` or `yarn build:edge` to build the
+Chrome and Edge versions.
+The output will be in the `dist-chrome` and `dist-edge` folders respectively.
+
+To build and package up a zip:
 
 ```
-yarn build:chrome
-```
-
-The output should be in the `dist-chrome` folder.
-
-Or to build and package up a zip you can pass around:
-
-```
-yarn package
-yarn package:chrome # Chrome version
+yarn package:firefox # or yarn package:chrome, yarn package:edge
 ```
 
 ## Running
@@ -64,17 +59,26 @@ yarn package:chrome # Chrome version
 For manual testing you can use:
 
 ```
-yarn start # or yarn start:chrome
+yarn start:firefox # or yarn start:chrome
 ```
 
 This will run the app using the webpack runner in Firefox (or Chrome) with automatic reloading.
 
+To use a specific version of Firefox:
+
 ```
-yarn start --env firefox=nightly
+yarn start:firefox --env firefox=nightly
 ```
 
-Other options include `--env firefoxProfile=<path>`,
-`--env keepProfileChanges`, and `--env profileCreateIfMissing`.
+Other options include:
+
+- `--env firefoxProfile=<path>`,
+- `--env chromium=<path>`,
+- `--env chromeProfile=<path>`,
+- `--env keepProfileChanges`, and
+- `--env profileCreateIfMissing`.
+
+(I believe the latter two options only apply to Firefox.)
 
 ## Testing
 

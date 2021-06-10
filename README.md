@@ -111,7 +111,7 @@ The other keys are as follows:
 | (Copy mode) Copy word/kanji               | <kbd>w</kbd>                                        |
 | (Copy mode) Select next entry             | <kbd>c</kbd>                                        |
 
-## Building from source
+## Building a release from source
 
 You may also build the add-ons using a source package from the
 [Releases](https://github.com/birtles/rikaichamp/releases) page and running the
@@ -120,7 +120,7 @@ following commands:
 ```
 export RELEASE_BUILD=1
 yarn install
-yarn package
+yarn package:firefox
 ```
 
 (Note that you may ignore the `.js` files associated with each release.
@@ -133,6 +133,8 @@ Edge.
 
 **Note:** For versions prior to and including 0.5.5 `yarn install` will try to
 install `husky` but fail so you will need to run `yarn install --ignore-scripts`.
+
+To build the latest trunk version please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Contributing
 

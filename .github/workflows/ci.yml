@@ -28,10 +28,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
+      # Check the build works. No need to run the build:edge target since it's
+      # almost identical to build:chrome
       - name: Build
         run: |
           yarn install --frozen-lockfile
-          yarn build
+          yarn build:firefox
           yarn build:chrome
 
       - name: Run tests
@@ -40,8 +42,12 @@ jobs:
         run: |
           yarn test
 
+      # Check packaging doesn't error. Again, no need to worry about the
+      # package:edge target.
       - name: Package
-        run: yarn package
+        run: |
+          yarn package:firefox
+          yarn package:chrome
 
   release:
     runs-on: ubuntu-latest
@@ -79,7 +85,7 @@ jobs:
           RELEASE_BUILD: 1
           BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY }}
         run: |
-          yarn package
+          yarn package:firefox
           yarn package:chrome
           yarn package:edge
 
