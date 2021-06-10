@@ -100,19 +100,21 @@ function completeForm() {
       config.showKanjiComponents = (evt.target as HTMLInputElement).checked;
     });
 
-  browser.management.getSelf().then((info) => {
-    if (info.installType === 'development') {
-      (document.querySelector('.db-admin') as HTMLElement).style.display =
-        'block';
-      document
-        .getElementById('deleteDatabase')!
-        .addEventListener('click', (evt) => {
-          if (browserPort) {
-            browserPort.postMessage(deleteDb());
-          }
-        });
-    }
-  });
+  if (browser.management) {
+    browser.management.getSelf().then((info) => {
+      if (info.installType === 'development') {
+        (document.querySelector('.db-admin') as HTMLElement).style.display =
+          'block';
+        document
+          .getElementById('deleteDatabase')!
+          .addEventListener('click', (evt) => {
+            if (browserPort) {
+              browserPort.postMessage(deleteDb());
+            }
+          });
+      }
+    });
+  }
 }
 
 function isFirefox(): boolean {

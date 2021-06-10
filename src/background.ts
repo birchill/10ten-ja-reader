@@ -87,11 +87,13 @@ const getExtensionInstallId = (): string => {
 
 let releaseStage = 'production';
 
-browser.management.getSelf().then((info) => {
-  if (info.installType === 'development') {
-    releaseStage = 'development';
-  }
-});
+if (browser.management) {
+  browser.management.getSelf().then((info) => {
+    if (info.installType === 'development') {
+      releaseStage = 'development';
+    }
+  });
+}
 
 const manifest = browser.runtime.getManifest();
 
