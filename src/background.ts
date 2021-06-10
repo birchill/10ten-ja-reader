@@ -833,13 +833,15 @@ function onTabSelect(tabId: number) {
 
 browser.runtime.onInstalled.addListener(async () => {
   // Request persistent storage permission
-  let persisted = await navigator.storage.persisted();
-  if (!persisted && (await shouldRequestPersistentStorage())) {
-    persisted = await navigator.storage.persist();
-    if (persisted) {
-      Bugsnag.leaveBreadcrumb('Got persistent storage permission');
-    } else {
-      Bugsnag.leaveBreadcrumb('Failed to get persistent storage permission');
+  if (navigator.storage) {
+    let persisted = await navigator.storage.persisted();
+    if (!persisted && (await shouldRequestPersistentStorage())) {
+      persisted = await navigator.storage.persist();
+      if (persisted) {
+        Bugsnag.leaveBreadcrumb('Got persistent storage permission');
+      } else {
+        Bugsnag.leaveBreadcrumb('Failed to get persistent storage permission');
+      }
     }
   }
 
