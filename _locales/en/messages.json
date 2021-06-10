@@ -72,7 +72,7 @@
     "description": "Label for key to copy a word to the clipboard"
   },
   "content_kanji_base_radical": {
-    "message": "from $char$ ($readings$)",
+    "message": "from $char$ ($readings$​)",
     "description": "The string used to describe the base radical",
     "placeholders": {
       "char": {
@@ -396,7 +396,7 @@
     }
   },
   "error_command_disallowed_modifier_key": {
-    "message": "Modifier '$modifier$' is not allowed",
+    "message": "Modifier '$modifier$​' is not allowed",
     "placeholders": {
       "modifier": {
         "content": "$1",
@@ -411,7 +411,7 @@
     "message": "A modifier must be specified unless using a function key"
   },
   "error_command_key_is_not_allowed": {
-    "message": "Key '$key$' is not allowed",
+    "message": "Key '$key$​' is not allowed",
     "placeholders": {
       "key": {
         "content": "$1",
@@ -1326,7 +1326,7 @@
     "description": "Label while we are checking for updates"
   },
   "options_data_series_date_only": {
-    "message": "Based on $source$ from $generated$.",
+    "message": "Based on $source$ from $generated$​.",
     "placeholders": {
       "source": {
         "content": "$1",
@@ -1339,7 +1339,7 @@
     }
   },
   "options_data_series_version_and_date": {
-    "message": "Based on $source$ $version$ from $generated$.",
+    "message": "Based on $source$ $version$ from $generated$​.",
     "placeholders": {
       "source": {
         "content": "$1",
@@ -1400,7 +1400,7 @@
     "message": "Dictionary language"
   },
   "options_downloading_data": {
-    "message": "Downloading $datatype$ version $version$ ($progress$%)…",
+    "message": "Downloading $datatype$ version $version$ ($progress$​%)…",
     "description": "Label while we are downloading updates",
     "placeholders": {
       "datatype": {
@@ -1595,7 +1595,7 @@
     "description": "Label for the button to retry the database update after a failure"
   },
   "options_updating_data": {
-    "message": "Updating $datatype$ to version $version$ ($progress$%)…",
+    "message": "Updating $datatype$ to version $version$ ($progress$​%)…",
     "description": "Label while we are applying updates",
     "placeholders": {
       "datatype": {
