@@ -1,5 +1,6 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const WebExtPlugin = require('web-ext-plugin');
 const {
   BugsnagBuildReporterPlugin,
@@ -21,7 +22,6 @@ const keepProfileChanges = !!env.keepProfileChanges;
 const profileCreateIfMissing = !!env.profileCreateIfMissing;
 
 const commonConfig = {
-  // No need for uglification etc.
   mode: 'development',
   devtool: 'source-map',
   module: {
@@ -45,11 +45,45 @@ const commonConfig = {
 
 const commonExtConfig = {
   ...commonConfig,
+  // We turn on production mode simply so we can drop unused code from the
+  // bundle -- otherwise we'll end up injecting a bunch of unrelated code like
+  // Russian toke stopwords into the content script.
+  //
+  // We _could_ use mode: 'development' and then set optimization as follows:
+  //
+  //   optimization: {
+  //      minimize: true,
+  //      minimizer: [...(as below)...],
+  //      usedExports: true
+  //   }
+  //
+  // but then we'd end up including a bunch of unneeded comments from modules
+  // that get pruned.
+  mode: 'production',
   entry: {
     'rikaichamp-content': './src/content.ts',
     'rikaichamp-background': './src/background.ts',
     'rikaichamp-options': './src/options.ts',
     'rikaichamp-jpdict': './src/jpdict-worker.ts',
+  },
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            defaults: false,
+            unused: true,
+          },
+          mangle: false,
+          format: {
+            beautify: true,
+            comments: 'all',
+            indent_level: 2,
+            keep_numbers: true,
+          },
+        },
+      }),
+    ],
   },
 };
 

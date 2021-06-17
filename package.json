@@ -74,6 +74,7 @@
     "semver-parser": "^3.1.0",
     "source-map-loader": "^3.0.0",
     "split2": "^3.2.2",
+    "terser-webpack-plugin": "^5.1.3",
     "ts-jest": "^25.5.1",
     "ts-loader": "^9.2.3",
     "ts-node": "^9.1.1",
