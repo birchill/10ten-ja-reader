@@ -615,9 +615,6 @@ async function search(
   abortSignal: AbortSignal
 ): Promise<SearchResult | null> {
   switch (dictOption) {
-    case DictMode.ForceKanji:
-      return searchKanji(text.charAt(0));
-
     case DictMode.Default:
       currentDict = DictType.Words;
       preferNames = false;

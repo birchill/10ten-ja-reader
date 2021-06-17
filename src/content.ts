@@ -248,7 +248,7 @@ export class RikaiContent {
     this.tryToUpdatePopup(
       { x: ev.clientX, y: ev.clientY },
       ev.target as Element,
-      ev.shiftKey ? DictMode.ForceKanji : DictMode.Default
+      DictMode.Default
     );
   }
 
@@ -563,10 +563,6 @@ export class RikaiContent {
 
     if (
       this.currentTextAtPoint === textAtPoint &&
-      // This following line is not strictly correct. If the previous
-      // dictionary mode was 'ForceKanji' and now it's 'Default' we shouldn't
-      // return early.  To fix that, however, we'd need to store the previous
-      // dictionary mode.
       dictMode === DictMode.Default
     ) {
       return;
