@@ -32,7 +32,9 @@
   },
   /*#endif*/
   "permissions": [
+    /*#if needs_clipboard_write*/
     "clipboardWrite",
+    /*#endif*/
     "contextMenus",
     "storage",
     "tabs",

@@ -136,6 +136,7 @@ if (process.env.RELEASE_BUILD && process.env.BUGSNAG_API_KEY) {
 const chromeConfig = buildExtConfig({
   distFolder: 'dist-chrome',
   includeChromeWebStoreIcons: true,
+  needsClipboardWrite: false,
   supportsChromeStyle: true,
   supportsMatchAboutBlank: true,
   target: 'chromium',
@@ -144,6 +145,7 @@ const chromeConfig = buildExtConfig({
 const edgeConfig = buildExtConfig({
   distFolder: 'dist-edge',
   includeChromeWebStoreIcons: true,
+  needsClipboardWrite: false,
   supportsMatchAboutBlank: true,
   target: 'chromium',
   usesEdgeStore: true,
@@ -165,6 +167,7 @@ module.exports = (env) => {
 function buildExtConfig({
   distFolder,
   includeChromeWebStoreIcons = false,
+  needsClipboardWrite = true,
   supportsAlphaVersion = false,
   supportsApplicationsField = false,
   supportsBrowserStyle = false,
@@ -175,6 +178,10 @@ function buildExtConfig({
   usesEdgeStore = false,
 }) {
   const preprocessorFeatures = [];
+  if (needsClipboardWrite) {
+    preprocessorFeatures.push('needs_clipboard_write');
+  }
+
   if (supportsAlphaVersion) {
     preprocessorFeatures.push('supports_alpha_version');
   }

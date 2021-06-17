@@ -1,3 +1,8 @@
+## 0.5.13 (2021-06-17)
+
+- Drop `clipboardWrite` property from Chromium manifest since it's not needed
+  there.
+
 ## 0.5.12 (2021-06-17)
 
 - Fix some bugs in the lookup cache
