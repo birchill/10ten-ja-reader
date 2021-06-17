@@ -339,59 +339,49 @@ async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
 // Context menu
 //
 
-let menuId: number | string | null = null;
-
 function addContextMenu() {
-  if (menuId) {
-    return;
-  }
+  const contexts: Array<browser.menus.ContextType> = [
+    'browser_action',
+    'editable',
+    'frame',
+    'image',
+    'link',
+    'page',
+    'selection',
+    'tab',
+    'video',
+  ];
 
   try {
-    menuId = browser.contextMenus.create({
+    // We'd like to use:
+    //
+    //   command: '_execute_browser_action'
+    //
+    // here instead of onclick but:
+    //
+    // a) Chrome etc. don't support that
+    // b) Firefox passes the wrong tab ID to the callback when the command is
+    //    activated from the context menu of a non-active tab.
+    browser.contextMenus.create({
       id: 'context-toggle',
       type: 'checkbox',
       title: browser.i18n.getMessage('menu_enable_extension'),
-      command: '_execute_browser_action',
-      contexts: ['all'],
+      onclick: (_info, tab) => toggle(tab),
+      contexts,
       checked: enabled,
     });
-  } catch (e) {
-    // Chrome doesn't support the 'command' member so if we got an
-    // exception, assume that's it and try the old-fashioned way.
-    try {
-      menuId = browser.contextMenus.create({
-        id: 'context-toggle',
-        type: 'checkbox',
-        title: browser.i18n.getMessage('menu_enable_extension'),
-        contexts: ['all'],
-        checked: enabled,
-        onclick: (_info, tab) => {
-          toggle(tab);
-        },
-      });
-    } catch (_) {
-      // Give up. We're likely on a platform that doesn't support the
-      // contextMenus API such as Firefox for Android.
-      console.info('Could not add context menu');
-    }
+  } catch (_e) {
+    // Give up. We're probably on a platform that doesn't support the
+    // contextMenus API such as Firefox for Android.
   }
 }
 
 async function removeContextMenu() {
-  if (!menuId) {
-    return;
-  }
-
   try {
-    await browser.contextMenus.remove(menuId);
+    await browser.contextMenus.remove('context-toggle');
   } catch (e) {
-    console.error(`Failed to remove context menu: ${e}`);
-    Bugsnag.notify(`Failed to remove context menu: ${e}`, (event) => {
-      event.severity = 'warning';
-    });
+    // Ignore
   }
-
-  menuId = null;
 }
 
 //
@@ -409,13 +399,22 @@ async function enableTab(tab: browser.tabs.Tab) {
     jpdictState,
   });
 
-  if (menuId) {
-    browser.contextMenus.update(menuId, { checked: true });
+  try {
+    await config.ready;
+  } catch (e) {
+    Bugsnag.notify(e || '(No error)');
+    return;
+  }
+
+  if (config.contextMenuEnable) {
+    browser.contextMenus
+      .update('context-toggle', { checked: true })
+      .catch(() => {
+        // Ignore
+      });
   }
 
   try {
-    await config.ready;
-
     Bugsnag.leaveBreadcrumb('Triggering database update from enableTab...');
     initJpDict();
 
@@ -453,8 +452,12 @@ async function enableTab(tab: browser.tabs.Tab) {
       jpdictState,
     });
 
-    if (menuId) {
-      browser.contextMenus.update(menuId, { checked: false });
+    if (config.contextMenuEnable) {
+      browser.contextMenus
+        .update('context-toggle', { checked: false })
+        .catch(() => {
+          // Ignore
+        });
     }
   }
 }
@@ -476,8 +479,12 @@ async function disableAll() {
     jpdictState,
   });
 
-  if (menuId) {
-    browser.contextMenus.update(menuId, { checked: false });
+  if (config.contextMenuEnable) {
+    browser.contextMenus
+      .update('context-toggle', { checked: false })
+      .catch(() => {
+        // Ignore
+      });
   }
 
   const windows = await browser.windows.getAll({
