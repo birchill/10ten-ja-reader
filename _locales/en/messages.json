@@ -72,7 +72,7 @@
     "description": "Label for key to copy a word to the clipboard"
   },
   "content_kanji_base_radical": {
-    "message": "from $char$ ($readings$​)",
+    "message": "from $char$ (​$readings$​)",
     "description": "The string used to describe the base radical",
     "placeholders": {
       "char": {
@@ -121,7 +121,7 @@
     }
   },
   "content_kanji_kentei_level_pre": {
-    "message": "Pre-$level$",
+    "message": "Pre-​$level$",
     "placeholders": {
       "level": {
         "content": "$1",
@@ -396,7 +396,7 @@
     }
   },
   "error_command_disallowed_modifier_key": {
-    "message": "Modifier '$modifier$​' is not allowed",
+    "message": "Modifier '​$modifier$​' is not allowed",
     "placeholders": {
       "modifier": {
         "content": "$1",
@@ -411,7 +411,7 @@
     "message": "A modifier must be specified unless using a function key"
   },
   "error_command_key_is_not_allowed": {
-    "message": "Key '$key$​' is not allowed",
+    "message": "Key '​$key$​' is not allowed",
     "placeholders": {
       "key": {
         "content": "$1",
@@ -1400,7 +1400,7 @@
     "message": "Dictionary language"
   },
   "options_downloading_data": {
-    "message": "Downloading $datatype$ version $version$ ($progress$​%)…",
+    "message": "Downloading $datatype$ version $version$ (​$progress$​%)…",
     "description": "Label while we are downloading updates",
     "placeholders": {
       "datatype": {
@@ -1449,7 +1449,7 @@
     "description": "The name for the kanji database data set"
   },
   "options_kanji_data_title": {
-    "message": "Kanji data v$version$",
+    "message": "Kanji data v​$version$",
     "description": "The kanji data series title and version",
     "placeholders": {
       "version": {
@@ -1507,7 +1507,7 @@
     "description": "The name for the name database data set"
   },
   "options_name_data_title": {
-    "message": "Name data v$version$",
+    "message": "Name data v​$version$",
     "description": "The name data series title and version",
     "placeholders": {
       "version": {
@@ -1595,7 +1595,7 @@
     "description": "Label for the button to retry the database update after a failure"
   },
   "options_updating_data": {
-    "message": "Updating $datatype$ to version $version$ ($progress$​%)…",
+    "message": "Updating $datatype$ to version $version$ (​$progress$​%)…",
     "description": "Label while we are applying updates",
     "placeholders": {
       "datatype": {
@@ -1617,7 +1617,7 @@
     "description": "The name for the words database data set"
   },
   "options_words_data_title": {
-    "message": "Word data v$version$",
+    "message": "Word data v​$version$",
     "description": "The word data series title and version",
     "placeholders": {
       "version": {

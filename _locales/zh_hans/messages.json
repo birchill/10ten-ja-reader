@@ -72,7 +72,7 @@
     "description": "Label for key to copy a word to the clipboard"
   },
   "content_kanji_base_radical": {
-    "message": "从$char$​（$readings$​）",
+    "message": "从​$char$​（​$readings$​）",
     "description": "The string used to describe the base radical",
     "placeholders": {
       "char": {
@@ -121,7 +121,7 @@
     }
   },
   "content_kanji_kentei_level_pre": {
-    "message": "准$level$​级",
+    "message": "准​$level$​级",
     "placeholders": {
       "level": {
         "content": "$1",
@@ -396,7 +396,7 @@
     }
   },
   "error_command_disallowed_modifier_key": {
-    "message": "修饰键 '$modifier$​' 不能使用",
+    "message": "修饰键 '​$modifier$​' 不能使用",
     "placeholders": {
       "modifier": {
         "content": "$1",
@@ -411,7 +411,7 @@
     "message": "必须使用一个修饰键，除非使用功能键（F1-F12）。"
   },
   "error_command_key_is_not_allowed": {
-    "message": "按键 '$key$​' 不可用",
+    "message": "按键 '​$key$​' 不可用",
     "placeholders": {
       "key": {
         "content": "$1",
@@ -1364,7 +1364,7 @@
     "description": "Label when IndexedDB is unusable"
   },
   "options_db_update_error": {
-    "message": "更新失败：$errormessage$",
+    "message": "更新失败：​$errormessage$",
     "description": "Label when we failed to update the data for some reason",
     "placeholders": {
       "errormessage": {
@@ -1400,7 +1400,7 @@
     "message": "词典语言"
   },
   "options_downloading_data": {
-    "message": "正在下载$datatype$​，版本 $version$​（$progress$​%）……",
+    "message": "正在下载​$datatype$​，版本 $version$​（​$progress$​%）……",
     "description": "Label while we are downloading updates",
     "placeholders": {
       "datatype": {
@@ -1449,7 +1449,7 @@
     "description": "The name for the kanji database data set"
   },
   "options_kanji_data_title": {
-    "message": "汉字数据版本 v$version$",
+    "message": "汉字数据版本 v​$version$",
     "description": "The kanji data series title and version",
     "placeholders": {
       "version": {
@@ -1507,7 +1507,7 @@
     "description": "The name for the name database data set"
   },
   "options_name_data_title": {
-    "message": "名字数据版本 v$version$",
+    "message": "名字数据版本 v​$version$",
     "description": "The name data series title and version",
     "placeholders": {
       "version": {
@@ -1595,7 +1595,7 @@
     "description": "Label for the button to retry the database update after a failure"
   },
   "options_updating_data": {
-    "message": "正在安装$datatype$​的更新版本 $version$​（$progress$​%）……",
+    "message": "正在安装​$datatype$​的更新版本 $version$​（​$progress$​%）……",
     "description": "Label while we are applying updates",
     "placeholders": {
       "datatype": {
@@ -1617,7 +1617,7 @@
     "description": "The name for the words database data set"
   },
   "options_words_data_title": {
-    "message": "单词数据版本 v$version$",
+    "message": "单词数据版本 v​$version$",
     "description": "The word data series title and version",
     "placeholders": {
       "version": {

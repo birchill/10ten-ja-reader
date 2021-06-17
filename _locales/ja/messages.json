@@ -72,7 +72,7 @@
     "description": "Label for key to copy a word to the clipboard"
   },
   "content_kanji_base_radical": {
-    "message": "部 $char$ ($readings$​)",
+    "message": "部 $char$ (​$readings$​)",
     "description": "The string used to describe the base radical",
     "placeholders": {
       "char": {
@@ -121,7 +121,7 @@
     }
   },
   "content_kanji_kentei_level_pre": {
-    "message": "準$level$​級",
+    "message": "準​$level$​級",
     "placeholders": {
       "level": {
         "content": "$1",
@@ -390,7 +390,7 @@
     "description": "Label used to describe senses whose dialect is 'tsug' (Tsugaru dialect)"
   },
   "error_command_could_not_parse": {
-    "message": "「$command$​」の構文解析が失敗しました",
+    "message": "「​$command$​」の構文解析が失敗しました",
     "placeholders": {
       "command": {
         "content": "$1",
@@ -399,7 +399,7 @@
     }
   },
   "error_command_disallowed_modifier_key": {
-    "message": "「$modifier$​」という修飾キーは利用できません",
+    "message": "「​$modifier$​」という修飾キーは利用できません",
     "placeholders": {
       "modifier": {
         "content": "$1",
@@ -414,7 +414,7 @@
     "message": "機能キーまたメディアキーの利用以外の場合、修飾キーも設定してください"
   },
   "error_command_key_is_not_allowed": {
-    "message": "「$key$​」というキーは利用できません",
+    "message": "「​$key$​」というキーは利用できません",
     "placeholders": {
       "key": {
         "content": "$1",
@@ -1329,7 +1329,7 @@
     "description": "Label while we are checking for updates"
   },
   "options_data_series_date_only": {
-    "message": "$generated$​に生成された$source$​のデータに基づいている。",
+    "message": "$generated$​に生成された​$source$​のデータに基づいている。",
     "placeholders": {
       "source": {
         "content": "$1",
@@ -1342,7 +1342,7 @@
     }
   },
   "options_data_series_version_and_date": {
-    "message": "$generated$​に生成された$source$ $version$​のデータに基づいている。",
+    "message": "$generated$​に生成された​$source$ $version$​のデータに基づいている。",
     "placeholders": {
       "source": {
         "content": "$1",
@@ -1367,7 +1367,7 @@
     "description": "Label when IndexedDB is unusable"
   },
   "options_db_update_error": {
-    "message": "更新失敗しました。「$errormessage$​」",
+    "message": "更新失敗しました。「​$errormessage$​」",
     "description": "Label when we failed to update the data for some reason",
     "placeholders": {
       "errormessage": {
@@ -1403,7 +1403,7 @@
     "message": "辞書の言語"
   },
   "options_downloading_data": {
-    "message": "$datatype$​バージョン$version$​を読み込み中 ($progress$​%)…",
+    "message": "$datatype$​バージョン​$version$​を読み込み中 (​$progress$​%)…",
     "description": "Label while we are downloading updates",
     "placeholders": {
       "datatype": {
@@ -1452,7 +1452,7 @@
     "description": "The name for the kanji database data set"
   },
   "options_kanji_data_title": {
-    "message": "漢字データ v$version$",
+    "message": "漢字データ v​$version$",
     "description": "The kanji data series title and version",
     "placeholders": {
       "version": {
@@ -1510,7 +1510,7 @@
     "description": "The name for the name database data set"
   },
   "options_name_data_title": {
-    "message": "人名データ v$version$",
+    "message": "人名データ v​$version$",
     "description": "The name data series title and version",
     "placeholders": {
       "version": {
@@ -1598,7 +1598,7 @@
     "description": "Label for the button to retry the database update after a failure"
   },
   "options_updating_data": {
-    "message": "$datatype$​バージョン$version$​を適用中…",
+    "message": "$datatype$​バージョン​$version$​を適用中…",
     "description": "Label while we are applying updates",
     "placeholders": {
       "datatype": {
@@ -1619,7 +1619,7 @@
     "description": "The name for the words database data set"
   },
   "options_words_data_title": {
-    "message": "単語データ v$version$",
+    "message": "単語データ v​$version$",
     "description": "The word data series title and version",
     "placeholders": {
       "version": {
