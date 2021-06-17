@@ -1,5 +1,8 @@
-import { SearchRequest, TranslateRequest } from './background-request';
-import { DictMode } from './dict-mode';
+import {
+  DictType,
+  SearchRequest,
+  TranslateRequest,
+} from './background-request';
 import {
   KanjiSearchResult,
   NameResult,
@@ -8,10 +11,11 @@ import {
   WordSearchResult,
 } from './search-result';
 
-export type QueryResult =
+export type QueryResult = (
   | WordSearchOrTranslateResult
   | NameSearchResult
-  | KanjiSearchResult;
+  | KanjiSearchResult
+) & { preferNames: boolean };
 
 export interface WordSearchOrTranslateResult
   extends Omit<WordSearchResult, 'matchLen'> {
@@ -21,11 +25,12 @@ export interface WordSearchOrTranslateResult
 }
 
 export interface QueryOptions {
-  dictMode: DictMode;
+  prevDict: DictType | undefined;
+  preferNames: boolean;
   wordLookup: boolean;
 }
 
-// XXX Add a wrapper for this that memoizes when dictMode is Default
+// XXX Add a wrapper for this that memoizes the result
 
 export async function query(
   text: string,
@@ -36,7 +41,8 @@ export async function query(
     message = {
       type: 'search',
       input: text,
-      dictOption: options.dictMode,
+      prevDict: options.prevDict,
+      preferNames: options.preferNames,
     };
   } else {
     message = {
@@ -79,9 +85,11 @@ export async function query(
 
   let names: Array<NameResult> | undefined;
   let moreNames: boolean | undefined;
+  let preferNames = false;
   if (searchResult.type === 'words') {
     names = searchResult.names;
     moreNames = searchResult.moreNames;
+    preferNames = searchResult.preferNames;
   }
 
   return {
@@ -92,5 +100,6 @@ export async function query(
     data: searchResult.data,
     matchLen,
     more,
+    preferNames,
   };
 }

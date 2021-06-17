@@ -62,8 +62,16 @@ export interface NameSearchResult {
   more: boolean;
 }
 
-export type SearchResult =
+export type RawSearchResult =
   | WordSearchResult
   | TranslateResult
   | KanjiSearchResult
   | NameSearchResult;
+
+export type SearchMetadata = {
+  preferNames: boolean;
+};
+
+// The search result combined with metadata needed to perform subsequent
+// searches.
+export type SearchResult = RawSearchResult & SearchMetadata;

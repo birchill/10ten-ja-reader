@@ -50,6 +50,11 @@ import '../html/background.html.src';
 import Bugsnag, { Event as BugsnagEvent } from '@bugsnag/browser';
 import { AbortError, DataSeriesState } from '@birchill/hikibiki-data';
 
+import {
+  DictType,
+  isBackgroundRequest,
+  SearchRequest,
+} from './background-request';
 import { updateBrowserAction } from './browser-action';
 import { Config } from './config';
 import { ContentConfig } from './content-config';
@@ -57,7 +62,6 @@ import {
   notifyDbStateUpdated,
   DbListenerMessage,
 } from './db-listener-messages';
-import { DictMode } from './dict-mode';
 import { ExtensionStorageError } from './extension-storage-error';
 import {
   JpdictStateWithFallback,
@@ -71,8 +75,12 @@ import {
   translate,
 } from './jpdict';
 import { shouldRequestPersistentStorage } from './quota-management';
-import { NameResult, SearchResult, WordSearchResult } from './search-result';
-import { isBackgroundRequest } from './background-request';
+import {
+  NameResult,
+  RawSearchResult,
+  SearchResult,
+  WordSearchResult,
+} from './search-result';
 
 //
 // Setup bugsnag
@@ -588,47 +596,29 @@ function toggle(tab: browser.tabs.Tab) {
 // Search
 //
 
-const enum DictType {
-  Words,
-  Kanji,
-  Names,
-}
-
 // The order in which we cycle/search through dictionaries.
-const defaultOrder: Array<DictType> = [
-  DictType.Words,
-  DictType.Kanji,
-  DictType.Names,
-];
+const defaultOrder: Array<DictType> = ['words', 'kanji', 'names'];
 
 // In some cases, however, where we don't find a match in the word dictionary
 // but find a good match in the name dictionary, we want to show that before
 // kanji entries so we use a different order.
-const preferNamesOrder: Array<DictType> = [DictType.Names, DictType.Kanji];
+const preferNamesOrder: Array<DictType> = ['names', 'kanji'];
 
-let currentDict: DictType = DictType.Words;
-let preferNames: boolean = false;
+async function search({
+  input,
+  prevDict,
+  preferNames,
+  abortSignal,
+}: SearchRequest & { abortSignal: AbortSignal }): Promise<SearchResult | null> {
+  // Work out which dictionary to use
+  let cycleOrder = preferNames ? preferNamesOrder : defaultOrder;
+  let dict = prevDict
+    ? cycleOrder[(cycleOrder.indexOf(prevDict) + 1) % cycleOrder.length]
+    : 'words';
 
-async function search(
-  text: string,
-  dictOption: DictMode,
-  abortSignal: AbortSignal
-): Promise<SearchResult | null> {
-  switch (dictOption) {
-    case DictMode.Default:
-      currentDict = DictType.Words;
-      preferNames = false;
-      break;
-
-    case DictMode.NextDict:
-      const cycleOrder = preferNames ? preferNamesOrder : defaultOrder;
-      currentDict =
-        cycleOrder[(cycleOrder.indexOf(currentDict) + 1) % cycleOrder.length];
-      break;
-  }
-
+  // Set up a helper for checking for a better names match
   const hasGoodNameMatch = async () => {
-    const nameMatch = await searchNames({ input: text });
+    const nameMatch = await searchNames({ input });
     // We could further refine this condition by checking that:
     //
     //   !isHiragana(text.substring(0, nameMatch.matchLen))
@@ -641,33 +631,33 @@ async function search(
     return nameMatch && nameMatch.matchLen > 1;
   };
 
-  const originalDict = currentDict;
+  const originalDict = dict;
   do {
     if (abortSignal.aborted) {
       throw new AbortError();
     }
 
-    let result: SearchResult | null = null;
-    switch (currentDict) {
-      case DictType.Words:
+    let result: RawSearchResult | null = null;
+    switch (dict) {
+      case 'words':
         result = await wordSearch({
-          input: text,
+          input,
           includeRomaji: config.showRomaji,
           abortSignal,
         });
         break;
 
-      case DictType.Kanji:
-        result = await searchKanji([...text][0]);
+      case 'kanji':
+        result = await searchKanji([...input][0]);
         break;
 
-      case DictType.Names:
-        result = await searchNames({ input: text });
+      case 'names':
+        result = await searchNames({ input });
         break;
     }
 
     if (result) {
-      return result;
+      return { ...result, preferNames: !!preferNames };
     }
 
     // Check the abort status again here since it might let us avoid doing a
@@ -676,16 +666,16 @@ async function search(
       throw new AbortError();
     }
 
-    // If we just looked up the words dictionary and didn't find a match,
-    // consider if we should switch to prioritizing the names dictionary.
+    // If we just looked up the default words dictionary and didn't find a
+    // match, consider if we should switch to prioritizing the names dictionary.
     if (
-      dictOption === DictMode.Default &&
+      !prevDict &&
       !preferNames &&
-      currentDict === DictType.Words &&
+      dict === 'words' &&
       (await hasGoodNameMatch())
     ) {
       preferNames = true;
-      currentDict = preferNamesOrder[0];
+      dict = preferNamesOrder[0];
       // (We've potentially created an infinite loop here since we've switched
       // to a cycle order that excludes the word dictionary which may be the
       // originalDict -- hence the loop termination condition will never be
@@ -693,11 +683,10 @@ async function search(
       // end up returning something.)
     } else {
       // Otherwise just try the next dictionary.
-      const cycleOrder = preferNames ? preferNamesOrder : defaultOrder;
-      currentDict =
-        cycleOrder[(cycleOrder.indexOf(currentDict) + 1) % cycleOrder.length];
+      cycleOrder = preferNames ? preferNamesOrder : defaultOrder;
+      dict = cycleOrder[(cycleOrder.indexOf(dict) + 1) % cycleOrder.length];
     }
-  } while (originalDict !== currentDict);
+  } while (originalDict !== dict);
 
   return null;
 }
@@ -806,11 +795,7 @@ browser.runtime.onMessage.addListener(
 
         pendingSearchRequest = new AbortController();
 
-        return search(
-          request.input,
-          request.dictOption,
-          pendingSearchRequest.signal
-        )
+        return search({ ...request, abortSignal: pendingSearchRequest.signal })
           .then((result) => {
             pendingSearchRequest = undefined;
             return result;

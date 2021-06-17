@@ -54,7 +54,6 @@ import {
   getWordToCopy,
   Entry as CopyEntry,
 } from './copy-text';
-import { DictMode } from './dict-mode';
 import {
   isContentEditableNode,
   isEditableNode,
@@ -248,7 +247,7 @@ export class RikaiContent {
     this.tryToUpdatePopup(
       { x: ev.clientX, y: ev.clientY },
       ev.target as Element,
-      DictMode.Default
+      'default'
     );
   }
 
@@ -316,11 +315,7 @@ export class RikaiContent {
     // possible.
     if (this.isHoldToShowKeysMatch(ev)) {
       if (this.currentPoint && this.currentTarget) {
-        this.tryToUpdatePopup(
-          this.currentPoint,
-          this.currentTarget,
-          DictMode.Default
-        );
+        this.tryToUpdatePopup(this.currentPoint, this.currentTarget, 'default');
         ev.preventDefault();
       }
       return;
@@ -394,11 +389,7 @@ export class RikaiContent {
 
     if (nextDictionary.includes(upperKey)) {
       if (this.currentPoint && this.currentTarget) {
-        this.tryToUpdatePopup(
-          this.currentPoint,
-          this.currentTarget,
-          DictMode.NextDict
-        );
+        this.tryToUpdatePopup(this.currentPoint, this.currentTarget, 'next');
       }
     } else if (toggleDefinition.includes(upperKey)) {
       try {
@@ -557,14 +548,11 @@ export class RikaiContent {
   async tryToUpdatePopup(
     point: { x: number; y: number },
     target: Element,
-    dictMode: DictMode
+    dictMode: 'default' | 'next'
   ) {
     const textAtPoint = getTextAtPoint(point, RikaiContent.MAX_LENGTH);
 
-    if (
-      this.currentTextAtPoint === textAtPoint &&
-      dictMode === DictMode.Default
-    ) {
+    if (this.currentTextAtPoint === textAtPoint && dictMode === 'default') {
       return;
     }
 
@@ -580,7 +568,11 @@ export class RikaiContent {
     }
 
     const queryResult = await query(textAtPoint.text, {
-      dictMode,
+      prevDict:
+        dictMode === 'next' && this.currentSearchResult
+          ? this.currentSearchResult.type
+          : undefined,
+      preferNames: this.currentSearchResult?.preferNames ?? false,
       wordLookup: textAtPoint.rangeStart !== null,
     });
 

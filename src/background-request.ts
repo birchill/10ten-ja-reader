@@ -1,4 +1,3 @@
-import { DictMode } from './dict-mode';
 import { isObject } from './is-object';
 
 type RequestObject = {
@@ -45,7 +44,8 @@ export function isReportWarningRequest(a: unknown): a is ReportWarningRequest {
 export type SearchRequest = {
   type: 'search';
   input: string;
-  dictOption: DictMode;
+  prevDict?: DictType;
+  preferNames?: boolean;
 };
 
 export function isSearchRequest(a: unknown): a is SearchRequest {
@@ -61,11 +61,24 @@ export function isSearchRequest(a: unknown): a is SearchRequest {
     return false;
   }
 
-  if (typeof a.dictOption !== 'number') {
+  if (typeof a.prevDict !== 'undefined' && !isDictType(a.prevDict)) {
+    return false;
+  }
+
+  if (
+    typeof a.preferNames !== 'undefined' &&
+    typeof a.preferNames !== 'boolean'
+  ) {
     return false;
   }
 
   return true;
+}
+
+export type DictType = 'words' | 'kanji' | 'names';
+
+export function isDictType(a: unknown): a is DictType {
+  return typeof a === 'string' && ['words', 'kanji', 'names'].includes(a);
 }
 
 //
