@@ -100,7 +100,7 @@ export async function query(
   return queryResult;
 }
 
-export async function doQuery(
+async function doQuery(
   text: string,
   options: QueryOptions
 ): Promise<QueryResult | null> {
