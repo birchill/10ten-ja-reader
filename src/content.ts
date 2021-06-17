@@ -81,20 +81,6 @@ declare global {
   interface Window {
     rikaichamp: any;
   }
-
-  /*
-   * Clipboard API
-   *
-   * (This is only a tiny subset of the API based on what is needed here.)
-   */
-
-  interface Clipboard extends EventTarget {
-    writeText(data: string): Promise<void>;
-  }
-
-  interface Navigator {
-    readonly clipboard: Clipboard;
-  }
 }
 
 // Either end of a Range object
