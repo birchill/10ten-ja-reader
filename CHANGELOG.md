@@ -1,3 +1,7 @@
+## 0.5.11 (2021-06-17)
+
+- Fix a bug in the lookup cache
+
 ## 0.5.10 (2021-06-17)
 
 - Add a series of performance optimizations to improve lookup performance.

@@ -76,7 +76,7 @@ export async function query(
   // If the query throws, comes back empty, or is a result from the fallback
   // database, drop it from the cache.
   const dropFromCache = () => {
-    queryCache = queryCache.filter((q) => q.hash === hash);
+    queryCache = queryCache.filter((q) => q.hash !== hash);
   };
   const queryResult = doQuery(text, options)
     .then((result) => {
