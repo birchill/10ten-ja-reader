@@ -156,10 +156,12 @@ async function doQuery(
   let names: Array<NameResult> | undefined;
   let moreNames: boolean | undefined;
   let preferNames = false;
+  let dbUnavailable = false;
   if (searchResult.type === 'words') {
     names = searchResult.names;
     moreNames = searchResult.moreNames;
     preferNames = searchResult.preferNames;
+    dbUnavailable = !!searchResult.dbUnavailable;
   }
 
   return {
@@ -171,5 +173,6 @@ async function doQuery(
     matchLen,
     more,
     preferNames,
+    dbUnavailable,
   };
 }

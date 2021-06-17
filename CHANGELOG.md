@@ -1,6 +1,6 @@
-## 0.5.11 (2021-06-17)
+## 0.5.12 (2021-06-17)
 
-- Fix a bug in the lookup cache
+- Fix some bugs in the lookup cache
 
 ## 0.5.10 (2021-06-17)
 
