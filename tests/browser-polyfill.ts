@@ -82,6 +82,8 @@ export const browser = {
           return 'next';
         case 'gloss_type_label_expl':
           return 'explanation';
+        case 'field_label_astron':
+          return 'astronomy';
         case 'field_label_mahj':
           return 'mahjong';
         case 'head_info_label_ateji':
