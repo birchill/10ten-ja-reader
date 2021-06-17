@@ -45,6 +45,7 @@
 
 */
 
+import { BackgroundRequest } from './background-request';
 import { ContentConfig } from './content-config';
 import { CopyKeys, CopyType } from './copy-keys';
 import {
@@ -401,7 +402,9 @@ export class RikaiContent {
       }
     } else if (toggleDefinition.includes(upperKey)) {
       try {
-        browser.runtime.sendMessage({ type: 'toggleDefinition' });
+        browser.runtime.sendMessage<BackgroundRequest>({
+          type: 'toggleDefinition',
+        });
       } catch (e) {
         console.log(
           '[rikaichamp] Failed to call toggleDefinition. The page might need to be refreshed.'
@@ -616,8 +619,8 @@ export class RikaiContent {
       return;
     }
 
-    const selectedWindow = textAtPoint.rangeStart.container.ownerDocument!
-      .defaultView!;
+    const selectedWindow =
+      textAtPoint.rangeStart.container.ownerDocument!.defaultView!;
 
     // Check that the window wasn't closed since we started the lookup
     if (!selectedWindow || selectedWindow.closed) {
@@ -1045,8 +1048,10 @@ browser.runtime.onMessage.addListener((request: any) => {
 // Note that the background script might not have been initialized yet in which
 // case this will fail. However, presumably once the background script has
 // initialized it will call us if we need to be enabled.
-browser.runtime.sendMessage({ type: 'enable?' }).catch(() => {
-  /* Ignore */
-});
+browser.runtime
+  .sendMessage<BackgroundRequest>({ type: 'enable?' })
+  .catch(() => {
+    /* Ignore */
+  });
 
 export default RikaiContent;

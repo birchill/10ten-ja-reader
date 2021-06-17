@@ -22,6 +22,7 @@ import {
 } from './db-listener-messages';
 import { translateDoc } from './l10n';
 import { getReferenceLabelsForLang, getReferencesForLang } from './refs';
+import { BackgroundRequest } from './background-request';
 
 const config = new Config();
 
@@ -667,7 +668,7 @@ function fillVals() {
     getToggleControl('key').value = toggleCommand.key;
     showToggleCommandSupport(toggleCommand);
   } catch (e) {
-    browser.runtime.sendMessage({
+    browser.runtime.sendMessage<BackgroundRequest>({
       type: 'reportWarning',
       message: `Unable to parse toggleKey: ${config.toggleKey}`,
     });

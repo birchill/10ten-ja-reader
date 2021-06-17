@@ -1,3 +1,4 @@
+import { SearchRequest, TranslateRequest } from './background-request';
 import { DictMode } from './dict-mode';
 import {
   KanjiSearchResult,
@@ -30,11 +31,11 @@ export async function query(
   text: string,
   options: QueryOptions
 ): Promise<QueryResult | null> {
-  let message;
+  let message: SearchRequest | TranslateRequest;
   if (options.wordLookup) {
     message = {
-      type: 'xsearch',
-      text: text,
+      type: 'search',
+      input: text,
       dictOption: options.dictMode,
     };
   } else {
@@ -48,8 +49,9 @@ export async function query(
   try {
     searchResult = await browser.runtime.sendMessage(message);
   } catch (e) {
-    console.log(
-      '[rikaichamp] Failed to call query. The page might need to be refreshed.'
+    console.error(
+      '[rikaichamp] Failed to call query. The page might need to be refreshed.',
+      e
     );
     searchResult = null;
   }

@@ -72,6 +72,7 @@ import {
 } from './jpdict';
 import { shouldRequestPersistentStorage } from './quota-management';
 import { NameResult, SearchResult, WordSearchResult } from './search-result';
+import { isBackgroundRequest } from './background-request';
 
 //
 // Setup bugsnag
@@ -779,10 +780,17 @@ let pendingSearchRequest: AbortController | undefined;
 
 browser.runtime.onMessage.addListener(
   (
-    request: any,
+    request: object,
     sender: browser.runtime.MessageSender
   ): void | Promise<any> => {
-    if (typeof request.type !== 'string') {
+    if (!isBackgroundRequest(request)) {
+      console.warn(`Unrecognized request: ${JSON.stringify(request)}`);
+      Bugsnag.notify(
+        `Unrecognized request: ${JSON.stringify(request)}`,
+        (event) => {
+          event.severity = 'warning';
+        }
+      );
       return;
     }
 
@@ -790,50 +798,32 @@ browser.runtime.onMessage.addListener(
       case 'enable?':
         if (sender.tab && typeof sender.tab.id === 'number') {
           onTabSelect(sender.tab.id);
-        } else {
-          console.error('No sender tab in enable? request');
-          Bugsnag.leaveBreadcrumb('No sender tab in enable? request');
         }
         break;
 
-      case 'xsearch':
-        if (
-          typeof request.text === 'string' &&
-          typeof request.dictOption === 'number'
-        ) {
-          if (pendingSearchRequest) {
-            pendingSearchRequest.abort();
+      case 'search':
+        if (pendingSearchRequest) {
+          pendingSearchRequest.abort();
+          pendingSearchRequest = undefined;
+        }
+
+        pendingSearchRequest = new AbortController();
+
+        return search(
+          request.input,
+          request.dictOption,
+          pendingSearchRequest.signal
+        )
+          .then((result) => {
             pendingSearchRequest = undefined;
-          }
-
-          pendingSearchRequest = new AbortController();
-
-          return search(
-            request.text as string,
-            request.dictOption as DictMode,
-            pendingSearchRequest.signal
-          )
-            .then((result) => {
-              pendingSearchRequest = undefined;
-              return result;
-            })
-            .catch((e) => {
-              if (e.name !== 'AbortError') {
-                Bugsnag.notify(e);
-              }
-              return null;
-            });
-        }
-        console.error(
-          `Unrecognized xsearch request: ${JSON.stringify(request)}`
-        );
-        Bugsnag.notify(
-          `Unrecognized xsearch request: ${JSON.stringify(request)}`,
-          (event) => {
-            event.severity = 'warning';
-          }
-        );
-        break;
+            return result;
+          })
+          .catch((e) => {
+            if (e.name !== 'AbortError') {
+              Bugsnag.notify(e);
+            }
+            return null;
+          });
 
       case 'translate':
         return translate({
