@@ -64,7 +64,7 @@ export function startBugsnag() {
       // frames from extensions.
       //
       // See: https://docs.bugsnag.com/platforms/javascript/faq/?#how-can-i-get-error-reports-from-browser-extensions
-      const basePath = `https://github.com/birchill/10ten-ja-reader/download/v${manifest.version}`;
+      const basePath = `https://github.com/birtles/rikaichamp/download/v${manifest.version}`;
       for (const error of event.errors) {
         for (const frame of error.stacktrace) {
           frame.file = frame.file.replace(

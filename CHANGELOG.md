@@ -1,4 +1,4 @@
-## 0.5.9 (Not released yet)
+## 0.5.10 (2021-06-17)
 
 - Add a series of performance optimizations to improve lookup performance.
 
