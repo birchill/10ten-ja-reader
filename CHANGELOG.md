@@ -1,3 +1,7 @@
+## 0.5.9 (Not released yet)
+
+- Add a series of performance optimizations to improve lookup performance.
+
 ## 0.5.8 (2021-06-10)
 
 - Added support for handling 旧字体 (_kyuujitai_, old characters)
