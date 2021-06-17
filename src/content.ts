@@ -639,7 +639,7 @@ export class RikaiContent {
       // If we were previously interacting with a different text box, restore
       // its range.
       if (this.selectedTextBox && node !== this.selectedTextBox.node) {
-        this._restoreTextBoxSelection();
+        this.restoreTextBoxSelection();
       }
 
       // If we were not already interacting with this text box, store its
@@ -688,7 +688,7 @@ export class RikaiContent {
     } else {
       // If we were previously interacting with a text box, restore its range
       // and blur it.
-      this._clearTextBoxSelection(null);
+      this.clearTextBoxSelection(null);
 
       const startNode = textAtPoint.rangeStart.container;
       const startOffset = textAtPoint.rangeStart.offset;
@@ -746,7 +746,7 @@ export class RikaiContent {
         }
       }
 
-      this._clearTextBoxSelection(currentElement);
+      this.clearTextBoxSelection(currentElement);
     }
 
     this.selectedWindow = null;
@@ -788,7 +788,7 @@ export class RikaiContent {
     this.previousSelection = null;
   }
 
-  _clearTextBoxSelection(currentElement: Element | null) {
+  clearTextBoxSelection(currentElement: Element | null) {
     if (!this.selectedTextBox) {
       return;
     }
@@ -798,7 +798,7 @@ export class RikaiContent {
     // Store the previous scroll position so we can restore it, if need be.
     const { scrollTop, scrollLeft } = textBox;
 
-    this._restoreTextBoxSelection();
+    this.restoreTextBoxSelection();
 
     // If we are still interacting with the textBox, make sure to maintain its
     // scroll position (rather than jumping back to wherever the restored
@@ -835,7 +835,7 @@ export class RikaiContent {
     this.previousFocus = null;
   }
 
-  _restoreTextBoxSelection() {
+  restoreTextBoxSelection() {
     if (!this.selectedTextBox) {
       return;
     }
