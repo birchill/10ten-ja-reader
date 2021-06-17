@@ -1,7 +1,5 @@
-import { getEntryToCopy, getFieldsToCopy, getWordToCopy } from './copy-text';
-
 // Mock browser.i18n.getMessage
-global.browser = {
+const mockBrowser = {
   i18n: {
     getMessage: (id: string, replacements?: Array<string>) => {
       switch (id) {
@@ -41,6 +39,10 @@ global.browser = {
     },
   },
 };
+
+jest.mock('webextension-polyfill-ts', () => ({ browser: mockBrowser }));
+
+import { getEntryToCopy, getFieldsToCopy, getWordToCopy } from './copy-text';
 
 describe('getWordToCopy', () => {
   it('copies a word from a word search', () => {

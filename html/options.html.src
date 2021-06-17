@@ -149,8 +149,5 @@
       </form>
     </div>
   </body>
-  <!--#if use_polyfill-->
-  <script src="browser-polyfill.js"></script>
-  <!--#endif-->
   <script src="rikaichamp-options.js"></script>
 </html>

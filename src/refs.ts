@@ -1,4 +1,6 @@
 import { KanjiResult } from '@birchill/hikibiki-data';
+import { browser } from 'webextension-polyfill-ts';
+
 import { DbLanguageId } from './db-languages';
 
 const SUPPORTED_REFERENCES = [
@@ -49,7 +51,7 @@ export type ReferenceAbbreviation = typeof SUPPORTED_REFERENCES[number];
 
 export function getReferencesForLang(lang: DbLanguageId) {
   if (lang !== 'fr') {
-    return SUPPORTED_REFERENCES.filter(ref => ref !== 'maniette');
+    return SUPPORTED_REFERENCES.filter((ref) => ref !== 'maniette');
   }
   return SUPPORTED_REFERENCES;
 }
@@ -129,8 +131,7 @@ const REFERENCE_LABELS: {
   },
   maniette: { full: 'Les Kanjis dans la tete' },
   nelson_c: {
-    full:
-      "Classic Nelson - Modern Reader's Japanese-English Character Dictionary",
+    full: "Classic Nelson - Modern Reader's Japanese-English Character Dictionary",
     short: 'Classic Nelson',
   },
   nelson_n: {
@@ -251,10 +252,7 @@ export function getReferenceValue(
       return entry.r.py ? entry.r.py.join(', ') : '';
 
     case 'unicode':
-      return `U+${entry.c
-        .codePointAt(0)!
-        .toString(16)
-        .toUpperCase()}`;
+      return `U+${entry.c.codePointAt(0)!.toString(16).toUpperCase()}`;
 
     default:
       return entry.refs[ref] ? String(entry.refs[ref]) : '';

@@ -11,6 +11,7 @@
 //   passing to the content process.
 
 import Bugsnag from '@bugsnag/browser';
+import { browser } from 'webextension-polyfill-ts';
 
 import { dbLanguages, DbLanguageId } from './db-languages';
 import { ExtensionStorageError } from './extension-storage-error';

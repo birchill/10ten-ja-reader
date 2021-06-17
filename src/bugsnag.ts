@@ -1,3 +1,4 @@
+import { browser } from 'webextension-polyfill-ts';
 import Bugsnag, { Event as BugsnagEvent } from '@bugsnag/browser';
 
 const getExtensionInstallId = (): string => {

@@ -1,3 +1,5 @@
+import { browser } from 'webextension-polyfill-ts';
+
 export interface CommandParams {
   ctrl?: boolean;
   alt?: boolean;

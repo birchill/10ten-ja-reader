@@ -1,8 +1,10 @@
+import { browser } from 'webextension-polyfill-ts';
+
 // The following code is based __very__ heavily on
 // https://github.com/piroor/webextensions-lib-l10n
 
 const getString = (fullKey: string): string =>
-  fullKey.replace(/__MSG_(.+?)__/g, matched => {
+  fullKey.replace(/__MSG_(.+?)__/g, (matched) => {
     const key = matched.slice(6, -2);
     return browser.i18n.getMessage(key) || matched;
   });

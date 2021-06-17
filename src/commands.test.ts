@@ -1,3 +1,5 @@
+jest.mock('webextension-polyfill-ts', () => ({ browser: {} }));
+
 import { Command } from './commands';
 
 describe('Command', () => {

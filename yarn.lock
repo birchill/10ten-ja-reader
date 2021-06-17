@@ -8339,10 +8339,6 @@ web-ext-plugin@^1.2.0:
   dependencies:
     web-ext "^6.1.0"
 
-"web-ext-types@github:michael-zapata/web-ext-types":
-  version "3.2.1"
-  resolved "https://codeload.github.com/michael-zapata/web-ext-types/tar.gz/117c1151a6f1b88bf3097cf6e9d0beab4a8c3e6f"
-
 web-ext@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/web-ext/-/web-ext-6.1.0.tgz#bbd3fb8d36c82de750f98596252220ae347d36e0"
@@ -8378,6 +8374,18 @@ web-ext@^6.1.0:
     ws "7.4.3"
     yargs "16.2.0"
     zip-dir "2.0.0"
+
+webextension-polyfill-ts@^0.25.0:
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/webextension-polyfill-ts/-/webextension-polyfill-ts-0.25.0.tgz#fff041626365dbd0e29c40b197e989a55ec221ca"
+  integrity sha512-ikQhwwHYkpBu00pFaUzIKY26I6L87DeRI+Q6jBT1daZUNuu8dSrg5U9l/ZbqdaQ1M/TTSPKeAa3kolP5liuedw==
+  dependencies:
+    webextension-polyfill "^0.7.0"
+
+webextension-polyfill@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/webextension-polyfill/-/webextension-polyfill-0.7.0.tgz#0df1120ff0266056319ce1a622b09ad8d4a56505"
+  integrity sha512-su48BkMLxqzTTvPSE1eWxKToPS2Tv5DLGxKexLEVpwFd6Po6N8hhSLIvG6acPAg7qERoEaDL+Y5HQJeJeml5Aw==
 
 webidl-conversions@^4.0.2:
   version "4.0.2"

@@ -45,10 +45,10 @@
 */
 
 import '../manifest.json.src';
-import '../html/background.html.src';
 
 import Bugsnag from '@bugsnag/browser';
 import { AbortError, DataSeriesState } from '@birchill/hikibiki-data';
+import Browser, { browser } from 'webextension-polyfill-ts';
 
 import {
   DictType,
@@ -189,7 +189,7 @@ config.ready.then(() => {
     typeof (browser.commands as any).update === 'function'
   ) {
     const getToggleCommand =
-      async (): Promise<browser.commands.Command | null> => {
+      async (): Promise<Browser.Commands.Command | null> => {
         const commands = await browser.commands.getAll();
         for (const command of commands) {
           if (command.name === '_execute_browser_action') {
@@ -199,7 +199,7 @@ config.ready.then(() => {
         return null;
       };
 
-    getToggleCommand().then((command: browser.commands.Command | null) => {
+    getToggleCommand().then((command: Browser.Commands.Command | null) => {
       if (command && command.shortcut !== config.toggleKey) {
         try {
           (browser.commands as any).update({
@@ -264,13 +264,13 @@ function onDbStatusUpdated(state: JpdictStateWithFallback) {
 // Listeners
 //
 
-const dbListeners: Array<browser.runtime.Port> = [];
+const dbListeners: Array<Browser.Runtime.Port> = [];
 
 function isDbListenerMessage(evt: unknown): evt is DbListenerMessage {
   return typeof evt === 'object' && typeof (evt as any).type === 'string';
 }
 
-browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
+browser.runtime.onConnect.addListener((port: Browser.Runtime.Port) => {
   dbListeners.push(port);
 
   // Push initial state to new listener
@@ -313,7 +313,7 @@ browser.runtime.onConnect.addListener((port: browser.runtime.Port) => {
   });
 });
 
-async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
+async function notifyDbListeners(specifiedListener?: Browser.Runtime.Port) {
   if (!dbListeners.length) {
     return;
   }
@@ -340,7 +340,7 @@ async function notifyDbListeners(specifiedListener?: browser.runtime.Port) {
 //
 
 function addContextMenu() {
-  const contexts: Array<browser.menus.ContextType> = [
+  const contexts: Array<Browser.Menus.ContextType> = [
     'browser_action',
     'editable',
     'frame',
@@ -390,7 +390,7 @@ async function removeContextMenu() {
 
 let enabled: boolean = false;
 
-async function enableTab(tab: browser.tabs.Tab) {
+async function enableTab(tab: Browser.Tabs.Tab) {
   console.assert(typeof tab.id === 'number', `Unexpected tab ID: ${tab.id}`);
 
   updateBrowserAction({
@@ -506,7 +506,7 @@ async function disableAll() {
   }
 }
 
-function toggle(tab: browser.tabs.Tab) {
+function toggle(tab: Browser.Tabs.Tab) {
   if (enabled) {
     disableAll();
   } else {
@@ -687,7 +687,7 @@ let pendingSearchRequest: AbortController | undefined;
 browser.runtime.onMessage.addListener(
   (
     request: object,
-    sender: browser.runtime.MessageSender
+    sender: Browser.Runtime.MessageSender
   ): void | Promise<any> => {
     if (!isBackgroundRequest(request)) {
       console.warn(`Unrecognized request: ${JSON.stringify(request)}`);

@@ -1,4 +1,5 @@
 import { PartOfSpeech } from '@birchill/hikibiki-data';
+import { browser } from 'webextension-polyfill-ts';
 
 import {
   deinflect,

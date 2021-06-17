@@ -9,6 +9,7 @@ import {
   ReadingInfo,
 } from '@birchill/hikibiki-data';
 import { countMora, moraSubstring } from '@birchill/normal-jp';
+import { browser } from 'webextension-polyfill-ts';
 
 import { AccentDisplay, PartOfSpeechDisplay } from './content-config';
 import {

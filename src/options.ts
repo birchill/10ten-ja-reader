@@ -7,6 +7,7 @@ import {
   DataSeriesState,
   MajorDataSeries,
 } from '@birchill/hikibiki-data';
+import Browser, { browser } from 'webextension-polyfill-ts';
 
 import { Config, DEFAULT_KEY_SETTINGS } from './config';
 import { AccentDisplay, PartOfSpeechDisplay } from './content-config';
@@ -22,7 +23,6 @@ import {
 } from './db-listener-messages';
 import { translateDoc } from './l10n';
 import { getReferenceLabelsForLang, getReferencesForLang } from './refs';
-import { BackgroundRequest } from './background-request';
 
 const config = new Config();
 
@@ -668,7 +668,7 @@ function fillVals() {
     getToggleControl('key').value = toggleCommand.key;
     showToggleCommandSupport(toggleCommand);
   } catch (e) {
-    browser.runtime.sendMessage<BackgroundRequest>({
+    browser.runtime.sendMessage({
       type: 'reportWarning',
       message: `Unable to parse toggleKey: ${config.toggleKey}`,
     });
@@ -713,7 +713,7 @@ function fillVals() {
   }
 }
 
-let browserPort: browser.runtime.Port | undefined;
+let browserPort: Browser.Runtime.Port | undefined;
 
 function isDbStateUpdatedMessage(evt: unknown): evt is DbStateUpdatedMessage {
   return (

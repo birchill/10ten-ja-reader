@@ -150,7 +150,7 @@ const chromeConfig = {
     ...commonExtConfig.module,
     rules: extendArray(
       commonExtConfig.module.rules,
-      getPreprocessorConfig('supports_chrome_style', 'use_polyfill')
+      getPreprocessorConfig('supports_chrome_style')
     ),
   },
   output: {
@@ -167,7 +167,6 @@ const chromeConfig = {
         'icons',
         // ^ Specifying a folder here means the icons will be placed directly
         //   in the root folder.
-        { from: 'lib/browser-polyfill.js*', to: '[name][ext]' },
       ],
     }),
     new WebExtPlugin({
@@ -188,7 +187,7 @@ const edgeConfig = {
     ...chromeConfig.module,
     rules: extendArray(
       commonExtConfig.module.rules,
-      getPreprocessorConfig('uses_edge_store', 'use_polyfill')
+      getPreprocessorConfig('uses_edge_store')
     ),
   },
   output: {

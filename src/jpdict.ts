@@ -16,6 +16,7 @@ import {
   kanaToHiragana,
   kyuujitaiToShinjitai,
 } from '@birchill/normal-jp';
+import { browser } from 'webextension-polyfill-ts';
 
 import { normalizeInput } from './conversion';
 import { ExtensionStorageError } from './extension-storage-error';

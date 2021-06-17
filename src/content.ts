@@ -45,7 +45,8 @@
 
 */
 
-import { BackgroundRequest } from './background-request';
+import { browser } from 'webextension-polyfill-ts';
+
 import { ContentConfig } from './content-config';
 import { CopyKeys, CopyType } from './copy-keys';
 import {
@@ -379,9 +380,7 @@ export class RikaiContent {
       }
     } else if (toggleDefinition.includes(upperKey)) {
       try {
-        browser.runtime.sendMessage<BackgroundRequest>({
-          type: 'toggleDefinition',
-        });
+        browser.runtime.sendMessage({ type: 'toggleDefinition' });
       } catch (e) {
         console.log(
           '[rikaichamp] Failed to call toggleDefinition. The page might need to be refreshed.'
@@ -982,7 +981,7 @@ export class RikaiContent {
 let rikaiContent: RikaiContent | null = null;
 
 // Event Listeners
-browser.runtime.onMessage.addListener((request: any) => {
+browser.runtime.onMessage.addListener((request: any): void | Promise<any> => {
   if (typeof request.type !== 'string') {
     return;
   }
@@ -1015,7 +1014,6 @@ browser.runtime.onMessage.addListener((request: any) => {
       console.error(`Unrecognized request ${JSON.stringify(request)}`);
       break;
   }
-  return false;
 });
 
 // When a page first loads, checks to see if it should enable script
@@ -1023,10 +1021,8 @@ browser.runtime.onMessage.addListener((request: any) => {
 // Note that the background script might not have been initialized yet in which
 // case this will fail. However, presumably once the background script has
 // initialized it will call us if we need to be enabled.
-browser.runtime
-  .sendMessage<BackgroundRequest>({ type: 'enable?' })
-  .catch(() => {
-    /* Ignore */
-  });
+browser.runtime.sendMessage({ type: 'enable?' }).catch(() => {
+  /* Ignore */
+});
 
 export default RikaiContent;

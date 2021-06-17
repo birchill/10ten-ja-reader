@@ -9,6 +9,7 @@ import {
 } from '@birchill/hikibiki-data';
 import { kanaToHiragana } from '@birchill/normal-jp';
 import { LRUMap } from 'lru_map';
+import { browser } from 'webextension-polyfill-ts';
 
 import { DictionaryWordResult, Sense } from './search-result';
 import { stripFields } from './strip-fields';

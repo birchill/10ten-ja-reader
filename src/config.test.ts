@@ -1,3 +1,7 @@
+let mockBrowser: any = {};
+
+jest.mock('webextension-polyfill-ts', () => ({ browser: mockBrowser }));
+
 import { Config } from './config';
 import { DbLanguageId } from './db-languages';
 
@@ -123,7 +127,7 @@ describe('Config', () => {
   let languageGetter: jest.SpyInstance<readonly string[], []>;
 
   beforeEach(() => {
-    global.browser = { storage: new MockStorage() };
+    mockBrowser.storage = new MockStorage();
     languageGetter = jest.spyOn(window.navigator, 'languages', 'get');
   });
 
@@ -212,7 +216,7 @@ describe('Config', () => {
   });
 
   it('upgrades reference settings', async () => {
-    await browser.storage.sync.set({
+    await mockBrowser.storage.sync.set({
       kanjiReferences: {
         E: true,
         U: true,
@@ -243,7 +247,9 @@ describe('Config', () => {
       'sh_desc',
     ]);
 
-    const setReferences = await browser.storage.sync.get('kanjiReferencesV2');
+    const setReferences = await mockBrowser.storage.sync.get(
+      'kanjiReferencesV2'
+    );
     expect(setReferences).toEqual({
       kanjiReferencesV2: {
         unicode: true,

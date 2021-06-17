@@ -7,11 +7,8 @@ class Worker {
 
 (window as any).Worker = Worker;
 
-import { searchWords, translate } from './jpdict';
-import { WordResult, WordSearchResult } from './search-result';
-
 // Mock browser.runtime.getURL and browser.i18n.getMessage
-global.browser = {
+const mockBrowser = {
   runtime: { getURL: jest.fn((url) => url) },
   i18n: {
     getMessage: (id: string) => {
@@ -80,6 +77,11 @@ global.browser = {
     },
   },
 };
+
+jest.mock('webextension-polyfill-ts', () => ({ browser: mockBrowser }));
+
+import { searchWords, translate } from './jpdict';
+import { WordResult, WordSearchResult } from './search-result';
 
 // Mock fetch
 window.fetch = jest.fn().mockImplementation(
