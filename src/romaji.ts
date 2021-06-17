@@ -220,8 +220,8 @@ export function toRomaji(kana: string): string {
   // anyway.)
   let explosiveness = 0;
 
-  // Apply any built-up explosiveness when we don't some following hiragana to
-  // apply it to.
+  // Apply any built-up explosiveness when we don't have any following hiragana
+  // to apply it to.
   const explode = () => {
     if (explosiveness) {
       result += "'".repeat(explosiveness);

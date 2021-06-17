@@ -25,6 +25,7 @@ export interface WordSearchOrTranslateResult
 }
 
 export interface QueryOptions {
+  includeRomaji: boolean;
   prevDict: DictType | undefined;
   preferNames: boolean;
   wordLookup: boolean;
@@ -43,11 +44,13 @@ export async function query(
       input: text,
       prevDict: options.prevDict,
       preferNames: options.preferNames,
+      includeRomaji: options.includeRomaji,
     };
   } else {
     message = {
       type: 'translate',
       title: text,
+      includeRomaji: options.includeRomaji,
     };
   }
 

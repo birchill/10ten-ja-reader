@@ -46,6 +46,7 @@ export type SearchRequest = {
   input: string;
   prevDict?: DictType;
   preferNames?: boolean;
+  includeRomaji?: boolean;
 };
 
 export function isSearchRequest(a: unknown): a is SearchRequest {
@@ -68,6 +69,13 @@ export function isSearchRequest(a: unknown): a is SearchRequest {
   if (
     typeof a.preferNames !== 'undefined' &&
     typeof a.preferNames !== 'boolean'
+  ) {
+    return false;
+  }
+
+  if (
+    typeof a.includeRomaji !== 'undefined' &&
+    typeof a.includeRomaji !== 'boolean'
   ) {
     return false;
   }
@@ -100,6 +108,10 @@ export function isTranslateRequest(a: unknown): a is TranslateRequest {
     return false;
   }
 
+  if (typeof a.title !== 'string') {
+    return false;
+  }
+
   if (
     typeof a.includeRomaji !== 'undefined' &&
     typeof a.includeRomaji !== 'boolean'
@@ -107,7 +119,7 @@ export function isTranslateRequest(a: unknown): a is TranslateRequest {
     return false;
   }
 
-  return typeof a.title === 'string';
+  return true;
 }
 
 //

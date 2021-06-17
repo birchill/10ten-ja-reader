@@ -158,8 +158,9 @@ export class Config {
       !this._settings.kanjiReferencesV2
     ) {
       const newSettings: KanjiReferenceFlagsV2 = {};
-      const existingSettings: { [key: string]: boolean } = (this
-        ._settings as any).kanjiReferences;
+      const existingSettings: { [key: string]: boolean } = (
+        this._settings as any
+      ).kanjiReferences;
       for (const [ref, enabled] of Object.entries(existingSettings)) {
         const newRef = convertLegacyReference(ref);
         if (newRef) {
@@ -645,8 +646,9 @@ export class Config {
       popupStyle: this.popupStyle,
       posDisplay: this.posDisplay,
       readingOnly: this.readingOnly,
-      showPriority: this.showPriority,
       showKanjiComponents: this.showKanjiComponents,
+      showPriority: this.showPriority,
+      showRomaji: this.showRomaji,
     };
   }
 }

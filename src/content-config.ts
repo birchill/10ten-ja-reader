@@ -59,4 +59,7 @@ export interface ContentConfig {
 
   // True if we should show indicators next to common words.
   showPriority: boolean;
+
+  // True if we should show romaji alongside each reading.
+  showRomaji: boolean;
 }

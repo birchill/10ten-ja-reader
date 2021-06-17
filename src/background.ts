@@ -608,6 +608,7 @@ async function search({
   input,
   prevDict,
   preferNames,
+  includeRomaji,
   abortSignal,
 }: SearchRequest & { abortSignal: AbortSignal }): Promise<SearchResult | null> {
   // Work out which dictionary to use
@@ -640,11 +641,7 @@ async function search({
     let result: RawSearchResult | null = null;
     switch (dict) {
       case 'words':
-        result = await wordSearch({
-          input,
-          includeRomaji: config.showRomaji,
-          abortSignal,
-        });
+        result = await wordSearch({ input, includeRomaji, abortSignal });
         break;
 
       case 'kanji':
@@ -810,7 +807,7 @@ browser.runtime.onMessage.addListener(
       case 'translate':
         return translate({
           text: request.title,
-          includeRomaji: config.showRomaji,
+          includeRomaji: request.includeRomaji,
         });
 
       case 'toggleDefinition':

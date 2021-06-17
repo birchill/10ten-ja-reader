@@ -29,8 +29,9 @@ describe('rikaiContent:highlighting', () => {
       popupStyle: 'blue',
       posDisplay: 'expl',
       readingOnly: false,
-      showPriority: true,
       showKanjiComponents: true,
+      showPriority: true,
+      showRomaji: true,
     };
     subject = new RikaiContent(config);
 

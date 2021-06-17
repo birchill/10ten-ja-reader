@@ -568,6 +568,7 @@ export class RikaiContent {
     }
 
     const queryResult = await query(textAtPoint.text, {
+      includeRomaji: this.config.showRomaji,
       prevDict:
         dictMode === 'next' && this.currentSearchResult
           ? this.currentSearchResult.type
