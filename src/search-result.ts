@@ -17,17 +17,28 @@ export type Sense = WordResult['s'][0];
 
 export interface WordSearchResult {
   type: 'words';
+
   data: Array<WordResult>;
+
   // The length of the longest match in the original input string.
   matchLen: number;
+
   // True if greater than `maxResults` entries were found.
   more: boolean;
+
   // If we found longer matches in the names dictionary we return the longest
   // ones here, here up to the first 3 results.
   names?: Array<NameResult>;
+
   // If there were more than 3 names with a longer length, we indicate that
   // here.
   moreNames?: boolean;
+
+  // A status flag used to indicate that we returned results from the flat-file
+  // database instead of the (more up-to-date and localized Indexed DB store)
+  // and hence the result should not be cached since a subsequent query with the
+  // same inputs might return a different (and better) result.
+  dbUnavailable?: boolean;
 }
 
 export interface TranslateResult {
@@ -69,6 +80,12 @@ export type RawSearchResult =
   | NameSearchResult;
 
 export type SearchMetadata = {
+  // Used to indicate that we failed to find a match in the word dictionary
+  // but found one in the names dictionary.
+  //
+  // When this is true, we use a different order for displaying the dictionaries
+  // so this flag should be passed along with the next query to preserve that
+  // order.
   preferNames: boolean;
 };
 

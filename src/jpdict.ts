@@ -319,10 +319,12 @@ export async function searchWords({
   // Determine which dictionary to use: The IndexedDB one or the flat-file
   // fallback dictionary.
   let getWords: GetWordsFunction;
+  let dbUnavailable = false;
   if (isDataSeriesAvailable('words')) {
     getWords = ({ input, maxResults }: { input: string; maxResults: number }) =>
       idbGetWords(input, { matchType: 'exact', limit: maxResults });
   } else {
+    dbUnavailable = true;
     try {
       const flatFileDatabase = await fallbackDatabaseLoader.database;
       getWords = flatFileDatabase.getWords.bind(flatFileDatabase);
@@ -365,7 +367,8 @@ export async function searchWords({
     }
   }
 
-  return result;
+  // Annotate the result with the database status
+  return result ? { ...result, dbUnavailable } : null;
 }
 
 // ---------------------------------------------------------------------------
