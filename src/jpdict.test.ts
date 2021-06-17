@@ -10,9 +10,9 @@ class Worker {
 import { searchWords, translate } from './jpdict';
 import { WordResult, WordSearchResult } from './search-result';
 
-// Mock browser.extension.getURL and browser.i18n.getMessage
+// Mock browser.runtime.getURL and browser.i18n.getMessage
 global.browser = {
-  extension: { getURL: jest.fn((url) => url) },
+  runtime: { getURL: jest.fn((url) => url) },
   i18n: {
     getMessage: (id: string) => {
       switch (id) {

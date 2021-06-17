@@ -49,10 +49,10 @@ export class FlatFileDatabase {
     try {
       // Read in series to reduce contention
       this.wordDict = await this.readFileWithAutoRetry(
-        browser.extension.getURL('data/words.ljson')
+        browser.runtime.getURL('data/words.ljson')
       );
       this.wordIndex = await this.readFileWithAutoRetry(
-        browser.extension.getURL('data/words.idx')
+        browser.runtime.getURL('data/words.idx')
       );
 
       this.notifyListeners({ type: 'loaded' });
