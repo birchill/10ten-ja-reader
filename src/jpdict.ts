@@ -1,5 +1,6 @@
 import Bugsnag from '@bugsnag/browser';
 import {
+  AbortError,
   DataSeries,
   DataSeriesState,
   DataVersion,
@@ -300,10 +301,12 @@ const WORDS_MAX_ENTRIES = 7;
 
 export async function searchWords({
   input,
+  abortSignal,
   max = 0,
   includeRomaji = false,
 }: {
   input: string;
+  abortSignal?: AbortSignal;
   max?: number;
   includeRomaji?: boolean;
 }): Promise<WordSearchResult | null> {
@@ -340,6 +343,13 @@ export async function searchWords({
 
   let result: WordSearchResult | null = null;
   for (const candidate of candidateWords) {
+    // Searching for strings with choon can take a particularly long time so
+    // we should check if we've been aborted before proceeding with the next
+    // candidate.
+    if (abortSignal?.aborted) {
+      throw new AbortError();
+    }
+
     // Try this particular expansion of any choon
     const thisResult = await wordSearch({
       getWords,

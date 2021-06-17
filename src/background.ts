@@ -48,7 +48,7 @@ import '../manifest.json.src';
 import '../html/background.html.src';
 
 import Bugsnag, { Event as BugsnagEvent } from '@bugsnag/browser';
-import { DataSeriesState } from '@birchill/hikibiki-data';
+import { AbortError, DataSeriesState } from '@birchill/hikibiki-data';
 
 import { updateBrowserAction } from './browser-action';
 import { Config } from './config';
@@ -610,7 +610,8 @@ let preferNames: boolean = false;
 
 async function search(
   text: string,
-  dictOption: DictMode
+  dictOption: DictMode,
+  abortSignal: AbortSignal
 ): Promise<SearchResult | null> {
   switch (dictOption) {
     case DictMode.ForceKanji:
@@ -644,12 +645,17 @@ async function search(
 
   const originalDict = currentDict;
   do {
+    if (abortSignal.aborted) {
+      throw new AbortError();
+    }
+
     let result: SearchResult | null = null;
     switch (currentDict) {
       case DictType.Words:
         result = await wordSearch({
           input: text,
           includeRomaji: config.showRomaji,
+          abortSignal,
         });
         break;
 
@@ -664,6 +670,12 @@ async function search(
 
     if (result) {
       return result;
+    }
+
+    // Check the abort status again here since it might let us avoid doing a
+    // lookup of the names dictionary.
+    if (abortSignal.aborted) {
+      throw new AbortError();
     }
 
     // If we just looked up the words dictionary and didn't find a match,
@@ -696,8 +708,16 @@ async function wordSearch(params: {
   input: string;
   max?: number;
   includeRomaji?: boolean;
+  abortSignal: AbortSignal;
 }): Promise<WordSearchResult | null> {
   const result = await searchWords(params);
+
+  // The name search we (sometimes) do below can end up adding an extra 30% or
+  // more to the total lookup time so we should check we haven't been aborted
+  // before going on.
+  if (params.abortSignal.aborted) {
+    throw new AbortError();
+  }
 
   // Check for a longer match in the names dictionary, but only if the existing
   // match has some non-hiragana characters in it.
@@ -753,6 +773,10 @@ browser.tabs.onActivated.addListener((activeInfo) => {
 
 browser.browserAction.onClicked.addListener(toggle);
 
+// We can sometimes find ourselves in a situation where we have a backlog of
+// search requests. To avoid that, we simply cancel any previous request.
+let pendingSearchRequest: AbortController | undefined;
+
 browser.runtime.onMessage.addListener(
   (
     request: any,
@@ -777,7 +801,28 @@ browser.runtime.onMessage.addListener(
           typeof request.text === 'string' &&
           typeof request.dictOption === 'number'
         ) {
-          return search(request.text as string, request.dictOption as DictMode);
+          if (pendingSearchRequest) {
+            pendingSearchRequest.abort();
+            pendingSearchRequest = undefined;
+          }
+
+          pendingSearchRequest = new AbortController();
+
+          return search(
+            request.text as string,
+            request.dictOption as DictMode,
+            pendingSearchRequest.signal
+          )
+            .then((result) => {
+              pendingSearchRequest = undefined;
+              return result;
+            })
+            .catch((e) => {
+              if (e.name !== 'AbortError') {
+                Bugsnag.notify(e);
+              }
+              return null;
+            });
         }
         console.error(
           `Unrecognized xsearch request: ${JSON.stringify(request)}`
