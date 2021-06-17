@@ -8,7 +8,7 @@ const {
 } = require('webpack-bugsnag-plugins');
 const pjson = require('./package.json');
 
-// Look for an --env arguments to pass along when running Firefox
+// Look for an --env arguments to pass along when running Firefox / Chrome
 const env = Object.fromEntries(
   process.argv
     .filter((_arg, index, args) => index && args[index - 1] === '--env')
@@ -40,6 +40,18 @@ const commonConfig = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
+  },
+};
+
+const testConfig = {
+  ...commonConfig,
+  name: 'tests',
+  entry: {
+    'content-loader': './tests/content-loader.ts',
+  },
+  output: {
+    path: path.resolve(__dirname, 'tests'),
+    filename: '[name].js',
   },
 };
 
@@ -87,72 +99,15 @@ const commonExtConfig = {
   },
 };
 
-const getPreprocessorConfig = (...features) => ({
-  test: /\.src$/,
-  use: [
-    {
-      loader: 'file-loader',
-      options: {
-        name: '[name]',
-      },
-    },
-    {
-      loader:
-        'webpack-preprocessor?' +
-        features.map((feature) => `definitions[]=${feature}`).join(','),
-    },
-  ],
+const firefoxConfig = buildExtConfig({
+  distFolder: 'dist-firefox',
+  supportsAlphaVersion: true,
+  supportsApplicationsField: true,
+  supportsBrowserStyle: true,
+  supportsMatchAboutBlank: true,
+  supportsSvgIcons: true,
+  target: 'firefox',
 });
-
-const extendArray = (array, ...newElems) => {
-  const result = array.slice();
-  result.push(...newElems);
-  return result;
-};
-
-const firefoxConfig = {
-  ...commonExtConfig,
-  module: {
-    ...commonExtConfig.module,
-    rules: extendArray(
-      commonExtConfig.module.rules,
-      getPreprocessorConfig(
-        'supports_alpha_version',
-        'supports_svg_icons',
-        'supports_browser_style',
-        'supports_applications_field'
-      )
-    ),
-  },
-  output: {
-    path: path.resolve(__dirname, 'dist-firefox'),
-    filename: '[name].js',
-  },
-  plugins: [
-    new CopyWebpackPlugin({
-      patterns: [
-        // Despite the fact that we inject popup.css directly into the
-        // content script, we still package it as a separate file in the add-on
-        // so that we can load it in the options page.
-        //
-        // One day we might decide to inject popup.css into the options page
-        // script too, but for now we duplicate this content.
-        'css/*',
-        'images/*.svg',
-        'data/*',
-        '_locales/**/*',
-      ],
-    }),
-    new WebExtPlugin({
-      firefox,
-      firefoxProfile,
-      keepProfileChanges,
-      profileCreateIfMissing,
-      startUrl: ['tests/playground.html'],
-      sourceDir: path.resolve(__dirname, 'dist-firefox'),
-    }),
-  ],
-};
 
 if (process.env.RELEASE_BUILD && process.env.BUGSNAG_API_KEY) {
   firefoxConfig.plugins.push(
@@ -178,69 +133,21 @@ if (process.env.RELEASE_BUILD && process.env.BUGSNAG_API_KEY) {
   );
 }
 
-const chromeConfig = {
-  ...commonExtConfig,
-  module: {
-    ...commonExtConfig.module,
-    rules: extendArray(
-      commonExtConfig.module.rules,
-      getPreprocessorConfig('supports_chrome_style')
-    ),
-  },
-  output: {
-    path: path.resolve(__dirname, 'dist-chrome'),
-    filename: '[name].js',
-  },
-  plugins: [
-    new CopyWebpackPlugin({
-      patterns: [
-        'css/*',
-        'images/*',
-        'data/*',
-        '_locales/**/*',
-        'icons',
-        // ^ Specifying a folder here means the icons will be placed directly
-        //   in the root folder.
-      ],
-    }),
-    new WebExtPlugin({
-      chromiumBinary: chromium,
-      chromiumProfile,
-      keepProfileChanges,
-      profileCreateIfMissing,
-      startUrl: [path.resolve(__dirname, 'tests', 'playground.html')],
-      sourceDir: path.resolve(__dirname, 'dist-chrome'),
-      target: 'chromium',
-    }),
-  ],
-};
+const chromeConfig = buildExtConfig({
+  distFolder: 'dist-chrome',
+  includeChromeWebStoreIcons: true,
+  supportsChromeStyle: true,
+  supportsMatchAboutBlank: true,
+  target: 'chromium',
+});
 
-const edgeConfig = {
-  ...chromeConfig,
-  module: {
-    ...chromeConfig.module,
-    rules: extendArray(
-      commonExtConfig.module.rules,
-      getPreprocessorConfig('uses_edge_store')
-    ),
-  },
-  output: {
-    path: path.resolve(__dirname, 'dist-edge'),
-    filename: '[name].js',
-  },
-};
-
-const testConfig = {
-  ...commonConfig,
-  name: 'tests',
-  entry: {
-    'content-loader': './tests/content-loader.ts',
-  },
-  output: {
-    path: path.resolve(__dirname, 'tests'),
-    filename: '[name].js',
-  },
-};
+const edgeConfig = buildExtConfig({
+  distFolder: 'dist-edge',
+  includeChromeWebStoreIcons: true,
+  supportsMatchAboutBlank: true,
+  target: 'chromium',
+  usesEdgeStore: true,
+});
 
 module.exports = (env) => {
   let configs = [testConfig];
@@ -254,3 +161,139 @@ module.exports = (env) => {
 
   return configs;
 };
+
+function buildExtConfig({
+  distFolder,
+  includeChromeWebStoreIcons = false,
+  supportsAlphaVersion = false,
+  supportsApplicationsField = false,
+  supportsBrowserStyle = false,
+  supportsChromeStyle = false,
+  supportsMatchAboutBlank = false,
+  supportsSvgIcons = false,
+  target,
+  usesEdgeStore = false,
+}) {
+  const preprocessorFeatures = [];
+  if (supportsAlphaVersion) {
+    preprocessorFeatures.push('supports_alpha_version');
+  }
+
+  if (supportsApplicationsField) {
+    preprocessorFeatures.push('supports_applications_field');
+  }
+
+  if (supportsBrowserStyle) {
+    preprocessorFeatures.push('supports_browser_style');
+  }
+
+  if (supportsChromeStyle) {
+    preprocessorFeatures.push('supports_chrome_style');
+  }
+
+  if (supportsMatchAboutBlank) {
+    preprocessorFeatures.push('supports_match_about_blank');
+  }
+
+  if (supportsSvgIcons) {
+    preprocessorFeatures.push('supports_svg_icons');
+  }
+
+  if (usesEdgeStore) {
+    preprocessorFeatures.push('uses_edge_store');
+  }
+
+  const plugins = [];
+
+  const copyPatterns = [
+    // Despite the fact that we inject popup.css directly into the
+    // content script, we still package it as a separate file in the add-on
+    // so that we can load it in the options page.
+    //
+    // One day we might decide to inject popup.css into the options page
+    // script too, but for now we duplicate this content.
+    'css/*',
+    supportsSvgIcons ? 'images/*.svg' : 'images/*',
+    'data/*',
+    '_locales/**/*',
+  ];
+
+  if (includeChromeWebStoreIcons) {
+    // Specifying a folder here means the icons will be placed directly in the
+    // root folder.
+    copyPatterns.push('icons');
+  }
+
+  plugins.push(new CopyWebpackPlugin({ patterns: copyPatterns }));
+
+  if (target === 'firefox') {
+    plugins.push(
+      new WebExtPlugin({
+        firefox,
+        firefoxProfile,
+        keepProfileChanges,
+        profileCreateIfMissing,
+        startUrl: ['tests/playground.html'],
+        sourceDir: path.resolve(__dirname, distFolder),
+      })
+    );
+  } else if (target === 'chromium') {
+    plugins.push(
+      new WebExtPlugin({
+        chromiumBinary: chromium,
+        chromiumProfile,
+        firefoxProfile,
+        keepProfileChanges,
+        profileCreateIfMissing,
+        startUrl: [path.resolve(__dirname, 'tests', 'playground.html')],
+        sourceDir: path.resolve(__dirname, distFolder),
+        target: 'chromium',
+      })
+    );
+  } else {
+    plugins.push(
+      new WebExtPlugin({ sourceDir: path.resolve(__dirname, distFolder) })
+    );
+  }
+
+  return {
+    ...commonExtConfig,
+    module: {
+      ...commonExtConfig.module,
+      rules: extendArray(
+        commonExtConfig.module.rules,
+        getPreprocessorConfig(...preprocessorFeatures)
+      ),
+    },
+    output: {
+      path: path.resolve(__dirname, distFolder),
+      filename: '[name].js',
+    },
+    plugins,
+  };
+}
+
+function getPreprocessorConfig(...features) {
+  return {
+    test: /\.src$/,
+    use: [
+      {
+        loader: 'file-loader',
+        options: {
+          name: '[name]',
+        },
+      },
+      {
+        loader:
+          'webpack-preprocessor?' +
+          features.map((feature) => `definitions[]=${feature}`).join(','),
+      },
+    ],
+  };
+}
+
+function extendArray(array, ...newElems) {
+  const result = array.slice();
+  result.push(...newElems);
+  return result;
+}
