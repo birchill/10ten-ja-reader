@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Rikaichamp Japanese dictionary",
   "author": "Brian Birtles",
-  "version": "0.5.12",
+  "version": "0.5.13",
   /*#if supports_applications_field*/
   "applications": {
     "gecko": {
