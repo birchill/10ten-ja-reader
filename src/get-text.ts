@@ -389,8 +389,7 @@ function getTextFromTextNode({
   while (treeWalker.referenceNode !== startNode && treeWalker.nextNode());
 
   if (treeWalker.referenceNode !== startNode) {
-    console.error('Could not find node in tree');
-    console.log(startNode);
+    console.error('Could not find node in tree', startNode);
     return null;
   }
 
