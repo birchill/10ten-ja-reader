@@ -104,13 +104,18 @@ let dbState: JpdictStateWithFallback = {
   updateState: { state: 'idle', lastCheck: null },
 };
 
-// We treat the names and words dictionaries as unavailable when they are being
-// updated because otherwise we can block for seconds waiting to read from them.
+// Is the IDB database available for the given series?
+//
+// We structure the tables and access them in a way that means we _should_ be
+// able to use, e.g., the 'words' table in a performant manner while the 'names'
+// table is being updated, but this doesn't appear to work for Chrome which
+// suffers significant lag when any tables in the database is being accessed.
+//
+// As a result we simply don't touch IDB while it's being updated.
 function isDataSeriesAvailable(series: DataSeries): boolean {
   return (
     dbState[series].state === DataSeriesState.Ok &&
-    (dbState.updateState.state === 'idle' ||
-      dbState.updateState.series !== series)
+    dbState.updateState.state === 'idle'
   );
 }
 
