@@ -1,13 +1,13 @@
-## 0.5.14 (2021-06-19)
+## 0.5.14 (2021-06-19) (Chrome only)
 
 - Drop `tabs` permission from manifest.
 
-## 0.5.13 (2021-06-17)
+## 0.5.13 (2021-06-17) (not shipped)
 
 - Drop `clipboardWrite` permission from Chromium manifest since it's not needed
   there.
 
-## 0.5.12 (2021-06-17)
+## 0.5.12 (2021-06-17) (Firefox, Edge)
 
 - Fix some bugs in the lookup cache
 
