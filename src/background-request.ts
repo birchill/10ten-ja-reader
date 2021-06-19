@@ -9,6 +9,18 @@ function isRequestObject(a: unknown): a is RequestObject {
 }
 
 //
+// Disabled request
+//
+
+export type DisabledRequest = {
+  type: 'disabled';
+};
+
+export function isDisabledRequest(a: unknown): a is DisabledRequest {
+  return isRequestObject(a) && a.type === 'disabled';
+}
+
+//
 // Enable? request
 //
 
@@ -141,6 +153,7 @@ export function isToggleDefinitionRequest(
 //
 
 export type BackgroundRequest =
+  | DisabledRequest
   | EnableQueryRequest
   | ReportWarningRequest
   | SearchRequest
@@ -149,6 +162,7 @@ export type BackgroundRequest =
 
 export function isBackgroundRequest(a: unknown): a is BackgroundRequest {
   return (
+    isDisabledRequest(a) ||
     isEnableQueryRequest(a) ||
     isReportWarningRequest(a) ||
     isSearchRequest(a) ||

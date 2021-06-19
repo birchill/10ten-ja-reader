@@ -32,6 +32,9 @@
   },
   /*#endif*/
   "permissions": [
+    /*#if active_tab_only*/
+    "activeTab",
+    /*#endif*/
     /*#if needs_clipboard_write*/
     "clipboardWrite",
     /*#endif*/
@@ -69,15 +72,19 @@
     /*#endif*/
     "page": "options.html"
   },
+  /*#if !active_tab_only*/
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*", "file:///*"],
+      /*#if supports_match_about_blank*/
       "match_about_blank": true,
+      /*#endif*/
       "js": ["rikaichamp-content.js"],
       "all_frames": true,
       "run_at": "document_start"
     }
   ],
+  /*#endif*/
   "web_accessible_resources": [
     "css/popup.css",
     "images/warning-red.svg",

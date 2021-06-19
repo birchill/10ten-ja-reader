@@ -50,6 +50,7 @@ import Bugsnag from '@bugsnag/browser';
 import { AbortError, DataSeriesState } from '@birchill/hikibiki-data';
 import Browser, { browser } from 'webextension-polyfill-ts';
 
+import TabManager from './all-tab-manager';
 import {
   DictType,
   isBackgroundRequest,
@@ -58,12 +59,10 @@ import {
 import { updateBrowserAction } from './browser-action';
 import { startBugsnag } from './bugsnag';
 import { Config } from './config';
-import { ContentConfig } from './content-config';
 import {
   notifyDbStateUpdated,
   DbListenerMessage,
 } from './db-listener-messages';
-import { ExtensionStorageError } from './extension-storage-error';
 import {
   JpdictStateWithFallback,
   cancelUpdateDb,
@@ -90,6 +89,48 @@ import {
 startBugsnag();
 
 //
+// Setup tab manager
+//
+
+const tabManager = new TabManager();
+
+tabManager.addListener(async (enabled: boolean, tabId: number | undefined) => {
+  // Typically we will run initJpDict from onStartup or onInstalled but if we
+  // are in development mode and reloading the extension neither of those
+  // callbacks will be called so make sure the database is initialized here.
+  if (enabled) {
+    Bugsnag.leaveBreadcrumb('Triggering database update from enableTab...');
+    initJpDict();
+  }
+
+  // Update browser action
+  updateBrowserAction({
+    popupStyle: config.popupStyle,
+    enabled,
+    jpdictState,
+    tabId,
+  });
+
+  // Update context menu
+  try {
+    await config.ready;
+  } catch (e) {
+    Bugsnag.notify(e || '(No error)');
+    return;
+  }
+
+  if (config.contextMenuEnable) {
+    try {
+      await browser.contextMenus.update('context-toggle', {
+        checked: enabled,
+      });
+    } catch (_e) {
+      // Ignore
+    }
+  }
+});
+
+//
 // Setup config
 //
 
@@ -103,16 +144,6 @@ config.addChangeListener((changes) => {
     } else {
       removeContextMenu();
     }
-  }
-
-  // Update pop-up style as needed
-  if (enabled && changes.hasOwnProperty('popupStyle')) {
-    const popupStyle = (changes as any).popupStyle.newValue;
-    updateBrowserAction({
-      popupStyle,
-      enabled: true,
-      jpdictState,
-    });
   }
 
   // Update toggle key
@@ -145,39 +176,14 @@ config.addChangeListener((changes) => {
   }
 
   // Tell the content scripts about any changes
-  //
-  // TODO: Ignore changes that aren't part of contentConfig
-  updateConfig(config.contentConfig);
+  tabManager.updateConfig(config.contentConfig);
 });
 
-async function updateConfig(config: ContentConfig) {
-  if (!enabled) {
-    return;
-  }
+config.ready.then(async () => {
+  // Initialize the tab manager first since we'll need its enabled state for
+  // a number of other things.
+  await tabManager.init(config.contentConfig);
 
-  const windows = await browser.windows.getAll({
-    populate: true,
-    windowTypes: ['normal'],
-  });
-
-  for (const win of windows) {
-    console.assert(typeof win.tabs !== 'undefined');
-    for (const tab of win.tabs!) {
-      console.assert(
-        typeof tab.id === 'number',
-        `Unexpected tab id: ${tab.id}`
-      );
-      browser.tabs
-        .sendMessage(tab.id!, { type: 'enable', config })
-        .catch(() => {
-          /* Some tabs don't have the content script so just ignore
-           * connection failures here. */
-        });
-    }
-  }
-}
-
-config.ready.then(() => {
   if (config.contextMenuEnable) {
     addContextMenu();
   }
@@ -243,25 +249,38 @@ let jpdictState: JpdictStateWithFallback = {
   updateState: { state: 'idle', lastCheck: null },
 };
 
+// Don't run initJpDict more that we need to
+let dbInitialized = false;
+
 async function initJpDict() {
+  if (dbInitialized) {
+    return;
+  }
+  dbInitialized = true;
   await config.ready;
   initDb({ lang: config.dictLang, onUpdate: onDbStatusUpdated });
 }
 
-function onDbStatusUpdated(state: JpdictStateWithFallback) {
+async function onDbStatusUpdated(state: JpdictStateWithFallback) {
   jpdictState = state;
 
-  updateBrowserAction({
-    popupStyle: config.popupStyle,
-    enabled,
-    jpdictState: state,
-  });
+  // Update all the different windows separately since they may have differing
+  // enabled states.
+  const enabledStates = await tabManager.getEnabledState();
+  for (const tabState of enabledStates) {
+    updateBrowserAction({
+      popupStyle: config.popupStyle,
+      enabled: tabState.enabled,
+      jpdictState: state,
+      tabId: tabState.tabId,
+    });
+  }
 
   notifyDbListeners();
 }
 
 //
-// Listeners
+// Database listeners
 //
 
 const dbListeners: Array<Browser.Runtime.Port> = [];
@@ -271,6 +290,10 @@ function isDbListenerMessage(evt: unknown): evt is DbListenerMessage {
 }
 
 browser.runtime.onConnect.addListener((port: Browser.Runtime.Port) => {
+  if (port.name !== 'options') {
+    return;
+  }
+
   dbListeners.push(port);
 
   // Push initial state to new listener
@@ -328,8 +351,7 @@ async function notifyDbListeners(specifiedListener?: Browser.Runtime.Port) {
     try {
       listener.postMessage(message);
     } catch (e) {
-      console.log('Error posting message');
-      console.log(e);
+      console.error('Error posting message', e);
       Bugsnag.notify(e || '(Error posting message update message)');
     }
   }
@@ -339,7 +361,7 @@ async function notifyDbListeners(specifiedListener?: Browser.Runtime.Port) {
 // Context menu
 //
 
-function addContextMenu() {
+async function addContextMenu() {
   const contexts: Array<Browser.Menus.ContextType> = [
     'browser_action',
     'editable',
@@ -351,6 +373,34 @@ function addContextMenu() {
     'tab',
     'video',
   ];
+
+  // We need to know if the context menu should be initially checked or not.
+  //
+  // That's not necessarily straight forward, however, since different windows
+  // can have different enabled states.
+  //
+  // So if we get multiple windows, we should try to find out which one is the
+  // current window and use that.
+  const enabledStates = await tabManager.getEnabledState();
+  let enabled = false;
+  if (enabledStates.length === 1) {
+    enabled = enabledStates[0].enabled;
+  } else if (enabledStates.length > 1) {
+    try {
+      const currentWindowTabs = await browser.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      const match = currentWindowTabs.length
+        ? enabledStates.find((s) => s.tabId === currentWindowTabs[0].id)
+        : undefined;
+      if (match) {
+        enabled = match.enabled;
+      }
+    } catch (_e) {
+      // Ignore
+    }
+  }
 
   try {
     // We'd like to use:
@@ -381,137 +431,6 @@ async function removeContextMenu() {
     await browser.contextMenus.remove('context-toggle');
   } catch (e) {
     // Ignore
-  }
-}
-
-//
-// Tab toggling
-//
-
-let enabled: boolean = false;
-
-async function enableTab(tab: Browser.Tabs.Tab) {
-  console.assert(typeof tab.id === 'number', `Unexpected tab ID: ${tab.id}`);
-
-  updateBrowserAction({
-    popupStyle: config.popupStyle,
-    enabled: true,
-    jpdictState,
-  });
-
-  try {
-    await config.ready;
-  } catch (e) {
-    Bugsnag.notify(e || '(No error)');
-    return;
-  }
-
-  if (config.contextMenuEnable) {
-    browser.contextMenus
-      .update('context-toggle', { checked: true })
-      .catch(() => {
-        // Ignore
-      });
-  }
-
-  try {
-    Bugsnag.leaveBreadcrumb('Triggering database update from enableTab...');
-    initJpDict();
-
-    // Send message to current tab to add listeners and create stuff
-    browser.tabs
-      .sendMessage(tab.id!, {
-        type: 'enable',
-        config: config.contentConfig,
-      })
-      .catch(() => {
-        /* Some tabs don't have the content script so just ignore
-         * connection failures here. */
-      });
-    enabled = true;
-    browser.storage.local.set({ enabled: true }).catch(() => {
-      Bugsnag.notify(
-        new ExtensionStorageError({ key: 'enabled', action: 'set' }),
-        (event) => {
-          event.severity = 'warning';
-        }
-      );
-    });
-
-    updateBrowserAction({
-      popupStyle: config.popupStyle,
-      enabled: true,
-      jpdictState,
-    });
-  } catch (e) {
-    Bugsnag.notify(e || '(No error)');
-
-    updateBrowserAction({
-      popupStyle: config.popupStyle,
-      enabled: true,
-      jpdictState,
-    });
-
-    if (config.contextMenuEnable) {
-      browser.contextMenus
-        .update('context-toggle', { checked: false })
-        .catch(() => {
-          // Ignore
-        });
-    }
-  }
-}
-
-async function disableAll() {
-  enabled = false;
-
-  browser.storage.local.remove('enabled').catch(() => {
-    /* Ignore */
-  });
-
-  browser.browserAction.setTitle({
-    title: browser.i18n.getMessage('command_toggle_disabled'),
-  });
-
-  updateBrowserAction({
-    popupStyle: config.popupStyle,
-    enabled,
-    jpdictState,
-  });
-
-  if (config.contextMenuEnable) {
-    browser.contextMenus
-      .update('context-toggle', { checked: false })
-      .catch(() => {
-        // Ignore
-      });
-  }
-
-  const windows = await browser.windows.getAll({
-    populate: true,
-    windowTypes: ['normal'],
-  });
-  for (const win of windows) {
-    console.assert(typeof win.tabs !== 'undefined');
-    for (const tab of win.tabs!) {
-      console.assert(
-        typeof tab.id === 'number',
-        `Unexpected tab id: ${tab.id}`
-      );
-      browser.tabs.sendMessage(tab.id!, { type: 'disable' }).catch(() => {
-        /* Some tabs don't have the content script so just ignore
-         * connection failures here. */
-      });
-    }
-  }
-}
-
-function toggle(tab: Browser.Tabs.Tab) {
-  if (enabled) {
-    disableAll();
-  } else {
-    Bugsnag.leaveBreadcrumb('Enabling tab from toggle');
-    enableTab(tab);
   }
 }
 
@@ -674,9 +593,10 @@ async function wordSearch(params: {
 // Browser event handlers
 //
 
-browser.tabs.onActivated.addListener((activeInfo) => {
-  onTabSelect(activeInfo.tabId);
-});
+async function toggle(tab: Browser.Tabs.Tab) {
+  await config.ready;
+  tabManager.toggleTab(tab, config.contentConfig);
+}
 
 browser.browserAction.onClicked.addListener(toggle);
 
@@ -685,10 +605,7 @@ browser.browserAction.onClicked.addListener(toggle);
 let pendingSearchRequest: AbortController | undefined;
 
 browser.runtime.onMessage.addListener(
-  (
-    request: object,
-    sender: Browser.Runtime.MessageSender
-  ): void | Promise<any> => {
+  (request: object): void | Promise<any> => {
     if (!isBackgroundRequest(request)) {
       console.warn(`Unrecognized request: ${JSON.stringify(request)}`);
       Bugsnag.notify(
@@ -701,12 +618,6 @@ browser.runtime.onMessage.addListener(
     }
 
     switch (request.type) {
-      case 'enable?':
-        if (sender.tab && typeof sender.tab.id === 'number') {
-          onTabSelect(sender.tab.id);
-        }
-        break;
-
       case 'search':
         if (pendingSearchRequest) {
           pendingSearchRequest.abort();
@@ -750,24 +661,6 @@ browser.runtime.onMessage.addListener(
   }
 );
 
-function onTabSelect(tabId: number) {
-  if (!enabled) {
-    return;
-  }
-
-  config.ready.then(() => {
-    browser.tabs
-      .sendMessage(tabId, {
-        type: 'enable',
-        config: config.contentConfig,
-      })
-      .catch(() => {
-        /* Some tabs don't have the content script so just ignore
-         * connection failures here. */
-      });
-  });
-}
-
 browser.runtime.onInstalled.addListener(async () => {
   // Request persistent storage permission
   if (navigator.storage) {
@@ -790,62 +683,3 @@ browser.runtime.onStartup.addListener(() => {
   Bugsnag.leaveBreadcrumb('Running initJpDict from onStartup...');
   initJpDict();
 });
-
-// See if we were enabled on the last run
-//
-// We don't do this in onStartup because that won't run when the add-on is
-// reloaded and we want to re-enable ourselves in that case too.
-(async function () {
-  let getEnabledResult;
-  try {
-    getEnabledResult = await browser.storage.local.get('enabled');
-  } catch (e) {
-    // If extension storage fails. Just ignore.
-    Bugsnag.notify(
-      new ExtensionStorageError({ key: 'enabled', action: 'get' }),
-      (event) => {
-        event.severity = 'warning';
-      }
-    );
-    return;
-  }
-  const wasEnabled =
-    getEnabledResult &&
-    getEnabledResult.hasOwnProperty('enabled') &&
-    getEnabledResult.enabled;
-
-  if (!wasEnabled) {
-    return;
-  }
-
-  // browser.tabs.query sometimes fails with a generic Error with message "An
-  // unexpected error occurred". I don't know why. Maybe it should fail? Maybe
-  // it's a timing thing? Who knows �‍♂️
-  //
-  // For now, we just do a single retry, two seconds later. If that fails,
-  // I suppose the user will just have to manually re-enable the add-on.
-  const tryToEnable = async () => {
-    const tabs = await browser.tabs.query({
-      currentWindow: true,
-      active: true,
-    });
-
-    if (tabs && tabs.length) {
-      Bugsnag.leaveBreadcrumb(
-        'Loading because we were enabled on the previous run'
-      );
-      enableTab(tabs[0]);
-    }
-  };
-
-  try {
-    await tryToEnable();
-  } catch (e) {
-    console.log('Failed to re-enable. Will retry in two seconds.');
-    setTimeout(() => {
-      tryToEnable().catch((e) => {
-        console.log('Second attempt to re-enable failed. Giving up.');
-      });
-    }, 2000);
-  }
-})();

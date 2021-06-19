@@ -638,9 +638,11 @@ export class Config {
     return {
       accentDisplay: this.accentDisplay,
       dictLang: this.dictLang,
-      holdToShowKeys: this.holdToShowKeys
-        ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)
-        : [],
+      // We hide the hold-to-show keys setting in activeTab only mode
+      holdToShowKeys:
+        !__ACTIVE_TAB_ONLY__ && this.holdToShowKeys
+          ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)
+          : [],
       kanjiReferences: this.kanjiReferences,
       keys: this.keysNormalized,
       noTextHighlight: this.noTextHighlight,

@@ -1,6 +1,9 @@
 import * as path from 'path';
 import { Config } from 'karma';
 
+const webpack = require('webpack');
+const pjson = require('./package.json');
+
 module.exports = (config: Config) => {
   config.set({
     basePath: 'tests',
@@ -29,6 +32,12 @@ module.exports = (config: Config) => {
           },
         ],
       },
+      plugins: [
+        new webpack.DefinePlugin({
+          __ACTIVE_TAB_ONLY__: false,
+          __VERSION__: `'${pjson.version}'`,
+        }),
+      ],
     },
     webpackMiddleware: {},
     frameworks: ['mocha', 'chai', 'webpack'],

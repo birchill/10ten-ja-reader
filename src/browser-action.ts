@@ -7,12 +7,14 @@ interface BrowserActionState {
   popupStyle: string;
   enabled: boolean;
   jpdictState: JpdictStateWithFallback;
+  tabId: number | undefined;
 }
 
 export function updateBrowserAction({
   popupStyle,
   enabled,
   jpdictState,
+  tabId,
 }: BrowserActionState) {
   let iconFilename = 'disabled';
   let titleStringId = 'command_toggle_disabled';
@@ -74,6 +76,7 @@ export function updateBrowserAction({
   browser.browserAction
     .setIcon({
       path: `images/rikaichamp-${iconFilename}.svg`,
+      tabId,
     })
     .catch(() => {
       // Assume we're on Chrome and it still can't handle SVGs
@@ -89,6 +92,7 @@ export function updateBrowserAction({
           32: `images/rikaichamp-${iconFilename}-32.png`,
           48: `images/rikaichamp-${iconFilename}-48.png`,
         },
+        tabId,
       });
     });
 
@@ -106,15 +110,16 @@ export function updateBrowserAction({
     // a constant error signal.
     jpdictState.updateError.name !== 'QuotaExceededError'
   ) {
-    browser.browserAction.setBadgeText({ text: '!' });
-    browser.browserAction.setBadgeBackgroundColor({ color: 'yellow' });
+    browser.browserAction.setBadgeText({ text: '!', tabId });
+    browser.browserAction.setBadgeBackgroundColor({ color: 'yellow', tabId });
     titleStringId = 'command_toggle_update_error';
   } else {
-    browser.browserAction.setBadgeText({ text: '' });
+    browser.browserAction.setBadgeText({ text: '', tabId });
   }
 
   // Set the caption
   browser.browserAction.setTitle({
     title: browser.i18n.getMessage(titleStringId),
+    tabId,
   });
 }

@@ -6,6 +6,8 @@ const {
   BugsnagBuildReporterPlugin,
   BugsnagSourceMapUploaderPlugin,
 } = require('webpack-bugsnag-plugins');
+const webpack = require('webpack');
+
 const pjson = require('./package.json');
 
 // Look for an --env arguments to pass along when running Firefox / Chrome
@@ -53,6 +55,12 @@ const testConfig = {
     path: path.resolve(__dirname, 'tests'),
     filename: '[name].js',
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      __ACTIVE_TAB_ONLY__: false,
+      __VERSION__: `'${pjson.version}'`,
+    }),
+  ],
 };
 
 const commonExtConfig = {
@@ -165,6 +173,7 @@ module.exports = (env) => {
 };
 
 function buildExtConfig({
+  activeTabOnly = false,
   distFolder,
   includeChromeWebStoreIcons = false,
   needsClipboardWrite = true,
@@ -179,6 +188,11 @@ function buildExtConfig({
   useEventPage = false,
 }) {
   const preprocessorFeatures = [];
+
+  if (activeTabOnly) {
+    preprocessorFeatures.push('active_tab_only');
+  }
+
   if (needsClipboardWrite) {
     preprocessorFeatures.push('needs_clipboard_write');
   }
@@ -215,7 +229,21 @@ function buildExtConfig({
     preprocessorFeatures.push('use_event_page');
   }
 
-  const plugins = [];
+  const plugins = [
+    new webpack.DefinePlugin({
+      __ACTIVE_TAB_ONLY__: activeTabOnly,
+      __VERSION__: `'${pjson.version}'`,
+    }),
+  ];
+
+  if (activeTabOnly) {
+    plugins.push(
+      new webpack.NormalModuleReplacementPlugin(
+        /all-tab-manager$/,
+        path.resolve(__dirname, 'src', 'active-tab-manager.ts')
+      )
+    );
+  }
 
   const copyPatterns = [
     // Despite the fact that we inject popup.css directly into the

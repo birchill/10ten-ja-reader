@@ -45,7 +45,7 @@
 
 */
 
-import { browser } from 'webextension-polyfill-ts';
+import Browser, { browser } from 'webextension-polyfill-ts';
 
 import { ContentConfig } from './content-config';
 import { CopyKeys, CopyType } from './copy-keys';
@@ -77,12 +77,6 @@ import { getPopupPosition, PopupPositionMode } from './popup-position';
 import { query, QueryResult } from './query';
 import { isForeignObjectElement, isSvgDoc, isSvgSvgElement } from './svg';
 import { hasReasonableTimerResolution } from './timer-precision';
-
-declare global {
-  interface Window {
-    rikaichamp: any;
-  }
-}
 
 // Either end of a Range object
 interface RangeEndpoint {
@@ -966,8 +960,7 @@ export class RikaiContent {
       await navigator.clipboard.writeText(message);
     } catch (e) {
       copyState = CopyState.Error;
-      console.log('Failed to write to clipboard');
-      console.log(e);
+      console.error('Failed to write to clipboard', e);
     }
 
     this.copyMode = false;
@@ -978,51 +971,162 @@ export class RikaiContent {
   _renderPopup = renderPopup;
 }
 
-let rikaiContent: RikaiContent | null = null;
+declare global {
+  interface Window {
+    readerScriptVer?: string;
+    removeReaderScript?: () => void;
+  }
+}
 
-// Event Listeners
-browser.runtime.onMessage.addListener((request: any): void | Promise<any> => {
-  if (typeof request.type !== 'string') {
+(function () {
+  // Ensure the content script is not loaded twice or that an incompatible
+  // version of the script is not used.
+  //
+  // This is only needed when we are injecting the script via executeScript
+  // when running in "activeTab" mode.
+  //
+  // Furthermore, with regards to incompatible versions, as far as I can tell
+  // Firefox will remove old versions of injected scripts when it reloads an
+  // add-on. I'm not sure if that behavior is reliable across all browsers,
+  // however, so for now we try our best to ensure we have the correct version
+  // of the script here.
+  if (window.readerScriptVer === __VERSION__) {
+    console.log('[rikaichamp] Script is already present. Returning.');
     return;
+  } else if (
+    typeof window.readerScriptVer !== 'undefined' &&
+    typeof window.removeReaderScript === 'function'
+  ) {
+    console.log('[rikaichamp] Found incompatible version of script. Removing.');
+    try {
+      window.removeReaderScript();
+    } catch (e) {
+      console.error(e);
+    }
   }
 
-  switch (request.type) {
-    case 'enable':
-      console.assert(
-        typeof request.config === 'object',
-        'No config object provided with enable message'
+  let rikaiContent: RikaiContent | null = null;
+
+  // Port to the background page.
+  //
+  // This is only used when we are running in "activeTab" mode. It serves to:
+  //
+  // - Provide an extra means to ensure the tab is removed from the list of
+  //   enabled tabs when the tab is destroyed (in case we fail to get a pagehide
+  //   event), and
+  // - Ensure the background page is kept alive so long as we have an enabled
+  //   tab when the background page is running as an event page.
+  //
+  let port: Browser.Runtime.Port | undefined;
+
+  window.readerScriptVer = __VERSION__;
+  window.removeReaderScript = () => {
+    disable();
+    browser.runtime.onMessage.removeListener(onMessage);
+  };
+
+  browser.runtime.onMessage.addListener(onMessage);
+
+  // Check if we should be enabled or not.
+  //
+  // We don't need to do this in activeTab mode since the background page will
+  // send us an 'enable' message after injecting the script.
+  //
+  // However, when the content script is injected using content_scripts the
+  // background script might not have been initialized yet in which case this
+  // will fail. However, presumably once the background script has initialized
+  // it will call us if we need to be enabled.
+  if (!__ACTIVE_TAB_ONLY__) {
+    browser.runtime.sendMessage({ type: 'enable?' }).catch(() => {
+      // Ignore
+    });
+  }
+
+  function onMessage(request: any): Promise<string> {
+    if (typeof request.type !== 'string') {
+      return Promise.reject(
+        new Error(`Invalid request: ${JSON.stringify(request.type)}`)
       );
+    }
 
-      if (rikaiContent) {
-        rikaiContent.setConfig(request.config);
-      } else {
-        // When Rikaichamp is upgraded, we can still have the old popup window
-        // hanging around so make sure to clear it.
-        removePopup();
-        rikaiContent = new RikaiContent(request.config);
-      }
-      break;
+    switch (request.type) {
+      case 'enable':
+        console.assert(
+          typeof request.config === 'object',
+          'No config object provided with enable message'
+        );
 
-    case 'disable':
-      if (rikaiContent) {
-        rikaiContent.detach();
-        rikaiContent = null;
-      }
-      break;
+        const tabId: number | undefined =
+          typeof request.id === 'number' ? request.id : undefined;
+        enable({ tabId, config: request.config });
 
-    default:
-      console.error(`Unrecognized request ${JSON.stringify(request)}`);
-      break;
+        return Promise.resolve('ok');
+
+      case 'disable':
+        disable();
+
+        return Promise.resolve('ok');
+
+      default:
+        return Promise.reject(
+          new Error(`Unrecognized request: ${JSON.stringify(request.type)}`)
+        );
+    }
   }
-});
 
-// When a page first loads, checks to see if it should enable script
-//
-// Note that the background script might not have been initialized yet in which
-// case this will fail. However, presumably once the background script has
-// initialized it will call us if we need to be enabled.
-browser.runtime.sendMessage({ type: 'enable?' }).catch(() => {
-  /* Ignore */
-});
+  function enable({
+    tabId,
+    config,
+  }: {
+    tabId?: number;
+    config: ContentConfig;
+  }) {
+    if (rikaiContent) {
+      rikaiContent.setConfig(config);
+    } else {
+      // When the extension is upgraded, we can still have the old popup
+      // window hanging around so make sure to clear it.
+      removePopup();
+      rikaiContent = new RikaiContent(config);
+    }
+
+    // If we are running in "activeTab" mode we will get passed our tab ID
+    // so we can set up a Port which will allow the background script to
+    // know when we disappear so it can update the browser action status.
+    //
+    // We only need to do that if we're the root-most frame, however.
+    if (typeof tabId !== 'undefined' && window.top === window.self && !port) {
+      port = browser.runtime.connect(undefined, {
+        name: `tab-${tabId}`,
+      });
+    }
+
+    window.addEventListener('pageshow', onPageShow);
+    window.addEventListener('pagehide', onPageHide);
+  }
+
+  function disable() {
+    if (rikaiContent) {
+      rikaiContent.detach();
+      rikaiContent = null;
+    }
+
+    if (port) {
+      port.disconnect();
+      port = undefined;
+    }
+
+    window.removeEventListener('pageshow', onPageShow);
+    window.removeEventListener('pagehide', onPageHide);
+  }
+
+  function onPageShow() {
+    browser.runtime.sendMessage({ type: 'enable?' });
+  }
+
+  function onPageHide() {
+    browser.runtime.sendMessage({ type: 'disabled' });
+  }
+})();
 
 export default RikaiContent;

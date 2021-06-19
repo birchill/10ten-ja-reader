@@ -674,6 +674,7 @@ function fillVals() {
     });
   }
 
+  // Note that this setting is hidden in active-tab only mode
   const holdKeyParts: Array<string> =
     typeof config.holdToShowKeys === 'string'
       ? config.holdToShowKeys.split('+')
@@ -738,7 +739,7 @@ window.onload = async () => {
   config.addChangeListener(updateFormFromConfig);
 
   // Listen to changes to the database.
-  browserPort = browser.runtime.connect();
+  browserPort = browser.runtime.connect(undefined, { name: 'options' });
   browserPort.onMessage.addListener((evt: unknown) => {
     if (isDbStateUpdatedMessage(evt)) {
       // For Runtime.Port.postMessage Chrome appears to serialize objects using

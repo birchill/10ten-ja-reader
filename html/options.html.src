@@ -92,6 +92,7 @@
               __MSG_options_browser_commands_alternative_chrome__
             </div>
             <!--#endif-->
+            <!--#if !active_tab_only-->
             <div class="key holdtoshowkeys browser-style">
               <input type=checkbox id=show-alt value=Alt>
               <label for=show-alt><span class="key-box">Alt</span></label>
@@ -102,6 +103,7 @@
               __MSG_options_hold_to_show_keys_description__
               <p><em>__MSG_options_hold_to_show_keys_explanation__</em></p>
             </div>
+            <!--#endif-->
           </div>
           <p>__MSG_options_popup_keys_subheading__</p>
           <div class="panel-section key-grid" id=key-grid></div>
