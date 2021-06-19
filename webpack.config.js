@@ -176,6 +176,7 @@ function buildExtConfig({
   supportsSvgIcons = false,
   target,
   usesEdgeStore = false,
+  useEventPage = false,
 }) {
   const preprocessorFeatures = [];
   if (needsClipboardWrite) {
@@ -208,6 +209,10 @@ function buildExtConfig({
 
   if (usesEdgeStore) {
     preprocessorFeatures.push('uses_edge_store');
+  }
+
+  if (useEventPage) {
+    preprocessorFeatures.push('use_event_page');
   }
 
   const plugins = [];

@@ -40,6 +40,9 @@
     "unlimitedStorage"
   ],
   "background": {
+    /*#if use_event_page */
+    "persistent": false,
+    /*#endif*/
     "scripts": ["rikaichamp-background.js"]
   },
   "browser_action": {
