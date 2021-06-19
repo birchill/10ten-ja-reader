@@ -1,6 +1,10 @@
+## 0.5.14 (2021-06-19)
+
+- Drop `tabs` permission from manifest.
+
 ## 0.5.13 (2021-06-17)
 
-- Drop `clipboardWrite` property from Chromium manifest since it's not needed
+- Drop `clipboardWrite` permission from Chromium manifest since it's not needed
   there.
 
 ## 0.5.12 (2021-06-17)
