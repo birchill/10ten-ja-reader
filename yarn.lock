@@ -3076,10 +3076,10 @@ error-stack-parser@^2.0.2, error-stack-parser@^2.0.3:
   dependencies:
     stackframe "^1.1.1"
 
-es-module-lexer@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/es-module-lexer/-/es-module-lexer-0.4.0.tgz#21f4181cc8b7eee06855f1c59e6087c7bc4f77b0"
-  integrity sha512-iuEGihqqhKWFgh72Q/Jtch7V2t/ft8w8IPP2aEN8ArYKO+IWyo6hsi96hCdgyeEDQIV3InhYQ9BlwUFPGXrbEQ==
+es-module-lexer@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/es-module-lexer/-/es-module-lexer-0.6.0.tgz#e72ab05b7412e62b9be37c37a09bdb6000d706f0"
+  integrity sha512-f8kcHX1ArhllUtb/wVSyvygoKCznIjnxhLxy7TCvIiMdT7fL4ZDTIKaadMe6eLvOXg6Wk02UeoFgUoZ2EKZZUA==
 
 es6-error@4.1.1:
   version "4.1.1"
@@ -4990,15 +4990,6 @@ jest-worker@^25.5.0:
   resolved "https://registry.yarnpkg.com/jest-worker/-/jest-worker-25.5.0.tgz#2611d071b79cea0f43ee57a3d118593ac1547db1"
   integrity sha512-/dsSmUkIy5EBGfv/IjjqmFxrNAUpBERfGs1oHROyD7yxjG/w+t0GOJDX8O1k32ySmd7+a5IhnJU2qQFcJ4n1vw==
   dependencies:
-    merge-stream "^2.0.0"
-    supports-color "^7.0.0"
-
-jest-worker@^26.6.2:
-  version "26.6.2"
-  resolved "https://registry.yarnpkg.com/jest-worker/-/jest-worker-26.6.2.tgz#7f72cbc4d643c365e27b9fd775f9d0eaa9c7a8ed"
-  integrity sha512-KWYVV1c4i+jbMpaBC+U++4Va0cp8OisU185o73T1vo99hqi7w8tSJfUXYswwqqrjzwxa6KpRK54WhPvwf5w6PQ==
-  dependencies:
-    "@types/node" "*"
     merge-stream "^2.0.0"
     supports-color "^7.0.0"
 
@@ -7824,18 +7815,6 @@ terminal-link@^2.0.0:
     ansi-escapes "^4.2.1"
     supports-hyperlinks "^2.0.0"
 
-terser-webpack-plugin@^5.1.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-5.1.1.tgz#7effadee06f7ecfa093dbbd3e9ab23f5f3ed8673"
-  integrity sha512-5XNNXZiR8YO6X6KhSGXfY0QrGrCRlSwAEjIIrlRQR4W8nP69TaJUlh3bkuac6zzgspiGPfKEHcY295MMVExl5Q==
-  dependencies:
-    jest-worker "^26.6.2"
-    p-limit "^3.1.0"
-    schema-utils "^3.0.0"
-    serialize-javascript "^5.0.1"
-    source-map "^0.6.1"
-    terser "^5.5.1"
-
 terser-webpack-plugin@^5.1.3:
   version "5.1.3"
   resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-5.1.3.tgz#30033e955ca28b55664f1e4b30a1347e61aa23af"
@@ -7847,15 +7826,6 @@ terser-webpack-plugin@^5.1.3:
     serialize-javascript "^5.0.1"
     source-map "^0.6.1"
     terser "^5.7.0"
-
-terser@^5.5.1:
-  version "5.6.0"
-  resolved "https://registry.yarnpkg.com/terser/-/terser-5.6.0.tgz#138cdf21c5e3100b1b3ddfddf720962f88badcd2"
-  integrity sha512-vyqLMoqadC1uR0vywqOZzriDYzgEkNJFK4q9GeyOBHIbiECHiWLKcWfbQWAUaPfxkjDhapSlZB9f7fkMrvkVjA==
-  dependencies:
-    commander "^2.20.0"
-    source-map "~0.7.2"
-    source-map-support "~0.5.19"
 
 terser@^5.7.0:
   version "5.7.0"
@@ -8480,10 +8450,10 @@ webpack-sources@^2.3.0:
     source-list-map "^2.0.1"
     source-map "^0.6.1"
 
-webpack@^5.39.0:
-  version "5.39.0"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.39.0.tgz#37d6899f1f40c31d5901abc0f39bc8cc7224138c"
-  integrity sha512-25CHmuDj+oOTyteI13sUqNlCnjCnySuhiKWE/cRYPQYeoQ3ijHgyWX27CiyUKLNGq27v8S0mrksyTreT/xo7pg==
+webpack@^5.40.0:
+  version "5.40.0"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.40.0.tgz#3182cfd324759d715252cf541901a226e57b5061"
+  integrity sha512-c7f5e/WWrxXWUzQqTBg54vBs5RgcAgpvKE4F4VegVgfo4x660ZxYUF2/hpMkZUnLjgytVTitjeXaN4IPlXCGIw==
   dependencies:
     "@types/eslint-scope" "^3.7.0"
     "@types/estree" "^0.0.47"
@@ -8494,7 +8464,7 @@ webpack@^5.39.0:
     browserslist "^4.14.5"
     chrome-trace-event "^1.0.2"
     enhanced-resolve "^5.8.0"
-    es-module-lexer "^0.4.0"
+    es-module-lexer "^0.6.0"
     eslint-scope "5.1.1"
     events "^3.2.0"
     glob-to-regexp "^0.4.1"
@@ -8505,7 +8475,7 @@ webpack@^5.39.0:
     neo-async "^2.6.2"
     schema-utils "^3.0.0"
     tapable "^2.1.1"
-    terser-webpack-plugin "^5.1.1"
+    terser-webpack-plugin "^5.1.3"
     watchpack "^2.2.0"
     webpack-sources "^2.3.0"
 
