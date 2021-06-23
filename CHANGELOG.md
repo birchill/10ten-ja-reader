@@ -24,7 +24,7 @@
 ## 0.5.8 (2021-06-10)
 
 - Added support for handling 旧字体 (_kyuujitai_, old characters)
-  ([#604](https://github.com/birtles/rikaichamp/issues/604))
+  ([#604](https://github.com/birchill/10ten-ja-reader/issues/604))
 - Added support for converting Japanese era years that use a series
   of digits (e.g. 昭和二〇年)
   thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
@@ -34,7 +34,7 @@
 ## 0.5.7 (2021-05-22)
 
 - Fixed handling of the first character of a text box
-  ([#605](https://github.com/birtles/rikaichamp/issues/605))
+  ([#605](https://github.com/birchill/10ten-ja-reader/issues/605))
 - Made Rikaichamp better able to recognize covered-up text such as is used on
   [asahi.com](https://asahi.com) and [nikkei.com](https://nikkei.com)
 
@@ -51,11 +51,11 @@
 ## 0.5.2 (2021-04-29)
 
 - Fixed popup positioning for documents in quirks mode
-  ([#576](https://github.com/birtles/rikaichamp/issues/576))
+  ([#576](https://github.com/birchill/10ten-ja-reader/issues/576))
 - Added a thin grey border to black popup
-  ([#577](https://github.com/birtles/rikaichamp/issues/577))
+  ([#577](https://github.com/birchill/10ten-ja-reader/issues/577))
 - Fixed Rikaichamp not working in certain iframes
-  ([#584](https://github.com/birtles/rikaichamp/issues/584))
+  ([#584](https://github.com/birchill/10ten-ja-reader/issues/584))
 - Made Rikaichamp be enabled earlier in the document load cycle.
 
 ## 0.5.1 (2021-04-19)
@@ -67,7 +67,7 @@
 - Adds ability to move the popup window using the <kbd>j</kbd> / <kbd>k</kbd>
   keys.
   Disabled by default. Please enable from the options screen.
-  ([#109](https://github.com/birtles/rikaichamp/issues/109))
+  ([#109](https://github.com/birchill/10ten-ja-reader/issues/109))
 
 ## 0.4.0 (2021-04-08)
 
@@ -98,20 +98,20 @@
 ## 0.3.4 (2021-03-01)
 
 - Made rikaichamp traverse text in `inline-block` elements so that it can
-  ready YouTube subtitles with ruby
-  ([#535](https://github.com/birtles/rikaichamp/issues/535))
+  read YouTube subtitles with ruby
+  ([#535](https://github.com/birchill/10ten-ja-reader/issues/535))
 - (Hopefully) fixed handling of low disk space situations
-  ([#428](https://github.com/birtles/rikaichamp/issues/428))
+  ([#428](https://github.com/birchill/10ten-ja-reader/issues/428))
 
 ## 0.3.3 (2020-12-09)
 
 - Moved display of part-of-speech labels to the start of the definition
   and grouped them when they are repetitive
-  ([#436](https://github.com/birtles/rikaichamp/issues/436))
+  ([#436](https://github.com/birchill/10ten-ja-reader/issues/436))
 - Made Rikaichamp include する in the match range for nouns that take
   する (`vs` nouns)
   thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
-  ([#180](https://github.com/birtles/rikaichamp/issues/180))
+  ([#180](https://github.com/birchill/10ten-ja-reader/issues/180))
 - Fixed recognition of vs-c verbs (suru verbs ending in す instead of する,
   e.g. 兼した)
   thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
@@ -121,25 +121,25 @@
 - Moved Rikaichamp popup to an isolated shadow DOM tree so that it should
   be more robust when used on pages that set styles in ways that conflict
   with Rikaichamp's styles
-  ([#144](https://github.com/birtles/rikaichamp/issues/144))
+  ([#144](https://github.com/birchill/10ten-ja-reader/issues/144))
 
 ## 0.3.2 (2020-12-03)
 
 - Made all kanji headwords be shown for an entry, not just the matching ones
-  ([#438](https://github.com/birtles/rikaichamp/issues/438)).
+  ([#438](https://github.com/birchill/10ten-ja-reader/issues/438)).
   Non-matching kanji headwords are dimmed.
 - Added recognition of full-width alphanumerics (e.g. ８月, Ｂ級グルメ)
-  ([#96](https://github.com/birtles/rikaichamp/issues/96))
+  ([#96](https://github.com/birchill/10ten-ja-reader/issues/96))
 - Allowed Rikaichamp to recognize characters in the CJK Unified Ideographs
   Extension B range (e.g. 𠏹沢).
 - Tweaked name preview feature to match names that start with hiragana
   (e.g. ほとけ沢)
 - Added support for recognizing き inflection of i-adjectives
   thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
-  ([#435](https://github.com/birtles/rikaichamp/issues/435))
+  ([#435](https://github.com/birchill/10ten-ja-reader/issues/435))
 - Fixed an issue with keydown listeners not being unregistered causing
   the "toggle definitions" feature to misbehave
-  ([#439](https://github.com/birtles/rikaichamp/issues/439))
+  ([#439](https://github.com/birchill/10ten-ja-reader/issues/439))
 - Added a few missing word entries (e.g. 印鑑)
 - Fixed popup window language tagging so Japanese and Chinese text are rendered
   correctly in the Chinese localization.
@@ -164,10 +164,10 @@
 ## 0.2.6 (2020-09-11)
 
 - Made name preview not show up for hiragana-only matches
-  ([#372](https://github.com/birtles/rikaichamp/issues/372)).
+  ([#372](https://github.com/birchill/10ten-ja-reader/issues/372)).
 - Made the name dictionary results show up first when there is a match there but
   none in the word dictionary
-  ([#374](https://github.com/birtles/rikaichamp/issues/374)).
+  ([#374](https://github.com/birchill/10ten-ja-reader/issues/374)).
 - Updated word dictionary to 2020-09-09 snapshot.
 
 ## 0.2.5 (2020-09-09)
@@ -200,12 +200,12 @@
 - Made display of names prioritize entries that match the selected text more
   closely (e.g. katakana entries are presented first when the text is katakana).
 - Fixed the display of multiple annotations for name data
-  ([#201](https://github.com/birtles/rikaichamp/issues/201)).
+  ([#201](https://github.com/birchill/10ten-ja-reader/issues/201)).
 - Added recognition for a variety of composed characters (e.g. ㋕㌀㋿ ).
 - Improved expansion of ー so that now オーサカ is recognized.
 - Made the word list display the first match from the names dictionary if it has
   longer length than any of the matches from the word dictionary
-  ([#256](https://github.com/birtles/rikaichamp/issues/256)).
+  ([#256](https://github.com/birchill/10ten-ja-reader/issues/256)).
 - Updated word dictionary to 2020-09-06 snapshot
 
 ## 0.1.20 (2020-08-11)
@@ -215,17 +215,17 @@
 - Added recognition of ん as a negative form (分からん, 知らん etc.)
   thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
 - Added recognition for slightly longer matches
-  ([#319](https://github.com/birtles/rikaichamp/issues/319))
+  ([#319](https://github.com/birchill/10ten-ja-reader/issues/319))
 - Added formatting for phantom kanji and kokuji kanji metadata
 - Updated word and name dictionaries to 2020-08-10 snapshot
 
 ## 0.1.19 (2020-06-24)
 
 - Fixed recognition of irregular verbs いらっしゃいます and おっしゃいます
-  ([#303](https://github.com/birtles/rikaichamp/issues/303))
+  ([#303](https://github.com/birchill/10ten-ja-reader/issues/303))
   thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
 - Fixed mis-recognition of くれる and くさせる
-  ([#301](https://github.com/birtles/rikaichamp/issues/301))
+  ([#301](https://github.com/birchill/10ten-ja-reader/issues/301))
   thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
 - Fixed recognition of ー (長音符) after ゛゜ and ゃゅょ (e.g. じーちゃん)
   thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
@@ -233,37 +233,37 @@
   even on Chinese language pages
   thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
 - Fixed selection range when matching years
-  ([#286](https://github.com/birtles/rikaichamp/issues/286))
+  ([#286](https://github.com/birchill/10ten-ja-reader/issues/286))
 - Updated word and name dictionaries to 2020-06-23 snapshot
 
 ## 0.1.18 (2020-05-18)
 
 - Ignore <kbd>Shift</kbd> when combined with other modifier keys
-  ([#235](https://github.com/birtles/rikaichamp/issues/235))
+  ([#235](https://github.com/birchill/10ten-ja-reader/issues/235))
 - Fixed a bug in handling ー after an い sound
-  ([#246](https://github.com/birtles/rikaichamp/issues/246))
+  ([#246](https://github.com/birchill/10ten-ja-reader/issues/246))
   thanks to [@claudiofreitas](https://github.com/claudiofreitas)
 - Fixed regression to recognizing -masu stem forms
-  ([#245](https://github.com/birtles/rikaichamp/issues/245))
+  ([#245](https://github.com/birchill/10ten-ja-reader/issues/245))
 - Fixed recognizing decomposed forms
-  ([#264](https://github.com/birtles/rikaichamp/issues/264))
+  ([#264](https://github.com/birchill/10ten-ja-reader/issues/264))
 - Updated word and name dictionaries to 2020-05-17 snapshot.
 
 ## 0.1.17 (2020-04-31)
 
 - Added support for recognizing and converting Japanese era years
   昭和５６年、令和元年、平成三十一年 etc.
-  ([#202](https://github.com/birtles/rikaichamp/issues/202))
+  ([#202](https://github.com/birchill/10ten-ja-reader/issues/202))
 - Made dictionary matching recognize ー in 頑張ろー and そーゆー etc.
-  ([#174](https://github.com/birtles/rikaichamp/issues/174))
+  ([#174](https://github.com/birchill/10ten-ja-reader/issues/174))
 - Added matching for continous forms such as 食べている and 食べてた
-  ([#73](https://github.com/birtles/rikaichamp/issues/73))
+  ([#73](https://github.com/birchill/10ten-ja-reader/issues/73))
 - Updated word and name dictionaries to 2020-04-12 snapshot.
 
 ## 0.1.16 (2020-01-07)
 
 - Made dictionary matching not split up yo-on like じゃ
-  ([#49](https://github.com/birtles/rikaichamp/issues/49))
+  ([#49](https://github.com/birchill/10ten-ja-reader/issues/49))
 - Tightened up error reporting
 - Updated word and name dictionaries to 2020-01-06 snapshot.
 
@@ -318,9 +318,9 @@
 ## 0.1.4 (2019-11-29)
 
 - Better handle the case where IndexedDB is unavailable
-  ([#148](https://github.com/birtles/rikaichamp/issues/148))
+  ([#148](https://github.com/birchill/10ten-ja-reader/issues/148))
 - Fix some cases where the content in the kanji window wraps
-  ([#149](https://github.com/birtles/rikaichamp/issues/149))
+  ([#149](https://github.com/birchill/10ten-ja-reader/issues/149))
 
 ## 0.1.3 (2019-11-27)
 
@@ -335,7 +335,7 @@
 ## 0.0.32 (2019-07-10)
 
 - Added support for displaying romaji (off by default)
-  ([#23](https://github.com/birtles/rikaichamp/issues/23))
+  ([#23](https://github.com/birchill/10ten-ja-reader/issues/23))
 - Updated dictionaries to 2019-07-05 snapshot.
 
 ## 0.0.31 (2019-04-03)
@@ -345,11 +345,11 @@
 ## 0.0.30 (2019-03-12)
 
 - Fixed looking up of entries where the reading is in Katakana
-  ([#84](https://github.com/birtles/rikaichamp/issues/84))
+  ([#84](https://github.com/birchill/10ten-ja-reader/issues/84))
 - Reworked handling of keystrokes when a textbox is in use.
   Hopefully Rikaichamp listens to keystrokes when you expect it to and ignores
   them when you don't.
-  ([#20](https://github.com/birtles/rikaichamp/issues/20))
+  ([#20](https://github.com/birchill/10ten-ja-reader/issues/20))
 - Updated dictionaries to 2019-03-11 snapshot.
 
 ## 0.0.29 (2019-01-27)
@@ -365,37 +365,37 @@
 ## 0.0.28 (2018-12-31)
 
 - Added more user-friendly display of annotations for the names dictionary
-  ([#64](https://github.com/birtles/rikaichamp/issues/64))
+  ([#64](https://github.com/birchill/10ten-ja-reader/issues/64))
 - Made pop-up key handling work even when CapsLock is on
-  ([#72](https://github.com/birtles/rikaichamp/issues/72))
+  ([#72](https://github.com/birchill/10ten-ja-reader/issues/72))
 - Updated dictionaries to 2018-12-30 snapshot.
 
 ## 0.0.27 (2018-12-28)
 
 - Fixed highlighting so it works correctly with faux-ruby as used on renshuu.org
   and Japanese learners' stack exchange
-  ([#67](https://github.com/birtles/rikaichamp/issues/67))
+  ([#67](https://github.com/birchill/10ten-ja-reader/issues/67))
 - Fixed result trimming so that it sorts by priority before trimming
-  ([#70](https://github.com/birtles/rikaichamp/issues/70))
+  ([#70](https://github.com/birchill/10ten-ja-reader/issues/70))
 - Updated dictionaries to 2018-12-27 snapshot.
 
 ## 0.0.26 (2018-11-09)
 
 - Added support for copying entries to the clipboard.
   Press 'c' when the popup is displayed then follow the on-screen prompts.
-  ([#50](https://github.com/birtles/rikaichamp/issues/50))
+  ([#50](https://github.com/birchill/10ten-ja-reader/issues/50))
 - Added Kanji kentei levels to kanji popup
 - Added support for parsing ぬ verbs
-  ([#56](https://github.com/birtles/rikaichamp/issues/56))
+  ([#56](https://github.com/birchill/10ten-ja-reader/issues/56))
   thanks to [@ispedals](https://github.com/ispedals).
 - Added deinflecting き → 来る
-  ([#59](https://github.com/birtles/rikaichamp/issues/59))
+  ([#59](https://github.com/birchill/10ten-ja-reader/issues/59))
   thanks to [@ispedals](https://github.com/ispedals).
 - Added support for looking up various conjugated irregular verbs and
   Yodan verbs and improved lookup for regular verbs
-  ([#58](https://github.com/birtles/rikaichamp/issues/58)).
+  ([#58](https://github.com/birchill/10ten-ja-reader/issues/58)).
 - Made the 'Toggle definitions' key (<kbd>d</kbd>) be disabled by
-  default ([#57](https://github.com/birtles/rikaichamp/issues/57)).
+  default ([#57](https://github.com/birchill/10ten-ja-reader/issues/57)).
   If you use this key, you will need to re-enable it from the extension options
   page.
 - Updated dictionaries to 2018-11-08 snapshot.
@@ -404,17 +404,17 @@
 
 - Fixed Japanese localization thanks to [@piroor](https://github.com/piroor).
 - Fixed ordering of entries so that more common entries appear first
-  ([#26](https://github.com/birtles/rikaichamp/issues/26)).
+  ([#26](https://github.com/birchill/10ten-ja-reader/issues/26)).
 - Added parsing for とく・どく forms
-  ([#51](https://github.com/birtles/rikaichamp/issues/51)).
+  ([#51](https://github.com/birchill/10ten-ja-reader/issues/51)).
 - Updated dictionaries to 2018-09-26 snapshot.
 
 ## 0.0.24 (2018-08-29)
 
 - Made the hotkey for enabling Rikaichamp configurable
-  ([#30](https://github.com/birtles/rikaichamp/issues/30)).
+  ([#30](https://github.com/birchill/10ten-ja-reader/issues/30)).
 - Introduced hold-to-display hotkey
-  ([#33](https://github.com/birtles/rikaichamp/issues/33)).
+  ([#33](https://github.com/birchill/10ten-ja-reader/issues/33)).
 - Localized UI into Japanese.
 - Various tweaks to option page styling.
 - Updated dictionaries to 2018-08-28 snapshot.
@@ -454,7 +454,7 @@
 
 - Added more diagnostics to try to narrow down the cause of Rikaichamp
   occasionally getting stuck loading
-  ([#45](https://github.com/birtles/rikaichamp/issues/45)).
+  ([#45](https://github.com/birchill/10ten-ja-reader/issues/45)).
 - Fixed handling of full-width tilde.
 - Updated word and names dictionaries to 2018-07-25 snapshot.
 
@@ -462,28 +462,28 @@
 
 - Added diagnostic error reporting for failures to load the dictionary.
   Attempting to fix the issue with Rikaichamp getting stuck loading
-  ([#45](https://github.com/birtles/rikaichamp/issues/45)).
+  ([#45](https://github.com/birchill/10ten-ja-reader/issues/45)).
 - Updated word and names dictionaries to 2018-07-13 snapshot.
 
 ## 0.0.16 (2018-06-28)
 
 - Hopefully fixed the issue where the extension would sometimes stop working
-  ([#17](https://github.com/birtles/rikaichamp/issues/17)).
+  ([#17](https://github.com/birchill/10ten-ja-reader/issues/17)).
 - Updated word and names dictionaries to 2018-06-27 snapshot.
 
 ## 0.0.15 (2018-06-22)
 
 - Made the extension continue to work when the timer precision is reduced
-  ([#35](https://github.com/birtles/rikaichamp/issues/35)).
+  ([#35](https://github.com/birchill/10ten-ja-reader/issues/35)).
 - Updated word and names dictionaries to 2018-06-21 snapshot.
 
 ## 0.0.14 (2018-06-01)
 
 - Improved ruby handling: Fixed text selection when `<rb>` elements are used
-  ([#37](https://github.com/birtles/rikaichamp/issues/37)).
+  ([#37](https://github.com/birchill/10ten-ja-reader/issues/37)).
 - Improved grammar reporting:
   - Fixed the reported inflection of passive godan verbs
-    ([#36](https://github.com/birtles/rikaichamp/issues/36)).
+    ([#36](https://github.com/birchill/10ten-ja-reader/issues/36)).
   - Added support for reporting causative passives.
   - Fixed deinflection of させる for verbs ending in す (e.g.
     起こさせる → 起こす).

@@ -133,7 +133,7 @@ if (process.env.RELEASE_BUILD && process.env.BUGSNAG_API_KEY) {
         apiKey: process.env.BUGSNAG_API_KEY,
         appVersion: pjson.version,
         ignoredBundleExtensions: ['.css', '.json', '.idx', '.svg', '.html'],
-        publicPath: `https://github.com/birtles/rikaichamp/releases/download/v${pjson.version}/`,
+        publicPath: `https://github.com/birchill/10ten-ja-reader/releases/download/v${pjson.version}/`,
         overwrite: true,
       },
       {}

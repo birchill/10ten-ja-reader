@@ -30,7 +30,7 @@ Thank you so much for offering to contribute! Here are a few tips that might hel
 ## Checking out
 
 ```
-git clone https://github.com/birtles/rikaichamp.git
+git clone https://github.com/birchill/10ten-ja-reader.git
 yarn install
 ```
 

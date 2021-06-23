@@ -752,7 +752,7 @@ describe('getTextAtPoint', () => {
   it('should traverse okurigana in inline-block elements too', () => {
     // YouTube annotates okurigana inline-block spans.
     //
-    // See https://github.com/birtles/rikaichamp/issues/535
+    // See https://github.com/birchill/10ten-ja-reader/issues/535
     testDiv.innerHTML =
       '<p><ruby><span>疲</span><rt>つか</rt></ruby><span style="display: inline-block">れた</span></p>';
 

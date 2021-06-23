@@ -26,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/birtles/rikaichamp.git"
+    "url": "https://github.com/birchill/10ten-ja-reader.git"
   },
   "keywords": [
     "rikaichamp",
@@ -36,12 +36,12 @@
     "dictionary",
     "translation"
   ],
-  "author": "Brian Birtles",
+  "author": "Birchill, Inc.",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/birtles/rikaichamp/issues"
+    "url": "https://github.com/birchill/10ten-ja-reader/issues"
   },
-  "homepage": "https://github.com/birtles/rikaichamp#readme",
+  "homepage": "https://github.com/birchill/10ten-ja-reader#readme",
   "devDependencies": {
     "@actions/core": "^1.4.0",
     "@actions/github": "^5.0.0",

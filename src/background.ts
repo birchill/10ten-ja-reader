@@ -2,7 +2,7 @@
 
   10ten Japanese Reader
   by Brian Birtles
-  https://github.com/birtles/rikaichamp
+  https://github.com/birchill/10ten-ja-reader
 
   ---
 
