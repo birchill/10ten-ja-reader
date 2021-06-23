@@ -1,6 +1,10 @@
 {
   "manifest_version": 2,
+  /*#if include_rikaichamp_name*/
   "name": "10ten Japanese Reader (Rikaichamp)",
+  /*#else*/
+  "name": "10ten Japanese Reader",
+  /*#endif*/
   "author": "Brian Birtles",
   "version": "0.5.14",
   /*#if supports_applications_field*/

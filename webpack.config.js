@@ -112,6 +112,7 @@ const commonExtConfig = {
 
 const firefoxConfig = buildExtConfig({
   distFolder: 'dist-firefox',
+  includeRikaichampName: true,
   supportsAlphaVersion: true,
   supportsApplicationsField: true,
   supportsBrowserStyle: true,
@@ -147,6 +148,7 @@ if (process.env.RELEASE_BUILD && process.env.BUGSNAG_API_KEY) {
 
 const chromeConfig = buildExtConfig({
   distFolder: 'dist-chrome',
+  includeRikaichampName: true,
   needsClipboardWrite: false,
   supportsChromeStyle: true,
   supportsMatchAboutBlank: true,
@@ -155,6 +157,7 @@ const chromeConfig = buildExtConfig({
 
 const edgeConfig = buildExtConfig({
   distFolder: 'dist-edge',
+  includeRikaichampName: true,
   needsClipboardWrite: false,
   supportsMatchAboutBlank: true,
   target: 'chromium',
@@ -189,6 +192,7 @@ function buildExtConfig({
   addBom = false,
   activeTabOnly = false,
   distFolder,
+  includeRikaichampName = false,
   needsClipboardWrite = true,
   supportsAlphaVersion = false,
   supportsApplicationsField = false,
@@ -205,6 +209,10 @@ function buildExtConfig({
 
   if (activeTabOnly) {
     preprocessorFeatures.push('active_tab_only');
+  }
+
+  if (includeRikaichampName) {
+    preprocessorFeatures.push('include_rikaichamp_name');
   }
 
   if (needsClipboardWrite) {

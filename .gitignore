@@ -1,3 +1,6 @@
+.DS_Store
+**/*.xcuserstate
+**/xcuserdata/**
 coverage
 node_modules
 tests/content-loader.js
