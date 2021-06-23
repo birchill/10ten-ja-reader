@@ -411,14 +411,23 @@ async function addContextMenu() {
     // a) Chrome etc. don't support that
     // b) Firefox passes the wrong tab ID to the callback when the command is
     //    activated from the context menu of a non-active tab.
-    browser.contextMenus.create({
-      id: 'context-toggle',
-      type: 'checkbox',
-      title: browser.i18n.getMessage('menu_enable_extension'),
-      onclick: (_info, tab) => toggle(tab),
-      contexts,
-      checked: enabled,
-    });
+    browser.contextMenus.create(
+      {
+        id: 'context-toggle',
+        type: 'checkbox',
+        title: browser.i18n.getMessage('menu_enable_extension'),
+        onclick: (_info, tab) => toggle(tab),
+        contexts,
+        checked: enabled,
+      },
+      () => {
+        // This is just to silence Safari which will complain if the menu already
+        // exists.
+        if (browser.runtime.lastError) {
+          // Very interesting
+        }
+      }
+    );
   } catch (_e) {
     // Give up. We're probably on a platform that doesn't support the
     // contextMenus API such as Firefox for Android.
