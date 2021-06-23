@@ -8,6 +8,7 @@ dist-edge
 dist-edge-package
 dist-firefox
 dist-firefox-package
+dist-safari
 dist-src
 dist-thunderbird
 yarn-error.log

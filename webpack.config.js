@@ -1,4 +1,5 @@
 const path = require('path');
+const BomPlugin = require('webpack-utf8-bom');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const WebExtPlugin = require('web-ext-plugin');
@@ -58,6 +59,8 @@ const testConfig = {
   plugins: [
     new webpack.DefinePlugin({
       __ACTIVE_TAB_ONLY__: false,
+      __SUPPORTS_SVG_ICONS__: false,
+      __SUPPORTS_TAB_CONTEXT_TYPE__: false,
       __VERSION__: `'${pjson.version}'`,
     }),
   ],
@@ -114,6 +117,7 @@ const firefoxConfig = buildExtConfig({
   supportsBrowserStyle: true,
   supportsMatchAboutBlank: true,
   supportsSvgIcons: true,
+  supportsTabContextType: true,
   target: 'firefox',
 });
 
@@ -157,12 +161,23 @@ const edgeConfig = buildExtConfig({
   usesEdgeStore: true,
 });
 
+const safariConfig = buildExtConfig({
+  activeTabOnly: true,
+  // Safari defaults to loading JS as Latin so make sure we add a UTF-8 BOM
+  addBom: true,
+  distFolder: 'dist-safari',
+  supportsBrowserStyle: true,
+  useEventPage: true,
+});
+
 module.exports = (env) => {
   let configs = [testConfig];
   if (env && env.target === 'chrome') {
     configs.push({ ...chromeConfig, name: 'extension' });
   } else if (env && env.target === 'edge') {
     configs.push({ ...edgeConfig, name: 'extension' });
+  } else if (env && env.target === 'safari') {
+    configs.push({ ...safariConfig, name: 'extension' });
   } else {
     configs.push({ ...firefoxConfig, name: 'extension' });
   }
@@ -171,6 +186,7 @@ module.exports = (env) => {
 };
 
 function buildExtConfig({
+  addBom = false,
   activeTabOnly = false,
   distFolder,
   needsClipboardWrite = true,
@@ -180,6 +196,7 @@ function buildExtConfig({
   supportsChromeStyle = false,
   supportsMatchAboutBlank = false,
   supportsSvgIcons = false,
+  supportsTabContextType = false,
   target,
   usesEdgeStore = false,
   useEventPage = false,
@@ -229,6 +246,8 @@ function buildExtConfig({
   const plugins = [
     new webpack.DefinePlugin({
       __ACTIVE_TAB_ONLY__: activeTabOnly,
+      __SUPPORTS_SVG_ICONS__: supportsSvgIcons,
+      __SUPPORTS_TAB_CONTEXT_TYPE__: supportsTabContextType,
       __VERSION__: `'${pjson.version}'`,
     }),
   ];
@@ -240,6 +259,10 @@ function buildExtConfig({
         path.resolve(__dirname, 'src', 'active-tab-manager.ts')
       )
     );
+  }
+
+  if (addBom) {
+    plugins.push(new BomPlugin(true));
   }
 
   const copyPatterns = [

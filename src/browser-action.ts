@@ -70,28 +70,24 @@ export function updateBrowserAction({
   }
 
   // Set the icon
-  browser.browserAction
-    .setIcon({
+  //
+  // We'd like to feature-detect if SVG icons are supported but Safari will
+  // just fail silently if we try.
+  if (__SUPPORTS_SVG_ICONS__) {
+    browser.browserAction.setIcon({
       path: `images/${iconFilename}.svg`,
       tabId,
-    })
-    .catch(() => {
-      // Assume we're on Chrome and it still can't handle SVGs
-      //
-      // If we're loading then, well, that's an animated file for which we only
-      // have an SVG version so we should use the disabled variant instead.
-      if (iconFilename.startsWith('loading')) {
-        iconFilename = iconFilename.replace('loading', 'disabled');
-      }
-      browser.browserAction.setIcon({
-        path: {
-          16: `images/${iconFilename}-16.png`,
-          32: `images/${iconFilename}-32.png`,
-          48: `images/${iconFilename}-48.png`,
-        },
-        tabId,
-      });
     });
+  } else {
+    browser.browserAction.setIcon({
+      path: {
+        16: `images/${iconFilename}-16.png`,
+        32: `images/${iconFilename}-32.png`,
+        48: `images/${iconFilename}-48.png`,
+      },
+      tabId,
+    });
+  }
 
   // Add a warning overlay and update the string if there was a fatal
   // update error.

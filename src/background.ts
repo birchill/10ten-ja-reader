@@ -364,9 +364,14 @@ async function addContextMenu() {
     'link',
     'page',
     'selection',
-    'tab',
     'video',
   ];
+
+  // Safari throws if we try to include 'tab' in the set of contexts.
+  // (Chrome just ignores it, despite not supporting it.)
+  if (__SUPPORTS_TAB_CONTEXT_TYPE__) {
+    contexts.push('tab');
+  }
 
   // We need to know if the context menu should be initially checked or not.
   //
