@@ -1,3 +1,9 @@
+## Next version
+
+- Added new default (gray) theme.
+- Made default theme switch between light/dark based on system dark-mode setting.
+- Tweaked colours and spacing of existing themes.
+
 ## 0.5.14 (2021-06-19) (Chrome only)
 
 - Drop `tabs` permission from manifest.

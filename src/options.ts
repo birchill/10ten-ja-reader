@@ -136,7 +136,7 @@ function isEdge(): boolean {
 function renderPopupStyleSelect() {
   const popupStyleSelect = document.getElementById('popupstyle-select')!;
   empty(popupStyleSelect);
-  const themes = ['blue', 'lightblue', 'black', 'yellow'];
+  const themes = ['default', 'light', 'blue', 'lightblue', 'black', 'yellow'];
 
   for (const theme of themes) {
     const input = document.createElement('input');
@@ -154,101 +154,114 @@ function renderPopupStyleSelect() {
     label.setAttribute('for', `popupstyle-${theme}`);
     popupStyleSelect.appendChild(label);
 
-    const popupPreview = document.createElement('div');
-    popupPreview.classList.add('popup-preview');
-    popupPreview.classList.add('window');
-    popupPreview.classList.add(`-${theme}`);
-    label.appendChild(popupPreview);
-
-    const entry = document.createElement('div');
-    entry.classList.add('entry');
-    popupPreview.appendChild(entry);
-
-    const headingDiv = document.createElement('div');
-    entry.append(headingDiv);
-
-    const spanKanji = document.createElement('span');
-    spanKanji.classList.add('w-kanji');
-    spanKanji.textContent = '理解';
-    if (config.showPriority) {
-      spanKanji.append(renderStar());
-    }
-    headingDiv.appendChild(spanKanji);
-
-    const spanKana = document.createElement('span');
-    spanKana.classList.add('w-kana');
-
-    switch (config.accentDisplay) {
-      case 'downstep':
-        spanKana.textContent = 'りꜜかい';
-        break;
-
-      case 'binary':
-        {
-          const spanWrapper = document.createElement('span');
-          spanWrapper.classList.add('w-binary');
-
-          const spanRi = document.createElement('span');
-          spanRi.classList.add('h-l');
-          spanRi.textContent = 'り';
-          spanWrapper.append(spanRi);
-
-          const spanKai = document.createElement('span');
-          spanKai.classList.add('l');
-          spanKai.textContent = 'かい';
-          spanWrapper.append(spanKai);
-
-          spanKana.append(spanWrapper);
-        }
-        break;
-
-      case 'none':
-        spanKana.textContent = 'りかい';
-        break;
-    }
-
-    if (config.showPriority) {
-      spanKana.append(renderStar());
-    }
-    headingDiv.appendChild(spanKana);
-
-    if (config.showRomaji) {
-      const spanRomaji = document.createElement('span');
-      spanRomaji.classList.add('w-romaji');
-      spanRomaji.textContent = 'rikai';
-      headingDiv.appendChild(spanRomaji);
-    }
-
-    if (!config.readingOnly) {
-      const spanDef = document.createElement('span');
-
-      if (config.posDisplay !== 'none') {
-        const posSpan = document.createElement('span');
-        posSpan.classList.add('w-pos', 'tag');
-        switch (config.posDisplay) {
-          case 'expl':
-            posSpan.append(
-              ['n', 'vs']
-                .map(
-                  (pos) => browser.i18n.getMessage(`pos_label_${pos}`) || pos
-                )
-                .join(', ')
-            );
-            break;
-
-          case 'code':
-            posSpan.append('n, vs');
-            break;
-        }
-        spanDef.append(posSpan);
-      }
-
-      spanDef.classList.add('w-def');
-      spanDef.append('understanding');
-
-      entry.appendChild(spanDef);
+    // The default theme alternates between light and dark so we need to
+    // generate two popup previews and overlay them.
+    if (theme === 'default') {
+      const popupPreviewContainer = document.createElement('div');
+      popupPreviewContainer.classList.add('overlay');
+      popupPreviewContainer.appendChild(renderPopupPreview('light'));
+      popupPreviewContainer.appendChild(renderPopupPreview('black'));
+      label.appendChild(popupPreviewContainer);
+    } else {
+      label.appendChild(renderPopupPreview(theme));
     }
   }
+}
+
+function renderPopupPreview(theme: string): HTMLElement {
+  const popupPreview = document.createElement('div');
+  popupPreview.classList.add('popup-preview');
+  popupPreview.classList.add('window');
+  popupPreview.classList.add(`-${theme}`);
+
+  const entry = document.createElement('div');
+  entry.classList.add('entry');
+  popupPreview.appendChild(entry);
+
+  const headingDiv = document.createElement('div');
+  entry.append(headingDiv);
+
+  const spanKanji = document.createElement('span');
+  spanKanji.classList.add('w-kanji');
+  spanKanji.textContent = '理解';
+  if (config.showPriority) {
+    spanKanji.append(renderStar());
+  }
+  headingDiv.appendChild(spanKanji);
+
+  const spanKana = document.createElement('span');
+  spanKana.classList.add('w-kana');
+
+  switch (config.accentDisplay) {
+    case 'downstep':
+      spanKana.textContent = 'りꜜかい';
+      break;
+
+    case 'binary':
+      {
+        const spanWrapper = document.createElement('span');
+        spanWrapper.classList.add('w-binary');
+
+        const spanRi = document.createElement('span');
+        spanRi.classList.add('h-l');
+        spanRi.textContent = 'り';
+        spanWrapper.append(spanRi);
+
+        const spanKai = document.createElement('span');
+        spanKai.classList.add('l');
+        spanKai.textContent = 'かい';
+        spanWrapper.append(spanKai);
+
+        spanKana.append(spanWrapper);
+      }
+      break;
+
+    case 'none':
+      spanKana.textContent = 'りかい';
+      break;
+  }
+
+  if (config.showPriority) {
+    spanKana.append(renderStar());
+  }
+  headingDiv.appendChild(spanKana);
+
+  if (config.showRomaji) {
+    const spanRomaji = document.createElement('span');
+    spanRomaji.classList.add('w-romaji');
+    spanRomaji.textContent = 'rikai';
+    headingDiv.appendChild(spanRomaji);
+  }
+
+  if (!config.readingOnly) {
+    const spanDef = document.createElement('span');
+
+    if (config.posDisplay !== 'none') {
+      const posSpan = document.createElement('span');
+      posSpan.classList.add('w-pos', 'tag');
+      switch (config.posDisplay) {
+        case 'expl':
+          posSpan.append(
+            ['n', 'vs']
+              .map((pos) => browser.i18n.getMessage(`pos_label_${pos}`) || pos)
+              .join(', ')
+          );
+          break;
+
+        case 'code':
+          posSpan.append('n, vs');
+          break;
+      }
+      spanDef.append(posSpan);
+    }
+
+    spanDef.classList.add('w-def');
+    spanDef.append('understanding');
+
+    entry.appendChild(spanDef);
+  }
+
+  return popupPreview;
 }
 
 const SVG_NS = 'http://www.w3.org/2000/svg';

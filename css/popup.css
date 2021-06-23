@@ -13,6 +13,22 @@
   border-radius: 5px;
   box-shadow: 2px 2px 1px rgba(100, 100, 100, 0.25);
   font: normal 14px sans-serif;
+
+  color: var(--text-color);
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+
+  --tag-green: #43a047aa;
+  --tag-pink: #f24b59aa;
+  --tag-blue: #2698fbaa;
+
+  --selected-highlight: var(--primary-highlight);
+  --selected-bg: #fffde5;
+  --selected-reading-highlight: #2e7d32;
+  --selected-conj-color: #fc7600;
+  --selected-def-color: #1a1d1f;
+  --selected-tag-color: #1a1d1f;
+  --selected-tag-border: rgba(0, 0, 0, 0.3);
 }
 
 .window.hidden {
@@ -30,15 +46,15 @@
 .more {
   margin-top: 3px;
   margin-bottom: 3px;
-  padding: 3px 8px;
+  padding: 4px 14px;
 }
 
 .wordlist > .entry:first-child {
-  padding-top: 6px;
+  margin-top: 8px;
 }
 
 .wordlist > .entry:last-child {
-  padding-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .entry,
@@ -49,6 +65,7 @@
 .w-kanji {
   font-size: 18px;
   margin-right: 0.7em;
+  color: var(--primary-highlight);
 }
 
 .w-kanji .w-unmatched,
@@ -106,6 +123,11 @@
   margin-left: 0.3em;
 }
 
+.w-kana,
+.w-romaji {
+  color: var(--reading-highlight);
+}
+
 .w-kanji .w-head-info,
 .w-kana .w-head-info {
   margin-left: 0.3em;
@@ -128,8 +150,8 @@
 }
 
 .w-conj {
-  color: #ffe0a0;
   font-size: 12px;
+  color: var(--conj-color);
 }
 
 .w-def {
@@ -140,15 +162,16 @@
   font-size: 12px;
 }
 
-/* Give group headings a bit more space. They typically consist of a series of tags
-   which can easily look cramped when there are tags on the line above or below it. */
+/* Give group headings a bit more space. They typically consist of a series of
+ * which can easily look cramped when there are tags on the line above or below
+ * it. */
 .w-def .w-group-head {
   margin-top: 2px;
   margin-bottom: 3px;
 }
 
-/* Especially when we have group headings amongst other definitions, we want a bit more
-   vertical space before they start. */
+/* Especially when we have group headings amongst other definitions, we want a
+ * bit more vertical space before they start. */
 .w-def ol + .w-group-head {
   margin-top: 6px;
 }
@@ -159,7 +182,7 @@
 }
 
 /* Add a little breathing space between native language definitions and
-   subsequent English definitions. */
+ * subsequent English definitions. */
 .w-def ul + .w-group-head,
 .w-def ul + ol {
   margin-top: 6px;
@@ -194,6 +217,7 @@
 
 .w-def .tag {
   font-size: 10px;
+  border: 1px solid var(--tag-border) !important;
   border-radius: 3px;
   margin-left: 0.5em;
   padding: 0px 3px;
@@ -201,27 +225,27 @@
 }
 
 .w-def .tag-fem {
-  background: rgba(255, 100, 100, 0.5);
+  background: var(--tag-pink);
 }
 
 .w-def .tag-masc {
-  background: rgba(0, 100, 255, 0.5);
+  background: var(--tag-blue);
 }
 
 .w-def .tag-place {
-  background: rgba(50, 200, 50, 0.6);
+  background: var(--tag-green);
 }
 
 .w-def .w-field {
-  background: rgba(50, 200, 50, 0.6);
+  background: var(--tag-green);
 }
 
 .w-def .w-misc {
-  background: rgba(0, 100, 255, 0.5);
+  background: var(--tag-blue);
 }
 
 .w-def .w-dial {
-  background: rgba(255, 100, 100, 0.5);
+  background: var(--tag-pink);
 }
 
 .w-def .w-pos,
@@ -238,31 +262,32 @@
 }
 
 .window .entry.-selected {
-  background: rgba(255, 255, 206);
+  color: var(--selected-highlight);
+  background: var(--selected-bg);
   border-radius: 2px;
 }
 
 .window .entry.-selected .w-def .tag {
-  color: black;
-  border-color: rgba(0, 0, 0, 0.3) !important;
+  color: var(--selected-tag-color);
+  border-color: var(--selected-tag-border) !important;
 }
 
 .window .entry.-selected .w-kanji {
-  color: #4c63a8;
+  color: var(--selected-highlight);
 }
 
 .window .entry.-selected .w-kana,
 .window .entry.-selected .w-romaji {
-  color: #029902;
+  color: var(--selected-reading-highlight);
 }
 
 .window .entry.-selected .w-def,
 .window .entry.-selected .w-def * {
-  color: rgb(0, 0, 50);
+  color: var(--selected-def-color);
 }
 
 .window .entry.-selected .w-conj {
-  color: #ff6300;
+  color: var(--selected-conj-color);
 }
 
 .window .entry.-flash {
@@ -277,8 +302,10 @@
 }
 
 .title {
+  background: var(--title-bg);
+  color: var(--title-fg);
   font-size: 10px;
-  padding: 10px 10px 6px;
+  padding: 10px 14px 6px;
   border-radius: 5px 5px 0 0;
   margin-bottom: 3px;
 }
@@ -314,7 +341,7 @@
 
 .kanji-table {
   max-width: 450px;
-  padding: 8px 14px;
+  padding: 10px 18px;
 }
 
 /* kanji: top part of the kanji table */
@@ -331,16 +358,19 @@
 /* kanji: character itself */
 
 .kanji-table .kanji {
+  color: var(--primary-highlight);
   line-height: 1;
   font-size: 60px;
   font-family: serif;
   text-align: center;
   margin-inline-end: 20px;
   padding-top: 0.1em;
+  text-shadow: rgba(0, 0, 0, 0.2) 1px 1px 4px;
 }
 
 .kanji-table.-copy .kanji {
-  background: rgba(255, 255, 206);
+  color: var(--selected-highlight);
+  background: var(--selected-bg);
   border-radius: 2px;
 }
 
@@ -351,12 +381,18 @@
 /* kanji: readings */
 
 .kanji-table .readings {
+  color: var(--reading-highlight);
   font-size: 14px;
   margin-top: 4px;
   margin-bottom: 10px;
 }
 
+.kanji-table .okurigana {
+  color: var(--okurigana-color);
+}
+
 .kanji-table .nanorilabel {
+  color: var(--reading-label);
   font-size: 11px;
 }
 
@@ -426,6 +462,13 @@
 
 .kanji-table .components table {
   border-collapse: collapse;
+
+  /*
+  * There's something odd in Firefox where, when you're viewing a text/plain
+  * document, the .window { color: white } rule doesn't inherit into the
+  * table so we have to explicitly re-establish the color there.
+  */
+  color: var(--text-color);
 }
 
 .kanji-table .components .char,
@@ -445,6 +488,11 @@
   padding-right: 0.5em;
 }
 
+.kanji-table .components .-radical * {
+  background: var(--cell-highlight-bg);
+  color: var(--cell-highlight-fg);
+}
+
 .kanji-table .components .-radical .char {
   border-top-left-radius: 0.5rem;
   border-bottom-left-radius: 0.5rem;
@@ -456,6 +504,7 @@
 }
 
 .kanji-table .components .-baseradical td {
+  color: var(--cell-highlight-fg);
   font-style: italic;
 }
 
@@ -477,6 +526,14 @@
   padding: 2px var(--bg-overhang);
   border-radius: 0.5em;
   justify-content: space-between;
+}
+
+.references .ref.-highlight {
+  background: var(--cell-highlight-bg);
+}
+
+.references .ref.-highlight * {
+  color: var(--cell-highlight-fg);
 }
 
 .references .name,
@@ -502,7 +559,7 @@
 .copy > .keys,
 .copy > .status {
   padding: 5px 8px 5px;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--copy-status-bg);
 }
 
 .copy > .keys kbd {
@@ -587,10 +644,10 @@
 .wordlist .meta {
   margin-top: 8px;
   margin-bottom: 3px;
-  padding: 3px 8px;
+  padding: 3px 14px;
   display: flex;
   align-items: baseline;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--meta-bg);
 }
 
 .wordlist .meta .era,
@@ -600,8 +657,17 @@
   font-size: 22px;
 }
 
+.wordlist .meta .era,
+.wordlist .meta .era * {
+  color: var(--primary-highlight);
+}
+
 .wordlist .meta .era rt {
   font-size: 12px;
+}
+
+.wordlist .meta .seireki {
+  color: var(--reading-highlight);
 }
 
 .wordlist .meta .equals {
@@ -610,92 +676,60 @@
 }
 
 /*
+ * Theme - light
+ */
+
+.window,
+.window.-light {
+  --text-color: #1d1a19;
+  --bg-color: #f6f1f0;
+  --border-color: #706c6b;
+
+  --primary-highlight: #1f66c7;
+  --reading-highlight: #43a047;
+  --conj-color: #1a47a8;
+
+  --tag-border: rgba(0, 0, 0, 0.3);
+
+  --title-fg: var(--text-color);
+  --title-bg: #ddd8d7;
+
+  --reading-label: #1b5e20;
+  --okurigana-color: #fc7600;
+  --cell-highlight-bg: #ede8e6;
+  --cell-highlight-fg: #1d1a19;
+
+  --meta-bg: var(--cell-highlight-bg);
+  --copy-status-bg: var(--cell-highlight-bg);
+}
+
+/*
  * Theme - blue
  */
 
 .window.-blue {
-  color: white;
-}
+  --text-color: white;
+  --bg-color: #446ea0;
+  --border-color: #17588e;
 
-.window.-blue {
-  background: #5c73b8;
-}
+  --primary-highlight: #bcdffe;
+  --reading-highlight: #c0ffc0;
+  --conj-color: #fff394;
 
-.window.-blue .w-kanji {
-  color: #b7e7ff;
-}
+  --tag-border: rgba(255, 255, 255, 0.4);
 
-.window.-blue .kanji-table.-copy .kanji {
-  color: #4c63a8;
-}
+  --title-bg: var(--cell-highlight-bg);
+  --title-fg: var(--text-color);
 
-.window.-blue .w-conj {
-  color: #ffe0a0;
-}
+  --reading-label: #e7ffe7;
+  --okurigana-color: #a8cfef;
+  --cell-highlight-bg: #17588e;
+  --cell-highlight-fg: var(--primary-highlight);
 
-.window.-blue .w-def .tag {
-  border: 1px solid rgba(255, 255, 255, 0.4) !important;
-}
+  --selected-highlight: var(--bg-color);
 
-.window.-blue .title {
-  background: #4c63a8;
-  color: #ffffff;
-}
-
-.window.-blue .kanji-table .kanji {
-  color: #b7e7ff;
-}
-
-/*
- * There's something odd in Firefox where, when you're viewing a text/plain
- * document, the .window.-blue { color: white } rule doesn't inherit into the
- * table so we have to explicitly re-establish the color there.
- */
-.window.-blue .kanji-table .components table {
-  color: white;
-}
-
-.window.-blue .kanji-table .components .-radical * {
-  background: #4c63a8;
-  color: #b7e7ff;
-}
-
-.window.-blue .kanji-table .components .-baseradical td {
-  color: #b7e7ff;
-}
-
-.window.-blue .w-kana,
-.window.-blue .w-romaji {
-  color: #c0ffc0;
-}
-
-.window.-blue .kanji-table .readings {
-  color: #c0ffc0;
-}
-
-.window.-blue .kanji-table .okurigana {
-  color: #a0d0ff;
-}
-
-.window.-blue .kanji-table .nanorilabel {
-  color: #e7ffe7;
-}
-
-.window.-blue .references .ref.-highlight {
-  background: #4c63a8;
-}
-
-.window.-blue .references .ref.-highlight * {
-  color: #b7e7ff;
-}
-
-.window.-blue .meta .era,
-.window.-blue .meta .era * {
-  color: #b7e7ff;
-}
-
-.window.-blue .meta .seireki {
-  color: #c0ffc0;
+  --copy-status-bg: rgba(255, 255, 255, 0.2);
+  --meta-bg: rgba(255, 255, 255, 0.2);
 }
 
 /*
@@ -703,94 +737,32 @@
  */
 
 .window.-black {
-  color: white;
-  border: 1px #777 solid;
+  --text-color: white;
+  --bg-color: #3e3a39;
+  --border-color: #999493;
+
+  --primary-highlight: #65b7fc;
+  --reading-highlight: #a5d6a7;
+  --conj-color: #817470;
+
+  --tag-border: rgba(255, 255, 255, 0.4);
+
+  --title-bg: #1d1a19;
+  --title-fg: #ede8e6;
+
+  --reading-label: #e7ffe7;
+  --okurigana-color: #ede8e6;
+  --cell-highlight-bg: #5d5857;
+  --cell-highlight-fg: #ede8e6;
+
+  --selected-highlight: #2277d9;
+
+  --copy-status-bg: rgba(255, 255, 255, 0.2);
+  --meta-bg: rgba(255, 255, 255, 0.2);
 }
 
-.window.-black {
-  background: #000000;
-}
-
-.window.-black .w-kanji {
-  color: #7070e0;
-}
-
-.window.-black .w-kana,
-.window.-black .w-romaji {
-  color: #20a020;
-}
-
-.window.-black .w-conj {
-  color: #a0a0a0;
-}
-
-.window.-black .w-def .tag {
-  border: 1px solid rgba(255, 255, 255, 0.4) !important;
-}
-
-.window.-black .entry.-selected .w-kanji {
-  color: #7070e0;
-}
-
-.window.-black .title {
-  background: #303030;
-  color: #e0e0e0;
-}
-
-.window.-black .kanji-table .kanji {
-  color: #ffffff;
-}
-
-.window.-black .kanji-table.-copy .kanji {
-  color: #7070e0;
-}
-
-/* See notes in .window.-blue for why this is necessary. */
-.window.-black .kanji-table .components table {
-  color: white;
-}
-
-.window.-black .kanji-table .components .-radical * {
-  background: #505050;
-  color: #e0e0e0;
-}
-
-.window.-black .kanji-table .components .-baseradical td {
-  color: #e0e0e0;
-}
-
-.window.-black .kanji-table .readings {
-  color: #20a020;
-}
-
-.window.-black .kanji-table .okurigana {
-  color: #7070e0;
-}
-
-.window.-black .kanji-table .nanorilabel {
-  color: #e0e0e0;
-}
-
-.window.-black .summary-box > .cell {
-  background: #505050;
-  color: #e0e0e0;
-}
-
-.window.-black .references .ref.-highlight {
-  background: #505050;
-}
-
-.window.-black .references .ref.-highlight * {
-  color: #e0e0e0;
-}
-
-.window.-black .meta .era,
-.window.-black .meta .era * {
-  color: #7070e0;
-}
-
-.window.-black .meta .seireki {
-  color: #20a020;
+.window.-black .kanji-table:not(.-copy) .kanji {
+  text-shadow: rgba(255, 255, 255, 0.2) 1px 1px 4px;
 }
 
 /*
@@ -798,86 +770,28 @@
  */
 
 .window.-lightblue {
-  color: black;
-}
+  --text-color: #1d1a19;
+  --bg-color: #e3f2fe;
+  --border-color: #65b7fc;
 
-.window.-lightblue {
-  background: #e6f4ff;
-}
+  --primary-highlight: #17588e;
+  --reading-highlight: #2e7d32;
+  --conj-color: #817470;
 
-.window.-lightblue .w-kanji {
-  color: #3082bf;
-}
+  --tag-border: rgba(0, 0, 0, 0.3);
 
-.window.-lightblue .w-kana,
-.window.-lightblue .w-romaji {
-  color: #00b366;
-}
+  --title-fg: var(--text-color);
+  --title-bg: #bcdffe;
 
-.window.-lightblue .w-conj {
-  color: #808080;
-}
+  --reading-label: #1b5e20;
+  --okurigana-color: #706c6b;
+  --cell-highlight-bg: #cae6fc;
+  --cell-highlight-fg: var(--primary-highlight);
 
-.window.-lightblue .w-def .tag {
-  border: 1px solid rgba(0, 0, 0, 0.3) !important;
-}
+  --selected-highlight: var(--primary-highlight);
 
-.window.-lightblue .title {
-  background: #bfe4ff;
-  color: #000000;
-}
-
-.window.-lightblue .kanji-table .kanji {
-  color: #000000;
-}
-
-.window.-lightblue .kanji-table.-copy .kanji {
-  color: #003d6b;
-}
-
-/* See notes in .window.-blue for why this is necessary.
-   (Strictly speaking it's not necessary here since we're setting the value to
-   black, but for consistency we do it anyway.) */
-.window.-lightblue .kanji-table .components table {
-  color: black;
-}
-
-.window.-lightblue .kanji-table .components .-radical * {
-  background: #dff1ff;
-  color: #003d6b;
-}
-
-.window.-lightblue .kanji-table .components .-baseradical td {
-  color: #003d6b;
-}
-
-.window.-lightblue .kanji-table .readings {
-  color: #00b366;
-}
-
-.window.-lightblue .kanji-table .okurigana {
-  color: #00868b;
-}
-
-.window.-lightblue .kanji-table .nanorilabel {
-  color: #000000;
-}
-
-.window.-lightblue .references .ref.-highlight {
-  background: #dff1ff;
-}
-
-.window.-lightblue .references .ref.-highlight * {
-  color: #003d6b;
-}
-
-.window.-lightblue .meta .era,
-.window.-lightblue .meta .era * {
-  color: #003d6b;
-}
-
-.window.-lightblue .meta .seireki {
-  color: #00b366;
+  --meta-bg: var(--cell-highlight-bg);
+  --copy-status-bg: var(--cell-highlight-bg);
 }
 
 /*
@@ -885,99 +799,27 @@
  */
 
 .window.-yellow {
-  color: black;
-}
+  --text-color: #1d1a19;
+  --bg-color: #fff8bf;
+  --border-color: #ffd600;
 
-.window.-yellow {
-  color: #111;
-  background: #ffffbf;
-}
+  --primary-highlight: #17588e;
+  --reading-highlight: #2e7d32;
+  --conj-color: #fc7600;
 
-.window.-yellow .w-kanji {
-  color: #7070e0;
-}
+  --tag-border: rgba(0, 0, 0, 0.3);
 
-.window.-yellow .w-kana,
-.window.-yellow .w-romaji {
-  color: #20a020;
-}
+  --title-bg: #fffde5;
+  --title-fg: var(--text-color);
 
-.window.-yellow .w-conj {
-  color: #a0a0a0;
-}
+  --reading-label: #1b5e20;
+  --okurigana-color: #fc7600;
+  --cell-highlight-bg: #fffde5;
+  --cell-highlight-fg: #3e3a39;
 
-.window.-yellow .w-def .tag {
-  border: 1px solid rgba(0, 0, 0, 0.3) !important;
-}
+  --selected-bg: #e3f2fe;
+  --selected-highlight: var(--primary-highlight);
 
-.window.-yellow .entry.-selected {
-  background: #d4edf9;
-}
-
-.window.-yellow .entry.-selected .w-kanji {
-  color: #7070e0;
-}
-
-.window.-yellow .entry.-selected .w-kana,
-.window.-yellow .entry.-selected .w-romaji {
-  color: #20a020;
-}
-
-.window.-yellow .title {
-  background: #f0f0b0;
-  color: #000000;
-}
-
-.window.-yellow .kanji-table .kanji {
-  color: #000000;
-}
-
-.window.-yellow .kanji-table.-copy .kanji {
-  background: #d4edf9;
-  color: #7070e0;
-}
-
-/* See notes in .window.-blue for why this is necessary.
-   (Strictly speaking it's not necessary here since we're setting the value to
-   black, but for consistency we do it anyway.) */
-.window.-yellow .kanji-table .components table {
-  color: black;
-}
-
-.window.-yellow .kanji-table .components .-radical * {
-  background: #ffffe6;
-  color: #000000;
-}
-
-.window.-yellow .kanji-table .components .-baseradical td {
-  color: #000000;
-}
-
-.window.-yellow .kanji-table .readings {
-  color: #20a020;
-}
-
-.window.-yellow .kanji-table .okurigana {
-  color: #cd5c5c;
-}
-
-.window.-yellow .kanji-table .nanorilabel {
-  color: #000000;
-}
-
-.window.-yellow .references .ref.-highlight {
-  background: #ffffe6;
-}
-
-.window.-yellow .references .ref.-highlight * {
-  color: #000000;
-}
-
-.window.-yellow .meta .era,
-.window.-yellow .meta .era * {
-  color: #7070e0;
-}
-
-.window.-yellow .meta .seireki {
-  color: #20a020;
+  --meta-bg: var(--cell-highlight-bg);
+  --copy-status-bg: var(--cell-highlight-bg);
 }

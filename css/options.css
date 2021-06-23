@@ -128,6 +128,20 @@ fieldset {
   min-width: 200px;
 }
 
+.popupstyle-select > label .overlay {
+  display: grid;
+}
+
+.popupstyle-select > label .overlay > * {
+  grid-column: 1 / 2;
+  grid-row: 1 / 1;
+}
+
+.popupstyle-select > label .overlay > :nth-child(2) {
+  -webkit-mask: linear-gradient(-45deg, black 50%, transparent 50%);
+  mask: linear-gradient(-45deg, black 50%, transparent 50%);
+}
+
 .popupstyle-select > input[type='radio']:checked + label {
   border-color: grey;
   background: lightgrey;

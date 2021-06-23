@@ -141,6 +141,9 @@ function getDefaultContainer(doc: Document): HTMLElement {
   container.style.position = 'absolute';
   // asahi.com puts z-index: 1000000 on its banner ads. We go one better.
   container.style.zIndex = '1000001';
+  // Make sure the drop shadow doesn't get cut off
+  container.style.paddingRight = '4px';
+  container.style.paddingBottom = '4px';
 
   // Set initial position
   container.style.top = '5px';
@@ -192,7 +195,14 @@ function resetContainer(
   }
 
   const windowDiv = doc.createElement('div');
-  windowDiv.classList.add('window', `-${popupStyle}`);
+  windowDiv.classList.add('window');
+  if (popupStyle !== 'default') {
+    windowDiv.classList.add(`-${popupStyle}`);
+  } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    // We don't bother registering an event listener for this since the popup is
+    // so short-lived.
+    windowDiv.classList.add('-black');
+  }
   container.shadowRoot!.append(windowDiv);
 
   // Reset the container position so we can consistently measure the size of

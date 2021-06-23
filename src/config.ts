@@ -447,24 +447,30 @@ export class Config {
     browser.storage.sync.set({ keys: this._settings.keys });
   }
 
-  // popupStyle: Defaults to blue
+  // popupStyle: Defaults to 'default'
 
   get popupStyle(): string {
     return typeof this._settings.popupStyle === 'undefined'
-      ? 'blue'
+      ? 'default'
       : this._settings.popupStyle;
   }
 
   set popupStyle(value: string) {
     if (
-      typeof this._settings.popupStyle !== 'undefined' &&
-      this._settings.popupStyle === value
+      (typeof this._settings.popupStyle !== 'undefined' &&
+        this._settings.popupStyle === value) ||
+      (typeof this._settings.popupStyle === 'undefined' && value === 'default')
     ) {
       return;
     }
 
-    this._settings.popupStyle = value;
-    browser.storage.sync.set({ popupStyle: value });
+    if (value !== 'default') {
+      this._settings.popupStyle = value;
+      browser.storage.sync.set({ popupStyle: value });
+    } else {
+      this._settings.popupStyle = undefined;
+      browser.storage.sync.remove('popupStyle');
+    }
   }
 
   // contextMenuEnable: Defaults to true

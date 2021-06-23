@@ -101,10 +101,10 @@ class Config {
     const existingSettings = this._settings.keys || {};
     this._settings.keys = Object.assign({}, existingSettings, keys);
   }
-  // popupStyle: Defaults to blue
+  // popupStyle: Defaults to 'default'
   get popupStyle() {
     return typeof this._settings.popupStyle === 'undefined'
-      ? 'blue'
+      ? 'default'
       : this._settings.popupStyle;
   }
   set popupStyle(value) {
@@ -184,7 +184,7 @@ const config = new Config();
 
 function completeForm() {
   const popupStyleSelect = document.getElementById('popupstyle-select');
-  const themes = ['blue', 'lightblue', 'black', 'yellow'];
+  const themes = ['light', 'blue', 'lightblue', 'black', 'yellow'];
   for (const theme of themes) {
     const input = document.createElement('input');
     input.setAttribute('type', 'radio');

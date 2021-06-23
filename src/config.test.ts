@@ -156,7 +156,7 @@ describe('Config', () => {
       startCopy: ['c'],
     });
     expect(config.contextMenuEnable).toEqual(true);
-    expect(config.popupStyle).toEqual('blue');
+    expect(config.popupStyle).toEqual('default');
     expect(config.noTextHighlight).toEqual(false);
     expect(config.dictLang).toEqual('fr');
     expect(config.showKanjiComponents).toEqual(true);
