@@ -531,7 +531,10 @@ export class ContentHandler {
   ) {
     const textAtPoint = getTextAtPoint(point, ContentHandler.MAX_LENGTH);
 
-    if (this.currentTextAtPoint === textAtPoint && dictMode === 'default') {
+    if (
+      JSON.stringify(this.currentTextAtPoint) === JSON.stringify(textAtPoint) &&
+      dictMode === 'default'
+    ) {
       return;
     }
 
