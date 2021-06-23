@@ -630,7 +630,7 @@
 .wordlist .bonus-name {
   margin-top: 8px;
   margin-bottom: 3px;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--meta-bg);
 }
 
 .wordlist .bonus-name .more {
