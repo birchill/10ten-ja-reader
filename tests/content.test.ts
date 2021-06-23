@@ -3,14 +3,14 @@ import { browser } from './browser-polyfill';
 (window as any).browser = browser;
 
 import { ContentConfig } from '../src/content-config';
-import { RikaiContent } from '../src/content';
+import { ContentHandler } from '../src/content';
 import { ReferenceAbbreviation } from '../src/refs';
 
 mocha.setup('bdd');
 
-describe('rikaiContent:highlighting', () => {
+describe('contentHandler:highlighting', () => {
   let testDiv: HTMLDivElement;
-  let subject: RikaiContent;
+  let subject: ContentHandler;
 
   beforeEach(() => {
     const config: ContentConfig = {
@@ -33,7 +33,7 @@ describe('rikaiContent:highlighting', () => {
       showPriority: true,
       showRomaji: true,
     };
-    subject = new RikaiContent(config);
+    subject = new ContentHandler(config);
 
     testDiv = document.createElement('div');
     testDiv.setAttribute('id', 'test-div');

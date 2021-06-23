@@ -1,6 +1,6 @@
 /*
 
-  Rikaichamp
+  10ten Japanese Reader
   by Brian Birtles
   https://github.com/birtles/rikaichamp
 
@@ -96,7 +96,7 @@ export interface GetTextResult {
   meta?: SelectionMeta;
 }
 
-export class RikaiContent {
+export class ContentHandler {
   // This should be enough for most (but not all) entries for now.
   //
   // See https://github.com/birtles/rikaichamp/issues/319#issuecomment-655545971
@@ -207,7 +207,7 @@ export class RikaiContent {
 
     // Check if any required "hold to show keys" are held. We do this before
     // checking throttling since that can be expensive and when this is
-    // configured, typically the user will have Rikaichamp more-or-less
+    // configured, typically the user will have the extension more-or-less
     // permanently enabled so we don't want to add unnecessary latency to
     // regular mouse events.
     if (!this.areHoldToShowKeysDown(ev)) {
@@ -273,7 +273,7 @@ export class RikaiContent {
       this.mouseSpeeds.push(speed);
       this.mouseSpeedRollingSum += speed;
 
-      if (this.mouseSpeeds.length > RikaiContent.MOUSE_SPEED_SAMPLES) {
+      if (this.mouseSpeeds.length > ContentHandler.MOUSE_SPEED_SAMPLES) {
         this.mouseSpeedRollingSum -= this.mouseSpeeds.shift()!;
       }
 
@@ -283,7 +283,7 @@ export class RikaiContent {
     this.previousMousePosition = { x: ev.pageX, y: ev.pageY };
     this.previousMouseMoveTime = ev.timeStamp;
 
-    return averageSpeed >= RikaiContent.MOUSE_SPEED_THRESHOLD;
+    return averageSpeed >= ContentHandler.MOUSE_SPEED_THRESHOLD;
   }
 
   onMouseDown(ev: MouseEvent) {
@@ -336,7 +336,7 @@ export class RikaiContent {
       ev.stopPropagation();
       ev.preventDefault();
     } else if (textBoxInFocus) {
-      // If we are focussed on a textbox and the keystroke wasn't a rikaichamp
+      // If we are focussed on a textbox and the keystroke wasn't one we handle
       // one, enter typing mode and hide the pop-up.
       if (textBoxInFocus) {
         this.clearHighlight(this.currentTarget);
@@ -377,7 +377,7 @@ export class RikaiContent {
         browser.runtime.sendMessage({ type: 'toggleDefinition' });
       } catch (e) {
         console.log(
-          '[rikaichamp] Failed to call toggleDefinition. The page might need to be refreshed.'
+          '[10ten-ja-reader] Failed to call toggleDefinition. The page might need to be refreshed.'
         );
         return false;
       }
@@ -529,7 +529,7 @@ export class RikaiContent {
     target: Element,
     dictMode: 'default' | 'next'
   ) {
-    const textAtPoint = getTextAtPoint(point, RikaiContent.MAX_LENGTH);
+    const textAtPoint = getTextAtPoint(point, ContentHandler.MAX_LENGTH);
 
     if (this.currentTextAtPoint === textAtPoint && dictMode === 'default') {
       return;
@@ -991,13 +991,15 @@ declare global {
   // however, so for now we try our best to ensure we have the correct version
   // of the script here.
   if (window.readerScriptVer === __VERSION__) {
-    console.log('[rikaichamp] Script is already present. Returning.');
+    console.log('[10ten-ja-reader] Script is already present. Returning.');
     return;
   } else if (
     typeof window.readerScriptVer !== 'undefined' &&
     typeof window.removeReaderScript === 'function'
   ) {
-    console.log('[rikaichamp] Found incompatible version of script. Removing.');
+    console.log(
+      '[10ten-ja-reader] Found incompatible version of script. Removing.'
+    );
     try {
       window.removeReaderScript();
     } catch (e) {
@@ -1005,7 +1007,7 @@ declare global {
     }
   }
 
-  let rikaiContent: RikaiContent | null = null;
+  let contentHandler: ContentHandler | null = null;
 
   // Port to the background page.
   //
@@ -1081,13 +1083,13 @@ declare global {
     tabId?: number;
     config: ContentConfig;
   }) {
-    if (rikaiContent) {
-      rikaiContent.setConfig(config);
+    if (contentHandler) {
+      contentHandler.setConfig(config);
     } else {
       // When the extension is upgraded, we can still have the old popup
       // window hanging around so make sure to clear it.
       removePopup();
-      rikaiContent = new RikaiContent(config);
+      contentHandler = new ContentHandler(config);
     }
 
     // If we are running in "activeTab" mode we will get passed our tab ID
@@ -1106,9 +1108,9 @@ declare global {
   }
 
   function disable() {
-    if (rikaiContent) {
-      rikaiContent.detach();
-      rikaiContent = null;
+    if (contentHandler) {
+      contentHandler.detach();
+      contentHandler = null;
     }
 
     if (port) {
@@ -1129,4 +1131,4 @@ declare global {
   }
 })();
 
-export default RikaiContent;
+export default ContentHandler;

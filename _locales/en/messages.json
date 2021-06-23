@@ -4,11 +4,11 @@
     "description": "Tooltip for toolbar button when checking for updates."
   },
   "command_toggle_description": {
-    "message": "Toggle Rikaichamp on/off",
-    "description": "Tooltip for toolbar button to turn Rikaichamp on or off"
+    "message": "Toggle 10ten reader on/off",
+    "description": "Tooltip for toolbar button to turn the extension on or off"
   },
   "command_toggle_disabled": {
-    "message": "Rikaichamp disabled",
+    "message": "10ten reader disabled",
     "description": "Tooltip for toolbar button when disabled."
   },
   "command_toggle_downloading": {
@@ -16,11 +16,11 @@
     "description": "Tooltip for toolbar button when downloading updates."
   },
   "command_toggle_enabled": {
-    "message": "Rikaichamp enabled",
+    "message": "10ten reader enabled",
     "description": "Tooltip for toolbar button when enabled."
   },
   "command_toggle_loading": {
-    "message": "Rikaichamp loading...",
+    "message": "10ten reader loading...",
     "description": "Tooltip for toolbar button when loading."
   },
   "command_toggle_update_error": {
@@ -1066,7 +1066,7 @@
     "description": "The BCP-47 compatible language code used to tag content from this localization"
   },
   "menu_enable_extension": {
-    "message": "Enable Rikaichamp",
+    "message": "Enable 10ten reader",
     "description": "Context menu item to enable the extension."
   },
   "misc_label_abbr": {
@@ -1434,10 +1434,10 @@
   },
   "options_hold_to_show_keys_description": {
     "message": "Hold to show popup",
-    "description": "Typically Rikaichamp shows the popup whenever it is active, but if these keys are configured the popup while only show while they are held down"
+    "description": "Typically we show the popup whenever it is active, but if these keys are configured the popup will only show while they are held down"
   },
   "options_hold_to_show_keys_explanation": {
-    "message": "The popup will only be shown while these keys are held down. If no keys are selected, the popup will be displayed whenever Rikaichamp is enabled.",
+    "message": "The popup will only be shown while these keys are held down. If no keys are selected, the popup will be displayed whenever 10ten reader is enabled.",
     "description": "This is supplementary explanation to options_hold_to_show_keys_explanation"
   },
   "options_kanji_components": {
@@ -1573,7 +1573,7 @@
     "description": "Label for hiding part-of-speech labels"
   },
   "options_show_context_menu_item": {
-    "message": "Show “Enable Rikaichamp” in context menu",
+    "message": "Show “Enable 10ten reader” in context menu",
     "description": "Option to enable context menu item with label `menu_enable_extension`"
   },
   "options_show_definitions": {

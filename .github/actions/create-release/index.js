@@ -35,7 +35,7 @@ async function main() {
     owner,
     repo,
     release_id: release.data.id,
-    name: `rikaichamp-${version}-firefox.zip`,
+    name: `10ten-ja-reader-${version}-firefox.zip`,
     data: fs.readFileSync(firefoxPackagePath),
   });
 
@@ -50,7 +50,7 @@ async function main() {
     owner,
     repo,
     release_id: release.data.id,
-    name: `rikaichamp-${version}-chrome.zip`,
+    name: `10ten-ja-reader-${version}-chrome.zip`,
     data: fs.readFileSync(chromePackagePath),
   });
 
@@ -61,14 +61,14 @@ async function main() {
     owner,
     repo,
     release_id: release.data.id,
-    name: `rikaichamp-${version}-edge.zip`,
+    name: `10ten-ja-reader-${version}-edge.zip`,
     data: fs.readFileSync(edgePackagePath),
   });
 
   // Upload raw source files
   for (const file of fs.readdirSync(path.join(root, 'dist-firefox'))) {
     // Too lazy to import @actions/glob...
-    if (!file.startsWith('rikaichamp-') || !file.endsWith('.js')) {
+    if (!file.startsWith('10ten-ja-') || !file.endsWith('.js')) {
       continue;
     }
 

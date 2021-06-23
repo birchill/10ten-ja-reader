@@ -4,11 +4,11 @@
     "description": "Tooltip for toolbar button when checking for updates."
   },
   "command_toggle_description": {
-    "message": "启用或关闭 Rikaichamp",
-    "description": "Tooltip for toolbar button to turn Rikaichamp on or off"
+    "message": "启用或关闭 10ten reader",
+    "description": "Tooltip for toolbar button to turn 10ten reader on or off"
   },
   "command_toggle_disabled": {
-    "message": "Rikaichamp 已关闭",
+    "message": "10ten reader 已关闭",
     "description": "Tooltip for toolbar button when disabled."
   },
   "command_toggle_downloading": {
@@ -16,11 +16,11 @@
     "description": "Tooltip for toolbar button when downloading updates."
   },
   "command_toggle_enabled": {
-    "message": "Rikaichamp 已启用",
+    "message": "10ten reader 已启用",
     "description": "Tooltip for toolbar button when enabled."
   },
   "command_toggle_loading": {
-    "message": "Rikaichamp 载入中……",
+    "message": "10ten reader 载入中……",
     "description": "Tooltip for toolbar button when loading."
   },
   "command_toggle_update_error": {
@@ -1066,7 +1066,7 @@
     "description": "The BCP-47 compatible language code used to tag content from this localization"
   },
   "menu_enable_extension": {
-    "message": "启用 Rikaichamp",
+    "message": "启用 10ten reader",
     "description": "Context menu item to enable the extension."
   },
   "misc_label_abbr": {
@@ -1418,7 +1418,7 @@
     }
   },
   "options_edrdg_license": {
-    "message": "这些资料的所有权属于电子词典研究与开发小组（Electronic Dictionary Research and Development Group），Rikaichamp 在 EDRDG 的许可协议的约束下使用它们。",
+    "message": "这些资料的所有权属于电子词典研究与开发小组（Electronic Dictionary Research and Development Group），10ten reader 在 EDRDG 的许可协议的约束下使用它们。",
     "description": "Description of license terms. The keywords 'Electronic Dictionary Research and Development Group' and options_edrdg_license_keyword must appear so they can be linkified. IT SHOULD BEGIN WITH APPROPRIATE SPACE IN LANGUAGES THAT SEPARATE SENTENCES WITH WHITESPACE."
   },
   "options_edrdg_license_keyword": {
@@ -1434,10 +1434,10 @@
   },
   "options_hold_to_show_keys_description": {
     "message": "仅按键时显示窗口",
-    "description": "Typically Rikaichamp shows the popup whenever it is active, but if these keys are configured the popup while only show while they are held down"
+    "description": "Typically we show the popup whenever it is active, but if these keys are configured the popup will only show while they are held down"
   },
   "options_hold_to_show_keys_explanation": {
-    "message": "在这里选择按键，按住这些按键时划词，才会显示 Rikaichamp 窗口。如果不选择任何按键，只要在 Rikaichamp 已启用时划词，就会显示窗口。",
+    "message": "在这里选择按键，按住这些按键时划词，才会显示 10ten reader 窗口。如果不选择任何按键，只要在 10ten reader 已启用时划词，就会显示窗口。",
     "description": "This is supplementary explanation to options_hold_to_show_keys_explanation"
   },
   "options_kanji_components": {
@@ -1521,7 +1521,7 @@
     "description": "Label when the database has not yet been downloaded"
   },
   "options_offline_explanation": {
-    "message": "无法检查更新，因为没有连接到互联网。一旦设备联网，Rikaichamp 会再次检查更新。",
+    "message": "无法检查更新，因为没有连接到互联网。一旦设备联网，10ten reader 会再次检查更新。",
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
   "options_popup_copy_entry": {
@@ -1573,7 +1573,7 @@
     "description": "Label for hiding part-of-speech labels"
   },
   "options_show_context_menu_item": {
-    "message": "右键菜单中添加“启用 Rikaichamp”",
+    "message": "右键菜单中添加“启用 10ten reader”",
     "description": "Option to enable context menu item with label `menu_enable_extension`"
   },
   "options_show_definitions": {

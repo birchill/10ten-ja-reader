@@ -25,17 +25,17 @@ try {
     process.exit(1);
   }
 
-  const firefoxPackageName = `rikaichamp_japanese_dictionary-${major}.${minor}.${patch}${
+  const firefoxPackageName = `10ten_japanese_reader_rikaichamp_-${major}.${minor}.${patch}${
     pre || ''
   }.zip`;
   console.log(`Firefox package name: ${firefoxPackageName}`);
   core.setOutput('firefox_package_name', firefoxPackageName);
 
-  const chromePackageName = `rikaichamp_japanese_dictionary-${major}.${minor}.${patch}.zip`;
+  const chromePackageName = `10ten_japanese_reader_rikaichamp_-${major}.${minor}.${patch}.zip`;
   console.log(`Chrome package name: ${chromePackageName}`);
   core.setOutput('chrome_package_name', chromePackageName);
 
-  const edgePackageName = `rikaichamp_japanese_dictionary-${major}.${minor}.${patch}.zip`;
+  const edgePackageName = `10ten_japanese_reader_rikaichamp_-${major}.${minor}.${patch}.zip`;
   console.log(`Edge package name: ${edgePackageName}`);
   core.setOutput('edge_package_name', edgePackageName);
 

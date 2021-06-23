@@ -1,9 +1,9 @@
-# Rikaichamp!
+# 10ten Japanese Reader
 
 ![](https://github.com/birtles/rikaichamp/workflows/Automated%20tests/badge.svg)
 ![Twitter Follow](https://img.shields.io/twitter/follow/rikaichamp)
 
-A browser extension to look up Japanese words with the hover of a mouse.
+Hi fellow Japanese reader! Formerly known as Rikaichamp, this is browser extension lets you look up Japanese words with the hover of a mouse or tap of a screen.
 
 ## Table of Contents
 
@@ -88,13 +88,13 @@ Forked from Rikaikun in 2017 it includes:
 
 ## Usage
 
-By default, you can enable Rikaichamp by either:
+By default, you can enable the 10ten Japanese Reader by either:
 
 - Pressing the toolbar button (you may need to add it to the browser toolbar yourself in some browsers)
 - Pressing <kbd>Alt</kbd>+<kbd>R</kbd>
 - Choosing to enable it from the context menu
 
-Alternatively, a lot of users find it helpful to have Rikaichamp permanently
+Alternatively, a lot of users find it helpful to have the extension permanently
 enabled but configured to only show the pop-up when either <kbd>Alt</kbd> or
 <kbd>Ctrl</kbd> is pressed.
 

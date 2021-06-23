@@ -114,8 +114,8 @@ export const DEFAULT_KEY_SETTINGS: KeySetting[] = [
   },
 ];
 
-// The following references were added to Rikaichamp in a later version and so
-// we turn them off by default to avoid overwhelming users with too many
+// The following references were added to this extension in a later version and
+// so we turn them off by default to avoid overwhelming users with too many
 // references.
 const OFF_BY_DEFAULT_REFERENCES: Set<ReferenceAbbreviation> = new Set([
   'busy_people',

@@ -199,7 +199,7 @@ function completeForm() {
     label.setAttribute('for', `popupstyle-${theme}`);
     popupStyleSelect.appendChild(label);
     const popupPreview = document.createElement('div');
-    popupPreview.setAttribute('id', 'rikaichamp-window');
+    popupPreview.setAttribute('id', 'tenten-ja-window');
     popupPreview.classList.add('popup-preview');
     popupPreview.classList.add(`-${theme}`);
     label.appendChild(popupPreview);

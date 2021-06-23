@@ -4,19 +4,17 @@ import { browser } from 'webextension-polyfill-ts';
 import { JpdictStateWithFallback } from './jpdict';
 
 interface BrowserActionState {
-  popupStyle: string;
   enabled: boolean;
   jpdictState: JpdictStateWithFallback;
   tabId: number | undefined;
 }
 
 export function updateBrowserAction({
-  popupStyle,
   enabled,
   jpdictState,
   tabId,
 }: BrowserActionState) {
-  let iconFilename = 'disabled';
+  let iconFilename = '10ten-disabled';
   let titleStringId = 'command_toggle_disabled';
 
   // First choose the base icon type / text
@@ -25,13 +23,12 @@ export function updateBrowserAction({
     const fallbackWords = jpdictState.words.fallbackState;
 
     if (jpdictWords === DataSeriesState.Ok || fallbackWords === 'ok') {
-      iconFilename = popupStyle;
+      iconFilename = '10ten';
       titleStringId = 'command_toggle_enabled';
     } else if (
       jpdictWords === DataSeriesState.Initializing ||
       fallbackWords === 'loading'
     ) {
-      iconFilename = 'loading';
       titleStringId = 'command_toggle_loading';
     } else if (fallbackWords === 'unloaded') {
       // If we get this far, we've either failed to load the jpdict database or
@@ -41,10 +38,10 @@ export function updateBrowserAction({
       // However, we won't load the fallback database until the user actually
       // tries to look something up so we don't know if it's available yet or
       // not. For now, assume everything is ok.
-      iconFilename = popupStyle;
+      iconFilename = '10ten';
       titleStringId = 'command_toggle_enabled';
     } else {
-      iconFilename = 'error';
+      iconFilename = '10ten-error';
       titleStringId = 'error_loading_dictionary';
     }
   }
@@ -60,8 +57,8 @@ export function updateBrowserAction({
 
     case 'downloading':
     case 'updatingdb':
-      // We only have progress variants for the Ok, disabled, and loading styles.
-      if ([popupStyle, 'disabled', 'loading'].includes(iconFilename)) {
+      // We only have progress variants for the regular and disabled styles.
+      if (['10ten', '10ten-disabled'].includes(iconFilename)) {
         iconFilename +=
           '-' + Math.round(jpdictState.updateState.progress * 5) * 20;
       }
@@ -75,7 +72,7 @@ export function updateBrowserAction({
   // Set the icon
   browser.browserAction
     .setIcon({
-      path: `images/rikaichamp-${iconFilename}.svg`,
+      path: `images/${iconFilename}.svg`,
       tabId,
     })
     .catch(() => {
@@ -88,9 +85,9 @@ export function updateBrowserAction({
       }
       browser.browserAction.setIcon({
         path: {
-          16: `images/rikaichamp-${iconFilename}-16.png`,
-          32: `images/rikaichamp-${iconFilename}-32.png`,
-          48: `images/rikaichamp-${iconFilename}-48.png`,
+          16: `images/${iconFilename}-16.png`,
+          32: `images/${iconFilename}-32.png`,
+          48: `images/${iconFilename}-48.png`,
         },
         tabId,
       });
@@ -111,7 +108,10 @@ export function updateBrowserAction({
     jpdictState.updateError.name !== 'QuotaExceededError'
   ) {
     browser.browserAction.setBadgeText({ text: '!', tabId });
-    browser.browserAction.setBadgeBackgroundColor({ color: 'yellow', tabId });
+    browser.browserAction.setBadgeBackgroundColor({
+      color: 'yellow',
+      tabId,
+    });
     titleStringId = 'command_toggle_update_error';
   } else {
     browser.browserAction.setBadgeText({ text: '', tabId });

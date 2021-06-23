@@ -4,11 +4,11 @@ outputs:
   version:
     description: 'The package version'
   edge_package_name:
-    description: 'The name of the Edge package, e.g. rikaichamp-0.1.0.zip'
+    description: 'The name of the Edge package, e.g. 10ten-ja-reader-0.1.0.zip'
   firefox_package_name:
-    description: 'The name of the Firefox package, e.g. rikaichamp-0.1.0pre5.zip'
+    description: 'The name of the Firefox package, e.g. 10ten-ja-reader-0.1.0pre5.zip'
   chrome_package_name:
-    description: 'The name of the Chrome package, e.g. rikaichamp-0.1.0.zip'
+    description: 'The name of the Chrome package, e.g. 10ten-ja-reader-0.1.0.zip'
   prerelease:
     description: 'Whether or not this version is a pre-release version'
 runs:

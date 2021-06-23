@@ -81,10 +81,10 @@ const commonExtConfig = {
   // that get pruned.
   mode: 'production',
   entry: {
-    'rikaichamp-content': './src/content.ts',
-    'rikaichamp-background': './src/background.ts',
-    'rikaichamp-options': './src/options.ts',
-    'rikaichamp-jpdict': './src/jpdict-worker.ts',
+    '10ten-ja-content': './src/content.ts',
+    '10ten-ja-background': './src/background.ts',
+    '10ten-ja-options': './src/options.ts',
+    '10ten-ja-jpdict': './src/jpdict-worker.ts',
   },
   optimization: {
     minimizer: [
@@ -143,7 +143,6 @@ if (process.env.RELEASE_BUILD && process.env.BUGSNAG_API_KEY) {
 
 const chromeConfig = buildExtConfig({
   distFolder: 'dist-chrome',
-  includeChromeWebStoreIcons: true,
   needsClipboardWrite: false,
   supportsChromeStyle: true,
   supportsMatchAboutBlank: true,
@@ -152,7 +151,6 @@ const chromeConfig = buildExtConfig({
 
 const edgeConfig = buildExtConfig({
   distFolder: 'dist-edge',
-  includeChromeWebStoreIcons: true,
   needsClipboardWrite: false,
   supportsMatchAboutBlank: true,
   target: 'chromium',
@@ -175,7 +173,6 @@ module.exports = (env) => {
 function buildExtConfig({
   activeTabOnly = false,
   distFolder,
-  includeChromeWebStoreIcons = false,
   needsClipboardWrite = true,
   supportsAlphaVersion = false,
   supportsApplicationsField = false,
@@ -257,12 +254,6 @@ function buildExtConfig({
     'data/*',
     '_locales/**/*',
   ];
-
-  if (includeChromeWebStoreIcons) {
-    // Specifying a folder here means the icons will be placed directly in the
-    // root folder.
-    copyPatterns.push('icons');
-  }
 
   plugins.push(new CopyWebpackPlugin({ patterns: copyPatterns }));
 

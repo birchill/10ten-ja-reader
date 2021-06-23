@@ -234,7 +234,7 @@ export default class ActiveTabManager implements TabManager {
     // Inject the script
     await browser.tabs.executeScript(tabId, {
       allFrames: typeof frameId === 'undefined',
-      file: '/rikaichamp-content.js',
+      file: '/10ten-ja-content.js',
       runAt: 'document_start',
       frameId,
     });

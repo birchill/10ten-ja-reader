@@ -9,7 +9,7 @@ async function main() {
   await ensureDir(DEST_DIR);
 
   const versionString = getPackageVersion();
-  const zipFilename = `rikaichamp-${versionString}-src.zip`;
+  const zipFilename = `10ten-ja-reader-${versionString}-src.zip`;
   console.log(`Writing to ${zipFilename}...`);
 
   const zipPath = path.join(DEST_DIR, zipFilename);

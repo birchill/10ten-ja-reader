@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Rikaichamp Japanese dictionary",
+  "name": "10ten Japanese Reader (Rikaichamp)",
   "author": "Brian Birtles",
   "version": "0.5.14",
   /*#if supports_applications_field*/
@@ -18,17 +18,19 @@
   /*#endif*/
   /*#if supports_svg_icons*/
   "icons": {
-    "16": "images/rikaichamp-blue.svg",
-    "48": "images/rikaichamp-blue.svg",
-    "96": "images/rikaichamp-blue.svg",
-    "128": "images/rikaichamp-blue.svg"
+    "16": "images/10ten-ja-reader.svg",
+    "32": "images/10ten-ja-reader.svg",
+    "48": "images/10ten-ja-reader.svg",
+    "96": "images/10ten-ja-reader.svg",
+    "128": "images/10ten-ja-reader.svg"
   },
   /*#else*/
   "icons": {
-    "16": "images/rikaichamp-blue-16.png",
-    "48": "images/rikaichamp-blue-48.png",
-    "96": "images/rikaichamp-blue-96.png",
-    "128": "images/rikaichamp-blue-128.png"
+    "16": "images/10ten-ja-reader-16.png",
+    "32": "images/10ten-ja-reader-32.png",
+    "48": "images/10ten-ja-reader-48.png",
+    "96": "images/10ten-ja-reader-96.png",
+    "128": "images/10ten-ja-reader-128.png"
   },
   /*#endif*/
   "permissions": [
@@ -46,19 +48,19 @@
     /*#if use_event_page */
     "persistent": false,
     /*#endif*/
-    "scripts": ["rikaichamp-background.js"]
+    "scripts": ["10ten-ja-background.js"]
   },
   "browser_action": {
     /*#if supports_browser_style*/
     "browser_style": false,
     /*#endif*/
     /*#if supports_svg_icons*/
-    "default_icon": "images/rikaichamp-disabled.svg",
+    "default_icon": "images/10ten-disabled.svg",
     /*#else*/
     "default_icon": {
-      "16": "images/rikaichamp-disabled-16.png",
-      "32": "images/rikaichamp-disabled-32.png",
-      "48": "images/rikaichamp-disabled-48.png"
+      "16": "images/10ten-disabled-16.png",
+      "32": "images/10ten-disabled-32.png",
+      "48": "images/10ten-disabled-48.png"
     },
     /*#endif*/
     "default_title": "__MSG_command_toggle_disabled__"
@@ -79,7 +81,7 @@
       /*#if supports_match_about_blank*/
       "match_about_blank": true,
       /*#endif*/
-      "js": ["rikaichamp-content.js"],
+      "js": ["10ten-ja-content.js"],
       "all_frames": true,
       "run_at": "document_start"
     }

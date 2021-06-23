@@ -4,11 +4,11 @@
     "description": "Tooltip for toolbar button when checking for updates."
   },
   "command_toggle_description": {
-    "message": "Rikaichampオン・オフを切り替える",
-    "description": "Explanation of toolbar button to turn Rikaichamp on or off"
+    "message": "10ten readerオン・オフを切り替える",
+    "description": "Explanation of toolbar button to turn 10ten reader on or off"
   },
   "command_toggle_disabled": {
-    "message": "Rikaichamp オフ",
+    "message": "10ten reader オフ",
     "description": "Tooltip for toolbar button when disabled."
   },
   "command_toggle_downloading": {
@@ -16,11 +16,11 @@
     "description": "Tooltip for toolbar button when downloading updates."
   },
   "command_toggle_enabled": {
-    "message": "Rikaichamp オン",
+    "message": "10ten reader オン",
     "description": "Tooltip for toolbar button when enabled."
   },
   "command_toggle_loading": {
-    "message": "Rikaichamp ロード中...",
+    "message": "10ten reader ロード中...",
     "description": "Tooltip for toolbar button when loading."
   },
   "command_toggle_update_error": {
@@ -1069,7 +1069,7 @@
     "description": "The BCP-47 compatible language code used to tag content from this localization"
   },
   "menu_enable_extension": {
-    "message": "Rikaichampを有効にする",
+    "message": "10ten readerを有効にする",
     "description": "Context menu item to enable the extension."
   },
   "misc_label_abbr": {
@@ -1437,7 +1437,7 @@
   },
   "options_hold_to_show_keys_description": {
     "message": "押しながらポップアップを表示する",
-    "description": "Typically Rikaichamp shows the popup whenever it is active, but if these keys are configured the popup while only show while they are held down"
+    "description": "Typically we show the popup whenever it is active, but if these keys are configured the popup will only show while they are held down"
   },
   "options_hold_to_show_keys_explanation": {
     "message": "ボタンを押しながら、マウスをテキストに合わせるとポップアップが表示されます。ボタンが選択されていない場合、ポップアップが常に表示されます。",
@@ -1576,7 +1576,7 @@
     "description": "Label for hiding part-of-speech labels"
   },
   "options_show_context_menu_item": {
-    "message": "コンテキストメニューに「Rikaichampを有効にする」を表示",
+    "message": "コンテキストメニューに「10ten readerを有効にする」を表示",
     "description": "Option to enable context menu item with label `menu_enable_extension`"
   },
   "options_show_definitions": {

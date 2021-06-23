@@ -1,12 +1,12 @@
 import { browser } from './browser-polyfill';
 (window as any).browser = browser;
 
-import { RikaiContent } from '../src/content';
+import { ContentHandler } from '../src/content';
 
 declare global {
   interface Window {
-    RikaiContent: any;
+    ContentHandler: any;
   }
 }
 
-window.RikaiContent = RikaiContent;
+window.ContentHandler = ContentHandler;

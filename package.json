@@ -1,5 +1,5 @@
 {
-  "name": "rikaichamp",
+  "name": "10ten-ja-reader",
   "version": "0.5.14",
   "description": "Translate Japanese by hovering over words.",
   "scripts": {
@@ -29,6 +29,7 @@
     "url": "git+https://github.com/birtles/rikaichamp.git"
   },
   "keywords": [
+    "rikaichamp",
     "rikaichan",
     "rikaikun",
     "japanese",

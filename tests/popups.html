@@ -27,7 +27,7 @@
     showPriority: true,
     showRomaji: false,
   };
-  const rikaiContent = new RikaiContent(config);
+  const contentHandler = new ContentHandler(config);
 </script>
 <body>
   <div id="container"></div>
@@ -43,7 +43,7 @@
       label.append(toTitle(`${test.description}:`));
       container.append(label);
 
-      rikaiContent._renderPopup(test.queryResult, {
+      contentHandler._renderPopup(test.queryResult, {
         ...config,
         container: createPopupContainer(),
         dictLang: test.description.indexOf('language') !== -1 ? 'fr' : undefined,
@@ -91,7 +91,7 @@
         label.append(`Theme: ${theme}`);
         container.append(label);
 
-        const popup = rikaiContent._renderPopup(nameTagTest, {
+        const popup = contentHandler._renderPopup(nameTagTest, {
           ...config,
           container: createPopupContainer(),
           popupStyle: theme,
@@ -253,7 +253,7 @@
         label.append(`Theme: ${theme}`);
         container.append(label);
 
-        const popup = rikaiContent._renderPopup(test.queryResult, {
+        const popup = contentHandler._renderPopup(test.queryResult, {
           ...config,
           container: createPopupContainer(),
           copyIndex: 1,
@@ -345,7 +345,7 @@
         label.append(`Theme: ${theme}`);
         container.append(label);
 
-        rikaiContent._renderPopup(yearQueryResult, {
+        contentHandler._renderPopup(yearQueryResult, {
           ...test.config,
           container: createPopupContainer(),
           popupStyle: theme,

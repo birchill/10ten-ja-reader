@@ -101,7 +101,9 @@ export function renderPopup(
 
 function getDefaultContainer(doc: Document): HTMLElement {
   // Look for an existing container
-  const existingContainers = doc.querySelectorAll('#rikaichamp-window');
+  const existingContainers = doc.querySelectorAll(
+    '#rikaichamp-window, #tenten-ja-window'
+  );
   if (existingContainers.length) {
     // Drop any duplicate containers
     while (existingContainers.length > 1) {
@@ -126,7 +128,7 @@ function getDefaultContainer(doc: Document): HTMLElement {
 
   // Actually create the container element
   const container = doc.createElement('div');
-  container.id = 'rikaichamp-window';
+  container.id = 'tenten-ja-window';
   parent.append(container);
 
   // Apply minimal container styles
@@ -214,7 +216,7 @@ function getStyleHash(): string {
 }
 
 export function isPopupVisible(): boolean {
-  const popup = document.getElementById('rikaichamp-window');
+  const popup = document.getElementById('tenten-ja-window');
   if (!popup || !popup.shadowRoot) {
     return false;
   }
@@ -224,7 +226,7 @@ export function isPopupVisible(): boolean {
 }
 
 export function hidePopup() {
-  const popup = document.getElementById('rikaichamp-window');
+  const popup = document.getElementById('tenten-ja-window');
   if (!popup || !popup.shadowRoot) {
     return;
   }
@@ -236,7 +238,7 @@ export function hidePopup() {
 }
 
 export function removePopup() {
-  let popup = document.getElementById('rikaichamp-window');
+  let popup = document.querySelector('#rikaichamp-window, #tenten-ja-window');
   while (popup) {
     // If we are in an SVG document, remove the wrapping <foreignObject>.
     if (isForeignObjectElement(popup.parentElement)) {
@@ -244,12 +246,12 @@ export function removePopup() {
     } else {
       popup.remove();
     }
-    popup = document.getElementById('rikaichamp-window');
+    popup = document.querySelector('#rikaichamp-window, #tenten-ja-window');
   }
 }
 
 export function setPopupStyle(style: string) {
-  const popup = document.getElementById('rikaichamp-window');
+  const popup = document.getElementById('tenten-ja-window');
   if (!popup || !popup.shadowRoot) {
     return;
   }

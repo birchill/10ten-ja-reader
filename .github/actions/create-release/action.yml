@@ -1,5 +1,5 @@
 name: 'Create release'
-description: 'Creates a Rikaichamp release'
+description: 'Creates a 10ten Japanese Reader release'
 inputs:
   edge_package_name:
     description: The filename of the Edge package within the dist-edge-package folder

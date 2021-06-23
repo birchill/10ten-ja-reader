@@ -126,7 +126,7 @@ async function doQuery(
     searchResult = await browser.runtime.sendMessage(message);
   } catch (e) {
     console.error(
-      '[rikaichamp] Failed to call query. The page might need to be refreshed.',
+      '[10ten-ja-reader] Failed to call query. The page might need to be refreshed.',
       e
     );
     searchResult = null;

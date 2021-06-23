@@ -28,19 +28,19 @@
   margin-bottom: 0;
 }
 
-#rikaichamp_options,
-#rikaichamp_options td {
+#tenten-ja-options,
+#tenten-ja-options td {
   padding: 0 10px;
   font-family: sans-serif;
   font-size: 10pt;
 }
 
-#rikaichamp_options a {
+#tenten-ja-options a {
   color: #0996f8;
   text-decoration-style: dotted;
 }
 
-#rikaichamp_options a:visited {
+#tenten-ja-options a:visited {
   color: #0996f8;
 }
 
@@ -51,7 +51,7 @@
  * In general we don't want these buttons to wrap, but if they do we should make
  * them look nice.
  */
-#rikaichamp_options button.browser-style {
+#tenten-ja-options button.browser-style {
   /* Don't wrap buttons */
   white-space: nowrap;
   /* If they do wrap, however, make them look nice */

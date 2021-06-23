@@ -1,6 +1,6 @@
 /*
 
-  Rikaichamp
+  10ten Japanese Reader
   by Brian Birtles
   https://github.com/birtles/rikaichamp
 
@@ -104,12 +104,7 @@ tabManager.addListener(async (enabled: boolean, tabId: number | undefined) => {
   }
 
   // Update browser action
-  updateBrowserAction({
-    popupStyle: config.popupStyle,
-    enabled,
-    jpdictState,
-    tabId,
-  });
+  updateBrowserAction({ enabled, jpdictState, tabId });
 
   // Update context menu
   try {
@@ -269,7 +264,6 @@ async function onDbStatusUpdated(state: JpdictStateWithFallback) {
   const enabledStates = await tabManager.getEnabledState();
   for (const tabState of enabledStates) {
     updateBrowserAction({
-      popupStyle: config.popupStyle,
       enabled: tabState.enabled,
       jpdictState: state,
       tabId: tabState.tabId,
