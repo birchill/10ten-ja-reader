@@ -440,7 +440,8 @@ export async function searchKanji(
 
   if (
     dbState.kanji.state !== DataSeriesState.Ok ||
-    dbState.radicals.state !== DataSeriesState.Ok
+    dbState.radicals.state !== DataSeriesState.Ok ||
+    dbState.updateState.state !== 'idle'
   ) {
     return null;
   }
