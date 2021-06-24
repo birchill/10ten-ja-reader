@@ -994,7 +994,6 @@ declare global {
   // however, so for now we try our best to ensure we have the correct version
   // of the script here.
   if (window.readerScriptVer === __VERSION__) {
-    console.log('[10ten-ja-reader] Script is already present. Returning.');
     return;
   } else if (
     typeof window.readerScriptVer !== 'undefined' &&
