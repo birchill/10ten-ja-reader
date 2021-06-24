@@ -75,6 +75,7 @@ import {
   setPopupStyle,
 } from './popup';
 import { getPopupPosition, PopupPositionMode } from './popup-position';
+import { removePuck, RikaiPuck } from './puck';
 import { query, QueryResult } from './query';
 import { isForeignObjectElement, isSvgDoc, isSvgSvgElement } from './svg';
 import { stripFields } from './strip-fields';
@@ -1401,6 +1402,7 @@ declare global {
   }
 
   let contentHandler: ContentHandler | null = null;
+  let puck: RikaiPuck | null = null;
 
   // Port to the background page.
   //
@@ -1413,6 +1415,8 @@ declare global {
   //   tab when the background page is running as an event page.
   //
   let port: Browser.Runtime.Port | undefined;
+
+  let theme = 'default';
 
   window.readerScriptVer = __VERSION__;
   window.removeReaderScript = () => {
@@ -1447,9 +1451,15 @@ declare global {
           'No config object provided with enable message'
         );
 
+        let puckThemeNeedsUpdate = false;
+        if ((request.config as ContentConfig).popupStyle !== theme) {
+          theme = (request.config as ContentConfig).popupStyle;
+          puckThemeNeedsUpdate = true;
+        }
+
         const tabId: number | undefined =
           typeof request.id === 'number' ? request.id : undefined;
-        enable({ tabId, config: request.config as ContentConfig });
+        enable({ tabId, config: request.config as ContentConfig, puckThemeNeedsUpdate });
 
         return 'ok';
 
@@ -1463,9 +1473,11 @@ declare global {
   function enable({
     tabId,
     config,
+    puckThemeNeedsUpdate,
   }: {
     tabId?: number;
     config: ContentConfig;
+    puckThemeNeedsUpdate: boolean;
   }) {
     if (contentHandler) {
       contentHandler.setConfig(config);
@@ -1474,6 +1486,19 @@ declare global {
       // window hanging around so make sure to clear it.
       removePopup();
       contentHandler = new ContentHandler(config);
+    }
+
+    if (puck) {
+      if (puckThemeNeedsUpdate) {
+        puck.setTheme(theme);
+      }
+    } else {
+      // When the extension is upgraded, we can still have the old puck
+      // container hanging around so make sure to clear it.
+      removePuck();
+      puck = new RikaiPuck();
+      puck.render({ doc: document, theme });
+      puck.enable();
     }
 
     // If we are running in "activeTab" mode we will get passed our tab ID
@@ -1499,6 +1524,11 @@ declare global {
     if (contentHandler) {
       contentHandler.detach();
       contentHandler = null;
+    }
+
+    if (puck) {
+      puck.unmount();
+      puck = null;
     }
 
     if (port) {
