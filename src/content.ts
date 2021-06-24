@@ -74,6 +74,7 @@ import {
   setPopupStyle,
 } from './popup';
 import { getPopupPosition, PopupPositionMode } from './popup-position';
+import { RikaiPuck } from './puck';
 import { query, QueryResult } from './query';
 import { isForeignObjectElement, isSvgDoc, isSvgSvgElement } from './svg';
 import { hasReasonableTimerResolution } from './timer-precision';
@@ -1187,6 +1188,19 @@ declare global {
   function onPageHide() {
     browser.runtime.sendMessage({ type: 'disabled' });
   }
+
+  window.addEventListener(
+    'DOMContentLoaded',
+    (event) => {
+      const rp = new RikaiPuck();
+      rp.render(document.body);
+      rp.enable();
+    },
+    {
+      once: true,
+    },
+  );
+
 })();
 
 export default ContentHandler;
