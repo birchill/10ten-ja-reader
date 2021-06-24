@@ -483,7 +483,7 @@
 				CODE_SIGN_ENTITLEMENTS = "10ten Japanese Reader/tenten-ja-reader.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = H3RB7C8768;
 				INFOPLIST_FILE = "10ten Japanese Reader/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -506,7 +506,7 @@
 				CODE_SIGN_ENTITLEMENTS = "10ten Japanese Reader/tenten-ja-reader.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = H3RB7C8768;
 				INFOPLIST_FILE = "10ten Japanese Reader/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
