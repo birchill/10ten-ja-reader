@@ -23,6 +23,7 @@ import {
 } from './db-listener-messages';
 import { translateDoc } from './l10n';
 import { getReferenceLabelsForLang, getReferencesForLang } from './refs';
+import { isChromium, isEdge, isFirefox, isMac, isSafari } from './ua-utils';
 
 const config = new Config();
 
@@ -36,6 +37,9 @@ function completeForm() {
   }
   if (isEdge()) {
     document.documentElement.classList.add('edge');
+  }
+  if (isSafari()) {
+    document.documentElement.classList.add('safari');
   }
 
   // Pop-up
@@ -116,21 +120,6 @@ function completeForm() {
       }
     });
   }
-}
-
-function isFirefox(): boolean {
-  return navigator.userAgent.indexOf('Firefox/') !== -1;
-}
-
-function isChromium(): boolean {
-  return (
-    navigator.userAgent.indexOf('Chrome/') !== -1 ||
-    navigator.userAgent.indexOf('Chromium/') !== -1
-  );
-}
-
-function isEdge(): boolean {
-  return navigator.userAgent.indexOf('Edg/') !== -1;
 }
 
 function renderPopupStyleSelect() {
@@ -567,8 +556,7 @@ function addPopupKeys() {
 }
 
 function translateKeys() {
-  const isMac = /^Mac/i.test(navigator.platform);
-  if (!isMac) {
+  if (!isMac()) {
     return;
   }
 

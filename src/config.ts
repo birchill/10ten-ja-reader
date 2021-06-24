@@ -27,6 +27,7 @@ import {
   getReferencesForLang,
 } from './refs';
 import { stripFields } from './strip-fields';
+import { isMac } from './ua-utils';
 
 // We represent the set of references that have been turned on as a series
 // of true or false values.
@@ -358,9 +359,8 @@ export class Config {
   // have to deal with that, so for now we just allow a single shortcut.
 
   get toggleKey(): string {
-    const isMac = /^Mac/i.test(navigator.platform);
     return typeof this._settings.toggleKey === 'undefined'
-      ? __ALLOW_MAC_CTRL__ && isMac
+      ? __ALLOW_MAC_CTRL__ && isMac()
         ? 'MacCtrl+Ctrl+R'
         : 'Alt+R'
       : this._settings.toggleKey;

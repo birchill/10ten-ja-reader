@@ -19,6 +19,12 @@
   min-width: 600px;
 }
 
+:root.safari body {
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /*
  * If we are using Firefox's browser styles for headings, drop the extra margin
  * we'd otherwise add for headings.
