@@ -17,7 +17,7 @@
   /*#endif*/
   "description": "__MSG_extension_description__",
   "default_locale": "en",
-  /*#if uses_edge_store*/
+  /*#if is_edge*/
   "update_url": "https://edge.microsoft.com/extensionwebstorebase/v1/crx",
   /*#endif*/
   /*#if supports_svg_icons*/

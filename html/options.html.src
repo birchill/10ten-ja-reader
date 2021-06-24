@@ -87,15 +87,15 @@
               __MSG_command_toggle_description__
               <div class="icon" id=toggle-key-icon></div>
             </div>
-            <!--#if uses_edge_store-->
             <div class="key-extended-explanation" id="browser-commands-alternative">
-              __MSG_options_browser_commands_alternative_edge__
+              <!--#if is_chrome-->
+              __MSG_options_browser_commands_no_toggle_key_chrome__
+              <!--#elif is_edge-->
+              __MSG_options_browser_commands_no_toggle_key_edge__
+              <!--#else-->
+              __MSG_options_browser_commands_no_toggle_key__
+              <!--#endif-->
             </div>
-            <!--#else-->
-            <div class="key-extended-explanation" id="browser-commands-alternative">
-              __MSG_options_browser_commands_alternative_chrome__
-            </div>
-            <!--#endif-->
             <!--#if !active_tab_only-->
             <div class="key holdtoshowkeys browser-style">
               <input type=checkbox id=show-alt value=Alt>

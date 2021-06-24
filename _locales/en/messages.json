@@ -1305,11 +1305,15 @@
     "message": "None",
     "description": "Label for not showing pitch accent information"
   },
-  "options_browser_commands_alternative_chrome": {
+  "options_browser_commands_no_toggle_key": {
+    "message": "The toggle key cannot be configured here. Please visit chrome://extensions/shortcuts instead.",
+    "description": "Descriptive text used for other browsers which do not permit configuring extension keys from the extension itself."
+  },
+  "options_browser_commands_no_toggle_key_chrome": {
     "message": "The toggle key cannot be configured here. Please visit chrome://extensions/shortcuts instead.",
     "description": "Descriptive text used for Chrome which does not permit configuring extension keys from the extension itself."
   },
-  "options_browser_commands_alternative_edge": {
+  "options_browser_commands_no_toggle_key_edge": {
     "message": "The toggle key cannot be configured here. Please visit edge://extensions/shortcuts instead.",
     "description": "Descriptive text used for Edge which does not permit configuring extension keys from the extension itself."
   },

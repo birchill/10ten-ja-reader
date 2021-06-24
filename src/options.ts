@@ -297,7 +297,7 @@ function configureCommands() {
   }
 
   document.getElementById('browser-commands-alternative')!.style.display =
-    canConfigureCommands || !isChromium() ? 'none' : 'block';
+    canConfigureCommands ? 'none' : 'block';
 
   if (!canConfigureCommands) {
     return;

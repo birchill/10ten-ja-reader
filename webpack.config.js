@@ -150,6 +150,7 @@ if (process.env.RELEASE_BUILD && process.env.BUGSNAG_API_KEY) {
 const chromeConfig = buildExtConfig({
   distFolder: 'dist-chrome',
   includeRikaichampName: true,
+  isChrome: true,
   needsClipboardWrite: false,
   supportsChromeStyle: true,
   supportsMatchAboutBlank: true,
@@ -159,10 +160,10 @@ const chromeConfig = buildExtConfig({
 const edgeConfig = buildExtConfig({
   distFolder: 'dist-edge',
   includeRikaichampName: true,
+  isEdge: true,
   needsClipboardWrite: false,
   supportsMatchAboutBlank: true,
   target: 'chromium',
-  usesEdgeStore: true,
 });
 
 const safariConfig = buildExtConfig({
@@ -203,6 +204,8 @@ function buildExtConfig({
   addBom = false,
   allowMacCtrl = false,
   distFolder,
+  isChrome = false,
+  isEdge = false,
   includeRikaichampName = false,
   needsClipboardWrite = true,
   supportsAlphaVersion = false,
@@ -213,7 +216,6 @@ function buildExtConfig({
   supportsSvgIcons = false,
   supportsTabContextType = false,
   target,
-  usesEdgeStore = false,
   useEventPage = false,
 }) {
   const preprocessorFeatures = [];
@@ -228,6 +230,14 @@ function buildExtConfig({
 
   if (includeRikaichampName) {
     preprocessorFeatures.push('include_rikaichamp_name');
+  }
+
+  if (isChrome) {
+    preprocessorFeatures.push('is_chrome');
+  }
+
+  if (isEdge) {
+    preprocessorFeatures.push('is_edge');
   }
 
   if (needsClipboardWrite) {
@@ -256,10 +266,6 @@ function buildExtConfig({
 
   if (supportsSvgIcons) {
     preprocessorFeatures.push('supports_svg_icons');
-  }
-
-  if (usesEdgeStore) {
-    preprocessorFeatures.push('uses_edge_store');
   }
 
   if (useEventPage) {
