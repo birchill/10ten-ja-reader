@@ -1306,7 +1306,7 @@
     "description": "Label for not showing pitch accent information"
   },
   "options_browser_commands_no_toggle_key": {
-    "message": "The toggle key cannot be configured here. Please visit chrome://extensions/shortcuts instead.",
+    "message": "The toggle key cannot be configured here.",
     "description": "Descriptive text used for other browsers which do not permit configuring extension keys from the extension itself."
   },
   "options_browser_commands_no_toggle_key_chrome": {
