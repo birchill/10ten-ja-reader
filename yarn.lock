@@ -336,14 +336,15 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@birchill/hikibiki-data@^7.5.0":
-  version "7.5.0"
-  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-7.5.0.tgz#026625cec273e13dd8c228ad854a7201b7b5afc2"
-  integrity sha512-MnS8RBFRUUF7c7MFqvF9NivZblaYLrYJLDQbxmScjei6WoOAnZOIPpNZf9SwtptxND6+lzeOJYpt3/IerhhuZw==
+"@birchill/hikibiki-data@^7.5.1":
+  version "7.5.1"
+  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-7.5.1.tgz#20eacd79b4e9da9360be063c5a2a2681faafcf7c"
+  integrity sha512-MUujssAmLiDQehIZDvFCmqadUf5T1o+o1m09VJXx7ZKFmw5GbiiffOQO7kxNvXquuPxN48TP0KxmSj8WjNgF7A==
   dependencies:
     "@birchill/json-equalish" "^1.1.2"
     "@birchill/normal-jp" "^1.2.2"
     idb "^6.0.0"
+    safari-14-idb-fix "^1.0.3"
 
 "@birchill/json-equalish@^1.1.2":
   version "1.1.2"
@@ -7067,6 +7068,11 @@ rxjs@^6.6.0, rxjs@^6.6.7:
   integrity sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==
   dependencies:
     tslib "^1.9.0"
+
+safari-14-idb-fix@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/safari-14-idb-fix/-/safari-14-idb-fix-1.0.3.tgz#3efabd6ee57bcd1522ebecbedaa61d14ca6061cc"
+  integrity sha512-g+mlH1SOHKYmZ46O5gV7A5LSpxyzpJhjhhwEl8EOp8BX2iy6XgfnrlY0fo3+Xjiid82ilEBTwIKiJHe38i8N2w==
 
 safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.2, safe-buffer@~5.2.0:
   version "5.2.1"
