@@ -311,6 +311,7 @@ function configureCommands() {
     const params: CommandParams = {
       alt: getControl('alt').checked,
       ctrl: getControl('ctrl').checked,
+      macCtrl: !!getControl('macctrl')?.checked,
       shift: getControl('shift').checked,
       key: getControl('key').value,
     };
@@ -394,15 +395,15 @@ function getFirefoxMajorVersion(): number | null {
 
 function showToggleCommandSupport(command: Command) {
   // Key sequences with a secondary modifier other than Shift are only
-  // supported prior to Firefox 63. Show a warning or error depending on
+  // supported from Firefox 63 and onwards. Show a warning or error depending on
   // whether or not we are prior to Firefox 63.
-  if (!command.usesExpandedModifierSet()) {
+  const firefoxMajorVersion = getFirefoxMajorVersion();
+  if (firefoxMajorVersion === null || !command.usesExpandedModifierSet()) {
     setToggleKeyWarningState('ok');
     return;
   }
 
-  const firefoxMajorVersion = getFirefoxMajorVersion();
-  if (firefoxMajorVersion !== null && firefoxMajorVersion < 63) {
+  if (firefoxMajorVersion < 63) {
     setToggleKeyWarningState(
       'error',
       browser.i18n.getMessage('error_ctrl_alt_unsupported')
@@ -678,6 +679,9 @@ function fillVals() {
     getToggleControl('alt').checked = toggleCommand.alt;
     getToggleControl('ctrl').checked = toggleCommand.ctrl;
     getToggleControl('shift').checked = toggleCommand.shift;
+    if (getToggleControl('macctrl')) {
+      getToggleControl('macctrl').checked = toggleCommand.macCtrl;
+    }
     getToggleControl('key').value = toggleCommand.key;
     showToggleCommandSupport(toggleCommand);
   } catch (e) {

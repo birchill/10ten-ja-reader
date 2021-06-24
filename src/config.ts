@@ -343,7 +343,7 @@ export class Config {
     browser.storage.sync.set({ posDisplay: value });
   }
 
-  // toggleKey: Default is 'Alt+R'
+  // toggleKey: Default is 'Alt+R' (or sometimes MacCtrl+Ctrl+R)
   //
   // Note that we'd like to derive this default from the manifest but,
   // as far as I can tell, browser.commands.getAll() won't necessarily give us
@@ -358,8 +358,11 @@ export class Config {
   // have to deal with that, so for now we just allow a single shortcut.
 
   get toggleKey(): string {
+    const isMac = /^Mac/i.test(navigator.platform);
     return typeof this._settings.toggleKey === 'undefined'
-      ? 'Alt+R'
+      ? __ALLOW_MAC_CTRL__ && isMac
+        ? 'MacCtrl+Ctrl+R'
+        : 'Alt+R'
       : this._settings.toggleKey;
   }
 

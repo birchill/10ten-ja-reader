@@ -4,20 +4,21 @@ export interface CommandParams {
   ctrl?: boolean;
   alt?: boolean;
   shift?: boolean;
+  macCtrl?: boolean;
   key: string;
 }
 
 //
-// You might have noticed how MacCtrl and Command are missing from the following
-// lists. That's because this class is for managing settings that get synced
-// across devices. We don't want users to be able to set keys that can't be
-// synced to other platforms. That would either render the keys useless on other
-// platforms (which would be very confusing) or would introduce a lot of
-// complexity in trying to manage variants of the key settings.
+// Normally we don't want to allow MacCtrl because it doesn't sync well across
+// platforms. However, in order to provide a better experience on Safari (and
+// because Safari doesn't generally need to worry about syncing keyboard
+// shortcuts cross-platform) we allow it there.
 //
-const PRIMARY_MODIFIER_KEYS = ['Ctrl', 'Alt'];
+// For other platforms we simply hide the controls that would allow setting it.
+//
+const PRIMARY_MODIFIER_KEYS = ['Ctrl', 'Alt', 'MacCtrl'];
 
-const SECONDARY_MODIFIER_KEYS = ['Ctrl', 'Alt', 'Shift'];
+const SECONDARY_MODIFIER_KEYS = ['Ctrl', 'Alt', 'Shift', 'MacCtrl'];
 
 const MEDIA_KEYS = [
   'MediaNextTrack',
@@ -47,8 +48,8 @@ const isFunctionKey = (key: string): boolean => /^F([1-9]|(1[0-2]))$/.test(key);
 export const isValidKey = (key: string): boolean =>
   /^[A-Z0-9]$/.test(key) || isFunctionKey(key) || SPECIAL_KEYS.includes(key);
 
-type PrimaryModifier = 'Ctrl' | 'Alt';
-type SecondaryModifier = 'Ctrl' | 'Alt' | 'Shift';
+type PrimaryModifier = 'Ctrl' | 'Alt' | 'MacCtrl';
+type SecondaryModifier = 'Ctrl' | 'Alt' | 'MacCtrl' | 'Shift';
 
 export class Command {
   private _modifier?: PrimaryModifier;
@@ -69,6 +70,14 @@ export class Command {
         isFunctionKey(key) ||
         typeof modifier !== 'undefined',
       'Should have a modifier unless we are using a media key or function key. Probably should have used one of the fromXXX methods'
+    );
+    console.assert(
+      __ALLOW_MAC_CTRL__ || modifier !== 'MacCtrl',
+      'Should not be specifying MacCtrl on a configuration that does not support it'
+    );
+    console.assert(
+      __ALLOW_MAC_CTRL__ || secondaryModifier !== 'MacCtrl',
+      'Should not be specifying MacCtrl on a configuration that does not support it'
     );
 
     this._key = key;
@@ -167,6 +176,7 @@ export class Command {
       params.alt ? 1 : 0,
       params.shift ? 1 : 0,
       params.ctrl ? 1 : 0,
+      params.macCtrl ? 1 : 0,
     ].reduce((value, currentValue) => currentValue + value);
     if (modifierCount > 2) {
       throw new Error(
@@ -179,12 +189,16 @@ export class Command {
       modifier = 'Alt';
     } else if (params.ctrl) {
       modifier = 'Ctrl';
+    } else if (params.macCtrl) {
+      modifier = 'MacCtrl';
     }
 
     let secondaryModifier: SecondaryModifier | undefined;
     if (modifier) {
       if (params.ctrl && modifier !== 'Ctrl') {
         secondaryModifier = 'Ctrl';
+      } else if (params.macCtrl && modifier !== 'MacCtrl') {
+        secondaryModifier = 'MacCtrl';
       } else if (params.shift) {
         secondaryModifier = 'Shift';
       }
@@ -213,6 +227,13 @@ export class Command {
 
   get shift(): boolean {
     return this._secondaryModifier === 'Shift';
+  }
+
+  get macCtrl(): boolean {
+    return (
+      __ALLOW_MAC_CTRL__ &&
+      (this._modifier === 'MacCtrl' || this._secondaryModifier === 'MacCtrl')
+    );
   }
 
   get key(): string {

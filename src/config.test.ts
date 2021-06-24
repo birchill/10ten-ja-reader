@@ -123,6 +123,8 @@ class MockStorageArea {
   }
 }
 
+(global as any).__ALLOW_MAC_CTRL__ = false;
+
 describe('Config', () => {
   let languageGetter: jest.SpyInstance<readonly string[], []>;
 

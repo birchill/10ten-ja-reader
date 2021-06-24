@@ -99,7 +99,12 @@
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
+        /*#if allow_mac_ctrl*/
+        "default": "Alt+R",
+        "mac": "MacCtrl+Ctrl+R"
+        /*#else*/
         "default": "Alt+R"
+        /*#endif*/
       },
       "description": "__MSG_command_toggle_description__"
     }

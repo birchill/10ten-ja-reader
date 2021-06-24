@@ -59,6 +59,7 @@ const testConfig = {
   plugins: [
     new webpack.DefinePlugin({
       __ACTIVE_TAB_ONLY__: false,
+      __ALLOW_MAC_CTRL__: false,
       __SUPPORTS_SVG_ICONS__: false,
       __SUPPORTS_TAB_CONTEXT_TYPE__: false,
       __VERSION__: `'${pjson.version}'`,
@@ -168,6 +169,15 @@ const safariConfig = buildExtConfig({
   activeTabOnly: true,
   // Safari defaults to loading JS as Latin so make sure we add a UTF-8 BOM
   addBom: true,
+  // Normally we don't allow specifying MacCtrl as a shortcut key because we
+  // can't sync it with other platforms but since Safari never needs to sync
+  // shortcuts with other platforms we can allow it there.
+  //
+  // This also allows us to set the default shortcut to Ctrl+Command+R is
+  // which is similar to the dictionary shortcut Ctrl+Command+D. This is nice
+  // because it seems like Safari doesn't allow a way to customize extension
+  // shortcuts so we should pick a good default.
+  allowMacCtrl: true,
   distFolder: 'dist-safari',
   supportsBrowserStyle: true,
   useEventPage: true,
@@ -189,8 +199,9 @@ module.exports = (env) => {
 };
 
 function buildExtConfig({
-  addBom = false,
   activeTabOnly = false,
+  addBom = false,
+  allowMacCtrl = false,
   distFolder,
   includeRikaichampName = false,
   needsClipboardWrite = true,
@@ -209,6 +220,10 @@ function buildExtConfig({
 
   if (activeTabOnly) {
     preprocessorFeatures.push('active_tab_only');
+  }
+
+  if (allowMacCtrl) {
+    preprocessorFeatures.push('allow_mac_ctrl');
   }
 
   if (includeRikaichampName) {
@@ -254,6 +269,7 @@ function buildExtConfig({
   const plugins = [
     new webpack.DefinePlugin({
       __ACTIVE_TAB_ONLY__: activeTabOnly,
+      __ALLOW_MAC_CTRL__: allowMacCtrl,
       __SUPPORTS_SVG_ICONS__: supportsSvgIcons,
       __SUPPORTS_TAB_CONTEXT_TYPE__: supportsTabContextType,
       __VERSION__: `'${pjson.version}'`,

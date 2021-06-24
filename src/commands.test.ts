@@ -2,6 +2,8 @@ jest.mock('webextension-polyfill-ts', () => ({ browser: {} }));
 
 import { Command } from './commands';
 
+(global as any).__ALLOW_MAC_CTRL__ = false;
+
 describe('Command', () => {
   type Expected = {
     alt: boolean;
