@@ -1100,9 +1100,13 @@ declare global {
     //
     // We only need to do that if we're the root-most frame, however.
     if (typeof tabId !== 'undefined' && window.top === window.self && !port) {
-      port = browser.runtime.connect(undefined, {
-        name: `tab-${tabId}`,
-      });
+      try {
+        port = browser.runtime.connect(undefined, {
+          name: `tab-${tabId}`,
+        });
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     window.addEventListener('pageshow', onPageShow);
