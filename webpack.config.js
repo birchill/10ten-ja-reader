@@ -26,7 +26,6 @@ const profileCreateIfMissing = !!env.profileCreateIfMissing;
 
 const commonConfig = {
   mode: 'development',
-  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -282,12 +281,39 @@ function buildExtConfig({
     }),
   ];
 
+  let devtool = 'source-map';
   if (activeTabOnly) {
     plugins.push(
       new webpack.NormalModuleReplacementPlugin(
         /all-tab-manager$/,
         path.resolve(__dirname, 'src', 'active-tab-manager.ts')
       )
+    );
+
+    // If we are injecting the content script don't include a sourceMappingURL
+    // on it. If we do, Safari will report a "Cocoa error -1008" every time
+    // we inject the script because it can't find the source map.
+    //
+    // In future we should actually fix the sourceMappingURL to include the
+    // extension URL but we don't know that until runtime so we'd have to load
+    // the source text into memory and manipulate it there. Until that becomes
+    // important we just drop it from the content script.
+    devtool = false;
+    plugins.push(
+      new webpack.SourceMapDevToolPlugin({
+        test: /.js$/,
+        exclude: '10ten-ja-content.js',
+        filename: '[file].map',
+        noSources: false,
+      })
+    );
+    plugins.push(
+      new webpack.SourceMapDevToolPlugin({
+        test: '10ten-ja-content.js',
+        filename: '[file].map',
+        noSources: false,
+        append: false,
+      })
     );
   }
 
@@ -342,6 +368,7 @@ function buildExtConfig({
 
   return {
     ...commonExtConfig,
+    devtool,
     module: {
       ...commonExtConfig.module,
       rules: extendArray(
