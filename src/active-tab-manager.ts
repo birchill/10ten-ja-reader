@@ -157,15 +157,12 @@ export default class ActiveTabManager implements TabManager {
     //
     // If we fail to set up the content script we'll drop the entry from
     // enabledTabs at that point.
-    let changedEnabledTabs = false;
-    if (
-      // We only want to change the enabled state if we are dealing with the
-      // root frame or the whole tab.
-      (typeof frameId === 'undefined' || frameId === 0) &&
-      !this.enabledTabs.some((t) => t.id === tabId)
-    ) {
+    //
+    // However, we only want to change the enabled state if we are dealing with
+    // the root frame or the whole tab.
+    const isRootFrame = typeof frameId === 'undefined' || frameId === 0;
+    if (isRootFrame && !this.enabledTabs.some((t) => t.id === tabId)) {
       this.enabledTabs.push({ id: tabId, port: undefined });
-      changedEnabledTabs = true;
     }
 
     // If we are dealing with a single frame, try calling to see if the content
@@ -190,16 +187,19 @@ export default class ActiveTabManager implements TabManager {
         enabled = false;
         // Drop the enabled tab from our list, but only if we're dealing with
         // the root frame or the whole tab.
-        if (typeof frameId === 'undefined' || frameId === 0) {
+        if (isRootFrame) {
           this.enabledTabs = this.enabledTabs.filter((t) => t.id !== tabId);
-          // It's possible we actually just reset `enabledTabs` back to its
-          // starting point, but to be safe assume we changed things.
-          changedEnabledTabs = true;
         }
       }
     }
 
-    if (changedEnabledTabs) {
+    // Notify listeners regardless of whether or not we updated enabledTabs.
+    //
+    // We need to do this because during navigation, the browser can reset the
+    // browser action to its non-active state without telling us so even if the
+    // tab is already in enabledTabs, we may still need to update the browser
+    // action to reflect that.
+    if (isRootFrame) {
       this.notifyListeners(enabled, tabId);
     }
   }
