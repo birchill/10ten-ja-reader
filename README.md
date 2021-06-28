@@ -3,7 +3,7 @@
 ![](https://github.com/birchill/10ten-ja-reader/workflows/Automated%20tests/badge.svg)
 ![Twitter Follow](https://img.shields.io/twitter/follow/rikaichamp)
 
-Hi fellow Japanese reader! Formerly known as Rikaichamp, this is browser extension lets you look up Japanese words with the hover of a mouse or tap of a screen.
+Hi fellow Japanese reader! Formerly known as Rikaichamp, this browser extension lets you look up Japanese words with the hover of a mouse or tap of a screen.
 
 ## Table of Contents
 
@@ -27,7 +27,7 @@ Forked from Rikaikun in 2017 it includes:
   <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/russian-cropped.png" alt="Screen shot showing Russian translation" title="Russian translation" width="480">
 
 - Dictionaries that update automatically every week by fetching just the updated entries
-- Overhauled dictionary entry display to make it much easier to read
+- Overhauled dictionary entry display to make it easier to read
 
   <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/word-display-cropped.png" alt="Screen shot showing how definitions are grouped by part-of-speech" title="Some of the features of word display" width="640">
 
@@ -46,7 +46,7 @@ Forked from Rikaikun in 2017 it includes:
   causative passive, させる for verbs ending in す e.g. 起こさせる)
 - Automatic preview of name entries when there is a better match in the name dictionary
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/year-translation-cropped.png" alt="Screen shot showing 南硫黄島 being automatically looked up from the names dictionary" title="Name dictionary cross-reference" width="354">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/name-dictionary-cross-ref-cropped.png" alt="Screen shot showing 南硫黄島 being automatically looked up from the names dictionary" title="Name dictionary cross-reference" width="354">
 
 - Handling of a much wider range of characters including ㋕, ㌀, ㋿, 𠏹沢, ８月, Ｂ級グルメ, オーサカ
 
@@ -66,12 +66,12 @@ Forked from Rikaikun in 2017 it includes:
 
 - Smarter popup positioning
 - Support for vertical text and SVG text
-- Much lower memory usage (> 90% less)
+- Lower memory usage (> 90% less)
 - Kanji data for Kanji kentei, Conning references, updated educational levels, heavily reworked kanji components etc.
 
   <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/kanji-view-cropped.png" alt="Screen shot of kanji view" title="Kanji dictionary" width="389">
 
-- Overhauled settings window to make it more intuitive
+- Overhauled settings window
 
   <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/options-window-cropped.png" alt="Screen shot of options window" title="Options window" width="459">
 
