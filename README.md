@@ -85,6 +85,7 @@ Forked from Rikaikun in 2017 it includes:
 - [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/rikaichamp/)
 - [Chrome Web Store](https://chrome.google.com/webstore/detail/pnmaklegiibbioifkmfkgpfnmdehdfan)
 - [Edge Web Store](https://microsoftedge.microsoft.com/addons/detail/rikaichamp-japanese-dicti/cgiogkjpebgfcpcaipiicfeaelpapeig)
+- [App Store](https://apps.apple.com/app/10ten-japanese-reader/id1573540634)
 
 ## Usage
 

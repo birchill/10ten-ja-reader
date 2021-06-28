@@ -1,4 +1,4 @@
-## Next version
+## 1.0.0 (2021-06-15) (Safari only)
 
 - Added new default (gray) theme.
 - Made default theme switch between light/dark based on system dark-mode setting.
