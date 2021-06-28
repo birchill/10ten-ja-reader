@@ -50,7 +50,7 @@
     "@types/node": "^15.12.5",
     "byline": "^5.0.0",
     "conventional-changelog-conventionalcommits": "^4.6.0",
-    "copy-webpack-plugin": "^9.0.0",
+    "copy-webpack-plugin": "^9.0.1",
     "csv-parse": "^4.16.0",
     "eslint": "^7.29.0",
     "eslint-plugin-lit": "^1.5.1",
