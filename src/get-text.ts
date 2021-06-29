@@ -47,7 +47,7 @@ export function getTextAtPoint(
   point: Point,
   maxLength?: number
 ): GetTextAtPointResult | null {
-  let position = carentPositionFromPoint(point);
+  let position = caretPositionFromPoint(point);
 
   // Chrome not only doesn't support caretPositionFromPoint, but also
   // caretRangeFromPoint doesn't return text input elements. Instead it returns
@@ -199,7 +199,7 @@ export function getTextAtPoint(
   return null;
 }
 
-function carentPositionFromPoint(point: Point): CursorPosition | null {
+function caretPositionFromPoint(point: Point): CursorPosition | null {
   if (document.caretPositionFromPoint) {
     return document.caretPositionFromPoint(point.x, point.y);
   }
@@ -603,7 +603,7 @@ function getTextFromCoveringLink({
   const previousPointEvents = linkElem.style.pointerEvents;
   linkElem.style.pointerEvents = 'none';
 
-  const position = carentPositionFromPoint(point);
+  const position = caretPositionFromPoint(point);
 
   linkElem.style.pointerEvents = previousPointEvents;
 
