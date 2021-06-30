@@ -56,7 +56,15 @@ export function isReportWarningRequest(a: unknown): a is ReportWarningRequest {
 export type SearchRequest = {
   type: 'search';
   input: string;
+  // Select the dictionary to lookup. If not set the search will look for the
+  // best match unless prevDict is set.
+  dict?: DictType;
+  // Request the next dictionary in the lookup order after 'prevDict'.
+  // Ignored if `dict` is set.
   prevDict?: DictType;
+  // Indicates that the previous search found no entry in the 'words' dictionary
+  // but did find an entry in the 'names' dictionary so we should use a
+  // dictionary lookup order that prioritizes the 'names' dictionary.
   preferNames?: boolean;
   includeRomaji?: boolean;
 };

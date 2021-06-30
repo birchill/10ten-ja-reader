@@ -21,6 +21,7 @@ describe('contentHandler:highlighting', () => {
       keys: {
         toggleDefinition: ['d'],
         nextDictionary: ['Shift'],
+        kanjiLookup: [],
         movePopupUp: [],
         movePopupDown: [],
         startCopy: ['c'],

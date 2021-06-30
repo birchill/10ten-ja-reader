@@ -147,12 +147,14 @@ describe('Config', () => {
     expect(config.keys).toEqual({
       toggleDefinition: [],
       nextDictionary: ['Shift', 'Enter'],
+      kanjiLookup: [],
       movePopupDownOrUp: [],
       startCopy: ['c'],
     });
     expect(config.keysNormalized).toEqual({
       toggleDefinition: [],
       nextDictionary: ['Shift', 'Enter'],
+      kanjiLookup: [],
       movePopupUp: [],
       movePopupDown: [],
       startCopy: ['c'],

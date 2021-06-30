@@ -96,6 +96,12 @@ export const DEFAULT_KEY_SETTINGS: KeySetting[] = [
     l10nKey: 'options_popup_switch_dictionaries',
   },
   {
+    name: 'kanjiLookup',
+    keys: ['Shift'],
+    enabledKeys: [],
+    l10nKey: 'options_popup_kanji_lookup',
+  },
+  {
     name: 'toggleDefinition',
     keys: ['d'],
     enabledKeys: [],

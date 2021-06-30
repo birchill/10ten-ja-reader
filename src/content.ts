@@ -142,6 +142,10 @@ export class ContentHandler {
   // privacy.resistFingerprinting is enabled then the timer won't be precise
   // enough for us to test the speed of the mouse.
   private hidePopupWhenMovingAtSpeed: boolean = false;
+
+  // Keyboard support
+  private kanjiLookupMode: boolean = false;
+
   // Used to try to detect when we are typing so we know when to ignore key
   // events.
   private typingMode: boolean = false;
@@ -159,10 +163,12 @@ export class ContentHandler {
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
     this.onFocusIn = this.onFocusIn.bind(this);
     window.addEventListener('mousemove', this.onMouseMove);
     window.addEventListener('mousedown', this.onMouseDown);
     window.addEventListener('keydown', this.onKeyDown, { capture: true });
+    window.addEventListener('keyup', this.onKeyUp, { capture: true });
     window.addEventListener('focusin', this.onFocusIn);
 
     hasReasonableTimerResolution().then((isReasonable) => {
@@ -188,6 +194,7 @@ export class ContentHandler {
     window.removeEventListener('mousemove', this.onMouseMove);
     window.removeEventListener('mousedown', this.onMouseDown);
     window.removeEventListener('keydown', this.onKeyDown, { capture: true });
+    window.removeEventListener('keyup', this.onKeyUp, { capture: true });
     window.removeEventListener('focusin', this.onFocusIn);
 
     this.clearHighlight(null);
@@ -225,10 +232,16 @@ export class ContentHandler {
       return;
     }
 
+    let dictMode: 'default' | 'kanji' = 'default';
+    if (ev.shiftKey && this.config.keys.kanjiLookup.includes('Shift')) {
+      this.kanjiLookupMode = ev.shiftKey;
+      dictMode = 'kanji';
+    }
+
     this.tryToUpdatePopup(
       { x: ev.clientX, y: ev.clientY },
       ev.target as Element,
-      'default'
+      dictMode
     );
   }
 
@@ -307,6 +320,9 @@ export class ContentHandler {
     // We need to allow shift by itself because it is used for switching
     // dictionaries. However, if the user presses, Cmd + Shift + 3, for example,
     // we should ignore the last two keystrokes.
+    //
+    // TODO: We should refine this so that if we have exactly the "hold to show"
+    // keys AND shift, we still allow it.
     if (
       ev.shiftKey &&
       (ev.ctrlKey || ev.altKey || ev.metaKey || ev.key !== 'Shift')
@@ -345,6 +361,17 @@ export class ContentHandler {
     }
   }
 
+  onKeyUp(ev: KeyboardEvent) {
+    if (!this.kanjiLookupMode) {
+      return;
+    }
+
+    if (ev.key === 'Shift') {
+      this.kanjiLookupMode = false;
+      ev.preventDefault();
+    }
+  }
+
   handleKey(key: string, ctrlKeyPressed: boolean): boolean {
     // Make an upper-case version of the list of keys so that we can do
     // a case-insensitive comparison. This is so that the keys continue to work
@@ -369,6 +396,11 @@ export class ContentHandler {
     const upperKey = key.toUpperCase();
 
     if (nextDictionary.includes(upperKey)) {
+      // If we are in kanji lookup mode, ignore 'Shift' keydown events since it
+      // is also the key we use to trigger lookup mode.
+      if (key === 'Shift' && this.kanjiLookupMode) {
+        return true;
+      }
       if (this.currentPoint && this.currentTarget) {
         this.tryToUpdatePopup(this.currentPoint, this.currentTarget, 'next');
       }
@@ -527,10 +559,18 @@ export class ContentHandler {
   async tryToUpdatePopup(
     point: { x: number; y: number },
     target: Element,
-    dictMode: 'default' | 'next'
+    dictMode: 'default' | 'next' | 'kanji'
   ) {
     const textAtPoint = getTextAtPoint(point, ContentHandler.MAX_LENGTH);
 
+    // The following is not strictly correct since if dictMode was 'kanji' or
+    // 'next' but is now 'default' then technically we shouldn't return early
+    // since the result will likely differ.
+    //
+    // In practice, however, locking the result to the previously shown
+    // dictionary in this case is not a problem. On the contrary it makes
+    // toggling dictionaries a little less sensitive to minor mouse movements
+    // and hence easier to work with.
     if (
       JSON.stringify(this.currentTextAtPoint) === JSON.stringify(textAtPoint) &&
       dictMode === 'default'
@@ -551,6 +591,7 @@ export class ContentHandler {
 
     const queryResult = await query(textAtPoint.text, {
       includeRomaji: this.config.showRomaji,
+      dict: dictMode === 'kanji' ? 'kanji' : undefined,
       prevDict:
         dictMode === 'next' && this.currentSearchResult
           ? this.currentSearchResult.type

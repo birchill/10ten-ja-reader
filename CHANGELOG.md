@@ -1,3 +1,11 @@
+## Next version
+
+- (Re-)added the option to show only kanji entries by holding <kbd>Shift</kbd>
+  ([#650](https://github.com/birchill/10ten-ja-reader/issues/650)).
+
+  This behavior must be explicitly enabled from the settings page.
+  However, it should now work without requiring the "Hold to show pop-up" feature.
+
 ## 1.0.0 (2021-06-15) (Safari only)
 
 - Added new default (gray) theme.

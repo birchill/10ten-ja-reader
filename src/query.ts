@@ -28,6 +28,7 @@ export interface WordSearchOrTranslateResult
 
 export interface QueryOptions {
   includeRomaji: boolean;
+  dict?: DictType;
   prevDict: DictType | undefined;
   preferNames: boolean;
   wordLookup: boolean;
@@ -48,6 +49,7 @@ export async function query(
   const hash = [
     text,
     options.includeRomaji ? '1' : '0',
+    options.dict || 'auto',
     options.prevDict || 'none',
     options.preferNames ? '1' : '0',
     options.wordLookup ? '1' : '0',
@@ -109,6 +111,7 @@ async function doQuery(
     message = {
       type: 'search',
       input: text,
+      dict: options.dict,
       prevDict: options.prevDict,
       preferNames: options.preferNames,
       includeRomaji: options.includeRomaji,

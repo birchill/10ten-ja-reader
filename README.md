@@ -104,6 +104,7 @@ The other keys are as follows:
 | Action                                    | Key                                                 |
 | ----------------------------------------- | --------------------------------------------------- |
 | Switch dictionary (words → kanji → names) | <kbd>Shift</kbd> / <kbd>Enter</kbd>                 |
+| Show kanji results only                   | <kbd>Shift</kbd> _(disabled by default)_            |
 | Toggle display of definitions             | <kbd>d</kbd> _(disabled by default)_                |
 | Move the popup up or down                 | <kbd>j</kbd> / <kbd>k</kbd> _(disabled by default)_ |
 | Enter copy mode                           | <kbd>c</kbd>                                        |

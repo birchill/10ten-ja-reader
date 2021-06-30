@@ -1540,6 +1540,10 @@
   "options_popup_copy_word_kanji": {
     "message": "复制词语或汉字"
   },
+  "options_popup_kanji_lookup": {
+    "message": "只显示汉字结果 ",
+    "description": "Label for the key to force looking up the kanji dictionary only"
+  },
   "options_popup_keys_subheading": {
     "message": "窗口控制键"
   },

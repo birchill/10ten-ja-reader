@@ -1543,6 +1543,10 @@
   "options_popup_copy_word_kanji": {
     "message": "単語又は漢字をコピーする"
   },
+  "options_popup_kanji_lookup": {
+    "message": "漢字の結果のみ表示する",
+    "description": "Label for the key to force looking up the kanji dictionary only"
+  },
   "options_popup_keys_subheading": {
     "message": "ポップアップキー"
   },

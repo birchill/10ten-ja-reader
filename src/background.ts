@@ -456,16 +456,31 @@ const preferNamesOrder: Array<DictType> = ['names', 'kanji'];
 
 async function search({
   input,
+  dict: specifiedDict,
   prevDict,
   preferNames,
   includeRomaji,
   abortSignal,
 }: SearchRequest & { abortSignal: AbortSignal }): Promise<SearchResult | null> {
+  // Set up the candiate set of dictionaries
+  let cycleOrder: Array<DictType>;
+  if (specifiedDict) {
+    cycleOrder = [specifiedDict];
+  } else if (preferNames) {
+    cycleOrder = preferNamesOrder;
+  } else {
+    cycleOrder = defaultOrder;
+  }
+
   // Work out which dictionary to use
-  let cycleOrder = preferNames ? preferNamesOrder : defaultOrder;
-  let dict = prevDict
-    ? cycleOrder[(cycleOrder.indexOf(prevDict) + 1) % cycleOrder.length]
-    : 'words';
+  let dict: DictType;
+  if (specifiedDict) {
+    dict = specifiedDict;
+  } else if (prevDict) {
+    dict = cycleOrder[(cycleOrder.indexOf(prevDict) + 1) % cycleOrder.length];
+  } else {
+    dict = 'words';
+  }
 
   // Set up a helper for checking for a better names match
   const hasGoodNameMatch = async () => {
@@ -516,12 +531,14 @@ async function search({
     // If we just looked up the default words dictionary and didn't find a
     // match, consider if we should switch to prioritizing the names dictionary.
     if (
+      !specifiedDict &&
       !prevDict &&
       !preferNames &&
       dict === 'words' &&
       (await hasGoodNameMatch())
     ) {
       preferNames = true;
+      cycleOrder = preferNamesOrder;
       dict = preferNamesOrder[0];
       // (We've potentially created an infinite loop here since we've switched
       // to a cycle order that excludes the word dictionary which may be the
@@ -530,7 +547,6 @@ async function search({
       // end up returning something.)
     } else {
       // Otherwise just try the next dictionary.
-      cycleOrder = preferNames ? preferNamesOrder : defaultOrder;
       dict = cycleOrder[(cycleOrder.indexOf(dict) + 1) % cycleOrder.length];
     }
   } while (originalDict !== dict);
