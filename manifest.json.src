@@ -99,7 +99,7 @@
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
-        /*#if allow_mac_ctrl*/
+        /*#if is_safari*/
         "default": "Alt+R",
         "mac": "MacCtrl+Ctrl+R"
         /*#else*/

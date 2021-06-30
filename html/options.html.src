@@ -71,10 +71,8 @@
         <div class="panel-section panel-section-formElements">
           <div class="panel-section key-grid">
             <div class="key command browser-style">
-              <!--#if allow_mac_ctrl-->
               <input type=checkbox id=toggle-macctrl>
               <label for=toggle-macctrl><span class="key-box">Control</span></label>
-              <!--#endif-->
               <input type=checkbox id=toggle-alt>
               <label for=toggle-alt><span class="key-box">Alt</span></label>
               <input type=checkbox id=toggle-ctrl>
@@ -88,13 +86,7 @@
               <div class="icon" id=toggle-key-icon></div>
             </div>
             <div class="key-extended-explanation" id="browser-commands-alternative">
-              <!--#if is_chrome-->
-              __MSG_options_browser_commands_no_toggle_key_chrome__
-              <!--#elif is_edge-->
-              __MSG_options_browser_commands_no_toggle_key_edge__
-              <!--#else-->
               __MSG_options_browser_commands_no_toggle_key__
-              <!--#endif-->
             </div>
             <!--#if !active_tab_only-->
             <div class="key holdtoshowkeys browser-style">

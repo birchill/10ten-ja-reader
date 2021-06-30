@@ -8,17 +8,8 @@ export interface CommandParams {
   key: string;
 }
 
-//
-// Normally we don't want to allow MacCtrl because it doesn't sync well across
-// platforms. However, in order to provide a better experience on Safari (and
-// because Safari doesn't generally need to worry about syncing keyboard
-// shortcuts cross-platform) we allow it there.
-//
-// For other platforms we simply hide the controls that would allow setting it.
-//
-const PRIMARY_MODIFIER_KEYS = ['Ctrl', 'Alt', 'MacCtrl'];
-
-const SECONDARY_MODIFIER_KEYS = ['Ctrl', 'Alt', 'Shift', 'MacCtrl'];
+const PRIMARY_MODIFIER_KEYS = ['Ctrl', 'Alt', 'MacCtrl', 'Command'];
+const SECONDARY_MODIFIER_KEYS = ['Ctrl', 'Alt', 'Shift', 'MacCtrl', 'Command'];
 
 const MEDIA_KEYS = [
   'MediaNextTrack',
@@ -71,14 +62,6 @@ export class Command {
         typeof modifier !== 'undefined',
       'Should have a modifier unless we are using a media key or function key. Probably should have used one of the fromXXX methods'
     );
-    console.assert(
-      __ALLOW_MAC_CTRL__ || modifier !== 'MacCtrl',
-      'Should not be specifying MacCtrl on a configuration that does not support it'
-    );
-    console.assert(
-      __ALLOW_MAC_CTRL__ || secondaryModifier !== 'MacCtrl',
-      'Should not be specifying MacCtrl on a configuration that does not support it'
-    );
 
     this._key = key;
     this._modifier = modifier;
@@ -127,7 +110,12 @@ export class Command {
           )
         );
       }
-      modifier = parts[0] as PrimaryModifier;
+
+      if (parts[0] === 'Command') {
+        modifier = 'Ctrl';
+      } else {
+        modifier = parts[0] as PrimaryModifier;
+      }
     }
 
     let secondaryModifier: SecondaryModifier | undefined;
@@ -140,8 +128,23 @@ export class Command {
           )
         );
       }
-      secondaryModifier = parts[1] as SecondaryModifier;
+
+      if (parts[1] === 'Command') {
+        secondaryModifier = 'Ctrl';
+      } else {
+        secondaryModifier = parts[1] as PrimaryModifier;
+      }
     }
+
+    // There are a few other checks we could do such as:
+    //
+    // - Checking that we don't have BOTH Ctrl and Command (since Ctrl maps to
+    //   Command on Macs and Command doesn't exist on other platforms).
+    // - Checking that we don't use MacCtrl or Command on non-Mac platforms.
+    //
+    // However, since we no longer sync toggle keys, they can only be set by
+    // our UI or the browser UI, presumably both of which ensure the key is
+    // valid for the above cases.
 
     return new Command(key, modifier, secondaryModifier);
   }
@@ -166,9 +169,26 @@ export class Command {
       );
     }
 
-    if (!isFunctionKey(params.key) && !(params.alt || params.ctrl)) {
+    if (
+      !isFunctionKey(params.key) &&
+      !(params.alt || params.ctrl || params.macCtrl)
+    ) {
       throw new Error(
         browser.i18n.getMessage('error_command_is_missing_modifier_key')
+      );
+    }
+
+    // Function key + Shift is not allowed
+    if (
+      isFunctionKey(params.key) &&
+      params.shift &&
+      !(params.alt || params.ctrl || params.macCtrl)
+    ) {
+      throw new Error(
+        browser.i18n.getMessage(
+          'error_command_disallowed_modifier_key',
+          'Shift'
+        )
       );
     }
 
@@ -231,8 +251,7 @@ export class Command {
 
   get macCtrl(): boolean {
     return (
-      __ALLOW_MAC_CTRL__ &&
-      (this._modifier === 'MacCtrl' || this._secondaryModifier === 'MacCtrl')
+      this._modifier === 'MacCtrl' || this._secondaryModifier === 'MacCtrl'
     );
   }
 
@@ -251,12 +270,6 @@ export class Command {
     parts.push(this._key!);
 
     return parts.join('+');
-  }
-
-  // Prior to Firefox 63, the second modifier could only be Shift.
-  // See https://bugzilla.mozilla.org/show_bug.cgi?id=1364784
-  usesExpandedModifierSet(): boolean {
-    return !!this._secondaryModifier && this._secondaryModifier !== 'Shift';
   }
 }
 

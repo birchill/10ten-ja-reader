@@ -2,8 +2,6 @@ jest.mock('webextension-polyfill-ts', () => ({ browser: {} }));
 
 import { Command } from './commands';
 
-(global as any).__ALLOW_MAC_CTRL__ = false;
-
 describe('Command', () => {
   type Expected = {
     alt: boolean;
@@ -122,21 +120,6 @@ describe('Command', () => {
       expect(() => {
         Command.fromParams(test);
       }).toThrow();
-    }
-  });
-
-  it('recognizes which commands use the expanded modifier set', () => {
-    const tests = [
-      { input: { alt: true, key: 'T' }, expected: false },
-      { input: { alt: true, shift: true, key: 'T' }, expected: false },
-      { input: { alt: true, ctrl: true, key: 'T' }, expected: true },
-      { input: { ctrl: true, shift: true, key: 'T' }, expected: false },
-      { input: { key: 'F11' }, expected: false },
-    ];
-
-    for (const test of tests) {
-      const command = Command.fromParams(test.input);
-      expect(command.usesExpandedModifierSet()).toEqual(test.expected);
     }
   });
 });

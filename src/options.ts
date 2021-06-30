@@ -276,8 +276,8 @@ function configureCommands() {
   // necessary APIs are not available.
   const canConfigureCommands =
     browser.commands &&
-    typeof (browser.commands as any).update === 'function' &&
-    typeof (browser.commands as any).reset === 'function';
+    typeof browser.commands.update === 'function' &&
+    typeof browser.commands.reset === 'function';
 
   const browserCommandControls =
     document.querySelectorAll('.key.command input');
@@ -285,34 +285,54 @@ function configureCommands() {
     (control as HTMLInputElement).disabled = !canConfigureCommands;
   }
 
-  document.getElementById('browser-commands-alternative')!.style.display =
-    canConfigureCommands ? 'none' : 'block';
+  const explanationBlock = document.getElementById(
+    'browser-commands-alternative'
+  ) as HTMLDivElement;
+  explanationBlock.style.display = canConfigureCommands ? 'none' : 'revert';
 
   if (!canConfigureCommands) {
+    if (isEdge()) {
+      explanationBlock.textContent = browser.i18n.getMessage(
+        'options_browser_commands_no_toggle_key_edge'
+      );
+    } else if (isChromium()) {
+      explanationBlock.textContent = browser.i18n.getMessage(
+        'options_browser_commands_no_toggle_key_chrome'
+      );
+    } else {
+      explanationBlock.textContent = browser.i18n.getMessage(
+        'options_browser_commands_no_toggle_key'
+      );
+    }
     return;
   }
 
-  const getToggleShortcut = (): Command => {
-    const getControl = (part: string): HTMLInputElement => {
-      return document.getElementById(`toggle-${part}`) as HTMLInputElement;
+  const getFormToggleKeyValue = (): Command => {
+    const getControl = (part: string): HTMLInputElement | null => {
+      return document.getElementById(
+        `toggle-${part}`
+      ) as HTMLInputElement | null;
     };
 
     const params: CommandParams = {
-      alt: getControl('alt').checked,
-      ctrl: getControl('ctrl').checked,
-      macCtrl: !!getControl('macctrl')?.checked,
-      shift: getControl('shift').checked,
-      key: getControl('key').value,
+      alt: getControl('alt')?.checked,
+      ctrl: getControl('ctrl')?.checked,
+      macCtrl: getControl('macctrl')?.checked,
+      shift: getControl('shift')?.checked,
+      key: getControl('key')?.value || '',
     };
 
     return Command.fromParams(params);
   };
 
-  const updateToggleKey = () => {
+  const updateToggleKey = async () => {
     try {
-      const shortcut = getToggleShortcut();
-      config.toggleKey = shortcut.toString();
-      showToggleCommandSupport(shortcut);
+      const shortcut = getFormToggleKeyValue();
+      await browser.commands.update({
+        name: '_execute_browser_action',
+        shortcut: shortcut.toString(),
+      });
+      setToggleKeyWarningState('ok');
     } catch (e) {
       setToggleKeyWarningState('error', e.message);
     }
@@ -372,37 +392,15 @@ function setToggleKeyWarningState(state: WarningState, message?: string) {
   }
 }
 
-function getFirefoxMajorVersion(): number | null {
-  const matches = navigator.userAgent.match(/Firefox\/(\d+)/);
-  if (matches === null || matches.length < 2) {
-    return null;
+async function getConfiguredToggleKeyValue(): Promise<Command | null> {
+  const commands = await browser.commands.getAll();
+  for (const command of commands) {
+    if (command.name === '_execute_browser_action' && command.shortcut) {
+      return Command.fromString(command.shortcut);
+    }
   }
 
-  const majorVersion = parseInt(matches[1]);
-  return majorVersion === 0 ? null : majorVersion;
-}
-
-function showToggleCommandSupport(command: Command) {
-  // Key sequences with a secondary modifier other than Shift are only
-  // supported from Firefox 63 and onwards. Show a warning or error depending on
-  // whether or not we are prior to Firefox 63.
-  const firefoxMajorVersion = getFirefoxMajorVersion();
-  if (firefoxMajorVersion === null || !command.usesExpandedModifierSet()) {
-    setToggleKeyWarningState('ok');
-    return;
-  }
-
-  if (firefoxMajorVersion < 63) {
-    setToggleKeyWarningState(
-      'error',
-      browser.i18n.getMessage('error_ctrl_alt_unsupported')
-    );
-  } else {
-    setToggleKeyWarningState(
-      'warning',
-      browser.i18n.getMessage('error_ctrl_alt_warning')
-    );
-  }
+  return null;
 }
 
 function configureHoldToShowKeys() {
@@ -556,7 +554,21 @@ function addPopupKeys() {
 }
 
 function translateKeys() {
-  if (!isMac()) {
+  const mac = isMac();
+
+  // Hide MacCtrl key if we're not on Mac
+  const macCtrlInput = document.getElementById(
+    'toggle-macctrl'
+  ) as HTMLInputElement | null;
+  const labels = macCtrlInput?.labels ? Array.from(macCtrlInput.labels) : [];
+  if (macCtrlInput) {
+    macCtrlInput.style.display = mac ? 'revert' : 'none';
+  }
+  for (const label of labels) {
+    label.style.display = mac ? 'revert' : 'none';
+  }
+
+  if (!mac) {
     return;
   }
 
@@ -660,24 +672,24 @@ function fillVals() {
   optform.showKanjiComponents.checked = config.showKanjiComponents;
   optform.popupStyle.value = config.popupStyle;
 
-  try {
-    const toggleCommand = Command.fromString(config.toggleKey);
-    const getToggleControl = (part: string): HTMLInputElement =>
-      document.getElementById(`toggle-${part}`) as HTMLInputElement;
-    getToggleControl('alt').checked = toggleCommand.alt;
-    getToggleControl('ctrl').checked = toggleCommand.ctrl;
-    getToggleControl('shift').checked = toggleCommand.shift;
-    if (getToggleControl('macctrl')) {
-      getToggleControl('macctrl').checked = toggleCommand.macCtrl;
-    }
-    getToggleControl('key').value = toggleCommand.key;
-    showToggleCommandSupport(toggleCommand);
-  } catch (e) {
-    browser.runtime.sendMessage({
-      type: 'reportWarning',
-      message: `Unable to parse toggleKey: ${config.toggleKey}`,
+  getConfiguredToggleKeyValue()
+    .then((toggleCommand) => {
+      const getToggleControl = (part: string): HTMLInputElement =>
+        document.getElementById(`toggle-${part}`) as HTMLInputElement;
+      getToggleControl('alt').checked = !!toggleCommand?.alt;
+      getToggleControl('ctrl').checked = !!toggleCommand?.ctrl;
+      getToggleControl('shift').checked = !!toggleCommand?.shift;
+      if (getToggleControl('macctrl')) {
+        getToggleControl('macctrl').checked = !!toggleCommand?.macCtrl;
+      }
+      getToggleControl('key').value = toggleCommand?.key || '';
+    })
+    .catch((e) => {
+      console.error(e);
+      if (browserPort) {
+        browserPort.postMessage(reportError(e.message));
+      }
     });
-  }
 
   // Note that this setting is hidden in active-tab only mode
   const holdKeyParts: Array<string> =

@@ -34,6 +34,15 @@
   margin-bottom: 0;
 }
 
+/*
+ * Fix Firefox browser_styles which doesn't seem to define disabled colors
+ * for checkboxes.
+ */
+:root.firefox .browser-style > input[type='checkbox']:checked:disabled {
+  background-color: gray;
+  border-color: darkgray;
+}
+
 #tenten-ja-options,
 #tenten-ja-options td {
   padding: 0 10px;
@@ -254,9 +263,11 @@ fieldset {
  * shortcut.
  */
 .key input[type='checkbox']:not(:checked) + label .key-box {
-  opacity: 0.6;
-  border-style: dashed;
+  opacity: 0.5;
   border-bottom-style: solid;
+}
+.key input[type='checkbox']:disabled + label .key-box {
+  opacity: 0.5;
 }
 .key-description {
   padding: 0.5rem;
@@ -303,10 +314,8 @@ fieldset {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
   padding: 8px 16px;
-  background: hsl(45, 100%, 96%);
-  border: 1px solid hsl(43, 77%, 27%);
+  border: 1px solid gray;
   border-radius: 8px;
-  color: hsl(43, 77%, 27%);
 }
 .key-extended-explanation#browser-commands-alternative {
   display: none;

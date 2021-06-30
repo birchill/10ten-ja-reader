@@ -27,7 +27,6 @@ import {
   getReferencesForLang,
 } from './refs';
 import { stripFields } from './strip-fields';
-import { isMac } from './ua-utils';
 
 // We represent the set of references that have been turned on as a series
 // of true or false values.
@@ -60,7 +59,6 @@ interface Settings {
   readingOnly?: boolean;
   accentDisplay?: AccentDisplay;
   posDisplay?: PartOfSpeechDisplay;
-  toggleKey?: string;
   holdToShowKeys?: string;
   keys?: Partial<StoredKeyboardKeys>;
   contextMenuEnable?: boolean;
@@ -224,7 +222,6 @@ export class Config {
         // it either.
         case 'popupStyle':
         case 'contextMenuEnable':
-        case 'toggleKey':
           updatedChanges[key] = { ...changes[key] };
           if (
             typeof updatedChanges[key].newValue === 'undefined' ||
@@ -348,40 +345,6 @@ export class Config {
 
     this._settings.posDisplay = value;
     browser.storage.sync.set({ posDisplay: value });
-  }
-
-  // toggleKey: Default is 'Alt+R' (or sometimes MacCtrl+Ctrl+R)
-  //
-  // Note that we'd like to derive this default from the manifest but,
-  // as far as I can tell, browser.commands.getAll() won't necessarily give us
-  // what's in the manifest. That is, if we update the command, it will give us
-  // the updated value instead.
-  //
-  // As a result, we don't really have a way of determining the true default
-  // programmatically, so we just hard-code the value here and hope it matches
-  // the manifest.
-  //
-  // While this could be an array value, it complicates the options form if we
-  // have to deal with that, so for now we just allow a single shortcut.
-
-  get toggleKey(): string {
-    return typeof this._settings.toggleKey === 'undefined'
-      ? __ALLOW_MAC_CTRL__ && isMac()
-        ? 'MacCtrl+Ctrl+R'
-        : 'Alt+R'
-      : this._settings.toggleKey;
-  }
-
-  set toggleKey(value: string) {
-    if (
-      typeof this._settings.toggleKey !== 'undefined' &&
-      this._settings.toggleKey === value
-    ) {
-      return;
-    }
-
-    this._settings.toggleKey = value;
-    browser.storage.sync.set({ toggleKey: value });
   }
 
   // holdToShowKeys: Defaults to null

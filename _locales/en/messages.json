@@ -1306,15 +1306,15 @@
     "description": "Label for not showing pitch accent information"
   },
   "options_browser_commands_no_toggle_key": {
-    "message": "The toggle key cannot be configured here.",
+    "message": "This shortcut key cannot be configured in this browser.",
     "description": "Descriptive text used for other browsers which do not permit configuring extension keys from the extension itself."
   },
   "options_browser_commands_no_toggle_key_chrome": {
-    "message": "The toggle key cannot be configured here. Please visit chrome://extensions/shortcuts instead.",
+    "message": "Please visit chrome://extensions/shortcuts to configure this shortcut key.",
     "description": "Descriptive text used for Chrome which does not permit configuring extension keys from the extension itself."
   },
   "options_browser_commands_no_toggle_key_edge": {
-    "message": "The toggle key cannot be configured here. Please visit edge://extensions/shortcuts instead.",
+    "message": "Please visit edge://extensions/shortcuts to configure this shortcut key.",
     "description": "Descriptive text used for Edge which does not permit configuring extension keys from the extension itself."
   },
   "options_bushu_data_name": {

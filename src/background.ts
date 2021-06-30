@@ -141,28 +141,6 @@ config.addChangeListener((changes) => {
     }
   }
 
-  // Update toggle key
-  if (
-    changes.hasOwnProperty('toggleKey') &&
-    browser.commands &&
-    typeof (browser.commands as any).update === 'function'
-  ) {
-    try {
-      (browser.commands as any).update({
-        name: '_execute_browser_action',
-        shortcut: (changes as any).toggleKey.newValue,
-      });
-    } catch (e) {
-      const message = `Failed to update toggle key to ${
-        (changes as any).toggleKey.newValue
-      }`;
-      console.error(message);
-      Bugsnag.notify(message, (event) => {
-        event.severity = 'warning';
-      });
-    }
-  }
-
   // Update dictionary language
   if (changes.hasOwnProperty('dictLang')) {
     const newLang = (changes as any).dictLang.newValue;
@@ -181,41 +159,6 @@ config.ready.then(async () => {
 
   if (config.contextMenuEnable) {
     addContextMenu();
-  }
-
-  // I'm not sure if this can actually happen, but just in case, update the
-  // toggleKey command if it differs from what is currently set.
-  if (
-    browser.commands &&
-    typeof (browser.commands as any).update === 'function'
-  ) {
-    const getToggleCommand =
-      async (): Promise<Browser.Commands.Command | null> => {
-        const commands = await browser.commands.getAll();
-        for (const command of commands) {
-          if (command.name === '_execute_browser_action') {
-            return command;
-          }
-        }
-        return null;
-      };
-
-    getToggleCommand().then((command: Browser.Commands.Command | null) => {
-      if (command && command.shortcut !== config.toggleKey) {
-        try {
-          (browser.commands as any).update({
-            name: '_execute_browser_action',
-            shortcut: config.toggleKey,
-          });
-        } catch (e) {
-          const message = `On startup, failed to update toggle key to ${config.toggleKey}`;
-          console.error(message);
-          Bugsnag.notify(message, (event) => {
-            event.severity = 'warning';
-          });
-        }
-      }
-    });
   }
 });
 

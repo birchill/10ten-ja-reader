@@ -1310,11 +1310,11 @@
     "description": "Descriptive text used for other browsers which do not permit configuring extension keys from the extension itself."
   },
   "options_browser_commands_no_toggle_key_chrome": {
-    "message": "您无法在浏览器中在此处更改此快捷键。 请访问chrome://extensions/shortcuts并更改设置。",
+    "message": "如果要更改此快捷键，请访问chrome://extensions/shortcuts并更改设置。",
     "description": "Descriptive text used for Chrome which does not permit configuring extension keys from the extension itself."
   },
   "options_browser_commands_no_toggle_key_edge": {
-    "message": "您无法在浏览器中在此处更改此快捷键。 请访问edge://extensions/shortcuts并更改设置。",
+    "message": "如果要更改此快捷键，请访问edge://extensions/shortcuts并更改设置。",
     "description": "Descriptive text used for Edge which does not permit configuring extension keys from the extension itself."
   },
   "options_bushu_data_name": {

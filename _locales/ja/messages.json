@@ -1313,11 +1313,11 @@
     "description": "Descriptive text used for other browsers which do not permit configuring extension keys from the extension itself."
   },
   "options_browser_commands_no_toggle_key_chrome": {
-    "message": "お使いになっているブラウザーではこちらでこのショートカットキーを変更していただけません。 chrome://extensions/shortcuts をアクセスし、設定変更を行ってください。",
+    "message": "このショートカットキーを変更する場合、 chrome://extensions/shortcuts をアクセスし、設定変更を行ってください。",
     "description": "Descriptive text used for Chrome which does not permit configuring extension keys from the extension itself."
   },
   "options_browser_commands_no_toggle_key_edge": {
-    "message": "お使いになっているブラウザーではこちらでこのショートカットキーを変更していただけません。 edge://extensions/shortcuts をアクセスし、設定変更を行ってください。",
+    "message": "このショートカットキーを変更する場合、 edge://extensions/shortcuts をアクセスし、設定変更を行ってください。",
     "description": "Descriptive text used for Edge which does not permit configuring extension keys from the extension itself."
   },
   "options_bushu_data_name": {

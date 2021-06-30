@@ -123,8 +123,6 @@ class MockStorageArea {
   }
 }
 
-(global as any).__ALLOW_MAC_CTRL__ = false;
-
 describe('Config', () => {
   let languageGetter: jest.SpyInstance<readonly string[], []>;
 
@@ -142,7 +140,6 @@ describe('Config', () => {
     expect(config.readingOnly).toEqual(false);
     expect(config.accentDisplay).toEqual('binary');
     expect(config.posDisplay).toEqual('expl');
-    expect(config.toggleKey).toEqual('Alt+R');
     expect(config.holdToShowKeys).toEqual(null);
     expect(config.keys).toEqual({
       toggleDefinition: [],
