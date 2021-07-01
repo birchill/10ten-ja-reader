@@ -1,6 +1,5 @@
 import Bugsnag from '@bugsnag/browser';
 import {
-  AbortError,
   DataSeries,
   DataSeriesState,
   DataVersion,
@@ -334,39 +333,14 @@ export async function searchWords({
     }
   }
 
-  // Setup a list of strings to try that includes all the possible expansions of
-  // ー characters.
-  const candidateWords = [word, ...expandChoon(word)];
-
-  // Try replacing kyuujitai with shinjitai too
-  const toNew = kyuujitaiToShinjitai(word);
-  if (toNew !== word) {
-    candidateWords.push(toNew);
-  }
-
-  let result: WordSearchResult | null = null;
-  for (const candidate of candidateWords) {
-    // Searching for strings with choon can take a particularly long time so
-    // we should check if we've been aborted before proceeding with the next
-    // candidate.
-    if (abortSignal?.aborted) {
-      throw new AbortError();
-    }
-
-    // Try this particular expansion of any choon
-    const thisResult = await wordSearch({
-      getWords,
-      input: candidate,
-      inputLengths,
-      maxResults,
-      includeRomaji,
-    });
-
-    // Replace the result if we got a longer match
-    if (!result || (thisResult && thisResult.matchLen > result.matchLen)) {
-      result = thisResult;
-    }
-  }
+  const result = await wordSearch({
+    abortSignal,
+    getWords,
+    input: word,
+    inputLengths,
+    maxResults,
+    includeRomaji,
+  });
 
   // Annotate the result with the database status
   return result ? { ...result, dbUnavailable } : null;

@@ -1,4 +1,5 @@
-import { PartOfSpeech } from '@birchill/hikibiki-data';
+import { AbortError, PartOfSpeech } from '@birchill/hikibiki-data';
+import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
 import { browser } from 'webextension-polyfill-ts';
 
 import {
@@ -21,97 +22,77 @@ export type GetWordsFunction = (params: {
 }) => Promise<Array<DictionaryWordResult>>;
 
 export async function wordSearch({
+  abortSignal,
   getWords,
   input,
   inputLengths,
   maxResults,
   includeRomaji,
 }: {
+  abortSignal?: AbortSignal;
   getWords: GetWordsFunction;
   input: string;
   inputLengths: Array<number>;
   maxResults: number;
   includeRomaji: boolean;
 }): Promise<WordSearchResult | null> {
-  let longestMatch: number = 0;
-
+  let longestMatch = 0;
   let have: Set<number> = new Set();
-
   let result: WordSearchResult = {
     type: 'words',
     data: [],
     more: false,
     matchLen: 0,
   };
+  let includeVariants = true;
 
   while (input.length) {
+    // Check if we have been aborted
+    if (abortSignal?.aborted) {
+      throw new AbortError();
+    }
+
     // If we include a de-inflected substring we show it in the reasons string.
     const showInflections = !!result.data.length;
-    const candidates: Array<CandidateWord> = deinflect(input);
 
-    for (const [candidateIndex, candidate] of candidates.entries()) {
-      let matches = await getWords({ input: candidate.word, maxResults });
+    const variations = [input];
 
-      // Drop matches we already have in our result
-      matches = matches.filter((match) => !have.has(match.id));
+    // Generate variations on this substring
+    if (includeVariants) {
+      // Expand ー to its various possibilities
+      variations.push(...expandChoon(input));
 
-      // The first candidate is the full string, anything after that is a
-      // possible deinflection.
-      //
-      // The deinflection code, however, doesn't know anything about the actual
-      // words. It just produces possible deinflections along with a type that
-      // says what kind of a word (e.g. godan verb, i-adjective etc.) it must be
-      // in order for that deinflection to be valid.
-      //
-      // So, if we have a possible deinflection, we need to check that it
-      // matches the kind of word we looked up.
-      matches = matches.filter(
-        (match) =>
-          candidateIndex === 0 || entryMatchesType(match, candidate.type)
-      );
+      // See if there are any 旧字体 we can convert to 新字体
+      const toNew = kyuujitaiToShinjitai(input);
+      if (toNew !== input) {
+        variations.push(toNew);
+      }
+    }
 
-      if (!matches.length) {
+    for (const variant of variations) {
+      let wordResults = await lookupCandidates({
+        existingEntries: have,
+        getWords,
+        input: variant,
+        includeRomaji,
+        maxResults,
+        showInflections,
+      });
+
+      if (!wordResults.length) {
         continue;
       }
 
       // Now that we have filtered our set of matches to those we plan to keep
       // update our duplicates set.
-      have = new Set([...have, ...matches.map((match) => match.id)]);
+      have = new Set([...have, ...wordResults.map((word) => word.id)]);
 
       // And now that we know we will add at least one entry for this candidate
       // we can update our longest match length.
       longestMatch = Math.max(longestMatch, inputLengths[input.length]);
 
-      // Generate the reason string
-      let reason: string | undefined;
-      if (candidate.reasons.length) {
-        reason =
-          '< ' +
-          candidate.reasons
-            .map((reasonList) =>
-              reasonList
-                .map((reason) =>
-                  browser.i18n.getMessage(deinflectL10NKeys[reason])
-                )
-                .join(' < ')
-            )
-            .join(browser.i18n.getMessage('deinflect_alternate'));
-        if (showInflections) {
-          reason += ` < ${input}`;
-        }
-      }
-
       // Process each match into a suitable result
-      for (const match of matches) {
-        const wordResult: WordResult = {
-          ...match,
-          reason,
-        };
-
-        if (includeRomaji) {
-          wordResult.romaji = match.r.map((r) => toRomaji(r.ent));
-        }
-
+      for (const wordResult of wordResults) {
         result.data.push(wordResult);
 
         if (result.data.length >= maxResults) {
@@ -119,6 +100,11 @@ export async function wordSearch({
           break;
         }
       }
+
+      // Continue refining this variant excluding all others
+      input = variant;
+      includeVariants = false;
+      break;
     }
 
     if (result.data.length >= maxResults) {
@@ -135,6 +121,114 @@ export async function wordSearch({
   }
 
   result.matchLen = longestMatch;
+  return result;
+}
+
+async function lookupCandidates({
+  existingEntries,
+  getWords,
+  includeRomaji,
+  input,
+  maxResults,
+  showInflections,
+}: {
+  existingEntries: Set<number>;
+  getWords: GetWordsFunction;
+  includeRomaji: boolean;
+  input: string;
+  maxResults: number;
+  showInflections: boolean;
+}): Promise<Array<WordResult>> {
+  const result: Array<WordResult> = [];
+
+  const candidates: Array<CandidateWord> = deinflect(input);
+  for (const [candidateIndex, candidate] of candidates.entries()) {
+    let wordResults = await lookupCandidate({
+      candidate,
+      getWords,
+      includeRomaji,
+      originalInput: input,
+      isDeinflection: candidateIndex !== 0,
+      maxResults,
+      showInflections,
+    });
+
+    // Drop redundant results
+    wordResults = wordResults.filter((word) => !existingEntries.has(word.id));
+
+    result.push(...wordResults);
+  }
+
+  return result;
+}
+
+async function lookupCandidate({
+  candidate,
+  getWords,
+  includeRomaji,
+  originalInput: input,
+  isDeinflection,
+  maxResults,
+  showInflections,
+}: {
+  candidate: CandidateWord;
+  getWords: GetWordsFunction;
+  includeRomaji: boolean;
+  originalInput: string;
+  isDeinflection: boolean;
+  maxResults: number;
+  showInflections: boolean;
+}): Promise<Array<WordResult>> {
+  let matches = await getWords({ input: candidate.word, maxResults });
+
+  // The deinflection code doesn't know anything about the actual words. It just
+  // produces possible deinflections along with a type that says what kind of a
+  // word (e.g. godan verb, i-adjective etc.) it must be in order for that
+  // deinflection to be valid.
+  //
+  // So, if we have a possible deinflection, we need to check that it matches
+  // the kind of word we looked up.
+  matches = matches.filter(
+    (match) => !isDeinflection || entryMatchesType(match, candidate.type)
+  );
+
+  if (!matches.length) {
+    return [];
+  }
+
+  // Generate the reason string
+  let reason: string | undefined;
+  if (candidate.reasons.length) {
+    reason =
+      '< ' +
+      candidate.reasons
+        .map((reasonList) =>
+          reasonList
+            .map((reason) => browser.i18n.getMessage(deinflectL10NKeys[reason]))
+            .join(' < ')
+        )
+        .join(browser.i18n.getMessage('deinflect_alternate'));
+    if (showInflections) {
+      reason += ` < ${input}`;
+    }
+  }
+
+  // Process each match into a suitable result
+  const result: Array<WordResult> = [];
+
+  for (const match of matches) {
+    const wordResult: WordResult = {
+      ...match,
+      reason,
+    };
+
+    if (includeRomaji) {
+      wordResult.romaji = match.r.map((r) => toRomaji(r.ent));
+    }
+
+    result.push(wordResult);
+  }
+
   return result;
 }
 
