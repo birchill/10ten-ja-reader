@@ -169,6 +169,7 @@ const safariConfig = buildExtConfig({
   // Safari defaults to loading JS as Latin so make sure we add a UTF-8 BOM
   addBom: true,
   distFolder: 'dist-safari',
+  isSafari: true,
   supportsBrowserStyle: true,
   useEventPage: true,
 });
@@ -194,6 +195,7 @@ function buildExtConfig({
   distFolder,
   isChrome = false,
   isEdge = false,
+  isSafari = false,
   includeRikaichampName = false,
   needsClipboardWrite = true,
   supportsAlphaVersion = false,
@@ -222,6 +224,10 @@ function buildExtConfig({
 
   if (isEdge) {
     preprocessorFeatures.push('is_edge');
+  }
+
+  if (isSafari) {
+    preprocessorFeatures.push('is_safari');
   }
 
   if (needsClipboardWrite) {
