@@ -7,6 +7,7 @@ describe('Command', () => {
     alt: boolean;
     ctrl: boolean;
     shift: boolean;
+    macCtrl: boolean;
     key: string;
   };
   const expected = (
@@ -17,6 +18,7 @@ describe('Command', () => {
       alt: modifiers.includes('alt'),
       ctrl: modifiers.includes('ctrl'),
       shift: modifiers.includes('shift'),
+      macCtrl: modifiers.includes('macCtrl'),
       key,
     };
   };
@@ -25,9 +27,14 @@ describe('Command', () => {
     const tests = [
       { input: 'Alt+T', expected: expected(['alt'], 'T') },
       { input: 'Alt+Shift+T', expected: expected(['alt', 'shift'], 'T') },
+      { input: 'Alt + Shift + T', expected: expected(['alt', 'shift'], 'T') },
       { input: 'F11', expected: expected([], 'F11') },
       { input: 'F1', expected: expected([], 'F1') },
       { input: 'MediaStop', expected: expected([], 'MediaStop') },
+      // Chrome on Mac does this �‍♂️
+      { input: '⌥⇧R', expected: expected(['alt', 'shift'], 'R') },
+      { input: '⌃⌘R', expected: expected(['macCtrl', 'ctrl'], 'R') },
+      { input: '⌃⇧R', expected: expected(['macCtrl', 'shift'], 'R') },
     ];
     for (const test of tests) {
       const command = Command.fromString(test.input);
@@ -35,6 +42,7 @@ describe('Command', () => {
         alt: command.alt,
         ctrl: command.ctrl,
         shift: command.shift,
+        macCtrl: command.macCtrl,
         key: command.key,
       }).toEqual(test.expected);
     }
@@ -46,15 +54,7 @@ describe('Command', () => {
       'Alt+t', // Lowercase
       'Shift+T', // Shift can't be primary modifier
       'Alt+Shift+Ctrl+T', // Too many modifiers
-      'Alt++T', // Malformed
       '+T',
-      '+Alt+T',
-      'Alt+T+',
-      'Alt + T',
-      'Alt+ T',
-      'Alt +T',
-      ' Alt+T',
-      'Alt+T ',
       'Alt+あ', // Not in A-Z range
       'F0', // Not a valid function key
       'F13',
@@ -90,6 +90,10 @@ describe('Command', () => {
       { input: { key: 'F11' }, expected: expected([], 'F11') },
       { input: { key: 'F1' }, expected: expected([], 'F1') },
       { input: { key: 'MediaStop' }, expected: expected([], 'MediaStop') },
+      {
+        input: { ctrl: true, macCtrl: true, key: 'R' },
+        expected: expected(['ctrl', 'macCtrl'], 'R'),
+      },
     ];
     for (const test of tests) {
       const command = Command.fromParams(test.input);
@@ -97,6 +101,7 @@ describe('Command', () => {
         alt: command.alt,
         ctrl: command.ctrl,
         shift: command.shift,
+        macCtrl: command.macCtrl,
         key: command.key,
       }).toEqual(test.expected);
     }

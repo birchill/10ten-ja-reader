@@ -8,8 +8,21 @@ export interface CommandParams {
   key: string;
 }
 
-const PRIMARY_MODIFIER_KEYS = ['Ctrl', 'Alt', 'MacCtrl', 'Command'];
-const SECONDARY_MODIFIER_KEYS = ['Ctrl', 'Alt', 'Shift', 'MacCtrl', 'Command'];
+const PRIMARY_MODIFIER_MAP: { [key: string]: PrimaryModifier } = {
+  Ctrl: 'Ctrl',
+  Command: 'Ctrl',
+  '⌘': 'Ctrl',
+  Alt: 'Alt',
+  '⌥': 'Alt',
+  MacCtrl: 'MacCtrl',
+  '⌃': 'MacCtrl',
+};
+
+const SECONDARY_MODIFIER_MAP: { [key: string]: SecondaryModifier } = {
+  ...PRIMARY_MODIFIER_MAP,
+  Shift: 'Shift',
+  '⇧': 'Shift',
+};
 
 const MEDIA_KEYS = [
   'MediaNextTrack',
@@ -73,7 +86,13 @@ export class Command {
       return new Command(value);
     }
 
-    const parts = value.split('+');
+    // Normally keys take the form Alt+Ctrl+R etc. but Chrome on Mac represents
+    // the different modifiers as ⌥⇧⌃⌘.
+    const parts = value
+      .split(/([⌥⇧⌃⌘])|\+/)
+      .filter(Boolean)
+      .map((key) => key.trim());
+
     if (!parts.length || parts.length > 3) {
       throw new Error(
         browser.i18n.getMessage('error_command_could_not_parse', value)
@@ -93,7 +112,7 @@ export class Command {
 
     if (
       !isFunctionKey(key) &&
-      (parts.length < 2 || !PRIMARY_MODIFIER_KEYS.includes(parts[0]))
+      (parts.length < 2 || !PRIMARY_MODIFIER_MAP.hasOwnProperty(parts[0]))
     ) {
       throw new Error(
         browser.i18n.getMessage('error_command_is_missing_modifier_key')
@@ -102,7 +121,7 @@ export class Command {
 
     let modifier: PrimaryModifier | undefined;
     if (parts.length > 1) {
-      if (!PRIMARY_MODIFIER_KEYS.includes(parts[0])) {
+      if (!PRIMARY_MODIFIER_MAP.hasOwnProperty(parts[0])) {
         throw new Error(
           browser.i18n.getMessage(
             'error_command_disallowed_modifier_key',
@@ -111,16 +130,12 @@ export class Command {
         );
       }
 
-      if (parts[0] === 'Command') {
-        modifier = 'Ctrl';
-      } else {
-        modifier = parts[0] as PrimaryModifier;
-      }
+      modifier = PRIMARY_MODIFIER_MAP[parts[0]];
     }
 
     let secondaryModifier: SecondaryModifier | undefined;
     if (parts.length > 2) {
-      if (!SECONDARY_MODIFIER_KEYS.includes(parts[1])) {
+      if (!SECONDARY_MODIFIER_MAP.hasOwnProperty(parts[1])) {
         throw new Error(
           browser.i18n.getMessage(
             'error_command_disallowed_modifier_key',
@@ -129,11 +144,7 @@ export class Command {
         );
       }
 
-      if (parts[1] === 'Command') {
-        secondaryModifier = 'Ctrl';
-      } else {
-        secondaryModifier = parts[1] as PrimaryModifier;
-      }
+      secondaryModifier = SECONDARY_MODIFIER_MAP[parts[1]];
     }
 
     // There are a few other checks we could do such as:
