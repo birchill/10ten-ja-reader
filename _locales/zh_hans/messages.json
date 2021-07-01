@@ -1541,7 +1541,7 @@
     "message": "复制词语或汉字"
   },
   "options_popup_kanji_lookup": {
-    "message": "只显示汉字结果 ",
+    "message": "只检查汉字结果",
     "description": "Label for the key to force looking up the kanji dictionary only"
   },
   "options_popup_keys_subheading": {

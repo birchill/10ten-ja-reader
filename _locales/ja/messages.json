@@ -1544,7 +1544,7 @@
     "message": "単語又は漢字をコピーする"
   },
   "options_popup_kanji_lookup": {
-    "message": "漢字の結果のみ表示する",
+    "message": "漢字の結果のみ調べる",
     "description": "Label for the key to force looking up the kanji dictionary only"
   },
   "options_popup_keys_subheading": {

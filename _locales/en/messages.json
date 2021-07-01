@@ -1541,7 +1541,7 @@
     "message": "Copy word or kanji"
   },
   "options_popup_kanji_lookup": {
-    "message": "Show kanji results only",
+    "message": "Lookup kanji results only",
     "description": "Label for the key to force looking up the kanji dictionary only"
   },
   "options_popup_keys_subheading": {
