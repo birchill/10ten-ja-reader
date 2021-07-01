@@ -6,6 +6,11 @@
   This behavior must be explicitly enabled from the settings page.
   However, it should now work without requiring the "Hold to show pop-up" feature.
 
+- Made toggle key not synchronized so that the full range of modified keys can
+  be used and so that extensions keys configured via the browser UI interoperate
+  with the extension UI better
+  ([#652](https://github.com/birchill/10ten-ja-reader/issues/652)).
+
 ## 1.0.0 (2021-06-15) (Safari only)
 
 - Added new default (gray) theme.

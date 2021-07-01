@@ -10,6 +10,11 @@
   margin-bottom: 6px;
 }
 
+:root:not(.firefox) .browser-style > input[type='text']:disabled,
+:root:not(.firefox) textarea.browser-style:disabled {
+  opacity: 0.5;
+}
+
 :root:not(.firefox) .panel-section-formElements {
   padding-top: 16px;
   padding-bottom: 16px;
@@ -122,7 +127,7 @@ fieldset {
   width: max-content;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 1rem;
+  margin-bottom: 1em;
 }
 
 @media (max-width: 500px) {
@@ -270,21 +275,21 @@ fieldset {
   opacity: 0.5;
 }
 .key-description {
-  padding: 0.5rem;
+  padding: 0.5em;
   /*
    * This magic number makes the baseline of the first line line-up with the
    * labels on the keys.
    */
-  padding-block-start: 0.8rem;
-  padding-inline-start: 1.5rem;
+  padding-block-start: 0.8em;
+  padding-inline-start: 1.5em;
 }
 .key-description .icon {
   display: inline-block;
   vertical-align: top;
-  margin-top: -0.25rem;
-  margin-left: 0.5rem;
-  width: 1.5rem;
-  height: 1.5rem;
+  margin-top: -0.25em;
+  margin-left: 0.5em;
+  width: 1.5em;
+  height: 1.5em;
   background-size: cover;
   background-repeat: no-repeat;
 }

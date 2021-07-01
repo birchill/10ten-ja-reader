@@ -1309,7 +1309,7 @@
     "description": "Label for not showing pitch accent information"
   },
   "options_browser_commands_no_toggle_key": {
-    "message": "お使いになっているブラウザーではこちらでこのショートカットキーを変更していただけません。",
+    "message": "お使いになっているブラウザーではこのショートカットキーを変更していただけません。",
     "description": "Descriptive text used for other browsers which do not permit configuring extension keys from the extension itself."
   },
   "options_browser_commands_no_toggle_key_chrome": {
