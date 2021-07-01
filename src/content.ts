@@ -329,8 +329,10 @@ export class ContentHandler {
     // dictionaries. However, if the user presses, Cmd + Shift + 3, for example,
     // we should ignore the last two keystrokes.
     //
-    // TODO: We should refine this so that if we have exactly the "hold to show"
-    // keys AND shift, we still allow it.
+    // TODO: We should refine this somehow so that it's possible to toggle
+    // dictionaries using Shift while pressing the hold-to-show keys.
+    //
+    // See https://github.com/birchill/10ten-ja-reader/issues/658
     if (
       ev.shiftKey &&
       (ev.ctrlKey || ev.altKey || ev.metaKey || ev.key !== 'Shift')
