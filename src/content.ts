@@ -305,12 +305,20 @@ export class ContentHandler {
   }
 
   onKeyDown(ev: KeyboardEvent) {
-    // If the user pressed the hold-to-show key combination, show the popup if
-    // possible.
+    const textBoxInFocus =
+      document.activeElement && isEditableNode(document.activeElement);
+
+    // If the user pressed the hold-to-show key combination, show the popup
+    // if possible.
+    //
+    // We don't do this when the there is a text box in focus because we
+    // we risk interfering with the text selection when, for example, the
+    // hold-to-show key is Ctrl and the user presses Ctrl+V etc.
     if (this.isHoldToShowKeysMatch(ev)) {
-      if (this.currentPoint && this.currentTarget) {
+      ev.preventDefault();
+
+      if (!textBoxInFocus && this.currentPoint && this.currentTarget) {
         this.tryToUpdatePopup(this.currentPoint, this.currentTarget, 'default');
-        ev.preventDefault();
       }
       return;
     }
@@ -339,8 +347,6 @@ export class ContentHandler {
 
     // If we're focussed on a text-editable node and in typing mode, listen to
     // keystrokes.
-    const textBoxInFocus =
-      document.activeElement && isEditableNode(document.activeElement);
     if (textBoxInFocus && this.typingMode) {
       return;
     }

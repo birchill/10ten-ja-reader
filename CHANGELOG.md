@@ -6,10 +6,16 @@
   This behavior must be explicitly enabled from the settings page.
   However, it should now work without requiring the "Hold to show pop-up" feature.
 
-- Made toggle key not synchronized so that the full range of modified keys can
-  be used and so that extensions keys configured via the browser UI interoperate
-  with the extension UI better
+- Made the shortcut key to toggle the extension on and off no longer be
+  synchronized so that the full range of modified keys can be used and so that
+  extensions keys configured via the browser UI interoperate with the extension
+  UI better
   ([#652](https://github.com/birchill/10ten-ja-reader/issues/652)).
+
+- Made the popup not show up so eagerly when the hold-to-show key(s) is/are
+  pressed and a text box is focussed since it can interfere with copying and
+  pasting.
+  ([#651](https://github.com/birchill/10ten-ja-reader/issues/651)).
 
 ## 1.0.0 (2021-06-15) (Safari only)
 
