@@ -394,6 +394,22 @@ function setToggleKeyWarningState(state: WarningState, message?: string) {
 
 async function getConfiguredToggleKeyValue(): Promise<Command | null> {
   const commands = await browser.commands.getAll();
+
+  // Safari (14.1.1) has a very broken implementation of
+  // chrome.commands.getAll(). It returns an object but it has no properties
+  // and is not iterable.
+  //
+  // There's not much we can do in that case so we just hard code the default
+  // key since Safari also has no way of changing shortcut keys. Hopefully
+  // Safari will fix chrome.commands.getAll() before or at the same time it
+  // provides a way of re-assigning shortcut keys.
+  if (
+    typeof commands === 'object' &&
+    typeof commands[Symbol.iterator] !== 'function'
+  ) {
+    return new Command('R', 'MacCtrl', 'Ctrl');
+  }
+
   for (const command of commands) {
     if (command.name === '_execute_browser_action' && command.shortcut) {
       return Command.fromString(command.shortcut);
