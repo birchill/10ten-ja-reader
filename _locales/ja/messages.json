@@ -1068,6 +1068,22 @@
     "message": "ja",
     "description": "The BCP-47 compatible language code used to tag content from this localization"
   },
+  "measure_jou_label_chuukyouma": {
+    "message": "中京間（東海）",
+    "description": "Label used when presenting alternative conversions between 畳 and square metres"
+  },
+  "measure_jou_label_danchima": {
+    "message": "団地間",
+    "description": "Label used when presenting alternative conversions between 畳 and square metres"
+  },
+  "measure_jou_label_edoma": {
+    "message": "江戸間（東日本）",
+    "description": "Label used when presenting alternative conversions between 畳 and square metres"
+  },
+  "measure_jou_label_kyouma": {
+    "message": "京間（西日本）",
+    "description": "Label used when presenting alternative conversions between 畳 and square metres"
+  },
   "menu_enable_extension": {
     "message": "10ten readerを有効にする",
     "description": "Context menu item to enable the extension."

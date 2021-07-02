@@ -104,18 +104,53 @@ export function extractMeasureMetadata(text: string): MeasureMeta | undefined {
   };
 }
 
-export type ConvertedMeasure = Omit<MeasureMeta, 'matchLen' | 'type'>;
+export type ConvertedMeasure = {
+  unit: '帖' | '畳' | 'm2';
+  value: number;
+  alt?: Array<AlternateMeasure>;
+};
+
+export type AlternateMeasure = {
+  type: 'kyouma' | 'chuukyouma' | 'edoma' | 'danchima';
+  unit: '畳' | 'm2';
+  value: number;
+};
+
+const alternateJouSizes: Array<{
+  type: AlternateMeasure['type'];
+  ratio: number;
+}> = [
+  { type: 'kyouma', ratio: 1.82405 },
+  { type: 'chuukyouma', ratio: 1.6562 },
+  { type: 'edoma', ratio: 1.5488 },
+  { type: 'danchima', ratio: 1.445 },
+];
 
 export function convertMeasure(measure: MeasureMeta): ConvertedMeasure {
   if (measure.unit === 'm2') {
     return {
       unit: '帖',
       value: measure.value / 1.62,
+      alt: alternateJouSizes.map((size) => ({
+        type: size.type,
+        unit: '畳',
+        value: measure.value / size.ratio,
+      })),
     };
   }
 
   return {
     unit: 'm2',
     value: measure.value * 1.62,
+    alt:
+      // Only show alternative sizes of the unit is 畳. If it's 帖 it
+      // means 1.62m2.
+      measure.unit === '畳'
+        ? alternateJouSizes.map((size) => ({
+            type: size.type,
+            unit: 'm2',
+            value: measure.value * size.ratio,
+          }))
+        : undefined,
   };
 }

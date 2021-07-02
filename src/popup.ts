@@ -440,11 +440,11 @@ function renderWordEntries(
 
 function renderEraInfo(meta: EraMeta, eraInfo: EraInfo): HTMLElement {
   const metaDiv = document.createElement('div');
-  metaDiv.classList.add('meta');
+  metaDiv.classList.add('meta', 'era');
   metaDiv.lang = 'ja';
 
   const eraSpan = document.createElement('span');
-  eraSpan.classList.add('era');
+  eraSpan.classList.add('era-name');
 
   const rubyBase = document.createElement('ruby');
   rubyBase.append(meta.era);
@@ -488,25 +488,53 @@ function renderMeasureInfo(meta: MeasureMeta): HTMLElement {
   const converted = convertMeasure(meta);
 
   const metaDiv = document.createElement('div');
-  metaDiv.classList.add('meta');
+  metaDiv.classList.add('meta', 'measure');
   metaDiv.lang = 'ja';
 
+  const mainRow = document.createElement('div');
+  mainRow.classList.add('main');
+  metaDiv.append(mainRow);
+
   const measureSpan = document.createElement('span');
-  measureSpan.classList.add('measure');
+  measureSpan.classList.add('value');
   measureSpan.append(String(meta.value));
   measureSpan.append(renderUnit(meta.unit));
-  metaDiv.append(measureSpan);
+  mainRow.append(measureSpan);
 
   const equalsSpan = document.createElement('span');
   equalsSpan.classList.add('equals');
   equalsSpan.append('=');
-  metaDiv.append(equalsSpan);
+  mainRow.append(equalsSpan);
 
   const convertedSpan = document.createElement('span');
-  convertedSpan.classList.add('measure');
+  convertedSpan.classList.add('value');
   convertedSpan.append(renderValue(converted.value));
   convertedSpan.append(renderUnit(converted.unit));
-  metaDiv.append(convertedSpan);
+  mainRow.append(convertedSpan);
+
+  if (converted.alt) {
+    for (const { type, unit, value } of converted.alt) {
+      const altRow = document.createElement('div');
+      altRow.classList.add('alt');
+
+      const altLabel = document.createElement('span');
+      altLabel.append(browser.i18n.getMessage(`measure_jou_label_${type}`));
+      altRow.append(altLabel);
+
+      const altEquals = document.createElement('span');
+      altEquals.classList.add('equals');
+      altEquals.append('=');
+      altRow.append(altEquals);
+
+      const altValue = document.createElement('span');
+      altValue.classList.add('measure');
+      altValue.append(renderValue(value));
+      altValue.append(renderUnit(unit, { showRuby: false }));
+      altRow.append(altValue);
+
+      metaDiv.append(altRow);
+    }
+  }
 
   return metaDiv;
 }
@@ -515,7 +543,10 @@ function renderValue(value: number): string {
   return String(parseFloat(value.toPrecision(4)));
 }
 
-function renderUnit(unit: MeasureMeta['unit']): HTMLElement {
+function renderUnit(
+  unit: MeasureMeta['unit'],
+  { showRuby = true }: { showRuby?: boolean } = {}
+): HTMLElement {
   const unitSpan = document.createElement('span');
   unitSpan.classList.add('unit');
 
@@ -524,7 +555,7 @@ function renderUnit(unit: MeasureMeta['unit']): HTMLElement {
     const sup = document.createElement('sup');
     sup.append('2');
     unitSpan.append(sup);
-  } else {
+  } else if (showRuby) {
     const rubyBase = document.createElement('ruby');
     rubyBase.append(unit);
 
@@ -540,6 +571,8 @@ function renderUnit(unit: MeasureMeta['unit']): HTMLElement {
     rpClose.append(')');
     rubyBase.append(rpClose);
     unitSpan.append(rubyBase);
+  } else {
+    unitSpan.append(unit);
   }
 
   return unitSpan;
