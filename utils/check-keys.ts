@@ -4,7 +4,7 @@ import * as path from 'path';
 import yargs from 'yargs';
 
 async function main() {
-  const args = yargs
+  const args = await yargs
     .option('locale', {
       alias: 'l',
       type: 'string',
