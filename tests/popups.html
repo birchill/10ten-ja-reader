@@ -321,7 +321,7 @@
         config: {
           ...config,
           showDefinitions: true,
-          meta: { era: '令和', year: 2 },
+          meta: { type: 'era', era: '令和', year: 2 },
         },
       },
       {
@@ -329,7 +329,7 @@
         config: {
           ...config,
           showDefinitions: true,
-          meta: { era: '令和', year: 0 },
+          meta: { type: 'era', era: '令和', year: 0 },
         },
       },
     ];
@@ -352,6 +352,48 @@
           popupStyle: theme,
         });
       }
+    }
+
+    // Measure tests
+
+    const measureTests = [
+      {
+        description: '帖 measure',
+        config: {
+          ...config,
+          showDefinitions: true,
+          meta: { type: 'measure', value: 6, unit: '帖' },
+        },
+      },
+      {
+        description: '畳 measure',
+        config: {
+          ...config,
+          showDefinitions: true,
+          meta: { type: 'measure', value: 4.5, unit: '畳' },
+        },
+      },
+      {
+        description: 'Square metre measure',
+        config: {
+          ...config,
+          showDefinitions: true,
+          meta: { type: 'measure', value: 5, unit: 'm2' },
+        },
+      },
+    ];
+
+    for (const test of measureTests) {
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.append(`【${test.description}】`);
+      container.append(label);
+
+      contentHandler._renderPopup(null, {
+        ...test.config,
+        container: createPopupContainer(),
+        popupStyle: 'light',
+      });
     }
 
     function createPopupContainer() {

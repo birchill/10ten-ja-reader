@@ -614,17 +614,16 @@ export class ContentHandler {
       return;
     }
 
-    if (!queryResult) {
+    if (!queryResult && !textAtPoint.meta) {
       this.clearHighlight(target);
       return;
     }
 
-    if (queryResult.matchLen) {
-      // Adjust matchLen if we are highlighting something meta.
-      let matchLen = queryResult.matchLen;
-      if (textAtPoint.meta) {
-        matchLen = Math.max(textAtPoint.meta.matchLen, matchLen);
-      }
+    const matchLen = Math.max(
+      queryResult?.matchLen || 0,
+      textAtPoint.meta?.matchLen || 0
+    );
+    if (matchLen) {
       this.highlightText(textAtPoint, matchLen);
     }
 
@@ -893,7 +892,7 @@ export class ContentHandler {
   }
 
   showPopup(options?: { copyState?: CopyState; copyType?: CopyType }) {
-    if (!this.currentSearchResult) {
+    if (!this.currentSearchResult && !this.currentTextAtPoint?.meta) {
       this.clearHighlight(this.currentTarget);
       return;
     }
@@ -921,7 +920,11 @@ export class ContentHandler {
       showPriority: this.config.showPriority,
     };
 
-    const popup = renderPopup(this.currentSearchResult!, popupOptions);
+    const popup = renderPopup(this.currentSearchResult, popupOptions);
+    if (!popup) {
+      this.clearHighlight(this.currentTarget);
+      return;
+    }
 
     // Position the popup
     const {

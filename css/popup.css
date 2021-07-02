@@ -650,6 +650,10 @@
   background: var(--meta-bg);
 }
 
+.wordlist .meta:last-child {
+  margin-bottom: 8px;
+}
+
 .wordlist .meta .era,
 .wordlist .meta .era ruby,
 .wordlist .meta .equals,
@@ -673,6 +677,14 @@
 .wordlist .meta .equals {
   padding-left: 5px;
   padding-right: 5px;
+}
+
+.wordlist .meta .measure {
+  font-size: 18px;
+}
+
+.wordlist .meta .measure .unit {
+  padding-left: 3px;
 }
 
 /*

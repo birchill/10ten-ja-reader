@@ -1,11 +1,33 @@
-// This may grow into some union of different meta-like things, but for now it's
-// just used for representing years marked with Japanese eras.
+import { MeasureMeta, extractMeasureMetadata, lookForMeasure } from './measure';
+import { EraMeta, extractEraMetadata, lookForEra } from './years';
 
-export type SelectionMeta = {
-  era: string;
-  // 0 here represents that the matched text used 元年 (equivalent to 1 but we
-  // might want to display it differently).
-  year: number;
-  // The length of the text that matched
-  matchLen: number;
-};
+export type SelectionMeta = EraMeta | MeasureMeta;
+
+export function lookForMetadata({
+  currentText,
+  nodeText,
+  textEnd,
+  textDelimiter,
+}: {
+  currentText: string;
+  nodeText: string;
+  textEnd: number;
+  textDelimiter: RegExp;
+}): {
+  textDelimiter: RegExp;
+  textEnd: number;
+} {
+  return (
+    lookForEra({ currentText, nodeText, textEnd }) ||
+    lookForMeasure({ nodeText, textDelimiter }) || {
+      textDelimiter,
+      textEnd,
+    }
+  );
+}
+
+export function extractGetTextMetadata(
+  text: string
+): SelectionMeta | undefined {
+  return extractEraMetadata(text) || extractMeasureMetadata(text);
+}

@@ -1,6 +1,10 @@
 ## Next version
 
-- (Re-)added the option to show only kanji entries by holding <kbd>Shift</kbd>
+- Added automatic translation of 畳/帖 and square measurements such as
+  四畳半, 6.5 帖, 10㎡, or 十二平米
+  ([#642](https://github.com/birchill/10ten-ja-reader/issues/642)).
+
+- (Re-)added an option to show only kanji entries by holding <kbd>Shift</kbd>
   ([#650](https://github.com/birchill/10ten-ja-reader/issues/650)).
 
   This behavior must be explicitly enabled from the settings page.

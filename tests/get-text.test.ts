@@ -264,7 +264,12 @@ describe('getTextAtPoint', () => {
     });
 
     assertTextResultEqual(result, '昭和56年', textNode, 0, textNode, 5);
-    assert.deepEqual(result!.meta, { era: '昭和', year: 56, matchLen: 5 });
+    assert.deepEqual(result!.meta, {
+      type: 'era',
+      era: '昭和',
+      year: 56,
+      matchLen: 5,
+    });
   });
 
   it('should include the year when recognizing years (full-width)', () => {
@@ -278,7 +283,12 @@ describe('getTextAtPoint', () => {
     });
 
     assertTextResultEqual(result, '昭和５６年に', textNode, 0, textNode, 6);
-    assert.deepEqual(result!.meta, { era: '昭和', year: 56, matchLen: 5 });
+    assert.deepEqual(result!.meta, {
+      type: 'era',
+      era: '昭和',
+      year: 56,
+      matchLen: 5,
+    });
   });
 
   it('should include the year when recognizing years (mixed full-width and half-width)', () => {
@@ -292,7 +302,12 @@ describe('getTextAtPoint', () => {
     });
 
     assertTextResultEqual(result, '昭和５6年', textNode, 0, textNode, 5);
-    assert.deepEqual(result!.meta, { era: '昭和', year: 56, matchLen: 5 });
+    assert.deepEqual(result!.meta, {
+      type: 'era',
+      era: '昭和',
+      year: 56,
+      matchLen: 5,
+    });
   });
 
   it('should include the year when recognizing years and there are spaces', () => {
@@ -307,7 +322,12 @@ describe('getTextAtPoint', () => {
     });
 
     assertTextResultEqual(result, '昭和 56 年', textNode, 0, textNode, 7);
-    assert.deepEqual(result!.meta, { era: '昭和', year: 56, matchLen: 7 });
+    assert.deepEqual(result!.meta, {
+      type: 'era',
+      era: '昭和',
+      year: 56,
+      matchLen: 7,
+    });
   });
 
   it('should include the year when recognizing years and there is no 年', () => {
@@ -322,7 +342,12 @@ describe('getTextAtPoint', () => {
     });
 
     assertTextResultEqual(result, '昭和56', textNode, 0, textNode, 4);
-    assert.deepEqual(result!.meta, { era: '昭和', year: 56, matchLen: 4 });
+    assert.deepEqual(result!.meta, {
+      type: 'era',
+      era: '昭和',
+      year: 56,
+      matchLen: 4,
+    });
   });
 
   it('should include the year when recognizing years and the numbers are in a separate span', () => {
@@ -349,7 +374,12 @@ describe('getTextAtPoint', () => {
       lastTextNode,
       1
     );
-    assert.deepEqual(result!.meta, { era: '昭和', year: 56, matchLen: 5 });
+    assert.deepEqual(result!.meta, {
+      type: 'era',
+      era: '昭和',
+      year: 56,
+      matchLen: 5,
+    });
   });
 
   it('should include the year when recognizing years and the numbers are in a separate span and there is whitespace too', () => {
@@ -373,7 +403,12 @@ describe('getTextAtPoint', () => {
       middleTextNode,
       4
     );
-    assert.deepEqual(result!.meta, { era: '昭和', year: 56, matchLen: 7 });
+    assert.deepEqual(result!.meta, {
+      type: 'era',
+      era: '昭和',
+      year: 56,
+      matchLen: 7,
+    });
   });
 
   it('should include the year when recognizing years and era description finishes exactly at the end of a span', () => {
@@ -397,7 +432,12 @@ describe('getTextAtPoint', () => {
       middleTextNode,
       3
     );
-    assert.deepEqual(result!.meta, { era: '昭和', year: 56, matchLen: 5 });
+    assert.deepEqual(result!.meta, {
+      type: 'era',
+      era: '昭和',
+      year: 56,
+      matchLen: 5,
+    });
   });
 
   it('should recognize 元年 after an era name', () => {
@@ -411,7 +451,12 @@ describe('getTextAtPoint', () => {
     });
 
     assertTextResultEqual(result, '令和元年に', textNode, 0, textNode, 5);
-    assert.deepEqual(result!.meta, { era: '令和', year: 0, matchLen: 4 });
+    assert.deepEqual(result!.meta, {
+      type: 'era',
+      era: '令和',
+      year: 0,
+      matchLen: 4,
+    });
   });
 
   it('should recognize 元年 after an era name even with interleaving whitespace and spans', () => {
@@ -435,7 +480,12 @@ describe('getTextAtPoint', () => {
       spanTextNode,
       2
     );
-    assert.deepEqual(result!.meta, { era: '昭和', year: 0, matchLen: 5 });
+    assert.deepEqual(result!.meta, {
+      type: 'era',
+      era: '昭和',
+      year: 0,
+      matchLen: 5,
+    });
   });
 
   it('should recognize kanji year numbers when recognizing years', () => {
@@ -449,7 +499,12 @@ describe('getTextAtPoint', () => {
     });
 
     assertTextResultEqual(result, '昭和五十六年に', textNode, 0, textNode, 7);
-    assert.deepEqual(result!.meta, { era: '昭和', year: 56, matchLen: 6 });
+    assert.deepEqual(result!.meta, {
+      type: 'era',
+      era: '昭和',
+      year: 56,
+      matchLen: 6,
+    });
   });
 
   it('should stop at delimeters (even when matching years)', () => {
@@ -463,7 +518,50 @@ describe('getTextAtPoint', () => {
     });
 
     assertTextResultEqual(result, '昭和三大馬鹿査定', textNode, 0, textNode, 8);
-    assert.deepEqual(result!.meta, { era: '昭和', year: 3, matchLen: 3 });
+    assert.deepEqual(result!.meta, {
+      type: 'era',
+      era: '昭和',
+      year: 3,
+      matchLen: 3,
+    });
+  });
+
+  it('should recognize 畳 measurements', () => {
+    testDiv.append('面積：6畳です');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 3);
+
+    const result = getTextAtPoint({
+      x: bbox.left,
+      y: bbox.top + bbox.height / 2,
+    });
+
+    assertTextResultEqual(result, '6畳です', textNode, 3, textNode, 7);
+    assert.deepEqual(result!.meta, {
+      type: 'measure',
+      unit: '畳',
+      value: 6,
+      matchLen: 2,
+    });
+  });
+
+  it('should recognize square metre measurements', () => {
+    testDiv.append('面積：4.5 m²です');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 3);
+
+    const result = getTextAtPoint({
+      x: bbox.left,
+      y: bbox.top + bbox.height / 2,
+    });
+
+    assertTextResultEqual(result, '4.5 m²です', textNode, 3, textNode, 11);
+    assert.deepEqual(result!.meta, {
+      type: 'measure',
+      unit: 'm2',
+      value: 4.5,
+      matchLen: 6,
+    });
   });
 
   it('should stop at the maximum number of characters', () => {

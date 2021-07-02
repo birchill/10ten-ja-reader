@@ -19,6 +19,7 @@ import {
   CopyNextKeyStrings,
 } from './copy-keys';
 import { getHash } from './hash';
+import { convertMeasure, MeasureMeta } from './measure';
 import { SelectionMeta } from './meta';
 import { QueryResult } from './query';
 import {
@@ -28,7 +29,7 @@ import {
 } from './refs';
 import { NameResult, Sense, WordResult } from './search-result';
 import { isForeignObjectElement, isSvgDoc, SVG_NS } from './svg';
-import { EraInfo, getEraInfo } from './years';
+import { EraInfo, EraMeta, getEraInfo } from './years';
 
 import popupStyles from '../css/popup.css';
 
@@ -60,9 +61,9 @@ export interface PopupOptions {
 }
 
 export function renderPopup(
-  result: QueryResult,
+  result: QueryResult | null,
   options: PopupOptions
-): HTMLElement {
+): HTMLElement | null {
   const doc = options.document || document;
   const container = options.container || getDefaultContainer(doc);
   const windowElem = resetContainer(container, {
@@ -73,7 +74,7 @@ export function renderPopup(
   // TODO: We should use `options.document` everywhere in this file and in
   // the other methods too.
 
-  switch (result.type) {
+  switch (result?.type) {
     case 'kanji':
       windowElem.append(renderKanjiEntry(result.data, options));
       break;
@@ -82,7 +83,7 @@ export function renderPopup(
       windowElem.append(renderNamesEntries(result.data, result.more, options));
       break;
 
-    default:
+    case 'words':
       windowElem.append(
         renderWordEntries(
           result.data,
@@ -93,6 +94,24 @@ export function renderPopup(
           options
         )
       );
+      break;
+
+    default:
+      {
+        if (!options.meta) {
+          return null;
+        }
+
+        const metadata = renderMetadata(options.meta);
+        if (!metadata) {
+          return null;
+        }
+
+        const metaDataContainer = document.createElement('div');
+        metaDataContainer.classList.add('wordlist');
+        metaDataContainer.append(metadata);
+        windowElem.append(metaDataContainer);
+      }
       break;
   }
 
@@ -300,9 +319,9 @@ function renderWordEntries(
   }
 
   if (options.meta) {
-    const eraInfo = getEraInfo(options.meta.era);
-    if (eraInfo) {
-      container.append(renderEraInfo(options.meta, eraInfo));
+    const metadata = renderMetadata(options.meta);
+    if (metadata) {
+      container.append(metadata);
     }
   }
 
@@ -419,7 +438,7 @@ function renderWordEntries(
   return container;
 }
 
-function renderEraInfo(meta: SelectionMeta, eraInfo: EraInfo): HTMLElement {
+function renderEraInfo(meta: EraMeta, eraInfo: EraInfo): HTMLElement {
   const metaDiv = document.createElement('div');
   metaDiv.classList.add('meta');
   metaDiv.lang = 'ja';
@@ -463,6 +482,67 @@ function renderEraInfo(meta: SelectionMeta, eraInfo: EraInfo): HTMLElement {
   metaDiv.append(seirekiSpan);
 
   return metaDiv;
+}
+
+function renderMeasureInfo(meta: MeasureMeta): HTMLElement {
+  const converted = convertMeasure(meta);
+
+  const metaDiv = document.createElement('div');
+  metaDiv.classList.add('meta');
+  metaDiv.lang = 'ja';
+
+  const measureSpan = document.createElement('span');
+  measureSpan.classList.add('measure');
+  measureSpan.append(String(meta.value));
+  measureSpan.append(renderUnit(meta.unit));
+  metaDiv.append(measureSpan);
+
+  const equalsSpan = document.createElement('span');
+  equalsSpan.classList.add('equals');
+  equalsSpan.append('=');
+  metaDiv.append(equalsSpan);
+
+  const convertedSpan = document.createElement('span');
+  convertedSpan.classList.add('measure');
+  convertedSpan.append(renderValue(converted.value));
+  convertedSpan.append(renderUnit(converted.unit));
+  metaDiv.append(convertedSpan);
+
+  return metaDiv;
+}
+
+function renderValue(value: number): string {
+  return String(parseFloat(value.toPrecision(4)));
+}
+
+function renderUnit(unit: MeasureMeta['unit']): HTMLElement {
+  const unitSpan = document.createElement('span');
+  unitSpan.classList.add('unit');
+
+  if (unit === 'm2') {
+    unitSpan.append('m');
+    const sup = document.createElement('sup');
+    sup.append('2');
+    unitSpan.append(sup);
+  } else {
+    const rubyBase = document.createElement('ruby');
+    rubyBase.append(unit);
+
+    const rpOpen = document.createElement('rp');
+    rpOpen.append('(');
+    rubyBase.append(rpOpen);
+
+    const rubyText = document.createElement('rt');
+    rubyText.append('じょう');
+    rubyBase.append(rubyText);
+
+    const rpClose = document.createElement('rp');
+    rpClose.append(')');
+    rubyBase.append(rpClose);
+    unitSpan.append(rubyBase);
+  }
+
+  return unitSpan;
 }
 
 function renderBonusNames(
@@ -1502,6 +1582,24 @@ function renderReferences(
   }
 
   return referenceTable;
+}
+
+function renderMetadata(meta: SelectionMeta): HTMLElement | null {
+  switch (meta.type) {
+    case 'era':
+      {
+        const eraInfo = getEraInfo(meta.era);
+        if (eraInfo) {
+          return renderEraInfo(meta, eraInfo);
+        }
+      }
+      break;
+
+    case 'measure':
+      return renderMeasureInfo(meta);
+  }
+
+  return null;
 }
 
 function renderCopyDetails(

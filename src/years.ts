@@ -1,3 +1,46 @@
+import { kanji } from './char-range';
+import { kanjiToNumber } from './numbers';
+
+const nonEraCharacter = /[^\s0-9０-９一二三四五六七八九十百元年]/;
+
+export function lookForEra({
+  currentText,
+  nodeText,
+  textEnd,
+}: {
+  currentText: string;
+  nodeText: string;
+  textEnd: number;
+}): {
+  textDelimiter: RegExp;
+  textEnd: number;
+} | null {
+  if (textEnd < 0 || !startsWithEraName(currentText)) {
+    return null;
+  }
+
+  const endOfEra = nodeText.substring(textEnd).search(nonEraCharacter);
+
+  return {
+    textDelimiter: nonEraCharacter,
+    textEnd: endOfEra === -1 ? -1 : textEnd + endOfEra,
+  };
+}
+
+export function startsWithEraName(text: string): boolean {
+  const maxEraLength = Math.max(
+    ...Array.from(yearMap.keys()).map((key) => key.length)
+  );
+
+  for (let i = 1; i <= text.length && i <= maxEraLength; i++) {
+    if (yearMap.has(text.substring(0, i))) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 export type EraInfo = {
   reading: string;
   start: number;
@@ -272,22 +315,59 @@ const yearMap = new Map<string, EraInfo>([
   ['㋿', { reading: 'れいわ', start: 2019, yomi: 'Reiwa' }],
 ]);
 
-export function isEraName(text: string): boolean {
-  return yearMap.has(text);
-}
+export type EraMeta = {
+  type: 'era';
+  era: string;
+  // 0 here represents that the matched text used 元年 (equivalent to 1 but we
+  // might want to display it differently).
+  year: number;
+  // The length of the text that matched
+  matchLen: number;
+};
 
-export function startsWithEraName(text: string): boolean {
-  const maxEraLength = Math.max(
-    ...Array.from(yearMap.keys()).map((key) => key.length)
-  );
+// This is a bit complicated because for a numeric year we don't require the
+// 年 but for 元年 we do. i.e. '令和2' is valid but '令和元' is not.
+const yearRegex = /(?:([0-9０-９〇一二三四五六七八九十百]+)\s*年?|(?:元\s*年))/;
 
-  for (let i = 1; i <= text.length && i <= maxEraLength; i++) {
-    if (yearMap.has(text.substring(0, i))) {
-      return true;
+export function extractEraMetadata(text: string): EraMeta | undefined {
+  // Look for a year
+  const matches = yearRegex.exec(text);
+  if (!matches || matches.index === 0) {
+    return undefined;
+  }
+
+  // Look for an era
+  const era = text.substring(0, matches.index).trim();
+  if (!isEraName(era)) {
+    return undefined;
+  }
+
+  // Parse year
+  let year: number | null = 0;
+  if (typeof matches[1] !== 'undefined') {
+    if (kanji.test(matches[1].substring(0, 1))) {
+      year = kanjiToNumber(matches[1]);
+    } else {
+      year = parseInt(
+        matches[1].replace(/[０-９]/g, (ch) =>
+          String.fromCharCode(ch.charCodeAt(0) - 0xfee0)
+        ),
+        10
+      );
     }
   }
 
-  return false;
+  if (year === null) {
+    return undefined;
+  }
+
+  const matchLen = matches.index + matches[0].length;
+
+  return { type: 'era', era, year, matchLen };
+}
+
+function isEraName(text: string): boolean {
+  return yearMap.has(text);
 }
 
 export function getEraInfo(text: string): EraInfo | undefined {

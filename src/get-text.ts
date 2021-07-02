@@ -1,8 +1,7 @@
+import { nonJapaneseChar } from './char-range';
 import { isTextInputNode, isTextNode } from './dom-utils';
-import { SelectionMeta } from './meta';
-import { kanjiToNumber } from './numbers';
+import { extractGetTextMetadata, lookForMetadata, SelectionMeta } from './meta';
 import { SVG_NS } from './svg';
-import { isEraName, startsWithEraName } from './years';
 
 export interface GetTextAtPointResult {
   text: string;
@@ -427,78 +426,25 @@ function getTextFromTextNode({
     rangeEnds: [],
   };
 
-  // Search for non-Japanese text (or a delimiter of some sort even if it
-  // is "Japanese" in the sense of being full-width).
-  //
-  // * U+FF01~U+FF5E is for full-width alphanumerics (includes some
-  //   punctuation like ＆ and ～ because they appear in the kanji headwords for
-  //   some entries)
-  // * U+25CB is 'white circle' often used to represent a blank
-  //   (U+3007 is an ideographic zero that is also sometimes used for this
-  //   purpose, but this is included in the U+3001~U+30FF range.)
-  // * U+3000~U+30FF is ideographic punctuation but we skip:
-  //
-  //    U+3000 (ideographic space),
-  //    U+3001 (、 ideographic comma),
-  //    U+3002 (。 ideographic full stop),
-  //    U+3003 (〃 ditto mark),
-  //    U+3008,U+3009 (〈〉),
-  //    U+300A,U+300B (《》),
-  //    U+300C,U+300D (「」 corner brackets for quotations),
-  //                  [ENAMDICT actually uses this in one entry,
-  //                  "ウィリアム「バッファロービル」コーディ", but I think we
-  //                  can live without being able to recognize that)
-  //    U+300E,U+300F (『 』), and
-  //    U+3010,U+3011 (【 】),
-  //
-  //   since these are typically only going to delimit words.
-  // * U+3041~U+309F is the hiragana range
-  // * U+30A0~U+30FF is the katakana range
-  // * U+3220~U+3247 is various enclosed characters like ㈵
-  // * U+3280~U+32B0 is various enclosed characters like ㊞
-  // * U+32D0~U+32FF is various enclosed characters like ㋐ and ㋿.
-  // * U+3300~U+3370 is various shorthand characters from the CJK
-  //   compatibility block like ㍍
-  // * U+337B~U+337F is various era names and ㍿
-  // * U+3400~U+4DBF is the CJK Unified Ideographs Extension A block (rare
-  //   kanji)
-  // * U+4E00~U+9FFF is the CJK Unified Ideographs block ("the kanji")
-  // * U+F900~U+FAFF is the CJK Compatibility Ideographs block (random odd
-  //   kanji, because standards)
-  // * U+FF5E is full-width tilde ～ (not 〜 which is a wave dash)
-  // * U+FF61~U+FF65 is some halfwidth ideographic symbols, e.g. ｡ but we
-  //   skip them (although previous rikai-tachi included them) since
-  //   they're mostly going to be delimiters
-  // * U+FF66~U+FF9F is halfwidth katakana
-  // * U+20000~U+2A6DF is CJK Unified Ideographs Extension B (more rare kanji)
-  //
-  const nonJapaneseOrDelimiter =
-    /[^\uff01-\uff5e\u25cb\u3004-\u3007\u3011-\u30ff\u3220-\u3247\u3280-\u32b0\u32d0-\u32ff\u3300-\u3370\u337b-\u337f\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff5e\uff66-\uff9f\u{20000}-\u{2a6df}]/u;
-
-  // If we detect a Japanese era, however, we allow a different set of
-  // characters.
-  const nonEraCharacter = /[^\s0-9０-９一二三四五六七八九十百元年]/;
-  let textDelimiter = nonJapaneseOrDelimiter;
+  let textDelimiter = nonJapaneseChar;
 
   // Look for range ends
   do {
     const nodeText = node.data.substring(offset);
     let textEnd = nodeText.search(textDelimiter);
 
-    // Check for a Japanese era since we use different end delimiters in that
-    // case.
-    if (textDelimiter === nonJapaneseOrDelimiter) {
+    // Check if we are looking at a special metadata string that accepts a
+    // different range of characters.
+    if (textDelimiter === nonJapaneseChar) {
       const currentText =
         result.text +
         nodeText.substring(0, textEnd === -1 ? undefined : textEnd);
-
-      // If we hit a delimiter but the existing text is an era name, we should
-      // re-find the end of this text node.
-      if (textEnd >= 0 && startsWithEraName(currentText)) {
-        textDelimiter = nonEraCharacter;
-        const endOfEra = nodeText.substring(textEnd).search(textDelimiter);
-        textEnd = endOfEra === -1 ? -1 : textEnd + endOfEra;
-      }
+      ({ textDelimiter, textEnd } = lookForMetadata({
+        currentText,
+        nodeText,
+        textDelimiter,
+        textEnd,
+      }));
     }
 
     if (typeof maxLength === 'number' && maxLength >= 0) {
@@ -622,49 +568,6 @@ function getTextFromCoveringLink({
     point,
     maxLength,
   });
-}
-
-// This is a bit complicated because for a numeric year we don't require the
-// 年 but for 元年 we do. i.e. '令和2' is valid but '令和元' is not.
-const yearRegex = /(?:([0-9０-９〇一二三四五六七八九十百]+)\s*年?|(?:元\s*年))/;
-
-function extractGetTextMetadata(text: string): SelectionMeta | undefined {
-  // Look for a year
-  const matches = yearRegex.exec(text);
-  if (!matches || matches.index === 0) {
-    return undefined;
-  }
-
-  // Look for an era
-  const era = text.substring(0, matches.index).trim();
-  if (!isEraName(era)) {
-    return undefined;
-  }
-
-  // Parse year
-  let year: number | null = 0;
-  if (typeof matches[1] !== 'undefined') {
-    // If it's a character in the CJK block, parse as a kanji number
-    const firstCharCode = matches[1].charCodeAt(0);
-    if (firstCharCode >= 0x4e00 && firstCharCode <= 0x9fff) {
-      year = kanjiToNumber(matches[1]);
-    } else {
-      year = parseInt(
-        matches[1].replace(/[０-９]/g, (ch) =>
-          String.fromCharCode(ch.charCodeAt(0) - 0xfee0)
-        ),
-        10
-      );
-    }
-  }
-
-  if (year === null) {
-    return undefined;
-  }
-
-  const matchLen = matches.index + matches[0].length;
-
-  return { era, year, matchLen };
 }
 
 function getTextFromRandomElement(elem: Element): string | null {
