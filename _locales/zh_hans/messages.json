@@ -425,14 +425,6 @@
   "error_command_too_many_modifiers": {
     "message": "过多的修饰键"
   },
-  "error_ctrl_alt_unsupported": {
-    "message": "当前版本的 Firefox 不支持设置同时按下 Alt 和 Ctrl 的组合键",
-    "description": "Tooltip displayed when the user attempts to set a hotkey combination including both Ctrl and Alt in a version of Firefox prior to 63"
-  },
-  "error_ctrl_alt_warning": {
-    "message": "较早版本（低于 63）的 Firefox 不支持设置同时按下 Alt 和 Ctrl 的组合键",
-    "description": "Tooltip displayed when the user attempts to set a hotkey combination including both Ctrl and Alt in a version of Firefox later than 63"
-  },
   "error_loading_dictionary": {
     "message": "词典加载失败，请重试。",
     "description": "Tooltip shown when the dictionary fails to load"

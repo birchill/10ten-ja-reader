@@ -425,14 +425,6 @@
   "error_command_too_many_modifiers": {
     "message": "Too many modifiers"
   },
-  "error_ctrl_alt_unsupported": {
-    "message": "Combining Alt and Ctrl is not supported in this version of Firefox",
-    "description": "Tooltip displayed when the user attempts to set a hotkey combination including both Ctrl and Alt in a version of Firefox prior to 63"
-  },
-  "error_ctrl_alt_warning": {
-    "message": "Combining Alt and Ctrl is not supported in earlier versions of Firefox (prior to 63)",
-    "description": "Tooltip displayed when the user attempts to set a hotkey combination including both Ctrl and Alt in a version of Firefox later than 63"
-  },
   "error_loading_dictionary": {
     "message": "Error loading dictionary. Please try again.",
     "description": "Tooltip shown when the dictionary fails to load"
