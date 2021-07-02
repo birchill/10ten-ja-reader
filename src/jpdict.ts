@@ -8,11 +8,7 @@ import {
   getKanji,
   getWords as idbGetWords,
 } from '@birchill/hikibiki-data';
-import {
-  expandChoon,
-  kanaToHiragana,
-  kyuujitaiToShinjitai,
-} from '@birchill/normal-jp';
+import { kanaToHiragana } from '@birchill/normal-jp';
 import { browser } from 'webextension-polyfill-ts';
 
 import { normalizeInput } from './conversion';
@@ -473,28 +469,10 @@ export async function searchNames({
 
   let [normalized, inputLengths] = normalizeInput(input);
 
-  // Setup a list of strings to try that includes all the possible expansions of
-  // ー characters.
-  const candidates = [normalized, ...expandChoon(normalized)];
-
-  const toNew = kyuujitaiToShinjitai(normalized);
-  if (toNew !== normalized) {
-    candidates.push(toNew);
-  }
-
-  let result: NameSearchResult | null = null;
-  for (const candidate of candidates) {
-    let thisResult = await nameSearch({
-      input: candidate,
-      inputLengths,
-      minInputLength: minLength,
-      maxResults: NAMES_MAX_ENTRIES,
-    });
-
-    if (!result || (thisResult && thisResult.matchLen > result.matchLen)) {
-      result = thisResult;
-    }
-  }
-
-  return result;
+  return nameSearch({
+    input: normalized,
+    inputLengths,
+    minInputLength: minLength,
+    maxResults: NAMES_MAX_ENTRIES,
+  });
 }

@@ -14,8 +14,11 @@
 
 - Made the popup not show up so eagerly when the hold-to-show key(s) is/are
   pressed and a text box is focussed since it can interfere with copying and
-  pasting.
+  pasting
   ([#651](https://github.com/birchill/10ten-ja-reader/issues/651)).
+
+- Optimized searching for variants of 長音 (ー) and 旧字体 to perform fewer
+  lookups while considering all 長音 variations for name entries.
 
 ## 1.0.0 (2021-06-15) (Safari only)
 
