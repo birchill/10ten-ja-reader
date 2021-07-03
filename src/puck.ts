@@ -22,13 +22,13 @@ export class RikaiPuck {
   public static id: string = 'tenten-ja-puck';
   private puck: HTMLDivElement | undefined;
   private enabled = false;
-
   private puckX: number;
   private puckY: number;
   private puckWidth: number;
   private puckHeight: number;
   private cachedViewportDimensions: ViewportDimensions | null = null;
   private cachedSafeAreaInsets: SafeAreaInsets | null = null;
+  private isBeingDragged: boolean = false;
 
   private setPosition(x: number, y: number) {
     this.puckX = x;
@@ -120,8 +120,13 @@ export class RikaiPuck {
     );
   }
 
-  private readonly onPointerMove = (event: PointerEvent) => {
-    if (!this.puckWidth || !this.puckHeight || !this.enabled) {
+  private readonly onWindowPointerMove = (event: PointerEvent) => {
+    if (
+      !this.puckWidth ||
+      !this.puckHeight ||
+      !this.enabled ||
+      !this.isBeingDragged
+    ) {
       return;
     }
 
@@ -154,12 +159,30 @@ export class RikaiPuck {
     }
   };
 
-  // Prevent any mouse events on the puck itself from being used for lookup.
-  //
-  // At least in Firefox we can get _both_ pointer events and mouse events being
-  // dispatched.
-  private readonly onMouseMove = (event: MouseEvent) => {
+  private readonly onPuckPointerDown = (event: PointerEvent) => {
+    if (!this.enabled || !this.puck) {
+      return;
+    }
+
+    event.preventDefault();
     event.stopPropagation();
+
+    this.isBeingDragged = true;
+    this.puck.style.pointerEvents = 'none';
+
+    window.addEventListener('pointermove', this.onWindowPointerMove);
+    window.addEventListener('pointerup', this.stopDraggingPuck);
+    window.addEventListener('pointercancel', this.stopDraggingPuck);
+  };
+
+  private readonly stopDraggingPuck = () => {
+    this.isBeingDragged = false;
+    if (this.puck) {
+      this.puck.style.pointerEvents = 'revert';
+    }
+    window.removeEventListener('pointermove', this.onWindowPointerMove);
+    window.removeEventListener('pointerup', this.stopDraggingPuck);
+    window.removeEventListener('pointercancel', this.stopDraggingPuck);
   };
 
   private readonly onWindowResize = (event: UIEvent) => {
@@ -200,10 +223,7 @@ export class RikaiPuck {
     // Add event listeners
     if (this.enabled) {
       window.addEventListener('resize', this.onWindowResize);
-      this.puck.addEventListener('pointermove', this.onPointerMove);
-      this.puck.addEventListener('mousemove', this.onMouseMove, {
-        capture: true,
-      });
+      this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
     }
   }
 
@@ -231,10 +251,7 @@ export class RikaiPuck {
     this.enabled = true;
     if (this.puck) {
       window.addEventListener('resize', this.onWindowResize);
-      this.puck.addEventListener('pointermove', this.onPointerMove);
-      this.puck.addEventListener('mousemove', this.onMouseMove, {
-        capture: true,
-      });
+      this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
     }
   }
 
@@ -242,10 +259,8 @@ export class RikaiPuck {
     this.enabled = false;
     if (this.puck) {
       window.removeEventListener('resize', this.onWindowResize);
-      this.puck.removeEventListener('pointermove', this.onPointerMove);
-      this.puck.removeEventListener('mousemove', this.onMouseMove, {
-        capture: true,
-      });
+      this.stopDraggingPuck();
+      this.puck.removeEventListener('pointerdown', this.onPuckPointerDown);
     }
   }
 }
