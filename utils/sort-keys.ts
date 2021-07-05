@@ -61,7 +61,7 @@ async function main() {
     }
 
     // Write to file
-    fs.writeFileSync(file, JSON.stringify(ordered, null, 2));
+    fs.writeFileSync(file, JSON.stringify(ordered, null, 2) + '\n');
   }
 }
 
