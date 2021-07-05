@@ -1059,19 +1059,19 @@
   },
   "measure_expl_chuukyouma": {
     "message": "（东海）",
-    "description": "Label used when presenting alternative conversions between 畳 and square metres"
+    "description": "Parenthetical explanation used when presenting alternative conversions between 畳 and square metres"
   },
   "measure_expl_danchima": {
     "message": "（住宅小区）",
-    "description": "Label used when presenting alternative conversions between 畳 and square metres"
+    "description": "Parenthetical explanation used when presenting alternative conversions between 畳 and square metres"
   },
   "measure_expl_edoma": {
     "message": "（东日本）",
-    "description": "Label used when presenting alternative conversions between 畳 and square metres"
+    "description": "Parenthetical explanation used when presenting alternative conversions between 畳 and square metres"
   },
   "measure_expl_kyouma": {
     "message": "（西日本）",
-    "description": "Label used when presenting alternative conversions between 畳 and square metres"
+    "description": "Parenthetical explanation used when presenting alternative conversions between 畳 and square metres"
   },
   "menu_enable_extension": {
     "message": "启用 10ten reader",

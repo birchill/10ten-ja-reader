@@ -1063,15 +1063,15 @@
   },
   "measure_expl_danchima": {
     "message": " (Danchi)",
-    "description": "Parenthetical explanation when presenting alternative conversions between 畳 and square metres"
+    "description": "Parenthetical explanation used when presenting alternative conversions between 畳 and square metres"
   },
   "measure_expl_edoma": {
     "message": " (East Japan)",
-    "description": "Parenthetical explanation when presenting alternative conversions between 畳 and square metres"
+    "description": "Parenthetical explanation used when presenting alternative conversions between 畳 and square metres"
   },
   "measure_expl_kyouma": {
     "message": " (West Japan)",
-    "description": "Parenthetical explanation when presenting alternative conversions between 畳 and square metres"
+    "description": "Parenthetical explanation used when presenting alternative conversions between 畳 and square metres"
   },
   "menu_enable_extension": {
     "message": "Enable 10ten reader",
