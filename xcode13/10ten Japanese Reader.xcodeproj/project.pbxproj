@@ -1,0 +1,983 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D306F4422692C553002FA4FD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D306F4412692C553002FA4FD /* AppDelegate.swift */; };
+		D306F4442692C553002FA4FD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D306F4432692C553002FA4FD /* SceneDelegate.swift */; };
+		D306F4472692C553002FA4FD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D306F4452692C553002FA4FD /* LaunchScreen.storyboard */; };
+		D306F44A2692C553002FA4FD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D306F4482692C553002FA4FD /* Main.storyboard */; };
+		D306F4532692C553002FA4FD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D306F4522692C553002FA4FD /* AppDelegate.swift */; };
+		D306F4562692C553002FA4FD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D306F4542692C553002FA4FD /* Main.storyboard */; };
+		D306F45E2692C553002FA4FD /* 10ten Japanese Reader Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = D306F45D2692C553002FA4FD /* 10ten Japanese Reader Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D306F4682692C553002FA4FD /* 10ten Japanese Reader Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = D306F4672692C553002FA4FD /* 10ten Japanese Reader Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D306F46D2692C553002FA4FD /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = D306F4312692C54F002FA4FD /* Main.html */; };
+		D306F46E2692C553002FA4FD /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = D306F4312692C54F002FA4FD /* Main.html */; };
+		D306F46F2692C553002FA4FD /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D306F4332692C54F002FA4FD /* Icon.png */; };
+		D306F4702692C553002FA4FD /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D306F4332692C54F002FA4FD /* Icon.png */; };
+		D306F4712692C553002FA4FD /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = D306F4342692C54F002FA4FD /* Style.css */; };
+		D306F4722692C553002FA4FD /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = D306F4342692C54F002FA4FD /* Style.css */; };
+		D306F4732692C553002FA4FD /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = D306F4352692C54F002FA4FD /* Script.js */; };
+		D306F4742692C553002FA4FD /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = D306F4352692C54F002FA4FD /* Script.js */; };
+		D306F4752692C553002FA4FD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D306F4362692C54F002FA4FD /* ViewController.swift */; };
+		D306F4762692C553002FA4FD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D306F4362692C54F002FA4FD /* ViewController.swift */; };
+		D306F4772692C553002FA4FD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D306F4372692C552002FA4FD /* Assets.xcassets */; };
+		D306F4782692C553002FA4FD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D306F4372692C552002FA4FD /* Assets.xcassets */; };
+		D306F4792692C553002FA4FD /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D306F4392692C552002FA4FD /* SafariWebExtensionHandler.swift */; };
+		D306F47A2692C553002FA4FD /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D306F4392692C552002FA4FD /* SafariWebExtensionHandler.swift */; };
+		D306F49A2692C556002FA4FD /* 10ten-ja-jpdict.js in Resources */ = {isa = PBXBuildFile; fileRef = D306F48E2692C556002FA4FD /* 10ten-ja-jpdict.js */; };
+		D306F49B2692C556002FA4FD /* css in Resources */ = {isa = PBXBuildFile; fileRef = D306F48F2692C556002FA4FD /* css */; };
+		D306F49C2692C556002FA4FD /* images in Resources */ = {isa = PBXBuildFile; fileRef = D306F4902692C556002FA4FD /* images */; };
+		D306F49D2692C556002FA4FD /* 10ten-ja-background.js in Resources */ = {isa = PBXBuildFile; fileRef = D306F4912692C556002FA4FD /* 10ten-ja-background.js */; };
+		D306F49E2692C556002FA4FD /* 10ten-ja-options.js in Resources */ = {isa = PBXBuildFile; fileRef = D306F4922692C556002FA4FD /* 10ten-ja-options.js */; };
+		D306F49F2692C556002FA4FD /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = D306F4942692C556002FA4FD /* manifest.json */; };
+		D306F4A02692C556002FA4FD /* options.html in Resources */ = {isa = PBXBuildFile; fileRef = D306F4952692C556002FA4FD /* options.html */; };
+		D306F4A12692C556002FA4FD /* 10ten-ja-content.js in Resources */ = {isa = PBXBuildFile; fileRef = D306F4962692C556002FA4FD /* 10ten-ja-content.js */; };
+		D306F4A22692C556002FA4FD /* _locales in Resources */ = {isa = PBXBuildFile; fileRef = D306F4972692C556002FA4FD /* _locales */; };
+		D306F4A32692C556002FA4FD /* data in Resources */ = {isa = PBXBuildFile; fileRef = D306F4982692C556002FA4FD /* data */; };
+		D306F4A42692C556002FA4FD /* 10ten-ja-jpdict.js in Resources */ = {isa = PBXBuildFile; fileRef = D306F48E2692C556002FA4FD /* 10ten-ja-jpdict.js */; };
+		D306F4A52692C556002FA4FD /* css in Resources */ = {isa = PBXBuildFile; fileRef = D306F48F2692C556002FA4FD /* css */; };
+		D306F4A62692C556002FA4FD /* images in Resources */ = {isa = PBXBuildFile; fileRef = D306F4902692C556002FA4FD /* images */; };
+		D306F4A72692C556002FA4FD /* 10ten-ja-background.js in Resources */ = {isa = PBXBuildFile; fileRef = D306F4912692C556002FA4FD /* 10ten-ja-background.js */; };
+		D306F4A82692C556002FA4FD /* 10ten-ja-options.js in Resources */ = {isa = PBXBuildFile; fileRef = D306F4922692C556002FA4FD /* 10ten-ja-options.js */; };
+		D306F4A92692C556002FA4FD /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = D306F4942692C556002FA4FD /* manifest.json */; };
+		D306F4AA2692C556002FA4FD /* options.html in Resources */ = {isa = PBXBuildFile; fileRef = D306F4952692C556002FA4FD /* options.html */; };
+		D306F4AB2692C556002FA4FD /* 10ten-ja-content.js in Resources */ = {isa = PBXBuildFile; fileRef = D306F4962692C556002FA4FD /* 10ten-ja-content.js */; };
+		D306F4AC2692C556002FA4FD /* _locales in Resources */ = {isa = PBXBuildFile; fileRef = D306F4972692C556002FA4FD /* _locales */; };
+		D306F4AD2692C556002FA4FD /* data in Resources */ = {isa = PBXBuildFile; fileRef = D306F4982692C556002FA4FD /* data */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D306F45F2692C553002FA4FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D306F42B2692C54F002FA4FD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D306F45C2692C553002FA4FD;
+			remoteInfo = "10ten Japanese Reader Extension (iOS)";
+		};
+		D306F4692692C553002FA4FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D306F42B2692C54F002FA4FD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D306F4662692C553002FA4FD;
+			remoteInfo = "10ten Japanese Reader Extension (macOS)";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D306F4802692C553002FA4FD /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				D306F45E2692C553002FA4FD /* 10ten Japanese Reader Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D306F4872692C553002FA4FD /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				D306F4682692C553002FA4FD /* 10ten Japanese Reader Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		D306F4322692C54F002FA4FD /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = ../Base.lproj/Main.html; sourceTree = "<group>"; };
+		D306F4332692C54F002FA4FD /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		D306F4342692C54F002FA4FD /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
+		D306F4352692C54F002FA4FD /* Script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Script.js; sourceTree = "<group>"; };
+		D306F4362692C54F002FA4FD /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		D306F4372692C552002FA4FD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D306F4392692C552002FA4FD /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
+		D306F43E2692C553002FA4FD /* 10ten Japanese Reader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "10ten Japanese Reader.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D306F4412692C553002FA4FD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		D306F4432692C553002FA4FD /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		D306F4462692C553002FA4FD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		D306F4492692C553002FA4FD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		D306F44B2692C553002FA4FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D306F4502692C553002FA4FD /* 10ten Japanese Reader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "10ten Japanese Reader.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D306F4522692C553002FA4FD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		D306F4552692C553002FA4FD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		D306F4572692C553002FA4FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D306F4582692C553002FA4FD /* 10ten Japanese Reader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "10ten Japanese Reader.entitlements"; sourceTree = "<group>"; };
+		D306F45D2692C553002FA4FD /* 10ten Japanese Reader Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "10ten Japanese Reader Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D306F4622692C553002FA4FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D306F4672692C553002FA4FD /* 10ten Japanese Reader Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "10ten Japanese Reader Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D306F46C2692C553002FA4FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D306F48C2692C556002FA4FD /* 10ten-ja-background.js.map */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; name = "10ten-ja-background.js.map"; path = "../../dist-safari/10ten-ja-background.js.map"; sourceTree = "<group>"; };
+		D306F48D2692C556002FA4FD /* 10ten-ja-content.js.map */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; name = "10ten-ja-content.js.map"; path = "../../dist-safari/10ten-ja-content.js.map"; sourceTree = "<group>"; };
+		D306F48E2692C556002FA4FD /* 10ten-ja-jpdict.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = "10ten-ja-jpdict.js"; path = "../../dist-safari/10ten-ja-jpdict.js"; sourceTree = "<group>"; };
+		D306F48F2692C556002FA4FD /* css */ = {isa = PBXFileReference; lastKnownFileType = folder; name = css; path = "../../dist-safari/css"; sourceTree = "<group>"; };
+		D306F4902692C556002FA4FD /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = images; path = "../../dist-safari/images"; sourceTree = "<group>"; };
+		D306F4912692C556002FA4FD /* 10ten-ja-background.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = "10ten-ja-background.js"; path = "../../dist-safari/10ten-ja-background.js"; sourceTree = "<group>"; };
+		D306F4922692C556002FA4FD /* 10ten-ja-options.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = "10ten-ja-options.js"; path = "../../dist-safari/10ten-ja-options.js"; sourceTree = "<group>"; };
+		D306F4932692C556002FA4FD /* 10ten-ja-jpdict.js.map */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; name = "10ten-ja-jpdict.js.map"; path = "../../dist-safari/10ten-ja-jpdict.js.map"; sourceTree = "<group>"; };
+		D306F4942692C556002FA4FD /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = "../../dist-safari/manifest.json"; sourceTree = "<group>"; };
+		D306F4952692C556002FA4FD /* options.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = options.html; path = "../../dist-safari/options.html"; sourceTree = "<group>"; };
+		D306F4962692C556002FA4FD /* 10ten-ja-content.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = "10ten-ja-content.js"; path = "../../dist-safari/10ten-ja-content.js"; sourceTree = "<group>"; };
+		D306F4972692C556002FA4FD /* _locales */ = {isa = PBXFileReference; lastKnownFileType = folder; name = _locales; path = "../../dist-safari/_locales"; sourceTree = "<group>"; };
+		D306F4982692C556002FA4FD /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = "../../dist-safari/data"; sourceTree = "<group>"; };
+		D306F4992692C556002FA4FD /* 10ten-ja-options.js.map */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; name = "10ten-ja-options.js.map"; path = "../../dist-safari/10ten-ja-options.js.map"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D306F43B2692C553002FA4FD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D306F44D2692C553002FA4FD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D306F45A2692C553002FA4FD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D306F4642692C553002FA4FD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D306F42A2692C54F002FA4FD = {
+			isa = PBXGroup;
+			children = (
+				D306F42F2692C54F002FA4FD /* Shared (App) */,
+				D306F4382692C552002FA4FD /* Shared (Extension) */,
+				D306F4402692C553002FA4FD /* iOS (App) */,
+				D306F4512692C553002FA4FD /* macOS (App) */,
+				D306F4612692C553002FA4FD /* iOS (Extension) */,
+				D306F46B2692C553002FA4FD /* macOS (Extension) */,
+				D306F43F2692C553002FA4FD /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D306F42F2692C54F002FA4FD /* Shared (App) */ = {
+			isa = PBXGroup;
+			children = (
+				D306F4362692C54F002FA4FD /* ViewController.swift */,
+				D306F4372692C552002FA4FD /* Assets.xcassets */,
+				D306F4302692C54F002FA4FD /* Resources */,
+			);
+			path = "Shared (App)";
+			sourceTree = "<group>";
+		};
+		D306F4302692C54F002FA4FD /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D306F4312692C54F002FA4FD /* Main.html */,
+				D306F4332692C54F002FA4FD /* Icon.png */,
+				D306F4342692C54F002FA4FD /* Style.css */,
+				D306F4352692C54F002FA4FD /* Script.js */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		D306F4382692C552002FA4FD /* Shared (Extension) */ = {
+			isa = PBXGroup;
+			children = (
+				D306F48B2692C556002FA4FD /* Resources */,
+				D306F4392692C552002FA4FD /* SafariWebExtensionHandler.swift */,
+			);
+			path = "Shared (Extension)";
+			sourceTree = "<group>";
+		};
+		D306F43F2692C553002FA4FD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D306F43E2692C553002FA4FD /* 10ten Japanese Reader.app */,
+				D306F4502692C553002FA4FD /* 10ten Japanese Reader.app */,
+				D306F45D2692C553002FA4FD /* 10ten Japanese Reader Extension.appex */,
+				D306F4672692C553002FA4FD /* 10ten Japanese Reader Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D306F4402692C553002FA4FD /* iOS (App) */ = {
+			isa = PBXGroup;
+			children = (
+				D306F4412692C553002FA4FD /* AppDelegate.swift */,
+				D306F4432692C553002FA4FD /* SceneDelegate.swift */,
+				D306F4452692C553002FA4FD /* LaunchScreen.storyboard */,
+				D306F4482692C553002FA4FD /* Main.storyboard */,
+				D306F44B2692C553002FA4FD /* Info.plist */,
+			);
+			path = "iOS (App)";
+			sourceTree = "<group>";
+		};
+		D306F4512692C553002FA4FD /* macOS (App) */ = {
+			isa = PBXGroup;
+			children = (
+				D306F4522692C553002FA4FD /* AppDelegate.swift */,
+				D306F4542692C553002FA4FD /* Main.storyboard */,
+				D306F4572692C553002FA4FD /* Info.plist */,
+				D306F4582692C553002FA4FD /* 10ten Japanese Reader.entitlements */,
+			);
+			path = "macOS (App)";
+			sourceTree = "<group>";
+		};
+		D306F4612692C553002FA4FD /* iOS (Extension) */ = {
+			isa = PBXGroup;
+			children = (
+				D306F4622692C553002FA4FD /* Info.plist */,
+			);
+			path = "iOS (Extension)";
+			sourceTree = "<group>";
+		};
+		D306F46B2692C553002FA4FD /* macOS (Extension) */ = {
+			isa = PBXGroup;
+			children = (
+				D306F46C2692C553002FA4FD /* Info.plist */,
+			);
+			path = "macOS (Extension)";
+			sourceTree = "<group>";
+		};
+		D306F48B2692C556002FA4FD /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D306F48C2692C556002FA4FD /* 10ten-ja-background.js.map */,
+				D306F48D2692C556002FA4FD /* 10ten-ja-content.js.map */,
+				D306F48E2692C556002FA4FD /* 10ten-ja-jpdict.js */,
+				D306F48F2692C556002FA4FD /* css */,
+				D306F4902692C556002FA4FD /* images */,
+				D306F4912692C556002FA4FD /* 10ten-ja-background.js */,
+				D306F4922692C556002FA4FD /* 10ten-ja-options.js */,
+				D306F4932692C556002FA4FD /* 10ten-ja-jpdict.js.map */,
+				D306F4942692C556002FA4FD /* manifest.json */,
+				D306F4952692C556002FA4FD /* options.html */,
+				D306F4962692C556002FA4FD /* 10ten-ja-content.js */,
+				D306F4972692C556002FA4FD /* _locales */,
+				D306F4982692C556002FA4FD /* data */,
+				D306F4992692C556002FA4FD /* 10ten-ja-options.js.map */,
+			);
+			name = Resources;
+			path = "Shared (Extension)";
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D306F43D2692C553002FA4FD /* 10ten Japanese Reader (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D306F4812692C553002FA4FD /* Build configuration list for PBXNativeTarget "10ten Japanese Reader (iOS)" */;
+			buildPhases = (
+				D306F43A2692C553002FA4FD /* Sources */,
+				D306F43B2692C553002FA4FD /* Frameworks */,
+				D306F43C2692C553002FA4FD /* Resources */,
+				D306F4802692C553002FA4FD /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D306F4602692C553002FA4FD /* PBXTargetDependency */,
+			);
+			name = "10ten Japanese Reader (iOS)";
+			productName = "10ten Japanese Reader (iOS)";
+			productReference = D306F43E2692C553002FA4FD /* 10ten Japanese Reader.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D306F44F2692C553002FA4FD /* 10ten Japanese Reader (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D306F4882692C553002FA4FD /* Build configuration list for PBXNativeTarget "10ten Japanese Reader (macOS)" */;
+			buildPhases = (
+				D306F44C2692C553002FA4FD /* Sources */,
+				D306F44D2692C553002FA4FD /* Frameworks */,
+				D306F44E2692C553002FA4FD /* Resources */,
+				D306F4872692C553002FA4FD /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D306F46A2692C553002FA4FD /* PBXTargetDependency */,
+			);
+			name = "10ten Japanese Reader (macOS)";
+			productName = "10ten Japanese Reader (macOS)";
+			productReference = D306F4502692C553002FA4FD /* 10ten Japanese Reader.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D306F45C2692C553002FA4FD /* 10ten Japanese Reader Extension (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D306F47D2692C553002FA4FD /* Build configuration list for PBXNativeTarget "10ten Japanese Reader Extension (iOS)" */;
+			buildPhases = (
+				D306F4592692C553002FA4FD /* Sources */,
+				D306F45A2692C553002FA4FD /* Frameworks */,
+				D306F45B2692C553002FA4FD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "10ten Japanese Reader Extension (iOS)";
+			productName = "10ten Japanese Reader Extension (iOS)";
+			productReference = D306F45D2692C553002FA4FD /* 10ten Japanese Reader Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		D306F4662692C553002FA4FD /* 10ten Japanese Reader Extension (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D306F4842692C553002FA4FD /* Build configuration list for PBXNativeTarget "10ten Japanese Reader Extension (macOS)" */;
+			buildPhases = (
+				D306F4632692C553002FA4FD /* Sources */,
+				D306F4642692C553002FA4FD /* Frameworks */,
+				D306F4652692C553002FA4FD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "10ten Japanese Reader Extension (macOS)";
+			productName = "10ten Japanese Reader Extension (macOS)";
+			productReference = D306F4672692C553002FA4FD /* 10ten Japanese Reader Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D306F42B2692C54F002FA4FD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1300;
+				LastUpgradeCheck = 1300;
+				TargetAttributes = {
+					D306F43D2692C553002FA4FD = {
+						CreatedOnToolsVersion = 13.0;
+					};
+					D306F44F2692C553002FA4FD = {
+						CreatedOnToolsVersion = 13.0;
+					};
+					D306F45C2692C553002FA4FD = {
+						CreatedOnToolsVersion = 13.0;
+					};
+					D306F4662692C553002FA4FD = {
+						CreatedOnToolsVersion = 13.0;
+					};
+				};
+			};
+			buildConfigurationList = D306F42E2692C54F002FA4FD /* Build configuration list for PBXProject "10ten Japanese Reader" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D306F42A2692C54F002FA4FD;
+			productRefGroup = D306F43F2692C553002FA4FD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D306F43D2692C553002FA4FD /* 10ten Japanese Reader (iOS) */,
+				D306F44F2692C553002FA4FD /* 10ten Japanese Reader (macOS) */,
+				D306F45C2692C553002FA4FD /* 10ten Japanese Reader Extension (iOS) */,
+				D306F4662692C553002FA4FD /* 10ten Japanese Reader Extension (macOS) */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D306F43C2692C553002FA4FD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D306F46F2692C553002FA4FD /* Icon.png in Resources */,
+				D306F4472692C553002FA4FD /* LaunchScreen.storyboard in Resources */,
+				D306F46D2692C553002FA4FD /* Main.html in Resources */,
+				D306F4732692C553002FA4FD /* Script.js in Resources */,
+				D306F4772692C553002FA4FD /* Assets.xcassets in Resources */,
+				D306F44A2692C553002FA4FD /* Main.storyboard in Resources */,
+				D306F4712692C553002FA4FD /* Style.css in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D306F44E2692C553002FA4FD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D306F4702692C553002FA4FD /* Icon.png in Resources */,
+				D306F4722692C553002FA4FD /* Style.css in Resources */,
+				D306F4562692C553002FA4FD /* Main.storyboard in Resources */,
+				D306F4742692C553002FA4FD /* Script.js in Resources */,
+				D306F4782692C553002FA4FD /* Assets.xcassets in Resources */,
+				D306F46E2692C553002FA4FD /* Main.html in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D306F45B2692C553002FA4FD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D306F4AC2692C556002FA4FD /* _locales in Resources */,
+				D306F4AA2692C556002FA4FD /* options.html in Resources */,
+				D306F4A62692C556002FA4FD /* images in Resources */,
+				D306F4A52692C556002FA4FD /* css in Resources */,
+				D306F4AD2692C556002FA4FD /* data in Resources */,
+				D306F4A72692C556002FA4FD /* 10ten-ja-background.js in Resources */,
+				D306F4A42692C556002FA4FD /* 10ten-ja-jpdict.js in Resources */,
+				D306F4A92692C556002FA4FD /* manifest.json in Resources */,
+				D306F4AB2692C556002FA4FD /* 10ten-ja-content.js in Resources */,
+				D306F4A82692C556002FA4FD /* 10ten-ja-options.js in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D306F4652692C553002FA4FD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D306F4A22692C556002FA4FD /* _locales in Resources */,
+				D306F4A02692C556002FA4FD /* options.html in Resources */,
+				D306F49C2692C556002FA4FD /* images in Resources */,
+				D306F49B2692C556002FA4FD /* css in Resources */,
+				D306F4A32692C556002FA4FD /* data in Resources */,
+				D306F49D2692C556002FA4FD /* 10ten-ja-background.js in Resources */,
+				D306F49A2692C556002FA4FD /* 10ten-ja-jpdict.js in Resources */,
+				D306F49F2692C556002FA4FD /* manifest.json in Resources */,
+				D306F4A12692C556002FA4FD /* 10ten-ja-content.js in Resources */,
+				D306F49E2692C556002FA4FD /* 10ten-ja-options.js in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D306F43A2692C553002FA4FD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D306F4752692C553002FA4FD /* ViewController.swift in Sources */,
+				D306F4422692C553002FA4FD /* AppDelegate.swift in Sources */,
+				D306F4442692C553002FA4FD /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D306F44C2692C553002FA4FD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D306F4762692C553002FA4FD /* ViewController.swift in Sources */,
+				D306F4532692C553002FA4FD /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D306F4592692C553002FA4FD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D306F4792692C553002FA4FD /* SafariWebExtensionHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D306F4632692C553002FA4FD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D306F47A2692C553002FA4FD /* SafariWebExtensionHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D306F4602692C553002FA4FD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D306F45C2692C553002FA4FD /* 10ten Japanese Reader Extension (iOS) */;
+			targetProxy = D306F45F2692C553002FA4FD /* PBXContainerItemProxy */;
+		};
+		D306F46A2692C553002FA4FD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D306F4662692C553002FA4FD /* 10ten Japanese Reader Extension (macOS) */;
+			targetProxy = D306F4692692C553002FA4FD /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		D306F4312692C54F002FA4FD /* Main.html */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D306F4322692C54F002FA4FD /* Base */,
+			);
+			name = Main.html;
+			sourceTree = "<group>";
+		};
+		D306F4452692C553002FA4FD /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D306F4462692C553002FA4FD /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		D306F4482692C553002FA4FD /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D306F4492692C553002FA4FD /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		D306F4542692C553002FA4FD /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D306F4552692C553002FA4FD /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		D306F47B2692C553002FA4FD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		D306F47C2692C553002FA4FD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		D306F47E2692C553002FA4FD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H3RB7C8768;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "10ten Japanese Reader Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.birchill.tenten-ja-reader.Extension";
+				PRODUCT_NAME = "10ten Japanese Reader Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D306F47F2692C553002FA4FD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H3RB7C8768;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "10ten Japanese Reader Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.birchill.tenten-ja-reader.Extension";
+				PRODUCT_NAME = "10ten Japanese Reader Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D306F4822692C553002FA4FD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H3RB7C8768;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "10ten Japanese Reader";
+				INFOPLIST_KEY_CFBundleExecutable = "10ten Japanese Reader";
+				INFOPLIST_KEY_CFBundleName = "10ten Japanese Reader";
+				INFOPLIST_KEY_CFBundleVersion = 7;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.birchill.tenten-ja-reader";
+				PRODUCT_NAME = "10ten Japanese Reader";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D306F4832692C553002FA4FD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H3RB7C8768;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "10ten Japanese Reader";
+				INFOPLIST_KEY_CFBundleExecutable = "10ten Japanese Reader";
+				INFOPLIST_KEY_CFBundleName = "10ten Japanese Reader";
+				INFOPLIST_KEY_CFBundleVersion = 7;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.birchill.tenten-ja-reader";
+				PRODUCT_NAME = "10ten Japanese Reader";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D306F4852692C553002FA4FD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H3RB7C8768;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "10ten Japanese Reader Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.birchill.tenten-ja-reader.Extension";
+				PRODUCT_NAME = "10ten Japanese Reader Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		D306F4862692C553002FA4FD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H3RB7C8768;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "10ten Japanese Reader Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.birchill.tenten-ja-reader.Extension";
+				PRODUCT_NAME = "10ten Japanese Reader Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		D306F4892692C553002FA4FD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "macOS (App)/10ten Japanese Reader.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H3RB7C8768;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "10ten Japanese Reader";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.birchill.tenten-ja-reader";
+				PRODUCT_NAME = "10ten Japanese Reader";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		D306F48A2692C553002FA4FD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "macOS (App)/10ten Japanese Reader.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H3RB7C8768;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "10ten Japanese Reader";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.birchill.tenten-ja-reader";
+				PRODUCT_NAME = "10ten Japanese Reader";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D306F42E2692C54F002FA4FD /* Build configuration list for PBXProject "10ten Japanese Reader" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D306F47B2692C553002FA4FD /* Debug */,
+				D306F47C2692C553002FA4FD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D306F47D2692C553002FA4FD /* Build configuration list for PBXNativeTarget "10ten Japanese Reader Extension (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D306F47E2692C553002FA4FD /* Debug */,
+				D306F47F2692C553002FA4FD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D306F4812692C553002FA4FD /* Build configuration list for PBXNativeTarget "10ten Japanese Reader (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D306F4822692C553002FA4FD /* Debug */,
+				D306F4832692C553002FA4FD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D306F4842692C553002FA4FD /* Build configuration list for PBXNativeTarget "10ten Japanese Reader Extension (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D306F4852692C553002FA4FD /* Debug */,
+				D306F4862692C553002FA4FD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D306F4882692C553002FA4FD /* Build configuration list for PBXNativeTarget "10ten Japanese Reader (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D306F4892692C553002FA4FD /* Debug */,
+				D306F48A2692C553002FA4FD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D306F42B2692C54F002FA4FD /* Project object */;
+}
