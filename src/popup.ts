@@ -513,12 +513,21 @@ function renderMeasureInfo(meta: MeasureMeta): HTMLElement {
   mainRow.append(convertedSpan);
 
   if (converted.alt) {
-    for (const { type, unit, value } of converted.alt) {
+    for (const { type, label, unit, value } of converted.alt) {
       const altRow = document.createElement('div');
       altRow.classList.add('alt');
 
       const altLabel = document.createElement('span');
-      altLabel.append(browser.i18n.getMessage(`measure_jou_label_${type}`));
+      if (label) {
+        altLabel.append(label);
+      }
+      const expl = browser.i18n.getMessage(`measure_expl_${type}`);
+      if (expl) {
+        const altExplLabel = document.createElement('span');
+        altExplLabel.append(expl);
+        altExplLabel.lang = getLangTag();
+        altLabel.append(altExplLabel);
+      }
       altRow.append(altLabel);
 
       const altEquals = document.createElement('span');

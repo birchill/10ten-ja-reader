@@ -114,14 +114,14 @@ export const browser = {
           return 'Unicode';
         case 'lang_tag':
           return 'en';
-        case 'measure_jou_label_kyouma':
-          return '京間 (West Japan)';
-        case 'measure_jou_label_chuukyouma':
-          return '中京間 (Tōkai region)';
-        case 'measure_jou_label_edoma':
-          return '江戸間 (East Japan)';
-        case 'measure_jou_label_danchima':
-          return '団地間 (Danchi)';
+        case 'measure_expl_kyouma':
+          return ' (West Japan)';
+        case 'measure_expl_chuukyouma':
+          return ' (Tōkai region)';
+        case 'measure_expl_edoma':
+          return ' (East Japan)';
+        case 'measure_expl_danchima':
+          return ' (Danchi)';
         case 'misc_label_abbr':
           return 'abbr.';
         case 'misc_label_arch':

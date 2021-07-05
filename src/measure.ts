@@ -112,18 +112,20 @@ export type ConvertedMeasure = {
 
 export type AlternateMeasure = {
   type: 'kyouma' | 'chuukyouma' | 'edoma' | 'danchima';
+  label?: string;
   unit: '畳' | 'm2';
   value: number;
 };
 
 const alternateJouSizes: Array<{
   type: AlternateMeasure['type'];
+  label: string;
   ratio: number;
 }> = [
-  { type: 'kyouma', ratio: 1.82405 },
-  { type: 'chuukyouma', ratio: 1.6562 },
-  { type: 'edoma', ratio: 1.5488 },
-  { type: 'danchima', ratio: 1.445 },
+  { type: 'kyouma', label: '京間', ratio: 1.82405 },
+  { type: 'chuukyouma', label: '中京間', ratio: 1.6562 },
+  { type: 'edoma', label: '江戸間', ratio: 1.5488 },
+  { type: 'danchima', label: '団地間', ratio: 1.445 },
 ];
 
 export function convertMeasure(measure: MeasureMeta): ConvertedMeasure {
@@ -133,6 +135,7 @@ export function convertMeasure(measure: MeasureMeta): ConvertedMeasure {
       value: measure.value / 1.62,
       alt: alternateJouSizes.map((size) => ({
         type: size.type,
+        label: size.label,
         unit: '畳',
         value: measure.value / size.ratio,
       })),
@@ -148,6 +151,7 @@ export function convertMeasure(measure: MeasureMeta): ConvertedMeasure {
       measure.unit === '畳'
         ? alternateJouSizes.map((size) => ({
             type: size.type,
+            label: size.label,
             unit: 'm2',
             value: measure.value * size.ratio,
           }))
