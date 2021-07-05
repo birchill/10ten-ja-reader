@@ -4,7 +4,7 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
-      day: 'tuesday'
+      day: 'friday'
       time: '10:00'
       timezone: 'Asia/Tokyo'
 
@@ -12,6 +12,6 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
-      day: 'tuesday'
-      time: '10:00'
+      day: 'friday'
+      time: '09:00'
       timezone: 'Asia/Tokyo'
