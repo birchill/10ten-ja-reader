@@ -17,12 +17,14 @@ const env = Object.fromEntries(
     .filter((_arg, index, args) => index && args[index - 1] === '--env')
     .map((kv) => (kv.indexOf('=') === -1 ? [kv, true] : kv.split('=')))
 );
+
 const chromium = env.chromium || undefined;
 const chromiumProfile = env.chromiumProfile || undefined;
 const firefox = env.firefox || undefined;
 const firefoxProfile = env.firefoxProfile || undefined;
 const keepProfileChanges = !!env.keepProfileChanges;
 const profileCreateIfMissing = !!env.profileCreateIfMissing;
+const package = !!env.package;
 
 const commonConfig = {
   mode: 'development',
@@ -110,6 +112,7 @@ const commonExtConfig = {
 };
 
 const firefoxConfig = buildExtConfig({
+  artifactsDir: 'dist-firefox-package',
   distFolder: 'dist-firefox',
   includeRikaichampName: true,
   supportsAlphaVersion: true,
@@ -146,6 +149,7 @@ if (process.env.RELEASE_BUILD && process.env.BUGSNAG_API_KEY) {
 }
 
 const chromeConfig = buildExtConfig({
+  artifactsDir: 'dist-chrome-package',
   distFolder: 'dist-chrome',
   includeRikaichampName: true,
   isChrome: true,
@@ -156,6 +160,7 @@ const chromeConfig = buildExtConfig({
 });
 
 const edgeConfig = buildExtConfig({
+  artifactsDir: 'dist-edge-package',
   distFolder: 'dist-edge',
   includeRikaichampName: true,
   isEdge: true,
@@ -168,6 +173,7 @@ const safariConfig = buildExtConfig({
   activeTabOnly: true,
   // Safari defaults to loading JS as Latin so make sure we add a UTF-8 BOM
   addBom: true,
+  artifactsDir: 'dist-safari-package',
   distFolder: 'dist-safari',
   isSafari: true,
   supportsBrowserStyle: true,
@@ -192,6 +198,7 @@ module.exports = (env) => {
 function buildExtConfig({
   activeTabOnly = false,
   addBom = false,
+  artifactsDir,
   distFolder,
   isChrome = false,
   isEdge = false,
@@ -329,9 +336,12 @@ function buildExtConfig({
   if (target === 'firefox') {
     plugins.push(
       new WebExtPlugin({
+        artifactsDir,
+        buildPackage: package,
         firefox,
         firefoxProfile,
         keepProfileChanges,
+        overwriteDest: true,
         profileCreateIfMissing,
         startUrl: ['tests/playground.html'],
         sourceDir: path.resolve(__dirname, distFolder),
@@ -340,10 +350,13 @@ function buildExtConfig({
   } else if (target === 'chromium') {
     plugins.push(
       new WebExtPlugin({
+        artifactsDir,
+        buildPackage: package,
         chromiumBinary: chromium,
         chromiumProfile,
         firefoxProfile,
         keepProfileChanges,
+        overwriteDest: true,
         profileCreateIfMissing,
         startUrl: [path.resolve(__dirname, 'tests', 'playground.html')],
         sourceDir: path.resolve(__dirname, distFolder),
@@ -352,7 +365,12 @@ function buildExtConfig({
     );
   } else {
     plugins.push(
-      new WebExtPlugin({ sourceDir: path.resolve(__dirname, distFolder) })
+      new WebExtPlugin({
+        artifactsDir,
+        buildPackage: package,
+        overwriteDest: true,
+        sourceDir: path.resolve(__dirname, distFolder),
+      })
     );
   }
 
