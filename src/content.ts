@@ -679,10 +679,7 @@ export class ContentHandler {
 
     this.currentDict = dict;
 
-    this.highlightText(
-      this.currentTextAtPoint,
-      this.currentSearchResult?.[dict]
-    );
+    this.highlightText(this.currentTextAtPoint, this.currentSearchResult[dict]);
 
     this.showPopup();
   }
