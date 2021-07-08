@@ -412,7 +412,7 @@ export class ContentHandler {
         return true;
       }
       if (this.currentPoint && this.currentTarget) {
-        this.tryToUpdatePopup(this.currentPoint, this.currentTarget, 'next');
+        this.showNextDictionary();
       }
     } else if (toggleDefinition.includes(upperKey)) {
       try {
@@ -569,11 +569,8 @@ export class ContentHandler {
   async tryToUpdatePopup(
     point: { x: number; y: number },
     target: Element,
-    dictMode: 'default' | 'next' | 'kanji'
+    dictMode: 'default' | 'kanji'
   ) {
-    // TODO: If dictMode is 'next' we should be able to skip querying
-    //       altogether. In fact, we should use a different method in that case.
-
     const textAtPoint = getTextAtPoint(point, ContentHandler.MAX_LENGTH);
 
     // The following is not strictly correct since if dictMode was 'kanji' or
@@ -639,30 +636,10 @@ export class ContentHandler {
           break;
 
         case 'kanji':
-          if (!queryResult?.kanji) {
+          if (!queryResult.kanji) {
             queryResult = null;
           } else {
             dict = 'kanji';
-          }
-          break;
-
-        case 'next':
-          {
-            const cycleOrder: Array<MajorDataSeries> = [
-              'words',
-              'kanji',
-              'names',
-            ];
-            let next =
-              (cycleOrder.indexOf(this.currentDict) + 1) % cycleOrder.length;
-            while (cycleOrder[next] !== this.currentDict) {
-              const nextDict = cycleOrder[next];
-              if (queryResult[nextDict]) {
-                dict = nextDict;
-                break;
-              }
-              next = ++next % cycleOrder.length;
-            }
           }
           break;
       }
@@ -670,13 +647,7 @@ export class ContentHandler {
       this.currentDict = dict;
     }
 
-    const matchLen = Math.max(
-      queryResult?.[dict]?.matchLen || 0,
-      textAtPoint.meta?.matchLen || 0
-    );
-    if (matchLen) {
-      this.highlightText(textAtPoint, matchLen);
-    }
+    this.highlightText(textAtPoint, queryResult?.[dict]);
 
     this.currentSearchResult = queryResult;
     this.currentTarget = target;
@@ -684,8 +655,55 @@ export class ContentHandler {
     this.showPopup();
   }
 
-  highlightText(textAtPoint: GetTextResult, matchLen: number) {
-    if (this.config.noTextHighlight || !textAtPoint.rangeStart) {
+  showNextDictionary() {
+    if (!this.currentSearchResult || !this.currentTextAtPoint) {
+      return;
+    }
+
+    let dict: MajorDataSeries = this.currentDict;
+
+    const cycleOrder: Array<MajorDataSeries> = ['words', 'kanji', 'names'];
+    let next = (cycleOrder.indexOf(this.currentDict) + 1) % cycleOrder.length;
+    while (cycleOrder[next] !== this.currentDict) {
+      const nextDict = cycleOrder[next];
+      if (this.currentSearchResult[nextDict]) {
+        dict = nextDict;
+        break;
+      }
+      next = ++next % cycleOrder.length;
+    }
+
+    if (dict === this.currentDict) {
+      return;
+    }
+
+    this.currentDict = dict;
+
+    this.highlightText(
+      this.currentTextAtPoint,
+      this.currentSearchResult?.[dict]
+    );
+
+    this.showPopup();
+  }
+
+  highlightText(
+    textAtPoint: GetTextResult,
+    searchResult: { matchLen: number } | undefined | null
+  ) {
+    if (this.config.noTextHighlight) {
+      return;
+    }
+
+    // Work out the appropriate length to highlight
+    const matchLen = Math.max(
+      searchResult?.matchLen || 0,
+      textAtPoint.meta?.matchLen || 0
+    );
+
+    // Check we have something to highlight
+    if (!textAtPoint.rangeStart || matchLen < 1) {
+      this.clearHighlight(null);
       return;
     }
 
