@@ -26,6 +26,7 @@ export class RikaiPuck {
   private puckY: number;
   private puckWidth: number;
   private puckHeight: number;
+  private targetOffset: { x: number; y: number } = { x: 0, y: 0 };
   private cachedViewportDimensions: ViewportDimensions | null = null;
   private cachedSafeAreaInsets: SafeAreaInsets | null = null;
   private isBeingDragged: boolean = false;
@@ -33,8 +34,36 @@ export class RikaiPuck {
   private setPosition(x: number, y: number) {
     this.puckX = x;
     this.puckY = y;
+
+    // Update puck
     if (this.puck) {
       this.puck.style.transform = `translate(${this.puckX}px, ${this.puckY}px)`;
+    }
+
+    // Calculate the corresponding target point.
+    const { viewportWidth } = this.getViewportDimensions(
+      this.puck?.ownerDocument || document
+    );
+    const midpointOfPuck = this.puckX + this.puckWidth / 2;
+    const horizontalPortion = midpointOfPuck / viewportWidth;
+
+    // Let the target drift by up to 45 degrees in either direction
+    const range = Math.PI / 2;
+    const angle = horizontalPortion * range - range / 2;
+    const offsetX = Math.sin(angle) * 35;
+    const offsetY = -60;
+
+    const restOffsetX = Math.sin(angle) * 25;
+    const restOffsetY = -Math.cos(angle) * 25;
+
+    this.targetOffset = { x: offsetX, y: offsetY };
+
+    // Update target position in style
+    if (this.puck) {
+      this.puck.style.setProperty('--target-x-offset', `${offsetX}px`);
+      this.puck.style.setProperty('--target-y-offset', `${offsetY}px`);
+      this.puck.style.setProperty('--rest-x-offset', `${restOffsetX}px`);
+      this.puck.style.setProperty('--rest-y-offset', `${restOffsetY}px`);
     }
   }
 
@@ -122,6 +151,7 @@ export class RikaiPuck {
 
   private readonly onWindowPointerMove = (event: PointerEvent) => {
     if (
+      !this.puck ||
       !this.puckWidth ||
       !this.puckHeight ||
       !this.enabled ||
@@ -133,16 +163,15 @@ export class RikaiPuck {
     event.preventDefault();
 
     const { clientX, clientY } = event;
+
     this.setPositionWithinSafeArea(
       clientX - this.puckWidth / 2,
       clientY - this.puckHeight / 2
     );
 
     // Work out where we want to lookup
-    const targetX = this.puckX;
-    // Offset by at least one pixel so that Rikai doesn't attempt to tunnel into
-    // the puck rather than the text.
-    const targetY = this.puckY - 1;
+    const targetX = this.puckX + this.puckWidth / 2 + this.targetOffset.x;
+    const targetY = this.puckY + this.puckHeight / 2 + this.targetOffset.y;
 
     // Make sure the target is an actual element since the mousemove handler
     // expects that.
@@ -169,6 +198,7 @@ export class RikaiPuck {
 
     this.isBeingDragged = true;
     this.puck.style.pointerEvents = 'none';
+    this.puck.classList.add('dragging');
 
     window.addEventListener('pointermove', this.onWindowPointerMove);
     window.addEventListener('pointerup', this.stopDraggingPuck);
@@ -179,7 +209,9 @@ export class RikaiPuck {
     this.isBeingDragged = false;
     if (this.puck) {
       this.puck.style.pointerEvents = 'revert';
+      this.puck.classList.remove('dragging');
     }
+
     window.removeEventListener('pointermove', this.onWindowPointerMove);
     window.removeEventListener('pointerup', this.stopDraggingPuck);
     window.removeEventListener('pointercancel', this.stopDraggingPuck);
@@ -202,6 +234,15 @@ export class RikaiPuck {
     // Create puck elem
     this.puck = doc.createElement('div');
     this.puck.classList.add('puck');
+
+    const earth = doc.createElement('div');
+    earth.classList.add('earth');
+    this.puck.append(earth);
+
+    const moon = doc.createElement('div');
+    moon.classList.add('moon');
+    this.puck.append(moon);
+
     container.shadowRoot!.append(this.puck);
 
     // Set theme styles
