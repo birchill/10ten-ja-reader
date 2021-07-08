@@ -1,15 +1,23 @@
 import { browser } from 'webextension-polyfill-ts';
 
 import { SearchRequest, TranslateRequest } from './background-request';
-import { SearchResult, TranslateResult } from './search-result';
+import { NameResult, SearchResult, TranslateResult } from './search-result';
 import { stripFields } from './strip-fields';
-
-export type QueryResult = SearchResult & { title?: string };
 
 export interface QueryOptions {
   includeRomaji: boolean;
   wordLookup: boolean;
 }
+
+export type QueryResult = SearchResult & {
+  title?: string;
+  namePreview?: NamePreview;
+};
+
+export type NamePreview = {
+  names: Array<NameResult>;
+  more: boolean;
+};
 
 type QueryCacheEntry = {
   hash: string;
@@ -59,7 +67,7 @@ export async function query(
       if (!result || !!result.dbStatus) {
         dropFromCache();
       }
-      return result;
+      return result ? addNamePreview(result) : null;
     })
     .catch(() => {
       dropFromCache();
@@ -129,4 +137,68 @@ function isTranslateResult(
   result: SearchResult | TranslateResult
 ): result is TranslateResult {
   return (result as TranslateResult).type === 'translate';
+}
+
+function addNamePreview(result: QueryResult): QueryResult {
+  if (!result.words || !result.names) {
+    return result;
+  }
+
+  // If we have a word result, check for a longer match in the names dictionary,
+  // but only if the existing match has some non-hiragana characters in it.
+  //
+  // The names dictionary contains mostly entries with at least some kanji or
+  // katakana but it also contains entries that are solely hiragana (e.g.  はなこ
+  // without any corresponding kanji). Generally we only want to show a name
+  // preview if it matches on some kanji or katakana as otherwise it's likely to
+  // be a false positive.
+  //
+  // While it might seem like it would be enough to check if the existing match
+  // from the words dictionary is hiragana-only, we can get cases where a longer
+  // match in the names dictionary _starts_ with hiragana but has kanji/katakana
+  // later, e.g. ほとけ沢.
+  const names: Array<NameResult> = [];
+  let more = false;
+
+  // Add up to three results provided that:
+  //
+  // - they have a kanji reading,
+  // - and are all are as long as the longest names match,
+  // - are all longer than the longest words match
+  const minLength = Math.max(result.names.matchLen, result.words.matchLen + 1);
+
+  for (const name of result.names.data) {
+    // Names should be in descending order of length so if any of them is less
+    // than the minimum length, we can skip the rest.
+    if (name.matchLen < minLength) {
+      break;
+    }
+
+    if (!name.k) {
+      continue;
+    }
+
+    if (names.length > 2) {
+      more = true;
+      break;
+    }
+
+    names.push(name);
+  }
+
+  if (!names.length) {
+    return result;
+  }
+
+  // If we got a match, extend the matchLen of the words result.
+  //
+  // Reaching into the words result like this is cheating a little bit but it
+  // simplifies the places where we use the word result.
+  const matchLen = names[0].matchLen;
+
+  return {
+    ...result,
+    words: { ...result.words, matchLen },
+    namePreview: { names, more },
+  };
 }

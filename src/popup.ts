@@ -22,7 +22,7 @@ import {
 import { getHash } from './hash';
 import { convertMeasure, MeasureMeta } from './measure';
 import { SelectionMeta } from './meta';
-import { QueryResult } from './query';
+import { NamePreview, QueryResult } from './query';
 import {
   getReferenceValue,
   getSelectedReferenceLabels,
@@ -97,51 +97,10 @@ export function renderPopup(
 
     case 'words':
       {
-        // Check for a longer match in the names dictionary, but only if the
-        // existing match has some non-hiragana characters in it.
-        //
-        // The names dictionary contains mostly entries with at least some kanji
-        // or katakana but it also contains entries that are solely hiragana
-        // (e.g.  はなこ without any corresponding kanji). Generally we only want
-        // to show a name preview if it matches on some kanji or katakana as
-        // otherwise it's likely to be a false positive.
-        //
-        // While it might seem like it would be enough to check if the existing
-        // match from the words dictionary is hiragana-only, we can get cases
-        // where a longer match in the names dictionary _starts_ with hiragana
-        // but has kanji/katakana later, e.g. ほとけ沢.
-        const names: Array<NameResult> = [];
-        let moreNames = false;
-        if (result!.names) {
-          // Add up to three results provided they have a kanji reading and are
-          // all are as long as the longest match.
-          const minNameLength = Math.max(
-            result!.names.matchLen,
-            resultToShow.matchLen + 1
-          );
-          for (const [i, name] of result!.names.data.entries()) {
-            if (name.matchLen < minNameLength) {
-              break;
-            }
-
-            if (!name.k) {
-              continue;
-            }
-
-            if (i > 2) {
-              moreNames = true;
-              break;
-            }
-
-            names.push(name);
-          }
-        }
-
         windowElem.append(
           renderWordEntries({
             entries: resultToShow.data,
-            names,
-            moreNames,
+            namePreview: result!.namePreview,
             title: result!.title,
             more: resultToShow.more,
             options,
@@ -355,15 +314,13 @@ export function setPopupStyle(style: string) {
 
 function renderWordEntries({
   entries,
-  names,
-  moreNames,
+  namePreview,
   title,
   more,
   options,
 }: {
   entries: Array<WordResult>;
-  names: Array<NameResult> | undefined;
-  moreNames: boolean | undefined;
+  namePreview: NamePreview | undefined;
   title: string | undefined;
   more: boolean;
   options: PopupOptions;
@@ -386,8 +343,8 @@ function renderWordEntries({
     }
   }
 
-  if (names) {
-    container.append(renderBonusNames(names, moreNames));
+  if (namePreview) {
+    container.append(renderNamePreview(namePreview));
   }
 
   let index = 0;
@@ -648,10 +605,7 @@ function renderUnit(
   return unitSpan;
 }
 
-function renderBonusNames(
-  names: Array<NameResult>,
-  moreNames?: boolean
-): HTMLElement {
+function renderNamePreview({ names, more }: NamePreview): HTMLElement {
   const container = document.createElement('div');
   container.classList.add('bonus-name');
 
@@ -659,7 +613,7 @@ function renderBonusNames(
     container.append(renderName(name));
   }
 
-  if (moreNames) {
+  if (more) {
     const moreSpan = document.createElement('span');
     moreSpan.classList.add('more');
     moreSpan.append('…');
