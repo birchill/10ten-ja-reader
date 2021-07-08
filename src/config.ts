@@ -89,7 +89,7 @@ interface KeySetting {
 export const DEFAULT_KEY_SETTINGS: KeySetting[] = [
   {
     name: 'nextDictionary',
-    keys: ['Shift', 'Enter'],
+    keys: ['Shift', 'Enter', 'n'],
     enabledKeys: ['Shift', 'Enter'],
     l10nKey: 'options_popup_switch_dictionaries',
   },

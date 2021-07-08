@@ -24,6 +24,10 @@
 - Optimized searching for variants of 長音 (ー) and 旧字体 to perform fewer
   lookups while considering all 長音 variations for name entries.
 
+- Defined an additional key that can be configured to switch dictionaries,
+  <kbd>n</kbd>, since <kbd>Shift</kbd> can be unavailable when Firefox's
+  resist fingerprinting mode is enabled.
+
 ## 1.0.0 (2021-06-15) (Safari only)
 
 - Added new default (gray) theme.
