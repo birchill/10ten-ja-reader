@@ -1,36 +1,13 @@
 import { browser } from 'webextension-polyfill-ts';
 
-import {
-  DictType,
-  SearchRequest,
-  TranslateRequest,
-} from './background-request';
-import {
-  KanjiSearchResult,
-  NameResult,
-  NameSearchResult,
-  SearchResult,
-  WordSearchResult,
-} from './search-result';
+import { SearchRequest, TranslateRequest } from './background-request';
+import { SearchResult, TranslateResult } from './search-result';
+import { stripFields } from './strip-fields';
 
-export type QueryResult = (
-  | WordSearchOrTranslateResult
-  | NameSearchResult
-  | KanjiSearchResult
-) & { preferNames: boolean };
-
-export interface WordSearchOrTranslateResult
-  extends Omit<WordSearchResult, 'matchLen'> {
-  type: 'words';
-  title?: string;
-  matchLen: number | null;
-}
+export type QueryResult = SearchResult & { title?: string };
 
 export interface QueryOptions {
   includeRomaji: boolean;
-  dict?: DictType;
-  prevDict: DictType | undefined;
-  preferNames: boolean;
   wordLookup: boolean;
 }
 
@@ -49,9 +26,6 @@ export async function query(
   const hash = [
     text,
     options.includeRomaji ? '1' : '0',
-    options.dict || 'auto',
-    options.prevDict || 'none',
-    options.preferNames ? '1' : '0',
     options.wordLookup ? '1' : '0',
   ].join('-');
 
@@ -59,7 +33,7 @@ export async function query(
   // work out some sort of LRU scheme for removing entries. While there are
   // plenty of libraries for that and we even use one such in the background
   // script, this code is part of the content script which goes into every page
-  // so we try to keep it learn.
+  // so we try to keep it lean.
   //
   // As a result, we limit our cache size to 10 entries and just do a linear
   // search of the array.
@@ -82,7 +56,7 @@ export async function query(
   };
   const queryResult = doQuery(text, options)
     .then((result) => {
-      if (!result || (result.type === 'words' && result.dbUnavailable)) {
+      if (!result || !!result.dbStatus) {
         dropFromCache();
       }
       return result;
@@ -106,25 +80,13 @@ async function doQuery(
   text: string,
   options: QueryOptions
 ): Promise<QueryResult | null> {
-  let message: SearchRequest | TranslateRequest;
-  if (options.wordLookup) {
-    message = {
-      type: 'search',
-      input: text,
-      dict: options.dict,
-      prevDict: options.prevDict,
-      preferNames: options.preferNames,
-      includeRomaji: options.includeRomaji,
-    };
-  } else {
-    message = {
-      type: 'translate',
-      title: text,
-      includeRomaji: options.includeRomaji,
-    };
-  }
+  const message: SearchRequest | TranslateRequest = {
+    type: options.wordLookup ? 'search' : 'translate',
+    input: text,
+    includeRomaji: options.includeRomaji,
+  };
 
-  let searchResult: SearchResult | null;
+  let searchResult: SearchResult | TranslateResult | null;
   try {
     searchResult = await browser.runtime.sendMessage(message);
   } catch (e) {
@@ -138,44 +100,33 @@ async function doQuery(
     return null;
   }
 
-  if (searchResult.type === 'kanji' || searchResult.type === 'names') {
-    return searchResult;
-  }
+  // Convert a translate result into a suitably shaped SearchResult but
+  // with the title part filled-in.
 
-  let matchLen: number | null = null;
-  if (searchResult.type === 'words') {
-    matchLen = searchResult.matchLen || 1;
-  }
-  const more = !!searchResult.more;
-
-  let title: string | undefined;
-  if (searchResult.type === 'translate') {
-    title = text.substr(0, searchResult.textLen);
+  let queryResult: QueryResult;
+  if (isTranslateResult(searchResult)) {
+    let title = text.substr(0, searchResult.textLen);
     if (text.length > searchResult.textLen) {
       title += '...';
     }
+    queryResult = {
+      words: {
+        ...stripFields(searchResult, ['dbStatus', 'textLen']),
+        type: 'words',
+        matchLen: searchResult.textLen,
+      },
+      title,
+      dbStatus: searchResult.dbStatus,
+    };
+  } else {
+    queryResult = searchResult;
   }
 
-  let names: Array<NameResult> | undefined;
-  let moreNames: boolean | undefined;
-  let preferNames = false;
-  let dbUnavailable = false;
-  if (searchResult.type === 'words') {
-    names = searchResult.names;
-    moreNames = searchResult.moreNames;
-    preferNames = searchResult.preferNames;
-    dbUnavailable = !!searchResult.dbUnavailable;
-  }
+  return queryResult;
+}
 
-  return {
-    type: 'words',
-    title,
-    names,
-    moreNames,
-    data: searchResult.data,
-    matchLen,
-    more,
-    preferNames,
-    dbUnavailable,
-  };
+function isTranslateResult(
+  result: SearchResult | TranslateResult
+): result is TranslateResult {
+  return (result as TranslateResult).type === 'translate';
 }

@@ -51,11 +51,7 @@ import { AbortError, DataSeriesState } from '@birchill/hikibiki-data';
 import Browser, { browser } from 'webextension-polyfill-ts';
 
 import TabManager from './all-tab-manager';
-import {
-  DictType,
-  isBackgroundRequest,
-  SearchRequest,
-} from './background-request';
+import { isBackgroundRequest, SearchRequest } from './background-request';
 import { updateBrowserAction } from './browser-action';
 import { startBugsnag } from './bugsnag';
 import { Config } from './config';
@@ -76,11 +72,11 @@ import {
 } from './jpdict';
 import { shouldRequestPersistentStorage } from './quota-management';
 import {
-  NameResult,
-  RawSearchResult,
+  KanjiSearchResult,
+  NameSearchResult,
   SearchResult,
-  WordSearchResult,
 } from './search-result';
+import { stripFields } from './strip-fields';
 
 //
 // Setup bugsnag
@@ -389,171 +385,57 @@ async function removeContextMenu() {
 // Search
 //
 
-// The order in which we cycle/search through dictionaries.
-const defaultOrder: Array<DictType> = ['words', 'kanji', 'names'];
-
-// In some cases, however, where we don't find a match in the word dictionary
-// but find a good match in the name dictionary, we want to show that before
-// kanji entries so we use a different order.
-const preferNamesOrder: Array<DictType> = ['names', 'kanji'];
-
 async function search({
   input,
-  dict: specifiedDict,
-  prevDict,
-  preferNames,
   includeRomaji,
   abortSignal,
 }: SearchRequest & { abortSignal: AbortSignal }): Promise<SearchResult | null> {
-  // Set up the candiate set of dictionaries
-  let cycleOrder: Array<DictType>;
-  if (specifiedDict) {
-    cycleOrder = [specifiedDict];
-  } else if (preferNames) {
-    cycleOrder = preferNamesOrder;
-  } else {
-    cycleOrder = defaultOrder;
-  }
+  // This is a bit funky because words can return a result AND a database status
+  // (since we have a fallback database for the words database) but the kanji
+  // and names databases return one or the other.
+  //
+  // Here we try and massage them into something simple with a single
+  // database status so that the client doesn't need to worry about these
+  // details so much.
+  const wordsResult = await searchWords({ input, includeRomaji, abortSignal });
+  const words = wordsResult ? stripFields(wordsResult, ['dbStatus']) : null;
+  let dbStatus = wordsResult?.dbStatus;
 
-  // Work out which dictionary to use
-  let dict: DictType;
-  if (specifiedDict) {
-    dict = specifiedDict;
-  } else if (prevDict) {
-    dict = cycleOrder[(cycleOrder.indexOf(prevDict) + 1) % cycleOrder.length];
-  } else {
-    dict = 'words';
-  }
-
-  // Set up a helper for checking for a better names match
-  const hasGoodNameMatch = async () => {
-    const nameMatch = await searchNames({ input });
-    // We could further refine this condition by checking that:
-    //
-    //   !isHiragana(text.substring(0, nameMatch.matchLen))
-    //
-    // However, we only call this when we have no match in the words dictionary,
-    // meaning we only have the name and kanji dictionaries left. The kanji
-    // dictionary presumably is not going to match on an all-hiragana key anyway
-    // so it's probably fine to prefer the name dictionary even if it's an
-    // all-hiragana match.
-    return nameMatch && nameMatch.matchLen > 1;
-  };
-
-  const originalDict = dict;
-  do {
-    if (abortSignal.aborted) {
-      throw new AbortError();
-    }
-
-    let result: RawSearchResult | null = null;
-    switch (dict) {
-      case 'words':
-        result = await wordSearch({ input, includeRomaji, abortSignal });
-        break;
-
-      case 'kanji':
-        result = await searchKanji([...input][0]);
-        break;
-
-      case 'names':
-        result = await searchNames({ input });
-        break;
-    }
-
-    if (result) {
-      return { ...result, preferNames: !!preferNames };
-    }
-
-    // Check the abort status again here since it might let us avoid doing a
-    // lookup of the names dictionary.
-    if (abortSignal.aborted) {
-      throw new AbortError();
-    }
-
-    // If we just looked up the default words dictionary and didn't find a
-    // match, consider if we should switch to prioritizing the names dictionary.
-    if (
-      !specifiedDict &&
-      !prevDict &&
-      !preferNames &&
-      dict === 'words' &&
-      (await hasGoodNameMatch())
-    ) {
-      preferNames = true;
-      cycleOrder = preferNamesOrder;
-      dict = preferNamesOrder[0];
-      // (We've potentially created an infinite loop here since we've switched
-      // to a cycle order that excludes the word dictionary which may be the
-      // originalDict -- hence the loop termination condition will never be
-      // true. However, we know that we have a names match so we should always
-      // end up returning something.)
-    } else {
-      // Otherwise just try the next dictionary.
-      dict = cycleOrder[(cycleOrder.indexOf(dict) + 1) % cycleOrder.length];
-    }
-  } while (originalDict !== dict);
-
-  return null;
-}
-
-async function wordSearch(params: {
-  input: string;
-  max?: number;
-  includeRomaji?: boolean;
-  abortSignal: AbortSignal;
-}): Promise<WordSearchResult | null> {
-  const result = await searchWords(params);
-
-  // The name search we (sometimes) do below can end up adding an extra 30% or
-  // more to the total lookup time so we should check we haven't been aborted
-  // before going on.
-  if (params.abortSignal.aborted) {
+  if (abortSignal.aborted) {
     throw new AbortError();
   }
 
-  // Check for a longer match in the names dictionary, but only if the existing
-  // match has some non-hiragana characters in it.
-  //
-  // The names dictionary contains mostly entries with at least some kanji or
-  // katakana but it also contains entries that are solely hiragana (e.g.
-  // はなこ without any corresponding kanji). Generally we only want to show
-  // a name preview if it matches on some kanji or katakana as otherwise it's
-  // likely to be a false positive.
-  //
-  // While it might seem like it would be enough to check if the existing
-  // match from the words dictionary is hiragana-only, we can get cases where
-  // a longer match in the names dictionary _starts_ with hiragana but has
-  // kanji/katakana later, e.g. ほとけ沢.
-  if (result) {
-    const nameResult = await searchNames({
-      input: params.input,
-      minLength: result.matchLen + 1,
-    });
-    if (nameResult) {
-      const names: Array<NameResult> = [];
-
-      // Add up to three results provided they have a kanji reading and are all
-      // are as long as the longest match.
-      for (const [i, name] of nameResult.data.entries()) {
-        if (name.k && name.matchLen < nameResult.matchLen) {
-          break;
-        }
-
-        if (i > 2) {
-          result.moreNames = true;
-          break;
-        }
-
-        names.push(name);
-      }
-
-      result.names = names;
-      result.matchLen = nameResult.matchLen;
-    }
+  // Kanji
+  const kanjiResult = await searchKanji([...input][0]);
+  let kanji: KanjiSearchResult | null | undefined;
+  if (typeof kanjiResult === 'string') {
+    dbStatus = dbStatus || kanjiResult;
+  } else {
+    kanji = kanjiResult;
   }
 
-  return result;
+  if (abortSignal.aborted) {
+    throw new AbortError();
+  }
+
+  // Names
+  const nameResult = await searchNames({ input });
+  let names: NameSearchResult | null | undefined;
+  if (typeof nameResult === 'string') {
+    dbStatus = dbStatus || nameResult;
+  } else {
+    names = nameResult;
+  }
+
+  if (abortSignal.aborted) {
+    throw new AbortError();
+  }
+
+  if (!words && !kanji && !names) {
+    return null;
+  }
+
+  return { words, kanji, names, dbStatus };
 }
 
 //
@@ -607,7 +489,7 @@ browser.runtime.onMessage.addListener(
 
       case 'translate':
         return translate({
-          text: request.title,
+          text: request.input,
           includeRomaji: request.includeRomaji,
         });
 

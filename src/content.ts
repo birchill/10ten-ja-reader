@@ -45,6 +45,7 @@
 
 */
 
+import type { MajorDataSeries } from '@birchill/hikibiki-data';
 import Browser, { browser } from 'webextension-polyfill-ts';
 
 import { ContentConfig } from './content-config';
@@ -113,6 +114,7 @@ export class ContentHandler {
   private currentPoint: { x: number; y: number } | null = null;
   private currentSearchResult: QueryResult | null = null;
   private currentTarget: Element | null = null;
+  private currentDict: MajorDataSeries = 'words';
 
   // Highlight tracking
   private selectedWindow: Window | null = null;
@@ -569,6 +571,9 @@ export class ContentHandler {
     target: Element,
     dictMode: 'default' | 'next' | 'kanji'
   ) {
+    // TODO: If dictMode is 'next' we should be able to skip querying
+    //       altogether. In fact, we should use a different method in that case.
+
     const textAtPoint = getTextAtPoint(point, ContentHandler.MAX_LENGTH);
 
     // The following is not strictly correct since if dictMode was 'kanji' or
@@ -597,14 +602,8 @@ export class ContentHandler {
       return;
     }
 
-    const queryResult = await query(textAtPoint.text, {
+    let queryResult = await query(textAtPoint.text, {
       includeRomaji: this.config.showRomaji,
-      dict: dictMode === 'kanji' ? 'kanji' : undefined,
-      prevDict:
-        dictMode === 'next' && this.currentSearchResult
-          ? this.currentSearchResult.type
-          : undefined,
-      preferNames: this.currentSearchResult?.preferNames ?? false,
       wordLookup: textAtPoint.rangeStart !== null,
     });
 
@@ -619,8 +618,60 @@ export class ContentHandler {
       return;
     }
 
+    // Determine the dictionary to show
+    let dict: MajorDataSeries = 'words';
+
+    if (queryResult) {
+      switch (dictMode) {
+        case 'default':
+          if (!queryResult.words) {
+            // Prefer the names dictionary if we have a names result of more
+            // than one character or if we have no kanji results.
+            //
+            // Otherwise, follow the usual fallback order words -> kanji ->
+            // names.
+            dict =
+              (queryResult.names && queryResult.names.matchLen > 1) ||
+              !queryResult.kanji
+                ? 'names'
+                : 'kanji';
+          }
+          break;
+
+        case 'kanji':
+          if (!queryResult?.kanji) {
+            queryResult = null;
+          } else {
+            dict = 'kanji';
+          }
+          break;
+
+        case 'next':
+          {
+            const cycleOrder: Array<MajorDataSeries> = [
+              'words',
+              'kanji',
+              'names',
+            ];
+            let next =
+              (cycleOrder.indexOf(this.currentDict) + 1) % cycleOrder.length;
+            while (cycleOrder[next] !== this.currentDict) {
+              const nextDict = cycleOrder[next];
+              if (queryResult[nextDict]) {
+                dict = nextDict;
+                break;
+              }
+              next = ++next % cycleOrder.length;
+            }
+          }
+          break;
+      }
+
+      this.currentDict = dict;
+    }
+
     const matchLen = Math.max(
-      queryResult?.matchLen || 0,
+      queryResult?.[dict]?.matchLen || 0,
       textAtPoint.meta?.matchLen || 0
     );
     if (matchLen) {
@@ -910,6 +961,7 @@ export class ContentHandler {
         (this.copyMode ? CopyState.Active : CopyState.Inactive),
       copyType: options?.copyType,
       dictLang: this.config.dictLang,
+      dictToShow: this.currentDict,
       document: doc,
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentTextAtPoint?.meta,
@@ -979,11 +1031,14 @@ export class ContentHandler {
       'Should be in copy mode when copying an entry'
     );
 
-    if (!this.currentSearchResult) {
+    if (
+      !this.currentSearchResult ||
+      !this.currentSearchResult[this.currentDict]
+    ) {
       return null;
     }
 
-    const searchResult = this.currentSearchResult;
+    const searchResult = this.currentSearchResult[this.currentDict]!;
 
     let copyIndex = this.copyIndex;
     if (searchResult.type === 'words' || searchResult.type === 'names') {

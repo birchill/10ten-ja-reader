@@ -56,16 +56,6 @@ export function isReportWarningRequest(a: unknown): a is ReportWarningRequest {
 export type SearchRequest = {
   type: 'search';
   input: string;
-  // Select the dictionary to lookup. If not set the search will look for the
-  // best match unless prevDict is set.
-  dict?: DictType;
-  // Request the next dictionary in the lookup order after 'prevDict'.
-  // Ignored if `dict` is set.
-  prevDict?: DictType;
-  // Indicates that the previous search found no entry in the 'words' dictionary
-  // but did find an entry in the 'names' dictionary so we should use a
-  // dictionary lookup order that prioritizes the 'names' dictionary.
-  preferNames?: boolean;
   includeRomaji?: boolean;
 };
 
@@ -82,17 +72,6 @@ export function isSearchRequest(a: unknown): a is SearchRequest {
     return false;
   }
 
-  if (typeof a.prevDict !== 'undefined' && !isDictType(a.prevDict)) {
-    return false;
-  }
-
-  if (
-    typeof a.preferNames !== 'undefined' &&
-    typeof a.preferNames !== 'boolean'
-  ) {
-    return false;
-  }
-
   if (
     typeof a.includeRomaji !== 'undefined' &&
     typeof a.includeRomaji !== 'boolean'
@@ -103,19 +82,13 @@ export function isSearchRequest(a: unknown): a is SearchRequest {
   return true;
 }
 
-export type DictType = 'words' | 'kanji' | 'names';
-
-export function isDictType(a: unknown): a is DictType {
-  return typeof a === 'string' && ['words', 'kanji', 'names'].includes(a);
-}
-
 //
 // Translate request
 //
 
 export type TranslateRequest = {
   type: 'translate';
-  title: string;
+  input: string;
   includeRomaji?: boolean;
 };
 
@@ -128,7 +101,7 @@ export function isTranslateRequest(a: unknown): a is TranslateRequest {
     return false;
   }
 
-  if (typeof a.title !== 'string') {
+  if (typeof a.input !== 'string') {
     return false;
   }
 
