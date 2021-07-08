@@ -549,7 +549,13 @@ function renderMeasureInfo(meta: MeasureMeta): HTMLElement {
 }
 
 function renderValue(value: number): string {
-  return String(parseFloat(value.toPrecision(4)));
+  // Round to two decimal places, then to five significant figures
+  return String(parseFloat(round(value, 2).toPrecision(5)));
+}
+
+function round(value: number, places: number): number {
+  const base = Math.pow(10, places);
+  return Math.round(value * base) / base;
 }
 
 function renderUnit(
