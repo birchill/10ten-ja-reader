@@ -36,6 +36,11 @@
   <script>
     const container = document.getElementById('container');
 
+    const getDict = (queryResult) =>
+      Object.keys(queryResult).find(
+        (key) => key === 'words' || key === 'kanji' || key === 'names'
+      ) || 'words';
+
     for (const test of htmlTests) {
       const toTitle = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -44,10 +49,17 @@
       label.append(toTitle(`${test.description}:`));
       container.append(label);
 
+      const dictToShow =
+        Object.keys(test.queryResult).find(
+          (key) => key === 'words' || key === 'kanji' || key === 'names'
+        ) || 'words';
+
       contentHandler._renderPopup(test.queryResult, {
         ...config,
         container: createPopupContainer(),
-        dictLang: test.description.indexOf('language') !== -1 ? 'fr' : undefined,
+        dictLang:
+          test.description.indexOf('language') !== -1 ? 'fr' : undefined,
+        dictToShow: getDict(test.queryResult),
         popupStyle: 'blue',
         showDefinitions: !test.extraConfig || !test.extraConfig.readingOnly,
       });
@@ -58,26 +70,28 @@
     // Name tag test
 
     const nameTagTest = {
-      type: 'names',
-      data: [
-        {
-          k: ['中野'],
-          r: ['なかの'],
-          tr: [{ type: ['place', 'surname'], det: ['Nakano'] }],
-        },
-        {
-          k: ['中野'],
-          r: ['なかのざき'],
-          tr: [{ type: ['surname'], det: ['Nakanozaki'] }],
-        },
-        {
-          k: ['中'],
-          r: ['あたり'],
-          tr: [{ type: ['fem', 'surname'], det: ['Atari'] }],
-        },
-      ],
-      more: false,
-      matchLen: 2,
+      names: {
+        type: 'names',
+        data: [
+          {
+            k: ['中野'],
+            r: ['なかの'],
+            tr: [{ type: ['place', 'surname'], det: ['Nakano'] }],
+          },
+          {
+            k: ['中野'],
+            r: ['なかのざき'],
+            tr: [{ type: ['surname'], det: ['Nakanozaki'] }],
+          },
+          {
+            k: ['中'],
+            r: ['あたり'],
+            tr: [{ type: ['fem', 'surname'], det: ['Atari'] }],
+          },
+        ],
+        more: false,
+        matchLen: 2,
+      },
     };
 
     {
@@ -95,6 +109,7 @@
         const popup = contentHandler._renderPopup(nameTagTest, {
           ...config,
           container: createPopupContainer(),
+          dictToShow: 'names',
           popupStyle: theme,
           showDefinitions: true,
         });
@@ -107,136 +122,150 @@
       {
         description: 'Word list',
         queryResult: {
-          type: 'words',
-          data: [
-            {
-              k: [{ ent: '韓国語', p: ['s1'], match: true }],
-              r: [{ ent: 'かんこくご', p: ['s1'], a: 0, match: true }],
-              s: [
-                { g: [{ str: 'Korean (language)' }], pos: ['n'], match: true },
-              ],
-            },
-            {
-              k: [{ ent: '韓国', p: ['n1', 'nf01'], match: true }],
-              r: [{ ent: 'かんこく', p: ['n1', 'nf01'], a: 0, match: true }],
-              s: [
-                {
-                  g: [{ str: 'South Korea' }, { str: 'Republic of Korea' }],
-                  pos: ['n', 'adj-no'],
-                  misc: ['abbr'],
-                  match: true,
-                },
-                {
-                  g: [{ str: 'Korean Empire (1897-1910)' }],
-                  pos: ['n', 'adj-no'],
-                  misc: ['abbr'],
-                  match: true,
-                },
-              ],
-            },
-            {
-              k: [
-                { ent: '唐国', match: false },
-                { ent: '韓国', match: true },
-              ],
-              r: [{ ent: 'からくに', match: true }],
-              s: [
-                {
-                  g: [{ str: 'China' }, { str: 'Korea' }],
-                  pos: ['n'],
-                  misc: ['arch'],
-                  match: true,
-                },
-              ],
-            },
-            {
-              k: [
-                { ent: '唐', match: false },
-                { ent: '韓', match: true },
-                { ent: '漢', match: false },
-              ],
-              r: [{ ent: 'から', a: 1, match: true }],
-              s: [
-                {
-                  g: [
-                    {
-                      str:
-                        'China (sometimes also used in ref. to Korea or other foreign countries)',
-                    },
-                  ],
-                  pos: ['n', 'n-pref'],
-                  misc: ['arch'],
-                  match: true,
-                },
-              ],
-            },
-          ],
-          more: false,
-          matchLen: 3,
+          words: {
+            type: 'words',
+            data: [
+              {
+                k: [{ ent: '韓国語', p: ['s1'], match: true }],
+                r: [{ ent: 'かんこくご', p: ['s1'], a: 0, match: true }],
+                s: [
+                  {
+                    g: [{ str: 'Korean (language)' }],
+                    pos: ['n'],
+                    match: true,
+                  },
+                ],
+              },
+              {
+                k: [{ ent: '韓国', p: ['n1', 'nf01'], match: true }],
+                r: [{ ent: 'かんこく', p: ['n1', 'nf01'], a: 0, match: true }],
+                s: [
+                  {
+                    g: [{ str: 'South Korea' }, { str: 'Republic of Korea' }],
+                    pos: ['n', 'adj-no'],
+                    misc: ['abbr'],
+                    match: true,
+                  },
+                  {
+                    g: [{ str: 'Korean Empire (1897-1910)' }],
+                    pos: ['n', 'adj-no'],
+                    misc: ['abbr'],
+                    match: true,
+                  },
+                ],
+              },
+              {
+                k: [
+                  { ent: '唐国', match: false },
+                  { ent: '韓国', match: true },
+                ],
+                r: [{ ent: 'からくに', match: true }],
+                s: [
+                  {
+                    g: [{ str: 'China' }, { str: 'Korea' }],
+                    pos: ['n'],
+                    misc: ['arch'],
+                    match: true,
+                  },
+                ],
+              },
+              {
+                k: [
+                  { ent: '唐', match: false },
+                  { ent: '韓', match: true },
+                  { ent: '漢', match: false },
+                ],
+                r: [{ ent: 'から', a: 1, match: true }],
+                s: [
+                  {
+                    g: [
+                      {
+                        str: 'China (sometimes also used in ref. to Korea or other foreign countries)',
+                      },
+                    ],
+                    pos: ['n', 'n-pref'],
+                    misc: ['arch'],
+                    match: true,
+                  },
+                ],
+              },
+            ],
+            more: false,
+            matchLen: 3,
+          },
         },
       },
       {
         description: 'Name entry',
         queryResult: {
-          type: 'names',
-          data: [
-            {
-              k: ['中野'],
-              r: ['なかの'],
-              tr: [{ type: ['surname', 'fem', 'masc'], det: ['Nakano'] }],
-            },
-          ],
-          more: false,
-          matchLen: 2,
-          names: true,
+          names: {
+            type: 'names',
+            data: [
+              {
+                k: ['中野'],
+                r: ['なかの'],
+                tr: [{ type: ['surname', 'fem', 'masc'], det: ['Nakano'] }],
+              },
+            ],
+            more: false,
+            matchLen: 2,
+            names: true,
+          },
         },
       },
       {
         description: 'Kanji entry',
         queryResult: {
-          type: 'kanji',
-          data: {
-            c: '士',
-            r: {
-              on: ['シ'],
-              kun: ['さむらい'],
-              na: ['お', 'ま'],
-            },
-            m: ['gentleman', 'scholar', 'samurai', 'samurai radical (no. 33)'],
-            rad: {
-              x: 33,
-              b: '⼠',
-              k: '士',
-              na: ['さむらい'],
-              m: ['gentleman', 'scholar', 'samurai'],
+          kanji: {
+            type: 'kanji',
+            data: {
+              c: '士',
+              r: {
+                on: ['シ'],
+                kun: ['さむらい'],
+                na: ['お', 'ま'],
+              },
+              m: [
+                'gentleman',
+                'scholar',
+                'samurai',
+                'samurai radical (no. 33)',
+              ],
+              rad: {
+                x: 33,
+                b: '⼠',
+                k: '士',
+                na: ['さむらい'],
+                m: ['gentleman', 'scholar', 'samurai'],
+                m_lang: 'en',
+              },
+              refs: {
+                nelson_c: 1160,
+                nelson_n: 1117,
+                halpern_njecd: 3405,
+                halpern_kkld: 2129,
+                halpern_kkld_2ed: 2877,
+                heisig: 319,
+                heisig6: 341,
+                henshall: 494,
+                sh_kk: 572,
+                sh_kk2: 581,
+                kanji_in_context: 755,
+                kodansha_compact: 393,
+                skip: '4-3-2',
+                sh_desc: '3p0.1',
+                conning: 350,
+              },
+              misc: {
+                sc: 3,
+                gr: 4,
+                freq: 526,
+                jlpt: 1,
+                kk: 7,
+              },
               m_lang: 'en',
+              comp: [],
             },
-            refs: {
-              nelson_c: 1160,
-              nelson_n: 1117,
-              halpern_njecd: 3405,
-              halpern_kkld: 2129,
-              halpern_kkld_2ed: 2877,
-              heisig: 319,
-              heisig6: 341,
-              henshall: 494,
-              sh_kk: 572,
-              sh_kk2: 581,
-              kanji_in_context: 755,
-              kodansha_compact: 393,
-              skip: '4-3-2',
-              sh_desc: '3p0.1',
-              conning: 350,
-            },
-            misc: {
-              sc: 3,
-              gr: 4,
-              freq: 526,
-              jlpt: 1,
-              kk: 7,
-            },
-            m_lang: 'en',
-            comp: [],
           },
         },
       },
@@ -260,6 +289,7 @@
           copyIndex: 1,
           copyNextKey: 'c',
           copyState: 1,
+          dictToShow: getDict(test.queryResult),
           popupStyle: theme,
           showDefinitions: true,
         });
@@ -349,6 +379,7 @@
         contentHandler._renderPopup(yearQueryResult, {
           ...test.config,
           container: createPopupContainer(),
+          dictToShow: 'words',
           popupStyle: theme,
         });
       }
@@ -392,6 +423,7 @@
       contentHandler._renderPopup(null, {
         ...test.config,
         container: createPopupContainer(),
+        dictToShow: 'words',
         popupStyle: 'light',
       });
     }
