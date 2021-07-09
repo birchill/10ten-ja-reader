@@ -46,7 +46,9 @@
 .tabs .tab {
   flex-grow: 1;
   list-style: none;
-  padding: 0.5em 1em;
+  padding: 0.5em 18px;
+  font-size: 0.8em;
+  opacity: 0.7;
 }
 
 .tabs .tab:not([aria-selected]) {
