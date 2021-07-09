@@ -180,6 +180,7 @@ fieldset {
   display: inline-block;
   min-width: 180px;
   text-align: left;
+  width: revert !important;
 }
 
 .key-grid {

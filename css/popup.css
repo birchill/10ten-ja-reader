@@ -8,7 +8,7 @@
 }
 
 .window {
-  max-width: 600px;
+  width: 500px;
   contain: content;
   border-radius: 5px;
   box-shadow: 2px 2px 1px rgba(100, 100, 100, 0.25);
@@ -33,6 +33,31 @@
 
 .window.hidden {
   display: none;
+}
+
+/* Tab bar */
+
+.tabs {
+  display: flex;
+  padding: 0;
+  margin: 0;
+}
+
+.tabs .tab {
+  flex-grow: 1;
+  list-style: none;
+  padding: 0.5em 1em;
+}
+
+.tabs .tab:not([aria-selected]) {
+  background: var(--cell-highlight-bg);
+  color: var(--cell-highlight-fg);
+  opacity: 0.8;
+}
+
+.tabs .tab.disabled {
+  opacity: 0.3;
+  pointer-events: none;
 }
 
 /* Word display */
@@ -340,7 +365,6 @@
 /* Kanji display */
 
 .kanji-table {
-  max-width: 450px;
   padding: 10px 18px;
 }
 

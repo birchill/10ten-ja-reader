@@ -159,10 +159,6 @@
     "message": "1 stroke",
     "description": "The description of the number of strokes when there is exactly 1 stroke"
   },
-  "content_names_dictionary": {
-    "message": "Names Dictionary",
-    "description": "The title used at the top of the popup when showing the names dictionary"
-  },
   "content_names_tag_char": {
     "message": "character"
   },
@@ -2033,5 +2029,17 @@
   "ref_label_unicode": {
     "message": "Unicode",
     "description": "The label used when presenting the Unicode codepoint of the kanji"
+  },
+  "tabs_kanji_label": {
+    "message": "Kanji",
+    "description": "The label for the kanji dictionary tab"
+  },
+  "tabs_names_label": {
+    "message": "Names",
+    "description": "The label for the names dictionary tab"
+  },
+  "tabs_words_label": {
+    "message": "Words",
+    "description": "The label for the words dictionary tab"
   }
 }

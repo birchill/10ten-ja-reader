@@ -76,6 +76,15 @@ export function renderPopup(
   // TODO: We should use `options.document` everywhere in this file and in
   // the other methods too.
 
+  if (result && result.dbStatus !== 'unavailable' && !result.title) {
+    windowElem.append(
+      renderTabBar({
+        queryResult: result,
+        selectedTab: options.dictToShow,
+      })
+    );
+  }
+
   const resultToShow = result?.[options.dictToShow];
 
   switch (resultToShow?.type) {
@@ -310,6 +319,33 @@ export function setPopupStyle(style: string) {
   }
 
   windowElem.classList.add(`-${style}`);
+}
+
+function renderTabBar({
+  queryResult,
+  selectedTab,
+}: {
+  queryResult: QueryResult | null;
+  selectedTab: MajorDataSeries;
+}): HTMLElement {
+  const list = document.createElement('ul');
+  list.classList.add('tabs');
+
+  const sections: Array<MajorDataSeries> = ['words', 'kanji', 'names'];
+  for (const section of sections) {
+    const li = document.createElement('li');
+    li.setAttribute('role', 'presentation');
+    li.classList.add('tab');
+    li.textContent = browser.i18n.getMessage(`tabs_${section}_label`);
+    if (section === selectedTab) {
+      li.setAttribute('aria-selected', 'true');
+    } else if (!queryResult || !queryResult[section]) {
+      li.classList.add('disabled');
+    }
+    list.append(li);
+  }
+
+  return list;
 }
 
 function renderWordEntries({
@@ -1052,12 +1088,6 @@ function renderNamesEntries({
   options: PopupOptions;
 }): HTMLElement {
   const container = document.createElement('div');
-
-  const titleDiv = document.createElement('div');
-  container.append(titleDiv);
-  titleDiv.classList.add('title');
-  titleDiv.lang = getLangTag();
-  titleDiv.append(browser.i18n.getMessage('content_names_dictionary'));
 
   const namesTable = document.createElement('div');
   container.append(namesTable);
