@@ -46,15 +46,24 @@
 .tabs .tab {
   flex-grow: 1;
   list-style: none;
-  padding: 0.5em 18px;
   font-size: 0.8em;
   opacity: 0.7;
 }
 
+.tabs .tab a {
+  display: block;
+  padding: 0.5em 18px;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
 .tabs .tab:not([aria-selected]) {
   background: var(--cell-highlight-bg);
-  color: var(--cell-highlight-fg);
   opacity: 0.8;
+}
+
+.tabs .tab:not([aria-selected]) {
+  color: var(--cell-highlight-fg);
 }
 
 .tabs .tab.disabled {

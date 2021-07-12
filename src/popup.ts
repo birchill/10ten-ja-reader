@@ -55,6 +55,7 @@ export interface PopupOptions {
   document?: Document;
   kanjiReferences: Array<ReferenceAbbreviation>;
   meta?: SelectionMeta;
+  onSwitchDictionary?: (newDict: MajorDataSeries) => void;
   posDisplay: PartOfSpeechDisplay;
   popupStyle: string;
   showDefinitions: boolean;
@@ -322,9 +323,11 @@ export function setPopupStyle(style: string) {
 }
 
 function renderTabBar({
+  onSwitchDictionary,
   queryResult,
   selectedTab,
 }: {
+  onSwitchDictionary?: (newDict: MajorDataSeries) => void;
   queryResult: QueryResult | null;
   selectedTab: MajorDataSeries;
 }): HTMLElement {
@@ -336,12 +339,24 @@ function renderTabBar({
     const li = document.createElement('li');
     li.setAttribute('role', 'presentation');
     li.classList.add('tab');
-    li.textContent = browser.i18n.getMessage(`tabs_${section}_label`);
+
     if (section === selectedTab) {
       li.setAttribute('aria-selected', 'true');
     } else if (!queryResult || !queryResult[section]) {
       li.classList.add('disabled');
     }
+
+    const a = document.createElement('a');
+    a.href = '#';
+    a.textContent = browser.i18n.getMessage(`tabs_${section}_label`);
+    if (onSwitchDictionary) {
+      a.onclick = (e: Event) => {
+        e.preventDefault();
+        onSwitchDictionary(section);
+      };
+    }
+    li.append(a);
+
     list.append(li);
   }
 

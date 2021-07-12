@@ -412,7 +412,7 @@ export class ContentHandler {
         return true;
       }
       if (this.currentPoint && this.currentTarget) {
-        this.showNextDictionary();
+        this.showDictionary('next');
       }
     } else if (toggleDefinition.includes(upperKey)) {
       try {
@@ -655,22 +655,28 @@ export class ContentHandler {
     this.showPopup();
   }
 
-  showNextDictionary() {
+  showDictionary(dictToShow: 'next' | MajorDataSeries) {
     if (!this.currentSearchResult || !this.currentTextAtPoint) {
       return;
     }
 
-    let dict: MajorDataSeries = this.currentDict;
+    let dict: MajorDataSeries;
 
-    const cycleOrder: Array<MajorDataSeries> = ['words', 'kanji', 'names'];
-    let next = (cycleOrder.indexOf(this.currentDict) + 1) % cycleOrder.length;
-    while (cycleOrder[next] !== this.currentDict) {
-      const nextDict = cycleOrder[next];
-      if (this.currentSearchResult[nextDict]) {
-        dict = nextDict;
-        break;
+    if (dictToShow == 'next') {
+      dict = this.currentDict;
+
+      const cycleOrder: Array<MajorDataSeries> = ['words', 'kanji', 'names'];
+      let next = (cycleOrder.indexOf(this.currentDict) + 1) % cycleOrder.length;
+      while (cycleOrder[next] !== this.currentDict) {
+        const nextDict = cycleOrder[next];
+        if (this.currentSearchResult[nextDict]) {
+          dict = nextDict;
+          break;
+        }
+        next = ++next % cycleOrder.length;
       }
-      next = ++next % cycleOrder.length;
+    } else {
+      dict = dictToShow;
     }
 
     if (dict === this.currentDict) {
@@ -980,6 +986,9 @@ export class ContentHandler {
       document: doc,
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentTextAtPoint?.meta,
+      onSwitchDictionary: (dict: MajorDataSeries) => {
+        this.showDictionary(dict);
+      },
       popupStyle: this.config.popupStyle,
       posDisplay: this.config.posDisplay,
       showDefinitions: !this.config.readingOnly,
