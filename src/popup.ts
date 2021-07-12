@@ -81,6 +81,8 @@ export function renderPopup(
   if (result && result.dbStatus !== 'unavailable' && !result.title) {
     windowElem.append(
       renderTabBar({
+        onClosePopup: options.onClosePopup,
+        onSwitchDictionary: options.onSwitchDictionary,
         queryResult: result,
         selectedTab: options.dictToShow,
       })
