@@ -333,6 +333,10 @@ export function setPopupStyle(style: string) {
   windowElem.classList.add(`-${style}`);
 }
 
+export function isPopupWindow(target: EventTarget | null): boolean {
+  return target instanceof HTMLElement && target.id === 'tenten-ja-window';
+}
+
 function renderTabBar({
   onClosePopup,
   onSwitchDictionary,

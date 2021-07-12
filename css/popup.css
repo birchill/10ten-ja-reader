@@ -44,6 +44,8 @@
 
   background: var(--cell-highlight-bg);
   color: var(--cell-highlight-fg);
+
+  pointer-events: auto;
 }
 
 .tabs {

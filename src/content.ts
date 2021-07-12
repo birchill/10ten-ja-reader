@@ -69,6 +69,7 @@ import {
   CopyState,
   hidePopup,
   isPopupVisible,
+  isPopupWindow,
   PopupOptions,
   removePopup,
   renderPopup,
@@ -214,6 +215,11 @@ export class ContentHandler {
       return;
     }
 
+    // Ignore mouse events on the popup window
+    if (isPopupWindow(ev.target)) {
+      return;
+    }
+
     // Check if any required "hold to show keys" are held. We do this before
     // checking throttling since that can be expensive and when this is
     // configured, typically the user will have the extension more-or-less
@@ -302,6 +308,11 @@ export class ContentHandler {
   }
 
   onMouseDown(ev: MouseEvent) {
+    // Ignore mouse events on the popup window
+    if (isPopupWindow(ev.target)) {
+      return;
+    }
+
     // Clear the highlight since it interferes with selection.
     this.clearHighlight(ev.target as Element);
   }
