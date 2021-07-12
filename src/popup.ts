@@ -250,7 +250,7 @@ function resetContainer(
   }
 
   // Set touch status
-  if ('ontouchstart' in window) {
+  if ('TouchEvent' in window) {
     windowDiv.classList.add('touch');
   }
 
