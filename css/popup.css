@@ -59,6 +59,7 @@
   flex-grow: 1;
   list-style: none;
   font-size: 0.8em;
+  user-select: none;
 }
 
 .tabs .tab a {
