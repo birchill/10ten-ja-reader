@@ -37,7 +37,17 @@
 
 /* Tab bar */
 
+.tab-bar {
+  display: flex;
+  padding: 0;
+  margin: 0;
+
+  background: var(--cell-highlight-bg);
+  color: var(--cell-highlight-fg);
+}
+
 .tabs {
+  flex-grow: 1;
   display: flex;
   padding: 0;
   margin: 0;
@@ -47,6 +57,9 @@
   flex-grow: 1;
   list-style: none;
   font-size: 0.8em;
+}
+
+.tabs .tab a {
   opacity: 0.7;
 }
 
@@ -57,7 +70,6 @@
 .tabs .tab a {
   display: block;
   padding: 0.5em 18px;
-  color: var(--text-color);
   text-decoration: none;
 }
 
@@ -65,18 +77,70 @@
   padding: 0.7em 18px;
 }
 
-.tabs .tab:not([aria-selected]) {
-  background: var(--cell-highlight-bg);
-  opacity: 0.8;
+.tabs .tab[aria-selected] {
+  background: var(--bg-color);
 }
 
-.tabs .tab:not([aria-selected]) {
+.tabs .tab[aria-selected] a {
+  color: var(--text-color);
+}
+
+.tabs .tab:not([aria-selected]) a {
+  opacity: 0.8;
   color: var(--cell-highlight-fg);
+}
+
+.tabs .tab:not([aria-selected]):hover {
+  filter: brightness(1.1);
+}
+
+.tabs .tab:not([aria-selected]):hover a {
+  opacity: 1;
 }
 
 .tabs .tab.disabled {
   opacity: 0.3;
   pointer-events: none;
+}
+
+.window:not(.touch) .close {
+  display: none;
+}
+
+.tab-bar .close {
+  flex-shrink: 0;
+  align-self: center;
+  margin: 2px;
+}
+
+.tab-bar .close-button {
+  appearance: none;
+  border: none;
+  line-height: 1;
+  padding: 6px;
+  border-radius: 20px;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+.tab-bar .close-button:hover {
+  filter: brightness(1.1);
+}
+
+.tab-bar .close-button svg {
+  display: block;
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  stroke-width: 5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-opacity: 0.7;
+  fill: none;
+}
+
+.tab-bar .close-button:hover svg {
+  stroke-opacity: 1;
 }
 
 /* Word display */

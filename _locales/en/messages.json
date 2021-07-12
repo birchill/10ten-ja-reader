@@ -1638,6 +1638,10 @@
       }
     }
   },
+  "popup_close_label": {
+    "message": "Close",
+    "description": "The aria-label associated with the button to close the popup"
+  },
   "pos_label_adj_f": {
     "message": "pre-noun adj.",
     "description": "Short part-of-speech label shown next to noun or verb entries acting prenominally"

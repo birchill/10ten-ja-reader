@@ -55,6 +55,7 @@ export interface PopupOptions {
   document?: Document;
   kanjiReferences: Array<ReferenceAbbreviation>;
   meta?: SelectionMeta;
+  onClosePopup?: () => void;
   onSwitchDictionary?: (newDict: MajorDataSeries) => void;
   posDisplay: PartOfSpeechDisplay;
   popupStyle: string;
@@ -331,14 +332,19 @@ export function setPopupStyle(style: string) {
 }
 
 function renderTabBar({
+  onClosePopup,
   onSwitchDictionary,
   queryResult,
   selectedTab,
 }: {
+  onClosePopup?: () => void;
   onSwitchDictionary?: (newDict: MajorDataSeries) => void;
   queryResult: QueryResult | null;
   selectedTab: MajorDataSeries;
 }): HTMLElement {
+  const tabBar = document.createElement('div');
+  tabBar.classList.add('tab-bar');
+
   const list = document.createElement('ul');
   list.classList.add('tabs');
 
@@ -355,9 +361,9 @@ function renderTabBar({
     }
 
     const a = document.createElement('a');
-    a.href = '#';
     a.textContent = browser.i18n.getMessage(`tabs_${section}_label`);
-    if (onSwitchDictionary) {
+    if (section !== selectedTab && onSwitchDictionary) {
+      a.href = '#';
       a.onclick = (e: Event) => {
         e.preventDefault();
         onSwitchDictionary(section);
@@ -367,8 +373,34 @@ function renderTabBar({
 
     list.append(li);
   }
+  tabBar.append(list);
 
-  return list;
+  // Close button
+  if (onClosePopup) {
+    const close = document.createElement('div');
+    close.classList.add('close');
+
+    const closeButton = document.createElement('button');
+    closeButton.classList.add('close-button');
+    closeButton.type = 'button';
+    closeButton.setAttribute(
+      'aria-label',
+      browser.i18n.getMessage('popup_close_button_label')
+    );
+    closeButton.onclick = onClosePopup;
+    close.append(closeButton);
+
+    const crossSvg = document.createElementNS(SVG_NS, 'svg');
+    crossSvg.setAttribute('viewBox', '0 0 24 24');
+    const path = document.createElementNS(SVG_NS, 'path');
+    path.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+    crossSvg.append(path);
+    closeButton.append(crossSvg);
+
+    tabBar.append(close);
+  }
+
+  return tabBar;
 }
 
 function renderWordEntries({

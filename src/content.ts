@@ -986,6 +986,9 @@ export class ContentHandler {
       document: doc,
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentTextAtPoint?.meta,
+      onClosePopup: () => {
+        this.clearHighlight(this.currentTarget);
+      },
       onSwitchDictionary: (dict: MajorDataSeries) => {
         this.showDictionary(dict);
       },
