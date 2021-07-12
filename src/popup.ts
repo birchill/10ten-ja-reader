@@ -238,6 +238,8 @@ function resetContainer(
 
   const windowDiv = doc.createElement('div');
   windowDiv.classList.add('window');
+
+  // Set theme
   if (popupStyle !== 'default') {
     windowDiv.classList.add(`-${popupStyle}`);
   } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -245,6 +247,12 @@ function resetContainer(
     // so short-lived.
     windowDiv.classList.add('-black');
   }
+
+  // Set touch status
+  if ('ontouchstart' in window) {
+    windowDiv.classList.add('touch');
+  }
+
   container.shadowRoot!.append(windowDiv);
 
   // Reset the container position so we can consistently measure the size of
