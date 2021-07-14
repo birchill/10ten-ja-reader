@@ -408,7 +408,7 @@ function renderTabBar({
     closeButton.type = 'button';
     closeButton.setAttribute(
       'aria-label',
-      browser.i18n.getMessage('popup_close_button_label')
+      browser.i18n.getMessage('popup_close_label')
     );
     closeButton.onclick = onClosePopup;
     close.append(closeButton);
