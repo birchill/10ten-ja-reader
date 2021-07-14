@@ -366,6 +366,7 @@ function renderTabBar({
 }): HTMLElement {
   const tabBar = document.createElement('div');
   tabBar.classList.add('tab-bar');
+  tabBar.lang = getLangTag();
 
   const list = document.createElement('ul');
   list.classList.add('tabs');
