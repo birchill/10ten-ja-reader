@@ -683,20 +683,20 @@
  * Keyboard keys
  */
 
-.copy {
+.status {
   margin-top: 3px;
   position: relative;
   width: 100%;
   max-height: 3em;
 }
 
-.copy > .keys,
-.copy > .status {
+.status > .keys,
+.status > .status {
   padding: 5px 8px 5px;
-  background: var(--copy-status-bg);
+  background: var(--status-bg);
 }
 
-.copy > .keys kbd {
+.status > .keys kbd {
   color: rgb(10, 10, 10);
   font-size: 0.8rem;
   font-family: monospace;
@@ -707,7 +707,7 @@
   border: 1px solid #909090 !important;
 }
 
-.copy > .status {
+.status > .status {
   position: absolute;
   left: 0;
   top: 0;
@@ -715,17 +715,17 @@
   box-sizing: border-box;
 }
 
-.copy.-finished > .keys,
-.copy.-error > .keys {
+.status.-finished > .keys,
+.status.-error > .keys {
   animation: fade-out 0.4s linear forwards;
 }
 
-.copy.-finished > .status {
+.status.-finished > .status {
   opacity: 0;
   animation: fade-in 0.4s linear forwards, fade-out 0.3s 0.9s forwards;
 }
 
-.copy.-finished {
+.status.-finished {
   animation: roll-up 0.3s 1s forwards;
 }
 
@@ -747,12 +747,12 @@
   }
 }
 
-.copy.-error > .status {
+.status.-error > .status {
   opacity: 0;
   animation: fade-in 0.4s linear forwards;
 }
 
-.copy.-error > .status {
+.status.-error > .status {
   background: rgba(255, 204, 204, 0.8);
   color: #b43e3e;
 }
@@ -859,7 +859,7 @@
   --cell-highlight-fg: #1d1a19;
 
   --meta-bg: var(--cell-highlight-bg);
-  --copy-status-bg: var(--cell-highlight-bg);
+  --status-bg: var(--cell-highlight-bg);
 }
 
 /*
@@ -887,7 +887,7 @@
 
   --selected-highlight: var(--bg-color);
 
-  --copy-status-bg: rgba(255, 255, 255, 0.2);
+  --status-bg: rgba(255, 255, 255, 0.2);
   --meta-bg: rgba(255, 255, 255, 0.2);
 }
 
@@ -916,7 +916,7 @@
 
   --selected-highlight: #2277d9;
 
-  --copy-status-bg: rgba(255, 255, 255, 0.2);
+  --status-bg: rgba(255, 255, 255, 0.2);
   --meta-bg: rgba(255, 255, 255, 0.2);
 }
 
@@ -950,7 +950,7 @@
   --selected-highlight: var(--primary-highlight);
 
   --meta-bg: var(--cell-highlight-bg);
-  --copy-status-bg: var(--cell-highlight-bg);
+  --status-bg: var(--cell-highlight-bg);
 }
 
 /*
@@ -980,5 +980,5 @@
   --selected-highlight: var(--primary-highlight);
 
   --meta-bg: var(--cell-highlight-bg);
-  --copy-status-bg: var(--cell-highlight-bg);
+  --status-bg: var(--cell-highlight-bg);
 }

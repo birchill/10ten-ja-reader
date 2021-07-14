@@ -144,6 +144,17 @@ export function renderPopup(
       break;
   }
 
+  // Show the copy status bar
+  const copyDetails = renderCopyDetails(
+    options.copyNextKey,
+    options.copyState,
+    typeof options.copyType !== 'undefined' ? options.copyType : undefined,
+    resultToShow?.type || 'words'
+  );
+  if (copyDetails) {
+    windowElem.append(copyDetails);
+  }
+
   return container;
 }
 
@@ -556,15 +567,6 @@ function renderWordEntries({
     moreDiv.classList.add('more');
     moreDiv.append('...');
     container.append(moreDiv);
-  }
-
-  const copyDetails = renderCopyDetails(
-    options.copyNextKey,
-    options.copyState,
-    typeof options.copyType !== 'undefined' ? options.copyType : undefined
-  );
-  if (copyDetails) {
-    container.append(copyDetails);
   }
 
   return container;
@@ -1202,15 +1204,6 @@ function renderNamesEntries({
     namesTable.append(moreDiv);
   }
 
-  const copyDetails = renderCopyDetails(
-    options.copyNextKey,
-    options.copyState,
-    typeof options.copyType !== 'undefined' ? options.copyType : undefined
-  );
-  if (copyDetails) {
-    container.append(copyDetails);
-  }
-
   return container;
 }
 
@@ -1354,19 +1347,6 @@ function renderKanjiEntry({
   // Reference row
   if (options.kanjiReferences && options.kanjiReferences.length) {
     table.append(renderReferences(entry, options));
-  }
-
-  // Copy details
-  const copyDetails = renderCopyDetails(
-    options.copyNextKey,
-    options.copyState,
-    typeof options.copyType !== 'undefined' ? options.copyType : undefined,
-    {
-      kanji: true,
-    }
-  );
-  if (copyDetails) {
-    container.append(copyDetails);
   }
 
   return container;
@@ -1875,27 +1855,27 @@ function renderMetadata(meta: SelectionMeta): HTMLElement | null {
 
 function renderCopyDetails(
   copyNextKey: string,
-  copyState?: CopyState,
-  copyType?: CopyType,
-  options: { kanji: boolean } = { kanji: false }
+  copyState: CopyState | undefined,
+  copyType: CopyType | undefined,
+  series: MajorDataSeries
 ): HTMLElement | null {
   if (typeof copyState === 'undefined' || copyState === CopyState.Inactive) {
     return null;
   }
 
-  const copyDiv = document.createElement('div');
-  copyDiv.classList.add('copy');
-  copyDiv.lang = browser.i18n.getMessage('lang_tag');
+  const statusDiv = document.createElement('div');
+  statusDiv.classList.add('status');
+  statusDiv.lang = browser.i18n.getMessage('lang_tag');
 
   const keysDiv = document.createElement('div');
   keysDiv.classList.add('keys');
-  copyDiv.append(keysDiv);
+  statusDiv.append(keysDiv);
 
   keysDiv.append(browser.i18n.getMessage('content_copy_keys_label') + ' ');
 
   const copyKeys: Array<{ key: string; l10nKey: string }> = CopyKeys.map(
     ({ key, type, popupString }) => {
-      if (type === CopyType.Word && options.kanji) {
+      if (type === CopyType.Word && series === 'kanji') {
         return { key, l10nKey: CopyKanjiKeyStrings.popupString };
       } else {
         return { key, l10nKey: popupString };
@@ -1917,16 +1897,16 @@ function renderCopyDetails(
   }
 
   if (copyState === CopyState.Finished && typeof copyType !== 'undefined') {
-    copyDiv.classList.add('-finished');
-    copyDiv.append(renderCopyStatus(getCopiedString(copyType)));
+    statusDiv.classList.add('-finished');
+    statusDiv.append(renderCopyStatus(getCopiedString(copyType)));
   } else if (copyState === CopyState.Error) {
-    copyDiv.classList.add('-error');
-    copyDiv.append(
+    statusDiv.classList.add('-error');
+    statusDiv.append(
       renderCopyStatus(browser.i18n.getMessage('content_copy_error'))
     );
   }
 
-  return copyDiv;
+  return statusDiv;
 }
 
 function getCopiedString(target: CopyType): string {
