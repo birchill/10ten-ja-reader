@@ -32,6 +32,9 @@
   <kbd>n</kbd>, since <kbd>Shift</kbd> can be unavailable when Firefox's
   resist fingerprinting mode is enabled.
 
+- Added a notification that incomplete results are shown when the dictionary
+  data is being updated.
+
 ## 1.0.0 (2021-06-15) (Safari only)
 
 - Added new default (gray) theme.

@@ -568,6 +568,34 @@
       }
     }
 
+    // Database status tests
+
+    const dbUpdatingTest = { ...touchScreenTest, dbStatus: 'updating' };
+
+    {
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.append('【Database updating】');
+      container.append(label);
+
+      for (const theme of themes) {
+        const label = document.createElement('div');
+        label.classList.add('label');
+        label.append(`Theme: ${theme}`);
+        container.append(label);
+
+        const popup = contentHandler._renderPopup(dbUpdatingTest, {
+          ...config,
+          container: createPopupContainer(),
+          dictToShow: 'words',
+          popupStyle: theme,
+          showDefinitions: true,
+          onClosePopup: () => {},
+        });
+        popup.shadowRoot.querySelector('.window').classList.add('touch');
+      }
+    }
+
     function createPopupContainer() {
       const popupContainer = document.createElement('div');
       popupContainer.style.width = 'max-content';

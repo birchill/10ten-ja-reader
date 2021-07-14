@@ -10,6 +10,8 @@ export const browser = {
   i18n: {
     getMessage: (id: string, replacements?: Array<string>) => {
       switch (id) {
+        case 'content_database_updating':
+          return 'Dictionary data is updating, incomplete results shown.';
         case 'content_names_tag_surname':
           return 'surname';
         case 'content_names_tag_place':

@@ -71,6 +71,10 @@
     "message": "word",
     "description": "Label for key to copy a word to the clipboard"
   },
+  "content_database_updating": {
+    "message": "Dictionary data is updating, incomplete results shown.",
+    "description": "Status bar message shown while the is being updated and only a snapshot can be shown."
+  },
   "content_kanji_base_radical": {
     "message": "from $char$ (​$readings$​)",
     "description": "The string used to describe the base radical",

@@ -71,6 +71,10 @@
     "message": "単語",
     "description": "Label for key to copy a word to the clipboard"
   },
+  "content_database_updating": {
+    "message": "辞書データを更新中のため、一部のデータのみ表示されています。",
+    "description": "Status bar message shown while the is being updated and only a snapshot can be shown."
+  },
   "content_kanji_base_radical": {
     "message": "部 $char$ (​$readings$​)",
     "description": "The string used to describe the base radical",

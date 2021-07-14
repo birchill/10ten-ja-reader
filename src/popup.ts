@@ -153,6 +153,8 @@ export function renderPopup(
   );
   if (copyDetails) {
     windowElem.append(copyDetails);
+  } else if (result?.dbStatus === 'updating') {
+    windowElem.append(renderUpdatingStatus());
   }
 
   return container;
@@ -1864,8 +1866,10 @@ function renderCopyDetails(
   }
 
   const statusDiv = document.createElement('div');
-  statusDiv.classList.add('status');
-  statusDiv.lang = browser.i18n.getMessage('lang_tag');
+  statusDiv.classList.add('status-bar');
+  statusDiv.classList.add('-stack');
+  statusDiv.classList.add('-copy');
+  statusDiv.lang = getLangTag();
 
   const keysDiv = document.createElement('div');
   keysDiv.classList.add('keys');
@@ -1927,6 +1931,46 @@ function renderCopyStatus(message: string): HTMLElement {
   status.classList.add('status');
   status.innerText = message;
   return status;
+}
+
+function renderUpdatingStatus(): HTMLElement {
+  const statusDiv = document.createElement('div');
+  statusDiv.classList.add('status-bar');
+  statusDiv.classList.add('-subdued');
+  statusDiv.lang = getLangTag();
+
+  const statusText = document.createElement('div');
+  statusText.classList.add('status');
+
+  const spinner = renderSpinner();
+  spinner.classList.add('spinner');
+  statusText.append(spinner);
+
+  statusText.append(browser.i18n.getMessage('content_database_updating'));
+  statusDiv.append(statusText);
+
+  return statusDiv;
+}
+
+function renderSpinner(): SVGElement {
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('viewBox', '0 0 16 16');
+  svg.setAttribute('role', 'presentation');
+
+  const path = document.createElementNS(SVG_NS, 'path');
+  path.setAttribute(
+    'd',
+    'M8.54,2.11l.66-.65A.78.78,0,0,0,9.2.38a.76.76,0,0,0-1.08,0L6.19,2.31A.81.81,0,0,0,6,2.55a.8.8,0,0,0-.06.3A.72.72,0,0,0,6,3.14a.74.74,0,0,0,.17.25L8.12,5.32a.73.73,0,0,0,.54.22.76.76,0,0,0,.54-.22.78.78,0,0,0,0-1.08l-.58-.58A4.38,4.38,0,1,1,3.68,8.82a.76.76,0,0,0-1.5.28,5.92,5.92,0,1,0,6.36-7Z'
+  );
+  svg.append(path);
+
+  const circle = document.createElementNS(SVG_NS, 'circle');
+  circle.setAttribute('cx', '2.673');
+  circle.setAttribute('cy', '6.71');
+  circle.setAttribute('r', '0.965');
+  svg.append(circle);
+
+  return svg;
 }
 
 // Cache language tag since we fetch it a lot

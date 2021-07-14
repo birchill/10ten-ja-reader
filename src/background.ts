@@ -409,7 +409,8 @@ async function search({
   const kanjiResult = await searchKanji([...input][0]);
   let kanji: KanjiSearchResult | null | undefined;
   if (typeof kanjiResult === 'string') {
-    dbStatus = dbStatus || kanjiResult;
+    // 'updating' overrides 'unavailable'
+    dbStatus = dbStatus === 'updating' ? dbStatus : kanjiResult;
   } else {
     kanji = kanjiResult;
   }
@@ -422,7 +423,8 @@ async function search({
   const nameResult = await searchNames({ input });
   let names: NameSearchResult | null | undefined;
   if (typeof nameResult === 'string') {
-    dbStatus = dbStatus || nameResult;
+    // 'updating' overrides 'unavailable'
+    dbStatus = dbStatus === 'updating' ? dbStatus : nameResult;
   } else {
     names = nameResult;
   }

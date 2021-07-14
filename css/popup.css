@@ -683,20 +683,33 @@
  * Keyboard keys
  */
 
-.status {
+.status-bar {
   margin-top: 3px;
   position: relative;
   width: 100%;
   max-height: 3em;
-}
-
-.status > .keys,
-.status > .status {
-  padding: 5px 8px 5px;
   background: var(--status-bg);
 }
 
-.status > .keys kbd {
+.status-bar.-stack {
+  display: grid;
+  grid-template-rows: [stack-start] auto [stack-end];
+}
+
+.status-bar.-stack > * {
+  grid-column: 1 / -1;
+  grid-row: stack-start / stack-end;
+}
+
+.status-bar > * {
+  padding: 5px 8px 5px;
+}
+
+.status-bar.-subdued {
+  opacity: 0.7;
+}
+
+.status-bar kbd {
   color: rgb(10, 10, 10);
   font-size: 0.8rem;
   font-family: monospace;
@@ -707,25 +720,26 @@
   border: 1px solid #909090 !important;
 }
 
-.status > .status {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  box-sizing: border-box;
+.status-bar .spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 7px;
+  fill: currentcolor;
+  animation: spin-ccw 0.8s linear infinite;
 }
 
-.status.-finished > .keys,
-.status.-error > .keys {
+.status-bar.-copy.-finished > .keys,
+.status-bar.-copy.-error > .keys {
   animation: fade-out 0.4s linear forwards;
 }
 
-.status.-finished > .status {
+.status-bar.-copy.-finished > .status {
   opacity: 0;
   animation: fade-in 0.4s linear forwards, fade-out 0.3s 0.9s forwards;
 }
 
-.status.-finished {
+.status-bar.-finished {
   animation: roll-up 0.3s 1s forwards;
 }
 
@@ -747,12 +761,18 @@
   }
 }
 
-.status.-error > .status {
+@keyframes spin-ccw {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.status-bar.-error > .status {
   opacity: 0;
   animation: fade-in 0.4s linear forwards;
 }
 
-.status.-error > .status {
+.status-bar.-error > .status {
   background: rgba(255, 204, 204, 0.8);
   color: #b43e3e;
 }
