@@ -1525,10 +1525,10 @@ function renderMiscRow(entry: KanjiResult): HTMLElement {
   // Strokes
   const strokesDiv = document.createElement('div');
   strokesDiv.classList.add('strokes');
-  const pencil = renderPencil();
-  pencil.classList.add('svgicon');
-  pencil.style.opacity = '0.5';
-  strokesDiv.append(pencil);
+  const pencilIcon = renderPencil();
+  pencilIcon.classList.add('svgicon');
+  pencilIcon.style.opacity = '0.5';
+  strokesDiv.append(pencilIcon);
   const strokeCount = document.createElement('span');
   strokeCount.textContent =
     entry.misc.sc === 1
@@ -1542,7 +1542,9 @@ function renderMiscRow(entry: KanjiResult): HTMLElement {
   // Frequency
   const frequencyDiv = document.createElement('div');
   frequencyDiv.classList.add('freq');
-  frequencyDiv.append(renderFrequency(entry.misc.freq));
+  const frequencyIcon = renderFrequency(entry.misc.freq);
+  frequencyIcon.classList.add('svgicon');
+  frequencyDiv.append(frequencyIcon);
   const frequency = document.createElement('span');
   if (entry.misc.freq) {
     frequency.textContent =
@@ -1561,7 +1563,10 @@ function renderMiscRow(entry: KanjiResult): HTMLElement {
   // Grade
   const gradeDiv = document.createElement('div');
   gradeDiv.classList.add('grade');
-  gradeDiv.append(renderUser());
+  const personIcon = renderPerson();
+  personIcon.classList.add('svgicon');
+  personIcon.style.opacity = '0.5';
+  gradeDiv.append(personIcon);
   const grade = document.createElement('span');
   switch (entry.misc.gr || 0) {
     case 8:
@@ -1612,7 +1617,6 @@ function renderPencil(): SVGElement {
 
 function renderFrequency(frequency: number | undefined): SVGElement {
   const freqSvg = document.createElementNS(SVG_NS, 'svg');
-  freqSvg.classList.add('svgicon');
   freqSvg.setAttribute('viewBox', '0 0 8 8');
 
   const rect1 = document.createElementNS(SVG_NS, 'rect');
@@ -1653,23 +1657,31 @@ function renderFrequency(frequency: number | undefined): SVGElement {
   return freqSvg;
 }
 
-let userSvg: SVGElement | undefined;
-function renderUser(): SVGElement {
-  if (!userSvg) {
-    userSvg = document.createElementNS(SVG_NS, 'svg');
-    userSvg.classList.add('svgicon');
-    userSvg.style.opacity = '0.5';
-    userSvg.setAttribute('viewBox', '0 0 8 8');
+function renderPerson(): SVGElement {
+  const personSvg = document.createElementNS(SVG_NS, 'svg');
+  personSvg.setAttribute('viewBox', '0 0 16 16');
 
-    const path = document.createElementNS(SVG_NS, 'path');
-    path.setAttribute(
-      'd',
-      'M4 8C1.93 8 .25 7.73.25 7.25V7c0-.9.69-1.39 1.02-1.55.33-.16 1.04-.38 1.34-.57L3 4.62s0-.04 0 0v-.37a2.62 2.62 0 0 1-.44-1.05c-.15.05-.33-.14-.4-.42-.07-.27-.01-.52.13-.56h.02l-.06-.82c0-.21-.03-.39.23-.76.27-.36.5-.22.5-.22s.17-.18.32-.26c.16-.08.54-.28 1.24-.07.69.2.96.3 1.13 1.1.1.46.07.8.04 1.03h.02c.14.03.2.29.12.56-.07.27-.24.46-.38.43-.1.44-.24.75-.47 1.04v.37c0-.01 0 0 0 0s.08.07.37.26c.3.2 1.02.41 1.35.57.32.16 1 .69 1.03 1.55v.25C7.75 7.73 6.07 8 4 8z'
-    );
-    userSvg.append(path);
-  }
+  const circle = document.createElementNS(SVG_NS, 'circle');
+  circle.setAttribute('cx', '14.5');
+  circle.setAttribute('cy', '14.5');
+  circle.setAttribute('r', '1.5');
+  personSvg.append(circle);
 
-  return userSvg;
+  const head = document.createElementNS(SVG_NS, 'path');
+  head.setAttribute(
+    'd',
+    'M8,0A2.87,2.87,0,0,0,5,2.72v2.5A2.92,2.92,0,0,0,8,8a2.92,2.92,0,0,0,3-2.78V2.72A2.87,2.87,0,0,0,8,0Z'
+  );
+  personSvg.append(head);
+
+  const body = document.createElementNS(SVG_NS, 'path');
+  body.setAttribute(
+    'd',
+    'M13.91,11.71A5.09,5.09,0,0,0,9.45,9H5.09A5.18,5.18,0,0,0,0,14.25.74.74,0,0,0,.73,15h10.9a.74.74,0,0,0,.73-.75,1.49,1.49,0,0,1,1.09-1.45.75.75,0,0,0,.49-.43A.76.76,0,0,0,13.91,11.71Z'
+  );
+  personSvg.append(body);
+
+  return personSvg;
 }
 
 function renderReferences(
