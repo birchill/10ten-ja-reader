@@ -17,36 +17,10 @@ export type Sense = WordResult['s'][0];
 
 export interface WordSearchResult {
   type: 'words';
-
   data: Array<WordResult>;
-
   // The length of the longest match in the original input string.
   matchLen: number;
-
   // True if greater than `maxResults` entries were found.
-  more: boolean;
-
-  // If we found longer matches in the names dictionary we return the longest
-  // ones here, here up to the first 3 results.
-  names?: Array<NameResult>;
-
-  // If there were more than 3 names with a longer length, we indicate that
-  // here.
-  moreNames?: boolean;
-
-  // A status flag used to indicate that we returned results from the flat-file
-  // database instead of the (more up-to-date and localized Indexed DB store)
-  // and hence the result should not be cached since a subsequent query with the
-  // same inputs might return a different (and better) result.
-  dbUnavailable?: boolean;
-}
-
-export interface TranslateResult {
-  type: 'translate';
-  data: Array<WordResult>;
-  // Length of text matched.
-  textLen: number;
-  // True if greater than WORDS_MAX_ENTRIES were found.
   more: boolean;
 }
 
@@ -73,22 +47,39 @@ export interface NameSearchResult {
   more: boolean;
 }
 
-export type RawSearchResult =
-  | WordSearchResult
-  | TranslateResult
-  | KanjiSearchResult
-  | NameSearchResult;
+// Combined search result
 
-export type SearchMetadata = {
-  // Used to indicate that we failed to find a match in the word dictionary
-  // but found one in the names dictionary.
+export type SearchDatabaseStatus = 'unavailable' | 'updating';
+
+export type SearchResult = {
+  // There is a subtle difference below between 'null' and 'undefined'/absent.
   //
-  // When this is true, we use a different order for displaying the dictionaries
-  // so this flag should be passed along with the next query to preserve that
-  // order.
-  preferNames: boolean;
+  // - 'null' means we searched the database but found nothing.
+  // - 'undefined'/absent means the database was not available for some reason
+  //   (usually covered by dbStatus below).
+  //
+  // (Since there is a fallback words database, `words` never ends up being
+  // undefined.)
+  words: WordSearchResult | null;
+  kanji?: KanjiSearchResult | null;
+  names?: NameSearchResult | null;
+  // DB here refers to the IndexedDB database. If it is unavailable or being
+  // updated we look up the flat-file database instead which only covers the
+  // words dictionary, has only English glosses, and may be out-of-date.
+  dbStatus?: SearchDatabaseStatus;
 };
 
-// The search result combined with metadata needed to perform subsequent
-// searches.
-export type SearchResult = RawSearchResult & SearchMetadata;
+// Translate result
+
+export interface TranslateResult {
+  type: 'translate';
+  data: Array<WordResult>;
+  // Length of text matched.
+  textLen: number;
+  // True if greater than WORDS_MAX_ENTRIES were found.
+  more: boolean;
+  // DB here refers to the IndexedDB database. If it is unavailable or being
+  // updated we look up the flat-file database instead which has only English
+  // glosses and may be out-of-date.
+  dbStatus?: SearchDatabaseStatus;
+}

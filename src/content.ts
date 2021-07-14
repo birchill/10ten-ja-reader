@@ -45,6 +45,7 @@
 
 */
 
+import type { MajorDataSeries } from '@birchill/hikibiki-data';
 import Browser, { browser } from 'webextension-polyfill-ts';
 
 import { ContentConfig } from './content-config';
@@ -68,6 +69,7 @@ import {
   CopyState,
   hidePopup,
   isPopupVisible,
+  isPopupWindow,
   PopupOptions,
   removePopup,
   renderPopup,
@@ -113,6 +115,7 @@ export class ContentHandler {
   private currentPoint: { x: number; y: number } | null = null;
   private currentSearchResult: QueryResult | null = null;
   private currentTarget: Element | null = null;
+  private currentDict: MajorDataSeries = 'words';
 
   // Highlight tracking
   private selectedWindow: Window | null = null;
@@ -212,6 +215,11 @@ export class ContentHandler {
       return;
     }
 
+    // Ignore mouse events on the popup window
+    if (isPopupWindow(ev.target)) {
+      return;
+    }
+
     // Check if any required "hold to show keys" are held. We do this before
     // checking throttling since that can be expensive and when this is
     // configured, typically the user will have the extension more-or-less
@@ -300,6 +308,11 @@ export class ContentHandler {
   }
 
   onMouseDown(ev: MouseEvent) {
+    // Ignore mouse events on the popup window
+    if (isPopupWindow(ev.target)) {
+      return;
+    }
+
     // Clear the highlight since it interferes with selection.
     this.clearHighlight(ev.target as Element);
   }
@@ -410,7 +423,7 @@ export class ContentHandler {
         return true;
       }
       if (this.currentPoint && this.currentTarget) {
-        this.tryToUpdatePopup(this.currentPoint, this.currentTarget, 'next');
+        this.showDictionary('next');
       }
     } else if (toggleDefinition.includes(upperKey)) {
       try {
@@ -567,7 +580,7 @@ export class ContentHandler {
   async tryToUpdatePopup(
     point: { x: number; y: number },
     target: Element,
-    dictMode: 'default' | 'next' | 'kanji'
+    dictMode: 'default' | 'kanji'
   ) {
     const textAtPoint = getTextAtPoint(point, ContentHandler.MAX_LENGTH);
 
@@ -597,14 +610,8 @@ export class ContentHandler {
       return;
     }
 
-    const queryResult = await query(textAtPoint.text, {
+    let queryResult = await query(textAtPoint.text, {
       includeRomaji: this.config.showRomaji,
-      dict: dictMode === 'kanji' ? 'kanji' : undefined,
-      prevDict:
-        dictMode === 'next' && this.currentSearchResult
-          ? this.currentSearchResult.type
-          : undefined,
-      preferNames: this.currentSearchResult?.preferNames ?? false,
       wordLookup: textAtPoint.rangeStart !== null,
     });
 
@@ -619,13 +626,39 @@ export class ContentHandler {
       return;
     }
 
-    const matchLen = Math.max(
-      queryResult?.matchLen || 0,
-      textAtPoint.meta?.matchLen || 0
-    );
-    if (matchLen) {
-      this.highlightText(textAtPoint, matchLen);
+    // Determine the dictionary to show
+    let dict: MajorDataSeries = 'words';
+
+    if (queryResult) {
+      switch (dictMode) {
+        case 'default':
+          if (!queryResult.words) {
+            // Prefer the names dictionary if we have a names result of more
+            // than one character or if we have no kanji results.
+            //
+            // Otherwise, follow the usual fallback order words -> kanji ->
+            // names.
+            dict =
+              (queryResult.names && queryResult.names.matchLen > 1) ||
+              !queryResult.kanji
+                ? 'names'
+                : 'kanji';
+          }
+          break;
+
+        case 'kanji':
+          if (!queryResult.kanji) {
+            queryResult = null;
+          } else {
+            dict = 'kanji';
+          }
+          break;
+      }
+
+      this.currentDict = dict;
     }
+
+    this.highlightText(textAtPoint, queryResult?.[dict]);
 
     this.currentSearchResult = queryResult;
     this.currentTarget = target;
@@ -633,8 +666,58 @@ export class ContentHandler {
     this.showPopup();
   }
 
-  highlightText(textAtPoint: GetTextResult, matchLen: number) {
-    if (this.config.noTextHighlight || !textAtPoint.rangeStart) {
+  showDictionary(dictToShow: 'next' | MajorDataSeries) {
+    if (!this.currentSearchResult || !this.currentTextAtPoint) {
+      return;
+    }
+
+    let dict: MajorDataSeries;
+
+    if (dictToShow == 'next') {
+      dict = this.currentDict;
+
+      const cycleOrder: Array<MajorDataSeries> = ['words', 'kanji', 'names'];
+      let next = (cycleOrder.indexOf(this.currentDict) + 1) % cycleOrder.length;
+      while (cycleOrder[next] !== this.currentDict) {
+        const nextDict = cycleOrder[next];
+        if (this.currentSearchResult[nextDict]) {
+          dict = nextDict;
+          break;
+        }
+        next = ++next % cycleOrder.length;
+      }
+    } else {
+      dict = dictToShow;
+    }
+
+    if (dict === this.currentDict) {
+      return;
+    }
+
+    this.currentDict = dict;
+
+    this.highlightText(this.currentTextAtPoint, this.currentSearchResult[dict]);
+
+    this.showPopup();
+  }
+
+  highlightText(
+    textAtPoint: GetTextResult,
+    searchResult: { matchLen: number } | undefined | null
+  ) {
+    if (this.config.noTextHighlight) {
+      return;
+    }
+
+    // Work out the appropriate length to highlight
+    const matchLen = Math.max(
+      searchResult?.matchLen || 0,
+      textAtPoint.meta?.matchLen || 0
+    );
+
+    // Check we have something to highlight
+    if (!textAtPoint.rangeStart || matchLen < 1) {
+      this.clearHighlight(null);
       return;
     }
 
@@ -910,9 +993,16 @@ export class ContentHandler {
         (this.copyMode ? CopyState.Active : CopyState.Inactive),
       copyType: options?.copyType,
       dictLang: this.config.dictLang,
+      dictToShow: this.currentDict,
       document: doc,
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentTextAtPoint?.meta,
+      onClosePopup: () => {
+        this.clearHighlight(this.currentTarget);
+      },
+      onSwitchDictionary: (dict: MajorDataSeries) => {
+        this.showDictionary(dict);
+      },
       popupStyle: this.config.popupStyle,
       posDisplay: this.config.posDisplay,
       showDefinitions: !this.config.readingOnly,
@@ -979,11 +1069,14 @@ export class ContentHandler {
       'Should be in copy mode when copying an entry'
     );
 
-    if (!this.currentSearchResult) {
+    if (
+      !this.currentSearchResult ||
+      !this.currentSearchResult[this.currentDict]
+    ) {
       return null;
     }
 
-    const searchResult = this.currentSearchResult;
+    const searchResult = this.currentSearchResult[this.currentDict]!;
 
     let copyIndex = this.copyIndex;
     if (searchResult.type === 'words' || searchResult.type === 'names') {

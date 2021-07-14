@@ -59,7 +59,7 @@ describe('contentHandler:highlighting', () => {
       rangeEnds: [{ container: textBox, offset: 5 }],
     };
 
-    subject.highlightText(range, 3);
+    subject.highlightText(range, { matchLen: 3 });
 
     assert.strictEqual(textBox.selectionStart, 1);
     assert.strictEqual(textBox.selectionEnd, 4);

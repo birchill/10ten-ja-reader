@@ -20,9 +20,10 @@ for message in ${messages[@]}; do
           $message != gloss_type_label_* && \
           $message != head_info_label_* && \
           $message != lang_label_* && \
-          $message != measure_jou_label_* && \
+          $message != measure_expl_* && \
           $message != misc_label_* && \
-          $message != pos_label_* ]]; then
+          $message != pos_label_* && \
+          $message != tabs_*_label ]]; then
       echo ${message} has no matches!
       ((errors=errors+1))
     fi

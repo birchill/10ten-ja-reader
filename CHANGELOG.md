@@ -1,5 +1,9 @@
 ## Next version
 
+- Added tabs for showing different dictionary results and made them interactive
+  on touch screen devices
+  ([#675](https://github.com/birchill/10ten-ja-reader/discussions/675)).
+
 - Added automatic translation of 畳/帖 and square measurements such as
   四畳半, 6.5 帖, 10㎡, or 十二平米
   ([#642](https://github.com/birchill/10ten-ja-reader/issues/642)).

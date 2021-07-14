@@ -107,11 +107,14 @@ let dbState: JpdictStateWithFallback = {
 // suffers significant lag when any tables in the database is being accessed.
 //
 // As a result we simply don't touch IDB while it's being updated.
-function isDataSeriesAvailable(series: DataSeries): boolean {
-  return (
-    dbState[series].state === DataSeriesState.Ok &&
-    dbState.updateState.state === 'idle'
-  );
+function getDataSeriesStatus(
+  series: DataSeries
+): 'ok' | 'updating' | 'unavailable' {
+  if (dbState[series].state !== DataSeriesState.Ok) {
+    return 'unavailable';
+  }
+
+  return dbState.updateState.state === 'idle' ? 'ok' : 'updating';
 }
 
 // Fallback words database to use if we can't read the IndexedDB one (e.g.
@@ -303,7 +306,9 @@ export async function searchWords({
   abortSignal?: AbortSignal;
   max?: number;
   includeRomaji?: boolean;
-}): Promise<WordSearchResult | null> {
+}): Promise<
+  (WordSearchResult & { dbStatus?: 'updating' | 'unavailable' }) | null
+> {
   let [word, inputLengths] = normalizeInput(input);
   word = kanaToHiragana(word);
 
@@ -313,12 +318,11 @@ export async function searchWords({
   // Determine which dictionary to use: The IndexedDB one or the flat-file
   // fallback dictionary.
   let getWords: GetWordsFunction;
-  let dbUnavailable = false;
-  if (isDataSeriesAvailable('words')) {
+  let dbStatus = getDataSeriesStatus('words');
+  if (dbStatus === 'ok') {
     getWords = ({ input, maxResults }: { input: string; maxResults: number }) =>
       idbGetWords(input, { matchType: 'exact', limit: maxResults });
   } else {
-    dbUnavailable = true;
     try {
       const flatFileDatabase = await fallbackDatabaseLoader.database;
       getWords = flatFileDatabase.getWords.bind(flatFileDatabase);
@@ -336,8 +340,8 @@ export async function searchWords({
     includeRomaji,
   });
 
-  // Annotate the result with the database status
-  return result ? { ...result, dbUnavailable } : null;
+  // Annotate the result with the database status if needed
+  return result ? (dbStatus !== 'ok' ? { ...result, dbStatus } : result) : null;
 }
 
 // ---------------------------------------------------------------------------
@@ -380,6 +384,11 @@ export async function translate({
     } else {
       skip = 1;
     }
+
+    if (searchResult && searchResult.dbStatus) {
+      result.dbStatus = searchResult.dbStatus;
+    }
+
     text = text.substr(skip, text.length - skip);
   }
 
@@ -399,7 +408,7 @@ export async function translate({
 
 export async function searchKanji(
   kanji: string
-): Promise<KanjiSearchResult | null> {
+): Promise<KanjiSearchResult | null | 'unavailable' | 'updating'> {
   // Pre-check (might not be needed anymore)
   const codepoint = kanji.charCodeAt(0);
   if (codepoint < 0x3000) {
@@ -408,10 +417,13 @@ export async function searchKanji(
 
   if (
     dbState.kanji.state !== DataSeriesState.Ok ||
-    dbState.radicals.state !== DataSeriesState.Ok ||
-    dbState.updateState.state !== 'idle'
+    dbState.radicals.state !== DataSeriesState.Ok
   ) {
-    return null;
+    return 'unavailable';
+  }
+
+  if (dbState.updateState.state !== 'idle') {
+    return 'updating';
   }
 
   const logWarningMessage = (message: string) => {
@@ -462,9 +474,10 @@ export async function searchNames({
 }: {
   input: string;
   minLength?: number;
-}): Promise<NameSearchResult | null> {
-  if (!isDataSeriesAvailable('names')) {
-    return null;
+}): Promise<NameSearchResult | null | 'unavailable' | 'updating'> {
+  const dbStatus = getDataSeriesStatus('names');
+  if (dbStatus !== 'ok') {
+    return dbStatus;
   }
 
   let [normalized, inputLengths] = normalizeInput(input);

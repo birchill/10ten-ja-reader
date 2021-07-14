@@ -159,10 +159,6 @@
     "message": "1画",
     "description": "The description of the number of strokes when there is exactly 1 stroke"
   },
-  "content_names_dictionary": {
-    "message": "人名辞典",
-    "description": "The title used at the top of the popup when showing the names dictionary"
-  },
   "content_names_tag_char": {
     "message": "キャラクター"
   },
@@ -1644,6 +1640,10 @@
       }
     }
   },
+  "popup_close_label": {
+    "message": "閉じる",
+    "description": "The aria-label associated with the button to close the popup"
+  },
   "pos_label_adj_f": {
     "message": "連体",
     "description": "Short part-of-speech label shown next to noun or verb entries acting prenominally"
@@ -2035,5 +2035,17 @@
   "ref_label_unicode": {
     "message": "Unicode",
     "description": "The label used when presenting the Unicode codepoint of the kanji"
+  },
+  "tabs_kanji_label": {
+    "message": "漢字",
+    "description": "The label for the kanji dictionary tab"
+  },
+  "tabs_names_label": {
+    "message": "人名",
+    "description": "The label for the names dictionary tab"
+  },
+  "tabs_words_label": {
+    "message": "単語",
+    "description": "The label for the words dictionary tab"
   }
 }

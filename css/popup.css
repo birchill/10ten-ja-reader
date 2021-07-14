@@ -31,8 +31,142 @@
   --selected-tag-border: rgba(0, 0, 0, 0.3);
 }
 
+.window.fixed-width {
+  max-width: auto;
+  /* Fallback for the below */
+  width: 500px;
+  /* The 30px here is to accommodate scrollbars on Windows plus a bit of
+     padding. */
+  width: min(500px, calc(100vw - 30px));
+}
+
 .window.hidden {
   display: none;
+}
+
+/* Tab bar */
+
+.tab-bar {
+  display: flex;
+  padding: 0;
+  margin: 0;
+
+  background: var(--cell-highlight-bg);
+  color: var(--cell-highlight-fg);
+
+  pointer-events: auto;
+}
+
+.tabs {
+  flex-grow: 1;
+  display: flex;
+  padding: 0;
+  margin: 0;
+}
+
+.tabs .tab {
+  flex-grow: 1;
+  list-style: none;
+  font-size: 0.8em;
+  user-select: none;
+}
+
+.window.touch .tabs .tab {
+  font-size: 1em;
+}
+
+.tabs .tab a {
+  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  padding: 0.5em 18px;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.window.touch .tabs .tab a {
+  padding: 0.7em 18px;
+}
+
+.tabs .tab a .icon {
+  display: block;
+  width: 12px;
+  height: 12px;
+  margin-right: 5px;
+  /* Push the icon up a little so it looks more aligned with the text */
+  margin-bottom: 1px;
+  fill: currentcolor;
+}
+
+.window.touch .tabs .tab a .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.tabs .tab[aria-selected] {
+  background: var(--bg-color);
+}
+
+.tabs .tab[aria-selected] a {
+  color: var(--text-color);
+}
+
+.tabs .tab:not([aria-selected]) a {
+  opacity: 0.8;
+  color: var(--cell-highlight-fg);
+}
+
+.tabs .tab:not([aria-selected]):hover {
+  filter: brightness(1.1);
+}
+
+.tabs .tab:not([aria-selected]):hover a {
+  opacity: 1;
+}
+
+.tabs .tab.disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.window:not(.touch) .close {
+  display: none;
+}
+
+.tab-bar .close {
+  flex-shrink: 0;
+  align-self: center;
+  margin: 2px;
+}
+
+.tab-bar .close-button {
+  appearance: none;
+  border: none;
+  line-height: 1;
+  padding: 6px;
+  border-radius: 20px;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+.tab-bar .close-button:hover {
+  filter: brightness(1.1);
+}
+
+.tab-bar .close-button svg {
+  display: block;
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  stroke-width: 5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-opacity: 0.7;
+  fill: none;
+}
+
+.tab-bar .close-button:hover svg {
+  stroke-opacity: 1;
 }
 
 /* Word display */
@@ -312,6 +446,7 @@
 
 .name-table {
   padding-bottom: 6px;
+  margin-top: 8px;
 }
 
 .name-table.-multicol {
@@ -340,7 +475,6 @@
 /* Kanji display */
 
 .kanji-table {
-  max-width: 450px;
   padding: 10px 18px;
 }
 

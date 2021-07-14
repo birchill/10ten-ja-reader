@@ -10,8 +10,6 @@ export const browser = {
   i18n: {
     getMessage: (id: string, replacements?: Array<string>) => {
       switch (id) {
-        case 'content_names_dictionary':
-          return 'Names Dictionary';
         case 'content_names_tag_surname':
           return 'surname';
         case 'content_names_tag_place':
@@ -128,6 +126,8 @@ export const browser = {
           return 'archaism';
         case 'misc_label_hon':
           return 'honorific';
+        case 'popup_close_button_label':
+          return 'Close';
         case 'pos_label_adj_f':
           return 'pre-noun adj.';
         case 'pos_label_adj_i':
@@ -312,6 +312,12 @@ export const browser = {
           return 'trans.';
         case 'pos_label_vz':
           return 'zuru verb';
+        case 'tabs_kanji_label':
+          return 'Kanji';
+        case 'tabs_names_label':
+          return 'Names';
+        case 'tabs_words_label':
+          return 'Words';
         default:
           console.error(`Unrecognized string ID: ${id}`);
           return '';
