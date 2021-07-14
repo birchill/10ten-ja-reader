@@ -126,7 +126,7 @@ export const browser = {
           return 'archaism';
         case 'misc_label_hon':
           return 'honorific';
-        case 'popup_close_button_label':
+        case 'popup_close_label':
           return 'Close';
         case 'pos_label_adj_f':
           return 'pre-noun adj.';

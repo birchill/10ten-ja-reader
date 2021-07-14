@@ -428,6 +428,146 @@
       });
     }
 
+    // Touch screen tests
+
+    const touchScreenTest = {
+      words: {
+        type: 'words',
+        data: [
+          {
+            k: [{ ent: '韓国語', p: ['s1'], match: true }],
+            r: [{ ent: 'かんこくご', p: ['s1'], a: 0, match: true }],
+            s: [{ g: [{ str: 'Korean (language)' }], pos: ['n'], match: true }],
+          },
+          {
+            k: [{ ent: '韓国', p: ['n1', 'nf01'], match: true }],
+            r: [{ ent: 'かんこく', p: ['n1', 'nf01'], a: 0, match: true }],
+            s: [
+              {
+                g: [{ str: 'South Korea' }, { str: 'Republic of Korea' }],
+                pos: ['n', 'adj-no'],
+                misc: ['abbr'],
+                match: true,
+              },
+              {
+                g: [{ str: 'Korean Empire (1897-1910)' }],
+                pos: ['n', 'adj-no'],
+                misc: ['abbr'],
+                match: true,
+              },
+            ],
+          },
+          {
+            k: [
+              { ent: '唐国', match: false },
+              { ent: '韓国', match: true },
+            ],
+            r: [{ ent: 'からくに', match: true }],
+            s: [
+              {
+                g: [{ str: 'China' }, { str: 'Korea' }],
+                pos: ['n'],
+                misc: ['arch'],
+                match: true,
+              },
+            ],
+          },
+          {
+            k: [
+              { ent: '唐', match: false },
+              { ent: '韓', match: true },
+              { ent: '漢', match: false },
+            ],
+            r: [{ ent: 'から', a: 1, match: true }],
+            s: [
+              {
+                g: [
+                  {
+                    str: 'China (sometimes also used in ref. to Korea or other foreign countries)',
+                  },
+                ],
+                pos: ['n', 'n-pref'],
+                misc: ['arch'],
+                match: true,
+              },
+            ],
+          },
+        ],
+        more: false,
+        matchLen: 3,
+      },
+      kanji: {
+        type: 'kanji',
+        data: {
+          c: '士',
+          r: {
+            on: ['シ'],
+            kun: ['さむらい'],
+            na: ['お', 'ま'],
+          },
+          m: ['gentleman', 'scholar', 'samurai', 'samurai radical (no. 33)'],
+          rad: {
+            x: 33,
+            b: '⼠',
+            k: '士',
+            na: ['さむらい'],
+            m: ['gentleman', 'scholar', 'samurai'],
+            m_lang: 'en',
+          },
+          refs: {
+            nelson_c: 1160,
+            nelson_n: 1117,
+            halpern_njecd: 3405,
+            halpern_kkld: 2129,
+            halpern_kkld_2ed: 2877,
+            heisig: 319,
+            heisig6: 341,
+            henshall: 494,
+            sh_kk: 572,
+            sh_kk2: 581,
+            kanji_in_context: 755,
+            kodansha_compact: 393,
+            skip: '4-3-2',
+            sh_desc: '3p0.1',
+            conning: 350,
+          },
+          misc: {
+            sc: 3,
+            gr: 4,
+            freq: 526,
+            jlpt: 1,
+            kk: 7,
+          },
+          m_lang: 'en',
+          comp: [],
+        },
+      },
+    };
+
+    {
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.append('【Touch screen tabs】');
+      container.append(label);
+
+      for (const theme of themes) {
+        const label = document.createElement('div');
+        label.classList.add('label');
+        label.append(`Theme: ${theme}`);
+        container.append(label);
+
+        const popup = contentHandler._renderPopup(touchScreenTest, {
+          ...config,
+          container: createPopupContainer(),
+          dictToShow: 'words',
+          popupStyle: theme,
+          showDefinitions: true,
+          onClosePopup: () => {},
+        });
+        popup.shadowRoot.querySelector('.window').classList.add('touch');
+      }
+    }
+
     function createPopupContainer() {
       const popupContainer = document.createElement('div');
       popupContainer.style.width = 'max-content';
