@@ -87,6 +87,9 @@ export function renderPopup(
         selectedTab: options.dictToShow,
       })
     );
+    // Make sure the window has a consistent width so that the tabs don't
+    // jump around.
+    windowElem.classList.add('fixed-width');
   }
 
   const resultToShow = result?.[options.dictToShow];

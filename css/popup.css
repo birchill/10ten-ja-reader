@@ -8,7 +8,7 @@
 }
 
 .window {
-  width: 500px;
+  max-width: 600px;
   contain: content;
   border-radius: 5px;
   box-shadow: 2px 2px 1px rgba(100, 100, 100, 0.25);
@@ -29,6 +29,15 @@
   --selected-def-color: #1a1d1f;
   --selected-tag-color: #1a1d1f;
   --selected-tag-border: rgba(0, 0, 0, 0.3);
+}
+
+.window.fixed-width {
+  max-width: auto;
+  /* Fallback for the below */
+  width: 500px;
+  /* The 30px here is to accommodate scrollbars on Windows plus a bit of
+     padding. */
+  width: min(500px, calc(100vw - 30px));
 }
 
 .window.hidden {
