@@ -1525,7 +1525,10 @@ function renderMiscRow(entry: KanjiResult): HTMLElement {
   // Strokes
   const strokesDiv = document.createElement('div');
   strokesDiv.classList.add('strokes');
-  strokesDiv.append(renderBrush());
+  const pencil = renderPencil();
+  pencil.classList.add('svgicon');
+  pencil.style.opacity = '0.5';
+  strokesDiv.append(pencil);
   const strokeCount = document.createElement('span');
   strokeCount.textContent =
     entry.misc.sc === 1
@@ -1585,23 +1588,26 @@ function renderMiscRow(entry: KanjiResult): HTMLElement {
   return miscInfoDiv;
 }
 
-let brushSvg: SVGElement | undefined;
-function renderBrush(): SVGElement {
-  if (!brushSvg) {
-    brushSvg = document.createElementNS(SVG_NS, 'svg');
-    brushSvg.classList.add('svgicon');
-    brushSvg.style.opacity = '0.5';
-    brushSvg.setAttribute('viewBox', '0 0 90 90');
+function renderPencil(): SVGElement {
+  const pencilSvg = document.createElementNS(SVG_NS, 'svg');
+  pencilSvg.setAttribute('viewBox', '0 0 16 16');
 
-    const path = document.createElementNS(SVG_NS, 'path');
-    path.setAttribute(
-      'd',
-      'M80 11c-2-2-5-2-7 0L22 58l12 12 46-52c2-2 2-5 0-7zM11 82c11 0 17-3 20-11L21 61c-12 6-3 14-10 21z'
-    );
-    brushSvg.append(path);
-  }
+  const circle = document.createElementNS(SVG_NS, 'circle');
+  circle.setAttribute('cx', '14.5');
+  circle.setAttribute('cy', '1.5');
+  circle.setAttribute('r', '1.5');
+  pencilSvg.append(circle);
 
-  return brushSvg;
+  const polyline = document.createElementNS(SVG_NS, 'polyline');
+  polyline.setAttribute('points', '13 4.5 4 13.5 1 15 2.5 12 11.5 3');
+  polyline.setAttribute('fill', 'none');
+  polyline.setAttribute('stroke', 'currentColor');
+  polyline.setAttribute('stroke-width', '1.5');
+  polyline.setAttribute('stroke-linecap', 'round');
+  polyline.setAttribute('stroke-linejoin', 'round');
+  pencilSvg.append(polyline);
+
+  return pencilSvg;
 }
 
 function renderFrequency(frequency: number | undefined): SVGElement {
