@@ -489,6 +489,10 @@ browser.runtime.onMessage.addListener(
             return null;
           });
 
+      case 'switchedDictionary':
+        config.setHasSwitchedDictionary();
+        break;
+
       case 'translate':
         return translate({
           text: request.input,

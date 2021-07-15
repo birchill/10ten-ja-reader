@@ -83,6 +83,20 @@ export function isSearchRequest(a: unknown): a is SearchRequest {
 }
 
 //
+// Switched dictionary request
+//
+
+export type SwitchedDictionaryRequest = {
+  type: 'switchedDictionary';
+};
+
+export function isSwitchedDictionaryRequest(
+  a: unknown
+): a is SwitchedDictionaryRequest {
+  return isRequestObject(a) && a.type === 'switchedDictionary';
+}
+
+//
 // Translate request
 //
 
@@ -116,7 +130,7 @@ export function isTranslateRequest(a: unknown): a is TranslateRequest {
 }
 
 //
-// Togggle definition request
+// Toggle definition request
 //
 
 export type ToggleDefinitionRequest = {
@@ -138,6 +152,7 @@ export type BackgroundRequest =
   | EnableQueryRequest
   | ReportWarningRequest
   | SearchRequest
+  | SwitchedDictionaryRequest
   | TranslateRequest
   | ToggleDefinitionRequest;
 
@@ -146,6 +161,7 @@ export function isBackgroundRequest(a: unknown): a is BackgroundRequest {
     isDisabledRequest(a) ||
     isEnableQueryRequest(a) ||
     isReportWarningRequest(a) ||
+    isSwitchedDictionaryRequest(a) ||
     isSearchRequest(a) ||
     isTranslateRequest(a) ||
     isToggleDefinitionRequest(a)

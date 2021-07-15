@@ -694,6 +694,19 @@ export class ContentHandler {
       return;
     }
 
+    // The user has successfully switched dictionaries. If this is the first
+    // time that's happened, store the result so we don't pester the user
+    // with prompts about how to change dictionaries.
+    if (!this.config.hasSwitchedDictionary) {
+      try {
+        browser.runtime.sendMessage({ type: 'switchedDictionary' });
+      } catch (e) {
+        console.log(
+          '[10ten-ja-reader] Failed to call switchedDictionary. The page might need to be refreshed.'
+        );
+      }
+    }
+
     this.currentDict = dict;
 
     this.highlightText(this.currentTextAtPoint, this.currentSearchResult[dict]);
