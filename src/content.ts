@@ -717,7 +717,6 @@ export class ContentHandler {
 
     // Check we have something to highlight
     if (!textAtPoint.rangeStart || matchLen < 1) {
-      this.clearHighlight(null);
       return;
     }
 
