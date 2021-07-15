@@ -54,19 +54,19 @@ type StoredKeyboardKeys = Omit<
 };
 
 interface Settings {
+  accentDisplay?: AccentDisplay;
+  contextMenuEnable?: boolean;
+  dictLang?: DbLanguageId;
+  holdToShowKeys?: string;
+  kanjiReferencesV2?: KanjiReferenceFlagsV2;
+  keys?: Partial<StoredKeyboardKeys>;
+  noTextHighlight?: boolean;
+  popupStyle?: string;
+  posDisplay?: PartOfSpeechDisplay;
+  readingOnly?: boolean;
+  showKanjiComponents?: boolean;
   showPriority?: boolean;
   showRomaji?: boolean;
-  readingOnly?: boolean;
-  accentDisplay?: AccentDisplay;
-  posDisplay?: PartOfSpeechDisplay;
-  holdToShowKeys?: string;
-  keys?: Partial<StoredKeyboardKeys>;
-  contextMenuEnable?: boolean;
-  noTextHighlight?: boolean;
-  dictLang?: DbLanguageId;
-  showKanjiComponents?: boolean;
-  kanjiReferencesV2?: KanjiReferenceFlagsV2;
-  popupStyle?: string;
 }
 
 type StorageChange = {
@@ -253,61 +253,7 @@ export class Config {
     this._changeListeners.splice(index, 1);
   }
 
-  // showPriority: Defaults to true
-
-  get showPriority(): boolean {
-    return (
-      typeof this._settings.showPriority === 'undefined' ||
-      this._settings.showPriority
-    );
-  }
-
-  set showPriority(value: boolean) {
-    this._settings.showPriority = value;
-    browser.storage.sync.set({ showPriority: value });
-  }
-
-  // showRomaji: Defaults to false
-
-  get showRomaji(): boolean {
-    return !!this._settings.showRomaji;
-  }
-
-  set showRomaji(value: boolean) {
-    if (
-      typeof this._settings.showRomaji !== 'undefined' &&
-      this._settings.showRomaji === value
-    ) {
-      return;
-    }
-
-    this._settings.showRomaji = value;
-    browser.storage.sync.set({ showRomaji: value });
-  }
-
-  // readingOnly: Defaults to false
-
-  get readingOnly(): boolean {
-    return !!this._settings.readingOnly;
-  }
-
-  set readingOnly(value: boolean) {
-    if (
-      typeof this._settings.readingOnly !== 'undefined' &&
-      this._settings.readingOnly === value
-    ) {
-      return;
-    }
-
-    this._settings.readingOnly = value;
-    browser.storage.sync.set({ readingOnly: value });
-  }
-
-  toggleReadingOnly() {
-    this.readingOnly = !this._settings.readingOnly;
-  }
-
-  // Pitch accent display: Defaults to binary
+  // accentDisplay: Defaults to binary
 
   get accentDisplay(): AccentDisplay {
     return typeof this._settings.accentDisplay === 'undefined'
@@ -325,124 +271,6 @@ export class Config {
 
     this._settings.accentDisplay = value;
     browser.storage.sync.set({ accentDisplay: value });
-  }
-
-  // Part-of-speech display: Defaults to expl
-
-  get posDisplay(): PartOfSpeechDisplay {
-    return typeof this._settings.posDisplay === 'undefined'
-      ? 'expl'
-      : this._settings.posDisplay;
-  }
-
-  set posDisplay(value: PartOfSpeechDisplay) {
-    if (
-      typeof this._settings.posDisplay !== 'undefined' &&
-      this._settings.posDisplay === value
-    ) {
-      return;
-    }
-
-    this._settings.posDisplay = value;
-    browser.storage.sync.set({ posDisplay: value });
-  }
-
-  // holdToShowKeys: Defaults to null
-
-  get holdToShowKeys(): string | null {
-    return typeof this._settings.holdToShowKeys === 'string'
-      ? this._settings.holdToShowKeys
-      : null;
-  }
-
-  set holdToShowKeys(value: string | null) {
-    if (
-      (typeof this._settings.holdToShowKeys !== 'undefined' &&
-        this._settings.holdToShowKeys === value) ||
-      (typeof this._settings.holdToShowKeys === 'undefined' && value === null)
-    ) {
-      return;
-    }
-
-    if (value === null) {
-      browser.storage.sync.remove('holdToShowKeys');
-      delete this._settings.holdToShowKeys;
-    } else {
-      browser.storage.sync.set({ holdToShowKeys: value });
-      this._settings.holdToShowKeys = value;
-    }
-  }
-
-  // keys: Defaults are defined by DEFAULT_KEY_SETTINGS, and particularly the
-  // enabledKeys member.
-
-  private getDefaultEnabledKeys(): StoredKeyboardKeys {
-    return DEFAULT_KEY_SETTINGS.reduce<Partial<StoredKeyboardKeys>>(
-      (defaultKeys, setting) => {
-        defaultKeys[setting.name] = setting.enabledKeys;
-        return defaultKeys;
-      },
-      {}
-    ) as StoredKeyboardKeys;
-  }
-
-  get keys(): StoredKeyboardKeys {
-    const setValues = this._settings.keys || {};
-    return { ...this.getDefaultEnabledKeys(), ...setValues };
-  }
-
-  get keysNormalized(): KeyboardKeys {
-    const storedKeys = this.keys;
-    const [down, up] = this.keys.movePopupDownOrUp
-      .map((key) => key.split(',', 2))
-      .reduce<[Array<string>, Array<string>]>(
-        ([existingDown, existingUp], [down, up]) => [
-          [...existingDown, down],
-          [...existingUp, up],
-        ],
-        [[], []]
-      );
-    return {
-      ...stripFields(storedKeys, ['movePopupDownOrUp']),
-      movePopupDown: down,
-      movePopupUp: up,
-    };
-  }
-
-  updateKeys(keys: Partial<StoredKeyboardKeys>) {
-    const existingSettings = this._settings.keys || {};
-    this._settings.keys = {
-      ...existingSettings,
-      ...keys,
-    };
-
-    browser.storage.sync.set({ keys: this._settings.keys });
-  }
-
-  // popupStyle: Defaults to 'default'
-
-  get popupStyle(): string {
-    return typeof this._settings.popupStyle === 'undefined'
-      ? 'default'
-      : this._settings.popupStyle;
-  }
-
-  set popupStyle(value: string) {
-    if (
-      (typeof this._settings.popupStyle !== 'undefined' &&
-        this._settings.popupStyle === value) ||
-      (typeof this._settings.popupStyle === 'undefined' && value === 'default')
-    ) {
-      return;
-    }
-
-    if (value !== 'default') {
-      this._settings.popupStyle = value;
-      browser.storage.sync.set({ popupStyle: value });
-    } else {
-      this._settings.popupStyle = undefined;
-      browser.storage.sync.remove('popupStyle');
-    }
   }
 
   // contextMenuEnable: Defaults to true
@@ -464,24 +292,6 @@ export class Config {
 
     this._settings.contextMenuEnable = value;
     browser.storage.sync.set({ contextMenuEnable: value });
-  }
-
-  // noTextHighlight: Defaults to false
-
-  get noTextHighlight(): boolean {
-    return !!this._settings.noTextHighlight;
-  }
-
-  set noTextHighlight(value: boolean) {
-    if (
-      typeof this._settings.noTextHighlight !== 'undefined' &&
-      this._settings.noTextHighlight === value
-    ) {
-      return;
-    }
-
-    this._settings.noTextHighlight = value;
-    browser.storage.sync.set({ noTextHighlight: value });
   }
 
   // dictLang: Defaults to the first match from navigator.languages found in
@@ -568,18 +378,30 @@ export class Config {
     }
   }
 
-  // showKanjiComponents: Defaults to true
+  // holdToShowKeys: Defaults to null
 
-  get showKanjiComponents(): boolean {
-    return (
-      typeof this._settings.showKanjiComponents === 'undefined' ||
-      this._settings.showKanjiComponents
-    );
+  get holdToShowKeys(): string | null {
+    return typeof this._settings.holdToShowKeys === 'string'
+      ? this._settings.holdToShowKeys
+      : null;
   }
 
-  set showKanjiComponents(value: boolean) {
-    this._settings.showKanjiComponents = value;
-    browser.storage.sync.set({ showKanjiComponents: value });
+  set holdToShowKeys(value: string | null) {
+    if (
+      (typeof this._settings.holdToShowKeys !== 'undefined' &&
+        this._settings.holdToShowKeys === value) ||
+      (typeof this._settings.holdToShowKeys === 'undefined' && value === null)
+    ) {
+      return;
+    }
+
+    if (value === null) {
+      browser.storage.sync.remove('holdToShowKeys');
+      delete this._settings.holdToShowKeys;
+    } else {
+      browser.storage.sync.set({ holdToShowKeys: value });
+      this._settings.holdToShowKeys = value;
+    }
   }
 
   // kanjiReferences: Defaults to true for all but a few references
@@ -609,6 +431,184 @@ export class Config {
     browser.storage.sync.set({
       kanjiReferencesV2: this._settings.kanjiReferencesV2,
     });
+  }
+
+  // keys: Defaults are defined by DEFAULT_KEY_SETTINGS, and particularly the
+  // enabledKeys member.
+
+  private getDefaultEnabledKeys(): StoredKeyboardKeys {
+    return DEFAULT_KEY_SETTINGS.reduce<Partial<StoredKeyboardKeys>>(
+      (defaultKeys, setting) => {
+        defaultKeys[setting.name] = setting.enabledKeys;
+        return defaultKeys;
+      },
+      {}
+    ) as StoredKeyboardKeys;
+  }
+
+  get keys(): StoredKeyboardKeys {
+    const setValues = this._settings.keys || {};
+    return { ...this.getDefaultEnabledKeys(), ...setValues };
+  }
+
+  get keysNormalized(): KeyboardKeys {
+    const storedKeys = this.keys;
+    const [down, up] = this.keys.movePopupDownOrUp
+      .map((key) => key.split(',', 2))
+      .reduce<[Array<string>, Array<string>]>(
+        ([existingDown, existingUp], [down, up]) => [
+          [...existingDown, down],
+          [...existingUp, up],
+        ],
+        [[], []]
+      );
+    return {
+      ...stripFields(storedKeys, ['movePopupDownOrUp']),
+      movePopupDown: down,
+      movePopupUp: up,
+    };
+  }
+
+  updateKeys(keys: Partial<StoredKeyboardKeys>) {
+    const existingSettings = this._settings.keys || {};
+    this._settings.keys = {
+      ...existingSettings,
+      ...keys,
+    };
+
+    browser.storage.sync.set({ keys: this._settings.keys });
+  }
+
+  // noTextHighlight: Defaults to false
+
+  get noTextHighlight(): boolean {
+    return !!this._settings.noTextHighlight;
+  }
+
+  set noTextHighlight(value: boolean) {
+    if (
+      typeof this._settings.noTextHighlight !== 'undefined' &&
+      this._settings.noTextHighlight === value
+    ) {
+      return;
+    }
+
+    this._settings.noTextHighlight = value;
+    browser.storage.sync.set({ noTextHighlight: value });
+  }
+
+  // popupStyle: Defaults to 'default'
+
+  get popupStyle(): string {
+    return typeof this._settings.popupStyle === 'undefined'
+      ? 'default'
+      : this._settings.popupStyle;
+  }
+
+  set popupStyle(value: string) {
+    if (
+      (typeof this._settings.popupStyle !== 'undefined' &&
+        this._settings.popupStyle === value) ||
+      (typeof this._settings.popupStyle === 'undefined' && value === 'default')
+    ) {
+      return;
+    }
+
+    if (value !== 'default') {
+      this._settings.popupStyle = value;
+      browser.storage.sync.set({ popupStyle: value });
+    } else {
+      this._settings.popupStyle = undefined;
+      browser.storage.sync.remove('popupStyle');
+    }
+  }
+
+  // posDisplay: Defaults to expl
+
+  get posDisplay(): PartOfSpeechDisplay {
+    return typeof this._settings.posDisplay === 'undefined'
+      ? 'expl'
+      : this._settings.posDisplay;
+  }
+
+  set posDisplay(value: PartOfSpeechDisplay) {
+    if (
+      typeof this._settings.posDisplay !== 'undefined' &&
+      this._settings.posDisplay === value
+    ) {
+      return;
+    }
+
+    this._settings.posDisplay = value;
+    browser.storage.sync.set({ posDisplay: value });
+  }
+
+  // readingOnly: Defaults to false
+
+  get readingOnly(): boolean {
+    return !!this._settings.readingOnly;
+  }
+
+  set readingOnly(value: boolean) {
+    if (
+      typeof this._settings.readingOnly !== 'undefined' &&
+      this._settings.readingOnly === value
+    ) {
+      return;
+    }
+
+    this._settings.readingOnly = value;
+    browser.storage.sync.set({ readingOnly: value });
+  }
+
+  toggleReadingOnly() {
+    this.readingOnly = !this._settings.readingOnly;
+  }
+
+  // showKanjiComponents: Defaults to true
+
+  get showKanjiComponents(): boolean {
+    return (
+      typeof this._settings.showKanjiComponents === 'undefined' ||
+      this._settings.showKanjiComponents
+    );
+  }
+
+  set showKanjiComponents(value: boolean) {
+    this._settings.showKanjiComponents = value;
+    browser.storage.sync.set({ showKanjiComponents: value });
+  }
+
+  // showPriority: Defaults to true
+
+  get showPriority(): boolean {
+    return (
+      typeof this._settings.showPriority === 'undefined' ||
+      this._settings.showPriority
+    );
+  }
+
+  set showPriority(value: boolean) {
+    this._settings.showPriority = value;
+    browser.storage.sync.set({ showPriority: value });
+  }
+
+  // showRomaji: Defaults to false
+
+  get showRomaji(): boolean {
+    return !!this._settings.showRomaji;
+  }
+
+  set showRomaji(value: boolean) {
+    if (
+      typeof this._settings.showRomaji !== 'undefined' &&
+      this._settings.showRomaji === value
+    ) {
+      return;
+    }
+
+    this._settings.showRomaji = value;
+    browser.storage.sync.set({ showRomaji: value });
   }
 
   // Get all the options the content process cares about at once

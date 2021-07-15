@@ -32,6 +32,11 @@ export interface ContentConfig {
   // The preferred language for dictionary content.
   dictLang: string;
 
+  // Modifier keys which must be held down in order for the pop-up to shown.
+  //
+  // This should be a Set but Chrome can't send Sets by sendMessage :(
+  holdToShowKeys: Array<'Alt' | 'Ctrl'>;
+
   // References to show in the kanji view.
   kanjiReferences: Array<import('./refs').ReferenceAbbreviation>;
 
@@ -39,11 +44,6 @@ export interface ContentConfig {
   // by KeyboardEvent.key). The array may be empty in which case the action is
   // not possible via keyboard.
   keys: KeyboardKeys;
-
-  // Modifier keys which must be held down in order for the pop-up to shown.
-  //
-  // This should be a Set but Chrome can't send Sets by sendMessage :(
-  holdToShowKeys: Array<'Alt' | 'Ctrl'>;
 
   // Prevents highlighting text on hover
   noTextHighlight: boolean;
