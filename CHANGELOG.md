@@ -35,6 +35,8 @@
 - Added a notification that incomplete results are shown when the dictionary
   data is being updated.
 
+- Added a hint indicating the keys that can be used to switch dictionaries.
+
 ## 1.0.0 (2021-06-15) (Safari only)
 
 - Added new default (gray) theme.

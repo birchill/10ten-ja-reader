@@ -80,6 +80,12 @@ export const browser = {
           return 'kanji';
         case 'content_copy_keys_next_label':
           return 'next';
+        case 'content_hint_switch_dict_keys_1':
+          return 'Hint: press %KEY% to display the next dictionary';
+        case 'content_hint_switch_dict_keys_2':
+          return 'Hint: press %KEY% or %KEY% to display the next dictionary';
+        case 'content_hint_switch_dict_keys_3':
+          return 'Hint: press %KEY%, %KEY%, or %KEY% to display the next dictionary';
         case 'gloss_type_label_expl':
           return 'explanation';
         case 'field_label_astron':

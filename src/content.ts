@@ -705,6 +705,8 @@ export class ContentHandler {
           '[10ten-ja-reader] Failed to call switchedDictionary. The page might need to be refreshed.'
         );
       }
+      // Make sure this applies immediately
+      this.config.hasSwitchedDictionary = true;
     }
 
     this.currentDict = dict;
@@ -1007,6 +1009,7 @@ export class ContentHandler {
       dictLang: this.config.dictLang,
       dictToShow: this.currentDict,
       document: doc,
+      hasSwitchedDictionary: this.config.hasSwitchedDictionary,
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentTextAtPoint?.meta,
       onClosePopup: () => {
@@ -1020,6 +1023,7 @@ export class ContentHandler {
       showDefinitions: !this.config.readingOnly,
       showKanjiComponents: this.config.showKanjiComponents,
       showPriority: this.config.showPriority,
+      switchDictionaryKeys: this.config.keys.nextDictionary,
     };
 
     const popup = renderPopup(this.currentSearchResult, popupOptions);

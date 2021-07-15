@@ -8,6 +8,7 @@ import {
   MajorDataSeries,
   NameTranslation,
   ReadingInfo,
+  allMajorDataSeries,
 } from '@birchill/hikibiki-data';
 import { countMora, moraSubstring } from '@birchill/normal-jp';
 import { browser } from 'webextension-polyfill-ts';
@@ -33,6 +34,7 @@ import { isForeignObjectElement, isSvgDoc, SVG_NS } from './svg';
 import { EraInfo, EraMeta, getEraInfo } from './years';
 
 import popupStyles from '../css/popup.css';
+import { isTouchDevice, probablyHasPhysicalKeyboard } from './device';
 
 export const enum CopyState {
   Inactive,
@@ -53,6 +55,7 @@ export interface PopupOptions {
   dictToShow: MajorDataSeries;
   dictLang?: string;
   document?: Document;
+  hasSwitchedDictionary?: boolean;
   kanjiReferences: Array<ReferenceAbbreviation>;
   meta?: SelectionMeta;
   onClosePopup?: () => void;
@@ -62,6 +65,7 @@ export interface PopupOptions {
   showDefinitions: boolean;
   showPriority: boolean;
   showKanjiComponents?: boolean;
+  switchDictionaryKeys: ReadonlyArray<string>;
 }
 
 export function renderPopup(
@@ -147,17 +151,28 @@ export function renderPopup(
       break;
   }
 
-  // Show the copy status bar
+  // Show the status bar
   const copyDetails = renderCopyDetails(
     options.copyNextKey,
     options.copyState,
     typeof options.copyType !== 'undefined' ? options.copyType : undefined,
     resultToShow?.type || 'words'
   );
+  const numResultsAvailable = () =>
+    allMajorDataSeries.filter((series) => !!result?.[series]).length;
+
   if (copyDetails) {
     windowElem.append(copyDetails);
   } else if (result?.dbStatus === 'updating') {
     windowElem.append(renderUpdatingStatus());
+  } else if (
+    showTabs &&
+    numResultsAvailable() > 1 &&
+    options.hasSwitchedDictionary === false &&
+    options.switchDictionaryKeys.length &&
+    probablyHasPhysicalKeyboard()
+  ) {
+    windowElem.append(renderSwitchDictionaryHint(options.switchDictionaryKeys));
   }
 
   return container;
@@ -1980,6 +1995,48 @@ function renderSpinner(): SVGElement {
   return svg;
 }
 
+function renderSwitchDictionaryHint(
+  keys: ReadonlyArray<string>
+): HTMLElement | string {
+  const hintDiv = document.createElement('div');
+  hintDiv.classList.add('status-bar');
+  hintDiv.lang = getLangTag();
+
+  const statusText = document.createElement('div');
+  statusText.classList.add('status');
+  hintDiv.append(statusText);
+
+  if (keys.length < 1 || keys.length > 3) {
+    console.warn(`Unexpected number of keys ${keys.length}`);
+    return '-';
+  }
+
+  // Set up a label where all the key placeholders are replaced with %KEY%.
+  let label = browser.i18n.getMessage(
+    `content_hint_switch_dict_keys_${keys.length}`,
+    Array(keys.length).fill('%KEY%')
+  );
+
+  // Replace all the %KEY% placeholders with <kbd> elements.
+  const keysCopy = keys.slice();
+  const parts = label
+    .split('%')
+    .filter(Boolean)
+    .map((part) => {
+      if (part !== 'KEY') {
+        return part;
+      }
+
+      const kbd = document.createElement('kbd');
+      kbd.textContent = keysCopy.shift() || '-';
+      return kbd;
+    });
+
+  statusText.append(...parts);
+
+  return hintDiv;
+}
+
 // Cache language tag since we fetch it a lot
 let langTag: string | null = null;
 function getLangTag() {
@@ -1987,18 +2044,4 @@ function getLangTag() {
     langTag = browser.i18n.getMessage('lang_tag');
   }
   return langTag;
-}
-
-function isTouchDevice(): boolean {
-  if (window.PointerEvent && 'maxTouchPoints' in navigator) {
-    return navigator.maxTouchPoints > 0;
-  }
-
-  if (window.matchMedia && window.matchMedia('(any-pointer:coarse)').matches) {
-    return true;
-  }
-
-  // The following will give a false positive in Chrome desktop but hopefully
-  // one of the above checks will cover us there.
-  return 'TouchEvent' in window;
 }

@@ -75,6 +75,48 @@
     "message": "辞書データを更新中のため、一部のデータのみ表示されています。",
     "description": "Status bar message shown while the is being updated and only a snapshot can be shown."
   },
+  "content_hint_switch_dict_keys_1": {
+    "message": "ヒント：​$key_1$​を押して次の辞書を表示できます",
+    "description": "Message displayed at the bottom of the pop-up instructing the user which keys to use to switch keyboards when there is only one such key configured",
+    "placeholders": {
+      "key_1": {
+        "content": "$1",
+        "example": "Shift"
+      }
+    }
+  },
+  "content_hint_switch_dict_keys_2": {
+    "message": "ヒント：​$key_1$​または​$key_2$​を押して次の辞書を表示できます",
+    "description": "Message displayed at the bottom of the pop-up instructing the user which keys to use to switch keyboards when there are two keys configured",
+    "placeholders": {
+      "key_1": {
+        "content": "$1",
+        "example": "Shift"
+      },
+      "key_2": {
+        "content": "$2",
+        "example": "Enter"
+      }
+    }
+  },
+  "content_hint_switch_dict_keys_3": {
+    "message": "ヒント：​$key_1$​、​$key_2$​、​$key_3$​のいずれかを押すと次の辞書を表示できます",
+    "description": "Message displayed at the bottom of the pop-up instructing the user which keys to use to switch keyboards when there are three keys configured",
+    "placeholders": {
+      "key_1": {
+        "content": "$1",
+        "example": "Shift"
+      },
+      "key_2": {
+        "content": "$2",
+        "example": "Enter"
+      },
+      "key_3": {
+        "content": "$3",
+        "example": "n"
+      }
+    }
+  },
   "content_kanji_base_radical": {
     "message": "部 $char$ (​$readings$​)",
     "description": "The string used to describe the base radical",

@@ -12,6 +12,7 @@
 <script>
   const config = {
     accentDisplay: 'binary',
+    hasSwitchedDictionary: true,
     holdToShowKeys: [],
     kanjiReferences: ['radical', 'nelson_r', 'kk', 'unicode', 'henshall'],
     keys: {
@@ -27,6 +28,7 @@
     showKanjiComponents: true,
     showPriority: true,
     showRomaji: false,
+    switchDictionaryKeys: [],
   };
   const contentHandler = new ContentHandler(config);
 </script>
@@ -616,6 +618,29 @@
         }
       );
       popup.shadowRoot.querySelector('.window').classList.add('touch');
+    }
+
+    // Switch dictionary hint
+
+    {
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.append('【Switch dictionary hint】');
+      container.append(label);
+
+      const popup = contentHandler._renderPopup(
+        touchScreenTest,
+        {
+          ...config,
+          hasSwitchedDictionary: false,
+          container: createPopupContainer(),
+          dictToShow: 'words',
+          popupStyle: 'default',
+          showDefinitions: true,
+          switchDictionaryKeys: ['Shift', 'Enter'],
+          onClosePopup: () => {},
+        }
+      );
     }
 
     function createPopupContainer() {
