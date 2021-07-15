@@ -135,32 +135,11 @@ describe('Config', () => {
     languageGetter.mockReturnValue(['ro', 'fr-CA', 'en']);
     const config = new Config();
 
-    expect(config.showPriority).toEqual(true);
-    expect(config.showRomaji).toEqual(false);
-    expect(config.readingOnly).toEqual(false);
     expect(config.accentDisplay).toEqual('binary');
-    expect(config.posDisplay).toEqual('expl');
-    expect(config.holdToShowKeys).toEqual(null);
-    expect(config.keys).toEqual({
-      toggleDefinition: [],
-      nextDictionary: ['Shift', 'Enter'],
-      kanjiLookup: [],
-      movePopupDownOrUp: [],
-      startCopy: ['c'],
-    });
-    expect(config.keysNormalized).toEqual({
-      toggleDefinition: [],
-      nextDictionary: ['Shift', 'Enter'],
-      kanjiLookup: [],
-      movePopupUp: [],
-      movePopupDown: [],
-      startCopy: ['c'],
-    });
     expect(config.contextMenuEnable).toEqual(true);
-    expect(config.popupStyle).toEqual('default');
-    expect(config.noTextHighlight).toEqual(false);
     expect(config.dictLang).toEqual('fr');
-    expect(config.showKanjiComponents).toEqual(true);
+    expect(config.hasSwitchedDictionary).toEqual(false);
+    expect(config.holdToShowKeys).toEqual(null);
     expect(config.kanjiReferences).toEqual([
       'radical',
       'nelson_r',
@@ -179,6 +158,28 @@ describe('Config', () => {
       'skip',
       'sh_desc',
     ]);
+    expect(config.keys).toEqual({
+      toggleDefinition: [],
+      nextDictionary: ['Shift', 'Enter'],
+      kanjiLookup: [],
+      movePopupDownOrUp: [],
+      startCopy: ['c'],
+    });
+    expect(config.keysNormalized).toEqual({
+      toggleDefinition: [],
+      nextDictionary: ['Shift', 'Enter'],
+      kanjiLookup: [],
+      movePopupUp: [],
+      movePopupDown: [],
+      startCopy: ['c'],
+    });
+    expect(config.noTextHighlight).toEqual(false);
+    expect(config.popupStyle).toEqual('default');
+    expect(config.posDisplay).toEqual('expl');
+    expect(config.readingOnly).toEqual(false);
+    expect(config.showKanjiComponents).toEqual(true);
+    expect(config.showPriority).toEqual(true);
+    expect(config.showRomaji).toEqual(false);
   });
 
   it('reports changes to all listeners', async () => {

@@ -16,6 +16,7 @@ describe('contentHandler:highlighting', () => {
     const config: ContentConfig = {
       accentDisplay: 'downstep',
       dictLang: 'en',
+      hasSwitchedDictionary: false,
       holdToShowKeys: [],
       kanjiReferences: ['kk'] as Array<ReferenceAbbreviation>,
       keys: {
