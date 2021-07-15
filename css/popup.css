@@ -139,7 +139,17 @@
   margin: 2px;
 }
 
-.tab-bar .close-button {
+.window > .close {
+  float: right;
+  margin: 4px;
+}
+
+/*
+ * The following uses .close .close-button because we have two configurations:
+ * a) The close button is a child of the tab bar
+ * b) The close button is a child of the window
+ */
+.close .close-button {
   appearance: none;
   border: none;
   line-height: 1;
@@ -149,11 +159,11 @@
   color: var(--text-color);
 }
 
-.tab-bar .close-button:hover {
+.close .close-button:hover {
   filter: brightness(1.1);
 }
 
-.tab-bar .close-button svg {
+.close .close-button svg {
   display: block;
   width: 15px;
   height: 15px;
@@ -165,7 +175,7 @@
   fill: none;
 }
 
-.tab-bar .close-button:hover svg {
+.close .close-button:hover svg {
   stroke-opacity: 1;
 }
 

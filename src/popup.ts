@@ -78,7 +78,8 @@ export function renderPopup(
   // TODO: We should use `options.document` everywhere in this file and in
   // the other methods too.
 
-  if (result && result.dbStatus !== 'unavailable' && !result.title) {
+  const showTabs = result && result.dbStatus !== 'unavailable' && !result.title;
+  if (showTabs) {
     windowElem.append(
       renderTabBar({
         onClosePopup: options.onClosePopup,
@@ -90,6 +91,8 @@ export function renderPopup(
     // Make sure the window has a consistent width so that the tabs don't
     // jump around.
     windowElem.classList.add('fixed-width');
+  } else if (options.onClosePopup) {
+    windowElem.append(renderCloseButton(options.onClosePopup));
   }
 
   const resultToShow = result?.[options.dictToShow];
@@ -268,7 +271,7 @@ function resetContainer(
   }
 
   // Set touch status
-  if ('TouchEvent' in window) {
+  if (isTouchDevice()) {
     windowDiv.classList.add('touch');
   }
 
@@ -412,32 +415,35 @@ function renderTabBar({
   }
   tabBar.append(list);
 
-  // Close button
   if (onClosePopup) {
-    const close = document.createElement('div');
-    close.classList.add('close');
-
-    const closeButton = document.createElement('button');
-    closeButton.classList.add('close-button');
-    closeButton.type = 'button';
-    closeButton.setAttribute(
-      'aria-label',
-      browser.i18n.getMessage('popup_close_label')
-    );
-    closeButton.onclick = onClosePopup;
-    close.append(closeButton);
-
-    const crossSvg = document.createElementNS(SVG_NS, 'svg');
-    crossSvg.setAttribute('viewBox', '0 0 24 24');
-    const path = document.createElementNS(SVG_NS, 'path');
-    path.setAttribute('d', 'M6 18L18 6M6 6l12 12');
-    crossSvg.append(path);
-    closeButton.append(crossSvg);
-
-    tabBar.append(close);
+    tabBar.append(renderCloseButton(onClosePopup));
   }
 
   return tabBar;
+}
+
+function renderCloseButton(onClosePopup: () => void): HTMLElement {
+  const close = document.createElement('div');
+  close.classList.add('close');
+
+  const closeButton = document.createElement('button');
+  closeButton.classList.add('close-button');
+  closeButton.type = 'button';
+  closeButton.setAttribute(
+    'aria-label',
+    browser.i18n.getMessage('popup_close_label')
+  );
+  closeButton.onclick = onClosePopup;
+  close.append(closeButton);
+
+  const crossSvg = document.createElementNS(SVG_NS, 'svg');
+  crossSvg.setAttribute('viewBox', '0 0 24 24');
+  const path = document.createElementNS(SVG_NS, 'path');
+  path.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+  crossSvg.append(path);
+  closeButton.append(crossSvg);
+
+  return close;
 }
 
 function renderWordEntries({
@@ -1981,4 +1987,11 @@ function getLangTag() {
     langTag = browser.i18n.getMessage('lang_tag');
   }
   return langTag;
+}
+
+function isTouchDevice(): boolean {
+  // Don't use `ontouchstart` as desktop browsers deliberately report false for
+  // touch devices since many sites use it to detect if they should show the
+  // mobile version or not.
+  return 'TouchEvent' in window;
 }

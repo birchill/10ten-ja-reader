@@ -596,6 +596,28 @@
       }
     }
 
+    // Close button only test
+
+    {
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.append('【Close button only】');
+      container.append(label);
+
+      const popup = contentHandler._renderPopup(
+        { ...touchScreenTest, dbStatus: 'unavailable' },
+        {
+          ...config,
+          container: createPopupContainer(),
+          dictToShow: 'words',
+          popupStyle: 'default',
+          showDefinitions: true,
+          onClosePopup: () => {},
+        }
+      );
+      popup.shadowRoot.querySelector('.window').classList.add('touch');
+    }
+
     function createPopupContainer() {
       const popupContainer = document.createElement('div');
       popupContainer.style.width = 'max-content';
