@@ -57,6 +57,7 @@ interface Settings {
   accentDisplay?: AccentDisplay;
   contextMenuEnable?: boolean;
   dictLang?: DbLanguageId;
+  hasSwitchedDictionary?: boolean;
   holdToShowKeys?: string;
   kanjiReferencesV2?: KanjiReferenceFlagsV2;
   keys?: Partial<StoredKeyboardKeys>;
@@ -378,6 +379,21 @@ export class Config {
     }
   }
 
+  // hasSwitchedDictionary: Defaults to false
+
+  get hasSwitchedDictionary(): boolean {
+    return !!this._settings.hasSwitchedDictionary;
+  }
+
+  setHasSwitchedDictionary() {
+    if (this._settings.hasSwitchedDictionary) {
+      return;
+    }
+
+    this._settings.hasSwitchedDictionary = true;
+    browser.storage.sync.set({ hasSwitchedDictionary: true });
+  }
+
   // holdToShowKeys: Defaults to null
 
   get holdToShowKeys(): string | null {
@@ -616,6 +632,7 @@ export class Config {
     return {
       accentDisplay: this.accentDisplay,
       dictLang: this.dictLang,
+      hasSwitchedDictionary: this.hasSwitchedDictionary,
       // We hide the hold-to-show keys setting in activeTab only mode
       holdToShowKeys:
         !__ACTIVE_TAB_ONLY__ && this.holdToShowKeys
