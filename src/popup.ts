@@ -1990,8 +1990,15 @@ function getLangTag() {
 }
 
 function isTouchDevice(): boolean {
-  // Don't use `ontouchstart` as desktop browsers deliberately report false for
-  // touch devices since many sites use it to detect if they should show the
-  // mobile version or not.
+  if (window.PointerEvent && 'maxTouchPoints' in navigator) {
+    return navigator.maxTouchPoints > 0;
+  }
+
+  if (window.matchMedia && window.matchMedia('(any-pointer:coarse)').matches) {
+    return true;
+  }
+
+  // The following will give a false positive in Chrome desktop but hopefully
+  // one of the above checks will cover us there.
   return 'TouchEvent' in window;
 }
