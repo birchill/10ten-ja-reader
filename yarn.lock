@@ -948,10 +948,10 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.7.tgz#98a993516c859eb0d5c4c8f098317a9ea68db9ad"
   integrity sha512-cxWFQVseBm6O9Gbw1IWb8r6OS4OhSt3hPZLkFApLjM8TEXROBuQGLAH2i2gZpcXdLBIrpXuTDhH7Vbm1iXmNGA==
 
-"@types/karma-webpack@^2.0.9":
-  version "2.0.9"
-  resolved "https://registry.yarnpkg.com/@types/karma-webpack/-/karma-webpack-2.0.9.tgz#878aad10e52305be9a608aed3286ee4b97d043a3"
-  integrity sha512-a3UPTVeUV7aSGuE6KGz36GZ0Cj0uutgpgfup3xmHQJfGMGgDa9UFp6s5BC21IFiEhkWIZ27exo+2h83HzZ4yxQ==
+"@types/karma-webpack@^2.0.10":
+  version "2.0.10"
+  resolved "https://registry.yarnpkg.com/@types/karma-webpack/-/karma-webpack-2.0.10.tgz#b2c816b2ac7ca25b7af43df61a8b5565a370fa57"
+  integrity sha512-qWEsvjRzycJ8rbs6pdISzapT5xLlBpNnPA0TfPSXVBPsEpJu9uHgrTmkSH5vIZxH5G89T3LYgARmpmnyKAzJIw==
   dependencies:
     "@types/karma" "*"
     "@types/webpack" "^4"
