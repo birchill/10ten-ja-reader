@@ -671,12 +671,23 @@ class RcxContent {
       text.length < maxLength &&
       (nextNode = result.iterateNext() as Text | null)
     ) {
+      // Since these nodes are text nodes we can assume parentElement exists.
+      if (!this.isElementVisible(nextNode.parentElement!)) {
+        // If a node isn't visible it shouldn't be part of our text look up.
+        // See issue #366 for an example where it breaks look ups.
+        continue;
+      }
       endIndex = Math.min(nextNode.data.length, maxLength - text.length);
       text += nextNode.data.substring(0, endIndex);
       selEndList.push({ node: nextNode, offset: endIndex });
     }
 
     return text;
+  }
+
+  private isElementVisible(element: HTMLElement) {
+    const style = window.getComputedStyle(element);
+    return style.visibility !== 'hidden' && style.display !== 'none';
   }
 
   // given a node which must not be null,
@@ -1286,3 +1297,5 @@ chrome.runtime.onMessage.addListener((request) => {
 
 // When a page first loads, checks to see if it should enable script
 chrome.runtime.sendMessage({ type: 'enable?' });
+
+export { RcxContent as TestOnlyRcxContent };

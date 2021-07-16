@@ -5,7 +5,7 @@ module.exports = {
   arrowParens: 'always',
   overrides: [
     {
-      files: ['*.js', '*.ts'],
+      files: ['*.js', '*.mjs', '*.ts'],
       options: {
         parser: 'jsdoc-parser',
       },
