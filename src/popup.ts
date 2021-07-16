@@ -283,6 +283,8 @@ function resetContainer(
     // We don't bother registering an event listener for this since the popup is
     // so short-lived.
     windowDiv.classList.add('-black');
+  } else {
+    windowDiv.classList.add('-light');
   }
 
   // Set touch status

@@ -868,28 +868,51 @@
  * Theme - light
  */
 
-.window,
 .window.-light {
   --text-color: #1d1a19;
-  --bg-color: #f6f1f0;
-  --border-color: #706c6b;
+  --bg-color: #fefef2;
+  --border-color: #b1ad96;
 
-  --primary-highlight: #1f66c7;
-  --reading-highlight: #43a047;
-  --conj-color: #1a47a8;
+  --primary-highlight: #c11f2a;
+  --reading-highlight: #615f52;
+  --conj-color: #ad565c;
 
   --tag-border: rgba(0, 0, 0, 0.3);
 
   --title-fg: var(--text-color);
-  --title-bg: #ddd8d7;
+  --title-bg: #ede7c9;
 
-  --reading-label: #1b5e20;
-  --okurigana-color: #fc7600;
-  --cell-highlight-bg: #ede8e6;
-  --cell-highlight-fg: #1d1a19;
+  --reading-label: #918d7b;
+  --okurigana-color: #ad565c;
+  --cell-highlight-bg: #ede7c9;
+  --cell-highlight-fg: #3e3a39;
+
+  --selected-bg: #fff8bf;
+  --selected-reading-highlight: #3e3a39;
 
   --meta-bg: var(--cell-highlight-bg);
   --status-bg: var(--cell-highlight-bg);
+}
+
+.window.-light .w-def .tag-fem,
+.window.-light .w-def .w-dial {
+  background: #f24b5922;
+  color: #7a282f;
+  --tag-border: #f24b5966;
+}
+
+.window.-light .w-def .tag-masc,
+.window.-light .w-def .w-misc {
+  background: #2698fb22;
+  color: #144977;
+  --tag-border: #2698fbaa;
+}
+
+.window.-light .w-def .tag-place,
+.window.-light .w-def .w-field {
+  background: #43a04722;
+  color: #215723;
+  --tag-border: #43a047aa;
 }
 
 /*
