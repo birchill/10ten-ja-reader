@@ -6,7 +6,7 @@ pull_request_rules:
       # Don't try to merge stacked pull requests into non merged parents.
       - base=main
       # Allow individuals to opt out of mergify on high churn PRs
-      - label!=WIP
+      - label!=work-in-progress
       # Allow marking a PR as expecting changes while also approving
       - label!='changes requested'
       # Don't run on PRs by dependabot (or users with dependabot in their name)
