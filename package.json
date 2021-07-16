@@ -46,6 +46,8 @@
     "lit-toast": "^1.5.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-conventional": "^12.1.4",
     "@esm-bundle/chai": "^4.3.4",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/exec": "^5.0.0",
@@ -70,6 +72,7 @@
     "eslint-plugin-sort-imports-es6-autofix": "^0.6.0",
     "eslint-plugin-tsdoc": "^0.2.14",
     "gts": "^3.1.0",
+    "husky": "^7.0.0",
     "iconv-lite": "^0.6.3",
     "prettier": "^2.3.2",
     "prettier-plugin-jsdoc": "^0.3.23",
