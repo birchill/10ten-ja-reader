@@ -15,6 +15,7 @@ for message in ${messages[@]}; do
     # Skip groups for which we programmatically generate the keys.
     if [[ $message != content_kanji_meta_* && \
           $message != content_names_tag_* && \
+          $message != content_hint_switch_dict_keys_* && \
           $message != dial_label_* && \
           $message != field_label_* && \
           $message != gloss_type_label_* && \

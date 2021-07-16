@@ -2013,10 +2013,8 @@ function renderSwitchDictionaryHint(
     return '-';
   }
 
-  // Set up a label where all the key placeholders are replaced with %KEY%.
-  let label = browser.i18n.getMessage(
-    `content_hint_switch_dict_keys_${keys.length}`,
-    Array(keys.length).fill('%KEY%')
+  const label = browser.i18n.getMessage(
+    `content_hint_switch_dict_keys_${keys.length}`
   );
 
   // Replace all the %KEY% placeholders with <kbd> elements.
