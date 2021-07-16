@@ -15,7 +15,7 @@ const config = {
         list: [
           //Remove test only export from rikaicontent
           {
-            from: /export.*TestOnlyRcxContent.*\n/,
+            from: /export.*TestOnly.*\n/,
             to: '',
           },
         ],

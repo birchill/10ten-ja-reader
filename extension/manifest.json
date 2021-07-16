@@ -26,6 +26,12 @@
       "match_about_blank": true,
       "js": ["rikaicontent.js"],
       "all_frames": true
+    },
+    {
+      "matches": ["https://docs.google.com/*"],
+      "js": ["docs-html-fallback.js"],
+      "run_at": "document_start",
+      "all_frames": true
     }
   ],
   "web_accessible_resources": [
