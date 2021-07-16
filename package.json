@@ -51,7 +51,7 @@
     "@types/karma": "^6.3.0",
     "@types/karma-webpack": "^2.0.9",
     "@types/mocha": "^8.2.3",
-    "@types/split2": "^3.2.0",
+    "@types/split2": "^3.2.1",
     "@types/yargs": "^17.0.0",
     "all-contributors-cli": "^6.20.0",
     "archiver": "^5.3.0",
