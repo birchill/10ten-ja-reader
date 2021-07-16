@@ -25,24 +25,24 @@ Hi fellow Japanese reader! Formerly known as Rikaichamp, this browser extension 
 
 - Pitch accent information
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/pitch-accent-cropped.png" alt="Screenshot showing pitch accent information" title="Pitch accent information" width="600">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/pitch-accent-cropped.png" alt="Screenshot showing pitch accent information" title="Pitch accent information" width="640">
 
 - Support for non-English dictionaries
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/german-cropped.png" alt="Screenshot showing German translation" title="German translation" width="600">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/german-cropped.png" alt="Screenshot showing German translation" title="German translation" width="640">
 
 - Dictionaries that update automatically every week by fetching just the updated entries
 - Easy to read dictionary entries
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/word-display-cropped.png" alt="Screenshot showing how definitions are grouped by part-of-speech" title="Some of the features of word display" width="600">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/word-display-cropped.png" alt="Screenshot showing how definitions are grouped by part-of-speech" title="Some of the features of word display" width="640">
 
 - Automatic translation of Japanese-era years into Gregorian years (e.g. 昭和５６年、令和元年、平成三十一年)
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/year-translation-cropped.png" alt="Screenshot showing translation of 明治四十二年 into 1909年" title="Year translation" width="600">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/year-translation-cropped.png" alt="Screenshot showing translation of 明治四十二年 into 1909年" title="Year translation" width="640">
 
 - Automatic translation between 畳/帖 measurements and square meters (e.g. 四畳半、12.6 帖、25 平米、6m<sup>2</sup>)
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/jou-conversion-cropped.png" alt="Screenshot showing translation of 四畳半 into 7.29 square meters" title="Area translation" width="600">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/jou-conversion-cropped.png" alt="Screenshot showing translation of 四畳半 into 7.29 square meters" title="Area translation" width="640">
 
 - Recognition of a wide range of grammatical forms
   (e.g. vs-c verbs like 兼した,
@@ -55,30 +55,30 @@ Hi fellow Japanese reader! Formerly known as Rikaichamp, this browser extension 
   causative passive, させる for verbs ending in す e.g. 起こさせる)
 - Automatic preview of name entries when there is a better match in the name dictionary
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/name-dictionary-cross-ref-cropped.png" alt="Screenshot showing 南硫黄島 being automatically looked up from the names dictionary" title="Name dictionary cross-reference" width="600">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/name-dictionary-cross-ref-cropped.png" alt="Screenshot showing 小池百合子 being automatically looked up from the names dictionary" title="Name dictionary cross-reference" width="640">
 
 - Handling of a wide range of characters including ㋕, ㌀, ㋿, 𠏹沢, ８月, Ｂ級グルメ, オーサカ
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/encircled-character-cropped.png" alt="Screenshot showing recognition of 弾道㋯㋚㋑㋸防衛 (弾道ミサイル防衛)" title="Encircled characters" width="600">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/encircled-character-cropped.png" alt="Screenshot showing recognition of 弾道㋯㋚㋑㋸防衛 (弾道ミサイル防衛)" title="Encircled characters" width="640">
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/kabushiki-gaisha-cropped.png" alt="Screenshot showing recognition of ㍿ (株式会社)" title="Composed characters" width="600">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/kabushiki-gaisha-cropped.png" alt="Screenshot showing recognition of ㍿ (株式会社)" title="Composed characters" width="640">
 
 - Localized into Japanese (so you can study Japanese while you study Japanese!) and Simplified Chinese
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/localized-cropped.png" alt="Screenshot showing various parts-of-speech and other information translated into Japanese" title="Localized popup" width="600">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/localized-cropped.png" alt="Screenshot showing various parts-of-speech and other information translated into Japanese" title="Localized popup" width="640">
 
 - Prioritization of common matches
 - Support for displaying romaji
 - Copy feature that allows selecting which entry and in what format to copy to the clipboard
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/copy-feature-cropped.png" alt="Screenshot showing 河川敷 being selected and the various formats available for copying" title="Copy feature" width="600">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/copy-feature-cropped.png" alt="Screenshot showing 河川敷 being selected and the various formats available for copying" title="Copy feature" width="640">
 
 - Smart popup positioning
 - Support for vertical text and text in SVG images
 - Minimal memory usage
 - Kanji data for Kanji kentei, Conning references, updated educational levels, heavily reworked kanji components etc.
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/kanji-view.png" alt="Screenshot of kanji view" title="Kanji dictionary" width="600">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/kanji-view.png" alt="Screenshot of kanji view" title="Kanji dictionary" width="640">
 
 - Intuitive settings window
 
