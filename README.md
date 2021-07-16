@@ -7,16 +7,23 @@ Hi fellow Japanese reader! Formerly known as Rikaichamp, this browser extension 
 
 ## Table of Contents
 
-- [Features](#features)
 - [Installing](#installing)
+- [Features](#features)
 - [Usage](#usage)
 - [Building from source](#building-from-source)
 - [Contributing](#contributing)
 - [Contributors](#contributors)
 
+## Installing
+
+- [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/rikaichamp/)
+- [Chrome Web Store](https://chrome.google.com/webstore/detail/pnmaklegiibbioifkmfkgpfnmdehdfan)
+- [Edge Web Store](https://microsoftedge.microsoft.com/addons/detail/rikaichamp-japanese-dicti/cgiogkjpebgfcpcaipiicfeaelpapeig)
+- [App Store](https://apps.apple.com/app/10ten-japanese-reader/id1573540634)
+
 ## Features
 
-Forked from Rikaikun in 2017 it includes:
+It includes:
 
 - Pitch accent information
 
@@ -24,18 +31,18 @@ Forked from Rikaikun in 2017 it includes:
 
 - Support for non-English dictionaries
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/russian-cropped.png" alt="Screen shot showing Russian translation" title="Russian translation" width="480">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/german-cropped.png" alt="Screen shot showing German translation" title="German translation" width="480">
 
 - Dictionaries that update automatically every week by fetching just the updated entries
-- Overhauled dictionary entry display to make it easier to read
+- Easy to read dictionary entries
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/word-display-cropped.png" alt="Screen shot showing how definitions are grouped by part-of-speech" title="Some of the features of word display" width="640">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/word-display-cropped.png" alt="Screen shot showing how definitions are grouped by part-of-speech" title="Some of the features of word display" width="480">
 
 - Automatic translation of Japanese-era years into Gregorian years (e.g. 昭和５６年、令和元年、平成三十一年)
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/year-translation-cropped.png" alt="Screen shot showing translation of 明治四十二年 into 1909年" title="Year translation" width="325">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/year-translation-cropped.png" alt="Screen shot showing translation of 明治四十二年 into 1909年" title="Year translation" width="480">
 
-- Recognition of many more grammatical forms
+- Recognition of a wide range of grammatical forms
   (e.g. vs-c verbs like 兼した,
   irregular verbs like いらっしゃいます,
   continuous forms like 食べてた,
@@ -46,46 +53,37 @@ Forked from Rikaikun in 2017 it includes:
   causative passive, させる for verbs ending in す e.g. 起こさせる)
 - Automatic preview of name entries when there is a better match in the name dictionary
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/name-dictionary-cross-ref-cropped.png" alt="Screen shot showing 南硫黄島 being automatically looked up from the names dictionary" title="Name dictionary cross-reference" width="354">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/name-dictionary-cross-ref-cropped.png" alt="Screen shot showing 南硫黄島 being automatically looked up from the names dictionary" title="Name dictionary cross-reference" width="480">
 
-- Handling of a much wider range of characters including ㋕, ㌀, ㋿, 𠏹沢, ８月, Ｂ級グルメ, オーサカ
+- Handling of a wide range of characters including ㋕, ㌀, ㋿, 𠏹沢, ８月, Ｂ級グルメ, オーサカ
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/encircled-character-cropped.png" alt="Screen shot showing recognition of 弾道㋯㋚㋑㋸防衛 (弾道ミサイル防衛)" title="Encircled characters" width="443">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/encircled-character-cropped.png" alt="Screen shot showing recognition of 弾道㋯㋚㋑㋸防衛 (弾道ミサイル防衛)" title="Encircled characters" width="480">
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/kabushiki-gaisha-cropped.png" alt="Screen shot showing recognition of ㍿ (株式会社)" title="Composed characters" width="464">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/kabushiki-gaisha-cropped.png" alt="Screen shot showing recognition of ㍿ (株式会社)" title="Composed characters" width="480">
 
-- Completely localized into Japanese (so you can study Japanese while you study Japanese!) and Simplified Chinese
+- Localized into Japanese (so you can study Japanese while you study Japanese!) and Simplified Chinese
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/localized-cropped.png" alt="Screen shot showing various parts-of-speech and other information translated into Japanese" title="Localized popup" width="277">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/localized-cropped.png" alt="Screen shot showing various parts-of-speech and other information translated into Japanese" title="Localized popup" width="480">
 
-- Better prioritization of more common matches
+- Prioritization of common matches
 - Support for displaying romaji
 - Copy feature that allows selecting which entry and in what format to copy to the clipboard
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/copy-feature-cropped.png" alt="Screen shot showing 魅惑的 being selected and the various formats available for copying" title="Copy feature" width="460">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/copy-feature-cropped.png" alt="Screen shot showing 河川敷 being selected and the various formats available for copying" title="Copy feature" width="480">
 
-- Smarter popup positioning
-- Support for vertical text and SVG text
-- Lower memory usage (> 90% less)
+- Smart popup positioning
+- Support for vertical text and text in SVG images
+- Minimal memory usage
 - Kanji data for Kanji kentei, Conning references, updated educational levels, heavily reworked kanji components etc.
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/kanji-view-cropped.png" alt="Screen shot of kanji view" title="Kanji dictionary" width="389">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/kanji-view.png" alt="Screen shot of kanji view" title="Kanji dictionary" width="480">
 
-- Overhauled settings window
+- Intuitive settings window
 
-  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/options-window-cropped.png" alt="Screen shot of options window" title="Options window" width="459">
+  <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/options-window-cropped-more.png" alt="Screen shot of options window" title="Options window" width="401">
 
-- Better isolation of styles so that the popup always looks correct
-- Improved handling of ruby text in YouTube
-- Entirely rewritten with static typing, automated tests, and modern API usage (no sync XHR, XPath etc.)
-- Hundreds of other fixes and improvements
-
-## Installing
-
-- [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/rikaichamp/)
-- [Chrome Web Store](https://chrome.google.com/webstore/detail/pnmaklegiibbioifkmfkgpfnmdehdfan)
-- [Edge Web Store](https://microsoftedge.microsoft.com/addons/detail/rikaichamp-japanese-dicti/cgiogkjpebgfcpcaipiicfeaelpapeig)
-- [App Store](https://apps.apple.com/app/10ten-japanese-reader/id1573540634)
+- Isolation of styles so that the popup always looks correct
+- Handling of ruby text in YouTube
 
 ## Usage
 
