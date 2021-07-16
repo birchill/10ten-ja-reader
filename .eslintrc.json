@@ -9,23 +9,25 @@
     "webextensions": true
   },
   "plugins": ["eslint-plugin-tsdoc", "sort-imports-es6-autofix"],
-  "ignorePatterns": "dist",
+  "ignorePatterns": ["dist"],
   "rules": {
-    "tsdoc/syntax": "error",
     "linebreak-style": ["error", "unix"],
     "no-tabs": "error",
     "sort-imports-es6-autofix/sort-imports-es6": "error",
     "node/no-unpublished-import": "off",
     "unicode-bom": "error",
     "promise/prefer-await-to-then": "error",
-    "@typescript-eslint/unbound-method": "error",
     "curly": "error"
   },
   "overrides": [
     {
-      "files": ["**/*.ts", "**/*.js"],
+      "files": ["**/*.ts"],
       "parserOptions": {
         "project": "./tsconfig.json"
+      },
+      "rules": {
+        "tsdoc/syntax": "error",
+        "@typescript-eslint/unbound-method": "error"
       }
     }
   ]

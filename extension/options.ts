@@ -8,7 +8,7 @@ type OptionEvent = {
   __update: Partial<Config>;
 };
 
-export class OptionsForm extends LitElement {
+class OptionsForm extends LitElement {
   private content: Promise<TemplateResult> = this.fetchAndRender();
 
   render() {
@@ -393,7 +393,7 @@ customElements.define('options-form', OptionsForm);
 
 // TODO(https://github.com/Victor-Bernabe/lit-toast/issues/2):
 // Remove this if the component supports types directly.
-interface LitToast {
+interface LitToast extends Element {
   show(text: string, duration: number): Promise<void>;
 }
 declare global {

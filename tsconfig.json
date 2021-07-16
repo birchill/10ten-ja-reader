@@ -12,7 +12,13 @@
     "outDir": "dist",
     "lib": ["ES2018", "DOM"],
     "esModuleInterop": true,
-    "declaration": false
+    "declaration": false,
+    // ES2020 corresponds to Chrome 80+
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "target": "ES2020",
+    // Added for compatibility with snowback/esbuild builder.
+    "isolatedModules": true
   },
   "include": ["**/*.ts"]
 }
