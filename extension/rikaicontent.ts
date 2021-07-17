@@ -1094,7 +1094,14 @@ class RcxContent {
         fake.scrollLeft = eventTarget.scrollLeft;
       }
       // Calculate range and friends here after we've made our fake textarea/input divs.
-      range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
+      range = document.caretRangeFromPoint(
+        ev.clientX,
+        ev.clientY
+      ) as Range | null;
+      // If we don't have a valid range, don't do any more work
+      if (range === null) {
+        return;
+      }
       const startNode = range.startContainer;
       ro = range.startOffset;
 
