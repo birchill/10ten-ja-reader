@@ -7,6 +7,26 @@ consistently version releases as follows:
 - Minor: New user visible feature added. (contains feat commits)
 - Patch: Bug fix to previous feature. (contains only fix commits)
 
+## [2.0.0](https://github.com/melink14/rikaikun/compare/v1.2.6...v2.0.0) (2021-07-17)
+
+### ⚠ BREAKING CHANGES
+
+- This version includes optional chaining requiring Chrome >=80
+
+### Features
+
+- Force Google Docs to use HTML mode instead of canvas mode ([#596](https://github.com/melink14/rikaikun/issues/596)) ([94b60a6](https://github.com/melink14/rikaikun/commit/94b60a64303d60ff08a05e71ec706a33da346821)), closes [#593](https://github.com/melink14/rikaikun/issues/593)
+- **detection:** Ignore invisible nodes when extracting text under mouse ([#561](https://github.com/melink14/rikaikun/issues/561)) ([cb97f36](https://github.com/melink14/rikaikun/commit/cb97f36ab72604c39684540f0ca7453458172604)), closes [#159](https://github.com/melink14/rikaikun/issues/159) [#366](https://github.com/melink14/rikaikun/issues/366) [#159](https://github.com/melink14/rikaikun/issues/159)
+
+### Bug Fixes
+
+- **dict:** Update dictionaries to latest versions. ([#581](https://github.com/melink14/rikaikun/issues/581)) ([77189c3](https://github.com/melink14/rikaikun/commit/77189c3a4bbaa56fd0a753236a7e9161f1610b0d))
+- Skip text processing when range is null ([#598](https://github.com/melink14/rikaikun/issues/598)) ([ae55bff](https://github.com/melink14/rikaikun/commit/ae55bffdc4f17bd59d60684f5f86766b3c0c1f56)), closes [#386](https://github.com/melink14/rikaikun/issues/386)
+
+### Code Refactoring
+
+- Migrate from webpack to snowpack for build step ([#583](https://github.com/melink14/rikaikun/issues/583)) ([1bdd3d3](https://github.com/melink14/rikaikun/commit/1bdd3d3e0e9abb88a5582bbbaef1284b6d9aa743))
+
 ### [1.2.6](https://github.com/melink14/rikaikun/compare/v1.2.5...v1.2.6) (2021-06-28)
 
 ### Bug Fixes
