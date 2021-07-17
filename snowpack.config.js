@@ -25,7 +25,7 @@ const config = {
   buildOptions: {
     out: 'dist',
     // The default _snowpack breaks chrome extensions.
-    metaUrlPath: '.snowpack',
+    metaUrlPath: 'snowpack',
     clean: true,
     // The extension HTML files don't have doctype strings so this is required.
     htmlFragments: true,
