@@ -1,0 +1,11 @@
+ignore:
+  # Ignore test directory
+  - '**/test/'
+coverage:
+  status:
+    patch:
+      default:
+        target: 100%
+        threshold: 0%
+comment:
+  require_changes: true
