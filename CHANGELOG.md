@@ -7,6 +7,12 @@ consistently version releases as follows:
 - Minor: New user visible feature added. (contains feat commits)
 - Patch: Bug fix to previous feature. (contains only fix commits)
 
+### [2.0.1](https://github.com/melink14/rikaikun/compare/v2.0.0...v2.0.1) (2021-07-17)
+
+### Bug Fixes
+
+- **build:** Renames `.snowpack` metapath to `snowpack` ([#608](https://github.com/melink14/rikaikun/issues/608)) ([b7e823c](https://github.com/melink14/rikaikun/commit/b7e823ce59f35186735d7dd169e848a3b68e3b1d)), closes [#607](https://github.com/melink14/rikaikun/issues/607)
+
 ## [2.0.0](https://github.com/melink14/rikaikun/compare/v1.2.6...v2.0.0) (2021-07-17)
 
 ### ⚠ BREAKING CHANGES
