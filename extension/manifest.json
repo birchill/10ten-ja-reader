@@ -8,6 +8,7 @@
     "48": "images/icon48.png",
     "128": "images/icon128.png"
   },
+  "offline_enabled": true,
   "permissions": ["clipboardWrite", "storage"],
   "background": {
     "page": "background.html",
