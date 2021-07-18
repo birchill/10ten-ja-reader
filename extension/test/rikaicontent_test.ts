@@ -66,6 +66,10 @@ describe('RcxContent', () => {
   });
 
   describe('mousemove', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
     it('handled without logging errors if `caretRangeFromPoint` returns null', () => {
       sinon
         .stub(document, 'caretRangeFromPoint')
@@ -75,6 +79,24 @@ describe('RcxContent', () => {
       simulant.fire(document, 'mousemove');
 
       expect(console.log).to.not.have.been.called;
+    });
+
+    it('triggers xsearch message when above Japanese text', async () => {
+      const clock = sinon.useFakeTimers();
+      const span = insertHtmlIntoDomAndReturnFirstTextNode(
+        '<span>先生test</span>'
+      ) as HTMLSpanElement;
+
+      simulant.fire(span, 'mousemove', {
+        clientX: span.offsetLeft,
+        clientY: span.offsetTop,
+      });
+      // Tick the clock forward to account for the popup delay.
+      clock.tick(1);
+
+      expect(chrome.runtime.sendMessage).to.have.been.calledWith(
+        sinon.match({ type: 'xsearch', text: '先生test' })
+      );
     });
   });
 });
