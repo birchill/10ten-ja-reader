@@ -72,7 +72,7 @@
     "description": "Label for key to copy a word to the clipboard"
   },
   "content_database_updating": {
-    "message": "由于字典数据正在更新，所以只显示了一些数据。",
+    "message": "由于字典数据正在更新，当前显示的数据不完整。",
     "description": "Status bar message shown while the is being updated and only a snapshot can be shown."
   },
   "content_hint_switch_dict_keys_1": {
@@ -80,11 +80,11 @@
     "description": "Message displayed at the bottom of the pop-up instructing the user which keys to use to switch keyboards when there is only one such key configured"
   },
   "content_hint_switch_dict_keys_2": {
-    "message": "提示：您可以按 %KEY% 或 %KEY% 键查看下一个字典",
+    "message": "提示：您可以按 %KEY% 或 %KEY% 查看下一个字典",
     "description": "Message displayed at the bottom of the pop-up instructing the user which keys to use to switch keyboards when there are two keys configured"
   },
   "content_hint_switch_dict_keys_3": {
-    "message": "提示：您可以通过按 %KEY%，%KEY% 或 %KEY% 来显示以下词典",
+    "message": "提示：您可以通过按 %KEY%，%KEY% 或 %KEY% 查看下一个词典",
     "description": "Message displayed at the bottom of the pop-up instructing the user which keys to use to switch keyboards when there are three keys configured"
   },
   "content_kanji_base_radical": {
@@ -1330,11 +1330,11 @@
     "description": "Descriptive text used for other browsers which do not permit configuring extension keys from the extension itself."
   },
   "options_browser_commands_no_toggle_key_chrome": {
-    "message": "如果要更改此快捷键，请访问chrome://extensions/shortcuts并更改设置。",
+    "message": "如果要更改此快捷键，请访问 chrome://extensions/shortcuts 并更改设置。",
     "description": "Descriptive text used for Chrome which does not permit configuring extension keys from the extension itself."
   },
   "options_browser_commands_no_toggle_key_edge": {
-    "message": "如果要更改此快捷键，请访问edge://extensions/shortcuts并更改设置。",
+    "message": "如果要更改此快捷键，请访问 edge://extensions/shortcuts 并更改设置。",
     "description": "Descriptive text used for Edge which does not permit configuring extension keys from the extension itself."
   },
   "options_bushu_data_name": {
@@ -1561,7 +1561,7 @@
     "message": "复制词语或汉字"
   },
   "options_popup_kanji_lookup": {
-    "message": "只检查汉字结果",
+    "message": "只查询汉字结果",
     "description": "Label for the key to force looking up the kanji dictionary only"
   },
   "options_popup_keys_subheading": {
