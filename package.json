@@ -61,7 +61,7 @@
     "@types/simulant": "^0.2.0",
     "@types/sinon-chai": "^3.2.5",
     "@types/sinon-chrome": "^2.2.10",
-    "@web/test-runner": "^0.13.13",
+    "@web/test-runner": "^0.13.15",
     "@web/test-runner-puppeteer": "^0.10.0",
     "byline": "^5.0.0",
     "conventional-changelog-conventionalcommits": "^4.6.0",
