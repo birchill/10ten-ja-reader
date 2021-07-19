@@ -142,6 +142,7 @@ export function renderPopup(
         if (!metadata) {
           return null;
         }
+        metadata.classList.add('-metaonly');
 
         const metaDataContainer = document.createElement('div');
         metaDataContainer.classList.add('wordlist');

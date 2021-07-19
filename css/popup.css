@@ -816,6 +816,10 @@
   margin-bottom: 8px;
 }
 
+.wordlist .meta.-metaonly {
+  background: transparent;
+}
+
 .wordlist .meta.era,
 .wordlist .meta.measure > * {
   display: flex;
