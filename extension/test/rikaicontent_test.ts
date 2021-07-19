@@ -26,8 +26,8 @@ describe('RcxContent', () => {
 
         executeShowForGivenNode(rcxContent, span);
 
-        expect(chrome.runtime.sendMessage).to.have.been.calledWith(
-          sinon.match({ type: 'xsearch', text: '試す' }),
+        expect(chrome.runtime.sendMessage).to.have.been.calledWithMatch(
+          { type: 'xsearch', text: '試す' },
           sinon.match.any
         );
       });
@@ -41,8 +41,8 @@ describe('RcxContent', () => {
 
         executeShowForGivenNode(rcxContent, span);
 
-        expect(chrome.runtime.sendMessage).to.have.been.calledWith(
-          sinon.match({ type: 'xsearch', text: '試す' }),
+        expect(chrome.runtime.sendMessage).to.have.been.calledWithMatch(
+          { type: 'xsearch', text: '試す' },
           sinon.match.any
         );
       });
@@ -57,8 +57,8 @@ describe('RcxContent', () => {
 
         executeShowForGivenNode(rcxContent, span);
 
-        expect(chrome.runtime.sendMessage).to.have.been.calledWith(
-          sinon.match({ type: 'xsearch', text: '試testす' }),
+        expect(chrome.runtime.sendMessage).to.have.been.calledWithMatch(
+          { type: 'xsearch', text: '試testす' },
           sinon.match.any
         );
       });
@@ -94,9 +94,10 @@ describe('RcxContent', () => {
       // Tick the clock forward to account for the popup delay.
       clock.tick(1);
 
-      expect(chrome.runtime.sendMessage).to.have.been.calledWith(
-        sinon.match({ type: 'xsearch', text: '先生test' })
-      );
+      expect(chrome.runtime.sendMessage).to.have.been.calledWithMatch({
+        type: 'xsearch',
+        text: '先生test',
+      });
     });
   });
 });

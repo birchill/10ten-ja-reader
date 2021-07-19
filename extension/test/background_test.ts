@@ -65,9 +65,9 @@ describe('background.ts', () => {
         type: 'forceDocsHtml?',
       });
 
-      expect(chrome.tabs.sendMessage).to.have.been.calledWith(
+      expect(chrome.tabs.sendMessage).to.have.been.calledWithMatch(
         /* tabId= */ sinon.match.any,
-        sinon.match({ type: 'showPopup' })
+        { type: 'showPopup' }
       );
     });
   });
