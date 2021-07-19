@@ -54,7 +54,7 @@
     "@semantic-release/git": "^9.0.0",
     "@snowpack/web-test-runner-plugin": "^0.2.2",
     "@types/byline": "^4.2.33",
-    "@types/chai": "^4.2.19",
+    "@types/chai": "^4.2.21",
     "@types/chrome": "0.0.147",
     "@types/mocha": "^8.2.3",
     "@types/node": "^16.3.3",
