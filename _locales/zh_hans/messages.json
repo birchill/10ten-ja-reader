@@ -73,7 +73,7 @@
   },
   "content_database_updating": {
     "message": "由于词典数据正在更新，当前显示的数据不完整。",
-    "description": "Status bar message shown while the is being updated and only a snapshot can be shown."
+    "description": "Status bar message shown while the dictionary is being updated and only a snapshot can be shown."
   },
   "content_hint_switch_dict_keys_1": {
     "message": "提示：您可以按 %KEY% 查看下一个词典",

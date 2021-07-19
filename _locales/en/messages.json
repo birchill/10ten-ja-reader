@@ -73,7 +73,7 @@
   },
   "content_database_updating": {
     "message": "Dictionary data is updating, incomplete results shown.",
-    "description": "Status bar message shown while the is being updated and only a snapshot can be shown."
+    "description": "Status bar message shown while the dictionary is being updated and only a snapshot can be shown."
   },
   "content_hint_switch_dict_keys_1": {
     "message": "Tip: press %KEY% to display the next dictionary",
