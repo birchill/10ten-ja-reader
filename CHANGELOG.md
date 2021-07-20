@@ -7,6 +7,18 @@ consistently version releases as follows:
 - Minor: New user visible feature added. (contains feat commits)
 - Patch: Bug fix to previous feature. (contains only fix commits)
 
+## [2.1.0](https://github.com/melink14/rikaikun/compare/v2.0.1...v2.1.0) (2021-07-20)
+
+### Features
+
+- **css:** Move popup themes into a single file using CSS variables ([#623](https://github.com/melink14/rikaikun/issues/623)) ([75241b5](https://github.com/melink14/rikaikun/commit/75241b53278678ba178000b0889130483195449f)), closes [#222](https://github.com/melink14/rikaikun/issues/222)
+- **popup:** Explicilty sets rikaikun to horizontal writing mode ([#624](https://github.com/melink14/rikaikun/issues/624)) ([5fae815](https://github.com/melink14/rikaikun/commit/5fae815f5f3671517eeaf0baadb51672361aacc8)), closes [#613](https://github.com/melink14/rikaikun/issues/613)
+- Set `offline_enabled` to true in extension manifest ([#612](https://github.com/melink14/rikaikun/issues/612)) ([202aeac](https://github.com/melink14/rikaikun/commit/202aeac1849904927d7f1f1269476b8f8f2a1777)), closes [#429](https://github.com/melink14/rikaikun/issues/429)
+
+### Bug Fixes
+
+- **dict:** Update dictionaries to latest versions. ([#620](https://github.com/melink14/rikaikun/issues/620)) ([9a67cb1](https://github.com/melink14/rikaikun/commit/9a67cb1fdf529b4587e58d2db72ce03412c29e66))
+
 ### [2.0.1](https://github.com/melink14/rikaikun/compare/v2.0.0...v2.0.1) (2021-07-17)
 
 ### Bug Fixes
