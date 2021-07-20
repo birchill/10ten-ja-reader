@@ -100,6 +100,36 @@ describe('RcxContent', () => {
       });
     });
   });
+
+  describe('showPopup', () => {
+    afterEach(() => {
+      rcxContent.disableTab();
+    });
+
+    it('sets data-theme attribute of rikaikun window to config popupcolor value', () => {
+      rcxContent.enableTab({ popupcolor: 'redtest' } as Config);
+
+      rcxContent.showPopup('<span></span>');
+
+      // expect rikaikun window to have data-theme attribute set to config popupcolor value
+      expect(
+        document.querySelector<HTMLDivElement>('#rikaichan-window')!.dataset
+          .theme
+      ).to.equal('redtest');
+    });
+
+    it('adds link tag pointing to "css/popup.css" to <head>', () => {
+      chrome.extension.getURL.callsFake((path: string) => {
+        return `http://fakebaseurl/${path}`;
+      });
+
+      rcxContent.showPopup('<span></span>');
+
+      expect(
+        document.querySelector<HTMLLinkElement>('head link')!.href
+      ).to.equal('http://fakebaseurl/css/popup.css');
+    });
+  });
 });
 
 function insertHtmlIntoDomAndReturnFirstTextNode(htmlString: string): Node {

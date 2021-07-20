@@ -35,10 +35,5 @@
       "all_frames": true
     }
   ],
-  "web_accessible_resources": [
-    "css/popup-black.css",
-    "css/popup-blue.css",
-    "css/popup-lightblue.css",
-    "css/popup-yellow.css"
-  ]
+  "web_accessible_resources": ["css/popup.css"]
 }

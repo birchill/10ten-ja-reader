@@ -143,11 +143,7 @@ class RcxContent {
       );
       css.setAttribute('rel', 'stylesheet');
       css.setAttribute('type', 'text/css');
-      const color = window.rikaichan!.config!.popupcolor;
-      css.setAttribute(
-        'href',
-        chrome.extension.getURL('css/popup-' + color + '.css')
-      );
+      css.setAttribute('href', chrome.extension.getURL('css/popup.css'));
       css.setAttribute('id', 'rikaichan-css');
       topdoc.getElementsByTagName('head')[0].appendChild(css);
 
@@ -165,6 +161,7 @@ class RcxContent {
         true
       );
     }
+    popup.setAttribute('data-theme', window.rikaichan!.config!.popupcolor);
 
     popup.style.width = 'auto';
     popup.style.height = 'auto';
