@@ -44,12 +44,46 @@
 }
 
 .moon {
+  position: absolute;
   width: 10px;
   height: 10px;
 
-  position: absolute;
+  /*
+   * Given that:
+   * - the earth has 50px width and height
+   * - the moon has 10px width and height
+   * Place the centre of the moon at the centre of the the earth (before transformations are applied).
+   * (50px / 2) - (10px / 2) = 20px
+   */
   top: 20px;
   left: 20px;
+
+  /*
+   * Given that:
+   * - the earth has 50px width and height
+   * - the moon has 10px width and height
+   * - they both have box-sizing: border-box
+   * - their centres are lined up (before any transformations are applied)
+   * At this offsetY value, the moon will be just touching the earth.
+   * (50px / 2) + (10px / 2) = 30px
+   */
+  --minimum-moon-offset-y: 30px;
+
+  /*
+   * Depending on whether the moon is above or below the earth, some extra
+   * altitude needs to be added to the orbit so that the thumb doesn't cover it.
+   */
+  --extra-altitude-to-clear-above-thumb: 30px;
+  --extra-altitude-to-clear-below-thumb: 60px;
+
+  /*
+   * By adding this extra clearance, we avoid the iOS 15 Safari full-size URL
+   * bar springing back into place when dragging the puck too far into the
+   * bottom of the viewport. Hopefully this covers the worst-case scenario.
+   * @see https://github.com/shirakaba/10ten-ja-reader/pull/5#issuecomment-877794905
+   */
+  --extra-altitude-to-clear-ios-15-safari-safe-area-activation-zone: 20px;
+
   transform: translate(var(--rest-x-offset), var(--rest-y-offset));
   transition: transform 0.1s;
 }

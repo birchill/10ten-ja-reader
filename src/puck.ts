@@ -26,7 +26,22 @@ export class RikaiPuck {
   private puckY: number;
   private puckWidth: number;
   private puckHeight: number;
+  /**
+   * The translateY value to apply to the moon when it is orbiting above the earth.
+   * Expressed as an absolute (positive) value.
+   */
+  private targetAbsoluteOffsetYAbove: number;
+  /**
+   * The translateY value to apply to the moon when it is orbiting below the earth.
+   * Expressed as an absolute (positive) value.
+   */
+  private targetAbsoluteOffsetYBelow: number;
+  /**
+   * The translate (X and Y) values applied to the moon whilst it is being dragged.
+   * They are measured relative to the midpoint of the moon (which is also the midpoint of the earth).
+   */
   private targetOffset: { x: number; y: number } = { x: 0, y: 0 };
+  private targetOrientation: 'above' | 'below' = 'above';
   private cachedViewportDimensions: ViewportDimensions | null = null;
   private cachedSafeAreaInsets: SafeAreaInsets | null = null;
   private isBeingDragged: boolean = false;
@@ -47,14 +62,21 @@ export class RikaiPuck {
     const midpointOfPuck = this.puckX + this.puckWidth / 2;
     const horizontalPortion = midpointOfPuck / viewportWidth;
 
-    // Let the target drift by up to 45 degrees in either direction
+    // Let the target drift by up to 45 degrees in either direction.
+    // Place the target either above or below the puck based on its current orientation.
     const range = Math.PI / 2;
     const angle = horizontalPortion * range - range / 2;
+    const offsetYOrientationFactor =
+      this.targetOrientation === 'above' ? -1 : 1;
     const offsetX = Math.sin(angle) * 35;
-    const offsetY = -60;
+    const offsetY =
+      (this.targetOrientation === 'above'
+        ? this.targetAbsoluteOffsetYAbove
+        : this.targetAbsoluteOffsetYBelow) * offsetYOrientationFactor;
 
+    // At rest, make the target land on the surface of the puck.
     const restOffsetX = Math.sin(angle) * 25;
-    const restOffsetY = -Math.cos(angle) * 25;
+    const restOffsetY = Math.cos(angle) * 25 * offsetYOrientationFactor;
 
     this.targetOffset = { x: offsetX, y: offsetY };
 
@@ -210,6 +232,25 @@ export class RikaiPuck {
     if (this.puck) {
       this.puck.style.pointerEvents = 'revert';
       this.puck.classList.remove('dragging');
+
+      // Update the target orientation if the puck was parked low down on the screen.
+      const { viewportHeight } = this.getViewportDimensions(
+        this.puck?.ownerDocument || document
+      );
+
+      const { bottom: safeAreaBottom } = this.getSafeArea(this.puck);
+
+      // The distance from the bottom of the earth (which can only travel within the safe area)
+      // to the centre of the moon (which is the point from which the mouse events are fired).
+      // This is effectively the height of the "blind spot" that a puck supporting only the "above" orientation would have.
+      const activePuckVerticalExtent =
+        this.puckHeight +
+        (this.targetAbsoluteOffsetYAbove - this.puckHeight / 2);
+      this.targetOrientation =
+        this.puckY >= viewportHeight - safeAreaBottom - activePuckVerticalExtent
+          ? 'below'
+          : 'above';
+      this.setPositionWithinSafeArea(this.puckX, this.puckY);
     }
 
     window.removeEventListener('pointermove', this.onWindowPointerMove);
@@ -253,6 +294,53 @@ export class RikaiPuck {
       const { width, height } = this.puck.getBoundingClientRect();
       this.puckWidth = width;
       this.puckHeight = height;
+    }
+
+    if (
+      typeof this.targetAbsoluteOffsetYAbove === 'undefined' ||
+      typeof this.targetAbsoluteOffsetYBelow === 'undefined'
+    ) {
+      const minimumMoonOffsetY =
+        parseFloat(
+          getComputedStyle(moon).getPropertyValue('--minimum-moon-offset-y')
+        ) || 0;
+
+      /*
+       * Depending on whether the moon is above or below the earth, some extra
+       * altitude needs to be added to the orbit so that the thumb doesn't cover it.
+       */
+      const extraAltitudeToClearAboveThumb =
+        parseFloat(
+          getComputedStyle(moon).getPropertyValue(
+            '--extra-altitude-to-clear-above-thumb'
+          )
+        ) || 0;
+      const extraAltitudeToClearBelowThumb =
+        parseFloat(
+          getComputedStyle(moon).getPropertyValue(
+            '--extra-altitude-to-clear-above-thumb'
+          )
+        ) || 0;
+
+      /*
+       * By adding this extra clearance, we avoid the iOS 15 Safari full-size URL
+       * bar springing back into place when dragging the puck too far into the
+       * bottom of the viewport. Hopefully this covers the worst-case scenario.
+       * @see https://github.com/shirakaba/10ten-ja-reader/pull/5#issuecomment-877794905
+       */
+      const extraAltitudeToClearIos15SafariSafeAreaActivationZone =
+        parseFloat(
+          getComputedStyle(moon).getPropertyValue(
+            '--extra-altitude-to-clear-ios-15-safari-safe-area-activation-zone'
+          )
+        ) || 0;
+
+      this.targetAbsoluteOffsetYAbove =
+        minimumMoonOffsetY + extraAltitudeToClearAboveThumb;
+      this.targetAbsoluteOffsetYBelow =
+        minimumMoonOffsetY +
+        extraAltitudeToClearBelowThumb +
+        extraAltitudeToClearIos15SafariSafeAreaActivationZone;
     }
 
     // Place in the bottom-right of the safe area
