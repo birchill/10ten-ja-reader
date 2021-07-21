@@ -1222,6 +1222,11 @@ aside {
   justify-content: center;
 }
 
+.bg-yellow-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(253, 230, 138, var(--tw-bg-opacity));
+}
+
 .bg-ink-black {
   --tw-bg-opacity: 1;
   background-color: rgba(29, 26, 25, var(--tw-bg-opacity));
@@ -1252,6 +1257,11 @@ aside {
 .text-white {
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity));
+}
+
+.text-yellow-800 {
+  --tw-text-opacity: 1;
+  color: rgba(146, 64, 14, var(--tw-text-opacity));
 }
 
 *, ::before, ::after {
