@@ -16,7 +16,7 @@ Hi fellow Japanese reader! Formerly known as Rikaichamp, this browser extension 
 
 ## Installing
 
-- [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/rikaichamp/)
+- [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/10ten-ja-reader/)
 - [Chrome Web Store](https://chrome.google.com/webstore/detail/pnmaklegiibbioifkmfkgpfnmdehdfan)
 - [Edge Web Store](https://microsoftedge.microsoft.com/addons/detail/rikaichamp-japanese-dicti/cgiogkjpebgfcpcaipiicfeaelpapeig)
 - [App Store](https://apps.apple.com/app/10ten-japanese-reader/id1573540634) (Safari)
