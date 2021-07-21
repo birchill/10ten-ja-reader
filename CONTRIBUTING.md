@@ -116,3 +116,49 @@ yarn version --new-version 1.2.3 --no-git-tag-version
 ```
 
 After pushing to GitHub the release action will run and spit out a draft release.
+
+### Releasing on Safari
+
+Safari is quite a different beast and needs to be done on a Mac.
+
+First run:
+
+```
+# git pull & yarn install etc.
+yarn build:safari
+```
+
+Then:
+
+1. Open Xcode (_not_ Xcode Beta since you can't publish to the App Store from a
+   beta version of Xcode).
+1. Open the project corresponding to the current version of Xcode.
+1. Update the Package and bundle version.
+
+   Go to the Info tab of the _app_ target, and update the following fields:
+
+   - Bundle version string (short): `<major>.<minor>`
+
+   Go to the Build Settings tab of the _app_ target, and bump the project version.
+
+   Go to the Info tab of the _extension_ target, and update the following fields:
+
+   - Bundle version string (short): `<major>.<minor>`
+   - Bundle version: Project version from above
+
+   There is almost certainly a better way of doing this but for now this seems
+   to work for me.
+
+1. Run Product → Archive.
+1. Choose Distribute App.
+1. App Store Connect.
+1. Upload.
+1. (Default options for the next couple of dialogs.)
+1. Upload (again).
+
+If that succeeds (and most often it doesn't because some version is out of line), then it's time to update the App Store.
+
+1. Go to https://appstoreconnect.apple.com/apps and choose 10ten Japanese Reader
+1. Press the blue + next to macOS App and enter the new version number
+1. Fill out the changes field / promotional text
+1. Select the uploaded build (can take a few minutes to be processed)
