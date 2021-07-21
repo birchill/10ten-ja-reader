@@ -1,4 +1,4 @@
-## 1.1.0 (2021-07-21)
+## 1.1.1 (2021-07-21)
 
 - Added tabs for showing different dictionary results and made them interactive
   on touch screen devices
