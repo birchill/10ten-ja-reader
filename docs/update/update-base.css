@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+  }
+
+  body {
+    font-family: 'Source Sans Pro', system-ui, -apple-system, 'Segoe UI', Roboto,
+      Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+  }
+
+  body :lang(ja) {
+    font-family: source-han-sans-japanese, system-ui, -apple-system, 'Segoe UI',
+      Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji',
+      'Segoe UI Emoji';
+    font-size: 85%;
+  }
+
+  aside {
+    @apply bg-gray-800 rounded-xl -mx-8 px-8;
+  }
+}

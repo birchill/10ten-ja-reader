@@ -1,0 +1,2157 @@
+/*! tailwindcss v2.2.4 | MIT License | https://tailwindcss.com */
+
+/*! modern-normalize v1.1.0 | MIT License | https://github.com/sindresorhus/modern-normalize */
+
+/*
+Document
+========
+*/
+
+/**
+Use a better box model (opinionated).
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+/**
+Use a more readable tab size (opinionated).
+*/
+
+html {
+  -moz-tab-size: 4;
+  tab-size: 4;
+}
+
+/**
+1. Correct the line height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+*/
+
+html {
+  line-height: 1.15;
+  /* 1 */
+  -webkit-text-size-adjust: 100%;
+  /* 2 */
+}
+
+/*
+Sections
+========
+*/
+
+/**
+Remove the margin in all browsers.
+*/
+
+body {
+  margin: 0;
+}
+
+/**
+Improve consistency of default fonts in all browsers. (https://github.com/sindresorhus/modern-normalize/issues/3)
+*/
+
+body {
+  font-family:
+		system-ui,
+		-apple-system, /* Firefox supports this but not yet `system-ui` */
+		'Segoe UI',
+		Roboto,
+		Helvetica,
+		Arial,
+		sans-serif,
+		'Apple Color Emoji',
+		'Segoe UI Emoji';
+}
+
+/*
+Grouping content
+================
+*/
+
+/**
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+*/
+
+hr {
+  height: 0;
+  /* 1 */
+  color: inherit;
+  /* 2 */
+}
+
+/*
+Text-level semantics
+====================
+*/
+
+/**
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr[title] {
+  text-decoration: underline dotted;
+}
+
+/**
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/**
+1. Improve consistency of default fonts in all browsers. (https://github.com/sindresorhus/modern-normalize/issues/3)
+2. Correct the odd 'em' font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family:
+		ui-monospace,
+		SFMono-Regular,
+		Consolas,
+		'Liberation Mono',
+		Menlo,
+		monospace;
+  /* 1 */
+  font-size: 1em;
+  /* 2 */
+}
+
+/**
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/**
+Prevent 'sub' and 'sup' elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+Tabular data
+============
+*/
+
+/**
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+*/
+
+table {
+  text-indent: 0;
+  /* 1 */
+  border-color: inherit;
+  /* 2 */
+}
+
+/*
+Forms
+=====
+*/
+
+/**
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  /* 1 */
+  font-size: 100%;
+  /* 1 */
+  line-height: 1.15;
+  /* 1 */
+  margin: 0;
+  /* 2 */
+}
+
+/**
+Remove the inheritance of text transform in Edge and Firefox.
+1. Remove the inheritance of text transform in Firefox.
+*/
+
+button,
+select {
+  /* 1 */
+  text-transform: none;
+}
+
+/**
+Correct the inability to style clickable types in iOS and Safari.
+*/
+
+button {
+  -webkit-appearance: button;
+}
+
+/**
+Remove the inner border and padding in Firefox.
+*/
+
+/**
+Restore the focus styles unset by the previous rule.
+*/
+
+/**
+Remove the additional ':invalid' styles in Firefox.
+See: https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737
+*/
+
+/**
+Remove the padding so developers are not caught out when they zero out 'fieldset' elements in all browsers.
+*/
+
+legend {
+  padding: 0;
+}
+
+/**
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/**
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+/**
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+/**
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+/**
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to 'inherit' in Safari.
+*/
+
+/*
+Interactive
+===========
+*/
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/**
+ * Manually forked from SUIT CSS Base: https://github.com/suitcss/base
+ * A thin layer on top of normalize.css that provides a starting point more
+ * suitable for web applications.
+ */
+
+/**
+ * Removes the default spacing and border for appropriate elements.
+ */
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+button {
+  background-color: transparent;
+  background-image: none;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+ol,
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/**
+ * Tailwind custom reset styles
+ */
+
+/**
+ * 1. Use the user's configured `sans` font-family (with Tailwind's default
+ *    sans-serif font stack as a fallback) as a sane default.
+ * 2. Use Tailwind's default "normal" line-height so the user isn't forced
+ *    to override it to ensure consistency even when using the default theme.
+ */
+
+html {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  /* 1 */
+  line-height: 1.5;
+  /* 2 */
+}
+
+/**
+ * Inherit font-family and line-height from `html` so users can set them as
+ * a class directly on the `html` element.
+ */
+
+body {
+  font-family: inherit;
+  line-height: inherit;
+}
+
+/**
+ * 1. Prevent padding and border from affecting element width.
+ *
+ *    We used to set this in the html element and inherit from
+ *    the parent element for everything else. This caused issues
+ *    in shadow-dom-enhanced elements like <details> where the content
+ *    is wrapped by a div with box-sizing set to `content-box`.
+ *
+ *    https://github.com/mozdevs/cssremedy/issues/4
+ *
+ *
+ * 2. Allow adding a border to an element by just adding a border-width.
+ *
+ *    By default, the way the browser specifies that an element should have no
+ *    border is by setting it's border-style to `none` in the user-agent
+ *    stylesheet.
+ *
+ *    In order to easily add borders to elements by just setting the `border-width`
+ *    property, we change the default border-style for all elements to `solid`, and
+ *    use border-width to hide them instead. This way our `border` utilities only
+ *    need to set the `border-width` property instead of the entire `border`
+ *    shorthand, making our border utilities much more straightforward to compose.
+ *
+ *    https://github.com/tailwindcss/tailwindcss/pull/116
+ */
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  /* 1 */
+  border-width: 0;
+  /* 2 */
+  border-style: solid;
+  /* 2 */
+  border-color: currentColor;
+  /* 2 */
+}
+
+/*
+ * Ensure horizontal rules are visible by default
+ */
+
+hr {
+  border-top-width: 1px;
+}
+
+/**
+ * Undo the `border-style: none` reset that Normalize applies to images so that
+ * our `border-{width}` utilities have the expected effect.
+ *
+ * The Normalize reset is unnecessary for us since we default the border-width
+ * to 0 on all elements.
+ *
+ * https://github.com/tailwindcss/tailwindcss/issues/362
+ */
+
+img {
+  border-style: solid;
+}
+
+textarea {
+  resize: vertical;
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1;
+  color: #a8a29e;
+}
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/**
+ * Reset links to optimize for opt-in styling instead of
+ * opt-out.
+ */
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/**
+ * Reset form element properties that are easy to forget to
+ * style explicitly so you don't inadvertently introduce
+ * styles that deviate from your design system. These styles
+ * supplement a partial reset that is already applied by
+ * normalize.css.
+ */
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  padding: 0;
+  line-height: inherit;
+  color: inherit;
+}
+
+/**
+ * Use the configured 'mono' font family for elements that
+ * are expected to be rendered with a monospace font, falling
+ * back to the system monospace stack if there is no configured
+ * 'mono' font family.
+ */
+
+pre,
+code,
+kbd,
+samp {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+/**
+ * 1. Make replaced elements `display: block` by default as that's
+ *    the behavior you want almost all of the time. Inspired by
+ *    CSS Remedy, with `svg` added as well.
+ *
+ *    https://github.com/mozdevs/cssremedy/issues/14
+ * 
+ * 2. Add `vertical-align: middle` to align replaced elements more
+ *    sensibly by default when overriding `display` by adding a
+ *    utility like `inline`.
+ *
+ *    This can trigger a poorly considered linting error in some
+ *    tools but is included by design.
+ * 
+ *    https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210
+ */
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block;
+  /* 1 */
+  vertical-align: middle;
+  /* 2 */
+}
+
+/**
+ * Constrain images and videos to the parent width and preserve
+ * their intrinsic aspect ratio.
+ *
+ * https://github.com/mozdevs/cssremedy/issues/14
+ */
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+*, ::before, ::after {
+  --tw-border-opacity: 1;
+  border-color: rgba(231, 229, 228, var(--tw-border-opacity));
+}
+
+html {
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+body {
+  font-family: 'Source Sans Pro', system-ui, -apple-system, 'Segoe UI', Roboto,
+      Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+}
+
+body :lang(ja) {
+  font-family: source-han-sans-japanese, system-ui, -apple-system, 'Segoe UI',
+      Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji',
+      'Segoe UI Emoji';
+  font-size: 85%;
+}
+
+aside {
+  margin-left: -2rem;
+  margin-right: -2rem;
+  border-radius: 0.75rem;
+  --tw-bg-opacity: 1;
+  background-color: rgba(41, 37, 36, var(--tw-bg-opacity));
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.prose {
+  color: white;
+  max-width: 65ch;
+}
+
+.prose a {
+  color: #ddd8d7;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.prose a:hover {
+  color: #2699fa;
+}
+
+.prose strong {
+  color: #1c1917;
+  font-weight: 600;
+}
+
+.prose ol > li {
+  position: relative;
+  padding-left: 1.75em;
+}
+
+.prose ol > li::before {
+  content: counter(list-item, var(--list-counter-style, decimal)) ".";
+  position: absolute;
+  font-weight: 400;
+  color: #78716c;
+  left: 0;
+}
+
+.prose ul > li {
+  position: relative;
+  padding-left: 1.75em;
+}
+
+.prose ul > li::before {
+  content: "";
+  position: absolute;
+  background-color: #d6d3d1;
+  border-radius: 50%;
+  width: 0.375em;
+  height: 0.375em;
+  top: calc(0.875em - 0.1875em);
+  left: 0.25em;
+}
+
+.prose hr {
+  border-color: #e7e5e4;
+  border-top-width: 1px;
+  margin-top: 3em;
+  margin-bottom: 3em;
+}
+
+.prose blockquote {
+  font-weight: 500;
+  font-style: italic;
+  color: #1c1917;
+  border-left-width: 0.25rem;
+  border-left-color: #e7e5e4;
+  quotes: "\201C""\201D""\2018""\2019";
+  margin-top: 1.6em;
+  margin-bottom: 1.6em;
+  padding-left: 1em;
+}
+
+.prose blockquote p:first-of-type::before {
+  content: open-quote;
+}
+
+.prose blockquote p:last-of-type::after {
+  content: close-quote;
+}
+
+.prose h1 {
+  color: white;
+  font-weight: 800;
+  font-size: 2.25em;
+  margin-top: 0;
+  margin-bottom: 0.8888889em;
+  line-height: 1.1111111;
+}
+
+.prose h2 {
+  color: #2699fa;
+  font-weight: 700;
+  font-size: 1.5em;
+  margin-top: 2em;
+  margin-bottom: 1em;
+  line-height: 1.3333333;
+}
+
+.prose h3 {
+  color: white;
+  font-weight: 600;
+  font-size: 1.25em;
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+  line-height: 1.6;
+}
+
+.prose h4 {
+  color: white;
+  font-weight: 600;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.5;
+}
+
+.prose figure figcaption {
+  color: #b9b4b3;
+  font-size: 0.875em;
+  line-height: 1.4285714;
+  margin-top: 0.8571429em;
+}
+
+.prose code {
+  color: #1c1917;
+  font-weight: 600;
+  font-size: 0.875em;
+}
+
+.prose code::before {
+  content: "`";
+}
+
+.prose code::after {
+  content: "`";
+}
+
+.prose a code {
+  color: #1c1917;
+}
+
+.prose pre {
+  color: #e7e5e4;
+  background-color: #292524;
+  overflow-x: auto;
+  font-size: 0.875em;
+  line-height: 1.7142857;
+  margin-top: 1.7142857em;
+  margin-bottom: 1.7142857em;
+  border-radius: 0.375rem;
+  padding-top: 0.8571429em;
+  padding-right: 1.1428571em;
+  padding-bottom: 0.8571429em;
+  padding-left: 1.1428571em;
+}
+
+.prose pre code {
+  background-color: transparent;
+  border-width: 0;
+  border-radius: 0;
+  padding: 0;
+  font-weight: 400;
+  color: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+}
+
+.prose pre code::before {
+  content: none;
+}
+
+.prose pre code::after {
+  content: none;
+}
+
+.prose table {
+  width: 100%;
+  table-layout: auto;
+  text-align: left;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  font-size: 0.875em;
+  line-height: 1.7142857;
+}
+
+.prose thead {
+  color: #1c1917;
+  font-weight: 600;
+  border-bottom-width: 1px;
+  border-bottom-color: #d6d3d1;
+}
+
+.prose thead th {
+  vertical-align: bottom;
+  padding-right: 0.5714286em;
+  padding-bottom: 0.5714286em;
+  padding-left: 0.5714286em;
+}
+
+.prose tbody tr {
+  border-bottom-width: 1px;
+  border-bottom-color: #e7e5e4;
+}
+
+.prose tbody tr:last-child {
+  border-bottom-width: 0;
+}
+
+.prose tbody td {
+  vertical-align: top;
+  padding-top: 0.5714286em;
+  padding-right: 0.5714286em;
+  padding-bottom: 0.5714286em;
+  padding-left: 0.5714286em;
+}
+
+.prose {
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.prose p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.prose img {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+.prose video {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+.prose figure {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+.prose figure > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.prose h2 code {
+  font-size: 0.875em;
+}
+
+.prose h3 code {
+  font-size: 0.9em;
+}
+
+.prose ol {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.prose ul {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.prose li {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose > ul > li p {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+}
+
+.prose > ul > li > *:first-child {
+  margin-top: 1.25em;
+}
+
+.prose > ul > li > *:last-child {
+  margin-bottom: 1.25em;
+}
+
+.prose > ol > li > *:first-child {
+  margin-top: 1.25em;
+}
+
+.prose > ol > li > *:last-child {
+  margin-bottom: 1.25em;
+}
+
+.prose ul ul, .prose ul ol, .prose ol ul, .prose ol ol {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+}
+
+.prose hr + * {
+  margin-top: 0;
+}
+
+.prose h2 + * {
+  margin-top: 0;
+}
+
+.prose h3 + * {
+  margin-top: 0;
+}
+
+.prose h4 + * {
+  margin-top: 0;
+}
+
+.prose thead th:first-child {
+  padding-left: 0;
+}
+
+.prose thead th:last-child {
+  padding-right: 0;
+}
+
+.prose tbody td:first-child {
+  padding-left: 0;
+}
+
+.prose tbody td:last-child {
+  padding-right: 0;
+}
+
+.prose > :first-child {
+  margin-top: 0;
+}
+
+.prose > :last-child {
+  margin-bottom: 0;
+}
+
+.prose figure > a > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.prose aside {
+  font-size: 0.9rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.prose aside h3 {
+  margin-top: 0;
+}
+
+.prose aside h4 {
+  margin-top: 0;
+}
+
+.prose aside *:last-child {
+  margin-bottom: 0;
+}
+
+.prose-sm {
+  font-size: 0.875rem;
+  line-height: 1.7142857;
+}
+
+.prose-sm p {
+  margin-top: 1.1428571em;
+  margin-bottom: 1.1428571em;
+}
+
+.prose-sm blockquote {
+  margin-top: 1.3333333em;
+  margin-bottom: 1.3333333em;
+  padding-left: 1.1111111em;
+}
+
+.prose-sm h1 {
+  font-size: 2.1428571em;
+  margin-top: 0;
+  margin-bottom: 0.8em;
+  line-height: 1.2;
+}
+
+.prose-sm h2 {
+  font-size: 1.4285714em;
+  margin-top: 1.6em;
+  margin-bottom: 0.8em;
+  line-height: 1.4;
+}
+
+.prose-sm h3 {
+  font-size: 1.2857143em;
+  margin-top: 1.5555556em;
+  margin-bottom: 0.4444444em;
+  line-height: 1.5555556;
+}
+
+.prose-sm h4 {
+  margin-top: 1.4285714em;
+  margin-bottom: 0.5714286em;
+  line-height: 1.4285714;
+}
+
+.prose-sm img {
+  margin-top: 1.7142857em;
+  margin-bottom: 1.7142857em;
+}
+
+.prose-sm video {
+  margin-top: 1.7142857em;
+  margin-bottom: 1.7142857em;
+}
+
+.prose-sm figure {
+  margin-top: 1.7142857em;
+  margin-bottom: 1.7142857em;
+}
+
+.prose-sm figure > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.prose-sm figure figcaption {
+  font-size: 0.8571429em;
+  line-height: 1.3333333;
+  margin-top: 0.6666667em;
+}
+
+.prose-sm code {
+  font-size: 0.8571429em;
+}
+
+.prose-sm h2 code {
+  font-size: 0.9em;
+}
+
+.prose-sm h3 code {
+  font-size: 0.8888889em;
+}
+
+.prose-sm pre {
+  font-size: 0.8571429em;
+  line-height: 1.6666667;
+  margin-top: 1.6666667em;
+  margin-bottom: 1.6666667em;
+  border-radius: 0.25rem;
+  padding-top: 0.6666667em;
+  padding-right: 1em;
+  padding-bottom: 0.6666667em;
+  padding-left: 1em;
+}
+
+.prose-sm ol {
+  margin-top: 1.1428571em;
+  margin-bottom: 1.1428571em;
+}
+
+.prose-sm ul {
+  margin-top: 1.1428571em;
+  margin-bottom: 1.1428571em;
+}
+
+.prose-sm li {
+  margin-top: 0.2857143em;
+  margin-bottom: 0.2857143em;
+}
+
+.prose-sm ol > li {
+  padding-left: 1.5714286em;
+}
+
+.prose-sm ol > li::before {
+  left: 0;
+}
+
+.prose-sm ul > li {
+  padding-left: 1.5714286em;
+}
+
+.prose-sm ul > li::before {
+  height: 0.3571429em;
+  width: 0.3571429em;
+  top: calc(0.8571429em - 0.1785714em);
+  left: 0.2142857em;
+}
+
+.prose-sm > ul > li p {
+  margin-top: 0.5714286em;
+  margin-bottom: 0.5714286em;
+}
+
+.prose-sm > ul > li > *:first-child {
+  margin-top: 1.1428571em;
+}
+
+.prose-sm > ul > li > *:last-child {
+  margin-bottom: 1.1428571em;
+}
+
+.prose-sm > ol > li > *:first-child {
+  margin-top: 1.1428571em;
+}
+
+.prose-sm > ol > li > *:last-child {
+  margin-bottom: 1.1428571em;
+}
+
+.prose-sm ul ul, .prose-sm ul ol, .prose-sm ol ul, .prose-sm ol ol {
+  margin-top: 0.5714286em;
+  margin-bottom: 0.5714286em;
+}
+
+.prose-sm hr {
+  margin-top: 2.8571429em;
+  margin-bottom: 2.8571429em;
+}
+
+.prose-sm hr + * {
+  margin-top: 0;
+}
+
+.prose-sm h2 + * {
+  margin-top: 0;
+}
+
+.prose-sm h3 + * {
+  margin-top: 0;
+}
+
+.prose-sm h4 + * {
+  margin-top: 0;
+}
+
+.prose-sm table {
+  font-size: 0.8571429em;
+  line-height: 1.5;
+}
+
+.prose-sm thead th {
+  padding-right: 1em;
+  padding-bottom: 0.6666667em;
+  padding-left: 1em;
+}
+
+.prose-sm thead th:first-child {
+  padding-left: 0;
+}
+
+.prose-sm thead th:last-child {
+  padding-right: 0;
+}
+
+.prose-sm tbody td {
+  padding-top: 0.6666667em;
+  padding-right: 1em;
+  padding-bottom: 0.6666667em;
+  padding-left: 1em;
+}
+
+.prose-sm tbody td:first-child {
+  padding-left: 0;
+}
+
+.prose-sm tbody td:last-child {
+  padding-right: 0;
+}
+
+.prose-sm > :first-child {
+  margin-top: 0;
+}
+
+.prose-sm > :last-child {
+  margin-bottom: 0;
+}
+
+.prose-sm aside {
+  font-size: 0.8rem;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mt-8 {
+  margin-top: 2rem;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mb-8 {
+  margin-bottom: 2rem;
+}
+
+.box-content {
+  box-sizing: content-box;
+}
+
+.block {
+  display: block;
+}
+
+.flex {
+  display: flex;
+}
+
+.table {
+  display: table;
+}
+
+.h-8 {
+  height: 2rem;
+}
+
+.w-8 {
+  width: 2rem;
+}
+
+.w-3\/5 {
+  width: 60%;
+}
+
+.max-w-3xl {
+  max-width: 48rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: .5;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8,0,1,1);
+  }
+
+  50% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0,0,0.2,1);
+  }
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.bg-ink-black {
+  --tw-bg-opacity: 1;
+  background-color: rgba(29, 26, 25, var(--tw-bg-opacity));
+}
+
+.p-2 {
+  padding: 0.5rem;
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-white {
+  --tw-text-opacity: 1;
+  color: rgba(255, 255, 255, var(--tw-text-opacity));
+}
+
+*, ::before, ::after {
+  --tw-shadow: 0 0 #0000;
+}
+
+*, ::before, ::after {
+  --tw-ring-inset: var(--tw-empty,/*!*/ /*!*/);
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+}
+
+@media (min-width: 640px) {
+  .sm\:prose {
+    color: white;
+    max-width: 65ch;
+  }
+
+  .sm\:prose a {
+    color: #ddd8d7;
+    text-decoration: underline;
+    font-weight: 500;
+  }
+
+  .sm\:prose a:hover {
+    color: #2699fa;
+  }
+
+  .sm\:prose strong {
+    color: #1c1917;
+    font-weight: 600;
+  }
+
+  .sm\:prose ol > li {
+    position: relative;
+    padding-left: 1.75em;
+  }
+
+  .sm\:prose ol > li::before {
+    content: counter(list-item, var(--list-counter-style, decimal)) ".";
+    position: absolute;
+    font-weight: 400;
+    color: #78716c;
+    left: 0;
+  }
+
+  .sm\:prose ul > li {
+    position: relative;
+    padding-left: 1.75em;
+  }
+
+  .sm\:prose ul > li::before {
+    content: "";
+    position: absolute;
+    background-color: #d6d3d1;
+    border-radius: 50%;
+    width: 0.375em;
+    height: 0.375em;
+    top: calc(0.875em - 0.1875em);
+    left: 0.25em;
+  }
+
+  .sm\:prose hr {
+    border-color: #e7e5e4;
+    border-top-width: 1px;
+    margin-top: 3em;
+    margin-bottom: 3em;
+  }
+
+  .sm\:prose blockquote {
+    font-weight: 500;
+    font-style: italic;
+    color: #1c1917;
+    border-left-width: 0.25rem;
+    border-left-color: #e7e5e4;
+    quotes: "\201C""\201D""\2018""\2019";
+    margin-top: 1.6em;
+    margin-bottom: 1.6em;
+    padding-left: 1em;
+  }
+
+  .sm\:prose blockquote p:first-of-type::before {
+    content: open-quote;
+  }
+
+  .sm\:prose blockquote p:last-of-type::after {
+    content: close-quote;
+  }
+
+  .sm\:prose h1 {
+    color: white;
+    font-weight: 800;
+    font-size: 2.25em;
+    margin-top: 0;
+    margin-bottom: 0.8888889em;
+    line-height: 1.1111111;
+  }
+
+  .sm\:prose h2 {
+    color: #2699fa;
+    font-weight: 700;
+    font-size: 1.5em;
+    margin-top: 2em;
+    margin-bottom: 1em;
+    line-height: 1.3333333;
+  }
+
+  .sm\:prose h3 {
+    color: white;
+    font-weight: 600;
+    font-size: 1.25em;
+    margin-top: 1.6em;
+    margin-bottom: 0.6em;
+    line-height: 1.6;
+  }
+
+  .sm\:prose h4 {
+    color: white;
+    font-weight: 600;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    line-height: 1.5;
+  }
+
+  .sm\:prose figure figcaption {
+    color: #b9b4b3;
+    font-size: 0.875em;
+    line-height: 1.4285714;
+    margin-top: 0.8571429em;
+  }
+
+  .sm\:prose code {
+    color: #1c1917;
+    font-weight: 600;
+    font-size: 0.875em;
+  }
+
+  .sm\:prose code::before {
+    content: "`";
+  }
+
+  .sm\:prose code::after {
+    content: "`";
+  }
+
+  .sm\:prose a code {
+    color: #1c1917;
+  }
+
+  .sm\:prose pre {
+    color: #e7e5e4;
+    background-color: #292524;
+    overflow-x: auto;
+    font-size: 0.875em;
+    line-height: 1.7142857;
+    margin-top: 1.7142857em;
+    margin-bottom: 1.7142857em;
+    border-radius: 0.375rem;
+    padding-top: 0.8571429em;
+    padding-right: 1.1428571em;
+    padding-bottom: 0.8571429em;
+    padding-left: 1.1428571em;
+  }
+
+  .sm\:prose pre code {
+    background-color: transparent;
+    border-width: 0;
+    border-radius: 0;
+    padding: 0;
+    font-weight: 400;
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    line-height: inherit;
+  }
+
+  .sm\:prose pre code::before {
+    content: none;
+  }
+
+  .sm\:prose pre code::after {
+    content: none;
+  }
+
+  .sm\:prose table {
+    width: 100%;
+    table-layout: auto;
+    text-align: left;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    font-size: 0.875em;
+    line-height: 1.7142857;
+  }
+
+  .sm\:prose thead {
+    color: #1c1917;
+    font-weight: 600;
+    border-bottom-width: 1px;
+    border-bottom-color: #d6d3d1;
+  }
+
+  .sm\:prose thead th {
+    vertical-align: bottom;
+    padding-right: 0.5714286em;
+    padding-bottom: 0.5714286em;
+    padding-left: 0.5714286em;
+  }
+
+  .sm\:prose tbody tr {
+    border-bottom-width: 1px;
+    border-bottom-color: #e7e5e4;
+  }
+
+  .sm\:prose tbody tr:last-child {
+    border-bottom-width: 0;
+  }
+
+  .sm\:prose tbody td {
+    vertical-align: top;
+    padding-top: 0.5714286em;
+    padding-right: 0.5714286em;
+    padding-bottom: 0.5714286em;
+    padding-left: 0.5714286em;
+  }
+
+  .sm\:prose {
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .sm\:prose p {
+    margin-top: 1.25em;
+    margin-bottom: 1.25em;
+  }
+
+  .sm\:prose img {
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
+
+  .sm\:prose video {
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
+
+  .sm\:prose figure {
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
+
+  .sm\:prose figure > * {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .sm\:prose h2 code {
+    font-size: 0.875em;
+  }
+
+  .sm\:prose h3 code {
+    font-size: 0.9em;
+  }
+
+  .sm\:prose ol {
+    margin-top: 1.25em;
+    margin-bottom: 1.25em;
+  }
+
+  .sm\:prose ul {
+    margin-top: 1.25em;
+    margin-bottom: 1.25em;
+  }
+
+  .sm\:prose li {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+
+  .sm\:prose > ul > li p {
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+  }
+
+  .sm\:prose > ul > li > *:first-child {
+    margin-top: 1.25em;
+  }
+
+  .sm\:prose > ul > li > *:last-child {
+    margin-bottom: 1.25em;
+  }
+
+  .sm\:prose > ol > li > *:first-child {
+    margin-top: 1.25em;
+  }
+
+  .sm\:prose > ol > li > *:last-child {
+    margin-bottom: 1.25em;
+  }
+
+  .sm\:prose ul ul, .sm\:prose ul ol, .sm\:prose ol ul, .sm\:prose ol ol {
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+  }
+
+  .sm\:prose hr + * {
+    margin-top: 0;
+  }
+
+  .sm\:prose h2 + * {
+    margin-top: 0;
+  }
+
+  .sm\:prose h3 + * {
+    margin-top: 0;
+  }
+
+  .sm\:prose h4 + * {
+    margin-top: 0;
+  }
+
+  .sm\:prose thead th:first-child {
+    padding-left: 0;
+  }
+
+  .sm\:prose thead th:last-child {
+    padding-right: 0;
+  }
+
+  .sm\:prose tbody td:first-child {
+    padding-left: 0;
+  }
+
+  .sm\:prose tbody td:last-child {
+    padding-right: 0;
+  }
+
+  .sm\:prose > :first-child {
+    margin-top: 0;
+  }
+
+  .sm\:prose > :last-child {
+    margin-bottom: 0;
+  }
+
+  .sm\:prose figure > a > * {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .sm\:prose aside {
+    font-size: 0.9rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .sm\:prose aside h3 {
+    margin-top: 0;
+  }
+
+  .sm\:prose aside h4 {
+    margin-top: 0;
+  }
+
+  .sm\:prose aside *:last-child {
+    margin-bottom: 0;
+  }
+
+  .sm\:mb-16 {
+    margin-bottom: 4rem;
+  }
+
+  .sm\:w-2\/5 {
+    width: 40%;
+  }
+
+  .sm\:whitespace-nowrap {
+    white-space: nowrap;
+  }
+
+  .sm\:px-6 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+}
+
+@media (min-width: 1024px) {
+  .lg\:prose-lg {
+    font-size: 1.125rem;
+    line-height: 1.7777778;
+  }
+
+  .lg\:prose-lg p {
+    margin-top: 1.3333333em;
+    margin-bottom: 1.3333333em;
+  }
+
+  .lg\:prose-lg blockquote {
+    margin-top: 1.6666667em;
+    margin-bottom: 1.6666667em;
+    padding-left: 1em;
+  }
+
+  .lg\:prose-lg h1 {
+    font-size: 2.6666667em;
+    margin-top: 0;
+    margin-bottom: 0.8333333em;
+    line-height: 1;
+  }
+
+  .lg\:prose-lg h2 {
+    font-size: 1.6666667em;
+    margin-top: 1.8666667em;
+    margin-bottom: 1.0666667em;
+    line-height: 1.3333333;
+  }
+
+  .lg\:prose-lg h3 {
+    font-size: 1.3333333em;
+    margin-top: 1.6666667em;
+    margin-bottom: 0.6666667em;
+    line-height: 1.5;
+  }
+
+  .lg\:prose-lg h4 {
+    margin-top: 1.7777778em;
+    margin-bottom: 0.4444444em;
+    line-height: 1.5555556;
+  }
+
+  .lg\:prose-lg img {
+    margin-top: 1.7777778em;
+    margin-bottom: 1.7777778em;
+  }
+
+  .lg\:prose-lg video {
+    margin-top: 1.7777778em;
+    margin-bottom: 1.7777778em;
+  }
+
+  .lg\:prose-lg figure {
+    margin-top: 1.7777778em;
+    margin-bottom: 1.7777778em;
+  }
+
+  .lg\:prose-lg figure > * {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .lg\:prose-lg figure figcaption {
+    font-size: 0.8888889em;
+    line-height: 1.5;
+    margin-top: 1em;
+  }
+
+  .lg\:prose-lg code {
+    font-size: 0.8888889em;
+  }
+
+  .lg\:prose-lg h2 code {
+    font-size: 0.8666667em;
+  }
+
+  .lg\:prose-lg h3 code {
+    font-size: 0.875em;
+  }
+
+  .lg\:prose-lg pre {
+    font-size: 0.8888889em;
+    line-height: 1.75;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    border-radius: 0.375rem;
+    padding-top: 1em;
+    padding-right: 1.5em;
+    padding-bottom: 1em;
+    padding-left: 1.5em;
+  }
+
+  .lg\:prose-lg ol {
+    margin-top: 1.3333333em;
+    margin-bottom: 1.3333333em;
+  }
+
+  .lg\:prose-lg ul {
+    margin-top: 1.3333333em;
+    margin-bottom: 1.3333333em;
+  }
+
+  .lg\:prose-lg li {
+    margin-top: 0.6666667em;
+    margin-bottom: 0.6666667em;
+  }
+
+  .lg\:prose-lg ol > li {
+    padding-left: 1.6666667em;
+  }
+
+  .lg\:prose-lg ol > li::before {
+    left: 0;
+  }
+
+  .lg\:prose-lg ul > li {
+    padding-left: 1.6666667em;
+  }
+
+  .lg\:prose-lg ul > li::before {
+    width: 0.3333333em;
+    height: 0.3333333em;
+    top: calc(0.8888889em - 0.1666667em);
+    left: 0.2222222em;
+  }
+
+  .lg\:prose-lg > ul > li p {
+    margin-top: 0.8888889em;
+    margin-bottom: 0.8888889em;
+  }
+
+  .lg\:prose-lg > ul > li > *:first-child {
+    margin-top: 1.3333333em;
+  }
+
+  .lg\:prose-lg > ul > li > *:last-child {
+    margin-bottom: 1.3333333em;
+  }
+
+  .lg\:prose-lg > ol > li > *:first-child {
+    margin-top: 1.3333333em;
+  }
+
+  .lg\:prose-lg > ol > li > *:last-child {
+    margin-bottom: 1.3333333em;
+  }
+
+  .lg\:prose-lg ul ul, .lg\:prose-lg ul ol, .lg\:prose-lg ol ul, .lg\:prose-lg ol ol {
+    margin-top: 0.8888889em;
+    margin-bottom: 0.8888889em;
+  }
+
+  .lg\:prose-lg hr {
+    margin-top: 3.1111111em;
+    margin-bottom: 3.1111111em;
+  }
+
+  .lg\:prose-lg hr + * {
+    margin-top: 0;
+  }
+
+  .lg\:prose-lg h2 + * {
+    margin-top: 0;
+  }
+
+  .lg\:prose-lg h3 + * {
+    margin-top: 0;
+  }
+
+  .lg\:prose-lg h4 + * {
+    margin-top: 0;
+  }
+
+  .lg\:prose-lg table {
+    font-size: 0.8888889em;
+    line-height: 1.5;
+  }
+
+  .lg\:prose-lg thead th {
+    padding-right: 0.75em;
+    padding-bottom: 0.75em;
+    padding-left: 0.75em;
+  }
+
+  .lg\:prose-lg thead th:first-child {
+    padding-left: 0;
+  }
+
+  .lg\:prose-lg thead th:last-child {
+    padding-right: 0;
+  }
+
+  .lg\:prose-lg tbody td {
+    padding-top: 0.75em;
+    padding-right: 0.75em;
+    padding-bottom: 0.75em;
+    padding-left: 0.75em;
+  }
+
+  .lg\:prose-lg tbody td:first-child {
+    padding-left: 0;
+  }
+
+  .lg\:prose-lg tbody td:last-child {
+    padding-right: 0;
+  }
+
+  .lg\:prose-lg > :first-child {
+    margin-top: 0;
+  }
+
+  .lg\:prose-lg > :last-child {
+    margin-bottom: 0;
+  }
+
+  .lg\:prose-lg aside {
+    font-size: 1.1rem;
+    padding-top: 1.1em;
+    padding-bottom: 1.1em;
+  }
+
+  .lg\:prose-lg aside h3 {
+    font-size: 1.2em;
+  }
+
+  .lg\:mt-16 {
+    margin-top: 4rem;
+  }
+
+  .lg\:mb-4 {
+    margin-bottom: 1rem;
+  }
+
+  .lg\:mb-8 {
+    margin-bottom: 2rem;
+  }
+
+  .lg\:h-12 {
+    height: 3rem;
+  }
+
+  .lg\:w-12 {
+    width: 3rem;
+  }
+
+  .lg\:max-w-4xl {
+    max-width: 56rem;
+  }
+
+  .lg\:p-3 {
+    padding: 0.75rem;
+  }
+
+  .lg\:px-8 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .lg\:text-4xl {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .xl\:prose-2xl {
+    font-size: 1.5rem;
+    line-height: 1.6666667;
+  }
+
+  .xl\:prose-2xl p {
+    margin-top: 1.3333333em;
+    margin-bottom: 1.3333333em;
+  }
+
+  .xl\:prose-2xl blockquote {
+    margin-top: 1.7777778em;
+    margin-bottom: 1.7777778em;
+    padding-left: 1.1111111em;
+  }
+
+  .xl\:prose-2xl h1 {
+    font-size: 2.6666667em;
+    margin-top: 0;
+    margin-bottom: 0.875em;
+    line-height: 1;
+  }
+
+  .xl\:prose-2xl h2 {
+    font-size: 2em;
+    margin-top: 1.5em;
+    margin-bottom: 0.8333333em;
+    line-height: 1.0833333;
+  }
+
+  .xl\:prose-2xl h3 {
+    font-size: 1.5em;
+    margin-top: 1.5555556em;
+    margin-bottom: 0.6666667em;
+    line-height: 1.2222222;
+  }
+
+  .xl\:prose-2xl h4 {
+    margin-top: 1.6666667em;
+    margin-bottom: 0.6666667em;
+    line-height: 1.5;
+  }
+
+  .xl\:prose-2xl img {
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
+
+  .xl\:prose-2xl video {
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
+
+  .xl\:prose-2xl figure {
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
+
+  .xl\:prose-2xl figure > * {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .xl\:prose-2xl figure figcaption {
+    font-size: 0.8333333em;
+    line-height: 1.6;
+    margin-top: 1em;
+  }
+
+  .xl\:prose-2xl code {
+    font-size: 0.8333333em;
+  }
+
+  .xl\:prose-2xl h2 code {
+    font-size: 0.875em;
+  }
+
+  .xl\:prose-2xl h3 code {
+    font-size: 0.8888889em;
+  }
+
+  .xl\:prose-2xl pre {
+    font-size: 0.8333333em;
+    line-height: 1.8;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    border-radius: 0.5rem;
+    padding-top: 1.2em;
+    padding-right: 1.6em;
+    padding-bottom: 1.2em;
+    padding-left: 1.6em;
+  }
+
+  .xl\:prose-2xl ol {
+    margin-top: 1.3333333em;
+    margin-bottom: 1.3333333em;
+  }
+
+  .xl\:prose-2xl ul {
+    margin-top: 1.3333333em;
+    margin-bottom: 1.3333333em;
+  }
+
+  .xl\:prose-2xl li {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+
+  .xl\:prose-2xl ol > li {
+    padding-left: 1.6666667em;
+  }
+
+  .xl\:prose-2xl ol > li::before {
+    left: 0;
+  }
+
+  .xl\:prose-2xl ul > li {
+    padding-left: 1.6666667em;
+  }
+
+  .xl\:prose-2xl ul > li::before {
+    width: 0.3333333em;
+    height: 0.3333333em;
+    top: calc(0.8333333em - 0.1666667em);
+    left: 0.25em;
+  }
+
+  .xl\:prose-2xl > ul > li p {
+    margin-top: 0.8333333em;
+    margin-bottom: 0.8333333em;
+  }
+
+  .xl\:prose-2xl > ul > li > *:first-child {
+    margin-top: 1.3333333em;
+  }
+
+  .xl\:prose-2xl > ul > li > *:last-child {
+    margin-bottom: 1.3333333em;
+  }
+
+  .xl\:prose-2xl > ol > li > *:first-child {
+    margin-top: 1.3333333em;
+  }
+
+  .xl\:prose-2xl > ol > li > *:last-child {
+    margin-bottom: 1.3333333em;
+  }
+
+  .xl\:prose-2xl ul ul, .xl\:prose-2xl ul ol, .xl\:prose-2xl ol ul, .xl\:prose-2xl ol ol {
+    margin-top: 0.6666667em;
+    margin-bottom: 0.6666667em;
+  }
+
+  .xl\:prose-2xl hr {
+    margin-top: 3em;
+    margin-bottom: 3em;
+  }
+
+  .xl\:prose-2xl hr + * {
+    margin-top: 0;
+  }
+
+  .xl\:prose-2xl h2 + * {
+    margin-top: 0;
+  }
+
+  .xl\:prose-2xl h3 + * {
+    margin-top: 0;
+  }
+
+  .xl\:prose-2xl h4 + * {
+    margin-top: 0;
+  }
+
+  .xl\:prose-2xl table {
+    font-size: 0.8333333em;
+    line-height: 1.4;
+  }
+
+  .xl\:prose-2xl thead th {
+    padding-right: 0.6em;
+    padding-bottom: 0.8em;
+    padding-left: 0.6em;
+  }
+
+  .xl\:prose-2xl thead th:first-child {
+    padding-left: 0;
+  }
+
+  .xl\:prose-2xl thead th:last-child {
+    padding-right: 0;
+  }
+
+  .xl\:prose-2xl tbody td {
+    padding-top: 0.8em;
+    padding-right: 0.6em;
+    padding-bottom: 0.8em;
+    padding-left: 0.6em;
+  }
+
+  .xl\:prose-2xl tbody td:first-child {
+    padding-left: 0;
+  }
+
+  .xl\:prose-2xl tbody td:last-child {
+    padding-right: 0;
+  }
+
+  .xl\:prose-2xl > :first-child {
+    margin-top: 0;
+  }
+
+  .xl\:prose-2xl > :last-child {
+    margin-bottom: 0;
+  }
+
+  .xl\:prose-2xl aside {
+    font-size: 1.25rem;
+    padding-top: 1.3em;
+    padding-bottom: 1.3em;
+  }
+
+  .xl\:prose-2xl aside h3 {
+    font-size: 1.33em;
+  }
+
+  .xl\:prose-2xl aside h4 {
+    font-size: 1.2em;
+  }
+
+  .xl\:mt-16 {
+    margin-top: 4rem;
+  }
+
+  .xl\:mb-32 {
+    margin-bottom: 8rem;
+  }
+
+  .xl\:max-w-6xl {
+    max-width: 72rem;
+  }
+}
+
+@media (min-width: 1536px) {
+}

@@ -516,7 +516,7 @@ browser.runtime.onMessage.addListener(
   }
 );
 
-browser.runtime.onInstalled.addListener(async () => {
+browser.runtime.onInstalled.addListener(async (details) => {
   // Request persistent storage permission
   if (navigator.storage) {
     let persisted = await navigator.storage.persisted();
@@ -532,6 +532,20 @@ browser.runtime.onInstalled.addListener(async () => {
 
   Bugsnag.leaveBreadcrumb('Running initJpDict from onInstalled...');
   initJpDict();
+
+  if (details.reason === 'update' && details.previousVersion) {
+    Bugsnag.leaveBreadcrumb(
+      `Updated from version ${details.previousVersion} to ${
+        browser.runtime.getManifest().version
+      }`
+    );
+
+    // Show update page when updating from Rikaichamp
+    if (details.previousVersion.startsWith('0') && !details.temporary) {
+      const url = browser.runtime.getURL('docs/from-0.x.html');
+      await browser.tabs.create({ url });
+    }
+  }
 });
 
 browser.runtime.onStartup.addListener(() => {

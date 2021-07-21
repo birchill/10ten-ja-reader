@@ -329,6 +329,11 @@ function buildExtConfig({
     supportsSvgIcons ? 'images/*.svg' : 'images/*',
     'data/*',
     '_locales/**/*',
+    // Update page assets
+    { from: 'docs/update/update.css', to: 'docs' },
+    { from: '*.html', context: 'docs/update', to: 'docs' },
+    { from: '*.png', context: 'docs/update', to: 'docs' },
+    { from: '*.js', context: 'docs/update', to: 'docs' },
   ];
 
   plugins.push(new CopyWebpackPlugin({ patterns: copyPatterns }));
