@@ -1,7 +1,7 @@
 # 10ten Japanese Reader
 
 ![](https://github.com/birchill/10ten-ja-reader/workflows/Automated%20tests/badge.svg)
-![Twitter Follow](https://img.shields.io/twitter/follow/rikaichamp)
+![Twitter Follow](https://img.shields.io/twitter/follow/10tenstudy)
 
 Hi fellow Japanese reader! Formerly known as Rikaichamp, this browser extension lets you look up Japanese words with the hover of a mouse or tap of a screen.
 
