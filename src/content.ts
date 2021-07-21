@@ -220,6 +220,33 @@ export class ContentHandler {
       return;
     }
 
+    // Safari has an odd bug where it dispatches extra mousemove events
+    // when you press any modifier key (e.g. Shift).
+    //
+    // It goes something like this:
+    //
+    // * Press Shift down
+    // -> mousemove with shiftKey = true
+    // -> keydown with shiftKey = true
+    // * Release Shift key
+    // -> mousemove with shiftKey = false
+    // -> keyup with shiftKey = false
+    //
+    // We really need to ignore the first mousemove event since otherwise it
+    // will completely mess up tab switching when we have the "Shift to show
+    // kanji only" setting in effect.
+    //
+    // For now the best way we know of doing that is to just check if the
+    // position has in fact changed.
+    if (
+      (ev.shiftKey || ev.altKey || ev.metaKey || ev.ctrlKey) &&
+      this.currentPoint &&
+      this.currentPoint.x === ev.clientX &&
+      this.currentPoint.y === ev.clientY
+    ) {
+      return;
+    }
+
     // Check if any required "hold to show keys" are held. We do this before
     // checking throttling since that can be expensive and when this is
     // configured, typically the user will have the extension more-or-less
