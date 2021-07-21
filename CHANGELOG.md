@@ -1,6 +1,7 @@
-## 1.1.2 (Not yet released)
+## 1.1.2 (2021-07-21)
 
 - Fixed translation of "Control" key for "hold to show" keys on Mac.
+- Added a release not about failed updates.
 
 ## 1.1.1 (2021-07-21)
 

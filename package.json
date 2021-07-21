@@ -1,6 +1,6 @@
 {
   "name": "10ten-ja-reader",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Translate Japanese by hovering over words.",
   "scripts": {
     "build:firefox": "webpack",
