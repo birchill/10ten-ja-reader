@@ -71,10 +71,10 @@
         <div class="panel-section panel-section-formElements">
           <div class="panel-section key-grid">
             <div class="key command browser-style">
-              <input type=checkbox id=toggle-macctrl>
-              <label for=toggle-macctrl><span class="key-box">Control</span></label>
               <input type=checkbox id=toggle-alt>
               <label for=toggle-alt><span class="key-box">Alt</span></label>
+              <input type=checkbox id=toggle-macctrl>
+              <label for=toggle-macctrl><span class="key-box">Control</span></label>
               <input type=checkbox id=toggle-ctrl>
               <label for=toggle-ctrl><span class="key-box" data-mac="Command">Ctrl</span></label>
               <input type=checkbox id=toggle-shift>
