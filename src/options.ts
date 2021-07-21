@@ -588,12 +588,25 @@ function translateKeys() {
     return;
   }
 
-  const keyLabels = document.querySelectorAll('.key > label > span');
+  const keyLabels = document.querySelectorAll<HTMLSpanElement>(
+    '.key > label > span'
+  );
   for (const label of keyLabels) {
-    if (label.textContent === 'Ctrl') {
+    // Look for a special key on the label saying what it really is.
+    //
+    // We need to do this because we have an odd situation where the 'commands'
+    // manifest.json property treats 'Ctrl' as 'Command' but in all other cases
+    // where we see 'Ctrl', it should actually be 'Control'.
+    //
+    // So to cover this, we stick data-mac="Command" on any labels that map to
+    // 'commands'.
+    const labelText = label.dataset['mac'] || label.textContent;
+    if (labelText === 'Command') {
       label.textContent = '⌘';
-    } else if (label.textContent === 'Alt') {
-      label.textContent = 'Option';
+    } else if (labelText === 'Ctrl') {
+      label.textContent = 'Control';
+    } else if (labelText === 'Alt') {
+      label.textContent = '⌥';
     }
   }
 }

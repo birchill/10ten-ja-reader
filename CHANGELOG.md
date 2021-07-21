@@ -1,3 +1,7 @@
+## 1.1.2 (Not yet released)
+
+- Fixed translation of "Control" key for "hold to show" keys on Mac.
+
 ## 1.1.1 (2021-07-21)
 
 - Added tabs for showing different dictionary results and made them interactive

@@ -76,7 +76,7 @@
               <input type=checkbox id=toggle-alt>
               <label for=toggle-alt><span class="key-box">Alt</span></label>
               <input type=checkbox id=toggle-ctrl>
-              <label for=toggle-ctrl><span class="key-box">Ctrl</span></label>
+              <label for=toggle-ctrl><span class="key-box" data-mac="Command">Ctrl</span></label>
               <input type=checkbox id=toggle-shift>
               <label for=toggle-shift><span class="key-box">Shift</span></label>
               <input size=1 type=text value=R disabled id=toggle-key class="key-box">
