@@ -83,7 +83,7 @@
     "sinon": "^11.1.1",
     "sinon-chai": "^3.7.0",
     "sinon-chrome": "^3.0.1",
-    "snowpack": "^3.8.2",
+    "snowpack": "^3.8.3",
     "snowpack-plugin-replace": "^1.0.4",
     "stylelint": "^13.13.1",
     "stylelint-config-prettier": "^8.0.2",
