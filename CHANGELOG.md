@@ -1,9 +1,15 @@
-## 1.1.2 (2021-07-21)
+## 1.1.3 (Not yet released)
+
+- Made icons a little more visible in disabled state when using dark mode
+  ([#687](https://github.com/birchill/10ten-ja-reader/discussions/687)).
+- Fixed handling of <kbd>Shift</kbd> on Safari.
+
+## 1.1.2 (2021-07-21) (Firefox)
 
 - Fixed translation of "Control" key for "hold to show" keys on Mac.
 - Added a release not about failed updates.
 
-## 1.1.1 (2021-07-21)
+## 1.1.1 (2021-07-21) (Firefox)
 
 - Added tabs for showing different dictionary results and made them interactive
   on touch screen devices
