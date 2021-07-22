@@ -1,4 +1,4 @@
-## 1.1.3 (Not yet released)
+## 1.1.3 (2021-07-22)
 
 - Made icons a little more visible in disabled state when using dark mode
   ([#687](https://github.com/birchill/10ten-ja-reader/discussions/687)).
