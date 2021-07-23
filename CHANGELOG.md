@@ -1,4 +1,4 @@
-## Next version
+## 1.1.4 (2021-07-23) (Firefox)
 
 - Made the dark theme have a higher contrast
   ([#692](https://github.com/birchill/10ten-ja-reader/discussions/692)).
