@@ -1,3 +1,8 @@
+## Next version
+
+- Made the dark theme have a higher contrast
+  ([#692](https://github.com/birchill/10ten-ja-reader/discussions/692)).
+
 ## 1.1.3 (2021-07-22) (Firefox, Chrome, Safari, Edge)
 
 - Made icons a little more visible in disabled state when using dark mode

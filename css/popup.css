@@ -954,22 +954,22 @@
 
 .window.-black {
   --text-color: white;
-  --bg-color: #3e3a39;
+  --bg-color: #1d1a19;
   --border-color: #999493;
 
-  --primary-highlight: #65b7fc;
-  --reading-highlight: #a5d6a7;
+  --primary-highlight: #1bf;
+  --reading-highlight: #7beb7e;
   --conj-color: #817470;
 
   --tag-border: rgba(255, 255, 255, 0.4);
 
-  --title-bg: #1d1a19;
+  --title-bg: #3e3a39;
   --title-fg: #ede8e6;
 
   --reading-label: #e7ffe7;
   --okurigana-color: #ede8e6;
-  --cell-highlight-bg: #5d5857;
-  --cell-highlight-fg: #ede8e6;
+  --cell-highlight-bg: #504c4b;
+  --cell-highlight-fg: #f0ecea;
 
   --selected-highlight: #2277d9;
 
