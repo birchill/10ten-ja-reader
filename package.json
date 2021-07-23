@@ -60,7 +60,7 @@
     "@types/chai": "^4.2.21",
     "@types/chrome": "0.0.148",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^16.4.0",
+    "@types/node": "^16.4.1",
     "@types/simulant": "^0.2.0",
     "@types/sinon-chai": "^3.2.5",
     "@types/sinon-chrome": "^2.2.11",
