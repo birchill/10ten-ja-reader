@@ -4,12 +4,14 @@
 [![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/jipdnfibhldikgcjhfnomkfpcebammhp?style=flat)](https://chrome.google.com/webstore/detail/rikaikun/jipdnfibhldikgcjhfnomkfpcebammhp)
 [![Mergify Status](https://img.shields.io/endpoint.svg?url=https://gh.mergify.io/badges/melink14/rikaikun&style=flat)](https://mergify.io)
 [![codecov](https://codecov.io/gh/melink14/rikaikun/branch/main/graph/badge.svg?token=4nZ7madoqJ)](https://codecov.io/gh/melink14/rikaikun)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/e342d582357449f38d9255c247e37159)](https://www.codacy.com/gh/melink14/rikaikun/dashboard?utm_source=github.com&utm_medium=referral&utm_content=melink14/rikaikun&utm_campaign=Badge_Grade)
 [![Code Style: Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat)](https://github.com/prettier/prettier)
 [![Code Style: Google](https://img.shields.io/badge/code%20style-google-blueviolet.svg?style=flat)](https://github.com/google/gts)
 [![License GPL-3.0](https://img.shields.io/github/license/melink14/rikaikun?style=flat)](https://github.com/melink14/rikaikun/blob/main/LICENSE)
 [![Standard Readme Compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat)](https://github.com/RichardLitt/standard-readme)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg?style=flat)](https://conventionalcommits.org)
 [![All Contributors](https://img.shields.io/badge/all_contributors-17-orange.svg?style=flat)](#contributors-)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](code_of_conduct.md)
 
 rikaikun is a Chrome extension that helps you to read Japanese web pages by showing the reading and English definition of Japanese words when you hover over them.
 
