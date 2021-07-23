@@ -20,7 +20,10 @@ jobs:
           node-version: '14'
       - run: npm ci
       - run: npm run presubmit:coverage
-      - name: Coverage
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: npm i -g codecov && codecov --disable=gcov
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          fail_ci_if_error: true
+          verbose: true
