@@ -1,7 +1,7 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Lint/Build/Test
+name: Presubmit
 
 on:
   pull_request:
@@ -9,8 +9,7 @@ on:
     branches: [main]
 
 jobs:
-  build_and_lint:
-    name: Build, lint and test rikaikun
+  presubmit:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,10 +19,7 @@ jobs:
         with:
           node-version: '14'
       - run: npm ci
-      - run: npm run lint
-      - run: npm run checktypes
-      - run: npm run build
-      - run: npm test -- --coverage
+      - run: npm run presubmit:coverage
       - name: Coverage
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
