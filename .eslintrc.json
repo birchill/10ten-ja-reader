@@ -2,7 +2,8 @@
   "extends": [
     "./node_modules/gts/",
     "plugin:lit/recommended",
-    "plugin:promise/recommended"
+    "plugin:promise/recommended",
+    "plugin:mocha/recommended"
   ],
   "env": {
     "browser": true,
@@ -17,7 +18,8 @@
     "node/no-unpublished-import": "off",
     "unicode-bom": "error",
     "promise/prefer-await-to-then": "error",
-    "curly": "error"
+    "curly": "error",
+    "mocha/no-mocha-arrows": "off"
   },
   "overrides": [
     {

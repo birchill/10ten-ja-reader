@@ -5,6 +5,10 @@
 - [Code Contributions](#code-contributions)
   - [Your First Code Contribution](#your-first-code-contribution)
   - [Getting started](#getting-started)
+  - [Testing](#testing)
+    - [Philosophy and Best Practices](#philosophy-and-best-practices)
+      - [Reasons for testing](#reasons-for-testing)
+      - [Guidelines](#guidelines)
   - [Pull Requests](#pull-requests)
 - [Style Guides](#style-guides)
   - [Git Commit Messages](#git-commit-messages)
@@ -44,8 +48,34 @@ If you get stuck, push your code early and ask for feedback on the issue.
 
 1. After you check out the code, run `npm install` ([npm installation guide](https://www.npmjs.com/get-npm)) to get the rikaikun dev tools ready.
 2. Make your changes and commit them locally. Run `npm run fix` often to ensure your code follows style guidelines.
-3. Run `npm run build` to create an unpackaged instance of rikaikun in the `dist` directory. Load this into Chrome to test your changes.
-4. When you're satisfied with your changes, commit your code, check that your commit message follows [these guidelines](#git-commit-messages), and start a pull request.
+3. Add tests for your new code in the `extension/test` directory.
+4. Run `npm run build` to create an unpackaged instance of rikaikun in the `dist` directory. Load this into Chrome to test your changes.
+5. When you're satisfied with your changes, commit your code, check that your commit message follows [these guidelines](#git-commit-messages), and start a pull request.
+
+## Testing
+
+rikaikun originally didn't have any tests but we're slowly building up test coverage as new functionality gets added. Right now, testing is focused around unit testing but ideally some screenshot and e2e testing will be added soon.
+Testing stack:
+
+- [@web/test-runner](https://modern-web.dev/docs/test-runner/overview/) is a modern test runner which works with snowpack. It is configured as follows:
+  - **Framework:** The default is [Mocha](https://mochajs.org/) and rikaikun keeps it for its behavior driven testing style.
+  - **Assertion Library:** [Chai](https://www.chaijs.com/) works well with Mocha; rikaikun use `expect` style assertions.
+  - **Test Doubles:** For spies and stubs, rikaikun uses [Sinon.JS](https://sinonjs.org/) combined with the [sinon-chrome](https://github.com/acvetkov/sinon-chrome) package which provides a complete fake Chrome extensions API.
+  - **Browser:** Test run using headless chrome via [Puppeteer](https://github.com/puppeteer/puppeteer).
+
+### Philosophy and Best Practices
+
+Testing is an art not a science but what follows is a set of guidelines to help you write tests that are easy to read and maintain.
+
+#### Reasons for testing
+
+- Ensures that your code is working as intended.
+- Ensures a minimum amount of composability in your tested code.
+- Acts as living documentation of your code.
+
+#### Guidelines
+
+For now, follow the [advice at this guide](https://github.com/goldbergyoni/javascript-testing-best-practices). Not every best practice there will apply but it's a great starting point. We can add exceptions and additions here as they come up.
 
 ## Pull Requests
 
@@ -61,7 +91,7 @@ Pull requests (PR) are where the main discussion around _how_ you implemented yo
 
 ## Git Commit Messages
 
-rikaikun follows the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) specification. This allows us to automatically generate new versions and change logs and reduces some cognitive load when first reading a commit.
+rikaikun follows the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) specification. This allows us to automatically generate new versions and change logs and reduces some cognitive load when first reading a commit. There is a git commit-msg hook which will ensure commit messages are to spec.
 
 In brief, commit messages should look like:
 
@@ -77,7 +107,7 @@ In brief, commit messages should look like:
 
 If your change requires a newer version of Chrome than was required previously, include `BREAKING CHANGE` with an explanation in the footer.
 
-Here are examples of the types currently in use ([source](http://karma-runner.github.io/1.0/dev/git-commit-msg.html)):
+Here are examples of the types currently in use ([partial source](http://karma-runner.github.io/1.0/dev/git-commit-msg.html)):
 
 ```
 feat (new feature for the user, not a new feature for build script)
@@ -87,6 +117,7 @@ style (formatting, missing semi colons, etc; no production code change)
 refactor (refactoring production code, eg. renaming a variable)
 test (adding missing tests, refactoring tests; no production code change)
 chore (updating grunt tasks etc; no production code change)
+ci (changing the github checks which continuously run on pushed code)
 ```
 
 These are the common scopes used, though feel free to suggest a new one if it makes sense:
