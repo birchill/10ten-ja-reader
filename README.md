@@ -161,6 +161,9 @@ Thank you to everyone who has contributed including the following people ([emoji
   </tr>
   <tr>
     <td align="center"><a href="https://erekspeed.com/"><img src="https://avatars.githubusercontent.com/u/1176550?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Erek Speed</b></sub></a><br /><a href="https://github.com/birchill/10ten-ja-reader/commits?author=melink14" title="Code">💻</a></td>
+    <td align="center"><a href="https://birchlabs.co.uk/"><img src="https://avatars.githubusercontent.com/u/14055146?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jamie Birch</b></sub></a><br /><a href="https://github.com/birchill/10ten-ja-reader/commits?author=shirakaba" title="Code">💻</a> <a href="#ideas-shirakaba" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="http://stackoverflow.com/users/18771/tomalak"><img src="https://avatars.githubusercontent.com/u/28300?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Martin Böhm</b></sub></a><br /><a href="https://github.com/birchill/10ten-ja-reader/issues?q=author%3ATomalak" title="Bug reports">🐛</a> <a href="#ideas-Tomalak" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/nicolasmaia"><img src="https://avatars.githubusercontent.com/u/23157217?v=4?s=100" width="100px;" alt=""/><br /><sub><b>nicolasmaia</b></sub></a><br /><a href="https://github.com/birchill/10ten-ja-reader/issues?q=author%3Anicolasmaia" title="Bug reports">🐛</a> <a href="#ideas-nicolasmaia" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 

@@ -83,6 +83,36 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "shirakaba",
+      "name": "Jamie Birch",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14055146?v=4",
+      "profile": "https://birchlabs.co.uk/",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
+    },
+    {
+      "login": "Tomalak",
+      "name": "Martin Böhm",
+      "avatar_url": "https://avatars.githubusercontent.com/u/28300?v=4",
+      "profile": "http://stackoverflow.com/users/18771/tomalak",
+      "contributions": [
+        "bug",
+        "ideas"
+      ]
+    },
+    {
+      "login": "nicolasmaia",
+      "name": "nicolasmaia",
+      "avatar_url": "https://avatars.githubusercontent.com/u/23157217?v=4",
+      "profile": "https://github.com/nicolasmaia",
+      "contributions": [
+        "bug",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7
