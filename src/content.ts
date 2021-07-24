@@ -1049,6 +1049,8 @@ export class ContentHandler {
       showKanjiComponents: this.config.showKanjiComponents,
       showPriority: this.config.showPriority,
       switchDictionaryKeys: this.config.keys.nextDictionary,
+      // XXX
+      tabDisplay: 'top',
     };
 
     const popup = renderPopup(this.currentSearchResult, popupOptions);

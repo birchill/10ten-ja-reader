@@ -643,6 +643,78 @@
       );
     }
 
+    // Tabs on the side
+
+    {
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.append('【Tabs on the side】');
+      container.append(label);
+
+      const popup = contentHandler._renderPopup(
+        touchScreenTest,
+        {
+          ...config,
+          container: createPopupContainer(),
+          dictToShow: 'words',
+          popupStyle: 'default',
+          showDefinitions: true,
+          switchDictionaryKeys: ['Shift', 'Enter'],
+          tabDisplay: 'side',
+          onClosePopup: () => {},
+        }
+      );
+    }
+
+    // Tabs on the side in touch mode
+
+    {
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.append('【Tabs on the side (touch display mode)】');
+      container.append(label);
+
+      const popup = contentHandler._renderPopup(
+        touchScreenTest,
+        {
+          ...config,
+          container: createPopupContainer(),
+          dictToShow: 'words',
+          popupStyle: 'default',
+          showDefinitions: true,
+          switchDictionaryKeys: ['Shift', 'Enter'],
+          tabDisplay: 'side',
+          onClosePopup: () => {},
+        }
+      );
+      popup.shadowRoot.querySelector('.window').classList.add('touch');
+    }
+
+    // Tabs on the side in touch mode with switch dictionary hint
+
+    {
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.append('【Tabs on the side (touch display mode and status bar)】');
+      container.append(label);
+
+      const popup = contentHandler._renderPopup(
+        touchScreenTest,
+        {
+          ...config,
+          container: createPopupContainer(),
+          dictToShow: 'words',
+          hasSwitchedDictionary: false,
+          popupStyle: 'default',
+          showDefinitions: true,
+          switchDictionaryKeys: ['Shift', 'Enter'],
+          tabDisplay: 'side',
+          onClosePopup: () => {},
+        }
+      );
+      popup.shadowRoot.querySelector('.window').classList.add('touch');
+    }
+
     function createPopupContainer() {
       const popupContainer = document.createElement('div');
       popupContainer.style.width = 'max-content';

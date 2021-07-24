@@ -70,6 +70,7 @@ export interface PopupOptions {
   showPriority: boolean;
   showKanjiComponents?: boolean;
   switchDictionaryKeys: ReadonlyArray<string>;
+  tabDisplay: 'top' | 'side';
 }
 
 export function renderPopup(
@@ -97,24 +98,32 @@ export function renderPopup(
         selectedTab: options.dictToShow,
       })
     );
-    // Make sure the window has a consistent width so that the tabs don't
-    // jump around.
-    windowElem.classList.add('fixed-width');
+
+    if (options.tabDisplay === 'side') {
+      windowElem.classList.add('side-tabs');
+    } else {
+      // When showing tabs on top, make sure the window has a consistent width so
+      // that the tabs don't jump around.
+      windowElem.classList.add('fixed-width');
+    }
   } else if (options.onClosePopup) {
     windowElem.append(renderCloseButton(options.onClosePopup));
   }
+
+  const contentContainer = document.createElement('div');
+  contentContainer.classList.add('content');
 
   const resultToShow = result?.[options.dictToShow];
 
   switch (resultToShow?.type) {
     case 'kanji':
-      windowElem.append(
+      contentContainer.append(
         renderKanjiEntry({ entry: resultToShow.data, options })
       );
       break;
 
     case 'names':
-      windowElem.append(
+      contentContainer.append(
         renderNamesEntries({
           entries: resultToShow.data,
           more: resultToShow.more,
@@ -125,7 +134,7 @@ export function renderPopup(
 
     case 'words':
       {
-        windowElem.append(
+        contentContainer.append(
           renderWordEntries({
             entries: resultToShow.data,
             namePreview: result!.namePreview,
@@ -152,7 +161,7 @@ export function renderPopup(
         const metaDataContainer = document.createElement('div');
         metaDataContainer.classList.add('wordlist');
         metaDataContainer.append(metadata);
-        windowElem.append(metaDataContainer);
+        contentContainer.append(metaDataContainer);
       }
       break;
   }
@@ -168,9 +177,9 @@ export function renderPopup(
     allMajorDataSeries.filter((series) => !!result?.[series]).length;
 
   if (copyDetails) {
-    windowElem.append(copyDetails);
+    contentContainer.append(copyDetails);
   } else if (result?.dbStatus === 'updating') {
-    windowElem.append(renderUpdatingStatus());
+    contentContainer.append(renderUpdatingStatus());
   } else if (
     showTabs &&
     numResultsAvailable() > 1 &&
@@ -178,8 +187,12 @@ export function renderPopup(
     options.switchDictionaryKeys.length &&
     probablyHasPhysicalKeyboard()
   ) {
-    windowElem.append(renderSwitchDictionaryHint(options.switchDictionaryKeys));
+    contentContainer.append(
+      renderSwitchDictionaryHint(options.switchDictionaryKeys)
+    );
   }
+
+  windowElem.append(contentContainer);
 
   return container;
 }

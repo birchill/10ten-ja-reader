@@ -183,6 +183,44 @@
   stroke-opacity: 1;
 }
 
+/* Tab bar on the side */
+
+.window.side-tabs {
+  display: flex;
+}
+
+.window.side-tabs .tab-bar {
+  order: 1;
+  flex-direction: column;
+}
+
+.window.side-tabs .tab-bar .tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.window.side-tabs .tab-bar .close {
+  order: -1;
+  margin-top: 0.5em;
+  margin-bottom: 1em;
+}
+
+.window.side-tabs .tabs .tab {
+  flex-grow: 0;
+}
+
+.window.side-tabs .tabs .tab a {
+  padding: 0.7em;
+}
+
+.window.side-tabs .tabs .tab a svg {
+  margin: 0;
+}
+
+.window.side-tabs .tabs .tab a span {
+  display: none;
+}
+
 /* Word display */
 
 .wordlist {
