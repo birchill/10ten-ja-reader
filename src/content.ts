@@ -1021,9 +1021,7 @@ export class ContentHandler {
       return;
     }
 
-    const doc: Document = this.currentTarget
-      ? this.currentTarget.ownerDocument!
-      : window.document;
+    const doc: Document = this.currentTarget?.ownerDocument ?? window.document;
 
     const popupOptions: PopupOptions = {
       accentDisplay: this.config.accentDisplay,

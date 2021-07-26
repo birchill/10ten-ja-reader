@@ -8,7 +8,7 @@
   font-family: Meiryo, sans-serif;
 }
 
-:host(:not(.test-popup)) {
+:host {
   position: absolute !important;
   /* asahi.com puts z-index: 1000000 on its banner ads. We go one better. */
   z-index: 1000001 !important;
