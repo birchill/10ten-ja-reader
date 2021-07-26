@@ -393,6 +393,13 @@ function setToggleKeyWarningState(state: WarningState, message?: string) {
 }
 
 async function getConfiguredToggleKeyValue(): Promise<Command | null> {
+  // Firefox for Android does not support the browser.commands API at all
+  // but probably not many people want to use keyboard shortcuts on Android
+  // anyway so we can just return null from here in that case.
+  if (!browser.commands) {
+    return null;
+  }
+
   const commands = await browser.commands.getAll();
 
   // Safari (14.1.1) has a very broken implementation of
