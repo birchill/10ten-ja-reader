@@ -25,6 +25,8 @@ export type AccentDisplay = 'downstep' | 'binary' | 'none';
 
 export type PartOfSpeechDisplay = 'expl' | 'code' | 'none';
 
+export type TabDisplay = 'top' | 'left' | 'right' | 'none';
+
 export interface ContentConfig {
   // Indicates the type of display to use for showing pitch accent information.
   accentDisplay: AccentDisplay;
@@ -69,4 +71,7 @@ export interface ContentConfig {
 
   // True if we should show romaji alongside each reading.
   showRomaji: boolean;
+
+  // Indicates the orientation / visibility of the popup tab bar.
+  tabDisplay: TabDisplay;
 }

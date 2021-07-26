@@ -20,6 +20,7 @@ import {
   ContentConfig,
   KeyboardKeys,
   PartOfSpeechDisplay,
+  TabDisplay,
 } from './content-config';
 import {
   ReferenceAbbreviation,
@@ -68,6 +69,7 @@ interface Settings {
   showKanjiComponents?: boolean;
   showPriority?: boolean;
   showRomaji?: boolean;
+  tabDisplay?: TabDisplay;
 }
 
 type StorageChange = {
@@ -627,6 +629,26 @@ export class Config {
     browser.storage.sync.set({ showRomaji: value });
   }
 
+  // tabDisplay: Defaults to top
+
+  get tabDisplay(): TabDisplay {
+    return typeof this._settings.tabDisplay === 'undefined'
+      ? 'top'
+      : this._settings.tabDisplay;
+  }
+
+  set tabDisplay(value: TabDisplay) {
+    if (
+      typeof this._settings.tabDisplay !== 'undefined' &&
+      this._settings.tabDisplay === value
+    ) {
+      return;
+    }
+
+    this._settings.tabDisplay = value;
+    browser.storage.sync.set({ tabDisplay: value });
+  }
+
   // Get all the options the content process cares about at once
   get contentConfig(): ContentConfig {
     return {
@@ -647,6 +669,7 @@ export class Config {
       showKanjiComponents: this.showKanjiComponents,
       showPriority: this.showPriority,
       showRomaji: this.showRomaji,
+      tabDisplay: this.tabDisplay,
     };
   }
 }

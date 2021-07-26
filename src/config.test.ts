@@ -180,6 +180,7 @@ describe('Config', () => {
     expect(config.showKanjiComponents).toEqual(true);
     expect(config.showPriority).toEqual(true);
     expect(config.showRomaji).toEqual(false);
+    expect(config.tabDisplay).toEqual('top');
   });
 
   it('reports changes to all listeners', async () => {

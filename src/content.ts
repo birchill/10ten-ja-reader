@@ -187,6 +187,10 @@ export class ContentHandler {
       setPopupStyle(config.popupStyle);
     }
 
+    // TODO: We should update the tab display if that value changes but we
+    // actually need to regenerate the popup in that case since we only generate
+    // the HTML for the tabs when tabDisplay is not 'none'.
+
     // TODO: We should probably check which keys have changed and regenerate
     // the pop-up if needed but currently you need to change tabs to tweak
     // the config so the popup probably won't be showing anyway.
@@ -1049,8 +1053,7 @@ export class ContentHandler {
       showKanjiComponents: this.config.showKanjiComponents,
       showPriority: this.config.showPriority,
       switchDictionaryKeys: this.config.keys.nextDictionary,
-      // XXX
-      tabDisplay: 'top',
+      tabDisplay: this.config.tabDisplay,
     };
 
     const popup = renderPopup(this.currentSearchResult, popupOptions);
