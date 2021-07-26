@@ -19,7 +19,8 @@
     "unicode-bom": "error",
     "promise/prefer-await-to-then": "error",
     "curly": "error",
-    "mocha/no-mocha-arrows": "off"
+    "prefer-arrow-callback": "off",
+    "mocha/prefer-arrow-callback": "error"
   },
   "overrides": [
     {

@@ -10,16 +10,16 @@ use(sinonChai);
 
 let rcxContent = new TestOnlyRcxContent();
 
-describe('RcxContent', () => {
-  beforeEach(() => {
+describe('RcxContent', function () {
+  beforeEach(function () {
     chrome.reset();
     rcxContent = new TestOnlyRcxContent();
     // Default enable rcxContent since no tests care about that now.
     rcxContent.enableTab({ showOnKey: '' } as Config);
   });
-  describe('.show', () => {
-    describe('when given Japanese word interrupted with text wrapped by `display: none`', () => {
-      it('sends "xsearch" message with invisible text omitted', () => {
+  describe('.show', function () {
+    describe('when given Japanese word interrupted with text wrapped by `display: none`', function () {
+      it('sends "xsearch" message with invisible text omitted', function () {
         const span = insertHtmlIntoDomAndReturnFirstTextNode(
           '<span>試<span style="display:none">test</span>す</span>'
         );
@@ -33,8 +33,8 @@ describe('RcxContent', () => {
       });
     });
 
-    describe('when given Japanese word interrupted with text wrapped by `visibility: hidden`', () => {
-      it('sends "xsearch" message with invisible text omitted', () => {
+    describe('when given Japanese word interrupted with text wrapped by `visibility: hidden`', function () {
+      it('sends "xsearch" message with invisible text omitted', function () {
         const span = insertHtmlIntoDomAndReturnFirstTextNode(
           '<span>試<span style="visibility: hidden">test</span>す</span>'
         );
@@ -48,8 +48,8 @@ describe('RcxContent', () => {
       });
     });
 
-    describe('when given Japanese word is interrupted with text wrapped by visible span', () => {
-      it('sends "xsearch" message with all text included', () => {
+    describe('when given Japanese word is interrupted with text wrapped by visible span', function () {
+      it('sends "xsearch" message with all text included', function () {
         const rcxContent = new TestOnlyRcxContent();
         const span = insertHtmlIntoDomAndReturnFirstTextNode(
           '<span>試<span>test</span>す</span>'
@@ -65,12 +65,12 @@ describe('RcxContent', () => {
     });
   });
 
-  describe('mousemove', () => {
-    afterEach(() => {
+  describe('mousemove', function () {
+    afterEach(function () {
       sinon.restore();
     });
 
-    it('handled without logging errors if `caretRangeFromPoint` returns null', () => {
+    it('handled without logging errors if `caretRangeFromPoint` returns null', function () {
       sinon
         .stub(document, 'caretRangeFromPoint')
         .returns(null as unknown as Range);
@@ -81,7 +81,7 @@ describe('RcxContent', () => {
       expect(console.log).to.not.have.been.called;
     });
 
-    it('triggers xsearch message when above Japanese text', async () => {
+    it('triggers xsearch message when above Japanese text', async function () {
       const clock = sinon.useFakeTimers();
       const span = insertHtmlIntoDomAndReturnFirstTextNode(
         '<span>先生test</span>'
@@ -101,12 +101,12 @@ describe('RcxContent', () => {
     });
   });
 
-  describe('showPopup', () => {
-    afterEach(() => {
+  describe('showPopup', function () {
+    afterEach(function () {
       rcxContent.disableTab();
     });
 
-    it('sets data-theme attribute of rikaikun window to config popupcolor value', () => {
+    it('sets data-theme attribute of rikaikun window to config popupcolor value', function () {
       rcxContent.enableTab({ popupcolor: 'redtest' } as Config);
 
       rcxContent.showPopup('<span></span>');
@@ -118,7 +118,7 @@ describe('RcxContent', () => {
       ).to.equal('redtest');
     });
 
-    it('adds link tag pointing to "css/popup.css" to <head>', () => {
+    it('adds link tag pointing to "css/popup.css" to <head>', function () {
       chrome.extension.getURL.callsFake((path: string) => {
         return `http://fakebaseurl/${path}`;
       });

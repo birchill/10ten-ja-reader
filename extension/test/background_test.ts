@@ -8,23 +8,23 @@ use(sinonChai);
 
 let rcxMain: RcxMain;
 
-describe('background.ts', () => {
-  before(async () => {
+describe('background.ts', function () {
+  before(async function () {
     // Resolve config fetch with minimal config object.
     chrome.storage.sync.get.yields({ kanjiInfo: [] });
     // Imports only run once so run in `before` to make it deterministic.
     rcxMain = await (await import('../background')).TestOnlyRxcMainPromise;
   });
 
-  beforeEach(() => {
+  beforeEach(function () {
     // Only reset the spies we're using since we need to preserve
     // the state of `chrome.runtime.onMessage.addListener` for invoking
     // the core functionality of background.ts.
     chrome.tabs.sendMessage.reset();
   });
 
-  describe('when sent "forceDocsHtml?" message', () => {
-    it('should not call response callback when rikaikun disabled', async () => {
+  describe('when sent "forceDocsHtml?" message', function () {
+    it('should not call response callback when rikaikun disabled', async function () {
       rcxMain.enabled = 0;
       const responseCallback = sinon.spy();
 
@@ -36,7 +36,7 @@ describe('background.ts', () => {
       expect(responseCallback).to.have.not.been.called;
     });
 
-    it('should not send "showPopup" message when rikaikun disabled', async () => {
+    it('should not send "showPopup" message when rikaikun disabled', async function () {
       rcxMain.enabled = 0;
 
       await sendMessageToBackground({
@@ -46,7 +46,7 @@ describe('background.ts', () => {
       expect(chrome.tabs.sendMessage).to.have.not.been.called;
     });
 
-    it('should pass true to response callback when rikaikun enabled', async () => {
+    it('should pass true to response callback when rikaikun enabled', async function () {
       rcxMain.enabled = 1;
       const responseCallback = sinon.spy();
 
@@ -58,7 +58,7 @@ describe('background.ts', () => {
       expect(responseCallback).to.have.been.calledOnceWith(true);
     });
 
-    it('should send "showPopup" message when rikaikun enabled', async () => {
+    it('should send "showPopup" message when rikaikun enabled', async function () {
       rcxMain.enabled = 1;
 
       await sendMessageToBackground({

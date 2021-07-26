@@ -9,27 +9,27 @@ declare global {
 
 let forceHtmlCallback: (force: boolean) => void;
 
-describe('docs-html-fallback.ts after sending `forceDocsHtml?` message', () => {
-  before(async () => {
+describe('docs-html-fallback.ts after sending `forceDocsHtml?` message', function () {
+  before(async function () {
     await import('../docs-html-fallback');
     forceHtmlCallback = chrome.runtime.sendMessage.args[0][1];
   });
 
-  beforeEach(() => {
+  beforeEach(function () {
     chrome.reset();
     window._docs_force_html_by_ext = undefined;
   });
 
-  describe('when `forceHtml` callback is called with `false`', () => {
-    it('should not add special property to window object', async () => {
+  describe('when `forceHtml` callback is called with `false`', function () {
+    it('should not add special property to window object', async function () {
       forceHtmlCallback(false);
 
       expect(window._docs_force_html_by_ext).to.be.undefined;
     });
   });
 
-  describe('when `forceHtml` callback is called with `true`', () => {
-    it('should set special property to rikaikun extension ID', async () => {
+  describe('when `forceHtml` callback is called with `true`', function () {
+    it('should set special property to rikaikun extension ID', async function () {
       chrome.runtime.id = 'test_special_id';
 
       forceHtmlCallback(true);
