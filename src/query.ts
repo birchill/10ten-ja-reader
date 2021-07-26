@@ -1,6 +1,7 @@
 import { browser } from 'webextension-polyfill-ts';
 
 import { SearchRequest, TranslateRequest } from './background-request';
+import { hasKatakana } from './char-range';
 import { NameResult, SearchResult, TranslateResult } from './search-result';
 import { stripFields } from './strip-fields';
 
@@ -162,7 +163,7 @@ function addNamePreview(result: QueryResult): QueryResult {
 
   // Add up to three results provided that:
   //
-  // - they have a kanji reading,
+  // - they have a kanji reading or katakana reading,
   // - and are all are as long as the longest names match,
   // - are all longer than the longest words match
   const minLength = Math.max(result.names.matchLen, result.words.matchLen + 1);
@@ -174,7 +175,7 @@ function addNamePreview(result: QueryResult): QueryResult {
       break;
     }
 
-    if (!name.k) {
+    if (!name.k && !name.r.some(hasKatakana)) {
       continue;
     }
 

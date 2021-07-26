@@ -33,10 +33,10 @@ export const nonDelimitingIdeographicPunctuation =
   /[\u3004-\u3007\u3012-\u3039]/;
 
 // U+3041~U+309F is the hiragana range
-export const hiragana = /[\u3041-\u309f]/;
+export const hiragana = /[\u3041-\u309f\u{1b001}]/u;
 
 // U+30A0~U+30FF is the katakana range
-export const katakana = /[\u30a0-\u30ff]/;
+export const katakana = /[\u30a0-\u30ff\u{1b000}]/u;
 
 // * U+3220~U+3247 is various enclosed characters like ㈵
 // * U+3280~U+32B0 is various enclosed characters like ㊞
@@ -68,6 +68,9 @@ export const rareKanji = /[\u3400-\u4dbf\uf900-\ufaff\u{20000}-\u{2a6df}]/u;
 
 // U+FF66~U+FF9F is halfwidth katakana
 export const halfwidthKatakanaChar = /[\uff66-\uff9f]/;
+
+// U+1B002-U+1B0FF is hentaigana
+export const hentaigana = /[\u{1b002}-\u{1b0ff}]/u;
 
 export function getCombinedCharRange(ranges: Array<RegExp>): RegExp {
   let source = '[';
@@ -124,6 +127,7 @@ export const japaneseChar = getCombinedCharRange([
   kanji,
   rareKanji,
   halfwidthKatakanaChar,
+  hentaigana,
 ]);
 
 export function getNegatedCharRange(range: RegExp): RegExp {
@@ -143,3 +147,7 @@ export function getNegatedCharRange(range: RegExp): RegExp {
 }
 
 export const nonJapaneseChar = getNegatedCharRange(japaneseChar);
+
+export function hasKatakana(text: string): boolean {
+  return katakana.test(text);
+}

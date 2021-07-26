@@ -1,3 +1,7 @@
+## Next version
+
+- Made katakana name matches show up in the name preview
+
 ## 1.1.4 (2021-07-23) (Firefox)
 
 - Made the dark theme have a higher contrast
