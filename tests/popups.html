@@ -566,7 +566,7 @@
           showDefinitions: true,
           onClosePopup: () => {},
         });
-        popup.shadowRoot.querySelector('.window').classList.add('touch');
+        popup.querySelector('.window').classList.add('touch');
       }
     }
 
@@ -594,7 +594,7 @@
           showDefinitions: true,
           onClosePopup: () => {},
         });
-        popup.shadowRoot.querySelector('.window').classList.add('touch');
+        popup.querySelector('.window').classList.add('touch');
       }
     }
 
@@ -617,7 +617,7 @@
           onClosePopup: () => {},
         }
       );
-      popup.shadowRoot.querySelector('.window').classList.add('touch');
+      popup.querySelector('.window').classList.add('touch');
     }
 
     // Switch dictionary hint
@@ -660,7 +660,7 @@
           popupStyle: 'default',
           showDefinitions: true,
           switchDictionaryKeys: ['Shift', 'Enter'],
-          tabDisplay: 'side',
+          tabDisplay: 'right',
           onClosePopup: () => {},
         }
       );
@@ -683,11 +683,11 @@
           popupStyle: 'default',
           showDefinitions: true,
           switchDictionaryKeys: ['Shift', 'Enter'],
-          tabDisplay: 'side',
+          tabDisplay: 'right',
           onClosePopup: () => {},
         }
       );
-      popup.shadowRoot.querySelector('.window').classList.add('touch');
+      popup.querySelector('.window').classList.add('touch');
     }
 
     // Tabs on the side in touch mode with switch dictionary hint
@@ -708,11 +708,11 @@
           popupStyle: 'default',
           showDefinitions: true,
           switchDictionaryKeys: ['Shift', 'Enter'],
-          tabDisplay: 'side',
+          tabDisplay: 'right',
           onClosePopup: () => {},
         }
       );
-      popup.shadowRoot.querySelector('.window').classList.add('touch');
+      popup.querySelector('.window').classList.add('touch');
     }
 
     function createPopupContainer() {

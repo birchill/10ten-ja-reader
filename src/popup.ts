@@ -70,7 +70,7 @@ export interface PopupOptions {
   showPriority: boolean;
   showKanjiComponents?: boolean;
   switchDictionaryKeys: ReadonlyArray<string>;
-  tabDisplay: 'top' | 'side';
+  tabDisplay: 'top' | 'left' | 'right' | 'none';
 }
 
 export function renderPopup(
@@ -88,7 +88,11 @@ export function renderPopup(
   // TODO: We should use `options.document` everywhere in this file and in
   // the other methods too.
 
-  const showTabs = result && result.dbStatus !== 'unavailable' && !result.title;
+  const showTabs =
+    result &&
+    result.dbStatus !== 'unavailable' &&
+    !result.title &&
+    options.tabDisplay !== 'none';
   if (showTabs) {
     windowElem.append(
       renderTabBar({
@@ -99,13 +103,7 @@ export function renderPopup(
       })
     );
 
-    if (options.tabDisplay === 'side') {
-      windowElem.classList.add('side-tabs');
-    } else {
-      // When showing tabs on top, make sure the window has a consistent width so
-      // that the tabs don't jump around.
-      windowElem.classList.add('fixed-width');
-    }
+    windowElem.dataset.tabSide = options.tabDisplay || 'top';
   } else if (options.onClosePopup) {
     windowElem.append(renderCloseButton(options.onClosePopup));
   }

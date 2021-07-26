@@ -35,7 +35,9 @@
   border: 1px solid var(--border-color);
 }
 
-.window.fixed-width {
+/* When the tabs are shown on top, make the window have a consistent width
+   so the tabs don't jump around. */
+.window[data-tab-side='top'] {
   max-width: auto;
   /* Fallback for the below */
   width: 500px;
@@ -185,39 +187,50 @@
 
 /* Tab bar on the side */
 
-.window.side-tabs {
+.window[data-tab-side='left'],
+.window[data-tab-side='right'] {
   display: flex;
 }
 
-.window.side-tabs .tab-bar {
+.window[data-tab-side='left'] .tab-bar,
+.window[data-tab-side='right'] .tab-bar {
+  flex-direction: column;
+}
+
+.window[data-tab-side='right'] .tab-bar {
   order: 1;
-  flex-direction: column;
 }
 
-.window.side-tabs .tab-bar .tabs {
+.window[data-tab-side='left'] .tab-bar .tabs,
+.window[data-tab-side='right'] .tab-bar .tabs {
   display: flex;
   flex-direction: column;
 }
 
-.window.side-tabs .tab-bar .close {
+.window[data-tab-side='left'] .tab-bar .close,
+.window[data-tab-side='right'] .tab-bar .close {
   order: -1;
   margin-top: 0.5em;
   margin-bottom: 1em;
 }
 
-.window.side-tabs .tabs .tab {
+.window[data-tab-side='left'] .tabs .tab,
+.window[data-tab-side='right'] .tabs .tab {
   flex-grow: 0;
 }
 
-.window.side-tabs .tabs .tab a {
+.window[data-tab-side='left'] .tabs .tab a,
+.window[data-tab-side='right'] .tabs .tab a {
   padding: 0.7em;
 }
 
-.window.side-tabs .tabs .tab a svg {
+.window[data-tab-side='left'] .tabs .tab a svg,
+.window[data-tab-side='right'] .tabs .tab a svg {
   margin: 0;
 }
 
-.window.side-tabs .tabs .tab a span {
+.window[data-tab-side='left'] .tabs .tab a span,
+.window[data-tab-side='right'] .tabs .tab a span {
   display: none;
 }
 
