@@ -218,23 +218,11 @@ function getDefaultContainer(doc: Document): HTMLElement {
   //
   // First reset all styles the page may have applied.
   container.style.all = 'initial';
-  container.style.position = 'absolute';
-  // asahi.com puts z-index: 1000000 on its banner ads. We go one better.
-  container.style.zIndex = '1000001';
-  // Make sure the drop shadow doesn't get cut off
-  container.style.paddingRight = '4px';
-  container.style.paddingBottom = '4px';
 
   // Set initial position
   container.style.top = '5px';
   container.style.left = '5px';
   container.style.minWidth = '100px';
-
-  // Enforce any max-height set on the container.
-  container.style.overflowY = 'hidden';
-
-  // Make sure the container too doesn't receive pointer events
-  container.style.pointerEvents = 'none';
 
   return container;
 }
