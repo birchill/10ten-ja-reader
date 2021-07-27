@@ -10,7 +10,11 @@ import {
 import Browser, { browser } from 'webextension-polyfill-ts';
 
 import { Config, DEFAULT_KEY_SETTINGS } from './config';
-import { AccentDisplay, PartOfSpeechDisplay } from './content-config';
+import {
+  AccentDisplay,
+  PartOfSpeechDisplay,
+  TabDisplay,
+} from './content-config';
 import { Command, CommandParams, isValidKey } from './commands';
 import { CopyKeys, CopyNextKeyStrings } from './copy-keys';
 import { dbLanguageMeta, isDbLanguageId } from './db-languages';
@@ -24,6 +28,7 @@ import {
 import { translateDoc } from './l10n';
 import { getReferenceLabelsForLang, getReferencesForLang } from './refs';
 import { isChromium, isEdge, isFirefox, isMac, isSafari } from './ua-utils';
+import { getThemeClass } from './themes';
 
 const config = new Config();
 
@@ -44,6 +49,13 @@ function completeForm() {
 
   // Pop-up
   renderPopupStyleSelect();
+  setTabDisplayTheme(config.popupStyle);
+  // Refresh the theme used in the tab preview if the dark mode setting changes
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', () => {
+      setTabDisplayTheme(config.popupStyle);
+    });
 
   // Keyboard
   configureCommands();
@@ -99,6 +111,16 @@ function completeForm() {
     renderPopupStyleSelect();
   });
 
+  const tabDisplayOptions = Array.from(
+    document.querySelectorAll('input[type=radio][name=tabDisplay]')
+  );
+  for (const option of tabDisplayOptions) {
+    option.addEventListener('change', (evt) => {
+      const tabDisplay = (evt.target as HTMLInputElement).value as TabDisplay;
+      config.tabDisplay = tabDisplay;
+    });
+  }
+
   document
     .getElementById('showKanjiComponents')!
     .addEventListener('click', (evt) => {
@@ -137,6 +159,7 @@ function renderPopupStyleSelect() {
 
     input.addEventListener('click', () => {
       config.popupStyle = theme;
+      setTabDisplayTheme(theme);
     });
 
     const label = document.createElement('label');
@@ -269,6 +292,22 @@ function renderStar(): SVGElement {
   svg.append(path);
 
   return svg;
+}
+
+function setTabDisplayTheme(theme: string) {
+  const tabIcons = Array.from(
+    document.querySelectorAll('.tabdisplay-select .tabicon')
+  );
+
+  const themeClass = getThemeClass(theme);
+  for (const tabIcon of tabIcons) {
+    for (const className of tabIcon.classList.values()) {
+      if (className.startsWith('theme-')) {
+        tabIcon.classList.remove(className);
+      }
+    }
+    tabIcon.classList.add(themeClass);
+  }
 }
 
 function configureCommands() {
@@ -707,6 +746,7 @@ function fillVals() {
   optform.contextMenuEnable.checked = config.contextMenuEnable;
   optform.showKanjiComponents.checked = config.showKanjiComponents;
   optform.popupStyle.value = config.popupStyle;
+  optform.tabDisplay.value = config.tabDisplay;
 
   getConfiguredToggleKeyValue()
     .then((toggleCommand) => {

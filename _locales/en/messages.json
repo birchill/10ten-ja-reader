@@ -1614,6 +1614,26 @@
   "options_show_romaji": {
     "message": "Show romaji"
   },
+  "options_tab_position_label": {
+    "message": "Tab position",
+    "description": "Heading for the radio buttons to choose the popup tab position"
+  },
+  "options_tab_position_left": {
+    "message": "Left",
+    "description": "Text label for the radio button to show tabs on the right"
+  },
+  "options_tab_position_none": {
+    "message": "None",
+    "description": "Text label for the radio button to hide tabs"
+  },
+  "options_tab_position_right": {
+    "message": "Right",
+    "description": "Text label for the radio button to show tabs on the right"
+  },
+  "options_tab_position_top": {
+    "message": "Top",
+    "description": "Text label for the radio button to show tabs on top"
+  },
   "options_update_check_button_label": {
     "message": "Check for updates",
     "description": "Label for the button to check for database updates"

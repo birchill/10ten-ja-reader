@@ -1617,6 +1617,26 @@
   "options_show_romaji": {
     "message": "ローマ字を表示"
   },
+  "options_tab_position_label": {
+    "message": "タブ位置",
+    "description": "Heading for the radio buttons to choose the popup tab position"
+  },
+  "options_tab_position_left": {
+    "message": "左",
+    "description": "Text label for the radio button to show tabs on the right"
+  },
+  "options_tab_position_none": {
+    "message": "なし",
+    "description": "Text label for the radio button to hide tabs"
+  },
+  "options_tab_position_right": {
+    "message": "右",
+    "description": "Text label for the radio button to show tabs on the right"
+  },
+  "options_tab_position_top": {
+    "message": "上",
+    "description": "Text label for the radio button to show tabs on top"
+  },
   "options_update_check_button_label": {
     "message": "更新を確認",
     "description": "Label for the button to check for database updates"

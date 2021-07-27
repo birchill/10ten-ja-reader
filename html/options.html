@@ -42,7 +42,10 @@
           </fieldset>
           <div class="browser-style checkbox-row">
             <input type="checkbox" id="showPriority" name="showPriority" />
-            <label for="showPriority">Show indicators next to common (★) and somewhat common (☆) words</label>
+            <label for="showPriority"
+              >Show indicators next to common (★) and somewhat common (☆)
+              words</label
+            >
           </div>
           <div class="browser-style checkbox-row">
             <input type="checkbox" id="showRomaji" name="showRomaji" />
@@ -58,7 +61,11 @@
           </div>
           <div class="browser-style">
             <label for="accentDisplay">Accent display</label>
-            <select id="accentDisplay" name="accentDisplay" class="browser-style">
+            <select
+              id="accentDisplay"
+              name="accentDisplay"
+              class="browser-style"
+            >
               <option value="downpitch">Downpitch ꜜ</option>
               <option value="binary">Binary pitch ⎾⏋</option>
               <option value="none">None</option>
@@ -74,6 +81,48 @@
               <option value="none">None</option>
             </select>
           </div>
+          <p>Tab position:</p>
+          <fieldset>
+            <div class="tabdisplay-select" id="tabdisplay-select">
+              <input type="radio" name="tabDisplay" value="top" id="tabdisplay-top" />
+              <label for="tabdisplay-top">
+                <svg viewBox="0 0 48 48" class="tabicon theme-light">
+                  <defs>
+                    <clipPath id="popup-outline">
+                      <rect x="1" y="1" rx="5" width="46" height="46" fill="black" />
+                    </clipPath>
+                    <rect id="tabicon-popup" x="1" y="1" rx="5" width="46" height="46" />
+                  </defs>
+                  <use href="#tabicon-popup" class=popup />
+                  <rect x="16" y="1" width="32" height="8" class="tab" />
+                </svg>
+                <div class=text-label>Top</div>
+              </label>
+              <input type="radio" name="tabDisplay" value="right" id="tabdisplay-right" />
+              <label for="tabdisplay-right">
+                <svg viewBox="0 0 48 48" class="tabicon theme-light">
+                  <use href="#tabicon-popup" class=popup />
+                  <rect x="40" y="8" width="8" height="40" class="tab" />
+                </svg>
+                <div class=text-label>Right</div>
+              </label>
+              <input type="radio" name="tabDisplay" value="left" id="tabdisplay-left" />
+              <label for="tabdisplay-left">
+                <svg viewBox="0 0 48 48" class="tabicon theme-light">
+                  <use href="#tabicon-popup" class=popup />
+                  <rect x="0" y="8" width="8" height="40" class="tab" />
+                </svg>
+                <div class=text-label>Left</div>
+              </label>
+              <input type="radio" name="tabDisplay" value="none" id="tabdisplay-none" />
+              <label for="tabdisplay-none">
+                <svg viewBox="0 0 48 48" class="tabicon theme-light">
+                  <use href="#tabicon-popup" class=popup />
+                </svg>
+                <div class=text-label>None</div>
+              </label>
+            </div>
+          </fieldset>
         </div>
         <div class="panel-section panel-section-header">
           <h2 class="text-section-header">Keyboard</h2>
@@ -86,7 +135,9 @@
               <input type="checkbox" id="toggle-ctrl" />
               <label for="toggle-ctrl"><span class="key-box">Ctrl</span></label>
               <input type="checkbox" id="toggle-shift" />
-              <label for="toggle-shift"><span class="key-box">Shift</span></label>
+              <label for="toggle-shift"
+                ><span class="key-box">Shift</span></label
+              >
               <input
                 size="1"
                 type="text"
@@ -106,7 +157,9 @@
               <input type="checkbox" id="show-ctrl" />
               <label for="toggle-ctrl"><span class="key-box">Ctrl</span></label>
               <input type="checkbox" id="show-shift" />
-              <label for="toggle-shift"><span class="key-box">Shift</span></label>
+              <label for="toggle-shift"
+                ><span class="key-box">Shift</span></label
+              >
             </div>
             <div class="key-description">
               Show pop-up
@@ -153,11 +206,20 @@
           <div class="note">
             <p>Please note that:</p>
             <ul>
-              <li>Word definitions for languages other than English are only shown when available.</li>
+              <li>
+                Word definitions for languages other than English are only shown
+                when available.
+              </li>
               <li>English word definitions are always shown.</li>
               <li>The names dictionary is only available in English.</li>
-              <li>Changing the language will cause the corresponding data files to be re-downloaded.</li>
-              <li>While updating language data, English definitions may be used temporarily.</li>
+              <li>
+                Changing the language will cause the corresponding data files to
+                be re-downloaded.
+              </li>
+              <li>
+                While updating language data, English definitions may be used
+                temporarily.
+              </li>
             </ul>
           </div>
         </div>
@@ -166,7 +228,11 @@
         </div>
         <div class="panel-section panel-section-db-summary">
           <div
-            class="db-summary-controls panel-section-grid panel-section-list browser-style"
+            class="
+              db-summary-controls
+              panel-section-grid panel-section-list
+              browser-style
+            "
           >
             <div class="browser-style checkbox-row">
               <input
@@ -244,7 +310,8 @@
               >licence</a
             >.
             <p>
-              The pitch accent data was provided by Uros Ozvatic through his free database.
+              The pitch accent data was provided by Uros Ozvatic through his
+              free database.
             </p>
           </div>
           <div class="db-summary-status">
