@@ -29,6 +29,9 @@ class SpecReporter {
    * @returns
    */
   outputSuite(suite, indent = '') {
+    if (suite === undefined) {
+      return 'Suite is undefined; top level error';
+    }
     let results = `${indent}${suite.name}\n`;
     results +=
       suite.tests
@@ -39,6 +42,11 @@ class SpecReporter {
           } else if (test.passed) {
             result += `${this.color.green} ✓ ${this.color.reset}${this.color.dim}${test.name}`;
           } else {
+            if (test.error === undefined) {
+              test.error = {};
+              test.error.message = 'Test failed with no error message';
+              test.error.stack = '<no stack trace>';
+            }
             result += `${this.color.red} ${test.name}\n\n${test.error.message}\n${test.error.stack}`;
           }
           result +=
@@ -68,6 +76,9 @@ class SpecReporter {
   async generateTestReport(testFile, sessionsForTestFile) {
     let results = '';
     sessionsForTestFile.forEach((session) => {
+      if (session.testResults === undefined) {
+        return session.status + '\n\n';
+      }
       results += session.testResults.suites
         .map((suite) => this.outputSuite(suite, ''))
         .join('\n\n');
@@ -101,7 +112,7 @@ class SpecReporter {
 /** @type {import('@web/test-runner').TestRunnerConfig} */
 export default {
   coverageConfig: {
-    exclude: ['**/.snowpack/**/*', '**/*.test.ts*'],
+    exclude: ['**/snowpack/**/*', '**/*.test.ts*'],
   },
   browsers: [
     puppeteerLauncher({
@@ -125,7 +136,7 @@ export default {
     </html>`,
   reporters: [
     // Gives overall test progress across all tests.
-    defaultReporter({ reportTestResults: false, reportTestProgress: true }),
+    defaultReporter({ reportTestResults: true, reportTestProgress: true }),
     // Gives detailed description of chai test spec results.
     new SpecReporter().specReporter(),
   ],

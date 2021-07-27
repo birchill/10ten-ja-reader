@@ -24,7 +24,7 @@
     "prettier:format": "npm run prettier:base --silent -- --write",
     "stylelint:check": "stylelint '**/*.css' '**/*.ts' --ignore-path '.gitignore'",
     "stylelint:fix": "npm run stylelint:check --silent -- --fix",
-    "test": "wtr \"extension/**/*test*\"",
+    "test": "wtr \"extension/test/*test*\"",
     "test:watch": "npm run test -- --watch",
     "update-db": "ts-node --project tsconfig_node.json utils/update-db"
   },

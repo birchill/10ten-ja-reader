@@ -45,7 +45,7 @@ const config = {
 
 if (process.env.NODE_ENV === 'test') {
   // Add sourcemaps for easy debugging.
-  config.buildOptions.sourcemap = true;
+  config.buildOptions.sourcemap = 'inline';
   // Remove plugin which replaces test only exports.
   config.plugins = [];
 }
