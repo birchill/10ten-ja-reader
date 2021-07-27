@@ -201,7 +201,7 @@ function completeForm() {
     const popupPreview = document.createElement('div');
     popupPreview.setAttribute('id', 'tenten-ja-window');
     popupPreview.classList.add('popup-preview');
-    popupPreview.classList.add(`-${theme}`);
+    popupPreview.classList.add(`theme-${theme}`);
     label.appendChild(popupPreview);
     const entry = document.createElement('div');
     entry.classList.add('entry');

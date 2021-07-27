@@ -19,7 +19,7 @@
  * Theme - light
  */
 
-.window.-light {
+.theme-light {
   --text-color: #1d1a19;
   --bg-color: #fefef2;
   --border-color: #b1ad96;
@@ -45,22 +45,22 @@
   --status-bg: var(--cell-highlight-bg);
 }
 
-.window.-light .w-def .tag-fem,
-.window.-light .w-def .w-dial {
+.window.theme-light .w-def .tag-fem,
+.window.theme-light .w-def .w-dial {
   background: #f24b5922;
   color: #7a282f;
   --tag-border: #f24b5966;
 }
 
-.window.-light .w-def .tag-masc,
-.window.-light .w-def .w-misc {
+.window.theme-light .w-def .tag-masc,
+.window.theme-light .w-def .w-misc {
   background: #2698fb22;
   color: #144977;
   --tag-border: #2698fbaa;
 }
 
-.window.-light .w-def .tag-place,
-.window.-light .w-def .w-field {
+.window.theme-light .w-def .tag-place,
+.window.theme-light .w-def .w-field {
   background: #43a04722;
   color: #215723;
   --tag-border: #43a047aa;
@@ -70,7 +70,7 @@
  * Theme - blue
  */
 
-.window.-blue {
+.theme-blue {
   --text-color: white;
   --bg-color: #446ea0;
   --border-color: #17588e;
@@ -99,7 +99,7 @@
  * Theme - black
  */
 
-.window.-black {
+.theme-black {
   --text-color: white;
   --bg-color: #1d1a19;
   --border-color: #999493;
@@ -124,7 +124,7 @@
   --meta-bg: rgba(255, 255, 255, 0.2);
 }
 
-.window.-black .kanji-table:not(.-copy) .kanji {
+.window.theme-black .kanji-table:not(.-copy) .kanji {
   text-shadow: rgba(255, 255, 255, 0.2) 1px 1px 4px;
 }
 
@@ -132,7 +132,7 @@
  * Theme - lightblue
  */
 
-.window.-lightblue {
+.theme-lightblue {
   --text-color: #1d1a19;
   --bg-color: #e3f2fe;
   --border-color: #65b7fc;
@@ -161,7 +161,7 @@
  * Theme - yellow
  */
 
-.window.-yellow {
+.theme-yellow {
   --text-color: #1d1a19;
   --bg-color: #fff8bf;
   --border-color: #ffd600;

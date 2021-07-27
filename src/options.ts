@@ -161,7 +161,7 @@ function renderPopupPreview(theme: string): HTMLElement {
   const popupPreview = document.createElement('div');
   popupPreview.classList.add('popup-preview');
   popupPreview.classList.add('window');
-  popupPreview.classList.add(`-${theme}`);
+  popupPreview.classList.add(`theme-${theme}`);
 
   const entry = document.createElement('div');
   entry.classList.add('entry');

@@ -24,6 +24,7 @@ import {
   CopyKanjiKeyStrings,
   CopyNextKeyStrings,
 } from './copy-keys';
+import { isTouchDevice, probablyHasPhysicalKeyboard } from './device';
 import { convertMeasure, MeasureMeta } from './measure';
 import { SelectionMeta } from './meta';
 import { NamePreview, QueryResult } from './query';
@@ -34,10 +35,10 @@ import {
 } from './refs';
 import { NameResult, Sense, WordResult } from './search-result';
 import { SVG_NS } from './svg';
+import { getThemeClass } from './themes';
 import { EraInfo, EraMeta, getEraInfo } from './years';
 
 import popupStyles from '../css/popup.css';
-import { isTouchDevice, probablyHasPhysicalKeyboard } from './device';
 
 export const enum CopyState {
   Inactive,
@@ -205,15 +206,7 @@ function resetContainer({
   windowDiv.classList.add('window');
 
   // Set theme
-  if (popupStyle !== 'default') {
-    windowDiv.classList.add(`-${popupStyle}`);
-  } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    // We don't bother registering an event listener for the
-    // prefers-color-scheme media query since the popup is so short-lived.
-    windowDiv.classList.add('-black');
-  } else {
-    windowDiv.classList.add('-light');
-  }
+  windowDiv.classList.add(getThemeClass(popupStyle));
 
   // Set touch status
   if (isTouchDevice()) {
@@ -256,12 +249,12 @@ export function setPopupStyle(style: string) {
   }
 
   for (const className of windowElem.classList.values()) {
-    if (className.startsWith('-')) {
+    if (className.startsWith('theme-')) {
       windowElem.classList.remove(className);
     }
   }
 
-  windowElem.classList.add(`-${style}`);
+  windowElem.classList.add(getThemeClass(style));
 }
 
 function getPopupWindow(): HTMLElement | null {
