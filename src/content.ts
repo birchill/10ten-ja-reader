@@ -196,6 +196,10 @@ export class ContentHandler {
   // Manual positioning support
   private popupPositionMode: PopupPositionMode = PopupPositionMode.Auto;
 
+  // A puck can optionally be associated with the ContentHandler at any moment
+  // to be considered in popup positioning calculations.
+  public puck: RikaiPuck | null = null;
+
   constructor(config: ContentConfig) {
     this.config = config;
     this.textHighlighter = new TextHighlighter();
@@ -1265,6 +1269,9 @@ export class ContentHandler {
     }
 
     // Position the popup
+    // FIXME: make popup avoid earth, moon (this.currentPoint - which may be above or below the earth),
+    // thumb, and maybe safe area (we don't want it slipping under notch - though is that even possible?).
+    // So at the very least, make an exclusion zone around the moon (this.currentPoint) and earth.
     const {
       x: popupX,
       y: popupY,
@@ -1501,6 +1508,8 @@ declare global {
       puck.enable();
     }
 
+    contentHandler.puck = puck;
+
     // If we are running in "activeTab" mode we will get passed our tab ID
     // so we can set up a Port which will allow the background script to
     // know when we disappear so it can update the browser action status.
@@ -1523,6 +1532,7 @@ declare global {
   function disable() {
     if (contentHandler) {
       contentHandler.detach();
+      contentHandler.puck = null;
       contentHandler = null;
     }
 
