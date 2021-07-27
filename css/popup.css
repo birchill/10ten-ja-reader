@@ -187,8 +187,8 @@
 
 /* Tab bar on the side */
 
-.window[data-tab-side='left'],
-.window[data-tab-side='right'] {
+.window[data-tab-side='left']:not(.hidden),
+.window[data-tab-side='right']:not(.hidden) {
   display: flex;
 }
 
