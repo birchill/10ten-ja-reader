@@ -1615,23 +1615,23 @@
     "message": "显示罗马字"
   },
   "options_tab_position_label": {
-    "message": "标签位置",
+    "message": "标签栏位置",
     "description": "Heading for the radio buttons to choose the popup tab position"
   },
   "options_tab_position_left": {
-    "message": "左",
+    "message": "左端",
     "description": "Text label for the radio button to show tabs on the right"
   },
   "options_tab_position_none": {
-    "message": "无",
+    "message": "不显示标签",
     "description": "Text label for the radio button to hide tabs"
   },
   "options_tab_position_right": {
-    "message": "右",
+    "message": "右端",
     "description": "Text label for the radio button to show tabs on the right"
   },
   "options_tab_position_top": {
-    "message": "向上",
+    "message": "上端",
     "description": "Text label for the radio button to show tabs on top"
   },
   "options_update_check_button_label": {
