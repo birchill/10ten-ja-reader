@@ -1044,6 +1044,11 @@ export class ContentHandler {
       onClosePopup: () => {
         this.clearHighlight(this.currentTarget);
       },
+      onShowSettings: () => {
+        browser.runtime.sendMessage({ type: 'options' }).catch(() => {
+          // Ignore
+        });
+      },
       onSwitchDictionary: (dict: MajorDataSeries) => {
         this.showDictionary(dict);
       },

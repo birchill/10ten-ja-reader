@@ -135,10 +135,12 @@
   pointer-events: none;
 }
 
+.window:not(.touch) .settings,
 .window:not(.touch) .close {
   display: none;
 }
 
+.tab-bar .settings,
 .tab-bar .close {
   flex-shrink: 0;
   align-self: center;
@@ -155,32 +157,51 @@
  * a) The close button is a child of the tab bar
  * b) The close button is a child of the window
  */
+.settings-button,
 .close .close-button {
   appearance: none;
   border: none;
   line-height: 1;
   padding: 6px;
   border-radius: 20px;
-  background: var(--bg-color);
   color: var(--text-color);
 }
 
+.settings-button {
+  background: transparent;
+}
+
+.settings-button:hover,
+.close .close-button {
+  background: var(--bg-color);
+}
+
+.settings-button:hover,
 .close .close-button:hover {
   filter: brightness(1.1);
 }
 
+.settings-button svg,
 .close .close-button svg {
   display: block;
   width: 15px;
   height: 15px;
   stroke: currentColor;
-  stroke-width: 5px;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-opacity: 0.7;
   fill: none;
 }
 
+.settings-button svg {
+  stroke-width: 2px;
+}
+
+.close .close-button svg {
+  stroke-width: 5px;
+}
+
+.settings-button:hover svg,
 .close .close-button:hover svg {
   stroke-opacity: 1;
 }
@@ -205,6 +226,15 @@
 .window[data-tab-side='right'] .tab-bar .tabs {
   display: flex;
   flex-direction: column;
+}
+
+.window[data-tab-side='left'] .tab-bar .settings,
+.window[data-tab-side='right'] .tab-bar .settings {
+  margin-bottom: 0.5em;
+}
+
+.window[data-tab-side='top'] .tab-bar .close {
+  margin-left: 1em;
 }
 
 .window[data-tab-side='left'] .tab-bar .close,

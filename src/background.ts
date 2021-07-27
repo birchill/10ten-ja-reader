@@ -508,6 +508,9 @@ browser.runtime.onMessage.addListener(
     }
 
     switch (request.type) {
+      case 'options':
+        return browser.runtime.openOptionsPage();
+
       case 'search':
         if (pendingSearchRequest) {
           pendingSearchRequest.abort();

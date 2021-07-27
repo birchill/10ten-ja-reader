@@ -33,6 +33,16 @@ export function isEnableQueryRequest(a: unknown): a is EnableQueryRequest {
 }
 
 //
+// Options request
+//
+
+export type OptionsRequest = { type: 'options' };
+
+export function isOptionsRequest(a: unknown): a is OptionsRequest {
+  return isRequestObject(a) && a.type === 'options';
+}
+
+//
 // Report warning request
 //
 
@@ -150,6 +160,7 @@ export function isToggleDefinitionRequest(
 export type BackgroundRequest =
   | DisabledRequest
   | EnableQueryRequest
+  | OptionsRequest
   | ReportWarningRequest
   | SearchRequest
   | SwitchedDictionaryRequest
@@ -160,6 +171,7 @@ export function isBackgroundRequest(a: unknown): a is BackgroundRequest {
   return (
     isDisabledRequest(a) ||
     isEnableQueryRequest(a) ||
+    isOptionsRequest(a) ||
     isReportWarningRequest(a) ||
     isSwitchedDictionaryRequest(a) ||
     isSearchRequest(a) ||

@@ -1671,9 +1671,6 @@
       }
     }
   },
-  "options_warning_language_is_kanji_only": {
-    "message": "この設定は現在漢字辞典のみに適用されます。"
-  },
   "options_words_data_name": {
     "message": "単語データ",
     "description": "The name for the words database data set"
@@ -1691,6 +1688,10 @@
   "popup_close_label": {
     "message": "閉じる",
     "description": "The aria-label associated with the button to close the popup"
+  },
+  "popup_settings_label": {
+    "message": "設定",
+    "description": "The aria-label associated with the button to open the settings panel from the popup"
   },
   "pos_label_adj_f": {
     "message": "連体",

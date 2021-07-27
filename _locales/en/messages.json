@@ -1690,6 +1690,10 @@
     "message": "Close",
     "description": "The aria-label associated with the button to close the popup"
   },
+  "popup_settings_label": {
+    "message": "Settings",
+    "description": "The aria-label associated with the button to open the settings panel from the popup"
+  },
   "pos_label_adj_f": {
     "message": "pre-noun adj.",
     "description": "Short part-of-speech label shown next to noun or verb entries acting prenominally"

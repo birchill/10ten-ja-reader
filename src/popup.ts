@@ -63,6 +63,7 @@ export interface PopupOptions {
   kanjiReferences: Array<ReferenceAbbreviation>;
   meta?: SelectionMeta;
   onClosePopup?: () => void;
+  onShowSettings?: () => void;
   onSwitchDictionary?: (newDict: MajorDataSeries) => void;
   posDisplay: PartOfSpeechDisplay;
   popupStyle: string;
@@ -97,6 +98,7 @@ export function renderPopup(
     windowElem.append(
       renderTabBar({
         onClosePopup: options.onClosePopup,
+        onShowSettings: options.onShowSettings,
         onSwitchDictionary: options.onSwitchDictionary,
         queryResult: result,
         selectedTab: options.dictToShow,
@@ -281,11 +283,13 @@ export function isPopupWindow(target: EventTarget | null): boolean {
 
 function renderTabBar({
   onClosePopup,
+  onShowSettings,
   onSwitchDictionary,
   queryResult,
   selectedTab,
 }: {
   onClosePopup?: () => void;
+  onShowSettings?: () => void;
   onSwitchDictionary?: (newDict: MajorDataSeries) => void;
   queryResult: QueryResult | null;
   selectedTab: MajorDataSeries;
@@ -338,11 +342,58 @@ function renderTabBar({
   }
   tabBar.append(list);
 
+  if (onShowSettings) {
+    tabBar.append(renderSettingsButton(onShowSettings));
+  }
+
   if (onClosePopup) {
     tabBar.append(renderCloseButton(onClosePopup));
   }
 
   return tabBar;
+}
+
+function renderSettingsButton(onShowSettings: () => void): HTMLElement {
+  const settings = document.createElement('div');
+  settings.classList.add('settings');
+
+  const settingsButton = document.createElement('button');
+  settingsButton.classList.add('settings-button');
+  settingsButton.type = 'button';
+  settingsButton.setAttribute(
+    'aria-label',
+    browser.i18n.getMessage('popup_settings_label')
+  );
+  settingsButton.onclick = onShowSettings;
+  settings.append(settingsButton);
+
+  const settingsSvg = document.createElementNS(SVG_NS, 'svg');
+  settingsSvg.setAttribute('viewBox', '0 0 24 24');
+
+  const circle1 = document.createElementNS(SVG_NS, 'circle');
+  circle1.setAttribute('cx', '21.5');
+  circle1.setAttribute('cy', '21.5');
+  circle1.setAttribute('r', '1.5');
+  circle1.style.fill = 'currentColor';
+  circle1.style.stroke = 'none';
+  settingsSvg.append(circle1);
+
+  const circle2 = document.createElementNS(SVG_NS, 'circle');
+  circle2.setAttribute('cx', '12');
+  circle2.setAttribute('cy', '12');
+  circle2.setAttribute('r', '4');
+  settingsSvg.append(circle2);
+
+  const path = document.createElementNS(SVG_NS, 'path');
+  path.setAttribute(
+    'd',
+    'M10.48 3.28a2 2 0 003 0 2.05 2.05 0 013.57 1.48 2.05 2.05 0 002.15 2.15 2.05 2.05 0 011.48 3.57 2 2 0 000 3 2.05 2.05 0 01-1.48 3.57 2.05 2.05 0 00-2.15 2.15 2.05 2.05 0 01-3.57 1.48 2 2 0 00-3 0 2.05 2.05 0 01-3.57-1.48 2.05 2.05 0 00-2.15-2.15 2.05 2.05 0 01-1.48-3.57 2 2 0 000-3 2.05 2.05 0 011.48-3.57 2.05 2.05 0 002.15-2.15 2.05 2.05 0 013.57-1.48z'
+  );
+  settingsSvg.append(path);
+
+  settingsButton.append(settingsSvg);
+
+  return settings;
 }
 
 function renderCloseButton(onClosePopup: () => void): HTMLElement {
