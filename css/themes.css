@@ -104,7 +104,7 @@
   --bg-color: #1d1a19;
   --border-color: #999493;
 
-  --primary-highlight: #1bf;
+  --primary-highlight: #3fa8de;
   --reading-highlight: #7beb7e;
   --conj-color: #817470;
 
@@ -122,6 +122,12 @@
 
   --status-bg: rgba(255, 255, 255, 0.2);
   --meta-bg: rgba(255, 255, 255, 0.2);
+}
+
+.window.theme-black .w-def .tag-masc,
+.window.theme-black .w-def .w-misc {
+  --tag-blue: #2698fb88;
+  --tag-border: rgba(255, 255, 255, 0.3);
 }
 
 .window.theme-black .kanji-table:not(.-copy) .kanji {
