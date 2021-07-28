@@ -31,11 +31,11 @@
             <div class="toolbaricon-select" id="toolbaricon-select">
               <input type="radio" name="toolbarIcon" value="default" id="toolbaricon-default" />
               <label for="toolbaricon-default">
-                <img src="/images/10ten.svg" alt="__MSG_options_toolbar_icon_default_alt" class="icon" />
+                <img src="/images/10ten.svg" alt="__MSG_options_toolbar_icon_default_alt__" class="icon" />
               </label>
               <input type="radio" name="toolbarIcon" value="sky" id="toolbaricon-sky" />
               <label for="toolbaricon-sky">
-                <img src="/images/10ten-sky.svg" alt="__MSG_options_toolbar_icon_sky_alt" class="icon" />
+                <img src="/images/10ten-sky.svg" alt="__MSG_options_toolbar_icon_sky_alt__" class="icon" />
               </label>
             </div>
           </fieldset>
