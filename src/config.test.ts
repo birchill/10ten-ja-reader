@@ -181,6 +181,7 @@ describe('Config', () => {
     expect(config.showPriority).toEqual(true);
     expect(config.showRomaji).toEqual(false);
     expect(config.tabDisplay).toEqual('top');
+    expect(config.toolbarIcon).toEqual('default');
   });
 
   it('reports changes to all listeners', async () => {

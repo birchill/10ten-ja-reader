@@ -2,6 +2,8 @@
 
 - Added an option to display tabs on the sides or hide them altogether
   ([#688](https://github.com/birchill/10ten-ja-reader/discussions/688)).
+- Added an option to change the toolbar icon to a 天 character instead
+  ([#689](https://github.com/birchill/10ten-ja-reader/discussions/689)).
 - Made katakana name matches show up in the name preview
 
 ## 1.1.4 (2021-07-23) (Firefox)

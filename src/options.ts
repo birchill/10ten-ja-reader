@@ -82,6 +82,18 @@ function completeForm() {
       config.contextMenuEnable = (evt.target as HTMLInputElement).checked;
     });
 
+  const toolbarIconOptions = Array.from(
+    document.querySelectorAll('input[type=radio][name=toolbarIcon]')
+  );
+  for (const option of toolbarIconOptions) {
+    option.addEventListener('change', (evt) => {
+      const toolbarIcon = (evt.target as HTMLInputElement).value as
+        | 'default'
+        | 'sky';
+      config.toolbarIcon = toolbarIcon;
+    });
+  }
+
   document.getElementById('showPriority')!.addEventListener('click', (evt) => {
     config.showPriority = (evt.target as HTMLInputElement).checked;
     renderPopupStyleSelect();
@@ -747,6 +759,7 @@ function fillVals() {
   optform.showKanjiComponents.checked = config.showKanjiComponents;
   optform.popupStyle.value = config.popupStyle;
   optform.tabDisplay.value = config.tabDisplay;
+  optform.toolbarIcon.value = config.toolbarIcon;
 
   getConfiguredToggleKeyValue()
     .then((toggleCommand) => {

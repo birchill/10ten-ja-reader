@@ -7,12 +7,14 @@ interface BrowserActionState {
   enabled: boolean;
   jpdictState: JpdictStateWithFallback;
   tabId: number | undefined;
+  toolbarIcon: 'default' | 'sky';
 }
 
 export function updateBrowserAction({
   enabled,
   jpdictState,
   tabId,
+  toolbarIcon,
 }: BrowserActionState) {
   let iconFilename = '10ten-disabled';
   let titleStringId = 'command_toggle_disabled';
@@ -67,6 +69,11 @@ export function updateBrowserAction({
           ? 'command_toggle_downloading'
           : 'command_toggle_updating';
       break;
+  }
+
+  // Apply the variant, if needed
+  if (toolbarIcon === 'sky') {
+    iconFilename += '-sky';
   }
 
   // Set the icon

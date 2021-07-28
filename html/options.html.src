@@ -26,6 +26,19 @@
             <label for=contextMenuEnable
               >__MSG_options_show_context_menu_item__</label>
           </div>
+          <p>__MSG_options_toolbar_icon_label__</p>
+          <fieldset>
+            <div class="toolbaricon-select" id="toolbaricon-select">
+              <input type="radio" name="toolbarIcon" value="default" id="toolbaricon-default" />
+              <label for="toolbaricon-default">
+                <img src="/images/10ten.svg" alt="__MSG_options_toolbar_icon_default_alt" class="icon" />
+              </label>
+              <input type="radio" name="toolbarIcon" value="sky" id="toolbaricon-sky" />
+              <label for="toolbaricon-sky">
+                <img src="/images/10ten-sky.svg" alt="__MSG_options_toolbar_icon_sky_alt" class="icon" />
+              </label>
+            </div>
+          </fieldset>
         </div>
         <div class="panel-section panel-section-header">
           <h2 class=text-section-header>__MSG_options_popup_style_heading__</h2>

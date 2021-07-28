@@ -99,10 +99,6 @@ tabManager.addListener(async (enabled: boolean, tabId: number | undefined) => {
     initJpDict();
   }
 
-  // Update browser action
-  updateBrowserAction({ enabled, jpdictState, tabId });
-
-  // Update context menu
   try {
     await config.ready;
   } catch (e) {
@@ -110,6 +106,15 @@ tabManager.addListener(async (enabled: boolean, tabId: number | undefined) => {
     return;
   }
 
+  // Update browser action with enabled state
+  updateBrowserAction({
+    enabled,
+    jpdictState,
+    tabId,
+    toolbarIcon: config.toolbarIcon,
+  });
+
+  // Update context menu
   if (config.contextMenuEnable) {
     try {
       await browser.contextMenus.update('context-toggle', {
@@ -127,7 +132,23 @@ tabManager.addListener(async (enabled: boolean, tabId: number | undefined) => {
 
 const config = new Config();
 
-config.addChangeListener((changes) => {
+config.addChangeListener(async (changes) => {
+  // Update toolbar icon as needed
+  if (changes.hasOwnProperty('toolbarIcon')) {
+    const toolbarIcon = changes.toolbarIcon.newValue as 'default' | 'sky';
+    // Update all the different windows separately since they may have differing
+    // enabled states.
+    const enabledStates = await tabManager.getEnabledState();
+    for (const tabState of enabledStates) {
+      updateBrowserAction({
+        enabled: tabState.enabled,
+        jpdictState,
+        tabId: tabState.tabId,
+        toolbarIcon,
+      });
+    }
+  }
+
   // Add / remove context menu as needed
   if (changes.hasOwnProperty('contextMenuEnable')) {
     if ((changes as any).contextMenuEnable.newValue) {
@@ -206,6 +227,7 @@ async function onDbStatusUpdated(state: JpdictStateWithFallback) {
       enabled: tabState.enabled,
       jpdictState: state,
       tabId: tabState.tabId,
+      toolbarIcon: config.toolbarIcon,
     });
   }
 

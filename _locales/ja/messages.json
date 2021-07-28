@@ -1637,6 +1637,18 @@
     "message": "上",
     "description": "Text label for the radio button to show tabs on top"
   },
+  "options_toolbar_icon_default_alt": {
+    "message": "既定",
+    "description": "Alt text for the default toolbar icon"
+  },
+  "options_toolbar_icon_label": {
+    "message": "ツールバーアイコン",
+    "description": "Heading for the radio buttons to choose the toolbar icon"
+  },
+  "options_toolbar_icon_sky_alt": {
+    "message": "天",
+    "description": "Alt text for the 天 toolbar icon"
+  },
   "options_update_check_button_label": {
     "message": "更新を確認",
     "description": "Label for the button to check for database updates"

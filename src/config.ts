@@ -70,6 +70,7 @@ interface Settings {
   showPriority?: boolean;
   showRomaji?: boolean;
   tabDisplay?: TabDisplay;
+  toolbarIcon?: 'default' | 'sky';
 }
 
 type StorageChange = {
@@ -223,8 +224,9 @@ export class Config {
         // the `newValue` of. We don't have a convenient means of fetching the
         // default value to fill in the oldValue, but we don't currently need
         // it either.
-        case 'popupStyle':
         case 'contextMenuEnable':
+        case 'popupStyle':
+        case 'toolbarIcon':
           updatedChanges[key] = { ...changes[key] };
           if (
             typeof updatedChanges[key].newValue === 'undefined' ||
@@ -629,7 +631,7 @@ export class Config {
     browser.storage.sync.set({ showRomaji: value });
   }
 
-  // tabDisplay: Defaults to top
+  // tabDisplay: Defaults to 'top'
 
   get tabDisplay(): TabDisplay {
     return typeof this._settings.tabDisplay === 'undefined'
@@ -639,14 +641,46 @@ export class Config {
 
   set tabDisplay(value: TabDisplay) {
     if (
-      typeof this._settings.tabDisplay !== 'undefined' &&
-      this._settings.tabDisplay === value
+      (typeof this._settings.tabDisplay !== 'undefined' &&
+        this._settings.tabDisplay === value) ||
+      (typeof this._settings.tabDisplay === 'undefined' && value === 'top')
     ) {
       return;
     }
 
-    this._settings.tabDisplay = value;
-    browser.storage.sync.set({ tabDisplay: value });
+    if (value !== 'top') {
+      this._settings.tabDisplay = value;
+      browser.storage.sync.set({ tabDisplay: value });
+    } else {
+      this._settings.tabDisplay = undefined;
+      browser.storage.sync.remove('tabDisplay');
+    }
+  }
+
+  // toolbarIcon: Defaults to 'default'
+
+  get toolbarIcon(): 'default' | 'sky' {
+    return typeof this._settings.toolbarIcon === 'undefined'
+      ? 'default'
+      : this._settings.toolbarIcon;
+  }
+
+  set toolbarIcon(value: 'default' | 'sky') {
+    if (
+      (typeof this._settings.toolbarIcon !== 'undefined' &&
+        this._settings.toolbarIcon === value) ||
+      (typeof this._settings.toolbarIcon === 'undefined' && value === 'default')
+    ) {
+      return;
+    }
+
+    if (value !== 'default') {
+      this._settings.toolbarIcon = value;
+      browser.storage.sync.set({ toolbarIcon: value });
+    } else {
+      this._settings.toolbarIcon = undefined;
+      browser.storage.sync.remove('toolbarIcon');
+    }
   }
 
   // Get all the options the content process cares about at once
