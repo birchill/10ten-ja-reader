@@ -153,6 +153,10 @@ Then:
 1. Choose Distribute App.
 1. App Store Connect.
 1. Upload.
+
+If you get `No Accounts with "App Store Connect" Access for team` at this point
+restarting XCode should fix it.
+
 1. (Default options for the next couple of dialogs.)
 1. Upload (again).
 
