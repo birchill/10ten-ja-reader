@@ -136,9 +136,36 @@ config.addChangeListener(async (changes) => {
   // Update toolbar icon as needed
   if (changes.hasOwnProperty('toolbarIcon')) {
     const toolbarIcon = changes.toolbarIcon.newValue as 'default' | 'sky';
+
     // Update all the different windows separately since they may have differing
     // enabled states.
     const enabledStates = await tabManager.getEnabledState();
+
+    // If we are targetting individual tabs, however, first update the default
+    // icon for all tabs.
+    if (
+      !enabledStates.length ||
+      typeof enabledStates[0].tabId !== 'undefined'
+    ) {
+      updateBrowserAction({
+        // The default icon should be the disabled state
+        enabled: false,
+        jpdictState: {
+          words: {
+            state: DataSeriesState.Ok,
+            version: null,
+            fallbackState: 'ok',
+          },
+          kanji: { state: DataSeriesState.Ok, version: null },
+          radicals: { state: DataSeriesState.Ok, version: null },
+          names: { state: DataSeriesState.Ok, version: null },
+          updateState: { state: 'idle', lastCheck: null },
+        },
+        tabId: undefined,
+        toolbarIcon,
+      });
+    }
+
     for (const tabState of enabledStates) {
       updateBrowserAction({
         enabled: tabState.enabled,
