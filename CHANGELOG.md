@@ -1,4 +1,4 @@
-## Next version
+## v1.2.0 (2021-07-29) (Firefox, Chrome, Safari, Edge)
 
 - Added an option to display tabs on the sides or hide them altogether
   ([#688](https://github.com/birchill/10ten-ja-reader/discussions/688)).
