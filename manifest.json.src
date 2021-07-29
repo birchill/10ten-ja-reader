@@ -96,6 +96,9 @@
     "images/warning-red.svg",
     "images/warning-yellow.svg"
   ],
+  /*#if supports_offline_enabled_field */
+  "offline_enabled": true,
+  /*#endif*/
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {

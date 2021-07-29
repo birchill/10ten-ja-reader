@@ -156,6 +156,7 @@ const chromeConfig = buildExtConfig({
   needsClipboardWrite: false,
   supportsChromeStyle: true,
   supportsMatchAboutBlank: true,
+  supportsOfflineEnabledField: true,
   target: 'chromium',
 });
 
@@ -210,6 +211,7 @@ function buildExtConfig({
   supportsBrowserStyle = false,
   supportsChromeStyle = false,
   supportsMatchAboutBlank = false,
+  supportsOfflineEnabledField = false,
   supportsSvgIcons = false,
   supportsTabContextType = false,
   target,
@@ -259,6 +261,10 @@ function buildExtConfig({
 
   if (supportsMatchAboutBlank) {
     preprocessorFeatures.push('supports_match_about_blank');
+  }
+
+  if (supportsOfflineEnabledField) {
+    preprocessorFeatures.push('supports_offline_enabled_field');
   }
 
   if (supportsSvgIcons) {
