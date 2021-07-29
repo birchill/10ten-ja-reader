@@ -52,7 +52,7 @@ import Browser, { browser } from 'webextension-polyfill-ts';
 
 import TabManager from './all-tab-manager';
 import { isBackgroundRequest, SearchRequest } from './background-request';
-import { updateBrowserAction } from './browser-action';
+import { setDefaultToolbarIcon, updateBrowserAction } from './browser-action';
 import { startBugsnag } from './bugsnag';
 import { Config } from './config';
 import {
@@ -147,23 +147,7 @@ config.addChangeListener(async (changes) => {
       !enabledStates.length ||
       typeof enabledStates[0].tabId !== 'undefined'
     ) {
-      updateBrowserAction({
-        // The default icon should be the disabled state
-        enabled: false,
-        jpdictState: {
-          words: {
-            state: DataSeriesState.Ok,
-            version: null,
-            fallbackState: 'ok',
-          },
-          kanji: { state: DataSeriesState.Ok, version: null },
-          radicals: { state: DataSeriesState.Ok, version: null },
-          names: { state: DataSeriesState.Ok, version: null },
-          updateState: { state: 'idle', lastCheck: null },
-        },
-        tabId: undefined,
-        toolbarIcon,
-      });
+      setDefaultToolbarIcon(config.toolbarIcon);
     }
 
     for (const tabState of enabledStates) {
@@ -197,6 +181,12 @@ config.addChangeListener(async (changes) => {
 });
 
 config.ready.then(async () => {
+  // If we have a non-default toolbar icon, set it for all tabs now so that
+  // when we open a new tab, etc. it will be set correctly.
+  if (config.toolbarIcon !== 'default') {
+    setDefaultToolbarIcon(config.toolbarIcon);
+  }
+
   // Initialize the tab manager first since we'll need its enabled state for
   // a number of other things.
   await tabManager.init(config.contentConfig);

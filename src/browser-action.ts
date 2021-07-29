@@ -126,3 +126,32 @@ export function updateBrowserAction({
     tabId,
   });
 }
+
+// This will clobber any existing icon settings so it is only intended
+// to be used on startup (when no existing icon is already set) or when the icon
+// setting is changed (in which case we will update the browser action for
+// enabled tabs immediately afterwards anyway).
+export function setDefaultToolbarIcon(toolbarIcon: 'default' | 'sky') {
+  let iconFilename = '10ten-disabled';
+
+  // Apply the variant, if needed
+  if (toolbarIcon === 'sky') {
+    iconFilename += '-sky';
+  }
+
+  // Set the icon
+  //
+  // We'd like to feature-detect if SVG icons are supported but Safari will
+  // just fail silently if we try.
+  if (__SUPPORTS_SVG_ICONS__) {
+    browser.browserAction.setIcon({ path: `images/${iconFilename}.svg` });
+  } else {
+    browser.browserAction.setIcon({
+      path: {
+        16: `images/${iconFilename}-16.png`,
+        32: `images/${iconFilename}-32.png`,
+        48: `images/${iconFilename}-48.png`,
+      },
+    });
+  }
+}
