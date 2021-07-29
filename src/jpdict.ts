@@ -186,12 +186,14 @@ export async function initDb({
         break;
 
       case 'error':
-        Bugsnag.notify(
-          { name: message.name, message: message.message },
-          (event) => {
+        {
+          const error = new Error(message.message);
+          error.name = message.name;
+          error.stack = message.stack;
+          Bugsnag.notify(error, (event) => {
             event.severity = message.severity as 'error' | 'warning';
-          }
-        );
+          });
+        }
         break;
     }
   };

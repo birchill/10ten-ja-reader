@@ -45,6 +45,7 @@ export const notifyError = ({
   type: <const>'error',
   severity,
   ...serializeError(error),
+  stack: error.stack,
 });
 
 export type JpdictWorkerMessage =
