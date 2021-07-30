@@ -59,7 +59,7 @@
     "chai": "^4.3.4",
     "combined-stream2": "^1.1.2",
     "copy-webpack-plugin": "^9.0.1",
-    "css-loader": "^5.2.6",
+    "css-loader": "^6.2.0",
     "fast-glob": "^3.2.7",
     "file-loader": "^6.2.0",
     "iconv-lite": "^0.6.3",
