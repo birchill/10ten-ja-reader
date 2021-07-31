@@ -1280,6 +1280,7 @@ export class ContentHandler {
     } = getPopupPosition({
       doc,
       isVerticalText: !!this.currentTargetProps?.isVerticalText,
+      puck: this.puck,
       mousePos: this.currentPoint,
       positionMode: this.popupPositionMode,
       popupSize: {
