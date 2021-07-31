@@ -1,4 +1,5 @@
 import { Point } from './geometry';
+import type { RikaiPuck } from './puck';
 
 export const enum PopupPositionMode {
   Start,
@@ -9,12 +10,13 @@ export const enum PopupPositionMode {
 }
 
 // Minimum space to leave between the edge of the pop-up and the edge of the
-// window.
+// stage.
 const GUTTER = 5;
 
 export function getPopupPosition({
   doc,
   isVerticalText,
+  puck,
   mousePos,
   popupSize,
   positionMode,
@@ -22,6 +24,7 @@ export function getPopupPosition({
 }: {
   doc: Document;
   isVerticalText: boolean;
+  puck: RikaiPuck | null;
   mousePos?: Point;
   popupSize: { width: number; height: number };
   positionMode: PopupPositionMode;
@@ -35,42 +38,48 @@ export function getPopupPosition({
   const { scrollX, scrollY } = doc.defaultView!;
   // Use the clientWidth (as opposed to doc.defaultView.innerWidth) since this
   // excludes the width of any scrollbars.
-  const windowWidth = doc.documentElement.clientWidth;
-  // For the height, however, we need to be careful because in quirks mode the
-  // body has the viewport height.
-  const windowHeight =
-    doc.compatMode === 'BackCompat'
-      ? doc.body?.clientHeight || doc.defaultView!.innerHeight
-      : doc.documentElement.clientHeight;
+  const stageWidth = doc.documentElement.clientWidth;
+
+  // For the height, however, we need to be careful because:
+  // - in quirks mode, the body has the viewport height;
+  // - when the puck is in use, we must consider the safe area insets, and thus
+  //   doc.defaultView.innerHeight must be used. See comments in puck.ts, in the
+  //   getViewportDimensions() function, for more details.
+  const stageHeight = puck
+    ? doc.defaultView!.innerHeight
+    : doc.compatMode === 'BackCompat'
+    ? doc.body?.clientHeight || doc.defaultView!.innerHeight
+    : doc.documentElement.clientHeight;
 
   if (positionMode === PopupPositionMode.Auto) {
     return getAutoPosition({
       isVerticalText,
+      puck,
       mousePos,
       popupSize,
       scrollX,
       scrollY,
       targetHasTitle,
-      windowWidth,
-      windowHeight,
+      stageWidth,
+      stageHeight,
     });
   }
 
-  const availableWindowHeight = windowHeight - 2 * GUTTER;
+  const availableStageHeight = stageHeight - 2 * GUTTER;
 
   const left = scrollX + GUTTER;
   const top = scrollY + GUTTER;
-  const right = scrollX + windowWidth - popupSize.width - GUTTER;
+  const right = scrollX + stageWidth - popupSize.width - GUTTER;
   const bottom =
     scrollY +
-    windowHeight -
-    Math.min(popupSize.height, availableWindowHeight) -
+    stageHeight -
+    Math.min(popupSize.height, availableStageHeight) -
     GUTTER;
 
   // We could calculate a value for constrainHeight as something like:
   //
-  //   constrainHeight = popupSize.height > availableWindowHeight
-  //                     ? availableWindowHeight
+  //   constrainHeight = popupSize.height > availableStageHeight
+  //                     ? availableStageHeight
   //                     : null;
   //
   // and we'd get the nice fade effect to show in that case, but it's probably
@@ -98,22 +107,24 @@ export function getPopupPosition({
 
 function getAutoPosition({
   isVerticalText,
+  puck,
   mousePos,
   popupSize,
   scrollX,
   scrollY,
   targetHasTitle,
-  windowWidth,
-  windowHeight,
+  stageWidth,
+  stageHeight,
 }: {
   isVerticalText: boolean;
+  puck: RikaiPuck | null;
   mousePos?: Point;
   popupSize: { width: number; height: number };
   scrollX: number;
   scrollY: number;
   targetHasTitle: boolean;
-  windowWidth: number;
-  windowHeight: number;
+  stageWidth: number;
+  stageHeight: number;
 }): {
   x: number;
   y: number;
@@ -130,9 +141,9 @@ function getAutoPosition({
   // should, I believe, be positive.)
   let inline = isVerticalText ? y : x;
   const inlinePopupSize = isVerticalText ? popupSize.height : popupSize.width;
-  const inlineWindowSize = isVerticalText ? windowHeight : windowWidth;
-  if (inline + inlinePopupSize > inlineWindowSize - GUTTER) {
-    inline = inlineWindowSize - inlinePopupSize - GUTTER;
+  const inlineStageSize = isVerticalText ? stageHeight : stageWidth;
+  if (inline + inlinePopupSize > inlineStageSize - GUTTER) {
+    inline = inlineStageSize - inlinePopupSize - GUTTER;
     if (inline < 0) {
       inline = 0;
     }
@@ -147,14 +158,14 @@ function getAutoPosition({
     blockAdjust += 20;
   }
 
-  // Check if we are too close to the window edge (bottom / right)...
+  // Check if we are too close to the stage edge (bottom / right)...
   let block = isVerticalText ? x : y;
   const blockPopupSize = isVerticalText ? popupSize.width : popupSize.height;
-  const blockWindowSize = isVerticalText ? windowWidth : windowHeight;
+  const blockStageSize = isVerticalText ? stageWidth : stageHeight;
   let constrainBlockSize: number | null = null;
-  if (block + blockAdjust + blockPopupSize > blockWindowSize) {
+  if (block + blockAdjust + blockPopupSize > blockStageSize) {
     // ...we are. See if the other side has more room.
-    const spaceOnThisSide = blockWindowSize - block;
+    const spaceOnThisSide = blockStageSize - block;
     const spaceOnOtherSide = block;
     if (spaceOnOtherSide > spaceOnThisSide) {
       blockAdjust = Math.max(-blockPopupSize - 25, -block);
