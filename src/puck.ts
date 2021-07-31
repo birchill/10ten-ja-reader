@@ -11,7 +11,7 @@ interface ViewportDimensions {
   viewportHeight: number;
 }
 
-interface SafeAreaInsets {
+export interface SafeAreaInsets {
   top: number;
   right: number;
   bottom: number;
@@ -24,8 +24,11 @@ export class RikaiPuck {
   private enabled = false;
   private puckX: number;
   private puckY: number;
-  private puckWidth: number;
-  private puckHeight: number;
+  private earthWidth: number;
+  private earthHeight: number;
+  private earthScaleFactorWhenDragging: number;
+  private moonWidth: number;
+  private moonHeight: number;
   /**
    * The translateY value to apply to the moon when it is orbiting above the earth.
    * Expressed as an absolute (positive) value.
@@ -59,7 +62,7 @@ export class RikaiPuck {
     const { viewportWidth } = this.getViewportDimensions(
       this.puck?.ownerDocument || document
     );
-    const midpointOfPuck = this.puckX + this.puckWidth / 2;
+    const midpointOfPuck = this.puckX + this.earthWidth / 2;
     const horizontalPortion = midpointOfPuck / viewportWidth;
 
     // Let the target drift by up to 45 degrees in either direction.
@@ -89,6 +92,31 @@ export class RikaiPuck {
     }
   }
 
+  public getPuckDimensions() {
+    const minorVerticalPortionOfPuckAboutMouseEvent = this.moonHeight / 2;
+    const majorVerticalPortionOfPuckAboutMouseEvent =
+      Math.abs(this.targetOffset.y) +
+      (this.earthScaleFactorWhenDragging * this.earthHeight) / 2;
+
+    return {
+      // The mouse event is emitted at the centre of the moon.
+      puckAboveMouseEvent:
+        this.targetOrientation === 'above'
+          ? minorVerticalPortionOfPuckAboutMouseEvent
+          : majorVerticalPortionOfPuckAboutMouseEvent,
+      puckBelowMouseEvent:
+        this.targetOrientation === 'above'
+          ? majorVerticalPortionOfPuckAboutMouseEvent
+          : minorVerticalPortionOfPuckAboutMouseEvent,
+      puckLeftOfMouseEvent:
+        (this.earthScaleFactorWhenDragging * this.earthWidth) / 2 +
+        this.targetOffset.x,
+      puckRightOfMouseEvent:
+        (this.earthScaleFactorWhenDragging * this.earthWidth) / 2 -
+        this.targetOffset.x,
+    };
+  }
+
   private getViewportDimensions(document: Document): ViewportDimensions {
     if (this.cachedViewportDimensions) {
       return this.cachedViewportDimensions;
@@ -100,10 +128,13 @@ export class RikaiPuck {
      * iOS 15 Safari doesn't behave suitably for that.
      *
      * iOS 15 Safari:
+     *
      * - seems to measure its safe area insets from the area defined by
      *   document.defaultView.innerHeight and .innerWidth.
-     * - decreases both document.defaultView.innerHeight and the safe-area-inset-bottom
-     *   in compact mode, and vice versa in non-compact mode.
+     *
+     * - decreases both document.defaultView.innerHeight and the
+     *   safe-area-inset-bottom in compact mode, and vice versa in non-compact
+     *   mode.
      *
      * @see https://github.com/shirakaba/10ten-ja-reader/pull/3#issuecomment-875127566
      */
@@ -115,12 +146,16 @@ export class RikaiPuck {
     return this.cachedViewportDimensions;
   }
 
-  private getSafeArea(safeAreaEnvProvider: HTMLElement): SafeAreaInsets {
+  public getSafeArea(): SafeAreaInsets | undefined {
+    if (!this.puck) {
+      return undefined;
+    }
+
     if (this.cachedSafeAreaInsets) {
       return this.cachedSafeAreaInsets;
     }
 
-    const computedStyle = getComputedStyle(safeAreaEnvProvider);
+    const computedStyle = getComputedStyle(this.puck);
 
     this.cachedSafeAreaInsets = {
       top:
@@ -154,16 +189,16 @@ export class RikaiPuck {
       right: safeAreaRight,
       bottom: safeAreaBottom,
       left: safeAreaLeft,
-    } = this.getSafeArea(this.puck);
+    } = this.getSafeArea()!;
 
     const { viewportWidth, viewportHeight } = this.getViewportDimensions(
       this.puck.ownerDocument
     );
 
     const minX = safeAreaLeft;
-    const maxX = viewportWidth - safeAreaRight - this.puckWidth;
+    const maxX = viewportWidth - safeAreaRight - this.earthWidth;
     const minY = safeAreaTop;
-    const maxY = viewportHeight - safeAreaBottom - this.puckHeight;
+    const maxY = viewportHeight - safeAreaBottom - this.earthHeight;
 
     this.setPosition(
       Math.min(Math.max(minX, x), maxX),
@@ -174,8 +209,8 @@ export class RikaiPuck {
   private readonly onWindowPointerMove = (event: PointerEvent) => {
     if (
       !this.puck ||
-      !this.puckWidth ||
-      !this.puckHeight ||
+      !this.earthWidth ||
+      !this.earthHeight ||
       !this.enabled ||
       !this.isBeingDragged
     ) {
@@ -186,14 +221,19 @@ export class RikaiPuck {
 
     const { clientX, clientY } = event;
 
+    // Translate the midpoint of the earth to the position of the pointer event.
+    // This updates the moon offset
     this.setPositionWithinSafeArea(
-      clientX - this.puckWidth / 2,
-      clientY - this.puckHeight / 2
+      clientX - this.earthWidth / 2,
+      clientY - this.earthHeight / 2
     );
 
-    // Work out where we want to lookup
-    const targetX = this.puckX + this.puckWidth / 2 + this.targetOffset.x;
-    const targetY = this.puckY + this.puckHeight / 2 + this.targetOffset.y;
+    // Before applying the transformations to the earth and the moon, they
+    // both share the same midpoint.
+    // Work out the midpoint of the moon post-transformations. This is where
+    // we'll fire the mousemove event to trigger a lookup.
+    const targetX = this.puckX + this.earthWidth / 2 + this.targetOffset.x;
+    const targetY = this.puckY + this.earthHeight / 2 + this.targetOffset.y;
 
     // Make sure the target is an actual element since the mousemove handler
     // expects that.
@@ -233,19 +273,20 @@ export class RikaiPuck {
       this.puck.style.pointerEvents = 'revert';
       this.puck.classList.remove('dragging');
 
-      // Update the target orientation if the puck was parked low down on the screen.
+      // Update the target orientation if the puck was parked low down on the
+      // screen.
       const { viewportHeight } = this.getViewportDimensions(
         this.puck?.ownerDocument || document
       );
 
-      const { bottom: safeAreaBottom } = this.getSafeArea(this.puck);
+      const { bottom: safeAreaBottom } = this.getSafeArea()!;
 
       // The distance from the bottom of the earth (which can only travel within the safe area)
       // to the centre of the moon (which is the point from which the mouse events are fired).
       // This is effectively the height of the "blind spot" that a puck supporting only the "above" orientation would have.
       const activePuckVerticalExtent =
-        this.puckHeight +
-        (this.targetAbsoluteOffsetYAbove - this.puckHeight / 2);
+        this.earthHeight +
+        (this.targetAbsoluteOffsetYAbove - this.earthHeight / 2);
       this.targetOrientation =
         this.puckY >= viewportHeight - safeAreaBottom - activePuckVerticalExtent
           ? 'below'
@@ -289,11 +330,27 @@ export class RikaiPuck {
     // Set theme styles
     this.puck.classList.add(getThemeClass(theme));
 
-    // Calculate the puck size
-    if (!this.puckWidth || !this.puckHeight) {
-      const { width, height } = this.puck.getBoundingClientRect();
-      this.puckWidth = width;
-      this.puckHeight = height;
+    // Calculate the earth size (which is equal to the puck's overall size)
+    if (!this.earthWidth || !this.earthHeight) {
+      const { width, height } = earth.getBoundingClientRect();
+      this.earthWidth = width;
+      this.earthHeight = height;
+    }
+
+    // Calculate the moon size
+    if (!this.moonWidth || !this.moonHeight) {
+      const { width, height } = moon.getBoundingClientRect();
+      this.moonWidth = width;
+      this.moonHeight = height;
+    }
+
+    if (typeof this.earthScaleFactorWhenDragging === 'undefined') {
+      this.earthScaleFactorWhenDragging =
+        parseFloat(
+          getComputedStyle(earth).getPropertyValue(
+            '--scale-factor-when-dragging'
+          )
+        ) || 0;
     }
 
     if (
@@ -362,12 +419,12 @@ export class RikaiPuck {
     }
 
     for (const className of this.puck.classList.values()) {
-      if (className.startsWith('-')) {
+      if (className.startsWith('theme-')) {
         this.puck.classList.remove(className);
       }
     }
 
-    this.puck.classList.add(`-${theme}`);
+    this.puck.classList.add(`theme-${theme}`);
   }
 
   unmount(): void {

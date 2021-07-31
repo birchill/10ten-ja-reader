@@ -37,10 +37,11 @@
   width: 50px;
   height: 50px;
   transition: transform 0.3s;
+  --scale-factor-when-dragging: 1.2;
 }
 
 .puck.dragging .earth {
-  transform: scale(1.2);
+  transform: scale(var(--scale-factor-when-dragging));
 }
 
 .moon {
@@ -82,7 +83,7 @@
    * bottom of the viewport. Hopefully this covers the worst-case scenario.
    * @see https://github.com/shirakaba/10ten-ja-reader/pull/5#issuecomment-877794905
    */
-  --extra-altitude-to-clear-ios-15-safari-safe-area-activation-zone: 20px;
+  --extra-altitude-to-clear-ios-15-safari-safe-area-activation-zone: 30px;
 
   transform: translate(var(--rest-x-offset), var(--rest-y-offset));
   transition: transform 0.1s;
