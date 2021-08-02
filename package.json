@@ -69,7 +69,7 @@
     "byline": "^5.0.0",
     "conventional-changelog-conventionalcommits": "^4.6.0",
     "csv-parse": "^4.16.0",
-    "esbuild": "^0.12.16",
+    "esbuild": "^0.12.17",
     "eslint": "^7.32.0",
     "eslint-plugin-lit": "^1.5.1",
     "eslint-plugin-mocha": "^9.0.0",
@@ -98,7 +98,7 @@
     "typescript": "^4.3.5"
   },
   "resolutions": {
-    "esbuild": "0.12.16"
+    "esbuild": "0.12.17"
   },
   "release": {
     "plugins": [
