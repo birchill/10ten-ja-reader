@@ -1,3 +1,13 @@
+:root.firefox {
+  /*
+   * Stop Firefox's scrollbars from disappearing and re-appearing triggering
+   * possible infinite updates.
+   *
+   * See: https://github.com/birchill/10ten-ja-reader/issues/708
+   */
+  overflow: hidden;
+}
+
 /*
  * Reproduce some styles from Firefox's browser_styles for other browsers' sake
  */

@@ -1,3 +1,8 @@
+## Next version
+
+- Fixed a case where the options page would flicker incessantly
+  ([#708](https://github.com/birchill/10ten-ja-reader/discussions/708)).
+
 ## v1.2.0 (2021-07-29) (Firefox, Chrome, Safari, Edge)
 
 - Added an option to display tabs on the sides or hide them altogether
