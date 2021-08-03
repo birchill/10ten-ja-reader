@@ -34,6 +34,7 @@ describe('contentHandler:highlighting', () => {
       showKanjiComponents: true,
       showPriority: true,
       showRomaji: true,
+      tabDisplay: 'top',
     };
     subject = new ContentHandler(config);
 
