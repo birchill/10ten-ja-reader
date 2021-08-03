@@ -2,20 +2,14 @@ import {
   getOrCreateEmptyContainer,
   removeContentContainer,
 } from './content-container';
+import { PaddingBox } from './geometry';
+import { getThemeClass } from './themes';
 
 import puckStyles from '../css/puck.css';
-import { getThemeClass } from './themes';
 
 interface ViewportDimensions {
   viewportWidth: number;
   viewportHeight: number;
-}
-
-export interface SafeAreaInsets {
-  top: number;
-  right: number;
-  bottom: number;
-  left: number;
 }
 
 export class RikaiPuck {
@@ -46,7 +40,7 @@ export class RikaiPuck {
   private targetOffset: { x: number; y: number } = { x: 0, y: 0 };
   private targetOrientation: 'above' | 'below' = 'above';
   private cachedViewportDimensions: ViewportDimensions | null = null;
-  private cachedSafeAreaInsets: SafeAreaInsets | null = null;
+  private cachedSafeAreaInsets: PaddingBox | null = null;
   private isBeingDragged: boolean = false;
 
   private setPosition(x: number, y: number) {
@@ -146,7 +140,7 @@ export class RikaiPuck {
     return this.cachedViewportDimensions;
   }
 
-  public getSafeArea(): SafeAreaInsets | undefined {
+  public getSafeArea(): PaddingBox | undefined {
     if (!this.puck) {
       return undefined;
     }
