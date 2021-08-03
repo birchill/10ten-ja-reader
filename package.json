@@ -8,7 +8,7 @@
     "build:edge": "webpack --env target=edge",
     "build:safari": "webpack --env target=safari",
     "check-keys": "ts-node utils/check-keys",
-    "lint": "web-ext lint",
+    "lint": "web-ext lint -w",
     "package": "webpack --env package",
     "package:firefox": "webpack --env package",
     "package:chrome": "webpack --env target=chrome --env package",
