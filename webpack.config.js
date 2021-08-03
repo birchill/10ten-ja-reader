@@ -397,6 +397,7 @@ function buildExtConfig({
     },
     output: {
       path: path.resolve(__dirname, distFolder),
+      publicPath: '/',
       filename: '[name].js',
     },
     plugins,
