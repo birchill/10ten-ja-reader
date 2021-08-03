@@ -1103,9 +1103,25 @@ export class ContentHandler {
     } else {
       popup.style.left = `${popupX}px`;
       popup.style.top = `${popupY}px`;
-      popup.style.maxWidth = constrainWidth ? `${constrainWidth}px` : 'none';
-      popup.style.maxHeight = constrainHeight ? `${constrainHeight}px` : 'none';
+
+      // If we are constraining the width we reach into the popup and set it on
+      // the window itself. That way the popup has a chance to try to respond to
+      // the width (as opposed to simply being clipped).
+      if (constrainWidth) {
+        const popupWindow =
+          popup.shadowRoot?.querySelector<HTMLDivElement>('.window');
+        if (popupWindow) {
+          popupWindow.style.maxWidth = `${constrainWidth}px`;
+        }
+      }
+
+      // If we are constraining the height, however, we just clip it at the
+      // bottom and fade it out. That's normally fine because we'll just clip
+      // the less important entries.
       if (constrainHeight) {
+        popup.style.maxHeight = constrainHeight
+          ? `${constrainHeight}px`
+          : 'none';
         popup.style.maskImage =
           'linear-gradient(to bottom, black 99%, transparent)';
       } else {
