@@ -1,5 +1,4 @@
-import { Point } from './geometry';
-import type { SafeAreaInsets } from './puck';
+import { MarginBox, PaddingBox, Point } from './geometry';
 
 export const enum PopupPositionMode {
   Start,
@@ -23,14 +22,14 @@ export function getPopupPosition({
   preferredSide,
   safeArea: initialSafeArea,
 }: {
-  cursorClearance: SafeAreaInsets;
+  cursorClearance: MarginBox;
   doc: Document;
   isVerticalText: boolean;
   mousePos?: Point;
   popupSize: { width: number; height: number };
   positionMode: PopupPositionMode;
   preferredSide: 'above' | 'below';
-  safeArea: SafeAreaInsets;
+  safeArea: PaddingBox;
 }): PopupPosition {
   const { scrollX, scrollY } = doc.defaultView!;
 
@@ -138,12 +137,12 @@ function getAutoPosition({
   stageWidth,
   stageHeight,
 }: {
-  cursorClearance: SafeAreaInsets;
+  cursorClearance: MarginBox;
   isVerticalText: boolean;
   mousePos?: Point;
   popupSize: { width: number; height: number };
   preferredSide: 'above' | 'below';
-  safeArea: SafeAreaInsets;
+  safeArea: PaddingBox;
   scrollX: number;
   scrollY: number;
   stageWidth: number;
@@ -241,7 +240,7 @@ function getAboveOrBelowPosition({
   safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
   target,
 }: {
-  cursorClearance: SafeAreaInsets;
+  cursorClearance: MarginBox;
   marginToPopup: number;
   popupSize: { width: number; height: number };
   position: 'above' | 'below';
@@ -251,7 +250,7 @@ function getAboveOrBelowPosition({
     safeTop: number;
     safeBottom: number;
   };
-  target: { x: number; y: number };
+  target: Point;
 }): PopupPosition | undefined {
   // Horizontal position
   const idealX = target.x;
@@ -298,7 +297,7 @@ function getLeftOrRightPosition({
   safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
   target,
 }: {
-  cursorClearance: SafeAreaInsets;
+  cursorClearance: MarginBox;
   marginToPopup: number;
   popupSize: { width: number; height: number };
   position: 'left' | 'right';
@@ -308,7 +307,7 @@ function getLeftOrRightPosition({
     safeTop: number;
     safeBottom: number;
   };
-  target: { x: number; y: number };
+  target: Point;
 }): PopupPosition | undefined {
   // Horizontal position
   let x;
