@@ -81,7 +81,7 @@ import {
   setPopupStyle,
 } from './popup';
 import { getPopupPosition, PopupPositionMode } from './popup-position';
-import { removePuck, RikaiPuck } from './puck';
+import { PuckRenderOptions, removePuck, RikaiPuck } from './puck';
 import { query, QueryResult } from './query';
 import { isForeignObjectElement, isSvgDoc, isSvgSvgElement } from './svg';
 import { stripFields } from './strip-fields';
@@ -206,9 +206,8 @@ export class ContentHandler {
   // Manual positioning support
   private popupPositionMode: PopupPositionMode = PopupPositionMode.Auto;
 
-  // A puck can optionally be associated with the ContentHandler at any moment
-  // to be considered in popup positioning calculations.
-  public puck: RikaiPuck | null = null;
+  // Consulted in order to determine popup positioning
+  private puck: RikaiPuck | null = new RikaiPuck();
 
   constructor(config: ContentConfig) {
     this.config = config;
@@ -241,6 +240,17 @@ export class ContentHandler {
         '*'
       );
     }
+  }
+
+  postInitializePuck(renderOptions: PuckRenderOptions) {
+    let puck: RikaiPuck;
+    if (this.puck) {
+      puck = this.puck;
+    } else {
+      this.puck = puck = new RikaiPuck();
+    }
+    puck.render(renderOptions);
+    puck.enable();
   }
 
   setConfig(config: Readonly<ContentConfig>) {
@@ -1579,11 +1589,10 @@ declare global {
       removePopup();
       removePuck();
       contentHandler = new ContentHandler(config);
-
-      const puck = new RikaiPuck();
-      puck.render({ doc: document, theme: config.popupStyle });
-      puck.enable();
-      contentHandler.puck = puck;
+      contentHandler.postInitializePuck({
+        doc: document,
+        theme: config.popupStyle,
+      });
     }
 
     // If we are running in "activeTab" mode we will get passed our tab ID

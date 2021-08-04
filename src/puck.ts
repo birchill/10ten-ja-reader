@@ -12,6 +12,11 @@ interface ViewportDimensions {
   viewportHeight: number;
 }
 
+export interface PuckRenderOptions {
+  doc: Document;
+  theme: string;
+}
+
 export class RikaiPuck {
   public static id: string = 'tenten-ja-puck';
   private puck: HTMLDivElement | undefined;
@@ -299,7 +304,7 @@ export class RikaiPuck {
     this.setPositionWithinSafeArea(this.puckX, this.puckY);
   };
 
-  render({ doc, theme }: { doc: Document; theme: string }): void {
+  render({ doc, theme }: PuckRenderOptions): void {
     // Set up shadow tree
     const container = getOrCreateEmptyContainer({
       doc,
