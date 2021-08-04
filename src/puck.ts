@@ -17,6 +17,16 @@ export interface PuckRenderOptions {
   theme: string;
 }
 
+export function isPuckMouseEvent(
+  mouseEvent: MouseEvent
+): mouseEvent is PuckMouseEvent {
+  return !!(mouseEvent as PuckMouseEvent).fromPuck;
+}
+
+export interface PuckMouseEvent extends MouseEvent {
+  fromPuck: true;
+}
+
 export class RikaiPuck {
   public static id: string = 'tenten-ja-puck';
   private puck: HTMLDivElement | undefined;
@@ -238,14 +248,16 @@ export class RikaiPuck {
     // expects that.
     const target = document.elementFromPoint(targetX, targetY);
     if (target) {
-      target.dispatchEvent(
-        new MouseEvent('mousemove', {
-          // Make sure the event bubbles up to the listener on the window
-          bubbles: true,
-          clientX: targetX,
-          clientY: targetY,
-        })
-      );
+      const mouseEvent = new MouseEvent('mousemove', {
+        // Make sure the event bubbles up to the listener on the window
+        bubbles: true,
+        clientX: targetX,
+        clientY: targetY,
+      });
+
+      (mouseEvent as PuckMouseEvent).fromPuck = true;
+
+      target.dispatchEvent(mouseEvent);
     }
   };
 
