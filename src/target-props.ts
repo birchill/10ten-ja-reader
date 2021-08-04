@@ -6,9 +6,10 @@ import { TextRange } from './text-range';
 /// so that we can correctly position the popup in a way that doesn't overlap
 /// the element.
 export type TargetProps = {
+  fromPuck: boolean;
   hasTitle: boolean;
-  textBoxSizes?: SelectionSizes;
   isVerticalText: boolean;
+  textBoxSizes?: SelectionSizes;
 };
 
 // A range of t-shirt sizes for the first part of the text selection.
@@ -32,14 +33,17 @@ export const textBoxSizeLengths: ReadonlyArray<keyof SelectionSizes> = [
   4, 8, 12, 16,
 ];
 
-export function getTargetElementProps({
+export function getTargetProps({
+  fromPuck,
   target,
   textRange,
 }: {
+  fromPuck: boolean;
   target: Element;
   textRange: TextRange | undefined;
 }): TargetProps {
   return {
+    fromPuck,
     hasTitle: !!((target as HTMLElement) || null)?.title,
     textBoxSizes: textRange
       ? getInitialBboxOfTextSelection(textRange)
