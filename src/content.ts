@@ -88,6 +88,11 @@ import {
   RikaiPuck,
 } from './puck';
 import { query, QueryResult } from './query';
+import {
+  removeSafeAreaProvider,
+  SafeAreaProvider,
+  SafeAreaProviderRenderOptions,
+} from './safe-area-provider';
 import { isForeignObjectElement, isSvgDoc, isSvgSvgElement } from './svg';
 import { stripFields } from './strip-fields';
 import { getBestFitSize, getTargetProps, TargetProps } from './target-props';
@@ -96,6 +101,10 @@ import { TextRange, textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
 import { getTopMostWindow, isTopMostWindow } from './top-window';
 import { BackgroundMessageSchema } from './background-message';
+
+interface SetUpPuckOptions extends PuckRenderOptions {
+  safeAreaProvider: SafeAreaProvider;
+}
 
 export class ContentHandler {
   // The content script is injected into every frame in a page but we delegate
@@ -207,8 +216,11 @@ export class ContentHandler {
   // Manual positioning support
   private popupPositionMode: PopupPositionMode = PopupPositionMode.Auto;
 
+  // Consulted in order to determine safe area
+  private safeAreaProvider: SafeAreaProvider | null = new SafeAreaProvider();
+
   // Consulted in order to determine popup positioning
-  private puck: RikaiPuck | null = new RikaiPuck();
+  private puck: RikaiPuck | null = null;
 
   constructor(config: ContentConfig) {
     this.config = config;
@@ -243,15 +255,31 @@ export class ContentHandler {
     }
   }
 
-  postInitializePuck(renderOptions: PuckRenderOptions) {
+  setUpPuck(setUpPuckOptions: SetUpPuckOptions) {
+    const { safeAreaProvider, ...renderOptions } = setUpPuckOptions;
+
     let puck: RikaiPuck;
     if (this.puck) {
       puck = this.puck;
     } else {
-      this.puck = puck = new RikaiPuck();
+      this.puck = puck = new RikaiPuck(safeAreaProvider);
     }
     puck.render(renderOptions);
     puck.enable();
+  }
+
+  setUpSafeAreaProvider(
+    renderOptions: SafeAreaProviderRenderOptions
+  ): SafeAreaProvider {
+    let safeAreaProvider: SafeAreaProvider;
+    if (this.safeAreaProvider) {
+      safeAreaProvider = this.safeAreaProvider;
+    } else {
+      this.safeAreaProvider = safeAreaProvider = new SafeAreaProvider();
+    }
+    safeAreaProvider.render(renderOptions);
+    safeAreaProvider.enable();
+    return safeAreaProvider;
   }
 
   setConfig(config: Readonly<ContentConfig>) {
@@ -284,9 +312,12 @@ export class ContentHandler {
     this.copyMode = false;
     this.puck?.unmount();
     this.puck = null;
+    this.safeAreaProvider?.unmount();
+    this.safeAreaProvider = null;
 
     removePopup();
     removePuck();
+    removeSafeAreaProvider();
   }
 
   onMouseMove(ev: MouseEvent) {
@@ -1312,15 +1343,8 @@ export class ContentHandler {
     }
 
     // Position the popup
-    //
-    // FIXME: make popup avoid earth, moon (this.currentPoint - which may be
-    // above or below the earth), thumb, and maybe safe area (we don't want it
-    // slipping under notch - though is that even possible?).  So at the very
-    // least, make an exclusion zone around the moon (this.currentPoint) and
-    // earth.
 
-    // TODO: Make this get the safe area even when we're not using the puck.
-    const safeArea = this.puck?.getSafeArea() || {
+    const safeArea = this.safeAreaProvider?.getSafeArea() || {
       top: 0,
       right: 0,
       left: 0,
@@ -1593,8 +1617,13 @@ declare global {
       // or puck hanging around so make sure to clear it.
       removePopup();
       removePuck();
+      removeSafeAreaProvider();
       contentHandler = new ContentHandler(config);
-      contentHandler.postInitializePuck({
+      const safeAreaProvider = contentHandler.setUpSafeAreaProvider({
+        doc: document,
+      });
+      contentHandler.setUpPuck({
+        safeAreaProvider,
         doc: document,
         theme: config.popupStyle,
       });
