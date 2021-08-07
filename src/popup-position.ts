@@ -21,6 +21,7 @@ export function getPopupPosition({
   positionMode,
   preferredSide,
   safeArea: initialSafeArea,
+  pointerType,
 }: {
   cursorClearance: MarginBox;
   doc: Document;
@@ -30,6 +31,7 @@ export function getPopupPosition({
   positionMode: PopupPositionMode;
   preferredSide: 'above' | 'below';
   safeArea: PaddingBox;
+  pointerType: 'cursor' | 'puck';
 }): PopupPosition {
   const { scrollX, scrollY } = doc.defaultView!;
 
@@ -75,6 +77,7 @@ export function getPopupPosition({
       scrollY,
       stageWidth,
       stageHeight,
+      pointerType,
     });
   }
 
@@ -136,6 +139,7 @@ function getAutoPosition({
   scrollY,
   stageWidth,
   stageHeight,
+  pointerType,
 }: {
   cursorClearance: MarginBox;
   isVerticalText: boolean;
@@ -147,6 +151,7 @@ function getAutoPosition({
   scrollY: number;
   stageWidth: number;
   stageHeight: number;
+  pointerType: 'cursor' | 'puck';
 }): PopupPosition {
   const x = mousePos?.x || 0;
   const y = mousePos?.y || 0;
@@ -156,38 +161,30 @@ function getAutoPosition({
   const safeBottom = stageHeight - safeArea.bottom;
 
   const marginToPopup = 25;
+  const commonPositioningArgs = {
+    cursorClearance,
+    marginToPopup,
+    popupSize,
+    safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
+    target: { x, y },
+    pointerType,
+  };
 
   const popupAboveLayout = getAboveOrBelowPosition({
-    cursorClearance,
-    marginToPopup,
-    popupSize,
+    ...commonPositioningArgs,
     position: 'above',
-    safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
-    target: { x, y },
   });
   const popupRightLayout = getLeftOrRightPosition({
-    cursorClearance,
-    marginToPopup,
-    popupSize,
+    ...commonPositioningArgs,
     position: 'right',
-    safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
-    target: { x, y },
   });
   const popupLeftLayout = getLeftOrRightPosition({
-    cursorClearance,
-    marginToPopup,
-    popupSize,
+    ...commonPositioningArgs,
     position: 'left',
-    safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
-    target: { x, y },
   });
   const popupBelowLayout = getAboveOrBelowPosition({
-    cursorClearance,
-    marginToPopup,
-    popupSize,
+    ...commonPositioningArgs,
     position: 'below',
-    safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
-    target: { x, y },
   });
 
   // Build up preferred order for considering each layout
@@ -201,8 +198,8 @@ function getAutoPosition({
     : [...belowAndAbovePreference, ...leftAndRightPreference];
 
   // We generally prefer to use a layout in the block direction
-  const orthogonalLayouts = orderOfPreference.slice(0, 2);
-  const preferredLayoutWithoutBlockConstraint = orthogonalLayouts.find(
+  const blockLayouts = orderOfPreference.slice(0, 2);
+  const preferredLayoutWithoutBlockConstraint = blockLayouts.find(
     (l) => l && (isVerticalText ? l.constrainWidth : l.constrainHeight) === null
   );
 
@@ -239,6 +236,7 @@ function getAboveOrBelowPosition({
   popupSize,
   safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
   target,
+  pointerType,
 }: {
   cursorClearance: MarginBox;
   marginToPopup: number;
@@ -251,6 +249,7 @@ function getAboveOrBelowPosition({
     safeBottom: number;
   };
   target: Point;
+  pointerType: 'cursor' | 'puck';
 }): PopupPosition | undefined {
   // Horizontal position
   const idealX = target.x;
@@ -286,7 +285,17 @@ function getAboveOrBelowPosition({
     constrainHeight = y + popupSize.height > safeBottom ? safeBottom - y : null;
   }
 
-  return { x, y, constrainWidth, constrainHeight };
+  return {
+    x,
+    y,
+    constrainWidth,
+    // When using the cursor, the user can scroll the viewport without
+    // dismissing the popup so we don't need to constrain it. However, if we're
+    // positioning the popup above the pointer, we don't want it to cover the
+    // pointer so we should constrain it in that case.
+    constrainHeight:
+      position === 'below' && pointerType === 'cursor' ? null : constrainHeight,
+  };
 }
 
 function getLeftOrRightPosition({
@@ -296,6 +305,7 @@ function getLeftOrRightPosition({
   popupSize,
   safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
   target,
+  pointerType,
 }: {
   cursorClearance: MarginBox;
   marginToPopup: number;
@@ -308,6 +318,7 @@ function getLeftOrRightPosition({
     safeBottom: number;
   };
   target: Point;
+  pointerType: 'cursor' | 'puck';
 }): PopupPosition | undefined {
   // Horizontal position
   let x;
@@ -347,7 +358,14 @@ function getLeftOrRightPosition({
   const constrainHeight =
     y + popupSize.height > safeBottom ? safeBottom - safeTop : null;
 
-  return { x, y, constrainWidth, constrainHeight };
+  return {
+    x,
+    y,
+    constrainWidth,
+    // When using the cursor, the user can scroll the viewport without
+    // dismissing the popup so we don't need to constrain it.
+    constrainHeight: pointerType === 'cursor' ? null : constrainHeight,
+  };
 }
 
 function sizeComparator(popupSize: { width: number; height: number }) {
