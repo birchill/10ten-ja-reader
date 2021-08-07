@@ -1397,6 +1397,7 @@ export class ContentHandler {
       },
       preferredSide: this.currentTargetProps?.fromPuck ? 'above' : 'below',
       safeArea,
+      pointerType: this.currentTargetProps?.fromPuck ? 'puck' : 'cursor',
     });
 
     if (
