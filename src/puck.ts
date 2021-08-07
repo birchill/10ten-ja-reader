@@ -2,7 +2,7 @@ import {
   getOrCreateEmptyContainer,
   removeContentContainer,
 } from './content-container';
-import { PaddingBox } from './geometry';
+import type { SafeAreaProvider } from './safe-area-provider';
 import { getThemeClass } from './themes';
 
 import puckStyles from '../css/puck.css';
@@ -55,8 +55,15 @@ export class RikaiPuck {
   private targetOffset: { x: number; y: number } = { x: 0, y: 0 };
   private targetOrientation: 'above' | 'below' = 'above';
   private cachedViewportDimensions: ViewportDimensions | null = null;
-  private cachedSafeAreaInsets: PaddingBox | null = null;
   private isBeingDragged: boolean = false;
+
+  constructor(private safeAreaProvider: SafeAreaProvider) {}
+
+  /** @see SafeAreaConsumerDelegate */
+  onSafeAreaUpdated(): void {
+    this.cachedViewportDimensions = null;
+    this.setPositionWithinSafeArea(this.puckX, this.puckY);
+  }
 
   private setPosition(x: number, y: number) {
     this.puckX = x;
@@ -155,39 +162,6 @@ export class RikaiPuck {
     return this.cachedViewportDimensions;
   }
 
-  public getSafeArea(): PaddingBox | undefined {
-    if (!this.puck) {
-      return undefined;
-    }
-
-    if (this.cachedSafeAreaInsets) {
-      return this.cachedSafeAreaInsets;
-    }
-
-    const computedStyle = getComputedStyle(this.puck);
-
-    this.cachedSafeAreaInsets = {
-      top:
-        parseFloat(
-          computedStyle.getPropertyValue('--tenten-puck-safe-area-inset-top')
-        ) || 0,
-      right:
-        parseFloat(
-          computedStyle.getPropertyValue('--tenten-puck-safe-area-inset-right')
-        ) || 0,
-      bottom:
-        parseFloat(
-          computedStyle.getPropertyValue('--tenten-puck-safe-area-inset-bottom')
-        ) || 0,
-      left:
-        parseFloat(
-          computedStyle.getPropertyValue('--tenten-puck-safe-area-inset-left')
-        ) || 0,
-    };
-
-    return this.cachedSafeAreaInsets;
-  }
-
   private setPositionWithinSafeArea(x: number, y: number) {
     if (!this.puck) {
       return;
@@ -198,7 +172,12 @@ export class RikaiPuck {
       right: safeAreaRight,
       bottom: safeAreaBottom,
       left: safeAreaLeft,
-    } = this.getSafeArea()!;
+    } = this.safeAreaProvider.getSafeArea() || {
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+    };
 
     const { viewportWidth, viewportHeight } = this.getViewportDimensions(
       this.puck.ownerDocument
@@ -290,7 +269,13 @@ export class RikaiPuck {
         this.puck?.ownerDocument || document
       );
 
-      const { bottom: safeAreaBottom } = this.getSafeArea()!;
+      const { bottom: safeAreaBottom } =
+        this.safeAreaProvider.getSafeArea() || {
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+        };
 
       // The distance from the bottom of the earth (which can only travel within the safe area)
       // to the centre of the moon (which is the point from which the mouse events are fired).
@@ -308,12 +293,6 @@ export class RikaiPuck {
     window.removeEventListener('pointermove', this.onWindowPointerMove);
     window.removeEventListener('pointerup', this.stopDraggingPuck);
     window.removeEventListener('pointercancel', this.stopDraggingPuck);
-  };
-
-  private readonly onWindowResize = (event: UIEvent) => {
-    this.cachedViewportDimensions = null;
-    this.cachedSafeAreaInsets = null;
-    this.setPositionWithinSafeArea(this.puckX, this.puckY);
   };
 
   render({ doc, theme }: PuckRenderOptions): void {
@@ -419,7 +398,6 @@ export class RikaiPuck {
 
     // Add event listeners
     if (this.enabled) {
-      window.addEventListener('resize', this.onWindowResize);
       this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
     }
   }
@@ -446,16 +424,16 @@ export class RikaiPuck {
 
   enable(): void {
     this.enabled = true;
+    this.safeAreaProvider.delegate = this;
     if (this.puck) {
-      window.addEventListener('resize', this.onWindowResize);
       this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
     }
   }
 
   disable(): void {
     this.enabled = false;
+    this.safeAreaProvider.delegate = null;
     if (this.puck) {
-      window.removeEventListener('resize', this.onWindowResize);
       this.stopDraggingPuck();
       this.puck.removeEventListener('pointerdown', this.onPuckPointerDown);
     }
