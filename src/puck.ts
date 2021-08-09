@@ -38,20 +38,14 @@ export class RikaiPuck {
   private earthScaleFactorWhenDragging: number;
   private moonWidth: number;
   private moonHeight: number;
-  /**
-   * The translateY value to apply to the moon when it is orbiting above the earth.
-   * Expressed as an absolute (positive) value.
-   */
+  // The translateY value to apply to the moon when it is orbiting above the earth.
+  // Expressed as an absolute (positive) value.
   private targetAbsoluteOffsetYAbove: number;
-  /**
-   * The translateY value to apply to the moon when it is orbiting below the earth.
-   * Expressed as an absolute (positive) value.
-   */
+  // The translateY value to apply to the moon when it is orbiting below the earth.
+  // Expressed as an absolute (positive) value.
   private targetAbsoluteOffsetYBelow: number;
-  /**
-   * The translate (X and Y) values applied to the moon whilst it is being dragged.
-   * They are measured relative to the midpoint of the moon (which is also the midpoint of the earth).
-   */
+  // The translate (X and Y) values applied to the moon whilst it is being dragged.
+  // They are measured relative to the midpoint of the moon (which is also the midpoint of the earth).
   private targetOffset: { x: number; y: number } = { x: 0, y: 0 };
   private targetOrientation: 'above' | 'below' = 'above';
   private cachedViewportDimensions: ViewportDimensions | null = null;
@@ -59,7 +53,7 @@ export class RikaiPuck {
 
   constructor(private safeAreaProvider: SafeAreaProvider) {}
 
-  /** @see SafeAreaConsumerDelegate */
+  // @see SafeAreaConsumerDelegate
   onSafeAreaUpdated(): void {
     this.cachedViewportDimensions = null;
     this.setPositionWithinSafeArea(this.puckX, this.puckY);
@@ -138,22 +132,20 @@ export class RikaiPuck {
       return this.cachedViewportDimensions;
     }
 
-    /**
-     * We'd ideally use document.documentElement.clientWidth and
-     * document.documentElement.clientHeight for both viewport measurements, but
-     * iOS 15 Safari doesn't behave suitably for that.
-     *
-     * iOS 15 Safari:
-     *
-     * - seems to measure its safe area insets from the area defined by
-     *   document.defaultView.innerHeight and .innerWidth.
-     *
-     * - decreases both document.defaultView.innerHeight and the
-     *   safe-area-inset-bottom in compact mode, and vice versa in non-compact
-     *   mode.
-     *
-     * @see https://github.com/shirakaba/10ten-ja-reader/pull/3#issuecomment-875127566
-     */
+    // We'd ideally use document.documentElement.clientWidth and
+    // document.documentElement.clientHeight for both viewport measurements, but
+    // iOS 15 Safari doesn't behave suitably for that.
+    //
+    // iOS 15 Safari:
+    //
+    // - seems to measure its safe area insets from the area defined by
+    //   document.defaultView.innerHeight and .innerWidth.
+    //
+    // - decreases both document.defaultView.innerHeight and the
+    //   safe-area-inset-bottom in compact mode, and vice versa in non-compact
+    //   mode.
+    //
+    // @see https://github.com/shirakaba/10ten-ja-reader/pull/3#issuecomment-875127566
     this.cachedViewportDimensions = {
       viewportWidth: document.documentElement.clientWidth,
       viewportHeight: document.defaultView?.innerHeight ?? 0,
@@ -352,10 +344,8 @@ export class RikaiPuck {
           getComputedStyle(moon).getPropertyValue('--minimum-moon-offset-y')
         ) || 0;
 
-      /*
-       * Depending on whether the moon is above or below the earth, some extra
-       * altitude needs to be added to the orbit so that the thumb doesn't cover it.
-       */
+      // Depending on whether the moon is above or below the earth, some extra
+      // altitude needs to be added to the orbit so that the thumb doesn't cover it.
       const extraAltitudeToClearAboveThumb =
         parseFloat(
           getComputedStyle(moon).getPropertyValue(
@@ -369,12 +359,10 @@ export class RikaiPuck {
           )
         ) || 0;
 
-      /*
-       * By adding this extra clearance, we avoid the iOS 15 Safari full-size URL
-       * bar springing back into place when dragging the puck too far into the
-       * bottom of the viewport. Hopefully this covers the worst-case scenario.
-       * @see https://github.com/shirakaba/10ten-ja-reader/pull/5#issuecomment-877794905
-       */
+      // By adding this extra clearance, we avoid the iOS 15 Safari full-size URL
+      // bar springing back into place when dragging the puck too far into the
+      // bottom of the viewport. Hopefully this covers the worst-case scenario.
+      // @see https://github.com/shirakaba/10ten-ja-reader/pull/5#issuecomment-877794905
       const extraAltitudeToClearIos15SafariSafeAreaActivationZone =
         parseFloat(
           getComputedStyle(moon).getPropertyValue(
