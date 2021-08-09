@@ -11,10 +11,8 @@ export interface SafeAreaProviderRenderOptions {
 }
 
 export interface SafeAreaConsumerDelegate {
-  /**
-   * Called whenever the cached safe area insets
-   * are invalidated or set to a new value.
-   */
+  // Called whenever the cached safe area insets
+  // are invalidated or set to a new value.
   onSafeAreaUpdated: () => void;
 }
 
