@@ -429,6 +429,11 @@ export async function searchKanji(
   }
 
   const logWarningMessage = (message: string) => {
+    // Ignore certain warnings that are not currently meaningful
+    if (message.startsWith("Couldn't find a radical or kanji entry for")) {
+      return;
+    }
+
     Bugsnag.notify(message, (event) => {
       event.severity = 'warning';
     });
