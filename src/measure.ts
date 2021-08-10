@@ -1,5 +1,5 @@
-import { getCombinedCharRange, getNegatedCharRange, kanji } from './char-range';
-import { kanjiToNumber } from './numbers';
+import { getCombinedCharRange, getNegatedCharRange } from './char-range';
+import { parseNumber } from './numbers';
 
 export function lookForMeasure({
   nodeText,
@@ -40,9 +40,9 @@ export type MeasureMeta = {
   matchLen: number;
 };
 
-const jouRegex = /([0-9.０-９。〇一二三四五六七八九十百]+)\s*(畳|帖)(半?)/;
+const jouRegex = /([0-9.０-９。．〇一二三四五六七八九十百]+)\s*(畳|帖)(半?)/;
 const squareMeterRegex =
-  /([0-9.０-９。〇一二三四五六七八九十百]+)\s*(㎡|(?:m2)|(?:m²)|(?:平方メートル)|(?:平方ﾒｰﾄﾙ)|(?:平方㍍)|(?:平㍍)|(?:平米)|(?:平方米))/;
+  /([0-9.０-９。．〇一二三四五六七八九十百千万]+)\s*(㎡|(?:m2)|(?:m²)|(?:平方メートル)|(?:平方ﾒｰﾄﾙ)|(?:平方㍍)|(?:平㍍)|(?:平米)|(?:平方米))/;
 
 export function extractMeasureMetadata(text: string): MeasureMeta | undefined {
   let type: 'jou' | 'm2';
@@ -65,16 +65,7 @@ export function extractMeasureMetadata(text: string): MeasureMeta | undefined {
   }
 
   const valueStr = matches[1];
-  let value: number | null = null;
-  if (kanji.test(valueStr.substring(0, 1))) {
-    value = kanjiToNumber(valueStr);
-  } else {
-    value = parseFloat(
-      valueStr.replace(/[０-９]/g, (ch) =>
-        String.fromCharCode(ch.charCodeAt(0) - 0xfee0)
-      )
-    );
-  }
+  let value = parseNumber(valueStr);
 
   if (value === null) {
     return undefined;

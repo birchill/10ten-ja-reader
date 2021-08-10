@@ -1,5 +1,4 @@
-import { kanji } from './char-range';
-import { kanjiToNumber } from './numbers';
+import { parseNumber } from './numbers';
 
 const nonEraCharacter = /[^\s0-9０-９一二三四五六七八九十百元年]/;
 
@@ -345,16 +344,7 @@ export function extractEraMetadata(text: string): EraMeta | undefined {
   // Parse year
   let year: number | null = 0;
   if (typeof matches[1] !== 'undefined') {
-    if (kanji.test(matches[1].substring(0, 1))) {
-      year = kanjiToNumber(matches[1]);
-    } else {
-      year = parseInt(
-        matches[1].replace(/[０-９]/g, (ch) =>
-          String.fromCharCode(ch.charCodeAt(0) - 0xfee0)
-        ),
-        10
-      );
-    }
+    year = parseNumber(matches[1]);
   }
 
   if (year === null) {
