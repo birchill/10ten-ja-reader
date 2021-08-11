@@ -230,24 +230,37 @@ export default class AllTabManager implements TabManager {
 }
 
 async function sendMessageToAllTabs(message: any): Promise<void> {
-  const windows = await browser.windows.getAll({
-    populate: true,
-    windowTypes: ['normal'],
-  });
-  for (const win of windows) {
-    if (!win.tabs) {
-      continue;
-    }
+  const allTabs: Array<Browser.Tabs.Tab> = [];
 
-    for (const tab of win.tabs) {
-      if (!tab.id) {
+  // We could probably always just use `browser.tabs.query` but for some reason
+  // I decided to use browser.window.getAll. We use `browser.tabs.query` as a
+  // fallback when that is not available (e.g. Firefox for Android).
+  if (browser.windows) {
+    const windows = await browser.windows.getAll({
+      populate: true,
+      windowTypes: ['normal'],
+    });
+
+    for (const win of windows) {
+      if (!win.tabs) {
         continue;
       }
 
-      browser.tabs.sendMessage(tab.id, message).catch(() => {
-        // Some tabs don't have the content script so just ignore
-        // connection failures here.
-      });
+      allTabs.push(...win.tabs);
     }
+  } else {
+    const tabs = await browser.tabs.query({});
+    allTabs.push(...tabs);
+  }
+
+  for (const tab of allTabs) {
+    if (!tab.id) {
+      continue;
+    }
+
+    browser.tabs.sendMessage(tab.id, message).catch(() => {
+      // Some tabs don't have the content script so just ignore
+      // connection failures here.
+    });
   }
 }
