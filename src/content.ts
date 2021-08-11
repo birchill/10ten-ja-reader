@@ -56,12 +56,7 @@ import {
   getWordToCopy,
   Entry as CopyEntry,
 } from './copy-text';
-import {
-  isContentEditableNode,
-  isEditableNode,
-  isFocusable,
-  isTextInputNode,
-} from './dom-utils';
+import { isEditableNode } from './dom-utils';
 import { getTextAtPoint, GetTextAtPointResult } from './get-text';
 import { SelectionMeta } from './meta';
 import { mod } from './mod';
@@ -78,6 +73,7 @@ import {
 import { getPopupPosition, PopupPositionMode } from './popup-position';
 import { query, QueryResult } from './query';
 import { isForeignObjectElement, isSvgDoc, isSvgSvgElement } from './svg';
+import { TextHighlighter } from './text-highlighter';
 import { hasReasonableTimerResolution } from './timer-precision';
 
 // Either end of a Range object
@@ -109,6 +105,7 @@ export class ContentHandler {
   private static MAX_LENGTH = 16;
 
   private config: ContentConfig;
+  private textHighlighter: TextHighlighter;
 
   // Lookup tracking (so we can avoid redundant work and so we can re-render)
   private currentTextAtPoint: GetTextAtPointResult | null = null;
@@ -116,19 +113,6 @@ export class ContentHandler {
   private currentSearchResult: QueryResult | null = null;
   private currentTarget: Element | null = null;
   private currentDict: MajorDataSeries = 'words';
-
-  // Highlight tracking
-  private selectedWindow: Window | null = null;
-  private selectedText: string | null = null;
-  private selectedTextBox: {
-    node: HTMLInputElement | HTMLTextAreaElement;
-    previousStart: number | null;
-    previousEnd: number | null;
-    previousDirection: 'forward' | 'backward' | 'none' | null;
-  } | null = null;
-  private previousFocus: Element | null;
-  private previousSelection: { node: Node; offset: number } | null;
-  private ignoreFocusEvent: boolean = false;
 
   // Mouse tracking
   //
@@ -162,12 +146,14 @@ export class ContentHandler {
 
   constructor(config: ContentConfig) {
     this.config = config;
+    this.textHighlighter = new TextHighlighter();
 
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onFocusIn = this.onFocusIn.bind(this);
+
     window.addEventListener('mousemove', this.onMouseMove);
     window.addEventListener('mousedown', this.onMouseDown);
     window.addEventListener('keydown', this.onKeyDown, { capture: true });
@@ -205,7 +191,7 @@ export class ContentHandler {
     window.removeEventListener('focusin', this.onFocusIn);
 
     this.clearHighlight(null);
-    this.selectedTextBox = null;
+    this.textHighlighter.detach();
     this.copyMode = false;
 
     removePopup();
@@ -548,19 +534,13 @@ export class ContentHandler {
   }
 
   onFocusIn(ev: FocusEvent) {
-    if (this.ignoreFocusEvent) {
+    if (this.textHighlighter.isUpdatingFocus()) {
       return;
     }
 
     // If we focussed on a text box, assume we want to type in it and ignore
     // keystrokes until we get another mousemove.
     this.typingMode = !!ev.target && isEditableNode(ev.target as Node);
-
-    // Update the previous focus.
-    if (!this.previousFocus || this.previousFocus !== ev.target) {
-      this.previousFocus = ev.target as Element;
-      this.storeSelection(this.previousFocus.ownerDocument!.defaultView!);
-    }
 
     // If we entered typing mode clear the highlight.
     if (this.typingMode) {
@@ -756,146 +736,38 @@ export class ContentHandler {
     }
 
     // Work out the appropriate length to highlight
-    const matchLen = Math.max(
+    const highlightLength = Math.max(
       searchResult?.matchLen || 0,
       textAtPoint.meta?.matchLen || 0
     );
 
     // Check we have something to highlight
-    if (!textAtPoint.rangeStart || matchLen < 1) {
+    if (!textAtPoint.rangeStart || highlightLength < 1) {
       return;
     }
 
-    const selectedWindow =
-      textAtPoint.rangeStart.container.ownerDocument!.defaultView!;
-
-    // Check that the window wasn't closed since we started the lookup
-    if (!selectedWindow || selectedWindow.closed) {
-      this.clearHighlight(null);
-      return;
-    }
-
-    // Check if there is already something selected in the page that is *not*
-    // what we selected. If there is we generally want to leave it alone unless
-    // it's a selection in a contenteditable node---in that case we want to
-    // store and restore it to mimic the behavior of textboxes.
-    const selection = selectedWindow.getSelection();
-    if (!selection) {
-      // If there is no selection, we're probably dealing with an iframe that
-      // has now become display:none.
-      this.clearHighlight(null);
-      return;
-    }
-
-    if (isContentEditableNode(selection.anchorNode)) {
-      if (
-        !this.previousSelection &&
-        selection.toString() !== this.selectedText
-      ) {
-        this.storeSelection(selectedWindow);
-      }
-    } else if (
-      selection.toString() &&
-      selection.toString() !== this.selectedText
-    ) {
-      this.selectedText = null;
-      return;
-    }
-
-    // Handle textarea/input selection separately since those elements have
-    // a different selection API.
-    if (isTextInputNode(textAtPoint.rangeStart.container)) {
-      const node = textAtPoint.rangeStart.container;
-      const start = textAtPoint.rangeStart.offset;
-      const end = start + matchLen;
-
-      // If we were previously interacting with a different text box, restore
-      // its range.
-      if (this.selectedTextBox && node !== this.selectedTextBox.node) {
-        this.restoreTextBoxSelection();
-      }
-
-      // If we were not already interacting with this text box, store its
-      // existing range and focus it.
-      if (!this.selectedTextBox || node !== this.selectedTextBox.node) {
-        // Record the original focus if we haven't already, so that we can
-        // restore it.
-        if (!this.previousFocus) {
-          this.previousFocus = document.activeElement;
-        }
-
-        // I haven't found a suitable way of detecting changes in focus due to
-        // the user actually selecting a field (which we want to reflect when we
-        // go to restore the focus) and changes in focus due to our focus
-        // management so for now we just use this terribly hacky approach to
-        // filter out our focus events.
-        console.assert(!this.ignoreFocusEvent);
-        this.ignoreFocusEvent = true;
-        node.focus();
-        this.ignoreFocusEvent = false;
-
-        this.selectedTextBox = {
-          node,
-          previousStart: node.selectionStart,
-          previousEnd: node.selectionEnd,
-          previousDirection: node.selectionDirection,
-        };
-      }
-
-      // Store the current scroll range so we can restore it.
-      const { scrollTop, scrollLeft } = node;
-
-      // Clear any other selection happening in the page.
-      selection.removeAllRanges();
-
-      node.setSelectionRange(start, end);
-      this.selectedText = node.value.substring(start, end);
-      this.selectedWindow = selectedWindow;
-
-      // Restore the scroll range. We need to do this on the next tick or else
-      // something else (not sure what) will clobber it.
-      requestAnimationFrame(() => {
-        node.scrollLeft = scrollLeft;
-        node.scrollTop = scrollTop;
+    // Prepare text range
+    //
+    // TODO: Make getTextAtPoint return a TextRange object instead
+    const textRange = [
+      {
+        node: textAtPoint.rangeStart.container,
+        start: textAtPoint.rangeStart.offset,
+        end: textAtPoint.rangeEnds[0].offset,
+      },
+    ];
+    for (const end of textAtPoint.rangeEnds.slice(1)) {
+      textRange.push({
+        node: end.container,
+        start: 0,
+        end: end.offset,
       });
-    } else {
-      // If we were previously interacting with a text box, restore its range
-      // and blur it.
-      this.clearTextBoxSelection(null);
-
-      const startNode = textAtPoint.rangeStart.container;
-      const startOffset = textAtPoint.rangeStart.offset;
-      let endNode = startNode;
-      let endOffset = startOffset;
-
-      let currentLen = 0;
-      for (
-        let i = 0;
-        currentLen < matchLen && i < textAtPoint.rangeEnds.length;
-        i++
-      ) {
-        const initialOffset = i == 0 ? startOffset : 0;
-        endNode = textAtPoint.rangeEnds[i].container;
-        const len = Math.min(
-          textAtPoint.rangeEnds[i].offset - initialOffset,
-          matchLen - currentLen
-        );
-        endOffset = initialOffset + len;
-        currentLen += len;
-      }
-
-      const range = startNode.ownerDocument!.createRange();
-      range.setStart(startNode, startOffset);
-      range.setEnd(endNode, endOffset);
-
-      const selection = selectedWindow.getSelection();
-      // (We checked for the case of selection being null above so it should be
-      // ok to assume it is non-null here.)
-      selection!.removeAllRanges();
-      selection!.addRange(range);
-      this.selectedText = selection!.toString();
-      this.selectedWindow = selectedWindow;
     }
+
+    this.textHighlighter.highlight({
+      length: highlightLength,
+      textRange,
+    });
   }
 
   clearHighlight(currentElement: Element | null) {
@@ -905,118 +777,9 @@ export class ContentHandler {
     this.currentTarget = null;
     this.copyMode = false;
 
-    if (this.selectedWindow && !this.selectedWindow.closed) {
-      const selection = this.selectedWindow.getSelection();
-      // Clear the selection if it's something we made.
-      if (
-        selection &&
-        (!selection.toString() || selection.toString() === this.selectedText)
-      ) {
-        if (this.previousSelection) {
-          this.restoreSelection();
-        } else {
-          selection.removeAllRanges();
-        }
-      }
-
-      this.clearTextBoxSelection(currentElement);
-    }
-
-    this.selectedWindow = null;
-    this.selectedText = null;
+    this.textHighlighter.clearHighlight({ currentElement });
 
     hidePopup();
-  }
-
-  storeSelection(selectedWindow: Window) {
-    const selection = selectedWindow.getSelection();
-    if (selection && isContentEditableNode(selection.anchorNode)) {
-      // We don't actually store the full selection, basically because we're
-      // lazy. Remembering the cursor position is hopefully good enough for
-      // now anyway.
-      this.previousSelection = {
-        node: selection.anchorNode!,
-        offset: selection.anchorOffset,
-      };
-    } else {
-      this.previousSelection = null;
-    }
-  }
-
-  restoreSelection() {
-    if (!this.previousSelection) {
-      return;
-    }
-
-    const { node, offset } = this.previousSelection;
-    const range = node.ownerDocument!.createRange();
-    range.setStart(node, offset);
-    range.setEnd(node, offset);
-
-    const selection = node.ownerDocument!.defaultView!.getSelection();
-    if (selection) {
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
-    this.previousSelection = null;
-  }
-
-  clearTextBoxSelection(currentElement: Element | null) {
-    if (!this.selectedTextBox) {
-      return;
-    }
-
-    const textBox = this.selectedTextBox.node;
-
-    // Store the previous scroll position so we can restore it, if need be.
-    const { scrollTop, scrollLeft } = textBox;
-
-    this.restoreTextBoxSelection();
-
-    // If we are still interacting with the textBox, make sure to maintain its
-    // scroll position (rather than jumping back to wherever the restored
-    // selection is just because we didn't find a match).
-    if (currentElement === textBox) {
-      // As before, we need to restore this in the next tick or else it will get
-      // clobbered.
-      requestAnimationFrame(() => {
-        textBox.scrollLeft = scrollLeft;
-        textBox.scrollTop = scrollTop;
-      });
-    }
-
-    // If we only focussed the textbox in order to highlight text, restore the
-    // previous focus.
-    //
-    // (We need to do this even if currentElement === textBox since we'll lose
-    // the previous focus when we reset _selectedTextBox and we if we don't
-    // restore the focus now, when we next go to set previousFocus we'll end up
-    // using `textBox` instead.)
-    if (isFocusable(this.previousFocus) && this.previousFocus !== textBox) {
-      // First blur the text box since some Elements' focus() method does
-      // nothing.
-      this.selectedTextBox.node.blur();
-
-      // Very hacky approach to filtering out our own focus handling.
-      console.assert(!this.ignoreFocusEvent);
-      this.ignoreFocusEvent = true;
-      this.previousFocus.focus();
-      this.ignoreFocusEvent = false;
-    }
-
-    this.selectedTextBox = null;
-    this.previousFocus = null;
-  }
-
-  restoreTextBoxSelection() {
-    if (!this.selectedTextBox) {
-      return;
-    }
-
-    const textBox = this.selectedTextBox.node;
-    textBox.selectionStart = this.selectedTextBox.previousStart;
-    textBox.selectionEnd = this.selectedTextBox.previousEnd;
-    textBox.selectionDirection = this.selectedTextBox.previousDirection;
   }
 
   showPopup(options?: { copyState?: CopyState; copyType?: CopyType }) {
