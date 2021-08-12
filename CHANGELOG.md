@@ -1,9 +1,11 @@
-## Next version
+## 1.2.1 (2021-08-12)
 
 - Fixed handling of scrollable text boxes in Chromium and Safari browsers.
 - Made number handling a bit more tolerant so 8万8千平㍍ etc. would be recognized.
 - Fixed a case where the options page would flicker incessantly
   ([#708](https://github.com/birchill/10ten-ja-reader/discussions/708)).
+- Made the popup respond better when there is little horizontal space.
+- Avoided reporting errors for missing kanji components.
 
 ## v1.2.0 (2021-07-29) (Firefox, Chrome, Safari, Edge)
 
