@@ -57,8 +57,7 @@ describe('contentHandler:highlighting', () => {
     const textBox = testDiv.firstChild as HTMLInputElement;
     const range = {
       text: 'いうえお',
-      rangeStart: { container: textBox, offset: 1 },
-      rangeEnds: [{ container: textBox, offset: 5 }],
+      textRange: [{ node: textBox, start: 1, end: 5 }],
     };
 
     subject.highlightText(range, { matchLen: 3 });

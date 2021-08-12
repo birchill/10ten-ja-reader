@@ -3,24 +3,17 @@ import { isTextInputNode, isTextNode } from './dom-utils';
 import { bboxIncludesPoint, Point } from './geometry-utils';
 import { extractGetTextMetadata, lookForMetadata, SelectionMeta } from './meta';
 import { SVG_NS } from './svg';
+import { TextRange } from './text-range';
 import { isChromium } from './ua-utils';
 
 export interface GetTextAtPointResult {
   text: string;
-  // Contains the node and offset where the selection starts. This will be null
-  // if, for example, the result is the text from an element's title attribute.
-  rangeStart: RangeEndpoint | null;
-  // Contains the node and offset for each text-containing node in the
-  // maximum selected range.
-  rangeEnds: RangeEndpoint[];
+  // Contains the set of nodes and their ranges where text was found.
+  // This will be null if, for example, the result is the text from an element's
+  // title attribute.
+  textRange: TextRange | null;
   // Extra metadata we parsed in the process
   meta?: SelectionMeta;
-}
-
-// Either end of a Range object
-interface RangeEndpoint {
-  container: Node;
-  offset: number;
 }
 
 // Basically CaretPosition but without getClientRect()
@@ -133,25 +126,22 @@ export function getTextAtPoint(
 
       if (result) {
         console.assert(
-          !!result.rangeStart,
-          'The range start should be set when getting text from a text node'
+          !!result.textRange,
+          'There should be a text range when getting text from a text node'
         );
 
         // If we synthesized a text node, substitute the original node back in.
         if (startNode !== position!.offsetNode) {
           console.assert(
-            result.rangeStart!.container === startNode,
+            result.textRange!.length === 1,
+            'When using a synthesized text node there should be a single range'
+          );
+          console.assert(
+            result.textRange![0].node === startNode,
             'When using a synthesized text node the range should start' +
               ' from that node'
           );
-          console.assert(
-            result.rangeEnds.length === 1 &&
-              result.rangeEnds[0].container === startNode,
-            'When using a synthesized text node there should be a single' +
-              ' range end using the synthesized node'
-          );
-          result.rangeStart!.container = position!.offsetNode;
-          result.rangeEnds[0].container = position!.offsetNode;
+          result.textRange![0].node = position!.offsetNode;
         }
 
         previousResult = { point, position: position!, result };
@@ -182,11 +172,7 @@ export function getTextAtPoint(
   if (elem) {
     const text = getTextFromRandomElement(elem);
     if (text) {
-      const result: GetTextAtPointResult = {
-        text,
-        rangeStart: null,
-        rangeEnds: [],
-      };
+      const result: GetTextAtPointResult = { text, textRange: null };
       previousResult = { point, position: undefined, result };
       return result;
     }
@@ -458,15 +444,9 @@ function getTextFromTextNode({
     return null;
   }
 
-  let result: GetTextAtPointResult | null = {
+  const result: GetTextAtPointResult = {
     text: '',
-    rangeStart: {
-      // If we're operating on a synthesized text node, use the actual
-      // start node.
-      container: node,
-      offset: offset,
-    },
-    rangeEnds: [],
+    textRange: [],
   };
 
   let textDelimiter = nonJapaneseChar;
@@ -509,18 +489,20 @@ function getTextFromTextNode({
       // The text node has disallowed characters mid-way through so
       // return up to that point.
       result.text += nodeText.substring(0, textEnd);
-      result.rangeEnds.push({
-        container: node,
-        offset: offset + textEnd,
+      result.textRange!.push({
+        node,
+        start: offset,
+        end: offset + textEnd,
       });
       break;
     }
 
     // The whole text node is allowed characters, keep going.
     result.text += nodeText;
-    result.rangeEnds.push({
-      container: node,
-      offset: node.data.length,
+    result.textRange!.push({
+      node,
+      start: offset,
+      end: node.data.length,
     });
     node = <CharacterData>treeWalker.nextNode();
     offset = 0;
@@ -531,13 +513,11 @@ function getTextFromTextNode({
   );
 
   // Check if we didn't find any suitable characters
-  if (!result.rangeEnds.length) {
-    result = null;
+  if (!result.textRange!.length) {
+    return null;
   }
 
-  if (result) {
-    result.meta = extractGetTextMetadata(result.text);
-  }
+  result.meta = extractGetTextMetadata(result.text);
 
   return result;
 }

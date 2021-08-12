@@ -1,6 +1,7 @@
 import { assert } from 'chai';
 
 import { getTextAtPoint, GetTextAtPointResult } from '../src/get-text';
+import { isChromium } from '../src/ua-utils';
 
 mocha.setup('bdd');
 
@@ -31,7 +32,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, 'いうえお', textNode, 1, textNode, 5);
+    assertTextResultEqual(result, 'いうえお', [textNode, 1, 5]);
   });
 
   it('should find a range in a div when the point is part-way through a character', () => {
@@ -44,7 +45,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, 'あいうえお', textNode, 0, textNode, 5);
+    assertTextResultEqual(result, 'あいうえお', [textNode, 0, 5]);
   });
 
   it('should NOT find a range in a div when the point is a long way away (but caretPositionFromPoint lands us in the wrong place)', () => {
@@ -103,14 +104,9 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(
       result,
       'いうえお',
-      firstTextNode,
-      1,
-      firstTextNode,
-      2,
-      middleTextNode,
-      2,
-      lastTextNode,
-      1
+      [firstTextNode, 1, 2],
+      [middleTextNode, 0, 2],
+      [lastTextNode, 0, 1]
     );
   });
 
@@ -124,7 +120,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, 'い', firstTextNode, 1, firstTextNode, 2);
+    assertTextResultEqual(result, 'い', [firstTextNode, 1, 2]);
   });
 
   it('should find text in a cousin for an inline node', () => {
@@ -144,16 +140,10 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(
       result,
       'あいうえお',
-      firstTextNode,
-      0,
-      firstTextNode,
-      2,
-      secondTextNode,
-      1,
-      thirdTextNode,
-      1,
-      lastTextNode,
-      1
+      [firstTextNode, 0, 2],
+      [secondTextNode, 0, 1],
+      [thirdTextNode, 0, 1],
+      [lastTextNode, 0, 1]
     );
   });
 
@@ -168,7 +158,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, 'うえお', lastTextNode, 0, lastTextNode, 3);
+    assertTextResultEqual(result, 'うえお', [lastTextNode, 0, 3]);
   });
 
   it('should dig into the content behind covering links', () => {
@@ -185,7 +175,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, 'いうえお', textNode, 1, textNode, 5);
+    assertTextResultEqual(result, 'いうえお', [textNode, 1, 5]);
   });
 
   it('should ignore non-Japanese characters', () => {
@@ -198,7 +188,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, 'あい', textNode, 0, textNode, 2);
+    assertTextResultEqual(result, 'あい', [textNode, 0, 2]);
   });
 
   it('should ignore non-Japanese characters when starting mid node', () => {
@@ -211,7 +201,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, 'あい', textNode, 3, textNode, 5);
+    assertTextResultEqual(result, 'あい', [textNode, 3, 5]);
   });
 
   it('should ignore non-Japanese characters even if the first character is such', () => {
@@ -237,7 +227,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, 'あい', textNode, 0, textNode, 2);
+    assertTextResultEqual(result, 'あい', [textNode, 0, 2]);
   });
 
   it('should include halfwidth katakana, rare kanji, compatibility kanji etc.', () => {
@@ -250,7 +240,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, 'ｷﾞﾝｺｳ㘆豈', textNode, 0, textNode, 7);
+    assertTextResultEqual(result, 'ｷﾞﾝｺｳ㘆豈', [textNode, 0, 7]);
   });
 
   it('should include the year when recognizing years', () => {
@@ -263,7 +253,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, '昭和56年', textNode, 0, textNode, 5);
+    assertTextResultEqual(result, '昭和56年', [textNode, 0, 5]);
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
@@ -282,7 +272,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, '昭和５６年に', textNode, 0, textNode, 6);
+    assertTextResultEqual(result, '昭和５６年に', [textNode, 0, 6]);
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
@@ -301,7 +291,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, '昭和５6年', textNode, 0, textNode, 5);
+    assertTextResultEqual(result, '昭和５6年', [textNode, 0, 5]);
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
@@ -321,7 +311,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, '昭和 56 年', textNode, 0, textNode, 7);
+    assertTextResultEqual(result, '昭和 56 年', [textNode, 0, 7]);
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
@@ -341,7 +331,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, '昭和56', textNode, 0, textNode, 4);
+    assertTextResultEqual(result, '昭和56', [textNode, 0, 4]);
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
@@ -365,14 +355,9 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(
       result,
       '昭和56年',
-      firstTextNode,
-      0,
-      firstTextNode,
-      2,
-      middleTextNode,
-      2,
-      lastTextNode,
-      1
+      [firstTextNode, 0, 2],
+      [middleTextNode, 0, 2],
+      [lastTextNode, 0, 1]
     );
     assert.deepEqual(result!.meta, {
       type: 'era',
@@ -396,12 +381,8 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(
       result,
       '昭和  56年',
-      firstTextNode,
-      0,
-      firstTextNode,
-      3,
-      middleTextNode,
-      4
+      [firstTextNode, 0, 3],
+      [middleTextNode, 0, 4]
     );
     assert.deepEqual(result!.meta, {
       type: 'era',
@@ -425,12 +406,8 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(
       result,
       '昭和56年',
-      firstTextNode,
-      0,
-      firstTextNode,
-      2,
-      middleTextNode,
-      3
+      [firstTextNode, 0, 2],
+      [middleTextNode, 0, 3]
     );
     assert.deepEqual(result!.meta, {
       type: 'era',
@@ -450,7 +427,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, '令和元年に', textNode, 0, textNode, 5);
+    assertTextResultEqual(result, '令和元年に', [textNode, 0, 5]);
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '令和',
@@ -473,12 +450,8 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(
       result,
       '昭和　元年',
-      firstTextNode,
-      0,
-      firstTextNode,
-      3,
-      spanTextNode,
-      2
+      [firstTextNode, 0, 3],
+      [spanTextNode, 0, 2]
     );
     assert.deepEqual(result!.meta, {
       type: 'era',
@@ -498,7 +471,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, '昭和五十六年に', textNode, 0, textNode, 7);
+    assertTextResultEqual(result, '昭和五十六年に', [textNode, 0, 7]);
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
@@ -517,7 +490,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, '昭和三大馬鹿査定', textNode, 0, textNode, 8);
+    assertTextResultEqual(result, '昭和三大馬鹿査定', [textNode, 0, 8]);
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
@@ -536,7 +509,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, '6畳です', textNode, 3, textNode, 7);
+    assertTextResultEqual(result, '6畳です', [textNode, 3, 7]);
     assert.deepEqual(result!.meta, {
       type: 'measure',
       unit: '畳',
@@ -555,7 +528,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, '4.5 m²です', textNode, 3, textNode, 11);
+    assertTextResultEqual(result, '4.5 m²です', [textNode, 3, 11]);
     assert.deepEqual(result!.meta, {
       type: 'measure',
       unit: 'm2',
@@ -574,7 +547,7 @@ describe('getTextAtPoint', () => {
       3
     );
 
-    assertTextResultEqual(result, 'いうえ', textNode, 1, textNode, 4);
+    assertTextResultEqual(result, 'いうえ', [textNode, 1, 4]);
   });
 
   it('should stop at the maximum number of characters even when navigating siblings', () => {
@@ -591,12 +564,8 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(
       result,
       'いう',
-      firstTextNode,
-      1,
-      firstTextNode,
-      2,
-      middleTextNode,
-      1
+      [firstTextNode, 1, 2],
+      [middleTextNode, 0, 1]
     );
   });
 
@@ -614,12 +583,8 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(
       result,
       'いうえ',
-      firstTextNode,
-      1,
-      firstTextNode,
-      2,
-      middleTextNode,
-      2
+      [firstTextNode, 1, 2],
+      [middleTextNode, 0, 2]
     );
   });
 
@@ -646,7 +611,7 @@ describe('getTextAtPoint', () => {
       1
     );
 
-    assertTextResultEqual(result, 'い', textNode, 1, textNode, 2);
+    assertTextResultEqual(result, 'い', [textNode, 1, 2]);
   });
 
   it('should stop at the end of the Japanese text if it comes before the maximum number of characters', () => {
@@ -659,7 +624,7 @@ describe('getTextAtPoint', () => {
       3
     );
 
-    assertTextResultEqual(result, 'いう', textNode, 1, textNode, 3);
+    assertTextResultEqual(result, 'いう', [textNode, 1, 3]);
   });
 
   it('should skip leading whitespace', () => {
@@ -672,7 +637,7 @@ describe('getTextAtPoint', () => {
       3
     );
 
-    assertTextResultEqual(result, 'あいう', textNode, 4, textNode, 7);
+    assertTextResultEqual(result, 'あいう', [textNode, 4, 7]);
   });
 
   it('should skip empty nodes', () => {
@@ -690,12 +655,8 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(
       result,
       'あいうえお',
-      firstTextNode,
-      0,
-      firstTextNode,
-      2,
-      lastTextNode,
-      3
+      [firstTextNode, 0, 2],
+      [lastTextNode, 0, 3]
     );
   });
 
@@ -714,12 +675,8 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(
       result,
       'あいうえお',
-      firstRealTextNode,
-      1,
-      firstRealTextNode,
-      3,
-      lastTextNode,
-      3
+      [firstRealTextNode, 1, 3],
+      [lastTextNode, 0, 3]
     );
   });
 
@@ -744,20 +701,12 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(
       result,
       '仙台の牧場です',
-      firstTextNode,
-      0,
-      firstTextNode,
-      1,
-      daiNode,
-      1,
-      noNode,
-      1,
-      bokuNode,
-      1,
-      jouNode,
-      1,
-      desuNode,
-      2
+      [firstTextNode, 0, 1],
+      [daiNode, 0, 1],
+      [noNode, 0, 1],
+      [bokuNode, 0, 1],
+      [jouNode, 0, 1],
+      [desuNode, 0, 2]
     );
   });
 
@@ -777,16 +726,10 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(
       result,
       '振り仮名',
-      fuNode,
-      0,
-      fuNode,
-      1,
-      riNode,
-      1,
-      gaNode,
-      1,
-      naNode,
-      1
+      [fuNode, 0, 1],
+      [riNode, 0, 1],
+      [gaNode, 0, 1],
+      [naNode, 0, 1]
     );
   });
 
@@ -806,16 +749,10 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(
       result,
       '振り仮名',
-      fuNode,
-      0,
-      fuNode,
-      1,
-      riNode,
-      1,
-      gaNode,
-      1,
-      naNode,
-      1
+      [fuNode, 0, 1],
+      [riNode, 0, 1],
+      [gaNode, 0, 1],
+      [naNode, 0, 1]
     );
   });
 
@@ -829,7 +766,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 4,
     });
 
-    assertTextResultEqual(result, 'せん', senNode, 0, senNode, 2);
+    assertTextResultEqual(result, 'せん', [senNode, 0, 2]);
   });
 
   it('should return the rt text if it is positioned over a child of an rt element', () => {
@@ -844,7 +781,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 4,
     });
 
-    assertTextResultEqual(result, 'せん', seNode, 0, seNode, 1, nNode, 1);
+    assertTextResultEqual(result, 'せん', [seNode, 0, 1], [nNode, 0, 1]);
   });
 
   it('should traverse okurigana in inline-block elements too', () => {
@@ -867,12 +804,8 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(
       result,
       '疲れた',
-      kanjiNode,
-      0,
-      kanjiNode,
-      1,
-      okuriganaNode,
-      2
+      [kanjiNode, 0, 1],
+      [okuriganaNode, 0, 2]
     );
   });
 
@@ -886,7 +819,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, 'いうえお', textNode, 1, textNode, 5);
+    assertTextResultEqual(result, 'いうえお', [textNode, 1, 5]);
   });
 
   it('should find text in nested SVG elements', () => {
@@ -908,16 +841,10 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(
       result,
       'あいうえお',
-      firstTextNode,
-      0,
-      firstTextNode,
-      1,
-      innerTspan,
-      2,
-      middleTextNode,
-      1,
-      innerA,
-      1
+      [firstTextNode, 0, 1],
+      [innerTspan, 0, 2],
+      [middleTextNode, 0, 1],
+      [innerA, 0, 1]
     );
   });
 
@@ -936,7 +863,7 @@ describe('getTextAtPoint', () => {
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, '引く', hiNode, 0, hiNode, 1, kuNode, 1);
+    assertTextResultEqual(result, '引く', [hiNode, 0, 1], [kuNode, 0, 1]);
   });
 
   it('should find text in input elements', () => {
@@ -956,14 +883,14 @@ describe('getTextAtPoint', () => {
     const bbox = inputNode.getBoundingClientRect();
 
     // Chrome and Firefox use different default fonts
-    const offset = isChrome() ? 10 : 15;
+    const offset = isChromium() ? 10 : 15;
 
     const result = getTextAtPoint(
       // Just guess here...
       { x: bbox.left + offset, y: bbox.top + bbox.height / 2 }
     );
 
-    assertTextResultEqual(result, 'いうえお', inputNode, 1, inputNode, 5);
+    assertTextResultEqual(result, 'いうえお', [inputNode, 1, 5]);
   });
 
   it('should NOT read beyond the bounds of the input element', () => {
@@ -975,14 +902,14 @@ describe('getTextAtPoint', () => {
     inputNode.style.fontFamily = 'monospace';
     const bbox = inputNode.getBoundingClientRect();
 
-    const offset = isChrome() ? 10 : 15;
+    const offset = isChromium() ? 10 : 15;
 
     const result = getTextAtPoint({
       x: bbox.left + offset,
       y: bbox.top + bbox.height / 2,
     });
 
-    assertTextResultEqual(result, 'いう', inputNode, 1, inputNode, 3);
+    assertTextResultEqual(result, 'いう', [inputNode, 1, 3]);
   });
 
   it('should NOT find text in input[type=password] elements', () => {
@@ -1017,7 +944,7 @@ describe('getTextAtPoint', () => {
 
     const result = getTextAtPoint({ x: bbox.left + 10, y: 5 });
 
-    assertTextResultEqual(result, 'いうえお', textAreaNode, 1, textAreaNode, 5);
+    assertTextResultEqual(result, 'いうえお', [textAreaNode, 1, 5]);
   });
 
   it('should NOT report results in textarea elements when the mouse is far away', () => {
@@ -1058,7 +985,7 @@ describe('getTextAtPoint', () => {
       x: bboxJP.left,
       y: bboxJP.top + bboxJP.height / 2,
     });
-    assertTextResultEqual(result, 'あいうえお', textNode, 6, textNode, 11);
+    assertTextResultEqual(result, 'あいうえお', [textNode, 6, 11]);
 
     // Fetch again
     const bboxEN = getBboxForOffset(textNode, 5);
@@ -1083,7 +1010,7 @@ describe('getTextAtPoint', () => {
       x: bboxJP.left,
       y: bboxJP.top + bboxJP.height / 2,
     });
-    assertTextResultEqual(result, 'あいうえお', textNode, 6, textNode, 11);
+    assertTextResultEqual(result, 'あいうえお', [textNode, 6, 11]);
 
     // Fetch again
     const bboxEN = getBboxForOffset(textNode, 0);
@@ -1098,9 +1025,7 @@ describe('getTextAtPoint', () => {
 function assertTextResultEqual(
   result: GetTextAtPointResult | null,
   text: string,
-  startContainer?: Node,
-  startOffset?: number,
-  ...endpoints: Array<any>
+  ...ranges: Array<[Node, number, number]>
 ) {
   assert.isNotNull(result, 'Result should not be null');
   if (result === null) {
@@ -1110,39 +1035,34 @@ function assertTextResultEqual(
   assert.strictEqual(result.text, text, 'Result text should match');
 
   // Title only case
-  if (!startContainer) {
-    assert.isNull(result.rangeStart, 'rangeStart should be null');
-    assert.strictEqual(result.rangeEnds.length, 0, 'rangeEnd should be empty');
+  if (!ranges.length) {
+    assert.isNull(result.textRange, 'textRange should be null');
     return;
   }
 
-  assert.isNotNull(result.rangeStart, 'rangeStart should NOT be null');
+  assert.isNotNull(result.textRange, 'textRange should NOT be null');
 
   assert.strictEqual(
-    result.rangeStart!.container,
-    startContainer,
-    'rangeStart container node should match'
+    result.textRange!.length,
+    ranges.length,
+    'number of ranges should match'
   );
-  assert.strictEqual(
-    result.rangeStart!.offset,
-    startOffset,
-    'rangeStart offset should match'
-  );
-  assert.strictEqual(
-    result.rangeEnds.length,
-    endpoints.length / 2,
-    'number of end points should match'
-  );
-  for (let i = 0; i < endpoints.length / 2; i++) {
+
+  for (const [i, range] of ranges.entries()) {
     assert.strictEqual(
-      result.rangeEnds[i].container,
-      endpoints[i * 2],
-      `rangeEnds #${i + 1} container node should match`
+      result.textRange![i].node,
+      range[0],
+      `Range #${i}: node should match`
     );
     assert.strictEqual(
-      result.rangeEnds[i].offset,
-      endpoints[i * 2 + 1],
-      `rangeEnds #${i + 1} offset should match`
+      result.textRange![i].start,
+      range[1],
+      `Range #${i}: start offset should match`
+    );
+    assert.strictEqual(
+      result.textRange![i].end,
+      range[2],
+      `Range #${i}: end offset should match`
     );
   }
 
@@ -1150,17 +1070,17 @@ function assertTextResultEqual(
   // but we don't create Range objects when the target is an <input> or
   // <textarea> node.
   if (
-    result.rangeStart!.container instanceof HTMLInputElement ||
-    result.rangeStart!.container instanceof HTMLTextAreaElement
+    result.textRange![0].node instanceof HTMLInputElement ||
+    result.textRange![0].node instanceof HTMLTextAreaElement
   ) {
     return;
   }
 
   // Consistency check
   const range = new Range();
-  range.setStart(result.rangeStart!.container, result.rangeStart!.offset);
-  const lastEndpoint = result.rangeEnds[result.rangeEnds.length - 1];
-  range.setEnd(lastEndpoint.container, lastEndpoint.offset);
+  range.setStart(result.textRange![0].node, result.textRange![0].start);
+  const lastEndpoint = result.textRange![result.textRange!.length - 1];
+  range.setEnd(lastEndpoint.node, lastEndpoint.end);
 
   // If we have ruby text then the range string won't match the text passed so
   // just skip this check.
@@ -1179,11 +1099,4 @@ function getBboxForOffset(node: Node, start: number) {
   range.setStart(node, start);
   range.setEnd(node, start + 1);
   return range.getBoundingClientRect();
-}
-
-function isChrome(): boolean {
-  return (
-    navigator.userAgent.indexOf('Chrome/') !== -1 ||
-    navigator.userAgent.indexOf('Chromium/') !== -1
-  );
 }

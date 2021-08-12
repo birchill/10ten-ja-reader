@@ -3,14 +3,7 @@ import {
   isFocusable,
   isTextInputNode,
 } from './dom-utils';
-
-export type NodeRange = {
-  node: Node;
-  start: number;
-  end: number;
-};
-
-export type TextRange = ReadonlyArray<NodeRange>;
+import { TextRange } from './text-range';
 
 export class TextHighlighter {
   private selectedWindow: Window | null = null;

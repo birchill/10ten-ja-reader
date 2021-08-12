@@ -58,7 +58,6 @@ import {
 } from './copy-text';
 import { isEditableNode } from './dom-utils';
 import { getTextAtPoint, GetTextAtPointResult } from './get-text';
-import { SelectionMeta } from './meta';
 import { mod } from './mod';
 import {
   CopyState,
@@ -75,24 +74,6 @@ import { query, QueryResult } from './query';
 import { isForeignObjectElement, isSvgDoc, isSvgSvgElement } from './svg';
 import { TextHighlighter } from './text-highlighter';
 import { hasReasonableTimerResolution } from './timer-precision';
-
-// Either end of a Range object
-interface RangeEndpoint {
-  container: Node;
-  offset: number;
-}
-
-export interface GetTextResult {
-  text: string;
-  // Contains the node and offset where the selection starts. This will be null
-  // if, for example, the result is the text from an element's title attribute.
-  rangeStart: RangeEndpoint | null;
-  // Contains the node and offset for each text-containing node in the
-  // maximum selected range.
-  rangeEnds: RangeEndpoint[];
-  // Extra metadata we parsed in the process
-  meta?: SelectionMeta;
-}
 
 export class ContentHandler {
   // This should be enough for most (but not all) entries for now.
@@ -623,7 +604,7 @@ export class ContentHandler {
 
     let queryResult = await query(textAtPoint.text, {
       includeRomaji: this.config.showRomaji,
-      wordLookup: textAtPoint.rangeStart !== null,
+      wordLookup: !!textAtPoint.textRange,
     });
 
     // Check if we have triggered a new query or been disabled while running
@@ -728,7 +709,7 @@ export class ContentHandler {
   }
 
   highlightText(
-    textAtPoint: GetTextResult,
+    textAtPoint: GetTextAtPointResult,
     searchResult: { matchLen: number } | undefined | null
   ) {
     if (this.config.noTextHighlight) {
@@ -742,31 +723,13 @@ export class ContentHandler {
     );
 
     // Check we have something to highlight
-    if (!textAtPoint.rangeStart || highlightLength < 1) {
+    if (!textAtPoint.textRange || highlightLength < 1) {
       return;
-    }
-
-    // Prepare text range
-    //
-    // TODO: Make getTextAtPoint return a TextRange object instead
-    const textRange = [
-      {
-        node: textAtPoint.rangeStart.container,
-        start: textAtPoint.rangeStart.offset,
-        end: textAtPoint.rangeEnds[0].offset,
-      },
-    ];
-    for (const end of textAtPoint.rangeEnds.slice(1)) {
-      textRange.push({
-        node: end.container,
-        start: 0,
-        end: end.offset,
-      });
     }
 
     this.textHighlighter.highlight({
       length: highlightLength,
-      textRange,
+      textRange: textAtPoint.textRange,
     });
   }
 
