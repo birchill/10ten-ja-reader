@@ -160,7 +160,8 @@ restarting XCode should fix it.
 1. (Default options for the next couple of dialogs.)
 1. Upload (again).
 
-If that succeeds (and most often it doesn't because some version is out of line), then it's time to update the App Store.
+If that succeeds (and most often it doesn't because some version is out of
+line), then it's time to update the App Store.
 
 1. Go to https://appstoreconnect.apple.com/apps and choose 10ten Japanese Reader
 1. Press the blue + next to macOS App and enter the new version number
