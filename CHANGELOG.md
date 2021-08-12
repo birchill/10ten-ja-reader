@@ -1,6 +1,7 @@
 ## Next version
 
-- Made number handling a bit more tolerant so 8 万 8 千平㍍ etc. would be recognized.
+- Fixed handling of scrollable text boxes in Chromium browsers.
+- Made number handling a bit more tolerant so 8万8千平㍍ etc. would be recognized.
 - Fixed a case where the options page would flicker incessantly
   ([#708](https://github.com/birchill/10ten-ja-reader/discussions/708)).
 

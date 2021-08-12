@@ -2,6 +2,7 @@ import { nonJapaneseChar } from './char-range';
 import { isTextInputNode, isTextNode } from './dom-utils';
 import { extractGetTextMetadata, lookForMetadata, SelectionMeta } from './meta';
 import { SVG_NS } from './svg';
+import { isChromium } from './ua-utils';
 
 export interface GetTextAtPointResult {
   text: string;
@@ -234,9 +235,37 @@ function getOffsetFromTextInputNode({
     mirrorElement.style.setProperty(prop, cs.getPropertyValue(prop));
   }
 
-  // Match the scroll position
-  mirrorElement.scrollTop = node.scrollTop;
-  mirrorElement.scrollLeft = node.scrollLeft;
+  // Special handling for Chromium which does _not_ include the scrollbars in
+  // the width/height when box-sizing is 'content-box'.
+  if (isChromium() && cs.boxSizing === 'content-box') {
+    const { paddingLeft, paddingRight, paddingTop, paddingBottom } = cs;
+    const {
+      borderLeftWidth,
+      borderRightWidth,
+      borderTopWidth,
+      borderBottomWidth,
+    } = cs;
+
+    const width =
+      node.offsetWidth -
+      parseFloat(paddingLeft) -
+      parseFloat(paddingRight) -
+      parseFloat(borderLeftWidth) -
+      parseFloat(borderRightWidth);
+    if (Number.isFinite(width)) {
+      mirrorElement.style.width = `${width}px`;
+    }
+
+    const height =
+      node.offsetHeight -
+      parseFloat(paddingTop) -
+      parseFloat(paddingBottom) -
+      parseFloat(borderTopWidth) -
+      parseFloat(borderBottomWidth);
+    if (Number.isFinite(height)) {
+      mirrorElement.style.height = `${height}px`;
+    }
+  }
 
   // Set its position in the document to be to be the same
   mirrorElement.style.position = 'absolute';
@@ -247,8 +276,15 @@ function getOffsetFromTextInputNode({
   // Finally, make sure it is on top
   mirrorElement.style.zIndex = '10000';
 
-  // Read the offset
+  // Append the element to the document. We need to do this before adjusting
+  // the scroll offset or else it won't update.
   document.documentElement.appendChild(mirrorElement);
+
+  // Match the scroll position
+  const { scrollLeft, scrollTop } = node;
+  mirrorElement.scrollTo(scrollLeft, scrollTop);
+
+  // Read the offset
   let result: number | null;
   if (document.caretPositionFromPoint) {
     const position = document.caretPositionFromPoint(point.x, point.y);
