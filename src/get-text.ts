@@ -66,6 +66,20 @@ export function getTextAtPoint(
         offset !== null ? { offset, offsetNode: elemUnderCursor } : null;
     }
   }
+  // By contrast, Safari simply always returns an offset of 0 for text boxes
+  else if (
+    position &&
+    position.usedCaretRangeFromPoint &&
+    position.offset === 0 &&
+    isTextInputNode(position.offsetNode)
+  ) {
+    const offset = getOffsetFromTextInputNode({
+      node: position.offsetNode,
+      point,
+    });
+    position =
+      offset !== null ? { offset, offsetNode: position.offsetNode } : position;
+  }
 
   if (
     position &&
@@ -199,7 +213,9 @@ export function getTextAtPoint(
   return null;
 }
 
-function caretPositionFromPoint(point: Point): CursorPosition | null {
+function caretPositionFromPoint(
+  point: Point
+): (CursorPosition & { usedCaretRangeFromPoint?: boolean }) | null {
   if (document.caretPositionFromPoint) {
     return document.caretPositionFromPoint(point.x, point.y);
   }
@@ -209,6 +225,7 @@ function caretPositionFromPoint(point: Point): CursorPosition | null {
     ? {
         offsetNode: range.startContainer,
         offset: range.startOffset,
+        usedCaretRangeFromPoint: true,
       }
     : null;
 }
