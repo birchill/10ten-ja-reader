@@ -285,14 +285,8 @@ function getOffsetFromTextInputNode({
   mirrorElement.scrollTo(scrollLeft, scrollTop);
 
   // Read the offset
-  let result: number | null;
-  if (document.caretPositionFromPoint) {
-    const position = document.caretPositionFromPoint(point.x, point.y);
-    result = position ? position.offset : null;
-  } else {
-    const range = document.caretRangeFromPoint(point.x, point.y);
-    result = range ? range.startOffset : null;
-  }
+  const position = caretPositionFromPoint(point);
+  const result = position?.offset || null;
 
   // Drop the element
   mirrorElement.remove();
