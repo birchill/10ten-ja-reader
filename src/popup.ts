@@ -614,7 +614,7 @@ function renderMeasureInfo(meta: MeasureMeta): HTMLElement {
 
   const measureSpan = document.createElement('span');
   measureSpan.classList.add('value');
-  measureSpan.append(String(meta.value));
+  measureSpan.append(meta.value.toLocaleString());
   measureSpan.append(renderUnit(meta.unit));
   mainRow.append(measureSpan);
 
@@ -667,7 +667,7 @@ function renderMeasureInfo(meta: MeasureMeta): HTMLElement {
 
 function renderValue(value: number): string {
   // Round to two decimal places, then to five significant figures
-  return String(parseFloat(round(value, 2).toPrecision(5)));
+  return parseFloat(round(value, 2).toPrecision(5)).toLocaleString();
 }
 
 function round(value: number, places: number): number {
