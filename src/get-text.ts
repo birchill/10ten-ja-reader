@@ -1,5 +1,6 @@
 import { nonJapaneseChar } from './char-range';
 import { isTextInputNode, isTextNode } from './dom-utils';
+import { bboxIncludesPoint, Point } from './geometry-utils';
 import { extractGetTextMetadata, lookForMetadata, SelectionMeta } from './meta';
 import { SVG_NS } from './svg';
 import { isChromium } from './ua-utils';
@@ -27,11 +28,6 @@ interface CursorPosition {
   readonly offset: number;
   readonly offsetNode: Node;
 }
-
-type Point = {
-  x: number;
-  y: number;
-};
 
 // Cache of previous result (since often the mouse position will change but
 // the cursor position will not).
@@ -643,21 +639,4 @@ function getTextFromRandomElement(elem: Element): string | null {
   }
 
   return null;
-}
-
-function bboxIncludesPoint({
-  bbox,
-  margin = 0,
-  point,
-}: {
-  bbox: DOMRect;
-  margin?: number;
-  point: Point;
-}): boolean {
-  return (
-    bbox.left - margin <= point.x &&
-    bbox.right + margin >= point.x &&
-    bbox.top - margin <= point.y &&
-    bbox.bottom + margin >= point.y
-  );
 }
