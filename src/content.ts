@@ -58,7 +58,8 @@ import {
 } from './copy-text';
 import { isEditableNode } from './dom-utils';
 import { Point } from './geometry';
-import { getTextAtPoint, GetTextAtPointResult } from './get-text';
+import { getTextAtPoint } from './get-text';
+import { SelectionMeta } from './meta';
 import { mod } from './mod';
 import {
   CopyState,
@@ -75,6 +76,7 @@ import { query, QueryResult } from './query';
 import { isForeignObjectElement, isSvgDoc, isSvgSvgElement } from './svg';
 import { TargetProps } from './target-props';
 import { TextHighlighter } from './text-highlighter';
+import { TextRange, textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
 
 export class ContentHandler {
@@ -91,8 +93,11 @@ export class ContentHandler {
   private textHighlighter: TextHighlighter;
 
   // Lookup tracking (so we can avoid redundant work and so we can re-render)
-  private currentTextAtPoint: GetTextAtPointResult | null = null;
+  private currentTextRange: TextRange | undefined;
   private currentPoint: Point | null = null;
+  private currentLookupParams:
+    | { text: string; wordLookup: boolean; meta?: SelectionMeta }
+    | undefined;
   private currentSearchResult: QueryResult | null = null;
   private currentTargetProps: TargetProps | undefined;
   private currentDict: MajorDataSeries = 'words';
@@ -593,8 +598,8 @@ export class ContentHandler {
   ) {
     const textAtPoint = getTextAtPoint(point, ContentHandler.MAX_LENGTH);
 
-    // The following is not strictly correct since if dictMode was 'kanji' or
-    // 'next' but is now 'default' then technically we shouldn't return early
+    // The following is not strictly correct since if dictMode was 'kanji'
+    // but is now 'default' then technically we shouldn't return early
     // since the result will likely differ.
     //
     // In practice, however, locking the result to the previously shown
@@ -602,31 +607,41 @@ export class ContentHandler {
     // toggling dictionaries a little less sensitive to minor mouse movements
     // and hence easier to work with.
     if (
-      JSON.stringify(this.currentTextAtPoint) === JSON.stringify(textAtPoint) &&
+      textRangesEqual(this.currentTextRange, textAtPoint?.textRange) &&
       dictMode === 'default'
     ) {
       return;
     }
 
-    this.currentTextAtPoint = textAtPoint;
+    if (!textAtPoint) {
+      this.clearHighlightAndHidePopup({ currentElement: target });
+      return;
+    }
+
     this.currentPoint = point;
+    this.currentTextRange = textAtPoint?.textRange || undefined;
+
+    let lookupParams = {
+      text: textAtPoint.text,
+      meta: textAtPoint.meta,
+      wordLookup: !!textAtPoint.textRange,
+    };
+    this.currentLookupParams = lookupParams;
 
     // The text or dictionary has changed so break out of copy mode
     this.copyMode = false;
 
-    if (!textAtPoint) {
-      this.clearHighlightAndHidePopup({ currentElement: this.lastMouseTarget });
-      return;
-    }
-
     let queryResult = await query(textAtPoint.text, {
       includeRomaji: this.config.showRomaji,
-      wordLookup: !!textAtPoint.textRange,
+      wordLookup: lookupParams.wordLookup,
     });
 
     // Check if we have triggered a new query or been disabled while running
     // the previous query.
-    if (!this.currentTextAtPoint || textAtPoint !== this.currentTextAtPoint) {
+    if (
+      !this.currentLookupParams ||
+      JSON.stringify(lookupParams) !== JSON.stringify(this.currentLookupParams)
+    ) {
       return;
     }
 
@@ -667,10 +682,7 @@ export class ContentHandler {
       this.currentDict = dict;
     }
 
-    this.highlightText(textAtPoint, queryResult?.[dict]);
-
     this.currentSearchResult = queryResult;
-    this.lastMouseTarget = target;
     this.currentTargetProps = {
       hasTitle: !!(target as HTMLElement)?.title,
       isVerticalText:
@@ -680,11 +692,12 @@ export class ContentHandler {
           .writingMode.startsWith('vertical'),
     };
 
+    this.highlightText();
     this.showPopup();
   }
 
   showDictionary(dictToShow: 'next' | MajorDataSeries) {
-    if (!this.currentSearchResult || !this.currentTextAtPoint) {
+    if (!this.currentSearchResult) {
       return;
     }
 
@@ -728,33 +741,39 @@ export class ContentHandler {
 
     this.currentDict = dict;
 
-    this.highlightText(this.currentTextAtPoint, this.currentSearchResult[dict]);
-
+    this.highlightText();
     this.showPopup();
   }
 
-  highlightText(
-    textAtPoint: GetTextAtPointResult,
-    searchResult: { matchLen: number } | undefined | null
-  ) {
+  highlightText() {
     if (this.config.noTextHighlight) {
       return;
     }
 
+    if (!this.currentSearchResult) {
+      return;
+    }
+
+    const searchResult = this.currentSearchResult[this.currentDict];
+
     // Work out the appropriate length to highlight
     const highlightLength = Math.max(
       searchResult?.matchLen || 0,
-      textAtPoint.meta?.matchLen || 0
+      this.currentLookupParams?.meta?.matchLen || 0
     );
 
     // Check we have something to highlight
-    if (!textAtPoint.textRange || highlightLength < 1) {
+    if (highlightLength < 1) {
+      return;
+    }
+
+    if (!this.currentTextRange?.length) {
       return;
     }
 
     this.textHighlighter.highlight({
       length: highlightLength,
-      textRange: textAtPoint.textRange,
+      textRange: this.currentTextRange,
     });
   }
 
@@ -769,8 +788,11 @@ export class ContentHandler {
   }: {
     currentElement?: Element | null;
   } = {}) {
-    this.currentTextAtPoint = null;
+    this.currentTextRange = undefined;
     this.currentPoint = null;
+    this.lastMouseTarget = null;
+
+    this.currentLookupParams = undefined;
     this.currentSearchResult = null;
     this.currentTargetProps = undefined;
     this.copyMode = false;
@@ -781,7 +803,7 @@ export class ContentHandler {
   }
 
   showPopup(options?: { copyState?: CopyState; copyType?: CopyType }) {
-    if (!this.currentSearchResult && !this.currentTextAtPoint?.meta) {
+    if (!this.currentSearchResult && !this.currentLookupParams?.meta) {
       this.clearHighlightAndHidePopup({ currentElement: this.lastMouseTarget });
       return;
     }
@@ -802,7 +824,7 @@ export class ContentHandler {
       document: doc,
       hasSwitchedDictionary: this.config.hasSwitchedDictionary,
       kanjiReferences: this.config.kanjiReferences,
-      meta: this.currentTextAtPoint?.meta,
+      meta: this.currentLookupParams?.meta,
       onClosePopup: () => {
         this.clearHighlightAndHidePopup({
           currentElement: this.lastMouseTarget,
