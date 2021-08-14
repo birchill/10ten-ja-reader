@@ -1,3 +1,8 @@
+## Next version
+
+- Made popups for iframes be shown in the topmost window
+  ([#13](https://github.com/birchill/10ten-ja-reader/discussions/13)).
+
 ## 1.2.1 (2021-08-12)
 
 - Fixed handling of scrollable text boxes in Chromium and Safari browsers.

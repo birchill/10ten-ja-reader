@@ -100,13 +100,24 @@ export class ContentHandler {
   private currentLookupParams:
     | { text: string; wordLookup: boolean; meta?: SelectionMeta }
     | undefined;
-  private currentSearchResult: QueryResult | null = null;
+  private currentSearchResult:
+    | (QueryResult & { source: Window | null })
+    | null = null;
   private currentTargetProps: TargetProps | undefined;
   private currentDict: MajorDataSeries = 'words';
 
   // We keep track of the last element that was the target of a mouse move so
   // that we can popup the window later using its properties.
   private lastMouseTarget: Element | null = null;
+
+  // Used by iframes to track when the topmost window is showing the popup so
+  // we know if we should handle keyboard keys or not.
+  //
+  // (You might think we could just forward them on unconditionally but
+  // when the popup is showing, if we successfully handled a keyboard event we
+  // mark it as handled by calling event.preventDefault(). However, we
+  // definitely don't want to do that if the popup is not showing.)
+  private isPopupShowing: boolean = false;
 
   // Mouse tracking
   //
@@ -161,6 +172,11 @@ export class ContentHandler {
         this.hidePopupWhenMovingAtSpeed = true;
       }
     });
+
+    // If we are an iframe, check if the popup is currently showing
+    if (!isTopMostWindow()) {
+      window.top.postMessage<ContentMessage>({ kind: 'isPopupShown' }, '*');
+    }
   }
 
   setConfig(config: Readonly<ContentConfig>) {
@@ -239,18 +255,20 @@ export class ContentHandler {
       return;
     }
 
-    // Check if any required "hold to show keys" are held. We do this before
-    // checking throttling since that can be expensive and when this is
-    // configured, typically the user will have the extension more-or-less
-    // permanently enabled so we don't want to add unnecessary latency to
-    // regular mouse events.
+    // Check if any required "hold to show keys" are held.
+    //
+    // We do this before checking throttling since that can be expensive and
+    // when this is configured, typically the user will have the extension
+    // more-or-less permanently enabled so we don't want to add unnecessary
+    // latency to regular mouse events.
     if (!this.areHoldToShowKeysDown(ev)) {
       this.clearHighlightAndHidePopup({ currentElement: ev.target });
-      // Nevertheless, we still want to set the current position information so
+
+      // We still want to set the current position and element information so
       // that if the user presses the hold-to-show keys later we can show the
       // popup immediately.
-      this.lastMouseTarget = ev.target;
       this.currentPoint = { x: ev.clientX, y: ev.clientY };
+      this.lastMouseTarget = ev.target;
       return;
     }
 
@@ -264,6 +282,10 @@ export class ContentHandler {
       this.kanjiLookupMode = ev.shiftKey;
       dictMode = 'kanji';
     }
+
+    // Record the last mouse target in case we need to trigger the popup
+    // again.
+    this.lastMouseTarget = ev.target;
 
     this.tryToUpdatePopup(
       { x: ev.clientX, y: ev.clientY },
@@ -551,7 +573,7 @@ export class ContentHandler {
   }
 
   isVisible(): boolean {
-    return isPopupVisible();
+    return isTopMostWindow() ? isPopupVisible() : this.isPopupShowing;
   }
 
   onContentMessage(ev: MessageEvent<ContentMessage>) {
@@ -579,7 +601,7 @@ export class ContentHandler {
           // clear any mouse target we previously stored.
           this.lastMouseTarget = null;
 
-          this.lookupText(ev.data);
+          this.lookupText({ ...ev.data, source: ev.source });
         }
         break;
 
@@ -624,21 +646,56 @@ export class ContentHandler {
           currentElement: this.lastMouseTarget,
         });
         break;
+
+      case 'popupHidden':
+        this.currentTextRange = undefined;
+        this.currentPoint = null;
+        this.copyMode = false;
+        this.isPopupShowing = false;
+        break;
+
+      case 'popupShown':
+        this.isPopupShowing = true;
+        break;
+
+      case 'isPopupShown':
+        if (this.isVisible() && ev.source instanceof Window) {
+          ev.source.postMessage<ContentMessage>({ kind: 'popupShown' }, '*');
+        }
+        break;
     }
   }
 
   showNextDictionary() {
+    if (!isTopMostWindow()) {
+      window.top.postMessage<ContentMessage>({ kind: 'nextDictionary' }, '*');
+      return;
+    }
+
     if (this.currentPoint) {
       this.showDictionary('next');
     }
   }
 
   toggleDefinition() {
+    if (!isTopMostWindow()) {
+      window.top.postMessage<ContentMessage>({ kind: 'toggleDefinition' }, '*');
+      return;
+    }
+
     this.config.readingOnly = !this.config.readingOnly;
     this.showPopup();
   }
 
   movePopup(direction: 'up' | 'down') {
+    if (!isTopMostWindow()) {
+      window.top.postMessage<ContentMessage>(
+        { kind: 'movePopup', direction },
+        '*'
+      );
+      return;
+    }
+
     if (direction === 'down') {
       this.popupPositionMode =
         (this.popupPositionMode + 1) % (PopupPositionMode.End + 1);
@@ -652,22 +709,57 @@ export class ContentHandler {
   }
 
   enterCopyMode() {
+    // In the iframe case, we mirror the copyMode state in both iframe and
+    // topmost window because:
+    //
+    // - The topmost window needs to know the copyMode state so that it can
+    //   render the popup correctly, but
+    // - The iframe needs to know the copyMode state so that it can determine
+    //   how to handle copyMode-specific keystrokes.
+    //
     this.copyMode = true;
+
+    if (!isTopMostWindow()) {
+      window.top.postMessage<ContentMessage>({ kind: 'enterCopyMode' }, '*');
+      return;
+    }
+
     this.copyIndex = 0;
     this.showPopup();
   }
 
   exitCopyMode() {
+    // As with enterCopyMode, we mirror the copyMode state in both iframe and
+    // topmost window.
     this.copyMode = false;
+
+    if (!isTopMostWindow()) {
+      window.top.postMessage<ContentMessage>({ kind: 'exitCopyMode' }, '*');
+      return;
+    }
+
     this.showPopup();
   }
 
   nextCopyEntry() {
+    if (!isTopMostWindow()) {
+      window.top.postMessage<ContentMessage>({ kind: 'nextCopyEntry' }, '*');
+      return;
+    }
+
     this.copyIndex++;
     this.showPopup();
   }
 
   copyCurrentEntry(copyType: CopyType) {
+    if (!isTopMostWindow()) {
+      window.top.postMessage<ContentMessage>(
+        { kind: 'copyCurrentEntry', copyType },
+        '*'
+      );
+      return;
+    }
+
     const copyEntry = this.getCopyEntry();
     if (!copyEntry) {
       return;
@@ -784,31 +876,51 @@ export class ContentHandler {
     }
 
     if (!textAtPoint) {
-      this.clearHighlightAndHidePopup({ currentElement: target });
+      if (isTopMostWindow()) {
+        this.clearHighlightAndHidePopup({ currentElement: target });
+      } else {
+        window.top.postMessage<ContentMessage>({ kind: 'clearText' }, '*');
+      }
       return;
     }
 
     this.currentPoint = point;
     this.currentTextRange = textAtPoint?.textRange || undefined;
 
-    this.lookupText({
+    const lookupParams = {
       dictMode,
       meta: textAtPoint.meta,
+      source: null,
       text: textAtPoint.text,
       targetProps: getTargetElementProps(target),
       wordLookup: !!textAtPoint.textRange,
-    });
+    };
+
+    if (isTopMostWindow()) {
+      this.lookupText(lookupParams);
+    } else {
+      window.top.postMessage<ContentMessage>(
+        {
+          ...lookupParams,
+          kind: 'lookup',
+          point,
+        },
+        '*'
+      );
+    }
   }
 
   async lookupText({
     dictMode,
     meta,
+    source,
     text,
     targetProps,
     wordLookup,
   }: {
     dictMode: 'default' | 'kanji';
     meta?: SelectionMeta;
+    source: Window | null;
     text: string;
     targetProps: TargetProps;
     wordLookup: boolean;
@@ -821,7 +933,7 @@ export class ContentHandler {
 
     let queryResult = await query(text, {
       includeRomaji: this.config.showRomaji,
-      wordLookup: lookupParams.wordLookup,
+      wordLookup,
     });
 
     // Check if we have triggered a new query or been disabled while running
@@ -870,7 +982,7 @@ export class ContentHandler {
       this.currentDict = dict;
     }
 
-    this.currentSearchResult = queryResult;
+    this.currentSearchResult = queryResult ? { ...queryResult, source } : null;
     this.currentTargetProps = targetProps;
 
     this.highlightTextForCurrentResult();
@@ -948,6 +1060,14 @@ export class ContentHandler {
       return;
     }
 
+    if (this.currentSearchResult?.source) {
+      this.currentSearchResult.source.postMessage<ContentMessage>(
+        { kind: 'highlightText', length: highlightLength },
+        '*'
+      );
+      return;
+    }
+
     this.highlightText(highlightLength);
   }
 
@@ -972,6 +1092,15 @@ export class ContentHandler {
     this.copyMode = false;
 
     this.textHighlighter.clearHighlight({ currentElement });
+
+    if (isTopMostWindow()) {
+      for (const frame of Array.from(window.frames)) {
+        frame.postMessage<ContentMessage>({ kind: 'popupHidden' }, '*');
+        frame.postMessage<ContentMessage>({ kind: 'clearTextHighlight' }, '*');
+      }
+    } else {
+      window.top.postMessage<ContentMessage>({ kind: 'clearText' }, '*');
+    }
 
     hidePopup();
   }
@@ -1089,6 +1218,12 @@ export class ContentHandler {
         popup.style.maskImage = 'none';
       }
     }
+
+    if (isTopMostWindow()) {
+      for (const frame of Array.from(window.frames)) {
+        frame.postMessage<ContentMessage>({ kind: 'popupShown' }, '*');
+      }
+    }
   }
 
   // Expose the renderPopup callback so that we can test it
@@ -1097,6 +1232,11 @@ export class ContentHandler {
 
 declare global {
   interface Window {
+    postMessage<T = any>(
+      message: T,
+      targetOrigin: string,
+      transfer?: Transferable[]
+    ): void;
     readerScriptVer?: string;
     removeReaderScript?: () => void;
   }

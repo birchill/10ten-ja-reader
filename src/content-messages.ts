@@ -60,6 +60,20 @@ export type ClearTextHighlightMessage = {
   kind: 'clearTextHighlight';
 };
 
+// Popup showing status messages
+
+type PopupHiddenMessage = {
+  kind: 'popupHidden';
+};
+
+type PopupShownMessage = {
+  kind: 'popupShown';
+};
+
+type IsPopupShownMessage = {
+  kind: 'isPopupShown';
+};
+
 export type ContentMessage =
   | LookupMessage
   | ClearTextMessage
@@ -71,4 +85,7 @@ export type ContentMessage =
   | NextCopyEntryMessage
   | CopyCurrentEntryMessage
   | HighlightTextMessage
-  | ClearTextHighlightMessage;
+  | ClearTextHighlightMessage
+  | PopupHiddenMessage
+  | PopupShownMessage
+  | IsPopupShownMessage;
