@@ -474,8 +474,7 @@ export class ContentHandler {
       // pressed since otherwise if the user simply wants to copy the selected
       // text by pressing Ctrl+C they will end up entering copy mode.
       !ctrlKeyPressed &&
-      startCopy.includes(upperKey) &&
-      this.currentSearchResult
+      startCopy.includes(upperKey)
     ) {
       if (this.copyMode) {
         this.copyIndex++;
