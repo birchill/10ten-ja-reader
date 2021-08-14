@@ -56,7 +56,7 @@ import {
   getWordToCopy,
   Entry as CopyEntry,
 } from './copy-text';
-import { isEditableNode } from './dom-utils';
+import { isEditableNode, isTopMostWindow } from './dom-utils';
 import { Point } from './geometry';
 import { getTextAtPoint } from './get-text';
 import { SelectionMeta } from './meta';
@@ -1097,7 +1097,7 @@ declare global {
     // know when we disappear so it can update the browser action status.
     //
     // We only need to do that if we're the root-most frame, however.
-    if (typeof tabId !== 'undefined' && window.top === window.self && !port) {
+    if (typeof tabId !== 'undefined' && isTopMostWindow() && !port) {
       try {
         port = browser.runtime.connect(undefined, {
           name: `tab-${tabId}`,

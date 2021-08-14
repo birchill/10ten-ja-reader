@@ -84,3 +84,7 @@ export function isTextInputNode(
 
 export const isTextNode = (node: Node | null): node is CharacterData =>
   !!node && node.nodeType === Node.TEXT_NODE;
+
+export function isTopMostWindow() {
+  return window.top === window.self;
+}
