@@ -799,6 +799,12 @@ export class ContentHandler {
       return;
     }
 
+    const isVerticalText =
+      !!this.currentTarget &&
+      doc
+        .defaultView!.getComputedStyle(this.currentTarget)
+        .writingMode.startsWith('vertical');
+
     // Position the popup
     const {
       x: popupX,
@@ -807,13 +813,14 @@ export class ContentHandler {
       constrainHeight,
     } = getPopupPosition({
       doc,
+      isVerticalText,
       mousePos: this.currentPoint,
       positionMode: this.popupPositionMode,
       popupSize: {
         width: popup.offsetWidth || 200,
         height: popup.offsetHeight,
       },
-      targetElem: this.currentTarget,
+      targetHasTitle: !!(this.currentTarget as HTMLElement)?.title,
     });
 
     if (

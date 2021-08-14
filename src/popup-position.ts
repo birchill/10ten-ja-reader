@@ -14,16 +14,18 @@ const GUTTER = 5;
 
 export function getPopupPosition({
   doc,
+  isVerticalText,
   mousePos,
   popupSize,
   positionMode,
-  targetElem,
+  targetHasTitle,
 }: {
   doc: Document;
+  isVerticalText: boolean;
   mousePos: Point | null;
   popupSize: { width: number; height: number };
   positionMode: PopupPositionMode;
-  targetElem: Element | null;
+  targetHasTitle: boolean;
 }): {
   x: number;
   y: number;
@@ -44,11 +46,12 @@ export function getPopupPosition({
   if (positionMode === PopupPositionMode.Auto) {
     return getAutoPosition({
       doc,
+      isVerticalText,
       mousePos,
       popupSize,
       scrollX,
       scrollY,
-      targetElem,
+      targetHasTitle,
       windowWidth,
       windowHeight,
     });
@@ -96,20 +99,22 @@ export function getPopupPosition({
 
 function getAutoPosition({
   doc,
+  isVerticalText,
   mousePos,
   popupSize,
   scrollX,
   scrollY,
-  targetElem,
+  targetHasTitle,
   windowWidth,
   windowHeight,
 }: {
   doc: Document;
+  isVerticalText: boolean;
   mousePos: Point | null;
   popupSize: { width: number; height: number };
   scrollX: number;
   scrollY: number;
-  targetElem: Element | null;
+  targetHasTitle: boolean;
   windowWidth: number;
   windowHeight: number;
 }): {
@@ -120,17 +125,6 @@ function getAutoPosition({
 } {
   let x = mousePos?.x || 0;
   let y = mousePos?.y || 0;
-
-  if (!targetElem) {
-    return { x, y, constrainWidth: null, constrainHeight: null };
-  }
-
-  // Check for vertical text
-  const isVerticalText =
-    targetElem &&
-    doc
-      .defaultView!.getComputedStyle(targetElem)
-      .writingMode.startsWith('vertical');
 
   // Inline position: Go back (left or up) if necessary
   //
@@ -152,7 +146,7 @@ function getAutoPosition({
 
   // If the element has a title, then there will probably be
   // a tooltip that we shouldn't cover up.
-  if ((targetElem as HTMLElement).title) {
+  if (targetHasTitle) {
     blockAdjust += 20;
   }
 
