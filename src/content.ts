@@ -172,7 +172,7 @@ export class ContentHandler {
     window.removeEventListener('keyup', this.onKeyUp, { capture: true });
     window.removeEventListener('focusin', this.onFocusIn);
 
-    this.clearHighlight(null);
+    this.clearHighlightAndHidePopup();
     this.textHighlighter.detach();
     this.copyMode = false;
 
@@ -230,7 +230,7 @@ export class ContentHandler {
     // permanently enabled so we don't want to add unnecessary latency to
     // regular mouse events.
     if (!this.areHoldToShowKeysDown(ev)) {
-      this.clearHighlight(ev.target);
+      this.clearHighlightAndHidePopup({ currentElement: ev.target });
       // Nevertheless, we still want to set the current position information so
       // that if the user presses the hold-to-show keys later we can show the
       // popup immediately.
@@ -240,7 +240,7 @@ export class ContentHandler {
     }
 
     if (this.shouldThrottlePopup(ev)) {
-      this.clearHighlight(ev.target);
+      this.clearHighlightAndHidePopup({ currentElement: ev.target });
       return;
     }
 
@@ -318,7 +318,7 @@ export class ContentHandler {
     }
 
     // Clear the highlight since it interferes with selection.
-    this.clearHighlight(ev.target as Element);
+    this.clearHighlightAndHidePopup({ currentElement: ev.target as Element });
   }
 
   onKeyDown(ev: KeyboardEvent) {
@@ -380,7 +380,7 @@ export class ContentHandler {
       // If we are focussed on a textbox and the keystroke wasn't one we handle
       // one, enter typing mode and hide the pop-up.
       if (textBoxInFocus) {
-        this.clearHighlight(this.currentTarget);
+        this.clearHighlightAndHidePopup({ currentElement: this.currentTarget });
         this.typingMode = true;
       }
     }
@@ -531,7 +531,7 @@ export class ContentHandler {
 
     // If we entered typing mode clear the highlight.
     if (this.typingMode) {
-      this.clearHighlight(this.currentTarget);
+      this.clearHighlightAndHidePopup({ currentElement: this.currentTarget });
     }
   }
 
@@ -604,7 +604,7 @@ export class ContentHandler {
     this.copyMode = false;
 
     if (!textAtPoint) {
-      this.clearHighlight(target);
+      this.clearHighlightAndHidePopup({ currentElement: this.currentTarget });
       return;
     }
 
@@ -620,7 +620,7 @@ export class ContentHandler {
     }
 
     if (!queryResult && !textAtPoint.meta) {
-      this.clearHighlight(target);
+      this.clearHighlightAndHidePopup({ currentElement: this.currentTarget });
       return;
     }
 
@@ -739,7 +739,17 @@ export class ContentHandler {
     });
   }
 
-  clearHighlight(currentElement: Element | null) {
+  // The currentElement here is _only_ used to avoid resetting the scroll
+  // position when we clear the text selection of a text box.
+  //
+  // That is, if we go to clear the text selection of a text box but we are
+  // still interacting with that element, then we take extra steps to ensure
+  // the scroll position does not change.
+  clearHighlightAndHidePopup({
+    currentElement = null,
+  }: {
+    currentElement?: Element | null;
+  } = {}) {
     this.currentTextAtPoint = null;
     this.currentPoint = null;
     this.currentSearchResult = null;
@@ -753,7 +763,7 @@ export class ContentHandler {
 
   showPopup(options?: { copyState?: CopyState; copyType?: CopyType }) {
     if (!this.currentSearchResult && !this.currentTextAtPoint?.meta) {
-      this.clearHighlight(this.currentTarget);
+      this.clearHighlightAndHidePopup({ currentElement: this.currentTarget });
       return;
     }
 
@@ -774,7 +784,7 @@ export class ContentHandler {
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentTextAtPoint?.meta,
       onClosePopup: () => {
-        this.clearHighlight(this.currentTarget);
+        this.clearHighlightAndHidePopup({ currentElement: this.currentTarget });
       },
       onShowSettings: () => {
         browser.runtime.sendMessage({ type: 'options' }).catch(() => {
@@ -795,7 +805,7 @@ export class ContentHandler {
 
     const popup = renderPopup(this.currentSearchResult, popupOptions);
     if (!popup) {
-      this.clearHighlight(this.currentTarget);
+      this.clearHighlightAndHidePopup({ currentElement: this.currentTarget });
       return;
     }
 
