@@ -1,6 +1,6 @@
 import { nonJapaneseChar } from './char-range';
 import { isTextInputNode, isTextNode } from './dom-utils';
-import { bboxIncludesPoint, Point } from './geometry-utils';
+import { bboxIncludesPoint, Point } from './geometry';
 import { extractGetTextMetadata, lookForMetadata, SelectionMeta } from './meta';
 import { SVG_NS } from './svg';
 import { TextRange } from './text-range';
