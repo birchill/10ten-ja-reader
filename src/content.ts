@@ -672,6 +672,17 @@ export class ContentHandler {
     this.showPopup({ copyState, copyType });
   }
 
+  highlightText(length: number) {
+    if (!this.currentTextRange?.length) {
+      return;
+    }
+
+    this.textHighlighter.highlight({
+      length,
+      textRange: this.currentTextRange,
+    });
+  }
+
   async tryToUpdatePopup(
     point: Point,
     target: Element,
@@ -773,7 +784,7 @@ export class ContentHandler {
           .writingMode.startsWith('vertical'),
     };
 
-    this.highlightText();
+    this.highlightTextForCurrentResult();
     this.showPopup();
   }
 
@@ -822,11 +833,11 @@ export class ContentHandler {
 
     this.currentDict = dict;
 
-    this.highlightText();
+    this.highlightTextForCurrentResult();
     this.showPopup();
   }
 
-  highlightText() {
+  highlightTextForCurrentResult() {
     if (this.config.noTextHighlight) {
       return;
     }
@@ -848,14 +859,7 @@ export class ContentHandler {
       return;
     }
 
-    if (!this.currentTextRange?.length) {
-      return;
-    }
-
-    this.textHighlighter.highlight({
-      length: highlightLength,
-      textRange: this.currentTextRange,
-    });
+    this.highlightText(highlightLength);
   }
 
   // The currentElement here is _only_ used to avoid resetting the scroll
