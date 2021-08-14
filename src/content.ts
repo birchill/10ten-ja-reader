@@ -57,6 +57,7 @@ import {
   Entry as CopyEntry,
 } from './copy-text';
 import { isEditableNode } from './dom-utils';
+import { Point } from './geometry';
 import { getTextAtPoint, GetTextAtPointResult } from './get-text';
 import { mod } from './mod';
 import {
@@ -90,7 +91,7 @@ export class ContentHandler {
 
   // Lookup tracking (so we can avoid redundant work and so we can re-render)
   private currentTextAtPoint: GetTextAtPointResult | null = null;
-  private currentPoint: { x: number; y: number } | null = null;
+  private currentPoint: Point | null = null;
   private currentSearchResult: QueryResult | null = null;
   private currentTarget: Element | null = null;
   private currentDict: MajorDataSeries = 'words';
@@ -103,7 +104,7 @@ export class ContentHandler {
   private static MOUSE_SPEED_THRESHOLD = 0.5;
   private mouseSpeedRollingSum: number = 0;
   private mouseSpeeds: number[] = [];
-  private previousMousePosition: { x: number; y: number } | null = null;
+  private previousMousePosition: Point | null = null;
   private previousMouseMoveTime: number | null = null;
   // We disable this feature by default and only turn it on once we've
   // established that we have a sufficiently precise timer. If
@@ -570,7 +571,7 @@ export class ContentHandler {
   }
 
   async tryToUpdatePopup(
-    point: { x: number; y: number },
+    point: Point,
     target: Element,
     dictMode: 'default' | 'kanji'
   ) {

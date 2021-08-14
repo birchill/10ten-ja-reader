@@ -296,10 +296,7 @@ function getOffsetFromTextInputNode({
 function getDistanceFromTextNode(
   startNode: CharacterData,
   startOffset: number,
-  point: {
-    x: number;
-    y: number;
-  }
+  point: Point
 ): { distance: number; glyphExtent: number } | null {
   // Ignore synthesized text nodes.
   if (!startNode.parentElement) {
@@ -345,10 +342,7 @@ function getTextFromTextNode({
 }: {
   startNode: CharacterData;
   startOffset: number;
-  point: {
-    x: number;
-    y: number;
-  };
+  point: Point;
   maxLength?: number;
 }): GetTextAtPointResult | null {
   const isRubyAnnotationElement = (element: Element | null) => {
@@ -562,10 +556,7 @@ function getTextFromCoveringLink({
 }: {
   linkElem: HTMLAnchorElement;
   originalElem: Node | null;
-  point: {
-    x: number;
-    y: number;
-  };
+  point: Point;
   maxLength?: number;
 }): GetTextAtPointResult | null {
   // Turn off pointer-events for the covering link

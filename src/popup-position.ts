@@ -1,3 +1,5 @@
+import { Point } from './geometry';
+
 export const enum PopupPositionMode {
   Start,
   TopLeft = Start,
@@ -18,7 +20,7 @@ export function getPopupPosition({
   targetElem,
 }: {
   doc: Document;
-  mousePos: { x: number; y: number } | null;
+  mousePos: Point | null;
   popupSize: { width: number; height: number };
   positionMode: PopupPositionMode;
   targetElem: Element | null;
@@ -103,7 +105,7 @@ function getAutoPosition({
   windowHeight,
 }: {
   doc: Document;
-  mousePos: { x: number; y: number } | null;
+  mousePos: Point | null;
   popupSize: { width: number; height: number };
   scrollX: number;
   scrollY: number;
