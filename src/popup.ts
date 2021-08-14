@@ -1860,7 +1860,7 @@ function renderCopyDetails(
 
   const copyKeys: Array<{ key: string; l10nKey: string }> = CopyKeys.map(
     ({ key, type, popupString }) => {
-      if (type === CopyType.Word && series === 'kanji') {
+      if (type === 'word' && series === 'kanji') {
         return { key, l10nKey: CopyKanjiKeyStrings.popupString };
       } else {
         return { key, l10nKey: popupString };
@@ -1896,13 +1896,13 @@ function renderCopyDetails(
 
 function getCopiedString(target: CopyType): string {
   switch (target) {
-    case CopyType.Entry:
+    case 'entry':
       return browser.i18n.getMessage('content_copied_entry');
 
-    case CopyType.TabDelimited:
+    case 'tab':
       return browser.i18n.getMessage('content_copied_fields');
 
-    case CopyType.Word:
+    case 'word':
       return browser.i18n.getMessage('content_copied_word');
   }
 }

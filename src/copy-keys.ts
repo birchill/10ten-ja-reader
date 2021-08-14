@@ -1,10 +1,6 @@
 // Various common definitions used for the keys supported in copy mode.
 
-export const enum CopyType {
-  Entry,
-  TabDelimited,
-  Word,
-}
+export type CopyType = 'entry' | 'tab' | 'word';
 
 interface CopyKey {
   type: CopyType;
@@ -15,19 +11,19 @@ interface CopyKey {
 
 export const CopyKeys: Array<CopyKey> = [
   {
-    type: CopyType.Entry,
+    type: 'entry',
     key: 'e',
     optionsString: 'options_popup_copy_entry',
     popupString: 'content_copy_keys_entry_label',
   },
   {
-    type: CopyType.TabDelimited,
+    type: 'tab',
     key: 't',
     optionsString: 'options_popup_copy_fields',
     popupString: 'content_copy_keys_fields_label',
   },
   {
-    type: CopyType.Word,
+    type: 'word',
     key: 'w',
     optionsString: 'options_popup_copy_word_kanji',
     popupString: 'content_copy_keys_word_label',

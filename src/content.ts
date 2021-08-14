@@ -598,21 +598,21 @@ export class ContentHandler {
     let textToCopy: string;
 
     switch (copyType) {
-      case CopyType.Entry:
+      case 'entry':
         textToCopy = getEntryToCopy(copyEntry, {
           kanjiReferences: this.config.kanjiReferences,
           showKanjiComponents: this.config.showKanjiComponents,
         });
         break;
 
-      case CopyType.TabDelimited:
+      case 'tab':
         textToCopy = getFieldsToCopy(copyEntry, {
           kanjiReferences: this.config.kanjiReferences,
           showKanjiComponents: this.config.showKanjiComponents,
         });
         break;
 
-      case CopyType.Word:
+      case 'word':
         textToCopy = getWordToCopy(copyEntry);
         break;
     }
