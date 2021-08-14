@@ -442,9 +442,7 @@ export class ContentHandler {
       if (key === 'Shift' && this.kanjiLookupMode) {
         return true;
       }
-      if (this.currentPoint && this.lastMouseTarget) {
-        this.showDictionary('next');
-      }
+      this.showNextDictionary();
     } else if (toggleDefinition.includes(upperKey)) {
       try {
         browser.runtime.sendMessage({ type: 'toggleDefinition' });
@@ -454,20 +452,11 @@ export class ContentHandler {
         );
         return false;
       }
-      // We'll eventually get notified of the config change but we just change
-      // it here now so we can update the popup immediately.
-      this.config.readingOnly = !this.config.readingOnly;
-      this.showPopup();
+      this.toggleDefinition();
     } else if (movePopupDown.includes(upperKey)) {
-      this.popupPositionMode =
-        (this.popupPositionMode + 1) % (PopupPositionMode.End + 1);
-      this.showPopup();
+      this.movePopup('down');
     } else if (movePopupUp.includes(upperKey)) {
-      this.popupPositionMode = mod(
-        this.popupPositionMode - 1,
-        PopupPositionMode.End + 1
-      );
-      this.showPopup();
+      this.movePopup('up');
     } else if (
       navigator.clipboard &&
       // It's important we _don't_ enter copy mode when the Ctrl key is being
@@ -476,16 +465,13 @@ export class ContentHandler {
       !ctrlKeyPressed &&
       startCopy.includes(upperKey)
     ) {
-      if (this.copyMode) {
-        this.copyIndex++;
+      if (!this.copyMode) {
+        this.enterCopyMode();
       } else {
-        this.copyMode = true;
-        this.copyIndex = 0;
+        this.nextCopyEntry();
       }
-      this.showPopup();
     } else if (this.copyMode && key === 'Escape') {
-      this.copyMode = false;
-      this.showPopup();
+      this.exitCopyMode();
     } else if (this.copyMode) {
       let copyType: CopyType | undefined;
       for (const copyKey of CopyKeys) {
@@ -500,34 +486,7 @@ export class ContentHandler {
         return false;
       }
 
-      const copyEntry = this.getCopyEntry();
-      if (!copyEntry) {
-        return true;
-      }
-
-      let textToCopy: string;
-
-      switch (copyType) {
-        case CopyType.Entry:
-          textToCopy = getEntryToCopy(copyEntry, {
-            kanjiReferences: this.config.kanjiReferences,
-            showKanjiComponents: this.config.showKanjiComponents,
-          });
-          break;
-
-        case CopyType.TabDelimited:
-          textToCopy = getFieldsToCopy(copyEntry, {
-            kanjiReferences: this.config.kanjiReferences,
-            showKanjiComponents: this.config.showKanjiComponents,
-          });
-          break;
-
-        case CopyType.Word:
-          textToCopy = getWordToCopy(copyEntry);
-          break;
-      }
-
-      this.copyString(textToCopy!, copyType);
+      this.copyCurrentEntry(copyType);
     } else {
       return false;
     }
@@ -588,6 +547,129 @@ export class ContentHandler {
 
   isVisible(): boolean {
     return isPopupVisible();
+  }
+
+  showNextDictionary() {
+    if (this.currentPoint) {
+      this.showDictionary('next');
+    }
+  }
+
+  toggleDefinition() {
+    this.config.readingOnly = !this.config.readingOnly;
+    this.showPopup();
+  }
+
+  movePopup(direction: 'up' | 'down') {
+    if (direction === 'down') {
+      this.popupPositionMode =
+        (this.popupPositionMode + 1) % (PopupPositionMode.End + 1);
+    } else {
+      this.popupPositionMode = mod(
+        this.popupPositionMode - 1,
+        PopupPositionMode.End + 1
+      );
+    }
+    this.showPopup();
+  }
+
+  enterCopyMode() {
+    this.copyMode = true;
+    this.copyIndex = 0;
+    this.showPopup();
+  }
+
+  exitCopyMode() {
+    this.copyMode = false;
+    this.showPopup();
+  }
+
+  nextCopyEntry() {
+    this.copyIndex++;
+    this.showPopup();
+  }
+
+  copyCurrentEntry(copyType: CopyType) {
+    const copyEntry = this.getCopyEntry();
+    if (!copyEntry) {
+      return;
+    }
+
+    let textToCopy: string;
+
+    switch (copyType) {
+      case CopyType.Entry:
+        textToCopy = getEntryToCopy(copyEntry, {
+          kanjiReferences: this.config.kanjiReferences,
+          showKanjiComponents: this.config.showKanjiComponents,
+        });
+        break;
+
+      case CopyType.TabDelimited:
+        textToCopy = getFieldsToCopy(copyEntry, {
+          kanjiReferences: this.config.kanjiReferences,
+          showKanjiComponents: this.config.showKanjiComponents,
+        });
+        break;
+
+      case CopyType.Word:
+        textToCopy = getWordToCopy(copyEntry);
+        break;
+    }
+
+    this.copyString(textToCopy!, copyType);
+  }
+
+  private getCopyEntry(): CopyEntry | null {
+    console.assert(
+      this.copyMode,
+      'Should be in copy mode when copying an entry'
+    );
+
+    if (
+      !this.currentSearchResult ||
+      !this.currentSearchResult[this.currentDict]
+    ) {
+      return null;
+    }
+
+    const searchResult = this.currentSearchResult[this.currentDict]!;
+
+    let copyIndex = this.copyIndex;
+    if (searchResult.type === 'words' || searchResult.type === 'names') {
+      copyIndex = copyIndex % searchResult.data.length;
+    }
+
+    if (copyIndex < 0) {
+      console.error('Bad copy index');
+      this.copyMode = false;
+      this.showPopup();
+      return null;
+    }
+
+    switch (searchResult.type) {
+      case 'words':
+        return { type: 'word', data: searchResult.data[copyIndex] };
+
+      case 'names':
+        return { type: 'name', data: searchResult.data[copyIndex] };
+
+      case 'kanji':
+        return { type: 'kanji', data: searchResult.data };
+    }
+  }
+
+  private async copyString(message: string, copyType: CopyType) {
+    let copyState = CopyState.Finished;
+    try {
+      await navigator.clipboard.writeText(message);
+    } catch (e) {
+      copyState = CopyState.Error;
+      console.error('Failed to write to clipboard', e);
+    }
+
+    this.copyMode = false;
+    this.showPopup({ copyState, copyType });
   }
 
   async tryToUpdatePopup(
@@ -914,58 +996,6 @@ export class ContentHandler {
         popup.style.maskImage = 'none';
       }
     }
-  }
-
-  private getCopyEntry(): CopyEntry | null {
-    console.assert(
-      this.copyMode,
-      'Should be in copy mode when copying an entry'
-    );
-
-    if (
-      !this.currentSearchResult ||
-      !this.currentSearchResult[this.currentDict]
-    ) {
-      return null;
-    }
-
-    const searchResult = this.currentSearchResult[this.currentDict]!;
-
-    let copyIndex = this.copyIndex;
-    if (searchResult.type === 'words' || searchResult.type === 'names') {
-      copyIndex = copyIndex % searchResult.data.length;
-    }
-
-    if (copyIndex < 0) {
-      console.error('Bad copy index');
-      this.copyMode = false;
-      this.showPopup();
-      return null;
-    }
-
-    switch (searchResult.type) {
-      case 'words':
-        return { type: 'word', data: searchResult.data[copyIndex] };
-
-      case 'names':
-        return { type: 'name', data: searchResult.data[copyIndex] };
-
-      case 'kanji':
-        return { type: 'kanji', data: searchResult.data };
-    }
-  }
-
-  private async copyString(message: string, copyType: CopyType) {
-    let copyState = CopyState.Finished;
-    try {
-      await navigator.clipboard.writeText(message);
-    } catch (e) {
-      copyState = CopyState.Error;
-      console.error('Failed to write to clipboard', e);
-    }
-
-    this.copyMode = false;
-    this.showPopup({ copyState, copyType });
   }
 
   // Expose the renderPopup callback so that we can test it
