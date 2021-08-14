@@ -82,29 +82,42 @@ import { TextRange, textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
 
 export class ContentHandler {
-  // This should be enough for most (but not all) entries for now.
+  // The content script is injected into every frame in a page but we delegate
+  // some responsibilities to the top-most window since that allows us to,
+  // for example, show the popup without it being clipped by its iframe
+  // boundary. Furthermore, we want to handle key events regardless of which
+  // iframe is currently in focus.
   //
-  // See https://github.com/birchill/10ten-ja-reader/issues/319#issuecomment-655545971
-  // for a snapshot of the entry lengths by frequency.
+  // As a result, we can divide the state and methods in this class into:
   //
-  // Once we have switched all databases to IndexedDB, we should investigate the
-  // performance impact of increasing this further.
-  private static MAX_LENGTH = 16;
+  // 1. Things done by the window / iframe where the text lives,
+  //    e.g. processing mouse events, extracting text, highlighting text, etc.
+  //
+  // 2. Things only the topmost window does,
+  //    e.g. querying the dictionary, showing the popup, etc.
+  //
+  // There are a few exceptions like copyMode which is mirrored in both and
+  // popup visibility tracking which only iframes need to care about but
+  // roughly these categories hold.
+  //
+  // One day we might actually separating these out into separate classes but
+  // for now we just document which is which here.
 
+  //
+  // Common concerns
+  //
   private config: ContentConfig;
+
+  //
+  // Text handling window concerns
+  //
   private textHighlighter: TextHighlighter;
 
-  // Lookup tracking (so we can avoid redundant work and so we can re-render)
   private currentTextRange: TextRange | undefined;
+  // The current point is used both by the text handling window to detect
+  // redundant mouse moves and by the topmost window to know where to position
+  // the popup.
   private currentPoint: Point | null = null;
-  private currentLookupParams:
-    | { text: string; wordLookup: boolean; meta?: SelectionMeta }
-    | undefined;
-  private currentSearchResult:
-    | (QueryResult & { source: Window | null })
-    | null = null;
-  private currentTargetProps: TargetProps | undefined;
-  private currentDict: MajorDataSeries = 'words';
 
   // We keep track of the last element that was the target of a mouse move so
   // that we can popup the window later using its properties.
@@ -125,6 +138,7 @@ export class ContentHandler {
   // mostly distracting and introduces unnecessary work.
   private static MOUSE_SPEED_SAMPLES = 2;
   private static MOUSE_SPEED_THRESHOLD = 0.5;
+
   private mouseSpeedRollingSum: number = 0;
   private mouseSpeeds: number[] = [];
   private previousMousePosition: Point | null = null;
@@ -142,7 +156,32 @@ export class ContentHandler {
   // events.
   private typingMode: boolean = false;
 
+  //
+  // Top-most window concerns
+  //
+
+  // This should be enough for most (but not all) entries for now.
+  //
+  // See https://github.com/birchill/10ten-ja-reader/issues/319#issuecomment-655545971
+  // for a snapshot of the entry lengths by frequency.
+  //
+  // Once we have switched all databases to IndexedDB, we should investigate the
+  // performance impact of increasing this further.
+  private static MAX_LENGTH = 16;
+
+  private currentLookupParams:
+    | { text: string; wordLookup: boolean; meta?: SelectionMeta }
+    | undefined;
+  private currentSearchResult:
+    | (QueryResult & { source: Window | null })
+    | null = null;
+  private currentTargetProps: TargetProps | undefined;
+  private currentDict: MajorDataSeries = 'words';
+
   // Copy support
+  //
+  // (copyMode is actually used by the text-handling window too to know which
+  // keyboard events to handle and how to interpret them.)
   private copyMode: boolean = false;
   private copyIndex: number = 0;
 
@@ -914,6 +953,12 @@ export class ContentHandler {
     }
   }
 
+  // ------------------------------------------------------------------------
+  //
+  // (Mostly) Top-most window concerns
+  //
+  // ------------------------------------------------------------------------
+
   async lookupText({
     dictMode,
     meta,
@@ -1074,6 +1119,9 @@ export class ContentHandler {
 
     this.highlightText(highlightLength);
   }
+
+  // (clearHighlightAndHidePopup is used by both the top-most window and the
+  // text-handling window. We probably should split it up at some point.)
 
   // The currentElement here is _only_ used to avoid resetting the scroll
   // position when we clear the text selection of a text box.
