@@ -73,6 +73,7 @@ import {
 import { getPopupPosition, PopupPositionMode } from './popup-position';
 import { query, QueryResult } from './query';
 import { isForeignObjectElement, isSvgDoc, isSvgSvgElement } from './svg';
+import { TargetProps } from './target-props';
 import { TextHighlighter } from './text-highlighter';
 import { hasReasonableTimerResolution } from './timer-precision';
 
@@ -93,8 +94,12 @@ export class ContentHandler {
   private currentTextAtPoint: GetTextAtPointResult | null = null;
   private currentPoint: Point | null = null;
   private currentSearchResult: QueryResult | null = null;
-  private currentTarget: Element | null = null;
+  private currentTargetProps: TargetProps | undefined;
   private currentDict: MajorDataSeries = 'words';
+
+  // We keep track of the last element that was the target of a mouse move so
+  // that we can popup the window later using its properties.
+  private lastMouseTarget: Element | null = null;
 
   // Mouse tracking
   //
@@ -234,7 +239,7 @@ export class ContentHandler {
       // Nevertheless, we still want to set the current position information so
       // that if the user presses the hold-to-show keys later we can show the
       // popup immediately.
-      this.currentTarget = ev.target;
+      this.lastMouseTarget = ev.target;
       this.currentPoint = { x: ev.clientX, y: ev.clientY };
       return;
     }
@@ -334,8 +339,12 @@ export class ContentHandler {
     if (this.isHoldToShowKeysMatch(ev)) {
       ev.preventDefault();
 
-      if (!textBoxInFocus && this.currentPoint && this.currentTarget) {
-        this.tryToUpdatePopup(this.currentPoint, this.currentTarget, 'default');
+      if (!textBoxInFocus && this.currentPoint && this.lastMouseTarget) {
+        this.tryToUpdatePopup(
+          this.currentPoint,
+          this.lastMouseTarget,
+          'default'
+        );
       }
       return;
     }
@@ -380,7 +389,9 @@ export class ContentHandler {
       // If we are focussed on a textbox and the keystroke wasn't one we handle
       // one, enter typing mode and hide the pop-up.
       if (textBoxInFocus) {
-        this.clearHighlightAndHidePopup({ currentElement: this.currentTarget });
+        this.clearHighlightAndHidePopup({
+          currentElement: this.lastMouseTarget,
+        });
         this.typingMode = true;
       }
     }
@@ -426,7 +437,7 @@ export class ContentHandler {
       if (key === 'Shift' && this.kanjiLookupMode) {
         return true;
       }
-      if (this.currentPoint && this.currentTarget) {
+      if (this.currentPoint && this.lastMouseTarget) {
         this.showDictionary('next');
       }
     } else if (toggleDefinition.includes(upperKey)) {
@@ -531,7 +542,7 @@ export class ContentHandler {
 
     // If we entered typing mode clear the highlight.
     if (this.typingMode) {
-      this.clearHighlightAndHidePopup({ currentElement: this.currentTarget });
+      this.clearHighlightAndHidePopup({ currentElement: this.lastMouseTarget });
     }
   }
 
@@ -604,7 +615,7 @@ export class ContentHandler {
     this.copyMode = false;
 
     if (!textAtPoint) {
-      this.clearHighlightAndHidePopup({ currentElement: this.currentTarget });
+      this.clearHighlightAndHidePopup({ currentElement: this.lastMouseTarget });
       return;
     }
 
@@ -620,7 +631,7 @@ export class ContentHandler {
     }
 
     if (!queryResult && !textAtPoint.meta) {
-      this.clearHighlightAndHidePopup({ currentElement: this.currentTarget });
+      this.clearHighlightAndHidePopup({ currentElement: this.lastMouseTarget });
       return;
     }
 
@@ -659,7 +670,15 @@ export class ContentHandler {
     this.highlightText(textAtPoint, queryResult?.[dict]);
 
     this.currentSearchResult = queryResult;
-    this.currentTarget = target;
+    this.lastMouseTarget = target;
+    this.currentTargetProps = {
+      hasTitle: !!(target as HTMLElement)?.title,
+      isVerticalText:
+        !!target &&
+        target.ownerDocument
+          .defaultView!.getComputedStyle(target)
+          .writingMode.startsWith('vertical'),
+    };
 
     this.showPopup();
   }
@@ -753,7 +772,7 @@ export class ContentHandler {
     this.currentTextAtPoint = null;
     this.currentPoint = null;
     this.currentSearchResult = null;
-    this.currentTarget = null;
+    this.currentTargetProps = undefined;
     this.copyMode = false;
 
     this.textHighlighter.clearHighlight({ currentElement });
@@ -763,11 +782,12 @@ export class ContentHandler {
 
   showPopup(options?: { copyState?: CopyState; copyType?: CopyType }) {
     if (!this.currentSearchResult && !this.currentTextAtPoint?.meta) {
-      this.clearHighlightAndHidePopup({ currentElement: this.currentTarget });
+      this.clearHighlightAndHidePopup({ currentElement: this.lastMouseTarget });
       return;
     }
 
-    const doc: Document = this.currentTarget?.ownerDocument ?? window.document;
+    const doc: Document =
+      this.lastMouseTarget?.ownerDocument ?? window.document;
 
     const popupOptions: PopupOptions = {
       accentDisplay: this.config.accentDisplay,
@@ -784,7 +804,9 @@ export class ContentHandler {
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentTextAtPoint?.meta,
       onClosePopup: () => {
-        this.clearHighlightAndHidePopup({ currentElement: this.currentTarget });
+        this.clearHighlightAndHidePopup({
+          currentElement: this.lastMouseTarget,
+        });
       },
       onShowSettings: () => {
         browser.runtime.sendMessage({ type: 'options' }).catch(() => {
@@ -805,15 +827,9 @@ export class ContentHandler {
 
     const popup = renderPopup(this.currentSearchResult, popupOptions);
     if (!popup) {
-      this.clearHighlightAndHidePopup({ currentElement: this.currentTarget });
+      this.clearHighlightAndHidePopup({ currentElement: this.lastMouseTarget });
       return;
     }
-
-    const isVerticalText =
-      !!this.currentTarget &&
-      doc
-        .defaultView!.getComputedStyle(this.currentTarget)
-        .writingMode.startsWith('vertical');
 
     // Position the popup
     const {
@@ -823,14 +839,14 @@ export class ContentHandler {
       constrainHeight,
     } = getPopupPosition({
       doc,
-      isVerticalText,
+      isVerticalText: !!this.currentTargetProps?.isVerticalText,
       mousePos: this.currentPoint,
       positionMode: this.popupPositionMode,
       popupSize: {
         width: popup.offsetWidth || 200,
         height: popup.offsetHeight,
       },
-      targetHasTitle: !!(this.currentTarget as HTMLElement)?.title,
+      targetHasTitle: !!this.currentTargetProps?.hasTitle,
     });
 
     if (
