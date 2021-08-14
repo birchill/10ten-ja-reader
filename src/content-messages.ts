@@ -13,8 +13,8 @@ export type LookupMessage = {
   wordLookup: boolean;
 };
 
-export type ClearTextMessage = {
-  kind: 'clearText';
+export type ClearResultMessage = {
+  kind: 'clearResult';
 };
 
 export type NextDictionaryMessage = {
@@ -76,7 +76,7 @@ type IsPopupShownMessage = {
 
 export type ContentMessage =
   | LookupMessage
-  | ClearTextMessage
+  | ClearResultMessage
   | NextDictionaryMessage
   | ToggleDefinitionMessage
   | MovePopupMessage

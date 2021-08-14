@@ -242,7 +242,7 @@ export class ContentHandler {
     window.removeEventListener('focusin', this.onFocusIn);
     window.removeEventListener('message', this.onContentMessage);
 
-    this.clearHighlightAndHidePopup();
+    this.clearResult();
     this.textHighlighter.detach();
     this.copyMode = false;
 
@@ -300,7 +300,7 @@ export class ContentHandler {
     // more-or-less permanently enabled so we don't want to add unnecessary
     // latency to regular mouse events.
     if (!this.areHoldToShowKeysDown(ev)) {
-      this.clearHighlightAndHidePopup({ currentElement: ev.target });
+      this.clearResult({ currentElement: ev.target });
 
       // We still want to set the current position and element information so
       // that if the user presses the hold-to-show keys later we can show the
@@ -311,7 +311,7 @@ export class ContentHandler {
     }
 
     if (this.shouldThrottlePopup(ev)) {
-      this.clearHighlightAndHidePopup({ currentElement: ev.target });
+      this.clearResult({ currentElement: ev.target });
       return;
     }
 
@@ -393,7 +393,7 @@ export class ContentHandler {
     }
 
     // Clear the highlight since it interferes with selection.
-    this.clearHighlightAndHidePopup({ currentElement: ev.target as Element });
+    this.clearResult({ currentElement: ev.target as Element });
   }
 
   onKeyDown(ev: KeyboardEvent) {
@@ -459,7 +459,7 @@ export class ContentHandler {
       // If we are focussed on a textbox and the keystroke wasn't one we handle
       // one, enter typing mode and hide the pop-up.
       if (textBoxInFocus) {
-        this.clearHighlightAndHidePopup({
+        this.clearResult({
           currentElement: this.lastMouseTarget,
         });
         this.typingMode = true;
@@ -570,7 +570,7 @@ export class ContentHandler {
 
     // If we entered typing mode clear the highlight.
     if (this.typingMode) {
-      this.clearHighlightAndHidePopup({ currentElement: this.lastMouseTarget });
+      this.clearResult({ currentElement: this.lastMouseTarget });
     }
   }
 
@@ -643,8 +643,8 @@ export class ContentHandler {
         }
         break;
 
-      case 'clearText':
-        this.clearHighlightAndHidePopup();
+      case 'clearResult':
+        this.clearResult();
         break;
 
       case 'nextDictionary':
@@ -680,9 +680,7 @@ export class ContentHandler {
         break;
 
       case 'clearTextHighlight':
-        this.textHighlighter.clearHighlight({
-          currentElement: this.lastMouseTarget,
-        });
+        this.clearTextHighlight();
         break;
 
       case 'popupHidden':
@@ -891,6 +889,42 @@ export class ContentHandler {
     });
   }
 
+  clearTextHighlight(currentElement: Element | null = null) {
+    this.textHighlighter.clearHighlight({ currentElement });
+  }
+
+  // The currentElement here is _only_ used to avoid resetting the scroll
+  // position when we clear the text selection of a text box.
+  //
+  // That is, if we go to clear the text selection of a text box but we are
+  // still interacting with that element, then we take extra steps to ensure
+  // the scroll position does not change.
+  clearResult({
+    currentElement = null,
+  }: {
+    currentElement?: Element | null;
+  } = {}) {
+    this.currentTextRange = undefined;
+    this.currentPoint = undefined;
+    this.lastMouseTarget = null;
+    this.copyMode = false;
+
+    if (isTopMostWindow() && this.currentSearchResult?.source) {
+      this.currentSearchResult.source.postMessage<ContentMessage>(
+        { kind: 'clearTextHighlight' },
+        '*'
+      );
+    } else {
+      this.clearTextHighlight(currentElement);
+    }
+
+    if (isTopMostWindow()) {
+      this.hidePopup();
+    } else {
+      window.top.postMessage<ContentMessage>({ kind: 'clearResult' }, '*');
+    }
+  }
+
   async tryToUpdatePopup({
     point,
     eventElement,
@@ -918,11 +952,7 @@ export class ContentHandler {
     }
 
     if (!textAtPoint) {
-      if (isTopMostWindow()) {
-        this.clearHighlightAndHidePopup({ currentElement: eventElement });
-      } else {
-        window.top.postMessage<ContentMessage>({ kind: 'clearText' }, '*');
-      }
+      this.clearResult({ currentElement: eventElement });
       return;
     }
 
@@ -994,7 +1024,7 @@ export class ContentHandler {
     }
 
     if (!queryResult && !meta) {
-      this.clearHighlightAndHidePopup({ currentElement: this.lastMouseTarget });
+      this.clearResult({ currentElement: this.lastMouseTarget });
       return;
     }
 
@@ -1121,46 +1151,9 @@ export class ContentHandler {
     this.highlightText(highlightLength);
   }
 
-  // (clearHighlightAndHidePopup is used by both the top-most window and the
-  // text-handling window. We probably should split it up at some point.)
-
-  // The currentElement here is _only_ used to avoid resetting the scroll
-  // position when we clear the text selection of a text box.
-  //
-  // That is, if we go to clear the text selection of a text box but we are
-  // still interacting with that element, then we take extra steps to ensure
-  // the scroll position does not change.
-  clearHighlightAndHidePopup({
-    currentElement = null,
-  }: {
-    currentElement?: Element | null;
-  } = {}) {
-    this.currentTextRange = undefined;
-    this.currentPoint = undefined;
-    this.lastMouseTarget = null;
-
-    this.currentLookupParams = undefined;
-    this.currentSearchResult = undefined;
-    this.currentTargetProps = undefined;
-    this.copyMode = false;
-
-    this.textHighlighter.clearHighlight({ currentElement });
-
-    if (isTopMostWindow()) {
-      for (const frame of Array.from(window.frames)) {
-        frame.postMessage<ContentMessage>({ kind: 'popupHidden' }, '*');
-        frame.postMessage<ContentMessage>({ kind: 'clearTextHighlight' }, '*');
-      }
-    } else {
-      window.top.postMessage<ContentMessage>({ kind: 'clearText' }, '*');
-    }
-
-    hidePopup();
-  }
-
   showPopup(options?: { copyState?: CopyState; copyType?: CopyType }) {
     if (!this.currentSearchResult && !this.currentLookupParams?.meta) {
-      this.clearHighlightAndHidePopup({ currentElement: this.lastMouseTarget });
+      this.clearResult({ currentElement: this.lastMouseTarget });
       return;
     }
 
@@ -1182,7 +1175,7 @@ export class ContentHandler {
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentLookupParams?.meta,
       onClosePopup: () => {
-        this.clearHighlightAndHidePopup({
+        this.clearResult({
           currentElement: this.lastMouseTarget,
         });
       },
@@ -1205,7 +1198,7 @@ export class ContentHandler {
 
     const popup = renderPopup(this.currentSearchResult, popupOptions);
     if (!popup) {
-      this.clearHighlightAndHidePopup({ currentElement: this.lastMouseTarget });
+      this.clearResult({ currentElement: this.lastMouseTarget });
       return;
     }
 
@@ -1275,6 +1268,20 @@ export class ContentHandler {
     if (isTopMostWindow()) {
       for (const frame of Array.from(window.frames)) {
         frame.postMessage<ContentMessage>({ kind: 'popupShown' }, '*');
+      }
+    }
+  }
+
+  hidePopup() {
+    this.currentLookupParams = undefined;
+    this.currentSearchResult = undefined;
+    this.currentTargetProps = undefined;
+
+    hidePopup();
+
+    if (isTopMostWindow()) {
+      for (const frame of Array.from(window.frames)) {
+        frame.postMessage<ContentMessage>({ kind: 'popupHidden' }, '*');
       }
     }
   }
