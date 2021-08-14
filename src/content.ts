@@ -187,6 +187,11 @@ export class ContentHandler {
       return;
     }
 
+    // We don't know how to deal with anything that's not an element
+    if (!(ev.target instanceof Element)) {
+      return;
+    }
+
     // Ignore mouse events on the popup window
     if (isPopupWindow(ev.target)) {
       return;
@@ -225,17 +230,17 @@ export class ContentHandler {
     // permanently enabled so we don't want to add unnecessary latency to
     // regular mouse events.
     if (!this.areHoldToShowKeysDown(ev)) {
-      this.clearHighlight(ev.target as Element);
+      this.clearHighlight(ev.target);
       // Nevertheless, we still want to set the current position information so
       // that if the user presses the hold-to-show keys later we can show the
       // popup immediately.
-      this.currentTarget = ev.target as Element;
+      this.currentTarget = ev.target;
       this.currentPoint = { x: ev.clientX, y: ev.clientY };
       return;
     }
 
     if (this.shouldThrottlePopup(ev)) {
-      this.clearHighlight(ev.target as Element);
+      this.clearHighlight(ev.target);
       return;
     }
 
@@ -247,7 +252,7 @@ export class ContentHandler {
 
     this.tryToUpdatePopup(
       { x: ev.clientX, y: ev.clientY },
-      ev.target as Element,
+      ev.target,
       dictMode
     );
   }
