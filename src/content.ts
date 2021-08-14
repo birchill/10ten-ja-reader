@@ -117,7 +117,7 @@ export class ContentHandler {
   // The current point is used both by the text handling window to detect
   // redundant mouse moves and by the topmost window to know where to position
   // the popup.
-  private currentPoint: Point | null = null;
+  private currentPoint: Point | undefined;
 
   // We keep track of the last element that was the target of a mouse move so
   // that we can popup the window later using its properties.
@@ -140,9 +140,9 @@ export class ContentHandler {
   private static MOUSE_SPEED_THRESHOLD = 0.5;
 
   private mouseSpeedRollingSum: number = 0;
-  private mouseSpeeds: number[] = [];
-  private previousMousePosition: Point | null = null;
-  private previousMouseMoveTime: number | null = null;
+  private mouseSpeeds: Array<number> = [];
+  private previousMousePosition: Point | undefined;
+  private previousMouseMoveTime: number | undefined;
   // We disable this feature by default and only turn it on once we've
   // established that we have a sufficiently precise timer. If
   // privacy.resistFingerprinting is enabled then the timer won't be precise
@@ -174,7 +174,7 @@ export class ContentHandler {
     | undefined;
   private currentSearchResult:
     | (QueryResult & { source: Window | null })
-    | null = null;
+    | undefined;
   private currentTargetProps: TargetProps | undefined;
   private currentDict: MajorDataSeries = 'words';
 
@@ -287,9 +287,8 @@ export class ContentHandler {
     // position has in fact changed.
     if (
       (ev.shiftKey || ev.altKey || ev.metaKey || ev.ctrlKey) &&
-      this.currentPoint &&
-      this.currentPoint.x === ev.clientX &&
-      this.currentPoint.y === ev.clientY
+      this.currentPoint?.x === ev.clientX &&
+      this.currentPoint?.y === ev.clientY
     ) {
       return;
     }
@@ -688,7 +687,7 @@ export class ContentHandler {
 
       case 'popupHidden':
         this.currentTextRange = undefined;
-        this.currentPoint = null;
+        this.currentPoint = undefined;
         this.copyMode = false;
         this.isPopupShowing = false;
         break;
@@ -1031,7 +1030,9 @@ export class ContentHandler {
       this.currentDict = dict;
     }
 
-    this.currentSearchResult = queryResult ? { ...queryResult, source } : null;
+    this.currentSearchResult = queryResult
+      ? { ...queryResult, source }
+      : undefined;
     this.currentTargetProps = targetProps;
 
     this.highlightTextForCurrentResult();
@@ -1135,11 +1136,11 @@ export class ContentHandler {
     currentElement?: Element | null;
   } = {}) {
     this.currentTextRange = undefined;
-    this.currentPoint = null;
+    this.currentPoint = undefined;
     this.lastMouseTarget = null;
 
     this.currentLookupParams = undefined;
-    this.currentSearchResult = null;
+    this.currentSearchResult = undefined;
     this.currentTargetProps = undefined;
     this.copyMode = false;
 

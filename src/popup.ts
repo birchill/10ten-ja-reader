@@ -75,7 +75,7 @@ export interface PopupOptions {
 }
 
 export function renderPopup(
-  result: QueryResult | null,
+  result: QueryResult | undefined,
   options: PopupOptions
 ): HTMLElement | null {
   const doc = options.document || document;
@@ -291,7 +291,7 @@ function renderTabBar({
   onClosePopup?: () => void;
   onShowSettings?: () => void;
   onSwitchDictionary?: (newDict: MajorDataSeries) => void;
-  queryResult: QueryResult | null;
+  queryResult?: QueryResult;
   selectedTab: MajorDataSeries;
 }): HTMLElement {
   const tabBar = document.createElement('div');

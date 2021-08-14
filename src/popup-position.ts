@@ -22,7 +22,7 @@ export function getPopupPosition({
 }: {
   doc: Document;
   isVerticalText: boolean;
-  mousePos: Point | null;
+  mousePos?: Point;
   popupSize: { width: number; height: number };
   positionMode: PopupPositionMode;
   targetHasTitle: boolean;
@@ -45,7 +45,6 @@ export function getPopupPosition({
 
   if (positionMode === PopupPositionMode.Auto) {
     return getAutoPosition({
-      doc,
       isVerticalText,
       mousePos,
       popupSize,
@@ -98,7 +97,6 @@ export function getPopupPosition({
 }
 
 function getAutoPosition({
-  doc,
   isVerticalText,
   mousePos,
   popupSize,
@@ -108,9 +106,8 @@ function getAutoPosition({
   windowWidth,
   windowHeight,
 }: {
-  doc: Document;
   isVerticalText: boolean;
-  mousePos: Point | null;
+  mousePos?: Point;
   popupSize: { width: number; height: number };
   scrollX: number;
   scrollY: number;
