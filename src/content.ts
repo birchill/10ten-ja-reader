@@ -49,6 +49,7 @@ import type { MajorDataSeries } from '@birchill/hikibiki-data';
 import Browser, { browser } from 'webextension-polyfill-ts';
 
 import { ContentConfig } from './content-config';
+import { ContentMessage } from './content-messages';
 import { CopyKeys, CopyType } from './copy-keys';
 import {
   getEntryToCopy,
@@ -59,6 +60,7 @@ import {
 import { isEditableNode, isTopMostWindow } from './dom-utils';
 import { Point } from './geometry';
 import { getTextAtPoint } from './get-text';
+import { getIframeOriginFromWindow } from './iframe-tracker';
 import { SelectionMeta } from './meta';
 import { mod } from './mod';
 import {
@@ -145,12 +147,14 @@ export class ContentHandler {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onFocusIn = this.onFocusIn.bind(this);
+    this.onContentMessage = this.onContentMessage.bind(this);
 
     window.addEventListener('mousemove', this.onMouseMove);
     window.addEventListener('mousedown', this.onMouseDown);
     window.addEventListener('keydown', this.onKeyDown, { capture: true });
     window.addEventListener('keyup', this.onKeyUp, { capture: true });
     window.addEventListener('focusin', this.onFocusIn);
+    window.addEventListener('message', this.onContentMessage);
 
     hasReasonableTimerResolution().then((isReasonable) => {
       if (isReasonable) {
@@ -181,6 +185,7 @@ export class ContentHandler {
     window.removeEventListener('keydown', this.onKeyDown, { capture: true });
     window.removeEventListener('keyup', this.onKeyUp, { capture: true });
     window.removeEventListener('focusin', this.onFocusIn);
+    window.removeEventListener('message', this.onContentMessage);
 
     this.clearHighlightAndHidePopup();
     this.textHighlighter.detach();
@@ -547,6 +552,79 @@ export class ContentHandler {
 
   isVisible(): boolean {
     return isPopupVisible();
+  }
+
+  onContentMessage(ev: MessageEvent<ContentMessage>) {
+    switch (ev.data.kind) {
+      case 'lookup':
+        {
+          const { point } = ev.data;
+          if (!(ev.source instanceof Window)) {
+            console.warn('Unexpected message source');
+            return;
+          }
+
+          const iframeOrigin = getIframeOriginFromWindow(ev.source);
+          if (!iframeOrigin) {
+            console.warn("Couldn't get iframe origin");
+            return;
+          }
+
+          this.currentPoint = {
+            x: point.x + iframeOrigin.x,
+            y: point.y + iframeOrigin.y,
+          };
+
+          // We are doing a lookup based on an iframe's contents so we should
+          // clear any mouse target we previously stored.
+          this.lastMouseTarget = null;
+
+          this.lookupText(ev.data);
+        }
+        break;
+
+      case 'clearText':
+        this.clearHighlightAndHidePopup();
+        break;
+
+      case 'nextDictionary':
+        this.showNextDictionary();
+        break;
+
+      case 'toggleDefinition':
+        this.toggleDefinition();
+        break;
+
+      case 'movePopup':
+        this.movePopup(ev.data.direction);
+        break;
+
+      case 'enterCopyMode':
+        this.enterCopyMode();
+        break;
+
+      case 'exitCopyMode':
+        this.exitCopyMode();
+        break;
+
+      case 'nextCopyEntry':
+        this.nextCopyEntry();
+        break;
+
+      case 'copyCurrentEntry':
+        this.copyCurrentEntry(ev.data.copyType);
+        break;
+
+      case 'highlightText':
+        this.highlightText(ev.data.length);
+        break;
+
+      case 'clearTextHighlight':
+        this.textHighlighter.clearHighlight({
+          currentElement: this.lastMouseTarget,
+        });
+        break;
+    }
   }
 
   showNextDictionary() {
