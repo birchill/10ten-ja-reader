@@ -287,11 +287,11 @@ export class ContentHandler {
     // again.
     this.lastMouseTarget = ev.target;
 
-    this.tryToUpdatePopup(
-      { x: ev.clientX, y: ev.clientY },
-      ev.target,
-      dictMode
-    );
+    this.tryToUpdatePopup({
+      point: { x: ev.clientX, y: ev.clientY },
+      eventElement: ev.target,
+      dictMode,
+    });
   }
 
   shouldThrottlePopup(ev: MouseEvent) {
@@ -372,11 +372,11 @@ export class ContentHandler {
       ev.preventDefault();
 
       if (!textBoxInFocus && this.currentPoint && this.lastMouseTarget) {
-        this.tryToUpdatePopup(
-          this.currentPoint,
-          this.lastMouseTarget,
-          'default'
-        );
+        this.tryToUpdatePopup({
+          point: this.currentPoint,
+          eventElement: this.lastMouseTarget,
+          dictMode: 'default',
+        });
       }
       return;
     }
@@ -853,11 +853,15 @@ export class ContentHandler {
     });
   }
 
-  async tryToUpdatePopup(
-    point: Point,
-    target: Element,
-    dictMode: 'default' | 'kanji'
-  ) {
+  async tryToUpdatePopup({
+    point,
+    eventElement,
+    dictMode,
+  }: {
+    point: Point;
+    eventElement: Element;
+    dictMode: 'default' | 'kanji';
+  }) {
     const textAtPoint = getTextAtPoint(point, ContentHandler.MAX_LENGTH);
 
     // The following is not strictly correct since if dictMode was 'kanji'
@@ -877,7 +881,7 @@ export class ContentHandler {
 
     if (!textAtPoint) {
       if (isTopMostWindow()) {
-        this.clearHighlightAndHidePopup({ currentElement: target });
+        this.clearHighlightAndHidePopup({ currentElement: eventElement });
       } else {
         window.top.postMessage<ContentMessage>({ kind: 'clearText' }, '*');
       }
@@ -892,7 +896,7 @@ export class ContentHandler {
       meta: textAtPoint.meta,
       source: null,
       text: textAtPoint.text,
-      targetProps: getTargetElementProps(target),
+      targetProps: getTargetElementProps(eventElement),
       wordLookup: !!textAtPoint.textRange,
     };
 
