@@ -74,7 +74,7 @@ import {
 import { getPopupPosition, PopupPositionMode } from './popup-position';
 import { query, QueryResult } from './query';
 import { isForeignObjectElement, isSvgDoc, isSvgSvgElement } from './svg';
-import { TargetProps } from './target-props';
+import { getTargetElementProps, TargetProps } from './target-props';
 import { TextHighlighter } from './text-highlighter';
 import { TextRange, textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
@@ -713,17 +713,35 @@ export class ContentHandler {
     this.currentPoint = point;
     this.currentTextRange = textAtPoint?.textRange || undefined;
 
-    let lookupParams = {
-      text: textAtPoint.text,
+    this.lookupText({
+      dictMode,
       meta: textAtPoint.meta,
+      text: textAtPoint.text,
+      targetProps: getTargetElementProps(target),
       wordLookup: !!textAtPoint.textRange,
-    };
+    });
+  }
+
+  async lookupText({
+    dictMode,
+    meta,
+    text,
+    targetProps,
+    wordLookup,
+  }: {
+    dictMode: 'default' | 'kanji';
+    meta?: SelectionMeta;
+    text: string;
+    targetProps: TargetProps;
+    wordLookup: boolean;
+  }) {
+    const lookupParams = { text, meta, wordLookup };
     this.currentLookupParams = lookupParams;
 
-    // The text or dictionary has changed so break out of copy mode
+    // Presumably the text or dictionary has changed so break out of copy mode
     this.copyMode = false;
 
-    let queryResult = await query(textAtPoint.text, {
+    let queryResult = await query(text, {
       includeRomaji: this.config.showRomaji,
       wordLookup: lookupParams.wordLookup,
     });
@@ -737,7 +755,7 @@ export class ContentHandler {
       return;
     }
 
-    if (!queryResult && !textAtPoint.meta) {
+    if (!queryResult && !meta) {
       this.clearHighlightAndHidePopup({ currentElement: this.lastMouseTarget });
       return;
     }
@@ -775,14 +793,7 @@ export class ContentHandler {
     }
 
     this.currentSearchResult = queryResult;
-    this.currentTargetProps = {
-      hasTitle: !!(target as HTMLElement)?.title,
-      isVerticalText:
-        !!target &&
-        target.ownerDocument
-          .defaultView!.getComputedStyle(target)
-          .writingMode.startsWith('vertical'),
-    };
+    this.currentTargetProps = targetProps;
 
     this.highlightTextForCurrentResult();
     this.showPopup();

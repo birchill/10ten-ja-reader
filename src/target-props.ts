@@ -5,3 +5,12 @@ export type TargetProps = {
   hasTitle: boolean;
   isVerticalText: boolean;
 };
+
+export function getTargetElementProps(target: Element): TargetProps {
+  return {
+    hasTitle: !!((target as HTMLElement) || null)?.title,
+    isVerticalText: !!target.ownerDocument.defaultView
+      ?.getComputedStyle(target)
+      .writingMode.startsWith('vertical'),
+  };
+}
