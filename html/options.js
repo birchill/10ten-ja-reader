@@ -450,7 +450,7 @@ function renderPopupPreview(theme) {
     }
 
     spanDef.classList.add('w-def');
-    spanDef.append('understanding');
+    spanDef.append('\u200bunderstanding');
 
     entry.appendChild(spanDef);
   }
