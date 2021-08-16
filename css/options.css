@@ -308,6 +308,17 @@ fieldset {
   opacity: 1;
 }
 
+/* See notes in device.ts:probablyHasPhysicalKeyboard for how we arrived at this
+ * media query.
+ *
+ * Note that 'not' here negates the _whole_ media query.
+ */
+@media not (hover: hover) and (pointer: fine) {
+  .needs-keyboard {
+    display: none;
+  }
+}
+
 .key-grid {
   display: grid;
   grid-template-columns: minmax(12em, auto) 1fr;

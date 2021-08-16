@@ -121,10 +121,10 @@
             </div>
           </fieldset>
         </div>
-        <div class="panel-section panel-section-header">
+        <div class="panel-section panel-section-header needs-keyboard">
           <h2 class=text-section-header>__MSG_options_keyboard_heading__</h2>
         </div>
-        <div class="panel-section panel-section-formElements">
+        <div class="panel-section panel-section-formElements needs-keyboard">
           <div class="panel-section key-grid">
             <div class="key command browser-style">
               <input type=checkbox id=toggle-alt>
