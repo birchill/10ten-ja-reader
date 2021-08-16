@@ -559,6 +559,18 @@ function getTextFromCoveringLink({
   point: Point;
   maxLength?: number;
 }): GetTextAtPointResult | null {
+  // We'd like to just turn off pointer-events and see what we find but that
+  // will introduce flickering when links have transitions defined on them.
+  //
+  // Instead we first probe to see if there is likely to be some other text
+  // underneath and only toggle pointer-events when that's the case.
+  const hasCoveredElements = document
+    .elementsFromPoint(point.x, point.y)
+    .some((elem) => !elem.contains(linkElem));
+  if (!hasCoveredElements) {
+    return null;
+  }
+
   // Turn off pointer-events for the covering link
   const previousPointEvents = linkElem.style.pointerEvents;
   linkElem.style.pointerEvents = 'none';

@@ -2,11 +2,14 @@
 
 - Made popups for iframes be shown in the topmost window
   ([#13](https://github.com/birchill/10ten-ja-reader/discussions/13)).
+- Fixed flickering on links that use transitions
+  ([#723](https://github.com/birchill/10ten-ja-reader/discussions/723),
+  [#724](https://github.com/birchill/10ten-ja-reader/discussions/724)).
 
 ## 1.2.1 (2021-08-12)
 
 - Fixed handling of scrollable text boxes in Chromium and Safari browsers.
-- Made number handling a bit more tolerant so 8万8千平㍍ etc. would be recognized.
+- Made number handling a bit more tolerant so 8 万 8 千平㍍ etc. would be recognized.
 - Fixed a case where the options page would flicker incessantly
   ([#708](https://github.com/birchill/10ten-ja-reader/discussions/708)).
 - Made the popup respond better when there is little horizontal space.
