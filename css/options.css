@@ -313,7 +313,7 @@ fieldset {
  *
  * Note that 'not' here negates the _whole_ media query.
  */
-@media not (hover: hover) and (pointer: fine) {
+@media not screen and (hover) and (pointer: fine) {
   .needs-keyboard {
     display: none;
   }
