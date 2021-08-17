@@ -285,7 +285,7 @@ function getOffsetFromTextInputNode({
 
   // Read the offset
   const position = caretPositionFromPoint(point);
-  const result = position?.offset || null;
+  const result = position?.offset ?? null;
 
   // Drop the element
   mirrorElement.remove();

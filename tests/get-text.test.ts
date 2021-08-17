@@ -893,6 +893,23 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(result, 'いうえお', [inputNode, 1, 5]);
   });
 
+  it('should find text from the start of input elements', () => {
+    testDiv.innerHTML = '<input type="text" value="あいうえお">';
+    const inputNode = testDiv.firstChild as HTMLInputElement;
+
+    inputNode.style.padding = '0px';
+    inputNode.style.fontSize = '10px';
+    inputNode.style.fontFamily = 'monospace';
+    const bbox = inputNode.getBoundingClientRect();
+
+    const result = getTextAtPoint({
+      x: bbox.left + 1,
+      y: bbox.top + bbox.height / 2,
+    });
+
+    assertTextResultEqual(result, 'あいうえお', [inputNode, 0, 5]);
+  });
+
   it('should NOT read beyond the bounds of the input element', () => {
     testDiv.innerHTML = '<div><input type="text" value="あいう">えお</div>';
     const inputNode = testDiv.firstChild!.firstChild as HTMLInputElement;

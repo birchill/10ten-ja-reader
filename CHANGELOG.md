@@ -5,6 +5,9 @@
 - Fixed flickering on links that use transitions
   ([#723](https://github.com/birchill/10ten-ja-reader/discussions/723),
   [#724](https://github.com/birchill/10ten-ja-reader/discussions/724)).
+- Fixed a regression where non-Firefox browsers could not look up the first
+  character in a text box
+  [#725](https://github.com/birchill/10ten-ja-reader/discussions/725)).
 
 ## 1.2.1 (2021-08-12)
 
