@@ -119,7 +119,7 @@ function getDataSeriesStatus(
     return 'unavailable';
   }
 
-  // Otherwise, whether we're empty or ok, checking if we're updating.
+  // Otherwise, whether we're empty or ok, check if we're updating.
   if (dbState.updateState.state !== 'idle') {
     return 'updating';
   }
