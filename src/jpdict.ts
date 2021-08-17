@@ -110,11 +110,22 @@ let dbState: JpdictStateWithFallback = {
 function getDataSeriesStatus(
   series: DataSeries
 ): 'ok' | 'updating' | 'unavailable' {
-  if (dbState[series].state !== DataSeriesState.Ok) {
+  // If we're unavailable or initializing, treat the database as unavailable
+  // regardless of whether or not we're updating.
+  if (
+    dbState[series].state === DataSeriesState.Unavailable ||
+    dbState[series].state === DataSeriesState.Initializing
+  ) {
     return 'unavailable';
   }
 
-  return dbState.updateState.state === 'idle' ? 'ok' : 'updating';
+  // Otherwise, whether we're empty or ok, checking if we're updating.
+  if (dbState.updateState.state !== 'idle') {
+    return 'updating';
+  }
+
+  // Otherwise treat empty as unavailable.
+  return dbState[series].state === DataSeriesState.Ok ? 'ok' : 'unavailable';
 }
 
 // Fallback words database to use if we can't read the IndexedDB one (e.g.
@@ -154,11 +165,7 @@ export async function initDb({
     switch (message.type) {
       case 'dbstateupdated':
         {
-          // Fill out the lastCheck field in the updateState.
-          //
-          // This value will only be set if we already did a check this session.
-          // It is _not_ a stored value.  So, if it is not set, use the value we
-          // stored instead.
+          // Prepare the new state while preserving the existing fallback state.
           const state = {
             ...message.state,
             words: {
@@ -166,9 +173,16 @@ export async function initDb({
               fallbackState: dbState.words.fallbackState,
             },
           };
+
+          // Fill out the lastCheck field in the updateState.
+          //
+          // This value will only be set if we already did a check this session.
+          // It is _not_ a stored value.  So, if it is not set, use the value we
+          // stored instead.
           if (state.updateState.lastCheck === null && lastUpdateTime) {
             state.updateState.lastCheck = new Date(lastUpdateTime);
           }
+
           dbState = state;
 
           onUpdate(state);
@@ -417,14 +431,13 @@ export async function searchKanji(
     return null;
   }
 
-  if (
-    dbState.kanji.state !== DataSeriesState.Ok ||
-    dbState.radicals.state !== DataSeriesState.Ok
-  ) {
+  const kanjiStatus = getDataSeriesStatus('kanji');
+  const radicalStatus = getDataSeriesStatus('radicals');
+  if (kanjiStatus === 'unavailable' || radicalStatus === 'unavailable') {
     return 'unavailable';
   }
 
-  if (dbState.updateState.state !== 'idle') {
+  if (kanjiStatus === 'updating' || radicalStatus === 'updating') {
     return 'updating';
   }
 
