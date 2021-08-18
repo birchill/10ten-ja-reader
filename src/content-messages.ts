@@ -4,7 +4,7 @@ import { SelectionMeta } from './meta';
 import { TargetProps } from './target-props';
 
 export type LookupMessage = {
-  kind: 'lookup';
+  kind: '10ten(ja):lookup';
   dictMode: 'default' | 'kanji';
   meta?: SelectionMeta;
   point: Point;
@@ -14,64 +14,64 @@ export type LookupMessage = {
 };
 
 export type ClearResultMessage = {
-  kind: 'clearResult';
+  kind: '10ten(ja):clearResult';
 };
 
 export type NextDictionaryMessage = {
-  kind: 'nextDictionary';
+  kind: '10ten(ja):nextDictionary';
 };
 
 export type ToggleDefinitionMessage = {
-  kind: 'toggleDefinition';
+  kind: '10ten(ja):toggleDefinition';
 };
 
 export type MovePopupMessage = {
-  kind: 'movePopup';
+  kind: '10ten(ja):movePopup';
   direction: 'up' | 'down';
 };
 
 // Copy-mode related messages
 
 export type EnterCopyModeMessage = {
-  kind: 'enterCopyMode';
+  kind: '10ten(ja):enterCopyMode';
 };
 
 export type ExitCopyModeMessage = {
-  kind: 'exitCopyMode';
+  kind: '10ten(ja):exitCopyMode';
 };
 
 export type NextCopyEntryMessage = {
-  kind: 'nextCopyEntry';
+  kind: '10ten(ja):nextCopyEntry';
 };
 
 export type CopyCurrentEntryMessage = {
-  kind: 'copyCurrentEntry';
+  kind: '10ten(ja):copyCurrentEntry';
   copyType: CopyType;
 };
 
 // Text highlight messages
 
 export type HighlightTextMessage = {
-  kind: 'highlightText';
+  kind: '10ten(ja):highlightText';
   length: number;
 };
 
 export type ClearTextHighlightMessage = {
-  kind: 'clearTextHighlight';
+  kind: '10ten(ja):clearTextHighlight';
 };
 
 // Popup showing status messages
 
 type PopupHiddenMessage = {
-  kind: 'popupHidden';
+  kind: '10ten(ja):popupHidden';
 };
 
 type PopupShownMessage = {
-  kind: 'popupShown';
+  kind: '10ten(ja):popupShown';
 };
 
 type IsPopupShownMessage = {
-  kind: 'isPopupShown';
+  kind: '10ten(ja):isPopupShown';
 };
 
 export type ContentMessage =

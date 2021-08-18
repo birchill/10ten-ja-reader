@@ -218,7 +218,10 @@ export class ContentHandler {
 
     // If we are an iframe, check if the popup is currently showing
     if (!isTopMostWindow()) {
-      window.top.postMessage<ContentMessage>({ kind: 'isPopupShown' }, '*');
+      window.top.postMessage<ContentMessage>(
+        { kind: '10ten(ja):isPopupShown' },
+        '*'
+      );
     }
   }
 
@@ -620,7 +623,7 @@ export class ContentHandler {
 
   onContentMessage(ev: MessageEvent<ContentMessage>) {
     switch (ev.data.kind) {
-      case 'lookup':
+      case '10ten(ja):lookup':
         {
           const { point } = ev.data;
           if (!isMessageSourceWindow(ev.source)) {
@@ -647,60 +650,63 @@ export class ContentHandler {
         }
         break;
 
-      case 'clearResult':
+      case '10ten(ja):clearResult':
         this.clearResult();
         break;
 
-      case 'nextDictionary':
+      case '10ten(ja):nextDictionary':
         this.showNextDictionary();
         break;
 
-      case 'toggleDefinition':
+      case '10ten(ja):toggleDefinition':
         this.toggleDefinition();
         break;
 
-      case 'movePopup':
+      case '10ten(ja):movePopup':
         this.movePopup(ev.data.direction);
         break;
 
-      case 'enterCopyMode':
+      case '10ten(ja):enterCopyMode':
         this.enterCopyMode();
         break;
 
-      case 'exitCopyMode':
+      case '10ten(ja):exitCopyMode':
         this.exitCopyMode();
         break;
 
-      case 'nextCopyEntry':
+      case '10ten(ja):nextCopyEntry':
         this.nextCopyEntry();
         break;
 
-      case 'copyCurrentEntry':
+      case '10ten(ja):copyCurrentEntry':
         this.copyCurrentEntry(ev.data.copyType);
         break;
 
-      case 'highlightText':
+      case '10ten(ja):highlightText':
         this.highlightText(ev.data.length);
         break;
 
-      case 'clearTextHighlight':
+      case '10ten(ja):clearTextHighlight':
         this.clearTextHighlight();
         break;
 
-      case 'popupHidden':
+      case '10ten(ja):popupHidden':
         this.currentTextRange = undefined;
         this.currentPoint = undefined;
         this.copyMode = false;
         this.isPopupShowing = false;
         break;
 
-      case 'popupShown':
+      case '10ten(ja):popupShown':
         this.isPopupShowing = true;
         break;
 
-      case 'isPopupShown':
+      case '10ten(ja):isPopupShown':
         if (this.isVisible() && ev.source instanceof Window) {
-          ev.source.postMessage<ContentMessage>({ kind: 'popupShown' }, '*');
+          ev.source.postMessage<ContentMessage>(
+            { kind: '10ten(ja):popupShown' },
+            '*'
+          );
         }
         break;
     }
@@ -708,7 +714,10 @@ export class ContentHandler {
 
   showNextDictionary() {
     if (!isTopMostWindow()) {
-      window.top.postMessage<ContentMessage>({ kind: 'nextDictionary' }, '*');
+      window.top.postMessage<ContentMessage>(
+        { kind: '10ten(ja):nextDictionary' },
+        '*'
+      );
       return;
     }
 
@@ -719,7 +728,10 @@ export class ContentHandler {
 
   toggleDefinition() {
     if (!isTopMostWindow()) {
-      window.top.postMessage<ContentMessage>({ kind: 'toggleDefinition' }, '*');
+      window.top.postMessage<ContentMessage>(
+        { kind: '10ten(ja):toggleDefinition' },
+        '*'
+      );
       return;
     }
 
@@ -730,7 +742,7 @@ export class ContentHandler {
   movePopup(direction: 'up' | 'down') {
     if (!isTopMostWindow()) {
       window.top.postMessage<ContentMessage>(
-        { kind: 'movePopup', direction },
+        { kind: '10ten(ja):movePopup', direction },
         '*'
       );
       return;
@@ -760,7 +772,10 @@ export class ContentHandler {
     this.copyMode = true;
 
     if (!isTopMostWindow()) {
-      window.top.postMessage<ContentMessage>({ kind: 'enterCopyMode' }, '*');
+      window.top.postMessage<ContentMessage>(
+        { kind: '10ten(ja):enterCopyMode' },
+        '*'
+      );
       return;
     }
 
@@ -774,7 +789,10 @@ export class ContentHandler {
     this.copyMode = false;
 
     if (!isTopMostWindow()) {
-      window.top.postMessage<ContentMessage>({ kind: 'exitCopyMode' }, '*');
+      window.top.postMessage<ContentMessage>(
+        { kind: '10ten(ja):exitCopyMode' },
+        '*'
+      );
       return;
     }
 
@@ -783,7 +801,10 @@ export class ContentHandler {
 
   nextCopyEntry() {
     if (!isTopMostWindow()) {
-      window.top.postMessage<ContentMessage>({ kind: 'nextCopyEntry' }, '*');
+      window.top.postMessage<ContentMessage>(
+        { kind: '10ten(ja):nextCopyEntry' },
+        '*'
+      );
       return;
     }
 
@@ -794,7 +815,7 @@ export class ContentHandler {
   copyCurrentEntry(copyType: CopyType) {
     if (!isTopMostWindow()) {
       window.top.postMessage<ContentMessage>(
-        { kind: 'copyCurrentEntry', copyType },
+        { kind: '10ten(ja):copyCurrentEntry', copyType },
         '*'
       );
       return;
@@ -915,7 +936,7 @@ export class ContentHandler {
 
     if (isTopMostWindow() && this.currentSearchResult?.source) {
       this.currentSearchResult.source.postMessage<ContentMessage>(
-        { kind: 'clearTextHighlight' },
+        { kind: '10ten(ja):clearTextHighlight' },
         '*'
       );
     } else {
@@ -925,7 +946,10 @@ export class ContentHandler {
     if (isTopMostWindow()) {
       this.hidePopup();
     } else {
-      window.top.postMessage<ContentMessage>({ kind: 'clearResult' }, '*');
+      window.top.postMessage<ContentMessage>(
+        { kind: '10ten(ja):clearResult' },
+        '*'
+      );
     }
   }
 
@@ -978,7 +1002,7 @@ export class ContentHandler {
       window.top.postMessage<ContentMessage>(
         {
           ...lookupParams,
-          kind: 'lookup',
+          kind: '10ten(ja):lookup',
           point,
         },
         '*'
@@ -1146,7 +1170,7 @@ export class ContentHandler {
 
     if (this.currentSearchResult?.source) {
       this.currentSearchResult.source.postMessage<ContentMessage>(
-        { kind: 'highlightText', length: highlightLength },
+        { kind: '10ten(ja):highlightText', length: highlightLength },
         '*'
       );
       return;
@@ -1271,7 +1295,10 @@ export class ContentHandler {
 
     if (isTopMostWindow()) {
       for (const frame of Array.from(window.frames)) {
-        frame.postMessage<ContentMessage>({ kind: 'popupShown' }, '*');
+        frame.postMessage<ContentMessage>(
+          { kind: '10ten(ja):popupShown' },
+          '*'
+        );
       }
     }
   }
@@ -1285,7 +1312,10 @@ export class ContentHandler {
 
     if (isTopMostWindow()) {
       for (const frame of Array.from(window.frames)) {
-        frame.postMessage<ContentMessage>({ kind: 'popupHidden' }, '*');
+        frame.postMessage<ContentMessage>(
+          { kind: '10ten(ja):popupHidden' },
+          '*'
+        );
       }
     }
   }
