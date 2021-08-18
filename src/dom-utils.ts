@@ -118,3 +118,9 @@ export function isMessageSourceWindow(
     return false;
   }
 }
+
+export function isSvg(node: Node): boolean {
+  return node.nodeType === Node.ELEMENT_NODE
+    ? node instanceof SVGElement
+    : node.parentElement instanceof SVGElement;
+}

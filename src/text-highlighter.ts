@@ -1,6 +1,7 @@
 import {
   isContentEditableNode,
   isFocusable,
+  isSvg,
   isTextInputNode,
 } from './dom-utils';
 import { TextRange } from './text-range';
@@ -339,10 +340,6 @@ export class TextHighlighter {
     let endNode = startNode;
     let endOffset = startOffset;
 
-    const isSvg = (node: Node) =>
-      node.nodeType === Node.ELEMENT_NODE
-        ? node instanceof SVGElement
-        : node.parentElement instanceof SVGElement;
     let containsSvg = isSvg(startNode);
 
     let currentLen = 0;
