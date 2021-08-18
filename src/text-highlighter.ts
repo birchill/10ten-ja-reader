@@ -5,6 +5,26 @@ import {
 } from './dom-utils';
 import { TextRange } from './text-range';
 
+declare global {
+  interface Highlight extends Set<StaticRange> {
+    readonly priority: number;
+  }
+
+  var Highlight: {
+    prototype: Highlight;
+    // Require StaticRange because that's currently all Safari TP allows
+    new (...initialRanges: Array<StaticRange>): Highlight;
+  };
+
+  interface HighlightRegistry extends Map<string, Highlight> {}
+
+  namespace CSS {
+    // Mark as possibly undefined since it's not widely implemented yet and we
+    // want to feature detect this.
+    const highlights: HighlightRegistry | undefined;
+  }
+}
+
 export class TextHighlighter {
   private selectedWindow: Window | null = null;
   private selectedText: string | null = null;
@@ -37,6 +57,7 @@ export class TextHighlighter {
   detach() {
     window.removeEventListener('focusin', this.onFocusIn);
     this.clearHighlight();
+    this.dropHighlightStyles();
   }
 
   highlight({ length, textRange }: { length: number; textRange: TextRange }) {
@@ -59,8 +80,11 @@ export class TextHighlighter {
       return;
     }
 
+    const useHighlightApi = !!CSS?.highlights;
+
     // If there is already something selected in the page that is *not*
-    // what we selected then generally want to leave it alone.
+    // what we selected then generally want to leave it alone, unless of course
+    // we're able to use the CSS Highlight API.
     //
     // The one exception to this is if the selection is in a contenteditable
     // node. In that case we want to store and restore it to mimic the behavior
@@ -73,6 +97,7 @@ export class TextHighlighter {
         this.storeContentEditableSelection(selectedWindow);
       }
     } else if (
+      !useHighlightApi &&
       selection.toString() &&
       selection.toString() !== this.selectedText
     ) {
@@ -120,6 +145,10 @@ export class TextHighlighter {
           selection.removeAllRanges();
         }
       }
+
+      // Delete any highlight we may have added using the CSS Highlight API.
+      CSS?.highlights?.delete('tenten-selection');
+      this.dropHighlightStyles();
 
       this.clearTextBoxSelection(currentElement);
     }
@@ -310,6 +339,12 @@ export class TextHighlighter {
     let endNode = startNode;
     let endOffset = startOffset;
 
+    const isSvg = (node: Node) =>
+      node.nodeType === Node.ELEMENT_NODE
+        ? node instanceof SVGElement
+        : node.parentElement instanceof SVGElement;
+    let containsSvg = isSvg(startNode);
+
     let currentLen = 0;
     for (let i = 0; currentLen < length && i < textRange.length; i++) {
       const { start, end } = textRange[i];
@@ -318,22 +353,37 @@ export class TextHighlighter {
 
       endNode = textRange[i].node;
       endOffset = start + len;
+
+      containsSvg = containsSvg || isSvg(endNode);
     }
 
-    const range = startNode.ownerDocument!.createRange();
-    range.setStart(startNode, startOffset);
-    range.setEnd(endNode, endOffset);
+    if (!containsSvg && CSS?.highlights) {
+      const range = new StaticRange({
+        startContainer: startNode,
+        startOffset,
+        endContainer: endNode,
+        endOffset,
+      });
+      CSS.highlights.set('tenten-selection', new Highlight(range));
+      this.ensureHighlightStyles();
+      this.selectedText = null;
+    } else {
+      const range = startNode.ownerDocument!.createRange();
+      range.setStart(startNode, startOffset);
+      range.setEnd(endNode, endOffset);
 
-    // We only call this method if selectedWindow.getSelection() is not null.
-    const selection = selectedWindow.getSelection()!;
-    selection.removeAllRanges();
-    selection.addRange(range);
+      // We only call this method if selectedWindow.getSelection() is not null.
+      const selection = selectedWindow.getSelection()!;
+      selection.removeAllRanges();
+      selection.addRange(range);
 
-    this.selectedText = selection.toString();
+      this.selectedText = selection.toString();
+    }
+
     this.selectedWindow = selectedWindow;
   }
 
-  onFocusIn(event: FocusEvent) {
+  private onFocusIn(event: FocusEvent) {
     if (this.updatingFocus) {
       return;
     }
@@ -352,5 +402,24 @@ export class TextHighlighter {
         );
       }
     }
+  }
+
+  private ensureHighlightStyles() {
+    if (document.getElementById('tenten-selection-styles')) {
+      return;
+    }
+
+    const styleElem = document.createElement('style');
+    styleElem.id = 'tenten-selection-styles';
+    styleElem.textContent = `
+::highlight(tenten-selection) {
+  background: yellow;
+  color: #1d1a19;
+}`;
+    document.head.append(styleElem);
+  }
+
+  private dropHighlightStyles() {
+    document.getElementById('tenten-selection-styles')?.remove();
   }
 }
