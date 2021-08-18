@@ -57,7 +57,11 @@ import {
   getWordToCopy,
   Entry as CopyEntry,
 } from './copy-text';
-import { isEditableNode, isTopMostWindow } from './dom-utils';
+import {
+  isEditableNode,
+  isMessageSourceWindow,
+  isTopMostWindow,
+} from './dom-utils';
 import { Point } from './geometry';
 import { getTextAtPoint } from './get-text';
 import { getIframeOriginFromWindow } from './iframe-tracker';
@@ -619,7 +623,7 @@ export class ContentHandler {
       case 'lookup':
         {
           const { point } = ev.data;
-          if (!(ev.source instanceof Window)) {
+          if (!isMessageSourceWindow(ev.source)) {
             console.warn('Unexpected message source');
             return;
           }
