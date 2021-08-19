@@ -1,4 +1,4 @@
-## Next version
+## 1.2.2 (2021-08-19)
 
 - Made popups for iframes be shown in the topmost window
   ([#13](https://github.com/birchill/10ten-ja-reader/discussions/13)).
