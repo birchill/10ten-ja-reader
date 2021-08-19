@@ -41,8 +41,10 @@ export function getIframeElementFromWindow(
   // For same origin iframes we can just use the `frameElement` property.
   try {
     const embeddingElement = iframeWindow.frameElement;
-    return embeddingElement instanceof HTMLIFrameElement
-      ? embeddingElement
+    // We can't use instanceof HTMLIFrameElement here because on Safari,
+    // depending on which iframe is in focus, that will sometimes fail.
+    return embeddingElement?.tagName === 'IFRAME'
+      ? (embeddingElement as HTMLIFrameElement)
       : null;
   } catch (e) {
     // Ignore
