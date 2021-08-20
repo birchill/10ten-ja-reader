@@ -159,6 +159,7 @@ export function getTextAtPoint(
       point,
       maxLength,
     });
+
     if (result) {
       // Don't cache `position` since it's not the position we actually used.
       previousResult = { point, position: undefined, result };
@@ -196,6 +197,66 @@ export function getTextAtPoint(
 }
 
 function caretPositionFromPoint(
+  point: Point
+): (CursorPosition & { usedCaretRangeFromPoint?: boolean }) | null {
+  let result = rawCaretPositionFromPoint(point);
+  if (!result) {
+    return result;
+  }
+
+  // If the cursor is more than half way across a character,
+  // caretPositionFromPoint will choose the _next_ character since that's where
+  // the cursor would be placed if you clicked there and started editing the
+  // text.
+  //
+  // (Or something like that, it looks like when editing it's more like if the
+  // character is 70% or so of the way across the character it inserts before
+  // the next character. In any case, caretPositionFromPoint et. al appear to
+  // consistently choose the next character after about the 50% mark in at least
+  // Firefox and Chromium.)
+  //
+  // For _looking up_ text, however, it's more intuitive if we look up starting
+  // from the character you're pointing at.
+  //
+  // Below we see if the point is within the bounding box of the _previous_
+  // character in the inline direction and, if it is, start from there instead.
+  //
+  // (We do this adjustment here, rather than in, say, getTextFromTextNode,
+  // since it allows us to continue caching the position returned from this
+  // method and returning early if it doesn't change. The disadvantage is that
+  // because it only applies to text nodes, we don't do this adjustment for text
+  // boxes.
+  //
+  // If we did the adjustment inside getTextFromTextNode, however, it _would_
+  // work for text boxes since we synthesize a text node for them before calling
+  // getTextFromTextNode. As it is, we'll end up calling caretPositionFromPoint
+  // on the mirrored element we create for text boxes in Chrome/Edge/Safari so
+  // text boxes there will benefit from this adjustment already, it's just
+  // Firefox that won't. One might say that when we're in text boxes it's better
+  // to follow caretPositionFromPoint's behavior anyway.
+  //
+  // In any case, for ow, we do the adjustment here so we keep the early return
+  // optimization and if it becomes important to apply this to text boxes too,
+  // we'll work out a way to address them at that time.)
+  const { offsetNode, offset } = result;
+  if (isTextNode(offsetNode) && offset) {
+    const range = new Range();
+    range.setStart(offsetNode, offset - 1);
+    range.setEnd(offsetNode, offset);
+    const previousCharacterBbox = range.getBoundingClientRect();
+    if (bboxIncludesPoint({ bbox: previousCharacterBbox, point })) {
+      result = {
+        offsetNode,
+        offset: offset - 1,
+        usedCaretRangeFromPoint: result.usedCaretRangeFromPoint,
+      };
+    }
+  }
+
+  return result;
+}
+
+function rawCaretPositionFromPoint(
   point: Point
 ): (CursorPosition & { usedCaretRangeFromPoint?: boolean }) | null {
   if (document.caretPositionFromPoint) {

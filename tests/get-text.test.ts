@@ -1,7 +1,6 @@
 import { assert } from 'chai';
 
 import { getTextAtPoint, GetTextAtPointResult } from '../src/get-text';
-import { isChromium } from '../src/ua-utils';
 
 mocha.setup('bdd');
 
@@ -25,10 +24,10 @@ describe('getTextAtPoint', () => {
   it('should find a range in a div', () => {
     testDiv.append('あいうえお');
     const textNode = testDiv.firstChild as Text;
-    const bbox = getBboxForOffset(textNode, 0);
+    const bbox = getBboxForOffset(textNode, 1);
 
     const result = getTextAtPoint({
-      x: bbox.right,
+      x: bbox.left + bbox.width / 2,
       y: bbox.top + bbox.height / 2,
     });
 
@@ -41,7 +40,9 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      x: bbox.left + bbox.width / 2 - 1,
+      // Add a little extra to make sure we're testing the behavior when we're
+      // in the second half of the character.
+      x: bbox.left + bbox.width / 2 + 2,
       y: bbox.top + bbox.height / 2,
     });
 
@@ -94,10 +95,10 @@ describe('getTextAtPoint', () => {
     const firstTextNode = testDiv.firstChild as Text;
     const middleTextNode = testDiv.childNodes[1].firstChild as Text;
     const lastTextNode = testDiv.lastChild as Text;
-    const bbox = getBboxForOffset(firstTextNode, 0);
+    const bbox = getBboxForOffset(firstTextNode, 1);
 
     const result = getTextAtPoint({
-      x: bbox.right,
+      x: bbox.left + bbox.width / 2,
       y: bbox.top + bbox.height / 2,
     });
 
@@ -113,10 +114,10 @@ describe('getTextAtPoint', () => {
   it('should NOT find text in a block sibling', () => {
     testDiv.innerHTML = 'あい<div>うえ</div>お';
     const firstTextNode = testDiv.firstChild as Text;
-    const bbox = getBboxForOffset(firstTextNode, 0);
+    const bbox = getBboxForOffset(firstTextNode, 1);
 
     const result = getTextAtPoint({
-      x: bbox.right,
+      x: bbox.left + bbox.width / 2,
       y: bbox.top + bbox.height / 2,
     });
 
@@ -133,7 +134,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = getTextAtPoint({
-      x: bbox.left + bbox.width / 2 - 1,
+      x: bbox.left + bbox.width / 2,
       y: bbox.top + bbox.height / 2,
     });
 
@@ -168,10 +169,10 @@ describe('getTextAtPoint', () => {
       '<div><a href="/articles/" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1"><span aria-hidden="true" style="display: block; width: 1px; height: 1px; overflow: hidden">あいうえお</span></a><div><div style="position: relative; width: 100%"><h2 style="z-index: auto"><a href="/articles/" id="innerLink">あいうえお</a></h2></div></div>';
 
     const textNode = testDiv.querySelector('#innerLink')!.firstChild as Text;
-    const bbox = getBboxForOffset(textNode, 0);
+    const bbox = getBboxForOffset(textNode, 1);
 
     const result = getTextAtPoint({
-      x: bbox.right,
+      x: bbox.left + bbox.width / 2,
       y: bbox.top + bbox.height / 2,
     });
 
@@ -184,7 +185,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      x: bbox.left + bbox.width / 2 - 1,
+      x: bbox.left + bbox.width / 2,
       y: bbox.top + bbox.height / 2,
     });
 
@@ -197,7 +198,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 3);
 
     const result = getTextAtPoint({
-      x: bbox.left,
+      x: bbox.left + bbox.width / 2,
       y: bbox.top + bbox.height / 2,
     });
 
@@ -210,7 +211,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 2);
 
     const result = getTextAtPoint({
-      x: bbox.left,
+      x: bbox.left + bbox.width / 2,
       y: bbox.top + bbox.height / 2,
     });
 
@@ -223,7 +224,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      x: bbox.left + bbox.width / 2 - 1,
+      x: bbox.left + bbox.width / 2,
       y: bbox.top + bbox.height / 2,
     });
 
@@ -505,7 +506,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 3);
 
     const result = getTextAtPoint({
-      x: bbox.left,
+      x: bbox.left + bbox.width / 2,
       y: bbox.top + bbox.height / 2,
     });
 
@@ -524,7 +525,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 3);
 
     const result = getTextAtPoint({
-      x: bbox.left,
+      x: bbox.left + bbox.width / 2,
       y: bbox.top + bbox.height / 2,
     });
 
@@ -543,7 +544,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 1);
 
     const result = getTextAtPoint(
-      { x: bbox.left, y: bbox.top + bbox.height / 2 },
+      { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
       3
     );
 
@@ -554,10 +555,10 @@ describe('getTextAtPoint', () => {
     testDiv.innerHTML = 'あい<span>うえ</span>お';
     const firstTextNode = testDiv.firstChild as Text;
     const middleTextNode = testDiv.childNodes[1].firstChild as Text;
-    const bbox = getBboxForOffset(firstTextNode, 0);
+    const bbox = getBboxForOffset(firstTextNode, 1);
 
     const result = getTextAtPoint(
-      { x: bbox.right, y: bbox.top + bbox.height / 2 },
+      { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
       2
     );
 
@@ -573,10 +574,10 @@ describe('getTextAtPoint', () => {
     testDiv.innerHTML = 'あい<span>うえ</span>お';
     const firstTextNode = testDiv.firstChild as Text;
     const middleTextNode = testDiv.childNodes[1].firstChild as Text;
-    const bbox = getBboxForOffset(firstTextNode, 0);
+    const bbox = getBboxForOffset(firstTextNode, 1);
 
     const result = getTextAtPoint(
-      { x: bbox.right, y: bbox.top + bbox.height / 2 },
+      { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
       3
     );
 
@@ -594,7 +595,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 2);
 
     const result = getTextAtPoint(
-      { x: bbox.left, y: bbox.top + bbox.height / 2 },
+      { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
       0
     );
 
@@ -607,7 +608,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 1);
 
     const result = getTextAtPoint(
-      { x: bbox.left, y: bbox.top + bbox.height / 2 },
+      { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
       1
     );
 
@@ -620,7 +621,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 1);
 
     const result = getTextAtPoint(
-      { x: bbox.left, y: bbox.top + bbox.height / 2 },
+      { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
       3
     );
 
@@ -633,7 +634,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 1);
 
     const result = getTextAtPoint(
-      { x: bbox.right, y: bbox.top + bbox.height / 2 },
+      { x: bbox.left, y: bbox.top + bbox.height / 2 },
       3
     );
 
@@ -648,7 +649,7 @@ describe('getTextAtPoint', () => {
     const bbox = firstEmptyNode.getBoundingClientRect();
 
     const result = getTextAtPoint({
-      x: bbox.right,
+      x: bbox.left,
       y: bbox.top + bbox.height / 2,
     });
 
@@ -720,7 +721,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(fuNode, 0);
 
     const result = getTextAtPoint({
-      x: bbox.left,
+      x: bbox.left + bbox.width / 2,
       y: bbox.top + bbox.height / 2,
     });
     assertTextResultEqual(
@@ -743,7 +744,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(fuNode, 0);
 
     const result = getTextAtPoint({
-      x: bbox.left,
+      x: bbox.left + bbox.width / 2,
       y: bbox.top + bbox.height / 2,
     });
     assertTextResultEqual(
@@ -762,7 +763,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(senNode, 0);
 
     const result = getTextAtPoint({
-      x: bbox.left,
+      x: bbox.left + bbox.width / 2,
       y: bbox.top + bbox.height / 4,
     });
 
@@ -777,7 +778,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(seNode, 0);
 
     const result = getTextAtPoint({
-      x: bbox.left,
+      x: bbox.left + bbox.width / 2,
       y: bbox.top + bbox.height / 4,
     });
 
@@ -797,7 +798,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(kanjiNode, 0);
 
     const result = getTextAtPoint({
-      x: bbox.left,
+      x: bbox.left + bbox.width / 2,
       y: bbox.top + bbox.height / 2,
     });
 
@@ -859,7 +860,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(hiNode, 0);
 
     const result = getTextAtPoint({
-      x: bbox.left,
+      x: bbox.left + bbox.width / 2,
       y: bbox.top + bbox.height / 2,
     });
 
@@ -882,8 +883,22 @@ describe('getTextAtPoint', () => {
     inputNode.style.fontFamily = 'monospace';
     const bbox = inputNode.getBoundingClientRect();
 
-    // Chrome and Firefox use different default fonts
-    const offset = isChromium() ? 10 : 15;
+    // The following is determined empirically based on what seems to work both
+    // on Windows and on Linux (in CI) for both Firefox and Chrome.
+    //
+    // We used to use 10px on Chrome and 15px on Firefox -- possibly because of
+    // the different default fonts they use on Linux -- but it may also be
+    // because they follow different code paths.
+    //
+    // On Chrome we create a mirror element for the text box and look up that
+    // instead. That might end up using different fonts for all we know.
+    // Furthermore, for the mirror element we end up applying the "previous
+    // character adjustment" (where we try to detect if caretPositionFromPoint
+    // _should_ have returned the previous character to what it did).
+    //
+    // As a result, this may need tweaking from time to time. For now,
+    // hopefully 15px does the trick on all browsers and platforms we test on.
+    const offset = 15;
 
     const result = getTextAtPoint(
       // Just guess here...
@@ -919,7 +934,8 @@ describe('getTextAtPoint', () => {
     inputNode.style.fontFamily = 'monospace';
     const bbox = inputNode.getBoundingClientRect();
 
-    const offset = isChromium() ? 10 : 15;
+    // See notes above about how we arrived at this offset.
+    const offset = 15;
 
     const result = getTextAtPoint({
       x: bbox.left + offset,
@@ -959,7 +975,7 @@ describe('getTextAtPoint', () => {
     textAreaNode.style.fontFamily = 'monospace';
     const bbox = textAreaNode.getBoundingClientRect();
 
-    const result = getTextAtPoint({ x: bbox.left + 10, y: 5 });
+    const result = getTextAtPoint({ x: bbox.left + 15, y: 5 });
 
     assertTextResultEqual(result, 'いうえお', [textAreaNode, 1, 5]);
   });
@@ -999,7 +1015,7 @@ describe('getTextAtPoint', () => {
     // Fetch once
     const bboxJP = getBboxForOffset(textNode, 6);
     const result = getTextAtPoint({
-      x: bboxJP.left,
+      x: bboxJP.left + 1,
       y: bboxJP.top + bboxJP.height / 2,
     });
     assertTextResultEqual(result, 'あいうえお', [textNode, 6, 11]);
@@ -1007,7 +1023,7 @@ describe('getTextAtPoint', () => {
     // Fetch again
     const bboxEN = getBboxForOffset(textNode, 5);
     const secondResult = getTextAtPoint({
-      x: bboxEN.left + bboxEN.width / 2,
+      x: bboxJP.left - 1,
       y: bboxEN.top + bboxEN.height / 2,
     });
     assert.strictEqual(
@@ -1024,7 +1040,7 @@ describe('getTextAtPoint', () => {
     // Fetch once
     const bboxJP = getBboxForOffset(textNode, 6);
     const result = getTextAtPoint({
-      x: bboxJP.left,
+      x: bboxJP.left + 1,
       y: bboxJP.top + bboxJP.height / 2,
     });
     assertTextResultEqual(result, 'あいうえお', [textNode, 6, 11]);

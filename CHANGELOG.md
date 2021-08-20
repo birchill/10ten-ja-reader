@@ -1,3 +1,8 @@
+## Next version
+
+- Made the lookup better reflect the cursor position
+  ([#278](https://github.com/birchill/10ten-ja-reader/discussions/278)).
+
 ## 1.2.2 (2021-08-19)
 
 - Made popups for iframes be shown in the topmost window
