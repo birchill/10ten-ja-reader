@@ -157,7 +157,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(firstTextNode, 1);
 
     const result = getTextAtPoint({
-      x: bbox.right,
+      x: bbox.right + 0.5,
       y: bbox.top + bbox.height / 2,
     });
 
@@ -936,8 +936,7 @@ describe('getTextAtPoint', () => {
     const bbox = inputNode.getBoundingClientRect();
 
     // See notes above about how we arrived at this offset.
-    // TODO: 14 is just a check in case 13 doesn't work
-    const offset = isChromium() ? 14 : 15;
+    const offset = isChromium() ? 13 : 15;
 
     const result = getTextAtPoint({
       x: bbox.left + offset,
@@ -978,8 +977,7 @@ describe('getTextAtPoint', () => {
     const bbox = textAreaNode.getBoundingClientRect();
 
     // See notes above about how we arrived at this offset.
-    // TODO: 12.5 is just a check in case 13 doesn't work
-    const offset = isChromium() ? 12.5 : 15;
+    const offset = isChromium() ? 13 : 15;
 
     const result = getTextAtPoint({ x: bbox.left + offset, y: 5 });
 
