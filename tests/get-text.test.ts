@@ -1,6 +1,7 @@
 import { assert } from 'chai';
 
 import { getTextAtPoint, GetTextAtPointResult } from '../src/get-text';
+import { isChromium } from '../src/ua-utils';
 
 mocha.setup('bdd');
 
@@ -79,6 +80,7 @@ describe('getTextAtPoint', () => {
   it('should NOT find a range in a div when the point is a long way away due to line wrapping', () => {
     testDiv.style.width = '300px';
     testDiv.style.paddingRight = '100px';
+    testDiv.style.boxSizing = 'border-box';
     testDiv.textContent =
       '何故かと云うとこの二三年京都には地震とか辻風とか火事とか饑饉とか云う災いがつづいて起こったそこで洛中のさびれ方は一通りでない旧記によると仏像や';
 
@@ -886,9 +888,8 @@ describe('getTextAtPoint', () => {
     // The following is determined empirically based on what seems to work both
     // on Windows and on Linux (in CI) for both Firefox and Chrome.
     //
-    // We used to use 10px on Chrome and 15px on Firefox -- possibly because of
-    // the different default fonts they use on Linux -- but it may also be
-    // because they follow different code paths.
+    // Chrome and Firefox will likely use different default fonts and
+    // furthermore they follow different code paths.
     //
     // On Chrome we create a mirror element for the text box and look up that
     // instead. That might end up using different fonts for all we know.
@@ -898,7 +899,7 @@ describe('getTextAtPoint', () => {
     //
     // As a result, this may need tweaking from time to time. For now,
     // hopefully 15px does the trick on all browsers and platforms we test on.
-    const offset = 15;
+    const offset = isChromium() ? 13 : 15;
 
     const result = getTextAtPoint(
       // Just guess here...
@@ -935,7 +936,8 @@ describe('getTextAtPoint', () => {
     const bbox = inputNode.getBoundingClientRect();
 
     // See notes above about how we arrived at this offset.
-    const offset = 15;
+    // TODO: 14 is just a check in case 13 doesn't work
+    const offset = isChromium() ? 14 : 15;
 
     const result = getTextAtPoint({
       x: bbox.left + offset,
@@ -975,7 +977,11 @@ describe('getTextAtPoint', () => {
     textAreaNode.style.fontFamily = 'monospace';
     const bbox = textAreaNode.getBoundingClientRect();
 
-    const result = getTextAtPoint({ x: bbox.left + 15, y: 5 });
+    // See notes above about how we arrived at this offset.
+    // TODO: 12.5 is just a check in case 13 doesn't work
+    const offset = isChromium() ? 12.5 : 15;
+
+    const result = getTextAtPoint({ x: bbox.left + offset, y: 5 });
 
     assertTextResultEqual(result, 'いうえお', [textAreaNode, 1, 5]);
   });
