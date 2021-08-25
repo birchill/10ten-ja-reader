@@ -2,6 +2,8 @@
 
 - Made the lookup better reflect the cursor position
   ([#278](https://github.com/birchill/10ten-ja-reader/discussions/278)).
+- Fixed a hang when using 10ten together with the LiveTL extension
+  ([#733](https://github.com/birchill/10ten-ja-reader/discussions/733)).
 
 ## 1.2.2 (2021-08-19)
 

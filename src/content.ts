@@ -622,6 +622,18 @@ export class ContentHandler {
   }
 
   onContentMessage(ev: MessageEvent<ContentMessage>) {
+    // In the following we need to be careful to avoid creating an infinite loop
+    // of messages.
+    //
+    // This is because many of the methods we call will simply forward the
+    // message on to topmost window if needed.
+    //
+    // However, the LiveTL add-on naively forwards all messages to its topmost
+    // window on to its iframes creating an infinite loop.
+    //
+    // To avoid this, for any message that is only intended to be sent to a
+    // topmost window, we ensure that we are the topmost window before
+    // calling the corresponding method.
     switch (ev.data.kind) {
       case '10ten(ja):lookup':
         {
@@ -646,40 +658,59 @@ export class ContentHandler {
           // clear any mouse target we previously stored.
           this.lastMouseTarget = null;
 
+          // We don't bother checking isTopMostWindow() here because lookupText
+          // doesn't delegate its work to the topmost window by calling
+          // postMessage.
           this.lookupText({ ...ev.data, source: ev.source });
         }
         break;
 
       case '10ten(ja):clearResult':
-        this.clearResult();
+        if (isTopMostWindow()) {
+          this.clearResult();
+        }
         break;
 
       case '10ten(ja):nextDictionary':
-        this.showNextDictionary();
+        if (isTopMostWindow()) {
+          this.showNextDictionary();
+        }
         break;
 
       case '10ten(ja):toggleDefinition':
-        this.toggleDefinition();
+        if (isTopMostWindow()) {
+          this.toggleDefinition();
+        }
         break;
 
       case '10ten(ja):movePopup':
-        this.movePopup(ev.data.direction);
+        if (isTopMostWindow()) {
+          this.movePopup(ev.data.direction);
+        }
         break;
 
       case '10ten(ja):enterCopyMode':
-        this.enterCopyMode();
+        if (isTopMostWindow()) {
+          this.enterCopyMode();
+        }
         break;
 
       case '10ten(ja):exitCopyMode':
-        this.exitCopyMode();
+        if (isTopMostWindow()) {
+          this.exitCopyMode();
+        }
         break;
 
       case '10ten(ja):nextCopyEntry':
-        this.nextCopyEntry();
+        if (isTopMostWindow()) {
+          this.nextCopyEntry();
+        }
         break;
 
       case '10ten(ja):copyCurrentEntry':
-        this.copyCurrentEntry(ev.data.copyType);
+        if (isTopMostWindow()) {
+          this.copyCurrentEntry(ev.data.copyType);
+        }
         break;
 
       case '10ten(ja):highlightText':
