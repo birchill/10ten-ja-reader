@@ -24,8 +24,8 @@ export let requestIdleCallback: (
 export let cancelIdleCallback: (handle: IdleCallbackHandle) => void;
 
 if ((self as any).requestIdleCallback && (self as any).cancelIdleCallback) {
-  requestIdleCallback = (self as any).requestIdleCallback;
-  cancelIdleCallback = (self as any).cancelIdleCallback;
+  requestIdleCallback = (self as any).requestIdleCallback.bind(self);
+  cancelIdleCallback = (self as any).cancelIdleCallback.bind(self);
 } else {
   requestIdleCallback = (
     callback: IdleRequestCallback,
@@ -47,7 +47,7 @@ if ((self as any).requestIdleCallback && (self as any).cancelIdleCallback) {
 export function requestIdleCallbackPromise(
   options?: IdleRequestOptions
 ): Promise<void> {
-  return new Promise(resolve =>
+  return new Promise((resolve) =>
     requestIdleCallback(() => {
       resolve();
     }, options)

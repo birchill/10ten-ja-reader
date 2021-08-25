@@ -57,11 +57,7 @@ import {
   getWordToCopy,
   Entry as CopyEntry,
 } from './copy-text';
-import {
-  isEditableNode,
-  isMessageSourceWindow,
-  isTopMostWindow,
-} from './dom-utils';
+import { isEditableNode, isMessageSourceWindow } from './dom-utils';
 import { Point } from './geometry';
 import { getTextAtPoint } from './get-text';
 import { getIframeOriginFromWindow } from './iframe-tracker';
@@ -84,6 +80,7 @@ import { getTargetElementProps, TargetProps } from './target-props';
 import { TextHighlighter } from './text-highlighter';
 import { TextRange, textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
+import { getTopMostWindow, isTopMostWindow } from './top-window';
 
 export class ContentHandler {
   // The content script is injected into every frame in a page but we delegate
@@ -218,7 +215,7 @@ export class ContentHandler {
 
     // If we are an iframe, check if the popup is currently showing
     if (!isTopMostWindow()) {
-      window.top.postMessage<ContentMessage>(
+      getTopMostWindow().postMessage<ContentMessage>(
         { kind: '10ten(ja):isPopupShown' },
         '*'
       );
@@ -745,7 +742,7 @@ export class ContentHandler {
 
   showNextDictionary() {
     if (!isTopMostWindow()) {
-      window.top.postMessage<ContentMessage>(
+      getTopMostWindow().postMessage<ContentMessage>(
         { kind: '10ten(ja):nextDictionary' },
         '*'
       );
@@ -759,7 +756,7 @@ export class ContentHandler {
 
   toggleDefinition() {
     if (!isTopMostWindow()) {
-      window.top.postMessage<ContentMessage>(
+      getTopMostWindow().postMessage<ContentMessage>(
         { kind: '10ten(ja):toggleDefinition' },
         '*'
       );
@@ -772,7 +769,7 @@ export class ContentHandler {
 
   movePopup(direction: 'up' | 'down') {
     if (!isTopMostWindow()) {
-      window.top.postMessage<ContentMessage>(
+      getTopMostWindow().postMessage<ContentMessage>(
         { kind: '10ten(ja):movePopup', direction },
         '*'
       );
@@ -803,7 +800,7 @@ export class ContentHandler {
     this.copyMode = true;
 
     if (!isTopMostWindow()) {
-      window.top.postMessage<ContentMessage>(
+      getTopMostWindow().postMessage<ContentMessage>(
         { kind: '10ten(ja):enterCopyMode' },
         '*'
       );
@@ -820,7 +817,7 @@ export class ContentHandler {
     this.copyMode = false;
 
     if (!isTopMostWindow()) {
-      window.top.postMessage<ContentMessage>(
+      getTopMostWindow().postMessage<ContentMessage>(
         { kind: '10ten(ja):exitCopyMode' },
         '*'
       );
@@ -832,7 +829,7 @@ export class ContentHandler {
 
   nextCopyEntry() {
     if (!isTopMostWindow()) {
-      window.top.postMessage<ContentMessage>(
+      getTopMostWindow().postMessage<ContentMessage>(
         { kind: '10ten(ja):nextCopyEntry' },
         '*'
       );
@@ -845,7 +842,7 @@ export class ContentHandler {
 
   copyCurrentEntry(copyType: CopyType) {
     if (!isTopMostWindow()) {
-      window.top.postMessage<ContentMessage>(
+      getTopMostWindow().postMessage<ContentMessage>(
         { kind: '10ten(ja):copyCurrentEntry', copyType },
         '*'
       );
@@ -977,7 +974,7 @@ export class ContentHandler {
     if (isTopMostWindow()) {
       this.hidePopup();
     } else {
-      window.top.postMessage<ContentMessage>(
+      getTopMostWindow().postMessage<ContentMessage>(
         { kind: '10ten(ja):clearResult' },
         '*'
       );
@@ -1030,7 +1027,7 @@ export class ContentHandler {
     if (isTopMostWindow()) {
       this.lookupText(lookupParams);
     } else {
-      window.top.postMessage<ContentMessage>(
+      getTopMostWindow().postMessage<ContentMessage>(
         {
           ...lookupParams,
           kind: '10ten(ja):lookup',
