@@ -634,6 +634,10 @@ export class ContentHandler {
     switch (ev.data.kind) {
       case '10ten(ja):lookup':
         {
+          if (!isTopMostWindow()) {
+            return;
+          }
+
           const { point } = ev.data;
           if (!isMessageSourceWindow(ev.source)) {
             console.warn('Unexpected message source');
