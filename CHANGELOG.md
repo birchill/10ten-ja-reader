@@ -1,47 +1,49 @@
 ## Next version
 
 - Made the lookup better reflect the cursor position
-  ([#278](https://github.com/birchill/10ten-ja-reader/discussions/278)).
+  ([#278](https://github.com/birchill/10ten-ja-reader/issues/278)).
 - Fixed a hang when using 10ten together with the LiveTL extension
-  ([#733](https://github.com/birchill/10ten-ja-reader/discussions/733)).
+  ([#733](https://github.com/birchill/10ten-ja-reader/issues/733)).
+- Fixed display of popup when using 10ten together with the LiveTL extension
+  ([#734](https://github.com/birchill/10ten-ja-reader/issues/734)).
 
 ## 1.2.2 (2021-08-19)
 
 - Made popups for iframes be shown in the topmost window
-  ([#13](https://github.com/birchill/10ten-ja-reader/discussions/13)).
+  ([#13](https://github.com/birchill/10ten-ja-reader/issues/13)).
 - Fixed flickering on links that use transitions
-  ([#723](https://github.com/birchill/10ten-ja-reader/discussions/723),
-  [#724](https://github.com/birchill/10ten-ja-reader/discussions/724)).
+  ([#723](https://github.com/birchill/10ten-ja-reader/issues/723),
+  [#724](https://github.com/birchill/10ten-ja-reader/issues/724)).
 - Fixed a regression where non-Firefox browsers could not look up the first
   character in a text box
-  [#725](https://github.com/birchill/10ten-ja-reader/discussions/725)).
+  [#725](https://github.com/birchill/10ten-ja-reader/issues/725)).
 
 ## 1.2.1 (2021-08-12)
 
 - Fixed handling of scrollable text boxes in Chromium and Safari browsers.
 - Made number handling a bit more tolerant so 8 万 8 千平㍍ etc. would be recognized.
 - Fixed a case where the options page would flicker incessantly
-  ([#708](https://github.com/birchill/10ten-ja-reader/discussions/708)).
+  ([#708](https://github.com/birchill/10ten-ja-reader/issues/708)).
 - Made the popup respond better when there is little horizontal space.
 - Avoided reporting errors for missing kanji components.
 
 ## v1.2.0 (2021-07-29) (Firefox, Chrome, Safari, Edge)
 
 - Added an option to display tabs on the sides or hide them altogether
-  ([#688](https://github.com/birchill/10ten-ja-reader/discussions/688)).
+  ([#688](https://github.com/birchill/10ten-ja-reader/issues/688)).
 - Added an option to change the toolbar icon to a 天 character instead
-  ([#689](https://github.com/birchill/10ten-ja-reader/discussions/689)).
+  ([#689](https://github.com/birchill/10ten-ja-reader/issues/689)).
 - Made katakana name matches show up in the name preview
 
 ## 1.1.4 (2021-07-23) (Firefox)
 
 - Made the dark theme have a higher contrast
-  ([#692](https://github.com/birchill/10ten-ja-reader/discussions/692)).
+  ([#692](https://github.com/birchill/10ten-ja-reader/issues/692)).
 
 ## 1.1.3 (2021-07-22) (Firefox, Chrome, Safari, Edge)
 
 - Made icons a little more visible in disabled state when using dark mode
-  ([#687](https://github.com/birchill/10ten-ja-reader/discussions/687)).
+  ([#687](https://github.com/birchill/10ten-ja-reader/issues/687)).
 - Fixed handling of <kbd>Shift</kbd> on Safari.
 
 ## 1.1.2 (2021-07-21) (Firefox)
