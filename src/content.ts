@@ -1183,11 +1183,7 @@ export class ContentHandler {
       return;
     }
 
-    if (!this.currentSearchResult) {
-      return;
-    }
-
-    const searchResult = this.currentSearchResult[this.currentDict];
+    const searchResult = this.currentSearchResult?.[this.currentDict];
 
     // Work out the appropriate length to highlight
     const highlightLength = Math.max(
