@@ -29,7 +29,7 @@ let gotResponse = false;
 window.addEventListener('message', (event) => {
   if (isObject(event) && isMessageSourceWindow(event.source)) {
     if (event.data === '10ten(ja):ping') {
-      event.source.postMessage('10ten(ja):pong', event.origin);
+      event.source.postMessage('10ten(ja):pong', '*');
     } else if (event.data === '10ten(ja):pong') {
       topMostWindow = event.source;
       gotResponse = true;
