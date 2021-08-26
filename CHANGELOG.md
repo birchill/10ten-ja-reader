@@ -1,4 +1,4 @@
-## Next version
+## 1.2.3 (2021-08-26)
 
 - Made the lookup better reflect the cursor position
   ([#278](https://github.com/birchill/10ten-ja-reader/issues/278)).
@@ -6,6 +6,8 @@
   ([#733](https://github.com/birchill/10ten-ja-reader/issues/733)).
 - Fixed display of popup when using 10ten together with the LiveTL extension
   ([#734](https://github.com/birchill/10ten-ja-reader/issues/734)).
+- Fixed a regression in the highlighting of text when only content that is not a
+  dictionary entry matches.
 
 ## 1.2.2 (2021-08-19)
 
