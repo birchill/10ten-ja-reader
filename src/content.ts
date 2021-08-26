@@ -76,6 +76,7 @@ import {
 import { getPopupPosition, PopupPositionMode } from './popup-position';
 import { query, QueryResult } from './query';
 import { isForeignObjectElement, isSvgDoc, isSvgSvgElement } from './svg';
+import { stripFields } from './strip-fields';
 import { getTargetElementProps, TargetProps } from './target-props';
 import { TextHighlighter } from './text-highlighter';
 import { TextRange, textRangesEqual } from './text-range';
@@ -171,11 +172,14 @@ export class ContentHandler {
   private static MAX_LENGTH = 16;
 
   private currentLookupParams:
-    | { text: string; wordLookup: boolean; meta?: SelectionMeta }
+    | {
+        text: string;
+        wordLookup: boolean;
+        meta?: SelectionMeta;
+        source: Window | null;
+      }
     | undefined;
-  private currentSearchResult:
-    | (QueryResult & { source: Window | null })
-    | undefined;
+  private currentSearchResult: QueryResult | undefined;
   private currentTargetProps: TargetProps | undefined;
   private currentDict: MajorDataSeries = 'words';
 
@@ -966,8 +970,8 @@ export class ContentHandler {
     this.lastMouseTarget = null;
     this.copyMode = false;
 
-    if (isTopMostWindow() && this.currentSearchResult?.source) {
-      this.currentSearchResult.source.postMessage<ContentMessage>(
+    if (isTopMostWindow() && this.currentLookupParams?.source) {
+      this.currentLookupParams.source.postMessage<ContentMessage>(
         { kind: '10ten(ja):clearTextHighlight' },
         '*'
       );
@@ -1064,7 +1068,7 @@ export class ContentHandler {
     wordLookup: boolean;
   }) {
     const lookupParams = { text, meta, wordLookup };
-    this.currentLookupParams = lookupParams;
+    this.currentLookupParams = { ...lookupParams, source };
 
     // Presumably the text or dictionary has changed so break out of copy mode
     this.copyMode = false;
@@ -1078,7 +1082,8 @@ export class ContentHandler {
     // the previous query.
     if (
       !this.currentLookupParams ||
-      JSON.stringify(lookupParams) !== JSON.stringify(this.currentLookupParams)
+      JSON.stringify(lookupParams) !==
+        JSON.stringify(stripFields(this.currentLookupParams, ['source']))
     ) {
       return;
     }
@@ -1120,9 +1125,7 @@ export class ContentHandler {
       this.currentDict = dict;
     }
 
-    this.currentSearchResult = queryResult
-      ? { ...queryResult, source }
-      : undefined;
+    this.currentSearchResult = queryResult || undefined;
     this.currentTargetProps = targetProps;
 
     this.highlightTextForCurrentResult();
@@ -1196,8 +1199,8 @@ export class ContentHandler {
       return;
     }
 
-    if (this.currentSearchResult?.source) {
-      this.currentSearchResult.source.postMessage<ContentMessage>(
+    if (this.currentLookupParams?.source) {
+      this.currentLookupParams.source.postMessage<ContentMessage>(
         { kind: '10ten(ja):highlightText', length: highlightLength },
         '*'
       );
