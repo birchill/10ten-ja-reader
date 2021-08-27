@@ -20,7 +20,7 @@ import { requestIdleCallback } from './request-idle-callback';
 
 // Initially assume the actual topmost window has the content script running
 // since this is the most common case.
-let topMostWindow: Window = window.top;
+let topMostWindow: Window = window.top || window.self;
 let gotResponse = false;
 
 // Respond to ping messages from descendants who want to know if we are
@@ -49,7 +49,7 @@ async function lookupTopMostWindow() {
   // _should_ be running the content script. It's hard to imagine a scenario
   // where we got the content script and it didn't.
   try {
-    if (window.location.origin === window.top.location.origin) {
+    if (window.location.origin === window.top?.location.origin) {
       topMostWindow = window.top;
       return;
     }
