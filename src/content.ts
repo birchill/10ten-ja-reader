@@ -46,6 +46,7 @@
 */
 
 import type { MajorDataSeries } from '@birchill/hikibiki-data';
+import * as s from 'superstruct';
 import Browser, { browser } from 'webextension-polyfill-ts';
 
 import { ContentConfig } from './content-config';
@@ -82,6 +83,7 @@ import { TextHighlighter } from './text-highlighter';
 import { TextRange, textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
 import { getTopMostWindow, isTopMostWindow } from './top-window';
+import { BackgroundMessageSchema } from './background-message';
 
 export class ContentHandler {
   // The content script is injected into every frame in a page but we delegate
@@ -1435,10 +1437,8 @@ declare global {
     });
   }
 
-  async function onMessage(request: any): Promise<string> {
-    if (typeof request.type !== 'string') {
-      throw new Error(`Invalid request: ${JSON.stringify(request.type)}`);
-    }
+  async function onMessage(request: unknown): Promise<string> {
+    s.assert(request, BackgroundMessageSchema);
 
     switch (request.type) {
       case 'enable':
@@ -1449,7 +1449,7 @@ declare global {
 
         const tabId: number | undefined =
           typeof request.id === 'number' ? request.id : undefined;
-        enable({ tabId, config: request.config });
+        enable({ tabId, config: request.config as ContentConfig });
 
         return 'ok';
 
@@ -1457,11 +1457,6 @@ declare global {
         disable();
 
         return 'ok';
-
-      default:
-        throw new Error(
-          `Unrecognized request: ${JSON.stringify(request.type)}`
-        );
     }
   }
 
