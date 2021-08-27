@@ -1,6 +1,6 @@
 import { browser } from 'webextension-polyfill-ts';
 
-import { SearchRequest, TranslateRequest } from './background-request';
+import { BackgroundRequest } from './background-request';
 import { hasKatakana } from './char-range';
 import { NameResult, SearchResult, TranslateResult } from './search-result';
 import { stripFields } from './strip-fields';
@@ -89,7 +89,7 @@ async function doQuery(
   text: string,
   options: QueryOptions
 ): Promise<QueryResult | null> {
-  const message: SearchRequest | TranslateRequest = {
+  const message: BackgroundRequest = {
     type: options.wordLookup ? 'search' : 'translate',
     input: text,
     includeRomaji: options.includeRomaji,

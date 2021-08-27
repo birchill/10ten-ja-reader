@@ -48,10 +48,11 @@ import '../manifest.json.src';
 
 import Bugsnag from '@bugsnag/browser';
 import { AbortError, DataSeriesState } from '@birchill/hikibiki-data';
+import * as s from 'superstruct';
 import Browser, { browser } from 'webextension-polyfill-ts';
 
 import TabManager from './all-tab-manager';
-import { isBackgroundRequest, SearchRequest } from './background-request';
+import { BackgroundRequestSchema, SearchRequest } from './background-request';
 import { setDefaultToolbarIcon, updateBrowserAction } from './browser-action';
 import { startBugsnag } from './bugsnag';
 import { Config } from './config';
@@ -495,8 +496,8 @@ browser.browserAction.onClicked.addListener(toggle);
 let pendingSearchRequest: AbortController | undefined;
 
 browser.runtime.onMessage.addListener(
-  (request: object): void | Promise<any> => {
-    if (!isBackgroundRequest(request)) {
+  (request: unknown): void | Promise<any> => {
+    if (!s.is(request, BackgroundRequestSchema)) {
       console.warn(`Unrecognized request: ${JSON.stringify(request)}`);
       Bugsnag.notify(
         `Unrecognized request: ${JSON.stringify(request)}`,

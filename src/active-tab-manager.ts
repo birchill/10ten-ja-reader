@@ -1,7 +1,8 @@
 import Bugsnag from '@bugsnag/js';
+import * as s from 'superstruct';
 import Browser, { browser } from 'webextension-polyfill-ts';
 
-import { isBackgroundRequest } from './background-request';
+import { BackgroundRequestSchema } from './background-request';
 import { ContentConfig } from './content-config';
 import {
   EnabledChangedCallback,
@@ -38,11 +39,11 @@ export default class ActiveTabManager implements TabManager {
     // Response to enable?/disabled messages
     browser.runtime.onMessage.addListener(
       (
-        request: any,
+        request: unknown,
         sender: Browser.Runtime.MessageSender
       ): void | Promise<any> => {
         // Basic sanity checks
-        if (!isBackgroundRequest(request)) {
+        if (!s.is(request, BackgroundRequestSchema)) {
           return;
         }
 

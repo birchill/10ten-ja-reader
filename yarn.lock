@@ -336,6 +336,11 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@birchill/discriminator@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@birchill/discriminator/-/discriminator-0.1.0.tgz#a6f6ccc55701d2072e6b8b7e9199c38d16cc5749"
+  integrity sha512-VAPyxxm8/VDBjsttMR6SEZOiW5tgzmoASHxDJ+Jk3V6bN2PVsS+ooClYXfDpNN/b6NdmGyYS95tXREcO+GXung==
+
 "@birchill/hikibiki-data@^7.5.1":
   version "7.5.1"
   resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-7.5.1.tgz#20eacd79b4e9da9360be063c5a2a2681faafcf7c"
@@ -7691,6 +7696,11 @@ strip-json-comments@~2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
   integrity sha1-PFMZQukIwml8DsNEhYwobHygpgo=
+
+superstruct@^0.15.2:
+  version "0.15.2"
+  resolved "https://registry.yarnpkg.com/superstruct/-/superstruct-0.15.2.tgz#ab7fb84c455a9d7da84c11cfd82c85a4fee9dfff"
+  integrity sha512-OsJI8lv6/PsInwCf4ultejmsJYseYshKhkcbDendqNwj3MeGXENajl3ujMGMU4FDDSSeJTOwFn9T6pnfsS9DYA==
 
 supports-color@8.1.1, supports-color@^8.0.0:
   version "8.1.1"

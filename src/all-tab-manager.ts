@@ -1,7 +1,8 @@
 import Bugsnag from '@bugsnag/browser';
+import * as s from 'superstruct';
 import Browser, { browser } from 'webextension-polyfill-ts';
 
-import { isBackgroundRequest } from './background-request';
+import { BackgroundRequestSchema } from './background-request';
 
 import { ContentConfig } from './content-config';
 import { ExtensionStorageError } from './extension-storage-error';
@@ -43,7 +44,7 @@ export default class AllTabManager implements TabManager {
         request: any,
         sender: Browser.Runtime.MessageSender
       ): void | Promise<any> => {
-        if (!isBackgroundRequest(request)) {
+        if (!s.is(request, BackgroundRequestSchema)) {
           return;
         }
 
