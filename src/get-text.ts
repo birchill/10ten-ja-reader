@@ -256,6 +256,20 @@ function caretPositionFromPoint(
   return result;
 }
 
+declare global {
+  // The following definitions were dropped from lib.dom.d.ts in TypeScript 4.4
+  // since only Firefox supports them.
+  interface CaretPosition {
+    readonly offsetNode: Node;
+    readonly offset: number;
+    getClientRect(): DOMRect | null;
+  }
+
+  interface Document {
+    caretPositionFromPoint(x: number, y: number): CaretPosition | null;
+  }
+}
+
 function rawCaretPositionFromPoint(
   point: Point
 ): (CursorPosition & { usedCaretRangeFromPoint?: boolean }) | null {
