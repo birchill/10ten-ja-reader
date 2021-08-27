@@ -1435,11 +1435,9 @@ declare global {
     });
   }
 
-  function onMessage(request: any): Promise<string> {
+  async function onMessage(request: any): Promise<string> {
     if (typeof request.type !== 'string') {
-      return Promise.reject(
-        new Error(`Invalid request: ${JSON.stringify(request.type)}`)
-      );
+      throw new Error(`Invalid request: ${JSON.stringify(request.type)}`);
     }
 
     switch (request.type) {
@@ -1453,16 +1451,16 @@ declare global {
           typeof request.id === 'number' ? request.id : undefined;
         enable({ tabId, config: request.config });
 
-        return Promise.resolve('ok');
+        return 'ok';
 
       case 'disable':
         disable();
 
-        return Promise.resolve('ok');
+        return 'ok';
 
       default:
-        return Promise.reject(
-          new Error(`Unrecognized request: ${JSON.stringify(request.type)}`)
+        throw new Error(
+          `Unrecognized request: ${JSON.stringify(request.type)}`
         );
     }
   }
