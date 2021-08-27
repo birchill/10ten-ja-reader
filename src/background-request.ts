@@ -12,9 +12,6 @@ export const BackgroundRequestSchema = discriminator('type', {
   disabled: s.type({}),
   'enable?': s.type({}),
   options: s.type({}),
-  reportWarning: s.type({
-    message: s.string(),
-  }),
   search: SearchRequestSchema,
   switchedDictionary: s.type({}),
   toggleDefinition: s.type({}),

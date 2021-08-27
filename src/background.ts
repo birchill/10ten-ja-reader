@@ -545,16 +545,6 @@ browser.runtime.onMessage.addListener(
       case 'toggleDefinition':
         config.toggleReadingOnly();
         break;
-
-      case 'reportWarning':
-        console.assert(
-          typeof request.message === 'string',
-          '`message` should be a string'
-        );
-        Bugsnag.notify(request.message, (event) => {
-          event.severity = 'warning';
-        });
-        break;
     }
   }
 );
