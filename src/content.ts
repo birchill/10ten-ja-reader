@@ -1317,10 +1317,13 @@ export class ContentHandler {
         popup.style.maxHeight = constrainHeight
           ? `${constrainHeight}px`
           : 'none';
-        popup.style.maskImage =
+        popup.style.webkitMaskImage =
+          'linear-gradient(to bottom, black 99%, transparent)';
+        (popup.style as any).maskImage =
           'linear-gradient(to bottom, black 99%, transparent)';
       } else {
-        popup.style.maskImage = 'none';
+        popup.style.webkitMaskImage = 'none';
+        (popup.style as any).maskImage = 'none';
       }
     }
 
