@@ -61,37 +61,91 @@ export class RikaiPuck {
     this.setPositionWithinSafeArea(this.puckX, this.puckY);
   }
 
-  private setPosition(x: number, y: number) {
+  private setPosition({
+    x,
+    y,
+    safeAreaLeft,
+    safeAreaRight,
+  }: {
+    x: number;
+    y: number;
+    safeAreaLeft: number;
+    safeAreaRight: number;
+  }) {
     this.puckX = x;
     this.puckY = y;
 
-    // Update puck
+    // Update the puck position (that is, the earth)
     if (this.puck) {
       this.puck.style.transform = `translate(${this.puckX}px, ${this.puckY}px)`;
     }
 
-    // Calculate the corresponding target point.
+    // Calculate the corresponding target point (that is, the moon)
+
+    // First determine the actual range of motion of the moon, taking into
+    // account any safe area on either side of the screen.
     const { viewportWidth } = this.getViewportDimensions(
       this.puck?.ownerDocument || document
     );
-    const midpointOfPuck = this.puckX + this.earthWidth / 2;
-    const horizontalPortion = midpointOfPuck / viewportWidth;
+    const safeAreaWidth = viewportWidth - safeAreaLeft - safeAreaRight;
 
-    // Let the target drift by up to 45 degrees in either direction.
-    // Place the target either above or below the puck based on its current orientation.
+    // Now work out where the moon is within that range such that it is
+    //
+    // * 0 when the the left side of the earth is touching the left safe area
+    //   inset, and
+    // * 1 when the right side of the earth is touching the right safe area
+    //   inset.
+    const clamp = (num: number, min: number, max: number) =>
+      Math.min(Math.max(num, min), max);
+    const horizontalPortion = clamp(
+      (this.puckX - safeAreaLeft) / (safeAreaWidth - this.earthWidth),
+      0,
+      1
+    );
+
+    // Then we calculate the horizontal offset. We need to ensure that we
+    // produce enough displacement that we can reach to the other edge of the
+    // safe area in either direction.
+
+    // The range is the amount the moon rotates either side of the moon, in this
+    // case 45 degrees in either direction.
     const range = Math.PI / 2;
+
+    // We need to determine the radius of the offset.
+    //
+    // Typically we set this to 10 pixels greater than the radius of the earth
+    // itself.
+    const radiusOfEarth = this.earthWidth / 2;
+    const preferredRadius = radiusOfEarth + 10;
+
+    // However, we may need to extend that to reach the other side of the safe
+    // area.
+    const safeAreaExtent = Math.max(safeAreaLeft, safeAreaRight);
+    const requiredReach = safeAreaExtent + radiusOfEarth;
+    const requiredRadius = requiredReach / Math.sin(range / 2);
+
+    // Choose whichever is larger
+    const offsetRadius = Math.max(preferredRadius, requiredRadius);
+
+    // Now finally we can calculate the horizontal offset.
     const angle = horizontalPortion * range - range / 2;
+    const offsetX = Math.sin(angle) * offsetRadius;
+
+    // For the vertical offset, we don't actually extend the moon out by the
+    // same radius but instead try to keep a fixed vertical offset since that
+    // makes scanning horizontally easier and allows us to tweak that offset to
+    // make room for the user's thumb.
     const offsetYOrientationFactor =
       this.targetOrientation === 'above' ? -1 : 1;
-    const offsetX = Math.sin(angle) * 35;
     const offsetY =
       (this.targetOrientation === 'above'
         ? this.targetAbsoluteOffsetYAbove
         : this.targetAbsoluteOffsetYBelow) * offsetYOrientationFactor;
 
     // At rest, make the target land on the surface of the puck.
-    const restOffsetX = Math.sin(angle) * 25;
-    const restOffsetY = Math.cos(angle) * 25 * offsetYOrientationFactor;
+    const restOffsetX = Math.sin(angle) * radiusOfEarth;
+    const restOffsetY =
+      Math.cos(angle) * radiusOfEarth * offsetYOrientationFactor;
 
     this.targetOffset = { x: offsetX, y: offsetY };
 
@@ -182,10 +236,12 @@ export class RikaiPuck {
     const minY = safeAreaTop;
     const maxY = viewportHeight - safeAreaBottom - this.earthHeight;
 
-    this.setPosition(
-      Math.min(Math.max(minX, x), maxX),
-      Math.min(Math.max(minY, y), maxY)
-    );
+    this.setPosition({
+      x: Math.min(Math.max(minX, x), maxX),
+      y: Math.min(Math.max(minY, y), maxY),
+      safeAreaLeft,
+      safeAreaRight,
+    });
   }
 
   readonly onWindowPointerMove = (event: PointerEvent) => {
