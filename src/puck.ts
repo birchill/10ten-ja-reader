@@ -330,10 +330,16 @@ export class LookupPuck {
     target.dispatchEvent(mouseEvent);
   };
 
+  private gotPuckPointerDown: boolean = false;
+  private doubleClickStart: number | null = null;
+  private static readonly doubleClickHysteresis = 300;
+
   private readonly onPuckPointerDown = (event: PointerEvent) => {
     if (!this.enabled || !this.puck) {
       return;
     }
+
+    this.gotPuckPointerDown = true;
 
     event.preventDefault();
     event.stopPropagation();
@@ -347,49 +353,68 @@ export class LookupPuck {
     window.addEventListener('pointercancel', this.stopDraggingPuck);
   };
 
-  private readonly stopDraggingPuck = () => {
+  private readonly onPuckClick = () => {
+    const dateNow = Date.now();
+
+    // If a click has preceded this, determine whether this is a double-click or a single-click.
+    if (this.doubleClickStart) {
+      if (dateNow - this.doubleClickStart < RikaiPuck.doubleClickHysteresis) {
+        this.onPuckDoubleClick();
+
+        // Let's handle double-clicks exclusively from single-clicks (and so bail out here).
+        return;
+      }
+    }
+
+    this.doubleClickStart = dateNow;
+
+    // TODO: toggle whether the puck is enabled or disabled.
+  };
+
+  private readonly onPuckDoubleClick = () => {
+    this.targetOrientation =
+      this.targetOrientation === 'above' ? 'below' : 'above';
+    this.setPositionWithinSafeArea(this.puckX, this.puckY);
+
+    this.doubleClickStart = null;
+  };
+
+  // May be called manually (without an event), or upon 'pointerup' or 'pointercancel'.
+  private readonly stopDraggingPuck = (event?: PointerEvent) => {
     this.isBeingDragged = false;
     if (this.puck) {
       this.puck.style.pointerEvents = 'revert';
       this.puck.classList.remove('dragging');
-
-      // Update the target orientation if the puck was parked low down on the
-      // screen.
-      const { viewportHeight } = this.getViewportDimensions(
-        this.puck?.ownerDocument || document
-      );
-
-      const { bottom: safeAreaBottom } =
-        this.safeAreaProvider.getSafeArea() || {
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: 0,
-        };
-
-      // The distance from the bottom of the earth (which can only travel within
-      // the safe area) to the centre of the moon (which is the point from which
-      // the mouse events are fired). This is effectively the height of the
-      // "blind spot" that a puck supporting only the "above" orientation would
-      // have.
-      const activePuckVerticalExtent =
-        this.earthHeight +
-        (this.targetAbsoluteOffsetYAbove - this.earthHeight / 2);
-      this.targetOrientation =
-        this.puckY >= viewportHeight - safeAreaBottom - activePuckVerticalExtent
-          ? 'below'
-          : 'above';
       this.setPositionWithinSafeArea(this.puckX, this.puckY);
     }
 
     window.removeEventListener('pointermove', this.onWindowPointerMove);
     window.removeEventListener('pointerup', this.stopDraggingPuck);
     window.removeEventListener('pointercancel', this.stopDraggingPuck);
+
+    if (event) {
+      const targetIsPuckOrRoot =
+        event.target === this.puck || event.target === this.container;
+      if (event.type === 'pointercancel' || !targetIsPuckOrRoot) {
+        // Stop tracking this click and wait for the next 'pointerdown' to come along instead.
+        this.gotPuckPointerDown = false;
+      } else if (
+        event.type === 'pointerup' &&
+        targetIsPuckOrRoot &&
+        this.gotPuckPointerDown
+      ) {
+        // Prevent any double-taps turning into a zoom
+        event.preventDefault();
+        this.onPuckClick();
+      }
+    }
   };
+
+  private container: HTMLElement | null = null;
 
   render({ doc, theme }: PuckRenderOptions): void {
     // Set up shadow tree
-    const container = getOrCreateEmptyContainer({
+    this.container = getOrCreateEmptyContainer({
       doc,
       id: LookupPuck.id,
       styles: puckStyles.toString(),
@@ -407,7 +432,7 @@ export class LookupPuck {
     moon.classList.add('moon');
     this.puck.append(moon);
 
-    container.shadowRoot!.append(this.puck);
+    this.container.shadowRoot!.append(this.puck);
 
     // Set theme styles
     this.puck.classList.add(getThemeClass(theme));
@@ -507,6 +532,7 @@ export class LookupPuck {
 
   unmount(): void {
     removePuck();
+    this.container = null;
     this.disable();
     this.puck = undefined;
   }
