@@ -4,6 +4,8 @@ import {
 } from './content-container';
 import type { SafeAreaProvider } from './safe-area-provider';
 import { getThemeClass } from './themes';
+import { getIframeOriginFromWindow } from './iframe-tracker';
+import type { ContentMessage } from './content-messages';
 
 import puckStyles from '../css/puck.css';
 
@@ -186,7 +188,7 @@ export class RikaiPuck {
     );
   }
 
-  private readonly onWindowPointerMove = (event: PointerEvent) => {
+  readonly onWindowPointerMove = (event: PointerEvent) => {
     if (
       !this.puck ||
       !this.earthWidth ||
@@ -217,19 +219,56 @@ export class RikaiPuck {
 
     // Make sure the target is an actual element since the mousemove handler
     // expects that.
-    const target = document.elementFromPoint(targetX, targetY);
-    if (target) {
-      const mouseEvent = new MouseEvent('mousemove', {
-        // Make sure the event bubbles up to the listener on the window
-        bubbles: true,
-        clientX: targetX,
-        clientY: targetY,
-      });
-
-      (mouseEvent as PuckMouseEvent).fromPuck = true;
-
-      target.dispatchEvent(mouseEvent);
+    let target = document.elementFromPoint(targetX, targetY);
+    if (!target) {
+      return;
     }
+
+    // When the target is an iframe, simply firing a 'mousemove' event at it
+    // does not have the desired effect of prompting a lookup at the target
+    // location within the iframe.
+    //
+    // Instead, we post a '10ten(ja):moonMoved' message to the iframe. Our
+    // injected content script ensures that the iframe has a listener in place
+    // to handle this message. Upon receiving this message, the iframe will
+    // fire a 'mousemove' event at the indicated location, ultimately resulting
+    // in a lookup at the target point.
+    if (target.tagName === 'IFRAME') {
+      const iframeElement = target as HTMLIFrameElement;
+      const contentWindow = iframeElement.contentWindow;
+      if (!contentWindow) {
+        return;
+      }
+
+      const originPoint = getIframeOriginFromWindow(contentWindow);
+      if (!originPoint) {
+        return;
+      }
+
+      // If it's an iframe, adjust the target position by the
+      // offset of the iframe itself within the viewport.
+      const { x, y } = originPoint;
+
+      contentWindow.postMessage<ContentMessage>(
+        {
+          kind: '10ten(ja):moonMoved',
+          clientX: targetX - x,
+          clientY: targetY - y,
+        },
+        '*'
+      );
+      return;
+    }
+
+    const mouseEvent = new MouseEvent('mousemove', {
+      // Make sure the event bubbles up to the listener on the window
+      bubbles: true,
+      clientX: targetX,
+      clientY: targetY,
+    });
+    (mouseEvent as PuckMouseEvent).fromPuck = true;
+
+    target.dispatchEvent(mouseEvent);
   };
 
   private readonly onPuckPointerDown = (event: PointerEvent) => {
