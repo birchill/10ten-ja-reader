@@ -300,7 +300,7 @@ class RcxContent {
       return;
     }
     if (tdata.prevSelView.closed) {
-      tdata.prevSelView = undefined;
+      delete tdata.prevSelView;
       return;
     }
 
@@ -313,7 +313,7 @@ class RcxContent {
       // we probably clicked somewhere else and we don't want to
       // bounce back.
       if (!sel.toString()) {
-        tdata.oldTA = undefined;
+        delete tdata.oldTA;
       }
 
       // clear all selections
@@ -328,8 +328,8 @@ class RcxContent {
         tdata.oldTA.selectionStart = tdata.oldTA.selectionEnd = tdata.oldCaret!;
       }
     }
-    tdata.prevSelView = undefined;
-    tdata.selText = undefined;
+    delete tdata.prevSelView;
+    delete tdata.selText;
   }
 
   // Array used for storing the last popup content shown, useful for easily
@@ -917,11 +917,13 @@ class RcxContent {
         // being not text.  This is the most general way to deal with
         // arbitrary types.
 
-        // we set oldTA to undefined because we don't want to do weird stuff
+        // delete oldTA because we don't want to do weird stuff
         // with buttons
-        tdata.oldTA = undefined;
+        delete tdata.oldTA;
         // console.log("invalid input type for selection:" + rp.type);
-        console.log(err.message);
+        if (err instanceof Error) {
+          console.log(err.message);
+        }
       }
       return;
     }
@@ -1197,7 +1199,9 @@ class RcxContent {
         document.body.removeChild(fake);
       }
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       if (fake) {
         document.body.removeChild(fake);
       }
@@ -1207,7 +1211,7 @@ class RcxContent {
     tdata.prevTarget = eventTarget;
     tdata.prevRangeNode = rp;
     tdata.prevRangeOfs = ro;
-    tdata.title = undefined;
+    delete tdata.title;
     tdata.uofs = 0;
     tdata.uofsNext = 1;
 

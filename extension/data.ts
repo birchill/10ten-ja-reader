@@ -52,7 +52,7 @@ const defaultDictEntryData = {
   misc: {} as Record<string, string>,
   eigo: '',
   hasNames: false,
-  data: [] as { entry: string; reason?: string }[],
+  data: [] as { entry: string; reason: string | undefined }[],
   hasMore: false,
   title: '',
   index: 0,

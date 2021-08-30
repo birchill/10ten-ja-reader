@@ -17,7 +17,7 @@ describe('docs-html-fallback.ts after sending `forceDocsHtml?` message', functio
 
   beforeEach(function () {
     chrome.reset();
-    window._docs_force_html_by_ext = undefined;
+    delete window._docs_force_html_by_ext;
   });
 
   describe('when `forceHtml` callback is called with `false`', function () {
