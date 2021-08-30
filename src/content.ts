@@ -83,6 +83,7 @@ import {
 import { getPopupPosition, PopupPositionMode } from './popup-position';
 import {
   isPuckMouseEvent,
+  PuckMouseEvent,
   PuckRenderOptions,
   removePuck,
   RikaiPuck,
@@ -252,6 +253,10 @@ export class ContentHandler {
         { kind: '10ten(ja):isPopupShown' },
         '*'
       );
+
+      // Also, we need to listen to pointer events so we can forward them to the
+      // top frame in case it is showing the puck.
+      window.addEventListener('pointermove', this.onIframePointerMove);
     }
   }
 
@@ -266,6 +271,7 @@ export class ContentHandler {
     }
     puck.render(renderOptions);
     puck.enable();
+    return puck;
   }
 
   setUpSafeAreaProvider(
@@ -306,6 +312,7 @@ export class ContentHandler {
     window.removeEventListener('keyup', this.onKeyUp, { capture: true });
     window.removeEventListener('focusin', this.onFocusIn);
     window.removeEventListener('message', this.onContentMessage);
+    window.removeEventListener('pointermove', this.onIframePointerMove);
 
     this.clearResult();
     this.textHighlighter.detach();
@@ -318,6 +325,24 @@ export class ContentHandler {
     removePopup();
     removePuck();
     removeSafeAreaProvider();
+  }
+
+  // On any 'pointermove' events fired at an iframe window,
+  // post a 'moveEarth' message back up to the top frame.
+  //
+  // This way, we can tell the top frame to update the
+  // position of the puck's earth component despite our
+  // 'pointermove' events having been captured by the iframe.
+  onIframePointerMove(event: PointerEvent) {
+    const { clientX, clientY } = event;
+    getTopMostWindow().postMessage<ContentMessage>(
+      {
+        kind: '10ten(ja):moveEarth',
+        clientX,
+        clientY,
+      },
+      '*'
+    );
   }
 
   onMouseMove(ev: MouseEvent) {
@@ -710,31 +735,54 @@ export class ContentHandler {
             return;
           }
 
-          const { point } = ev.data;
           if (!isMessageSourceWindow(ev.source)) {
             console.warn('Unexpected message source');
             return;
           }
 
-          const iframeOrigin = getIframeOriginFromWindow(ev.source);
-          if (!iframeOrigin) {
+          const iframeOriginPoint = getIframeOriginFromWindow(ev.source);
+          if (!iframeOriginPoint) {
             console.warn("Couldn't get iframe origin");
             return;
           }
 
+          const { point } = ev.data;
           this.currentPoint = {
-            x: point.x + iframeOrigin.x,
-            y: point.y + iframeOrigin.y,
+            x: point.x + iframeOriginPoint.x,
+            y: point.y + iframeOriginPoint.y,
           };
 
           // We are doing a lookup based on an iframe's contents so we should
           // clear any mouse target we previously stored.
           this.lastMouseTarget = null;
 
-          // We don't bother checking isTopMostWindow() here because lookupText
-          // doesn't delegate its work to the topmost window by calling
-          // postMessage.
           this.lookupText({ ...ev.data, source: ev.source });
+        }
+        break;
+
+      case '10ten(ja):moveEarth':
+        {
+          if (!this.puck || !isTopMostWindow()) {
+            return;
+          }
+
+          if (!isMessageSourceWindow(ev.source)) {
+            console.warn('Unexpected message source');
+            return;
+          }
+
+          const iframeOriginPoint = getIframeOriginFromWindow(ev.source);
+          if (!iframeOriginPoint) {
+            console.warn("Couldn't get iframe origin");
+            return;
+          }
+
+          const { clientX, clientY } = ev.data;
+          const topFrameEvent = new PointerEvent('pointermove', {
+            clientX: clientX + iframeOriginPoint.x,
+            clientY: clientY + iframeOriginPoint.y,
+          });
+          this.puck.onWindowPointerMove(topFrameEvent);
         }
         break;
 
@@ -813,6 +861,26 @@ export class ContentHandler {
           );
         }
         break;
+
+      case '10ten(ja):moonMoved': {
+        const { clientX, clientY } = ev.data;
+        const mouseEvent = new MouseEvent('mousemove', {
+          // Make sure the event bubbles up to the listener on the window
+          bubbles: true,
+          clientX,
+          clientY,
+        });
+        (mouseEvent as PuckMouseEvent).fromPuck = true;
+
+        const documentBody = window.self.document.body;
+        if (!documentBody) {
+          // Hasn't loaded yet
+          return;
+        }
+
+        documentBody.dispatchEvent(mouseEvent);
+        break;
+      }
     }
   }
 
@@ -1622,11 +1690,15 @@ declare global {
       const safeAreaProvider = contentHandler.setUpSafeAreaProvider({
         doc: document,
       });
-      contentHandler.setUpPuck({
-        safeAreaProvider,
-        doc: document,
-        theme: config.popupStyle,
-      });
+
+      // Render and enable the puck only on the top frame.
+      if (isTopMostWindow()) {
+        contentHandler.setUpPuck({
+          safeAreaProvider,
+          doc: document,
+          theme: config.popupStyle,
+        });
+      }
     }
 
     // If we are running in "activeTab" mode we will get passed our tab ID
