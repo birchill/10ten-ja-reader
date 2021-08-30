@@ -30,6 +30,22 @@ export interface PuckMouseEvent extends MouseEvent {
   fromPuck: true;
 }
 
+type ClickState =
+  | {
+      kind: 'idle';
+    }
+  | {
+      kind: 'gotpointerdown';
+    }
+  | {
+      kind: 'firstclick';
+      timeout: number;
+    }
+  | {
+      kind: 'firstclickwithpointerdown';
+      timeout: number;
+    };
+
 export class LookupPuck {
   public static id: string = 'tenten-ja-puck';
   private puck: HTMLDivElement | undefined;
@@ -330,8 +346,7 @@ export class LookupPuck {
     target.dispatchEvent(mouseEvent);
   };
 
-  private gotPuckPointerDown: boolean = false;
-  private doubleClickStart: number | null = null;
+  private clickState: ClickState = { kind: 'idle' };
   private static readonly doubleClickHysteresis = 300;
 
   private readonly onPuckPointerDown = (event: PointerEvent) => {
@@ -339,7 +354,14 @@ export class LookupPuck {
       return;
     }
 
-    this.gotPuckPointerDown = true;
+    if (this.clickState.kind === 'idle') {
+      this.clickState = { kind: 'gotpointerdown' };
+    } else if (this.clickState.kind === 'firstclick') {
+      this.clickState = {
+        ...this.clickState,
+        kind: 'firstclickwithpointerdown',
+      };
+    }
 
     event.preventDefault();
     event.stopPropagation();
@@ -354,20 +376,6 @@ export class LookupPuck {
   };
 
   private readonly onPuckClick = () => {
-    const dateNow = Date.now();
-
-    // If a click has preceded this, determine whether this is a double-click or a single-click.
-    if (this.doubleClickStart) {
-      if (dateNow - this.doubleClickStart < RikaiPuck.doubleClickHysteresis) {
-        this.onPuckDoubleClick();
-
-        // Let's handle double-clicks exclusively from single-clicks (and so bail out here).
-        return;
-      }
-    }
-
-    this.doubleClickStart = dateNow;
-
     // TODO: toggle whether the puck is enabled or disabled.
   };
 
@@ -375,8 +383,6 @@ export class LookupPuck {
     this.targetOrientation =
       this.targetOrientation === 'above' ? 'below' : 'above';
     this.setPositionWithinSafeArea(this.puckX, this.puckY);
-
-    this.doubleClickStart = null;
   };
 
   // May be called manually (without an event), or upon 'pointerup' or 'pointercancel'.
@@ -397,15 +403,30 @@ export class LookupPuck {
         event.target === this.puck || event.target === this.container;
       if (event.type === 'pointercancel' || !targetIsPuckOrRoot) {
         // Stop tracking this click and wait for the next 'pointerdown' to come along instead.
-        this.gotPuckPointerDown = false;
-      } else if (
-        event.type === 'pointerup' &&
-        targetIsPuckOrRoot &&
-        this.gotPuckPointerDown
-      ) {
+        if (
+          this.clickState.kind === 'firstclick' ||
+          this.clickState.kind === 'firstclickwithpointerdown'
+        ) {
+          window.clearTimeout(this.clickState.timeout);
+        }
+        this.clickState = { kind: 'idle' };
+      } else if (event.type === 'pointerup' && targetIsPuckOrRoot) {
         // Prevent any double-taps turning into a zoom
         event.preventDefault();
-        this.onPuckClick();
+
+        if (this.clickState.kind === 'gotpointerdown') {
+          this.clickState = {
+            kind: 'firstclick',
+            timeout: window.setTimeout(() => {
+              this.clickState = { kind: 'idle' };
+            }, LookupPuck.doubleClickHysteresis),
+          };
+          this.onPuckClick();
+        } else if (this.clickState.kind === 'firstclickwithpointerdown') {
+          window.clearTimeout(this.clickState.timeout);
+          this.clickState = { kind: 'idle' };
+          this.onPuckDoubleClick();
+        }
       }
     }
   };
@@ -552,6 +573,13 @@ export class LookupPuck {
       this.stopDraggingPuck();
       this.puck.removeEventListener('pointerdown', this.onPuckPointerDown);
     }
+    if (
+      this.clickState.kind === 'firstclick' ||
+      this.clickState.kind === 'firstclickwithpointerdown'
+    ) {
+      window.clearTimeout(this.clickState.timeout);
+    }
+    this.clickState = { kind: 'idle' };
   }
 }
 
