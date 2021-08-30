@@ -35,6 +35,7 @@ module.exports = (config: Config) => {
       plugins: [
         new webpack.DefinePlugin({
           __ACTIVE_TAB_ONLY__: false,
+          __ENABLE_PUCK__: false,
           __SUPPORTS_SVG_ICONS__: false,
           __SUPPORTS_TAB_CONTEXT_TYPE__: false,
           __VERSION__: `'${pjson.version}'`,

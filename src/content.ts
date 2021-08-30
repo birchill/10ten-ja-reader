@@ -1692,7 +1692,7 @@ declare global {
       });
 
       // Render and enable the puck only on the top frame.
-      if (isTopMostWindow()) {
+      if (isTopMostWindow() && __ENABLE_PUCK__) {
         contentHandler.setUpPuck({
           safeAreaProvider,
           doc: document,

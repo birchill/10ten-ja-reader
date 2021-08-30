@@ -60,6 +60,7 @@ const testConfig = {
   plugins: [
     new webpack.DefinePlugin({
       __ACTIVE_TAB_ONLY__: false,
+      __ENABLE_PUCK__: false,
       __SUPPORTS_SVG_ICONS__: false,
       __SUPPORTS_TAB_CONTEXT_TYPE__: false,
       __VERSION__: `'${pjson.version}'`,
@@ -278,6 +279,7 @@ function buildExtConfig({
   const plugins = [
     new webpack.DefinePlugin({
       __ACTIVE_TAB_ONLY__: activeTabOnly,
+      __ENABLE_PUCK__: !!process.env.ENABLE_PUCK,
       __SUPPORTS_SVG_ICONS__: supportsSvgIcons,
       __SUPPORTS_TAB_CONTEXT_TYPE__: supportsTabContextType,
       __VERSION__: `'${pjson.version}'`,
