@@ -77,7 +77,6 @@ import {
   NameSearchResult,
   SearchResult,
 } from './search-result';
-import { stripFields } from './strip-fields';
 
 //
 // Setup bugsnag
@@ -430,16 +429,12 @@ async function search({
   includeRomaji,
   abortSignal,
 }: SearchRequest & { abortSignal: AbortSignal }): Promise<SearchResult | null> {
-  // This is a bit funky because words can return a result AND a database status
-  // (since we have a fallback database for the words database) but the kanji
-  // and names databases return one or the other.
-  //
-  // Here we try and massage them into something simple with a single
-  // database status so that the client doesn't need to worry about these
-  // details so much.
-  const wordsResult = await searchWords({ input, includeRomaji, abortSignal });
-  const words = wordsResult ? stripFields(wordsResult, ['dbStatus']) : null;
-  let dbStatus = wordsResult?.dbStatus;
+  const [words, usedSnapshotReason] = await searchWords({
+    input,
+    includeRomaji,
+    abortSignal,
+  });
+  let dbStatus = usedSnapshotReason;
 
   if (abortSignal.aborted) {
     throw new AbortError();

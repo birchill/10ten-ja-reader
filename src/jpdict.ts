@@ -323,7 +323,10 @@ export async function searchWords({
   max?: number;
   includeRomaji?: boolean;
 }): Promise<
-  (WordSearchResult & { dbStatus?: 'updating' | 'unavailable' }) | null
+  [
+    result: WordSearchResult | null,
+    usedSnapshotReason: 'updating' | 'unavailable' | undefined
+  ]
 > {
   let [word, inputLengths] = normalizeInput(input);
   word = kanaToHiragana(word);
@@ -335,29 +338,31 @@ export async function searchWords({
   // fallback dictionary.
   let getWords: GetWordsFunction;
   let dbStatus = getDataSeriesStatus('words');
+  let usedSnapshotReason: 'updating' | 'unavailable' | undefined;
   if (dbStatus === 'ok') {
     getWords = ({ input, maxResults }: { input: string; maxResults: number }) =>
       idbGetWords(input, { matchType: 'exact', limit: maxResults });
   } else {
+    usedSnapshotReason = dbStatus;
     try {
       const flatFileDatabase = await fallbackDatabaseLoader.database;
       getWords = flatFileDatabase.getWords.bind(flatFileDatabase);
-    } catch (_) {
-      return null;
+    } catch {
+      return [null, usedSnapshotReason];
     }
   }
 
-  const result = await wordSearch({
-    abortSignal,
-    getWords,
-    input: word,
-    inputLengths,
-    maxResults,
-    includeRomaji,
-  });
-
-  // Annotate the result with the database status if needed
-  return result ? (dbStatus !== 'ok' ? { ...result, dbStatus } : result) : null;
+  return [
+    await wordSearch({
+      abortSignal,
+      getWords,
+      input: word,
+      inputLengths,
+      maxResults,
+      includeRomaji,
+    }),
+    usedSnapshotReason,
+  ];
 }
 
 // ---------------------------------------------------------------------------
@@ -382,7 +387,7 @@ export async function translate({
 
   let skip: number;
   while (text.length > 0) {
-    const searchResult = await searchWords({
+    const [searchResult, dbStatus] = await searchWords({
       input: text,
       max: 1,
       includeRomaji,
@@ -401,8 +406,8 @@ export async function translate({
       skip = 1;
     }
 
-    if (searchResult && searchResult.dbStatus) {
-      result.dbStatus = searchResult.dbStatus;
+    if (searchResult && dbStatus) {
+      result.dbStatus = dbStatus;
     }
 
     text = text.substr(skip, text.length - skip);
