@@ -383,6 +383,7 @@ export async function translate({
     data: [],
     textLen: text.length,
     more: false,
+    resultType: 'full',
   };
 
   let skip: number;
@@ -407,7 +408,8 @@ export async function translate({
     }
 
     if (searchResult && dbStatus) {
-      result.dbStatus = dbStatus;
+      result.resultType =
+        dbStatus === 'unavailable' ? 'db-unavailable' : 'db-updating';
     }
 
     text = text.substr(skip, text.length - skip);

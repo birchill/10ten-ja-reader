@@ -49,15 +49,38 @@ export interface NameSearchResult {
 
 // Combined search result
 
-export type SearchDatabaseStatus = 'unavailable' | 'updating';
-
 export type InitialSearchResult = {
   words: WordSearchResult | null;
 
-  // DB here refers to the IndexedDB database. If it is unavailable or being
-  // updated we look up the flat-file database instead which only covers the
-  // words dictionary, has only English glosses, and may be out-of-date.
-  dbStatus?: SearchDatabaseStatus;
+  // The initial result can be one of several types which will determine how
+  // it is displayed to the user:
+  //
+  // 'db-unavailable' - The IndexedDB database is not available, e.g. because we
+  // are in always-on private browsing mode. In this case we should present the
+  // result as complete (i.e. not translucent) and not show any tabs since there
+  // never will be any other tabs to show.
+  //
+  //    Show tabs? No
+  //    Show "updating" status? No
+  //
+  // 'db-updating' - The IndexedDB database is being updated and so we won't
+  // access it because in Chromium browsers even if we access a different table
+  // it will block. In this case we should indicate the database is updating and
+  // hence incomplete results are shown. We should should probably show the tabs
+  // however, because eventually they will become available once the update has
+  // completed.
+  //
+  //    Show tabs? Yes
+  //    Show "updating" status? Yes
+  //
+  // 'initial' - The IndexedDB database is available and we used it to gather
+  // the word results. A subsequent result will provide the data for other data
+  // series (names and kanji) along with identical data for the words result.
+  //
+  //    Show tabs? Yes
+  //    Show "updating" status? No
+  //
+  resultType: 'db-unavailable' | 'db-updating' | 'initial';
 };
 
 export type FullSearchResult = {
@@ -71,13 +94,16 @@ export type FullSearchResult = {
   words: WordSearchResult | null;
   kanji?: KanjiSearchResult | null;
   names?: NameSearchResult | null;
+
+  // For symmetry with InitialSearchResult we provide a resultType member.
+  resultType: 'full';
 };
 
 // A type we temporarily introduce representing the conflation of
 // InitialSearchResult and FullSearchResult that we return from the background
 // page until we the content script knows how to handle the separate results.
-export type CompatibilitySearchResult = FullSearchResult & {
-  dbStatus?: SearchDatabaseStatus;
+export type CompatibilitySearchResult = Omit<FullSearchResult, 'resultType'> & {
+  resultType: 'db-unavailable' | 'db-updating' | undefined;
 };
 
 // Translate result
@@ -89,8 +115,6 @@ export interface TranslateResult {
   textLen: number;
   // True if greater than WORDS_MAX_ENTRIES were found.
   more: boolean;
-  // DB here refers to the IndexedDB database. If it is unavailable or being
-  // updated we look up the flat-file database instead which has only English
-  // glosses and may be out-of-date.
-  dbStatus?: SearchDatabaseStatus;
+  // See the description of these values in InitialSearchResult and FullSearchResult.
+  resultType: 'db-unavailable' | 'db-updating' | 'full';
 }

@@ -478,13 +478,21 @@ async function search({
         words,
         kanji,
         names,
+        resultType: 'full' as const,
       };
     })();
   }
 
+  let resultType: InitialSearchResult['resultType'] = 'initial';
+  if (usedSnapshotReason === 'unavailable') {
+    resultType = 'db-unavailable';
+  } else if (usedSnapshotReason === 'updating') {
+    resultType = 'db-updating';
+  }
+
   // If our initial search turned up no results but we are running a full
   // search, then we should still return an InitialSearchResult object with an
-  // appropriate 'dbStatus' so the caller prepare to handle the follow-up
+  // appropriate 'resultType' so the caller prepare to handle the follow-up
   // result from the up full search.
   //
   // If we're NOT running a full search (e.g. because the database is not
@@ -492,7 +500,7 @@ async function search({
   // this query.
   const initialResult =
     fullSearch || initialWordSearchResult
-      ? { words: initialWordSearchResult, dbStatus: usedSnapshotReason }
+      ? { words: initialWordSearchResult, resultType }
       : null;
 
   return [initialResult, fullSearch];
@@ -539,19 +547,22 @@ browser.runtime.onMessage.addListener(
         pendingSearchRequest = new AbortController();
 
         try {
-          let [result, fullResult] = await search({
+          let result: InitialSearchResult | FullSearchResult | null = null;
+          let fullResult: Promise<FullSearchResult | null> | undefined;
+          [result, fullResult] = await search({
             ...request,
             abortSignal: pendingSearchRequest.signal,
           });
-          const dbStatus = result?.dbStatus;
+          const resultType = result?.resultType.startsWith('db-')
+            ? result.resultType
+            : undefined;
 
           if (fullResult) {
             result = await fullResult;
-          } else {
-            pendingSearchRequest = undefined;
           }
+          pendingSearchRequest = undefined;
 
-          return result ? { ...result, dbStatus } : null;
+          return result ? { ...result, resultType } : null;
         } catch (e) {
           if (e.name !== 'AbortError') {
             Bugsnag.notify(e);

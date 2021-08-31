@@ -69,7 +69,7 @@ export async function query(
   };
   const queryResult = doQuery(text, options)
     .then((result) => {
-      if (!result || !!result.dbStatus) {
+      if (!result || !!result.resultType) {
         dropFromCache();
       }
       return result ? addNamePreview(result) : null;
@@ -113,7 +113,7 @@ async function doQuery(
     return null;
   }
 
-  // Convert a translate result into a suitably shaped SearchResult but
+  // Convert a translate result into a suitably shaped QueryResult but
   // with the title part filled-in.
 
   let queryResult: QueryResult;
@@ -124,12 +124,15 @@ async function doQuery(
     }
     queryResult = {
       words: {
-        ...stripFields(searchResult, ['dbStatus', 'textLen']),
+        ...stripFields(searchResult, ['resultType', 'textLen']),
         type: 'words',
         matchLen: searchResult.textLen,
       },
       title,
-      dbStatus: searchResult.dbStatus,
+      resultType:
+        searchResult.resultType !== 'full'
+          ? searchResult.resultType
+          : undefined,
     };
   } else {
     queryResult = searchResult;

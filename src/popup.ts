@@ -91,7 +91,7 @@ export function renderPopup(
 
   const showTabs =
     result &&
-    result.dbStatus !== 'unavailable' &&
+    result.resultType !== 'db-unavailable' &&
     !result.title &&
     options.tabDisplay !== 'none';
   if (showTabs) {
@@ -178,7 +178,7 @@ export function renderPopup(
 
   if (copyDetails) {
     contentContainer.append(copyDetails);
-  } else if (result?.dbStatus === 'updating') {
+  } else if (result?.resultType === 'db-updating') {
     contentContainer.append(renderUpdatingStatus());
   } else if (
     showTabs &&
