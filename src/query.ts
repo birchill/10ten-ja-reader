@@ -2,7 +2,11 @@ import { browser } from 'webextension-polyfill-ts';
 
 import { BackgroundRequest } from './background-request';
 import { hasKatakana } from './char-range';
-import { NameResult, SearchResult, TranslateResult } from './search-result';
+import {
+  CompatibilitySearchResult,
+  NameResult,
+  TranslateResult,
+} from './search-result';
 import { stripFields } from './strip-fields';
 
 export interface QueryOptions {
@@ -10,7 +14,7 @@ export interface QueryOptions {
   wordLookup: boolean;
 }
 
-export type QueryResult = SearchResult & {
+export type QueryResult = CompatibilitySearchResult & {
   title?: string;
   namePreview?: NamePreview;
 };
@@ -95,7 +99,7 @@ async function doQuery(
     includeRomaji: options.includeRomaji,
   };
 
-  let searchResult: SearchResult | TranslateResult | null;
+  let searchResult: CompatibilitySearchResult | TranslateResult | null;
   try {
     searchResult = await browser.runtime.sendMessage(message);
   } catch (e) {
@@ -135,7 +139,7 @@ async function doQuery(
 }
 
 function isTranslateResult(
-  result: SearchResult | TranslateResult
+  result: CompatibilitySearchResult | TranslateResult
 ): result is TranslateResult {
   return (result as TranslateResult).type === 'translate';
 }

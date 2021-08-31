@@ -72,11 +72,7 @@ import {
   translate,
 } from './jpdict';
 import { shouldRequestPersistentStorage } from './quota-management';
-import {
-  KanjiSearchResult,
-  NameSearchResult,
-  SearchResult,
-} from './search-result';
+import { FullSearchResult, InitialSearchResult } from './search-result';
 
 //
 // Setup bugsnag
@@ -428,51 +424,78 @@ async function search({
   input,
   includeRomaji,
   abortSignal,
-}: SearchRequest & { abortSignal: AbortSignal }): Promise<SearchResult | null> {
-  const [words, usedSnapshotReason] = await searchWords({
+}: SearchRequest & { abortSignal: AbortSignal }): Promise<
+  [InitialSearchResult | null, Promise<FullSearchResult | null> | undefined]
+> {
+  const [initialWordSearchResult, usedSnapshotReason] = await searchWords({
     input,
     includeRomaji,
     abortSignal,
   });
-  let dbStatus = usedSnapshotReason;
 
   if (abortSignal.aborted) {
     throw new AbortError();
   }
 
-  // Kanji
-  const kanjiResult = await searchKanji([...input][0]);
-  let kanji: KanjiSearchResult | null | undefined;
-  if (typeof kanjiResult === 'string') {
-    // 'updating' overrides 'unavailable'
-    dbStatus = dbStatus === 'updating' ? dbStatus : kanjiResult;
-  } else {
-    kanji = kanjiResult;
+  // If the words database was not available for some reason, then don't bother
+  // scheduling a full search.
+  //
+  // If it was 'unavailable' we're probably in always-on private browsing mode
+  // or something of the sort and hence none of the data series will be
+  // available.
+  //
+  // If it was 'updating' then we will refuse to look up any other data series
+  // since Chrome seems to block when we try.
+  let fullSearch: Promise<FullSearchResult | null> | undefined;
+  if (
+    usedSnapshotReason !== 'unavailable' &&
+    usedSnapshotReason !== 'updating'
+  ) {
+    fullSearch = (async () => {
+      const words = initialWordSearchResult;
+
+      // Kanji
+      const kanjiResult = await searchKanji([...input][0]);
+      let kanji = typeof kanjiResult === 'string' ? undefined : kanjiResult;
+
+      if (abortSignal.aborted) {
+        throw new AbortError();
+      }
+
+      // Names
+      const nameResult = await searchNames({ input });
+      let names = typeof nameResult === 'string' ? undefined : nameResult;
+
+      if (abortSignal.aborted) {
+        throw new AbortError();
+      }
+
+      if (!words && !kanji && !names) {
+        return null;
+      }
+
+      return {
+        words,
+        kanji,
+        names,
+      };
+    })();
   }
 
-  if (abortSignal.aborted) {
-    throw new AbortError();
-  }
+  // If our initial search turned up no results but we are running a full
+  // search, then we should still return an InitialSearchResult object with an
+  // appropriate 'dbStatus' so the caller prepare to handle the follow-up
+  // result from the up full search.
+  //
+  // If we're NOT running a full search (e.g. because the database is not
+  // available) then we can just return null so the caller knows to give up on
+  // this query.
+  const initialResult =
+    fullSearch || initialWordSearchResult
+      ? { words: initialWordSearchResult, dbStatus: usedSnapshotReason }
+      : null;
 
-  // Names
-  const nameResult = await searchNames({ input });
-  let names: NameSearchResult | null | undefined;
-  if (typeof nameResult === 'string') {
-    // 'updating' overrides 'unavailable'
-    dbStatus = dbStatus === 'updating' ? dbStatus : nameResult;
-  } else {
-    names = nameResult;
-  }
-
-  if (abortSignal.aborted) {
-    throw new AbortError();
-  }
-
-  if (!words && !kanji && !names) {
-    return null;
-  }
-
-  return { words, kanji, names, dbStatus };
+  return [initialResult, fullSearch];
 }
 
 //
@@ -491,7 +514,7 @@ browser.browserAction.onClicked.addListener(toggle);
 let pendingSearchRequest: AbortController | undefined;
 
 browser.runtime.onMessage.addListener(
-  (request: unknown): void | Promise<any> => {
+  async (request: unknown): Promise<any> => {
     if (!s.is(request, BackgroundRequestSchema)) {
       console.warn(`Unrecognized request: ${JSON.stringify(request)}`);
       Bugsnag.notify(
@@ -515,17 +538,27 @@ browser.runtime.onMessage.addListener(
 
         pendingSearchRequest = new AbortController();
 
-        return search({ ...request, abortSignal: pendingSearchRequest.signal })
-          .then((result) => {
-            pendingSearchRequest = undefined;
-            return result;
-          })
-          .catch((e) => {
-            if (e.name !== 'AbortError') {
-              Bugsnag.notify(e);
-            }
-            return null;
+        try {
+          let [result, fullResult] = await search({
+            ...request,
+            abortSignal: pendingSearchRequest.signal,
           });
+          const dbStatus = result?.dbStatus;
+
+          if (fullResult) {
+            result = await fullResult;
+          } else {
+            pendingSearchRequest = undefined;
+          }
+
+          return result ? { ...result, dbStatus } : null;
+        } catch (e) {
+          if (e.name !== 'AbortError') {
+            Bugsnag.notify(e);
+          }
+          pendingSearchRequest = undefined;
+          return null;
+        }
 
       case 'switchedDictionary':
         config.setHasSwitchedDictionary();

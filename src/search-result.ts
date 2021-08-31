@@ -51,21 +51,32 @@ export interface NameSearchResult {
 
 export type SearchDatabaseStatus = 'unavailable' | 'updating';
 
-export type SearchResult = {
+export type InitialSearchResult = {
+  words: WordSearchResult | null;
+
+  // DB here refers to the IndexedDB database. If it is unavailable or being
+  // updated we look up the flat-file database instead which only covers the
+  // words dictionary, has only English glosses, and may be out-of-date.
+  dbStatus?: SearchDatabaseStatus;
+};
+
+export type FullSearchResult = {
   // There is a subtle difference below between 'null' and 'undefined'/absent.
   //
   // - 'null' means we searched the database but found nothing.
-  // - 'undefined'/absent means the database was not available for some reason
-  //   (usually covered by dbStatus below).
+  // - 'undefined'/absent means the database was not available for some reason.
   //
   // (Since there is a fallback words database, `words` never ends up being
   // undefined.)
   words: WordSearchResult | null;
   kanji?: KanjiSearchResult | null;
   names?: NameSearchResult | null;
-  // DB here refers to the IndexedDB database. If it is unavailable or being
-  // updated we look up the flat-file database instead which only covers the
-  // words dictionary, has only English glosses, and may be out-of-date.
+};
+
+// A type we temporarily introduce representing the conflation of
+// InitialSearchResult and FullSearchResult that we return from the background
+// page until we the content script knows how to handle the separate results.
+export type CompatibilitySearchResult = FullSearchResult & {
   dbStatus?: SearchDatabaseStatus;
 };
 
