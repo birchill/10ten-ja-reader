@@ -1217,6 +1217,16 @@ export class ContentHandler {
     let queryResult = await query(text, {
       includeRomaji: this.config.showRomaji,
       wordLookup,
+      updateQueryResult: (queryResult: QueryResult | null) => {
+        this.applyQueryResult({
+          dictMode,
+          meta,
+          queryResult,
+          targetProps,
+          text,
+          wordLookup,
+        });
+      },
     });
 
     this.applyQueryResult({

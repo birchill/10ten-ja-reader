@@ -524,7 +524,10 @@ browser.browserAction.onClicked.addListener(toggle);
 let pendingSearchRequest: AbortController | undefined;
 
 browser.runtime.onMessage.addListener(
-  async (request: unknown): Promise<any> => {
+  async (
+    request: unknown,
+    sender: Browser.Runtime.MessageSender
+  ): Promise<any> => {
     if (!s.is(request, BackgroundRequestSchema)) {
       console.warn(`Unrecognized request: ${JSON.stringify(request)}`);
       Bugsnag.notify(
@@ -549,22 +552,46 @@ browser.runtime.onMessage.addListener(
         pendingSearchRequest = new AbortController();
 
         try {
-          let result: InitialSearchResult | FullSearchResult | null = null;
-          let fullResult: Promise<FullSearchResult | null> | undefined;
-          [result, fullResult] = await search({
+          const [result, fullResult] = await search({
             ...request,
             abortSignal: pendingSearchRequest.signal,
           });
-          const resultType = result?.resultType.startsWith('db-')
-            ? result.resultType
-            : undefined;
 
-          if (fullResult) {
-            result = await fullResult;
+          if (fullResult && sender.tab?.id) {
+            const tabId = sender.tab.id;
+            fullResult
+              .then((result) => {
+                browser.tabs.sendMessage(
+                  tabId,
+                  {
+                    type: 'updateSearchResult',
+                    result,
+                  },
+                  { frameId: sender.frameId }
+                );
+              })
+              .catch((e) => {
+                if (e.name !== 'AbortError') {
+                  Bugsnag.notify(e);
+                }
+
+                browser.tabs.sendMessage(
+                  tabId,
+                  {
+                    type: 'updateSearchResult',
+                    result: null,
+                  },
+                  { frameId: sender.frameId }
+                );
+              })
+              .finally(() => {
+                pendingSearchRequest = undefined;
+              });
+          } else {
+            pendingSearchRequest = undefined;
           }
-          pendingSearchRequest = undefined;
 
-          return result ? { ...result, resultType } : null;
+          return result;
         } catch (e) {
           if (e.name !== 'AbortError') {
             Bugsnag.notify(e);

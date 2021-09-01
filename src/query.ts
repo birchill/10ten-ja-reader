@@ -1,22 +1,31 @@
+import * as s from 'superstruct';
 import { browser } from 'webextension-polyfill-ts';
 
+import { BackgroundMessageSchema } from './background-message';
 import { BackgroundRequest } from './background-request';
 import { hasKatakana } from './char-range';
 import {
-  CompatibilitySearchResult,
+  FullSearchResult,
+  InitialSearchResult,
+  KanjiSearchResult,
   NameResult,
+  NameSearchResult,
   TranslateResult,
+  WordSearchResult,
 } from './search-result';
 import { stripFields } from './strip-fields';
 
-export interface QueryOptions {
-  includeRomaji: boolean;
-  wordLookup: boolean;
-}
+export type QueryResult = {
+  words: WordSearchResult | null;
+  kanji?: KanjiSearchResult | null;
+  names?: NameSearchResult | null;
 
-export type QueryResult = CompatibilitySearchResult & {
+  // Metadata
   title?: string;
   namePreview?: NamePreview;
+  resultType:
+    | InitialSearchResult['resultType']
+    | FullSearchResult['resultType'];
 };
 
 export type NamePreview = {
@@ -24,14 +33,45 @@ export type NamePreview = {
   more: boolean;
 };
 
+export interface QueryOptions {
+  includeRomaji: boolean;
+  wordLookup: boolean;
+  updateQueryResult: (result: QueryResult | null) => void;
+}
+
 type QueryCacheEntry = {
   key: string;
-  query: Promise<QueryResult | null>;
+
+  // We'd like to cache a Promise representing the initial request (in fact,
+  // we used to do that), but that's problematic when the result is returned in
+  // two steps.
+  //
+  // e.g. imagine the following sequence:
+  //
+  // 1. Search for 'A'
+  // 2. Get back initial result for 'A'. Meanwhile the background page is doing
+  //    a full search for 'A'.
+  // 3. Search for 'B'.
+  // 4. Background page detects an overlapping request, cancels the full search
+  //    for 'A' and sends back 'null' indicating the full search was cancelled.
+  // 5. Meanwhile we trigger another search for 'A' before we get back the null
+  //    result (which would clear the entry from our cache).
+  // 6. Since we still have the initial result for 'A' in the cache, we return
+  //    that, assuming the full result will come in time.
+  //
+  //    But it won't. As a result the users sees the initial result for 'A'
+  //    and it appears to be a partial result.
+  //
+  // So, for now, the simplest thing is just to cache the result once we have a
+  // _full_ result. That might mean a few overlapping requests but hopefully the
+  // speed-up from the two-step search covers up for that.
+  query: QueryResult;
 };
 
 let queryCache: Array<QueryCacheEntry> = [];
 
-let requestIndex = 0;
+const callbackRegistry: Array<(result: QueryResult | null) => void> = [];
+let callbackIndex = 0;
 
 export async function query(
   text: string,
@@ -53,40 +93,22 @@ export async function query(
     return cachedEntry.query;
   }
 
-  // Limit the cache to 10 entries. This cache is really just here for the case
-  // when the user is moving the cursor back and forward along a word and
-  // therefore running the same query multiple times.
-  if (queryCache.length > 10) {
-    queryCache.shift();
+  const requestId = callbackIndex++;
+
+  try {
+    const queryResult = await doQuery(text, { ...options, requestId });
+
+    // If we are expecting a follow-up result, add the callback to the registry.
+    if (queryResult && !queryResult.resultType.startsWith('db-')) {
+      callbackRegistry[requestId] = options.updateQueryResult;
+    }
+
+    // The initial result only ever has the words filled-in so if that's
+    // missing, return null.
+    return queryResult?.words ? queryResult : null;
+  } catch {
+    return null;
   }
-
-  const requestId = requestIndex++;
-
-  // If the query throws, comes back empty, or is a result from the fallback
-  // database, drop it from the cache.
-  const dropFromCache = () => {
-    queryCache = queryCache.filter((q) => q.key !== key);
-  };
-  const queryResult = doQuery(text, { ...options, requestId })
-    .then((result) => {
-      if (!result || !!result.resultType) {
-        dropFromCache();
-      }
-      return result ? addNamePreview(result) : null;
-    })
-    .catch(() => {
-      dropFromCache();
-      return null;
-    });
-
-  // We cache the Promise, instead of the result, because we hope this will
-  // help to stop flooding the background process with redundant requests.
-  queryCache.push({
-    key: key,
-    query: queryResult,
-  });
-
-  return queryResult;
 }
 
 async function doQuery(
@@ -100,7 +122,7 @@ async function doQuery(
     requestId: options.requestId,
   };
 
-  let searchResult: CompatibilitySearchResult | TranslateResult | null;
+  let searchResult: InitialSearchResult | TranslateResult | null;
   try {
     searchResult = await browser.runtime.sendMessage(message);
   } catch (e) {
@@ -114,10 +136,10 @@ async function doQuery(
     return null;
   }
 
+  let queryResult: QueryResult;
+
   // Convert a translate result into a suitably shaped QueryResult but
   // with the title part filled-in.
-
-  let queryResult: QueryResult;
   if (isTranslateResult(searchResult)) {
     let title = text.substr(0, searchResult.textLen);
     if (text.length > searchResult.textLen) {
@@ -130,10 +152,7 @@ async function doQuery(
         matchLen: searchResult.textLen,
       },
       title,
-      resultType:
-        searchResult.resultType !== 'full'
-          ? searchResult.resultType
-          : undefined,
+      resultType: searchResult.resultType,
     };
   } else {
     queryResult = searchResult;
@@ -143,7 +162,7 @@ async function doQuery(
 }
 
 function isTranslateResult(
-  result: CompatibilitySearchResult | TranslateResult
+  result: InitialSearchResult | TranslateResult
 ): result is TranslateResult {
   return (result as TranslateResult).type === 'translate';
 }
@@ -223,3 +242,56 @@ function getCacheKey({
 }): string {
   return [text, includeRomaji ? '1' : '0', wordLookup ? '1' : '0'].join('-');
 }
+
+function addToCache({
+  key,
+  queryResult,
+}: {
+  key: string;
+  queryResult: QueryResult;
+}) {
+  // Limit the cache to 10 entries. This cache is really just here for the case
+  // when the user is moving the cursor back and forward along a word and
+  // therefore running the same query multiple times.
+  if (queryCache.length > 10) {
+    queryCache.shift();
+  }
+
+  queryCache.push({ key: key, query: queryResult });
+}
+
+browser.runtime.onMessage.addListener((message: unknown) => {
+  s.assert(message, BackgroundMessageSchema);
+
+  if (message.type !== 'updateSearchResult') {
+    return;
+  }
+
+  let result = message.result as FullSearchResult | null;
+  let queryResult: QueryResult | null = result
+    ? {
+        words: result.words,
+        kanji: result.kanji,
+        names: result.names,
+        resultType: 'full',
+      }
+    : null;
+
+  if (queryResult) {
+    queryResult = addNamePreview(queryResult);
+    const key = getCacheKey({
+      text: result!.request.input,
+      includeRomaji: !!result!.request.includeRomaji,
+      // Translate lookups never have a two step result
+      wordLookup: true,
+    });
+    addToCache({ key, queryResult });
+  }
+
+  // Call the callback
+  const requestId = result?.request.requestId;
+  if (requestId && callbackRegistry[requestId]) {
+    callbackRegistry[requestId](queryResult);
+    delete callbackRegistry[requestId];
+  }
+});
