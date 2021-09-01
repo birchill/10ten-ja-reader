@@ -1169,6 +1169,12 @@ export class ContentHandler {
     // toggling dictionaries a little less sensitive to minor mouse movements
     // and hence easier to work with.
     if (
+      // We require that at least one of the text ranges was set (or for there
+      // to be no text discovered at all), however, since otherwise for the case
+      // of a non-text element (e.g. an <img> with a title attribute) where
+      // textAtPoint.textRange is null but textAtPoint.text is set, we'll end up
+      // returning early and not displaying the popup.
+      (this.currentTextRange || !textAtPoint || textAtPoint.textRange) &&
       textRangesEqual(this.currentTextRange, textAtPoint?.textRange) &&
       dictMode === 'default'
     ) {

@@ -1,5 +1,6 @@
 ## Next release
 
+- Restore showing the popup for non-text elements.
 - Optimized perceived lookup performance.
 - Thoroughly reworked popup positioning.
 
