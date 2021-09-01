@@ -25,7 +25,7 @@ export type NamePreview = {
 };
 
 type QueryCacheEntry = {
-  hash: string;
+  key: string;
   query: Promise<QueryResult | null>;
 };
 
@@ -38,11 +38,7 @@ export async function query(
   options: QueryOptions
 ): Promise<QueryResult | null> {
   // Add a very very basic cache
-  const hash = [
-    text,
-    options.includeRomaji ? '1' : '0',
-    options.wordLookup ? '1' : '0',
-  ].join('-');
+  const key = getCacheKey({ ...options, text });
 
   // You'd think we'd use an actual hashmap (object) here but then we'd need to
   // work out some sort of LRU scheme for removing entries. While there are
@@ -52,7 +48,7 @@ export async function query(
   //
   // As a result, we limit our cache size to 10 entries and just do a linear
   // search of the array.
-  const cachedEntry = queryCache.find((q) => q.hash === hash);
+  const cachedEntry = queryCache.find((q) => q.key === key);
   if (cachedEntry) {
     return cachedEntry.query;
   }
@@ -69,7 +65,7 @@ export async function query(
   // If the query throws, comes back empty, or is a result from the fallback
   // database, drop it from the cache.
   const dropFromCache = () => {
-    queryCache = queryCache.filter((q) => q.hash !== hash);
+    queryCache = queryCache.filter((q) => q.key !== key);
   };
   const queryResult = doQuery(text, { ...options, requestId })
     .then((result) => {
@@ -86,7 +82,7 @@ export async function query(
   // We cache the Promise, instead of the result, because we hope this will
   // help to stop flooding the background process with redundant requests.
   queryCache.push({
-    hash,
+    key: key,
     query: queryResult,
   });
 
@@ -214,4 +210,16 @@ function addNamePreview(result: QueryResult): QueryResult {
     words: { ...result.words, matchLen },
     namePreview: { names, more },
   };
+}
+
+function getCacheKey({
+  text,
+  includeRomaji,
+  wordLookup,
+}: {
+  text: string;
+  includeRomaji: boolean;
+  wordLookup: boolean;
+}): string {
+  return [text, includeRomaji ? '1' : '0', wordLookup ? '1' : '0'].join('-');
 }
