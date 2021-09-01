@@ -40,14 +40,15 @@ export class RikaiPuck {
   private earthScaleFactorWhenDragging: number;
   private moonWidth: number;
   private moonHeight: number;
-  // The translateY value to apply to the moon when it is orbiting above the earth.
-  // Expressed as an absolute (positive) value.
+  // The translateY value to apply to the moon when it is orbiting above the
+  // earth. Expressed as an absolute (positive) value.
   private targetAbsoluteOffsetYAbove: number;
-  // The translateY value to apply to the moon when it is orbiting below the earth.
-  // Expressed as an absolute (positive) value.
+  // The translateY value to apply to the moon when it is orbiting below the
+  // earth. Expressed as an absolute (positive) value.
   private targetAbsoluteOffsetYBelow: number;
-  // The translate (X and Y) values applied to the moon whilst it is being dragged.
-  // They are measured relative to the midpoint of the moon (which is also the midpoint of the earth).
+  // The translate (X and Y) values applied to the moon whilst it is being
+  // dragged. They are measured relative to the midpoint of the moon (which is
+  // also the midpoint of the earth).
   private targetOffset: { x: number; y: number } = { x: 0, y: 0 };
   private targetOrientation: 'above' | 'below' = 'above';
   private cachedViewportDimensions: ViewportDimensions | null = null;
@@ -364,9 +365,11 @@ export class RikaiPuck {
           left: 0,
         };
 
-      // The distance from the bottom of the earth (which can only travel within the safe area)
-      // to the centre of the moon (which is the point from which the mouse events are fired).
-      // This is effectively the height of the "blind spot" that a puck supporting only the "above" orientation would have.
+      // The distance from the bottom of the earth (which can only travel within
+      // the safe area) to the centre of the moon (which is the point from which
+      // the mouse events are fired). This is effectively the height of the
+      // "blind spot" that a puck supporting only the "above" orientation would
+      // have.
       const activePuckVerticalExtent =
         this.earthHeight +
         (this.targetAbsoluteOffsetYAbove - this.earthHeight / 2);
@@ -454,9 +457,10 @@ export class RikaiPuck {
           )
         ) || 0;
 
-      // By adding this extra clearance, we avoid the iOS 15 Safari full-size URL
-      // bar springing back into place when dragging the puck too far into the
-      // bottom of the viewport. Hopefully this covers the worst-case scenario.
+      // By adding this extra clearance, we avoid the iOS 15 Safari full-size
+      // URL bar springing back into place when dragging the puck too far into
+      // the bottom of the viewport. Hopefully this covers the worst-case
+      // scenario.
       // @see https://github.com/shirakaba/10ten-ja-reader/pull/5#issuecomment-877794905
       const extraAltitudeToClearIos15SafariSafeAreaActivationZone =
         parseFloat(
