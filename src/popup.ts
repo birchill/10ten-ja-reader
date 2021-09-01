@@ -166,6 +166,12 @@ export function renderPopup(
       break;
   }
 
+  // Indicate if this is a snapshot result
+  windowElem.classList.toggle(
+    '-snapshot-result',
+    result?.resultType === 'snapshot'
+  );
+
   // Show the status bar
   const copyDetails = renderCopyDetails(
     options.copyNextKey,

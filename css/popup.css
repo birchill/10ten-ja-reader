@@ -50,6 +50,10 @@
   display: none;
 }
 
+.window.-snapshot-result {
+  opacity: 0.8;
+}
+
 /* Tab bar */
 
 .tab-bar {

@@ -62,6 +62,7 @@ export type InitialSearchResult = {
   // result as complete (i.e. not translucent) and not show any tabs since there
   // never will be any other tabs to show.
   //
+  //    Popup is translucent? No
   //    Show tabs? No
   //    Show "updating" status? No
   //
@@ -72,17 +73,31 @@ export type InitialSearchResult = {
   // however, because eventually they will become available once the update has
   // completed.
   //
+  //    Popup is translucent? No
   //    Show tabs? Yes
   //    Show "updating" status? Yes
+  //
+  // 'snapshot' - The IndexedDB database is available to be queried but we
+  // decided to initially return a result from the in-memory snapshot of the
+  // database because we determined that would produce better response time for
+  // this device. A subsequent result will provide the complete, up-to-date,
+  // data from the IndexedDB database so we should show this result in a
+  // tentative manner (e.g. translucent) since it may be subsequently replaced
+  // with entirely different data.
+  //
+  //    Popup is translucent? Yes
+  //    Show tabs? Yes
+  //    Show "updating" status? No
   //
   // 'initial' - The IndexedDB database is available and we used it to gather
   // the word results. A subsequent result will provide the data for other data
   // series (names and kanji) along with identical data for the words result.
   //
+  //    Popup is translucent? No
   //    Show tabs? Yes
   //    Show "updating" status? No
   //
-  resultType: 'db-unavailable' | 'db-updating' | 'initial';
+  resultType: 'db-unavailable' | 'db-updating' | 'snapshot' | 'initial';
 };
 
 export type FullSearchResult = {
