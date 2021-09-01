@@ -1687,14 +1687,14 @@ declare global {
         const tabId: number | undefined =
           typeof request.id === 'number' ? request.id : undefined;
         enable({ tabId, config: request.config as ContentConfig });
-
-        return 'ok';
+        break;
 
       case 'disable':
         disable();
-
-        return 'ok';
+        break;
     }
+
+    return 'ok';
   }
 
   function enable({
