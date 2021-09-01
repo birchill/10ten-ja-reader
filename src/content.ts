@@ -96,7 +96,12 @@ import {
 } from './safe-area-provider';
 import { isForeignObjectElement, isSvgDoc, isSvgSvgElement } from './svg';
 import { stripFields } from './strip-fields';
-import { getBestFitSize, getTargetProps, TargetProps } from './target-props';
+import {
+  getBestFitSize,
+  getTargetProps,
+  TargetProps,
+  textBoxSizeLengths,
+} from './target-props';
 import { TextHighlighter } from './text-highlighter';
 import { TextRange, textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
@@ -746,17 +751,34 @@ export class ContentHandler {
             return;
           }
 
+          // Translate the point from the iframe's coordinate system to ours.
           const { point } = ev.data;
           this.currentPoint = {
             x: point.x + iframeOriginPoint.x,
             y: point.y + iframeOriginPoint.y,
           };
 
+          // Similarly translate any text box sizes.
+          let { targetProps } = ev.data;
+          if (targetProps.textBoxSizes) {
+            targetProps = JSON.parse(JSON.stringify(targetProps));
+            const { textBoxSizes } = targetProps;
+            for (const size of textBoxSizeLengths) {
+              const { left, top, width, height } = textBoxSizes![size];
+              textBoxSizes![size] = {
+                left: left + iframeOriginPoint.x,
+                top: top + iframeOriginPoint.y,
+                width,
+                height,
+              };
+            }
+          }
+
           // We are doing a lookup based on an iframe's contents so we should
           // clear any mouse target we previously stored.
           this.lastMouseTarget = null;
 
-          this.lookupText({ ...ev.data, source: ev.source });
+          this.lookupText({ ...ev.data, targetProps, source: ev.source });
         }
         break;
 
