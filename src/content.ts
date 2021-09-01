@@ -1205,12 +1205,11 @@ export class ContentHandler {
     dictMode: 'default' | 'kanji';
     meta?: SelectionMeta;
     source: Window | null;
-    text: string;
     targetProps: TargetProps;
+    text: string;
     wordLookup: boolean;
   }) {
-    const lookupParams = { text, meta, wordLookup };
-    this.currentLookupParams = { ...lookupParams, source };
+    this.currentLookupParams = { text, meta, wordLookup, source };
 
     // Presumably the text or dictionary has changed so break out of copy mode
     this.copyMode = false;
@@ -1219,6 +1218,33 @@ export class ContentHandler {
       includeRomaji: this.config.showRomaji,
       wordLookup,
     });
+
+    this.applyQueryResult({
+      dictMode,
+      meta,
+      queryResult,
+      targetProps,
+      text,
+      wordLookup,
+    });
+  }
+
+  async applyQueryResult({
+    dictMode,
+    meta,
+    queryResult,
+    targetProps,
+    text,
+    wordLookup,
+  }: {
+    dictMode: 'default' | 'kanji';
+    meta?: SelectionMeta;
+    queryResult: QueryResult | null;
+    targetProps: TargetProps;
+    text: string;
+    wordLookup: boolean;
+  }) {
+    const lookupParams = { text, meta, wordLookup };
 
     // Check if we have triggered a new query or been disabled while running
     // the previous query.
