@@ -4,6 +4,8 @@ import type {
   WordResult as HikibikiWordResult,
 } from '@birchill/hikibiki-data';
 
+import { SearchRequest } from './background-request';
+
 // Words
 
 export type DictionaryWordResult = HikibikiWordResult;
@@ -95,6 +97,10 @@ export type FullSearchResult = {
   kanji?: KanjiSearchResult | null;
   names?: NameSearchResult | null;
 
+  // Include the original search request so the caller can cache the result
+  // against the search input.
+  request: SearchRequest;
+
   // For symmetry with InitialSearchResult we provide a resultType member.
   resultType: 'full';
 };
@@ -102,7 +108,10 @@ export type FullSearchResult = {
 // A type we temporarily introduce representing the conflation of
 // InitialSearchResult and FullSearchResult that we return from the background
 // page until we the content script knows how to handle the separate results.
-export type CompatibilitySearchResult = Omit<FullSearchResult, 'resultType'> & {
+export type CompatibilitySearchResult = Omit<
+  FullSearchResult,
+  'resultType' | 'request'
+> & {
   resultType: 'db-unavailable' | 'db-updating' | undefined;
 };
 

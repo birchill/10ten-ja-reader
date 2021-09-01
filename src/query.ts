@@ -31,6 +31,8 @@ type QueryCacheEntry = {
 
 let queryCache: Array<QueryCacheEntry> = [];
 
+let requestIndex = 0;
+
 export async function query(
   text: string,
   options: QueryOptions
@@ -62,12 +64,14 @@ export async function query(
     queryCache.shift();
   }
 
+  const requestId = requestIndex++;
+
   // If the query throws, comes back empty, or is a result from the fallback
   // database, drop it from the cache.
   const dropFromCache = () => {
     queryCache = queryCache.filter((q) => q.hash !== hash);
   };
-  const queryResult = doQuery(text, options)
+  const queryResult = doQuery(text, { ...options, requestId })
     .then((result) => {
       if (!result || !!result.resultType) {
         dropFromCache();
@@ -91,12 +95,13 @@ export async function query(
 
 async function doQuery(
   text: string,
-  options: QueryOptions
+  options: QueryOptions & { requestId: number }
 ): Promise<QueryResult | null> {
   const message: BackgroundRequest = {
     type: options.wordLookup ? 'search' : 'translate',
     input: text,
     includeRomaji: options.includeRomaji,
+    requestId: options.requestId,
   };
 
   let searchResult: CompatibilitySearchResult | TranslateResult | null;

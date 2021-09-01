@@ -423,6 +423,7 @@ async function removeContextMenu() {
 async function search({
   input,
   includeRomaji,
+  requestId,
   abortSignal,
 }: SearchRequest & { abortSignal: AbortSignal }): Promise<
   [InitialSearchResult | null, Promise<FullSearchResult | null> | undefined]
@@ -478,6 +479,7 @@ async function search({
         words,
         kanji,
         names,
+        request: { input, includeRomaji, requestId },
         resultType: 'full' as const,
       };
     })();

@@ -4,6 +4,7 @@ import * as s from 'superstruct';
 const SearchRequestSchema = s.type({
   input: s.string(),
   includeRomaji: s.optional(s.boolean()),
+  requestId: s.optional(s.number()),
 });
 
 export type SearchRequest = s.Infer<typeof SearchRequestSchema>;
