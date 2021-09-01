@@ -2,10 +2,11 @@ import {
   getOrCreateEmptyContainer,
   removeContentContainer,
 } from './content-container';
+import type { ContentMessage } from './content-messages';
+import { MarginBox } from './geometry';
+import { getIframeOriginFromWindow } from './iframe-tracker';
 import type { SafeAreaProvider } from './safe-area-provider';
 import { getThemeClass } from './themes';
-import { getIframeOriginFromWindow } from './iframe-tracker';
-import type { ContentMessage } from './content-messages';
 
 import puckStyles from '../css/puck.css';
 
@@ -159,26 +160,27 @@ export class LookupPuck {
     }
   }
 
-  public getPuckDimensions() {
-    const minorVerticalPortionOfPuckAboutMouseEvent = this.moonHeight / 2;
-    const majorVerticalPortionOfPuckAboutMouseEvent =
+  // Returns the total clearance to allow arround the target offset for the
+  // puck.
+  public getPuckClearance(): MarginBox {
+    const moonVerticalClearance = this.moonHeight / 2;
+    const earthVerticalClearance =
       Math.abs(this.targetOffset.y) +
       (this.earthScaleFactorWhenDragging * this.earthHeight) / 2;
 
     return {
-      // The mouse event is emitted at the centre of the moon.
-      puckAboveMouseEvent:
+      top:
         this.targetOrientation === 'above'
-          ? minorVerticalPortionOfPuckAboutMouseEvent
-          : majorVerticalPortionOfPuckAboutMouseEvent,
-      puckBelowMouseEvent:
+          ? moonVerticalClearance
+          : earthVerticalClearance,
+      bottom:
         this.targetOrientation === 'above'
-          ? majorVerticalPortionOfPuckAboutMouseEvent
-          : minorVerticalPortionOfPuckAboutMouseEvent,
-      puckLeftOfMouseEvent:
+          ? earthVerticalClearance
+          : moonVerticalClearance,
+      left:
         (this.earthScaleFactorWhenDragging * this.earthWidth) / 2 +
         this.targetOffset.x,
-      puckRightOfMouseEvent:
+      right:
         (this.earthScaleFactorWhenDragging * this.earthWidth) / 2 -
         this.targetOffset.x,
     };

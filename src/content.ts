@@ -1485,12 +1485,7 @@ export class ContentHandler {
 
     let cursorClearance: MarginBox;
     if (this.currentTargetProps?.fromPuck && this.puck) {
-      const {
-        puckAboveMouseEvent: top,
-        puckBelowMouseEvent: bottom,
-        puckLeftOfMouseEvent: left,
-        puckRightOfMouseEvent: right,
-      } = this.puck.getPuckDimensions();
+      const { top, bottom, left, right } = this.puck.getPuckClearance();
 
       // Although we can't tell whether the left or right thumb is in use
       // (so we don't make corresponding adjustments to left/right), we can at
