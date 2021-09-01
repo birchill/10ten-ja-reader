@@ -86,7 +86,7 @@ import {
   PuckMouseEvent,
   PuckRenderOptions,
   removePuck,
-  RikaiPuck,
+  LookupPuck,
 } from './puck';
 import { query, QueryResult } from './query';
 import {
@@ -226,7 +226,7 @@ export class ContentHandler {
   private safeAreaProvider: SafeAreaProvider | null = new SafeAreaProvider();
 
   // Consulted in order to determine popup positioning
-  private puck: RikaiPuck | null = null;
+  private puck: LookupPuck | null = null;
 
   constructor(config: ContentConfig) {
     this.config = config;
@@ -268,11 +268,11 @@ export class ContentHandler {
   setUpPuck(setUpPuckOptions: SetUpPuckOptions) {
     const { safeAreaProvider, ...renderOptions } = setUpPuckOptions;
 
-    let puck: RikaiPuck;
+    let puck: LookupPuck;
     if (this.puck) {
       puck = this.puck;
     } else {
-      this.puck = puck = new RikaiPuck(safeAreaProvider);
+      this.puck = puck = new LookupPuck(safeAreaProvider);
     }
     puck.render(renderOptions);
     puck.enable();

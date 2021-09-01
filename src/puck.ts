@@ -29,7 +29,7 @@ export interface PuckMouseEvent extends MouseEvent {
   fromPuck: true;
 }
 
-export class RikaiPuck {
+export class LookupPuck {
   public static id: string = 'tenten-ja-puck';
   private puck: HTMLDivElement | undefined;
   private enabled = false;
@@ -389,7 +389,7 @@ export class RikaiPuck {
     // Set up shadow tree
     const container = getOrCreateEmptyContainer({
       doc,
-      id: RikaiPuck.id,
+      id: LookupPuck.id,
       styles: puckStyles.toString(),
     });
 
@@ -528,5 +528,5 @@ export class RikaiPuck {
 }
 
 export function removePuck(): void {
-  removeContentContainer(RikaiPuck.id);
+  removeContentContainer(LookupPuck.id);
 }
