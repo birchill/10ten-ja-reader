@@ -1,3 +1,8 @@
+## Next release
+
+- Optimized perceived lookup performance.
+- Thoroughly reworked popup positioning.
+
 ## 1.2.3 (2021-08-26)
 
 - Made the lookup better reflect the cursor position
