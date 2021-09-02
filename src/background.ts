@@ -584,6 +584,7 @@ browser.runtime.onMessage.addListener(
             const tabId = sender.tab.id;
             fullResult
               .then((result) => {
+                pendingSearchRequest = undefined;
                 browser.tabs.sendMessage(
                   tabId,
                   {
@@ -595,6 +596,7 @@ browser.runtime.onMessage.addListener(
               })
               .catch((e) => {
                 if (e.name !== 'AbortError') {
+                  pendingSearchRequest = undefined;
                   Bugsnag.notify(e);
                 }
 
@@ -606,9 +608,6 @@ browser.runtime.onMessage.addListener(
                   },
                   { frameId: sender.frameId }
                 );
-              })
-              .finally(() => {
-                pendingSearchRequest = undefined;
               });
           } else {
             pendingSearchRequest = undefined;
@@ -617,9 +616,9 @@ browser.runtime.onMessage.addListener(
           return result;
         } catch (e) {
           if (e.name !== 'AbortError') {
+            pendingSearchRequest = undefined;
             Bugsnag.notify(e);
           }
-          pendingSearchRequest = undefined;
           return null;
         }
 
