@@ -1411,11 +1411,7 @@ export class ContentHandler {
       return 0;
     }
 
-    if (!this.currentSearchResult) {
-      return 0;
-    }
-
-    const searchResult = this.currentSearchResult[this.currentDict];
+    const searchResult = this.currentSearchResult?.[this.currentDict];
 
     return Math.max(
       searchResult?.matchLen || 0,
