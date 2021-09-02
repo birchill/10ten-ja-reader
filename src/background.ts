@@ -68,11 +68,11 @@ import {
   updateDb,
   searchKanji,
   searchNames,
-  searchWords,
+  searchWords as jpdictSearchWords,
   translate,
 } from './jpdict';
 import { shouldRequestPersistentStorage } from './quota-management';
-import { FullSearchResult, InitialSearchResult } from './search-result';
+import { SearchOtherResult, SearchWordsResult } from './search-result';
 
 //
 // Setup bugsnag
@@ -420,95 +420,55 @@ async function removeContextMenu() {
 // Search
 //
 
-async function search({
+async function searchWords({
   input,
   includeRomaji,
-  requestId,
   abortSignal,
-}: SearchRequest & { abortSignal: AbortSignal }): Promise<
-  [InitialSearchResult | null, Promise<FullSearchResult | null> | undefined]
-> {
-  // Chrome's IndexedDB performance is terrible and iOS devices typically don't
-  // have enough grunt to do the IndexedDB lookup in a reasonable amount of time
-  // so we prefer to do an in-memory lookup first in those cases.
-  const [initialWordSearchResult, usedSnapshotReason] = await searchWords({
+}: SearchRequest & {
+  abortSignal: AbortSignal;
+}): Promise<SearchWordsResult | null> {
+  const [words, dbStatus] = await jpdictSearchWords({
+    abortSignal,
     input,
     includeRomaji,
-    abortSignal,
   });
+
+  return {
+    words,
+    dbStatus,
+  };
+}
+
+async function searchOther({
+  input,
+  abortSignal,
+}: SearchRequest & {
+  abortSignal: AbortSignal;
+}): Promise<SearchOtherResult | null> {
+  // Kanji
+  const kanjiResult = await searchKanji([...input][0]);
+  let kanji = typeof kanjiResult === 'string' ? null : kanjiResult;
 
   if (abortSignal.aborted) {
     throw new AbortError();
   }
 
-  // If the words database was not available for some reason, then don't bother
-  // scheduling a full search.
-  //
-  // If it was 'unavailable' we're probably in always-on private browsing mode
-  // or something of the sort and hence none of the data series will be
-  // available.
-  //
-  // If it was 'updating' then we will refuse to look up any other data series
-  // since Chrome seems to block when we try.
-  let fullSearch: Promise<FullSearchResult | null> | undefined;
-  if (
-    usedSnapshotReason !== 'unavailable' &&
-    usedSnapshotReason !== 'updating'
-  ) {
-    fullSearch = (async () => {
-      const words = initialWordSearchResult;
+  // Names
+  const nameResult = await searchNames({ abortSignal, input });
+  let names = typeof nameResult === 'string' ? null : nameResult;
 
-      // Kanji
-      const kanjiResult = await searchKanji([...input][0]);
-      let kanji = typeof kanjiResult === 'string' ? undefined : kanjiResult;
-
-      if (abortSignal.aborted) {
-        throw new AbortError();
-      }
-
-      // Names
-      const nameResult = await searchNames({ abortSignal, input });
-      let names = typeof nameResult === 'string' ? undefined : nameResult;
-
-      if (abortSignal.aborted) {
-        throw new AbortError();
-      }
-
-      if (!words && !kanji && !names) {
-        return null;
-      }
-
-      return {
-        words,
-        kanji,
-        names,
-        request: { input, includeRomaji, requestId },
-        resultType: 'full' as const,
-      };
-    })();
+  if (abortSignal.aborted) {
+    throw new AbortError();
   }
 
-  let resultType: InitialSearchResult['resultType'] = 'initial';
-  if (usedSnapshotReason === 'unavailable') {
-    resultType = 'db-unavailable';
-  } else if (usedSnapshotReason === 'updating') {
-    resultType = 'db-updating';
+  if (!kanji && !names) {
+    return null;
   }
 
-  // If our initial search turned up no results but we are running a full
-  // search, then we should still return an InitialSearchResult object with an
-  // appropriate 'resultType' so the caller prepare to handle the follow-up
-  // result from the up full search.
-  //
-  // If we're NOT running a full search (e.g. because the database is not
-  // available) then we can just return null so the caller knows to give up on
-  // this query.
-  const initialResult =
-    fullSearch || initialWordSearchResult
-      ? { words: initialWordSearchResult, resultType }
-      : null;
-
-  return [initialResult, fullSearch];
+  return {
+    kanji,
+    names,
+  };
 }
 
 //
@@ -524,13 +484,15 @@ browser.browserAction.onClicked.addListener(toggle);
 
 // We can sometimes find ourselves in a situation where we have a backlog of
 // search requests. To avoid that, we simply cancel any previous request.
-let pendingSearchRequest: AbortController | undefined;
+let pendingSearchWordsRequest:
+  | { input: string; controller: AbortController }
+  | undefined;
+let pendingSearchOtherRequest:
+  | { input: string; controller: AbortController }
+  | undefined;
 
 browser.runtime.onMessage.addListener(
-  async (
-    request: unknown,
-    sender: Browser.Runtime.MessageSender
-  ): Promise<any> => {
+  async (request: unknown): Promise<any> => {
     if (!s.is(request, BackgroundRequestSchema)) {
       console.warn(`Unrecognized request: ${JSON.stringify(request)}`);
       Bugsnag.notify(
@@ -547,59 +509,62 @@ browser.runtime.onMessage.addListener(
         return browser.runtime.openOptionsPage();
 
       case 'search':
-        if (pendingSearchRequest) {
-          pendingSearchRequest.abort();
-          pendingSearchRequest = undefined;
+      case 'searchWords':
+        if (pendingSearchWordsRequest) {
+          pendingSearchWordsRequest.controller.abort();
+          pendingSearchWordsRequest = undefined;
         }
 
-        pendingSearchRequest = new AbortController();
+        pendingSearchWordsRequest = {
+          input: request.input,
+          controller: new AbortController(),
+        };
 
         try {
-          const [result, fullResult] = await search({
+          return await searchWords({
             ...request,
-            abortSignal: pendingSearchRequest.signal,
+            abortSignal: pendingSearchWordsRequest.controller.signal,
           });
-
-          if (fullResult && sender.tab?.id) {
-            const tabId = sender.tab.id;
-            fullResult
-              .then((result) => {
-                pendingSearchRequest = undefined;
-                browser.tabs.sendMessage(
-                  tabId,
-                  {
-                    type: 'updateSearchResult',
-                    result,
-                  },
-                  { frameId: sender.frameId }
-                );
-              })
-              .catch((e) => {
-                if (e.name !== 'AbortError') {
-                  pendingSearchRequest = undefined;
-                  Bugsnag.notify(e);
-                }
-
-                browser.tabs.sendMessage(
-                  tabId,
-                  {
-                    type: 'updateSearchResult',
-                    result: null,
-                  },
-                  { frameId: sender.frameId }
-                );
-              });
-          } else {
-            pendingSearchRequest = undefined;
-          }
-
-          return result;
         } catch (e) {
           if (e.name !== 'AbortError') {
-            pendingSearchRequest = undefined;
+            Bugsnag.notify(e);
+          }
+          // Legacy content scripts (which use the request type 'search') won't
+          // recognize the 'aborted' result value and expect null in that case.
+          return e.name !== 'AbortError' || request.type === 'search'
+            ? null
+            : 'aborted';
+        } finally {
+          if (pendingSearchWordsRequest?.input === request.input) {
+            pendingSearchWordsRequest = undefined;
+          }
+        }
+
+      case 'searchOther':
+        if (pendingSearchOtherRequest) {
+          pendingSearchOtherRequest.controller.abort();
+          pendingSearchOtherRequest = undefined;
+        }
+
+        pendingSearchOtherRequest = {
+          input: request.input,
+          controller: new AbortController(),
+        };
+
+        try {
+          return await searchOther({
+            ...request,
+            abortSignal: pendingSearchOtherRequest.controller.signal,
+          });
+        } catch (e) {
+          if (e.name !== 'AbortError') {
             Bugsnag.notify(e);
           }
           return null;
+        } finally {
+          if (pendingSearchOtherRequest?.input === request.input) {
+            pendingSearchOtherRequest = undefined;
+          }
         }
 
       case 'switchedDictionary':

@@ -325,7 +325,7 @@ export async function searchWords({
 }): Promise<
   [
     result: WordSearchResult | null,
-    usedSnapshotReason: 'updating' | 'unavailable' | undefined
+    dbStatus: 'updating' | 'unavailable' | undefined
   ]
 > {
   let [word, inputLengths] = normalizeInput(input);
@@ -338,17 +338,15 @@ export async function searchWords({
   // fallback dictionary.
   let getWords: GetWordsFunction;
   let dbStatus = getDataSeriesStatus('words');
-  let usedSnapshotReason: 'updating' | 'unavailable' | undefined;
   if (dbStatus === 'ok') {
     getWords = ({ input, maxResults }: { input: string; maxResults: number }) =>
       idbGetWords(input, { matchType: 'exact', limit: maxResults });
   } else {
-    usedSnapshotReason = dbStatus;
     try {
       const flatFileDatabase = await fallbackDatabaseLoader.database;
       getWords = flatFileDatabase.getWords.bind(flatFileDatabase);
     } catch {
-      return [null, usedSnapshotReason];
+      return [null, dbStatus];
     }
   }
 
@@ -361,7 +359,7 @@ export async function searchWords({
       maxResults,
       includeRomaji,
     }),
-    usedSnapshotReason,
+    dbStatus !== 'ok' ? dbStatus : undefined,
   ];
 }
 
@@ -383,7 +381,6 @@ export async function translate({
     data: [],
     textLen: text.length,
     more: false,
-    resultType: 'full',
   };
 
   let skip: number;
@@ -408,8 +405,7 @@ export async function translate({
     }
 
     if (searchResult && dbStatus) {
-      result.resultType =
-        dbStatus === 'unavailable' ? 'db-unavailable' : 'db-updating';
+      result.dbStatus = dbStatus;
     }
 
     text = text.substr(skip, text.length - skip);

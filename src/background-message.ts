@@ -8,10 +8,6 @@ export const BackgroundMessageSchema = discriminator('type', {
     config: s.type({}),
     id: s.optional(s.number()),
   }),
-  updateSearchResult: s.type({
-    // We don't validate the contents of the search result yet
-    result: s.nullable(s.type({})),
-  }),
 });
 
 export type BackgroundMessage = s.Infer<typeof BackgroundMessageSchema>;
