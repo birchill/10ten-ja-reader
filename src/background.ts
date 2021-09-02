@@ -526,14 +526,14 @@ browser.runtime.onMessage.addListener(
             abortSignal: pendingSearchWordsRequest.controller.signal,
           });
         } catch (e) {
-          if (e.name !== 'AbortError') {
-            Bugsnag.notify(e);
+          if (e.name === 'AbortError') {
+            // Legacy content scripts (which use the request type 'search')
+            // won't recognize the 'aborted' result value and expect null in
+            // that case.
+            return request.type === 'search' ? null : 'aborted';
           }
-          // Legacy content scripts (which use the request type 'search') won't
-          // recognize the 'aborted' result value and expect null in that case.
-          return e.name !== 'AbortError' || request.type === 'search'
-            ? null
-            : 'aborted';
+          Bugsnag.notify(e);
+          return null;
         } finally {
           if (pendingSearchWordsRequest?.input === request.input) {
             pendingSearchWordsRequest = undefined;
@@ -557,9 +557,10 @@ browser.runtime.onMessage.addListener(
             abortSignal: pendingSearchOtherRequest.controller.signal,
           });
         } catch (e) {
-          if (e.name !== 'AbortError') {
-            Bugsnag.notify(e);
+          if (e.name === 'AbortError') {
+            return 'aborted';
           }
+          Bugsnag.notify(e);
           return null;
         } finally {
           if (pendingSearchOtherRequest?.input === request.input) {
