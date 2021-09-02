@@ -71,6 +71,7 @@ export async function wordSearch({
 
     for (const variant of variations) {
       let wordResults = await lookupCandidates({
+        abortSignal,
         existingEntries: have,
         getWords,
         input: variant,
@@ -125,6 +126,7 @@ export async function wordSearch({
 }
 
 async function lookupCandidates({
+  abortSignal,
   existingEntries,
   getWords,
   includeRomaji,
@@ -132,6 +134,7 @@ async function lookupCandidates({
   maxResults,
   showInflections,
 }: {
+  abortSignal?: AbortSignal;
   existingEntries: Set<number>;
   getWords: GetWordsFunction;
   includeRomaji: boolean;
@@ -143,6 +146,10 @@ async function lookupCandidates({
 
   const candidates: Array<CandidateWord> = deinflect(input);
   for (const [candidateIndex, candidate] of candidates.entries()) {
+    if (abortSignal?.aborted) {
+      throw new AbortError();
+    }
+
     let wordResults = await lookupCandidate({
       candidate,
       getWords,
