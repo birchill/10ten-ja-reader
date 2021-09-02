@@ -89,8 +89,8 @@ export async function query(
   // If the query throws, comes back empty, or is a result from the fallback
   // database, drop it from the cache.
 
-  const wordsQuery = queryWords(text, options);
-  const fullQuery = queryOther(text, options, wordsQuery)
+  const rawWordsQuery = queryWords(text, options);
+  const fullQuery = queryOther(text, options, rawWordsQuery)
     .then((result) => {
       // Update the cache accordingly
       if (!result || result === 'aborted') {
@@ -114,23 +114,24 @@ export async function query(
       return null;
     });
 
-  // Normally if the words query is aborted, we need to pass that status on to
-  // the extended query (which will then promptly return and remove the cache
-  // entry). However, we shouldn't return that status to the caller.
-  const sanitizedWordsQuery = wordsQuery.then((result) => {
-    return result === 'aborted' ? null : result;
+  // The rawWordsQuery can return the 'aborted' value or an object with a
+  // null `words` property (so we can read its dbStatus property) so that the
+  // queryOther knows not to proceed, but we should simplify the result before
+  // returning it to the caller.
+  const wordsQuery = rawWordsQuery.then((result) => {
+    return result === 'aborted' || !result?.words ? null : result;
   });
 
   queryCache.push({
     key,
     state: 'searching',
-    wordsQuery: sanitizedWordsQuery,
+    wordsQuery,
     fullQuery,
   });
 
   fullQuery.then((result) => options.updateQueryResult(result));
 
-  return sanitizedWordsQuery;
+  return wordsQuery;
 }
 
 async function queryWords(
@@ -228,7 +229,8 @@ async function queryOther(
   }
 
   if (!searchResult) {
-    return words;
+    // If the words query was empty too, make sure the final result is null.
+    return words?.words ? words : null;
   }
 
   if (searchResult === 'aborted') {
