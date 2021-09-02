@@ -73,7 +73,6 @@ import {
 } from './jpdict';
 import { shouldRequestPersistentStorage } from './quota-management';
 import { FullSearchResult, InitialSearchResult } from './search-result';
-import { isChromium, isIOS } from './ua-utils';
 
 //
 // Setup bugsnag
@@ -432,10 +431,8 @@ async function search({
   // Chrome's IndexedDB performance is terrible and iOS devices typically don't
   // have enough grunt to do the IndexedDB lookup in a reasonable amount of time
   // so we prefer to do an in-memory lookup first in those cases.
-  let preferSnapshot = isChromium() || isIOS();
   const [initialWordSearchResult, usedSnapshotReason] = await searchWords({
     input,
-    preferSnapshot,
     includeRomaji,
     abortSignal,
   });
@@ -459,22 +456,7 @@ async function search({
     usedSnapshotReason !== 'updating'
   ) {
     fullSearch = (async () => {
-      // If we deliberately searched the snapshot for the initial words result
-      // (as opposed to simply searching it because IndexedDB was not
-      // available), try searching IndexedDB instead.
-      let words = initialWordSearchResult;
-      if (usedSnapshotReason === 'preference') {
-        let [fullWordSearchResult] = await searchWords({
-          abortSignal,
-          input,
-          includeRomaji,
-        });
-        words = fullWordSearchResult || initialWordSearchResult;
-      }
-
-      if (abortSignal.aborted) {
-        throw new AbortError();
-      }
+      const words = initialWordSearchResult;
 
       // Kanji
       const kanjiResult = await searchKanji([...input][0]);
@@ -511,8 +493,6 @@ async function search({
     resultType = 'db-unavailable';
   } else if (usedSnapshotReason === 'updating') {
     resultType = 'db-updating';
-  } else if (usedSnapshotReason === 'preference') {
-    resultType = 'snapshot';
   }
 
   // If our initial search turned up no results but we are running a full

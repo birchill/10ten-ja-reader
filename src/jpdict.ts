@@ -315,57 +315,17 @@ const WORDS_MAX_ENTRIES = 7;
 export async function searchWords({
   input,
   abortSignal,
-  includeRomaji,
-  max,
-  preferSnapshot,
+  includeRomaji = false,
+  max = 0,
 }: {
   input: string;
   abortSignal?: AbortSignal;
   includeRomaji?: boolean;
   max?: number;
-  preferSnapshot?: false | undefined;
 }): Promise<
   [
     result: WordSearchResult | null,
     usedSnapshotReason: 'updating' | 'unavailable' | undefined
-  ]
->;
-
-export async function searchWords({
-  input,
-  abortSignal,
-  includeRomaji,
-  max,
-  preferSnapshot,
-}: {
-  input: string;
-  abortSignal?: AbortSignal;
-  includeRomaji?: boolean;
-  max?: number;
-  preferSnapshot: boolean;
-}): Promise<
-  [
-    result: WordSearchResult | null,
-    usedSnapshotReason: 'updating' | 'unavailable' | 'preference' | undefined
-  ]
->;
-
-export async function searchWords({
-  input,
-  abortSignal,
-  includeRomaji = false,
-  max = 0,
-  preferSnapshot = false,
-}: {
-  input: string;
-  abortSignal?: AbortSignal;
-  includeRomaji?: boolean;
-  max?: number;
-  preferSnapshot?: boolean;
-}): Promise<
-  [
-    result: WordSearchResult | null,
-    usedSnapshotReason: 'updating' | 'unavailable' | 'preference' | undefined
   ]
 > {
   let [word, inputLengths] = normalizeInput(input);
@@ -378,12 +338,12 @@ export async function searchWords({
   // fallback dictionary.
   let getWords: GetWordsFunction;
   let dbStatus = getDataSeriesStatus('words');
-  let usedSnapshotReason: 'updating' | 'unavailable' | 'preference' | undefined;
-  if (dbStatus === 'ok' && !preferSnapshot) {
+  let usedSnapshotReason: 'updating' | 'unavailable' | undefined;
+  if (dbStatus === 'ok') {
     getWords = ({ input, maxResults }: { input: string; maxResults: number }) =>
       idbGetWords(input, { matchType: 'exact', limit: maxResults });
   } else {
-    usedSnapshotReason = dbStatus !== 'ok' ? dbStatus : 'preference';
+    usedSnapshotReason = dbStatus;
     try {
       const flatFileDatabase = await fallbackDatabaseLoader.database;
       getWords = flatFileDatabase.getWords.bind(flatFileDatabase);
