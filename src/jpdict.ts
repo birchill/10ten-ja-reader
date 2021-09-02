@@ -536,9 +536,11 @@ export async function searchKanji(
 const NAMES_MAX_ENTRIES = 20;
 
 export async function searchNames({
+  abortSignal,
   input,
   minLength,
 }: {
+  abortSignal?: AbortSignal;
   input: string;
   minLength?: number;
 }): Promise<NameSearchResult | null | 'unavailable' | 'updating'> {
@@ -550,6 +552,7 @@ export async function searchNames({
   let [normalized, inputLengths] = normalizeInput(input);
 
   return nameSearch({
+    abortSignal,
     input: normalized,
     inputLengths,
     minInputLength: minLength,

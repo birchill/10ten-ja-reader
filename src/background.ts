@@ -465,9 +465,9 @@ async function search({
       let words = initialWordSearchResult;
       if (usedSnapshotReason === 'preference') {
         let [fullWordSearchResult] = await searchWords({
+          abortSignal,
           input,
           includeRomaji,
-          abortSignal,
         });
         words = fullWordSearchResult || initialWordSearchResult;
       }
@@ -485,7 +485,7 @@ async function search({
       }
 
       // Names
-      const nameResult = await searchNames({ input });
+      const nameResult = await searchNames({ abortSignal, input });
       let names = typeof nameResult === 'string' ? undefined : nameResult;
 
       if (abortSignal.aborted) {

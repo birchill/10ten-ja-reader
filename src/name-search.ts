@@ -1,16 +1,18 @@
 import Bugsnag from '@bugsnag/browser';
-import { NameResult, getNames } from '@birchill/hikibiki-data';
+import { AbortError, NameResult, getNames } from '@birchill/hikibiki-data';
 import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
 
 import { NameSearchResult } from './search-result';
 import { endsInYoon } from './yoon';
 
 export async function nameSearch({
+  abortSignal,
   input,
   inputLengths,
   minInputLength,
   maxResults,
 }: {
+  abortSignal?: AbortSignal;
   input: string;
   inputLengths: Array<number>;
   minInputLength?: number;
@@ -29,6 +31,11 @@ export async function nameSearch({
   let currentString = input;
 
   while (currentString.length > 0) {
+    // Check if we have been aborted
+    if (abortSignal?.aborted) {
+      throw new AbortError();
+    }
+
     const currentInputLength = inputLengths[currentString.length];
     if (minInputLength && minInputLength > currentInputLength) {
       break;
