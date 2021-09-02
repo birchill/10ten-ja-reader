@@ -515,6 +515,13 @@ browser.runtime.onMessage.addListener(
           pendingSearchWordsRequest = undefined;
         }
 
+        // Go ahead and stop any searches of other dictionaries too since they
+        // are no longer relevant and will only make this search take longer.
+        if (pendingSearchOtherRequest) {
+          pendingSearchOtherRequest.controller.abort();
+          pendingSearchOtherRequest = undefined;
+        }
+
         pendingSearchWordsRequest = {
           input: request.input,
           controller: new AbortController(),
