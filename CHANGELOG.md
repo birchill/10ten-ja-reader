@@ -1,7 +1,11 @@
 ## Next release
 
-- Restore showing the popup for non-text elements.
-- Optimized perceived lookup performance.
+- Optimized lookup performance.
+- Restored the behavior where 10ten would translate the alt/title attributes on
+  images and form elements which was accidentally disabled in the previous
+  version.
+- Added an option to disable translating the alt/title attribute on images
+  ([#140](https://github.com/birchill/10ten-ja-reader/issues/140)).
 - Thoroughly reworked popup positioning.
 
 ## 1.2.3 (2021-08-26)

@@ -1456,14 +1456,6 @@
   "options_highlight_matched_text": {
     "message": "匹配词条高亮显示"
   },
-  "options_hold_to_show_keys_description": {
-    "message": "仅按键时显示窗口",
-    "description": "Typically we show the popup whenever it is active, but if these keys are configured the popup will only show while they are held down"
-  },
-  "options_hold_to_show_keys_explanation": {
-    "message": "在这里选择按键，按住这些按键时划词，才会显示 10ten reader 窗口。如果不选择任何按键，只要在 10ten reader 已启用时划词，就会显示窗口。",
-    "description": "This is supplementary explanation to options_hold_to_show_keys_explanation"
-  },
   "options_kanji_components": {
     "message": "汉字部件",
     "description": "Option to define if radicals are displayed or not"
@@ -1606,6 +1598,18 @@
   },
   "options_show_definitions": {
     "message": "显示释义"
+  },
+  "options_show_popup_explanation": {
+    "message": "选择以下键时，按住键并将鼠标悬停在目标内容上以显示弹出窗口。 "
+  },
+  "options_show_popup_images_subheading": {
+    "message": "图片"
+  },
+  "options_show_popup_subheading": {
+    "message": "显示弹出窗口"
+  },
+  "options_show_popup_text_subheading": {
+    "message": "文本"
   },
   "options_show_priority": {
     "message": "显示高频率（★）和较高频率（☆）的标志",

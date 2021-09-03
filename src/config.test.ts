@@ -140,6 +140,7 @@ describe('Config', () => {
     expect(config.dictLang).toEqual('fr');
     expect(config.hasSwitchedDictionary).toEqual(false);
     expect(config.holdToShowKeys).toEqual(null);
+    expect(config.holdToShowImageKeys).toEqual(null);
     expect(config.kanjiReferences).toEqual([
       'radical',
       'nelson_r',

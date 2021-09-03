@@ -1456,14 +1456,6 @@
   "options_highlight_matched_text": {
     "message": "Highlight matched text"
   },
-  "options_hold_to_show_keys_description": {
-    "message": "Hold to show popup",
-    "description": "Typically we show the popup whenever it is active, but if these keys are configured the popup will only show while they are held down"
-  },
-  "options_hold_to_show_keys_explanation": {
-    "message": "The popup will only be shown while these keys are held down. If no keys are selected, the popup will be displayed whenever 10ten reader is enabled.",
-    "description": "This is supplementary explanation to options_hold_to_show_keys_explanation"
-  },
   "options_kanji_components": {
     "message": "Kanji components",
     "description": "Option to define if radicals are displayed or not"
@@ -1606,6 +1598,18 @@
   },
   "options_show_definitions": {
     "message": "Show definitions"
+  },
+  "options_show_popup_explanation": {
+    "message": "If selected, the following keys must be held down when the mouse is over an item in order to display the popup."
+  },
+  "options_show_popup_images_subheading": {
+    "message": "Images"
+  },
+  "options_show_popup_subheading": {
+    "message": "Show popup"
+  },
+  "options_show_popup_text_subheading": {
+    "message": "Text"
   },
   "options_show_priority": {
     "message": "Show indicators next to common (★) and somewhat common (☆) words",

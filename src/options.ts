@@ -478,11 +478,9 @@ async function getConfiguredToggleKeyValue(): Promise<Command | null> {
 }
 
 function configureHoldToShowKeys() {
-  const checkboxes = document.querySelectorAll(
-    '.holdtoshowkeys input[type=checkbox][id^=show-]'
-  );
-
-  const getHoldToShowKeysValue = (): string | null => {
+  const getHoldToShowKeysValue = (
+    checkboxes: NodeListOf<HTMLInputElement>
+  ): string | null => {
     const parts: Array<string> = [];
 
     for (const checkbox of checkboxes) {
@@ -496,10 +494,17 @@ function configureHoldToShowKeys() {
     return parts.join('+');
   };
 
-  for (const checkbox of checkboxes) {
-    checkbox.addEventListener('click', () => {
-      config.holdToShowKeys = getHoldToShowKeysValue();
-    });
+  const settings = ['holdToShowKeys', 'holdToShowImageKeys'] as const;
+  for (const setting of settings) {
+    const checkboxes = document.querySelectorAll<HTMLInputElement>(
+      `.${setting.toLowerCase()} input[type=checkbox][id^=show-]`
+    );
+
+    for (const checkbox of checkboxes) {
+      checkbox.addEventListener('click', () => {
+        config[setting] = getHoldToShowKeysValue(checkboxes);
+      });
+    }
   }
 }
 
@@ -781,17 +786,18 @@ function fillVals() {
     });
 
   // Note that this setting is hidden in active-tab only mode
-  const holdKeyParts: Array<string> =
-    typeof config.holdToShowKeys === 'string'
-      ? config.holdToShowKeys.split('+')
-      : [];
-  const holdKeyCheckboxes = document.querySelectorAll(
-    '.holdtoshowkeys input[type=checkbox][id^=show-]'
-  );
-  for (const checkbox of holdKeyCheckboxes) {
-    (checkbox as HTMLInputElement).checked = holdKeyParts.includes(
-      (checkbox as HTMLInputElement).value
+  const holdToShowSettings = ['holdToShowKeys', 'holdToShowImageKeys'] as const;
+  for (const setting of holdToShowSettings) {
+    const holdKeyParts: Array<string> =
+      typeof config[setting] === 'string' ? config[setting]!.split('+') : [];
+    const holdKeyCheckboxes = document.querySelectorAll(
+      `.${setting.toLowerCase()} input[type=checkbox][id^=show-]`
     );
+    for (const checkbox of holdKeyCheckboxes) {
+      (checkbox as HTMLInputElement).checked = holdKeyParts.includes(
+        (checkbox as HTMLInputElement).value
+      );
+    }
   }
 
   for (const [setting, keys] of Object.entries(config.keys)) {

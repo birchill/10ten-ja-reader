@@ -112,6 +112,12 @@ interface SetUpPuckOptions extends PuckRenderOptions {
   safeAreaProvider: SafeAreaProvider;
 }
 
+const enum HoldToShowKeyType {
+  Text = 1 << 0,
+  Images = 1 << 1,
+  All = Text | Images,
+}
+
 export class ContentHandler {
   // The content script is injected into every frame in a page but we delegate
   // some responsibilities to the top-most window since that allows us to,
@@ -403,7 +409,10 @@ export class ContentHandler {
     //
     // Note that the "hold to show keys" setting is only relevant for mouse
     // events.
-    if (!this.areHoldToShowKeysDown(ev) && !isPuckMouseEvent(ev)) {
+    const contentsToMatch =
+      this.getActiveHoldToShowKeys(ev) |
+      (isPuckMouseEvent(ev) ? HoldToShowKeyType.All : 0);
+    if (!contentsToMatch) {
       this.clearResult({ currentElement: ev.target });
 
       // We still want to set the current position and element information so
@@ -429,8 +438,13 @@ export class ContentHandler {
     // again.
     this.lastMouseTarget = ev.target;
 
+    const matchText = !!(contentsToMatch & HoldToShowKeyType.Text);
+    const matchImages = !!(contentsToMatch & HoldToShowKeyType.Images);
+
     this.tryToUpdatePopup({
       fromPuck: isPuckMouseEvent(ev),
+      matchText,
+      matchImages,
       point: { x: ev.clientX, y: ev.clientY },
       eventElement: ev.target,
       dictMode,
@@ -511,12 +525,15 @@ export class ContentHandler {
     // We don't do this when the there is a text box in focus because we
     // we risk interfering with the text selection when, for example, the
     // hold-to-show key is Ctrl and the user presses Ctrl+V etc.
-    if (this.isHoldToShowKeysMatch(ev)) {
+    const matchedHoldToShowKeys = this.isHoldToShowKeyStroke(ev);
+    if (matchedHoldToShowKeys) {
       ev.preventDefault();
 
       if (!textBoxInFocus && this.currentPoint && this.lastMouseTarget) {
         this.tryToUpdatePopup({
           fromPuck: false,
+          matchText: !!(matchedHoldToShowKeys & HoldToShowKeyType.Text),
+          matchImages: !!(matchedHoldToShowKeys & HoldToShowKeyType.Images),
           point: this.currentPoint,
           eventElement: this.lastMouseTarget,
           dictMode: 'default',
@@ -680,40 +697,47 @@ export class ContentHandler {
     }
   }
 
-  // Test if an incoming keyboard event matches the hold-to-show key sequence
-  isHoldToShowKeysMatch(ev: KeyboardEvent): boolean {
-    if (!this.config.holdToShowKeys.length) {
-      return false;
-    }
-
+  // Test if an incoming keyboard event matches the hold-to-show key sequence.
+  isHoldToShowKeyStroke(ev: KeyboardEvent): HoldToShowKeyType {
     // Check if it is a modifier at all
     if (!['Alt', 'AltGraph', 'Control'].includes(ev.key)) {
-      return false;
+      return 0;
     }
 
-    return this.areHoldToShowKeysDown(ev);
+    const definedKeys =
+      (this.config.holdToShowKeys.length ? HoldToShowKeyType.Text : 0) |
+      (this.config.holdToShowImageKeys.length ? HoldToShowKeyType.Images : 0);
+
+    return definedKeys & this.getActiveHoldToShowKeys(ev);
   }
 
   // Test if hold-to-show keys are set for a given a UI event
-  areHoldToShowKeysDown(ev: MouseEvent | KeyboardEvent): boolean {
-    if (!this.config.holdToShowKeys.length) {
+  getActiveHoldToShowKeys(ev: MouseEvent | KeyboardEvent): HoldToShowKeyType {
+    const areKeysDownForSetting = (
+      setting: 'holdToShowKeys' | 'holdToShowImageKeys'
+    ) => {
+      if (!this.config[setting].length) {
+        return true;
+      }
+
+      // Check if all the configured hold-to-show keys are pressed down
+      const isAltGraph = ev.getModifierState('AltGraph');
+      if (this.config[setting].includes('Alt') && !ev.altKey && !isAltGraph) {
+        return false;
+      }
+      if (this.config[setting].includes('Ctrl') && !ev.ctrlKey) {
+        return false;
+      }
+
       return true;
-    }
+    };
 
-    // Check if all the configured hold-to-show keys are pressed down
-    const isAltGraph = ev.getModifierState('AltGraph');
-    if (
-      this.config.holdToShowKeys.includes('Alt') &&
-      !ev.altKey &&
-      !isAltGraph
-    ) {
-      return false;
-    }
-    if (this.config.holdToShowKeys.includes('Ctrl') && !ev.ctrlKey) {
-      return false;
-    }
-
-    return true;
+    return (
+      (areKeysDownForSetting('holdToShowKeys') ? HoldToShowKeyType.Text : 0) |
+      (areKeysDownForSetting('holdToShowImageKeys')
+        ? HoldToShowKeyType.Images
+        : 0)
+    );
   }
 
   isVisible(): boolean {
@@ -1149,16 +1173,25 @@ export class ContentHandler {
 
   async tryToUpdatePopup({
     fromPuck,
+    matchText,
+    matchImages,
     point,
     eventElement,
     dictMode,
   }: {
     fromPuck: boolean;
+    matchText: boolean;
+    matchImages: boolean;
     point: Point;
     eventElement: Element;
     dictMode: 'default' | 'kanji';
   }) {
-    const textAtPoint = getTextAtPoint(point, ContentHandler.MAX_LENGTH);
+    const textAtPoint = getTextAtPoint({
+      matchText,
+      matchImages,
+      point,
+      maxLength: ContentHandler.MAX_LENGTH,
+    });
 
     // The following is not strictly correct since if dictMode was 'kanji'
     // but is now 'default' then technically we shouldn't return early
@@ -1178,6 +1211,14 @@ export class ContentHandler {
       textRangesEqual(this.currentTextRange, textAtPoint?.textRange) &&
       dictMode === 'default'
     ) {
+      // We might have failed to find a match because we didn't have the
+      // necessary keys held down.
+      //
+      // In that case, we still want to store the current point so that if those
+      // keys are pressed later, we can show the pop-up immediately.
+      if (!textAtPoint && (!matchText || !matchImages)) {
+        this.currentPoint = point;
+      }
       return;
     }
 

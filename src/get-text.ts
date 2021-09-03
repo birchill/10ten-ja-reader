@@ -32,11 +32,18 @@ let previousResult:
     }
   | undefined;
 
-export function getTextAtPoint(
-  point: Point,
-  maxLength?: number
-): GetTextAtPointResult | null {
-  let position = caretPositionFromPoint(point);
+export function getTextAtPoint({
+  matchText = true,
+  matchImages = true,
+  point,
+  maxLength,
+}: {
+  matchText?: boolean;
+  matchImages?: boolean;
+  point: Point;
+  maxLength?: number;
+}): GetTextAtPointResult | null {
+  let position = matchText ? caretPositionFromPoint(point) : null;
 
   // Chrome not only doesn't support caretPositionFromPoint, but also
   // caretRangeFromPoint doesn't return text input elements. Instead it returns
@@ -171,7 +178,7 @@ export function getTextAtPoint(
 
   const elem = document.elementFromPoint(point.x, point.y);
   if (elem) {
-    const text = getTextFromRandomElement(elem);
+    const text = getTextFromRandomElement({ elem, matchImages });
     if (text) {
       const result: GetTextAtPointResult = { text, textRange: null };
       previousResult = { point, position: undefined, result };
@@ -671,10 +678,20 @@ function getTextFromCoveringLink({
   });
 }
 
-function getTextFromRandomElement(elem: Element): string | null {
+function getTextFromRandomElement({
+  elem,
+  matchImages,
+}: {
+  elem: Element;
+  matchImages: boolean;
+}): string | null {
   // Don't return anything for an iframe since this script will run inside the
   // iframe's contents as well.
   if (elem.nodeName === 'IFRAME') {
+    return null;
+  }
+
+  if (!matchImages && elem.tagName === 'IMG') {
     return null;
   }
 

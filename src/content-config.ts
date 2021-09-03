@@ -43,6 +43,9 @@ export interface ContentConfig {
   // This should be a Set but Chrome can't send Sets by sendMessage :(
   holdToShowKeys: Array<'Alt' | 'Ctrl'>;
 
+  // As above but specifically for images.
+  holdToShowImageKeys: Array<'Alt' | 'Ctrl'>;
+
   // References to show in the kanji view.
   kanjiReferences: Array<import('./refs').ReferenceAbbreviation>;
 

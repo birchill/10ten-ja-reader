@@ -60,6 +60,7 @@
 
 fieldset {
   padding: 0;
+  border: none;
 }
 
 #tenten-ja-options,
@@ -172,8 +173,16 @@ fieldset {
   }
 }
 
-fieldset {
-  border: none;
+fieldset.bordered {
+  padding: 12px 24px;
+  border: 0.5px solid lightgrey;
+}
+
+.section-explanation {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  line-height: 1.5;
+  font-style: italic;
 }
 
 .popupstyle-select {
@@ -438,6 +447,24 @@ fieldset {
 }
 .key-description p {
   line-height: 1.25;
+}
+
+/* This is a little different to key-grid in that it prioritizes the key in the
+ * first column */
+.key-and-icon-grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0 2em;
+  align-items: center;
+}
+
+.key-and-icon-grid .row-label {
+  grid-column: 1 / -1;
+}
+
+.key-and-icon-grid .icon {
+  width: 100px;
+  color: #aaa;
 }
 
 .key-list {

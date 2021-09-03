@@ -60,6 +60,7 @@ interface Settings {
   dictLang?: DbLanguageId;
   hasSwitchedDictionary?: boolean;
   holdToShowKeys?: string;
+  holdToShowImageKeys?: string;
   kanjiReferencesV2?: KanjiReferenceFlagsV2;
   keys?: Partial<StoredKeyboardKeys>;
   noTextHighlight?: boolean;
@@ -407,11 +408,8 @@ export class Config {
   }
 
   set holdToShowKeys(value: string | null) {
-    if (
-      (typeof this._settings.holdToShowKeys !== 'undefined' &&
-        this._settings.holdToShowKeys === value) ||
-      (typeof this._settings.holdToShowKeys === 'undefined' && value === null)
-    ) {
+    const storedSetting = this._settings.holdToShowKeys || null;
+    if (value === storedSetting) {
       return;
     }
 
@@ -421,6 +419,73 @@ export class Config {
     } else {
       browser.storage.sync.set({ holdToShowKeys: value });
       this._settings.holdToShowKeys = value;
+    }
+
+    // If holdToShowImageKeys was mirroring this setting, save the previous
+    // value as its own value.
+    if (typeof this._settings.holdToShowImageKeys === 'undefined') {
+      this.holdToShowImageKeys = storedSetting;
+    }
+    // Otherwise, if we have cleared this setting and holdToShowImageKeys was
+    // storing 'none' just to differentiate itself from us, we can clear that
+    // stored value now.
+    else if (!value && this._settings.holdToShowImageKeys === 'none') {
+      this.holdToShowImageKeys = null;
+    }
+  }
+
+  // holdToShowImageKeys: Default is... complicated.
+  //
+  // This setting was introduced after the "holdToShowKeys" setting was
+  // introduced and we want the default behavior to be:
+  //
+  // - For new users, nothing, since that's the default for "holdToShow" keys
+  //   and it makes sense to surface this by default and let users who find it
+  //   annoying turn it off.
+  //
+  // - For users who have previously configured a "holdToShowKeys" setting,
+  //   the same value as the "holdToShowKeys" setting since previously that
+  //   setting controlled this behavior.
+  //
+  // But how do we distinguish between a user who has previously configured the
+  // "holdToShowKeys" setting (meaning we should mirror that value here) vs one
+  // who has configured the "holdToShowKeys" setting _since_ this setting was
+  // introduced and deliberately wants different behavior to that setting?
+  //
+  // We achieve that by deliberately storing "none" as the value for this
+  // setting any time we alter the "holdToShowKeys" setting while this is null.
+
+  get holdToShowImageKeys(): string | null {
+    // If there is an explicit setting for this value, use that.
+    if (typeof this._settings.holdToShowImageKeys === 'string') {
+      return this._settings.holdToShowImageKeys === 'none'
+        ? null
+        : this._settings.holdToShowImageKeys;
+    }
+
+    // Otherwise, mirror the holdToShowKeys setting
+    return this.holdToShowKeys;
+  }
+
+  set holdToShowImageKeys(value: string | null) {
+    // If this is null AND holdToShowKeys is null, then we can clear the local
+    // setting. We only need to store 'none' if holdToShowKeys is set (in order
+    // to ensure we DON'T mirror that setting).
+    const settingToStore =
+      value === null && this.holdToShowKeys ? 'none' : value;
+
+    // Ignore null-op changes
+    const storedSetting = this._settings.holdToShowImageKeys || null;
+    if (settingToStore === storedSetting) {
+      return;
+    }
+
+    if (settingToStore === null) {
+      browser.storage.sync.remove('holdToShowImageKeys');
+      delete this._settings.holdToShowImageKeys;
+    } else {
+      browser.storage.sync.set({ holdToShowImageKeys: settingToStore });
+      this._settings.holdToShowImageKeys = settingToStore;
     }
   }
 
@@ -693,6 +758,10 @@ export class Config {
       holdToShowKeys:
         !__ACTIVE_TAB_ONLY__ && this.holdToShowKeys
           ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)
+          : [],
+      holdToShowImageKeys:
+        !__ACTIVE_TAB_ONLY__ && this.holdToShowImageKeys
+          ? (this.holdToShowImageKeys.split('+') as Array<'Ctrl' | 'Alt'>)
           : [],
       kanjiReferences: this.kanjiReferences,
       keys: this.keysNormalized,

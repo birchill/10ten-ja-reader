@@ -1459,14 +1459,6 @@
   "options_highlight_matched_text": {
     "message": "照合される文字列をハイライト"
   },
-  "options_hold_to_show_keys_description": {
-    "message": "押しながらポップアップを表示する",
-    "description": "Typically we show the popup whenever it is active, but if these keys are configured the popup will only show while they are held down"
-  },
-  "options_hold_to_show_keys_explanation": {
-    "message": "ボタンを押しながら、マウスをテキストに合わせるとポップアップが表示されます。ボタンが選択されていない場合、ポップアップが常に表示されます。",
-    "description": "This is supplementary explanation to options_hold_to_show_keys_explanation"
-  },
   "options_kanji_components": {
     "message": "漢字構成",
     "description": "Option to define if radicals are displayed or not"
@@ -1609,6 +1601,18 @@
   },
   "options_show_definitions": {
     "message": "定義を表示"
+  },
+  "options_show_popup_explanation": {
+    "message": "以下のキーが選択された場合、キーを押しながら対象するコンテンツにマウスを合わせるとポップアップが表示されます。"
+  },
+  "options_show_popup_images_subheading": {
+    "message": "画像"
+  },
+  "options_show_popup_subheading": {
+    "message": "ポップアップを表示する"
+  },
+  "options_show_popup_text_subheading": {
+    "message": "テキスト"
   },
   "options_show_priority": {
     "message": "頻度の高い（★）又はある程度の高い（☆）のマーカーを表示",
