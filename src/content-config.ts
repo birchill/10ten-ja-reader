@@ -72,6 +72,15 @@ export interface ContentConfig {
   // True if we should show indicators next to common words.
   showPriority: boolean;
 
+  // Should we show the puck or not? If the setting is 'auto' the content script
+  // should detect if the device has hover capability or not and hide the puck
+  // if so.
+  //
+  // (We make the content script responsible for implementing this because it may
+  // be difficult to have the background process do this if/when we move to a
+  // Service Worker model.)
+  showPuck: 'auto' | 'hide' | 'show';
+
   // True if we should show romaji alongside each reading.
   showRomaji: boolean;
 

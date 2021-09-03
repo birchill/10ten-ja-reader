@@ -1518,6 +1518,10 @@
       }
     }
   },
+  "options_lookup_puck_heading": {
+    "message": "用于搜索的圆形按钮",
+    "description": "Heading for the section containing options controlling the lookup puck used on touch devices"
+  },
   "options_name_data_name": {
     "message": "名字数据库",
     "description": "The name for the name database data set"
@@ -1614,6 +1618,22 @@
   "options_show_priority": {
     "message": "显示高频率（★）和较高频率（☆）的标志",
     "description": "Label for enabling the ★ and ☆ markers next to dictionary headwords to indicate they occur frequently  or somewhat frequently respectively"
+  },
+  "options_show_puck_label": {
+    "message": "显示圆形按钮：",
+    "description": "Leading text for options for when to display the puck"
+  },
+  "options_show_puck_option_auto": {
+    "message": "自动的",
+    "description": "Option to have 10ten automatically determine when to show the puck"
+  },
+  "options_show_puck_option_hide": {
+    "message": "隐藏",
+    "description": "Option to always hide the puck"
+  },
+  "options_show_puck_option_show": {
+    "message": "显示",
+    "description": "Option to always show the puck"
   },
   "options_show_romaji": {
     "message": "显示罗马字"

@@ -224,6 +224,10 @@ function buildExtConfig({
     preprocessorFeatures.push('active_tab_only');
   }
 
+  if (process.env.ENABLE_PUCK) {
+    preprocessorFeatures.push('enable_puck');
+  }
+
   if (includeRikaichampName) {
     preprocessorFeatures.push('include_rikaichamp_name');
   }

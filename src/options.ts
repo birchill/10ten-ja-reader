@@ -63,6 +63,9 @@ function completeForm() {
   addPopupKeys();
   translateKeys();
 
+  // Puck
+  configurePuckSettings();
+
   // Language
   fillInLanguages();
 
@@ -674,6 +677,23 @@ function translateKeys() {
   }
 }
 
+function configurePuckSettings() {
+  const showPuckOptions = Array.from(
+    document.querySelectorAll<HTMLInputElement>(
+      'input[type=radio][name=showPuck]'
+    )
+  );
+  for (const option of showPuckOptions) {
+    option.addEventListener('change', (evt) => {
+      const setting = (evt.target as HTMLInputElement).value as
+        | 'auto'
+        | 'show'
+        | 'hide';
+      config.showPuck = setting;
+    });
+  }
+}
+
 function fillInLanguages() {
   const select = document.querySelector('select#lang') as HTMLSelectElement;
 
@@ -765,6 +785,7 @@ function fillVals() {
   optform.popupStyle.value = config.popupStyle;
   optform.tabDisplay.value = config.tabDisplay;
   optform.toolbarIcon.value = config.toolbarIcon;
+  optform.showPuck.value = config.showPuck;
 
   getConfiguredToggleKeyValue()
     .then((toggleCommand) => {

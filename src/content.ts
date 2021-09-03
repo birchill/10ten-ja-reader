@@ -84,7 +84,6 @@ import { getPopupPosition, PopupPositionMode } from './popup-position';
 import {
   isPuckMouseEvent,
   PuckMouseEvent,
-  PuckRenderOptions,
   removePuck,
   LookupPuck,
 } from './puck';
@@ -107,10 +106,6 @@ import { TextRange, textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
 import { getTopMostWindow, isTopMostWindow } from './top-window';
 import { BackgroundMessageSchema } from './background-message';
-
-interface SetUpPuckOptions extends PuckRenderOptions {
-  safeAreaProvider: SafeAreaProvider;
-}
 
 const enum HoldToShowKeyType {
   Text = 1 << 0,
@@ -189,6 +184,9 @@ export class ContentHandler {
   // Keyboard support
   private kanjiLookupMode: boolean = false;
 
+  // Puck support
+  private hoverDeviceMediaQuery: MediaQueryList | undefined;
+
   // Used to try to detect when we are typing so we know when to ignore key
   // events.
   private typingMode: boolean = false;
@@ -229,7 +227,7 @@ export class ContentHandler {
   private popupPositionMode: PopupPositionMode = PopupPositionMode.Auto;
 
   // Consulted in order to determine safe area
-  private safeAreaProvider: SafeAreaProvider | null = new SafeAreaProvider();
+  private safeAreaProvider: SafeAreaProvider = new SafeAreaProvider();
 
   // Consulted in order to determine popup positioning
   private puck: LookupPuck | null = null;
@@ -243,6 +241,7 @@ export class ContentHandler {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onFocusIn = this.onFocusIn.bind(this);
+    this.onHoverMediaQueryChange = this.onHoverMediaQueryChange.bind(this);
     this.onContentMessage = this.onContentMessage.bind(this);
 
     window.addEventListener('mousemove', this.onMouseMove);
@@ -258,6 +257,8 @@ export class ContentHandler {
       }
     });
 
+    this.setUpSafeAreaProvider({ doc: document });
+
     // If we are an iframe, check if the popup is currently showing
     if (!isTopMostWindow()) {
       getTopMostWindow().postMessage<ContentMessage>(
@@ -269,34 +270,61 @@ export class ContentHandler {
       // top frame in case it is showing the puck.
       window.addEventListener('pointermove', this.onIframePointerMove);
     }
+
+    this.applyPuckConfig();
   }
 
-  setUpPuck(setUpPuckOptions: SetUpPuckOptions) {
-    const { safeAreaProvider, ...renderOptions } = setUpPuckOptions;
-
-    let puck: LookupPuck;
-    if (this.puck) {
-      puck = this.puck;
-    } else {
-      this.puck = puck = new LookupPuck(safeAreaProvider);
-    }
-    puck.render(renderOptions);
-    puck.enable();
-    return puck;
+  setUpSafeAreaProvider(renderOptions: SafeAreaProviderRenderOptions) {
+    this.safeAreaProvider.render(renderOptions);
+    this.safeAreaProvider.enable();
   }
 
-  setUpSafeAreaProvider(
-    renderOptions: SafeAreaProviderRenderOptions
-  ): SafeAreaProvider {
-    let safeAreaProvider: SafeAreaProvider;
-    if (this.safeAreaProvider) {
-      safeAreaProvider = this.safeAreaProvider;
-    } else {
-      this.safeAreaProvider = safeAreaProvider = new SafeAreaProvider();
+  applyPuckConfig() {
+    if (!__ENABLE_PUCK__ || !isTopMostWindow()) {
+      return;
     }
-    safeAreaProvider.render(renderOptions);
-    safeAreaProvider.enable();
-    return safeAreaProvider;
+
+    let show: boolean;
+    if (this.config.showPuck === 'auto') {
+      if (!this.hoverDeviceMediaQuery) {
+        // We don't show the puck if the primary input device is capable of
+        // hovering.
+        this.hoverDeviceMediaQuery = window.matchMedia('(hover: hover)');
+      }
+      this.hoverDeviceMediaQuery.addEventListener(
+        'change',
+        this.onHoverMediaQueryChange
+      );
+      show = !this.hoverDeviceMediaQuery.matches;
+    } else {
+      this.hoverDeviceMediaQuery?.removeEventListener(
+        'change',
+        this.onHoverMediaQueryChange
+      );
+      show = this.config.showPuck === 'show';
+    }
+
+    if (show) {
+      this.setUpPuck();
+    } else {
+      this.tearDownPuck();
+    }
+  }
+
+  setUpPuck() {
+    if (!this.puck) {
+      this.puck = new LookupPuck(this.safeAreaProvider);
+    }
+
+    this.puck.render({ doc: document, theme: this.config.popupStyle });
+    this.puck.enable();
+  }
+
+  tearDownPuck() {
+    this.puck?.unmount();
+    this.puck = null;
+
+    removePuck();
   }
 
   setConfig(config: Readonly<ContentConfig>) {
@@ -306,6 +334,8 @@ export class ContentHandler {
       this.puck?.setTheme(config.popupStyle);
     }
 
+    const puckConfigChanged = config.showPuck !== this.config?.showPuck;
+
     // TODO: We should update the tab display if that value changes but we
     // actually need to regenerate the popup in that case since we only generate
     // the HTML for the tabs when tabDisplay is not 'none'.
@@ -314,6 +344,10 @@ export class ContentHandler {
     // the pop-up if needed but currently you need to change tabs to tweak
     // the config so the popup probably won't be showing anyway.
     this.config = { ...config };
+
+    if (puckConfigChanged) {
+      this.applyPuckConfig();
+    }
   }
 
   detach() {
@@ -325,16 +359,20 @@ export class ContentHandler {
     window.removeEventListener('message', this.onContentMessage);
     window.removeEventListener('pointermove', this.onIframePointerMove);
 
+    this.hoverDeviceMediaQuery?.removeEventListener(
+      'change',
+      this.onHoverMediaQueryChange
+    );
+    this.hoverDeviceMediaQuery = undefined;
+
     this.clearResult();
+    this.tearDownPuck();
+
     this.textHighlighter.detach();
     this.copyMode = false;
-    this.puck?.unmount();
-    this.puck = null;
     this.safeAreaProvider?.unmount();
-    this.safeAreaProvider = null;
 
     removePopup();
-    removePuck();
     removeSafeAreaProvider();
   }
 
@@ -694,6 +732,18 @@ export class ContentHandler {
     // If we entered typing mode clear the highlight.
     if (this.typingMode) {
       this.clearResult({ currentElement: this.lastMouseTarget });
+    }
+  }
+
+  onHoverMediaQueryChange(ev: MediaQueryListEvent) {
+    if (this.config.showPuck !== 'auto') {
+      return;
+    }
+
+    if (ev.matches && this.puck) {
+      this.tearDownPuck();
+    } else if (!ev.matches && !this.puck) {
+      this.setUpPuck();
     }
   }
 
@@ -1782,19 +1832,8 @@ declare global {
       removePopup();
       removePuck();
       removeSafeAreaProvider();
-      contentHandler = new ContentHandler(config);
-      const safeAreaProvider = contentHandler.setUpSafeAreaProvider({
-        doc: document,
-      });
 
-      // Render and enable the puck only on the top frame.
-      if (isTopMostWindow() && __ENABLE_PUCK__) {
-        contentHandler.setUpPuck({
-          safeAreaProvider,
-          doc: document,
-          theme: config.popupStyle,
-        });
-      }
+      contentHandler = new ContentHandler(config);
     }
 
     // If we are running in "activeTab" mode we will get passed our tab ID

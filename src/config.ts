@@ -13,8 +13,6 @@
 import Bugsnag from '@bugsnag/browser';
 import { browser } from 'webextension-polyfill-ts';
 
-import { dbLanguages, DbLanguageId } from './db-languages';
-import { ExtensionStorageError } from './extension-storage-error';
 import {
   AccentDisplay,
   ContentConfig,
@@ -22,6 +20,9 @@ import {
   PartOfSpeechDisplay,
   TabDisplay,
 } from './content-config';
+import { dbLanguages, DbLanguageId } from './db-languages';
+import { ExtensionStorageError } from './extension-storage-error';
+import { isObject } from './is-object';
 import {
   ReferenceAbbreviation,
   convertLegacyReference,
@@ -63,6 +64,9 @@ interface Settings {
   holdToShowImageKeys?: string;
   kanjiReferencesV2?: KanjiReferenceFlagsV2;
   keys?: Partial<StoredKeyboardKeys>;
+  localSettings?: {
+    showPuck?: 'show' | 'hide';
+  };
   noTextHighlight?: boolean;
   popupStyle?: string;
   posDisplay?: PartOfSpeechDisplay;
@@ -155,8 +159,15 @@ export class Config {
     let settings;
     try {
       settings = await browser.storage.sync.get(null);
-    } catch (e) {
+    } catch {
       settings = {};
+    }
+    try {
+      settings.localSettings = (
+        await browser.storage.local.get('settings')
+      ).settings;
+    } catch {
+      // Ignore
     }
     this._settings = settings;
     await this.upgradeSettings();
@@ -199,7 +210,7 @@ export class Config {
   }
 
   async onChange(changes: ChangeDict, areaName: string) {
-    if (areaName !== 'sync') {
+    if (areaName !== 'sync' && areaName !== 'local') {
       return;
     }
 
@@ -207,8 +218,13 @@ export class Config {
     // this class.
     await this._readSettings();
 
+    // Extract the changes in a suitable form
+    const updatedChanges =
+      areaName === 'sync'
+        ? { ...changes }
+        : this.extractLocalSettingChanges(changes);
+
     // Fill in default setting values
-    const updatedChanges: ChangeDict = { ...changes };
     for (const key of Object.keys(updatedChanges)) {
       switch (key) {
         case 'dictLang':
@@ -239,9 +255,37 @@ export class Config {
       }
     }
 
+    if (!Object.keys(updatedChanges).length) {
+      return;
+    }
+
     for (const listener of this._changeListeners) {
       listener(updatedChanges);
     }
+  }
+
+  extractLocalSettingChanges(changes: Readonly<ChangeDict>): ChangeDict {
+    if (typeof changes.settings !== 'object' || !isObject(changes.settings)) {
+      return {};
+    }
+
+    const settingsChange = changes.settings;
+    const settings = [
+      ...new Set([
+        ...Object.keys(settingsChange.newValue || {}),
+        ...Object.keys(settingsChange.oldValue || {}),
+      ]),
+    ];
+
+    const result: ChangeDict = {};
+    for (const setting of settings) {
+      result[setting] = {
+        newValue: settingsChange.newValue?.[setting],
+        oldValue: settingsChange.oldValue?.[setting],
+      };
+    }
+
+    return result;
   }
 
   addChangeListener(callback: ChangeCallback) {
@@ -678,6 +722,28 @@ export class Config {
     browser.storage.sync.set({ showPriority: value });
   }
 
+  // showPuck (local): Defaults to 'auto'
+
+  get showPuck(): 'show' | 'hide' | 'auto' {
+    return this._settings.localSettings?.showPuck || 'auto';
+  }
+
+  set showPuck(value: 'show' | 'hide' | 'auto') {
+    const storedSetting = this._settings.localSettings?.showPuck || 'auto';
+    if (storedSetting === value) {
+      return;
+    }
+
+    const localSettings = { ...this._settings.localSettings };
+    if (value === 'auto') {
+      delete localSettings.showPuck;
+    } else {
+      localSettings.showPuck = value;
+    }
+    this._settings.localSettings = localSettings;
+    browser.storage.local.set({ settings: localSettings });
+  }
+
   // showRomaji: Defaults to false
 
   get showRomaji(): boolean {
@@ -771,6 +837,7 @@ export class Config {
       readingOnly: this.readingOnly,
       showKanjiComponents: this.showKanjiComponents,
       showPriority: this.showPriority,
+      showPuck: this.showPuck,
       showRomaji: this.showRomaji,
       tabDisplay: this.tabDisplay,
     };

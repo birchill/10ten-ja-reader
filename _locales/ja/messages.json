@@ -1521,6 +1521,10 @@
       }
     }
   },
+  "options_lookup_puck_heading": {
+    "message": "検索用の丸いボタン",
+    "description": "Heading for the section containing options controlling the lookup puck used on touch devices"
+  },
   "options_name_data_name": {
     "message": "人名データ",
     "description": "The name for the name database data set"
@@ -1617,6 +1621,22 @@
   "options_show_priority": {
     "message": "頻度の高い（★）又はある程度の高い（☆）のマーカーを表示",
     "description": "Label for enabling the ★ and ☆ markers next to dictionary headwords to indicate they occur frequently  or somewhat frequently respectively"
+  },
+  "options_show_puck_label": {
+    "message": "丸いボタンを表示する：",
+    "description": "Leading text for options for when to display the puck"
+  },
+  "options_show_puck_option_auto": {
+    "message": "自動",
+    "description": "Option to have 10ten automatically determine when to show the puck"
+  },
+  "options_show_puck_option_hide": {
+    "message": "非表示",
+    "description": "Option to always hide the puck"
+  },
+  "options_show_puck_option_show": {
+    "message": "表示",
+    "description": "Option to always show the puck"
   },
   "options_show_romaji": {
     "message": "ローマ字を表示"

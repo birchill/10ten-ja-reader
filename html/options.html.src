@@ -196,6 +196,26 @@
           <p>__MSG_options_popup_keys_subheading__</p>
           <div class="panel-section key-grid" id=key-grid></div>
         </div>
+        <!--#if enable_puck-->
+        <div class="panel-section panel-section-header">
+          <h2 class=text-section-header>__MSG_options_lookup_puck_heading__</h2>
+        </div>
+        <div class="panel-section panel-section-formElements">
+          <p>__MSG_options_show_puck_label__</p>
+          <div class="browser-style">
+            <input type=radio name="showPuck" id="showPuck-auto" value="auto">
+            <label for="showPuck-auto">__MSG_options_show_puck_option_auto__</label>
+          </div>
+          <div class="browser-style">
+            <input type=radio name="showPuck" id="showPuck-show" value="show">
+            <label for="showPuck-show">__MSG_options_show_puck_option_show__</label>
+          </div>
+          <div class="browser-style">
+            <input type=radio name="showPuck" id="showPuck-hide" value="hide">
+            <label for="showPuck-hide">__MSG_options_show_puck_option_hide__</label>
+          </div>
+        </div>
+        <!--#endif-->
         <div class="panel-section panel-section-header">
           <h2 class=text-section-header>__MSG_options_dictionary_language_heading__</h2>
         </div>
