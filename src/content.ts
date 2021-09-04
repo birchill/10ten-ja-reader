@@ -265,6 +265,8 @@ export class ContentHandler {
       // Also, we need to listen to pointer events so we can forward them to the
       // top frame in case it is showing the puck.
       window.addEventListener('pointermove', this.onIframePointerMove);
+      window.addEventListener('pointerup', this.onIframePointerUpOrCancel);
+      window.addEventListener('pointercancel', this.onIframePointerUpOrCancel);
     }
 
     this.applyPuckConfig();
@@ -334,6 +336,8 @@ export class ContentHandler {
     window.removeEventListener('focusin', this.onFocusIn);
     window.removeEventListener('message', this.onContentMessage);
     window.removeEventListener('pointermove', this.onIframePointerMove);
+    window.removeEventListener('pointerup', this.onIframePointerUpOrCancel);
+    window.removeEventListener('pointercancel', this.onIframePointerUpOrCancel);
 
     this.clearResult();
     this.tearDownPuck();
@@ -347,7 +351,7 @@ export class ContentHandler {
   }
 
   // On any 'pointermove' events fired at an iframe window,
-  // post a 'moveEarth' message back up to the top frame.
+  // post a 'movePuck' message back up to the top frame.
   //
   // This way, we can tell the top frame to update the
   // position of the puck's earth component despite our
@@ -356,9 +360,29 @@ export class ContentHandler {
     const { clientX, clientY } = event;
     getTopMostWindow().postMessage<ContentMessage>(
       {
-        kind: '10ten(ja):moveEarth',
+        kind: '10ten(ja):movePuck',
         clientX,
         clientY,
+      },
+      '*'
+    );
+  }
+
+  // On any 'pointerup' or 'pointercancel' event received by the
+  // iframe, stop dragging the puck.
+  //
+  // Were this event received on the top frame, we'd be able to
+  // check whether it targeted the puck, and thus whether it might
+  // progress its single-click or double-click state. In such case,
+  // we'd also call preventDefault() on the event to prevent
+  // double-taps resulting in a zoom.
+  //
+  // This is all impossible in an iframe, so we just won't support
+  // single-click/double-click on the puck while it's over an iframe.
+  onIframePointerUpOrCancel(event: PointerEvent) {
+    getTopMostWindow().postMessage<ContentMessage>(
+      {
+        kind: '10ten(ja):stopDraggingPuck',
       },
       '*'
     );
@@ -814,7 +838,7 @@ export class ContentHandler {
         }
         break;
 
-      case '10ten(ja):moveEarth':
+      case '10ten(ja):movePuck':
         {
           if (!this.puck || !isTopMostWindow()) {
             return;
@@ -837,6 +861,21 @@ export class ContentHandler {
             clientY: clientY + iframeOriginPoint.y,
           });
           this.puck.onWindowPointerMove(topFrameEvent);
+        }
+        break;
+
+      case '10ten(ja):stopDraggingPuck':
+        {
+          if (!this.puck || !isTopMostWindow()) {
+            return;
+          }
+
+          if (!isMessageSourceWindow(ev.source)) {
+            console.warn('Unexpected message source');
+            return;
+          }
+
+          this.puck.stopDraggingPuck();
         }
         break;
 
@@ -916,7 +955,7 @@ export class ContentHandler {
         }
         break;
 
-      case '10ten(ja):moonMoved': {
+      case '10ten(ja):puckTargetMoved': {
         const { clientX, clientY } = ev.data;
         const mouseEvent = new MouseEvent('mousemove', {
           // Make sure the event bubbles up to the listener on the window

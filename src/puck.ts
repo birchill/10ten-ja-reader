@@ -344,7 +344,7 @@ export class LookupPuck {
 
       contentWindow.postMessage<ContentMessage>(
         {
-          kind: '10ten(ja):moonMoved',
+          kind: '10ten(ja):puckTargetMoved',
           clientX: targetX - x,
           clientY: targetY - y,
         },
@@ -421,7 +421,7 @@ export class LookupPuck {
   };
 
   // May be called manually (without an event), or upon 'pointerup' or 'pointercancel'.
-  private readonly stopDraggingPuck = (event?: PointerEvent) => {
+  readonly stopDraggingPuck = (event?: PointerEvent) => {
     if (this.puck) {
       this.puck.style.pointerEvents = 'revert';
       this.puck.classList.remove('dragging');
@@ -435,8 +435,8 @@ export class LookupPuck {
     if (!event) {
       if (this.clickStateHasTimeout(this.clickState)) {
         window.clearTimeout(this.clickState.timeout);
-        this.clickState = { kind: 'idle' };
       }
+      this.clickState = { kind: 'idle' };
       return;
     }
 
