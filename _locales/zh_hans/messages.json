@@ -1089,6 +1089,10 @@
     "message": "启用 10ten reader",
     "description": "Context menu item to enable the extension."
   },
+  "menu_enable_puck": {
+    "message": "启用用于搜索的圆形按钮",
+    "description": "Context menu item to enable the puck."
+  },
   "misc_label_abbr": {
     "message": "略",
     "description": "Label used to describe senses with the 'abbr' (abbrev.) annotation"

@@ -1092,6 +1092,10 @@
     "message": "10ten readerを有効にする",
     "description": "Context menu item to enable the extension."
   },
+  "menu_enable_puck": {
+    "message": "検索用の丸いボタンを有効にする",
+    "description": "Context menu item to enable the puck."
+  },
   "misc_label_abbr": {
     "message": "略",
     "description": "Label used to describe senses with the 'abbr' (abbrev.) annotation"

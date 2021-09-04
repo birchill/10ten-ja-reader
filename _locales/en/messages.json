@@ -1089,6 +1089,10 @@
     "message": "Enable 10ten reader",
     "description": "Context menu item to enable the extension."
   },
+  "menu_enable_puck": {
+    "message": "Enable lookup puck",
+    "description": "Context menu item to enable the puck."
+  },
   "misc_label_abbr": {
     "message": "abbrev.",
     "description": "Label used to describe senses with the 'abbr' (abbrev.) annotation"

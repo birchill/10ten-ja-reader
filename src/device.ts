@@ -48,3 +48,13 @@ export function probablyHasPhysicalKeyboard(): boolean {
   // the value of this property to be for a device without a physical keyboard.
   return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 }
+
+// Detect if the primary input means is capable of hovering. If it is NOT
+// we show the puck by default.
+//
+// e.g. if we're on a laptop device that has a touchpad or mouse we generally
+// _don't_ want to show the puck unless the user explicitly enables it.
+// For a smartphone or tablet, however, we want to show the puck by default.
+export function getHoverCapabilityMql(): MediaQueryList {
+  return window.matchMedia('(hover: hover)');
+}

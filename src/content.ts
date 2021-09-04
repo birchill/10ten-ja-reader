@@ -106,6 +106,7 @@ import { TextRange, textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
 import { getTopMostWindow, isTopMostWindow } from './top-window';
 import { BackgroundMessageSchema } from './background-message';
+import { getHoverCapabilityMql } from './device';
 
 const enum HoldToShowKeyType {
   Text = 1 << 0,
@@ -289,7 +290,7 @@ export class ContentHandler {
       if (!this.hoverDeviceMediaQuery) {
         // We don't show the puck if the primary input device is capable of
         // hovering.
-        this.hoverDeviceMediaQuery = window.matchMedia('(hover: hover)');
+        this.hoverDeviceMediaQuery = getHoverCapabilityMql();
       }
       this.hoverDeviceMediaQuery.addEventListener(
         'change',

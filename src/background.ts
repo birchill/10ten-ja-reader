@@ -73,6 +73,7 @@ import {
 } from './jpdict';
 import { shouldRequestPersistentStorage } from './quota-management';
 import { SearchOtherResult, SearchWordsResult } from './search-result';
+import { getHoverCapabilityMql } from './device';
 
 //
 // Setup bugsnag
@@ -116,7 +117,7 @@ tabManager.addListener(async (enabled: boolean, tabId: number | undefined) => {
       await browser.contextMenus.update('context-toggle', {
         checked: enabled,
       });
-    } catch (_e) {
+    } catch {
       // Ignore
     }
   }
@@ -165,6 +166,11 @@ config.addChangeListener(async (changes) => {
     }
   }
 
+  // Update enable puck context menu as needed
+  if (changes.hasOwnProperty('showPuck')) {
+    updateEnablePuckContextMenuFromConfig((changes as any).showPuck.newValue);
+  }
+
   // Update dictionary language
   if (changes.hasOwnProperty('dictLang')) {
     const newLang = (changes as any).dictLang.newValue;
@@ -190,6 +196,8 @@ config.ready.then(async () => {
   if (config.contextMenuEnable) {
     addContextMenu();
   }
+
+  updateEnablePuckContextMenuFromConfig(config.showPuck);
 });
 
 //
@@ -326,7 +334,7 @@ async function notifyDbListeners(specifiedListener?: Browser.Runtime.Port) {
 }
 
 //
-// Context menu
+// Standard context menu
 //
 
 async function addContextMenu() {
@@ -412,6 +420,78 @@ async function removeContextMenu() {
   try {
     await browser.contextMenus.remove('context-toggle');
   } catch (e) {
+    // Ignore
+  }
+}
+
+//
+// Enable puck context menu
+//
+
+let createdEnablePuckContextMenu = false;
+let hoverCapabilityMql: MediaQueryList | undefined;
+
+async function updateEnablePuckContextMenuFromConfig(
+  showPuck: 'auto' | 'show' | 'hide'
+) {
+  if (!__ENABLE_PUCK__) {
+    return;
+  }
+
+  let enabled;
+  if (showPuck === 'auto') {
+    if (!hoverCapabilityMql) {
+      hoverCapabilityMql = getHoverCapabilityMql();
+    }
+    hoverCapabilityMql.addEventListener(
+      'change',
+      updateEnablePuckContextMenuFromMql
+    );
+    enabled = !hoverCapabilityMql.matches;
+  } else {
+    enabled = showPuck === 'show';
+    hoverCapabilityMql?.removeEventListener(
+      'change',
+      updateEnablePuckContextMenuFromMql
+    );
+  }
+
+  try {
+    if (!createdEnablePuckContextMenu) {
+      browser.contextMenus.create(
+        {
+          id: 'context-enable-puck',
+          type: 'checkbox',
+          title: browser.i18n.getMessage('menu_enable_puck'),
+          onclick: (info) => {
+            config.showPuck = info.checked ? 'show' : 'hide';
+          },
+          contexts: ['browser_action'],
+          checked: enabled,
+        },
+        () => {
+          if (!browser.runtime.lastError) {
+            createdEnablePuckContextMenu = true;
+          }
+        }
+      );
+    } else {
+      browser.contextMenus.update('context-enable-puck', {
+        checked: enabled,
+      });
+    }
+  } catch {
+    // Give up. We're probably on a platform that doesn't support the
+    // contextMenus API such as Firefox for Android.
+  }
+}
+
+function updateEnablePuckContextMenuFromMql(ev: MediaQueryListEvent) {
+  try {
+    browser.contextMenus.update('context-enable-puck', {
+      checked: !ev.matches,
+    });
+  } catch {
     // Ignore
   }
 }
