@@ -83,7 +83,6 @@ export class LookupPuck {
   private targetOffset: { x: number; y: number } = { x: 0, y: 0 };
   private targetOrientation: 'above' | 'below' = 'above';
   private cachedViewportDimensions: ViewportDimensions | null = null;
-  private isBeingPressedOrDragged: boolean = false;
 
   constructor(private safeAreaProvider: SafeAreaProvider) {}
 
@@ -283,7 +282,12 @@ export class LookupPuck {
       !this.earthWidth ||
       !this.earthHeight ||
       !this.enabled ||
-      !this.isBeingPressedOrDragged
+      // i.e. if it's neither being pressed nor dragged
+      !(
+        this.clickState.kind === 'dragging' ||
+        this.clickState.kind === 'firstpointerdown' ||
+        this.clickState.kind === 'secondpointerdown'
+      )
     ) {
       return;
     }
@@ -398,7 +402,6 @@ export class LookupPuck {
     event.preventDefault();
     event.stopPropagation();
 
-    this.isBeingPressedOrDragged = true;
     this.puck.style.pointerEvents = 'none';
     this.puck.classList.add('dragging');
     this.puck.setPointerCapture(event.pointerId);
@@ -420,7 +423,6 @@ export class LookupPuck {
 
   // May be called manually (without an event), or upon 'pointerup' or 'pointercancel'.
   private readonly stopDraggingPuck = (event?: PointerEvent) => {
-    this.isBeingPressedOrDragged = false;
     if (this.puck) {
       this.puck.style.pointerEvents = 'revert';
       this.puck.classList.remove('dragging');
