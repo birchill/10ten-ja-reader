@@ -357,7 +357,7 @@ async function addContextMenu() {
 
   // We need to know if the context menu should be initially checked or not.
   //
-  // That's not necessarily straight forward, however, since different windows
+  // That's not necessarily straightforward, however, since different windows
   // can have different enabled states.
   //
   // So if we get multiple windows, we should try to find out which one is the
@@ -375,10 +375,8 @@ async function addContextMenu() {
       const match = currentWindowTabs.length
         ? enabledStates.find((s) => s.tabId === currentWindowTabs[0].id)
         : undefined;
-      if (match) {
-        enabled = match.enabled;
-      }
-    } catch (_e) {
+      enabled = !!match?.enabled;
+    } catch {
       // Ignore
     }
   }
