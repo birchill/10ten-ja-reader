@@ -1,8 +1,8 @@
-// This is a wrapper about the browser.sync.settings API which provides
+// This is largely a wrapper about the browser.sync.settings API which provides
 // following important features:
 //
 // * Only options that are explicitly set get saved. (This prevents the
-//   FoxClocks problem where, when you install the FoxClocks add-on on a new
+//   "FoxClocks problem" where, when you install the FoxClocks add-on on a new
 //   computer it sets all the settings to their default values before a sync
 //   happens so then all other synchronized computers end up having their
 //   settings reset to their default values.)
