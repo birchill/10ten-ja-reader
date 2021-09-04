@@ -106,7 +106,6 @@ import { TextRange, textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
 import { getTopMostWindow, isTopMostWindow } from './top-window';
 import { BackgroundMessageSchema } from './background-message';
-import { getHoverCapabilityMql } from './device';
 
 const enum HoldToShowKeyType {
   Text = 1 << 0,
@@ -185,9 +184,6 @@ export class ContentHandler {
   // Keyboard support
   private kanjiLookupMode: boolean = false;
 
-  // Puck support
-  private hoverDeviceMediaQuery: MediaQueryList | undefined;
-
   // Used to try to detect when we are typing so we know when to ignore key
   // events.
   private typingMode: boolean = false;
@@ -242,7 +238,6 @@ export class ContentHandler {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onFocusIn = this.onFocusIn.bind(this);
-    this.onHoverMediaQueryChange = this.onHoverMediaQueryChange.bind(this);
     this.onContentMessage = this.onContentMessage.bind(this);
 
     window.addEventListener('mousemove', this.onMouseMove);
@@ -285,27 +280,7 @@ export class ContentHandler {
       return;
     }
 
-    let show: boolean;
-    if (this.config.showPuck === 'auto') {
-      if (!this.hoverDeviceMediaQuery) {
-        // We don't show the puck if the primary input device is capable of
-        // hovering.
-        this.hoverDeviceMediaQuery = getHoverCapabilityMql();
-      }
-      this.hoverDeviceMediaQuery.addEventListener(
-        'change',
-        this.onHoverMediaQueryChange
-      );
-      show = !this.hoverDeviceMediaQuery.matches;
-    } else {
-      this.hoverDeviceMediaQuery?.removeEventListener(
-        'change',
-        this.onHoverMediaQueryChange
-      );
-      show = this.config.showPuck === 'show';
-    }
-
-    if (show) {
+    if (this.config.showPuck === 'show') {
       this.setUpPuck();
     } else {
       this.tearDownPuck();
@@ -359,12 +334,6 @@ export class ContentHandler {
     window.removeEventListener('focusin', this.onFocusIn);
     window.removeEventListener('message', this.onContentMessage);
     window.removeEventListener('pointermove', this.onIframePointerMove);
-
-    this.hoverDeviceMediaQuery?.removeEventListener(
-      'change',
-      this.onHoverMediaQueryChange
-    );
-    this.hoverDeviceMediaQuery = undefined;
 
     this.clearResult();
     this.tearDownPuck();
@@ -733,18 +702,6 @@ export class ContentHandler {
     // If we entered typing mode clear the highlight.
     if (this.typingMode) {
       this.clearResult({ currentElement: this.lastMouseTarget });
-    }
-  }
-
-  onHoverMediaQueryChange(ev: MediaQueryListEvent) {
-    if (this.config.showPuck !== 'auto') {
-      return;
-    }
-
-    if (ev.matches && this.puck) {
-      this.tearDownPuck();
-    } else if (!ev.matches && !this.puck) {
-      this.setUpPuck();
     }
   }
 

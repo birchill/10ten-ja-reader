@@ -73,7 +73,6 @@ import {
 } from './jpdict';
 import { shouldRequestPersistentStorage } from './quota-management';
 import { SearchOtherResult, SearchWordsResult } from './search-result';
-import { getHoverCapabilityMql } from './device';
 
 //
 // Setup bugsnag
@@ -167,8 +166,8 @@ config.addChangeListener(async (changes) => {
   }
 
   // Update enable puck context menu as needed
-  if (changes.hasOwnProperty('showPuck')) {
-    updateEnablePuckContextMenuFromConfig((changes as any).showPuck.newValue);
+  if (changes.hasOwnProperty('computed:showPuck')) {
+    updateEnablePuckContextMenu((changes as any)['computed:showPuck'].newValue);
   }
 
   // Update dictionary language
@@ -197,7 +196,7 @@ config.ready.then(async () => {
     addContextMenu();
   }
 
-  updateEnablePuckContextMenuFromConfig(config.showPuck);
+  updateEnablePuckContextMenu(config.contentConfig.showPuck);
 });
 
 //
@@ -427,32 +426,13 @@ async function removeContextMenu() {
 //
 
 let createdEnablePuckContextMenu = false;
-let hoverCapabilityMql: MediaQueryList | undefined;
 
-async function updateEnablePuckContextMenuFromConfig(
-  showPuck: 'auto' | 'show' | 'hide'
-) {
+async function updateEnablePuckContextMenu(showPuck: 'show' | 'hide') {
   if (!__ENABLE_PUCK__) {
     return;
   }
 
-  let enabled;
-  if (showPuck === 'auto') {
-    if (!hoverCapabilityMql) {
-      hoverCapabilityMql = getHoverCapabilityMql();
-    }
-    hoverCapabilityMql.addEventListener(
-      'change',
-      updateEnablePuckContextMenuFromMql
-    );
-    enabled = !hoverCapabilityMql.matches;
-  } else {
-    enabled = showPuck === 'show';
-    hoverCapabilityMql?.removeEventListener(
-      'change',
-      updateEnablePuckContextMenuFromMql
-    );
-  }
+  const enabled = showPuck === 'show';
 
   try {
     if (!createdEnablePuckContextMenu) {
@@ -481,16 +461,6 @@ async function updateEnablePuckContextMenuFromConfig(
   } catch {
     // Give up. We're probably on a platform that doesn't support the
     // contextMenus API such as Firefox for Android.
-  }
-}
-
-function updateEnablePuckContextMenuFromMql(ev: MediaQueryListEvent) {
-  try {
-    browser.contextMenus.update('context-enable-puck', {
-      checked: !ev.matches,
-    });
-  } catch {
-    // Ignore
   }
 }
 

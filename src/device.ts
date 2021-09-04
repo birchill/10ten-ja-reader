@@ -55,6 +55,7 @@ export function probablyHasPhysicalKeyboard(): boolean {
 // e.g. if we're on a laptop device that has a touchpad or mouse we generally
 // _don't_ want to show the puck unless the user explicitly enables it.
 // For a smartphone or tablet, however, we want to show the puck by default.
-export function getHoverCapabilityMql(): MediaQueryList {
-  return window.matchMedia('(hover: hover)');
+export function getHoverCapabilityMql(): MediaQueryList | undefined {
+  // The undefined case here is just for the sake of our unit tests.
+  return window.matchMedia ? window.matchMedia('(hover: hover)') : undefined;
 }

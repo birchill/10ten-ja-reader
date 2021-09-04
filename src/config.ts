@@ -21,6 +21,7 @@ import {
   TabDisplay,
 } from './content-config';
 import { dbLanguages, DbLanguageId } from './db-languages';
+import { getHoverCapabilityMql } from './device';
 import { ExtensionStorageError } from './extension-storage-error';
 import { isObject } from './is-object';
 import {
@@ -143,6 +144,7 @@ export class Config {
   private readPromise: Promise<void>;
   private changeListeners: ChangeCallback[] = [];
   private previousDefaultLang: DbLanguageId;
+  private hoverCapabilityMql: MediaQueryList | undefined;
 
   constructor() {
     this.readPromise = this.readSettings();
@@ -153,6 +155,8 @@ export class Config {
 
     this.onLanguageChange = this.onLanguageChange.bind(this);
     window.addEventListener('languagechange', this.onLanguageChange);
+
+    this.onHoverCapabilityChange = this.onHoverCapabilityChange.bind(this);
   }
 
   private async readSettings() {
@@ -171,6 +175,7 @@ export class Config {
     }
     this.settings = settings;
     await this.upgradeSettings();
+    this.maybeListenToHoverCapabilityChanges();
   }
 
   private async upgradeSettings() {
@@ -257,6 +262,13 @@ export class Config {
 
     if (!Object.keys(updatedChanges).length) {
       return;
+    }
+
+    // Fill out computed values
+    if (updatedChanges.hasOwnProperty('showPuck')) {
+      updatedChanges['computed:showPuck'] = {
+        newValue: this.contentConfig.showPuck,
+      };
     }
 
     for (const listener of this.changeListeners) {
@@ -743,7 +755,43 @@ export class Config {
       localSettings.showPuck = value;
     }
     this.settings.localSettings = localSettings;
+    // We should make sure to set up the MediaQueryList _before_ updating local
+    // storage since this will ensure that this.hoverCapabilityMql is
+    // initialized before any StorageChange is dispatched.
+    this.maybeListenToHoverCapabilityChanges();
     browser.storage.local.set({ settings: localSettings });
+  }
+
+  private maybeListenToHoverCapabilityChanges() {
+    if (this.showPuck === 'auto') {
+      this.hoverCapabilityMql =
+        this.hoverCapabilityMql || getHoverCapabilityMql();
+      this.hoverCapabilityMql?.addEventListener(
+        'change',
+        this.onHoverCapabilityChange
+      );
+    } else {
+      this.hoverCapabilityMql?.removeEventListener(
+        'change',
+        this.onHoverCapabilityChange
+      );
+    }
+  }
+
+  private onHoverCapabilityChange(ev: MediaQueryListEvent) {
+    if (this.showPuck !== 'auto') {
+      return;
+    }
+
+    const changes: ChangeDict = {
+      'computed:showPuck': {
+        newValue: ev.matches ? 'hide' : 'show',
+      },
+    };
+
+    for (const listener of this.changeListeners) {
+      listener(changes);
+    }
   }
 
   // showRomaji: Defaults to false
@@ -839,7 +887,12 @@ export class Config {
       readingOnly: this.readingOnly,
       showKanjiComponents: this.showKanjiComponents,
       showPriority: this.showPriority,
-      showPuck: this.showPuck,
+      showPuck:
+        this.showPuck === 'auto'
+          ? this.hoverCapabilityMql?.matches
+            ? 'hide'
+            : 'show'
+          : this.showPuck,
       showRomaji: this.showRomaji,
       tabDisplay: this.tabDisplay,
     };
