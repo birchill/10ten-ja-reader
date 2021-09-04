@@ -35,16 +35,30 @@ type ClickState =
       kind: 'idle';
     }
   | {
-      kind: 'gotpointerdown';
+      kind: 'firstpointerdown';
+      // This is the timeout we use to detect if it's a drag or not
+      timeout: number;
+    }
+  | {
+      kind: 'dragging';
     }
   | {
       kind: 'firstclick';
+      // This is the timeout we use to detect if it's a double-click or not
       timeout: number;
     }
   | {
-      kind: 'firstclickwithpointerdown';
+      kind: 'secondpointerdown';
+      // This is the same timeout as we start when we enter the firstclick state
       timeout: number;
     };
+
+interface ClickStateBase<T extends string> {
+  kind: T;
+}
+interface ClickStateWithTimeout<T extends string> extends ClickStateBase<T> {
+  timeout: number;
+}
 
 export class LookupPuck {
   public static id: string = 'tenten-ja-puck';
@@ -69,7 +83,7 @@ export class LookupPuck {
   private targetOffset: { x: number; y: number } = { x: 0, y: 0 };
   private targetOrientation: 'above' | 'below' = 'above';
   private cachedViewportDimensions: ViewportDimensions | null = null;
-  private isBeingDragged: boolean = false;
+  private isBeingPressedOrDragged: boolean = false;
 
   constructor(private safeAreaProvider: SafeAreaProvider) {}
 
@@ -269,7 +283,7 @@ export class LookupPuck {
       !this.earthWidth ||
       !this.earthHeight ||
       !this.enabled ||
-      !this.isBeingDragged
+      !this.isBeingPressedOrDragged
     ) {
       return;
     }
@@ -347,7 +361,12 @@ export class LookupPuck {
   };
 
   private clickState: ClickState = { kind: 'idle' };
-  private static readonly doubleClickHysteresis = 300;
+  private clickStateHasTimeout<T extends ClickState['kind']>(
+    clickState: ClickStateBase<T>
+  ): clickState is ClickStateWithTimeout<T> {
+    return typeof (clickState as ClickStateWithTimeout<T>).timeout === 'number';
+  }
+  private static readonly clickHysteresis = 300;
 
   private readonly onPuckPointerDown = (event: PointerEvent) => {
     if (!this.enabled || !this.puck) {
@@ -355,18 +374,31 @@ export class LookupPuck {
     }
 
     if (this.clickState.kind === 'idle') {
-      this.clickState = { kind: 'gotpointerdown' };
+      // If no transition to 'pointerup' occurs during the click hysteresis
+      // period, then we transition to 'dragging'. This avoids onPuckClick()
+      // being fired every time the puck gets parked.
+      this.clickState = {
+        kind: 'firstpointerdown',
+        timeout: window.setTimeout(() => {
+          if (this.clickState.kind === 'firstpointerdown') {
+            this.clickState = { kind: 'dragging' };
+          }
+        }, LookupPuck.clickHysteresis),
+      };
     } else if (this.clickState.kind === 'firstclick') {
+      // Carry across the timeout from 'firstclick', as we still want to
+      // transition back to 'idle' if no 'pointerdown' event came within
+      // the hysteresis period of the preceding 'firstclick' state.
       this.clickState = {
         ...this.clickState,
-        kind: 'firstclickwithpointerdown',
+        kind: 'secondpointerdown',
       };
     }
 
     event.preventDefault();
     event.stopPropagation();
 
-    this.isBeingDragged = true;
+    this.isBeingPressedOrDragged = true;
     this.puck.style.pointerEvents = 'none';
     this.puck.classList.add('dragging');
     this.puck.setPointerCapture(event.pointerId);
@@ -376,7 +408,7 @@ export class LookupPuck {
     window.addEventListener('pointercancel', this.stopDraggingPuck);
   };
 
-  private readonly onPuckClick = () => {
+  private readonly onPuckSingleClick = () => {
     // TODO: toggle whether the puck is enabled or disabled.
   };
 
@@ -388,7 +420,7 @@ export class LookupPuck {
 
   // May be called manually (without an event), or upon 'pointerup' or 'pointercancel'.
   private readonly stopDraggingPuck = (event?: PointerEvent) => {
-    this.isBeingDragged = false;
+    this.isBeingPressedOrDragged = false;
     if (this.puck) {
       this.puck.style.pointerEvents = 'revert';
       this.puck.classList.remove('dragging');
@@ -399,35 +431,47 @@ export class LookupPuck {
     window.removeEventListener('pointerup', this.stopDraggingPuck);
     window.removeEventListener('pointercancel', this.stopDraggingPuck);
 
-    if (event) {
-      const targetIsPuckOrRoot =
-        event.target === this.puck || event.target === this.container;
-      if (event.type === 'pointercancel' || !targetIsPuckOrRoot) {
-        // Stop tracking this click and wait for the next 'pointerdown' to come along instead.
-        if (
-          this.clickState.kind === 'firstclick' ||
-          this.clickState.kind === 'firstclickwithpointerdown'
-        ) {
-          window.clearTimeout(this.clickState.timeout);
-        }
+    if (!event) {
+      if (this.clickStateHasTimeout(this.clickState)) {
+        window.clearTimeout(this.clickState.timeout);
         this.clickState = { kind: 'idle' };
-      } else if (event.type === 'pointerup' && targetIsPuckOrRoot) {
-        // Prevent any double-taps turning into a zoom
-        event.preventDefault();
+      }
+      return;
+    }
 
-        if (this.clickState.kind === 'gotpointerdown') {
-          this.clickState = {
-            kind: 'firstclick',
-            timeout: window.setTimeout(() => {
-              this.clickState = { kind: 'idle' };
-            }, LookupPuck.doubleClickHysteresis),
-          };
-          this.onPuckClick();
-        } else if (this.clickState.kind === 'firstclickwithpointerdown') {
-          window.clearTimeout(this.clickState.timeout);
-          this.clickState = { kind: 'idle' };
-          this.onPuckDoubleClick();
-        }
+    const targetIsPuckOrRoot =
+      event.target === this.puck || event.target === this.container;
+    if (event.type === 'pointercancel' || !targetIsPuckOrRoot) {
+      // Stop tracking this click and wait for the next 'pointerdown' to come along instead.
+      if (this.clickStateHasTimeout(this.clickState)) {
+        window.clearTimeout(this.clickState.timeout);
+      }
+      this.clickState = { kind: 'idle' };
+    } else if (event.type === 'pointerup' && targetIsPuckOrRoot) {
+      // Prevent any double-taps turning into a zoom
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (this.clickState.kind === 'firstpointerdown') {
+        // Prevent 'firstpointerdown' transitioning to 'dragging' state.
+        window.clearTimeout(this.clickState.timeout);
+
+        // Wait for the hysteresis period to expire before calling
+        // this.onPuckSingleClick() (to rule out a double-click).
+        this.clickState = {
+          kind: 'firstclick',
+          timeout: window.setTimeout(() => {
+            this.onPuckSingleClick();
+            this.clickState = { kind: 'idle' };
+          }, LookupPuck.clickHysteresis),
+        };
+      } else if (this.clickState.kind === 'secondpointerdown') {
+        window.clearTimeout(this.clickState.timeout);
+
+        this.clickState = { kind: 'idle' };
+        this.onPuckDoubleClick();
+      } else if (this.clickState.kind === 'dragging') {
+        this.clickState = { kind: 'idle' };
       }
     }
   };
@@ -579,12 +623,6 @@ export class LookupPuck {
       this.puck.removeEventListener('pointerdown', this.onPuckPointerDown);
     }
     window.removeEventListener('pointerup', this.noOpPointerUpHandler);
-    if (
-      this.clickState.kind === 'firstclick' ||
-      this.clickState.kind === 'firstclickwithpointerdown'
-    ) {
-      window.clearTimeout(this.clickState.timeout);
-    }
     this.clickState = { kind: 'idle' };
   }
 }
