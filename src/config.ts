@@ -139,14 +139,14 @@ const OFF_BY_DEFAULT_REFERENCES: Set<ReferenceAbbreviation> = new Set([
 ]);
 
 export class Config {
-  private _settings: Settings = {};
-  private _readPromise: Promise<void>;
-  private _changeListeners: ChangeCallback[] = [];
-  private _previousDefaultLang: DbLanguageId;
+  private settings: Settings = {};
+  private readPromise: Promise<void>;
+  private changeListeners: ChangeCallback[] = [];
+  private previousDefaultLang: DbLanguageId;
 
   constructor() {
-    this._readPromise = this._readSettings();
-    this._previousDefaultLang = this.getDefaultLang();
+    this.readPromise = this.readSettings();
+    this.previousDefaultLang = this.getDefaultLang();
 
     this.onChange = this.onChange.bind(this);
     browser.storage.onChanged.addListener(this.onChange);
@@ -155,7 +155,7 @@ export class Config {
     window.addEventListener('languagechange', this.onLanguageChange);
   }
 
-  async _readSettings() {
+  private async readSettings() {
     let settings;
     try {
       settings = await browser.storage.sync.get(null);
@@ -169,19 +169,19 @@ export class Config {
     } catch {
       // Ignore
     }
-    this._settings = settings;
+    this.settings = settings;
     await this.upgradeSettings();
   }
 
-  async upgradeSettings() {
+  private async upgradeSettings() {
     // If we have old kanji reference settings but not new ones, upgrade them.
     if (
-      this._settings.hasOwnProperty('kanjiReferences') &&
-      !this._settings.kanjiReferencesV2
+      this.settings.hasOwnProperty('kanjiReferences') &&
+      !this.settings.kanjiReferencesV2
     ) {
       const newSettings: KanjiReferenceFlagsV2 = {};
       const existingSettings: { [key: string]: boolean } = (
-        this._settings as any
+        this.settings as any
       ).kanjiReferences;
       for (const [ref, enabled] of Object.entries(existingSettings)) {
         const newRef = convertLegacyReference(ref);
@@ -190,7 +190,7 @@ export class Config {
         }
       }
 
-      this._settings.kanjiReferencesV2 = newSettings;
+      this.settings.kanjiReferencesV2 = newSettings;
       try {
         await browser.storage.sync.set({
           kanjiReferencesV2: newSettings,
@@ -206,17 +206,17 @@ export class Config {
   }
 
   get ready(): Promise<void> {
-    return this._readPromise;
+    return this.readPromise;
   }
 
-  async onChange(changes: ChangeDict, areaName: string) {
+  private async onChange(changes: ChangeDict, areaName: string) {
     if (areaName !== 'sync' && areaName !== 'local') {
       return;
     }
 
     // Re-read settings in case the changes were made by a different instance of
     // this class.
-    await this._readSettings();
+    await this.readSettings();
 
     // Extract the changes in a suitable form
     const updatedChanges =
@@ -233,7 +233,7 @@ export class Config {
             updatedChanges.dictLang.newValue = this.dictLang;
           }
           if (!updatedChanges.dictLang.oldValue) {
-            updatedChanges.dictLang.oldValue = this._previousDefaultLang;
+            updatedChanges.dictLang.oldValue = this.previousDefaultLang;
           }
           break;
 
@@ -259,12 +259,14 @@ export class Config {
       return;
     }
 
-    for (const listener of this._changeListeners) {
+    for (const listener of this.changeListeners) {
       listener(updatedChanges);
     }
   }
 
-  extractLocalSettingChanges(changes: Readonly<ChangeDict>): ChangeDict {
+  private extractLocalSettingChanges(
+    changes: Readonly<ChangeDict>
+  ): ChangeDict {
     if (typeof changes.settings !== 'object' || !isObject(changes.settings)) {
       return {};
     }
@@ -289,37 +291,37 @@ export class Config {
   }
 
   addChangeListener(callback: ChangeCallback) {
-    if (this._changeListeners.indexOf(callback) !== -1) {
+    if (this.changeListeners.indexOf(callback) !== -1) {
       return;
     }
-    this._changeListeners.push(callback);
+    this.changeListeners.push(callback);
   }
 
   removeChangeListener(callback: ChangeCallback) {
-    const index = this._changeListeners.indexOf(callback);
+    const index = this.changeListeners.indexOf(callback);
     if (index === -1) {
       return;
     }
-    this._changeListeners.splice(index, 1);
+    this.changeListeners.splice(index, 1);
   }
 
   // accentDisplay: Defaults to binary
 
   get accentDisplay(): AccentDisplay {
-    return typeof this._settings.accentDisplay === 'undefined'
+    return typeof this.settings.accentDisplay === 'undefined'
       ? 'binary'
-      : this._settings.accentDisplay;
+      : this.settings.accentDisplay;
   }
 
   set accentDisplay(value: AccentDisplay) {
     if (
-      typeof this._settings.accentDisplay !== 'undefined' &&
-      this._settings.accentDisplay === value
+      typeof this.settings.accentDisplay !== 'undefined' &&
+      this.settings.accentDisplay === value
     ) {
       return;
     }
 
-    this._settings.accentDisplay = value;
+    this.settings.accentDisplay = value;
     browser.storage.sync.set({ accentDisplay: value });
   }
 
@@ -327,20 +329,20 @@ export class Config {
 
   get contextMenuEnable(): boolean {
     return (
-      typeof this._settings.contextMenuEnable === 'undefined' ||
-      this._settings.contextMenuEnable
+      typeof this.settings.contextMenuEnable === 'undefined' ||
+      this.settings.contextMenuEnable
     );
   }
 
   set contextMenuEnable(value: boolean) {
     if (
-      typeof this._settings.contextMenuEnable !== 'undefined' &&
-      this._settings.contextMenuEnable === value
+      typeof this.settings.contextMenuEnable !== 'undefined' &&
+      this.settings.contextMenuEnable === value
     ) {
       return;
     }
 
-    this._settings.contextMenuEnable = value;
+    this.settings.contextMenuEnable = value;
     browser.storage.sync.set({ contextMenuEnable: value });
   }
 
@@ -350,15 +352,15 @@ export class Config {
   get dictLang(): DbLanguageId {
     return this.useDefaultLang()
       ? this.getDefaultLang()
-      : this._settings.dictLang!;
+      : this.settings.dictLang!;
   }
 
   private useDefaultLang(): boolean {
     // Check that the language that is set is valid. It might be invalid if we
     // deprecated a language or we synced a value from a newer version of the
     // extension.
-    if (this._settings.dictLang) {
-      return !dbLanguages.includes(this._settings.dictLang);
+    if (this.settings.dictLang) {
+      return !dbLanguages.includes(this.settings.dictLang);
     }
 
     return true;
@@ -377,7 +379,7 @@ export class Config {
   }
 
   set dictLang(value: DbLanguageId) {
-    if (this._settings.dictLang && this._settings.dictLang === value) {
+    if (this.settings.dictLang && this.settings.dictLang === value) {
       return;
     }
 
@@ -396,7 +398,7 @@ export class Config {
           }
         );
       });
-      delete this._settings.dictLang;
+      delete this.settings.dictLang;
     } else {
       browser.storage.sync.set({ dictLang: value }).catch(() => {
         Bugsnag.notify(
@@ -406,7 +408,7 @@ export class Config {
           }
         );
       });
-      this._settings.dictLang = value;
+      this.settings.dictLang = value;
     }
   }
 
@@ -418,11 +420,11 @@ export class Config {
     }
 
     const newValue = this.getDefaultLang();
-    if (this._previousDefaultLang !== newValue) {
-      const oldValue = this._previousDefaultLang;
-      this._previousDefaultLang = newValue;
+    if (this.previousDefaultLang !== newValue) {
+      const oldValue = this.previousDefaultLang;
+      this.previousDefaultLang = newValue;
       const changes: ChangeDict = { dictLang: { newValue, oldValue } };
-      for (const listener of this._changeListeners) {
+      for (const listener of this.changeListeners) {
         listener(changes);
       }
     }
@@ -431,49 +433,49 @@ export class Config {
   // hasSwitchedDictionary: Defaults to false
 
   get hasSwitchedDictionary(): boolean {
-    return !!this._settings.hasSwitchedDictionary;
+    return !!this.settings.hasSwitchedDictionary;
   }
 
   setHasSwitchedDictionary() {
-    if (this._settings.hasSwitchedDictionary) {
+    if (this.settings.hasSwitchedDictionary) {
       return;
     }
 
-    this._settings.hasSwitchedDictionary = true;
+    this.settings.hasSwitchedDictionary = true;
     browser.storage.sync.set({ hasSwitchedDictionary: true });
   }
 
   // holdToShowKeys: Defaults to null
 
   get holdToShowKeys(): string | null {
-    return typeof this._settings.holdToShowKeys === 'string'
-      ? this._settings.holdToShowKeys
+    return typeof this.settings.holdToShowKeys === 'string'
+      ? this.settings.holdToShowKeys
       : null;
   }
 
   set holdToShowKeys(value: string | null) {
-    const storedSetting = this._settings.holdToShowKeys || null;
+    const storedSetting = this.settings.holdToShowKeys || null;
     if (value === storedSetting) {
       return;
     }
 
     if (value === null) {
       browser.storage.sync.remove('holdToShowKeys');
-      delete this._settings.holdToShowKeys;
+      delete this.settings.holdToShowKeys;
     } else {
       browser.storage.sync.set({ holdToShowKeys: value });
-      this._settings.holdToShowKeys = value;
+      this.settings.holdToShowKeys = value;
     }
 
     // If holdToShowImageKeys was mirroring this setting, save the previous
     // value as its own value.
-    if (typeof this._settings.holdToShowImageKeys === 'undefined') {
+    if (typeof this.settings.holdToShowImageKeys === 'undefined') {
       this.holdToShowImageKeys = storedSetting;
     }
     // Otherwise, if we have cleared this setting and holdToShowImageKeys was
     // storing 'none' just to differentiate itself from us, we can clear that
     // stored value now.
-    else if (!value && this._settings.holdToShowImageKeys === 'none') {
+    else if (!value && this.settings.holdToShowImageKeys === 'none') {
       this.holdToShowImageKeys = null;
     }
   }
@@ -501,10 +503,10 @@ export class Config {
 
   get holdToShowImageKeys(): string | null {
     // If there is an explicit setting for this value, use that.
-    if (typeof this._settings.holdToShowImageKeys === 'string') {
-      return this._settings.holdToShowImageKeys === 'none'
+    if (typeof this.settings.holdToShowImageKeys === 'string') {
+      return this.settings.holdToShowImageKeys === 'none'
         ? null
-        : this._settings.holdToShowImageKeys;
+        : this.settings.holdToShowImageKeys;
     }
 
     // Otherwise, mirror the holdToShowKeys setting
@@ -519,17 +521,17 @@ export class Config {
       value === null && this.holdToShowKeys ? 'none' : value;
 
     // Ignore null-op changes
-    const storedSetting = this._settings.holdToShowImageKeys || null;
+    const storedSetting = this.settings.holdToShowImageKeys || null;
     if (settingToStore === storedSetting) {
       return;
     }
 
     if (settingToStore === null) {
       browser.storage.sync.remove('holdToShowImageKeys');
-      delete this._settings.holdToShowImageKeys;
+      delete this.settings.holdToShowImageKeys;
     } else {
       browser.storage.sync.set({ holdToShowImageKeys: settingToStore });
-      this._settings.holdToShowImageKeys = settingToStore;
+      this.settings.holdToShowImageKeys = settingToStore;
     }
   }
 
@@ -537,7 +539,7 @@ export class Config {
   // that were added more recently.
 
   get kanjiReferences(): Array<ReferenceAbbreviation> {
-    const setValues = this._settings.kanjiReferencesV2 || {};
+    const setValues = this.settings.kanjiReferencesV2 || {};
     const result: Array<ReferenceAbbreviation> = [];
     for (const ref of getReferencesForLang(this.dictLang)) {
       if (typeof setValues[ref] === 'undefined') {
@@ -552,13 +554,13 @@ export class Config {
   }
 
   updateKanjiReferences(updatedReferences: KanjiReferenceFlagsV2) {
-    const existingSettings = this._settings.kanjiReferencesV2 || {};
-    this._settings.kanjiReferencesV2 = {
+    const existingSettings = this.settings.kanjiReferencesV2 || {};
+    this.settings.kanjiReferencesV2 = {
       ...existingSettings,
       ...updatedReferences,
     };
     browser.storage.sync.set({
-      kanjiReferencesV2: this._settings.kanjiReferencesV2,
+      kanjiReferencesV2: this.settings.kanjiReferencesV2,
     });
   }
 
@@ -576,7 +578,7 @@ export class Config {
   }
 
   get keys(): StoredKeyboardKeys {
-    const setValues = this._settings.keys || {};
+    const setValues = this.settings.keys || {};
     return { ...this.getDefaultEnabledKeys(), ...setValues };
   }
 
@@ -599,55 +601,55 @@ export class Config {
   }
 
   updateKeys(keys: Partial<StoredKeyboardKeys>) {
-    const existingSettings = this._settings.keys || {};
-    this._settings.keys = {
+    const existingSettings = this.settings.keys || {};
+    this.settings.keys = {
       ...existingSettings,
       ...keys,
     };
 
-    browser.storage.sync.set({ keys: this._settings.keys });
+    browser.storage.sync.set({ keys: this.settings.keys });
   }
 
   // noTextHighlight: Defaults to false
 
   get noTextHighlight(): boolean {
-    return !!this._settings.noTextHighlight;
+    return !!this.settings.noTextHighlight;
   }
 
   set noTextHighlight(value: boolean) {
     if (
-      typeof this._settings.noTextHighlight !== 'undefined' &&
-      this._settings.noTextHighlight === value
+      typeof this.settings.noTextHighlight !== 'undefined' &&
+      this.settings.noTextHighlight === value
     ) {
       return;
     }
 
-    this._settings.noTextHighlight = value;
+    this.settings.noTextHighlight = value;
     browser.storage.sync.set({ noTextHighlight: value });
   }
 
   // popupStyle: Defaults to 'default'
 
   get popupStyle(): string {
-    return typeof this._settings.popupStyle === 'undefined'
+    return typeof this.settings.popupStyle === 'undefined'
       ? 'default'
-      : this._settings.popupStyle;
+      : this.settings.popupStyle;
   }
 
   set popupStyle(value: string) {
     if (
-      (typeof this._settings.popupStyle !== 'undefined' &&
-        this._settings.popupStyle === value) ||
-      (typeof this._settings.popupStyle === 'undefined' && value === 'default')
+      (typeof this.settings.popupStyle !== 'undefined' &&
+        this.settings.popupStyle === value) ||
+      (typeof this.settings.popupStyle === 'undefined' && value === 'default')
     ) {
       return;
     }
 
     if (value !== 'default') {
-      this._settings.popupStyle = value;
+      this.settings.popupStyle = value;
       browser.storage.sync.set({ popupStyle: value });
     } else {
-      this._settings.popupStyle = undefined;
+      this.settings.popupStyle = undefined;
       browser.storage.sync.remove('popupStyle');
     }
   }
@@ -655,56 +657,56 @@ export class Config {
   // posDisplay: Defaults to expl
 
   get posDisplay(): PartOfSpeechDisplay {
-    return typeof this._settings.posDisplay === 'undefined'
+    return typeof this.settings.posDisplay === 'undefined'
       ? 'expl'
-      : this._settings.posDisplay;
+      : this.settings.posDisplay;
   }
 
   set posDisplay(value: PartOfSpeechDisplay) {
     if (
-      typeof this._settings.posDisplay !== 'undefined' &&
-      this._settings.posDisplay === value
+      typeof this.settings.posDisplay !== 'undefined' &&
+      this.settings.posDisplay === value
     ) {
       return;
     }
 
-    this._settings.posDisplay = value;
+    this.settings.posDisplay = value;
     browser.storage.sync.set({ posDisplay: value });
   }
 
   // readingOnly: Defaults to false
 
   get readingOnly(): boolean {
-    return !!this._settings.readingOnly;
+    return !!this.settings.readingOnly;
   }
 
   set readingOnly(value: boolean) {
     if (
-      typeof this._settings.readingOnly !== 'undefined' &&
-      this._settings.readingOnly === value
+      typeof this.settings.readingOnly !== 'undefined' &&
+      this.settings.readingOnly === value
     ) {
       return;
     }
 
-    this._settings.readingOnly = value;
+    this.settings.readingOnly = value;
     browser.storage.sync.set({ readingOnly: value });
   }
 
   toggleReadingOnly() {
-    this.readingOnly = !this._settings.readingOnly;
+    this.readingOnly = !this.settings.readingOnly;
   }
 
   // showKanjiComponents: Defaults to true
 
   get showKanjiComponents(): boolean {
     return (
-      typeof this._settings.showKanjiComponents === 'undefined' ||
-      this._settings.showKanjiComponents
+      typeof this.settings.showKanjiComponents === 'undefined' ||
+      this.settings.showKanjiComponents
     );
   }
 
   set showKanjiComponents(value: boolean) {
-    this._settings.showKanjiComponents = value;
+    this.settings.showKanjiComponents = value;
     browser.storage.sync.set({ showKanjiComponents: value });
   }
 
@@ -712,78 +714,78 @@ export class Config {
 
   get showPriority(): boolean {
     return (
-      typeof this._settings.showPriority === 'undefined' ||
-      this._settings.showPriority
+      typeof this.settings.showPriority === 'undefined' ||
+      this.settings.showPriority
     );
   }
 
   set showPriority(value: boolean) {
-    this._settings.showPriority = value;
+    this.settings.showPriority = value;
     browser.storage.sync.set({ showPriority: value });
   }
 
   // showPuck (local): Defaults to 'auto'
 
   get showPuck(): 'show' | 'hide' | 'auto' {
-    return this._settings.localSettings?.showPuck || 'auto';
+    return this.settings.localSettings?.showPuck || 'auto';
   }
 
   set showPuck(value: 'show' | 'hide' | 'auto') {
-    const storedSetting = this._settings.localSettings?.showPuck || 'auto';
+    const storedSetting = this.settings.localSettings?.showPuck || 'auto';
     if (storedSetting === value) {
       return;
     }
 
-    const localSettings = { ...this._settings.localSettings };
+    const localSettings = { ...this.settings.localSettings };
     if (value === 'auto') {
       delete localSettings.showPuck;
     } else {
       localSettings.showPuck = value;
     }
-    this._settings.localSettings = localSettings;
+    this.settings.localSettings = localSettings;
     browser.storage.local.set({ settings: localSettings });
   }
 
   // showRomaji: Defaults to false
 
   get showRomaji(): boolean {
-    return !!this._settings.showRomaji;
+    return !!this.settings.showRomaji;
   }
 
   set showRomaji(value: boolean) {
     if (
-      typeof this._settings.showRomaji !== 'undefined' &&
-      this._settings.showRomaji === value
+      typeof this.settings.showRomaji !== 'undefined' &&
+      this.settings.showRomaji === value
     ) {
       return;
     }
 
-    this._settings.showRomaji = value;
+    this.settings.showRomaji = value;
     browser.storage.sync.set({ showRomaji: value });
   }
 
   // tabDisplay: Defaults to 'top'
 
   get tabDisplay(): TabDisplay {
-    return typeof this._settings.tabDisplay === 'undefined'
+    return typeof this.settings.tabDisplay === 'undefined'
       ? 'top'
-      : this._settings.tabDisplay;
+      : this.settings.tabDisplay;
   }
 
   set tabDisplay(value: TabDisplay) {
     if (
-      (typeof this._settings.tabDisplay !== 'undefined' &&
-        this._settings.tabDisplay === value) ||
-      (typeof this._settings.tabDisplay === 'undefined' && value === 'top')
+      (typeof this.settings.tabDisplay !== 'undefined' &&
+        this.settings.tabDisplay === value) ||
+      (typeof this.settings.tabDisplay === 'undefined' && value === 'top')
     ) {
       return;
     }
 
     if (value !== 'top') {
-      this._settings.tabDisplay = value;
+      this.settings.tabDisplay = value;
       browser.storage.sync.set({ tabDisplay: value });
     } else {
-      this._settings.tabDisplay = undefined;
+      this.settings.tabDisplay = undefined;
       browser.storage.sync.remove('tabDisplay');
     }
   }
@@ -791,25 +793,25 @@ export class Config {
   // toolbarIcon: Defaults to 'default'
 
   get toolbarIcon(): 'default' | 'sky' {
-    return typeof this._settings.toolbarIcon === 'undefined'
+    return typeof this.settings.toolbarIcon === 'undefined'
       ? 'default'
-      : this._settings.toolbarIcon;
+      : this.settings.toolbarIcon;
   }
 
   set toolbarIcon(value: 'default' | 'sky') {
     if (
-      (typeof this._settings.toolbarIcon !== 'undefined' &&
-        this._settings.toolbarIcon === value) ||
-      (typeof this._settings.toolbarIcon === 'undefined' && value === 'default')
+      (typeof this.settings.toolbarIcon !== 'undefined' &&
+        this.settings.toolbarIcon === value) ||
+      (typeof this.settings.toolbarIcon === 'undefined' && value === 'default')
     ) {
       return;
     }
 
     if (value !== 'default') {
-      this._settings.toolbarIcon = value;
+      this.settings.toolbarIcon = value;
       browser.storage.sync.set({ toolbarIcon: value });
     } else {
-      this._settings.toolbarIcon = undefined;
+      this.settings.toolbarIcon = undefined;
       browser.storage.sync.remove('toolbarIcon');
     }
   }
