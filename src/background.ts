@@ -56,6 +56,7 @@ import { BackgroundRequestSchema, SearchRequest } from './background-request';
 import { setDefaultToolbarIcon, updateBrowserAction } from './browser-action';
 import { startBugsnag } from './bugsnag';
 import { Config } from './config';
+import { initContextMenus, updateContextMenus } from './context-menus';
 import {
   notifyDbStateUpdated,
   DbListenerMessage,
@@ -110,16 +111,12 @@ tabManager.addListener(async (enabled: boolean, tabId: number | undefined) => {
     toolbarIcon: config.toolbarIcon,
   });
 
-  // Update context menu
-  if (config.contextMenuEnable) {
-    try {
-      await browser.contextMenus.update('context-toggle', {
-        checked: enabled,
-      });
-    } catch {
-      // Ignore
-    }
-  }
+  // Update context menus
+  await updateContextMenus({
+    tabEnabled: enabled,
+    toggleMenuEnabled: config.contextMenuEnable,
+    showPuck: config.contentConfig.showPuck === 'show',
+  });
 });
 
 //
@@ -156,18 +153,25 @@ config.addChangeListener(async (changes) => {
     }
   }
 
-  // Add / remove context menu as needed
-  if (changes.hasOwnProperty('contextMenuEnable')) {
-    if ((changes as any).contextMenuEnable.newValue) {
-      addContextMenu();
-    } else {
-      removeContextMenu();
-    }
-  }
-
-  // Update enable puck context menu as needed
-  if (changes.hasOwnProperty('computed:showPuck')) {
-    updateEnablePuckContextMenu((changes as any)['computed:showPuck'].newValue);
+  // Update context menus as needed
+  let toggleMenuEnabled: boolean | undefined =
+    changes.contextMenuEnable?.newValue;
+  let showPuck: 'show' | 'hide' | undefined =
+    changes['computed:showPuck']?.newValue;
+  if (
+    typeof toggleMenuEnabled !== 'undefined' ||
+    typeof showPuck !== 'undefined'
+  ) {
+    updateContextMenus({
+      toggleMenuEnabled:
+        typeof toggleMenuEnabled === 'undefined'
+          ? config.contextMenuEnable
+          : toggleMenuEnabled,
+      showPuck:
+        typeof showPuck === 'undefined'
+          ? config.contentConfig.showPuck === 'show'
+          : showPuck === 'show',
+    });
   }
 
   // Update dictionary language
@@ -192,11 +196,15 @@ config.ready.then(async () => {
   // a number of other things.
   await tabManager.init(config.contentConfig);
 
-  if (config.contextMenuEnable) {
-    addContextMenu();
-  }
-
-  updateEnablePuckContextMenu(config.contentConfig.showPuck);
+  initContextMenus({
+    onToggleMenu: toggle,
+    onTogglePuck: (enabled: boolean) => {
+      config.showPuck = enabled ? 'show' : 'hide';
+    },
+    tabManager,
+    toggleMenuEnabled: config.contextMenuEnable,
+    showPuck: config.contentConfig.showPuck === 'show',
+  });
 });
 
 //
@@ -329,138 +337,6 @@ async function notifyDbListeners(specifiedListener?: Browser.Runtime.Port) {
       console.error('Error posting message', e);
       Bugsnag.notify(e || '(Error posting message update message)');
     }
-  }
-}
-
-//
-// Standard context menu
-//
-
-async function addContextMenu() {
-  const contexts: Array<Browser.Menus.ContextType> = [
-    'browser_action',
-    'editable',
-    'frame',
-    'image',
-    'link',
-    'page',
-    'selection',
-    'video',
-  ];
-
-  // Safari throws if we try to include 'tab' in the set of contexts.
-  // (Chrome just ignores it, despite not supporting it.)
-  if (__SUPPORTS_TAB_CONTEXT_TYPE__) {
-    contexts.push('tab');
-  }
-
-  // We need to know if the context menu should be initially checked or not.
-  //
-  // That's not necessarily straightforward, however, since different windows
-  // can have different enabled states.
-  //
-  // So if we get multiple windows, we should try to find out which one is the
-  // current window and use that.
-  const enabledStates = await tabManager.getEnabledState();
-  let enabled = false;
-  if (enabledStates.length === 1) {
-    enabled = enabledStates[0].enabled;
-  } else if (enabledStates.length > 1) {
-    try {
-      const currentWindowTabs = await browser.tabs.query({
-        active: true,
-        currentWindow: true,
-      });
-      const match = currentWindowTabs.length
-        ? enabledStates.find((s) => s.tabId === currentWindowTabs[0].id)
-        : undefined;
-      enabled = !!match?.enabled;
-    } catch {
-      // Ignore
-    }
-  }
-
-  try {
-    // We'd like to use:
-    //
-    //   command: '_execute_browser_action'
-    //
-    // here instead of onclick but:
-    //
-    // a) Chrome etc. don't support that
-    // b) Firefox passes the wrong tab ID to the callback when the command is
-    //    activated from the context menu of a non-active tab.
-    browser.contextMenus.create(
-      {
-        id: 'context-toggle',
-        type: 'checkbox',
-        title: browser.i18n.getMessage('menu_enable_extension'),
-        onclick: (_info, tab) => toggle(tab),
-        contexts,
-        checked: enabled,
-      },
-      () => {
-        // This is just to silence Safari which will complain if the menu already
-        // exists.
-        if (browser.runtime.lastError) {
-          // Very interesting
-        }
-      }
-    );
-  } catch (_e) {
-    // Give up. We're probably on a platform that doesn't support the
-    // contextMenus API such as Firefox for Android.
-  }
-}
-
-async function removeContextMenu() {
-  try {
-    await browser.contextMenus.remove('context-toggle');
-  } catch (e) {
-    // Ignore
-  }
-}
-
-//
-// Enable puck context menu
-//
-
-let createdEnablePuckContextMenu = false;
-
-async function updateEnablePuckContextMenu(showPuck: 'show' | 'hide') {
-  if (!__ENABLE_PUCK__) {
-    return;
-  }
-
-  const enabled = showPuck === 'show';
-
-  try {
-    if (!createdEnablePuckContextMenu) {
-      browser.contextMenus.create(
-        {
-          id: 'context-enable-puck',
-          type: 'checkbox',
-          title: browser.i18n.getMessage('menu_enable_puck'),
-          onclick: (info) => {
-            config.showPuck = info.checked ? 'show' : 'hide';
-          },
-          contexts: ['browser_action'],
-          checked: enabled,
-        },
-        () => {
-          if (!browser.runtime.lastError) {
-            createdEnablePuckContextMenu = true;
-          }
-        }
-      );
-    } else {
-      browser.contextMenus.update('context-enable-puck', {
-        checked: enabled,
-      });
-    }
-  } catch {
-    // Give up. We're probably on a platform that doesn't support the
-    // contextMenus API such as Firefox for Android.
   }
 }
 
