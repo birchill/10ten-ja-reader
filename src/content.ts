@@ -276,7 +276,7 @@ export class ContentHandler {
   }
 
   applyPuckConfig() {
-    if (!__ENABLE_PUCK__ || !isTopMostWindow()) {
+    if (!isTopMostWindow()) {
       return;
     }
 
