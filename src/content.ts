@@ -261,10 +261,6 @@ export class ContentHandler {
         { kind: '10ten(ja):isPopupShown' },
         '*'
       );
-
-      // Also, we need to listen to pointer events so we can forward them to the
-      // top frame in case it is showing the puck.
-      window.addEventListener('pointermove', this.onIframePointerMove);
     }
 
     this.applyPuckConfig();
@@ -333,7 +329,6 @@ export class ContentHandler {
     window.removeEventListener('keyup', this.onKeyUp, { capture: true });
     window.removeEventListener('focusin', this.onFocusIn);
     window.removeEventListener('message', this.onContentMessage);
-    window.removeEventListener('pointermove', this.onIframePointerMove);
 
     this.clearResult();
     this.tearDownPuck();
@@ -344,24 +339,6 @@ export class ContentHandler {
 
     removePopup();
     removeSafeAreaProvider();
-  }
-
-  // On any 'pointermove' events fired at an iframe window,
-  // post a 'moveEarth' message back up to the top frame.
-  //
-  // This way, we can tell the top frame to update the
-  // position of the puck's earth component despite our
-  // 'pointermove' events having been captured by the iframe.
-  onIframePointerMove(event: PointerEvent) {
-    const { clientX, clientY } = event;
-    getTopMostWindow().postMessage<ContentMessage>(
-      {
-        kind: '10ten(ja):moveEarth',
-        clientX,
-        clientY,
-      },
-      '*'
-    );
   }
 
   onMouseMove(ev: MouseEvent) {
@@ -811,32 +788,6 @@ export class ContentHandler {
           this.lastMouseTarget = null;
 
           this.lookupText({ ...ev.data, targetProps, source: ev.source });
-        }
-        break;
-
-      case '10ten(ja):moveEarth':
-        {
-          if (!this.puck || !isTopMostWindow()) {
-            return;
-          }
-
-          if (!isMessageSourceWindow(ev.source)) {
-            console.warn('Unexpected message source');
-            return;
-          }
-
-          const iframeOriginPoint = getIframeOriginFromWindow(ev.source);
-          if (!iframeOriginPoint) {
-            console.warn("Couldn't get iframe origin");
-            return;
-          }
-
-          const { clientX, clientY } = ev.data;
-          const topFrameEvent = new PointerEvent('pointermove', {
-            clientX: clientX + iframeOriginPoint.x,
-            clientY: clientY + iframeOriginPoint.y,
-          });
-          this.puck.onWindowPointerMove(topFrameEvent);
         }
         break;
 

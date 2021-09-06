@@ -341,6 +341,7 @@ export class LookupPuck {
     this.isBeingDragged = true;
     this.puck.style.pointerEvents = 'none';
     this.puck.classList.add('dragging');
+    this.puck.setPointerCapture(event.pointerId);
 
     window.addEventListener('pointermove', this.onWindowPointerMove);
     window.addEventListener('pointerup', this.stopDraggingPuck);

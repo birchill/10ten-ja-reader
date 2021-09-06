@@ -76,12 +76,6 @@ type IsPopupShownMessage = {
 
 // Puck methods
 
-type MoveEarthMessage = {
-  kind: '10ten(ja):moveEarth';
-  clientX: number;
-  clientY: number;
-};
-
 type MoonMovedMessage = {
   kind: '10ten(ja):moonMoved';
   clientX: number;
@@ -103,5 +97,4 @@ export type ContentMessage =
   | PopupHiddenMessage
   | PopupShownMessage
   | IsPopupShownMessage
-  | MoveEarthMessage
   | MoonMovedMessage;
