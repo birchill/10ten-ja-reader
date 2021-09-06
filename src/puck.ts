@@ -60,6 +60,12 @@ interface ClickStateWithTimeout<T extends string> extends ClickStateBase<T> {
   timeout: number;
 }
 
+function clickStateHasTimeout<T extends ClickState['kind']>(
+  clickState: ClickStateBase<T>
+): clickState is ClickStateWithTimeout<T> {
+  return typeof (clickState as ClickStateWithTimeout<T>).timeout === 'number';
+}
+
 export class LookupPuck {
   public static id: string = 'tenten-ja-puck';
   private puck: HTMLDivElement | undefined;
@@ -365,11 +371,6 @@ export class LookupPuck {
   };
 
   private clickState: ClickState = { kind: 'idle' };
-  private clickStateHasTimeout<T extends ClickState['kind']>(
-    clickState: ClickStateBase<T>
-  ): clickState is ClickStateWithTimeout<T> {
-    return typeof (clickState as ClickStateWithTimeout<T>).timeout === 'number';
-  }
   private static readonly clickHysteresis = 300;
 
   private readonly onPuckPointerDown = (event: PointerEvent) => {
@@ -434,22 +435,20 @@ export class LookupPuck {
     window.removeEventListener('pointercancel', this.stopDraggingPuck);
 
     if (!event) {
-      if (this.clickStateHasTimeout(this.clickState)) {
+      if (clickStateHasTimeout(this.clickState)) {
         window.clearTimeout(this.clickState.timeout);
         this.clickState = { kind: 'idle' };
       }
       return;
     }
 
-    const targetIsPuckOrRoot =
-      event.target === this.puck || event.target === this.container;
-    if (event.type === 'pointercancel' || !targetIsPuckOrRoot) {
+    if (event.type === 'pointercancel') {
       // Stop tracking this click and wait for the next 'pointerdown' to come along instead.
-      if (this.clickStateHasTimeout(this.clickState)) {
+      if (clickStateHasTimeout(this.clickState)) {
         window.clearTimeout(this.clickState.timeout);
       }
       this.clickState = { kind: 'idle' };
-    } else if (event.type === 'pointerup' && targetIsPuckOrRoot) {
+    } else if (event.type === 'pointerup') {
       // Prevent any double-taps turning into a zoom
       event.preventDefault();
       event.stopPropagation();
@@ -463,8 +462,8 @@ export class LookupPuck {
         this.clickState = {
           kind: 'firstclick',
           timeout: window.setTimeout(() => {
-            this.onPuckSingleClick();
             this.clickState = { kind: 'idle' };
+            this.onPuckSingleClick();
           }, LookupPuck.clickHysteresis),
         };
       } else if (this.clickState.kind === 'secondpointerdown') {
@@ -479,11 +478,10 @@ export class LookupPuck {
   };
 
   private readonly noOpPointerUpHandler = () => {};
-  private container: HTMLElement | null = null;
-
+  
   render({ doc, theme }: PuckRenderOptions): void {
     // Set up shadow tree
-    this.container = getOrCreateEmptyContainer({
+    const container = getOrCreateEmptyContainer({
       doc,
       id: LookupPuck.id,
       styles: puckStyles.toString(),
@@ -501,7 +499,7 @@ export class LookupPuck {
     moon.classList.add('moon');
     this.puck.append(moon);
 
-    this.container.shadowRoot!.append(this.puck);
+    container.shadowRoot!.append(this.puck);
 
     // Set theme styles
     this.puck.classList.add(getThemeClass(theme));
@@ -601,7 +599,6 @@ export class LookupPuck {
 
   unmount(): void {
     removePuck();
-    this.container = null;
     this.disable();
     this.puck = undefined;
   }
