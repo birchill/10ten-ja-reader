@@ -114,6 +114,7 @@ export class Command {
       !isFunctionKey(key) &&
       (parts.length < 2 || !PRIMARY_MODIFIER_MAP.hasOwnProperty(parts[0]))
     ) {
+      console.warn(`Unexpected command string: ${value}`);
       throw new Error(
         browser.i18n.getMessage('error_command_is_missing_modifier_key')
       );
@@ -184,6 +185,7 @@ export class Command {
       !isFunctionKey(params.key) &&
       !(params.alt || params.ctrl || params.macCtrl)
     ) {
+      console.warn(`Unexpected command params: ${JSON.stringify(params)}`);
       throw new Error(
         browser.i18n.getMessage('error_command_is_missing_modifier_key')
       );
