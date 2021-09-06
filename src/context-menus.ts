@@ -38,8 +38,11 @@ export async function updateContextMenus({
   toggleMenuEnabled: boolean;
   showPuck: boolean;
 }): Promise<void> {
+  // This can happen when the background page initializes the tab manager (in
+  // order to determine the tab enabled state) and it ends up notifying about
+  // the enabled state before the background page has a chance to call
+  // initContextMenus.
   if (!tabManager || !onToggleMenu || !onTogglePuck) {
-    console.error('Updating context menus before initialization');
     return;
   }
 
