@@ -11,7 +11,6 @@ import {
 } from './tab-manager';
 
 type EnabledTab = {
-  id: number;
   port: Browser.Runtime.Port | undefined;
 };
 
@@ -30,7 +29,7 @@ export default class ActiveTabManager implements TabManager {
 
     // Notify listeners when the active tab changes
     browser.tabs.onActivated.addListener(({ tabId }) => {
-      const enabled = this.enabledTabs.some((t) => t.id === tabId);
+      const enabled = tabId in this.enabledTabs;
       this.notifyListeners(enabled, tabId);
     });
 
@@ -82,7 +81,7 @@ export default class ActiveTabManager implements TabManager {
       return;
     }
 
-    const tab = this.enabledTabs.find((t) => t.id === id);
+    const tab = this.enabledTabs[id];
     if (!tab) {
       return;
     }
@@ -103,7 +102,8 @@ export default class ActiveTabManager implements TabManager {
     try {
       const activeTabs = await browser.tabs.query({ active: true });
       for (const tab of activeTabs) {
-        const enabled = this.enabledTabs.some((t) => t.id === tab.id);
+        const enabled =
+          typeof tab.id !== 'undefined' && tab.id in this.enabledTabs;
         result.push({ enabled, tabId: tab.id });
       }
     } catch (e) {
@@ -123,7 +123,7 @@ export default class ActiveTabManager implements TabManager {
     }
 
     // First, determine if we want to disable or enable
-    const enabled = !this.enabledTabs.some((t) => t.id === tab.id);
+    const enabled = !(tab.id in this.enabledTabs);
 
     if (enabled) {
       this.config = config;
@@ -133,7 +133,7 @@ export default class ActiveTabManager implements TabManager {
       // notify the content script. Otherwise when the content script
       // disconnects itself we'll think it should still be enabled and try to
       // re-inject ourselves.
-      this.enabledTabs = this.enabledTabs.filter((t) => t.id !== tab.id);
+      delete this.enabledTabs[tab.id];
       try {
         await browser.tabs.sendMessage(tab.id, { type: 'disable' });
       } catch (e) {
@@ -162,8 +162,8 @@ export default class ActiveTabManager implements TabManager {
     // However, we only want to change the enabled state if we are dealing with
     // the root frame or the whole tab.
     const isRootFrame = typeof frameId === 'undefined' || frameId === 0;
-    if (isRootFrame && !this.enabledTabs.some((t) => t.id === tabId)) {
-      this.enabledTabs.push({ id: tabId, port: undefined });
+    if (isRootFrame && !(tabId in this.enabledTabs)) {
+      this.enabledTabs[tabId] = { port: undefined };
     }
 
     // If we are dealing with a single frame, try calling to see if the content
@@ -189,7 +189,7 @@ export default class ActiveTabManager implements TabManager {
         // Drop the enabled tab from our list, but only if we're dealing with
         // the root frame or the whole tab.
         if (isRootFrame) {
-          this.enabledTabs = this.enabledTabs.filter((t) => t.id !== tabId);
+          delete this.enabledTabs[tabId];
         }
       }
     }
@@ -271,7 +271,7 @@ export default class ActiveTabManager implements TabManager {
   private async onPageDisabled(tabId: number, frameId?: number) {
     // If we already believe the page to be disabled, there's nothing more to
     // do.
-    if (!this.enabledTabs.some((t) => t.id === tabId)) {
+    if (!(tabId in this.enabledTabs)) {
       return;
     }
 
@@ -297,12 +297,12 @@ export default class ActiveTabManager implements TabManager {
 
       // Next, check if the tab still exists. Perhaps it finished unloading
       // while we were injecting scripts.
-      if (!this.enabledTabs.some((t) => t.id === tabId)) {
+      if (!(tabId in this.enabledTabs)) {
         return;
       }
 
       // Drop the tab from our list of enabled tabs
-      this.enabledTabs = this.enabledTabs.filter((t) => t.id !== tabId);
+      delete this.enabledTabs[tabId];
     }
 
     // Note that even if we successfully re-injected our content script
@@ -325,12 +325,13 @@ export default class ActiveTabManager implements TabManager {
 
     this.config = config;
 
-    for (const tab of this.enabledTabs.slice()) {
+    const tabIds = Object.keys(this.enabledTabs).map(Number);
+    for (const tabId of tabIds) {
       try {
         // We deliberately omit the 'id' member here since it's only needed
         // when setting up a port and shouldn't be required when we're just
         // updating the config.
-        await browser.tabs.sendMessage(tab.id, { type: 'enable', config });
+        await browser.tabs.sendMessage(tabId, { type: 'enable', config });
       } catch (e) {
         console.error(e);
         Bugsnag.notify(e);
