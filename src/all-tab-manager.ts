@@ -1,21 +1,33 @@
 import Bugsnag from '@bugsnag/browser';
 import * as s from 'superstruct';
 import Browser, { browser } from 'webextension-polyfill-ts';
+import { BackgroundMessage } from './background-message';
 
 import { BackgroundRequestSchema } from './background-request';
 
 import { ContentConfig } from './content-config';
 import { ExtensionStorageError } from './extension-storage-error';
+import { requestIdleCallback } from './request-idle-callback';
 import {
   EnabledChangedCallback,
   TabManager,
   EnabledState,
 } from './tab-manager';
 
+type Tab = {
+  frames: Array<{
+    /* TODO */
+  }>;
+  src: string;
+  rootWindowCheckTimeout?: number;
+};
+
 export default class AllTabManager implements TabManager {
   private config: ContentConfig | undefined;
   private enabled = false;
   private listeners: Array<EnabledChangedCallback> = [];
+  private tabs: Array<Tab> = [];
+  private tabsCleanupTask: number | undefined;
 
   async init(config: ContentConfig): Promise<void> {
     this.config = config;
@@ -38,10 +50,10 @@ export default class AllTabManager implements TabManager {
     // enabled too.
     browser.tabs.onActivated.addListener(({ tabId }) => this.enableTab(tabId));
 
-    // Response to enable? messages
+    // Response to enabling-related messages
     browser.runtime.onMessage.addListener(
       (
-        request: any,
+        request: unknown,
         sender: Browser.Runtime.MessageSender
       ): void | Promise<any> => {
         if (!s.is(request, BackgroundRequestSchema)) {
@@ -55,6 +67,34 @@ export default class AllTabManager implements TabManager {
             }
 
             this.enableTab(sender.tab.id);
+            break;
+
+          case 'enabled':
+            if (
+              !sender.tab ||
+              typeof sender.tab.id !== 'number' ||
+              typeof sender.frameId !== 'number'
+            ) {
+              return;
+            }
+
+            this.updateFrames({
+              tabId: sender.tab.id,
+              frameId: sender.frameId,
+              src: request.src,
+            });
+
+            return Promise.resolve({ frameId: sender.frameId });
+
+          case 'disabled':
+            if (!sender.tab || typeof sender.tab.id !== 'number') {
+              return;
+            }
+
+            this.dropFrame({
+              tabId: sender.tab.id,
+              frameId: sender.frameId,
+            });
             break;
         }
       }
@@ -178,7 +218,7 @@ export default class AllTabManager implements TabManager {
         type: 'enable',
         config: this.config,
       });
-    } catch (_e) {
+    } catch {
       // Some tabs don't have the content script so just ignore
       // connection failures here.
     }
@@ -201,6 +241,99 @@ export default class AllTabManager implements TabManager {
     }
 
     await sendMessageToAllTabs({ type: 'enable', config });
+  }
+
+  //
+  // Frame management
+  //
+
+  private updateFrames({
+    tabId,
+    frameId,
+    src,
+  }: {
+    tabId: number;
+    frameId: number;
+    src: string;
+  }) {
+    let addedFrame;
+
+    if (tabId in this.tabs) {
+      const tab = this.tabs[tabId];
+      if (frameId === 0) {
+        tab.src = src;
+      }
+      if (frameId === 0 && tab.src !== src && tab.src !== '') {
+        tab.frames = [];
+      }
+      addedFrame = !(frameId in tab.frames);
+      tab.frames[frameId] = {};
+    } else {
+      this.tabs[tabId] = {
+        src: frameId === 0 ? src : '',
+        frames: [],
+      };
+      addedFrame = !(frameId in this.tabs[tabId].frames);
+      this.tabs[tabId].frames[frameId] = {};
+    }
+
+    const tab = this.tabs[tabId];
+
+    // Try to detect the "no content script in the root window" case
+    if (addedFrame && !tab.frames[0] && !tab.rootWindowCheckTimeout) {
+      tab.rootWindowCheckTimeout = self.setTimeout(() => {
+        if (!this.tabs[tabId] || !Object.keys(this.tabs[tabId].frames).length) {
+          return;
+        }
+
+        this.tabs[tabId].rootWindowCheckTimeout = undefined;
+
+        const topMostFrameId = Number(Object.keys(this.tabs[tabId].frames)[0]);
+        if (topMostFrameId !== 0) {
+          browser.tabs.sendMessage(
+            tabId,
+            { type: 'isTopMost' },
+            { frameId: topMostFrameId }
+          );
+        }
+      }, 3000);
+    }
+
+    // Schedule a task to clean up any tabs that have been closed
+    if (!this.tabsCleanupTask) {
+      this.tabsCleanupTask = requestIdleCallback(async () => {
+        this.tabsCleanupTask = undefined;
+        const allTabs = await browser.tabs.query({});
+        const ourTabs = Object.keys(this.tabs).map(Number);
+        for (const tabId of ourTabs) {
+          if (!allTabs.some((t) => t.id === tabId)) {
+            delete this.tabs[tabId];
+          }
+        }
+      });
+    }
+  }
+
+  private dropFrame({
+    tabId,
+    frameId,
+  }: {
+    tabId: number;
+    frameId: number | undefined;
+  }) {
+    if (!this.tabs[tabId]) {
+      return;
+    }
+
+    if (frameId) {
+      const tab = this.tabs[tabId];
+      delete tab.frames[frameId];
+      if (!tab.frames.length) {
+        delete this.tabs[tabId];
+      }
+    } else {
+      delete this.tabs[tabId];
+    }
   }
 
   //
@@ -230,7 +363,7 @@ export default class AllTabManager implements TabManager {
   }
 }
 
-async function sendMessageToAllTabs(message: any): Promise<void> {
+async function sendMessageToAllTabs(message: BackgroundMessage): Promise<void> {
   const allTabs: Array<Browser.Tabs.Tab> = [];
 
   // We could probably always just use `browser.tabs.query` but for some reason

@@ -11,6 +11,9 @@ export type SearchRequest = s.Infer<typeof SearchRequestSchema>;
 export const BackgroundRequestSchema = discriminator('type', {
   disabled: s.type({}),
   'enable?': s.type({}),
+  enabled: s.type({
+    src: s.string(),
+  }),
   options: s.type({}),
   // TODO: Remove 'search' once we have shipped the two-step search approach.
   //
