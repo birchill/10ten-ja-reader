@@ -8,6 +8,7 @@ export const BackgroundMessageSchema = discriminator('type', {
     config: s.type({}),
     id: s.optional(s.number()),
   }),
+  isTopMost: s.type({}),
 });
 
 export type BackgroundMessage = s.Infer<typeof BackgroundMessageSchema>;

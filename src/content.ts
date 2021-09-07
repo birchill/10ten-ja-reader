@@ -104,7 +104,6 @@ import {
 import { TextHighlighter } from './text-highlighter';
 import { TextRange, textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
-import { getTopMostWindow, isTopMostWindow } from './top-window';
 import { BackgroundMessageSchema } from './background-message';
 import { isTouchDevice } from './device';
 
@@ -202,6 +201,8 @@ export class ContentHandler {
   // performance impact of increasing this further.
   private static MAX_LENGTH = 16;
 
+  private isEffectiveTopMostWindow = false;
+
   private currentLookupParams:
     | {
         text: string;
@@ -257,8 +258,8 @@ export class ContentHandler {
     this.setUpSafeAreaProvider({ doc: document });
 
     // If we are an iframe, check if the popup is currently showing
-    if (!isTopMostWindow()) {
-      getTopMostWindow().postMessage<ContentMessage>(
+    if (!this.isTopMostWindow()) {
+      this.getTopMostWindow().postMessage<ContentMessage>(
         { kind: '10ten(ja):isPopupShown' },
         '*'
       );
@@ -273,7 +274,7 @@ export class ContentHandler {
   }
 
   applyPuckConfig() {
-    if (!isTopMostWindow()) {
+    if (!this.isTopMostWindow()) {
       return;
     }
 
@@ -348,6 +349,22 @@ export class ContentHandler {
 
     removePopup();
     removeSafeAreaProvider();
+  }
+
+  setEffectiveTopMostWindow() {
+    this.isEffectiveTopMostWindow = true;
+  }
+
+  isTopMostWindow() {
+    return (
+      this.isEffectiveTopMostWindow || window.self === this.getTopMostWindow()
+    );
+  }
+
+  getTopMostWindow() {
+    return this.isEffectiveTopMostWindow
+      ? window.self
+      : window.top || window.self;
   }
 
   onMouseMove(ev: MouseEvent) {
@@ -739,7 +756,7 @@ export class ContentHandler {
   }
 
   isVisible(): boolean {
-    return isTopMostWindow() ? isPopupVisible() : this.isPopupShowing;
+    return this.isTopMostWindow() ? isPopupVisible() : this.isPopupShowing;
   }
 
   onContentMessage(ev: MessageEvent<ContentMessage>) {
@@ -758,7 +775,7 @@ export class ContentHandler {
     switch (ev.data.kind) {
       case '10ten(ja):lookup':
         {
-          if (!isTopMostWindow()) {
+          if (!this.isTopMostWindow()) {
             return;
           }
 
@@ -805,49 +822,49 @@ export class ContentHandler {
         break;
 
       case '10ten(ja):clearResult':
-        if (isTopMostWindow()) {
+        if (this.isTopMostWindow()) {
           this.clearResult();
         }
         break;
 
       case '10ten(ja):nextDictionary':
-        if (isTopMostWindow()) {
+        if (this.isTopMostWindow()) {
           this.showNextDictionary();
         }
         break;
 
       case '10ten(ja):toggleDefinition':
-        if (isTopMostWindow()) {
+        if (this.isTopMostWindow()) {
           this.toggleDefinition();
         }
         break;
 
       case '10ten(ja):movePopup':
-        if (isTopMostWindow()) {
+        if (this.isTopMostWindow()) {
           this.movePopup(ev.data.direction);
         }
         break;
 
       case '10ten(ja):enterCopyMode':
-        if (isTopMostWindow()) {
+        if (this.isTopMostWindow()) {
           this.enterCopyMode();
         }
         break;
 
       case '10ten(ja):exitCopyMode':
-        if (isTopMostWindow()) {
+        if (this.isTopMostWindow()) {
           this.exitCopyMode();
         }
         break;
 
       case '10ten(ja):nextCopyEntry':
-        if (isTopMostWindow()) {
+        if (this.isTopMostWindow()) {
           this.nextCopyEntry();
         }
         break;
 
       case '10ten(ja):copyCurrentEntry':
-        if (isTopMostWindow()) {
+        if (this.isTopMostWindow()) {
           this.copyCurrentEntry(ev.data.copyType);
         }
         break;
@@ -903,8 +920,8 @@ export class ContentHandler {
   }
 
   showNextDictionary() {
-    if (!isTopMostWindow()) {
-      getTopMostWindow().postMessage<ContentMessage>(
+    if (!this.isTopMostWindow()) {
+      this.getTopMostWindow().postMessage<ContentMessage>(
         { kind: '10ten(ja):nextDictionary' },
         '*'
       );
@@ -917,8 +934,8 @@ export class ContentHandler {
   }
 
   toggleDefinition() {
-    if (!isTopMostWindow()) {
-      getTopMostWindow().postMessage<ContentMessage>(
+    if (!this.isTopMostWindow()) {
+      this.getTopMostWindow().postMessage<ContentMessage>(
         { kind: '10ten(ja):toggleDefinition' },
         '*'
       );
@@ -930,8 +947,8 @@ export class ContentHandler {
   }
 
   movePopup(direction: 'up' | 'down') {
-    if (!isTopMostWindow()) {
-      getTopMostWindow().postMessage<ContentMessage>(
+    if (!this.isTopMostWindow()) {
+      this.getTopMostWindow().postMessage<ContentMessage>(
         { kind: '10ten(ja):movePopup', direction },
         '*'
       );
@@ -961,8 +978,8 @@ export class ContentHandler {
     //
     this.copyMode = true;
 
-    if (!isTopMostWindow()) {
-      getTopMostWindow().postMessage<ContentMessage>(
+    if (!this.isTopMostWindow()) {
+      this.getTopMostWindow().postMessage<ContentMessage>(
         { kind: '10ten(ja):enterCopyMode' },
         '*'
       );
@@ -978,8 +995,8 @@ export class ContentHandler {
     // topmost window.
     this.copyMode = false;
 
-    if (!isTopMostWindow()) {
-      getTopMostWindow().postMessage<ContentMessage>(
+    if (!this.isTopMostWindow()) {
+      this.getTopMostWindow().postMessage<ContentMessage>(
         { kind: '10ten(ja):exitCopyMode' },
         '*'
       );
@@ -990,8 +1007,8 @@ export class ContentHandler {
   }
 
   nextCopyEntry() {
-    if (!isTopMostWindow()) {
-      getTopMostWindow().postMessage<ContentMessage>(
+    if (!this.isTopMostWindow()) {
+      this.getTopMostWindow().postMessage<ContentMessage>(
         { kind: '10ten(ja):nextCopyEntry' },
         '*'
       );
@@ -1003,8 +1020,8 @@ export class ContentHandler {
   }
 
   copyCurrentEntry(copyType: CopyType) {
-    if (!isTopMostWindow()) {
-      getTopMostWindow().postMessage<ContentMessage>(
+    if (!this.isTopMostWindow()) {
+      this.getTopMostWindow().postMessage<ContentMessage>(
         { kind: '10ten(ja):copyCurrentEntry', copyType },
         '*'
       );
@@ -1127,7 +1144,7 @@ export class ContentHandler {
     this.lastMouseTarget = null;
     this.copyMode = false;
 
-    if (isTopMostWindow() && this.currentLookupParams?.source) {
+    if (this.isTopMostWindow() && this.currentLookupParams?.source) {
       this.currentLookupParams.source.postMessage<ContentMessage>(
         { kind: '10ten(ja):clearTextHighlight' },
         '*'
@@ -1137,10 +1154,10 @@ export class ContentHandler {
       this.clearTextHighlight(currentElement);
     }
 
-    if (isTopMostWindow()) {
+    if (this.isTopMostWindow()) {
       this.hidePopup();
     } else {
-      getTopMostWindow().postMessage<ContentMessage>(
+      this.getTopMostWindow().postMessage<ContentMessage>(
         { kind: '10ten(ja):clearResult' },
         '*'
       );
@@ -1219,10 +1236,10 @@ export class ContentHandler {
       wordLookup: !!textAtPoint.textRange,
     };
 
-    if (isTopMostWindow()) {
+    if (this.isTopMostWindow()) {
       this.lookupText(lookupParams);
     } else {
-      getTopMostWindow().postMessage<ContentMessage>(
+      this.getTopMostWindow().postMessage<ContentMessage>(
         {
           ...lookupParams,
           kind: '10ten(ja):lookup',
@@ -1626,7 +1643,7 @@ export class ContentHandler {
       }
     }
 
-    if (isTopMostWindow()) {
+    if (this.isTopMostWindow()) {
       for (const frame of Array.from(window.frames)) {
         frame.postMessage<ContentMessage>(
           { kind: '10ten(ja):popupShown' },
@@ -1645,7 +1662,7 @@ export class ContentHandler {
 
     hidePopup();
 
-    if (wasShowing && isTopMostWindow()) {
+    if (wasShowing && this.isTopMostWindow()) {
       for (const frame of Array.from(window.frames)) {
         frame.postMessage<ContentMessage>(
           { kind: '10ten(ja):popupHidden' },
@@ -1681,8 +1698,8 @@ declare global {
   // Furthermore, with regards to incompatible versions, as far as I can tell
   // Firefox will remove old versions of injected scripts when it reloads an
   // add-on. I'm not sure if that behavior is reliable across all browsers,
-  // however, so for now we try our best to ensure we have the correct version
-  // of the script here.
+  // however, (update: it's not) so for now we try our best to ensure we have
+  // the correct version of the script here.
   if (window.readerScriptVer === __VERSION__) {
     return;
   } else if (
@@ -1719,6 +1736,23 @@ declare global {
     browser.runtime.onMessage.removeListener(onMessage);
   };
 
+  // Track if we are the top-most window or not.
+  //
+  // Normally we detect the top-most window by comparing window.top ===
+  // window.self but in some cases the actual top-most window does not have the
+  // content script injected and hence we have a concept of the effective
+  // top-most window.
+  //
+  // This only happens in Firefox and only really with the Live TL extension
+  // where the top-most window in some cases is a moz-extension:// URL and hence
+  // does not have the content script injected. Instead a child iframe (a
+  // regular YouTube page) has the content script injected and should be treated
+  // as the top-most window for the purposes of showing the popup.
+  let isEffectiveTopMostWindow: boolean = false;
+  function isTopMostWindow() {
+    return isEffectiveTopMostWindow || window.self === window.top;
+  }
+
   browser.runtime.onMessage.addListener(onMessage);
 
   // Check if we should be enabled or not.
@@ -1746,13 +1780,19 @@ declare global {
           'No config object provided with enable message'
         );
 
-        const tabId: number | undefined =
-          typeof request.id === 'number' ? request.id : undefined;
-        enable({ tabId, config: request.config as ContentConfig });
+        enable({
+          tabId: request.id,
+          config: request.config as ContentConfig,
+        });
         break;
 
       case 'disable':
         disable();
+        break;
+
+      case 'isTopMost':
+        isEffectiveTopMostWindow = true;
+        contentHandler?.setEffectiveTopMostWindow();
         break;
     }
 
@@ -1768,6 +1808,9 @@ declare global {
   }) {
     if (contentHandler) {
       contentHandler.setConfig(config);
+      if (isEffectiveTopMostWindow) {
+        contentHandler.setEffectiveTopMostWindow();
+      }
     } else {
       // When the extension is upgraded, we can still have the old popup window
       // or puck hanging around so make sure to clear it.
@@ -1792,6 +1835,21 @@ declare global {
         console.error(e);
       }
     }
+
+    browser.runtime
+      .sendMessage({
+        type: 'enabled',
+        src: document.location.href,
+      })
+      .then((resp) => {
+        if (resp && window.frameElement instanceof HTMLElement) {
+          const { frameId } = resp;
+          window.frameElement.dataset.frameId = frameId.toString();
+        }
+      })
+      .catch((e) => {
+        console.warn(e);
+      });
 
     window.addEventListener('pageshow', onPageShow);
     window.addEventListener('pagehide', onPageHide);

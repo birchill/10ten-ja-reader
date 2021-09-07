@@ -11,7 +11,11 @@ import {
 } from './tab-manager';
 
 type EnabledTab = {
+  frames: Array<{
+    /* TODO */
+  }>;
   port: Browser.Runtime.Port | undefined;
+  src: string;
 };
 
 export default class ActiveTabManager implements TabManager {
@@ -54,6 +58,20 @@ export default class ActiveTabManager implements TabManager {
         switch (request.type) {
           case 'enable?':
             this.enablePage(sender.tab.id, sender.frameId);
+            break;
+
+          case 'enabled':
+            if (
+              typeof sender.frameId === 'number' &&
+              sender.tab.id in this.enabledTabs
+            ) {
+              this.updateFrames({
+                tabId: sender.tab.id,
+                frameId: sender.frameId,
+                src: request.src,
+              });
+              return Promise.resolve({ frameId: sender.frameId });
+            }
             break;
 
           case 'disabled':
@@ -123,9 +141,9 @@ export default class ActiveTabManager implements TabManager {
     }
 
     // First, determine if we want to disable or enable
-    const enabled = !(tab.id in this.enabledTabs);
+    const enable = !(tab.id in this.enabledTabs);
 
-    if (enabled) {
+    if (enable) {
       this.config = config;
       await this.enablePage(tab.id);
     } else {
@@ -158,12 +176,13 @@ export default class ActiveTabManager implements TabManager {
     //
     // If we fail to set up the content script we'll drop the entry from
     // enabledTabs at that point.
-    //
-    // However, we only want to change the enabled state if we are dealing with
-    // the root frame or the whole tab.
     const isRootFrame = typeof frameId === 'undefined' || frameId === 0;
     if (isRootFrame && !(tabId in this.enabledTabs)) {
-      this.enabledTabs[tabId] = { port: undefined };
+      this.enabledTabs[tabId] = {
+        frames: [],
+        port: undefined,
+        src: '',
+      };
     }
 
     // If we are dealing with a single frame, try calling to see if the content
@@ -174,6 +193,9 @@ export default class ActiveTabManager implements TabManager {
     //
     // So in that case we just have to blindly inject the script and trust the
     // content script to return early if it finds it has already been injected.
+    //
+    // However, we only want to change the enabled state if we are dealing with
+    // the root frame or the whole tab.
     let enabled = true;
     if (
       typeof frameId === 'undefined' ||
@@ -226,7 +248,7 @@ export default class ActiveTabManager implements TabManager {
       // We need to check we got the expected result because Safari simply fails
       // silently if no one received the message.
       return result === 'ok';
-    } catch (_e) {
+    } catch {
       return false;
     }
   }
@@ -251,7 +273,7 @@ export default class ActiveTabManager implements TabManager {
     // while Chrome reports 'null'. However, it's not clear if these results are
     // ordered by frame or not, or how to actually return a meaningful value
     // given the way we package our content script. What's more, if any of the
-    // frames throws an error, theo whole call executeScript call fails.
+    // frames throws an error, the whole call executeScript call fails.
     //
     // So, for now, we just rely on the call site doing some guessing about
     // whether or not we should report ourselves as being enabled or not.
@@ -266,6 +288,52 @@ export default class ActiveTabManager implements TabManager {
       },
       { frameId }
     );
+  }
+
+  private updateFrames({
+    tabId,
+    frameId,
+    src,
+  }: {
+    tabId: number;
+    frameId: number;
+    src: string;
+  }) {
+    if (!(tabId in this.enabledTabs)) {
+      return;
+    }
+
+    const tab = this.enabledTabs[tabId];
+    if (frameId === 0) {
+      // If the root URL has changed, clobber the set of frames
+      if (tab.src !== '' && tab.src !== src) {
+        tab.frames = [];
+      }
+      tab.src = src;
+    }
+    tab.frames[frameId] = {};
+  }
+
+  private dropFrame({
+    tabId,
+    frameId,
+  }: {
+    tabId: number;
+    frameId: number | undefined;
+  }) {
+    if (!this.enabledTabs[tabId]) {
+      return;
+    }
+
+    if (frameId) {
+      const tab = this.enabledTabs[tabId];
+      delete tab.frames[frameId];
+      if (!tab.frames.length) {
+        delete this.enabledTabs[tabId];
+      }
+    } else {
+      delete this.enabledTabs[tabId];
+    }
   }
 
   private async onPageDisabled(tabId: number, frameId?: number) {
@@ -289,20 +357,13 @@ export default class ActiveTabManager implements TabManager {
       await this.injectScript(tabId, frameId);
       enabled = true;
     } catch (e) {
-      // We got an error. If we're not dealing with the tab / root frame there's
-      // nothing left to do.
-      if (!isTabOrRootFrame) {
-        return;
-      }
-
-      // Next, check if the tab still exists. Perhaps it finished unloading
-      // while we were injecting scripts.
+      // Check if the tab still exists. Perhaps it finished unloading while we
+      // were injecting scripts.
       if (!(tabId in this.enabledTabs)) {
         return;
       }
 
-      // Drop the tab from our list of enabled tabs
-      delete this.enabledTabs[tabId];
+      this.dropFrame({ tabId, frameId });
     }
 
     // Note that even if we successfully re-injected our content script
