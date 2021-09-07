@@ -1606,13 +1606,15 @@ export class ContentHandler {
   }
 
   hidePopup() {
+    const wasShowing = !!this.currentSearchResult;
+
     this.currentLookupParams = undefined;
     this.currentSearchResult = undefined;
     this.currentTargetProps = undefined;
 
     hidePopup();
 
-    if (isTopMostWindow()) {
+    if (wasShowing && isTopMostWindow()) {
       for (const frame of Array.from(window.frames)) {
         frame.postMessage<ContentMessage>(
           { kind: '10ten(ja):popupHidden' },
