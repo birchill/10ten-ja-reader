@@ -71,6 +71,7 @@ import {
   findIframeElement,
   getIframeOrigin,
   getIframeOriginFromWindow,
+  getWindowDimensions,
 } from './iframes';
 import { SelectionMeta } from './meta';
 import { mod } from './mod';
@@ -1321,14 +1322,15 @@ export class ContentHandler {
     if (this.isTopMostWindow()) {
       this.lookupText(lookupParams);
     } else {
-      this.getTopMostWindow().postMessage<ContentMessage>(
-        {
-          ...lookupParams,
-          kind: '10ten(ja):lookup',
-          point,
+      browser.runtime.sendMessage({
+        ...lookupParams,
+        type: 'top:lookup',
+        point,
+        source: {
+          src: document.location.href,
+          dimensions: getWindowDimensions(),
         },
-        '*'
-      );
+      });
     }
   }
 
