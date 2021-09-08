@@ -83,9 +83,10 @@ export function findIframeElement(
   }
 
   // Look for an iframe that matches on frameId
-  const frameIdMatch = params.frameId
-    ? iframes.find((f) => f.dataset.frameId === params.frameId)
-    : undefined;
+  const frameIdMatch =
+    typeof params.frameId === 'number'
+      ? iframes.find((f) => f.dataset.frameId === params.frameId)
+      : undefined;
   if (frameIdMatch) {
     return frameIdMatch;
   }
@@ -161,4 +162,34 @@ function getIframeDimensions(elem: HTMLIFrameElement): {
     parseFloat(cs.borderBottomWidth);
 
   return { width, height };
+}
+
+let cachedOriginForIframeElement:
+  | { iframe: HTMLIFrameElement; origin: Point; resizeObserver: ResizeObserver }
+  | undefined;
+
+export function getIframeOrigin(iframeElement: HTMLIFrameElement): Point {
+  if (cachedOriginForIframeElement?.iframe === iframeElement) {
+    return cachedOriginForIframeElement.origin;
+  } else if (cachedOriginForIframeElement) {
+    cachedOriginForIframeElement.resizeObserver.disconnect();
+    cachedOriginForIframeElement = undefined;
+  }
+
+  const { left: x, top: y } = iframeElement.getBoundingClientRect();
+
+  const resizeObserver = new ResizeObserver(() => {
+    cachedOriginForIframeElement = undefined;
+    resizeObserver.disconnect();
+  });
+
+  resizeObserver.observe(iframeElement);
+
+  cachedOriginForIframeElement = {
+    iframe: iframeElement,
+    origin: { x, y },
+    resizeObserver,
+  };
+
+  return cachedOriginForIframeElement.origin;
 }
