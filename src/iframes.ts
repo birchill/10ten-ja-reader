@@ -193,3 +193,20 @@ export function getIframeOrigin(iframeElement: HTMLIFrameElement): Point {
 
   return cachedOriginForIframeElement.origin;
 }
+
+// Called from within an iframe, returns the window dimensions using a size that
+// should match the size we expect when expecting the <iframe> element from its
+// parent.
+export function getWindowDimensions(): { width: number; height: number } {
+  if (document.compatMode === 'BackCompat') {
+    return {
+      width: document.body?.clientWidth ?? window.innerWidth,
+      height: document.body?.clientHeight ?? window.innerHeight,
+    };
+  } else {
+    return {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    };
+  }
+}
