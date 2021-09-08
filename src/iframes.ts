@@ -1,65 +1,5 @@
 import { Point } from './geometry';
 
-let cachedOrigin:
-  | { window: Window; origin: Point; resizeObserver: ResizeObserver }
-  | undefined;
-
-export function getIframeOriginFromWindow(iframeWindow: Window): Point | null {
-  if (cachedOrigin?.window === iframeWindow) {
-    return cachedOrigin.origin;
-  } else if (cachedOrigin) {
-    cachedOrigin.resizeObserver.disconnect();
-    cachedOrigin = undefined;
-  }
-
-  const iframeElement = getIframeElementFromWindow(iframeWindow);
-  if (!iframeElement) {
-    return null;
-  }
-
-  const { left: x, top: y } = iframeElement.getBoundingClientRect();
-
-  const resizeObserver = new ResizeObserver(() => {
-    cachedOrigin = undefined;
-    resizeObserver.disconnect();
-  });
-
-  resizeObserver.observe(iframeElement);
-
-  cachedOrigin = {
-    window: iframeWindow,
-    origin: { x, y },
-    resizeObserver,
-  };
-
-  return cachedOrigin.origin;
-}
-
-export function getIframeElementFromWindow(
-  iframeWindow: Window
-): HTMLIFrameElement | null {
-  // For same origin iframes we can just use the `frameElement` property.
-  try {
-    const embeddingElement = iframeWindow.frameElement;
-    // We can't use instanceof HTMLIFrameElement here because on Safari,
-    // depending on which iframe is in focus, that will sometimes fail.
-    return embeddingElement?.tagName === 'IFRAME'
-      ? (embeddingElement as HTMLIFrameElement)
-      : null;
-  } catch (e) {
-    // Ignore
-  }
-
-  // For cross-origin iframe we need to look through all the <iframe> elements
-  // and find one with a matching contentWindow
-  const iframeElements = document.getElementsByTagName('iframe');
-  return (
-    Array.from(iframeElements).find(
-      (iframe) => iframe.contentWindow === iframeWindow
-    ) || null
-  );
-}
-
 export type IframeSearchParams = {
   frameId?: number;
   initialSrc?: string;
@@ -164,34 +104,34 @@ function getIframeDimensions(elem: HTMLIFrameElement): {
   return { width, height };
 }
 
-let cachedOriginForIframeElement:
+let cachedOrigin:
   | { iframe: HTMLIFrameElement; origin: Point; resizeObserver: ResizeObserver }
   | undefined;
 
 export function getIframeOrigin(iframeElement: HTMLIFrameElement): Point {
-  if (cachedOriginForIframeElement?.iframe === iframeElement) {
-    return cachedOriginForIframeElement.origin;
-  } else if (cachedOriginForIframeElement) {
-    cachedOriginForIframeElement.resizeObserver.disconnect();
-    cachedOriginForIframeElement = undefined;
+  if (cachedOrigin?.iframe === iframeElement) {
+    return cachedOrigin.origin;
+  } else if (cachedOrigin) {
+    cachedOrigin.resizeObserver.disconnect();
+    cachedOrigin = undefined;
   }
 
   const { left: x, top: y } = iframeElement.getBoundingClientRect();
 
   const resizeObserver = new ResizeObserver(() => {
-    cachedOriginForIframeElement = undefined;
+    cachedOrigin = undefined;
     resizeObserver.disconnect();
   });
 
   resizeObserver.observe(iframeElement);
 
-  cachedOriginForIframeElement = {
+  cachedOrigin = {
     iframe: iframeElement,
     origin: { x, y },
     resizeObserver,
   };
 
-  return cachedOriginForIframeElement.origin;
+  return cachedOrigin.origin;
 }
 
 // Called from within an iframe, returns the window dimensions using a size that
