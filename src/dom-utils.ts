@@ -85,36 +85,6 @@ export function isTextInputNode(
 export const isTextNode = (node: Node | null): node is CharacterData =>
   !!node && node.nodeType === Node.TEXT_NODE;
 
-export function isMessageSourceWindow(
-  source: MessageEventSource | null
-): source is Window {
-  // This is mostly determined empirically, but basically we need to know if
-  // a message source is a Window or not since the signature for postMessage
-  // differs slightly for different sources.
-  //
-  // For cross-origin iframes, however, instanceof Window won't always work
-  // (although it does in some browsers). Furthermore, we can't access prototype
-  // etc. on the object.
-  //
-  // Instead we just try a few checks that so far see to work.
-  if (!source) {
-    return false;
-  }
-
-  if (source instanceof Window) {
-    return true;
-  }
-
-  try {
-    return (
-      (source as unknown as Window).window ===
-      (source as unknown as Window).self
-    );
-  } catch (_e) {
-    return false;
-  }
-}
-
 export function isSvg(node: Node): boolean {
   return node.nodeType === Node.ELEMENT_NODE
     ? node instanceof SVGElement

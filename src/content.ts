@@ -58,7 +58,7 @@ import {
   getWordToCopy,
   Entry as CopyEntry,
 } from './copy-text';
-import { isEditableNode, isMessageSourceWindow } from './dom-utils';
+import { isEditableNode } from './dom-utils';
 import {
   addMarginToPoint,
   getMarginAroundPoint,
@@ -70,7 +70,6 @@ import { getTextAtPoint } from './get-text';
 import {
   findIframeElement,
   getIframeOrigin,
-  getIframeOriginFromWindow,
   getWindowDimensions,
 } from './iframes';
 import { SelectionMeta } from './meta';
@@ -213,7 +212,7 @@ export class ContentHandler {
         text: string;
         wordLookup: boolean;
         meta?: SelectionMeta;
-        source: Window | number | null;
+        source: number | null;
       }
     | undefined;
   private currentSearchResult: QueryResult | undefined;
@@ -781,54 +780,6 @@ export class ContentHandler {
     // topmost window, we ensure that we are the topmost window before
     // calling the corresponding method.
     switch (ev.data.kind) {
-      case '10ten(ja):lookup':
-        {
-          if (!this.isTopMostWindow()) {
-            return;
-          }
-
-          if (!isMessageSourceWindow(ev.source)) {
-            console.warn('Unexpected message source');
-            return;
-          }
-
-          const iframeOriginPoint = getIframeOriginFromWindow(ev.source);
-          if (!iframeOriginPoint) {
-            console.warn("Couldn't get iframe origin");
-            return;
-          }
-
-          // Translate the point from the iframe's coordinate system to ours.
-          const { point } = ev.data;
-          this.currentPoint = {
-            x: point.x + iframeOriginPoint.x,
-            y: point.y + iframeOriginPoint.y,
-          };
-
-          // Similarly translate any text box sizes.
-          let { targetProps } = ev.data;
-          if (targetProps.textBoxSizes) {
-            targetProps = JSON.parse(JSON.stringify(targetProps));
-            const { textBoxSizes } = targetProps;
-            for (const size of textBoxSizeLengths) {
-              const { left, top, width, height } = textBoxSizes![size];
-              textBoxSizes![size] = {
-                left: left + iframeOriginPoint.x,
-                top: top + iframeOriginPoint.y,
-                width,
-                height,
-              };
-            }
-          }
-
-          // We are doing a lookup based on an iframe's contents so we should
-          // clear any mouse target we previously stored.
-          this.lastMouseTarget = null;
-
-          this.lookupText({ ...ev.data, targetProps, source: ev.source });
-        }
-        break;
-
       case '10ten(ja):clearResult':
         if (this.isTopMostWindow()) {
           this.clearResult();
@@ -1219,19 +1170,15 @@ export class ContentHandler {
     this.lastMouseTarget = null;
     this.copyMode = false;
 
-    if (this.isTopMostWindow() && this.currentLookupParams?.source) {
+    if (
+      this.isTopMostWindow() &&
+      typeof this.currentLookupParams?.source === 'number'
+    ) {
       const { source } = this.currentLookupParams;
-      if (typeof source === 'number') {
-        browser.runtime.sendMessage({
-          type: 'frame:clearTextHighlight',
-          frameId: source,
-        });
-      } else {
-        source.postMessage<ContentMessage>(
-          { kind: '10ten(ja):clearTextHighlight' },
-          '*'
-        );
-      }
+      browser.runtime.sendMessage({
+        type: 'frame:clearTextHighlight',
+        frameId: source,
+      });
       this.puck?.clearHighlight();
     } else {
       this.clearTextHighlight(currentElement);
@@ -1350,7 +1297,7 @@ export class ContentHandler {
   }: {
     dictMode: 'default' | 'kanji';
     meta?: SelectionMeta;
-    source: Window | number | null;
+    source: number | null;
     targetProps: TargetProps;
     text: string;
     wordLookup: boolean;
@@ -1513,20 +1460,13 @@ export class ContentHandler {
       return;
     }
 
-    if (this.currentLookupParams?.source) {
+    if (typeof this.currentLookupParams?.source === 'number') {
       const { source } = this.currentLookupParams;
-      if (typeof source === 'number') {
-        browser.runtime.sendMessage({
-          type: 'frame:highlightText',
-          frameId: source,
-          length: highlightLength,
-        });
-      } else {
-        source.postMessage<ContentMessage>(
-          { kind: '10ten(ja):highlightText', length: highlightLength },
-          '*'
-        );
-      }
+      browser.runtime.sendMessage({
+        type: 'frame:highlightText',
+        frameId: source,
+        length: highlightLength,
+      });
       this.puck?.highlightMatch();
       return;
     }
