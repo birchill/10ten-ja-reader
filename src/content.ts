@@ -67,7 +67,11 @@ import {
   union,
 } from './geometry';
 import { getTextAtPoint } from './get-text';
-import { getIframeOriginFromWindow } from './iframes';
+import {
+  findIframeElement,
+  getIframeOrigin,
+  getIframeOriginFromWindow,
+} from './iframes';
 import { SelectionMeta } from './meta';
 import { mod } from './mod';
 import {
@@ -925,6 +929,58 @@ export class ContentHandler {
   async onBackgroundMessage(request: unknown): Promise<string> {
     s.assert(request, BackgroundMessageSchema);
     switch (request.type) {
+      case 'lookup':
+        {
+          const iframe = findIframeElement({
+            frameId: request.source.frameId,
+            initialSrc: request.source.initialSrc,
+            currentSrc: request.source.currentSrc,
+            dimensions: request.source.dimensions,
+          });
+          if (!iframe) {
+            console.warn("Couldn't find iframe element");
+            break;
+          }
+
+          const iframeOriginPoint = getIframeOrigin(iframe);
+
+          // Translate the point from the iframe's coordinate system to ours.
+          const { point } = request;
+          this.currentPoint = {
+            x: point.x + iframeOriginPoint.x,
+            y: point.y + iframeOriginPoint.y,
+          };
+
+          // Similarly translate any text box sizes.
+          let targetProps = request.targetProps as TargetProps;
+          if (targetProps.textBoxSizes) {
+            targetProps = JSON.parse(JSON.stringify(targetProps));
+            const { textBoxSizes } = targetProps;
+            for (const size of textBoxSizeLengths) {
+              const { left, top, width, height } = textBoxSizes![size];
+              textBoxSizes![size] = {
+                left: left + iframeOriginPoint.x,
+                top: top + iframeOriginPoint.y,
+                width,
+                height,
+              };
+            }
+          }
+
+          // We are doing a lookup based on an iframe's contents so we should
+          // clear any mouse target we previously stored.
+          this.lastMouseTarget = null;
+
+          let meta = request.meta as SelectionMeta | undefined;
+          this.lookupText({
+            ...request,
+            meta,
+            targetProps,
+            source: request.source.frameId,
+          });
+        }
+        break;
+
       case 'highlightText':
         this.highlightText(request.length);
         break;
@@ -1292,7 +1348,7 @@ export class ContentHandler {
   }: {
     dictMode: 'default' | 'kanji';
     meta?: SelectionMeta;
-    source: Window | null;
+    source: Window | number | null;
     targetProps: TargetProps;
     text: string;
     wordLookup: boolean;
