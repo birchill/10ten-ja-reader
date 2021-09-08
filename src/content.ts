@@ -828,14 +828,6 @@ export class ContentHandler {
         }
         break;
 
-      case '10ten(ja):highlightText':
-        this.highlightText(ev.data.length);
-        break;
-
-      case '10ten(ja):clearTextHighlight':
-        this.clearTextHighlight();
-        break;
-
       case '10ten(ja):popupHidden':
         this.currentTextRange = undefined;
         this.currentPoint = undefined;
