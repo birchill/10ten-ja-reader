@@ -4,7 +4,7 @@ import {
 } from './content-container';
 import type { ContentMessage } from './content-messages';
 import { MarginBox } from './geometry';
-import { getIframeOriginFromWindow } from './iframe-tracker';
+import { getIframeOriginFromWindow } from './iframes';
 import type { SafeAreaProvider } from './safe-area-provider';
 import { getThemeClass } from './themes';
 

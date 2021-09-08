@@ -67,7 +67,7 @@ import {
   union,
 } from './geometry';
 import { getTextAtPoint } from './get-text';
-import { getIframeOriginFromWindow } from './iframe-tracker';
+import { getIframeOriginFromWindow } from './iframes';
 import { SelectionMeta } from './meta';
 import { mod } from './mod';
 import {
