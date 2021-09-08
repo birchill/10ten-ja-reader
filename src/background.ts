@@ -532,6 +532,30 @@ browser.runtime.onMessage.addListener(
           );
         }
         break;
+
+      case 'top:lookup':
+        {
+          if (!sender.tab?.id || typeof sender.frameId !== 'number') {
+            break;
+          }
+
+          const topFrame = tabManager.getTopFrame({
+            tabId: sender.tab?.id,
+            frameId: sender.frameId,
+            ...request.source,
+          });
+          if (!topFrame) {
+            break;
+          }
+
+          const { frameId, source } = topFrame;
+          browser.tabs.sendMessage(
+            sender.tab?.id,
+            { ...request, type: 'lookup', ...source },
+            { frameId }
+          );
+        }
+        break;
     }
   }
 );

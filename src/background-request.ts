@@ -36,6 +36,19 @@ export const BackgroundRequestSchema = discriminator('type', {
   // messages.
   'frame:highlightText': s.type({ length: s.number(), frameId: s.number() }),
   'frame:clearTextHighlight': s.type({ frameId: s.number() }),
+  'top:lookup': s.type({
+    // We don't validate the bulk of the contents here but leave that to the
+    // receiving end.
+
+    // Parameters for designating the iframe source properties
+    source: s.type({
+      src: s.string(),
+      dimensions: s.type({
+        width: s.number(),
+        height: s.number(),
+      }),
+    }),
+  }),
 });
 
 export type BackgroundRequest = s.Infer<typeof BackgroundRequestSchema>;

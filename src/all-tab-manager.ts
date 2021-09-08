@@ -18,8 +18,10 @@ type Tab = {
   frames: Array<{
     initialSrc: string;
     currentSrc?: string;
-    width?: number;
-    height?: number;
+    dimensions?: {
+      width: number;
+      height: number;
+    };
   }>;
   src: string;
   rootWindowCheckTimeout?: number;
@@ -249,6 +251,53 @@ export default class AllTabManager implements TabManager {
   //
   // Frame management
   //
+
+  getTopFrame({
+    tabId,
+    frameId,
+    src,
+    dimensions,
+  }: {
+    tabId: number;
+    frameId: number;
+    src: string;
+    dimensions: {
+      width: number;
+      height: number;
+    };
+  }): {
+    frameId: number;
+    source: {
+      frameId: number;
+      initialSrc: string;
+      currentSrc: string;
+      dimensions: { width: number; height: number };
+    };
+  } | null {
+    if (!(tabId in this.tabs)) {
+      return null;
+    }
+
+    if (!(frameId in this.tabs[tabId].frames)) {
+      return null;
+    }
+
+    const frame = this.tabs[tabId].frames[frameId];
+    const { initialSrc } = frame;
+    frame.currentSrc = src;
+    frame.dimensions = dimensions;
+
+    const topMostFrameId = Number(Object.keys(this.tabs[tabId].frames)[0]);
+    return {
+      frameId: topMostFrameId,
+      source: {
+        frameId,
+        initialSrc,
+        currentSrc: src,
+        dimensions,
+      },
+    };
+  }
 
   private updateFrames({
     tabId,
