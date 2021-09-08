@@ -1,4 +1,4 @@
-## Next release
+## 1.3.0 (2021-09-08) (Firefox, Chrome)
 
 - Optimized lookup performance.
 - Restored the behavior where 10ten would translate the alt/title attributes on
