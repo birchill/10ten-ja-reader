@@ -412,7 +412,10 @@ let pendingSearchOtherRequest:
   | undefined;
 
 browser.runtime.onMessage.addListener(
-  async (request: unknown): Promise<any> => {
+  async (
+    request: unknown,
+    sender: Browser.Runtime.MessageSender
+  ): Promise<any> => {
     if (!s.is(request, BackgroundRequestSchema)) {
       console.warn(`Unrecognized request: ${JSON.stringify(request)}`);
       Bugsnag.notify(
@@ -507,6 +510,27 @@ browser.runtime.onMessage.addListener(
 
       case 'toggleDefinition':
         config.toggleReadingOnly();
+        break;
+
+      // Forwarded messages
+      case 'frame:highlightText':
+        if (sender.tab?.id) {
+          browser.tabs.sendMessage(
+            sender.tab?.id,
+            { type: 'highlightText', length: request.length },
+            { frameId: request.frameId }
+          );
+        }
+        break;
+
+      case 'frame:clearTextHighlight':
+        if (sender.tab?.id) {
+          browser.tabs.sendMessage(
+            sender.tab?.id,
+            { type: 'clearTextHighlight' },
+            { frameId: request.frameId }
+          );
+        }
         break;
     }
   }

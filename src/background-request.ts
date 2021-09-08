@@ -28,6 +28,14 @@ export const BackgroundRequestSchema = discriminator('type', {
     input: s.string(),
     includeRomaji: s.optional(s.boolean()),
   }),
+
+  // Requests that should be relayed to the top-most frame in a tab.
+  //
+  // We send these messages via the background page simply because using
+  // postMessage causes some Web pages to break when they encounter unrecognized
+  // messages.
+  'frame:highlightText': s.type({ length: s.number(), frameId: s.number() }),
+  'frame:clearTextHighlight': s.type({ frameId: s.number() }),
 });
 
 export type BackgroundRequest = s.Infer<typeof BackgroundRequestSchema>;

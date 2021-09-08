@@ -208,7 +208,7 @@ export class ContentHandler {
         text: string;
         wordLookup: boolean;
         meta?: SelectionMeta;
-        source: Window | null;
+        source: Window | number | null;
       }
     | undefined;
   private currentSearchResult: QueryResult | undefined;
@@ -241,6 +241,7 @@ export class ContentHandler {
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onFocusIn = this.onFocusIn.bind(this);
     this.onContentMessage = this.onContentMessage.bind(this);
+    this.onBackgroundMessage = this.onBackgroundMessage.bind(this);
 
     window.addEventListener('mousemove', this.onMouseMove);
     window.addEventListener('mousedown', this.onMouseDown);
@@ -248,6 +249,7 @@ export class ContentHandler {
     window.addEventListener('keyup', this.onKeyUp, { capture: true });
     window.addEventListener('focusin', this.onFocusIn);
     window.addEventListener('message', this.onContentMessage);
+    browser.runtime.onMessage.addListener(this.onBackgroundMessage);
 
     hasReasonableTimerResolution().then((isReasonable) => {
       if (isReasonable) {
@@ -339,6 +341,7 @@ export class ContentHandler {
     window.removeEventListener('keyup', this.onKeyUp, { capture: true });
     window.removeEventListener('focusin', this.onFocusIn);
     window.removeEventListener('message', this.onContentMessage);
+    browser.runtime.onMessage.removeListener(this.onBackgroundMessage);
 
     this.clearResult();
     this.tearDownPuck();
@@ -919,6 +922,21 @@ export class ContentHandler {
     }
   }
 
+  async onBackgroundMessage(request: unknown): Promise<string> {
+    s.assert(request, BackgroundMessageSchema);
+    switch (request.type) {
+      case 'highlightText':
+        this.highlightText(request.length);
+        break;
+
+      case 'clearTextHighlight':
+        this.clearTextHighlight();
+        break;
+    }
+
+    return 'ok';
+  }
+
   showNextDictionary() {
     if (!this.isTopMostWindow()) {
       this.getTopMostWindow().postMessage<ContentMessage>(
@@ -1145,10 +1163,18 @@ export class ContentHandler {
     this.copyMode = false;
 
     if (this.isTopMostWindow() && this.currentLookupParams?.source) {
-      this.currentLookupParams.source.postMessage<ContentMessage>(
-        { kind: '10ten(ja):clearTextHighlight' },
-        '*'
-      );
+      const { source } = this.currentLookupParams;
+      if (typeof source === 'number') {
+        browser.runtime.sendMessage({
+          type: 'frame:clearTextHighlight',
+          frameId: source,
+        });
+      } else {
+        source.postMessage<ContentMessage>(
+          { kind: '10ten(ja):clearTextHighlight' },
+          '*'
+        );
+      }
       this.puck?.clearHighlight();
     } else {
       this.clearTextHighlight(currentElement);
@@ -1430,10 +1456,19 @@ export class ContentHandler {
     }
 
     if (this.currentLookupParams?.source) {
-      this.currentLookupParams.source.postMessage<ContentMessage>(
-        { kind: '10ten(ja):highlightText', length: highlightLength },
-        '*'
-      );
+      const { source } = this.currentLookupParams;
+      if (typeof source === 'number') {
+        browser.runtime.sendMessage({
+          type: 'frame:highlightText',
+          frameId: source,
+          length: highlightLength,
+        });
+      } else {
+        source.postMessage<ContentMessage>(
+          { kind: '10ten(ja):highlightText', length: highlightLength },
+          '*'
+        );
+      }
       this.puck?.highlightMatch();
       return;
     }

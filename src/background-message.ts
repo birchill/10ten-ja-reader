@@ -9,6 +9,10 @@ export const BackgroundMessageSchema = discriminator('type', {
     id: s.optional(s.number()),
   }),
   isTopMost: s.type({}),
+
+  // Relayed messages from other content scripts
+  highlightText: s.type({ length: s.number() }),
+  clearTextHighlight: s.type({}),
 });
 
 export type BackgroundMessage = s.Infer<typeof BackgroundMessageSchema>;
