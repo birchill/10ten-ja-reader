@@ -1,4 +1,9 @@
-## 1.3.1 (2021-09-08) (Firefox, Chrome)
+## Next version
+
+- Stopped the popup for showing up for all numbers
+  [#749](https://github.com/birchill/10ten-ja-reader/issues/749)).
+
+## 1.3.1 (2021-09-08) (Firefox)
 
 - Added recognition for counters that start with half-width numerals
   (e.g. 1 つ, 14 日, see

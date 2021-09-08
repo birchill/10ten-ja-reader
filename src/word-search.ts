@@ -21,7 +21,7 @@ export type GetWordsFunction = (params: {
   maxResults: number;
 }) => Promise<Array<DictionaryWordResult>>;
 
-const onlyDigits = /^[0-9０-９,、.．]$/;
+const onlyDigits = /^[0-9０-９,、.．]+$/;
 
 export async function wordSearch({
   abortSignal,
