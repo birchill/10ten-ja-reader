@@ -1,3 +1,5 @@
+export const halfWidthNumbers = /[0-9]/;
+
 // U+FF01~U+FF5E is for full-width alphanumerics (includes some punctuation
 // like ＆ and ～ because they appear in the kanji headwords for some entries)
 //
@@ -148,6 +150,16 @@ export function getNegatedCharRange(range: RegExp): RegExp {
 
 export const nonJapaneseChar = getNegatedCharRange(japaneseChar);
 
+export const nonJapaneseCharOrNumber = getNegatedCharRange(
+  getCombinedCharRange([japaneseChar, halfWidthNumbers, /[,、.．]/])
+);
+
 export function hasKatakana(text: string): boolean {
   return katakana.test(text);
+}
+
+const numberStartRegex = /^[0-9０-９一二三四五六七八九十百]/;
+
+export function startsWithNumber(input: string): boolean {
+  return !!input.length && numberStartRegex.test(input);
 }

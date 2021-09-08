@@ -1,4 +1,8 @@
-import { nonJapaneseChar } from './char-range';
+import {
+  nonJapaneseChar,
+  nonJapaneseCharOrNumber,
+  startsWithNumber,
+} from './char-range';
 import { isTextInputNode, isTextNode } from './dom-utils';
 import { bboxIncludesPoint, Point } from './geometry';
 import { extractGetTextMetadata, lookForMetadata, SelectionMeta } from './meta';
@@ -532,12 +536,22 @@ function getTextFromTextNode({
     const nodeText = node.data.substring(offset);
     let textEnd = nodeText.search(textDelimiter);
 
-    // Check if we are looking at a special metadata string that accepts a
-    // different range of characters.
+    // Check if we are looking at a special string that accepts a different
+    // range of characters.
     if (textDelimiter === nonJapaneseChar) {
       const currentText =
         result.text +
         nodeText.substring(0, textEnd === -1 ? undefined : textEnd);
+
+      // If the source starts with a number, expand our text delimeter to allow
+      // reading the rest of the number since it might be something like 5つ.
+      if (!currentText.length && startsWithNumber(nodeText)) {
+        textDelimiter = nonJapaneseCharOrNumber;
+      }
+
+      // Check if should further expand the set of allowed characters in order
+      // to recognize certains types of metadata-type strings (e.g. years or
+      // floor space measurements).
       ({ textDelimiter, textEnd } = lookForMetadata({
         currentText,
         nodeText,

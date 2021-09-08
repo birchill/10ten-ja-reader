@@ -1,3 +1,9 @@
+## Next version
+
+- Added recognition for counters that start with half-width numerals
+  (e.g. 1 つ, 14 日, see
+  [#709](https://github.com/birchill/10ten-ja-reader/issues/709)).
+
 ## 1.3.0 (2021-09-08) (Firefox, Chrome)
 
 - Optimized lookup performance.

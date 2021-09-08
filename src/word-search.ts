@@ -21,6 +21,8 @@ export type GetWordsFunction = (params: {
   maxResults: number;
 }) => Promise<Array<DictionaryWordResult>>;
 
+const onlyDigits = /^[0-9０-９,、.．]$/;
+
 export async function wordSearch({
   abortSignal,
   getWords,
@@ -50,6 +52,13 @@ export async function wordSearch({
     // Check if we have been aborted
     if (abortSignal?.aborted) {
       throw new AbortError();
+    }
+
+    // If we only have digits left, don't bother looking them up since we don't
+    // want to bother the user by showing the popup every time they hover over a
+    // digit.
+    if (onlyDigits.test(input)) {
+      break;
     }
 
     // If we include a de-inflected substring we show it in the reasons string.

@@ -361,10 +361,10 @@
   resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.2.2.tgz#38234fbfe9b9f622a815f7ae6ea6cba31f363e41"
   integrity sha512-WSpN/ERemjXOCorzHkc3VXp356s24a2mtVST1s06UVV1jsluVCMEo/f3FJyqaAeu60yPF+ow05TIThlPR4DhBQ==
 
-"@birchill/normal-jp@^1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.3.1.tgz#71a9f0d0538b147719b24a40629f38545d01f127"
-  integrity sha512-fhvQql3+g1agS/R6wXvTf/jZj+q4dJs3FyIhwxUm7kemB3ipg66wnJDVI+urSfI1SNoPxbaTPamxGLtbgk0xtg==
+"@birchill/normal-jp@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.4.0.tgz#b58f6146f9b754431f7d93c2d48aca9ee45ee1a3"
+  integrity sha512-iMeOw4BJS1Z0wqMyC3eYoZN+ANDlg1VQ+dZy56UEwNEaY+hzkR6nYT0DKpDRVRp5oJbpf7rEJQ6gfmD7AWJv2A==
 
 "@bugsnag/browser@^7.11.0":
   version "7.11.0"
