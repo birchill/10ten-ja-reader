@@ -1,17 +1,4 @@
 import { CopyType } from './copy-keys';
-import { Point } from './geometry';
-import { SelectionMeta } from './meta';
-import { TargetProps } from './target-props';
-
-export type LookupMessage = {
-  kind: '10ten(ja):lookup';
-  dictMode: 'default' | 'kanji';
-  meta?: SelectionMeta;
-  point: Point;
-  targetProps: TargetProps;
-  text: string;
-  wordLookup: boolean;
-};
 
 export type ClearResultMessage = {
   kind: '10ten(ja):clearResult';
@@ -49,17 +36,6 @@ export type CopyCurrentEntryMessage = {
   copyType: CopyType;
 };
 
-// Text highlight messages
-
-export type HighlightTextMessage = {
-  kind: '10ten(ja):highlightText';
-  length: number;
-};
-
-export type ClearTextHighlightMessage = {
-  kind: '10ten(ja):clearTextHighlight';
-};
-
 // Popup showing status messages
 
 type PopupHiddenMessage = {
@@ -83,7 +59,6 @@ type MoonMovedMessage = {
 };
 
 export type ContentMessage =
-  | LookupMessage
   | ClearResultMessage
   | NextDictionaryMessage
   | ToggleDefinitionMessage
@@ -92,8 +67,6 @@ export type ContentMessage =
   | ExitCopyModeMessage
   | NextCopyEntryMessage
   | CopyCurrentEntryMessage
-  | HighlightTextMessage
-  | ClearTextHighlightMessage
   | PopupHiddenMessage
   | PopupShownMessage
   | IsPopupShownMessage
