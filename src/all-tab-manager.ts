@@ -71,7 +71,7 @@ export default class AllTabManager implements TabManager {
               return;
             }
 
-            this.enableTab(sender.tab.id);
+            this.enableTab(sender.tab.id, sender.frameId);
             break;
 
           case 'enabled':
@@ -90,17 +90,6 @@ export default class AllTabManager implements TabManager {
             });
 
             return Promise.resolve({ frameId: sender.frameId });
-
-          case 'disabled':
-            if (!sender.tab || typeof sender.tab.id !== 'number') {
-              return;
-            }
-
-            this.dropFrame({
-              tabId: sender.tab.id,
-              frameId: sender.frameId,
-            });
-            break;
         }
       }
     );
@@ -209,7 +198,7 @@ export default class AllTabManager implements TabManager {
     this.notifyListeners(this.enabled);
   }
 
-  private async enableTab(tabId: number): Promise<void> {
+  private async enableTab(tabId: number, frameId?: number): Promise<void> {
     if (!this.config) {
       throw new Error(`Should have called init before enableTab`);
     }
@@ -219,10 +208,14 @@ export default class AllTabManager implements TabManager {
     }
 
     try {
-      await browser.tabs.sendMessage(tabId, {
-        type: 'enable',
-        config: this.config,
-      });
+      await browser.tabs.sendMessage(
+        tabId,
+        {
+          type: 'enable',
+          config: this.config,
+        },
+        { frameId }
+      );
     } catch {
       // Some tabs don't have the content script so just ignore
       // connection failures here.
@@ -315,13 +308,19 @@ export default class AllTabManager implements TabManager {
       if (frameId === 0) {
         tab.src = src;
       }
+      // If we have navigated the root frame, blow away all the child frames
       if (frameId === 0 && tab.src !== src && tab.src !== '') {
         tab.frames = [];
       }
-      addedFrame = !(frameId in tab.frames);
-      tab.frames[frameId] = {
-        initialSrc: src,
-      };
+      if (frameId in tab.frames) {
+        tab.frames[frameId].currentSrc = src;
+      } else {
+        tab.frames[frameId] = {
+          initialSrc: src,
+          currentSrc: src,
+        };
+        addedFrame = true;
+      }
     } else {
       this.tabs[tabId] = {
         src: frameId === 0 ? src : '',
@@ -330,6 +329,7 @@ export default class AllTabManager implements TabManager {
       addedFrame = !(frameId in this.tabs[tabId].frames);
       this.tabs[tabId].frames[frameId] = {
         initialSrc: src,
+        currentSrc: src,
       };
     }
 
@@ -367,28 +367,6 @@ export default class AllTabManager implements TabManager {
           }
         }
       });
-    }
-  }
-
-  private dropFrame({
-    tabId,
-    frameId,
-  }: {
-    tabId: number;
-    frameId: number | undefined;
-  }) {
-    if (!this.tabs[tabId]) {
-      return;
-    }
-
-    if (frameId) {
-      const tab = this.tabs[tabId];
-      delete tab.frames[frameId];
-      if (!tab.frames.length) {
-        delete this.tabs[tabId];
-      }
-    } else {
-      delete this.tabs[tabId];
     }
   }
 

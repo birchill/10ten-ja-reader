@@ -356,15 +356,20 @@ export default class ActiveTabManager implements TabManager {
 
     const tab = this.enabledTabs[tabId];
     if (frameId === 0) {
-      // If the root URL has changed, clobber the set of frames
+      // If we have navigated the root frame, blow away all the child frames
       if (tab.src !== '' && tab.src !== src) {
         tab.frames = [];
       }
       tab.src = src;
     }
-    tab.frames[frameId] = {
-      initialSrc: src,
-    };
+    if (frameId in tab.frames) {
+      tab.frames[frameId].currentSrc = src;
+    } else {
+      tab.frames[frameId] = {
+        initialSrc: src,
+        currentSrc: src,
+      };
+    }
   }
 
   private dropFrame({
