@@ -4,7 +4,7 @@ import {
 } from './content-container';
 import type { ContentMessage } from './content-messages';
 import { MarginBox } from './geometry';
-import { getIframeOriginFromWindow } from './iframes';
+import { getIframeOrigin } from './iframes';
 import type { SafeAreaProvider } from './safe-area-provider';
 import { getThemeClass } from './themes';
 
@@ -356,7 +356,7 @@ export class LookupPuck {
         return;
       }
 
-      const originPoint = getIframeOriginFromWindow(contentWindow);
+      const originPoint = getIframeOrigin(iframeElement);
       if (!originPoint) {
         return;
       }
