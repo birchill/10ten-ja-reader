@@ -1,4 +1,4 @@
-## Next version
+## 1.3.2 (2021-09-09) (Firefox)
 
 - Stopped the popup for showing up for all numbers
   [#749](https://github.com/birchill/10ten-ja-reader/issues/749)).
