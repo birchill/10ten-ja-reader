@@ -14,8 +14,10 @@ type EnabledTab = {
   frames: Array<{
     initialSrc: string;
     currentSrc?: string;
-    width?: number;
-    height?: number;
+    dimensions?: {
+      width: number;
+      height: number;
+    };
   }>;
   port: Browser.Runtime.Port | undefined;
   src: string;
@@ -291,6 +293,52 @@ export default class ActiveTabManager implements TabManager {
       },
       { frameId }
     );
+  }
+
+  getTopFrame({
+    tabId,
+    frameId,
+    src,
+    dimensions,
+  }: {
+    tabId: number;
+    frameId: number;
+    src: string;
+    dimensions: {
+      width: number;
+      height: number;
+    };
+  }): {
+    frameId: number;
+    source: {
+      frameId: number;
+      initialSrc: string;
+      currentSrc: string;
+      dimensions: { width: number; height: number };
+    };
+  } | null {
+    if (!(tabId in this.enabledTabs)) {
+      return null;
+    }
+
+    if (!(frameId in this.enabledTabs[tabId].frames)) {
+      return null;
+    }
+
+    const frame = this.enabledTabs[tabId].frames[frameId];
+    const { initialSrc } = frame;
+    frame.currentSrc = src;
+    frame.dimensions = dimensions;
+
+    return {
+      frameId: 0,
+      source: {
+        frameId,
+        initialSrc,
+        currentSrc: src,
+        dimensions,
+      },
+    };
   }
 
   private updateFrames({
