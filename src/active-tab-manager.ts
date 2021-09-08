@@ -12,7 +12,10 @@ import {
 
 type EnabledTab = {
   frames: Array<{
-    /* TODO */
+    initialSrc: string;
+    currentSrc?: string;
+    width?: number;
+    height?: number;
   }>;
   port: Browser.Runtime.Port | undefined;
   src: string;
@@ -311,7 +314,9 @@ export default class ActiveTabManager implements TabManager {
       }
       tab.src = src;
     }
-    tab.frames[frameId] = {};
+    tab.frames[frameId] = {
+      initialSrc: src,
+    };
   }
 
   private dropFrame({

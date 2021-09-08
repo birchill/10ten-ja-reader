@@ -16,7 +16,10 @@ import {
 
 type Tab = {
   frames: Array<{
-    /* TODO */
+    initialSrc: string;
+    currentSrc?: string;
+    width?: number;
+    height?: number;
   }>;
   src: string;
   rootWindowCheckTimeout?: number;
@@ -267,14 +270,18 @@ export default class AllTabManager implements TabManager {
         tab.frames = [];
       }
       addedFrame = !(frameId in tab.frames);
-      tab.frames[frameId] = {};
+      tab.frames[frameId] = {
+        initialSrc: src,
+      };
     } else {
       this.tabs[tabId] = {
         src: frameId === 0 ? src : '',
         frames: [],
       };
       addedFrame = !(frameId in this.tabs[tabId].frames);
-      this.tabs[tabId].frames[frameId] = {};
+      this.tabs[tabId].frames[frameId] = {
+        initialSrc: src,
+      };
     }
 
     const tab = this.tabs[tabId];
