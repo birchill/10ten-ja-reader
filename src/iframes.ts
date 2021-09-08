@@ -25,7 +25,7 @@ export function findIframeElement(
   // Look for an iframe that matches on frameId
   const frameIdMatch =
     typeof params.frameId === 'number'
-      ? iframes.find((f) => f.dataset.frameId === params.frameId)
+      ? iframes.find((f) => f.dataset.frameId === String(params.frameId))
       : undefined;
   if (frameIdMatch) {
     return frameIdMatch;

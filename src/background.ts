@@ -412,10 +412,10 @@ let pendingSearchOtherRequest:
   | undefined;
 
 browser.runtime.onMessage.addListener(
-  async (
+  (
     request: unknown,
     sender: Browser.Runtime.MessageSender
-  ): Promise<any> => {
+  ): void | Promise<any> => {
     if (!s.is(request, BackgroundRequestSchema)) {
       console.warn(`Unrecognized request: ${JSON.stringify(request)}`);
       Bugsnag.notify(
@@ -450,25 +450,27 @@ browser.runtime.onMessage.addListener(
           controller: new AbortController(),
         };
 
-        try {
-          return await searchWords({
-            ...request,
-            abortSignal: pendingSearchWordsRequest.controller.signal,
-          });
-        } catch (e) {
-          if (e.name === 'AbortError') {
-            // Legacy content scripts (which use the request type 'search')
-            // won't recognize the 'aborted' result value and expect null in
-            // that case.
-            return request.type === 'search' ? null : 'aborted';
+        return (async () => {
+          try {
+            return searchWords({
+              ...request,
+              abortSignal: pendingSearchWordsRequest.controller.signal,
+            });
+          } catch (e) {
+            if (e.name === 'AbortError') {
+              // Legacy content scripts (which use the request type 'search')
+              // won't recognize the 'aborted' result value and expect null in
+              // that case.
+              return request.type === 'search' ? null : 'aborted';
+            }
+            Bugsnag.notify(e);
+            return null;
+          } finally {
+            if (pendingSearchWordsRequest?.input === request.input) {
+              pendingSearchWordsRequest = undefined;
+            }
           }
-          Bugsnag.notify(e);
-          return null;
-        } finally {
-          if (pendingSearchWordsRequest?.input === request.input) {
-            pendingSearchWordsRequest = undefined;
-          }
-        }
+        })();
 
       case 'searchOther':
         if (pendingSearchOtherRequest) {
@@ -481,22 +483,24 @@ browser.runtime.onMessage.addListener(
           controller: new AbortController(),
         };
 
-        try {
-          return await searchOther({
-            ...request,
-            abortSignal: pendingSearchOtherRequest.controller.signal,
-          });
-        } catch (e) {
-          if (e.name === 'AbortError') {
-            return 'aborted';
+        return (async () => {
+          try {
+            return await searchOther({
+              ...request,
+              abortSignal: pendingSearchOtherRequest.controller.signal,
+            });
+          } catch (e) {
+            if (e.name === 'AbortError') {
+              return 'aborted';
+            }
+            Bugsnag.notify(e);
+            return null;
+          } finally {
+            if (pendingSearchOtherRequest?.input === request.input) {
+              pendingSearchOtherRequest = undefined;
+            }
           }
-          Bugsnag.notify(e);
-          return null;
-        } finally {
-          if (pendingSearchOtherRequest?.input === request.input) {
-            pendingSearchOtherRequest = undefined;
-          }
-        }
+        })();
 
       case 'switchedDictionary':
         config.setHasSwitchedDictionary();
@@ -551,7 +555,7 @@ browser.runtime.onMessage.addListener(
           const { frameId, source } = topFrame;
           browser.tabs.sendMessage(
             sender.tab?.id,
-            { ...request, type: 'lookup', ...source },
+            { ...request, type: 'lookup', source },
             { frameId }
           );
         }
