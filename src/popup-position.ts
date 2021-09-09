@@ -199,14 +199,30 @@ function getAutoPosition({
 
   // We generally prefer to use a layout in the block direction
   const blockLayouts = orderOfPreference.slice(0, 2);
-  const preferredLayoutWithoutBlockConstraint = blockLayouts.find(
-    (l) => l && (isVerticalText ? l.constrainWidth : l.constrainHeight) === null
-  );
+  const preferredBlockLayout = blockLayouts.find((l) => {
+    if (!l) {
+      return false;
+    }
+
+    // For vertical text, find the first block layout whose width is not
+    // constrained.
+    if (isVerticalText) {
+      return !l.constrainWidth;
+    }
+
+    // For horizontal text, we don't constrain the height of the popup when
+    // using a mouse since the user can scroll to see the overflow.
+    //
+    // Instead, look for a block layout that is neither constrained _nor_
+    // overflowing the viewport.
+    const extent = l.y + (l.constrainHeight ?? popupSize.height);
+    return !l.constrainHeight && extent < safeBottom;
+  });
 
   // If we can't find an unconstrained layout in the block direction fall back
   // to the layout with the highest area.
   const preferredLayout =
-    preferredLayoutWithoutBlockConstraint ??
+    preferredBlockLayout ??
     orderOfPreference.sort(sizeComparator(popupSize))[0];
 
   // This probably never happens but if we have no suitable layouts, just put
