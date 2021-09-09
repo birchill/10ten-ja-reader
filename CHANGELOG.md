@@ -1,3 +1,9 @@
+## 1.3.3 (2021-09-09)
+
+- Fixed some popup positioning issues.
+- Prevented the popup from showing for images where the alt text is 画像 (e.g. on
+  Twitter).
+
 ## 1.3.2 (2021-09-09) (Firefox)
 
 - Stopped the popup for showing up for all numbers
