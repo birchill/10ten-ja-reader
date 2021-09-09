@@ -709,23 +709,35 @@ function getTextFromRandomElement({
     return null;
   }
 
-  if (typeof (<any>elem).title === 'string' && (<any>elem).title.length) {
-    return (<any>elem).title;
+  if (hasTitleAttribute(elem) && elem.title.length) {
+    return elem.title;
   }
 
-  if (typeof (<any>elem).alt === 'string' && (<any>elem).alt.length) {
-    return (<any>elem).alt;
+  if (hasAltAttribute(elem) && elem.alt.length) {
+    // Ignore the default '画像' alt text Twitter and others put on many of their
+    // images.
+    return elem.alt !== '画像' ? elem.alt : null;
   }
 
   if (elem.nodeName === 'OPTION') {
-    return (<HTMLOptionElement>elem).text;
+    return (elem as HTMLOptionElement).text;
   }
 
-  const isSelectElement = (elem: Element): elem is HTMLSelectElement =>
-    elem.nodeName === 'SELECT';
   if (isSelectElement(elem)) {
     return elem.options[elem.selectedIndex].text;
   }
 
   return null;
+}
+
+function hasTitleAttribute(elem: Element): elem is HTMLElement {
+  return typeof (elem as HTMLElement).title === 'string';
+}
+
+function hasAltAttribute(elem: Element): elem is HTMLImageElement {
+  return typeof (elem as HTMLImageElement).alt === 'string';
+}
+
+function isSelectElement(elem: Element): elem is HTMLSelectElement {
+  return elem.nodeName === 'SELECT';
 }
