@@ -7,8 +7,10 @@ import {
   DataSeriesState,
   MajorDataSeries,
 } from '@birchill/hikibiki-data';
+import Bugsnag from '@bugsnag/browser';
 import Browser, { browser } from 'webextension-polyfill-ts';
 
+import { startBugsnag } from './bugsnag';
 import { Config, DEFAULT_KEY_SETTINGS } from './config';
 import {
   AccentDisplay,
@@ -22,13 +24,14 @@ import {
   DbStateUpdatedMessage,
   cancelDbUpdate,
   deleteDb,
-  reportError,
   updateDb,
 } from './db-listener-messages';
 import { translateDoc } from './l10n';
 import { getReferenceLabelsForLang, getReferencesForLang } from './refs';
 import { isChromium, isEdge, isFirefox, isMac, isSafari } from './ua-utils';
 import { getThemeClass } from './themes';
+
+startBugsnag();
 
 const config = new Config();
 
@@ -717,9 +720,7 @@ function fillInLanguages() {
   select.addEventListener('change', () => {
     if (!isDbLanguageId(select.value)) {
       const msg = `Got unexpected language code: ${select.value}`;
-      if (browserPort) {
-        browserPort.postMessage(reportError(msg));
-      }
+      Bugsnag.notify(new Error(msg));
       console.error(msg);
       return;
     }
@@ -807,9 +808,7 @@ function fillVals() {
     })
     .catch((e) => {
       console.error(e);
-      if (browserPort) {
-        browserPort.postMessage(reportError(e.message));
-      }
+      Bugsnag.notify(e);
     });
 
   // Note that this setting is hidden in active-tab only mode

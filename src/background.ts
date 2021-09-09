@@ -304,10 +304,6 @@ browser.runtime.onConnect.addListener((port: Browser.Runtime.Port) => {
         Bugsnag.leaveBreadcrumb('Manually deleting database');
         deleteDb();
         break;
-
-      case 'reporterror':
-        Bugsnag.notify(evt.message);
-        break;
     }
   });
 
