@@ -701,7 +701,11 @@ export class ContentHandler {
     const areKeysDownForSetting = (
       setting: 'holdToShowKeys' | 'holdToShowImageKeys'
     ) => {
-      if (!this.config[setting].length) {
+      if (
+        typeof this.config[setting] === 'undefined' ||
+        !Array.isArray(this.config[setting]) ||
+        !this.config[setting].length
+      ) {
         return true;
       }
 

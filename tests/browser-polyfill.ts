@@ -136,6 +136,8 @@ export const browser = {
           return 'honorific';
         case 'popup_close_label':
           return 'Close';
+        case 'popup_settings_label':
+          return 'Settings';
         case 'pos_label_adj_f':
           return 'pre-noun adj.';
         case 'pos_label_adj_i':
