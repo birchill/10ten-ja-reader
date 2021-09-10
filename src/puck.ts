@@ -388,6 +388,8 @@ export class LookupPuck {
     window.removeEventListener('pointercancel', this.stopDraggingPuck);
   };
 
+  private readonly noOpPointerUpHandler = () => {};
+
   render({ doc, theme }: PuckRenderOptions): void {
     // Set up shadow tree
     const container = getOrCreateEmptyContainer({
@@ -518,6 +520,9 @@ export class LookupPuck {
     if (this.puck) {
       this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
     }
+    // Needed to stop iOS Safari from stealing pointer events after we finish
+    // scrolling.
+    window.addEventListener('pointerup', this.noOpPointerUpHandler);
   }
 
   disable(): void {
@@ -527,6 +532,7 @@ export class LookupPuck {
       this.stopDraggingPuck();
       this.puck.removeEventListener('pointerdown', this.onPuckPointerDown);
     }
+    window.removeEventListener('pointerup', this.noOpPointerUpHandler);
   }
 }
 
