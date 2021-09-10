@@ -298,6 +298,10 @@ function renderTabBar({
   tabBar.classList.add('tab-bar');
   tabBar.lang = getLangTag();
 
+  tabBar.addEventListener('pointerup', () => {
+    // Dummy event to make Safari not eat clicks on the child links / buttons.
+  });
+
   const list = document.createElement('ul');
   list.classList.add('tabs');
 
