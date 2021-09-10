@@ -295,7 +295,11 @@ export default class ActiveTabManager implements TabManager {
     );
   }
 
-  getTopFrame({
+  getTopFrameId(tabId: number): number | null {
+    return tabId in this.enabledTabs ? 0 : null;
+  }
+
+  getTopFrameWithFrameSrc({
     tabId,
     frameId,
     src,

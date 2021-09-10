@@ -245,7 +245,15 @@ export default class AllTabManager implements TabManager {
   // Frame management
   //
 
-  getTopFrame({
+  getTopFrameId(tabId: number): number | null {
+    if (!(tabId in this.tabs)) {
+      return null;
+    }
+
+    return Number(Object.keys(this.tabs[tabId].frames)[0]);
+  }
+
+  getTopFrameWithFrameSrc({
     tabId,
     frameId,
     src,
@@ -267,7 +275,8 @@ export default class AllTabManager implements TabManager {
       dimensions: { width: number; height: number };
     };
   } | null {
-    if (!(tabId in this.tabs)) {
+    const topFrameId = this.getTopFrameId(tabId);
+    if (topFrameId === null) {
       return null;
     }
 
@@ -280,9 +289,8 @@ export default class AllTabManager implements TabManager {
     frame.currentSrc = src;
     frame.dimensions = dimensions;
 
-    const topMostFrameId = Number(Object.keys(this.tabs[tabId].frames)[0]);
     return {
-      frameId: topMostFrameId,
+      frameId: topFrameId,
       source: {
         frameId,
         initialSrc,

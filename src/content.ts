@@ -780,54 +780,6 @@ export class ContentHandler {
     // topmost window, we ensure that we are the topmost window before
     // calling the corresponding method.
     switch (ev.data.kind) {
-      case '10ten(ja):clearResult':
-        if (this.isTopMostWindow()) {
-          this.clearResult();
-        }
-        break;
-
-      case '10ten(ja):nextDictionary':
-        if (this.isTopMostWindow()) {
-          this.showNextDictionary();
-        }
-        break;
-
-      case '10ten(ja):toggleDefinition':
-        if (this.isTopMostWindow()) {
-          this.toggleDefinition();
-        }
-        break;
-
-      case '10ten(ja):movePopup':
-        if (this.isTopMostWindow()) {
-          this.movePopup(ev.data.direction);
-        }
-        break;
-
-      case '10ten(ja):enterCopyMode':
-        if (this.isTopMostWindow()) {
-          this.enterCopyMode();
-        }
-        break;
-
-      case '10ten(ja):exitCopyMode':
-        if (this.isTopMostWindow()) {
-          this.exitCopyMode();
-        }
-        break;
-
-      case '10ten(ja):nextCopyEntry':
-        if (this.isTopMostWindow()) {
-          this.nextCopyEntry();
-        }
-        break;
-
-      case '10ten(ja):copyCurrentEntry':
-        if (this.isTopMostWindow()) {
-          this.copyCurrentEntry(ev.data.copyType);
-        }
-        break;
-
       case '10ten(ja):popupHidden':
         this.currentTextRange = undefined;
         this.currentPoint = undefined;
@@ -873,6 +825,38 @@ export class ContentHandler {
   async onBackgroundMessage(request: unknown): Promise<string> {
     s.assert(request, BackgroundMessageSchema);
     switch (request.type) {
+      case 'clearResult':
+        this.clearResult();
+        break;
+
+      case 'nextDictionary':
+        this.showNextDictionary();
+        break;
+
+      case 'toggleDefinition':
+        this.toggleDefinition();
+        break;
+
+      case 'movePopup':
+        this.movePopup(request.direction);
+        break;
+
+      case 'enterCopyMode':
+        this.enterCopyMode();
+        break;
+
+      case 'exitCopyMode':
+        this.exitCopyMode();
+        break;
+
+      case 'nextCopyEntry':
+        this.nextCopyEntry();
+        break;
+
+      case 'copyCurrentEntry':
+        this.copyCurrentEntry(request.copyType);
+        break;
+
       case 'lookup':
         {
           const iframe = findIframeElement({
@@ -939,10 +923,7 @@ export class ContentHandler {
 
   showNextDictionary() {
     if (!this.isTopMostWindow()) {
-      this.getTopMostWindow().postMessage<ContentMessage>(
-        { kind: '10ten(ja):nextDictionary' },
-        '*'
-      );
+      browser.runtime.sendMessage({ type: 'top:nextDictionary' });
       return;
     }
 
@@ -953,10 +934,7 @@ export class ContentHandler {
 
   toggleDefinition() {
     if (!this.isTopMostWindow()) {
-      this.getTopMostWindow().postMessage<ContentMessage>(
-        { kind: '10ten(ja):toggleDefinition' },
-        '*'
-      );
+      browser.runtime.sendMessage({ type: 'top:toggleDefinition' });
       return;
     }
 
@@ -966,10 +944,7 @@ export class ContentHandler {
 
   movePopup(direction: 'up' | 'down') {
     if (!this.isTopMostWindow()) {
-      this.getTopMostWindow().postMessage<ContentMessage>(
-        { kind: '10ten(ja):movePopup', direction },
-        '*'
-      );
+      browser.runtime.sendMessage({ type: 'top:movePopup', direction });
       return;
     }
 
@@ -997,10 +972,7 @@ export class ContentHandler {
     this.copyMode = true;
 
     if (!this.isTopMostWindow()) {
-      this.getTopMostWindow().postMessage<ContentMessage>(
-        { kind: '10ten(ja):enterCopyMode' },
-        '*'
-      );
+      browser.runtime.sendMessage({ type: 'top:enterCopyMode' });
       return;
     }
 
@@ -1014,10 +986,7 @@ export class ContentHandler {
     this.copyMode = false;
 
     if (!this.isTopMostWindow()) {
-      this.getTopMostWindow().postMessage<ContentMessage>(
-        { kind: '10ten(ja):exitCopyMode' },
-        '*'
-      );
+      browser.runtime.sendMessage({ type: 'top:exitCopyMode' });
       return;
     }
 
@@ -1026,10 +995,7 @@ export class ContentHandler {
 
   nextCopyEntry() {
     if (!this.isTopMostWindow()) {
-      this.getTopMostWindow().postMessage<ContentMessage>(
-        { kind: '10ten(ja):nextCopyEntry' },
-        '*'
-      );
+      browser.runtime.sendMessage({ type: 'top:nextCopyEntry' });
       return;
     }
 
@@ -1039,10 +1005,7 @@ export class ContentHandler {
 
   copyCurrentEntry(copyType: CopyType) {
     if (!this.isTopMostWindow()) {
-      this.getTopMostWindow().postMessage<ContentMessage>(
-        { kind: '10ten(ja):copyCurrentEntry', copyType },
-        '*'
-      );
+      browser.runtime.sendMessage({ type: 'top:copyCurrentEntry', copyType });
       return;
     }
 
@@ -1179,10 +1142,7 @@ export class ContentHandler {
     if (this.isTopMostWindow()) {
       this.hidePopup();
     } else {
-      this.getTopMostWindow().postMessage<ContentMessage>(
-        { kind: '10ten(ja):clearResult' },
-        '*'
-      );
+      browser.runtime.sendMessage({ type: 'top:clearResult' });
     }
   }
 
