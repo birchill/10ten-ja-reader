@@ -40,7 +40,7 @@ export function getPopupPosition({
   const stageWidth = doc.documentElement.clientWidth;
 
   // For the height, we'd like to similarly use clientHeight...
-  let stageHeight = document.documentElement.clientHeight;
+  let stageHeight = doc.documentElement.clientHeight;
 
   // ... but we need to be careful because:
   //
@@ -166,6 +166,7 @@ function getAutoPosition({
     marginToPopup,
     popupSize,
     safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
+    scrollY,
     target: { x, y },
     pointerType,
   };
@@ -251,6 +252,7 @@ function getAboveOrBelowPosition({
   position,
   popupSize,
   safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
+  scrollY,
   target,
   pointerType,
 }: {
@@ -264,6 +266,7 @@ function getAboveOrBelowPosition({
     safeTop: number;
     safeBottom: number;
   };
+  scrollY: number;
   target: Point;
   pointerType: 'cursor' | 'puck';
 }): PopupPosition | undefined {
@@ -301,16 +304,35 @@ function getAboveOrBelowPosition({
     constrainHeight = y + popupSize.height > safeBottom ? safeBottom - y : null;
   }
 
+  // When using the cursor, provided we are not at the bottom of the page, the
+  // user can scroll the viewport without dismissing the popup so we don't need
+  // to constrain it.
+  //
+  // However, if we're positioning the popup above the pointer, we don't want it
+  // to cover the pointer so we should constrain it in that case.
+  if (
+    constrainHeight !== null &&
+    position === 'below' &&
+    pointerType === 'cursor'
+  ) {
+    // Before we drop the constraint, check that there is actually room in the
+    // document to display it in its unconstrained size.
+    const extent = scrollY + y + popupSize.height;
+    const available =
+      getComputedStyle(document.documentElement).overflowY === 'visible' &&
+      getComputedStyle(document.body).overflowY === 'visible'
+        ? document.documentElement.scrollHeight
+        : safeBottom;
+    if (extent < available) {
+      constrainHeight = null;
+    }
+  }
+
   return {
     x,
     y,
     constrainWidth,
-    // When using the cursor, the user can scroll the viewport without
-    // dismissing the popup so we don't need to constrain it. However, if we're
-    // positioning the popup above the pointer, we don't want it to cover the
-    // pointer so we should constrain it in that case.
-    constrainHeight:
-      position === 'below' && pointerType === 'cursor' ? null : constrainHeight,
+    constrainHeight,
   };
 }
 

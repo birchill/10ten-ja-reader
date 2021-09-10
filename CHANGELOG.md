@@ -1,4 +1,8 @@
-## 1.3.3 (2021-09-09)
+## Next version
+
+- Fixed another popup positioning issue.
+
+## 1.3.3 (2021-09-09) (Firefox)
 
 - Fixed some popup positioning issues.
 - Prevented the popup from showing for images where the alt text is 画像 (e.g. on
