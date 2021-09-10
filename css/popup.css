@@ -101,7 +101,7 @@
 
 @media (max-width: 350px) {
   .window[data-tab-side='top'] .tabs .tab {
-    flex-grow: 0
+    flex-grow: 0;
   }
   .window[data-tab-side='top'] .tabs .tab a span {
     display: none;
@@ -770,6 +770,12 @@
   margin-left: calc(-1 * var(--bg-overhang));
   margin-right: calc(-1 * var(--bg-overhang));
   width: calc(100% + 2 * var(--bg-overhang));
+}
+
+@media (max-width: 450px) {
+  .references {
+    grid-template-columns: revert;
+  }
 }
 
 .references .ref {
