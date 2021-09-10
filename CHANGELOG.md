@@ -1,4 +1,4 @@
-## Next version
+## 1.3.4 (2021-09-10)
 
 - Fixed another popup positioning issue.
 
