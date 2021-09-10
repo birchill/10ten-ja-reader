@@ -56,6 +56,8 @@
   display: flex;
   padding: 0;
   margin: 0;
+  /* Safari appears to need the following */
+  overflow: hidden;
 
   background: var(--cell-highlight-bg);
   color: var(--cell-highlight-fg);
@@ -74,6 +76,7 @@
   flex-grow: 1;
   list-style: none;
   font-size: 0.8em;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -88,6 +91,24 @@
   padding: 0.5em 18px;
   line-height: 1;
   text-decoration: none;
+}
+
+@media (max-width: 400px) {
+  .window[data-tab-side='top'] .tabs .tab a span:lang(en) {
+    font-size: 0.7em;
+  }
+}
+
+@media (max-width: 350px) {
+  .window[data-tab-side='top'] .tabs .tab {
+    flex-grow: 0
+  }
+  .window[data-tab-side='top'] .tabs .tab a span {
+    display: none;
+  }
+  .window[data-tab-side='top'] .tabs .tab a .icon {
+    margin-right: 0px;
+  }
 }
 
 .window.touch .tabs .tab a {
@@ -216,6 +237,7 @@
 .window[data-tab-side='left'] .tab-bar,
 .window[data-tab-side='right'] .tab-bar {
   flex-direction: column;
+  overflow: visible;
 }
 
 .window[data-tab-side='right'] .tab-bar {
