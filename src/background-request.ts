@@ -49,6 +49,16 @@ export const BackgroundRequestSchema = discriminator('type', {
       }),
     }),
   }),
+  'top:clearResult': s.type({}),
+  'top:nextDictionary': s.type({}),
+  'top:toggleDefinition': s.type({}),
+  'top:movePopup': s.type({ direction: s.enums(['up', 'down'] as const) }),
+  'top:enterCopyMode': s.type({}),
+  'top:exitCopyMode': s.type({}),
+  'top:nextCopyEntry': s.type({}),
+  'top:copyCurrentEntry': s.type({
+    copyType: s.enums(['entry', 'tab', 'word'] as const),
+  }),
 });
 
 export type BackgroundRequest = s.Infer<typeof BackgroundRequestSchema>;

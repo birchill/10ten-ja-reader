@@ -543,7 +543,7 @@ browser.runtime.onMessage.addListener(
             break;
           }
 
-          const topFrame = tabManager.getTopFrame({
+          const topFrame = tabManager.getTopFrameWithFrameSrc({
             tabId: sender.tab?.id,
             frameId: sender.frameId,
             ...request.source,
@@ -552,11 +552,37 @@ browser.runtime.onMessage.addListener(
             break;
           }
 
-          const { frameId, source } = topFrame;
+          const { frameId: topFrameId, source } = topFrame;
           browser.tabs.sendMessage(
-            sender.tab?.id,
+            sender.tab.id,
             { ...request, type: 'lookup', source },
-            { frameId }
+            { frameId: topFrameId }
+          );
+        }
+        break;
+
+      case 'top:clearResult':
+      case 'top:nextDictionary':
+      case 'top:toggleDefinition':
+      case 'top:movePopup':
+      case 'top:enterCopyMode':
+      case 'top:exitCopyMode':
+      case 'top:nextCopyEntry':
+      case 'top:copyCurrentEntry':
+        {
+          if (!sender.tab?.id || typeof sender.frameId !== 'number') {
+            break;
+          }
+
+          const topFrameId = tabManager.getTopFrameId(sender.tab.id);
+          if (topFrameId === null) {
+            break;
+          }
+
+          browser.tabs.sendMessage(
+            sender.tab.id,
+            { ...request, type: request.type.slice('top:'.length) },
+            { frameId: topFrameId }
           );
         }
         break;

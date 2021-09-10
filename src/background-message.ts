@@ -11,6 +11,12 @@ export const BackgroundMessageSchema = discriminator('type', {
   isTopMost: s.type({}),
 
   // Relayed messages from other content scripts
+
+  // Child-frame
+  highlightText: s.type({ length: s.number() }),
+  clearTextHighlight: s.type({}),
+
+  // Top-most window
   lookup: s.type({
     dictMode: s.enums(['default', 'kanji'] as const),
     // We don't validate the contents of meta (yet)
@@ -36,8 +42,16 @@ export const BackgroundMessageSchema = discriminator('type', {
       ),
     }),
   }),
-  highlightText: s.type({ length: s.number() }),
-  clearTextHighlight: s.type({}),
+  clearResult: s.type({}),
+  nextDictionary: s.type({}),
+  toggleDefinition: s.type({}),
+  movePopup: s.type({ direction: s.enums(['up', 'down'] as const) }),
+  enterCopyMode: s.type({}),
+  exitCopyMode: s.type({}),
+  nextCopyEntry: s.type({}),
+  copyCurrentEntry: s.type({
+    copyType: s.enums(['entry', 'tab', 'word'] as const),
+  }),
 });
 
 export type BackgroundMessage = s.Infer<typeof BackgroundMessageSchema>;
