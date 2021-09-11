@@ -265,10 +265,7 @@ export class ContentHandler {
 
     // If we are an iframe, check if the popup is currently showing
     if (!this.isTopMostWindow()) {
-      this.getTopMostWindow().postMessage<ContentMessage>(
-        { kind: '10ten(ja):isPopupShown' },
-        '*'
-      );
+      browser.runtime.sendMessage({ type: 'top:isPopupShowing' });
     }
 
     this.applyPuckConfig();
@@ -780,19 +777,6 @@ export class ContentHandler {
     // topmost window, we ensure that we are the topmost window before
     // calling the corresponding method.
     switch (ev.data.kind) {
-      case '10ten(ja):popupShown':
-        this.isPopupShowing = true;
-        break;
-
-      case '10ten(ja):isPopupShown':
-        if (this.isVisible() && ev.source instanceof Window) {
-          ev.source.postMessage<ContentMessage>(
-            { kind: '10ten(ja):popupShown' },
-            '*'
-          );
-        }
-        break;
-
       case '10ten(ja):moonMoved': {
         const { clientX, clientY } = ev.data;
         const mouseEvent = new MouseEvent('mousemove', {
@@ -831,6 +815,19 @@ export class ContentHandler {
         this.currentPoint = undefined;
         this.copyMode = false;
         this.isPopupShowing = false;
+        break;
+
+      case 'popupShown':
+        this.isPopupShowing = true;
+        break;
+
+      case 'isPopupShowing':
+        if (this.isVisible()) {
+          browser.runtime.sendMessage({
+            type: 'frame:popupShown',
+            frameId: request.frameId,
+          });
+        }
         break;
 
       case 'clearResult':
@@ -1629,12 +1626,7 @@ export class ContentHandler {
     }
 
     if (this.isTopMostWindow()) {
-      for (const frame of Array.from(window.frames)) {
-        frame.postMessage<ContentMessage>(
-          { kind: '10ten(ja):popupShown' },
-          '*'
-        );
-      }
+      browser.runtime.sendMessage({ type: 'frames:popupShown' });
     }
   }
 
