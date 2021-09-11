@@ -18,8 +18,10 @@ export const BackgroundMessageSchema = discriminator('type', {
 
   // All child frames
   popupHidden: s.type({}),
+  popupShown: s.type({}),
 
   // Top-most window
+  isPopupShowing: s.type({ frameId: s.number() }),
   lookup: s.type({
     dictMode: s.enums(['default', 'kanji'] as const),
     // We don't validate the contents of meta (yet)

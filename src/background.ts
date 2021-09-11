@@ -518,20 +518,12 @@ browser.runtime.onMessage.addListener(
 
       // Forwarded messages
       case 'frame:highlightText':
-        if (sender.tab?.id) {
-          browser.tabs.sendMessage(
-            sender.tab?.id,
-            { type: 'highlightText', length: request.length },
-            { frameId: request.frameId }
-          );
-        }
-        break;
-
       case 'frame:clearTextHighlight':
+      case 'frame:popupShown':
         if (sender.tab?.id) {
           browser.tabs.sendMessage(
             sender.tab?.id,
-            { type: 'clearTextHighlight' },
+            { ...request, type: request.type.slice('frame:'.length) },
             { frameId: request.frameId }
           );
         }
@@ -562,6 +554,7 @@ browser.runtime.onMessage.addListener(
         break;
 
       case 'frames:popupHidden':
+      case 'frames:popupShown':
         {
           if (!sender.tab?.id) {
             break;
@@ -574,10 +567,29 @@ browser.runtime.onMessage.addListener(
           for (const frameId of otherFrames) {
             browser.tabs.sendMessage(
               sender.tab.id,
-              { type: 'popupHidden' },
+              { type: request.type.slice('frames:'.length) },
               { frameId }
             );
           }
+        }
+        break;
+
+      case 'top:isPopupShowing':
+        {
+          if (!sender.tab?.id || typeof sender.frameId !== 'number') {
+            return Promise.resolve(false);
+          }
+
+          const topFrameId = tabManager.getTopFrameId(sender.tab.id);
+          if (topFrameId === null) {
+            return Promise.resolve(false);
+          }
+
+          browser.tabs.sendMessage(
+            sender.tab.id,
+            { type: 'isPopupShowing', frameId: sender.frameId },
+            { frameId: topFrameId }
+          );
         }
         break;
 
@@ -590,7 +602,7 @@ browser.runtime.onMessage.addListener(
       case 'top:nextCopyEntry':
       case 'top:copyCurrentEntry':
         {
-          if (!sender.tab?.id || typeof sender.frameId !== 'number') {
+          if (!sender.tab?.id) {
             break;
           }
 

@@ -1,13 +1,3 @@
-// Popup showing status messages
-
-type PopupShownMessage = {
-  kind: '10ten(ja):popupShown';
-};
-
-type IsPopupShownMessage = {
-  kind: '10ten(ja):isPopupShown';
-};
-
 // Puck methods
 
 type MoonMovedMessage = {
@@ -16,7 +6,4 @@ type MoonMovedMessage = {
   clientY: number;
 };
 
-export type ContentMessage =
-  | PopupShownMessage
-  | IsPopupShownMessage
-  | MoonMovedMessage;
+export type ContentMessage = MoonMovedMessage;
