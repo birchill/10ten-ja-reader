@@ -516,39 +516,18 @@ browser.runtime.onMessage.addListener(
         config.toggleReadingOnly();
         break;
 
+      //
       // Forwarded messages
+      //
+
+      case 'frame:popupShown':
       case 'frame:highlightText':
       case 'frame:clearTextHighlight':
-      case 'frame:popupShown':
         if (sender.tab?.id) {
           browser.tabs.sendMessage(
             sender.tab?.id,
             { ...request, type: request.type.slice('frame:'.length) },
             { frameId: request.frameId }
-          );
-        }
-        break;
-
-      case 'top:lookup':
-        {
-          if (!sender.tab?.id || typeof sender.frameId !== 'number') {
-            break;
-          }
-
-          const topFrame = tabManager.getTopFrameWithFrameSrc({
-            tabId: sender.tab?.id,
-            frameId: sender.frameId,
-            ...request.source,
-          });
-          if (!topFrame) {
-            break;
-          }
-
-          const { frameId: topFrameId, source } = topFrame;
-          browser.tabs.sendMessage(
-            sender.tab.id,
-            { ...request, type: 'lookup', source },
-            { frameId: topFrameId }
           );
         }
         break;
@@ -588,6 +567,30 @@ browser.runtime.onMessage.addListener(
           browser.tabs.sendMessage(
             sender.tab.id,
             { type: 'isPopupShowing', frameId: sender.frameId },
+            { frameId: topFrameId }
+          );
+        }
+        break;
+
+      case 'top:lookup':
+        {
+          if (!sender.tab?.id || typeof sender.frameId !== 'number') {
+            break;
+          }
+
+          const topFrame = tabManager.getTopFrameWithFrameSrc({
+            tabId: sender.tab?.id,
+            frameId: sender.frameId,
+            ...request.source,
+          });
+          if (!topFrame) {
+            break;
+          }
+
+          const { frameId: topFrameId, source } = topFrame;
+          browser.tabs.sendMessage(
+            sender.tab.id,
+            { ...request, type: 'lookup', source },
             { frameId: topFrameId }
           );
         }

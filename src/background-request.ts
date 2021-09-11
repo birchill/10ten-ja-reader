@@ -14,6 +14,10 @@ export const BackgroundRequestSchema = discriminator('type', {
   enabled: s.type({
     src: s.string(),
   }),
+  //
+  // Requests for the background page
+  //
+
   options: s.type({}),
   // TODO: Remove 'search' once we have shipped the two-step search approach.
   //
@@ -29,17 +33,25 @@ export const BackgroundRequestSchema = discriminator('type', {
     includeRomaji: s.optional(s.boolean()),
   }),
 
-  // Requests that should be relayed to the top-most frame in a tab.
   //
+  // Requests to be forwarded to different frames
+  //
+
   // We send these messages via the background page simply because using
   // postMessage causes some Web pages to break when they encounter unrecognized
   // messages.
+
+  // Popup showing status
+  'frame:popupShown': s.type({ frameId: s.number() }),
+  'frames:popupShown': s.type({}),
+  'frames:popupHidden': s.type({}),
+  'top:isPopupShowing': s.type({}),
+
+  // Text highlighting
   'frame:highlightText': s.type({ length: s.number(), frameId: s.number() }),
   'frame:clearTextHighlight': s.type({ frameId: s.number() }),
-  'frame:popupShown': s.type({ frameId: s.number() }),
-  'frames:popupHidden': s.type({}),
-  'frames:popupShown': s.type({}),
-  'top:isPopupShowing': s.type({}),
+
+  // Lookup-related requests
   'top:lookup': s.type({
     // We don't validate the bulk of the contents here but leave that to the
     // receiving end.
@@ -57,6 +69,8 @@ export const BackgroundRequestSchema = discriminator('type', {
   'top:nextDictionary': s.type({}),
   'top:toggleDefinition': s.type({}),
   'top:movePopup': s.type({ direction: s.enums(['up', 'down'] as const) }),
+
+  // Copy mode requests
   'top:enterCopyMode': s.type({}),
   'top:exitCopyMode': s.type({}),
   'top:nextCopyEntry': s.type({}),
