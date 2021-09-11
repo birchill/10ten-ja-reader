@@ -561,6 +561,26 @@ browser.runtime.onMessage.addListener(
         }
         break;
 
+      case 'frames:popupHidden':
+        {
+          if (!sender.tab?.id) {
+            break;
+          }
+
+          const otherFrames = tabManager
+            .getFramesForTab(sender.tab.id)
+            .filter((f) => f !== sender.frameId);
+
+          for (const frameId of otherFrames) {
+            browser.tabs.sendMessage(
+              sender.tab.id,
+              { type: 'popupHidden' },
+              { frameId }
+            );
+          }
+        }
+        break;
+
       case 'top:clearResult':
       case 'top:nextDictionary':
       case 'top:toggleDefinition':

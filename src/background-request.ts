@@ -36,6 +36,7 @@ export const BackgroundRequestSchema = discriminator('type', {
   // messages.
   'frame:highlightText': s.type({ length: s.number(), frameId: s.number() }),
   'frame:clearTextHighlight': s.type({ frameId: s.number() }),
+  'frames:popupHidden': s.type({}),
   'top:lookup': s.type({
     // We don't validate the bulk of the contents here but leave that to the
     // receiving end.

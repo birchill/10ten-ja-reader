@@ -780,13 +780,6 @@ export class ContentHandler {
     // topmost window, we ensure that we are the topmost window before
     // calling the corresponding method.
     switch (ev.data.kind) {
-      case '10ten(ja):popupHidden':
-        this.currentTextRange = undefined;
-        this.currentPoint = undefined;
-        this.copyMode = false;
-        this.isPopupShowing = false;
-        break;
-
       case '10ten(ja):popupShown':
         this.isPopupShowing = true;
         break;
@@ -825,6 +818,21 @@ export class ContentHandler {
   async onBackgroundMessage(request: unknown): Promise<string> {
     s.assert(request, BackgroundMessageSchema);
     switch (request.type) {
+      case 'highlightText':
+        this.highlightText(request.length);
+        break;
+
+      case 'clearTextHighlight':
+        this.clearTextHighlight();
+        break;
+
+      case 'popupHidden':
+        this.currentTextRange = undefined;
+        this.currentPoint = undefined;
+        this.copyMode = false;
+        this.isPopupShowing = false;
+        break;
+
       case 'clearResult':
         this.clearResult();
         break;
@@ -907,14 +915,6 @@ export class ContentHandler {
             source: request.source.frameId,
           });
         }
-        break;
-
-      case 'highlightText':
-        this.highlightText(request.length);
-        break;
-
-      case 'clearTextHighlight':
-        this.clearTextHighlight();
         break;
     }
 
@@ -1648,12 +1648,7 @@ export class ContentHandler {
     hidePopup();
 
     if (wasShowing && this.isTopMostWindow()) {
-      for (const frame of Array.from(window.frames)) {
-        frame.postMessage<ContentMessage>(
-          { kind: '10ten(ja):popupHidden' },
-          '*'
-        );
-      }
+      browser.runtime.sendMessage({ type: 'frames:popupHidden' });
     }
   }
 
