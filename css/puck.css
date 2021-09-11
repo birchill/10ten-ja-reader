@@ -24,6 +24,9 @@
   --rest-x-offset: -20px;
   --rest-y-offset: -20px;
 }
+.puck.lookup-disabled {
+  opacity: 0.5;
+}
 
 .earth,
 .moon {

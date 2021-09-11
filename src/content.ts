@@ -91,6 +91,7 @@ import {
   removePuck,
   LookupPuck,
   PuckMouseEvent,
+  LookupPuckEnabledState,
 } from './puck';
 import { query, QueryResult } from './query';
 import {
@@ -292,7 +293,9 @@ export class ContentHandler {
 
   setUpPuck() {
     if (!this.puck) {
-      this.puck = new LookupPuck(this.safeAreaProvider);
+      this.puck = new LookupPuck(this.safeAreaProvider, () => {
+        this.clearResult();
+      });
     }
 
     this.puck.render({
@@ -300,7 +303,7 @@ export class ContentHandler {
       icon: this.config.toolbarIcon,
       theme: this.config.popupStyle,
     });
-    this.puck.enable();
+    this.puck.setEnabledState(LookupPuckEnabledState.enableGesturesAndLookup);
   }
 
   tearDownPuck() {
