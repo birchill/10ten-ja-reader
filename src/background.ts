@@ -524,11 +524,15 @@ browser.runtime.onMessage.addListener(
       case 'frame:highlightText':
       case 'frame:clearTextHighlight':
         if (sender.tab?.id) {
-          browser.tabs.sendMessage(
-            sender.tab?.id,
-            { ...request, type: request.type.slice('frame:'.length) },
-            { frameId: request.frameId }
-          );
+          browser.tabs
+            .sendMessage(
+              sender.tab?.id,
+              { ...request, type: request.type.slice('frame:'.length) },
+              { frameId: request.frameId }
+            )
+            .catch(() => {
+              // Probably just a stale frameId
+            });
         }
         break;
 
@@ -544,11 +548,15 @@ browser.runtime.onMessage.addListener(
             .filter((f) => f !== sender.frameId);
 
           for (const frameId of otherFrames) {
-            browser.tabs.sendMessage(
-              sender.tab.id,
-              { type: request.type.slice('frames:'.length) },
-              { frameId }
-            );
+            browser.tabs
+              .sendMessage(
+                sender.tab.id,
+                { type: request.type.slice('frames:'.length) },
+                { frameId }
+              )
+              .catch(() => {
+                // Probably just a stale frameId
+              });
           }
         }
         break;
@@ -564,11 +572,15 @@ browser.runtime.onMessage.addListener(
             return Promise.resolve(false);
           }
 
-          browser.tabs.sendMessage(
-            sender.tab.id,
-            { type: 'isPopupShowing', frameId: sender.frameId },
-            { frameId: topFrameId }
-          );
+          browser.tabs
+            .sendMessage(
+              sender.tab.id,
+              { type: 'isPopupShowing', frameId: sender.frameId },
+              { frameId: topFrameId }
+            )
+            .catch(() => {
+              // Probably just a stale frameId
+            });
         }
         break;
 
@@ -588,11 +600,15 @@ browser.runtime.onMessage.addListener(
           }
 
           const { frameId: topFrameId, source } = topFrame;
-          browser.tabs.sendMessage(
-            sender.tab.id,
-            { ...request, type: 'lookup', source },
-            { frameId: topFrameId }
-          );
+          browser.tabs
+            .sendMessage(
+              sender.tab.id,
+              { ...request, type: 'lookup', source },
+              { frameId: topFrameId }
+            )
+            .catch(() => {
+              // Probably just a stale frameId
+            });
         }
         break;
 
@@ -614,11 +630,15 @@ browser.runtime.onMessage.addListener(
             break;
           }
 
-          browser.tabs.sendMessage(
-            sender.tab.id,
-            { ...request, type: request.type.slice('top:'.length) },
-            { frameId: topFrameId }
-          );
+          browser.tabs
+            .sendMessage(
+              sender.tab.id,
+              { ...request, type: request.type.slice('top:'.length) },
+              { frameId: topFrameId }
+            )
+            .catch(() => {
+              // Probably just a stale frameId
+            });
         }
         break;
     }
