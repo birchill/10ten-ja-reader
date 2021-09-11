@@ -10,18 +10,20 @@ export const BackgroundMessageSchema = discriminator('type', {
   }),
   isTopMost: s.type({}),
 
+  //
   // Relayed messages from other content scripts
+  //
 
-  // Child-frame
+  // Popup showing status
+  popupShown: s.type({}),
+  popupHidden: s.type({}),
+  isPopupShowing: s.type({ frameId: s.number() }),
+
+  // Text highlighting
   highlightText: s.type({ length: s.number() }),
   clearTextHighlight: s.type({}),
 
-  // All child frames
-  popupHidden: s.type({}),
-  popupShown: s.type({}),
-
-  // Top-most window
-  isPopupShowing: s.type({ frameId: s.number() }),
+  // Lookup-related messages
   lookup: s.type({
     dictMode: s.enums(['default', 'kanji'] as const),
     // We don't validate the contents of meta (yet)
@@ -51,6 +53,8 @@ export const BackgroundMessageSchema = discriminator('type', {
   nextDictionary: s.type({}),
   toggleDefinition: s.type({}),
   movePopup: s.type({ direction: s.enums(['up', 'down'] as const) }),
+
+  // Copy mode messages
   enterCopyMode: s.type({}),
   exitCopyMode: s.type({}),
   nextCopyEntry: s.type({}),

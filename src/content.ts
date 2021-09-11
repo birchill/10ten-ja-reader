@@ -802,12 +802,8 @@ export class ContentHandler {
   async onBackgroundMessage(request: unknown): Promise<string> {
     s.assert(request, BackgroundMessageSchema);
     switch (request.type) {
-      case 'highlightText':
-        this.highlightText(request.length);
-        break;
-
-      case 'clearTextHighlight':
-        this.clearTextHighlight();
+      case 'popupShown':
+        this.isPopupShowing = true;
         break;
 
       case 'popupHidden':
@@ -815,10 +811,6 @@ export class ContentHandler {
         this.currentPoint = undefined;
         this.copyMode = false;
         this.isPopupShowing = false;
-        break;
-
-      case 'popupShown':
-        this.isPopupShowing = true;
         break;
 
       case 'isPopupShowing':
@@ -830,36 +822,12 @@ export class ContentHandler {
         }
         break;
 
-      case 'clearResult':
-        this.clearResult();
+      case 'highlightText':
+        this.highlightText(request.length);
         break;
 
-      case 'nextDictionary':
-        this.showNextDictionary();
-        break;
-
-      case 'toggleDefinition':
-        this.toggleDefinition();
-        break;
-
-      case 'movePopup':
-        this.movePopup(request.direction);
-        break;
-
-      case 'enterCopyMode':
-        this.enterCopyMode();
-        break;
-
-      case 'exitCopyMode':
-        this.exitCopyMode();
-        break;
-
-      case 'nextCopyEntry':
-        this.nextCopyEntry();
-        break;
-
-      case 'copyCurrentEntry':
-        this.copyCurrentEntry(request.copyType);
+      case 'clearTextHighlight':
+        this.clearTextHighlight();
         break;
 
       case 'lookup':
@@ -912,6 +880,38 @@ export class ContentHandler {
             source: request.source.frameId,
           });
         }
+        break;
+
+      case 'clearResult':
+        this.clearResult();
+        break;
+
+      case 'nextDictionary':
+        this.showNextDictionary();
+        break;
+
+      case 'toggleDefinition':
+        this.toggleDefinition();
+        break;
+
+      case 'movePopup':
+        this.movePopup(request.direction);
+        break;
+
+      case 'enterCopyMode':
+        this.enterCopyMode();
+        break;
+
+      case 'exitCopyMode':
+        this.exitCopyMode();
+        break;
+
+      case 'nextCopyEntry':
+        this.nextCopyEntry();
+        break;
+
+      case 'copyCurrentEntry':
+        this.copyCurrentEntry(request.copyType);
         break;
     }
 
