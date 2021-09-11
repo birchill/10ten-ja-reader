@@ -16,6 +16,9 @@ export const BackgroundMessageSchema = discriminator('type', {
   highlightText: s.type({ length: s.number() }),
   clearTextHighlight: s.type({}),
 
+  // All child frames
+  popupHidden: s.type({}),
+
   // Top-most window
   lookup: s.type({
     dictMode: s.enums(['default', 'kanji'] as const),

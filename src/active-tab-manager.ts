@@ -345,6 +345,14 @@ export default class ActiveTabManager implements TabManager {
     };
   }
 
+  getFramesForTab(tabId: number): Array<number> {
+    if (!(tabId in this.enabledTabs)) {
+      return [];
+    }
+
+    return Object.keys(this.enabledTabs[tabId].frames).map(Number);
+  }
+
   private updateFrames({
     tabId,
     frameId,

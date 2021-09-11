@@ -300,6 +300,14 @@ export default class AllTabManager implements TabManager {
     };
   }
 
+  getFramesForTab(tabId: number): Array<number> {
+    if (!(tabId in this.tabs)) {
+      return [];
+    }
+
+    return Object.keys(this.tabs[tabId].frames).map(Number);
+  }
+
   private updateFrames({
     tabId,
     frameId,

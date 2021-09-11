@@ -1,9 +1,5 @@
 // Popup showing status messages
 
-type PopupHiddenMessage = {
-  kind: '10ten(ja):popupHidden';
-};
-
 type PopupShownMessage = {
   kind: '10ten(ja):popupShown';
 };
@@ -21,7 +17,6 @@ type MoonMovedMessage = {
 };
 
 export type ContentMessage =
-  | PopupHiddenMessage
   | PopupShownMessage
   | IsPopupShownMessage
   | MoonMovedMessage;
