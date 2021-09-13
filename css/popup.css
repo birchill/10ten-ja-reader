@@ -62,6 +62,7 @@
 
 .window.touch .content {
   overflow: auto;
+  pointer-events: all;
 }
 
 @supports (scrollbar-width: thin) {
