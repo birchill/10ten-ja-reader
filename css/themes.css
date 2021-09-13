@@ -43,6 +43,9 @@
 
   --meta-bg: var(--cell-highlight-bg);
   --status-bg: var(--cell-highlight-bg);
+
+  --scrollbar-fg: var(--cell-highlight-bg);
+  --scrollbar-bg: var(--bg-color);
 }
 
 .window.theme-light .w-def .tag-fem,
@@ -93,6 +96,9 @@
 
   --status-bg: rgba(255, 255, 255, 0.2);
   --meta-bg: rgba(255, 255, 255, 0.2);
+
+  --scrollbar-fg: var(--cell-highlight-bg);
+  --scrollbar-bg: var(--bg-color);
 }
 
 /*
@@ -122,6 +128,9 @@
 
   --status-bg: rgba(255, 255, 255, 0.2);
   --meta-bg: rgba(255, 255, 255, 0.2);
+
+  --scrollbar-fg: var(--cell-highlight-bg);
+  --scrollbar-bg: var(--bg-color);
 }
 
 .window.theme-black .w-def .tag-masc,
@@ -161,6 +170,9 @@
 
   --meta-bg: var(--cell-highlight-bg);
   --status-bg: var(--cell-highlight-bg);
+
+  --scrollbar-fg: var(--cell-highlight-bg);
+  --scrollbar-bg: var(--bg-color);
 }
 
 /*
@@ -191,4 +203,7 @@
 
   --meta-bg: var(--cell-highlight-bg);
   --status-bg: var(--cell-highlight-bg);
+
+  --scrollbar-fg: var(--cell-highlight-bg);
+  --scrollbar-bg: var(--bg-color);
 }

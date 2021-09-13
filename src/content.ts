@@ -106,6 +106,7 @@ import { TextRange, textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
 import { getTopMostWindow, isTopMostWindow } from './top-window';
 import { BackgroundMessageSchema } from './background-message';
+import { isTouchDevice } from './device';
 
 const enum HoldToShowKeyType {
   Text = 1 << 0,
@@ -1571,9 +1572,10 @@ export class ContentHandler {
       popup.style.left = `${popupX}px`;
       popup.style.top = `${popupY}px`;
 
-      // If we are constraining the width we reach into the popup and set it on
-      // the window itself. That way the popup has a chance to try to respond to
-      // the width (as opposed to simply being clipped).
+      // If we are constraining the width or height we reach into the popup and
+      // set it on the window itself. That way the popup has a chance to try to
+      // respond to the constraint (as opposed to simply being clipped).
+
       if (constrainWidth) {
         const popupWindow =
           popup.shadowRoot?.querySelector<HTMLDivElement>('.window');
@@ -1582,20 +1584,18 @@ export class ContentHandler {
         }
       }
 
-      // If we are constraining the height, however, we just clip it at the
-      // bottom and fade it out. That's normally fine because we'll just clip
-      // the less important entries.
       if (constrainHeight) {
-        popup.style.maxHeight = constrainHeight
-          ? `${constrainHeight}px`
-          : 'none';
-        popup.style.webkitMaskImage =
-          'linear-gradient(to bottom, black 99%, transparent)';
-        (popup.style as any).maskImage =
-          'linear-gradient(to bottom, black 99%, transparent)';
-      } else {
-        popup.style.webkitMaskImage = 'none';
-        (popup.style as any).maskImage = 'none';
+        const popupWindow =
+          popup.shadowRoot?.querySelector<HTMLDivElement>('.window');
+        if (popupWindow) {
+          popupWindow.style.maxHeight = `${constrainHeight}px`;
+
+          // On touch devices we make the window scrollable, but for non-touch
+          // devices we just fade it out.
+          if (!isTouchDevice()) {
+            popupWindow.classList.add('fade-out');
+          }
+        }
       }
     }
 
