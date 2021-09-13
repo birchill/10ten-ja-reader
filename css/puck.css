@@ -108,10 +108,14 @@
   --extra-altitude-to-clear-ios-15-safari-safe-area-activation-zone: 30px;
 
   transform: translate(var(--rest-x-offset), var(--rest-y-offset));
-  transition: transform 0.1s;
+  transition: transform 0.1s, opacity 0.3s;
 }
 
 .puck.dragging .moon,
 .puck.hold-position .moon {
   transform: translate(var(--target-x-offset), var(--target-y-offset));
+}
+
+.puck.hold-position:not(.dragging) .moon {
+  opacity: 0.75;
 }
