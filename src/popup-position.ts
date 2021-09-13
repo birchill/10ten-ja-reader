@@ -19,7 +19,6 @@ export function getPopupPosition({
   mousePos,
   popupSize,
   positionMode,
-  preferredSide,
   safeArea: initialSafeArea,
   pointerType,
 }: {
@@ -29,7 +28,6 @@ export function getPopupPosition({
   mousePos?: Point;
   popupSize: { width: number; height: number };
   positionMode: PopupPositionMode;
-  preferredSide: 'above' | 'below';
   safeArea: PaddingBox;
   pointerType: 'cursor' | 'puck';
 }): PopupPosition {
@@ -71,7 +69,6 @@ export function getPopupPosition({
       isVerticalText,
       mousePos,
       popupSize,
-      preferredSide,
       safeArea,
       scrollX,
       scrollY,
@@ -133,7 +130,6 @@ function getAutoPosition({
   isVerticalText,
   mousePos,
   popupSize,
-  preferredSide,
   safeArea,
   scrollX,
   scrollY,
@@ -145,7 +141,6 @@ function getAutoPosition({
   isVerticalText: boolean;
   mousePos?: Point;
   popupSize: { width: number; height: number };
-  preferredSide: 'above' | 'below';
   safeArea: PaddingBox;
   scrollX: number;
   scrollY: number;
@@ -191,7 +186,7 @@ function getAutoPosition({
   // Build up preferred order for considering each layout
   const leftAndRightPreference = [popupRightLayout, popupLeftLayout];
   const belowAndAbovePreference =
-    preferredSide === 'above'
+    pointerType === 'puck'
       ? [popupAboveLayout, popupBelowLayout]
       : [popupBelowLayout, popupAboveLayout];
   const orderOfPreference = isVerticalText
