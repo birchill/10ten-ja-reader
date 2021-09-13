@@ -148,7 +148,7 @@ function getAutoPosition({
   stageHeight: number;
   pointerType: 'cursor' | 'puck';
 }): PopupPosition {
-  const position = getAutoPositionWithoutScrollOffset({
+  const extendedPosition = getAutoPositionWithoutScrollOffset({
     cursorClearance,
     isVerticalText,
     mousePos,
@@ -159,12 +159,37 @@ function getAutoPosition({
     pointerType,
   });
 
-  return {
-    ...position,
-    x: position.x + scrollX,
-    y: position.y + scrollY,
-  };
+  return extendedPosition
+    ? {
+        ...extendedPosition.position,
+        x: extendedPosition.position.x + scrollX,
+        y: extendedPosition.position.y + scrollY,
+        // When using the cursor, the user can scroll the viewport without
+        // dismissing the popup so we don't need to constrain it.
+        //
+        // However, if we're positioning the popup _above_ the target text, we
+        // don't want it to cover the text so we should constrain it in that
+        // case.
+        constrainHeight:
+          pointerType === 'cursor' &&
+          (extendedPosition.side === 'after' ||
+            extendedPosition.axis === 'horizontal')
+            ? null
+            : extendedPosition.position.constrainHeight,
+      }
+    : {
+        x: scrollX,
+        y: scrollY,
+        constrainWidth: null,
+        constrainHeight: null,
+      };
 }
+
+type ExtendedPopupPosition = {
+  axis: 'vertical' | 'horizontal';
+  side: 'before' | 'after';
+  position: PopupPosition;
+};
 
 function getAutoPositionWithoutScrollOffset({
   cursorClearance,
@@ -184,7 +209,7 @@ function getAutoPositionWithoutScrollOffset({
   stageWidth: number;
   stageHeight: number;
   pointerType: 'cursor' | 'puck';
-}): PopupPosition {
+}): ExtendedPopupPosition | undefined {
   // Set up a few useful variables...
   const x = mousePos?.x || 0;
   const y = mousePos?.y || 0;
@@ -209,14 +234,7 @@ function getAutoPositionWithoutScrollOffset({
   const sides = ['after', 'before'] as const;
 
   // Store the possible layouts
-  const candidates: Array<
-    | {
-        axis: 'horizontal' | 'vertical';
-        position: PopupPosition;
-        side: 'before' | 'after';
-      }
-    | undefined
-  > = [];
+  const candidates: Array<ExtendedPopupPosition | undefined> = [];
 
   for (const axis of axisOrder) {
     // Prefer the 'before' side when we are looking up horizontal text with the
@@ -230,7 +248,6 @@ function getAutoPositionWithoutScrollOffset({
         popupSize,
         safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
         target: { x, y },
-        pointerType,
         side,
       });
       candidates.push(
@@ -245,106 +262,53 @@ function getAutoPositionWithoutScrollOffset({
     }
   }
 
-  // If our first preference fits in the screen, use that.
-  if (
-    candidates[0] &&
-    positionFitsInViewport({
-      isVerticalText,
-      popupSize,
-      position: candidates[0].position,
-      safeExtent: { safeRight, safeBottom },
-    })
-  ) {
-    return candidates[0].position;
+  // See if we have an unconstrained position in the block direction, and if so,
+  // use that.
+  const blockCandidates = candidates.slice(0, 2);
+  const blockPosition = blockCandidates.find(
+    (candidate) =>
+      candidate &&
+      (isVerticalText
+        ? candidate.position.constrainWidth
+        : candidate.position.constrainHeight) === null
+  );
+  if (blockPosition) {
+    return blockPosition;
   }
 
   // Beyond that, our behavior depends on the sort of screen we're dealing with.
   //
   // There are two modes:
   //
-  // A) For most cases we simply want to find which side in the block direction
-  //    has more room and use that.
+  // A) In the general case, we want to stick to want of the block direction
+  //    positions so we need to work out which direction is _less_ constrained.
   //
   // B) However, if the user is on a small screen which has more room in the
   //    inline direction (i.e. it's in "landscape mode" as far as the block
   //    direction is concerned) then putting the popup to the side could be
-  //    quite helpful so we generate the other possible positions and try to
-  //    find the best one.
+  //    quite helpful so we should check all the possible positions.
   if (
     !isSmallLandscapeScreen({
       isVerticalText,
       safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
     })
   ) {
-    if (candidates[0] && !candidates[1]) {
-      return candidates[0].position;
+    const bestBlockPosition = blockCandidates.sort(
+      sizeComparator(popupSize)
+    )[0];
+    if (bestBlockPosition) {
+      return bestBlockPosition;
     }
-
-    if (!candidates[0] && candidates[1]) {
-      return candidates[1].position;
-    }
-
-    if (candidates[0] && candidates[1]) {
-      const [thisSideMin, thisSideMax] = getRangeForPopup({
-        axis: candidates[0].axis,
-        cursorClearance,
-        marginToPopup,
-        safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
-        side: candidates[0].side,
-        target: { x, y },
-      });
-      const [otherSideMin, otherSideMax] = getRangeForPopup({
-        axis: candidates[1].axis,
-        cursorClearance,
-        marginToPopup,
-        safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
-        side: candidates[1].side,
-        target: { x, y },
-      });
-
-      return otherSideMax - otherSideMin > thisSideMax - thisSideMin
-        ? candidates[1].position
-        : candidates[0].position;
-    }
-  }
-
-  // Otherwise, find the best candidate from the set.
-
-  // We generally prefer to use a position in the block direction so see if we
-  // have an unconstrained position there.
-  const blockPosition = candidates
-    .slice(0, 2) // <-- Block direction positions
-    .find(
-      (l) =>
-        l &&
-        (isVerticalText
-          ? l.position.constrainWidth
-          : l.position.constrainHeight) === null
-    );
-  if (blockPosition) {
-    return blockPosition.position;
   }
 
   // Otherwise, use the layout with the greatest width/area.
-  const preferredLayout = candidates.sort(sizeComparator(popupSize))[0];
-
-  return (
-    preferredLayout?.position ?? {
-      // This probably never happens but if we have no suitable layouts, just
-      // put the popup in the top-left.
-      x: safeLeft,
-      y: safeTop,
-      constrainWidth: null,
-      constrainHeight: null,
-    }
-  );
+  return candidates.sort(sizeComparator(popupSize))[0];
 }
 
 function calculatePosition({
   axis,
   cursorClearance,
   marginToPopup,
-  pointerType,
   popupSize,
   safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
   side,
@@ -353,7 +317,6 @@ function calculatePosition({
   axis: 'vertical' | 'horizontal';
   cursorClearance: MarginBox;
   marginToPopup: number;
-  pointerType: 'cursor' | 'puck';
   popupSize: { width: number; height: number };
   safeBoundaries: {
     safeLeft: number;
@@ -417,52 +380,14 @@ function calculatePosition({
         x: crossPos,
         y: axisPos,
         constrainWidth: constrainCrossExtent,
-        // When using the cursor, the user can scroll the viewport without
-        // dismissing the popup so we don't need to constrain it.
-        //
-        // However, if we're positioning the popup before the pointer, we don't want
-        // it to cover the pointer so we should constrain it in that case.
-        constrainHeight:
-          side === 'after' && pointerType === 'cursor'
-            ? null
-            : constrainAxisExtent,
+        constrainHeight: constrainAxisExtent,
       }
     : {
         x: axisPos,
         y: crossPos,
         constrainWidth: constrainAxisExtent,
-        // Similar to the above, when positioning on the sides we typically don't want to
-        // constraint the height of the popup.
-        constrainHeight: pointerType === 'cursor' ? null : constrainCrossExtent,
+        constrainHeight: constrainCrossExtent,
       };
-}
-
-function positionFitsInViewport({
-  isVerticalText,
-  popupSize,
-  position,
-  safeExtent: { safeRight, safeBottom },
-}: {
-  isVerticalText: boolean;
-  popupSize: { width: number; height: number };
-  position: PopupPosition;
-  safeExtent: { safeRight: number; safeBottom: number };
-}): boolean {
-  // First check if it is constrained in the block direction. If it's
-  // constrained then it doesn't fit.
-  const isConstrained = isVerticalText
-    ? position.constrainWidth !== null
-    : position.constrainHeight !== null;
-  if (isConstrained) {
-    return false;
-  }
-
-  const blockEdge = isVerticalText ? safeRight : safeBottom;
-  const popupExtent = isVerticalText
-    ? position.x + popupSize.width
-    : position.y + popupSize.height;
-
-  return popupExtent <= blockEdge;
 }
 
 function getRangeForPopup({
