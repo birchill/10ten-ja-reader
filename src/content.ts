@@ -1584,18 +1584,33 @@ export class ContentHandler {
         }
       }
 
-      if (constrainHeight) {
-        const popupWindow =
-          popup.shadowRoot?.querySelector<HTMLDivElement>('.window');
-        if (popupWindow) {
-          popupWindow.style.maxHeight = `${constrainHeight}px`;
-
-          // On touch devices we make the window scrollable, but for non-touch
-          // devices we just fade it out.
-          if (!isTouchDevice()) {
-            popupWindow.classList.add('fade-out');
+      // On touch devices we make the window scrollable, but for non-touch
+      // devices we just fade it out.
+      //
+      // To make the window scrollable we need to set the max-height on the
+      // inner window itself.
+      //
+      // For the fade-effect, however, we set the max-height and fade effect
+      // on the popup host element so that the mask doesn't end up clipping
+      // the drop shadow on the popup.
+      if (isTouchDevice()) {
+        if (constrainHeight) {
+          const popupWindow =
+            popup.shadowRoot?.querySelector<HTMLDivElement>('.window');
+          if (popupWindow && constrainHeight) {
+            popupWindow.style.maxHeight = `${constrainHeight}px`;
           }
         }
+      } else if (constrainHeight) {
+        popup.style.maxHeight = `${constrainHeight}px`;
+        popup.style.webkitMaskImage =
+          'linear-gradient(to bottom, black 99%, transparent)';
+        (popup.style as any).maskImage =
+          'linear-gradient(to bottom, black 99%, transparent)';
+      } else {
+        popup.style.maxHeight = 'none';
+        popup.style.webkitMaskImage = 'none';
+        (popup.style as any).maskImage = 'none';
       }
     }
 

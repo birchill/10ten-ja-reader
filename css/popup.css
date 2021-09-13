@@ -50,11 +50,6 @@
   display: none;
 }
 
-.window.fade-out {
-  -webkit-mask-image: linear-gradient(to bottom, black 99%, transparent);
-  mask-image: linear-gradient(to bottom, black 99%, transparent);
-}
-
 .window.touch:not(.hidden) {
   display: flex;
   flex-direction: column;
