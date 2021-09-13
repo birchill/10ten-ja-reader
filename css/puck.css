@@ -45,6 +45,21 @@
   height: 50px;
   transition: transform 0.3s;
   --scale-factor-when-dragging: 1.2;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.earth .logo {
+  width: 25px;
+  height: 25px;
+  color: var(--border-color);
+  opacity: 0.5;
+}
+
+.earth .logo * {
+  fill: currentColor;
 }
 
 .puck.dragging .earth {

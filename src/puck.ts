@@ -9,6 +9,7 @@ import type { SafeAreaProvider } from './safe-area-provider';
 import { getThemeClass } from './themes';
 
 import puckStyles from '../css/puck.css';
+import { SVG_NS } from './svg';
 
 interface ViewportDimensions {
   viewportWidth: number;
@@ -494,6 +495,28 @@ export class LookupPuck {
     const earth = doc.createElement('div');
     earth.classList.add('earth');
     this.puck.append(earth);
+
+    // Brand the earth
+    const logoSvg = doc.createElementNS(SVG_NS, 'svg');
+    logoSvg.setAttribute('viewBox', '0 0 20 20');
+    logoSvg.classList.add('logo');
+    const dot1 = doc.createElementNS(SVG_NS, 'circle');
+    dot1.setAttribute('cx', '11.5');
+    dot1.setAttribute('cy', '10');
+    dot1.setAttribute('r', '1.5');
+    logoSvg.append(dot1);
+    const dot2 = doc.createElementNS(SVG_NS, 'circle');
+    dot2.setAttribute('cx', '18.5');
+    dot2.setAttribute('cy', '15.5');
+    dot2.setAttribute('r', '1.5');
+    logoSvg.append(dot2);
+    const path = doc.createElementNS(SVG_NS, 'path');
+    path.setAttribute(
+      'd',
+      'M4.9 7.1c-.1-.5-.2-.9-.5-1.3-.2-.4-.5-.8-.8-1.1-.2-.3-.5-.5-.8-.7C2 3.3 1 3 0 3v3c1.2 0 1.9.7 2 1.9v9.2h3V8.2c0-.4 0-.8-.1-1.1zM11.5 3c-2.8 0-5 2.3-5 5.1v3.7c0 2.8 2.2 5.1 5 5.1s5-2.3 5-5.1V8.1c0-2.8-2.2-5.1-5-5.1zm2.3 5.1v3.7c0 .3-.1.6-.2.9-.4.8-1.2 1.4-2.1 1.4s-1.7-.6-2.1-1.4c-.1-.3-.2-.6-.2-.9V8.1c0-.3.1-.6.2-.9.4-.8 1.2-1.4 2.1-1.4s1.7.6 2.1 1.4c.1.3.2.6.2.9z'
+    );
+    logoSvg.append(path);
+    earth.append(logoSvg);
 
     const moon = doc.createElement('div');
     moon.classList.add('moon');
