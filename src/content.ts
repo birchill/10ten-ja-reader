@@ -1094,10 +1094,13 @@ export class ContentHandler {
       length,
       textRange: this.currentTextRange,
     });
+
+    this.puck?.highlightMatch();
   }
 
   clearTextHighlight(currentElement: Element | null = null) {
     this.textHighlighter.clearHighlight({ currentElement });
+    this.puck?.clearHighlight();
   }
 
   // The currentElement here is _only_ used to avoid resetting the scroll
@@ -1121,6 +1124,7 @@ export class ContentHandler {
         { kind: '10ten(ja):clearTextHighlight' },
         '*'
       );
+      this.puck?.clearHighlight();
     } else {
       this.clearTextHighlight(currentElement);
     }
@@ -1405,6 +1409,7 @@ export class ContentHandler {
         { kind: '10ten(ja):highlightText', length: highlightLength },
         '*'
       );
+      this.puck?.highlightMatch();
       return;
     }
 

@@ -111,6 +111,7 @@
   transition: transform 0.1s;
 }
 
-.puck.dragging .moon {
+.puck.dragging .moon,
+.puck.hold-position .moon {
   transform: translate(var(--target-x-offset), var(--target-y-offset));
 }

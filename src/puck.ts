@@ -10,6 +10,7 @@ import { getThemeClass } from './themes';
 
 import puckStyles from '../css/puck.css';
 import { SVG_NS } from './svg';
+import { isIOS } from './ua-utils';
 
 interface ViewportDimensions {
   viewportWidth: number;
@@ -646,6 +647,24 @@ export class LookupPuck {
     }
     window.removeEventListener('pointerup', this.noOpPointerUpHandler);
     this.clickState = { kind: 'idle' };
+  }
+
+  highlightMatch(): void {
+    // On iOS the selection API is very unreliable so we don't have a good way
+    // of indicating to the user what they looked up, unless they enable the
+    // (experimental) CSS Highlight API.
+    //
+    // So, in that case, whenever our lookup gets a match we make the moon
+    // stick to its extended position.
+    if (!isIOS() || CSS?.highlights) {
+      return;
+    }
+
+    this.puck?.classList.add('hold-position');
+  }
+
+  clearHighlight(): void {
+    this.puck?.classList.remove('hold-position');
   }
 }
 
