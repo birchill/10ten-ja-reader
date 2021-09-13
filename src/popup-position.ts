@@ -161,26 +161,29 @@ function getAutoPosition({
     marginToPopup,
     popupSize,
     safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
-    scrollY,
     target: { x, y },
     pointerType,
   };
 
-  const popupAboveLayout = getAboveOrBelowPosition({
+  const popupAboveLayout = calculatePosition({
     ...commonPositioningArgs,
-    position: 'above',
+    axis: 'vertical',
+    side: 'before',
   });
-  const popupRightLayout = getLeftOrRightPosition({
+  const popupRightLayout = calculatePosition({
     ...commonPositioningArgs,
-    position: 'right',
+    axis: 'horizontal',
+    side: 'after',
   });
-  const popupLeftLayout = getLeftOrRightPosition({
+  const popupLeftLayout = calculatePosition({
     ...commonPositioningArgs,
-    position: 'left',
+    axis: 'horizontal',
+    side: 'before',
   });
-  const popupBelowLayout = getAboveOrBelowPosition({
+  const popupBelowLayout = calculatePosition({
     ...commonPositioningArgs,
-    position: 'below',
+    axis: 'vertical',
+    side: 'after',
   });
 
   // Build up preferred order for considering each layout
@@ -239,166 +242,108 @@ function getAutoPosition({
   };
 }
 
-// TODO: Combine the below two functions into a more generic one.
-
-function getAboveOrBelowPosition({
+function calculatePosition({
+  axis,
   cursorClearance,
   marginToPopup,
-  position,
+  pointerType,
   popupSize,
   safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
-  scrollY,
+  side,
   target,
-  pointerType,
 }: {
+  axis: 'vertical' | 'horizontal';
   cursorClearance: MarginBox;
   marginToPopup: number;
+  pointerType: 'cursor' | 'puck';
   popupSize: { width: number; height: number };
-  position: 'above' | 'below';
   safeBoundaries: {
     safeLeft: number;
     safeRight: number;
     safeTop: number;
     safeBottom: number;
   };
-  scrollY: number;
+  side: 'before' | 'after';
   target: Point;
-  pointerType: 'cursor' | 'puck';
 }): PopupPosition | undefined {
-  // Horizontal position
-  const idealX = target.x;
-  const x =
-    idealX + popupSize.width > safeRight
-      ? Math.max(safeLeft, safeRight - popupSize.width)
-      : idealX;
-  const constrainWidth = x + popupSize.width > safeRight ? safeRight - x : null;
-
-  // Vertical position
-  let y;
-  let constrainHeight: number | null;
-  if (position === 'above') {
-    const marginBetweenMouseEventAndBottomOfPopup =
-      marginToPopup + cursorClearance.top;
-    const maxYExtent = target.y - marginBetweenMouseEventAndBottomOfPopup;
-
-    y = Math.max(safeTop, maxYExtent - popupSize.height);
-    if (y >= maxYExtent) {
-      return undefined;
-    }
-
-    constrainHeight = y + popupSize.height > maxYExtent ? maxYExtent - y : null;
-  } else {
-    const marginBetweenMouseEventAndTopOfPopup =
-      cursorClearance.bottom + marginToPopup;
-    y = target.y + marginBetweenMouseEventAndTopOfPopup;
-
-    if (y >= safeBottom) {
-      return undefined;
-    }
-
-    constrainHeight = y + popupSize.height > safeBottom ? safeBottom - y : null;
-  }
-
-  // When using the cursor, provided we are not at the bottom of the page, the
-  // user can scroll the viewport without dismissing the popup so we don't need
-  // to constrain it.
+  // Cross-axis position
   //
-  // However, if we're positioning the popup above the pointer, we don't want it
-  // to cover the pointer so we should constrain it in that case.
-  if (
-    constrainHeight !== null &&
-    position === 'below' &&
-    pointerType === 'cursor'
-  ) {
-    // Before we drop the constraint, check that there is actually room in the
-    // document to display it in its unconstrained size.
-    const extent = scrollY + y + popupSize.height;
-    const available =
-      getComputedStyle(document.documentElement).overflowY === 'visible' &&
-      getComputedStyle(document.body).overflowY === 'visible'
-        ? document.documentElement.scrollHeight
-        : safeBottom;
-    if (extent < available) {
-      constrainHeight = null;
-    }
-  }
+  // (e.g. horizontal position when we are laying the popup out on the vertical
+  // axis).
+  const idealCrossPos = axis === 'vertical' ? target.x : target.y;
+  const crossPopupSize =
+    axis === 'vertical' ? popupSize.width : popupSize.height;
+  const maxCrossExtent = axis === 'vertical' ? safeRight : safeBottom;
+  const minCrossExtent = axis === 'vertical' ? safeLeft : safeTop;
+  const crossPos =
+    idealCrossPos + crossPopupSize > maxCrossExtent
+      ? Math.max(minCrossExtent, maxCrossExtent - crossPopupSize)
+      : idealCrossPos;
+  const constrainCrossExtent =
+    crossPos + crossPopupSize > maxCrossExtent
+      ? maxCrossExtent - crossPos
+      : null;
 
-  return {
-    x,
-    y,
-    constrainWidth,
-    constrainHeight,
-  };
-}
+  // Axis position
+  //
+  // (e.g. vertical position when we are laying the popup out on the vertical
+  // axis).
+  const targetAxisPos = axis === 'vertical' ? target.y : target.x;
+  const axisPopupSize =
+    axis === 'vertical' ? popupSize.height : popupSize.width;
+  let axisPos;
+  let constrainAxisExtent: number | null;
+  if (side === 'before') {
+    const clearanceAtFarEdge =
+      axis === 'vertical' ? cursorClearance.top : cursorClearance.left;
+    const marginAtFarEdge = clearanceAtFarEdge + marginToPopup;
+    const maxAxisExtent = targetAxisPos - marginAtFarEdge;
 
-function getLeftOrRightPosition({
-  cursorClearance,
-  marginToPopup,
-  position,
-  popupSize,
-  safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
-  target,
-  pointerType,
-}: {
-  cursorClearance: MarginBox;
-  marginToPopup: number;
-  popupSize: { width: number; height: number };
-  position: 'left' | 'right';
-  safeBoundaries: {
-    safeLeft: number;
-    safeRight: number;
-    safeTop: number;
-    safeBottom: number;
-  };
-  target: Point;
-  pointerType: 'cursor' | 'puck';
-}): PopupPosition | undefined {
-  // Horizontal position
-  let x;
-  let constrainWidth: number | null;
-  if (position === 'left') {
-    const marginBetweenMouseEventAndRightOfPopup =
-      cursorClearance.left + marginToPopup;
-    const maxXExtent = target.x - marginBetweenMouseEventAndRightOfPopup;
-
-    x = Math.max(safeLeft, maxXExtent - popupSize.width);
-    if (x >= maxXExtent) {
+    const minAxisPos = axis === 'vertical' ? safeTop : safeLeft;
+    axisPos = Math.max(minAxisPos, maxAxisExtent - axisPopupSize);
+    if (axisPos >= maxAxisExtent) {
       return undefined;
     }
 
-    constrainWidth = x + popupSize.width > maxXExtent ? maxXExtent - x : null;
+    constrainAxisExtent =
+      axisPos + axisPopupSize > maxAxisExtent ? maxAxisExtent - axisPos : null;
   } else {
-    const marginBetweenMouseEventAndLeftOfPopup =
-      cursorClearance.right + marginToPopup;
+    const clearanceAtNearEdge =
+      axis === 'vertical' ? cursorClearance.bottom : cursorClearance.right;
+    const marginAtNearEdge = clearanceAtNearEdge + marginToPopup;
+    axisPos = targetAxisPos + marginAtNearEdge;
 
-    x = target.x + marginBetweenMouseEventAndLeftOfPopup;
-    if (x >= safeRight) {
+    const maxAxisExtent = axis === 'vertical' ? safeBottom : safeRight;
+    if (axisPos >= maxAxisExtent) {
       return undefined;
     }
 
-    constrainWidth = x + popupSize.width > safeRight ? safeRight - x : null;
+    constrainAxisExtent =
+      axisPos + axisPopupSize > maxAxisExtent ? maxAxisExtent - axisPos : null;
   }
 
-  // Vertical position
-  const idealY = target.y;
-  const y =
-    idealY + popupSize.height > safeBottom
-      ? Math.max(safeTop, safeBottom - popupSize.height)
-      : idealY;
-  if (safeBottom - safeTop < 0) {
-    return undefined;
+  // When using the cursor, the user can scroll the viewport without
+  // dismissing the popup so we don't need to constrain it.
+  //
+  // However, if we're positioning the popup before the pointer, we don't want
+  // it to cover the pointer so we should constrain it in that case.
+  if (side === 'after' && pointerType === 'cursor') {
+    constrainAxisExtent = null;
   }
-  const constrainHeight =
-    y + popupSize.height > safeBottom ? safeBottom - safeTop : null;
 
-  return {
-    x,
-    y,
-    constrainWidth,
-    // When using the cursor, the user can scroll the viewport without
-    // dismissing the popup so we don't need to constrain it.
-    constrainHeight: pointerType === 'cursor' ? null : constrainHeight,
-  };
+  return axis === 'vertical'
+    ? {
+        x: crossPos,
+        y: axisPos,
+        constrainWidth: constrainCrossExtent,
+        constrainHeight: constrainAxisExtent,
+      }
+    : {
+        x: axisPos,
+        y: crossPos,
+        constrainWidth: constrainAxisExtent,
+        constrainHeight: constrainCrossExtent,
+      };
 }
 
 function sizeComparator(popupSize: { width: number; height: number }) {
