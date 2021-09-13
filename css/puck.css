@@ -28,9 +28,16 @@
 .earth,
 .moon {
   background: var(--bg-color);
-  border: 2px solid var(--border-color);
+  background: radial-gradient(
+    farthest-side at 25% 25%,
+    var(--puck-bg-highlight) 0%,
+    var(--puck-bg) 100%
+  );
+
+  border: 1px solid var(--border-color);
   border-radius: 100px;
   box-sizing: border-box;
+  box-shadow: 1px 2px 1px rgba(100, 100, 100, 0.2);
 }
 
 .earth {
