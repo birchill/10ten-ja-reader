@@ -478,7 +478,7 @@ export class LookupPuck {
   };
 
   private readonly noOpPointerUpHandler = () => {};
-  
+
   render({ doc, theme }: PuckRenderOptions): void {
     // Set up shadow tree
     const container = getOrCreateEmptyContainer({
@@ -594,7 +594,7 @@ export class LookupPuck {
       }
     }
 
-    this.puck.classList.add(`theme-${theme}`);
+    this.puck.classList.add(getThemeClass(theme));
   }
 
   unmount(): void {
