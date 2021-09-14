@@ -900,6 +900,7 @@ export class Config {
         : 'hide',
       showRomaji: this.showRomaji,
       tabDisplay: this.tabDisplay,
+      toolbarIcon: this.toolbarIcon,
     };
   }
 }

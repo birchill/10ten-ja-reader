@@ -289,7 +289,11 @@ export class ContentHandler {
       this.puck = new LookupPuck(this.safeAreaProvider);
     }
 
-    this.puck.render({ doc: document, theme: this.config.popupStyle });
+    this.puck.render({
+      doc: document,
+      icon: this.config.toolbarIcon,
+      theme: this.config.popupStyle,
+    });
     this.puck.enable();
   }
 
@@ -305,6 +309,10 @@ export class ContentHandler {
     if (this.config && config.popupStyle !== this.config.popupStyle) {
       setPopupStyle(config.popupStyle);
       this.puck?.setTheme(config.popupStyle);
+    }
+
+    if (this.config && config.toolbarIcon !== this.config.toolbarIcon) {
+      this.puck?.setIcon(config.toolbarIcon);
     }
 
     const puckConfigChanged = config.showPuck !== this.config?.showPuck;

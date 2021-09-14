@@ -80,4 +80,8 @@ export interface ContentConfig {
 
   // Indicates the orientation / visibility of the popup tab bar.
   tabDisplay: TabDisplay;
+
+  // The icon we show on the toolbar. We mirror this in the puck so we need to
+  // let the content script now about it.
+  toolbarIcon: 'default' | 'sky';
 }
