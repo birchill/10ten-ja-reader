@@ -452,7 +452,7 @@ browser.runtime.onMessage.addListener(
 
         return (async () => {
           try {
-            return searchWords({
+            return await searchWords({
               ...request,
               abortSignal: pendingSearchWordsRequest.controller.signal,
             });
