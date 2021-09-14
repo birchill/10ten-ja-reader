@@ -68,6 +68,21 @@ function getIframes(doc: Document): Array<HTMLIFrameElement> {
 
   // For same-origin iframes, fetch their child iframe elements recursively.
   for (let iframe of iframes) {
+    // If we try to access iframe.contentDocument and it's cross-origin,
+    // Safari will print an error to the console. In fact, even if we just use
+    // `typeof iframe.contentDocument` it will print the same message.
+    //
+    // Inspecting the contentWindow doesn't seem to provide any clues either.
+    //
+    // However, if we try to access `iframe.contentWindow.frameElement` it
+    // will throw a SecurityError which we can detect and it won't print
+    // anything to the console.
+    try {
+      iframe.contentWindow?.frameElement;
+    } catch {
+      continue;
+    }
+
     if (iframe.contentDocument) {
       iframes.push(...getIframes(iframe.contentDocument));
     }
