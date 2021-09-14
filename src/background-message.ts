@@ -41,13 +41,11 @@ export const BackgroundMessageSchema = discriminator('type', {
     source: s.type({
       frameId: s.number(),
       initialSrc: s.optional(s.string()),
-      currentSrc: s.optional(s.string()),
-      dimensions: s.optional(
-        s.type({
-          width: s.number(),
-          height: s.number(),
-        })
-      ),
+      currentSrc: s.string(),
+      dimensions: s.type({
+        width: s.number(),
+        height: s.number(),
+      }),
     }),
     frame: s.literal('top'),
   }),

@@ -12,14 +12,7 @@ import {
 } from './tab-manager';
 
 type EnabledTab = {
-  frames: Array<{
-    initialSrc: string;
-    currentSrc?: string;
-    dimensions?: {
-      width: number;
-      height: number;
-    };
-  }>;
+  frames: Array<{ initialSrc: string }>;
   port: Browser.Runtime.Port | undefined;
   src: string;
 };
@@ -335,40 +328,18 @@ export default class ActiveTabManager implements TabManager {
     return tabId in this.enabledTabs ? 0 : null;
   }
 
-  getAndUpdateFrame({
+  getInitialFrameSrc({
     tabId,
     frameId,
-    src,
-    dimensions,
   }: {
     tabId: number;
     frameId: number;
-    src: string;
-    dimensions: {
-      width: number;
-      height: number;
-    };
-  }): {
-    frameId: number;
-    initialSrc: string;
-    currentSrc: string;
-    dimensions: { width: number; height: number };
-  } | null {
+  }): string | undefined {
     if (!(frameId in this.enabledTabs[tabId].frames)) {
-      return null;
+      return undefined;
     }
 
-    const frame = this.enabledTabs[tabId].frames[frameId];
-    const { initialSrc } = frame;
-    frame.currentSrc = src;
-    frame.dimensions = dimensions;
-
-    return {
-      frameId,
-      initialSrc,
-      currentSrc: src,
-      dimensions,
-    };
+    return this.enabledTabs[tabId].frames[frameId].initialSrc;
   }
 
   private updateFrames({
@@ -392,13 +363,8 @@ export default class ActiveTabManager implements TabManager {
       }
       tab.src = src;
     }
-    if (frameId in tab.frames) {
-      tab.frames[frameId].currentSrc = src;
-    } else {
-      tab.frames[frameId] = {
-        initialSrc: src,
-        currentSrc: src,
-      };
+    if (!(frameId in tab.frames)) {
+      tab.frames[frameId] = { initialSrc: src };
     }
   }
 
