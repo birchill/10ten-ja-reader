@@ -27,7 +27,8 @@
   max-width: 600px;
   contain: content;
   border-radius: 5px;
-  box-shadow: 2px 2px 1px rgba(100, 100, 100, 0.25);
+  box-shadow: 0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
+    1px 2px 1px rgba(100, 100, 100, 0.15), 2px 4px 8px rgba(100, 100, 100, 0.15);
   font: normal 14px sans-serif;
 
   color: var(--text-color);
