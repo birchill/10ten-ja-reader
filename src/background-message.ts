@@ -61,6 +61,12 @@ export const BackgroundMessageSchema = discriminator('type', {
   copyCurrentEntry: s.type({
     copyType: s.enums(['entry', 'tab', 'word'] as const),
   }),
+
+  // Puck messages
+  puckMoved: s.type({
+    clientX: s.number(),
+    clientY: s.number(),
+  }),
 });
 
 export type BackgroundMessage = s.Infer<typeof BackgroundMessageSchema>;

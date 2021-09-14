@@ -4,6 +4,7 @@ import Browser, { browser } from 'webextension-polyfill-ts';
 
 import { BackgroundRequestSchema } from './background-request';
 import { ContentConfig } from './content-config';
+import { getFrameByProperties } from './frame-management';
 import {
   EnabledChangedCallback,
   TabManager,
@@ -351,6 +352,29 @@ export default class ActiveTabManager implements TabManager {
     }
 
     return Object.keys(this.enabledTabs[tabId].frames).map(Number);
+  }
+
+  getFrameByProperties({
+    tabId,
+    src,
+    width,
+    height,
+  }: {
+    tabId: number;
+    src: string;
+    width: number;
+    height: number;
+  }): number | undefined {
+    if (!(tabId in this.enabledTabs)) {
+      return undefined;
+    }
+
+    return getFrameByProperties({
+      frames: this.enabledTabs[tabId].frames,
+      src,
+      width,
+      height,
+    });
   }
 
   private updateFrames({
