@@ -76,7 +76,7 @@ function getIframes(doc: Document): Array<HTMLIFrameElement> {
   return iframes;
 }
 
-export function getIframeDimensions(elem: HTMLIFrameElement): {
+function getIframeDimensions(elem: HTMLIFrameElement): {
   width: number;
   height: number;
 } {

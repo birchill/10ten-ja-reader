@@ -49,8 +49,10 @@ import type { MajorDataSeries } from '@birchill/hikibiki-data';
 import * as s from 'superstruct';
 import Browser, { browser } from 'webextension-polyfill-ts';
 
+import { BackgroundMessageSchema } from './background-message';
 import { ContentConfig } from './content-config';
 import { CopyKeys, CopyType } from './copy-keys';
+import { isTouchDevice } from './device';
 import {
   getEntryToCopy,
   getFieldsToCopy,
@@ -86,9 +88,9 @@ import {
 import { getPopupPosition, PopupPositionMode } from './popup-position';
 import {
   isPuckMouseEvent,
-  PuckMouseEvent,
   removePuck,
   LookupPuck,
+  PuckMouseEvent,
 } from './puck';
 import { query, QueryResult } from './query';
 import {
@@ -107,8 +109,6 @@ import {
 import { TextHighlighter } from './text-highlighter';
 import { TextRange, textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
-import { BackgroundMessageSchema } from './background-message';
-import { isTouchDevice } from './device';
 
 const enum HoldToShowKeyType {
   Text = 1 << 0,
@@ -243,6 +243,7 @@ export class ContentHandler {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onFocusIn = this.onFocusIn.bind(this);
+    this.onInterFrameMessage = this.onInterFrameMessage.bind(this);
     this.onBackgroundMessage = this.onBackgroundMessage.bind(this);
 
     window.addEventListener('mousemove', this.onMouseMove);
@@ -250,6 +251,9 @@ export class ContentHandler {
     window.addEventListener('keydown', this.onKeyDown, { capture: true });
     window.addEventListener('keyup', this.onKeyUp, { capture: true });
     window.addEventListener('focusin', this.onFocusIn);
+    window.addEventListener('message', this.onInterFrameMessage, {
+      capture: true,
+    });
     browser.runtime.onMessage.addListener(this.onBackgroundMessage);
 
     hasReasonableTimerResolution().then((isReasonable) => {
@@ -338,6 +342,9 @@ export class ContentHandler {
     window.removeEventListener('keydown', this.onKeyDown, { capture: true });
     window.removeEventListener('keyup', this.onKeyUp, { capture: true });
     window.removeEventListener('focusin', this.onFocusIn);
+    window.removeEventListener('message', this.onInterFrameMessage, {
+      capture: true,
+    });
     browser.runtime.onMessage.removeListener(this.onBackgroundMessage);
 
     this.clearResult();
@@ -759,6 +766,46 @@ export class ContentHandler {
     return this.isTopMostWindow() ? isPopupVisible() : this.isPopupShowing;
   }
 
+  onInterFrameMessage(event: MessageEvent) {
+    // NOTE: Please do not add additional messages here.
+    //
+    // We want to avoid using postMessage at all costs. Please see the rationale
+    // for this one exception here:
+    //
+    // https://github.com/birchill/10ten-ja-reader/issues/747#issuecomment-918774588
+    //
+    const PuckMovedMessageSchema = s.type({
+      type: s.literal('10ten(ja):puckMoved'),
+      clientX: s.number(),
+      clientY: s.number(),
+    });
+    if (!s.is(event.data, PuckMovedMessageSchema)) {
+      return;
+    }
+
+    // Make sure no-one else sees this message since some apps will get confused
+    // if they see unrecognized messages.
+    event.stopImmediatePropagation();
+    event.preventDefault();
+
+    const { clientX, clientY } = event.data;
+    const mouseEvent = new MouseEvent('mousemove', {
+      // Make sure the event bubbles up to the listener on the window
+      bubbles: true,
+      clientX,
+      clientY,
+    });
+    (mouseEvent as PuckMouseEvent).fromPuck = true;
+
+    const documentBody = window.self.document.body;
+    if (!documentBody) {
+      // Hasn't loaded yet
+      return;
+    }
+
+    documentBody.dispatchEvent(mouseEvent);
+  }
+
   async onBackgroundMessage(request: unknown): Promise<string> {
     s.assert(request, BackgroundMessageSchema);
     switch (request.type) {
@@ -873,26 +920,6 @@ export class ContentHandler {
       case 'copyCurrentEntry':
         this.copyCurrentEntry(request.copyType);
         break;
-
-      case 'puckMoved': {
-        const { clientX, clientY } = request;
-        const mouseEvent = new MouseEvent('mousemove', {
-          // Make sure the event bubbles up to the listener on the window
-          bubbles: true,
-          clientX,
-          clientY,
-        });
-        (mouseEvent as PuckMouseEvent).fromPuck = true;
-
-        const documentBody = window.self.document.body;
-        if (!documentBody) {
-          // Hasn't loaded yet
-          break;
-        }
-
-        documentBody.dispatchEvent(mouseEvent);
-        break;
-      }
     }
 
     return 'ok';

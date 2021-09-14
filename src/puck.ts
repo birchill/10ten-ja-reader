@@ -3,14 +3,13 @@ import {
   removeContentContainer,
 } from './content-container';
 import { MarginBox } from './geometry';
-import { getIframeDimensions, getIframeOrigin } from './iframes';
+import { getIframeOrigin } from './iframes';
 import type { SafeAreaProvider } from './safe-area-provider';
+import { SVG_NS } from './svg';
 import { getThemeClass } from './themes';
+import { isIOS } from './ua-utils';
 
 import puckStyles from '../css/puck.css';
-import { SVG_NS } from './svg';
-import { isIOS } from './ua-utils';
-import { browser } from 'webextension-polyfill-ts';
 
 interface ViewportDimensions {
   viewportWidth: number;
@@ -349,8 +348,20 @@ export class LookupPuck {
     // this message. Upon receiving this message, the iframe will fire a
     // 'mousemove' event at the indicated location, ultimately resulting in a
     // lookup at the target point.
+    //
+    // Note that this is the one and only case where we use postMessage, the
+    // reasons for which are described here:
+    //
+    //  https://github.com/birchill/10ten-ja-reader/issues/747#issuecomment-918774588
+    //
+    // For any other cross-frame messaging we should very very strongly prefer
+    // passing messages via the background page.
     if (target.tagName === 'IFRAME') {
       const iframeElement = target as HTMLIFrameElement;
+      const contentWindow = iframeElement.contentWindow;
+      if (!contentWindow) {
+        return;
+      }
 
       // Adjust the target position by the offset of the iframe itself within
       // the viewport.
@@ -360,29 +371,14 @@ export class LookupPuck {
       }
       const { x, y } = originPoint;
 
-      // Find some attributes to identify the target iframe by.
-      let targetProps:
-        | { type: 'frameId'; frameId: number }
-        | { type: 'attributes'; src: string; width: number; height: number };
-      if (iframeElement.dataset.frameId) {
-        targetProps = {
-          type: 'frameId',
-          frameId: parseInt(iframeElement.dataset.frameId, 10),
-        };
-      } else {
-        targetProps = {
-          type: 'attributes',
-          src: iframeElement.src,
-          ...getIframeDimensions(iframeElement),
-        };
-      }
-
-      browser.runtime.sendMessage({
-        type: 'frame:puckMoved',
-        clientX: targetX - x,
-        clientY: targetY - y,
-        target: targetProps,
-      });
+      contentWindow.postMessage(
+        {
+          type: '10ten(ja):puckMoved',
+          clientX: targetX - x,
+          clientY: targetY - y,
+        },
+        '*'
+      );
       return;
     }
 

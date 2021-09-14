@@ -7,7 +7,6 @@ import { BackgroundRequestSchema } from './background-request';
 
 import { ContentConfig } from './content-config';
 import { ExtensionStorageError } from './extension-storage-error';
-import { getFrameByProperties } from './frame-management';
 import { requestIdleCallback } from './request-idle-callback';
 import {
   EnabledChangedCallback,
@@ -307,29 +306,6 @@ export default class AllTabManager implements TabManager {
     }
 
     return Object.keys(this.tabs[tabId].frames).map(Number);
-  }
-
-  getFrameByProperties({
-    tabId,
-    src,
-    width,
-    height,
-  }: {
-    tabId: number;
-    src: string;
-    width: number;
-    height: number;
-  }): number | undefined {
-    if (!(tabId in this.tabs)) {
-      return undefined;
-    }
-
-    return getFrameByProperties({
-      frames: this.tabs[tabId].frames,
-      src,
-      width,
-      height,
-    });
   }
 
   private updateFrames({
