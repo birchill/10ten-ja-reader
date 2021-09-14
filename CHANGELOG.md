@@ -1,4 +1,4 @@
-## Next version
+## 1.3.5 (2021-09-15)
 
 - Overhauled popup positioning to better correspond with old behavior
   [#756](https://github.com/birchill/10ten-ja-reader/issues/756)).
@@ -6,7 +6,7 @@
   Azure portal
   [#747](https://github.com/birchill/10ten-ja-reader/issues/747)).
 
-## 1.3.4 (2021-09-10)
+## 1.3.4 (2021-09-10) (Firefox, Chrome)
 
 - Fixed another popup positioning issue.
 
