@@ -1,10 +1,13 @@
 import Bugsnag from '@bugsnag/browser';
 import * as s from 'superstruct';
 import Browser, { browser } from 'webextension-polyfill-ts';
-import { BackgroundMessage } from './background-message';
 
+import {
+  BackgroundMessage,
+  IndividualFrameMessage,
+  TopFrameMessage,
+} from './background-message';
 import { BackgroundRequestSchema } from './background-request';
-
 import { ContentConfig } from './content-config';
 import { ExtensionStorageError } from './extension-storage-error';
 import { requestIdleCallback } from './request-idle-callback';
@@ -181,7 +184,7 @@ export default class AllTabManager implements TabManager {
       await this.enableTab(tab.id);
     } else {
       // Disable all tabs
-      await sendMessageToAllTabs({ type: 'disable' });
+      await sendMessageToAllTabs({ type: 'disable', frame: '*' });
     }
 
     // Store our local value
@@ -213,6 +216,9 @@ export default class AllTabManager implements TabManager {
         {
           type: 'enable',
           config: this.config,
+          // At the point when the listener gets this message it won't know what
+          // its frameId is so it's pointless to specify it here.
+          frame: '*',
         },
         { frameId }
       );
@@ -238,14 +244,49 @@ export default class AllTabManager implements TabManager {
       return;
     }
 
-    await sendMessageToAllTabs({ type: 'enable', config });
+    await sendMessageToAllTabs({ type: 'enable', config, frame: '*' });
   }
 
   //
   // Frame management
   //
 
-  getTopFrameId(tabId: number): number | null {
+  sendMessageToFrame<T extends Omit<IndividualFrameMessage, 'frame'>>({
+    tabId,
+    message,
+    frameId,
+  }: {
+    tabId: number;
+    message: T;
+    frameId: number;
+  }) {
+    browser.tabs
+      .sendMessage(tabId, { ...message, frame: frameId }, { frameId })
+      .catch(() => {
+        // Probably just a stale frameId
+      });
+  }
+
+  sendMessageToTopFrame<T extends Omit<TopFrameMessage, 'frame'>>({
+    tabId,
+    message,
+  }: {
+    tabId: number;
+    message: T;
+  }) {
+    const frameId = this.getTopFrameId(tabId);
+    if (frameId === null) {
+      return;
+    }
+
+    browser.tabs
+      .sendMessage(tabId, { ...message, frame: 'top' }, { frameId })
+      .catch(() => {
+        // Probably just a stale frameId
+      });
+  }
+
+  private getTopFrameId(tabId: number): number | null {
     if (!(tabId in this.tabs)) {
       return null;
     }
@@ -253,7 +294,7 @@ export default class AllTabManager implements TabManager {
     return Number(Object.keys(this.tabs[tabId].frames)[0]);
   }
 
-  getTopFrameWithFrameSrc({
+  getAndUpdateFrame({
     tabId,
     frameId,
     src,
@@ -268,18 +309,10 @@ export default class AllTabManager implements TabManager {
     };
   }): {
     frameId: number;
-    source: {
-      frameId: number;
-      initialSrc: string;
-      currentSrc: string;
-      dimensions: { width: number; height: number };
-    };
+    initialSrc: string;
+    currentSrc: string;
+    dimensions: { width: number; height: number };
   } | null {
-    const topFrameId = this.getTopFrameId(tabId);
-    if (topFrameId === null) {
-      return null;
-    }
-
     if (!(frameId in this.tabs[tabId].frames)) {
       return null;
     }
@@ -290,22 +323,11 @@ export default class AllTabManager implements TabManager {
     frame.dimensions = dimensions;
 
     return {
-      frameId: topFrameId,
-      source: {
-        frameId,
-        initialSrc,
-        currentSrc: src,
-        dimensions,
-      },
+      frameId,
+      initialSrc,
+      currentSrc: src,
+      dimensions,
     };
-  }
-
-  getFramesForTab(tabId: number): Array<number> {
-    if (!(tabId in this.tabs)) {
-      return [];
-    }
-
-    return Object.keys(this.tabs[tabId].frames).map(Number);
   }
 
   private updateFrames({
@@ -362,11 +384,11 @@ export default class AllTabManager implements TabManager {
 
         const topMostFrameId = Number(Object.keys(this.tabs[tabId].frames)[0]);
         if (topMostFrameId !== 0) {
-          browser.tabs.sendMessage(
+          this.sendMessageToFrame({
             tabId,
-            { type: 'isTopMost' },
-            { frameId: topMostFrameId }
-          );
+            message: { type: 'isTopMost' },
+            frameId: topMostFrameId,
+          });
         }
       }, 3000);
     }

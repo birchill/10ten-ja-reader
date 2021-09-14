@@ -43,8 +43,8 @@ export const BackgroundRequestSchema = discriminator('type', {
 
   // Popup showing status
   'frame:popupShown': s.type({ frameId: s.number() }),
-  'frames:popupShown': s.type({}),
-  'frames:popupHidden': s.type({}),
+  'children:popupShown': s.type({}),
+  'children:popupHidden': s.type({}),
   'top:isPopupShowing': s.type({}),
 
   // Text highlighting

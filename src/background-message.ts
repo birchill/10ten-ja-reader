@@ -2,26 +2,27 @@ import { discriminator } from '@birchill/discriminator';
 import * as s from 'superstruct';
 
 export const BackgroundMessageSchema = discriminator('type', {
-  disable: s.type({}),
+  disable: s.type({ frame: s.literal('*') }),
   enable: s.type({
     // We don't validate the contents of the config object yet
     config: s.type({}),
     id: s.optional(s.number()),
+    frame: s.literal('*'),
   }),
-  isTopMost: s.type({}),
+  isTopMost: s.type({ frame: s.number() }),
 
   //
   // Relayed messages from other content scripts
   //
 
   // Popup showing status
-  popupShown: s.type({}),
-  popupHidden: s.type({}),
-  isPopupShowing: s.type({ frameId: s.number() }),
+  popupShown: s.type({ frame: s.union([s.literal('children'), s.number()]) }),
+  popupHidden: s.type({ frame: s.literal('children') }),
+  isPopupShowing: s.type({ frameId: s.number(), frame: s.literal('top') }),
 
   // Text highlighting
-  highlightText: s.type({ length: s.number() }),
-  clearTextHighlight: s.type({}),
+  highlightText: s.type({ length: s.number(), frame: s.number() }),
+  clearTextHighlight: s.type({ frame: s.number() }),
 
   // Lookup-related messages
   lookup: s.type({
@@ -48,19 +49,35 @@ export const BackgroundMessageSchema = discriminator('type', {
         })
       ),
     }),
+    frame: s.literal('top'),
   }),
-  clearResult: s.type({}),
-  nextDictionary: s.type({}),
-  toggleDefinition: s.type({}),
-  movePopup: s.type({ direction: s.enums(['up', 'down'] as const) }),
+  clearResult: s.type({ frame: s.literal('top') }),
+  nextDictionary: s.type({ frame: s.literal('top') }),
+  toggleDefinition: s.type({ frame: s.literal('top') }),
+  movePopup: s.type({
+    direction: s.enums(['up', 'down'] as const),
+    frame: s.literal('top'),
+  }),
 
   // Copy mode messages
-  enterCopyMode: s.type({}),
-  exitCopyMode: s.type({}),
-  nextCopyEntry: s.type({}),
+  enterCopyMode: s.type({ frame: s.literal('top') }),
+  exitCopyMode: s.type({ frame: s.literal('top') }),
+  nextCopyEntry: s.type({ frame: s.literal('top') }),
   copyCurrentEntry: s.type({
     copyType: s.enums(['entry', 'tab', 'word'] as const),
+    frame: s.literal('top'),
   }),
 });
 
 export type BackgroundMessage = s.Infer<typeof BackgroundMessageSchema>;
+
+export type IndividualFrameMessage =
+  | Extract<BackgroundMessage, { frame: number }>
+  | { type: 'popupShown'; frame: number | 'children' };
+// ^ This last bit is because I'm terrible at TypeScript meta programming
+
+export type ChildFramesMessage =
+  | Extract<BackgroundMessage, { frame: 'children' }>
+  | { type: 'popupShown'; frame: number | 'children' };
+
+export type TopFrameMessage = Extract<BackgroundMessage, { frame: 'top' }>;

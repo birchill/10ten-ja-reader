@@ -52,6 +52,7 @@ import * as s from 'superstruct';
 import Browser, { browser } from 'webextension-polyfill-ts';
 
 import TabManager from './all-tab-manager';
+import { ChildFramesMessage } from './background-message';
 import { BackgroundRequestSchema, SearchRequest } from './background-request';
 import { setDefaultToolbarIcon, updateBrowserAction } from './browser-action';
 import { startBugsnag } from './bugsnag';
@@ -74,6 +75,8 @@ import {
 } from './jpdict';
 import { shouldRequestPersistentStorage } from './quota-management';
 import { SearchOtherResult, SearchWordsResult } from './search-result';
+import { stripFields } from './strip-fields';
+import { Split } from './type-helpers';
 
 //
 // Setup bugsnag
@@ -523,64 +526,35 @@ browser.runtime.onMessage.addListener(
       case 'frame:popupShown':
       case 'frame:highlightText':
       case 'frame:clearTextHighlight':
+        const [, type] = request.type.split(':') as Split<
+          typeof request.type,
+          ':'
+        >;
         if (sender.tab?.id) {
-          browser.tabs
-            .sendMessage(
-              sender.tab?.id,
-              { ...request, type: request.type.slice('frame:'.length) },
-              { frameId: request.frameId }
-            )
-            .catch(() => {
-              // Probably just a stale frameId
-            });
+          tabManager.sendMessageToFrame({
+            tabId: sender.tab.id,
+            message: { ...stripFields(request, ['frameId']), type },
+            frameId: request.frameId,
+          });
         }
         break;
 
-      case 'frames:popupHidden':
-      case 'frames:popupShown':
+      case 'children:popupHidden':
+      case 'children:popupShown':
         {
           if (!sender.tab?.id) {
             break;
           }
 
-          const otherFrames = tabManager
-            .getFramesForTab(sender.tab.id)
-            .filter((f) => f !== sender.frameId);
-
-          for (const frameId of otherFrames) {
-            browser.tabs
-              .sendMessage(
-                sender.tab.id,
-                { type: request.type.slice('frames:'.length) },
-                { frameId }
-              )
-              .catch(() => {
-                // Probably just a stale frameId
-              });
-          }
-        }
-        break;
-
-      case 'top:isPopupShowing':
-        {
-          if (!sender.tab?.id || typeof sender.frameId !== 'number') {
-            return Promise.resolve(false);
-          }
-
-          const topFrameId = tabManager.getTopFrameId(sender.tab.id);
-          if (topFrameId === null) {
-            return Promise.resolve(false);
-          }
-
-          browser.tabs
-            .sendMessage(
-              sender.tab.id,
-              { type: 'isPopupShowing', frameId: sender.frameId },
-              { frameId: topFrameId }
-            )
-            .catch(() => {
-              // Probably just a stale frameId
-            });
+          const [, type] = request.type.split(':') as Split<
+            typeof request.type,
+            ':'
+          >;
+          const message: ChildFramesMessage = {
+            type,
+            frame: 'children',
+          };
+          browser.tabs.sendMessage(sender.tab.id, message);
         }
         break;
 
@@ -590,28 +564,24 @@ browser.runtime.onMessage.addListener(
             break;
           }
 
-          const topFrame = tabManager.getTopFrameWithFrameSrc({
+          const source = tabManager.getAndUpdateFrame({
             tabId: sender.tab?.id,
             frameId: sender.frameId,
             ...request.source,
           });
-          if (!topFrame) {
-            break;
-          }
 
-          const { frameId: topFrameId, source } = topFrame;
-          browser.tabs
-            .sendMessage(
-              sender.tab.id,
-              { ...request, type: 'lookup', source },
-              { frameId: topFrameId }
-            )
-            .catch(() => {
-              // Probably just a stale frameId
-            });
+          tabManager.sendMessageToTopFrame({
+            tabId: sender.tab.id,
+            message: {
+              ...request,
+              type: 'lookup',
+              source,
+            },
+          });
         }
         break;
 
+      case 'top:isPopupShowing':
       case 'top:clearResult':
       case 'top:nextDictionary':
       case 'top:toggleDefinition':
@@ -625,20 +595,14 @@ browser.runtime.onMessage.addListener(
             break;
           }
 
-          const topFrameId = tabManager.getTopFrameId(sender.tab.id);
-          if (topFrameId === null) {
-            break;
-          }
-
-          browser.tabs
-            .sendMessage(
-              sender.tab.id,
-              { ...request, type: request.type.slice('top:'.length) },
-              { frameId: topFrameId }
-            )
-            .catch(() => {
-              // Probably just a stale frameId
-            });
+          const [, type] = request.type.split(':') as Split<
+            typeof request.type,
+            ':'
+          >;
+          tabManager.sendMessageToTopFrame({
+            tabId: sender.tab.id,
+            message: { ...request, type },
+          });
         }
         break;
     }
