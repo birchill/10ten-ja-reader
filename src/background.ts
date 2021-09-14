@@ -564,10 +564,9 @@ browser.runtime.onMessage.addListener(
             break;
           }
 
-          const source = tabManager.getAndUpdateFrame({
-            tabId: sender.tab?.id,
+          const initialSrc = tabManager.getInitialFrameSrc({
+            tabId: sender.tab.id,
             frameId: sender.frameId,
-            ...request.source,
           });
 
           tabManager.sendMessageToTopFrame({
@@ -575,7 +574,12 @@ browser.runtime.onMessage.addListener(
             message: {
               ...request,
               type: 'lookup',
-              source,
+              source: {
+                frameId: sender.frameId,
+                initialSrc,
+                currentSrc: request.source.src,
+                dimensions: request.source.dimensions,
+              },
             },
           });
         }

@@ -18,14 +18,7 @@ import {
 } from './tab-manager';
 
 type Tab = {
-  frames: Array<{
-    initialSrc: string;
-    currentSrc?: string;
-    dimensions?: {
-      width: number;
-      height: number;
-    };
-  }>;
+  frames: Array<{ initialSrc: string }>;
   src: string;
   rootWindowCheckTimeout?: number;
 };
@@ -294,40 +287,18 @@ export default class AllTabManager implements TabManager {
     return Number(Object.keys(this.tabs[tabId].frames)[0]);
   }
 
-  getAndUpdateFrame({
+  getInitialFrameSrc({
     tabId,
     frameId,
-    src,
-    dimensions,
   }: {
     tabId: number;
     frameId: number;
-    src: string;
-    dimensions: {
-      width: number;
-      height: number;
-    };
-  }): {
-    frameId: number;
-    initialSrc: string;
-    currentSrc: string;
-    dimensions: { width: number; height: number };
-  } | null {
+  }): string | undefined {
     if (!(frameId in this.tabs[tabId].frames)) {
-      return null;
+      return undefined;
     }
 
-    const frame = this.tabs[tabId].frames[frameId];
-    const { initialSrc } = frame;
-    frame.currentSrc = src;
-    frame.dimensions = dimensions;
-
-    return {
-      frameId,
-      initialSrc,
-      currentSrc: src,
-      dimensions,
-    };
+    return this.tabs[tabId].frames[frameId].initialSrc;
   }
 
   private updateFrames({
@@ -350,28 +321,16 @@ export default class AllTabManager implements TabManager {
       if (frameId === 0 && tab.src !== src && tab.src !== '') {
         tab.frames = [];
       }
-      if (frameId in tab.frames) {
-        tab.frames[frameId].currentSrc = src;
-      } else {
-        tab.frames[frameId] = {
-          initialSrc: src,
-          currentSrc: src,
-        };
-        addedFrame = true;
-      }
     } else {
       this.tabs[tabId] = {
         src: frameId === 0 ? src : '',
         frames: [],
       };
-      addedFrame = !(frameId in this.tabs[tabId].frames);
-      this.tabs[tabId].frames[frameId] = {
-        initialSrc: src,
-        currentSrc: src,
-      };
     }
 
     const tab = this.tabs[tabId];
+    addedFrame = !(frameId in tab.frames);
+    tab.frames[frameId] = { initialSrc: src };
 
     // Try to detect the "no content script in the root window" case
     if (addedFrame && !tab.frames[0] && !tab.rootWindowCheckTimeout) {
