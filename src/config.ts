@@ -200,7 +200,7 @@ export class Config {
         await browser.storage.sync.set({
           kanjiReferencesV2: newSettings,
         });
-      } catch (_) {
+      } catch {
         // If we failed to store the upgraded settings that's fine since at
         // least the in-memory version of the settings has been upgraded.
         // We'll try upgrading the stored settings next time we're loaded

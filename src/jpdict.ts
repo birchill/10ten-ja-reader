@@ -242,7 +242,7 @@ async function getLastUpdateTime(): Promise<number | null> {
     if (typeof getResult.lastDbUpdateTime === 'number') {
       return getResult.lastDbUpdateTime as number;
     }
-  } catch (_) {
+  } catch {
     // Extension storage can sometimes randomly fail with 'An unexpected error
     // occurred'. Ignore, but log it.
     Bugsnag.notify(
@@ -278,7 +278,7 @@ async function setLastUpdateTime(time: number | null) {
     browser.storage.local.remove('lastUpdateKanjiDb').catch(() => {
       /* Ignore */
     });
-  } catch (e) {
+  } catch {
     Bugsnag.notify(
       new ExtensionStorageError({
         key: 'lastDbUpdateTime',

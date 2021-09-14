@@ -667,7 +667,7 @@ export class ContentHandler {
     } else if (toggleDefinition.includes(upperKey)) {
       try {
         browser.runtime.sendMessage({ type: 'toggleDefinition' });
-      } catch (e) {
+      } catch {
         console.log(
           '[10ten-ja-reader] Failed to call toggleDefinition. The page might need to be refreshed.'
         );
@@ -1427,7 +1427,7 @@ export class ContentHandler {
     if (!this.config.hasSwitchedDictionary) {
       try {
         browser.runtime.sendMessage({ type: 'switchedDictionary' });
-      } catch (e) {
+      } catch {
         console.log(
           '[10ten-ja-reader] Failed to call switchedDictionary. The page might need to be refreshed.'
         );

@@ -244,7 +244,7 @@ export class Command {
     try {
       Command.fromParams(params);
       return true;
-    } catch (e) {
+    } catch {
       return false;
     }
   }

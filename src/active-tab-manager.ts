@@ -414,7 +414,7 @@ export default class ActiveTabManager implements TabManager {
     try {
       await this.injectScript(tabId, frameId);
       enabled = true;
-    } catch (e) {
+    } catch {
       // Check if the tab still exists. Perhaps it finished unloading while we
       // were injecting scripts.
       if (!(tabId in this.enabledTabs)) {

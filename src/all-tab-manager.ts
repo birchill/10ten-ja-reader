@@ -106,7 +106,7 @@ export default class AllTabManager implements TabManager {
     let getEnabledResult;
     try {
       getEnabledResult = await browser.storage.local.get('enabled');
-    } catch (_e) {
+    } catch {
       Bugsnag.notify(
         new ExtensionStorageError({ key: 'enabled', action: 'get' }),
         (event) => {
@@ -145,7 +145,7 @@ export default class AllTabManager implements TabManager {
     // Try to enable but only wait on the first attempt.
     try {
       await tryToEnable();
-    } catch (_e) {
+    } catch {
       console.log('Failed to re-enable. Will retry in two seconds.');
       setTimeout(() => {
         tryToEnable().catch(() => {

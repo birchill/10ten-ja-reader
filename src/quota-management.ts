@@ -24,7 +24,7 @@ async function wouldBenefitFromPersistentStorage(): Promise<boolean> {
   let estimate: StorageEstimate;
   try {
     estimate = await navigator.storage.estimate();
-  } catch (e) {
+  } catch {
     return false;
   }
 

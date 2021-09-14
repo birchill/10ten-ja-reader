@@ -68,7 +68,7 @@ async function initDb(): Promise<JpdictDatabase> {
     if (db) {
       try {
         await db.destroy();
-      } catch (e) {
+      } catch {
         console.log('Failed to destroy previous database');
       }
     }
@@ -135,42 +135,40 @@ async function updateAllSeries({
     currentUpdate = undefined;
   }
 
-  const onUpdateError = (series: DataSeries) => (params: {
-    error: Error;
-    nextRetry?: Date;
-    retryCount?: number;
-  }) => {
-    const { error, nextRetry, retryCount } = params;
-    if (nextRetry) {
-      const diffInMs = nextRetry.getTime() - Date.now();
-      self.postMessage(
-        leaveBreadcrumb({
-          message: `Encountered ${error.name} error updating ${series} database. Retrying in ${diffInMs}ms.`,
-        })
-      );
+  const onUpdateError =
+    (series: DataSeries) =>
+    (params: { error: Error; nextRetry?: Date; retryCount?: number }) => {
+      const { error, nextRetry, retryCount } = params;
+      if (nextRetry) {
+        const diffInMs = nextRetry.getTime() - Date.now();
+        self.postMessage(
+          leaveBreadcrumb({
+            message: `Encountered ${error.name} error updating ${series} database. Retrying in ${diffInMs}ms.`,
+          })
+        );
 
-      // We don't want to report all download errors since the auto-retry
-      // behavior will mean we get too many. Also, we don't care about
-      // intermittent failures for users on flaky network connections.
-      //
-      // However, if a lot of clients are failing multiple times to fetch
-      // a particular resource, we want to know.
-      if (retryCount === 5) {
-        self.postMessage(notifyError({ error, severity: 'warning' }));
+        // We don't want to report all download errors since the auto-retry
+        // behavior will mean we get too many. Also, we don't care about
+        // intermittent failures for users on flaky network connections.
+        //
+        // However, if a lot of clients are failing multiple times to fetch
+        // a particular resource, we want to know.
+        if (retryCount === 5) {
+          self.postMessage(notifyError({ error, severity: 'warning' }));
+        }
+      } else if (error.name !== 'AbortError' && error.name !== 'OfflineError') {
+        self.postMessage(notifyError({ error }));
+      } else {
+        self.postMessage(
+          leaveBreadcrumb({
+            message: `Database update for ${series} database encountered ${error.name} error`,
+          })
+        );
       }
-    } else if (error.name !== 'AbortError' && error.name !== 'OfflineError') {
-      self.postMessage(notifyError({ error }));
-    } else {
-      self.postMessage(
-        leaveBreadcrumb({
-          message: `Database update for ${series} database encountered ${error.name} error`,
-        })
-      );
-    }
 
-    lastUpdateError = toUpdateErrorState(params);
-    doDbStateNotification();
-  };
+      lastUpdateError = toUpdateErrorState(params);
+      doDbStateNotification();
+    };
 
   const runNextUpdate = () => {
     // Check if we successfully updated a series

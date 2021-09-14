@@ -4,7 +4,7 @@ import { browser } from 'webextension-polyfill-ts';
 const getExtensionInstallId = (): string => {
   try {
     return new URL(browser.runtime.getURL('yer')).host;
-  } catch (e) {
+  } catch {
     return 'unknown';
   }
 };
@@ -79,7 +79,7 @@ export function startBugsnag() {
         try {
           const { quota, usage } = await navigator.storage.estimate();
           event.addMetadata('storage', { quota, usage });
-        } catch (_e) {
+        } catch {
           console.warn('Failed to get storage estimate');
         }
       }

@@ -1125,7 +1125,7 @@ async function updateIdleStateSummary(
             formatSize(quota)
           );
         }
-      } catch (_e) {
+      } catch {
         /* Ignore. This UA likely doesn't support the navigator.storage API */
       }
     }

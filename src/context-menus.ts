@@ -174,7 +174,7 @@ async function createMenuItem(
 async function removeMenuItem(menuItemId: string) {
   try {
     await browser.contextMenus.remove(menuItemId);
-  } catch (e) {
+  } catch {
     // Ignore
   }
 }
