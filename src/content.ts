@@ -142,6 +142,7 @@ export class ContentHandler {
   // Common concerns
   //
   private config: ContentConfig;
+  private frameId: number | undefined;
 
   //
   // Text handling window concerns
@@ -372,6 +373,14 @@ export class ContentHandler {
     return this.isEffectiveTopMostWindow
       ? window.self
       : window.top || window.self;
+  }
+
+  getFrameId(): number | undefined {
+    return this.frameId;
+  }
+
+  setFrameId(frameId: number) {
+    this.frameId = frameId;
   }
 
   onMouseMove(ev: MouseEvent) {
@@ -808,6 +817,21 @@ export class ContentHandler {
 
   async onBackgroundMessage(request: unknown): Promise<string> {
     s.assert(request, BackgroundMessageSchema);
+
+    // Most messages are targeted at specific frames and should only arrive
+    // there. However, Safari doesn't support sending to specific frames so we
+    // also explicitly indicate the target within each message so we can ignore
+    // those not intended for us.
+    if (request.frame === 'top' && !this.isTopMostWindow()) {
+      return 'ok';
+    }
+    if (request.frame === 'children' && this.isTopMostWindow()) {
+      return 'ok';
+    }
+    if (typeof request.frame === 'number' && this.frameId !== request.frame) {
+      return 'ok';
+    }
+
     switch (request.type) {
       case 'popupShown':
         this.isPopupShowing = true;
@@ -1637,7 +1661,7 @@ export class ContentHandler {
     }
 
     if (this.isTopMostWindow()) {
-      browser.runtime.sendMessage({ type: 'frames:popupShown' });
+      browser.runtime.sendMessage({ type: 'children:popupShown' });
     }
   }
 
@@ -1651,7 +1675,7 @@ export class ContentHandler {
     hidePopup();
 
     if (wasShowing && this.isTopMostWindow()) {
-      browser.runtime.sendMessage({ type: 'frames:popupHidden' });
+      browser.runtime.sendMessage({ type: 'children:popupHidden' });
     }
   }
 
@@ -1756,12 +1780,16 @@ declare global {
   async function onMessage(request: unknown): Promise<string> {
     s.assert(request, BackgroundMessageSchema);
 
+    // As with onBackgroundMessage we need to ensure that we are the
+    // intended recipient for these messages because Safari.
+
     switch (request.type) {
       case 'enable':
         console.assert(
           typeof request.config === 'object',
           'No config object provided with enable message'
         );
+        console.assert(request.frame === '*');
 
         enable({
           tabId: request.id,
@@ -1770,12 +1798,15 @@ declare global {
         break;
 
       case 'disable':
+        console.assert(request.frame === '*');
         disable();
         break;
 
       case 'isTopMost':
         isEffectiveTopMostWindow = true;
-        contentHandler?.setEffectiveTopMostWindow();
+        if (contentHandler?.getFrameId() === request.frame) {
+          contentHandler?.setEffectiveTopMostWindow();
+        }
         break;
     }
 
@@ -1825,8 +1856,14 @@ declare global {
         src: document.location.href,
       })
       .then((resp) => {
-        if (resp && window.frameElement instanceof HTMLElement) {
-          const { frameId } = resp;
+        if (!resp) {
+          return;
+        }
+        const { frameId } = resp;
+        if (contentHandler) {
+          contentHandler.setFrameId(frameId);
+        }
+        if (window.frameElement instanceof HTMLElement) {
           window.frameElement.dataset.frameId = frameId.toString();
         }
       })

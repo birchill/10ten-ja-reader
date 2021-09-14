@@ -2,6 +2,7 @@ import Bugsnag from '@bugsnag/js';
 import * as s from 'superstruct';
 import Browser, { browser } from 'webextension-polyfill-ts';
 
+import { IndividualFrameMessage, TopFrameMessage } from './background-message';
 import { BackgroundRequestSchema } from './background-request';
 import { ContentConfig } from './content-config';
 import {
@@ -295,11 +296,46 @@ export default class ActiveTabManager implements TabManager {
     );
   }
 
-  getTopFrameId(tabId: number): number | null {
+  sendMessageToFrame<T extends Omit<IndividualFrameMessage, 'frame'>>({
+    tabId,
+    message,
+    frameId,
+  }: {
+    tabId: number;
+    message: T;
+    frameId: number;
+  }) {
+    browser.tabs
+      .sendMessage(tabId, { ...message, frame: frameId }, { frameId })
+      .catch(() => {
+        // Probably just a stale frameId
+      });
+  }
+
+  sendMessageToTopFrame<T extends Omit<TopFrameMessage, 'frame'>>({
+    tabId,
+    message,
+  }: {
+    tabId: number;
+    message: T;
+  }) {
+    const frameId = this.getTopFrameId(tabId);
+    if (frameId === null) {
+      return;
+    }
+
+    browser.tabs
+      .sendMessage(tabId, { ...message, frame: 'top' }, { frameId })
+      .catch(() => {
+        // Probably just a stale frameId
+      });
+  }
+
+  private getTopFrameId(tabId: number): number | null {
     return tabId in this.enabledTabs ? 0 : null;
   }
 
-  getTopFrameWithFrameSrc({
+  getAndUpdateFrame({
     tabId,
     frameId,
     src,
@@ -314,17 +350,10 @@ export default class ActiveTabManager implements TabManager {
     };
   }): {
     frameId: number;
-    source: {
-      frameId: number;
-      initialSrc: string;
-      currentSrc: string;
-      dimensions: { width: number; height: number };
-    };
+    initialSrc: string;
+    currentSrc: string;
+    dimensions: { width: number; height: number };
   } | null {
-    if (!(tabId in this.enabledTabs)) {
-      return null;
-    }
-
     if (!(frameId in this.enabledTabs[tabId].frames)) {
       return null;
     }
@@ -335,22 +364,11 @@ export default class ActiveTabManager implements TabManager {
     frame.dimensions = dimensions;
 
     return {
-      frameId: 0,
-      source: {
-        frameId,
-        initialSrc,
-        currentSrc: src,
-        dimensions,
-      },
+      frameId,
+      initialSrc,
+      currentSrc: src,
+      dimensions,
     };
-  }
-
-  getFramesForTab(tabId: number): Array<number> {
-    if (!(tabId in this.enabledTabs)) {
-      return [];
-    }
-
-    return Object.keys(this.enabledTabs[tabId].frames).map(Number);
   }
 
   private updateFrames({
