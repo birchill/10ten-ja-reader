@@ -38,10 +38,6 @@ export function findIframeElement(
   if (!candidates.length) {
     candidates = iframes;
   }
-
-  if (!candidates.length) {
-    return null;
-  }
   if (candidates.length === 1) {
     return candidates[0];
   }
@@ -80,7 +76,7 @@ function getIframes(doc: Document): Array<HTMLIFrameElement> {
   return iframes;
 }
 
-function getIframeDimensions(elem: HTMLIFrameElement): {
+export function getIframeDimensions(elem: HTMLIFrameElement): {
   width: number;
   height: number;
 } {

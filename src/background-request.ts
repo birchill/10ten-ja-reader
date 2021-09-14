@@ -77,6 +77,20 @@ export const BackgroundRequestSchema = discriminator('type', {
   'top:copyCurrentEntry': s.type({
     copyType: s.enums(['entry', 'tab', 'word'] as const),
   }),
+
+  // Puck requests
+  'frame:puckMoved': s.type({
+    clientX: s.number(),
+    clientY: s.number(),
+    target: discriminator('type', {
+      frameId: s.type({ frameId: s.number() }),
+      attributes: s.type({
+        src: s.string(),
+        width: s.number(),
+        height: s.number(),
+      }),
+    }),
+  }),
 });
 
 export type BackgroundRequest = s.Infer<typeof BackgroundRequestSchema>;

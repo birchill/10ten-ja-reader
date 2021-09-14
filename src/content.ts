@@ -50,7 +50,6 @@ import * as s from 'superstruct';
 import Browser, { browser } from 'webextension-polyfill-ts';
 
 import { ContentConfig } from './content-config';
-import { ContentMessage } from './content-messages';
 import { CopyKeys, CopyType } from './copy-keys';
 import {
   getEntryToCopy,
@@ -244,7 +243,6 @@ export class ContentHandler {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onFocusIn = this.onFocusIn.bind(this);
-    this.onContentMessage = this.onContentMessage.bind(this);
     this.onBackgroundMessage = this.onBackgroundMessage.bind(this);
 
     window.addEventListener('mousemove', this.onMouseMove);
@@ -252,7 +250,6 @@ export class ContentHandler {
     window.addEventListener('keydown', this.onKeyDown, { capture: true });
     window.addEventListener('keyup', this.onKeyUp, { capture: true });
     window.addEventListener('focusin', this.onFocusIn);
-    window.addEventListener('message', this.onContentMessage);
     browser.runtime.onMessage.addListener(this.onBackgroundMessage);
 
     hasReasonableTimerResolution().then((isReasonable) => {
@@ -341,7 +338,6 @@ export class ContentHandler {
     window.removeEventListener('keydown', this.onKeyDown, { capture: true });
     window.removeEventListener('keyup', this.onKeyUp, { capture: true });
     window.removeEventListener('focusin', this.onFocusIn);
-    window.removeEventListener('message', this.onContentMessage);
     browser.runtime.onMessage.removeListener(this.onBackgroundMessage);
 
     this.clearResult();
@@ -763,42 +759,6 @@ export class ContentHandler {
     return this.isTopMostWindow() ? isPopupVisible() : this.isPopupShowing;
   }
 
-  onContentMessage(ev: MessageEvent<ContentMessage>) {
-    // In the following we need to be careful to avoid creating an infinite loop
-    // of messages.
-    //
-    // This is because many of the methods we call will simply forward the
-    // message on to topmost window if needed.
-    //
-    // However, the LiveTL add-on naively forwards all messages to its topmost
-    // window on to its iframes creating an infinite loop.
-    //
-    // To avoid this, for any message that is only intended to be sent to a
-    // topmost window, we ensure that we are the topmost window before
-    // calling the corresponding method.
-    switch (ev.data.kind) {
-      case '10ten(ja):moonMoved': {
-        const { clientX, clientY } = ev.data;
-        const mouseEvent = new MouseEvent('mousemove', {
-          // Make sure the event bubbles up to the listener on the window
-          bubbles: true,
-          clientX,
-          clientY,
-        });
-        (mouseEvent as PuckMouseEvent).fromPuck = true;
-
-        const documentBody = window.self.document.body;
-        if (!documentBody) {
-          // Hasn't loaded yet
-          return;
-        }
-
-        documentBody.dispatchEvent(mouseEvent);
-        break;
-      }
-    }
-  }
-
   async onBackgroundMessage(request: unknown): Promise<string> {
     s.assert(request, BackgroundMessageSchema);
     switch (request.type) {
@@ -913,6 +873,26 @@ export class ContentHandler {
       case 'copyCurrentEntry':
         this.copyCurrentEntry(request.copyType);
         break;
+
+      case 'puckMoved': {
+        const { clientX, clientY } = request;
+        const mouseEvent = new MouseEvent('mousemove', {
+          // Make sure the event bubbles up to the listener on the window
+          bubbles: true,
+          clientX,
+          clientY,
+        });
+        (mouseEvent as PuckMouseEvent).fromPuck = true;
+
+        const documentBody = window.self.document.body;
+        if (!documentBody) {
+          // Hasn't loaded yet
+          break;
+        }
+
+        documentBody.dispatchEvent(mouseEvent);
+        break;
+      }
     }
 
     return 'ok';

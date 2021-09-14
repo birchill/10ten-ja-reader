@@ -2,15 +2,15 @@ import {
   getOrCreateEmptyContainer,
   removeContentContainer,
 } from './content-container';
-import type { ContentMessage } from './content-messages';
 import { MarginBox } from './geometry';
-import { getIframeOrigin } from './iframes';
+import { getIframeDimensions, getIframeOrigin } from './iframes';
 import type { SafeAreaProvider } from './safe-area-provider';
 import { getThemeClass } from './themes';
 
 import puckStyles from '../css/puck.css';
 import { SVG_NS } from './svg';
 import { isIOS } from './ua-utils';
+import { browser } from 'webextension-polyfill-ts';
 
 interface ViewportDimensions {
   viewportWidth: number;
@@ -344,35 +344,45 @@ export class LookupPuck {
     // does not have the desired effect of prompting a lookup at the target
     // location within the iframe.
     //
-    // Instead, we post a '10ten(ja):moonMoved' message to the iframe. Our
-    // injected content script ensures that the iframe has a listener in place
-    // to handle this message. Upon receiving this message, the iframe will
-    // fire a 'mousemove' event at the indicated location, ultimately resulting
-    // in a lookup at the target point.
+    // Instead, we send a 'puckMoved' message to the iframe. Our injected
+    // content script ensures that the iframe has a listener in place to handle
+    // this message. Upon receiving this message, the iframe will fire a
+    // 'mousemove' event at the indicated location, ultimately resulting in a
+    // lookup at the target point.
     if (target.tagName === 'IFRAME') {
       const iframeElement = target as HTMLIFrameElement;
-      const contentWindow = iframeElement.contentWindow;
-      if (!contentWindow) {
-        return;
-      }
 
+      // Adjust the target position by the offset of the iframe itself within
+      // the viewport.
       const originPoint = getIframeOrigin(iframeElement);
       if (!originPoint) {
         return;
       }
-
-      // If it's an iframe, adjust the target position by the
-      // offset of the iframe itself within the viewport.
       const { x, y } = originPoint;
 
-      contentWindow.postMessage<ContentMessage>(
-        {
-          kind: '10ten(ja):moonMoved',
-          clientX: targetX - x,
-          clientY: targetY - y,
-        },
-        '*'
-      );
+      // Find some attributes to identify the target iframe by.
+      let targetProps:
+        | { type: 'frameId'; frameId: number }
+        | { type: 'attributes'; src: string; width: number; height: number };
+      if (iframeElement.dataset.frameId) {
+        targetProps = {
+          type: 'frameId',
+          frameId: parseInt(iframeElement.dataset.frameId, 10),
+        };
+      } else {
+        targetProps = {
+          type: 'attributes',
+          src: iframeElement.src,
+          ...getIframeDimensions(iframeElement),
+        };
+      }
+
+      browser.runtime.sendMessage({
+        type: 'frame:puckMoved',
+        clientX: targetX - x,
+        clientY: targetY - y,
+        target: targetProps,
+      });
       return;
     }
 
