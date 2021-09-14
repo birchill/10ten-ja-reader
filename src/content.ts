@@ -360,7 +360,13 @@ export class ContentHandler {
   }
 
   setEffectiveTopMostWindow() {
+    const wasTopMost = this.isTopMostWindow();
     this.isEffectiveTopMostWindow = true;
+
+    // If we are now the top most we might now be the puck host
+    if (!wasTopMost) {
+      this.applyPuckConfig();
+    }
   }
 
   isTopMostWindow() {
