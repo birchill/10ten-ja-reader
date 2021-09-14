@@ -1803,8 +1803,8 @@ declare global {
         break;
 
       case 'isTopMost':
-        isEffectiveTopMostWindow = true;
         if (contentHandler?.getFrameId() === request.frame) {
+          isEffectiveTopMostWindow = true;
           contentHandler?.setEffectiveTopMostWindow();
         }
         break;

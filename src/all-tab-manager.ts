@@ -86,6 +86,17 @@ export default class AllTabManager implements TabManager {
             });
 
             return Promise.resolve({ frameId: sender.frameId });
+
+          case 'disabled':
+            if (!sender.tab || typeof sender.tab.id !== 'number') {
+              return;
+            }
+
+            this.dropFrame({
+              tabId: sender.tab.id,
+              frameId: sender.frameId,
+            });
+            break;
         }
       }
     );
@@ -364,6 +375,28 @@ export default class AllTabManager implements TabManager {
           }
         }
       });
+    }
+  }
+
+  private dropFrame({
+    tabId,
+    frameId,
+  }: {
+    tabId: number;
+    frameId: number | undefined;
+  }) {
+    if (!this.tabs[tabId]) {
+      return;
+    }
+
+    if (typeof frameId === 'number') {
+      const tab = this.tabs[tabId];
+      delete tab.frames[frameId];
+      if (!tab.frames.length) {
+        delete this.tabs[tabId];
+      }
+    } else {
+      delete this.tabs[tabId];
     }
   }
 
