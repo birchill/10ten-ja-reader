@@ -276,9 +276,23 @@ export class LookupPuck {
     const minY = safeAreaTop;
     const maxY = viewportHeight - safeAreaBottom - this.earthHeight;
 
+    let clampedX = Math.min(Math.max(minX, x), maxX);
+    let clampedY = Math.min(Math.max(minY, y), maxY);
+
+    // When we initialize the puck, we put it in the bottom-right corner, but on
+    // iOS 15 Safari, if it's flush up against the right edge of the screen then
+    // when you try to drag it away, you end up dragging in the next tab.
+    //
+    // To avoid that we detect the initial position coordinates and add a few
+    // pixels margin.
+    if (x === Number.MAX_SAFE_INTEGER && y === Number.MAX_SAFE_INTEGER) {
+      clampedX -= 8;
+      clampedY -= 8;
+    }
+
     this.setPosition({
-      x: Math.min(Math.max(minX, x), maxX),
-      y: Math.min(Math.max(minY, y), maxY),
+      x: clampedX,
+      y: clampedY,
       safeAreaLeft,
       safeAreaRight,
     });
