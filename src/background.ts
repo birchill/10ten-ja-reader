@@ -641,42 +641,6 @@ browser.runtime.onMessage.addListener(
             });
         }
         break;
-
-      case 'frame:puckMoved':
-        {
-          if (!sender.tab?.id) {
-            break;
-          }
-
-          let frameId: number | undefined;
-          if (request.target.type === 'frameId') {
-            frameId = request.target.frameId;
-          } else {
-            frameId = tabManager.getFrameByProperties({
-              tabId: sender.tab.id,
-              ...request.target,
-            });
-          }
-
-          if (!frameId) {
-            return;
-          }
-
-          browser.tabs
-            .sendMessage(
-              sender.tab.id,
-              {
-                type: 'puckMoved',
-                clientX: request.clientX,
-                clientY: request.clientY,
-              },
-              { frameId }
-            )
-            .catch(() => {
-              // Probably just a stale frameId
-            });
-        }
-        break;
     }
   }
 );
