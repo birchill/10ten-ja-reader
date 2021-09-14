@@ -1,3 +1,11 @@
+## Next version
+
+- Overhauled popup positioning to better correspond with old behavior
+  [#756](https://github.com/birchill/10ten-ja-reader/issues/756)).
+- Reworked iframe message passing to prevent interfering with pages like
+  Azure portal
+  [#747](https://github.com/birchill/10ten-ja-reader/issues/747)).
+
 ## 1.3.4 (2021-09-10)
 
 - Fixed another popup positioning issue.
