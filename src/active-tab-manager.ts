@@ -152,7 +152,7 @@ export default class ActiveTabManager implements TabManager {
       // re-inject ourselves.
       delete this.enabledTabs[tab.id];
       try {
-        await browser.tabs.sendMessage(tab.id, { type: 'disable' });
+        await browser.tabs.sendMessage(tab.id, { type: 'disable', frame: '*' });
       } catch (e) {
         Bugsnag.notify(e);
       }
@@ -241,6 +241,9 @@ export default class ActiveTabManager implements TabManager {
           type: 'enable',
           config: this.config,
           id: tabId,
+          // At the point when the listener gets this message it won't know what
+          // its frameId is so it's pointless to specify it here.
+          frame: '*',
         },
         { frameId }
       );
@@ -284,6 +287,7 @@ export default class ActiveTabManager implements TabManager {
         type: 'enable',
         config: this.config,
         id: tabId,
+        frame: '*',
       },
       { frameId }
     );
@@ -446,7 +450,11 @@ export default class ActiveTabManager implements TabManager {
         // We deliberately omit the 'id' member here since it's only needed
         // when setting up a port and shouldn't be required when we're just
         // updating the config.
-        await browser.tabs.sendMessage(tabId, { type: 'enable', config });
+        await browser.tabs.sendMessage(tabId, {
+          type: 'enable',
+          config,
+          frame: '*',
+        });
       } catch (e) {
         console.error(e);
         Bugsnag.notify(e);
