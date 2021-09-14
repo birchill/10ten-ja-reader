@@ -845,12 +845,16 @@ export class ContentHandler {
             currentSrc: request.source.currentSrc,
             dimensions: request.source.dimensions,
           });
+
+          let iframeOriginPoint;
           if (!iframe) {
             console.warn("Couldn't find iframe element");
-            break;
+            // Just use the top-left corner since that's probably better than
+            // not showing the popup at all.
+            iframeOriginPoint = { x: 0, y: 0 };
+          } else {
+            iframeOriginPoint = getIframeOrigin(iframe);
           }
-
-          const iframeOriginPoint = getIframeOrigin(iframe);
 
           // Translate the point from the iframe's coordinate system to ours.
           const { point } = request;
