@@ -1,6 +1,8 @@
 import Bugsnag, { Event as BugsnagEvent } from '@bugsnag/browser';
 import { browser } from 'webextension-polyfill-ts';
 
+import { getReleaseStage } from './release-stage';
+
 const getExtensionInstallId = (): string => {
   try {
     return new URL(browser.runtime.getURL('yer')).host;
@@ -8,16 +10,6 @@ const getExtensionInstallId = (): string => {
     return 'unknown';
   }
 };
-
-let releaseStage = 'production';
-
-if (browser.management) {
-  browser.management.getSelf().then((info) => {
-    if (info.installType === 'development') {
-      releaseStage = 'development';
-    }
-  });
-}
 
 export function startBugsnag() {
   const manifest = browser.runtime.getManifest();
@@ -52,7 +44,7 @@ export function startBugsnag() {
 
       // Update release stage here since we can only fetch this async but
       // bugsnag doesn't allow updating the instance after initializing.
-      event.app.releaseStage = releaseStage;
+      event.app.releaseStage = getReleaseStage();
 
       // Update paths in stack trace so that:
       //

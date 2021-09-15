@@ -62,6 +62,7 @@ import {
   notifyDbStateUpdated,
   DbListenerMessage,
 } from './db-listener-messages';
+import { FxFetcher } from './fx-fetcher';
 import {
   JpdictStateWithFallback,
   cancelUpdateDb,
@@ -89,11 +90,13 @@ startBugsnag();
 //
 
 const tabManager = new TabManager();
+const fxFetcher = new FxFetcher();
 
 tabManager.addListener(
   async ({
     enabled,
     tabId,
+    anyEnabled,
   }: {
     enabled: boolean;
     tabId: number | undefined;
@@ -128,6 +131,17 @@ tabManager.addListener(
       toggleMenuEnabled: config.contextMenuEnable,
       showPuck: config.contentConfig.showPuck === 'show',
     });
+
+    // If we have enabled a tab, make sure we update our FX data.
+    //
+    // We don't do this unless a tab is enabled because some users may have the
+    // add-on installed but never enabled and we shouldn't download FX data each
+    // day in that case.
+    if (anyEnabled) {
+      fxFetcher.scheduleNextUpdate();
+    } else {
+      fxFetcher.cancelScheduledUpdate();
+    }
   }
 );
 

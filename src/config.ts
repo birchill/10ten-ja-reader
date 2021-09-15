@@ -23,6 +23,7 @@ import {
 import { dbLanguages, DbLanguageId } from './db-languages';
 import { getHoverCapabilityMql } from './device';
 import { ExtensionStorageError } from './extension-storage-error';
+import { FxLocalData, getLocalFxData } from './fx-data';
 import { isObject } from './is-object';
 import {
   ReferenceAbbreviation,
@@ -60,6 +61,7 @@ interface Settings {
   accentDisplay?: AccentDisplay;
   contextMenuEnable?: boolean;
   dictLang?: DbLanguageId;
+  fxCurrency?: string;
   hasSwitchedDictionary?: boolean;
   holdToShowKeys?: string;
   holdToShowImageKeys?: string;
@@ -140,14 +142,17 @@ const OFF_BY_DEFAULT_REFERENCES: Set<ReferenceAbbreviation> = new Set([
 ]);
 
 export class Config {
+  private fxData: FxLocalData | undefined;
   private settings: Settings = {};
-  private readPromise: Promise<void>;
+  private readyPromise: Promise<void>;
   private changeListeners: ChangeCallback[] = [];
   private previousDefaultLang: DbLanguageId;
   private hoverCapabilityMql: MediaQueryList | undefined;
 
   constructor() {
-    this.readPromise = this.readSettings();
+    this.readyPromise = this.readSettings().then(async () => {
+      this.fxData = await getLocalFxData(this.onFxDataChange.bind(this));
+    });
     this.previousDefaultLang = this.getDefaultLang();
 
     this.onChange = this.onChange.bind(this);
@@ -211,7 +216,7 @@ export class Config {
   }
 
   get ready(): Promise<void> {
-    return this.readPromise;
+    return this.readyPromise;
   }
 
   private async onChange(changes: ChangeDict, areaName: string) {
@@ -270,6 +275,19 @@ export class Config {
         newValue: this.contentConfig.showPuck,
       };
     }
+
+    for (const listener of this.changeListeners) {
+      listener(updatedChanges);
+    }
+  }
+
+  private async onFxDataChange(fxData: FxLocalData) {
+    this.fxData = fxData;
+
+    const updatedChanges: ChangeDict = {
+      fxCurrencies: { newValue: this.fxCurrencies },
+      fx: { newValue: this.contentConfig.fx },
+    };
 
     for (const listener of this.changeListeners) {
       listener(updatedChanges);
@@ -440,6 +458,32 @@ export class Config {
         listener(changes);
       }
     }
+  }
+
+  // fxCurrency: Defaults to USD
+
+  get fxCurrency(): string {
+    return typeof this.settings.fxCurrency === 'string'
+      ? this.settings.fxCurrency
+      : 'USD';
+  }
+
+  set fxCurrency(value: string) {
+    const storedSetting = this.settings.fxCurrency;
+    if (value === storedSetting) {
+      return;
+    }
+
+    // Unlike many other settings, we don't reset the setting if the user
+    // chooses the default value ('USD') since in this case we treat it as an
+    // explicit signal they want currencies displayed in USD even if we later
+    // change the default.
+    browser.storage.sync.set({ fxCurrency: value });
+    this.settings.fxCurrency = value;
+  }
+
+  get fxCurrencies(): Array<string> | undefined {
+    return this.fxData ? Object.keys(this.fxData.rates) : undefined;
   }
 
   // hasSwitchedDictionary: Defaults to false
@@ -869,6 +913,14 @@ export class Config {
     return {
       accentDisplay: this.accentDisplay,
       dictLang: this.dictLang,
+      fx:
+        this.fxData && this.fxCurrency in this.fxData.rates
+          ? {
+              currency: this.fxCurrency,
+              rate: this.fxData.rates[this.fxCurrency],
+              timestamp: this.fxData.timestamp,
+            }
+          : undefined,
       hasSwitchedDictionary: this.hasSwitchedDictionary,
       // We hide the hold-to-show keys setting in activeTab only mode
       holdToShowKeys:

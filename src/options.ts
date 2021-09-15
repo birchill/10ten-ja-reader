@@ -31,6 +31,33 @@ import { getReferenceLabelsForLang, getReferencesForLang } from './refs';
 import { isChromium, isEdge, isFirefox, isMac, isSafari } from './ua-utils';
 import { getThemeClass } from './themes';
 
+declare global {
+  namespace Intl {
+    type RelativeTimeFormatLocaleMatcher = 'lookup' | 'best fit';
+
+    type RelativeTimeFormatStyle = 'long' | 'short' | 'narrow';
+
+    interface DisplayNamesOptions {
+      localeMatcher: RelativeTimeFormatLocaleMatcher;
+      style: RelativeTimeFormatStyle;
+      type: 'language' | 'region' | 'script' | 'currency';
+      fallback: 'code' | 'none';
+    }
+
+    interface DisplayNames {
+      of(code: string): string;
+    }
+
+    const DisplayNames: {
+      prototype: DisplayNames;
+      new (
+        locales?: string | string[],
+        options?: Partial<DisplayNamesOptions>
+      ): DisplayNames;
+    };
+  }
+}
+
 startBugsnag();
 
 const config = new Config();
@@ -138,6 +165,10 @@ function completeForm() {
       config.tabDisplay = tabDisplay;
     });
   }
+
+  document.getElementById('fxCurrency')!.addEventListener('input', (evt) => {
+    config.fxCurrency = (evt.target as HTMLSelectElement).value;
+  });
 
   document
     .getElementById('showKanjiComponents')!
@@ -326,6 +357,41 @@ function setTabDisplayTheme(theme: string) {
     }
     tabIcon.classList.add(themeClass);
   }
+}
+
+function renderCurrencyList(
+  selectedCurrency: string,
+  currencies: Array<string> | undefined
+) {
+  const heading = document.querySelector<HTMLDivElement>('.currency-heading')!;
+  const body = document.querySelector<HTMLDivElement>('.currency-body')!;
+
+  if (!currencies || !currencies.length) {
+    heading.style.display = 'none';
+    body.style.display = 'none';
+    return;
+  }
+
+  heading.style.display = 'revert';
+  body.style.display = 'revert';
+
+  // Drop all the existing currencies since the rates may have changed
+  const fxCurrency = document.getElementById('fxCurrency') as HTMLSelectElement;
+  while (fxCurrency.options.length) {
+    fxCurrency.options.remove(0);
+  }
+
+  // Re-add them
+  const currencyNames = Intl.DisplayNames
+    ? new Intl.DisplayNames(['en'], { type: 'currency' })
+    : undefined;
+  for (const currency of currencies) {
+    const label = currencyNames
+      ? `${currency} - ${currencyNames.of(currency)}`
+      : currency;
+    fxCurrency.options.add(new Option(label, currency));
+  }
+  fxCurrency.value = selectedCurrency;
 }
 
 function configureCommands() {
@@ -787,6 +853,8 @@ function fillVals() {
   optform.tabDisplay.value = config.tabDisplay;
   optform.toolbarIcon.value = config.toolbarIcon;
   optform.showPuck.value = config.showPuck;
+
+  renderCurrencyList(config.fxCurrency, config.fxCurrencies);
 
   getConfiguredToggleKeyValue()
     .then((toggleCommand) => {

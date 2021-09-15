@@ -1353,6 +1353,14 @@
     "message": "Checking for updates…",
     "description": "Label while we are checking for updates"
   },
+  "options_currency_conversion_heading": {
+    "message": "Currency conversion",
+    "description": "Heading for the section for configuring currency conversion"
+  },
+  "options_currency_label": {
+    "message": "Currency",
+    "description": "Label for the drop-down box for choosing the currency"
+  },
   "options_data_series_date_only": {
     "message": "Based on $source$ from $generated$​.",
     "placeholders": {

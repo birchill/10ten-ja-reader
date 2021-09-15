@@ -34,6 +34,10 @@ export interface ContentConfig {
   // The preferred language for dictionary content.
   dictLang: string;
 
+  // The preferred currency to convert to, along with its rate and the timestamp
+  // for the rate.
+  fx: { currency: string; rate: number; timestamp: number } | undefined;
+
   // True if the user has successfully switched dictionaries (meaning we don't
   // need to tell them how).
   hasSwitchedDictionary: boolean;

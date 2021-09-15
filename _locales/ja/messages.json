@@ -1356,6 +1356,14 @@
     "message": "更新確認中…",
     "description": "Label while we are checking for updates"
   },
+  "options_currency_conversion_heading": {
+    "message": "通貨換算",
+    "description": "Heading for the section for configuring currency conversion"
+  },
+  "options_currency_label": {
+    "message": "通貨",
+    "description": "Label for the drop-down box for choosing the currency"
+  },
   "options_data_series_date_only": {
     "message": "$generated$​に生成された​$source$​のデータに基づいている。",
     "placeholders": {

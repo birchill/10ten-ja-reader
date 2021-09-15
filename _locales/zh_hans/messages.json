@@ -1353,6 +1353,14 @@
     "message": "正在检查更新……",
     "description": "Label while we are checking for updates"
   },
+  "options_currency_conversion_heading": {
+    "message": "货币转换",
+    "description": "Heading for the section for configuring currency conversion"
+  },
+  "options_currency_label": {
+    "message": "货币",
+    "description": "Label for the drop-down box for choosing the currency"
+  },
   "options_data_series_date_only": {
     "message": "基于 $source$ 资料，生成于 $generated$​。",
     "placeholders": {
