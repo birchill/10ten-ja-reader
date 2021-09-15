@@ -1,5 +1,6 @@
 import Browser from 'webextension-polyfill-ts';
 
+import { IndividualFrameMessage, TopFrameMessage } from './background-message';
 import { ContentConfig } from './content-config';
 
 export interface TabManager {
@@ -7,6 +8,19 @@ export interface TabManager {
   getEnabledState(): Promise<Array<EnabledState>>;
   toggleTab(tab: Browser.Tabs.Tab, config: ContentConfig): Promise<void>;
   updateConfig(config: ContentConfig): Promise<void>;
+  sendMessageToFrame<T extends Omit<IndividualFrameMessage, 'frame'>>(params: {
+    tabId: number;
+    message: T;
+    frameId: number;
+  }): void;
+  sendMessageToTopFrame<T extends Omit<TopFrameMessage, 'frame'>>(params: {
+    tabId: number;
+    message: T;
+  }): void;
+  getInitialFrameSrc(params: {
+    tabId: number;
+    frameId: number;
+  }): string | undefined;
   addListener(listener: EnabledChangedCallback): void;
   removeListener(listener: EnabledChangedCallback): void;
 }
