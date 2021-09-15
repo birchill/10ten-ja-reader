@@ -24,7 +24,7 @@
   --rest-x-offset: -20px;
   --rest-y-offset: -20px;
 }
-.puck.lookup-disabled {
+.puck.lookup-inactive {
   opacity: 0.5;
 }
 

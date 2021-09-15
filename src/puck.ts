@@ -68,17 +68,18 @@ function clickStateHasTimeout<T extends ClickState['kind']>(
   return typeof (clickState as ClickStateWithTimeout<T>).timeout === 'number';
 }
 
-export enum LookupPuckEnabledState {
-  disabled,
-  enableGestures,
-  enableGesturesAndLookup,
-}
+// - 'disabled': Does not listen for any events (so can't be moved
+//   nor tapped).
+// - 'inactive': Listens for events (so can be moved and tapped),
+//   but does not look up words.
+// - 'active': Listens for events (so can be moved and tapped), and
+//   furthermore looks up words.
+export type PuckEnabledState = 'disabled' | 'inactive' | 'active';
 
 export class LookupPuck {
   public static id: string = 'tenten-ja-puck';
   private puck: HTMLDivElement | undefined;
-  private enabledState: LookupPuckEnabledState =
-    LookupPuckEnabledState.disabled;
+  private enabledState: PuckEnabledState = 'disabled';
   private puckX: number;
   private puckY: number;
   private earthWidth: number;
@@ -313,7 +314,7 @@ export class LookupPuck {
       !this.puck ||
       !this.earthWidth ||
       !this.earthHeight ||
-      this.enabledState === LookupPuckEnabledState.disabled ||
+      this.enabledState === 'disabled' ||
       // i.e. if it's neither being pressed nor dragged
       !(
         this.clickState.kind === 'dragging' ||
@@ -335,7 +336,7 @@ export class LookupPuck {
       clientY - this.earthHeight / 2
     );
 
-    if (this.enabledState < LookupPuckEnabledState.enableGesturesAndLookup) {
+    if (this.enabledState !== 'active') {
       return;
     }
 
@@ -411,7 +412,7 @@ export class LookupPuck {
   private static readonly clickHysteresis = 300;
 
   private readonly onPuckPointerDown = (event: PointerEvent) => {
-    if (this.enabledState === LookupPuckEnabledState.disabled || !this.puck) {
+    if (this.enabledState === 'disabled' || !this.puck) {
       return;
     }
 
@@ -451,9 +452,7 @@ export class LookupPuck {
 
   private readonly onPuckSingleClick = () => {
     this.setEnabledState(
-      this.enabledState < LookupPuckEnabledState.enableGesturesAndLookup
-        ? LookupPuckEnabledState.enableGesturesAndLookup
-        : LookupPuckEnabledState.enableGestures
+      this.enabledState === 'active' ? 'inactive' : 'active'
     );
   };
 
@@ -624,7 +623,7 @@ export class LookupPuck {
     );
 
     // Add event listeners
-    if (this.enabledState > LookupPuckEnabledState.disabled) {
+    if (this.enabledState !== 'disabled') {
       this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
     }
   }
@@ -729,15 +728,15 @@ export class LookupPuck {
 
   unmount(): void {
     removePuck();
-    this.setEnabledState(LookupPuckEnabledState.disabled);
+    this.setEnabledState('disabled');
     this.puck = undefined;
   }
 
-  setEnabledState(enabledState: LookupPuckEnabledState): void {
+  setEnabledState(enabledState: PuckEnabledState): void {
     const previousState = this.enabledState;
     this.enabledState = enabledState;
 
-    if (enabledState === LookupPuckEnabledState.disabled) {
+    if (enabledState === 'disabled') {
       this.safeAreaProvider.delegate = null;
       if (this.puck) {
         this.stopDraggingPuck();
@@ -748,9 +747,9 @@ export class LookupPuck {
       return;
     }
 
-    // Avoid redoing any of this setup (that's common between both .enableGestures
-    // and .enableGesturesAndLookup).
-    if (previousState === LookupPuckEnabledState.disabled) {
+    // Avoid redoing any of this setup (that's common between both 'active'
+    // and 'inactive').
+    if (previousState === 'disabled') {
       this.safeAreaProvider.delegate = this;
       if (this.puck) {
         this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
@@ -760,19 +759,18 @@ export class LookupPuck {
       window.addEventListener('pointerup', this.noOpPointerUpHandler);
     }
 
-    const lookupDisabledClass = 'lookup-disabled';
-    if (this.enabledState === LookupPuckEnabledState.enableGestures) {
-      if (this.puck) {
-        this.puck.classList.add(lookupDisabledClass);
-      }
+    if (this.puck) {
+      this.puck.classList.toggle(
+        'lookup-inactive',
+        this.enabledState === 'inactive'
+      );
+    }
+
+    if (this.enabledState === 'inactive') {
       // Calling this callback allows the owner (ContentHandler) to clear any
       // existing popups.
       this.onLookupDisabled();
       return;
-    }
-
-    if (this.puck) {
-      this.puck.classList.remove(lookupDisabledClass);
     }
   }
 

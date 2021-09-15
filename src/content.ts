@@ -91,7 +91,6 @@ import {
   removePuck,
   LookupPuck,
   PuckMouseEvent,
-  LookupPuckEnabledState,
 } from './puck';
 import { query, QueryResult } from './query';
 import {
@@ -303,7 +302,7 @@ export class ContentHandler {
       icon: this.config.toolbarIcon,
       theme: this.config.popupStyle,
     });
-    this.puck.setEnabledState(LookupPuckEnabledState.enableGesturesAndLookup);
+    this.puck.setEnabledState('active');
   }
 
   tearDownPuck() {
