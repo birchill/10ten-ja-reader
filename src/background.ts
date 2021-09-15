@@ -90,37 +90,45 @@ startBugsnag();
 
 const tabManager = new TabManager();
 
-tabManager.addListener(async (enabled: boolean, tabId: number | undefined) => {
-  // Typically we will run initJpDict from onStartup or onInstalled but if we
-  // are in development mode and reloading the extension neither of those
-  // callbacks will be called so make sure the database is initialized here.
-  if (enabled) {
-    Bugsnag.leaveBreadcrumb('Triggering database update from enableTab...');
-    initJpDict();
-  }
-
-  try {
-    await config.ready;
-  } catch (e) {
-    Bugsnag.notify(e || '(No error)');
-    return;
-  }
-
-  // Update browser action with enabled state
-  updateBrowserAction({
+tabManager.addListener(
+  async ({
     enabled,
-    jpdictState,
     tabId,
-    toolbarIcon: config.toolbarIcon,
-  });
+  }: {
+    enabled: boolean;
+    tabId: number | undefined;
+  }) => {
+    // Typically we will run initJpDict from onStartup or onInstalled but if we
+    // are in development mode and reloading the extension neither of those
+    // callbacks will be called so make sure the database is initialized here.
+    if (enabled) {
+      Bugsnag.leaveBreadcrumb('Triggering database update from enableTab...');
+      initJpDict();
+    }
 
-  // Update context menus
-  await updateContextMenus({
-    tabEnabled: enabled,
-    toggleMenuEnabled: config.contextMenuEnable,
-    showPuck: config.contentConfig.showPuck === 'show',
-  });
-});
+    try {
+      await config.ready;
+    } catch (e) {
+      Bugsnag.notify(e || '(No error)');
+      return;
+    }
+
+    // Update browser action with enabled state
+    updateBrowserAction({
+      enabled,
+      jpdictState,
+      tabId,
+      toolbarIcon: config.toolbarIcon,
+    });
+
+    // Update context menus
+    await updateContextMenus({
+      tabEnabled: enabled,
+      toggleMenuEnabled: config.contextMenuEnable,
+      showPuck: config.contentConfig.showPuck === 'show',
+    });
+  }
+);
 
 //
 // Setup config

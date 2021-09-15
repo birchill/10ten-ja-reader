@@ -478,7 +478,7 @@ export default class ActiveTabManager implements TabManager {
 
   private notifyListeners(enabled: boolean, tabId: number) {
     for (const listener of this.listeners.slice()) {
-      listener(enabled, tabId);
+      listener({ enabled, tabId });
     }
   }
 }

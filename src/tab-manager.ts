@@ -25,10 +25,10 @@ export interface TabManager {
   removeListener(listener: EnabledChangedCallback): void;
 }
 
-export type EnabledChangedCallback = (
-  enabled: boolean,
-  tabId?: number | undefined
-) => void;
+export type EnabledChangedCallback = (params: {
+  enabled: boolean;
+  tabId?: number | undefined;
+}) => void;
 
 export type EnabledState = {
   enabled: boolean;

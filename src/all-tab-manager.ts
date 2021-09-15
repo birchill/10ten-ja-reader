@@ -412,7 +412,7 @@ export default class AllTabManager implements TabManager {
     // Call with initial state, after spinning the event loop to give the client
     // a chance to initialize.
     setTimeout(() => {
-      listener(this.enabled);
+      listener({ enabled: this.enabled });
     }, 0);
   }
 
@@ -422,7 +422,7 @@ export default class AllTabManager implements TabManager {
 
   private notifyListeners(enabled: boolean) {
     for (const listener of this.listeners.slice()) {
-      listener(enabled);
+      listener({ enabled });
     }
   }
 }
