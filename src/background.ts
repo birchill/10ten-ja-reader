@@ -554,7 +554,9 @@ browser.runtime.onMessage.addListener(
             type,
             frame: 'children',
           };
-          browser.tabs.sendMessage(sender.tab.id, message);
+          browser.tabs.sendMessage(sender.tab.id, message).catch(() => {
+            // Ignore, possibly a tab that has gone away.
+          });
         }
         break;
 
