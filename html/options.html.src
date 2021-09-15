@@ -196,7 +196,6 @@
           <p>__MSG_options_popup_keys_subheading__</p>
           <div class="panel-section key-grid" id=key-grid></div>
         </div>
-        <!--#if enable_puck-->
         <div class="panel-section panel-section-header">
           <h2 class=text-section-header>__MSG_options_lookup_puck_heading__</h2>
         </div>
@@ -215,7 +214,6 @@
             <label for="showPuck-hide">__MSG_options_show_puck_option_hide__</label>
           </div>
         </div>
-        <!--#endif-->
         <div class="panel-section panel-section-header">
           <h2 class=text-section-header>__MSG_options_dictionary_language_heading__</h2>
         </div>

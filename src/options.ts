@@ -681,10 +681,6 @@ function translateKeys() {
 }
 
 function configurePuckSettings() {
-  if (!__ENABLE_PUCK__) {
-    return;
-  }
-
   const showPuckOptions = Array.from(
     document.querySelectorAll<HTMLInputElement>(
       'input[type=radio][name=showPuck]'
@@ -790,9 +786,7 @@ function fillVals() {
   optform.popupStyle.value = config.popupStyle;
   optform.tabDisplay.value = config.tabDisplay;
   optform.toolbarIcon.value = config.toolbarIcon;
-  if (__ENABLE_PUCK__) {
-    optform.showPuck.value = config.showPuck;
-  }
+  optform.showPuck.value = config.showPuck;
 
   getConfiguredToggleKeyValue()
     .then((toggleCommand) => {

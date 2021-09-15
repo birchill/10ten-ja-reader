@@ -763,10 +763,6 @@ export class Config {
   }
 
   private maybeListenToHoverCapabilityChanges() {
-    if (!__ENABLE_PUCK__) {
-      return;
-    }
-
     if (this.showPuck === 'auto') {
       this.hoverCapabilityMql =
         this.hoverCapabilityMql || getHoverCapabilityMql();
@@ -891,13 +887,12 @@ export class Config {
       readingOnly: this.readingOnly,
       showKanjiComponents: this.showKanjiComponents,
       showPriority: this.showPriority,
-      showPuck: __ENABLE_PUCK__
-        ? this.showPuck === 'auto'
+      showPuck:
+        this.showPuck === 'auto'
           ? this.hoverCapabilityMql?.matches
             ? 'hide'
             : 'show'
-          : this.showPuck
-        : 'hide',
+          : this.showPuck,
       showRomaji: this.showRomaji,
       tabDisplay: this.tabDisplay,
       toolbarIcon: this.toolbarIcon,

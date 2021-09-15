@@ -2,8 +2,6 @@ let mockBrowser: any = {};
 
 jest.mock('webextension-polyfill-ts', () => ({ browser: mockBrowser }));
 
-(global as any).__ENABLE_PUCK__ = true;
-
 import { Config } from './config';
 import { DbLanguageId } from './db-languages';
 

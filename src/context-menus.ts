@@ -87,7 +87,7 @@ export async function updateContextMenus({
   }
 
   // Update the enable puck menu -- we only show this item if the tab is enabled
-  if (__ENABLE_PUCK__ && tabEnabled) {
+  if (tabEnabled) {
     if (!enablePuckMenuCreated) {
       await addEnablePuckMenu(showPuck, onTogglePuck);
       enablePuckMenuCreated = true;

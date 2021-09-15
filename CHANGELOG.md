@@ -1,4 +1,10 @@
-## 1.3.5 (2021-09-15)
+## Next version
+
+- Added a "puck" for looking up words on touch screens.
+  A **big** thanks to [@shirakaba](https://github.com/shirakaba) for making this
+  happen!
+
+## 1.3.5 (2021-09-15) (Firefox, Chrome, Edge)
 
 - Overhauled popup positioning to better correspond with old behavior
   [#756](https://github.com/birchill/10ten-ja-reader/issues/756)).
