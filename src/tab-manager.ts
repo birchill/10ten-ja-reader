@@ -28,6 +28,7 @@ export interface TabManager {
 export type EnabledChangedCallback = (params: {
   enabled: boolean;
   tabId?: number | undefined;
+  anyEnabled: boolean;
 }) => void;
 
 export type EnabledState = {

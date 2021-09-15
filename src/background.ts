@@ -97,6 +97,7 @@ tabManager.addListener(
   }: {
     enabled: boolean;
     tabId: number | undefined;
+    anyEnabled: boolean;
   }) => {
     // Typically we will run initJpDict from onStartup or onInstalled but if we
     // are in development mode and reloading the extension neither of those
