@@ -17,12 +17,16 @@
   z-index: 1000002;
   /* Stops the screen scrolling on touch devices while dragging the puck around. */
   touch-action: none;
+  transition: opacity 0.1s ease-in-out;
 
   --target-x-offset: 0px;
   --target-y-offset: 0px;
 
   --rest-x-offset: -20px;
   --rest-y-offset: -20px;
+}
+.puck.lookup-inactive {
+  opacity: 0.5;
 }
 
 .earth,
@@ -113,7 +117,7 @@
   transition: transform 0.1s, opacity 0.3s;
 }
 
-.puck.dragging .moon,
+.puck.dragging:not(.lookup-inactive) .moon,
 .puck.hold-position .moon {
   transform: translate(var(--target-x-offset), var(--target-y-offset));
 }

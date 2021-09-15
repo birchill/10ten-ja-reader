@@ -68,10 +68,18 @@ function clickStateHasTimeout<T extends ClickState['kind']>(
   return typeof (clickState as ClickStateWithTimeout<T>).timeout === 'number';
 }
 
+// - 'disabled': Does not listen for any events (so can't be moved
+//   nor tapped).
+// - 'inactive': Listens for events (so can be moved and tapped),
+//   but does not look up words.
+// - 'active': Listens for events (so can be moved and tapped), and
+//   furthermore looks up words.
+export type PuckEnabledState = 'disabled' | 'inactive' | 'active';
+
 export class LookupPuck {
   public static id: string = 'tenten-ja-puck';
   private puck: HTMLDivElement | undefined;
-  private enabled = false;
+  private enabledState: PuckEnabledState = 'disabled';
   private puckX: number;
   private puckY: number;
   private earthWidth: number;
@@ -92,7 +100,10 @@ export class LookupPuck {
   private targetOrientation: 'above' | 'below' = 'above';
   private cachedViewportDimensions: ViewportDimensions | null = null;
 
-  constructor(private safeAreaProvider: SafeAreaProvider) {}
+  constructor(
+    private safeAreaProvider: SafeAreaProvider,
+    private onLookupDisabled: () => void
+  ) {}
 
   // @see SafeAreaConsumerDelegate
   onSafeAreaUpdated(): void {
@@ -303,7 +314,7 @@ export class LookupPuck {
       !this.puck ||
       !this.earthWidth ||
       !this.earthHeight ||
-      !this.enabled ||
+      this.enabledState === 'disabled' ||
       // i.e. if it's neither being pressed nor dragged
       !(
         this.clickState.kind === 'dragging' ||
@@ -324,6 +335,10 @@ export class LookupPuck {
       clientX - this.earthWidth / 2,
       clientY - this.earthHeight / 2
     );
+
+    if (this.enabledState !== 'active') {
+      return;
+    }
 
     // Before applying the transformations to the earth and the moon, they
     // both share the same midpoint.
@@ -397,7 +412,7 @@ export class LookupPuck {
   private static readonly clickHysteresis = 300;
 
   private readonly onPuckPointerDown = (event: PointerEvent) => {
-    if (!this.enabled || !this.puck) {
+    if (this.enabledState === 'disabled' || !this.puck) {
       return;
     }
 
@@ -436,7 +451,9 @@ export class LookupPuck {
   };
 
   private readonly onPuckSingleClick = () => {
-    // TODO: toggle whether the puck is enabled or disabled.
+    this.setEnabledState(
+      this.enabledState === 'active' ? 'inactive' : 'active'
+    );
   };
 
   private readonly onPuckDoubleClick = () => {
@@ -606,7 +623,7 @@ export class LookupPuck {
     );
 
     // Add event listeners
-    if (this.enabled) {
+    if (this.enabledState !== 'disabled') {
       this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
     }
   }
@@ -711,30 +728,50 @@ export class LookupPuck {
 
   unmount(): void {
     removePuck();
-    this.disable();
+    this.setEnabledState('disabled');
     this.puck = undefined;
   }
 
-  enable(): void {
-    this.enabled = true;
-    this.safeAreaProvider.delegate = this;
-    if (this.puck) {
-      this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
-    }
-    // Needed to stop iOS Safari from stealing pointer events after we finish
-    // scrolling.
-    window.addEventListener('pointerup', this.noOpPointerUpHandler);
-  }
+  setEnabledState(enabledState: PuckEnabledState): void {
+    const previousState = this.enabledState;
+    this.enabledState = enabledState;
 
-  disable(): void {
-    this.enabled = false;
-    this.safeAreaProvider.delegate = null;
-    if (this.puck) {
-      this.stopDraggingPuck();
-      this.puck.removeEventListener('pointerdown', this.onPuckPointerDown);
+    if (enabledState === 'disabled') {
+      this.safeAreaProvider.delegate = null;
+      if (this.puck) {
+        this.stopDraggingPuck();
+        this.puck.removeEventListener('pointerdown', this.onPuckPointerDown);
+      }
+      window.removeEventListener('pointerup', this.noOpPointerUpHandler);
+      this.clickState = { kind: 'idle' };
+      return;
     }
-    window.removeEventListener('pointerup', this.noOpPointerUpHandler);
-    this.clickState = { kind: 'idle' };
+
+    // Avoid redoing any of this setup (that's common between both 'active'
+    // and 'inactive').
+    if (previousState === 'disabled') {
+      this.safeAreaProvider.delegate = this;
+      if (this.puck) {
+        this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
+      }
+      // Needed to stop iOS Safari from stealing pointer events after we finish
+      // scrolling.
+      window.addEventListener('pointerup', this.noOpPointerUpHandler);
+    }
+
+    if (this.puck) {
+      this.puck.classList.toggle(
+        'lookup-inactive',
+        this.enabledState === 'inactive'
+      );
+    }
+
+    if (this.enabledState === 'inactive') {
+      // Calling this callback allows the owner (ContentHandler) to clear any
+      // existing popups.
+      this.onLookupDisabled();
+      return;
+    }
   }
 
   highlightMatch(): void {
