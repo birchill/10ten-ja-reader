@@ -105,6 +105,8 @@ export async function query(
             result,
           };
         }
+      } else {
+        queryCache = queryCache.filter((q) => q.key !== key);
       }
 
       return result;
