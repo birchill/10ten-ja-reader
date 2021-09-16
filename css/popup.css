@@ -25,6 +25,7 @@
 
 .window {
   max-width: 600px;
+  max-width: min(600px, calc(100vw - 30px));
   contain: content;
   border-radius: 5px;
   box-shadow: 0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
@@ -965,7 +966,6 @@
   background: transparent;
 }
 
-.wordlist .meta.currency > *,
 .wordlist .meta.era,
 .wordlist .meta.measure > * {
   display: flex;
@@ -981,6 +981,11 @@
 
 .wordlist .currency > .main {
   font-size: 18px;
+}
+
+.wordlist .currency > .main .equation-part {
+  display: inline-flex;
+  align-items: baseline;
 }
 
 .wordlist .currency .main .curr {

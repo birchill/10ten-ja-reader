@@ -733,10 +733,14 @@ function renderCurrencyInfo(
   mainRow.classList.add('main');
   metaDiv.append(mainRow);
 
+  const lhs = document.createElement('div');
+  lhs.classList.add('equation-part');
+  mainRow.append(lhs);
+
   const srcCurrencyLabel = document.createElement('span');
   srcCurrencyLabel.classList.add('curr');
   srcCurrencyLabel.append('JPY');
-  mainRow.append(srcCurrencyLabel);
+  lhs.append(srcCurrencyLabel);
 
   const srcSpan = document.createElement('span');
   srcSpan.classList.add('src');
@@ -746,17 +750,21 @@ function renderCurrencyInfo(
       currency: 'JPY',
     }).format(meta.value)
   );
-  mainRow.append(srcSpan);
+  lhs.append(srcSpan);
 
   const equalsSpan = document.createElement('span');
   equalsSpan.classList.add('equals');
   equalsSpan.append('≈');
-  mainRow.append(equalsSpan);
+  lhs.append(equalsSpan);
+
+  const rhs = document.createElement('div');
+  rhs.classList.add('equation-part');
+  mainRow.append(rhs);
 
   const valueCurrencyLabel = document.createElement('span');
   valueCurrencyLabel.classList.add('curr');
   valueCurrencyLabel.append(fxData.currency);
-  mainRow.append(valueCurrencyLabel);
+  rhs.append(valueCurrencyLabel);
 
   const valueSpan = document.createElement('span');
   valueSpan.classList.add('value');
@@ -767,7 +775,7 @@ function renderCurrencyInfo(
       currencyDisplay: 'narrowSymbol',
     }).format(meta.value * fxData.rate)
   );
-  mainRow.append(valueSpan);
+  rhs.append(valueSpan);
 
   const timestampRow = document.createElement('div');
   timestampRow.classList.add('timestamp');
