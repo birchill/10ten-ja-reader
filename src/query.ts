@@ -93,7 +93,7 @@ export async function query(
   const fullQuery = queryOther(text, options, rawWordsQuery)
     .then((result) => {
       // Update the cache accordingly
-      if (!result || result === 'aborted') {
+      if (!result || result === 'aborted' || result.resultType !== 'full') {
         queryCache = queryCache.filter((q) => q.key !== key);
         return null;
       } else {
