@@ -1,4 +1,9 @@
-## 1.3.5 (2021-09-15)
+## 1.3.6 (2021-09-16)
+
+- Fixed a regression in popup layout when the tabs are on the side on touch
+  screens
+
+## 1.3.5 (2021-09-15) (Firefox, Chrome, Edge)
 
 - Overhauled popup positioning to better correspond with old behavior
   [#756](https://github.com/birchill/10ten-ja-reader/issues/756)).
