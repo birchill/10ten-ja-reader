@@ -4,6 +4,11 @@
   A **big** thanks to [@shirakaba](https://github.com/shirakaba) for making this
   happen!
 
+## 1.3.6 (2021-09-16)
+
+- Fixed a regression in popup layout when the tabs are on the side on touch
+  screens
+
 ## 1.3.5 (2021-09-15) (Firefox, Chrome, Edge)
 
 - Overhauled popup positioning to better correspond with old behavior
