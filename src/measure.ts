@@ -22,11 +22,11 @@ export function lookForMeasure({
   // getTextFromTextNode should already have expanded this range to include
   // half-width numbers and serparators so we just need to add the units and
   // space characters.
-  const japaneseOrNumberish = getCombinedCharRange([
+  const japaneseOrUnit = getCombinedCharRange([
     getNegatedCharRange(originalTextDelimeter),
     /[\sm2㎡²]/,
   ]);
-  const textDelimiter = getNegatedCharRange(japaneseOrNumberish);
+  const textDelimiter = getNegatedCharRange(japaneseOrUnit);
 
   return {
     textDelimiter,

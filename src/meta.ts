@@ -1,4 +1,8 @@
-import { CurrencyMeta } from './currency';
+import {
+  CurrencyMeta,
+  extractCurrencyMetadata,
+  lookForCurrency,
+} from './currency';
 import { MeasureMeta, extractMeasureMetadata, lookForMeasure } from './measure';
 import { EraMeta, extractEraMetadata, lookForEra } from './years';
 
@@ -19,6 +23,7 @@ export function lookForMetadata({
   textEnd: number;
 } {
   return (
+    lookForCurrency({ nodeText, textDelimiter }) ||
     lookForEra({ currentText, nodeText, textEnd }) ||
     lookForMeasure({ nodeText, textDelimiter }) || {
       textDelimiter,
@@ -30,5 +35,9 @@ export function lookForMetadata({
 export function extractGetTextMetadata(
   text: string
 ): SelectionMeta | undefined {
-  return extractEraMetadata(text) || extractMeasureMetadata(text);
+  return (
+    extractCurrencyMetadata(text) ||
+    extractEraMetadata(text) ||
+    extractMeasureMetadata(text)
+  );
 }

@@ -550,6 +550,86 @@ describe('getTextAtPoint', () => {
     });
   });
 
+  it('should recognize Japanese yen values', () => {
+    testDiv.append('価格8万8千円です');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 2);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(result, '8万8千円です', [textNode, 2, 9]);
+    assert.deepEqual(result!.meta, {
+      type: 'currency',
+      value: 88000,
+      matchLen: 5,
+    });
+  });
+
+  it('should recognize Japanese yen values that start with ￥', () => {
+    testDiv.append('価格￥8万8千です');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 2);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(result, '￥8万8千です', [textNode, 2, 9]);
+    assert.deepEqual(result!.meta, {
+      type: 'currency',
+      value: 88000,
+      matchLen: 5,
+    });
+  });
+
+  it('should recognize Japanese yen values that start with ¥', () => {
+    testDiv.append('価格¥ 8万8千です');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 2);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(result, '¥ 8万8千です', [textNode, 2, 10]);
+    assert.deepEqual(result!.meta, {
+      type: 'currency',
+      value: 88000,
+      matchLen: 6,
+    });
+  });
+
+  it('should recognize Japanese yen values that include commas', () => {
+    testDiv.append('価格8,800円です');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 2);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(result, '8,800円です', [textNode, 2, 10]);
+    assert.deepEqual(result?.meta, {
+      type: 'currency',
+      value: 8800,
+      matchLen: 6,
+    });
+  });
+
   it('should recognize 畳 measurements', () => {
     testDiv.append('面積：6畳です');
     const textNode = testDiv.firstChild as Text;

@@ -549,9 +549,9 @@ function getTextFromTextNode({
         textDelimiter = nonJapaneseCharOrNumber;
       }
 
-      // Check if should further expand the set of allowed characters in order
-      // to recognize certains types of metadata-type strings (e.g. years or
-      // floor space measurements).
+      // Check if we should further expand the set of allowed characters in
+      // order to recognize certains types of metadata-type strings (e.g. years
+      // or floor space measurements).
       ({ textDelimiter, textEnd } = lookForMetadata({
         currentText,
         nodeText,

@@ -438,16 +438,30 @@
         description: 'USD',
         config: {
           ...config,
-          showDefinitions: true,
-          meta: { type: 'currency', src: 88000, value: 804.512312, currency: 'USD', timestamp: 1631754180485 },
+          fxData: {
+            currency: 'USD',
+            rate: 0.009115065781351295,
+            timestamp: 1631754180485,
+          },
+          meta: {
+            type: 'currency',
+            value: 88000,
+          },
         },
       },
       {
         description: 'KRW',
         config: {
           ...config,
-          showDefinitions: true,
-          meta: { type: 'currency', src: 88000, value: 939327.84, currency: 'KRW', timestamp: 1631754180485 },
+          fxData: {
+            currency: 'KRW',
+            rate: 10.688500558390665,
+            timestamp: 1631754180485,
+          },
+          meta: {
+            type: 'currency',
+            value: 88000,
+          },
         },
       },
     ];
@@ -667,20 +681,17 @@
       label.append('【Switch dictionary hint】');
       container.append(label);
 
-      const popup = contentHandler._renderPopup(
-        touchScreenTest,
-        {
-          ...config,
-          hasSwitchedDictionary: false,
-          container: createPopupContainer(),
-          dictToShow: 'words',
-          popupStyle: 'default',
-          showDefinitions: true,
-          switchDictionaryKeys: ['Shift', 'Enter'],
-          onClosePopup: () => {},
-          onShowSettings: () => {},
-        }
-      );
+      const popup = contentHandler._renderPopup(touchScreenTest, {
+        ...config,
+        hasSwitchedDictionary: false,
+        container: createPopupContainer(),
+        dictToShow: 'words',
+        popupStyle: 'default',
+        showDefinitions: true,
+        switchDictionaryKeys: ['Shift', 'Enter'],
+        onClosePopup: () => {},
+        onShowSettings: () => {},
+      });
     }
 
     // Tabs on the side
@@ -691,20 +702,17 @@
       label.append('【Tabs on the side】');
       container.append(label);
 
-      const popup = contentHandler._renderPopup(
-        touchScreenTest,
-        {
-          ...config,
-          container: createPopupContainer(),
-          dictToShow: 'words',
-          popupStyle: 'default',
-          showDefinitions: true,
-          switchDictionaryKeys: ['Shift', 'Enter'],
-          tabDisplay: 'right',
-          onClosePopup: () => {},
-          onShowSettings: () => {},
-        }
-      );
+      const popup = contentHandler._renderPopup(touchScreenTest, {
+        ...config,
+        container: createPopupContainer(),
+        dictToShow: 'words',
+        popupStyle: 'default',
+        showDefinitions: true,
+        switchDictionaryKeys: ['Shift', 'Enter'],
+        tabDisplay: 'right',
+        onClosePopup: () => {},
+        onShowSettings: () => {},
+      });
     }
 
     // Tabs on the side in touch mode
@@ -715,20 +723,17 @@
       label.append('【Tabs on the side (touch display mode)】');
       container.append(label);
 
-      const popup = contentHandler._renderPopup(
-        touchScreenTest,
-        {
-          ...config,
-          container: createPopupContainer(),
-          dictToShow: 'words',
-          popupStyle: 'default',
-          showDefinitions: true,
-          switchDictionaryKeys: ['Shift', 'Enter'],
-          tabDisplay: 'right',
-          onClosePopup: () => {},
-          onShowSettings: () => {},
-        }
-      );
+      const popup = contentHandler._renderPopup(touchScreenTest, {
+        ...config,
+        container: createPopupContainer(),
+        dictToShow: 'words',
+        popupStyle: 'default',
+        showDefinitions: true,
+        switchDictionaryKeys: ['Shift', 'Enter'],
+        tabDisplay: 'right',
+        onClosePopup: () => {},
+        onShowSettings: () => {},
+      });
       popup.querySelector('.window').classList.add('touch');
     }
 
@@ -740,21 +745,18 @@
       label.append('【Tabs on the side (touch display mode and status bar)】');
       container.append(label);
 
-      const popup = contentHandler._renderPopup(
-        touchScreenTest,
-        {
-          ...config,
-          container: createPopupContainer(),
-          dictToShow: 'words',
-          hasSwitchedDictionary: false,
-          popupStyle: 'default',
-          showDefinitions: true,
-          switchDictionaryKeys: ['Shift', 'Enter'],
-          tabDisplay: 'right',
-          onClosePopup: () => {},
-          onShowSettings: () => {},
-        }
-      );
+      const popup = contentHandler._renderPopup(touchScreenTest, {
+        ...config,
+        container: createPopupContainer(),
+        dictToShow: 'words',
+        hasSwitchedDictionary: false,
+        popupStyle: 'default',
+        showDefinitions: true,
+        switchDictionaryKeys: ['Shift', 'Enter'],
+        tabDisplay: 'right',
+        onClosePopup: () => {},
+        onShowSettings: () => {},
+      });
       popup.querySelector('.window').classList.add('touch');
     }
 

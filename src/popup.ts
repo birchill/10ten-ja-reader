@@ -13,7 +13,11 @@ import {
 import { countMora, moraSubstring } from '@birchill/normal-jp';
 import { browser } from 'webextension-polyfill-ts';
 
-import { AccentDisplay, PartOfSpeechDisplay } from './content-config';
+import {
+  AccentDisplay,
+  ContentConfig,
+  PartOfSpeechDisplay,
+} from './content-config';
 import {
   getOrCreateEmptyContainer,
   removeContentContainer,
@@ -60,6 +64,7 @@ export interface PopupOptions {
   dictToShow: MajorDataSeries;
   dictLang?: string;
   document?: Document;
+  fxData: ContentConfig['fx'];
   hasSwitchedDictionary?: boolean;
   kanjiReferences: Array<ReferenceAbbreviation>;
   meta?: SelectionMeta;
@@ -153,7 +158,7 @@ export function renderPopup(
           return null;
         }
 
-        const metadata = renderMetadata(options.meta);
+        const metadata = renderMetadata(options.meta, options.fxData);
         if (!metadata) {
           return null;
         }
@@ -450,7 +455,7 @@ function renderWordEntries({
   }
 
   if (options.meta) {
-    const metadata = renderMetadata(options.meta);
+    const metadata = renderMetadata(options.meta, options.fxData);
     if (metadata) {
       container.append(metadata);
     }
@@ -715,7 +720,10 @@ function renderUnit(
   return unitSpan;
 }
 
-function renderCurrencyInfo(meta: CurrencyMeta): HTMLElement {
+function renderCurrencyInfo(
+  meta: CurrencyMeta,
+  fxData: NonNullable<ContentConfig['fx']>
+): HTMLElement {
   const metaDiv = document.createElement('div');
   metaDiv.classList.add('meta', 'currency');
   metaDiv.lang = 'ja';
@@ -735,7 +743,7 @@ function renderCurrencyInfo(meta: CurrencyMeta): HTMLElement {
     new Intl.NumberFormat('ja-JP', {
       style: 'currency',
       currency: 'JPY',
-    }).format(meta.src)
+    }).format(meta.value)
   );
   mainRow.append(srcSpan);
 
@@ -746,7 +754,7 @@ function renderCurrencyInfo(meta: CurrencyMeta): HTMLElement {
 
   const valueCurrencyLabel = document.createElement('span');
   valueCurrencyLabel.classList.add('curr');
-  valueCurrencyLabel.append(meta.currency);
+  valueCurrencyLabel.append(fxData.currency);
   mainRow.append(valueCurrencyLabel);
 
   const valueSpan = document.createElement('span');
@@ -754,14 +762,15 @@ function renderCurrencyInfo(meta: CurrencyMeta): HTMLElement {
   valueSpan.append(
     new Intl.NumberFormat(undefined, {
       style: 'currency',
-      currency: meta.currency,
-    }).format(meta.value)
+      currency: fxData.currency,
+      currencyDisplay: 'narrowSymbol',
+    }).format(meta.value * fxData.rate)
   );
   mainRow.append(valueSpan);
 
   const timestampRow = document.createElement('div');
   timestampRow.classList.add('timestamp');
-  const timestampAsDate = new Date(meta.timestamp);
+  const timestampAsDate = new Date(fxData.timestamp);
   const timestampAsString = timestampAsDate.toLocaleString(undefined, {
     dateStyle: 'medium',
     timeStyle: 'short',
@@ -1884,7 +1893,10 @@ function renderReferences(
   return referenceTable;
 }
 
-function renderMetadata(meta: SelectionMeta): HTMLElement | null {
+function renderMetadata(
+  meta: SelectionMeta,
+  fxData: ContentConfig['fx']
+): HTMLElement | null {
   switch (meta.type) {
     case 'era':
       {
@@ -1899,7 +1911,7 @@ function renderMetadata(meta: SelectionMeta): HTMLElement | null {
       return renderMeasureInfo(meta);
 
     case 'currency':
-      return renderCurrencyInfo(meta);
+      return fxData ? renderCurrencyInfo(meta, fxData) : null;
   }
 
   return null;

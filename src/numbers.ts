@@ -43,6 +43,7 @@ const transliterateMap = new Map([
 // Following are the digits we recognize for numbers that specify powers of 10,
 // e.g. 五十六.
 const kanjiToNumberMap = new Map<string, number>([
+  ['〇', 0],
   ['一', 1],
   ['二', 2],
   ['三', 3],
@@ -52,6 +53,7 @@ const kanjiToNumberMap = new Map<string, number>([
   ['七', 7],
   ['八', 8],
   ['九', 9],
+  ['０', 0],
   ['１', 1],
   ['２', 2],
   ['３', 3],
@@ -61,6 +63,7 @@ const kanjiToNumberMap = new Map<string, number>([
   ['７', 7],
   ['８', 8],
   ['９', 9],
+  ['0', 0],
   ['1', 1],
   ['2', 2],
   ['3', 3],
@@ -78,7 +81,10 @@ const kanjiToNumberMap = new Map<string, number>([
   ['兆', 1000000000000],
 ]);
 
-export function parseNumber(text: string): number | null {
+export function parseNumber(inputText: string): number | null {
+  // Drop any commas in the string first
+  const text = inputText.replace(/[,、]/g, '');
+
   // Try a transliterated number first since the set of inputs like 二二一 would
   // also be found in kanjiToNumberMap.
   let digits = [...text].map((ch) => transliterateMap.get(ch));
@@ -104,14 +110,27 @@ export function parseNumber(text: string): number | null {
 
   while (numbers.length > 1) {
     const [first, second, ...rest] = numbers;
+
+    // Detect strings of digits and combine them
+    if (first < 10 && second < 10) {
+      while (numbers.length > 1 && numbers[1] < 10) {
+        numbers = [numbers[0] * 10 + numbers[1], ...numbers.slice(2)];
+      }
+      continue;
+    }
+
     if (!validNumber(first, second)) {
       return null;
     }
 
     if (second < first) {
+      // Detected a step down, check if there are any multipliers on what we
+      // currently have.
       if (rest.some((x) => x > first)) {
         numbers = breakDownNumbers(numbers);
       } else {
+        // No multipliers on what we currently have accumualated so store what
+        // we have and process the remainder.
         result += first;
         numbers = [second, ...rest];
       }
@@ -124,6 +143,8 @@ export function parseNumber(text: string): number | null {
 }
 
 function validNumber(c1: number, c2: number): boolean {
+  // If we have xxx万, xxx億, xxx兆 then the only requirement is that xxx is less
+  // than the 'base'.
   if (c2 >= 10000 && c1 < c2) {
     return true;
   }
@@ -133,6 +154,8 @@ function validNumber(c1: number, c2: number): boolean {
   if (c1 >= 100 && c2 < c1 && c2 >= 10 && c2 <= 1000) {
     return true;
   }
+
+  // Don't allow 一十 or 一百
   if (c1 === 1 && (c2 === 10 || c2 === 100)) {
     return false;
   }
@@ -141,6 +164,45 @@ function validNumber(c1: number, c2: number): boolean {
 }
 
 function breakDownNumbers(numbers: Array<number>): Array<number> {
+  // If this is called, we already know that second < first.
+  //
+  // Furthermore, we know that there is something after 'second' that is
+  // greater than 'first'.
+  //
+  // Most often, the second value will be the 'unit' (i.e. value < 10) and the
+  // third value will be the base-10 multiplier.
+  //
+  // e.g. [300, 2, 10, 10000], i.e. 3,200,000
+  //
+  // In this case we want to multiply the second and third values together
+  //
+  // i.e. [300, 20, 10000]
+  //
+  // There are two cases where we can't do this:
+  //
+  // (a) When the third value is actually a multiplier not just on the second
+  //     value, but on everything we've accumulated in the first value.
+  //
+  //     In this case it will be greater than the first value.
+  //
+  //     e.g. [300, 2, 10000], i.e. 3,020,000
+  //
+  //     Here we can add the first two together and proceed.
+  //
+  //     i.e. [302, 10000]
+  //
+  // (b) When the third value is less than the second, i.e. is _not_ a
+  //     multiplier on it.
+  //
+  //     This mostly happens when lining up powers of 10 since they we don't
+  //     need a 'unit' in this case.
+  //
+  //     e.g. [1000, 100, 10, 10000], i.e. 11,100,000
+  //
+  //     Here too we can just add the first two together and proceed.
+  //
+  //     i.e. [1100, 10, 10000]
+
   const [first, second, third, ...rest] = numbers;
   if (first < third || third < second) {
     return [first + second, third, ...rest];

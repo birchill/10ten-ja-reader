@@ -20,6 +20,15 @@ describe('parseNumber', () => {
     // Mixing numerals and powers of ten
     expect(parseNumber('8万8千')).toEqual(88000);
     expect(parseNumber('８万８千')).toEqual(88000);
+    expect(parseNumber('9万8800')).toEqual(98800);
+    expect(parseNumber('100億')).toEqual(10000000000);
+    expect(parseNumber('100億123万3')).toEqual(10001230003);
+
+    // This is bogus but we happen to make sense of it anyway
+    //
+    // (This function is not intended to correctness check the input, it's just
+    // supposed to try and make sense of whatever input it encounters.)
+    expect(parseNumber('七万九千〇五')).toStrictEqual(79005);
 
     // More transliterated digits
     expect(parseNumber('七二一三〇六四九')).toEqual(72130649);
@@ -31,8 +40,6 @@ describe('parseNumber', () => {
 
     // Bogus inputs
 
-    // Mixing digits with powers of ten
-    expect(parseNumber('七万九千〇五')).toStrictEqual(null);
     // Putting the powers of ten in the wrong order
     expect(parseNumber('七十二百一')).toStrictEqual(null);
 

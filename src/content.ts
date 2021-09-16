@@ -1499,6 +1499,7 @@ export class ContentHandler {
       dictLang: this.config.dictLang,
       dictToShow: this.currentDict,
       document: doc,
+      fxData: this.config.fx,
       hasSwitchedDictionary: this.config.hasSwitchedDictionary,
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentLookupParams?.meta,
