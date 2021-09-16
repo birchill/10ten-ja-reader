@@ -95,8 +95,9 @@ export function renderPopup(
   // TODO: We should use `options.document` everywhere in this file and in
   // the other methods too.
 
+  const hasResult = result && (result.words || result.kanji || result.names);
   const showTabs =
-    result &&
+    hasResult &&
     result.resultType !== 'db-unavailable' &&
     !result.title &&
     options.tabDisplay !== 'none';
@@ -184,7 +185,7 @@ export function renderPopup(
 
   if (copyDetails) {
     contentContainer.append(copyDetails);
-  } else if (result?.resultType === 'db-updating') {
+  } else if (hasResult && result?.resultType === 'db-updating') {
     contentContainer.append(renderUpdatingStatus());
   } else if (
     showTabs &&
