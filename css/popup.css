@@ -965,6 +965,7 @@
   background: transparent;
 }
 
+.wordlist .meta.currency > *,
 .wordlist .meta.era,
 .wordlist .meta.measure > * {
   display: flex;
@@ -974,6 +975,23 @@
 .wordlist .meta .equals {
   padding-left: 5px;
   padding-right: 5px;
+}
+
+/* Meta: currency */
+
+.wordlist .currency > .main {
+  font-size: 18px;
+}
+
+.wordlist .currency .main .curr {
+  opacity: 0.6;
+  font-size: 14px;
+  margin-right: 0.3em;
+}
+
+.wordlist .currency > .timestamp {
+  opacity: 0.6;
+  font-size: 10px;
 }
 
 /* Meta: era */

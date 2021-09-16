@@ -250,6 +250,16 @@
   "content_names_tag_work": {
     "message": "work"
   },
+  "currency_data_updated_label": {
+    "message": "Updated $updated$",
+    "description": "Caption added to popup explaining when the currency data was last refreshed",
+    "placeholders": {
+      "updated": {
+        "content": "$1",
+        "example": "Sep 16, 2021, 10:03 AM"
+      }
+    }
+  },
   "deinflect_adv": {
     "message": "adv"
   },

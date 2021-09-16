@@ -39,6 +39,7 @@ import { getThemeClass } from './themes';
 import { EraInfo, EraMeta, getEraInfo } from './years';
 
 import popupStyles from '../css/popup.css';
+import { CurrencyMeta } from './currency';
 
 export const enum CopyState {
   Inactive,
@@ -712,6 +713,67 @@ function renderUnit(
   }
 
   return unitSpan;
+}
+
+function renderCurrencyInfo(meta: CurrencyMeta): HTMLElement {
+  const metaDiv = document.createElement('div');
+  metaDiv.classList.add('meta', 'currency');
+  metaDiv.lang = 'ja';
+
+  const mainRow = document.createElement('div');
+  mainRow.classList.add('main');
+  metaDiv.append(mainRow);
+
+  const srcCurrencyLabel = document.createElement('span');
+  srcCurrencyLabel.classList.add('curr');
+  srcCurrencyLabel.append('JPY');
+  mainRow.append(srcCurrencyLabel);
+
+  const srcSpan = document.createElement('span');
+  srcSpan.classList.add('src');
+  srcSpan.append(
+    new Intl.NumberFormat('ja-JP', {
+      style: 'currency',
+      currency: 'JPY',
+    }).format(meta.src)
+  );
+  mainRow.append(srcSpan);
+
+  const equalsSpan = document.createElement('span');
+  equalsSpan.classList.add('equals');
+  equalsSpan.append('≈');
+  mainRow.append(equalsSpan);
+
+  const valueCurrencyLabel = document.createElement('span');
+  valueCurrencyLabel.classList.add('curr');
+  valueCurrencyLabel.append(meta.currency);
+  mainRow.append(valueCurrencyLabel);
+
+  const valueSpan = document.createElement('span');
+  valueSpan.classList.add('value');
+  valueSpan.append(
+    new Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency: meta.currency,
+    }).format(meta.value)
+  );
+  mainRow.append(valueSpan);
+
+  const timestampRow = document.createElement('div');
+  timestampRow.classList.add('timestamp');
+  const timestampAsDate = new Date(meta.timestamp);
+  const timestampAsString = timestampAsDate.toLocaleString(undefined, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  } as any);
+  const expl = browser.i18n.getMessage(
+    'currency_data_updated_label',
+    timestampAsString
+  );
+  timestampRow.append(expl);
+  metaDiv.append(timestampRow);
+
+  return metaDiv;
 }
 
 function renderNamePreview({ names, more }: NamePreview): HTMLElement {
@@ -1835,6 +1897,9 @@ function renderMetadata(meta: SelectionMeta): HTMLElement | null {
 
     case 'measure':
       return renderMeasureInfo(meta);
+
+    case 'currency':
+      return renderCurrencyInfo(meta);
   }
 
   return null;

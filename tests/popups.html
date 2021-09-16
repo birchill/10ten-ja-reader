@@ -431,6 +431,41 @@
       });
     }
 
+    // Currency tests
+
+    const currencyTests = [
+      {
+        description: 'USD',
+        config: {
+          ...config,
+          showDefinitions: true,
+          meta: { type: 'currency', src: 88000, value: 804.512312, currency: 'USD', timestamp: 1631754180485 },
+        },
+      },
+      {
+        description: 'KRW',
+        config: {
+          ...config,
+          showDefinitions: true,
+          meta: { type: 'currency', src: 88000, value: 939327.84, currency: 'KRW', timestamp: 1631754180485 },
+        },
+      },
+    ];
+
+    for (const test of currencyTests) {
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.append(`【${test.description}】`);
+      container.append(label);
+
+      contentHandler._renderPopup(null, {
+        ...test.config,
+        container: createPopupContainer(),
+        dictToShow: 'words',
+        popupStyle: 'light',
+      });
+    }
+
     // Touch screen tests
 
     const touchScreenTest = {

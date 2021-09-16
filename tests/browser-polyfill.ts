@@ -86,6 +86,8 @@ export const browser = {
           return 'Hint: press %KEY% or %KEY% to display the next dictionary';
         case 'content_hint_switch_dict_keys_3':
           return 'Hint: press %KEY%, %KEY%, or %KEY% to display the next dictionary';
+        case 'currency_data_updated_label':
+          return `Updated ${replacements}`;
         case 'gloss_type_label_expl':
           return 'explanation';
         case 'field_label_astron':

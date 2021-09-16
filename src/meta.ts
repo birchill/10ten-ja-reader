@@ -1,7 +1,8 @@
+import { CurrencyMeta } from './currency';
 import { MeasureMeta, extractMeasureMetadata, lookForMeasure } from './measure';
 import { EraMeta, extractEraMetadata, lookForEra } from './years';
 
-export type SelectionMeta = EraMeta | MeasureMeta;
+export type SelectionMeta = CurrencyMeta | EraMeta | MeasureMeta;
 
 export function lookForMetadata({
   currentText,
