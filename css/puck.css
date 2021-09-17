@@ -115,6 +115,8 @@
 
   transform: translate(var(--rest-x-offset), var(--rest-y-offset));
   transition: transform 0.1s, opacity 0.3s;
+
+  pointer-events: none;
 }
 
 .puck.dragging:not(.lookup-inactive) .moon,

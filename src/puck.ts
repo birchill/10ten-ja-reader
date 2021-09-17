@@ -441,7 +441,6 @@ export class LookupPuck {
     event.preventDefault();
     event.stopPropagation();
 
-    this.puck.style.pointerEvents = 'none';
     this.puck.classList.add('dragging');
     this.puck.setPointerCapture(event.pointerId);
 
@@ -465,7 +464,6 @@ export class LookupPuck {
   // May be called manually (without an event), or upon 'pointerup' or 'pointercancel'.
   private readonly stopDraggingPuck = (event?: PointerEvent) => {
     if (this.puck) {
-      this.puck.style.pointerEvents = 'revert';
       this.puck.classList.remove('dragging');
       this.setPositionWithinSafeArea(this.puckX, this.puckY);
     }
