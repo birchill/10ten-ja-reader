@@ -333,7 +333,11 @@ export class LookupPuck {
 
     event.preventDefault();
 
-    const { clientX, clientY } = event;
+    let { clientX, clientY } = event;
+
+    // Factor in any viewport zoom
+    clientX += window.visualViewport?.offsetLeft ?? 0;
+    clientY += window.visualViewport?.offsetTop ?? 0;
 
     // Translate the midpoint of the earth to the position of the pointer event.
     // This updates the moon offset
@@ -350,8 +354,21 @@ export class LookupPuck {
     // both share the same midpoint.
     // Work out the midpoint of the moon post-transformations. This is where
     // we'll fire the mousemove event to trigger a lookup.
-    const targetX = this.puckX + this.earthWidth / 2 + this.targetOffset.x;
-    const targetY = this.puckY + this.earthHeight / 2 + this.targetOffset.y;
+    //
+    // We drop any zoom offsets here since both elementFromPoint and the mouse
+    // event handlers we pass these coordinates to will expect an unadjusted
+    // value.
+    const targetX =
+      this.puckX +
+      this.earthWidth / 2 +
+      this.targetOffset.x -
+      (window.visualViewport?.offsetLeft || 0);
+    const targetY =
+      this.puckY +
+      this.earthHeight / 2 +
+      this.targetOffset.y -
+      (window.visualViewport?.offsetTop || 0);
+    console.log(`targetX, targetY: ${targetX}, ${targetY}`);
 
     // Make sure the target is an actual element since the mousemove handler
     // expects that.
