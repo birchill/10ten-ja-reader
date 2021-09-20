@@ -17,6 +17,7 @@
   z-index: 1000002;
   /* Stops the screen scrolling on touch devices while dragging the puck around. */
   touch-action: none;
+  -webkit-tap-highlight-color: transparent;
   transition: opacity 0.1s ease-in-out;
 
   --target-x-offset: 0px;

@@ -481,7 +481,8 @@ export class LookupPuck {
     }
 
     if (event.type === 'pointercancel') {
-      // Stop tracking this click and wait for the next 'pointerdown' to come along instead.
+      // Stop tracking this click and wait for the next 'pointerdown' to come
+      // along instead.
       if (clickStateHasTimeout(this.clickState)) {
         window.clearTimeout(this.clickState.timeout);
       }
@@ -515,7 +516,7 @@ export class LookupPuck {
     }
   };
 
-  private readonly noOpPointerUpHandler = () => {};
+  private readonly noOpEventHandler = () => {};
 
   render({ doc, icon, theme }: PuckRenderOptions): void {
     // Set up shadow tree
@@ -621,8 +622,11 @@ export class LookupPuck {
     );
 
     // Add event listeners
+    //
+    // Note: This currently never happens. We always render before enabling.
     if (this.enabledState !== 'disabled') {
       this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
+      this.puck.addEventListener('mousedown', this.noOpEventHandler);
     }
   }
 
@@ -739,8 +743,9 @@ export class LookupPuck {
       if (this.puck) {
         this.stopDraggingPuck();
         this.puck.removeEventListener('pointerdown', this.onPuckPointerDown);
+        this.puck.removeEventListener('mousedown', this.noOpEventHandler);
       }
-      window.removeEventListener('pointerup', this.noOpPointerUpHandler);
+      window.removeEventListener('pointerup', this.noOpEventHandler);
       this.clickState = { kind: 'idle' };
       return;
     }
@@ -751,10 +756,13 @@ export class LookupPuck {
       this.safeAreaProvider.delegate = this;
       if (this.puck) {
         this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
+        // This no-op mousedown handler is needed to prevent double-taps being
+        // turned into zooms on iOS.
+        this.puck.addEventListener('mousedown', this.noOpEventHandler);
       }
       // Needed to stop iOS Safari from stealing pointer events after we finish
       // scrolling.
-      window.addEventListener('pointerup', this.noOpPointerUpHandler);
+      window.addEventListener('pointerup', this.noOpEventHandler);
     }
 
     if (this.puck) {
