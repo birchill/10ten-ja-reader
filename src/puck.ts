@@ -303,8 +303,8 @@ export class LookupPuck {
     // To avoid that we detect the initial position coordinates and add a few
     // pixels margin.
     if (x === Number.MAX_SAFE_INTEGER && y === Number.MAX_SAFE_INTEGER) {
-      clampedX -= 8;
-      clampedY -= 8;
+      clampedX -= 15;
+      clampedY -= 15;
     }
 
     this.setPosition({
