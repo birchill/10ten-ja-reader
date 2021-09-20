@@ -113,8 +113,6 @@ export function renderPopup(
     );
 
     windowElem.dataset.tabSide = options.tabDisplay || 'top';
-  } else if (options.onClosePopup) {
-    windowElem.append(renderCloseButton(options.onClosePopup));
   }
 
   const contentContainer = document.createElement('div');
@@ -199,7 +197,15 @@ export function renderPopup(
     );
   }
 
-  windowElem.append(contentContainer);
+  if (!showTabs && options.onClosePopup) {
+    const closeButtonWrapper = document.createElement('div');
+    closeButtonWrapper.classList.add('close-button-wrapper');
+    closeButtonWrapper.append(contentContainer);
+    closeButtonWrapper.append(renderCloseButton(options.onClosePopup));
+    windowElem.append(closeButtonWrapper);
+  } else {
+    windowElem.append(contentContainer);
+  }
 
   return container;
 }

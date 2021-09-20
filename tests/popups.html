@@ -464,6 +464,21 @@
           },
         },
       },
+      {
+        description: 'USD (touch version)',
+        config: {
+          ...config,
+          fxData: {
+            currency: 'USD',
+            rate: 0.009115065781351295,
+            timestamp: 1631754180485,
+          },
+          meta: {
+            type: 'currency',
+            value: 88000,
+          },
+        },
+      },
     ];
 
     for (const test of currencyTests) {
@@ -472,12 +487,17 @@
       label.append(`【${test.description}】`);
       container.append(label);
 
-      contentHandler._renderPopup(null, {
+      const popup = contentHandler._renderPopup(null, {
         ...test.config,
         container: createPopupContainer(),
         dictToShow: 'words',
         popupStyle: 'light',
+        onClosePopup: () => { console.log('closed') },
+        onShowSettings: () => {},
       });
+      if (test.description.indexOf('touch') !== -1) {
+        popup.querySelector('.window').classList.add('touch');
+      }
     }
 
     // Touch screen tests

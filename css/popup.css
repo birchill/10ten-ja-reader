@@ -200,16 +200,21 @@
   margin: 2px;
 }
 
-.window > .close {
-  position: absolute;
-  top: 4px;
-  right: 4px;
+.window .close-button-wrapper {
+  display: flex;
+}
+
+.window .close-button-wrapper .close {
+  flex: 0 0 auto;
+  margin: 4px;
+  /* Drop margin since the meta element should have sufficient padding */
+  margin-left: 0px;
 }
 
 /*
  * The following uses .close .close-button because we have two configurations:
  * a) The close button is a child of the tab bar
- * b) The close button is a child of the window
+ * b) The close button is a child of the close-button-wrapper
  */
 .settings-button,
 .close .close-button {
