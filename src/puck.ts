@@ -580,7 +580,8 @@ export class LookupPuck {
         ) || 0;
 
       // Depending on whether the moon is above or below the earth, some extra
-      // altitude needs to be added to the orbit so that the thumb doesn't cover it.
+      // altitude needs to be added to the orbit so that the thumb doesn't cover
+      // it.
       const extraAltitudeToClearAboveThumb =
         parseFloat(
           getComputedStyle(moon).getPropertyValue(
