@@ -6,7 +6,7 @@
   "name": "10ten Japanese Reader",
   /*#endif*/
   "author": "Brian Birtles",
-  "version": "1.3.5",
+  "version": "1.4.0",
   /*#if supports_applications_field*/
   "applications": {
     "gecko": {
