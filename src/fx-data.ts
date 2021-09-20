@@ -21,6 +21,9 @@ export async function getLocalFxData(
 
   try {
     const fxData = (await browser.storage.local.get('fx')).fx;
+    if (!fxData) {
+      return undefined;
+    }
     const [error, validated] = s.validate(fxData, FxLocalDataSchema);
 
     if (validated) {
