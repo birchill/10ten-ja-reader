@@ -367,12 +367,20 @@ export default class AllTabManager implements TabManager {
     if (!this.tabsCleanupTask) {
       this.tabsCleanupTask = requestIdleCallback(async () => {
         this.tabsCleanupTask = undefined;
-        const allTabs = await browser.tabs.query({});
-        const ourTabs = Object.keys(this.tabs).map(Number);
-        for (const tabId of ourTabs) {
-          if (!allTabs.some((t) => t.id === tabId)) {
-            delete this.tabs[tabId];
+        try {
+          const allTabs = await browser.tabs.query({});
+          const ourTabs = Object.keys(this.tabs).map(Number);
+          for (const tabId of ourTabs) {
+            if (!allTabs.some((t) => t.id === tabId)) {
+              delete this.tabs[tabId];
+            }
           }
+        } catch (e) {
+          // Sometimes tabs.query will fail (e.g. if the user is dragging tabs).
+          //
+          // That's fine since presumably this task will get scheduled again
+          // eventually.
+          Bugsnag.leaveBreadcrumb('Error cleaning up tabs', e);
         }
       });
     }
@@ -433,6 +441,10 @@ async function sendMessageToAllTabs(message: BackgroundMessage): Promise<void> {
   // We could probably always just use `browser.tabs.query` but for some reason
   // I decided to use browser.window.getAll. We use `browser.tabs.query` as a
   // fallback when that is not available (e.g. Firefox for Android).
+  //
+  // 2021-09-20: I think we prefer windows.getAll over tabs.query because
+  // tabs.query is not particularly reliable (e.g. when the user is dragging
+  // tabs it will fail).
   if (browser.windows) {
     const windows = await browser.windows.getAll({
       populate: true,
