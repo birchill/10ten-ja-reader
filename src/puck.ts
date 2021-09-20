@@ -438,6 +438,9 @@ export class LookupPuck {
       return;
     }
 
+    // NOTE: Some of the code in this function is duplicated in onPuckMouseDown
+    // so please make sure to keep these two functions in sync.
+
     if (this.clickState.kind === 'idle') {
       // If no transition to 'pointerup' occurs during the click hysteresis
       // period, then we transition to 'dragging'. This avoids onPuckClick()
@@ -469,6 +472,62 @@ export class LookupPuck {
     window.addEventListener('pointermove', this.onWindowPointerMove);
     window.addEventListener('pointerup', this.stopDraggingPuck);
     window.addEventListener('pointercancel', this.stopDraggingPuck);
+  };
+
+  // See notes where we register the following two functions (onPuckMouseDown
+  // and onPuckMouseUp) for why they are needed. The summary is that they are
+  // only here to work around iOS swallowing pointerevents during the _second_
+  // tap of a double-tap gesture.
+  //
+  // As a result these event listeners are _only_ interested in when we are
+  // detecting the second tap of a double-tap gesture.
+  //
+  // When the pointer events are _not_ swallowed, because we call preventDefault
+  // on the pointerdown / pointerup events, we these functions should never be
+  // called.
+
+  private readonly onPuckMouseDown = (event: MouseEvent) => {
+    if (this.enabledState === 'disabled' || !this.puck) {
+      return;
+    }
+
+    // We only care about detecting the start of a second tap
+    if (this.clickState.kind !== 'firstclick') {
+      return;
+    }
+
+    // Following are the important bits of onPuckPointerDown.
+    //
+    // Eventually we should find a way to share this code better with that
+    // function.
+    this.clickState = {
+      ...this.clickState,
+      kind: 'secondpointerdown',
+    };
+
+    event.preventDefault();
+
+    window.addEventListener('pointermove', this.onWindowPointerMove);
+    window.addEventListener('pointerup', this.stopDraggingPuck);
+    window.addEventListener('pointercancel', this.stopDraggingPuck);
+  };
+
+  private readonly onPuckMouseUp = (event: MouseEvent) => {
+    if (this.enabledState === 'disabled' || !this.puck) {
+      return;
+    }
+
+    // We only care about detecting the end of the second tap in a double-tap
+    // gesture.
+    if (this.clickState.kind !== 'secondpointerdown') {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.stopDraggingPuck();
+    this.onPuckDoubleClick();
   };
 
   private readonly onPuckSingleClick = () => {
@@ -642,7 +701,8 @@ export class LookupPuck {
     // Note: This currently never happens. We always render before enabling.
     if (this.enabledState !== 'disabled') {
       this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
-      this.puck.addEventListener('mousedown', this.noOpEventHandler);
+      this.puck.addEventListener('mousedown', this.onPuckMouseDown);
+      this.puck.addEventListener('mouseup', this.onPuckMouseUp);
     }
   }
 
@@ -759,7 +819,8 @@ export class LookupPuck {
       if (this.puck) {
         this.stopDraggingPuck();
         this.puck.removeEventListener('pointerdown', this.onPuckPointerDown);
-        this.puck.removeEventListener('mousedown', this.noOpEventHandler);
+        this.puck.removeEventListener('mousedown', this.onPuckMouseDown);
+        this.puck.removeEventListener('mouseup', this.onPuckMouseUp);
       }
       window.removeEventListener('pointerup', this.noOpEventHandler);
       clearClickTimeout(this.clickState);
@@ -773,9 +834,24 @@ export class LookupPuck {
       this.safeAreaProvider.delegate = this;
       if (this.puck) {
         this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
-        // This no-open mousedown handler is needed to prevent double-taps being
-        // turned into zoom gestures on iOS.
-        this.puck.addEventListener('mousedown', this.noOpEventHandler);
+
+        // The following event handlers are needed to cover the case where iOS
+        // Safari sometimes seems to eat the second tap in a double-tap gesture.
+        //
+        // We've tried everything to avoid this (touch-action: none,
+        // -webkit-user-select: none, etc. etc.) but it just sometimes does it.
+        //
+        // Furthermore, when debugging, after about ~1hr or so it will somtimes
+        // _stop_ eating these events, leading you to believe you've fixed it
+        // only for it to start eating them again a few minutes later.
+        //
+        // However, in this case it sill dispatches _mouse_ events so we listen
+        // to them and trigger the necessary state transitions when needed.
+        //
+        // Note that the mere _presence_ of the mousedown handler is also needed
+        // to prevent double-tap being interpreted as a zoon.
+        this.puck.addEventListener('mousedown', this.onPuckMouseDown);
+        this.puck.addEventListener('mouseup', this.onPuckMouseUp);
       }
       // Needed to stop iOS Safari from stealing pointer events after we finish
       // scrolling.
