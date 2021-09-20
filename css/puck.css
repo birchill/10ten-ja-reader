@@ -27,7 +27,7 @@
   --rest-y-offset: -20px;
 }
 .puck.lookup-inactive {
-  opacity: 0.5;
+  opacity: 0.65;
 }
 
 .earth,
@@ -63,10 +63,15 @@
   height: 25px;
   color: var(--border-color);
   opacity: 0.5;
+  transition: opacity 0.1s ease-in-out;
 }
 
 .earth .logo * {
   fill: currentColor;
+}
+
+.puck.lookup-inactive .earth .logo {
+  opacity: 0;
 }
 
 .puck.dragging .earth {
