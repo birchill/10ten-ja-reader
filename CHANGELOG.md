@@ -3,6 +3,7 @@
 - Added a "puck" for looking up words on touch screens.
   A **big** thanks to [@shirakaba](https://github.com/shirakaba) for making this
   happen!
+- Add conversion of currency amounts (e.g. 8万8千円, 100億円)
 - Fixed a shortcut key handling bug on Edge.
 
 ## 1.3.6 (2021-09-16)
