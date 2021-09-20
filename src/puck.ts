@@ -498,10 +498,11 @@ export class LookupPuck {
       this.clickState = {
         kind: 'firstclick',
         timeout: window.setTimeout(() => {
-          const wasFirstClick = this.clickState.kind === 'firstclick';
-          this.clickState = { kind: 'idle' };
-          if (wasFirstClick) {
+          if (this.clickState.kind === 'firstclick') {
+            this.clickState = { kind: 'idle' };
             this.onPuckSingleClick();
+          } else if (this.clickState.kind === 'secondpointerdown') {
+            this.clickState = { kind: 'dragging' };
           }
         }, LookupPuck.clickHysteresis),
       };
