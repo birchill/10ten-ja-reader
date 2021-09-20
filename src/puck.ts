@@ -438,6 +438,11 @@ export class LookupPuck {
       return;
     }
 
+    // Ignore right-clicks
+    if (event.button) {
+      return;
+    }
+
     // NOTE: Some of the code in this function is duplicated in onPuckMouseDown
     // so please make sure to keep these two functions in sync.
 
@@ -491,6 +496,11 @@ export class LookupPuck {
       return;
     }
 
+    // Ignore right-clicks
+    if (event.button) {
+      return;
+    }
+
     // We only care about detecting the start of a second tap
     if (this.clickState.kind !== 'firstclick') {
       return;
@@ -514,6 +524,11 @@ export class LookupPuck {
 
   private readonly onPuckMouseUp = (event: MouseEvent) => {
     if (this.enabledState === 'disabled' || !this.puck) {
+      return;
+    }
+
+    // Ignore right-clicks
+    if (event.button) {
       return;
     }
 
@@ -545,6 +560,11 @@ export class LookupPuck {
   // May be called manually (without an event), or upon 'pointerup' or
   // 'pointercancel'.
   private readonly stopDraggingPuck = (event?: PointerEvent) => {
+    // Ignore right-clicks
+    if (event?.button) {
+      return;
+    }
+
     if (this.puck) {
       this.puck.classList.remove('dragging');
       this.setPositionWithinSafeArea(this.puckX, this.puckY);
