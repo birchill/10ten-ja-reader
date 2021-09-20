@@ -368,7 +368,6 @@ export class LookupPuck {
       this.earthHeight / 2 +
       this.targetOffset.y -
       (window.visualViewport?.offsetTop || 0);
-    console.log(`targetX, targetY: ${targetX}, ${targetY}`);
 
     // Make sure the target is an actual element since the mousemove handler
     // expects that.
