@@ -1547,7 +1547,8 @@ export class ContentHandler {
       // Although we can't tell whether the left or right thumb is in use
       // (so we don't make corresponding adjustments to left/right), we can at
       // least be reasonably sure that the thumb extends downwards!
-      const extraMarginToClearThumb = 100;
+      const extraMarginToClearThumb =
+        this.puck.getTargetOrientation() === 'above' ? 100 : 0;
       cursorClearance = {
         top,
         right,

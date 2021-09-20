@@ -240,6 +240,10 @@ export class LookupPuck {
     };
   }
 
+  public getTargetOrientation(): 'above' | 'below' {
+    return this.targetOrientation;
+  }
+
   private getViewportDimensions(document: Document): ViewportDimensions {
     if (this.cachedViewportDimensions) {
       return this.cachedViewportDimensions;
