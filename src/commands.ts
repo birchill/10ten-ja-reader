@@ -88,10 +88,22 @@ export class Command {
 
     // Normally keys take the form Alt+Ctrl+R etc. but Chrome on Mac represents
     // the different modifiers as ⌥⇧⌃⌘.
-    const parts = value
+    let parts = value
       .split(/([⌥⇧⌃⌘])|\+/)
       .filter(Boolean)
       .map((key) => key.trim());
+
+    // Normalize the case of modifiers.
+    //
+    // On Edge, at least on the German locale, the modifiers appear to be
+    // uppercased.
+    const modifiers = new Map(
+      [...new Set(Object.values(SECONDARY_MODIFIER_MAP))].map((m) => [
+        m.toLowerCase(),
+        m,
+      ])
+    );
+    parts = parts.map((p) => modifiers.get(p.toLowerCase()) || p);
 
     if (!parts.length || parts.length > 3) {
       throw new Error(

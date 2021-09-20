@@ -1,4 +1,10 @@
-jest.mock('webextension-polyfill-ts', () => ({ browser: {} }));
+jest.mock('webextension-polyfill-ts', () => ({
+  browser: {
+    i18n: {
+      getMessage: (key: string) => key,
+    },
+  },
+}));
 
 import { Command } from './commands';
 
@@ -26,6 +32,7 @@ describe('Command', () => {
   it('parses valid command strings', () => {
     const tests = [
       { input: 'Alt+T', expected: expected(['alt'], 'T') },
+      { input: 'ALT+T', expected: expected(['alt'], 'T') },
       { input: 'Alt+Shift+T', expected: expected(['alt', 'shift'], 'T') },
       { input: 'Alt + Shift + T', expected: expected(['alt', 'shift'], 'T') },
       { input: 'F11', expected: expected([], 'F11') },
