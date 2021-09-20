@@ -642,6 +642,7 @@ export class LookupPuck {
     // Note: This currently never happens. We always render before enabling.
     if (this.enabledState !== 'disabled') {
       this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
+      this.puck.addEventListener('mousedown', this.noOpEventHandler);
     }
   }
 
@@ -758,9 +759,9 @@ export class LookupPuck {
       if (this.puck) {
         this.stopDraggingPuck();
         this.puck.removeEventListener('pointerdown', this.onPuckPointerDown);
+        this.puck.removeEventListener('mousedown', this.noOpEventHandler);
       }
       window.removeEventListener('pointerup', this.noOpEventHandler);
-      window.removeEventListener('click', this.noOpEventHandler);
       clearClickTimeout(this.clickState);
       this.clickState = { kind: 'idle' };
       return;
@@ -772,19 +773,13 @@ export class LookupPuck {
       this.safeAreaProvider.delegate = this;
       if (this.puck) {
         this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
+        // This no-open mousedown handler is needed to prevent double-taps being
+        // turned into zoom gestures on iOS.
+        this.puck.addEventListener('mousedown', this.noOpEventHandler);
       }
       // Needed to stop iOS Safari from stealing pointer events after we finish
       // scrolling.
       window.addEventListener('pointerup', this.noOpEventHandler);
-
-      // This no-op click handler is needed to prevent double-taps being
-      // turned into zooms on iOS AND the second pointerdown event in a
-      // double-tap gesture from being eaten.
-      //
-      // Note that for the former, a mousedown event handler on the puck seems
-      // to be sufficient, but for the latter we need a click handler somewhere
-      // else it seems.
-      window.addEventListener('click', this.noOpEventHandler);
     }
 
     if (this.puck) {
