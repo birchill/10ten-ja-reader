@@ -68,6 +68,12 @@ function clickStateHasTimeout<T extends ClickState['kind']>(
   return typeof (clickState as ClickStateWithTimeout<T>).timeout === 'number';
 }
 
+function clearClickTimeout(clickState: ClickState) {
+  if (clickStateHasTimeout(clickState)) {
+    clearTimeout(clickState.timeout);
+  }
+}
+
 // - 'disabled': Does not listen for any events (so can't be moved
 //   nor tapped).
 // - 'inactive': Listens for events (so can be moved and tapped),
@@ -315,7 +321,7 @@ export class LookupPuck {
       !this.earthWidth ||
       !this.earthHeight ||
       this.enabledState === 'disabled' ||
-      // i.e. if it's neither being pressed nor dragged
+      // If we're not being pressed or dragged, ignore
       !(
         this.clickState.kind === 'dragging' ||
         this.clickState.kind === 'firstpointerdown' ||
@@ -461,7 +467,8 @@ export class LookupPuck {
     this.setPositionWithinSafeArea(this.puckX, this.puckY);
   };
 
-  // May be called manually (without an event), or upon 'pointerup' or 'pointercancel'.
+  // May be called manually (without an event), or upon 'pointerup' or
+  // 'pointercancel'.
   private readonly stopDraggingPuck = (event?: PointerEvent) => {
     if (this.puck) {
       this.puck.classList.remove('dragging');
@@ -472,47 +479,38 @@ export class LookupPuck {
     window.removeEventListener('pointerup', this.stopDraggingPuck);
     window.removeEventListener('pointercancel', this.stopDraggingPuck);
 
-    if (!event) {
-      if (clickStateHasTimeout(this.clickState)) {
-        window.clearTimeout(this.clickState.timeout);
-        this.clickState = { kind: 'idle' };
-      }
+    if (!event || event.type === 'pointercancel') {
+      clearClickTimeout(this.clickState);
+      this.clickState = { kind: 'idle' };
       return;
     }
 
-    if (event.type === 'pointercancel') {
-      // Stop tracking this click and wait for the next 'pointerdown' to come
-      // along instead.
-      if (clickStateHasTimeout(this.clickState)) {
-        window.clearTimeout(this.clickState.timeout);
-      }
-      this.clickState = { kind: 'idle' };
-    } else if (event.type === 'pointerup') {
-      // Prevent any double-taps turning into a zoom
-      event.preventDefault();
-      event.stopPropagation();
+    // Prevent any double-taps turning into a zoom
+    event.preventDefault();
+    event.stopPropagation();
 
-      if (this.clickState.kind === 'firstpointerdown') {
-        // Prevent 'firstpointerdown' transitioning to 'dragging' state.
-        window.clearTimeout(this.clickState.timeout);
+    if (this.clickState.kind === 'firstpointerdown') {
+      // Prevent 'firstpointerdown' transitioning to 'dragging' state.
+      clearClickTimeout(this.clickState);
 
-        // Wait for the hysteresis period to expire before calling
-        // this.onPuckSingleClick() (to rule out a double-click).
-        this.clickState = {
-          kind: 'firstclick',
-          timeout: window.setTimeout(() => {
-            this.clickState = { kind: 'idle' };
+      // Wait for the hysteresis period to expire before calling
+      // this.onPuckSingleClick() (to rule out a double-click).
+      this.clickState = {
+        kind: 'firstclick',
+        timeout: window.setTimeout(() => {
+          const wasFirstClick = this.clickState.kind === 'firstclick';
+          this.clickState = { kind: 'idle' };
+          if (wasFirstClick) {
             this.onPuckSingleClick();
-          }, LookupPuck.clickHysteresis),
-        };
-      } else if (this.clickState.kind === 'secondpointerdown') {
-        window.clearTimeout(this.clickState.timeout);
-
-        this.clickState = { kind: 'idle' };
-        this.onPuckDoubleClick();
-      } else if (this.clickState.kind === 'dragging') {
-        this.clickState = { kind: 'idle' };
-      }
+          }
+        }, LookupPuck.clickHysteresis),
+      };
+    } else if (this.clickState.kind === 'secondpointerdown') {
+      clearClickTimeout(this.clickState);
+      this.clickState = { kind: 'idle' };
+      this.onPuckDoubleClick();
+    } else if (this.clickState.kind === 'dragging') {
+      this.clickState = { kind: 'idle' };
     }
   };
 
@@ -746,6 +744,7 @@ export class LookupPuck {
         this.puck.removeEventListener('mousedown', this.noOpEventHandler);
       }
       window.removeEventListener('pointerup', this.noOpEventHandler);
+      clearClickTimeout(this.clickState);
       this.clickState = { kind: 'idle' };
       return;
     }
