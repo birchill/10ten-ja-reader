@@ -78,6 +78,7 @@ import { shouldRequestPersistentStorage } from './quota-management';
 import { SearchOtherResult, SearchWordsResult } from './search-result';
 import { stripFields } from './strip-fields';
 import { Split } from './type-helpers';
+import { isSafari } from './ua-utils';
 
 //
 // Setup bugsnag
@@ -662,11 +663,16 @@ browser.runtime.onInstalled.addListener(async (details) => {
       }`
     );
 
+    // Safari doesn't appear to support displaying extension pages
+    if (details.temporary || isSafari()) {
+      return;
+    }
+
     // Show update page when updating from Rikaichamp
-    if (details.previousVersion.startsWith('0') && !details.temporary) {
+    if (details.previousVersion.startsWith('0')) {
       const url = browser.runtime.getURL('docs/from-pre-1.0.html');
       await browser.tabs.create({ url });
-    } else if (!details.temporary) {
+    } else {
       const [major, minor] = details.previousVersion.split('.').map(Number);
       if (major === 1 && minor < 4) {
         const url = browser.runtime.getURL('docs/from-pre-1.4.html');
