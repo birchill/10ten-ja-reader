@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 
-import { getTextAtPoint, GetTextAtPointResult } from '../src/get-text';
-import { isChromium } from '../src/ua-utils';
+import { getTextAtPoint, GetTextAtPointResult } from '../src/content/get-text';
+import { isChromium } from '../src/utils/ua-utils';
 
 mocha.setup('bdd');
 

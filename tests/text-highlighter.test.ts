@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import { browser } from './browser-polyfill';
 (window as any).browser = browser;
 
-import { TextHighlighter } from '../src/text-highlighter';
+import { TextHighlighter } from '../src/content/text-highlighter';
 
 mocha.setup('bdd');
 

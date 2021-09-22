@@ -85,10 +85,10 @@ const commonExtConfig = {
   // that get pruned.
   mode: 'production',
   entry: {
-    '10ten-ja-content': './src/content.ts',
-    '10ten-ja-background': './src/background.ts',
-    '10ten-ja-options': './src/options.ts',
-    '10ten-ja-jpdict': './src/jpdict-worker.ts',
+    '10ten-ja-content': './src/content/content.ts',
+    '10ten-ja-background': './src/background/background.ts',
+    '10ten-ja-options': './src/options/options.ts',
+    '10ten-ja-jpdict': './src/worker/jpdict-worker.ts',
   },
   optimization: {
     minimizer: [
