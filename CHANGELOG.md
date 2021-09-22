@@ -1,8 +1,8 @@
-## Next version
+## 1.4.1 (2021-09-22) (Firefox, Chrome, Edge, Mac Safari)
 
 - Made sure the currency list is sorted correctly in Safari.
 
-## 1.4.0 (2021-09-22) (iOS)
+## 1.4.0 (2021-09-22) (iOS Safari)
 
 - Added a "puck" for looking up words on touch screens.
   A **big** thanks to [@shirakaba](https://github.com/shirakaba) for making this
