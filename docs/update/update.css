@@ -1,4 +1,4 @@
-/*! tailwindcss v2.2.4 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v2.2.15 | MIT License | https://tailwindcss.com */
 
 /*! modern-normalize v1.1.0 | MIT License | https://github.com/sindresorhus/modern-normalize */
 
@@ -424,6 +424,14 @@ button,
   cursor: pointer;
 }
 
+/**
+ * Override legacy focus reset from Normalize with modern Firefox focus styles.
+ *
+ * This is actually an improvement over the new defaults in Firefox in our testing,
+ * as it triggers the better focus styles even for links, which still use a dotted
+ * outline in Firefox by default.
+ */
+
 table {
   border-collapse: collapse;
 }
@@ -524,6 +532,10 @@ video {
   height: auto;
 }
 
+/**
+ * Ensure the default browser behavior of the `hidden` attribute.
+ */
+
 *, ::before, ::after {
   --tw-border-opacity: 1;
   border-color: rgba(231, 229, 228, var(--tw-border-opacity));
@@ -572,7 +584,7 @@ aside {
 }
 
 .prose strong {
-  color: #1c1917;
+  color: white;
   font-weight: 600;
 }
 
@@ -615,7 +627,7 @@ aside {
 .prose blockquote {
   font-weight: 500;
   font-style: italic;
-  color: #1c1917;
+  color: white;
   border-left-width: 0.25rem;
   border-left-color: #e7e5e4;
   quotes: "\201C""\201D""\2018""\2019";
@@ -675,17 +687,21 @@ aside {
 }
 
 .prose code {
-  color: #1c1917;
-  font-weight: 600;
+  color: white;
+  font-weight: 400;
   font-size: 0.875em;
+  background-color: #44403c;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-radius: 4px;
 }
 
 .prose code::before {
-  content: "`";
+  content: "";
 }
 
 .prose code::after {
-  content: "`";
+  content: "";
 }
 
 .prose a code {
@@ -1130,6 +1146,37 @@ aside {
   font-size: 0.8rem;
 }
 
+.iphone-preview {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.iphone-preview video {
+  width: 375px;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media screen and (min-width: 470px) {
+  .iphone-preview {
+    background: url(img/iphone.png) no-repeat center center;
+    background-size: 436.5px 886.5px;
+    width: 436.5px;
+    height: 886.5px;
+  }
+
+  .iphone-preview video {
+    box-sizing: content-box;
+    padding-top: 109px;
+  }
+}
+
+.highlight {
+  background: yellow !important;
+  color: #1d1a19 !important;
+}
+
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -1165,6 +1212,10 @@ aside {
 
 .table {
   display: table;
+}
+
+.grid {
+  display: grid;
 }
 
 .h-8 {
@@ -1214,12 +1265,24 @@ aside {
   }
 }
 
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
 .items-center {
   align-items: center;
 }
 
 .justify-center {
   justify-content: center;
+}
+
+.justify-items-start {
+  justify-items: start;
+}
+
+.gap-4 {
+  gap: 1rem;
 }
 
 .bg-yellow-200 {
@@ -1294,7 +1357,7 @@ aside {
   }
 
   .sm\:prose strong {
-    color: #1c1917;
+    color: white;
     font-weight: 600;
   }
 
@@ -1337,7 +1400,7 @@ aside {
   .sm\:prose blockquote {
     font-weight: 500;
     font-style: italic;
-    color: #1c1917;
+    color: white;
     border-left-width: 0.25rem;
     border-left-color: #e7e5e4;
     quotes: "\201C""\201D""\2018""\2019";
@@ -1397,17 +1460,21 @@ aside {
   }
 
   .sm\:prose code {
-    color: #1c1917;
-    font-weight: 600;
+    color: white;
+    font-weight: 400;
     font-size: 0.875em;
+    background-color: #44403c;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: 4px;
   }
 
   .sm\:prose code::before {
-    content: "`";
+    content: "";
   }
 
   .sm\:prose code::after {
-    content: "`";
+    content: "";
   }
 
   .sm\:prose a code {
@@ -1638,6 +1705,10 @@ aside {
 
   .sm\:w-2\/5 {
     width: 40%;
+  }
+
+  .sm\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .sm\:whitespace-nowrap {

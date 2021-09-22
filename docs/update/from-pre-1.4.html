@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang=en>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<link href="update.css" rel="stylesheet">
+<script src="update.js"></script>
+<!-- Inject the content script directly since content_scripts doesn't allow matching
+     on extension URLs so it won't be injected otherwise. -->
+<script src="/10ten-ja-content.js"></script>
+<title>10ten Japanese Reader on iPhones and iPads</title>
+<body class=bg-ink-black>
+
+<div class="mx-auto max-w-3xl lg:max-w-4xl xl:max-w-6xl px-4 sm:px-6 lg:px-8">
+
+<div class="mt-8 mb-8 sm:mb-16 xl:mt-16 xl:mb-32">
+  <svg class="w-3/5 sm:w-2/5 mx-auto block" role="presentation" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 36">
+    <path fill="#2699fa" d="M127.85,32A3.85,3.85,0,1,1,124,28.15,3.85,3.85,0,0,1,127.85,32"/>
+    <path fill="#ffd600" d="M33.1,18a3.85,3.85,0,1,1-3.85-3.85A3.85,3.85,0,0,1,33.1,18"/>
+    <g fill="#fff">
+      <path d="M0,0A13,13,0,0,1,13,12.86V36H5V12.86A5,5,0,0,0,0,7.71"/>
+      <path d="M34.5,23.14a5.25,5.25,0,0,1-10.5,0V12.86a5.25,5.25,0,0,1,10.5,0ZM29.25,0A12.79,12.79,0,0,0,16.5,12.86V23.14a12.75,12.75,0,1,0,25.5,0V12.86A12.75,12.75,0,0,0,29.3,0"/>
+      <path d="M53.08,14.07l1.77,3.06a5.85,5.85,0,0,1-3,.87A6,6,0,0,1,46,12V2.5h3.5V6H53V8.5H49.5V12a2.42,2.42,0,0,0,2.4,2.38,2.36,2.36,0,0,0,1.18-.31"/>
+      <path d="M57.12,11a3.18,3.18,0,0,1,6.26,0Zm9.12,1a6,6,0,1,0-6,6,12,12,0,0,0,1.34-.07A6.89,6.89,0,0,0,64,17.14a5.35,5.35,0,0,0,1.26-.95l-2.1-1.74a5,5,0,0,1-2.94,1.15A3.4,3.4,0,0,1,57.12,13h9a4.09,4.09,0,0,0,.12-1"/>
+      <path d="M76,10.91a2.57,2.57,0,0,0-2.6-2.36h-.59A1.8,1.8,0,0,0,71,10.32V18H67.5V8a2,2,0,0,1,1.77-2H73.4a6.24,6.24,0,0,1,6.1,6.09V18H76Z"/>
+      <path d="M50,28c2.71,0,4.2-.77,4.2-3s-1.49-3-4.2-3H47v6Zm-4-7h4.29c3,0,5,1.15,5,4,0,2.39-1.51,3.73-3.94,4l4.22,7H54.37l-4.15-7H47v7H46Z"/>
+      <polygon points="58 21 66 21 66 22 59 22 59 28 65 28 65 29 59 29 59 35 66 35 66 36 58 36 58 21"/>
+      <path d="M71.28,30h5.44l-1-2.88c-.62-1.77-1.14-3.34-1.7-5.19h-.09c-.52,1.85-1,3.42-1.67,5.19Zm2.23-9h1l5.37,15H78.78L77,31H71l-1.82,5h-1Z"/>
+      <path d="M85.37,35c4.13,0,5.92-2.56,5.92-6.5S89.5,22,85.37,22H83V35ZM82,21h3.46c4.68,0,6.86,2.94,6.86,7.44S90.14,36,85.48,36H82Z"/>
+      <polygon points="95 21 103 21 103 22 96 22 96 28 102 28 102 29 96 29 96 35 103 35 103 36 95 36 95 21"/>
+      <path d="M110,28c2.71,0,4.2-.77,4.2-3s-1.49-3-4.2-3h-3v6Zm-4-7h4.29c3,0,4.95,1.15,4.95,4,0,2.39-1.51,3.73-3.94,4l4.22,7h-1.15l-4.15-7H107v7h-1Z"/>
+    </g>
+  </svg>
+</div>
+
+<article class="mx-auto prose prose-sm sm:prose lg:prose-lg xl:prose-2xl">
+
+<h1 class=text-center><span class=sm:whitespace-nowrap>10ten Japanese
+Reader</span> is available for iPhones and iPads!</h1>
+
+<h2 id=ios-version>The iOS version</h2>
+
+<p>Ever since the announcement that iOS 15 would support Web Extensions,
+we teamed up with Jamie Birch (<a href=https://twitter.com/LinguaBrowse
+rel=noopener target=_blank>LinguaBrowse</a> on Twitter) to bring 10ten Japanese
+Reader to iPhones and iPads.
+</p>
+
+<p>
+We ended up rewriting major parts of the extension to make it work on
+smartphones with small screens and less power but the biggest challenge was
+working out how to &ldquo;hover&rdquo; over text without a mouse.
+You could tap the text, but what if the text was part of a link?
+</p>
+
+<p>
+For that Jamie had the brilliant idea of using a &ldquo;puck&rdquo;.
+</p>
+
+<p>
+The result looks something like this:
+</p>
+
+<div class=iphone-preview>
+  <video src=https://reader.10ten.study/assets/iPhone-demo.mp4
+    controls muted loop></video>
+</div>
+
+<figure>
+  <a
+  href="https://apps.apple.com/app/10ten-japanese-reader/id1573540634#?platform=iphone"
+  rel=noopener target=_blank><img src=img/app-store-badge.svg class=mx-auto
+  style="width: 240px" alt="Download on the App Store"></a>
+</figure>
+
+<p>
+It still has some rough edges but we hope you find it useful.
+If you like it please let us know on
+<a href="https://twitter.com/10tenstudy" rel=noopener target=_blank>Twitter</a>
+or the
+<a
+href="https://apps.apple.com/app/10ten-japanese-reader/id1573540634#?platform=iphone"
+rel=noopener target=_blank>App Store</a>.
+</p>
+
+<aside id=no-iphone>
+<h3>Don't have an iPhone or iPad?</h3>
+<p>Many of the changes we made to support iOS like improved lookup
+performance, touch screen support, and improved iframe handling should still
+bring some benefits to desktop devices.</p>
+
+<p>Also, you can manually turn on the lookup &ldquo;puck&rdquo; from the
+<a href="#" class="options-link">options page</a> in any browser,
+should that prove handy!</p>
+
+<figure>
+  <img src=img/puck-setting.png alt="Screenshot of the setting to display the puck: auto, hide or show"
+    style="width: 645.33px" class=mx-auto>
+  <figcaption class=text-center>Might be useful?</figcaption>
+</figure>
+</aside>
+
+<h2 id=a-little-highlight>A <span class=highlight>little highlight</span></h2>
+
+<p>
+One of the challenges we faced with supporting iOS, is that 10ten indicates
+the matched text by selecting it,
+but text selections are not consistently shown on iOS.
+In future, we hope to use a new feature in Web browsers called
+the Highlight API to fix this.
+In fact, that's how we added the <span class=highlight>yellow highlights</span>
+in the video above.
+</p>
+
+<p>
+Using the Highlight API is better than selecting the text because it doesn't
+interfere with any text you might have already selected.
+Safari and Chrome (and Edge) already have an experimental implementation of
+this feature.
+If you'd like to try it, the instructions for enabling are below.
+If you're on iOS, we think it will make using 10ten a lot easier so we
+encourage you to give it a try.
+</p>
+
+<ul>
+  <li><p><strong>Safari on iOS (iPhone and iPad)</strong></p>
+    <p>Settings &rarr; Safari &rarr; Advanced &rarr; Experimental Features
+    &rarr; Highlight API
+    (<a href=https://twitter.com/10tenstudy/status/1440455991288422401 rel=noopener target=_blank>Screenshots</a>)</p>
+  </li>
+  <li><p><strong>Safari on Mac</strong></p>
+    <ol>
+      <li>Enable the &ldquo;Develop&rdquo; Menu: Safari &rarr;
+          Preferences &rarr; Advanced &rarr; Show Develop menu in menu bar</li>
+      <li>Enable the Highlight API: Develop &rarr; Experimental Features
+          &rarr; Highlight API</li>
+    </ol>
+  </li>
+  <li><p><strong>Chrome and Edge</strong></p>
+    <p>Type <code>chrome://flags/#enable-experimental-web-platform-features</code>
+    in the address bar, and switch &ldquo;Experimental Web Platform features&rdquo;
+    to &ldquo;Enabled&rdquo;, then click &ldquo;Relaunch&rdquo;.</p>
+    <p><em>Beware that enabling this might cause some websites to break.</em></p>
+  </li>
+</ul>
+
+<p>
+  Unfortunately Firefox does not yet have an implementation of this feature but you
+  can follow
+  <a href=https://bugzilla.mozilla.org/show_bug.cgi?id=1703961 rel=noopener target=_blank>Mozilla bug 1703961</a>
+  if you would like to see when it becomes available.
+</p>
+
+<h2 id=currency-feature>Price fixing</h2>
+
+<p>
+After our last major release we got lots of great feedback including this
+<a href=https://twitter.com/maximillianaire/status/1418126666862252036 rel=noopener target=_blank>suggestion</a>:
+</p>
+
+<blockquote>
+Do you think similar support for numbers or currency would be possible in a
+future update? It always takes me a few seconds to parse numbers like 150億円 etc
+</blockquote>
+
+<p>
+We haven't done numbers yet (soon!) but currency conversion is here!
+With a bit of luck, 10ten has already downloaded the currency rates in the
+background and the following examples might just work:
+</p>
+
+<ul>
+  <li>150億円
+  <li>9万8800円
+  <li>¥ 88,000.00
+</ul>
+
+<p>
+You can change the currency for conversion in the
+<a href="#" class="options-link">options page</a>.
+</p>
+
+<figure>
+  <img src=img/currency-conversion.png alt="Screenshot of the setting to change the target currency for conversion with the 'BTC' (Bitcoin) item highlighted"
+    style="width: 408px" class=mx-auto>
+  <figcaption class=text-center>Convert JPY to Bitcoin?</figcaption>
+</figure>
+
+<p>
+The currency data is updated once a day, but only once you enable 10ten.
+As a result, if you want up-to-the-minute conversion rates, you'll
+want to use a real currency converter.
+</p>
+
+<h2 id=in-case-you-missed-it>In case you missed it</h2>
+
+<p>
+Thank you for all your suggestions and feedback on
+<a href="https://twitter.com/10tenstudy" rel=noopener>Twitter (@tentenstudy)</a>
+and
+<a href="https://github.com/birchill/10ten-ja-reader" rel=noopener>GitHub</a>.
+Here are a few of the suggestions we implemented since the last release:
+</p>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center justify-items-start">
+  <div>
+    Choose the icon to show.
+  </div>
+  <div>
+    <img src=img/icon-selection.png style="width: 169.333px; margin-top: 0" class="mx-auto">
+  </div>
+  <div>
+    Choose how to display tabs.
+  </div>
+  <div>
+    <img src=img/tab-display-selection.png style="width: 487.333px; margin-top: 0" class=mx-auto>
+  </div>
+  <div>
+    Configure keys to press before showing translations of the alt/title text
+    in images.
+  </div>
+  <div>
+    <img src=img/hold-to-show-keys.png style="width: 604.667px; margin-top: 0" class=mx-auto>
+  </div>
+  <div>
+    Recognize counters that use half-width numbers like 1つ, 14日, etc.
+  </div>
+  <div>
+    <img src=img/halfwidth-numerals.png style="width: 566px; margin-top: 0" class=mx-auto>
+  </div>
+</div>
+
+<p>
+Thank you very much for using 10ten Japanese Reader!
+</p>
+
+</article>
+
+<a href="https://twitter.com/10tenstudy" rel=noopener
+  class="flex justify-center items-center mt-8 lg:mt-16 mb-2 lg:mb-4">
+  <!-- Twitter brand guidelines require this the logo to have an extra 25% padding.
+       It must also be either white or blue. -->
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 248 204"
+    class="text-white box-content w-8 h-8 p-2 lg:w-12 lg:h-12 lg:p-3">
+    <path fill="currentColor" d="M221.95,51.29c0.15,2.17,0.15,4.34,0.15,6.53c0,66.73-50.8,143.69-143.69,143.69v-0.04
+      C50.97,201.51,24.1,193.65,1,178.83c3.99,0.48,8,0.72,12.02,0.73c22.74,0.02,44.83-7.61,62.72-21.66
+      c-21.61-0.41-40.56-14.5-47.18-35.07c7.57,1.46,15.37,1.16,22.8-0.87C27.8,117.2,10.85,96.5,10.85,72.46c0-0.22,0-0.43,0-0.64
+      c7.02,3.91,14.88,6.08,22.92,6.32C11.58,63.31,4.74,33.79,18.14,10.71c25.64,31.55,63.47,50.73,104.08,52.76
+      c-4.07-17.54,1.49-35.92,14.61-48.25c20.34-19.12,52.33-18.14,71.45,2.19c11.31-2.23,22.15-6.38,32.07-12.26
+      c-3.77,11.69-11.66,21.62-22.2,27.93c10.01-1.18,19.79-3.86,29-7.95C240.37,35.29,231.83,44.14,221.95,51.29z"/>
+  </svg>
+  <!-- Also, the text should be the same height as the logo -->
+  <div class="text-white text-2xl lg:text-4xl font-bold">@10tenstudy</div>
+</a>
+
+<a href="https://github.com/birchill/10ten-ja-reader" rel=noopener
+  class="flex justify-center items-center mb-4 lg:mb-8">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32.58 31.77"
+    class="text-white box-content w-8 h-8 p-2 lg:w-12 lg:h-12 lg:p-3">
+    <path fill="currentColor"
+    d="M16.29,0a16.29,16.29,0,0,0-5.15,31.75c.82.15,1.11-.36,1.11-.79s0-1.41,0-2.77C7.7,29.18,6.74,26,6.74,26a4.36,4.36,0,0,0-1.81-2.39c-1.47-1,.12-1,.12-1a3.43,3.43,0,0,1,2.49,1.68,3.48,3.48,0,0,0,4.74,1.36,3.46,3.46,0,0,1,1-2.18c-3.62-.41-7.42-1.81-7.42-8a6.3,6.3,0,0,1,1.67-4.37,5.94,5.94,0,0,1,.16-4.31s1.37-.44,4.48,1.67a15.41,15.41,0,0,1,8.16,0c3.11-2.11,4.47-1.67,4.47-1.67A5.91,5.91,0,0,1,25,11.07a6.3,6.3,0,0,1,1.67,4.37c0,6.26-3.81,7.63-7.44,8a3.85,3.85,0,0,1,1.11,3c0,2.18,0,3.94,0,4.47s.29.94,1.12.78A16.29,16.29,0,0,0,16.29,0Z"/>
+  </svg>
+  <div class="text-white text-2xl lg:text-4xl font-bold">10ten-ja-reader</div>
+</a>
+
+</div>
+
+</body>
+
+</html>

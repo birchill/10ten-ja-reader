@@ -664,8 +664,14 @@ browser.runtime.onInstalled.addListener(async (details) => {
 
     // Show update page when updating from Rikaichamp
     if (details.previousVersion.startsWith('0') && !details.temporary) {
-      const url = browser.runtime.getURL('docs/from-0.x.html');
+      const url = browser.runtime.getURL('docs/from-pre-1.0.html');
       await browser.tabs.create({ url });
+    } else if (!details.temporary) {
+      const [major, minor] = details.previousVersion.split('.').map(Number);
+      if (major === 1 && minor < 4) {
+        const url = browser.runtime.getURL('docs/from-pre-1.4.html');
+        await browser.tabs.create({ url });
+      }
     }
   }
 });

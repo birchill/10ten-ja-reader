@@ -9,7 +9,7 @@ module.exports = {
         'ink-black': '#1d1a19',
         gray: colors.warmGray,
       },
-      typography: {
+      typography: (theme) => ({
         DEFAULT: {
           css: {
             color: 'white',
@@ -30,6 +30,26 @@ module.exports = {
             },
             h4: {
               color: 'white',
+            },
+            strong: {
+              color: 'white',
+            },
+            blockquote: {
+              color: 'white',
+            },
+            code: {
+              backgroundColor: theme('colors.gray.700'),
+              color: 'white',
+              fontWeight: 400,
+              paddingLeft: '8px',
+              paddingRight: '8px',
+              borderRadius: '4px',
+            },
+            'code::before': {
+              content: '""',
+            },
+            'code::after': {
+              content: '""',
             },
             'figure > a > *': {
               marginTop: '0',
@@ -88,7 +108,7 @@ module.exports = {
             },
           },
         },
-      },
+      }),
     },
   },
   variants: {

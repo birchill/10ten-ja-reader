@@ -13,8 +13,8 @@ hard to tweak as a result so at some point we should just start manually editing
 For now though, `update.css` can be generated as follows.
 
 1. Make sure the `tailwindcss` and `@tailwindcss/typography` packages are
-   installed either by installing them globally or temporarily adding them to the
-   project.
+   installed either by installing them globally or temporarily adding them to
+   the project.
 
 2. From `docs/update` run
    `NODE_ENV=production npx tailwindcss -i update-base.css -o update.css --no-autoprefixer`
