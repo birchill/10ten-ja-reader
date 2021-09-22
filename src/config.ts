@@ -483,7 +483,9 @@ export class Config {
   }
 
   get fxCurrencies(): Array<string> | undefined {
-    return this.fxData ? Object.keys(this.fxData.rates) : undefined;
+    return this.fxData
+      ? Object.keys(this.fxData.rates).sort((a, b) => a.localeCompare(b))
+      : undefined;
   }
 
   // hasSwitchedDictionary: Defaults to false
