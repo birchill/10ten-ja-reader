@@ -1,17 +1,21 @@
 ## Next version
 
+- Made sure the currency list is sorted correctly in Safari.
+
+## 1.4.0 (2021-09-22) (iOS)
+
 - Added a "puck" for looking up words on touch screens.
   A **big** thanks to [@shirakaba](https://github.com/shirakaba) for making this
   happen!
-- Add conversion of currency amounts (e.g. 8万8千円, 100億円)
+- Add conversion of currency amounts (e.g. 8万 8千円, 100億円)
 - Fixed a shortcut key handling bug on Edge.
 
-## 1.3.6 (2021-09-16)
+## 1.3.6 (2021-09-16) (Firefox, Chrome, Edge)
 
 - Fixed a regression in popup layout when the tabs are on the side on touch
   screens
 
-## 1.3.5 (2021-09-15) (Firefox, Chrome, Edge)
+## 1.3.5 (2021-09-15) (Firefox, Chrome)
 
 - Overhauled popup positioning to better correspond with old behavior
   [#756](https://github.com/birchill/10ten-ja-reader/issues/756)).
@@ -37,7 +41,7 @@
 ## 1.3.1 (2021-09-08) (Firefox)
 
 - Added recognition for counters that start with half-width numerals
-  (e.g. 1 つ, 14 日, see
+  (e.g. 1つ, 14日, see
   [#709](https://github.com/birchill/10ten-ja-reader/issues/709)).
 - Fixed a bug when displaying the options page.
 
@@ -76,7 +80,7 @@
 ## 1.2.1 (2021-08-12)
 
 - Fixed handling of scrollable text boxes in Chromium and Safari browsers.
-- Made number handling a bit more tolerant so 8 万 8 千平㍍ etc. would be recognized.
+- Made number handling a bit more tolerant so 8万 8千平㍍ etc. would be recognized.
 - Fixed a case where the options page would flicker incessantly
   ([#708](https://github.com/birchill/10ten-ja-reader/issues/708)).
 - Made the popup respond better when there is little horizontal space.
@@ -113,7 +117,7 @@
   ([#675](https://github.com/birchill/10ten-ja-reader/discussions/675)).
 
 - Added automatic translation of 畳/帖 and square measurements such as
-  四畳半, 6.5 帖, 10㎡, or 十二平米
+  四畳半, 6.5帖, 10㎡, or 十二平米
   ([#642](https://github.com/birchill/10ten-ja-reader/issues/642)).
 
 - (Re-)added an option to show only kanji entries by holding <kbd>Shift</kbd>
