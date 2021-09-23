@@ -1,3 +1,7 @@
+## Next version
+
+- Make sure the pop-up and puck appear above various advertisements and headers.
+
 ## 1.4.1 (2021-09-22) (Firefox, Chrome, Edge, Mac Safari)
 
 - Made sure the currency list is sorted correctly in Safari.

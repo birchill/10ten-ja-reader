@@ -10,8 +10,14 @@
 
 :host {
   position: absolute !important;
-  /* asahi.com puts z-index: 1000000 on its banner ads. We go one better. */
-  z-index: 1000001 !important;
+  /*
+   * asahi.com puts z-index: 1000000 on its banner ads.
+   * 小説家になろう puts them at 2999999.
+   * Yahoo ニュース puts its banner at 5000000.
+   *
+   * We go one better than them all (until someone goes higher still).
+   */
+  z-index: 5000001 !important;
   /* Make sure the drop shadow doesn't get cut off */
   padding-right: 4px !important;
   padding-bottom: 4px !important;
