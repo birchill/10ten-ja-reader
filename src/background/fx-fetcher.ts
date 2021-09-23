@@ -7,6 +7,7 @@ import { padNum } from '../utils/pad-num';
 import { getReleaseStage } from '../utils/release-stage';
 
 import { getLocalFxData } from './fx-data';
+import { isError } from '../utils/is-error';
 
 const FxDataSchema = s.type({
   timestamp: s.min(s.integer(), 0),
@@ -155,13 +156,27 @@ export class FxFetcher {
       // Update our local state now that everything succeeded
       this.updated = now.getTime();
       this.fetchState = { type: 'idle' };
-    } catch (e) {
+    } catch (e: unknown) {
+      // Convert NetworkErrors disguised as TypeErrors to DownloadErrors
+      if (
+        isError(e) &&
+        e instanceof TypeError &&
+        e.message.startsWith('NetworkError')
+      ) {
+        // Use 418 just so that we pass the check for a retry-able error below
+        // which looks for a status code in the 4xx~5xx range.
+        e = new DownloadError(url, 418, e.message);
+      }
+
       // Possibly schedule a retry
       const retryAbleError =
-        e?.name === 'TimeoutError' ||
-        e?.name === 'NetworkError' ||
-        (e instanceof TypeError && e.message.startsWith('NetworkError')) ||
-        (e?.name === 'DownloadError' && e.code >= 400 && e.code < 500);
+        isError(e) &&
+        (e.name === 'TimeoutError' ||
+          e.name === 'NetworkError' ||
+          (e.name === 'DownloadError' &&
+            (e as DownloadError).code >= 400 &&
+            (e as DownloadError).code < 500));
+
       const retryCount =
         this.fetchState.type === 'fetching' &&
         typeof this.fetchState.retryCount === 'number'
@@ -185,7 +200,7 @@ export class FxFetcher {
         this.fetchState = { type: 'waiting to retry', retryCount, timeout };
       } else {
         console.error(e);
-        Bugsnag.notify(e);
+        Bugsnag.notify(e as any);
         this.fetchState = { type: 'idle' };
       }
     }
