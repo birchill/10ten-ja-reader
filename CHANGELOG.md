@@ -1,6 +1,8 @@
 ## Next version
 
-- Make sure the pop-up and puck appear above various advertisements and headers.
+- Added onboarding screens for iOS.
+- Made sure the pop-up and puck appear above various advertisements and headers.
+- Improved handling of various network errors.
 
 ## 1.4.1 (2021-09-22) (Firefox, Chrome, Edge, Mac Safari)
 
