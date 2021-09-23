@@ -20,7 +20,7 @@ export async function getLocalFxData(
   }
 
   try {
-    const fxData = (await browser.storage.local.get('fx')).fx;
+    const fxData = (await browser.storage.local.get('fx'))?.fx;
     if (!fxData) {
       return undefined;
     }
@@ -33,14 +33,15 @@ export async function getLocalFxData(
         event.severity = 'warning';
       });
     }
-  } catch {
+  } catch (e) {
     Bugsnag.notify(
       new ExtensionStorageError({
-        key: 'fxData',
+        key: 'fx',
         action: 'get',
       }),
       (event) => {
         event.severity = 'warning';
+        event.addMetadata('error', { error: e });
       }
     );
   }
