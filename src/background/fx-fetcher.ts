@@ -49,6 +49,10 @@ type FetchState =
       retryCount: number;
     };
 
+const ONE_MINUTE = 60 * 1000;
+const ONE_HOUR = 60 * ONE_MINUTE;
+const ONE_DAY = 24 * ONE_HOUR;
+
 export class FxFetcher {
   private fetchState: FetchState = { type: 'idle' };
   private updated: number | undefined;
@@ -82,7 +86,9 @@ export class FxFetcher {
     });
   }
 
-  private async fetchData() {
+  private async fetchData({
+    usePreviousDay = false,
+  }: { usePreviousDay?: boolean } = {}) {
     // Don't try fetching if we are offline
     if (!navigator.onLine) {
       Bugsnag.leaveBreadcrumb('Deferring FX data update until we are online');
@@ -116,7 +122,10 @@ export class FxFetcher {
     };
 
     // Set up base URL
-    const now = new Date();
+    if (usePreviousDay) {
+      Bugsnag.leaveBreadcrumb("Using previous day's FX data");
+    }
+    const now = usePreviousDay ? new Date(Date.now() - ONE_DAY) : new Date();
     const dateString =
       now.getUTCFullYear() +
       padNum(now.getUTCMonth() + 1) +
@@ -189,13 +198,22 @@ export class FxFetcher {
           { error: e }
         );
 
+        // If we request a day in the future (e.g. because our clock is wrong),
+        // CloudFront will return a 401 Forbidden response.
+        //
+        // In that case we should try to request the previous day's data.
+        //
+        // (Eventually we should probably just serve a single file with the
+        // latest data and set an appropriate 24h expiry on it.)
+        const usePreviousDay = e instanceof DownloadError && e.code === 401;
+
         // We're using setTimeout here but in the case of event pages (as we
         // use on some platforms) these are not guaranteed to run.
         //
         // That's fine though because if the background page gets killed then
         // when it restarts it will trigger a new fetch anyway.
         const timeout = window.setTimeout(() => {
-          this.fetchData();
+          this.fetchData({ usePreviousDay });
         }, 5000);
         this.fetchState = { type: 'waiting to retry', retryCount, timeout };
       } else {
@@ -236,9 +254,6 @@ export class FxFetcher {
     // For that case, we don't want to re-trigger too soon or else we'll ping
     // the server unnecessarily.
     const now = Date.now();
-    const ONE_MINUTE = 60 * 1000;
-    const ONE_HOUR = 60 * ONE_MINUTE;
-    const ONE_DAY = 24 * ONE_HOUR;
     let nextRun =
       typeof this.updated === 'undefined'
         ? now + ONE_HOUR
