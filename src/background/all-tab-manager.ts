@@ -447,10 +447,15 @@ async function sendMessageToAllTabs(message: BackgroundMessage): Promise<void> {
   // tabs.query is not particularly reliable (e.g. when the user is dragging
   // tabs it will fail).
   if (browser.windows) {
-    const windows = await browser.windows.getAll({
-      populate: true,
-      windowTypes: ['normal'],
-    });
+    let windows: Array<Browser.Windows.Window> = [];
+    try {
+      windows = await browser.windows.getAll({
+        populate: true,
+        windowTypes: ['normal'],
+      });
+    } catch (e) {
+      Bugsnag.leaveBreadcrumb('Error getting windows', { error: e });
+    }
 
     for (const win of windows) {
       if (!win.tabs) {
