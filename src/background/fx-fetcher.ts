@@ -1,4 +1,4 @@
-import Bugsnag from '@bugsnag/browser';
+import Bugsnag, { Event as BugsnagEvent } from '@bugsnag/browser';
 import { browser } from 'webextension-polyfill-ts';
 import * as s from 'superstruct';
 
@@ -142,6 +142,7 @@ export class FxFetcher {
     url += `?${queryParams.toString()}`;
 
     // Do the fetch
+    let responseText: string | undefined;
     try {
       const response = await fetchWithTimeout(url, {
         mode: 'cors',
@@ -154,7 +155,15 @@ export class FxFetcher {
       }
 
       // Parse the response
-      const result = await response.json();
+      let result: any;
+      try {
+        result = await response.json();
+      } catch (e) {
+        if (isError(e) && e.name === 'SyntaxError') {
+          responseText = await response.text();
+        }
+        throw e;
+      }
       s.assert(result, FxDataSchema);
 
       // Store the response
@@ -218,7 +227,11 @@ export class FxFetcher {
         this.fetchState = { type: 'waiting to retry', retryCount, timeout };
       } else {
         console.error(e);
-        Bugsnag.notify(e as any);
+        Bugsnag.notify(e as any, (event: BugsnagEvent) => {
+          if (responseText) {
+            event.addMetadata('response', { text: responseText });
+          }
+        });
         this.fetchState = { type: 'idle' };
       }
     }
