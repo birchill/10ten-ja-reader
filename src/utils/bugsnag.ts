@@ -19,7 +19,7 @@ export function startBugsnag() {
     appVersion: (manifest as any).version_name || manifest.version,
     autoTrackSessions: false,
     collectUserIp: false,
-    enabledBreadcrumbTypes: ['log', 'error'],
+    enabledBreadcrumbTypes: ['log', 'error', 'request'],
     logger: null,
     onError: async (event: BugsnagEvent) => {
       // Group download errors by URL and error code

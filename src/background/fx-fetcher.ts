@@ -55,6 +55,7 @@ export class FxFetcher {
   constructor() {
     browser.alarms.onAlarm.addListener((alarm) => {
       if (alarm.name === 'fx-update') {
+        Bugsnag.leaveBreadcrumb('Running FX data update from alarm');
         this.fetchData().catch((e) => {
           Bugsnag.notify(e);
         });
@@ -65,10 +66,16 @@ export class FxFetcher {
     // do it now.
     getLocalFxData().then((fxData) => {
       if (!fxData) {
+        Bugsnag.leaveBreadcrumb('No stored FX data. Doing initial fetch.');
         this.fetchData().catch((e) => {
           Bugsnag.notify(e);
         });
       } else {
+        Bugsnag.leaveBreadcrumb(
+          `Got stored FX data from ${new Date(
+            fxData.timestamp
+          )}. Last updated ${new Date(fxData.updated)}.`
+        );
         this.updated = fxData.updated;
       }
     });
@@ -77,7 +84,11 @@ export class FxFetcher {
   private async fetchData() {
     // Don't try fetching if we are offline
     if (!navigator.onLine) {
+      Bugsnag.leaveBreadcrumb('Deferring FX data update until we are online');
       window.addEventListener('online', () => {
+        Bugsnag.leaveBreadcrumb(
+          'Fetching FX data update now that we are online'
+        );
         this.fetchData();
       });
       return;
@@ -85,6 +96,7 @@ export class FxFetcher {
 
     // Don't try if we are already fetching
     if (this.fetchState.type === 'fetching') {
+      Bugsnag.leaveBreadcrumb('Overlapping attempt to fetch FX data.');
       return;
     }
 
@@ -123,7 +135,7 @@ export class FxFetcher {
     try {
       const response = await fetchWithTimeout(url, {
         mode: 'cors',
-        timeout: 5000,
+        timeout: 10_000,
       });
 
       // Check the response
@@ -144,9 +156,6 @@ export class FxFetcher {
       this.updated = now.getTime();
       this.fetchState = { type: 'idle' };
     } catch (e) {
-      console.error(e);
-      Bugsnag.notify(e);
-
       // Possibly schedule a retry
       const retryAbleError =
         e?.name === 'TimeoutError' ||
@@ -159,6 +168,12 @@ export class FxFetcher {
           ? this.fetchState.retryCount
           : 0;
       if (retryAbleError && retryCount < 3) {
+        console.warn(e);
+        Bugsnag.leaveBreadcrumb(
+          `Failed attempt #${retryCount + 1} to fetch FX data. Will retry.`,
+          { error: e }
+        );
+
         // We're using setTimeout here but in the case of event pages (as we
         // use on some platforms) these are not guaranteed to run.
         //
@@ -166,9 +181,11 @@ export class FxFetcher {
         // when it restarts it will trigger a new fetch anyway.
         const timeout = window.setTimeout(() => {
           this.fetchData();
-        }, 3000);
+        }, 5000);
         this.fetchState = { type: 'waiting to retry', retryCount, timeout };
       } else {
+        console.error(e);
+        Bugsnag.notify(e);
         this.fetchState = { type: 'idle' };
       }
     }
@@ -227,9 +244,13 @@ export class FxFetcher {
       this.fetchData();
     } else {
       try {
+        Bugsnag.leaveBreadcrumb(
+          `Scheduling next FX data update for ${new Date(nextRun)}`
+        );
         browser.alarms.create('fx-update', { when: nextRun });
       } catch (e) {
-        console.log(e);
+        console.error(e);
+        Bugsnag.notify(e);
       }
     }
   }
