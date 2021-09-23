@@ -1,4 +1,4 @@
-## Next version
+## 1.4.2
 
 - Added onboarding screens for iOS.
 - Made sure the pop-up and puck appear above various advertisements and headers.
