@@ -22,8 +22,7 @@
     "start:edge": "webpack -w --env target=chrome --env chromium=edge",
     "start:chrome": "webpack -w --env target=chrome",
     "update-snapshot": "ts-node utils/update-snapshot",
-    "version": "node utils/sync-manifest-version && git add manifest.json.src",
-    "zip-src": "node utils/zip-src"
+    "version": "node utils/sync-manifest-version && git add manifest.json.src"
   },
   "repository": {
     "type": "git",
