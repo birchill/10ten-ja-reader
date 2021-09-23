@@ -289,7 +289,7 @@ function buildExtConfig({
     plugins.push(
       new webpack.NormalModuleReplacementPlugin(
         /all-tab-manager$/,
-        path.resolve(__dirname, 'src', 'active-tab-manager.ts')
+        path.resolve(__dirname, 'src', 'background', 'active-tab-manager.ts')
       )
     );
 
