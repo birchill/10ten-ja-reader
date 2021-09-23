@@ -323,3 +323,72 @@ body.platform-ipad .carousel .slides .slide .text {
 span.smalla {
   font-size: 80%;
 }
+
+#single-tap-moon, #single-tap-earth {
+  animation: toggle-activate 3s alternate infinite;
+}
+
+@keyframes toggle-activate {
+  30%  {
+    opacity: 1;
+  }
+  70%, to {
+    opacity: 0.65;
+  }
+}
+
+#single-tap-logo {
+  animation: toggle-hide 3s alternate infinite;
+}
+
+@keyframes toggle-hide {
+  30%  {
+    opacity: 1;
+  }
+  70%, to {
+    opacity: 0;
+  }
+}
+
+#single-tap-highlight {
+  animation: single-tap 3s infinite step-end;
+}
+
+@keyframes single-tap {
+  0%, 13% {
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+}
+
+#double-tap-moon {
+  animation: change-sides 3s alternate infinite;
+}
+
+@keyframes change-sides {
+  30% {
+    transform: none;
+  }
+  70%,
+  to {
+    transform: translateY(60px);
+  }
+}
+
+#double-tap-highlight {
+  animation: double-tap 3s infinite step-end;
+}
+
+@keyframes double-tap {
+  0% {
+    opacity: 0;
+  }
+  5%, 20% {
+    opacity: 1;
+  }
+  13%, 28% {
+    opacity: 0;
+  }
+}
