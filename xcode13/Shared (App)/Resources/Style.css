@@ -288,6 +288,7 @@ body.platform-ipad .carousel .slides .slide:nth-child(6) .img {
   margin-left: auto;
   margin-right: auto;
   padding: 0 1em;
+  overflow: scroll;
 }
 
 body.platform-ipad .carousel .slides .slide .text {
