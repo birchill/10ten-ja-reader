@@ -18,6 +18,15 @@ typealias PlatformViewController = NSViewController
 
 let extensionBundleIdentifier = "jp.co.birchill.tenten-ja-reader.Extension"
 
+struct Device {
+    static let SCREEN_WIDTH      = Int(UIScreen.main.bounds.size.width)
+    static let SCREEN_HEIGHT     = Int(UIScreen.main.bounds.size.height)
+    static let SCREEN_MAX_LENGTH = Int(max(SCREEN_WIDTH, SCREEN_HEIGHT))
+    static let IS_IPAD           = UIDevice.current.userInterfaceIdiom == .pad
+    static let IS_IPHONE         = UIDevice.current.userInterfaceIdiom == .phone && SCREEN_MAX_LENGTH < 812
+    static let IS_IPHONE_PRO     = UIDevice.current.userInterfaceIdiom == .phone && SCREEN_MAX_LENGTH >= 812
+}
+
 class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMessageHandler {
 
     @IBOutlet var webView: WKWebView!
@@ -38,7 +47,13 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
 #if os(iOS)
-        webView.evaluateJavaScript("show('ios')")
+        if (Device.IS_IPAD) {
+            webView.evaluateJavaScript("show('ipad')")
+        } else if (Device.IS_IPHONE_PRO) {
+            webView.evaluateJavaScript("show('iphone-pro')")
+        } else {
+            webView.evaluateJavaScript("show('iphone')")
+        }
 #elseif os(macOS)
         webView.evaluateJavaScript("show('mac')")
 

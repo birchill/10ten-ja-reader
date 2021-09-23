@@ -1,61 +1,395 @@
 * {
-    -webkit-user-select: none;
-    -webkit-user-drag: none;
-    cursor: default;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  cursor: default;
 }
 
 :root {
-    color-scheme: light dark;
-
-    --spacing: 20px;
+  color-scheme: light dark;
+  --spacing: 20px;
 }
 
 html {
-    height: 100%;
+  height: 100%;
 }
 
 body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-
-    gap: var(--spacing);
-    margin: 0 calc(var(--spacing) * 2);
-    height: 100%;
-
-    font: -apple-system-short-body;
-    text-align: center;
+  margin: 0;
+  height: 100%;
 }
 
-body:not(.platform-mac, .platform-ios) :is(.platform-mac, .platform-ios) {
-    display: none;
+body:not(.platform-mac, .platform-iphone, .platform-iphone-pro, .platform-ipad)
+  :is(.platform-mac, .platform-iphone, .platform-iphone-pro, .platform-ipad) {
+  display: none;
 }
 
-body.platform-ios .platform-mac {
-    display: none;
-}
-
-body.platform-mac .platform-ios {
-    display: none;
-}
-
-body.platform-ios .platform-mac {
-    display: none;
+body.platform-mac :is(.platform-iphone, .platform-iphone-pro, .platform-ipad),
+body.platform-iphone :is(.platform-mac, .platform-iphone-pro, .platform-ipad):not(.platform-iphone),
+body.platform-iphone-pro :is(.platform-mac, .platform-iphone, .platform-ipad):not(.platform-iphone-pro),
+body.platform-ipad :is(.platform-mac, .platform-iphone, .platform-iphone-pro):not(.platform-ipad) {
+  display: none;
 }
 
 body:not(.state-on, .state-off) :is(.state-on, .state-off) {
-    display: none;
+  display: none;
 }
 
 body.state-on :is(.state-off, .state-unknown) {
-    display: none;
+  display: none;
 }
 
 body.state-off :is(.state-on, .state-unknown) {
-    display: none;
+  display: none;
+}
+
+h1 {
+  font-weight: 400;
+  font-size: 16px;
 }
 
 button {
-    font-size: 1em;
+  font-size: 1em;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  gap: var(--spacing);
+  margin: 0 calc(var(--spacing) * 2);
+  padding: var(--spacing) 0;
+  box-sizing: border-box;
+  height: 100%;
+
+  font: -apple-system-short-body;
+  text-align: center;
+}
+
+.carousel {
+  margin-left: calc(var(--spacing) * -2);
+  margin-right: calc(var(--spacing) * -2);
+  min-height: 0;
+  width: 100%;
+}
+
+.carousel .slide-row {
+  display: flex;
+  align-items: center;
+  height: calc(100% - 50px);
+}
+
+.carousel .slide-row .arrow {
+  flex: 0 0 auto;
+}
+
+.carousel .slide-row .arrow svg {
+  width: 20px;
+}
+
+.carousel .slide-row .arrow svg path {
+  fill: none;
+  stroke: rgba(38, 152, 251, 0.3);
+  stroke-width: 3px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.carousel .slides {
+  /* Set up stack of tiles */
+  display: grid;
+  grid-template-rows: [stack-start] auto [stack-end];
+
+  /* Clear default list styles */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  /* Make the height responsive */
+  height: 100%;
+
+  /* Fill the width and push the arrows to the edges */
+  flex-grow: 1;
+}
+
+.carousel .slides .slide {
+  /* Stack items on top of one another */
+  grid-column: 1 / -1;
+  grid-row: stack-start / stack-end;
+
+  /* Center content */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--spacing);
+
+  /* Make it responsive */
+  height: 100%;
+  min-height: 0;
+}
+
+body.platform-iphone .carousel .slides .slide .img {
+  aspect-ratio: 1242 / 2208;
+}
+
+body.platform-iphone-pro .carousel .slides .slide .img {
+  aspect-ratio: 1284 / 2778;
+}
+
+body.platform-ipad .carousel .slides .slide .img {
+  aspect-ratio: 2732 / 2048;
+}
+
+.carousel .slides .slide .img {
+  flex: 1 1 450px;
+  /* The following is only needed by Safari */
+  height: 100%;
+
+  /* Fill the area */
+  align-self: center;
+
+  /* Set up common background positioning */
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.carousel .slides .slide {
+  transition: opacity 0.5s;
+}
+
+.carousel .slides .slide:not(.active) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* iPhone images */
+
+body.platform-iphone .carousel .slides .slide:nth-child(1) .img {
+  background-image: url(iphone-1.png);
+}
+
+body.platform-iphone .carousel .slides .slide:nth-child(2) .img {
+  background-image: url(iphone-2.png);
+}
+
+body.platform-iphone .carousel .slides .slide:nth-child(3) .img {
+  background-image: url(iphone-3.png);
+}
+
+body.platform-iphone .carousel .slides .slide:nth-child(4) .img {
+  background-image: url(iphone-4a.png);
+  position: relative;
+}
+
+.carousel .slides .slide:nth-child(4) .img::after {
+  content: '';
+  position: absolute;
+  display: block;
+
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+
+  animation: fade alternate infinite 1.5s linear;
+}
+
+@keyframes fade {
+  25% {
+    opacity: 0;
+  }
+  75%,
+  to {
+    opacity: 1;
+  }
+}
+
+body.platform-iphone .carousel .slides .slide:nth-child(4) .img::after {
+  background-image: url(iphone-4b.png);
+}
+
+body.platform-iphone .carousel .slides .slide:nth-child(5) .img {
+  background-image: url(iphone-5.png);
+}
+
+body.platform-iphone .carousel .slides .slide:nth-child(6) .img {
+  background-image: url(iphone-6.png);
+}
+
+/* iPhone Pro images */
+
+body.platform-iphone-pro .carousel .slides .slide:nth-child(1) .img {
+  background-image: url(iphone-pro-1.png);
+}
+
+body.platform-iphone-pro .carousel .slides .slide:nth-child(2) .img {
+  background-image: url(iphone-pro-2.png);
+}
+
+body.platform-iphone-pro .carousel .slides .slide:nth-child(3) .img {
+  background-image: url(iphone-pro-3.png);
+}
+
+body.platform-iphone-pro .carousel .slides .slide:nth-child(4) .img {
+  background-image: url(iphone-pro-4a.png);
+  position: relative;
+}
+
+body.platform-iphone-pro .carousel .slides .slide:nth-child(4) .img::after {
+  background-image: url(iphone-pro-4b.png);
+}
+
+body.platform-iphone-pro .carousel .slides .slide:nth-child(5) .img {
+  background-image: url(iphone-pro-5.png);
+}
+
+body.platform-iphone-pro .carousel .slides .slide:nth-child(6) .img {
+  background-image: url(iphone-pro-6.png);
+}
+
+/* iPad images */
+
+body.platform-ipad .carousel .slides .slide:nth-child(1) .img {
+  background-image: url(ipad-1.png);
+}
+
+body.platform-ipad .carousel .slides .slide:nth-child(2) .img {
+  background-image: url(ipad-2.png);
+}
+
+body.platform-ipad .carousel .slides .slide:nth-child(3) .img {
+  background-image: url(ipad-3.png);
+}
+
+body.platform-ipad .carousel .slides .slide:nth-child(4) .img {
+  background-image: url(ipad-4a.png);
+  position: relative;
+}
+
+body.platform-ipad .carousel .slides .slide:nth-child(4) .img::after {
+  background-image: url(ipad-4b.png);
+}
+
+body.platform-ipad .carousel .slides .slide:nth-child(5) .img {
+  background-image: url(ipad-5.png);
+}
+
+body.platform-ipad .carousel .slides .slide:nth-child(6) .img {
+  background-image: url(ipad-6.png);
+}
+
+.carousel .slides .slide .text {
+  max-width: 250px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 1em;
+  overflow: scroll;
+}
+
+body.platform-ipad .carousel .slides .slide .text {
+  max-width: 400px;
+}
+
+.carousel .dots {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing);
+}
+
+.carousel .dots .dot {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.carousel .dots .dot::before {
+  content: '';
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 5px;
+  background: rgba(38, 152, 251, 0.5);
+  transition: background-color 0.5s, transform 0.5s;
+}
+
+.carousel .dots .dot.active::before {
+  background: rgb(38, 152, 251);
+  transform: scale(1.5);
+}
+
+span.smalla {
+  font-size: 80%;
+}
+
+#single-tap-moon, #single-tap-earth {
+  animation: toggle-activate 3s alternate infinite;
+}
+
+@keyframes toggle-activate {
+  30%  {
+    opacity: 1;
+  }
+  70%, to {
+    opacity: 0.65;
+  }
+}
+
+#single-tap-logo {
+  animation: toggle-hide 3s alternate infinite;
+}
+
+@keyframes toggle-hide {
+  30%  {
+    opacity: 1;
+  }
+  70%, to {
+    opacity: 0;
+  }
+}
+
+#single-tap-highlight {
+  animation: single-tap 3s infinite step-end;
+}
+
+@keyframes single-tap {
+  0%, 13% {
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+}
+
+#double-tap-moon {
+  animation: change-sides 3s alternate infinite;
+}
+
+@keyframes change-sides {
+  30% {
+    transform: none;
+  }
+  70%,
+  to {
+    transform: translateY(60px);
+  }
+}
+
+#double-tap-highlight {
+  animation: double-tap 3s infinite step-end;
+}
+
+@keyframes double-tap {
+  0% {
+    opacity: 0;
+  }
+  5%, 20% {
+    opacity: 1;
+  }
+  13%, 28% {
+    opacity: 0;
+  }
 }
