@@ -175,11 +175,12 @@ export class FxFetcher {
       this.updated = now.getTime();
       this.fetchState = { type: 'idle' };
     } catch (e: unknown) {
-      // Convert NetworkErrors disguised as TypeErrors to DownloadErrors
+      // Convert network errors disguised as TypeErrors to DownloadErrors
       if (
         isError(e) &&
         e instanceof TypeError &&
-        e.message.startsWith('NetworkError')
+        (e.message.startsWith('NetworkError') ||
+          e.message === 'Failed to fetch')
       ) {
         // Use 418 just so that we pass the check for a retry-able error below
         // which looks for a status code in the 4xx~5xx range.
