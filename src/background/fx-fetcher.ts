@@ -1,4 +1,4 @@
-import Bugsnag, { Event as BugsnagEvent } from '@bugsnag/browser';
+import Bugsnag from '@bugsnag/browser';
 import { browser } from 'webextension-polyfill-ts';
 import * as s from 'superstruct';
 
