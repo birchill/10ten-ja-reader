@@ -1,4 +1,4 @@
-## 1.4.2
+## 1.4.2 (2021-09-24)
 
 - Added onboarding screens for iOS.
 - Made sure the pop-up and puck appear above various advertisements and headers.
