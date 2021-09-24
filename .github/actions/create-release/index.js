@@ -65,6 +65,20 @@ async function main() {
     data: fs.readFileSync(edgePackagePath),
   });
 
+  // Upload source asset
+  const sourcePackagePath = path.join(
+    root,
+    'dist-src',
+    `10ten-ja-reader-${version}-src.zip`
+  );
+  await octokit.repos.uploadReleaseAsset({
+    owner,
+    repo,
+    release_id: release.data.id,
+    name: `10ten-ja-reader-${version}-src.zip`,
+    data: fs.readFileSync(sourcePackagePath),
+  });
+
   // Upload raw source files
   for (const file of fs.readdirSync(path.join(root, 'dist-firefox'))) {
     // Too lazy to import @actions/glob...

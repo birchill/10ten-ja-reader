@@ -22,7 +22,8 @@
     "start:edge": "webpack -w --env target=chrome --env chromium=edge",
     "start:chrome": "webpack -w --env target=chrome",
     "update-snapshot": "ts-node utils/update-snapshot",
-    "version": "node utils/sync-manifest-version && git add manifest.json.src && ts-node utils/sync-xcode && git add xcode13/\"10ten Japanese Reader\".xcodeproj/project.pbxproj"
+    "version": "node utils/sync-manifest-version && git add manifest.json.src && ts-node utils/sync-xcode && git add xcode13/\"10ten Japanese Reader\".xcodeproj/project.pbxproj",
+    "zip-src": "ts-node utils/zip-src"
   },
   "repository": {
     "type": "git",
@@ -45,6 +46,7 @@
   "devDependencies": {
     "@actions/core": "^1.5.0",
     "@actions/github": "^5.0.0",
+    "@types/archiver": "^5.1.1",
     "@types/chai": "^4.2.22",
     "@types/jest": "^27.0.2",
     "@types/karma": "^6.3.1",

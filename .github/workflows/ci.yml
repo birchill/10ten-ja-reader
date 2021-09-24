@@ -88,6 +88,7 @@ jobs:
           yarn package:firefox
           yarn package:chrome
           yarn package:edge
+          yarn zip-src
 
       - name: Read package version
         id: read_package_version
