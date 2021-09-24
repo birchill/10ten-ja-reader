@@ -18,6 +18,7 @@ typealias PlatformViewController = NSViewController
 
 let extensionBundleIdentifier = "jp.co.birchill.tenten-ja-reader.Extension"
 
+#if os(iOS)
 struct Device {
     static let SCREEN_WIDTH      = Int(UIScreen.main.bounds.size.width)
     static let SCREEN_HEIGHT     = Int(UIScreen.main.bounds.size.height)
@@ -26,6 +27,7 @@ struct Device {
     static let IS_IPHONE         = UIDevice.current.userInterfaceIdiom == .phone && SCREEN_MAX_LENGTH < 812
     static let IS_IPHONE_PRO     = UIDevice.current.userInterfaceIdiom == .phone && SCREEN_MAX_LENGTH >= 812
 }
+#endif
 
 class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMessageHandler {
 
