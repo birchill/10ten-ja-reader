@@ -142,7 +142,6 @@ export class FxFetcher {
     url += `?${queryParams.toString()}`;
 
     // Do the fetch
-    let responseText: string | undefined;
     try {
       const response = await fetchWithTimeout(url, {
         mode: 'cors',
@@ -155,15 +154,7 @@ export class FxFetcher {
       }
 
       // Parse the response
-      let result: any;
-      try {
-        result = await response.json();
-      } catch (e) {
-        if (isError(e) && e.name === 'SyntaxError') {
-          responseText = await response.text();
-        }
-        throw e;
-      }
+      const result = await response.json();
       s.assert(result, FxDataSchema);
 
       // Store the response
@@ -228,11 +219,7 @@ export class FxFetcher {
         this.fetchState = { type: 'waiting to retry', retryCount, timeout };
       } else {
         console.error(e);
-        Bugsnag.notify(e as any, (event: BugsnagEvent) => {
-          if (responseText) {
-            event.addMetadata('response', { text: responseText });
-          }
-        });
+        Bugsnag.notify(e as any);
         this.fetchState = { type: 'idle' };
       }
     }
