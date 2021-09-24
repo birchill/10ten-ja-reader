@@ -125,30 +125,18 @@ First run:
 
 ```
 # git pull & yarn install etc.
+#
+# NOTE: Make sure we've run `yarn version --new-version ...` _somewhere_
+# then pushed the result first.
 yarn build:safari
 ```
 
 Then:
 
-1. Open Xcode (_not_ Xcode Beta since you can't publish to the App Store from a
-   beta version of Xcode).
-1. Open the project corresponding to the current version of Xcode.
-1. Update the Package and bundle version.
-
-   Go to the Info tab of the _app_ target, and update the following fields:
-
-   - Bundle version string (short): `<major>.<minor>`
-
-   Go to the Build Settings tab of the _app_ target, and bump the project version.
-
-   Go to the Info tab of the _extension_ target, and update the following fields:
-
-   - Bundle version string (short): `<major>.<minor>`
-   - Bundle version: Project version from above
-
-   There is almost certainly a better way of doing this but for now this seems
-   to work for me.
-
+1. Open Xcode.
+1. Select the target: Mac or iOS. You eventually need to do both.
+   For iOS, you need to set the device to "Any iOS Device" in order to generate
+   a suitable build.
 1. Run Product → Archive.
 1. Choose Distribute App.
 1. App Store Connect.
@@ -160,10 +148,24 @@ restarting XCode should fix it.
 1. (Default options for the next couple of dialogs.)
 1. Upload (again).
 
-If that succeeds (and most often it doesn't because some version is out of
-line), then it's time to update the App Store.
+If that succeeds then it's time to update the App Store.
+
+Note that it will take several minutes to process the uploaded build so there's
+no hurry.
 
 1. Go to https://appstoreconnect.apple.com/apps and choose 10ten Japanese Reader
-1. Press the blue + next to macOS App and enter the new version number
-1. Fill out the changes field / promotional text
-1. Select the uploaded build (can take a few minutes to be processed)
+1. Choose the MacOS/iOS app and copy the Promotional Text.
+1. Press the blue + next to the macOS/iOS App and enter the new version number
+1. Fill out the changes field / promotional text and save
+   (If it ever fails to save because, e.g. you entered a disallowed character,
+   you lose all your work so save regularly.)
+1. Select the uploaded build. It can take a few minutes to be processed after
+   which you'll need to reload the page to see it.
+   You can check the status of processing the build from the TestFlight tab.
+
+After that is done, you'll need to do the same for the iOS/MacOS build depending
+on which one you did first.
+
+For iOS you _might_ need to submit a demo video. We did for the initial
+submission and were told we'd need to for every subsequent submission but on the
+next submission no-one asked for it so 🤷‍♂️
