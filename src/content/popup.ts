@@ -804,9 +804,10 @@ function renderCurrencyInfo(
     }).format(value);
     // Drop redundant currency code.
     //
-    // If the browser doesn't have a specific symbol (e.g. $) for the currency, it
-    // generally just prepends the currency code (e.g. USD) but that is redundant
-    // with out valueCurrencyLabel so we detect and drop it in that case.
+    // If the browser doesn't have a specific symbol (e.g. $) for the currency,
+    // it generally just prepends the currency code (e.g. USD) but that's
+    // redundant with our valueCurrencyLabel so we try to detect and drop it in
+    // that case.
     formattedValue = formattedValue.replace(
       new RegExp(`^\\s*${fxData.currency}\\s*`),
       ''
