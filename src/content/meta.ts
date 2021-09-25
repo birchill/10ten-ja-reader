@@ -12,11 +12,13 @@ export type SelectionMeta = CurrencyMeta | EraMeta | MeasureMeta | NumberMeta;
 export function lookForMetadata({
   currentText,
   nodeText,
+  matchCurrency,
   textEnd,
   textDelimiter,
 }: {
   currentText: string;
   nodeText: string;
+  matchCurrency: boolean;
   textEnd: number;
   textDelimiter: RegExp;
 }): {
@@ -24,7 +26,9 @@ export function lookForMetadata({
   textEnd: number;
 } {
   return (
-    lookForCurrency({ nodeText, textDelimiter }) ||
+    (matchCurrency
+      ? lookForCurrency({ nodeText, textDelimiter })
+      : undefined) ||
     lookForEra({ currentText, nodeText, textEnd }) ||
     lookForMeasure({ nodeText, textDelimiter }) || {
       textDelimiter,
@@ -33,11 +37,15 @@ export function lookForMetadata({
   );
 }
 
-export function extractGetTextMetadata(
-  text: string
-): SelectionMeta | undefined {
+export function extractGetTextMetadata({
+  text,
+  matchCurrency,
+}: {
+  text: string;
+  matchCurrency: boolean;
+}): SelectionMeta | undefined {
   return (
-    extractCurrencyMetadata(text) ||
+    (matchCurrency ? extractCurrencyMetadata(text) : undefined) ||
     extractEraMetadata(text) ||
     extractMeasureMetadata(text) ||
     extractNumberMetadata(text)

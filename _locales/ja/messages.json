@@ -1374,6 +1374,10 @@
     "message": "通貨",
     "description": "Label for the drop-down box for choosing the currency"
   },
+  "options_currency_none_label": {
+    "message": "なし",
+    "description": "Label for the special item to disable currency conversion"
+  },
   "options_data_series_date_only": {
     "message": "$generated$​に生成された​$source$​のデータに基づいている。",
     "placeholders": {

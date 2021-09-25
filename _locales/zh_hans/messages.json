@@ -1371,6 +1371,10 @@
     "message": "货币",
     "description": "Label for the drop-down box for choosing the currency"
   },
+  "options_currency_none_label": {
+    "message": "无",
+    "description": "Label for the special item to disable currency conversion"
+  },
   "options_data_series_date_only": {
     "message": "基于 $source$ 资料，生成于 $generated$​。",
     "placeholders": {

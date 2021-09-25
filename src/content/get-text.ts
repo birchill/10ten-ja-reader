@@ -38,11 +38,13 @@ let previousResult:
   | undefined;
 
 export function getTextAtPoint({
+  matchCurrency = true,
   matchText = true,
   matchImages = true,
   point,
   maxLength,
 }: {
+  matchCurrency?: boolean;
   matchText?: boolean;
   matchImages?: boolean;
   point: Point;
@@ -133,6 +135,7 @@ export function getTextAtPoint({
         startNode,
         startOffset: position!.offset,
         point,
+        matchCurrency,
         maxLength,
       });
 
@@ -169,6 +172,7 @@ export function getTextAtPoint({
       linkElem: parentLink,
       originalElem: startNode,
       point,
+      matchCurrency,
       maxLength,
     });
 
@@ -425,11 +429,13 @@ function getTextFromTextNode({
   startNode,
   startOffset,
   point,
+  matchCurrency,
   maxLength,
 }: {
   startNode: CharacterData;
   startOffset: number;
   point: Point;
+  matchCurrency: boolean;
   maxLength?: number;
 }): GetTextAtPointResult | null {
   const isRubyAnnotationElement = (element: Element | null) => {
@@ -555,6 +561,7 @@ function getTextFromTextNode({
       // or floor space measurements).
       ({ textDelimiter, textEnd } = lookForMetadata({
         currentText,
+        matchCurrency,
         nodeText,
         textDelimiter,
         textEnd,
@@ -608,7 +615,7 @@ function getTextFromTextNode({
     return null;
   }
 
-  result.meta = extractGetTextMetadata(result.text);
+  result.meta = extractGetTextMetadata({ text: result.text, matchCurrency });
 
   return result;
 }
@@ -649,11 +656,13 @@ function getTextFromCoveringLink({
   linkElem,
   originalElem,
   point,
+  matchCurrency,
   maxLength,
 }: {
   linkElem: HTMLAnchorElement;
   originalElem: Node | null;
   point: Point;
+  matchCurrency: boolean;
   maxLength?: number;
 }): GetTextAtPointResult | null {
   // We'd like to just turn off pointer-events and see what we find but that
@@ -689,6 +698,7 @@ function getTextFromCoveringLink({
     startNode: position.offsetNode,
     startOffset: position.offset,
     point,
+    matchCurrency,
     maxLength,
   });
 }

@@ -1371,6 +1371,10 @@
     "message": "Currency",
     "description": "Label for the drop-down box for choosing the currency"
   },
+  "options_currency_none_label": {
+    "message": "(none)",
+    "description": "Label for the special item to disable currency conversion"
+  },
   "options_data_series_date_only": {
     "message": "Based on $source$ from $generated$​.",
     "placeholders": {

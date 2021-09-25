@@ -1,7 +1,8 @@
 ## Next version
 
-- Expands numbers that include kanji characters and aren't in the dictionary
+- Expanded numbers that include kanji characters and aren't in the dictionary
   (e.g. 9万8800, 365億).
+- Added option to disable currency conversion.
 
 ## 1.4.2 (2021-09-24)
 

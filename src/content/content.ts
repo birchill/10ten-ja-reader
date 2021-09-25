@@ -1203,6 +1203,7 @@ export class ContentHandler {
     dictMode: 'default' | 'kanji';
   }) {
     const textAtPoint = getTextAtPoint({
+      matchCurrency: !!this.config.fx,
       matchText,
       matchImages,
       point,

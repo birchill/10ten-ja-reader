@@ -385,7 +385,8 @@ function renderCurrencyList(
   heading.style.display = 'revert';
   body.style.display = 'revert';
 
-  // Drop all the existing currencies since the rates may have changed
+  // Drop all the existing currencies since the set of currencies may have
+  // changed
   const fxCurrency = document.getElementById('fxCurrency') as HTMLSelectElement;
   while (fxCurrency.options.length) {
     fxCurrency.options.remove(0);
@@ -395,10 +396,16 @@ function renderCurrencyList(
   const currencyNames = Intl.DisplayNames
     ? new Intl.DisplayNames(['en'], { type: 'currency' })
     : undefined;
-  for (const currency of currencies) {
-    const label = currencyNames
-      ? `${currency} - ${currencyNames.of(currency)}`
-      : currency;
+  const options = ['none', ...currencies];
+  for (const currency of options) {
+    let label: string;
+    if (currency === 'none') {
+      label = browser.i18n.getMessage('options_currency_none_label');
+    } else {
+      label = currencyNames
+        ? `${currency} - ${currencyNames.of(currency)}`
+        : currency;
+    }
     fxCurrency.options.add(new Option(label, currency));
   }
   fxCurrency.value = selectedCurrency;
