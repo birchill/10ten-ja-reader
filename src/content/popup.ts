@@ -789,20 +789,29 @@ function renderCurrencyInfo(
 
   const valueSpan = document.createElement('span');
   valueSpan.classList.add('value');
-  let formattedValue = new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency: fxData.currency,
-    currencyDisplay: 'narrowSymbol',
-  }).format(meta.value * fxData.rate);
-  // Drop redundant currency code.
-  //
-  // If the browser doesn't have a specific symbol (e.g. $) for the currency, it
-  // generally just prepends the currency code (e.g. USD) but that is redundant
-  // with out valueCurrencyLabel so we detect and drop it in that case.
-  formattedValue = formattedValue.replace(
-    new RegExp(`^\\s*${fxData.currency}\\s*`),
-    ''
-  );
+  const value = meta.value * fxData.rate;
+  let formattedValue: string;
+  if (fxData.currency === 'BTC') {
+    // BTC is a bit special because Intl.NumberFormat doesn't support it and if
+    // we let it do its fallback rounding to two decimal places we'll lose most
+    // of the information.
+    formattedValue = `\u20bf${value.toFixed(8)}`;
+  } else {
+    formattedValue = new Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency: fxData.currency,
+      currencyDisplay: 'narrowSymbol',
+    }).format(value);
+    // Drop redundant currency code.
+    //
+    // If the browser doesn't have a specific symbol (e.g. $) for the currency, it
+    // generally just prepends the currency code (e.g. USD) but that is redundant
+    // with out valueCurrencyLabel so we detect and drop it in that case.
+    formattedValue = formattedValue.replace(
+      new RegExp(`^\\s*${fxData.currency}\\s*`),
+      ''
+    );
+  }
   valueSpan.append(formattedValue);
   rhs.append(valueSpan);
 
