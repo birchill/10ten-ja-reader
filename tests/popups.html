@@ -492,7 +492,148 @@
         container: createPopupContainer(),
         dictToShow: 'words',
         popupStyle: 'light',
-        onClosePopup: () => { console.log('closed') },
+        onClosePopup: () => {
+          console.log('closed');
+        },
+        onShowSettings: () => {},
+      });
+      if (test.description.indexOf('touch') !== -1) {
+        popup.querySelector('.window').classList.add('touch');
+      }
+    }
+
+    // Number tests
+
+    const numberTests = [
+      {
+        description: 'in isolation',
+        config: {
+          ...config,
+          meta: {
+            type: 'number',
+            value: 88000,
+            src: '8万8千',
+            matchLen: 5,
+          },
+        },
+      },
+      {
+        description: 'in isolation (touch version)',
+        config: {
+          ...config,
+          meta: {
+            type: 'number',
+            value: 88000,
+            src: '8万8千',
+            matchLen: 5,
+          },
+        },
+      },
+      {
+        description: 'combined',
+        config: {
+          ...config,
+          meta: {
+            type: 'number',
+            src: '九十八',
+            value: 98,
+            matchLen: 5,
+          },
+        },
+        queryResult: {
+          words: {
+            type: 'words',
+            data: [
+              {
+                id: 1578160,
+                k: [
+                  { ent: '９０', p: ['s1'], match: false },
+                  {
+                    ent: '九十',
+                    p: ['n1', 'nf06'],
+                    match: true,
+                    matchRange: [0, 2],
+                  },
+                  { ent: '九〇', match: false },
+                ],
+                r: [
+                  { ent: 'きゅうじゅう', p: ['n1', 'nf06', 's1'], match: true },
+                  { ent: 'くじゅう', match: true },
+                ],
+                s: [
+                  {
+                    g: [{ str: 'ninety' }, { str: '90' }],
+                    pos: ['num'],
+                    match: true,
+                  },
+                ],
+              },
+              {
+                id: 1578150,
+                k: [
+                  {
+                    ent: '九',
+                    p: ['i1', 'n1', 'nf01'],
+                    match: true,
+                    matchRange: [0, 1],
+                  },
+                  { ent: '９', match: false },
+                  { ent: '玖', match: false },
+                ],
+                r: [
+                  { ent: 'きゅう', p: ['i1', 'n1', 'nf01'], a: 1, match: true },
+                  { ent: 'く', p: ['i1'], a: 1, match: true },
+                  { ent: 'ここの', a: 2, match: true },
+                  { ent: 'この', a: 1, match: true },
+                  { ent: 'ここ', match: true },
+                ],
+                s: [
+                  {
+                    g: [{ str: 'nine' }],
+                    inf: '玖 is used in legal documents',
+                    pos: ['num'],
+                    match: true,
+                  },
+                ],
+              },
+              {
+                id: 2748010,
+                k: [{ ent: '九', match: true, matchRange: [0, 1] }],
+                r: [{ ent: 'チュー', a: 1, match: true }],
+                s: [
+                  {
+                    g: [{ str: 'nine' }],
+                    inf: 'クー, キュー or チュー in mahjong',
+                    lsrc: [{ lang: 'zh', src: 'jiǔ' }],
+                    pos: ['num'],
+                    match: true,
+                  },
+                ],
+              },
+            ],
+            more: false,
+            matchLen: 2,
+          },
+          resultType: 'full',
+        },
+      },
+    ];
+
+    for (const test of numberTests) {
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.append(`【${test.description}】`);
+      container.append(label);
+
+      const popup = contentHandler._renderPopup(test.queryResult || null, {
+        ...test.config,
+        container: createPopupContainer(),
+        dictToShow: 'words',
+        popupStyle: 'light',
+        showDefinitions: true,
+        onClosePopup: () => {
+          console.log('closed');
+        },
         onShowSettings: () => {},
       });
       if (test.description.indexOf('touch') !== -1) {

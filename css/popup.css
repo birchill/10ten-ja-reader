@@ -1046,3 +1046,10 @@
   opacity: 0.6;
   margin-top: 3px;
 }
+
+/* Meta: number */
+.wordlist .meta.number {
+  line-height: 1;
+  padding-bottom: 6px;
+  padding-top: 6px;
+}

@@ -45,6 +45,7 @@ import { SVG_NS } from './svg';
 import { EraInfo, EraMeta, getEraInfo } from './years';
 
 import popupStyles from '../../css/popup.css';
+import { NumberMeta } from './numbers';
 
 export const enum CopyState {
   Inactive,
@@ -143,10 +144,11 @@ export function renderPopup(
         contentContainer.append(
           renderWordEntries({
             entries: resultToShow.data,
-            namePreview: result!.namePreview,
-            title: result!.title,
+            matchLen: resultToShow.matchLen,
             more: resultToShow.more,
+            namePreview: result!.namePreview,
             options,
+            title: result!.title,
           })
         );
       }
@@ -158,7 +160,12 @@ export function renderPopup(
           return null;
         }
 
-        const metadata = renderMetadata(options.meta, options.fxData);
+        const metadata = renderMetadata({
+          fxData: options.fxData,
+          isCombinedResult: false,
+          matchLen: 0,
+          meta: options.meta,
+        });
         if (!metadata) {
           return null;
         }
@@ -440,16 +447,18 @@ function renderCloseButton(onClosePopup: () => void): HTMLElement {
 
 function renderWordEntries({
   entries,
-  namePreview,
-  title,
+  matchLen,
   more,
+  namePreview,
   options,
+  title,
 }: {
   entries: Array<WordResult>;
-  namePreview: NamePreview | undefined;
-  title: string | undefined;
+  matchLen: number;
   more: boolean;
+  namePreview: NamePreview | undefined;
   options: PopupOptions;
+  title: string | undefined;
 }): HTMLElement {
   const container = document.createElement('div');
   container.classList.add('wordlist');
@@ -463,7 +472,12 @@ function renderWordEntries({
   }
 
   if (options.meta) {
-    const metadata = renderMetadata(options.meta, options.fxData);
+    const metadata = renderMetadata({
+      fxData: options.fxData,
+      isCombinedResult: true,
+      matchLen,
+      meta: options.meta,
+    });
     if (metadata) {
       container.append(metadata);
     }
@@ -797,6 +811,34 @@ function renderCurrencyInfo(
   );
   timestampRow.append(expl);
   metaDiv.append(timestampRow);
+
+  return metaDiv;
+}
+
+function renderNumberInfo(
+  meta: NumberMeta,
+  { isCombinedResult }: { isCombinedResult: boolean }
+): HTMLElement {
+  const metaDiv = document.createElement('div');
+  metaDiv.classList.add('meta', 'number');
+
+  if (isCombinedResult) {
+    const srcSpan = document.createElement('span');
+    srcSpan.classList.add('src');
+    srcSpan.append(meta.src);
+    srcSpan.lang = 'ja';
+    metaDiv.append(srcSpan);
+
+    const equalsSpan = document.createElement('span');
+    equalsSpan.classList.add('equals');
+    equalsSpan.append('=');
+    metaDiv.append(equalsSpan);
+  }
+
+  const numberSpan = document.createElement('span');
+  numberSpan.classList.add('value');
+  numberSpan.append(meta.value.toLocaleString());
+  metaDiv.append(numberSpan);
 
   return metaDiv;
 }
@@ -1909,10 +1951,17 @@ function renderReferences(
   return referenceTable;
 }
 
-function renderMetadata(
-  meta: SelectionMeta,
-  fxData: ContentConfig['fx']
-): HTMLElement | null {
+function renderMetadata({
+  fxData,
+  isCombinedResult,
+  matchLen,
+  meta,
+}: {
+  fxData: ContentConfig['fx'];
+  isCombinedResult: boolean;
+  matchLen: number;
+  meta: SelectionMeta;
+}): HTMLElement | null {
   switch (meta.type) {
     case 'era':
       {
@@ -1928,6 +1977,11 @@ function renderMetadata(
 
     case 'currency':
       return fxData ? renderCurrencyInfo(meta, fxData) : null;
+
+    case 'number':
+      return meta.matchLen > matchLen
+        ? renderNumberInfo(meta, { isCombinedResult })
+        : null;
   }
 
   return null;

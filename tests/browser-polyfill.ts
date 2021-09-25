@@ -122,6 +122,8 @@ export const browser = {
           return 'Unicode';
         case 'lang_tag':
           return 'en';
+        case 'lang_label_zh':
+          return 'Chinese';
         case 'measure_expl_kyouma':
           return ' (West Japan)';
         case 'measure_expl_chuukyouma':

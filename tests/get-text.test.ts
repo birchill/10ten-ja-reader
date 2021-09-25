@@ -672,6 +672,27 @@ describe('getTextAtPoint', () => {
     });
   });
 
+  it('should recognize number values', () => {
+    testDiv.append('距離：8万8千キロメートル');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 3);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(result, '8万8千キロメートル', [textNode, 3, 13]);
+    assert.deepEqual(result!.meta, {
+      type: 'number',
+      value: 88000,
+      src: '8万8千',
+      matchLen: 4,
+    });
+  });
+
   it('should stop at the maximum number of characters', () => {
     testDiv.append('あいうえお');
     const textNode = testDiv.firstChild as Text;

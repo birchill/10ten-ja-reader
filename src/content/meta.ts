@@ -4,9 +4,10 @@ import {
   lookForCurrency,
 } from './currency';
 import { MeasureMeta, extractMeasureMetadata, lookForMeasure } from './measure';
+import { NumberMeta, extractNumberMetadata } from './numbers';
 import { EraMeta, extractEraMetadata, lookForEra } from './years';
 
-export type SelectionMeta = CurrencyMeta | EraMeta | MeasureMeta;
+export type SelectionMeta = CurrencyMeta | EraMeta | MeasureMeta | NumberMeta;
 
 export function lookForMetadata({
   currentText,
@@ -38,6 +39,7 @@ export function extractGetTextMetadata(
   return (
     extractCurrencyMetadata(text) ||
     extractEraMetadata(text) ||
-    extractMeasureMetadata(text)
+    extractMeasureMetadata(text) ||
+    extractNumberMetadata(text)
   );
 }

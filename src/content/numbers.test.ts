@@ -1,4 +1,4 @@
-import { parseNumber } from './numbers';
+import { extractNumberMetadata, parseNumber } from './numbers';
 
 describe('parseNumber', () => {
   it('converts various numbers', () => {
@@ -46,5 +46,60 @@ describe('parseNumber', () => {
     // Completely invalid inputs
     expect(parseNumber('abc')).toStrictEqual(null);
     expect(parseNumber('')).toStrictEqual(null);
+  });
+});
+
+describe('extractNumberMetadata', () => {
+  it('extracts numbers', () => {
+    // Needs to be at least two characters long
+    expect(extractNumberMetadata('1')).toStrictEqual(undefined);
+    expect(extractNumberMetadata('0')).toStrictEqual(undefined);
+    expect(extractNumberMetadata('二')).toStrictEqual(undefined);
+    expect(extractNumberMetadata('十')).toStrictEqual(undefined);
+    expect(extractNumberMetadata('〇')).toStrictEqual(undefined);
+
+    // Needs to have at least one kanji character
+    expect(extractNumberMetadata('123')).toStrictEqual(undefined);
+    expect(extractNumberMetadata('8,800')).toStrictEqual(undefined);
+    expect(extractNumberMetadata('43.2')).toStrictEqual(undefined);
+    expect(extractNumberMetadata('４３．２')).toStrictEqual(undefined);
+    expect(extractNumberMetadata('４３。２')).toStrictEqual(undefined);
+
+    // Shouldn't be zero
+    expect(extractNumberMetadata('〇〇〇')).toStrictEqual(undefined);
+
+    // Successful cases
+    expect(extractNumberMetadata('二十')).toStrictEqual({
+      type: 'number',
+      value: 20,
+      src: '二十',
+      matchLen: 2,
+    });
+    expect(extractNumberMetadata('2十')).toStrictEqual({
+      type: 'number',
+      value: 20,
+      src: '2十',
+      matchLen: 2,
+    });
+    expect(extractNumberMetadata('8万8千')).toStrictEqual({
+      type: 'number',
+      value: 88000,
+      src: '8万8千',
+      matchLen: 4,
+    });
+    expect(extractNumberMetadata('3,600億')).toStrictEqual({
+      type: 'number',
+      value: 360000000000,
+      src: '3,600億',
+      matchLen: 6,
+    });
+
+    // Produces correct src / matchLen
+    expect(extractNumberMetadata('二十キロメートル')).toStrictEqual({
+      type: 'number',
+      value: 20,
+      src: '二十',
+      matchLen: 2,
+    });
   });
 });

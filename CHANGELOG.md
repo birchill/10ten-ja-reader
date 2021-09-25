@@ -1,3 +1,8 @@
+## Next version
+
+- Expands numbers that include kanji characters and aren't in the dictionary
+  (e.g. 9万8800, 365億).
+
 ## 1.4.2 (2021-09-24)
 
 - Added onboarding screens for iOS.

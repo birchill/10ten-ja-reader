@@ -210,3 +210,38 @@ function breakDownNumbers(numbers: Array<number>): Array<number> {
     return [first, second * third, ...rest];
   }
 }
+
+export interface NumberMeta {
+  type: 'number';
+  value: number;
+  src: string;
+  matchLen: number;
+}
+
+// This very long regex is really just trying to say: only recognize a number
+// that
+//
+// - is at least two digits long, and
+// - has at least one kanji digit
+//
+const numberRegex =
+  /^([一二三四五六七八九十百千万億兆京][0-9.,０-９。．、〇一二三四五六七八九十百千万億兆京]+)|([0-9,０-９、]+[〇一二三四五六七八九十百千万億兆京][0-9.,０-９。．、〇一二三四五六七八九十百千万億兆京]*)/;
+
+export function extractNumberMetadata(text: string): NumberMeta | undefined {
+  let matches = numberRegex.exec(text);
+  if (!matches || matches.index !== 0) {
+    return undefined;
+  }
+
+  const valueStr = matches[0];
+  if (!valueStr) {
+    return undefined;
+  }
+
+  let value = parseNumber(valueStr);
+  if (!value) {
+    return undefined;
+  }
+
+  return { type: 'number', value, src: valueStr, matchLen: valueStr.length };
+}
