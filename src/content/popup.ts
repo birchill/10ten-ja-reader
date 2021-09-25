@@ -789,13 +789,21 @@ function renderCurrencyInfo(
 
   const valueSpan = document.createElement('span');
   valueSpan.classList.add('value');
-  valueSpan.append(
-    new Intl.NumberFormat(undefined, {
-      style: 'currency',
-      currency: fxData.currency,
-      currencyDisplay: 'narrowSymbol',
-    }).format(meta.value * fxData.rate)
+  let formattedValue = new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: fxData.currency,
+    currencyDisplay: 'narrowSymbol',
+  }).format(meta.value * fxData.rate);
+  // Drop redundant currency code.
+  //
+  // If the browser doesn't have a specific symbol (e.g. $) for the currency, it
+  // generally just prepends the currency code (e.g. USD) but that is redundant
+  // with out valueCurrencyLabel so we detect and drop it in that case.
+  formattedValue = formattedValue.replace(
+    new RegExp(`^\\s*${fxData.currency}\\s*`),
+    ''
   );
+  valueSpan.append(formattedValue);
   rhs.append(valueSpan);
 
   const timestampRow = document.createElement('div');

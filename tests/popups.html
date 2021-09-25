@@ -479,6 +479,21 @@
           },
         },
       },
+      {
+        description: 'AED (redundant currency code)',
+        config: {
+          ...config,
+          fxData: {
+            currency: 'AED',
+            rate: 0.033166509528545496,
+            timestamp: 1631754180485,
+          },
+          meta: {
+            type: 'currency',
+            value: 88000,
+          },
+        },
+      },
     ];
 
     for (const test of currencyTests) {
