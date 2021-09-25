@@ -200,13 +200,14 @@ export class FxFetcher {
         );
 
         // If we request a day in the future (e.g. because our clock is wrong),
-        // CloudFront will return a 401 Forbidden response.
+        // CloudFront will return a 401/403 Forbidden response.
         //
         // In that case we should try to request the previous day's data.
         //
         // (Eventually we should probably just serve a single file with the
         // latest data and set an appropriate 24h expiry on it.)
-        const usePreviousDay = e instanceof DownloadError && e.code === 401;
+        const usePreviousDay =
+          e instanceof DownloadError && (e.code === 401 || e.code === 403);
 
         // We're using setTimeout here but in the case of event pages (as we
         // use on some platforms) these are not guaranteed to run.
