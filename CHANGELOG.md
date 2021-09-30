@@ -2,7 +2,8 @@
 
 - Expanded numbers that include kanji characters and aren't in the dictionary
   (e.g. 9万8800, 365億).
-- Added option to disable currency conversion.
+- Added an option to disable currency conversion.
+- Fixed a bug where popups were not scrollable when no tabs are shown.
 
 ## 1.4.2 (2021-09-24)
 

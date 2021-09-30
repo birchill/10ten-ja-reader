@@ -951,6 +951,57 @@
       popup.querySelector('.window').classList.add('touch');
     }
 
+    // Constrained height tests
+
+    for (const tabDisplay of ['top', 'right', 'none']) {
+      {
+        const label = document.createElement('div');
+        label.classList.add('label');
+        label.append(`【Constrained height, tab display: ${tabDisplay}】`);
+        container.append(label);
+
+        const popup = contentHandler._renderPopup(touchScreenTest, {
+          ...config,
+          container: createPopupContainer(),
+          dictToShow: 'words',
+          popupStyle: 'default',
+          showDefinitions: true,
+          switchDictionaryKeys: ['Shift', 'Enter'],
+          tabDisplay,
+          onClosePopup: () => {},
+          onShowSettings: () => {},
+        });
+
+        popup.style.maxHeight = '200px';
+        popup.style.webkitMaskImage =
+          'linear-gradient(to bottom, black 99%, transparent)';
+        popup.style.maskImage =
+          'linear-gradient(to bottom, black 99%, transparent)';
+      }
+
+      {
+        const label = document.createElement('div');
+        label.classList.add('label');
+        label.append(`【Constrained height, tab display: ${tabDisplay} (touch version)】`);
+        container.append(label);
+
+        const popup = contentHandler._renderPopup(touchScreenTest, {
+          ...config,
+          container: createPopupContainer(),
+          dictToShow: 'words',
+          popupStyle: 'default',
+          showDefinitions: true,
+          switchDictionaryKeys: ['Shift', 'Enter'],
+          tabDisplay,
+          onClosePopup: () => {},
+          onShowSettings: () => {},
+        });
+
+        popup.querySelector('.window').style.maxHeight = '200px';
+        popup.querySelector('.window').classList.add('touch');
+      }
+    }
+
     function createPopupContainer() {
       const popupContainer = document.createElement('div');
       popupContainer.style.width = 'max-content';

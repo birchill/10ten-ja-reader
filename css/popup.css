@@ -208,6 +208,7 @@
 
 .window .close-button-wrapper {
   display: flex;
+  overflow: auto;
 }
 
 .window .close-button-wrapper .close {

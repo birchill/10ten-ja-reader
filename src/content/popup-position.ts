@@ -280,7 +280,7 @@ function getAutoPositionWithoutScrollOffset({
   //
   // There are two modes:
   //
-  // A) In the general case, we want to stick to want of the block direction
+  // A) In the general case, we want to stick to one of the block direction
   //    positions so we need to work out which direction is _less_ constrained.
   //
   // B) However, if the user is on a small screen which has more room in the
