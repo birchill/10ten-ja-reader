@@ -86,6 +86,7 @@ const commonExtConfig = {
   mode: 'production',
   entry: {
     '10ten-ja-content': './src/content/content.ts',
+    '10ten-ja-gdocs-fallback': './src/content/gdocs-fallback.ts',
     '10ten-ja-background': './src/background/background.ts',
     '10ten-ja-options': './src/options/options.ts',
     '10ten-ja-jpdict': './src/worker/jpdict-worker.ts',

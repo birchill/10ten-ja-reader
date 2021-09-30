@@ -4,6 +4,7 @@
   (e.g. 9万8800, 365億).
 - Added an option to disable currency conversion.
 - Fixed a bug where popups were not scrollable when no tabs are shown.
+- Force Google Docs to use HTML mode for now anyway.
 
 ## 1.4.2 (2021-09-24)
 

@@ -1363,6 +1363,10 @@
     "message": "Checking for updates…",
     "description": "Label while we are checking for updates"
   },
+  "options_compatibility_heading": {
+    "message": "Compatibility",
+    "description": "Heading for the section for configuring site compatibility"
+  },
   "options_currency_conversion_heading": {
     "message": "Currency conversion",
     "description": "Heading for the section for configuring currency conversion"
@@ -1474,6 +1478,18 @@
   "options_edrdg_license_keyword": {
     "message": "licence",
     "description": "The keyword in options_edrdg_license to link to the license"
+  },
+  "options_force_gdocs_html_mode": {
+    "message": "Force Google Docs to use HTML mode",
+    "description": "Label for the option to cause Google Docs to be loaded in the legacy HTML mode"
+  },
+  "options_force_gdocs_html_mode_expl_1": {
+    "message": "Google Docs is introducing a new “canvas mode” that does not make available the document text to extensions like 10ten Japanese Reader.",
+    "description": "The first sentence of the 'Force Google Docs to use HTML mode' option introducing canvas mode"
+  },
+  "options_force_gdocs_html_mode_expl_2": {
+    "message": "When the option below is selected, Google Docs will load using the existing behavior (“HTML mode”) so that Japanese text can still be looked up.",
+    "description": "The second sentence of the 'Force Google Docs to use HTML mode' option explaining how the option affects that mode"
   },
   "options_general_heading": {
     "message": "General",

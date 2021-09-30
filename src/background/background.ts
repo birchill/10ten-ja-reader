@@ -456,6 +456,13 @@ browser.runtime.onMessage.addListener(
     }
 
     switch (request.type) {
+      case 'forceGdocsHtmlMode':
+        return (async () => {
+          // Check if we are configured to force GDocs to HTML mode
+          await config.ready;
+          return config.forceGdocsHtmlMode;
+        })();
+
       case 'options':
         return browser.runtime.openOptionsPage();
 

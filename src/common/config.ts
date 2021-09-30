@@ -62,6 +62,7 @@ interface Settings {
   accentDisplay?: AccentDisplay;
   contextMenuEnable?: boolean;
   dictLang?: DbLanguageId;
+  forceGdocsHtmlMode?: boolean;
   fxCurrency?: string;
   hasSwitchedDictionary?: boolean;
   holdToShowKeys?: string;
@@ -458,6 +459,31 @@ export class Config {
       for (const listener of this.changeListeners) {
         listener(changes);
       }
+    }
+  }
+
+  // forceGdocsHtmlMode: Defaults to true
+
+  get forceGdocsHtmlMode(): boolean {
+    return (
+      typeof this.settings.forceGdocsHtmlMode === 'undefined' ||
+      this.settings.forceGdocsHtmlMode
+    );
+  }
+
+  set forceGdocsHtmlMode(value: boolean) {
+    if (
+      typeof this.settings.forceGdocsHtmlMode !== 'undefined' &&
+      this.settings.forceGdocsHtmlMode === value
+    ) {
+      return;
+    }
+
+    this.settings.forceGdocsHtmlMode = value;
+    if (!value) {
+      browser.storage.sync.set({ forceGdocsHtmlMode: value });
+    } else {
+      browser.storage.sync.remove('forceGdocsHtmlMode');
     }
   }
 
