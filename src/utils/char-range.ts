@@ -10,6 +10,11 @@ export const halfWidthNumbers = /[0-9]/;
 // be delimiters
 export const fullWidthAlphanumerics = /[\uff01-\uff5e]/;
 
+// On some platforms, Google Docs puts zero-width joiner characters between
+// _all_ the characters so we need to match on them in order to match runs of
+// characters.
+export const zeroWidthNonJoiner = /[\u200c]/;
+
 // * U+25CB is 'white circle' often used to represent a blank
 //   (U+3007 is an ideographic zero that is also sometimes used for this
 //   purpose, but this is included in the U+3001~U+30FF range.)
@@ -117,6 +122,7 @@ function isCharacterClassRange(re: RegExp): boolean {
 // typically delimit words.
 export const japaneseChar = getCombinedCharRange([
   fullWidthAlphanumerics,
+  zeroWidthNonJoiner,
   whiteCircle,
   nonDelimitingIdeographicPunctuation,
   hiragana,

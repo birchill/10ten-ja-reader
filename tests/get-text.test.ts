@@ -270,6 +270,21 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(result, 'ｷﾞﾝｺｳ㘆豈', [textNode, 0, 7]);
   });
 
+  it('should include zero-width non-joiner characters', () => {
+    testDiv.append('あ\u200cい\u200cう\u200c。');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(result, 'あ\u200cい\u200cう\u200c', [textNode, 0, 6]);
+  });
+
   it('should include the year when recognizing years', () => {
     testDiv.append('昭和56年に');
     const textNode = testDiv.firstChild as Text;
