@@ -432,7 +432,10 @@ function renderCloseButton(onClosePopup: () => void): HTMLElement {
     'aria-label',
     browser.i18n.getMessage('popup_close_label')
   );
-  closeButton.onclick = onClosePopup;
+  closeButton.onclick = (evt: MouseEvent) => {
+    evt.preventDefault();
+    onClosePopup();
+  };
   close.append(closeButton);
 
   const crossSvg = document.createElementNS(SVG_NS, 'svg');
