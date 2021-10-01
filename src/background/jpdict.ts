@@ -430,8 +430,8 @@ export async function searchKanji(
   kanji: string
 ): Promise<KanjiSearchResult | null | 'unavailable' | 'updating'> {
   // Pre-check (might not be needed anymore)
-  const codepoint = kanji.charCodeAt(0);
-  if (codepoint < 0x3000) {
+  const codepoint = kanji.codePointAt(0);
+  if (!codepoint || codepoint < 0x3000) {
     return null;
   }
 

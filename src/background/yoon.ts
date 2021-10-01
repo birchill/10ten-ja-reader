@@ -7,9 +7,10 @@ const yoonStart = [
 const smallY = [0x3083, 0x3085, 0x3087];
 
 export function endsInYoon(input: string): boolean {
+  const length = [...input].length;
   return (
-    input.length > 1 &&
-    smallY.includes(input.charCodeAt(input.length - 1)) &&
-    yoonStart.includes(input.charCodeAt(input.length - 2))
+    length > 1 &&
+    smallY.includes(input.codePointAt(length - 1)!) &&
+    yoonStart.includes(input.codePointAt(length - 2)!)
   );
 }
