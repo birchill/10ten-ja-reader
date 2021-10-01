@@ -71,7 +71,7 @@ async function main() {
     'dist-src',
     `10ten-ja-reader-${version}-src.zip`
   );
-  await octokit.repos.uploadReleaseAsset({
+  await octokit.rest.repos.uploadReleaseAsset({
     owner,
     repo,
     release_id: release.data.id,
