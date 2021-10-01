@@ -44,7 +44,7 @@
   },
   "homepage": "https://github.com/birchill/10ten-ja-reader#readme",
   "devDependencies": {
-    "@actions/core": "^1.5.0",
+    "@actions/core": "^1.6.0",
     "@actions/github": "^5.0.0",
     "@types/archiver": "^5.1.1",
     "@types/chai": "^4.2.22",
