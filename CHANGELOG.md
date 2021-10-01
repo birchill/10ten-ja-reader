@@ -1,14 +1,16 @@
-## Next version
+## 1.4.3 (2021-10-01)
 
 - Expands numbers that include kanji characters and aren't in the dictionary
   (e.g. 9万8800, 365億).
 - Adds an option to disable currency conversion.
 - Fixes a bug where popups were not scrollable when no tabs are shown.
-- Forces Google Docs to use HTML mode for now anyway.
+- Forces Google Docs to use HTML mode (for now anyway)
+  [#782](https://github.com/birchill/10ten-ja-reader/issues/782)).
 - Ignores zero-width non-joiner characters (which Google Docs sometimes likes to
-  put between characters)
+  put between characters).
 - Handles `-webkit-user-select: none` content (such as
   [bookwalker.jp](https://bookwalker.jp)'s popup window) on Safari better
+  [#773](https://github.com/birchill/10ten-ja-reader/issues/773)).
 
 ## 1.4.2 (2021-09-24)
 
