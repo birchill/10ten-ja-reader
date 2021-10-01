@@ -293,13 +293,66 @@ function rawCaretPositionFromPoint(
     return document.caretPositionFromPoint(point.x, point.y);
   }
 
-  const range = document.caretRangeFromPoint(point.x, point.y);
+  let range = document.caretRangeFromPoint(point.x, point.y);
+
+  // Special handling for Safari which doesn't dig into nodes with
+  // -webkit-user-select: none.
+  //
+  // If we got an element (not a text node), try using elementFromPoint to see
+  // if we get a better match.
+  if (range && range.startContainer.nodeType === Node.ELEMENT_NODE) {
+    range =
+      getRangeWithoutUserSelectNone({ existingRange: range, point }) || range;
+  }
+
   return range
     ? {
         offsetNode: range.startContainer,
         offset: range.startOffset,
         usedCaretRangeFromPoint: true,
       }
+    : null;
+}
+
+// For Safari, try harder to get the caret position for nodes with
+// -webkit-user-select: none.
+//
+// See notes in rawCaretPositionFromPoint for why we do this.
+function getRangeWithoutUserSelectNone({
+  existingRange,
+  point,
+}: {
+  existingRange: Range;
+  point: Point;
+}): Range | null {
+  const elemFromPoint = document.elementFromPoint(point.x, point.y);
+
+  if (
+    elemFromPoint === existingRange.startContainer ||
+    !(elemFromPoint instanceof HTMLElement) ||
+    !elemFromPoint.innerText.length
+  ) {
+    return null;
+  }
+
+  // Check if (-webkit-)user-select: none is set on the element
+  const cs = window.getComputedStyle(elemFromPoint);
+  if (cs.webkitUserSelect !== 'none' && cs.userSelect !== 'none') {
+    return null;
+  }
+
+  // Try to temporarily disable the (-webkit-)user-select style.
+  const styleElem = document.createElement('style');
+  styleElem.textContent = `* { -webkit-user-select: all !important; user-select: all !important; }`;
+  document.head.append(styleElem);
+
+  // Retry looking up
+  const range = document.caretRangeFromPoint(point.x, point.y);
+  styleElem.remove();
+
+  // If we got a text node, prefer that to our previous result.
+  return range && range.startContainer.nodeType === Node.TEXT_NODE
+    ? range
     : null;
 }
 

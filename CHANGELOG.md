@@ -1,12 +1,14 @@
 ## Next version
 
-- Expanded numbers that include kanji characters and aren't in the dictionary
+- Expands numbers that include kanji characters and aren't in the dictionary
   (e.g. 9万8800, 365億).
-- Added an option to disable currency conversion.
-- Fixed a bug where popups were not scrollable when no tabs are shown.
-- Force Google Docs to use HTML mode for now anyway.
-- Ignore zero-width non-joiner characters (which Google Docs sometimes likes to
+- Adds an option to disable currency conversion.
+- Fixes a bug where popups were not scrollable when no tabs are shown.
+- Forces Google Docs to use HTML mode for now anyway.
+- Ignores zero-width non-joiner characters (which Google Docs sometimes likes to
   put between characters)
+- Handles `-webkit-user-select: none` content (such as
+  [bookwalker.jp](https://bookwalker.jp)'s popup window) on Safari better
 
 ## 1.4.2 (2021-09-24)
 
