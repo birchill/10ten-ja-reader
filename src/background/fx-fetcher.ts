@@ -158,6 +158,10 @@ export class FxFetcher {
       s.assert(result, FxDataSchema);
 
       // Store the response
+      //
+      // If this fails (e.g. due to a QuotaExceededError) there's not much we
+      // can do since we communicate the FX data with other components via
+      // local storage.
       await browser.storage.local.set({
         fx: { ...result, updated: now.getTime() },
       });
@@ -255,9 +259,13 @@ export class FxFetcher {
     //
     // For that case, we don't want to re-trigger too soon or else we'll ping
     // the server unnecessarily.
+    //
+    // Furthermore, if we successfully updated once in the past but have failed
+    // since (e.g. because storage.local is now full) make sure we don't set
+    // nextRun to some time in the past.
     const now = Date.now();
     let nextRun =
-      typeof this.updated === 'undefined'
+      typeof this.updated === 'undefined' || this.updated + ONE_DAY <= now
         ? now + ONE_HOUR
         : this.updated + ONE_DAY;
 
