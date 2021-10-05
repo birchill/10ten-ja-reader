@@ -172,7 +172,9 @@ export default class AllTabManager implements TabManager {
     // Update our local copy of the config
     this.config = config;
 
-    if (typeof tab.id !== 'number') {
+    // On Firefox 78 we've observed `tab` being undefined at least once so
+    // check just in case.
+    if (!tab || typeof tab.id !== 'number') {
       return;
     }
 
