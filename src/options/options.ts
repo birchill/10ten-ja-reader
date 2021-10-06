@@ -980,9 +980,9 @@ window.onload = async () => {
           evt.state.updateState.lastCheck
         );
       }
-      if (typeof (evt.state.updateState as any).nextRetry === 'string') {
-        (evt.state.updateState as any).nextRetry = new Date(
-          (evt.state.updateState as any).nextRetry
+      if (typeof evt.state.updateError?.nextRetry === 'string') {
+        evt.state.updateError.nextRetry = new Date(
+          evt.state.updateError.nextRetry
         );
       }
 
