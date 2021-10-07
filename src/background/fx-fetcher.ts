@@ -3,7 +3,6 @@ import { browser } from 'webextension-polyfill-ts';
 import * as s from 'superstruct';
 
 import { fetchWithTimeout } from '../utils/fetch';
-import { padNum } from '../utils/pad-num';
 import { getReleaseStage } from '../utils/release-stage';
 
 import { getLocalFxData } from './fx-data';
@@ -86,9 +85,7 @@ export class FxFetcher {
     });
   }
 
-  private async fetchData({
-    usePreviousDay = false,
-  }: { usePreviousDay?: boolean } = {}) {
+  private async fetchData() {
     // Don't try fetching if we are offline
     if (!navigator.onLine) {
       Bugsnag.leaveBreadcrumb('Deferring FX data update until we are online');
@@ -122,15 +119,7 @@ export class FxFetcher {
     };
 
     // Set up base URL
-    if (usePreviousDay) {
-      Bugsnag.leaveBreadcrumb("Using previous day's FX data");
-    }
-    const now = usePreviousDay ? new Date(Date.now() - ONE_DAY) : new Date();
-    const dateString =
-      now.getUTCFullYear() +
-      padNum(now.getUTCMonth() + 1) +
-      padNum(now.getUTCDate());
-    let url = `https://data.10ten.study/fx/jpy-${dateString}.json`;
+    let url = `https://data.10ten.study/fx/jpy.json`;
 
     // Set up query string
     const manifest = browser.runtime.getManifest();
@@ -162,12 +151,13 @@ export class FxFetcher {
       // If this fails (e.g. due to a QuotaExceededError) there's not much we
       // can do since we communicate the FX data with other components via
       // local storage.
+      const updated = Date.now();
       await browser.storage.local.set({
-        fx: { ...result, updated: now.getTime() },
+        fx: { ...result, updated },
       });
 
       // Update our local state now that everything succeeded
-      this.updated = now.getTime();
+      this.updated = updated;
       this.fetchState = { type: 'idle' };
     } catch (e: unknown) {
       // Convert network errors disguised as TypeErrors to DownloadErrors
@@ -203,24 +193,12 @@ export class FxFetcher {
           { error: e }
         );
 
-        // If we request a day in the future (e.g. because our clock is wrong),
-        // CloudFront will return a 401/403 Forbidden response.
-        //
-        // In that case we should try to request the previous day's data.
-        //
-        // (Eventually we should probably just serve a single file with the
-        // latest data and set an appropriate 24h expiry on it.)
-        const usePreviousDay =
-          e instanceof DownloadError && (e.code === 401 || e.code === 403);
-
         // We're using setTimeout here but in the case of event pages (as we
         // use on some platforms) these are not guaranteed to run.
         //
         // That's fine though because if the background page gets killed then
         // when it restarts it will trigger a new fetch anyway.
-        const timeout = window.setTimeout(() => {
-          this.fetchData({ usePreviousDay });
-        }, 5000);
+        const timeout = window.setTimeout(() => this.fetchData(), 5000);
         this.fetchState = { type: 'waiting to retry', retryCount, timeout };
       } else {
         console.error(e);
