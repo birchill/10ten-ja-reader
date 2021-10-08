@@ -6,4 +6,4 @@ path = require('path');
 // fork to system-installed node which is v14.17.6 at this time of writing
 // this workaround can be removed once the Github actions runner supports a
 // newer version of Node.js
-child.fork(path.resolve(__dirname, 'dist/index.mjs'), [], { execPath: 'node' });
+child.fork(path.resolve(__dirname, 'index.mjs'), [], { execPath: 'node' });
