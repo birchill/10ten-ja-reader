@@ -1,3 +1,7 @@
+## Next version
+
+- Minor fixes to currency data fetching and error reporting.
+
 ## 1.4.3 (2021-10-01)
 
 - Expands numbers that include kanji characters and aren't in the dictionary
