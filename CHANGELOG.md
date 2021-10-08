@@ -1,4 +1,4 @@
-## Next version
+## 1.4.4 (2021-10-08)
 
 - Minor fixes to currency data fetching and error reporting.
 
