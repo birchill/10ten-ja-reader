@@ -1,6 +1,9 @@
-const fs = require('fs');
-const path = require('path');
-const { parseSemVer } = require('semver-parser');
+import * as fs from 'fs';
+import * as path from 'path';
+import { fileURLToPath } from 'url';
+import { parseSemVer } from 'semver-parser';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function main() {
   console.log('Synchronizing version number in manifest...');
@@ -17,8 +20,9 @@ function main() {
   console.log(`  Version in package.json: ${packageJson.version}`);
 
   // Parse it
-  const { major, minor, patch, pre, matches } =
-    parseSemVer(originalVersionString);
+  const { major, minor, patch, pre, matches } = parseSemVer(
+    originalVersionString
+  );
   if (!matches) {
     console.error(`Could not parse version ${originalVersionString}`);
     process.exit(1);
@@ -37,7 +41,8 @@ function main() {
   // Update the manifest
   const manifestPath = path.join(__dirname, '..', 'manifest.json.src');
   const manifestSrc = fs.readFileSync(manifestPath, 'utf8');
-  const existingVersionInfo = /(\/\*#if supports_alpha_version\*\/.*?\/\*#endif\*\/)|("version": "\d+\.\d+\.\d+",)/s;
+  const existingVersionInfo =
+    /(\/\*#if supports_alpha_version\*\/.*?\/\*#endif\*\/)|("version": "\d+\.\d+\.\d+",)/s;
   if (!manifestSrc.match(existingVersionInfo)) {
     console.error('Failed to find existing version information in manifest');
     process.exit(1);
