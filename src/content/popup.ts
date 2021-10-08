@@ -47,6 +47,60 @@ import { EraInfo, EraMeta, getEraInfo } from './years';
 import popupStyles from '../../css/popup.css';
 import { NumberMeta } from './numbers';
 
+// Update NumberFormatOptions definition
+declare global {
+  namespace Intl {
+    interface NumberFormatOptions {
+      compactDisplay?: 'short' | 'long';
+      currency?: string;
+      // Should be 'symbol' | 'narrowSymbol' | 'code' | 'name' but TS doesn't
+      // let us override the type here.
+      currencyDisplay?: string;
+      // Should be 'standard' | 'accounting' but TS doesn't let us override the
+      // type here.
+      currencySign?: string;
+      // Should be 'lookup' | 'best fit' but TS doesn't let us override the
+      // type here.
+      notation?: 'standard' | 'scientific' | 'engineering' | 'compact';
+      numberingSystem?:
+        | 'arab'
+        | 'arabext'
+        | 'bali'
+        | 'beng'
+        | 'deva'
+        | 'fullwide'
+        | 'gujr'
+        | 'guru'
+        | 'hanidec'
+        | 'khmr'
+        | 'knda'
+        | 'laoo'
+        | 'latn'
+        | 'limb'
+        | 'mlym'
+        | 'mong'
+        | 'mymr'
+        | 'orya'
+        | 'tamldec'
+        | 'telu'
+        | 'thai'
+        | 'tibt';
+      signDisplay?: 'auto' | 'always' | 'never' | 'exceptZero';
+      // Should be 'decimal' | 'currency' | 'percent' | 'unit' but TS doesn't
+      // let us override the type here.
+      style?: string;
+      unit?: string;
+      unitDisplay?: 'short' | 'long' | 'narrow';
+      useGrouping?: boolean;
+      minimumIntegerDigits?: number;
+      minimumFractionDigits?: number;
+      maximumFractionDigits?: number;
+      minimumSignificantDigits?: number;
+      maximumSignificantDigits?: number;
+    }
+  }
+}
+
 export const enum CopyState {
   Inactive,
   Active,
@@ -793,30 +847,7 @@ function renderCurrencyInfo(
   const valueSpan = document.createElement('span');
   valueSpan.classList.add('value');
   const value = meta.value * fxData.rate;
-  let formattedValue: string;
-  if (fxData.currency === 'BTC') {
-    // BTC is a bit special because Intl.NumberFormat doesn't support it and if
-    // we let it do its fallback rounding to two decimal places we'll lose most
-    // of the information.
-    formattedValue = `\u20bf${value.toFixed(8)}`;
-  } else {
-    formattedValue = new Intl.NumberFormat(undefined, {
-      style: 'currency',
-      currency: fxData.currency,
-      currencyDisplay: 'narrowSymbol',
-    }).format(value);
-    // Drop redundant currency code.
-    //
-    // If the browser doesn't have a specific symbol (e.g. $) for the currency,
-    // it generally just prepends the currency code (e.g. USD) but that's
-    // redundant with our valueCurrencyLabel so we try to detect and drop it in
-    // that case.
-    formattedValue = formattedValue.replace(
-      new RegExp(`^\\s*${fxData.currency}\\s*`),
-      ''
-    );
-  }
-  valueSpan.append(formattedValue);
+  valueSpan.append(renderCurrencyValue({ currency: fxData.currency, value }));
   rhs.append(valueSpan);
 
   const timestampRow = document.createElement('div');
@@ -834,6 +865,50 @@ function renderCurrencyInfo(
   metaDiv.append(timestampRow);
 
   return metaDiv;
+}
+
+function renderCurrencyValue({
+  currency,
+  value,
+}: {
+  currency: string;
+  value: number;
+}): string {
+  // BTC is a bit special because Intl.NumberFormat doesn't support it and if we
+  // let it do its fallback rounding to two decimal places we'll lose most of
+  // the information.
+  //
+  // In fact, the convention for BTC appears to be to always use 8 decimal
+  // places.
+  if (currency === 'BTC') {
+    return `\u20bf${value.toFixed(8)}`;
+  }
+
+  let formattedValue: string;
+  try {
+    formattedValue = new Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency,
+      currencyDisplay: 'narrowSymbol',
+    }).format(value);
+  } catch {
+    // Some older browsers may not support all the options above so fall back to
+    // general number formatting in that case.
+    formattedValue = new Intl.NumberFormat().format(value);
+  }
+
+  // Drop redundant currency code.
+  //
+  // If the browser doesn't have a specific symbol (e.g. $) for the currency,
+  // it generally just prepends the currency code (e.g. USD) but that's
+  // redundant with our valueCurrencyLabel so we try to detect and drop it in
+  // that case.
+  formattedValue = formattedValue.replace(
+    new RegExp(`^\\s*${currency}\\s*`),
+    ''
+  );
+
+  return formattedValue;
 }
 
 function renderNumberInfo(
