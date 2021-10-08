@@ -2,7 +2,7 @@
 
 - Minor fixes to currency data fetching and error reporting.
 
-## 1.4.3 (2021-10-01)
+## 1.4.3 (2021-10-01) (Firefox, Chrome, Mac Safari, iOS Safari)
 
 - Expands numbers that include kanji characters and aren't in the dictionary
   (e.g. 9万8800, 365億).
