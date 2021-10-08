@@ -37,6 +37,7 @@ class DownloadError extends Error {
 type FetchState =
   | {
       type: 'idle';
+      didFail?: boolean;
     }
   | {
       type: 'fetching';
@@ -203,7 +204,7 @@ export class FxFetcher {
       } else {
         console.error(e);
         Bugsnag.notify(e as any);
-        this.fetchState = { type: 'idle' };
+        this.fetchState = { type: 'idle', didFail: true };
       }
     }
 
@@ -213,7 +214,7 @@ export class FxFetcher {
     // If we succeeded, or failed outright, schedule our next update.
     //
     // For the failed outright case, we determined that retrying isn't going to
-    // help but who knows, maybe in 24 hours it will?
+    // help but who knows, maybe in an hour it will?
     await this.scheduleNextUpdate();
   }
 
@@ -230,25 +231,21 @@ export class FxFetcher {
       return;
     }
 
-    // If we've never been updated, schedule the next run in an hour.
+    // Schedule the next run to run in a day from the last update.
     //
-    // This is mostly going to happen when we fail the initial download and
-    // fetch decides to schedule the next update anyway.
-    //
-    // For that case, we don't want to re-trigger too soon or else we'll ping
+    // If we failed the last update (or failed _every_ update) try again in an
+    // hour. We don't want to re-trigger too soon, however, or else we'll ping
     // the server unnecessarily.
-    //
-    // Furthermore, if we successfully updated once in the past but have failed
-    // since (e.g. because storage.local is now full) make sure we don't set
-    // nextRun to some time in the past.
     const now = Date.now();
-    let nextRun =
-      typeof this.updated === 'undefined' || this.updated + ONE_DAY <= now
-        ? now + ONE_HOUR
-        : this.updated + ONE_DAY;
+    let nextRun: number;
+    if (typeof this.updated === 'undefined' || this.fetchState.didFail) {
+      nextRun = now + ONE_HOUR;
+    } else {
+      nextRun = Math.max(this.updated + ONE_DAY, now);
+    }
 
-    // Clamp the next run to the start of the next UTC day so that it is as
-    // up-to-date as possible.
+    // If the next UTC day is before we're scheduled to run next, bring the next
+    // run forwards so that we get the data when it is as fresh as possible.
     const nextUtcDay = now + ONE_DAY - (now % ONE_DAY);
     if (nextUtcDay < nextRun) {
       // ... but add a few minutes to avoid all the clients hitting the server
