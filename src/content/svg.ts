@@ -1,4 +1,5 @@
 export const SVG_NS = 'http://www.w3.org/2000/svg';
+export const HTML_NS = 'http://www.w3.org/1999/xhtml';
 
 export const isSvgDoc = (doc: Document): boolean => {
   return doc.documentElement.namespaceURI === SVG_NS;

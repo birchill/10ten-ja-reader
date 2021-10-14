@@ -1,6 +1,6 @@
 import { getHash } from '../utils/hash';
 
-import { isForeignObjectElement, isSvgDoc, SVG_NS } from './svg';
+import { HTML_NS, isForeignObjectElement, isSvgDoc, SVG_NS } from './svg';
 
 export function getOrCreateEmptyContainer({
   doc,
@@ -51,6 +51,7 @@ export function getOrCreateEmptyContainer({
     foreignObject.setAttribute('width', '100%');
     foreignObject.setAttribute('height', '100%');
     foreignObject.style.setProperty('pointer-events', 'none', 'important');
+    foreignObject.style.setProperty('overflow', 'visible', 'important');
     doc.documentElement.append(foreignObject);
     parent = foreignObject;
   } else {
@@ -58,7 +59,7 @@ export function getOrCreateEmptyContainer({
   }
 
   // Actually create the container element
-  const container = doc.createElement('div');
+  const container = doc.createElementNS(HTML_NS, 'div');
   container.id = id;
   parent.append(container);
 
@@ -100,8 +101,11 @@ function resetContent(elem: HTMLElement) {
     return;
   }
 
-  for (const child of elem.shadowRoot!.children) {
-    if (child.tagName !== 'STYLE') {
+  const children = Array.from(elem.shadowRoot.children);
+  for (const child of children) {
+    // We need to convert to uppercase because for standalone SVG documents the
+    // tag name case is not normalized.
+    if (child.tagName.toUpperCase() !== 'STYLE') {
       child.remove();
     }
   }
@@ -122,7 +126,7 @@ function resetStyles({
     container.attachShadow({ mode: 'open' });
 
     // Add <style>
-    const style = doc.createElement('style');
+    const style = doc.createElementNS(HTML_NS, 'style');
     style.textContent = styles;
     style.dataset.hash = styleHash;
     container.shadowRoot!.append(style);
@@ -135,7 +139,7 @@ function resetStyles({
     }
 
     if (!existingStyle) {
-      const style = doc.createElement('style');
+      const style = doc.createElementNS(HTML_NS, 'style');
       style.textContent = styles;
       style.dataset.hash = styleHash;
       container.shadowRoot!.append(style);

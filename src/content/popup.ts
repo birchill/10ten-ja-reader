@@ -41,7 +41,7 @@ import { CurrencyMeta } from './currency';
 import { convertMeasure, MeasureMeta } from './measure';
 import { SelectionMeta } from './meta';
 import { NamePreview, QueryResult } from './query';
-import { SVG_NS } from './svg';
+import { HTML_NS, SVG_NS } from './svg';
 import { EraInfo, EraMeta, getEraInfo } from './years';
 
 import popupStyles from '../../css/popup.css';
@@ -171,7 +171,7 @@ export function renderPopup(
     windowElem.dataset.tabSide = options.tabDisplay || 'top';
   }
 
-  const contentContainer = document.createElement('div');
+  const contentContainer = document.createElementNS(HTML_NS, 'div');
   contentContainer.classList.add('content');
 
   const resultToShow = result?.[options.dictToShow];
@@ -225,7 +225,7 @@ export function renderPopup(
         }
         metadata.classList.add('-metaonly');
 
-        const metaDataContainer = document.createElement('div');
+        const metaDataContainer = document.createElementNS(HTML_NS, 'div');
         metaDataContainer.classList.add('wordlist');
         metaDataContainer.append(metadata);
         contentContainer.append(metaDataContainer);
@@ -260,7 +260,7 @@ export function renderPopup(
   }
 
   if (!showTabs && options.onClosePopup) {
-    const closeButtonWrapper = document.createElement('div');
+    const closeButtonWrapper = document.createElementNS(HTML_NS, 'div');
     closeButtonWrapper.classList.add('close-button-wrapper');
     closeButtonWrapper.append(contentContainer);
     closeButtonWrapper.append(renderCloseButton(options.onClosePopup));
@@ -290,7 +290,7 @@ function resetContainer({
   document: Document;
   popupStyle: string;
 }): HTMLElement {
-  const windowDiv = doc.createElement('div');
+  const windowDiv = doc.createElementNS(HTML_NS, 'div');
   windowDiv.classList.add('window');
 
   // Set theme
@@ -369,7 +369,7 @@ function renderTabBar({
   queryResult?: QueryResult;
   selectedTab: MajorDataSeries;
 }): HTMLElement {
-  const tabBar = document.createElement('div');
+  const tabBar = document.createElementNS(HTML_NS, 'div');
   tabBar.classList.add('tab-bar');
   tabBar.lang = getLangTag();
 
@@ -377,7 +377,7 @@ function renderTabBar({
     // Dummy event to make Safari not eat clicks on the child links / buttons.
   });
 
-  const list = document.createElement('ul');
+  const list = document.createElementNS(HTML_NS, 'ul');
   list.classList.add('tabs');
 
   const sections: Array<{
@@ -389,7 +389,7 @@ function renderTabBar({
     { series: 'names', renderIcon: renderPerson },
   ];
   for (const { series, renderIcon } of sections) {
-    const li = document.createElement('li');
+    const li = document.createElementNS(HTML_NS, 'li');
     li.setAttribute('role', 'presentation');
     li.classList.add('tab');
 
@@ -399,7 +399,7 @@ function renderTabBar({
       li.classList.add('disabled');
     }
 
-    const a = document.createElement('a');
+    const a = document.createElementNS(HTML_NS, 'a') as HTMLAnchorElement;
     if (series !== selectedTab && onSwitchDictionary) {
       a.href = '#';
       a.onclick = (e: Event) => {
@@ -413,7 +413,7 @@ function renderTabBar({
     icon.classList.add('icon');
     a.append(icon);
 
-    const label = document.createElement('span');
+    const label = document.createElementNS(HTML_NS, 'span');
     label.textContent = browser.i18n.getMessage(`tabs_${series}_label`);
     a.append(label);
 
@@ -433,10 +433,13 @@ function renderTabBar({
 }
 
 function renderSettingsButton(onShowSettings: () => void): HTMLElement {
-  const settings = document.createElement('div');
+  const settings = document.createElementNS(HTML_NS, 'div');
   settings.classList.add('settings');
 
-  const settingsButton = document.createElement('button');
+  const settingsButton = document.createElementNS(
+    HTML_NS,
+    'button'
+  ) as HTMLButtonElement;
   settingsButton.classList.add('settings-button');
   settingsButton.type = 'button';
   settingsButton.setAttribute(
@@ -476,10 +479,13 @@ function renderSettingsButton(onShowSettings: () => void): HTMLElement {
 }
 
 function renderCloseButton(onClosePopup: () => void): HTMLElement {
-  const close = document.createElement('div');
+  const close = document.createElementNS(HTML_NS, 'div');
   close.classList.add('close');
 
-  const closeButton = document.createElement('button');
+  const closeButton = document.createElementNS(
+    HTML_NS,
+    'button'
+  ) as HTMLButtonElement;
   closeButton.classList.add('close-button');
   closeButton.type = 'button';
   closeButton.setAttribute(
@@ -517,11 +523,11 @@ function renderWordEntries({
   options: PopupOptions;
   title: string | undefined;
 }): HTMLElement {
-  const container = document.createElement('div');
+  const container = document.createElementNS(HTML_NS, 'div');
   container.classList.add('wordlist');
 
   if (title) {
-    const titleDiv = document.createElement('div');
+    const titleDiv = document.createElementNS(HTML_NS, 'div');
     container.append(titleDiv);
     titleDiv.classList.add('title');
     titleDiv.lang = 'ja';
@@ -547,7 +553,7 @@ function renderWordEntries({
   let index = 0;
   const selectedIndex = getSelectedIndex(options, entries.length);
   for (const entry of entries) {
-    const entryDiv = document.createElement('div');
+    const entryDiv = document.createElementNS(HTML_NS, 'div');
     container.append(entryDiv);
 
     entryDiv.classList.add('entry');
@@ -558,7 +564,7 @@ function renderWordEntries({
     }
     index++;
 
-    const headingDiv = document.createElement('div');
+    const headingDiv = document.createElementNS(HTML_NS, 'div');
     entryDiv.append(headingDiv);
 
     // Sort matched kanji entries first
@@ -566,12 +572,12 @@ function renderWordEntries({
       ? [...entry.k].sort((a, b) => Number(b.match) - Number(a.match))
       : [];
     if (sortedKanji.length) {
-      const kanjiSpan = document.createElement('span');
+      const kanjiSpan = document.createElementNS(HTML_NS, 'span');
       kanjiSpan.classList.add('w-kanji');
       kanjiSpan.lang = 'ja';
       for (const [i, kanji] of sortedKanji.entries()) {
         if (i) {
-          const commaSpan = document.createElement('span');
+          const commaSpan = document.createElementNS(HTML_NS, 'span');
           commaSpan.classList.add('w-separator');
           commaSpan.textContent = '、';
           kanjiSpan.append(commaSpan);
@@ -579,7 +585,7 @@ function renderWordEntries({
 
         let headwordSpan = kanjiSpan;
         if (!kanji.match) {
-          const dimmedSpan = document.createElement('span');
+          const dimmedSpan = document.createElementNS(HTML_NS, 'span');
           dimmedSpan.classList.add('w-unmatched');
           kanjiSpan.append(dimmedSpan);
           headwordSpan = dimmedSpan;
@@ -597,7 +603,7 @@ function renderWordEntries({
 
     const matchingKana = entry.r.filter((r) => r.match);
     if (matchingKana.length) {
-      const kanaSpan = document.createElement('span');
+      const kanaSpan = document.createElementNS(HTML_NS, 'span');
       kanaSpan.classList.add('w-kana');
       kanaSpan.lang = 'ja';
       for (const [i, kana] of matchingKana.entries()) {
@@ -614,7 +620,7 @@ function renderWordEntries({
     }
 
     if (entry.romaji?.length) {
-      const romajiSpan = document.createElement('span');
+      const romajiSpan = document.createElementNS(HTML_NS, 'span');
       romajiSpan.classList.add('w-romaji');
       romajiSpan.lang = 'ja';
       romajiSpan.append(entry.romaji.join(', '));
@@ -622,7 +628,7 @@ function renderWordEntries({
     }
 
     if (entry.reason) {
-      const reasonSpan = document.createElement('span');
+      const reasonSpan = document.createElementNS(HTML_NS, 'span');
       headingDiv.append(reasonSpan);
       reasonSpan.lang = getLangTag();
       reasonSpan.classList.add('w-conj');
@@ -635,7 +641,7 @@ function renderWordEntries({
   }
 
   if (more) {
-    const moreDiv = document.createElement('div');
+    const moreDiv = document.createElementNS(HTML_NS, 'div');
     moreDiv.classList.add('more');
     moreDiv.append('...');
     container.append(moreDiv);
@@ -645,25 +651,25 @@ function renderWordEntries({
 }
 
 function renderEraInfo(meta: EraMeta, eraInfo: EraInfo): HTMLElement {
-  const metaDiv = document.createElement('div');
+  const metaDiv = document.createElementNS(HTML_NS, 'div');
   metaDiv.classList.add('meta', 'era');
   metaDiv.lang = 'ja';
 
-  const eraSpan = document.createElement('span');
+  const eraSpan = document.createElementNS(HTML_NS, 'span');
   eraSpan.classList.add('era-name');
 
-  const rubyBase = document.createElement('ruby');
+  const rubyBase = document.createElementNS(HTML_NS, 'ruby');
   rubyBase.append(meta.era);
 
-  const rpOpen = document.createElement('rp');
+  const rpOpen = document.createElementNS(HTML_NS, 'rp');
   rpOpen.append('(');
   rubyBase.append(rpOpen);
 
-  const rubyText = document.createElement('rt');
+  const rubyText = document.createElementNS(HTML_NS, 'rt');
   rubyText.append(eraInfo.reading);
   rubyBase.append(rubyText);
 
-  const rpClose = document.createElement('rp');
+  const rpClose = document.createElementNS(HTML_NS, 'rp');
   rpClose.append(')');
   rubyBase.append(rpClose);
   eraSpan.append(rubyBase);
@@ -675,12 +681,12 @@ function renderEraInfo(meta: EraMeta, eraInfo: EraInfo): HTMLElement {
   }
   metaDiv.append(eraSpan);
 
-  const equalsSpan = document.createElement('span');
+  const equalsSpan = document.createElementNS(HTML_NS, 'span');
   equalsSpan.classList.add('equals');
   equalsSpan.append('=');
   metaDiv.append(equalsSpan);
 
-  const seirekiSpan = document.createElement('span');
+  const seirekiSpan = document.createElementNS(HTML_NS, 'span');
   seirekiSpan.classList.add('seireki');
   const seireki =
     meta.year === 0 ? eraInfo.start : meta.year - 1 + eraInfo.start;
@@ -693,26 +699,26 @@ function renderEraInfo(meta: EraMeta, eraInfo: EraInfo): HTMLElement {
 function renderMeasureInfo(meta: MeasureMeta): HTMLElement {
   const converted = convertMeasure(meta);
 
-  const metaDiv = document.createElement('div');
+  const metaDiv = document.createElementNS(HTML_NS, 'div');
   metaDiv.classList.add('meta', 'measure');
   metaDiv.lang = 'ja';
 
-  const mainRow = document.createElement('div');
+  const mainRow = document.createElementNS(HTML_NS, 'div');
   mainRow.classList.add('main');
   metaDiv.append(mainRow);
 
-  const measureSpan = document.createElement('span');
+  const measureSpan = document.createElementNS(HTML_NS, 'span');
   measureSpan.classList.add('value');
   measureSpan.append(meta.value.toLocaleString());
   measureSpan.append(renderUnit(meta.unit));
   mainRow.append(measureSpan);
 
-  const equalsSpan = document.createElement('span');
+  const equalsSpan = document.createElementNS(HTML_NS, 'span');
   equalsSpan.classList.add('equals');
   equalsSpan.append('=');
   mainRow.append(equalsSpan);
 
-  const convertedSpan = document.createElement('span');
+  const convertedSpan = document.createElementNS(HTML_NS, 'span');
   convertedSpan.classList.add('value');
   convertedSpan.append(renderValue(converted.value));
   convertedSpan.append(renderUnit(converted.unit));
@@ -720,28 +726,28 @@ function renderMeasureInfo(meta: MeasureMeta): HTMLElement {
 
   if (converted.alt) {
     for (const { type, label, unit, value } of converted.alt) {
-      const altRow = document.createElement('div');
+      const altRow = document.createElementNS(HTML_NS, 'div');
       altRow.classList.add('alt');
 
-      const altLabel = document.createElement('span');
+      const altLabel = document.createElementNS(HTML_NS, 'span');
       if (label) {
         altLabel.append(label);
       }
       const expl = browser.i18n.getMessage(`measure_expl_${type}`);
       if (expl) {
-        const altExplLabel = document.createElement('span');
+        const altExplLabel = document.createElementNS(HTML_NS, 'span');
         altExplLabel.append(expl);
         altExplLabel.lang = getLangTag();
         altLabel.append(altExplLabel);
       }
       altRow.append(altLabel);
 
-      const altEquals = document.createElement('span');
+      const altEquals = document.createElementNS(HTML_NS, 'span');
       altEquals.classList.add('equals');
       altEquals.append('=');
       altRow.append(altEquals);
 
-      const altValue = document.createElement('span');
+      const altValue = document.createElementNS(HTML_NS, 'span');
       altValue.classList.add('measure');
       altValue.append(renderValue(value));
       altValue.append(renderUnit(unit, { showRuby: false }));
@@ -768,27 +774,27 @@ function renderUnit(
   unit: MeasureMeta['unit'],
   { showRuby = true }: { showRuby?: boolean } = {}
 ): HTMLElement {
-  const unitSpan = document.createElement('span');
+  const unitSpan = document.createElementNS(HTML_NS, 'span');
   unitSpan.classList.add('unit');
 
   if (unit === 'm2') {
     unitSpan.append('m');
-    const sup = document.createElement('sup');
+    const sup = document.createElementNS(HTML_NS, 'sup');
     sup.append('2');
     unitSpan.append(sup);
   } else if (showRuby) {
-    const rubyBase = document.createElement('ruby');
+    const rubyBase = document.createElementNS(HTML_NS, 'ruby');
     rubyBase.append(unit);
 
-    const rpOpen = document.createElement('rp');
+    const rpOpen = document.createElementNS(HTML_NS, 'rp');
     rpOpen.append('(');
     rubyBase.append(rpOpen);
 
-    const rubyText = document.createElement('rt');
+    const rubyText = document.createElementNS(HTML_NS, 'rt');
     rubyText.append('じょう');
     rubyBase.append(rubyText);
 
-    const rpClose = document.createElement('rp');
+    const rpClose = document.createElementNS(HTML_NS, 'rp');
     rpClose.append(')');
     rubyBase.append(rpClose);
     unitSpan.append(rubyBase);
@@ -803,24 +809,24 @@ function renderCurrencyInfo(
   meta: CurrencyMeta,
   fxData: NonNullable<ContentConfig['fx']>
 ): HTMLElement {
-  const metaDiv = document.createElement('div');
+  const metaDiv = document.createElementNS(HTML_NS, 'div');
   metaDiv.classList.add('meta', 'currency');
   metaDiv.lang = 'ja';
 
-  const mainRow = document.createElement('div');
+  const mainRow = document.createElementNS(HTML_NS, 'div');
   mainRow.classList.add('main');
   metaDiv.append(mainRow);
 
-  const lhs = document.createElement('div');
+  const lhs = document.createElementNS(HTML_NS, 'div');
   lhs.classList.add('equation-part');
   mainRow.append(lhs);
 
-  const srcCurrencyLabel = document.createElement('span');
+  const srcCurrencyLabel = document.createElementNS(HTML_NS, 'span');
   srcCurrencyLabel.classList.add('curr');
   srcCurrencyLabel.append('JPY');
   lhs.append(srcCurrencyLabel);
 
-  const srcSpan = document.createElement('span');
+  const srcSpan = document.createElementNS(HTML_NS, 'span');
   srcSpan.classList.add('src');
   srcSpan.append(
     new Intl.NumberFormat('ja-JP', {
@@ -830,27 +836,27 @@ function renderCurrencyInfo(
   );
   lhs.append(srcSpan);
 
-  const equalsSpan = document.createElement('span');
+  const equalsSpan = document.createElementNS(HTML_NS, 'span');
   equalsSpan.classList.add('equals');
   equalsSpan.append('≈');
   lhs.append(equalsSpan);
 
-  const rhs = document.createElement('div');
+  const rhs = document.createElementNS(HTML_NS, 'div');
   rhs.classList.add('equation-part');
   mainRow.append(rhs);
 
-  const valueCurrencyLabel = document.createElement('span');
+  const valueCurrencyLabel = document.createElementNS(HTML_NS, 'span');
   valueCurrencyLabel.classList.add('curr');
   valueCurrencyLabel.append(fxData.currency);
   rhs.append(valueCurrencyLabel);
 
-  const valueSpan = document.createElement('span');
+  const valueSpan = document.createElementNS(HTML_NS, 'span');
   valueSpan.classList.add('value');
   const value = meta.value * fxData.rate;
   valueSpan.append(renderCurrencyValue({ currency: fxData.currency, value }));
   rhs.append(valueSpan);
 
-  const timestampRow = document.createElement('div');
+  const timestampRow = document.createElementNS(HTML_NS, 'div');
   timestampRow.classList.add('timestamp');
   const timestampAsDate = new Date(fxData.timestamp);
   const timestampAsString = timestampAsDate.toLocaleString(undefined, {
@@ -915,23 +921,23 @@ function renderNumberInfo(
   meta: NumberMeta,
   { isCombinedResult }: { isCombinedResult: boolean }
 ): HTMLElement {
-  const metaDiv = document.createElement('div');
+  const metaDiv = document.createElementNS(HTML_NS, 'div');
   metaDiv.classList.add('meta', 'number');
 
   if (isCombinedResult) {
-    const srcSpan = document.createElement('span');
+    const srcSpan = document.createElementNS(HTML_NS, 'span');
     srcSpan.classList.add('src');
     srcSpan.append(meta.src);
     srcSpan.lang = 'ja';
     metaDiv.append(srcSpan);
 
-    const equalsSpan = document.createElement('span');
+    const equalsSpan = document.createElementNS(HTML_NS, 'span');
     equalsSpan.classList.add('equals');
     equalsSpan.append('=');
     metaDiv.append(equalsSpan);
   }
 
-  const numberSpan = document.createElement('span');
+  const numberSpan = document.createElementNS(HTML_NS, 'span');
   numberSpan.classList.add('value');
   numberSpan.append(meta.value.toLocaleString());
   metaDiv.append(numberSpan);
@@ -940,7 +946,7 @@ function renderNumberInfo(
 }
 
 function renderNamePreview({ names, more }: NamePreview): HTMLElement {
-  const container = document.createElement('div');
+  const container = document.createElementNS(HTML_NS, 'div');
   container.classList.add('bonus-name');
 
   for (const name of names) {
@@ -948,7 +954,7 @@ function renderNamePreview({ names, more }: NamePreview): HTMLElement {
   }
 
   if (more) {
-    const moreSpan = document.createElement('span');
+    const moreSpan = document.createElementNS(HTML_NS, 'span');
     moreSpan.classList.add('more');
     moreSpan.append('…');
     container.append(moreSpan);
@@ -979,7 +985,7 @@ function renderKana(
       // At the same time we want to distinguish between heiban and
       // "no accent information". So we indicate heiban with a dotted line
       // across the top instead.
-      const wrapperSpan = document.createElement('span');
+      const wrapperSpan = document.createElementNS(HTML_NS, 'span');
       wrapperSpan.classList.add('w-heiban');
       wrapperSpan.textContent = kana.ent;
       return wrapperSpan;
@@ -993,38 +999,38 @@ function renderKana(
   }
 
   // Generate binary pitch display
-  const wrapperSpan = document.createElement('span');
+  const wrapperSpan = document.createElementNS(HTML_NS, 'span');
   wrapperSpan.classList.add('w-binary');
 
   // Accent position 0 (heiban: LHHHHH) and accent position 1 (atamadata: HLLLL)
   // are sufficiently similar that we handle them together.
   if (accentPos === 0 || accentPos === 1) {
     const len = countMora(kana.ent);
-    const startSpan = document.createElement('span');
+    const startSpan = document.createElementNS(HTML_NS, 'span');
     startSpan.classList.add(accentPos ? 'h-l' : len > 1 ? 'l-h' : 'h');
     startSpan.textContent = moraSubstring(kana.ent, 0, 1);
     wrapperSpan.append(startSpan);
 
     if (len > 1) {
-      const endSpan = document.createElement('span');
+      const endSpan = document.createElementNS(HTML_NS, 'span');
       endSpan.classList.add(accentPos ? 'l' : 'h');
       endSpan.textContent = moraSubstring(kana.ent, 1);
       wrapperSpan.append(endSpan);
     }
   } else {
     // Otherwise we have nakadaka (LHHHHL) or odaka (LHHHH)
-    const startSpan = document.createElement('span');
+    const startSpan = document.createElementNS(HTML_NS, 'span');
     startSpan.classList.add('l-h');
     startSpan.textContent = moraSubstring(kana.ent, 0, 1);
     wrapperSpan.append(startSpan);
 
-    const middleSpan = document.createElement('span');
+    const middleSpan = document.createElementNS(HTML_NS, 'span');
     middleSpan.classList.add('h-l');
     middleSpan.textContent = moraSubstring(kana.ent, 1, accentPos);
     wrapperSpan.append(middleSpan);
 
     if (accentPos < countMora(kana.ent)) {
-      const endSpan = document.createElement('span');
+      const endSpan = document.createElementNS(HTML_NS, 'span');
       endSpan.classList.add('l');
       endSpan.textContent = moraSubstring(kana.ent, accentPos);
       wrapperSpan.append(endSpan);
@@ -1043,7 +1049,7 @@ function appendHeadwordInfo(
   }
 
   for (const i of info) {
-    const span = document.createElement('span');
+    const span = document.createElementNS(HTML_NS, 'span');
     span.classList.add('w-head-info');
     span.lang = getLangTag();
     span.append('(');
@@ -1111,7 +1117,7 @@ function renderStar(style: 'full' | 'hollow'): SVGElement {
 }
 
 function renderDefinitions(entry: WordResult, options: PopupOptions) {
-  const definitionsDiv = document.createElement('div');
+  const definitionsDiv = document.createElementNS(HTML_NS, 'div');
   definitionsDiv.classList.add('w-def');
 
   if (entry.s.length === 1) {
@@ -1128,9 +1134,9 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
     // First extract any native language senses
     const nativeSenses = entry.s.filter((s) => s.lang && s.lang !== 'en');
     if (nativeSenses.length) {
-      const definitionList = document.createElement('ul');
+      const definitionList = document.createElementNS(HTML_NS, 'ul');
       for (const sense of nativeSenses) {
-        const listItem = document.createElement('li');
+        const listItem = document.createElementNS(HTML_NS, 'li');
         listItem.lang = sense.lang || 'en';
         listItem.append(renderSense(sense, options));
         definitionList.append(listItem);
@@ -1159,11 +1165,11 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
       let startIndex = 1;
       for (const group of posGroups) {
         // Group heading
-        const groupHeading = document.createElement('p');
+        const groupHeading = document.createElementNS(HTML_NS, 'p');
         groupHeading.classList.add('w-group-head');
 
         for (const pos of group.pos) {
-          const posSpan = document.createElement('span');
+          const posSpan = document.createElementNS(HTML_NS, 'span');
           posSpan.classList.add('w-pos', 'tag');
           if (options.posDisplay === 'expl') {
             posSpan.lang = getLangTag();
@@ -1177,7 +1183,7 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
         }
 
         for (const misc of group.misc) {
-          const miscSpan = document.createElement('span');
+          const miscSpan = document.createElementNS(HTML_NS, 'span');
           miscSpan.classList.add('w-misc', 'tag');
           miscSpan.lang = getLangTag();
           miscSpan.textContent =
@@ -1188,7 +1194,7 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
 
         // If there is no group heading, just add a '-' placeholder
         if (!group.pos.length && !group.misc.length) {
-          const posSpan = document.createElement('span');
+          const posSpan = document.createElementNS(HTML_NS, 'span');
           posSpan.classList.add('w-pos', 'tag');
           posSpan.textContent = '-';
           groupHeading.append(posSpan);
@@ -1197,10 +1203,13 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
         definitionsDiv.append(groupHeading);
 
         // Group items
-        const definitionList = document.createElement('ol');
+        const definitionList = document.createElementNS(
+          HTML_NS,
+          'ol'
+        ) as HTMLOListElement;
         definitionList.start = startIndex;
         for (const sense of group.senses) {
-          const listItem = document.createElement('li');
+          const listItem = document.createElementNS(HTML_NS, 'li');
           listItem.lang = sense.lang || 'en';
           listItem.append(renderSense(sense, options));
           listItem.classList.toggle('foreign', isForeign);
@@ -1210,9 +1219,9 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
         definitionsDiv.append(definitionList);
       }
     } else {
-      const definitionList = document.createElement('ol');
+      const definitionList = document.createElementNS(HTML_NS, 'ol');
       for (const sense of enSenses) {
-        const listItem = document.createElement('li');
+        const listItem = document.createElementNS(HTML_NS, 'li');
         listItem.lang = sense.lang || 'en';
         listItem.append(renderSense(sense, options));
         listItem.classList.toggle('foreign', isForeign);
@@ -1233,7 +1242,7 @@ function renderSense(
 
   if (options.posDisplay !== 'none') {
     for (const pos of sense.pos || []) {
-      const posSpan = document.createElement('span');
+      const posSpan = document.createElementNS(HTML_NS, 'span');
       posSpan.classList.add('w-pos', 'tag');
       switch (options.posDisplay) {
         case 'expl':
@@ -1254,7 +1263,7 @@ function renderSense(
 
   if (sense.field) {
     for (const field of sense.field) {
-      const fieldSpan = document.createElement('span');
+      const fieldSpan = document.createElementNS(HTML_NS, 'span');
       fieldSpan.classList.add('w-field', 'tag');
       fieldSpan.lang = getLangTag();
       fieldSpan.textContent =
@@ -1265,7 +1274,7 @@ function renderSense(
 
   if (sense.misc) {
     for (const misc of sense.misc) {
-      const miscSpan = document.createElement('span');
+      const miscSpan = document.createElementNS(HTML_NS, 'span');
       miscSpan.classList.add('w-misc', 'tag');
       miscSpan.lang = getLangTag();
       miscSpan.textContent =
@@ -1277,7 +1286,7 @@ function renderSense(
 
   if (sense.dial) {
     for (const dial of sense.dial) {
-      const dialSpan = document.createElement('span');
+      const dialSpan = document.createElementNS(HTML_NS, 'span');
       dialSpan.classList.add('w-dial', 'tag');
       dialSpan.lang = getLangTag();
       dialSpan.textContent =
@@ -1289,7 +1298,7 @@ function renderSense(
   appendGlosses(sense.g, fragment);
 
   if (sense.inf) {
-    const infSpan = document.createElement('span');
+    const infSpan = document.createElementNS(HTML_NS, 'span');
     infSpan.classList.add('w-inf');
     // Mark inf as Japanese because it often contains Japanese text
     infSpan.lang = 'ja';
@@ -1321,7 +1330,7 @@ function appendGlosses(glosses: Array<Gloss>, parent: ParentNode) {
         ? browser.i18n.getMessage(`gloss_type_label_${typeCode}`)
         : '';
       if (typeStr) {
-        const typeSpan = document.createElement('span');
+        const typeSpan = document.createElementNS(HTML_NS, 'span');
         typeSpan.classList.add('w-type');
         typeSpan.lang = getLangTag();
         typeSpan.textContent = `(${typeStr}) `;
@@ -1347,7 +1356,7 @@ function renderLangSources(sources: Array<LangSource>): DocumentFragment {
         browser.i18n.getMessage(`lang_label_${lsrc.lang || 'en'}`) || lsrc.lang;
     }
 
-    const wrapperSpan = document.createElement('span');
+    const wrapperSpan = document.createElementNS(HTML_NS, 'span');
     wrapperSpan.classList.add('w-lsrc');
     wrapperSpan.lang = getLangTag();
     wrapperSpan.append('(');
@@ -1360,7 +1369,7 @@ function renderLangSources(sources: Array<LangSource>): DocumentFragment {
     }
 
     if (lsrc.src) {
-      const sourceSpan = document.createElement('span');
+      const sourceSpan = document.createElementNS(HTML_NS, 'span');
       if (lsrc.lang) {
         sourceSpan.lang = lsrc.lang;
       }
@@ -1385,9 +1394,9 @@ function renderNamesEntries({
   more: boolean;
   options: PopupOptions;
 }): HTMLElement {
-  const container = document.createElement('div');
+  const container = document.createElementNS(HTML_NS, 'div');
 
-  const namesTable = document.createElement('div');
+  const namesTable = document.createElementNS(HTML_NS, 'div');
   container.append(namesTable);
   namesTable.classList.add('name-table');
 
@@ -1410,7 +1419,7 @@ function renderNamesEntries({
   }
 
   if (more) {
-    const moreDiv = document.createElement('div');
+    const moreDiv = document.createElementNS(HTML_NS, 'div');
     moreDiv.classList.add('more');
     moreDiv.append('...');
     namesTable.append(moreDiv);
@@ -1420,10 +1429,10 @@ function renderNamesEntries({
 }
 
 function renderName(entry: NameResult): HTMLElement {
-  const entryDiv = document.createElement('div');
+  const entryDiv = document.createElementNS(HTML_NS, 'div');
   entryDiv.classList.add('entry');
 
-  const entryTitleDiv = document.createElement('div');
+  const entryTitleDiv = document.createElementNS(HTML_NS, 'div');
   entryTitleDiv.classList.add('w-title');
   entryTitleDiv.lang = 'ja';
   entryDiv.append(entryTitleDiv);
@@ -1437,19 +1446,19 @@ function renderName(entry: NameResult): HTMLElement {
       kanji += '…';
     }
 
-    const kanjiSpan = document.createElement('span');
+    const kanjiSpan = document.createElementNS(HTML_NS, 'span');
     entryTitleDiv.append(kanjiSpan);
     kanjiSpan.classList.add('w-kanji');
     kanjiSpan.append(kanji);
   }
 
   const kana = entry.r.join('、');
-  const kanaSpan = document.createElement('span');
+  const kanaSpan = document.createElementNS(HTML_NS, 'span');
   entryTitleDiv.append(kanaSpan);
   kanaSpan.classList.add('w-kana');
   kanaSpan.append(kana);
 
-  const definitionBlock = document.createElement('div');
+  const definitionBlock = document.createElementNS(HTML_NS, 'div');
   definitionBlock.classList.add('w-def');
   for (const tr of entry.tr) {
     definitionBlock.append(renderNameTranslation(tr));
@@ -1460,7 +1469,7 @@ function renderName(entry: NameResult): HTMLElement {
 }
 
 function renderNameTranslation(tr: NameTranslation): HTMLSpanElement {
-  const definitionSpan = document.createElement('div');
+  const definitionSpan = document.createElementNS(HTML_NS, 'div');
   // ENAMDICT only has English glosses
   definitionSpan.lang = 'en';
   definitionSpan.append(tr.det.join(', '));
@@ -1471,7 +1480,7 @@ function renderNameTranslation(tr: NameTranslation): HTMLSpanElement {
       continue;
     }
 
-    const tagSpan = document.createElement('span');
+    const tagSpan = document.createElementNS(HTML_NS, 'span');
     tagSpan.classList.add('tag');
     tagSpan.classList.add(`tag-${tag}`);
     tagSpan.lang = getLangTag();
@@ -1501,7 +1510,7 @@ function renderKanjiEntry({
   const container = document.createDocumentFragment();
 
   // Main table
-  const table = document.createElement('div');
+  const table = document.createElementNS(HTML_NS, 'div');
   container.append(table);
   table.classList.add('kanji-table');
 
@@ -1515,19 +1524,19 @@ function renderKanjiEntry({
   }
 
   // Top part
-  const topPart = document.createElement('div');
+  const topPart = document.createElementNS(HTML_NS, 'div');
   topPart.classList.add('top-part');
   table.append(topPart);
 
   // -- The kanji itself
-  const kanjiDiv = document.createElement('div');
+  const kanjiDiv = document.createElementNS(HTML_NS, 'div');
   kanjiDiv.classList.add('kanji');
   kanjiDiv.lang = 'ja';
   kanjiDiv.append(entry.c);
   topPart.append(kanjiDiv);
 
   // -- Top-right part
-  const topRightPart = document.createElement('div');
+  const topRightPart = document.createElementNS(HTML_NS, 'div');
   topPart.append(topRightPart);
 
   // -- -- Readings
@@ -1539,7 +1548,7 @@ function renderKanjiEntry({
   }
 
   // -- -- Meanings
-  const meaningsDiv = document.createElement('div');
+  const meaningsDiv = document.createElementNS(HTML_NS, 'div');
   meaningsDiv.classList.add('meanings');
   meaningsDiv.lang = entry.m_lang;
   meaningsDiv.append(entry.m.join(', '));
@@ -1565,10 +1574,10 @@ function renderKanjiEntry({
 }
 
 function renderKanjiComponents(entry: KanjiResult): HTMLElement {
-  const componentsDiv = document.createElement('div');
+  const componentsDiv = document.createElementNS(HTML_NS, 'div');
   componentsDiv.classList.add('components');
 
-  const componentsTable = document.createElement('table');
+  const componentsTable = document.createElementNS(HTML_NS, 'table');
   componentsDiv.append(componentsTable);
 
   // The radical row is special. It has special highlighting, we show all
@@ -1577,30 +1586,30 @@ function renderKanjiComponents(entry: KanjiResult): HTMLElement {
   const addRadicalRow = () => {
     const { rad } = entry;
 
-    const row = document.createElement('tr');
+    const row = document.createElementNS(HTML_NS, 'tr');
     row.classList.add('-radical');
     componentsTable.append(row);
 
-    const radicalCell = document.createElement('td');
+    const radicalCell = document.createElementNS(HTML_NS, 'td');
     row.append(radicalCell);
     radicalCell.classList.add('char');
     radicalCell.append((rad.b || rad.k)!);
     radicalCell.lang = 'ja';
 
-    const readingCell = document.createElement('td');
+    const readingCell = document.createElementNS(HTML_NS, 'td');
     row.append(readingCell);
     readingCell.classList.add('reading');
     readingCell.append(rad.na.join('、'));
     readingCell.lang = 'ja';
 
-    const meaningCell = document.createElement('td');
+    const meaningCell = document.createElementNS(HTML_NS, 'td');
     row.append(meaningCell);
     meaningCell.classList.add('meaning');
     meaningCell.lang = rad.m_lang;
     meaningCell.append(rad.m.join(', '));
 
     if (rad.base) {
-      const baseRow = document.createElement('tr');
+      const baseRow = document.createElementNS(HTML_NS, 'tr');
       baseRow.classList.add('-baseradical');
       baseRow.lang = getLangTag();
       componentsTable.append(baseRow);
@@ -1612,7 +1621,7 @@ function renderKanjiComponents(entry: KanjiResult): HTMLElement {
         baseReadings,
       ]);
 
-      const baseCell = document.createElement('td');
+      const baseCell = document.createElementNS(HTML_NS, 'td');
       baseCell.setAttribute('colspan', '3');
       baseCell.innerText = fromText;
       baseRow.append(baseCell);
@@ -1634,22 +1643,22 @@ function renderKanjiComponents(entry: KanjiResult): HTMLElement {
       continue;
     }
 
-    const row = document.createElement('tr');
+    const row = document.createElementNS(HTML_NS, 'tr');
     componentsTable.append(row);
 
-    const radicalCell = document.createElement('td');
+    const radicalCell = document.createElementNS(HTML_NS, 'td');
     row.append(radicalCell);
     radicalCell.classList.add('char');
     radicalCell.lang = 'ja';
     radicalCell.append(component.c);
 
-    const readingCell = document.createElement('td');
+    const readingCell = document.createElementNS(HTML_NS, 'td');
     row.append(readingCell);
     readingCell.classList.add('reading');
     readingCell.lang = 'ja';
     readingCell.append(component.na.length ? component.na[0] : '-');
 
-    const meaningCell = document.createElement('td');
+    const meaningCell = document.createElementNS(HTML_NS, 'td');
     row.append(meaningCell);
     meaningCell.classList.add('meaning');
     meaningCell.lang = component.m_lang;
@@ -1661,7 +1670,7 @@ function renderKanjiComponents(entry: KanjiResult): HTMLElement {
 
 function renderReadings(entry: KanjiResult): HTMLElement {
   // Readings
-  const readingsDiv = document.createElement('div');
+  const readingsDiv = document.createElementNS(HTML_NS, 'div');
   readingsDiv.classList.add('readings');
   readingsDiv.lang = 'ja';
 
@@ -1687,7 +1696,7 @@ function renderReadings(entry: KanjiResult): HTMLElement {
       readingsDiv.append(reading);
     } else {
       readingsDiv.append(reading.substr(0, highlightIndex));
-      const okuriganaSpan = document.createElement('span');
+      const okuriganaSpan = document.createElementNS(HTML_NS, 'span');
       okuriganaSpan.classList.add('okurigana');
       okuriganaSpan.append(reading.substr(highlightIndex + 1));
       readingsDiv.append(okuriganaSpan);
@@ -1698,14 +1707,14 @@ function renderReadings(entry: KanjiResult): HTMLElement {
 
   // Name readings
   if (entry.r.na && entry.r.na.length) {
-    const nanoriLabelSpan = document.createElement('span');
+    const nanoriLabelSpan = document.createElementNS(HTML_NS, 'span');
     nanoriLabelSpan.classList.add('nanorilabel');
     nanoriLabelSpan.lang = getLangTag();
     nanoriLabelSpan.append(
       browser.i18n.getMessage('content_kanji_nanori_label')
     );
     readingsDiv.append(
-      document.createElement('br'),
+      document.createElementNS(HTML_NS, 'br'),
       nanoriLabelSpan,
       ` ${entry.r.na.join('、')}`
     );
@@ -1715,11 +1724,11 @@ function renderReadings(entry: KanjiResult): HTMLElement {
 }
 
 function renderMeta(meta: Array<string>): HTMLElement {
-  const metaDiv = document.createElement('div');
+  const metaDiv = document.createElementNS(HTML_NS, 'div');
   metaDiv.classList.add('meta');
 
   for (const tag of meta) {
-    const span = document.createElement('span');
+    const span = document.createElementNS(HTML_NS, 'span');
     span.classList.add('tag');
     span.lang = getLangTag();
     span.textContent = browser.i18n.getMessage(
@@ -1733,18 +1742,18 @@ function renderMeta(meta: Array<string>): HTMLElement {
 
 function renderMiscRow(entry: KanjiResult): HTMLElement {
   // Misc information row
-  const miscInfoDiv = document.createElement('div');
+  const miscInfoDiv = document.createElementNS(HTML_NS, 'div');
   miscInfoDiv.classList.add('misc');
   miscInfoDiv.lang = getLangTag();
 
   // Strokes
-  const strokesDiv = document.createElement('div');
+  const strokesDiv = document.createElementNS(HTML_NS, 'div');
   strokesDiv.classList.add('strokes');
   const pencilIcon = renderPencil();
   pencilIcon.classList.add('svgicon');
   pencilIcon.style.opacity = '0.5';
   strokesDiv.append(pencilIcon);
-  const strokeCount = document.createElement('span');
+  const strokeCount = document.createElementNS(HTML_NS, 'span');
   strokeCount.textContent =
     entry.misc.sc === 1
       ? browser.i18n.getMessage('content_kanji_strokes_label_1')
@@ -1755,17 +1764,17 @@ function renderMiscRow(entry: KanjiResult): HTMLElement {
   miscInfoDiv.append(strokesDiv);
 
   // Frequency
-  const frequencyDiv = document.createElement('div');
+  const frequencyDiv = document.createElementNS(HTML_NS, 'div');
   frequencyDiv.classList.add('freq');
   const frequencyIcon = renderFrequency(entry.misc.freq);
   frequencyIcon.classList.add('svgicon');
   frequencyDiv.append(frequencyIcon);
-  const frequency = document.createElement('span');
+  const frequency = document.createElementNS(HTML_NS, 'span');
   if (entry.misc.freq) {
     frequency.textContent =
       browser.i18n.getMessage('content_kanji_frequency_label') +
       ` ${entry.misc.freq.toLocaleString()}`;
-    const denominator = document.createElement('span');
+    const denominator = document.createElementNS(HTML_NS, 'span');
     denominator.classList.add('denom');
     denominator.append(` / ${Number(2500).toLocaleString()}`);
     frequency.append(denominator);
@@ -1776,13 +1785,13 @@ function renderMiscRow(entry: KanjiResult): HTMLElement {
   miscInfoDiv.append(frequencyDiv);
 
   // Grade
-  const gradeDiv = document.createElement('div');
+  const gradeDiv = document.createElementNS(HTML_NS, 'div');
   gradeDiv.classList.add('grade');
   const personIcon = renderPerson();
   personIcon.classList.add('svgicon');
   personIcon.style.opacity = '0.5';
   gradeDiv.append(personIcon);
-  const grade = document.createElement('span');
+  const grade = document.createElementNS(HTML_NS, 'span');
   switch (entry.misc.gr || 0) {
     case 8:
       grade.append(browser.i18n.getMessage('content_kanji_grade_general_use'));
@@ -1978,7 +1987,7 @@ function renderReferences(
   entry: KanjiResult,
   options: PopupOptions
 ): HTMLElement {
-  const referenceTable = document.createElement('div');
+  const referenceTable = document.createElementNS(HTML_NS, 'div');
   referenceTable.classList.add('references');
   referenceTable.lang = getLangTag();
 
@@ -1995,17 +2004,17 @@ function renderReferences(
       continue;
     }
 
-    const referenceCell = document.createElement('div');
+    const referenceCell = document.createElementNS(HTML_NS, 'div');
     referenceCell.classList.add('ref');
     referenceTable.append(referenceCell);
 
-    const nameSpan = document.createElement('span');
+    const nameSpan = document.createElementNS(HTML_NS, 'span');
     nameSpan.classList.add('name');
     nameSpan.append(ref.short || ref.full);
     referenceCell.append(nameSpan);
 
     const value = getReferenceValue(entry, ref.ref) || '-';
-    const valueSpan = document.createElement('span');
+    const valueSpan = document.createElementNS(HTML_NS, 'span');
     valueSpan.classList.add('value');
     if (ref.ref === 'radical' || ref.ref === 'nelson_r') {
       valueSpan.lang = 'ja';
@@ -2093,13 +2102,13 @@ function renderCopyDetails(
     return null;
   }
 
-  const statusDiv = document.createElement('div');
+  const statusDiv = document.createElementNS(HTML_NS, 'div');
   statusDiv.classList.add('status-bar');
   statusDiv.classList.add('-stack');
   statusDiv.classList.add('-copy');
   statusDiv.lang = getLangTag();
 
-  const keysDiv = document.createElement('div');
+  const keysDiv = document.createElementNS(HTML_NS, 'div');
   keysDiv.classList.add('keys');
   statusDiv.append(keysDiv);
 
@@ -2120,7 +2129,7 @@ function renderCopyDetails(
   });
 
   for (const copyKey of copyKeys) {
-    const keyElem = document.createElement('kbd');
+    const keyElem = document.createElementNS(HTML_NS, 'kbd');
     keyElem.append(copyKey.key);
     keysDiv.append(keyElem, ' = ' + browser.i18n.getMessage(copyKey.l10nKey));
     if (copyKey.key !== copyNextKey) {
@@ -2155,19 +2164,19 @@ function getCopiedString(target: CopyType): string {
 }
 
 function renderCopyStatus(message: string): HTMLElement {
-  const status = document.createElement('div');
+  const status = document.createElementNS(HTML_NS, 'div');
   status.classList.add('status');
   status.innerText = message;
   return status;
 }
 
 function renderUpdatingStatus(): HTMLElement {
-  const statusDiv = document.createElement('div');
+  const statusDiv = document.createElementNS(HTML_NS, 'div');
   statusDiv.classList.add('status-bar');
   statusDiv.classList.add('-subdued');
   statusDiv.lang = getLangTag();
 
-  const statusText = document.createElement('div');
+  const statusText = document.createElementNS(HTML_NS, 'div');
   statusText.classList.add('status');
 
   const spinner = renderSpinner();
@@ -2204,11 +2213,11 @@ function renderSpinner(): SVGElement {
 function renderSwitchDictionaryHint(
   keys: ReadonlyArray<string>
 ): HTMLElement | string {
-  const hintDiv = document.createElement('div');
+  const hintDiv = document.createElementNS(HTML_NS, 'div');
   hintDiv.classList.add('status-bar');
   hintDiv.lang = getLangTag();
 
-  const statusText = document.createElement('div');
+  const statusText = document.createElementNS(HTML_NS, 'div');
   statusText.classList.add('status');
   hintDiv.append(statusText);
 
@@ -2231,7 +2240,7 @@ function renderSwitchDictionaryHint(
         return part;
       }
 
-      const kbd = document.createElement('kbd');
+      const kbd = document.createElementNS(HTML_NS, 'kbd');
       kbd.textContent = keysCopy.shift() || '-';
       return kbd;
     });

@@ -1,7 +1,8 @@
 ## Next version
 
-- Stop interfering with interactive SVG images
+- Stop interfering with interactive standalone SVG images
   [#793](https://github.com/birchill/10ten-ja-reader/issues/793)).
+- Made the popup show again on standalone SVG images.
 
 ## 1.4.7 (2021-10-08)
 
