@@ -50,6 +50,7 @@ export function getOrCreateEmptyContainer({
     const foreignObject = doc.createElementNS(SVG_NS, 'foreignObject');
     foreignObject.setAttribute('width', '100%');
     foreignObject.setAttribute('height', '100%');
+    foreignObject.style.setProperty('pointer-events', 'none', 'important');
     doc.documentElement.append(foreignObject);
     parent = foreignObject;
   } else {

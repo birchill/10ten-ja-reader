@@ -1,3 +1,8 @@
+## Next version
+
+- Stop interfering with interactive SVG images
+  [#793](https://github.com/birchill/10ten-ja-reader/issues/793)).
+
 ## 1.4.7 (2021-10-08)
 
 - Minor fixes to currency data fetching and error reporting.
