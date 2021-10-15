@@ -2618,10 +2618,10 @@ crypto-random-string@^2.0.0:
   resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-2.0.0.tgz#ef2a7a966ec11083388369baa02ebead229b30d5"
   integrity sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==
 
-css-loader@^6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/css-loader/-/css-loader-6.3.0.tgz#334d3500ff0a0c14cfbd4b0670088dbb5b5c1530"
-  integrity sha512-9NGvHOR+L6ps13Ilw/b216++Q8q+5RpJcVufCdW9S/9iCzs4KBDNa8qnA/n3FK/sSfWmH35PAIK/cfPi7LOSUg==
+css-loader@^6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/css-loader/-/css-loader-6.4.0.tgz#01c57ea776024e18ca193428dcad3ff6b42a0130"
+  integrity sha512-Dlt6qfsxI/w1vU0r8qDd4BtMPxWqJeY5qQU7SmmZfvbpe6Xl18McO4GhyaMLns24Y2VNPiZwJPQ8JSbg4qvQLw==
   dependencies:
     icss-utils "^5.1.0"
     postcss "^8.2.15"
@@ -8432,10 +8432,10 @@ webpack-utf8-bom@^1.3.0:
   resolved "https://registry.yarnpkg.com/webpack-utf8-bom/-/webpack-utf8-bom-1.3.0.tgz#6823e8c715fc39164389b3c171f0bef956262d57"
   integrity sha512-2oooQzHUuNGk7viY92qShw9J2n7ZOzWIVP201DVNpnWkL9lqB/FVJfknwzwEu1AkN+q+SMTG3xxb/KO36NLacg==
 
-webpack@^5.58.0:
-  version "5.58.0"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.58.0.tgz#9ec621cf8534f23c25e779e7c35dfde1211d5ccb"
-  integrity sha512-xc2k5MLbR1iah24Z5xUm1nBh1PZXEdUnrX6YkTSOScq/VWbl5JCLREXJzGYqEAUbIO8tZI+Dzv82lGtnuUnVCQ==
+webpack@^5.58.2:
+  version "5.58.2"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.58.2.tgz#6b4af12fc9bd5cbedc00dc0a2fc2b9592db16b44"
+  integrity sha512-3S6e9Vo1W2ijk4F4PPWRIu6D/uGgqaPmqw+av3W3jLDujuNkdxX5h5c+RQ6GkjVR+WwIPOfgY8av+j5j4tMqJw==
   dependencies:
     "@types/eslint-scope" "^3.7.0"
     "@types/estree" "^0.0.50"
