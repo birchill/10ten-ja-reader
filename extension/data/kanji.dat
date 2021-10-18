@@ -598,7 +598,7 @@
 兵|B4 G4 S7 F522 N201 V374 H2551 DK1621 L1331:soldier DN1429:soldier E578 IN784 P2-5-2 I2o5.6 Ybing1|ヘイ ヒョウ つわもの|へ||soldier, private, troops, army, warfare, strategy, tactics
 其|B12 G9 S8 F1930 N590 V378 H2629 P2-6-2 I2o6.6 Yqi2 Yji1|キ ギ ゴ それ その|||that
 具|B109 G3 S8 F629 N3128 V376 H2552 DK1622 L74:tool DN78:tool E265 IN420 P2-5-3 I5c3.1 Yju4|グ そな.える つぶさ.に|とも||tool; utensil; means; possess; ingredients; counter for armor, suits, sets of furniture
-典|B12 G4 S8 F1055 N588 V375 H2627 DK1680 L1827:code DN1969:code E552 IN367 P2-6-2 I2o6.5 Ydian3|テン デン|すけ つね の のり||code, ceremony, law, rule
+典|B12 G4 S8 F1055 N588 V375 H2627 DK1680 L1827:code DN1969:code E552 IN367 P2-6-2 I2o6.5 Ydian3|テン デン ふみ のり|すけ つね の||code, ceremony, law, rule
 兼|B12 G8 S10 F1164 N598 V381 H2286 DK1469 L1597:concurrently DN1723:concurrently E850 IN1081 P2-3-7 I2o8.1 Yjian1|ケン か.ねる -か.ねる|かね||concurrently, and, beforehand, in advance
 兾|B12 S14 V382 P2-2-12 Yji4|キ こいねが.う こいねが.わくは|||
 冀|B12 S16 N614 V383 P2-5-11 I2o14.3 Yji4|キ こいねが.う こいねが.わくは|||hope for, wish, Hebei province
@@ -738,7 +738,7 @@
 剃|B18 S9 F2411 N691 V489 L2146:shave DN2271:shave P1-7-2 I2f7.5 Yti4|テイ まい そ.る す.る|||shave
 剄|B18 S9 N687 V483 P1-7-2 I2f7.2 Yjing3|ケイ くびき.る|||beheading
 剅|B18 S9 P1-7-2 Ylou2|ロウ ル トウ ツ さ.く さ.ける|||
-則|B154 G5 S9 F753 N4487 V487 H1444 DK967 L88:rule DN92:rule E742 IN608 P1-7-2 I7b2.1 Yze2|ソク のっと.る|のり||rule, follow, based on, model after
+則|B154 G5 S9 F753 N4487 V487 H1444 DK967 L88:rule DN92:rule E742 IN608 P1-7-2 I7b2.1 Yze2|ソク のっと.る のり すなわち|||rule, law, follow, based on, model after
 剉|B18 S9 P1-7-2 Ycuo4|サ くじく かどをと.る|||cut, file, trim
 削|B18 G8 S9 F814 N690 V488 H1448 DK972 L118:plane DN124:plane E1298 IN1611 P1-7-2 I2f7.4 Yxue1 Yxiao1 Yxue4|サク けず.る はつ.る そ.ぐ|げ||plane, sharpen, whittle, pare, shave
 剋|B24 S9 N776 V486 H3305 P3-7-2 I3d6.20 Yke4|コク かつ|||victory
@@ -3095,7 +3095,7 @@
 慣|B61 G5 S14 F1177 N1756 V1970 H685 DK487 L627:accustomed DN674:accustomed E638 IN915 P1-3-11 I4k11.9 Yguan4|カン な.れる な.らす|||accustomed, get used to, become experienced
 慥|B61 S14 N1735 V1937 P1-3-11 I4k10.9 Yzao4|ゾウ たし.かに|||certainly, doubtless
 慧|B61 G9 S15 F2168 N1753 V1964 H2810 DK1798 L2851:astute DN2866:astute IN2076 P2-8-7 I4k11.16 Yhui4|ケイ エ さとい|さと さとし さとる あきら とし||wise
-慨|B61 G8 S13 F1875 N1741 V1944 H641 DK462 L1483:rue DN1595:rue E1070 IN1460 P1-3-10 I4k10.3 Ykai3 Ykai4|ガイ|||rue, be sad, sigh, lament
+慨|B61 G8 S13 F1875 N1741 V1944 H641 DK462 L1483:rue DN1595:rue E1070 IN1460 P1-3-10 I4k10.3 Ykai3 Ykai4|ガイ なげ.く|||rue, be sad, sigh, lament
 慫|B61 S15 N1749 V1958 P2-11-4 I4k11.15 Ysong3|ショウ すす.める|||advise, persuade
 慬|B61 S14 P1-3-11 Yjin3|キン コン かな.しむ|||brave, cautious, sad
 慮|B141 G8 S15 F916 N4112 V1962 H3266 DK2057 L1996:prudence DN2151:prudence E1904 IN1384 P3-4-11 I2m13.2 Ylu:4|リョ おもんぱく.る おもんぱか.る|ぜ||prudence, thought, concern, consider, deliberate, fear
