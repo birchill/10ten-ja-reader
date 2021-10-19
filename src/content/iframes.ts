@@ -127,7 +127,20 @@ export function getIframeOrigin(iframeElement: HTMLIFrameElement): Point {
     cachedOrigin = undefined;
   }
 
-  const { left: x, top: y } = iframeElement.getBoundingClientRect();
+  let { left: x, top: y } = iframeElement.getBoundingClientRect();
+
+  // The bounding client rect includes the element and its borders and padding.
+  // However, the coordinates within the iframe are minus the borders and
+  // padding.
+  //
+  // Note that if these values change, the ResizeObserver _should_ fire because
+  // it is supposed to fire when either the iframe's border box _or_ content box
+  // size changes.
+  const cs = getComputedStyle(iframeElement);
+  x += parseFloat(cs.borderLeftWidth);
+  x += parseFloat(cs.paddingLeft);
+  y += parseFloat(cs.borderTopWidth);
+  y += parseFloat(cs.paddingTop);
 
   const resizeObserver = new ResizeObserver(() => {
     cachedOrigin = undefined;

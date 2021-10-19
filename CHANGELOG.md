@@ -3,6 +3,9 @@
 - Stop interfering with interactive standalone SVG images
   [#793](https://github.com/birchill/10ten-ja-reader/issues/793)).
 - Made the popup show again on standalone SVG images.
+- Fixed popup positioning for iframes with borders
+  (e.g. the [Bibi EPUB reader](https://bibi.epub.link/))
+  [#803](https://github.com/birchill/10ten-ja-reader/issues/803))
 
 ## 1.4.7 (2021-10-08)
 
