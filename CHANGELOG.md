@@ -1,4 +1,4 @@
-## Next version
+## 1.4.8 (2021-10-21)
 
 - Stop interfering with interactive standalone SVG images
   [#793](https://github.com/birchill/10ten-ja-reader/issues/793)).
