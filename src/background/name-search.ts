@@ -2,6 +2,7 @@ import Bugsnag from '@bugsnag/browser';
 import { AbortError, NameResult, getNames } from '@birchill/hikibiki-data';
 import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
 
+import { isOnlyDigits } from '../utils/char-range';
 import { NameSearchResult } from './search-result';
 import { endsInYoon } from './yoon';
 
@@ -38,6 +39,11 @@ export async function nameSearch({
 
     const currentInputLength = inputLengths[currentString.length];
     if (minInputLength && minInputLength > currentInputLength) {
+      break;
+    }
+
+    // Don't lookup the input if we only have digits remaining.
+    if (isOnlyDigits(input)) {
       break;
     }
 

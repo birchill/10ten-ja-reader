@@ -2,6 +2,7 @@ import { AbortError, PartOfSpeech } from '@birchill/hikibiki-data';
 import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
 import { browser } from 'webextension-polyfill-ts';
 
+import { isOnlyDigits } from '../utils/char-range';
 import { toRomaji } from '../utils/romaji';
 
 import {
@@ -21,8 +22,6 @@ export type GetWordsFunction = (params: {
   input: string;
   maxResults: number;
 }) => Promise<Array<DictionaryWordResult>>;
-
-const onlyDigits = /^[0-9０-９,、.．]+$/;
 
 export async function wordSearch({
   abortSignal,
@@ -58,7 +57,7 @@ export async function wordSearch({
     // If we only have digits left, don't bother looking them up since we don't
     // want to bother the user by showing the popup every time they hover over a
     // digit.
-    if (onlyDigits.test(input)) {
+    if (isOnlyDigits(input)) {
       break;
     }
 

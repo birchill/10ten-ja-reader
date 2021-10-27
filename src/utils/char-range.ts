@@ -169,3 +169,9 @@ const numberStartRegex = /^[0-9０-９一二三四五六七八九十百]/;
 export function startsWithNumber(input: string): boolean {
   return !!input.length && numberStartRegex.test(input);
 }
+
+const onlyDigits = /^[0-9０-９,、.．]+$/;
+
+export function isOnlyDigits(input: string): boolean {
+  return onlyDigits.test(input);
+}

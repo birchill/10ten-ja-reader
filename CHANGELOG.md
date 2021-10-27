@@ -1,3 +1,9 @@
+## Next version
+
+- Stop showing the popup for number-only matches in the name dictionary
+  (e.g. 64)
+  [#811](https://github.com/birchill/10ten-ja-reader/issues/811)).
+
 ## 1.4.8 (2021-10-21)
 
 - Stop interfering with interactive standalone SVG images
