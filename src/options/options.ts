@@ -32,6 +32,7 @@ import { startBugsnag } from '../utils/bugsnag';
 import {
   isChromium,
   isEdge,
+  isFenix,
   isFirefox,
   isMac,
   isSafari,
@@ -74,7 +75,10 @@ const config = new Config();
 
 function completeForm() {
   // UA-specific styles
-  if (isFirefox()) {
+
+  // We only add the 'firefox' class on desktop Firefox since Fenix doesn't
+  // include browser styles.
+  if (isFirefox() && !isFenix()) {
     document.documentElement.classList.add('firefox');
   }
   if (isChromium()) {
