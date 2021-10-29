@@ -7505,10 +7505,10 @@ split2@^2.2.0:
   dependencies:
     through2 "^2.0.2"
 
-split2@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/split2/-/split2-4.0.0.tgz#c76cb53ad55040ddff3a9c3b73fc88a4690f047c"
-  integrity sha512-gjmavJzvQCAZzaEHWoJBOwqIUAiEvUOlguQ6uO0+0LTS1tlLa2YetTLWCrm049ouvLOa1l6SOGm3XaiRiCg9SQ==
+split2@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/split2/-/split2-4.1.0.tgz#101907a24370f85bb782f08adaabe4e281ecf809"
+  integrity sha512-VBiJxFkxiXRlUIeyMQi8s4hgvKCSjtknJv/LVYbrgALPwf5zSKmEwV9Lst25AkvMDnvxODugjdl6KZgwKM1WYQ==
 
 split@0.3, split@~0.3.3:
   version "0.3.3"
