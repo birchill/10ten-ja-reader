@@ -14,6 +14,7 @@ const PRIMARY_MODIFIER_MAP: { [key: string]: PrimaryModifier } = {
   '⌘': 'Ctrl',
   Alt: 'Alt',
   '⌥': 'Alt',
+  Alternatif: 'Alt',
   MacCtrl: 'MacCtrl',
   '⌃': 'MacCtrl',
 };

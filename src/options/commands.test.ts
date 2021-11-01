@@ -42,6 +42,8 @@ describe('Command', () => {
       { input: '⌥⇧R', expected: expected(['alt', 'shift'], 'R') },
       { input: '⌃⌘R', expected: expected(['macCtrl', 'ctrl'], 'R') },
       { input: '⌃⇧R', expected: expected(['macCtrl', 'shift'], 'R') },
+      // We've seen this on Edge at least once
+      { input: 'Alternatif+T', expected: expected(['alt'], 'T') },
     ];
     for (const test of tests) {
       const command = Command.fromString(test.input);
