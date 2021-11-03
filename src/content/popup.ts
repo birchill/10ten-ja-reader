@@ -1117,22 +1117,27 @@ function renderStar(style: 'full' | 'hollow'): SVGElement {
 }
 
 function renderDefinitions(entry: WordResult, options: PopupOptions) {
+  const senses = entry.s.filter((s) => s.match);
+  if (!senses.length) {
+    return '';
+  }
+
   const definitionsDiv = document.createElementNS(HTML_NS, 'div');
   definitionsDiv.classList.add('w-def');
 
-  if (entry.s.length === 1) {
-    definitionsDiv.append(renderSense(entry.s[0], options));
-    definitionsDiv.lang = entry.s[0].lang || 'en';
+  if (senses.length === 1) {
+    definitionsDiv.append(renderSense(senses[0], options));
+    definitionsDiv.lang = senses[0].lang || 'en';
     if (
       options.dictLang &&
       options.dictLang !== 'en' &&
-      entry.s[0].lang !== options.dictLang
+      senses[0].lang !== options.dictLang
     ) {
       definitionsDiv.classList.add('foreign');
     }
   } else {
     // First extract any native language senses
-    const nativeSenses = entry.s.filter((s) => s.lang && s.lang !== 'en');
+    const nativeSenses = senses.filter((s) => s.lang && s.lang !== 'en');
     if (nativeSenses.length) {
       const definitionList = document.createElementNS(HTML_NS, 'ul');
       for (const sense of nativeSenses) {
@@ -1145,7 +1150,7 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
     }
 
     // Try grouping the remaining (English) definitions by part-of-speech.
-    const enSenses = entry.s.filter((s) => !s.lang || s.lang === 'en');
+    const enSenses = senses.filter((s) => !s.lang || s.lang === 'en');
     const posGroups =
       options.posDisplay !== 'none' ? groupSenses(enSenses) : [];
     const isForeign = !!options.dictLang && options.dictLang !== 'en';
