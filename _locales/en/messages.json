@@ -175,6 +175,24 @@
     "message": "1 stroke",
     "description": "The description of the number of strokes when there is exactly 1 stroke"
   },
+  "content_names_age": {
+    "message": "$years$ y.o.",
+    "placeholders": {
+      "years": {
+        "content": "$1",
+        "example": "73"
+      }
+    }
+  },
+  "content_names_age_approx": {
+    "message": "~$years$ y.o.",
+    "placeholders": {
+      "years": {
+        "content": "$1",
+        "example": "73"
+      }
+    }
+  },
   "content_names_tag_char": {
     "message": "character"
   },

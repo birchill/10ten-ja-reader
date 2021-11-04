@@ -46,6 +46,7 @@ import { EraInfo, EraMeta, getEraInfo } from './years';
 
 import popupStyles from '../../css/popup.css';
 import { NumberMeta } from './numbers';
+import { getDob } from '../utils/age';
 
 // Update NumberFormatOptions definition
 declare global {
@@ -1479,7 +1480,7 @@ function renderNameTranslation(tr: NameTranslation): HTMLSpanElement {
   const definitionSpan = document.createElementNS(HTML_NS, 'div');
   // ENAMDICT only has English glosses
   definitionSpan.lang = 'en';
-  definitionSpan.append(tr.det.join(', '));
+  definitionSpan.append(tr.det.map(annotateAge).join(', '));
 
   for (const tag of tr.type || []) {
     const tagText = browser.i18n.getMessage(`content_names_tag_${tag}`);
@@ -1496,6 +1497,33 @@ function renderNameTranslation(tr: NameTranslation): HTMLSpanElement {
   }
 
   return definitionSpan;
+}
+
+function annotateAge(text: string): string {
+  const dob = getDob(text);
+  if (!dob) {
+    return text;
+  }
+
+  // Calculate age
+  const { date, approx } = dob;
+  const today = new Date();
+  let age = today.getFullYear() - date.getFullYear();
+  const month = today.getMonth() - date.getMonth();
+  if (month < 0 || (month === 0 && today.getDate() < date.getDate())) {
+    age--;
+  }
+
+  // Sanity check
+  if (age < 1 || age > 150) {
+    return text;
+  }
+
+  const ageString = approx
+    ? browser.i18n.getMessage('content_names_age_approx', [String(age)])
+    : browser.i18n.getMessage('content_names_age', [String(age)]);
+
+  return `${text} (${ageString})`;
 }
 
 function getSelectedIndex(options: PopupOptions, numEntries: number) {

@@ -1,6 +1,7 @@
 ## Next version
 
 - Hide senses that don't apply to the looked-up text.
+- Show the age next to names for people with birth dates.
 - Replace "(trademark)" text with ™.
 - Stop showing the popup for number-only matches in the name dictionary
   (e.g. 64)
