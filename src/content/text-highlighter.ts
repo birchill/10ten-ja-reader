@@ -4,7 +4,11 @@ import {
   isSvg,
   isTextInputNode,
 } from './dom-utils';
-import { isGdocsSpan } from './gdocs';
+import {
+  clearHighlight as clearGdocsHighlight,
+  highlightRange as highlightGdocsRange,
+  isGdocsSpan,
+} from './gdocs';
 import { TextRange } from './text-range';
 
 declare global {
@@ -115,6 +119,12 @@ export class TextHighlighter {
         selectedWindow,
         textBox: startNode,
       });
+    } else if (isGdocsSpan(startNode)) {
+      highlightGdocsRange({
+        startSpan: startNode,
+        offset: textRange[0].start,
+        length,
+      });
     } else {
       this.highlightRegularNode({
         length,
@@ -151,6 +161,9 @@ export class TextHighlighter {
       // Delete any highlight we may have added using the CSS Highlight API.
       CSS?.highlights?.delete('tenten-selection');
       this.dropHighlightStyles();
+
+      // Likewise any Google docs selection
+      clearGdocsHighlight();
 
       this.clearTextBoxSelection(currentElement);
     }
@@ -355,10 +368,7 @@ export class TextHighlighter {
       containsSvg = containsSvg || isSvg(endNode);
     }
 
-    if (isGdocsSpan(startNode)) {
-      // TODO: Handle this properly
-      this.selectedText = null;
-    } else if (!containsSvg && CSS?.highlights) {
+    if (!containsSvg && CSS?.highlights) {
       const range = new StaticRange({
         startContainer: startNode,
         startOffset,

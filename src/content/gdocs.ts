@@ -1,4 +1,4 @@
-import { Point } from '../utils/geometry';
+import { Point, Rect } from '../utils/geometry';
 import { CursorPosition } from './get-text';
 import { SVG_NS } from './svg';
 
@@ -109,4 +109,59 @@ export function isGdocsOverlayElem(node: Node | null): node is SVGElement {
     ((node as SVGElement).tagName === 'g' ||
       (node as SVGElement).tagName === 'rect')
   );
+}
+
+export function highlightRange({
+  startSpan,
+  offset,
+  length,
+}: {
+  startSpan: SVGRectElement;
+  offset: number;
+  length: number;
+}) {
+  const boxes: Array<Rect> = [];
+
+  const text = startSpan.getAttribute('aria-label');
+  if (!text) {
+    return;
+  }
+
+  const font = startSpan.getAttribute('data-font-css');
+  if (!font) {
+    return;
+  }
+
+  const ctx = document.createElement('canvas').getContext('2d');
+  if (!ctx) {
+    return;
+  }
+
+  const { x, y: top, height } = startSpan.getBoundingClientRect();
+
+  ctx.font = font;
+  const leadingWidth = ctx.measureText(text.substring(0, offset)).width;
+  const width = ctx.measureText(text.substring(offset, offset + length)).width;
+
+  boxes.push({ left: x + leadingWidth, top, width, height });
+
+  let highlight = document.getElementById('tenten-gdocs-highlight');
+  if (!highlight) {
+    highlight = document.createElement('div');
+    highlight.id = 'tenten-gdocs-highlight';
+    highlight.style.position = 'absolute';
+    highlight.style.pointerEvents = 'none';
+    highlight.style.backgroundColor = 'yellow';
+    highlight.style.opacity = '0.3';
+    highlight.style.zIndex = '100';
+    document.body.append(highlight);
+  }
+  highlight.style.left = `${boxes[0].left}px`;
+  highlight.style.top = `${boxes[0].top}px`;
+  highlight.style.width = `${boxes[0].width}px`;
+  highlight.style.height = `${boxes[0].height}px`;
+}
+
+export function clearHighlight() {
+  document.getElementById('tenten-gdocs-highlight')?.remove();
 }
