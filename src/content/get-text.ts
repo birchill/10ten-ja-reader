@@ -7,7 +7,7 @@ import { bboxIncludesPoint, Point } from '../utils/geometry';
 import { isChromium } from '../utils/ua-utils';
 
 import { isTextInputNode, isTextNode } from './dom-utils';
-import { getTextFromAnnotatedCanvas } from './gdocs';
+import { getTextFromAnnotatedCanvas, isGdocsOverlayElem } from './gdocs';
 import { extractGetTextMetadata, lookForMetadata, SelectionMeta } from './meta';
 import { SVG_NS } from './svg';
 import { TextRange } from './text-range';
@@ -88,13 +88,10 @@ export function getTextAtPoint({
   // Check if we are dealing with Google docs annotated canvas
   let textToSynthesize = '';
   if (
+    matchText &&
     document.location.host === 'docs.google.com' &&
     position &&
-    position.offsetNode?.nodeType === Node.ELEMENT_NODE &&
-    (position.offsetNode as Element).namespaceURI === SVG_NS &&
-    ((position.offsetNode as SVGElement).tagName === 'g' ||
-      (position.offsetNode as SVGElement).tagName === 'rect') &&
-    matchText
+    isGdocsOverlayElem(position.offsetNode)
   ) {
     ({ position, text: textToSynthesize } = getTextFromAnnotatedCanvas(point));
   }

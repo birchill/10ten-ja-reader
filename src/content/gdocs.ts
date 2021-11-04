@@ -23,7 +23,7 @@ export function getTextFromAnnotatedCanvas(point: Point): {
   // TODO: maxLength
 
   const elem = document.elementFromPoint(point.x, point.y);
-  if (!elem || !isGdocsSpan(elem)) {
+  if (!elem || !isGdocsLine(elem)) {
     return { position: null, text: '' };
   }
 
@@ -70,11 +70,21 @@ export function getTextFromAnnotatedCanvas(point: Point): {
   };
 }
 
-export function isGdocsSpan(node: Node): node is SVGRectElement {
+export function isGdocsLine(node: Node): node is SVGRectElement {
   return (
     node.nodeType === Node.ELEMENT_NODE &&
     (node as Element).namespaceURI === SVG_NS &&
     (node as SVGElement).tagName === 'rect' &&
     (node as SVGElement).hasAttribute('aria-label')
+  );
+}
+
+export function isGdocsOverlayElem(node: Node | null): node is SVGElement {
+  return (
+    !!node &&
+    node.nodeType === Node.ELEMENT_NODE &&
+    (node as Element).namespaceURI === SVG_NS &&
+    ((node as SVGElement).tagName === 'g' ||
+      (node as SVGElement).tagName === 'rect')
   );
 }
