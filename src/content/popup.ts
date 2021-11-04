@@ -1324,12 +1324,11 @@ function appendGlosses(glosses: Array<Gloss>, parent: ParentNode) {
       parent.append('; ');
     }
 
-    if (gloss.type) {
+    if (gloss.type && gloss.type !== GlossType.Tm) {
       const typeCode = {
         [GlossType.Expl]: 'expl',
         [GlossType.Fig]: 'fig',
         [GlossType.Lit]: 'lit',
-        [GlossType.Tm]: 'tm',
       }[gloss.type];
       const typeStr = typeCode
         ? browser.i18n.getMessage(`gloss_type_label_${typeCode}`)
@@ -1344,6 +1343,9 @@ function appendGlosses(glosses: Array<Gloss>, parent: ParentNode) {
     }
 
     parent.append(gloss.str);
+    if (gloss.type === GlossType.Tm) {
+      parent.append('™');
+    }
   }
 }
 

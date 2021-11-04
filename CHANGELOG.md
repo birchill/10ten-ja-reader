@@ -1,9 +1,10 @@
 ## Next version
 
+- Hide senses that don't apply to the looked-up text.
+- Replace "(trademark)" text with ™.
 - Stop showing the popup for number-only matches in the name dictionary
   (e.g. 64)
   [#811](https://github.com/birchill/10ten-ja-reader/issues/811)).
-- Hide senses that don't apply to the looked-up text.
 - Fix formatting of options page on Firefox for Android (Nightly).
 
 ## 1.4.8 (2021-10-21)

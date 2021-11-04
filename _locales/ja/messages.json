@@ -758,10 +758,6 @@
     "message": "直訳",
     "description": "Short annotation used to represent the lit (literally) gloss type"
   },
-  "gloss_type_label_tm": {
-    "message": "商標",
-    "description": "Short annotation used to represent the tm (trademark) gloss type"
-  },
   "gloss_type_short_expl": {
     "message": "説明",
     "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
