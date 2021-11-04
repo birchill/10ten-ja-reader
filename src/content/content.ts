@@ -70,6 +70,7 @@ import {
   Entry as CopyEntry,
 } from './copy-text';
 import { isEditableNode } from './dom-utils';
+import { injectGdocsStyles, removeGdocsStyles } from './gdocs';
 import { getTextAtPoint } from './get-text';
 import {
   findIframeElement,
@@ -272,6 +273,10 @@ export class ContentHandler {
     }
 
     this.applyPuckConfig();
+
+    if (document.location.host === 'docs.google.com') {
+      injectGdocsStyles();
+    }
   }
 
   setUpSafeAreaProvider(renderOptions: SafeAreaProviderRenderOptions) {
@@ -360,6 +365,7 @@ export class ContentHandler {
 
     removePopup();
     removeSafeAreaProvider();
+    removeGdocsStyles();
   }
 
   setEffectiveTopMostWindow() {
@@ -1843,6 +1849,7 @@ declare global {
       removePopup();
       removePuck();
       removeSafeAreaProvider();
+      removeGdocsStyles();
 
       contentHandler = new ContentHandler(config);
     }
