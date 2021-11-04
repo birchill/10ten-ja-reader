@@ -1489,18 +1489,6 @@
     "message": "许可协议",
     "description": "The keyword in options_edrdg_license to link to the license"
   },
-  "options_force_gdocs_html_mode": {
-    "message": "强制 Google 文档进入 HTML 模式 ",
-    "description": "Label for the option to cause Google Docs to be loaded in the legacy HTML mode"
-  },
-  "options_force_gdocs_html_mode_expl_1": {
-    "message": "Google Docs 引入了一种新的“画布模式”，其中 10ten Japanese Reader 等扩展程序无法读取文档中的字符。",
-    "description": "The first sentence of the 'Force Google Docs to use HTML mode' option introducing canvas mode"
-  },
-  "options_force_gdocs_html_mode_expl_2": {
-    "message": "如果选择以下选项，Google Docs 将恢复其现有行为（所谓的 HTML 模式），因为它可以检测日语字符。",
-    "description": "The second sentence of the 'Force Google Docs to use HTML mode' option explaining how the option affects that mode"
-  },
   "options_general_heading": {
     "message": "一般",
     "description": "Heading for common preferences."

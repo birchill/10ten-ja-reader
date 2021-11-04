@@ -17,7 +17,6 @@ export const BackgroundRequestSchema = discriminator('type', {
   enabled: s.type({
     src: s.string(),
   }),
-  forceGdocsHtmlMode: s.type({}),
   options: s.type({}),
   // TODO: Remove 'search' once we have shipped the two-step search approach.
   //

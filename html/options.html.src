@@ -227,25 +227,6 @@
           </div>
         </div>
         <div class="panel-section panel-section-header">
-          <h2 class=text-section-header>__MSG_options_compatibility_heading__</h2>
-        </div>
-        <div class="panel-section panel-section-formElements compatibility">
-          <div class="note">
-            <p>
-              __MSG_options_force_gdocs_html_mode_expl_1__
-              __MSG_options_force_gdocs_html_mode_expl_2__
-            </p>
-          </div>
-          <div class="browser-style checkbox-row">
-            <input
-              type="checkbox"
-              id="forceGdocsHtmlMode"
-              name="forceGdocsHtmlMode"
-            />
-            <label for="forceGdocsHtmlMode">__MSG_options_force_gdocs_html_mode__</label>
-          </div>
-        </div>
-        <div class="panel-section panel-section-header">
           <h2 class=text-section-header>__MSG_options_dictionary_language_heading__</h2>
         </div>
         <div class="panel-section panel-section-formElements dict-lang">

@@ -1492,18 +1492,6 @@
     "message": "ライセンス",
     "description": "The keyword in options_edrdg_license to link to the license"
   },
-  "options_force_gdocs_html_mode": {
-    "message": "強制的にGoogle DocsをHTML modeにさせる",
-    "description": "Label for the option to cause Google Docs to be loaded in the legacy HTML mode"
-  },
-  "options_force_gdocs_html_mode_expl_1": {
-    "message": "Google Docsでは10ten Japanese Readerのような拡張機能がドキュメントの文字が読み込めない新しい「canvas mode」を導入しております。",
-    "description": "The first sentence of the 'Force Google Docs to use HTML mode' option introducing canvas mode"
-  },
-  "options_force_gdocs_html_mode_expl_2": {
-    "message": "以下のオプションが選択された場合、日本語の文字の検出ができるためGoogle Docsは既存の挙動（いわゆるHTML mode）に戻ります。",
-    "description": "The second sentence of the 'Force Google Docs to use HTML mode' option explaining how the option affects that mode"
-  },
   "options_general_heading": {
     "message": "一般",
     "description": "Heading for common preferences."

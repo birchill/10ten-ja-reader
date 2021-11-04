@@ -185,12 +185,6 @@ function completeForm() {
   });
 
   document
-    .getElementById('forceGdocsHtmlMode')!
-    .addEventListener('click', (evt) => {
-      config.forceGdocsHtmlMode = (evt.target as HTMLInputElement).checked;
-    });
-
-  document
     .getElementById('showKanjiComponents')!
     .addEventListener('click', (evt) => {
       config.showKanjiComponents = (evt.target as HTMLInputElement).checked;
@@ -880,7 +874,6 @@ function fillVals() {
   optform.tabDisplay.value = config.tabDisplay;
   optform.toolbarIcon.value = config.toolbarIcon;
   optform.showPuck.value = config.showPuck;
-  optform.forceGdocsHtmlMode.checked = config.forceGdocsHtmlMode;
 
   renderCurrencyList(config.fxCurrency, config.fxCurrencies);
 
