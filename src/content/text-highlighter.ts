@@ -4,7 +4,7 @@ import {
   isSvg,
   isTextInputNode,
 } from './dom-utils';
-import { isGdocsLine } from './gdocs';
+import { isGdocsSpan } from './gdocs';
 import { TextRange } from './text-range';
 
 declare global {
@@ -355,7 +355,7 @@ export class TextHighlighter {
       containsSvg = containsSvg || isSvg(endNode);
     }
 
-    if (isGdocsLine(startNode)) {
+    if (isGdocsSpan(startNode)) {
       // TODO: Handle this properly
       this.selectedText = null;
     } else if (!containsSvg && CSS?.highlights) {

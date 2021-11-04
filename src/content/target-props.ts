@@ -1,7 +1,7 @@
 import { Rect } from '../utils/geometry';
 
 import { isTextInputNode } from './dom-utils';
-import { isGdocsLine } from './gdocs';
+import { isGdocsSpan } from './gdocs';
 import { TextRange } from './text-range';
 
 /// Properties about the target element from which we started lookup needed
@@ -68,7 +68,7 @@ function getInitialBboxOfTextSelection(
   }
 
   // TODO: Handle this
-  if (isGdocsLine(textRange[0].node)) {
+  if (isGdocsSpan(textRange[0].node)) {
     return undefined;
   }
 

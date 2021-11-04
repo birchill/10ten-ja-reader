@@ -27,12 +27,12 @@ export function getTextFromAnnotatedCanvas({
   text: string;
 } {
   const elem = document.elementFromPoint(point.x, point.y);
-  if (!elem || !isGdocsLine(elem)) {
+  if (!elem || !isGdocsSpan(elem)) {
     return { position: null, text: '' };
   }
 
-  const line = elem.getAttribute('aria-label');
-  if (!line) {
+  let text = elem.getAttribute('aria-label');
+  if (!text) {
     return { position: null, text: '' };
   }
 
@@ -51,10 +51,10 @@ export function getTextFromAnnotatedCanvas({
   ctx.font = font;
 
   let start = 0;
-  let end = line.length;
+  let end = text.length;
   while (start < end && Math.abs(end - start) > 1) {
     const mid = Math.floor((start + end) / 2);
-    const width = ctx.measureText(line.substring(0, mid)).width;
+    const width = ctx.measureText(text.substring(0, mid)).width;
     if (width > xPos) {
       end = mid;
     } else if (width < xPos) {
@@ -65,20 +65,21 @@ export function getTextFromAnnotatedCanvas({
     }
   }
 
-  // If maxLength is not set, we just stop at the end of the current line.
+  // If maxLength is not set, we just stop at the end of the current span.
   //
-  // If it _is_ set and we don't have enough characters, look up the next line
-  // too.
-  let text = line;
-  const selectedText = text.substring(start);
-  if (maxLength && selectedText.length < maxLength) {
-    const nextLine = elem.nextSibling;
-    if (nextLine && isGdocsLine(nextLine)) {
-      text +=
-        nextLine
-          .getAttribute('aria-label')
-          ?.substring(0, Math.max(maxLength - selectedText.length, 0)) || '';
+  // If it _is_ set and we don't have enough characters, look up subsequent
+  // spans.
+  let currentSpan = elem;
+  while (maxLength && text.substring(start).length < maxLength) {
+    const nextSpan = currentSpan.nextSibling;
+    if (!isGdocsSpan(nextSpan)) {
+      break;
     }
+
+    const remainingLength = maxLength - text.substring(start).length;
+    text +=
+      nextSpan.getAttribute('aria-label')?.substring(0, remainingLength) || '';
+    currentSpan = nextSpan;
   }
 
   return {
@@ -90,8 +91,9 @@ export function getTextFromAnnotatedCanvas({
   };
 }
 
-export function isGdocsLine(node: Node): node is SVGRectElement {
+export function isGdocsSpan(node: Node | null): node is SVGRectElement {
   return (
+    !!node &&
     node.nodeType === Node.ELEMENT_NODE &&
     (node as Element).namespaceURI === SVG_NS &&
     (node as SVGElement).tagName === 'rect' &&
