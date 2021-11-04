@@ -93,7 +93,10 @@ export function getTextAtPoint({
     position &&
     isGdocsOverlayElem(position.offsetNode)
   ) {
-    ({ position, text: textToSynthesize } = getTextFromAnnotatedCanvas(point));
+    ({ position, text: textToSynthesize } = getTextFromAnnotatedCanvas({
+      maxLength,
+      point,
+    }));
   }
 
   if (

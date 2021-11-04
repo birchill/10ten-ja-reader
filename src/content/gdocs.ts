@@ -16,12 +16,16 @@ export function removeGdocsStyles() {
   document.getElementById('tenten-gdocs-styles')?.remove();
 }
 
-export function getTextFromAnnotatedCanvas(point: Point): {
+export function getTextFromAnnotatedCanvas({
+  maxLength,
+  point,
+}: {
+  maxLength?: number;
+  point: Point;
+}): {
   position: CursorPosition | null;
   text: string;
 } {
-  // TODO: maxLength
-
   const elem = document.elementFromPoint(point.x, point.y);
   if (!elem || !isGdocsLine(elem)) {
     return { position: null, text: '' };
@@ -61,12 +65,28 @@ export function getTextFromAnnotatedCanvas(point: Point): {
     }
   }
 
+  // If maxLength is not set, we just stop at the end of the current line.
+  //
+  // If it _is_ set and we don't have enough characters, look up the next line
+  // too.
+  let text = line;
+  const selectedText = text.substring(start);
+  if (maxLength && selectedText.length < maxLength) {
+    const nextLine = elem.nextSibling;
+    if (nextLine && isGdocsLine(nextLine)) {
+      text +=
+        nextLine
+          .getAttribute('aria-label')
+          ?.substring(0, Math.max(maxLength - selectedText.length, 0)) || '';
+    }
+  }
+
   return {
     position: {
       offset: start,
       offsetNode: elem,
     },
-    text: line,
+    text,
   };
 }
 
