@@ -4,6 +4,7 @@ import {
   isSvg,
   isTextInputNode,
 } from './dom-utils';
+import { isGdocsSpan } from './gdocs';
 import { TextRange } from './text-range';
 
 declare global {
@@ -354,7 +355,10 @@ export class TextHighlighter {
       containsSvg = containsSvg || isSvg(endNode);
     }
 
-    if (!containsSvg && CSS?.highlights) {
+    if (isGdocsSpan(startNode)) {
+      // TODO: Handle this properly
+      this.selectedText = null;
+    } else if (!containsSvg && CSS?.highlights) {
       const range = new StaticRange({
         startContainer: startNode,
         startOffset,

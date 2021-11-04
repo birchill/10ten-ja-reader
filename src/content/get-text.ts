@@ -7,6 +7,7 @@ import { bboxIncludesPoint, Point } from '../utils/geometry';
 import { isChromium } from '../utils/ua-utils';
 
 import { isTextInputNode, isTextNode } from './dom-utils';
+import { getTextFromAnnotatedCanvas } from './gdocs';
 import { extractGetTextMetadata, lookForMetadata, SelectionMeta } from './meta';
 import { SVG_NS } from './svg';
 import { TextRange } from './text-range';
@@ -22,7 +23,7 @@ export interface GetTextAtPointResult {
 }
 
 // Basically CaretPosition but without getClientRect()
-interface CursorPosition {
+export interface CursorPosition {
   readonly offset: number;
   readonly offsetNode: Node;
 }
@@ -84,6 +85,20 @@ export function getTextAtPoint({
       offset !== null ? { offset, offsetNode: position.offsetNode } : position;
   }
 
+  // Check if we are dealing with Google docs annotated canvas
+  let textToSynthesize = '';
+  if (
+    document.location.host === 'docs.google.com' &&
+    position &&
+    position.offsetNode?.nodeType === Node.ELEMENT_NODE &&
+    (position.offsetNode as Element).namespaceURI === SVG_NS &&
+    ((position.offsetNode as SVGElement).tagName === 'g' ||
+      (position.offsetNode as SVGElement).tagName === 'rect') &&
+    matchText
+  ) {
+    ({ position, text: textToSynthesize } = getTextFromAnnotatedCanvas(point));
+  }
+
   if (
     position &&
     position.offsetNode === previousResult?.position?.offsetNode &&
@@ -104,6 +119,10 @@ export function getTextAtPoint({
       return null;
     }
     startNode = document.createTextNode(startNode.value);
+  } else if (textToSynthesize) {
+    // Similarly, we synthesize a text node if we are dealing with Google docs
+    // text.
+    startNode = document.createTextNode(textToSynthesize);
   }
 
   // Try handling as a text node
@@ -251,7 +270,7 @@ function caretPositionFromPoint(
   // Firefox that won't. One might say that when we're in text boxes it's better
   // to follow caretPositionFromPoint's behavior anyway.
   //
-  // In any case, for ow, we do the adjustment here so we keep the early return
+  // In any case, for now, we do the adjustment here so we keep the early return
   // optimization and if it becomes important to apply this to text boxes too,
   // we'll work out a way to address them at that time.)
   const { offsetNode, offset } = result;

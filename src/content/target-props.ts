@@ -1,6 +1,7 @@
 import { Rect } from '../utils/geometry';
 
 import { isTextInputNode } from './dom-utils';
+import { isGdocsSpan } from './gdocs';
 import { TextRange } from './text-range';
 
 /// Properties about the target element from which we started lookup needed
@@ -63,6 +64,11 @@ function getInitialBboxOfTextSelection(
   // (We easily can't get the bbox of text selections in input elements
   // unfortunately.)
   if (!textRange.length || isTextInputNode(textRange[0].node)) {
+    return undefined;
+  }
+
+  // TODO: Handle this
+  if (isGdocsSpan(textRange[0].node)) {
     return undefined;
   }
 
