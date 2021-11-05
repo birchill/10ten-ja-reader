@@ -951,15 +951,12 @@ export class Config {
             }
           : undefined,
       hasSwitchedDictionary: this.hasSwitchedDictionary,
-      // We hide the hold-to-show keys setting in activeTab only mode
-      holdToShowKeys:
-        !__ACTIVE_TAB_ONLY__ && this.holdToShowKeys
-          ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)
-          : [],
-      holdToShowImageKeys:
-        !__ACTIVE_TAB_ONLY__ && this.holdToShowImageKeys
-          ? (this.holdToShowImageKeys.split('+') as Array<'Ctrl' | 'Alt'>)
-          : [],
+      holdToShowKeys: this.holdToShowKeys
+        ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)
+        : [],
+      holdToShowImageKeys: this.holdToShowImageKeys
+        ? (this.holdToShowImageKeys.split('+') as Array<'Ctrl' | 'Alt'>)
+        : [],
       kanjiReferences: this.kanjiReferences,
       keys: this.keysNormalized,
       noTextHighlight: this.noTextHighlight,

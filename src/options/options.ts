@@ -901,7 +901,8 @@ function fillVals() {
       Bugsnag.notify(e);
     });
 
-  // Note that this setting is hidden in active-tab only mode
+  // Note that this setting is hidden when we detect the device does not likely
+  // have a physical keyboard.
   const holdToShowSettings = ['holdToShowKeys', 'holdToShowImageKeys'] as const;
   for (const setting of holdToShowSettings) {
     const holdKeyParts: Array<string> =

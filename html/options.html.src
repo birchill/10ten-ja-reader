@@ -159,7 +159,6 @@
               __MSG_options_browser_commands_no_toggle_key__
             </div>
           </div>
-          <!--#if !active_tab_only-->
           <p>__MSG_options_show_popup_subheading__</p>
           <fieldset class="bordered">
             <p class="section-explanation">__MSG_options_show_popup_explanation__</p>
@@ -206,7 +205,6 @@
               </div>
             </div>
           </fieldset>
-          <!--#endif-->
           <p>__MSG_options_popup_keys_subheading__</p>
           <div class="panel-section key-grid" id=key-grid></div>
         </div>

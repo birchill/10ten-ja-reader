@@ -35,9 +35,9 @@ export function probablyHasPhysicalKeyboard(): boolean {
   // that's not going to work properly for feature phones like KaiOS that are
   // mobile but don't have a proper keyboard.
   //
-  // Instead, we test for a mouse-like device, and if we have one, assume we also
-  // have a keyboard. It's not right, but it should work for most devices until
-  // the CSSWG gets around to speccing something for this.
+  // Instead, we test for a mouse-like device, and if we have one, assume we
+  // also have a keyboard. It's not right, but it should work for most devices
+  // until the CSSWG gets around to speccing something for this.
   //
   // This approach also happens to work when we enable touch simulation (and
   // reload) in Firefox DevTools.
