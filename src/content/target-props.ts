@@ -1,7 +1,7 @@
 import { Rect } from '../utils/geometry';
 
 import { isTextInputNode } from '../utils/dom-utils';
-import { isGdocsSpan } from './gdocs';
+import { getGdocsRangeBboxes, isGdocsSpan } from './gdocs';
 import { TextRange } from './text-range';
 
 /// Properties about the target element from which we started lookup needed
@@ -67,14 +67,20 @@ function getInitialBboxOfTextSelection(
     return undefined;
   }
 
-  // TODO: Handle this
-  if (isGdocsSpan(textRange[0].node)) {
-    return undefined;
-  }
-
+  // All this fiddling we do do get bboxes for Google docs spans is possibly
+  // not necessary. The bboxes are mostly useful on mobile devices when we are
+  // trying to position the popup to the side of the selection, but the Web
+  // version of Google docs is probably not often used on mobile devices.
+  //
+  // However, it's fairly easy to calculate these bboxes and doing so means we
+  // get a more consistent vertical gutter as non-Google docs cases so for now
+  // we put up with the complexity.
   const node = textRange[0].node;
-  const range = node.ownerDocument!.createRange();
-  range.setStart(node, textRange[0].start);
+  const gDocsStartSpan = isGdocsSpan(node) ? node : undefined;
+  const range = gDocsStartSpan ? undefined : node.ownerDocument!.createRange();
+  if (range) {
+    range.setStart(node, textRange[0].start);
+  }
 
   let lastEnd = -1;
   let lastSize: Rect | undefined;
@@ -85,8 +91,16 @@ function getInitialBboxOfTextSelection(
     if (end <= lastEnd) {
       result[size] = lastSize!;
     } else {
-      range.setEnd(node, end);
-      result[size] = range.getClientRects()[0];
+      if (gDocsStartSpan) {
+        result[size] = getGdocsRangeBboxes({
+          startSpan: gDocsStartSpan,
+          offset: textRange[0].start,
+          length: end - textRange[0].start,
+        })[0];
+      } else if (range) {
+        range.setEnd(node, end);
+        result[size] = range.getClientRects()[0];
+      }
 
       lastEnd = end;
       lastSize = result[size];
