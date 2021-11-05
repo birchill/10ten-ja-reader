@@ -3,10 +3,10 @@ import {
   nonJapaneseCharOrNumber,
   startsWithNumber,
 } from '../utils/char-range';
+import { isTextInputNode, isTextNode } from '../utils/dom-utils';
 import { bboxIncludesPoint, Point } from '../utils/geometry';
 import { isChromium } from '../utils/ua-utils';
 
-import { isTextInputNode, isTextNode } from './dom-utils';
 import { getTextFromAnnotatedCanvas, isGdocsOverlayElem } from './gdocs';
 import { extractGetTextMetadata, lookForMetadata, SelectionMeta } from './meta';
 import { SVG_NS } from './svg';

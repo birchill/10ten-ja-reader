@@ -29,6 +29,7 @@ import {
   getReferencesForLang,
 } from '../common/refs';
 import { startBugsnag } from '../utils/bugsnag';
+import { empty } from '../utils/dom-utils';
 import {
   isChromium,
   isEdge,
@@ -1312,12 +1313,6 @@ async function updateIdleStateSummary(
   }
 
   statusElem.append(gridDiv);
-}
-
-function empty(elem: Element) {
-  while (elem.firstChild) {
-    (elem.firstChild as any).remove();
-  }
 }
 
 function linkify(

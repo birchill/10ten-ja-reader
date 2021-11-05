@@ -3,7 +3,8 @@ import {
   isFocusable,
   isSvg,
   isTextInputNode,
-} from './dom-utils';
+} from '../utils/dom-utils';
+
 import { clearGdocsHighlight, highlightGdocsRange, isGdocsSpan } from './gdocs';
 import { TextRange } from './text-range';
 

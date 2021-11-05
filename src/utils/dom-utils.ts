@@ -1,3 +1,9 @@
+export function empty(elem: Element) {
+  while (elem.firstChild) {
+    (elem.firstChild as any).remove();
+  }
+}
+
 export function isContentEditableNode(node: Node | null): boolean {
   if (!node) {
     return false;

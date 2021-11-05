@@ -53,6 +53,7 @@ import { BackgroundMessageSchema } from '../background/background-message';
 import { ContentConfig } from '../common/content-config';
 import { CopyKeys, CopyType } from '../common/copy-keys';
 import { isTouchDevice } from '../utils/device';
+import { isEditableNode } from '../utils/dom-utils';
 import {
   addMarginToPoint,
   getMarginAroundPoint,
@@ -69,7 +70,6 @@ import {
   getWordToCopy,
   Entry as CopyEntry,
 } from './copy-text';
-import { isEditableNode } from './dom-utils';
 import { injectGdocsStyles, removeGdocsStyles } from './gdocs';
 import { getTextAtPoint } from './get-text';
 import {

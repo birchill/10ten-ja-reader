@@ -1,6 +1,6 @@
 import { Rect } from '../utils/geometry';
 
-import { isTextInputNode } from './dom-utils';
+import { isTextInputNode } from '../utils/dom-utils';
 import { isGdocsSpan } from './gdocs';
 import { TextRange } from './text-range';
 

@@ -1,3 +1,4 @@
+import { empty } from '../utils/dom-utils';
 import { Point, Rect } from '../utils/geometry';
 import { CursorPosition } from './get-text';
 import { SVG_NS } from './svg';
@@ -8,7 +9,19 @@ export function injectGdocsStyles() {
   const style = document.createElement('style');
   style.id = 'tenten-gdocs-styles';
   style.textContent = `.kix-canvas-tile-selection { pointer-events: none }
-.kix-canvas-tile-content g rect[aria-label] { pointer-events: all }`;
+.kix-canvas-tile-content g rect[aria-label] { pointer-events: all }
+#tenten-gdocs-highlight {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  opacity: 0.3;
+}
+#tenten-gdocs-highlight .box {
+  position: absolute;
+  pointer-events: none;
+  background-color: yellow;
+}`;
   (document.head || document.documentElement).appendChild(style);
 }
 
@@ -111,6 +124,69 @@ export function isGdocsOverlayElem(node: Node | null): node is SVGElement {
   );
 }
 
+export function getGdocsRangeBboxes({
+  startSpan,
+  offset,
+  length,
+}: {
+  startSpan: SVGRectElement;
+  offset: number;
+  length: number;
+}): Array<Rect> {
+  const boxes: Array<Rect> = [];
+
+  const text = startSpan.getAttribute('aria-label');
+  if (!text) {
+    return boxes;
+  }
+
+  const font = startSpan.getAttribute('data-font-css');
+  if (!font) {
+    return boxes;
+  }
+
+  const ctx = document.createElement('canvas').getContext('2d');
+  if (!ctx) {
+    return boxes;
+  }
+
+  const { x, y: top, height } = startSpan.getBoundingClientRect();
+
+  ctx.font = font;
+  const leadingWidth = offset
+    ? ctx.measureText(text.substring(0, offset)).width
+    : 0;
+  const width = ctx.measureText(text.substring(offset, offset + length)).width;
+
+  boxes.push({ left: x + leadingWidth, top, width, height });
+
+  let currentSpan = startSpan;
+  let accumulatedLength = text.length - offset;
+  while (accumulatedLength < length) {
+    if (!isGdocsSpan(currentSpan.nextSibling)) {
+      break;
+    }
+    currentSpan = currentSpan.nextSibling;
+
+    const text = currentSpan.getAttribute('aria-label');
+    const font = currentSpan.getAttribute('data-font-css');
+    if (!text || !font) {
+      continue;
+    }
+
+    const lengthToMeasure = Math.min(length - accumulatedLength, text.length);
+    accumulatedLength += lengthToMeasure;
+
+    const { x: left, y: top, height } = currentSpan.getBoundingClientRect();
+    ctx.font = font;
+    const width = ctx.measureText(text.substring(0, lengthToMeasure)).width;
+
+    boxes.push({ left, top, width, height });
+  }
+
+  return boxes;
+}
+
 export function highlightGdocsRange({
   startSpan,
   offset,
@@ -120,46 +196,31 @@ export function highlightGdocsRange({
   offset: number;
   length: number;
 }) {
-  const boxes: Array<Rect> = [];
+  let highlightContainer = document.getElementById('tenten-gdocs-highlight');
+  if (highlightContainer) {
+    empty(highlightContainer);
+  }
 
-  const text = startSpan.getAttribute('aria-label');
-  if (!text) {
+  const boxes = getGdocsRangeBboxes({ startSpan, offset, length });
+  if (!boxes.length) {
     return;
   }
 
-  const font = startSpan.getAttribute('data-font-css');
-  if (!font) {
-    return;
+  if (!highlightContainer) {
+    highlightContainer = document.createElement('div');
+    highlightContainer.id = 'tenten-gdocs-highlight';
+    document.body.append(highlightContainer);
   }
 
-  const ctx = document.createElement('canvas').getContext('2d');
-  if (!ctx) {
-    return;
+  for (const box of boxes) {
+    const boxElem = document.createElement('div');
+    boxElem.classList.add('box');
+    boxElem.style.left = `${box.left}px`;
+    boxElem.style.top = `${box.top}px`;
+    boxElem.style.width = `${box.width}px`;
+    boxElem.style.height = `${box.height}px`;
+    highlightContainer.append(boxElem);
   }
-
-  const { x, y: top, height } = startSpan.getBoundingClientRect();
-
-  ctx.font = font;
-  const leadingWidth = ctx.measureText(text.substring(0, offset)).width;
-  const width = ctx.measureText(text.substring(offset, offset + length)).width;
-
-  boxes.push({ left: x + leadingWidth, top, width, height });
-
-  let highlight = document.getElementById('tenten-gdocs-highlight');
-  if (!highlight) {
-    highlight = document.createElement('div');
-    highlight.id = 'tenten-gdocs-highlight';
-    highlight.style.position = 'absolute';
-    highlight.style.pointerEvents = 'none';
-    highlight.style.backgroundColor = 'yellow';
-    highlight.style.opacity = '0.3';
-    highlight.style.zIndex = '100';
-    document.body.append(highlight);
-  }
-  highlight.style.left = `${boxes[0].left}px`;
-  highlight.style.top = `${boxes[0].top}px`;
-  highlight.style.width = `${boxes[0].width}px`;
-  highlight.style.height = `${boxes[0].height}px`;
 }
 
 export function clearGdocsHighlight() {
