@@ -209,14 +209,18 @@ export function highlightGdocsRange({
   if (!highlightContainer) {
     highlightContainer = document.createElement('div');
     highlightContainer.id = 'tenten-gdocs-highlight';
-    document.body.append(highlightContainer);
+    const parent =
+      document.querySelector('.kix-appview-editor') || document.body;
+    parent.append(highlightContainer);
   }
+
+  const containerBbox = highlightContainer.getBoundingClientRect();
 
   for (const box of boxes) {
     const boxElem = document.createElement('div');
     boxElem.classList.add('box');
-    boxElem.style.left = `${box.left}px`;
-    boxElem.style.top = `${box.top}px`;
+    boxElem.style.left = `${box.left - containerBbox.left}px`;
+    boxElem.style.top = `${box.top - containerBbox.top}px`;
     boxElem.style.width = `${box.width}px`;
     boxElem.style.height = `${box.height}px`;
     highlightContainer.append(boxElem);
