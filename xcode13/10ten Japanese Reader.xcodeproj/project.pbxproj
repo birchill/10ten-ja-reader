@@ -49,6 +49,8 @@
 		D306F4AB2692C556002FA4FD /* 10ten-ja-content.js in Resources */ = {isa = PBXBuildFile; fileRef = D306F4962692C556002FA4FD /* 10ten-ja-content.js */; };
 		D306F4AC2692C556002FA4FD /* _locales in Resources */ = {isa = PBXBuildFile; fileRef = D306F4972692C556002FA4FD /* _locales */; };
 		D306F4AD2692C556002FA4FD /* data in Resources */ = {isa = PBXBuildFile; fileRef = D306F4982692C556002FA4FD /* data */; };
+		D34BCE9B273550DF00955778 /* 10ten-ja-gdocs-bootstrap.js in Resources */ = {isa = PBXBuildFile; fileRef = D34BCE99273550DF00955778 /* 10ten-ja-gdocs-bootstrap.js */; };
+		D34BCE9C273550DF00955778 /* 10ten-ja-gdocs-bootstrap.js in Resources */ = {isa = PBXBuildFile; fileRef = D34BCE99273550DF00955778 /* 10ten-ja-gdocs-bootstrap.js */; };
 		D3BBFEB226FCA81B0059B886 /* iphone-pro-2.png in Resources */ = {isa = PBXBuildFile; fileRef = D3BBFE9D26FCA81A0059B886 /* iphone-pro-2.png */; };
 		D3BBFEB326FCA81B0059B886 /* iphone-pro-2.png in Resources */ = {isa = PBXBuildFile; fileRef = D3BBFE9D26FCA81A0059B886 /* iphone-pro-2.png */; };
 		D3BBFEB426FCA81B0059B886 /* iphone-2.png in Resources */ = {isa = PBXBuildFile; fileRef = D3BBFE9E26FCA81A0059B886 /* iphone-2.png */; };
@@ -172,6 +174,8 @@
 		D306F4972692C556002FA4FD /* _locales */ = {isa = PBXFileReference; lastKnownFileType = folder; name = _locales; path = "../../dist-safari/_locales"; sourceTree = "<group>"; };
 		D306F4982692C556002FA4FD /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = "../../dist-safari/data"; sourceTree = "<group>"; };
 		D306F4992692C556002FA4FD /* 10ten-ja-options.js.map */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; name = "10ten-ja-options.js.map"; path = "../../dist-safari/10ten-ja-options.js.map"; sourceTree = "<group>"; };
+		D34BCE99273550DF00955778 /* 10ten-ja-gdocs-bootstrap.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "10ten-ja-gdocs-bootstrap.js"; path = "../../dist-safari/10ten-ja-gdocs-bootstrap.js"; sourceTree = "<group>"; };
+		D34BCE9A273550DF00955778 /* 10ten-ja-gdocs-bootstrap.js.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = "10ten-ja-gdocs-bootstrap.js.map"; path = "../../dist-safari/10ten-ja-gdocs-bootstrap.js.map"; sourceTree = "<group>"; };
 		D3BBFE9D26FCA81A0059B886 /* iphone-pro-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-pro-2.png"; sourceTree = "<group>"; };
 		D3BBFE9E26FCA81A0059B886 /* iphone-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-2.png"; sourceTree = "<group>"; };
 		D3BBFE9F26FCA81A0059B886 /* iphone-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-5.png"; sourceTree = "<group>"; };
@@ -344,6 +348,8 @@
 		D306F48B2692C556002FA4FD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D34BCE99273550DF00955778 /* 10ten-ja-gdocs-bootstrap.js */,
+				D34BCE9A273550DF00955778 /* 10ten-ja-gdocs-bootstrap.js.map */,
 				D306F48C2692C556002FA4FD /* 10ten-ja-background.js.map */,
 				D306F48D2692C556002FA4FD /* 10ten-ja-content.js.map */,
 				D306F48E2692C556002FA4FD /* 10ten-ja-jpdict.js */,
@@ -559,6 +565,7 @@
 			files = (
 				D306F4AC2692C556002FA4FD /* _locales in Resources */,
 				D306F4AA2692C556002FA4FD /* options.html in Resources */,
+				D34BCE9B273550DF00955778 /* 10ten-ja-gdocs-bootstrap.js in Resources */,
 				D306F4A62692C556002FA4FD /* images in Resources */,
 				D306F4A52692C556002FA4FD /* css in Resources */,
 				D306F4AD2692C556002FA4FD /* data in Resources */,
@@ -576,6 +583,7 @@
 			files = (
 				D306F4A22692C556002FA4FD /* _locales in Resources */,
 				D306F4A02692C556002FA4FD /* options.html in Resources */,
+				D34BCE9C273550DF00955778 /* 10ten-ja-gdocs-bootstrap.js in Resources */,
 				D306F49C2692C556002FA4FD /* images in Resources */,
 				D306F49B2692C556002FA4FD /* css in Resources */,
 				D306F4A32692C556002FA4FD /* data in Resources */,
