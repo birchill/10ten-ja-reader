@@ -628,11 +628,25 @@ export class ContentHandler {
     //
     // Instead we just allow these events through on Google docs and accept that
     // if the popup is showing it might interfere with typing.
-    if (
-      textBoxInFocus &&
-      this.typingMode &&
-      !(document.location.host === 'docs.google.com' && window.frameElement)
-    ) {
+    const isGoogleDocsIframe = () => {
+      try {
+        return (
+          // On Firefox the iframe src is javascript:undefined which ends up
+          // getting host docs.google.com, while on Chrome the iframe src is
+          // about:blank which has an empty host.
+          //
+          // We wrap the whole thing in try/catch because I'm paranoid about
+          // cross-origin things throwing security exceptions.
+          (document.location.host === 'docs.google.com' ||
+            window.top?.location.host === 'docs.google.com') &&
+          window.frameElement
+        );
+      } catch {
+        return false;
+      }
+    };
+
+    if (textBoxInFocus && this.typingMode && !isGoogleDocsIframe()) {
       return;
     }
 
@@ -645,12 +659,10 @@ export class ContentHandler {
     } else if (textBoxInFocus) {
       // If we are focussed on a textbox and the keystroke wasn't one we handle
       // one, enter typing mode and hide the pop-up.
-      if (textBoxInFocus) {
-        this.clearResult({
-          currentElement: this.lastMouseTarget,
-        });
-        this.typingMode = true;
-      }
+      this.clearResult({
+        currentElement: this.lastMouseTarget,
+      });
+      this.typingMode = true;
     }
   }
 
