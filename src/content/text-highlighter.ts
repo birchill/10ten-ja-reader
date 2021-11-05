@@ -122,6 +122,8 @@ export class TextHighlighter {
         offset: textRange[0].start,
         length,
       });
+      this.selectedText = null;
+      this.selectedWindow = selectedWindow;
     } else {
       this.highlightRegularNode({
         length,
