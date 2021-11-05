@@ -21,8 +21,6 @@ const mockBrowser = {
           return 'lit.';
         case 'gloss_type_short_fig':
           return 'fig.';
-        case 'gloss_type_short_tm':
-          return '(tm)';
         case 'ref_label_radical':
           return 'Radical';
         case 'ref_label_nelson_r':

@@ -788,10 +788,6 @@
     "message": "直訳",
     "description": "Short annotation used to represent the expl (explanation) gloss type when copying entries to the clipboard"
   },
-  "gloss_type_short_tm": {
-    "message": "商標",
-    "description": "Short annotation used to represent the tm (trademark) gloss type when copying entries to the clipboard"
-  },
   "head_info_label_ateji": {
     "message": "当て字",
     "description": "Short annotation given to kanji headwords that are ateji (kanji chosen to represent sounds)"

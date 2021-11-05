@@ -201,28 +201,30 @@ function serializeSense(sense: Sense): string {
   let result = '';
 
   result += sense.pos ? `(${sense.pos.join(',')}) ` : '';
-
-  // Gloss types
-  if (sense.g.some((g) => g.type)) {
-    result +=
-      '(' +
-      sense.g
-        .filter((g) => g.type)
-        .map((g) =>
-          browser.i18n.getMessage(`gloss_type_short_${glossTypes[g.type!]}`)
-        )
-        .filter((message) => message !== 'Unrecognized string ID')
-        .join(',') +
-      ') ';
-  }
-
   result += sense.field ? `(${sense.field.join(',')}) ` : '';
   result += sense.misc ? `(${sense.misc.join(',')}) ` : '';
   result += sense.dial
     ? `(${sense.dial.map((dial) => dialects[dial]).join(',')}) `
     : '';
 
-  result += sense.g.map((g) => g.str).join('; ');
+  const glosses: Array<string> = [];
+  for (const g of sense.g) {
+    let gloss = '';
+    if (g.type && g.type !== GlossType.Tm) {
+      const glossTypeStr = browser.i18n.getMessage(
+        `gloss_type_short_${glossTypes[g.type]}`
+      );
+      if (glossTypeStr) {
+        gloss = `(${glossTypeStr}) `;
+      }
+    }
+    gloss += g.str;
+    if (g.type === GlossType.Tm) {
+      gloss += '™';
+    }
+    glosses.push(gloss);
+  }
+  result += glosses.join('; ');
 
   result += sense.lsrc
     ? ` (${sense.lsrc.map(serializeLangSrc).join(', ')})`
