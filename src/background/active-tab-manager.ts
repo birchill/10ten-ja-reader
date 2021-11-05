@@ -265,19 +265,19 @@ export default class ActiveTabManager implements TabManager {
       frameId,
     });
 
-    // See if we should inject the Google Docs fallback script too
+    // See if we should inject the Google Docs bootstrap script too
     try {
       const tabDetails = await browser.tabs.get(tabId);
       if (tabDetails.url?.startsWith('https://docs.google.com')) {
         await browser.tabs.executeScript(tabId, {
           allFrames: typeof frameId === 'undefined',
-          file: '/10ten-ja-gdocs-fallback.js',
+          file: '/10ten-ja-gdocs-bootstrap.js',
           runAt: 'document_start',
           frameId,
         });
       }
     } catch {
-      console.warn('Failed to get tab for injecting Google docs fallback');
+      console.warn('Failed to get tab for injecting Google docs bootstrap');
     }
 
     // We'd really like to detect if we failed to inject into the root frame
