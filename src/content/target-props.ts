@@ -1,7 +1,7 @@
 import { Rect } from '../utils/geometry';
 
 import { isTextInputNode } from '../utils/dom-utils';
-import { getGdocsRangeBboxes, isGdocsSpan } from './gdocs';
+import { getGdocsRangeBboxes, isGdocsSpan } from './gdocs-canvas';
 import { TextRange } from './text-range';
 
 /// Properties about the target element from which we started lookup needed

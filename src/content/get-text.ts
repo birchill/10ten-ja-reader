@@ -7,7 +7,7 @@ import { isTextInputNode, isTextNode } from '../utils/dom-utils';
 import { bboxIncludesPoint, Point } from '../utils/geometry';
 import { isChromium } from '../utils/ua-utils';
 
-import { getTextFromAnnotatedCanvas, isGdocsOverlayElem } from './gdocs';
+import { getTextFromAnnotatedCanvas, isGdocsOverlayElem } from './gdocs-canvas';
 import { extractGetTextMetadata, lookForMetadata, SelectionMeta } from './meta';
 import { SVG_NS } from './svg';
 import { TextRange } from './text-range';

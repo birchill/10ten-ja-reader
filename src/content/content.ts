@@ -70,7 +70,7 @@ import {
   getWordToCopy,
   Entry as CopyEntry,
 } from './copy-text';
-import { injectGdocsStyles, removeGdocsStyles } from './gdocs';
+import { injectGdocsStyles, removeGdocsStyles } from './gdocs-canvas';
 import { getTextAtPoint } from './get-text';
 import {
   findIframeElement,

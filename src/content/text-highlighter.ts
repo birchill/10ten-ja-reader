@@ -5,7 +5,11 @@ import {
   isTextInputNode,
 } from '../utils/dom-utils';
 
-import { clearGdocsHighlight, highlightGdocsRange, isGdocsSpan } from './gdocs';
+import {
+  clearGdocsHighlight,
+  highlightGdocsRange,
+  isGdocsSpan,
+} from './gdocs-canvas';
 import { TextRange } from './text-range';
 
 declare global {
