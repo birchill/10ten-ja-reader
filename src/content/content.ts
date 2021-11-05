@@ -608,9 +608,31 @@ export class ContentHandler {
       return;
     }
 
-    // If we're focussed on a text-editable node and in typing mode, listen to
-    // keystrokes.
-    if (textBoxInFocus && this.typingMode) {
+    // If we're focussed on a text-editable node and in typing mode, don't try
+    // to handle keystrokes. This is so that if the user has accidentally left
+    // their mouse sitting over some Japanese text we don't interfere with
+    // typing.
+    //
+    // The one exception to this is Google Docs. In Google Docs when the
+    // document canvas is in focus it puts the focus on a contenteditable
+    // element in a 1 pixel high iframe.
+    //
+    // Normally, whenever we see a mousemove event we will reset the
+    // `typingMode` flag but becuase the iframe is only 1 pixel high, the iframe
+    // will never see those mousemove events and hence `typingMode` will only
+    // get cleared on the top-most document and not the iframe.
+    //
+    // The `keydown` events, however, will go to the iframe. If we ignore them
+    // because `typingMode` is true we will end up ignoring all keyboard events
+    // while the canvas is in focus.
+    //
+    // Instead we just allow these events through on Google docs and accept that
+    // if the popup is showing it might interfere with typing.
+    if (
+      textBoxInFocus &&
+      this.typingMode &&
+      !(document.location.host === 'docs.google.com' && window.frameElement)
+    ) {
       return;
     }
 
