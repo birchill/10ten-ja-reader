@@ -111,7 +111,7 @@ export function isGdocsOverlayElem(node: Node | null): node is SVGElement {
   );
 }
 
-export function highlightRange({
+export function highlightGdocsRange({
   startSpan,
   offset,
   length,
@@ -162,6 +162,6 @@ export function highlightRange({
   highlight.style.height = `${boxes[0].height}px`;
 }
 
-export function clearHighlight() {
+export function clearGdocsHighlight() {
   document.getElementById('tenten-gdocs-highlight')?.remove();
 }

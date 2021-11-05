@@ -4,11 +4,7 @@ import {
   isSvg,
   isTextInputNode,
 } from './dom-utils';
-import {
-  clearHighlight as clearGdocsHighlight,
-  highlightRange as highlightGdocsRange,
-  isGdocsSpan,
-} from './gdocs';
+import { clearGdocsHighlight, highlightGdocsRange, isGdocsSpan } from './gdocs';
 import { TextRange } from './text-range';
 
 declare global {
