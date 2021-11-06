@@ -459,7 +459,6 @@ browser.runtime.onMessage.addListener(
       case 'options':
         return browser.runtime.openOptionsPage();
 
-      case 'search':
       case 'searchWords':
         if (pendingSearchWordsRequest) {
           pendingSearchWordsRequest.controller.abort();
@@ -486,10 +485,7 @@ browser.runtime.onMessage.addListener(
             });
           } catch (e) {
             if (e.name === 'AbortError') {
-              // Legacy content scripts (which use the request type 'search')
-              // won't recognize the 'aborted' result value and expect null in
-              // that case.
-              return request.type === 'search' ? null : 'aborted';
+              return 'aborted';
             }
             Bugsnag.notify(e);
             return null;

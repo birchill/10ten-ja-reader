@@ -18,11 +18,6 @@ export const BackgroundRequestSchema = discriminator('type', {
     src: s.string(),
   }),
   options: s.type({}),
-  // TODO: Remove 'search' once we have shipped the two-step search approach.
-  //
-  // It is provided now for the sake of supporting content scripts from previous
-  // versions.
-  search: SearchRequestSchema,
   searchWords: SearchRequestSchema,
   searchOther: SearchRequestSchema,
   switchedDictionary: s.type({}),
