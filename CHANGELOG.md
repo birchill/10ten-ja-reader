@@ -1,5 +1,8 @@
 ## Next version
 
+- Support for Google Docs annotated canvas.
+  Note that this does not yet work in Safari due to [Safari bug
+  232781](https://bugs.webkit.org/show_bug.cgi?id=232781)
 - Hide senses that don't apply to the looked-up text.
 - Show the age next to names for people with birth dates.
 - Replace "(trademark)" text with ™.
