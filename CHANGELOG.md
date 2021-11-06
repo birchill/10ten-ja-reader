@@ -5,6 +5,8 @@
   232781](https://bugs.webkit.org/show_bug.cgi?id=232781)
 - Hide senses that don't apply to the looked-up text.
 - Show the age next to names for people with birth dates.
+- Allow setting the hold to show keys in active tab mode too (Safari)
+  [#818](https://github.com/birchill/10ten-ja-reader/issues/818)).
 - Replace "(trademark)" text with ™.
 - Stop showing the popup for number-only matches in the name dictionary
   (e.g. 64)
