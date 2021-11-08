@@ -1,4 +1,4 @@
-## Next version
+## 1.5.0 (2021-11-08)
 
 - Support for Google Docs annotated canvas.
   Note that this does not yet work in Safari due to [Safari bug
