@@ -135,7 +135,7 @@ export class FxFetcher {
     try {
       const response = await fetchWithTimeout(url, {
         mode: 'cors',
-        timeout: 10_000,
+        timeout: 20_000,
       });
 
       // Check the response
@@ -199,7 +199,7 @@ export class FxFetcher {
         //
         // That's fine though because if the background page gets killed then
         // when it restarts it will trigger a new fetch anyway.
-        const timeout = window.setTimeout(() => this.fetchData(), 5000);
+        const timeout = window.setTimeout(() => this.fetchData(), 10_000);
         this.fetchState = { type: 'waiting to retry', retryCount, timeout };
       } else {
         console.error(e);
