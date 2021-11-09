@@ -794,15 +794,15 @@
     "description": "Short annotation given to kana headwords with gikun (meaning as reading) or jukujikun (special kanji reading)"
   },
   "head_info_label_ikana": {
-    "message": "rare",
+    "message": "irreg.",
     "description": "Short annotation given to (mostly?) kana headwords that have rare use of kana"
   },
   "head_info_label_ikanji": {
-    "message": "rare",
+    "message": "irreg.",
     "description": "Short annotation given to kanji headwords that have rare use of kanji"
   },
   "head_info_label_io": {
-    "message": "rare",
+    "message": "irreg.",
     "description": "Short annotation given to kanji headwords that have rare use of okurigana"
   },
   "head_info_label_okana": {
