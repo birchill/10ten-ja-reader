@@ -59,7 +59,7 @@
     "byline": "^5.0.0",
     "chai": "^4.3.4",
     "combined-stream2": "^1.1.2",
-    "copy-webpack-plugin": "^9.0.1",
+    "copy-webpack-plugin": "^9.1.0",
     "css-loader": "^6.5.1",
     "fast-glob": "^3.2.7",
     "file-loader": "^6.2.0",
