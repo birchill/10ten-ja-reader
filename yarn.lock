@@ -368,10 +368,10 @@
   resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.4.0.tgz#b58f6146f9b754431f7d93c2d48aca9ee45ee1a3"
   integrity sha512-iMeOw4BJS1Z0wqMyC3eYoZN+ANDlg1VQ+dZy56UEwNEaY+hzkR6nYT0DKpDRVRp5oJbpf7rEJQ6gfmD7AWJv2A==
 
-"@bugsnag/browser@^7.13.2":
-  version "7.13.2"
-  resolved "https://registry.yarnpkg.com/@bugsnag/browser/-/browser-7.13.2.tgz#d42956070f53894a449fb17aa84d82be7cc6969c"
-  integrity sha512-TNt6QhJxIqxvZ6wviLfwHu31V48EW+VnySxki0J2s4F++AF/lxCQ2o4ygFSQjOAHRMRChPI5jFM8OKDkx2q7mA==
+"@bugsnag/browser@^7.13.3":
+  version "7.13.3"
+  resolved "https://registry.yarnpkg.com/@bugsnag/browser/-/browser-7.13.3.tgz#bb0fe756a884d50f3e73cea0e684121236ac2eba"
+  integrity sha512-nxYb0AtyER3zSk7xoZnFVRQwhRJ0To/quhqrRqwESMrFEIKEkwkU6FMR4esr2rKY0uE3ugZ2eXdQOf3/ttso5w==
   dependencies:
     "@bugsnag/core" "^7.13.2"
 
@@ -391,12 +391,12 @@
   resolved "https://registry.yarnpkg.com/@bugsnag/cuid/-/cuid-3.0.0.tgz#2ee7642a30aee6dc86f5e7f824653741e42e5c35"
   integrity sha512-LOt8aaBI+KvOQGneBtpuCz3YqzyEAehd1f3nC5yr9TIYW1+IzYKa2xWS4EiMz5pPOnRPHkyyS5t/wmSmN51Gjg==
 
-"@bugsnag/js@^7.13.2":
-  version "7.13.2"
-  resolved "https://registry.yarnpkg.com/@bugsnag/js/-/js-7.13.2.tgz#5d1dad39bdab665a7dce155751f99fca19426177"
-  integrity sha512-yXEhiVAiHgpzlP/luA3lDTo+pLgxa3TDl6cSXJtUTOvVqcgzA30k+SHG8h0KwSjXQ0MJWiQFwzPPVENdLAB5nA==
+"@bugsnag/js@^7.13.3":
+  version "7.13.3"
+  resolved "https://registry.yarnpkg.com/@bugsnag/js/-/js-7.13.3.tgz#e108a45c4be9811756f6214f47aca84b57981e2b"
+  integrity sha512-V4r1Vt0SUslaz7dafU3bmKjUW6fak7CIrkWUz/aUKevQZM4kLARCnBXw9BfQrCejgyWyN9u1iysSIHVGkqsulA==
   dependencies:
-    "@bugsnag/browser" "^7.13.2"
+    "@bugsnag/browser" "^7.13.3"
     "@bugsnag/node" "^7.13.2"
 
 "@bugsnag/node@^7.13.2":
