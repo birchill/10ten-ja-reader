@@ -68,7 +68,7 @@
     "@web/test-runner-puppeteer": "^0.10.4",
     "byline": "^5.0.0",
     "conventional-changelog-conventionalcommits": "^4.6.0",
-    "csv-parse": "^4.16.2",
+    "csv-parse": "^5.0.3",
     "esbuild": "^0.13.15",
     "eslint": "^7.32.0",
     "eslint-plugin-lit": "^1.5.1",

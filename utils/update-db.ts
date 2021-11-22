@@ -11,10 +11,10 @@ import {
   Writable,
   WritableOptions,
 } from 'stream';
+import { parse } from 'csv-parse/lib/sync';
 import fs, { WriteStream, promises as promiseFs } from 'fs';
 import http from 'http';
 import iconv from 'iconv-lite';
-import parse from 'csv-parse/lib/sync';
 import path from 'path';
 import zlib from 'zlib';
 
