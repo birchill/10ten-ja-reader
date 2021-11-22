@@ -20,7 +20,7 @@ jobs:
           echo 'EOF' >> $GITHUB_ENV
           git status
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3.10.1
+        uses: peter-evans/create-pull-request@v3.11.0
         with:
           token: ${{ secrets.RIKAIKUN_BOT_PAT }}
           author: rikaikun[bot] <83656842+rikaikun-bot@users.noreply.github.com>
