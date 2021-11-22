@@ -65,7 +65,7 @@
     "@types/sinon-chai": "^3.2.5",
     "@types/sinon-chrome": "^2.2.11",
     "@web/test-runner": "^0.13.22",
-    "@web/test-runner-puppeteer": "^0.10.1",
+    "@web/test-runner-puppeteer": "^0.10.4",
     "byline": "^5.0.0",
     "conventional-changelog-conventionalcommits": "^4.6.0",
     "csv-parse": "^4.16.2",
