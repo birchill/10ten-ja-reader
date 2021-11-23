@@ -340,9 +340,11 @@ class OptionsForm extends LitElement {
       font-size: 10pt;
       padding: 0 10px;
     }
+
     table {
       border-spacing: 5px;
     }
+
     .tab {
       background-color: #eee;
       border: 1px solid #999;
