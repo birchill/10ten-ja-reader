@@ -49,7 +49,7 @@
     "lit-toast": "^1.5.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "^13.1.0",
+    "@commitlint/cli": "^15.0.0",
     "@commitlint/config-conventional": "^13.1.0",
     "@esm-bundle/chai": "^4.3.4",
     "@semantic-release/changelog": "^5.0.1",
