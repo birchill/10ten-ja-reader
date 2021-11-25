@@ -14,10 +14,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2.4.0
-      - name: Use Node.js 14
+      - name: Use Node.js 16
         uses: actions/setup-node@v2.4.1
         with:
-          node-version: '14'
+          node-version: '16'
       - run: npm ci
       - run: npm run presubmit:coverage
       - name: Upload coverage to Codecov

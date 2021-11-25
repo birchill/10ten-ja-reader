@@ -80,9 +80,10 @@ async function sendMessageToBackground({
   type: string;
   responseCallback?: Function;
 }): Promise<void> {
-  return await chrome.runtime.onMessage.addListener.yield(
+  await chrome.runtime.onMessage.addListener.yield(
     { type: type },
     { tab: { id: 0 } },
     responseCallback
   );
+  return;
 }
