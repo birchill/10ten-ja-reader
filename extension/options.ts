@@ -29,7 +29,7 @@ class OptionsForm extends LitElement {
     const options = await configPromise;
 
     return html`
-      <div id="rikaikun_options">
+      <div id="rikaikun-options">
         <form
           id="optform"
           name="optform"
@@ -37,7 +37,7 @@ class OptionsForm extends LitElement {
             chrome.storage.sync.set(event.__update, () => this.showToast())}
         >
           <div id="options">
-            <div id="gencon" class="tabContent">
+            <div id="gencon" class="tab-content">
               <h1>General</h1>
               <p>
                 Popup color:
@@ -132,7 +132,7 @@ class OptionsForm extends LitElement {
                 milliseconds
               </p>
             </div>
-            <div id="keycon" class="tabContent">
+            <div id="keycon" class="tab-content">
               <h1>Keyboard</h1>
               Show popup only on pressed key:<br />
               <div
@@ -217,7 +217,7 @@ class OptionsForm extends LitElement {
               />
               Disable these keys
             </div>
-            <div id="kanjicon" class="tabContent">
+            <div id="kanjicon" class="tab-content">
               <h1>Kanji Dictionary</h1>
               <p>
                 <strong>Displayed information:</strong><br /><br />
@@ -246,7 +246,7 @@ class OptionsForm extends LitElement {
                 })}
               </p>
             </div>
-            <div id="clipcon" class="tabContent">
+            <div id="clipcon" class="tab-content">
               <h1>Copy to Clipboard</h1>
               <table>
                 <tr>
@@ -317,7 +317,7 @@ class OptionsForm extends LitElement {
                 </tr>
               </table>
             </div>
-            <div id="tts" class="tabContent">
+            <div id="tts" class="tab-content">
               <h1>Text-To-Speech</h1>
               <input
                 type="checkbox"
@@ -334,8 +334,8 @@ class OptionsForm extends LitElement {
   }
 
   static styles = css`
-    #rikaikun_options,
-    #rikaikun_options td {
+    #rikaikun-options,
+    #rikaikun-options td {
       font-family: sans-serif;
       font-size: 10pt;
       padding: 0 10px;
@@ -368,7 +368,7 @@ class OptionsForm extends LitElement {
       font-weight: bold;
     }
 
-    .tabContent.hide {
+    .tab-content.hide {
       display: none;
     }
 
