@@ -30,6 +30,7 @@ import {
 } from '../common/refs';
 import { startBugsnag } from '../utils/bugsnag';
 import { empty } from '../utils/dom-utils';
+import { isObject } from '../utils/is-object';
 import {
   isChromium,
   isEdge,
@@ -988,6 +989,42 @@ window.onload = async () => {
       updateDatabaseSummary(evt);
     }
   });
+
+  // It's possible this might be disconnected on iOS which doesn't seem to
+  // keep inactive ports alive.
+  //
+  // Note that according to the docs, this should not be called when _we_ call
+  // disconnect():
+  //
+  //  https://developer.chrome.com/docs/extensions/mv3/messaging/#port-lifetime
+  //
+  // Nevertheless, we check that `browserPort` is not undefined before trying to
+  // re-connect just in case some some browsers behave differently here.
+  browserPort.onDisconnect.addListener((port: Browser.Runtime.Port) => {
+    // Firefox annotates `port` with an `error` but Chrome does not.
+    const error =
+      isObject((port as any).error) &&
+      typeof (port as any).error.message === 'string'
+        ? (port as any).error.message
+        : browser.runtime.lastError;
+    Bugsnag.leaveBreadcrumb(
+      `Options page disconnected from background page: ${error}`
+    );
+
+    // Wait a moment and try to reconnect
+    setTimeout(() => {
+      try {
+        // Check that browserPort is still set to _something_. If it is
+        // undefined it probably means we are shutting down.
+        if (!browserPort) {
+          return;
+        }
+        browserPort = browser.runtime.connect(undefined, { name: 'options' });
+      } catch (e) {
+        Bugsnag.notify(e);
+      }
+    }, 1000);
+  });
 };
 
 window.onunload = () => {
@@ -999,11 +1036,11 @@ window.onunload = () => {
 };
 
 function updateDatabaseSummary(evt: DbStateUpdatedMessage) {
-  updateDatabaseBlurb(evt);
+  updateDatabaseBlurb();
   updateDatabaseStatus(evt);
 }
 
-function updateDatabaseBlurb(evt: DbStateUpdatedMessage) {
+function updateDatabaseBlurb() {
   const blurb = document.querySelector('.db-summary-blurb')!;
   empty(blurb);
 
