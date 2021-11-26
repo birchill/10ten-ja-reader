@@ -999,7 +999,7 @@ window.onload = async () => {
   //  https://developer.chrome.com/docs/extensions/mv3/messaging/#port-lifetime
   //
   // Nevertheless, we check that `browserPort` is not undefined before trying to
-  // re-connect just in case some some browsers behave differently here.
+  // re-connect just in case some browsers behave differently here.
   browserPort.onDisconnect.addListener((port: Browser.Runtime.Port) => {
     // Firefox annotates `port` with an `error` but Chrome does not.
     const error =
