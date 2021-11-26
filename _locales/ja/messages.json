@@ -1426,6 +1426,10 @@
     "message": "使用しているデータにJMDict/EDICT、KANJIDICおよびJMnedict/ENAMDICTのデータが含まれております。",
     "description": "Attribute of source data. The strings 'JMdict/EDICT', 'KANJIDIC' and 'JMnedict/ENAMDICT' must appear so that they can be link-ified to the corresponding project home pages."
   },
+  "options_database_initializing": {
+    "message": "データベース初期化中",
+    "description": "Label when IndexedDB is being initialized"
+  },
   "options_database_unavailable": {
     "message": "データベースストレージ利用不可",
     "description": "Label when IndexedDB is unusable"

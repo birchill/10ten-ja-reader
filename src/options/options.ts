@@ -1176,7 +1176,6 @@ async function updateIdleStateSummary(
   statusElem: Element
 ) {
   const { updateError } = evt.state;
-  const kanjiDbState = evt.state.kanji;
 
   if (!!updateError && updateError.name === 'OfflineError') {
     const infoDiv = document.createElement('div');
@@ -1211,7 +1210,7 @@ async function updateIdleStateSummary(
           );
         }
       } catch {
-        /* Ignore. This UA likely doesn't support the navigator.storage API */
+        // Ignore. This UA likely doesn't support the navigator.storage API
       }
     }
 
@@ -1240,24 +1239,31 @@ async function updateIdleStateSummary(
     return;
   }
 
-  if (
-    kanjiDbState.state === DataSeriesState.Initializing ||
-    kanjiDbState.state === DataSeriesState.Empty
-  ) {
-    const infoDiv = document.createElement('div');
-    infoDiv.classList.add('db-summary-info');
-    infoDiv.append(browser.i18n.getMessage('options_no_database'));
-    statusElem.append(infoDiv);
-    return;
-  }
-
-  if (kanjiDbState.state === DataSeriesState.Unavailable) {
-    const infoDiv = document.createElement('div');
-    infoDiv.classList.add('db-summary-info');
-    infoDiv.append(browser.i18n.getMessage('options_database_unavailable'));
-    statusElem.classList.add('-error');
-    statusElem.append(infoDiv);
-    return;
+  // If we have no version information, seem if we have a suitable summary to
+  // display instead.
+  const hasVersionInfo = allMajorDataSeries.some(
+    (series) => !!evt.state[series].version
+  );
+  if (!hasVersionInfo) {
+    const summaryStates: Array<[DataSeriesState, string]> = [
+      [DataSeriesState.Initializing, 'options_db_initializing'],
+      [DataSeriesState.Empty, 'options_no_database'],
+      [DataSeriesState.Unavailable, 'options_database_unavailable'],
+    ];
+    for (const [state, key] of summaryStates) {
+      if (
+        allMajorDataSeries.some((series) => evt.state[series].state === state)
+      ) {
+        const infoDiv = document.createElement('div');
+        infoDiv.classList.add('db-summary-info');
+        infoDiv.append(browser.i18n.getMessage(key));
+        if (state === DataSeriesState.Unavailable) {
+          statusElem.classList.add('-error');
+        }
+        statusElem.append(infoDiv);
+        return;
+      }
+    }
   }
 
   const gridDiv = document.createElement('div');
