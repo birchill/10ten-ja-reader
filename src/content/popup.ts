@@ -102,17 +102,29 @@ declare global {
   }
 }
 
-export type CopyState = 'inactive' | 'active' | 'finished' | 'error';
+export type CopyState =
+  | {
+      kind: 'inactive';
+    }
+  | {
+      kind: 'active';
+      index: number;
+    }
+  | {
+      kind: 'finished';
+      index: number;
+      type: CopyType;
+    }
+  | {
+      kind: 'error';
+      index: number;
+    };
 
 export interface PopupOptions {
   accentDisplay: AccentDisplay;
   container?: HTMLElement;
-  // Set when copyState !== 'inactive'
-  copyIndex?: number;
   copyNextKey: string;
   copyState: CopyState;
-  // Set when copyState === 'finished'
-  copyType?: CopyType;
   dictToShow: MajorDataSeries;
   dictLang?: string;
   document?: Document;
@@ -233,7 +245,6 @@ export function renderPopup(
   const copyDetails = renderCopyDetails(
     options.copyNextKey,
     options.copyState,
-    typeof options.copyType !== 'undefined' ? options.copyType : undefined,
     resultToShow?.type || 'words'
   );
   const numResultsAvailable = () =>
@@ -555,7 +566,7 @@ function renderWordEntries({
     entryDiv.classList.add('entry');
     if (index === selectedIndex) {
       entryDiv.classList.add(
-        options.copyState === 'active' ? '-selected' : '-flash'
+        options.copyState.kind === 'active' ? '-selected' : '-flash'
       );
     }
     index++;
@@ -1413,7 +1424,7 @@ function renderNamesEntries({
     const entryDiv = renderName(entry);
     if (index === selectedIndex) {
       entryDiv.classList.add(
-        options.copyState === 'active' ? '-selected' : '-flash'
+        options.copyState.kind === 'active' ? '-selected' : '-flash'
       );
     }
     index++;
@@ -1522,11 +1533,8 @@ function annotateAge(text: string): string {
 }
 
 function getSelectedIndex(options: PopupOptions, numEntries: number) {
-  return typeof options.copyState !== 'undefined' &&
-    options.copyState !== 'inactive' &&
-    typeof options.copyIndex !== 'undefined' &&
-    numEntries
-    ? options.copyIndex % numEntries
+  return options.copyState.kind !== 'inactive' && numEntries
+    ? options.copyState.index % numEntries
     : -1;
 }
 
@@ -1544,11 +1552,11 @@ function renderKanjiEntry({
   container.append(table);
   table.classList.add('kanji-table');
 
-  if (options.copyState === 'active') {
+  if (options.copyState.kind === 'active') {
     table.classList.add('-copy');
   } else if (
-    options.copyState === 'finished' ||
-    options.copyState === 'error'
+    options.copyState.kind === 'finished' ||
+    options.copyState.kind === 'error'
   ) {
     table.classList.add('-finished');
   }
@@ -2124,11 +2132,10 @@ function renderMetadata({
 
 function renderCopyDetails(
   copyNextKey: string,
-  copyState: CopyState | undefined,
-  copyType: CopyType | undefined,
+  copyState: CopyState,
   series: MajorDataSeries
 ): HTMLElement | null {
-  if (typeof copyState === 'undefined' || copyState === 'inactive') {
+  if (copyState.kind === 'inactive') {
     return null;
   }
 
@@ -2167,10 +2174,10 @@ function renderCopyDetails(
     }
   }
 
-  if (copyState === 'finished' && typeof copyType !== 'undefined') {
+  if (copyState.kind === 'finished') {
     statusDiv.classList.add('-finished');
-    statusDiv.append(renderCopyStatus(getCopiedString(copyType)));
-  } else if (copyState === 'error') {
+    statusDiv.append(renderCopyStatus(getCopiedString(copyState.type)));
+  } else if (copyState.kind === 'error') {
     statusDiv.classList.add('-error');
     statusDiv.append(
       renderCopyStatus(browser.i18n.getMessage('content_copy_error'))

@@ -12,6 +12,7 @@
 <script>
   const config = {
     accentDisplay: 'binary',
+    copyState: { kind: 'inactive' },
     hasSwitchedDictionary: true,
     holdToShowKeys: [],
     holdToShowImageKeys: [],
@@ -964,9 +965,11 @@
         const popup = contentHandler._renderPopup(test.queryResult, {
           ...config,
           container: createPopupContainer(),
-          copyIndex: 1,
           copyNextKey: 'c',
-          copyState: 'active',
+          copyState: {
+            kind: 'active',
+            index: 1,
+          },
           dictToShow: getDictFromResult(test.queryResult),
           popupStyle: theme,
           showDefinitions: true,

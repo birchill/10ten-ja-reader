@@ -225,8 +225,7 @@ export class ContentHandler {
   //
   // (copyMode is actually used by the text-handling window too to know which
   // keyboard events to handle and how to interpret them.)
-  private copyMode: boolean = false;
-  private copyIndex: number = 0;
+  private copyState: CopyState = { kind: 'inactive' };
 
   // Manual positioning support
   private popupPositionMode: PopupPositionMode = PopupPositionMode.Auto;
@@ -360,7 +359,7 @@ export class ContentHandler {
     this.tearDownPuck();
 
     this.textHighlighter.detach();
-    this.copyMode = false;
+    this.copyState = { kind: 'inactive' };
     this.safeAreaProvider?.unmount();
 
     removePopup();
@@ -729,14 +728,14 @@ export class ContentHandler {
       !ctrlKeyPressed &&
       startCopy.includes(upperKey)
     ) {
-      if (!this.copyMode) {
+      if (this.copyState.kind === 'inactive') {
         this.enterCopyMode();
       } else {
         this.nextCopyEntry();
       }
-    } else if (this.copyMode && key === 'Escape') {
+    } else if (this.copyState.kind !== 'inactive' && key === 'Escape') {
       this.exitCopyMode();
-    } else if (this.copyMode) {
+    } else if (this.copyState.kind !== 'inactive') {
       let copyType: CopyType | undefined;
       for (const copyKey of CopyKeys) {
         if (upperKey === copyKey.key.toUpperCase()) {
@@ -889,7 +888,7 @@ export class ContentHandler {
       case 'popupHidden':
         this.currentTextRange = undefined;
         this.currentPoint = undefined;
-        this.copyMode = false;
+        this.copyState = { kind: 'inactive' };
         this.isPopupShowing = false;
         break;
 
@@ -1050,21 +1049,20 @@ export class ContentHandler {
     // - The iframe needs to know the copyMode state so that it can determine
     //   how to handle copyMode-specific keystrokes.
     //
-    this.copyMode = true;
+    this.copyState = { kind: 'active', index: 0 };
 
     if (!this.isTopMostWindow()) {
       browser.runtime.sendMessage({ type: 'top:enterCopyMode' });
       return;
     }
 
-    this.copyIndex = 0;
     this.showPopup();
   }
 
   exitCopyMode() {
     // As with enterCopyMode, we mirror the copyMode state in both iframe and
     // topmost window.
-    this.copyMode = false;
+    this.copyState = { kind: 'inactive' };
 
     if (!this.isTopMostWindow()) {
       browser.runtime.sendMessage({ type: 'top:exitCopyMode' });
@@ -1080,7 +1078,9 @@ export class ContentHandler {
       return;
     }
 
-    this.copyIndex++;
+    if (this.copyState.kind === 'active' || this.copyState.kind === 'error') {
+      this.copyState = { kind: 'active', index: this.copyState.index + 1 };
+    }
     this.showPopup();
   }
 
@@ -1121,10 +1121,10 @@ export class ContentHandler {
   }
 
   private getCopyEntry(): CopyEntry | null {
-    console.assert(
-      this.copyMode,
-      'Should be in copy mode when copying an entry'
-    );
+    if (this.copyState.kind !== 'active') {
+      console.error('Expected to be in copy mode');
+      return null;
+    }
 
     if (
       !this.currentSearchResult ||
@@ -1135,14 +1135,14 @@ export class ContentHandler {
 
     const searchResult = this.currentSearchResult[this.currentDict]!;
 
-    let copyIndex = this.copyIndex;
+    let copyIndex = this.copyState.index;
     if (searchResult.type === 'words' || searchResult.type === 'names') {
       copyIndex = copyIndex % searchResult.data.length;
     }
 
     if (copyIndex < 0) {
-      console.error('Bad copy index');
-      this.copyMode = false;
+      console.error('Bad copy index', copyIndex);
+      this.copyState = { kind: 'inactive' };
       this.showPopup();
       return null;
     }
@@ -1160,16 +1160,16 @@ export class ContentHandler {
   }
 
   private async copyString(message: string, copyType: CopyType) {
-    let copyState: CopyState = 'finished';
+    const index = this.copyState.kind !== 'inactive' ? this.copyState.index : 0;
     try {
       await navigator.clipboard.writeText(message);
+      this.copyState = { kind: 'finished', type: copyType, index };
     } catch (e) {
-      copyState = 'error';
       console.error('Failed to write to clipboard', e);
+      this.copyState = { kind: 'error', index };
     }
 
-    this.copyMode = false;
-    this.showPopup({ copyState, copyType });
+    this.showPopup();
   }
 
   highlightText(length: number) {
@@ -1204,7 +1204,7 @@ export class ContentHandler {
     this.currentTextRange = undefined;
     this.currentPoint = undefined;
     this.lastMouseTarget = null;
-    this.copyMode = false;
+    this.copyState = { kind: 'inactive' };
 
     if (
       this.isTopMostWindow() &&
@@ -1339,7 +1339,7 @@ export class ContentHandler {
     this.currentLookupParams = { text, meta, wordLookup, source };
 
     // Presumably the text or dictionary has changed so break out of copy mode
-    this.copyMode = false;
+    this.copyState = { kind: 'inactive' };
 
     let queryResult = await query(text, {
       includeRomaji: this.config.showRomaji,
@@ -1521,7 +1521,7 @@ export class ContentHandler {
     );
   }
 
-  showPopup(options?: { copyState?: CopyState; copyType?: CopyType }) {
+  showPopup() {
     if (!this.currentSearchResult && !this.currentLookupParams?.meta) {
       this.clearResult({ currentElement: this.lastMouseTarget });
       return;
@@ -1532,10 +1532,8 @@ export class ContentHandler {
 
     const popupOptions: PopupOptions = {
       accentDisplay: this.config.accentDisplay,
-      copyIndex: this.copyIndex,
       copyNextKey: this.config.keys.startCopy[0] || '',
-      copyState: options?.copyState || (this.copyMode ? 'active' : 'inactive'),
-      copyType: options?.copyType,
+      copyState: this.copyState,
       dictLang: this.config.dictLang,
       dictToShow: this.currentDict,
       document: doc,
