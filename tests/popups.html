@@ -34,23 +34,58 @@
   const contentHandler = new ContentHandler(config);
 </script>
 <body>
+  <div>
+    <h2>Contents</h2>
+    <ul id="toc">
+    </ul>
+  </div>
   <div id="container"></div>
   <script src="html-tests.js"></script>
   <script>
+    const toc = document.getElementById('toc');
     const container = document.getElementById('container');
 
-    const getDict = (queryResult) =>
+    const addHeading = (heading, level = 2) => {
+      if (level < 2) {
+        return;
+      }
+
+      const href = heading.replace(/\s/g, '-').toLowerCase();
+      if (level === 2) {
+        const li = toc.appendChild(document.createElement('li'));
+        const a = li.appendChild(document.createElement('a'));
+        a.textContent = heading;
+        a.href = `#${href}`;
+      }
+
+      const headingElement = document.createElement(`h${level}`);
+      headingElement.textContent = heading;
+      headingElement.id = href;
+      container.appendChild(headingElement);
+    };
+
+    const addLabel = (labelText) => {
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.append(labelText);
+      container.append(label);
+    }
+
+    const createPopupContainer = () => {
+      const popupContainer = document.createElement('div');
+      popupContainer.style.width = 'max-content';
+      container.append(popupContainer);
+      return popupContainer;
+    }
+
+    const getDictFromResult = (queryResult) =>
       Object.keys(queryResult).find(
         (key) => key === 'words' || key === 'kanji' || key === 'names'
       ) || 'words';
 
+    addHeading('Basic results');
     for (const test of htmlTests) {
-      const toTitle = (str) => str.charAt(0).toUpperCase() + str.slice(1);
-
-      const label = document.createElement('div');
-      label.classList.add('label');
-      label.append(toTitle(`${test.description}:`));
-      container.append(label);
+      addLabel(test.description);
 
       const dictToShow =
         Object.keys(test.queryResult).find(
@@ -62,7 +97,7 @@
         container: createPopupContainer(),
         dictLang:
           test.description.indexOf('language') !== -1 ? 'fr' : undefined,
-        dictToShow: getDict(test.queryResult),
+        dictToShow: getDictFromResult(test.queryResult),
         popupStyle: 'blue',
         showDefinitions: !test.extraConfig || !test.extraConfig.readingOnly,
       });
@@ -71,6 +106,8 @@
     const themes = ['light', 'blue', 'lightblue', 'black', 'yellow'];
 
     // Name tag test
+
+    addHeading('Name tags');
 
     const nameTagTest = {
       names: {
@@ -97,11 +134,92 @@
       },
     };
 
-    {
+    for (const theme of themes) {
       const label = document.createElement('div');
       label.classList.add('label');
-      label.append('【Name tags】');
+      label.append(`Theme: ${theme}`);
       container.append(label);
+
+      const popup = contentHandler._renderPopup(nameTagTest, {
+        ...config,
+        container: createPopupContainer(),
+        dictToShow: 'names',
+        popupStyle: theme,
+        showDefinitions: true,
+      });
+    }
+
+    // Year tests
+
+    addHeading('Year conversion');
+    const yearQueryResult = {
+      type: 'words',
+      data: [
+        {
+          k: [{ ent: '令和', p: ['s1'], match: true }],
+          r: [{ ent: 'れいわ', p: ['s1'], match: true }],
+          s: [
+            {
+              g: [{ str: 'Reiwa era (May 1, 2019-)' }],
+              pos: ['n'],
+              match: true,
+            },
+          ],
+        },
+        {
+          k: [{ ent: '令', p: ['n1', 'nf05'], match: true }],
+          r: [{ ent: 'れい', p: ['n1', 'nf05'], a: 1, match: true }],
+          s: [
+            {
+              g: [{ str: 'command' }, { str: 'order' }, { str: 'dictation' }],
+              pos: ['n', 'n-suf'],
+              match: true,
+            },
+            {
+              g: [{ str: 'nth year in the Reiwa era (May 1, 2019-)' }],
+              pos: ['pref'],
+              match: true,
+            },
+          ],
+        },
+        {
+          k: [{ ent: '令', match: true }],
+          r: [{ ent: 'りょう', a: 1, match: true }],
+          s: [
+            {
+              g: [{ str: 'administrative and civil code' }],
+              pos: ['n'],
+              misc: ['arch'],
+              match: true,
+            },
+          ],
+        },
+      ],
+      more: false,
+      matchLen: 2,
+    };
+
+    const yearTests = [
+      {
+        description: 'Regular year',
+        config: {
+          ...config,
+          showDefinitions: true,
+          meta: { type: 'era', era: '令和', year: 2 },
+        },
+      },
+      {
+        description: '元年',
+        config: {
+          ...config,
+          showDefinitions: true,
+          meta: { type: 'era', era: '令和', year: 0 },
+        },
+      },
+    ];
+
+    for (const test of yearTests) {
+      addHeading(test.description, 3);
 
       for (const theme of themes) {
         const label = document.createElement('div');
@@ -109,18 +227,578 @@
         label.append(`Theme: ${theme}`);
         container.append(label);
 
-        const popup = contentHandler._renderPopup(nameTagTest, {
-          ...config,
+        contentHandler._renderPopup(yearQueryResult, {
+          ...test.config,
           container: createPopupContainer(),
-          dictToShow: 'names',
+          dictToShow: 'words',
           popupStyle: theme,
-          showDefinitions: true,
         });
       }
     }
 
-    // Highlight tests
+    // Measure tests
 
+    addHeading('Measurement conversion');
+    const measureTests = [
+      {
+        description: '帖 measure',
+        config: {
+          ...config,
+          showDefinitions: true,
+          meta: { type: 'measure', value: 6, unit: '帖' },
+        },
+      },
+      {
+        description: '畳 measure',
+        config: {
+          ...config,
+          showDefinitions: true,
+          meta: { type: 'measure', value: 4.5, unit: '畳' },
+        },
+      },
+      {
+        description: 'Square metre measure',
+        config: {
+          ...config,
+          showDefinitions: true,
+          meta: { type: 'measure', value: 5, unit: 'm2' },
+        },
+      },
+    ];
+
+    for (const test of measureTests) {
+      addLabel(test.description);
+      contentHandler._renderPopup(null, {
+        ...test.config,
+        container: createPopupContainer(),
+        dictToShow: 'words',
+        popupStyle: 'light',
+      });
+    }
+
+    // Currency tests
+
+    addHeading('Currency conversion');
+    const currencyTests = [
+      {
+        description: 'USD',
+        config: {
+          ...config,
+          fxData: {
+            currency: 'USD',
+            rate: 0.009115065781351295,
+            timestamp: 1631754180485,
+          },
+          meta: {
+            type: 'currency',
+            value: 88000,
+          },
+        },
+      },
+      {
+        description: 'KRW',
+        config: {
+          ...config,
+          fxData: {
+            currency: 'KRW',
+            rate: 10.688500558390665,
+            timestamp: 1631754180485,
+          },
+          meta: {
+            type: 'currency',
+            value: 88000,
+          },
+        },
+      },
+      {
+        description: 'USD (touch version)',
+        config: {
+          ...config,
+          fxData: {
+            currency: 'USD',
+            rate: 0.009115065781351295,
+            timestamp: 1631754180485,
+          },
+          meta: {
+            type: 'currency',
+            value: 88000,
+          },
+        },
+      },
+      {
+        description: 'AED (redundant currency code)',
+        config: {
+          ...config,
+          fxData: {
+            currency: 'AED',
+            rate: 0.033166509528545496,
+            timestamp: 1631754180485,
+          },
+          meta: {
+            type: 'currency',
+            value: 88000,
+          },
+        },
+      },
+      {
+        description: 'BTC',
+        config: {
+          ...config,
+          fxData: {
+            currency: 'BTC',
+            rate: 2.0997785505420689e-7,
+            timestamp: 1631754180485,
+          },
+          meta: {
+            type: 'currency',
+            value: 88000,
+          },
+        },
+      },
+    ];
+
+    for (const test of currencyTests) {
+      addLabel(test.description);
+      const popup = contentHandler._renderPopup(null, {
+        ...test.config,
+        container: createPopupContainer(),
+        dictToShow: 'words',
+        popupStyle: 'light',
+        onClosePopup: () => {
+          console.log('closed');
+        },
+        onShowSettings: () => {},
+      });
+      if (test.description.indexOf('touch') !== -1) {
+        popup.querySelector('.window').classList.add('touch');
+      }
+    }
+
+    // Number tests
+
+    addHeading('Number conversion');
+    const numberTests = [
+      {
+        description: 'in isolation',
+        config: {
+          ...config,
+          meta: {
+            type: 'number',
+            value: 88000,
+            src: '8万8千',
+            matchLen: 5,
+          },
+        },
+      },
+      {
+        description: 'in isolation (touch version)',
+        config: {
+          ...config,
+          meta: {
+            type: 'number',
+            value: 88000,
+            src: '8万8千',
+            matchLen: 5,
+          },
+        },
+      },
+      {
+        description: 'combined',
+        config: {
+          ...config,
+          meta: {
+            type: 'number',
+            src: '九十八',
+            value: 98,
+            matchLen: 5,
+          },
+        },
+        queryResult: {
+          words: {
+            type: 'words',
+            data: [
+              {
+                id: 1578160,
+                k: [
+                  { ent: '９０', p: ['s1'], match: false },
+                  {
+                    ent: '九十',
+                    p: ['n1', 'nf06'],
+                    match: true,
+                    matchRange: [0, 2],
+                  },
+                  { ent: '九〇', match: false },
+                ],
+                r: [
+                  { ent: 'きゅうじゅう', p: ['n1', 'nf06', 's1'], match: true },
+                  { ent: 'くじゅう', match: true },
+                ],
+                s: [
+                  {
+                    g: [{ str: 'ninety' }, { str: '90' }],
+                    pos: ['num'],
+                    match: true,
+                  },
+                ],
+              },
+              {
+                id: 1578150,
+                k: [
+                  {
+                    ent: '九',
+                    p: ['i1', 'n1', 'nf01'],
+                    match: true,
+                    matchRange: [0, 1],
+                  },
+                  { ent: '９', match: false },
+                  { ent: '玖', match: false },
+                ],
+                r: [
+                  { ent: 'きゅう', p: ['i1', 'n1', 'nf01'], a: 1, match: true },
+                  { ent: 'く', p: ['i1'], a: 1, match: true },
+                  { ent: 'ここの', a: 2, match: true },
+                  { ent: 'この', a: 1, match: true },
+                  { ent: 'ここ', match: true },
+                ],
+                s: [
+                  {
+                    g: [{ str: 'nine' }],
+                    inf: '玖 is used in legal documents',
+                    pos: ['num'],
+                    match: true,
+                  },
+                ],
+              },
+              {
+                id: 2748010,
+                k: [{ ent: '九', match: true, matchRange: [0, 1] }],
+                r: [{ ent: 'チュー', a: 1, match: true }],
+                s: [
+                  {
+                    g: [{ str: 'nine' }],
+                    inf: 'クー, キュー or チュー in mahjong',
+                    lsrc: [{ lang: 'zh', src: 'jiǔ' }],
+                    pos: ['num'],
+                    match: true,
+                  },
+                ],
+              },
+            ],
+            more: false,
+            matchLen: 2,
+          },
+          resultType: 'full',
+        },
+      },
+    ];
+
+    for (const test of numberTests) {
+      addLabel(test.description);
+      const popup = contentHandler._renderPopup(test.queryResult || null, {
+        ...test.config,
+        container: createPopupContainer(),
+        dictToShow: 'words',
+        popupStyle: 'light',
+        showDefinitions: true,
+        onClosePopup: () => {
+          console.log('closed');
+        },
+        onShowSettings: () => {},
+      });
+      if (test.description.indexOf('touch') !== -1) {
+        popup.querySelector('.window').classList.add('touch');
+      }
+    }
+
+    // Touch screen tests
+
+    addHeading('Touch screen');
+    const touchScreenTest = {
+      words: {
+        type: 'words',
+        data: [
+          {
+            k: [{ ent: '韓国語', p: ['s1'], match: true }],
+            r: [{ ent: 'かんこくご', p: ['s1'], a: 0, match: true }],
+            s: [{ g: [{ str: 'Korean (language)' }], pos: ['n'], match: true }],
+          },
+          {
+            k: [{ ent: '韓国', p: ['n1', 'nf01'], match: true }],
+            r: [{ ent: 'かんこく', p: ['n1', 'nf01'], a: 0, match: true }],
+            s: [
+              {
+                g: [{ str: 'South Korea' }, { str: 'Republic of Korea' }],
+                pos: ['n', 'adj-no'],
+                misc: ['abbr'],
+                match: true,
+              },
+              {
+                g: [{ str: 'Korean Empire (1897-1910)' }],
+                pos: ['n', 'adj-no'],
+                misc: ['abbr'],
+                match: true,
+              },
+            ],
+          },
+          {
+            k: [
+              { ent: '唐国', match: false },
+              { ent: '韓国', match: true },
+            ],
+            r: [{ ent: 'からくに', match: true }],
+            s: [
+              {
+                g: [{ str: 'China' }, { str: 'Korea' }],
+                pos: ['n'],
+                misc: ['arch'],
+                match: true,
+              },
+            ],
+          },
+          {
+            k: [
+              { ent: '唐', match: false },
+              { ent: '韓', match: true },
+              { ent: '漢', match: false },
+            ],
+            r: [{ ent: 'から', a: 1, match: true }],
+            s: [
+              {
+                g: [
+                  {
+                    str: 'China (sometimes also used in ref. to Korea or other foreign countries)',
+                  },
+                ],
+                pos: ['n', 'n-pref'],
+                misc: ['arch'],
+                match: true,
+              },
+            ],
+          },
+        ],
+        more: false,
+        matchLen: 3,
+      },
+      kanji: {
+        type: 'kanji',
+        data: {
+          c: '士',
+          r: {
+            on: ['シ'],
+            kun: ['さむらい'],
+            na: ['お', 'ま'],
+          },
+          m: ['gentleman', 'scholar', 'samurai', 'samurai radical (no. 33)'],
+          rad: {
+            x: 33,
+            b: '⼠',
+            k: '士',
+            na: ['さむらい'],
+            m: ['gentleman', 'scholar', 'samurai'],
+            m_lang: 'en',
+          },
+          refs: {
+            nelson_c: 1160,
+            nelson_n: 1117,
+            halpern_njecd: 3405,
+            halpern_kkld: 2129,
+            halpern_kkld_2ed: 2877,
+            heisig: 319,
+            heisig6: 341,
+            henshall: 494,
+            sh_kk: 572,
+            sh_kk2: 581,
+            kanji_in_context: 755,
+            kodansha_compact: 393,
+            skip: '4-3-2',
+            sh_desc: '3p0.1',
+            conning: 350,
+          },
+          misc: {
+            sc: 3,
+            gr: 4,
+            freq: 526,
+            jlpt: 1,
+            kk: 7,
+          },
+          m_lang: 'en',
+          comp: [],
+        },
+      },
+    };
+
+    addHeading('Touch screen tabs', 3);
+
+    for (const theme of themes) {
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.append(`Theme: ${theme}`);
+      container.append(label);
+
+      const popup = contentHandler._renderPopup(touchScreenTest, {
+        ...config,
+        container: createPopupContainer(),
+        dictToShow: 'words',
+        popupStyle: theme,
+        showDefinitions: true,
+        onClosePopup: () => {},
+        onShowSettings: () => {},
+      });
+      popup.querySelector('.window').classList.add('touch');
+    }
+
+    // Database status tests
+
+    addHeading('Database status');
+    const dbUpdatingTest = { ...touchScreenTest, resultType: 'db-updating' };
+
+    for (const theme of themes) {
+      addLabel(`Theme: ${theme}`);
+      const popup = contentHandler._renderPopup(dbUpdatingTest, {
+        ...config,
+        container: createPopupContainer(),
+        dictToShow: 'words',
+        popupStyle: theme,
+        showDefinitions: true,
+        onClosePopup: () => {},
+        onShowSettings: () => {},
+      });
+      popup.querySelector('.window').classList.add('touch');
+    }
+
+    // Close button only test
+
+    addHeading('Close button only', 3);
+    {
+      const popup = contentHandler._renderPopup(
+        { ...touchScreenTest, resultType: 'db-unavailable' },
+        {
+          ...config,
+          container: createPopupContainer(),
+          dictToShow: 'words',
+          popupStyle: 'default',
+          showDefinitions: true,
+          onClosePopup: () => {},
+          onShowSettings: () => {},
+        }
+      );
+      popup.querySelector('.window').classList.add('touch');
+    }
+
+    // Switch dictionary hint
+
+    addHeading('Switch dictionary hint');
+    contentHandler._renderPopup(touchScreenTest, {
+      ...config,
+      hasSwitchedDictionary: false,
+      container: createPopupContainer(),
+      dictToShow: 'words',
+      popupStyle: 'default',
+      showDefinitions: true,
+      switchDictionaryKeys: ['Shift', 'Enter'],
+      onClosePopup: () => {},
+      onShowSettings: () => {},
+    });
+
+    // Tabs on the side
+
+    addHeading('Tabs on the side');
+    contentHandler._renderPopup(touchScreenTest, {
+      ...config,
+      container: createPopupContainer(),
+      dictToShow: 'words',
+      popupStyle: 'default',
+      showDefinitions: true,
+      switchDictionaryKeys: ['Shift', 'Enter'],
+      tabDisplay: 'right',
+      onClosePopup: () => {},
+      onShowSettings: () => {},
+    });
+
+    // Tabs on the side in touch mode
+
+    addHeading('Tabs on the side (touch display mode)', 3);
+    {
+      const popup = contentHandler._renderPopup(touchScreenTest, {
+        ...config,
+        container: createPopupContainer(),
+        dictToShow: 'words',
+        popupStyle: 'default',
+        showDefinitions: true,
+        switchDictionaryKeys: ['Shift', 'Enter'],
+        tabDisplay: 'right',
+        onClosePopup: () => {},
+        onShowSettings: () => {},
+      });
+      popup.querySelector('.window').classList.add('touch');
+    }
+
+    // Tabs on the side in touch mode with switch dictionary hint
+
+    addHeading('Tabs on the side (touch display mode and status bar)', 3);
+    {
+      const popup = contentHandler._renderPopup(touchScreenTest, {
+        ...config,
+        container: createPopupContainer(),
+        dictToShow: 'words',
+        hasSwitchedDictionary: false,
+        popupStyle: 'default',
+        showDefinitions: true,
+        switchDictionaryKeys: ['Shift', 'Enter'],
+        tabDisplay: 'right',
+        onClosePopup: () => {},
+        onShowSettings: () => {},
+      });
+      popup.querySelector('.window').classList.add('touch');
+    }
+
+    // Constrained height tests
+
+    addHeading('Constrained height');
+    for (const tabDisplay of ['top', 'right', 'none']) {
+      {
+        addHeading(`Tab display: ${tabDisplay}`, 3);
+        const popup = contentHandler._renderPopup(touchScreenTest, {
+          ...config,
+          container: createPopupContainer(),
+          dictToShow: 'words',
+          popupStyle: 'default',
+          showDefinitions: true,
+          switchDictionaryKeys: ['Shift', 'Enter'],
+          tabDisplay,
+          onClosePopup: () => {},
+          onShowSettings: () => {},
+        });
+
+        popup.style.maxHeight = '200px';
+        popup.style.webkitMaskImage =
+          'linear-gradient(to bottom, black 99%, transparent)';
+        popup.style.maskImage =
+          'linear-gradient(to bottom, black 99%, transparent)';
+      }
+
+      {
+        addHeading(`Tab display: ${tabDisplay} (touch version)`, 3);
+        const popup = contentHandler._renderPopup(touchScreenTest, {
+          ...config,
+          container: createPopupContainer(),
+          dictToShow: 'words',
+          popupStyle: 'default',
+          showDefinitions: true,
+          switchDictionaryKeys: ['Shift', 'Enter'],
+          tabDisplay,
+          onClosePopup: () => {},
+          onShowSettings: () => {},
+        });
+
+        popup.querySelector('.window').style.maxHeight = '200px';
+        popup.querySelector('.window').classList.add('touch');
+      }
+    }
+
+    // Copy mode highlight tests
+
+    addHeading('Copy mode');
     const highlightTests = [
       {
         description: 'Word list',
@@ -275,10 +953,7 @@
     ];
 
     for (const test of highlightTests) {
-      const label = document.createElement('div');
-      label.classList.add('label');
-      label.append(`【${test.description}】`);
-      container.append(label);
+      addHeading(test.description, 3);
 
       for (const theme of themes) {
         const label = document.createElement('div');
@@ -292,721 +967,11 @@
           copyIndex: 1,
           copyNextKey: 'c',
           copyState: 1,
-          dictToShow: getDict(test.queryResult),
+          dictToShow: getDictFromResult(test.queryResult),
           popupStyle: theme,
           showDefinitions: true,
         });
       }
-    }
-
-    // Year tests
-
-    const yearQueryResult = {
-      type: 'words',
-      data: [
-        {
-          k: [{ ent: '令和', p: ['s1'], match: true }],
-          r: [{ ent: 'れいわ', p: ['s1'], match: true }],
-          s: [
-            {
-              g: [{ str: 'Reiwa era (May 1, 2019-)' }],
-              pos: ['n'],
-              match: true,
-            },
-          ],
-        },
-        {
-          k: [{ ent: '令', p: ['n1', 'nf05'], match: true }],
-          r: [{ ent: 'れい', p: ['n1', 'nf05'], a: 1, match: true }],
-          s: [
-            {
-              g: [{ str: 'command' }, { str: 'order' }, { str: 'dictation' }],
-              pos: ['n', 'n-suf'],
-              match: true,
-            },
-            {
-              g: [{ str: 'nth year in the Reiwa era (May 1, 2019-)' }],
-              pos: ['pref'],
-              match: true,
-            },
-          ],
-        },
-        {
-          k: [{ ent: '令', match: true }],
-          r: [{ ent: 'りょう', a: 1, match: true }],
-          s: [
-            {
-              g: [{ str: 'administrative and civil code' }],
-              pos: ['n'],
-              misc: ['arch'],
-              match: true,
-            },
-          ],
-        },
-      ],
-      more: false,
-      matchLen: 2,
-    };
-
-    const yearTests = [
-      {
-        description: 'Regular year',
-        config: {
-          ...config,
-          showDefinitions: true,
-          meta: { type: 'era', era: '令和', year: 2 },
-        },
-      },
-      {
-        description: 'Gannen',
-        config: {
-          ...config,
-          showDefinitions: true,
-          meta: { type: 'era', era: '令和', year: 0 },
-        },
-      },
-    ];
-
-    for (const test of yearTests) {
-      const label = document.createElement('div');
-      label.classList.add('label');
-      label.append(`【${test.description}】`);
-      container.append(label);
-
-      for (const theme of themes) {
-        const label = document.createElement('div');
-        label.classList.add('label');
-        label.append(`Theme: ${theme}`);
-        container.append(label);
-
-        contentHandler._renderPopup(yearQueryResult, {
-          ...test.config,
-          container: createPopupContainer(),
-          dictToShow: 'words',
-          popupStyle: theme,
-        });
-      }
-    }
-
-    // Measure tests
-
-    const measureTests = [
-      {
-        description: '帖 measure',
-        config: {
-          ...config,
-          showDefinitions: true,
-          meta: { type: 'measure', value: 6, unit: '帖' },
-        },
-      },
-      {
-        description: '畳 measure',
-        config: {
-          ...config,
-          showDefinitions: true,
-          meta: { type: 'measure', value: 4.5, unit: '畳' },
-        },
-      },
-      {
-        description: 'Square metre measure',
-        config: {
-          ...config,
-          showDefinitions: true,
-          meta: { type: 'measure', value: 5, unit: 'm2' },
-        },
-      },
-    ];
-
-    for (const test of measureTests) {
-      const label = document.createElement('div');
-      label.classList.add('label');
-      label.append(`【${test.description}】`);
-      container.append(label);
-
-      contentHandler._renderPopup(null, {
-        ...test.config,
-        container: createPopupContainer(),
-        dictToShow: 'words',
-        popupStyle: 'light',
-      });
-    }
-
-    // Currency tests
-
-    const currencyTests = [
-      {
-        description: 'USD',
-        config: {
-          ...config,
-          fxData: {
-            currency: 'USD',
-            rate: 0.009115065781351295,
-            timestamp: 1631754180485,
-          },
-          meta: {
-            type: 'currency',
-            value: 88000,
-          },
-        },
-      },
-      {
-        description: 'KRW',
-        config: {
-          ...config,
-          fxData: {
-            currency: 'KRW',
-            rate: 10.688500558390665,
-            timestamp: 1631754180485,
-          },
-          meta: {
-            type: 'currency',
-            value: 88000,
-          },
-        },
-      },
-      {
-        description: 'USD (touch version)',
-        config: {
-          ...config,
-          fxData: {
-            currency: 'USD',
-            rate: 0.009115065781351295,
-            timestamp: 1631754180485,
-          },
-          meta: {
-            type: 'currency',
-            value: 88000,
-          },
-        },
-      },
-      {
-        description: 'AED (redundant currency code)',
-        config: {
-          ...config,
-          fxData: {
-            currency: 'AED',
-            rate: 0.033166509528545496,
-            timestamp: 1631754180485,
-          },
-          meta: {
-            type: 'currency',
-            value: 88000,
-          },
-        },
-      },
-      {
-        description: 'BTC',
-        config: {
-          ...config,
-          fxData: {
-            currency: 'BTC',
-            rate: 2.0997785505420689e-7,
-            timestamp: 1631754180485,
-          },
-          meta: {
-            type: 'currency',
-            value: 88000,
-          },
-        },
-      },
-    ];
-
-    for (const test of currencyTests) {
-      const label = document.createElement('div');
-      label.classList.add('label');
-      label.append(`【${test.description}】`);
-      container.append(label);
-
-      const popup = contentHandler._renderPopup(null, {
-        ...test.config,
-        container: createPopupContainer(),
-        dictToShow: 'words',
-        popupStyle: 'light',
-        onClosePopup: () => {
-          console.log('closed');
-        },
-        onShowSettings: () => {},
-      });
-      if (test.description.indexOf('touch') !== -1) {
-        popup.querySelector('.window').classList.add('touch');
-      }
-    }
-
-    // Number tests
-
-    const numberTests = [
-      {
-        description: 'in isolation',
-        config: {
-          ...config,
-          meta: {
-            type: 'number',
-            value: 88000,
-            src: '8万8千',
-            matchLen: 5,
-          },
-        },
-      },
-      {
-        description: 'in isolation (touch version)',
-        config: {
-          ...config,
-          meta: {
-            type: 'number',
-            value: 88000,
-            src: '8万8千',
-            matchLen: 5,
-          },
-        },
-      },
-      {
-        description: 'combined',
-        config: {
-          ...config,
-          meta: {
-            type: 'number',
-            src: '九十八',
-            value: 98,
-            matchLen: 5,
-          },
-        },
-        queryResult: {
-          words: {
-            type: 'words',
-            data: [
-              {
-                id: 1578160,
-                k: [
-                  { ent: '９０', p: ['s1'], match: false },
-                  {
-                    ent: '九十',
-                    p: ['n1', 'nf06'],
-                    match: true,
-                    matchRange: [0, 2],
-                  },
-                  { ent: '九〇', match: false },
-                ],
-                r: [
-                  { ent: 'きゅうじゅう', p: ['n1', 'nf06', 's1'], match: true },
-                  { ent: 'くじゅう', match: true },
-                ],
-                s: [
-                  {
-                    g: [{ str: 'ninety' }, { str: '90' }],
-                    pos: ['num'],
-                    match: true,
-                  },
-                ],
-              },
-              {
-                id: 1578150,
-                k: [
-                  {
-                    ent: '九',
-                    p: ['i1', 'n1', 'nf01'],
-                    match: true,
-                    matchRange: [0, 1],
-                  },
-                  { ent: '９', match: false },
-                  { ent: '玖', match: false },
-                ],
-                r: [
-                  { ent: 'きゅう', p: ['i1', 'n1', 'nf01'], a: 1, match: true },
-                  { ent: 'く', p: ['i1'], a: 1, match: true },
-                  { ent: 'ここの', a: 2, match: true },
-                  { ent: 'この', a: 1, match: true },
-                  { ent: 'ここ', match: true },
-                ],
-                s: [
-                  {
-                    g: [{ str: 'nine' }],
-                    inf: '玖 is used in legal documents',
-                    pos: ['num'],
-                    match: true,
-                  },
-                ],
-              },
-              {
-                id: 2748010,
-                k: [{ ent: '九', match: true, matchRange: [0, 1] }],
-                r: [{ ent: 'チュー', a: 1, match: true }],
-                s: [
-                  {
-                    g: [{ str: 'nine' }],
-                    inf: 'クー, キュー or チュー in mahjong',
-                    lsrc: [{ lang: 'zh', src: 'jiǔ' }],
-                    pos: ['num'],
-                    match: true,
-                  },
-                ],
-              },
-            ],
-            more: false,
-            matchLen: 2,
-          },
-          resultType: 'full',
-        },
-      },
-    ];
-
-    for (const test of numberTests) {
-      const label = document.createElement('div');
-      label.classList.add('label');
-      label.append(`【${test.description}】`);
-      container.append(label);
-
-      const popup = contentHandler._renderPopup(test.queryResult || null, {
-        ...test.config,
-        container: createPopupContainer(),
-        dictToShow: 'words',
-        popupStyle: 'light',
-        showDefinitions: true,
-        onClosePopup: () => {
-          console.log('closed');
-        },
-        onShowSettings: () => {},
-      });
-      if (test.description.indexOf('touch') !== -1) {
-        popup.querySelector('.window').classList.add('touch');
-      }
-    }
-
-    // Touch screen tests
-
-    const touchScreenTest = {
-      words: {
-        type: 'words',
-        data: [
-          {
-            k: [{ ent: '韓国語', p: ['s1'], match: true }],
-            r: [{ ent: 'かんこくご', p: ['s1'], a: 0, match: true }],
-            s: [{ g: [{ str: 'Korean (language)' }], pos: ['n'], match: true }],
-          },
-          {
-            k: [{ ent: '韓国', p: ['n1', 'nf01'], match: true }],
-            r: [{ ent: 'かんこく', p: ['n1', 'nf01'], a: 0, match: true }],
-            s: [
-              {
-                g: [{ str: 'South Korea' }, { str: 'Republic of Korea' }],
-                pos: ['n', 'adj-no'],
-                misc: ['abbr'],
-                match: true,
-              },
-              {
-                g: [{ str: 'Korean Empire (1897-1910)' }],
-                pos: ['n', 'adj-no'],
-                misc: ['abbr'],
-                match: true,
-              },
-            ],
-          },
-          {
-            k: [
-              { ent: '唐国', match: false },
-              { ent: '韓国', match: true },
-            ],
-            r: [{ ent: 'からくに', match: true }],
-            s: [
-              {
-                g: [{ str: 'China' }, { str: 'Korea' }],
-                pos: ['n'],
-                misc: ['arch'],
-                match: true,
-              },
-            ],
-          },
-          {
-            k: [
-              { ent: '唐', match: false },
-              { ent: '韓', match: true },
-              { ent: '漢', match: false },
-            ],
-            r: [{ ent: 'から', a: 1, match: true }],
-            s: [
-              {
-                g: [
-                  {
-                    str: 'China (sometimes also used in ref. to Korea or other foreign countries)',
-                  },
-                ],
-                pos: ['n', 'n-pref'],
-                misc: ['arch'],
-                match: true,
-              },
-            ],
-          },
-        ],
-        more: false,
-        matchLen: 3,
-      },
-      kanji: {
-        type: 'kanji',
-        data: {
-          c: '士',
-          r: {
-            on: ['シ'],
-            kun: ['さむらい'],
-            na: ['お', 'ま'],
-          },
-          m: ['gentleman', 'scholar', 'samurai', 'samurai radical (no. 33)'],
-          rad: {
-            x: 33,
-            b: '⼠',
-            k: '士',
-            na: ['さむらい'],
-            m: ['gentleman', 'scholar', 'samurai'],
-            m_lang: 'en',
-          },
-          refs: {
-            nelson_c: 1160,
-            nelson_n: 1117,
-            halpern_njecd: 3405,
-            halpern_kkld: 2129,
-            halpern_kkld_2ed: 2877,
-            heisig: 319,
-            heisig6: 341,
-            henshall: 494,
-            sh_kk: 572,
-            sh_kk2: 581,
-            kanji_in_context: 755,
-            kodansha_compact: 393,
-            skip: '4-3-2',
-            sh_desc: '3p0.1',
-            conning: 350,
-          },
-          misc: {
-            sc: 3,
-            gr: 4,
-            freq: 526,
-            jlpt: 1,
-            kk: 7,
-          },
-          m_lang: 'en',
-          comp: [],
-        },
-      },
-    };
-
-    {
-      const label = document.createElement('div');
-      label.classList.add('label');
-      label.append('【Touch screen tabs】');
-      container.append(label);
-
-      for (const theme of themes) {
-        const label = document.createElement('div');
-        label.classList.add('label');
-        label.append(`Theme: ${theme}`);
-        container.append(label);
-
-        const popup = contentHandler._renderPopup(touchScreenTest, {
-          ...config,
-          container: createPopupContainer(),
-          dictToShow: 'words',
-          popupStyle: theme,
-          showDefinitions: true,
-          onClosePopup: () => {},
-          onShowSettings: () => {},
-        });
-        popup.querySelector('.window').classList.add('touch');
-      }
-    }
-
-    // Database status tests
-
-    const dbUpdatingTest = { ...touchScreenTest, dbStatus: 'updating' };
-
-    {
-      const label = document.createElement('div');
-      label.classList.add('label');
-      label.append('【Database updating】');
-      container.append(label);
-
-      for (const theme of themes) {
-        const label = document.createElement('div');
-        label.classList.add('label');
-        label.append(`Theme: ${theme}`);
-        container.append(label);
-
-        const popup = contentHandler._renderPopup(dbUpdatingTest, {
-          ...config,
-          container: createPopupContainer(),
-          dictToShow: 'words',
-          popupStyle: theme,
-          showDefinitions: true,
-          onClosePopup: () => {},
-          onShowSettings: () => {},
-        });
-        popup.querySelector('.window').classList.add('touch');
-      }
-    }
-
-    // Close button only test
-
-    {
-      const label = document.createElement('div');
-      label.classList.add('label');
-      label.append('【Close button only】');
-      container.append(label);
-
-      const popup = contentHandler._renderPopup(
-        { ...touchScreenTest, dbStatus: 'unavailable' },
-        {
-          ...config,
-          container: createPopupContainer(),
-          dictToShow: 'words',
-          popupStyle: 'default',
-          showDefinitions: true,
-          onClosePopup: () => {},
-          onShowSettings: () => {},
-        }
-      );
-      popup.querySelector('.window').classList.add('touch');
-    }
-
-    // Switch dictionary hint
-
-    {
-      const label = document.createElement('div');
-      label.classList.add('label');
-      label.append('【Switch dictionary hint】');
-      container.append(label);
-
-      const popup = contentHandler._renderPopup(touchScreenTest, {
-        ...config,
-        hasSwitchedDictionary: false,
-        container: createPopupContainer(),
-        dictToShow: 'words',
-        popupStyle: 'default',
-        showDefinitions: true,
-        switchDictionaryKeys: ['Shift', 'Enter'],
-        onClosePopup: () => {},
-        onShowSettings: () => {},
-      });
-    }
-
-    // Tabs on the side
-
-    {
-      const label = document.createElement('div');
-      label.classList.add('label');
-      label.append('【Tabs on the side】');
-      container.append(label);
-
-      const popup = contentHandler._renderPopup(touchScreenTest, {
-        ...config,
-        container: createPopupContainer(),
-        dictToShow: 'words',
-        popupStyle: 'default',
-        showDefinitions: true,
-        switchDictionaryKeys: ['Shift', 'Enter'],
-        tabDisplay: 'right',
-        onClosePopup: () => {},
-        onShowSettings: () => {},
-      });
-    }
-
-    // Tabs on the side in touch mode
-
-    {
-      const label = document.createElement('div');
-      label.classList.add('label');
-      label.append('【Tabs on the side (touch display mode)】');
-      container.append(label);
-
-      const popup = contentHandler._renderPopup(touchScreenTest, {
-        ...config,
-        container: createPopupContainer(),
-        dictToShow: 'words',
-        popupStyle: 'default',
-        showDefinitions: true,
-        switchDictionaryKeys: ['Shift', 'Enter'],
-        tabDisplay: 'right',
-        onClosePopup: () => {},
-        onShowSettings: () => {},
-      });
-      popup.querySelector('.window').classList.add('touch');
-    }
-
-    // Tabs on the side in touch mode with switch dictionary hint
-
-    {
-      const label = document.createElement('div');
-      label.classList.add('label');
-      label.append('【Tabs on the side (touch display mode and status bar)】');
-      container.append(label);
-
-      const popup = contentHandler._renderPopup(touchScreenTest, {
-        ...config,
-        container: createPopupContainer(),
-        dictToShow: 'words',
-        hasSwitchedDictionary: false,
-        popupStyle: 'default',
-        showDefinitions: true,
-        switchDictionaryKeys: ['Shift', 'Enter'],
-        tabDisplay: 'right',
-        onClosePopup: () => {},
-        onShowSettings: () => {},
-      });
-      popup.querySelector('.window').classList.add('touch');
-    }
-
-    // Constrained height tests
-
-    for (const tabDisplay of ['top', 'right', 'none']) {
-      {
-        const label = document.createElement('div');
-        label.classList.add('label');
-        label.append(`【Constrained height, tab display: ${tabDisplay}】`);
-        container.append(label);
-
-        const popup = contentHandler._renderPopup(touchScreenTest, {
-          ...config,
-          container: createPopupContainer(),
-          dictToShow: 'words',
-          popupStyle: 'default',
-          showDefinitions: true,
-          switchDictionaryKeys: ['Shift', 'Enter'],
-          tabDisplay,
-          onClosePopup: () => {},
-          onShowSettings: () => {},
-        });
-
-        popup.style.maxHeight = '200px';
-        popup.style.webkitMaskImage =
-          'linear-gradient(to bottom, black 99%, transparent)';
-        popup.style.maskImage =
-          'linear-gradient(to bottom, black 99%, transparent)';
-      }
-
-      {
-        const label = document.createElement('div');
-        label.classList.add('label');
-        label.append(`【Constrained height, tab display: ${tabDisplay} (touch version)】`);
-        container.append(label);
-
-        const popup = contentHandler._renderPopup(touchScreenTest, {
-          ...config,
-          container: createPopupContainer(),
-          dictToShow: 'words',
-          popupStyle: 'default',
-          showDefinitions: true,
-          switchDictionaryKeys: ['Shift', 'Enter'],
-          tabDisplay,
-          onClosePopup: () => {},
-          onShowSettings: () => {},
-        });
-
-        popup.querySelector('.window').style.maxHeight = '200px';
-        popup.querySelector('.window').classList.add('touch');
-      }
-    }
-
-    function createPopupContainer() {
-      const popupContainer = document.createElement('div');
-      popupContainer.style.width = 'max-content';
-      container.append(popupContainer);
-      return popupContainer;
     }
   </script>
 </body>
