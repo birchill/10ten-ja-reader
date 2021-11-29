@@ -7,6 +7,13 @@ consistently version releases as follows:
 - Minor: New user visible feature added. (contains feat commits)
 - Patch: Bug fix to previous feature. (contains only fix commits)
 
+### [2.1.19](https://github.com/melink14/rikaikun/compare/v2.1.18...v2.1.19) (2021-11-29)
+
+### Bug Fixes
+
+- **dict:** Update dictionaries to latest versions ([#763](https://github.com/melink14/rikaikun/issues/763)) ([972e227](https://github.com/melink14/rikaikun/commit/972e2270e2d591a2710835ac5739e0a9667bf1fa))
+- **update-db:** Correct typo in csv-parse sync library import ([#762](https://github.com/melink14/rikaikun/issues/762)) ([8529f12](https://github.com/melink14/rikaikun/commit/8529f1266d367e56b5eca7296cd7add9dbf4dd62))
+
 ### [2.1.18](https://github.com/melink14/rikaikun/compare/v2.1.17...v2.1.18) (2021-11-22)
 
 ### Bug Fixes
