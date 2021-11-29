@@ -1160,11 +1160,11 @@ export class ContentHandler {
   }
 
   private async copyString(message: string, copyType: CopyType) {
-    let copyState = CopyState.Finished;
+    let copyState: CopyState = 'finished';
     try {
       await navigator.clipboard.writeText(message);
     } catch (e) {
-      copyState = CopyState.Error;
+      copyState = 'error';
       console.error('Failed to write to clipboard', e);
     }
 
@@ -1534,9 +1534,7 @@ export class ContentHandler {
       accentDisplay: this.config.accentDisplay,
       copyIndex: this.copyIndex,
       copyNextKey: this.config.keys.startCopy[0] || '',
-      copyState:
-        options?.copyState ||
-        (this.copyMode ? CopyState.Active : CopyState.Inactive),
+      copyState: options?.copyState || (this.copyMode ? 'active' : 'inactive'),
       copyType: options?.copyType,
       dictLang: this.config.dictLang,
       dictToShow: this.currentDict,

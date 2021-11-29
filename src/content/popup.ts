@@ -102,21 +102,16 @@ declare global {
   }
 }
 
-export const enum CopyState {
-  Inactive,
-  Active,
-  Finished,
-  Error,
-}
+export type CopyState = 'inactive' | 'active' | 'finished' | 'error';
 
 export interface PopupOptions {
   accentDisplay: AccentDisplay;
   container?: HTMLElement;
-  // Set when copyState !== CopyState.Inactive
+  // Set when copyState !== 'inactive'
   copyIndex?: number;
   copyNextKey: string;
   copyState: CopyState;
-  // Set when copyState === CopyState.Finished
+  // Set when copyState === 'finished'
   copyType?: CopyType;
   dictToShow: MajorDataSeries;
   dictLang?: string;
@@ -560,7 +555,7 @@ function renderWordEntries({
     entryDiv.classList.add('entry');
     if (index === selectedIndex) {
       entryDiv.classList.add(
-        options.copyState === CopyState.Active ? '-selected' : '-flash'
+        options.copyState === 'active' ? '-selected' : '-flash'
       );
     }
     index++;
@@ -1418,7 +1413,7 @@ function renderNamesEntries({
     const entryDiv = renderName(entry);
     if (index === selectedIndex) {
       entryDiv.classList.add(
-        options.copyState === CopyState.Active ? '-selected' : '-flash'
+        options.copyState === 'active' ? '-selected' : '-flash'
       );
     }
     index++;
@@ -1528,7 +1523,7 @@ function annotateAge(text: string): string {
 
 function getSelectedIndex(options: PopupOptions, numEntries: number) {
   return typeof options.copyState !== 'undefined' &&
-    options.copyState !== CopyState.Inactive &&
+    options.copyState !== 'inactive' &&
     typeof options.copyIndex !== 'undefined' &&
     numEntries
     ? options.copyIndex % numEntries
@@ -1549,11 +1544,11 @@ function renderKanjiEntry({
   container.append(table);
   table.classList.add('kanji-table');
 
-  if (options.copyState === CopyState.Active) {
+  if (options.copyState === 'active') {
     table.classList.add('-copy');
   } else if (
-    options.copyState === CopyState.Finished ||
-    options.copyState === CopyState.Error
+    options.copyState === 'finished' ||
+    options.copyState === 'error'
   ) {
     table.classList.add('-finished');
   }
@@ -2133,7 +2128,7 @@ function renderCopyDetails(
   copyType: CopyType | undefined,
   series: MajorDataSeries
 ): HTMLElement | null {
-  if (typeof copyState === 'undefined' || copyState === CopyState.Inactive) {
+  if (typeof copyState === 'undefined' || copyState === 'inactive') {
     return null;
   }
 
@@ -2172,10 +2167,10 @@ function renderCopyDetails(
     }
   }
 
-  if (copyState === CopyState.Finished && typeof copyType !== 'undefined') {
+  if (copyState === 'finished' && typeof copyType !== 'undefined') {
     statusDiv.classList.add('-finished');
     statusDiv.append(renderCopyStatus(getCopiedString(copyType)));
-  } else if (copyState === CopyState.Error) {
+  } else if (copyState === 'error') {
     statusDiv.classList.add('-error');
     statusDiv.append(
       renderCopyStatus(browser.i18n.getMessage('content_copy_error'))
