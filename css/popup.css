@@ -332,6 +332,12 @@
   display: none;
 }
 
+/* Blurring for the entry area when the copy overlay is showing */
+.blurred {
+  filter: blur(2px);
+  transition: filter 0.25s ease-in-out;
+}
+
 /* Word display */
 
 .wordlist {
@@ -859,16 +865,6 @@
   background: var(--status-bg);
 }
 
-.status-bar.-stack {
-  display: grid;
-  grid-template-rows: [stack-start] auto [stack-end];
-}
-
-.status-bar.-stack > * {
-  grid-column: 1 / -1;
-  grid-row: stack-start / stack-end;
-}
-
 .status-bar > * {
   padding: 5px 8px 5px;
 }
@@ -1053,4 +1049,140 @@
   line-height: 1;
   padding-bottom: 6px;
   padding-top: 6px;
+}
+
+/*
+ * Copy overlay for touch screens
+ */
+.copy-overlay {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: hsla(0, 0%, 97%, 0.9);
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+  max-height: 0;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  isolation: isolate;
+  overflow: hidden;
+
+  /* We fade the background so we always want a dark foreground color here,
+   * regardless of the theme. */
+  color: #1d1a19;
+}
+
+.copy-overlay.-active {
+  opacity: 1;
+  max-height: initial;
+}
+
+.copy-overlay .copy-heading {
+  opacity: 0.8;
+}
+
+.copy-overlay .copy-options {
+  max-width: 90%;
+  list-style: none;
+  margin: 0 8px;
+  padding: 0;
+}
+
+.copy-overlay .copy-options li {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+/* Reset some button styles */
+.copy-overlay button {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  color: inherit;
+}
+
+.copy-overlay .copy-options li button {
+  font-size: 16px;
+  font-weight: 600;
+  width: 100%;
+  min-height: 60px;
+  background: white;
+  padding: 8px 32px;
+  border-radius: 16px;
+  --shadow-color: 0deg 0% 0%;
+  box-shadow: 0.2px 0.6px 0.5px hsl(var(--shadow-color) / 0.12),
+    0.4px 1.2px 1.1px -1.5px hsl(var(--shadow-color) / 0.09),
+    1.4px 3.7px 3.3px -3px hsl(var(--shadow-color) / 0.06),
+    3.8px 10.3px 9.1px -4.4px hsl(var(--shadow-color) / 0.04);
+  border: 0.1px solid hsla(0deg, 0%, 0%, 0.1);
+}
+
+.copy-overlay .copy-options .copy-preview {
+  margin-top: 4px;
+  display: flex;
+  white-space: nowrap;
+  color: #817470;
+  font-size: 12px;
+  font-weight: 400;
+  max-width: 200px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, black 180px, transparent);
+  mask-image: linear-gradient(to right, black 180px, transparent);
+}
+
+.copy-overlay .copy-options .copy-preview .icon {
+  flex-shrink: 0;
+  width: 1.2em;
+  height: 1.2em;
+  margin-right: 6px;
+  opacity: 0.6;
+}
+
+.copy-overlay .copy-options .copy-preview span {
+  min-width: 0;
+}
+
+.copy-overlay .copy-options button.-icon-label,
+.copy-overlay .cancel-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.copy-overlay .copy-options button.-icon-label .icon,
+.copy-overlay .cancel-button .icon {
+  width: 1.2em;
+  height: 1.2em;
+  margin-right: 6px;
+  margin-top: -0.2em;
+  opacity: 0.6;
+}
+
+.copy-overlay .cancel-button {
+  padding: 12px 36px;
+  color: #817470;
+}
+
+/*
+ * Utility: grid stack
+ */
+
+.grid-stack,
+.-stack {
+  display: grid;
+  grid-template-rows: [stack-start] auto [stack-end];
+}
+
+.grid-stack > *,
+.-stack > * {
+  grid-column: 1 / -1;
+  grid-row: stack-start / stack-end;
 }

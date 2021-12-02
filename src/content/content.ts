@@ -64,13 +64,9 @@ import {
 import { mod } from '../utils/mod';
 import { stripFields } from '../utils/strip-fields';
 
-import {
-  getEntryToCopy,
-  getFieldsToCopy,
-  getWordToCopy,
-  Entry as CopyEntry,
-} from './copy-text';
+import { CopyEntry, getTextToCopy } from './copy-text';
 import { injectGdocsStyles, removeGdocsStyles } from './gdocs-canvas';
+import { getCopyEntryFromResult } from './get-copy-entry';
 import { getTextAtPoint } from './get-text';
 import {
   findIframeElement,
@@ -1095,27 +1091,12 @@ export class ContentHandler {
       return;
     }
 
-    let textToCopy: string;
-
-    switch (copyType) {
-      case 'entry':
-        textToCopy = getEntryToCopy(copyEntry, {
-          kanjiReferences: this.config.kanjiReferences,
-          showKanjiComponents: this.config.showKanjiComponents,
-        });
-        break;
-
-      case 'tab':
-        textToCopy = getFieldsToCopy(copyEntry, {
-          kanjiReferences: this.config.kanjiReferences,
-          showKanjiComponents: this.config.showKanjiComponents,
-        });
-        break;
-
-      case 'word':
-        textToCopy = getWordToCopy(copyEntry);
-        break;
-    }
+    const textToCopy = getTextToCopy({
+      entry: copyEntry,
+      copyType,
+      kanjiReferences: this.config.kanjiReferences,
+      showKanjiComponents: this.config.showKanjiComponents,
+    });
 
     this.copyString(textToCopy!, copyType);
   }
@@ -1135,28 +1116,16 @@ export class ContentHandler {
 
     const searchResult = this.currentSearchResult[this.currentDict]!;
 
-    let copyIndex = this.copyState.index;
-    if (searchResult.type === 'words' || searchResult.type === 'names') {
-      copyIndex = copyIndex % searchResult.data.length;
-    }
-
-    if (copyIndex < 0) {
-      console.error('Bad copy index', copyIndex);
+    const copyEntry = getCopyEntryFromResult({
+      result: searchResult,
+      index: this.copyState.index,
+    });
+    if (!copyEntry) {
       this.copyState = { kind: 'inactive' };
       this.showPopup();
-      return null;
     }
 
-    switch (searchResult.type) {
-      case 'words':
-        return { type: 'word', data: searchResult.data[copyIndex] };
-
-      case 'names':
-        return { type: 'name', data: searchResult.data[copyIndex] };
-
-      case 'kanji':
-        return { type: 'kanji', data: searchResult.data };
-    }
+    return copyEntry;
   }
 
   private async copyString(message: string, copyType: CopyType) {

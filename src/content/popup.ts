@@ -47,6 +47,8 @@ import { EraInfo, EraMeta, getEraInfo } from './years';
 import popupStyles from '../../css/popup.css';
 import { NumberMeta } from './numbers';
 import { getDob } from '../utils/age';
+import { renderCopyOverlay } from './popup/copy-overlay';
+import { getLangTag } from './popup/lang-tag';
 
 // Update NumberFormatOptions definition
 declare global {
@@ -128,6 +130,7 @@ export interface PopupOptions {
   dictToShow: MajorDataSeries;
   dictLang?: string;
   document?: Document;
+  forceTouchMode?: boolean;
   fxData: ContentConfig['fx'];
   hasSwitchedDictionary?: boolean;
   kanjiReferences: Array<ReferenceAbbreviation>;
@@ -150,10 +153,12 @@ export function renderPopup(
 ): HTMLElement | null {
   const doc = options.document || document;
   const container = options.container || getDefaultContainer(doc);
+  const touchMode = options.forceTouchMode || isTouchDevice();
   const windowElem = resetContainer({
     container,
     document: doc,
     popupStyle: options.popupStyle,
+    touchMode,
   });
 
   // TODO: We should use `options.document` everywhere in this file and in
@@ -241,14 +246,42 @@ export function renderPopup(
       break;
   }
 
+  // Render the copy overlay
+  if (touchMode) {
+    const stackContainer = document.createElementNS(HTML_NS, 'div');
+    stackContainer.classList.add('grid-stack');
+    const dictionaryContent = contentContainer.lastElementChild as HTMLElement;
+    stackContainer.append(dictionaryContent);
+    stackContainer.append(
+      renderCopyOverlay({
+        copyState: options.copyState,
+        kanjiReferences: options.kanjiReferences,
+        result: resultToShow || undefined,
+        showKanjiComponents: options.showKanjiComponents,
+      })
+    );
+    contentContainer.append(stackContainer);
+
+    // Blur the background (with a slight transition)
+    if (options.copyState.kind !== 'inactive') {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          dictionaryContent.classList.add('blurred');
+        });
+      });
+    }
+  }
+
   // Show the status bar
-  const copyDetails = renderCopyDetails(
-    options.copyNextKey,
-    options.copyState,
-    resultToShow?.type || 'words'
-  );
-  const numResultsAvailable = () =>
-    allMajorDataSeries.filter((series) => !!result?.[series]).length;
+  const copyDetails = renderCopyDetails({
+    copyNextKey: options.copyNextKey,
+    copyState: options.copyState,
+    series: resultToShow?.type || 'words',
+    touchMode,
+  });
+  const numResultsAvailable = allMajorDataSeries.filter(
+    (series) => !!result?.[series]
+  ).length;
 
   if (copyDetails) {
     contentContainer.append(copyDetails);
@@ -256,7 +289,7 @@ export function renderPopup(
     contentContainer.append(renderUpdatingStatus());
   } else if (
     showTabs &&
-    numResultsAvailable() > 1 &&
+    numResultsAvailable > 1 &&
     options.hasSwitchedDictionary === false &&
     options.switchDictionaryKeys.length &&
     probablyHasPhysicalKeyboard()
@@ -292,10 +325,12 @@ function resetContainer({
   container,
   document: doc,
   popupStyle,
+  touchMode,
 }: {
   container: HTMLElement;
   document: Document;
   popupStyle: string;
+  touchMode: boolean;
 }): HTMLElement {
   const windowDiv = doc.createElementNS(HTML_NS, 'div');
   windowDiv.classList.add('window');
@@ -304,7 +339,7 @@ function resetContainer({
   windowDiv.classList.add(getThemeClass(popupStyle));
 
   // Set touch status
-  if (isTouchDevice()) {
+  if (touchMode) {
     windowDiv.classList.add('touch');
   }
 
@@ -2130,12 +2165,24 @@ function renderMetadata({
   return null;
 }
 
-function renderCopyDetails(
-  copyNextKey: string,
-  copyState: CopyState,
-  series: MajorDataSeries
-): HTMLElement | null {
+function renderCopyDetails({
+  copyNextKey,
+  copyState,
+  series,
+  touchMode,
+}: {
+  copyNextKey: string;
+  copyState: CopyState;
+  series: MajorDataSeries;
+  touchMode: boolean;
+}): HTMLElement | null {
   if (copyState.kind === 'inactive') {
+    return null;
+  }
+
+  // In touch mode, only use the status bar to show the finished and error
+  // states.
+  if (touchMode && copyState.kind === 'active') {
     return null;
   }
 
@@ -2285,13 +2332,4 @@ function renderSwitchDictionaryHint(
   statusText.append(...parts);
 
   return hintDiv;
-}
-
-// Cache language tag since we fetch it a lot
-let langTag: string | null = null;
-function getLangTag() {
-  if (langTag === null) {
-    langTag = browser.i18n.getMessage('lang_tag');
-  }
-  return langTag;
 }

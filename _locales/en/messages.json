@@ -71,6 +71,30 @@
     "message": "word",
     "description": "Label for key to copy a word to the clipboard"
   },
+  "content_copy_overlay_cancel_button": {
+    "message": "Cancel",
+    "description": "Label for the cancel button"
+  },
+  "content_copy_overlay_copy_title": {
+    "message": "Copy",
+    "description": "Title show at the top of the copy overlay"
+  },
+  "content_copy_overlay_entry_button": {
+    "message": "Entry",
+    "description": "Label for the button to copy an entire entry"
+  },
+  "content_copy_overlay_kanji_button": {
+    "message": "Kanji",
+    "description": "Fallback label used for the button to copy a kanji character when we fail to look up the kanji"
+  },
+  "content_copy_overlay_tab_separated_button": {
+    "message": "Tab-separated",
+    "description": "Label for the button to copy an entry with fields separated by tabs"
+  },
+  "content_copy_overlay_word_button": {
+    "message": "Word",
+    "description": "Fallback label used for the button to copy a word when we fail to look up the word"
+  },
   "content_database_updating": {
     "message": "Dictionary data is updating, incomplete results shown.",
     "description": "Status bar message shown while the dictionary is being updated and only a snapshot can be shown."

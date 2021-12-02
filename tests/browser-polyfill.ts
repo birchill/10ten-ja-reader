@@ -10,8 +10,22 @@ export const browser = {
   i18n: {
     getMessage: (id: string, replacements?: Array<string>) => {
       switch (id) {
+        case 'content_copy_overlay_cancel_button':
+          return 'Cancel';
+        case 'content_copy_overlay_copy_title':
+          return 'Copy';
+        case 'content_copy_overlay_entry_button':
+          return 'Entry';
+        case 'content_copy_overlay_kanji_button':
+          return 'Kanji';
+        case 'content_copy_overlay_tab_separated_button':
+          return 'Tab-separated';
+        case 'content_copy_overlay_word_button':
+          return 'Word';
         case 'content_database_updating':
           return 'Dictionary data is updating, incomplete results shown.';
+        case 'content_kanji_components_label':
+          return 'components';
         case 'content_names_tag_surname':
           return 'surname';
         case 'content_names_tag_place':

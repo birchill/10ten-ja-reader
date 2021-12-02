@@ -7,20 +7,50 @@ import {
 import { browser } from 'webextension-polyfill-ts';
 
 import { NameResult, Sense, WordResult } from '../background/search-result';
+import { CopyType } from '../common/copy-keys';
 import {
   getReferenceValue,
   getSelectedReferenceLabels,
   ReferenceAbbreviation,
 } from '../common/refs';
 
-export type Entry =
+export type CopyEntry =
   | { type: 'word'; data: WordResult }
   | { type: 'name'; data: NameResult }
   | { type: 'kanji'; data: KanjiResult };
 
 type Headword = WordResult['k'][0] | WordResult['r'][0];
 
-export function getWordToCopy(entry: Entry): string {
+export function getTextToCopy({
+  entry,
+  copyType,
+  kanjiReferences = [] as Array<ReferenceAbbreviation>,
+  showKanjiComponents = true,
+}: {
+  entry: CopyEntry;
+  copyType: CopyType;
+  kanjiReferences?: Array<ReferenceAbbreviation>;
+  showKanjiComponents?: boolean;
+}): string {
+  switch (copyType) {
+    case 'entry':
+      return getEntryToCopy(entry, {
+        kanjiReferences,
+        showKanjiComponents,
+      });
+
+    case 'tab':
+      return getFieldsToCopy(entry, {
+        kanjiReferences,
+        showKanjiComponents,
+      });
+
+    case 'word':
+      return getWordToCopy(entry);
+  }
+}
+
+export function getWordToCopy(entry: CopyEntry): string {
   let result: string;
 
   switch (entry.type) {
@@ -47,7 +77,7 @@ export function getWordToCopy(entry: Entry): string {
 }
 
 export function getEntryToCopy(
-  entry: Entry,
+  entry: CopyEntry,
   {
     kanjiReferences = [] as Array<ReferenceAbbreviation>,
     showKanjiComponents = true,
@@ -240,7 +270,7 @@ function serializeLangSrc(lsrc: LangSource) {
 }
 
 export function getFieldsToCopy(
-  entry: Entry,
+  entry: CopyEntry,
   {
     kanjiReferences = [] as Array<ReferenceAbbreviation>,
     showKanjiComponents = true,

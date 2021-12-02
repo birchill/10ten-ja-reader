@@ -954,25 +954,37 @@
     ];
 
     for (const test of highlightTests) {
-      addHeading(test.description, 3);
-
-      for (const theme of themes) {
-        const label = document.createElement('div');
-        label.classList.add('label');
-        label.append(`Theme: ${theme}`);
-        container.append(label);
-
-        const popup = contentHandler._renderPopup(test.queryResult, {
+      const testConfig = {
           ...config,
-          container: createPopupContainer(),
           copyNextKey: 'c',
           copyState: {
             kind: 'active',
             index: 1,
           },
           dictToShow: getDictFromResult(test.queryResult),
-          popupStyle: theme,
+          onClosePopup: () => {},
+          onShowSettings: () => {},
           showDefinitions: true,
+      };
+
+      addHeading(test.description, 3);
+      for (const theme of themes) {
+        addLabel(`Theme: ${theme}`);
+        contentHandler._renderPopup(test.queryResult, {
+          ...testConfig,
+          container: createPopupContainer(),
+          popupStyle: theme,
+        });
+      }
+
+      addHeading(`${test.description} (touch version)`, 3);
+      for (const theme of themes) {
+        addLabel(`Theme: ${theme}`);
+        const popup = contentHandler._renderPopup(test.queryResult, {
+          ...testConfig,
+          container: createPopupContainer(),
+          forceTouchMode: true,
+          popupStyle: theme,
         });
       }
     }
