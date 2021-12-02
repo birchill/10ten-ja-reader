@@ -573,6 +573,9 @@
 
   .window.touch .entry:hover {
     cursor: pointer;
+    /* Make the highlight brighter so we can distinguish it from a selection made
+     * using the keyboard. */
+    filter: brightness(1.2);
   }
 }
 
@@ -714,6 +717,15 @@
   color: var(--selected-highlight);
   background: var(--selected-bg);
   border-radius: 2px;
+}
+
+@media (hover) {
+  .window.touch .kanji:hover {
+    color: var(--selected-highlight);
+    background: var(--selected-bg);
+    border-radius: 2px;
+    filter: brightness(1.2);
+  }
 }
 
 .kanji-table.-finished .kanji {
