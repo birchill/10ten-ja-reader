@@ -10,6 +10,8 @@ export const browser = {
   i18n: {
     getMessage: (id: string, replacements?: Array<string>) => {
       switch (id) {
+        case 'content_copy_error':
+          return 'Failed to copy to clipboard';
         case 'content_copy_overlay_cancel_button':
           return 'Cancel';
         case 'content_copy_overlay_copy_title':

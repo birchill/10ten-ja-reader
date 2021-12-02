@@ -37,8 +37,7 @@
 <body>
   <div>
     <h2>Contents</h2>
-    <ul id="toc">
-    </ul>
+    <ul id="toc"></ul>
   </div>
   <div id="container"></div>
   <script src="html-tests.js"></script>
@@ -70,14 +69,14 @@
       label.classList.add('label');
       label.append(labelText);
       container.append(label);
-    }
+    };
 
     const createPopupContainer = () => {
       const popupContainer = document.createElement('div');
       popupContainer.style.width = 'max-content';
       container.append(popupContainer);
       return popupContainer;
-    }
+    };
 
     const getDictFromResult = (queryResult) =>
       Object.keys(queryResult).find(
@@ -955,16 +954,17 @@
 
     for (const test of highlightTests) {
       const testConfig = {
-          ...config,
-          copyNextKey: 'c',
-          copyState: {
-            kind: 'active',
-            index: 1,
-          },
-          dictToShow: getDictFromResult(test.queryResult),
-          onClosePopup: () => {},
-          onShowSettings: () => {},
-          showDefinitions: true,
+        ...config,
+        copyNextKey: 'c',
+        copyState: {
+          kind: 'active',
+          index: 1,
+          mode: 'keyboard',
+        },
+        dictToShow: getDictFromResult(test.queryResult),
+        onClosePopup: () => {},
+        onShowSettings: () => {},
+        showDefinitions: true,
       };
 
       addHeading(test.description, 3);
@@ -982,6 +982,51 @@
         addLabel(`Theme: ${theme}`);
         const popup = contentHandler._renderPopup(test.queryResult, {
           ...testConfig,
+          copyState: {
+            ...testConfig.copyState,
+            mode: 'overlay',
+          },
+          container: createPopupContainer(),
+          forceTouchMode: true,
+          popupStyle: theme,
+        });
+      }
+    }
+
+    {
+      const testConfig = {
+        ...config,
+        copyNextKey: 'c',
+        copyState: {
+          kind: 'error',
+          index: 1,
+          mode: 'keyboard',
+        },
+        dictToShow: getDictFromResult(highlightTests[0].queryResult),
+        onClosePopup: () => {},
+        onShowSettings: () => {},
+        showDefinitions: true,
+      };
+
+      addHeading('Copy error', 3);
+      for (const theme of themes) {
+        addLabel(`Theme: ${theme}`);
+        contentHandler._renderPopup(highlightTests[0].queryResult, {
+          ...testConfig,
+          container: createPopupContainer(),
+          popupStyle: theme,
+        });
+      }
+
+      addHeading('Copy error (touch version)', 3);
+      for (const theme of themes) {
+        addLabel(`Theme: ${theme}`);
+        contentHandler._renderPopup(highlightTests[0].queryResult, {
+          ...testConfig,
+          copyState: {
+            ...testConfig.copyState,
+            mode: 'overlay',
+          },
           container: createPopupContainer(),
           forceTouchMode: true,
           popupStyle: theme,
