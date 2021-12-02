@@ -1510,10 +1510,10 @@ export class ContentHandler {
       hasSwitchedDictionary: this.config.hasSwitchedDictionary,
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentLookupParams?.meta,
+      onCancelCopy: () => this.exitCopyMode(),
+      onCopy: (copyType: CopyType) => this.copyCurrentEntry(copyType),
       onClosePopup: () => {
-        this.clearResult({
-          currentElement: this.lastMouseTarget,
-        });
+        this.clearResult({ currentElement: this.lastMouseTarget });
       },
       onShowSettings: () => {
         browser.runtime.sendMessage({ type: 'options' }).catch(() => {

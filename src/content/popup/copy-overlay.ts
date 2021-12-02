@@ -5,6 +5,7 @@ import {
   NameSearchResult,
   WordSearchResult,
 } from '../../background/search-result';
+import { CopyType } from '../../common/copy-keys';
 import { ReferenceAbbreviation } from '../../common/refs';
 import { getTextToCopy } from '../copy-text';
 import { getCopyEntryFromResult } from '../get-copy-entry';
@@ -17,11 +18,15 @@ import { getLangTag } from './lang-tag';
 export function renderCopyOverlay({
   copyState,
   kanjiReferences,
+  onCancelCopy,
+  onCopy,
   result,
   showKanjiComponents,
 }: {
   copyState: CopyState;
   kanjiReferences: Array<ReferenceAbbreviation>;
+  onCancelCopy?: () => void;
+  onCopy?: (copyType: CopyType) => void;
   result?: WordSearchResult | NameSearchResult | KanjiSearchResult;
   showKanjiComponents?: boolean;
 }): HTMLDivElement {
@@ -62,16 +67,12 @@ export function renderCopyOverlay({
           showKanjiComponents,
         })
       : undefined;
-    list.append(
-      html(
-        'li',
-        {},
-        renderButtonWithPreview({
-          label: browser.i18n.getMessage('content_copy_overlay_entry_button'),
-          previewText: entryPreviewText,
-        })
-      )
-    );
+    const button = renderButtonWithPreview({
+      label: browser.i18n.getMessage('content_copy_overlay_entry_button'),
+      previewText: entryPreviewText,
+    });
+    button.addEventListener('click', () => onCopy?.('entry'));
+    list.append(html('li', {}, button));
   }
 
   // Tab-separated button
@@ -84,18 +85,14 @@ export function renderCopyOverlay({
           showKanjiComponents,
         }).replace(/\t/g, ' → ')
       : undefined;
-    list.append(
-      html(
-        'li',
-        {},
-        renderButtonWithPreview({
-          label: browser.i18n.getMessage(
-            'content_copy_overlay_tab_separated_button'
-          ),
-          previewText: tabSeparatedPreviewText,
-        })
-      )
-    );
+    const button = renderButtonWithPreview({
+      label: browser.i18n.getMessage(
+        'content_copy_overlay_tab_separated_button'
+      ),
+      previewText: tabSeparatedPreviewText,
+    });
+    button.addEventListener('click', () => onCopy?.('tab'));
+    list.append(html('li', {}, button));
   }
 
   // Word button
@@ -129,29 +126,30 @@ export function renderCopyOverlay({
       copyWordLabel.lang = getLangTag();
     }
     copyWordButton.append(copyWordLabel);
+    copyWordButton.addEventListener('click', () => onCopy?.('word'));
   }
 
   // Cancel button
-  copyOverlay.appendChild(
-    html(
-      'button',
+  const cancelButton = html(
+    'button',
+    {
+      class: 'cancel-button',
+      lang: getLangTag(),
+    },
+    svg(
+      'svg',
       {
-        class: 'cancel-button',
-        lang: getLangTag(),
+        class: 'icon',
+        viewBox: '0 0 24 24',
+        stroke: 'currentColor',
+        'stroke-width': '2',
       },
-      svg(
-        'svg',
-        {
-          class: 'icon',
-          viewBox: '0 0 24 24',
-          stroke: 'currentColor',
-          'stroke-width': '2',
-        },
-        svg('path', { d: 'M6 18L18 6M6 6l12 12' })
-      ),
-      browser.i18n.getMessage('content_copy_overlay_cancel_button')
-    )
+      svg('path', { d: 'M6 18L18 6M6 6l12 12' })
+    ),
+    browser.i18n.getMessage('content_copy_overlay_cancel_button')
   );
+  cancelButton.addEventListener('click', () => onCancelCopy?.());
+  copyOverlay.append(cancelButton);
 
   return copyOverlay;
 }

@@ -135,6 +135,8 @@ export interface PopupOptions {
   hasSwitchedDictionary?: boolean;
   kanjiReferences: Array<ReferenceAbbreviation>;
   meta?: SelectionMeta;
+  onCancelCopy?: () => void;
+  onCopy?: (copyType: CopyType) => void;
   onClosePopup?: () => void;
   onShowSettings?: () => void;
   onSwitchDictionary?: (newDict: MajorDataSeries) => void;
@@ -256,6 +258,8 @@ export function renderPopup(
       renderCopyOverlay({
         copyState: options.copyState,
         kanjiReferences: options.kanjiReferences,
+        onCancelCopy: options.onCancelCopy,
+        onCopy: options.onCopy,
         result: resultToShow || undefined,
         showKanjiComponents: options.showKanjiComponents,
       })
