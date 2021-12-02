@@ -272,9 +272,7 @@ export function renderPopup(
       options.copyState.kind === 'error'
     ) {
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          dictionaryContent.classList.add('blurred');
-        });
+        stackContainer.classList.add('-blur-bg');
       });
     }
   }
