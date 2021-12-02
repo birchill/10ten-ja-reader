@@ -1073,11 +1073,6 @@
   isolation: isolate;
   overflow: hidden;
 
-  /* Hide by default */
-  opacity: 0;
-  pointer-events: none;
-  max-height: 0;
-
   /* We fade the background so we always want a dark foreground color here,
    * regardless of the theme. */
   color: #1d1a19;
@@ -1092,12 +1087,6 @@
 .content .grid-stack.-blur-bg > .copy-overlay {
   background: hsla(0, 0%, 97%, 0.6);
   transition: background-color 0.3s ease-in-out;
-}
-
-.copy-overlay.-active {
-  opacity: 1;
-  pointer-events: auto;
-  max-height: initial;
 }
 
 .copy-overlay .copy-heading {
