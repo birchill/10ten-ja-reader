@@ -564,32 +564,44 @@
   font-size: 12px;
 }
 
-.window .entry.-selected {
+.window .entry.-selected,
+.window.touch .entry:hover {
   color: var(--selected-highlight);
   background: var(--selected-bg);
   border-radius: 2px;
 }
 
-.window .entry.-selected .w-def .tag {
+.window.touch .entry:hover {
+  cursor: pointer;
+}
+
+.window .entry.-selected .w-def .tag,
+.window.touch .entry:hover .w-def .tag {
   color: var(--selected-tag-color);
   border-color: var(--selected-tag-border) !important;
 }
 
-.window .entry.-selected .w-kanji {
+.window .entry.-selected .w-kanji,
+.window.touch .entry:hover .w-kanji {
   color: var(--selected-highlight);
 }
 
 .window .entry.-selected .w-kana,
-.window .entry.-selected .w-romaji {
+.window .entry.-selected .w-romaji,
+.window.touch .entry:hover .w-kana,
+.window.touch .entry:hover .w-romaji {
   color: var(--selected-reading-highlight);
 }
 
 .window .entry.-selected .w-def,
-.window .entry.-selected .w-def * {
+.window .entry.-selected .w-def *,
+.window.touch .entry:hover .w-def,
+.window.touch .entry:hover .w-def * {
   color: var(--selected-def-color);
 }
 
-.window .entry.-selected .w-conj {
+.window .entry.-selected .w-conj,
+.window.touch .entry:hover .w-conj {
   color: var(--selected-conj-color);
 }
 
@@ -1064,12 +1076,15 @@
   align-items: center;
   background: hsla(0, 0%, 97%, 0.9);
   transition: opacity 0.3s ease-in-out;
-  opacity: 0;
-  max-height: 0;
   padding-top: 24px;
   padding-bottom: 24px;
   isolation: isolate;
   overflow: hidden;
+
+  /* Hide by default */
+  opacity: 0;
+  pointer-events: none;
+  max-height: 0;
 
   /* We fade the background so we always want a dark foreground color here,
    * regardless of the theme. */
@@ -1078,6 +1093,7 @@
 
 .copy-overlay.-active {
   opacity: 1;
+  pointer-events: auto;
   max-height: initial;
 }
 
