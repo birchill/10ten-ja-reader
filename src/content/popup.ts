@@ -139,6 +139,7 @@ export interface PopupOptions {
   kanjiReferences: Array<ReferenceAbbreviation>;
   meta?: SelectionMeta;
   onCancelCopy?: () => void;
+  onStartCopy?: (index: number) => void;
   onCopy?: (copyType: CopyType) => void;
   onClosePopup?: () => void;
   onShowSettings?: () => void;
@@ -603,9 +604,8 @@ function renderWordEntries({
     container.append(renderNamePreview(namePreview));
   }
 
-  let index = 0;
   const selectedIndex = getSelectedIndex(options, entries.length);
-  for (const entry of entries) {
+  for (const [index, entry] of entries.entries()) {
     const entryDiv = document.createElementNS(HTML_NS, 'div');
     container.append(entryDiv);
 
@@ -615,7 +615,10 @@ function renderWordEntries({
         options.copyState.kind === 'active' ? '-selected' : '-flash'
       );
     }
-    index++;
+
+    entryDiv.addEventListener('click', () => {
+      options.onStartCopy?.(index);
+    });
 
     const headingDiv = document.createElementNS(HTML_NS, 'div');
     entryDiv.append(headingDiv);
@@ -1464,16 +1467,18 @@ function renderNamesEntries({
     namesTable.classList.add('-multicol');
   }
 
-  let index = 0;
   const selectedIndex = getSelectedIndex(options, entries.length);
-  for (const entry of entries) {
+  for (const [index, entry] of entries.entries()) {
     const entryDiv = renderName(entry);
     if (index === selectedIndex) {
       entryDiv.classList.add(
         options.copyState.kind === 'active' ? '-selected' : '-flash'
       );
     }
-    index++;
+
+    entryDiv.addEventListener('click', () => {
+      options.onStartCopy?.(index);
+    });
 
     namesTable.append(entryDiv);
   }
@@ -1617,6 +1622,9 @@ function renderKanjiEntry({
   kanjiDiv.classList.add('kanji');
   kanjiDiv.lang = 'ja';
   kanjiDiv.append(entry.c);
+  kanjiDiv.addEventListener('click', () => {
+    options.onStartCopy?.(0);
+  });
   topPart.append(kanjiDiv);
 
   // -- Top-right part

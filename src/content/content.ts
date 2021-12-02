@@ -728,7 +728,7 @@ export class ContentHandler {
         this.copyState.kind === 'inactive' ||
         this.copyState.kind === 'finished'
       ) {
-        this.enterCopyMode('keyboard');
+        this.enterCopyMode({ mode: 'keyboard' });
       } else {
         this.nextCopyEntry();
       }
@@ -984,7 +984,7 @@ export class ContentHandler {
         break;
 
       case 'enterCopyMode':
-        this.enterCopyMode('keyboard');
+        this.enterCopyMode({ mode: 'keyboard' });
         break;
 
       case 'exitCopyMode':
@@ -1042,7 +1042,13 @@ export class ContentHandler {
     this.showPopup();
   }
 
-  enterCopyMode(mode: 'overlay' | 'keyboard') {
+  enterCopyMode({
+    mode,
+    index = 0,
+  }: {
+    mode: 'overlay' | 'keyboard';
+    index?: number;
+  }) {
     // In the iframe case, we mirror the copyMode state in both iframe and
     // topmost window because:
     //
@@ -1051,7 +1057,7 @@ export class ContentHandler {
     // - The iframe needs to know the copyMode state so that it can determine
     //   how to handle copyMode-specific keystrokes.
     //
-    this.copyState = { kind: 'active', index: 0, mode };
+    this.copyState = { kind: 'active', index, mode };
 
     if (!this.isTopMostWindow()) {
       console.assert(
@@ -1529,6 +1535,8 @@ export class ContentHandler {
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentLookupParams?.meta,
       onCancelCopy: () => this.exitCopyMode(),
+      onStartCopy: (index: number) =>
+        this.enterCopyMode({ mode: 'overlay', index }),
       onCopy: (copyType: CopyType) => this.copyCurrentEntry(copyType),
       onClosePopup: () => {
         this.clearResult({ currentElement: this.lastMouseTarget });
