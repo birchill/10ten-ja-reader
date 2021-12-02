@@ -9,7 +9,8 @@ import { HTML_NS, SVG_NS } from '../svg';
 // - Setting attributes (for convenience)
 export function html<K extends keyof HTMLElementTagNameMap>(
   tagName: K,
-  attributes?: { [key: string]: string }
+  attributes?: { [key: string]: string },
+  ...children: Array<Node | string>
 ): HTMLElementTagNameMap[K] {
   const elem = document.createElementNS(
     HTML_NS,
@@ -22,12 +23,17 @@ export function html<K extends keyof HTMLElementTagNameMap>(
     }
   }
 
+  if (children) {
+    elem.append(...children);
+  }
+
   return elem;
 }
 
 export function svg<K extends keyof SVGElementTagNameMap>(
   tagName: K,
-  attributes?: { [key: string]: string }
+  attributes?: { [key: string]: string },
+  ...children: Array<Node | string>
 ): SVGElementTagNameMap[K] {
   const elem = document.createElementNS(
     SVG_NS,
@@ -38,6 +44,10 @@ export function svg<K extends keyof SVGElementTagNameMap>(
     for (const key in attributes) {
       elem.setAttribute(key, attributes[key]);
     }
+  }
+
+  if (children) {
+    elem.append(...children);
   }
 
   return elem;
