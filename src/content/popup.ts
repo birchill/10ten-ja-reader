@@ -291,7 +291,6 @@ export function renderPopup(
     copyNextKey: options.copyNextKey,
     copyState: options.copyState,
     series: resultToShow?.type || 'words',
-    touchMode,
   });
   const numResultsAvailable = allMajorDataSeries.filter(
     (series) => !!result?.[series]
@@ -2190,12 +2189,10 @@ function renderCopyDetails({
   copyNextKey,
   copyState,
   series,
-  touchMode,
 }: {
   copyNextKey: string;
   copyState: CopyState;
   series: MajorDataSeries;
-  touchMode: boolean;
 }): HTMLElement | null {
   if (copyState.kind === 'inactive') {
     return null;
@@ -2203,7 +2200,7 @@ function renderCopyDetails({
 
   // In touch mode, only use the status bar to show the finished and error
   // states.
-  if (touchMode && copyState.kind === 'active') {
+  if (copyState.mode === 'overlay' && copyState.kind === 'active') {
     return null;
   }
 
