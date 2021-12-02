@@ -9,7 +9,8 @@ import { ReferenceAbbreviation } from '../../common/refs';
 import { getTextToCopy } from '../copy-text';
 import { getCopyEntryFromResult } from '../get-copy-entry';
 import { CopyState } from '../popup';
-import { HTML_NS, SVG_NS } from '../svg';
+
+import { html, svg } from './builder';
 import { renderClipboard } from './icons';
 import { getLangTag } from './lang-tag';
 
@@ -24,23 +25,20 @@ export function renderCopyOverlay({
   result?: WordSearchResult | NameSearchResult | KanjiSearchResult;
   showKanjiComponents?: boolean;
 }): HTMLDivElement {
-  const copyOverlay = document.createElementNS(
-    HTML_NS,
-    'div'
-  ) as HTMLDivElement;
-  copyOverlay.classList.add('copy-overlay');
+  const copyOverlay = html('div', { class: 'copy-overlay' });
   copyOverlay.classList.toggle('-active', copyState.kind !== 'inactive');
 
   // Heading
   const copyHeading = copyOverlay.appendChild(
-    document.createElementNS(HTML_NS, 'div')
+    html('div', {
+      role: 'heading',
+      class: 'copy-heading',
+      lang: getLangTag(),
+    })
   );
-  copyHeading.classList.add('copy-heading');
-  copyHeading.setAttribute('role', 'heading');
   copyHeading.append(
     browser.i18n.getMessage('content_copy_overlay_copy_title')
   );
-  copyHeading.lang = getLangTag();
 
   // Work out what we would copy so we can generate suitable preview text
   const entryToCopy = result
@@ -51,7 +49,7 @@ export function renderCopyOverlay({
     : null;
 
   // Options
-  const list = copyOverlay.appendChild(document.createElementNS(HTML_NS, 'ul'));
+  const list = copyOverlay.appendChild(html('ul'));
   list.classList.add('copy-options');
 
   // Entry button
@@ -64,8 +62,7 @@ export function renderCopyOverlay({
           showKanjiComponents,
         })
       : undefined;
-
-    list.appendChild(document.createElementNS(HTML_NS, 'li')).appendChild(
+    list.appendChild(html('li')).append(
       renderButtonWithPreview({
         label: browser.i18n.getMessage('content_copy_overlay_entry_button'),
         previewText: entryPreviewText,
@@ -83,8 +80,7 @@ export function renderCopyOverlay({
           showKanjiComponents,
         }).replace(/\t/g, ' → ')
       : undefined;
-
-    list.appendChild(document.createElementNS(HTML_NS, 'li')).appendChild(
+    list.appendChild(html('li')).append(
       renderButtonWithPreview({
         label: browser.i18n.getMessage(
           'content_copy_overlay_tab_separated_button'
@@ -97,16 +93,15 @@ export function renderCopyOverlay({
   // Word button
   {
     const copyWordButton = list
-      .appendChild(document.createElementNS(HTML_NS, 'li'))
-      .appendChild(document.createElementNS(HTML_NS, 'button'));
-    copyWordButton.classList.add('-icon-label');
+      .appendChild(html('li'))
+      .appendChild(html('button', { class: '-icon-label' }));
 
     if (entryToCopy) {
       const icon = renderClipboard();
       icon.classList.add('icon');
       copyWordButton.append(icon);
     }
-    const copyWordLabel = document.createElementNS(HTML_NS, 'span');
+    const copyWordLabel = html('span');
     if (entryToCopy) {
       copyWordLabel.append(
         getTextToCopy({
@@ -128,20 +123,20 @@ export function renderCopyOverlay({
     copyWordButton.append(copyWordLabel);
   }
 
-  // Cancel
+  // Cancel button
   const cancelButton = copyOverlay.appendChild(
-    document.createElementNS(HTML_NS, 'button')
+    html('button', {
+      class: 'cancel-button',
+    })
   );
-  cancelButton.classList.add('cancel-button');
 
-  const crossSvg = document.createElementNS(SVG_NS, 'svg');
-  crossSvg.classList.add('icon');
-  crossSvg.setAttribute('viewBox', '0 0 24 24');
-  crossSvg.setAttribute('stroke', 'currentColor');
-  crossSvg.setAttribute('stroke-width', '2');
-  const path = document.createElementNS(SVG_NS, 'path');
-  path.setAttribute('d', 'M6 18L18 6M6 6l12 12');
-  crossSvg.append(path);
+  const crossSvg = svg('svg', {
+    class: 'icon',
+    viewBox: '0 0 24 24',
+    stroke: 'currentColor',
+    'stroke-width': '2',
+  });
+  crossSvg.append(svg('path', { d: 'M6 18L18 6M6 6l12 12' }));
   cancelButton.append(crossSvg);
 
   cancelButton.append(
@@ -159,22 +154,21 @@ function renderButtonWithPreview({
   label: string;
   previewText?: string;
 }) {
-  const button = document.createElementNS(HTML_NS, 'button');
+  const button = html('button', { lang: getLangTag() });
   button.append(label);
-  button.lang = getLangTag();
 
   if (previewText) {
-    const previewRow = document.createElementNS(HTML_NS, 'div');
-    previewRow.setAttribute('role', 'presentation');
-    previewRow.classList.add('copy-preview');
+    const previewRow = html('div', {
+      class: 'copy-preview',
+      role: 'presentation',
+    });
 
     const icon = renderClipboard();
     icon.classList.add('icon');
     previewRow.append(icon);
 
-    const span = document.createElementNS(HTML_NS, 'span');
+    const span = html('span', { lang: 'ja' });
     span.append(previewText);
-    span.lang = 'ja';
     previewRow.append(span);
 
     button.append(previewRow);
