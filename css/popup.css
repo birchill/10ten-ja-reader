@@ -558,45 +558,78 @@
   font-size: 12px;
 }
 
-.window .entry.-selected,
-.window.touch .entry:hover {
+.window .entry.-selected {
   color: var(--selected-highlight);
   background: var(--selected-bg);
   border-radius: 2px;
 }
 
-.window.touch .entry:hover {
-  cursor: pointer;
+@media (hover) {
+  .window.touch .entry:hover {
+    color: var(--selected-highlight);
+    background: var(--selected-bg);
+    border-radius: 2px;
+  }
+
+  .window.touch .entry:hover {
+    cursor: pointer;
+  }
 }
 
-.window .entry.-selected .w-def .tag,
-.window.touch .entry:hover .w-def .tag {
+.window .entry.-selected .w-def .tag {
   color: var(--selected-tag-color);
   border-color: var(--selected-tag-border) !important;
 }
 
-.window .entry.-selected .w-kanji,
-.window.touch .entry:hover .w-kanji {
+@media (hover) {
+  .window.touch .entry:hover .w-def .tag {
+    color: var(--selected-tag-color);
+    border-color: var(--selected-tag-border) !important;
+  }
+}
+
+.window .entry.-selected .w-kanji {
   color: var(--selected-highlight);
 }
 
+@media (hover) {
+  .window.touch .entry:hover .w-kanji {
+    color: var(--selected-highlight);
+  }
+}
+
 .window .entry.-selected .w-kana,
-.window .entry.-selected .w-romaji,
-.window.touch .entry:hover .w-kana,
-.window.touch .entry:hover .w-romaji {
+.window .entry.-selected .w-romaji {
   color: var(--selected-reading-highlight);
 }
 
+@media (hover) {
+  .window.touch .entry:hover .w-kana,
+  .window.touch .entry:hover .w-romaji {
+    color: var(--selected-reading-highlight);
+  }
+}
+
 .window .entry.-selected .w-def,
-.window .entry.-selected .w-def *,
-.window.touch .entry:hover .w-def,
-.window.touch .entry:hover .w-def * {
+.window .entry.-selected .w-def * {
   color: var(--selected-def-color);
 }
 
-.window .entry.-selected .w-conj,
-.window.touch .entry:hover .w-conj {
+@media (hover) {
+  .window.touch .entry:hover .w-def,
+  .window.touch .entry:hover .w-def * {
+    color: var(--selected-def-color);
+  }
+}
+
+.window .entry.-selected .w-conj {
   color: var(--selected-conj-color);
+}
+
+@media (hover) {
+  .window.touch .entry:hover .w-conj {
+    color: var(--selected-conj-color);
+  }
 }
 
 .window .entry.-flash {
