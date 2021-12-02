@@ -728,7 +728,7 @@ export class ContentHandler {
         this.copyState.kind === 'inactive' ||
         this.copyState.kind === 'finished'
       ) {
-        this.enterCopyMode();
+        this.enterCopyMode('keyboard');
       } else {
         this.nextCopyEntry();
       }
@@ -984,7 +984,7 @@ export class ContentHandler {
         break;
 
       case 'enterCopyMode':
-        this.enterCopyMode();
+        this.enterCopyMode('keyboard');
         break;
 
       case 'exitCopyMode':
@@ -1042,7 +1042,7 @@ export class ContentHandler {
     this.showPopup();
   }
 
-  enterCopyMode() {
+  enterCopyMode(mode: 'overlay' | 'keyboard') {
     // In the iframe case, we mirror the copyMode state in both iframe and
     // topmost window because:
     //
@@ -1051,9 +1051,13 @@ export class ContentHandler {
     // - The iframe needs to know the copyMode state so that it can determine
     //   how to handle copyMode-specific keystrokes.
     //
-    this.copyState = { kind: 'active', index: 0 };
+    this.copyState = { kind: 'active', index: 0, mode };
 
     if (!this.isTopMostWindow()) {
+      console.assert(
+        mode === 'keyboard',
+        "We probably should't be receiving touch events in the iframe"
+      );
       browser.runtime.sendMessage({ type: 'top:enterCopyMode' });
       return;
     }
@@ -1081,7 +1085,11 @@ export class ContentHandler {
     }
 
     if (this.copyState.kind === 'active' || this.copyState.kind === 'error') {
-      this.copyState = { kind: 'active', index: this.copyState.index + 1 };
+      this.copyState = {
+        kind: 'active',
+        index: this.copyState.index + 1,
+        mode: this.copyState.mode,
+      };
     }
     this.showPopup();
   }
@@ -1135,13 +1143,17 @@ export class ContentHandler {
   }
 
   private async copyString(message: string, copyType: CopyType) {
-    const index = this.copyState.kind !== 'inactive' ? this.copyState.index : 0;
+    if (this.copyState.kind === 'inactive') {
+      return;
+    }
+
+    const { index, mode } = this.copyState;
     try {
       await navigator.clipboard.writeText(message);
-      this.copyState = { kind: 'finished', type: copyType, index };
+      this.copyState = { kind: 'finished', type: copyType, index, mode };
     } catch (e) {
       console.error('Failed to write to clipboard', e);
-      this.copyState = { kind: 'error', index };
+      this.copyState = { kind: 'error', index, mode };
     }
 
     this.showPopup();

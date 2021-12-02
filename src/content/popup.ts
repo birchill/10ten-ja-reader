@@ -111,15 +111,18 @@ export type CopyState =
   | {
       kind: 'active';
       index: number;
+      mode: 'overlay' | 'keyboard';
     }
   | {
       kind: 'finished';
-      index: number;
       type: CopyType;
+      index: number;
+      mode: 'overlay' | 'keyboard';
     }
   | {
       kind: 'error';
       index: number;
+      mode: 'overlay' | 'keyboard';
     };
 
 export interface PopupOptions {
