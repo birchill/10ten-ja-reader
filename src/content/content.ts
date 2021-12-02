@@ -724,14 +724,20 @@ export class ContentHandler {
       !ctrlKeyPressed &&
       startCopy.includes(upperKey)
     ) {
-      if (this.copyState.kind === 'inactive') {
+      if (
+        this.copyState.kind === 'inactive' ||
+        this.copyState.kind === 'finished'
+      ) {
         this.enterCopyMode();
       } else {
         this.nextCopyEntry();
       }
     } else if (this.copyState.kind !== 'inactive' && key === 'Escape') {
       this.exitCopyMode();
-    } else if (this.copyState.kind !== 'inactive') {
+    } else if (
+      this.copyState.kind !== 'inactive' &&
+      this.copyState.kind !== 'finished'
+    ) {
       let copyType: CopyType | undefined;
       for (const copyKey of CopyKeys) {
         if (upperKey === copyKey.key.toUpperCase()) {

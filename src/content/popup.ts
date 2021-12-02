@@ -267,7 +267,10 @@ export function renderPopup(
     contentContainer.append(stackContainer);
 
     // Blur the background (with a slight transition)
-    if (options.copyState.kind !== 'inactive') {
+    if (
+      options.copyState.kind === 'active' ||
+      options.copyState.kind === 'error'
+    ) {
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           dictionaryContent.classList.add('blurred');

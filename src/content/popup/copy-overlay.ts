@@ -31,7 +31,10 @@ export function renderCopyOverlay({
   showKanjiComponents?: boolean;
 }): HTMLDivElement {
   const copyOverlay = html('div', { class: 'copy-overlay' });
-  copyOverlay.classList.toggle('-active', copyState.kind !== 'inactive');
+  copyOverlay.classList.toggle(
+    '-active',
+    copyState.kind === 'active' || copyState.kind === 'error'
+  );
 
   // Heading
   copyOverlay.append(
