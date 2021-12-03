@@ -82,7 +82,7 @@
     "ts-jest": "^25.5.1",
     "ts-loader": "^9.2.6",
     "ts-node": "^9.1.1",
-    "web-ext-plugin": "^1.4.0",
+    "web-ext-plugin": "^1.5.0",
     "webextension-polyfill-ts": "^0.26.0",
     "webpack": "^5.64.4",
     "webpack-bugsnag-plugins": "^1.8.0",
