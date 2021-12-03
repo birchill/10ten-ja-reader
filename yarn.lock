@@ -368,10 +368,10 @@
   resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.4.0.tgz#b58f6146f9b754431f7d93c2d48aca9ee45ee1a3"
   integrity sha512-iMeOw4BJS1Z0wqMyC3eYoZN+ANDlg1VQ+dZy56UEwNEaY+hzkR6nYT0DKpDRVRp5oJbpf7rEJQ6gfmD7AWJv2A==
 
-"@bugsnag/browser@^7.14.0":
-  version "7.14.0"
-  resolved "https://registry.yarnpkg.com/@bugsnag/browser/-/browser-7.14.0.tgz#972fc8b1c688ba6563070a6c974d9686a637df06"
-  integrity sha512-uYVdSielaF6tvrbTwt/UWYgKapqLxvQ2kt/MLoVZtY8q/gTCm+ka1mBINEWBB1zeDcyrKoW262jgpnS4oHTiJQ==
+"@bugsnag/browser@^7.14.1":
+  version "7.14.1"
+  resolved "https://registry.yarnpkg.com/@bugsnag/browser/-/browser-7.14.1.tgz#ba92aae1fb40aeba0983d2af950f70cc82729882"
+  integrity sha512-xenvisYx6xFNuh7GGR/SCLcRs2H6AXn58Ha/u/Yhk+typ1oE5EFAy15+2vdGMDmZp0GsAEgrOTsEZ30uSKdC1w==
   dependencies:
     "@bugsnag/core" "^7.14.0"
 
@@ -391,18 +391,18 @@
   resolved "https://registry.yarnpkg.com/@bugsnag/cuid/-/cuid-3.0.0.tgz#2ee7642a30aee6dc86f5e7f824653741e42e5c35"
   integrity sha512-LOt8aaBI+KvOQGneBtpuCz3YqzyEAehd1f3nC5yr9TIYW1+IzYKa2xWS4EiMz5pPOnRPHkyyS5t/wmSmN51Gjg==
 
-"@bugsnag/js@^7.14.0":
-  version "7.14.0"
-  resolved "https://registry.yarnpkg.com/@bugsnag/js/-/js-7.14.0.tgz#c8c4c3dd3f882c97c2585cc673b0bc4812f6c140"
-  integrity sha512-sL+QfhEll6tLdN33d3SP5Q6ZiMLx5AHFGM+Uk1GwkAC1akXzoz0TGdNiRkBF63cUBoxKHCurmlT9zAH7oj/NPQ==
+"@bugsnag/js@^7.14.1":
+  version "7.14.1"
+  resolved "https://registry.yarnpkg.com/@bugsnag/js/-/js-7.14.1.tgz#b9368751da0883e90e2fa486e5947251cf8766b6"
+  integrity sha512-ygykhixXByzolFpOsUGr72ENgiL1t4TkvKvka2rhoSHOr5kul9TierjvmwBKNpkPdUpDNkgqw3y349jYzzjk+w==
   dependencies:
-    "@bugsnag/browser" "^7.14.0"
-    "@bugsnag/node" "^7.14.0"
+    "@bugsnag/browser" "^7.14.1"
+    "@bugsnag/node" "^7.14.1"
 
-"@bugsnag/node@^7.14.0":
-  version "7.14.0"
-  resolved "https://registry.yarnpkg.com/@bugsnag/node/-/node-7.14.0.tgz#85de5ffd0c9e87ee4a4b168e420ad506f342b9f1"
-  integrity sha512-vR2iRYRE5PpLJKKc6hljcz9hxzIN7lQ7rn+8MQtOTUKl11RsOJnM4LjsMzw1YX1GdNaUc0dMLJASkzYOTomcGQ==
+"@bugsnag/node@^7.14.1":
+  version "7.14.1"
+  resolved "https://registry.yarnpkg.com/@bugsnag/node/-/node-7.14.1.tgz#609cbb6b6dddce8d3458dcc0a0caa56c727a9fb5"
+  integrity sha512-QhdFez60rTlEueg5rA0W6x8UrTcEnssv4XVPgfooGe2fYh6O89RFjI7zVVdw8QXUyqdf7w4WzyAsCir3XEhCqQ==
   dependencies:
     "@bugsnag/core" "^7.14.0"
     byline "^5.0.0"
