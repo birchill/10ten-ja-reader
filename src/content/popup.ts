@@ -29,7 +29,7 @@ import {
   getSelectedReferenceLabels,
   ReferenceAbbreviation,
 } from '../common/refs';
-import { isTouchDevice, probablyHasPhysicalKeyboard } from '../utils/device';
+import { probablyHasPhysicalKeyboard } from '../utils/device';
 import { NameResult, Sense, WordResult } from '../background/search-result';
 import { getThemeClass } from '../utils/themes';
 
@@ -133,7 +133,6 @@ export interface PopupOptions {
   dictToShow: MajorDataSeries;
   dictLang?: string;
   document?: Document;
-  forceTouchMode?: boolean;
   fxData: ContentConfig['fx'];
   hasSwitchedDictionary?: boolean;
   kanjiReferences: Array<ReferenceAbbreviation>;
@@ -151,6 +150,7 @@ export interface PopupOptions {
   showKanjiComponents?: boolean;
   switchDictionaryKeys: ReadonlyArray<string>;
   tabDisplay: 'top' | 'left' | 'right' | 'none';
+  touchMode?: boolean;
 }
 
 export function renderPopup(
@@ -159,7 +159,7 @@ export function renderPopup(
 ): HTMLElement | null {
   const doc = options.document || document;
   const container = options.container || getDefaultContainer(doc);
-  const touchMode = options.forceTouchMode || isTouchDevice();
+  const touchMode = !!options.touchMode;
   const windowElem = resetContainer({
     container,
     document: doc,
@@ -253,12 +253,7 @@ export function renderPopup(
   }
 
   // Render the copy overlay
-  if (
-    touchMode &&
-    (options.copyState.kind === 'active' ||
-      options.copyState.kind === 'error') &&
-    options.copyState.mode === 'overlay'
-  ) {
+  if (touchMode && showOverlay(options.copyState)) {
     const stackContainer = document.createElementNS(HTML_NS, 'div');
     stackContainer.classList.add('grid-stack');
     const dictionaryContent = contentContainer.lastElementChild as HTMLElement;
@@ -275,15 +270,9 @@ export function renderPopup(
     );
     contentContainer.append(stackContainer);
 
-    // Blur the background (with a slight transition)
-    if (
-      options.copyState.kind === 'active' ||
-      options.copyState.kind === 'error'
-    ) {
-      requestAnimationFrame(() => {
-        stackContainer.classList.add('-blur-bg');
-      });
-    }
+    // Set the overlay styles for the window, but wait a moment so we can
+    // transition the styles in.
+    requestAnimationFrame(() => windowElem.classList.add('-has-overlay'));
   }
 
   // Show the status bar
@@ -409,6 +398,13 @@ function getPopupWindow(): HTMLElement | null {
 
 export function isPopupWindow(target: EventTarget | null): boolean {
   return target instanceof HTMLElement && target.id === 'tenten-ja-window';
+}
+
+export function showOverlay(copyState: CopyState): boolean {
+  return (
+    (copyState.kind === 'active' || copyState.kind === 'error') &&
+    copyState.mode === 'overlay'
+  );
 }
 
 function renderTabBar({

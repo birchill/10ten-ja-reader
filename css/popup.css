@@ -32,6 +32,7 @@
 .window {
   max-width: 600px;
   max-width: min(600px, calc(100vw - 30px));
+  max-height: var(--max-height, none);
   contain: content;
   border-radius: 5px;
   box-shadow: 0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
@@ -1111,7 +1112,9 @@
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* It's important to align to the top so that if the popup is very long we
+   * don't end up putting the copy buttons off screen somewhere. */
+  justify-content: start;
   align-items: center;
   padding-top: 24px;
   padding-bottom: 24px;
@@ -1124,14 +1127,33 @@
 }
 
 /* Blurring for the entry area when the copy overlay is showing */
-.content .grid-stack.-blur-bg > *:first-child {
+.window.-has-overlay .content .grid-stack > *:first-child {
   filter: blur(20px);
   transition: filter 0.3s ease-in-out;
 }
 
-.content .grid-stack.-blur-bg > .copy-overlay {
+.window.-has-overlay .content .grid-stack > .copy-overlay {
   background: hsla(0, 0%, 97%, 0.6);
   transition: background-color 0.3s ease-in-out;
+}
+
+/* If the overlay is showing, don't constrain the window height since it might
+ * mean that the buttons on the overlay get cut off. */
+.window.-has-overlay {
+  max-height: none;
+}
+
+/* Let the size of the overlay determine the overall size of the popup contents.
+ *
+ * This prevents the window from suddenly getting very large when we drop the
+ * max-height definition above.
+ *
+ * Ideally we'd only do this if we were actually going to constrain the height
+ * anyway, but that's hard to detect so we just do this unconditionally and so
+ * far it seems to work ok. */
+.window.-has-overlay .content .grid-stack > *:first-child {
+  position: absolute;
+  width: 100%;
 }
 
 .copy-overlay .copy-heading {

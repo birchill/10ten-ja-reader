@@ -83,6 +83,7 @@ import {
   removePopup,
   renderPopup,
   setPopupStyle,
+  showOverlay,
 } from './popup';
 import { getPopupPosition, PopupPositionMode } from './popup-position';
 import {
@@ -1522,6 +1523,7 @@ export class ContentHandler {
 
     const doc: Document =
       this.lastMouseTarget?.ownerDocument ?? window.document;
+    const touchMode = isTouchDevice();
 
     const popupOptions: PopupOptions = {
       accentDisplay: this.config.accentDisplay,
@@ -1556,6 +1558,7 @@ export class ContentHandler {
       showPriority: this.config.showPriority,
       switchDictionaryKeys: this.config.keys.nextDictionary,
       tabDisplay: this.config.tabDisplay,
+      touchMode,
     };
 
     const popup = renderPopup(this.currentSearchResult, popupOptions);
@@ -1682,15 +1685,25 @@ export class ContentHandler {
       // For the fade-effect, however, we set the max-height and fade effect
       // on the popup host element so that the mask doesn't end up clipping
       // the drop shadow on the popup.
-      if (isTouchDevice()) {
+      if (touchMode) {
+        // Unlike the non-touch mode case below, we don't need to check for the
+        // presence of an overlay here since we cover that in CSS.
+        //
+        // (One day we should move all this into CSS but we're not there yet.)
         if (constrainHeight) {
-          const popupWindow =
-            popup.shadowRoot?.querySelector<HTMLDivElement>('.window');
-          if (popupWindow && constrainHeight) {
-            popupWindow.style.maxHeight = `${constrainHeight}px`;
-          }
+          popup.style.setProperty('--max-height', `${constrainHeight}px`);
+        } else {
+          popup.style.removeProperty('--max-height');
         }
-      } else if (constrainHeight) {
+      }
+      // If we are showing the copy overlay, we don't constrain the height of
+      // the popup since it may cause the buttons on the overlay to be clipped
+      // or scrolled out of view.
+      //
+      // (Never mind that we currently only show the overlay in touch mode...
+      // hopefully that will change in the near future and we'll almost
+      // certainly forget to update this part so we handle it for now.)
+      else if (constrainHeight && !showOverlay(this.copyState)) {
         popup.style.maxHeight = `${constrainHeight}px`;
         popup.style.webkitMaskImage =
           'linear-gradient(to bottom, black 99%, transparent)';
