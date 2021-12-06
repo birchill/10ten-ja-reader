@@ -916,6 +916,7 @@
   position: relative;
   width: 100%;
   background: var(--status-bg);
+  max-height: 3em;
 }
 
 .status-bar > * {
