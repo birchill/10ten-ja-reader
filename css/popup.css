@@ -1109,7 +1109,6 @@
 .copy-overlay {
   box-sizing: border-box;
   width: 100%;
-  min-height: 100%;
   display: flex;
   flex-direction: column;
   /* It's important to align to the top so that if the popup is very long we
