@@ -59,7 +59,8 @@ export function getWordToCopy(entry: CopyEntry): string {
         const headwords =
           entry.data.k && entry.data.k.length ? entry.data.k : entry.data.r;
         result = (headwords as Array<Headword>)
-          .map((entry: Headword): string => entry.ent)
+          .filter((entry: Headword) => entry.match)
+          .map((entry: Headword) => entry.ent)
           .join(', ');
       }
       break;

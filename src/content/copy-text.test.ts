@@ -74,27 +74,55 @@ describe('getWordToCopy', () => {
       getWordToCopy({
         type: 'word',
         data: {
-          id: 1,
-          k: [],
-          r: [{ ent: 'ホルモン', p: ['g1'], a: 1, match: true }],
+          id: 1588730,
+          k: [
+            {
+              ent: '選ぶ',
+              p: ['i1', 'n1', 'nf02'],
+              match: true,
+              matchRange: [0, 2],
+            },
+            { ent: '撰ぶ', i: ['oK'], match: false },
+            { ent: '択ぶ', i: ['oK'], match: false },
+          ],
+          r: [{ ent: 'えらぶ', p: ['i1', 'n1', 'nf02'], a: 2, match: true }],
           s: [
             {
-              g: [{ str: 'hormone' }],
-              pos: ['n', 'adj-no'],
-              lsrc: [{ lang: 'de', src: 'Hormon' }],
-              match: true,
-            },
-            {
-              g: [{ str: "cows' or pigs' offal (entrails)" }],
-              inf: 'from 放る物',
-              pos: ['n', 'adj-no'],
-              dial: ['ks'],
+              g: [{ str: 'to choose' }, { str: 'to select' }],
+              pos: ['v5b', 'vt'],
               match: true,
             },
           ],
+          reason: '< -te',
         },
       })
-    ).toEqual('ホルモン');
+    ).toEqual('選ぶ');
+  });
+
+  it('copies only the matching headword(s) from a word search', () => {
+    expect(
+      getWordToCopy({
+        type: 'word',
+        data: {
+          id: 1,
+          k: [{ ent: '理解', match: true, p: ['i1', 'n1', 'nf02'] }],
+          r: [{ ent: 'りかい', match: true, p: ['i1', 'n1', 'nf02'], a: 1 }],
+          s: [
+            {
+              pos: ['n', 'vs'],
+              g: [
+                { str: 'understanding' },
+                { str: 'comprehension' },
+                { str: 'appreciation' },
+                { str: 'sympathy' },
+              ],
+              match: true,
+            },
+          ],
+          romaji: ['rikai'],
+        },
+      })
+    ).toEqual('理解');
   });
 
   it('copies names from a name search', () => {
