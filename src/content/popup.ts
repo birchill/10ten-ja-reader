@@ -2212,7 +2212,6 @@ function renderCopyDetails({
   const statusDiv = document.createElementNS(HTML_NS, 'div');
   statusDiv.classList.add('status-bar');
   statusDiv.classList.add('-stack');
-  statusDiv.classList.add('-copy');
   statusDiv.lang = getLangTag();
 
   const keysDiv = document.createElementNS(HTML_NS, 'div');
