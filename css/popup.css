@@ -714,12 +714,6 @@
   text-shadow: rgba(0, 0, 0, 0.2) 1px 1px 4px;
 }
 
-.kanji-table.-copy .kanji {
-  color: var(--selected-highlight);
-  background: var(--selected-bg);
-  border-radius: 2px;
-}
-
 @media (hover) {
   .window.touch .kanji:hover {
     color: var(--selected-highlight);
@@ -729,7 +723,14 @@
   }
 }
 
-.kanji-table.-finished .kanji {
+.window.-copy-active .kanji-table .kanji {
+  color: var(--selected-highlight);
+  background: var(--selected-bg);
+  border-radius: 2px;
+}
+
+.window.-copy-finished .kanji-table .kanji,
+.window.-copy-error .kanji-table .kanji {
   animation: flash 0.5s;
 }
 
@@ -945,17 +946,17 @@
   animation: spin-ccw 0.8s linear infinite;
 }
 
-.status-bar.-copy.-finished > .keys,
-.status-bar.-copy.-error > .keys {
+.window.-copy-finished .status-bar > .keys,
+.window.-copy-error .status-bar > .keys {
   animation: fade-out 0.4s linear forwards;
 }
 
-.status-bar.-copy.-finished > .status {
+.window.-copy-finished .status-bar > .status {
   opacity: 0;
   animation: fade-in 0.4s linear forwards, fade-out 0.3s 0.9s forwards;
 }
 
-.status-bar.-finished {
+.window.-copy-finished .status-bar {
   animation: roll-up 0.3s 1s forwards;
 }
 
@@ -983,12 +984,9 @@
   }
 }
 
-.status-bar.-error > .status {
+.window.-copy-error .status-bar > .status {
   opacity: 0;
   animation: fade-in 0.4s linear forwards;
-}
-
-.status-bar.-error > .status {
   background: rgba(255, 204, 204, 0.8);
   color: #b43e3e;
 }

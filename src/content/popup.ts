@@ -252,7 +252,7 @@ export function renderPopup(
       break;
   }
 
-  // Render the copy overlay
+  // Render the copy overlay if needed
   if (touchMode && showOverlay(options.copyState)) {
     const stackContainer = document.createElementNS(HTML_NS, 'div');
     stackContainer.classList.add('grid-stack');
@@ -273,6 +273,21 @@ export function renderPopup(
     // Set the overlay styles for the window, but wait a moment so we can
     // transition the styles in.
     requestAnimationFrame(() => windowElem.classList.add('-has-overlay'));
+  }
+
+  // Set copy styles
+  switch (options.copyState.kind) {
+    case 'active':
+      windowElem.classList.add('-copy-active');
+      break;
+
+    case 'error':
+      windowElem.classList.add('-copy-error');
+      break;
+
+    case 'finished':
+      windowElem.classList.add('-copy-finished');
+      break;
   }
 
   // Show the status bar
@@ -1600,15 +1615,6 @@ function renderKanjiEntry({
   container.append(table);
   table.classList.add('kanji-table');
 
-  if (options.copyState.kind === 'active') {
-    table.classList.add('-copy');
-  } else if (
-    options.copyState.kind === 'finished' ||
-    options.copyState.kind === 'error'
-  ) {
-    table.classList.add('-finished');
-  }
-
   // Top part
   const topPart = document.createElementNS(HTML_NS, 'div');
   topPart.classList.add('top-part');
@@ -2236,10 +2242,8 @@ function renderCopyDetails({
   }
 
   if (copyState.kind === 'finished') {
-    statusDiv.classList.add('-finished');
     statusDiv.append(renderCopyStatus(getCopiedString(copyState.type)));
   } else if (copyState.kind === 'error') {
-    statusDiv.classList.add('-error');
     statusDiv.append(
       renderCopyStatus(browser.i18n.getMessage('content_copy_error'))
     );
