@@ -253,7 +253,7 @@ export function renderPopup(
   }
 
   // Render the copy overlay if needed
-  if (touchMode && showOverlay(options.copyState)) {
+  if (showOverlay(options.copyState)) {
     const stackContainer = document.createElementNS(HTML_NS, 'div');
     stackContainer.classList.add('grid-stack');
     const dictionaryContent = contentContainer.lastElementChild as HTMLElement;
