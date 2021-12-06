@@ -1,3 +1,7 @@
+## Next version
+
+- Added support for copying entries from a touch interface by tapping the entry.
+
 ## 1.5.0 (2021-11-08)
 
 - Support for Google Docs annotated canvas.
