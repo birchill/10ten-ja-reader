@@ -2211,32 +2211,34 @@ function renderCopyDetails({
   statusDiv.classList.add('-stack');
   statusDiv.lang = getLangTag();
 
-  const keysDiv = document.createElementNS(HTML_NS, 'div');
-  keysDiv.classList.add('keys');
-  statusDiv.append(keysDiv);
+  if (copyState.mode === 'keyboard') {
+    const keysDiv = document.createElementNS(HTML_NS, 'div');
+    keysDiv.classList.add('keys');
+    statusDiv.append(keysDiv);
 
-  keysDiv.append(browser.i18n.getMessage('content_copy_keys_label') + ' ');
+    keysDiv.append(browser.i18n.getMessage('content_copy_keys_label') + ' ');
 
-  const copyKeys: Array<{ key: string; l10nKey: string }> = CopyKeys.map(
-    ({ key, type, popupString }) => {
-      if (type === 'word' && series === 'kanji') {
-        return { key, l10nKey: CopyKanjiKeyStrings.popupString };
-      } else {
-        return { key, l10nKey: popupString };
+    const copyKeys: Array<{ key: string; l10nKey: string }> = CopyKeys.map(
+      ({ key, type, popupString }) => {
+        if (type === 'word' && series === 'kanji') {
+          return { key, l10nKey: CopyKanjiKeyStrings.popupString };
+        } else {
+          return { key, l10nKey: popupString };
+        }
       }
-    }
-  );
-  copyKeys.push({
-    key: copyNextKey,
-    l10nKey: CopyNextKeyStrings.popupString,
-  });
+    );
+    copyKeys.push({
+      key: copyNextKey,
+      l10nKey: CopyNextKeyStrings.popupString,
+    });
 
-  for (const copyKey of copyKeys) {
-    const keyElem = document.createElementNS(HTML_NS, 'kbd');
-    keyElem.append(copyKey.key);
-    keysDiv.append(keyElem, ' = ' + browser.i18n.getMessage(copyKey.l10nKey));
-    if (copyKey.key !== copyNextKey) {
-      keysDiv.append(', ');
+    for (const copyKey of copyKeys) {
+      const keyElem = document.createElementNS(HTML_NS, 'kbd');
+      keyElem.append(copyKey.key);
+      keysDiv.append(keyElem, ' = ' + browser.i18n.getMessage(copyKey.l10nKey));
+      if (copyKey.key !== copyNextKey) {
+        keysDiv.append(', ');
+      }
     }
   }
 
