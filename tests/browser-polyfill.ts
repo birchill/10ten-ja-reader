@@ -8,7 +8,7 @@ export const browser = {
     },
   },
   i18n: {
-    getMessage: (id: string, replacements?: Array<string>) => {
+    getMessage: (id: string, replacements?: string | Array<string>) => {
       switch (id) {
         case 'content_copy_error':
           return 'Failed to copy to clipboard';
@@ -16,6 +16,8 @@ export const browser = {
           return 'Cancel';
         case 'content_copy_overlay_copy_title':
           return 'Copy';
+        case 'content_copy_overlay_copy_title_with_word':
+          return `Copy ${replacements}`;
         case 'content_copy_overlay_entry_button':
           return 'Entry';
         case 'content_copy_overlay_kanji_button':

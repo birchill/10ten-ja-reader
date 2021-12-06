@@ -32,7 +32,24 @@ export function renderCopyOverlay({
 }): HTMLDivElement {
   const copyOverlay = html('div', { class: 'copy-overlay' });
 
+  // Work out what we would copy so we can generate suitable preview text
+  const entryToCopy = result
+    ? getCopyEntryFromResult({
+        result,
+        index: copyState.kind !== 'inactive' ? copyState.index : 0,
+      })
+    : null;
+
   // Heading
+  const wordToCopy = entryToCopy
+    ? getTextToCopy({ entry: entryToCopy, copyType: 'word' })
+    : null;
+  let heading = wordToCopy
+    ? browser.i18n.getMessage(
+        'content_copy_overlay_copy_title_with_word',
+        wordToCopy
+      )
+    : browser.i18n.getMessage('content_copy_overlay_copy_title');
   copyOverlay.append(
     html(
       'div',
@@ -41,17 +58,9 @@ export function renderCopyOverlay({
         class: 'copy-heading',
         lang: getLangTag(),
       },
-      browser.i18n.getMessage('content_copy_overlay_copy_title')
+      heading
     )
   );
-
-  // Work out what we would copy so we can generate suitable preview text
-  const entryToCopy = result
-    ? getCopyEntryFromResult({
-        result,
-        index: copyState.kind !== 'inactive' ? copyState.index : 0,
-      })
-    : null;
 
   // Options
   const list = copyOverlay.appendChild(html('ul', { class: 'copy-options' }));
@@ -100,19 +109,14 @@ export function renderCopyOverlay({
       .appendChild(html('li'))
       .appendChild(html('button', { class: '-icon-label' }));
 
-    if (entryToCopy) {
+    if (wordToCopy) {
       const icon = renderClipboard();
       icon.classList.add('icon');
       copyWordButton.append(icon);
     }
     const copyWordLabel = html('span');
-    if (entryToCopy) {
-      copyWordLabel.append(
-        getTextToCopy({
-          entry: entryToCopy,
-          copyType: 'word',
-        })
-      );
+    if (wordToCopy) {
+      copyWordLabel.append(wordToCopy);
       copyWordLabel.lang = 'ja';
     } else {
       copyWordLabel.append(

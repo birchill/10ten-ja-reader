@@ -77,7 +77,17 @@
   },
   "content_copy_overlay_copy_title": {
     "message": "コピー",
-    "description": "Title show at the top of the copy overlay"
+    "description": "Title shown at the top of the copy overlay when we can't find the word to copy."
+  },
+  "content_copy_overlay_copy_title_with_word": {
+    "message": "「​$word$​」をコピー",
+    "description": "Title shown at the top of the copy overlay. It includes the matching headwords / kanji",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "選ぶ"
+      }
+    }
   },
   "content_copy_overlay_entry_button": {
     "message": "項目",
