@@ -566,13 +566,32 @@
 }
 
 @media (hover) {
-  .window.touch .entry:hover {
+  /*
+   * We don't apply hover styles when we are in the finished state.
+   *
+   * That's because when we're on a device like a touchscreen laptop the
+   * media(hover) query above will still match and if we touch an entry we'll
+   * end up with the mouse cursor sitting in that position even when the copy
+   * has completed. As a result the entry will remain highlighted.
+   *
+   * If the user then uses the keyboard to highlight subsequent entries the
+   * experience will be quite confusing because we'll have one entry highlighted
+   * due to the hover state below and another highlighted due to the -selected
+   * rule above.
+   *
+   * We make sure the hover styles differ by using the `brightness` filter below
+   * but even so it's confusing.
+   *
+   * As a result we simply hide hover styles after the copy has finished and
+   * then make sure to clear -copy-finished on the next pointer event.
+   *
+   * This doesn't help for the case where the user cancels the copy operation
+   * but it's good enough for now.
+   */
+  .window.touch:not(.-copy-finished) .entry:hover {
     color: var(--selected-highlight);
     background: var(--selected-bg);
     border-radius: 2px;
-  }
-
-  .window.touch .entry:hover {
     cursor: pointer;
     /* Make the highlight brighter so we can distinguish it from a selection made
      * using the keyboard. */
@@ -586,7 +605,7 @@
 }
 
 @media (hover) {
-  .window.touch .entry:hover .w-def .tag {
+  .window.touch:not(.-copy-finished) .entry:hover .w-def .tag {
     color: var(--selected-tag-color);
     border-color: var(--selected-tag-border) !important;
   }
@@ -597,7 +616,7 @@
 }
 
 @media (hover) {
-  .window.touch .entry:hover .w-kanji {
+  .window.touch:not(.-copy-finished) .entry:hover .w-kanji {
     color: var(--selected-highlight);
   }
 }
@@ -608,8 +627,8 @@
 }
 
 @media (hover) {
-  .window.touch .entry:hover .w-kana,
-  .window.touch .entry:hover .w-romaji {
+  .window.touch:not(.-copy-finished) .entry:hover .w-kana,
+  .window.touch:not(.-copy-finished) .entry:hover .w-romaji {
     color: var(--selected-reading-highlight);
   }
 }
@@ -620,8 +639,8 @@
 }
 
 @media (hover) {
-  .window.touch .entry:hover .w-def,
-  .window.touch .entry:hover .w-def * {
+  .window.touch:not(.-copy-finished) .entry:hover .w-def,
+  .window.touch:not(.-copy-finished) .entry:hover .w-def * {
     color: var(--selected-def-color);
   }
 }
@@ -715,7 +734,7 @@
 }
 
 @media (hover) {
-  .window.touch .kanji:hover {
+  .window.touch:not(.-copy-finished) .kanji:hover {
     color: var(--selected-highlight);
     background: var(--selected-bg);
     border-radius: 2px;

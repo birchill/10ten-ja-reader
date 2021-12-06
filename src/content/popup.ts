@@ -287,6 +287,9 @@ export function renderPopup(
 
     case 'finished':
       windowElem.classList.add('-copy-finished');
+      windowElem.addEventListener('pointermove', () =>
+        windowElem.classList.remove('-copy-finished')
+      );
       break;
   }
 
