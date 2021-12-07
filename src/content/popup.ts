@@ -290,7 +290,7 @@ export function renderPopup(
       break;
   }
 
-  // Show the status bar
+  // Generate status bar contents
   const copyDetails = renderCopyDetails({
     copyNextKey: options.copyNextKey,
     copyState: options.copyState,
@@ -300,10 +300,11 @@ export function renderPopup(
     (series) => !!result?.[series]
   ).length;
 
+  let statusBar: HTMLElement | null = null;
   if (copyDetails) {
-    contentContainer.append(copyDetails);
+    statusBar = copyDetails;
   } else if (hasResult && result?.resultType === 'db-updating') {
-    contentContainer.append(renderUpdatingStatus());
+    statusBar = renderUpdatingStatus();
   } else if (
     showTabs &&
     numResultsAvailable > 1 &&
@@ -311,19 +312,25 @@ export function renderPopup(
     options.switchDictionaryKeys.length &&
     probablyHasPhysicalKeyboard()
   ) {
-    contentContainer.append(
-      renderSwitchDictionaryHint(options.switchDictionaryKeys)
-    );
+    statusBar = renderSwitchDictionaryHint(options.switchDictionaryKeys);
+  }
+
+  let contentWrapper = contentContainer;
+  if (statusBar) {
+    contentWrapper = document.createElementNS(HTML_NS, 'div');
+    contentWrapper.classList.add('status-bar-wrapper');
+    contentWrapper.append(contentContainer);
+    contentWrapper.append(statusBar);
   }
 
   if (!showTabs && options.onClosePopup) {
     const closeButtonWrapper = document.createElementNS(HTML_NS, 'div');
     closeButtonWrapper.classList.add('close-button-wrapper');
-    closeButtonWrapper.append(contentContainer);
+    closeButtonWrapper.append(contentWrapper);
     closeButtonWrapper.append(renderCloseButton(options.onClosePopup));
     windowElem.append(closeButtonWrapper);
   } else {
-    windowElem.append(contentContainer);
+    windowElem.append(contentWrapper);
   }
 
   return container;
@@ -2315,7 +2322,7 @@ function renderSpinner(): SVGElement {
 
 function renderSwitchDictionaryHint(
   keys: ReadonlyArray<string>
-): HTMLElement | string {
+): HTMLElement | null {
   const hintDiv = document.createElementNS(HTML_NS, 'div');
   hintDiv.classList.add('status-bar');
   hintDiv.lang = getLangTag();
@@ -2326,7 +2333,7 @@ function renderSwitchDictionaryHint(
 
   if (keys.length < 1 || keys.length > 3) {
     console.warn(`Unexpected number of keys ${keys.length}`);
-    return '-';
+    return null;
   }
 
   const label = browser.i18n.getMessage(

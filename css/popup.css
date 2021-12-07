@@ -87,6 +87,16 @@
   }
 }
 
+.window .status-bar-wrapper {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.window .status-bar-wrapper > .status-bar {
+  flex-shrink: 0;
+}
+
 /* Tab bar */
 
 .tab-bar {
@@ -913,7 +923,6 @@
  */
 
 .status-bar {
-  margin-top: 3px;
   position: relative;
   width: 100%;
   background: var(--status-bg);

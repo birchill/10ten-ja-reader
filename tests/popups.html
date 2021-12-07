@@ -513,7 +513,7 @@
     // Touch screen tests
 
     addHeading('Touch screen');
-    const touchScreenTest = {
+    const kankokuWordsResult = {
       words: {
         type: 'words',
         data: [
@@ -635,7 +635,7 @@
       label.append(`Theme: ${theme}`);
       container.append(label);
 
-      const popup = contentHandler._renderPopup(touchScreenTest, {
+      const popup = contentHandler._renderPopup(kankokuWordsResult, {
         ...config,
         container: createPopupContainer(),
         dictToShow: 'words',
@@ -650,7 +650,7 @@
     // Database status tests
 
     addHeading('Database status');
-    const dbUpdatingTest = { ...touchScreenTest, resultType: 'db-updating' };
+    const dbUpdatingTest = { ...kankokuWordsResult, resultType: 'db-updating' };
 
     for (const theme of themes) {
       addLabel(`Theme: ${theme}`);
@@ -671,7 +671,7 @@
     addHeading('Close button only', 3);
     {
       const popup = contentHandler._renderPopup(
-        { ...touchScreenTest, resultType: 'db-unavailable' },
+        { ...kankokuWordsResult, resultType: 'db-unavailable' },
         {
           ...config,
           container: createPopupContainer(),
@@ -688,7 +688,7 @@
     // Switch dictionary hint
 
     addHeading('Switch dictionary hint');
-    contentHandler._renderPopup(touchScreenTest, {
+    contentHandler._renderPopup(kankokuWordsResult, {
       ...config,
       hasSwitchedDictionary: false,
       container: createPopupContainer(),
@@ -703,7 +703,7 @@
     // Tabs on the side
 
     addHeading('Tabs on the side');
-    contentHandler._renderPopup(touchScreenTest, {
+    contentHandler._renderPopup(kankokuWordsResult, {
       ...config,
       container: createPopupContainer(),
       dictToShow: 'words',
@@ -719,7 +719,7 @@
 
     addHeading('Tabs on the side (touch display mode)', 3);
     {
-      const popup = contentHandler._renderPopup(touchScreenTest, {
+      const popup = contentHandler._renderPopup(kankokuWordsResult, {
         ...config,
         container: createPopupContainer(),
         dictToShow: 'words',
@@ -737,7 +737,7 @@
 
     addHeading('Tabs on the side (touch display mode and status bar)', 3);
     {
-      const popup = contentHandler._renderPopup(touchScreenTest, {
+      const popup = contentHandler._renderPopup(kankokuWordsResult, {
         ...config,
         container: createPopupContainer(),
         dictToShow: 'words',
@@ -758,7 +758,7 @@
     for (const tabDisplay of ['top', 'right', 'none']) {
       {
         addHeading(`Tab display: ${tabDisplay}`, 3);
-        const popup = contentHandler._renderPopup(touchScreenTest, {
+        const popup = contentHandler._renderPopup(kankokuWordsResult, {
           ...config,
           container: createPopupContainer(),
           dictToShow: 'words',
@@ -778,8 +778,32 @@
       }
 
       {
+        addHeading(`Tab display: ${tabDisplay} (with status bar)`, 3);
+        const popup = contentHandler._renderPopup(
+          { ...kankokuWordsResult, resultType: 'db-updating' },
+          {
+            ...config,
+            container: createPopupContainer(),
+            dictToShow: 'words',
+            popupStyle: 'default',
+            showDefinitions: true,
+            switchDictionaryKeys: ['Shift', 'Enter'],
+            tabDisplay,
+            onClosePopup: () => {},
+            onShowSettings: () => {},
+          }
+        );
+
+        popup.style.maxHeight = '200px';
+        popup.style.webkitMaskImage =
+          'linear-gradient(to bottom, black 99%, transparent)';
+        popup.style.maskImage =
+          'linear-gradient(to bottom, black 99%, transparent)';
+      }
+
+      {
         addHeading(`Tab display: ${tabDisplay} (touch version)`, 3);
-        const popup = contentHandler._renderPopup(touchScreenTest, {
+        const popup = contentHandler._renderPopup(kankokuWordsResult, {
           ...config,
           container: createPopupContainer(),
           dictToShow: 'words',
@@ -791,7 +815,35 @@
           onShowSettings: () => {},
         });
 
-        popup.querySelector('.window').style.maxHeight = '200px';
+        popup
+          .querySelector('.window')
+          .style.setProperty('--max-height', '200px');
+        popup.querySelector('.window').classList.add('touch');
+      }
+
+      {
+        addHeading(
+          `Tab display: ${tabDisplay} (touch version with status bar)`,
+          3
+        );
+        const popup = contentHandler._renderPopup(
+          { ...kankokuWordsResult, resultType: 'db-updating' },
+          {
+            ...config,
+            container: createPopupContainer(),
+            dictToShow: 'words',
+            popupStyle: 'default',
+            showDefinitions: true,
+            switchDictionaryKeys: ['Shift', 'Enter'],
+            tabDisplay,
+            onClosePopup: () => {},
+            onShowSettings: () => {},
+          }
+        );
+
+        popup
+          .querySelector('.window')
+          .style.setProperty('--max-height', '200px');
         popup.querySelector('.window').classList.add('touch');
       }
     }
