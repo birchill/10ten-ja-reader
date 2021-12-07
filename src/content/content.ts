@@ -64,6 +64,7 @@ import {
 import { mod } from '../utils/mod';
 import { stripFields } from '../utils/strip-fields';
 
+import { copyText } from './clipboard';
 import { CopyEntry, getTextToCopy } from './copy-text';
 import { injectGdocsStyles, removeGdocsStyles } from './gdocs-canvas';
 import { getCopyEntryFromResult } from './get-copy-entry';
@@ -718,7 +719,6 @@ export class ContentHandler {
     } else if (movePopupUp.includes(upperKey)) {
       this.movePopup('up');
     } else if (
-      navigator.clipboard &&
       // It's important we _don't_ enter copy mode when the Ctrl key is being
       // pressed since otherwise if the user simply wants to copy the selected
       // text by pressing Ctrl+C they will end up entering copy mode.
@@ -1156,10 +1156,9 @@ export class ContentHandler {
 
     const { index, mode } = this.copyState;
     try {
-      await navigator.clipboard.writeText(message);
+      await copyText(message);
       this.copyState = { kind: 'finished', type: copyType, index, mode };
     } catch (e) {
-      console.error('Failed to write to clipboard', e);
       this.copyState = { kind: 'error', index, mode };
     }
 
