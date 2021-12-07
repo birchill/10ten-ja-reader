@@ -109,6 +109,7 @@ import {
 import { TextHighlighter } from './text-highlighter';
 import { TextRange, textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
+import { TouchClickTracker } from './touch-click-tracker';
 
 const enum HoldToShowKeyType {
   Text = 1 << 0,
@@ -192,6 +193,10 @@ export class ContentHandler {
   // events.
   private typingMode: boolean = false;
 
+  // Detect touch taps so we can show the popup for them, but not for
+  // regular mouse clicks.
+  private touchClickTracker: TouchClickTracker = new TouchClickTracker();
+
   //
   // Top-most window concerns
   //
@@ -255,6 +260,18 @@ export class ContentHandler {
       capture: true,
     });
     browser.runtime.onMessage.addListener(this.onBackgroundMessage);
+
+    this.touchClickTracker.onTouchClick = (event: MouseEvent) => {
+      // Ignore clicks on interactive elements
+      if (
+        event.target instanceof HTMLAnchorElement ||
+        event.target instanceof HTMLButtonElement
+      ) {
+        return;
+      }
+
+      this.onMouseMove(event);
+    };
 
     hasReasonableTimerResolution().then((isReasonable) => {
       if (isReasonable) {
@@ -359,6 +376,7 @@ export class ContentHandler {
     this.textHighlighter.detach();
     this.copyState = { kind: 'inactive' };
     this.safeAreaProvider?.unmount();
+    this.touchClickTracker.destroy();
 
     removePopup();
     removeSafeAreaProvider();
