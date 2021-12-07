@@ -29,6 +29,9 @@ export async function copyText(text: string): Promise<void> {
       throw new Error('No selection to work with');
     }
 
+    // This isn't going to work if this is an SVG document but I'm quite happy
+    // to accept that you can't copy text from SVG documents served over
+    // insecure HTTP in Safari.
     const span = document.createElementNS(HTML_NS, 'span');
     span.append(text);
     (document.body || document.documentElement).append(span);
