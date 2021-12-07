@@ -112,6 +112,10 @@
   color: var(--cell-highlight-fg);
 
   pointer-events: auto;
+  /* Make sure we are above the content area. This is mostly needed when we are
+   * showing the copy overlay since the entry data might overflow its region in
+   * that case. */
+  z-index: 1;
 }
 
 .tabs {
