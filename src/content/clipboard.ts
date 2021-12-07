@@ -4,7 +4,7 @@ export async function copyText(text: string): Promise<void> {
   } catch {
     // Fallback for non HTTPS pages
     const copy = function (event: ClipboardEvent) {
-      event.clipboardData!.setData('Text', text);
+      event.clipboardData!.setData('text/plain', text);
       event.preventDefault();
     };
     document.addEventListener('copy', copy);
