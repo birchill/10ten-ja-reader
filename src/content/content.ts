@@ -1159,6 +1159,7 @@ export class ContentHandler {
       await copyText(message);
       this.copyState = { kind: 'finished', type: copyType, index, mode };
     } catch (e) {
+      console.error(e);
       this.copyState = { kind: 'error', index, mode };
     }
 
