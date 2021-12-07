@@ -2,7 +2,7 @@
 
 - Added support for copying entries from touch devices by tapping the entry.
 - Made copying to the clipboard work for HTTP sites
-  [#157](https://github.com/birchill/10ten-ja-reader/issues/157)).
+  ([#157](https://github.com/birchill/10ten-ja-reader/issues/157)).
 
 ## 1.5.0 (2021-11-08)
 
@@ -12,21 +12,21 @@
 - Hide senses that don't apply to the looked-up text.
 - Show the age next to names for people with birth dates.
 - Allow setting the hold to show keys in active tab mode too (Safari)
-  [#818](https://github.com/birchill/10ten-ja-reader/issues/818)).
+  ([#818](https://github.com/birchill/10ten-ja-reader/issues/818)).
 - Replace "(trademark)" text with ™.
 - Stop showing the popup for number-only matches in the name dictionary
   (e.g. 64)
-  [#811](https://github.com/birchill/10ten-ja-reader/issues/811)).
+  ([#811](https://github.com/birchill/10ten-ja-reader/issues/811)).
 - Fix formatting of options page on Firefox for Android (Nightly).
 
 ## 1.4.8 (2021-10-21)
 
 - Stop interfering with interactive standalone SVG images
-  [#793](https://github.com/birchill/10ten-ja-reader/issues/793)).
+  ([#793](https://github.com/birchill/10ten-ja-reader/issues/793)).
 - Made the popup show again on standalone SVG images.
 - Fixed popup positioning for iframes with borders
   (e.g. the [Bibi EPUB reader](https://bibi.epub.link/))
-  [#803](https://github.com/birchill/10ten-ja-reader/issues/803))
+  ([#803](https://github.com/birchill/10ten-ja-reader/issues/803))
 
 ## 1.4.7 (2021-10-08)
 
@@ -39,12 +39,12 @@
 - Adds an option to disable currency conversion.
 - Fixes a bug where popups were not scrollable when no tabs are shown.
 - Forces Google Docs to use HTML mode (for now anyway)
-  [#782](https://github.com/birchill/10ten-ja-reader/issues/782)).
+  ([#782](https://github.com/birchill/10ten-ja-reader/issues/782)).
 - Ignores zero-width non-joiner characters (which Google Docs sometimes likes to
   put between characters).
 - Handles `-webkit-user-select: none` content (such as
   [bookwalker.jp](https://bookwalker.jp)'s popup window) on Safari better
-  [#773](https://github.com/birchill/10ten-ja-reader/issues/773)).
+  ([#773](https://github.com/birchill/10ten-ja-reader/issues/773)).
 
 ## 1.4.2 (2021-09-24)
 
@@ -72,10 +72,10 @@
 ## 1.3.5 (2021-09-15) (Firefox, Chrome)
 
 - Overhauled popup positioning to better correspond with old behavior
-  [#756](https://github.com/birchill/10ten-ja-reader/issues/756)).
+  ([#756](https://github.com/birchill/10ten-ja-reader/issues/756)).
 - Reworked iframe message passing to prevent interfering with pages like
   Azure portal
-  [#747](https://github.com/birchill/10ten-ja-reader/issues/747)).
+  ([#747](https://github.com/birchill/10ten-ja-reader/issues/747)).
 
 ## 1.3.4 (2021-09-10) (Firefox, Chrome)
 
@@ -90,7 +90,7 @@
 ## 1.3.2 (2021-09-09) (Firefox)
 
 - Stopped the popup for showing up for all numbers
-  [#749](https://github.com/birchill/10ten-ja-reader/issues/749)).
+  ([#749](https://github.com/birchill/10ten-ja-reader/issues/749)).
 
 ## 1.3.1 (2021-09-08) (Firefox)
 
