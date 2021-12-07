@@ -685,6 +685,24 @@
       popup.querySelector('.window').classList.add('touch');
     }
 
+    addLabel('Close button with status bar');
+    {
+      const popup = contentHandler._renderPopup(
+        { ...kankokuWordsResult, resultType: 'db-updating' },
+        {
+          ...config,
+          container: createPopupContainer(),
+          dictToShow: 'words',
+          popupStyle: 'default',
+          showDefinitions: true,
+          tabDisplay: 'none',
+          onClosePopup: () => {},
+          onShowSettings: () => {},
+        }
+      );
+      popup.querySelector('.window').classList.add('touch');
+    }
+
     // Switch dictionary hint
 
     addHeading('Switch dictionary hint');
