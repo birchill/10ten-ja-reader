@@ -1135,7 +1135,7 @@
 }
 
 /* Blurring for the entry area when the copy overlay is showing */
-.window.-has-overlay .content .grid-stack > *:first-child {
+.window.-has-overlay .content .grid-stack > .entry-data {
   filter: blur(20px);
   transition: filter 0.3s ease-in-out;
 }
@@ -1159,7 +1159,7 @@
  * Ideally we'd only do this if we were actually going to constrain the height
  * anyway, but that's hard to detect so we just do this unconditionally and so
  * far it seems to work ok. */
-.window.-has-overlay .content .grid-stack > *:first-child {
+.window.-has-overlay .content .grid-stack > .entry-data {
   position: absolute;
   width: 100%;
 }

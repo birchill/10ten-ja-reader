@@ -246,6 +246,7 @@ export function renderPopup(
 
         const metaDataContainer = document.createElementNS(HTML_NS, 'div');
         metaDataContainer.classList.add('wordlist');
+        metaDataContainer.classList.add('entry-data');
         metaDataContainer.append(metadata);
         contentContainer.append(metaDataContainer);
       }
@@ -598,6 +599,7 @@ function renderWordEntries({
 }): HTMLElement {
   const container = document.createElementNS(HTML_NS, 'div');
   container.classList.add('wordlist');
+  container.classList.add('entry-data');
 
   if (title) {
     const titleDiv = document.createElementNS(HTML_NS, 'div');
@@ -1476,11 +1478,9 @@ function renderNamesEntries({
   more: boolean;
   options: PopupOptions;
 }): HTMLElement {
-  const container = document.createElementNS(HTML_NS, 'div');
-
   const namesTable = document.createElementNS(HTML_NS, 'div');
-  container.append(namesTable);
   namesTable.classList.add('name-table');
+  namesTable.classList.add('entry-data');
 
   if (entries.length > 4) {
     namesTable.classList.add('-multicol');
@@ -1509,7 +1509,7 @@ function renderNamesEntries({
     namesTable.append(moreDiv);
   }
 
-  return container;
+  return namesTable;
 }
 
 function renderName(entry: NameResult): HTMLElement {
@@ -1614,13 +1614,11 @@ function renderKanjiEntry({
 }: {
   entry: KanjiResult;
   options: PopupOptions;
-}): HTMLElement | DocumentFragment {
-  const container = document.createDocumentFragment();
-
+}): HTMLElement {
   // Main table
   const table = document.createElementNS(HTML_NS, 'div');
-  container.append(table);
   table.classList.add('kanji-table');
+  table.classList.add('entry-data');
 
   // Top part
   const topPart = document.createElementNS(HTML_NS, 'div');
@@ -1672,7 +1670,7 @@ function renderKanjiEntry({
     table.append(renderReferences(entry, options));
   }
 
-  return container;
+  return table;
 }
 
 function renderKanjiComponents(entry: KanjiResult): HTMLElement {
