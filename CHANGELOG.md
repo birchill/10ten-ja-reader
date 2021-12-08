@@ -3,6 +3,8 @@
 - Added support for copying entries from touch devices by tapping the entry.
 - Made copying to the clipboard work for HTTP sites
   ([#157](https://github.com/birchill/10ten-ja-reader/issues/157)).
+- Added support for looking up words on touch screens by tapping the word
+  ([#845](https://github.com/birchill/10ten-ja-reader/issues/845)).
 
 ## 1.5.0 (2021-11-08)
 
