@@ -276,7 +276,34 @@ export class ContentHandler {
         return;
       }
 
-      this.onMouseMove(event);
+      // We need to ensure the 'buttons' field of the event is zero since
+      // normally we ignore mousemoves when the buttons are being pressed, but
+      // we've decided to allow this "click".
+      //
+      // This is, unfortunately, a little involved since:
+      //
+      // (a) the 'buttons' member of `event` is readonly,
+      // (b) the object spread operator only deals with enumerable _own_
+      //     properties so we can't just spread the values from `event` into a
+      //     new object, and
+      // (c) we use `getModifierState` etc. on `MouseEvent` elsewhere so we
+      //     actually need to generate a `MouseEvent` object rather than just a
+      //     property bag.
+      const mouseMoveEvent = new MouseEvent('mousemove', {
+        bubbles: true,
+        screenX: event.screenX,
+        screenY: event.screenY,
+        clientX: event.clientX,
+        clientY: event.clientY,
+        ctrlKey: event.ctrlKey,
+        shiftKey: event.shiftKey,
+        altKey: event.altKey,
+        metaKey: event.metaKey,
+        button: 0,
+        buttons: 0,
+        relatedTarget: event.relatedTarget,
+      });
+      (event.target || document.body).dispatchEvent(mouseMoveEvent);
     };
 
     hasReasonableTimerResolution().then((isReasonable) => {
