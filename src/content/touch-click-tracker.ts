@@ -1,5 +1,6 @@
 export class TouchClickTracker {
   private wasTouch = false;
+  private ignoring = false;
   onTouchClick?: (event: MouseEvent) => void;
 
   constructor() {
@@ -18,12 +19,20 @@ export class TouchClickTracker {
     window.removeEventListener('click', this.onClick);
   }
 
+  startIgnoringClicks() {
+    this.ignoring = true;
+  }
+
+  stopIgnoringClicks() {
+    this.ignoring = false;
+  }
+
   private onTouchStart() {
     this.wasTouch = false;
   }
 
   private onTouchEnd() {
-    this.wasTouch = true;
+    this.wasTouch = !this.ignoring;
   }
 
   private onClick(event: MouseEvent) {

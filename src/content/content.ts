@@ -1237,6 +1237,9 @@ export class ContentHandler {
     } else {
       browser.runtime.sendMessage({ type: 'top:clearResult' });
     }
+
+    // Start tracking touch taps again now that the window is hidden.
+    this.touchClickTracker.stopIgnoringClicks();
   }
 
   async tryToUpdatePopup({
@@ -1584,6 +1587,13 @@ export class ContentHandler {
       this.clearResult({ currentElement: this.lastMouseTarget });
       return;
     }
+
+    // Inform the touch click tracker to ignore taps since the popup is now
+    // showing.
+    //
+    // We can't simply check if the popup is visible when we get the touch click
+    // callback since by that point we will already have hidden it.
+    this.touchClickTracker.startIgnoringClicks();
 
     // Position the popup
 
