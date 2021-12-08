@@ -270,6 +270,12 @@ export class ContentHandler {
         return;
       }
 
+      // If the puck is showing but inactive, use that as a signal that the user
+      // doesn't want to do lookups at the moment.
+      if (this.puck?.getEnabledState() === 'inactive') {
+        return;
+      }
+
       this.onMouseMove(event);
     };
 

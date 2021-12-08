@@ -835,6 +835,10 @@ export class LookupPuck {
     this.puck = undefined;
   }
 
+  getEnabledState(): PuckEnabledState {
+    return this.enabledState;
+  }
+
   setEnabledState(enabledState: PuckEnabledState): void {
     const previousState = this.enabledState;
     this.enabledState = enabledState;
