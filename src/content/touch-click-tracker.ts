@@ -10,13 +10,16 @@ export class TouchClickTracker {
 
     window.addEventListener('touchstart', this.onTouchStart, { passive: true });
     window.addEventListener('touchend', this.onTouchEnd, { passive: true });
-    window.addEventListener('click', this.onClick);
+    // We need to register for clicks on the _body_ because if there is no
+    // click handler on the body element, iOS won't generate click events
+    // from touch taps.
+    document.body?.addEventListener('click', this.onClick);
   }
 
   destroy() {
     window.removeEventListener('touchstart', this.onTouchStart);
     window.removeEventListener('touchend', this.onTouchEnd);
-    window.removeEventListener('click', this.onClick);
+    document.body?.removeEventListener('click', this.onClick);
   }
 
   startIgnoringClicks() {
