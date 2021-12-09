@@ -1,4 +1,4 @@
-## Next version
+## 1.6.0 (2021-12-09)
 
 - Added support for copying entries from touch devices by tapping the entry.
 - Made copying to the clipboard work for HTTP sites
