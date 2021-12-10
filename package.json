@@ -73,7 +73,7 @@
     "karma-mocha": "^2.0.1",
     "karma-webpack": "^5.0.0",
     "mocha": "^9.1.3",
-    "prettier": "^2.5.0",
+    "prettier": "^2.5.1",
     "prettier-plugin-md-nocjsp": "^1.2.0",
     "semver-parser": "^4.0.0",
     "source-map-loader": "^3.0.0",
