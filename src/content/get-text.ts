@@ -432,8 +432,13 @@ function getOffsetFromTextInputNode({
   // Set its position in the document to be to be the same
   mirrorElement.style.position = 'absolute';
   const bbox = node.getBoundingClientRect();
-  mirrorElement.style.top = bbox.top + 'px';
-  mirrorElement.style.left = bbox.left + 'px';
+
+  // We need to factor in the document scroll position too
+  const top = bbox.top + document.documentElement.scrollTop;
+  const left = bbox.left + document.documentElement.scrollLeft;
+
+  mirrorElement.style.top = top + 'px';
+  mirrorElement.style.left = left + 'px';
 
   // Finally, make sure it is on top
   mirrorElement.style.zIndex = '10000';

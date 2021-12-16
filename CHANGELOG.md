@@ -1,3 +1,9 @@
+## Next version
+
+- Fixed looking up text in text boxes when the document is scrolled on
+  Chrome/Edge/Safari
+  ([#856](https://github.com/birchill/10ten-ja-reader/issues/856)).
+
 ## 1.6.0 (2021-12-09)
 
 - Added support for copying entries from touch devices by tapping the entry.
