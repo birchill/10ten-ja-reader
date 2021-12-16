@@ -1,4 +1,4 @@
-## Next version
+## 1.6.1 (2021-12-16) (Chrome, Edge, Safari)
 
 - Fixed looking up text in text boxes when the document is scrolled on
   Chrome/Edge/Safari
