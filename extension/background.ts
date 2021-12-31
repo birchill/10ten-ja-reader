@@ -14,14 +14,21 @@ async function createRcxMainPromise(): Promise<RcxMain> {
 }
 const rcxMainPromise: Promise<RcxMain> = createRcxMainPromise();
 
-chrome.browserAction.onClicked.addListener(async (tab) => {
-  const rcxMain = await rcxMainPromise;
-  rcxMain.inlineToggle(tab);
+chrome.browserAction.onClicked.addListener((tab) => {
+  void (async () => {
+    const rcxMain = await rcxMainPromise;
+    rcxMain.inlineToggle(tab);
+  })();
 });
-chrome.tabs.onActivated.addListener(async (activeInfo) => {
-  const rcxMain = await rcxMainPromise;
-  rcxMain.onTabSelect(activeInfo.tabId);
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  void (async () => {
+    const rcxMain = await rcxMainPromise;
+    rcxMain.onTabSelect(activeInfo.tabId);
+  })();
 });
+
+// Passing a promise to `addListener` here allows us to await the promise in tests.
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
 chrome.runtime.onMessage.addListener(async (request, sender, response) => {
   const rcxMain = await rcxMainPromise;
   switch (request.type) {
@@ -63,7 +70,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, response) => {
       break;
     case 'switchOnlyReading':
       console.log('switchOnlyReading');
-      chrome.storage.sync.set({
+      void chrome.storage.sync.set({
         onlyreading: !rcxMain.config.onlyreading,
       });
       break;
@@ -82,6 +89,6 @@ chrome.runtime.onMessage.addListener(async (request, sender, response) => {
 
 // Clear browser action badge text on first load
 // Chrome preserves last state which is usually 'On'
-chrome.browserAction.setBadgeText({ text: '' });
+void chrome.browserAction.setBadgeText({ text: '' });
 
 export { rcxMainPromise as TestOnlyRxcMainPromise };

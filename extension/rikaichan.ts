@@ -191,17 +191,17 @@ class RcxMain {
         });
       }
     }
-    chrome.browserAction.setBadgeBackgroundColor({
+    void chrome.browserAction.setBadgeBackgroundColor({
       color: [255, 0, 0, 255],
     });
-    chrome.browserAction.setBadgeText({ text: 'On' });
+    void chrome.browserAction.setBadgeText({ text: 'On' });
   }
 
   // This function disables rikaikun in all tabs.
   inlineDisable() {
     this.enabled = 0;
-    chrome.browserAction.setBadgeBackgroundColor({ color: [0, 0, 0, 0] });
-    chrome.browserAction.setBadgeText({ text: '' });
+    void chrome.browserAction.setBadgeBackgroundColor({ color: [0, 0, 0, 0] });
+    void chrome.browserAction.setBadgeText({ text: '' });
 
     // Send a disable message to all browsers
     chrome.windows.getAll({ populate: true }, (windows) => {

@@ -48,7 +48,7 @@ declare global {
   }
 }
 type Rikaichan = {
-  config?: Config;
+  config: Config;
   prevTarget?: HTMLElement;
   popX?: number;
   popY?: number;
@@ -76,7 +76,7 @@ class RcxContent {
   // Adds the listeners and stuff.
   enableTab(config: Config) {
     if (window.rikaichan === undefined) {
-      window.rikaichan = {};
+      window.rikaichan = { config: config };
       window.addEventListener('mousemove', this.onMouseMove, false);
       window.addEventListener('keydown', this.onKeyDown, true);
       window.addEventListener('keyup', this.onKeyUp, true);
@@ -161,7 +161,7 @@ class RcxContent {
         true
       );
     }
-    popup.setAttribute('data-theme', window.rikaichan!.config!.popupcolor);
+    popup.setAttribute('data-theme', window.rikaichan!.config.popupcolor);
 
     popup.style.width = 'auto';
     popup.style.height = 'auto';
@@ -345,7 +345,7 @@ class RcxContent {
   };
   _onKeyDown(ev: KeyboardEvent) {
     if (
-      window.rikaichan!.config!.showOnKey !== '' &&
+      window.rikaichan!.config.showOnKey !== '' &&
       (ev.altKey || ev.ctrlKey || ev.key === 'AltGraph')
     ) {
       if (this.lastTarget !== null) {
@@ -375,13 +375,13 @@ class RcxContent {
     if (!this.isVisible()) {
       return;
     }
-    if (window.rikaichan!.config!.disablekeys && ev.keyCode !== 16) {
+    if (window.rikaichan!.config.disablekeys && ev.keyCode !== 16) {
       return;
     }
 
     let i;
     let shouldPreventDefault = true;
-    const maxDictEntries = window.rikaichan!.config!.maxDictEntries;
+    const maxDictEntries = window.rikaichan!.config.maxDictEntries;
     let e: DictEntryData | null;
 
     switch (ev.keyCode) {
@@ -727,13 +727,13 @@ class RcxContent {
 
     let text = '';
 
-    const xpathExpr = textRange.ownerDocument!.createExpression(
+    const xpathExpr = textRange.ownerDocument.createExpression(
       this.textNodeExpr,
       null
     );
 
     if (
-      textRange.ownerDocument!.evaluate(
+      textRange.ownerDocument.evaluate(
         this.startElementExpr,
         textRange,
         null,
@@ -850,10 +850,10 @@ class RcxContent {
     // don't try to highlight form elements
     if (
       rp &&
-      ((tdata.config!.highlight &&
+      ((tdata.config.highlight &&
         !this.mDown &&
         !('form' in tdata.prevTarget!)) ||
-        ('form' in tdata.prevTarget! && tdata.config!.textboxhl))
+        ('form' in tdata.prevTarget! && tdata.config.textboxhl))
     ) {
       const doc = rp.ownerDocument;
       if (!doc) {
@@ -862,7 +862,7 @@ class RcxContent {
         return;
       }
       this.highlightMatch(doc, rp, ro, e.matchLen, selEndList, tdata);
-      tdata.prevSelView! = doc.defaultView!;
+      tdata.prevSelView = doc.defaultView!;
     }
 
     chrome.runtime.sendMessage(
@@ -957,7 +957,7 @@ class RcxContent {
     sel.addRange(range);
     tdata.selText = sel.toString();
 
-    if (window.rikaichan!.config!.ttsEnabled) {
+    if (window.rikaichan!.config.ttsEnabled) {
       const text = sel.toString();
       if (text.length > 0) {
         chrome.runtime.sendMessage({ type: 'playTTS', text: text });
@@ -1058,10 +1058,10 @@ class RcxContent {
     const altGraph = ev.getModifierState && ev.getModifierState('AltGraph');
 
     if (
-      (window.rikaichan!.config!.showOnKey.includes('Alt') &&
+      (window.rikaichan!.config.showOnKey.includes('Alt') &&
         !ev.altKey &&
         !altGraph) ||
-      (window.rikaichan!.config!.showOnKey.includes('Ctrl') && !ev.ctrlKey)
+      (window.rikaichan!.config.showOnKey.includes('Ctrl') && !ev.ctrlKey)
     ) {
       this.clearHi();
       this.hidePopup();
@@ -1093,10 +1093,7 @@ class RcxContent {
         fake.scrollLeft = eventTarget.scrollLeft;
       }
       // Calculate range and friends here after we've made our fake textarea/input divs.
-      range = document.caretRangeFromPoint(
-        ev.clientX,
-        ev.clientY
-      ) as Range | null;
+      range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
       // If we don't have a valid range, don't do any more work
       if (range === null) {
         return;
@@ -1215,7 +1212,7 @@ class RcxContent {
     tdata.uofs = 0;
     tdata.uofsNext = 1;
 
-    const delay = ev.noDelay ? 1 : window.rikaichan!.config!.popupDelay;
+    const delay = ev.noDelay ? 1 : window.rikaichan!.config.popupDelay;
 
     if (rp && rp.data && ro < rp.data.length) {
       this.forceKanji = ev.shiftKey ? 1 : 0;

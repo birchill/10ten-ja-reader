@@ -1,36 +1,91 @@
 {
   "extends": [
-    "./node_modules/gts/",
+    "eslint:recommended",
+    "plugin:json/recommended-with-comments",
+    "plugin:import/recommended",
     "plugin:lit/recommended",
     "plugin:promise/recommended",
-    "plugin:mocha/recommended"
+    "plugin:mocha/recommended",
+    "prettier"
   ],
   "env": {
     "browser": true,
     "webextensions": true
   },
-  "plugins": ["eslint-plugin-tsdoc", "sort-imports-es6-autofix"],
+  "plugins": ["import", "eslint-plugin-tsdoc", "sort-imports-es6-autofix"],
   "ignorePatterns": ["dist"],
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    }
+  },
   "rules": {
+    "import/no-unresolved": ["error", { "ignore": ["csv-parse/sync"] }],
+    "block-scoped-var": "error",
+    "eqeqeq": "error",
+    "no-var": "error",
+    "prefer-const": "error",
+    "eol-last": "error",
+    "no-trailing-spaces": "error",
+    "quotes": ["warn", "single", { "avoidEscape": true }],
     "linebreak-style": ["error", "unix"],
     "no-tabs": "error",
     "sort-imports-es6-autofix/sort-imports-es6": "error",
-    "node/no-unpublished-import": "off",
     "unicode-bom": "error",
     "promise/prefer-await-to-then": "error",
     "curly": "error",
-    "prefer-arrow-callback": "off",
     "mocha/prefer-arrow-callback": "error"
   },
   "overrides": [
     {
       "files": ["**/*.ts"],
+      "extends": [
+        "plugin:import/typescript",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking"
+      ],
+      "parser": "@typescript-eslint/parser",
       "parserOptions": {
         "project": "./tsconfig.json"
       },
       "rules": {
-        "tsdoc/syntax": "error",
-        "@typescript-eslint/unbound-method": "error"
+        // TODO(#792): Remove/evaluate following rules once errors are fixed.
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unsafe-argument": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/restrict-plus-operands": "off",
+        "import/no-named-as-default-member": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        // End of rules to fix.
+        "@typescript-eslint/no-empty-function": [
+          "error",
+          { "allow": ["private-constructors"] }
+        ],
+        "tsdoc/syntax": "error"
+      }
+    },
+    {
+      // Enumeration of node scripts and configs.
+      "files": [
+        "web-test-runner.config.js",
+        "utils/*",
+        "snowpack.config.cjs",
+        "commitlint.config.cjs",
+        ".prettierrc.cjs"
+      ],
+      "env": {
+        "node": true
+      },
+      "settings": {
+        "import/resolver": {
+          "node": {
+            "extensions": [".js", ".cjs", ".ts"]
+          }
+        }
+      },
+      "extends": ["plugin:node/recommended"],
+      "rules": {
+        "node/no-unpublished-import": "off"
       }
     }
   ]

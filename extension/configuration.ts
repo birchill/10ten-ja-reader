@@ -43,7 +43,7 @@ async function getStorage(): Promise<MutableConfig> {
 }
 
 function isLegacyKanjiInfo(
-  kanjiInfo: [] | {}
+  kanjiInfo: unknown[] | Record<string, unknown>
 ): kanjiInfo is { [kanjiInfoCode: string]: boolean } {
   return !(kanjiInfo instanceof Array);
 }
@@ -72,15 +72,18 @@ async function createNormalizedConfiguration(): Promise<MutableConfig> {
 
 const configPromise: Promise<MutableConfig> = createNormalizedConfiguration();
 
-chrome.storage.onChanged.addListener(async (changes, area) => {
+chrome.storage.onChanged.addListener((changes, area) => {
   if (area !== 'sync') {
     return;
   }
-  const config = await configPromise;
+  void (async () => {
+    const config = await configPromise;
 
-  Object.entries(changes).map((change) => {
-    (config[change[0] as keyof MutableConfig] as unknown) = change[1].newValue;
-  });
+    Object.entries(changes).map((change) => {
+      (config[change[0] as keyof MutableConfig] as unknown) =
+        change[1].newValue;
+    });
+  })();
 });
 
 const immutableConfigPromise = configPromise as Promise<Config>;

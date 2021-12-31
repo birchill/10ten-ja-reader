@@ -387,7 +387,7 @@ class OptionsForm extends LitElement {
   `;
 
   private showToast() {
-    this.shadowRoot!.querySelector('lit-toast')!.show('Saved', 2500);
+    void this.shadowRoot!.querySelector('lit-toast')!.show('Saved', 2500);
   }
 }
 

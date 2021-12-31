@@ -1,5 +1,4 @@
 {
-  "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
     "plugins": [
       {
@@ -7,6 +6,15 @@
         "strict": true
       }
     ],
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "pretty": true,
+    "sourceMap": true,
+    "strict": true,
     "experimentalDecorators": true,
     "rootDir": ".",
     "outDir": "dist",
@@ -20,5 +28,6 @@
     // Added for compatibility with snowback/esbuild builder.
     "isolatedModules": true
   },
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
 }

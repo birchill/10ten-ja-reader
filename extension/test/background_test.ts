@@ -75,11 +75,15 @@ describe('background.ts', function () {
 
 async function sendMessageToBackground({
   type,
-  responseCallback = () => {},
+  responseCallback = () => {
+    // Do nothing by default.
+  },
 }: {
   type: string;
-  responseCallback?: Function;
+  responseCallback?: (response: unknown) => void;
 }): Promise<void> {
+  // In background.ts, a promise is passed to `addListener` so we can await it here.
+  // eslint-disable-next-line @typescript-eslint/await-thenable
   await chrome.runtime.onMessage.addListener.yield(
     { type: type },
     { tab: { id: 0 } },

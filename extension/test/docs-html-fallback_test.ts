@@ -21,7 +21,7 @@ describe('docs-html-fallback.ts after sending `forceDocsHtml?` message', functio
   });
 
   describe('when `forceHtml` callback is called with `false`', function () {
-    it('should not add special property to window object', async function () {
+    it('should not add special property to window object', function () {
       forceHtmlCallback(false);
 
       expect(window._docs_force_html_by_ext).to.be.undefined;
@@ -29,7 +29,7 @@ describe('docs-html-fallback.ts after sending `forceDocsHtml?` message', functio
   });
 
   describe('when `forceHtml` callback is called with `true`', function () {
-    it('should set special property to rikaikun extension ID', async function () {
+    it('should set special property to rikaikun extension ID', function () {
       chrome.runtime.id = 'test_special_id';
 
       forceHtmlCallback(true);

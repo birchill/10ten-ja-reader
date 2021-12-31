@@ -8,9 +8,12 @@ import { LineStream } from 'byline';
 import {
   Transform,
   TransformCallback,
+  TransformOptions,
   Writable,
   WritableOptions,
 } from 'stream';
+// TODO( mysticatea/eslint-plugin-node#255 ): no-missing-import doesn't support export packages.
+// eslint-disable-next-line node/no-missing-import
 import { parse } from 'csv-parse/sync';
 import fs, { WriteStream, promises as promiseFs } from 'fs';
 import http from 'http';
@@ -106,7 +109,7 @@ class DictParser extends Transform {
   #length = 0;
   #index: Record<string, Array<number>> = {};
   /** Pass options as per Transform. */
-  constructor(options?: {}) {
+  constructor(options?: TransformOptions) {
     super(options);
   }
 
@@ -204,7 +207,7 @@ const parseEdict = (url: string, dataFile: string, indexFile: string) => {
           });
       })
       .on('error', (err) => {
-        reject(new Error(`Connection error: ${err}`));
+        reject(new Error(`Connection error: ${err.message}`));
       });
   });
 };
@@ -413,7 +416,7 @@ const parseKanjiDic = async (
             .pipe(parser, { end: false });
         })
         .on('error', (err) => {
-          throw Error(`Connection error: ${err}`);
+          throw Error(`Connection error: ${err.message}`);
         });
     });
 
@@ -461,5 +464,7 @@ parseEdict('http://ftp.edrdg.org/pub/Nihongo/edict.gz', 'dict.dat', 'dict.idx')
     return undefined;
   })
   .catch((err) => {
+    // Promise rejection is untyped so allow `any` for this template expression.
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.log(`Error: '${err}'`);
   });

@@ -113,7 +113,7 @@ class RcxDict {
 
   static createDefaultDictEntry(): DictEntryData {
     // Use JSON parse round trip for deep copy of default data.
-    return JSON.parse(JSON.stringify(defaultDictEntryData));
+    return JSON.parse(JSON.stringify(defaultDictEntryData)) as DictEntryData;
   }
 
   async init() {

@@ -81,7 +81,7 @@ describe('RcxContent', function () {
       expect(console.log).to.not.have.been.called;
     });
 
-    it('triggers xsearch message when above Japanese text', async function () {
+    it('triggers xsearch message when above Japanese text', function () {
       const clock = sinon.useFakeTimers();
       const span = insertHtmlIntoDomAndReturnFirstTextNode(
         '<span>先生test</span>'
@@ -144,6 +144,8 @@ function executeShowForGivenNode(
 ): void {
   rcxContent.show(
     {
+      // config is a required property but not needed for testing.
+      config: {} as Config,
       prevRangeNode: rcxContent.getFirstTextChild(node) as Text,
       prevRangeOfs: 0,
       uofs: 0,
