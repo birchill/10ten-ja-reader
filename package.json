@@ -64,7 +64,7 @@
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.4.4",
     "@types/simulant": "^0.2.0",
-    "@types/sinon-chai": "^3.2.6",
+    "@types/sinon-chai": "^3.2.8",
     "@types/sinon-chrome": "^2.2.11",
     "@typescript-eslint/eslint-plugin": "^5.8.1",
     "@typescript-eslint/parser": "^5.8.1",
