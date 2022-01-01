@@ -68,7 +68,7 @@
     "@types/sinon-chrome": "^2.2.11",
     "@typescript-eslint/eslint-plugin": "^5.8.1",
     "@typescript-eslint/parser": "^5.8.1",
-    "@web/test-runner": "^0.13.22",
+    "@web/test-runner": "^0.13.23",
     "@web/test-runner-puppeteer": "^0.10.4",
     "byline": "^5.0.0",
     "conventional-changelog-conventionalcommits": "^4.6.3",
