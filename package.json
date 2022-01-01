@@ -54,7 +54,7 @@
     "@commitlint/config-conventional": "^16.0.0",
     "@esm-bundle/chai": "^4.3.4",
     "@semantic-release/changelog": "^6.0.1",
-    "@semantic-release/exec": "^6.0.2",
+    "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@snowpack/web-test-runner-plugin": "^0.2.2",
     "@stylelint/postcss-css-in-js": "^0.37.2",
