@@ -27,7 +27,7 @@
     "stylelint:fix": "npm run stylelint:check --silent -- --fix",
     "test": "wtr \"extension/test/*test*\"",
     "test:watch": "npm run test -- --watch",
-    "update-db": "ts-node --project tsconfig_node.json utils/update-db"
+    "update-db": "node --loader ts-node/esm utils/update-db.ts"
   },
   "repository": {
     "type": "git",

@@ -12,6 +12,7 @@ import {
   Writable,
   WritableOptions,
 } from 'stream';
+import { URL } from 'url';
 // TODO( mysticatea/eslint-plugin-node#255 ): no-missing-import doesn't support export packages.
 // eslint-disable-next-line node/no-missing-import
 import { parse } from 'csv-parse/sync';
@@ -190,7 +191,10 @@ const parseEdict = (url: string, dataFile: string, indexFile: string) => {
           .pipe(parser)
           .pipe(
             fs.createWriteStream(
-              path.join(__dirname, '..', 'extension', 'data', dataFile)
+              new URL(
+                path.join('..', 'extension', 'data', dataFile),
+                import.meta.url
+              )
             )
           )
           .on('error', (err) => {
@@ -199,7 +203,10 @@ const parseEdict = (url: string, dataFile: string, indexFile: string) => {
           .on('close', () => {
             console.log('Writing index...');
             const indexStream = fs.createWriteStream(
-              path.join(__dirname, '..', 'extension', 'data', indexFile)
+              new URL(
+                path.join('..', 'extension', 'data', indexFile),
+                import.meta.url
+              )
             );
             parser.printIndex(indexStream);
             indexStream.end();
@@ -385,7 +392,7 @@ interface HeisigDatum {
 
 const loadHeisigData = async (): Promise<Map<string, HeisigDatum>> => {
   const data = await promiseFs.readFile(
-    path.join(__dirname, 'heisig-kanjis.csv')
+    new URL(path.join('heisig-kanjis.csv'), import.meta.url)
   );
   const records: Map<string, HeisigDatum> = new Map();
   (parse(data, { columns: true, comment: '#' }) as HeisigDatum[]).forEach(
@@ -427,7 +434,7 @@ const parseKanjiDic = async (
   parser.end();
 
   const output = fs.createWriteStream(
-    path.join(__dirname, '..', 'extension', 'data', dataFile)
+    new URL(path.join('..', 'extension', 'data', dataFile), import.meta.url)
   );
   parser.printDict(output);
 };
