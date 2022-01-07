@@ -978,14 +978,14 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.9.tgz#97edc9037ea0c38585320b28964dde3b39e4660d"
   integrity sha512-qcUXuemtEu+E5wZSJHNxUXeCZhAfXKQ41D+duX+VYPde7xyEVZci+/oXKJL13tnRs9lR2pr4fod59GT6/X1/yQ==
 
-"@types/karma-webpack@^2.0.10":
-  version "2.0.10"
-  resolved "https://registry.yarnpkg.com/@types/karma-webpack/-/karma-webpack-2.0.10.tgz#b2c816b2ac7ca25b7af43df61a8b5565a370fa57"
-  integrity sha512-qWEsvjRzycJ8rbs6pdISzapT5xLlBpNnPA0TfPSXVBPsEpJu9uHgrTmkSH5vIZxH5G89T3LYgARmpmnyKAzJIw==
+"@types/karma-webpack@^2.0.11":
+  version "2.0.11"
+  resolved "https://registry.yarnpkg.com/@types/karma-webpack/-/karma-webpack-2.0.11.tgz#2177f2c79c143a6a139591d6ccc04ddaf6f82328"
+  integrity sha512-WssFzK70R2HFzZu6q6y57Rdtrer9PoSirZn6nN/NHTalMEo8K3U7HhByYLgsFJaxO+AU+Xp3w3AP6/qQEre9AQ==
   dependencies:
     "@types/karma" "*"
     "@types/webpack" "^4"
-    "@types/webpack-dev-middleware" "^3"
+    "@types/webpack-dev-middleware" "3"
 
 "@types/karma@*", "@types/karma@^6.3.1":
   version "6.3.1"
@@ -1066,14 +1066,14 @@
   dependencies:
     source-map "^0.6.1"
 
-"@types/webpack-dev-middleware@^3":
-  version "3.7.3"
-  resolved "https://registry.yarnpkg.com/@types/webpack-dev-middleware/-/webpack-dev-middleware-3.7.3.tgz#2b0aa70b19f30ead7e6ff8c2789d6930e2298c7b"
-  integrity sha512-g6Q1Gom9kGZv8Sme2gNCrxKdxDi68FX3jW4u2Abntx/5ejX1g2tpI95+3ObdXkTHm8XEFpVcmZbmhlcZbVqEeg==
+"@types/webpack-dev-middleware@3":
+  version "3.7.5"
+  resolved "https://registry.yarnpkg.com/@types/webpack-dev-middleware/-/webpack-dev-middleware-3.7.5.tgz#a5e87668d36b3e8cf2c58a9e27314b7cf0999fce"
+  integrity sha512-jHcCoRc2Hh6oDozoc27ibKAqrfn8nlewheoFV704EMJqheaOe7HxZZp9Q39bPh2eUDLtEJApLNQy6l20yT/4jA==
   dependencies:
     "@types/connect" "*"
     "@types/memory-fs" "*"
-    "@types/webpack" "*"
+    "@types/webpack" "^4"
     loglevel "^1.6.2"
 
 "@types/webpack-sources@*":
@@ -1085,7 +1085,7 @@
     "@types/source-list-map" "*"
     source-map "^0.7.3"
 
-"@types/webpack@*", "@types/webpack@^4":
+"@types/webpack@^4":
   version "4.41.27"
   resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-4.41.27.tgz#f47da488c8037e7f1b2dbf2714fbbacb61ec0ffc"
   integrity sha512-wK/oi5gcHi72VMTbOaQ70VcDxSQ1uX8S2tukBK9ARuGXrYM/+u4ou73roc7trXDNmCxCoerE8zruQqX/wuHszA==
