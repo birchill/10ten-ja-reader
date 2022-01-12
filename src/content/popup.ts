@@ -1556,7 +1556,11 @@ function renderNameTranslation(tr: NameTranslation): HTMLSpanElement {
   const definitionSpan = document.createElementNS(HTML_NS, 'div');
   // ENAMDICT only has English glosses
   definitionSpan.lang = 'en';
-  definitionSpan.append(tr.det.map(annotateAge).join(', '));
+  // Only add age annotations if the name is for a person
+  const annotateDetailFn = tr.type?.includes('person')
+    ? annotateAge
+    : (det: string) => det;
+  definitionSpan.append(tr.det.map(annotateDetailFn).join(', '));
 
   for (const tag of tr.type || []) {
     const tagText = browser.i18n.getMessage(`content_names_tag_${tag}`);

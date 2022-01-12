@@ -1,6 +1,7 @@
 ## Next
 
-- Don't show an age when only a year is given
+- Don't show the age for a name entry when only a year is given, or when the
+  name is not for a person
   ([#863](https://github.com/birchill/10ten-ja-reader/issues/863)).
 
 ## 1.6.1 (2021-12-16) (Chrome, Edge, Safari)
