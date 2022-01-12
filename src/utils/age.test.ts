@@ -36,4 +36,7 @@ describe('annotateAge', () => {
   it('ignores the age of a deceased person', () => {
     expect(getDob('Tsutomu Hata (1935.8.24-2017.8.28)')).toBe(null);
   });
+  it('ignores an age with only a year', () => {
+    expect(getDob('Shōten (1966-; TV comedy program)')).toBe(null);
+  });
 });

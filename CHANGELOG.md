@@ -1,3 +1,8 @@
+## Next
+
+- Don't show an age when only a year is given
+  ([#863](https://github.com/birchill/10ten-ja-reader/issues/863)).
+
 ## 1.6.1 (2021-12-16) (Chrome, Edge, Safari)
 
 - Fixed looking up text in text boxes when the document is scrolled on

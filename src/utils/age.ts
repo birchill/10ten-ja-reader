@@ -1,5 +1,5 @@
-const regularAgeRegex = /(\d{4}).(\d{1,2})(?:.(\d{1,2}))?-[;)]/;
-const backwardsAgeRegex = /(\d{1,2}).(\d{1,2}).(\d{4})?-[;)]/;
+const regularAgeRegex = /(\d{4})\.(\d{1,2})(?:\.(\d{1,2}))?-[;)]/;
+const backwardsAgeRegex = /(\d{1,2})\.(\d{1,2})\.(\d{4})?-[;)]/;
 
 export function getDob(text: string): { date: Date; approx: boolean } | null {
   let year: number;
