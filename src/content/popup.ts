@@ -1,14 +1,14 @@
 import {
-  groupSenses,
+  allMajorDataSeries,
   Gloss,
   GlossType,
+  groupSenses,
   KanjiInfo,
   KanjiResult,
   LangSource,
   MajorDataSeries,
   NameTranslation,
   ReadingInfo,
-  allMajorDataSeries,
 } from '@birchill/hikibiki-data';
 import { countMora, moraSubstring } from '@birchill/normal-jp';
 import { browser } from 'webextension-polyfill-ts';
@@ -19,10 +19,10 @@ import {
   PartOfSpeechDisplay,
 } from '../common/content-config';
 import {
-  CopyKeys,
-  CopyType,
   CopyKanjiKeyStrings,
+  CopyKeys,
   CopyNextKeyStrings,
+  CopyType,
 } from '../common/copy-keys';
 import {
   getReferenceValue,
@@ -52,6 +52,7 @@ import { getLangTag } from './popup/lang-tag';
 
 // Update NumberFormatOptions definition
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Intl {
     interface NumberFormatOptions {
       compactDisplay?: 'short' | 'long';

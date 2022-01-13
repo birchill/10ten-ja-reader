@@ -48,7 +48,7 @@ const currencyRegex =
 export function extractCurrencyMetadata(
   text: string
 ): CurrencyMeta | undefined {
-  let matches = currencyRegex.exec(text);
+  const matches = currencyRegex.exec(text);
   if (!matches || matches.index !== 0) {
     return undefined;
   }
@@ -59,7 +59,7 @@ export function extractCurrencyMetadata(
     return undefined;
   }
 
-  let value = parseNumber(valueStr);
+  const value = parseNumber(valueStr);
   if (!value) {
     return undefined;
   }

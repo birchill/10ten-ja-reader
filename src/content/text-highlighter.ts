@@ -17,14 +17,16 @@ declare global {
     readonly priority: number;
   }
 
+  // eslint-disable-next-line no-var
   var Highlight: {
     prototype: Highlight;
     // Require StaticRange because that's currently all Safari TP allows
     new (...initialRanges: Array<StaticRange>): Highlight;
   };
 
-  interface HighlightRegistry extends Map<string, Highlight> {}
+  type HighlightRegistry = Map<string, Highlight>;
 
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace CSS {
     // Mark as possibly undefined since it's not widely implemented yet and we
     // want to feature detect this.
@@ -54,7 +56,7 @@ export class TextHighlighter {
   private previousFocus: Element | null;
 
   // Gross hack to ignore our own focus events.
-  private updatingFocus: boolean = false;
+  private updatingFocus = false;
 
   constructor() {
     this.onFocusIn = this.onFocusIn.bind(this);

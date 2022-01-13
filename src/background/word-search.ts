@@ -6,9 +6,9 @@ import { isOnlyDigits } from '../utils/char-range';
 import { toRomaji } from '../utils/romaji';
 
 import {
+  CandidateWord,
   deinflect,
   deinflectL10NKeys,
-  CandidateWord,
   WordType,
 } from './deinflect';
 import {
@@ -40,7 +40,7 @@ export async function wordSearch({
 }): Promise<WordSearchResult | null> {
   let longestMatch = 0;
   let have: Set<number> = new Set();
-  let result: WordSearchResult = {
+  const result: WordSearchResult = {
     type: 'words',
     data: [],
     more: false,
@@ -79,7 +79,7 @@ export async function wordSearch({
     }
 
     for (const variant of variations) {
-      let wordResults = await lookupCandidates({
+      const wordResults = await lookupCandidates({
         abortSignal,
         existingEntries: have,
         getWords,

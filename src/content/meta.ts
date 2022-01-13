@@ -3,8 +3,8 @@ import {
   extractCurrencyMetadata,
   lookForCurrency,
 } from './currency';
-import { MeasureMeta, extractMeasureMetadata, lookForMeasure } from './measure';
-import { NumberMeta, extractNumberMetadata } from './numbers';
+import { extractMeasureMetadata, lookForMeasure, MeasureMeta } from './measure';
+import { extractNumberMetadata, NumberMeta } from './numbers';
 import { EraMeta, extractEraMetadata, lookForEra } from './years';
 
 export type SelectionMeta = CurrencyMeta | EraMeta | MeasureMeta | NumberMeta;

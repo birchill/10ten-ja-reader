@@ -362,7 +362,8 @@ function getRangeWithoutUserSelectNone({
 
   // Try to temporarily disable the (-webkit-)user-select style.
   const styleElem = document.createElement('style');
-  styleElem.textContent = `* { -webkit-user-select: all !important; user-select: all !important; }`;
+  styleElem.textContent =
+    '* { -webkit-user-select: all !important; user-select: all !important; }';
   document.head.append(styleElem);
 
   // Retry looking up

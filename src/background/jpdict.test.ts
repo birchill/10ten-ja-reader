@@ -1,8 +1,8 @@
 import { readFile } from 'fs';
 
 class Worker {
-  constructor(_stringUrl: string) {}
-  postMessage(_msg: string) {}
+  constructor() {}
+  postMessage() {}
 }
 
 (window as any).Worker = Worker;

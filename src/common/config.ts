@@ -25,12 +25,12 @@ import {
   PartOfSpeechDisplay,
   TabDisplay,
 } from './content-config';
-import { dbLanguages, DbLanguageId } from './db-languages';
+import { DbLanguageId, dbLanguages } from './db-languages';
 import { ExtensionStorageError } from './extension-storage-error';
 import {
-  ReferenceAbbreviation,
   convertLegacyReference,
   getReferencesForLang,
+  ReferenceAbbreviation,
 } from './refs';
 
 // We represent the set of references that have been turned on as a series
@@ -353,7 +353,7 @@ export class Config {
     }
 
     this.settings.accentDisplay = value;
-    browser.storage.sync.set({ accentDisplay: value });
+    void browser.storage.sync.set({ accentDisplay: value });
   }
 
   // contextMenuEnable: Defaults to true
@@ -374,7 +374,7 @@ export class Config {
     }
 
     this.settings.contextMenuEnable = value;
-    browser.storage.sync.set({ contextMenuEnable: value });
+    void browser.storage.sync.set({ contextMenuEnable: value });
   }
 
   // dictLang: Defaults to the first match from navigator.languages found in
@@ -384,29 +384,6 @@ export class Config {
     return this.useDefaultLang()
       ? this.getDefaultLang()
       : this.settings.dictLang!;
-  }
-
-  private useDefaultLang(): boolean {
-    // Check that the language that is set is valid. It might be invalid if we
-    // deprecated a language or we synced a value from a newer version of the
-    // extension.
-    if (this.settings.dictLang) {
-      return !dbLanguages.includes(this.settings.dictLang);
-    }
-
-    return true;
-  }
-
-  private getDefaultLang(): DbLanguageId {
-    const availableLanguages = new Set(dbLanguages);
-    for (const lang of navigator.languages) {
-      const langCode = lang.split('-')[0];
-      if (availableLanguages.has(langCode as DbLanguageId)) {
-        return langCode as DbLanguageId;
-      }
-    }
-
-    return 'en';
   }
 
   set dictLang(value: DbLanguageId) {
@@ -441,6 +418,29 @@ export class Config {
       });
       this.settings.dictLang = value;
     }
+  }
+
+  private useDefaultLang(): boolean {
+    // Check that the language that is set is valid. It might be invalid if we
+    // deprecated a language or we synced a value from a newer version of the
+    // extension.
+    if (this.settings.dictLang) {
+      return !dbLanguages.includes(this.settings.dictLang);
+    }
+
+    return true;
+  }
+
+  private getDefaultLang(): DbLanguageId {
+    const availableLanguages = new Set(dbLanguages);
+    for (const lang of navigator.languages) {
+      const langCode = lang.split('-')[0];
+      if (availableLanguages.has(langCode as DbLanguageId)) {
+        return langCode as DbLanguageId;
+      }
+    }
+
+    return 'en';
   }
 
   onLanguageChange() {
@@ -479,7 +479,7 @@ export class Config {
     // chooses the default value ('USD') since in this case we treat it as an
     // explicit signal they want currencies displayed in USD even if we later
     // change the default.
-    browser.storage.sync.set({ fxCurrency: value });
+    void browser.storage.sync.set({ fxCurrency: value });
     this.settings.fxCurrency = value;
   }
 
@@ -501,7 +501,7 @@ export class Config {
     }
 
     this.settings.hasSwitchedDictionary = true;
-    browser.storage.sync.set({ hasSwitchedDictionary: true });
+    void browser.storage.sync.set({ hasSwitchedDictionary: true });
   }
 
   // holdToShowKeys: Defaults to null
@@ -519,10 +519,10 @@ export class Config {
     }
 
     if (value === null) {
-      browser.storage.sync.remove('holdToShowKeys');
+      void browser.storage.sync.remove('holdToShowKeys');
       delete this.settings.holdToShowKeys;
     } else {
-      browser.storage.sync.set({ holdToShowKeys: value });
+      void browser.storage.sync.set({ holdToShowKeys: value });
       this.settings.holdToShowKeys = value;
     }
 
@@ -586,10 +586,10 @@ export class Config {
     }
 
     if (settingToStore === null) {
-      browser.storage.sync.remove('holdToShowImageKeys');
+      void browser.storage.sync.remove('holdToShowImageKeys');
       delete this.settings.holdToShowImageKeys;
     } else {
-      browser.storage.sync.set({ holdToShowImageKeys: settingToStore });
+      void browser.storage.sync.set({ holdToShowImageKeys: settingToStore });
       this.settings.holdToShowImageKeys = settingToStore;
     }
   }
@@ -618,7 +618,7 @@ export class Config {
       ...existingSettings,
       ...updatedReferences,
     };
-    browser.storage.sync.set({
+    void browser.storage.sync.set({
       kanjiReferencesV2: this.settings.kanjiReferencesV2,
     });
   }
@@ -666,7 +666,7 @@ export class Config {
       ...keys,
     };
 
-    browser.storage.sync.set({ keys: this.settings.keys });
+    void browser.storage.sync.set({ keys: this.settings.keys });
   }
 
   // noTextHighlight: Defaults to false
@@ -684,7 +684,7 @@ export class Config {
     }
 
     this.settings.noTextHighlight = value;
-    browser.storage.sync.set({ noTextHighlight: value });
+    void browser.storage.sync.set({ noTextHighlight: value });
   }
 
   // popupStyle: Defaults to 'default'
@@ -706,10 +706,10 @@ export class Config {
 
     if (value !== 'default') {
       this.settings.popupStyle = value;
-      browser.storage.sync.set({ popupStyle: value });
+      void browser.storage.sync.set({ popupStyle: value });
     } else {
       this.settings.popupStyle = undefined;
-      browser.storage.sync.remove('popupStyle');
+      void browser.storage.sync.remove('popupStyle');
     }
   }
 
@@ -730,7 +730,7 @@ export class Config {
     }
 
     this.settings.posDisplay = value;
-    browser.storage.sync.set({ posDisplay: value });
+    void browser.storage.sync.set({ posDisplay: value });
   }
 
   // readingOnly: Defaults to false
@@ -748,7 +748,7 @@ export class Config {
     }
 
     this.settings.readingOnly = value;
-    browser.storage.sync.set({ readingOnly: value });
+    void browser.storage.sync.set({ readingOnly: value });
   }
 
   toggleReadingOnly() {
@@ -766,7 +766,7 @@ export class Config {
 
   set showKanjiComponents(value: boolean) {
     this.settings.showKanjiComponents = value;
-    browser.storage.sync.set({ showKanjiComponents: value });
+    void browser.storage.sync.set({ showKanjiComponents: value });
   }
 
   // showPriority: Defaults to true
@@ -780,7 +780,7 @@ export class Config {
 
   set showPriority(value: boolean) {
     this.settings.showPriority = value;
-    browser.storage.sync.set({ showPriority: value });
+    void browser.storage.sync.set({ showPriority: value });
   }
 
   // showPuck (local): Defaults to 'auto'
@@ -806,7 +806,7 @@ export class Config {
     // storage since this will ensure that this.hoverCapabilityMql is
     // initialized before any StorageChange is dispatched.
     this.maybeListenToHoverCapabilityChanges();
-    browser.storage.local.set({ settings: localSettings });
+    void browser.storage.local.set({ settings: localSettings });
   }
 
   private maybeListenToHoverCapabilityChanges() {
@@ -856,7 +856,7 @@ export class Config {
     }
 
     this.settings.showRomaji = value;
-    browser.storage.sync.set({ showRomaji: value });
+    void browser.storage.sync.set({ showRomaji: value });
   }
 
   // tabDisplay: Defaults to 'top'
@@ -878,10 +878,10 @@ export class Config {
 
     if (value !== 'top') {
       this.settings.tabDisplay = value;
-      browser.storage.sync.set({ tabDisplay: value });
+      void browser.storage.sync.set({ tabDisplay: value });
     } else {
       this.settings.tabDisplay = undefined;
-      browser.storage.sync.remove('tabDisplay');
+      void browser.storage.sync.remove('tabDisplay');
     }
   }
 
@@ -904,10 +904,10 @@ export class Config {
 
     if (value !== 'default') {
       this.settings.toolbarIcon = value;
-      browser.storage.sync.set({ toolbarIcon: value });
+      void browser.storage.sync.set({ toolbarIcon: value });
     } else {
       this.settings.toolbarIcon = undefined;
-      browser.storage.sync.remove('toolbarIcon');
+      void browser.storage.sync.remove('toolbarIcon');
     }
   }
 

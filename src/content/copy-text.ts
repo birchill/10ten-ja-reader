@@ -1,8 +1,8 @@
 import {
   Dialect,
   GlossType,
-  LangSource,
   KanjiResult,
+  LangSource,
 } from '@birchill/hikibiki-data';
 import { browser } from 'webextension-polyfill-ts';
 
@@ -132,7 +132,7 @@ export function getEntryToCopy(
           result += ` [${readings}]`;
         }
         if (r.na && r.na.length) {
-          result += ` (${r.na.join(`、`)})`;
+          result += ` (${r.na.join('、')})`;
         }
         result += ` ${m.join(', ')}`;
         const radicalLabel = browser.i18n.getMessage(
@@ -155,7 +155,7 @@ export function getEntryToCopy(
           const componentsLabel = browser.i18n.getMessage(
             'content_kanji_components_label'
           );
-          let components: Array<string> = [];
+          const components: Array<string> = [];
           for (const component of comp) {
             components.push(
               `${component.c} (${
@@ -327,7 +327,7 @@ export function getFieldsToCopy(
         result = c;
         const readings = getKanjiReadings(entry.data);
         result += `\t${readings}`;
-        result += `\t${(r.na || []).join(`、`)}`;
+        result += `\t${(r.na || []).join('、')}`;
         result += `\t${m.join(', ')}`;
         if (showKanjiComponents) {
           const components = comp.map((comp) => comp.c).join('');

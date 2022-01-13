@@ -1,5 +1,5 @@
 import Bugsnag from '@bugsnag/browser';
-import { AbortError, NameResult, getNames } from '@birchill/hikibiki-data';
+import { AbortError, getNames, NameResult } from '@birchill/hikibiki-data';
 import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
 
 import { isOnlyDigits } from '../utils/char-range';
@@ -19,7 +19,7 @@ export async function nameSearch({
   minInputLength?: number;
   maxResults: number;
 }): Promise<NameSearchResult | null> {
-  let result: NameSearchResult = {
+  const result: NameSearchResult = {
     type: 'names',
     data: [],
     more: false,
@@ -27,7 +27,7 @@ export async function nameSearch({
   };
 
   // Record the position of existing entries for grouping purposes
-  let existingItems = new Map<string, number>();
+  const existingItems = new Map<string, number>();
 
   let currentString = input;
 

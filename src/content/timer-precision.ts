@@ -5,7 +5,7 @@ export async function hasReasonableTimerResolution(): Promise<boolean> {
   // If performance.now() returns different times at least three out of five
   // times then we can assume that we're not doing timer clamping of the sort
   // that would confuse our speed calculations.
-  const numSamples: number = 5;
+  const numSamples = 5;
   const samples: number[] = [];
   samples.push(performance.now());
   for (let i = 1; i < numSamples; i++) {

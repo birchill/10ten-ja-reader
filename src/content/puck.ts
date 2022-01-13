@@ -84,7 +84,7 @@ function clearClickTimeout(clickState: ClickState) {
 export type PuckEnabledState = 'disabled' | 'inactive' | 'active';
 
 export class LookupPuck {
-  public static id: string = 'tenten-ja-puck';
+  public static id = 'tenten-ja-puck';
   private puck: HTMLDivElement | undefined;
   private enabledState: PuckEnabledState = 'disabled';
   private puckX: number;
@@ -376,7 +376,7 @@ export class LookupPuck {
 
     // Make sure the target is an actual element since the mousemove handler
     // expects that.
-    let target = document.elementFromPoint(targetX, targetY);
+    const target = document.elementFromPoint(targetX, targetY);
     if (!target) {
       return;
     }

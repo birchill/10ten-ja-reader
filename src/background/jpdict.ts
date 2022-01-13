@@ -3,10 +3,10 @@ import {
   DataSeries,
   DataSeriesState,
   DataVersion,
-  UpdateErrorState,
-  UpdateState,
   getKanji,
   getWords as idbGetWords,
+  UpdateErrorState,
+  UpdateState,
 } from '@birchill/hikibiki-data';
 import { kanaToHiragana } from '@birchill/normal-jp';
 import { browser } from 'webextension-polyfill-ts';
@@ -192,7 +192,7 @@ export async function initDb({
 
       case 'dbupdatecomplete':
         if (message.lastCheck) {
-          setLastUpdateTime(message.lastCheck.getTime());
+          void setLastUpdateTime(message.lastCheck.getTime());
         }
         break;
 
@@ -302,7 +302,7 @@ export function cancelUpdateDb() {
 
 export function deleteDb() {
   jpdictWorker.postMessage(messages.deleteDb());
-  setLastUpdateTime(null);
+  void setLastUpdateTime(null);
 }
 
 // ---------------------------------------------------------------------------
@@ -338,7 +338,7 @@ export async function searchWords({
   // Determine which dictionary to use: The IndexedDB one or the flat-file
   // fallback dictionary.
   let getWords: GetWordsFunction;
-  let dbStatus = getDataSeriesStatus('words');
+  const dbStatus = getDataSeriesStatus('words');
   if (dbStatus === 'ok') {
     getWords = ({ input, maxResults }: { input: string; maxResults: number }) =>
       idbGetWords(input, { matchType: 'exact', limit: maxResults });
@@ -506,7 +506,7 @@ export async function searchNames({
     return dbStatus;
   }
 
-  let [normalized, inputLengths] = normalizeInput(input);
+  const [normalized, inputLengths] = normalizeInput(input);
 
   return nameSearch({
     abortSignal,

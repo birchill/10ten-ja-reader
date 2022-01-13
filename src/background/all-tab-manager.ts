@@ -14,8 +14,8 @@ import {
 import { BackgroundRequestSchema } from './background-request';
 import {
   EnabledChangedCallback,
-  TabManager,
   EnabledState,
+  TabManager,
 } from './tab-manager';
 
 type Tab = {
@@ -68,7 +68,7 @@ export default class AllTabManager implements TabManager {
               return;
             }
 
-            this.enableTab(sender.tab.id, sender.frameId);
+            void this.enableTab(sender.tab.id, sender.frameId);
             break;
 
           case 'enabled':
@@ -210,7 +210,7 @@ export default class AllTabManager implements TabManager {
 
   private async enableTab(tabId: number, frameId?: number): Promise<void> {
     if (!this.config) {
-      throw new Error(`Should have called init before enableTab`);
+      throw new Error('Should have called init before enableTab');
     }
 
     if (!this.enabled) {
@@ -324,8 +324,6 @@ export default class AllTabManager implements TabManager {
     frameId: number;
     src: string;
   }) {
-    let addedFrame;
-
     if (tabId in this.tabs) {
       const tab = this.tabs[tabId];
       if (frameId === 0) {
@@ -343,7 +341,7 @@ export default class AllTabManager implements TabManager {
     }
 
     const tab = this.tabs[tabId];
-    addedFrame = !(frameId in tab.frames);
+    const addedFrame = !(frameId in tab.frames);
     tab.frames[frameId] = { initialSrc: src };
 
     // Try to detect the "no content script in the root window" case

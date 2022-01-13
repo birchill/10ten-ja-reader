@@ -641,7 +641,7 @@ const deinflectRuleGroups: Array<DeinflectRuleGroup> = [];
 
 function getDeinflectRuleGroups() {
   if (!deinflectRuleGroups.length) {
-    let prevLen: number = -1;
+    let prevLen = -1;
     let ruleGroup: DeinflectRuleGroup;
 
     for (const [from, to, type, reason] of deinflectRuleData) {

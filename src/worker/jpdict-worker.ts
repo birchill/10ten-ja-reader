@@ -1,27 +1,27 @@
 import {
+  allMajorDataSeries,
+  cancelUpdateWithRetry,
   DataSeries,
   DataSeriesState,
   JpdictDatabase,
   MajorDataSeries,
-  UpdateErrorState,
-  allMajorDataSeries,
   toUpdateErrorState,
+  UpdateErrorState,
   updateWithRetry,
-  cancelUpdateWithRetry,
 } from '@birchill/hikibiki-data';
 
 import { JpdictState } from '../background/jpdict';
 import { requestIdleCallbackPromise } from '../utils/request-idle-callback';
 
 import {
+  JpdictWorkerMessage,
+  leaveBreadcrumb,
   notifyDbStateUpdated,
   notifyDbUpdateComplete,
   notifyError,
-  JpdictWorkerMessage,
-  leaveBreadcrumb,
 } from './jpdict-worker-messages';
 
-declare var self: DedicatedWorkerGlobalScope;
+declare let self: DedicatedWorkerGlobalScope;
 
 self.onmessage = async (evt: MessageEvent) => {
   // We seem to get random events here occasionally. Not sure where they come
@@ -38,7 +38,14 @@ self.onmessage = async (evt: MessageEvent) => {
       break;
 
     case 'update':
-      updateAllSeries({ lang: evt.data.lang, forceUpdate: evt.data.force });
+      try {
+        await updateAllSeries({
+          lang: evt.data.lang,
+          forceUpdate: evt.data.force,
+        });
+      } catch (error) {
+        self.postMessage(notifyError({ error }));
+      }
       break;
 
     case 'cancelupdate':
@@ -47,7 +54,11 @@ self.onmessage = async (evt: MessageEvent) => {
 
     case 'delete':
       if (db) {
-        db.destroy();
+        try {
+          await db.destroy();
+        } catch (error) {
+          self.postMessage(notifyError({ error }));
+        }
       }
       break;
   }
@@ -211,7 +222,7 @@ async function updateAllSeries({
       return;
     }
 
-    updateWithRetry({
+    void updateWithRetry({
       db: db!,
       series: currentUpdate.series,
       lang,

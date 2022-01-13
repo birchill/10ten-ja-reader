@@ -1,4 +1,4 @@
-import { toNormalized, halfToFullWidthNum } from '@birchill/normal-jp';
+import { halfToFullWidthNum, toNormalized } from '@birchill/normal-jp';
 
 export function normalizeInput(input: string): [string, number[]] {
   // Convert to full-width, normalize decomposed characters, expand combined
@@ -35,8 +35,8 @@ function stripZwnj(
   input: string,
   inputLengths: Array<number>
 ): [string, Array<number>] {
-  let normalized: string = '';
-  let lengths: Array<number> = [];
+  let normalized = '';
+  const lengths: Array<number> = [];
 
   const chars = [...input];
   let last = 0;

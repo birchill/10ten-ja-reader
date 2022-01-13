@@ -8,8 +8,8 @@ import { IndividualFrameMessage, TopFrameMessage } from './background-message';
 import { BackgroundRequestSchema } from './background-request';
 import {
   EnabledChangedCallback,
-  TabManager,
   EnabledState,
+  TabManager,
 } from './tab-manager';
 
 type EnabledTab = {
@@ -57,7 +57,9 @@ export default class ActiveTabManager implements TabManager {
 
         switch (request.type) {
           case 'enable?':
-            this.enablePage(sender.tab.id, sender.frameId);
+            this.enablePage(sender.tab.id, sender.frameId).catch((e) =>
+              Bugsnag.notify(e)
+            );
             break;
 
           case 'enabled':
@@ -75,7 +77,9 @@ export default class ActiveTabManager implements TabManager {
             break;
 
           case 'disabled':
-            this.onPageDisabled(sender.tab.id, sender.frameId);
+            this.onPageDisabled(sender.tab.id, sender.frameId).catch((e) =>
+              Bugsnag.notify(e)
+            );
             break;
         }
       }

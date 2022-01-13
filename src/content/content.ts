@@ -89,9 +89,9 @@ import {
 import { getPopupPosition, PopupPositionMode } from './popup-position';
 import {
   isPuckMouseEvent,
-  removePuck,
   LookupPuck,
   PuckMouseEvent,
+  removePuck,
 } from './puck';
 import { query, QueryResult } from './query';
 import {
@@ -167,7 +167,7 @@ export class ContentHandler {
   // when the popup is showing, if we successfully handled a keyboard event we
   // mark it as handled by calling event.preventDefault(). However, we
   // definitely don't want to do that if the popup is not showing.)
-  private isPopupShowing: boolean = false;
+  private isPopupShowing = false;
 
   // Mouse tracking
   //
@@ -176,7 +176,7 @@ export class ContentHandler {
   private static MOUSE_SPEED_SAMPLES = 2;
   private static MOUSE_SPEED_THRESHOLD = 0.5;
 
-  private mouseSpeedRollingSum: number = 0;
+  private mouseSpeedRollingSum = 0;
   private mouseSpeeds: Array<number> = [];
   private previousMousePosition: Point | undefined;
   private previousMouseMoveTime: number | undefined;
@@ -184,14 +184,14 @@ export class ContentHandler {
   // established that we have a sufficiently precise timer. If
   // privacy.resistFingerprinting is enabled then the timer won't be precise
   // enough for us to test the speed of the mouse.
-  private hidePopupWhenMovingAtSpeed: boolean = false;
+  private hidePopupWhenMovingAtSpeed = false;
 
   // Keyboard support
-  private kanjiLookupMode: boolean = false;
+  private kanjiLookupMode = false;
 
   // Used to try to detect when we are typing so we know when to ignore key
   // events.
-  private typingMode: boolean = false;
+  private typingMode = false;
 
   // Detect touch taps so we can show the popup for them, but not for
   // regular mouse clicks.
@@ -306,7 +306,7 @@ export class ContentHandler {
       (event.target || document.body).dispatchEvent(mouseMoveEvent);
     };
 
-    hasReasonableTimerResolution().then((isReasonable) => {
+    void hasReasonableTimerResolution().then((isReasonable) => {
       if (isReasonable) {
         this.hidePopupWhenMovingAtSpeed = true;
       }
@@ -316,7 +316,7 @@ export class ContentHandler {
 
     // If we are an iframe, check if the popup is currently showing
     if (!this.isTopMostWindow()) {
-      browser.runtime.sendMessage({ type: 'top:isPopupShowing' });
+      void browser.runtime.sendMessage({ type: 'top:isPopupShowing' });
     }
 
     this.applyPuckConfig();
@@ -531,7 +531,7 @@ export class ContentHandler {
     const matchText = !!(contentsToMatch & HoldToShowKeyType.Text);
     const matchImages = !!(contentsToMatch & HoldToShowKeyType.Images);
 
-    this.tryToUpdatePopup({
+    void this.tryToUpdatePopup({
       fromPuck: isPuckMouseEvent(ev),
       matchText,
       matchImages,
@@ -620,7 +620,7 @@ export class ContentHandler {
       ev.preventDefault();
 
       if (!textBoxInFocus && this.currentPoint && this.lastMouseTarget) {
-        this.tryToUpdatePopup({
+        void this.tryToUpdatePopup({
           fromPuck: false,
           matchText: !!(matchedHoldToShowKeys & HoldToShowKeyType.Text),
           matchImages: !!(matchedHoldToShowKeys & HoldToShowKeyType.Images),
@@ -731,7 +731,7 @@ export class ContentHandler {
     // even when the user has Caps Lock on.
     const toUpper = (keys: string[]): string[] =>
       keys.map((key) => key.toUpperCase());
-    let { keys } = this.config;
+    const { keys } = this.config;
     const [
       nextDictionary,
       toggleDefinition,
@@ -757,7 +757,10 @@ export class ContentHandler {
       this.showNextDictionary();
     } else if (toggleDefinition.includes(upperKey)) {
       try {
-        browser.runtime.sendMessage({ type: 'toggleDefinition' });
+        // We don't wait on the following because we're only really interested
+        // in synchronous failures which occur in some browsers when the content
+        // script is stale.
+        void browser.runtime.sendMessage({ type: 'toggleDefinition' });
       } catch {
         console.log(
           '[10ten-ja-reader] Failed to call toggleDefinition. The page might need to be refreshed.'
@@ -948,7 +951,7 @@ export class ContentHandler {
 
       case 'isPopupShowing':
         if (this.isVisible()) {
-          browser.runtime.sendMessage({
+          void browser.runtime.sendMessage({
             type: 'frame:popupShown',
             frameId: request.frameId,
           });
@@ -1009,8 +1012,8 @@ export class ContentHandler {
           // clear any mouse target we previously stored.
           this.lastMouseTarget = null;
 
-          let meta = request.meta as SelectionMeta | undefined;
-          this.lookupText({
+          const meta = request.meta as SelectionMeta | undefined;
+          void this.lookupText({
             ...request,
             meta,
             targetProps,
@@ -1057,7 +1060,7 @@ export class ContentHandler {
 
   showNextDictionary() {
     if (!this.isTopMostWindow()) {
-      browser.runtime.sendMessage({ type: 'top:nextDictionary' });
+      void browser.runtime.sendMessage({ type: 'top:nextDictionary' });
       return;
     }
 
@@ -1068,7 +1071,7 @@ export class ContentHandler {
 
   toggleDefinition() {
     if (!this.isTopMostWindow()) {
-      browser.runtime.sendMessage({ type: 'top:toggleDefinition' });
+      void browser.runtime.sendMessage({ type: 'top:toggleDefinition' });
       return;
     }
 
@@ -1078,7 +1081,7 @@ export class ContentHandler {
 
   movePopup(direction: 'up' | 'down') {
     if (!this.isTopMostWindow()) {
-      browser.runtime.sendMessage({ type: 'top:movePopup', direction });
+      void browser.runtime.sendMessage({ type: 'top:movePopup', direction });
       return;
     }
 
@@ -1116,7 +1119,7 @@ export class ContentHandler {
         mode === 'keyboard',
         "We probably should't be receiving touch events in the iframe"
       );
-      browser.runtime.sendMessage({ type: 'top:enterCopyMode' });
+      void browser.runtime.sendMessage({ type: 'top:enterCopyMode' });
       return;
     }
 
@@ -1129,7 +1132,7 @@ export class ContentHandler {
     this.copyState = { kind: 'inactive' };
 
     if (!this.isTopMostWindow()) {
-      browser.runtime.sendMessage({ type: 'top:exitCopyMode' });
+      void browser.runtime.sendMessage({ type: 'top:exitCopyMode' });
       return;
     }
 
@@ -1138,7 +1141,7 @@ export class ContentHandler {
 
   nextCopyEntry() {
     if (!this.isTopMostWindow()) {
-      browser.runtime.sendMessage({ type: 'top:nextCopyEntry' });
+      void browser.runtime.sendMessage({ type: 'top:nextCopyEntry' });
       return;
     }
 
@@ -1154,7 +1157,10 @@ export class ContentHandler {
 
   copyCurrentEntry(copyType: CopyType) {
     if (!this.isTopMostWindow()) {
-      browser.runtime.sendMessage({ type: 'top:copyCurrentEntry', copyType });
+      void browser.runtime.sendMessage({
+        type: 'top:copyCurrentEntry',
+        copyType,
+      });
       return;
     }
 
@@ -1170,7 +1176,7 @@ export class ContentHandler {
       showKanjiComponents: this.config.showKanjiComponents,
     });
 
-    this.copyString(textToCopy!, copyType);
+    void this.copyString(textToCopy!, copyType);
   }
 
   private getCopyEntry(): CopyEntry | null {
@@ -1256,7 +1262,7 @@ export class ContentHandler {
       typeof this.currentLookupParams?.source === 'number'
     ) {
       const { source } = this.currentLookupParams;
-      browser.runtime.sendMessage({
+      void browser.runtime.sendMessage({
         type: 'frame:clearTextHighlight',
         frameId: source,
       });
@@ -1268,7 +1274,7 @@ export class ContentHandler {
     if (this.isTopMostWindow()) {
       this.hidePopup();
     } else {
-      browser.runtime.sendMessage({ type: 'top:clearResult' });
+      void browser.runtime.sendMessage({ type: 'top:clearResult' });
     }
 
     // Start tracking touch taps again now that the window is hidden.
@@ -1349,9 +1355,9 @@ export class ContentHandler {
     };
 
     if (this.isTopMostWindow()) {
-      this.lookupText(lookupParams);
+      void this.lookupText(lookupParams);
     } else {
-      browser.runtime.sendMessage({
+      void browser.runtime.sendMessage({
         ...lookupParams,
         type: 'top:lookup',
         point,
@@ -1389,11 +1395,11 @@ export class ContentHandler {
     // Presumably the text or dictionary has changed so break out of copy mode
     this.copyState = { kind: 'inactive' };
 
-    let queryResult = await query(text, {
+    const queryResult = await query(text, {
       includeRomaji: this.config.showRomaji,
       wordLookup,
       updateQueryResult: (queryResult: QueryResult | null) => {
-        this.applyQueryResult({
+        void this.applyQueryResult({
           dictMode,
           meta,
           queryResult,
@@ -1404,7 +1410,7 @@ export class ContentHandler {
       },
     });
 
-    this.applyQueryResult({
+    void this.applyQueryResult({
       dictMode,
       meta,
       queryResult,
@@ -1518,7 +1524,10 @@ export class ContentHandler {
     // with prompts about how to change dictionaries.
     if (!this.config.hasSwitchedDictionary) {
       try {
-        browser.runtime.sendMessage({ type: 'switchedDictionary' });
+        // As elsewhere, we don't wait on the promise here since we're only
+        // interested in catching synchronous errors which occur in some
+        // browsers when the content script is old.
+        void browser.runtime.sendMessage({ type: 'switchedDictionary' });
       } catch {
         console.log(
           '[10ten-ja-reader] Failed to call switchedDictionary. The page might need to be refreshed.'
@@ -1544,7 +1553,7 @@ export class ContentHandler {
 
     if (typeof this.currentLookupParams?.source === 'number') {
       const { source } = this.currentLookupParams;
-      browser.runtime.sendMessage({
+      void browser.runtime.sendMessage({
         type: 'frame:highlightText',
         frameId: source,
         length: highlightLength,
@@ -1653,7 +1662,7 @@ export class ContentHandler {
         left,
       };
     } else {
-      const tooltipClearance = !!this.currentTargetProps?.hasTitle ? 20 : 0;
+      const tooltipClearance = this.currentTargetProps?.hasTitle ? 20 : 0;
       cursorClearance = {
         top: 0,
         right: 0,
@@ -1778,7 +1787,7 @@ export class ContentHandler {
     }
 
     if (this.isTopMostWindow()) {
-      browser.runtime.sendMessage({ type: 'children:popupShown' });
+      void browser.runtime.sendMessage({ type: 'children:popupShown' });
     }
   }
 
@@ -1792,7 +1801,7 @@ export class ContentHandler {
     hidePopup();
 
     if (wasShowing && this.isTopMostWindow()) {
-      browser.runtime.sendMessage({ type: 'children:popupHidden' });
+      void browser.runtime.sendMessage({ type: 'children:popupHidden' });
     }
   }
 
@@ -1872,7 +1881,7 @@ declare global {
   // does not have the content script injected. Instead a child iframe (a
   // regular YouTube page) has the content script injected and should be treated
   // as the top-most window for the purposes of showing the popup.
-  let isEffectiveTopMostWindow: boolean = false;
+  let isEffectiveTopMostWindow = false;
   function isTopMostWindow() {
     return isEffectiveTopMostWindow || window.self === window.top;
   }
@@ -2009,11 +2018,11 @@ declare global {
   }
 
   function onPageShow() {
-    browser.runtime.sendMessage({ type: 'enable?' });
+    void browser.runtime.sendMessage({ type: 'enable?' });
   }
 
   function onPageHide() {
-    browser.runtime.sendMessage({ type: 'disabled' });
+    void browser.runtime.sendMessage({ type: 'disabled' });
   }
 })();
 

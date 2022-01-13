@@ -1,7 +1,7 @@
 import type {
-  KanjiResult,
   NameResult as HikibikiNameResult,
   WordResult as HikibikiWordResult,
+  KanjiResult,
 } from '@birchill/hikibiki-data';
 
 // Words

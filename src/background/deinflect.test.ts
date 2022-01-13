@@ -232,7 +232,7 @@ describe('deinflect', () => {
       ],
     ];
 
-    for (let [inflected, plain, type, reasons] of cases) {
+    for (const [inflected, plain, type, reasons] of cases) {
       const result = deinflect(inflected);
       const match = result.find((candidate) => candidate.word == plain);
       expect(match).toEqual({

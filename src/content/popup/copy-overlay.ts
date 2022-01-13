@@ -44,7 +44,7 @@ export function renderCopyOverlay({
   const wordToCopy = entryToCopy
     ? getTextToCopy({ entry: entryToCopy, copyType: 'word' })
     : null;
-  let heading = wordToCopy
+  const heading = wordToCopy
     ? browser.i18n.getMessage(
         'content_copy_overlay_copy_title_with_word',
         wordToCopy

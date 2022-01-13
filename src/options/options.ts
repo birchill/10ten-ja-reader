@@ -19,8 +19,8 @@ import {
 import { CopyKeys, CopyNextKeyStrings } from '../common/copy-keys';
 import { dbLanguageMeta, isDbLanguageId } from '../common/db-languages';
 import {
-  DbStateUpdatedMessage,
   cancelDbUpdate,
+  DbStateUpdatedMessage,
   deleteDb,
   updateDb,
 } from '../common/db-listener-messages';
@@ -45,6 +45,7 @@ import { Command, CommandParams, isValidKey } from './commands';
 import { translateDoc } from './l10n';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Intl {
     type RelativeTimeFormatLocaleMatcher = 'lookup' | 'best fit';
 
@@ -193,13 +194,13 @@ function completeForm() {
     });
 
   if (browser.management) {
-    browser.management.getSelf().then((info) => {
+    void browser.management.getSelf().then((info) => {
       if (info.installType === 'development') {
         (document.querySelector('.db-admin') as HTMLElement).style.display =
           'block';
         document
           .getElementById('deleteDatabase')!
-          .addEventListener('click', (evt) => {
+          .addEventListener('click', () => {
             if (browserPort) {
               browserPort.postMessage(deleteDb());
             }
@@ -513,7 +514,7 @@ function configureCommands() {
 
     toggleKeyTextbox.value = key;
     evt.preventDefault();
-    updateToggleKey();
+    void updateToggleKey();
   });
 
   toggleKeyTextbox.addEventListener('compositionstart', () => {
@@ -521,7 +522,7 @@ function configureCommands() {
   });
   toggleKeyTextbox.addEventListener('compositionend', () => {
     toggleKeyTextbox.value = toggleKeyTextbox.value.toUpperCase();
-    updateToggleKey();
+    void updateToggleKey();
   });
 }
 
@@ -789,7 +790,7 @@ function configurePuckSettings() {
 function fillInLanguages() {
   const select = document.querySelector('select#lang') as HTMLSelectElement;
 
-  for (let [id, data] of dbLanguageMeta) {
+  for (const [id, data] of dbLanguageMeta) {
     let label = data.name;
     if (data.hasWords && !data.hasKanji) {
       label += browser.i18n.getMessage('options_lang_words_only');
@@ -1100,7 +1101,7 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
 
   switch (updateState.state) {
     case 'idle':
-      updateIdleStateSummary(evt, statusElem);
+      void updateIdleStateSummary(evt, statusElem);
       break;
 
     case 'checking': {

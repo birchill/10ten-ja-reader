@@ -1,4 +1,4 @@
-let mockBrowser: any = {};
+const mockBrowser: any = {};
 
 jest.mock('webextension-polyfill-ts', () => ({ browser: mockBrowser }));
 

@@ -69,7 +69,10 @@ export class FxFetcher {
 
     // Fetch the latest update date and if we've never downloaded the data,
     // do it now.
-    getLocalFxData().then((fxData) => {
+    //
+    // No need to catch errors here, getLocalFxData does it's own error
+    // handling.
+    void getLocalFxData().then((fxData) => {
       if (!fxData) {
         Bugsnag.leaveBreadcrumb('No stored FX data. Doing initial fetch.');
         this.fetchData().catch((e) => {
@@ -94,7 +97,7 @@ export class FxFetcher {
         Bugsnag.leaveBreadcrumb(
           'Fetching FX data update now that we are online'
         );
-        this.fetchData();
+        void this.fetchData();
       });
       return;
     }
@@ -120,7 +123,7 @@ export class FxFetcher {
     };
 
     // Set up base URL
-    let url = `https://data.10ten.study/fx/jpy.json`;
+    let url = 'https://data.10ten.study/fx/jpy.json';
 
     // Set up query string
     const manifest = browser.runtime.getManifest();
@@ -162,6 +165,7 @@ export class FxFetcher {
       this.fetchState = { type: 'idle' };
     } catch (e: unknown) {
       // Convert network errors disguised as TypeErrors to DownloadErrors
+      let error = e;
       if (
         isError(e) &&
         e instanceof TypeError &&
@@ -170,17 +174,17 @@ export class FxFetcher {
       ) {
         // Use 418 just so that we pass the check for a retry-able error below
         // which looks for a status code in the 4xx~5xx range.
-        e = new DownloadError(url, 418, e.message);
+        error = new DownloadError(url, 418, e.message);
       }
 
       // Possibly schedule a retry
       const retryAbleError =
-        isError(e) &&
-        (e.name === 'TimeoutError' ||
-          e.name === 'NetworkError' ||
-          (e.name === 'DownloadError' &&
-            (e as DownloadError).code >= 400 &&
-            (e as DownloadError).code < 500));
+        isError(error) &&
+        (error.name === 'TimeoutError' ||
+          error.name === 'NetworkError' ||
+          (error.name === 'DownloadError' &&
+            (error as DownloadError).code >= 400 &&
+            (error as DownloadError).code < 500));
 
       const retryCount =
         this.fetchState.type === 'fetching' &&
@@ -188,10 +192,10 @@ export class FxFetcher {
           ? this.fetchState.retryCount
           : 0;
       if (retryAbleError && retryCount < 3) {
-        console.warn(e);
+        console.warn(error);
         Bugsnag.leaveBreadcrumb(
           `Failed attempt #${retryCount + 1} to fetch FX data. Will retry.`,
-          { error: e }
+          { error }
         );
 
         // We're using setTimeout here but in the case of event pages (as we
@@ -202,8 +206,8 @@ export class FxFetcher {
         const timeout = window.setTimeout(() => this.fetchData(), 10_000);
         this.fetchState = { type: 'waiting to retry', retryCount, timeout };
       } else {
-        console.error(e);
-        Bugsnag.notify(e as any);
+        console.error(error);
+        Bugsnag.notify(error as any);
         this.fetchState = { type: 'idle', didFail: true };
       }
     }
@@ -256,7 +260,10 @@ export class FxFetcher {
     // If the next run is within a minute or so, run it now. Otherwise, schedule
     // it for later.
     if (nextRun <= now + ONE_MINUTE) {
-      this.fetchData();
+      // Don't wait on fetchData -- it does its own error handling and caller's
+      // of this function shouldn't have to wait for us to run the fetch, only
+      // to schedule it.
+      void this.fetchData();
     } else {
       try {
         Bugsnag.leaveBreadcrumb(

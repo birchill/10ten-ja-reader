@@ -75,7 +75,7 @@ export class SafeAreaProvider {
     return this._cachedSafeAreaInsets!;
   }
 
-  private readonly onWindowResize = (event: UIEvent) => {
+  private readonly onWindowResize = () => {
     this.setCachedSafeAreaInsets(null);
   };
 

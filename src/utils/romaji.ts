@@ -200,9 +200,7 @@ const replacements: Array<[string, string]> = [
   ['ヿ', 'koto'],
 ];
 
-const maxReplacementLength = Math.max(
-  ...replacements.map(([a, b]) => a.length)
-);
+const maxReplacementLength = Math.max(...replacements.map(([a]) => a.length));
 const replacementMap = new Map(replacements);
 
 export function toRomaji(kana: string): string {
@@ -251,7 +249,7 @@ export function toRomaji(kana: string): string {
     let substringLength = Math.max(maxReplacementLength, hiragana.length - i);
 
     while (substringLength) {
-      let substring = hiragana.substr(i, substringLength);
+      const substring = hiragana.substr(i, substringLength);
       const replacement = replacementMap.get(substring);
       if (replacement) {
         if (explosiveness) {

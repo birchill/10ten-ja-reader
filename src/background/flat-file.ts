@@ -1,11 +1,11 @@
 import { Client as BugsnagClient } from '@bugsnag/browser';
 import {
   Gloss,
+  GLOSS_TYPE_MAX,
   GlossType,
   RawKanjiMeta,
   RawReadingMeta,
   RawWordSense,
-  GLOSS_TYPE_MAX,
 } from '@birchill/hikibiki-data';
 import { kanaToHiragana } from '@birchill/normal-jp';
 import { LRUMap } from 'lru_map';
@@ -74,7 +74,7 @@ export class FlatFileDatabase {
     };
 
     if (this.bugsnag) {
-      this.bugsnag.leaveBreadcrumb(makeBreadcrumb(`Loading: `, url));
+      this.bugsnag.leaveBreadcrumb(makeBreadcrumb('Loading: ', url));
     }
 
     while (true) {
@@ -229,7 +229,7 @@ function findLineStartingWith({
   text: string;
 }): string | null {
   const tlen: number = text.length;
-  let start: number = 0;
+  let start = 0;
   let end: number = source.length - 1;
 
   while (start < end) {
@@ -480,7 +480,8 @@ export class FlatFileDatabaseLoader {
         return this.loadPromise!;
 
       case 'retrying':
-      // This should fail since we don't want the caller to wait on retries
+      // This should fail since we don't want the caller to wait on retries so
+      // this falls through
 
       case 'error':
         return Promise.reject(this.loadError);

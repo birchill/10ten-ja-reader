@@ -81,12 +81,12 @@ export function updateBrowserAction({
   // We'd like to feature-detect if SVG icons are supported but Safari will
   // just fail silently if we try.
   if (__SUPPORTS_SVG_ICONS__) {
-    browser.browserAction.setIcon({
+    void browser.browserAction.setIcon({
       path: `images/${iconFilename}.svg`,
       tabId,
     });
   } else {
-    browser.browserAction.setIcon({
+    void browser.browserAction.setIcon({
       path: {
         16: `images/${iconFilename}-16.png`,
         32: `images/${iconFilename}-32.png`,
@@ -110,18 +110,18 @@ export function updateBrowserAction({
     // a constant error signal.
     jpdictState.updateError.name !== 'QuotaExceededError'
   ) {
-    browser.browserAction.setBadgeText({ text: '!', tabId });
-    browser.browserAction.setBadgeBackgroundColor({
+    void browser.browserAction.setBadgeText({ text: '!', tabId });
+    void browser.browserAction.setBadgeBackgroundColor({
       color: 'yellow',
       tabId,
     });
     titleStringId = 'command_toggle_update_error';
   } else {
-    browser.browserAction.setBadgeText({ text: '', tabId });
+    void browser.browserAction.setBadgeText({ text: '', tabId });
   }
 
   // Set the caption
-  browser.browserAction.setTitle({
+  void browser.browserAction.setTitle({
     title: browser.i18n.getMessage(titleStringId),
     tabId,
   });
@@ -144,9 +144,9 @@ export function setDefaultToolbarIcon(toolbarIcon: 'default' | 'sky') {
   // We'd like to feature-detect if SVG icons are supported but Safari will
   // just fail silently if we try.
   if (__SUPPORTS_SVG_ICONS__) {
-    browser.browserAction.setIcon({ path: `images/${iconFilename}.svg` });
+    void browser.browserAction.setIcon({ path: `images/${iconFilename}.svg` });
   } else {
-    browser.browserAction.setIcon({
+    void browser.browserAction.setIcon({
       path: {
         16: `images/${iconFilename}-16.png`,
         32: `images/${iconFilename}-32.png`,

@@ -228,7 +228,7 @@ const numberRegex =
   /^([一二三四五六七八九十百千万億兆京][0-9.,０-９。．、〇一二三四五六七八九十百千万億兆京]+)|([0-9,０-９、]+[〇一二三四五六七八九十百千万億兆京][0-9.,０-９。．、〇一二三四五六七八九十百千万億兆京]*)/;
 
 export function extractNumberMetadata(text: string): NumberMeta | undefined {
-  let matches = numberRegex.exec(text);
+  const matches = numberRegex.exec(text);
   if (!matches || matches.index !== 0) {
     return undefined;
   }
@@ -238,7 +238,7 @@ export function extractNumberMetadata(text: string): NumberMeta | undefined {
     return undefined;
   }
 
-  let value = parseNumber(valueStr);
+  const value = parseNumber(valueStr);
   if (!value) {
     return undefined;
   }

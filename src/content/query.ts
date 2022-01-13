@@ -2,11 +2,11 @@ import { browser } from 'webextension-polyfill-ts';
 
 import { BackgroundRequest } from '../background/background-request';
 import {
-  SearchOtherResult,
-  SearchWordsResult,
   KanjiSearchResult,
   NameResult,
   NameSearchResult,
+  SearchOtherResult,
+  SearchWordsResult,
   TranslateResult,
   WordSearchResult,
 } from '../background/search-result';
@@ -69,7 +69,7 @@ export async function query(
   if (cachedEntry) {
     switch (cachedEntry.state) {
       case 'searching':
-        cachedEntry.fullQuery.then((result) => {
+        void cachedEntry.fullQuery.then((result) => {
           options.updateQueryResult(result);
         });
         return cachedEntry.wordsQuery;
@@ -131,7 +131,7 @@ export async function query(
     fullQuery,
   });
 
-  fullQuery.then((result) => options.updateQueryResult(result));
+  void fullQuery.then((result) => options.updateQueryResult(result));
 
   return wordsQuery;
 }

@@ -8,7 +8,7 @@
     "build:edge": "webpack --env target=edge",
     "build:safari": "webpack --env target=safari",
     "check-keys": "ts-node utils/check-keys",
-    "lint": "web-ext lint -w",
+    "lint": "web-ext lint -w && eslint src/",
     "package": "webpack --env package",
     "package:firefox": "webpack --env package",
     "package:chrome": "webpack --env target=chrome --env package",
@@ -54,6 +54,8 @@
     "@types/mocha": "^9.0.0",
     "@types/split2": "^3.2.1",
     "@types/yargs": "^17.0.8",
+    "@typescript-eslint/eslint-plugin": "^5.9.1",
+    "@typescript-eslint/parser": "^5.9.1",
     "all-contributors-cli": "^6.20.0",
     "archiver": "^5.3.0",
     "byline": "^5.0.0",
@@ -61,6 +63,8 @@
     "combined-stream2": "^1.1.2",
     "copy-webpack-plugin": "^10.2.0",
     "css-loader": "^6.5.1",
+    "eslint": "^8.6.0",
+    "eslint-config-prettier": "^8.3.0",
     "fast-glob": "^3.2.7",
     "file-loader": "^6.2.0",
     "iconv-lite": "^0.6.3",
@@ -127,7 +131,8 @@
   },
   "lint-staged": {
     "*.ts": [
-      "prettier --write"
+      "prettier --write",
+      "eslint --fix"
     ],
     "_locales/**/messages.json": [
       "yarn sort-i18n-keys"

@@ -53,8 +53,8 @@ import Browser, { browser } from 'webextension-polyfill-ts';
 
 import { Config } from '../common/config';
 import {
-  notifyDbStateUpdated,
   DbListenerMessage,
+  notifyDbStateUpdated,
 } from '../common/db-listener-messages';
 import { startBugsnag } from '../utils/bugsnag';
 import { stripFields } from '../utils/strip-fields';
@@ -68,15 +68,15 @@ import { setDefaultToolbarIcon, updateBrowserAction } from './browser-action';
 import { initContextMenus, updateContextMenus } from './context-menus';
 import { FxFetcher } from './fx-fetcher';
 import {
-  JpdictStateWithFallback,
   cancelUpdateDb,
   deleteDb,
   initDb,
-  updateDb,
+  searchWords as jpdictSearchWords,
+  JpdictStateWithFallback,
   searchKanji,
   searchNames,
-  searchWords as jpdictSearchWords,
   translate,
+  updateDb,
 } from './jpdict';
 import { shouldRequestPersistentStorage } from './quota-management';
 import { SearchOtherResult, SearchWordsResult } from './search-result';
@@ -109,7 +109,7 @@ tabManager.addListener(
     // callbacks will be called so make sure the database is initialized here.
     if (enabled) {
       Bugsnag.leaveBreadcrumb('Triggering database update from enableTab...');
-      initJpDict();
+      initJpDict().catch((e) => Bugsnag.notify(e));
     }
 
     try {
@@ -140,9 +140,9 @@ tabManager.addListener(
     // add-on installed but never enabled and we shouldn't download FX data each
     // day in that case.
     if (anyEnabled) {
-      fxFetcher.scheduleNextUpdate();
+      await fxFetcher.scheduleNextUpdate();
     } else {
-      fxFetcher.cancelScheduledUpdate();
+      await fxFetcher.cancelScheduledUpdate();
     }
   }
 );
@@ -182,24 +182,28 @@ config.addChangeListener(async (changes) => {
   }
 
   // Update context menus as needed
-  let toggleMenuEnabled: boolean | undefined =
+  const toggleMenuEnabled: boolean | undefined =
     changes.contextMenuEnable?.newValue;
-  let showPuck: 'show' | 'hide' | undefined =
+  const showPuck: 'show' | 'hide' | undefined =
     changes['computed:showPuck']?.newValue;
   if (
     typeof toggleMenuEnabled !== 'undefined' ||
     typeof showPuck !== 'undefined'
   ) {
-    updateContextMenus({
-      toggleMenuEnabled:
-        typeof toggleMenuEnabled === 'undefined'
-          ? config.contextMenuEnable
-          : toggleMenuEnabled,
-      showPuck:
-        typeof showPuck === 'undefined'
-          ? config.contentConfig.showPuck === 'show'
-          : showPuck === 'show',
-    });
+    try {
+      await updateContextMenus({
+        toggleMenuEnabled:
+          typeof toggleMenuEnabled === 'undefined'
+            ? config.contextMenuEnable
+            : toggleMenuEnabled,
+        showPuck:
+          typeof showPuck === 'undefined'
+            ? config.contentConfig.showPuck === 'show'
+            : showPuck === 'show',
+      });
+    } catch (e) {
+      Bugsnag.notify(e);
+    }
   }
 
   // Update dictionary language
@@ -210,10 +214,10 @@ config.addChangeListener(async (changes) => {
   }
 
   // Tell the content scripts about any changes
-  tabManager.updateConfig(config.contentConfig);
+  await tabManager.updateConfig(config.contentConfig);
 });
 
-config.ready.then(async () => {
+void config.ready.then(async () => {
   // If we have a non-default toolbar icon, set it for all tabs now so that
   // when we open a new tab, etc. it will be set correctly.
   if (config.toolbarIcon !== 'default') {
@@ -224,7 +228,7 @@ config.ready.then(async () => {
   // a number of other things.
   await tabManager.init(config.contentConfig);
 
-  initContextMenus({
+  await initContextMenus({
     onToggleMenu: toggle,
     onTogglePuck: (enabled: boolean) => {
       config.showPuck = enabled ? 'show' : 'hide';
@@ -269,7 +273,7 @@ async function initJpDict() {
   }
   dbInitialized = true;
   await config.ready;
-  initDb({ lang: config.dictLang, onUpdate: onDbStatusUpdated });
+  await initDb({ lang: config.dictLang, onUpdate: onDbStatusUpdated });
 }
 
 async function onDbStatusUpdated(state: JpdictStateWithFallback) {
@@ -343,7 +347,7 @@ browser.runtime.onConnect.addListener((port: Browser.Runtime.Port) => {
   });
 });
 
-async function notifyDbListeners(specifiedListener?: Browser.Runtime.Port) {
+function notifyDbListeners(specifiedListener?: Browser.Runtime.Port) {
   if (!dbListeners.length) {
     return;
   }
@@ -395,7 +399,7 @@ async function searchOther({
 }): Promise<SearchOtherResult | null> {
   // Kanji
   const kanjiResult = await searchKanji([...input][0]);
-  let kanji = typeof kanjiResult === 'string' ? null : kanjiResult;
+  const kanji = typeof kanjiResult === 'string' ? null : kanjiResult;
 
   if (abortSignal.aborted) {
     throw new AbortError();
@@ -403,7 +407,7 @@ async function searchOther({
 
   // Names
   const nameResult = await searchNames({ abortSignal, input });
-  let names = typeof nameResult === 'string' ? null : nameResult;
+  const names = typeof nameResult === 'string' ? null : nameResult;
 
   if (abortSignal.aborted) {
     throw new AbortError();
@@ -425,7 +429,7 @@ async function searchOther({
 
 async function toggle(tab: Browser.Tabs.Tab) {
   await config.ready;
-  tabManager.toggleTab(tab, config.contentConfig);
+  await tabManager.toggleTab(tab, config.contentConfig);
 }
 
 browser.browserAction.onClicked.addListener(toggle);
@@ -547,16 +551,18 @@ browser.runtime.onMessage.addListener(
       case 'frame:popupShown':
       case 'frame:highlightText':
       case 'frame:clearTextHighlight':
-        const [, type] = request.type.split(':') as Split<
-          typeof request.type,
-          ':'
-        >;
-        if (sender.tab?.id) {
-          tabManager.sendMessageToFrame({
-            tabId: sender.tab.id,
-            message: { ...stripFields(request, ['frameId']), type },
-            frameId: request.frameId,
-          });
+        {
+          const [, type] = request.type.split(':') as Split<
+            typeof request.type,
+            ':'
+          >;
+          if (sender.tab?.id) {
+            tabManager.sendMessageToFrame({
+              tabId: sender.tab.id,
+              message: { ...stripFields(request, ['frameId']), type },
+              frameId: request.frameId,
+            });
+          }
         }
         break;
 
@@ -651,7 +657,7 @@ browser.runtime.onInstalled.addListener(async (details) => {
   }
 
   Bugsnag.leaveBreadcrumb('Running initJpDict from onInstalled...');
-  initJpDict();
+  initJpDict().catch((e) => Bugsnag.notify(e));
 
   if (details.reason === 'update' && details.previousVersion) {
     Bugsnag.leaveBreadcrumb(
@@ -685,5 +691,5 @@ browser.runtime.onInstalled.addListener(async (details) => {
 
 browser.runtime.onStartup.addListener(() => {
   Bugsnag.leaveBreadcrumb('Running initJpDict from onStartup...');
-  initJpDict();
+  initJpDict().catch((e) => Bugsnag.notify(e));
 });
