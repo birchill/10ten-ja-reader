@@ -1,4 +1,4 @@
-import { HTML_NS } from './svg';
+import { HTML_NS } from '../utils/dom-utils';
 
 export async function copyText(text: string): Promise<void> {
   try {

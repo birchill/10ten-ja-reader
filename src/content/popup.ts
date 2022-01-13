@@ -30,6 +30,7 @@ import {
   ReferenceAbbreviation,
 } from '../common/refs';
 import { probablyHasPhysicalKeyboard } from '../utils/device';
+import { HTML_NS, SVG_NS } from '../utils/dom-utils';
 import { NameResult, Sense, WordResult } from '../background/search-result';
 import { getThemeClass } from '../utils/themes';
 
@@ -41,7 +42,6 @@ import { CurrencyMeta } from './currency';
 import { convertMeasure, MeasureMeta } from './measure';
 import { SelectionMeta } from './meta';
 import { NamePreview, QueryResult } from './query';
-import { HTML_NS, SVG_NS } from './svg';
 import { EraInfo, EraMeta, getEraInfo } from './years';
 
 import popupStyles from '../../css/popup.css';

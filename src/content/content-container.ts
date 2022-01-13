@@ -1,6 +1,7 @@
 import { getHash } from '../utils/hash';
+import { HTML_NS, SVG_NS } from '../utils/dom-utils';
 
-import { HTML_NS, isForeignObjectElement, isSvgDoc, SVG_NS } from './svg';
+import { isForeignObjectElement, isSvgDoc } from './svg';
 
 export function getOrCreateEmptyContainer({
   doc,

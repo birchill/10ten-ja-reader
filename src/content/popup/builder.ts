@@ -1,4 +1,4 @@
-import { HTML_NS, SVG_NS } from '../svg';
+import { HTML_NS, SVG_NS } from '../../utils/dom-utils';
 
 // Little helper to simplify creating HTML elements that takes care of:
 //

@@ -29,7 +29,7 @@ import {
   getReferencesForLang,
 } from '../common/refs';
 import { startBugsnag } from '../utils/bugsnag';
-import { empty } from '../utils/dom-utils';
+import { empty, SVG_NS } from '../utils/dom-utils';
 import { isObject } from '../utils/is-object';
 import {
   isChromium,
@@ -347,8 +347,6 @@ function renderPopupPreview(theme: string): HTMLElement {
 
   return popupPreview;
 }
-
-const SVG_NS = 'http://www.w3.org/2000/svg';
 
 function renderStar(): SVGElement {
   const svg = document.createElementNS(SVG_NS, 'svg');

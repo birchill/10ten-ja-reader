@@ -1,7 +1,7 @@
-import { empty } from '../utils/dom-utils';
+import { empty, SVG_NS } from '../utils/dom-utils';
 import { Point, Rect } from '../utils/geometry';
+
 import { CursorPosition } from './get-text';
-import { SVG_NS } from './svg';
 
 export function injectGdocsStyles() {
   removeGdocsStyles();

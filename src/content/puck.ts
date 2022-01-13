@@ -1,3 +1,4 @@
+import { SVG_NS } from '../utils/dom-utils';
 import { MarginBox } from '../utils/geometry';
 import { getThemeClass } from '../utils/themes';
 import { isIOS } from '../utils/ua-utils';
@@ -8,7 +9,6 @@ import {
 } from './content-container';
 import { getIframeOrigin } from './iframes';
 import type { SafeAreaProvider } from './safe-area-provider';
-import { SVG_NS } from './svg';
 
 import puckStyles from '../../css/puck.css';
 
