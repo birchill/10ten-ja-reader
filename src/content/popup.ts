@@ -49,6 +49,7 @@ import { NumberMeta } from './numbers';
 import { getDob } from '../utils/age';
 import { renderCopyOverlay } from './popup/copy-overlay';
 import { getLangTag } from './popup/lang-tag';
+import { renderBook, renderKanjiIcon, renderPerson } from './popup/icons';
 
 // Update NumberFormatOptions definition
 declare global {
@@ -1986,106 +1987,6 @@ function renderFrequency(frequency: number | undefined): SVGElement {
   freqSvg.append(rect3);
 
   return freqSvg;
-}
-
-function renderPerson(): SVGElement {
-  const personSvg = document.createElementNS(SVG_NS, 'svg');
-  personSvg.setAttribute('viewBox', '0 0 16 16');
-  personSvg.setAttribute('role', 'presentation');
-
-  const circle = document.createElementNS(SVG_NS, 'circle');
-  circle.setAttribute('cx', '14.5');
-  circle.setAttribute('cy', '14.5');
-  circle.setAttribute('r', '1.5');
-  personSvg.append(circle);
-
-  const head = document.createElementNS(SVG_NS, 'path');
-  head.setAttribute(
-    'd',
-    'M8,0A2.87,2.87,0,0,0,5,2.72v2.5A2.92,2.92,0,0,0,8,8a2.92,2.92,0,0,0,3-2.78V2.72A2.87,2.87,0,0,0,8,0Z'
-  );
-  personSvg.append(head);
-
-  const body = document.createElementNS(SVG_NS, 'path');
-  body.setAttribute(
-    'd',
-    'M13.91,11.71A5.09,5.09,0,0,0,9.45,9H5.09A5.18,5.18,0,0,0,0,14.25.74.74,0,0,0,.73,15h10.9a.74.74,0,0,0,.73-.75,1.49,1.49,0,0,1,1.09-1.45.75.75,0,0,0,.49-.43A.76.76,0,0,0,13.91,11.71Z'
-  );
-  personSvg.append(body);
-
-  return personSvg;
-}
-
-function renderKanjiIcon(): SVGElement {
-  const kanjiSvg = document.createElementNS(SVG_NS, 'svg');
-  kanjiSvg.setAttribute('viewBox', '0 0 16 16');
-  kanjiSvg.setAttribute('role', 'presentation');
-
-  const circle = document.createElementNS(SVG_NS, 'circle');
-  circle.setAttribute('cx', '14.5');
-  circle.setAttribute('cy', '14.5');
-  circle.setAttribute('r', '1.5');
-  kanjiSvg.append(circle);
-
-  const outline = document.createElementNS(SVG_NS, 'path');
-  outline.setAttribute(
-    'd',
-    'M11,15H2a2,2,0,0,1-2-2V2A2,2,0,0,1,2,0H13a2,2,0,0,1,2,2v9a1,1,0,0,1-2,0V2H2V13h9a1,1,0,0,1,0,2Z'
-  );
-  kanjiSvg.append(outline);
-
-  const ji = document.createElementNS(SVG_NS, 'path');
-  ji.setAttribute(
-    'd',
-    'M8.5,7H5V6h5V7H9.5l-1,1H12V9H8v2a1,1,0,0,1-.24.71A1.15,1.15,0,0,1,7,12H6V11H7V9H3V8H7.5ZM8,4h4V6H11V5H4V6H3V4H7V3H8Z'
-  );
-  kanjiSvg.append(ji);
-
-  return kanjiSvg;
-}
-
-function renderBook(): SVGElement {
-  const bookSvg = document.createElementNS(SVG_NS, 'svg');
-  bookSvg.setAttribute('viewBox', '0 0 16 16');
-  bookSvg.setAttribute('role', 'presentation');
-
-  const path = document.createElementNS(SVG_NS, 'path');
-  path.setAttribute(
-    'd',
-    'M14,2H10.09a2.16,2.16,0,0,0-.71.12l-1.11.41a.83.83,0,0,1-.54,0L6.62,2.12A2.16,2.16,0,0,0,5.91,2H2A2,2,0,0,0,0,4v8a2,2,0,0,0,2.05,2H5.91a.76.76,0,0,1,.27.05l1.12.4a1.95,1.95,0,0,0,1.4,0L10.33,14l.84,0a.84.84,0,0,0,.71-.8c0-.67-.76-.69-.76-.69a5.17,5.17,0,0,0-1.25.12L9,13V4l.07,0,1.11-.4a.86.86,0,0,1,.27,0h3.27a.78.78,0,0,1,.78.78V9A.75.75,0,0,0,16,9V4A2,2,0,0,0,14,2ZM7,13l-.76-.33a1.85,1.85,0,0,0-.7-.13H2.28a.78.78,0,0,1-.78-.78V4.28a.78.78,0,0,1,.78-.78H5.54a.75.75,0,0,1,.26,0L6.92,4,7,4Z'
-  );
-  bookSvg.append(path);
-
-  const lineGroup = document.createElementNS(SVG_NS, 'g');
-  lineGroup.setAttribute('fill', 'none');
-  lineGroup.setAttribute('stroke', 'currentColor');
-  lineGroup.setAttribute('stroke-linecap', 'round');
-  bookSvg.append(lineGroup);
-
-  const lines = [
-    [3, 7.5, 5.5, 7.5],
-    [3, 5.5, 5.5, 5.5],
-    [3, 9.5, 5.5, 9.5],
-    [10.5, 7.5, 13, 7.5],
-    [10.5, 5.5, 13, 5.5],
-    [10.5, 9.5, 11.5, 9.5],
-  ];
-  for (const [x1, y1, x2, y2] of lines) {
-    const line = document.createElementNS(SVG_NS, 'line');
-    line.setAttribute('x1', String(x1));
-    line.setAttribute('y1', String(y1));
-    line.setAttribute('x2', String(x2));
-    line.setAttribute('y2', String(y2));
-    lineGroup.append(line);
-  }
-
-  const circle = document.createElementNS(SVG_NS, 'circle');
-  circle.setAttribute('cx', '14.5');
-  circle.setAttribute('cy', '12.5');
-  circle.setAttribute('r', '1.5');
-  bookSvg.append(circle);
-
-  return bookSvg;
 }
 
 function renderReferences(
