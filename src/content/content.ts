@@ -446,21 +446,21 @@ export class ContentHandler {
     this.frameId = frameId;
   }
 
-  onMouseMove(ev: MouseEvent) {
+  onMouseMove(event: MouseEvent) {
     this.typingMode = false;
 
     // Ignore mouse events while buttons are being pressed.
-    if (ev.buttons) {
+    if (event.buttons) {
       return;
     }
 
     // We don't know how to deal with anything that's not an element
-    if (!(ev.target instanceof Element)) {
+    if (!(event.target instanceof Element)) {
       return;
     }
 
     // Ignore mouse events on the popup window
-    if (isPopupWindow(ev.target)) {
+    if (isPopupWindow(event.target)) {
       return;
     }
 
@@ -483,9 +483,9 @@ export class ContentHandler {
     // For now the best way we know of doing that is to just check if the
     // position has in fact changed.
     if (
-      (ev.shiftKey || ev.altKey || ev.metaKey || ev.ctrlKey) &&
-      this.currentPoint?.x === ev.clientX &&
-      this.currentPoint?.y === ev.clientY
+      (event.shiftKey || event.altKey || event.metaKey || event.ctrlKey) &&
+      this.currentPoint?.x === event.clientX &&
+      this.currentPoint?.y === event.clientY
     ) {
       return;
     }
@@ -500,48 +500,48 @@ export class ContentHandler {
     // Note that the "hold to show keys" setting is only relevant for mouse
     // events.
     const contentsToMatch =
-      this.getActiveHoldToShowKeys(ev) |
-      (isPuckMouseEvent(ev) ? HoldToShowKeyType.All : 0);
+      this.getActiveHoldToShowKeys(event) |
+      (isPuckMouseEvent(event) ? HoldToShowKeyType.All : 0);
     if (!contentsToMatch) {
-      this.clearResult({ currentElement: ev.target });
+      this.clearResult({ currentElement: event.target });
 
       // We still want to set the current position and element information so
       // that if the user presses the hold-to-show keys later we can show the
       // popup immediately.
-      this.currentPoint = { x: ev.clientX, y: ev.clientY };
-      this.lastMouseTarget = ev.target;
+      this.currentPoint = { x: event.clientX, y: event.clientY };
+      this.lastMouseTarget = event.target;
       return;
     }
 
-    if (this.shouldThrottlePopup(ev)) {
-      this.clearResult({ currentElement: ev.target });
+    if (this.shouldThrottlePopup(event)) {
+      this.clearResult({ currentElement: event.target });
       return;
     }
 
     let dictMode: 'default' | 'kanji' = 'default';
-    if (ev.shiftKey && this.config.keys.kanjiLookup.includes('Shift')) {
-      this.kanjiLookupMode = ev.shiftKey;
+    if (event.shiftKey && this.config.keys.kanjiLookup.includes('Shift')) {
+      this.kanjiLookupMode = event.shiftKey;
       dictMode = 'kanji';
     }
 
     // Record the last mouse target in case we need to trigger the popup
     // again.
-    this.lastMouseTarget = ev.target;
+    this.lastMouseTarget = event.target;
 
     const matchText = !!(contentsToMatch & HoldToShowKeyType.Text);
     const matchImages = !!(contentsToMatch & HoldToShowKeyType.Images);
 
     void this.tryToUpdatePopup({
-      fromPuck: isPuckMouseEvent(ev),
+      fromPuck: isPuckMouseEvent(event),
       matchText,
       matchImages,
-      point: { x: ev.clientX, y: ev.clientY },
-      eventElement: ev.target,
+      point: { x: event.clientX, y: event.clientY },
+      eventElement: event.target,
       dictMode,
     });
   }
 
-  shouldThrottlePopup(ev: MouseEvent) {
+  shouldThrottlePopup(event: MouseEvent) {
     if (!this.hidePopupWhenMovingAtSpeed) {
       return false;
     }
@@ -565,19 +565,19 @@ export class ContentHandler {
       //   permanently hiding it.
       //
       if (
-        ev.timeStamp === this.previousMouseMoveTime ||
-        ev.timeStamp - this.previousMouseMoveTime > 32
+        event.timeStamp === this.previousMouseMoveTime ||
+        event.timeStamp - this.previousMouseMoveTime > 32
       ) {
-        this.previousMousePosition = { x: ev.pageX, y: ev.pageY };
-        this.previousMouseMoveTime = ev.timeStamp;
+        this.previousMousePosition = { x: event.pageX, y: event.pageY };
+        this.previousMouseMoveTime = event.timeStamp;
         return false;
       }
 
       const distance = Math.sqrt(
-        Math.pow(ev.pageX - this.previousMousePosition.x, 2) +
-          Math.pow(ev.pageY - this.previousMousePosition.y, 2)
+        Math.pow(event.pageX - this.previousMousePosition.x, 2) +
+          Math.pow(event.pageY - this.previousMousePosition.y, 2)
       );
-      const speed = distance / (ev.timeStamp - this.previousMouseMoveTime);
+      const speed = distance / (event.timeStamp - this.previousMouseMoveTime);
 
       this.mouseSpeeds.push(speed);
       this.mouseSpeedRollingSum += speed;
@@ -589,23 +589,23 @@ export class ContentHandler {
       averageSpeed = this.mouseSpeedRollingSum / this.mouseSpeeds.length;
     }
 
-    this.previousMousePosition = { x: ev.pageX, y: ev.pageY };
-    this.previousMouseMoveTime = ev.timeStamp;
+    this.previousMousePosition = { x: event.pageX, y: event.pageY };
+    this.previousMouseMoveTime = event.timeStamp;
 
     return averageSpeed >= ContentHandler.MOUSE_SPEED_THRESHOLD;
   }
 
-  onMouseDown(ev: MouseEvent) {
+  onMouseDown(event: MouseEvent) {
     // Ignore mouse events on the popup window
-    if (isPopupWindow(ev.target)) {
+    if (isPopupWindow(event.target)) {
       return;
     }
 
     // Clear the highlight since it interferes with selection.
-    this.clearResult({ currentElement: ev.target as Element });
+    this.clearResult({ currentElement: event.target as Element });
   }
 
-  onKeyDown(ev: KeyboardEvent) {
+  onKeyDown(event: KeyboardEvent) {
     const textBoxInFocus =
       document.activeElement && isEditableNode(document.activeElement);
 
@@ -615,9 +615,9 @@ export class ContentHandler {
     // We don't do this when the there is a text box in focus because we
     // we risk interfering with the text selection when, for example, the
     // hold-to-show key is Ctrl and the user presses Ctrl+V etc.
-    const matchedHoldToShowKeys = this.isHoldToShowKeyStroke(ev);
+    const matchedHoldToShowKeys = this.isHoldToShowKeyStroke(event);
     if (matchedHoldToShowKeys) {
-      ev.preventDefault();
+      event.preventDefault();
 
       if (!textBoxInFocus && this.currentPoint && this.lastMouseTarget) {
         void this.tryToUpdatePopup({
@@ -643,8 +643,8 @@ export class ContentHandler {
     //
     // See https://github.com/birchill/10ten-ja-reader/issues/658
     if (
-      ev.shiftKey &&
-      (ev.ctrlKey || ev.altKey || ev.metaKey || ev.key !== 'Shift')
+      event.shiftKey &&
+      (event.ctrlKey || event.altKey || event.metaKey || event.key !== 'Shift')
     ) {
       this.typingMode = true;
       return;
@@ -698,12 +698,12 @@ export class ContentHandler {
       return;
     }
 
-    if (this.handleKey(ev.key, ev.ctrlKey)) {
+    if (this.handleKey(event.key, event.ctrlKey)) {
       // We handled the key stroke so we should break out of typing mode.
       this.typingMode = false;
 
-      ev.stopPropagation();
-      ev.preventDefault();
+      event.stopPropagation();
+      event.preventDefault();
     } else if (textBoxInFocus) {
       // If we are focussed on a textbox and the keystroke wasn't one we handle
       // one, enter typing mode and hide the pop-up.
@@ -714,14 +714,14 @@ export class ContentHandler {
     }
   }
 
-  onKeyUp(ev: KeyboardEvent) {
+  onKeyUp(event: KeyboardEvent) {
     if (!this.kanjiLookupMode) {
       return;
     }
 
-    if (ev.key === 'Shift') {
+    if (event.key === 'Shift') {
       this.kanjiLookupMode = false;
-      ev.preventDefault();
+      event.preventDefault();
     }
   }
 
@@ -814,14 +814,14 @@ export class ContentHandler {
     return true;
   }
 
-  onFocusIn(ev: FocusEvent) {
+  onFocusIn(event: FocusEvent) {
     if (this.textHighlighter.isUpdatingFocus()) {
       return;
     }
 
     // If we focussed on a text box, assume we want to type in it and ignore
     // keystrokes until we get another mousemove.
-    this.typingMode = !!ev.target && isEditableNode(ev.target as Node);
+    this.typingMode = !!event.target && isEditableNode(event.target as Node);
 
     // If we entered typing mode clear the highlight.
     if (this.typingMode) {
@@ -830,9 +830,9 @@ export class ContentHandler {
   }
 
   // Test if an incoming keyboard event matches the hold-to-show key sequence.
-  isHoldToShowKeyStroke(ev: KeyboardEvent): HoldToShowKeyType {
+  isHoldToShowKeyStroke(event: KeyboardEvent): HoldToShowKeyType {
     // Check if it is a modifier at all
-    if (!['Alt', 'AltGraph', 'Control'].includes(ev.key)) {
+    if (!['Alt', 'AltGraph', 'Control'].includes(event.key)) {
       return 0;
     }
 
@@ -840,11 +840,13 @@ export class ContentHandler {
       (this.config.holdToShowKeys.length ? HoldToShowKeyType.Text : 0) |
       (this.config.holdToShowImageKeys.length ? HoldToShowKeyType.Images : 0);
 
-    return definedKeys & this.getActiveHoldToShowKeys(ev);
+    return definedKeys & this.getActiveHoldToShowKeys(event);
   }
 
   // Test if hold-to-show keys are set for a given a UI event
-  getActiveHoldToShowKeys(ev: MouseEvent | KeyboardEvent): HoldToShowKeyType {
+  getActiveHoldToShowKeys(
+    event: MouseEvent | KeyboardEvent
+  ): HoldToShowKeyType {
     const areKeysDownForSetting = (
       setting: 'holdToShowKeys' | 'holdToShowImageKeys'
     ) => {
@@ -857,11 +859,15 @@ export class ContentHandler {
       }
 
       // Check if all the configured hold-to-show keys are pressed down
-      const isAltGraph = ev.getModifierState('AltGraph');
-      if (this.config[setting].includes('Alt') && !ev.altKey && !isAltGraph) {
+      const isAltGraph = event.getModifierState('AltGraph');
+      if (
+        this.config[setting].includes('Alt') &&
+        !event.altKey &&
+        !isAltGraph
+      ) {
         return false;
       }
-      if (this.config[setting].includes('Ctrl') && !ev.ctrlKey) {
+      if (this.config[setting].includes('Ctrl') && !event.ctrlKey) {
         return false;
       }
 

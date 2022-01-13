@@ -69,9 +69,9 @@ const UPDATE_THRESHOLD_MS = 12 * 60 * 60 * 1000; // 12 hours
 
 const jpdictWorker = new Worker('./10ten-ja-jpdict.js', { type: 'module' });
 
-jpdictWorker.onmessageerror = (evt: MessageEvent) => {
-  console.error(`Worker error: ${JSON.stringify(evt)}`);
-  Bugsnag.notify(`Worker error: ${JSON.stringify(evt)}`);
+jpdictWorker.onmessageerror = (event: MessageEvent) => {
+  console.error(`Worker error: ${JSON.stringify(event)}`);
+  Bugsnag.notify(`Worker error: ${JSON.stringify(event)}`);
 };
 
 // Local state tracking
@@ -161,8 +161,8 @@ export async function initDb({
   Bugsnag.leaveBreadcrumb(`Got last update time of ${lastUpdateTime}`);
 
   // Register the listener
-  jpdictWorker.onmessage = async (evt: MessageEvent) => {
-    const message = evt.data as JpdictWorkerMessage;
+  jpdictWorker.onmessage = async (event: MessageEvent) => {
+    const message = event.data as JpdictWorkerMessage;
     switch (message.type) {
       case 'dbstateupdated':
         {

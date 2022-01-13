@@ -825,14 +825,14 @@ export class Config {
     }
   }
 
-  private onHoverCapabilityChange(ev: MediaQueryListEvent) {
+  private onHoverCapabilityChange(event: MediaQueryListEvent) {
     if (this.showPuck !== 'auto') {
       return;
     }
 
     const changes: ChangeDict = {
       'computed:showPuck': {
-        newValue: ev.matches ? 'hide' : 'show',
+        newValue: event.matches ? 'hide' : 'show',
       },
     };
 

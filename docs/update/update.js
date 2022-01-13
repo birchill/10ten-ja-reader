@@ -5,8 +5,8 @@
 window.addEventListener('DOMContentLoaded', () => {
   const optionsLinks = document.querySelectorAll('.options-link');
   for (const link of Array.from(optionsLinks)) {
-    link.addEventListener('click', (evt) => {
-      evt.preventDefault();
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
       chrome.runtime.openOptionsPage();
     });
   }

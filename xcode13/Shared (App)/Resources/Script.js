@@ -2,11 +2,11 @@ function show(platform, enabled) {
   document.body.classList.add(`platform-${platform}`);
 
   if (typeof enabled === 'boolean') {
-    document.body.classList.toggle(`state-on`, enabled);
-    document.body.classList.toggle(`state-off`, !enabled);
+    document.body.classList.toggle('state-on', enabled);
+    document.body.classList.toggle('state-off', !enabled);
   } else {
-    document.body.classList.remove(`state-on`);
-    document.body.classList.remove(`state-off`);
+    document.body.classList.remove('state-on');
+    document.body.classList.remove('state-off');
   }
 
   setupCarousel();
@@ -37,14 +37,14 @@ function setupCarousel() {
   };
 
   for (const slide of slides) {
-    slide.addEventListener('click', (evt) => {
+    slide.addEventListener('click', () => {
       select(Math.min(selected + 1, slides.length - 1));
     });
   }
 
   for (const dot of dots) {
-    dot.addEventListener('click', (evt) => {
-      const index = dots.findIndex((dot) => dot === evt.target);
+    dot.addEventListener('click', (event) => {
+      const index = dots.findIndex((dot) => dot === event.target);
       if (index === -1) {
         return;
       }

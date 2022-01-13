@@ -477,8 +477,8 @@ function renderTabBar({
     const a = document.createElementNS(HTML_NS, 'a') as HTMLAnchorElement;
     if (series !== selectedTab && onSwitchDictionary) {
       a.href = '#';
-      a.onclick = (e: Event) => {
-        e.preventDefault();
+      a.onclick = (event: Event) => {
+        event.preventDefault();
         onSwitchDictionary(series);
       };
     }
@@ -567,8 +567,8 @@ function renderCloseButton(onClosePopup: () => void): HTMLElement {
     'aria-label',
     browser.i18n.getMessage('popup_close_label')
   );
-  closeButton.onclick = (evt: MouseEvent) => {
-    evt.preventDefault();
+  closeButton.onclick = (event: MouseEvent) => {
+    event.preventDefault();
     onClosePopup();
   };
   close.append(closeButton);

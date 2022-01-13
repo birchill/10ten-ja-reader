@@ -300,8 +300,8 @@ async function onDbStatusUpdated(state: JpdictStateWithFallback) {
 
 const dbListeners: Array<Browser.Runtime.Port> = [];
 
-function isDbListenerMessage(evt: unknown): evt is DbListenerMessage {
-  return typeof evt === 'object' && typeof (evt as any).type === 'string';
+function isDbListenerMessage(event: unknown): event is DbListenerMessage {
+  return typeof event === 'object' && typeof (event as any).type === 'string';
 }
 
 browser.runtime.onConnect.addListener((port: Browser.Runtime.Port) => {
@@ -314,12 +314,12 @@ browser.runtime.onConnect.addListener((port: Browser.Runtime.Port) => {
   // Push initial state to new listener
   notifyDbListeners(port);
 
-  port.onMessage.addListener(async (evt: unknown) => {
-    if (!isDbListenerMessage(evt)) {
+  port.onMessage.addListener(async (event: unknown) => {
+    if (!isDbListenerMessage(event)) {
       return;
     }
 
-    switch (evt.type) {
+    switch (event.type) {
       case 'updatedb':
         await config.ready;
 

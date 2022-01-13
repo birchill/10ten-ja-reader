@@ -122,53 +122,59 @@ function completeForm() {
   // l10n
   translateDoc();
 
-  document.getElementById('highlightText')!.addEventListener('click', (evt) => {
-    config.noTextHighlight = !(evt.target as HTMLInputElement).checked;
-  });
+  document
+    .getElementById('highlightText')!
+    .addEventListener('click', (event) => {
+      config.noTextHighlight = !(event.target as HTMLInputElement).checked;
+    });
 
   document
     .getElementById('contextMenuEnable')!
-    .addEventListener('click', (evt) => {
-      config.contextMenuEnable = (evt.target as HTMLInputElement).checked;
+    .addEventListener('click', (event) => {
+      config.contextMenuEnable = (event.target as HTMLInputElement).checked;
     });
 
   const toolbarIconOptions = Array.from(
     document.querySelectorAll('input[type=radio][name=toolbarIcon]')
   );
   for (const option of toolbarIconOptions) {
-    option.addEventListener('change', (evt) => {
-      const toolbarIcon = (evt.target as HTMLInputElement).value as
+    option.addEventListener('change', (event) => {
+      const toolbarIcon = (event.target as HTMLInputElement).value as
         | 'default'
         | 'sky';
       config.toolbarIcon = toolbarIcon;
     });
   }
 
-  document.getElementById('showPriority')!.addEventListener('click', (evt) => {
-    config.showPriority = (evt.target as HTMLInputElement).checked;
-    renderPopupStyleSelect();
-  });
+  document
+    .getElementById('showPriority')!
+    .addEventListener('click', (event) => {
+      config.showPriority = (event.target as HTMLInputElement).checked;
+      renderPopupStyleSelect();
+    });
 
-  document.getElementById('showRomaji')!.addEventListener('click', (evt) => {
-    config.showRomaji = (evt.target as HTMLInputElement).checked;
+  document.getElementById('showRomaji')!.addEventListener('click', (event) => {
+    config.showRomaji = (event.target as HTMLInputElement).checked;
     renderPopupStyleSelect();
   });
 
   document
     .getElementById('showDefinitions')!
-    .addEventListener('click', (evt) => {
-      config.readingOnly = !(evt.target as HTMLInputElement).checked;
+    .addEventListener('click', (event) => {
+      config.readingOnly = !(event.target as HTMLInputElement).checked;
       renderPopupStyleSelect();
     });
 
-  document.getElementById('accentDisplay')!.addEventListener('input', (evt) => {
-    config.accentDisplay = (evt.target as HTMLSelectElement)
-      .value as AccentDisplay;
-    renderPopupStyleSelect();
-  });
+  document
+    .getElementById('accentDisplay')!
+    .addEventListener('input', (event) => {
+      config.accentDisplay = (event.target as HTMLSelectElement)
+        .value as AccentDisplay;
+      renderPopupStyleSelect();
+    });
 
-  document.getElementById('posDisplay')!.addEventListener('input', (evt) => {
-    config.posDisplay = (evt.target as HTMLSelectElement)
+  document.getElementById('posDisplay')!.addEventListener('input', (event) => {
+    config.posDisplay = (event.target as HTMLSelectElement)
       .value as PartOfSpeechDisplay;
     renderPopupStyleSelect();
   });
@@ -177,20 +183,20 @@ function completeForm() {
     document.querySelectorAll('input[type=radio][name=tabDisplay]')
   );
   for (const option of tabDisplayOptions) {
-    option.addEventListener('change', (evt) => {
-      const tabDisplay = (evt.target as HTMLInputElement).value as TabDisplay;
+    option.addEventListener('change', (event) => {
+      const tabDisplay = (event.target as HTMLInputElement).value as TabDisplay;
       config.tabDisplay = tabDisplay;
     });
   }
 
-  document.getElementById('fxCurrency')!.addEventListener('input', (evt) => {
-    config.fxCurrency = (evt.target as HTMLSelectElement).value;
+  document.getElementById('fxCurrency')!.addEventListener('input', (event) => {
+    config.fxCurrency = (event.target as HTMLSelectElement).value;
   });
 
   document
     .getElementById('showKanjiComponents')!
-    .addEventListener('click', (evt) => {
-      config.showKanjiComponents = (evt.target as HTMLInputElement).checked;
+    .addEventListener('click', (event) => {
+      config.showKanjiComponents = (event.target as HTMLInputElement).checked;
     });
 
   if (browser.management) {
@@ -495,9 +501,9 @@ function configureCommands() {
   const toggleKeyTextbox = document.getElementById(
     'toggle-key'
   ) as HTMLInputElement;
-  toggleKeyTextbox.addEventListener('keydown', (evt) => {
-    let key = evt.key;
-    if (evt.key.length === 1) {
+  toggleKeyTextbox.addEventListener('keydown', (event) => {
+    let key = event.key;
+    if (event.key.length === 1) {
       key = key.toUpperCase();
     }
 
@@ -506,14 +512,14 @@ function configureCommands() {
       // allow the default action of adding them to the text input. For other
       // keys we don't handle though (e.g. Tab) we probably want to allow the
       // default action.
-      if (evt.key.length === 1) {
-        evt.preventDefault();
+      if (event.key.length === 1) {
+        event.preventDefault();
       }
       return;
     }
 
     toggleKeyTextbox.value = key;
-    evt.preventDefault();
+    event.preventDefault();
     void updateToggleKey();
   });
 
@@ -777,8 +783,8 @@ function configurePuckSettings() {
     )
   );
   for (const option of showPuckOptions) {
-    option.addEventListener('change', (evt) => {
-      const setting = (evt.target as HTMLInputElement).value as
+    option.addEventListener('change', (event) => {
+      const setting = (event.target as HTMLInputElement).value as
         | 'auto'
         | 'show'
         | 'hide';
@@ -836,9 +842,9 @@ function createKanjiReferences() {
     checkbox.setAttribute('type', 'checkbox');
     checkbox.setAttribute('id', `ref-${ref}`);
     checkbox.setAttribute('name', ref);
-    checkbox.addEventListener('click', (evt) => {
+    checkbox.addEventListener('click', (event) => {
       config.updateKanjiReferences({
-        [ref]: (evt.target as HTMLInputElement).checked,
+        [ref]: (event.target as HTMLInputElement).checked,
       });
     });
 
@@ -941,11 +947,13 @@ function fillVals() {
 
 let browserPort: Browser.Runtime.Port | undefined;
 
-function isDbStateUpdatedMessage(evt: unknown): evt is DbStateUpdatedMessage {
+function isDbStateUpdatedMessage(
+  event: unknown
+): event is DbStateUpdatedMessage {
   return (
-    typeof evt === 'object' &&
-    typeof (evt as any).type === 'string' &&
-    (evt as any).type === 'dbstateupdated'
+    typeof event === 'object' &&
+    typeof (event as any).type === 'string' &&
+    (event as any).type === 'dbstateupdated'
   );
 }
 
@@ -965,8 +973,8 @@ window.onload = async () => {
 
   // Listen to changes to the database.
   browserPort = browser.runtime.connect(undefined, { name: 'options' });
-  browserPort.onMessage.addListener((evt: unknown) => {
-    if (isDbStateUpdatedMessage(evt)) {
+  browserPort.onMessage.addListener((event: unknown) => {
+    if (isDbStateUpdatedMessage(event)) {
       // For Runtime.Port.postMessage Chrome appears to serialize objects using
       // JSON serialization (not structured cloned). As a result, any Date
       // objects will be transformed into strings.
@@ -976,18 +984,18 @@ window.onload = async () => {
       // day of TypeScript wrestling so instead we just manually reach into
       // this object and convert the fields known to possibly contain dates
       // into dates.
-      if (typeof evt.state.updateState.lastCheck === 'string') {
-        evt.state.updateState.lastCheck = new Date(
-          evt.state.updateState.lastCheck
+      if (typeof event.state.updateState.lastCheck === 'string') {
+        event.state.updateState.lastCheck = new Date(
+          event.state.updateState.lastCheck
         );
       }
-      if (typeof evt.state.updateError?.nextRetry === 'string') {
-        evt.state.updateError.nextRetry = new Date(
-          evt.state.updateError.nextRetry
+      if (typeof event.state.updateError?.nextRetry === 'string') {
+        event.state.updateError.nextRetry = new Date(
+          event.state.updateError.nextRetry
         );
       }
 
-      updateDatabaseSummary(evt);
+      updateDatabaseSummary(event);
     }
   });
 
@@ -1036,9 +1044,9 @@ window.onunload = () => {
   }
 };
 
-function updateDatabaseSummary(evt: DbStateUpdatedMessage) {
+function updateDatabaseSummary(event: DbStateUpdatedMessage) {
   updateDatabaseBlurb();
-  updateDatabaseStatus(evt);
+  updateDatabaseStatus(event);
 }
 
 function updateDatabaseBlurb() {
@@ -1089,8 +1097,8 @@ function updateDatabaseBlurb() {
   blurb.append(accentPara);
 }
 
-function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
-  const { updateState } = evt.state;
+function updateDatabaseStatus(event: DbStateUpdatedMessage) {
+  const { updateState } = event.state;
 
   const statusElem = document.querySelector('.db-summary-status')!;
   empty(statusElem);
@@ -1101,7 +1109,7 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
 
   switch (updateState.state) {
     case 'idle':
-      void updateIdleStateSummary(evt, statusElem);
+      void updateIdleStateSummary(event, statusElem);
       break;
 
     case 'checking': {
@@ -1168,7 +1176,7 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
       updateButton.classList.add('browser-style');
       updateButton.setAttribute('type', 'button');
       const isUnavailable = allDataSeries.some(
-        (series) => evt.state[series].state === DataSeriesState.Unavailable
+        (series) => event.state[series].state === DataSeriesState.Unavailable
       );
       updateButton.textContent = browser.i18n.getMessage(
         updateState.state === 'idle' && !isUnavailable
@@ -1210,10 +1218,10 @@ function updateDatabaseStatus(evt: DbStateUpdatedMessage) {
 }
 
 async function updateIdleStateSummary(
-  evt: DbStateUpdatedMessage,
+  event: DbStateUpdatedMessage,
   statusElem: Element
 ) {
-  const { updateError } = evt.state;
+  const { updateError } = event.state;
 
   if (!!updateError && updateError.name === 'OfflineError') {
     const infoDiv = document.createElement('div');
@@ -1280,7 +1288,7 @@ async function updateIdleStateSummary(
   // If we have no version information, seem if we have a suitable summary to
   // display instead.
   const hasVersionInfo = allMajorDataSeries.some(
-    (series) => !!evt.state[series].version
+    (series) => !!event.state[series].version
   );
   if (!hasVersionInfo) {
     const summaryStates: Array<[DataSeriesState, string]> = [
@@ -1290,7 +1298,7 @@ async function updateIdleStateSummary(
     ];
     for (const [state, key] of summaryStates) {
       if (
-        allMajorDataSeries.some((series) => evt.state[series].state === state)
+        allMajorDataSeries.some((series) => event.state[series].state === state)
       ) {
         const infoDiv = document.createElement('div');
         infoDiv.classList.add('db-summary-info');
@@ -1308,7 +1316,7 @@ async function updateIdleStateSummary(
   gridDiv.classList.add('db-summary-version-grid');
 
   for (const series of allMajorDataSeries) {
-    const versionInfo = evt.state[series].version;
+    const versionInfo = event.state[series].version;
     if (!versionInfo) {
       continue;
     }

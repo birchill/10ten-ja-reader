@@ -28,7 +28,7 @@ type FlatFileDatabaseEvent =
   | { type: 'loaded' }
   | { type: 'error'; error: any; willRetry: boolean };
 
-type FlatFileDatabaseListener = (evt: FlatFileDatabaseEvent) => void;
+type FlatFileDatabaseListener = (event: FlatFileDatabaseEvent) => void;
 
 export class FlatFileDatabase {
   bugsnag?: BugsnagClient;
@@ -212,10 +212,10 @@ export class FlatFileDatabase {
     this.listeners = this.listeners.filter((l) => l !== listener);
   }
 
-  notifyListeners(evt: FlatFileDatabaseEvent) {
+  notifyListeners(event: FlatFileDatabaseEvent) {
     const listenersCopy = this.listeners.slice();
     for (const listener of listenersCopy) {
-      listener(evt);
+      listener(event);
     }
   }
 }
@@ -427,8 +427,8 @@ export class FlatFileDatabaseLoader {
     return this.loadPromise;
   }
 
-  private onFlatFileDatabaseUpdated(evt: FlatFileDatabaseEvent) {
-    switch (evt.type) {
+  private onFlatFileDatabaseUpdated(event: FlatFileDatabaseEvent) {
+    switch (event.type) {
       case 'loaded':
         this.loadState = 'ok';
         this.loadError = undefined;
@@ -450,7 +450,7 @@ export class FlatFileDatabaseLoader {
         break;
 
       case 'error':
-        if (evt.willRetry) {
+        if (event.willRetry) {
           this.loadState = 'retrying';
         } else {
           this.loadState = 'error';
@@ -459,9 +459,9 @@ export class FlatFileDatabaseLoader {
           this.flatFileDatabase?.removeListener(this.onFlatFileDatabaseUpdated);
           this.flatFileDatabase = undefined;
         }
-        this.loadError = evt.error;
+        this.loadError = event.error;
         if (this.rejectLoad) {
-          this.rejectLoad(evt.error);
+          this.rejectLoad(event.error);
         }
         break;
     }

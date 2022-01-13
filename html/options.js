@@ -306,7 +306,7 @@ function completeForm() {
       keyInput.classList.add(`key-${setting.name}`);
       keyInput.dataset.key = key;
       keyBlock.appendChild(keyInput);
-      keyInput.addEventListener('click', (evt) => {
+      keyInput.addEventListener('click', () => {
         const checkedKeys = document.querySelectorAll(
           `input[type=checkbox].key-${setting.name}:checked`
         );
@@ -336,30 +336,32 @@ function completeForm() {
 
   // TODO: Use REF_ABBREVIATIONS to generate the HTML for options.html too.
   for (const ref of Object.keys(config.kanjiReferences)) {
-    document.getElementById(ref).addEventListener('click', (evt) => {
+    document.getElementById(ref).addEventListener('click', (event) => {
       config.updateKanjiReferences({
-        [ref]: evt.target.checked,
+        [ref]: event.target.checked,
       });
     });
   }
 
   document
     .getElementById('showDefinitions')
-    .addEventListener('click', (evt) => {
-      config.readingOnly = !evt.target.checked;
+    .addEventListener('click', (event) => {
+      config.readingOnly = !event.target.checked;
     });
-  document.getElementById('highlightText').addEventListener('click', (evt) => {
-    config.noTextHighlight = !evt.target.checked;
-  });
+  document
+    .getElementById('highlightText')
+    .addEventListener('click', (event) => {
+      config.noTextHighlight = !event.target.checked;
+    });
   document
     .getElementById('contextMenuEnable')
-    .addEventListener('click', (evt) => {
-      config.contextMenuEnable = evt.target.checked;
+    .addEventListener('click', (event) => {
+      config.contextMenuEnable = event.target.checked;
     });
   document
     .getElementById('showKanjiComponents')
-    .addEventListener('click', (evt) => {
-      config.showKanjiComponents = evt.target.checked;
+    .addEventListener('click', (event) => {
+      config.showKanjiComponents = event.target.checked;
     });
 }
 

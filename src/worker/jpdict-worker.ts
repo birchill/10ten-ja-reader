@@ -23,14 +23,14 @@ import {
 
 declare let self: DedicatedWorkerGlobalScope;
 
-self.onmessage = async (evt: MessageEvent) => {
+self.onmessage = async (event: MessageEvent) => {
   // We seem to get random events here occasionally. Not sure where they come
   // from.
-  if (!evt.data) {
+  if (!event.data) {
     return;
   }
 
-  switch ((evt.data as JpdictWorkerMessage).type) {
+  switch ((event.data as JpdictWorkerMessage).type) {
     case 'querystate':
       if (await dbIsInitialized) {
         doDbStateNotification();
@@ -40,8 +40,8 @@ self.onmessage = async (evt: MessageEvent) => {
     case 'update':
       try {
         await updateAllSeries({
-          lang: evt.data.lang,
-          forceUpdate: evt.data.force,
+          lang: event.data.lang,
+          forceUpdate: event.data.force,
         });
       } catch (error) {
         self.postMessage(notifyError({ error }));
