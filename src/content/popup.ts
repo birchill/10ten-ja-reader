@@ -49,7 +49,14 @@ import { NumberMeta } from './numbers';
 import { getDob } from '../utils/age';
 import { renderCopyOverlay } from './popup/copy-overlay';
 import { getLangTag } from './popup/lang-tag';
-import { renderBook, renderKanjiIcon, renderPerson } from './popup/icons';
+import {
+  renderBook,
+  renderCog,
+  renderCross,
+  renderKanjiIcon,
+  renderPerson,
+} from './popup/icons';
+import { html } from './popup/builder';
 
 // Update NumberFormatOptions definition
 declare global {
@@ -509,79 +516,36 @@ function renderTabBar({
 }
 
 function renderSettingsButton(onShowSettings: () => void): HTMLElement {
-  const settings = document.createElementNS(HTML_NS, 'div');
-  settings.classList.add('settings');
-
-  const settingsButton = document.createElementNS(
-    HTML_NS,
-    'button'
-  ) as HTMLButtonElement;
-  settingsButton.classList.add('settings-button');
-  settingsButton.type = 'button';
-  settingsButton.setAttribute(
-    'aria-label',
-    browser.i18n.getMessage('popup_settings_label')
+  const settingsButton = html(
+    'button',
+    {
+      'aria-label': browser.i18n.getMessage('popup_settings_label'),
+      class: 'settings-button',
+      type: 'button',
+    },
+    renderCog()
   );
   settingsButton.onclick = onShowSettings;
-  settings.append(settingsButton);
 
-  const settingsSvg = document.createElementNS(SVG_NS, 'svg');
-  settingsSvg.setAttribute('viewBox', '0 0 24 24');
-
-  const circle1 = document.createElementNS(SVG_NS, 'circle');
-  circle1.setAttribute('cx', '21.5');
-  circle1.setAttribute('cy', '21.5');
-  circle1.setAttribute('r', '1.5');
-  circle1.style.fill = 'currentColor';
-  circle1.style.stroke = 'none';
-  settingsSvg.append(circle1);
-
-  const circle2 = document.createElementNS(SVG_NS, 'circle');
-  circle2.setAttribute('cx', '12');
-  circle2.setAttribute('cy', '12');
-  circle2.setAttribute('r', '4');
-  settingsSvg.append(circle2);
-
-  const path = document.createElementNS(SVG_NS, 'path');
-  path.setAttribute(
-    'd',
-    'M10.48 3.28a2 2 0 003 0 2.05 2.05 0 013.57 1.48 2.05 2.05 0 002.15 2.15 2.05 2.05 0 011.48 3.57 2 2 0 000 3 2.05 2.05 0 01-1.48 3.57 2.05 2.05 0 00-2.15 2.15 2.05 2.05 0 01-3.57 1.48 2 2 0 00-3 0 2.05 2.05 0 01-3.57-1.48 2.05 2.05 0 00-2.15-2.15 2.05 2.05 0 01-1.48-3.57 2 2 0 000-3 2.05 2.05 0 011.48-3.57 2.05 2.05 0 002.15-2.15 2.05 2.05 0 013.57-1.48z'
-  );
-  settingsSvg.append(path);
-
-  settingsButton.append(settingsSvg);
-
-  return settings;
+  return html('div', { class: 'settings' }, settingsButton);
 }
 
 function renderCloseButton(onClosePopup: () => void): HTMLElement {
-  const close = document.createElementNS(HTML_NS, 'div');
-  close.classList.add('close');
-
-  const closeButton = document.createElementNS(
-    HTML_NS,
-    'button'
-  ) as HTMLButtonElement;
-  closeButton.classList.add('close-button');
-  closeButton.type = 'button';
-  closeButton.setAttribute(
-    'aria-label',
-    browser.i18n.getMessage('popup_close_label')
+  const closeButton = html(
+    'button',
+    {
+      'aria-label': browser.i18n.getMessage('popup_close_label'),
+      class: 'close-button',
+      type: 'button',
+    },
+    renderCross()
   );
   closeButton.onclick = (event: MouseEvent) => {
     event.preventDefault();
     onClosePopup();
   };
-  close.append(closeButton);
 
-  const crossSvg = document.createElementNS(SVG_NS, 'svg');
-  crossSvg.setAttribute('viewBox', '0 0 24 24');
-  const path = document.createElementNS(SVG_NS, 'path');
-  path.setAttribute('d', 'M6 18L18 6M6 6l12 12');
-  crossSvg.append(path);
-  closeButton.append(crossSvg);
-
-  return close;
+  return html('div', { class: 'close' }, closeButton);
 }
 
 function renderWordEntries({

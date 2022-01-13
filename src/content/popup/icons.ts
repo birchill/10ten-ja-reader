@@ -66,6 +66,36 @@ export function renderClipboard(): SVGElement {
   );
 }
 
+export function renderCog(): SVGElement {
+  return svg(
+    'svg',
+    { viewBox: '0 0 24 24' },
+    svg('circle', {
+      cx: '21.5',
+      cy: '21.5',
+      r: '1.5',
+      fill: 'currentColor',
+      stroke: 'none',
+    }),
+    svg('circle', {
+      cx: '12',
+      cy: '12',
+      r: '4',
+    }),
+    svg('path', {
+      d: 'M10.48 3.28a2 2 0 003 0 2.05 2.05 0 013.57 1.48 2.05 2.05 0 002.15 2.15 2.05 2.05 0 011.48 3.57 2 2 0 000 3 2.05 2.05 0 01-1.48 3.57 2.05 2.05 0 00-2.15 2.15 2.05 2.05 0 01-3.57 1.48 2 2 0 00-3 0 2.05 2.05 0 01-3.57-1.48 2.05 2.05 0 00-2.15-2.15 2.05 2.05 0 01-1.48-3.57 2 2 0 000-3 2.05 2.05 0 011.48-3.57 2.05 2.05 0 002.15-2.15 2.05 2.05 0 013.57-1.48z',
+    })
+  );
+}
+
+export function renderCross(): SVGElement {
+  return svg(
+    'svg',
+    { viewBox: '0 0 24 24' },
+    svg('path', { d: 'M6 18L18 6M6 6l12 12' })
+  );
+}
+
 export function renderKanjiIcon(): SVGElement {
   return svg(
     'svg',
