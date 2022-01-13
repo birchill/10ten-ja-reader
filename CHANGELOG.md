@@ -1,39 +1,64 @@
-## Next
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based roughly on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+This project does _not_ adhere to semantic versioning—it's a consumer
+app.
+
+## [Unreleased]
+
+### Fixed
 
 - Don't show the age for a name entry when only a year is given, or when the
   name is not for a person
   ([#863](https://github.com/birchill/10ten-ja-reader/issues/863)).
 
-## 1.6.1 (2021-12-16) (Chrome, Edge, Safari)
+## [1.6.1] - 2021-12-16 (Chrome, Edge, Safari)
+
+### Fixed
 
 - Fixed looking up text in text boxes when the document is scrolled on
   Chrome/Edge/Safari
   ([#856](https://github.com/birchill/10ten-ja-reader/issues/856)).
 
-## 1.6.0 (2021-12-09)
+## [1.6.0] - 2021-12-09
 
-- Added support for copying entries from touch devices by tapping the entry.
-- Made copying to the clipboard work for HTTP sites
-  ([#157](https://github.com/birchill/10ten-ja-reader/issues/157)).
-- Added support for looking up words on touch screens by tapping the word
+### Added
+
+- Support for copying entries from touch devices by tapping the entry.
+- Support for looking up words on touch screens by tapping the word
   ([#845](https://github.com/birchill/10ten-ja-reader/issues/845)).
 
-## 1.5.0 (2021-11-08)
+### Fixed
 
-- Support for Google Docs annotated canvas.
+- Made copying to the clipboard work for HTTP sites
+  ([#157](https://github.com/birchill/10ten-ja-reader/issues/157)).
+
+## [1.5.0] - 2021-11-08
+
+### Added
+
+- Support for Google Docs' annotated canvas.
   Note that this does not yet work in Safari due to [Safari bug
   232781](https://bugs.webkit.org/show_bug.cgi?id=232781)
-- Hide senses that don't apply to the looked-up text.
 - Show the age next to names for people with birth dates.
 - Allow setting the hold to show keys in active tab mode too (Safari)
   ([#818](https://github.com/birchill/10ten-ja-reader/issues/818)).
+
+### Changed
+
+- Hide senses that don't apply to the looked-up text.
 - Replace "(trademark)" text with ™.
+
+### Fixed
+
 - Stop showing the popup for number-only matches in the name dictionary
   (e.g. 64)
   ([#811](https://github.com/birchill/10ten-ja-reader/issues/811)).
 - Fix formatting of options page on Firefox for Android (Nightly).
 
-## 1.4.8 (2021-10-21)
+## [1.4.8] - 2021-10-21
 
 - Stop interfering with interactive standalone SVG images
   ([#793](https://github.com/birchill/10ten-ja-reader/issues/793)).
@@ -42,11 +67,11 @@
   (e.g. the [Bibi EPUB reader](https://bibi.epub.link/))
   ([#803](https://github.com/birchill/10ten-ja-reader/issues/803))
 
-## 1.4.7 (2021-10-08)
+## [1.4.7] - 2021-10-08
 
 - Minor fixes to currency data fetching and error reporting.
 
-## 1.4.3 (2021-10-01) (Firefox, Chrome, Mac Safari, iOS Safari)
+## [1.4.3] - 2021-10-01 (Firefox, Chrome, Mac Safari, iOS Safari)
 
 - Expands numbers that include kanji characters and aren't in the dictionary
   (e.g. 9万8800, 365億).
@@ -60,17 +85,17 @@
   [bookwalker.jp](https://bookwalker.jp)'s popup window) on Safari better
   ([#773](https://github.com/birchill/10ten-ja-reader/issues/773)).
 
-## 1.4.2 (2021-09-24)
+## [1.4.2] - 2021-09-24
 
 - Added onboarding screens for iOS.
 - Made sure the pop-up and puck appear above various advertisements and headers.
 - Improved handling of various network errors.
 
-## 1.4.1 (2021-09-22) (Firefox, Chrome, Edge, Mac Safari)
+## [1.4.1] - 2021-09-22 (Firefox, Chrome, Edge, Mac Safari)
 
 - Made sure the currency list is sorted correctly in Safari.
 
-## 1.4.0 (2021-09-22) (iOS Safari)
+## [1.4.0] - 2021-09-22 (iOS Safari)
 
 - Added a "puck" for looking up words on touch screens.
   A **big** thanks to [@shirakaba](https://github.com/shirakaba) for making this
@@ -78,12 +103,12 @@
 - Add conversion of currency amounts (e.g. 8万 8千円, 100億円)
 - Fixed a shortcut key handling bug on Edge.
 
-## 1.3.6 (2021-09-16) (Firefox, Chrome, Edge)
+## [1.3.6] - 2021-09-16 (Firefox, Chrome, Edge)
 
 - Fixed a regression in popup layout when the tabs are on the side on touch
   screens
 
-## 1.3.5 (2021-09-15) (Firefox, Chrome)
+## [1.3.5] - 2021-09-15 (Firefox, Chrome)
 
 - Overhauled popup positioning to better correspond with old behavior
   ([#756](https://github.com/birchill/10ten-ja-reader/issues/756)).
@@ -91,29 +116,29 @@
   Azure portal
   ([#747](https://github.com/birchill/10ten-ja-reader/issues/747)).
 
-## 1.3.4 (2021-09-10) (Firefox, Chrome)
+## [1.3.4] - 2021-09-10 (Firefox, Chrome)
 
 - Fixed another popup positioning issue.
 
-## 1.3.3 (2021-09-09) (Firefox)
+## [1.3.3] - 2021-09-09 (Firefox)
 
 - Fixed some popup positioning issues.
 - Prevented the popup from showing for images where the alt text is 画像 (e.g. on
   Twitter).
 
-## 1.3.2 (2021-09-09) (Firefox)
+## [1.3.2] - 2021-09-09 (Firefox)
 
 - Stopped the popup for showing up for all numbers
   ([#749](https://github.com/birchill/10ten-ja-reader/issues/749)).
 
-## 1.3.1 (2021-09-08) (Firefox)
+## [1.3.1] - 2021-09-08 (Firefox)
 
 - Added recognition for counters that start with half-width numerals
   (e.g. 1つ, 14日, see
   [#709](https://github.com/birchill/10ten-ja-reader/issues/709)).
 - Fixed a bug when displaying the options page.
 
-## 1.3.0 (2021-09-08) (Firefox)
+## [1.3.0] - 2021-09-08 (Firefox)
 
 - Optimized lookup performance.
 - Restored the behavior where 10ten would translate the alt/title attributes on
@@ -123,7 +148,7 @@
   ([#140](https://github.com/birchill/10ten-ja-reader/issues/140)).
 - Thoroughly reworked popup positioning.
 
-## 1.2.3 (2021-08-26)
+## [1.2.3] - 2021-08-26
 
 - Made the lookup better reflect the cursor position
   ([#278](https://github.com/birchill/10ten-ja-reader/issues/278)).
@@ -134,7 +159,7 @@
 - Fixed a regression in the highlighting of text when only content that is not a
   dictionary entry matches.
 
-## 1.2.2 (2021-08-19)
+## [1.2.2] - 2021-08-19
 
 - Made popups for iframes be shown in the topmost window
   ([#13](https://github.com/birchill/10ten-ja-reader/issues/13)).
@@ -145,7 +170,7 @@
   character in a text box
   [#725](https://github.com/birchill/10ten-ja-reader/issues/725)).
 
-## 1.2.1 (2021-08-12)
+## [1.2.1] - 2021-08-12
 
 - Fixed handling of scrollable text boxes in Chromium and Safari browsers.
 - Made number handling a bit more tolerant so 8万 8千平㍍ etc. would be recognized.
@@ -154,7 +179,7 @@
 - Made the popup respond better when there is little horizontal space.
 - Avoided reporting errors for missing kanji components.
 
-## v1.2.0 (2021-07-29) (Firefox, Chrome, Safari, Edge)
+## [v1.2.0] - 2021-07-29 (Firefox, Chrome, Safari, Edge)
 
 - Added an option to display tabs on the sides or hide them altogether
   ([#688](https://github.com/birchill/10ten-ja-reader/issues/688)).
@@ -162,23 +187,23 @@
   ([#689](https://github.com/birchill/10ten-ja-reader/issues/689)).
 - Made katakana name matches show up in the name preview
 
-## 1.1.4 (2021-07-23) (Firefox)
+## [1.1.4] - 2021-07-23 (Firefox)
 
 - Made the dark theme have a higher contrast
   ([#692](https://github.com/birchill/10ten-ja-reader/issues/692)).
 
-## 1.1.3 (2021-07-22) (Firefox, Chrome, Safari, Edge)
+## [1.1.3] - 2021-07-22 (Firefox, Chrome, Safari, Edge)
 
 - Made icons a little more visible in disabled state when using dark mode
   ([#687](https://github.com/birchill/10ten-ja-reader/issues/687)).
 - Fixed handling of <kbd>Shift</kbd> on Safari.
 
-## 1.1.2 (2021-07-21) (Firefox)
+## [1.1.2] - 2021-07-21 (Firefox)
 
 - Fixed translation of "Control" key for "hold to show" keys on Mac.
 - Added a release not about failed updates.
 
-## 1.1.1 (2021-07-21) (Firefox)
+## [1.1.1] - 2021-07-21 (Firefox)
 
 - Added tabs for showing different dictionary results and made them interactive
   on touch screen devices
@@ -217,30 +242,30 @@
 
 - Added a hint indicating the keys that can be used to switch dictionaries.
 
-## 1.0.0 (2021-06-15) (Safari only)
+## [1.0.0] - 2021-06-15 (Safari only)
 
 - Added new default (gray) theme.
 - Made default theme switch between light/dark based on system dark-mode setting.
 - Tweaked colours and spacing of existing themes.
 
-## 0.5.14 (2021-06-19) (Chrome only)
+## [0.5.14] - 2021-06-19 (Chrome only)
 
 - Drop `tabs` permission from manifest.
 
-## 0.5.13 (2021-06-17) (not shipped)
+## [0.5.13] - 2021-06-17 (not shipped)
 
 - Drop `clipboardWrite` permission from Chromium manifest since it's not needed
   there.
 
-## 0.5.12 (2021-06-17) (Firefox, Edge)
+## [0.5.12] - 2021-06-17 (Firefox, Edge)
 
 - Fix some bugs in the lookup cache
 
-## 0.5.10 (2021-06-17)
+## [0.5.10] - 2021-06-17
 
 - Add a series of performance optimizations to improve lookup performance.
 
-## 0.5.8 (2021-06-10)
+## [0.5.8] - 2021-06-10
 
 - Added support for handling 旧字体 (_kyuujitai_, old characters)
   ([#604](https://github.com/birchill/10ten-ja-reader/issues/604))
@@ -250,24 +275,24 @@
 - Updated to latest changes to JMDict/JMnedict database (new field types, gloss
   types, dialects etc.)
 
-## 0.5.7 (2021-05-22)
+## [0.5.7] - 2021-05-22
 
 - Fixed handling of the first character of a text box
   ([#605](https://github.com/birchill/10ten-ja-reader/issues/605))
 - Made Rikaichamp better able to recognize covered-up text such as is used on
   [asahi.com](https://asahi.com) and [nikkei.com](https://nikkei.com)
 
-## 0.5.5 (2021-05-11)
+## [0.5.5] - 2021-05-11
 
 - Fixed release infrastructure and tweaked options page.
 
-## 0.5.3 (2021-05-10)
+## [0.5.3] - 2021-05-10
 
 - Fixed coloring of kanji components when viewing text documents.
 - Fixed a regression in copy mode meaning the visual indication that it
   finished would never show.
 
-## 0.5.2 (2021-04-29)
+## [0.5.2] - 2021-04-29
 
 - Fixed popup positioning for documents in quirks mode
   ([#576](https://github.com/birchill/10ten-ja-reader/issues/576))
@@ -277,18 +302,18 @@
   ([#584](https://github.com/birchill/10ten-ja-reader/issues/584))
 - Made Rikaichamp be enabled earlier in the document load cycle.
 
-## 0.5.1 (2021-04-19)
+## [0.5.1] - 2021-04-19
 
 - Make <kbd>j</kbd> / <kbd>k</kbd> keys wrap-around when they reach the limit.
 
-## 0.5.0 (2021-04-17)
+## [0.5.0] - 2021-04-17
 
 - Adds ability to move the popup window using the <kbd>j</kbd> / <kbd>k</kbd>
   keys.
   Disabled by default. Please enable from the options screen.
   ([#109](https://github.com/birchill/10ten-ja-reader/issues/109))
 
-## 0.4.0 (2021-04-08)
+## [0.4.0] - 2021-04-08
 
 - Switched to using IndexedDB database for looking up words
 
@@ -308,13 +333,13 @@
 - Made Rikaichamp recognize the full range of characters in CJK Unified
   Ideographs Extension B so that some more rare kanji are recognized.
 
-## 0.3.5 (2021-03-19)
+## [0.3.5] - 2021-03-19
 
 - Improved popup positioning for vertical text (and hopefully some other
   situations too).
 - Improved error handling for low disk space situations.
 
-## 0.3.4 (2021-03-01)
+## [0.3.4] - 2021-03-01
 
 - Made rikaichamp traverse text in `inline-block` elements so that it can
   read YouTube subtitles with ruby
@@ -322,7 +347,7 @@
 - (Hopefully) fixed handling of low disk space situations
   ([#428](https://github.com/birchill/10ten-ja-reader/issues/428))
 
-## 0.3.3 (2020-12-09)
+## [0.3.3] - 2020-12-09
 
 - Moved display of part-of-speech labels to the start of the definition
   and grouped them when they are repetitive
@@ -342,7 +367,7 @@
   with Rikaichamp's styles
   ([#144](https://github.com/birchill/10ten-ja-reader/issues/144))
 
-## 0.3.2 (2020-12-03)
+## [0.3.2] - 2020-12-03
 
 - Made all kanji headwords be shown for an entry, not just the matching ones
   ([#438](https://github.com/birchill/10ten-ja-reader/issues/438)).
@@ -365,12 +390,12 @@
 - Localized a few hardcoded English strings
   with help from [@SaltfishAmi](https://github.com/SaltfishAmi)
 
-## 0.3.1 (2020-11-26)
+## [0.3.1] - 2020-11-26
 
 - Fix an issue with the SVG star being too large when upgrading and the old
   stylesheet is still in effect.
 
-## 0.3.0 (2020-11-26)
+## [0.3.0] - 2020-11-26
 
 - Rewrote word definition display to use structured data.
   - Pitch accent information is displayed.
@@ -380,7 +405,7 @@
     frequency
     (★ for common words and ☆ for somewhat common words)
 
-## 0.2.6 (2020-09-11)
+## [0.2.6] - 2020-09-11
 
 - Made name preview not show up for hiragana-only matches
   ([#372](https://github.com/birchill/10ten-ja-reader/issues/372)).
@@ -389,30 +414,30 @@
   ([#374](https://github.com/birchill/10ten-ja-reader/issues/374)).
 - Updated word dictionary to 2020-09-09 snapshot.
 
-## 0.2.5 (2020-09-09)
+## [0.2.5] - 2020-09-09
 
 - Updated Chinese (simplified) localization.
 - Made name preview feature show up to three results.
 - Updated word dictionary to 2020-09-08 snapshot.
 
-## 0.2.4 (2020-09-08)
+## [0.2.4] - 2020-09-08
 
 - Further tweaks to error reporting.
 
-## 0.2.3 (2020-09-08)
+## [0.2.3] - 2020-09-08
 
 - Really fix error reporting.
 
-## 0.2.2 (2020-09-08)
+## [0.2.2] - 2020-09-08
 
 - Fixed error reporting.
 
-## 0.2.1 (2020-09-08)
+## [0.2.1] - 2020-09-08
 
 - Fixed a bug that would cause name data not to be immediately downloaded when
   updating.
 
-## 0.2.0 (2020-09-08)
+## [0.2.0] - 2020-09-08
 
 - Made names data be downloaded out-of-band. As a result names data is
   updated weekly and does not consume memory.
@@ -427,7 +452,7 @@
   ([#256](https://github.com/birchill/10ten-ja-reader/issues/256)).
 - Updated word dictionary to 2020-09-06 snapshot
 
-## 0.1.20 (2020-08-11)
+## [0.1.20] - 2020-08-11
 
 - Added Chinese (simplified) localization
   thanks to [@SaltfishAmi](https://github.com/SaltfishAmi)
@@ -438,7 +463,7 @@
 - Added formatting for phantom kanji and kokuji kanji metadata
 - Updated word and name dictionaries to 2020-08-10 snapshot
 
-## 0.1.19 (2020-06-24)
+## [0.1.19] - 2020-06-24
 
 - Fixed recognition of irregular verbs いらっしゃいます and おっしゃいます
   ([#303](https://github.com/birchill/10ten-ja-reader/issues/303))
@@ -455,7 +480,7 @@
   ([#286](https://github.com/birchill/10ten-ja-reader/issues/286))
 - Updated word and name dictionaries to 2020-06-23 snapshot
 
-## 0.1.18 (2020-05-18)
+## [0.1.18] - 2020-05-18
 
 - Ignore <kbd>Shift</kbd> when combined with other modifier keys
   ([#235](https://github.com/birchill/10ten-ja-reader/issues/235))
@@ -468,7 +493,7 @@
   ([#264](https://github.com/birchill/10ten-ja-reader/issues/264))
 - Updated word and name dictionaries to 2020-05-17 snapshot.
 
-## 0.1.17 (2020-04-31)
+## [0.1.17] - 2020-04-31
 
 - Added support for recognizing and converting Japanese era years
   昭和５６年、令和元年、平成三十一年 etc.
@@ -479,89 +504,89 @@
   ([#73](https://github.com/birchill/10ten-ja-reader/issues/73))
 - Updated word and name dictionaries to 2020-04-12 snapshot.
 
-## 0.1.16 (2020-01-07)
+## [0.1.16] - 2020-01-07
 
 - Made dictionary matching not split up yo-on like じゃ
   ([#49](https://github.com/birchill/10ten-ja-reader/issues/49))
 - Tightened up error reporting
 - Updated word and name dictionaries to 2020-01-06 snapshot.
 
-## 0.1.15 (2019-12-23)
+## [0.1.15] - 2019-12-23
 
 - Made database handling (hopefully) more robust
 
-## 0.1.14 (2019-12-12)
+## [0.1.14] - 2019-12-12
 
 - Add more robust handling of extension storage
 - Make browser action warning less noisy
 
-## 0.1.13 (2019-12-12)
+## [0.1.13] - 2019-12-12
 
 - Yet more database logging
 
-## 0.1.12 (2019-12-11)
+## [0.1.12] - 2019-12-11
 
 - Avoid reporting update errors twice
 - Try to make updating more robust
 - Add further logging
 
-## 0.1.11 (2019-12-10)
+## [0.1.11] - 2019-12-10
 
 - Add even more logging
 
-## 0.1.10 (2019-12-10)
+## [0.1.10] - 2019-12-10
 
 - Add some more logging
 
-## 0.1.9 (2019-12-10)
+## [0.1.9] - 2019-12-10
 
 - Switch to using idb instead of dexie.
 - Update word and name dictionaries to 2019-12-09 snapshot.
 
-## 0.1.8 (2019-12-04)
+## [0.1.8] - 2019-12-04
 
 - Make failed downloads resume from most recent failure.
 
-## 0.1.7 (2019-12-03)
+## [0.1.7] - 2019-12-03
 
 - Improve error handling and reporting for download errors.
 
-## 0.1.6 (2019-11-29)
+## [0.1.6] - 2019-11-29
 
 - Avoid looking up database when it is unavailable.
 
-## 0.1.5 (2019-11-29)
+## [0.1.5] - 2019-11-29
 
 - Make sure asynchronous download errors are handled correctly.
 
-## 0.1.4 (2019-11-29)
+## [0.1.4] - 2019-11-29
 
 - Better handle the case where IndexedDB is unavailable
   ([#148](https://github.com/birchill/10ten-ja-reader/issues/148))
 - Fix some cases where the content in the kanji window wraps
   ([#149](https://github.com/birchill/10ten-ja-reader/issues/149))
 
-## 0.1.3 (2019-11-27)
+## [0.1.3] - 2019-11-27
 
 - Updated database interaction to better handle initial language setting.
 - Added logging to various database interactions.
 
-## 0.1.2 (2019-11-27)
+## [0.1.2] - 2019-11-27
 
 - Made kanji dictionary always updated and not loaded into memory.
 - Updated word and name dictionaries to 2019-11-25 snapshot.
 
-## 0.0.32 (2019-07-10)
+## [0.0.32] - 2019-07-10
 
 - Added support for displaying romaji (off by default)
   ([#23](https://github.com/birchill/10ten-ja-reader/issues/23))
 - Updated dictionaries to 2019-07-05 snapshot.
 
-## 0.0.31 (2019-04-03)
+## [0.0.31] - 2019-04-03
 
 - Updated dictionaries to 2019-04-02 snapshot (to include 令和).
 
-## 0.0.30 (2019-03-12)
+## [0.0.30] - 2019-03-12
 
 - Fixed looking up of entries where the reading is in Katakana
   ([#84](https://github.com/birchill/10ten-ja-reader/issues/84))
@@ -571,7 +596,7 @@
   ([#20](https://github.com/birchill/10ten-ja-reader/issues/20))
 - Updated dictionaries to 2019-03-11 snapshot.
 
-## 0.0.29 (2019-01-27)
+## [0.0.29] - 2019-01-27
 
 - Added kanji references for Conning's 'The Kodansha Kanji Learner's Course'
   thanks to [@Kala-J](https://github.com/Kala-J).
@@ -581,7 +606,7 @@
 - Kanji components are now included when copying a kanji entry to the clipboard
 - Updated dictionaries to 2019-01-26 snapshot.
 
-## 0.0.28 (2018-12-31)
+## [0.0.28] - 2018-12-31
 
 - Added more user-friendly display of annotations for the names dictionary
   ([#64](https://github.com/birchill/10ten-ja-reader/issues/64))
@@ -589,7 +614,7 @@
   ([#72](https://github.com/birchill/10ten-ja-reader/issues/72))
 - Updated dictionaries to 2018-12-30 snapshot.
 
-## 0.0.27 (2018-12-28)
+## [0.0.27] - 2018-12-28
 
 - Fixed highlighting so it works correctly with faux-ruby as used on renshuu.org
   and Japanese learners' stack exchange
@@ -598,7 +623,7 @@
   ([#70](https://github.com/birchill/10ten-ja-reader/issues/70))
 - Updated dictionaries to 2018-12-27 snapshot.
 
-## 0.0.26 (2018-11-09)
+## [0.0.26] - 2018-11-09
 
 - Added support for copying entries to the clipboard.
   Press 'c' when the popup is displayed then follow the on-screen prompts.
@@ -619,7 +644,7 @@
   page.
 - Updated dictionaries to 2018-11-08 snapshot.
 
-## 0.0.25 (2018-09-27)
+## [0.0.25] - 2018-09-27
 
 - Fixed Japanese localization thanks to [@piroor](https://github.com/piroor).
 - Fixed ordering of entries so that more common entries appear first
@@ -628,7 +653,7 @@
   ([#51](https://github.com/birchill/10ten-ja-reader/issues/51)).
 - Updated dictionaries to 2018-09-26 snapshot.
 
-## 0.0.24 (2018-08-29)
+## [0.0.24] - 2018-08-29
 
 - Made the hotkey for enabling Rikaichamp configurable
   ([#30](https://github.com/birchill/10ten-ja-reader/issues/30)).
@@ -638,38 +663,38 @@
 - Various tweaks to option page styling.
 - Updated dictionaries to 2018-08-28 snapshot.
 
-## 0.0.23 (2018-08-08!)
+## [0.0.23] - 2018-08-08!
 
 - Properly fixed pre-Firefox 57 installs.
 - Tweaked timeout for file reads so it is initially shorters.
 - Tweaked diagnostics for longer loads.
 - Updated dictionaries to 2018-08-07 snapshot.
 
-## 0.0.22 (2018-08-08)
+## [0.0.22] - 2018-08-08
 
 - Added temporary workaround for users of Firefox <56 (but seriously, please
   upgrade your Firefox).
 
-## 0.0.21 (2018-08-08)
+## [0.0.21] - 2018-08-08
 
 - Added timeout handling to deal with file loads that seem to never end
   (particularly on Linux and on startup / upgrade).
 - Made it possible to recover from load errors.
 
-## 0.0.20 (released on 2018-08-07 but disabled moments later)
+## [0.0.20] - 2018-08-07 [YANKED]
 
 - Hopefully made loading data files more robust to reduce the likelihood of
   errors on startup.
 - Made names display in two columns when necessary.
 - Updated word, names, and **kanji** dictionaries to 2018-08-06 snapshot.
 
-## 0.0.19 (2018-07-28)
+## [0.0.19] - 2018-07-28
 
 - Added even more diagnostics to dictionary loading.
 - Simplified dictionary loading somewhat.
 - Updated word and names dictionaries to 2018-07-27 snapshot.
 
-## 0.0.18 (2018-07-26)
+## [0.0.18] - 2018-07-26
 
 - Added more diagnostics to try to narrow down the cause of Rikaichamp
   occasionally getting stuck loading
@@ -677,26 +702,26 @@
 - Fixed handling of full-width tilde.
 - Updated word and names dictionaries to 2018-07-25 snapshot.
 
-## 0.0.17 (2018-07-14)
+## [0.0.17] - 2018-07-14
 
 - Added diagnostic error reporting for failures to load the dictionary.
   Attempting to fix the issue with Rikaichamp getting stuck loading
   ([#45](https://github.com/birchill/10ten-ja-reader/issues/45)).
 - Updated word and names dictionaries to 2018-07-13 snapshot.
 
-## 0.0.16 (2018-06-28)
+## [0.0.16] - 2018-06-28
 
 - Hopefully fixed the issue where the extension would sometimes stop working
   ([#17](https://github.com/birchill/10ten-ja-reader/issues/17)).
 - Updated word and names dictionaries to 2018-06-27 snapshot.
 
-## 0.0.15 (2018-06-22)
+## [0.0.15] - 2018-06-22
 
 - Made the extension continue to work when the timer precision is reduced
   ([#35](https://github.com/birchill/10ten-ja-reader/issues/35)).
 - Updated word and names dictionaries to 2018-06-21 snapshot.
 
-## 0.0.14 (2018-06-01)
+## [0.0.14] - 2018-06-01
 
 - Improved ruby handling: Fixed text selection when `<rb>` elements are used
   ([#37](https://github.com/birchill/10ten-ja-reader/issues/37)).
@@ -711,13 +736,13 @@
 - Improved bundling of scripts using webpack.
 - Updated word and names dictionaries to 2018-05-31 snapshot.
 
-## 0.0.13 (2018-01-28)
+## [0.0.13] - 2018-01-28
 
 - (Hopefully) fixed text box handling, especially scroll restoration.
 - Made pop-up not show up when the mouse if far from the target word.
 - Updated word and names dictionaries to 2018-01-28 snapshot.
 
-## 0.0.12 (2017-12-20)
+## [0.0.12] - 2017-12-20
 
 - Add popup style selection to settings panel (thanks to [@kikaxa](https://github.com/kikaxa)).
 - Fixed a bug where the popup would not appear correctly when dealing with pages
@@ -725,7 +750,7 @@
 - Disabled the popup while selecting text.
 - Updated word and names dictionaries to 2017-12-19 snapshot.
 
-## 0.0.11 (2017-11-23)
+## [0.0.11] - 2017-11-23
 
 - Fixed hidden popup from interfering with page contents.
 - Make popup now show when the mouse is moving at high speed.
@@ -733,13 +758,13 @@
 - Make rikaichamp a little more thorough about cleaning up after itself.
 - Updated word dictionary to 2017-11-22 snapshot.
 
-## 0.0.10 (2017-11-19)
+## [0.0.10] - 2017-11-19
 
 - Made the extension remember if it was enabled across browser restarts (this
   time for sure).
 - Added a description of the Alt+R shortcut key to the options page.
 
-## 0.0.9 (2017-11-18)
+## [0.0.9] - 2017-11-18
 
 - Added "Enable Rikaichamp" to the context menu (can be disabled from the
   options).
@@ -748,7 +773,7 @@
   (hopefully).~~ (It turns out this didn't work)
 - Updated word dictionary to 2017-11-17 snapshot.
 
-## 0.0.8 (2017-11-13)
+## [0.0.8] - 2017-11-13
 
 - Added option to disable text highlighting (thanks to [@nanaya](https://github.com/nanaya)).
 - Added option to disable individual keyboard shortcuts.
@@ -756,22 +781,122 @@
   know if you used this feature and I'll add it back!
 - Updated word dictionary to 2017-11-12 snapshot.
 
-## 0.0.7 (2017-11-06)
+## [0.0.7] - 2017-11-06
 
 - Fixed incorrect positioning of pop-up on initial display.
 - Updated word dictionary to 2017-11-05 snapshot.
 
-## 0.0.6 (2017-10-30)
+## [0.0.6] - 2017-10-30
 
 - Improved text box selection handling including ignoring key strokes when
   a text box is selected.
 - Improved options synchronization.
 
-## 0.0.5 (2017-10-24)
+## [0.0.5] - 2017-10-24
 
 - Fixed a bug where keyboard events would get ignored while the pop-up was
   showing.
 
-## 0.0.4 (2017-10-20)
+## [0.0.4] - 2017-10-20
 
 - Initial version (yes, it took me four attempts to publish).
+
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.6.1...HEAD
+[1.6.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.6.0...v1.6.1
+[1.6.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.5.0...v1.6.0
+[1.5.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.4.8...v1.5.0
+[1.4.8]: https://github.com/birchill/10ten-ja-reader/compare/v1.4.7...v1.4.8
+[1.4.7]: https://github.com/birchill/10ten-ja-reader/compare/v1.4.3...v1.4.7
+[1.4.3]: https://github.com/birchill/10ten-ja-reader/compare/v1.4.2...v1.4.3
+[1.4.2]: https://github.com/birchill/10ten-ja-reader/compare/v1.4.1...v1.4.2
+[1.4.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.4.0...v1.4.1
+[1.4.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.3.6...v1.4.0
+[1.3.6]: https://github.com/birchill/10ten-ja-reader/compare/v1.3.5...v1.3.6
+[1.3.5]: https://github.com/birchill/10ten-ja-reader/compare/v1.3.4...v1.3.5
+[1.3.4]: https://github.com/birchill/10ten-ja-reader/compare/v1.3.3...v1.3.4
+[1.3.3]: https://github.com/birchill/10ten-ja-reader/compare/v1.3.2...v1.3.3
+[1.3.2]: https://github.com/birchill/10ten-ja-reader/compare/v1.3.1...v1.3.2
+[1.3.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.3.0...v1.3.1
+[1.3.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.2.3...v1.3.0
+[1.2.3]: https://github.com/birchill/10ten-ja-reader/compare/v1.2.2...v1.2.3
+[1.2.2]: https://github.com/birchill/10ten-ja-reader/compare/v1.2.1...v1.2.2
+[1.2.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.2.0...v1.2.1
+[1.2.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.1.4...v1.2.0
+[1.1.4]: https://github.com/birchill/10ten-ja-reader/compare/v1.1.3...v1.1.4
+[1.1.3]: https://github.com/birchill/10ten-ja-reader/compare/v1.1.2...v1.1.3
+[1.1.2]: https://github.com/birchill/10ten-ja-reader/compare/v1.1.1...v1.1.2
+[1.1.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.0.0...v1.1.1
+[1.0.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.5.14...v1.0.0
+[0.5.14]: https://github.com/birchill/10ten-ja-reader/compare/v1.5.13...v0.5.14
+[0.5.13]: https://github.com/birchill/10ten-ja-reader/compare/v0.5.12...v0.5.13
+[0.5.12]: https://github.com/birchill/10ten-ja-reader/compare/v0.5.10...v0.5.12
+[0.5.10]: https://github.com/birchill/10ten-ja-reader/compare/v0.5.8...v0.5.10
+[0.5.8]: https://github.com/birchill/10ten-ja-reader/compare/v0.5.7...v0.5.8
+[0.5.7]: https://github.com/birchill/10ten-ja-reader/compare/v0.5.5...v0.5.7
+[0.5.5]: https://github.com/birchill/10ten-ja-reader/compare/v0.5.3...v0.5.5
+[0.5.3]: https://github.com/birchill/10ten-ja-reader/compare/v0.5.2...v0.5.3
+[0.5.2]: https://github.com/birchill/10ten-ja-reader/compare/v0.5.1...v0.5.2
+[0.5.1]: https://github.com/birchill/10ten-ja-reader/compare/v0.5.0...v0.5.1
+[0.5.0]: https://github.com/birchill/10ten-ja-reader/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/birchill/10ten-ja-reader/compare/v0.3.5...v0.4.0
+[0.3.5]: https://github.com/birchill/10ten-ja-reader/compare/v0.3.4...v0.3.5
+[0.3.4]: https://github.com/birchill/10ten-ja-reader/compare/v0.3.3...v0.3.4
+[0.3.3]: https://github.com/birchill/10ten-ja-reader/compare/v0.3.2...v0.3.3
+[0.3.2]: https://github.com/birchill/10ten-ja-reader/compare/v0.3.1...v0.3.2
+[0.3.1]: https://github.com/birchill/10ten-ja-reader/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/birchill/10ten-ja-reader/compare/v0.2.6...v0.3.0
+[0.2.6]: https://github.com/birchill/10ten-ja-reader/compare/v0.2.5...v0.2.6
+[0.2.5]: https://github.com/birchill/10ten-ja-reader/compare/v0.2.4...v0.2.5
+[0.2.4]: https://github.com/birchill/10ten-ja-reader/compare/v0.2.3...v0.2.4
+[0.2.3]: https://github.com/birchill/10ten-ja-reader/compare/v0.2.2...v0.2.3
+[0.2.2]: https://github.com/birchill/10ten-ja-reader/compare/v0.2.1...v0.2.2
+[0.2.1]: https://github.com/birchill/10ten-ja-reader/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.20...v0.2.0
+[0.1.20]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.19...v0.1.20
+[0.1.19]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.18...v0.1.19
+[0.1.18]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.17...v0.1.18
+[0.1.17]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.16...v0.1.17
+[0.1.16]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.15...v0.1.16
+[0.1.15]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.14...v0.1.15
+[0.1.14]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.13...v0.1.14
+[0.1.13]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.12...v0.1.13
+[0.1.12]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.11...v0.1.12
+[0.1.11]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.10...v0.1.11
+[0.1.10]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.9...v0.1.10
+[0.1.9]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.8...v0.1.9
+[0.1.8]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.7...v0.1.8
+[0.1.7]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.6...v0.1.7
+[0.1.6]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.5...v0.1.6
+[0.1.5]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.4...v0.1.5
+[0.1.4]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.3...v0.1.4
+[0.1.3]: https://github.com/birchill/10ten-ja-reader/compare/v0.1.2...v0.1.3
+[0.1.2]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.32...v0.1.2
+[0.0.32]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.31...v0.0.32
+[0.0.31]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.30...v0.0.31
+[0.0.30]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.29...v0.0.30
+[0.0.29]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.28...v0.0.29
+[0.0.28]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.27...v0.0.28
+[0.0.27]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.26...v0.0.27
+[0.0.26]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.25...v0.0.26
+[0.0.25]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.24...v0.0.25
+[0.0.24]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.23...v0.0.24
+[0.0.23]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.22...v0.0.23
+[0.0.22]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.21...v0.0.22
+[0.0.21]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.20...v0.0.21
+[0.0.20]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.19...v0.0.20
+[0.0.19]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.18...v0.0.19
+[0.0.18]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.17...v0.0.18
+[0.0.17]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.16...v0.0.17
+[0.0.16]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.15...v0.0.16
+[0.0.15]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.14...v0.0.15
+[0.0.14]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.13...v0.0.14
+[0.0.13]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.12...v0.0.13
+[0.0.12]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.11...v0.0.12
+[0.0.11]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.10...v0.0.11
+[0.0.10]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.9...v0.0.10
+[0.0.9]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.8...v0.0.9
+[0.0.8]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.7...v0.0.8
+[0.0.7]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.6...v0.0.7
+[0.0.6]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.5...v0.0.6
+[0.0.5]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.4...v0.0.5
+[0.0.4]: https://github.com/birchill/10ten-ja-reader/releases/tag/v0.0.4
