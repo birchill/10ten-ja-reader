@@ -197,6 +197,24 @@ export function renderPerson(): SVGElement {
   );
 }
 
+export function renderSpinner(): SVGElement {
+  return svg(
+    'svg',
+    {
+      viewBox: '0 0 16 16',
+      role: 'presentation',
+    },
+    svg('path', {
+      d: 'M8.54,2.11l.66-.65A.78.78,0,0,0,9.2.38a.76.76,0,0,0-1.08,0L6.19,2.31A.81.81,0,0,0,6,2.55a.8.8,0,0,0-.06.3A.72.72,0,0,0,6,3.14a.74.74,0,0,0,.17.25L8.12,5.32a.73.73,0,0,0,.54.22.76.76,0,0,0,.54-.22.78.78,0,0,0,0-1.08l-.58-.58A4.38,4.38,0,1,1,3.68,8.82a.76.76,0,0,0-1.5.28,5.92,5.92,0,1,0,6.36-7Z',
+    }),
+    svg('circle', {
+      cx: '2.673',
+      cy: '6.71',
+      r: '0.965',
+    })
+  );
+}
+
 export function renderStar(style: 'full' | 'hollow'): SVGElement {
   return svg(
     'svg',
