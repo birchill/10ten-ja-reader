@@ -1016,13 +1016,13 @@
     "@types/webpack" "^4"
     "@types/webpack-dev-middleware" "3"
 
-"@types/karma@*", "@types/karma@^6.3.1":
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/@types/karma/-/karma-6.3.1.tgz#a9e05df4a5d898bffd619c4e109fff9e4f3c676a"
-  integrity sha512-t7hSJ8oWrgzrJV0nBqqMrDnQFft/W3WCPOfSi2aOq7rUPARLC8XpZfbsQ+mfYaNk18v1XqkBU12uirp1ISJVAA==
+"@types/karma@*", "@types/karma@^6.3.2":
+  version "6.3.2"
+  resolved "https://registry.yarnpkg.com/@types/karma/-/karma-6.3.2.tgz#6db4a5ca40a2bb09e189690f2d763dadca77f181"
+  integrity sha512-ZQfjGEfEV57I3o6Y5iK1+6aoQDguxmCBeQ0H8r9dasRTFn2Ohqgvx44FSPdY+R+/VUVtr8lvAYaRFzdNrQFvww==
   dependencies:
     "@types/node" "*"
-    log4js "^6.2.1"
+    log4js "^6.3.0"
 
 "@types/memory-fs@*":
   version "0.3.2"
@@ -5791,7 +5791,7 @@ log-update@^4.0.0:
     slice-ansi "^4.0.0"
     wrap-ansi "^6.2.0"
 
-log4js@^6.2.1, log4js@^6.3.0:
+log4js@^6.3.0:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/log4js/-/log4js-6.3.0.tgz#10dfafbb434351a3e30277a00b9879446f715bcb"
   integrity sha512-Mc8jNuSFImQUIateBFwdOQcmC6Q5maU0VVvdC2R6XMb66/VnT+7WS4D/0EeNMZu1YODmJe5NIn2XftCzEocUgw==
