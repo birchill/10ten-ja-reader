@@ -53,8 +53,11 @@ import {
   renderBook,
   renderCog,
   renderCross,
+  renderFrequency,
   renderKanjiIcon,
+  renderPencil,
   renderPerson,
+  renderStar,
 } from './popup/icons';
 import { html } from './popup/builder';
 
@@ -1141,24 +1144,6 @@ function appendPriorityMark(
   parent.append(renderStar(highPriority ? 'full' : 'hollow'));
 }
 
-function renderStar(style: 'full' | 'hollow'): SVGElement {
-  const svg = document.createElementNS(SVG_NS, 'svg');
-  svg.classList.add('svgicon');
-  svg.style.opacity = '0.5';
-  svg.setAttribute('viewBox', '0 0 98.6 93.2');
-
-  const path = document.createElementNS(SVG_NS, 'path');
-  path.setAttribute(
-    'd',
-    style === 'full'
-      ? 'M98 34a4 4 0 00-3-1l-30-4L53 2a4 4 0 00-7 0L33 29 4 33a4 4 0 00-3 6l22 20-6 29a4 4 0 004 5 4 4 0 002 0l26-15 26 15a4 4 0 002 0 4 4 0 004-4 4 4 0 000-1l-6-29 22-20a4 4 0 001-5z'
-      : 'M77 93a4 4 0 004-4 4 4 0 000-1l-6-29 22-20a4 4 0 00-2-6l-30-4L53 2a4 4 0 00-7 0L33 29 4 33a4 4 0 00-3 6l22 20-6 29a4 4 0 004 5 4 4 0 002 0l26-15 26 15a4 4 0 002 0zm-5-12L51 70a4 4 0 00-4 0L27 81l5-22a4 4 0 00-1-4L13 40l23-3a4 4 0 004-2l9-21 10 21a4 4 0 003 2l23 3-17 15a4 4 0 00-1 4z'
-  );
-  svg.append(path);
-
-  return svg;
-}
-
 function renderDefinitions(entry: WordResult, options: PopupOptions) {
   const senses = entry.s.filter((s) => s.match);
   if (!senses.length) {
@@ -1885,72 +1870,6 @@ function renderMiscRow(entry: KanjiResult): HTMLElement {
   miscInfoDiv.append(gradeDiv);
 
   return miscInfoDiv;
-}
-
-function renderPencil(): SVGElement {
-  const pencilSvg = document.createElementNS(SVG_NS, 'svg');
-  pencilSvg.setAttribute('viewBox', '0 0 16 16');
-  pencilSvg.setAttribute('role', 'presentation');
-
-  const circle = document.createElementNS(SVG_NS, 'circle');
-  circle.setAttribute('cx', '14.5');
-  circle.setAttribute('cy', '1.5');
-  circle.setAttribute('r', '1.5');
-  pencilSvg.append(circle);
-
-  const polyline = document.createElementNS(SVG_NS, 'polyline');
-  polyline.setAttribute('points', '13 4.5 4 13.5 1 15 2.5 12 11.5 3');
-  polyline.setAttribute('fill', 'none');
-  polyline.setAttribute('stroke', 'currentColor');
-  polyline.setAttribute('stroke-width', '1.5');
-  polyline.setAttribute('stroke-linecap', 'round');
-  polyline.setAttribute('stroke-linejoin', 'round');
-  pencilSvg.append(polyline);
-
-  return pencilSvg;
-}
-
-function renderFrequency(frequency: number | undefined): SVGElement {
-  const freqSvg = document.createElementNS(SVG_NS, 'svg');
-  freqSvg.setAttribute('viewBox', '0 0 8 8');
-  freqSvg.setAttribute('role', 'presentation');
-
-  const rect1 = document.createElementNS(SVG_NS, 'rect');
-  rect1.setAttribute('x', '0');
-  rect1.setAttribute('y', '5');
-  rect1.setAttribute('width', '2');
-  rect1.setAttribute('height', '3');
-  rect1.setAttribute('rx', '0.5');
-  rect1.setAttribute('ry', '0.5');
-  if (!frequency) {
-    rect1.setAttribute('opacity', '0.5');
-  }
-  freqSvg.append(rect1);
-
-  const rect2 = document.createElementNS(SVG_NS, 'rect');
-  rect2.setAttribute('x', '3');
-  rect2.setAttribute('y', '3');
-  rect2.setAttribute('width', '2');
-  rect2.setAttribute('height', '5');
-  rect2.setAttribute('rx', '0.5');
-  rect2.setAttribute('ry', '0.5');
-  if (!frequency || frequency >= (2500 * 2) / 3) {
-    rect2.setAttribute('opacity', '0.5');
-  }
-  freqSvg.append(rect2);
-
-  const rect3 = document.createElementNS(SVG_NS, 'rect');
-  rect3.setAttribute('x', '6');
-  rect3.setAttribute('width', '2');
-  rect3.setAttribute('height', '8');
-  rect3.setAttribute('rx', '0.5');
-  rect3.setAttribute('ry', '0.5');
-  if (!frequency || frequency >= 2500 / 3) {
-    rect3.setAttribute('opacity', '0.5');
-  }
-  freqSvg.append(rect3);
-
-  return freqSvg;
 }
 
 function renderReferences(

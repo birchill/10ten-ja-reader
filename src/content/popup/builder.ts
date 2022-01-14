@@ -32,7 +32,7 @@ export function html<K extends keyof HTMLElementTagNameMap>(
 
 export function svg<K extends keyof SVGElementTagNameMap>(
   tagName: K,
-  attributes?: { [key: string]: string },
+  attributes?: { [key: string]: string | undefined },
   ...children: Array<Node | string>
 ): SVGElementTagNameMap[K] {
   const elem = document.createElementNS(
@@ -42,7 +42,10 @@ export function svg<K extends keyof SVGElementTagNameMap>(
 
   if (attributes) {
     for (const key in attributes) {
-      elem.setAttribute(key, attributes[key]);
+      const val = attributes[key];
+      if (typeof val !== 'undefined') {
+        elem.setAttribute(key, val);
+      }
     }
   }
 

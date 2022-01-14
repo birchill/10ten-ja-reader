@@ -96,6 +96,42 @@ export function renderCross(): SVGElement {
   );
 }
 
+export function renderFrequency(frequency: number | undefined): SVGElement {
+  return svg(
+    'svg',
+    {
+      viewBox: '0 0 8 8',
+      role: 'presentation',
+    },
+    svg('rect', {
+      x: '0',
+      y: '5',
+      width: '2',
+      height: '3',
+      rx: '0.5',
+      ry: '0.5',
+      opacity: !frequency ? '0.5' : undefined,
+    }),
+    svg('rect', {
+      x: '3',
+      y: '3',
+      width: '2',
+      height: '5',
+      rx: '0.5',
+      ry: '0.5',
+      opacity: !frequency || frequency >= (2500 * 2) / 3 ? '0.5' : undefined,
+    }),
+    svg('rect', {
+      x: '6',
+      width: '2',
+      height: '8',
+      rx: '0.5',
+      ry: '0.5',
+      opacity: !frequency || frequency >= 2500 / 3 ? '0.5' : undefined,
+    })
+  );
+}
+
 export function renderKanjiIcon(): SVGElement {
   return svg(
     'svg',
@@ -117,6 +153,29 @@ export function renderKanjiIcon(): SVGElement {
   );
 }
 
+export function renderPencil(): SVGElement {
+  return svg(
+    'svg',
+    {
+      role: 'presentation',
+      viewBox: '0 0 16 16',
+    },
+    svg('circle', {
+      cx: '14.5',
+      cy: '1.5',
+      r: '1.5',
+    }),
+    svg('polyline', {
+      points: '13 4.5 4 13.5 1 15 2.5 12 11.5 3',
+      fill: 'none',
+      stroke: 'currentColor',
+      'stroke-width': '1.5',
+      'stroke-linecap': 'round',
+      'stroke-linejoin': 'round',
+    })
+  );
+}
+
 export function renderPerson(): SVGElement {
   return svg(
     'svg',
@@ -134,6 +193,23 @@ export function renderPerson(): SVGElement {
     }),
     svg('path', {
       d: 'M13.91,11.71A5.09,5.09,0,0,0,9.45,9H5.09A5.18,5.18,0,0,0,0,14.25.74.74,0,0,0,.73,15h10.9a.74.74,0,0,0,.73-.75,1.49,1.49,0,0,1,1.09-1.45.75.75,0,0,0,.49-.43A.76.76,0,0,0,13.91,11.71Z',
+    })
+  );
+}
+
+export function renderStar(style: 'full' | 'hollow'): SVGElement {
+  return svg(
+    'svg',
+    {
+      class: 'svgicon',
+      viewBox: '0 0 98.6 93.2',
+      style: 'opacity: 0.5',
+    },
+    svg('path', {
+      d:
+        style === 'full'
+          ? 'M98 34a4 4 0 00-3-1l-30-4L53 2a4 4 0 00-7 0L33 29 4 33a4 4 0 00-3 6l22 20-6 29a4 4 0 004 5 4 4 0 002 0l26-15 26 15a4 4 0 002 0 4 4 0 004-4 4 4 0 000-1l-6-29 22-20a4 4 0 001-5z'
+          : 'M77 93a4 4 0 004-4 4 4 0 000-1l-6-29 22-20a4 4 0 00-2-6l-30-4L53 2a4 4 0 00-7 0L33 29 4 33a4 4 0 00-3 6l22 20-6 29a4 4 0 004 5 4 4 0 002 0l26-15 26 15a4 4 0 002 0zm-5-12L51 70a4 4 0 00-4 0L27 81l5-22a4 4 0 00-1-4L13 40l23-3a4 4 0 004-2l9-21 10 21a4 4 0 003 2l23 3-17 15a4 4 0 00-1 4z',
     })
   );
 }
