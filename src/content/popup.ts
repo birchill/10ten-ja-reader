@@ -38,17 +38,14 @@ import {
   getOrCreateEmptyContainer,
   removeContentContainer,
 } from './content-container';
-import { CurrencyMeta } from './currency';
-import { convertMeasure, MeasureMeta } from './measure';
 import { SelectionMeta } from './meta';
 import { NamePreview, QueryResult } from './query';
-import { EraInfo, EraMeta, getEraInfo } from './years';
 
 import popupStyles from '../../css/popup.css';
-import { NumberMeta } from './numbers';
 import { getDob } from '../utils/age';
+
+import { html } from './popup/builder';
 import { renderCopyOverlay } from './popup/copy-overlay';
-import { getLangTag } from './popup/lang-tag';
 import {
   renderBook,
   renderCog,
@@ -60,7 +57,8 @@ import {
   renderSpinner,
   renderStar,
 } from './popup/icons';
-import { html } from './popup/builder';
+import { getLangTag } from './popup/lang-tag';
+import { renderMetadata } from './popup/metadata';
 
 // Update NumberFormatOptions definition
 declare global {
@@ -695,301 +693,6 @@ function renderWordEntries({
   }
 
   return container;
-}
-
-function renderEraInfo(meta: EraMeta, eraInfo: EraInfo): HTMLElement {
-  const metaDiv = document.createElementNS(HTML_NS, 'div');
-  metaDiv.classList.add('meta', 'era');
-  metaDiv.lang = 'ja';
-
-  const eraSpan = document.createElementNS(HTML_NS, 'span');
-  eraSpan.classList.add('era-name');
-
-  const rubyBase = document.createElementNS(HTML_NS, 'ruby');
-  rubyBase.append(meta.era);
-
-  const rpOpen = document.createElementNS(HTML_NS, 'rp');
-  rpOpen.append('(');
-  rubyBase.append(rpOpen);
-
-  const rubyText = document.createElementNS(HTML_NS, 'rt');
-  rubyText.append(eraInfo.reading);
-  rubyBase.append(rubyText);
-
-  const rpClose = document.createElementNS(HTML_NS, 'rp');
-  rpClose.append(')');
-  rubyBase.append(rpClose);
-  eraSpan.append(rubyBase);
-
-  if (meta.year === 0) {
-    eraSpan.append('元年');
-  } else {
-    eraSpan.append(`${meta.year}年`);
-  }
-  metaDiv.append(eraSpan);
-
-  const equalsSpan = document.createElementNS(HTML_NS, 'span');
-  equalsSpan.classList.add('equals');
-  equalsSpan.append('=');
-  metaDiv.append(equalsSpan);
-
-  const seirekiSpan = document.createElementNS(HTML_NS, 'span');
-  seirekiSpan.classList.add('seireki');
-  const seireki =
-    meta.year === 0 ? eraInfo.start : meta.year - 1 + eraInfo.start;
-  seirekiSpan.append(`${seireki}年`);
-  metaDiv.append(seirekiSpan);
-
-  return metaDiv;
-}
-
-function renderMeasureInfo(meta: MeasureMeta): HTMLElement {
-  const converted = convertMeasure(meta);
-
-  const metaDiv = document.createElementNS(HTML_NS, 'div');
-  metaDiv.classList.add('meta', 'measure');
-  metaDiv.lang = 'ja';
-
-  const mainRow = document.createElementNS(HTML_NS, 'div');
-  mainRow.classList.add('main');
-  metaDiv.append(mainRow);
-
-  const measureSpan = document.createElementNS(HTML_NS, 'span');
-  measureSpan.classList.add('value');
-  measureSpan.append(meta.value.toLocaleString());
-  measureSpan.append(renderUnit(meta.unit));
-  mainRow.append(measureSpan);
-
-  const equalsSpan = document.createElementNS(HTML_NS, 'span');
-  equalsSpan.classList.add('equals');
-  equalsSpan.append('=');
-  mainRow.append(equalsSpan);
-
-  const convertedSpan = document.createElementNS(HTML_NS, 'span');
-  convertedSpan.classList.add('value');
-  convertedSpan.append(renderValue(converted.value));
-  convertedSpan.append(renderUnit(converted.unit));
-  mainRow.append(convertedSpan);
-
-  if (converted.alt) {
-    for (const { type, label, unit, value } of converted.alt) {
-      const altRow = document.createElementNS(HTML_NS, 'div');
-      altRow.classList.add('alt');
-
-      const altLabel = document.createElementNS(HTML_NS, 'span');
-      if (label) {
-        altLabel.append(label);
-      }
-      const expl = browser.i18n.getMessage(`measure_expl_${type}`);
-      if (expl) {
-        const altExplLabel = document.createElementNS(HTML_NS, 'span');
-        altExplLabel.append(expl);
-        altExplLabel.lang = getLangTag();
-        altLabel.append(altExplLabel);
-      }
-      altRow.append(altLabel);
-
-      const altEquals = document.createElementNS(HTML_NS, 'span');
-      altEquals.classList.add('equals');
-      altEquals.append('=');
-      altRow.append(altEquals);
-
-      const altValue = document.createElementNS(HTML_NS, 'span');
-      altValue.classList.add('measure');
-      altValue.append(renderValue(value));
-      altValue.append(renderUnit(unit, { showRuby: false }));
-      altRow.append(altValue);
-
-      metaDiv.append(altRow);
-    }
-  }
-
-  return metaDiv;
-}
-
-function renderValue(value: number): string {
-  // Round to two decimal places, then to five significant figures
-  return parseFloat(round(value, 2).toPrecision(5)).toLocaleString();
-}
-
-function round(value: number, places: number): number {
-  const base = Math.pow(10, places);
-  return Math.round(value * base) / base;
-}
-
-function renderUnit(
-  unit: MeasureMeta['unit'],
-  { showRuby = true }: { showRuby?: boolean } = {}
-): HTMLElement {
-  const unitSpan = document.createElementNS(HTML_NS, 'span');
-  unitSpan.classList.add('unit');
-
-  if (unit === 'm2') {
-    unitSpan.append('m');
-    const sup = document.createElementNS(HTML_NS, 'sup');
-    sup.append('2');
-    unitSpan.append(sup);
-  } else if (showRuby) {
-    const rubyBase = document.createElementNS(HTML_NS, 'ruby');
-    rubyBase.append(unit);
-
-    const rpOpen = document.createElementNS(HTML_NS, 'rp');
-    rpOpen.append('(');
-    rubyBase.append(rpOpen);
-
-    const rubyText = document.createElementNS(HTML_NS, 'rt');
-    rubyText.append('じょう');
-    rubyBase.append(rubyText);
-
-    const rpClose = document.createElementNS(HTML_NS, 'rp');
-    rpClose.append(')');
-    rubyBase.append(rpClose);
-    unitSpan.append(rubyBase);
-  } else {
-    unitSpan.append(unit);
-  }
-
-  return unitSpan;
-}
-
-function renderCurrencyInfo(
-  meta: CurrencyMeta,
-  fxData: NonNullable<ContentConfig['fx']>
-): HTMLElement {
-  const metaDiv = document.createElementNS(HTML_NS, 'div');
-  metaDiv.classList.add('meta', 'currency');
-  metaDiv.lang = 'ja';
-
-  const mainRow = document.createElementNS(HTML_NS, 'div');
-  mainRow.classList.add('main');
-  metaDiv.append(mainRow);
-
-  const lhs = document.createElementNS(HTML_NS, 'div');
-  lhs.classList.add('equation-part');
-  mainRow.append(lhs);
-
-  const srcCurrencyLabel = document.createElementNS(HTML_NS, 'span');
-  srcCurrencyLabel.classList.add('curr');
-  srcCurrencyLabel.append('JPY');
-  lhs.append(srcCurrencyLabel);
-
-  const srcSpan = document.createElementNS(HTML_NS, 'span');
-  srcSpan.classList.add('src');
-  srcSpan.append(
-    new Intl.NumberFormat('ja-JP', {
-      style: 'currency',
-      currency: 'JPY',
-    }).format(meta.value)
-  );
-  lhs.append(srcSpan);
-
-  const equalsSpan = document.createElementNS(HTML_NS, 'span');
-  equalsSpan.classList.add('equals');
-  equalsSpan.append('≈');
-  lhs.append(equalsSpan);
-
-  const rhs = document.createElementNS(HTML_NS, 'div');
-  rhs.classList.add('equation-part');
-  mainRow.append(rhs);
-
-  const valueCurrencyLabel = document.createElementNS(HTML_NS, 'span');
-  valueCurrencyLabel.classList.add('curr');
-  valueCurrencyLabel.append(fxData.currency);
-  rhs.append(valueCurrencyLabel);
-
-  const valueSpan = document.createElementNS(HTML_NS, 'span');
-  valueSpan.classList.add('value');
-  const value = meta.value * fxData.rate;
-  valueSpan.append(renderCurrencyValue({ currency: fxData.currency, value }));
-  rhs.append(valueSpan);
-
-  const timestampRow = document.createElementNS(HTML_NS, 'div');
-  timestampRow.classList.add('timestamp');
-  const timestampAsDate = new Date(fxData.timestamp);
-  const timestampAsString = timestampAsDate.toLocaleString(undefined, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  } as any);
-  const expl = browser.i18n.getMessage(
-    'currency_data_updated_label',
-    timestampAsString
-  );
-  timestampRow.append(expl);
-  metaDiv.append(timestampRow);
-
-  return metaDiv;
-}
-
-function renderCurrencyValue({
-  currency,
-  value,
-}: {
-  currency: string;
-  value: number;
-}): string {
-  // BTC is a bit special because Intl.NumberFormat doesn't support it and if we
-  // let it do its fallback rounding to two decimal places we'll lose most of
-  // the information.
-  //
-  // In fact, the convention for BTC appears to be to always use 8 decimal
-  // places.
-  if (currency === 'BTC') {
-    return `\u20bf${value.toFixed(8)}`;
-  }
-
-  let formattedValue: string;
-  try {
-    formattedValue = new Intl.NumberFormat(undefined, {
-      style: 'currency',
-      currency,
-      currencyDisplay: 'narrowSymbol',
-    }).format(value);
-  } catch {
-    // Some older browsers may not support all the options above so fall back to
-    // general number formatting in that case.
-    formattedValue = new Intl.NumberFormat().format(value);
-  }
-
-  // Drop redundant currency code.
-  //
-  // If the browser doesn't have a specific symbol (e.g. $) for the currency,
-  // it generally just prepends the currency code (e.g. USD) but that's
-  // redundant with our valueCurrencyLabel so we try to detect and drop it in
-  // that case.
-  formattedValue = formattedValue.replace(
-    new RegExp(`^\\s*${currency}\\s*`),
-    ''
-  );
-
-  return formattedValue;
-}
-
-function renderNumberInfo(
-  meta: NumberMeta,
-  { isCombinedResult }: { isCombinedResult: boolean }
-): HTMLElement {
-  const metaDiv = document.createElementNS(HTML_NS, 'div');
-  metaDiv.classList.add('meta', 'number');
-
-  if (isCombinedResult) {
-    const srcSpan = document.createElementNS(HTML_NS, 'span');
-    srcSpan.classList.add('src');
-    srcSpan.append(meta.src);
-    srcSpan.lang = 'ja';
-    metaDiv.append(srcSpan);
-
-    const equalsSpan = document.createElementNS(HTML_NS, 'span');
-    equalsSpan.classList.add('equals');
-    equalsSpan.append('=');
-    metaDiv.append(equalsSpan);
-  }
-
-  const numberSpan = document.createElementNS(HTML_NS, 'span');
-  numberSpan.classList.add('value');
-  numberSpan.append(meta.value.toLocaleString());
-  metaDiv.append(numberSpan);
-
-  return metaDiv;
 }
 
 function renderNamePreview({ names, more }: NamePreview): HTMLElement {
@@ -1944,42 +1647,6 @@ function renderReferences(
   }
 
   return referenceTable;
-}
-
-function renderMetadata({
-  fxData,
-  isCombinedResult,
-  matchLen,
-  meta,
-}: {
-  fxData: ContentConfig['fx'];
-  isCombinedResult: boolean;
-  matchLen: number;
-  meta: SelectionMeta;
-}): HTMLElement | null {
-  switch (meta.type) {
-    case 'era':
-      {
-        const eraInfo = getEraInfo(meta.era);
-        if (eraInfo) {
-          return renderEraInfo(meta, eraInfo);
-        }
-      }
-      break;
-
-    case 'measure':
-      return renderMeasureInfo(meta);
-
-    case 'currency':
-      return fxData ? renderCurrencyInfo(meta, fxData) : null;
-
-    case 'number':
-      return meta.matchLen > matchLen
-        ? renderNumberInfo(meta, { isCombinedResult })
-        : null;
-  }
-
-  return null;
 }
 
 function renderCopyDetails({
