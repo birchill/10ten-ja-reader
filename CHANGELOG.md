@@ -8,15 +8,14 @@ app.
 
 ## [Unreleased]
 
-### Fixed
-
 - Don't show the age for a name entry when only a year is given, or when the
   name is not for a person
   ([#863](https://github.com/birchill/10ten-ja-reader/issues/863)).
+- Made more common kana reading be displayed when looking up an entry by an
+  irregular kana reading (e.g. showing ふんいき when looking up ふいんき)
+  ([#877](https://github.com/birchill/10ten-ja-reader/issues/877)).
 
 ## [1.6.1] - 2021-12-16 (Chrome, Edge, Safari)
-
-### Fixed
 
 - Fixed looking up text in text boxes when the document is scrolled on
   Chrome/Edge/Safari
@@ -24,35 +23,22 @@ app.
 
 ## [1.6.0] - 2021-12-09
 
-### Added
-
-- Support for copying entries from touch devices by tapping the entry.
-- Support for looking up words on touch screens by tapping the word
+- Added support for copying entries from touch devices by tapping the entry.
+- Added support for looking up words on touch screens by tapping the word
   ([#845](https://github.com/birchill/10ten-ja-reader/issues/845)).
-
-### Fixed
-
 - Made copying to the clipboard work for HTTP sites
   ([#157](https://github.com/birchill/10ten-ja-reader/issues/157)).
 
 ## [1.5.0] - 2021-11-08
 
-### Added
-
-- Support for Google Docs' annotated canvas.
+- Added support for Google Docs' annotated canvas.
   Note that this does not yet work in Safari due to [Safari bug
   232781](https://bugs.webkit.org/show_bug.cgi?id=232781)
 - Show the age next to names for people with birth dates.
 - Allow setting the hold to show keys in active tab mode too (Safari)
   ([#818](https://github.com/birchill/10ten-ja-reader/issues/818)).
-
-### Changed
-
 - Hide senses that don't apply to the looked-up text.
 - Replace "(trademark)" text with ™.
-
-### Fixed
-
 - Stop showing the popup for number-only matches in the name dictionary
   (e.g. 64)
   ([#811](https://github.com/birchill/10ten-ja-reader/issues/811)).

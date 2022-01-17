@@ -103,7 +103,26 @@ export function renderWordEntries({
       headingDiv.append(kanjiSpan);
     }
 
-    const matchingKana = entry.r.filter((r) => r.match);
+    // Typically we only show the matching kana headwords but if we matched on
+    // an irregular form, we should show the regular kana headwords too, for
+    // reference.
+    //
+    // For example, if we looked up ふんいき (雰囲気) we should only show that
+    // headword, but if we looked up ふいんき, we should show the more correct
+    // ふんいき too.
+    const matchedOnKana = entry.r.some((r) => r.matchRange);
+    const matchedOnIrregularKana =
+      matchedOnKana &&
+      entry.r.every(
+        (r) => !r.match || r.i?.includes('ik') || r.i?.includes('ok')
+      );
+
+    const matchingKana = entry.r.filter(
+      (r) =>
+        r.match ||
+        (matchedOnIrregularKana && !r.i?.includes('ik') && !r.i?.includes('ok'))
+    );
+
     if (matchingKana.length) {
       const kanaSpan = html('span', { class: 'w-kana', lang: 'ja' });
       for (const [i, kana] of matchingKana.entries()) {
