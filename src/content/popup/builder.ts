@@ -9,7 +9,7 @@ import { HTML_NS, SVG_NS } from '../../utils/dom-utils';
 // - Setting attributes (for convenience)
 export function html<K extends keyof HTMLElementTagNameMap>(
   tagName: K,
-  attributes?: { [key: string]: string },
+  attributes?: { [key: string]: string | undefined },
   ...children: Array<Node | string>
 ): HTMLElementTagNameMap[K] {
   const elem = document.createElementNS(
@@ -19,7 +19,10 @@ export function html<K extends keyof HTMLElementTagNameMap>(
 
   if (attributes) {
     for (const key in attributes) {
-      elem.setAttribute(key, attributes[key]);
+      const val = attributes[key];
+      if (typeof val !== 'undefined') {
+        elem.setAttribute(key, val);
+      }
     }
   }
 
