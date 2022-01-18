@@ -1,8 +1,4 @@
-import {
-  allMajorDataSeries,
-  KanjiResult,
-  MajorDataSeries,
-} from '@birchill/hikibiki-data';
+import { allMajorDataSeries, MajorDataSeries } from '@birchill/hikibiki-data';
 import { browser } from 'webextension-polyfill-ts';
 
 import {
@@ -16,11 +12,7 @@ import {
   CopyNextKeyStrings,
   CopyType,
 } from '../common/copy-keys';
-import {
-  getReferenceValue,
-  getSelectedReferenceLabels,
-  ReferenceAbbreviation,
-} from '../common/refs';
+import { ReferenceAbbreviation } from '../common/refs';
 import { probablyHasPhysicalKeyboard } from '../utils/device';
 import { HTML_NS } from '../utils/dom-utils';
 import { NameResult } from '../background/search-result';
@@ -33,17 +25,13 @@ import {
 import { SelectionMeta } from './meta';
 import { QueryResult } from './query';
 
-import popupStyles from '../../css/popup.css';
-
 import { html } from './popup/builder';
 import { renderCopyOverlay } from './popup/copy-overlay';
 import {
   renderBook,
   renderCog,
   renderCross,
-  renderFrequency,
   renderKanjiIcon,
-  renderPencil,
   renderPerson,
   renderSpinner,
 } from './popup/icons';
@@ -52,6 +40,9 @@ import { renderMetadata } from './popup/metadata';
 import { renderName } from './popup/names';
 import { getSelectedIndex } from './popup/selected-index';
 import { renderWordEntries } from './popup/words';
+import { renderKanjiEntry } from './popup/kanji';
+
+import popupStyles from '../../css/popup.css';
 
 // Update NumberFormatOptions definition
 declare global {
@@ -584,388 +575,6 @@ function renderNamesEntries({
   }
 
   return namesTable;
-}
-
-function renderKanjiEntry({
-  entry,
-  options,
-}: {
-  entry: KanjiResult;
-  options: PopupOptions;
-}): HTMLElement {
-  // Main table
-  const table = document.createElementNS(HTML_NS, 'div');
-  table.classList.add('kanji-table');
-  table.classList.add('entry-data');
-
-  // Top part
-  const topPart = document.createElementNS(HTML_NS, 'div');
-  topPart.classList.add('top-part');
-  table.append(topPart);
-
-  // -- The kanji itself
-  const kanjiDiv = document.createElementNS(HTML_NS, 'div');
-  kanjiDiv.classList.add('kanji');
-  kanjiDiv.lang = 'ja';
-  kanjiDiv.append(entry.c);
-  kanjiDiv.addEventListener('click', () => {
-    options.onStartCopy?.(0);
-  });
-  topPart.append(kanjiDiv);
-
-  // -- Top-right part
-  const topRightPart = document.createElementNS(HTML_NS, 'div');
-  topPart.append(topRightPart);
-
-  // -- -- Readings
-  topRightPart.append(renderReadings(entry));
-
-  // -- -- Meta
-  if (entry.misc.meta) {
-    topRightPart.append(renderMeta(entry.misc.meta));
-  }
-
-  // -- -- Meanings
-  const meaningsDiv = document.createElementNS(HTML_NS, 'div');
-  meaningsDiv.classList.add('meanings');
-  meaningsDiv.lang = entry.m_lang;
-  meaningsDiv.append(entry.m.join(', '));
-  topRightPart.append(meaningsDiv);
-
-  // -- -- Misc info
-  topRightPart.append(renderMiscRow(entry));
-
-  // -- -- Kanji components
-  if (
-    typeof options.showKanjiComponents === 'undefined' ||
-    options.showKanjiComponents
-  ) {
-    topRightPart.append(renderKanjiComponents(entry));
-  }
-
-  // Reference row
-  if (options.kanjiReferences && options.kanjiReferences.length) {
-    table.append(renderReferences(entry, options));
-  }
-
-  return table;
-}
-
-function renderKanjiComponents(entry: KanjiResult): HTMLElement {
-  const componentsDiv = document.createElementNS(HTML_NS, 'div');
-  componentsDiv.classList.add('components');
-
-  const componentsTable = document.createElementNS(HTML_NS, 'table');
-  componentsDiv.append(componentsTable);
-
-  // The radical row is special. It has special highlighting, we show all
-  // readings and meanings (not just the first of each), and we also show
-  // the base radical, if any.
-  const addRadicalRow = () => {
-    const { rad } = entry;
-
-    const row = document.createElementNS(HTML_NS, 'tr');
-    row.classList.add('-radical');
-    componentsTable.append(row);
-
-    const radicalCell = document.createElementNS(HTML_NS, 'td');
-    row.append(radicalCell);
-    radicalCell.classList.add('char');
-    radicalCell.append((rad.b || rad.k)!);
-    radicalCell.lang = 'ja';
-
-    const readingCell = document.createElementNS(HTML_NS, 'td');
-    row.append(readingCell);
-    readingCell.classList.add('reading');
-    readingCell.append(rad.na.join('、'));
-    readingCell.lang = 'ja';
-
-    const meaningCell = document.createElementNS(HTML_NS, 'td');
-    row.append(meaningCell);
-    meaningCell.classList.add('meaning');
-    meaningCell.lang = rad.m_lang;
-    meaningCell.append(rad.m.join(', '));
-
-    if (rad.base) {
-      const baseRow = document.createElementNS(HTML_NS, 'tr');
-      baseRow.classList.add('-baseradical');
-      baseRow.lang = getLangTag();
-      componentsTable.append(baseRow);
-
-      const baseChar = (rad.base.b || rad.base.k)!;
-      const baseReadings = rad.base.na.join('、');
-      const fromText = browser.i18n.getMessage('content_kanji_base_radical', [
-        baseChar,
-        baseReadings,
-      ]);
-
-      const baseCell = document.createElementNS(HTML_NS, 'td');
-      baseCell.setAttribute('colspan', '3');
-      baseCell.innerText = fromText;
-      baseRow.append(baseCell);
-    }
-  };
-
-  // Typically, the radical will also be one of the components, but in case it's
-  // not (the data is frequently hand-edited, after all), make sure we add it
-  // first.
-  if (
-    !entry.comp.some((comp) => comp.c === entry.rad.b || comp.c === entry.rad.k)
-  ) {
-    addRadicalRow();
-  }
-
-  for (const component of entry.comp) {
-    if (component.c === entry.rad.b || component.c === entry.rad.k) {
-      addRadicalRow();
-      continue;
-    }
-
-    const row = document.createElementNS(HTML_NS, 'tr');
-    componentsTable.append(row);
-
-    const radicalCell = document.createElementNS(HTML_NS, 'td');
-    row.append(radicalCell);
-    radicalCell.classList.add('char');
-    radicalCell.lang = 'ja';
-    radicalCell.append(component.c);
-
-    const readingCell = document.createElementNS(HTML_NS, 'td');
-    row.append(readingCell);
-    readingCell.classList.add('reading');
-    readingCell.lang = 'ja';
-    readingCell.append(component.na.length ? component.na[0] : '-');
-
-    const meaningCell = document.createElementNS(HTML_NS, 'td');
-    row.append(meaningCell);
-    meaningCell.classList.add('meaning');
-    meaningCell.lang = component.m_lang;
-    meaningCell.append(component.m.length ? component.m[0] : '-');
-  }
-
-  return componentsDiv;
-}
-
-function renderReadings(entry: KanjiResult): HTMLElement {
-  // Readings
-  const readingsDiv = document.createElementNS(HTML_NS, 'div');
-  readingsDiv.classList.add('readings');
-  readingsDiv.lang = 'ja';
-
-  if (entry.r.on && entry.r.on.length) {
-    readingsDiv.append(entry.r.on.join('、'));
-  }
-
-  // Kun readings sometimes have a . in them separating the initial part that
-  // represents the kanji, from the okurigana.
-  //
-  // e.g. あた.える
-  //
-  // We want to take the bit after the '.' and wrap it in a span with an
-  // appropriate class.
-  let hasPrecedingEntries = entry.r.on && entry.r.on.length !== 0;
-  for (const reading of entry.r.kun || []) {
-    if (hasPrecedingEntries) {
-      readingsDiv.append('、');
-    }
-
-    const highlightIndex = reading.indexOf('.');
-    if (highlightIndex === -1) {
-      readingsDiv.append(reading);
-    } else {
-      readingsDiv.append(reading.substr(0, highlightIndex));
-      const okuriganaSpan = document.createElementNS(HTML_NS, 'span');
-      okuriganaSpan.classList.add('okurigana');
-      okuriganaSpan.append(reading.substr(highlightIndex + 1));
-      readingsDiv.append(okuriganaSpan);
-    }
-
-    hasPrecedingEntries = true;
-  }
-
-  // Name readings
-  if (entry.r.na && entry.r.na.length) {
-    const nanoriLabelSpan = document.createElementNS(HTML_NS, 'span');
-    nanoriLabelSpan.classList.add('nanorilabel');
-    nanoriLabelSpan.lang = getLangTag();
-    nanoriLabelSpan.append(
-      browser.i18n.getMessage('content_kanji_nanori_label')
-    );
-    readingsDiv.append(
-      document.createElementNS(HTML_NS, 'br'),
-      nanoriLabelSpan,
-      ` ${entry.r.na.join('、')}`
-    );
-  }
-
-  return readingsDiv;
-}
-
-function renderMeta(meta: Array<string>): HTMLElement {
-  const metaDiv = document.createElementNS(HTML_NS, 'div');
-  metaDiv.classList.add('meta');
-
-  for (const tag of meta) {
-    const span = document.createElementNS(HTML_NS, 'span');
-    span.classList.add('tag');
-    span.lang = getLangTag();
-    span.textContent = browser.i18n.getMessage(
-      `content_kanji_meta_${tag.replace(' ', '_')}`
-    );
-    metaDiv.append(span);
-  }
-
-  return metaDiv;
-}
-
-function renderMiscRow(entry: KanjiResult): HTMLElement {
-  // Misc information row
-  const miscInfoDiv = document.createElementNS(HTML_NS, 'div');
-  miscInfoDiv.classList.add('misc');
-  miscInfoDiv.lang = getLangTag();
-
-  // Strokes
-  const strokesDiv = document.createElementNS(HTML_NS, 'div');
-  strokesDiv.classList.add('strokes');
-  const pencilIcon = renderPencil();
-  pencilIcon.classList.add('svgicon');
-  pencilIcon.style.opacity = '0.5';
-  strokesDiv.append(pencilIcon);
-  const strokeCount = document.createElementNS(HTML_NS, 'span');
-  strokeCount.textContent =
-    entry.misc.sc === 1
-      ? browser.i18n.getMessage('content_kanji_strokes_label_1')
-      : browser.i18n.getMessage('content_kanji_strokes_label', [
-          String(entry.misc.sc),
-        ]);
-  strokesDiv.append(strokeCount);
-  miscInfoDiv.append(strokesDiv);
-
-  // Frequency
-  const frequencyDiv = document.createElementNS(HTML_NS, 'div');
-  frequencyDiv.classList.add('freq');
-  const frequencyIcon = renderFrequency(entry.misc.freq);
-  frequencyIcon.classList.add('svgicon');
-  frequencyDiv.append(frequencyIcon);
-  const frequency = document.createElementNS(HTML_NS, 'span');
-  if (entry.misc.freq) {
-    frequency.textContent =
-      browser.i18n.getMessage('content_kanji_frequency_label') +
-      ` ${entry.misc.freq.toLocaleString()}`;
-    const denominator = document.createElementNS(HTML_NS, 'span');
-    denominator.classList.add('denom');
-    denominator.append(` / ${Number(2500).toLocaleString()}`);
-    frequency.append(denominator);
-  } else {
-    frequency.textContent = '-';
-  }
-  frequencyDiv.append(frequency);
-  miscInfoDiv.append(frequencyDiv);
-
-  // Grade
-  const gradeDiv = document.createElementNS(HTML_NS, 'div');
-  gradeDiv.classList.add('grade');
-  const personIcon = renderPerson();
-  personIcon.classList.add('svgicon');
-  personIcon.style.opacity = '0.5';
-  gradeDiv.append(personIcon);
-  const grade = document.createElementNS(HTML_NS, 'span');
-  switch (entry.misc.gr || 0) {
-    case 8:
-      grade.append(browser.i18n.getMessage('content_kanji_grade_general_use'));
-      break;
-    case 9:
-      grade.append(browser.i18n.getMessage('content_kanji_grade_name_use'));
-      break;
-    default:
-      if (typeof entry.misc.gr === 'undefined') {
-        grade.append('-');
-      } else {
-        grade.append(
-          browser.i18n.getMessage('content_kanji_grade_label', [
-            String(entry.misc.gr),
-          ])
-        );
-      }
-      break;
-  }
-  gradeDiv.append(grade);
-  miscInfoDiv.append(gradeDiv);
-
-  return miscInfoDiv;
-}
-
-function renderReferences(
-  entry: KanjiResult,
-  options: PopupOptions
-): HTMLElement {
-  const referenceTable = document.createElementNS(HTML_NS, 'div');
-  referenceTable.classList.add('references');
-  referenceTable.lang = getLangTag();
-
-  const referenceNames = getSelectedReferenceLabels(options.kanjiReferences);
-  let numReferences = 0;
-  for (const ref of referenceNames) {
-    // Don't show the Nelson radical if it's the same as the regular radical
-    // (in which case it will be empty) and we're showing the regular radical.
-    if (
-      ref.ref === 'nelson_r' &&
-      !entry.rad.nelson &&
-      options.kanjiReferences.includes('radical')
-    ) {
-      continue;
-    }
-
-    const referenceCell = document.createElementNS(HTML_NS, 'div');
-    referenceCell.classList.add('ref');
-    referenceTable.append(referenceCell);
-
-    const nameSpan = document.createElementNS(HTML_NS, 'span');
-    nameSpan.classList.add('name');
-    nameSpan.append(ref.short || ref.full);
-    referenceCell.append(nameSpan);
-
-    const value = getReferenceValue(entry, ref.ref) || '-';
-    const valueSpan = document.createElementNS(HTML_NS, 'span');
-    valueSpan.classList.add('value');
-    if (ref.ref === 'radical' || ref.ref === 'nelson_r') {
-      valueSpan.lang = 'ja';
-    }
-    valueSpan.append(value);
-    referenceCell.append(valueSpan);
-    numReferences++;
-  }
-
-  // The layout we want is something in-between what CSS grid and CSS multicol
-  // can do. See:
-  //
-  //   https://twitter.com/brianskold/status/1186198347184398336
-  //
-  // In the stylesheet we make let the table flow horizontally, but then here
-  // where we know the number of rows, we update it to produce the desired
-  // vertical flow.
-  if (numReferences > 1) {
-    referenceTable.style.gridAutoFlow = 'column';
-    referenceTable.style.gridTemplateRows = `repeat(${Math.ceil(
-      numReferences / 2
-    )}, minmax(min-content, max-content))`;
-  }
-
-  // Now we go through and toggle the styles to get the desired alternating
-  // effect.
-  //
-  // We can't easily use nth-child voodoo here because we need to
-  // handle unbalanced columns etc. We also can't easily do this in the loop
-  // where we generate the cells because we don't know how many references we
-  // will generate at that point.
-  for (const [index, cell] of [...referenceTable.children].entries()) {
-    const row = index % Math.ceil(numReferences / 2);
-    if (row % 2 === 0) {
-      cell.classList.add('-highlight');
-    }
-  }
-
-  return referenceTable;
 }
 
 function renderCopyDetails({
