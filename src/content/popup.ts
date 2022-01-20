@@ -15,7 +15,6 @@ import {
 import { ReferenceAbbreviation } from '../common/refs';
 import { probablyHasPhysicalKeyboard } from '../utils/device';
 import { HTML_NS } from '../utils/dom-utils';
-import { NameResult } from '../background/search-result';
 import { getThemeClass } from '../utils/themes';
 
 import {
@@ -37,67 +36,11 @@ import {
 } from './popup/icons';
 import { getLangTag } from './popup/lang-tag';
 import { renderMetadata } from './popup/metadata';
-import { renderName } from './popup/names';
-import { getSelectedIndex } from './popup/selected-index';
+import { renderNamesEntries } from './popup/names';
 import { renderWordEntries } from './popup/words';
 import { renderKanjiEntry } from './popup/kanji';
 
 import popupStyles from '../../css/popup.css';
-
-// Update NumberFormatOptions definition
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace Intl {
-    interface NumberFormatOptions {
-      compactDisplay?: 'short' | 'long';
-      currency?: string;
-      // Should be 'symbol' | 'narrowSymbol' | 'code' | 'name' but TS doesn't
-      // let us override the type here.
-      currencyDisplay?: string;
-      // Should be 'standard' | 'accounting' but TS doesn't let us override the
-      // type here.
-      currencySign?: string;
-      // Should be 'lookup' | 'best fit' but TS doesn't let us override the
-      // type here.
-      notation?: 'standard' | 'scientific' | 'engineering' | 'compact';
-      numberingSystem?:
-        | 'arab'
-        | 'arabext'
-        | 'bali'
-        | 'beng'
-        | 'deva'
-        | 'fullwide'
-        | 'gujr'
-        | 'guru'
-        | 'hanidec'
-        | 'khmr'
-        | 'knda'
-        | 'laoo'
-        | 'latn'
-        | 'limb'
-        | 'mlym'
-        | 'mong'
-        | 'mymr'
-        | 'orya'
-        | 'tamldec'
-        | 'telu'
-        | 'thai'
-        | 'tibt';
-      signDisplay?: 'auto' | 'always' | 'never' | 'exceptZero';
-      // Should be 'decimal' | 'currency' | 'percent' | 'unit' but TS doesn't
-      // let us override the type here.
-      style?: string;
-      unit?: string;
-      unitDisplay?: 'short' | 'long' | 'narrow';
-      useGrouping?: boolean;
-      minimumIntegerDigits?: number;
-      minimumFractionDigits?: number;
-      maximumFractionDigits?: number;
-      minimumSignificantDigits?: number;
-      maximumSignificantDigits?: number;
-    }
-  }
-}
 
 export type CopyState =
   | {
@@ -532,49 +475,6 @@ function renderCloseButton(onClosePopup: () => void): HTMLElement {
   };
 
   return html('div', { class: 'close' }, closeButton);
-}
-
-function renderNamesEntries({
-  entries,
-  more,
-  options,
-}: {
-  entries: Array<NameResult>;
-  more: boolean;
-  options: PopupOptions;
-}): HTMLElement {
-  const namesTable = document.createElementNS(HTML_NS, 'div');
-  namesTable.classList.add('name-table');
-  namesTable.classList.add('entry-data');
-
-  if (entries.length > 4) {
-    namesTable.classList.add('-multicol');
-  }
-
-  const selectedIndex = getSelectedIndex(options, entries.length);
-  for (const [index, entry] of entries.entries()) {
-    const entryDiv = renderName(entry);
-    if (index === selectedIndex) {
-      entryDiv.classList.add(
-        options.copyState.kind === 'active' ? '-selected' : '-flash'
-      );
-    }
-
-    entryDiv.addEventListener('click', () => {
-      options.onStartCopy?.(index);
-    });
-
-    namesTable.append(entryDiv);
-  }
-
-  if (more) {
-    const moreDiv = document.createElementNS(HTML_NS, 'div');
-    moreDiv.classList.add('more');
-    moreDiv.append('...');
-    namesTable.append(moreDiv);
-  }
-
-  return namesTable;
 }
 
 function renderCopyDetails({

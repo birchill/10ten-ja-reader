@@ -3,9 +3,49 @@ import { browser } from 'webextension-polyfill-ts';
 
 import { NameResult } from '../../background/search-result';
 import { getDob } from '../../utils/age';
-import { html } from './builder';
+import { PopupOptions } from '../popup';
 
+import { html } from './builder';
 import { getLangTag } from './lang-tag';
+import { getSelectedIndex } from './selected-index';
+
+export function renderNamesEntries({
+  entries,
+  more,
+  options,
+}: {
+  entries: Array<NameResult>;
+  more: boolean;
+  options: PopupOptions;
+}): HTMLElement {
+  const namesTable = html('div', { class: 'name-table entry-data' });
+
+  if (entries.length > 4) {
+    namesTable.classList.add('-multicol');
+  }
+
+  const selectedIndex = getSelectedIndex(options, entries.length);
+  for (const [index, entry] of entries.entries()) {
+    const entryDiv = renderName(entry);
+    if (index === selectedIndex) {
+      entryDiv.classList.add(
+        options.copyState.kind === 'active' ? '-selected' : '-flash'
+      );
+    }
+
+    entryDiv.addEventListener('click', () => {
+      options.onStartCopy?.(index);
+    });
+
+    namesTable.append(entryDiv);
+  }
+
+  if (more) {
+    namesTable.append(html('span', { class: 'more' }, '…'));
+  }
+
+  return namesTable;
+}
 
 export function renderName(entry: NameResult): HTMLElement {
   const entryDiv = html('div', { class: 'entry' });
