@@ -381,8 +381,10 @@
   color: var(--primary-highlight);
 }
 
-.w-kanji .w-unmatched,
-.w-kanji .w-separator {
+.w-kanji .dimmed,
+.w-kanji .separator,
+.w-kana .dimmed,
+.w-kana .separator {
   opacity: 0.6;
 }
 

@@ -83,12 +83,12 @@ export function renderWordEntries({
       const kanjiSpan = html('span', { class: 'w-kanji', lang: 'ja' });
       for (const [i, kanji] of sortedKanji.entries()) {
         if (i) {
-          kanjiSpan.append(html('span', { class: 'w-separator' }, '、'));
+          kanjiSpan.append(html('span', { class: 'separator' }, '、'));
         }
 
         let headwordSpan = kanjiSpan;
         if (!kanji.match) {
-          const dimmedSpan = html('span', { class: 'w-unmatched' });
+          const dimmedSpan = html('span', { class: 'dimmed' });
           kanjiSpan.append(dimmedSpan);
           headwordSpan = dimmedSpan;
         }
@@ -127,12 +127,25 @@ export function renderWordEntries({
       const kanaSpan = html('span', { class: 'w-kana', lang: 'ja' });
       for (const [i, kana] of matchingKana.entries()) {
         if (i) {
-          kanaSpan.append('、 ');
+          kanaSpan.append(html('span', { class: 'separator' }, '、'));
         }
-        kanaSpan.append(renderKana(kana, options));
-        appendHeadwordInfo(kana.i, kanaSpan);
+
+        // If we looked up by kanji, dim any kana headwords that are irregular
+        // or old.
+        let headwordSpan = kanaSpan;
+        if (
+          !matchedOnKana &&
+          (kana.i?.includes('ik') || kana.i?.includes('ok'))
+        ) {
+          const dimmedSpan = html('span', { class: 'dimmed' });
+          kanaSpan.append(dimmedSpan);
+          headwordSpan = dimmedSpan;
+        }
+
+        headwordSpan.append(renderKana(kana, options));
+        appendHeadwordInfo(kana.i, headwordSpan);
         if (options.showPriority) {
-          appendPriorityMark(kana.p, kanaSpan);
+          appendPriorityMark(kana.p, headwordSpan);
         }
       }
       headingDiv.append(kanaSpan);
