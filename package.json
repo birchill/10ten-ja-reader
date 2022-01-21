@@ -51,7 +51,7 @@
     "@types/jest": "^27.4.0",
     "@types/karma": "^6.3.2",
     "@types/karma-webpack": "^2.0.11",
-    "@types/mocha": "^9.0.0",
+    "@types/mocha": "^9.1.0",
     "@types/split2": "^3.2.1",
     "@types/yargs": "^17.0.8",
     "@typescript-eslint/eslint-plugin": "^5.9.1",
