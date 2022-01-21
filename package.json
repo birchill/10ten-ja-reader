@@ -99,7 +99,7 @@
     "@birchill/discriminator": "^0.1.0",
     "@birchill/hikibiki-data": "^7.5.1",
     "@birchill/normal-jp": "^1.4.0",
-    "@bugsnag/js": "^7.14.1",
+    "@bugsnag/js": "^7.15.1",
     "husky": "^7.0.4",
     "lint-staged": "^12.1.7",
     "lru_map": "^0.4.1",
