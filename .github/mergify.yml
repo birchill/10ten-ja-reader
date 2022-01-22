@@ -1,3 +1,9 @@
+queue_rules:
+  - name: default
+    conditions:
+      # Github branch protections is enough but mergify doesn't work with no conditions
+      - label!=work-in-progress
+
 pull_request_rules:
   - name: Automatic merge when Github conditions pass
     conditions:
@@ -12,10 +18,12 @@ pull_request_rules:
       # Don't run on PRs by dependabot (or users with dependabot in their name)
       - author~=^(?:(?!dependabot).)*$
     actions:
-      merge:
+      queue:
+        name: default
         # Each PR is one commit, but may have extras added during review so squash.
         method: squash
-        # Will update PRs before merging but will start with PRs that don't need updating.
-        strict: smart+fasttrack
         # Uses original PR title and body for squashed commit message.
-        commit_message: title+body
+        commit_message_template: |
+          {{ title }} (#{{ number }})
+
+          {{ body }}
