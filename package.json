@@ -103,7 +103,7 @@
     "stylelint-order": "^5.0.0",
     "ts-lit-plugin": "^1.2.1",
     "ts-node": "^10.4.0",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.5"
   },
   "resolutions": {
     "esbuild": "0.14.0"
