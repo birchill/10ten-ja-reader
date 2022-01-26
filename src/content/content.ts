@@ -76,7 +76,6 @@ import {
 } from './iframes';
 import { SelectionMeta } from './meta';
 import {
-  CopyState,
   hidePopup,
   isPopupVisible,
   isPopupWindow,
@@ -87,6 +86,7 @@ import {
   showOverlay,
 } from './popup';
 import { getPopupPosition, PopupPositionMode } from './popup-position';
+import { CopyState } from './popup/copy-state';
 import {
   isPuckMouseEvent,
   LookupPuck,

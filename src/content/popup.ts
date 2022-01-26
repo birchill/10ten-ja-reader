@@ -20,6 +20,7 @@ import { QueryResult } from './query';
 
 import { renderCloseButton } from './popup/close';
 import { renderCopyOverlay } from './popup/copy-overlay';
+import { CopyState } from './popup/copy-state';
 import { renderKanjiEntry } from './popup/kanji';
 import { renderMetadata } from './popup/metadata';
 import { renderNamesEntries } from './popup/names';
@@ -32,27 +33,6 @@ import { renderTabBar } from './popup/tabs';
 import { renderWordEntries } from './popup/words';
 
 import popupStyles from '../../css/popup.css';
-
-export type CopyState =
-  | {
-      kind: 'inactive';
-    }
-  | {
-      kind: 'active';
-      index: number;
-      mode: 'overlay' | 'keyboard';
-    }
-  | {
-      kind: 'finished';
-      type: CopyType;
-      index: number;
-      mode: 'overlay' | 'keyboard';
-    }
-  | {
-      kind: 'error';
-      index: number;
-      mode: 'overlay' | 'keyboard';
-    };
 
 export interface PopupOptions {
   accentDisplay: AccentDisplay;

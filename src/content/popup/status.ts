@@ -7,8 +7,9 @@ import {
   CopyNextKeyStrings,
   CopyType,
 } from '../../common/copy-keys';
-import { CopyState } from '../popup';
+
 import { html } from './builder';
+import { CopyState } from './copy-state';
 import { renderSpinner } from './icons';
 
 import { getLangTag } from './lang-tag';

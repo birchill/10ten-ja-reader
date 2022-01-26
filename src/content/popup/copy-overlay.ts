@@ -9,9 +9,9 @@ import { CopyType } from '../../common/copy-keys';
 import { ReferenceAbbreviation } from '../../common/refs';
 import { getTextToCopy } from '../copy-text';
 import { getCopyEntryFromResult } from '../get-copy-entry';
-import { CopyState } from '../popup';
 
 import { html, svg } from './builder';
+import { CopyState } from './copy-state';
 import { renderClipboard } from './icons';
 import { getLangTag } from './lang-tag';
 
