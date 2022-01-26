@@ -24,21 +24,15 @@ import {
 import { SelectionMeta } from './meta';
 import { QueryResult } from './query';
 
-import { html } from './popup/builder';
+import { renderCloseButton } from './popup/close';
 import { renderCopyOverlay } from './popup/copy-overlay';
-import {
-  renderBook,
-  renderCog,
-  renderCross,
-  renderKanjiIcon,
-  renderPerson,
-  renderSpinner,
-} from './popup/icons';
+import { renderSpinner } from './popup/icons';
+import { renderKanjiEntry } from './popup/kanji';
 import { getLangTag } from './popup/lang-tag';
 import { renderMetadata } from './popup/metadata';
 import { renderNamesEntries } from './popup/names';
+import { renderTabBar } from './popup/tabs';
 import { renderWordEntries } from './popup/words';
-import { renderKanjiEntry } from './popup/kanji';
 
 import popupStyles from '../../css/popup.css';
 
@@ -366,115 +360,6 @@ export function showOverlay(copyState: CopyState): boolean {
     (copyState.kind === 'active' || copyState.kind === 'error') &&
     copyState.mode === 'overlay'
   );
-}
-
-function renderTabBar({
-  onClosePopup,
-  onShowSettings,
-  onSwitchDictionary,
-  queryResult,
-  selectedTab,
-}: {
-  onClosePopup?: () => void;
-  onShowSettings?: () => void;
-  onSwitchDictionary?: (newDict: MajorDataSeries) => void;
-  queryResult?: QueryResult;
-  selectedTab: MajorDataSeries;
-}): HTMLElement {
-  const tabBar = document.createElementNS(HTML_NS, 'div');
-  tabBar.classList.add('tab-bar');
-  tabBar.lang = getLangTag();
-
-  tabBar.addEventListener('pointerup', () => {
-    // Dummy event to make Safari not eat clicks on the child links / buttons.
-  });
-
-  const list = document.createElementNS(HTML_NS, 'ul');
-  list.classList.add('tabs');
-
-  const sections: Array<{
-    series: MajorDataSeries;
-    renderIcon: () => SVGElement;
-  }> = [
-    { series: 'words', renderIcon: renderBook },
-    { series: 'kanji', renderIcon: renderKanjiIcon },
-    { series: 'names', renderIcon: renderPerson },
-  ];
-  for (const { series, renderIcon } of sections) {
-    const li = document.createElementNS(HTML_NS, 'li');
-    li.setAttribute('role', 'presentation');
-    li.classList.add('tab');
-
-    if (series === selectedTab) {
-      li.setAttribute('aria-selected', 'true');
-    } else if (!queryResult || !queryResult[series]) {
-      li.classList.add('disabled');
-    }
-
-    const a = document.createElementNS(HTML_NS, 'a') as HTMLAnchorElement;
-    if (series !== selectedTab && onSwitchDictionary) {
-      a.href = '#';
-      a.onclick = (event: Event) => {
-        event.preventDefault();
-        onSwitchDictionary(series);
-      };
-    }
-    li.append(a);
-
-    const icon = renderIcon();
-    icon.classList.add('icon');
-    a.append(icon);
-
-    const label = document.createElementNS(HTML_NS, 'span');
-    label.textContent = browser.i18n.getMessage(`tabs_${series}_label`);
-    a.append(label);
-
-    list.append(li);
-  }
-  tabBar.append(list);
-
-  if (onShowSettings) {
-    tabBar.append(renderSettingsButton(onShowSettings));
-  }
-
-  if (onClosePopup) {
-    tabBar.append(renderCloseButton(onClosePopup));
-  }
-
-  return tabBar;
-}
-
-function renderSettingsButton(onShowSettings: () => void): HTMLElement {
-  const settingsButton = html(
-    'button',
-    {
-      'aria-label': browser.i18n.getMessage('popup_settings_label'),
-      class: 'settings-button',
-      type: 'button',
-    },
-    renderCog()
-  );
-  settingsButton.onclick = onShowSettings;
-
-  return html('div', { class: 'settings' }, settingsButton);
-}
-
-function renderCloseButton(onClosePopup: () => void): HTMLElement {
-  const closeButton = html(
-    'button',
-    {
-      'aria-label': browser.i18n.getMessage('popup_close_label'),
-      class: 'close-button',
-      type: 'button',
-    },
-    renderCross()
-  );
-  closeButton.onclick = (event: MouseEvent) => {
-    event.preventDefault();
-    onClosePopup();
-  };
-
-  return html('div', { class: 'close' }, closeButton);
 }
 
 function renderCopyDetails({
