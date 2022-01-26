@@ -17,6 +17,9 @@ app.
 - Made irregular readings be dimmed when looking up by kanji
   (e.g. ふいんき is dimmed when looking up 雰囲気)
   ([#877](https://github.com/birchill/10ten-ja-reader/issues/877)).
+- Made irregular kanji headwords be dimmed when looking up by kana
+  (e.g. お母 is dimmed when looking up おふくろ)
+  ([#877](https://github.com/birchill/10ten-ja-reader/issues/877)).
 
 ## [1.6.1] - 2021-12-16 (Chrome, Edge, Safari)
 

@@ -75,6 +75,8 @@ export function renderWordEntries({
     const headingDiv = html('div', {});
     entryDiv.append(headingDiv);
 
+    const matchedOnKana = entry.r.some((r) => r.matchRange);
+
     // Sort matched kanji entries first
     const sortedKanji = entry.k
       ? [...entry.k].sort((a, b) => Number(b.match) - Number(a.match))
@@ -87,7 +89,15 @@ export function renderWordEntries({
         }
 
         let headwordSpan = kanjiSpan;
-        if (!kanji.match) {
+        if (
+          !kanji.match ||
+          // Dim any kanji "matches" where the reading is irregular, old, or
+          // rare.
+          (matchedOnKana &&
+            (kanji.i?.includes('iK') ||
+              kanji.i?.includes('oK') ||
+              kanji.i?.includes('rK')))
+        ) {
           const dimmedSpan = html('span', { class: 'dimmed' });
           kanjiSpan.append(dimmedSpan);
           headwordSpan = dimmedSpan;
@@ -110,7 +120,6 @@ export function renderWordEntries({
     // For example, if we looked up ふんいき (雰囲気) we should only show that
     // headword, but if we looked up ふいんき, we should show the more correct
     // ふんいき too.
-    const matchedOnKana = entry.r.some((r) => r.matchRange);
     const matchedOnIrregularKana =
       matchedOnKana &&
       entry.r.every(
