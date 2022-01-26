@@ -1,17 +1,11 @@
 import { allMajorDataSeries, MajorDataSeries } from '@birchill/hikibiki-data';
-import { browser } from 'webextension-polyfill-ts';
 
 import {
   AccentDisplay,
   ContentConfig,
   PartOfSpeechDisplay,
 } from '../common/content-config';
-import {
-  CopyKanjiKeyStrings,
-  CopyKeys,
-  CopyNextKeyStrings,
-  CopyType,
-} from '../common/copy-keys';
+import { CopyType } from '../common/copy-keys';
 import { ReferenceAbbreviation } from '../common/refs';
 import { probablyHasPhysicalKeyboard } from '../utils/device';
 import { HTML_NS } from '../utils/dom-utils';
@@ -26,11 +20,14 @@ import { QueryResult } from './query';
 
 import { renderCloseButton } from './popup/close';
 import { renderCopyOverlay } from './popup/copy-overlay';
-import { renderSpinner } from './popup/icons';
 import { renderKanjiEntry } from './popup/kanji';
-import { getLangTag } from './popup/lang-tag';
 import { renderMetadata } from './popup/metadata';
 import { renderNamesEntries } from './popup/names';
+import {
+  renderCopyDetails,
+  renderSwitchDictionaryHint,
+  renderUpdatingStatus,
+} from './popup/status';
 import { renderTabBar } from './popup/tabs';
 import { renderWordEntries } from './popup/words';
 
@@ -360,149 +357,4 @@ export function showOverlay(copyState: CopyState): boolean {
     (copyState.kind === 'active' || copyState.kind === 'error') &&
     copyState.mode === 'overlay'
   );
-}
-
-function renderCopyDetails({
-  copyNextKey,
-  copyState,
-  series,
-}: {
-  copyNextKey: string;
-  copyState: CopyState;
-  series: MajorDataSeries;
-}): HTMLElement | null {
-  if (copyState.kind === 'inactive') {
-    return null;
-  }
-
-  // In touch mode, only use the status bar to show the finished and error
-  // states.
-  if (copyState.mode === 'overlay' && copyState.kind === 'active') {
-    return null;
-  }
-
-  const statusDiv = document.createElementNS(HTML_NS, 'div');
-  statusDiv.classList.add('status-bar');
-  statusDiv.classList.add('-stack');
-  statusDiv.lang = getLangTag();
-
-  if (copyState.mode === 'keyboard') {
-    const keysDiv = document.createElementNS(HTML_NS, 'div');
-    keysDiv.classList.add('keys');
-    statusDiv.append(keysDiv);
-
-    keysDiv.append(browser.i18n.getMessage('content_copy_keys_label') + ' ');
-
-    const copyKeys: Array<{ key: string; l10nKey: string }> = CopyKeys.map(
-      ({ key, type, popupString }) => {
-        if (type === 'word' && series === 'kanji') {
-          return { key, l10nKey: CopyKanjiKeyStrings.popupString };
-        } else {
-          return { key, l10nKey: popupString };
-        }
-      }
-    );
-    copyKeys.push({
-      key: copyNextKey,
-      l10nKey: CopyNextKeyStrings.popupString,
-    });
-
-    for (const copyKey of copyKeys) {
-      const keyElem = document.createElementNS(HTML_NS, 'kbd');
-      keyElem.append(copyKey.key);
-      keysDiv.append(keyElem, ' = ' + browser.i18n.getMessage(copyKey.l10nKey));
-      if (copyKey.key !== copyNextKey) {
-        keysDiv.append(', ');
-      }
-    }
-  }
-
-  if (copyState.kind === 'finished') {
-    statusDiv.append(renderCopyStatus(getCopiedString(copyState.type)));
-  } else if (copyState.kind === 'error') {
-    statusDiv.append(
-      renderCopyStatus(browser.i18n.getMessage('content_copy_error'))
-    );
-  }
-
-  return statusDiv;
-}
-
-function getCopiedString(target: CopyType): string {
-  switch (target) {
-    case 'entry':
-      return browser.i18n.getMessage('content_copied_entry');
-
-    case 'tab':
-      return browser.i18n.getMessage('content_copied_fields');
-
-    case 'word':
-      return browser.i18n.getMessage('content_copied_word');
-  }
-}
-
-function renderCopyStatus(message: string): HTMLElement {
-  const status = document.createElementNS(HTML_NS, 'div');
-  status.classList.add('status');
-  status.innerText = message;
-  return status;
-}
-
-function renderUpdatingStatus(): HTMLElement {
-  const statusDiv = document.createElementNS(HTML_NS, 'div');
-  statusDiv.classList.add('status-bar');
-  statusDiv.classList.add('-subdued');
-  statusDiv.lang = getLangTag();
-
-  const statusText = document.createElementNS(HTML_NS, 'div');
-  statusText.classList.add('status');
-
-  const spinner = renderSpinner();
-  spinner.classList.add('spinner');
-  statusText.append(spinner);
-
-  statusText.append(browser.i18n.getMessage('content_database_updating'));
-  statusDiv.append(statusText);
-
-  return statusDiv;
-}
-
-function renderSwitchDictionaryHint(
-  keys: ReadonlyArray<string>
-): HTMLElement | null {
-  const hintDiv = document.createElementNS(HTML_NS, 'div');
-  hintDiv.classList.add('status-bar');
-  hintDiv.lang = getLangTag();
-
-  const statusText = document.createElementNS(HTML_NS, 'div');
-  statusText.classList.add('status');
-  hintDiv.append(statusText);
-
-  if (keys.length < 1 || keys.length > 3) {
-    console.warn(`Unexpected number of keys ${keys.length}`);
-    return null;
-  }
-
-  const label = browser.i18n.getMessage(
-    `content_hint_switch_dict_keys_${keys.length}`
-  );
-
-  // Replace all the %KEY% placeholders with <kbd> elements.
-  const keysCopy = keys.slice();
-  const parts = label
-    .split('%')
-    .filter(Boolean)
-    .map((part) => {
-      if (part !== 'KEY') {
-        return part;
-      }
-
-      const kbd = document.createElementNS(HTML_NS, 'kbd');
-      kbd.textContent = keysCopy.shift() || '-';
-      return kbd;
-    });
-
-  statusText.append(...parts);
-
-  return hintDiv;
 }
