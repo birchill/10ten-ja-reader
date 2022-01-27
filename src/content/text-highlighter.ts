@@ -1,3 +1,4 @@
+import { html } from '../utils/builder';
 import {
   isContentEditableNode,
   isFocusable,
@@ -425,14 +426,17 @@ export class TextHighlighter {
       return;
     }
 
-    const styleElem = document.createElement('style');
-    styleElem.id = 'tenten-selection-styles';
-    styleElem.textContent = `
+    document.head.append(
+      html(
+        'style',
+        { id: 'tenten-selection-styles' },
+        `
 ::highlight(tenten-selection) {
   background: yellow;
   color: #1d1a19;
-}`;
-    document.head.append(styleElem);
+}`
+      )
+    );
   }
 
   private dropHighlightStyles() {

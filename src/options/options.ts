@@ -28,8 +28,10 @@ import {
   getReferenceLabelsForLang,
   getReferencesForLang,
 } from '../common/refs';
+import { renderStar } from '../content/popup/icons';
 import { startBugsnag } from '../utils/bugsnag';
-import { empty, SVG_NS } from '../utils/dom-utils';
+import { html } from '../utils/builder';
+import { empty } from '../utils/dom-utils';
 import { isObject } from '../utils/is-object';
 import {
   isChromium,
@@ -222,11 +224,12 @@ function renderPopupStyleSelect() {
   const themes = ['default', 'light', 'blue', 'lightblue', 'black', 'yellow'];
 
   for (const theme of themes) {
-    const input = document.createElement('input');
-    input.setAttribute('type', 'radio');
-    input.setAttribute('name', 'popupStyle');
-    input.setAttribute('value', theme);
-    input.setAttribute('id', `popupstyle-${theme}`);
+    const input = html('input', {
+      type: 'radio',
+      name: 'popupStyle',
+      value: theme,
+      id: `popupstyle-${theme}`,
+    });
     popupStyleSelect.appendChild(input);
 
     input.addEventListener('click', () => {
@@ -234,18 +237,20 @@ function renderPopupStyleSelect() {
       setTabDisplayTheme(theme);
     });
 
-    const label = document.createElement('label');
-    label.setAttribute('for', `popupstyle-${theme}`);
+    const label = html('label', { for: `popupstyle-${theme}` });
     popupStyleSelect.appendChild(label);
 
     // The default theme alternates between light and dark so we need to
     // generate two popup previews and overlay them.
     if (theme === 'default') {
-      const popupPreviewContainer = document.createElement('div');
-      popupPreviewContainer.classList.add('overlay');
-      popupPreviewContainer.appendChild(renderPopupPreview('light'));
-      popupPreviewContainer.appendChild(renderPopupPreview('black'));
-      label.appendChild(popupPreviewContainer);
+      label.appendChild(
+        html(
+          'div',
+          { class: 'overlay' },
+          renderPopupPreview('light'),
+          renderPopupPreview('black')
+        )
+      );
     } else {
       label.appendChild(renderPopupPreview(theme));
     }
@@ -253,28 +258,23 @@ function renderPopupStyleSelect() {
 }
 
 function renderPopupPreview(theme: string): HTMLElement {
-  const popupPreview = document.createElement('div');
-  popupPreview.classList.add('popup-preview');
-  popupPreview.classList.add('window');
-  popupPreview.classList.add(`theme-${theme}`);
+  const popupPreview = html('div', {
+    class: `popup-preview window theme-${theme}`,
+  });
 
-  const entry = document.createElement('div');
-  entry.classList.add('entry');
+  const entry = html('div', { class: 'entry' });
   popupPreview.appendChild(entry);
 
-  const headingDiv = document.createElement('div');
+  const headingDiv = html('div', {});
   entry.append(headingDiv);
 
-  const spanKanji = document.createElement('span');
-  spanKanji.classList.add('w-kanji');
-  spanKanji.textContent = '理解';
+  const spanKanji = html('span', { class: 'w-kanji' }, '理解');
   if (config.showPriority) {
-    spanKanji.append(renderStar());
+    spanKanji.append(renderStar('full'));
   }
   headingDiv.appendChild(spanKanji);
 
-  const spanKana = document.createElement('span');
-  spanKana.classList.add('w-kana');
+  const spanKana = html('span', { class: 'w-kana' });
 
   switch (config.accentDisplay) {
     case 'downstep':
@@ -283,20 +283,14 @@ function renderPopupPreview(theme: string): HTMLElement {
 
     case 'binary':
       {
-        const spanWrapper = document.createElement('span');
-        spanWrapper.classList.add('w-binary');
-
-        const spanRi = document.createElement('span');
-        spanRi.classList.add('h-l');
-        spanRi.textContent = 'り';
-        spanWrapper.append(spanRi);
-
-        const spanKai = document.createElement('span');
-        spanKai.classList.add('l');
-        spanKai.textContent = 'かい';
-        spanWrapper.append(spanKai);
-
-        spanKana.append(spanWrapper);
+        spanKana.append(
+          html(
+            'span',
+            { class: 'w-binary' },
+            html('span', { class: 'h-l' }, 'り'),
+            html('span', { class: 'l' }, 'かい')
+          )
+        );
       }
       break;
 
@@ -306,23 +300,19 @@ function renderPopupPreview(theme: string): HTMLElement {
   }
 
   if (config.showPriority) {
-    spanKana.append(renderStar());
+    spanKana.append(renderStar('full'));
   }
   headingDiv.appendChild(spanKana);
 
   if (config.showRomaji) {
-    const spanRomaji = document.createElement('span');
-    spanRomaji.classList.add('w-romaji');
-    spanRomaji.textContent = 'rikai';
-    headingDiv.appendChild(spanRomaji);
+    headingDiv.appendChild(html('span', { class: 'w-romaji' }, 'rikai'));
   }
 
   if (!config.readingOnly) {
-    const spanDef = document.createElement('span');
+    const spanDef = html('span', { class: 'w-def' });
 
     if (config.posDisplay !== 'none') {
-      const posSpan = document.createElement('span');
-      posSpan.classList.add('w-pos', 'tag');
+      const posSpan = html('span', { class: 'w-pos tag' });
       switch (config.posDisplay) {
         case 'expl':
           posSpan.append(
@@ -339,29 +329,12 @@ function renderPopupPreview(theme: string): HTMLElement {
       spanDef.append(posSpan);
     }
 
-    spanDef.classList.add('w-def');
     spanDef.append('\u200bunderstanding');
 
     entry.appendChild(spanDef);
   }
 
   return popupPreview;
-}
-
-function renderStar(): SVGElement {
-  const svg = document.createElementNS(SVG_NS, 'svg');
-  svg.classList.add('svgicon');
-  svg.style.opacity = '0.5';
-  svg.setAttribute('viewBox', '0 0 98.6 93.2');
-
-  const path = document.createElementNS(SVG_NS, 'path');
-  path.setAttribute(
-    'd',
-    'M98 34a4 4 0 00-3-1l-30-4L53 2a4 4 0 00-7 0L33 29 4 33a4 4 0 00-3 6l22 20-6 29a4 4 0 004 5 4 4 0 002 0l26-15 26 15a4 4 0 002 0 4 4 0 004-4 4 4 0 000-1l-6-29 22-20a4 4 0 001-5z'
-  );
-  svg.append(path);
-
-  return svg;
 }
 
 function setTabDisplayTheme(theme: string) {
@@ -621,16 +594,15 @@ function addPopupKeys() {
       continue;
     }
 
-    const keyBlock = document.createElement('div');
-    keyBlock.classList.add('key');
-    keyBlock.classList.add('browser-style');
+    const keyBlock = html('div', { class: 'key browser-style' });
 
     for (const key of setting.keys) {
-      const keyInput = document.createElement('input');
-      keyInput.setAttribute('type', 'checkbox');
-      keyInput.setAttribute('id', `key-${setting.name}-${key}`);
-      keyInput.setAttribute('name', `key-${setting.name}-${key}`);
-      keyInput.classList.add(`key-${setting.name}`);
+      const keyInput = html('input', {
+        type: 'checkbox',
+        class: `key-${setting.name}`,
+        id: `key-${setting.name}-${key}`,
+        name: `key-${setting.name}-${key}`,
+      });
       keyInput.dataset.key = key;
       keyBlock.append(keyInput);
       keyBlock.append(' '); // <-- Mimick the whitespace in the template file
@@ -646,40 +618,18 @@ function addPopupKeys() {
         });
       });
 
-      const keyLabel = document.createElement('label');
-      keyLabel.setAttribute('for', `key-${setting.name}-${key}`);
+      const keyLabel = html('label', { for: `key-${setting.name}-${key}` });
 
       // We need to add an extra span inside in order to be able to get
       // consistent layout when using older versions of extensions.css that put
       // the checkbox in a pseudo.
       if (setting.name === 'movePopupDownOrUp') {
         const [down, up] = key.split(',', 2);
-
-        {
-          const downSpan = document.createElement('span');
-          downSpan.classList.add('key-box');
-          downSpan.textContent = down;
-          keyLabel.append(downSpan);
-        }
-
-        {
-          const orSpan = document.createElement('span');
-          orSpan.classList.add('or');
-          orSpan.textContent = '/';
-          keyLabel.append(orSpan);
-        }
-
-        {
-          const upSpan = document.createElement('span');
-          upSpan.classList.add('key-box');
-          upSpan.textContent = up;
-          keyLabel.append(upSpan);
-        }
+        keyLabel.append(html('span', { class: 'key-box' }, down));
+        keyLabel.append(html('span', { class: 'or' }, '/'));
+        keyLabel.append(html('span', { class: 'key-box' }, up));
       } else {
-        const keyLabelSpan = document.createElement('span');
-        keyLabelSpan.classList.add('key-box');
-        keyLabelSpan.textContent = key;
-        keyLabel.append(keyLabelSpan);
+        keyLabel.append(html('span', { class: 'key-box' }, key));
       }
 
       keyBlock.append(keyLabel);
@@ -687,14 +637,15 @@ function addPopupKeys() {
 
     grid.append(keyBlock);
 
-    const keyDescription = document.createElement('div');
-    keyDescription.classList.add('key-description');
-    keyDescription.textContent = browser.i18n.getMessage(setting.l10nKey);
+    const keyDescription = html(
+      'div',
+      { class: 'key-description' },
+      browser.i18n.getMessage(setting.l10nKey)
+    );
 
     // Copy keys has an extended description.
     if (setting.name === 'startCopy') {
-      const copyKeyList = document.createElement('ul');
-      copyKeyList.classList.add('key-list');
+      const copyKeyList = html('ul', { class: 'key-list' });
 
       const copyKeys: Array<{
         key: string;
@@ -711,18 +662,14 @@ function addPopupKeys() {
       });
 
       for (const copyKey of copyKeys) {
-        const item = document.createElement('li');
-        item.classList.add('key');
-
-        const keyLabel = document.createElement('label');
-        const keySpan = document.createElement('span');
-        keySpan.classList.add('key-box');
-        keySpan.append(copyKey.key);
-        keyLabel.append(keySpan);
-        item.append(keyLabel);
-        item.append(browser.i18n.getMessage(copyKey.l10nKey));
-
-        copyKeyList.appendChild(item);
+        copyKeyList.append(
+          html(
+            'li',
+            { class: 'key' },
+            html('label', {}, html('span', { class: 'key-box' }, copyKey.key)),
+            browser.i18n.getMessage(copyKey.l10nKey)
+          )
+        );
       }
 
       keyDescription.appendChild(copyKeyList);
@@ -801,10 +748,7 @@ function fillInLanguages() {
     } else if (!data.hasWords && data.hasKanji) {
       label += browser.i18n.getMessage('options_lang_kanji_only');
     }
-    const option = document.createElement('option');
-    option.value = id;
-    option.append(label);
-    select.append(option);
+    select.append(html('option', { value: id }, label));
   }
 
   select.addEventListener('change', () => {
@@ -832,28 +776,25 @@ function createKanjiReferences() {
 
   const referenceNames = getReferenceLabelsForLang(config.dictLang);
   for (const { ref, full } of referenceNames) {
-    const rowDiv = document.createElement('div');
-    rowDiv.classList.add('browser-style');
-    rowDiv.classList.add('checkbox-row');
-
-    const checkbox = document.createElement('input');
-    checkbox.setAttribute('type', 'checkbox');
-    checkbox.setAttribute('id', `ref-${ref}`);
-    checkbox.setAttribute('name', ref);
+    const checkbox = html('input', {
+      type: 'checkbox',
+      id: `ref-${ref}`,
+      name: ref,
+    });
     checkbox.addEventListener('click', (event) => {
       config.updateKanjiReferences({
         [ref]: (event.target as HTMLInputElement).checked,
       });
     });
 
-    rowDiv.append(checkbox);
-
-    const label = document.createElement('label');
-    label.setAttribute('for', `ref-${ref}`);
-    label.textContent = full;
-    rowDiv.append(label);
-
-    container.append(rowDiv);
+    container.append(
+      html(
+        'div',
+        { class: 'browser-style checkbox-row' },
+        checkbox,
+        html('label', { for: `ref-${ref}` }, full)
+      )
+    );
   }
 
   // We want to match the arrangement of references when they are displayed,
@@ -1090,9 +1031,7 @@ function updateDatabaseBlurb() {
   const accentAttribution = browser.i18n.getMessage(
     'options_accent_data_source'
   );
-  const accentPara = document.createElement('p');
-  accentPara.append(accentAttribution);
-  blurb.append(accentPara);
+  blurb.append(html('p', {}, accentAttribution));
 }
 
 function updateDatabaseStatus(event: DbStateUpdatedMessage) {
@@ -1110,28 +1049,33 @@ function updateDatabaseStatus(event: DbStateUpdatedMessage) {
       void updateIdleStateSummary(event, statusElem);
       break;
 
-    case 'checking': {
-      const infoDiv = document.createElement('div');
-      infoDiv.classList.add('db-summary-info');
-      infoDiv.append(browser.i18n.getMessage('options_checking_for_updates'));
-      statusElem.append(infoDiv);
+    case 'checking':
+      statusElem.append(
+        html(
+          'div',
+          { class: 'db-summary-info' },
+          browser.i18n.getMessage('options_checking_for_updates')
+        )
+      );
       break;
-    }
 
     case 'downloading':
     case 'updatingdb': {
-      const infoDiv = document.createElement('div');
-      infoDiv.classList.add('db-summary-info');
-      const progressElem = document.createElement('progress');
-      progressElem.classList.add('progress');
-      progressElem.max = 100;
-      progressElem.value = updateState.progress * 100;
-      progressElem.id = 'update-progress';
-      infoDiv.append(progressElem);
+      const infoDiv = html(
+        'div',
+        { class: 'db-summary-info' },
+        html('progress', {
+          class: 'progress',
+          max: '100',
+          value: String(updateState.progress * 100),
+          id: 'update-progress',
+        })
+      );
 
-      const labelElem = document.createElement('label');
-      labelElem.classList.add('label');
-      labelElem.htmlFor = 'update-progress';
+      const labelElem = html('label', {
+        class: 'label',
+        for: 'update-progress',
+      });
 
       const labels: { [series in DataSeries]: string } = {
         kanji: 'options_kanji_data_name',
@@ -1163,16 +1107,16 @@ function updateDatabaseStatus(event: DbStateUpdatedMessage) {
 
   // Add the action button info if any
 
-  const buttonDiv = document.createElement('div');
-  buttonDiv.classList.add('db-summary-button');
+  const buttonDiv = html('div', { class: 'db-summary-button' });
 
   switch (updateState.state) {
     case 'idle': {
       // We should probably skip this when we are offline, but for now it
       // doesn't really matter.
-      const updateButton = document.createElement('button');
-      updateButton.classList.add('browser-style');
-      updateButton.setAttribute('type', 'button');
+      const updateButton = html('button', {
+        class: 'browser-style',
+        type: 'button',
+      });
       const isUnavailable = allDataSeries.some(
         (series) => event.state[series].state === DataSeriesState.Unavailable
       );
@@ -1185,14 +1129,11 @@ function updateDatabaseStatus(event: DbStateUpdatedMessage) {
       buttonDiv.append(updateButton);
 
       if (updateState.lastCheck) {
-        const lastCheckDiv = document.createElement('div');
-        lastCheckDiv.classList.add('last-check');
         const lastCheckString = browser.i18n.getMessage(
           'options_last_database_check',
           formatDate(updateState.lastCheck)
         );
-        lastCheckDiv.append(lastCheckString);
-        buttonDiv.append(lastCheckDiv);
+        buttonDiv.append(html('div', { class: 'last-check' }, lastCheckString));
       }
       break;
     }
@@ -1200,11 +1141,10 @@ function updateDatabaseStatus(event: DbStateUpdatedMessage) {
     case 'checking':
     case 'downloading':
     case 'updatingdb': {
-      const cancelButton = document.createElement('button');
-      cancelButton.classList.add('browser-style');
-      cancelButton.setAttribute('type', 'button');
-      cancelButton.textContent = browser.i18n.getMessage(
-        'options_cancel_update_button_label'
+      const cancelButton = html(
+        'button',
+        { class: 'browser-style', type: 'button' },
+        browser.i18n.getMessage('options_cancel_update_button_label')
       );
       cancelButton.addEventListener('click', cancelDatabaseUpdate);
       buttonDiv.append(cancelButton);
@@ -1222,19 +1162,20 @@ async function updateIdleStateSummary(
   const { updateError } = event.state;
 
   if (!!updateError && updateError.name === 'OfflineError') {
-    const infoDiv = document.createElement('div');
-    infoDiv.classList.add('db-summary-info');
-    infoDiv.append(browser.i18n.getMessage('options_offline_explanation'));
     statusElem.classList.add('-warning');
-    statusElem.append(infoDiv);
+    statusElem.append(
+      html(
+        'div',
+        { class: 'db-summary-info' },
+        browser.i18n.getMessage('options_offline_explanation')
+      )
+    );
     return;
   }
 
   if (!!updateError && updateError.name !== 'AbortError') {
-    const infoDiv = document.createElement('div');
-    infoDiv.classList.add('db-summary-info');
+    const infoDiv = html('div', { class: 'db-summary-info' });
 
-    const messageDiv = document.createElement('div');
     let errorMessage: string | undefined;
     if (updateError.name === 'QuotaExceededError') {
       try {
@@ -1264,17 +1205,19 @@ async function updateIdleStateSummary(
         updateError.message
       );
     }
-    messageDiv.append(errorMessage);
-    infoDiv.append(messageDiv);
+    infoDiv.append(html('div', {}, errorMessage));
 
     if (updateError.nextRetry) {
-      const nextRetryDiv = document.createElement('div');
-      const nextRetryString = browser.i18n.getMessage(
-        'options_db_update_next_retry',
-        formatDate(updateError.nextRetry)
+      infoDiv.append(
+        html(
+          'div',
+          {},
+          browser.i18n.getMessage(
+            'options_db_update_next_retry',
+            formatDate(updateError.nextRetry)
+          )
+        )
       );
-      nextRetryDiv.append(nextRetryString);
-      infoDiv.append(nextRetryDiv);
     }
 
     statusElem.classList.add('-error');
@@ -1298,20 +1241,22 @@ async function updateIdleStateSummary(
       if (
         allMajorDataSeries.some((series) => event.state[series].state === state)
       ) {
-        const infoDiv = document.createElement('div');
-        infoDiv.classList.add('db-summary-info');
-        infoDiv.append(browser.i18n.getMessage(key));
         if (state === DataSeriesState.Unavailable) {
           statusElem.classList.add('-error');
         }
-        statusElem.append(infoDiv);
+        statusElem.append(
+          html(
+            'div',
+            { class: 'db-summary-info' },
+            browser.i18n.getMessage(key)
+          )
+        );
         return;
       }
     }
   }
 
-  const gridDiv = document.createElement('div');
-  gridDiv.classList.add('db-summary-version-grid');
+  const gridDiv = html('div', { class: 'db-summary-version-grid' });
 
   for (const series of allMajorDataSeries) {
     const versionInfo = event.state[series].version;
@@ -1320,8 +1265,6 @@ async function updateIdleStateSummary(
     }
 
     const { major, minor, patch, lang } = versionInfo;
-    const titleDiv = document.createElement('div');
-    titleDiv.classList.add('db-source-title');
     const titleKeys: { [series in MajorDataSeries]: string } = {
       kanji: 'options_kanji_data_title',
       names: 'options_name_data_title',
@@ -1331,11 +1274,7 @@ async function updateIdleStateSummary(
       titleKeys[series],
       `${major}.${minor}.${patch} (${lang})`
     );
-    titleDiv.append(titleString);
-    gridDiv.append(titleDiv);
-
-    const sourceDiv = document.createElement('div');
-    sourceDiv.classList.add('db-source-version');
+    gridDiv.append(html('div', { class: 'db-source-title' }, titleString));
 
     const sourceNames: { [series in MajorDataSeries]: string } = {
       kanji: 'KANJIDIC',
@@ -1358,8 +1297,7 @@ async function updateIdleStateSummary(
         dateOfCreation,
       ]);
     }
-    sourceDiv.append(sourceString);
-    gridDiv.append(sourceDiv);
+    gridDiv.append(html('div', { class: 'db-source-version' }, sourceString));
   }
 
   statusElem.append(gridDiv);
@@ -1391,12 +1329,17 @@ function linkify(
       result.append(source.substring(position, replacement.index));
     }
 
-    const link = document.createElement('a');
-    link.href = replacement.href;
-    link.target = '_blank';
-    link.rel = 'noopener';
-    link.textContent = replacement.keyword;
-    result.append(link);
+    result.append(
+      html(
+        'a',
+        {
+          href: replacement.href,
+          target: '_blank',
+          rel: 'noopener',
+        },
+        replacement.keyword
+      )
+    );
 
     position = replacement.index + replacement.keyword.length;
   }

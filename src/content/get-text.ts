@@ -1,3 +1,4 @@
+import { html } from '../utils/builder';
 import {
   nonJapaneseChar,
   nonJapaneseCharOrNumber,
@@ -360,9 +361,11 @@ function getRangeWithoutUserSelectNone({
   }
 
   // Try to temporarily disable the (-webkit-)user-select style.
-  const styleElem = document.createElement('style');
-  styleElem.textContent =
-    '* { -webkit-user-select: all !important; user-select: all !important; }';
+  const styleElem = html(
+    'style',
+    {},
+    '* { -webkit-user-select: all !important; user-select: all !important; }'
+  );
   document.head.append(styleElem);
 
   // Retry looking up
@@ -387,8 +390,7 @@ function getOffsetFromTextInputNode({
   // text area, read the text position, then drop it.
 
   // Create the element
-  const mirrorElement = document.createElement('div');
-  mirrorElement.textContent = node.value;
+  const mirrorElement = html('div', {}, node.value);
 
   // Set its styles to be the same
   const cs = document.defaultView!.getComputedStyle(node);
