@@ -15,7 +15,7 @@ import { PopupOptions } from './popup';
 
 import { renderMetadata } from './metadata';
 import { renderName } from './names';
-import { html } from './builder';
+import { html } from '../../utils/builder';
 import { getSelectedIndex } from './selected-index';
 import { getLangTag } from './lang-tag';
 import { renderStar } from './icons';

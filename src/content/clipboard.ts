@@ -1,4 +1,4 @@
-import { html } from './popup/builder';
+import { html } from '../utils/builder';
 
 export async function copyText(text: string): Promise<void> {
   try {

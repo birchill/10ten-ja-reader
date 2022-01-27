@@ -3,10 +3,10 @@ import { browser } from 'webextension-polyfill-ts';
 
 import { NameResult } from '../../background/search-result';
 import { getDob } from '../../utils/age';
-import { PopupOptions } from './popup';
+import { html } from '../../utils/builder';
 
-import { html } from './builder';
 import { getLangTag } from './lang-tag';
+import { PopupOptions } from './popup';
 import { getSelectedIndex } from './selected-index';
 
 export function renderNamesEntries({

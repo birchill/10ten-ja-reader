@@ -1,6 +1,6 @@
 import { browser } from 'webextension-polyfill-ts';
 
-import { html } from './builder';
+import { html } from '../../utils/builder';
 import { renderCross } from './icons';
 
 export function renderCloseButton(onClosePopup: () => void): HTMLElement {

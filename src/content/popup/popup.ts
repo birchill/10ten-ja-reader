@@ -18,7 +18,7 @@ import {
 import { SelectionMeta } from '../meta';
 import { QueryResult } from '../query';
 
-import { html } from './builder';
+import { html } from '../../utils/builder';
 import { renderCloseButton } from './close';
 import { renderCopyOverlay } from './copy-overlay';
 import { CopyState } from './copy-state';

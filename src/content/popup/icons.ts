@@ -1,4 +1,4 @@
-import { svg } from './builder';
+import { svg } from '../../utils/builder';
 
 export function renderBook(): SVGElement {
   const bookSvg = svg(

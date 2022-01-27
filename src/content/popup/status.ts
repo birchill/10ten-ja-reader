@@ -7,11 +7,10 @@ import {
   CopyNextKeyStrings,
   CopyType,
 } from '../../common/copy-keys';
+import { html } from '../../utils/builder';
 
-import { html } from './builder';
 import { CopyState } from './copy-state';
 import { renderSpinner } from './icons';
-
 import { getLangTag } from './lang-tag';
 
 export function renderCopyDetails({

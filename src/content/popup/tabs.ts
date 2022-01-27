@@ -2,8 +2,8 @@ import { MajorDataSeries } from '@birchill/hikibiki-data';
 import { browser } from 'webextension-polyfill-ts';
 
 import { QueryResult } from '../query';
+import { html } from '../../utils/builder';
 
-import { html } from './builder';
 import { renderCloseButton } from './close';
 import { renderBook, renderCog, renderKanjiIcon, renderPerson } from './icons';
 import { getLangTag } from './lang-tag';

@@ -6,7 +6,7 @@ import { convertMeasure, MeasureMeta } from '../measure';
 import { SelectionMeta } from '../meta';
 import { NumberMeta } from '../numbers';
 import { EraInfo, EraMeta, getEraInfo } from '../years';
-import { html } from './builder';
+import { html } from '../../utils/builder';
 import { getLangTag } from './lang-tag';
 
 export function renderMetadata({
