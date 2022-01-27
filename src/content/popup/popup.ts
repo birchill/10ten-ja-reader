@@ -18,6 +18,7 @@ import {
 import { SelectionMeta } from '../meta';
 import { QueryResult } from '../query';
 
+import { html } from './builder';
 import { renderCloseButton } from './close';
 import { renderCopyOverlay } from './copy-overlay';
 import { CopyState } from './copy-state';
@@ -99,8 +100,7 @@ export function renderPopup(
     windowElem.dataset.tabSide = options.tabDisplay || 'top';
   }
 
-  const contentContainer = document.createElementNS(HTML_NS, 'div');
-  contentContainer.classList.add('content');
+  const contentContainer = html('div', { class: 'content' });
 
   const resultToShow = result?.[options.dictToShow];
 
@@ -153,32 +153,31 @@ export function renderPopup(
         }
         metadata.classList.add('-metaonly');
 
-        const metaDataContainer = document.createElementNS(HTML_NS, 'div');
-        metaDataContainer.classList.add('wordlist');
-        metaDataContainer.classList.add('entry-data');
-        metaDataContainer.append(metadata);
-        contentContainer.append(metaDataContainer);
+        contentContainer.append(
+          html('div', { class: 'wordlist entry-data' }, metadata)
+        );
       }
       break;
   }
 
   // Render the copy overlay if needed
   if (showOverlay(options.copyState)) {
-    const stackContainer = document.createElementNS(HTML_NS, 'div');
-    stackContainer.classList.add('grid-stack');
-    const dictionaryContent = contentContainer.lastElementChild as HTMLElement;
-    stackContainer.append(dictionaryContent);
-    stackContainer.append(
-      renderCopyOverlay({
-        copyState: options.copyState,
-        kanjiReferences: options.kanjiReferences,
-        onCancelCopy: options.onCancelCopy,
-        onCopy: options.onCopy,
-        result: resultToShow || undefined,
-        showKanjiComponents: options.showKanjiComponents,
-      })
+    contentContainer.append(
+      html(
+        'div',
+        { class: 'grid-stack' },
+        // Dictionary content
+        contentContainer.lastElementChild as HTMLElement,
+        renderCopyOverlay({
+          copyState: options.copyState,
+          kanjiReferences: options.kanjiReferences,
+          onCancelCopy: options.onCancelCopy,
+          onCopy: options.onCopy,
+          result: resultToShow || undefined,
+          showKanjiComponents: options.showKanjiComponents,
+        })
+      )
     );
-    contentContainer.append(stackContainer);
 
     // Set the overlay styles for the window, but wait a moment so we can
     // transition the styles in.
@@ -227,18 +226,23 @@ export function renderPopup(
 
   let contentWrapper = contentContainer;
   if (statusBar) {
-    contentWrapper = document.createElementNS(HTML_NS, 'div');
-    contentWrapper.classList.add('status-bar-wrapper');
-    contentWrapper.append(contentContainer);
-    contentWrapper.append(statusBar);
+    contentWrapper = html(
+      'div',
+      { class: 'status-bar-wrapper' },
+      contentContainer,
+      statusBar
+    );
   }
 
   if (!showTabs && options.onClosePopup) {
-    const closeButtonWrapper = document.createElementNS(HTML_NS, 'div');
-    closeButtonWrapper.classList.add('close-button-wrapper');
-    closeButtonWrapper.append(contentWrapper);
-    closeButtonWrapper.append(renderCloseButton(options.onClosePopup));
-    windowElem.append(closeButtonWrapper);
+    windowElem.append(
+      html(
+        'div',
+        { class: 'close-button-wrapper' },
+        contentWrapper,
+        renderCloseButton(options.onClosePopup)
+      )
+    );
   } else {
     windowElem.append(contentWrapper);
   }
