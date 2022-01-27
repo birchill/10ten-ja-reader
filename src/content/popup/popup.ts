@@ -4,35 +4,35 @@ import {
   AccentDisplay,
   ContentConfig,
   PartOfSpeechDisplay,
-} from '../common/content-config';
-import { CopyType } from '../common/copy-keys';
-import { ReferenceAbbreviation } from '../common/refs';
-import { probablyHasPhysicalKeyboard } from '../utils/device';
-import { HTML_NS } from '../utils/dom-utils';
-import { getThemeClass } from '../utils/themes';
+} from '../../common/content-config';
+import { CopyType } from '../../common/copy-keys';
+import { ReferenceAbbreviation } from '../../common/refs';
+import { probablyHasPhysicalKeyboard } from '../../utils/device';
+import { HTML_NS } from '../../utils/dom-utils';
+import { getThemeClass } from '../../utils/themes';
 
 import {
   getOrCreateEmptyContainer,
   removeContentContainer,
-} from './content-container';
-import { SelectionMeta } from './meta';
-import { QueryResult } from './query';
+} from '../content-container';
+import { SelectionMeta } from '../meta';
+import { QueryResult } from '../query';
 
-import { renderCloseButton } from './popup/close';
-import { renderCopyOverlay } from './popup/copy-overlay';
-import { CopyState } from './popup/copy-state';
-import { renderKanjiEntry } from './popup/kanji';
-import { renderMetadata } from './popup/metadata';
-import { renderNamesEntries } from './popup/names';
+import { renderCloseButton } from './close';
+import { renderCopyOverlay } from './copy-overlay';
+import { CopyState } from './copy-state';
+import { renderKanjiEntry } from './kanji';
+import { renderMetadata } from './metadata';
+import { renderNamesEntries } from './names';
 import {
   renderCopyDetails,
   renderSwitchDictionaryHint,
   renderUpdatingStatus,
-} from './popup/status';
-import { renderTabBar } from './popup/tabs';
-import { renderWordEntries } from './popup/words';
+} from './status';
+import { renderTabBar } from './tabs';
+import { renderWordEntries } from './words';
 
-import popupStyles from '../../css/popup.css';
+import popupStyles from '../../../css/popup.css';
 
 export interface PopupOptions {
   accentDisplay: AccentDisplay;

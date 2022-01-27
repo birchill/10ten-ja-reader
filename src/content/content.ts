@@ -84,7 +84,7 @@ import {
   renderPopup,
   setPopupStyle,
   showOverlay,
-} from './popup';
+} from './popup/popup';
 import { getPopupPosition, PopupPositionMode } from './popup-position';
 import { CopyState } from './popup/copy-state';
 import {

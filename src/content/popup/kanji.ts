@@ -5,7 +5,7 @@ import {
   getReferenceValue,
   getSelectedReferenceLabels,
 } from '../../common/refs';
-import { PopupOptions } from '../popup';
+import { PopupOptions } from './popup';
 
 import { html } from './builder';
 import { renderFrequency, renderPencil, renderPerson } from './icons';

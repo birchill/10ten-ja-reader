@@ -3,7 +3,7 @@ import { browser } from 'webextension-polyfill-ts';
 
 import { NameResult } from '../../background/search-result';
 import { getDob } from '../../utils/age';
-import { PopupOptions } from '../popup';
+import { PopupOptions } from './popup';
 
 import { html } from './builder';
 import { getLangTag } from './lang-tag';

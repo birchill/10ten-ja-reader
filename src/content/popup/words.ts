@@ -11,7 +11,7 @@ import { browser } from 'webextension-polyfill-ts';
 
 import { Sense, WordResult } from '../../background/search-result';
 import { NamePreview } from '../query';
-import { PopupOptions } from '../popup';
+import { PopupOptions } from './popup';
 
 import { renderMetadata } from './metadata';
 import { renderName } from './names';
