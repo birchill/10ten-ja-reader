@@ -1,4 +1,4 @@
-import { HTML_NS } from '../utils/dom-utils';
+import { html } from './popup/builder';
 
 export async function copyText(text: string): Promise<void> {
   try {
@@ -32,8 +32,7 @@ export async function copyText(text: string): Promise<void> {
     // This isn't going to work if this is an SVG document but I'm quite happy
     // to accept that you can't copy text from SVG documents served over
     // insecure HTTP in Safari.
-    const span = document.createElementNS(HTML_NS, 'span');
-    span.append(text);
+    const span = html('span', {}, text);
     (document.body || document.documentElement).append(span);
 
     // We would like to build up a specific Range here so we can cleanly remove
