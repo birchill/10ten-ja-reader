@@ -1,3 +1,5 @@
+/* eslint-env node */
+/* eslint @typescript-eslint/no-var-requires: 0 */
 const path = require('path');
 const BomPlugin = require('webpack-utf8-bom');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -183,7 +185,7 @@ const safariConfig = buildExtConfig({
 });
 
 module.exports = (env) => {
-  let configs = [testConfig];
+  const configs = [testConfig];
   if (env && env.target === 'chrome') {
     configs.push({ ...chromeConfig, name: 'extension' });
   } else if (env && env.target === 'edge') {
