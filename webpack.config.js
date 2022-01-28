@@ -73,7 +73,7 @@ const commonExtConfig = {
   ...commonConfig,
   // We turn on production mode simply so we can drop unused code from the
   // bundle -- otherwise we'll end up injecting a bunch of unrelated code like
-  // Russian toke stopwords into the content script.
+  // Russian token stopwords into the content script.
   //
   // We _could_ use mode: 'development' and then set optimization as follows:
   //
@@ -104,7 +104,9 @@ const commonExtConfig = {
           mangle: false,
           format: {
             beautify: true,
-            comments: 'all',
+            // Drop any embedded source mapping URLs but preserve other comments
+            // (superstruct has these, for example)
+            comments: /^(?!# sourceMappingURL=)/,
             indent_level: 2,
             keep_numbers: true,
           },
@@ -158,6 +160,7 @@ const chromeConfig = buildExtConfig({
   isChrome: true,
   needsClipboardWrite: false,
   supportsChromeStyle: true,
+  supportsExtensionSourceMaps: false,
   supportsMatchAboutBlank: true,
   supportsOfflineEnabledField: true,
   target: 'chromium',
@@ -169,6 +172,7 @@ const edgeConfig = buildExtConfig({
   includeRikaichampName: true,
   isEdge: true,
   needsClipboardWrite: false,
+  supportsExtensionSourceMaps: false,
   supportsMatchAboutBlank: true,
   target: 'chromium',
 });
@@ -181,6 +185,7 @@ const safariConfig = buildExtConfig({
   distFolder: 'dist-safari',
   isSafari: true,
   supportsBrowserStyle: true,
+  supportsExtensionSourceMaps: false,
   useEventPage: true,
 });
 
@@ -213,6 +218,7 @@ function buildExtConfig({
   supportsApplicationsField = false,
   supportsBrowserStyle = false,
   supportsChromeStyle = false,
+  supportsExtensionSourceMaps = true,
   supportsMatchAboutBlank = false,
   supportsOfflineEnabledField = false,
   supportsSvgIcons = false,
@@ -287,7 +293,6 @@ function buildExtConfig({
     }),
   ];
 
-  let devtool = 'source-map';
   if (activeTabOnly) {
     plugins.push(
       new webpack.NormalModuleReplacementPlugin(
@@ -295,36 +300,51 @@ function buildExtConfig({
         path.resolve(__dirname, 'src', 'background', 'active-tab-manager.ts')
       )
     );
-
-    // If we are injecting the content script don't include a sourceMappingURL
-    // on it. If we do, Safari will report a "Cocoa error -1008" every time
-    // we inject the script because it can't find the source map.
-    //
-    // In future we should actually fix the sourceMappingURL to include the
-    // extension URL but we don't know that until runtime so we'd have to load
-    // the source text into memory and manipulate it there. Until that becomes
-    // important we just drop it from the content script.
-    devtool = false;
-    plugins.push(
-      new webpack.SourceMapDevToolPlugin({
-        test: /.js$/,
-        exclude: '10ten-ja-content.js',
-        filename: '[file].map',
-        noSources: false,
-      })
-    );
-    plugins.push(
-      new webpack.SourceMapDevToolPlugin({
-        test: '10ten-ja-content.js',
-        filename: '[file].map',
-        noSources: false,
-        append: false,
-      })
-    );
   }
 
   if (addBom) {
     plugins.push(new BomPlugin(true));
+  }
+
+  // Safari and Chrome struggle with extension URL source maps.
+  //
+  // For Safari, if it sees the sourceMappingURL it will report a
+  // "Cocoa error -1008" every time we inject the content script.
+  //
+  // For Chrome, it will report:
+  //
+  // > DevTools failed to load source map: Could not load content for
+  // > chrome-extension://.../10ten-ja-content.js.map:
+  // > HTTP error: status code 404, net::ERR_UNKNOWN_URL_SCHEME
+  //
+  // For these browsers we turn off source maps in release builds (as it is, we
+  // currently only upload the Firefox source maps anyway) and use inline source
+  // maps for debug builds.
+  //
+  // Note that if we simply want to drop the "sourceMappingURL" _comment_ and
+  // only drop it for the content script (which is what we used to do), we
+  // can achieve that by setting `devtool` to false and then doing:
+  //
+  //  plugins.push(
+  //    new webpack.SourceMapDevToolPlugin({
+  //      test: /.js$/,
+  //      exclude: '10ten-ja-content.js',
+  //      filename: '[file].map',
+  //      noSources: false,
+  //    })
+  //  );
+  //  plugins.push(
+  //    new webpack.SourceMapDevToolPlugin({
+  //      test: '10ten-ja-content.js',
+  //      filename: '[file].map',
+  //      noSources: false,
+  //      append: false,
+  //    })
+  //  );
+  //
+  let devtool = 'source-map';
+  if (!supportsExtensionSourceMaps) {
+    devtool = process.env.RELEASE_BUILD ? false : 'inline-source-map';
   }
 
   const copyPatterns = [
