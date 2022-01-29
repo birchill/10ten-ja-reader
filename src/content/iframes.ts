@@ -1,3 +1,4 @@
+import { browser } from 'webextension-polyfill-ts';
 import { Point } from '../utils/geometry';
 
 export type IframeSearchParams = {
@@ -10,25 +11,47 @@ export type IframeSearchParams = {
   };
 };
 
+declare module 'webextension-polyfill-ts' {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Runtime {
+    interface Static {
+      getFrameId(target: WindowProxy | HTMLIFrameElement): number;
+    }
+  }
+}
+
 export function findIframeElement(
   params: IframeSearchParams
-): HTMLIFrameElement | null {
+): HTMLIFrameElement | undefined {
   // First collect together all the iframes we can.
   const iframes = getIframes(document);
   if (!iframes.length) {
-    return null;
+    return undefined;
   }
   if (iframes.length === 1) {
     return iframes[0];
   }
 
   // Look for an iframe that matches on frameId
-  const frameIdMatch =
-    typeof params.frameId === 'number'
-      ? iframes.find((f) => f.dataset.frameId === String(params.frameId))
-      : undefined;
-  if (frameIdMatch) {
-    return frameIdMatch;
+  if (typeof params.frameId === 'number') {
+    // Use the getFrameId API if available
+    //
+    // If it is available, we treat this as definitive since, at least in
+    // Firefox, it should work for cross-origin iframes, unlike when using the
+    // data attribute.
+    if (typeof browser.runtime.getFrameId === 'function') {
+      return iframes.find(
+        (iframe) => browser.runtime.getFrameId(iframe) === params.frameId
+      );
+    }
+
+    // Otherwise look for a frameId stored in a data attribute
+    const frameIdMatch = iframes.find(
+      (f) => f.dataset.frameId === String(params.frameId)
+    );
+    if (frameIdMatch) {
+      return frameIdMatch;
+    }
   }
 
   // Then try to narrow the list by matches on initialSrc or currentSrc

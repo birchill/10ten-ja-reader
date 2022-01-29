@@ -439,7 +439,9 @@ export class ContentHandler {
   }
 
   getFrameId(): number | undefined {
-    return this.frameId;
+    return this.frameId ?? typeof browser.runtime.getFrameId === 'function'
+      ? browser.runtime.getFrameId(window)
+      : undefined;
   }
 
   setFrameId(frameId: number) {
@@ -939,7 +941,10 @@ export class ContentHandler {
     if (request.frame === 'children' && this.isTopMostWindow()) {
       return 'ok';
     }
-    if (typeof request.frame === 'number' && this.frameId !== request.frame) {
+    if (
+      typeof request.frame === 'number' &&
+      this.getFrameId() !== request.frame
+    ) {
       return 'ok';
     }
 
