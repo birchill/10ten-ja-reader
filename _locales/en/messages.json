@@ -2188,6 +2188,62 @@
     "message": "Unicode",
     "description": "The label used when presenting the Unicode codepoint of the kanji"
   },
+  "shogi_dest_same": {
+    "message": "previous move's position"
+  },
+  "shogi_move_piece_dest": {
+    "message": "$piece$ to $dest$",
+    "placeholders": {
+      "piece": {
+        "content": "$1"
+      },
+      "dest": {
+        "content": "$2"
+      }
+    }
+  },
+  "shogi_piece_b": {
+    "message": "bishop"
+  },
+  "shogi_piece_g": {
+    "message": "gold general"
+  },
+  "shogi_piece_k": {
+    "message": "king"
+  },
+  "shogi_piece_l": {
+    "message": "lance"
+  },
+  "shogi_piece_n": {
+    "message": "knight"
+  },
+  "shogi_piece_p": {
+    "message": "pawn"
+  },
+  "shogi_piece_pro_b": {
+    "message": "horse (promoted bishop)"
+  },
+  "shogi_piece_pro_l": {
+    "message": "promoted lance"
+  },
+  "shogi_piece_pro_n": {
+    "message": "promoted knight"
+  },
+  "shogi_piece_pro_p": {
+    "message": "promoted pawn"
+  },
+  "shogi_piece_pro_r": {
+    "message": "dragon (promoted rook)"
+  },
+  "shogi_piece_pro_s": {
+    "message": "promoted silver general"
+  },
+  "shogi_piece_r": {
+    "message": "rook"
+  },
+  "shogi_piece_s": {
+    "message": "silver general"
+  },
   "tabs_kanji_label": {
     "message": "Kanji",
     "description": "The label for the kanji dictionary tab"

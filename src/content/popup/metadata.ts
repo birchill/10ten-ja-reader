@@ -8,6 +8,7 @@ import { NumberMeta } from '../numbers';
 import { EraInfo, EraMeta, getEraInfo } from '../years';
 import { html } from '../../utils/builder';
 import { getLangTag } from './lang-tag';
+import { ShogiMeta } from '../shogi';
 
 export function renderMetadata({
   fxData,
@@ -40,6 +41,9 @@ export function renderMetadata({
       return meta.matchLen > matchLen
         ? renderNumberInfo(meta, { isCombinedResult })
         : null;
+
+    case 'shogi':
+      return renderShogiInfo(meta);
   }
 
   return null;
@@ -282,3 +286,51 @@ function renderNumberInfo(
 
   return metaDiv;
 }
+
+function renderShogiInfo(meta: ShogiMeta): HTMLElement {
+  const metaDiv = html('div', { class: 'meta shogi' });
+
+  metaDiv.append(
+    html('span', { class: 'src', lang: 'ja' }, meta.src),
+    html('span', { class: 'equals' }, '=')
+  );
+
+  const piece = browser.i18n.getMessage(`shogi_piece_${meta.piece}`);
+
+  // For Chinese we use the Japanese expansion anyway
+  let lang = getLangTag();
+  if (lang === 'zh-Hans') {
+    lang = 'ja';
+  }
+
+  let dest: string;
+  if (meta.dest) {
+    dest =
+      lang === 'ja'
+        ? `${String.fromCodePoint(meta.dest[0] + 0xff10)}${
+            numberToKanji[meta.dest[1]]
+          }`
+        : meta.dest.map(String).join('');
+  } else {
+    dest = browser.i18n.getMessage('shogi_dest_same');
+  }
+
+  const move = browser.i18n.getMessage('shogi_move_piece_dest', [piece, dest]);
+
+  metaDiv.append(html('span', { class: 'value', lang }, move));
+
+  return metaDiv;
+}
+
+const numberToKanji = [
+  '〇',
+  '一',
+  '二',
+  '三',
+  '四',
+  '五',
+  '六',
+  '七',
+  '八',
+  '九',
+];
