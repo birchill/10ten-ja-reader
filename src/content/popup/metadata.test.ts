@@ -20,12 +20,12 @@ import { clearLangTagCache } from './lang-tag';
 
 import { renderMetadata } from './metadata';
 
-describe('renderMetadata', () => {
+describe('renderShogiInfo', () => {
   afterEach(() => {
     setLocale('en');
   });
 
-  it('renders shogi moves', () => {
+  it('renders a shogi move with pieces and destination', () => {
     const params: Parameters<typeof renderMetadata>[0] = {
       fxData: undefined,
       isCombinedResult: false,
@@ -51,6 +51,29 @@ describe('renderMetadata', () => {
     setLocale('zh_hans');
     expect(renderMetadata(params)?.querySelector('.value')?.textContent).toBe(
       '銀将を８三に'
+    );
+  });
+
+  it('renders a shogi move using the same destination', () => {
+    const params: Parameters<typeof renderMetadata>[0] = {
+      fxData: undefined,
+      isCombinedResult: false,
+      matchLen: 3,
+      meta: {
+        type: 'shogi',
+        src: '８三銀',
+        matchLen: 3,
+        piece: 's',
+      },
+    };
+
+    expect(renderMetadata(params)?.querySelector('.value')?.textContent).toBe(
+      "silver general to previous move's position"
+    );
+
+    setLocale('ja');
+    expect(renderMetadata(params)?.querySelector('.value')?.textContent).toBe(
+      '銀将を同じ場所に'
     );
   });
 });
