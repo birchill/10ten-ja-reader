@@ -60,9 +60,49 @@ describe('extractShogiMetadata', () => {
       undefined
     );
     expect(extractShogiMetadata('８三銀直成')!.promotion).toStrictEqual(true);
-    expect(extractShogiMetadata('８三銀直生')!.promotion).toStrictEqual(true);
+    expect(extractShogiMetadata('８三銀直生')!.promotion).toStrictEqual(false);
     expect(extractShogiMetadata('８三銀直不成')!.promotion).toStrictEqual(
       false
     );
+  });
+  it('parses shorthand notation', () => {
+    // Shorthand for pieces
+    expect(extractShogiMetadata('８三丶')!.piece).toEqual('p');
+    expect(extractShogiMetadata('８三フ')!.piece).toEqual('p');
+    expect(extractShogiMetadata('８三ゝ')!.piece).toEqual('p');
+    expect(extractShogiMetadata('８三・')!.piece).toEqual('p');
+    expect(extractShogiMetadata('８三禾')!.piece).toEqual('l');
+    expect(extractShogiMetadata('８三キ')!.piece).toEqual('l');
+    expect(extractShogiMetadata('８三↑')!.piece).toEqual('l');
+    expect(extractShogiMetadata('８三土')!.piece).toEqual('n');
+    expect(extractShogiMetadata('８三ヨ')!.piece).toEqual('s');
+    expect(extractShogiMetadata('８三ク')!.piece).toEqual('b');
+    expect(extractShogiMetadata('８三ヒ')!.piece).toEqual('r');
+    expect(extractShogiMetadata('８三乙')!.piece).toEqual('r');
+    expect(extractShogiMetadata('８三人')!.piece).toEqual('g');
+
+    expect(extractShogiMetadata('８三ナキ')!.piece).toEqual('pro_l');
+    expect(extractShogiMetadata('８三ナ香')!.piece).toEqual('pro_l');
+    expect(extractShogiMetadata('８三成キ')!.piece).toEqual('pro_l');
+
+    expect(extractShogiMetadata('８三マ')!.piece).toEqual('pro_b');
+    expect(extractShogiMetadata('８三ウ')!.piece).toEqual('pro_b');
+    expect(extractShogiMetadata('８三立')!.piece).toEqual('pro_r');
+    expect(extractShogiMetadata('８三リ')!.piece).toEqual('pro_r');
+    expect(extractShogiMetadata('８三○')!.piece).toEqual('k');
+
+    // Shorthand for promotions
+    expect(extractShogiMetadata('８三銀直ナ')!.promotion).toStrictEqual(true);
+    expect(extractShogiMetadata('８三銀直フナ')!.promotion).toStrictEqual(
+      false
+    );
+    expect(extractShogiMetadata('８三銀直不ナ')!.promotion).toStrictEqual(
+      false
+    );
+
+    // Shorthand for 同
+    expect(extractShogiMetadata('－銀')!.dest).toEqual(undefined);
+    expect(extractShogiMetadata('𠔼銀')!.dest).toEqual(undefined);
+    expect(extractShogiMetadata('ド銀')!.dest).toEqual(undefined);
   });
 });
