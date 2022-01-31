@@ -2188,6 +2188,62 @@
     "message": "Unicode",
     "description": "The label used when presenting the Unicode codepoint of the kanji"
   },
+  "shogi_dest_same": {
+    "message": "同じ場所"
+  },
+  "shogi_move_piece_dest": {
+    "message": "$piece$を$dest$に",
+    "placeholders": {
+      "piece": {
+        "content": "$1"
+      },
+      "dest": {
+        "content": "$2"
+      }
+    }
+  },
+  "shogi_piece_b": {
+    "message": "角行"
+  },
+  "shogi_piece_g": {
+    "message": "金将"
+  },
+  "shogi_piece_k": {
+    "message": "王将"
+  },
+  "shogi_piece_l": {
+    "message": "香車"
+  },
+  "shogi_piece_n": {
+    "message": "桂馬"
+  },
+  "shogi_piece_p": {
+    "message": "歩兵"
+  },
+  "shogi_piece_pro_b": {
+    "message": "竜馬"
+  },
+  "shogi_piece_pro_l": {
+    "message": "成香"
+  },
+  "shogi_piece_pro_n": {
+    "message": "成桂"
+  },
+  "shogi_piece_pro_p": {
+    "message": "と金"
+  },
+  "shogi_piece_pro_r": {
+    "message": "竜王"
+  },
+  "shogi_piece_pro_s": {
+    "message": "成銀"
+  },
+  "shogi_piece_r": {
+    "message": "飛車"
+  },
+  "shogi_piece_s": {
+    "message": "銀将"
+  },
   "tabs_kanji_label": {
     "message": "汉字",
     "description": "The label for the kanji dictionary tab"

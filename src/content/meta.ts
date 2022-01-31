@@ -5,9 +5,15 @@ import {
 } from './currency';
 import { extractMeasureMetadata, lookForMeasure, MeasureMeta } from './measure';
 import { extractNumberMetadata, NumberMeta } from './numbers';
+import { ShogiMeta } from './shogi';
 import { EraMeta, extractEraMetadata, lookForEra } from './years';
 
-export type SelectionMeta = CurrencyMeta | EraMeta | MeasureMeta | NumberMeta;
+export type SelectionMeta =
+  | CurrencyMeta
+  | EraMeta
+  | MeasureMeta
+  | NumberMeta
+  | ShogiMeta;
 
 export function lookForMetadata({
   currentText,

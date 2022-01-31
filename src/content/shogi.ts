@@ -51,6 +51,9 @@ export type ShogiMovementType =
   | 'vert';
 
 export type ShogiMeta = {
+  type: 'shogi';
+  src: string;
+  matchLen: number;
   side?: ShogiSideType;
   dest?: [number, number];
   piece: ShogiPieceType;
@@ -149,7 +152,7 @@ export function extractShogiMetadata(text: string): ShogiMeta | undefined {
     return undefined;
   }
 
-  const [, sideStr, destStr, pieceStr, movementStr, promotionStr] = matches;
+  const [src, sideStr, destStr, pieceStr, movementStr, promotionStr] = matches;
 
   // Side
   const side = sideStr ? sides.get(sideStr) : undefined;
@@ -175,6 +178,9 @@ export function extractShogiMetadata(text: string): ShogiMeta | undefined {
   }
 
   return {
+    type: 'shogi',
+    src,
+    matchLen: src.length,
     side,
     dest,
     piece,
