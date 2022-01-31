@@ -16,67 +16,10 @@ jest.mock('webextension-polyfill-ts', () => ({
 import * as fs from 'fs';
 import * as path from 'path';
 import { isObject } from '../../utils/is-object';
+import { ShogiMeta } from '../shogi';
 import { clearLangTagCache } from './lang-tag';
 
 import { renderMetadata } from './metadata';
-
-describe('renderShogiInfo', () => {
-  afterEach(() => {
-    setLocale('en');
-  });
-
-  it('renders a shogi move with pieces and destination', () => {
-    const params: Parameters<typeof renderMetadata>[0] = {
-      fxData: undefined,
-      isCombinedResult: false,
-      matchLen: 3,
-      meta: {
-        type: 'shogi',
-        src: '８三銀',
-        matchLen: 3,
-        dest: [8, 3],
-        piece: 's',
-      },
-    };
-
-    expect(renderMetadata(params)?.querySelector('.value')?.textContent).toBe(
-      'silver general to 83'
-    );
-
-    setLocale('ja');
-    expect(renderMetadata(params)?.querySelector('.value')?.textContent).toBe(
-      '銀将を８三に'
-    );
-
-    setLocale('zh_hans');
-    expect(renderMetadata(params)?.querySelector('.value')?.textContent).toBe(
-      '銀将を８三に'
-    );
-  });
-
-  it('renders a shogi move using the same destination', () => {
-    const params: Parameters<typeof renderMetadata>[0] = {
-      fxData: undefined,
-      isCombinedResult: false,
-      matchLen: 3,
-      meta: {
-        type: 'shogi',
-        src: '８三銀',
-        matchLen: 3,
-        piece: 's',
-      },
-    };
-
-    expect(renderMetadata(params)?.querySelector('.value')?.textContent).toBe(
-      "silver general to previous move's position"
-    );
-
-    setLocale('ja');
-    expect(renderMetadata(params)?.querySelector('.value')?.textContent).toBe(
-      '銀将を同じ場所に'
-    );
-  });
-});
 
 function setLocale(localeToSet: 'en' | 'ja' | 'zh_hans') {
   locale = localeToSet;
@@ -156,4 +99,61 @@ function getMessagePolyfill(
     return dollarSigns;
   };
   return expandedMessage.replace(/\$(?:([1-9]\d*)|(\$+))/g, stringReplacer);
+}
+
+describe('renderShogiInfo', () => {
+  afterEach(() => {
+    setLocale('en');
+  });
+
+  it('renders a shogi move with a piece and destination', () => {
+    expect(getShogiMove({ src: '８三銀', dest: [8, 3], piece: 's' })).toBe(
+      'silver general to 83'
+    );
+    expect(
+      getShogiMove({ src: '８三銀', dest: [8, 3], piece: 's' }, 'ja')
+    ).toBe('銀将を８三に');
+    expect(
+      getShogiMove({ src: '８三銀', dest: [8, 3], piece: 's' }, 'zh_hans')
+    ).toBe('銀将を８三に');
+  });
+
+  it('renders a shogi move using the same destination', () => {
+    expect(getShogiMove({ src: '８三銀', piece: 's' })).toBe(
+      "silver general to previous move's position"
+    );
+    expect(getShogiMove({ src: '８三銀', piece: 's' }, 'ja')).toBe(
+      '銀将を同じ場所に'
+    );
+  });
+});
+
+function getShogiMove(
+  meta: Omit<ShogiMeta, 'type' | 'matchLen'>,
+  localeToUse?: 'en' | 'ja' | 'zh_hans'
+): string | undefined {
+  const params: Parameters<typeof renderMetadata>[0] = {
+    fxData: undefined,
+    isCombinedResult: false,
+    matchLen: meta.src.length,
+    meta: {
+      ...meta,
+      type: 'shogi',
+      matchLen: meta.src.length,
+    },
+  };
+
+  const prevLocale = locale;
+  if (localeToUse) {
+    setLocale(localeToUse);
+  }
+
+  const result =
+    renderMetadata(params)?.querySelector('.value')?.textContent ?? undefined;
+
+  if (prevLocale !== localeToUse) {
+    setLocale(prevLocale);
+  }
+
+  return result;
 }
