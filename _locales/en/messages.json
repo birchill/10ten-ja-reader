@@ -2191,6 +2191,9 @@
   "shogi_dest_same": {
     "message": "previous move's position"
   },
+  "shogi_label": {
+    "message": "Shogi"
+  },
   "shogi_move_piece_dest": {
     "message": "$piece$ to $dest$",
     "placeholders": {
