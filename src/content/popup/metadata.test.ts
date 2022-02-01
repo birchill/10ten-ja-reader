@@ -221,6 +221,42 @@ describe('renderShogiInfo', () => {
       )
     ).toBe('後手が金将を５六に打つ');
   });
+
+  it('renders a shogi move with promotion information', () => {
+    expect(
+      getShogiMove({
+        src: '▲４四銀不成',
+        side: 'black',
+        dest: [4, 4],
+        piece: 's',
+        promotion: false,
+      })
+    ).toBe('black silver general to 44 without promoting');
+    expect(
+      getShogiMove(
+        {
+          src: '▲４四銀不成',
+          side: 'black',
+          dest: [4, 4],
+          piece: 's',
+          promotion: false,
+        },
+        'ja'
+      )
+    ).toBe('先手が銀将を４四に（成らない）');
+    expect(
+      getShogiMove(
+        {
+          src: '▲４四銀不成',
+          side: 'black',
+          dest: [4, 4],
+          piece: 's',
+          promotion: false,
+        },
+        'zh_hans'
+      )
+    ).toBe('先手が銀将を４四に（成らない）');
+  });
 });
 
 function getShogiMove(
