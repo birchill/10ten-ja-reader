@@ -125,6 +125,9 @@ describe('renderShogiInfo', () => {
     expect(getShogiMove({ src: '８三銀', piece: 's' }, 'ja')).toBe(
       '銀将を同じ場所に'
     );
+    expect(getShogiMove({ src: '８三銀', piece: 's' }, 'zh_hans')).toBe(
+      '銀将を同じ場所に'
+    );
   });
 
   it('renders a shogi move where a side is specified', () => {
@@ -142,6 +145,81 @@ describe('renderShogiInfo', () => {
         'ja'
       )
     ).toBe('先手が竜馬を２五に');
+    expect(
+      getShogiMove(
+        { src: '☗2五馬', side: 'black', dest: [2, 5], piece: 'pro_b' },
+        'zh_hans'
+      )
+    ).toBe('先手が竜馬を２五に');
+  });
+
+  it('renders a shogi move where a movement is specified', () => {
+    expect(
+      getShogiMove({
+        src: '５二金右',
+        dest: [5, 2],
+        piece: 'g',
+        movement: 'right',
+      })
+    ).toBe('gold general moves from the right to 52');
+    expect(
+      getShogiMove(
+        {
+          src: '５二金右',
+          dest: [5, 2],
+          piece: 'g',
+          movement: 'right',
+        },
+        'ja'
+      )
+    ).toBe('金将を５二に右から動かす');
+    expect(
+      getShogiMove(
+        {
+          src: '５二金右',
+          dest: [5, 2],
+          piece: 'g',
+          movement: 'right',
+        },
+        'zh_hans'
+      )
+    ).toBe('金将を５二に右から動かす');
+  });
+
+  it('renders a shogi move where a movement and side are specified', () => {
+    expect(
+      getShogiMove({
+        src: '☖５六金打',
+        side: 'white',
+        dest: [5, 6],
+        piece: 'g',
+        movement: 'drop',
+      })
+    ).toBe('white gold general dropped at 56');
+    expect(
+      getShogiMove(
+        {
+          src: '☖５六金打',
+          side: 'white',
+          dest: [5, 6],
+          piece: 'g',
+          movement: 'drop',
+        },
+        'ja'
+      )
+    ).toBe('後手が金将を５六に打つ');
+    expect(
+      getShogiMove(
+        {
+          src: '☖５六金打',
+          side: 'white',
+          dest: [5, 6],
+          piece: 'g',
+          movement: 'drop',
+        },
+        'zh_hans'
+      )
+    ).toBe('後手が金将を５六に打つ');
   });
 });
 

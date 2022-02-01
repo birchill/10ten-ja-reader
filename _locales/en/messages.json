@@ -2202,6 +2202,20 @@
       }
     }
   },
+  "shogi_move_piece_dest_movement": {
+    "message": "$piece$ $movement$ $dest$",
+    "placeholders": {
+      "piece": {
+        "content": "$1"
+      },
+      "dest": {
+        "content": "$2"
+      },
+      "movement": {
+        "content": "$3"
+      }
+    }
+  },
   "shogi_move_side_piece_dest": {
     "message": "$side$ $piece$ to $dest$",
     "placeholders": {
@@ -2215,6 +2229,44 @@
         "content": "$3"
       }
     }
+  },
+  "shogi_move_side_piece_dest_movement": {
+    "message": "$side$ $piece$ $movement$ $dest$",
+    "placeholders": {
+      "side": {
+        "content": "$1"
+      },
+      "piece": {
+        "content": "$2"
+      },
+      "dest": {
+        "content": "$3"
+      },
+      "movement": {
+        "content": "$4"
+      }
+    }
+  },
+  "shogi_movement_down": {
+    "message": "moves down to"
+  },
+  "shogi_movement_drop": {
+    "message": "dropped at"
+  },
+  "shogi_movement_horiz": {
+    "message": "moves horizontally to"
+  },
+  "shogi_movement_left": {
+    "message": "moves from the left to"
+  },
+  "shogi_movement_right": {
+    "message": "moves from the right to"
+  },
+  "shogi_movement_up": {
+    "message": "moves up to"
+  },
+  "shogi_movement_vert": {
+    "message": "moves vertically to"
   },
   "shogi_piece_b": {
     "message": "bishop"

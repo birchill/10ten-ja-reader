@@ -322,13 +322,31 @@ function renderShogiInfo(meta: ShogiMeta): HTMLElement {
     dest = browser.i18n.getMessage('shogi_dest_same');
   }
 
+  // Movement
+  const movement = meta.movement
+    ? browser.i18n.getMessage(`shogi_movement_${meta.movement}`)
+    : undefined;
+
   // Get the combined string
   let move: string;
-  if (side) {
+  if (side && movement) {
+    move = browser.i18n.getMessage('shogi_move_side_piece_dest_movement', [
+      side,
+      piece,
+      dest,
+      movement,
+    ]);
+  } else if (side) {
     move = browser.i18n.getMessage('shogi_move_side_piece_dest', [
       side,
       piece,
       dest,
+    ]);
+  } else if (movement) {
+    move = browser.i18n.getMessage('shogi_move_piece_dest_movement', [
+      piece,
+      dest,
+      movement,
     ]);
   } else {
     move = browser.i18n.getMessage('shogi_move_piece_dest', [piece, dest]);
