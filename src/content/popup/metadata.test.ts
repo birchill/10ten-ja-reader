@@ -30,56 +30,44 @@ describe('renderShogiInfo', () => {
   });
 
   it('renders a shogi move with a piece and destination', () => {
-    expect(getShogiMove({ src: '８三銀', dest: [8, 3], piece: 's' })).toBe(
+    expect(getShogiMove({ dest: [8, 3], piece: 's' })).toBe(
       'silver general to 83'
     );
-    expect(
-      getShogiMove({ src: '８三銀', dest: [8, 3], piece: 's' }, 'ja')
-    ).toBe('銀将を８三に');
-    expect(
-      getShogiMove({ src: '８三銀', dest: [8, 3], piece: 's' }, 'zh_hans')
-    ).toBe('銀将を８三に');
+    expect(getShogiMove({ dest: [8, 3], piece: 's' }, 'ja')).toBe(
+      '銀将を８三に'
+    );
+    expect(getShogiMove({ dest: [8, 3], piece: 's' }, 'zh_hans')).toBe(
+      '銀将を８三に'
+    );
   });
 
   it('renders a shogi move using the same destination', () => {
-    expect(getShogiMove({ src: '８三銀', piece: 's' })).toBe(
+    expect(getShogiMove({ piece: 's' })).toBe(
       "silver general to previous move's position"
     );
-    expect(getShogiMove({ src: '８三銀', piece: 's' }, 'ja')).toBe(
-      '銀将を同じ場所に'
-    );
-    expect(getShogiMove({ src: '８三銀', piece: 's' }, 'zh_hans')).toBe(
-      '銀将を同じ場所に'
-    );
+    expect(getShogiMove({ piece: 's' }, 'ja')).toBe('銀将を同じ場所に');
+    expect(getShogiMove({ piece: 's' }, 'zh_hans')).toBe('銀将を同じ場所に');
   });
 
   it('renders a shogi move where a side is specified', () => {
     expect(
       getShogiMove({
-        src: '☗2五馬',
         side: 'black',
         dest: [2, 5],
         piece: 'pro_b',
       })
     ).toBe('black horse (promoted bishop) to 25');
     expect(
-      getShogiMove(
-        { src: '☗2五馬', side: 'black', dest: [2, 5], piece: 'pro_b' },
-        'ja'
-      )
+      getShogiMove({ side: 'black', dest: [2, 5], piece: 'pro_b' }, 'ja')
     ).toBe('先手が竜馬を２五に');
     expect(
-      getShogiMove(
-        { src: '☗2五馬', side: 'black', dest: [2, 5], piece: 'pro_b' },
-        'zh_hans'
-      )
+      getShogiMove({ side: 'black', dest: [2, 5], piece: 'pro_b' }, 'zh_hans')
     ).toBe('先手が竜馬を２五に');
   });
 
   it('renders a shogi move where a movement is specified', () => {
     expect(
       getShogiMove({
-        src: '５二金右',
         dest: [5, 2],
         piece: 'g',
         movement: 'right',
@@ -88,7 +76,6 @@ describe('renderShogiInfo', () => {
     expect(
       getShogiMove(
         {
-          src: '５二金右',
           dest: [5, 2],
           piece: 'g',
           movement: 'right',
@@ -99,7 +86,6 @@ describe('renderShogiInfo', () => {
     expect(
       getShogiMove(
         {
-          src: '５二金右',
           dest: [5, 2],
           piece: 'g',
           movement: 'right',
@@ -112,7 +98,6 @@ describe('renderShogiInfo', () => {
   it('renders a shogi move where a movement and side are specified', () => {
     expect(
       getShogiMove({
-        src: '☖５六金打',
         side: 'white',
         dest: [5, 6],
         piece: 'g',
@@ -122,7 +107,6 @@ describe('renderShogiInfo', () => {
     expect(
       getShogiMove(
         {
-          src: '☖５六金打',
           side: 'white',
           dest: [5, 6],
           piece: 'g',
@@ -134,7 +118,6 @@ describe('renderShogiInfo', () => {
     expect(
       getShogiMove(
         {
-          src: '☖５六金打',
           side: 'white',
           dest: [5, 6],
           piece: 'g',
@@ -148,7 +131,6 @@ describe('renderShogiInfo', () => {
   it('renders a shogi move with promotion information', () => {
     expect(
       getShogiMove({
-        src: '▲４四銀不成',
         side: 'black',
         dest: [4, 4],
         piece: 's',
@@ -158,7 +140,6 @@ describe('renderShogiInfo', () => {
     expect(
       getShogiMove(
         {
-          src: '▲４四銀不成',
           side: 'black',
           dest: [4, 4],
           piece: 's',
@@ -170,7 +151,6 @@ describe('renderShogiInfo', () => {
     expect(
       getShogiMove(
         {
-          src: '▲４四銀不成',
           side: 'black',
           dest: [4, 4],
           piece: 's',
@@ -189,11 +169,11 @@ function getShogiMove(
   const params: Parameters<typeof renderMetadata>[0] = {
     fxData: undefined,
     isCombinedResult: false,
-    matchLen: meta.src.length,
+    matchLen: 5, // Not used
     meta: {
       ...meta,
       type: 'shogi',
-      matchLen: meta.src.length,
+      matchLen: 5, // Not used
     },
   };
 

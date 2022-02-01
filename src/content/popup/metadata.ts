@@ -8,7 +8,7 @@ import { NumberMeta } from '../numbers';
 import { EraInfo, EraMeta, getEraInfo } from '../years';
 import { html } from '../../utils/builder';
 import { getLangTag } from './lang-tag';
-import { ShogiMeta } from '../shogi';
+import { serializeShogi, serializeShogiDest, ShogiMeta } from '../shogi';
 
 export function renderMetadata({
   fxData,
@@ -296,7 +296,7 @@ function renderShogiInfo(meta: ShogiMeta): HTMLElement {
       { class: 'label', lang: getLangTag() },
       browser.i18n.getMessage('shogi_label')
     ),
-    html('span', { class: 'src', lang: 'ja' }, meta.src),
+    html('span', { class: 'src', lang: 'ja' }, serializeShogi(meta)),
     html('span', { class: 'equals' }, '=')
   );
 
@@ -319,9 +319,7 @@ function renderShogiInfo(meta: ShogiMeta): HTMLElement {
   if (meta.dest) {
     dest =
       lang === 'ja'
-        ? `${String.fromCodePoint(meta.dest[0] + 0xff10)}${
-            numberToKanji[meta.dest[1]]
-          }`
+        ? serializeShogiDest(meta.dest)
         : meta.dest.map(String).join('');
   } else {
     dest = browser.i18n.getMessage('shogi_dest_same');
@@ -368,16 +366,3 @@ function renderShogiInfo(meta: ShogiMeta): HTMLElement {
 
   return metaDiv;
 }
-
-const numberToKanji = [
-  '〇',
-  '一',
-  '二',
-  '三',
-  '四',
-  '五',
-  '六',
-  '七',
-  '八',
-  '九',
-];

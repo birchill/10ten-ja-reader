@@ -4,7 +4,6 @@ describe('extractShogiMetadata', () => {
   it('parses shogi notation with all parts included', () => {
     expect(extractShogiMetadata('☗８三銀引成成成成成')).toEqual({
       type: 'shogi',
-      src: '☗８三銀引成',
       matchLen: 6,
       side: 'black',
       dest: [8, 3],
