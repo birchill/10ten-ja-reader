@@ -352,6 +352,13 @@ function renderShogiInfo(meta: ShogiMeta): HTMLElement {
     move = browser.i18n.getMessage('shogi_move_piece_dest', [piece, dest]);
   }
 
+  // Add promotion annotation
+  if (typeof meta.promotion === 'boolean') {
+    move += browser.i18n.getMessage(
+      meta.promotion ? 'shogi_promoted_suffix' : 'shogi_not_promoted_suffix'
+    );
+  }
+
   metaDiv.append(html('span', { class: 'value', lang }, move));
 
   return metaDiv;
