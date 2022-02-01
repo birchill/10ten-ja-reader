@@ -291,6 +291,11 @@ function renderShogiInfo(meta: ShogiMeta): HTMLElement {
   const metaDiv = html('div', { class: 'meta shogi' });
 
   metaDiv.append(
+    html(
+      'span',
+      { class: 'label', lang: getLangTag() },
+      browser.i18n.getMessage('shogi_label')
+    ),
     html('span', { class: 'src', lang: 'ja' }, meta.src),
     html('span', { class: 'equals' }, '=')
   );

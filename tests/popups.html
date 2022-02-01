@@ -510,6 +510,37 @@
       }
     }
 
+    // Shogi tests
+
+    addHeading('Shogi move parsing');
+    const shogiTests = [
+      {
+        description: 'Shogi move',
+        config: {
+          ...config,
+          showDefinitions: true,
+          meta: {
+            type: 'shogi',
+            src: '☗2五馬',
+            matchLen: 4,
+            side: 'black',
+            dest: [2, 5],
+            piece: 'pro_b',
+          },
+        },
+      }
+    ];
+
+    for (const test of shogiTests) {
+      addLabel(test.description);
+      contentHandler._renderPopup(null, {
+        ...test.config,
+        container: createPopupContainer(),
+        dictToShow: 'words',
+        popupStyle: 'light',
+      });
+    }
+
     // Touch screen tests
 
     addHeading('Touch screen');

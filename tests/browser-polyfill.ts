@@ -78,7 +78,7 @@ export const browser = {
           return 'phantom kanji';
         case 'content_kanji_strokes_label':
           return `${replacements ? replacements[0] : '?'} strokes`;
-        case 'content_kanji_strokes_label':
+        case 'content_kanji_strokes_label_1':
           return '1 stroke';
         case 'content_kanji_kentei_label':
           return 'Kanji Kentei Level';
@@ -344,6 +344,68 @@ export const browser = {
           return 'trans.';
         case 'pos_label_vz':
           return 'zuru verb';
+        case 'shogi_dest_same':
+          return "previous move's position";
+        case 'shogi_label':
+          return 'Shogi';
+        case 'shogi_move_piece_dest':
+          return `${replacements?.[0]} to ${replacements?.[1]}`;
+        case 'shogi_move_piece_dest_movement':
+          return `${replacements?.[0]} ${replacements?.[2]} ${replacements?.[1]}`;
+        case 'shogi_move_side_piece_dest':
+          return `${replacements?.[0]} ${replacements?.[1]} to ${replacements?.[2]}`;
+        case 'shogi_move_side_piece_dest_movement':
+          return `${replacements?.[0]} ${replacements?.[1]} ${replacements?.[3]} ${replacements?.[2]}`;
+        case 'shogi_movement_down':
+          return 'moves down to';
+        case 'shogi_movement_drop':
+          return 'dropped at';
+        case 'shogi_movement_horiz':
+          return 'moves horizontally to';
+        case 'shogi_movement_left':
+          return 'moves from the left to';
+        case 'shogi_movement_right':
+          return 'moves from the right to';
+        case 'shogi_movement_up':
+          return 'moves up to';
+        case 'shogi_movement_vert':
+          return 'moves vertically to';
+        case 'shogi_not_promoted_suffix':
+          return ' without promoting';
+        case 'shogi_piece_b':
+          return 'bishop';
+        case 'shogi_piece_g':
+          return 'gold general';
+        case 'shogi_piece_k':
+          return 'king';
+        case 'shogi_piece_l':
+          return 'lance';
+        case 'shogi_piece_n':
+          return 'knight';
+        case 'shogi_piece_p':
+          return 'pawn';
+        case 'shogi_piece_pro_b':
+          return 'horse (promoted bishop)';
+        case 'shogi_piece_pro_l':
+          return 'promoted lance';
+        case 'shogi_piece_pro_n':
+          return 'promoted knight';
+        case 'shogi_piece_pro_p':
+          return 'promoted pawn';
+        case 'shogi_piece_pro_r':
+          return 'dragon (promoted rook)';
+        case 'shogi_piece_pro_s':
+          return 'promoted silver general';
+        case 'shogi_piece_r':
+          return 'rook';
+        case 'shogi_piece_s':
+          return 'silver general';
+        case 'shogi_promoted_suffix':
+          return ' and promotes';
+        case 'shogi_side_black':
+          return 'black';
+        case 'shogi_side_white':
+          return 'white';
         case 'tabs_kanji_label':
           return 'Kanji';
         case 'tabs_names_label':

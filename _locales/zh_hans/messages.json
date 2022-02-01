@@ -2191,6 +2191,9 @@
   "shogi_dest_same": {
     "message": "同じ場所"
   },
+  "shogi_label": {
+    "message": "日本将棋"
+  },
   "shogi_move_piece_dest": {
     "message": "$piece$を$dest$に",
     "placeholders": {
