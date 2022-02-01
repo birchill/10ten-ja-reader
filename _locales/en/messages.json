@@ -2202,6 +2202,20 @@
       }
     }
   },
+  "shogi_move_side_piece_dest": {
+    "message": "$side$ $piece$ to $dest$",
+    "placeholders": {
+      "side": {
+        "content": "$1"
+      },
+      "piece": {
+        "content": "$2"
+      },
+      "dest": {
+        "content": "$3"
+      }
+    }
+  },
   "shogi_piece_b": {
     "message": "bishop"
   },
@@ -2243,6 +2257,12 @@
   },
   "shogi_piece_s": {
     "message": "silver general"
+  },
+  "shogi_side_black": {
+    "message": "black"
+  },
+  "shogi_side_white": {
+    "message": "white"
   },
   "tabs_kanji_label": {
     "message": "Kanji",

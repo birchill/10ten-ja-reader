@@ -126,6 +126,23 @@ describe('renderShogiInfo', () => {
       '銀将を同じ場所に'
     );
   });
+
+  it('renders a shogi move where a side is specified', () => {
+    expect(
+      getShogiMove({
+        src: '☗2五馬',
+        side: 'black',
+        dest: [2, 5],
+        piece: 'pro_b',
+      })
+    ).toBe('black horse (promoted bishop) to 25');
+    expect(
+      getShogiMove(
+        { src: '☗2五馬', side: 'black', dest: [2, 5], piece: 'pro_b' },
+        'ja'
+      )
+    ).toBe('先手が竜馬を２五に');
+  });
 });
 
 function getShogiMove(
