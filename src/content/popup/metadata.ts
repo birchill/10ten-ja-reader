@@ -295,14 +295,21 @@ function renderShogiInfo(meta: ShogiMeta): HTMLElement {
     html('span', { class: 'equals' }, '=')
   );
 
-  const piece = browser.i18n.getMessage(`shogi_piece_${meta.piece}`);
-
   // For Chinese we use the Japanese expansion anyway
   let lang = getLangTag();
   if (lang === 'zh-Hans') {
     lang = 'ja';
   }
 
+  // Side
+  const side = meta.side
+    ? browser.i18n.getMessage(`shogi_side_${meta.side}`)
+    : undefined;
+
+  // Piece
+  const piece = browser.i18n.getMessage(`shogi_piece_${meta.piece}`);
+
+  // Destination
   let dest: string;
   if (meta.dest) {
     dest =
@@ -315,7 +322,17 @@ function renderShogiInfo(meta: ShogiMeta): HTMLElement {
     dest = browser.i18n.getMessage('shogi_dest_same');
   }
 
-  const move = browser.i18n.getMessage('shogi_move_piece_dest', [piece, dest]);
+  // Get the combined string
+  let move: string;
+  if (side) {
+    move = browser.i18n.getMessage('shogi_move_side_piece_dest', [
+      side,
+      piece,
+      dest,
+    ]);
+  } else {
+    move = browser.i18n.getMessage('shogi_move_piece_dest', [piece, dest]);
+  }
 
   metaDiv.append(html('span', { class: 'value', lang }, move));
 

@@ -2202,6 +2202,20 @@
       }
     }
   },
+  "shogi_move_side_piece_dest": {
+    "message": "$side$が$piece$を$dest$に",
+    "placeholders": {
+      "side": {
+        "content": "$1"
+      },
+      "piece": {
+        "content": "$2"
+      },
+      "dest": {
+        "content": "$3"
+      }
+    }
+  },
   "shogi_piece_b": {
     "message": "角行"
   },
@@ -2243,6 +2257,12 @@
   },
   "shogi_piece_s": {
     "message": "銀将"
+  },
+  "shogi_side_black": {
+    "message": "先手"
+  },
+  "shogi_side_white": {
+    "message": "後手"
   },
   "tabs_kanji_label": {
     "message": "汉字",
