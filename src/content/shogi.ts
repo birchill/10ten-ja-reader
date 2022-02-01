@@ -52,7 +52,6 @@ export type ShogiMovementType =
 
 export type ShogiMeta = {
   type: 'shogi';
-  src: string;
   matchLen: number;
   side?: ShogiSideType;
   dest?: [number, number];
@@ -179,7 +178,6 @@ export function extractShogiMetadata(text: string): ShogiMeta | undefined {
 
   return {
     type: 'shogi',
-    src,
     matchLen: src.length,
     side,
     dest,
@@ -187,4 +185,85 @@ export function extractShogiMetadata(text: string): ShogiMeta | undefined {
     movement,
     promotion,
   };
+}
+
+const standardPieceNotation: Record<ShogiPieceType, string> = {
+  p: '歩',
+  l: '香',
+  n: '桂',
+  s: '銀',
+  b: '角',
+  r: '飛',
+  g: '金',
+  pro_p: 'と',
+  pro_l: '成香',
+  pro_n: '成桂',
+  pro_s: '成銀',
+  pro_b: '馬',
+  pro_r: '龍',
+  k: '王',
+};
+
+const standardMovementNotation: Record<ShogiMovementType, string> = {
+  drop: '打',
+  down: '引',
+  horiz: '寄',
+  up: '上',
+  right: '右',
+  left: '左',
+  vert: '直',
+};
+
+export function serializeShogi({
+  side,
+  dest,
+  piece,
+  movement,
+  promotion,
+}: {
+  side?: ShogiSideType;
+  dest?: [number, number];
+  piece: ShogiPieceType;
+  movement?: ShogiMovementType;
+  promotion?: boolean;
+}): string {
+  let result = '';
+  if (side) {
+    result += side === 'black' ? '☗' : '☖';
+  }
+
+  if (dest) {
+    result += serializeShogiDest(dest);
+  } else {
+    result += '同';
+  }
+
+  result += standardPieceNotation[piece];
+
+  if (movement) {
+    result += standardMovementNotation[movement];
+  }
+
+  if (typeof promotion === 'boolean') {
+    result += promotion ? '成' : '不成';
+  }
+
+  return result;
+}
+
+const numberToKanji = [
+  '〇',
+  '一',
+  '二',
+  '三',
+  '四',
+  '五',
+  '六',
+  '七',
+  '八',
+  '九',
+];
+
+export function serializeShogiDest(dest: [number, number]): string {
+  return `${String.fromCodePoint(dest[0] + 0xff10)}${numberToKanji[dest[1]]}`;
 }
