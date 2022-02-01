@@ -2202,6 +2202,20 @@
       }
     }
   },
+  "shogi_move_piece_dest_movement": {
+    "message": "$piece$を$dest$に$movement$",
+    "placeholders": {
+      "piece": {
+        "content": "$1"
+      },
+      "dest": {
+        "content": "$2"
+      },
+      "movement": {
+        "content": "$3"
+      }
+    }
+  },
   "shogi_move_side_piece_dest": {
     "message": "$side$が$piece$を$dest$に",
     "placeholders": {
@@ -2215,6 +2229,44 @@
         "content": "$3"
       }
     }
+  },
+  "shogi_move_side_piece_dest_movement": {
+    "message": "$side$が$piece$を$dest$に$movement$",
+    "placeholders": {
+      "side": {
+        "content": "$1"
+      },
+      "piece": {
+        "content": "$2"
+      },
+      "dest": {
+        "content": "$3"
+      },
+      "movement": {
+        "content": "$4"
+      }
+    }
+  },
+  "shogi_movement_down": {
+    "message": "下げる"
+  },
+  "shogi_movement_drop": {
+    "message": "打つ"
+  },
+  "shogi_movement_horiz": {
+    "message": "左右に動かす"
+  },
+  "shogi_movement_left": {
+    "message": "左から動かす"
+  },
+  "shogi_movement_right": {
+    "message": "右から動かす"
+  },
+  "shogi_movement_up": {
+    "message": "上げる"
+  },
+  "shogi_movement_vert": {
+    "message": "まっすぐ上げる"
   },
   "shogi_piece_b": {
     "message": "角行"
