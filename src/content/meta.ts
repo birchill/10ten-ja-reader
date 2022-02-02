@@ -5,7 +5,7 @@ import {
 } from './currency';
 import { extractMeasureMetadata, lookForMeasure, MeasureMeta } from './measure';
 import { extractNumberMetadata, NumberMeta } from './numbers';
-import { ShogiMeta } from './shogi';
+import { extractShogiMetadata, lookForShogi, ShogiMeta } from './shogi';
 import { EraMeta, extractEraMetadata, lookForEra } from './years';
 
 export type SelectionMeta =
@@ -36,6 +36,7 @@ export function lookForMetadata({
       ? lookForCurrency({ nodeText, textDelimiter })
       : undefined) ||
     lookForEra({ currentText, nodeText, textEnd }) ||
+    lookForShogi({ nodeText, textDelimiter }) ||
     lookForMeasure({ nodeText, textDelimiter }) || {
       textDelimiter,
       textEnd,
@@ -53,6 +54,7 @@ export function extractGetTextMetadata({
   return (
     (matchCurrency ? extractCurrencyMetadata(text) : undefined) ||
     extractEraMetadata(text) ||
+    extractShogiMetadata(text) ||
     extractMeasureMetadata(text) ||
     extractNumberMetadata(text)
   );

@@ -1,6 +1,7 @@
 import { assert } from 'chai';
 
 import { getTextAtPoint, GetTextAtPointResult } from '../src/content/get-text';
+import { empty } from '../src/utils/dom-utils';
 import { isChromium } from '../src/utils/ua-utils';
 
 mocha.setup('bdd');
@@ -707,6 +708,93 @@ describe('getTextAtPoint', () => {
       matchLen: 4,
     });
   });
+
+  it('should recognize shogi moves', () => {
+    const moves = ['☗８三銀', '８三銀', '8三銀', '☗83銀', '☗八三銀'];
+
+    for (const move of moves) {
+      empty(testDiv);
+      testDiv.append(`${move}です`);
+      const textNode = testDiv.firstChild as Text;
+      const bbox = getBboxForOffset(textNode, 0);
+
+      const result = getTextAtPoint({
+        point: {
+          x: bbox.left,
+          y: bbox.top + bbox.height / 2,
+        },
+      });
+
+      assert.deepEqual(
+        result!.meta,
+        {
+          type: 'shogi',
+          matchLen: move.length,
+          side: move.startsWith('☗') ? 'black' : undefined,
+          dest: [8, 3],
+          piece: 's',
+          movement: undefined,
+          promotion: undefined,
+        },
+        `move: ${move}`
+      );
+    }
+  });
+
+  it('should NOT recognize ambiguous shogi-like moves', () => {
+    testDiv.append('83銀です');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    let result = getTextAtPoint({
+      point: {
+        x: bbox.left,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+    assert.isUndefined(result?.meta);
+
+    // Try again with an all kanji match that should be treated as a number
+    empty(testDiv);
+    testDiv.append('八三銀です');
+    result = getTextAtPoint({
+      point: {
+        x: bbox.left,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+    assert.deepEqual(result!.meta, {
+      type: 'number',
+      value: 83,
+      src: '八三',
+      matchLen: 2,
+    });
+  });
+
+  it('should recognize shogi moves that use shorthand characters', () => {
+    testDiv.append('８三↑です');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+    assert.deepEqual(result!.meta, {
+      type: 'shogi',
+      matchLen: 3,
+      side: undefined,
+      dest: [8, 3],
+      piece: 'l',
+      movement: undefined,
+      promotion: undefined,
+    });
+  });
+
+  // Test shorthand symbols etc. are recognized -- they're not part of the
+  // usual delimiter regex but we're assuming they are.
 
   it('should stop at the maximum number of characters', () => {
     testDiv.append('あいうえお');

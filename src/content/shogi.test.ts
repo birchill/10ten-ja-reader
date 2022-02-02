@@ -22,9 +22,12 @@ describe('extractShogiMetadata', () => {
   it('parses the destination', () => {
     expect(extractShogiMetadata('８三銀')!.dest).toEqual([8, 3]);
     expect(extractShogiMetadata('8三銀')!.dest).toEqual([8, 3]);
-    expect(extractShogiMetadata('２４銀')!.dest).toEqual([2, 4]);
-    expect(extractShogiMetadata('24銀')!.dest).toEqual([2, 4]);
-    expect(extractShogiMetadata('二三銀')!.dest).toEqual([2, 3]);
+    expect(extractShogiMetadata('☗２４銀')!.dest).toEqual([2, 4]);
+    expect(extractShogiMetadata('２４銀')).toBeUndefined();
+    expect(extractShogiMetadata('☗24銀')!.dest).toEqual([2, 4]);
+    expect(extractShogiMetadata('24銀')).toBeUndefined();
+    expect(extractShogiMetadata('☗二三銀')!.dest).toEqual([2, 3]);
+    expect(extractShogiMetadata('二三銀')).toBeUndefined();
     expect(extractShogiMetadata('同銀')!.dest).toEqual(undefined);
     expect(extractShogiMetadata('仝銀')!.dest).toEqual(undefined);
   });
