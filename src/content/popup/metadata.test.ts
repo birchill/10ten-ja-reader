@@ -194,8 +194,12 @@ function getShogiMove(
     setLocale(localeToUse);
   }
 
-  const result =
+  let result =
     renderMetadata(params)?.querySelector('.value')?.textContent ?? undefined;
+
+  // Drop any zero-width spaces since we only add them for Safari's sake and
+  // they're not expected to affect the visual result
+  result = result?.replace(/\u200b/g, '');
 
   if (prevLocale !== localeToUse) {
     setLocale(prevLocale);
