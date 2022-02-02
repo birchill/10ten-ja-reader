@@ -2195,7 +2195,7 @@
     "message": " (same as previous move)"
   },
   "shogi_label": {
-    "message": "Shogi"
+    "message": "Shōgi"
   },
   "shogi_move_piece_dest": {
     "message": "$piece$ to $dest$",
