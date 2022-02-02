@@ -346,6 +346,8 @@ export const browser = {
           return 'zuru verb';
         case 'shogi_dest_same':
           return "previous move's position";
+        case 'shogi_dest_same_suffix':
+          return ' (same as previous move)';
         case 'shogi_label':
           return 'Shogi';
         case 'shogi_move_piece_dest':

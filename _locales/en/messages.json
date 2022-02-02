@@ -2191,6 +2191,9 @@
   "shogi_dest_same": {
     "message": "previous move's position"
   },
+  "shogi_dest_same_suffix": {
+    "message": " (same as previous move)"
+  },
   "shogi_label": {
     "message": "Shogi"
   },

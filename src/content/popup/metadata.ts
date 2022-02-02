@@ -320,7 +320,10 @@ function renderShogiInfo(meta: ShogiMeta): HTMLElement {
     dest =
       lang === 'ja'
         ? serializeShogiDest(meta.dest)
-        : meta.dest.map(String).join('');
+        : meta.dest.slice(0, 2).map(String).join('');
+    if (meta.dest.length === 3) {
+      dest += browser.i18n.getMessage('shogi_dest_same_suffix');
+    }
   } else {
     dest = browser.i18n.getMessage('shogi_dest_same');
   }

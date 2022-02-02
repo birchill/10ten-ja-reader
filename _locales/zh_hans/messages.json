@@ -2191,6 +2191,9 @@
   "shogi_dest_same": {
     "message": "同じ場所"
   },
+  "shogi_dest_same_suffix": {
+    "message": "（同じ場所）"
+  },
   "shogi_label": {
     "message": "日本将棋"
   },
