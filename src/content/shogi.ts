@@ -1,6 +1,69 @@
 import { getCombinedCharRange, getNegatedCharRange } from '../utils/char-range';
 import { parseNumber } from './numbers';
 
+// ---------------------------------------------------------------------------
+//
+// Data types
+//
+// ---------------------------------------------------------------------------
+
+// It feels a little imperialist to force these values into a more Western
+// notation but by doing so we hope it's easier to map to localization keys
+//
+// (Safari in particular will probably have trouble with full-width string
+// keys--it already has enough trouble with case sensitive keys.)
+
+export type ShogiSideType = 'black' | 'white';
+
+// If the third member of the tuple is defined, it indicates that the position
+// is specified AND marked as being the same as the last move (e.g. ☖２四同歩).
+export type ShogiDestType = [number, number] | [number, number, 1];
+
+export type ShogiPieceType =
+  | 'p'
+  | 'l'
+  | 'n'
+  | 's'
+  | 'b'
+  | 'r'
+  | 'g'
+  | 'pro_p'
+  | 'pro_l'
+  | 'pro_n'
+  | 'pro_s'
+  | 'pro_b'
+  | 'pro_r'
+  | 'k';
+
+export type ShogiMovementType =
+  | 'drop'
+  | 'down'
+  | 'horiz'
+  | 'up'
+  | 'right'
+  | 'left'
+  | 'vert';
+
+export type ShogiMeta = {
+  type: 'shogi';
+  matchLen: number;
+  side?: ShogiSideType;
+  // An undefined destination indicates that destination is the same as the
+  // position of the last move. (If the position is specified AND marked as
+  // being the same as the last move, e.g. ☖２四同歩, then a 3 element tuple
+  // is used, with the last element being set to 1.)
+  dest?: ShogiDestType;
+  piece: ShogiPieceType;
+  movement?: ShogiMovementType;
+  promotion?: boolean;
+};
+
+// ---------------------------------------------------------------------------
+//
+// Parsing
+//
+// ---------------------------------------------------------------------------
+
 export function lookForShogi({
   nodeText,
   textDelimiter: originalTextDelimeter,
@@ -45,49 +108,6 @@ export function lookForShogi({
   };
 }
 
-// It feels a little imperialist to force these values into a more Western
-// notation but by doing so we hope it's easier to map to localization keys
-//
-// (Safari in particular will probably have trouble with full-width string
-// keys--it already has enough trouble with case sensitive keys.)
-
-export type ShogiSideType = 'black' | 'white';
-
-export type ShogiPieceType =
-  | 'p'
-  | 'l'
-  | 'n'
-  | 's'
-  | 'b'
-  | 'r'
-  | 'g'
-  | 'pro_p'
-  | 'pro_l'
-  | 'pro_n'
-  | 'pro_s'
-  | 'pro_b'
-  | 'pro_r'
-  | 'k';
-
-export type ShogiMovementType =
-  | 'drop'
-  | 'down'
-  | 'horiz'
-  | 'up'
-  | 'right'
-  | 'left'
-  | 'vert';
-
-export type ShogiMeta = {
-  type: 'shogi';
-  matchLen: number;
-  side?: ShogiSideType;
-  dest?: [number, number];
-  piece: ShogiPieceType;
-  movement?: ShogiMovementType;
-  promotion?: boolean;
-};
-
 // This needs to be kept in sync with the regexes below.
 const shogiDelimeter =
   /[^▲△☗☖1-9１-９一二三四五六七八九同仝－𠔼ド歩兵丶フゝ・香禾キ↑桂土銀ヨ角ク飛ヒ乙金人と成ナ馬マウ龍竜立リ玉王○打引寄上行入右左直行入不生]/u;
@@ -97,9 +117,9 @@ const unprefixedShogiStart = /^[1-9１-９][一二三四五六七八九]|[同仝
 // which in turn is based on the description at
 // https://en.wikipedia.org/wiki/Shogi_notation#Japanese_notation
 const shogiRegex =
-  /([▲△☗☖])([1-9１-９一二三四五六七八九][1-9１-９一二三四五六七八九]|[同仝－𠔼ド])(歩|兵|丶|フ|ゝ|・|香|禾|キ|↑|桂|土|銀|ヨ|角|ク|飛|ヒ|乙|金|人|と|成香|成禾|成キ|成↑|ナ香|ナ禾|ナキ|ナ↑|成桂|成土|ナ桂|ナ土|成銀|成ヨ|ナ銀|ナヨ|馬|マ|ウ|龍|竜|立|リ|玉|王|○)([打引寄上行入右左直行入]?)(成|ナ|不成|生|フナ|不ナ)?/u;
+  /([▲△☗☖])([1-9１-９一二三四五六七八九][1-9１-９一二三四五六七八九][同仝－𠔼ド]?|[同仝－𠔼ド])(歩|兵|丶|フ|ゝ|・|香|禾|キ|↑|桂|土|銀|ヨ|角|ク|飛|ヒ|乙|金|人|と|成香|成禾|成キ|成↑|ナ香|ナ禾|ナキ|ナ↑|成桂|成土|ナ桂|ナ土|成銀|成ヨ|ナ銀|ナヨ|馬|マ|ウ|龍|竜|立|リ|玉|王|○)([打引寄上行入右左直行入]?)(成|ナ|不成|生|フナ|不ナ)?/u;
 const shogiWithoutPrefixRegex =
-  /([1-9１-９][一二三四五六七八九]|[同仝－𠔼ド])(歩|兵|丶|フ|ゝ|・|香|禾|キ|↑|桂|土|銀|ヨ|角|ク|飛|ヒ|乙|金|人|と|成香|成禾|成キ|成↑|ナ香|ナ禾|ナキ|ナ↑|成桂|成土|ナ桂|ナ土|成銀|成ヨ|ナ銀|ナヨ|馬|マ|ウ|龍|竜|立|リ|玉|王|○)([打引寄上行入右左直行入]?)(成|ナ|不成|生|フナ|不ナ)?/u;
+  /([1-9１-９][一二三四五六七八九][同仝－𠔼ド]?|[同仝－𠔼ド])(歩|兵|丶|フ|ゝ|・|香|禾|キ|↑|桂|土|銀|ヨ|角|ク|飛|ヒ|乙|金|人|と|成香|成禾|成キ|成↑|ナ香|ナ禾|ナキ|ナ↑|成桂|成土|ナ桂|ナ土|成銀|成ヨ|ナ銀|ナヨ|馬|マ|ウ|龍|竜|立|リ|玉|王|○)([打引寄上行入右左直行入]?)(成|ナ|不成|生|フナ|不ナ)?/u;
 
 const sides = new Map<string, ShogiSideType>([
   ['▲', 'black'],
@@ -195,7 +215,14 @@ export function extractShogiMetadata(text: string): ShogiMeta | undefined {
   // Destination
   let dest: [number, number] | undefined;
   if (!sameDest.has(destStr)) {
-    dest = destStr.split('').map(parseNumber) as [number, number];
+    const parts = destStr.split('');
+    dest = parts.slice(0, 2).map(parseNumber) as [number, number];
+    // Check for a "same" indication (we need to check for > 2 instead of === 3
+    // because if the "same" character is 𠔼 the string will have length 4 since
+    // that charater is non-BMP).
+    if (parts.length > 2) {
+      dest.push(1);
+    }
   }
 
   // Piece
@@ -222,6 +249,12 @@ export function extractShogiMetadata(text: string): ShogiMeta | undefined {
     promotion,
   };
 }
+
+// ---------------------------------------------------------------------------
+//
+// Serialization
+//
+// ---------------------------------------------------------------------------
 
 const standardPieceNotation: Record<ShogiPieceType, string> = {
   p: '歩',
@@ -258,7 +291,7 @@ export function serializeShogi({
   promotion,
 }: {
   side?: ShogiSideType;
-  dest?: [number, number];
+  dest?: ShogiDestType;
   piece: ShogiPieceType;
   movement?: ShogiMovementType;
   promotion?: boolean;
@@ -270,7 +303,8 @@ export function serializeShogi({
 
   if (dest) {
     result += serializeShogiDest(dest);
-  } else {
+  }
+  if (!dest || dest.length === 3) {
     result += '同';
   }
 
@@ -300,6 +334,6 @@ const numberToKanji = [
   '九',
 ];
 
-export function serializeShogiDest(dest: [number, number]): string {
+export function serializeShogiDest(dest: ShogiDestType): string {
   return `${String.fromCodePoint(dest[0] + 0xff10)}${numberToKanji[dest[1]]}`;
 }

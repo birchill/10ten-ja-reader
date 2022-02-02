@@ -49,6 +49,18 @@ describe('renderShogiInfo', () => {
     expect(getShogiMove({ piece: 's' }, 'zh_hans')).toBe('銀将を同じ場所に');
   });
 
+  it('renders a shogi move with a destination indicated as being the same', () => {
+    expect(getShogiMove({ dest: [8, 3, 1], piece: 's' })).toBe(
+      'silver general to 83 (same as previous move)'
+    );
+    expect(getShogiMove({ dest: [8, 3, 1], piece: 's' }, 'ja')).toBe(
+      '銀将を８三（同じ場所）に'
+    );
+    expect(getShogiMove({ dest: [8, 3, 1], piece: 's' }, 'zh_hans')).toBe(
+      '銀将を８三（同じ場所）に'
+    );
+  });
+
   it('renders a shogi move where a side is specified', () => {
     expect(
       getShogiMove({

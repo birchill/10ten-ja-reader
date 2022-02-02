@@ -30,6 +30,11 @@ describe('extractShogiMetadata', () => {
     expect(extractShogiMetadata('二三銀')).toBeUndefined();
     expect(extractShogiMetadata('同銀')!.dest).toEqual(undefined);
     expect(extractShogiMetadata('仝銀')!.dest).toEqual(undefined);
+
+    // Special case where the destination is specified and indicated as being
+    // the same
+    expect(extractShogiMetadata('☖２四同歩')!.dest).toEqual([2, 4, 1]);
+    expect(extractShogiMetadata('２四𠔼歩')!.dest).toEqual([2, 4, 1]);
   });
   it('parses the piece', () => {
     expect(extractShogiMetadata('８三歩')!.piece).toEqual('p');
