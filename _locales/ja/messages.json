@@ -2197,7 +2197,7 @@
     "message": "将棋"
   },
   "shogi_move_piece_dest": {
-    "message": "$piece$を$dest$に",
+    "message": "$piece$​を​$dest$​に",
     "placeholders": {
       "piece": {
         "content": "$1"
@@ -2208,7 +2208,7 @@
     }
   },
   "shogi_move_piece_dest_movement": {
-    "message": "$piece$を$dest$に$movement$",
+    "message": "$piece$​を​$dest$​に​$movement$",
     "placeholders": {
       "piece": {
         "content": "$1"
@@ -2222,7 +2222,7 @@
     }
   },
   "shogi_move_side_piece_dest": {
-    "message": "$side$が$piece$を$dest$に",
+    "message": "$side$​が​$piece$​を​$dest$​に",
     "placeholders": {
       "side": {
         "content": "$1"
@@ -2236,7 +2236,7 @@
     }
   },
   "shogi_move_side_piece_dest_movement": {
-    "message": "$side$が$piece$を$dest$に$movement$",
+    "message": "$side$​が​$piece$​を​$dest$​に​$movement$",
     "placeholders": {
       "side": {
         "content": "$1"
