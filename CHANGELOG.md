@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- Added parsing for shogi moves (e.g. ☗８三銀引成).
+  Thanks to [@devurandom](https://twitter.com/_dev_urandom_) for the idea and
+  prototype!
 - Don't show the age for a name entry when only a year is given, or when the
   name is not for a person
   ([#863](https://github.com/birchill/10ten-ja-reader/issues/863)).
