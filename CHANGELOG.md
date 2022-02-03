@@ -11,6 +11,7 @@ app.
 - Added parsing for shogi moves (e.g. ☗８三銀引成).
   Thanks to [@devurandom](https://twitter.com/_dev_urandom_) for the idea and
   prototype!
+- Fixed text look up for Google docs when the document is scaled.
 - Don't show the age for a name entry when only a year is given, or when the
   name is not for a person
   ([#863](https://github.com/birchill/10ten-ja-reader/issues/863)).

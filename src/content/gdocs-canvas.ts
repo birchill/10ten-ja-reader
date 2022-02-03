@@ -59,6 +59,8 @@ export function getTextFromAnnotatedCanvas({
     return { position: null, text: '' };
   }
 
+  const docScale = getDocScale(elem);
+
   // Do a binary search to find the start of the string
   const xPos = point.x - elem.getBoundingClientRect().left;
   ctx.font = font;
@@ -67,7 +69,7 @@ export function getTextFromAnnotatedCanvas({
   let end = text.length;
   while (start < end && Math.abs(end - start) > 1) {
     const mid = Math.floor((start + end) / 2);
-    const width = ctx.measureText(text.substring(0, mid)).width;
+    const width = ctx.measureText(text.substring(0, mid)).width * docScale;
     if (width > xPos) {
       end = mid;
     } else if (width < xPos) {
@@ -102,6 +104,32 @@ export function getTextFromAnnotatedCanvas({
     },
     text,
   };
+}
+
+function getDocScale(gdocsSpanElem: SVGElement) {
+  const transform = gdocsSpanElem.getAttribute('transform');
+  if (!transform) {
+    return 1;
+  }
+
+  const matches = transform.match(/matrix\((.*)\)\s?/);
+  if (!matches) {
+    return 1;
+  }
+
+  const [, inner] = matches;
+  const parts = inner.split(/\s*,\s*/);
+  if (parts.length < 4) {
+    return 1;
+  }
+
+  const [a, , , d] = parts.map((x) => parseFloat(x));
+  // It should be uniform scale but just check
+  if (Math.abs(a - d) > 0.1) {
+    return 1;
+  }
+
+  return a;
 }
 
 export function isGdocsSpan(node: Node | null): node is SVGRectElement {
@@ -150,13 +178,16 @@ export function getGdocsRangeBboxes({
     return boxes;
   }
 
+  const docScale = getDocScale(startSpan);
+
   const { x, y: top, height } = startSpan.getBoundingClientRect();
 
   ctx.font = font;
   const leadingWidth = offset
-    ? ctx.measureText(text.substring(0, offset)).width
+    ? ctx.measureText(text.substring(0, offset)).width * docScale
     : 0;
-  const width = ctx.measureText(text.substring(offset, offset + length)).width;
+  const width =
+    ctx.measureText(text.substring(offset, offset + length)).width * docScale;
 
   boxes.push({ left: x + leadingWidth, top, width, height });
 
@@ -179,7 +210,8 @@ export function getGdocsRangeBboxes({
 
     const { x: left, y: top, height } = currentSpan.getBoundingClientRect();
     ctx.font = font;
-    const width = ctx.measureText(text.substring(0, lengthToMeasure)).width;
+    const width =
+      ctx.measureText(text.substring(0, lengthToMeasure)).width * docScale;
 
     boxes.push({ left, top, width, height });
   }
