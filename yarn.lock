@@ -1001,13 +1001,13 @@
     "@types/webpack" "^4"
     "@types/webpack-dev-middleware" "3"
 
-"@types/karma@*", "@types/karma@^6.3.2":
-  version "6.3.2"
-  resolved "https://registry.yarnpkg.com/@types/karma/-/karma-6.3.2.tgz#6db4a5ca40a2bb09e189690f2d763dadca77f181"
-  integrity sha512-ZQfjGEfEV57I3o6Y5iK1+6aoQDguxmCBeQ0H8r9dasRTFn2Ohqgvx44FSPdY+R+/VUVtr8lvAYaRFzdNrQFvww==
+"@types/karma@*", "@types/karma@^6.3.3":
+  version "6.3.3"
+  resolved "https://registry.yarnpkg.com/@types/karma/-/karma-6.3.3.tgz#fc48cc53d13ec9beeea3a2a47a2036ed7647ba29"
+  integrity sha512-nRMec4mTCt+tkpRqh5/pAxmnjzEgAaalIq7mdfLFH88gSRC8+bxejLiSjHMMT/vHIhJHqg4GPIGCnCFbwvDRww==
   dependencies:
     "@types/node" "*"
-    log4js "^6.3.0"
+    log4js "^6.4.1"
 
 "@types/memory-fs@*":
   version "0.3.2"
@@ -5724,10 +5724,10 @@ log-update@^4.0.0:
     slice-ansi "^4.0.0"
     wrap-ansi "^6.2.0"
 
-log4js@^6.3.0:
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/log4js/-/log4js-6.4.0.tgz#3f63ccfc8033c83cd617a4d2d50e48be5944eae9"
-  integrity sha512-ysc/XUecZJuN8NoKOssk3V0cQ29xY4fra6fnigZa5VwxFsCsvdqsdnEuAxNN89LlHpbE4KUD3zGcn+kFqonSVQ==
+log4js@^6.3.0, log4js@^6.4.1:
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/log4js/-/log4js-6.4.1.tgz#9d3a8bf2c31c1e213fe3fc398a6053f7a2bc53e8"
+  integrity sha512-iUiYnXqAmNKiIZ1XSAitQ4TmNs8CdZYTAWINARF3LjnsLN8tY5m0vRwd6uuWj/yNY0YHxeZodnbmxKFUOM2rMg==
   dependencies:
     date-format "^4.0.3"
     debug "^4.3.3"
