@@ -1833,6 +1833,17 @@ declare global {
 }
 
 (function () {
+  // Check that we should be running at all. We can only handle HTML and SVG
+  // content and if we start messing with other documents (e.g. random XML
+  // documents) we can break their styling.
+  const { namespaceURI } = document.documentElement;
+  if (
+    namespaceURI !== 'http://www.w3.org/1999/xhtml' &&
+    namespaceURI !== 'http://www.w3.org/2000/svg'
+  ) {
+    return;
+  }
+
   // Ensure the content script is not loaded twice or that an incompatible
   // version of the script is not used.
   //
