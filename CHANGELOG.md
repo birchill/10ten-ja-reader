@@ -24,6 +24,8 @@ app.
 - Made irregular kanji headwords be dimmed when looking up by kana
   (e.g. お母 is dimmed when looking up おふくろ)
   ([#877](https://github.com/birchill/10ten-ja-reader/issues/877)).
+- Fixed positioning of puck when using a scaled viewport on non iOS Safari
+  browsers.
 - Stopped the add-on from interfering with generic XML documents
   ([#902](https://github.com/birchill/10ten-ja-reader/issues/902)).
 - Stopped producing source maps for Safari and Chromium releases since they

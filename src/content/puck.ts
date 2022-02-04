@@ -107,6 +107,18 @@ export class LookupPuck {
   private targetOrientation: 'above' | 'below' = 'above';
   private cachedViewportDimensions: ViewportDimensions | null = null;
 
+  // We need to detect if the browser has a buggy position:fixed behavior
+  // (as is currently the case for Safari
+  // https://bugs.webkit.org/show_bug.cgi?id=207089)
+  // so we can adjust the way we position the puck.
+  //
+  // This probably should _also_ apply to the way we position the safe area
+  // but we haven't looked into that case just yet.
+  //
+  // undefined means we haven't been able to detect whether or not the bug is
+  // present yet.
+  private hasBuggyPositionFixed: boolean | undefined;
+
   constructor(
     private safeAreaProvider: SafeAreaProvider,
     private onLookupDisabled: () => void
@@ -340,9 +352,16 @@ export class LookupPuck {
 
     let { clientX, clientY } = event;
 
-    // Factor in any viewport zoom
-    clientX += window.visualViewport?.offsetLeft ?? 0;
-    clientY += window.visualViewport?.offsetTop ?? 0;
+    // Factor in any viewport offset needed to make up for Safari iOS's buggy
+    // implementation of position:fixed.
+    let viewportOffsetLeft = 0;
+    let viewportOffsetTop = 0;
+    if (this.hasBuggyPositionFixed) {
+      viewportOffsetLeft = window.visualViewport?.offsetLeft ?? 0;
+      viewportOffsetTop = window.visualViewport?.offsetTop ?? 0;
+    }
+    clientX += viewportOffsetLeft;
+    clientY += viewportOffsetTop;
 
     // Translate the midpoint of the earth to the position of the pointer event.
     // This updates the moon offset
@@ -367,12 +386,12 @@ export class LookupPuck {
       this.puckX +
       this.earthWidth / 2 +
       this.targetOffset.x -
-      (window.visualViewport?.offsetLeft || 0);
+      viewportOffsetLeft;
     const targetY =
       this.puckY +
       this.earthHeight / 2 +
       this.targetOffset.y -
-      (window.visualViewport?.offsetTop || 0);
+      viewportOffsetTop;
 
     // Make sure the target is an actual element since the mousemove handler
     // expects that.
@@ -433,6 +452,67 @@ export class LookupPuck {
     (mouseEvent as PuckMouseEvent).fromPuck = true;
 
     target.dispatchEvent(mouseEvent);
+  };
+
+  private readonly checkForBuggyPositionFixed = () => {
+    // Check if we've already run this check
+    if (typeof this.hasBuggyPositionFixed === 'undefined') {
+      return;
+    }
+
+    // Check we have the visual viewport API available.
+    //
+    // If not, it's hard to detect the browser bug (since we don't know if we're
+    // scaled or not) and it's hard to work around it too without flushing style
+    // on every pointer event so we just act as if there's no bug.
+    //
+    // (Normally this function won't be called in the first place if we don't
+    // have the visual viewport API since we can't register for viewport resize
+    // events, but we manually call this function initially after rendering so
+    // we can still arrive here even without the API.)
+    if (typeof window.visualViewport === 'undefined') {
+      this.hasBuggyPositionFixed = false;
+      return;
+    }
+
+    // Check that there is a suitable viewport scale applied so that we could
+    // potentially detect the bug
+    if (
+      Math.abs(window.visualViewport.scale - 1) < 0.01 ||
+      (Math.abs(window.visualViewport.offsetLeft) <= 1 &&
+        Math.abs(window.visualViewport.offsetTop) <= 1)
+    ) {
+      return;
+    }
+
+    // Check the puck is actually being rendered
+    if (!this.puck) {
+      return;
+    }
+
+    // Clear the transform on the puck and check if its resting position is
+    // actually equal to the offset of the visual viewport.
+    //
+    // When that's the case we've got iOS's buggy position:fixed that makes the
+    // element not actually fixed.
+    //
+    // https://bugs.webkit.org/show_bug.cgi?id=207089
+    //
+    // Furthermore, because the offsets match we know we can work around it
+    // by factoring the viewport offset into our calculations.
+    const previousTransform = this.puck.style.transform || 'none';
+    this.puck.style.transform = 'none';
+    const bbox = this.puck.getBoundingClientRect();
+    this.hasBuggyPositionFixed =
+      Math.abs(bbox.left + window.visualViewport.offsetLeft) < 1 &&
+      Math.abs(bbox.top + window.visualViewport.offsetTop) < 1;
+    this.puck.style.transform = previousTransform;
+
+    // Don't listen for any more viewport resize events
+    window.visualViewport.removeEventListener(
+      'resize',
+      this.checkForBuggyPositionFixed
+    );
   };
 
   private clickState: ClickState = { kind: 'idle' };
@@ -729,6 +809,16 @@ export class LookupPuck {
       this.puck.addEventListener('mousedown', this.onPuckMouseDown);
       this.puck.addEventListener('mouseup', this.onPuckMouseUp);
     }
+
+    // Start trying to detect a buggy position:fixed implementation.
+    window.visualViewport?.addEventListener(
+      'resize',
+      this.checkForBuggyPositionFixed
+    );
+    // If the viewport has already been scaled, we might be able to detect it
+    // right away (and avoid mis-positioning the puck before the viewport is
+    // next resized).
+    this.checkForBuggyPositionFixed();
   }
 
   private renderIcon({
@@ -831,6 +921,10 @@ export class LookupPuck {
 
   unmount(): void {
     removePuck();
+    window.visualViewport?.removeEventListener(
+      'resize',
+      this.checkForBuggyPositionFixed
+    );
     this.setEnabledState('disabled');
     this.puck = undefined;
   }
