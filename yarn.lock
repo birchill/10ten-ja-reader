@@ -1001,13 +1001,13 @@
     "@types/webpack" "^4"
     "@types/webpack-dev-middleware" "3"
 
-"@types/karma@*", "@types/karma@^6.3.2":
-  version "6.3.2"
-  resolved "https://registry.yarnpkg.com/@types/karma/-/karma-6.3.2.tgz#6db4a5ca40a2bb09e189690f2d763dadca77f181"
-  integrity sha512-ZQfjGEfEV57I3o6Y5iK1+6aoQDguxmCBeQ0H8r9dasRTFn2Ohqgvx44FSPdY+R+/VUVtr8lvAYaRFzdNrQFvww==
+"@types/karma@*", "@types/karma@^6.3.3":
+  version "6.3.3"
+  resolved "https://registry.yarnpkg.com/@types/karma/-/karma-6.3.3.tgz#fc48cc53d13ec9beeea3a2a47a2036ed7647ba29"
+  integrity sha512-nRMec4mTCt+tkpRqh5/pAxmnjzEgAaalIq7mdfLFH88gSRC8+bxejLiSjHMMT/vHIhJHqg4GPIGCnCFbwvDRww==
   dependencies:
     "@types/node" "*"
-    log4js "^6.3.0"
+    log4js "^6.4.1"
 
 "@types/memory-fs@*":
   version "0.3.2"
