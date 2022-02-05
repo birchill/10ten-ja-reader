@@ -119,17 +119,16 @@ function getDocScale(gdocsSpanElem: SVGElement) {
 
   const [, inner] = matches;
   const parts = inner.split(/\s*,\s*/);
-  if (parts.length < 4) {
+
+  // We expect the document scale to be uniform (i.e. a =~ d) but we also happen
+  // to know we only ever scale width (horizontal) values so we can just fetch
+  // the horizontal scale value.
+  if (!parts.length) {
     return 1;
   }
+  const a = parseFloat(parts[0]);
 
-  const [a, , , d] = parts.map((x) => parseFloat(x));
-  // It should be uniform scale but just check
-  if (Math.abs(a - d) > 0.1) {
-    return 1;
-  }
-
-  return a;
+  return a > 0 ? a : 1;
 }
 
 export function isGdocsSpan(node: Node | null): node is SVGRectElement {
