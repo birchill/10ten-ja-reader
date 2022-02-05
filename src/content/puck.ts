@@ -276,9 +276,18 @@ export class LookupPuck {
     //   mode.
     //
     // @see https://github.com/shirakaba/10ten-ja-reader/pull/3#issuecomment-875127566
+    //
+    // Another curiousity, if you load a page initially zoomed-in using pinch
+    // zoom (e.g. by refreshing it after zooming in), the innerHeight will
+    // initially report the zoomed-in viewport height (i.e. the same value as
+    // window.visualViewport.height). However, if you zoom all the way out and
+    // back in again, it will give you the layout viewport. If you zoom
+    // partially out and back in, you get something in between.
     this.cachedViewportDimensions = {
       viewportWidth: document.documentElement.clientWidth,
-      viewportHeight: document.defaultView?.innerHeight ?? 0,
+      viewportHeight:
+        document.defaultView?.innerHeight ??
+        document.documentElement.clientHeight,
     };
 
     return this.cachedViewportDimensions;
