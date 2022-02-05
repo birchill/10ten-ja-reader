@@ -456,7 +456,7 @@ export class LookupPuck {
 
   private readonly checkForBuggyPositionFixed = () => {
     // Check if we've already run this check
-    if (typeof this.hasBuggyPositionFixed === 'undefined') {
+    if (typeof this.hasBuggyPositionFixed !== 'undefined') {
       return;
     }
 
