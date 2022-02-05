@@ -8,13 +8,16 @@ app.
 
 ## [Unreleased]
 
+(Nothing yet)
+
+## [1.7.0] - 2022-02-05
+
 - Added parsing for shogi moves (e.g. ☗８三銀引成).
   Thanks to [@devurandom](https://twitter.com/_dev_urandom_) for the idea and
   prototype!
 - Fixed text look up for Google docs when the document is scaled.
-- Don't show the age for a name entry when only a year is given, or when the
-  name is not for a person
-  ([#863](https://github.com/birchill/10ten-ja-reader/issues/863)).
+- Fixed positioning of the puck when using a scaled viewport on non iOS Safari
+  browsers.
 - Made more common kana reading be displayed when looking up an entry by an
   irregular kana reading (e.g. showing ふんいき when looking up ふいんき)
   ([#877](https://github.com/birchill/10ten-ja-reader/issues/877)).
@@ -24,8 +27,9 @@ app.
 - Made irregular kanji headwords be dimmed when looking up by kana
   (e.g. お母 is dimmed when looking up おふくろ)
   ([#877](https://github.com/birchill/10ten-ja-reader/issues/877)).
-- Fixed positioning of puck when using a scaled viewport on non iOS Safari
-  browsers.
+- Made the name preview not show the age for a name entry when only a year is
+  given, or when the name is not for a person
+  ([#863](https://github.com/birchill/10ten-ja-reader/issues/863)).
 - Stopped the add-on from interfering with generic XML documents
   ([#902](https://github.com/birchill/10ten-ja-reader/issues/902)).
 - Stopped producing source maps for Safari and Chromium releases since they
