@@ -69,8 +69,6 @@ You can also install rikaikun from the source as an unpacked extension:
 
 Activate the extension by clicking on the 理 in the top right. When the introductory pop up appears, rikaikun is ready for action.
 
-> Note: There is a bug where sometimes the 'On' badge appears active when Chrome first loads. In those cases, click the icon again and rikaikun will activate. ([Issue #82](https://github.com/melink14/rikaikun/issues/82))
-
 When rikaikun is active, hovering over Japanese words will trigger a translation pop-up.
 
 See it in action in this [Youtube demo](https://www.youtube.com/watch?v=DFRTt6d0s3c) by [Tariq Sheikh](https://www.youtube.com/channel/UCRAL2bcBZ1Cw-xyPwelpi8A).
