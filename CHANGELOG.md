@@ -12,7 +12,7 @@ app.
 
 ## [1.7.1] - 2022-02-10
 
-- Fixed display of the radical meaning in kanji view
+- Fixed display of the radical meaning in kanji view.
 
 ## [1.7.0] - 2022-02-05
 
