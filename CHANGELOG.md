@@ -8,6 +8,10 @@ app.
 
 ## [Unreleased]
 
+(Nothing yet)
+
+## [1.7.1] - 2022-02-10
+
 - Fixed display of the radical meaning in kanji view
 
 ## [1.7.0] - 2022-02-05
@@ -810,6 +814,8 @@ app.
 - Initial version (yes, it took me four attempts to publish).
 
 [unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.6.1...HEAD
+[1.7.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.7.1...v1.7.0
+[1.7.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.6.1...v1.7.0
 [1.6.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.6.0...v1.6.1
 [1.6.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.4.8...v1.5.0
