@@ -87,7 +87,7 @@ function renderKanjiComponents(entry: KanjiResult): HTMLElement {
         { class: '-radical' },
         html('td', { class: 'char', lang: 'ja' }, (rad.b || rad.k)!),
         html('td', { class: 'reading', lang: 'ja' }, rad.na.join('、')),
-        html('td', { class: 'meaning', lang: rad.m_lang }, rad.na.join(', '))
+        html('td', { class: 'meaning', lang: rad.m_lang }, rad.m.join(', '))
       )
     );
 

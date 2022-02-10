@@ -8,7 +8,7 @@ app.
 
 ## [Unreleased]
 
-(Nothing yet)
+- Fixed display of the radical meaning in kanji view
 
 ## [1.7.0] - 2022-02-05
 
