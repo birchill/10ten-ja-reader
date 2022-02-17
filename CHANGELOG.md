@@ -8,7 +8,7 @@ app.
 
 ## [Unreleased]
 
-(Nothing yet)
+- Fixed a regression in highlighting of non-BMP characters e.g. 𠏹沢.
 
 ## [1.7.1] - 2022-02-10
 
@@ -813,7 +813,7 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.6.1...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.7.1...HEAD
 [1.7.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.7.1...v1.7.0
 [1.7.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.6.1...v1.7.0
 [1.6.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.6.0...v1.6.1

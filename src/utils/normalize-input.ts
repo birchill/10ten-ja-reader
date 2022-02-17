@@ -1,5 +1,11 @@
 import { halfToFullWidthNum, toNormalized } from '@birchill/normal-jp';
 
+// This method returns an array of input lengths which use 16-bit character
+// offsets as opposed to Unicode codepoints.
+//
+// That allows us to use .length, .substring etc. on the matched string.
+// If we make this return the positions of Unicode codepoints we will need to
+// update all users of this output to be non-BMP character aware.
 export function normalizeInput(input: string): [string, number[]] {
   // Convert to full-width, normalize decomposed characters, expand combined
   // characters etc.
@@ -13,7 +19,7 @@ export function normalizeInput(input: string): [string, number[]] {
   [normalized, inputLengths] = stripZwnj(normalized, inputLengths);
 
   // Truncate if we find characters outside the expected range.
-  for (let i = 0; i < [...fullWidthInput].length; ++i) {
+  for (let i = 0; i < fullWidthInput.length; ++i) {
     const char = fullWidthInput.codePointAt(i)!;
     // If we find a character out of range, we need to trim both normalized
     // and inputLengths
@@ -38,11 +44,10 @@ function stripZwnj(
   let normalized = '';
   const lengths: Array<number> = [];
 
-  const chars = [...input];
   let last = 0;
-  for (let i = 0; i < chars.length; ++i) {
+  for (let i = 0; i < input.length; ++i) {
     if (input.codePointAt(i) !== 0x200c) {
-      normalized += chars[i];
+      normalized += input[i];
       lengths.push(inputLengths[i]);
       last = inputLengths[i + 1];
     }

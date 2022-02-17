@@ -26,4 +26,10 @@ describe('normalizeInput', () => {
     expect(normalizeInput('\u200c\u200c')).toEqual(['', []]);
     expect(normalizeInput('\u200c')).toEqual(['', []]);
   });
+
+  it('preserves non-BMP characters', () => {
+    // Because inputLengths deals with 16-bit code points we _should_ return a
+    // value for each part of the initial surrogate pair.
+    expect(normalizeInput('𠏹沢')).toEqual(['𠏹沢', [0, 1, 2, 3]]);
+  });
 });
