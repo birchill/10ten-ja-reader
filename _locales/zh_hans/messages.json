@@ -1144,7 +1144,7 @@
     "description": "Context menu item to enable the extension."
   },
   "menu_enable_puck": {
-    "message": "启用用于搜索的圆形按钮",
+    "message": "启用用于触摸屏的圆形按钮",
     "description": "Context menu item to enable the puck."
   },
   "misc_label_abbr": {
@@ -1597,7 +1597,7 @@
     }
   },
   "options_lookup_puck_heading": {
-    "message": "用于搜索的圆形按钮",
+    "message": "用于触摸屏的圆形按钮",
     "description": "Heading for the section containing options controlling the lookup puck used on touch devices"
   },
   "options_name_data_name": {
@@ -1702,7 +1702,7 @@
     "description": "Leading text for options for when to display the puck"
   },
   "options_show_puck_option_auto": {
-    "message": "自动的",
+    "message": "自动",
     "description": "Option to have 10ten automatically determine when to show the puck"
   },
   "options_show_puck_option_hide": {
