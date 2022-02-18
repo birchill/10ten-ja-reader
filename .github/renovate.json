@@ -10,8 +10,6 @@
     },
     {
       "matchDepTypes": ["devDependencies"],
-      "automerge": true,
-      "automergeType": "branch",
       "addLabels": ["dev"]
     }
   ]
