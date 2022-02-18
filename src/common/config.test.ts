@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 const mockBrowser: any = {};
 
 jest.mock('webextension-polyfill-ts', () => ({ browser: mockBrowser }));
@@ -103,9 +107,9 @@ class MockStorageArea {
 
     this._storage = { ...this._storage, ...obj };
 
-    setImmediate(() => {
+    setTimeout(() => {
       this._onChanged._onChange(changes, this._areaName);
-    });
+    }, 0);
 
     return Promise.resolve();
   }
@@ -204,9 +208,9 @@ describe('Config', () => {
 
     await new Promise<void>(function checkForChanges(resolve) {
       if (receivedChanges1.length + receivedChanges2.length < 4) {
-        setImmediate(() => {
+        setTimeout(() => {
           checkForChanges(resolve);
-        });
+        }, 0);
       } else {
         resolve();
       }
@@ -315,7 +319,7 @@ describe('Config', () => {
         let tries = 10;
         (function wait() {
           if (--tries) {
-            setImmediate(wait);
+            setInterval(wait, 0);
           } else {
             resolve();
           }
