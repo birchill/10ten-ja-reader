@@ -30,7 +30,7 @@
     },
     {
       "matches": ["https://docs.google.com/*"],
-      "js": ["docs-html-fallback.js"],
+      "js": ["docs-annotate-canvas.js"],
       "run_at": "document_start",
       "all_frames": true
     }
