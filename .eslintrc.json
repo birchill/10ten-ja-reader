@@ -62,6 +62,11 @@
           { "allow": ["private-constructors"] }
         ],
         "tsdoc/syntax": "error"
+      },
+      "settings": {
+        "import/resolver": {
+          "typescript": {}
+        }
       }
     },
     {

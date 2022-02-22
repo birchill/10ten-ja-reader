@@ -73,6 +73,9 @@ class RcxContent {
   private defaultDict = 2;
   private nextDict = 3;
 
+  private isGoogleDocPage =
+    document.querySelector('.kix-canvas-tile-content') !== null;
+
   // Adds the listeners and stuff.
   enableTab(config: Config) {
     if (window.rikaichan === undefined) {
@@ -709,6 +712,14 @@ class RcxContent {
     selEndList: { node: CharacterData; offset: number }[],
     maxLength: number
   ) {
+    // <rect> elements come from annotated google docs
+    if (rangeParent.nodeName === 'rect') {
+      return this.getTextFromGDoc(
+        rangeParent as SVGRectElement,
+        offset,
+        maxLength
+      );
+    }
     if (
       rangeParent.nodeName === 'TEXTAREA' ||
       rangeParent.nodeName === 'INPUT'
@@ -770,6 +781,52 @@ class RcxContent {
   lastSelEnd: { node: CharacterData; offset: number }[] = [];
   // Hack because ro was coming out always 0 for some reason.
   lastRo = 0;
+
+  private getTextFromGDoc(
+    initialRect: SVGRectElement,
+    offset: number,
+    maxLength: number
+  ): string {
+    // Get text from initial rect.
+    const endIndex = Math.min(initialRect.ariaLabel.length, offset + maxLength);
+    let text = initialRect.ariaLabel.substring(offset, endIndex);
+
+    // Append text from sibling and cousin rects.
+    const rectWalker = this.createGDocTreeWalker(initialRect);
+    let rectNode: Node | null;
+    rectWalker.currentNode = initialRect;
+    while (
+      (rectNode = rectWalker.nextNode()) !== null &&
+      text.length < maxLength
+    ) {
+      const rect = rectNode as SVGRectElement;
+      const rectEndIndex = Math.min(
+        rect.ariaLabel.length,
+        maxLength - text.length
+      );
+      text += rect.ariaLabel.substring(0, rectEndIndex);
+    }
+    return text;
+  }
+
+  private createGDocTreeWalker(rect: SVGRectElement): TreeWalker {
+    return document.createTreeWalker(
+      rect.parentNode!.parentNode!, // rect is in g is in svg always
+      NodeFilter.SHOW_ELEMENT,
+      {
+        acceptNode: function (node) {
+          if (node.nodeName === 'rect') {
+            return NodeFilter.FILTER_ACCEPT;
+          }
+          if (node.nodeName === 'g') {
+            // Don't include g elements but consider their children.
+            return NodeFilter.FILTER_SKIP;
+          }
+          return NodeFilter.FILTER_REJECT;
+        },
+      }
+    );
+  }
 
   show(tdata: Rikaichan, dictOption: number) {
     const rp = tdata.prevRangeNode;
@@ -848,8 +905,10 @@ class RcxContent {
 
     const rp = tdata.prevRangeNode;
     // don't try to highlight form elements
+    // don't try to highlight google docs
     if (
       rp &&
+      !this.isGoogleDoc(rp) &&
       ((tdata.config.highlight &&
         !this.mDown &&
         !('form' in tdata.prevTarget!)) ||
@@ -1010,10 +1069,16 @@ class RcxContent {
     //
   }
 
-  makeFake(real: HTMLTextAreaElement | HTMLInputElement) {
+  makeFake(real: HTMLTextAreaElement | HTMLInputElement | SVGRectElement) {
     const fake = document.createElement('div');
     const realRect = real.getBoundingClientRect();
-    fake.innerText = real.value;
+    let textValue = '';
+    if (real instanceof SVGRectElement) {
+      textValue = real.ariaLabel;
+    } else {
+      textValue = real.value;
+    }
+    fake.innerText = textValue;
     fake.style.cssText = document.defaultView!.getComputedStyle(
       real,
       ''
@@ -1069,6 +1134,7 @@ class RcxContent {
     }
 
     let fake;
+    let gdocRect: SVGRectElement | undefined;
     const tdata = window.rikaichan!; // per-tab data
     let range;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1081,6 +1147,14 @@ class RcxContent {
       HTMLSelectElement;
     // Put this in a try catch so that an exception here doesn't prevent editing due to div.
     try {
+      if (this.isGoogleDoc(eventTarget)) {
+        gdocRect = this.getRectUnderMouse(ev);
+        if (gdocRect) {
+          fake = this.makeFake(gdocRect);
+          fake.style.font = gdocRect.getAttribute('data-font-css')!;
+        }
+      }
+
       if (
         eventTarget.nodeName === 'TEXTAREA' ||
         eventTarget.nodeName === 'INPUT'
@@ -1088,9 +1162,9 @@ class RcxContent {
         fake = this.makeFake(
           eventTarget as HTMLTextAreaElement | HTMLInputElement
         );
+      }
+      if (fake) {
         document.body.appendChild(fake);
-        fake.scrollTop = eventTarget.scrollTop;
-        fake.scrollLeft = eventTarget.scrollLeft;
       }
       // Calculate range and friends here after we've made our fake textarea/input divs.
       range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
@@ -1171,9 +1245,17 @@ class RcxContent {
       // For text nodes do special stuff
       // we make rp the text area and keep the offset the same
       // we give the text area data so it can act normal
-      if (fake) {
+      // Google Docs case also uses a fake so exclude it here
+      if (fake && !gdocRect) {
         rp = eventTarget;
         rp.data = rp.value;
+      }
+
+      // Same as text case above except we use the found gdocRect instead of
+      // eventTarget
+      if (gdocRect) {
+        rp = gdocRect;
+        rp.data = rp.ariaLabel;
       }
 
       if (eventTarget === tdata.prevTarget && this.isVisible()) {
@@ -1279,6 +1361,38 @@ class RcxContent {
         this.hidePopup();
       }
     }
+  }
+
+  private getRectUnderMouse(ev: MouseEvent): SVGRectElement | undefined {
+    const gElements = document.querySelectorAll('g');
+    for (const gElement of gElements) {
+      if (this.mouseEventWasInElement(ev, gElement)) {
+        const rects = gElement.querySelectorAll('rect');
+        for (const rectChild of rects) {
+          if (this.mouseEventWasInElement(ev, rectChild)) {
+            return rectChild;
+          }
+        }
+      }
+    }
+    return undefined;
+  }
+
+  private mouseEventWasInElement(ev: MouseEvent, element: Element) {
+    const rect = element.getBoundingClientRect();
+    return (
+      ev.clientX >= rect.left &&
+      ev.clientX <= rect.right &&
+      ev.clientY >= rect.top &&
+      ev.clientY <= rect.bottom
+    );
+  }
+
+  private isGoogleDoc(eventTarget: Element | CharacterData): boolean {
+    return (
+      this.isGoogleDocPage &&
+      (eventTarget.nodeName === 'svg' || eventTarget.nodeName === 'rect')
+    );
   }
 }
 

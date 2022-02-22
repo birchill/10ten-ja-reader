@@ -39,19 +39,6 @@ chrome.runtime.onMessage.addListener(async (request, sender, response) => {
       }
       rcxMain.onTabSelect(sender.tab.id);
       break;
-    case 'forceDocsHtml?':
-      console.log('forceDocsHtml?');
-      if (rcxMain.enabled === 1) {
-        response(true);
-        chrome.tabs.sendMessage(sender.tab!.id!, {
-          type: 'showPopup',
-          text: `
-            rikaikun is forcing Google Docs to render using HTML instead of canvas.<br>
-            rikaikun can't work with canvas mode but if you need that mode, please disable rikaikun.
-          `,
-        });
-      }
-      break;
     case 'xsearch':
       console.log('xsearch');
       response(rcxMain.search(request.text, request.dictOption));

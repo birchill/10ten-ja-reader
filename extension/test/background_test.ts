@@ -1,3 +1,4 @@
+import { Config } from '../configuration';
 import { RcxMain } from '../rikaichan';
 import { expect, use } from '@esm-bundle/chai';
 import chrome from 'sinon-chrome';
@@ -23,62 +24,54 @@ describe('background.ts', function () {
     chrome.tabs.sendMessage.reset();
   });
 
-  describe('when sent "forceDocsHtml?" message', function () {
-    it('should not call response callback when rikaikun disabled', async function () {
-      rcxMain.enabled = 0;
-      const responseCallback = sinon.spy();
-
-      await sendMessageToBackground({
-        type: 'forceDocsHtml?',
-        responseCallback: responseCallback,
-      });
-
-      expect(responseCallback).to.have.not.been.called;
-    });
-
-    it('should not send "showPopup" message when rikaikun disabled', async function () {
-      rcxMain.enabled = 0;
-
-      await sendMessageToBackground({
-        type: 'forceDocsHtml?',
-      });
-
-      expect(chrome.tabs.sendMessage).to.have.not.been.called;
-    });
-
-    it('should pass true to response callback when rikaikun enabled', async function () {
-      rcxMain.enabled = 1;
-      const responseCallback = sinon.spy();
-
-      await sendMessageToBackground({
-        type: 'forceDocsHtml?',
-        responseCallback: responseCallback,
-      });
-
-      expect(responseCallback).to.have.been.calledOnceWith(true);
-    });
-
-    it('should send "showPopup" message when rikaikun enabled', async function () {
+  describe('when sent enable? message', function () {
+    it('should send "enable" message to tab', async function () {
       rcxMain.enabled = 1;
 
-      await sendMessageToBackground({
-        type: 'forceDocsHtml?',
-      });
+      await sendMessageToBackground({ type: 'enable?' });
 
       expect(chrome.tabs.sendMessage).to.have.been.calledWithMatch(
         /* tabId= */ sinon.match.any,
-        { type: 'showPopup' }
+        {
+          type: 'enable',
+        }
+      );
+    });
+
+    it('should respond to the same tab it received a message from', async function () {
+      rcxMain.enabled = 1;
+      const tabId = 10;
+
+      await sendMessageToBackground({ tabId: tabId, type: 'enable?' });
+
+      expect(chrome.tabs.sendMessage).to.have.been.calledWithMatch(
+        tabId,
+        /* message= */ sinon.match.any
+      );
+    });
+
+    it('should send config in message to tab', async function () {
+      rcxMain.enabled = 1;
+      rcxMain.config = { copySeparator: 'testValue' } as Config;
+
+      await sendMessageToBackground({ type: 'enable?' });
+
+      expect(chrome.tabs.sendMessage).to.have.been.calledWithMatch(
+        /* tabId= */ sinon.match.any,
+        { config: rcxMain.config }
       );
     });
   });
 });
 
 async function sendMessageToBackground({
+  tabId = 0,
   type,
   responseCallback = () => {
     // Do nothing by default.
   },
 }: {
+  tabId?: number;
   type: string;
   responseCallback?: (response: unknown) => void;
 }): Promise<void> {
@@ -86,7 +79,7 @@ async function sendMessageToBackground({
   // eslint-disable-next-line @typescript-eslint/await-thenable
   await chrome.runtime.onMessage.addListener.yield(
     { type: type },
-    { tab: { id: 0 } },
+    { tab: { id: tabId } },
     responseCallback
   );
   return;

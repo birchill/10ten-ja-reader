@@ -13,9 +13,14 @@ const config = {
       'snowpack-plugin-replace',
       {
         list: [
-          //Remove test only export from rikaicontent
+          // Remove test only exports
           {
             from: /export.*TestOnly.*\n/,
+            to: '',
+          },
+          // Remove empty exports
+          {
+            from: /export {};\n/,
             to: '',
           },
         ],

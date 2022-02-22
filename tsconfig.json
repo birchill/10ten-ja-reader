@@ -18,7 +18,7 @@
     "experimentalDecorators": true,
     "rootDir": ".",
     "outDir": "dist",
-    "lib": ["ES2018", "DOM"],
+    "lib": ["ES2018", "DOM", "DOM.Iterable"],
     "esModuleInterop": true,
     "declaration": false,
     // ES2020 corresponds to Chrome 80+

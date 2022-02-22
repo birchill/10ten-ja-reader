@@ -112,7 +112,7 @@ class SpecReporter {
 /** @type {import('@web/test-runner').TestRunnerConfig} */
 export default {
   coverageConfig: {
-    exclude: ['**/snowpack/**/*', '**/*.test.ts*'],
+    exclude: ['**/snowpack/**/*', '**/*_test.ts*'],
   },
   browsers: [
     puppeteerLauncher({

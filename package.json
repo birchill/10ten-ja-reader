@@ -25,7 +25,7 @@
     "prettier:format": "npm run prettier:base --silent -- --write",
     "stylelint:check": "stylelint '**/*.css' '**/*.ts' --ignore-path '.gitignore'",
     "stylelint:fix": "npm run stylelint:check --silent -- --fix",
-    "test": "wtr \"extension/test/*test*\"",
+    "test": "wtr \"extension/test/*_test.ts\"",
     "test:watch": "npm run test -- --watch",
     "update-db": "node --loader ts-node/esm utils/update-db.ts"
   },
