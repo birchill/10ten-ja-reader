@@ -7,6 +7,13 @@ consistently version releases as follows:
 - Minor: New user visible feature added. (contains feat commits)
 - Patch: Bug fix to previous feature. (contains only fix commits)
 
+### [2.1.31](https://github.com/melink14/rikaikun/compare/v2.1.30...v2.1.31) (2022-02-22)
+
+### Bug Fixes
+
+- **dict:** Update dictionaries to latest versions ([#864](https://github.com/melink14/rikaikun/issues/864)) ([77873c5](https://github.com/melink14/rikaikun/commit/77873c5cba85c4d70977c04a41b27e7c5381db58))
+- Support Google Docs annotated canvas mode ([#865](https://github.com/melink14/rikaikun/issues/865)) ([bb9b254](https://github.com/melink14/rikaikun/commit/bb9b2543e13a14e9ba52b0fcef91904fc1080442)), closes [#852](https://github.com/melink14/rikaikun/issues/852)
+
 ### [2.1.30](https://github.com/melink14/rikaikun/compare/v2.1.29...v2.1.30) (2022-02-14)
 
 ### Bug Fixes
