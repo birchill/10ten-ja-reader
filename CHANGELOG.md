@@ -7,6 +7,12 @@ consistently version releases as follows:
 - Minor: New user visible feature added. (contains feat commits)
 - Patch: Bug fix to previous feature. (contains only fix commits)
 
+## [2.2.0](https://github.com/melink14/rikaikun/compare/v2.1.31...v2.2.0) (2022-02-23)
+
+### Features
+
+- Enables Google docs annotate canvas in manifest ([#868](https://github.com/melink14/rikaikun/issues/868)) ([c50d60e](https://github.com/melink14/rikaikun/commit/c50d60e2b48a9c259ef810b1714999b21dec549e)), closes [#865](https://github.com/melink14/rikaikun/issues/865)
+
 ### [2.1.31](https://github.com/melink14/rikaikun/compare/v2.1.30...v2.1.31) (2022-02-22)
 
 ### Bug Fixes
