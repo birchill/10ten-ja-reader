@@ -67,7 +67,7 @@
     "@types/sinon-chai": "^3.2.8",
     "@types/sinon-chrome": "^2.2.11",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
-    "@typescript-eslint/parser": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.1",
     "@web/test-runner": "^0.13.27",
     "@web/test-runner-puppeteer": "^0.10.5",
     "byline": "^5.0.0",
