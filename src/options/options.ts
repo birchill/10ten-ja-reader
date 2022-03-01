@@ -46,34 +46,6 @@ import { getThemeClass } from '../utils/themes';
 import { Command, CommandParams, isValidKey } from './commands';
 import { translateDoc } from './l10n';
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace Intl {
-    type RelativeTimeFormatLocaleMatcher = 'lookup' | 'best fit';
-
-    type RelativeTimeFormatStyle = 'long' | 'short' | 'narrow';
-
-    interface DisplayNamesOptions {
-      localeMatcher: RelativeTimeFormatLocaleMatcher;
-      style: RelativeTimeFormatStyle;
-      type: 'language' | 'region' | 'script' | 'currency';
-      fallback: 'code' | 'none';
-    }
-
-    interface DisplayNames {
-      of(code: string): string;
-    }
-
-    const DisplayNames: {
-      prototype: DisplayNames;
-      new (
-        locales?: string | string[],
-        options?: Partial<DisplayNamesOptions>
-      ): DisplayNames;
-    };
-  }
-}
-
 startBugsnag();
 
 const config = new Config();
