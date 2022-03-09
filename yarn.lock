@@ -561,10 +561,10 @@
   resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.2.2.tgz#38234fbfe9b9f622a815f7ae6ea6cba31f363e41"
   integrity sha512-WSpN/ERemjXOCorzHkc3VXp356s24a2mtVST1s06UVV1jsluVCMEo/f3FJyqaAeu60yPF+ow05TIThlPR4DhBQ==
 
-"@bugsnag/browser@^7.16.1":
-  version "7.16.1"
-  resolved "https://registry.yarnpkg.com/@bugsnag/browser/-/browser-7.16.1.tgz#652aa3ed64e51ba0015878d252a08917429bba03"
-  integrity sha512-Tq9fWpwmqdOsbedYL67GzsTKrG5MERIKtnKCi5FyvFjTj143b6as0pwj7LWQ+Eh8grWlR7S11+VvJmb8xnY8Tg==
+"@bugsnag/browser@^7.16.2":
+  version "7.16.2"
+  resolved "https://registry.yarnpkg.com/@bugsnag/browser/-/browser-7.16.2.tgz#b6fc7ebaeae4800d195b660abc770caf33670e03"
+  integrity sha512-iBbAmjTDe0I6WPTHi3wIcmKu3ykydtT6fc8atJA65rzgDLMlTM1Wnwz4Ny1cn0bVouLGa48BRiOJ27Rwy7QRYA==
   dependencies:
     "@bugsnag/core" "^7.16.1"
 
@@ -584,18 +584,18 @@
   resolved "https://registry.yarnpkg.com/@bugsnag/cuid/-/cuid-3.0.0.tgz#2ee7642a30aee6dc86f5e7f824653741e42e5c35"
   integrity sha512-LOt8aaBI+KvOQGneBtpuCz3YqzyEAehd1f3nC5yr9TIYW1+IzYKa2xWS4EiMz5pPOnRPHkyyS5t/wmSmN51Gjg==
 
-"@bugsnag/js@7.16.1":
-  version "7.16.1"
-  resolved "https://registry.yarnpkg.com/@bugsnag/js/-/js-7.16.1.tgz#4a4ec2c7f3e047333e7d15eb53cb11f165b7067f"
-  integrity sha512-yb83OmsbIMDJhX3hHhbHl5StN72feqdr/Ctq7gqsdcfOHNb2121Edf2EbegPJKZhFqSik66vWwiVbGJ6CdS/UQ==
+"@bugsnag/js@7.16.2":
+  version "7.16.2"
+  resolved "https://registry.yarnpkg.com/@bugsnag/js/-/js-7.16.2.tgz#fb15ec9cc5980f0b210aecc7b740274e50400a91"
+  integrity sha512-AzV0PtG3SZt+HnA2JmRJeI60aDNZsIJbEEAZIWZeATvWBt5RdVdsWKllM1SkTvURfxfdAVd4Xry3BgVrh8nEbg==
   dependencies:
-    "@bugsnag/browser" "^7.16.1"
-    "@bugsnag/node" "^7.16.1"
+    "@bugsnag/browser" "^7.16.2"
+    "@bugsnag/node" "^7.16.2"
 
-"@bugsnag/node@^7.16.1":
-  version "7.16.1"
-  resolved "https://registry.yarnpkg.com/@bugsnag/node/-/node-7.16.1.tgz#473bb6eeb346b418295b49e4c4576e0004af4901"
-  integrity sha512-9zBA1IfDTbLKMoDltdhELpTd1e+b5+vUW4j40zGA+4SYIe64XNZKShfqRdvij7embvC1iHQ9UpuPRSk60P6Dng==
+"@bugsnag/node@^7.16.2":
+  version "7.16.2"
+  resolved "https://registry.yarnpkg.com/@bugsnag/node/-/node-7.16.2.tgz#8ac1b41786306d8917fb9fe222ada74fe0c4c6d5"
+  integrity sha512-V5pND701cIYGzjjTwt0tuvAU1YyPB9h7vo5F/DzrDHRPmCINA/oVbc0Twco87knc2VPe8ntGFqTicTY65iOWzg==
   dependencies:
     "@bugsnag/core" "^7.16.1"
     byline "^5.0.0"
