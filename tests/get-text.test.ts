@@ -135,6 +135,44 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(result, 'い', [firstTextNode, 1, 2]);
   });
 
+  it('should find text in a block sibling if we only have one character', () => {
+    // The following markup is based on what pdf.js generates for vertical
+    // text, in at least some cases.
+    //
+    // In particular, the `position: absolute` part is important because it
+    // causes the spans to compute to `display: block`.
+    testDiv.innerHTML = `
+      <div class="textLayer" style="width: 10px; height: 120px">
+        <span style="position: absolute; left: 1.764px; top: 26.745px; font-size: 16.5338px; font-family: monospace;" role="presentation" dir="ltr">一</span>
+        <br role="presentation">
+        <span style="position: absolute; left: 1.764px; top: 45.455px; font-size: 16.5338px; font-family: monospace;" role="presentation" dir="ltr">生</span>
+        <br role="presentation">
+        <span style="position: absolute; left: 1.764px; top: 64.165px; font-size: 16.5338px; font-family: monospace;" role="presentation" dir="ltr">懸</span>
+        <br role="presentation">
+        <span style="position: absolute; left: 1.764px; top: 82.876px; font-size: 16.5338px; font-family: monospace;" role="presentation" dir="ltr">命</span>
+        <br role="presentation">
+        <span style="position: absolute; left: 1.764px; top: 101.585px; font-size: 16.5338px; font-family: monospace;" role="presentation" dir="ltr">、</span>
+        <br role="presentation">
+      </div>
+      `;
+    const firstTextNode = testDiv.firstElementChild?.firstElementChild
+      ?.firstChild as Text;
+    const bbox = getBboxForOffset(firstTextNode, 0);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assert.strictEqual(
+      result?.text.replace(/\s/g, ''),
+      '一生懸命',
+      'Result text should match'
+    );
+  });
+
   it('should find text in a cousin for an inline node', () => {
     testDiv.innerHTML =
       '<span><span>あい</span></span>う<span>え<span>お</span></span>';

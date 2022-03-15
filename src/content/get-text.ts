@@ -534,15 +534,70 @@ function getTextFromTextNode({
     //
     // Furthermore, we treat inline-block as inline because YouTube puts
     // okurigana in a separate inline-block span when using ruby.
-    (['RB', 'RUBY'].includes(element.tagName) ||
+    //
+    // Finally, we make an exception for span too because pdf.js uses
+    // absolutely-positioned (and hence `display: block`) spans to lay out
+    // characters in vertical text.
+    //
+    // Given all these exceptions, I wonder if we should even both checking
+    // the display property.
+    (['RB', 'RUBY', 'SPAN'].includes(element.tagName) ||
       ['inline', 'inline-block', 'ruby', 'ruby-base', 'ruby-text'].includes(
         getComputedStyle(element).display!
       ));
 
+  // Set up a check that each ancestor is visible.
+  //
+  // We need to do this because for asahi.com's "covering links" we have the
+  // following structure:
+  //
+  // <div>
+  //   <a href="/articles/" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1">
+  //     <span aria-hidden="true" style="display: block; width: 1px; height: 1px; overflow: hidden">
+  //       あいうえお
+  //     </span>
+  //   </a>
+  // </div>
+  // <div>
+  //   <div style="position: relative; width: 100%">
+  //     <h2 style="z-index: auto">
+  //       <a href="/articles/" id="innerLink">
+  //         あいうえお
+  //       </a>
+  //     </h2>
+  //   </div>
+  // </div>
+  //
+  // We will initially pick up the あういえお text from the <a> element, but
+  // we want to ignore that since it is aria-hidden. Previously we got that
+  // behavior for free because we would treat the <span> as the inline ancestor
+  // and would throw out the result when we determined that `point` lies
+  // outside the bounds of the span (which has a width/height of 1px x 1px).
+  //
+  // Now that we treat <span>s as always being inline, however, we'll treat the
+  // <a> element as the inline ancestor and fail to throw out the result based
+  // on the bounds check below unless we also check for aria-hidden !== "true".
+  //
+  // Furthermore, nikkei.com has a similar structure but without using
+  // aria-hidden. Instead it marks the covering link as opacity: 0 so we should
+  // be sure to check for that too.
+  const isVisible = (element: Element) =>
+    element.getAttribute('aria-hidden')?.toLowerCase() !== 'true' &&
+    getComputedStyle(element).opacity !== '0';
+
   // Get the ancestor node for all inline nodes
   let inlineAncestor = startNode.parentElement;
+
+  // Check the direct parent, if available, is visible.
+  if (inlineAncestor && !isVisible(inlineAncestor)) {
+    return null;
+  }
+
   while (isInline(inlineAncestor) && !isRubyAnnotationElement(inlineAncestor)) {
     inlineAncestor = inlineAncestor!.parentElement;
+    if (inlineAncestor && !isVisible(inlineAncestor)) {
+      return null;
+    }
   }
 
   // Check that our ancestor does actually cover the point in question since

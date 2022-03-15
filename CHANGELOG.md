@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+- Fixed looking up vertical text using [pdf.js](https://mozilla.github.io/pdf.js/)
+  ([#938](https://github.com/birchill/10ten-ja-reader/issues/938)).
 - Fixed a regression in highlighting of non-BMP characters e.g. 𠏹沢.
 
 ## [1.7.1] - 2022-02-10
