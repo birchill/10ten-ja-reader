@@ -546,10 +546,23 @@ function getTextFromTextNode({
         getComputedStyle(element).display!
       ));
 
-  // Set up a check that each ancestor is visible.
+  // Set up a check that each ancestor is visible and actually contains the
+  // point we're looking up.
   //
-  // We need to do this because for asahi.com's "covering links" we have the
-  // following structure:
+  // We need to do this for a few reasons:
+  //
+  // Firstly, sometimes caretPositionFromPoint can be too helpful and can choose
+  // an element far away.
+  //
+  // (For this we used to simply check that `inlineAncestor` is an inclusive
+  // ancestor of the result of document.elementFromPoint but using the bounding
+  // box seems like it should be a bit more robust, especially if
+  // caretPositionFromPoint is more clever than elementFromPoint in locating
+  // covered-up text.)
+  //
+  //
+  // Secondly, sites like asahi.com use "covering links" with the following
+  // structure:
   //
   // <div>
   //   <a href="/articles/" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1">
@@ -569,26 +582,35 @@ function getTextFromTextNode({
   // </div>
   //
   // We will initially pick up the あういえお text from the <a> element, but
-  // we want to ignore that since it is aria-hidden. Previously we got that
-  // behavior for free because we would treat the <span> as the inline ancestor
-  // and would throw out the result when we determined that `point` lies
-  // outside the bounds of the span (which has a width/height of 1px x 1px).
+  // we want to ignore that it since it is "hidden" by giving it a width/height
+  // of 1px.
   //
-  // Now that we treat <span>s as always being inline, however, we'll treat the
-  // <a> element as the inline ancestor and fail to throw out the result based
-  // on the bounds check below unless we also check for aria-hidden !== "true".
+  // Note that we can't just check for aria-hidden !== "true" because asahi.com
+  // also has links marked as aria-hidden="true" that are definitely NOT hidden.
   //
-  // Furthermore, nikkei.com has a similar structure but without using
-  // aria-hidden. Instead it marks the covering link as opacity: 0 so we should
-  // be sure to check for that too.
+  // nikkei.com has a somewhat similar structure but without using or setting
+  // width/height to 1px. Instead it uses an opacity of 0 to hide the covering
+  // link so we need to check for that too.
   const isVisible = (element: Element) =>
-    element.getAttribute('aria-hidden')?.toLowerCase() !== 'true' &&
-    getComputedStyle(element).opacity !== '0';
+    getComputedStyle(element).opacity !== '0' &&
+    bboxIncludesPoint({
+      bbox: element.getBoundingClientRect(),
+      margin: 5,
+      point,
+    });
 
   // Get the ancestor node for all inline nodes
   let inlineAncestor = startNode.parentElement;
 
   // Check the direct parent, if available, is visible.
+  //
+  // If it is not, return null. This is particularly important for the "covering
+  // link" case described above since it will give us a chance to search for the
+  // real link text.
+  //
+  // (Note that here, and below if there is no inline ancestor we do NOT want to
+  // return null because we commonly encounter that case when using synthesized
+  // text nodes.)
   if (inlineAncestor && !isVisible(inlineAncestor)) {
     return null;
   }
@@ -598,22 +620,6 @@ function getTextFromTextNode({
     if (inlineAncestor && !isVisible(inlineAncestor)) {
       return null;
     }
-  }
-
-  // Check that our ancestor does actually cover the point in question since
-  // sometimes caretPositionFromPoint can be too helpful and can choose an
-  // element far away.
-  //
-  // (We used to simply check that `inlineAncestor` is an inclusive ancestor
-  // of the result of document.elementFromPoint but the following seems like it
-  // should be a bit more robust, especially if caretPositionFromPoint is more
-  // clever than elementFromPoint in locating covered-up text.)
-  const ancestorBbox = inlineAncestor?.getBoundingClientRect();
-  if (
-    ancestorBbox &&
-    !bboxIncludesPoint({ bbox: ancestorBbox, margin: 5, point })
-  ) {
-    return null;
   }
 
   // Skip ruby annotation elements when traversing. However, don't do that
