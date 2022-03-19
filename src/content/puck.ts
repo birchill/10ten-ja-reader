@@ -568,7 +568,13 @@ export class LookupPuck {
     this.puck.classList.add('dragging');
     this.puck.setPointerCapture(event.pointerId);
 
-    window.addEventListener('pointermove', this.onWindowPointerMove);
+    // We need to register in the capture phase because Bibi reader (which
+    // apparently is based on Epub.js) registers a pointermove handler on the
+    // window in the capture phase and calls `stopPropagation()` on the events
+    // so if we don't register in the capture phase, we'll never see the events.
+    window.addEventListener('pointermove', this.onWindowPointerMove, {
+      capture: true,
+    });
     window.addEventListener('pointerup', this.stopDraggingPuck);
     window.addEventListener('pointercancel', this.stopDraggingPuck);
   };
@@ -611,7 +617,11 @@ export class LookupPuck {
 
     event.preventDefault();
 
-    window.addEventListener('pointermove', this.onWindowPointerMove);
+    // See note in onPointerDown for why we need to register in the capture
+    // phase.
+    window.addEventListener('pointermove', this.onWindowPointerMove, {
+      capture: true,
+    });
     window.addEventListener('pointerup', this.stopDraggingPuck);
     window.addEventListener('pointercancel', this.stopDraggingPuck);
   };
@@ -664,7 +674,9 @@ export class LookupPuck {
       this.setPositionWithinSafeArea(this.puckX, this.puckY);
     }
 
-    window.removeEventListener('pointermove', this.onWindowPointerMove);
+    window.removeEventListener('pointermove', this.onWindowPointerMove, {
+      capture: true,
+    });
     window.removeEventListener('pointerup', this.stopDraggingPuck);
     window.removeEventListener('pointercancel', this.stopDraggingPuck);
 
