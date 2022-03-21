@@ -92,7 +92,7 @@
           (key) => key === 'words' || key === 'kanji' || key === 'names'
         ) || 'words';
 
-      contentHandler._renderPopup(test.queryResult, {
+      const popup = contentHandler._renderPopup(test.queryResult, {
         ...config,
         container: createPopupContainer(),
         dictLang:
@@ -101,6 +101,7 @@
         popupStyle: 'blue',
         showDefinitions: !test.extraConfig || !test.extraConfig.readingOnly,
       });
+      popup.classList.add('-inline');
     }
 
     const themes = ['light', 'blue', 'lightblue', 'black', 'yellow'];
@@ -147,6 +148,7 @@
         popupStyle: theme,
         showDefinitions: true,
       });
+      popup.classList.add('-inline');
     }
 
     // Year tests
@@ -227,12 +229,13 @@
         label.append(`Theme: ${theme}`);
         container.append(label);
 
-        contentHandler._renderPopup(yearQueryResult, {
+        const popup = contentHandler._renderPopup(yearQueryResult, {
           ...test.config,
           container: createPopupContainer(),
           dictToShow: 'words',
           popupStyle: theme,
         });
+        popup.classList.add('-inline');
       }
     }
 
@@ -268,12 +271,13 @@
 
     for (const test of measureTests) {
       addLabel(test.description);
-      contentHandler._renderPopup(null, {
+      const popup = contentHandler._renderPopup(null, {
         ...test.config,
         container: createPopupContainer(),
         dictToShow: 'words',
         popupStyle: 'light',
       });
+      popup.classList.add('-inline');
     }
 
     // Currency tests
@@ -369,8 +373,9 @@
         },
         onShowSettings: () => {},
       });
+      popup.classList.add('-inline');
       if (test.description.indexOf('touch') !== -1) {
-        popup.querySelector('.window').classList.add('touch');
+        popup.querySelector('.container').classList.add('touch');
       }
     }
 
@@ -505,8 +510,9 @@
         },
         onShowSettings: () => {},
       });
+      popup.classList.add('-inline');
       if (test.description.indexOf('touch') !== -1) {
-        popup.querySelector('.window').classList.add('touch');
+        popup.querySelector('.container').classList.add('touch');
       }
     }
 
@@ -527,17 +533,18 @@
             piece: 'pro_b',
           },
         },
-      }
+      },
     ];
 
     for (const test of shogiTests) {
       addLabel(test.description);
-      contentHandler._renderPopup(null, {
+      const popup = contentHandler._renderPopup(null, {
         ...test.config,
         container: createPopupContainer(),
         dictToShow: 'words',
         popupStyle: 'light',
       });
+      popup.classList.add('-inline');
     }
 
     // Touch screen tests
@@ -674,7 +681,8 @@
         onClosePopup: () => {},
         onShowSettings: () => {},
       });
-      popup.querySelector('.window').classList.add('touch');
+      popup.classList.add('-inline');
+      popup.querySelector('.container').classList.add('touch');
     }
 
     // Database status tests
@@ -693,7 +701,8 @@
         onClosePopup: () => {},
         onShowSettings: () => {},
       });
-      popup.querySelector('.window').classList.add('touch');
+      popup.classList.add('-inline');
+      popup.querySelector('.container').classList.add('touch');
     }
 
     // Close button only test
@@ -712,7 +721,8 @@
           onShowSettings: () => {},
         }
       );
-      popup.querySelector('.window').classList.add('touch');
+      popup.classList.add('-inline');
+      popup.querySelector('.container').classList.add('touch');
     }
 
     addLabel('Close button with status bar');
@@ -730,38 +740,45 @@
           onShowSettings: () => {},
         }
       );
-      popup.querySelector('.window').classList.add('touch');
+      popup.classList.add('-inline');
+      popup.querySelector('.container').classList.add('touch');
     }
 
     // Switch dictionary hint
 
     addHeading('Switch dictionary hint');
-    contentHandler._renderPopup(kankokuWordsResult, {
-      ...config,
-      hasSwitchedDictionary: false,
-      container: createPopupContainer(),
-      dictToShow: 'words',
-      popupStyle: 'default',
-      showDefinitions: true,
-      switchDictionaryKeys: ['Shift', 'Enter'],
-      onClosePopup: () => {},
-      onShowSettings: () => {},
-    });
+    {
+      const popup = contentHandler._renderPopup(kankokuWordsResult, {
+        ...config,
+        hasSwitchedDictionary: false,
+        container: createPopupContainer(),
+        dictToShow: 'words',
+        popupStyle: 'default',
+        showDefinitions: true,
+        switchDictionaryKeys: ['Shift', 'Enter'],
+        onClosePopup: () => {},
+        onShowSettings: () => {},
+      });
+      popup.classList.add('-inline');
+    }
 
     // Tabs on the side
 
     addHeading('Tabs on the side');
-    contentHandler._renderPopup(kankokuWordsResult, {
-      ...config,
-      container: createPopupContainer(),
-      dictToShow: 'words',
-      popupStyle: 'default',
-      showDefinitions: true,
-      switchDictionaryKeys: ['Shift', 'Enter'],
-      tabDisplay: 'right',
-      onClosePopup: () => {},
-      onShowSettings: () => {},
-    });
+    {
+      const popup = contentHandler._renderPopup(kankokuWordsResult, {
+        ...config,
+        container: createPopupContainer(),
+        dictToShow: 'words',
+        popupStyle: 'default',
+        showDefinitions: true,
+        switchDictionaryKeys: ['Shift', 'Enter'],
+        tabDisplay: 'right',
+        onClosePopup: () => {},
+        onShowSettings: () => {},
+      });
+      popup.classList.add('-inline');
+    }
 
     // Tabs on the side in touch mode
 
@@ -778,7 +795,8 @@
         onClosePopup: () => {},
         onShowSettings: () => {},
       });
-      popup.querySelector('.window').classList.add('touch');
+      popup.classList.add('-inline');
+      popup.querySelector('.container').classList.add('touch');
     }
 
     // Tabs on the side in touch mode with switch dictionary hint
@@ -797,7 +815,8 @@
         onClosePopup: () => {},
         onShowSettings: () => {},
       });
-      popup.querySelector('.window').classList.add('touch');
+      popup.classList.add('-inline');
+      popup.querySelector('.container').classList.add('touch');
     }
 
     // Constrained height tests
@@ -818,11 +837,8 @@
           onShowSettings: () => {},
         });
 
-        popup.style.maxHeight = '200px';
-        popup.style.webkitMaskImage =
-          'linear-gradient(to bottom, black 99%, transparent)';
-        popup.style.maskImage =
-          'linear-gradient(to bottom, black 99%, transparent)';
+        popup.classList.add('-inline');
+        popup.style.setProperty('--max-height', '200px');
       }
 
       {
@@ -842,11 +858,8 @@
           }
         );
 
-        popup.style.maxHeight = '200px';
-        popup.style.webkitMaskImage =
-          'linear-gradient(to bottom, black 99%, transparent)';
-        popup.style.maskImage =
-          'linear-gradient(to bottom, black 99%, transparent)';
+        popup.classList.add('-inline');
+        popup.style.setProperty('--max-height', '200px');
       }
 
       {
@@ -863,10 +876,9 @@
           onShowSettings: () => {},
         });
 
-        popup
-          .querySelector('.window')
-          .style.setProperty('--max-height', '200px');
-        popup.querySelector('.window').classList.add('touch');
+        popup.classList.add('-inline');
+        popup.style.setProperty('--max-height', '200px');
+        popup.querySelector('.container').classList.add('touch');
       }
 
       {
@@ -889,10 +901,9 @@
           }
         );
 
-        popup
-          .querySelector('.window')
-          .style.setProperty('--max-height', '200px');
-        popup.querySelector('.window').classList.add('touch');
+        popup.classList.add('-inline');
+        popup.style.setProperty('--max-height', '200px');
+        popup.querySelector('.container').classList.add('touch');
       }
     }
 
@@ -1070,11 +1081,12 @@
       addHeading(test.description, 3);
       for (const theme of themes) {
         addLabel(`Theme: ${theme}`);
-        contentHandler._renderPopup(test.queryResult, {
+        const popup = contentHandler._renderPopup(test.queryResult, {
           ...testConfig,
           container: createPopupContainer(),
           popupStyle: theme,
         });
+        popup.classList.add('-inline');
       }
 
       addHeading(`${test.description} (touch version)`, 3);
@@ -1090,6 +1102,7 @@
           popupStyle: theme,
           touchMode: true,
         });
+        popup.classList.add('-inline');
       }
     }
 
@@ -1111,26 +1124,34 @@
       addHeading('Copy error', 3);
       for (const theme of themes) {
         addLabel(`Theme: ${theme}`);
-        contentHandler._renderPopup(highlightTests[0].queryResult, {
-          ...testConfig,
-          container: createPopupContainer(),
-          popupStyle: theme,
-        });
+        const popup = contentHandler._renderPopup(
+          highlightTests[0].queryResult,
+          {
+            ...testConfig,
+            container: createPopupContainer(),
+            popupStyle: theme,
+          }
+        );
+        popup.classList.add('-inline');
       }
 
       addHeading('Copy error (touch version)', 3);
       for (const theme of themes) {
         addLabel(`Theme: ${theme}`);
-        contentHandler._renderPopup(highlightTests[0].queryResult, {
-          ...testConfig,
-          copyState: {
-            ...testConfig.copyState,
-            mode: 'overlay',
-          },
-          container: createPopupContainer(),
-          popupStyle: theme,
-          touchMode: true,
-        });
+        const popup = contentHandler._renderPopup(
+          highlightTests[0].queryResult,
+          {
+            ...testConfig,
+            copyState: {
+              ...testConfig.copyState,
+              mode: 'overlay',
+            },
+            container: createPopupContainer(),
+            popupStyle: theme,
+            touchMode: true,
+          }
+        );
+        popup.classList.add('-inline');
       }
     }
   </script>

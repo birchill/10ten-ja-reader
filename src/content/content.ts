@@ -76,9 +76,10 @@ import {
 } from './iframes';
 import { SelectionMeta } from './meta';
 import {
+  getPopupDimensions,
   hidePopup,
   isPopupVisible,
-  isPopupWindow,
+  isPopupWindowHostElem,
   PopupOptions,
   removePopup,
   renderPopup,
@@ -462,7 +463,7 @@ export class ContentHandler {
     }
 
     // Ignore mouse events on the popup window
-    if (isPopupWindow(event.target)) {
+    if (isPopupWindowHostElem(event.target)) {
       return;
     }
 
@@ -599,7 +600,7 @@ export class ContentHandler {
 
   onMouseDown(event: MouseEvent) {
     // Ignore mouse events on the popup window
-    if (isPopupWindow(event.target)) {
+    if (isPopupWindowHostElem(event.target)) {
       return;
     }
 
@@ -1706,6 +1707,7 @@ export class ContentHandler {
       }
     }
 
+    const popupSize = getPopupDimensions(popup);
     const {
       x: popupX,
       y: popupY,
@@ -1717,10 +1719,7 @@ export class ContentHandler {
       isVerticalText: !!this.currentTargetProps?.isVerticalText,
       mousePos: this.currentPoint,
       positionMode: this.popupPositionMode,
-      popupSize: {
-        width: popup.offsetWidth || 200,
-        height: popup.offsetHeight,
-      },
+      popupSize,
       safeArea,
       pointerType: this.currentTargetProps?.fromPuck ? 'puck' : 'cursor',
     });
@@ -1742,58 +1741,22 @@ export class ContentHandler {
         wrapper.transform.baseVal.initialize(transform);
       }
     } else {
-      popup.style.left = `${popupX}px`;
-      popup.style.top = `${popupY}px`;
-
-      // If we are constraining the width or height we reach into the popup and
-      // set it on the window itself. That way the popup has a chance to try to
-      // respond to the constraint (as opposed to simply being clipped).
+      popup.style.setProperty('--left', `${popupX}px`);
+      popup.style.setProperty('--top', `${popupY}px`);
 
       if (constrainWidth) {
-        const popupWindow =
-          popup.shadowRoot?.querySelector<HTMLDivElement>('.window');
-        if (popupWindow) {
-          popupWindow.style.maxWidth = `${constrainWidth}px`;
-        }
+        popup.style.setProperty('--max-width', `${constrainWidth}px`);
+      } else {
+        popup.style.removeProperty('--max-width');
       }
 
-      // On touch devices we make the window scrollable, but for non-touch
-      // devices we just fade it out.
-      //
-      // To make the window scrollable we need to set the max-height on the
-      // inner window itself.
-      //
-      // For the fade-effect, however, we set the max-height and fade effect
-      // on the popup host element so that the mask doesn't end up clipping
-      // the drop shadow on the popup.
-      if (touchMode) {
-        // Unlike the non-touch mode case below, we don't need to check for the
-        // presence of an overlay here since we cover that in CSS.
-        //
-        // (One day we should move all this into CSS but we're not there yet.)
-        if (constrainHeight) {
-          popup.style.setProperty('--max-height', `${constrainHeight}px`);
-        } else {
-          popup.style.removeProperty('--max-height');
-        }
-      }
       // If we are showing the copy overlay, we don't constrain the height of
       // the popup since it may cause the buttons on the overlay to be clipped
       // or scrolled out of view.
-      //
-      // (Never mind that we currently only show the overlay in touch mode...
-      // hopefully that will change in the near future and we'll almost
-      // certainly forget to update this part so we handle it for now.)
-      else if (constrainHeight && !showOverlay(this.copyState)) {
-        popup.style.maxHeight = `${constrainHeight}px`;
-        popup.style.webkitMaskImage =
-          'linear-gradient(to bottom, black 99%, transparent)';
-        (popup.style as any).maskImage =
-          'linear-gradient(to bottom, black 99%, transparent)';
+      if (constrainHeight && !showOverlay(this.copyState)) {
+        popup.style.setProperty('--max-height', `${constrainHeight}px`);
       } else {
-        popup.style.maxHeight = 'none';
-        popup.style.webkitMaskImage = 'none';
-        (popup.style as any).maskImage = 'none';
+        popup.style.removeProperty('--max-height');
       }
     }
 

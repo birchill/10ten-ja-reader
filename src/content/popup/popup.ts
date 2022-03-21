@@ -8,7 +8,6 @@ import {
 import { CopyType } from '../../common/copy-keys';
 import { ReferenceAbbreviation } from '../../common/refs';
 import { probablyHasPhysicalKeyboard } from '../../utils/device';
-import { HTML_NS } from '../../utils/dom-utils';
 import { getThemeClass } from '../../utils/themes';
 
 import {
@@ -71,8 +70,7 @@ export function renderPopup(
   const container = options.container || getDefaultContainer(doc);
   const touchMode = !!options.touchMode;
   const windowElem = resetContainer({
-    container,
-    document: doc,
+    host: container,
     popupStyle: options.popupStyle,
     touchMode,
   });
@@ -260,39 +258,38 @@ function getDefaultContainer(doc: Document): HTMLElement {
 }
 
 function resetContainer({
-  container,
-  document: doc,
+  host,
   popupStyle,
   touchMode,
 }: {
-  container: HTMLElement;
-  document: Document;
+  host: HTMLElement;
   popupStyle: string;
   touchMode: boolean;
 }): HTMLElement {
-  const windowDiv = doc.createElementNS(HTML_NS, 'div');
-  windowDiv.classList.add('window');
+  const container = html('div', { class: 'container' });
+  const windowDiv = html('div', { class: 'window' });
+  container.append(windowDiv);
+
+  // Set touch status
+  if (touchMode) {
+    container.classList.add('touch');
+  }
 
   // Set theme
   windowDiv.classList.add(getThemeClass(popupStyle));
 
-  // Set touch status
-  if (touchMode) {
-    windowDiv.classList.add('touch');
-  }
-
-  if (container.shadowRoot) {
-    container.shadowRoot.append(windowDiv);
+  if (host.shadowRoot) {
+    host.shadowRoot.append(container);
   } else {
-    container.append(windowDiv);
+    host.append(container);
   }
 
   // Reset the container position and size so that we can consistently measure
   // the size of the popup.
-  container.style.removeProperty('left');
-  container.style.removeProperty('top');
-  container.style.removeProperty('max-width');
-  container.style.removeProperty('max-height');
+  host.style.removeProperty('--left');
+  host.style.removeProperty('--top');
+  host.style.removeProperty('--max-width');
+  host.style.removeProperty('--max-height');
 
   return windowDiv;
 }
@@ -326,13 +323,27 @@ export function setPopupStyle(style: string) {
 }
 
 function getPopupWindow(): HTMLElement | null {
-  const contentContainer = document.getElementById('tenten-ja-window');
-  return contentContainer && contentContainer.shadowRoot
-    ? contentContainer.shadowRoot.querySelector('.window')
+  const hostElem = document.getElementById('tenten-ja-window');
+  return hostElem && hostElem.shadowRoot
+    ? hostElem.shadowRoot.querySelector('.window')
     : null;
 }
 
-export function isPopupWindow(target: EventTarget | null): boolean {
+export function getPopupDimensions(hostElem: HTMLElement): {
+  width: number;
+  height: number;
+} {
+  // Measure the size of the inner window so that we don't include the padding
+  // for the shadow
+  const windowElem = hostElem.shadowRoot?.querySelector('.window');
+  const width =
+    (windowElem instanceof HTMLElement ? windowElem.offsetWidth : 0) || 200;
+  const height =
+    windowElem instanceof HTMLElement ? windowElem.offsetHeight : 0;
+  return { width, height };
+}
+
+export function isPopupWindowHostElem(target: EventTarget | null): boolean {
   return target instanceof HTMLElement && target.id === 'tenten-ja-window';
 }
 

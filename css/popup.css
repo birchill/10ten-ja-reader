@@ -8,8 +8,11 @@
   font-family: Meiryo, sans-serif;
 }
 
-:host {
-  position: absolute !important;
+.container {
+  position: absolute;
+  left: var(--left, auto);
+  top: var(--top, auto);
+
   /*
    * asahi.com puts z-index: 1000000 on its banner ads.
    * 小説家になろう puts them at 2999999.
@@ -17,22 +20,55 @@
    *
    * We go one better than them all (until someone goes higher still).
    */
-  z-index: 5000001 !important;
-  /* Make sure the drop shadow doesn't get cut off */
-  padding-right: 4px !important;
-  padding-bottom: 4px !important;
+  z-index: 5000001;
 
-  /* Enforce any max-height set on the popup container. */
-  overflow-y: hidden !important;
+  /* Make sure the drop shadow on the window doesn't get cut off */
+  padding-right: 4px;
+  padding-bottom: 4px;
 
-  /* Make sure the popup container too doesn't receive pointer events */
-  pointer-events: none !important;
+  overflow-y: hidden;
+  pointer-events: none;
+}
+
+.-inline > .container {
+  position: revert;
+  z-index: revert;
+  pointer-events: revert;
+}
+
+/*
+ * On touch devices we make the window scrollable, but for non-touch
+ * devices we just fade it out.
+ *
+ * To make the window scrollable we need to set the max-height on the
+ * window itself.
+ *
+ * For the fade-effect, however, we set the max-height and fade effect
+ * on the container so that the mask doesn't end up clipping the drop shadow
+ * on the popup.
+ */
+.container.touch .window {
+  max-height: var(--max-height, none);
+}
+
+.container:not(.touch) {
+  max-height: var(--max-height, none);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black calc(var(--max-height) - 5px),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    black calc(var(--max-height) - 5px),
+    transparent
+  );
 }
 
 .window {
-  max-width: 600px;
-  max-width: min(600px, calc(100vw - 30px));
-  max-height: var(--max-height, none);
+  max-width: var(--max-width, 600px);
+  max-width: var(--max-width, min(600px, calc(100vw - 30px)));
+
   contain: content;
   border-radius: 5px;
   box-shadow: 0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
@@ -47,7 +83,7 @@
 /* When the tabs are shown on top, make the window have a consistent width
    so the tabs don't jump around. */
 .window[data-tab-side='top'] {
-  max-width: auto;
+  max-width: none;
   /* Fallback for the below */
   width: 500px;
   /* The 30px here is to accommodate scrollbars on Windows plus a bit of
@@ -59,12 +95,12 @@
   display: none;
 }
 
-.window.touch:not(.hidden) {
+.container.touch .window:not(.hidden) {
   display: flex;
   flex-direction: column;
 }
 
-.window.touch .content {
+.container.touch .content {
   overflow: auto;
   pointer-events: all;
 }
@@ -133,7 +169,7 @@
   user-select: none;
 }
 
-.window.touch .tabs .tab {
+.container.touch .tabs .tab {
   font-size: 1em;
 }
 
@@ -164,7 +200,7 @@
   }
 }
 
-.window.touch .tabs .tab a {
+.container.touch .tabs .tab a {
   padding: 0.7em 18px;
 }
 
@@ -178,7 +214,7 @@
   fill: currentcolor;
 }
 
-.window.touch .tabs .tab a .icon {
+.container.touch .tabs .tab a .icon {
   width: 14px;
   height: 14px;
 }
@@ -209,8 +245,8 @@
   pointer-events: none;
 }
 
-.window:not(.touch) .settings,
-.window:not(.touch) .close {
+.container:not(.touch) .settings,
+.container:not(.touch) .close {
   display: none;
 }
 
@@ -290,61 +326,61 @@
 
 /* Tab bar on the side */
 
-.window[data-tab-side='left']:not(.hidden),
-.window[data-tab-side='right']:not(.hidden) {
+.container .window[data-tab-side='left']:not(.hidden),
+.container .window[data-tab-side='right']:not(.hidden) {
   display: flex;
   flex-direction: row;
 }
 
-.window[data-tab-side='left'] .tab-bar,
-.window[data-tab-side='right'] .tab-bar {
+.container .window[data-tab-side='left'] .tab-bar,
+.container .window[data-tab-side='right'] .tab-bar {
   flex-direction: column;
   overflow: visible;
 }
 
-.window[data-tab-side='right'] .tab-bar {
+.container .window[data-tab-side='right'] .tab-bar {
   order: 1;
 }
 
-.window[data-tab-side='left'] .tab-bar .tabs,
-.window[data-tab-side='right'] .tab-bar .tabs {
+.container .window[data-tab-side='left'] .tab-bar .tabs,
+.container .window[data-tab-side='right'] .tab-bar .tabs {
   display: flex;
   flex-direction: column;
 }
 
-.window[data-tab-side='left'] .tab-bar .settings,
-.window[data-tab-side='right'] .tab-bar .settings {
+.container .window[data-tab-side='left'] .tab-bar .settings,
+.container .window[data-tab-side='right'] .tab-bar .settings {
   margin-bottom: 0.5em;
 }
 
-.window[data-tab-side='top'] .tab-bar .close {
+.container .window[data-tab-side='top'] .tab-bar .close {
   margin-left: 1em;
 }
 
-.window[data-tab-side='left'] .tab-bar .close,
-.window[data-tab-side='right'] .tab-bar .close {
+.container .window[data-tab-side='left'] .tab-bar .close,
+.container .window[data-tab-side='right'] .tab-bar .close {
   order: -1;
   margin-top: 0.5em;
   margin-bottom: 1em;
 }
 
-.window[data-tab-side='left'] .tabs .tab,
-.window[data-tab-side='right'] .tabs .tab {
+.container .window[data-tab-side='left'] .tabs .tab,
+.container .window[data-tab-side='right'] .tabs .tab {
   flex-grow: 0;
 }
 
-.window[data-tab-side='left'] .tabs .tab a,
-.window[data-tab-side='right'] .tabs .tab a {
+.container .window[data-tab-side='left'] .tabs .tab a,
+.container .window[data-tab-side='right'] .tabs .tab a {
   padding: 0.7em;
 }
 
-.window[data-tab-side='left'] .tabs .tab a svg,
-.window[data-tab-side='right'] .tabs .tab a svg {
+.container .window[data-tab-side='left'] .tabs .tab a svg,
+.container .window[data-tab-side='right'] .tabs .tab a svg {
   margin: 0;
 }
 
-.window[data-tab-side='left'] .tabs .tab a span,
-.window[data-tab-side='right'] .tabs .tab a span {
+.container .window[data-tab-side='left'] .tabs .tab a span,
+.container .window[data-tab-side='right'] .tabs .tab a span {
   display: none;
 }
 
@@ -583,7 +619,7 @@
 }
 
 @media (hover) {
-  .window.touch .entry:hover {
+  .container.touch .entry:hover {
     color: var(--selected-highlight);
     background: var(--selected-bg);
     border-radius: 2px;
@@ -592,7 +628,7 @@
      * using the keyboard. */
     filter: brightness(1.2);
   }
-  .window.touch .entry.-selected:hover {
+  .container.touch .entry.-selected:hover {
     /* Let keyboard selection override the hover state */
     filter: none;
   }
@@ -604,7 +640,7 @@
 }
 
 @media (hover) {
-  .window.touch .entry:hover .w-def .tag {
+  .container.touch .entry:hover .w-def .tag {
     color: var(--selected-tag-color);
     border-color: var(--selected-tag-border) !important;
   }
@@ -615,7 +651,7 @@
 }
 
 @media (hover) {
-  .window.touch .entry:hover .w-kanji {
+  .container.touch .entry:hover .w-kanji {
     color: var(--selected-highlight);
   }
 }
@@ -626,8 +662,8 @@
 }
 
 @media (hover) {
-  .window.touch .entry:hover .w-kana,
-  .window.touch .entry:hover .w-romaji {
+  .container.touch .entry:hover .w-kana,
+  .container.touch .entry:hover .w-romaji {
     color: var(--selected-reading-highlight);
   }
 }
@@ -638,8 +674,8 @@
 }
 
 @media (hover) {
-  .window.touch .entry:hover .w-def,
-  .window.touch .entry:hover .w-def * {
+  .container.touch .entry:hover .w-def,
+  .container.touch .entry:hover .w-def * {
     color: var(--selected-def-color);
   }
 }
@@ -649,7 +685,7 @@
 }
 
 @media (hover) {
-  .window.touch .entry:hover .w-conj {
+  .container.touch .entry:hover .w-conj {
     color: var(--selected-conj-color);
   }
 }
@@ -733,7 +769,7 @@
 }
 
 @media (hover) {
-  .window.touch .kanji:hover {
+  .container.touch .kanji:hover {
     color: var(--selected-highlight);
     background: var(--selected-bg);
     border-radius: 2px;
