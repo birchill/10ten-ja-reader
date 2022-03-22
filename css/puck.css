@@ -13,7 +13,12 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 5000001;
+  /*
+   * Use the same z-index as the popup. This is the empirical maximum value. Because
+   * we ensure the popup appears before the puck in the DOM, even though we use
+   * the same z-index, the puck should appear on top.
+   */
+  z-index: 2147483647;
   /* Stops the screen scrolling on touch devices while dragging the puck around. */
   touch-action: none;
   -webkit-tap-highlight-color: transparent;

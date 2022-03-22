@@ -14,13 +14,10 @@
   top: var(--top, auto);
 
   /*
-   * asahi.com puts z-index: 1000000 on its banner ads.
-   * 小説家になろう puts them at 2999999.
-   * Yahoo ニュース puts its banner at 5000000.
-   *
-   * We go one better than them all (until someone goes higher still).
+   * Use the empirical maximum z-index since some sites (e.g. TimeTree) use this
+   * for their popups.
    */
-  z-index: 5000001;
+  z-index: 2147483647;
 
   /* Make sure the drop shadow on the window doesn't get cut off */
   padding-right: 4px;
