@@ -6,18 +6,18 @@ import {
   PartOfSpeechDisplay,
 } from '../../common/content-config';
 import { CopyType } from '../../common/copy-keys';
-import { ReferenceAbbreviation } from '../../common/refs';
-import { probablyHasPhysicalKeyboard } from '../../utils/device';
-import { getThemeClass } from '../../utils/themes';
-
 import {
   getOrCreateEmptyContainer,
   removeContentContainer,
 } from '../content-container';
+import { ReferenceAbbreviation } from '../../common/refs';
 import { SelectionMeta } from '../meta';
+import { LookupPuck } from '../puck';
 import { QueryResult } from '../query';
-
 import { html } from '../../utils/builder';
+import { probablyHasPhysicalKeyboard } from '../../utils/device';
+import { getThemeClass } from '../../utils/themes';
+
 import { renderCloseButton } from './close';
 import { renderCopyOverlay } from './copy-overlay';
 import { CopyState } from './copy-state';
@@ -252,8 +252,11 @@ function getDefaultContainer(doc: Document): HTMLElement {
   return getOrCreateEmptyContainer({
     doc,
     id: 'tenten-ja-window',
-    legacyIds: ['rikaichamp-window'],
     styles: popupStyles.toString(),
+    // Make sure the popup container appears _before_ the puck container so that
+    // we can assign them the same z-index and have the puck appear on top.
+    before: LookupPuck.id,
+    legacyIds: ['rikaichamp-window'],
   });
 }
 

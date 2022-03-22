@@ -6,13 +6,15 @@ import { isForeignObjectElement, isSvgDoc } from './svg';
 export function getOrCreateEmptyContainer({
   doc,
   id,
-  legacyIds,
   styles,
+  before,
+  legacyIds,
 }: {
   doc: Document;
   id: string;
-  legacyIds?: Array<string>;
   styles: string;
+  before?: string;
+  legacyIds?: Array<string>;
 }): HTMLElement {
   // Drop any legacy containers
   if (legacyIds?.length) {
@@ -45,6 +47,17 @@ export function getOrCreateEmptyContainer({
 
   // We didn't find an existing content container so create a new one
 
+  // Set up a method to add to the DOM, respecting any `before` ID we might
+  // have.
+  const insertBefore = (parent: Element, elem: Element) => {
+    const beforeElem = before ? parent.children.namedItem(before) : null;
+    if (beforeElem) {
+      parent.insertBefore(elem, beforeElem);
+    } else {
+      parent.append(elem);
+    }
+  };
+
   // For SVG documents we put container <div> inside a <foreignObject>.
   let parent: Element;
   if (isSvgDoc(doc)) {
@@ -53,7 +66,7 @@ export function getOrCreateEmptyContainer({
     foreignObject.setAttribute('height', '100%');
     foreignObject.style.setProperty('pointer-events', 'none', 'important');
     foreignObject.style.setProperty('overflow', 'visible', 'important');
-    doc.documentElement.append(foreignObject);
+    insertBefore(doc.documentElement, foreignObject);
     parent = foreignObject;
   } else {
     parent = doc.documentElement;
@@ -62,7 +75,7 @@ export function getOrCreateEmptyContainer({
   // Actually create the container element
   const container = doc.createElementNS(HTML_NS, 'div');
   container.id = id;
-  parent.append(container);
+  insertBefore(parent, container);
 
   // Reset any styles the page may have applied.
   container.style.all = 'initial';

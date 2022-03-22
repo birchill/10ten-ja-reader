@@ -13,8 +13,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  /* We use a z-index one higher than the popup */
-  z-index: 5000002;
+  z-index: 5000001;
   /* Stops the screen scrolling on touch devices while dragging the puck around. */
   touch-action: none;
   -webkit-tap-highlight-color: transparent;
