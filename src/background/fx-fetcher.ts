@@ -70,7 +70,7 @@ export class FxFetcher {
     // Fetch the latest update date and if we've never downloaded the data,
     // do it now.
     //
-    // No need to catch errors here, getLocalFxData does it's own error
+    // No need to catch errors here, getLocalFxData does its own error
     // handling.
     void getLocalFxData().then((fxData) => {
       if (!fxData) {

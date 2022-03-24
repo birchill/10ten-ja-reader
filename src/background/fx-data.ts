@@ -58,20 +58,18 @@ function getStorageChangeCallback(onChange: (data: FxLocalData) => void) {
       return;
     }
 
-    for (const key of Object.keys(changes)) {
-      if (key === 'fx') {
-        const [error, validated] = s.validate(
-          changes[key].newValue,
-          FxLocalDataSchema
-        );
+    if ('fx' in changes) {
+      const [error, validated] = s.validate(
+        changes.fx.newValue,
+        FxLocalDataSchema
+      );
 
-        if (validated) {
-          onChange(validated);
-        } else if (error) {
-          Bugsnag.notify(error, (event) => {
-            event.severity = 'warning';
-          });
-        }
+      if (validated) {
+        onChange(validated);
+      } else {
+        Bugsnag.notify(error, (event) => {
+          event.severity = 'warning';
+        });
       }
     }
   };
