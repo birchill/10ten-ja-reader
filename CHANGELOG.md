@@ -15,6 +15,8 @@ app.
 - Fixed a regression in highlighting of non-BMP characters e.g. 𠏹沢.
 - Made sure the popup always appears on top, even for sites like TimeTree that use
   the maximum z-index for their popups.
+- Fixed a bug where the copy status message would re-appear after switching
+  tabs.
 
 ## [1.7.1] - 2022-02-10
 

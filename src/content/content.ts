@@ -1233,6 +1233,10 @@ export class ContentHandler {
     }
 
     this.showPopup();
+
+    // Reset the copy state so that it doesn't re-appear next time we re-render
+    // the popup.
+    this.copyState = { kind: 'inactive' };
   }
 
   highlightText(length: number) {
