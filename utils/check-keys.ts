@@ -53,7 +53,7 @@ async function main() {
     }
 
     for (const file of localeFiles) {
-      const matches = file.match(/\/([^\/]+?)\/messages.json/);
+      const matches = file.match(/\/([^/]+?)\/messages.json/);
       if (!matches || matches.length < 2) {
         throw new Error(`Failed to determine the locale from path ${file}`);
       }

@@ -96,7 +96,7 @@ interface VersionInfo {
 async function getCurrentVersionInfo(
   majorVersion: number
 ): Promise<VersionInfo> {
-  console.log(`Fetching version info from jpdict-rc-en-version.json...`);
+  console.log('Fetching version info from jpdict-rc-en-version.json...');
   const rawVersionInfo = await getHttpsContents({
     url: `${BASE_URL}/jpdict-rc-en-version.json`,
   });
@@ -197,7 +197,7 @@ function isJsonRecord(obj: unknown): obj is JsonRecord {
 
 function applyPatch(
   stream: Readable,
-  result: Map<string, Object>
+  result: Map<string, Record<string, unknown>>
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     stream
