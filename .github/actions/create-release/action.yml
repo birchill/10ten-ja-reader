@@ -20,5 +20,5 @@ outputs:
   url:
     description: 'The release URL'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'index.js'

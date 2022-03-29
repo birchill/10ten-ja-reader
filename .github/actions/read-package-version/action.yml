@@ -12,5 +12,5 @@ outputs:
   prerelease:
     description: 'Whether or not this version is a pre-release version'
 runs:
-  using: 'node12'
-  main: 'index.cjs'
+  using: 'node16'
+  main: 'index.js'
