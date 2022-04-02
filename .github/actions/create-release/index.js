@@ -10,6 +10,7 @@ async function main() {
     sha,
   } = github.context;
   const prerelease = core.getInput('prerelease').toLowerCase() === 'true';
+  const releaseNotes = core.getInput('release_notes') || '';
   const version = core.getInput('version').toLowerCase();
 
   const release = await octokit.rest.repos.createRelease({
@@ -17,6 +18,7 @@ async function main() {
     repo,
     tag_name: `v${version}`,
     name: `Release v${version}`,
+    body: releaseNotes,
     draft: true,
     prerelease,
     target_commitish: sha,

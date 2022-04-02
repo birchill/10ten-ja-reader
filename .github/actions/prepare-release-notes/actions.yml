@@ -1,0 +1,12 @@
+name: 'Prepare release notes'
+description: 'Extracts the text to use for a new release'
+inputs:
+  version:
+    description: The version of the release, e.g. 1.7.1
+    required: true
+outputs:
+  text:
+    description: 'The release notes text'
+runs:
+  using: 'node16'
+  main: 'index.js'

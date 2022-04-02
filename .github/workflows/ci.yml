@@ -94,6 +94,12 @@ jobs:
         id: read_package_version
         uses: ./.github/actions/read-package-version
 
+      - name: Prepare release notes
+        id: prepare_release_notes
+        uses: ./.github/actions/prepare-release-notes
+        with:
+          version: ${{ steps.read_package_version.outputs.version }}
+
       - name: Create release
         id: create_release
         uses: ./.github/actions/create-release
@@ -104,6 +110,7 @@ jobs:
           chrome_package_name: ${{ steps.read_package_version.outputs.chrome_package_name }}
           firefox_package_name: ${{ steps.read_package_version.outputs.firefox_package_name }}
           prerelease: ${{ steps.read_package_version.outputs.prerelease }}
+          release_notes: ${{ steps.prepare_release_notes.text }}
           version: ${{ steps.read_package_version.outputs.version }}
 
       - name: Show Release URL

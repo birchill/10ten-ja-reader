@@ -13,6 +13,8 @@ inputs:
   prerelease:
     description: Whether or not this is a pre-release. Defaults to false.
     default: false
+  release_notes:
+    description: The draft text to use for the release notes
   version:
     description: The version name for this release
     required: true
