@@ -13,4 +13,4 @@ outputs:
     description: 'Whether or not this version is a pre-release version'
 runs:
   using: 'node16'
-  main: 'index.js'
+  main: 'index.mjs'
