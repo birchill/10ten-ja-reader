@@ -1,8 +1,8 @@
-import * as core from '@actions/core';
-import * as fs from 'fs';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
-import { parseSemVer } from 'semver-parser';
+const core = require('@actions/core');
+const fs = require('fs');
+const path = require('path');
+const { fileURLToPath } = require('url');
+const { parseSemVer } = require('semver-parser');
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

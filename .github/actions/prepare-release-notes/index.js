@@ -1,8 +1,8 @@
-import * as core from '@actions/core';
-import * as fs from 'fs';
-import * as path from 'path';
+const core = require('@actions/core');
+const fs = require('fs');
+const path = require('path');
 
-import { formatReleaseNotes } from './format-release-notes';
+const { formatReleaseNotes } = require('./format-release-notes');
 
 async function main() {
   const version = core.getInput('version').toLowerCase();
