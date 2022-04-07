@@ -8,6 +8,10 @@ app.
 
 ## [Unreleased]
 
+(Nothing yet)
+
+## [1.8.0] - 2022-04-07
+
 - Fixed looking up vertical text using [pdf.js](https://mozilla.github.io/pdf.js/)
   ([#938](https://github.com/birchill/10ten-ja-reader/issues/938)).
 - Fixed use of the puck on Bibi reader
@@ -821,7 +825,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.7.1...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.8.0...HEAD
+[1.8.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.8.0...v1.7.1
 [1.7.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.7.1...v1.7.0
 [1.7.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.6.1...v1.7.0
 [1.6.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.6.0...v1.6.1
