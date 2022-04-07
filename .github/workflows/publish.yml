@@ -22,7 +22,7 @@ jobs:
           target: 'Firefox'
 
       - name: Publish
-        uses: ./.github/actions/publish-firefox
+        uses: birchill/amo-upload@main
         if: !steps.parse_firefox_release.outputs.skip
         with:
           addon_id: 59812185-ea92-4cca-8ab7-cfcacee81281
