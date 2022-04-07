@@ -1,0 +1,21 @@
+name: 'Parse release notes'
+description: 'Extract asset names and release notes from a release'
+inputs:
+  release_id:
+    description: The ID of the release to parse
+    required: true
+  target:
+    description: The browser to target
+    required: true
+outputs:
+  skip:
+    description: 'Set to true if the target browser is not included in the specified release'
+  addon_asset_name:
+    description: 'The name of the add-on asset'
+  src_asset_name:
+    description: 'The name of the source asset (only set when target is Firefox)'
+  release_notes:
+    description: 'The release notes for the given target'
+runs:
+  using: 'node16'
+  main: 'index.js'

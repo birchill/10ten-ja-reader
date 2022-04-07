@@ -1,0 +1,34 @@
+name: Publish
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish-firefox:
+    runs-on: ubuntu-latest
+    name: Publish to AMO
+
+    steps:
+      - name: Setup node
+        uses: actions/setup-node@v3.1.0
+        with:
+          node-version: '16.x'
+
+      - name: Get Firefox release details
+        id: parse_firefox_release
+        uses: ./.github/actions/parse-release
+        with:
+          release_id: ${{ github.event.release.id }}
+          target: 'Firefox'
+
+      - name: Publish
+        uses: ./.github/actions/publish-firefox
+        if: !steps.parse_firefox_release.outputs.skip
+        with:
+          addon_id: 59812185-ea92-4cca-8ab7-cfcacee81281
+          amo_jwt_iss: ${{ secrets.AMO_JWT_ISS }}
+          amo_jwt_secret: ${{ secrets.AMO_JWT_SECRET }}
+          release_id: ${{ github.event.release.id }}
+          addon_asset_name: ${{ steps.parse_firefox_release.outputs.addon_asset_name }}
+          src_asset_name: ${{ steps.parse_firefox_release.outputs.src_asset_name }}
+          release_notes: ${{ steps.parse_firefox_release.outputs.release_notes }}
