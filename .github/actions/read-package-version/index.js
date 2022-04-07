@@ -1,10 +1,7 @@
 const core = require('@actions/core');
 const fs = require('fs');
 const path = require('path');
-const { fileURLToPath } = require('url');
 const { parseSemVer } = require('semver-parser');
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 try {
   const packageJson = JSON.parse(
