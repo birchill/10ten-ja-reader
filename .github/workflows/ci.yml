@@ -110,7 +110,7 @@ jobs:
           chrome_package_name: ${{ steps.read_package_version.outputs.chrome_package_name }}
           firefox_package_name: ${{ steps.read_package_version.outputs.firefox_package_name }}
           prerelease: ${{ steps.read_package_version.outputs.prerelease }}
-          release_notes: ${{ steps.prepare_release_notes.text }}
+          release_notes: ${{ steps.prepare_release_notes.outputs.text }}
           version: ${{ steps.read_package_version.outputs.version }}
 
       - name: Show Release URL
