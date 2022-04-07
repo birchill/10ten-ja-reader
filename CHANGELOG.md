@@ -10,7 +10,7 @@ app.
 
 (Nothing yet)
 
-## [1.8.2] - 2022-04-07
+## [1.8.3] - 2022-04-07
 
 - Fixed looking up vertical text using [pdf.js](https://mozilla.github.io/pdf.js/)
   ([#938](https://github.com/birchill/10ten-ja-reader/issues/938)).
@@ -825,8 +825,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.8.2...HEAD
-[1.8.2]: https://github.com/birchill/10ten-ja-reader/compare/v1.8.2...v1.7.1
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.8.3...HEAD
+[1.8.3]: https://github.com/birchill/10ten-ja-reader/compare/v1.8.3...v1.7.1
 [1.7.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.7.1...v1.7.0
 [1.7.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.6.1...v1.7.0
 [1.6.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.6.0...v1.6.1
