@@ -6,6 +6,20 @@ export function serializeError(error: Error): {
 } {
   let name: string;
 
+  // Occasionally we get an undefined error object. We saw this at least once
+  // on Firefox 68. Note sure where it's coming from.
+  if (!error) {
+    // Generate a stack in the hope of getting some clue where this is coming
+    // from.
+    let stack: string | undefined;
+    try {
+      throw new Error('(Unknown error)');
+    } catch (e) {
+      stack = (e as Error).stack;
+    }
+    return { name: '(Unknown error)', message: stack || '' };
+  }
+
   // We need to be careful not to read the 'code' field unless it's a string
   // because DOMExceptions, for example, have a code field that is a number
   // but what we really want from them is their 'name' field.

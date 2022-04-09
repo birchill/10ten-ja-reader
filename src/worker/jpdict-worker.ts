@@ -65,7 +65,7 @@ self.onmessage = async (event: MessageEvent) => {
 };
 
 self.onerror = (e) => {
-  self.postMessage(notifyError({ error: e.error }));
+  self.postMessage(notifyError({ error: e.error || e }));
 };
 
 let db: JpdictDatabase | undefined;
