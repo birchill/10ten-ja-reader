@@ -73,7 +73,7 @@
     "if-env": "1.0.4",
     "jest": "27.5.1",
     "jsonwebtoken": "8.5.1",
-    "karma": "6.3.17",
+    "karma": "6.3.18",
     "karma-chai": "0.1.0",
     "karma-chrome-launcher": "3.1.1",
     "karma-firefox-launcher": "2.1.2",
