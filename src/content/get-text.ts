@@ -206,7 +206,7 @@ export function getTextAtPoint({
 
   const elem = document.elementFromPoint(point.x, point.y);
   if (elem) {
-    const text = getTextFromRandomElement({ elem, matchImages });
+    const text = getTextFromRandomElement({ elem, matchImages, matchText });
     if (text) {
       const result: GetTextAtPointResult = { text, textRange: null };
       previousResult = { point, position: undefined, result };
@@ -229,6 +229,11 @@ export function getTextAtPoint({
 
   previousResult = undefined;
   return null;
+}
+
+// For unit testing
+export function clearPreviousResult() {
+  previousResult = undefined;
 }
 
 function caretPositionFromPoint(
@@ -846,9 +851,11 @@ function getTextFromCoveringLink({
 function getTextFromRandomElement({
   elem,
   matchImages,
+  matchText,
 }: {
   elem: Element;
   matchImages: boolean;
+  matchText: boolean;
 }): string | null {
   // Don't return anything for an iframe since this script will run inside the
   // iframe's contents as well.
@@ -856,7 +863,12 @@ function getTextFromRandomElement({
     return null;
   }
 
-  if (!matchImages && elem.tagName === 'IMG') {
+  // We divide the world into two types of elements: image-like elements and the
+  // rest which we presume to be "text" elements.
+  const isImage = ['IMG', 'PICTURE', 'VIDEO'].includes(elem.tagName);
+  if (isImage && !matchImages) {
+    return null;
+  } else if (!isImage && !matchText) {
     return null;
   }
 

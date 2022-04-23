@@ -8,7 +8,9 @@ app.
 
 ## [Unreleased]
 
-(Nothing yet)
+- Made the popup not automatically show for text elements with `title`/`alt`
+  attributes when a key is required to show the popup
+  ([#946](https://github.com/birchill/10ten-ja-reader/issues/946)).
 
 ## [1.8.4] - 2022-04-07
 

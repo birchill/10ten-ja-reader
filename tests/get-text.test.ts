@@ -1,6 +1,10 @@
 import { assert } from 'chai';
 
-import { getTextAtPoint, GetTextAtPointResult } from '../src/content/get-text';
+import {
+  clearPreviousResult,
+  getTextAtPoint,
+  GetTextAtPointResult,
+} from '../src/content/get-text';
 import { empty } from '../src/utils/dom-utils';
 import { isChromium } from '../src/utils/ua-utils';
 
@@ -20,7 +24,8 @@ describe('getTextAtPoint', () => {
   });
 
   afterEach(() => {
-    document.getElementById('test-div')!.remove();
+    testDiv.remove();
+    clearPreviousResult();
   });
 
   it('should find a range in a div', () => {
@@ -1334,6 +1339,42 @@ describe('getTextAtPoint', () => {
     });
 
     assertTextResultEqual(result, 'あいうえお');
+  });
+
+  it('should pull the text out of a title attribute on an image even when matchText is false', () => {
+    testDiv.innerHTML = '<img src="" title="あいうえお">';
+    const imgNode = testDiv.firstChild as HTMLImageElement;
+    imgNode.style.width = '200px';
+    imgNode.style.height = '200px';
+    const bbox = imgNode.getBoundingClientRect();
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+      matchText: false,
+      matchImages: true,
+    });
+
+    assertTextResultEqual(result, 'あいうえお');
+  });
+
+  it('should NOT pull the text out of a title attribute on a text node when matchText is false', () => {
+    testDiv.innerHTML = '<span title="あいうえお">Not Japanese text</span>';
+    const span = testDiv.firstChild as HTMLSpanElement;
+    const bbox = span.getBoundingClientRect();
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+      matchText: false,
+      matchImages: true,
+    });
+
+    assert.strictEqual(result, null);
   });
 
   it("should use the last result if there's no result but we haven't moved far", () => {
