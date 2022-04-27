@@ -14,7 +14,6 @@ const GUTTER = 5;
 
 export function getPopupPosition({
   cursorClearance,
-  doc,
   isVerticalText,
   mousePos,
   popupSize,
@@ -23,7 +22,6 @@ export function getPopupPosition({
   pointerType,
 }: {
   cursorClearance: MarginBox;
-  doc: Document;
   isVerticalText: boolean;
   mousePos?: Point;
   popupSize: { width: number; height: number };
@@ -31,27 +29,28 @@ export function getPopupPosition({
   safeArea: PaddingBox;
   pointerType: 'cursor' | 'puck';
 }): PopupPosition {
-  let { scrollX, scrollY } = doc.defaultView!;
+  let { scrollX, scrollY } = document.defaultView!;
 
   // If we're in full screen mode, however, we should use the scroll position of
   // the full-screen element (which is always zero?).
-  if (doc.fullscreenElement) {
-    scrollX = doc.fullscreenElement.scrollLeft;
-    scrollY = doc.fullscreenElement.scrollTop;
+  if (document.fullscreenElement) {
+    scrollX = document.fullscreenElement.scrollLeft;
+    scrollY = document.fullscreenElement.scrollTop;
   }
 
   // Use the clientWidth (as opposed to doc.defaultView.innerWidth) since this
   // excludes the width of any scrollbars.
-  const stageWidth = doc.documentElement.clientWidth;
+  const stageWidth = document.documentElement.clientWidth;
 
   // For the height, we'd like to similarly use clientHeight...
-  let stageHeight = doc.documentElement.clientHeight;
+  let stageHeight = document.documentElement.clientHeight;
 
   // ... but we need to be careful because:
   //
   // (a) in quirks mode, the body has the viewport height;
-  if (doc.compatMode === 'BackCompat') {
-    stageHeight = doc.body?.clientHeight || doc.defaultView!.innerHeight;
+  if (document.compatMode === 'BackCompat') {
+    stageHeight =
+      document.body?.clientHeight || document.defaultView!.innerHeight;
   }
 
   // (b) at least in iOS 15 Safari, the safe area appears to be measured from

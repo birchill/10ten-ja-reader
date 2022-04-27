@@ -41,7 +41,6 @@ export interface PopupOptions {
   copyState: CopyState;
   dictToShow: MajorDataSeries;
   dictLang?: string;
-  document?: Document;
   fxData: ContentConfig['fx'];
   hasSwitchedDictionary?: boolean;
   kanjiReferences: Array<ReferenceAbbreviation>;
@@ -66,17 +65,13 @@ export function renderPopup(
   result: QueryResult | undefined,
   options: PopupOptions
 ): HTMLElement | null {
-  const doc = options.document || document;
-  const container = options.container || getDefaultContainer(doc);
+  const container = options.container || getDefaultContainer();
   const touchMode = !!options.touchMode;
   const windowElem = resetContainer({
     host: container,
     popupStyle: options.popupStyle,
     touchMode,
   });
-
-  // TODO: We should use `options.document` everywhere in this file and in
-  // the other methods too.
 
   const hasResult = result && (result.words || result.kanji || result.names);
   const showTabs =
@@ -248,9 +243,8 @@ export function renderPopup(
   return container;
 }
 
-function getDefaultContainer(doc: Document): HTMLElement {
+function getDefaultContainer(): HTMLElement {
   return getOrCreateEmptyContainer({
-    doc,
     id: 'tenten-ja-window',
     styles: popupStyles.toString(),
     // Make sure the popup container appears _before_ the puck container so that
@@ -306,11 +300,8 @@ export function hidePopup() {
   getPopupWindow()?.classList.add('hidden');
 }
 
-export function removePopup(doc: Document) {
-  removeContentContainer({
-    doc,
-    id: ['rikaichamp-window', 'tenten-ja-window'],
-  });
+export function removePopup() {
+  removeContentContainer(['rikaichamp-window', 'tenten-ja-window']);
 }
 
 export function setPopupStyle(style: string) {

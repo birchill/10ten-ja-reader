@@ -18,7 +18,6 @@ interface ViewportDimensions {
 }
 
 export interface PuckRenderOptions {
-  doc: Document;
   icon: 'default' | 'sky';
   theme: string;
 }
@@ -106,7 +105,6 @@ export class LookupPuck {
   private targetOffset: { x: number; y: number } = { x: 0, y: 0 };
   private targetOrientation: 'above' | 'below' = 'above';
   private cachedViewportDimensions: ViewportDimensions | null = null;
-  private document: Document = window.document;
 
   // We need to detect if the browser has a buggy position:fixed behavior
   // (as is currently the case for Safari
@@ -154,9 +152,7 @@ export class LookupPuck {
 
     // First determine the actual range of motion of the moon, taking into
     // account any safe area on either side of the screen.
-    const { viewportWidth } = this.getViewportDimensions(
-      this.puck?.ownerDocument || document
-    );
+    const { viewportWidth } = this.getViewportDimensions(document);
     const safeAreaWidth = viewportWidth - safeAreaLeft - safeAreaRight;
 
     // Now work out where the moon is within that range such that it is
@@ -311,9 +307,8 @@ export class LookupPuck {
       left: 0,
     };
 
-    const { viewportWidth, viewportHeight } = this.getViewportDimensions(
-      this.puck.ownerDocument
-    );
+    const { viewportWidth, viewportHeight } =
+      this.getViewportDimensions(document);
 
     const minX = safeAreaLeft;
     const maxX = viewportWidth - safeAreaRight - this.earthWidth;
@@ -719,30 +714,27 @@ export class LookupPuck {
 
   private readonly noOpEventHandler = () => {};
 
-  render({ doc, icon, theme }: PuckRenderOptions): void {
-    this.document = doc;
-
+  render({ icon, theme }: PuckRenderOptions): void {
     // Set up shadow tree
     const container = getOrCreateEmptyContainer({
-      doc,
       id: LookupPuck.id,
       styles: puckStyles.toString(),
     });
 
     // Create puck elem
-    this.puck = doc.createElement('div');
+    this.puck = document.createElement('div');
     this.puck.classList.add('puck');
 
-    const earth = doc.createElement('div');
+    const earth = document.createElement('div');
     earth.classList.add('earth');
     this.puck.append(earth);
 
     // Brand the earth
-    const logoSvg = this.renderIcon({ doc, icon });
+    const logoSvg = this.renderIcon(icon);
     logoSvg.classList.add('logo');
     earth.append(logoSvg);
 
-    const moon = doc.createElement('div');
+    const moon = document.createElement('div');
     moon.classList.add('moon');
     this.puck.append(moon);
 
@@ -845,35 +837,27 @@ export class LookupPuck {
     this.checkForBuggyPositionFixed();
   }
 
-  private renderIcon({
-    doc,
-    icon,
-  }: {
-    doc: Document;
-    icon: 'default' | 'sky';
-  }): SVGSVGElement {
-    return icon === 'default'
-      ? this.renderDefaultIcon(doc)
-      : this.renderSkyIcon(doc);
+  private renderIcon(icon: 'default' | 'sky'): SVGSVGElement {
+    return icon === 'default' ? this.renderDefaultIcon() : this.renderSkyIcon();
   }
 
-  private renderDefaultIcon(doc: Document): SVGSVGElement {
-    const icon = doc.createElementNS(SVG_NS, 'svg');
+  private renderDefaultIcon(): SVGSVGElement {
+    const icon = document.createElementNS(SVG_NS, 'svg');
     icon.setAttribute('viewBox', '0 0 20 20');
 
-    const dot1 = doc.createElementNS(SVG_NS, 'circle');
+    const dot1 = document.createElementNS(SVG_NS, 'circle');
     dot1.setAttribute('cx', '11.5');
     dot1.setAttribute('cy', '10');
     dot1.setAttribute('r', '1.5');
     icon.append(dot1);
 
-    const dot2 = doc.createElementNS(SVG_NS, 'circle');
+    const dot2 = document.createElementNS(SVG_NS, 'circle');
     dot2.setAttribute('cx', '18.5');
     dot2.setAttribute('cy', '15.5');
     dot2.setAttribute('r', '1.5');
     icon.append(dot2);
 
-    const path = doc.createElementNS(SVG_NS, 'path');
+    const path = document.createElementNS(SVG_NS, 'path');
     path.setAttribute(
       'd',
       'M4.9 7.1c-.1-.5-.2-.9-.5-1.3-.2-.4-.5-.8-.8-1.1-.2-.3-.5-.5-.8-.7C2 3.3 1 3 0 3v3c1.2 0 1.9.7 2 1.9v9.2h3V8.2c0-.4 0-.8-.1-1.1zM11.5 3c-2.8 0-5 2.3-5 5.1v3.7c0 2.8 2.2 5.1 5 5.1s5-2.3 5-5.1V8.1c0-2.8-2.2-5.1-5-5.1zm2.3 5.1v3.7c0 .3-.1.6-.2.9-.4.8-1.2 1.4-2.1 1.4s-1.7-.6-2.1-1.4c-.1-.3-.2-.6-.2-.9V8.1c0-.3.1-.6.2-.9.4-.8 1.2-1.4 2.1-1.4s1.7.6 2.1 1.4c.1.3.2.6.2.9z'
@@ -883,23 +867,23 @@ export class LookupPuck {
     return icon;
   }
 
-  private renderSkyIcon(doc: Document): SVGSVGElement {
-    const icon = doc.createElementNS(SVG_NS, 'svg');
+  private renderSkyIcon(): SVGSVGElement {
+    const icon = document.createElementNS(SVG_NS, 'svg');
     icon.setAttribute('viewBox', '0 0 20 20');
 
-    const dot1 = doc.createElementNS(SVG_NS, 'circle');
+    const dot1 = document.createElementNS(SVG_NS, 'circle');
     dot1.setAttribute('cx', '18.5');
     dot1.setAttribute('cy', '15.5');
     dot1.setAttribute('r', '1.5');
     icon.append(dot1);
 
-    const dot2 = doc.createElementNS(SVG_NS, 'circle');
+    const dot2 = document.createElementNS(SVG_NS, 'circle');
     dot2.setAttribute('cx', '1.5');
     dot2.setAttribute('cy', '4.5');
     dot2.setAttribute('r', '1.5');
     icon.append(dot2);
 
-    const path = doc.createElementNS(SVG_NS, 'path');
+    const path = document.createElementNS(SVG_NS, 'path');
     path.setAttribute(
       'd',
       'M3.4 3.5c.1.3.2.6.2 1s-.1.7-.2 1h4.1V8H3c-.5 0-1 .5-1 1s.5 1 1 1h4.3c-.3.9-.7 1.6-1.5 2.4-1 1-2.3 1.8-3.8 2.3-.6.2-.9.9-.7 1.5.3.5.9.8 1.4.6 2.9-1.1 5-2.9 6-5.2 1 2.3 3.1 4.1 6 5.2.5.2 1.2-.1 1.4-.6.3-.6 0-1.3-.7-1.5a9.7 9.7 0 0 1-3.8-2.3c-.8-.8-1.2-1.5-1.5-2.4h4.4c.5 0 1-.5 1-1s-.4-1-1-1H10V5.5h5.4c.5 0 1-.5 1-1s-.4-1-1-1h-12z'
@@ -934,17 +918,16 @@ export class LookupPuck {
       return;
     }
 
-    const doc = logo.ownerDocument;
     const classes = logo.getAttribute('class') || '';
 
     logo.remove();
-    const newLogo = this.renderIcon({ doc, icon });
+    const newLogo = this.renderIcon(icon);
     newLogo.setAttribute('class', classes);
     logoParent.append(newLogo);
   }
 
   unmount(): void {
-    removePuck(this.document);
+    removePuck();
     window.visualViewport?.removeEventListener(
       'resize',
       this.checkForBuggyPositionFixed
@@ -1039,6 +1022,6 @@ export class LookupPuck {
   }
 }
 
-export function removePuck(doc: Document): void {
-  removeContentContainer({ doc, id: LookupPuck.id });
+export function removePuck(): void {
+  removeContentContainer(LookupPuck.id);
 }

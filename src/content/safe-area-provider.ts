@@ -6,10 +6,6 @@ import {
 
 import safeAreaProviderStyles from '../../css/safe-area-provider.css';
 
-export interface SafeAreaProviderRenderOptions {
-  doc: Document;
-}
-
 export interface SafeAreaConsumerDelegate {
   // Called whenever the cached safe area insets
   // are invalidated or set to a new value.
@@ -42,7 +38,6 @@ export class SafeAreaProvider {
   private readonly notifyDelegate = () => {
     this.delegate?.onSafeAreaUpdated();
   };
-  private document: Document = document;
 
   getSafeArea(): PaddingBox | undefined {
     if (!this.element) {
@@ -81,18 +76,15 @@ export class SafeAreaProvider {
     this.setCachedSafeAreaInsets(null);
   };
 
-  render({ doc }: SafeAreaProviderRenderOptions): void {
-    this.document = doc;
-
+  render(): void {
     // Set up shadow tree
     const container = getOrCreateEmptyContainer({
-      doc,
       id: SafeAreaProvider.id,
       styles: safeAreaProviderStyles.toString(),
     });
 
     // Create safe area provider elem
-    this.element = doc.createElement('div');
+    this.element = document.createElement('div');
     this.element.classList.add('safe-area-provider');
 
     container.shadowRoot!.append(this.element);
@@ -113,7 +105,7 @@ export class SafeAreaProvider {
   }
 
   unmount(): void {
-    removeSafeAreaProvider(this.document);
+    removeSafeAreaProvider();
     this.disable();
     this.element = undefined;
   }
@@ -129,6 +121,6 @@ export class SafeAreaProvider {
   }
 }
 
-export function removeSafeAreaProvider(doc: Document): void {
-  removeContentContainer({ doc, id: SafeAreaProvider.id });
+export function removeSafeAreaProvider(): void {
+  removeContentContainer(SafeAreaProvider.id);
 }

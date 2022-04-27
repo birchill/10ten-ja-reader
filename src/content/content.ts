@@ -95,11 +95,7 @@ import {
   removePuck,
 } from './puck';
 import { query, QueryResult } from './query';
-import {
-  removeSafeAreaProvider,
-  SafeAreaProvider,
-  SafeAreaProviderRenderOptions,
-} from './safe-area-provider';
+import { removeSafeAreaProvider, SafeAreaProvider } from './safe-area-provider';
 import { isForeignObjectElement, isSvgDoc, isSvgSvgElement } from './svg';
 import {
   getBestFitSize,
@@ -313,7 +309,7 @@ export class ContentHandler {
       }
     });
 
-    this.setUpSafeAreaProvider({ doc: document });
+    this.setUpSafeAreaProvider();
 
     // If we are an iframe, check if the popup is currently showing
     if (!this.isTopMostWindow()) {
@@ -327,8 +323,8 @@ export class ContentHandler {
     }
   }
 
-  setUpSafeAreaProvider(renderOptions: SafeAreaProviderRenderOptions) {
-    this.safeAreaProvider.render(renderOptions);
+  setUpSafeAreaProvider() {
+    this.safeAreaProvider.render();
     this.safeAreaProvider.enable();
   }
 
@@ -352,7 +348,6 @@ export class ContentHandler {
     }
 
     this.puck.render({
-      doc: document,
       icon: this.config.toolbarIcon,
       theme: this.config.popupStyle,
     });
@@ -363,7 +358,7 @@ export class ContentHandler {
     this.puck?.unmount();
     this.puck = null;
 
-    removePuck(document);
+    removePuck();
   }
 
   setConfig(config: Readonly<ContentConfig>) {
@@ -412,8 +407,8 @@ export class ContentHandler {
     this.safeAreaProvider?.unmount();
     this.touchClickTracker.destroy();
 
-    removePopup(this.lastMouseTarget?.ownerDocument || window.document);
-    removeSafeAreaProvider(document);
+    removePopup();
+    removeSafeAreaProvider();
     removeGdocsStyles();
   }
 
@@ -1600,8 +1595,6 @@ export class ContentHandler {
       return;
     }
 
-    const doc: Document =
-      this.lastMouseTarget?.ownerDocument || window.document;
     const touchMode = isTouchDevice();
 
     const popupOptions: PopupOptions = {
@@ -1610,7 +1603,6 @@ export class ContentHandler {
       copyState: this.copyState,
       dictLang: this.config.dictLang,
       dictToShow: this.currentDict,
-      document: doc,
       fxData: this.config.fx,
       hasSwitchedDictionary: this.config.hasSwitchedDictionary,
       kanjiReferences: this.config.kanjiReferences,
@@ -1719,7 +1711,6 @@ export class ContentHandler {
       constrainHeight,
     } = getPopupPosition({
       cursorClearance,
-      doc,
       isVerticalText: !!this.currentTargetProps?.isVerticalText,
       mousePos: this.currentPoint,
       positionMode: this.popupPositionMode,
@@ -1729,13 +1720,13 @@ export class ContentHandler {
     });
 
     if (
-      isSvgDoc(doc) &&
-      isSvgSvgElement(doc.documentElement) &&
+      isSvgDoc(document) &&
+      isSvgSvgElement(document.documentElement) &&
       isForeignObjectElement(popup.parentElement)
     ) {
       // Set the x/y attributes on the <foreignObject> wrapper after converting
       // to document space.
-      const svg: SVGSVGElement = doc.documentElement;
+      const svg: SVGSVGElement = document.documentElement;
       const wrapper: SVGForeignObjectElement = popup.parentElement;
       wrapper.x.baseVal.value = popupX;
       wrapper.y.baseVal.value = popupY;
@@ -1943,9 +1934,9 @@ declare global {
     } else {
       // When the extension is upgraded, we can still have the old popup window
       // or puck hanging around so make sure to clear it.
-      removePopup(document);
-      removePuck(document);
-      removeSafeAreaProvider(document);
+      removePopup();
+      removePuck();
+      removeSafeAreaProvider();
       removeGdocsStyles();
 
       contentHandler = new ContentHandler(config);

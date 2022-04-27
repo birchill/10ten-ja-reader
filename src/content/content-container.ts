@@ -4,13 +4,11 @@ import { HTML_NS, SVG_NS } from '../utils/dom-utils';
 import { isForeignObjectElement, isSvgDoc } from './svg';
 
 export function getOrCreateEmptyContainer({
-  doc,
   id,
   styles,
   before,
   legacyIds,
 }: {
-  doc: Document;
   id: string;
   styles: string;
   before?: string;
@@ -18,7 +16,7 @@ export function getOrCreateEmptyContainer({
 }): HTMLElement {
   // Drop any legacy containers
   if (legacyIds?.length) {
-    const legacyContainers = doc.querySelectorAll(
+    const legacyContainers = document.querySelectorAll(
       legacyIds.map((id) => `#${id}`).join(', ')
     );
     for (const container of legacyContainers) {
@@ -28,7 +26,7 @@ export function getOrCreateEmptyContainer({
 
   // Look for an existing container we can re-use
   const existingContainers = Array.from<HTMLElement>(
-    doc.querySelectorAll(`#${id}`)
+    document.querySelectorAll(`#${id}`)
   );
   if (existingContainers.length) {
     // Drop any duplicate containers, returning only the last one
@@ -40,47 +38,41 @@ export function getOrCreateEmptyContainer({
     resetContent(existingContainers[0]);
 
     // Make sure the styles are up-to-date
-    resetStyles({ container: existingContainers[0], doc, styles });
+    resetStyles({ container: existingContainers[0], styles });
 
     // Make sure we have a fullscreenchange callback registered
-    addFullScreenChangeCallback({ doc, id, before });
+    addFullScreenChangeCallback({ id, before });
 
     return existingContainers[0];
   }
 
   // We didn't find an existing content container so create a new one
-  const container = doc.createElementNS(HTML_NS, 'div');
+  const container = document.createElementNS(HTML_NS, 'div');
   container.id = id;
-  addContainerElement({ doc, elem: container, before });
+  addContainerElement({ elem: container, before });
 
   // Reset any styles the page may have applied.
   container.style.all = 'initial';
 
   // Add the necessary style element
-  resetStyles({ container, doc, styles });
+  resetStyles({ container, styles });
 
   // Update the position in the document if we go to/from fullscreen mode
-  addFullScreenChangeCallback({ doc, id, before });
+  addFullScreenChangeCallback({ id, before });
 
   return container;
 }
 
-export function removeContentContainer({
-  doc,
-  id,
-}: {
-  doc: Document;
-  id: string | Array<string>;
-}) {
+export function removeContentContainer(id: string | Array<string>) {
   const containerIds = typeof id === 'string' ? [id] : id;
   const containers = Array.from<HTMLElement>(
-    doc.querySelectorAll(containerIds.map((id) => `#${id}`).join(', '))
+    document.querySelectorAll(containerIds.map((id) => `#${id}`).join(', '))
   );
   for (const container of containers) {
     removeContainerElement(container);
   }
   for (const id of containerIds) {
-    removeFullScreenChangeCallback({ doc, id });
+    removeFullScreenChangeCallback(id);
   }
 }
 
@@ -91,11 +83,9 @@ export function removeContentContainer({
 // --------------------------------------------------------------------------
 
 function addContainerElement({
-  doc,
   elem,
   before,
 }: {
-  doc: Document;
   elem: HTMLElement;
   before?: string;
 }) {
@@ -113,19 +103,19 @@ function addContainerElement({
   };
 
   let parent: Element;
-  if (doc.fullscreenElement) {
-    parent = doc.fullscreenElement;
-  } else if (isSvgDoc(doc)) {
+  if (document.fullscreenElement) {
+    parent = document.fullscreenElement;
+  } else if (isSvgDoc(document)) {
     // For SVG documents we put the container <div> inside a <foreignObject>.
-    const foreignObject = doc.createElementNS(SVG_NS, 'foreignObject');
+    const foreignObject = document.createElementNS(SVG_NS, 'foreignObject');
     foreignObject.setAttribute('width', '100%');
     foreignObject.setAttribute('height', '100%');
     foreignObject.style.setProperty('pointer-events', 'none', 'important');
     foreignObject.style.setProperty('overflow', 'visible', 'important');
-    insertBefore(doc.documentElement, foreignObject);
+    insertBefore(document.documentElement, foreignObject);
     parent = foreignObject;
   } else {
-    parent = doc.documentElement;
+    parent = document.documentElement;
   }
 
   insertBefore(parent, elem);
@@ -147,11 +137,9 @@ function removeContainerElement(elem: Element) {
 const fullScreenChangedCallbacks: Record<string, (event: Event) => void> = {};
 
 function addFullScreenChangeCallback({
-  doc,
   id,
   before,
 }: {
-  doc: Document;
   id: string;
   before?: string;
 }) {
@@ -161,30 +149,24 @@ function addFullScreenChangeCallback({
   }
 
   const callback = () => {
-    const container = doc.getElementById(id);
+    const container = document.getElementById(id);
     if (!container) {
       return;
     }
 
     // Re-add the container element, respecting the updated
     // document.fullScreenElement property.
-    addContainerElement({ doc, elem: container, before });
+    addContainerElement({ elem: container, before });
   };
 
-  doc.addEventListener('fullscreenchange', callback);
+  document.addEventListener('fullscreenchange', callback);
   fullScreenChangedCallbacks[id] = callback;
 }
 
-function removeFullScreenChangeCallback({
-  doc,
-  id,
-}: {
-  doc: Document;
-  id: string;
-}) {
+function removeFullScreenChangeCallback(id: string) {
   const callback = fullScreenChangedCallbacks[id];
   if (callback) {
-    doc.removeEventListener('fullscreenchange', callback);
+    document.removeEventListener('fullscreenchange', callback);
   }
 }
 
@@ -205,11 +187,9 @@ function resetContent(elem: HTMLElement) {
 
 function resetStyles({
   container,
-  doc,
   styles,
 }: {
   container: HTMLElement;
-  doc: Document;
   styles: string;
 }) {
   const styleHash = getHash(styles);
@@ -218,7 +198,7 @@ function resetStyles({
     container.attachShadow({ mode: 'open' });
 
     // Add <style>
-    const style = doc.createElementNS(HTML_NS, 'style');
+    const style = document.createElementNS(HTML_NS, 'style');
     style.textContent = styles;
     style.dataset.hash = styleHash;
     container.shadowRoot!.append(style);
@@ -231,7 +211,7 @@ function resetStyles({
     }
 
     if (!existingStyle) {
-      const style = doc.createElementNS(HTML_NS, 'style');
+      const style = document.createElementNS(HTML_NS, 'style');
       style.textContent = styles;
       style.dataset.hash = styleHash;
       container.shadowRoot!.append(style);
