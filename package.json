@@ -71,7 +71,8 @@
     "form-data": "4.0.0",
     "iconv-lite": "0.6.3",
     "if-env": "1.0.4",
-    "jest": "27.5.1",
+    "jest": "28.0.1",
+    "jest-environment-jsdom": "28.0.1",
     "jsonwebtoken": "8.5.1",
     "karma": "6.3.19",
     "karma-chai": "0.1.0",
@@ -86,7 +87,7 @@
     "source-map-loader": "3.0.1",
     "split2": "4.1.0",
     "terser-webpack-plugin": "5.3.1",
-    "ts-jest": "27.1.4",
+    "ts-jest": "28.0.0-next.1",
     "ts-loader": "9.2.9",
     "ts-node": "10.7.0",
     "web-ext-plugin": "1.8.0",
@@ -119,7 +120,7 @@
       ".github/actions"
     ],
     "transform": {
-      "^.+\\.ts$": "ts-jest"
+      "^.+\\.ts$": "ts-jest/legacy"
     },
     "testRegex": ".test.[tj]s$",
     "moduleFileExtensions": [
