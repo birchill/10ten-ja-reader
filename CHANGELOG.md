@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- Made the popup display in full-screen mode so you can look up text in
+  subtitles on full-screen videos
+  ([#466](https://github.com/birchill/10ten-ja-reader/issues/466)).
 - Made the popup not automatically show for text elements with `title`/`alt`
   attributes when a key is required to show the popup
   ([#946](https://github.com/birchill/10ten-ja-reader/issues/946)).

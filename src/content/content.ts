@@ -363,7 +363,7 @@ export class ContentHandler {
     this.puck?.unmount();
     this.puck = null;
 
-    removePuck();
+    removePuck(document);
   }
 
   setConfig(config: Readonly<ContentConfig>) {
@@ -412,8 +412,8 @@ export class ContentHandler {
     this.safeAreaProvider?.unmount();
     this.touchClickTracker.destroy();
 
-    removePopup();
-    removeSafeAreaProvider();
+    removePopup(this.lastMouseTarget?.ownerDocument || window.document);
+    removeSafeAreaProvider(document);
     removeGdocsStyles();
   }
 
@@ -1601,7 +1601,7 @@ export class ContentHandler {
     }
 
     const doc: Document =
-      this.lastMouseTarget?.ownerDocument ?? window.document;
+      this.lastMouseTarget?.ownerDocument || window.document;
     const touchMode = isTouchDevice();
 
     const popupOptions: PopupOptions = {
@@ -1943,9 +1943,9 @@ declare global {
     } else {
       // When the extension is upgraded, we can still have the old popup window
       // or puck hanging around so make sure to clear it.
-      removePopup();
-      removePuck();
-      removeSafeAreaProvider();
+      removePopup(document);
+      removePuck(document);
+      removeSafeAreaProvider(document);
       removeGdocsStyles();
 
       contentHandler = new ContentHandler(config);

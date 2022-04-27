@@ -106,6 +106,7 @@ export class LookupPuck {
   private targetOffset: { x: number; y: number } = { x: 0, y: 0 };
   private targetOrientation: 'above' | 'below' = 'above';
   private cachedViewportDimensions: ViewportDimensions | null = null;
+  private document: Document = window.document;
 
   // We need to detect if the browser has a buggy position:fixed behavior
   // (as is currently the case for Safari
@@ -719,6 +720,8 @@ export class LookupPuck {
   private readonly noOpEventHandler = () => {};
 
   render({ doc, icon, theme }: PuckRenderOptions): void {
+    this.document = doc;
+
     // Set up shadow tree
     const container = getOrCreateEmptyContainer({
       doc,
@@ -941,7 +944,7 @@ export class LookupPuck {
   }
 
   unmount(): void {
-    removePuck();
+    removePuck(this.document);
     window.visualViewport?.removeEventListener(
       'resize',
       this.checkForBuggyPositionFixed
@@ -1036,6 +1039,6 @@ export class LookupPuck {
   }
 }
 
-export function removePuck(): void {
-  removeContentContainer(LookupPuck.id);
+export function removePuck(doc: Document): void {
+  removeContentContainer({ doc, id: LookupPuck.id });
 }

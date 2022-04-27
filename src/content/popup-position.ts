@@ -31,7 +31,14 @@ export function getPopupPosition({
   safeArea: PaddingBox;
   pointerType: 'cursor' | 'puck';
 }): PopupPosition {
-  const { scrollX, scrollY } = doc.defaultView!;
+  let { scrollX, scrollY } = doc.defaultView!;
+
+  // If we're in full screen mode, however, we should use the scroll position of
+  // the full-screen element (which is always zero?).
+  if (doc.fullscreenElement) {
+    scrollX = doc.fullscreenElement.scrollLeft;
+    scrollY = doc.fullscreenElement.scrollTop;
+  }
 
   // Use the clientWidth (as opposed to doc.defaultView.innerWidth) since this
   // excludes the width of any scrollbars.

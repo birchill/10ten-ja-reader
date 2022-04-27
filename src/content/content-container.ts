@@ -42,10 +42,64 @@ export function getOrCreateEmptyContainer({
     // Make sure the styles are up-to-date
     resetStyles({ container: existingContainers[0], doc, styles });
 
+    // Make sure we have a fullscreenchange callback registered
+    addFullScreenChangeCallback({ doc, id, before });
+
     return existingContainers[0];
   }
 
   // We didn't find an existing content container so create a new one
+  const container = doc.createElementNS(HTML_NS, 'div');
+  container.id = id;
+  addContainerElement({ doc, elem: container, before });
+
+  // Reset any styles the page may have applied.
+  container.style.all = 'initial';
+
+  // Add the necessary style element
+  resetStyles({ container, doc, styles });
+
+  // Update the position in the document if we go to/from fullscreen mode
+  addFullScreenChangeCallback({ doc, id, before });
+
+  return container;
+}
+
+export function removeContentContainer({
+  doc,
+  id,
+}: {
+  doc: Document;
+  id: string | Array<string>;
+}) {
+  const containerIds = typeof id === 'string' ? [id] : id;
+  const containers = Array.from<HTMLElement>(
+    doc.querySelectorAll(containerIds.map((id) => `#${id}`).join(', '))
+  );
+  for (const container of containers) {
+    removeContainerElement(container);
+  }
+  for (const id of containerIds) {
+    removeFullScreenChangeCallback({ doc, id });
+  }
+}
+
+// --------------------------------------------------------------------------
+//
+// Implementation helpers
+//
+// --------------------------------------------------------------------------
+
+function addContainerElement({
+  doc,
+  elem,
+  before,
+}: {
+  doc: Document;
+  elem: HTMLElement;
+  before?: string;
+}) {
+  const previousParent = elem.parentElement;
 
   // Set up a method to add to the DOM, respecting any `before` ID we might
   // have.
@@ -58,9 +112,11 @@ export function getOrCreateEmptyContainer({
     }
   };
 
-  // For SVG documents we put container <div> inside a <foreignObject>.
   let parent: Element;
-  if (isSvgDoc(doc)) {
+  if (doc.fullscreenElement) {
+    parent = doc.fullscreenElement;
+  } else if (isSvgDoc(doc)) {
+    // For SVG documents we put the container <div> inside a <foreignObject>.
     const foreignObject = doc.createElementNS(SVG_NS, 'foreignObject');
     foreignObject.setAttribute('width', '100%');
     foreignObject.setAttribute('height', '100%');
@@ -72,41 +128,63 @@ export function getOrCreateEmptyContainer({
     parent = doc.documentElement;
   }
 
-  // Actually create the container element
-  const container = doc.createElementNS(HTML_NS, 'div');
-  container.id = id;
-  insertBefore(parent, container);
+  insertBefore(parent, elem);
 
-  // Reset any styles the page may have applied.
-  container.style.all = 'initial';
-
-  // Add the necessary style element
-  resetStyles({ container, doc, styles });
-
-  return container;
-}
-
-export function removeContentContainer(id: string | Array<string>) {
-  const containerIds = typeof id === 'string' ? [id] : id;
-  const containers = Array.from<HTMLElement>(
-    document.querySelectorAll(containerIds.map((id) => `#${id}`).join(', '))
-  );
-  for (const container of containers) {
-    removeContainerElement(container);
+  // If our previous parent was a foreignObject wrapper, drop it
+  if (isForeignObjectElement(previousParent)) {
+    previousParent.remove();
   }
 }
-
-// --------------------------------------------------------------------------
-//
-// Implementation helpers
-//
-// --------------------------------------------------------------------------
 
 function removeContainerElement(elem: Element) {
   if (isForeignObjectElement(elem.parentElement)) {
     elem.parentElement.remove();
   } else {
     elem.remove();
+  }
+}
+
+const fullScreenChangedCallbacks: Record<string, (event: Event) => void> = {};
+
+function addFullScreenChangeCallback({
+  doc,
+  id,
+  before,
+}: {
+  doc: Document;
+  id: string;
+  before?: string;
+}) {
+  const existingCallback = fullScreenChangedCallbacks[id];
+  if (typeof existingCallback !== 'undefined') {
+    return;
+  }
+
+  const callback = () => {
+    const container = doc.getElementById(id);
+    if (!container) {
+      return;
+    }
+
+    // Re-add the container element, respecting the updated
+    // document.fullScreenElement property.
+    addContainerElement({ doc, elem: container, before });
+  };
+
+  doc.addEventListener('fullscreenchange', callback);
+  fullScreenChangedCallbacks[id] = callback;
+}
+
+function removeFullScreenChangeCallback({
+  doc,
+  id,
+}: {
+  doc: Document;
+  id: string;
+}) {
+  const callback = fullScreenChangedCallbacks[id];
+  if (callback) {
+    doc.removeEventListener('fullscreenchange', callback);
   }
 }
 

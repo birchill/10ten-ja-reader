@@ -306,8 +306,11 @@ export function hidePopup() {
   getPopupWindow()?.classList.add('hidden');
 }
 
-export function removePopup() {
-  removeContentContainer(['rikaichamp-window', 'tenten-ja-window']);
+export function removePopup(doc: Document) {
+  removeContentContainer({
+    doc,
+    id: ['rikaichamp-window', 'tenten-ja-window'],
+  });
 }
 
 export function setPopupStyle(style: string) {

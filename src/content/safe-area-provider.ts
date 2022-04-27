@@ -18,6 +18,7 @@ export interface SafeAreaConsumerDelegate {
 
 export class SafeAreaProvider {
   public static readonly id: string = 'tenten-safe-area-provider';
+
   private element: HTMLDivElement | undefined;
   private _cachedSafeAreaInsets: PaddingBox | null = null;
   private setCachedSafeAreaInsets(insets: PaddingBox | null) {
@@ -41,6 +42,7 @@ export class SafeAreaProvider {
   private readonly notifyDelegate = () => {
     this.delegate?.onSafeAreaUpdated();
   };
+  private document: Document = document;
 
   getSafeArea(): PaddingBox | undefined {
     if (!this.element) {
@@ -80,6 +82,8 @@ export class SafeAreaProvider {
   };
 
   render({ doc }: SafeAreaProviderRenderOptions): void {
+    this.document = doc;
+
     // Set up shadow tree
     const container = getOrCreateEmptyContainer({
       doc,
@@ -109,7 +113,7 @@ export class SafeAreaProvider {
   }
 
   unmount(): void {
-    removeSafeAreaProvider();
+    removeSafeAreaProvider(this.document);
     this.disable();
     this.element = undefined;
   }
@@ -125,6 +129,6 @@ export class SafeAreaProvider {
   }
 }
 
-export function removeSafeAreaProvider(): void {
-  removeContentContainer(SafeAreaProvider.id);
+export function removeSafeAreaProvider(doc: Document): void {
+  removeContentContainer({ doc, id: SafeAreaProvider.id });
 }
