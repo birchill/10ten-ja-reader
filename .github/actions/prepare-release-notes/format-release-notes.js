@@ -57,6 +57,17 @@ function formatReleaseNotes({ changeLog, version }) {
   // 3. Drop any shout outs
   humanNotes = humanNotes.replaceAll(/ thanks to \[@[^\]]+\]\([^)]+\)/g, '');
 
+  // 4. Strip various other markdown
+  //
+  // Based on https://github.com/stiang/remove-markdown/blob/master/index.js
+  humanNotes = humanNotes.replace(/\[([^\]]*?)\][\[\(].*?[\]\)]/g, '$1');
+  humanNotes = humanNotes.replace(/([\*]+)(\S)(.*?\S)??\1/g, '$2$3');
+  humanNotes = humanNotes.replace(
+    /(^|\W)([_]+)(\S)(.*?\S)??\2($|\W)/g,
+    '$1$3$4$5'
+  );
+  humanNotes = humanNotes.replace(/`(.+?)`/g, '$1');
+
   // Generate specific notes for each browser
   notes += `\n\n<!--\n${getBrowserNotes({
     notes: humanNotes,
