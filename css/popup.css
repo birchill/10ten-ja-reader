@@ -8,6 +8,24 @@
   font-family: Meiryo, sans-serif;
 }
 
+:host {
+  /*
+   * The following is because there appears to be some (yet unidentified) add-on
+   * that sets `position: absolute` on various div elements without also setting
+   * `left/top: 0`. As a result, our popup will end up being positioned at the
+   * very end of the page unless we ensure we set left/top ourselves.
+   *
+   * It's also possible something similar could happen with z-index so we set
+   * that one too.
+   *
+   * See: https://github.com/birchill/10ten-ja-reader/issues/947
+   */
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  z-index: 2147483647 !important;
+}
+
 .container {
   position: absolute;
   left: var(--left, auto);
