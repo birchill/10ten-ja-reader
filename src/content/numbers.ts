@@ -79,14 +79,17 @@ const kanjiToNumberMap = new Map<string, number>([
   ['万', 10000],
   ['億', 100000000],
   ['兆', 1000000000000],
+  ['.', -1],
+  ['。', -1],
+  ['．', -1],
 ]);
 
 export function parseNumber(inputText: string): number | null {
   // Drop any commas in the string first
   const text = inputText.replace(/[,、]/g, '');
 
-  // Try a transliterated number first since the set of inputs like 二二一 would
-  // also be found in kanjiToNumberMap.
+  // Try a transliterated number first since inputs like 二二一 would also be
+  // found in kanjiToNumberMap.
   let digits = [...text].map((ch) => transliterateMap.get(ch));
   if (digits.length && !digits.some((digit) => typeof digit === 'undefined')) {
     if (digits.indexOf(-1) === -1) {
@@ -113,13 +116,27 @@ export function parseNumber(inputText: string): number | null {
 
     // Detect strings of digits and combine them
     if (first < 10 && second < 10) {
+      let decimal = 0;
       while (numbers.length > 1 && numbers[1] < 10) {
-        numbers = [numbers[0] * 10 + numbers[1], ...numbers.slice(2)];
+        if (numbers[1] === -1) {
+          if (decimal) {
+            return null;
+          }
+          decimal = 1;
+          numbers = [numbers[0], ...numbers.slice(2)];
+        } else if (decimal) {
+          numbers = [
+            numbers[0] + numbers[1] * Math.pow(10, -decimal++),
+            ...numbers.slice(2),
+          ];
+        } else {
+          numbers = [numbers[0] * 10 + numbers[1], ...numbers.slice(2)];
+        }
       }
       continue;
     }
 
-    if (!validNumber(first, second)) {
+    if (!validSequence(first, second)) {
       return null;
     }
 
@@ -142,7 +159,7 @@ export function parseNumber(inputText: string): number | null {
   return result + (numbers.length ? numbers[0] : 0);
 }
 
-function validNumber(c1: number, c2: number): boolean {
+function validSequence(c1: number, c2: number): boolean {
   // If we have xxx万, xxx億, xxx兆 then the only requirement is that xxx is less
   // than the 'base'.
   if (c2 >= 10000 && c1 < c2) {
@@ -225,7 +242,7 @@ export interface NumberMeta {
 // - has at least one kanji digit
 //
 const numberRegex =
-  /^([一二三四五六七八九十百千万億兆京][0-9.,０-９。．、〇一二三四五六七八九十百千万億兆京]+)|([0-9,０-９、]+[〇一二三四五六七八九十百千万億兆京][0-9.,０-９。．、〇一二三四五六七八九十百千万億兆京]*)/;
+  /^([一二三四五六七八九十百千万億兆京][0-9.,０-９。．、〇一二三四五六七八九十百千万億兆京]+)|([0-9,０-９、]+([.。．][0-9０-９]+)?[〇一二三四五六七八九十百千万億兆京][0-9.,０-９。．、〇一二三四五六七八九十百千万億兆京]*)/;
 
 export function extractNumberMetadata(text: string): NumberMeta | undefined {
   const matches = numberRegex.exec(text);

@@ -64,6 +64,11 @@ describe('extractCurrencyMetadata', () => {
       value: 123.45,
       matchLen: 7,
     });
+    expect(extractCurrencyMetadata('123.45万円')).toEqual({
+      type: 'currency',
+      value: 1_234_500,
+      matchLen: 8,
+    });
 
     // Very large amounts
     expect(extractCurrencyMetadata('8兆8億円')).toEqual({

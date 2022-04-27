@@ -38,6 +38,14 @@ describe('parseNumber', () => {
     expect(parseNumber('４３．２')).toEqual(43.2);
     expect(parseNumber('４３。２')).toEqual(43.2);
 
+    // Decimals and kanji
+    expect(parseNumber('43.2万')).toEqual(432_000);
+    expect(parseNumber('4.2万')).toEqual(42_000);
+    expect(parseNumber('0.2万')).toEqual(2_000);
+    expect(parseNumber('54.321万')).toEqual(543_210);
+    expect(parseNumber('987.654321万')).toBeCloseTo(9_876_543.21, 5);
+    expect(parseNumber('1.2億')).toEqual(120000000);
+
     // Bogus inputs
 
     // Putting the powers of ten in the wrong order
@@ -92,6 +100,24 @@ describe('extractNumberMetadata', () => {
       value: 360000000000,
       src: '3,600億',
       matchLen: 6,
+    });
+    expect(extractNumberMetadata('43.2万')).toStrictEqual({
+      type: 'number',
+      value: 432_000,
+      src: '43.2万',
+      matchLen: 5,
+    });
+    expect(extractNumberMetadata('4,321.0万')).toStrictEqual({
+      type: 'number',
+      value: 43_210_000,
+      src: '4,321.0万',
+      matchLen: 8,
+    });
+    expect(extractNumberMetadata('25.301億')).toStrictEqual({
+      type: 'number',
+      value: 2530100000,
+      src: '25.301億',
+      matchLen: 7,
     });
 
     // Produces correct src / matchLen
