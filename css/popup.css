@@ -11,18 +11,31 @@
 :host {
   /*
    * The following is because there appears to be some (yet unidentified) add-on
-   * that sets `position: absolute` on various div elements without also setting
-   * `left/top: 0`. As a result, our popup will end up being positioned at the
-   * very end of the page unless we ensure we set left/top ourselves.
-   *
-   * It's also possible something similar could happen with z-index so we set
-   * that one too.
+   * that sets `position: absolute` on various div elements. As a result, our
+   * popup will end up being positioned at the very end of the page unless we
+   * ensure we set left/top ourselves.
    *
    * See: https://github.com/birchill/10ten-ja-reader/issues/947
+   */
+  position: revert !important;
+
+  /*
+   * However, supposing our rule above loses out to the interfering add-on?
+   *
+   * Assuming said add-on sets `position: absolute` on the popup we can make it
+   * work for us by setting the left/top/bottom/right properties.
    */
   position: absolute !important;
   left: 0 !important;
   top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  pointer-events: none !important;
+
+  /*
+   * It's conceivable add-ons might interfere with our z-index too so make sure
+   * that's covered.
+   */
   z-index: 2147483647 !important;
 }
 
