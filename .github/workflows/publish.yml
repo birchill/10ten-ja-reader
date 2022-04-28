@@ -9,6 +9,9 @@ jobs:
     name: Publish to AMO
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Setup node
         uses: actions/setup-node@v3.1.1
         with:
