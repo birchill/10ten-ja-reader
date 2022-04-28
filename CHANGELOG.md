@@ -8,6 +8,10 @@ app.
 
 ## [Unreleased]
 
+(Nothing yet)
+
+## [1.9.0] - 2022-04-28
+
 - Made the popup display in full-screen mode so you can look up text in
   subtitles on full-screen videos
   ([#466](https://github.com/birchill/10ten-ja-reader/issues/466)).
@@ -834,7 +838,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.8.4...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.9.0...HEAD
+[1.9.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.9.0...v1.8.4
 [1.8.4]: https://github.com/birchill/10ten-ja-reader/compare/v1.8.4...v1.7.1
 [1.7.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.7.1...v1.7.0
 [1.7.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.6.1...v1.7.0
