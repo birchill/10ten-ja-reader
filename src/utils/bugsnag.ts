@@ -3,13 +3,54 @@ import { browser } from 'webextension-polyfill-ts';
 
 import { getReleaseStage } from './release-stage';
 
-const getExtensionInstallId = (): string => {
+const getExtensionInstallId = async (): Promise<string> => {
+  let internalUuid: string | undefined;
   try {
-    return new URL(browser.runtime.getURL('yer')).host;
+    // In Firefox, each install gets a unique internalUuid which differs from
+    // the extension ID (provided it is set through the
+    // browser_specific_settings in manifest.json).
+    //
+    // Specifically:
+    //
+    // browser.runtime.id = Extension ID
+    // browser.runtime.getURL('yer').host = Internal UUID
+    // browser.getMessage('@@extension_id') = Internal UUID
+    //
+    internalUuid = new URL(browser.runtime.getURL('yer')).host;
   } catch {
-    return 'unknown';
+    // Ignore
   }
+
+  if (internalUuid && internalUuid !== browser.runtime.id) {
+    return internalUuid;
+  }
+
+  try {
+    let storedInstallId = (await browser.storage.local.get('installid'))
+      ?.installid;
+    if (!storedInstallId) {
+      const installId = getRandomId();
+      await browser.storage.local.set({ installid: installId });
+      storedInstallId = installId;
+    }
+
+    return storedInstallId;
+  } catch {
+    // Ignore because we are probably already in the middle of reporting an error
+  }
+
+  return 'unknown';
 };
+
+function getRandomId() {
+  const randomPool = new Uint8Array(32);
+  crypto.getRandomValues(randomPool);
+  let hex = '';
+  for (let i = 0; i < randomPool.length; ++i) {
+    hex += randomPool[i].toString(16);
+  }
+  return hex;
+}
 
 export function startBugsnag() {
   const manifest = browser.runtime.getManifest();
@@ -22,6 +63,11 @@ export function startBugsnag() {
     enabledBreadcrumbTypes: ['log', 'error', 'request'],
     logger: null,
     onError: async (event: BugsnagEvent) => {
+      // Fill out the user ID
+      if (!event.getUser()) {
+        event.setUser(await getExtensionInstallId());
+      }
+
       // Group download errors by URL and error code
       if (
         event.errors[0].errorClass === 'DownloadError' &&
@@ -78,6 +124,5 @@ export function startBugsnag() {
 
       return true;
     },
-    user: { id: getExtensionInstallId() },
   });
 }
