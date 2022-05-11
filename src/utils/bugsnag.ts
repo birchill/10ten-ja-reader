@@ -6,7 +6,7 @@ import { getReleaseStage } from './release-stage';
 const getExtensionInstallId = async (): Promise<string> => {
   let internalUuid: string | undefined;
   try {
-    // In Firefox, each install gets a unique internalUuid which differs from
+    // In Firefox, each install gets a unique internal UUID which differs from
     // the extension ID (provided it is set through the
     // browser_specific_settings in manifest.json).
     //
@@ -15,6 +15,9 @@ const getExtensionInstallId = async (): Promise<string> => {
     // browser.runtime.id = Extension ID
     // browser.runtime.getURL('yer').host = Internal UUID
     // browser.getMessage('@@extension_id') = Internal UUID
+    //
+    // In other browsers I think all of the above return the Extension ID.
+    // (I haven't checked Safari, however.)
     //
     internalUuid = new URL(browser.runtime.getURL('yer')).host;
   } catch {
@@ -25,6 +28,7 @@ const getExtensionInstallId = async (): Promise<string> => {
     return internalUuid;
   }
 
+  // Generate/fetch a unique install ID since the browser doesn't provide one.
   try {
     let storedInstallId = (await browser.storage.local.get('installid'))
       ?.installid;
