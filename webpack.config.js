@@ -121,7 +121,7 @@ const firefoxConfig = buildExtConfig({
   distFolder: 'dist-firefox',
   includeRikaichampName: true,
   supportsAlphaVersion: true,
-  supportsApplicationsField: true,
+  supportsBrowserSpecificSettings: true,
   supportsBrowserStyle: true,
   supportsMatchAboutBlank: true,
   supportsSvgIcons: true,
@@ -184,6 +184,7 @@ const safariConfig = buildExtConfig({
   artifactsDir: 'dist-safari-package',
   distFolder: 'dist-safari',
   isSafari: true,
+  supportsBrowserSpecificSettings: true,
   supportsBrowserStyle: true,
   supportsExtensionSourceMaps: false,
   useEventPage: true,
@@ -215,7 +216,7 @@ function buildExtConfig({
   includeRikaichampName = false,
   needsClipboardWrite = true,
   supportsAlphaVersion = false,
-  supportsApplicationsField = false,
+  supportsBrowserSpecificSettings = false,
   supportsBrowserStyle = false,
   supportsChromeStyle = false,
   supportsExtensionSourceMaps = true,
@@ -256,8 +257,8 @@ function buildExtConfig({
     preprocessorFeatures.push('supports_alpha_version');
   }
 
-  if (supportsApplicationsField) {
-    preprocessorFeatures.push('supports_applications_field');
+  if (supportsBrowserSpecificSettings) {
+    preprocessorFeatures.push('supports_browser_specific_settings');
   }
 
   if (supportsBrowserStyle) {

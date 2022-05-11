@@ -7,8 +7,8 @@
   /*#endif*/
   "author": "Brian Birtles",
   "version": "1.9.0",
-  /*#if supports_applications_field*/
-  "applications": {
+  /*#if supports_browser_specific_settings*/
+  "browser_specific_settings": {
     "gecko": {
       "id": "{59812185-ea92-4cca-8ab7-cfcacee81281}",
       "strict_min_version": "69.0"
