@@ -19,6 +19,10 @@ const getExtensionInstallId = async (): Promise<string> => {
     // In other browsers I think all of the above return the Extension ID.
     // (I haven't checked Safari, however.)
     //
+    // If that internal UUID is available, we use it because it is sometimes
+    // helpful when Firefox users contact us describing a bug, to be able to
+    // find error reports generated from their installation.
+    //
     internalUuid = new URL(browser.runtime.getURL('yer')).host;
   } catch {
     // Ignore
@@ -47,13 +51,27 @@ const getExtensionInstallId = async (): Promise<string> => {
 };
 
 function getRandomId() {
-  const randomPool = new Uint8Array(32);
-  crypto.getRandomValues(randomPool);
-  let hex = '';
-  for (let i = 0; i < randomPool.length; ++i) {
-    hex += randomPool[i].toString(16);
+  const number = getRandomNumber(10);
+  return `${'0'.repeat(10)}${number.toString(36)}`.slice(-10);
+}
+
+// |length| here is the maximum number of base-36 digits we want to generate.
+function getRandomNumber(length: number): number {
+  if (Math.pow(36, length) > Number.MAX_SAFE_INTEGER) {
+    console.error(
+      `A base-36 number with ${length} digits overflows the range of an integer`
+    );
   }
-  return hex;
+  const values = new Uint8Array(length);
+  crypto.getRandomValues(values);
+  const max = Math.pow(2, 8);
+
+  let result = 0;
+  for (let i = 0; i < values.length; i++) {
+    result *= 36;
+    result += Math.round((values[i] / max) * 35);
+  }
+  return result;
 }
 
 export function startBugsnag() {
@@ -68,9 +86,13 @@ export function startBugsnag() {
     logger: null,
     onError: async (event: BugsnagEvent) => {
       // Fill out the user ID
-      if (!event.getUser()) {
-        event.setUser(await getExtensionInstallId());
-      }
+      //
+      // Bugsnag will generate a unique device ID, store it in local storage,
+      // and use that as the user ID but that won't help us once we move to
+      // MV3 (no local storage) or if we try to use it in a content script
+      // (different local storage context) so we use our own ID that we store
+      // in extension local storage.
+      event.setUser(await getExtensionInstallId());
 
       // Group download errors by URL and error code
       if (
