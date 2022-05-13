@@ -9,20 +9,15 @@
   dependencies:
     "@actions/http-client" "^2.0.1"
 
-"@actions/github@5.0.2":
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/@actions/github/-/github-5.0.2.tgz#ae2ff4c42bab7bbc620f23c6e549c12f5919f531"
-  integrity sha512-+5a9gntqJhqn3bind2TT2xMp+7H6drlr5JPygyJvr6K8lSOs7qRF02doABmMbJKz+dy04wJVG5bBLCodPoTfaQ==
+"@actions/github@5.0.3":
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/@actions/github/-/github-5.0.3.tgz#b305765d6173962d113451ea324ff675aa674f35"
+  integrity sha512-myjA/pdLQfhUGLtRZC/J4L1RXOG4o6aYdiEq+zr5wVVKljzbFld+xv10k1FX6IkIJtNxbAq44BdwSNpQ015P0A==
   dependencies:
-    "@actions/http-client" "^2.0.0"
+    "@actions/http-client" "^2.0.1"
     "@octokit/core" "^3.6.0"
     "@octokit/plugin-paginate-rest" "^2.17.0"
     "@octokit/plugin-rest-endpoint-methods" "^5.13.0"
-
-"@actions/http-client@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@actions/http-client/-/http-client-2.0.0.tgz#518c4af1e7045769d3e2ad8c2ce7f8b05224a9b3"
-  integrity sha512-fm1+OPPey5ypgStT9K8zbBhICj4J4UV/TJIHDhuWlkb8KyJaAtjcZK184dTqul0dV0nPKX97FNtDXX20BTLXSA==
 
 "@actions/http-client@^2.0.1":
   version "2.0.1"
