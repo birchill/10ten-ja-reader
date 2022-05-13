@@ -27,10 +27,6 @@
     "message": "Failed to update dictionary data",
     "description": "Tooltip for toolbar button when we failed to update."
   },
-  "command_toggle_updating": {
-    "message": "Applying dictionary data...",
-    "description": "Tooltip for toolbar button when applying updates."
-  },
   "content_copied_entry": {
     "message": "Copied entry",
     "description": "Overlay shown after copying an entry to the clipboard."
@@ -1755,24 +1751,6 @@
   "options_update_retry_button_label": {
     "message": "Retry",
     "description": "Label for the button to retry the database update after a failure"
-  },
-  "options_updating_data": {
-    "message": "Updating $datatype$ to version $version$ (​$progress$​%)…",
-    "description": "Label while we are applying updates",
-    "placeholders": {
-      "datatype": {
-        "content": "$1",
-        "example": "kanji data"
-      },
-      "version": {
-        "content": "$2",
-        "example": "1.0.3"
-      },
-      "progress": {
-        "content": "$3",
-        "example": "60"
-      }
-    }
   },
   "options_words_data_name": {
     "message": "word data",

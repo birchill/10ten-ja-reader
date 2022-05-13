@@ -1,4 +1,4 @@
-import { NameTranslation } from '@birchill/hikibiki-data';
+import { NameTranslation } from '@birchill/jpdict-idb';
 import { browser } from 'webextension-polyfill-ts';
 
 import { NameResult } from '../../background/search-result';

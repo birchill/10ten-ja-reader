@@ -1,14 +1,14 @@
 import {
   allMajorDataSeries,
   cancelUpdateWithRetry,
+  clearCachedVersionInfo,
   DataSeries,
-  DataSeriesState,
-  JpdictDatabase,
+  JpdictIdb,
   MajorDataSeries,
   toUpdateErrorState,
   UpdateErrorState,
   updateWithRetry,
-} from '@birchill/hikibiki-data';
+} from '@birchill/jpdict-idb';
 
 import { JpdictState } from '../background/jpdict';
 import { requestIdleCallbackPromise } from '../utils/request-idle-callback';
@@ -68,13 +68,13 @@ self.onerror = (e) => {
   self.postMessage(notifyError({ error: e.error || e }));
 };
 
-let db: JpdictDatabase | undefined;
+let db: JpdictIdb | undefined;
 
 const dbIsInitialized: Promise<boolean> = initDb()
   .then(() => true)
   .catch(() => false);
 
-async function initDb(): Promise<JpdictDatabase> {
+async function initDb(): Promise<JpdictIdb> {
   let retryCount = 0;
   while (true) {
     if (db) {
@@ -85,7 +85,7 @@ async function initDb(): Promise<JpdictDatabase> {
       }
     }
 
-    db = new JpdictDatabase({ verbose: true });
+    db = new JpdictIdb({ verbose: true });
     db.addChangeListener(doDbStateNotification);
 
     try {
@@ -222,11 +222,13 @@ async function updateAllSeries({
       return;
     }
 
+    if (forceUpdate || wasForcedUpdate) {
+      clearCachedVersionInfo();
+    }
     void updateWithRetry({
       db: db!,
       series: currentUpdate.series,
       lang,
-      forceUpdate: forceUpdate || wasForcedUpdate,
       onUpdateComplete: runNextUpdate,
       onUpdateError: onUpdateError(currentUpdate.series),
     });
@@ -249,10 +251,10 @@ function doDbStateNotification() {
   // reporting anything.
   if (
     !db ||
-    db.words.state === DataSeriesState.Initializing ||
-    db.kanji.state === DataSeriesState.Initializing ||
-    db.radicals.state === DataSeriesState.Initializing ||
-    db.names.state === DataSeriesState.Initializing
+    db.words.state === 'init' ||
+    db.kanji.state === 'init' ||
+    db.radicals.state === 'init' ||
+    db.names.state === 'init'
   ) {
     return;
   }
@@ -261,7 +263,7 @@ function doDbStateNotification() {
   const lastCheck = getLatestCheckTime(db!);
   const updateState = currentUpdate
     ? db[currentUpdate.series].updateState
-    : { state: <const>'idle', lastCheck };
+    : { type: <const>'idle', lastCheck };
 
   const state: JpdictState = {
     words: {
@@ -292,7 +294,7 @@ function doDbStateNotification() {
   }
 }
 
-function getLatestCheckTime(db: JpdictDatabase): Date | null {
+function getLatestCheckTime(db: JpdictIdb): Date | null {
   const latestCheckAsNumber = Math.max.apply(
     null,
     allMajorDataSeries.map((series) => db[series].updateState.lastCheck)

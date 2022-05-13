@@ -494,30 +494,26 @@
   resolved "https://registry.yarnpkg.com/@birchill/discriminator/-/discriminator-0.1.0.tgz#a6f6ccc55701d2072e6b8b7e9199c38d16cc5749"
   integrity sha512-VAPyxxm8/VDBjsttMR6SEZOiW5tgzmoASHxDJ+Jk3V6bN2PVsS+ooClYXfDpNN/b6NdmGyYS95tXREcO+GXung==
 
-"@birchill/hikibiki-data@7.5.1":
-  version "7.5.1"
-  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-7.5.1.tgz#20eacd79b4e9da9360be063c5a2a2681faafcf7c"
-  integrity sha512-MUujssAmLiDQehIZDvFCmqadUf5T1o+o1m09VJXx7ZKFmw5GbiiffOQO7kxNvXquuPxN48TP0KxmSj8WjNgF7A==
+"@birchill/jpdict-idb@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-1.1.0.tgz#c601e0ea72d3b00a1e40636985a892a975c92960"
+  integrity sha512-ZEV/VcLbcVC9TuBV/1adIPf+cBQXxWDTlX5vSZXOjYaOLHt9jWXQZQzgZ03tQqaFMLIiNjQuHF5K8AReSrwPmA==
   dependencies:
     "@birchill/json-equalish" "^1.1.2"
-    "@birchill/normal-jp" "^1.2.2"
-    idb "^6.0.0"
-    safari-14-idb-fix "^1.0.3"
+    "@birchill/normal-jp" "^1.4.0"
+    idb "^7.0.1"
+    safari-14-idb-fix "^3.0.0"
+    superstruct "^0.15.4"
 
 "@birchill/json-equalish@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@birchill/json-equalish/-/json-equalish-1.1.2.tgz#6547834e6ce2331a969a1aa13c485f19b7428c9f"
   integrity sha512-oXsOtXbuxai0iq8bXZKa0S2AkGEEhigu2WcZUbYwRbv4EtHJvT6jqSg5kNtWeI+6frv7ixIbJbuWP6AbNtj7Sw==
 
-"@birchill/normal-jp@1.4.0":
+"@birchill/normal-jp@1.4.0", "@birchill/normal-jp@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.4.0.tgz#b58f6146f9b754431f7d93c2d48aca9ee45ee1a3"
   integrity sha512-iMeOw4BJS1Z0wqMyC3eYoZN+ANDlg1VQ+dZy56UEwNEaY+hzkR6nYT0DKpDRVRp5oJbpf7rEJQ6gfmD7AWJv2A==
-
-"@birchill/normal-jp@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.2.2.tgz#38234fbfe9b9f622a815f7ae6ea6cba31f363e41"
-  integrity sha512-WSpN/ERemjXOCorzHkc3VXp356s24a2mtVST1s06UVV1jsluVCMEo/f3FJyqaAeu60yPF+ow05TIThlPR4DhBQ==
 
 "@bugsnag/browser@^7.16.2":
   version "7.16.2"
@@ -4525,10 +4521,10 @@ icss-utils@^5.0.0, icss-utils@^5.1.0:
   resolved "https://registry.yarnpkg.com/icss-utils/-/icss-utils-5.1.0.tgz#c6be6858abd013d768e98366ae47e25d5887b1ae"
   integrity sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==
 
-idb@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/idb/-/idb-6.0.0.tgz#00d6092b948138cf9bebc9dcddc4df8bf60bf0ac"
-  integrity sha512-+M367poGtpzAylX4pwcrZIa7cFQLfNkAOlMMLN2kw/2jGfJP6h+TB/unQNSVYwNtP8XqkLYrfuiVnxLQNP1tjA==
+idb@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/idb/-/idb-7.0.1.tgz#d2875b3a2f205d854ee307f6d196f246fea590a7"
+  integrity sha512-UUxlE7vGWK5RfB/fDwEGgRf84DY/ieqNha6msMV99UsEMQhJ1RwbCd8AYBj3QMgnE3VZnfQvm4oKVCJTYlqIgg==
 
 ieee754@^1.1.13:
   version "1.2.1"
@@ -7194,10 +7190,10 @@ rxjs@^7.5.2:
   dependencies:
     tslib "^2.1.0"
 
-safari-14-idb-fix@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/safari-14-idb-fix/-/safari-14-idb-fix-1.0.3.tgz#3efabd6ee57bcd1522ebecbedaa61d14ca6061cc"
-  integrity sha512-g+mlH1SOHKYmZ46O5gV7A5LSpxyzpJhjhhwEl8EOp8BX2iy6XgfnrlY0fo3+Xjiid82ilEBTwIKiJHe38i8N2w==
+safari-14-idb-fix@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/safari-14-idb-fix/-/safari-14-idb-fix-3.0.0.tgz#450fc049b996ec7f3fd9ca2f89d32e0761583440"
+  integrity sha512-eBNFLob4PMq8JA1dGyFn6G97q3/WzNtFK4RnzT1fnLq+9RyrGknzYiM/9B12MnKAxuj1IXr7UKYtTNtjyKMBog==
 
 safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.2, safe-buffer@~5.2.0:
   version "5.2.1"
@@ -7764,7 +7760,7 @@ strip-json-comments@~2.0.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
   integrity sha1-PFMZQukIwml8DsNEhYwobHygpgo=
 
-superstruct@0.15.4:
+superstruct@0.15.4, superstruct@^0.15.4:
   version "0.15.4"
   resolved "https://registry.yarnpkg.com/superstruct/-/superstruct-0.15.4.tgz#e3381dd84ca07e704e19f69eda74eee1a5efb1f9"
   integrity sha512-eOoMeSbP9ZJChNOm/9RYjE+F36rYR966AAqeG3xhQB02j2sfAUXDp4EQ/7bAOqnlJnuFDB8yvOu50SocvKpUEw==

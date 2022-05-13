@@ -2,7 +2,7 @@ import type {
   NameResult as HikibikiNameResult,
   WordResult as HikibikiWordResult,
   KanjiResult,
-} from '@birchill/hikibiki-data';
+} from '@birchill/jpdict-idb';
 
 // Words
 

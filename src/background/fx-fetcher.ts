@@ -14,8 +14,7 @@ const FxDataSchema = s.type({
 });
 
 // Hopefully this is sufficiently similar enough to the DownloadError class used
-// by hikibiki-data that our Bugsnag grouping code should treat them as the
-// same.
+// by jpdict-idb that our Bugsnag grouping code should treat them as the same.
 class DownloadError extends Error {
   code: number;
   url: string;

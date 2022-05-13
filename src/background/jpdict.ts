@@ -7,7 +7,7 @@ import {
   getWords as idbGetWords,
   UpdateErrorState,
   UpdateState,
-} from '@birchill/hikibiki-data';
+} from '@birchill/jpdict-idb';
 import { kanaToHiragana } from '@birchill/normal-jp';
 import { browser } from 'webextension-polyfill-ts';
 
@@ -81,23 +81,23 @@ jpdictWorker.onmessageerror = (event: MessageEvent) => {
 
 let dbState: JpdictStateWithFallback = {
   words: {
-    state: DataSeriesState.Initializing,
+    state: 'init',
     version: null,
     fallbackState: 'unloaded',
   },
   kanji: {
-    state: DataSeriesState.Initializing,
+    state: 'init',
     version: null,
   },
   radicals: {
-    state: DataSeriesState.Initializing,
+    state: 'init',
     version: null,
   },
   names: {
-    state: DataSeriesState.Initializing,
+    state: 'init',
     version: null,
   },
-  updateState: { state: 'idle', lastCheck: null },
+  updateState: { type: 'idle', lastCheck: null },
 };
 
 // Is the IDB database available for the given series?
@@ -105,7 +105,7 @@ let dbState: JpdictStateWithFallback = {
 // We structure the tables and access them in a way that means we _should_ be
 // able to use, e.g., the 'words' table in a performant manner while the 'names'
 // table is being updated, but this doesn't appear to work for Chrome which
-// suffers significant lag when any tables in the database is being accessed.
+// suffers significant lag when any tables in the database are being accessed.
 //
 // As a result we simply don't touch IDB while it's being updated.
 function getDataSeriesStatus(
@@ -114,19 +114,19 @@ function getDataSeriesStatus(
   // If we're unavailable or initializing, treat the database as unavailable
   // regardless of whether or not we're updating.
   if (
-    dbState[series].state === DataSeriesState.Unavailable ||
-    dbState[series].state === DataSeriesState.Initializing
+    dbState[series].state === 'unavailable' ||
+    dbState[series].state === 'init'
   ) {
     return 'unavailable';
   }
 
   // Otherwise, whether we're empty or ok, check if we're updating.
-  if (dbState.updateState.state !== 'idle') {
+  if (dbState.updateState.type !== 'idle') {
     return 'updating';
   }
 
   // Otherwise treat empty as unavailable.
-  return dbState[series].state === DataSeriesState.Ok ? 'ok' : 'unavailable';
+  return dbState[series].state === 'ok' ? 'ok' : 'unavailable';
 }
 
 // Fallback words database to use if we can't read the IndexedDB one (e.g.

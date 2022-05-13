@@ -1,8 +1,8 @@
-// This is duplicated from hikibiki-data's sorting of entries.
+// This is duplicated from jpdict-idb's sorting of entries.
 //
 // We only use it for sorting in the case where we've fallen back to the
 // flat file database so it doesn't need to be perfect or even keep in sync
-// with changes to hikibiki-data. It's really just a stop-gap measure.
+// with changes to jpdict-idb. It's really just a stop-gap measure.
 
 import { WordResult } from './search-result';
 

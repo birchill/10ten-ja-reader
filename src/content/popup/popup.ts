@@ -1,4 +1,4 @@
-import { allMajorDataSeries, MajorDataSeries } from '@birchill/hikibiki-data';
+import { allMajorDataSeries, MajorDataSeries } from '@birchill/jpdict-idb';
 
 import {
   AccentDisplay,

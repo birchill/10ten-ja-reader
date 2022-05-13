@@ -6,7 +6,7 @@ import {
   DataSeries,
   DataSeriesState,
   MajorDataSeries,
-} from '@birchill/hikibiki-data';
+} from '@birchill/jpdict-idb';
 import Bugsnag from '@bugsnag/browser';
 import Browser, { browser } from 'webextension-polyfill-ts';
 
@@ -1016,7 +1016,7 @@ function updateDatabaseStatus(event: DbStateUpdatedMessage) {
 
   // Fill out the info part
 
-  switch (updateState.state) {
+  switch (updateState.type) {
     case 'idle':
       void updateIdleStateSummary(event, statusElem);
       break;
@@ -1031,15 +1031,14 @@ function updateDatabaseStatus(event: DbStateUpdatedMessage) {
       );
       break;
 
-    case 'downloading':
-    case 'updatingdb': {
+    case 'updating': {
       const infoDiv = html(
         'div',
         { class: 'db-summary-info' },
         html('progress', {
           class: 'progress',
           max: '100',
-          value: String(updateState.progress * 100),
+          value: String(updateState.totalProgress * 100),
           id: 'update-progress',
         })
       );
@@ -1057,19 +1056,14 @@ function updateDatabaseStatus(event: DbStateUpdatedMessage) {
       };
       const dbLabel = browser.i18n.getMessage(labels[updateState.series]);
 
-      const { major, minor, patch } = updateState.downloadVersion;
+      const { major, minor, patch } = updateState.version;
       const versionString = `${major}.${minor}.${patch}`;
 
-      const progressAsPercent = Math.round(updateState.progress * 100);
-      const key =
-        updateState.state === 'downloading'
-          ? 'options_downloading_data'
-          : 'options_updating_data';
-      labelElem.textContent = browser.i18n.getMessage(key, [
-        dbLabel,
-        versionString,
-        String(progressAsPercent),
-      ]);
+      const progressAsPercent = Math.round(updateState.totalProgress * 100);
+      labelElem.textContent = browser.i18n.getMessage(
+        'options_downloading_data',
+        [dbLabel, versionString, String(progressAsPercent)]
+      );
 
       infoDiv.append(labelElem);
       statusElem.append(infoDiv);
@@ -1081,7 +1075,7 @@ function updateDatabaseStatus(event: DbStateUpdatedMessage) {
 
   const buttonDiv = html('div', { class: 'db-summary-button' });
 
-  switch (updateState.state) {
+  switch (updateState.type) {
     case 'idle': {
       // We should probably skip this when we are offline, but for now it
       // doesn't really matter.
@@ -1090,10 +1084,10 @@ function updateDatabaseStatus(event: DbStateUpdatedMessage) {
         type: 'button',
       });
       const isUnavailable = allDataSeries.some(
-        (series) => event.state[series].state === DataSeriesState.Unavailable
+        (series) => event.state[series].state === 'unavailable'
       );
       updateButton.textContent = browser.i18n.getMessage(
-        updateState.state === 'idle' && !isUnavailable
+        updateState.type === 'idle' && !isUnavailable
           ? 'options_update_check_button_label'
           : 'options_update_retry_button_label'
       );
@@ -1111,8 +1105,7 @@ function updateDatabaseStatus(event: DbStateUpdatedMessage) {
     }
 
     case 'checking':
-    case 'downloading':
-    case 'updatingdb': {
+    case 'updating': {
       const cancelButton = html(
         'button',
         { class: 'browser-style', type: 'button' },
@@ -1205,17 +1198,15 @@ async function updateIdleStateSummary(
   );
   if (!hasVersionInfo) {
     const summaryStates: Array<[DataSeriesState, string]> = [
-      [DataSeriesState.Initializing, 'options_db_initializing'],
-      [DataSeriesState.Empty, 'options_no_database'],
-      [DataSeriesState.Unavailable, 'options_database_unavailable'],
+      ['init', 'options_db_initializing'],
+      ['empty', 'options_no_database'],
+      ['unavailable', 'options_database_unavailable'],
     ];
     for (const [state, key] of summaryStates) {
       if (
         allMajorDataSeries.some((series) => event.state[series].state === state)
       ) {
-        if (state === DataSeriesState.Unavailable) {
-          statusElem.classList.add('-error');
-        }
+        statusElem.classList.toggle('-error', state === 'unavailable');
         statusElem.append(
           html(
             'div',

@@ -46,8 +46,8 @@
 
 import '../../manifest.json.src';
 
+import { AbortError } from '@birchill/jpdict-idb';
 import Bugsnag from '@bugsnag/browser';
-import { AbortError, DataSeriesState } from '@birchill/hikibiki-data';
 import * as s from 'superstruct';
 import Browser, { browser } from 'webextension-polyfill-ts';
 
@@ -245,23 +245,23 @@ void config.ready.then(async () => {
 
 let jpdictState: JpdictStateWithFallback = {
   words: {
-    state: DataSeriesState.Initializing,
+    state: 'init',
     version: null,
     fallbackState: 'unloaded',
   },
   kanji: {
-    state: DataSeriesState.Initializing,
+    state: 'init',
     version: null,
   },
   radicals: {
-    state: DataSeriesState.Initializing,
+    state: 'init',
     version: null,
   },
   names: {
-    state: DataSeriesState.Initializing,
+    state: 'init',
     version: null,
   },
-  updateState: { state: 'idle', lastCheck: null },
+  updateState: { type: 'idle', lastCheck: null },
 };
 
 // Don't run initJpDict more that we need to

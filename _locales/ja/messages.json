@@ -27,10 +27,6 @@
     "message": "辞書データの更新を失敗しました",
     "description": "Tooltip for toolbar button when we failed to update."
   },
-  "command_toggle_updating": {
-    "message": "辞書データを適用中...",
-    "description": "Tooltip for toolbar button when applying updates."
-  },
   "content_copied_entry": {
     "message": "項目をコピーしました",
     "description": "Overlay shown after copying an entry to the clipboard."
@@ -1758,20 +1754,6 @@
   "options_update_retry_button_label": {
     "message": "再試行",
     "description": "Label for the button to retry the database update after a failure"
-  },
-  "options_updating_data": {
-    "message": "$datatype$​バージョン​$version$​を適用中…",
-    "description": "Label while we are applying updates",
-    "placeholders": {
-      "datatype": {
-        "content": "$1",
-        "example": "kanji data"
-      },
-      "version": {
-        "content": "$2",
-        "example": "1.0.3"
-      }
-    }
   },
   "options_words_data_name": {
     "message": "単語データ",

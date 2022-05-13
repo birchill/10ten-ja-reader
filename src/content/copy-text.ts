@@ -3,7 +3,7 @@ import {
   GlossType,
   KanjiResult,
   LangSource,
-} from '@birchill/hikibiki-data';
+} from '@birchill/jpdict-idb';
 import { browser } from 'webextension-polyfill-ts';
 
 import { NameResult, Sense, WordResult } from '../background/search-result';
@@ -235,7 +235,9 @@ function serializeSense(sense: Sense): string {
   result += sense.field ? `(${sense.field.join(',')}) ` : '';
   result += sense.misc ? `(${sense.misc.join(',')}) ` : '';
   result += sense.dial
-    ? `(${sense.dial.map((dial) => dialects[dial]).join(',')}) `
+    ? `(${sense.dial
+        .map((dial) => (dial in dialects ? dialects[dial as Dialect] : dial))
+        .join(',')}) `
     : '';
 
   const glosses: Array<string> = [];

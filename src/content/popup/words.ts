@@ -5,7 +5,7 @@ import {
   KanjiInfo,
   LangSource,
   ReadingInfo,
-} from '@birchill/hikibiki-data';
+} from '@birchill/jpdict-idb';
 import { countMora, moraSubstring } from '@birchill/normal-jp';
 import { browser } from 'webextension-polyfill-ts';
 
@@ -203,7 +203,7 @@ function renderNamePreview({ names, more }: NamePreview): HTMLElement {
 }
 
 function appendHeadwordInfo(
-  info: Array<KanjiInfo> | Array<ReadingInfo> | undefined,
+  info: Array<string> | undefined,
   parent: ParentNode
 ) {
   if (!info || !info.length) {
@@ -232,7 +232,9 @@ function appendHeadwordInfo(
       uK: 'ukanji',
       rK: 'rkanji',
     };
-    const key = specialKeys.hasOwnProperty(i) ? specialKeys[i] : i;
+    const key = specialKeys.hasOwnProperty(i)
+      ? specialKeys[i as KanjiInfo | ReadingInfo]
+      : i;
 
     span.append(browser.i18n.getMessage(`head_info_label_${key}`) || i, ')');
     parent.append(span);

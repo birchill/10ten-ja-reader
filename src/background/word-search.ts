@@ -1,4 +1,4 @@
-import { AbortError, PartOfSpeech } from '@birchill/hikibiki-data';
+import { AbortError, PartOfSpeech } from '@birchill/jpdict-idb';
 import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
 import { browser } from 'webextension-polyfill-ts';
 

@@ -1,5 +1,5 @@
 import Bugsnag from '@bugsnag/browser';
-import { AbortError, getNames, NameResult } from '@birchill/hikibiki-data';
+import { AbortError, getNames, NameResult } from '@birchill/jpdict-idb';
 import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
 
 import { isOnlyDigits } from '../utils/char-range';

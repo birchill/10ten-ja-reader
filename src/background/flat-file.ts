@@ -6,7 +6,7 @@ import {
   RawKanjiMeta,
   RawReadingMeta,
   RawWordSense,
-} from '@birchill/hikibiki-data';
+} from '@birchill/jpdict-idb';
 import { kanaToHiragana } from '@birchill/normal-jp';
 import { LRUMap } from 'lru_map';
 import { browser } from 'webextension-polyfill-ts';
@@ -250,8 +250,8 @@ function findLineStartingWith({
 }
 
 // This type matches the structure of the records in the flat file database
-// (which, incidentally, differ slightly from the data format used by
-// hikibiki-data since, for example, they don't include the ID field).
+// (which, incidentally, differ slightly from the data format used by jpdict-idb
+// since, for example, they don't include the ID field).
 //
 // As a result it is only used as part of the fallback mechanism.
 

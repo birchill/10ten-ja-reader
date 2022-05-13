@@ -45,7 +45,7 @@
 
 */
 
-import type { MajorDataSeries } from '@birchill/hikibiki-data';
+import type { MajorDataSeries } from '@birchill/jpdict-idb';
 import * as s from 'superstruct';
 import Browser, { browser } from 'webextension-polyfill-ts';
 

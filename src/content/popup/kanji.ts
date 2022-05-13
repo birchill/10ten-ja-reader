@@ -1,4 +1,4 @@
-import { KanjiResult } from '@birchill/hikibiki-data';
+import { KanjiResult } from '@birchill/jpdict-idb';
 import { browser } from 'webextension-polyfill-ts';
 
 import {

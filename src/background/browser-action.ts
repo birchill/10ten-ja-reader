@@ -1,4 +1,4 @@
-import { allMajorDataSeries, DataSeriesState } from '@birchill/hikibiki-data';
+import { allMajorDataSeries } from '@birchill/jpdict-idb';
 import { browser } from 'webextension-polyfill-ts';
 
 import { JpdictStateWithFallback } from './jpdict';
@@ -24,13 +24,10 @@ export function updateBrowserAction({
     const jpdictWords = jpdictState.words.state;
     const fallbackWords = jpdictState.words.fallbackState;
 
-    if (jpdictWords === DataSeriesState.Ok || fallbackWords === 'ok') {
+    if (jpdictWords === 'ok' || fallbackWords === 'ok') {
       iconFilename = '10ten';
       titleStringId = 'command_toggle_enabled';
-    } else if (
-      jpdictWords === DataSeriesState.Initializing ||
-      fallbackWords === 'loading'
-    ) {
+    } else if (jpdictWords === 'init' || fallbackWords === 'loading') {
       titleStringId = 'command_toggle_loading';
     } else if (fallbackWords === 'unloaded') {
       // If we get this far, we've either failed to load the jpdict database or
@@ -49,7 +46,7 @@ export function updateBrowserAction({
   }
 
   // Next determine if we need to overlay any additional information.
-  switch (jpdictState.updateState.state) {
+  switch (jpdictState.updateState.type) {
     case 'checking':
       // Technically the '-indeterminate' icon would be more correct here but
       // using '-0' instead leads to less flicker.
@@ -57,17 +54,13 @@ export function updateBrowserAction({
       titleStringId = 'command_toggle_checking';
       break;
 
-    case 'downloading':
-    case 'updatingdb':
+    case 'updating':
       // We only have progress variants for the regular and disabled styles.
       if (['10ten', '10ten-disabled'].includes(iconFilename)) {
         iconFilename +=
-          '-' + Math.round(jpdictState.updateState.progress * 5) * 20;
+          '-' + Math.round(jpdictState.updateState.totalProgress * 5) * 20;
       }
-      titleStringId =
-        jpdictState.updateState.state === 'downloading'
-          ? 'command_toggle_downloading'
-          : 'command_toggle_updating';
+      titleStringId = 'command_toggle_downloading';
       break;
   }
 
@@ -99,7 +92,7 @@ export function updateBrowserAction({
   // Add a warning overlay and update the string if there was a fatal
   // update error.
   const hasNotOkDatabase = allMajorDataSeries.some(
-    (series) => jpdictState[series].state !== DataSeriesState.Ok
+    (series) => jpdictState[series].state !== 'ok'
   );
   if (
     hasNotOkDatabase &&

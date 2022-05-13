@@ -1,4 +1,4 @@
-import { MajorDataSeries } from '@birchill/hikibiki-data';
+import { MajorDataSeries } from '@birchill/jpdict-idb';
 import { browser } from 'webextension-polyfill-ts';
 
 import { QueryResult } from '../query';
