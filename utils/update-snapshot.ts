@@ -2,11 +2,15 @@ import { kanaToHiragana } from '@birchill/normal-jp';
 import * as https from 'https';
 import * as fs from 'fs';
 import * as path from 'path';
-import split from 'split2';
-import { Readable } from 'stream';
+import {
+  Readable,
+  Transform,
+  TransformCallback,
+  TransformOptions,
+} from 'stream';
 import { createBrotliDecompress } from 'zlib';
 
-const BASE_URL = 'https://d907hooix2fo8.cloudfront.net';
+const BASE_URL = 'https://data.10ten.study';
 
 async function main() {
   // Download the latest data
@@ -96,9 +100,9 @@ interface VersionInfo {
 async function getCurrentVersionInfo(
   majorVersion: number
 ): Promise<VersionInfo> {
-  console.log('Fetching version info from jpdict-rc-en-version.json...');
+  console.log('Fetching version info from version-en.json...');
   const rawVersionInfo = await getHttpsContents({
-    url: `${BASE_URL}/jpdict-rc-en-version.json`,
+    url: `${BASE_URL}/jpdict/reader/version-en.json`,
   });
   if (!rawVersionInfo) {
     throw new Error('Version file was empty');
@@ -143,7 +147,7 @@ async function getCurrentVersionInfo(
 // ---------------------------------------------------------------------------
 
 type JsonRecord = {
-  id: string;
+  id: number;
   deleted?: boolean;
 };
 
@@ -151,30 +155,46 @@ async function readJsonRecords(currentVersion: {
   major: number;
   minor: number;
   patch: number;
-}): Promise<Map<string, JsonRecord>> {
-  const { major, minor, patch } = currentVersion;
-
-  // Get base version
-  const baseKey = `words-rc-en-${major}.${minor}.0.ljson`;
-  console.log(`Fetching latest version from: ${baseKey}...`);
-
-  const result = new Map<string, JsonRecord>();
-  await applyPatch(await getHttpsStream(`${BASE_URL}/${baseKey}`), result);
-
-  // Apply subsequent patches
-  let currentPatch = 0;
-  while (++currentPatch <= patch) {
-    const patchKey = `words-rc-en-${major}.${minor}.${currentPatch}.ljson`;
-    console.log(`Fetching patch: ${patchKey}...`);
-
-    await applyPatch(await getHttpsStream(`${BASE_URL}/${patchKey}`), result);
+}): Promise<Map<number, JsonRecord>> {
+  const result = new Map<number, JsonRecord>();
+  const combinedStream = await getCombinedStream(currentVersion);
+  for await (const line of ljsonStreamIterator(combinedStream)) {
+    if (isJsonRecord(line)) {
+      result.set(line.id, line);
+    }
   }
 
   return result;
 }
 
+async function getCombinedStream({
+  major,
+  minor,
+  patch,
+}: {
+  major: number;
+  minor: number;
+  patch: number;
+}): Promise<Readable> {
+  let part = 1;
+  return new StreamConcat(async () => {
+    const url = `${BASE_URL}/jpdict/reader/words/en/${major}.${minor}.${patch}-${part}.jsonl`;
+
+    let stream: Readable;
+    try {
+      console.log(`Reading ${url}...`);
+      stream = await getHttpsStream(url);
+    } catch {
+      return null;
+    }
+
+    ++part;
+    return stream;
+  });
+}
+
 function isJsonRecord(obj: unknown): obj is JsonRecord {
-  if (typeof obj !== 'object' || obj === null) {
+  if (typeof obj !== 'object' || obj === null || Array.isArray(obj)) {
     return false;
   }
 
@@ -183,39 +203,15 @@ function isJsonRecord(obj: unknown): obj is JsonRecord {
     return false;
   }
 
-  // If we have an id, it must be a non-zero number
-  if (typeof (obj as JsonRecord).id !== 'number' || !(obj as JsonRecord).id) {
-    return false;
-  }
-
-  if ('deleted' in obj && typeof (obj as JsonRecord).deleted !== 'boolean') {
+  // We should have an ID that is a positive number
+  if (
+    typeof (obj as JsonRecord).id !== 'number' ||
+    (obj as JsonRecord).id <= 0
+  ) {
     return false;
   }
 
   return true;
-}
-
-function applyPatch(
-  stream: Readable,
-  result: Map<string, Record<string, unknown>>
-): Promise<void> {
-  return new Promise((resolve, reject) => {
-    stream
-      .pipe(split(JSON.parse))
-      .on('data', (obj: unknown) => {
-        if (!isJsonRecord(obj)) {
-          return;
-        }
-
-        if (obj.deleted) {
-          result.delete(obj.id);
-        } else {
-          result.set(obj.id, obj);
-        }
-      })
-      .on('error', (err) => reject(err))
-      .on('end', resolve);
-  });
 }
 
 // ---------------------------------------------------------------------------
@@ -279,4 +275,150 @@ function getHttpsStream(url: string): Promise<Readable> {
         reject(err);
       });
   });
+}
+
+// ---------------------------------------------------------------------------
+//
+// Stream utilities
+//
+// ---------------------------------------------------------------------------
+
+class StreamConcat extends Transform {
+  private canAddStream = true;
+  private currentStream: Readable | null | Promise<Readable | null> = null;
+  private streamIndex = 0;
+
+  constructor(
+    private streams:
+      | Array<Readable>
+      | (() => Readable | null | Promise<Readable | null>),
+    private options: TransformOptions & { advanceOnClose?: boolean } = {}
+  ) {
+    super(options);
+    void this.nextStream();
+  }
+
+  addStream(newStream: Readable): void {
+    if (!this.canAddStream) {
+      return void this.emit('error', new Error("Can't add stream."));
+    }
+    (this.streams as Array<Readable>).push(newStream);
+  }
+
+  async nextStream() {
+    this.currentStream = null;
+    if (Array.isArray(this.streams) && this.streamIndex < this.streams.length) {
+      this.currentStream = this.streams[this.streamIndex++];
+    } else if (typeof this.streams === 'function') {
+      this.canAddStream = false;
+      this.currentStream = this.streams();
+    }
+
+    const pipeStream = async () => {
+      if (!this.currentStream) {
+        this.canAddStream = false;
+        this.end();
+      } else if (isAsyncCallback(this.currentStream)) {
+        this.currentStream = await this.currentStream;
+        await pipeStream();
+      } else {
+        this.currentStream.pipe(this, { end: false });
+        let streamClosed = false;
+        const goNext = async () => {
+          if (streamClosed) {
+            return;
+          }
+          streamClosed = true;
+          await this.nextStream();
+        };
+
+        this.currentStream.on('end', goNext);
+        if (this.options.advanceOnClose) {
+          this.currentStream.on('close', goNext);
+        }
+      }
+    };
+    await pipeStream();
+  }
+
+  _transform(
+    chunk: any,
+    _encoding: BufferEncoding,
+    callback: TransformCallback
+  ) {
+    callback(null, chunk);
+  }
+}
+
+function isAsyncCallback(
+  arg: Promise<Readable | null> | Readable
+): arg is Promise<Readable | null> {
+  return typeof (arg as Promise<any>).then === 'function';
+}
+
+async function* ljsonStreamIterator(
+  stream: Readable
+): AsyncIterableIterator<Record<string, any>> {
+  const lineEnd = /\n|\r|\r\n/m;
+  const decoder = new TextDecoder('utf-8');
+
+  const records: Array<Record<string, any>> = [];
+  let error: unknown | undefined;
+  let done = false;
+
+  let buffer = '';
+
+  const processBuffer = ({ done }: { done: boolean }) => {
+    const lines = buffer.split(lineEnd);
+
+    // If we're not done, move the last line back into the buffer since it might
+    // not be a complete line.
+    if (!done) {
+      buffer = lines.length ? lines.splice(lines.length - 1, 1)[0] : '';
+    }
+
+    for (const line of lines) {
+      if (!line) {
+        continue;
+      }
+
+      try {
+        records.push(JSON.parse(line));
+      } catch (e) {
+        error = e;
+      }
+    }
+  };
+
+  stream
+    .on('data', (chunk) => {
+      buffer += decoder.decode(chunk, { stream: true });
+      processBuffer({ done: false });
+    })
+    .on('error', (err) => {
+      error = err;
+    })
+    .on('end', () => {
+      processBuffer({ done: true });
+      done = true;
+    });
+
+  while (true) {
+    if (error) {
+      throw error;
+    }
+
+    while (records.length) {
+      yield records.shift()!;
+    }
+
+    if (done) {
+      return;
+    }
+
+    // Wait a tick for more data
+    // (It's important to use setImmediate here rather than process.nextTick or
+    // Promise.resolve since setImmediate runs after I/O callbacks).
+    await new Promise<void>((res) => setImmediate(res));
+  }
 }
