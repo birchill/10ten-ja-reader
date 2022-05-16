@@ -95,7 +95,7 @@
     "webpack-cli": "4.9.2",
     "webpack-preprocessor": "0.1.12",
     "webpack-utf8-bom": "1.4.0",
-    "yargs": "17.5.0"
+    "yargs": "17.5.1"
   },
   "dependencies": {
     "@birchill/discriminator": "0.1.0",
