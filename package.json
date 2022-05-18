@@ -80,6 +80,7 @@
     "karma-mocha": "2.0.1",
     "karma-webpack": "5.0.0",
     "mocha": "10.0.0",
+    "playwright": "^1.22.0",
     "prettier": "2.6.2",
     "prettier-plugin-md-nocjsp": "1.2.0",
     "semver-parser": "4.0.1",
@@ -95,6 +96,7 @@
     "webpack-cli": "4.9.2",
     "webpack-preprocessor": "0.1.12",
     "webpack-utf8-bom": "1.4.0",
+    "xmlbuilder2": "^3.0.2",
     "yargs": "17.5.1"
   },
   "dependencies": {
