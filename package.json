@@ -103,7 +103,7 @@
     "@birchill/discriminator": "0.1.0",
     "@birchill/jpdict-idb": "1.1.0",
     "@birchill/normal-jp": "1.4.0",
-    "@bugsnag/js": "7.16.2",
+    "@bugsnag/js": "7.16.5",
     "husky": "8.0.1",
     "lint-staged": "12.4.1",
     "lru_map": "0.4.1",
