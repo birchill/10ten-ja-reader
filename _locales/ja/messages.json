@@ -12,8 +12,18 @@
     "description": "Tooltip for toolbar button when disabled."
   },
   "command_toggle_downloading": {
-    "message": "辞書データを読み込み中...",
-    "description": "Tooltip for toolbar button when downloading updates."
+    "message": "$datatype$​を読み込み中 (​$progress$​%)…",
+    "description": "Tooltip for toolbar button when downloading updates.",
+    "placeholders": {
+      "datatype": {
+        "content": "$1",
+        "example": "radical data"
+      },
+      "progress": {
+        "content": "$2",
+        "example": "12"
+      }
+    }
   },
   "command_toggle_enabled": {
     "message": "10ten reader オン",

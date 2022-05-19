@@ -12,8 +12,18 @@
     "description": "Tooltip for toolbar button when disabled."
   },
   "command_toggle_downloading": {
-    "message": "正在下载词典更新……",
-    "description": "Tooltip for toolbar button when downloading updates."
+    "message": "正在下载​$datatype$​更新（​$progress$​%）……",
+    "description": "Tooltip for toolbar button when downloading updates.",
+    "placeholders": {
+      "datatype": {
+        "content": "$1",
+        "example": "radical data"
+      },
+      "progress": {
+        "content": "$2",
+        "example": "12"
+      }
+    }
   },
   "command_toggle_enabled": {
     "message": "10ten reader 已启用",

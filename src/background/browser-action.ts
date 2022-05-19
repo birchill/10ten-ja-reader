@@ -1,5 +1,6 @@
 import { allMajorDataSeries } from '@birchill/jpdict-idb';
 import { browser } from 'webextension-polyfill-ts';
+import { getLocalizedDataSeriesLabel } from '../common/data-series-labels';
 
 import { JpdictStateWithFallback } from './jpdict';
 
@@ -17,7 +18,7 @@ export function updateBrowserAction({
   toolbarIcon,
 }: BrowserActionState) {
   const iconFilenameParts = ['10ten'];
-  let titleStringId = 'command_toggle_disabled';
+  let tooltip: string;
 
   // Apply the variant, if needed
   if (toolbarIcon === 'sky') {
@@ -30,9 +31,9 @@ export function updateBrowserAction({
     const fallbackWords = jpdictState.words.fallbackState;
 
     if (jpdictWords === 'ok' || fallbackWords === 'ok') {
-      titleStringId = 'command_toggle_enabled';
+      tooltip = browser.i18n.getMessage('command_toggle_enabled');
     } else if (jpdictWords === 'init' || fallbackWords === 'loading') {
-      titleStringId = 'command_toggle_loading';
+      tooltip = browser.i18n.getMessage('command_toggle_loading');
     } else if (fallbackWords === 'unloaded') {
       // If we get this far, we've either failed to load the jpdict database or
       // we simply haven't got around to populating it yet (e.g. we're still
@@ -41,13 +42,14 @@ export function updateBrowserAction({
       // However, we won't load the fallback database until the user actually
       // tries to look something up so we don't know if it's available yet or
       // not. For now, assume everything is ok.
-      titleStringId = 'command_toggle_enabled';
+      tooltip = browser.i18n.getMessage('command_toggle_enabled');
     } else {
       iconFilenameParts.push('error');
-      titleStringId = 'error_loading_dictionary';
+      tooltip = browser.i18n.getMessage('error_loading_dictionary');
     }
   } else {
     iconFilenameParts.push('disabled');
+    tooltip = browser.i18n.getMessage('command_toggle_disabled');
   }
 
   const seriesColors = {
@@ -66,18 +68,27 @@ export function updateBrowserAction({
         '0p',
         seriesColors[jpdictState.updateState.series]
       );
-      titleStringId = 'command_toggle_checking';
+      tooltip = browser.i18n.getMessage('command_toggle_checking');
       break;
 
     case 'updating':
-      // We only have progress variants for the regular and disabled styles.
-      if (!iconFilenameParts.includes('error')) {
-        iconFilenameParts.push(
-          Math.round(jpdictState.updateState.totalProgress * 5) * 20 + 'p',
-          seriesColors[jpdictState.updateState.series]
-        );
+      {
+        const { totalProgress, series } = jpdictState.updateState;
+        // We only have progress variants for the regular and disabled styles.
+        if (!iconFilenameParts.includes('error')) {
+          iconFilenameParts.push(
+            Math.round(totalProgress * 5) * 20 + 'p',
+            seriesColors[series]
+          );
+        }
+        tooltip = 'command_toggle_downloading';
+        const dbLabel = getLocalizedDataSeriesLabel(series);
+        const progressAsPercent = Math.round(totalProgress * 100);
+        tooltip = browser.i18n.getMessage('command_toggle_downloading', [
+          dbLabel,
+          String(progressAsPercent),
+        ]);
       }
-      titleStringId = 'command_toggle_downloading';
       break;
   }
 
@@ -121,16 +132,13 @@ export function updateBrowserAction({
       color: 'yellow',
       tabId,
     });
-    titleStringId = 'command_toggle_update_error';
+    tooltip = browser.i18n.getMessage('command_toggle_update_error');
   } else {
     void browser.browserAction.setBadgeText({ text: '', tabId });
   }
 
   // Set the caption
-  void browser.browserAction.setTitle({
-    title: browser.i18n.getMessage(titleStringId),
-    tabId,
-  });
+  void browser.browserAction.setTitle({ title: tooltip, tabId });
 }
 
 // This will clobber any existing icon settings so it is only intended
@@ -138,12 +146,8 @@ export function updateBrowserAction({
 // setting is changed (in which case we will update the browser action for
 // enabled tabs immediately afterwards anyway).
 export function setDefaultToolbarIcon(toolbarIcon: 'default' | 'sky') {
-  let iconFilename = '10ten-disabled';
-
-  // Apply the variant, if needed
-  if (toolbarIcon === 'sky') {
-    iconFilename += '-sky';
-  }
+  const iconFilename =
+    toolbarIcon === 'sky' ? '10ten-disabled' : '10ten-sky-disabled';
 
   // Set the icon
   //

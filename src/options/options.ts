@@ -3,7 +3,6 @@ import '../../html/options.html.src';
 import {
   allDataSeries,
   allMajorDataSeries,
-  DataSeries,
   DataSeriesState,
   MajorDataSeries,
 } from '@birchill/jpdict-idb';
@@ -45,6 +44,7 @@ import { getThemeClass } from '../utils/themes';
 
 import { Command, CommandParams, isValidKey } from './commands';
 import { translateDoc } from './l10n';
+import { getLocalizedDataSeriesLabel } from '../common/data-series-labels';
 
 startBugsnag();
 
@@ -1048,18 +1048,11 @@ function updateDatabaseStatus(event: DbStateUpdatedMessage) {
         for: 'update-progress',
       });
 
-      const labels: { [series in DataSeries]: string } = {
-        kanji: 'options_kanji_data_name',
-        radicals: 'options_bushu_data_name',
-        names: 'options_name_data_name',
-        words: 'options_words_data_name',
-      };
-      const dbLabel = browser.i18n.getMessage(labels[updateState.series]);
-
       const { major, minor, patch } = updateState.version;
       const versionString = `${major}.${minor}.${patch}`;
 
       const progressAsPercent = Math.round(updateState.totalProgress * 100);
+      const dbLabel = getLocalizedDataSeriesLabel(updateState.series);
       labelElem.textContent = browser.i18n.getMessage(
         'options_downloading_data',
         [dbLabel, versionString, String(progressAsPercent)]
