@@ -24,13 +24,15 @@ async function main() {
         100,
         'indeterminate',
       ] as const) {
-        await saveIcon({
-          browser,
-          enabled,
-          progress,
-          sizes: [16, 32, 48],
-          style,
-        });
+        for (const color of ['green', 'blue', 'purple'] as const) {
+          await saveIcon({
+            browser,
+            enabled,
+            progress: { value: progress, color },
+            sizes: [16, 32, 48],
+            style,
+          });
+        }
       }
     }
 
@@ -58,7 +60,10 @@ async function saveIcon({
   badge?: 'error';
   browser: Browser;
   enabled: boolean;
-  progress?: 0 | 20 | 40 | 60 | 80 | 100 | 'indeterminate';
+  progress?: {
+    value: 0 | 20 | 40 | 60 | 80 | 100 | 'indeterminate';
+    color: 'green' | 'blue' | 'purple';
+  };
   sizes: Array<16 | 32 | 48 | 96 | 128>;
   style: '10' | '天';
 }) {
@@ -73,11 +78,10 @@ async function saveIcon({
   if (badge === 'error') {
     filenameParts.push('error');
   }
-  if (progress !== undefined) {
-    filenameParts.push(
-      typeof progress === 'number' ? `${progress}p` : progress
-    );
-    filenameParts.push('green');
+  if (progress) {
+    const { value, color } = progress;
+    filenameParts.push(typeof value === 'number' ? `${value}p` : value);
+    filenameParts.push(color);
   }
 
   // SVG version
@@ -101,6 +105,12 @@ async function saveIcon({
   }
 }
 
+const COLORS = {
+  green: ['green', 'lime'],
+  blue: ['#004d91', '#26bdfb'],
+  purple: ['#5b006e', '#e458fa'],
+};
+
 function generateSvg({
   badge,
   enabled,
@@ -110,7 +120,10 @@ function generateSvg({
 }: {
   badge?: 'error';
   enabled: boolean;
-  progress?: 0 | 20 | 40 | 60 | 80 | 100 | 'indeterminate';
+  progress?: {
+    value: 0 | 20 | 40 | 60 | 80 | 100 | 'indeterminate';
+    color: 'green' | 'blue' | 'purple';
+  };
   size: 16 | 32 | 48 | 96 | 128;
   style: '10' | '天';
 }) {
@@ -120,7 +133,7 @@ function generateSvg({
   });
 
   // Progress bar gradient
-  if (progress !== undefined) {
+  if (progress) {
     if (size > 48) {
       throw new Error('Progress bar is only supported for sizes <= 48');
     }
@@ -156,9 +169,9 @@ function generateSvg({
         ...gradientDimension[size as 16 | 32 | 48],
         gradientUnits: 'userSpaceOnUse',
       })
-      .ele('stop', { offset: '.2', 'stop-color': 'lime' })
+      .ele('stop', { offset: '.2', 'stop-color': COLORS[progress.color][1] })
       .up()
-      .ele('stop', { offset: 1, 'stop-color': 'green' });
+      .ele('stop', { offset: 1, 'stop-color': COLORS[progress.color][0] });
   }
 
   // Background
@@ -180,14 +193,19 @@ function generateSvg({
   // 10ten logo
   svg.import(getLogo({ enabled, size, style }));
 
-  // Progress bar (background + fill)
-  if (progress !== undefined) {
+  // Progress bar
+  if (progress) {
     if (size > 48) {
       throw new Error('Progress bar is only supported for sizes <= 48');
     }
 
     svg.import(
-      getProgressBar({ enabled, progress, size: size as 16 | 32 | 48 })
+      getProgressBar({
+        color: progress.color,
+        enabled,
+        value: progress.value,
+        size: size as 16 | 32 | 48,
+      })
     );
   }
 
@@ -285,12 +303,14 @@ function getLogo({
 }
 
 function getProgressBar({
+  color,
   enabled,
-  progress,
+  value,
   size,
 }: {
+  color: 'green' | 'blue' | 'purple';
   enabled: boolean;
-  progress: 0 | 20 | 40 | 60 | 80 | 100 | 'indeterminate';
+  value: 0 | 20 | 40 | 60 | 80 | 100 | 'indeterminate';
   size: 16 | 32 | 48;
 }) {
   const backgroundPath = {
@@ -345,12 +365,12 @@ function getProgressBar({
     })
     .up()
     .ele('path', {
-      d: barPath[progress === 'indeterminate' ? 100 : progress][size],
+      d: barPath[value === 'indeterminate' ? 100 : value][size],
       fill: 'url(#linear-gradient)',
     });
 
-  if (progress === 'indeterminate') {
-    result.ele('path', { d: indeterminatePath[size], fill: 'green' });
+  if (value === 'indeterminate') {
+    result.ele('path', { d: indeterminatePath[size], fill: COLORS[color][0] });
   }
 
   return result;

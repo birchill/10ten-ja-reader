@@ -50,12 +50,22 @@ export function updateBrowserAction({
     iconFilenameParts.push('disabled');
   }
 
+  const seriesColors = {
+    words: 'green',
+    names: 'blue',
+    kanji: 'purple',
+    radicals: 'purple',
+  };
+
   // Next determine if we need to overlay any additional information.
   switch (jpdictState.updateState.type) {
     case 'checking':
       // Technically the 'indeterminate' icon would be more correct here but
       // using '0' instead leads to less flicker.
-      iconFilenameParts.push('0p', 'green');
+      iconFilenameParts.push(
+        '0p',
+        seriesColors[jpdictState.updateState.series]
+      );
       titleStringId = 'command_toggle_checking';
       break;
 
@@ -64,7 +74,7 @@ export function updateBrowserAction({
       if (!iconFilenameParts.includes('error')) {
         iconFilenameParts.push(
           Math.round(jpdictState.updateState.totalProgress * 5) * 20 + 'p',
-          'green'
+          seriesColors[jpdictState.updateState.series]
         );
       }
       titleStringId = 'command_toggle_downloading';
