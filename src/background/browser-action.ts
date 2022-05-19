@@ -81,7 +81,6 @@ export function updateBrowserAction({
             seriesColors[series]
           );
         }
-        tooltip = 'command_toggle_downloading';
         const dbLabel = getLocalizedDataSeriesLabel(series);
         const progressAsPercent = Math.round(totalProgress * 100);
         tooltip = browser.i18n.getMessage('command_toggle_downloading', [
