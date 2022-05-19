@@ -13,7 +13,7 @@ interface BrowserActionState {
 }
 
 // Chrome makes the tooltip disappear for a second or so if we try updating it
-// while it is showing so if we update it to quickly it becomes impossible to
+// while it is showing so if we update it too quickly it becomes impossible to
 // read. Instead we need to throttle our updates. 2.5s or so seems like a good
 // balance between being up-to-date and being readable.
 const throttledSetTitle = throttle(
