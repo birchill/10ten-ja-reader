@@ -1,7 +1,8 @@
 import { allMajorDataSeries } from '@birchill/jpdict-idb';
-import { browser } from 'webextension-polyfill-ts';
-import { getLocalizedDataSeriesLabel } from '../common/data-series-labels';
+import Browser, { browser } from 'webextension-polyfill-ts';
 
+import { getLocalizedDataSeriesLabel } from '../common/data-series-labels';
+import { throttle } from '../utils/throttle';
 import { JpdictStateWithFallback } from './jpdict';
 
 interface BrowserActionState {
@@ -10,6 +11,17 @@ interface BrowserActionState {
   tabId: number | undefined;
   toolbarIcon: 'default' | 'sky';
 }
+
+// Chrome makes the tooltip disappear for a second or so if we try updating it
+// while it is showing so if we update it to quickly it becomes impossible to
+// read. Instead we need to throttle our updates. 2.5s or so seems like a good
+// balance between being up-to-date and being readable.
+const throttledSetTitle = throttle(
+  (...args: Parameters<Browser.Action.Static['setTitle']>) => {
+    void browser.browserAction.setTitle(...args);
+  },
+  2500
+);
 
 export function updateBrowserAction({
   enabled,
@@ -137,7 +149,7 @@ export function updateBrowserAction({
   }
 
   // Set the caption
-  void browser.browserAction.setTitle({ title: tooltip, tabId });
+  throttledSetTitle({ title: tooltip, tabId });
 }
 
 // This will clobber any existing icon settings so it is only intended
