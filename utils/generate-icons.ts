@@ -77,6 +77,7 @@ async function saveIcon({
     filenameParts.push(
       typeof progress === 'number' ? `${progress}p` : progress
     );
+    filenameParts.push('green');
   }
 
   // SVG version

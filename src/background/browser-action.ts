@@ -55,7 +55,7 @@ export function updateBrowserAction({
     case 'checking':
       // Technically the 'indeterminate' icon would be more correct here but
       // using '0' instead leads to less flicker.
-      iconFilenameParts.push('0p');
+      iconFilenameParts.push('0p', 'green');
       titleStringId = 'command_toggle_checking';
       break;
 
@@ -63,7 +63,8 @@ export function updateBrowserAction({
       // We only have progress variants for the regular and disabled styles.
       if (!iconFilenameParts.includes('error')) {
         iconFilenameParts.push(
-          Math.round(jpdictState.updateState.totalProgress * 5) * 20 + 'p'
+          Math.round(jpdictState.updateState.totalProgress * 5) * 20 + 'p',
+          'green'
         );
       }
       titleStringId = 'command_toggle_downloading';
