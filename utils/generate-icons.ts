@@ -64,6 +64,9 @@ async function saveIcon({
 }) {
   // Filename
   const filenameParts = ['10ten'];
+  if (style === '天') {
+    filenameParts.push('sky');
+  }
   if (!enabled && badge !== 'error') {
     filenameParts.push('disabled');
   }
@@ -72,9 +75,6 @@ async function saveIcon({
   }
   if (progress !== undefined) {
     filenameParts.push(progress.toString());
-  }
-  if (style === '天') {
-    filenameParts.push('sky');
   }
 
   // SVG version

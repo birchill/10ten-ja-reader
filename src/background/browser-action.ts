@@ -16,8 +16,13 @@ export function updateBrowserAction({
   tabId,
   toolbarIcon,
 }: BrowserActionState) {
-  let iconFilename = '10ten-disabled';
+  const iconFilenameParts = ['10ten'];
   let titleStringId = 'command_toggle_disabled';
+
+  // Apply the variant, if needed
+  if (toolbarIcon === 'sky') {
+    iconFilenameParts.push('sky');
+  }
 
   // First choose the base icon type / text
   if (enabled) {
@@ -25,7 +30,6 @@ export function updateBrowserAction({
     const fallbackWords = jpdictState.words.fallbackState;
 
     if (jpdictWords === 'ok' || fallbackWords === 'ok') {
-      iconFilename = '10ten';
       titleStringId = 'command_toggle_enabled';
     } else if (jpdictWords === 'init' || fallbackWords === 'loading') {
       titleStringId = 'command_toggle_loading';
@@ -37,42 +41,40 @@ export function updateBrowserAction({
       // However, we won't load the fallback database until the user actually
       // tries to look something up so we don't know if it's available yet or
       // not. For now, assume everything is ok.
-      iconFilename = '10ten';
       titleStringId = 'command_toggle_enabled';
     } else {
-      iconFilename = '10ten-error';
+      iconFilenameParts.push('error');
       titleStringId = 'error_loading_dictionary';
     }
+  } else {
+    iconFilenameParts.push('disabled');
   }
 
   // Next determine if we need to overlay any additional information.
   switch (jpdictState.updateState.type) {
     case 'checking':
-      // Technically the '-indeterminate' icon would be more correct here but
-      // using '-0' instead leads to less flicker.
-      iconFilename += '-0';
+      // Technically the 'indeterminate' icon would be more correct here but
+      // using '0' instead leads to less flicker.
+      iconFilenameParts.push('0');
       titleStringId = 'command_toggle_checking';
       break;
 
     case 'updating':
       // We only have progress variants for the regular and disabled styles.
-      if (['10ten', '10ten-disabled'].includes(iconFilename)) {
-        iconFilename +=
-          '-' + Math.round(jpdictState.updateState.totalProgress * 5) * 20;
+      if (!iconFilenameParts.includes('error')) {
+        iconFilenameParts.push(
+          String(Math.round(jpdictState.updateState.totalProgress * 5) * 20)
+        );
       }
       titleStringId = 'command_toggle_downloading';
       break;
-  }
-
-  // Apply the variant, if needed
-  if (toolbarIcon === 'sky') {
-    iconFilename += '-sky';
   }
 
   // Set the icon
   //
   // We'd like to feature-detect if SVG icons are supported but Safari will
   // just fail silently if we try.
+  const iconFilename = iconFilenameParts.join('-');
   if (__SUPPORTS_SVG_ICONS__) {
     void browser.browserAction.setIcon({
       path: `images/${iconFilename}.svg`,
