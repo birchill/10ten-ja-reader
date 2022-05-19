@@ -74,7 +74,9 @@ async function saveIcon({
     filenameParts.push('error');
   }
   if (progress !== undefined) {
-    filenameParts.push(progress.toString());
+    filenameParts.push(
+      typeof progress === 'number' ? `${progress}p` : progress
+    );
   }
 
   // SVG version
