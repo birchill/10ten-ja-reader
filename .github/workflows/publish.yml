@@ -17,6 +17,9 @@ jobs:
         with:
           node-version: '16.x'
 
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
       - name: Get Firefox release details
         id: parse_firefox_release
         uses: ./.github/actions/parse-release
