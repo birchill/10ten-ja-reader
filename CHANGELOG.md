@@ -10,6 +10,11 @@ app.
 
 (Nothing yet)
 
+## [1.10.0] - 2022-05-20
+
+- Rewrote the data downloading service to improve initial download performance
+  and provide more useful download progress.
+
 ## [1.9.0] - 2022-04-28
 
 - Made the popup display in full-screen mode so you can look up text in
@@ -838,10 +843,11 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.9.0...HEAD
-[1.9.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.9.0...v1.8.4
-[1.8.4]: https://github.com/birchill/10ten-ja-reader/compare/v1.8.4...v1.7.1
-[1.7.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.7.1...v1.7.0
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.0...HEAD
+[1.10.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.9.0...v1.10.0
+[1.9.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.8.4...v1.9.0
+[1.8.4]: https://github.com/birchill/10ten-ja-reader/compare/v1.7.1...v1.8.4
+[1.7.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.7.0...v1.7.1
 [1.7.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.6.1...v1.7.0
 [1.6.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.6.0...v1.6.1
 [1.6.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.5.0...v1.6.0
