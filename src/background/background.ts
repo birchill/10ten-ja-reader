@@ -689,7 +689,46 @@ browser.runtime.onInstalled.addListener(async (details) => {
   }
 });
 
-browser.runtime.onStartup.addListener(() => {
+declare module 'webextension-polyfill-ts' {
+  type ExtensionFileOrCode = { code: string } | { file: string };
+
+  interface RegisteredScriptOptions {
+    css?: Array<ExtensionFileOrCode>;
+    js?: Array<ExtensionFileOrCode>;
+  }
+
+  interface RegisteredScript {
+    unregister: () => void;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  interface Browser {
+    messageDisplayScripts?: {
+      register(options: RegisteredScriptOptions): Promise<RegisteredScript>;
+    };
+    composeScripts?: {
+      register(options: RegisteredScriptOptions): Promise<RegisteredScript>;
+    };
+  }
+}
+
+void (async () => {
+  if (browser.messageDisplayScripts || browser.composeScripts) {
+    try {
+      await browser.messageDisplayScripts?.register({
+        js: [{ file: '/10ten-ja-content.js' }],
+      });
+      await browser.composeScripts?.register({
+        js: [{ file: '/10ten-ja-content.js' }],
+      });
+    } catch (e) {
+      console.error('Failed to register message display or compose scripts', e);
+      Bugsnag.notify(e);
+    }
+  }
+})();
+
+browser.runtime.onStartup.addListener(async () => {
   Bugsnag.leaveBreadcrumb('Running initJpDict from onStartup...');
   initJpDict().catch((e) => Bugsnag.notify(e));
 });

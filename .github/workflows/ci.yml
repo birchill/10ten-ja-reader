@@ -35,6 +35,7 @@ jobs:
           yarn install --frozen-lockfile
           yarn build:firefox
           yarn build:chrome
+          yarn build:thunderbird
 
       - name: Run tests
         env:
@@ -88,6 +89,7 @@ jobs:
           yarn package:firefox
           yarn package:chrome
           yarn package:edge
+          yarn package:thunderbird
           yarn zip-src
 
       - name: Read package version

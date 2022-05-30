@@ -190,6 +190,18 @@ const safariConfig = buildExtConfig({
   useEventPage: true,
 });
 
+const thunderbirdConfig = buildExtConfig({
+  artifactsDir: 'dist-thunderbird-package',
+  distFolder: 'dist-thunderbird',
+  includeRikaichampName: true,
+  mailExtension: true,
+  supportsAlphaVersion: true,
+  supportsBrowserSpecificSettings: true,
+  supportsBrowserStyle: true,
+  supportsSvgIcons: true,
+  supportsTabContextType: true,
+});
+
 module.exports = (env) => {
   const configs = [testConfig];
   if (env && env.target === 'chrome') {
@@ -198,6 +210,8 @@ module.exports = (env) => {
     configs.push({ ...edgeConfig, name: 'extension' });
   } else if (env && env.target === 'safari') {
     configs.push({ ...safariConfig, name: 'extension' });
+  } else if (env && env.target === 'thunderbird') {
+    configs.push({ ...thunderbirdConfig, name: 'extension' });
   } else {
     configs.push({ ...firefoxConfig, name: 'extension' });
   }
@@ -214,6 +228,7 @@ function buildExtConfig({
   isEdge = false,
   isSafari = false,
   includeRikaichampName = false,
+  mailExtension = false,
   needsClipboardWrite = true,
   supportsAlphaVersion = false,
   supportsBrowserSpecificSettings = false,
@@ -247,6 +262,10 @@ function buildExtConfig({
 
   if (isSafari) {
     preprocessorFeatures.push('is_safari');
+  }
+
+  if (mailExtension) {
+    preprocessorFeatures.push('mail_extension');
   }
 
   if (needsClipboardWrite) {

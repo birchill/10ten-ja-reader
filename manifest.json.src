@@ -45,7 +45,15 @@
     /*#if needs_clipboard_write*/
     "clipboardWrite",
     /*#endif*/
+    /*#if mail_extension*/
+    "compose",
+    /*#endif*/
+    /*#if !mail_extension*/
     "contextMenus",
+    /*#endif*/
+    /*#if mail_extension*/
+    "messagesModify",
+    /*#endif*/
     "storage",
     "unlimitedStorage"
   ],
