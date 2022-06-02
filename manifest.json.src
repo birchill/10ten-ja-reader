@@ -76,8 +76,19 @@
       "48": "images/10ten-disabled-48.png"
     },
     /*#endif*/
+    /*#if mail_extension*/
+    "default_label": "",
+    /*#endif*/
     "default_title": "__MSG_command_toggle_disabled__"
   },
+  /*#if mail_extension*/
+  "compose_action": {
+    "browser_style": false,
+    "default_icon": "images/10ten-disabled.svg",
+    "default_label": "",
+    "default_title": "__MSG_command_toggle_disabled__"
+  },
+  /*#endif*/
   "options_ui": {
     /*#if supports_browser_style*/
     "browser_style": true,

@@ -8,7 +8,8 @@ app.
 
 ## [Unreleased]
 
-(Nothing yet)
+- (Firefox, Chrome, Edge) Made all windows become active when enabling the
+  extension (not only the current window).
 
 ## [1.10.0] - 2022-05-20
 

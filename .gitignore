@@ -14,4 +14,5 @@ dist-firefox-package
 dist-safari
 dist-src
 dist-thunderbird
+dist-thunderbird-package
 yarn-error.log

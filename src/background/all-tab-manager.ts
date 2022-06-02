@@ -42,15 +42,16 @@ export default class AllTabManager implements TabManager {
       this.notifyListeners(true);
     }
 
-    // Try to enable the active tab in the current window
+    // Try to enable the active tab in each window
     if (this.enabled) {
-      this.enableActiveTab().catch(Bugsnag.notify);
+      this.enableActiveTabs().catch(Bugsnag.notify);
     }
 
-    // Since we only enable the content script in the active tab for the current
-    // window, if any other tab becomes active we should make sure it gets
-    // enabled too.
-    browser.tabs.onActivated.addListener(({ tabId }) => this.enableTab(tabId));
+    // Since we only enable the content script in the active tabs, if any other
+    // tab becomes active we should make sure it gets enabled too.
+    browser.tabs.onActivated.addListener(({ tabId }) => {
+      return this.enableTab(tabId);
+    });
 
     // Response to enabling-related messages
     browser.runtime.onMessage.addListener(
@@ -122,24 +123,23 @@ export default class AllTabManager implements TabManager {
     );
   }
 
-  private async enableActiveTab(): Promise<void> {
+  private async enableActiveTabs(): Promise<void> {
     // browser.tabs.query sometimes fails with a generic Error with message "An
     // unexpected error occurred". I don't know why. Maybe it should fail? Maybe
     // it's a timing thing? Who knows �‍♂️
     //
     // For now, we just do a single retry, two seconds later. If that fails,
-    // I suppose the user will just have to manually re-enable the add-on.
+    // I suppose the user will have to try again.
     const tryToEnable = async () => {
-      const tabs = await browser.tabs.query({
-        currentWindow: true,
-        active: true,
-      });
+      const tabs = await browser.tabs.query({ active: true });
+      if (!tabs) {
+        return;
+      }
 
-      if (tabs && tabs.length && typeof tabs[0].id === 'number') {
-        Bugsnag.leaveBreadcrumb(
-          'Loading because we were enabled on the previous run'
-        );
-        await this.enableTab(tabs[0].id);
+      for (const tab of tabs) {
+        if (typeof tab.id === 'number') {
+          await this.enableTab(tab.id);
+        }
       }
     };
 
@@ -168,18 +168,12 @@ export default class AllTabManager implements TabManager {
   // Toggling related interface
   //
 
-  async toggleTab(tab: Browser.Tabs.Tab, config: ContentConfig) {
+  async toggleTab(_tab: Browser.Tabs.Tab, config: ContentConfig) {
     // Update our local copy of the config
     this.config = config;
 
-    // On Firefox 78 we've observed `tab` being undefined at least once so
-    // check just in case.
-    if (!tab || typeof tab.id !== 'number') {
-      return;
-    }
-
     if (!this.enabled) {
-      Bugsnag.leaveBreadcrumb('Enabling tab from toggle');
+      Bugsnag.leaveBreadcrumb('Enabling active tabs from toggle');
     }
 
     // Update local state
@@ -187,8 +181,8 @@ export default class AllTabManager implements TabManager {
 
     // Update tabs
     if (this.enabled) {
-      // Enable this tab
-      await this.enableTab(tab.id);
+      // Enable the active tabs
+      await this.enableActiveTabs();
     } else {
       // Disable all tabs
       await sendMessageToAllTabs({ type: 'disable', frame: '*' });
@@ -448,11 +442,17 @@ async function sendMessageToAllTabs(message: BackgroundMessage): Promise<void> {
   // tabs it will fail).
   if (browser.windows) {
     let windows: Array<Browser.Windows.Window> = [];
+    const windowTypes: Array<Browser.Windows.MailWindowType> = ['normal'];
+    // Firefox will just return an empty array if we pass a window type it
+    // doesn't recognize so we need to "feature-detect" if we are in a mail
+    // extension context or not. For now the presence/absence of the
+    // composeAction member will do.
+    if (browser.composeAction) {
+      windowTypes.push('messageCompose', 'messageDisplay');
+    }
+
     try {
-      windows = await browser.windows.getAll({
-        populate: true,
-        windowTypes: ['normal'],
-      });
+      windows = await browser.windows.getAll({ populate: true, windowTypes });
     } catch (e) {
       Bugsnag.leaveBreadcrumb('Error getting windows', { error: e });
     }

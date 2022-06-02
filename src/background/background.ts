@@ -433,6 +433,7 @@ async function toggle(tab: Browser.Tabs.Tab) {
 }
 
 browser.browserAction.onClicked.addListener(toggle);
+browser.composeAction?.onClicked.addListener(toggle);
 
 // We can sometimes find ourselves in a situation where we have a backlog of
 // search requests. To avoid that, we simply cancel any previous request.
@@ -689,28 +690,12 @@ browser.runtime.onInstalled.addListener(async (details) => {
   }
 });
 
-declare module 'webextension-polyfill-ts' {
-  type ExtensionFileOrCode = { code: string } | { file: string };
+browser.runtime.onStartup.addListener(async () => {
+  Bugsnag.leaveBreadcrumb('Running initJpDict from onStartup...');
+  initJpDict().catch((e) => Bugsnag.notify(e));
+});
 
-  interface RegisteredScriptOptions {
-    css?: Array<ExtensionFileOrCode>;
-    js?: Array<ExtensionFileOrCode>;
-  }
-
-  interface RegisteredScript {
-    unregister: () => void;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  interface Browser {
-    messageDisplayScripts?: {
-      register(options: RegisteredScriptOptions): Promise<RegisteredScript>;
-    };
-    composeScripts?: {
-      register(options: RegisteredScriptOptions): Promise<RegisteredScript>;
-    };
-  }
-}
+// Mail extension steps
 
 void (async () => {
   if (browser.messageDisplayScripts || browser.composeScripts) {
@@ -727,8 +712,3 @@ void (async () => {
     }
   }
 })();
-
-browser.runtime.onStartup.addListener(async () => {
-  Bugsnag.leaveBreadcrumb('Running initJpDict from onStartup...');
-  initJpDict().catch((e) => Bugsnag.notify(e));
-});
