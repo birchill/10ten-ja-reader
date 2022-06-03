@@ -90,7 +90,7 @@
     "terser-webpack-plugin": "5.3.3",
     "ts-jest": "28.0.4",
     "ts-loader": "9.3.0",
-    "ts-node": "10.8.0",
+    "ts-node": "10.8.1",
     "web-ext-plugin": "1.8.0",
     "webextension-polyfill-ts": "0.26.0",
     "webpack": "5.73.0",
