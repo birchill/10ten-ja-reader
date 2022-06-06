@@ -10,7 +10,7 @@ app.
 
 - (Firefox, Chrome, Edge) Fixed enabling of multiple windows.
 
-## [1.10.1] - 2022-06-06 (Thunderbird only)
+## [1.10.2] - 2022-06-06 (Thunderbird only)
 
 - Initial Thunderbird release
 
