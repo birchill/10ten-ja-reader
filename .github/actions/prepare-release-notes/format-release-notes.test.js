@@ -56,6 +56,10 @@ Edge:
 Safari:
 • Fixed display of the radical meaning in kanji view.
 • Fixed text look up for Google docs when the document is scaled.
+
+Thunderbird:
+• Fixed display of the radical meaning in kanji view.
+• Fixed text look up for Google docs when the document is scaled.
 -->`);
   });
 
@@ -97,6 +101,11 @@ Edge:
 • Fixed text look up for Google docs when the document is scaled.
 
 Safari:
+• Fixed a regression where non-Firefox browsers could not look up the first character in a text box.
+  ◦ Just to make things interesting, we also go for a nested bullet point.
+• Fixed text look up for Google docs when the document is scaled.
+
+Thunderbird:
 • Fixed a regression where non-Firefox browsers could not look up the first character in a text box.
   ◦ Just to make things interesting, we also go for a nested bullet point.
 • Fixed text look up for Google docs when the document is scaled.
@@ -160,6 +169,12 @@ Safari:
 • Release note with an attribution
 • Release note with an issue number and an attribution.
 • Chrome and Safari-only item
+• (Bonus!) New feature!
+
+Thunderbird:
+• Release note with an issue number.
+• Release note with an attribution
+• Release note with an issue number and an attribution.
 • (Bonus!) New feature!
 -->`);
   });
