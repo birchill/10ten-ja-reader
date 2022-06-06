@@ -77,7 +77,7 @@ function formatReleaseNotes({ changeLog, version }) {
   return notes;
 }
 
-const browsers = ['Firefox', 'Chrome', 'Edge', 'Safari'];
+const browsers = ['Firefox', 'Chrome', 'Edge', 'Safari', 'Thunderbird'];
 
 function getSupportedBrowsers(annotation) {
   const listedBrowsers = annotation

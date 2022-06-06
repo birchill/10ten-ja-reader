@@ -9,6 +9,8 @@ outputs:
     description: 'The name of the Firefox package, e.g. 10ten-ja-reader-0.1.0pre5.zip'
   chrome_package_name:
     description: 'The name of the Chrome package, e.g. 10ten-ja-reader-0.1.0.zip'
+  thunderbird_package_name:
+    description: 'The name of the Thunderbird package, e.g. 10ten-ja-reader-0.1.0.zip'
   prerelease:
     description: 'Whether or not this version is a pre-release version'
 runs:

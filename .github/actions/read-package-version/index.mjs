@@ -42,6 +42,12 @@ try {
   console.log(`Edge package name: ${edgePackageName}`);
   core.setOutput('edge_package_name', edgePackageName);
 
+  const thunderbirdPackageName = `10ten_japanese_reader_rikaichamp_-${major}.${minor}.${patch}${
+    pre || ''
+  }.zip`;
+  console.log(`Thunderbird package name: ${thunderbirdPackageName}`);
+  core.setOutput('thunderbird_package_name', thunderbirdPackageName);
+
   console.log(`Pre-release status: ${!!pre}`);
   core.setOutput('prerelease', !!pre);
 } catch (error) {

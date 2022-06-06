@@ -67,6 +67,21 @@ async function main() {
     data: fs.readFileSync(edgePackagePath),
   });
 
+  // Upload Thunderbird asset
+  const thunderbirdPackageName = core.getInput('thunderbird_package_name');
+  const thunderbirdPackagePath = path.join(
+    root,
+    'dist-thunderbird-package',
+    thunderbirdPackageName
+  );
+  await octokit.rest.repos.uploadReleaseAsset({
+    owner,
+    repo,
+    release_id: release.data.id,
+    name: `10ten-ja-reader-${version}-thunderbird.zip`,
+    data: fs.readFileSync(thunderbirdPackagePath),
+  });
+
   // Upload source asset
   const sourcePackagePath = path.join(
     root,
