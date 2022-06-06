@@ -23,6 +23,8 @@ jobs:
       - name: Get Firefox release details
         id: parse_firefox_release
         uses: ./.github/actions/parse-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           release_id: ${{ github.event.release.id }}
           target: 'Firefox'
