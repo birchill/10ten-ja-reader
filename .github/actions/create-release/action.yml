@@ -10,6 +10,9 @@ inputs:
   firefox_package_name:
     description: The filename of the Firefox package within the dist-firefox-package folder
     required: true
+  thunderbird_package_name:
+    description: The filename of the Thunderbird package within the dist-thunderbird-package folder
+    required: true
   prerelease:
     description: Whether or not this is a pre-release. Defaults to false.
     default: false
