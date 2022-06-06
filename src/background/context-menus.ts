@@ -17,6 +17,9 @@ let tabManager: TabManager | undefined;
 let toggleMenuCreated = false;
 let enablePuckMenuCreated = false;
 
+// Thunderbird does not support contextMenus, only menus.
+const contextMenus = browser.contextMenus || browser.menus;
+
 export async function initContextMenus(
   options: ContextMenusInit
 ): Promise<void> {
@@ -158,7 +161,7 @@ async function createMenuItem(
   createProperties: Browser.Menus.CreateCreatePropertiesType
 ) {
   return new Promise<void>((resolve) => {
-    browser.contextMenus.create(createProperties, () => {
+    contextMenus.create(createProperties, () => {
       // This is just to silence Safari which will complain if the menu
       if (browser.runtime.lastError) {
         // Very interesting
@@ -167,13 +170,13 @@ async function createMenuItem(
     });
   }).catch(() => {
     // Give up. We're probably on a platform that doesn't support the
-    // contextMenus API such as Firefox for Android.
+    // contextMenus/menus API such as Firefox for Android.
   });
 }
 
 async function removeMenuItem(menuItemId: string) {
   try {
-    await browser.contextMenus.remove(menuItemId);
+    await contextMenus.remove(menuItemId);
   } catch {
     // Ignore
   }
@@ -184,7 +187,7 @@ async function updateMenuItemCheckedState(
   checked: boolean
 ) {
   try {
-    await browser.contextMenus.update(menuItemId, { checked });
+    await contextMenus.update(menuItemId, { checked });
   } catch {
     // Ignore
   }
