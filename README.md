@@ -20,6 +20,7 @@ Hi fellow Japanese reader! Formerly known as Rikaichamp, this browser extension 
 - [Chrome Web Store](https://chrome.google.com/webstore/detail/pnmaklegiibbioifkmfkgpfnmdehdfan)
 - [Edge Web Store](https://microsoftedge.microsoft.com/addons/detail/cgiogkjpebgfcpcaipiicfeaelpapeig)
 - [App Store](https://apps.apple.com/app/10ten-japanese-reader/id1573540634) (Safari)
+- [Thunderbird](https://addons.thunderbird.net/thunderbird/addon/10ten-ja-reader/)
 
 ## Features
 
