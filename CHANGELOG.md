@@ -10,7 +10,7 @@ app.
 
 - (Firefox, Chrome, Edge) Fixed enabling of multiple windows.
 
-## [1.10.2] - 2022-06-06 (Thunderbird only)
+## [1.10.4] - 2022-06-06 (Thunderbird only)
 
 - Initial Thunderbird release
 
@@ -847,7 +847,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.0...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.4...HEAD
+[1.10.4]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.0...v1.10.4
 [1.10.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.8.4...v1.9.0
 [1.8.4]: https://github.com/birchill/10ten-ja-reader/compare/v1.7.1...v1.8.4
