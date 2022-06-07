@@ -58,6 +58,10 @@
   pointer-events: none;
 }
 
+.container.hidden {
+  display: none;
+}
+
 .-inline > .container {
   position: revert;
   z-index: revert;
@@ -119,11 +123,7 @@
   width: min(500px, calc(100vw - 30px));
 }
 
-.window.hidden {
-  display: none;
-}
-
-.container.touch .window:not(.hidden) {
+.container:not(.hidden).touch .window {
   display: flex;
   flex-direction: column;
 }
@@ -354,8 +354,8 @@
 
 /* Tab bar on the side */
 
-.container .window[data-tab-side='left']:not(.hidden),
-.container .window[data-tab-side='right']:not(.hidden) {
+.container:not(.hidden) .window[data-tab-side='left'],
+.container:not(.hidden) .window[data-tab-side='right'] {
   display: flex;
   flex-direction: row;
 }

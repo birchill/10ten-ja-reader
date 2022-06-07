@@ -9,6 +9,8 @@ app.
 ## [Unreleased]
 
 - (Firefox, Chrome, Edge) Fixed enabling of multiple windows.
+- Fixed an issue with 10ten affecting the scroll height of pages
+  ([#959](https://github.com/birchill/10ten-ja-reader/issues/959)).
 
 ## [1.10.4] - 2022-06-06 (Thunderbird only)
 

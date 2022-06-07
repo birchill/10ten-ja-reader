@@ -292,12 +292,19 @@ function resetContainer({
 }
 
 export function isPopupVisible(): boolean {
-  const popupWindow = getPopupWindow();
-  return !!popupWindow && !popupWindow.classList.contains('hidden');
+  const popupContainer = getPopupContainer();
+  return !!popupContainer && !popupContainer.classList.contains('hidden');
 }
 
 export function hidePopup() {
-  getPopupWindow()?.classList.add('hidden');
+  getPopupContainer()?.classList.add('hidden');
+}
+
+function getPopupContainer(): HTMLElement | null {
+  const hostElem = document.getElementById('tenten-ja-window');
+  return hostElem && hostElem.shadowRoot
+    ? hostElem.shadowRoot.querySelector('.container')
+    : null;
 }
 
 export function removePopup() {
