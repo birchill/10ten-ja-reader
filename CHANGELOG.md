@@ -13,6 +13,9 @@ app.
   ([#959](https://github.com/birchill/10ten-ja-reader/issues/959)).
 - Fixed an issue with the popup being shown for numbers that have a comma in
   them ([#962](https://github.com/birchill/10ten-ja-reader/issues/962)).
+- (Safari) Made it easier to look up text at the start of a range (typically
+  text with furigana)
+  ([#956](https://github.com/birchill/10ten-ja-reader/issues/956)).
 
 ## [1.10.4] - 2022-06-06 (Thunderbird only)
 

@@ -329,6 +329,9 @@ function rawCaretPositionFromPoint(
       getRangeWithoutUserSelectNone({ existingRange: range, point }) || range;
   }
 
+  // Another Safari-specific workaround
+  range = adjustForRangeBoundary({ range, point });
+
   return range
     ? {
         offsetNode: range.startContainer,
@@ -381,6 +384,60 @@ function getRangeWithoutUserSelectNone({
   return range && range.startContainer.nodeType === Node.TEXT_NODE
     ? range
     : null;
+}
+
+// On Safari, if you pass a point into caretRangeFromPoint that is less than
+// about 60~70% of the way across the first character in a text node it will
+// return the previous text node instead.
+//
+// Here we try to detect that situation and return the "next" text node instead.
+function adjustForRangeBoundary({
+  range,
+  point,
+}: {
+  range: Range | null;
+  point: Point;
+}): Range | null {
+  // Check we got a range with the offset set to the end of a text node
+  if (
+    !range ||
+    !range.startOffset ||
+    range.startContainer.nodeType !== Node.TEXT_NODE ||
+    range.startOffset !== range.startContainer.textContent?.length
+  ) {
+    return range;
+  }
+
+  // Check there is a _different_ text node under the cursor
+  const elemFromPoint = document.elementFromPoint(point.x, point.y);
+  if (
+    !(elemFromPoint instanceof HTMLElement) ||
+    elemFromPoint === range.startContainer ||
+    !elemFromPoint.innerText.length
+  ) {
+    return range;
+  }
+
+  // Check the first character in the new element is actually the one under the
+  // cursor.
+  const firstTextNode = Array.from(elemFromPoint.childNodes).find(
+    (elem) => elem.nodeType === Node.TEXT_NODE
+  );
+  if (!firstTextNode) {
+    return range;
+  }
+
+  const firstCharRange = new Range();
+  firstCharRange.setStart(firstTextNode, 0);
+  firstCharRange.setEnd(firstTextNode, 1);
+
+  const firstCharBbox = firstCharRange.getBoundingClientRect();
+  if (!bboxIncludesPoint({ bbox: firstCharBbox, point })) {
+    return range;
+  }
+
+  firstCharRange.setEnd(firstTextNode, 0);
+  return firstCharRange;
 }
 
 function getOffsetFromTextInputNode({
