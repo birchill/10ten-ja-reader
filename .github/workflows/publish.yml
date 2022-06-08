@@ -32,6 +32,8 @@ jobs:
       - name: Publish
         uses: birchill/amo-upload@main
         if: ${{ !steps.parse_firefox_release.outputs.skip }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           addon_id: 59812185-ea92-4cca-8ab7-cfcacee81281
           amo_jwt_iss: ${{ secrets.AMO_JWT_ISS }}
