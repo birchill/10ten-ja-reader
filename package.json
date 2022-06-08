@@ -107,7 +107,7 @@
     "@birchill/normal-jp": "1.4.0",
     "@bugsnag/js": "7.16.7",
     "husky": "8.0.1",
-    "lint-staged": "13.0.0",
+    "lint-staged": "13.0.1",
     "lru_map": "0.4.1",
     "superstruct": "0.16.0",
     "typescript": "4.7.3",
