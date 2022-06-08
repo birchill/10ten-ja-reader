@@ -11,6 +11,8 @@ app.
 - (Firefox, Chrome, Edge) Fixed enabling of multiple windows.
 - Fixed an issue with 10ten affecting the scroll height of pages
   ([#959](https://github.com/birchill/10ten-ja-reader/issues/959)).
+- Fixed an issue with the popup being shown for numbers that have a comma in
+  them ([#962](https://github.com/birchill/10ten-ja-reader/issues/962)).
 
 ## [1.10.4] - 2022-06-06 (Thunderbird only)
 
