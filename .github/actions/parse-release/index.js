@@ -8,18 +8,19 @@ async function main() {
   } = github.context;
 
   const releaseId = core.getInput('release_id');
-  console.log(`Fetching metadata for release ${releaseId}`);
+  console.log(`Fetching metadata for release ${releaseId}...`);
   const release = await octokit.rest.repos.getRelease({
     owner,
     repo,
     release_id: releaseId,
   });
 
-  const target = core.getInput('target');
-  const normalizedTarget = normalizeTarget();
+  const rawTarget = core.getInput('target');
+  const normalizedTarget = normalizeTarget(rawTarget);
   if (normalizedTarget !== 'Firefox') {
-    throw new Error(`Unsupported target: ${target}`);
+    throw new Error(`Unsupported target: ${rawTarget}`);
   }
+  console.log(`Target: ${normalizedTarget}`);
 
   // Find the add-on asset
   let addonAsset;
@@ -69,7 +70,7 @@ async function main() {
     core.setOutput('skip', true);
   } else {
     const releaseNotes = matches[1];
-    console.log(`Found release notes for ${target}`);
+    console.log(`Found release notes for ${rawTarget}`);
     console.log(releaseNotes);
     core.setOutput('release_notes', releaseNotes);
   }

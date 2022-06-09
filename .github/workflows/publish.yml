@@ -27,7 +27,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           release_id: ${{ github.event.release.id }}
-          target: 'Firefox'
+          target: Firefox
 
       - name: Publish
         uses: birchill/amo-upload@main
