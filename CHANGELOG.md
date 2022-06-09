@@ -8,6 +8,10 @@ app.
 
 ## [Unreleased]
 
+(Nothing yet)
+
+## [1.10.5] - 2022-06-09
+
 - (Firefox, Chrome, Edge) Fixed enabling of multiple windows.
 - Fixed an issue with 10ten affecting the scroll height of pages
   ([#959](https://github.com/birchill/10ten-ja-reader/issues/959)).
@@ -854,7 +858,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.4...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.5...HEAD
+[1.10.5]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.4...v1.10.5
 [1.10.4]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.0...v1.10.4
 [1.10.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.8.4...v1.9.0
