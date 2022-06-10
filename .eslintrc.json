@@ -16,7 +16,7 @@
   },
   "overrides": [
     {
-      "files": ["*.js", "tests/**/*", "utils/**/*"],
+      "files": ["*.js", "*.mjs", "tests/**/*", "utils/**/*"],
       "parserOptions": {
         "project": null
       },

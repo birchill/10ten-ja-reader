@@ -1,17 +1,22 @@
 /* eslint-env node */
 /* eslint @typescript-eslint/no-var-requires: 0 */
-const path = require('path');
-const BomPlugin = require('webpack-utf8-bom');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
-const WebExtPlugin = require('web-ext-plugin');
-const {
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import * as path from 'path';
+import TerserPlugin from 'terser-webpack-plugin';
+import { fileURLToPath } from 'url';
+import WebExtPlugin from 'web-ext-plugin';
+import webpack from 'webpack';
+import {
   BugsnagBuildReporterPlugin,
   BugsnagSourceMapUploaderPlugin,
-} = require('webpack-bugsnag-plugins');
-const webpack = require('webpack');
+} from 'webpack-bugsnag-plugins';
+import BomPlugin from 'webpack-utf8-bom';
 
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const pjson = require('./package.json');
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Look for an --env arguments to pass along when running Firefox / Chrome
 const env = Object.fromEntries(
@@ -26,7 +31,7 @@ const firefox = env.firefox || undefined;
 const firefoxProfile = env.firefoxProfile || undefined;
 const keepProfileChanges = !!env.keepProfileChanges;
 const profileCreateIfMissing = !!env.profileCreateIfMissing;
-const package = !!env.package;
+const buildPackage = !!env.package;
 
 const commonConfig = {
   mode: 'development',
@@ -202,7 +207,7 @@ const thunderbirdConfig = buildExtConfig({
   supportsTabContextType: true,
 });
 
-module.exports = (env) => {
+export default (env) => {
   const configs = [testConfig];
   if (env && env.target === 'chrome') {
     configs.push({ ...chromeConfig, name: 'extension' });
@@ -392,7 +397,7 @@ function buildExtConfig({
     plugins.push(
       new WebExtPlugin({
         artifactsDir,
-        buildPackage: package,
+        buildPackage,
         firefox,
         firefoxProfile,
         keepProfileChanges,
@@ -406,7 +411,7 @@ function buildExtConfig({
     plugins.push(
       new WebExtPlugin({
         artifactsDir,
-        buildPackage: package,
+        buildPackage,
         chromiumBinary: chromium,
         chromiumProfile,
         firefoxProfile,
@@ -422,7 +427,7 @@ function buildExtConfig({
     plugins.push(
       new WebExtPlugin({
         artifactsDir,
-        buildPackage: package,
+        buildPackage,
         overwriteDest: true,
         sourceDir: path.resolve(__dirname, distFolder),
       })
