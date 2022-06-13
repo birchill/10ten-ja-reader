@@ -86,7 +86,7 @@
     "prettier": "2.6.2",
     "prettier-plugin-md-nocjsp": "1.2.0",
     "semver-parser": "4.0.1",
-    "source-map-loader": "3.0.1",
+    "source-map-loader": "4.0.0",
     "terser-webpack-plugin": "5.3.3",
     "ts-jest": "28.0.4",
     "ts-loader": "9.3.0",
