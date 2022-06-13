@@ -88,7 +88,7 @@
     "semver-parser": "4.0.1",
     "source-map-loader": "4.0.0",
     "terser-webpack-plugin": "5.3.3",
-    "ts-jest": "28.0.4",
+    "ts-jest": "28.0.5",
     "ts-loader": "9.3.0",
     "ts-node": "10.8.1",
     "web-ext-plugin": "2.0.2",
