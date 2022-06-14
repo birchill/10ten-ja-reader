@@ -75,7 +75,7 @@
     "jest": "28.1.1",
     "jest-environment-jsdom": "28.1.1",
     "jsonwebtoken": "8.5.1",
-    "karma": "6.3.20",
+    "karma": "6.4.0",
     "karma-chai": "0.1.0",
     "karma-chrome-launcher": "3.1.1",
     "karma-firefox-launcher": "2.1.2",
