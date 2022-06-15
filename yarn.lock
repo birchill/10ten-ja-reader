@@ -7832,10 +7832,10 @@ wcwidth@^1.0.0:
   dependencies:
     defaults "^1.0.3"
 
-web-ext-plugin@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/web-ext-plugin/-/web-ext-plugin-2.0.2.tgz#7491ce7b3b33c8b8959366eee65a37ecaa60e2de"
-  integrity sha512-Q9Pf9t3o+DPhDT0ibk/POfAqrOOvbL6uwTi8GA+H8UDk2lZ2P+1tCDpS7dV43MV22uDVjxv1asO0w+Fb7Q+Jog==
+web-ext-plugin@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/web-ext-plugin/-/web-ext-plugin-2.1.0.tgz#6f5b229ca0769cf067bd44ecb564dbf71453c2ed"
+  integrity sha512-H8EsAOamQEhgzcHUO/7LVTPqUgkTxisnbnx+AfqMCP2A+0gdjLUzuywVjZ8kPXQY/x3S2/BTb2M6VJoRUEsUIQ==
   dependencies:
     web-ext "^7.0.0"
 
