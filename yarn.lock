@@ -754,6 +754,11 @@
   resolved "https://registry.yarnpkg.com/@mdn/browser-compat-data/-/browser-compat-data-5.0.1.tgz#e71fe19c5ba99413fae9305cc9ed060eeb07ea45"
   integrity sha512-c+RIBgZSqSWgxZdNWLaaCAfBon2YM4pz0QD+VoT32rIOGChJl3l99E7B/xSWvVlSSiE7jQkEuJx3hbKoUdAi3w==
 
+"@mdn/browser-compat-data@5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@mdn/browser-compat-data/-/browser-compat-data-5.1.1.tgz#20b3040392242216ee7f9c3f0807fcb1f0b88872"
+  integrity sha512-odIvtuAoXePQL4UcPrhy3MSXMvz2vefTe5uQQoLzKHQ6+f6vAhVlZEbs92d6cz8oSjylF+KL3Z/G2eLCMFl7qw==
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
@@ -1537,6 +1542,43 @@ addons-linter@5.7.0:
     jed "1.1.1"
     os-locale "5.0.0"
     pino "7.11.0"
+    postcss "8.4.14"
+    relaxed-json "1.0.3"
+    semver "7.3.7"
+    sha.js "2.4.11"
+    source-map-support "0.5.21"
+    tosource "1.0.0"
+    upath "2.0.1"
+    yargs "17.5.1"
+    yauzl "2.10.0"
+
+addons-linter@5.9.0:
+  version "5.9.0"
+  resolved "https://registry.yarnpkg.com/addons-linter/-/addons-linter-5.9.0.tgz#2a4074d7928d5ca23fb13b06643ef446bab4c5aa"
+  integrity sha512-ACvBvkO8WtupOT42S3ln801/Ek7X1Yss59aYlI5JPc+dEBfEyEtkUa23UEQmALqdDEoHk0i+3NkKHdiXbhqp/g==
+  dependencies:
+    "@mdn/browser-compat-data" "5.1.1"
+    addons-moz-compare "1.2.0"
+    addons-scanner-utils "7.0.0"
+    ajv "8.11.0"
+    ajv-merge-patch "5.0.1"
+    chalk "4.1.2"
+    cheerio "1.0.0-rc.11"
+    columnify "1.6.0"
+    common-tags "1.8.2"
+    deepmerge "4.2.2"
+    eslint "8.18.0"
+    eslint-plugin-no-unsanitized "4.0.1"
+    eslint-visitor-keys "3.3.0"
+    espree "9.3.2"
+    esprima "4.0.1"
+    fluent-syntax "0.13.0"
+    glob "8.0.3"
+    image-size "1.0.1"
+    is-mergeable-object "1.1.1"
+    jed "1.1.1"
+    os-locale "5.0.0"
+    pino "8.0.0"
     postcss "8.4.14"
     relaxed-json "1.0.3"
     semver "7.3.7"
@@ -5799,6 +5841,11 @@ on-exit-leak-free@^0.2.0:
   resolved "https://registry.yarnpkg.com/on-exit-leak-free/-/on-exit-leak-free-0.2.0.tgz#b39c9e3bf7690d890f4861558b0d7b90a442d209"
   integrity sha512-dqaz3u44QbRXQooZLTUKU41ZrzYrcvLISVgbrzbyCMxpmSLJvZ3ZamIJIZ29P6OhZIkNIQKosdeM6t1LYbA9hg==
 
+on-exit-leak-free@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/on-exit-leak-free/-/on-exit-leak-free-1.0.0.tgz#4a2accb382278a266848bb1a21439e5fc3cd9881"
+  integrity sha512-Ve8ubhrXRdnuCJ5bQSQpP3uaV43K1PMcOfSRC1pqHgRZommXCgsXwh08jVC5NpjwScE23BPDwDvVg4cov3mwjw==
+
 on-finished@2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/on-finished/-/on-finished-2.4.1.tgz#58c8c44116e54845ad57f14ab10b03533184ac3f"
@@ -6103,6 +6150,11 @@ pino-std-serializers@^4.0.0:
   resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-4.0.0.tgz#1791ccd2539c091ae49ce9993205e2cd5dbba1e2"
   integrity sha512-cK0pekc1Kjy5w9V2/n+8MkZwusa6EyyxfeQCB799CQRhRt/CqYKiWs5adeu8Shve2ZNffvfC/7J64A2PJo1W/Q==
 
+pino-std-serializers@^5.0.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-5.6.0.tgz#31b141155d6520967c5ec72944d08fb45c490fd3"
+  integrity sha512-VdUXCw8gO+xhir7sFuoYSjTnzB+TMDGxhAC/ph3YS3sdHnXNdsK0wMtADNUltfeGkn2KDxEM21fnjF3RwXyC8A==
+
 pino@7.11.0:
   version "7.11.0"
   resolved "https://registry.yarnpkg.com/pino/-/pino-7.11.0.tgz#0f0ea5c4683dc91388081d44bff10c83125066f6"
@@ -6119,6 +6171,23 @@ pino@7.11.0:
     safe-stable-stringify "^2.1.0"
     sonic-boom "^2.2.1"
     thread-stream "^0.15.1"
+
+pino@8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/pino/-/pino-8.0.0.tgz#7918a19b647a8f281fe06a28043e99ade12dce46"
+  integrity sha512-EvZh9ZUoLGkrhqhoF9UBxw2/ZiAhXHUKlGrI4WUT/wLu0sfu8Wr3NJaZ6lxcy/S51W0PMSon5KE7ujPAhc/G6g==
+  dependencies:
+    atomic-sleep "^1.0.0"
+    fast-redact "^3.0.0"
+    on-exit-leak-free "^1.0.0"
+    pino-abstract-transport v0.5.0
+    pino-std-serializers "^5.0.0"
+    process-warning "^2.0.0"
+    quick-format-unescaped "^4.0.3"
+    real-require "^0.1.0"
+    safe-stable-stringify "^2.1.0"
+    sonic-boom "^3.0.0"
+    thread-stream "^1.0.0"
 
 pino@^4.10.3:
   version "4.17.6"
@@ -6261,6 +6330,11 @@ process-warning@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/process-warning/-/process-warning-1.0.0.tgz#980a0b25dc38cd6034181be4b7726d89066b4616"
   integrity sha512-du4wfLyj4yCZq1VupnVSZmRsPJsNuxoDQFdCFHLaYiEbFBD7QE0a+I4D7hOxrVnh78QE/YipFAj9lXHiXocV+Q==
+
+process-warning@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/process-warning/-/process-warning-2.0.0.tgz#341dbeaac985b90a04ebcd844d50097c7737b2ee"
+  integrity sha512-+MmoAXoUX+VTHAlwns0h+kFUWFs/3FZy+ZuchkgjyOu3oioLAo2LB5aCfKPh2+P9O18i3m43tUEv3YqttSy0Ww==
 
 promise-toolbox@0.21.0:
   version "0.21.0"
@@ -6916,6 +6990,13 @@ sonic-boom@^2.2.1:
   dependencies:
     atomic-sleep "^1.0.0"
 
+sonic-boom@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/sonic-boom/-/sonic-boom-3.0.0.tgz#235119a6606e2646919a27d83ef687f2ba6c0fba"
+  integrity sha512-p5DiZOZHbJ2ZO5MADczp5qrfOd3W5Vr2vHxfCpe7G4AzPwVOweIjbfgku8wSQUuk+Y5Yuo8W7JqRe6XKmKistg==
+  dependencies:
+    atomic-sleep "^1.0.0"
+
 source-map-js@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/source-map-js/-/source-map-js-1.0.2.tgz#adbc361d9c62df380125e7f161f71c826f1e490c"
@@ -7382,6 +7463,13 @@ thread-stream@^0.15.1:
   dependencies:
     real-require "^0.1.0"
 
+thread-stream@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/thread-stream/-/thread-stream-1.0.0.tgz#a7ba5c3defceb77c69deea6c3a62faf74891e4ba"
+  integrity sha512-2Sw29jWubQWOcVa7MhLHJ51wjksUD/GHN4Fy3hP9w9DYTujifoZGSKBl54CMLRXWoD5h2pD707kY3fAdzhcwAg==
+  dependencies:
+    real-require "^0.1.0"
+
 throat@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/throat/-/throat-6.0.1.tgz#d514fedad95740c12c2d7fc70ea863eb51ade375"
@@ -7836,7 +7924,43 @@ web-ext-plugin@2.1.0:
   dependencies:
     web-ext "^7.0.0"
 
-web-ext@7.0.0, web-ext@^7.0.0:
+web-ext@7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/web-ext/-/web-ext-7.1.0.tgz#180e883ab20ff53303892c03723416e9b7f528ac"
+  integrity sha512-wrEU9uIieKwkqQaa2NESuaypIvtJWEvMzPh3LSfI3C6R7DMMTmtxHchVLJnupeWjQ1FJzc3TszfcVRIwXk8DfQ==
+  dependencies:
+    "@babel/runtime" "7.18.3"
+    "@devicefarmer/adbkit" "3.2.3"
+    addons-linter "5.9.0"
+    bunyan "1.8.15"
+    camelcase "7.0.0"
+    chrome-launcher "0.15.1"
+    debounce "1.2.1"
+    decamelize "6.0.0"
+    es6-error "4.1.1"
+    firefox-profile "4.2.2"
+    fs-extra "10.1.0"
+    fx-runner "1.2.0"
+    import-fresh "3.3.0"
+    mkdirp "1.0.4"
+    multimatch "6.0.0"
+    mz "2.7.0"
+    node-notifier "10.0.1"
+    open "8.4.0"
+    parse-json "6.0.2"
+    promise-toolbox "0.21.0"
+    sign-addon "5.0.0"
+    source-map-support "0.5.21"
+    strip-bom "5.0.0"
+    strip-json-comments "4.0.0"
+    tmp "0.2.1"
+    update-notifier "5.1.0"
+    watchpack "2.4.0"
+    ws "8.8.0"
+    yargs "17.5.1"
+    zip-dir "2.0.0"
+
+web-ext@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/web-ext/-/web-ext-7.0.0.tgz#f25e16fb92c847d0d99fcc9f5104b1652c945e62"
   integrity sha512-+i2lfRWm4Br/zIkY1sbpQHkTb7fzDFS5rkAobNGWqhaYpFWdD7ZUaNkH0Y682Ut5rEiRX9IWKI+9hkQIchtIWw==
@@ -8145,6 +8269,11 @@ ws@8.7.0:
   version "8.7.0"
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.7.0.tgz#eaf9d874b433aa00c0e0d8752532444875db3957"
   integrity sha512-c2gsP0PRwcLFzUiA8Mkr37/MI7ilIlHQxaEAtd0uNMbVMoy8puJyafRlm0bV9MbGSabUPeLrRRaqIBcFcA2Pqg==
+
+ws@8.8.0:
+  version "8.8.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.8.0.tgz#8e71c75e2f6348dbf8d78005107297056cb77769"
+  integrity sha512-JDAgSYQ1ksuwqfChJusw1LSJ8BizJ2e/vVu5Lxjq3YvNJNlROv1ui4i+c/kUUrPheBvQl4c5UbERhTwKa6QBJQ==
 
 ws@^8.2.3:
   version "8.6.0"
