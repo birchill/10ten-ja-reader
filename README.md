@@ -1,9 +1,16 @@
-# 10ten Japanese Reader
-
-![](https://github.com/birchill/10ten-ja-reader/workflows/Automated%20tests/badge.svg)
-![Twitter Follow](https://img.shields.io/twitter/follow/10tenstudy)
-
-Hi fellow Japanese reader! Formerly known as Rikaichamp, this browser extension lets you look up Japanese words with the hover of a mouse or tap of a screen.
+<div align="center">
+  <img src="images/10ten-ja-reader.svg" alt="10ten Japanese Reader" width="200" height="200" />
+  <h1>10ten Japanese Reader</h1>
+  
+  <p>
+    Hi fellow Japanese reader! Formerly known as Rikaichamp, this browser extension lets you look up Japanese words with the hover of a mouse or tap of a screen. 
+  </p>
+  
+  <p>
+    <a href="https://twitter.com/10tenstudy"><img src="https://img.shields.io/twitter/follow/10tenstudy" alt="Follow @10tenstudy"></a>
+    <a href=""><img src="https://github.com/birchill/10ten-ja-reader/workflows/Automated%20tests/badge.svg" alt="automated test status" /></a>
+  </p>
+</div>
 
 ## Table of Contents
 
@@ -32,7 +39,7 @@ Hi fellow Japanese reader! Formerly known as Rikaichamp, this browser extension 
 
   <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/german-cropped.png" alt="Screenshot showing German translation" title="German translation" width="640">
 
-- Dictionaries that update automatically every week by fetching just the updated entries
+- Dictionaries that update automatically twice a week by fetching just the updated entries
 - Easy to read dictionary entries
 
   <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/word-display-cropped.png" alt="Screenshot showing how definitions are grouped by part-of-speech" title="Some of the features of word display" width="640">
@@ -131,8 +138,9 @@ These are published simply to provide a public URL for each version of the
 source files to associating stack traces from error reports.)
 
 The above builds the package for **Firefox**.
-Use `yarn package:chrome` to build the Chrome package, or `yarn package:edge` for
-Edge.
+Use `yarn package:chrome` to build the Chrome package, `yarn package:edge` for
+Edge, `yarn package:safari` for Safari, or `yarn package:thunderbird` for
+Thunderbird.
 
 **Note:** For versions prior to and including 0.5.5 `yarn install` will try to
 install `husky` but fail so you will need to run `yarn install --ignore-scripts`.
