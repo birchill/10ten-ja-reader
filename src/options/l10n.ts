@@ -4,8 +4,7 @@ import { browser } from 'webextension-polyfill-ts';
 // https://github.com/piroor/webextensions-lib-l10n
 
 const getString = (fullKey: string): string =>
-  fullKey.replace(/__MSG_(.+?)__/g, (matched) => {
-    const key = matched.slice(6, -2);
+  fullKey.replace(/__MSG_([@\w]+)__/g, (matched, key) => {
     return browser.i18n.getMessage(key) || matched;
   });
 
