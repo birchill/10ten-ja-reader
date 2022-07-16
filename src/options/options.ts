@@ -877,9 +877,15 @@ function updateFormFromConfig() {
 }
 
 window.onload = async () => {
-  await config.ready;
-  completeForm();
-  fillVals();
+  try {
+    await config.ready;
+    completeForm();
+    fillVals();
+  } finally {
+    // Reveal contents now that it is complete
+    document.documentElement.classList.add('initialized');
+  }
+
   config.addChangeListener(updateFormFromConfig);
 
   // Listen to changes to the database.

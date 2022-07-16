@@ -8,6 +8,7 @@ app.
 
 ## [Unreleased]
 
+- Fixed flicker when opening options page.
 - Fixed handling of <kbd>Strg</kbd> key.
 
 ## [1.10.5] - 2022-06-09
