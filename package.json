@@ -103,7 +103,7 @@
   },
   "dependencies": {
     "@birchill/discriminator": "0.1.0",
-    "@birchill/jpdict-idb": "1.1.0",
+    "@birchill/jpdict-idb": "1.2.0",
     "@birchill/normal-jp": "1.4.0",
     "@bugsnag/js": "7.17.0",
     "husky": "8.0.1",
