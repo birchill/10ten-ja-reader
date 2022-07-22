@@ -153,7 +153,7 @@ export const browser = {
         case 'misc_label_abbr':
           return 'abbr.';
         case 'misc_label_arch':
-          return 'archaism';
+          return 'archaic';
         case 'misc_label_hon':
           return 'honorific';
         case 'popup_close_label':

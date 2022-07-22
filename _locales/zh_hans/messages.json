@@ -296,6 +296,9 @@
   "content_names_tag_serv": {
     "message": "服务"
   },
+  "content_names_tag_ship": {
+    "message": "船"
+  },
   "content_names_tag_station": {
     "message": "车站"
   },
@@ -569,6 +572,10 @@
     "message": "商务",
     "description": "Label applied to senses with the 'bus' field"
   },
+  "field_label_cards": {
+    "message": "纸牌",
+    "description": "Label applied to senses with the 'cards' field"
+  },
   "field_label_chem": {
     "message": "化学",
     "description": "Label applied to senses with the 'chem' field"
@@ -588,6 +595,10 @@
   "field_label_cryst": {
     "message": "晶体学",
     "description": "Label applied to senses with the 'cryst' field"
+  },
+  "field_label_dent": {
+    "message": "牙科",
+    "description": "Label applied to senses with the 'dent' field"
   },
   "field_label_ecol": {
     "message": "生态学",
@@ -616,6 +627,10 @@
   "field_label_ent": {
     "message": "昆虫学",
     "description": "Label applied to senses with the 'ent' field"
+  },
+  "field_label_film": {
+    "message": "电影",
+    "description": "Label applied to senses with the 'film' field"
   },
   "field_label_finc": {
     "message": "金融",
@@ -673,6 +688,10 @@
     "message": "赛马",
     "description": "Label applied to senses with the 'horse' field"
   },
+  "field_label_kabuki": {
+    "message": "歌舞伎",
+    "description": "Label applied to senses with the 'kabuki' field"
+  },
   "field_label_law": {
     "message": "法学",
     "description": "Label applied to senses with the 'law' field"
@@ -692,6 +711,10 @@
   "field_label_mahj": {
     "message": "麻将",
     "description": "Label applied to senses with the 'mahj' field"
+  },
+  "field_label_manga": {
+    "message": "漫画",
+    "description": "Label applied to senses with the 'manga' field"
   },
   "field_label_math": {
     "message": "数学",
@@ -713,9 +736,17 @@
     "message": "军事",
     "description": "Label applied to senses with the 'mil' field"
   },
+  "field_label_mining": {
+    "message": "矿业",
+    "description": "Label applied to senses with the 'mining' field"
+  },
   "field_label_music": {
     "message": "音乐",
     "description": "Label applied to senses with the 'music' field"
+  },
+  "field_label_noh": {
+    "message": "能剧",
+    "description": "Label applied to senses with the 'noh' field"
   },
   "field_label_ornith": {
     "message": "鸟类学",
@@ -749,6 +780,10 @@
     "message": "生理学",
     "description": "Label applied to senses with the 'physiol' field"
   },
+  "field_label_politics": {
+    "message": "政治",
+    "description": "Label applied to senses with the 'politics' field"
+  },
   "field_label_print": {
     "message": "印刷",
     "description": "Label applied to senses with the 'print' field"
@@ -756,6 +791,10 @@
   "field_label_psy": {
     "message": "精神科",
     "description": "Label applied to senses with the 'psy' field"
+  },
+  "field_label_psyanal": {
+    "message": "精神分析",
+    "description": "Label applied to senses with the 'psyanal' field"
   },
   "field_label_psych": {
     "message": "心理学",
@@ -765,6 +804,10 @@
     "message": "铁路",
     "description": "Label applied to senses with the 'rail' field"
   },
+  "field_label_rommyth": {
+    "message": "罗马神话",
+    "description": "Label applied to senses with the 'rommyth' field"
+  },
   "field_label_Shinto": {
     "message": "神道",
     "description": "Label applied to senses with the 'Shinto' field"
@@ -773,6 +816,10 @@
     "message": "将棋",
     "description": "Label applied to senses with the 'shogi' field"
   },
+  "field_label_ski": {
+    "message": "滑雪",
+    "description": "Label applied to senses with the 'ski' field"
+  },
   "field_label_sports": {
     "message": "体育",
     "description": "Label applied to senses with the 'sports' field"
@@ -780,6 +827,10 @@
   "field_label_stat": {
     "message": "统计学",
     "description": "Label applied to senses with the 'stat' field"
+  },
+  "field_label_stockm": {
+    "message": "股市",
+    "description": "Label applied to senses with the 'stockm' field"
   },
   "field_label_sumo": {
     "message": "相扑",
@@ -792,6 +843,10 @@
   "field_label_tradem": {
     "message": "商标",
     "description": "Label applied to senses with the 'tradem' field"
+  },
+  "field_label_tv": {
+    "message": "电视机",
+    "description": "Label applied to senses with the 'tv' field"
   },
   "field_label_vidg": {
     "message": "游戏",
@@ -1157,9 +1212,13 @@
     "message": "略",
     "description": "Label used to describe senses with the 'abbr' (abbrev.) annotation"
   },
+  "misc_label_aphorism": {
+    "message": "格言",
+    "description": "Label used to describe senses with the 'aphorism' (pithy saying) annotation"
+  },
   "misc_label_arch": {
     "message": "古",
-    "description": "Label used to describe senses with the 'arch' (archaism) annotation"
+    "description": "Label used to describe senses with the 'arch' (archaic) annotation"
   },
   "misc_label_char": {
     "message": "角色",
@@ -1171,7 +1230,7 @@
   },
   "misc_label_col": {
     "message": "俗语",
-    "description": "Label used to describe senses with the 'col' (colloquialism) annotation"
+    "description": "Label used to describe senses with the 'col' (colloquial) annotation"
   },
   "misc_label_company": {
     "message": "公司",
@@ -1196,6 +1255,10 @@
   "misc_label_doc": {
     "message": "文书",
     "description": "Label used to describe senses with the 'doc' (document) annotation"
+  },
+  "misc_label_euph": {
+    "message": "委婉的",
+    "description": "Label used to describe senses with the 'euph' (euphemistic) annotation"
   },
   "misc_label_ev": {
     "message": "事件",

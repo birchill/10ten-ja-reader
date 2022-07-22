@@ -296,6 +296,9 @@
   "content_names_tag_serv": {
     "message": "service"
   },
+  "content_names_tag_ship": {
+    "message": "ship"
+  },
   "content_names_tag_station": {
     "message": "station"
   },
@@ -569,6 +572,10 @@
     "message": "business",
     "description": "Label applied to senses with the 'bus' field"
   },
+  "field_label_cards": {
+    "message": "card games",
+    "description": "Label applied to senses with the 'cards' field"
+  },
   "field_label_chem": {
     "message": "chemistry",
     "description": "Label applied to senses with the 'chem' field"
@@ -588,6 +595,10 @@
   "field_label_cryst": {
     "message": "crystallography",
     "description": "Label applied to senses with the 'cryst' field"
+  },
+  "field_label_dent": {
+    "message": "dentistry",
+    "description": "Label applied to senses with the 'dent' field"
   },
   "field_label_ecol": {
     "message": "ecology",
@@ -616,6 +627,10 @@
   "field_label_ent": {
     "message": "entomology",
     "description": "Label applied to senses with the 'ent' field"
+  },
+  "field_label_film": {
+    "message": "film",
+    "description": "Label applied to senses with the 'film' field"
   },
   "field_label_finc": {
     "message": "finance",
@@ -673,6 +688,10 @@
     "message": "horse racing",
     "description": "Label applied to senses with the 'horse' field"
   },
+  "field_label_kabuki": {
+    "message": "kabuki",
+    "description": "Label applied to senses with the 'kabuki' field"
+  },
   "field_label_law": {
     "message": "law",
     "description": "Label applied to senses with the 'law' field"
@@ -692,6 +711,10 @@
   "field_label_mahj": {
     "message": "mahjong",
     "description": "Label applied to senses with the 'mahj' field"
+  },
+  "field_label_manga": {
+    "message": "manga",
+    "description": "Label applied to senses with the 'manga' field"
   },
   "field_label_math": {
     "message": "mathematics",
@@ -713,9 +736,17 @@
     "message": "military",
     "description": "Label applied to senses with the 'mil' field"
   },
+  "field_label_mining": {
+    "message": "mining",
+    "description": "Label applied to senses with the 'mining' field"
+  },
   "field_label_music": {
     "message": "music",
     "description": "Label applied to senses with the 'music' field"
+  },
+  "field_label_noh": {
+    "message": "Noh",
+    "description": "Label applied to senses with the 'noh' field"
   },
   "field_label_ornith": {
     "message": "ornithology",
@@ -730,7 +761,7 @@
     "description": "Label applied to senses with the 'pathol' field"
   },
   "field_label_pharm": {
-    "message": "pharmacy",
+    "message": "pharmacology",
     "description": "Label applied to senses with the 'pharm' field"
   },
   "field_label_phil": {
@@ -749,6 +780,10 @@
     "message": "physiology",
     "description": "Label applied to senses with the 'physiol' field"
   },
+  "field_label_politics": {
+    "message": "politics",
+    "description": "Label applied to senses with the 'politics' field"
+  },
   "field_label_print": {
     "message": "printing",
     "description": "Label applied to senses with the 'print' field"
@@ -756,6 +791,10 @@
   "field_label_psy": {
     "message": "psychiatry",
     "description": "Label applied to senses with the 'psy' field"
+  },
+  "field_label_psyanal": {
+    "message": "psychoanalysis",
+    "description": "Label applied to senses with the 'psyanal' field"
   },
   "field_label_psych": {
     "message": "psychology",
@@ -765,6 +804,10 @@
     "message": "railway",
     "description": "Label applied to senses with the 'rail' field"
   },
+  "field_label_rommyth": {
+    "message": "Roman mythology",
+    "description": "Label applied to senses with the 'rommyth' field"
+  },
   "field_label_Shinto": {
     "message": "Shinto",
     "description": "Label applied to senses with the 'Shinto' field"
@@ -773,6 +816,10 @@
     "message": "shogi",
     "description": "Label applied to senses with the 'shogi' field"
   },
+  "field_label_ski": {
+    "message": "skiing",
+    "description": "Label applied to senses with the 'ski' field"
+  },
   "field_label_sports": {
     "message": "sports",
     "description": "Label applied to senses with the 'sports' field"
@@ -780,6 +827,10 @@
   "field_label_stat": {
     "message": "statistics",
     "description": "Label applied to senses with the 'stat' field"
+  },
+  "field_label_stockm": {
+    "message": "stock market",
+    "description": "Label applied to senses with the 'stockm' field"
   },
   "field_label_sumo": {
     "message": "sumo",
@@ -792,6 +843,10 @@
   "field_label_tradem": {
     "message": "trademark",
     "description": "Label applied to senses with the 'tradem' field"
+  },
+  "field_label_tv": {
+    "message": "TV",
+    "description": "Label applied to senses with the 'tv' field"
   },
   "field_label_vidg": {
     "message": "video games",
@@ -1157,9 +1212,13 @@
     "message": "abbrev.",
     "description": "Label used to describe senses with the 'abbr' (abbrev.) annotation"
   },
+  "misc_label_aphorism": {
+    "message": "aphorism",
+    "description": "Label used to describe senses with the 'aphorism' (pithy saying) annotation"
+  },
   "misc_label_arch": {
-    "message": "archaism",
-    "description": "Label used to describe senses with the 'arch' (archaism) annotation"
+    "message": "archaic",
+    "description": "Label used to describe senses with the 'arch' (archaic) annotation"
   },
   "misc_label_char": {
     "message": "character",
@@ -1170,8 +1229,8 @@
     "description": "Label used to describe senses with the 'chn' (children) annotation"
   },
   "misc_label_col": {
-    "message": "colloquialism",
-    "description": "Label used to describe senses with the 'col' (colloquialism) annotation"
+    "message": "colloquial",
+    "description": "Label used to describe senses with the 'col' (colloquial) annotation"
   },
   "misc_label_company": {
     "message": "company",
@@ -1196,6 +1255,10 @@
   "misc_label_doc": {
     "message": "document",
     "description": "Label used to describe senses with the 'doc' (document) annotation"
+  },
+  "misc_label_euph": {
+    "message": "euphemistic",
+    "description": "Label used to describe senses with the 'euph' (euphemistic) annotation"
   },
   "misc_label_ev": {
     "message": "event",
