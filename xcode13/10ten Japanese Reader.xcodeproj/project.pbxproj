@@ -452,7 +452,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1300;
-				LastUpgradeCheck = 1300;
+				LastUpgradeCheck = 1330;
 				TargetAttributes = {
 					D306F43D2692C553002FA4FD = {
 						CreatedOnToolsVersion = 13.0;
@@ -934,6 +934,7 @@
 		D306F4852692C553002FA4FD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 42;
 				DEVELOPMENT_TEAM = H3RB7C8768;
@@ -963,6 +964,7 @@
 		D306F4862692C553002FA4FD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 42;
 				DEVELOPMENT_TEAM = H3RB7C8768;
