@@ -8,6 +8,7 @@ app.
 
 ## [Unreleased]
 
+- Added new field and misc tags from JMdict.
 - Fixed flicker when opening options page.
 - Fixed handling of <kbd>Strg</kbd> key.
 
