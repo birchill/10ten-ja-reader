@@ -409,7 +409,7 @@ export async function translate({
       result.dbStatus = dbStatus;
     }
 
-    text = text.substr(skip, text.length - skip);
+    text = text.substring(skip);
   }
 
   if (result.data.length === 0) {
