@@ -65,7 +65,7 @@ async function main() {
     'package.json',
     'README.md',
     'tsconfig.json',
-    'webpack.config.js',
+    'webpack.config.mjs',
     'yarn.lock',
   ];
   for (const file of files) {
