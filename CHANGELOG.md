@@ -8,6 +8,10 @@ app.
 
 ## [Unreleased]
 
+- Nothing yet
+
+## [1.10.6] - 2022-07-23
+
 - Added new field and misc tags from JMdict.
 - Fixed flicker when opening options page.
 - Fixed handling of <kbd>Strg</kbd> key.
@@ -860,7 +864,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.5...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.6...HEAD
+[1.10.6]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.5...v1.10.6
 [1.10.5]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.4...v1.10.5
 [1.10.4]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.0...v1.10.4
 [1.10.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.9.0...v1.10.0
