@@ -84,7 +84,7 @@ function normalizeTarget(target) {
   const result = target.trim().toLowerCase();
   // Initial caps (since that's what we'll look for in the release notes)
   if (result.length > 2) {
-    return result.charAt(0).toUpperCase + result.slice(1);
+    return result.charAt(0).toUpperCase() + result.slice(1);
   }
   return result.toUpperCase();
 }
