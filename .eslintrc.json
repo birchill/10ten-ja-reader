@@ -18,7 +18,8 @@
     {
       "files": ["*.js", "*.mjs", "tests/**/*", "utils/**/*"],
       "parserOptions": {
-        "project": null
+        "project": "tsconfig.json",
+        "sourceType": "module"
       },
       "rules": {
         "@typescript-eslint/no-floating-promises": "off",
