@@ -379,6 +379,121 @@
       }
     }
 
+    // Special tests for names + currency
+    {
+      addLabel('Currency + names');
+      const popup = contentHandler._renderPopup(
+        {
+          words: null,
+          names: {
+            type: 'names',
+            data: [
+              {
+                id: 5743402,
+                k: ['６４'],
+                r: ['ロクヨン'],
+                tr: [{ det: ['Nintendo 64 (col)'], type: ['product'] }],
+                matchLen: 2,
+              },
+            ],
+            more: false,
+            matchLen: 2,
+          },
+          kanji: null,
+          resultType: 'full',
+        },
+        {
+          ...config,
+          dictToShow: 'names',
+          fxData: {
+            currency: 'USD',
+            rate: 0.009115065781351295,
+            timestamp: 1631754180485,
+          },
+          meta: {
+            type: 'currency',
+            value: 64040,
+            matchLen: 7,
+          },
+          container: createPopupContainer(),
+          popupStyle: 'light',
+          onClosePopup: () => {
+            console.log('closed');
+          },
+          onShowSettings: () => {},
+        }
+      );
+      popup.classList.add('-inline');
+    }
+
+    {
+      addLabel('Currency + names + multicol');
+      const popup = contentHandler._renderPopup(
+        {
+          words: null,
+          names: {
+            type: 'names',
+            data: [
+              {
+                id: 5743402,
+                k: ['６４'],
+                r: ['ロクヨン'],
+                tr: [{ det: ['Nintendo 64 (col)'], type: ['product'] }],
+                matchLen: 2,
+              },
+              // The following don't make sense but should be enough to force
+              // us into multicol mode
+              {
+                k: ['日本'],
+                r: ['にっぽん'],
+                tr: [{ type: ['surname'], det: ['Nippon'] }],
+              },
+              {
+                k: ['日本'],
+                r: ['につぽん'],
+                tr: [{ type: ['surname'], det: ['Nitsupon'] }],
+              },
+              {
+                k: ['日本'],
+                r: ['にほん'],
+                tr: [{ type: ['surname'], det: ['Nihon'] }],
+              },
+              {
+                k: ['日本'],
+                r: ['ひのもと'],
+                tr: [{ type: ['surname'], det: ['Hinomoto'] }],
+              },
+            ],
+            more: false,
+            matchLen: 2,
+          },
+          kanji: null,
+          resultType: 'full',
+        },
+        {
+          ...config,
+          dictToShow: 'names',
+          fxData: {
+            currency: 'USD',
+            rate: 0.009115065781351295,
+            timestamp: 1631754180485,
+          },
+          meta: {
+            type: 'currency',
+            value: 64040,
+            matchLen: 7,
+          },
+          container: createPopupContainer(),
+          popupStyle: 'light',
+          onClosePopup: () => {
+            console.log('closed');
+          },
+          onShowSettings: () => {},
+        }
+      );
+      popup.classList.add('-inline');
+    }
+
     // Number tests
 
     addHeading('Number conversion');

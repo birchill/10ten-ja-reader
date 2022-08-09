@@ -6,19 +6,34 @@ import { getDob } from '../../utils/age';
 import { html } from '../../utils/builder';
 
 import { getLangTag } from './lang-tag';
+import { renderMetadata } from './metadata';
 import { PopupOptions } from './popup';
 import { getSelectedIndex } from './selected-index';
 
 export function renderNamesEntries({
   entries,
+  matchLen,
   more,
   options,
 }: {
   entries: Array<NameResult>;
+  matchLen: number;
   more: boolean;
   options: PopupOptions;
 }): HTMLElement {
   const namesTable = html('div', { class: 'name-table entry-data' });
+
+  if (options.meta) {
+    const metadata = renderMetadata({
+      fxData: options.fxData,
+      isCombinedResult: true,
+      matchLen,
+      meta: options.meta,
+    });
+    if (metadata) {
+      namesTable.append(metadata);
+    }
+  }
 
   if (entries.length > 4) {
     namesTable.classList.add('-multicol');

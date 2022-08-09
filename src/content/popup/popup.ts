@@ -108,8 +108,13 @@ export function renderPopup(
       contentContainer.append(
         renderNamesEntries({
           entries: resultToShow.data,
+          matchLen: resultToShow.matchLen,
           more: resultToShow.more,
-          options,
+          options: {
+            ...options,
+            // Hide the meta if we have already shown it on the words tab
+            meta: result?.words ? undefined : options.meta,
+          },
         })
       );
       break;
