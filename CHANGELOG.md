@@ -8,8 +8,10 @@ app.
 
 ## [Unreleased]
 
-- Prioritize katakana headwords when matching on katakana
+- Made katakana headwords be shown when matching on katakana
   ([#978](https://github.com/birchill/10ten-ja-reader/issues/978)).
+- Made non-matching kanji headwords be hidden when matching on kana
+  ([#979](https://github.com/birchill/10ten-ja-reader/issues/979)).
 - Fixed display of currency conversion etc. when there are only name results
   ([#970](https://github.com/birchill/10ten-ja-reader/issues/970)).
 

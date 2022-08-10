@@ -77,13 +77,34 @@ export function renderWordEntries({
 
     const matchedOnKana = entry.r.some((r) => r.matchRange);
 
+    // If we matched on kana, then any headwords which are _not_ matches should
+    // be hidden since they don't apply to the kana.
+    //
+    // This is because we mostly only show matching kana headwords and so if we
+    // start showing kanji that don't correspond to the kana headwords the
+    // result will be misleading.
+    //
+    // For example, take the string さいだん. Entry 1385120 has readings
+    // さいだん and せつだん but さいだん is specifically bound to the 截断 kanji.
+    //
+    // As a result if we look up さいだん we'll mark the さいだん kana headword as a
+    // match and the 截断 kanji headword too. As per our usual processing, we'll
+    // only show the さいだん kana headword, however, not せつだん.
+    //
+    // If we were also to show the unmatched 切断 kanji headword we'd end up
+    // displaying:
+    //
+    // 截断、切断  さいだん
+    //
+    // which would be misleading since 切断 can never have that reading.
+    const matchingKanji =
+      matchedOnKana && entry.k ? entry.k.filter((k) => k.match) : entry.k || [];
+
     // Sort matched kanji entries first
-    const sortedKanji = entry.k
-      ? [...entry.k].sort((a, b) => Number(b.match) - Number(a.match))
-      : [];
-    if (sortedKanji.length) {
+    matchingKanji.sort((a, b) => Number(b.match) - Number(a.match));
+    if (matchingKanji.length) {
       const kanjiSpan = html('span', { class: 'w-kanji', lang: 'ja' });
-      for (const [i, kanji] of sortedKanji.entries()) {
+      for (const [i, kanji] of matchingKanji.entries()) {
         if (i) {
           kanjiSpan.append(html('span', { class: 'separator' }, '、'));
         }
