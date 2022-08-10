@@ -18,7 +18,7 @@
     {
       "files": ["*.js", "*.mjs", "tests/**/*", "utils/**/*"],
       "parserOptions": {
-        "project": "tsconfig.json",
+        "project": null,
         "sourceType": "module"
       },
       "rules": {
