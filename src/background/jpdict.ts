@@ -8,6 +8,7 @@ import {
   UpdateErrorState,
   UpdateState,
 } from '@birchill/jpdict-idb';
+import { kanaToHiragana } from '@birchill/normal-jp';
 import { browser } from 'webextension-polyfill-ts';
 
 import { ExtensionStorageError } from '../common/extension-storage-error';
@@ -328,7 +329,7 @@ export async function searchWords({
     dbStatus: 'updating' | 'unavailable' | undefined
   ]
 > {
-  const [word, inputLengths] = normalizeInput(input);
+  let [word, inputLengths] = normalizeInput(input);
 
   const maxResults =
     max > 0 ? Math.min(WORDS_MAX_ENTRIES, max) : WORDS_MAX_ENTRIES;
@@ -344,6 +345,9 @@ export async function searchWords({
     try {
       const flatFileDatabase = await fallbackDatabaseLoader.database;
       getWords = flatFileDatabase.getWords.bind(flatFileDatabase);
+      // The IDB database handles kana variations but for the flat file database
+      // we need to do it ourselves.
+      word = kanaToHiragana(word);
     } catch {
       return [null, dbStatus];
     }
