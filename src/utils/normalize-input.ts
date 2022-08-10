@@ -10,9 +10,7 @@ export function normalizeInput(input: string): [string, number[]] {
   // Convert to full-width, normalize decomposed characters, expand combined
   // characters etc.
   const fullWidthInput = halfToFullWidthNum(input);
-  let [normalized, inputLengths] = toNormalized(
-    halfToFullWidthNum(fullWidthInput)
-  );
+  let [normalized, inputLengths] = toNormalized(fullWidthInput);
 
   // Strip out any zero-width non-joiners (as Google Docs sometimes likes to
   // stick them between every single character).
@@ -28,7 +26,7 @@ export function normalizeInput(input: string): [string, number[]] {
       while (inputLengths[outputIndex] < i) {
         outputIndex++;
       }
-      normalized = normalized.substr(0, outputIndex);
+      normalized = normalized.substring(0, outputIndex);
       inputLengths = inputLengths.slice(0, outputIndex ? outputIndex + 1 : 0);
       break;
     }

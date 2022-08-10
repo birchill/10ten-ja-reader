@@ -93,7 +93,7 @@ export async function wordSearch({
         continue;
       }
 
-      // Now that we have filtered our set of matches to those we plan to keep
+      // Now that we have filtered our set of matches to those we plan to keep,
       // update our duplicates set.
       have = new Set([...have, ...wordResults.map((word) => word.id)]);
 
@@ -123,7 +123,7 @@ export async function wordSearch({
 
     // Shorten input, but don't split a ようおん (e.g. きゃ).
     const lengthToShorten = endsInYoon(input) ? 2 : 1;
-    input = input.substr(0, input.length - lengthToShorten);
+    input = input.substring(0, input.length - lengthToShorten);
   }
 
   if (!result.data.length) {

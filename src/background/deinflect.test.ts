@@ -23,6 +23,26 @@ describe('deinflect', () => {
     });
   });
 
+  it('deinflects kana variations', () => {
+    const cases = [
+      ['走ります', '走る', [[DeinflectReason.Polite]], 2],
+      ['走りまス', '走る', [[DeinflectReason.Polite]], 2],
+      ['走りマス', '走る', [[DeinflectReason.Polite]], 2],
+      ['走リマス', '走る', [[DeinflectReason.Polite]], 2],
+      ['走リマす', '走る', [[DeinflectReason.Polite]], 2],
+      ['走った', '走る', [[DeinflectReason.Past]], 2],
+      ['走っタ', '走る', [[DeinflectReason.Past]], 2],
+      ['走ッタ', '走る', [[DeinflectReason.Past]], 2],
+      ['走ッた', '走る', [[DeinflectReason.Past]], 2],
+    ];
+
+    for (const [inflected, plain, reasons, type] of cases) {
+      const result = deinflect(inflected as string);
+      const match = result.find((candidate) => candidate.word == plain);
+      expect(match).toMatchObject({ reasons, type, word: plain });
+    }
+  });
+
   it('deinflects -masu stem forms', () => {
     const result = deinflect('食べ');
     const match = result.find((candidate) => candidate.word === '食べる');

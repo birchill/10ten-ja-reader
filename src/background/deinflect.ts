@@ -1,3 +1,5 @@
+import { kanaToHiragana } from '@birchill/normal-jp';
+
 export const enum DeinflectReason {
   PolitePastNegative,
   PoliteNegative,
@@ -718,63 +720,72 @@ export function deinflect(word: string): CandidateWord[] {
     const type = thisCandidate.type;
 
     for (const ruleGroup of ruleGroups) {
-      if (ruleGroup.fromLen <= word.length) {
-        const ending = word.substr(-ruleGroup.fromLen);
+      if (ruleGroup.fromLen > word.length) {
+        continue;
+      }
 
-        for (const rule of ruleGroup.rules) {
-          if (type & rule.type && ending === rule.from) {
-            const newWord =
-              word.substr(0, word.length - rule.from.length) + rule.to;
-            if (newWord.length <= 1) {
-              continue;
-            }
+      const ending = word.slice(-ruleGroup.fromLen);
+      const hiraganaEnding = kanaToHiragana(ending);
 
-            // If we already have a candidate for this word with the same
-            // to type(s), expand the possible reasons.
-            //
-            // If the to type(s) differ, then we'll add a separate candidate
-            // and just hope that when we go to match against dictionary words
-            // we'll filter out the mismatching one(s).
-            if (resultIndex[newWord]) {
-              const candidate = result[resultIndex[newWord]];
-              if (candidate.type === rule.type >> 8) {
-                candidate.reasons.unshift([rule.reason]);
-                continue;
-              }
-            }
-            resultIndex[newWord] = result.length;
+      for (const rule of ruleGroup.rules) {
+        if (!(type & rule.type)) {
+          continue;
+        }
 
-            // Deep clone multidimensional array
-            const reasons = [];
-            for (const array of thisCandidate.reasons) {
-              reasons.push(Array.from(array));
-            }
-            if (reasons.length) {
-              const firstReason = reasons[0];
-              // This is a bit hacky but the alternative is to add the
-              // full-form causative passive inflections to the deinflection
-              // dictionary and then try to merge the results.
-              if (
-                rule.reason === DeinflectReason.Causative &&
-                firstReason.length &&
-                firstReason[0] === DeinflectReason.PotentialOrPassive
-              ) {
-                firstReason.splice(0, 1, DeinflectReason.CausativePassive);
-              } else {
-                firstReason.unshift(rule.reason);
-              }
-            } else {
-              reasons.push([rule.reason]);
-            }
-            const candidate: CandidateWord = {
-              reasons,
-              type: rule.type >> 8,
-              word: newWord,
-            };
+        if (ending !== rule.from && hiraganaEnding !== rule.from) {
+          continue;
+        }
 
-            result.push(candidate);
+        const newWord =
+          word.substring(0, word.length - rule.from.length) + rule.to;
+        if (newWord.length <= 1) {
+          continue;
+        }
+
+        // If we already have a candidate for this word with the same
+        // to type(s), expand the possible reasons.
+        //
+        // If the to type(s) differ, then we'll add a separate candidate
+        // and just hope that when we go to match against dictionary words
+        // we'll filter out the mismatching one(s).
+        if (resultIndex[newWord]) {
+          const candidate = result[resultIndex[newWord]];
+          if (candidate.type === rule.type >> 8) {
+            candidate.reasons.unshift([rule.reason]);
+            continue;
           }
         }
+        resultIndex[newWord] = result.length;
+
+        // Deep clone multidimensional array
+        const reasons = [];
+        for (const array of thisCandidate.reasons) {
+          reasons.push(Array.from(array));
+        }
+        if (reasons.length) {
+          const firstReason = reasons[0];
+          // This is a bit hacky but the alternative is to add the
+          // full-form causative passive inflections to the deinflection
+          // dictionary and then try to merge the results.
+          if (
+            rule.reason === DeinflectReason.Causative &&
+            firstReason.length &&
+            firstReason[0] === DeinflectReason.PotentialOrPassive
+          ) {
+            firstReason.splice(0, 1, DeinflectReason.CausativePassive);
+          } else {
+            firstReason.unshift(rule.reason);
+          }
+        } else {
+          reasons.push([rule.reason]);
+        }
+        const candidate: CandidateWord = {
+          reasons,
+          type: rule.type >> 8,
+          word: newWord,
+        };
+
+        result.push(candidate);
       }
     }
   } while (++i < result.length);

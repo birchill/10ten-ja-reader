@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+- Prioritize katakana headwords when matching on katakana
+  ([#978](https://github.com/birchill/10ten-ja-reader/issues/978)).
 - Fixed display of currency conversion etc. when there are only name results
   ([#970](https://github.com/birchill/10ten-ja-reader/issues/970)).
 

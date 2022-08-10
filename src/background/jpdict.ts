@@ -8,7 +8,6 @@ import {
   UpdateErrorState,
   UpdateState,
 } from '@birchill/jpdict-idb';
-import { kanaToHiragana } from '@birchill/normal-jp';
 import { browser } from 'webextension-polyfill-ts';
 
 import { ExtensionStorageError } from '../common/extension-storage-error';
@@ -329,8 +328,7 @@ export async function searchWords({
     dbStatus: 'updating' | 'unavailable' | undefined
   ]
 > {
-  let [word, inputLengths] = normalizeInput(input);
-  word = kanaToHiragana(word);
+  const [word, inputLengths] = normalizeInput(input);
 
   const maxResults =
     max > 0 ? Math.min(WORDS_MAX_ENTRIES, max) : WORDS_MAX_ENTRIES;
