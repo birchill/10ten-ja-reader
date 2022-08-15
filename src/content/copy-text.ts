@@ -56,12 +56,18 @@ export function getWordToCopy(entry: CopyEntry): string {
   switch (entry.type) {
     case 'word':
       {
-        const headwords =
-          entry.data.k && entry.data.k.length ? entry.data.k : entry.data.r;
-        result = (headwords as Array<Headword>)
-          .filter((entry: Headword) => entry.match)
-          .map((entry: Headword) => entry.ent)
-          .join(', ');
+        let headwords =
+          entry.data.k && entry.data.k.length
+            ? entry.data.k.filter((k) => !k.i?.includes('sK'))
+            : entry.data.r.filter((r) => !r.i?.includes('sk'));
+
+        // Only show matches -- unless our only matches were search-only
+        // terms -- in which case we want to include all headwords.
+        if (headwords.some((h) => h.match)) {
+          headwords = headwords.filter((entry: Headword) => entry.match);
+        }
+
+        result = headwords.map((entry: Headword) => entry.ent).join(', ');
       }
       break;
 
@@ -92,12 +98,16 @@ export function getEntryToCopy(
   switch (entry.type) {
     case 'word':
       {
-        result =
-          entry.data.k && entry.data.k.length
-            ? `${entry.data.k.map((k) => k.ent).join(', ')} [${entry.data.r
-                .map((r) => r.ent)
-                .join(', ')}]`
-            : entry.data.r.map((r) => r.ent).join(', ');
+        const kanjiHeadwords = entry.data.k
+          ? entry.data.k.filter((k) => !k.i?.includes('sK')).map((k) => k.ent)
+          : [];
+        const kanaHeadwords = entry.data.r
+          .filter((r) => !r.i?.includes('sk'))
+          .map((r) => r.ent);
+
+        result = kanjiHeadwords.length
+          ? `${kanjiHeadwords.join(', ')} [${kanaHeadwords.join(', ')}]`
+          : kanaHeadwords.join(', ');
         if (entry.data.romaji?.length) {
           result += ` (${entry.data.romaji.join(', ')})`;
         }
@@ -288,9 +298,17 @@ export function getFieldsToCopy(
     case 'word':
       result =
         entry.data.k && entry.data.k.length
-          ? entry.data.k.map((k) => k.ent).join('; ')
+          ? entry.data.k
+              .filter((k) => !k.i?.includes('sK'))
+              .map((k) => k.ent)
+              .join('; ')
           : '';
-      result += '\t' + entry.data.r.map((r) => r.ent).join('; ');
+      result +=
+        '\t' +
+        entry.data.r
+          .filter((r) => !r.i?.includes('sk'))
+          .map((r) => r.ent)
+          .join('; ');
       if (entry.data.romaji?.length) {
         result += '\t' + entry.data.romaji.join('; ');
       }

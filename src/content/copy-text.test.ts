@@ -125,6 +125,123 @@ describe('getWordToCopy', () => {
     ).toEqual('理解');
   });
 
+  it('does not copy search-only kanji headword(s) from a word search', () => {
+    expect(
+      getWordToCopy({
+        type: 'word',
+        data: {
+          id: 1169210,
+          k: [
+            { ent: '引き裂く', p: ['i1'], match: true },
+            { ent: '引裂く', match: true },
+            { ent: '引きさく', match: true, i: ['sK'] },
+          ],
+          r: [
+            {
+              ent: 'ひきさく',
+              p: ['i1'],
+              a: 3,
+              match: true,
+              matchRange: [0, 4],
+            },
+          ],
+          s: [
+            {
+              g: [
+                { str: 'to tear up' },
+                { str: 'to tear off' },
+                { str: 'to rip up' },
+                { str: 'to tear to pieces' },
+              ],
+              pos: ['v5k', 'vt'],
+              match: true,
+            },
+            {
+              g: [
+                { str: 'to (forcibly) separate (a couple, family, etc.)' },
+                { str: 'to force apart' },
+                { str: 'to tear apart' },
+              ],
+              pos: ['v5k', 'vt'],
+              match: true,
+            },
+          ],
+        },
+      })
+    ).toEqual('引き裂く, 引裂く');
+  });
+
+  it('copies non-matching headwords if the only matching ones are search-only', () => {
+    expect(
+      getWordToCopy({
+        type: 'word',
+        data: {
+          id: 1169210,
+          k: [
+            { ent: '引き裂く', p: ['i1'], match: false },
+            { ent: '引裂く', match: false },
+            { ent: '引きさく', match: true, i: ['sK'], matchRange: [0, 4] },
+          ],
+          r: [
+            {
+              ent: 'ひきさく',
+              p: ['i1'],
+              a: 3,
+              match: true,
+            },
+          ],
+          s: [
+            {
+              g: [
+                { str: 'to tear up' },
+                { str: 'to tear off' },
+                { str: 'to rip up' },
+                { str: 'to tear to pieces' },
+              ],
+              pos: ['v5k', 'vt'],
+              match: true,
+            },
+            {
+              g: [
+                { str: 'to (forcibly) separate (a couple, family, etc.)' },
+                { str: 'to force apart' },
+                { str: 'to tear apart' },
+              ],
+              pos: ['v5k', 'vt'],
+              match: true,
+            },
+          ],
+        },
+      })
+    ).toEqual('引き裂く, 引裂く');
+  });
+
+  it('does not copy search-only kana headword(s) from a word search', () => {
+    expect(
+      getWordToCopy({
+        type: 'word',
+        data: {
+          id: 1037940,
+          k: [],
+          r: [
+            { ent: 'カネロニ', a: 0, match: false, matchRange: [0, 4] },
+            { ent: 'カネローニ', match: false },
+            { ent: 'カネローニー', match: true, i: ['sk'] },
+          ],
+          s: [
+            {
+              g: [{ str: 'cannelloni' }, { str: 'canneloni' }],
+              pos: ['n'],
+              field: ['food'],
+              lsrc: [{ lang: 'it' }],
+              match: true,
+            },
+          ],
+        },
+      })
+    ).toEqual('カネロニ, カネローニ');
+  });
+
   it('copies names from a name search', () => {
     expect(
       getWordToCopy({

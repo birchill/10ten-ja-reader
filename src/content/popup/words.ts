@@ -77,6 +77,11 @@ export function renderWordEntries({
 
     const matchedOnKana = entry.r.some((r) => r.matchRange);
 
+    // Exclude any search-only kanji headwords
+    const kanjiHeadwords = entry.k
+      ? entry.k.filter((k) => !k.i?.includes('sK'))
+      : [];
+
     // If we matched on kana, then any headwords which are _not_ matches should
     // be hidden since they don't apply to the kana.
     //
@@ -97,8 +102,9 @@ export function renderWordEntries({
     // 截断、切断  さいだん
     //
     // which would be misleading since 切断 can never have that reading.
-    const matchingKanji =
-      matchedOnKana && entry.k ? entry.k.filter((k) => k.match) : entry.k || [];
+    const matchingKanji = matchedOnKana
+      ? kanjiHeadwords.filter((k) => k.match)
+      : kanjiHeadwords;
 
     // Sort matched kanji entries first
     matchingKanji.sort((a, b) => Number(b.match) - Number(a.match));
@@ -149,8 +155,12 @@ export function renderWordEntries({
 
     const matchingKana = entry.r.filter(
       (r) =>
-        r.match ||
-        (matchedOnIrregularKana && !r.i?.includes('ik') && !r.i?.includes('ok'))
+        // Exclude search-only kana forms
+        !r.i?.includes('sk') &&
+        (r.match ||
+          (matchedOnIrregularKana &&
+            !r.i?.includes('ik') &&
+            !r.i?.includes('ok')))
     );
 
     if (matchingKana.length) {
