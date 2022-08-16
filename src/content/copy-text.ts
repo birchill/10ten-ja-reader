@@ -279,7 +279,14 @@ function serializeSense(sense: Sense): string {
 
 function serializeLangSrc(lsrc: LangSource) {
   const lang = lsrc.wasei ? 'wasei' : lsrc.lang;
-  return (lang ? `${lang}: ` : '') + lsrc.src;
+  const parts = [];
+  if (lang) {
+    parts.push(lang);
+  }
+  if (lsrc.src) {
+    parts.push(lsrc.src);
+  }
+  return parts.join(': ');
 }
 
 export function getFieldsToCopy(
