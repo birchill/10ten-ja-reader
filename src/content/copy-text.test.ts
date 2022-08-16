@@ -368,6 +368,80 @@ describe('getEntryToCopy', () => {
     );
   });
 
+  it('does not copy search-only kanji headwords from a word search', () => {
+    expect(
+      getEntryToCopy({
+        type: 'word',
+        data: {
+          id: 1169210,
+          k: [
+            { ent: '引き裂く', p: ['i1'], match: true },
+            { ent: '引裂く', match: true },
+            { ent: '引きさく', match: true, i: ['sK'] },
+          ],
+          r: [
+            {
+              ent: 'ひきさく',
+              p: ['i1'],
+              a: 3,
+              match: true,
+              matchRange: [0, 4],
+            },
+          ],
+          s: [
+            {
+              g: [
+                { str: 'to tear up' },
+                { str: 'to tear off' },
+                { str: 'to rip up' },
+                { str: 'to tear to pieces' },
+              ],
+              pos: ['v5k', 'vt'],
+              match: true,
+            },
+            {
+              g: [
+                { str: 'to (forcibly) separate (a couple, family, etc.)' },
+                { str: 'to force apart' },
+                { str: 'to tear apart' },
+              ],
+              pos: ['v5k', 'vt'],
+              match: true,
+            },
+          ],
+        },
+      })
+    ).toEqual(
+      '引き裂く, 引裂く [ひきさく] (1) (v5k,vt) to tear up; to tear off; to rip up; to tear to pieces (2) (v5k,vt) to (forcibly) separate (a couple, family, etc.); to force apart; to tear apart'
+    );
+  });
+
+  it('does not copy search-only kana headwords from a word search', () => {
+    expect(
+      getEntryToCopy({
+        type: 'word',
+        data: {
+          id: 1037940,
+          k: [],
+          r: [
+            { ent: 'カネロニ', a: 0, match: false, matchRange: [0, 4] },
+            { ent: 'カネローニ', match: false },
+            { ent: 'カネローニー', match: true, i: ['sk'] },
+          ],
+          s: [
+            {
+              g: [{ str: 'cannelloni' }, { str: 'canneloni' }],
+              pos: ['n'],
+              field: ['food'],
+              lsrc: [{ lang: 'it' }],
+              match: true,
+            },
+          ],
+        },
+      })
+    ).toEqual('カネロニ, カネローニ (n) (food) cannelloni; canneloni (it)');
+  });
+
   it('prepares text from name search results', () => {
     expect(
       getEntryToCopy({
@@ -516,6 +590,80 @@ describe('getFieldsToCopy', () => {
     ).toEqual(
       '韓国\tかんこく\tkankoku\t(1) (n,adj-no) (abbr) South Korea; Republic of Korea (2) (n,adj-no) (abbr) Korean Empire (1897-1910)'
     );
+  });
+
+  it('does not copy search-only kanji headwords from a word search', () => {
+    expect(
+      getFieldsToCopy({
+        type: 'word',
+        data: {
+          id: 1169210,
+          k: [
+            { ent: '引き裂く', p: ['i1'], match: true },
+            { ent: '引裂く', match: true },
+            { ent: '引きさく', match: true, i: ['sK'] },
+          ],
+          r: [
+            {
+              ent: 'ひきさく',
+              p: ['i1'],
+              a: 3,
+              match: true,
+              matchRange: [0, 4],
+            },
+          ],
+          s: [
+            {
+              g: [
+                { str: 'to tear up' },
+                { str: 'to tear off' },
+                { str: 'to rip up' },
+                { str: 'to tear to pieces' },
+              ],
+              pos: ['v5k', 'vt'],
+              match: true,
+            },
+            {
+              g: [
+                { str: 'to (forcibly) separate (a couple, family, etc.)' },
+                { str: 'to force apart' },
+                { str: 'to tear apart' },
+              ],
+              pos: ['v5k', 'vt'],
+              match: true,
+            },
+          ],
+        },
+      })
+    ).toEqual(
+      '引き裂く; 引裂く\tひきさく\t(1) (v5k,vt) to tear up; to tear off; to rip up; to tear to pieces (2) (v5k,vt) to (forcibly) separate (a couple, family, etc.); to force apart; to tear apart'
+    );
+  });
+
+  it('does not copy search-only kana headwords from a word search', () => {
+    expect(
+      getFieldsToCopy({
+        type: 'word',
+        data: {
+          id: 1037940,
+          k: [],
+          r: [
+            { ent: 'カネロニ', a: 0, match: false, matchRange: [0, 4] },
+            { ent: 'カネローニ', match: false },
+            { ent: 'カネローニー', match: true, i: ['sk'] },
+          ],
+          s: [
+            {
+              g: [{ str: 'cannelloni' }, { str: 'canneloni' }],
+              pos: ['n'],
+              field: ['food'],
+              lsrc: [{ lang: 'it' }],
+              match: true,
+            },
+          ],
+        },
+      })
+    ).toEqual('\tカネロニ; カネローニ\t(n) (food) cannelloni; canneloni (it)');
   });
 
   it('prepares text from name search results', () => {
