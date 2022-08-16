@@ -141,8 +141,8 @@ export function renderWordEntries({
     }
 
     // Typically we only show the matching kana headwords but if we matched on
-    // an irregular form, we should show the regular kana headwords too, for
-    // reference.
+    // an irregular form or a search-only form, we should show the regular kana
+    // headwords too, for reference.
     //
     // For example, if we looked up ふんいき (雰囲気) we should only show that
     // headword, but if we looked up ふいんき, we should show the more correct
@@ -150,7 +150,11 @@ export function renderWordEntries({
     const matchedOnIrregularKana =
       matchedOnKana &&
       entry.r.every(
-        (r) => !r.match || r.i?.includes('ik') || r.i?.includes('ok')
+        (r) =>
+          !r.match ||
+          r.i?.includes('ik') ||
+          r.i?.includes('ok') ||
+          r.i?.includes('sk')
       );
 
     const matchingKana = entry.r.filter(
@@ -160,7 +164,8 @@ export function renderWordEntries({
         (r.match ||
           (matchedOnIrregularKana &&
             !r.i?.includes('ik') &&
-            !r.i?.includes('ok')))
+            !r.i?.includes('ok') &&
+            !r.i?.includes('sk')))
     );
 
     if (matchingKana.length) {
