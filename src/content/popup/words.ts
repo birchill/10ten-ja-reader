@@ -105,6 +105,7 @@ export function renderWordEntries({
     const matchingKanji = matchedOnKana
       ? kanjiHeadwords.filter((k) => k.match)
       : kanjiHeadwords;
+    const hasKanjiMatch = matchingKanji.some((k) => k.match);
 
     // Sort matched kanji entries first
     matchingKanji.sort((a, b) => Number(b.match) - Number(a.match));
@@ -117,7 +118,9 @@ export function renderWordEntries({
 
         let headwordSpan = kanjiSpan;
         if (
-          !kanji.match ||
+          // Dim the non-matching kanji unless there are none (e.g. because we
+          // matched on a search-only kanji headword).
+          (hasKanjiMatch && !kanji.match) ||
           // Dim any kanji "matches" where the reading is irregular, old, or
           // rare.
           (matchedOnKana &&
