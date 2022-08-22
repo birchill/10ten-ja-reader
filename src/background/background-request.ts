@@ -1,6 +1,8 @@
 import { discriminator } from '@birchill/discriminator';
 import * as s from 'superstruct';
 
+import { TranslatedPopupGeometrySchema } from '../common/popup-geometry';
+
 const SearchRequestSchema = s.type({
   input: s.string(),
   includeRomaji: s.optional(s.boolean()),
@@ -37,7 +39,9 @@ export const BackgroundRequestSchema = discriminator('type', {
 
   // Popup showing status
   'frame:popupShown': s.type({ frameId: s.number() }),
-  'children:popupShown': s.type({}),
+  'children:popupShown': s.type({
+    geometry: s.optional(TranslatedPopupGeometrySchema),
+  }),
   'children:popupHidden': s.type({}),
   'top:isPopupShowing': s.type({}),
 

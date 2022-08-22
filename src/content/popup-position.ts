@@ -1,5 +1,7 @@
 import { MarginBox, PaddingBox, Point } from '../utils/geometry';
 
+import { getScrollOffset } from './scroll-offset';
+
 export const enum PopupPositionMode {
   Start,
   TopLeft = Start,
@@ -29,14 +31,7 @@ export function getPopupPosition({
   safeArea: PaddingBox;
   pointerType: 'cursor' | 'puck';
 }): PopupPosition {
-  let { scrollX, scrollY } = document.defaultView!;
-
-  // If we're in full screen mode, however, we should use the scroll position of
-  // the full-screen element (which is always zero?).
-  if (document.fullscreenElement) {
-    scrollX = document.fullscreenElement.scrollLeft;
-    scrollY = document.fullscreenElement.scrollTop;
-  }
+  const { scrollX, scrollY } = getScrollOffset();
 
   // Use the clientWidth (as opposed to doc.defaultView.innerWidth) since this
   // excludes the width of any scrollbars.
@@ -112,6 +107,7 @@ export function getPopupPosition({
         y: top,
         constrainWidth: null,
         constrainHeight: null,
+        direction: 'disjoint',
       };
 
     case PopupPositionMode.BottomRight:
@@ -120,15 +116,17 @@ export function getPopupPosition({
         y: bottom,
         constrainWidth: null,
         constrainHeight: null,
+        direction: 'disjoint',
       };
   }
 }
 
-interface PopupPosition {
+export interface PopupPosition {
   x: number;
   y: number;
   constrainWidth: number | null;
   constrainHeight: number | null;
+  direction: 'vertical' | 'horizontal' | 'disjoint';
 }
 
 function getAutoPosition({
@@ -188,6 +186,7 @@ function getAutoPosition({
         y: scrollY,
         constrainWidth: null,
         constrainHeight: null,
+        direction: 'disjoint',
       };
 }
 
@@ -387,12 +386,14 @@ function calculatePosition({
         y: axisPos,
         constrainWidth: constrainCrossExtent,
         constrainHeight: constrainAxisExtent,
+        direction: axis,
       }
     : {
         x: axisPos,
         y: crossPos,
         constrainWidth: constrainAxisExtent,
         constrainHeight: constrainCrossExtent,
+        direction: axis,
       };
 }
 

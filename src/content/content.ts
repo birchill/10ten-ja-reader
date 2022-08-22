@@ -53,7 +53,7 @@ import { BackgroundMessageSchema } from '../background/background-message';
 import { ContentConfig } from '../common/content-config';
 import { CopyKeys, CopyType } from '../common/copy-keys';
 import { isTouchDevice } from '../utils/device';
-import { isEditableNode } from '../utils/dom-utils';
+import { isEditableNode, SVG_NS } from '../utils/dom-utils';
 import {
   addMarginToPoint,
   getMarginAroundPoint,
@@ -107,6 +107,11 @@ import { TextHighlighter } from './text-highlighter';
 import { TextRange, textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
 import { TouchClickTracker } from './touch-click-tracker';
+import {
+  PopupGeometry,
+  TranslatedPopupGeometry,
+} from '../common/popup-geometry';
+import { getScrollOffset } from './scroll-offset';
 
 const enum HoldToShowKeyType {
   Text = 1 << 0,
@@ -165,6 +170,11 @@ export class ContentHandler {
   // mark it as handled by calling event.preventDefault(). However, we
   // definitely don't want to do that if the popup is not showing.)
   private isPopupShowing = false;
+
+  // Keep track of the popup position so that we can detect if a mouse movement
+  // is "between" `currentPoint` and the popup so we can avoid hiding the popup
+  // in that case.
+  private popupGeometry: PopupGeometry | undefined;
 
   // Mouse tracking
   //
@@ -511,6 +521,14 @@ export class ContentHandler {
       return;
     }
 
+    // If the mouse have moved in a triangular shape between the original popup
+    // point and the popup, don't hide it, but instead allow the user to
+    // interact with the popup.
+    if (this.isEnRouteToPopup(event)) {
+      return;
+    }
+
+    // If the mouse is moving too quickly, don't show the popup
     if (this.shouldThrottlePopup(event)) {
       this.clearResult({ currentElement: event.target });
       return;
@@ -537,6 +555,221 @@ export class ContentHandler {
       eventElement: event.target,
       dictMode,
     });
+  }
+
+  isEnRouteToPopup(event: MouseEvent) {
+    let highlightElem = document.getElementById('en-route-highlight');
+
+    if (isPuckMouseEvent(event)) {
+      highlightElem?.remove();
+      return false;
+    }
+
+    if (!this.popupGeometry) {
+      highlightElem?.remove();
+      return false;
+    }
+
+    if (!this.currentPoint) {
+      highlightElem?.remove();
+      return false;
+    }
+
+    const {
+      x: popupX,
+      y: popupY,
+      width: popupWidth,
+      height: popupHeight,
+      direction,
+    } = this.popupGeometry;
+
+    // If the popup is not related to the mouse position we don't want to allow
+    // mousing over it might require making most of the screen un-scannable.
+    if (direction === 'disjoint') {
+      highlightElem?.remove();
+      return false;
+    }
+
+    const { scrollX, scrollY } = getScrollOffset();
+
+    // Check block axis range
+
+    // Make current point page-relative since the popup position is page
+    // relative.
+    let currentBlockPos =
+      direction === 'vertical'
+        ? this.currentPoint.y + scrollY
+        : this.currentPoint.x + scrollX;
+
+    // Get the closest edge of the popup edge
+    const popupBlockPos = direction === 'vertical' ? popupY : popupX;
+    const popupBlockSize = direction === 'vertical' ? popupHeight : popupWidth;
+    const popupEdge =
+      popupBlockPos >= currentBlockPos
+        ? popupBlockPos
+        : popupBlockPos + popupBlockSize;
+
+    // Now that we know which side of the lookup point the popup is on, tweak
+    // the lookup point by a few pixels just to make the envelope we use a
+    // little bigger. (Specifically we push the current block pos away from the
+    // popup so that the triangular envelope we create more fully encompasses
+    // the lookup point.)
+    if (popupEdge > currentBlockPos) {
+      currentBlockPos -= 4;
+    } else {
+      currentBlockPos += 4;
+    }
+
+    // Work out the distance between the lookup point and the edge of the popup
+    const popupDist = popupEdge - currentBlockPos;
+
+    // Work out the mouse distance from the lookup point
+    //
+    // NOTE: We _don't_ want to use event.pageY/pageX since that will return the
+    // wrong result when we are in full-screen mode. Instead we should manually
+    // add the scroll offset in.
+    const mouseBlockPos =
+      direction === 'vertical'
+        ? event.clientY + scrollY
+        : event.clientX + scrollX;
+
+    // Work out the portion of the distance we are in the gap between the lookup
+    // point and the edge of the popup.
+    const blockOffset =
+      popupDist < 0
+        ? currentBlockPos - mouseBlockPos
+        : mouseBlockPos - currentBlockPos;
+    const blockRange = Math.abs(popupDist);
+    const blockPortion = blockOffset / blockRange;
+
+    // Check if we are in the gap
+    let blockOk = true;
+    if (blockPortion < 0 || blockPortion > 1) {
+      blockOk = false;
+    }
+
+    // Check the inline range
+    //
+    // We do this by basically drawing a triangle from the lookup point spanning
+    // outwards towards the edge of the popup.
+    //
+    // e.g.
+    //
+    //                    +
+    //                  /  \
+    //                 / x  \
+    //                /<-D-->\
+    //               /        \
+    //  +----------------------------------------------+
+    //  |           <----B---->                        |
+    //  |           ^                                  |
+    //  |           C                                  |
+    //  A
+    //
+    // + = Lookup point (current inline position)
+    // x = Mouse position
+    // A = Inline popup start
+    // B = Max inline range (i.e. the inline range at the edge)
+    // C = Max inline range start
+    // D = Proportional inline range
+
+    const currentInlinePos =
+      direction === 'vertical'
+        ? this.currentPoint.x + scrollX
+        : this.currentPoint.y + scrollY;
+
+    const mouseInlinePos =
+      direction === 'vertical'
+        ? event.clientX + scrollX
+        : event.clientY + scrollY;
+
+    const inlinePopupStart = direction === 'vertical' ? popupX : popupY;
+    const maxInlineRange = blockRange * 2;
+    const maxInlineRangeStart = Math.max(
+      inlinePopupStart,
+      currentInlinePos - maxInlineRange / 2
+    );
+    const proportionalInlineRangeStart =
+      currentInlinePos -
+      blockPortion * (currentInlinePos - maxInlineRangeStart);
+    const proportionalInlineRangeEnd =
+      proportionalInlineRangeStart + blockPortion * maxInlineRange;
+
+    let inlineOk = true;
+    if (
+      mouseInlinePos < proportionalInlineRangeStart ||
+      mouseInlinePos > proportionalInlineRangeEnd
+    ) {
+      inlineOk = false;
+    }
+
+    // Make up a highlight elem to show where we are trying to cover
+    if (!highlightElem) {
+      highlightElem = document.createElement('div');
+      highlightElem.id = 'en-route-highlight';
+    }
+
+    // Make sure the element is included in the right place in the document
+    if (document.fullscreenElement) {
+      document.fullscreenElement.append(highlightElem);
+    } else {
+      document.body.append(highlightElem);
+    }
+
+    // Drop any existing children
+    while (highlightElem.firstElementChild) {
+      highlightElem.firstElementChild.remove();
+    }
+
+    const inlineMinExtreme = Math.min(maxInlineRangeStart, currentInlinePos);
+    const inlineMaxExtreme = Math.max(
+      maxInlineRangeStart + maxInlineRange,
+      currentInlinePos
+    );
+    const blockMinExtreme = Math.min(popupEdge, currentBlockPos);
+    const blockMaxExtreme = Math.max(popupEdge, currentBlockPos);
+
+    const leftmost =
+      direction === 'vertical' ? inlineMinExtreme : blockMinExtreme;
+    const rightmost =
+      direction === 'vertical' ? inlineMaxExtreme : blockMaxExtreme;
+    const topmost =
+      direction === 'vertical' ? blockMinExtreme : inlineMinExtreme;
+    const bottommost =
+      direction === 'vertical' ? blockMaxExtreme : inlineMaxExtreme;
+
+    const graphicWidth = rightmost - leftmost;
+    const graphicHeight = bottommost - topmost;
+
+    const highlightSvg = document.createElementNS(SVG_NS, 'svg');
+    highlightSvg.setAttribute(
+      'viewBox',
+      `0 0 ${graphicWidth} ${graphicHeight}`
+    );
+    highlightSvg.setAttribute('width', `${graphicWidth}`);
+    highlightElem.append(highlightSvg);
+
+    const path = document.createElementNS(SVG_NS, 'path');
+    const d =
+      direction === 'vertical'
+        ? `M${currentInlinePos - leftmost} ${popupDist > 0 ? 0 : -popupDist}L${
+            maxInlineRangeStart - leftmost
+          } ${popupDist}h${maxInlineRange}z`
+        : `M${popupDist > 0 ? 0 : -popupDist} ${
+            currentInlinePos - topmost
+          }L${popupDist} ${maxInlineRangeStart - topmost}v${maxInlineRange}z`;
+    path.setAttribute('d', d);
+    path.setAttribute('fill', 'green');
+    path.setAttribute('fill-opacity', '0.2');
+    highlightSvg.append(path);
+
+    // Position the element
+    highlightElem.style.position = 'absolute';
+    highlightElem.style.pointerEvents = 'none';
+    highlightElem.style.left = `${leftmost}px`;
+    highlightElem.style.top = `${topmost}px`;
+
+    return blockOk && inlineOk;
   }
 
   shouldThrottlePopup(event: MouseEvent) {
@@ -947,6 +1180,21 @@ export class ContentHandler {
     switch (request.type) {
       case 'popupShown':
         this.isPopupShowing = true;
+
+        // Check if this request has translated the geometry for us
+        if (
+          request.geometry &&
+          this.getFrameId() === request.geometry.frameId
+        ) {
+          const { scrollX, scrollY } = getScrollOffset();
+          this.popupGeometry = {
+            ...stripFields(request.geometry, ['frameId']),
+            x: request.geometry.x + scrollX,
+            y: request.geometry.y + scrollY,
+          };
+        } else {
+          this.popupGeometry = undefined;
+        }
         break;
 
       case 'popupHidden':
@@ -954,6 +1202,7 @@ export class ContentHandler {
         this.currentPoint = undefined;
         this.copyState = { kind: 'inactive' };
         this.isPopupShowing = false;
+        this.popupGeometry = undefined;
         break;
 
       case 'isPopupShowing':
@@ -961,6 +1210,9 @@ export class ContentHandler {
           void browser.runtime.sendMessage({
             type: 'frame:popupShown',
             frameId: request.frameId,
+            // No need to pass the popup geometry here, since presumably it
+            // doesn't belong to the iframe who is asking (or else they would
+            // have heard about it when the lookup completed).
           });
         }
         break;
@@ -1705,6 +1957,7 @@ export class ContentHandler {
       y: popupY,
       constrainWidth,
       constrainHeight,
+      direction,
     } = getPopupPosition({
       cursorClearance,
       isVerticalText: !!this.currentTargetProps?.isVerticalText,
@@ -1714,6 +1967,14 @@ export class ContentHandler {
       safeArea,
       pointerType: this.currentTargetProps?.fromPuck ? 'puck' : 'cursor',
     });
+
+    this.popupGeometry = {
+      x: popupX,
+      y: popupY,
+      width: constrainWidth ?? popupSize.width,
+      height: constrainHeight ?? popupSize.height,
+      direction,
+    };
 
     if (
       isSvgDoc(document) &&
@@ -1752,7 +2013,18 @@ export class ContentHandler {
     }
 
     if (this.isTopMostWindow()) {
-      void browser.runtime.sendMessage({ type: 'children:popupShown' });
+      let geometry: TranslatedPopupGeometry | undefined;
+      if (typeof this.currentLookupParams?.source === 'number') {
+        geometry = this.getTranslatedPopupGeometry(
+          this.currentLookupParams.source,
+          this.popupGeometry
+        );
+      }
+
+      void browser.runtime.sendMessage({
+        type: 'children:popupShown',
+        geometry,
+      });
     }
   }
 
@@ -1768,6 +2040,26 @@ export class ContentHandler {
     if (wasShowing && this.isTopMostWindow()) {
       void browser.runtime.sendMessage({ type: 'children:popupHidden' });
     }
+  }
+
+  getTranslatedPopupGeometry(
+    frameId: number,
+    popupGeometry: Readonly<PopupGeometry>
+  ): TranslatedPopupGeometry | undefined {
+    const iframe = findIframeElement({ frameId });
+    if (!iframe) {
+      return undefined;
+    }
+
+    const iframeOrigin = getIframeOrigin(iframe);
+    const { scrollX, scrollY } = getScrollOffset();
+
+    return {
+      ...popupGeometry,
+      x: popupGeometry.x - iframeOrigin.x - scrollX,
+      y: popupGeometry.y - iframeOrigin.y - scrollY,
+      frameId,
+    };
   }
 
   // Expose the renderPopup callback so that we can test it

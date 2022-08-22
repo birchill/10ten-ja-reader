@@ -579,6 +579,7 @@ browser.runtime.onMessage.addListener(
             ':'
           >;
           const message: ChildFramesMessage = {
+            ...request,
             type,
             frame: 'children',
           };

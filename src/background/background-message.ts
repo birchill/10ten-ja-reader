@@ -1,5 +1,9 @@
 import { discriminator } from '@birchill/discriminator';
 import * as s from 'superstruct';
+import {
+  PopupGeometry,
+  TranslatedPopupGeometrySchema,
+} from '../common/popup-geometry';
 
 export const BackgroundMessageSchema = discriminator('type', {
   disable: s.type({ frame: s.literal('*') }),
@@ -16,7 +20,10 @@ export const BackgroundMessageSchema = discriminator('type', {
   //
 
   // Popup showing status
-  popupShown: s.type({ frame: s.union([s.literal('children'), s.number()]) }),
+  popupShown: s.type({
+    frame: s.union([s.literal('children'), s.number()]),
+    geometry: s.optional(TranslatedPopupGeometrySchema),
+  }),
   popupHidden: s.type({ frame: s.literal('children') }),
   isPopupShowing: s.type({ frameId: s.number(), frame: s.literal('top') }),
 
@@ -76,6 +83,11 @@ export type IndividualFrameMessage =
 
 export type ChildFramesMessage =
   | Extract<BackgroundMessage, { frame: 'children' }>
-  | { type: 'popupShown'; frame: number | 'children' };
+  | {
+      type: 'popupShown';
+      frame: number | 'children';
+      // The geometry is translated to the origin of the `frameId` iframe.
+      geometry?: PopupGeometry & { frameId: number };
+    };
 
 export type TopFrameMessage = Extract<BackgroundMessage, { frame: 'top' }>;
