@@ -53,7 +53,7 @@ import { BackgroundMessageSchema } from '../background/background-message';
 import { ContentConfig } from '../common/content-config';
 import { CopyKeys, CopyType } from '../common/copy-keys';
 import { isTouchDevice } from '../utils/device';
-import { isEditableNode, SVG_NS } from '../utils/dom-utils';
+import { isEditableNode } from '../utils/dom-utils';
 import {
   addMarginToPoint,
   getMarginAroundPoint,
@@ -558,20 +558,15 @@ export class ContentHandler {
   }
 
   isEnRouteToPopup(event: MouseEvent) {
-    let highlightElem = document.getElementById('en-route-highlight');
-
     if (isPuckMouseEvent(event)) {
-      highlightElem?.remove();
       return false;
     }
 
     if (!this.popupGeometry) {
-      highlightElem?.remove();
       return false;
     }
 
     if (!this.currentPoint) {
-      highlightElem?.remove();
       return false;
     }
 
@@ -586,7 +581,6 @@ export class ContentHandler {
     // If the popup is not related to the mouse position we don't want to allow
     // mousing over it might require making most of the screen un-scannable.
     if (direction === 'disjoint') {
-      highlightElem?.remove();
       return false;
     }
 
@@ -643,9 +637,8 @@ export class ContentHandler {
     const blockPortion = blockOffset / blockRange;
 
     // Check if we are in the gap
-    let blockOk = true;
     if (blockPortion < 0 || blockPortion > 1) {
-      blockOk = false;
+      return false;
     }
 
     // Check the inline range
@@ -695,81 +688,14 @@ export class ContentHandler {
     const proportionalInlineRangeEnd =
       proportionalInlineRangeStart + blockPortion * maxInlineRange;
 
-    let inlineOk = true;
     if (
       mouseInlinePos < proportionalInlineRangeStart ||
       mouseInlinePos > proportionalInlineRangeEnd
     ) {
-      inlineOk = false;
+      return false;
     }
 
-    // Make up a highlight elem to show where we are trying to cover
-    if (!highlightElem) {
-      highlightElem = document.createElement('div');
-      highlightElem.id = 'en-route-highlight';
-    }
-
-    // Make sure the element is included in the right place in the document
-    if (document.fullscreenElement) {
-      document.fullscreenElement.append(highlightElem);
-    } else {
-      document.body.append(highlightElem);
-    }
-
-    // Drop any existing children
-    while (highlightElem.firstElementChild) {
-      highlightElem.firstElementChild.remove();
-    }
-
-    const inlineMinExtreme = Math.min(maxInlineRangeStart, currentInlinePos);
-    const inlineMaxExtreme = Math.max(
-      maxInlineRangeStart + maxInlineRange,
-      currentInlinePos
-    );
-    const blockMinExtreme = Math.min(popupEdge, currentBlockPos);
-    const blockMaxExtreme = Math.max(popupEdge, currentBlockPos);
-
-    const leftmost =
-      direction === 'vertical' ? inlineMinExtreme : blockMinExtreme;
-    const rightmost =
-      direction === 'vertical' ? inlineMaxExtreme : blockMaxExtreme;
-    const topmost =
-      direction === 'vertical' ? blockMinExtreme : inlineMinExtreme;
-    const bottommost =
-      direction === 'vertical' ? blockMaxExtreme : inlineMaxExtreme;
-
-    const graphicWidth = rightmost - leftmost;
-    const graphicHeight = bottommost - topmost;
-
-    const highlightSvg = document.createElementNS(SVG_NS, 'svg');
-    highlightSvg.setAttribute(
-      'viewBox',
-      `0 0 ${graphicWidth} ${graphicHeight}`
-    );
-    highlightSvg.setAttribute('width', `${graphicWidth}`);
-    highlightElem.append(highlightSvg);
-
-    const path = document.createElementNS(SVG_NS, 'path');
-    const d =
-      direction === 'vertical'
-        ? `M${currentInlinePos - leftmost} ${popupDist > 0 ? 0 : -popupDist}L${
-            maxInlineRangeStart - leftmost
-          } ${popupDist}h${maxInlineRange}z`
-        : `M${popupDist > 0 ? 0 : -popupDist} ${
-            currentInlinePos - topmost
-          }L${popupDist} ${maxInlineRangeStart - topmost}v${maxInlineRange}z`;
-    path.setAttribute('d', d);
-    path.setAttribute('fill', 'green');
-    path.setAttribute('fill-opacity', '0.2');
-    highlightSvg.append(path);
-
-    // Position the element
-    highlightElem.style.position = 'absolute';
-    highlightElem.style.pointerEvents = 'none';
-    highlightElem.style.left = `${leftmost}px`;
-    highlightElem.style.top = `${topmost}px`;
-
-    return blockOk && inlineOk;
+    return true;
   }
 
   shouldThrottlePopup(event: MouseEvent) {
