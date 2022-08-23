@@ -52,25 +52,6 @@ export function isFocusable(element?: any): element is Focusable {
   );
 }
 
-export function isInclusiveAncestor(
-  ancestor: Element,
-  testNode?: Node | null
-): boolean {
-  if (!testNode) {
-    return false;
-  }
-
-  let node: Node | null = testNode;
-  do {
-    if (node === ancestor) {
-      return true;
-    }
-    node = node.parentElement;
-  } while (node);
-
-  return false;
-}
-
 export function isTextInputNode(
   node: Node | null
 ): node is HTMLInputElement | HTMLTextAreaElement {
