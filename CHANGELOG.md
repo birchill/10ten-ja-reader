@@ -8,7 +8,13 @@ app.
 
 ## [Unreleased]
 
-(Nothing yet)
+- Made it possible to interact with the popup by using the mouse.
+  For example, you can change tabs or copy entries by clicking.
+  - Note that this makes the popup tabs larger and may sometimes mean the popup
+    does not dismiss as quickly.
+    This behavior can be disabled from the options page by unchecking the
+    "Make popup interactive" checkbox.
+- Made the popup not move position when changing tabs via touch or mouse.
 
 ## [1.11.0] - 2022-08-29 (Firefox, Chrome, Thunderbird only)
 
