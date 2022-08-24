@@ -16,6 +16,7 @@ const GUTTER = 5;
 
 export function getPopupPosition({
   cursorClearance,
+  interactive,
   isVerticalText,
   mousePos,
   popupSize,
@@ -24,6 +25,7 @@ export function getPopupPosition({
   pointerType,
 }: {
   cursorClearance: MarginBox;
+  interactive: boolean;
   isVerticalText: boolean;
   mousePos?: Point;
   popupSize: { width: number; height: number };
@@ -67,6 +69,7 @@ export function getPopupPosition({
   if (positionMode === PopupPositionMode.Auto) {
     return getAutoPosition({
       cursorClearance,
+      interactive,
       isVerticalText,
       mousePos,
       popupSize,
@@ -131,6 +134,7 @@ export interface PopupPosition {
 
 function getAutoPosition({
   cursorClearance,
+  interactive,
   isVerticalText,
   mousePos,
   popupSize,
@@ -142,6 +146,7 @@ function getAutoPosition({
   pointerType,
 }: {
   cursorClearance: MarginBox;
+  interactive: boolean;
   isVerticalText: boolean;
   mousePos?: Point;
   popupSize: { width: number; height: number };
@@ -168,18 +173,22 @@ function getAutoPosition({
         ...extendedPosition.position,
         x: extendedPosition.position.x + scrollX,
         y: extendedPosition.position.y + scrollY,
-        // When using the cursor, the user can scroll the viewport without
-        // dismissing the popup so we don't need to constrain it.
+        // When in interactive mode, the user can scroll the popup so we can
+        // constrain the height.
         //
-        // However, if we're positioning the popup _above_ the target text, we
-        // don't want it to cover the text so we should constrain it in that
-        // case.
+        // Otherwise, we the typically allow the popup to overflow the viewport
+        // and let the user use their mouse wheel to see the rest of the
+        // popup (i.e. we remove any constraint on the height).
+        //
+        // However, if we're positioning the popup vertically _above_ the target
+        // text, we don't want it to cover the text so we should constrain it in
+        // that case too.
         constrainHeight:
-          pointerType === 'cursor' &&
-          (extendedPosition.side === 'after' ||
-            extendedPosition.axis === 'horizontal')
-            ? null
-            : extendedPosition.position.constrainHeight,
+          interactive ||
+          extendedPosition.axis === 'horizontal' ||
+          extendedPosition.side === 'before'
+            ? extendedPosition.position.constrainHeight
+            : null,
       }
     : {
         x: scrollX,

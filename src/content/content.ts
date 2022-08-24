@@ -1883,6 +1883,7 @@ export class ContentHandler {
       direction,
     } = getPopupPosition({
       cursorClearance,
+      interactive: this.config.popupInteractive,
       isVerticalText: !!this.currentTargetProps?.isVerticalText,
       mousePos: this.currentPoint,
       positionMode: this.popupPositionMode,
