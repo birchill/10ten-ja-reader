@@ -636,7 +636,11 @@ export class ContentHandler {
     const blockPortion = blockOffset / blockRange;
 
     // Check if we are in the gap
-    if (blockPortion < 0 || blockPortion > 1) {
+    //
+    // (We allow going a bit beyond the edge of the popup to cover the case
+    // where the user is aiming for the corner but swings in a little from the
+    // side.)
+    if (blockPortion < 0 || blockPortion > 1.1) {
       return false;
     }
 
@@ -678,7 +682,10 @@ export class ContentHandler {
     const inlinePopupStart = direction === 'vertical' ? popupX : popupY;
     const maxInlineRange = blockRange * 2;
     const maxInlineRangeStart = Math.max(
-      inlinePopupStart,
+      // We allow the triangle to extend a bit past the edge of the popup
+      // because it makes it easier to reach the popup when it gets positioned
+      // to the side of the cursor.
+      inlinePopupStart - 8,
       currentInlinePos - maxInlineRange / 2
     );
     const proportionalInlineRangeStart =
