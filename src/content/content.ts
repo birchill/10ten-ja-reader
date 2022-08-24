@@ -52,7 +52,6 @@ import Browser, { browser } from 'webextension-polyfill-ts';
 import { BackgroundMessageSchema } from '../background/background-message';
 import { ContentConfig } from '../common/content-config';
 import { CopyKeys, CopyType } from '../common/copy-keys';
-import { isTouchDevice } from '../utils/device';
 import { isEditableNode } from '../utils/dom-utils';
 import {
   addMarginToPoint,
@@ -524,7 +523,7 @@ export class ContentHandler {
     // If the mouse have moved in a triangular shape between the original popup
     // point and the popup, don't hide it, but instead allow the user to
     // interact with the popup.
-    if (this.isEnRouteToPopup(event)) {
+    if (this.config.popupInteractive && this.isEnRouteToPopup(event)) {
       return;
     }
 
@@ -1769,8 +1768,6 @@ export class ContentHandler {
       return;
     }
 
-    const touchMode = isTouchDevice();
-
     const popupOptions: PopupOptions = {
       accentDisplay: this.config.accentDisplay,
       copyNextKey: this.config.keys.startCopy[0] || '',
@@ -1779,6 +1776,7 @@ export class ContentHandler {
       dictToShow: this.currentDict,
       fxData: this.config.fx,
       hasSwitchedDictionary: this.config.hasSwitchedDictionary,
+      interactive: this.config.popupInteractive,
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentLookupParams?.meta,
       onCancelCopy: () => this.exitCopyMode(),
@@ -1803,7 +1801,6 @@ export class ContentHandler {
       showPriority: this.config.showPriority,
       switchDictionaryKeys: this.config.keys.nextDictionary,
       tabDisplay: this.config.tabDisplay,
-      touchMode,
     };
 
     const popup = renderPopup(this.currentSearchResult, popupOptions);

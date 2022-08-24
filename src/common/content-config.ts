@@ -61,6 +61,9 @@ export interface ContentConfig {
   // Prevents highlighting text on hover
   noTextHighlight: boolean;
 
+  // If the popup should be interactive (e.g. response to mouse clicks)
+  popupInteractive: boolean;
+
   // The theme in use, e.g. 'blue'.
   popupStyle: string;
 

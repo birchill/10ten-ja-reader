@@ -315,7 +315,7 @@
         },
       },
       {
-        description: 'USD (touch version)',
+        description: 'USD (interactive version)',
         config: {
           ...config,
           fxData: {
@@ -374,8 +374,8 @@
         onShowSettings: () => {},
       });
       popup.classList.add('-inline');
-      if (test.description.indexOf('touch') !== -1) {
-        popup.querySelector('.container').classList.add('touch');
+      if (test.description.indexOf('interactive') !== -1) {
+        popup.querySelector('.container').classList.add('interactive');
       }
     }
 
@@ -511,7 +511,7 @@
         },
       },
       {
-        description: 'in isolation (touch version)',
+        description: 'in isolation (interactive version)',
         config: {
           ...config,
           meta: {
@@ -626,8 +626,8 @@
         onShowSettings: () => {},
       });
       popup.classList.add('-inline');
-      if (test.description.indexOf('touch') !== -1) {
-        popup.querySelector('.container').classList.add('touch');
+      if (test.description.indexOf('interactive') !== -1) {
+        popup.querySelector('.container').classList.add('interactive');
       }
     }
 
@@ -662,9 +662,9 @@
       popup.classList.add('-inline');
     }
 
-    // Touch screen tests
+    // Interactive mode tests
 
-    addHeading('Touch screen');
+    addHeading('Interactive mode');
     const kankokuWordsResult = {
       words: {
         type: 'words',
@@ -779,7 +779,7 @@
       },
     };
 
-    addHeading('Touch screen tabs', 3);
+    addHeading('Interactive mode tabs', 3);
 
     for (const theme of themes) {
       const label = document.createElement('div');
@@ -797,7 +797,7 @@
         onShowSettings: () => {},
       });
       popup.classList.add('-inline');
-      popup.querySelector('.container').classList.add('touch');
+      popup.querySelector('.container').classList.add('interactive');
     }
 
     // Database status tests
@@ -817,7 +817,7 @@
         onShowSettings: () => {},
       });
       popup.classList.add('-inline');
-      popup.querySelector('.container').classList.add('touch');
+      popup.querySelector('.container').classList.add('interactive');
     }
 
     // Close button only test
@@ -837,7 +837,7 @@
         }
       );
       popup.classList.add('-inline');
-      popup.querySelector('.container').classList.add('touch');
+      popup.querySelector('.container').classList.add('interactive');
     }
 
     addLabel('Close button with status bar');
@@ -856,7 +856,7 @@
         }
       );
       popup.classList.add('-inline');
-      popup.querySelector('.container').classList.add('touch');
+      popup.querySelector('.container').classList.add('interactive');
     }
 
     // Switch dictionary hint
@@ -895,9 +895,9 @@
       popup.classList.add('-inline');
     }
 
-    // Tabs on the side in touch mode
+    // Tabs on the side in interactive mode
 
-    addHeading('Tabs on the side (touch display mode)', 3);
+    addHeading('Tabs on the side (interactive display mode)', 3);
     {
       const popup = contentHandler._renderPopup(kankokuWordsResult, {
         ...config,
@@ -911,12 +911,12 @@
         onShowSettings: () => {},
       });
       popup.classList.add('-inline');
-      popup.querySelector('.container').classList.add('touch');
+      popup.querySelector('.container').classList.add('interactive');
     }
 
-    // Tabs on the side in touch mode with switch dictionary hint
+    // Tabs on the side in interactive mode with switch dictionary hint
 
-    addHeading('Tabs on the side (touch display mode and status bar)', 3);
+    addHeading('Tabs on the side (interactive display mode and status bar)', 3);
     {
       const popup = contentHandler._renderPopup(kankokuWordsResult, {
         ...config,
@@ -931,7 +931,7 @@
         onShowSettings: () => {},
       });
       popup.classList.add('-inline');
-      popup.querySelector('.container').classList.add('touch');
+      popup.querySelector('.container').classList.add('interactive');
     }
 
     // Constrained height tests
@@ -978,7 +978,7 @@
       }
 
       {
-        addHeading(`Tab display: ${tabDisplay} (touch version)`, 3);
+        addHeading(`Tab display: ${tabDisplay} (interactive version)`, 3);
         const popup = contentHandler._renderPopup(kankokuWordsResult, {
           ...config,
           container: createPopupContainer(),
@@ -993,12 +993,12 @@
 
         popup.classList.add('-inline');
         popup.style.setProperty('--max-height', '200px');
-        popup.querySelector('.container').classList.add('touch');
+        popup.querySelector('.container').classList.add('interactive');
       }
 
       {
         addHeading(
-          `Tab display: ${tabDisplay} (touch version with status bar)`,
+          `Tab display: ${tabDisplay} (interactive version with status bar)`,
           3
         );
         const popup = contentHandler._renderPopup(
@@ -1018,7 +1018,7 @@
 
         popup.classList.add('-inline');
         popup.style.setProperty('--max-height', '200px');
-        popup.querySelector('.container').classList.add('touch');
+        popup.querySelector('.container').classList.add('interactive');
       }
     }
 
@@ -1204,7 +1204,7 @@
         popup.classList.add('-inline');
       }
 
-      addHeading(`${test.description} (touch version)`, 3);
+      addHeading(`${test.description} (interactive version)`, 3);
       for (const theme of themes) {
         addLabel(`Theme: ${theme}`);
         const popup = contentHandler._renderPopup(test.queryResult, {
@@ -1215,7 +1215,7 @@
           },
           container: createPopupContainer(),
           popupStyle: theme,
-          touchMode: true,
+          interactive: true,
         });
         popup.classList.add('-inline');
       }
@@ -1250,7 +1250,7 @@
         popup.classList.add('-inline');
       }
 
-      addHeading('Copy error (touch version)', 3);
+      addHeading('Copy error (interactive version)', 3);
       for (const theme of themes) {
         addLabel(`Theme: ${theme}`);
         const popup = contentHandler._renderPopup(
@@ -1263,7 +1263,7 @@
             },
             container: createPopupContainer(),
             popupStyle: theme,
-            touchMode: true,
+            interactive: true,
           }
         );
         popup.classList.add('-inline');

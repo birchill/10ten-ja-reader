@@ -26,7 +26,7 @@ export function renderCopyDetails({
     return null;
   }
 
-  // In touch mode, only use the status bar to show the finished and error
+  // In interactive mode, only use the status bar to show the finished and error
   // states.
   if (copyState.mode === 'overlay' && copyState.kind === 'active') {
     return null;

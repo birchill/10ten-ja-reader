@@ -1604,6 +1604,10 @@
     "message": "许可协议",
     "description": "The keyword in options_edrdg_license to link to the license"
   },
+  "options_enable_mouse_interaction": {
+    "message": "启用鼠标控制",
+    "description": "Checkbox for enabling mouse/touch interactivity in the popup"
+  },
   "options_general_heading": {
     "message": "一般",
     "description": "Heading for common preferences."
@@ -1710,6 +1714,10 @@
   },
   "options_popup_copy_word_kanji": {
     "message": "复制词语或汉字"
+  },
+  "options_popup_interactivity_heading": {
+    "message": "窗口交互",
+    "description": "Heading for the section for configuring popup interactivity features"
   },
   "options_popup_kanji_lookup": {
     "message": "只查询汉字结果",

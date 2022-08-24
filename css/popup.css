@@ -55,7 +55,7 @@
   padding-bottom: 4px;
 
   overflow-y: hidden;
-  pointer-events: all;
+  pointer-events: none;
 }
 
 .container.hidden {
@@ -65,11 +65,12 @@
 .-inline > .container {
   position: revert;
   z-index: revert;
+  pointer-events: revert;
 }
 
 /*
- * On touch devices we make the window scrollable, but for non-touch
- * devices we just fade it out.
+ * When the popup is interactive we make the window scrollable, but for
+ * non-interactive cases we just fade it out.
  *
  * To make the window scrollable we need to set the max-height on the
  * window itself.
@@ -78,11 +79,11 @@
  * on the container so that the mask doesn't end up clipping the drop shadow
  * on the popup.
  */
-.container.touch .window {
+.container.interactive .window {
   max-height: var(--max-height, none);
 }
 
-.container:not(.touch) {
+.container:not(.interactive) {
   max-height: var(--max-height, none);
   -webkit-mask-image: linear-gradient(
     to bottom,
@@ -122,13 +123,14 @@
   width: min(500px, calc(100vw - 30px));
 }
 
-.container:not(.hidden).touch .window {
+.container:not(.hidden).interactive .window {
   display: flex;
   flex-direction: column;
 }
 
-.container.touch .content {
+.container.interactive .content {
   overflow: auto;
+  pointer-events: auto;
 }
 
 @supports (scrollbar-width: thin) {
@@ -173,6 +175,7 @@
   background: var(--cell-highlight-bg);
   color: var(--cell-highlight-fg);
 
+  pointer-events: auto;
   /* Make sure we are above the content area. This is mostly needed when we are
    * showing the copy overlay since the entry data might overflow its region in
    * that case. */
@@ -194,7 +197,7 @@
   user-select: none;
 }
 
-.container.touch .tabs .tab {
+.container.interactive .tabs .tab {
   font-size: 1em;
 }
 
@@ -225,7 +228,7 @@
   }
 }
 
-.container.touch .tabs .tab a {
+.container.interactive .tabs .tab a {
   padding: 0.7em 18px;
 }
 
@@ -239,7 +242,7 @@
   fill: currentcolor;
 }
 
-.container.touch .tabs .tab a .icon {
+.container.interactive .tabs .tab a .icon {
   width: 14px;
   height: 14px;
 }
@@ -270,8 +273,8 @@
   pointer-events: none;
 }
 
-.container:not(.touch) .settings,
-.container:not(.touch) .close {
+.container:not(.interactive) .settings,
+.container:not(.interactive) .close {
   display: none;
 }
 
@@ -644,7 +647,7 @@
 }
 
 @media (hover) {
-  .container.touch .entry:hover {
+  .container.interactive .entry:hover {
     color: var(--selected-highlight);
     background: var(--selected-bg);
     border-radius: 2px;
@@ -653,7 +656,7 @@
      * using the keyboard. */
     filter: brightness(1.2);
   }
-  .container.touch .entry.-selected:hover {
+  .container.interactive .entry.-selected:hover {
     /* Let keyboard selection override the hover state */
     filter: none;
   }
@@ -665,7 +668,7 @@
 }
 
 @media (hover) {
-  .container.touch .entry:hover .w-def .tag {
+  .container.interactive .entry:hover .w-def .tag {
     color: var(--selected-tag-color);
     border-color: var(--selected-tag-border) !important;
   }
@@ -676,7 +679,7 @@
 }
 
 @media (hover) {
-  .container.touch .entry:hover .w-kanji {
+  .container.interactive .entry:hover .w-kanji {
     color: var(--selected-highlight);
   }
 }
@@ -687,8 +690,8 @@
 }
 
 @media (hover) {
-  .container.touch .entry:hover .w-kana,
-  .container.touch .entry:hover .w-romaji {
+  .container.interactive .entry:hover .w-kana,
+  .container.interactive .entry:hover .w-romaji {
     color: var(--selected-reading-highlight);
   }
 }
@@ -699,8 +702,8 @@
 }
 
 @media (hover) {
-  .container.touch .entry:hover .w-def,
-  .container.touch .entry:hover .w-def * {
+  .container.interactive .entry:hover .w-def,
+  .container.interactive .entry:hover .w-def * {
     color: var(--selected-def-color);
   }
 }
@@ -710,7 +713,7 @@
 }
 
 @media (hover) {
-  .container.touch .entry:hover .w-conj {
+  .container.interactive .entry:hover .w-conj {
     color: var(--selected-conj-color);
   }
 }
@@ -798,7 +801,7 @@
 }
 
 @media (hover) {
-  .container.touch .kanji:hover {
+  .container.interactive .kanji:hover {
     color: var(--selected-highlight);
     background: var(--selected-bg);
     border-radius: 2px;
@@ -1202,7 +1205,7 @@
 }
 
 /*
- * Copy overlay for touch screens
+ * Copy overlay for when the popup is interactive
  */
 .copy-overlay {
   box-sizing: border-box;

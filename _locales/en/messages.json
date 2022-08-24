@@ -1604,6 +1604,10 @@
     "message": "licence",
     "description": "The keyword in options_edrdg_license to link to the license"
   },
+  "options_enable_mouse_interaction": {
+    "message": "Make popup interactive",
+    "description": "Checkbox for enabling mouse/touch interactivity in the popup"
+  },
   "options_general_heading": {
     "message": "General",
     "description": "Heading for common preferences."
@@ -1710,6 +1714,10 @@
   },
   "options_popup_copy_word_kanji": {
     "message": "Copy word or kanji"
+  },
+  "options_popup_interactivity_heading": {
+    "message": "Popup interactivity",
+    "description": "Heading for the section for configuring popup interactivity features"
   },
   "options_popup_kanji_lookup": {
     "message": "Lookup kanji results only",

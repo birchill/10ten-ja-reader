@@ -95,6 +95,19 @@
               <option value="none">None</option>
             </select>
           </div>
+        </div>
+        <div class="panel-section panel-section-header">
+          <h2 class="text-section-header">Popup interactivity</h2>
+        </div>
+        <div class="panel-section panel-section-formElements browser-style">
+          <div class="browser-style checkbox-row">
+            <input
+              type="checkbox"
+              id="popupInteractive"
+              name="popupInteractive"
+            />
+            <label for="popupInteractive">Enable mouse interaction</label>
+          </div>
           <p>Tab position:</p>
           <fieldset>
             <div class="tabdisplay-select" id="tabdisplay-select">
@@ -422,4 +435,9 @@
     </div>
   </body>
   <script src="options.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      document.documentElement.classList.add('initialized');
+    });
+  </script>
 </html>

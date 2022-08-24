@@ -1604,6 +1604,10 @@
     "message": "ライセンス",
     "description": "The keyword in options_edrdg_license to link to the license"
   },
+  "options_enable_mouse_interaction": {
+    "message": "マウスの操作を有効にする",
+    "description": "Checkbox for enabling mouse/touch interactivity in the popup"
+  },
   "options_general_heading": {
     "message": "一般",
     "description": "Heading for common preferences."
@@ -1711,6 +1715,10 @@
   "options_popup_copy_word_kanji": {
     "message": "単語又は漢字をコピーする"
   },
+  "options_popup_interactivity_heading": {
+    "message": "ポップアップの双方向性",
+    "description": "Heading for the section for configuring popup interactivity features"
+  },
   "options_popup_kanji_lookup": {
     "message": "漢字の結果のみ調べる",
     "description": "Label for the key to force looking up the kanji dictionary only"
@@ -1726,7 +1734,7 @@
     "message": "コピーモードを有効にする"
   },
   "options_popup_style_heading": {
-    "message": "ポップアップ",
+    "message": "ポップアップ外観",
     "description": "Heading for options to configure popup display"
   },
   "options_popup_switch_dictionaries": {

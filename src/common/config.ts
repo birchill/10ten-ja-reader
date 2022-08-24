@@ -14,7 +14,7 @@ import Bugsnag from '@bugsnag/browser';
 import { browser } from 'webextension-polyfill-ts';
 
 import { FxLocalData, getLocalFxData } from '../background/fx-data';
-import { getHoverCapabilityMql } from '../utils/device';
+import { getHoverCapabilityMql, getMouseCapabilityMql } from '../utils/device';
 import { isObject } from '../utils/is-object';
 import { stripFields } from '../utils/strip-fields';
 
@@ -69,6 +69,7 @@ interface Settings {
   kanjiReferencesV2?: KanjiReferenceFlagsV2;
   keys?: Partial<StoredKeyboardKeys>;
   localSettings?: {
+    popupInteractive?: boolean;
     showPuck?: 'show' | 'hide';
   };
   noTextHighlight?: boolean;
@@ -149,6 +150,7 @@ export class Config {
   private changeListeners: ChangeCallback[] = [];
   private previousDefaultLang: DbLanguageId;
   private hoverCapabilityMql: MediaQueryList | undefined;
+  private mouseCapabilityMql = getMouseCapabilityMql();
 
   constructor() {
     this.readyPromise = this.readSettings().then(async () => {
@@ -687,6 +689,28 @@ export class Config {
     void browser.storage.sync.set({ noTextHighlight: value });
   }
 
+  // popupInteractive (local): Defaults to true
+
+  get popupInteractive(): boolean {
+    return this.settings.localSettings?.popupInteractive ?? true;
+  }
+
+  set popupInteractive(value: boolean) {
+    const storedSetting = this.settings.localSettings?.popupInteractive;
+    if (storedSetting === value) {
+      return;
+    }
+
+    const localSettings = { ...this.settings.localSettings };
+    if (value) {
+      delete localSettings.popupInteractive;
+    } else {
+      localSettings.popupInteractive = false;
+    }
+    this.settings.localSettings = localSettings;
+    void browser.storage.local.set({ settings: localSettings });
+  }
+
   // popupStyle: Defaults to 'default'
 
   get popupStyle(): string {
@@ -934,6 +958,9 @@ export class Config {
       kanjiReferences: this.kanjiReferences,
       keys: this.keysNormalized,
       noTextHighlight: this.noTextHighlight,
+      popupInteractive:
+        // Force the value to true if we don't have a mouse
+        this.popupInteractive || !this.mouseCapabilityMql?.matches,
       popupStyle: this.popupStyle,
       posDisplay: this.posDisplay,
       readingOnly: this.readingOnly,

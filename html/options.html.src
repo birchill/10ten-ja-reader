@@ -78,6 +78,15 @@
               <option value="none">__MSG_options_pos_display_none__</option>
             </select>
           </div>
+        </div>
+        <div class="panel-section panel-section-header">
+          <h2 class=text-section-header>__MSG_options_popup_interactivity_heading__</h2>
+        </div>
+        <div class="panel-section panel-section-formElements">
+          <div class="browser-style checkbox-row">
+            <input type=checkbox id=popupInteractive name=popupInteractive>
+            <label for=popupInteractive>__MSG_options_enable_mouse_interaction__</label>
+          </div>
           <p>__MSG_options_tab_position_label__</p>
           <fieldset>
             <div class="tabdisplay-select" id="tabdisplay-select">

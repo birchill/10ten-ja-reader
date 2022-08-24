@@ -45,6 +45,7 @@ import { getThemeClass } from '../utils/themes';
 import { Command, CommandParams, isValidKey } from './commands';
 import { translateDoc } from './l10n';
 import { getLocalizedDataSeriesLabel } from '../common/data-series-labels';
+import { getMouseCapabilityMql } from '../utils/device';
 
 startBugsnag();
 
@@ -77,6 +78,12 @@ function completeForm() {
     .addEventListener('change', () => {
       setTabDisplayTheme(config.popupStyle);
     });
+
+  const mouseCapababiltyMql = getMouseCapabilityMql();
+  toggleInteractivityCheckboxVisibility(mouseCapababiltyMql?.matches ?? true);
+  mouseCapababiltyMql?.addEventListener('change', (ev) => {
+    toggleInteractivityCheckboxVisibility(ev.matches);
+  });
 
   // Keyboard
   configureCommands();
@@ -162,6 +169,12 @@ function completeForm() {
       config.tabDisplay = tabDisplay;
     });
   }
+
+  document
+    .getElementById('popupInteractive')!
+    .addEventListener('click', (event) => {
+      config.popupInteractive = (event.target as HTMLInputElement).checked;
+    });
 
   document.getElementById('fxCurrency')!.addEventListener('input', (event) => {
     config.fxCurrency = (event.target as HTMLSelectElement).value;
@@ -323,6 +336,12 @@ function setTabDisplayTheme(theme: string) {
     }
     tabIcon.classList.add(themeClass);
   }
+}
+
+function toggleInteractivityCheckboxVisibility(visible: boolean) {
+  document.getElementById('popupInteractive')!.style.display = visible
+    ? 'revert'
+    : 'block';
 }
 
 function renderCurrencyList(
@@ -790,6 +809,7 @@ function fillVals() {
   optform.highlightText.checked = !config.noTextHighlight;
   optform.contextMenuEnable.checked = config.contextMenuEnable;
   optform.showKanjiComponents.checked = config.showKanjiComponents;
+  optform.popupInteractive.checked = config.popupInteractive;
   optform.popupStyle.value = config.popupStyle;
   optform.tabDisplay.value = config.tabDisplay;
   optform.toolbarIcon.value = config.toolbarIcon;

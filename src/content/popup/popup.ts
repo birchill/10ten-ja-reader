@@ -43,6 +43,7 @@ export interface PopupOptions {
   dictLang?: string;
   fxData: ContentConfig['fx'];
   hasSwitchedDictionary?: boolean;
+  interactive?: boolean;
   kanjiReferences: Array<ReferenceAbbreviation>;
   meta?: SelectionMeta;
   onCancelCopy?: () => void;
@@ -58,7 +59,6 @@ export interface PopupOptions {
   showKanjiComponents?: boolean;
   switchDictionaryKeys: ReadonlyArray<string>;
   tabDisplay: 'top' | 'left' | 'right' | 'none';
-  touchMode?: boolean;
 }
 
 export function renderPopup(
@@ -66,11 +66,11 @@ export function renderPopup(
   options: PopupOptions
 ): HTMLElement | null {
   const container = options.container || getDefaultContainer();
-  const touchMode = !!options.touchMode;
+  const interactive = !!options.interactive;
   const windowElem = resetContainer({
     host: container,
     popupStyle: options.popupStyle,
-    touchMode,
+    interactive,
   });
 
   const hasResult = result && (result.words || result.kanji || result.names);
@@ -263,19 +263,19 @@ function getDefaultContainer(): HTMLElement {
 function resetContainer({
   host,
   popupStyle,
-  touchMode,
+  interactive,
 }: {
   host: HTMLElement;
   popupStyle: string;
-  touchMode: boolean;
+  interactive: boolean;
 }): HTMLElement {
   const container = html('div', { class: 'container' });
   const windowDiv = html('div', { class: 'window' });
   container.append(windowDiv);
 
-  // Set touch status
-  if (touchMode) {
-    container.classList.add('touch');
+  // Set interactive status
+  if (interactive) {
+    container.classList.add('interactive');
   }
 
   // Set theme
