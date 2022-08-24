@@ -10,12 +10,37 @@ export const enum PopupPositionMode {
   End = BottomRight,
 }
 
+export interface PopupPosition {
+  x: number;
+  y: number;
+  constrainWidth: number | null;
+  constrainHeight: number | null;
+  direction: 'vertical' | 'horizontal' | 'disjoint';
+}
+
+// We have three (ok, two) possible situations:
+//
+// A) Tab bar is on the top -- we want to fix the top and left position.
+// B) Tab bar is on the left -- we want to fix the top and left position.
+//    i.e. as with A
+// C) Tab bar is on the right -- we want to fix the top and right position.
+//
+export type PopupPositionConstraints = {
+  // Note that the 'x' position here should correspond to the _right_ edge of
+  // the popup when `anchor` is `'right'`.
+  x: number;
+  y: number;
+  anchor: 'top' | 'left' | 'right';
+  direction: 'vertical' | 'horizontal' | 'disjoint';
+};
+
 // Minimum space to leave between the edge of the pop-up and the edge of the
 // stage.
 const GUTTER = 5;
 
 export function getPopupPosition({
   cursorClearance,
+  fixedPosition,
   interactive,
   isVerticalText,
   mousePos,
@@ -25,6 +50,7 @@ export function getPopupPosition({
   pointerType,
 }: {
   cursorClearance: MarginBox;
+  fixedPosition?: PopupPositionConstraints;
   interactive: boolean;
   isVerticalText: boolean;
   mousePos?: Point;
@@ -65,6 +91,19 @@ export function getPopupPosition({
     top: initialSafeArea.top + GUTTER,
     bottom: initialSafeArea.bottom + GUTTER,
   };
+
+  if (fixedPosition) {
+    return getFixedPosition({
+      fixedPosition,
+      interactive,
+      popupSize,
+      safeArea,
+      scrollX,
+      scrollY,
+      stageWidth,
+      stageHeight,
+    });
+  }
 
   if (positionMode === PopupPositionMode.Auto) {
     return getAutoPosition({
@@ -124,12 +163,65 @@ export function getPopupPosition({
   }
 }
 
-export interface PopupPosition {
-  x: number;
-  y: number;
-  constrainWidth: number | null;
-  constrainHeight: number | null;
-  direction: 'vertical' | 'horizontal' | 'disjoint';
+function getFixedPosition({
+  fixedPosition,
+  interactive,
+  popupSize,
+  safeArea,
+  scrollY,
+  stageWidth,
+  stageHeight,
+}: {
+  fixedPosition: PopupPositionConstraints;
+  interactive: boolean;
+  popupSize: { width: number; height: number };
+  safeArea: PaddingBox;
+  scrollX: number;
+  scrollY: number;
+  stageWidth: number;
+  stageHeight: number;
+}): PopupPosition {
+  // The following are all in screen coordinates (as opposed to page
+  // coordinates)
+  const safeLeft = safeArea.left;
+  const safeRight = stageWidth - safeArea.right;
+  const safeBottom = stageHeight - safeArea.bottom;
+
+  // In all cases the top is fixed
+  const screenY = fixedPosition.y - scrollY;
+
+  // Work out if we need to constrain the height
+  //
+  // In order to be consistent with getAutoPosition, we don't constrain the
+  // height when we are not interactive
+  const constrainHeight =
+    interactive && screenY + popupSize.height > safeBottom
+      ? safeBottom - screenY
+      : null;
+
+  // The x position and width will depend on if we are anchoring to the left or
+  // right.
+  let constrainWidth: number | null;
+  let screenX = fixedPosition.x - scrollX;
+  if (fixedPosition.anchor !== 'right') {
+    constrainWidth =
+      screenX + popupSize.width > safeRight ? safeRight - screenX : null;
+  } else {
+    constrainWidth =
+      screenX - popupSize.width < safeLeft ? screenX - safeLeft : null;
+    screenX =
+      constrainWidth !== null
+        ? screenX - constrainWidth
+        : screenX - popupSize.width;
+  }
+
+  return {
+    x: screenX + scrollX,
+    y: screenY + scrollY,
+    constrainWidth,
+    constrainHeight,
+    direction: fixedPosition.direction,
+  };
 }
 
 function getAutoPosition({

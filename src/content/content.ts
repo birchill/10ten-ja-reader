@@ -1314,7 +1314,7 @@ export class ContentHandler {
       return;
     }
 
-    this.showPopup();
+    this.showPopup({ fixPosition: true });
   }
 
   exitCopyMode() {
@@ -1327,7 +1327,7 @@ export class ContentHandler {
       return;
     }
 
-    this.showPopup();
+    this.showPopup({ fixPosition: true });
   }
 
   nextCopyEntry() {
@@ -1343,7 +1343,7 @@ export class ContentHandler {
         mode: this.copyState.mode,
       };
     }
-    this.showPopup();
+    this.showPopup({ fixPosition: true });
   }
 
   copyCurrentEntry(copyType: CopyType) {
@@ -1387,7 +1387,7 @@ export class ContentHandler {
     });
     if (!copyEntry) {
       this.copyState = { kind: 'inactive' };
-      this.showPopup();
+      this.showPopup({ fixPosition: true });
     }
 
     return copyEntry;
@@ -1407,7 +1407,7 @@ export class ContentHandler {
       this.copyState = { kind: 'error', index, mode };
     }
 
-    this.showPopup();
+    this.showPopup({ fixPosition: true });
 
     // Reset the copy state so that it doesn't re-appear next time we re-render
     // the popup.
@@ -1682,7 +1682,10 @@ export class ContentHandler {
     this.showPopup();
   }
 
-  showDictionary(dictToShow: 'next' | MajorDataSeries) {
+  showDictionary(
+    dictToShow: 'next' | MajorDataSeries,
+    options: { fixPopupPosition?: boolean } = {}
+  ) {
     if (!this.currentSearchResult) {
       return;
     }
@@ -1731,7 +1734,7 @@ export class ContentHandler {
     this.currentDict = dict;
 
     this.highlightTextForCurrentResult();
-    this.showPopup();
+    this.showPopup({ fixPosition: options?.fixPopupPosition });
   }
 
   highlightTextForCurrentResult() {
@@ -1769,7 +1772,7 @@ export class ContentHandler {
     );
   }
 
-  showPopup() {
+  showPopup(options: { fixPosition?: boolean } = {}) {
     if (!this.currentSearchResult && !this.currentLookupParams?.meta) {
       this.clearResult({ currentElement: this.lastMouseTarget });
       return;
@@ -1799,7 +1802,7 @@ export class ContentHandler {
         });
       },
       onSwitchDictionary: (dict: MajorDataSeries) => {
-        this.showDictionary(dict);
+        this.showDictionary(dict, { fixPopupPosition: true });
       },
       popupStyle: this.config.popupStyle,
       posDisplay: this.config.posDisplay,
@@ -1882,6 +1885,21 @@ export class ContentHandler {
     }
 
     const popupSize = getPopupDimensions(popup);
+    const fixedPosition =
+      options?.fixPosition &&
+      this.popupGeometry &&
+      this.config.tabDisplay !== 'none'
+        ? {
+            x:
+              this.config.tabDisplay === 'right'
+                ? this.popupGeometry.x + this.popupGeometry.width
+                : this.popupGeometry.x,
+            y: this.popupGeometry.y,
+            anchor: this.config.tabDisplay,
+            direction: this.popupGeometry.direction,
+          }
+        : undefined;
+
     const {
       x: popupX,
       y: popupY,
@@ -1890,6 +1908,7 @@ export class ContentHandler {
       direction,
     } = getPopupPosition({
       cursorClearance,
+      fixedPosition,
       interactive: this.config.popupInteractive,
       isVerticalText: !!this.currentTargetProps?.isVerticalText,
       mousePos: this.currentPoint,
