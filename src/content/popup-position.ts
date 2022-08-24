@@ -38,6 +38,9 @@ export type PopupPositionConstraints = {
 // stage.
 const GUTTER = 5;
 
+// Minimum space to leave between the edge of the pop-up and the cursor.
+const MARGIN_TO_POPUP = 25;
+
 export function getPopupPosition({
   cursorClearance,
   fixedPosition,
@@ -94,8 +97,10 @@ export function getPopupPosition({
 
   if (fixedPosition) {
     return getFixedPosition({
+      cursorClearance,
       fixedPosition,
       interactive,
+      mousePos,
       popupSize,
       safeArea,
       scrollX,
@@ -164,16 +169,21 @@ export function getPopupPosition({
 }
 
 function getFixedPosition({
+  cursorClearance,
   fixedPosition,
   interactive,
+  mousePos,
   popupSize,
   safeArea,
+  scrollX,
   scrollY,
   stageWidth,
   stageHeight,
 }: {
+  cursorClearance: MarginBox;
   fixedPosition: PopupPositionConstraints;
   interactive: boolean;
+  mousePos?: Point;
   popupSize: { width: number; height: number };
   safeArea: PaddingBox;
   scrollX: number;
@@ -181,14 +191,40 @@ function getFixedPosition({
   stageWidth: number;
   stageHeight: number;
 }): PopupPosition {
-  // The following are all in screen coordinates (as opposed to page
-  // coordinates)
-  const safeLeft = safeArea.left;
-  const safeRight = stageWidth - safeArea.right;
-  const safeBottom = stageHeight - safeArea.bottom;
+  // Work out our safe area in screen coordinates (as opposed to an inset).
+  let { left: safeLeft, top: safeTop } = safeArea;
+  let safeRight = stageWidth - safeArea.right;
+  let safeBottom = stageHeight - safeArea.bottom;
 
-  // In all cases the top is fixed
+  // Convert inputs to screen coordinates
   const screenY = fixedPosition.y - scrollY;
+  let screenX = fixedPosition.x - scrollX;
+
+  // See if we can further constrain the area to place the popup in based on
+  // the text being highlighted.
+  const { direction, anchor } = fixedPosition;
+  if (direction !== 'disjoint' && mousePos) {
+    const side =
+      (direction === 'vertical' && mousePos.y < screenY) ||
+      (direction === 'horizontal' && mousePos.x < screenX)
+        ? 'after'
+        : 'before';
+
+    const [min, max] = getRangeForPopup({
+      axis: direction,
+      cursorClearance,
+      side,
+      safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
+      target: mousePos,
+    });
+
+    if (direction === 'vertical') {
+      safeBottom = max;
+    } else {
+      safeLeft = min;
+      safeRight = max;
+    }
+  }
 
   // Work out if we need to constrain the height
   //
@@ -202,8 +238,7 @@ function getFixedPosition({
   // The x position and width will depend on if we are anchoring to the left or
   // right.
   let constrainWidth: number | null;
-  let screenX = fixedPosition.x - scrollX;
-  if (fixedPosition.anchor !== 'right') {
+  if (anchor !== 'right') {
     constrainWidth =
       screenX + popupSize.width > safeRight ? safeRight - screenX : null;
   } else {
@@ -220,7 +255,7 @@ function getFixedPosition({
     y: screenY + scrollY,
     constrainWidth,
     constrainHeight,
-    direction: fixedPosition.direction,
+    direction,
   };
 }
 
@@ -323,7 +358,6 @@ function getAutoPositionWithoutScrollOffset({
   const { left: safeLeft, top: safeTop } = safeArea;
   const safeRight = stageWidth - safeArea.right;
   const safeBottom = stageHeight - safeArea.bottom;
-  const marginToPopup = 25;
 
   // Generate the possible position sizes in order of preference.
   //
@@ -350,7 +384,6 @@ function getAutoPositionWithoutScrollOffset({
       const position = calculatePosition({
         axis,
         cursorClearance,
-        marginToPopup,
         popupSize,
         safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
         target: { x, y },
@@ -414,7 +447,6 @@ function getAutoPositionWithoutScrollOffset({
 function calculatePosition({
   axis,
   cursorClearance,
-  marginToPopup,
   popupSize,
   safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
   side,
@@ -422,7 +454,6 @@ function calculatePosition({
 }: {
   axis: 'vertical' | 'horizontal';
   cursorClearance: MarginBox;
-  marginToPopup: number;
   popupSize: { width: number; height: number };
   safeBoundaries: {
     safeLeft: number;
@@ -458,7 +489,6 @@ function calculatePosition({
   const [axisMin, axisMax] = getRangeForPopup({
     axis,
     cursorClearance,
-    marginToPopup,
     side,
     safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
     target,
@@ -501,14 +531,12 @@ function calculatePosition({
 function getRangeForPopup({
   axis,
   cursorClearance,
-  marginToPopup,
   side,
   safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
   target,
 }: {
   axis: 'vertical' | 'horizontal';
   cursorClearance: MarginBox;
-  marginToPopup: number;
   safeBoundaries: {
     safeLeft: number;
     safeRight: number;
@@ -528,12 +556,12 @@ function getRangeForPopup({
 
     const clearanceAtFarEdge =
       axis === 'vertical' ? cursorClearance.top : cursorClearance.left;
-    const marginAtFarEdge = clearanceAtFarEdge + marginToPopup;
+    const marginAtFarEdge = clearanceAtFarEdge + MARGIN_TO_POPUP;
     maxAxisExtent = targetAxisPos - marginAtFarEdge;
   } else {
     const clearanceAtNearEdge =
       axis === 'vertical' ? cursorClearance.bottom : cursorClearance.right;
-    const marginAtNearEdge = clearanceAtNearEdge + marginToPopup;
+    const marginAtNearEdge = clearanceAtNearEdge + MARGIN_TO_POPUP;
     minAxisExtent = targetAxisPos + marginAtNearEdge;
 
     maxAxisExtent = axis === 'vertical' ? safeBottom : safeRight;
