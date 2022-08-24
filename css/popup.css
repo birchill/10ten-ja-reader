@@ -55,6 +55,10 @@
   padding-bottom: 4px;
 
   overflow-y: hidden;
+  pointer-events: all;
+}
+
+.container:not(.interactive) {
   pointer-events: none;
 }
 
@@ -130,7 +134,6 @@
 
 .container.interactive .content {
   overflow: auto;
-  pointer-events: auto;
 }
 
 @supports (scrollbar-width: thin) {
@@ -175,7 +178,6 @@
   background: var(--cell-highlight-bg);
   color: var(--cell-highlight-fg);
 
-  pointer-events: auto;
   /* Make sure we are above the content area. This is mostly needed when we are
    * showing the copy overlay since the entry data might overflow its region in
    * that case. */
