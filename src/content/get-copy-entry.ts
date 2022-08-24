@@ -1,33 +1,54 @@
-import {
-  KanjiSearchResult,
-  NameSearchResult,
-  WordSearchResult,
-} from '../background/search-result';
+import { MajorDataSeries } from '@birchill/jpdict-idb';
 import { CopyEntry } from './copy-text';
+import { QueryResult } from './query';
 
 export function getCopyEntryFromResult({
+  series,
   result,
   index,
 }: {
-  result: WordSearchResult | NameSearchResult | KanjiSearchResult;
+  series: MajorDataSeries;
+  result: QueryResult;
   index: number;
 }): CopyEntry | null {
-  let wrappedIndex = index;
-  if (result.type === 'words' || result.type === 'names') {
-    wrappedIndex = wrappedIndex % result.data.length;
+  // Get the actual index to use.
+  let numberOfCopyableEntries;
+  if (series === 'words') {
+    const { namePreview } = result;
+    numberOfCopyableEntries =
+      (namePreview?.names.length ?? 0) + (result.words?.data.length ?? 0);
+  } else if (series === 'names') {
+    numberOfCopyableEntries = result.names?.data.length ?? 0;
+  } else if (series === 'kanji') {
+    numberOfCopyableEntries = 1;
   }
 
-  if (wrappedIndex < 0) {
-    console.error('Bad copy index', index);
+  if (!numberOfCopyableEntries) {
     return null;
   }
 
-  switch (result.type) {
-    case 'kanji':
-      return { type: 'kanji', data: result.data };
-    case 'names':
-      return { type: 'name', data: result.data[wrappedIndex] };
-    case 'words':
-      return { type: 'word', data: result.data[wrappedIndex] };
+  const wrappedIndex = index % numberOfCopyableEntries;
+
+  // Find the corresponding entry
+  if (series === 'words') {
+    const { namePreview } = result;
+    const namesLength = namePreview?.names.length ?? 0;
+    const inNamePreviewRange = wrappedIndex < namesLength;
+
+    if (inNamePreviewRange) {
+      return { type: 'name', data: namePreview!.names[wrappedIndex] };
+    }
+
+    return result.words
+      ? { type: 'word', data: result.words.data[wrappedIndex - namesLength] }
+      : null;
+  } else if (series === 'names') {
+    return result.names
+      ? { type: 'name', data: result.names.data[wrappedIndex] }
+      : null;
+  } else if (series === 'kanji') {
+    return result.kanji ? { type: 'kanji', data: result.kanji.data } : null;
   }
+
+  return null;
 }

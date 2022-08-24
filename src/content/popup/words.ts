@@ -19,6 +19,7 @@ import { html } from '../../utils/builder';
 import { getSelectedIndex } from './selected-index';
 import { getLangTag } from './lang-tag';
 import { renderStar } from './icons';
+import { CopyState } from './copy-state';
 
 export function renderWordEntries({
   entries,
@@ -53,23 +54,32 @@ export function renderWordEntries({
     }
   }
 
+  const numNames = namePreview?.names.length ?? 0;
+  const totalEntries = entries.length + numNames;
+  const selectedIndex = getSelectedIndex(options, totalEntries);
+
   if (namePreview) {
-    container.append(renderNamePreview(namePreview));
+    container.append(
+      renderNamePreview(namePreview, {
+        copyKind: options.copyState.kind,
+        onStartCopy: options.onStartCopy,
+        selectedIndex,
+      })
+    );
   }
 
-  const selectedIndex = getSelectedIndex(options, entries.length);
   for (const [index, entry] of entries.entries()) {
     const entryDiv = html('div', { class: 'entry' });
     container.append(entryDiv);
 
-    if (index === selectedIndex) {
+    if (index === selectedIndex - numNames) {
       entryDiv.classList.add(
         options.copyState.kind === 'active' ? '-selected' : '-flash'
       );
     }
 
     entryDiv.addEventListener('click', () => {
-      options.onStartCopy?.(index);
+      options.onStartCopy?.(index + numNames);
     });
 
     const headingDiv = html('div', {});
@@ -227,11 +237,31 @@ export function renderWordEntries({
   return container;
 }
 
-function renderNamePreview({ names, more }: NamePreview): HTMLElement {
+function renderNamePreview(
+  { names, more }: NamePreview,
+  {
+    copyKind,
+    onStartCopy,
+    selectedIndex,
+  }: {
+    copyKind: CopyState['kind'];
+    onStartCopy?: (index: number) => void;
+    selectedIndex?: number;
+  }
+): HTMLElement {
   const container = html('div', { class: 'bonus-name' });
 
-  for (const name of names) {
-    container.append(renderName(name));
+  for (const [index, name] of names.entries()) {
+    const nameEntry = renderName(name);
+    if (index === selectedIndex) {
+      nameEntry.classList.add(copyKind === 'active' ? '-selected' : '-flash');
+    }
+
+    nameEntry.addEventListener('click', () => {
+      onStartCopy?.(index);
+    });
+
+    container.append(nameEntry);
   }
 
   if (more) {

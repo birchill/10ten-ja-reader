@@ -171,7 +171,8 @@ export function renderPopup(
           kanjiReferences: options.kanjiReferences,
           onCancelCopy: options.onCancelCopy,
           onCopy: options.onCopy,
-          result: resultToShow || undefined,
+          result: resultToShow ? result : undefined,
+          series: options.dictToShow,
           showKanjiComponents: options.showKanjiComponents,
         })
       )

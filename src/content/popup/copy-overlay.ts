@@ -1,15 +1,13 @@
+import { MajorDataSeries } from '@birchill/jpdict-idb';
 import { browser } from 'webextension-polyfill-ts';
 
-import {
-  KanjiSearchResult,
-  NameSearchResult,
-  WordSearchResult,
-} from '../../background/search-result';
 import { CopyType } from '../../common/copy-keys';
 import { ReferenceAbbreviation } from '../../common/refs';
+import { html, svg } from '../../utils/builder';
+
 import { getTextToCopy } from '../copy-text';
 import { getCopyEntryFromResult } from '../get-copy-entry';
-import { html, svg } from '../../utils/builder';
+import { QueryResult } from '../query';
 
 import { CopyState } from './copy-state';
 import { renderClipboard } from './icons';
@@ -21,13 +19,15 @@ export function renderCopyOverlay({
   onCancelCopy,
   onCopy,
   result,
+  series,
   showKanjiComponents,
 }: {
   copyState: CopyState;
   kanjiReferences: Array<ReferenceAbbreviation>;
   onCancelCopy?: () => void;
   onCopy?: (copyType: CopyType) => void;
-  result?: WordSearchResult | NameSearchResult | KanjiSearchResult;
+  result?: QueryResult;
+  series: MajorDataSeries;
   showKanjiComponents?: boolean;
 }): HTMLDivElement {
   const copyOverlay = html('div', { class: 'copy-overlay' });
@@ -36,6 +36,7 @@ export function renderCopyOverlay({
   const entryToCopy = result
     ? getCopyEntryFromResult({
         result,
+        series,
         index: copyState.kind !== 'inactive' ? copyState.index : 0,
       })
     : null;
@@ -121,7 +122,7 @@ export function renderCopyOverlay({
     } else {
       copyWordLabel.append(
         browser.i18n.getMessage(
-          result?.type === 'kanji'
+          series === 'kanji'
             ? 'content_copy_overlay_kanji_button'
             : 'content_copy_overlay_word_button'
         )

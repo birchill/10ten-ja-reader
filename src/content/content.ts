@@ -1192,17 +1192,13 @@ export class ContentHandler {
       return null;
     }
 
-    if (
-      !this.currentSearchResult ||
-      !this.currentSearchResult[this.currentDict]
-    ) {
+    if (!this.currentSearchResult) {
       return null;
     }
 
-    const searchResult = this.currentSearchResult[this.currentDict]!;
-
     const copyEntry = getCopyEntryFromResult({
-      result: searchResult,
+      result: this.currentSearchResult,
+      series: this.currentDict,
       index: this.copyState.index,
     });
     if (!copyEntry) {
