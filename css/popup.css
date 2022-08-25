@@ -134,6 +134,7 @@
 
 .container.interactive .content {
   overflow: auto;
+  overscroll-behavior: contain;
 }
 
 @supports (scrollbar-width: thin) {
