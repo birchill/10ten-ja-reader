@@ -1286,6 +1286,7 @@
   border: 0;
   font: inherit;
   color: inherit;
+  cursor: pointer;
 }
 
 .copy-overlay .copy-options li button {
