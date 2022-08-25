@@ -576,7 +576,7 @@ export class ContentHandler {
       width: popupWidth,
       height: popupHeight,
       direction,
-      lookupPoint: { x: lookupX, y: lookupY, angle: lookupAngle },
+      lookupPoint: { x: lookupX, y: lookupY },
     } = this.popupGeometry;
 
     // If the popup is not related to the mouse position we don't want to allow
@@ -629,9 +629,7 @@ export class ContentHandler {
     // Check the inline range
     //
     // We do this by basically drawing a triangle from the lookup point spanning
-    // outwards towards the edge of the popup using the provided angle (which,
-    // when looking up text, is typically based on the bounding box of the first
-    // glyph).
+    // outwards towards the edge of the popup using the defined angle.
     //
     // e.g.
     //
@@ -660,7 +658,10 @@ export class ContentHandler {
         ? event.clientX + scrollX
         : event.clientY + scrollY;
 
-    const inlineHalfRange = Math.tan(lookupAngle) * Math.abs(popupDist);
+    const ENVELOPE_SPREAD_DEGREES = 90;
+    const inlineHalfRange =
+      Math.tan(((ENVELOPE_SPREAD_DEGREES / 2) * Math.PI) / 180) *
+      Math.abs(popupDist);
     const inlineRangeStart = lookupInlinePos - inlineHalfRange;
     const inlineRangeEnd = lookupInlinePos + inlineHalfRange;
 
@@ -1095,7 +1096,6 @@ export class ContentHandler {
               ? {
                   x: lookupPoint.x + scrollX,
                   y: lookupPoint.y + scrollY,
-                  angle: lookupPoint.angle,
                 }
               : undefined,
           };
@@ -2022,7 +2022,6 @@ export class ContentHandler {
       return {
         x: firstCharBbox.left + firstCharBbox.width / 2 + scrollX,
         y: firstCharBbox.top + firstCharBbox.height / 2 + scrollY,
-        angle: Math.atan(firstCharBbox.width / firstCharBbox.height),
       };
     }
 
@@ -2030,7 +2029,6 @@ export class ContentHandler {
       ? {
           x: currentPoint.x + scrollX,
           y: currentPoint.y + scrollY,
-          angle: Math.PI / 4, // 45 degrees
         }
       : undefined;
   }
@@ -2056,7 +2054,6 @@ export class ContentHandler {
         ? {
             x: lookupPoint.x - iframeOrigin.x - scrollX,
             y: lookupPoint.y - iframeOrigin.y - scrollY,
-            angle: lookupPoint.angle,
           }
         : undefined,
       frameId,
