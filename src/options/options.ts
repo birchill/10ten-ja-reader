@@ -339,9 +339,13 @@ function setTabDisplayTheme(theme: string) {
 }
 
 function toggleInteractivityCheckboxVisibility(visible: boolean) {
-  document.getElementById('popupInteractive')!.style.display = visible
-    ? 'revert'
-    : 'block';
+  const checkBoxRow =
+    document.getElementById('popupInteractive')?.parentElement;
+  if (!checkBoxRow) {
+    return;
+  }
+
+  checkBoxRow.style.display = visible ? 'revert' : 'none';
 }
 
 function renderCurrencyList(
