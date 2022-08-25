@@ -38,8 +38,18 @@ export type PopupPositionConstraints = {
 // stage.
 const GUTTER = 5;
 
-// Minimum space to leave between the edge of the pop-up and the cursor.
-const MARGIN_TO_POPUP = 25;
+// Minimum space to leave between the edge of the pop-up and the cursor when in
+// interactive mode.
+//
+// We don't want this value to be too large or else it becomes too hard to move
+// the mouse over the popup.
+const INTERACTIVE_MARGIN_TO_POPUP = 10;
+
+// Minimum space to leave between the edge of the pop-up and the cursor when we
+// are NOT in interactive mode. In future we'd probably like to make this the
+// same value as INTERACTIVE_MARGIN_TO_POPUP but for now it's safest to keep
+// things as they are.
+const NON_INTERACTIVE_MARGIN_TO_POPUP = 25;
 
 export function getPopupPosition({
   cursorClearance,
@@ -213,6 +223,7 @@ function getFixedPosition({
     const [min, max] = getRangeForPopup({
       axis: direction,
       cursorClearance,
+      interactive,
       side,
       safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
       target: mousePos,
@@ -286,6 +297,7 @@ function getAutoPosition({
 }): PopupPosition {
   const extendedPosition = getAutoPositionWithoutScrollOffset({
     cursorClearance,
+    interactive,
     isVerticalText,
     mousePos,
     popupSize,
@@ -334,6 +346,7 @@ type ExtendedPopupPosition = {
 
 function getAutoPositionWithoutScrollOffset({
   cursorClearance,
+  interactive,
   isVerticalText,
   mousePos,
   popupSize,
@@ -343,6 +356,7 @@ function getAutoPositionWithoutScrollOffset({
   pointerType,
 }: {
   cursorClearance: MarginBox;
+  interactive: boolean;
   isVerticalText: boolean;
   mousePos?: Point;
   popupSize: { width: number; height: number };
@@ -384,6 +398,7 @@ function getAutoPositionWithoutScrollOffset({
       const position = calculatePosition({
         axis,
         cursorClearance,
+        interactive,
         popupSize,
         safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
         target: { x, y },
@@ -447,6 +462,7 @@ function getAutoPositionWithoutScrollOffset({
 function calculatePosition({
   axis,
   cursorClearance,
+  interactive,
   popupSize,
   safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
   side,
@@ -454,6 +470,7 @@ function calculatePosition({
 }: {
   axis: 'vertical' | 'horizontal';
   cursorClearance: MarginBox;
+  interactive: boolean;
   popupSize: { width: number; height: number };
   safeBoundaries: {
     safeLeft: number;
@@ -489,6 +506,7 @@ function calculatePosition({
   const [axisMin, axisMax] = getRangeForPopup({
     axis,
     cursorClearance,
+    interactive,
     side,
     safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
     target,
@@ -531,12 +549,14 @@ function calculatePosition({
 function getRangeForPopup({
   axis,
   cursorClearance,
+  interactive,
   side,
   safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
   target,
 }: {
   axis: 'vertical' | 'horizontal';
   cursorClearance: MarginBox;
+  interactive: boolean;
   safeBoundaries: {
     safeLeft: number;
     safeRight: number;
@@ -547,6 +567,9 @@ function getRangeForPopup({
   target: Point;
 }): [min: number, max: number] {
   const targetAxisPos = axis === 'vertical' ? target.y : target.x;
+  const marginToPopup = interactive
+    ? INTERACTIVE_MARGIN_TO_POPUP
+    : NON_INTERACTIVE_MARGIN_TO_POPUP;
 
   let minAxisExtent;
   let maxAxisExtent;
@@ -556,12 +579,12 @@ function getRangeForPopup({
 
     const clearanceAtFarEdge =
       axis === 'vertical' ? cursorClearance.top : cursorClearance.left;
-    const marginAtFarEdge = clearanceAtFarEdge + MARGIN_TO_POPUP;
+    const marginAtFarEdge = clearanceAtFarEdge + marginToPopup;
     maxAxisExtent = targetAxisPos - marginAtFarEdge;
   } else {
     const clearanceAtNearEdge =
       axis === 'vertical' ? cursorClearance.bottom : cursorClearance.right;
-    const marginAtNearEdge = clearanceAtNearEdge + MARGIN_TO_POPUP;
+    const marginAtNearEdge = clearanceAtNearEdge + marginToPopup;
     minAxisExtent = targetAxisPos + marginAtNearEdge;
 
     maxAxisExtent = axis === 'vertical' ? safeBottom : safeRight;
