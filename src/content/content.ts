@@ -636,11 +636,7 @@ export class ContentHandler {
     const blockPortion = blockOffset / blockRange;
 
     // Check if we are in the gap
-    //
-    // (We allow going a bit beyond the edge of the popup to cover the case
-    // where the user is aiming for the corner but swings in a little from the
-    // side.)
-    if (blockPortion < 0 || blockPortion > 1.1) {
+    if (blockPortion < 0 || blockPortion > 1) {
       return false;
     }
 
@@ -682,10 +678,7 @@ export class ContentHandler {
     const inlinePopupStart = direction === 'vertical' ? popupX : popupY;
     const maxInlineRange = blockRange * 2;
     const maxInlineRangeStart = Math.max(
-      // We allow the triangle to extend a bit past the edge of the popup
-      // because it makes it easier to reach the popup when it gets positioned
-      // to the side of the cursor.
-      inlinePopupStart - 8,
+      inlinePopupStart,
       currentInlinePos - maxInlineRange / 2
     );
     const proportionalInlineRangeStart =
@@ -1866,7 +1859,9 @@ export class ContentHandler {
     // wraps lines and that would produce a massive area that would be too hard
     // to avoid.
     const { textBoxSizes } = this.currentTargetProps || {};
-    if (textBoxSizes && this.currentPoint) {
+    const mousePos = this.currentPoint;
+    const isVerticalText = !!this.currentTargetProps?.isVerticalText;
+    if (textBoxSizes && mousePos) {
       const bbox = getBestFitSize({
         sizes: textBoxSizes,
         length: this.getHighlightLengthForCurrentResult(),
@@ -1874,22 +1869,44 @@ export class ContentHandler {
       if (bbox) {
         const cursorClearanceAsRect = addMarginToPoint(
           cursorClearance,
-          this.currentPoint
+          mousePos
         );
+
+        // Adjust the mousePos to use the edge of the text box.
+        //
+        // This should cause the popup to be better aligned with the selected
+        // text which, apart from appearing a little bit neater, also makes
+        // mousing over the popup easier since it should be closer.
+        //
+        // (It's important we do this _after_ calling addMarginToPoint above
+        // since, when we are using the puck, the original value of
+        // `cursorClearance` is relative to this.currentPoint, i.e. the original
+        // value of mousePos, so we need to supply that value when converting to
+        // a rect.)
+        if (isVerticalText) {
+          mousePos.y = Math.max(0, bbox.top - 10);
+        } else {
+          mousePos.x = Math.max(0, bbox.left - 10);
+        }
+
         const expandedClearance = union(bbox, cursorClearanceAsRect);
-        cursorClearance = getMarginAroundPoint(
-          this.currentPoint,
-          expandedClearance
-        );
+        cursorClearance = getMarginAroundPoint(mousePos, expandedClearance);
       }
     }
 
     const popupSize = getPopupDimensions(popup);
+
+    // If we want to preserve the position of the popup when positioning it
+    // (e.g. because the user switched tabs using the mouse and we don't want
+    // the popup to jump around) we need to set up the fixed position parameters
+    // for the positioning routine to use.
     const fixedPosition =
       options?.fixPosition &&
       this.popupGeometry &&
       this.config.tabDisplay !== 'none'
         ? {
+            // If the tabs are on the right, the x position is the right edge
+            // of the popup.
             x:
               this.config.tabDisplay === 'right'
                 ? this.popupGeometry.x + this.popupGeometry.width
@@ -1910,8 +1927,8 @@ export class ContentHandler {
       cursorClearance,
       fixedPosition,
       interactive: this.config.popupInteractive,
-      isVerticalText: !!this.currentTargetProps?.isVerticalText,
-      mousePos: this.currentPoint,
+      isVerticalText,
+      mousePos,
       positionMode: this.popupPositionMode,
       popupSize,
       safeArea,
