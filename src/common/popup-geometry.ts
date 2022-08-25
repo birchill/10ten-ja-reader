@@ -6,6 +6,16 @@ export const PopupGeometrySchema = s.type({
   width: s.number(),
   height: s.number(),
   direction: s.enums(['vertical', 'horizontal', 'disjoint'] as const),
+  side: s.enums(['before', 'after', 'disjoint'] as const),
+  // Reference lookup point and angle we should use for determining if a mouse
+  // move is "between" the lookup point and the popup.
+  lookupPoint: s.optional(
+    s.type({
+      x: s.number(),
+      y: s.number(),
+      angle: s.number(),
+    })
+  ),
 });
 
 export type PopupGeometry = s.Infer<typeof PopupGeometrySchema>;

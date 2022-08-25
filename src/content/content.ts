@@ -58,6 +58,7 @@ import {
   getMarginAroundPoint,
   MarginBox,
   Point,
+  Rect,
   union,
 } from '../utils/geometry';
 import { mod } from '../utils/mod';
@@ -85,7 +86,11 @@ import {
   setPopupStyle,
   showOverlay,
 } from './popup/popup';
-import { getPopupPosition, PopupPositionMode } from './popup-position';
+import {
+  getPopupPosition,
+  PopupPositionConstraints,
+  PopupPositionMode,
+} from './popup-position';
 import { CopyState } from './popup/copy-state';
 import {
   isPuckMouseEvent,
@@ -561,11 +566,7 @@ export class ContentHandler {
       return false;
     }
 
-    if (!this.popupGeometry) {
-      return false;
-    }
-
-    if (!this.currentPoint) {
+    if (!this.popupGeometry || !this.popupGeometry.lookupPoint) {
       return false;
     }
 
@@ -575,6 +576,7 @@ export class ContentHandler {
       width: popupWidth,
       height: popupHeight,
       direction,
+      lookupPoint: { x: lookupX, y: lookupY, angle: lookupAngle },
     } = this.popupGeometry;
 
     // If the popup is not related to the mouse position we don't want to allow
@@ -587,34 +589,18 @@ export class ContentHandler {
 
     // Check block axis range
 
-    // Make current point page-relative since the popup position is page
-    // relative.
-    let currentBlockPos =
-      direction === 'vertical'
-        ? this.currentPoint.y + scrollY
-        : this.currentPoint.x + scrollX;
+    const lookupBlockPos = direction === 'vertical' ? lookupY : lookupX;
 
     // Get the closest edge of the popup edge
     const popupBlockPos = direction === 'vertical' ? popupY : popupX;
     const popupBlockSize = direction === 'vertical' ? popupHeight : popupWidth;
     const popupEdge =
-      popupBlockPos >= currentBlockPos
+      popupBlockPos >= lookupBlockPos
         ? popupBlockPos
         : popupBlockPos + popupBlockSize;
 
-    // Now that we know which side of the lookup point the popup is on, tweak
-    // the lookup point by a few pixels just to make the envelope we use a
-    // little bigger. (Specifically we push the current block pos away from the
-    // popup so that the triangular envelope we create more fully encompasses
-    // the lookup point.)
-    if (popupEdge > currentBlockPos) {
-      currentBlockPos -= 4;
-    } else {
-      currentBlockPos += 4;
-    }
-
     // Work out the distance between the lookup point and the edge of the popup
-    const popupDist = popupEdge - currentBlockPos;
+    const popupDist = popupEdge - lookupBlockPos;
 
     // Work out the mouse distance from the lookup point
     //
@@ -630,8 +616,8 @@ export class ContentHandler {
     // point and the edge of the popup.
     const blockOffset =
       popupDist < 0
-        ? currentBlockPos - mouseBlockPos
-        : mouseBlockPos - currentBlockPos;
+        ? lookupBlockPos - mouseBlockPos
+        : mouseBlockPos - lookupBlockPos;
     const blockRange = Math.abs(popupDist);
     const blockPortion = blockOffset / blockRange;
 
@@ -643,7 +629,9 @@ export class ContentHandler {
     // Check the inline range
     //
     // We do this by basically drawing a triangle from the lookup point spanning
-    // outwards towards the edge of the popup.
+    // outwards towards the edge of the popup using the provided angle (which,
+    // when looking up text, is typically based on the bounding box of the first
+    // glyph).
     //
     // e.g.
     //
@@ -658,39 +646,25 @@ export class ContentHandler {
     //  |           C                                  |
     //  A
     //
-    // + = Lookup point (current inline position)
+    // + = Lookup point (lookup inline position)
     // x = Mouse position
     // A = Inline popup start
     // B = Max inline range (i.e. the inline range at the edge)
     // C = Max inline range start
     // D = Proportional inline range
 
-    const currentInlinePos =
-      direction === 'vertical'
-        ? this.currentPoint.x + scrollX
-        : this.currentPoint.y + scrollY;
+    const lookupInlinePos = direction === 'vertical' ? lookupX : lookupY;
 
     const mouseInlinePos =
       direction === 'vertical'
         ? event.clientX + scrollX
         : event.clientY + scrollY;
 
-    const inlinePopupStart = direction === 'vertical' ? popupX : popupY;
-    const maxInlineRange = blockRange * 2;
-    const maxInlineRangeStart = Math.max(
-      inlinePopupStart,
-      currentInlinePos - maxInlineRange / 2
-    );
-    const proportionalInlineRangeStart =
-      currentInlinePos -
-      blockPortion * (currentInlinePos - maxInlineRangeStart);
-    const proportionalInlineRangeEnd =
-      proportionalInlineRangeStart + blockPortion * maxInlineRange;
+    const inlineHalfRange = Math.tan(lookupAngle) * Math.abs(popupDist);
+    const inlineRangeStart = lookupInlinePos - inlineHalfRange;
+    const inlineRangeEnd = lookupInlinePos + inlineHalfRange;
 
-    if (
-      mouseInlinePos < proportionalInlineRangeStart ||
-      mouseInlinePos > proportionalInlineRangeEnd
-    ) {
+    if (mouseInlinePos < inlineRangeStart || mouseInlinePos > inlineRangeEnd) {
       return false;
     }
 
@@ -1112,10 +1086,18 @@ export class ContentHandler {
           this.getFrameId() === request.geometry.frameId
         ) {
           const { scrollX, scrollY } = getScrollOffset();
+          const { x, y, lookupPoint } = request.geometry;
           this.popupGeometry = {
             ...stripFields(request.geometry, ['frameId']),
-            x: request.geometry.x + scrollX,
-            y: request.geometry.y + scrollY,
+            x: x + scrollX,
+            y: y + scrollY,
+            lookupPoint: lookupPoint
+              ? {
+                  x: lookupPoint.x + scrollX,
+                  y: lookupPoint.y + scrollY,
+                  angle: lookupPoint.angle,
+                }
+              : undefined,
           };
         } else {
           this.popupGeometry = undefined;
@@ -1819,14 +1801,11 @@ export class ContentHandler {
     // callback since by that point we will already have hidden it.
     this.touchClickTracker.startIgnoringClicks();
 
+    //
     // Position the popup
+    //
 
-    const safeArea = this.safeAreaProvider?.getSafeArea() || {
-      top: 0,
-      right: 0,
-      left: 0,
-      bottom: 0,
-    };
+    // First work out our constraints, i.e. where _not_ to put the popup
 
     let cursorClearance: MarginBox;
     if (this.currentTargetProps?.fromPuck && this.puck) {
@@ -1894,28 +1873,18 @@ export class ContentHandler {
       }
     }
 
+    const safeArea = this.safeAreaProvider?.getSafeArea() || {
+      top: 0,
+      right: 0,
+      left: 0,
+      bottom: 0,
+    };
+
+    // Work out its size
+
     const popupSize = getPopupDimensions(popup);
 
-    // If we want to preserve the position of the popup when positioning it
-    // (e.g. because the user switched tabs using the mouse and we don't want
-    // the popup to jump around) we need to set up the fixed position parameters
-    // for the positioning routine to use.
-    const fixedPosition =
-      options?.fixPosition &&
-      this.popupGeometry &&
-      this.config.tabDisplay !== 'none'
-        ? {
-            // If the tabs are on the right, the x position is the right edge
-            // of the popup.
-            x:
-              this.config.tabDisplay === 'right'
-                ? this.popupGeometry.x + this.popupGeometry.width
-                : this.popupGeometry.x,
-            y: this.popupGeometry.y,
-            anchor: this.config.tabDisplay,
-            direction: this.popupGeometry.direction,
-          }
-        : undefined;
+    // Finally get the popup position
 
     const {
       x: popupX,
@@ -1923,9 +1892,10 @@ export class ContentHandler {
       constrainWidth,
       constrainHeight,
       direction,
+      side,
     } = getPopupPosition({
       cursorClearance,
-      fixedPosition,
+      fixedPosition: options?.fixPosition ? this.getFixedPosition() : undefined,
       interactive: this.config.popupInteractive,
       isVerticalText,
       mousePos,
@@ -1935,12 +1905,23 @@ export class ContentHandler {
       pointerType: this.currentTargetProps?.fromPuck ? 'puck' : 'cursor',
     });
 
+    // Store the popup geometry so that:
+    //
+    // (a) we can fix the popup's position when changing tabs, and
+    // (b) we can detect if future mouse events lie between the popup and
+    //     the lookup point (and _not_ close or update the popup in that case)
+    //
     this.popupGeometry = {
       x: popupX,
       y: popupY,
       width: constrainWidth ?? popupSize.width,
       height: constrainHeight ?? popupSize.height,
       direction,
+      side,
+      lookupPoint: this.getPopupLookupPoint({
+        currentPoint: this.currentPoint,
+        firstCharBbox: textBoxSizes?.[1],
+      }),
     };
 
     if (
@@ -2009,6 +1990,51 @@ export class ContentHandler {
     }
   }
 
+  getFixedPosition(): PopupPositionConstraints | undefined {
+    if (!this.popupGeometry || this.config.tabDisplay === 'none') {
+      return undefined;
+    }
+
+    return {
+      // If the tabs are on the right, the x position is the right edge of the
+      // popup.
+      x:
+        this.config.tabDisplay === 'right'
+          ? this.popupGeometry.x + this.popupGeometry.width
+          : this.popupGeometry.x,
+      y: this.popupGeometry.y,
+      anchor: this.config.tabDisplay,
+      direction: this.popupGeometry.direction,
+      side: this.popupGeometry.side,
+    };
+  }
+
+  getPopupLookupPoint({
+    currentPoint,
+    firstCharBbox,
+  }: {
+    currentPoint?: Point;
+    firstCharBbox?: Rect;
+  }): PopupGeometry['lookupPoint'] {
+    const { scrollX, scrollY } = getScrollOffset();
+
+    if (firstCharBbox) {
+      return {
+        x: firstCharBbox.left + firstCharBbox.width / 2 + scrollX,
+        y: firstCharBbox.top + firstCharBbox.height / 2 + scrollY,
+        angle: Math.atan(firstCharBbox.width / firstCharBbox.height),
+      };
+    }
+
+    return currentPoint
+      ? {
+          x: currentPoint.x + scrollX,
+          y: currentPoint.y + scrollY,
+          angle: Math.PI / 4, // 45 degrees
+        }
+      : undefined;
+  }
+
   getTranslatedPopupGeometry(
     frameId: number,
     popupGeometry: Readonly<PopupGeometry>
@@ -2020,11 +2046,19 @@ export class ContentHandler {
 
     const iframeOrigin = getIframeOrigin(iframe);
     const { scrollX, scrollY } = getScrollOffset();
+    const { x, y, lookupPoint } = popupGeometry;
 
     return {
       ...popupGeometry,
-      x: popupGeometry.x - iframeOrigin.x - scrollX,
-      y: popupGeometry.y - iframeOrigin.y - scrollY,
+      x: x - iframeOrigin.x - scrollX,
+      y: y - iframeOrigin.y - scrollY,
+      lookupPoint: lookupPoint
+        ? {
+            x: lookupPoint.x - iframeOrigin.x - scrollX,
+            y: lookupPoint.y - iframeOrigin.y - scrollY,
+            angle: lookupPoint.angle,
+          }
+        : undefined,
       frameId,
     };
   }

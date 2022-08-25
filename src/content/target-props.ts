@@ -24,6 +24,7 @@ export type TargetProps = {
 // just return a set of standard sizes and let the topmost window choose the
 // best fit.
 export type SelectionSizes = {
+  1: Rect;
   4: Rect;
   8: Rect;
   12: Rect;
@@ -32,7 +33,7 @@ export type SelectionSizes = {
 
 // Guaranteed to be arranged in ascending order
 export const textBoxSizeLengths: ReadonlyArray<keyof SelectionSizes> = [
-  4, 8, 12, 16,
+  1, 4, 8, 12, 16,
 ];
 
 export function getTargetProps({

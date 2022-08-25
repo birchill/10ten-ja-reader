@@ -16,6 +16,7 @@ export interface PopupPosition {
   constrainWidth: number | null;
   constrainHeight: number | null;
   direction: 'vertical' | 'horizontal' | 'disjoint';
+  side: 'before' | 'after' | 'disjoint';
 }
 
 // We have three (ok, two) possible situations:
@@ -32,6 +33,7 @@ export type PopupPositionConstraints = {
   y: number;
   anchor: 'top' | 'left' | 'right';
   direction: 'vertical' | 'horizontal' | 'disjoint';
+  side: 'before' | 'after' | 'disjoint';
 };
 
 // Minimum space to leave between the edge of the pop-up and the edge of the
@@ -165,6 +167,7 @@ export function getPopupPosition({
         constrainWidth: null,
         constrainHeight: null,
         direction: 'disjoint',
+        side: 'disjoint',
       };
 
     case PopupPositionMode.BottomRight:
@@ -174,6 +177,7 @@ export function getPopupPosition({
         constrainWidth: null,
         constrainHeight: null,
         direction: 'disjoint',
+        side: 'disjoint',
       };
   }
 }
@@ -212,14 +216,8 @@ function getFixedPosition({
 
   // See if we can further constrain the area to place the popup in based on
   // the text being highlighted.
-  const { direction, anchor } = fixedPosition;
-  if (direction !== 'disjoint' && mousePos) {
-    const side =
-      (direction === 'vertical' && mousePos.y < screenY) ||
-      (direction === 'horizontal' && mousePos.x < screenX)
-        ? 'after'
-        : 'before';
-
+  const { direction, anchor, side } = fixedPosition;
+  if (direction !== 'disjoint' && side !== 'disjoint' && mousePos) {
     const [min, max] = getRangeForPopup({
       axis: direction,
       cursorClearance,
@@ -267,6 +265,7 @@ function getFixedPosition({
     constrainWidth,
     constrainHeight,
     direction,
+    side,
   };
 }
 
@@ -335,6 +334,7 @@ function getAutoPosition({
         constrainWidth: null,
         constrainHeight: null,
         direction: 'disjoint',
+        side: 'disjoint',
       };
 }
 
@@ -536,6 +536,7 @@ function calculatePosition({
         constrainWidth: constrainCrossExtent,
         constrainHeight: constrainAxisExtent,
         direction: axis,
+        side,
       }
     : {
         x: axisPos,
@@ -543,6 +544,7 @@ function calculatePosition({
         constrainWidth: constrainAxisExtent,
         constrainHeight: constrainCrossExtent,
         direction: axis,
+        side,
       };
 }
 
