@@ -570,6 +570,15 @@ export class ContentHandler {
       return false;
     }
 
+    // Allow a grace period where we don't allow mousing into the popup so the
+    // user can scan around freely without being interrupted by the popup.
+    //
+    // This value should be aligned with the lenghth of the
+    // tenten-ja-enable-pointer-events animation in popup.css
+    if (performance.now() - this.popupGeometry.showTime < 400) {
+      return false;
+    }
+
     const {
       x: popupX,
       y: popupY,
@@ -658,7 +667,7 @@ export class ContentHandler {
         ? event.clientX + scrollX
         : event.clientY + scrollY;
 
-    const ENVELOPE_SPREAD_DEGREES = 90;
+    const ENVELOPE_SPREAD_DEGREES = 70;
     const inlineHalfRange =
       Math.tan(((ENVELOPE_SPREAD_DEGREES / 2) * Math.PI) / 180) *
       Math.abs(popupDist);
@@ -1242,7 +1251,7 @@ export class ContentHandler {
     }
 
     this.config.readingOnly = !this.config.readingOnly;
-    this.showPopup();
+    this.showPopup({ update: true });
   }
 
   movePopup(direction: 'up' | 'down') {
@@ -1260,7 +1269,7 @@ export class ContentHandler {
         PopupPositionMode.End + 1
       );
     }
-    this.showPopup();
+    this.showPopup({ update: true });
   }
 
   enterCopyMode({
@@ -1289,7 +1298,7 @@ export class ContentHandler {
       return;
     }
 
-    this.showPopup({ fixPosition: true });
+    this.showPopup({ fixPosition: true, update: true });
   }
 
   exitCopyMode() {
@@ -1302,7 +1311,7 @@ export class ContentHandler {
       return;
     }
 
-    this.showPopup({ fixPosition: true });
+    this.showPopup({ fixPosition: true, update: true });
   }
 
   nextCopyEntry() {
@@ -1318,7 +1327,7 @@ export class ContentHandler {
         mode: this.copyState.mode,
       };
     }
-    this.showPopup({ fixPosition: true });
+    this.showPopup({ fixPosition: true, update: true });
   }
 
   copyCurrentEntry(copyType: CopyType) {
@@ -1362,7 +1371,7 @@ export class ContentHandler {
     });
     if (!copyEntry) {
       this.copyState = { kind: 'inactive' };
-      this.showPopup({ fixPosition: true });
+      this.showPopup({ fixPosition: true, update: true });
     }
 
     return copyEntry;
@@ -1382,7 +1391,7 @@ export class ContentHandler {
       this.copyState = { kind: 'error', index, mode };
     }
 
-    this.showPopup({ fixPosition: true });
+    this.showPopup({ fixPosition: true, update: true });
 
     // Reset the copy state so that it doesn't re-appear next time we re-render
     // the popup.
@@ -1422,6 +1431,7 @@ export class ContentHandler {
     this.currentPoint = undefined;
     this.lastMouseTarget = null;
     this.copyState = { kind: 'inactive' };
+    this.popupGeometry = undefined;
 
     if (
       this.isTopMostWindow() &&
@@ -1709,7 +1719,7 @@ export class ContentHandler {
     this.currentDict = dict;
 
     this.highlightTextForCurrentResult();
-    this.showPopup({ fixPosition: options?.fixPopupPosition });
+    this.showPopup({ fixPosition: options?.fixPopupPosition, update: true });
   }
 
   highlightTextForCurrentResult() {
@@ -1747,7 +1757,7 @@ export class ContentHandler {
     );
   }
 
-  showPopup(options: { fixPosition?: boolean } = {}) {
+  showPopup(options: { fixPosition?: boolean; update?: boolean } = {}) {
     if (!this.currentSearchResult && !this.currentLookupParams?.meta) {
       this.clearResult({ currentElement: this.lastMouseTarget });
       return;
@@ -1786,6 +1796,7 @@ export class ContentHandler {
       showPriority: this.config.showPriority,
       switchDictionaryKeys: this.config.keys.nextDictionary,
       tabDisplay: this.config.tabDisplay,
+      update: options.update,
     };
 
     const popup = renderPopup(this.currentSearchResult, popupOptions);
@@ -1922,6 +1933,7 @@ export class ContentHandler {
         currentPoint: this.currentPoint,
         firstCharBbox: textBoxSizes?.[1],
       }),
+      showTime: performance.now(),
     };
 
     if (

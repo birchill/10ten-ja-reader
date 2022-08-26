@@ -58,6 +58,21 @@
   pointer-events: all;
 }
 
+/*
+ * Initial state of an interactive container where we temporarily disable
+ * pointer events.
+ */
+.container.interactive.initial {
+  pointer-events: none;
+  animation: tenten-ja-enable-pointer-events 0.4s step-end forwards;
+}
+
+@keyframes tenten-ja-enable-pointer-events {
+  to {
+    pointer-events: all;
+  }
+}
+
 .container:not(.interactive) {
   pointer-events: none;
 }
@@ -722,10 +737,10 @@
 }
 
 .window .entry.-flash {
-  animation: flash 0.5s;
+  animation: tenten-ja-flash 0.5s;
 }
 
-@keyframes flash {
+@keyframes tenten-ja-flash {
   from {
     background: white;
     color: white;
@@ -820,7 +835,7 @@
 
 .window.-copy-finished .kanji-table .kanji,
 .window.-copy-error .kanji-table .kanji {
-  animation: flash 0.5s;
+  animation: tenten-ja-flash 0.5s;
 }
 
 /* kanji: readings */

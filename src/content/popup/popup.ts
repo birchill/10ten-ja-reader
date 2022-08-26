@@ -59,6 +59,7 @@ export interface PopupOptions {
   showKanjiComponents?: boolean;
   switchDictionaryKeys: ReadonlyArray<string>;
   tabDisplay: 'top' | 'left' | 'right' | 'none';
+  update?: boolean;
 }
 
 export function renderPopup(
@@ -67,9 +68,11 @@ export function renderPopup(
 ): HTMLElement | null {
   const container = options.container || getDefaultContainer();
   const interactive = !!options.interactive;
+  const initial = !options.update;
   const windowElem = resetContainer({
     host: container,
     popupStyle: options.popupStyle,
+    initial,
     interactive,
   });
 
@@ -263,20 +266,21 @@ function getDefaultContainer(): HTMLElement {
 function resetContainer({
   host,
   popupStyle,
+  initial,
   interactive,
 }: {
   host: HTMLElement;
   popupStyle: string;
+  initial: boolean;
   interactive: boolean;
 }): HTMLElement {
   const container = html('div', { class: 'container' });
   const windowDiv = html('div', { class: 'window' });
   container.append(windowDiv);
 
-  // Set interactive status
-  if (interactive) {
-    container.classList.add('interactive');
-  }
+  // Set initial and interactive status
+  container.classList.toggle('initial', initial);
+  container.classList.toggle('interactive', interactive);
 
   // Set theme
   windowDiv.classList.add(getThemeClass(popupStyle));

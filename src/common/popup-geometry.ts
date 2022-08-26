@@ -15,6 +15,8 @@ export const PopupGeometrySchema = s.type({
       y: s.number(),
     })
   ),
+  // Value of performance.now() when the popup was first shown
+  showTime: s.number(),
 });
 
 export type PopupGeometry = s.Infer<typeof PopupGeometrySchema>;
