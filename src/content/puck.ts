@@ -475,7 +475,10 @@ export class LookupPuck {
     // have the visual viewport API since we can't register for viewport resize
     // events, but we manually call this function initially after rendering so
     // we can still arrive here even without the API.)
-    if (typeof window.visualViewport === 'undefined') {
+    if (
+      typeof window.visualViewport === 'undefined' ||
+      window.visualViewport === null
+    ) {
       this.hasBuggyPositionFixed = false;
       return;
     }
