@@ -667,10 +667,9 @@ export class ContentHandler {
         ? event.clientX + scrollX
         : event.clientY + scrollY;
 
-    const ENVELOPE_SPREAD_DEGREES = 70;
+    const ENVELOPE_SPREAD_DEGREES = 120;
     const inlineHalfRange =
-      Math.tan(((ENVELOPE_SPREAD_DEGREES / 2) * Math.PI) / 180) *
-      Math.abs(popupDist);
+      Math.tan(((ENVELOPE_SPREAD_DEGREES / 2) * Math.PI) / 180) * blockOffset;
     const inlineRangeStart = lookupInlinePos - inlineHalfRange;
     const inlineRangeEnd = lookupInlinePos + inlineHalfRange;
 
