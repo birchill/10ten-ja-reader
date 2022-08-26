@@ -824,6 +824,7 @@
     background: var(--selected-bg);
     border-radius: 2px;
     filter: brightness(1.2);
+    cursor: pointer;
   }
 }
 
