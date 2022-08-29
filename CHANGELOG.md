@@ -6,6 +6,10 @@ The format is based roughly on [Keep a Changelog](https://keepachangelog.com/en/
 This project does _not_ adhere to semantic versioning—it's a consumer
 app.
 
+## [Unreleased]
+
+(Nothing yet)
+
 ## [1.11.0] - 2022-08-29 (Firefox, Chrome, Thunderbird only)
 
 - Made katakana headwords be shown when matching on katakana
