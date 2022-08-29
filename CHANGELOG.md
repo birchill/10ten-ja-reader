@@ -18,6 +18,7 @@ app.
   ([#970](https://github.com/birchill/10ten-ja-reader/issues/970)).
 - Fixed handling of kanji records with multiple cross references
   ([#983](https://github.com/birchill/10ten-ja-reader/issues/983)).
+- Made the label for rarely-used kanji shorter.
 
 ## [1.10.6] - 2022-07-23
 

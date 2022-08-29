@@ -909,7 +909,7 @@
     "description": "Short annotation given to kanji headwords that use out-dated kanji"
   },
   "head_info_label_rkanji": {
-    "message": "rarely-used kanji form",
+    "message": "rare",
     "description": "Short annotation given to kanji headwords that use rarely-used kanji forms"
   },
   "head_info_label_ukanji": {
