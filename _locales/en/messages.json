@@ -1152,6 +1152,10 @@
     "message": "Thai",
     "description": "Label used to describe senses whose source language is 'th' (Thai)"
   },
+  "lang_label_tl": {
+    "message": "Tagalog",
+    "description": "Label used to describe senses whose source language is 'tl' (Tagalog)"
+  },
   "lang_label_tr": {
     "message": "Turkish",
     "description": "Label used to describe senses whose source language is 'tr' (Turkish)"
@@ -1159,6 +1163,10 @@
   "lang_label_ty": {
     "message": "Tahitian",
     "description": "Label used to describe senses whose source language is 'ty' (Tahitian)"
+  },
+  "lang_label_uk": {
+    "message": "Ukrainian",
+    "description": "Label used to describe senses whose source language is 'uk' (Ukrainian)"
   },
   "lang_label_ur": {
     "message": "Urdu",
