@@ -6,7 +6,7 @@ The format is based roughly on [Keep a Changelog](https://keepachangelog.com/en/
 This project does _not_ adhere to semantic versioning—it's a consumer
 app.
 
-## [Unreleased]
+## [1.11.0] - 2022-08-29 (Firefox, Chrome, Thunderbird only)
 
 - Made katakana headwords be shown when matching on katakana
   ([#978](https://github.com/birchill/10ten-ja-reader/issues/978)).
@@ -874,7 +874,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.6...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.11.0...HEAD
+[1.11.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.6...v1.11.0
 [1.10.6]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.5...v1.10.6
 [1.10.5]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.4...v1.10.5
 [1.10.4]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.0...v1.10.4
