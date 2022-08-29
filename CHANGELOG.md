@@ -16,6 +16,8 @@ app.
 - Made it possible to copy name preview entries to the clipboard.
 - Fixed display of currency conversion etc. when there are only name results
   ([#970](https://github.com/birchill/10ten-ja-reader/issues/970)).
+- Fixed handling of kanji records with multiple cross references
+  ([#983](https://github.com/birchill/10ten-ja-reader/issues/983)).
 
 ## [1.10.6] - 2022-07-23
 

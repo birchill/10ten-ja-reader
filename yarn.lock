@@ -349,14 +349,14 @@
   resolved "https://registry.yarnpkg.com/@birchill/discriminator/-/discriminator-0.1.0.tgz#a6f6ccc55701d2072e6b8b7e9199c38d16cc5749"
   integrity sha512-VAPyxxm8/VDBjsttMR6SEZOiW5tgzmoASHxDJ+Jk3V6bN2PVsS+ooClYXfDpNN/b6NdmGyYS95tXREcO+GXung==
 
-"@birchill/jpdict-idb@1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-1.2.1.tgz#46aacde7a398f1a1b5f72c9a40936f06ec7065f9"
-  integrity sha512-HVBGETEXNWM/UKt1G9TzLGnkHXDF03D9DyXQNGv7IwaDBSVgayPfBYFeivlq82ib1sXJPSMB0rmbLq3sMQ1RGw==
+"@birchill/jpdict-idb@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-1.2.2.tgz#03944103905adcf740e6e75f696e57158cb6cba8"
+  integrity sha512-OXi8iAFUsCSZleJwa0CY7hhDbTYK/2phpJ/6qIt9mWN0KzdPAgVpCc6j/B4iGPnlFGITOGA++qpG7NLg2CfOvQ==
   dependencies:
     "@birchill/json-equalish" "^1.1.2"
     "@birchill/normal-jp" "^1.4.0"
-    idb "^7.0.1"
+    idb "^7.0.2"
     safari-14-idb-fix "^3.0.0"
     superstruct "^0.16.0"
 
@@ -4593,10 +4593,10 @@ icss-utils@^5.0.0, icss-utils@^5.1.0:
   resolved "https://registry.yarnpkg.com/icss-utils/-/icss-utils-5.1.0.tgz#c6be6858abd013d768e98366ae47e25d5887b1ae"
   integrity sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==
 
-idb@^7.0.1:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/idb/-/idb-7.0.1.tgz#d2875b3a2f205d854ee307f6d196f246fea590a7"
-  integrity sha512-UUxlE7vGWK5RfB/fDwEGgRf84DY/ieqNha6msMV99UsEMQhJ1RwbCd8AYBj3QMgnE3VZnfQvm4oKVCJTYlqIgg==
+idb@^7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/idb/-/idb-7.0.2.tgz#7a067e20dd16539938e456814b7d714ba8db3892"
+  integrity sha512-jjKrT1EnyZewQ/gCBb/eyiYrhGzws2FeY92Yx8qT9S9GeQAmo4JFVIiWRIfKW/6Ob9A+UDAOW9j9jn58fy2HIg==
 
 ieee754@^1.1.13:
   version "1.2.1"
