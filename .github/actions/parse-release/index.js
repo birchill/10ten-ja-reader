@@ -7,6 +7,13 @@ async function main() {
     repo: { owner, repo },
   } = github.context;
 
+  const rawTarget = core.getInput('target');
+  const normalizedTarget = normalizeTarget(rawTarget);
+  if (normalizedTarget !== 'Firefox') {
+    throw new Error(`Unsupported target: ${rawTarget}`);
+  }
+  console.log(`Target: ${normalizedTarget}`);
+
   const releaseId = core.getInput('release_id');
   console.log(`Fetching metadata for release ${releaseId}...`);
   const release = await octokit.rest.repos.getRelease({
@@ -15,16 +22,10 @@ async function main() {
     release_id: releaseId,
   });
 
-  const rawTarget = core.getInput('target');
-  const normalizedTarget = normalizeTarget(rawTarget);
-  if (normalizedTarget !== 'Firefox') {
-    throw new Error(`Unsupported target: ${rawTarget}`);
-  }
-  console.log(`Target: ${normalizedTarget}`);
-
   // Find the add-on asset
   let addonAsset;
-  for (const asset of release.assets) {
+  const { assets } = release.data;
+  for (const asset of assets) {
     if (asset.name.endsWith('-firefox.zip')) {
       addonAsset = asset;
       break;
@@ -32,7 +33,7 @@ async function main() {
   }
   if (!addonAsset) {
     throw new Error(
-      `No add-on asset found in ${release.assets.map((a) => a.name).join(', ')}`
+      `No add-on asset found in ${assets.map((a) => a.name).join(', ')}`
     );
   }
   console.log(`Found add-on asset: ${addonAsset.name}`);
@@ -41,7 +42,7 @@ async function main() {
   // Find the src asset
   if (normalizedTarget === 'Firefox') {
     let srcAsset;
-    for (const asset of release.assets) {
+    for (const asset of assets) {
       if (asset.name.endsWith('-src.zip')) {
         srcAsset = asset;
         break;
@@ -49,9 +50,7 @@ async function main() {
     }
     if (!srcAsset) {
       throw new Error(
-        `No source asset found in ${release.assets
-          .map((a) => a.name)
-          .join(', ')}`
+        `No source asset found in ${assets.map((a) => a.name).join(', ')}`
       );
     }
     console.log(`Found source asset: ${srcAsset.name}`);
@@ -59,7 +58,7 @@ async function main() {
   }
 
   // Parse the release notes
-  const { body } = release;
+  const { body } = release.data;
   const matches = body.match(
     new RegExp(`${normalizedTarget}:\\s*\n([\\s\\S]*?)(\n\n|\n-->)`)
   );
