@@ -1562,21 +1562,9 @@ export class ContentHandler {
       return;
     }
 
-    // If we got no result, clear the result...
+    // If we got no result, clear the result.
     if (!textAtPoint) {
-      // ...unless we have an interactive popup and the reason we got no result
-      // is because we have released the hold-to-show keys.
-      const missingHoldKeys =
-        this.config.popupInteractive &&
-        ((this.currentTargetProps?.contentType === 'text' && !matchText) ||
-          (this.currentTargetProps?.contentType === 'image' && !matchImages));
-      if (missingHoldKeys) {
-        console.warn('Expecting this to never happen!');
-      }
-
-      if (!missingHoldKeys) {
-        this.clearResult({ currentElement: eventElement });
-      }
+      this.clearResult({ currentElement: eventElement });
       return;
     }
 
