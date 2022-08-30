@@ -1,13 +1,15 @@
 import { Rect } from '../utils/geometry';
-
 import { isTextInputNode } from '../utils/dom-utils';
+
 import { getGdocsRangeBboxes, isGdocsSpan } from './gdocs-canvas';
 import { TextRange } from './text-range';
+import { getContentType } from './content-type';
 
 /// Properties about the target element from which we started lookup needed
 /// so that we can correctly position the popup in a way that doesn't overlap
 /// the element.
 export type TargetProps = {
+  contentType: 'text' | 'image';
   fromPuck: boolean;
   hasTitle: boolean;
   isVerticalText: boolean;
@@ -46,6 +48,7 @@ export function getTargetProps({
   textRange: TextRange | undefined;
 }): TargetProps {
   return {
+    contentType: getContentType(target),
     fromPuck,
     hasTitle: !!((target as HTMLElement) || null)?.title,
     textBoxSizes: textRange

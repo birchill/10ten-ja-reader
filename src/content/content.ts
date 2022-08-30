@@ -83,6 +83,7 @@ import {
   PopupOptions,
   removePopup,
   renderPopup,
+  renderPopupArrow,
   setPopupStyle,
   showOverlay,
 } from './popup/popup';
@@ -476,6 +477,24 @@ export class ContentHandler {
       return;
     }
 
+    // Check if we have released the hold-to-show keys such that a ghosted
+    // interactive popup should be fixed.
+    //
+    // Normally we'd handle this case in onKeyUp, but it's possible, even common
+    // to have the focus in a different window/frame while mousing over content.
+    //
+    // Our window/frame will still get mousemove events with the corresponding
+    // modifier key attributes set so we can _show_ the popup, but we _won't_
+    // get the `keyup` event(s) when the modifier(s) are released so instead
+    // we need to try and detect when that happens on the next mousemove event.
+    if (
+      this.popupGeometry?.ghost?.kind === 'keys' &&
+      !(this.getActiveHoldToShowKeys(event) & this.popupGeometry.ghost.keyType)
+    ) {
+      this.showPopup({ update: true });
+      return;
+    }
+
     // Safari has an odd bug where it dispatches extra mousemove events
     // when you press any modifier key (e.g. Shift).
     //
@@ -510,12 +529,31 @@ export class ContentHandler {
     // latency to regular mouse events.
     //
     // Note that the "hold to show keys" setting is only relevant for mouse
-    // events.
+    // events, not puck events.
     const contentsToMatch =
       this.getActiveHoldToShowKeys(event) |
       (isPuckMouseEvent(event) ? HoldToShowKeyType.All : 0);
+    const matchText = !!(contentsToMatch & HoldToShowKeyType.Text);
+    const matchImages = !!(contentsToMatch & HoldToShowKeyType.Images);
+
+    // If we have hold keys configured that _don't_ cover the type of content in
+    // the popup, we should make it sticky.
+    //
+    // TODO: Replace this with a proper sticky mode
+    const missingHoldKeys =
+      this.config.popupInteractive &&
+      ((this.currentTargetProps?.contentType === 'text' && !matchText) ||
+        (this.currentTargetProps?.contentType === 'image' && !matchImages));
+    if (missingHoldKeys) {
+      return;
+    }
+
     if (!contentsToMatch) {
-      this.clearResult({ currentElement: event.target });
+      // If the popup is able to be interacted with using the mouse, we should
+      // _not_ close it simply because the keys are no longer being held.
+      if (!this.config.popupInteractive) {
+        this.clearResult({ currentElement: event.target });
+      }
 
       // We still want to set the current position and element information so
       // that if the user presses the hold-to-show keys later we can show the
@@ -548,9 +586,6 @@ export class ContentHandler {
     // again.
     this.lastMouseTarget = event.target;
 
-    const matchText = !!(contentsToMatch & HoldToShowKeyType.Text);
-    const matchImages = !!(contentsToMatch & HoldToShowKeyType.Images);
-
     void this.tryToUpdatePopup({
       fromPuck: isPuckMouseEvent(event),
       matchText,
@@ -566,16 +601,11 @@ export class ContentHandler {
       return false;
     }
 
-    if (!this.popupGeometry || !this.popupGeometry.lookupPoint) {
-      return false;
-    }
-
-    // Allow a grace period where we don't allow mousing into the popup so the
-    // user can scan around freely without being interrupted by the popup.
-    //
-    // This value should be aligned with the lenghth of the
-    // tenten-ja-enable-pointer-events animation in popup.css
-    if (performance.now() - this.popupGeometry.showTime < 400) {
+    if (
+      !this.popupGeometry ||
+      !this.popupGeometry.lookupPoint ||
+      this.popupGeometry.ghost
+    ) {
       return false;
     }
 
@@ -750,14 +780,13 @@ export class ContentHandler {
 
     // If the user pressed the hold-to-show key combination, show the popup
     // if possible.
-    //
-    // We don't do this when the there is a text box in focus because we
-    // we risk interfering with the text selection when, for example, the
-    // hold-to-show key is Ctrl and the user presses Ctrl+V etc.
     const matchedHoldToShowKeys = this.isHoldToShowKeyStroke(event);
     if (matchedHoldToShowKeys) {
       event.preventDefault();
 
+      // We don't do this when the there is a text box in focus because we
+      // we risk interfering with the text selection when, for example, the
+      // hold-to-show key is Ctrl and the user presses Ctrl+V etc.
       if (!textBoxInFocus && this.currentPoint && this.lastMouseTarget) {
         void this.tryToUpdatePopup({
           fromPuck: false,
@@ -854,6 +883,16 @@ export class ContentHandler {
   }
 
   onKeyUp(event: KeyboardEvent) {
+    // If we are showing a popup that required certain hold keys, check if they
+    // are now no longer held, and, if they are not, trigger an update of the
+    // popup where we mark it as interactive
+    if (
+      this.popupGeometry?.ghost?.kind === 'keys' &&
+      !(this.getActiveHoldToShowKeys(event) & this.popupGeometry.ghost.keyType)
+    ) {
+      this.showPopup({ update: true });
+    }
+
     if (!this.kanjiLookupMode) {
       return;
     }
@@ -1096,6 +1135,7 @@ export class ContentHandler {
         ) {
           const { scrollX, scrollY } = getScrollOffset();
           const { x, y, lookupPoint } = request.geometry;
+          // TODO: It would be nice to _not_ pass the timeout ID around here
           this.popupGeometry = {
             ...stripFields(request.geometry, ['frameId']),
             x: x + scrollX,
@@ -1108,6 +1148,8 @@ export class ContentHandler {
               : undefined,
           };
         } else {
+          // The ghosting timeout is only set by the topmost window so we don't
+          // need to clear it here.
           this.popupGeometry = undefined;
         }
         break;
@@ -1117,6 +1159,8 @@ export class ContentHandler {
         this.currentPoint = undefined;
         this.copyState = { kind: 'inactive' };
         this.isPopupShowing = false;
+        // The ghosting timeout is only set by the topmost window so we don't
+        // need to clear it here.
         this.popupGeometry = undefined;
         break;
 
@@ -1430,6 +1474,13 @@ export class ContentHandler {
     this.currentPoint = undefined;
     this.lastMouseTarget = null;
     this.copyState = { kind: 'inactive' };
+    if (this.popupGeometry?.ghost?.kind === 'timeout') {
+      window.clearTimeout(this.popupGeometry.ghost.timeout);
+    }
+
+    // We do this here, as opposed to in hidePopup, because we want to clear
+    // this state on child iframes too since they use it to determine how to
+    // handle mouse events.
     this.popupGeometry = undefined;
 
     if (
@@ -1479,6 +1530,17 @@ export class ContentHandler {
       maxLength: ContentHandler.MAX_LENGTH,
     });
 
+    // We might have failed to find a match because we didn't have the
+    // necessary keys held down.
+    //
+    // In that case, we still want to store the current point so that if those
+    // keys are pressed later, we can show the pop-up immediately.
+    if (!textAtPoint && (!matchText || !matchImages)) {
+      this.currentPoint = point;
+    }
+
+    // Check if the text range was the same as the last time.
+    //
     // The following is not strictly correct since if dictMode was 'kanji'
     // but is now 'default' then technically we shouldn't return early
     // since the result will likely differ.
@@ -1497,19 +1559,24 @@ export class ContentHandler {
       textRangesEqual(this.currentTextRange, textAtPoint?.textRange) &&
       dictMode === 'default'
     ) {
-      // We might have failed to find a match because we didn't have the
-      // necessary keys held down.
-      //
-      // In that case, we still want to store the current point so that if those
-      // keys are pressed later, we can show the pop-up immediately.
-      if (!textAtPoint && (!matchText || !matchImages)) {
-        this.currentPoint = point;
-      }
       return;
     }
 
+    // If we got no result, clear the result...
     if (!textAtPoint) {
-      this.clearResult({ currentElement: eventElement });
+      // ...unless we have an interactive popup and the reason we got no result
+      // is because we have released the hold-to-show keys.
+      const missingHoldKeys =
+        this.config.popupInteractive &&
+        ((this.currentTargetProps?.contentType === 'text' && !matchText) ||
+          (this.currentTargetProps?.contentType === 'image' && !matchImages));
+      if (missingHoldKeys) {
+        console.warn('Expecting this to never happen!');
+      }
+
+      if (!missingHoldKeys) {
+        this.clearResult({ currentElement: eventElement });
+      }
       return;
     }
 
@@ -1762,6 +1829,14 @@ export class ContentHandler {
       return;
     }
 
+    // Currently, if we ever update an existing popup, that is sufficient signal
+    // that the popup should be static.
+    const interactivity = this.config.popupInteractive
+      ? options?.update
+        ? 'interactive'
+        : 'ghost'
+      : 'static';
+
     const popupOptions: PopupOptions = {
       accentDisplay: this.config.accentDisplay,
       copyNextKey: this.config.keys.startCopy[0] || '',
@@ -1770,7 +1845,7 @@ export class ContentHandler {
       dictToShow: this.currentDict,
       fxData: this.config.fx,
       hasSwitchedDictionary: this.config.hasSwitchedDictionary,
-      interactive: this.config.popupInteractive,
+      interactivity,
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentLookupParams?.meta,
       onCancelCopy: () => this.exitCopyMode(),
@@ -1817,6 +1892,7 @@ export class ContentHandler {
 
     // First work out our constraints, i.e. where _not_ to put the popup
 
+    const cursorPos = this.currentPoint ? { ...this.currentPoint } : undefined;
     let cursorClearance: MarginBox;
     if (this.currentTargetProps?.fromPuck && this.puck) {
       const { top, bottom, left, right } = this.puck.getPuckClearance();
@@ -1848,9 +1924,8 @@ export class ContentHandler {
     // wraps lines and that would produce a massive area that would be too hard
     // to avoid.
     const { textBoxSizes } = this.currentTargetProps || {};
-    const mousePos = this.currentPoint;
     const isVerticalText = !!this.currentTargetProps?.isVerticalText;
-    if (textBoxSizes && mousePos) {
+    if (textBoxSizes && cursorPos) {
       const bbox = getBestFitSize({
         sizes: textBoxSizes,
         length: this.getHighlightLengthForCurrentResult(),
@@ -1858,7 +1933,7 @@ export class ContentHandler {
       if (bbox) {
         const cursorClearanceAsRect = addMarginToPoint(
           cursorClearance,
-          mousePos
+          cursorPos
         );
 
         // Adjust the mousePos to use the edge of the text box.
@@ -1873,13 +1948,13 @@ export class ContentHandler {
         // value of mousePos, so we need to supply that value when converting to
         // a rect.)
         if (isVerticalText) {
-          mousePos.y = Math.max(0, bbox.top - 10);
+          cursorPos.y = Math.max(0, bbox.top - 10);
         } else {
-          mousePos.x = Math.max(0, bbox.left - 10);
+          cursorPos.x = Math.max(0, bbox.left - 10);
         }
 
         const expandedClearance = union(bbox, cursorClearanceAsRect);
-        cursorClearance = getMarginAroundPoint(mousePos, expandedClearance);
+        cursorClearance = getMarginAroundPoint(cursorPos, expandedClearance);
       }
     }
 
@@ -1892,7 +1967,7 @@ export class ContentHandler {
 
     // Work out its size
 
-    const popupSize = getPopupDimensions(popup);
+    let popupSize = getPopupDimensions(popup);
 
     // Finally get the popup position
 
@@ -1905,10 +1980,10 @@ export class ContentHandler {
       side,
     } = getPopupPosition({
       cursorClearance,
+      cursorPos,
       fixedPosition: options?.fixPosition ? this.getFixedPosition() : undefined,
       interactive: this.config.popupInteractive,
       isVerticalText,
-      mousePos,
       positionMode: this.popupPositionMode,
       popupSize,
       safeArea,
@@ -1921,6 +1996,32 @@ export class ContentHandler {
     // (b) we can detect if future mouse events lie between the popup and
     //     the lookup point (and _not_ close or update the popup in that case)
     //
+    if (this.popupGeometry?.ghost?.kind === 'timeout') {
+      window.clearTimeout(this.popupGeometry.ghost.timeout);
+    }
+
+    let ghost: PopupGeometry['ghost'];
+    if (interactivity === 'ghost') {
+      if (
+        this.config.holdToShowKeys.length &&
+        this.currentTargetProps?.contentType === 'text'
+      ) {
+        ghost = { kind: 'keys', keyType: HoldToShowKeyType.Text };
+      } else if (
+        this.config.holdToShowImageKeys.length &&
+        this.currentTargetProps?.contentType === 'image'
+      ) {
+        ghost = { kind: 'keys', keyType: HoldToShowKeyType.Images };
+      } else {
+        ghost = {
+          kind: 'timeout',
+          timeout: window.setTimeout(() => {
+            this.showPopup({ fixPosition: true, update: true });
+          }, 400),
+        };
+      }
+    }
+
     this.popupGeometry = {
       x: popupX,
       y: popupY,
@@ -1932,8 +2033,12 @@ export class ContentHandler {
         currentPoint: this.currentPoint,
         firstCharBbox: textBoxSizes?.[1],
       }),
-      showTime: performance.now(),
+      ghost,
     };
+
+    //
+    // Apply the popup position
+    //
 
     if (
       isSvgDoc(document) &&
@@ -1969,6 +2074,34 @@ export class ContentHandler {
       } else {
         popup.style.removeProperty('--max-height');
       }
+    }
+
+    //
+    // Maybe add an arrow to it
+    //
+    // This needs to happen after positioning the popup so we can read back its
+    // final size (after applying any edge case CSS rules) and determine if
+    // there is room for the arrow or not.
+    //
+
+    if (
+      interactivity === 'interactive' &&
+      direction !== 'disjoint' &&
+      side !== 'disjoint'
+    ) {
+      // Update the popup size now that we have positioned it.
+      popupSize = getPopupDimensions(popup);
+
+      renderPopupArrow({
+        cursorPos,
+        direction,
+        firstCharBbox: textBoxSizes?.[1],
+        popupPos: { x: popupX, y: popupY },
+        popupSize,
+        scrollPos: { x: scrollX, y: scrollY },
+        side,
+        theme: this.config.popupStyle,
+      });
     }
 
     if (this.isTopMostWindow()) {

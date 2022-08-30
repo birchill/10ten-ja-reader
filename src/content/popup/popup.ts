@@ -33,6 +33,8 @@ import { renderTabBar } from './tabs';
 import { renderWordEntries } from './words';
 
 import popupStyles from '../../../css/popup.css';
+import { Point, Rect } from '../../utils/geometry';
+import { renderArrow } from './arrow';
 
 export interface PopupOptions {
   accentDisplay: AccentDisplay;
@@ -43,7 +45,7 @@ export interface PopupOptions {
   dictLang?: string;
   fxData: ContentConfig['fx'];
   hasSwitchedDictionary?: boolean;
-  interactive?: boolean;
+  interactivity?: 'static' | 'ghost' | 'interactive';
   kanjiReferences: Array<ReferenceAbbreviation>;
   meta?: SelectionMeta;
   onCancelCopy?: () => void;
@@ -67,13 +69,11 @@ export function renderPopup(
   options: PopupOptions
 ): HTMLElement | null {
   const container = options.container || getDefaultContainer();
-  const interactive = !!options.interactive;
-  const initial = !options.update;
+  const interactivity = options.interactivity || 'static';
   const windowElem = resetContainer({
     host: container,
     popupStyle: options.popupStyle,
-    initial,
-    interactive,
+    interactivity,
   });
 
   const hasResult = result && (result.words || result.kanji || result.names);
@@ -265,22 +265,20 @@ function getDefaultContainer(): HTMLElement {
 
 function resetContainer({
   host,
+  interactivity,
   popupStyle,
-  initial,
-  interactive,
 }: {
   host: HTMLElement;
+  interactivity: 'static' | 'ghost' | 'interactive';
   popupStyle: string;
-  initial: boolean;
-  interactive: boolean;
 }): HTMLElement {
   const container = html('div', { class: 'container' });
   const windowDiv = html('div', { class: 'window' });
   container.append(windowDiv);
 
   // Set initial and interactive status
-  container.classList.toggle('initial', initial);
-  container.classList.toggle('interactive', interactive);
+  container.classList.toggle('ghost', interactivity === 'ghost');
+  container.classList.toggle('interactive', interactivity !== 'static');
 
   // Set theme
   windowDiv.classList.add(getThemeClass(popupStyle));
@@ -322,18 +320,21 @@ export function removePopup() {
 }
 
 export function setPopupStyle(style: string) {
-  const windowElem = getPopupWindow();
-  if (!windowElem) {
-    return;
-  }
+  const elems = [getPopupWindow(), getPopupArrow()];
 
-  for (const className of windowElem.classList.values()) {
-    if (className.startsWith('theme-')) {
-      windowElem.classList.remove(className);
+  for (const elem of elems) {
+    if (!elem) {
+      continue;
     }
-  }
 
-  windowElem.classList.add(getThemeClass(style));
+    for (const className of elem.classList.values()) {
+      if (className.startsWith('theme-')) {
+        elem.classList.remove(className);
+      }
+    }
+
+    elem.classList.add(getThemeClass(style));
+  }
 }
 
 function getPopupWindow(): HTMLElement | null {
@@ -366,4 +367,58 @@ export function showOverlay(copyState: CopyState): boolean {
     (copyState.kind === 'active' || copyState.kind === 'error') &&
     copyState.mode === 'overlay'
   );
+}
+
+export function renderPopupArrow(options: {
+  cursorPos?: Point;
+  direction: 'vertical' | 'horizontal';
+  firstCharBbox?: Rect;
+  popupPos: Point;
+  popupSize: { width: number; height: number };
+  scrollPos: Point;
+  side: 'before' | 'after';
+  theme: string;
+}) {
+  const popupContainer = getPopupContainer();
+  if (!popupContainer) {
+    return;
+  }
+
+  // Determine the reference point to align to
+  let target: Point;
+  const { cursorPos, firstCharBbox, popupPos, popupSize } = options;
+  if (firstCharBbox) {
+    target = {
+      x: firstCharBbox.left + firstCharBbox.width / 2,
+      y: firstCharBbox.top + firstCharBbox.height / 2,
+    };
+  } else if (cursorPos) {
+    target = cursorPos;
+  } else {
+    return;
+  }
+
+  // Check for cases where the popup overlaps the target element
+  if (options.direction === 'vertical') {
+    if (options.side === 'before' && popupPos.y + popupSize.height > target.y) {
+      return;
+    } else if (options.side === 'after' && popupPos.y < target.y) {
+      return;
+    }
+  } else {
+    if (options.side === 'before' && popupPos.x + popupSize.width > target.x) {
+      return;
+    } else if (options.side === 'after' && popupPos.x < target.x) {
+      return;
+    }
+  }
+
+  renderArrow({ ...options, popupContainer, target });
+}
+
+function getPopupArrow(): HTMLElement | null {
+  const hostElem = document.getElementById('tenten-ja-window');
+  return hostElem && hostElem.shadowRoot
+    ? hostElem.shadowRoot.querySelector('.arrow')
+    : null;
 }

@@ -55,20 +55,20 @@ const NON_INTERACTIVE_MARGIN_TO_POPUP = 25;
 
 export function getPopupPosition({
   cursorClearance,
+  cursorPos,
   fixedPosition,
   interactive,
   isVerticalText,
-  mousePos,
   popupSize,
   positionMode,
   safeArea: initialSafeArea,
   pointerType,
 }: {
   cursorClearance: MarginBox;
+  cursorPos?: Point;
   fixedPosition?: PopupPositionConstraints;
   interactive: boolean;
   isVerticalText: boolean;
-  mousePos?: Point;
   popupSize: { width: number; height: number };
   positionMode: PopupPositionMode;
   safeArea: PaddingBox;
@@ -110,9 +110,9 @@ export function getPopupPosition({
   if (fixedPosition) {
     return getFixedPosition({
       cursorClearance,
+      cursorPos,
       fixedPosition,
       interactive,
-      mousePos,
       popupSize,
       safeArea,
       scrollX,
@@ -125,9 +125,9 @@ export function getPopupPosition({
   if (positionMode === PopupPositionMode.Auto) {
     return getAutoPosition({
       cursorClearance,
+      cursorPos,
       interactive,
       isVerticalText,
-      mousePos,
       popupSize,
       safeArea,
       scrollX,
@@ -184,9 +184,9 @@ export function getPopupPosition({
 
 function getFixedPosition({
   cursorClearance,
+  cursorPos,
   fixedPosition,
   interactive,
-  mousePos,
   popupSize,
   safeArea,
   scrollX,
@@ -195,9 +195,9 @@ function getFixedPosition({
   stageHeight,
 }: {
   cursorClearance: MarginBox;
+  cursorPos?: Point;
   fixedPosition: PopupPositionConstraints;
   interactive: boolean;
-  mousePos?: Point;
   popupSize: { width: number; height: number };
   safeArea: PaddingBox;
   scrollX: number;
@@ -217,14 +217,14 @@ function getFixedPosition({
   // See if we can further constrain the area to place the popup in based on
   // the text being highlighted.
   const { direction, anchor, side } = fixedPosition;
-  if (direction !== 'disjoint' && side !== 'disjoint' && mousePos) {
+  if (direction !== 'disjoint' && side !== 'disjoint' && cursorPos) {
     const [min, max] = getRangeForPopup({
       axis: direction,
       cursorClearance,
       interactive,
       side,
       safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
-      target: mousePos,
+      target: cursorPos,
     });
 
     if (direction === 'vertical') {
@@ -271,9 +271,9 @@ function getFixedPosition({
 
 function getAutoPosition({
   cursorClearance,
+  cursorPos,
   interactive,
   isVerticalText,
-  mousePos,
   popupSize,
   safeArea,
   scrollX,
@@ -283,9 +283,9 @@ function getAutoPosition({
   pointerType,
 }: {
   cursorClearance: MarginBox;
+  cursorPos?: Point;
   interactive: boolean;
   isVerticalText: boolean;
-  mousePos?: Point;
   popupSize: { width: number; height: number };
   safeArea: PaddingBox;
   scrollX: number;
@@ -296,9 +296,9 @@ function getAutoPosition({
 }): PopupPosition {
   const extendedPosition = getAutoPositionWithoutScrollOffset({
     cursorClearance,
+    cursorPos,
     interactive,
     isVerticalText,
-    mousePos,
     popupSize,
     safeArea,
     stageWidth,
@@ -346,9 +346,9 @@ type ExtendedPopupPosition = {
 
 function getAutoPositionWithoutScrollOffset({
   cursorClearance,
+  cursorPos,
   interactive,
   isVerticalText,
-  mousePos,
   popupSize,
   safeArea,
   stageWidth,
@@ -356,9 +356,9 @@ function getAutoPositionWithoutScrollOffset({
   pointerType,
 }: {
   cursorClearance: MarginBox;
+  cursorPos?: Point;
   interactive: boolean;
   isVerticalText: boolean;
-  mousePos?: Point;
   popupSize: { width: number; height: number };
   safeArea: PaddingBox;
   stageWidth: number;
@@ -366,8 +366,8 @@ function getAutoPositionWithoutScrollOffset({
   pointerType: 'cursor' | 'puck';
 }): ExtendedPopupPosition | undefined {
   // Set up a few useful variables...
-  const x = mousePos?.x || 0;
-  const y = mousePos?.y || 0;
+  const x = cursorPos?.x || 0;
+  const y = cursorPos?.y || 0;
 
   const { left: safeLeft, top: safeTop } = safeArea;
   const safeRight = stageWidth - safeArea.right;

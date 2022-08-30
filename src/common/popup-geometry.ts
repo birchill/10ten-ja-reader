@@ -1,3 +1,4 @@
+import { discriminator } from '@birchill/discriminator';
 import * as s from 'superstruct';
 
 export const PopupGeometrySchema = s.type({
@@ -15,8 +16,18 @@ export const PopupGeometrySchema = s.type({
       y: s.number(),
     })
   ),
-  // Value of performance.now() when the popup was first shown
-  showTime: s.number(),
+  // Set when the window is not-yet-interactive.
+  //
+  // The 'kind' field indicates the condition required to transition to
+  // being interactive.
+  ghost: s.optional(
+    discriminator('kind', {
+      // Transition to interactive when the timeout expires
+      timeout: s.type({ timeout: s.number() }),
+      // Transition to interactive when the following keys are no longer held
+      keys: s.type({ keyType: s.number() }),
+    })
+  ),
 });
 
 export type PopupGeometry = s.Infer<typeof PopupGeometrySchema>;

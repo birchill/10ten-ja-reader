@@ -54,27 +54,24 @@
   padding-right: 4px;
   padding-bottom: 4px;
 
-  overflow-y: hidden;
+  overflow-y: visible;
   pointer-events: all;
-}
-
-/*
- * Initial state of an interactive container where we temporarily disable
- * pointer events.
- */
-.container.interactive.initial {
-  pointer-events: none;
-  animation: tenten-ja-enable-pointer-events 0.4s step-end forwards;
-}
-
-@keyframes tenten-ja-enable-pointer-events {
-  to {
-    pointer-events: all;
-  }
 }
 
 .container:not(.interactive) {
   pointer-events: none;
+}
+
+/*
+ * Variation on the interactive container when it is not yet actually
+ * interactive.
+ */
+.container.interactive.ghost {
+  pointer-events: none;
+}
+
+.container.interactive.ghost .window {
+  border-style: dashed;
 }
 
 .container.hidden {
@@ -1381,4 +1378,115 @@
 .-stack > * {
   grid-column: 1 / -1;
   grid-row: stack-start / stack-end;
+}
+
+/*
+ * Arrow
+ */
+.arrow {
+  position: absolute;
+  overflow: hidden;
+
+  /* Desired width of the arrow */
+  --arrow-width: 20px;
+
+  /*
+   * Amount of room to allow for the shadow.
+   */
+  --shadow-radius: 8px;
+  --shadow-margin: calc(var(--shadow-radius) / 2);
+
+  /*
+   * Crop the arrow region to show half the arrow plus allow room for margins.
+   */
+  width: calc(var(--arrow-width) + 2 * var(--shadow-margin));
+  height: calc(var(--arrow-width) / 2 + var(--shadow-margin));
+
+  z-index: 2147483647;
+}
+
+.arrow.-left,
+.arrow.-right {
+  width: calc(var(--arrow-width) / 2 + var(--shadow-margin));
+  height: calc(var(--arrow-width) + 2 * var(--shadow-margin));
+}
+
+.arrow::before {
+  position: absolute;
+  content: '';
+
+  /* Make sure the border is included in the size. */
+  box-sizing: border-box;
+
+  /* Don't inherit any rounded corners. */
+  border-radius: 0;
+
+  /*
+   * When the box is rotated, it should have width <arrow-width>. That makes the
+   * length of one side of the box equal to:
+   *
+   *    (<arrow-width> / 2) / sin 45
+   */
+  --sin-45: 0.707106781;
+  --square-side: calc(var(--arrow-width) / 2 / var(--sin-45));
+  width: var(--square-side);
+  height: var(--square-side);
+
+  /*
+   * The rotated square will overshoot the left / top side and need to be
+   * shifted in by:
+   *
+   *   (<arrow-width> - <square side>) / 2
+   *
+   * But we also want to shift it in so that the box-shadow is not clipped when
+   * we clip the parent so we add a suitable margin for that.
+   */
+  --overhang: calc((var(--arrow-width) - var(--square-side)) / 2);
+  margin-left: calc(var(--overhang) + var(--shadow-margin));
+  margin-top: calc(var(--overhang) + var(--shadow-margin));
+
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+}
+
+.arrow.-bottom {
+  margin-top: -1px;
+}
+
+.arrow.-bottom::before {
+  transform: rotate(45deg);
+  margin-top: calc(var(--square-side) / -2);
+  box-shadow: 0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
+    2px 2px 1px rgba(100, 100, 100, 0.15),
+    4px 4px 8px rgba(100, 100, 100, 0.15);
+}
+
+.arrow.-top {
+  margin-top: 1px;
+}
+
+.arrow.-top::before {
+  transform: rotate(225deg);
+  box-shadow: 0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
+    -1px 2px 1px rgba(100, 100, 100, 0.15);
+}
+
+.arrow.-right {
+  margin-left: -1px;
+}
+
+.arrow.-right::before {
+  transform: rotate(225deg);
+  margin-left: calc(var(--square-side) / -2);
+  box-shadow: 0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
+    -2px 2px 1px rgba(100, 100, 100, 0.15),
+    -2px 2px 8px rgba(100, 100, 100, 0.15);
+}
+
+.arrow.-left {
+  margin-left: 1px;
+}
+
+.arrow.-left::before {
+  transform: rotate(45deg);
 }
