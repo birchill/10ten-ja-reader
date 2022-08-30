@@ -1,7 +1,7 @@
 import { discriminator } from '@birchill/discriminator';
 import * as s from 'superstruct';
 
-import { TranslatedPopupGeometrySchema } from '../common/popup-geometry';
+import { TranslatedPopupStateSchema } from '../content/popup-state';
 
 const SearchRequestSchema = s.type({
   input: s.string(),
@@ -40,7 +40,7 @@ export const BackgroundRequestSchema = discriminator('type', {
   // Popup showing status
   'frame:popupShown': s.type({ frameId: s.number() }),
   'children:popupShown': s.type({
-    geometry: s.optional(TranslatedPopupGeometrySchema),
+    geometry: s.optional(TranslatedPopupStateSchema),
   }),
   'children:popupHidden': s.type({}),
   'top:isPopupShowing': s.type({}),

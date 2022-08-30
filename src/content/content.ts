@@ -87,12 +87,13 @@ import {
   setPopupStyle,
   showOverlay,
 } from './popup/popup';
+import { CopyState } from './popup/copy-state';
 import {
   getPopupPosition,
   PopupPositionConstraints,
   PopupPositionMode,
 } from './popup-position';
-import { CopyState } from './popup/copy-state';
+import { PopupState, TranslatedPopupState } from './popup-state';
 import {
   isPuckMouseEvent,
   LookupPuck,
@@ -112,10 +113,6 @@ import { TextHighlighter } from './text-highlighter';
 import { TextRange, textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
 import { TouchClickTracker } from './touch-click-tracker';
-import {
-  PopupGeometry,
-  TranslatedPopupGeometry,
-} from '../common/popup-geometry';
 import { getScrollOffset } from './scroll-offset';
 
 const enum HoldToShowKeyType {
@@ -167,19 +164,25 @@ export class ContentHandler {
   // that we can popup the window later using its properties.
   private lastMouseTarget: Element | null = null;
 
-  // Used by iframes to track when the topmost window is showing the popup so
-  // we know if we should handle keyboard keys or not.
+  // Track the state of the popup
   //
-  // (You might think we could just forward them on unconditionally but
-  // when the popup is showing, if we successfully handled a keyboard event we
-  // mark it as handled by calling event.preventDefault(). However, we
-  // definitely don't want to do that if the popup is not showing.)
-  private isPopupShowing = false;
-
-  // Keep track of the popup position so that we can detect if a mouse movement
-  // is "between" `currentPoint` and the popup so we can avoid hiding the popup
-  // in that case.
-  private popupGeometry: PopupGeometry | undefined;
+  // This is used by top-most windows and child iframes alike to detect if
+  // a mouse movement is "between" `currentPoint` and the popup so we can avoid
+  // hiding the popup in that case (provided the popup is configured to be
+  // interactive).
+  //
+  // Note, however, that the position of the popup is only ever stored on the
+  // top-most window and on the child iframe which contains the content that the
+  // popup is positioned relative to (if any).
+  //
+  // This is also used to determine how to handle keyboard keys.
+  //
+  // (You might think we could just unconditionally forward keyboard events from
+  // iframes to the topmost window but when the popup is showing, if we
+  // successfully handled a keyboard event, we mark it as handled by calling
+  // event.preventDefault(). However, we definitely don't want to do that if the
+  // popup is _not_ showing.)
+  private popupState: PopupState | undefined;
 
   // Mouse tracking
   //
@@ -488,8 +491,8 @@ export class ContentHandler {
     // get the `keyup` event(s) when the modifier(s) are released so instead
     // we need to try and detect when that happens on the next mousemove event.
     if (
-      this.popupGeometry?.ghost?.kind === 'keys' &&
-      !(this.getActiveHoldToShowKeys(event) & this.popupGeometry.ghost.keyType)
+      this.popupState?.ghost?.kind === 'keys' &&
+      !(this.getActiveHoldToShowKeys(event) & this.popupState.ghost.keyType)
     ) {
       this.showPopup({ update: true });
       return;
@@ -601,11 +604,7 @@ export class ContentHandler {
       return false;
     }
 
-    if (
-      !this.popupGeometry ||
-      !this.popupGeometry.lookupPoint ||
-      this.popupGeometry.ghost
-    ) {
+    if (!this.popupState?.pos?.lookupPoint || this.popupState.ghost) {
       return false;
     }
 
@@ -616,7 +615,7 @@ export class ContentHandler {
       height: popupHeight,
       direction,
       lookupPoint: { x: lookupX, y: lookupY },
-    } = this.popupGeometry;
+    } = this.popupState.pos;
 
     // If the popup is not related to the mouse position we don't want to allow
     // mousing over it might require making most of the screen un-scannable.
@@ -887,8 +886,8 @@ export class ContentHandler {
     // are now no longer held, and, if they are not, trigger an update of the
     // popup where we mark it as interactive
     if (
-      this.popupGeometry?.ghost?.kind === 'keys' &&
-      !(this.getActiveHoldToShowKeys(event) & this.popupGeometry.ghost.keyType)
+      this.popupState?.ghost?.kind === 'keys' &&
+      !(this.getActiveHoldToShowKeys(event) & this.popupState.ghost.keyType)
     ) {
       this.showPopup({ update: true });
     }
@@ -1061,7 +1060,7 @@ export class ContentHandler {
   }
 
   isVisible(): boolean {
-    return this.isTopMostWindow() ? isPopupVisible() : this.isPopupShowing;
+    return this.isTopMostWindow() ? isPopupVisible() : !!this.popupState;
   }
 
   onInterFrameMessage(event: MessageEvent) {
@@ -1126,42 +1125,43 @@ export class ContentHandler {
 
     switch (request.type) {
       case 'popupShown':
-        this.isPopupShowing = true;
+        this.popupState = {};
 
-        // Check if this request has translated the geometry for us
-        if (
-          request.geometry &&
-          this.getFrameId() === request.geometry.frameId
-        ) {
-          const { scrollX, scrollY } = getScrollOffset();
-          const { x, y, lookupPoint } = request.geometry;
-          // TODO: It would be nice to _not_ pass the timeout ID around here
-          this.popupGeometry = {
-            ...stripFields(request.geometry, ['frameId']),
-            x: x + scrollX,
-            y: y + scrollY,
-            lookupPoint: lookupPoint
-              ? {
-                  x: lookupPoint.x + scrollX,
-                  y: lookupPoint.y + scrollY,
-                }
-              : undefined,
-          };
-        } else {
-          // The ghosting timeout is only set by the topmost window so we don't
-          // need to clear it here.
-          this.popupGeometry = undefined;
+        if (request.state) {
+          let pos: PopupState['pos'];
+
+          // Check if this request has translated the popup geometry for us
+          //
+          // If not, we should leave `pos` as undefined.
+          if (this.getFrameId() === request.state.pos.frameId) {
+            const { scrollX, scrollY } = getScrollOffset();
+            const { x, y, lookupPoint } = request.state.pos;
+            pos = {
+              ...stripFields(request.state.pos, ['frameId']),
+              x: x + scrollX,
+              y: y + scrollY,
+              lookupPoint: lookupPoint
+                ? {
+                    x: lookupPoint.x + scrollX,
+                    y: lookupPoint.y + scrollY,
+                  }
+                : undefined,
+            };
+          }
+
+          // We don't need to worry about clearing any timeout that may have
+          // been set in `this.popupState.ghost.timeout` because that timeout
+          // is cleared by the top-most window (which we are are not).
+          this.popupState = { ...request.state, pos };
         }
+
         break;
 
       case 'popupHidden':
         this.currentTextRange = undefined;
         this.currentPoint = undefined;
         this.copyState = { kind: 'inactive' };
-        this.isPopupShowing = false;
-        // The ghosting timeout is only set by the topmost window so we don't
-        // need to clear it here.
-        this.popupGeometry = undefined;
+        this.popupState = undefined;
         break;
 
       case 'isPopupShowing':
@@ -1169,7 +1169,7 @@ export class ContentHandler {
           void browser.runtime.sendMessage({
             type: 'frame:popupShown',
             frameId: request.frameId,
-            // No need to pass the popup geometry here, since presumably it
+            // No need to pass the popup state here, since presumably it
             // doesn't belong to the iframe who is asking (or else they would
             // have heard about it when the lookup completed).
           });
@@ -1474,14 +1474,11 @@ export class ContentHandler {
     this.currentPoint = undefined;
     this.lastMouseTarget = null;
     this.copyState = { kind: 'inactive' };
-    if (this.popupGeometry?.ghost?.kind === 'timeout') {
-      window.clearTimeout(this.popupGeometry.ghost.timeout);
+    if (this.popupState?.ghost?.kind === 'timeout') {
+      window.clearTimeout(this.popupState.ghost.timeout);
     }
 
-    // We do this here, as opposed to in hidePopup, because we want to clear
-    // this state on child iframes too since they use it to determine how to
-    // handle mouse events.
-    this.popupGeometry = undefined;
+    this.popupState = undefined;
 
     if (
       this.isTopMostWindow() &&
@@ -1978,17 +1975,19 @@ export class ContentHandler {
       pointerType: this.currentTargetProps?.fromPuck ? 'puck' : 'cursor',
     });
 
-    // Store the popup geometry so that:
+    // Store the popup state so that:
     //
     // (a) we can fix the popup's position when changing tabs, and
     // (b) we can detect if future mouse events lie between the popup and
     //     the lookup point (and _not_ close or update the popup in that case)
+    // (c) we know how to handle keyboard events based on whether or not the
+    //     popup is showing
     //
-    if (this.popupGeometry?.ghost?.kind === 'timeout') {
-      window.clearTimeout(this.popupGeometry.ghost.timeout);
+    if (this.popupState?.ghost?.kind === 'timeout') {
+      window.clearTimeout(this.popupState.ghost.timeout);
     }
 
-    let ghost: PopupGeometry['ghost'];
+    let ghost: PopupState['ghost'];
     if (interactivity === 'ghost') {
       if (
         this.config.holdToShowKeys.length &&
@@ -2010,17 +2009,19 @@ export class ContentHandler {
       }
     }
 
-    this.popupGeometry = {
-      x: popupX,
-      y: popupY,
-      width: constrainWidth ?? popupSize.width,
-      height: constrainHeight ?? popupSize.height,
-      direction,
-      side,
-      lookupPoint: this.getPopupLookupPoint({
-        currentPoint: this.currentPoint,
-        firstCharBbox: textBoxSizes?.[1],
-      }),
+    this.popupState = {
+      pos: {
+        x: popupX,
+        y: popupY,
+        width: constrainWidth ?? popupSize.width,
+        height: constrainHeight ?? popupSize.height,
+        direction,
+        side,
+        lookupPoint: this.getPopupLookupPoint({
+          currentPoint: this.currentPoint,
+          firstCharBbox: textBoxSizes?.[1],
+        }),
+      },
       ghost,
     };
 
@@ -2093,18 +2094,15 @@ export class ContentHandler {
     }
 
     if (this.isTopMostWindow()) {
-      let geometry: TranslatedPopupGeometry | undefined;
+      let state: TranslatedPopupState | undefined;
       if (typeof this.currentLookupParams?.source === 'number') {
-        geometry = this.getTranslatedPopupGeometry(
+        state = this.getTranslatedPopupState(
           this.currentLookupParams.source,
-          this.popupGeometry
+          this.popupState
         );
       }
 
-      void browser.runtime.sendMessage({
-        type: 'children:popupShown',
-        geometry,
-      });
+      void browser.runtime.sendMessage({ type: 'children:popupShown', state });
     }
   }
 
@@ -2123,21 +2121,20 @@ export class ContentHandler {
   }
 
   getFixedPosition(): PopupPositionConstraints | undefined {
-    if (!this.popupGeometry || this.config.tabDisplay === 'none') {
+    if (!this.popupState?.pos || this.config.tabDisplay === 'none') {
       return undefined;
     }
+
+    const { x, y, width, direction, side } = this.popupState.pos;
 
     return {
       // If the tabs are on the right, the x position is the right edge of the
       // popup.
-      x:
-        this.config.tabDisplay === 'right'
-          ? this.popupGeometry.x + this.popupGeometry.width
-          : this.popupGeometry.x,
-      y: this.popupGeometry.y,
+      x: this.config.tabDisplay === 'right' ? x + width : x,
+      y,
       anchor: this.config.tabDisplay,
-      direction: this.popupGeometry.direction,
-      side: this.popupGeometry.side,
+      direction,
+      side,
     };
   }
 
@@ -2147,7 +2144,7 @@ export class ContentHandler {
   }: {
     currentPoint?: Point;
     firstCharBbox?: Rect;
-  }): PopupGeometry['lookupPoint'] {
+  }): NonNullable<PopupState['pos']>['lookupPoint'] {
     const { scrollX, scrollY } = getScrollOffset();
 
     if (firstCharBbox) {
@@ -2165,30 +2162,37 @@ export class ContentHandler {
       : undefined;
   }
 
-  getTranslatedPopupGeometry(
+  getTranslatedPopupState(
     frameId: number,
-    popupGeometry: Readonly<PopupGeometry>
-  ): TranslatedPopupGeometry | undefined {
+    popupState: Readonly<PopupState>
+  ): TranslatedPopupState | undefined {
     const iframe = findIframeElement({ frameId });
     if (!iframe) {
       return undefined;
     }
 
+    if (!popupState.pos) {
+      return undefined;
+    }
+
     const iframeOrigin = getIframeOrigin(iframe);
     const { scrollX, scrollY } = getScrollOffset();
-    const { x, y, lookupPoint } = popupGeometry;
+    const { x, y, lookupPoint } = popupState.pos;
 
     return {
-      ...popupGeometry,
-      x: x - iframeOrigin.x - scrollX,
-      y: y - iframeOrigin.y - scrollY,
-      lookupPoint: lookupPoint
-        ? {
-            x: lookupPoint.x - iframeOrigin.x - scrollX,
-            y: lookupPoint.y - iframeOrigin.y - scrollY,
-          }
-        : undefined,
-      frameId,
+      ...popupState,
+      pos: {
+        ...popupState.pos,
+        x: x - iframeOrigin.x - scrollX,
+        y: y - iframeOrigin.y - scrollY,
+        lookupPoint: lookupPoint
+          ? {
+              x: lookupPoint.x - iframeOrigin.x - scrollX,
+              y: lookupPoint.y - iframeOrigin.y - scrollY,
+            }
+          : undefined,
+        frameId,
+      },
     };
   }
 
