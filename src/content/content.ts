@@ -1169,15 +1169,9 @@ export class ContentHandler {
           void browser.runtime.sendMessage({
             type: 'frame:popupShown',
             frameId: request.frameId,
-            state:
-              this.popupState &&
-              // We should only pass along the position if the popup is relative
-              // to `request.frameId`.
-              //
-              // TODO: Probably set this unconditionally
-              this.currentLookupParams?.source === request.frameId
-                ? this.getTranslatedPopupState(request.frameId, this.popupState)
-                : { ...stripFields(this.popupState || {}, ['pos']) },
+            state: this.popupState
+              ? this.getTranslatedPopupState(request.frameId, this.popupState)
+              : undefined,
           });
         }
         break;
