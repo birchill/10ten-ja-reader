@@ -386,7 +386,7 @@ export function renderPopupArrow(options: {
 
   // Determine the reference point to align to
   let target: Point;
-  const { cursorPos, firstCharBbox, popupPos, popupSize } = options;
+  const { cursorPos, firstCharBbox, popupSize } = options;
   if (firstCharBbox) {
     target = {
       x: firstCharBbox.left + firstCharBbox.width / 2,
@@ -398,22 +398,36 @@ export function renderPopupArrow(options: {
     return;
   }
 
+  // Convert the popup position from page coordinates to screen coordinates
+  // since `cursorPos` and `firstCharBbox` are in screen coordinates.
+  const {
+    popupPos: { x: popupPageX, y: popupPageY },
+    scrollPos: { x: scrollX, y: scrollY },
+  } = options;
+  const popupScreenPos = { x: popupPageX - scrollX, y: popupPageY - scrollY };
+
   // Check for cases where the popup overlaps the target element
   if (options.direction === 'vertical') {
-    if (options.side === 'before' && popupPos.y + popupSize.height > target.y) {
+    if (
+      options.side === 'before' &&
+      popupScreenPos.y + popupSize.height > target.y
+    ) {
       return;
-    } else if (options.side === 'after' && popupPos.y < target.y) {
+    } else if (options.side === 'after' && popupScreenPos.y < target.y) {
       return;
     }
   } else {
-    if (options.side === 'before' && popupPos.x + popupSize.width > target.x) {
+    if (
+      options.side === 'before' &&
+      popupScreenPos.x + popupSize.width > target.x
+    ) {
       return;
-    } else if (options.side === 'after' && popupPos.x < target.x) {
+    } else if (options.side === 'after' && popupScreenPos.x < target.x) {
       return;
     }
   }
 
-  renderArrow({ ...options, popupContainer, target });
+  renderArrow({ ...options, popupContainer, popupPos: popupScreenPos, target });
 }
 
 function getPopupArrow(): HTMLElement | null {
