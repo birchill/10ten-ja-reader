@@ -494,7 +494,7 @@ export class ContentHandler {
       this.popupState?.ghost?.kind === 'keys' &&
       !(this.getActiveHoldToShowKeys(event) & this.popupState.ghost.keyType)
     ) {
-      this.showPopup({ update: true });
+      this.updatePopup();
       return;
     }
 
@@ -545,8 +545,8 @@ export class ContentHandler {
     // TODO: Replace this with a proper sticky mode
     const missingHoldKeys =
       this.config.popupInteractive &&
-      ((this.currentTargetProps?.contentType === 'text' && !matchText) ||
-        (this.currentTargetProps?.contentType === 'image' && !matchImages));
+      ((this.popupState?.contentType === 'text' && !matchText) ||
+        (this.popupState?.contentType === 'image' && !matchImages));
     if (missingHoldKeys) {
       return;
     }
@@ -889,7 +889,7 @@ export class ContentHandler {
       this.popupState?.ghost?.kind === 'keys' &&
       !(this.getActiveHoldToShowKeys(event) & this.popupState.ghost.keyType)
     ) {
-      this.showPopup({ update: true });
+      this.updatePopup();
     }
 
     if (!this.kanjiLookupMode) {
@@ -939,7 +939,7 @@ export class ContentHandler {
         // script is stale.
         void browser.runtime.sendMessage({ type: 'toggleDefinition' });
       } catch {
-        console.log(
+        console.warn(
           '[10ten-ja-reader] Failed to call toggleDefinition. The page might need to be refreshed.'
         );
         return false;
@@ -1125,7 +1125,7 @@ export class ContentHandler {
 
     switch (request.type) {
       case 'popupShown':
-        this.popupState = {};
+        this.popupState = { contentType: 'text' };
 
         if (request.state) {
           let pos: PopupState['pos'];
@@ -1240,6 +1240,10 @@ export class ContentHandler {
             source: request.source.frameId,
           });
         }
+        break;
+
+      case 'updatePopup':
+        this.updatePopup();
         break;
 
       case 'clearResult':
@@ -1459,6 +1463,15 @@ export class ContentHandler {
   clearTextHighlight(currentElement: Element | null = null) {
     this.textHighlighter.clearHighlight({ currentElement });
     this.puck?.clearHighlight();
+  }
+
+  updatePopup() {
+    if (!this.isTopMostWindow()) {
+      void browser.runtime.sendMessage({ type: 'top:updatePopup' });
+      return;
+    }
+
+    this.showPopup({ update: true });
   }
 
   // The currentElement here is _only_ used to avoid resetting the scroll
@@ -1761,7 +1774,7 @@ export class ContentHandler {
         // browsers when the content script is old.
         void browser.runtime.sendMessage({ type: 'switchedDictionary' });
       } catch {
-        console.log(
+        console.warn(
           '[10ten-ja-reader] Failed to call switchedDictionary. The page might need to be refreshed.'
         );
       }
@@ -1811,6 +1824,11 @@ export class ContentHandler {
   }
 
   showPopup(options: { fixPosition?: boolean; update?: boolean } = {}) {
+    if (!this.isTopMostWindow()) {
+      console.warn('[10ten-ja-reader] Called showPopup from iframe.');
+      return;
+    }
+
     if (!this.currentSearchResult && !this.currentLookupParams?.meta) {
       this.clearResult({ currentElement: this.lastMouseTarget });
       return;
@@ -2025,6 +2043,7 @@ export class ContentHandler {
           firstCharBbox: textBoxSizes?.[1],
         }),
       },
+      contentType: this.currentTargetProps?.contentType || 'text',
       ghost,
     };
 
@@ -2096,17 +2115,21 @@ export class ContentHandler {
       });
     }
 
-    if (this.isTopMostWindow()) {
-      let state: PopupState | undefined;
-      if (typeof this.currentLookupParams?.source === 'number') {
-        state = this.getTranslatedPopupState(
-          this.currentLookupParams.source,
-          this.popupState
-        );
-      }
-
-      void browser.runtime.sendMessage({ type: 'children:popupShown', state });
+    //
+    // Tell child iframes
+    //
+    let childState: PopupState | undefined;
+    if (typeof this.currentLookupParams?.source === 'number') {
+      childState = this.getTranslatedPopupState(
+        this.currentLookupParams.source,
+        this.popupState
+      );
     }
+
+    void browser.runtime.sendMessage({
+      type: 'children:popupShown',
+      state: childState,
+    });
   }
 
   hidePopup() {
@@ -2244,7 +2267,7 @@ declare global {
     typeof window.readerScriptVer !== 'undefined' &&
     typeof window.removeReaderScript === 'function'
   ) {
-    console.log(
+    console.info(
       '[10ten-ja-reader] Found incompatible version of script. Removing.'
     );
     try {

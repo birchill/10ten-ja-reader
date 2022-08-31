@@ -617,6 +617,7 @@ browser.runtime.onMessage.addListener(
         break;
 
       case 'top:isPopupShowing':
+      case 'top:updatePopup':
       case 'top:clearResult':
       case 'top:nextDictionary':
       case 'top:toggleDefinition':

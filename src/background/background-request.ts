@@ -66,6 +66,7 @@ export const BackgroundRequestSchema = discriminator('type', {
       }),
     }),
   }),
+  'top:updatePopup': s.type({}),
   'top:clearResult': s.type({}),
   'top:nextDictionary': s.type({}),
   'top:toggleDefinition': s.type({}),

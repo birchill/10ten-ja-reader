@@ -53,6 +53,7 @@ export const BackgroundMessageSchema = discriminator('type', {
     }),
     frame: s.literal('top'),
   }),
+  updatePopup: s.type({ frame: s.literal('top') }),
   clearResult: s.type({ frame: s.literal('top') }),
   nextDictionary: s.type({ frame: s.literal('top') }),
   toggleDefinition: s.type({ frame: s.literal('top') }),
