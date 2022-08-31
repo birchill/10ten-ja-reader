@@ -2088,9 +2088,9 @@ export class ContentHandler {
         cursorPos,
         direction,
         firstCharBbox: textBoxSizes?.[1],
-        popupPos: { x: popupX, y: popupY },
+        // Convert page coordinates to screen coordinates
+        popupPos: { x: popupX - scrollX, y: popupY - scrollY },
         popupSize,
-        scrollPos: { x: scrollX, y: scrollY },
         side,
         theme: this.config.popupStyle,
       });
