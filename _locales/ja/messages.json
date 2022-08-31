@@ -1703,6 +1703,9 @@
     "message": "この端末は只今オフラインになっているため、更新の確認ができませんでした。オフラインになりましたら、更新確認を行います。",
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
+  "options_popup_close_popup": {
+    "message": "ポップアップを閉じる"
+  },
   "options_popup_copy_entry": {
     "message": "項目をコピーする"
   },

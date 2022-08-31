@@ -168,6 +168,7 @@ describe('Config', () => {
       toggleDefinition: [],
       nextDictionary: ['Shift', 'Enter'],
       kanjiLookup: [],
+      closePopup: ['Escape'],
       movePopupDownOrUp: [],
       startCopy: ['c'],
     });
@@ -175,6 +176,7 @@ describe('Config', () => {
       toggleDefinition: [],
       nextDictionary: ['Shift', 'Enter'],
       kanjiLookup: [],
+      closePopup: ['Escape'],
       movePopupUp: [],
       movePopupDown: [],
       startCopy: ['c'],

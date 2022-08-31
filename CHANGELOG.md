@@ -15,6 +15,7 @@ app.
     This behavior can be disabled from the options page by unchecking the
     "Make popup interactive" checkbox.
 - Made the popup not move position when changing tabs via touch or mouse.
+- Added a shortcut key for closing the popup (defaults to <kbd>Esc</kbd>).
 
 ## [1.11.0] - 2022-08-29 (Firefox, Chrome, Thunderbird only)
 

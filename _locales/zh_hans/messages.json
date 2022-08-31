@@ -1703,6 +1703,9 @@
     "message": "无法检查更新，因为没有连接到互联网。一旦设备联网，10ten reader 会再次检查更新。",
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
+  "options_popup_close_popup": {
+    "message": "关闭弹出窗口"
+  },
   "options_popup_copy_entry": {
     "message": "复制词条"
   },

@@ -11,6 +11,9 @@ export interface KeyboardKeys {
   // The key(s) to force kanji-only lookup.
   kanjiLookup: string[];
 
+  // The key(s) to close the popup.
+  closePopup: string[];
+
   // The key(s) to move the popup up.
   movePopupUp: string[];
 

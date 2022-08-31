@@ -623,6 +623,8 @@ function addPopupKeys() {
         keyLabel.append(html('span', { class: 'key-box' }, down));
         keyLabel.append(html('span', { class: 'or' }, '/'));
         keyLabel.append(html('span', { class: 'key-box' }, up));
+      } else if (key === 'Escape') {
+        keyLabel.append(html('span', { class: 'key-box' }, 'Esc'));
       } else {
         keyLabel.append(html('span', { class: 'key-box' }, key));
       }

@@ -912,12 +912,14 @@ export class ContentHandler {
     const [
       nextDictionary,
       toggleDefinition,
+      closePopup,
       movePopupUp,
       movePopupDown,
       startCopy,
     ] = [
       toUpper(keys.nextDictionary),
       toUpper(keys.toggleDefinition),
+      toUpper(keys.closePopup),
       toUpper(keys.movePopupUp),
       toUpper(keys.movePopupDown),
       toUpper(keys.startCopy),
@@ -966,6 +968,12 @@ export class ContentHandler {
       }
     } else if (this.copyState.kind !== 'inactive' && key === 'Escape') {
       this.exitCopyMode();
+    }
+    // This needs to come _after_ the above check so that if the user has
+    // configured Escape to close the popup but they are in copy mode, we first
+    // escape copy mode (and if they press it a second time we close the popup).
+    else if (closePopup.includes(upperKey)) {
+      this.clearResult();
     } else if (
       this.copyState.kind !== 'inactive' &&
       this.copyState.kind !== 'finished'

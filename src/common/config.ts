@@ -120,6 +120,12 @@ export const DEFAULT_KEY_SETTINGS: KeySetting[] = [
     l10nKey: 'options_popup_toggle_definition',
   },
   {
+    name: 'closePopup',
+    keys: ['Escape', 'x'],
+    enabledKeys: ['Escape'],
+    l10nKey: 'options_popup_close_popup',
+  },
+  {
     name: 'movePopupDownOrUp',
     keys: ['j,k'],
     enabledKeys: [],
