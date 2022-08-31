@@ -1865,6 +1865,10 @@
     "message": "Close",
     "description": "The aria-label associated with the button to close the popup"
   },
+  "popup_pin_label": {
+    "message": "Pin popup",
+    "description": "The aria-label associated with the button to pin the popup"
+  },
   "popup_settings_label": {
     "message": "Settings",
     "description": "The aria-label associated with the button to open the settings panel from the popup"

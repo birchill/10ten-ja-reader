@@ -1865,6 +1865,10 @@
     "message": "关闭",
     "description": "The aria-label associated with the button to close the popup"
   },
+  "popup_pin_label": {
+    "message": "固定弹出窗口",
+    "description": "The aria-label associated with the button to pin the popup"
+  },
   "popup_settings_label": {
     "message": "设置",
     "description": "The aria-label associated with the button to open the settings panel from the popup"

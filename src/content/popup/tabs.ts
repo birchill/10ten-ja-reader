@@ -5,7 +5,13 @@ import { QueryResult } from '../query';
 import { html } from '../../utils/builder';
 
 import { renderCloseButton } from './close';
-import { renderBook, renderCog, renderKanjiIcon, renderPerson } from './icons';
+import {
+  renderBook,
+  renderCog,
+  renderKanjiIcon,
+  renderPerson,
+  renderPin,
+} from './icons';
 import { getLangTag } from './lang-tag';
 
 export function renderTabBar({
@@ -66,6 +72,8 @@ export function renderTabBar({
   }
   tabBar.append(list);
 
+  tabBar.append(renderPinButton());
+
   if (onShowSettings) {
     tabBar.append(renderSettingsButton(onShowSettings));
   }
@@ -77,11 +85,28 @@ export function renderTabBar({
   return tabBar;
 }
 
+function renderPinButton(): HTMLElement {
+  const pinButton = html(
+    'button',
+    {
+      'aria-label': browser.i18n.getMessage('popup_pin_label'),
+      title: browser.i18n.getMessage('popup_pin_label'),
+      class: 'pin-button',
+      type: 'button',
+    },
+    renderPin()
+  );
+  // TODO: Add an event listener to this
+
+  return html('div', { class: 'pin' }, pinButton);
+}
+
 function renderSettingsButton(onShowSettings: () => void): HTMLElement {
   const settingsButton = html(
     'button',
     {
       'aria-label': browser.i18n.getMessage('popup_settings_label'),
+      title: browser.i18n.getMessage('popup_settings_label'),
       class: 'settings-button',
       type: 'button',
     },

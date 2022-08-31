@@ -289,11 +289,13 @@
 }
 
 .container:not(.interactive) .settings,
+.container:not(.interactive) .pin,
 .container:not(.interactive) .close {
   display: none;
 }
 
 .tab-bar .settings,
+.tab-bar .pin,
 .tab-bar .close {
   flex-shrink: 0;
   align-self: center;
@@ -319,6 +321,7 @@
  * b) The close button is a child of the close-button-wrapper
  */
 .settings-button,
+.pin-button,
 .close .close-button {
   appearance: none;
   border: none;
@@ -328,21 +331,26 @@
   color: var(--text-color);
 }
 
-.settings-button {
+.settings-button,
+.pin-button {
+  cursor: pointer;
   background: transparent;
 }
 
 .settings-button:hover,
+.pin-button:hover,
 .close .close-button {
   background: var(--bg-color);
 }
 
 .settings-button:hover,
+.pin-button:hover,
 .close .close-button:hover {
   filter: brightness(1.1);
 }
 
 .settings-button svg,
+.pin-button svg,
 .close .close-button svg {
   display: block;
   width: 15px;
@@ -351,10 +359,12 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-opacity: 0.7;
+  fill-opacity: 0.7;
   fill: none;
 }
 
-.settings-button svg {
+.settings-button svg,
+.pin-button svg {
   stroke-width: 2px;
 }
 
@@ -363,8 +373,14 @@
 }
 
 .settings-button:hover svg,
+.pin-button:hover svg,
 .close .close-button:hover svg {
   stroke-opacity: 1;
+  fill-opacity: 1;
+}
+
+.pin-button.pinned svg path {
+  fill: currentColor;
 }
 
 /* Tab bar on the side */
