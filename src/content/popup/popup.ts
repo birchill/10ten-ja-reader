@@ -33,7 +33,7 @@ import { renderTabBar } from './tabs';
 import { renderWordEntries } from './words';
 
 import popupStyles from '../../../css/popup.css';
-import { Point, Rect } from '../../utils/geometry';
+import { Point } from '../../utils/geometry';
 import { renderArrow } from './arrow';
 
 export interface PopupOptions {
@@ -370,12 +370,11 @@ export function showOverlay(copyState: CopyState): boolean {
 }
 
 export function renderPopupArrow(options: {
-  cursorPos?: Point;
   direction: 'vertical' | 'horizontal';
-  firstCharBbox?: Rect;
   popupPos: Point;
   popupSize: { width: number; height: number };
   side: 'before' | 'after';
+  target: Point;
   theme: string;
 }) {
   const popupContainer = getPopupContainer();
@@ -383,21 +382,8 @@ export function renderPopupArrow(options: {
     return;
   }
 
-  // Determine the reference point to align to
-  let target: Point;
-  const { cursorPos, firstCharBbox, popupPos, popupSize } = options;
-  if (firstCharBbox) {
-    target = {
-      x: firstCharBbox.left + firstCharBbox.width / 2,
-      y: firstCharBbox.top + firstCharBbox.height / 2,
-    };
-  } else if (cursorPos) {
-    target = cursorPos;
-  } else {
-    return;
-  }
-
   // Check for cases where the popup overlaps the target element
+  const { popupPos, popupSize, target } = options;
   if (options.direction === 'vertical') {
     if (options.side === 'before' && popupPos.y + popupSize.height > target.y) {
       return;

@@ -1941,7 +1941,8 @@ export class ContentHandler {
           cursorPos
         );
 
-        // Adjust the mousePos to use the edge of the text box.
+        // Adjust the mousePos to use the middle of the first character of the
+        // selected text.
         //
         // This should cause the popup to be better aligned with the selected
         // text which, apart from appearing a little bit neater, also makes
@@ -1952,11 +1953,9 @@ export class ContentHandler {
         // `cursorClearance` is relative to this.currentPoint, i.e. the original
         // value of mousePos, so we need to supply that value when converting to
         // a rect.)
-        if (isVerticalText) {
-          cursorPos.y = Math.max(0, bbox.top - 10);
-        } else {
-          cursorPos.x = Math.max(0, bbox.left - 10);
-        }
+        const firstCharBbox = textBoxSizes[1];
+        cursorPos.x = Math.max(0, firstCharBbox.left + firstCharBbox.width / 2);
+        cursorPos.y = Math.max(0, firstCharBbox.top + firstCharBbox.height / 2);
 
         const expandedClearance = union(bbox, cursorClearanceAsRect);
         cursorClearance = getMarginAroundPoint(cursorPos, expandedClearance);
@@ -2096,6 +2095,7 @@ export class ContentHandler {
     //
 
     if (
+      cursorPos &&
       interactivity === 'interactive' &&
       direction !== 'disjoint' &&
       side !== 'disjoint'
@@ -2104,13 +2104,12 @@ export class ContentHandler {
       popupSize = getPopupDimensions(popup);
 
       renderPopupArrow({
-        cursorPos,
         direction,
-        firstCharBbox: textBoxSizes?.[1],
         // Convert page coordinates to screen coordinates
         popupPos: { x: popupX - scrollX, y: popupY - scrollY },
         popupSize,
         side,
+        target: cursorPos,
         theme: this.config.popupStyle,
       });
     }

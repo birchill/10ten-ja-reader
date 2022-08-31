@@ -294,7 +294,7 @@ function getAutoPosition({
   stageHeight: number;
   pointerType: 'cursor' | 'puck';
 }): PopupPosition {
-  const extendedPosition = getAutoPositionWithoutScrollOffset({
+  const extendedPosition = getScreenAutoPosition({
     cursorClearance,
     cursorPos,
     interactive,
@@ -344,7 +344,7 @@ type ExtendedPopupPosition = {
   position: PopupPosition;
 };
 
-function getAutoPositionWithoutScrollOffset({
+function getScreenAutoPosition({
   cursorClearance,
   cursorPos,
   interactive,
@@ -485,7 +485,33 @@ function calculatePosition({
   //
   // (e.g. horizontal position when we are laying the popup out on the vertical
   // axis).
-  const idealCrossPos = axis === 'vertical' ? target.x : target.y;
+
+  // We want the popup to actually be positioned slight "before" the target
+  // position so that if we are showing an arrow from the popup to the target
+  // position there is enough slack to position the arrow inside the popup and
+  // still have it line up with the target.
+  //
+  // Graphically,
+  //
+  //    x <-- target
+  //  ╭^─────╮
+  //   ⏟
+  //   Cross offset
+  //
+  // At minimum we want to push the popup "back" by the width of the popup
+  // rounding and half the width of the arrow.
+  //
+  // We _could_ fetch those values from computed style but we'd rather avoid
+  // adding even more layout flushes so we just fudge it.
+  //
+  // At the time of writing the rounding is 5px and the arrow width is 20px, or
+  // actually 28px if you add in the margin we allow for the shadow.
+  //
+  // That would give us an offset of 5px + 28px / 2 = 19px so we just use 20px
+  // to allow us a leeway if those values change marginally.
+  const CROSS_OFFSET = 20;
+  const idealCrossPos =
+    axis === 'vertical' ? target.x - CROSS_OFFSET : target.y - CROSS_OFFSET;
   const crossPopupSize =
     axis === 'vertical' ? popupSize.width : popupSize.height;
   const maxCrossExtent = axis === 'vertical' ? safeRight : safeBottom;
