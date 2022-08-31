@@ -93,7 +93,7 @@ import {
   PopupPositionConstraints,
   PopupPositionMode,
 } from './popup-position';
-import { PopupState, TranslatedPopupState } from './popup-state';
+import { PopupState } from './popup-state';
 import {
   isPuckMouseEvent,
   LookupPuck,
@@ -1132,12 +1132,14 @@ export class ContentHandler {
 
           // Check if this request has translated the popup geometry for us
           //
-          // If not, we should leave `pos` as undefined.
-          if (this.getFrameId() === request.state.pos.frameId) {
+          // If not, we should leave `pos` as undefined so we know not to use
+          // it.
+          const { pos: requestPos } = request.state;
+          if (requestPos && this.getFrameId() === requestPos.frameId) {
             const { scrollX, scrollY } = getScrollOffset();
-            const { x, y, lookupPoint } = request.state.pos;
+            const { x, y, lookupPoint } = requestPos;
             pos = {
-              ...stripFields(request.state.pos, ['frameId']),
+              ...requestPos,
               x: x + scrollX,
               y: y + scrollY,
               lookupPoint: lookupPoint
@@ -2011,6 +2013,7 @@ export class ContentHandler {
 
     this.popupState = {
       pos: {
+        frameId: this.getFrameId() || 0,
         x: popupX,
         y: popupY,
         width: constrainWidth ?? popupSize.width,
@@ -2094,7 +2097,7 @@ export class ContentHandler {
     }
 
     if (this.isTopMostWindow()) {
-      let state: TranslatedPopupState | undefined;
+      let state: PopupState | undefined;
       if (typeof this.currentLookupParams?.source === 'number') {
         state = this.getTranslatedPopupState(
           this.currentLookupParams.source,
@@ -2165,14 +2168,14 @@ export class ContentHandler {
   getTranslatedPopupState(
     frameId: number,
     popupState: Readonly<PopupState>
-  ): TranslatedPopupState | undefined {
+  ): Readonly<PopupState> | undefined {
     const iframe = findIframeElement({ frameId });
     if (!iframe) {
       return undefined;
     }
 
     if (!popupState.pos) {
-      return undefined;
+      return popupState;
     }
 
     const iframeOrigin = getIframeOrigin(iframe);
@@ -2183,6 +2186,7 @@ export class ContentHandler {
       ...popupState,
       pos: {
         ...popupState.pos,
+        frameId,
         x: x - iframeOrigin.x - scrollX,
         y: y - iframeOrigin.y - scrollY,
         lookupPoint: lookupPoint
@@ -2191,7 +2195,6 @@ export class ContentHandler {
               y: lookupPoint.y - iframeOrigin.y - scrollY,
             }
           : undefined,
-        frameId,
       },
     };
   }

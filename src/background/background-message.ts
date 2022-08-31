@@ -1,9 +1,6 @@
 import { discriminator } from '@birchill/discriminator';
 import * as s from 'superstruct';
-import {
-  TranslatedPopupState,
-  TranslatedPopupStateSchema,
-} from '../content/popup-state';
+import { PopupState, PopupStateSchema } from '../content/popup-state';
 
 export const BackgroundMessageSchema = discriminator('type', {
   disable: s.type({ frame: s.literal('*') }),
@@ -22,7 +19,7 @@ export const BackgroundMessageSchema = discriminator('type', {
   // Popup showing status
   popupShown: s.type({
     frame: s.union([s.literal('children'), s.number()]),
-    state: s.optional(TranslatedPopupStateSchema),
+    state: s.optional(PopupStateSchema),
   }),
   popupHidden: s.type({ frame: s.literal('children') }),
   isPopupShowing: s.type({ frameId: s.number(), frame: s.literal('top') }),
@@ -86,8 +83,7 @@ export type ChildFramesMessage =
   | {
       type: 'popupShown';
       frame: number | 'children';
-      // The state is translated to the origin of the `frameId` iframe.
-      state?: TranslatedPopupState;
+      state?: PopupState;
     };
 
 export type TopFrameMessage = Extract<BackgroundMessage, { frame: 'top' }>;

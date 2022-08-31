@@ -1,7 +1,7 @@
 import { discriminator } from '@birchill/discriminator';
 import * as s from 'superstruct';
 
-import { TranslatedPopupStateSchema } from '../content/popup-state';
+import { PopupStateSchema } from '../content/popup-state';
 
 const SearchRequestSchema = s.type({
   input: s.string(),
@@ -38,9 +38,12 @@ export const BackgroundRequestSchema = discriminator('type', {
   // messages.
 
   // Popup showing status
-  'frame:popupShown': s.type({ frameId: s.number() }),
+  'frame:popupShown': s.type({
+    frameId: s.number(),
+    state: s.optional(PopupStateSchema),
+  }),
   'children:popupShown': s.type({
-    geometry: s.optional(TranslatedPopupStateSchema),
+    state: s.optional(PopupStateSchema),
   }),
   'children:popupHidden': s.type({}),
   'top:isPopupShowing': s.type({}),

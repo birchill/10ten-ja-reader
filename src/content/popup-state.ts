@@ -1,8 +1,8 @@
 import { discriminator } from '@birchill/discriminator';
 import * as s from 'superstruct';
-import { ExpandRecursively } from '../utils/type-helpers';
 
 const PopupPositionSchema = s.type({
+  frameId: s.number(),
   x: s.number(),
   y: s.number(),
   width: s.number(),
@@ -43,14 +43,3 @@ export const PopupStateSchema = s.type({
 });
 
 export type PopupState = s.Infer<typeof PopupStateSchema>;
-
-// When we translate the popup geometry for a specific iframe, we annotate the
-// result with the frameId.
-export const TranslatedPopupStateSchema = s.type({
-  pos: s.intersection([PopupPositionSchema, s.type({ frameId: s.number() })]),
-  ghost: s.optional(GhostDataSchema),
-});
-
-export type TranslatedPopupState = ExpandRecursively<
-  s.Infer<typeof TranslatedPopupStateSchema>
->;
