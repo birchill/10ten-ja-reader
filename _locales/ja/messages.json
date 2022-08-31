@@ -1733,6 +1733,9 @@
     "message": "ポップアップを下・上にずらす",
     "description": "Note that it is important that down comes before up"
   },
+  "options_popup_pin_popup": {
+    "message": "ポップアップをピン留めする"
+  },
   "options_popup_start_copy": {
     "message": "コピーモードを有効にする"
   },

@@ -169,6 +169,7 @@ describe('Config', () => {
       nextDictionary: ['Shift', 'Enter'],
       kanjiLookup: [],
       closePopup: ['Escape'],
+      pinPopup: ['Ctrl'],
       movePopupDownOrUp: [],
       startCopy: ['c'],
     });
@@ -177,6 +178,7 @@ describe('Config', () => {
       nextDictionary: ['Shift', 'Enter'],
       kanjiLookup: [],
       closePopup: ['Escape'],
+      pinPopup: ['Ctrl'],
       movePopupUp: [],
       movePopupDown: [],
       startCopy: ['c'],

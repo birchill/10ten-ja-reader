@@ -1733,6 +1733,9 @@
     "message": "向上、下移动弹出窗口",
     "description": "Note that it is important that down comes before up"
   },
+  "options_popup_pin_popup": {
+    "message": "固定弹出窗口"
+  },
   "options_popup_start_copy": {
     "message": "进入复制模式"
   },

@@ -14,6 +14,9 @@ export interface KeyboardKeys {
   // The key(s) to close the popup.
   closePopup: string[];
 
+  // The key(s) to pin the popup.
+  pinPopup: string[];
+
   // The key(s) to move the popup up.
   movePopupUp: string[];
 

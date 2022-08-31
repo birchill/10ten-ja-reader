@@ -1733,6 +1733,9 @@
     "message": "Move popup down / up",
     "description": "Note that it is important that down comes before up"
   },
+  "options_popup_pin_popup": {
+    "message": "Pin popup"
+  },
   "options_popup_start_copy": {
     "message": "Enter copy mode"
   },

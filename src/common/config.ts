@@ -126,6 +126,12 @@ export const DEFAULT_KEY_SETTINGS: KeySetting[] = [
     l10nKey: 'options_popup_close_popup',
   },
   {
+    name: 'pinPopup',
+    keys: ['Alt', 'Ctrl', 'Space'],
+    enabledKeys: ['Ctrl'],
+    l10nKey: 'options_popup_pin_popup',
+  },
+  {
     name: 'movePopupDownOrUp',
     keys: ['j,k'],
     enabledKeys: [],
@@ -646,7 +652,26 @@ export class Config {
 
   get keys(): StoredKeyboardKeys {
     const setValues = this.settings.keys || {};
-    return { ...this.getDefaultEnabledKeys(), ...setValues };
+    const keys = { ...this.getDefaultEnabledKeys(), ...setValues };
+
+    // If there is no key set for the pin popup key, but there _is_ a suitable
+    // hold-to-show key set, we should use that as the default value.
+    if (!('pinPopup' in setValues)) {
+      // Hold-to-show keys contains a string like `Alt+Ctrl` but we can only
+      // re-use the hold-to-show keys when it's a single item like 'Alt'.
+      const holdToShowKeys = this.holdToShowKeys?.split('+');
+      if (holdToShowKeys?.length === 1) {
+        const holdToShowKey = holdToShowKeys[0];
+        const availableKeys = DEFAULT_KEY_SETTINGS.find(
+          (k) => k.name === 'pinPopup'
+        );
+        if (availableKeys?.keys.includes(holdToShowKey)) {
+          keys.pinPopup = [holdToShowKey];
+        }
+      }
+    }
+
+    return keys;
   }
 
   get keysNormalized(): KeyboardKeys {
@@ -660,6 +685,7 @@ export class Config {
         ],
         [[], []]
       );
+
     return {
       ...stripFields(storedKeys, ['movePopupDownOrUp']),
       movePopupDown: down,
