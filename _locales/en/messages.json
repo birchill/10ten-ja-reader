@@ -1593,7 +1593,7 @@
     "description": "The keyword in options_edrdg_license to link to the license"
   },
   "options_enable_mouse_interaction": {
-    "message": "Make popup interactive",
+    "message": "Enable interacting with mouse",
     "description": "Checkbox for enabling mouse/touch interactivity in the popup"
   },
   "options_general_heading": {
