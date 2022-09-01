@@ -220,8 +220,20 @@ export function renderPopup(
   } else if (hasResult && result?.resultType === 'db-updating') {
     statusBar = renderUpdatingStatus();
   } else if (
+    // We could probably drop this whole section now since it probably never
+    // occurs.
+    //
+    // We default to making the popup interactive so someone would need to go
+    // into the options, disable that, and never switch dictionaries in order
+    // for it to show up.
+    //
+    // It was only ever introduced because many people probably didn't know
+    // there were multiple dictionaries (or if they did, they didn't know how to
+    // switch between them) but now that we're turning on mouse support by
+    // default it's probably not needed.
     showTabs &&
     numResultsAvailable > 1 &&
+    options.displayMode === 'static' &&
     options.hasSwitchedDictionary === false &&
     options.switchDictionaryKeys.length &&
     probablyHasPhysicalKeyboard()
