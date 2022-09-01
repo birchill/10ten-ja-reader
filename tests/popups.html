@@ -13,6 +13,7 @@
   const config = {
     accentDisplay: 'binary',
     copyState: { kind: 'inactive' },
+    displayMode: 'static',
     hasSwitchedDictionary: true,
     holdToShowKeys: [],
     holdToShowImageKeys: [],
@@ -372,6 +373,7 @@
           console.log('closed');
         },
         onShowSettings: () => {},
+        onTogglePin: () => {},
       });
       popup.classList.add('-inline');
       if (test.description.indexOf('interactive') !== -1) {
@@ -421,6 +423,7 @@
             console.log('closed');
           },
           onShowSettings: () => {},
+          onTogglePin: () => {},
         }
       );
       popup.classList.add('-inline');
@@ -489,6 +492,7 @@
             console.log('closed');
           },
           onShowSettings: () => {},
+          onTogglePin: () => {},
         }
       );
       popup.classList.add('-inline');
@@ -624,6 +628,7 @@
           console.log('closed');
         },
         onShowSettings: () => {},
+        onTogglePin: () => {},
       });
       popup.classList.add('-inline');
       if (test.description.indexOf('interactive') !== -1) {
@@ -790,14 +795,37 @@
       const popup = contentHandler._renderPopup(kankokuWordsResult, {
         ...config,
         container: createPopupContainer(),
+        displayMode: 'touch',
         dictToShow: 'words',
         popupStyle: theme,
         showDefinitions: true,
         onClosePopup: () => {},
         onShowSettings: () => {},
+        onTogglePin: () => {},
       });
       popup.classList.add('-inline');
-      popup.querySelector('.container').classList.add('interactive');
+    }
+
+    addHeading('Ghost mode', 3);
+
+    for (const theme of themes) {
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.append(`Theme: ${theme}`);
+      container.append(label);
+
+      const popup = contentHandler._renderPopup(kankokuWordsResult, {
+        ...config,
+        container: createPopupContainer(),
+        displayMode: 'ghost',
+        dictToShow: 'words',
+        popupStyle: theme,
+        showDefinitions: true,
+        onClosePopup: () => {},
+        onShowSettings: () => {},
+        onTogglePin: () => {},
+      });
+      popup.classList.add('-inline');
     }
 
     // Database status tests
@@ -811,13 +839,14 @@
         ...config,
         container: createPopupContainer(),
         dictToShow: 'words',
+        displayMode: 'touch',
         popupStyle: theme,
         showDefinitions: true,
         onClosePopup: () => {},
         onShowSettings: () => {},
+        onTogglePin: () => {},
       });
       popup.classList.add('-inline');
-      popup.querySelector('.container').classList.add('interactive');
     }
 
     // Close button only test
@@ -829,15 +858,16 @@
         {
           ...config,
           container: createPopupContainer(),
+          displayMode: 'touch',
           dictToShow: 'words',
           popupStyle: 'default',
           showDefinitions: true,
           onClosePopup: () => {},
           onShowSettings: () => {},
+          onTogglePin: () => {},
         }
       );
       popup.classList.add('-inline');
-      popup.querySelector('.container').classList.add('interactive');
     }
 
     addLabel('Close button with status bar');
@@ -848,15 +878,16 @@
           ...config,
           container: createPopupContainer(),
           dictToShow: 'words',
+          displayMode: 'touch',
           popupStyle: 'default',
           showDefinitions: true,
           tabDisplay: 'none',
           onClosePopup: () => {},
           onShowSettings: () => {},
+          onTogglePin: () => {},
         }
       );
       popup.classList.add('-inline');
-      popup.querySelector('.container').classList.add('interactive');
     }
 
     // Switch dictionary hint
@@ -873,6 +904,7 @@
         switchDictionaryKeys: ['Shift', 'Enter'],
         onClosePopup: () => {},
         onShowSettings: () => {},
+        onTogglePin: () => {},
       });
       popup.classList.add('-inline');
     }
@@ -891,6 +923,7 @@
         tabDisplay: 'right',
         onClosePopup: () => {},
         onShowSettings: () => {},
+        onTogglePin: () => {},
       });
       popup.classList.add('-inline');
     }
@@ -903,15 +936,16 @@
         ...config,
         container: createPopupContainer(),
         dictToShow: 'words',
+        displayMode: 'touch',
         popupStyle: 'default',
         showDefinitions: true,
         switchDictionaryKeys: ['Shift', 'Enter'],
         tabDisplay: 'right',
         onClosePopup: () => {},
         onShowSettings: () => {},
+        onTogglePin: () => {},
       });
       popup.classList.add('-inline');
-      popup.querySelector('.container').classList.add('interactive');
     }
 
     // Tabs on the side in interactive mode with switch dictionary hint
@@ -922,6 +956,7 @@
         ...config,
         container: createPopupContainer(),
         dictToShow: 'words',
+        displayMode: 'touch',
         hasSwitchedDictionary: false,
         popupStyle: 'default',
         showDefinitions: true,
@@ -929,9 +964,9 @@
         tabDisplay: 'right',
         onClosePopup: () => {},
         onShowSettings: () => {},
+        onTogglePin: () => {},
       });
       popup.classList.add('-inline');
-      popup.querySelector('.container').classList.add('interactive');
     }
 
     // Constrained height tests
@@ -950,6 +985,7 @@
           tabDisplay,
           onClosePopup: () => {},
           onShowSettings: () => {},
+          onTogglePin: () => {},
         });
 
         popup.classList.add('-inline');
@@ -970,6 +1006,7 @@
             tabDisplay,
             onClosePopup: () => {},
             onShowSettings: () => {},
+            onTogglePin: () => {},
           }
         );
 
@@ -983,17 +1020,18 @@
           ...config,
           container: createPopupContainer(),
           dictToShow: 'words',
+          displayMode: 'touch',
           popupStyle: 'default',
           showDefinitions: true,
           switchDictionaryKeys: ['Shift', 'Enter'],
           tabDisplay,
           onClosePopup: () => {},
           onShowSettings: () => {},
+          onTogglePin: () => {},
         });
 
         popup.classList.add('-inline');
         popup.style.setProperty('--max-height', '200px');
-        popup.querySelector('.container').classList.add('interactive');
       }
 
       {
@@ -1007,18 +1045,19 @@
             ...config,
             container: createPopupContainer(),
             dictToShow: 'words',
+            displayMode: 'touch',
             popupStyle: 'default',
             showDefinitions: true,
             switchDictionaryKeys: ['Shift', 'Enter'],
             tabDisplay,
             onClosePopup: () => {},
             onShowSettings: () => {},
+            onTogglePin: () => {},
           }
         );
 
         popup.classList.add('-inline');
         popup.style.setProperty('--max-height', '200px');
-        popup.querySelector('.container').classList.add('interactive');
       }
     }
 
@@ -1190,6 +1229,7 @@
         dictToShow: getDictFromResult(test.queryResult),
         onClosePopup: () => {},
         onShowSettings: () => {},
+        onTogglePin: () => {},
         showDefinitions: true,
       };
 
@@ -1214,8 +1254,8 @@
             mode: 'overlay',
           },
           container: createPopupContainer(),
+          displayMode: 'touch',
           popupStyle: theme,
-          interactive: true,
         });
         popup.classList.add('-inline');
       }
@@ -1233,6 +1273,7 @@
         dictToShow: getDictFromResult(highlightTests[0].queryResult),
         onClosePopup: () => {},
         onShowSettings: () => {},
+        onTogglePin: () => {},
         showDefinitions: true,
       };
 
@@ -1262,8 +1303,8 @@
               mode: 'overlay',
             },
             container: createPopupContainer(),
+            displayMode: 'touch',
             popupStyle: theme,
-            interactive: true,
           }
         );
         popup.classList.add('-inline');
