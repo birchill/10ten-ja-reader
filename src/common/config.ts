@@ -63,7 +63,6 @@ interface Settings {
   contextMenuEnable?: boolean;
   dictLang?: DbLanguageId;
   fxCurrency?: string;
-  hasSwitchedDictionary?: boolean;
   holdToShowKeys?: string;
   holdToShowImageKeys?: string;
   kanjiReferencesV2?: KanjiReferenceFlagsV2;
@@ -501,21 +500,6 @@ export class Config {
     return this.fxData
       ? Object.keys(this.fxData.rates).sort((a, b) => a.localeCompare(b))
       : undefined;
-  }
-
-  // hasSwitchedDictionary: Defaults to false
-
-  get hasSwitchedDictionary(): boolean {
-    return !!this.settings.hasSwitchedDictionary;
-  }
-
-  setHasSwitchedDictionary() {
-    if (this.settings.hasSwitchedDictionary) {
-      return;
-    }
-
-    this.settings.hasSwitchedDictionary = true;
-    void browser.storage.sync.set({ hasSwitchedDictionary: true });
   }
 
   // holdToShowKeys: Defaults to null
@@ -984,7 +968,6 @@ export class Config {
               timestamp: this.fxData.timestamp,
             }
           : undefined,
-      hasSwitchedDictionary: this.hasSwitchedDictionary,
       holdToShowKeys: this.holdToShowKeys
         ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)
         : [],

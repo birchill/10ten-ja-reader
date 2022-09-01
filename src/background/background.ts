@@ -530,10 +530,6 @@ browser.runtime.onMessage.addListener(
           }
         })();
 
-      case 'switchedDictionary':
-        config.setHasSwitchedDictionary();
-        break;
-
       case 'translate':
         return translate({
           text: request.input,

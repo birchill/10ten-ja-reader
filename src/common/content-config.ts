@@ -44,10 +44,6 @@ export interface ContentConfig {
   // for the rate.
   fx: { currency: string; rate: number; timestamp: number } | undefined;
 
-  // True if the user has successfully switched dictionaries (meaning we don't
-  // need to tell them how).
-  hasSwitchedDictionary: boolean;
-
   // Modifier keys which must be held down in order for the pop-up to shown.
   //
   // This should be a Set but Chrome can't send Sets by sendMessage :(

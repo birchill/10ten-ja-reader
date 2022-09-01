@@ -14,7 +14,6 @@
     accentDisplay: 'binary',
     copyState: { kind: 'inactive' },
     displayMode: 'static',
-    hasSwitchedDictionary: true,
     holdToShowKeys: [],
     holdToShowImageKeys: [],
     kanjiReferences: ['radical', 'nelson_r', 'kk', 'unicode', 'henshall'],
@@ -890,25 +889,6 @@
       popup.classList.add('-inline');
     }
 
-    // Switch dictionary hint
-
-    addHeading('Switch dictionary hint');
-    {
-      const popup = contentHandler._renderPopup(kankokuWordsResult, {
-        ...config,
-        hasSwitchedDictionary: false,
-        container: createPopupContainer(),
-        dictToShow: 'words',
-        popupStyle: 'default',
-        showDefinitions: true,
-        switchDictionaryKeys: ['Shift', 'Enter'],
-        onClosePopup: () => {},
-        onShowSettings: () => {},
-        onTogglePin: () => {},
-      });
-      popup.classList.add('-inline');
-    }
-
     // Tabs on the side
 
     addHeading('Tabs on the side');
@@ -937,27 +917,6 @@
         container: createPopupContainer(),
         dictToShow: 'words',
         displayMode: 'touch',
-        popupStyle: 'default',
-        showDefinitions: true,
-        switchDictionaryKeys: ['Shift', 'Enter'],
-        tabDisplay: 'right',
-        onClosePopup: () => {},
-        onShowSettings: () => {},
-        onTogglePin: () => {},
-      });
-      popup.classList.add('-inline');
-    }
-
-    // Tabs on the side in interactive mode with switch dictionary hint
-
-    addHeading('Tabs on the side (interactive display mode and status bar)', 3);
-    {
-      const popup = contentHandler._renderPopup(kankokuWordsResult, {
-        ...config,
-        container: createPopupContainer(),
-        dictToShow: 'words',
-        displayMode: 'touch',
-        hasSwitchedDictionary: false,
         popupStyle: 'default',
         showDefinitions: true,
         switchDictionaryKeys: ['Shift', 'Enter'],

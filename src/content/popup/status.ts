@@ -117,35 +117,3 @@ export function renderUpdatingStatus(): HTMLElement {
 
   return statusDiv;
 }
-
-export function renderSwitchDictionaryHint(
-  keys: ReadonlyArray<string>
-): HTMLElement | null {
-  if (keys.length < 1 || keys.length > 3) {
-    console.warn(`Unexpected number of keys ${keys.length}`);
-    return null;
-  }
-
-  const label = browser.i18n.getMessage(
-    `content_hint_switch_dict_keys_${keys.length}`
-  );
-
-  // Replace all the %KEY% placeholders with <kbd> elements.
-  const keysCopy = keys.slice();
-  const parts = label
-    .split('%')
-    .filter(Boolean)
-    .map((part) => {
-      if (part !== 'KEY') {
-        return part;
-      }
-
-      return html('kbd', {}, keysCopy.shift() || '-');
-    });
-
-  return html(
-    'div',
-    { class: 'status-bar', lang: getLangTag() },
-    html('div', { class: 'status' }, ...parts)
-  );
-}

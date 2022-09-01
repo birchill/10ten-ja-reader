@@ -1815,24 +1815,6 @@ export class ContentHandler {
       return;
     }
 
-    // The user has successfully switched dictionaries. If this is the first
-    // time that's happened, store the result so we don't pester the user
-    // with prompts about how to change dictionaries.
-    if (!this.config.hasSwitchedDictionary) {
-      try {
-        // As elsewhere, we don't wait on the promise here since we're only
-        // interested in catching synchronous errors which occur in some
-        // browsers when the content script is old.
-        void browser.runtime.sendMessage({ type: 'switchedDictionary' });
-      } catch {
-        console.warn(
-          '[10ten-ja-reader] Failed to call switchedDictionary. The page might need to be refreshed.'
-        );
-      }
-      // Make sure this applies immediately
-      this.config.hasSwitchedDictionary = true;
-    }
-
     this.currentDict = dict;
 
     this.highlightTextForCurrentResult();
@@ -1898,7 +1880,6 @@ export class ContentHandler {
       dictToShow: this.currentDict,
       displayMode,
       fxData: this.config.fx,
-      hasSwitchedDictionary: this.config.hasSwitchedDictionary,
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentLookupParams?.meta,
       onCancelCopy: () => this.exitCopyMode(),

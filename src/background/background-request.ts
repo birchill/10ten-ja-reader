@@ -22,7 +22,6 @@ export const BackgroundRequestSchema = discriminator('type', {
   options: s.type({}),
   searchWords: SearchRequestSchema,
   searchOther: SearchRequestSchema,
-  switchedDictionary: s.type({}),
   toggleDefinition: s.type({}),
   translate: s.type({
     input: s.string(),

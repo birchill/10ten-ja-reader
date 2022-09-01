@@ -115,18 +115,6 @@
     "message": "辞書データを更新中のため、一部のデータのみ表示されています。",
     "description": "Status bar message shown while the dictionary is being updated and only a snapshot can be shown."
   },
-  "content_hint_switch_dict_keys_1": {
-    "message": "ヒント：%KEY%を押して次の辞書を表示できます",
-    "description": "Message displayed at the bottom of the pop-up instructing the user which keys to use to switch keyboards when there is only one such key configured"
-  },
-  "content_hint_switch_dict_keys_2": {
-    "message": "ヒント：%KEY%または%KEY%を押して次の辞書を表示できます",
-    "description": "Message displayed at the bottom of the pop-up instructing the user which keys to use to switch keyboards when there are two keys configured"
-  },
-  "content_hint_switch_dict_keys_3": {
-    "message": "ヒント：%KEY%、%KEY%、%KEY%のいずれかを押すと次の辞書を表示できます",
-    "description": "Message displayed at the bottom of the pop-up instructing the user which keys to use to switch keyboards when there are three keys configured"
-  },
   "content_kanji_base_radical": {
     "message": "部 $char$ (​$readings$​)",
     "description": "The string used to describe the base radical",

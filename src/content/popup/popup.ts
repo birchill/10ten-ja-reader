@@ -1,4 +1,4 @@
-import { allMajorDataSeries, MajorDataSeries } from '@birchill/jpdict-idb';
+import { MajorDataSeries } from '@birchill/jpdict-idb';
 
 import {
   AccentDisplay,
@@ -9,7 +9,6 @@ import { CopyType } from '../../common/copy-keys';
 import { ReferenceAbbreviation } from '../../common/refs';
 
 import { html } from '../../utils/builder';
-import { probablyHasPhysicalKeyboard } from '../../utils/device';
 import { Point } from '../../utils/geometry';
 import { getThemeClass } from '../../utils/themes';
 
@@ -29,11 +28,7 @@ import { CopyState } from './copy-state';
 import { renderKanjiEntry } from './kanji';
 import { renderMetadata } from './metadata';
 import { renderNamesEntries } from './names';
-import {
-  renderCopyDetails,
-  renderSwitchDictionaryHint,
-  renderUpdatingStatus,
-} from './status';
+import { renderCopyDetails, renderUpdatingStatus } from './status';
 import { renderTabBar } from './tabs';
 import { renderWordEntries } from './words';
 
@@ -48,7 +43,6 @@ export interface PopupOptions {
   dictLang?: string;
   displayMode: DisplayMode;
   fxData: ContentConfig['fx'];
-  hasSwitchedDictionary?: boolean;
   kanjiReferences: Array<ReferenceAbbreviation>;
   meta?: SelectionMeta;
   onCancelCopy?: () => void;
@@ -210,35 +204,12 @@ export function renderPopup(
     copyState: options.copyState,
     series: resultToShow?.type || 'words',
   });
-  const numResultsAvailable = allMajorDataSeries.filter(
-    (series) => !!result?.[series]
-  ).length;
 
   let statusBar: HTMLElement | null = null;
   if (copyDetails) {
     statusBar = copyDetails;
   } else if (hasResult && result?.resultType === 'db-updating') {
     statusBar = renderUpdatingStatus();
-  } else if (
-    // We could probably drop this whole section now since it probably never
-    // occurs.
-    //
-    // We default to making the popup interactive so someone would need to go
-    // into the options, disable that, and never switch dictionaries in order
-    // for it to show up.
-    //
-    // It was only ever introduced because many people probably didn't know
-    // there were multiple dictionaries (or if they did, they didn't know how to
-    // switch between them) but now that we're turning on mouse support by
-    // default it's probably not needed.
-    showTabs &&
-    numResultsAvailable > 1 &&
-    options.displayMode === 'static' &&
-    options.hasSwitchedDictionary === false &&
-    options.switchDictionaryKeys.length &&
-    probablyHasPhysicalKeyboard()
-  ) {
-    statusBar = renderSwitchDictionaryHint(options.switchDictionaryKeys);
   }
 
   let contentWrapper = contentContainer;
