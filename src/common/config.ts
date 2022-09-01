@@ -656,6 +656,10 @@ export class Config {
 
     // If there is no key set for the pin popup key, but there _is_ a suitable
     // hold-to-show key set, we should use that as the default value.
+    //
+    // (Note that all this complexity might be meaningless. At least on Firefox
+    // on Windows, no one in their right mind would configure Alt as their
+    // hold-to-show key. Every time you release it the menu pops up!)
     if (!('pinPopup' in setValues)) {
       // Hold-to-show keys contains a string like `Alt+Ctrl` but we can only
       // re-use the hold-to-show keys when it's a single item like 'Alt'.
