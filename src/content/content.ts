@@ -316,6 +316,8 @@ export class ContentHandler {
         buttons: 0,
         relatedTarget: event.relatedTarget,
       });
+      (mouseMoveEvent as TouchClickEvent).fromTouch = true;
+
       (event.target || document.body).dispatchEvent(mouseMoveEvent);
     };
 
@@ -475,7 +477,10 @@ export class ContentHandler {
     }
 
     // Ignore mouse moves if we are pinned
-    if (this.popupState?.display.mode === 'pinned') {
+    if (
+      !isTouchClickEvent(event) &&
+      this.popupState?.display.mode === 'pinned'
+    ) {
       return;
     }
 
@@ -495,6 +500,7 @@ export class ContentHandler {
     // get the `keyup` event(s) when the modifier(s) are released so instead
     // we need to try and detect when that happens on the next mousemove event.
     if (
+      !isTouchClickEvent(event) &&
       this.popupState?.display.mode === 'ghost' &&
       this.popupState.display.trigger === 'keys' &&
       !(this.getActiveHoldToShowKeys(event) & this.popupState.display.keyType)
@@ -540,7 +546,9 @@ export class ContentHandler {
     // events, not puck events.
     const contentsToMatch =
       this.getActiveHoldToShowKeys(event) |
-      (isPuckMouseEvent(event) ? HoldToShowKeyType.All : 0);
+      (isPuckMouseEvent(event) || isTouchClickEvent(event)
+        ? HoldToShowKeyType.All
+        : 0);
     const matchText = !!(contentsToMatch & HoldToShowKeyType.Text);
     const matchImages = !!(contentsToMatch & HoldToShowKeyType.Images);
 
@@ -584,6 +592,7 @@ export class ContentHandler {
 
     void this.tryToUpdatePopup({
       fromPuck: isPuckMouseEvent(event),
+      fromTouch: isTouchClickEvent(event),
       matchText,
       matchImages,
       point: { x: event.clientX, y: event.clientY },
@@ -593,7 +602,7 @@ export class ContentHandler {
   }
 
   isEnRouteToPopup(event: MouseEvent) {
-    if (isPuckMouseEvent(event)) {
+    if (isPuckMouseEvent(event) || isTouchClickEvent(event)) {
       return false;
     }
 
@@ -799,6 +808,7 @@ export class ContentHandler {
       if (!textBoxInFocus && this.currentPoint && this.lastMouseTarget) {
         void this.tryToUpdatePopup({
           fromPuck: false,
+          fromTouch: false,
           matchText: !!(matchedHoldToShowKeys & HoldToShowKeyType.Text),
           matchImages: !!(matchedHoldToShowKeys & HoldToShowKeyType.Images),
           point: this.currentPoint,
@@ -1559,6 +1569,7 @@ export class ContentHandler {
 
   async tryToUpdatePopup({
     fromPuck,
+    fromTouch,
     matchText,
     matchImages,
     point,
@@ -1566,6 +1577,7 @@ export class ContentHandler {
     dictMode,
   }: {
     fromPuck: boolean;
+    fromTouch: boolean;
     matchText: boolean;
     matchImages: boolean;
     point: Point;
@@ -1628,6 +1640,7 @@ export class ContentHandler {
       text: textAtPoint.text,
       targetProps: getTargetProps({
         fromPuck,
+        fromTouch,
         target: eventElement,
         textRange: textAtPoint?.textRange || undefined,
       }),
@@ -2145,7 +2158,10 @@ export class ContentHandler {
   }
 
   getInitialDisplayMode(interactive: 'ghost' | 'hover'): DisplayMode {
-    if (this.currentTargetProps?.fromPuck) {
+    if (
+      this.currentTargetProps?.fromPuck ||
+      this.currentTargetProps?.fromTouch
+    ) {
       return 'touch';
     } else if (this.config.popupInteractive) {
       return interactive;
@@ -2353,6 +2369,16 @@ export class ContentHandler {
 
   // Expose the renderPopup callback so that we can test it
   _renderPopup = renderPopup;
+}
+
+export function isTouchClickEvent(
+  mouseEvent: MouseEvent
+): mouseEvent is TouchClickEvent {
+  return !!(mouseEvent as TouchClickEvent).fromTouch;
+}
+
+export interface TouchClickEvent extends MouseEvent {
+  fromTouch: true;
 }
 
 declare global {

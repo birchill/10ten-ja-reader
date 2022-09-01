@@ -11,6 +11,7 @@ import { getContentType } from './content-type';
 export type TargetProps = {
   contentType: 'text' | 'image';
   fromPuck: boolean;
+  fromTouch: boolean;
   hasTitle: boolean;
   isVerticalText: boolean;
   textBoxSizes?: SelectionSizes;
@@ -40,16 +41,19 @@ export const textBoxSizeLengths: ReadonlyArray<keyof SelectionSizes> = [
 
 export function getTargetProps({
   fromPuck,
+  fromTouch,
   target,
   textRange,
 }: {
   fromPuck: boolean;
+  fromTouch: boolean;
   target: Element;
   textRange: TextRange | undefined;
 }): TargetProps {
   return {
     contentType: getContentType(target),
     fromPuck,
+    fromTouch,
     hasTitle: !!((target as HTMLElement) || null)?.title,
     textBoxSizes: textRange
       ? getInitialBboxOfTextSelection(textRange)
