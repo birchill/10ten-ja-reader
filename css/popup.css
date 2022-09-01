@@ -379,7 +379,7 @@
   fill-opacity: 1;
 }
 
-.pin-button.pinned svg path {
+.container.pinned .pin-button svg path {
   fill: currentColor;
 }
 

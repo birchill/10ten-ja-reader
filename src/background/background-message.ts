@@ -19,7 +19,7 @@ export const BackgroundMessageSchema = discriminator('type', {
   // Popup showing status
   popupShown: s.type({
     frame: s.union([s.literal('children'), s.number()]),
-    state: s.optional(PopupStateSchema),
+    state: PopupStateSchema,
   }),
   popupHidden: s.type({ frame: s.literal('children') }),
   isPopupShowing: s.type({ frameId: s.number(), frame: s.literal('top') }),
@@ -53,7 +53,9 @@ export const BackgroundMessageSchema = discriminator('type', {
     }),
     frame: s.literal('top'),
   }),
-  updatePopup: s.type({ frame: s.literal('top') }),
+  pinPopup: s.type({ frame: s.literal('top') }),
+  unpinPopup: s.type({ frame: s.literal('top') }),
+  commitPopup: s.type({ frame: s.literal('top') }),
   clearResult: s.type({ frame: s.literal('top') }),
   nextDictionary: s.type({ frame: s.literal('top') }),
   toggleDefinition: s.type({ frame: s.literal('top') }),
@@ -76,7 +78,7 @@ export type BackgroundMessage = s.Infer<typeof BackgroundMessageSchema>;
 
 export type IndividualFrameMessage =
   | Extract<BackgroundMessage, { frame: number }>
-  | { type: 'popupShown'; frame: number | 'children' };
+  | { type: 'popupShown'; frame: number | 'children'; state: PopupState };
 // ^ This last bit is because I'm terrible at TypeScript meta programming
 
 export type ChildFramesMessage =
@@ -84,7 +86,7 @@ export type ChildFramesMessage =
   | {
       type: 'popupShown';
       frame: number | 'children';
-      state?: PopupState;
+      state: PopupState;
     };
 
 export type TopFrameMessage = Extract<BackgroundMessage, { frame: 'top' }>;

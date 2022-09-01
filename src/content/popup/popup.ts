@@ -6,18 +6,23 @@ import {
   PartOfSpeechDisplay,
 } from '../../common/content-config';
 import { CopyType } from '../../common/copy-keys';
+import { ReferenceAbbreviation } from '../../common/refs';
+
+import { html } from '../../utils/builder';
+import { probablyHasPhysicalKeyboard } from '../../utils/device';
+import { Point } from '../../utils/geometry';
+import { getThemeClass } from '../../utils/themes';
+
 import {
   getOrCreateEmptyContainer,
   removeContentContainer,
 } from '../content-container';
-import { ReferenceAbbreviation } from '../../common/refs';
 import { SelectionMeta } from '../meta';
+import { DisplayMode } from '../popup-state';
 import { LookupPuck } from '../puck';
 import { QueryResult } from '../query';
-import { html } from '../../utils/builder';
-import { probablyHasPhysicalKeyboard } from '../../utils/device';
-import { getThemeClass } from '../../utils/themes';
 
+import { renderArrow } from './arrow';
 import { renderCloseButton } from './close';
 import { renderCopyOverlay } from './copy-overlay';
 import { CopyState } from './copy-state';
@@ -33,8 +38,6 @@ import { renderTabBar } from './tabs';
 import { renderWordEntries } from './words';
 
 import popupStyles from '../../../css/popup.css';
-import { Point } from '../../utils/geometry';
-import { renderArrow } from './arrow';
 
 export interface PopupOptions {
   accentDisplay: AccentDisplay;
@@ -43,9 +46,9 @@ export interface PopupOptions {
   copyState: CopyState;
   dictToShow: MajorDataSeries;
   dictLang?: string;
+  displayMode: DisplayMode;
   fxData: ContentConfig['fx'];
   hasSwitchedDictionary?: boolean;
-  interactivity?: 'static' | 'ghost' | 'interactive';
   kanjiReferences: Array<ReferenceAbbreviation>;
   meta?: SelectionMeta;
   onCancelCopy?: () => void;
@@ -54,6 +57,7 @@ export interface PopupOptions {
   onClosePopup?: () => void;
   onShowSettings?: () => void;
   onSwitchDictionary?: (newDict: MajorDataSeries) => void;
+  onTogglePin?: () => void;
   posDisplay: PartOfSpeechDisplay;
   popupStyle: string;
   showDefinitions: boolean;
@@ -61,7 +65,6 @@ export interface PopupOptions {
   showKanjiComponents?: boolean;
   switchDictionaryKeys: ReadonlyArray<string>;
   tabDisplay: 'top' | 'left' | 'right' | 'none';
-  update?: boolean;
 }
 
 export function renderPopup(
@@ -69,11 +72,10 @@ export function renderPopup(
   options: PopupOptions
 ): HTMLElement | null {
   const container = options.container || getDefaultContainer();
-  const interactivity = options.interactivity || 'static';
   const windowElem = resetContainer({
     host: container,
+    displayMode: options.displayMode,
     popupStyle: options.popupStyle,
-    interactivity,
   });
 
   const hasResult = result && (result.words || result.kanji || result.names);
@@ -88,6 +90,7 @@ export function renderPopup(
         onClosePopup: options.onClosePopup,
         onShowSettings: options.onShowSettings,
         onSwitchDictionary: options.onSwitchDictionary,
+        onTogglePin: options.onTogglePin,
         queryResult: result,
         selectedTab: options.dictToShow,
       })
@@ -265,11 +268,11 @@ function getDefaultContainer(): HTMLElement {
 
 function resetContainer({
   host,
-  interactivity,
+  displayMode,
   popupStyle,
 }: {
   host: HTMLElement;
-  interactivity: 'static' | 'ghost' | 'interactive';
+  displayMode: DisplayMode;
   popupStyle: string;
 }): HTMLElement {
   const container = html('div', { class: 'container' });
@@ -277,8 +280,9 @@ function resetContainer({
   container.append(windowDiv);
 
   // Set initial and interactive status
-  container.classList.toggle('ghost', interactivity === 'ghost');
-  container.classList.toggle('interactive', interactivity !== 'static');
+  container.classList.toggle('ghost', displayMode === 'ghost');
+  container.classList.toggle('interactive', displayMode !== 'static');
+  container.classList.toggle('pinned', displayMode === 'pinned');
 
   // Set theme
   windowDiv.classList.add(getThemeClass(popupStyle));

@@ -18,12 +18,14 @@ export function renderTabBar({
   onClosePopup,
   onShowSettings,
   onSwitchDictionary,
+  onTogglePin,
   queryResult,
   selectedTab,
 }: {
   onClosePopup?: () => void;
   onShowSettings?: () => void;
   onSwitchDictionary?: (newDict: MajorDataSeries) => void;
+  onTogglePin?: () => void;
   queryResult?: QueryResult;
   selectedTab: MajorDataSeries;
 }): HTMLElement {
@@ -72,7 +74,9 @@ export function renderTabBar({
   }
   tabBar.append(list);
 
-  tabBar.append(renderPinButton());
+  if (onTogglePin) {
+    tabBar.append(renderPinButton(onTogglePin));
+  }
 
   if (onShowSettings) {
     tabBar.append(renderSettingsButton(onShowSettings));
@@ -85,7 +89,7 @@ export function renderTabBar({
   return tabBar;
 }
 
-function renderPinButton(): HTMLElement {
+function renderPinButton(onTogglePin: () => void): HTMLElement {
   const pinButton = html(
     'button',
     {
@@ -96,7 +100,7 @@ function renderPinButton(): HTMLElement {
     },
     renderPin()
   );
-  // TODO: Add an event listener to this
+  pinButton.onclick = onTogglePin;
 
   return html('div', { class: 'pin' }, pinButton);
 }

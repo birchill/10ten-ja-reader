@@ -121,8 +121,8 @@ export const DEFAULT_KEY_SETTINGS: KeySetting[] = [
   },
   {
     name: 'closePopup',
-    keys: ['Escape', 'x'],
-    enabledKeys: ['Escape'],
+    keys: ['Esc', 'x'],
+    enabledKeys: ['Esc'],
     l10nKey: 'options_popup_close_popup',
   },
   {
