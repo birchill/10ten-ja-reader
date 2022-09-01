@@ -2130,7 +2130,7 @@ export class ContentHandler {
     //
     // Tell child iframes
     //
-    let childState: PopupState | undefined = this.popupState;
+    let childState = this.popupState!;
     if (typeof this.currentLookupParams?.source === 'number') {
       childState = this.getTranslatedPopupState(
         this.currentLookupParams.source,
@@ -2318,10 +2318,10 @@ export class ContentHandler {
   getTranslatedPopupState(
     frameId: number,
     popupState: Readonly<PopupState>
-  ): Readonly<PopupState> | undefined {
+  ): Readonly<PopupState> {
     const iframe = findIframeElement({ frameId });
     if (!iframe) {
-      return undefined;
+      return popupState;
     }
 
     if (!popupState.pos) {
