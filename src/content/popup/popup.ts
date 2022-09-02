@@ -34,6 +34,11 @@ import { renderWordEntries } from './words';
 
 import popupStyles from '../../../css/popup.css';
 
+export type StartCopyCallback = (
+  index: number,
+  trigger: 'touch' | 'mouse'
+) => void;
+
 export interface PopupOptions {
   accentDisplay: AccentDisplay;
   container?: HTMLElement;
@@ -46,7 +51,7 @@ export interface PopupOptions {
   kanjiReferences: Array<ReferenceAbbreviation>;
   meta?: SelectionMeta;
   onCancelCopy?: () => void;
-  onStartCopy?: (index: number) => void;
+  onStartCopy?: StartCopyCallback;
   onCopy?: (copyType: CopyType) => void;
   onClosePopup?: () => void;
   onShowSettings?: () => void;

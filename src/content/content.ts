@@ -997,7 +997,7 @@ export class ContentHandler {
         this.copyState.kind === 'inactive' ||
         this.copyState.kind === 'finished'
       ) {
-        this.enterCopyMode({ mode: 'keyboard' });
+        this.enterCopyMode({ trigger: 'keyboard' });
       } else {
         this.nextCopyEntry();
       }
@@ -1325,7 +1325,7 @@ export class ContentHandler {
         break;
 
       case 'enterCopyMode':
-        this.enterCopyMode({ mode: 'keyboard' });
+        this.enterCopyMode({ trigger: 'keyboard' });
         break;
 
       case 'exitCopyMode':
@@ -1384,10 +1384,10 @@ export class ContentHandler {
   }
 
   enterCopyMode({
-    mode,
+    trigger,
     index = 0,
   }: {
-    mode: 'overlay' | 'keyboard';
+    trigger: 'keyboard' | 'touch' | 'mouse';
     index?: number;
   }) {
     // In the iframe case, we mirror the copyMode state in both iframe and
@@ -1398,18 +1398,29 @@ export class ContentHandler {
     // - The iframe needs to know the copyMode state so that it can determine
     //   how to handle copyMode-specific keystrokes.
     //
-    this.copyState = { kind: 'active', index, mode };
+    this.copyState = {
+      kind: 'active',
+      index,
+      mode: trigger === 'keyboard' ? trigger : 'overlay',
+    };
 
     if (!this.isTopMostWindow()) {
       console.assert(
-        mode === 'keyboard',
-        "We probably should't be receiving touch events in the iframe"
+        trigger === 'keyboard',
+        "We probably should't be receiving touch or mouse events in the iframe"
       );
       void browser.runtime.sendMessage({ type: 'top:enterCopyMode' });
       return;
     }
 
-    this.updatePopup({ fixPosition: true });
+    // If the copy overlay was trigger by mouse we pin the popup so that it
+    // doesn't immediately vanish if it becomes smaller and the user's cursor
+    // falls outside the window.
+    if (trigger === 'mouse') {
+      this.showPopup({ displayMode: 'pinned', fixPosition: true });
+    } else {
+      this.updatePopup({ fixPosition: true });
+    }
   }
 
   exitCopyMode() {
@@ -1886,8 +1897,8 @@ export class ContentHandler {
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentLookupParams?.meta,
       onCancelCopy: () => this.exitCopyMode(),
-      onStartCopy: (index: number) =>
-        this.enterCopyMode({ mode: 'overlay', index }),
+      onStartCopy: (index: number, trigger: 'touch' | 'mouse') =>
+        this.enterCopyMode({ trigger, index }),
       onCopy: (copyType: CopyType) => this.copyCurrentEntry(copyType),
       onClosePopup: () => {
         this.clearResult({ currentElement: this.lastMouseTarget });

@@ -11,7 +11,7 @@ import { browser } from 'webextension-polyfill-ts';
 
 import { Sense, WordResult } from '../../background/search-result';
 import { NamePreview } from '../query';
-import { PopupOptions } from './popup';
+import { PopupOptions, StartCopyCallback } from './popup';
 
 import { renderMetadata } from './metadata';
 import { renderName } from './names';
@@ -68,6 +68,8 @@ export function renderWordEntries({
     );
   }
 
+  let lastPointerType = 'touch';
+
   for (const [index, entry] of entries.entries()) {
     const entryDiv = html('div', { class: 'entry' });
     container.append(entryDiv);
@@ -78,8 +80,13 @@ export function renderWordEntries({
       );
     }
 
+    entryDiv.addEventListener('pointerup', (evt) => {
+      lastPointerType = evt.pointerType;
+    });
+
     entryDiv.addEventListener('click', () => {
-      options.onStartCopy?.(index + numNames);
+      const trigger = lastPointerType === 'mouse' ? 'mouse' : 'touch';
+      options.onStartCopy?.(index + numNames, trigger);
     });
 
     const headingDiv = html('div', {});
@@ -245,11 +252,13 @@ function renderNamePreview(
     selectedIndex,
   }: {
     copyKind: CopyState['kind'];
-    onStartCopy?: (index: number) => void;
+    onStartCopy?: StartCopyCallback;
     selectedIndex?: number;
   }
 ): HTMLElement {
   const container = html('div', { class: 'bonus-name' });
+
+  let lastPointerType = 'touch';
 
   for (const [index, name] of names.entries()) {
     const nameEntry = renderName(name);
@@ -257,8 +266,13 @@ function renderNamePreview(
       nameEntry.classList.add(copyKind === 'active' ? '-selected' : '-flash');
     }
 
+    nameEntry.addEventListener('pointerup', (evt) => {
+      lastPointerType = evt.pointerType;
+    });
+
     nameEntry.addEventListener('click', () => {
-      onStartCopy?.(index);
+      const trigger = lastPointerType === 'mouse' ? 'mouse' : 'touch';
+      onStartCopy?.(index, trigger);
     });
 
     container.append(nameEntry);
