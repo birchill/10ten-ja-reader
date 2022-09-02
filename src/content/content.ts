@@ -261,6 +261,7 @@ export class ContentHandler {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onFocusIn = this.onFocusIn.bind(this);
+    this.onFullScreenChange = this.onFullScreenChange.bind(this);
     this.onInterFrameMessage = this.onInterFrameMessage.bind(this);
     this.onBackgroundMessage = this.onBackgroundMessage.bind(this);
 
@@ -269,6 +270,7 @@ export class ContentHandler {
     window.addEventListener('keydown', this.onKeyDown, { capture: true });
     window.addEventListener('keyup', this.onKeyUp, { capture: true });
     window.addEventListener('focusin', this.onFocusIn);
+    window.addEventListener('fullscreenchange', this.onFullScreenChange);
     window.addEventListener('message', this.onInterFrameMessage, {
       capture: true,
     });
@@ -412,6 +414,7 @@ export class ContentHandler {
     window.removeEventListener('keydown', this.onKeyDown, { capture: true });
     window.removeEventListener('keyup', this.onKeyUp, { capture: true });
     window.removeEventListener('focusin', this.onFocusIn);
+    window.removeEventListener('fullscreenchange', this.onFullScreenChange);
     window.removeEventListener('message', this.onInterFrameMessage, {
       capture: true,
     });
@@ -1116,6 +1119,12 @@ export class ContentHandler {
 
   isVisible(): boolean {
     return this.isTopMostWindow() ? isPopupVisible() : !!this.popupState;
+  }
+
+  onFullScreenChange() {
+    if (this.popupState?.display.mode === 'pinned') {
+      this.unpinPopup();
+    }
   }
 
   onInterFrameMessage(event: MessageEvent) {
