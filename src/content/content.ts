@@ -481,6 +481,10 @@ export class ContentHandler {
       !isTouchClickEvent(event) &&
       this.popupState?.display.mode === 'pinned'
     ) {
+      // Update the current point so we can determine if the window should still
+      // be showing if we unpin.
+      this.currentPoint = { x: event.clientX, y: event.clientY };
+      this.lastMouseTarget = event.target;
       return;
     }
 
@@ -2224,6 +2228,32 @@ export class ContentHandler {
       displayMode: this.getInitialDisplayMode('hover'),
       fixPosition: this.config.popupInteractive,
     });
+
+    // Typically when you unpin the popup you want it to disappear immediately
+    // (unless the mouse is currently over it).
+    //
+    // To try to make that happen we dispatch another mouse event with the last
+    // mouse position.
+    //
+    // Unfortunately this won't necessarily help if the user has since moused
+    // over an iframe since our last recorded mouse position will be based
+    // on the last mousemove event we received in _this_ frame.
+    if (this.currentPoint && this.lastMouseTarget) {
+      const mouseMoveEvent = new MouseEvent('mousemove', {
+        bubbles: true,
+        screenX: this.currentPoint.x,
+        screenY: this.currentPoint.y,
+        clientX: this.currentPoint.x,
+        clientY: this.currentPoint.y,
+        ctrlKey: false,
+        shiftKey: false,
+        altKey: false,
+        metaKey: false,
+        button: 0,
+        buttons: 0,
+      });
+      this.lastMouseTarget.dispatchEvent(mouseMoveEvent);
+    }
   }
 
   togglePin() {
