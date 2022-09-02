@@ -2124,6 +2124,7 @@ export class ContentHandler {
       // Update the popup size now that we have positioned it.
       popupSize = getPopupDimensions(popup);
 
+      const { scrollX, scrollY } = getScrollOffset();
       renderPopupArrow({
         direction,
         // Convert page coordinates to screen coordinates
