@@ -15,17 +15,21 @@ import {
 import { getLangTag } from './lang-tag';
 
 export function renderTabBar({
+  closeShortcuts,
   onClosePopup,
   onShowSettings,
   onSwitchDictionary,
   onTogglePin,
+  pinShortcuts,
   queryResult,
   selectedTab,
 }: {
+  closeShortcuts?: ReadonlyArray<string>;
   onClosePopup?: () => void;
   onShowSettings?: () => void;
   onSwitchDictionary?: (newDict: MajorDataSeries) => void;
   onTogglePin?: () => void;
+  pinShortcuts?: ReadonlyArray<string>;
   queryResult?: QueryResult;
   selectedTab: MajorDataSeries;
 }): HTMLElement {
@@ -75,7 +79,7 @@ export function renderTabBar({
   tabBar.append(list);
 
   if (onTogglePin) {
-    tabBar.append(renderPinButton(onTogglePin));
+    tabBar.append(renderPinButton(onTogglePin, pinShortcuts || []));
   }
 
   if (onShowSettings) {
@@ -83,18 +87,25 @@ export function renderTabBar({
   }
 
   if (onClosePopup) {
-    tabBar.append(renderCloseButton(onClosePopup));
+    tabBar.append(renderCloseButton(onClosePopup, closeShortcuts || []));
   }
 
   return tabBar;
 }
 
-function renderPinButton(onTogglePin: () => void): HTMLElement {
+function renderPinButton(
+  onTogglePin: () => void,
+  pinShortcuts: ReadonlyArray<string>
+): HTMLElement {
+  const label = browser.i18n.getMessage('popup_pin_label');
+  const title = pinShortcuts.length
+    ? `${label} (${pinShortcuts.join(' / ')})`
+    : label;
   const pinButton = html(
     'button',
     {
-      'aria-label': browser.i18n.getMessage('popup_pin_label'),
-      title: browser.i18n.getMessage('popup_pin_label'),
+      'aria-label': label,
+      title,
       class: 'pin-button',
       type: 'button',
     },
@@ -106,11 +117,12 @@ function renderPinButton(onTogglePin: () => void): HTMLElement {
 }
 
 function renderSettingsButton(onShowSettings: () => void): HTMLElement {
+  const label = browser.i18n.getMessage('popup_settings_label');
   const settingsButton = html(
     'button',
     {
-      'aria-label': browser.i18n.getMessage('popup_settings_label'),
-      title: browser.i18n.getMessage('popup_settings_label'),
+      'aria-label': label,
+      title: label,
       class: 'settings-button',
       type: 'button',
     },

@@ -1897,6 +1897,7 @@ export class ContentHandler {
 
     const popupOptions: PopupOptions = {
       accentDisplay: this.config.accentDisplay,
+      closeShortcuts: this.config.keys.closePopup,
       copyNextKey: this.config.keys.startCopy[0] || '',
       copyState: this.copyState,
       dictLang: this.config.dictLang,
@@ -1923,6 +1924,7 @@ export class ContentHandler {
       onTogglePin: () => {
         displayMode === 'pinned' ? this.unpinPopup() : this.pinPopup();
       },
+      pinShortcuts: this.config.keys.pinPopup,
       popupStyle: this.config.popupStyle,
       posDisplay: this.config.posDisplay,
       showDefinitions: !this.config.readingOnly,

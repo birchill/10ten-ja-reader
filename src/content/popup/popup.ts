@@ -41,6 +41,7 @@ export type StartCopyCallback = (
 
 export interface PopupOptions {
   accentDisplay: AccentDisplay;
+  closeShortcuts?: ReadonlyArray<string>;
   container?: HTMLElement;
   copyNextKey: string;
   copyState: CopyState;
@@ -57,6 +58,7 @@ export interface PopupOptions {
   onShowSettings?: () => void;
   onSwitchDictionary?: (newDict: MajorDataSeries) => void;
   onTogglePin?: () => void;
+  pinShortcuts?: ReadonlyArray<string>;
   posDisplay: PartOfSpeechDisplay;
   popupStyle: string;
   showDefinitions: boolean;
@@ -86,10 +88,12 @@ export function renderPopup(
   if (showTabs) {
     windowElem.append(
       renderTabBar({
+        closeShortcuts: options.closeShortcuts,
         onClosePopup: options.onClosePopup,
         onShowSettings: options.onShowSettings,
         onSwitchDictionary: options.onSwitchDictionary,
         onTogglePin: options.onTogglePin,
+        pinShortcuts: options.pinShortcuts,
         queryResult: result,
         selectedTab: options.dictToShow,
       })
@@ -233,7 +237,7 @@ export function renderPopup(
         'div',
         { class: 'close-button-wrapper' },
         contentWrapper,
-        renderCloseButton(options.onClosePopup)
+        renderCloseButton(options.onClosePopup, options.closeShortcuts || [])
       )
     );
   } else {
