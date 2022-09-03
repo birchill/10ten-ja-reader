@@ -1,5 +1,7 @@
 import { MarginBox, PaddingBox, Point } from '../utils/geometry';
 
+import { getScrollOffset } from './scroll-offset';
+
 export const enum PopupPositionMode {
   Start,
   TopLeft = Start,
@@ -8,35 +10,71 @@ export const enum PopupPositionMode {
   End = BottomRight,
 }
 
+export interface PopupPosition {
+  x: number;
+  y: number;
+  constrainWidth: number | null;
+  constrainHeight: number | null;
+  direction: 'vertical' | 'horizontal' | 'disjoint';
+  side: 'before' | 'after' | 'disjoint';
+}
+
+// We have three (ok, two) possible situations:
+//
+// A) Tab bar is on the top -- we want to fix the top and left position.
+// B) Tab bar is on the left -- we want to fix the top and left position.
+//    i.e. as with A
+// C) Tab bar is on the right -- we want to fix the top and right position.
+//
+export type PopupPositionConstraints = {
+  // Note that the 'x' position here should correspond to the _right_ edge of
+  // the popup when `anchor` is `'right'`.
+  x: number;
+  y: number;
+  anchor: 'top' | 'left' | 'right';
+  direction: 'vertical' | 'horizontal' | 'disjoint';
+  side: 'before' | 'after' | 'disjoint';
+};
+
 // Minimum space to leave between the edge of the pop-up and the edge of the
 // stage.
 const GUTTER = 5;
 
+// Minimum space to leave between the edge of the pop-up and the cursor when in
+// interactive mode.
+//
+// We don't want this value to be too large or else it becomes too hard to move
+// the mouse over the popup.
+const INTERACTIVE_MARGIN_TO_POPUP = 10;
+
+// Minimum space to leave between the edge of the pop-up and the cursor when we
+// are NOT in interactive mode. In future we'd probably like to make this the
+// same value as INTERACTIVE_MARGIN_TO_POPUP but for now it's safest to keep
+// things as they are.
+const NON_INTERACTIVE_MARGIN_TO_POPUP = 25;
+
 export function getPopupPosition({
   cursorClearance,
+  cursorPos,
+  fixedPosition,
+  interactive,
   isVerticalText,
-  mousePos,
   popupSize,
   positionMode,
   safeArea: initialSafeArea,
   pointerType,
 }: {
   cursorClearance: MarginBox;
+  cursorPos?: Point;
+  fixedPosition?: PopupPositionConstraints;
+  interactive: boolean;
   isVerticalText: boolean;
-  mousePos?: Point;
   popupSize: { width: number; height: number };
   positionMode: PopupPositionMode;
   safeArea: PaddingBox;
   pointerType: 'cursor' | 'puck';
 }): PopupPosition {
-  let { scrollX, scrollY } = document.defaultView!;
-
-  // If we're in full screen mode, however, we should use the scroll position of
-  // the full-screen element (which is always zero?).
-  if (document.fullscreenElement) {
-    scrollX = document.fullscreenElement.scrollLeft;
-    scrollY = document.fullscreenElement.scrollTop;
-  }
+  const { scrollX, scrollY } = getScrollOffset();
 
   // Use the clientWidth (as opposed to doc.defaultView.innerWidth) since this
   // excludes the width of any scrollbars.
@@ -69,11 +107,27 @@ export function getPopupPosition({
     bottom: initialSafeArea.bottom + GUTTER,
   };
 
+  if (fixedPosition) {
+    return getFixedPosition({
+      cursorClearance,
+      cursorPos,
+      fixedPosition,
+      interactive,
+      popupSize,
+      safeArea,
+      scrollX,
+      scrollY,
+      stageWidth,
+      stageHeight,
+    });
+  }
+
   if (positionMode === PopupPositionMode.Auto) {
     return getAutoPosition({
       cursorClearance,
+      cursorPos,
+      interactive,
       isVerticalText,
-      mousePos,
       popupSize,
       safeArea,
       scrollX,
@@ -112,6 +166,8 @@ export function getPopupPosition({
         y: top,
         constrainWidth: null,
         constrainHeight: null,
+        direction: 'disjoint',
+        side: 'disjoint',
       };
 
     case PopupPositionMode.BottomRight:
@@ -120,21 +176,104 @@ export function getPopupPosition({
         y: bottom,
         constrainWidth: null,
         constrainHeight: null,
+        direction: 'disjoint',
+        side: 'disjoint',
       };
   }
 }
 
-interface PopupPosition {
-  x: number;
-  y: number;
-  constrainWidth: number | null;
-  constrainHeight: number | null;
+function getFixedPosition({
+  cursorClearance,
+  cursorPos,
+  fixedPosition,
+  interactive,
+  popupSize,
+  safeArea,
+  scrollX,
+  scrollY,
+  stageWidth,
+  stageHeight,
+}: {
+  cursorClearance: MarginBox;
+  cursorPos?: Point;
+  fixedPosition: PopupPositionConstraints;
+  interactive: boolean;
+  popupSize: { width: number; height: number };
+  safeArea: PaddingBox;
+  scrollX: number;
+  scrollY: number;
+  stageWidth: number;
+  stageHeight: number;
+}): PopupPosition {
+  // Work out our safe area in screen coordinates (as opposed to an inset).
+  let { left: safeLeft, top: safeTop } = safeArea;
+  let safeRight = stageWidth - safeArea.right;
+  let safeBottom = stageHeight - safeArea.bottom;
+
+  // Convert inputs to screen coordinates
+  const screenY = fixedPosition.y - scrollY;
+  let screenX = fixedPosition.x - scrollX;
+
+  // See if we can further constrain the area to place the popup in based on
+  // the text being highlighted.
+  const { direction, anchor, side } = fixedPosition;
+  if (direction !== 'disjoint' && side !== 'disjoint' && cursorPos) {
+    const [min, max] = getRangeForPopup({
+      axis: direction,
+      cursorClearance,
+      interactive,
+      side,
+      safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
+      target: cursorPos,
+    });
+
+    if (direction === 'vertical') {
+      safeBottom = max;
+    } else {
+      safeLeft = min;
+      safeRight = max;
+    }
+  }
+
+  // Work out if we need to constrain the height
+  //
+  // In order to be consistent with getAutoPosition, we don't constrain the
+  // height when we are not interactive
+  const constrainHeight =
+    interactive && screenY + popupSize.height > safeBottom
+      ? safeBottom - screenY
+      : null;
+
+  // The x position and width will depend on if we are anchoring to the left or
+  // right.
+  let constrainWidth: number | null;
+  if (anchor !== 'right') {
+    constrainWidth =
+      screenX + popupSize.width > safeRight ? safeRight - screenX : null;
+  } else {
+    constrainWidth =
+      screenX - popupSize.width < safeLeft ? screenX - safeLeft : null;
+    screenX =
+      constrainWidth !== null
+        ? screenX - constrainWidth
+        : screenX - popupSize.width;
+  }
+
+  return {
+    x: screenX + scrollX,
+    y: screenY + scrollY,
+    constrainWidth,
+    constrainHeight,
+    direction,
+    side,
+  };
 }
 
 function getAutoPosition({
   cursorClearance,
+  cursorPos,
+  interactive,
   isVerticalText,
-  mousePos,
   popupSize,
   safeArea,
   scrollX,
@@ -144,8 +283,9 @@ function getAutoPosition({
   pointerType,
 }: {
   cursorClearance: MarginBox;
+  cursorPos?: Point;
+  interactive: boolean;
   isVerticalText: boolean;
-  mousePos?: Point;
   popupSize: { width: number; height: number };
   safeArea: PaddingBox;
   scrollX: number;
@@ -154,10 +294,11 @@ function getAutoPosition({
   stageHeight: number;
   pointerType: 'cursor' | 'puck';
 }): PopupPosition {
-  const extendedPosition = getAutoPositionWithoutScrollOffset({
+  const extendedPosition = getScreenAutoPosition({
     cursorClearance,
+    cursorPos,
+    interactive,
     isVerticalText,
-    mousePos,
     popupSize,
     safeArea,
     stageWidth,
@@ -170,24 +311,30 @@ function getAutoPosition({
         ...extendedPosition.position,
         x: extendedPosition.position.x + scrollX,
         y: extendedPosition.position.y + scrollY,
-        // When using the cursor, the user can scroll the viewport without
-        // dismissing the popup so we don't need to constrain it.
+        // When in interactive mode, the user can scroll the popup so we can
+        // constrain the height.
         //
-        // However, if we're positioning the popup _above_ the target text, we
-        // don't want it to cover the text so we should constrain it in that
-        // case.
+        // Otherwise, we the typically allow the popup to overflow the viewport
+        // and let the user use their mouse wheel to see the rest of the
+        // popup (i.e. we remove any constraint on the height).
+        //
+        // However, if we're positioning the popup vertically _above_ the target
+        // text, we don't want it to cover the text so we should constrain it in
+        // that case too.
         constrainHeight:
-          pointerType === 'cursor' &&
-          (extendedPosition.side === 'after' ||
-            extendedPosition.axis === 'horizontal')
-            ? null
-            : extendedPosition.position.constrainHeight,
+          interactive ||
+          extendedPosition.axis === 'horizontal' ||
+          extendedPosition.side === 'before'
+            ? extendedPosition.position.constrainHeight
+            : null,
       }
     : {
         x: scrollX,
         y: scrollY,
         constrainWidth: null,
         constrainHeight: null,
+        direction: 'disjoint',
+        side: 'disjoint',
       };
 }
 
@@ -197,10 +344,11 @@ type ExtendedPopupPosition = {
   position: PopupPosition;
 };
 
-function getAutoPositionWithoutScrollOffset({
+function getScreenAutoPosition({
   cursorClearance,
+  cursorPos,
+  interactive,
   isVerticalText,
-  mousePos,
   popupSize,
   safeArea,
   stageWidth,
@@ -208,8 +356,9 @@ function getAutoPositionWithoutScrollOffset({
   pointerType,
 }: {
   cursorClearance: MarginBox;
+  cursorPos?: Point;
+  interactive: boolean;
   isVerticalText: boolean;
-  mousePos?: Point;
   popupSize: { width: number; height: number };
   safeArea: PaddingBox;
   stageWidth: number;
@@ -217,13 +366,12 @@ function getAutoPositionWithoutScrollOffset({
   pointerType: 'cursor' | 'puck';
 }): ExtendedPopupPosition | undefined {
   // Set up a few useful variables...
-  const x = mousePos?.x || 0;
-  const y = mousePos?.y || 0;
+  const x = cursorPos?.x || 0;
+  const y = cursorPos?.y || 0;
 
   const { left: safeLeft, top: safeTop } = safeArea;
   const safeRight = stageWidth - safeArea.right;
   const safeBottom = stageHeight - safeArea.bottom;
-  const marginToPopup = 25;
 
   // Generate the possible position sizes in order of preference.
   //
@@ -250,7 +398,7 @@ function getAutoPositionWithoutScrollOffset({
       const position = calculatePosition({
         axis,
         cursorClearance,
-        marginToPopup,
+        interactive,
         popupSize,
         safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
         target: { x, y },
@@ -314,7 +462,7 @@ function getAutoPositionWithoutScrollOffset({
 function calculatePosition({
   axis,
   cursorClearance,
-  marginToPopup,
+  interactive,
   popupSize,
   safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
   side,
@@ -322,7 +470,7 @@ function calculatePosition({
 }: {
   axis: 'vertical' | 'horizontal';
   cursorClearance: MarginBox;
-  marginToPopup: number;
+  interactive: boolean;
   popupSize: { width: number; height: number };
   safeBoundaries: {
     safeLeft: number;
@@ -337,7 +485,33 @@ function calculatePosition({
   //
   // (e.g. horizontal position when we are laying the popup out on the vertical
   // axis).
-  const idealCrossPos = axis === 'vertical' ? target.x : target.y;
+
+  // We want the popup to actually be positioned slight "before" the target
+  // position so that if we are showing an arrow from the popup to the target
+  // position there is enough slack to position the arrow inside the popup and
+  // still have it line up with the target.
+  //
+  // Graphically,
+  //
+  //    x <-- target
+  //  ╭^─────╮
+  //   ⏟
+  //   Cross offset
+  //
+  // At minimum we want to push the popup "back" by the width of the popup
+  // rounding and half the width of the arrow.
+  //
+  // We _could_ fetch those values from computed style but we'd rather avoid
+  // adding even more layout flushes so we just fudge it.
+  //
+  // At the time of writing the rounding is 5px and the arrow width is 20px, or
+  // actually 28px if you add in the margin we allow for the shadow.
+  //
+  // That would give us an offset of 5px + 28px / 2 = 19px so we just use 20px
+  // to allow us some leeway if those values change marginally.
+  const CROSS_OFFSET = 20;
+  const idealCrossPos =
+    axis === 'vertical' ? target.x - CROSS_OFFSET : target.y - CROSS_OFFSET;
   const crossPopupSize =
     axis === 'vertical' ? popupSize.width : popupSize.height;
   const maxCrossExtent = axis === 'vertical' ? safeRight : safeBottom;
@@ -358,7 +532,7 @@ function calculatePosition({
   const [axisMin, axisMax] = getRangeForPopup({
     axis,
     cursorClearance,
-    marginToPopup,
+    interactive,
     side,
     safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
     target,
@@ -387,26 +561,30 @@ function calculatePosition({
         y: axisPos,
         constrainWidth: constrainCrossExtent,
         constrainHeight: constrainAxisExtent,
+        direction: axis,
+        side,
       }
     : {
         x: axisPos,
         y: crossPos,
         constrainWidth: constrainAxisExtent,
         constrainHeight: constrainCrossExtent,
+        direction: axis,
+        side,
       };
 }
 
 function getRangeForPopup({
   axis,
   cursorClearance,
-  marginToPopup,
+  interactive,
   side,
   safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
   target,
 }: {
   axis: 'vertical' | 'horizontal';
   cursorClearance: MarginBox;
-  marginToPopup: number;
+  interactive: boolean;
   safeBoundaries: {
     safeLeft: number;
     safeRight: number;
@@ -417,6 +595,9 @@ function getRangeForPopup({
   target: Point;
 }): [min: number, max: number] {
   const targetAxisPos = axis === 'vertical' ? target.y : target.x;
+  const marginToPopup = interactive
+    ? INTERACTIVE_MARGIN_TO_POPUP
+    : NON_INTERACTIVE_MARGIN_TO_POPUP;
 
   let minAxisExtent;
   let maxAxisExtent;

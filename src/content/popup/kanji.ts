@@ -27,8 +27,13 @@ export function renderKanjiEntry({
 
   // -- The kanji itself
   const kanjiDiv = html('div', { class: 'kanji', lang: 'ja' }, entry.c);
+  let lastPointerType = 'touch';
+  kanjiDiv.addEventListener('pointerup', (evt) => {
+    lastPointerType = evt.pointerType;
+  });
   kanjiDiv.addEventListener('click', () => {
-    options.onStartCopy?.(0);
+    const trigger = lastPointerType === 'mouse' ? 'mouse' : 'touch';
+    options.onStartCopy?.(0, trigger);
   });
   topPart.append(kanjiDiv);
 

@@ -115,18 +115,6 @@
     "message": "由于词典数据正在更新，当前显示的数据不完整。",
     "description": "Status bar message shown while the dictionary is being updated and only a snapshot can be shown."
   },
-  "content_hint_switch_dict_keys_1": {
-    "message": "提示：您可以按 %KEY% 查看下一个词典",
-    "description": "Message displayed at the bottom of the pop-up instructing the user which keys to use to switch keyboards when there is only one such key configured"
-  },
-  "content_hint_switch_dict_keys_2": {
-    "message": "提示：您可以按 %KEY% 或 %KEY% 查看下一个词典",
-    "description": "Message displayed at the bottom of the pop-up instructing the user which keys to use to switch keyboards when there are two keys configured"
-  },
-  "content_hint_switch_dict_keys_3": {
-    "message": "提示：您可以通过按 %KEY%，%KEY% 或 %KEY% 查看下一个词典",
-    "description": "Message displayed at the bottom of the pop-up instructing the user which keys to use to switch keyboards when there are three keys configured"
-  },
   "content_kanji_base_radical": {
     "message": "从​$char$​（​$readings$​）",
     "description": "The string used to describe the base radical",
@@ -1677,6 +1665,16 @@
     "message": "用于触摸屏的圆形按钮",
     "description": "Heading for the section containing options controlling the lookup puck used on touch devices"
   },
+  "options_mouse_interactivity_disable": {
+    "message": "禁用"
+  },
+  "options_mouse_interactivity_enable": {
+    "message": "启用"
+  },
+  "options_mouse_interactivity_label": {
+    "message": "鼠标操作",
+    "description": "Label for section for enabling mouse/touch interactivity in the popup"
+  },
   "options_name_data_name": {
     "message": "名字数据库",
     "description": "The name for the name database data set"
@@ -1699,6 +1697,9 @@
     "message": "无法检查更新，因为没有连接到互联网。一旦设备联网，10ten reader 会再次检查更新。",
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
+  "options_popup_close_popup": {
+    "message": "关闭弹出窗口"
+  },
   "options_popup_copy_entry": {
     "message": "复制词条"
   },
@@ -1711,6 +1712,10 @@
   "options_popup_copy_word_kanji": {
     "message": "复制词语或汉字"
   },
+  "options_popup_interactivity_heading": {
+    "message": "窗口交互",
+    "description": "Heading for the section for configuring popup interactivity features"
+  },
   "options_popup_kanji_lookup": {
     "message": "只查询汉字结果",
     "description": "Label for the key to force looking up the kanji dictionary only"
@@ -1721,6 +1726,9 @@
   "options_popup_move_popup_down_or_up": {
     "message": "向上、下移动弹出窗口",
     "description": "Note that it is important that down comes before up"
+  },
+  "options_popup_pin_popup": {
+    "message": "固定弹出窗口"
   },
   "options_popup_start_copy": {
     "message": "进入复制模式"
@@ -1850,6 +1858,10 @@
   "popup_close_label": {
     "message": "关闭",
     "description": "The aria-label associated with the button to close the popup"
+  },
+  "popup_pin_label": {
+    "message": "固定弹出窗口",
+    "description": "The aria-label associated with the button to pin the popup"
   },
   "popup_settings_label": {
     "message": "设置",

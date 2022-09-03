@@ -1,6 +1,8 @@
 import { discriminator } from '@birchill/discriminator';
 import * as s from 'superstruct';
 
+import { PopupState, PopupStateSchema } from '../content/popup-state';
+
 export const BackgroundMessageSchema = discriminator('type', {
   disable: s.type({ frame: s.literal('*') }),
   enable: s.type({
@@ -16,7 +18,10 @@ export const BackgroundMessageSchema = discriminator('type', {
   //
 
   // Popup showing status
-  popupShown: s.type({ frame: s.union([s.literal('children'), s.number()]) }),
+  popupShown: s.type({
+    frame: s.union([s.literal('children'), s.number()]),
+    state: PopupStateSchema,
+  }),
   popupHidden: s.type({ frame: s.literal('children') }),
   isPopupShowing: s.type({ frameId: s.number(), frame: s.literal('top') }),
 
@@ -49,6 +54,9 @@ export const BackgroundMessageSchema = discriminator('type', {
     }),
     frame: s.literal('top'),
   }),
+  pinPopup: s.type({ frame: s.literal('top') }),
+  unpinPopup: s.type({ frame: s.literal('top') }),
+  commitPopup: s.type({ frame: s.literal('top') }),
   clearResult: s.type({ frame: s.literal('top') }),
   nextDictionary: s.type({ frame: s.literal('top') }),
   toggleDefinition: s.type({ frame: s.literal('top') }),
@@ -71,11 +79,15 @@ export type BackgroundMessage = s.Infer<typeof BackgroundMessageSchema>;
 
 export type IndividualFrameMessage =
   | Extract<BackgroundMessage, { frame: number }>
-  | { type: 'popupShown'; frame: number | 'children' };
+  | { type: 'popupShown'; frame: number | 'children'; state: PopupState };
 // ^ This last bit is because I'm terrible at TypeScript meta programming
 
 export type ChildFramesMessage =
   | Extract<BackgroundMessage, { frame: 'children' }>
-  | { type: 'popupShown'; frame: number | 'children' };
+  | {
+      type: 'popupShown';
+      frame: number | 'children';
+      state: PopupState;
+    };
 
 export type TopFrameMessage = Extract<BackgroundMessage, { frame: 'top' }>;

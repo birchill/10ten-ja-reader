@@ -119,26 +119,56 @@ fieldset {
   margin-top: 4px;
 }
 
-.toolbaricon-select {
+/*
+ * Custom radio button styles
+ */
+
+.icon-radio > input[type='radio'] {
+  display: none;
+}
+
+.icon-radio > input[type='radio']:checked + label {
+  border-color: #aaa;
+  border-radius: 5px;
+  background: #ddd;
+}
+
+.icon-radio > input[type='radio']:not(:checked) + label {
+  opacity: 0.5;
+}
+.icon-radio > input[type='radio']:not(:checked) + label:hover,
+.icon-radio > input[type='radio']:not(:checked) + label:active {
+  opacity: 1;
+}
+
+.icon-radio {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
   width: -moz-max-content;
   width: max-content;
   margin-left: auto;
   margin-right: auto;
 }
 
-.toolbaricon-select > input[type='radio'] {
-  display: none;
+.icon-radio > label {
+  border: 1px solid transparent;
+  transition: background-color 0.3s, opacity 0.3s;
+  padding: 0.5em;
+  text-align: center;
+  cursor: pointer;
+}
+
+/*
+ * Toolbar icon selection
+ */
+
+.toolbaricon-select {
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .toolbaricon-select > label {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid transparent;
-  transition: background-color 0.3s, opacity 0.3s;
-  padding: 0.5em;
   min-width: 80px;
 }
 
@@ -146,19 +176,6 @@ fieldset {
   width: 48px;
   height: 48px;
   filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.25));
-}
-
-.toolbaricon-select > input[type='radio']:checked + label {
-  border-color: grey;
-  background: lightgrey;
-}
-
-.toolbaricon-select > input[type='radio']:not(:checked) + label {
-  opacity: 0.5;
-}
-.toolbaricon-select > input[type='radio']:not(:checked) + label:hover,
-.toolbaricon-select > input[type='radio']:not(:checked) + label:active {
-  opacity: 1;
 }
 
 .panel-section-grid {
@@ -195,13 +212,12 @@ fieldset.bordered {
   font-style: italic;
 }
 
+/*
+ * Popup-style selection
+ */
+
 .popupstyle-select {
-  display: grid;
   grid-template-columns: 1fr 1fr;
-  width: -moz-max-content;
-  width: max-content;
-  margin-left: auto;
-  margin-right: auto;
   margin-bottom: 1em;
 }
 
@@ -211,15 +227,7 @@ fieldset.bordered {
   }
 }
 
-.popupstyle-select > input[type='radio'] {
-  display: none;
-}
-
 .popupstyle-select > label {
-  border: 1px solid transparent;
-  transition: border-color 0.3s, opacity 0.3s;
-  padding: 0.5em;
-  text-align: center;
   min-width: 200px;
 }
 
@@ -237,19 +245,6 @@ fieldset.bordered {
   mask: linear-gradient(-45deg, black 50%, transparent 50%);
 }
 
-.popupstyle-select > input[type='radio']:checked + label {
-  border-color: grey;
-  background: lightgrey;
-}
-
-.popupstyle-select > input[type='radio']:not(:checked) + label {
-  opacity: 0.5;
-}
-.popupstyle-select > input[type='radio']:not(:checked) + label:hover,
-.popupstyle-select > input[type='radio']:not(:checked) + label:active {
-  opacity: 1;
-}
-
 .popup-preview {
   position: static;
   display: inline-block;
@@ -258,13 +253,37 @@ fieldset.bordered {
   width: revert !important;
 }
 
+/*
+ * Interactivity selection
+ */
+
+.interactivity-select {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (max-width: 300px) {
+  .interactivity-select {
+    grid-template-columns: 1fr;
+  }
+}
+
+.interactivity-select > label .tabicon {
+  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.25));
+  width: 200px;
+  height: 150px;
+}
+
+.interactivity-select > label .text-label {
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+/*
+ * Tab side selection
+ */
+
 .tabdisplay-select {
-  display: grid;
   grid-template-columns: repeat(4, 1fr);
-  width: -moz-max-content;
-  width: max-content;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 @media (max-width: 600px) {
@@ -279,15 +298,7 @@ fieldset.bordered {
   }
 }
 
-.tabdisplay-select > input[type='radio'] {
-  display: none;
-}
-
 .tabdisplay-select > label {
-  border: 1px solid transparent;
-  transition: background-color 0.3s, opacity 0.3s;
-  padding: 0.5em;
-  text-align: center;
   min-width: 120px;
 }
 
@@ -312,19 +323,6 @@ fieldset.bordered {
 
 .tabdisplay-select > label .text-label {
   text-align: center;
-}
-
-.tabdisplay-select > input[type='radio']:checked + label {
-  border-color: grey;
-  background: lightgrey;
-}
-
-.tabdisplay-select > input[type='radio']:not(:checked) + label {
-  opacity: 0.5;
-}
-.tabdisplay-select > input[type='radio']:not(:checked) + label:hover,
-.tabdisplay-select > input[type='radio']:not(:checked) + label:active {
-  opacity: 1;
 }
 
 /* See notes in device.ts:probablyHasPhysicalKeyboard for how we arrived at this

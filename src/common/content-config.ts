@@ -11,6 +11,12 @@ export interface KeyboardKeys {
   // The key(s) to force kanji-only lookup.
   kanjiLookup: string[];
 
+  // The key(s) to close the popup.
+  closePopup: string[];
+
+  // The key(s) to pin the popup.
+  pinPopup: string[];
+
   // The key(s) to move the popup up.
   movePopupUp: string[];
 
@@ -38,10 +44,6 @@ export interface ContentConfig {
   // for the rate.
   fx: { currency: string; rate: number; timestamp: number } | undefined;
 
-  // True if the user has successfully switched dictionaries (meaning we don't
-  // need to tell them how).
-  hasSwitchedDictionary: boolean;
-
   // Modifier keys which must be held down in order for the pop-up to shown.
   //
   // This should be a Set but Chrome can't send Sets by sendMessage :(
@@ -60,6 +62,9 @@ export interface ContentConfig {
 
   // Prevents highlighting text on hover
   noTextHighlight: boolean;
+
+  // If the popup should be interactive (e.g. response to mouse clicks)
+  popupInteractive: boolean;
 
   // The theme in use, e.g. 'blue'.
   popupStyle: string;

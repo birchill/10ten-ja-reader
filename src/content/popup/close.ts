@@ -3,11 +3,19 @@ import { browser } from 'webextension-polyfill-ts';
 import { html } from '../../utils/builder';
 import { renderCross } from './icons';
 
-export function renderCloseButton(onClosePopup: () => void): HTMLElement {
+export function renderCloseButton(
+  onClosePopup: () => void,
+  closeShortcuts: ReadonlyArray<string>
+): HTMLElement {
+  const label = browser.i18n.getMessage('popup_close_label');
+  const title = closeShortcuts.length
+    ? `${label} (${closeShortcuts.join(' / ')})`
+    : label;
   const closeButton = html(
     'button',
     {
       'aria-label': browser.i18n.getMessage('popup_close_label'),
+      title,
       class: 'close-button',
       type: 'button',
     },

@@ -1,14 +1,17 @@
 import { Rect } from '../utils/geometry';
-
 import { isTextInputNode } from '../utils/dom-utils';
+
 import { getGdocsRangeBboxes, isGdocsSpan } from './gdocs-canvas';
 import { TextRange } from './text-range';
+import { getContentType } from './content-type';
 
 /// Properties about the target element from which we started lookup needed
 /// so that we can correctly position the popup in a way that doesn't overlap
 /// the element.
 export type TargetProps = {
+  contentType: 'text' | 'image';
   fromPuck: boolean;
+  fromTouch: boolean;
   hasTitle: boolean;
   isVerticalText: boolean;
   textBoxSizes?: SelectionSizes;
@@ -24,6 +27,7 @@ export type TargetProps = {
 // just return a set of standard sizes and let the topmost window choose the
 // best fit.
 export type SelectionSizes = {
+  1: Rect;
   4: Rect;
   8: Rect;
   12: Rect;
@@ -32,20 +36,24 @@ export type SelectionSizes = {
 
 // Guaranteed to be arranged in ascending order
 export const textBoxSizeLengths: ReadonlyArray<keyof SelectionSizes> = [
-  4, 8, 12, 16,
+  1, 4, 8, 12, 16,
 ];
 
 export function getTargetProps({
   fromPuck,
+  fromTouch,
   target,
   textRange,
 }: {
   fromPuck: boolean;
+  fromTouch: boolean;
   target: Element;
   textRange: TextRange | undefined;
 }): TargetProps {
   return {
+    contentType: getContentType(target),
     fromPuck,
+    fromTouch,
     hasTitle: !!((target as HTMLElement) || null)?.title,
     textBoxSizes: textRange
       ? getInitialBboxOfTextSelection(textRange)

@@ -54,8 +54,24 @@
   padding-right: 4px;
   padding-bottom: 4px;
 
-  overflow-y: hidden;
+  overflow-y: visible;
+  pointer-events: all;
+}
+
+.container:not(.interactive) {
   pointer-events: none;
+}
+
+/*
+ * Variation on the interactive container when it is not yet actually
+ * interactive.
+ */
+.container.interactive.ghost {
+  pointer-events: none;
+}
+
+.container.interactive.ghost .window {
+  border-style: dashed;
 }
 
 .container.hidden {
@@ -69,8 +85,8 @@
 }
 
 /*
- * On touch devices we make the window scrollable, but for non-touch
- * devices we just fade it out.
+ * When the popup is interactive we make the window scrollable, but for
+ * non-interactive cases we just fade it out.
  *
  * To make the window scrollable we need to set the max-height on the
  * window itself.
@@ -79,11 +95,11 @@
  * on the container so that the mask doesn't end up clipping the drop shadow
  * on the popup.
  */
-.container.touch .window {
+.container.interactive .window {
   max-height: var(--max-height, none);
 }
 
-.container:not(.touch) {
+.container:not(.interactive) {
   max-height: var(--max-height, none);
   -webkit-mask-image: linear-gradient(
     to bottom,
@@ -123,14 +139,14 @@
   width: min(500px, calc(100vw - 30px));
 }
 
-.container:not(.hidden).touch .window {
+.container:not(.hidden).interactive .window {
   display: flex;
   flex-direction: column;
 }
 
-.container.touch .content {
+.container.interactive .content {
   overflow: auto;
-  pointer-events: all;
+  overscroll-behavior: contain;
 }
 
 @supports (scrollbar-width: thin) {
@@ -175,7 +191,6 @@
   background: var(--cell-highlight-bg);
   color: var(--cell-highlight-fg);
 
-  pointer-events: auto;
   /* Make sure we are above the content area. This is mostly needed when we are
    * showing the copy overlay since the entry data might overflow its region in
    * that case. */
@@ -197,7 +212,7 @@
   user-select: none;
 }
 
-.container.touch .tabs .tab {
+.container.interactive .tabs .tab {
   font-size: 1em;
 }
 
@@ -228,7 +243,7 @@
   }
 }
 
-.container.touch .tabs .tab a {
+.container.interactive .tabs .tab a {
   padding: 0.7em 18px;
 }
 
@@ -242,7 +257,7 @@
   fill: currentcolor;
 }
 
-.container.touch .tabs .tab a .icon {
+.container.interactive .tabs .tab a .icon {
   width: 14px;
   height: 14px;
 }
@@ -273,12 +288,14 @@
   pointer-events: none;
 }
 
-.container:not(.touch) .settings,
-.container:not(.touch) .close {
+.container:not(.interactive) .settings,
+.container:not(.interactive) .pin,
+.container:not(.interactive) .close {
   display: none;
 }
 
 .tab-bar .settings,
+.tab-bar .pin,
 .tab-bar .close {
   flex-shrink: 0;
   align-self: center;
@@ -304,6 +321,7 @@
  * b) The close button is a child of the close-button-wrapper
  */
 .settings-button,
+.pin-button,
 .close .close-button {
   appearance: none;
   border: none;
@@ -313,21 +331,26 @@
   color: var(--text-color);
 }
 
-.settings-button {
+.settings-button,
+.pin-button {
+  cursor: pointer;
   background: transparent;
 }
 
 .settings-button:hover,
+.pin-button:hover,
 .close .close-button {
   background: var(--bg-color);
 }
 
 .settings-button:hover,
+.pin-button:hover,
 .close .close-button:hover {
   filter: brightness(1.1);
 }
 
 .settings-button svg,
+.pin-button svg,
 .close .close-button svg {
   display: block;
   width: 15px;
@@ -336,10 +359,12 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-opacity: 0.7;
+  fill-opacity: 0.7;
   fill: none;
 }
 
-.settings-button svg {
+.settings-button svg,
+.pin-button svg {
   stroke-width: 2px;
 }
 
@@ -348,8 +373,14 @@
 }
 
 .settings-button:hover svg,
+.pin-button:hover svg,
 .close .close-button:hover svg {
   stroke-opacity: 1;
+  fill-opacity: 1;
+}
+
+.container.pinned .pin-button svg path {
+  fill: currentColor;
 }
 
 /* Tab bar on the side */
@@ -647,7 +678,7 @@
 }
 
 @media (hover) {
-  .container.touch .entry:hover {
+  .container.interactive .entry:hover {
     color: var(--selected-highlight);
     background: var(--selected-bg);
     border-radius: 2px;
@@ -656,7 +687,7 @@
      * using the keyboard. */
     filter: brightness(1.2);
   }
-  .container.touch .entry.-selected:hover {
+  .container.interactive .entry.-selected:hover {
     /* Let keyboard selection override the hover state */
     filter: none;
   }
@@ -668,7 +699,7 @@
 }
 
 @media (hover) {
-  .container.touch .entry:hover .w-def .tag {
+  .container.interactive .entry:hover .w-def .tag {
     color: var(--selected-tag-color);
     border-color: var(--selected-tag-border) !important;
   }
@@ -679,7 +710,7 @@
 }
 
 @media (hover) {
-  .container.touch .entry:hover .w-kanji {
+  .container.interactive .entry:hover .w-kanji {
     color: var(--selected-highlight);
   }
 }
@@ -690,8 +721,8 @@
 }
 
 @media (hover) {
-  .container.touch .entry:hover .w-kana,
-  .container.touch .entry:hover .w-romaji {
+  .container.interactive .entry:hover .w-kana,
+  .container.interactive .entry:hover .w-romaji {
     color: var(--selected-reading-highlight);
   }
 }
@@ -702,8 +733,8 @@
 }
 
 @media (hover) {
-  .container.touch .entry:hover .w-def,
-  .container.touch .entry:hover .w-def * {
+  .container.interactive .entry:hover .w-def,
+  .container.interactive .entry:hover .w-def * {
     color: var(--selected-def-color);
   }
 }
@@ -713,16 +744,16 @@
 }
 
 @media (hover) {
-  .container.touch .entry:hover .w-conj {
+  .container.interactive .entry:hover .w-conj {
     color: var(--selected-conj-color);
   }
 }
 
 .window .entry.-flash {
-  animation: flash 0.5s;
+  animation: tenten-ja-flash 0.5s;
 }
 
-@keyframes flash {
+@keyframes tenten-ja-flash {
   from {
     background: white;
     color: white;
@@ -801,11 +832,12 @@
 }
 
 @media (hover) {
-  .container.touch .kanji:hover {
+  .container.interactive .kanji:hover {
     color: var(--selected-highlight);
     background: var(--selected-bg);
     border-radius: 2px;
     filter: brightness(1.2);
+    cursor: pointer;
   }
 }
 
@@ -817,7 +849,7 @@
 
 .window.-copy-finished .kanji-table .kanji,
 .window.-copy-error .kanji-table .kanji {
-  animation: flash 0.5s;
+  animation: tenten-ja-flash 0.5s;
 }
 
 /* kanji: readings */
@@ -1205,7 +1237,7 @@
 }
 
 /*
- * Copy overlay for touch screens
+ * Copy overlay for when the popup is interactive
  */
 .copy-overlay {
   box-sizing: border-box;
@@ -1283,6 +1315,7 @@
   border: 0;
   font: inherit;
   color: inherit;
+  cursor: pointer;
 }
 
 .copy-overlay .copy-options li button {
@@ -1361,4 +1394,115 @@
 .-stack > * {
   grid-column: 1 / -1;
   grid-row: stack-start / stack-end;
+}
+
+/*
+ * Arrow
+ */
+.arrow {
+  position: absolute;
+  overflow: hidden;
+
+  /* Desired width of the arrow */
+  --arrow-width: 20px;
+
+  /*
+   * Amount of room to allow for the shadow.
+   */
+  --shadow-radius: 8px;
+  --shadow-margin: calc(var(--shadow-radius) / 2);
+
+  /*
+   * Crop the arrow region to show half the arrow plus allow room for margins.
+   */
+  width: calc(var(--arrow-width) + 2 * var(--shadow-margin));
+  height: calc(var(--arrow-width) / 2 + var(--shadow-margin));
+
+  z-index: 2147483647;
+}
+
+.arrow.-left,
+.arrow.-right {
+  width: calc(var(--arrow-width) / 2 + var(--shadow-margin));
+  height: calc(var(--arrow-width) + 2 * var(--shadow-margin));
+}
+
+.arrow::before {
+  position: absolute;
+  content: '';
+
+  /* Make sure the border is included in the size. */
+  box-sizing: border-box;
+
+  /* Don't inherit any rounded corners. */
+  border-radius: 0;
+
+  /*
+   * When the box is rotated, it should have width <arrow-width>. That makes the
+   * length of one side of the box equal to:
+   *
+   *    (<arrow-width> / 2) / sin 45
+   */
+  --sin-45: 0.707106781;
+  --square-side: calc(var(--arrow-width) / 2 / var(--sin-45));
+  width: var(--square-side);
+  height: var(--square-side);
+
+  /*
+   * The rotated square will overshoot the left / top side and need to be
+   * shifted in by:
+   *
+   *   (<arrow-width> - <square side>) / 2
+   *
+   * But we also want to shift it in so that the box-shadow is not clipped when
+   * we clip the parent so we add a suitable margin for that.
+   */
+  --overhang: calc((var(--arrow-width) - var(--square-side)) / 2);
+  margin-left: calc(var(--overhang) + var(--shadow-margin));
+  margin-top: calc(var(--overhang) + var(--shadow-margin));
+
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+}
+
+.arrow.-bottom {
+  margin-top: -1px;
+}
+
+.arrow.-bottom::before {
+  transform: rotate(45deg);
+  margin-top: calc(var(--square-side) / -2);
+  box-shadow: 0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
+    2px 2px 1px rgba(100, 100, 100, 0.15),
+    4px 4px 8px rgba(100, 100, 100, 0.15);
+}
+
+.arrow.-top {
+  margin-top: 1px;
+}
+
+.arrow.-top::before {
+  transform: rotate(225deg);
+  box-shadow: 0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
+    -1px 2px 1px rgba(100, 100, 100, 0.15);
+}
+
+.arrow.-right {
+  margin-left: -1px;
+}
+
+.arrow.-right::before {
+  transform: rotate(225deg);
+  margin-left: calc(var(--square-side) / -2);
+  box-shadow: 0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
+    -2px 2px 1px rgba(100, 100, 100, 0.15),
+    -2px 2px 8px rgba(100, 100, 100, 0.15);
+}
+
+.arrow.-left {
+  margin-left: 1px;
+}
+
+.arrow.-left::before {
+  transform: rotate(45deg);
 }

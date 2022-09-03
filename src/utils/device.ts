@@ -59,3 +59,9 @@ export function getHoverCapabilityMql(): MediaQueryList | undefined {
   // The undefined case here is just for the sake of our unit tests.
   return window.matchMedia ? window.matchMedia('(hover: hover)') : undefined;
 }
+
+export function getMouseCapabilityMql(): MediaQueryList | undefined {
+  return window.matchMedia
+    ? window.matchMedia('(hover: hover) and (pointer: fine)')
+    : undefined;
+}

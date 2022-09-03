@@ -7,6 +7,7 @@ import {
 import { isTextInputNode, isTextNode, SVG_NS } from '../utils/dom-utils';
 import { bboxIncludesPoint, Point } from '../utils/geometry';
 import { isChromium } from '../utils/ua-utils';
+import { getContentType } from './content-type';
 
 import { getTextFromAnnotatedCanvas, isGdocsOverlayElem } from './gdocs-canvas';
 import { extractGetTextMetadata, lookForMetadata, SelectionMeta } from './meta';
@@ -714,7 +715,7 @@ function getTextFromTextNode({
   let node: CharacterData = startNode;
   let offset: number = startOffset;
   do {
-    const nodeText = node.data.substr(offset);
+    const nodeText = node.data.substring(offset);
     const textStart = nodeText.search(/\S/);
     if (textStart !== -1) {
       offset += textStart;
@@ -922,7 +923,7 @@ function getTextFromRandomElement({
 
   // We divide the world into two types of elements: image-like elements and the
   // rest which we presume to be "text" elements.
-  const isImage = ['IMG', 'PICTURE', 'VIDEO'].includes(elem.tagName);
+  const isImage = getContentType(elem) === 'image';
   if (isImage && !matchImages) {
     return null;
   } else if (!isImage && !matchText) {

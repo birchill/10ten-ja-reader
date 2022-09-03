@@ -9,13 +9,14 @@ import {
 import Bugsnag from '@bugsnag/browser';
 import Browser, { browser } from 'webextension-polyfill-ts';
 
+import { CopyKeys, CopyNextKeyStrings } from '../common/copy-keys';
 import { Config, DEFAULT_KEY_SETTINGS } from '../common/config';
 import {
   AccentDisplay,
   PartOfSpeechDisplay,
   TabDisplay,
 } from '../common/content-config';
-import { CopyKeys, CopyNextKeyStrings } from '../common/copy-keys';
+import { getLocalizedDataSeriesLabel } from '../common/data-series-labels';
 import { dbLanguageMeta, isDbLanguageId } from '../common/db-languages';
 import {
   cancelDbUpdate,
@@ -30,6 +31,7 @@ import {
 import { renderStar } from '../content/popup/icons';
 import { startBugsnag } from '../utils/bugsnag';
 import { html } from '../utils/builder';
+import { getMouseCapabilityMql } from '../utils/device';
 import { empty } from '../utils/dom-utils';
 import { isObject } from '../utils/is-object';
 import {
@@ -44,7 +46,6 @@ import { getThemeClass } from '../utils/themes';
 
 import { Command, CommandParams, isValidKey } from './commands';
 import { translateDoc } from './l10n';
-import { getLocalizedDataSeriesLabel } from '../common/data-series-labels';
 
 startBugsnag();
 
@@ -77,6 +78,12 @@ function completeForm() {
     .addEventListener('change', () => {
       setTabDisplayTheme(config.popupStyle);
     });
+
+  const mouseCapababiltyMql = getMouseCapabilityMql();
+  toggleMouseInteractivityVisibility(mouseCapababiltyMql?.matches ?? true);
+  mouseCapababiltyMql?.addEventListener('change', (ev) => {
+    toggleMouseInteractivityVisibility(ev.matches);
+  });
 
   // Keyboard
   configureCommands();
@@ -152,6 +159,16 @@ function completeForm() {
       .value as PartOfSpeechDisplay;
     renderPopupStyleSelect();
   });
+
+  const mouseInteractivityOptions = Array.from(
+    document.querySelectorAll('input[type=radio][name=mouseInteractivity]')
+  );
+  for (const option of mouseInteractivityOptions) {
+    option.addEventListener('change', (event) => {
+      const popupInteractive = (event.target as HTMLInputElement).value;
+      config.popupInteractive = popupInteractive === 'enable';
+    });
+  }
 
   const tabDisplayOptions = Array.from(
     document.querySelectorAll('input[type=radio][name=tabDisplay]')
@@ -311,7 +328,9 @@ function renderPopupPreview(theme: string): HTMLElement {
 
 function setTabDisplayTheme(theme: string) {
   const tabIcons = Array.from(
-    document.querySelectorAll('.tabdisplay-select .tabicon')
+    document.querySelectorAll(
+      '.interactivity-select .tabicon, .tabdisplay-select .tabicon'
+    )
   );
 
   const themeClass = getThemeClass(theme);
@@ -323,6 +342,17 @@ function setTabDisplayTheme(theme: string) {
     }
     tabIcon.classList.add(themeClass);
   }
+}
+
+function toggleMouseInteractivityVisibility(visible: boolean) {
+  const mouseInteractivitySection = document.getElementById(
+    'mouse-interactivity-section'
+  )?.parentElement;
+  if (!mouseInteractivitySection) {
+    return;
+  }
+
+  mouseInteractivitySection.style.display = visible ? 'revert' : 'none';
 }
 
 function renderCurrencyList(
@@ -790,6 +820,9 @@ function fillVals() {
   optform.highlightText.checked = !config.noTextHighlight;
   optform.contextMenuEnable.checked = config.contextMenuEnable;
   optform.showKanjiComponents.checked = config.showKanjiComponents;
+  optform.mouseInteractivity.value = config.popupInteractive
+    ? 'enable'
+    : 'disable';
   optform.popupStyle.value = config.popupStyle;
   optform.tabDisplay.value = config.tabDisplay;
   optform.toolbarIcon.value = config.toolbarIcon;

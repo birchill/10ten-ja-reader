@@ -14,7 +14,7 @@ import Bugsnag from '@bugsnag/browser';
 import { browser } from 'webextension-polyfill-ts';
 
 import { FxLocalData, getLocalFxData } from '../background/fx-data';
-import { getHoverCapabilityMql } from '../utils/device';
+import { getHoverCapabilityMql, getMouseCapabilityMql } from '../utils/device';
 import { isObject } from '../utils/is-object';
 import { stripFields } from '../utils/strip-fields';
 
@@ -63,12 +63,12 @@ interface Settings {
   contextMenuEnable?: boolean;
   dictLang?: DbLanguageId;
   fxCurrency?: string;
-  hasSwitchedDictionary?: boolean;
   holdToShowKeys?: string;
   holdToShowImageKeys?: string;
   kanjiReferencesV2?: KanjiReferenceFlagsV2;
   keys?: Partial<StoredKeyboardKeys>;
   localSettings?: {
+    popupInteractive?: boolean;
     showPuck?: 'show' | 'hide';
   };
   noTextHighlight?: boolean;
@@ -119,6 +119,18 @@ export const DEFAULT_KEY_SETTINGS: KeySetting[] = [
     l10nKey: 'options_popup_toggle_definition',
   },
   {
+    name: 'closePopup',
+    keys: ['Esc', 'x'],
+    enabledKeys: ['Esc'],
+    l10nKey: 'options_popup_close_popup',
+  },
+  {
+    name: 'pinPopup',
+    keys: ['Alt', 'Ctrl', 'Space'],
+    enabledKeys: ['Ctrl'],
+    l10nKey: 'options_popup_pin_popup',
+  },
+  {
     name: 'movePopupDownOrUp',
     keys: ['j,k'],
     enabledKeys: [],
@@ -149,6 +161,7 @@ export class Config {
   private changeListeners: ChangeCallback[] = [];
   private previousDefaultLang: DbLanguageId;
   private hoverCapabilityMql: MediaQueryList | undefined;
+  private mouseCapabilityMql = getMouseCapabilityMql();
 
   constructor() {
     this.readyPromise = this.readSettings().then(async () => {
@@ -489,21 +502,6 @@ export class Config {
       : undefined;
   }
 
-  // hasSwitchedDictionary: Defaults to false
-
-  get hasSwitchedDictionary(): boolean {
-    return !!this.settings.hasSwitchedDictionary;
-  }
-
-  setHasSwitchedDictionary() {
-    if (this.settings.hasSwitchedDictionary) {
-      return;
-    }
-
-    this.settings.hasSwitchedDictionary = true;
-    void browser.storage.sync.set({ hasSwitchedDictionary: true });
-  }
-
   // holdToShowKeys: Defaults to null
 
   get holdToShowKeys(): string | null {
@@ -638,7 +636,30 @@ export class Config {
 
   get keys(): StoredKeyboardKeys {
     const setValues = this.settings.keys || {};
-    return { ...this.getDefaultEnabledKeys(), ...setValues };
+    const keys = { ...this.getDefaultEnabledKeys(), ...setValues };
+
+    // If there is no key set for the pin popup key, but there _is_ a suitable
+    // hold-to-show key set, we should use that as the default value.
+    //
+    // (Note that all this complexity might be meaningless. At least on Firefox
+    // on Windows, no one in their right mind would configure Alt as their
+    // hold-to-show key. Every time you release it the menu pops up!)
+    if (!('pinPopup' in setValues)) {
+      // Hold-to-show keys contains a string like `Alt+Ctrl` but we can only
+      // re-use the hold-to-show keys when it's a single item like 'Alt'.
+      const holdToShowKeys = this.holdToShowKeys?.split('+');
+      if (holdToShowKeys?.length === 1) {
+        const holdToShowKey = holdToShowKeys[0];
+        const availableKeys = DEFAULT_KEY_SETTINGS.find(
+          (k) => k.name === 'pinPopup'
+        );
+        if (availableKeys?.keys.includes(holdToShowKey)) {
+          keys.pinPopup = [holdToShowKey];
+        }
+      }
+    }
+
+    return keys;
   }
 
   get keysNormalized(): KeyboardKeys {
@@ -652,6 +673,7 @@ export class Config {
         ],
         [[], []]
       );
+
     return {
       ...stripFields(storedKeys, ['movePopupDownOrUp']),
       movePopupDown: down,
@@ -685,6 +707,28 @@ export class Config {
 
     this.settings.noTextHighlight = value;
     void browser.storage.sync.set({ noTextHighlight: value });
+  }
+
+  // popupInteractive (local): Defaults to true
+
+  get popupInteractive(): boolean {
+    return this.settings.localSettings?.popupInteractive ?? true;
+  }
+
+  set popupInteractive(value: boolean) {
+    const storedSetting = this.settings.localSettings?.popupInteractive;
+    if (storedSetting === value) {
+      return;
+    }
+
+    const localSettings = { ...this.settings.localSettings };
+    if (value) {
+      delete localSettings.popupInteractive;
+    } else {
+      localSettings.popupInteractive = false;
+    }
+    this.settings.localSettings = localSettings;
+    void browser.storage.local.set({ settings: localSettings });
   }
 
   // popupStyle: Defaults to 'default'
@@ -924,7 +968,6 @@ export class Config {
               timestamp: this.fxData.timestamp,
             }
           : undefined,
-      hasSwitchedDictionary: this.hasSwitchedDictionary,
       holdToShowKeys: this.holdToShowKeys
         ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)
         : [],
@@ -934,6 +977,9 @@ export class Config {
       kanjiReferences: this.kanjiReferences,
       keys: this.keysNormalized,
       noTextHighlight: this.noTextHighlight,
+      popupInteractive:
+        // Force the value to true if we don't have a mouse
+        this.popupInteractive || !this.mouseCapabilityMql?.matches,
       popupStyle: this.popupStyle,
       posDisplay: this.posDisplay,
       readingOnly: this.readingOnly,

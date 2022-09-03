@@ -143,7 +143,6 @@ describe('Config', () => {
     expect(config.contextMenuEnable).toEqual(true);
     expect(config.dictLang).toEqual('fr');
     expect(config.fxCurrency).toEqual('USD');
-    expect(config.hasSwitchedDictionary).toEqual(false);
     expect(config.holdToShowKeys).toEqual(null);
     expect(config.holdToShowImageKeys).toEqual(null);
     expect(config.kanjiReferences).toEqual([
@@ -168,6 +167,8 @@ describe('Config', () => {
       toggleDefinition: [],
       nextDictionary: ['Shift', 'Enter'],
       kanjiLookup: [],
+      closePopup: ['Esc'],
+      pinPopup: ['Ctrl'],
       movePopupDownOrUp: [],
       startCopy: ['c'],
     });
@@ -175,6 +176,8 @@ describe('Config', () => {
       toggleDefinition: [],
       nextDictionary: ['Shift', 'Enter'],
       kanjiLookup: [],
+      closePopup: ['Esc'],
+      pinPopup: ['Ctrl'],
       movePopupUp: [],
       movePopupDown: [],
       startCopy: ['c'],

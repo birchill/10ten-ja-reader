@@ -8,7 +8,15 @@ app.
 
 ## [Unreleased]
 
-(Nothing yet)
+- Made it possible to interact with the popup by using the mouse.
+  For example, you can change tabs or copy entries by clicking.
+  - Note that this makes the popup tabs larger and may sometimes mean the popup
+    does not dismiss as quickly.
+    This behavior can be disabled from the options page under "Popup
+    interactivity".
+- Made the popup not move position when changing tabs via touch or mouse.
+- Added a shortcut key for closing the popup (defaults to <kbd>Esc</kbd>).
+- Added a shortcut key for pinning the popup (defaults to <kbd>Ctrl</kbd>).
 
 ## [1.11.0] - 2022-08-29 (Firefox, Chrome, Thunderbird only)
 

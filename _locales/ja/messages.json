@@ -115,18 +115,6 @@
     "message": "辞書データを更新中のため、一部のデータのみ表示されています。",
     "description": "Status bar message shown while the dictionary is being updated and only a snapshot can be shown."
   },
-  "content_hint_switch_dict_keys_1": {
-    "message": "ヒント：%KEY%を押して次の辞書を表示できます",
-    "description": "Message displayed at the bottom of the pop-up instructing the user which keys to use to switch keyboards when there is only one such key configured"
-  },
-  "content_hint_switch_dict_keys_2": {
-    "message": "ヒント：%KEY%または%KEY%を押して次の辞書を表示できます",
-    "description": "Message displayed at the bottom of the pop-up instructing the user which keys to use to switch keyboards when there are two keys configured"
-  },
-  "content_hint_switch_dict_keys_3": {
-    "message": "ヒント：%KEY%、%KEY%、%KEY%のいずれかを押すと次の辞書を表示できます",
-    "description": "Message displayed at the bottom of the pop-up instructing the user which keys to use to switch keyboards when there are three keys configured"
-  },
   "content_kanji_base_radical": {
     "message": "部 $char$ (​$readings$​)",
     "description": "The string used to describe the base radical",
@@ -1677,6 +1665,16 @@
     "message": "検索用の丸いボタン",
     "description": "Heading for the section containing options controlling the lookup puck used on touch devices"
   },
+  "options_mouse_interactivity_disable": {
+    "message": "無効"
+  },
+  "options_mouse_interactivity_enable": {
+    "message": "有効"
+  },
+  "options_mouse_interactivity_label": {
+    "message": "マウスの操作",
+    "description": "Label for section for enabling mouse/touch interactivity in the popup"
+  },
   "options_name_data_name": {
     "message": "人名データ",
     "description": "The name for the name database data set"
@@ -1699,6 +1697,9 @@
     "message": "この端末は只今オフラインになっているため、更新の確認ができませんでした。オフラインになりましたら、更新確認を行います。",
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
+  "options_popup_close_popup": {
+    "message": "ポップアップを閉じる"
+  },
   "options_popup_copy_entry": {
     "message": "項目をコピーする"
   },
@@ -1711,6 +1712,10 @@
   "options_popup_copy_word_kanji": {
     "message": "単語又は漢字をコピーする"
   },
+  "options_popup_interactivity_heading": {
+    "message": "ポップアップの双方向性",
+    "description": "Heading for the section for configuring popup interactivity features"
+  },
   "options_popup_kanji_lookup": {
     "message": "漢字の結果のみ調べる",
     "description": "Label for the key to force looking up the kanji dictionary only"
@@ -1722,11 +1727,14 @@
     "message": "ポップアップを下・上にずらす",
     "description": "Note that it is important that down comes before up"
   },
+  "options_popup_pin_popup": {
+    "message": "ポップアップをピン留めする"
+  },
   "options_popup_start_copy": {
     "message": "コピーモードを有効にする"
   },
   "options_popup_style_heading": {
-    "message": "ポップアップ",
+    "message": "ポップアップ外観",
     "description": "Heading for options to configure popup display"
   },
   "options_popup_switch_dictionaries": {
@@ -1850,6 +1858,10 @@
   "popup_close_label": {
     "message": "閉じる",
     "description": "The aria-label associated with the button to close the popup"
+  },
+  "popup_pin_label": {
+    "message": "ピン留め",
+    "description": "The aria-label associated with the button to pin the popup"
   },
   "popup_settings_label": {
     "message": "設定",

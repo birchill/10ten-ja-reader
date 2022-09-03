@@ -62,7 +62,6 @@ import { Split } from '../utils/type-helpers';
 import { isSafari } from '../utils/ua-utils';
 
 import TabManager from './all-tab-manager';
-import { ChildFramesMessage } from './background-message';
 import { BackgroundRequestSchema, SearchRequest } from './background-request';
 import { setDefaultToolbarIcon, updateBrowserAction } from './browser-action';
 import { initContextMenus, updateContextMenus } from './context-menus';
@@ -531,10 +530,6 @@ browser.runtime.onMessage.addListener(
           }
         })();
 
-      case 'switchedDictionary':
-        config.setHasSwitchedDictionary();
-        break;
-
       case 'translate':
         return translate({
           text: request.input,
@@ -578,10 +573,7 @@ browser.runtime.onMessage.addListener(
             typeof request.type,
             ':'
           >;
-          const message: ChildFramesMessage = {
-            type,
-            frame: 'children',
-          };
+          const message = { ...request, type, frame: 'children' };
           browser.tabs.sendMessage(sender.tab.id, message).catch(() => {
             // Ignore, possibly a tab that has gone away.
           });
@@ -616,6 +608,9 @@ browser.runtime.onMessage.addListener(
         break;
 
       case 'top:isPopupShowing':
+      case 'top:pinPopup':
+      case 'top:unpinPopup':
+      case 'top:commitPopup':
       case 'top:clearResult':
       case 'top:nextDictionary':
       case 'top:toggleDefinition':

@@ -1,4 +1,4 @@
-import { allMajorDataSeries, MajorDataSeries } from '@birchill/jpdict-idb';
+import { MajorDataSeries } from '@birchill/jpdict-idb';
 
 import {
   AccentDisplay,
@@ -6,51 +6,59 @@ import {
   PartOfSpeechDisplay,
 } from '../../common/content-config';
 import { CopyType } from '../../common/copy-keys';
+import { ReferenceAbbreviation } from '../../common/refs';
+
+import { html } from '../../utils/builder';
+import { Point } from '../../utils/geometry';
+import { getThemeClass } from '../../utils/themes';
+
 import {
   getOrCreateEmptyContainer,
   removeContentContainer,
 } from '../content-container';
-import { ReferenceAbbreviation } from '../../common/refs';
 import { SelectionMeta } from '../meta';
+import { DisplayMode } from '../popup-state';
 import { LookupPuck } from '../puck';
 import { QueryResult } from '../query';
-import { html } from '../../utils/builder';
-import { probablyHasPhysicalKeyboard } from '../../utils/device';
-import { getThemeClass } from '../../utils/themes';
 
+import { renderArrow } from './arrow';
 import { renderCloseButton } from './close';
 import { renderCopyOverlay } from './copy-overlay';
 import { CopyState } from './copy-state';
 import { renderKanjiEntry } from './kanji';
 import { renderMetadata } from './metadata';
 import { renderNamesEntries } from './names';
-import {
-  renderCopyDetails,
-  renderSwitchDictionaryHint,
-  renderUpdatingStatus,
-} from './status';
+import { renderCopyDetails, renderUpdatingStatus } from './status';
 import { renderTabBar } from './tabs';
 import { renderWordEntries } from './words';
 
 import popupStyles from '../../../css/popup.css';
 
+export type StartCopyCallback = (
+  index: number,
+  trigger: 'touch' | 'mouse'
+) => void;
+
 export interface PopupOptions {
   accentDisplay: AccentDisplay;
+  closeShortcuts?: ReadonlyArray<string>;
   container?: HTMLElement;
   copyNextKey: string;
   copyState: CopyState;
   dictToShow: MajorDataSeries;
   dictLang?: string;
+  displayMode: DisplayMode;
   fxData: ContentConfig['fx'];
-  hasSwitchedDictionary?: boolean;
   kanjiReferences: Array<ReferenceAbbreviation>;
   meta?: SelectionMeta;
   onCancelCopy?: () => void;
-  onStartCopy?: (index: number) => void;
+  onStartCopy?: StartCopyCallback;
   onCopy?: (copyType: CopyType) => void;
   onClosePopup?: () => void;
   onShowSettings?: () => void;
   onSwitchDictionary?: (newDict: MajorDataSeries) => void;
+  onTogglePin?: () => void;
+  pinShortcuts?: ReadonlyArray<string>;
   posDisplay: PartOfSpeechDisplay;
   popupStyle: string;
   showDefinitions: boolean;
@@ -58,7 +66,6 @@ export interface PopupOptions {
   showKanjiComponents?: boolean;
   switchDictionaryKeys: ReadonlyArray<string>;
   tabDisplay: 'top' | 'left' | 'right' | 'none';
-  touchMode?: boolean;
 }
 
 export function renderPopup(
@@ -66,11 +73,10 @@ export function renderPopup(
   options: PopupOptions
 ): HTMLElement | null {
   const container = options.container || getDefaultContainer();
-  const touchMode = !!options.touchMode;
   const windowElem = resetContainer({
     host: container,
+    displayMode: options.displayMode,
     popupStyle: options.popupStyle,
-    touchMode,
   });
 
   const hasResult = result && (result.words || result.kanji || result.names);
@@ -82,9 +88,12 @@ export function renderPopup(
   if (showTabs) {
     windowElem.append(
       renderTabBar({
+        closeShortcuts: options.closeShortcuts,
         onClosePopup: options.onClosePopup,
         onShowSettings: options.onShowSettings,
         onSwitchDictionary: options.onSwitchDictionary,
+        onTogglePin: options.onTogglePin,
+        pinShortcuts: options.pinShortcuts,
         queryResult: result,
         selectedTab: options.dictToShow,
       })
@@ -204,23 +213,12 @@ export function renderPopup(
     copyState: options.copyState,
     series: resultToShow?.type || 'words',
   });
-  const numResultsAvailable = allMajorDataSeries.filter(
-    (series) => !!result?.[series]
-  ).length;
 
   let statusBar: HTMLElement | null = null;
   if (copyDetails) {
     statusBar = copyDetails;
   } else if (hasResult && result?.resultType === 'db-updating') {
     statusBar = renderUpdatingStatus();
-  } else if (
-    showTabs &&
-    numResultsAvailable > 1 &&
-    options.hasSwitchedDictionary === false &&
-    options.switchDictionaryKeys.length &&
-    probablyHasPhysicalKeyboard()
-  ) {
-    statusBar = renderSwitchDictionaryHint(options.switchDictionaryKeys);
   }
 
   let contentWrapper = contentContainer;
@@ -239,7 +237,7 @@ export function renderPopup(
         'div',
         { class: 'close-button-wrapper' },
         contentWrapper,
-        renderCloseButton(options.onClosePopup)
+        renderCloseButton(options.onClosePopup, options.closeShortcuts || [])
       )
     );
   } else {
@@ -262,21 +260,21 @@ function getDefaultContainer(): HTMLElement {
 
 function resetContainer({
   host,
+  displayMode,
   popupStyle,
-  touchMode,
 }: {
   host: HTMLElement;
+  displayMode: DisplayMode;
   popupStyle: string;
-  touchMode: boolean;
 }): HTMLElement {
   const container = html('div', { class: 'container' });
   const windowDiv = html('div', { class: 'window' });
   container.append(windowDiv);
 
-  // Set touch status
-  if (touchMode) {
-    container.classList.add('touch');
-  }
+  // Set initial and interactive status
+  container.classList.toggle('ghost', displayMode === 'ghost');
+  container.classList.toggle('interactive', displayMode !== 'static');
+  container.classList.toggle('pinned', displayMode === 'pinned');
 
   // Set theme
   windowDiv.classList.add(getThemeClass(popupStyle));
@@ -318,18 +316,21 @@ export function removePopup() {
 }
 
 export function setPopupStyle(style: string) {
-  const windowElem = getPopupWindow();
-  if (!windowElem) {
-    return;
-  }
+  const elems = [getPopupWindow(), getPopupArrow()];
 
-  for (const className of windowElem.classList.values()) {
-    if (className.startsWith('theme-')) {
-      windowElem.classList.remove(className);
+  for (const elem of elems) {
+    if (!elem) {
+      continue;
     }
-  }
 
-  windowElem.classList.add(getThemeClass(style));
+    for (const className of elem.classList.values()) {
+      if (className.startsWith('theme-')) {
+        elem.classList.remove(className);
+      }
+    }
+
+    elem.classList.add(getThemeClass(style));
+  }
 }
 
 function getPopupWindow(): HTMLElement | null {
@@ -362,4 +363,43 @@ export function showOverlay(copyState: CopyState): boolean {
     (copyState.kind === 'active' || copyState.kind === 'error') &&
     copyState.mode === 'overlay'
   );
+}
+
+export function renderPopupArrow(options: {
+  direction: 'vertical' | 'horizontal';
+  popupPos: Point;
+  popupSize: { width: number; height: number };
+  side: 'before' | 'after';
+  target: Point;
+  theme: string;
+}) {
+  const popupContainer = getPopupContainer();
+  if (!popupContainer) {
+    return;
+  }
+
+  // Check for cases where the popup overlaps the target element
+  const { popupPos, popupSize, target } = options;
+  if (options.direction === 'vertical') {
+    if (options.side === 'before' && popupPos.y + popupSize.height > target.y) {
+      return;
+    } else if (options.side === 'after' && popupPos.y < target.y) {
+      return;
+    }
+  } else {
+    if (options.side === 'before' && popupPos.x + popupSize.width > target.x) {
+      return;
+    } else if (options.side === 'after' && popupPos.x < target.x) {
+      return;
+    }
+  }
+
+  renderArrow({ ...options, popupContainer, target });
+}
+
+function getPopupArrow(): HTMLElement | null {
+  const hostElem = document.getElementById('tenten-ja-window');
+  return hostElem && hostElem.shadowRoot
+    ? hostElem.shadowRoot.querySelector('.arrow')
+    : null;
 }

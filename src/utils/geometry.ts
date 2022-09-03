@@ -36,10 +36,10 @@ export function addMarginToPoint(margin: MarginBox, point: Point): Rect {
 
 export function getMarginAroundPoint(point: Point, rect: Rect): MarginBox {
   return {
-    left: point.x - rect.left,
-    top: point.y - rect.top,
-    right: rect.left + rect.width - point.x,
-    bottom: rect.top + rect.height - point.y,
+    left: Math.max(0, point.x - rect.left),
+    top: Math.max(0, point.y - rect.top),
+    right: Math.max(0, rect.left + rect.width - point.x),
+    bottom: Math.max(0, rect.top + rect.height - point.y),
   };
 }
 

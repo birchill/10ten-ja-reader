@@ -39,6 +39,7 @@ export function renderNamesEntries({
     namesTable.classList.add('-multicol');
   }
 
+  let lastPointerType = 'touch';
   const selectedIndex = getSelectedIndex(options, entries.length);
   for (const [index, entry] of entries.entries()) {
     const entryDiv = renderName(entry);
@@ -48,8 +49,12 @@ export function renderNamesEntries({
       );
     }
 
+    entryDiv.addEventListener('pointerup', (evt) => {
+      lastPointerType = evt.pointerType;
+    });
     entryDiv.addEventListener('click', () => {
-      options.onStartCopy?.(index);
+      const trigger = lastPointerType === 'mouse' ? 'mouse' : 'touch';
+      options.onStartCopy?.(index, trigger);
     });
 
     namesTable.append(entryDiv);
