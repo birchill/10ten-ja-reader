@@ -257,6 +257,14 @@ fieldset.bordered {
  * Interactivity selection
  */
 
+.interactivity-select > input[type='radio']:not(:checked) + label {
+  filter: grayscale(100%);
+}
+.interactivity-select > input[type='radio']:not(:checked) + label:hover,
+.interactivity-select > input[type='radio']:not(:checked) + label:active {
+  filter: none;
+}
+
 .interactivity-select {
   grid-template-columns: repeat(2, 1fr);
 }
@@ -281,6 +289,14 @@ fieldset.bordered {
 /*
  * Tab side selection
  */
+
+.tabdisplay-select > input[type='radio']:not(:checked) + label {
+  filter: grayscale(100%);
+}
+.tabdisplay-select > input[type='radio']:not(:checked) + label:hover,
+.tabdisplay-select > input[type='radio']:not(:checked) + label:active {
+  filter: none;
+}
 
 .tabdisplay-select {
   grid-template-columns: repeat(4, 1fr);
