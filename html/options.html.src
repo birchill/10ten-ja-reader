@@ -83,75 +83,77 @@
           <h2 class=text-section-header>__MSG_options_popup_interactivity_heading__</h2>
         </div>
         <div class="panel-section panel-section-formElements">
-          <p>__MSG_options_mouse_interactivity_label__</p>
-          <fieldset>
-            <div class="interactivity-select icon-radio" id="interactivity-select">
-              <input type="radio" name="mouseInteractivity" value="disable"
-                id="interactivity-disable" />
-              <label for="interactivity-disable">
-                <div class=text-label>__MSG_options_mouse_interactivity_disable__</div>
-                <svg viewBox="0 0 200 150" class="tabicon theme-light">
-                  <defs>
-                    <clipPath id="interactive-popup-outline-1">
-                      <rect x="1" y="50" rx="5" width="198" height="90" fill="black" />
-                    </clipPath>
-                  </defs>
-                  <!-- Popup outline -->
-                  <rect x="1" y="50" rx="5" width="198" height="90"
-                    fill="var(--bg-color)" stroke="var(--border-color)"
-                    stroke-width="0.5"/>
-                  <!-- Tab background -->
-                  <rect x="60" y="50" width="140" height="15"
-                    fill="var(--cell-highlight-bg)"
-                    clip-path="url(#interactive-popup-outline-1)" />
-                  <!-- Highlighted part -->
-                  <rect x="10" y="0" width="150" height="30" fill="#ccc" />
-                  <use href="#cursor" x="40" y="10" width="20.5" color="#888" />
-                </svg>
-              </label>
-              <input type="radio" name="mouseInteractivity" value="enable"
-                id="interactivity-enable" />
-              <label for="interactivity-enable">
-                <div class=text-label>__MSG_options_mouse_interactivity_enable__</div>
-                <svg viewBox="0 0 200 150" class="tabicon theme-light">
-                  <defs>
-                    <clipPath id="interactive-popup-outline-2">
-                      <rect x="1" y="50" rx="5" width="198" height="100" fill="black" />
-                    </clipPath>
-                  </defs>
-                  <!-- Popup outline (with arrow) -->
-                  <path d="M6 50h10l15-15l15 15h148a5 5 90 0 1 5 5v89a5 5 90 0 1-5 5h-188a5
-                    5 90 0 1-5-5v-89a5 5 90 0 1 5-5Z"
-                    fill="var(--bg-color)" stroke="var(--border-color)"
-                    stroke-width="0.5"/>
-                  <!-- Tab background -->
-                  <rect x="60" y="50" width="140" height="25"
-                    fill="var(--cell-highlight-bg)"
-                    clip-path="url(#interactive-popup-outline-2)" />
-                  <!-- Close button -->
-                  <g transform="translate(185 62.5)">
-                    <circle r="8" fill="var(--bg-color)" />
-                    <path d="M-3-3l6 6m0-6l-6 6" stroke="var(--text-color)"
-                      stroke-width="2" stroke-linecap="round"
-                      stroke-opacity="0.7" />
-                  </g>
-                  <!-- Text outline -->
-                  <rect x="10" y="0" width="150" height="30" fill="#ccc" />
-                  <!-- Highlighted part -->
-                  <rect x="5" y="85" rx="5" width="190" height="30"
-                    fill="var(--selected-bg)" />
-                  <!-- Cursor trail -->
-                  <use href="#cursor" x="25" y="10" width="16" color="#888"
-                    opacity="0.2"/>
-                  <use href="#cursor" x="25" y="32" width="19" color="#888"
-                    opacity="0.25"/>
-                  <use href="#cursor" x="30" y="60" width="23" color="#888"
-                    opacity="0.32"/>
-                  <use href="#hand" x="34" y="95" width="35" color="#888" />
-                </svg>
-              </label>
-            </div>
-          </fieldset>
+          <div id="mouse-interactivity-section">
+            <p>__MSG_options_mouse_interactivity_label__</p>
+            <fieldset>
+              <div class="interactivity-select icon-radio" id="interactivity-select">
+                <input type="radio" name="mouseInteractivity" value="disable"
+                  id="interactivity-disable" />
+                <label for="interactivity-disable">
+                  <div class=text-label>__MSG_options_mouse_interactivity_disable__</div>
+                  <svg viewBox="0 0 200 150" class="tabicon theme-light">
+                    <defs>
+                      <clipPath id="interactive-popup-outline-1">
+                        <rect x="1" y="50" rx="5" width="198" height="90" fill="black" />
+                      </clipPath>
+                    </defs>
+                    <!-- Popup outline -->
+                    <rect x="1" y="50" rx="5" width="198" height="90"
+                      fill="var(--bg-color)" stroke="var(--border-color)"
+                      stroke-width="0.5"/>
+                    <!-- Tab background -->
+                    <rect x="60" y="50" width="140" height="15"
+                      fill="var(--cell-highlight-bg)"
+                      clip-path="url(#interactive-popup-outline-1)" />
+                    <!-- Highlighted part -->
+                    <rect x="10" y="0" width="150" height="30" fill="#ccc" />
+                    <use href="#cursor" x="40" y="10" width="20.5" color="#888" />
+                  </svg>
+                </label>
+                <input type="radio" name="mouseInteractivity" value="enable"
+                  id="interactivity-enable" />
+                <label for="interactivity-enable">
+                  <div class=text-label>__MSG_options_mouse_interactivity_enable__</div>
+                  <svg viewBox="0 0 200 150" class="tabicon theme-light">
+                    <defs>
+                      <clipPath id="interactive-popup-outline-2">
+                        <rect x="1" y="50" rx="5" width="198" height="100" fill="black" />
+                      </clipPath>
+                    </defs>
+                    <!-- Popup outline (with arrow) -->
+                    <path d="M6 50h10l15-15l15 15h148a5 5 90 0 1 5 5v89a5 5 90 0 1-5 5h-188a5
+                      5 90 0 1-5-5v-89a5 5 90 0 1 5-5Z"
+                      fill="var(--bg-color)" stroke="var(--border-color)"
+                      stroke-width="0.5"/>
+                    <!-- Tab background -->
+                    <rect x="60" y="50" width="140" height="25"
+                      fill="var(--cell-highlight-bg)"
+                      clip-path="url(#interactive-popup-outline-2)" />
+                    <!-- Close button -->
+                    <g transform="translate(185 62.5)">
+                      <circle r="8" fill="var(--bg-color)" />
+                      <path d="M-3-3l6 6m0-6l-6 6" stroke="var(--text-color)"
+                        stroke-width="2" stroke-linecap="round"
+                        stroke-opacity="0.7" />
+                    </g>
+                    <!-- Text outline -->
+                    <rect x="10" y="0" width="150" height="30" fill="#ccc" />
+                    <!-- Highlighted part -->
+                    <rect x="5" y="85" rx="5" width="190" height="30"
+                      fill="var(--selected-bg)" />
+                    <!-- Cursor trail -->
+                    <use href="#cursor" x="25" y="10" width="16" color="#888"
+                      opacity="0.2"/>
+                    <use href="#cursor" x="25" y="32" width="19" color="#888"
+                      opacity="0.25"/>
+                    <use href="#cursor" x="30" y="60" width="23" color="#888"
+                      opacity="0.32"/>
+                    <use href="#hand" x="34" y="95" width="35" color="#888" />
+                  </svg>
+                </label>
+              </div>
+            </fieldset>
+          </div>
           <p>__MSG_options_tab_position_label__</p>
           <fieldset>
             <div class="tabdisplay-select icon-radio" id="tabdisplay-select">

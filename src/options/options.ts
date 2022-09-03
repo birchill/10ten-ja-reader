@@ -80,9 +80,9 @@ function completeForm() {
     });
 
   const mouseCapababiltyMql = getMouseCapabilityMql();
-  toggleInteractivityCheckboxVisibility(mouseCapababiltyMql?.matches ?? true);
+  toggleMouseInteractivityVisibility(mouseCapababiltyMql?.matches ?? true);
   mouseCapababiltyMql?.addEventListener('change', (ev) => {
-    toggleInteractivityCheckboxVisibility(ev.matches);
+    toggleMouseInteractivityVisibility(ev.matches);
   });
 
   // Keyboard
@@ -344,14 +344,15 @@ function setTabDisplayTheme(theme: string) {
   }
 }
 
-function toggleInteractivityCheckboxVisibility(visible: boolean) {
-  const checkBoxRow =
-    document.getElementById('popupInteractive')?.parentElement;
-  if (!checkBoxRow) {
+function toggleMouseInteractivityVisibility(visible: boolean) {
+  const mouseInteractivitySection = document.getElementById(
+    'mouse-interactivity-section'
+  )?.parentElement;
+  if (!mouseInteractivitySection) {
     return;
   }
 
-  checkBoxRow.style.display = visible ? 'revert' : 'none';
+  mouseInteractivitySection.style.display = visible ? 'revert' : 'none';
 }
 
 function renderCurrencyList(
