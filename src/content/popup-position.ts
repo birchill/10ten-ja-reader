@@ -508,7 +508,7 @@ function calculatePosition({
   // actually 28px if you add in the margin we allow for the shadow.
   //
   // That would give us an offset of 5px + 28px / 2 = 19px so we just use 20px
-  // to allow us a leeway if those values change marginally.
+  // to allow us some leeway if those values change marginally.
   const CROSS_OFFSET = 20;
   const idealCrossPos =
     axis === 'vertical' ? target.x - CROSS_OFFSET : target.y - CROSS_OFFSET;

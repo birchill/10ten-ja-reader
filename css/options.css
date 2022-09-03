@@ -303,9 +303,9 @@ fieldset.bordered {
 }
 
 .tabdisplay-select > label .tabicon {
-  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.25));
   width: 48px;
   height: 48px;
+  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.25));
 }
 
 .tabdisplay-select > label .tabicon .popup {

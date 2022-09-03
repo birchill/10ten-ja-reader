@@ -1,5 +1,6 @@
 import { discriminator } from '@birchill/discriminator';
 import * as s from 'superstruct';
+
 import { PopupState, PopupStateSchema } from '../content/popup-state';
 
 export const BackgroundMessageSchema = discriminator('type', {

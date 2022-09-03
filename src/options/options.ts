@@ -9,13 +9,14 @@ import {
 import Bugsnag from '@bugsnag/browser';
 import Browser, { browser } from 'webextension-polyfill-ts';
 
+import { CopyKeys, CopyNextKeyStrings } from '../common/copy-keys';
 import { Config, DEFAULT_KEY_SETTINGS } from '../common/config';
 import {
   AccentDisplay,
   PartOfSpeechDisplay,
   TabDisplay,
 } from '../common/content-config';
-import { CopyKeys, CopyNextKeyStrings } from '../common/copy-keys';
+import { getLocalizedDataSeriesLabel } from '../common/data-series-labels';
 import { dbLanguageMeta, isDbLanguageId } from '../common/db-languages';
 import {
   cancelDbUpdate,
@@ -30,6 +31,7 @@ import {
 import { renderStar } from '../content/popup/icons';
 import { startBugsnag } from '../utils/bugsnag';
 import { html } from '../utils/builder';
+import { getMouseCapabilityMql } from '../utils/device';
 import { empty } from '../utils/dom-utils';
 import { isObject } from '../utils/is-object';
 import {
@@ -44,8 +46,6 @@ import { getThemeClass } from '../utils/themes';
 
 import { Command, CommandParams, isValidKey } from './commands';
 import { translateDoc } from './l10n';
-import { getLocalizedDataSeriesLabel } from '../common/data-series-labels';
-import { getMouseCapabilityMql } from '../utils/device';
 
 startBugsnag();
 
