@@ -1672,7 +1672,7 @@
     "message": "Enable"
   },
   "options_mouse_interactivity_label": {
-    "message": "Mouse interactivity",
+    "message": "Mouse interaction",
     "description": "Label for section for enabling mouse/touch interactivity in the popup"
   },
   "options_name_data_name": {
