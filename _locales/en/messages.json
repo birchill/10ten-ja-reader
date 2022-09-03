@@ -1592,10 +1592,6 @@
     "message": "licence",
     "description": "The keyword in options_edrdg_license to link to the license"
   },
-  "options_enable_mouse_interaction": {
-    "message": "Enable interacting with mouse",
-    "description": "Checkbox for enabling mouse/touch interactivity in the popup"
-  },
   "options_general_heading": {
     "message": "General",
     "description": "Heading for common preferences."
@@ -1668,6 +1664,16 @@
   "options_lookup_puck_heading": {
     "message": "Lookup puck",
     "description": "Heading for the section containing options controlling the lookup puck used on touch devices"
+  },
+  "options_mouse_interactivity_disable": {
+    "message": "Disable"
+  },
+  "options_mouse_interactivity_enable": {
+    "message": "Enable"
+  },
+  "options_mouse_interactivity_label": {
+    "message": "Mouse interactivity",
+    "description": "Label for section for enabling mouse/touch interactivity in the popup"
   },
   "options_name_data_name": {
     "message": "name data",

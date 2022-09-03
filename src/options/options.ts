@@ -160,6 +160,16 @@ function completeForm() {
     renderPopupStyleSelect();
   });
 
+  const mouseInteractivityOptions = Array.from(
+    document.querySelectorAll('input[type=radio][name=mouseInteractivity]')
+  );
+  for (const option of mouseInteractivityOptions) {
+    option.addEventListener('change', (event) => {
+      const popupInteractive = (event.target as HTMLInputElement).value;
+      config.popupInteractive = popupInteractive === 'enable';
+    });
+  }
+
   const tabDisplayOptions = Array.from(
     document.querySelectorAll('input[type=radio][name=tabDisplay]')
   );
@@ -169,12 +179,6 @@ function completeForm() {
       config.tabDisplay = tabDisplay;
     });
   }
-
-  document
-    .getElementById('popupInteractive')!
-    .addEventListener('click', (event) => {
-      config.popupInteractive = (event.target as HTMLInputElement).checked;
-    });
 
   document.getElementById('fxCurrency')!.addEventListener('input', (event) => {
     config.fxCurrency = (event.target as HTMLSelectElement).value;
@@ -324,7 +328,9 @@ function renderPopupPreview(theme: string): HTMLElement {
 
 function setTabDisplayTheme(theme: string) {
   const tabIcons = Array.from(
-    document.querySelectorAll('.tabdisplay-select .tabicon')
+    document.querySelectorAll(
+      '.interactivity-select .tabicon, .tabdisplay-select .tabicon'
+    )
   );
 
   const themeClass = getThemeClass(theme);
@@ -813,7 +819,9 @@ function fillVals() {
   optform.highlightText.checked = !config.noTextHighlight;
   optform.contextMenuEnable.checked = config.contextMenuEnable;
   optform.showKanjiComponents.checked = config.showKanjiComponents;
-  optform.popupInteractive.checked = config.popupInteractive;
+  optform.mouseInteractivity.value = config.popupInteractive
+    ? 'enable'
+    : 'disable';
   optform.popupStyle.value = config.popupStyle;
   optform.tabDisplay.value = config.tabDisplay;
   optform.toolbarIcon.value = config.toolbarIcon;
