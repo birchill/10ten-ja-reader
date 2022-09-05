@@ -2,8 +2,38 @@ import { browser } from 'webextension-polyfill-ts';
 
 import { html, svg } from '../../utils/builder';
 
-export function renderMouseOnboarding(): HTMLElement {
+export function renderMouseOnboarding(
+  options: {
+    onDismiss?: (options?: { disable?: boolean }) => void;
+  } = {}
+): HTMLElement {
   const container = html('div', { class: 'onboarding' });
+
+  const okButton = html(
+    'button',
+    { class: 'primary' },
+    browser.i18n.getMessage('content_mouse_onboarding_ok_button')
+  );
+  if (options.onDismiss) {
+    okButton.addEventListener('click', (evt) => {
+      evt.preventDefault();
+      container.classList.add('dismissed');
+      options.onDismiss!();
+    });
+  }
+
+  const disableButton = html(
+    'button',
+    {},
+    browser.i18n.getMessage('content_mouse_onboarding_disable_button')
+  );
+  if (options.onDismiss) {
+    disableButton.addEventListener('click', (evt) => {
+      evt.preventDefault();
+      container.classList.add('dismissed');
+      options.onDismiss!({ disable: true });
+    });
+  }
 
   container.append(
     html(
@@ -33,20 +63,7 @@ export function renderMouseOnboarding(): HTMLElement {
             browser.i18n.getMessage('content_mouse_onboarding_details_link')
           )
         ),
-        html(
-          'div',
-          { class: 'button-group' },
-          html(
-            'button',
-            { class: 'primary' },
-            browser.i18n.getMessage('content_mouse_onboarding_ok_button')
-          ),
-          html(
-            'button',
-            {},
-            browser.i18n.getMessage('content_mouse_onboarding_disable_button')
-          )
-        )
+        html('div', { class: 'button-group' }, okButton, disableButton)
       ),
       html(
         'div',

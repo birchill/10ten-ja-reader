@@ -44,6 +44,13 @@ export interface ContentConfig {
   // for the rate.
   fx: { currency: string; rate: number; timestamp: number } | undefined;
 
+  // True if the user has performed any action that means we should no longer
+  // show the mouse onboarding banner.
+  hasDismissedMouseOnboarding: boolean;
+
+  // True if the user has upgraded from a version prior to 1.12
+  hasUpgradeFromPre1_12: boolean;
+
   // Modifier keys which must be held down in order for the pop-up to shown.
   //
   // This should be a Set but Chrome can't send Sets by sendMessage :(

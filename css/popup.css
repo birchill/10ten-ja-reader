@@ -1121,6 +1121,12 @@
   width: 100%;
   background: var(--status-bg);
   padding: 14px 14px 18px;
+  transition: opacity 0.25s;
+}
+
+.onboarding.dismissed {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .onboarding .explanation {

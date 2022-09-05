@@ -56,6 +56,7 @@ export interface PopupOptions {
   onStartCopy?: StartCopyCallback;
   onCopy?: (copyType: CopyType) => void;
   onClosePopup?: () => void;
+  onDismissMouseOnboarding?: (options?: { disable?: boolean }) => void;
   onShowSettings?: () => void;
   onSwitchDictionary?: (newDict: MajorDataSeries) => void;
   onTogglePin?: () => void;
@@ -144,7 +145,11 @@ export function renderPopup(
         );
 
         if (options.showMouseOnboarding) {
-          contentContainer.append(renderMouseOnboarding());
+          contentContainer.append(
+            renderMouseOnboarding({
+              onDismiss: options.onDismissMouseOnboarding,
+            })
+          );
         }
       }
       break;

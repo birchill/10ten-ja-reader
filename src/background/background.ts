@@ -540,6 +540,14 @@ browser.runtime.onMessage.addListener(
         config.toggleReadingOnly();
         break;
 
+      case 'disableMouseInteraction':
+        config.popupInteractive = false;
+        break;
+
+      case 'dismissedMouseOnboarding':
+        config.setHasDismissedMouseOnboarding();
+        break;
+
       //
       // Forwarded messages
       //
@@ -662,26 +670,40 @@ browser.runtime.onInstalled.addListener(async (details) => {
       }`
     );
 
-    // Safari doesn't appear to support displaying extension pages
-    if (details.temporary || isSafari()) {
-      return;
-    }
-
     // Show update page when updating from Rikaichamp
     try {
-      if (details.previousVersion.startsWith('0')) {
-        const url = browser.runtime.getURL('docs/from-pre-1.0.html');
-        await browser.tabs.create({ url });
-      } else {
-        const [major, minor] = details.previousVersion.split('.').map(Number);
-        if (major === 1 && minor < 4) {
-          const url = browser.runtime.getURL('docs/from-pre-1.4.html');
+      // Safari doesn't appear to support displaying extension pages
+      if (!details.temporary && !isSafari()) {
+        if (details.previousVersion.startsWith('0')) {
+          void config.ready.then(() => {
+            config.setHasUpgradedFromPre1_12();
+          });
+          const url = browser.runtime.getURL('docs/from-pre-1.0.html');
           await browser.tabs.create({ url });
+        } else {
+          const [major, minor] = details.previousVersion.split('.').map(Number);
+          if (major === 1 && minor < 4) {
+            const url = browser.runtime.getURL('docs/from-pre-1.4.html');
+            await browser.tabs.create({ url });
+          }
+          if (major === 1 && minor < 12) {
+            void config.ready.then(() => {
+              config.setHasUpgradedFromPre1_12();
+            });
+          }
         }
       }
     } catch (e) {
       Bugsnag.leaveBreadcrumb('Failed to show update page', { error: e });
     }
+  }
+
+  // If we are still developing pre 1.12, act like we are upgrading so we can
+  // test the onboarding banner.
+  if (details.temporary && __VERSION__ === '1.11.0') {
+    void config.ready.then(() => {
+      config.setHasUpgradedFromPre1_12();
+    });
   }
 });
 

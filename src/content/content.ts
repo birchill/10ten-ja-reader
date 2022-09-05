@@ -392,6 +392,8 @@ export class ContentHandler {
       this.puck?.setIcon(config.toolbarIcon);
     }
 
+    const popupInteractivityChanged =
+      !!config.popupInteractive !== !!this.config?.popupInteractive;
     const puckConfigChanged = config.showPuck !== this.config?.showPuck;
 
     // TODO: We should update the tab display if that value changes but we
@@ -402,6 +404,16 @@ export class ContentHandler {
     // the pop-up if needed but currently you need to change tabs to tweak
     // the config so the popup probably won't be showing anyway.
     this.config = { ...config };
+
+    if (popupInteractivityChanged && this.isTopMostWindow()) {
+      // We can't use updatePopup here since it will try to re-use the existing
+      // popup display mode but we specifically want to change it in this case
+      // (but, ideally, retain the same position etc.)
+      this.showPopup({
+        displayMode: config.popupInteractive ? 'hover' : 'static',
+        fixPosition: true,
+      });
+    }
 
     if (puckConfigChanged) {
       this.applyPuckConfig();
@@ -1895,6 +1907,30 @@ export class ContentHandler {
     const displayMode =
       options.displayMode || this.getInitialDisplayMode('ghost');
 
+    // Determine if we should show the mouse onboarding
+    const wasTriggeredByMouse =
+      this.currentTargetProps &&
+      !this.currentTargetProps.fromPuck &&
+      !this.currentTargetProps.fromTouch;
+    const showMouseOnboarding =
+      this.config.popupInteractive &&
+      !this.config.hasDismissedMouseOnboarding &&
+      this.config.hasUpgradeFromPre1_12 &&
+      wasTriggeredByMouse;
+
+    const onDismissMouseOnboarding = showMouseOnboarding
+      ? (options?: { disable?: true }) => {
+          void browser.runtime.sendMessage({
+            type: 'dismissedMouseOnboarding',
+          });
+          if (options?.disable) {
+            void browser.runtime.sendMessage({
+              type: 'disableMouseInteraction',
+            });
+          }
+        }
+      : undefined;
+
     const popupOptions: PopupOptions = {
       accentDisplay: this.config.accentDisplay,
       closeShortcuts: this.config.keys.closePopup,
@@ -1907,6 +1943,7 @@ export class ContentHandler {
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentLookupParams?.meta,
       onCancelCopy: () => this.exitCopyMode(),
+      onDismissMouseOnboarding,
       onStartCopy: (index: number, trigger: 'touch' | 'mouse') =>
         this.enterCopyMode({ trigger, index }),
       onCopy: (copyType: CopyType) => this.copyCurrentEntry(copyType),
@@ -1929,6 +1966,7 @@ export class ContentHandler {
       posDisplay: this.config.posDisplay,
       showDefinitions: !this.config.readingOnly,
       showKanjiComponents: this.config.showKanjiComponents,
+      showMouseOnboarding,
       showPriority: this.config.showPriority,
       switchDictionaryKeys: this.config.keys.nextDictionary,
       tabDisplay: this.config.tabDisplay,
