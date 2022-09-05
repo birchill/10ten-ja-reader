@@ -203,6 +203,26 @@
     "message": "1画",
     "description": "The description of the number of strokes when there is exactly 1 stroke"
   },
+  "content_mouse_onboarding_details_link": {
+    "message": "詳細…",
+    "description": "Link text to page with more details"
+  },
+  "content_mouse_onboarding_disable_button": {
+    "message": "無効にする",
+    "description": "Label for the button to turn off the mouse interaction"
+  },
+  "content_mouse_onboarding_explanation": {
+    "message": "このウィンドウ上のマウス操作が可能になりました。",
+    "description": "The text explaining that it is now possibly to mouse over th e popup"
+  },
+  "content_mouse_onboarding_new": {
+    "message": "新機能！",
+    "description": "The prefix announcing the new feature"
+  },
+  "content_mouse_onboarding_ok_button": {
+    "message": "OK",
+    "description": "Label for the button to dismiss the onboarding prompt"
+  },
   "content_names_age": {
     "message": "$years$歳",
     "placeholders": {

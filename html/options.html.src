@@ -140,7 +140,7 @@
                     <rect x="10" y="0" width="150" height="30" fill="#ccc" />
                     <!-- Highlighted part -->
                     <rect x="5" y="85" rx="5" width="190" height="30"
-                      fill="var(--selected-bg)" />
+                      fill="var(--hover-bg)" />
                     <!-- Cursor trail -->
                     <use href="#cursor" x="25" y="10" width="16" color="#888"
                       opacity="0.2"/>

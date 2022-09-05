@@ -1269,5 +1269,30 @@
         popup.classList.add('-inline');
       }
     }
+
+    // Mouse onboarding
+
+    addHeading('Mouse onboarding');
+
+    for (const theme of themes) {
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.append(`Theme: ${theme}`);
+      container.append(label);
+
+      const popup = contentHandler._renderPopup(kankokuWordsResult, {
+        ...config,
+        container: createPopupContainer(),
+        displayMode: 'float',
+        dictToShow: 'words',
+        popupStyle: theme,
+        showDefinitions: true,
+        showMouseOnboarding: true,
+        onClosePopup: () => {},
+        onShowSettings: () => {},
+        onTogglePin: () => {},
+      });
+      popup.classList.add('-inline');
+    }
   </script>
 </body>

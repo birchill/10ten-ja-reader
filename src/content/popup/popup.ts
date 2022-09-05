@@ -28,6 +28,7 @@ import { CopyState } from './copy-state';
 import { renderKanjiEntry } from './kanji';
 import { renderMetadata } from './metadata';
 import { renderNamesEntries } from './names';
+import { renderMouseOnboarding } from './onboarding';
 import { renderCopyDetails, renderUpdatingStatus } from './status';
 import { renderTabBar } from './tabs';
 import { renderWordEntries } from './words';
@@ -62,6 +63,7 @@ export interface PopupOptions {
   posDisplay: PartOfSpeechDisplay;
   popupStyle: string;
   showDefinitions: boolean;
+  showMouseOnboarding?: boolean;
   showPriority: boolean;
   showKanjiComponents?: boolean;
   switchDictionaryKeys: ReadonlyArray<string>;
@@ -140,6 +142,10 @@ export function renderPopup(
             title: result!.title,
           })
         );
+
+        if (options.showMouseOnboarding) {
+          contentContainer.append(renderMouseOnboarding());
+        }
       }
       break;
 
