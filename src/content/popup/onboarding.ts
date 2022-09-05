@@ -35,6 +35,19 @@ export function renderMouseOnboarding(
     });
   }
 
+  const detailsLink = html(
+    'a',
+    {
+      href: browser.runtime.getURL('docs/introducing-the-mouse.html'),
+      target: '_blank',
+    },
+    browser.i18n.getMessage('content_mouse_onboarding_details_link')
+  );
+  detailsLink.addEventListener('click', () => {
+    container.classList.add('dismissed');
+    options.onDismiss?.();
+  });
+
   container.append(
     html(
       'div',
@@ -57,11 +70,7 @@ export function renderMouseOnboarding(
             browser.i18n.getMessage('content_mouse_onboarding_explanation')
           ),
           html('span', {}, ' '),
-          html(
-            'a',
-            { href: '#' },
-            browser.i18n.getMessage('content_mouse_onboarding_details_link')
-          )
+          detailsLink
         ),
         html('div', { class: 'button-group' }, okButton, disableButton)
       ),

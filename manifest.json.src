@@ -124,6 +124,7 @@
   /*#endif*/
   "web_accessible_resources": [
     "css/popup.css",
+    "docs/introducing-the-mouse.html",
     "images/warning-red.svg",
     "images/warning-yellow.svg"
   ],
