@@ -6,6 +6,13 @@
 <script src="update.js"></script>
 <!-- Inject the content script directly since content_scripts doesn't allow matching
      on extension URLs so it won't be injected otherwise. -->
+<!-- 2022-09-06: It turns this is a bad idea. When we tried doing this with the
+     mouse onboarding and it seems like we'd end up in a situation where this
+     page ends up acting like a background page (i.e. gets messages sent to
+     browser.runtime) _and_ a content script (since we inject the content
+     script) and that just confuses everyone since we get messages intended for
+     the background page that we try to interpret as messages intended for the
+     content script. -->
 <script src="/10ten-ja-content.js"></script>
 <title>10ten Japanese Reader on iPhones and iPads</title>
 <body class=bg-ink-black>
