@@ -15,6 +15,8 @@ export const BackgroundRequestSchema = discriminator('type', {
   // Requests for the background page
   //
   disabled: s.type({}),
+  disableMouseInteraction: s.type({}),
+  dismissedMouseOnboarding: s.type({}),
   'enable?': s.type({}),
   enabled: s.type({
     src: s.string(),

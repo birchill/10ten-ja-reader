@@ -63,11 +63,13 @@ interface Settings {
   contextMenuEnable?: boolean;
   dictLang?: DbLanguageId;
   fxCurrency?: string;
+  hasDismissedMouseOnboarding?: boolean;
   holdToShowKeys?: string;
   holdToShowImageKeys?: string;
   kanjiReferencesV2?: KanjiReferenceFlagsV2;
   keys?: Partial<StoredKeyboardKeys>;
   localSettings?: {
+    hasUpgradedFromPre1_12?: boolean;
     popupInteractive?: boolean;
     showPuck?: 'show' | 'hide';
   };
@@ -955,6 +957,36 @@ export class Config {
     }
   }
 
+  // Mouse onboarding-related prefs (to be removed eventually)
+
+  get hasDismissedMouseOnboarding(): boolean {
+    return !!this.settings.hasDismissedMouseOnboarding;
+  }
+
+  setHasDismissedMouseOnboarding() {
+    if (this.hasDismissedMouseOnboarding) {
+      return;
+    }
+
+    this.settings.hasDismissedMouseOnboarding = true;
+    void browser.storage.sync.set({ hasDismissedMouseOnboarding: true });
+  }
+
+  get hasUpgradedFromPre1_12(): boolean {
+    return !!this.settings.localSettings?.hasUpgradedFromPre1_12;
+  }
+
+  setHasUpgradedFromPre1_12() {
+    if (this.hasUpgradedFromPre1_12) {
+      return;
+    }
+
+    const localSettings = { ...this.settings.localSettings };
+    localSettings.hasUpgradedFromPre1_12 = true;
+    this.settings.localSettings = localSettings;
+    void browser.storage.local.set({ settings: localSettings });
+  }
+
   // Get all the options the content process cares about at once
   get contentConfig(): ContentConfig {
     return {
@@ -968,6 +1000,8 @@ export class Config {
               timestamp: this.fxData.timestamp,
             }
           : undefined,
+      hasDismissedMouseOnboarding: this.hasDismissedMouseOnboarding,
+      hasUpgradeFromPre1_12: this.hasUpgradedFromPre1_12,
       holdToShowKeys: this.holdToShowKeys
         ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)
         : [],

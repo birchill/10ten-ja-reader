@@ -678,18 +678,17 @@
 }
 
 @media (hover) {
+  .container.interactive .entry:not(:hover) {
+    transition: background-color 0.08s ease-out;
+  }
   .container.interactive .entry:hover {
     color: var(--selected-highlight);
-    background: var(--selected-bg);
+    background: var(--hover-bg);
     border-radius: 2px;
     cursor: pointer;
-    /* Make the highlight brighter so we can distinguish it from a selection made
-     * using the keyboard. */
-    filter: brightness(1.2);
   }
   .container.interactive .entry.-selected:hover {
-    /* Let keyboard selection override the hover state */
-    filter: none;
+    background: var(--selected-bg);
   }
 }
 
@@ -832,9 +831,12 @@
 }
 
 @media (hover) {
+  .container.interactive .kanji:not(:hover) {
+    transition: background-color 0.1s ease-out;
+  }
   .container.interactive .kanji:hover {
     color: var(--selected-highlight);
-    background: var(--selected-bg);
+    background: var(--hover-bg);
     border-radius: 2px;
     filter: brightness(1.2);
     cursor: pointer;
@@ -1026,7 +1028,7 @@
 }
 
 /*
- * Keyboard keys
+ * Status bar
  */
 
 .status-bar {
@@ -1107,6 +1109,76 @@
   animation: fade-in 0.4s linear forwards;
   background: rgba(255, 204, 204, 0.8);
   color: #b43e3e;
+}
+
+/*
+ * Onboarding
+ */
+
+.onboarding {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  background: var(--status-bg);
+  padding: 14px 14px 18px;
+  transition: opacity 0.25s;
+}
+
+.onboarding.dismissed {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.onboarding .explanation {
+  line-height: 1.7;
+}
+
+.onboarding a {
+  color: var(--text-color);
+}
+
+.onboarding .button-group {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.onboarding button {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  margin: 0;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+  border-radius: 20px;
+  border: 1px solid var(--status-button-color);
+  color: var(--status-button-color);
+  padding: 6px 15px;
+  min-width: 4.5em;
+}
+
+.onboarding button.primary {
+  background: var(--status-button-color);
+  color: var(--status-button-primary-text-color);
+}
+
+.onboarding button:hover {
+  filter: brightness(1.1);
+}
+
+.onboarding .image-and-text-container {
+  display: flex;
+  gap: 10px;
+}
+
+.onboarding .icon {
+  align-self: center;
+  width: 200px;
+}
+
+.onboarding .icon svg {
+  filter: drop-shadow(1px 2px 1px rgba(0, 0, 0, 0.15));
 }
 
 /*

@@ -203,6 +203,26 @@
     "message": "1画",
     "description": "The description of the number of strokes when there is exactly 1 stroke"
   },
+  "content_mouse_onboarding_details_link": {
+    "message": "细节……",
+    "description": "Link text to page with more details"
+  },
+  "content_mouse_onboarding_disable_button": {
+    "message": "禁用",
+    "description": "Label for the button to turn off the mouse interaction"
+  },
+  "content_mouse_onboarding_explanation": {
+    "message": "现在可以在此窗口上进行鼠标操作。",
+    "description": "The text explaining that it is now possibly to mouse over th e popup"
+  },
+  "content_mouse_onboarding_new": {
+    "message": "新功能！",
+    "description": "The prefix announcing the new feature"
+  },
+  "content_mouse_onboarding_ok_button": {
+    "message": "OK",
+    "description": "Label for the button to dismiss the onboarding prompt"
+  },
   "content_names_age": {
     "message": "$years$岁",
     "placeholders": {
@@ -1675,6 +1695,10 @@
     "message": "鼠标操作",
     "description": "Label for section for enabling mouse/touch interactivity in the popup"
   },
+  "options_mouse_onboarding_learn_mode": {
+    "message": "鼠标操作详解",
+    "descripion": "Text for the link to the mouse onboarding page"
+  },
   "options_name_data_name": {
     "message": "名字数据库",
     "description": "The name for the name database data set"
@@ -1688,6 +1712,10 @@
         "example": "2.0.0"
       }
     }
+  },
+  "options_new_badge_text": {
+    "message": "新功能！",
+    "description": "Text on the little badges highlighting new settings"
   },
   "options_no_database": {
     "message": "没有数据库",

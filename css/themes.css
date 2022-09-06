@@ -39,6 +39,7 @@
   --cell-highlight-fg: #3e3a39;
 
   --selected-bg: #fff8bf;
+  --hover-bg: rgb(255, 250, 210);
   --selected-reading-highlight: #3e3a39;
 
   --meta-bg: var(--cell-highlight-bg);
@@ -49,6 +50,9 @@
 
   --puck-bg: var(--title-bg);
   --puck-bg-highlight: var(--bg-color);
+
+  --status-button-color: #615f52;
+  --status-button-primary-text-color: var(--status-bg);
 }
 
 .window.theme-light .w-def .tag-fem,
@@ -96,6 +100,8 @@
   --cell-highlight-fg: var(--primary-highlight);
 
   --selected-highlight: var(--bg-color);
+  --selected-bg: rgb(220, 225, 255);
+  --hover-bg: rgb(233, 238, 255, 0.8);
 
   --status-bg: rgba(255, 255, 255, 0.2);
   --meta-bg: rgba(255, 255, 255, 0.2);
@@ -105,6 +111,9 @@
 
   --puck-bg: var(--bg-color);
   --puck-bg-highlight: #5f87bb;
+
+  --status-button-color: white;
+  --status-button-primary-text-color: var(--bg-color);
 }
 
 /*
@@ -118,7 +127,7 @@
 
   --primary-highlight: #3fa8de;
   --reading-highlight: #7beb7e;
-  --conj-color: #817470;
+  --conj-color: #c1a4a0;
 
   --tag-border: rgba(255, 255, 255, 0.4);
 
@@ -130,7 +139,15 @@
   --cell-highlight-bg: #504c4b;
   --cell-highlight-fg: #f0ecea;
 
-  --selected-highlight: #2277d9;
+  --selected-bg: #555;
+  --hover-bg: #484844;
+
+  /* Reset selection styles */
+  --selected-highlight: var(--primary-highlight);
+  --selected-reading-highlight: var(--reading-highlight);
+  --selected-def-color: var(--text-color);
+  --selected-tag-color: var(--text-color);
+  --selected-tag-border: var(--tag-border);
 
   --status-bg: rgba(255, 255, 255, 0.2);
   --meta-bg: rgba(255, 255, 255, 0.2);
@@ -140,6 +157,9 @@
 
   --puck-bg: var(--bg-color);
   --puck-bg-highlight: #555;
+
+  --status-button-color: white;
+  --status-button-primary-text-color: var(--bg-color);
 }
 
 .window.theme-black .w-def .tag-masc,
@@ -176,6 +196,8 @@
   --cell-highlight-fg: var(--primary-highlight);
 
   --selected-highlight: var(--primary-highlight);
+  --selected-bg: #fffac5;
+  --hover-bg: #fffde5;
 
   --meta-bg: var(--cell-highlight-bg);
   --status-bg: var(--cell-highlight-bg);
@@ -185,6 +207,9 @@
 
   --puck-bg: #c5e0f5;
   --puck-bg-highlight: var(--bg-color);
+
+  --status-button-color: var(--primary-highlight);
+  --status-button-primary-text-color: var(--bg-color);
 }
 
 /*
@@ -211,6 +236,7 @@
   --cell-highlight-fg: #3e3a39;
 
   --selected-bg: #e3f2fe;
+  --hover-bg: #fdfdf4;
   --selected-highlight: var(--primary-highlight);
 
   --meta-bg: var(--cell-highlight-bg);
@@ -221,4 +247,7 @@
 
   --puck-bg: #ffeeaa;
   --puck-bg-highlight: var(--bg-color);
+
+  --status-button-color: var(--primary-highlight);
+  --status-button-primary-text-color: var(--status-bg);
 }

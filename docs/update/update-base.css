@@ -54,4 +54,15 @@
     background: yellow !important;
     color: #1d1a19 !important;
   }
+
+  kbd {
+    background: #ddd;
+    color: #1d1a19;
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 80%;
+    box-shadow: inset 0 -2px 1px #ccc;
+    border: 1px solid #aaa;
+    border-bottom-width: 2px;
+  }
 }

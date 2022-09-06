@@ -2,12 +2,12 @@ const colors = require('tailwindcss/colors');
 
 module.exports = {
   purge: ['*.html'],
-  darkMode: false,
+  darkMode: 'media',
   theme: {
     extend: {
       colors: {
         'ink-black': '#1d1a19',
-        gray: colors.warmGray,
+        gray: colors.stone,
       },
       typography: (theme) => ({
         DEFAULT: {

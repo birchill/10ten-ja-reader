@@ -104,6 +104,16 @@ export const browser = {
           return 'Hint: press %KEY% or %KEY% to display the next dictionary';
         case 'content_hint_switch_dict_keys_3':
           return 'Hint: press %KEY%, %KEY%, or %KEY% to display the next dictionary';
+        case 'content_mouse_onboarding_new':
+          return 'New!';
+        case 'content_mouse_onboarding_explanation':
+          return 'You can now hover over this window with your mouse.';
+        case 'content_mouse_onboarding_details_link':
+          return 'Details...';
+        case 'content_mouse_onboarding_ok_button':
+          return 'OK';
+        case 'content_mouse_onboarding_disable_button':
+          return 'Disable';
         case 'currency_data_updated_label':
           return `Updated ${replacements}`;
         case 'gloss_type_label_expl':
