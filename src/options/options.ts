@@ -110,6 +110,9 @@ function completeForm() {
   // l10n
   translateDoc();
 
+  // Auto-expire new badges
+  expireNewBadges();
+
   document
     .getElementById('highlightText')!
     .addEventListener('click', (event) => {
@@ -590,6 +593,8 @@ function configureHoldToShowKeys() {
   }
 }
 
+const NEW_POPUP_KEYS = ['closePopup', 'pinPopup'];
+
 function addPopupKeys() {
   const grid = document.getElementById('key-grid')!;
 
@@ -651,6 +656,17 @@ function addPopupKeys() {
       { class: 'key-description' },
       browser.i18n.getMessage(setting.l10nKey)
     );
+
+    // Add new label if needed
+    if (NEW_POPUP_KEYS.includes(setting.name)) {
+      keyDescription.append(
+        html(
+          'span',
+          { class: 'new-badge' },
+          browser.i18n.getMessage('options_new_badge_text')
+        )
+      );
+    }
 
     // Copy keys has an extended description.
     if (setting.name === 'startCopy') {
@@ -815,6 +831,22 @@ function createKanjiReferences() {
   container.style.gridTemplateRows = `repeat(${Math.ceil(
     (referenceNames.length + 1) / 2
   )}, minmax(min-content, max-content))`;
+}
+
+// Expire current set of badges on Oct 10 (ten-ten)
+const NEW_EXPIRY = new Date(2022, 9, 10);
+
+function expireNewBadges() {
+  if (new Date() < NEW_EXPIRY) {
+    return;
+  }
+
+  const badges = document.querySelectorAll('.new-badge');
+  for (const badge of badges) {
+    if (badge instanceof HTMLElement) {
+      badge.style.display = 'none';
+    }
+  }
 }
 
 function fillVals() {

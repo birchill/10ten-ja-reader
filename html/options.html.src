@@ -84,7 +84,8 @@
         </div>
         <div class="panel-section panel-section-formElements">
           <div id="mouse-interactivity-section">
-            <p>__MSG_options_mouse_interactivity_label__</p>
+            <p>__MSG_options_mouse_interactivity_label__<span
+              class=new-badge>__MSG_options_new_badge_text__</span></p>
             <fieldset>
               <div class="interactivity-select icon-radio" id="interactivity-select">
                 <input type="radio" name="mouseInteractivity" value="disable"

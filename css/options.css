@@ -292,8 +292,26 @@ fieldset.bordered {
 }
 
 /*
+ * New badge
+ */
+.new-badge {
+  font-size: 12px;
+  line-height: 12px;
+
+  margin: 0 8px;
+  padding: 2px 10px;
+
+  font-weight: 500;
+  color: #991b1b;
+  border-radius: 20px;
+  background: #fee2e2;
+
+  display: inline-block;
+}
+
+/*
  * Learn more
-  */
+ */
 .info {
   background: #eff6ff;
   border-radius: 12px;

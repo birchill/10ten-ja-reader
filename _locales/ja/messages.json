@@ -1713,6 +1713,10 @@
       }
     }
   },
+  "options_new_badge_text": {
+    "message": "新機能！",
+    "description": "Text on the little badges highlighting new settings"
+  },
   "options_no_database": {
     "message": "データベースがありません",
     "description": "Label when the database has not yet been downloaded"
