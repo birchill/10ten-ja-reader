@@ -1852,6 +1852,9 @@ export class ContentHandler {
 
     this.currentDict = dict;
 
+    // Exit copy state if we are changing tabs
+    this.copyState = { kind: 'inactive' };
+
     this.highlightTextForCurrentResult();
     this.updatePopup({ fixPosition: options?.fixPopupPosition });
   }
