@@ -69,7 +69,8 @@ interface Settings {
   kanjiReferencesV2?: KanjiReferenceFlagsV2;
   keys?: Partial<StoredKeyboardKeys>;
   localSettings?: {
-    hasUpgradedFromPre1_12?: boolean;
+    hasUpgradedFromPreMouse?: boolean;
+    numLookupsWithMouseOnboarding?: number;
     popupInteractive?: boolean;
     showPuck?: 'show' | 'hide';
   };
@@ -972,17 +973,32 @@ export class Config {
     void browser.storage.sync.set({ hasDismissedMouseOnboarding: true });
   }
 
-  get hasUpgradedFromPre1_12(): boolean {
-    return !!this.settings.localSettings?.hasUpgradedFromPre1_12;
+  get hasUpgradedFromPreMouse(): boolean {
+    return !!this.settings.localSettings?.hasUpgradedFromPreMouse;
   }
 
-  setHasUpgradedFromPre1_12() {
-    if (this.hasUpgradedFromPre1_12) {
+  setHasUpgradedFromPreMouse() {
+    if (this.hasUpgradedFromPreMouse) {
       return;
     }
 
     const localSettings = { ...this.settings.localSettings };
-    localSettings.hasUpgradedFromPre1_12 = true;
+    localSettings.hasUpgradedFromPreMouse = true;
+    this.settings.localSettings = localSettings;
+    void browser.storage.local.set({ settings: localSettings });
+  }
+
+  get numLookupsWithMouseOnboarding(): number {
+    return this.settings.localSettings?.numLookupsWithMouseOnboarding ?? 0;
+  }
+
+  incrementNumLookupsWithMouseOnboarding() {
+    const localSettings = { ...this.settings.localSettings };
+    if (localSettings.numLookupsWithMouseOnboarding) {
+      localSettings.numLookupsWithMouseOnboarding++;
+    } else {
+      localSettings.numLookupsWithMouseOnboarding = 1;
+    }
     this.settings.localSettings = localSettings;
     void browser.storage.local.set({ settings: localSettings });
   }
@@ -1001,7 +1017,7 @@ export class Config {
             }
           : undefined,
       hasDismissedMouseOnboarding: this.hasDismissedMouseOnboarding,
-      hasUpgradeFromPre1_12: this.hasUpgradedFromPre1_12,
+      hasUpgradedFromPreMouse: this.hasUpgradedFromPreMouse,
       holdToShowKeys: this.holdToShowKeys
         ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)
         : [],

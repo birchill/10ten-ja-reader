@@ -49,7 +49,7 @@ export interface ContentConfig {
   hasDismissedMouseOnboarding: boolean;
 
   // True if the user has upgraded from a version prior to 1.12
-  hasUpgradeFromPre1_12: boolean;
+  hasUpgradedFromPreMouse: boolean;
 
   // Modifier keys which must be held down in order for the pop-up to shown.
   //

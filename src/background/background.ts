@@ -481,6 +481,38 @@ browser.runtime.onMessage.addListener(
           controller: new AbortController(),
         };
 
+        // Detect if this was likely a lookup that resulted in the mouse
+        // onboarding being shown so we can set a hard limit on how many times
+        // we show it.
+        //
+        // Specifically, if the user has done over a thousand lookups on this
+        // device and _still_ hasn't dismissed the onboarding, they're probably
+        // never going to (or have hit some snag where they _can't_).
+        // In that case, we should dismiss it for them instead of continuing to
+        // bother them.
+        //
+        // The following logic roughly mimicks the conditions used in the content
+        // script to determine if we should show the onboarding but doesn't
+        // account for whether or not the user is looking up using the puck or
+        // touch. As a result, if the user is consistently using the puck/touch,
+        // we may decide we no longer need to show the onboarding and, if the
+        // user later decides to try using the mouse, they'll miss our beautiful
+        // onboarding notice.
+        //
+        // That's probably ok, however, and saves us having to thread the "was
+        // a mouse lookup?" state all the way from the content thread.
+        if (
+          config.popupInteractive &&
+          !config.hasDismissedMouseOnboarding &&
+          config.hasUpgradedFromPreMouse
+        ) {
+          config.incrementNumLookupsWithMouseOnboarding();
+
+          if (config.numLookupsWithMouseOnboarding > 1000) {
+            config.setHasDismissedMouseOnboarding();
+          }
+        }
+
         return (async () => {
           try {
             return await searchWords({
@@ -676,7 +708,7 @@ browser.runtime.onInstalled.addListener(async (details) => {
       if (!details.temporary && !isSafari()) {
         if (details.previousVersion.startsWith('0')) {
           void config.ready.then(() => {
-            config.setHasUpgradedFromPre1_12();
+            config.setHasUpgradedFromPreMouse();
           });
           const url = browser.runtime.getURL('docs/from-pre-1.0.html');
           await browser.tabs.create({ url });
@@ -688,7 +720,7 @@ browser.runtime.onInstalled.addListener(async (details) => {
           }
           if (major === 1 && minor < 12) {
             void config.ready.then(() => {
-              config.setHasUpgradedFromPre1_12();
+              config.setHasUpgradedFromPreMouse();
             });
           }
         }
@@ -702,7 +734,7 @@ browser.runtime.onInstalled.addListener(async (details) => {
   // test the onboarding banner.
   if (details.temporary && __VERSION__ === '1.11.0') {
     void config.ready.then(() => {
-      config.setHasUpgradedFromPre1_12();
+      config.setHasUpgradedFromPreMouse();
     });
   }
 });

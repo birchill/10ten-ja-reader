@@ -1918,7 +1918,7 @@ export class ContentHandler {
     const showMouseOnboarding =
       this.config.popupInteractive &&
       !this.config.hasDismissedMouseOnboarding &&
-      this.config.hasUpgradeFromPre1_12 &&
+      this.config.hasUpgradedFromPreMouse &&
       wasTriggeredByMouse;
 
     const onDismissMouseOnboarding = showMouseOnboarding
