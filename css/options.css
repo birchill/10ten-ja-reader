@@ -286,6 +286,45 @@ fieldset.bordered {
   margin-bottom: 1em;
 }
 
+#mouse-interactivity-section .info {
+  margin-top: 1em;
+  margin-bottom: 1.5em;
+}
+
+/*
+ * Learn more
+  */
+.info {
+  background: #eff6ff;
+  border-radius: 12px;
+  margin-left: -10px;
+  margin-right: -10px;
+  line-height: 1;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #1d4ed8;
+  padding: 0 10px;
+}
+
+.info a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  text-decoration: underline currentcolor !important;
+}
+
+.info a,
+.info a:visited {
+  color: inherit !important;
+}
+
+.info .icon {
+  width: 16px;
+}
+
 /*
  * Tab side selection
  */

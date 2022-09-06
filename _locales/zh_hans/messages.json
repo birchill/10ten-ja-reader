@@ -1695,6 +1695,10 @@
     "message": "鼠标操作",
     "description": "Label for section for enabling mouse/touch interactivity in the popup"
   },
+  "options_mouse_onboarding_learn_mode": {
+    "message": "鼠标操作详解",
+    "descripion": "Text for the link to the mouse onboarding page"
+  },
   "options_name_data_name": {
     "message": "名字数据库",
     "description": "The name for the name database data set"

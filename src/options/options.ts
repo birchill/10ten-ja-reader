@@ -85,6 +85,13 @@ function completeForm() {
     toggleMouseInteractivityVisibility(ev.matches);
   });
 
+  const mouseOnboardingLink = document.getElementById(
+    'mouse-onboarding-link'
+  ) as HTMLAnchorElement;
+  mouseOnboardingLink.href = browser.runtime.getURL(
+    'docs/introducing-the-mouse.html'
+  );
+
   // Keyboard
   configureCommands();
   configureHoldToShowKeys();

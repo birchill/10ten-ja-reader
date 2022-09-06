@@ -1695,6 +1695,10 @@
     "message": "Mouse interaction",
     "description": "Label for section for enabling mouse/touch interactivity in the popup"
   },
+  "options_mouse_onboarding_learn_mode": {
+    "message": "Learn more about how mouse interaction works",
+    "descripion": "Text for the link to the mouse onboarding page"
+  },
   "options_name_data_name": {
     "message": "name data",
     "description": "The name for the name database data set"

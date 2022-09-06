@@ -1695,6 +1695,10 @@
     "message": "マウスの操作",
     "description": "Label for section for enabling mouse/touch interactivity in the popup"
   },
+  "options_mouse_onboarding_learn_mode": {
+    "message": "マウス操作についての詳細説明",
+    "descripion": "Text for the link to the mouse onboarding page"
+  },
   "options_name_data_name": {
     "message": "人名データ",
     "description": "The name for the name database data set"
