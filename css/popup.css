@@ -216,17 +216,28 @@
   font-size: 1em;
 }
 
-.tabs .tab a {
+.tabs .tab button {
+  /* Reset button styles */
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  margin: 0;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+
   opacity: 0.7;
   display: flex;
   align-items: center;
+  width: 100%;
   padding: 0.5em 18px;
   line-height: 1;
   text-decoration: none;
 }
 
 @media (max-width: 400px) {
-  .window[data-tab-side='top'] .tabs .tab a span:lang(en) {
+  .window[data-tab-side='top'] .tabs .tab button span:lang(en) {
     font-size: 0.7em;
   }
 }
@@ -235,19 +246,19 @@
   .window[data-tab-side='top'] .tabs .tab {
     flex-grow: 0;
   }
-  .window[data-tab-side='top'] .tabs .tab a span {
+  .window[data-tab-side='top'] .tabs .tab button span {
     display: none;
   }
-  .window[data-tab-side='top'] .tabs .tab a .icon {
+  .window[data-tab-side='top'] .tabs .tab button .icon {
     margin-right: 0px;
   }
 }
 
-.container.interactive .tabs .tab a {
+.container.interactive .tabs .tab button {
   padding: 0.7em 18px;
 }
 
-.tabs .tab a .icon {
+.tabs .tab button .icon {
   display: block;
   width: 12px;
   height: 12px;
@@ -257,7 +268,7 @@
   fill: currentcolor;
 }
 
-.container.interactive .tabs .tab a .icon {
+.container.interactive .tabs .tab button .icon {
   width: 14px;
   height: 14px;
 }
@@ -266,11 +277,11 @@
   background: var(--bg-color);
 }
 
-.tabs .tab[aria-selected] a {
+.tabs .tab[aria-selected] button {
   color: var(--text-color);
 }
 
-.tabs .tab:not([aria-selected]) a {
+.tabs .tab:not([aria-selected]) button {
   opacity: 0.8;
   color: var(--cell-highlight-fg);
 }
@@ -279,7 +290,7 @@
   filter: brightness(1.1);
 }
 
-.tabs .tab:not([aria-selected]):hover a {
+.tabs .tab:not([aria-selected]):hover button {
   opacity: 1;
 }
 
@@ -428,18 +439,18 @@
   flex-grow: 0;
 }
 
-.container .window[data-tab-side='left'] .tabs .tab a,
-.container .window[data-tab-side='right'] .tabs .tab a {
+.container .window[data-tab-side='left'] .tabs .tab button,
+.container .window[data-tab-side='right'] .tabs .tab button {
   padding: 0.7em;
 }
 
-.container .window[data-tab-side='left'] .tabs .tab a svg,
-.container .window[data-tab-side='right'] .tabs .tab a svg {
+.container .window[data-tab-side='left'] .tabs .tab button svg,
+.container .window[data-tab-side='right'] .tabs .tab button svg {
   margin: 0;
 }
 
-.container .window[data-tab-side='left'] .tabs .tab a span,
-.container .window[data-tab-side='right'] .tabs .tab a span {
+.container .window[data-tab-side='left'] .tabs .tab button span,
+.container .window[data-tab-side='right'] .tabs .tab button span {
   display: none;
 }
 

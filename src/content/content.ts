@@ -1434,8 +1434,8 @@ export class ContentHandler {
       return;
     }
 
-    // If the copy overlay was trigger by mouse we pin the popup so that it
-    // doesn't immediately vanish if it becomes smaller and the user's cursor
+    // If the copy overlay was triggered by the mouse we pin the popup so that
+    // it doesn't immediately vanish if it becomes smaller and the user's cursor
     // falls outside the window.
     if (trigger === 'mouse') {
       this.showPopup({ displayMode: 'pinned', fixPosition: true });

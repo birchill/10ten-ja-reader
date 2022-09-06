@@ -58,21 +58,24 @@ export function renderTabBar({
       li.classList.add('disabled');
     }
 
-    const a = html('a', {});
+    // We use a button because if it's a link there will be a little tooltip
+    // show in the corner of the browser when the user hovers over the tab.
+    const button = html('button', {});
     if (series !== selectedTab && onSwitchDictionary) {
-      a.href = '#';
-      a.onclick = (event: Event) => {
+      button.onclick = (event: Event) => {
         event.preventDefault();
         onSwitchDictionary(series);
       };
     }
-    li.append(a);
+    li.append(button);
 
     const icon = renderIcon();
     icon.classList.add('icon');
-    a.append(icon);
+    button.append(icon);
 
-    a.append(html('span', {}, browser.i18n.getMessage(`tabs_${series}_label`)));
+    button.append(
+      html('span', {}, browser.i18n.getMessage(`tabs_${series}_label`))
+    );
 
     list.append(li);
   }
