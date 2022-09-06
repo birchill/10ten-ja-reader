@@ -185,7 +185,7 @@ export function renderPopup(
         'div',
         { class: 'grid-stack' },
         // Dictionary content
-        contentContainer.lastElementChild as HTMLElement,
+        html('div', {}, ...contentContainer.children),
         renderCopyOverlay({
           copyState: options.copyState,
           kanjiReferences: options.kanjiReferences,

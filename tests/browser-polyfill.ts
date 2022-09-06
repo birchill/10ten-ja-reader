@@ -1,5 +1,6 @@
 export const browser = {
   runtime: {
+    getURL: () => '#',
     sendMessage: () => new Promise((resolve) => resolve),
     onMessage: {
       addListener: () => {

@@ -1294,5 +1294,28 @@
       });
       popup.classList.add('-inline');
     }
+
+    addHeading('Mouse onboarding + copy overlay');
+
+    {
+      const popup = contentHandler._renderPopup(kankokuWordsResult, {
+        ...config,
+        container: createPopupContainer(),
+        copyState: {
+          kind: 'active',
+          index: 1,
+          mode: 'overlay',
+        },
+        displayMode: 'float',
+        dictToShow: 'words',
+        popupStyle: themes[0],
+        showDefinitions: true,
+        showMouseOnboarding: true,
+        onClosePopup: () => {},
+        onShowSettings: () => {},
+        onTogglePin: () => {},
+      });
+      popup.classList.add('-inline');
+    }
   </script>
 </body>
