@@ -14,8 +14,8 @@ window.addEventListener('DOMContentLoaded', () => {
   if (isMac()) {
     const kbdElems = document.querySelectorAll('kbd[data-mac]');
     for (const elem of Array.from(kbdElems)) {
-      if (elem.data.mac) {
-        elem.textContent = elem.data.mac;
+      if (elem.dataset.mac) {
+        elem.textContent = elem.dataset.mac;
       }
     }
   }
