@@ -468,9 +468,12 @@ export class ContentHandler {
   }
 
   getFrameId(): number | undefined {
-    return this.frameId ?? typeof browser.runtime.getFrameId === 'function'
-      ? browser.runtime.getFrameId(window)
-      : undefined;
+    return (
+      this.frameId ??
+      (typeof browser.runtime.getFrameId === 'function'
+        ? browser.runtime.getFrameId(window)
+        : undefined)
+    );
   }
 
   setFrameId(frameId: number) {
