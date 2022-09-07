@@ -462,7 +462,7 @@ export class TextHighlighter {
         { id: 'tenten-selection-styles' },
         `
 ::highlight(tenten-selection) {
-  background: yellow;
+  background: #fff394;
   color: #1d1a19;
 }`
       )
