@@ -63,6 +63,7 @@ import {
 } from '../utils/geometry';
 import { mod } from '../utils/mod';
 import { stripFields } from '../utils/strip-fields';
+import { WithRequired } from '../utils/type-helpers';
 
 import { copyText } from './clipboard';
 import { CopyEntry, getTextToCopy } from './copy-text';
@@ -73,6 +74,8 @@ import {
   findIframeElement,
   getIframeOrigin,
   getWindowDimensions,
+  IframeSearchParams,
+  IframeSourceParams,
 } from './iframes';
 import { SelectionMeta } from './meta';
 import {
@@ -230,7 +233,7 @@ export class ContentHandler {
         text: string;
         wordLookup: boolean;
         meta?: SelectionMeta;
-        source: number | null;
+        source: IframeSourceParams | null;
       }
     | undefined;
   private currentSearchResult: QueryResult | undefined;
@@ -468,12 +471,18 @@ export class ContentHandler {
   }
 
   getFrameId(): number | undefined {
-    return (
-      this.frameId ??
-      (typeof browser.runtime.getFrameId === 'function'
-        ? browser.runtime.getFrameId(window)
-        : undefined)
-    );
+    if (typeof this.frameId === 'number') {
+      return this.frameId;
+    }
+
+    if (typeof browser.runtime.getFrameId === 'function') {
+      const frameId = browser.runtime.getFrameId(window);
+      if (frameId !== -1) {
+        return frameId;
+      }
+    }
+
+    return undefined;
   }
 
   setFrameId(frameId: number) {
@@ -1249,7 +1258,7 @@ export class ContentHandler {
             type: 'frame:popupShown',
             frameId: request.frameId,
             state: this.getTranslatedPopupState(
-              request.frameId,
+              { frameId: request.frameId },
               this.popupState
             ),
           });
@@ -1315,7 +1324,7 @@ export class ContentHandler {
             ...request,
             meta,
             targetProps,
-            source: request.source.frameId,
+            source: request.source,
           });
         }
         break;
@@ -1584,14 +1593,13 @@ export class ContentHandler {
     clearPopupTimeout(this.popupState);
     this.popupState = undefined;
 
-    if (
-      this.isTopMostWindow() &&
-      typeof this.currentLookupParams?.source === 'number'
-    ) {
-      const { source } = this.currentLookupParams;
+    if (this.isTopMostWindow() && this.currentLookupParams?.source) {
+      const {
+        source: { frameId },
+      } = this.currentLookupParams;
       void browser.runtime.sendMessage({
         type: 'frame:clearTextHighlight',
-        frameId: source,
+        frameId,
       });
       this.puck?.clearHighlight();
     } else {
@@ -1696,6 +1704,7 @@ export class ContentHandler {
         type: 'top:lookup',
         point,
         source: {
+          // The background page will fill in our frame ID for us
           src: document.location.href,
           dimensions: getWindowDimensions(),
         },
@@ -1719,7 +1728,7 @@ export class ContentHandler {
   }: {
     dictMode: 'default' | 'kanji';
     meta?: SelectionMeta;
-    source: number | null;
+    source: IframeSourceParams | null;
     targetProps: TargetProps;
     text: string;
     wordLookup: boolean;
@@ -1873,11 +1882,13 @@ export class ContentHandler {
       return;
     }
 
-    if (typeof this.currentLookupParams?.source === 'number') {
-      const { source } = this.currentLookupParams;
+    if (this.currentLookupParams?.source) {
+      const {
+        source: { frameId },
+      } = this.currentLookupParams;
       void browser.runtime.sendMessage({
         type: 'frame:highlightText',
-        frameId: source,
+        frameId,
         length: highlightLength,
       });
       this.puck?.highlightMatch();
@@ -2219,7 +2230,7 @@ export class ContentHandler {
     // Tell child iframes
     //
     let childState = this.popupState!;
-    if (typeof this.currentLookupParams?.source === 'number') {
+    if (this.currentLookupParams?.source) {
       childState = this.getTranslatedPopupState(
         this.currentLookupParams.source,
         this.popupState
@@ -2437,10 +2448,10 @@ export class ContentHandler {
   }
 
   getTranslatedPopupState(
-    frameId: number,
+    frameSource: WithRequired<IframeSearchParams, 'frameId'>,
     popupState: Readonly<PopupState>
   ): Readonly<PopupState> {
-    const iframe = findIframeElement({ frameId });
+    const iframe = findIframeElement(frameSource);
     if (!iframe) {
       return popupState;
     }
@@ -2457,7 +2468,7 @@ export class ContentHandler {
       ...popupState,
       pos: {
         ...popupState.pos,
-        frameId,
+        frameId: frameSource.frameId,
         x: x - iframeOrigin.x - scrollX,
         y: y - iframeOrigin.y - scrollY,
         lookupPoint: lookupPoint

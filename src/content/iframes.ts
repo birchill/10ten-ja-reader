@@ -1,5 +1,7 @@
 import { browser } from 'webextension-polyfill-ts';
+
 import { Point } from '../utils/geometry';
+import { WithRequired } from '../utils/type-helpers';
 
 export type IframeSearchParams = {
   frameId?: number;
@@ -10,6 +12,12 @@ export type IframeSearchParams = {
     height: number;
   };
 };
+
+// As with IframeSearchParams but will a few members marked not optional
+export type IframeSourceParams = WithRequired<
+  IframeSearchParams,
+  'frameId' | 'currentSrc' | 'dimensions'
+>;
 
 declare module 'webextension-polyfill-ts' {
   // eslint-disable-next-line @typescript-eslint/no-namespace
