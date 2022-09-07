@@ -705,7 +705,7 @@
   font-size: 12px;
 }
 
-.window .entry.-selected {
+.window:not(.-has-overlay) .entry.-selected {
   color: var(--selected-highlight);
   background: var(--selected-bg);
   border-radius: 2px;
@@ -872,19 +872,18 @@
     color: var(--selected-highlight);
     background: var(--hover-bg);
     border-radius: 2px;
-    filter: brightness(1.2);
     cursor: pointer;
   }
 }
 
-.window.-copy-active .kanji-table .kanji {
+.window:not(.-has-overlay).-copy-active .kanji-table .kanji {
   color: var(--selected-highlight);
   background: var(--selected-bg);
   border-radius: 2px;
 }
 
-.window.-copy-finished .kanji-table .kanji,
-.window.-copy-error .kanji-table .kanji {
+.window:not(.-has-overlay).-copy-finished .kanji-table .kanji,
+.window:not(.-has-overlay).-copy-error .kanji-table .kanji {
   animation: tenten-ja-flash 0.5s;
 }
 
