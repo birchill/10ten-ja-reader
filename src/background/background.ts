@@ -59,7 +59,6 @@ import {
 import { startBugsnag } from '../utils/bugsnag';
 import { stripFields } from '../utils/strip-fields';
 import { Split } from '../utils/type-helpers';
-import { isSafari } from '../utils/ua-utils';
 
 import TabManager from './all-tab-manager';
 import { BackgroundRequestSchema, SearchRequest } from './background-request';

@@ -387,7 +387,6 @@ function buildExtConfig({
     { from: 'docs/update/update.css', to: 'docs' },
     { from: '*.html', context: 'docs/update', to: 'docs' },
     { from: '*.png', context: 'docs/update/img', to: 'docs/img' },
-    { from: '*.svg', context: 'docs/update/img', to: 'docs/img' },
     { from: '*.js', context: 'docs/update', to: 'docs' },
   ];
 
