@@ -113,6 +113,10 @@
   );
 }
 
+.container .window {
+  min-height: var(--min-height, none);
+}
+
 .window {
   max-width: var(--max-width, 600px);
   max-width: var(--max-width, min(600px, calc(100vw - 30px)));
@@ -131,6 +135,7 @@
 /* When the tabs are shown on top, make the window have a consistent width
    so the tabs don't jump around. */
 .window[data-tab-side='top'] {
+  display: flex;
   max-width: none;
   /* Fallback for the below */
   width: 500px;
@@ -139,7 +144,7 @@
   width: min(500px, calc(100vw - 30px));
 }
 
-.container:not(.hidden).interactive .window {
+.container:not(.hidden) .window {
   display: flex;
   flex-direction: column;
 }
@@ -168,13 +173,29 @@
 }
 
 .window .status-bar-wrapper {
+  flex-grow: 1;
+
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
+.window .status-bar-wrapper > :first-child {
+  flex-grow: 1;
+}
+
 .window .status-bar-wrapper > .status-bar {
   flex-shrink: 0;
+}
+
+.window .content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.window .content > :first-child {
+  flex-grow: 1;
 }
 
 /* Tab bar */
@@ -314,6 +335,8 @@
 }
 
 .window .close-button-wrapper {
+  flex-grow: 1;
+
   display: flex;
   overflow: auto;
 }

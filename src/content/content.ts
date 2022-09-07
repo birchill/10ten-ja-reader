@@ -87,7 +87,7 @@ import {
   setPopupStyle,
   showOverlay,
 } from './popup/popup';
-import { CopyState } from './popup/copy-state';
+import { CopyState, getCopyMode } from './popup/copy-state';
 import {
   getPopupPosition,
   PopupPositionConstraints,
@@ -1419,11 +1419,7 @@ export class ContentHandler {
     // - The iframe needs to know the copyMode state so that it can determine
     //   how to handle copyMode-specific keystrokes.
     //
-    this.copyState = {
-      kind: 'active',
-      index,
-      mode: trigger === 'keyboard' ? trigger : 'overlay',
-    };
+    this.copyState = { kind: 'active', index, mode: trigger };
 
     if (!this.isTopMostWindow()) {
       console.assert(
@@ -1434,17 +1430,14 @@ export class ContentHandler {
       return;
     }
 
-    // If the copy overlay was triggered by the mouse we pin the popup so that
-    // it doesn't immediately vanish if it becomes smaller and the user's cursor
-    // falls outside the window.
-    if (trigger === 'mouse') {
-      this.showPopup({ displayMode: 'pinned', fixPosition: true });
-    } else {
-      this.updatePopup({ fixPosition: true });
-    }
+    this.updatePopup({ fixPosition: true });
   }
 
   exitCopyMode() {
+    // Use the existing copyState to determine if we need to maintain a minimum
+    // size for the popup.
+    const fixMinHeight = this.shouldFixMinHeightForCopyMode();
+
     // As with enterCopyMode, we mirror the copyMode state in both iframe and
     // topmost window.
     this.copyState = { kind: 'inactive' };
@@ -1454,7 +1447,15 @@ export class ContentHandler {
       return;
     }
 
-    this.updatePopup({ fixPosition: true });
+    this.updatePopup({ fixPosition: true, fixMinHeight });
+  }
+
+  private shouldFixMinHeightForCopyMode() {
+    return (
+      getCopyMode(this.copyState) === 'mouse' &&
+      // If the popup is pinned, there's no need to fix the height
+      this.popupState?.display.mode !== 'pinned'
+    );
   }
 
   nextCopyEntry() {
@@ -1513,8 +1514,9 @@ export class ContentHandler {
       index: this.copyState.index,
     });
     if (!copyEntry) {
+      const fixMinHeight = this.shouldFixMinHeightForCopyMode();
       this.copyState = { kind: 'inactive' };
-      this.updatePopup({ fixPosition: true });
+      this.updatePopup({ fixPosition: true, fixMinHeight });
     }
 
     return copyEntry;
@@ -1525,6 +1527,7 @@ export class ContentHandler {
       return;
     }
 
+    const fixMinHeight = this.shouldFixMinHeightForCopyMode();
     const { index, mode } = this.copyState;
     try {
       await copyText(message);
@@ -1534,7 +1537,7 @@ export class ContentHandler {
       this.copyState = { kind: 'error', index, mode };
     }
 
-    this.updatePopup({ fixPosition: true });
+    this.updatePopup({ fixPosition: true, fixMinHeight });
 
     // Reset the copy state so that it doesn't re-appear next time we re-render
     // the popup.
@@ -1895,7 +1898,11 @@ export class ContentHandler {
   }
 
   showPopup(
-    options: { displayMode?: DisplayMode; fixPosition?: boolean } = {}
+    options: {
+      displayMode?: DisplayMode;
+      fixPosition?: boolean;
+      fixMinHeight?: boolean;
+    } = {}
   ) {
     if (!this.isTopMostWindow()) {
       console.warn('[10ten-ja-reader] Called showPopup from iframe.');
@@ -2091,6 +2098,18 @@ export class ContentHandler {
       pointerType: this.currentTargetProps?.fromPuck ? 'puck' : 'cursor',
     });
 
+    // Determine if we need to set a minimum height
+
+    let minHeight: number | null = null;
+    if (
+      options.fixMinHeight &&
+      constrainHeight === null &&
+      this.popupState?.pos &&
+      popupSize.height < this.popupState.pos.height
+    ) {
+      minHeight = this.popupState.pos.height;
+    }
+
     // Store the popup's display mode so that:
     //
     // (a) we can fix the popup's position when changing tabs, and
@@ -2107,7 +2126,7 @@ export class ContentHandler {
         x: popupX,
         y: popupY,
         width: constrainWidth ?? popupSize.width,
-        height: constrainHeight ?? popupSize.height,
+        height: constrainHeight ?? minHeight ?? popupSize.height,
         direction,
         side,
         lookupPoint: this.getPopupLookupPoint({
@@ -2153,8 +2172,13 @@ export class ContentHandler {
       // the popup since it may cause the buttons on the overlay to be clipped
       // or scrolled out of view.
       if (constrainHeight && !showOverlay(this.copyState)) {
+        popup.style.removeProperty('--min-height');
         popup.style.setProperty('--max-height', `${constrainHeight}px`);
+      } else if (minHeight) {
+        popup.style.setProperty('--min-height', `${minHeight}px`);
+        popup.style.removeProperty('--max-height');
       } else {
+        popup.style.removeProperty('--min-height');
         popup.style.removeProperty('--max-height');
       }
     }
@@ -2254,14 +2278,18 @@ export class ContentHandler {
     return display;
   }
 
-  updatePopup(options: { fixPosition?: boolean } = {}) {
+  updatePopup(options: { fixPosition?: boolean; fixMinHeight?: boolean } = {}) {
     if (!this.isTopMostWindow()) {
       console.warn('Called updatePopup within iframe');
       return;
     }
 
     const displayMode = this.popupState?.display.mode;
-    this.showPopup({ displayMode, fixPosition: options.fixPosition });
+    this.showPopup({
+      displayMode,
+      fixPosition: options.fixPosition,
+      fixMinHeight: options.fixMinHeight,
+    });
   }
 
   pinPopup() {

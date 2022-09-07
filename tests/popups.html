@@ -931,6 +931,7 @@
     // Constrained height tests
 
     addHeading('Constrained height');
+
     for (const tabDisplay of ['top', 'right', 'none']) {
       {
         addHeading(`Tab display: ${tabDisplay}`, 3);
@@ -1017,6 +1018,150 @@
 
         popup.classList.add('-inline');
         popup.style.setProperty('--max-height', '200px');
+      }
+    }
+
+    addHeading('Forced height');
+
+    for (const tabDisplay of ['top', 'right', 'none']) {
+      {
+        addHeading(`Tab display: ${tabDisplay}`, 3);
+        const popup = contentHandler._renderPopup(kankokuWordsResult, {
+          ...config,
+          container: createPopupContainer(),
+          dictToShow: 'words',
+          popupStyle: 'default',
+          showDefinitions: true,
+          switchDictionaryKeys: ['Shift', 'Enter'],
+          tabDisplay,
+          onClosePopup: () => {},
+          onShowSettings: () => {},
+          onTogglePin: () => {},
+        });
+
+        popup.classList.add('-inline');
+        popup.style.setProperty('--min-height', '400px');
+      }
+
+      {
+        addHeading(`Tab display: ${tabDisplay} (with status bar)`, 3);
+        const popup = contentHandler._renderPopup(
+          { ...kankokuWordsResult, resultType: 'db-updating' },
+          {
+            ...config,
+            container: createPopupContainer(),
+            dictToShow: 'words',
+            popupStyle: 'default',
+            showDefinitions: true,
+            switchDictionaryKeys: ['Shift', 'Enter'],
+            tabDisplay,
+            onClosePopup: () => {},
+            onShowSettings: () => {},
+            onTogglePin: () => {},
+          }
+        );
+
+        popup.classList.add('-inline');
+        popup.style.setProperty('--min-height', '400px');
+      }
+
+      {
+        addHeading(`Tab display: ${tabDisplay} (with status bar and onboarding)`, 3);
+        const popup = contentHandler._renderPopup(
+          { ...kankokuWordsResult, resultType: 'db-updating' },
+          {
+            ...config,
+            container: createPopupContainer(),
+            dictToShow: 'words',
+            popupStyle: 'default',
+            showDefinitions: true,
+            showMouseOnboarding: true,
+            switchDictionaryKeys: ['Shift', 'Enter'],
+            tabDisplay,
+            onClosePopup: () => {},
+            onShowSettings: () => {},
+            onTogglePin: () => {},
+          }
+        );
+
+        popup.classList.add('-inline');
+        popup.style.setProperty('--min-height', '600px');
+      }
+
+      {
+        addHeading(`Tab display: ${tabDisplay} (interactive version)`, 3);
+        const popup = contentHandler._renderPopup(kankokuWordsResult, {
+          ...config,
+          container: createPopupContainer(),
+          dictToShow: 'words',
+          displayMode: 'touch',
+          popupStyle: 'default',
+          showDefinitions: true,
+          switchDictionaryKeys: ['Shift', 'Enter'],
+          tabDisplay,
+          onClosePopup: () => {},
+          onShowSettings: () => {},
+          onTogglePin: () => {},
+        });
+
+        popup.classList.add('-inline');
+        popup.style.setProperty('--min-height', '400px');
+      }
+
+      {
+        addHeading(
+          `Tab display: ${tabDisplay} (interactive version with status bar)`,
+          3
+        );
+        const popup = contentHandler._renderPopup(
+          { ...kankokuWordsResult, resultType: 'db-updating' },
+          {
+            ...config,
+            container: createPopupContainer(),
+            dictToShow: 'words',
+            displayMode: 'touch',
+            popupStyle: 'default',
+            showDefinitions: true,
+            switchDictionaryKeys: ['Shift', 'Enter'],
+            tabDisplay,
+            onClosePopup: () => {},
+            onShowSettings: () => {},
+            onTogglePin: () => {},
+          }
+        );
+
+        popup.classList.add('-inline');
+        popup.style.setProperty('--min-height', '400px');
+      }
+
+      {
+        addHeading(
+          `Tab display: ${tabDisplay} (interactive version with copy overlay)`,
+          3
+        );
+        const popup = contentHandler._renderPopup(kankokuWordsResult,
+          {
+            ...config,
+            container: createPopupContainer(),
+            copyState: {
+              kind: 'active',
+              index: 1,
+              mode: 'touch',
+            },
+            dictToShow: 'words',
+            displayMode: 'hover',
+            popupStyle: 'default',
+            showDefinitions: true,
+            switchDictionaryKeys: ['Shift', 'Enter'],
+            tabDisplay,
+            onClosePopup: () => {},
+            onShowSettings: () => {},
+            onTogglePin: () => {},
+          }
+        );
+
+        popup.classList.add('-inline');
+        popup.style.setProperty('--min-height', '400px');
       }
     }
 
@@ -1210,7 +1355,7 @@
           ...testConfig,
           copyState: {
             ...testConfig.copyState,
-            mode: 'overlay',
+            mode: 'touch',
           },
           container: createPopupContainer(),
           displayMode: 'touch',
@@ -1259,7 +1404,7 @@
             ...testConfig,
             copyState: {
               ...testConfig.copyState,
-              mode: 'overlay',
+              mode: 'touch',
             },
             container: createPopupContainer(),
             displayMode: 'touch',
@@ -1304,7 +1449,7 @@
         copyState: {
           kind: 'active',
           index: 1,
-          mode: 'overlay',
+          mode: 'touch',
         },
         displayMode: 'float',
         dictToShow: 'words',

@@ -372,7 +372,7 @@ export function isPopupWindowHostElem(target: EventTarget | null): boolean {
 export function showOverlay(copyState: CopyState): boolean {
   return (
     (copyState.kind === 'active' || copyState.kind === 'error') &&
-    copyState.mode === 'overlay'
+    (copyState.mode === 'touch' || copyState.mode === 'mouse')
   );
 }
 

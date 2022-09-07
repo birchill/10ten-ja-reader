@@ -26,9 +26,9 @@ export function renderCopyDetails({
     return null;
   }
 
-  // In interactive mode, only use the status bar to show the finished and error
-  // states.
-  if (copyState.mode === 'overlay' && copyState.kind === 'active') {
+  // In interactive mode, we only use the status bar to show the finished and
+  // error states.
+  if (copyState.mode !== 'keyboard' && copyState.kind === 'active') {
     return null;
   }
 
