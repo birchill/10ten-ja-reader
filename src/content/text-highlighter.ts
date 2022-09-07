@@ -390,9 +390,11 @@ export class TextHighlighter {
       range.setEnd(endNode, endOffset);
 
       // We only call this method if selectedWindow.getSelection() is not null.
+      this.updatingFocus = true;
       const selection = selectedWindow.getSelection()!;
       selection.removeAllRanges();
       selection.addRange(range);
+      this.updatingFocus = false;
 
       this.selectedText = selection.toString();
     }
