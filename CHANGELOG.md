@@ -17,6 +17,8 @@ app.
 - Made the popup not move position when changing tabs via touch or mouse.
 - Added a shortcut key for closing the popup (defaults to <kbd>Esc</kbd>).
 - Added a shortcut key for pinning the popup (defaults to <kbd>Ctrl</kbd>).
+- Disabled using the Highlight API on Chrome for vertical text due to
+  [Chromium bug 1360724](https://bugs.chromium.org/p/chromium/issues/detail?id=1360724)
 
 ## [1.11.0] - 2022-08-29 (Firefox, Chrome, Thunderbird only)
 

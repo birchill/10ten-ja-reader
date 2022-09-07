@@ -4,14 +4,16 @@ import {
   isFocusable,
   isSvg,
   isTextInputNode,
+  isVerticalText,
 } from '../utils/dom-utils';
+import { isChromium } from '../utils/ua-utils';
 
 import {
   clearGdocsHighlight,
   highlightGdocsRange,
   isGdocsSpan,
 } from './gdocs-canvas';
-import { TextRange } from './text-range';
+import { NodeRange, TextRange } from './text-range';
 
 declare global {
   interface Highlight extends Set<StaticRange> {
@@ -90,7 +92,7 @@ export class TextHighlighter {
       return;
     }
 
-    const useHighlightApi = !!CSS?.highlights;
+    const canUseHighlightApi = this.canUseHighlightApi({ textRange, length });
 
     // If there is already something selected in the page that is *not*
     // what we selected then generally want to leave it alone, unless of course
@@ -107,7 +109,7 @@ export class TextHighlighter {
         this.storeContentEditableSelection(selectedWindow);
       }
     } else if (
-      !useHighlightApi &&
+      !canUseHighlightApi &&
       selection.toString() &&
       selection.toString() !== this.selectedText
     ) {
@@ -133,6 +135,7 @@ export class TextHighlighter {
       this.selectedWindow = selectedWindow;
     } else {
       this.highlightRegularNode({
+        canUseHighlightApi,
         length,
         selectedWindow,
         textRange,
@@ -342,11 +345,45 @@ export class TextHighlighter {
     textBox.setSelectionRange(previousStart, previousEnd, previousDirection);
   }
 
+  private canUseHighlightApi({
+    length,
+    textRange,
+  }: {
+    length: number;
+    textRange: TextRange;
+  }) {
+    if (!CSS?.highlights) {
+      return false;
+    }
+
+    // We cannot highlight SVG
+    for (const { node } of new TextRangeWithLength(textRange, length)) {
+      if (isSvg(node)) {
+        return false;
+      }
+    }
+
+    // Chrome can't do highlights properly on vertical text
+    //
+    // https://bugs.chromium.org/p/chromium/issues/detail?id=1360724
+    if (isChromium()) {
+      for (const { node } of new TextRangeWithLength(textRange, length)) {
+        if (isVerticalText(node)) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
   private highlightRegularNode({
+    canUseHighlightApi,
     length,
     selectedWindow,
     textRange,
   }: {
+    canUseHighlightApi: boolean;
     length: number;
     selectedWindow: Window;
     textRange: TextRange;
@@ -360,28 +397,19 @@ export class TextHighlighter {
     let endNode = startNode;
     let endOffset = startOffset;
 
-    let containsSvg = isSvg(startNode);
-
-    let currentLen = 0;
-    for (let i = 0; currentLen < length && i < textRange.length; i++) {
-      const { start, end } = textRange[i];
-      const len = Math.min(end - start, length - currentLen);
-      currentLen += len;
-
-      endNode = textRange[i].node;
-      endOffset = start + len;
-
-      containsSvg = containsSvg || isSvg(endNode);
+    for (const { node, end } of new TextRangeWithLength(textRange, length)) {
+      endNode = node;
+      endOffset = end;
     }
 
-    if (!containsSvg && CSS?.highlights) {
+    if (canUseHighlightApi) {
       const range = new StaticRange({
         startContainer: startNode,
         startOffset,
         endContainer: endNode,
         endOffset,
       });
-      CSS.highlights.set('tenten-selection', new Highlight(range));
+      CSS.highlights!.set('tenten-selection', new Highlight(range));
       this.ensureHighlightStyles();
       this.selectedText = null;
     } else {
@@ -443,5 +471,31 @@ export class TextHighlighter {
 
   private dropHighlightStyles() {
     document.getElementById('tenten-selection-styles')?.remove();
+  }
+}
+
+// Iterator for a TextRange that enforces the supplied length
+class TextRangeWithLength implements Iterable<NodeRange> {
+  constructor(public textRange: TextRange, public length: number) {}
+
+  [Symbol.iterator](): Iterator<NodeRange> {
+    let i = 0;
+    let currentLen = 0;
+
+    return {
+      next: () => {
+        if (currentLen >= this.length || i >= this.textRange.length) {
+          return { done: true, value: undefined };
+        }
+
+        const { start, end, node } = this.textRange[i];
+        const len = Math.min(end - start, this.length - currentLen);
+        currentLen += len;
+
+        i++;
+
+        return { value: { start, end: start + len, node } };
+      },
+    };
   }
 }

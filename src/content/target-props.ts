@@ -1,5 +1,5 @@
 import { Rect } from '../utils/geometry';
-import { isTextInputNode } from '../utils/dom-utils';
+import { isTextInputNode, isVerticalText } from '../utils/dom-utils';
 
 import { getGdocsRangeBboxes, isGdocsSpan } from './gdocs-canvas';
 import { TextRange } from './text-range';
@@ -58,9 +58,7 @@ export function getTargetProps({
     textBoxSizes: textRange
       ? getInitialBboxOfTextSelection(textRange)
       : undefined,
-    isVerticalText: !!target.ownerDocument.defaultView
-      ?.getComputedStyle(target)
-      .writingMode.startsWith('vertical'),
+    isVerticalText: isVerticalText(target),
   };
 }
 

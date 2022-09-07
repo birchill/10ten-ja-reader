@@ -80,3 +80,17 @@ export function isSvg(node: Node): boolean {
     ? node instanceof SVGElement
     : node.parentElement instanceof SVGElement;
 }
+
+export function isVerticalText(node: Node): boolean {
+  const element =
+    node.nodeType === Node.ELEMENT_NODE
+      ? (node as Element)
+      : node.parentElement;
+
+  return (
+    !!element &&
+    !!element.ownerDocument.defaultView
+      ?.getComputedStyle(element)
+      .writingMode.startsWith('vertical')
+  );
+}
