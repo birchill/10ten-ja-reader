@@ -695,42 +695,28 @@ browser.runtime.onInstalled.addListener(async (details) => {
   Bugsnag.leaveBreadcrumb('Running initJpDict from onInstalled...');
   initJpDict().catch((e) => Bugsnag.notify(e));
 
-  if (details.reason === 'update' && details.previousVersion) {
+  if (
+    details.reason === 'update' &&
+    details.previousVersion &&
+    !details.temporary
+  ) {
     Bugsnag.leaveBreadcrumb(
       `Updated from version ${details.previousVersion} to ${
         browser.runtime.getManifest().version
       }`
     );
 
-    // Show update page when updating from Rikaichamp
-    try {
-      // Safari doesn't appear to support displaying extension pages
-      if (!details.temporary && !isSafari()) {
-        if (details.previousVersion.startsWith('0')) {
-          void config.ready.then(() => {
-            config.setHasUpgradedFromPreMouse();
-          });
-          const url = browser.runtime.getURL('docs/from-pre-1.0.html');
-          await browser.tabs.create({ url });
-        } else {
-          const [major, minor] = details.previousVersion.split('.').map(Number);
-          if (major === 1 && minor < 4) {
-            const url = browser.runtime.getURL('docs/from-pre-1.4.html');
-            await browser.tabs.create({ url });
-          }
-          if (major === 1 && minor < 12) {
-            void config.ready.then(() => {
-              config.setHasUpgradedFromPreMouse();
-            });
-          }
-        }
-      }
-    } catch (e) {
-      Bugsnag.leaveBreadcrumb('Failed to show update page', { error: e });
+    const [major, minor] = details.previousVersion.split('.').map(Number);
+    if (major === 1 && minor < 12) {
+      // Wait for config to load before trying to update it or else we'll
+      // clobber the other local settings.
+      void config.ready.then(() => {
+        config.setHasUpgradedFromPreMouse();
+      });
     }
   }
 
-  // If we are still developing pre 1.12, act like we are upgrading so we can
+  // If we are still developing pre-1.12, act like we are upgrading so we can
   // test the onboarding banner.
   if (details.temporary && __VERSION__ === '1.11.0') {
     void config.ready.then(() => {
