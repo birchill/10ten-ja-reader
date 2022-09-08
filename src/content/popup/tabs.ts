@@ -2,7 +2,9 @@ import { MajorDataSeries } from '@birchill/jpdict-idb';
 import { browser } from 'webextension-polyfill-ts';
 
 import { QueryResult } from '../query';
+import { DisplayMode } from '../popup-state';
 import { html } from '../../utils/builder';
+import { getMouseCapabilityMql } from '../../utils/device';
 
 import { renderCloseButton } from './close';
 import {
@@ -16,6 +18,7 @@ import { getLangTag } from './lang-tag';
 
 export function renderTabBar({
   closeShortcuts,
+  displayMode,
   onClosePopup,
   onShowSettings,
   onSwitchDictionary,
@@ -25,6 +28,7 @@ export function renderTabBar({
   selectedTab,
 }: {
   closeShortcuts?: ReadonlyArray<string>;
+  displayMode: DisplayMode;
   onClosePopup?: () => void;
   onShowSettings?: () => void;
   onSwitchDictionary?: (newDict: MajorDataSeries) => void;
@@ -81,7 +85,16 @@ export function renderTabBar({
   }
   tabBar.append(list);
 
-  if (onTogglePin) {
+  // We don't want to show the pin on devices that don't have a mouse since it's
+  // generally not useful there (and just takes up room).
+  //
+  // If, however, the user somehow managed to get the popup into a pinned state,
+  // we should show the icon just so they don't get confused (and can get out of
+  // that state).
+  const showPin =
+    onTogglePin &&
+    (getMouseCapabilityMql()?.matches !== false || displayMode === 'pinned');
+  if (showPin) {
     tabBar.append(renderPinButton(onTogglePin, pinShortcuts || []));
   }
 
