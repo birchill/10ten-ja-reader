@@ -409,6 +409,16 @@ fieldset.bordered {
   }
 }
 
+/*
+ * This media query is exactly the same as the above but maybe they will
+ * differ one day?
+ */
+@media not screen and (hover) and (pointer: fine) {
+  .needs-mouse {
+    display: none;
+  }
+}
+
 .key-grid {
   display: grid;
   grid-template-columns: minmax(12em, auto) 1fr;

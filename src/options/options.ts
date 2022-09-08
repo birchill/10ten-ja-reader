@@ -31,7 +31,6 @@ import {
 import { renderStar } from '../content/popup/icons';
 import { startBugsnag } from '../utils/bugsnag';
 import { html } from '../utils/builder';
-import { getMouseCapabilityMql } from '../utils/device';
 import { empty } from '../utils/dom-utils';
 import { isObject } from '../utils/is-object';
 import {
@@ -78,12 +77,6 @@ function completeForm() {
     .addEventListener('change', () => {
       setTabDisplayTheme(config.popupStyle);
     });
-
-  const mouseCapababiltyMql = getMouseCapabilityMql();
-  toggleMouseInteractivityVisibility(mouseCapababiltyMql?.matches ?? true);
-  mouseCapababiltyMql?.addEventListener('change', (ev) => {
-    toggleMouseInteractivityVisibility(ev.matches);
-  });
 
   const mouseOnboardingLink = document.getElementById(
     'mouse-onboarding-link'
@@ -357,17 +350,6 @@ function setTabDisplayTheme(theme: string) {
     }
     tabIcon.classList.add(themeClass);
   }
-}
-
-function toggleMouseInteractivityVisibility(visible: boolean) {
-  const mouseInteractivitySection = document.getElementById(
-    'mouse-interactivity-section'
-  )?.parentElement;
-  if (!mouseInteractivitySection) {
-    return;
-  }
-
-  mouseInteractivitySection.style.display = visible ? 'revert' : 'none';
 }
 
 function renderCurrencyList(

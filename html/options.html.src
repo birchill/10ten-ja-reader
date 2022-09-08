@@ -83,7 +83,7 @@
           <h2 class=text-section-header>__MSG_options_popup_interactivity_heading__</h2>
         </div>
         <div class="panel-section panel-section-formElements">
-          <div id="mouse-interactivity-section">
+          <div id="mouse-interactivity-section" class="needs-mouse">
             <p>__MSG_options_mouse_interactivity_label__<span
               class=new-badge>__MSG_options_new_badge_text__</span></p>
             <fieldset>
