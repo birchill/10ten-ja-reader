@@ -88,9 +88,14 @@ function completeForm() {
   const mouseOnboardingLink = document.getElementById(
     'mouse-onboarding-link'
   ) as HTMLAnchorElement;
-  mouseOnboardingLink.href = browser.runtime.getURL(
-    'docs/introducing-the-mouse.html'
-  );
+  // Safari doesn't support opening extension pages, at least not with our
+  // current permissions.
+  //
+  // (Trust me, I tried over and over again to make Safari open these but it
+  // just flat our rejects any safari-web-extension:// URLs.)
+  mouseOnboardingLink.href = isSafari()
+    ? 'https://10ten.study/reader/docs/mouse-onboarding.html'
+    : browser.runtime.getURL('docs/introducing-the-mouse.html');
 
   // Keyboard
   configureCommands();

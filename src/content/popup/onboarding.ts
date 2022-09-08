@@ -1,6 +1,7 @@
 import { browser } from 'webextension-polyfill-ts';
 
 import { html, svg } from '../../utils/builder';
+import { isSafari } from '../../utils/ua-utils';
 
 export function renderMouseOnboarding(
   options: {
@@ -38,7 +39,11 @@ export function renderMouseOnboarding(
   const detailsLink = html(
     'a',
     {
-      href: browser.runtime.getURL('docs/introducing-the-mouse.html'),
+      // As with the note in options.ts, Safari does not appear to be able to
+      // open extension pages so we use a publicly hosted Web page instead.
+      href: isSafari()
+        ? 'https://10ten.study/reader/docs/mouse-onboarding.html'
+        : browser.runtime.getURL('docs/introducing-the-mouse.html'),
       target: '_blank',
     },
     browser.i18n.getMessage('content_mouse_onboarding_details_link')
