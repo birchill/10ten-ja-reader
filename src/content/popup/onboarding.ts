@@ -1,7 +1,7 @@
 import { browser } from 'webextension-polyfill-ts';
 
 import { html, svg } from '../../utils/builder';
-import { isSafari } from '../../utils/ua-utils';
+import { isSafari, isThunderbird } from '../../utils/ua-utils';
 
 export function renderMouseOnboarding(
   options: {
@@ -48,7 +48,20 @@ export function renderMouseOnboarding(
     },
     browser.i18n.getMessage('content_mouse_onboarding_details_link')
   );
-  detailsLink.addEventListener('click', () => {
+
+  detailsLink.addEventListener('click', (event: MouseEvent) => {
+    // Thunderbird doesn't open links that point to extension pages and for
+    // regular https:// links it opens them in the user's default Web browser
+    // instead of a new Thunderbird tab.
+    //
+    // What's more, we can't use `browser.tabs.create` from a content script it
+    // seems, so instead we override the click event and send a message to the
+    // background page.
+    if (isThunderbird()) {
+      void browser.runtime.sendMessage({ type: 'showMouseOnboarding' });
+      event.preventDefault();
+    }
+
     container.classList.add('dismissed');
     options.onDismiss?.();
   });

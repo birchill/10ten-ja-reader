@@ -39,3 +39,7 @@ export function isIOS(): boolean {
     (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
   );
 }
+
+export function isThunderbird(): boolean {
+  return navigator.userAgent.indexOf('Thunderbird/') !== -1;
+}

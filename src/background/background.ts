@@ -561,6 +561,11 @@ browser.runtime.onMessage.addListener(
           }
         })();
 
+      case 'showMouseOnboarding':
+        return browser.tabs.create({
+          url: browser.runtime.getURL('docs/introducing-the-mouse.html'),
+        });
+
       case 'translate':
         return translate({
           text: request.input,
