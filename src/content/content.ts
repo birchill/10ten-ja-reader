@@ -2093,7 +2093,7 @@ export class ContentHandler {
 
     // Finally get the popup position
 
-    const {
+    let {
       x: popupX,
       y: popupY,
       constrainWidth,
@@ -2111,6 +2111,13 @@ export class ContentHandler {
       safeArea,
       pointerType: this.currentTargetProps?.fromPuck ? 'puck' : 'cursor',
     });
+
+    // If we are showing the copy overlay, we don't constrain the height of
+    // the popup since it may cause the buttons on the overlay to be clipped
+    // or scrolled out of view.
+    if (constrainHeight && showOverlay(this.copyState)) {
+      constrainHeight = null;
+    }
 
     // Determine if we need to set a minimum height
 
@@ -2182,10 +2189,7 @@ export class ContentHandler {
         popup.style.removeProperty('--max-width');
       }
 
-      // If we are showing the copy overlay, we don't constrain the height of
-      // the popup since it may cause the buttons on the overlay to be clipped
-      // or scrolled out of view.
-      if (constrainHeight && !showOverlay(this.copyState)) {
+      if (constrainHeight) {
         popup.style.removeProperty('--min-height');
         popup.style.setProperty('--max-height', `${constrainHeight}px`);
       } else if (minHeight) {
