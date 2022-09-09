@@ -146,7 +146,7 @@
                         fill="var(--cell-highlight-bg)"
                         clip-path="url(#interactive-popup-outline-1)" />
                       <!-- Highlighted part -->
-                      <rect x="10" y="0" width="150" height="30" fill="#ccc" />
+                      <text x="10" y="25" fill="#bbb" font-weight="bold">点々と家が建つ…</text>
                       <use href="#cursor" x="40" y="10" width="20.5" color="#888" />
                     </svg>
                   </div>
@@ -180,7 +180,7 @@
                           stroke-opacity="0.7" />
                       </g>
                       <!-- Text outline -->
-                      <rect x="10" y="0" width="150" height="30" fill="#ccc" />
+                      <text x="10" y="25" fill="#bbb" font-weight="bold">点々と家が建つ…</text>
                       <!-- Highlighted part -->
                       <rect x="5" y="85" rx="5" width="190" height="30"
                         fill="var(--hover-bg)" />
