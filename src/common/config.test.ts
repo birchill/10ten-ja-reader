@@ -143,6 +143,7 @@ describe('Config', () => {
     expect(config.contextMenuEnable).toEqual(true);
     expect(config.dictLang).toEqual('fr');
     expect(config.fxCurrency).toEqual('USD');
+    expect(config.highlightStyle).toEqual('yellow');
     expect(config.holdToShowKeys).toEqual(null);
     expect(config.holdToShowImageKeys).toEqual(null);
     expect(config.kanjiReferences).toEqual([

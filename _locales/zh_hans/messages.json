@@ -1619,6 +1619,16 @@
   "options_highlight_matched_text": {
     "message": "匹配词条高亮显示"
   },
+  "options_highlight_style_blue": {
+    "message": "蓝色的"
+  },
+  "options_highlight_style_label": {
+    "message": "高亮显示风格",
+    "description": "Title for the section for selection the highlight color"
+  },
+  "options_highlight_style_yellow": {
+    "message": "黄色"
+  },
   "options_kanji_components": {
     "message": "汉字部件",
     "description": "Option to define if radicals are displayed or not"

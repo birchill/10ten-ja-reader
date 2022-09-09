@@ -1,3 +1,4 @@
+import { HighlightStyle } from '../common/content-config';
 import { html } from '../utils/builder';
 import {
   isContentEditableNode,
@@ -72,7 +73,15 @@ export class TextHighlighter {
     this.dropHighlightStyles();
   }
 
-  highlight({ length, textRange }: { length: number; textRange: TextRange }) {
+  highlight({
+    length,
+    textRange,
+    style,
+  }: {
+    length: number;
+    textRange: TextRange;
+    style?: HighlightStyle;
+  }) {
     console.assert(textRange.length, 'Should have a non-empty range');
     const selectedWindow = textRange[0].node.ownerDocument!.defaultView!;
 
@@ -110,12 +119,17 @@ export class TextHighlighter {
       }
     } else if (
       !canUseHighlightApi &&
-      selection.toString() &&
+      !selection.isCollapsed &&
       selection.toString() !== this.selectedText
     ) {
       this.clearHighlight();
       return;
     }
+
+    // Unconditionally clear any existing CSS highlights since we might end up
+    // using regular DOM selections in some cases.
+    CSS?.highlights?.delete('tenten-selection');
+    CSS?.highlights?.delete('tenten-selection-blue');
 
     const startNode = textRange[0].node;
     if (isTextInputNode(startNode)) {
@@ -130,6 +144,7 @@ export class TextHighlighter {
         startSpan: startNode,
         offset: textRange[0].start,
         length,
+        style,
       });
       this.selectedText = null;
       this.selectedWindow = selectedWindow;
@@ -138,6 +153,7 @@ export class TextHighlighter {
         canUseHighlightApi,
         length,
         selectedWindow,
+        style,
         textRange,
       });
     }
@@ -169,6 +185,7 @@ export class TextHighlighter {
 
       // Delete any highlight we may have added using the CSS Highlight API.
       CSS?.highlights?.delete('tenten-selection');
+      CSS?.highlights?.delete('tenten-selection-blue');
       this.dropHighlightStyles();
 
       // Likewise any Google docs selection
@@ -380,12 +397,14 @@ export class TextHighlighter {
   private highlightRegularNode({
     canUseHighlightApi,
     length,
+    style,
     selectedWindow,
     textRange,
   }: {
     canUseHighlightApi: boolean;
     length: number;
     selectedWindow: Window;
+    style?: HighlightStyle;
     textRange: TextRange;
   }) {
     // If we were previously interacting with a text box, restore its range
@@ -409,7 +428,10 @@ export class TextHighlighter {
         endContainer: endNode,
         endOffset,
       });
-      CSS.highlights!.set('tenten-selection', new Highlight(range));
+      CSS.highlights!.set(
+        style === 'blue' ? 'tenten-selection-blue' : 'tenten-selection',
+        new Highlight(range)
+      );
       this.ensureHighlightStyles();
       this.selectedText = null;
     } else {
@@ -456,6 +478,12 @@ export class TextHighlighter {
       return;
     }
 
+    //
+    // These styles need to be synchronized with the preview styles in
+    // options.css
+    //
+    // Don't forget the Google Docs styles in gdocs-canvas.ts too!
+    //
     document.head.append(
       html(
         'style',
@@ -464,6 +492,10 @@ export class TextHighlighter {
 ::highlight(tenten-selection) {
   background: #fff394;
   color: #1d1a19;
+}
+::highlight(tenten-selection-blue) {
+  background: #2589ed;
+  color: white;
 }`
       )
     );

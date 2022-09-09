@@ -1,3 +1,5 @@
+export type HighlightStyle = 'yellow' | 'blue';
+
 // Keyboard shortcut keys. Each of these is an array of keycodes (as reported
 // by KeyboardEvent.key). The array may be empty in which case the action is
 // effectively disabled.
@@ -50,6 +52,10 @@ export interface ContentConfig {
 
   // True if the user has upgraded from a version prior to 1.12
   hasUpgradedFromPreMouse: boolean;
+
+  // The colors etc. to use for highlighting text when using the CSS Highlight
+  // API etc.
+  highlightStyle: HighlightStyle;
 
   // Modifier keys which must be held down in order for the pop-up to shown.
   //

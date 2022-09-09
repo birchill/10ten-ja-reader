@@ -1,3 +1,4 @@
+import { HighlightStyle } from '../common/content-config';
 import { empty, SVG_NS } from '../utils/dom-utils';
 import { Point, Rect } from '../utils/geometry';
 
@@ -21,6 +22,9 @@ export function injectGdocsStyles() {
   position: absolute;
   pointer-events: none;
   background-color: yellow;
+}
+#tenten-gdocs-highlight .box.blue {
+  background-color: #2698fb;
 }`;
   (document.head || document.documentElement).appendChild(style);
 }
@@ -222,10 +226,12 @@ export function highlightGdocsRange({
   startSpan,
   offset,
   length,
+  style,
 }: {
   startSpan: SVGRectElement;
   offset: number;
   length: number;
+  style?: HighlightStyle;
 }) {
   let highlightContainer = document.getElementById('tenten-gdocs-highlight');
   if (highlightContainer) {
@@ -250,6 +256,7 @@ export function highlightGdocsRange({
   for (const box of boxes) {
     const boxElem = document.createElement('div');
     boxElem.classList.add('box');
+    boxElem.classList.toggle('blue', style === 'blue');
     boxElem.style.left = `${box.left - containerBbox.left}px`;
     boxElem.style.top = `${box.top - containerBbox.top}px`;
     boxElem.style.width = `${box.width}px`;

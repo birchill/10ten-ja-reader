@@ -1619,6 +1619,16 @@
   "options_highlight_matched_text": {
     "message": "照合される文字列をハイライト"
   },
+  "options_highlight_style_blue": {
+    "message": "青"
+  },
+  "options_highlight_style_label": {
+    "message": "ハイライトテーマ",
+    "description": "Title for the section for selection the highlight color"
+  },
+  "options_highlight_style_yellow": {
+    "message": "黄色"
+  },
   "options_kanji_components": {
     "message": "漢字構成",
     "description": "Option to define if radicals are displayed or not"

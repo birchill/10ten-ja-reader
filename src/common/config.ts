@@ -21,6 +21,7 @@ import { stripFields } from '../utils/strip-fields';
 import {
   AccentDisplay,
   ContentConfig,
+  HighlightStyle,
   KeyboardKeys,
   PartOfSpeechDisplay,
   TabDisplay,
@@ -64,6 +65,7 @@ interface Settings {
   dictLang?: DbLanguageId;
   fxCurrency?: string;
   hasDismissedMouseOnboarding?: boolean;
+  highlightStyle?: HighlightStyle;
   holdToShowKeys?: string;
   holdToShowImageKeys?: string;
   kanjiReferencesV2?: KanjiReferenceFlagsV2;
@@ -503,6 +505,26 @@ export class Config {
     return this.fxData
       ? Object.keys(this.fxData.rates).sort((a, b) => a.localeCompare(b))
       : undefined;
+  }
+
+  // highlightStyle: Defaults to 'yellow'
+
+  get highlightStyle(): HighlightStyle {
+    return this.settings.highlightStyle ?? 'yellow';
+  }
+
+  set highlightStyle(value: HighlightStyle) {
+    if (this.highlightStyle === value) {
+      return;
+    }
+
+    if (value === 'yellow') {
+      this.settings.highlightStyle = undefined;
+      void browser.storage.sync.remove('highlightStyle');
+    } else {
+      this.settings.highlightStyle = value;
+      void browser.storage.sync.set({ highlightStyle: value });
+    }
   }
 
   // holdToShowKeys: Defaults to null
@@ -1018,6 +1040,7 @@ export class Config {
           : undefined,
       hasDismissedMouseOnboarding: this.hasDismissedMouseOnboarding,
       hasUpgradedFromPreMouse: this.hasUpgradedFromPreMouse,
+      highlightStyle: this.highlightStyle,
       holdToShowKeys: this.holdToShowKeys
         ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)
         : [],

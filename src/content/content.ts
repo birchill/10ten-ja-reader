@@ -1564,6 +1564,7 @@ export class ContentHandler {
     this.textHighlighter.highlight({
       length,
       textRange: this.currentTextRange,
+      style: this.config.highlightStyle,
     });
 
     this.puck?.highlightMatch();

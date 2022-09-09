@@ -145,6 +145,9 @@ fieldset {
   display: grid;
   width: -moz-max-content;
   width: max-content;
+}
+
+.icon-radio.centered {
   margin-left: auto;
   margin-right: auto;
 }
@@ -155,6 +158,107 @@ fieldset {
   padding: 0.5em;
   text-align: center;
   cursor: pointer;
+}
+
+/*
+ * Highlight style selection
+ */
+
+.highlightstyle-select > input[type='radio']:not(:checked) + label {
+  filter: grayscale(100%);
+}
+.highlightstyle-select > input[type='radio']:not(:checked) + label:hover,
+.highlightstyle-select > input[type='radio']:not(:checked) + label:active {
+  filter: none;
+}
+
+.highlightstyle-select {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+@media (max-width: 300px) {
+  .highlightstyle-select {
+    grid-template-columns: 1fr;
+  }
+}
+
+.highlightstyle-select > label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #888;
+  border-radius: 5px;
+  padding: 0;
+  background: white !important;
+}
+
+.highlightstyle-select > label .highlight-icon {
+  background: #ddd;
+  font-size: 25px;
+  padding: 16px 8px;
+}
+
+.highlightstyle-select > input[type='radio'] + label:hover .highlight-icon {
+  background: #ccc;
+}
+
+.highlightstyle-select > label .highlight-icon .text-fade {
+  -webkit-mask: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
+  mask: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
+}
+
+.highlightstyle-select > label .highlight.yellow {
+  background: #fff394;
+  color: #1d1a19;
+}
+
+.highlightstyle-select > label .highlight.blue {
+  background: #2589ed;
+  color: white;
+}
+
+.highlightstyle-select > label .label {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  border-top: 1px solid #888;
+  padding: 5px 8px;
+}
+
+.highlightstyle-select > label .label .radio {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 14px;
+  margin-right: 8px;
+  background: #ddd;
+  border: 1px solid #888;
+}
+
+.highlightstyle-select > input[type='radio']:checked + label .label .radio {
+  border: 1px solid #0670cc;
+  background: white;
+  box-shadow: inset 0 0 0 2.5px #0996f8;
+}
+
+.highlightstyle-select > input[type='radio']:not(:checked) + label:hover .label .radio {
+  background: #ccc;
+}
+
+#highlight-style-section {
+  display: none;
+}
+
+@supports selector(::highlight(yer)) {
+  #highlight-style-section {
+    display: revert;
+  }
+}
+
+#highlight-style-section .highlightstyle-select {
+  margin-bottom: 1.5em;
 }
 
 /*

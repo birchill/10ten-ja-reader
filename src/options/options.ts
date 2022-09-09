@@ -131,6 +131,18 @@ function completeForm() {
       config.noTextHighlight = !(event.target as HTMLInputElement).checked;
     });
 
+  const highlightStyleOptions = Array.from(
+    document.querySelectorAll('input[type=radio][name=highlightStyle]')
+  );
+  for (const option of highlightStyleOptions) {
+    option.addEventListener('change', (event) => {
+      const highlightStyle = (event.target as HTMLInputElement).value as
+        | 'yellow'
+        | 'blue';
+      config.highlightStyle = highlightStyle;
+    });
+  }
+
   document
     .getElementById('contextMenuEnable')!
     .addEventListener('click', (event) => {
@@ -852,6 +864,7 @@ function expireNewBadges() {
 
 function fillVals() {
   const optform = document.getElementById('optform') as HTMLFormElement;
+  optform.highlightStyle.value = config.highlightStyle;
   optform.showPriority.checked = config.showPriority;
   optform.showRomaji.checked = config.showRomaji;
   optform.showDefinitions.checked = !config.readingOnly;

@@ -17,6 +17,9 @@ app.
 - Made the popup not move position when changing tabs via touch or mouse.
 - Added a shortcut key for closing the popup (defaults to <kbd>Esc</kbd>).
 - Added a shortcut key for pinning the popup (defaults to <kbd>Ctrl</kbd>).
+- Added a setting to make highlight styles blue on browsers that support the CSS
+  Highlight API and made the default yellow style more subdued.
+- Fixed a bug where highlights might not be cleared.
 - Disabled using the Highlight API on Chrome for vertical text due to
   [Chromium bug 1360724](https://bugs.chromium.org/p/chromium/issues/detail?id=1360724)
 

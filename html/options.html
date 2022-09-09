@@ -23,6 +23,27 @@
             <input type="checkbox" id="highlightText" name="highlightText" />
             <label for="highlightText">Highlight matched text</label>
           </div>
+          <div id="highlight-style-section">
+            <p>Highlight style<span class="new-badge">New!</span></p>
+            <fieldset>
+              <div class="highlightstyle-select icon-radio" id="highlightstyle-select">
+                <input type="radio" name="highlightStyle" value="yellow"
+                  id="highlightstyle-yellow" />
+                <label for="highlightstyle-yellow">
+                  <div class="highlight-icon"><span class="text-fade">に<span
+                    class="highlight yellow">点々</span>と</span></div>
+                  <div class="label"><span class="radio"></span>Yellow</div>
+                </label>
+                <input type="radio" name="highlightStyle" value="blue"
+                  id="highlightstyle-blue" />
+                <label for="highlightstyle-blue">
+                  <div class="highlight-icon"><span class="text-fade">に<span
+                    class="highlight blue">点々</span>と</span></div>
+                  <div class="label"><span class="radio"></span>Blue</div>
+                </label>
+              </div>
+            </fieldset>
+          </div>
           <div class="browser-style checkbox-row">
             <input
               type="checkbox"
@@ -33,9 +54,9 @@
               >Show &ldquo;Enable 10ten reader&rdquo; in context menu</label
             >
           </div>
-          <p>Toolbar icon:</p>
+          <p>Toolbar icon</p>
           <fieldset>
-            <div class="toolbaricon-select icon-radio" id="toolbaricon-select">
+            <div class="toolbaricon-select icon-radio centered" id="toolbaricon-select">
               <input type="radio" name="toolbarIcon" value="default" id="toolbaricon-default" />
               <label for="toolbaricon-default">
                 <img src="../images/10ten.svg" alt="default" class="icon" />
@@ -52,7 +73,7 @@
         </div>
         <div class="panel-section panel-section-formElements">
           <fieldset>
-            <div class="popupstyle-select icon-radio" id="popupstyle-select"></div>
+            <div class="popupstyle-select icon-radio centered" id="popupstyle-select"></div>
           </fieldset>
           <div class="browser-style checkbox-row">
             <input type="checkbox" id="showPriority" name="showPriority" />
@@ -103,7 +124,7 @@
           <div id="mouse-interactivity-section" class="needs-mouse">
             <p>Mouse interaction<span class="new-badge">New!</span></p>
             <fieldset>
-              <div class="interactivity-select icon-radio" id="interactivity-select">
+              <div class="interactivity-select icon-radio centered" id="interactivity-select">
                 <input type="radio" name="mouseInteractivity" value="disable"
                   id="interactivity-disable" />
                 <label for="interactivity-disable">
@@ -187,7 +208,7 @@
           </div>
           <p>Tab position</p>
           <fieldset>
-            <div class="tabdisplay-select icon-radio" id="tabdisplay-select">
+            <div class="tabdisplay-select icon-radio centered" id="tabdisplay-select">
               <input type="radio" name="tabDisplay" value="top" id="tabdisplay-top" />
               <label for="tabdisplay-top">
                 <svg viewBox="0 0 48 48" class="tabicon theme-light">

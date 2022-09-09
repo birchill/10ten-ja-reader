@@ -22,6 +22,30 @@
             <label for=highlightText
               >__MSG_options_highlight_matched_text__</label>
           </div>
+          <div id="highlight-style-section">
+            <p>__MSG_options_highlight_style_label__<span
+              class=new-badge>__MSG_options_new_badge_text__</span></p>
+            <fieldset>
+              <div class="highlightstyle-select icon-radio" id="highlightstyle-select">
+                <input type="radio" name="highlightStyle" value="yellow"
+                  id="highlightstyle-yellow" />
+                <label for="highlightstyle-yellow">
+                  <div class="highlight-icon"><span class="text-fade">に<span
+                    class="highlight yellow">点々</span>と</span></div>
+                  <div class="label"><span
+                      class="radio"></span>__MSG_options_highlight_style_yellow__</div>
+                </label>
+                <input type="radio" name="highlightStyle" value="blue"
+                  id="highlightstyle-blue" />
+                <label for="highlightstyle-blue">
+                  <div class="highlight-icon"><span class="text-fade">に<span
+                    class="highlight blue">点々</span>と</span></div>
+                  <div class="label"><span
+                      class="radio"></span>__MSG_options_highlight_style_blue__</div>
+                </label>
+              </div>
+            </fieldset>
+          </div>
           <div class="browser-style checkbox-row">
             <input type=checkbox id=contextMenuEnable name=contextMenuEnable>
             <label for=contextMenuEnable
@@ -29,7 +53,7 @@
           </div>
           <p>__MSG_options_toolbar_icon_label__</p>
           <fieldset>
-            <div class="toolbaricon-select icon-radio" id="toolbaricon-select">
+            <div class="toolbaricon-select icon-radio centered" id="toolbaricon-select">
               <input type="radio" name="toolbarIcon" value="default" id="toolbaricon-default" />
               <label for="toolbaricon-default">
                 <img src="/images/10ten.svg" alt="__MSG_options_toolbar_icon_default_alt__" class="icon" />
@@ -47,7 +71,7 @@
         <div class="panel-section panel-section-formElements">
           <fieldset>
             <!-- Extra div because Chrome can't do flex in fieldset -->
-            <div class="popupstyle-select icon-radio" id=popupstyle-select>
+            <div class="popupstyle-select icon-radio centered" id=popupstyle-select>
             </div>
           </fieldset>
           <div class="browser-style checkbox-row">
@@ -87,7 +111,7 @@
             <p>__MSG_options_mouse_interactivity_label__<span
               class=new-badge>__MSG_options_new_badge_text__</span></p>
             <fieldset>
-              <div class="interactivity-select icon-radio" id="interactivity-select">
+              <div class="interactivity-select icon-radio centered" id="interactivity-select">
                 <input type="radio" name="mouseInteractivity" value="disable"
                   id="interactivity-disable" />
                 <label for="interactivity-disable">
@@ -171,7 +195,7 @@
           </div>
           <p>__MSG_options_tab_position_label__</p>
           <fieldset>
-            <div class="tabdisplay-select icon-radio" id="tabdisplay-select">
+            <div class="tabdisplay-select icon-radio centered" id="tabdisplay-select">
               <input type="radio" name="tabDisplay" value="top" id="tabdisplay-top" />
               <label for="tabdisplay-top">
                 <svg viewBox="0 0 48 48" class="tabicon theme-light">

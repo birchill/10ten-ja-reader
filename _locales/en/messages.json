@@ -1619,6 +1619,16 @@
   "options_highlight_matched_text": {
     "message": "Highlight matched text"
   },
+  "options_highlight_style_blue": {
+    "message": "Blue"
+  },
+  "options_highlight_style_label": {
+    "message": "Highlight style",
+    "description": "Title for the section for selection the highlight color"
+  },
+  "options_highlight_style_yellow": {
+    "message": "Yellow"
+  },
   "options_kanji_components": {
     "message": "Kanji components",
     "description": "Option to define if radicals are displayed or not"
