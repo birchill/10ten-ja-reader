@@ -1859,9 +1859,15 @@
     "message": "上",
     "description": "Text label for the radio button to show tabs on top"
   },
+  "options_toolbar_icon_classic_label": {
+    "message": "クラシック"
+  },
   "options_toolbar_icon_default_alt": {
     "message": "既定",
     "description": "Alt text for the default toolbar icon"
+  },
+  "options_toolbar_icon_kanji_label": {
+    "message": "漢字"
   },
   "options_toolbar_icon_label": {
     "message": "ツールバーアイコン",

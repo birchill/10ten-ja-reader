@@ -127,10 +127,12 @@ fieldset {
   display: none;
 }
 
-.icon-radio > input[type='radio']:checked + label {
-  border-color: #aaa;
+.icon-radio > label {
+  border: 1px solid transparent;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s, opacity 0.3s;
   border-radius: 5px;
-  background: #ddd;
 }
 
 .icon-radio > input[type='radio']:not(:checked) + label {
@@ -147,30 +149,83 @@ fieldset {
   width: max-content;
 }
 
-.icon-radio.centered {
+/*
+ * Custom radio variant: centered
+ */
+
+.icon-radio.-centered {
   margin-left: auto;
   margin-right: auto;
 }
 
-.icon-radio > label {
-  border: 1px solid transparent;
-  transition: background-color 0.3s, opacity 0.3s;
-  padding: 0.5em;
-  text-align: center;
-  cursor: pointer;
+/*
+ * Custom radio variant: label along the bottom
+ */
+
+.icon-radio.-with-labels > label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #888;
+  border-radius: 5px;
+  padding: 0;
+  background: white;
+  overflow: hidden;
+}
+
+.icon-radio.-with-labels > label .icon {
+  background: #eee;
+  width: 100%;
+}
+
+.icon-radio.-with-labels > label:hover .icon {
+  background: #ddd;
+}
+
+.icon-radio.-with-labels > label .text {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  border-top: 1px solid #888;
+  padding: 5px 8px;
+}
+
+.icon-radio.-with-labels > label .text .radio {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 14px;
+  margin-right: 8px;
+  background: #ddd;
+  border: 1px solid #888;
+}
+
+.icon-radio.-with-labels > input[type='radio']:checked + label .text .radio {
+  border: 1px solid #0670cc;
+  background: white;
+  box-shadow: inset 0 0 0 2.5px #0996f8;
+}
+
+.icon-radio.-with-labels > input[type='radio']:not(:checked) + label:hover .text .radio {
+  background: #ccc;
+}
+
+/*
+ * Custom radio variant: black and white for inactive options
+ */
+
+.icon-radio.-bw-inactive > input[type='radio']:not(:checked) + label {
+  filter: grayscale(100%);
+}
+.icon-radio.-bw-inactive > input[type='radio']:not(:checked) + label:hover,
+.icon-radio.-bw-inactive > input[type='radio']:not(:checked) + label:active {
+  filter: none;
 }
 
 /*
  * Highlight style selection
  */
-
-.highlightstyle-select > input[type='radio']:not(:checked) + label {
-  filter: grayscale(100%);
-}
-.highlightstyle-select > input[type='radio']:not(:checked) + label:hover,
-.highlightstyle-select > input[type='radio']:not(:checked) + label:active {
-  filter: none;
-}
 
 .highlightstyle-select {
   grid-template-columns: repeat(2, 1fr);
@@ -183,27 +238,12 @@ fieldset {
   }
 }
 
-.highlightstyle-select > label {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 1px solid #888;
-  border-radius: 5px;
-  padding: 0;
-  background: white !important;
-}
-
-.highlightstyle-select > label .highlight-icon {
-  background: #ddd;
+.highlightstyle-select > label .icon {
   font-size: 25px;
   padding: 16px 8px;
 }
 
-.highlightstyle-select > input[type='radio'] + label:hover .highlight-icon {
-  background: #ccc;
-}
-
-.highlightstyle-select > label .highlight-icon .text-fade {
+.highlightstyle-select > label .icon .text-fade {
   -webkit-mask: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
   mask: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
 }
@@ -216,35 +256,6 @@ fieldset {
 .highlightstyle-select > label .highlight.blue {
   background: #2589ed;
   color: white;
-}
-
-.highlightstyle-select > label .label {
-  display: flex;
-  align-items: center;
-
-  width: 100%;
-  border-top: 1px solid #888;
-  padding: 5px 8px;
-}
-
-.highlightstyle-select > label .label .radio {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  border-radius: 14px;
-  margin-right: 8px;
-  background: #ddd;
-  border: 1px solid #888;
-}
-
-.highlightstyle-select > input[type='radio']:checked + label .label .radio {
-  border: 1px solid #0670cc;
-  background: white;
-  box-shadow: inset 0 0 0 2.5px #0996f8;
-}
-
-.highlightstyle-select > input[type='radio']:not(:checked) + label:hover .label .radio {
-  background: #ccc;
 }
 
 #highlight-style-section {
@@ -267,41 +278,18 @@ fieldset {
 
 .toolbaricon-select {
   grid-template-columns: repeat(2, 1fr);
-}
-
-.toolbaricon-select > label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 80px;
+  gap: 8px;
 }
 
 .toolbaricon-select > label .icon {
+  padding: 16px 32px;
+  text-align: center;
+}
+
+.toolbaricon-select > label .icon .image {
   width: 48px;
   height: 48px;
   filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.25));
-}
-
-.panel-section-grid {
-  display: grid;
-  width: 95%;
-  grid-template-columns: repeat(2, minmax(250px, 1fr));
-  grid-column-gap: 1em;
-  grid-auto-flow: column;
-  padding-top: 16px;
-  padding-bottom: 16px;
-}
-:root.firefox .panel-section-grid {
-  margin-left: 16px;
-  margin-right: 16px;
-}
-
-/* Edge options window is tiny */
-@media (max-width: 500px) {
-  .panel-section-grid {
-    grid-template-columns: minmax(250px, 1fr);
-    grid-auto-flow: row;
-  }
 }
 
 fieldset.bordered {
@@ -333,6 +321,13 @@ fieldset.bordered {
 
 .popupstyle-select > label {
   min-width: 200px;
+  padding: 0.5em;
+  transition: background-color 0.3s, opacity 0.3s;
+}
+
+.popupstyle-select > input[type='radio']:checked + label {
+  border-color: #aaa;
+  background: #ddd;
 }
 
 .popupstyle-select > label .overlay {
@@ -361,16 +356,9 @@ fieldset.bordered {
  * Interactivity selection
  */
 
-.interactivity-select > input[type='radio']:not(:checked) + label {
-  filter: grayscale(100%);
-}
-.interactivity-select > input[type='radio']:not(:checked) + label:hover,
-.interactivity-select > input[type='radio']:not(:checked) + label:active {
-  filter: none;
-}
-
 .interactivity-select {
   grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
 }
 
 @media (max-width: 500px) {
@@ -379,15 +367,14 @@ fieldset.bordered {
   }
 }
 
-.interactivity-select > label .tabicon {
-  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.25));
-  width: 200px;
-  height: 150px;
+.interactivity-select > label .icon {
+  padding: 8px 16px;
+  text-align: center;
 }
 
-.interactivity-select > label .text-label {
-  text-align: center;
-  margin-bottom: 1em;
+.interactivity-select > label .icon .svg {
+  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.25));
+  width: 150px;
 }
 
 #mouse-interactivity-section .info {
@@ -451,16 +438,9 @@ fieldset.bordered {
  * Tab side selection
  */
 
-.tabdisplay-select > input[type='radio']:not(:checked) + label {
-  filter: grayscale(100%);
-}
-.tabdisplay-select > input[type='radio']:not(:checked) + label:hover,
-.tabdisplay-select > input[type='radio']:not(:checked) + label:active {
-  filter: none;
-}
-
 .tabdisplay-select {
   grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
 }
 
 @media (max-width: 600px) {
@@ -479,27 +459,28 @@ fieldset.bordered {
   min-width: 120px;
 }
 
-.tabdisplay-select > label .tabicon {
+.tabdisplay-select > label .icon {
+  padding: 8px 16px;
+  text-align: center;
+}
+
+.tabdisplay-select > label .icon .svg {
   width: 48px;
   height: 48px;
   filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.25));
 }
 
-.tabdisplay-select > label .tabicon .popup {
+.tabdisplay-select > label .icon .svg .popup {
   fill: var(--bg-color);
   stroke: var(--border-color);
   stroke-width: 0.5px;
 }
 
-.tabdisplay-select > label .tabicon .tab {
+.tabdisplay-select > label .icon .svg .tab {
   fill: var(--cell-highlight-bg);
   stroke: var(--border-color);
   stroke-width: 0.5px;
   clip-path: url(#popup-outline);
-}
-
-.tabdisplay-select > label .text-label {
-  text-align: center;
 }
 
 /* See notes in device.ts:probablyHasPhysicalKeyboard for how we arrived at this
@@ -696,6 +677,32 @@ fieldset.bordered {
   border: 1px solid hsl(43, 77%, 27%);
   border-radius: 8px;
   color: hsl(43, 77%, 27%);
+}
+
+/*
+ * Grid layout panel
+ */
+
+.panel-section-grid {
+  display: grid;
+  width: 95%;
+  grid-template-columns: repeat(2, minmax(250px, 1fr));
+  grid-column-gap: 1em;
+  grid-auto-flow: column;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+:root.firefox .panel-section-grid {
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+/* Edge options window is tiny */
+@media (max-width: 500px) {
+  .panel-section-grid {
+    grid-template-columns: minmax(250px, 1fr);
+    grid-auto-flow: row;
+  }
 }
 
 .panel-section-db-summary {

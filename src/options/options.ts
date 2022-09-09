@@ -363,7 +363,7 @@ function renderPopupPreview(theme: string): HTMLElement {
 function setTabDisplayTheme(theme: string) {
   const tabIcons = Array.from(
     document.querySelectorAll(
-      '.interactivity-select .tabicon, .tabdisplay-select .tabicon'
+      '.interactivity-select .icon .svg, .tabdisplay-select .icon .svg'
     )
   );
 

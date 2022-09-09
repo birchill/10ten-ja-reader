@@ -26,21 +26,23 @@
             <p>__MSG_options_highlight_style_label__<span
               class=new-badge>__MSG_options_new_badge_text__</span></p>
             <fieldset>
-              <div class="highlightstyle-select icon-radio" id="highlightstyle-select">
+              <div
+                class="highlightstyle-select icon-radio -with-labels -bw-inactive"
+                id="highlightstyle-select">
                 <input type="radio" name="highlightStyle" value="yellow"
                   id="highlightstyle-yellow" />
                 <label for="highlightstyle-yellow">
-                  <div class="highlight-icon"><span class="text-fade">に<span
+                  <div class="icon"><span class="text-fade">に<span
                     class="highlight yellow">点々</span>と</span></div>
-                  <div class="label"><span
+                  <div class="text"><span
                       class="radio"></span>__MSG_options_highlight_style_yellow__</div>
                 </label>
                 <input type="radio" name="highlightStyle" value="blue"
                   id="highlightstyle-blue" />
                 <label for="highlightstyle-blue">
-                  <div class="highlight-icon"><span class="text-fade">に<span
+                  <div class="icon"><span class="text-fade">に<span
                     class="highlight blue">点々</span>と</span></div>
-                  <div class="label"><span
+                  <div class="text"><span
                       class="radio"></span>__MSG_options_highlight_style_blue__</div>
                 </label>
               </div>
@@ -53,14 +55,25 @@
           </div>
           <p>__MSG_options_toolbar_icon_label__</p>
           <fieldset>
-            <div class="toolbaricon-select icon-radio centered" id="toolbaricon-select">
+            <div class="toolbaricon-select icon-radio -with-labels -bw-inactive"
+              id="toolbaricon-select">
               <input type="radio" name="toolbarIcon" value="default" id="toolbaricon-default" />
               <label for="toolbaricon-default">
-                <img src="/images/10ten.svg" alt="__MSG_options_toolbar_icon_default_alt__" class="icon" />
+                <div class="icon">
+                  <img src="/images/10ten.svg"
+                  alt="__MSG_options_toolbar_icon_default_alt__" class="image" />
+                </div>
+                <div class=text><span
+                    class=radio></span>__MSG_options_toolbar_icon_classic_label__</div>
               </label>
               <input type="radio" name="toolbarIcon" value="sky" id="toolbaricon-sky" />
               <label for="toolbaricon-sky">
-                <img src="/images/10ten-sky.svg" alt="__MSG_options_toolbar_icon_sky_alt__" class="icon" />
+                <div class="icon">
+                  <img src="/images/10ten-sky.svg"
+                  alt="__MSG_options_toolbar_icon_sky_alt__" class="image" />
+                </div>
+                <div class=text><span
+                    class=radio></span>__MSG_options_toolbar_icon_kanji_label__</div>
               </label>
             </div>
           </fieldset>
@@ -71,7 +84,7 @@
         <div class="panel-section panel-section-formElements">
           <fieldset>
             <!-- Extra div because Chrome can't do flex in fieldset -->
-            <div class="popupstyle-select icon-radio centered" id=popupstyle-select>
+            <div class="popupstyle-select icon-radio -centered" id=popupstyle-select>
             </div>
           </fieldset>
           <div class="browser-style checkbox-row">
@@ -111,70 +124,78 @@
             <p>__MSG_options_mouse_interactivity_label__<span
               class=new-badge>__MSG_options_new_badge_text__</span></p>
             <fieldset>
-              <div class="interactivity-select icon-radio centered" id="interactivity-select">
+              <div
+                class="interactivity-select icon-radio -with-labels -bw-inactive"
+                id="interactivity-select">
                 <input type="radio" name="mouseInteractivity" value="disable"
                   id="interactivity-disable" />
                 <label for="interactivity-disable">
-                  <div class=text-label>__MSG_options_mouse_interactivity_disable__</div>
-                  <svg viewBox="0 0 200 150" class="tabicon theme-light">
-                    <defs>
-                      <clipPath id="interactive-popup-outline-1">
-                        <rect x="1" y="50" rx="5" width="198" height="90" fill="black" />
-                      </clipPath>
-                    </defs>
-                    <!-- Popup outline -->
-                    <rect x="1" y="50" rx="5" width="198" height="90"
-                      fill="var(--bg-color)" stroke="var(--border-color)"
-                      stroke-width="0.5"/>
-                    <!-- Tab background -->
-                    <rect x="60" y="50" width="140" height="15"
-                      fill="var(--cell-highlight-bg)"
-                      clip-path="url(#interactive-popup-outline-1)" />
-                    <!-- Highlighted part -->
-                    <rect x="10" y="0" width="150" height="30" fill="#ccc" />
-                    <use href="#cursor" x="40" y="10" width="20.5" color="#888" />
-                  </svg>
+                  <div class=icon>
+                    <svg viewBox="0 0 200 150" class="svg theme-light">
+                      <defs>
+                        <clipPath id="interactive-popup-outline-1">
+                          <rect x="1" y="50" rx="5" width="198" height="90" fill="black" />
+                        </clipPath>
+                      </defs>
+                      <!-- Popup outline -->
+                      <rect x="1" y="50" rx="5" width="198" height="90"
+                        fill="var(--bg-color)" stroke="var(--border-color)"
+                        stroke-width="0.5"/>
+                      <!-- Tab background -->
+                      <rect x="60" y="50" width="140" height="15"
+                        fill="var(--cell-highlight-bg)"
+                        clip-path="url(#interactive-popup-outline-1)" />
+                      <!-- Highlighted part -->
+                      <rect x="10" y="0" width="150" height="30" fill="#ccc" />
+                      <use href="#cursor" x="40" y="10" width="20.5" color="#888" />
+                    </svg>
+                  </div>
+                  <div class=text><span
+                      class=radio></span>__MSG_options_mouse_interactivity_disable__</div>
                 </label>
                 <input type="radio" name="mouseInteractivity" value="enable"
                   id="interactivity-enable" />
                 <label for="interactivity-enable">
-                  <div class=text-label>__MSG_options_mouse_interactivity_enable__</div>
-                  <svg viewBox="0 0 200 150" class="tabicon theme-light">
-                    <defs>
-                      <clipPath id="interactive-popup-outline-2">
-                        <rect x="1" y="50" rx="5" width="198" height="100" fill="black" />
-                      </clipPath>
-                    </defs>
-                    <!-- Popup outline (with arrow) -->
-                    <path d="M6 50h10l15-15l15 15h148a5 5 90 0 1 5 5v89a5 5 90 0 1-5 5h-188a5
-                      5 90 0 1-5-5v-89a5 5 90 0 1 5-5Z"
-                      fill="var(--bg-color)" stroke="var(--border-color)"
-                      stroke-width="0.5"/>
-                    <!-- Tab background -->
-                    <rect x="60" y="50" width="140" height="25"
-                      fill="var(--cell-highlight-bg)"
-                      clip-path="url(#interactive-popup-outline-2)" />
-                    <!-- Close button -->
-                    <g transform="translate(185 62.5)">
-                      <circle r="8" fill="var(--bg-color)" />
-                      <path d="M-3-3l6 6m0-6l-6 6" stroke="var(--text-color)"
-                        stroke-width="2" stroke-linecap="round"
-                        stroke-opacity="0.7" />
-                    </g>
-                    <!-- Text outline -->
-                    <rect x="10" y="0" width="150" height="30" fill="#ccc" />
-                    <!-- Highlighted part -->
-                    <rect x="5" y="85" rx="5" width="190" height="30"
-                      fill="var(--hover-bg)" />
-                    <!-- Cursor trail -->
-                    <use href="#cursor" x="25" y="10" width="16" color="#888"
-                      opacity="0.2"/>
-                    <use href="#cursor" x="25" y="32" width="19" color="#888"
-                      opacity="0.25"/>
-                    <use href="#cursor" x="30" y="60" width="23" color="#888"
-                      opacity="0.32"/>
-                    <use href="#hand" x="34" y="95" width="35" color="#888" />
-                  </svg>
+                  <div class=icon>
+                    <svg viewBox="0 0 200 150" class="svg theme-light">
+                      <defs>
+                        <clipPath id="interactive-popup-outline-2">
+                          <rect x="1" y="50" rx="5" width="198" height="100" fill="black" />
+                        </clipPath>
+                      </defs>
+                      <!-- Popup outline (with arrow) -->
+                      <path d="M6 50h10l15-15l15 15h148a5 5 90 0 1 5 5v89a5 5 90 0 1-5 5h-188a5
+                        5 90 0 1-5-5v-89a5 5 90 0 1 5-5Z"
+                        fill="var(--bg-color)" stroke="var(--border-color)"
+                        stroke-width="0.5"/>
+                      <!-- Tab background -->
+                      <rect x="60" y="50" width="140" height="25"
+                        fill="var(--cell-highlight-bg)"
+                        clip-path="url(#interactive-popup-outline-2)" />
+                      <!-- Close button -->
+                      <g transform="translate(185 62.5)">
+                        <circle r="8" fill="var(--bg-color)" />
+                        <path d="M-3-3l6 6m0-6l-6 6" stroke="var(--text-color)"
+                          stroke-width="2" stroke-linecap="round"
+                          stroke-opacity="0.7" />
+                      </g>
+                      <!-- Text outline -->
+                      <rect x="10" y="0" width="150" height="30" fill="#ccc" />
+                      <!-- Highlighted part -->
+                      <rect x="5" y="85" rx="5" width="190" height="30"
+                        fill="var(--hover-bg)" />
+                      <!-- Cursor trail -->
+                      <use href="#cursor" x="25" y="10" width="16" color="#888"
+                        opacity="0.2"/>
+                      <use href="#cursor" x="25" y="32" width="19" color="#888"
+                        opacity="0.25"/>
+                      <use href="#cursor" x="30" y="60" width="23" color="#888"
+                        opacity="0.32"/>
+                      <use href="#hand" x="34" y="95" width="35" color="#888" />
+                    </svg>
+                  </div>
+                  <div class=text><span
+                      class=radio></span>__MSG_options_mouse_interactivity_enable__</div>
                 </label>
               </div>
             </fieldset>
@@ -195,43 +216,57 @@
           </div>
           <p>__MSG_options_tab_position_label__</p>
           <fieldset>
-            <div class="tabdisplay-select icon-radio centered" id="tabdisplay-select">
+            <div
+              class="tabdisplay-select icon-radio -with-labels -bw-inactive"
+              id="tabdisplay-select">
               <input type="radio" name="tabDisplay" value="top" id="tabdisplay-top" />
               <label for="tabdisplay-top">
-                <svg viewBox="0 0 48 48" class="tabicon theme-light">
-                  <defs>
-                    <clipPath id="popup-outline">
-                      <rect x="1" y="1" rx="5" width="46" height="46" fill="black" />
-                    </clipPath>
-                    <rect id="tabicon-popup" x="1" y="1" rx="5" width="46" height="46" />
-                  </defs>
-                  <use href="#tabicon-popup" class=popup />
-                  <rect x="16" y="1" width="32" height="8" class="tab" />
-                </svg>
-                <div class=text-label>__MSG_options_tab_position_top__</div>
+                <div class=icon>
+                  <svg viewBox="0 0 48 48" class="svg theme-light">
+                    <defs>
+                      <clipPath id="popup-outline">
+                        <rect x="1" y="1" rx="5" width="46" height="46" fill="black" />
+                      </clipPath>
+                      <rect id="tabicon-popup" x="1" y="1" rx="5" width="46" height="46" />
+                    </defs>
+                    <use href="#tabicon-popup" class=popup />
+                    <rect x="16" y="1" width="32" height="8" class="tab" />
+                  </svg>
+                </div>
+                <div class=text><span
+                    class=radio></span>__MSG_options_tab_position_top__</div>
               </label>
               <input type="radio" name="tabDisplay" value="left" id="tabdisplay-left" />
               <label for="tabdisplay-left">
-                <svg viewBox="0 0 48 48" class="tabicon theme-light">
-                  <use href="#tabicon-popup" class=popup />
-                  <rect x="0" y="8" width="8" height="40" class="tab" />
-                </svg>
-                <div class=text-label>__MSG_options_tab_position_left__</div>
+                <div class=icon>
+                  <svg viewBox="0 0 48 48" class="svg theme-light">
+                    <use href="#tabicon-popup" class=popup />
+                    <rect x="0" y="8" width="8" height="40" class="tab" />
+                  </svg>
+                </div>
+                <div class=text><span
+                    class=radio></span>__MSG_options_tab_position_left__</div>
               </label>
               <input type="radio" name="tabDisplay" value="right" id="tabdisplay-right" />
               <label for="tabdisplay-right">
-                <svg viewBox="0 0 48 48" class="tabicon theme-light">
-                  <use href="#tabicon-popup" class=popup />
-                  <rect x="40" y="8" width="8" height="40" class="tab" />
-                </svg>
-                <div class=text-label>__MSG_options_tab_position_right__</div>
+                <div class=icon>
+                  <svg viewBox="0 0 48 48" class="svg theme-light">
+                    <use href="#tabicon-popup" class=popup />
+                    <rect x="40" y="8" width="8" height="40" class="tab" />
+                  </svg>
+                </div>
+                <div class=text><span
+                    class=radio></span>__MSG_options_tab_position_right__</div>
               </label>
               <input type="radio" name="tabDisplay" value="none" id="tabdisplay-none" />
               <label for="tabdisplay-none">
-                <svg viewBox="0 0 48 48" class="tabicon theme-light">
-                  <use href="#tabicon-popup" class=popup />
-                </svg>
-                <div class=text-label>__MSG_options_tab_position_none__</div>
+                <div class=icon>
+                  <svg viewBox="0 0 48 48" class="svg theme-light">
+                    <use href="#tabicon-popup" class=popup />
+                  </svg>
+                </div>
+                <div class=text><span
+                    class=radio></span>__MSG_options_tab_position_none__</div>
               </label>
             </div>
           </fieldset>
