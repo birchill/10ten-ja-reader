@@ -203,7 +203,7 @@ export class ContentHandler {
 
   // Keyboard support
   private kanjiLookupMode = false;
-  private startedPinToggle = false;
+  private pinToggleState: 'idle' | 'keydown' | 'ignore' = 'idle';
 
   // Used to try to detect when we are typing so we know when to ignore key
   // events.
@@ -491,7 +491,9 @@ export class ContentHandler {
 
   onMouseMove(event: MouseEvent) {
     this.typingMode = false;
-    this.startedPinToggle = false;
+    if (this.pinToggleState === 'keydown') {
+      this.pinToggleState = 'ignore';
+    }
     // Ignore mouse events while buttons are being pressed.
     if (event.buttons) {
       return;
@@ -949,15 +951,13 @@ export class ContentHandler {
       this.commitPopup();
     }
 
-    if (this.startedPinToggle) {
-      const pinPopup = normalizeKeys(this.config.keys.pinPopup);
-      const key = normalizeKey(event.key);
-      if (pinPopup.includes(key)) {
-        this.startedPinToggle = false;
-        if (this.togglePin()) {
-          event.preventDefault();
-        }
+    const pinPopup = normalizeKeys(this.config.keys.pinPopup);
+    const key = normalizeKey(event.key);
+    if (pinPopup.includes(key)) {
+      if (this.pinToggleState === 'keydown' && this.togglePin()) {
+        event.preventDefault();
       }
+      this.pinToggleState = 'idle';
     }
 
     if (!this.kanjiLookupMode) {
@@ -1048,12 +1048,15 @@ export class ContentHandler {
       // state since otherwise when the hold-to-show keys and pin keys overlap
       // we'll end up going straight into the pin state if the user happens
       // to be still when they release the hold-to-show keys.
-      this.popupState?.display.mode !== 'ghost'
+      this.popupState?.display.mode !== 'ghost' &&
+      // Likewise if we got a mouse move since the first keydown event occurred
+      // we should ignore subsequent keydown events.
+      this.pinToggleState !== 'ignore'
     ) {
       if (hasModifiers(event)) {
         return false;
       }
-      this.startedPinToggle = true;
+      this.pinToggleState = 'keydown';
     } else if (
       this.copyState.kind !== 'inactive' &&
       this.copyState.kind !== 'finished'

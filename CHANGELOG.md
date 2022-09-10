@@ -8,8 +8,10 @@ app.
 
 ## [Unreleased]
 
-- Fix a bug that would cause the popup to effectively be pinned after releasing
+- Fixed a bug that would cause the popup to effectively be pinned after releasing
   hold-to-show keys when they are set for both text and images.
+- Fixed a bug that would cause unwanted pinning of the popup when hold-to-show
+  keys are configured and mouse interactivity is disabled.
 
 ## [1.12.0] - 2022-09-10
 
