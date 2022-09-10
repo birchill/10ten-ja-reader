@@ -62,16 +62,28 @@ async function main() {
   const matches = body.match(
     new RegExp(`${normalizedTarget}:\\s*\n([\\s\\S]*?)(\n\n|\n-->)`)
   );
-  if (!matches) {
+  if (!matches || matches.length < 2 || !matches[1].length) {
     console.log(
       'No target section found in release notes. Setting skip = true.'
     );
     core.setOutput('skip', true);
   } else {
     const releaseNotes = matches[1];
-    console.log(`Found release notes for ${rawTarget}`);
-    console.log(releaseNotes);
-    core.setOutput('release_notes', releaseNotes);
+
+    // This regex, which works perfectly fine locally, seems to return too much
+    // when running in CI. Is CI doing something to the line-breaks, for
+    // example?
+    if (releaseNotes.indexOf('Chrome:') !== -1) {
+      console.error('Regex failed');
+      console.log('body: ' + JSON.stringify(body));
+      console.log('matches: ' + JSON.stringify(matches));
+      console.log('releaseNotes: ' + JSON.stringify(releaseNotes));
+      core.setFailed('Regex failure');
+    } else {
+      console.log(`Found release notes for ${rawTarget}`);
+      console.log(releaseNotes);
+      core.setOutput('release_notes', releaseNotes);
+    }
   }
 }
 
