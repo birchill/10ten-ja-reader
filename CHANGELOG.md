@@ -8,7 +8,8 @@ app.
 
 ## [Unreleased]
 
-(Nothing yet)
+- Fix a bug that would cause the popup to effectively be pinned after releasing
+  hold-to-show keys when they are set for both text and images.
 
 ## [1.12.0] - 2022-09-10
 

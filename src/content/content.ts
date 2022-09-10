@@ -582,10 +582,16 @@ export class ContentHandler {
     const matchText = !!(contentsToMatch & HoldToShowKeyType.Text);
     const matchImages = !!(contentsToMatch & HoldToShowKeyType.Images);
 
-    if (!contentsToMatch) {
-      // If the popup is static (not interactive) and nothing is going to match,
-      // close the popup.
-      if (this.popupState?.display.mode === 'static') {
+    // If nothing is going to match, close the popup. If we're in hover mode,
+    // however, we need to proceed with the regular processing to see if we are
+    // hovering over the arrow area or not.
+    //
+    // (For pinned mode and touch mode, contentsToMatch is guaranteed to be
+    // non-zero. For static mode we certainly want to close the popup, and we
+    // never seem to hit this case in ghost mode but presumably if we did we'd
+    // want to close the popup.)
+    if (!contentsToMatch && this.popupState?.display.mode !== 'hover') {
+      if (this.popupState) {
         this.clearResult({ currentElement: event.target });
       }
 
