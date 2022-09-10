@@ -8,6 +8,10 @@ app.
 
 ## [Unreleased]
 
+(Nothing yet)
+
+## [1.12.2] - 2022-09-10
+
 - Fixed a bug that would cause the popup to effectively be pinned after releasing
   hold-to-show keys when they are set for both text and images.
 - Fixed a bug that would cause unwanted pinning of the popup when hold-to-show
@@ -898,7 +902,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.0...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.2...HEAD
+[1.12.2]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.0...v1.12.2
 [1.12.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.6...v1.11.0
 [1.10.6]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.5...v1.10.6
