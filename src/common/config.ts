@@ -754,6 +754,19 @@ export class Config {
     }
     this.settings.localSettings = localSettings;
     void browser.storage.local.set({ settings: localSettings });
+
+    // We currently _don't_ set the `hasDismissedMouseOnboarding` property when
+    // the user disables interactivity using the onboarding Disable button.
+    //
+    // That's because this `popupInteractive` setting is a local setting and the
+    // user will likely _want_ the onboarding to show up on synchronized devices
+    // so they can easily click "Disable" there too.
+    //
+    // However, if they re-enable interactivity, we should make sure that flag
+    // is set so they no longer get bothered by the popup.
+    if (value) {
+      this.setHasDismissedMouseOnboarding();
+    }
   }
 
   // popupStyle: Defaults to 'default'

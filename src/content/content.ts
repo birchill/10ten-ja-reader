@@ -1945,9 +1945,22 @@ export class ContentHandler {
 
     const onDismissMouseOnboarding = showMouseOnboarding
       ? (options?: { disable?: true }) => {
-          void browser.runtime.sendMessage({
-            type: 'dismissedMouseOnboarding',
-          });
+          // We _don't_ set the "dismissed mouse onboarding" flag when the user
+          // clicks the "Disable" button because the `popupInteractive` setting
+          // is a local setting (i.e. not synced) and the user will likely want to
+          // see the Disable onboarding button on any synchronized devices so
+          // they can disable mouse interaction there too.
+          //
+          // Instead, we rely on the fact that we only show the onboarding when
+          // interactivity is enabled and if the user _re-enables_ interactivity
+          // we will make sure the "dismissed mouse onboarding" flag gets set
+          // then.
+          if (!options?.disable) {
+            void browser.runtime.sendMessage({
+              type: 'dismissedMouseOnboarding',
+            });
+          }
+
           if (options?.disable) {
             void browser.runtime.sendMessage({
               type: 'disableMouseInteraction',
