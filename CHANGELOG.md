@@ -8,6 +8,10 @@ app.
 
 ## [Unreleased]
 
+(Nothing yet)
+
+## [1.12.0] - 2022-09-10
+
 - Made it possible to interact with the popup by using the mouse.
   For example, you can change tabs or copy entries by clicking.
   - Note that this makes the popup tabs larger and may sometimes mean the popup
@@ -891,7 +895,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.11.0...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.0...HEAD
+[1.12.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.6...v1.11.0
 [1.10.6]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.5...v1.10.6
 [1.10.5]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.4...v1.10.5
