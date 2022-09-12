@@ -491,9 +491,27 @@ export class ContentHandler {
 
   onMouseMove(event: MouseEvent) {
     this.typingMode = false;
-    if (this.pinToggleState === 'keydown') {
+
+    // If we start moving the mouse, we should stop trying to recognize a tap on
+    // the "pin" key as such since it's no longer a tap (and very often these
+    // keys overlap with the hold-to-show keys which are held while moving the
+    // mouse).
+    //
+    // Note that it's not enough just to check if `pinToggleState` is in the
+    // 'keydown' state because it seems like sometimes browsers (at least
+    // Firefox) batch up input events so that all the mousemove events arrive
+    // before the keyboard events.
+    //
+    // In order to handle that case, we need to check if the relevant key for
+    // pinning are being held (and hence we are likely to get a keydown event
+    // soon).
+    if (
+      this.pinToggleState === 'keydown' ||
+      (this.pinToggleState === 'idle' && this.hasPinKeysPressed(event))
+    ) {
       this.pinToggleState = 'ignore';
     }
+
     // Ignore mouse events while buttons are being pressed.
     if (event.buttons) {
       return;
@@ -559,6 +577,10 @@ export class ContentHandler {
     //
     // For now the best way we know of doing that is to just check if the
     // position has in fact changed.
+    //
+    // 2022-09-12: This is WebKit bug
+    // https://bugs.webkit.org/show_bug.cgi?id=16271
+    // which is fixed and might be shipping by now?
     if (
       (event.shiftKey || event.altKey || event.metaKey || event.ctrlKey) &&
       this.currentPoint?.x === event.clientX &&
@@ -1127,11 +1149,11 @@ export class ContentHandler {
       }
 
       // Check if all the configured hold-to-show keys are pressed down
-      const isAltGraph = event.getModifierState('AltGraph');
+      const hasAltGraph = event.getModifierState('AltGraph');
       if (
         this.config[setting].includes('Alt') &&
         !event.altKey &&
-        !isAltGraph
+        !hasAltGraph
       ) {
         return false;
       }
@@ -1147,6 +1169,15 @@ export class ContentHandler {
       (areKeysDownForSetting('holdToShowImageKeys')
         ? HoldToShowKeyType.Images
         : 0)
+    );
+  }
+
+  hasPinKeysPressed(event: MouseEvent): boolean {
+    const pinPopupKeys = this.config.keys.pinPopup;
+    const hasAltGraph = event.getModifierState('AltGraph');
+    return (
+      (pinPopupKeys.includes('Ctrl') && event.ctrlKey) ||
+      (pinPopupKeys.includes('Alt') && (event.altKey || hasAltGraph))
     );
   }
 
