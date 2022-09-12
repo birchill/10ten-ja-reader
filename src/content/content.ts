@@ -1096,10 +1096,9 @@ export class ContentHandler {
       // we should ignore subsequent keydown events.
       this.pinToggleState !== 'ignore'
     ) {
-      if (hasModifiers(event)) {
-        return false;
-      }
       this.pinToggleState = 'keydown';
+    } else if (this.isHoldToShowKeyStroke(event)) {
+      return true;
     } else if (
       this.copyState.kind !== 'inactive' &&
       this.copyState.kind !== 'finished'

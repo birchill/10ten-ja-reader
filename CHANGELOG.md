@@ -8,7 +8,7 @@ app.
 
 ## [Unreleased]
 
-(Nothing yet)
+- Fixed flickering when using hold-to-show keys and a text box is selected.
 
 ## [1.12.3] - 2022-09-12
 
