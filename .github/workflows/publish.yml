@@ -35,7 +35,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          addon_id: 59812185-ea92-4cca-8ab7-cfcacee81281
+          addon_id: 10ten-ja-reader
           amo_jwt_iss: ${{ secrets.AMO_JWT_ISS }}
           amo_jwt_secret: ${{ secrets.AMO_JWT_SECRET }}
           release_id: ${{ github.event.release.id }}
