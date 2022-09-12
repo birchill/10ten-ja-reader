@@ -58,7 +58,11 @@ async function main() {
   }
 
   // Parse the release notes
-  const { body } = release.data;
+  let { body } = release.data;
+
+  // Normalize line breaks
+  body = body.replace(/\r?\n/g, '\n');
+
   const matches = body.match(
     new RegExp(`${normalizedTarget}:\\s*\n([\\s\\S]*?)(\n\n|\n-->)`)
   );
