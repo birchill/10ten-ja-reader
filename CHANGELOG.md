@@ -8,22 +8,26 @@ app.
 
 ## [Unreleased]
 
+(Nothing yet)
+
+## [1.12.4] - 2022-09-12
+
 - Fixed flickering when using hold-to-show keys and a text box is selected.
 
-## [1.12.3] - 2022-09-12
+## [1.12.3] - 2022-09-12 (Firefox, Thunderbird only)
 
 - Fixed a bug where the popup would sometimes pin when mouse interaction was
   disabled and hold-to-show keys were configured.
 - Fixed detecting of pin popup keys on Safari.
 
-## [1.12.2] - 2022-09-10
+## [1.12.2] - 2022-09-10 (Firefox, Thunderbird only)
 
 - Fixed a bug that would cause the popup to effectively be pinned after releasing
   hold-to-show keys when they are set for both text and images.
 - Fixed a bug that would cause unwanted pinning of the popup when hold-to-show
   keys are configured and mouse interactivity is disabled.
 
-## [1.12.0] - 2022-09-10
+## [1.12.0] - 2022-09-10 (Firefox, Thunderbird only)
 
 - Made it possible to interact with the popup by using the mouse.
   For example, you can change tabs or copy entries by clicking.
@@ -908,7 +912,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.3...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.4...HEAD
+[1.12.4]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.3...v1.12.4
 [1.12.3]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.2...v1.12.3
 [1.12.2]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.0...v1.12.2
 [1.12.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.11.0...v1.12.0
