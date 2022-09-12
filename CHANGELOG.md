@@ -8,6 +8,10 @@ app.
 
 ## [Unreleased]
 
+(Nothing yet)
+
+## [1.12.3] - 2022-09-12
+
 - Fixed a bug where the popup would sometimes pin when mouse interaction was
   disabled and hold-to-show keys were configured.
 - Fixed detecting of pin popup keys on Safari.
@@ -904,7 +908,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.2...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.3...HEAD
+[1.12.3]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.2...v1.12.3
 [1.12.2]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.0...v1.12.2
 [1.12.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.10.6...v1.11.0
