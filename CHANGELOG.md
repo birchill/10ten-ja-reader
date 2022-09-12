@@ -10,6 +10,7 @@ app.
 
 - Fixed a bug where the popup would sometimes pin when mouse interaction was
   disabled and hold-to-show keys were configured.
+- Fixed detecting of pin popup keys on Safari.
 
 ## [1.12.2] - 2022-09-10
 

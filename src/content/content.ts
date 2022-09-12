@@ -118,6 +118,7 @@ import { hasReasonableTimerResolution } from './timer-precision';
 import { TouchClickTracker } from './touch-click-tracker';
 import { getScrollOffset } from './scroll-offset';
 import { hasModifiers, normalizeKey, normalizeKeys } from './keyboard';
+import { isSafari } from '../utils/ua-utils';
 
 const enum HoldToShowKeyType {
   Text = 1 << 0,
@@ -167,6 +168,12 @@ export class ContentHandler {
   // We keep track of the last element that was the target of a mouse move so
   // that we can popup the window later using its properties.
   private lastMouseTarget: Element | null = null;
+
+  // Safari-only redundant mousemove event handling
+  //
+  // See notes in `onMouseMove` for why we need to do this.
+  private lastMouseMovePoint = { x: -1, y: -1 };
+  private ignoreNextMouseMove = false;
 
   // Track the state of the popup
   //
@@ -492,6 +499,50 @@ export class ContentHandler {
   onMouseMove(event: MouseEvent) {
     this.typingMode = false;
 
+    // Safari has an odd bug where it dispatches extra mousemove events when you
+    // press any modifier key (e.g. Shift).
+    //
+    // It goes something like this:
+    //
+    // * Press Shift down
+    // -> mousemove with shiftKey = true
+    // -> keydown with shiftKey = true
+    //
+    // * Release Shift key
+    // -> mousemove with shiftKey = false
+    // -> keyup with shiftKey = false
+    //
+    // We really need to ignore these events since they will intefere with
+    // detecting taps of the "pin popup" key as well as when using Shift to only
+    // show kanji.
+    //
+    // For now the best way we know of doing that is to just check if the
+    // position has changed.
+    //
+    // 2022-09-12: This is tracked as WebKit bug
+    // https://bugs.webkit.org/show_bug.cgi?id=16271
+    // which was apparently fixed in July 2021 but in September 2022 I can still
+    // reproduce it, at least with the control key.
+    if (isSafari()) {
+      if (
+        (event.shiftKey ||
+          event.altKey ||
+          event.metaKey ||
+          event.ctrlKey ||
+          this.ignoreNextMouseMove) &&
+        this.lastMouseMovePoint.x === event.clientX &&
+        this.lastMouseMovePoint.y === event.clientY
+      ) {
+        // We need to ignore the mousemove event corresponding to the keyup
+        // event too.
+        this.ignoreNextMouseMove = !this.ignoreNextMouseMove;
+        return;
+      }
+
+      this.lastMouseMovePoint = { x: event.clientX, y: event.clientY };
+      this.ignoreNextMouseMove = false;
+    }
+
     // If we start moving the mouse, we should stop trying to recognize a tap on
     // the "pin" key as such since it's no longer a tap (and very often these
     // keys overlap with the hold-to-show keys which are held while moving the
@@ -556,36 +607,6 @@ export class ContentHandler {
       !(this.getActiveHoldToShowKeys(event) & this.popupState.display.keyType)
     ) {
       this.commitPopup();
-      return;
-    }
-
-    // Safari has an odd bug where it dispatches extra mousemove events
-    // when you press any modifier key (e.g. Shift).
-    //
-    // It goes something like this:
-    //
-    // * Press Shift down
-    // -> mousemove with shiftKey = true
-    // -> keydown with shiftKey = true
-    // * Release Shift key
-    // -> mousemove with shiftKey = false
-    // -> keyup with shiftKey = false
-    //
-    // We really need to ignore the first mousemove event since otherwise it
-    // will completely mess up tab switching when we have the "Shift to show
-    // kanji only" setting in effect.
-    //
-    // For now the best way we know of doing that is to just check if the
-    // position has in fact changed.
-    //
-    // 2022-09-12: This is WebKit bug
-    // https://bugs.webkit.org/show_bug.cgi?id=16271
-    // which is fixed and might be shipping by now?
-    if (
-      (event.shiftKey || event.altKey || event.metaKey || event.ctrlKey) &&
-      this.currentPoint?.x === event.clientX &&
-      this.currentPoint?.y === event.clientY
-    ) {
       return;
     }
 
