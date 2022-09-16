@@ -168,11 +168,11 @@ export class ContentHandler {
   // We keep track of the last element that was the target of a mouse move so
   // that we can popup the window later using its properties.
   private lastMouseTarget: Element | null = null;
+  private lastMouseMovePoint = { x: -1, y: -1 };
 
   // Safari-only redundant mousemove event handling
   //
   // See notes in `onMouseMove` for why we need to do this.
-  private lastMouseMovePoint = { x: -1, y: -1 };
   private ignoreNextMouseMove = false;
 
   // Track the state of the popup
@@ -539,9 +539,9 @@ export class ContentHandler {
         return;
       }
 
-      this.lastMouseMovePoint = { x: event.clientX, y: event.clientY };
       this.ignoreNextMouseMove = false;
     }
+    this.lastMouseMovePoint = { x: event.clientX, y: event.clientY };
 
     // If we start moving the mouse, we should stop trying to recognize a tap on
     // the "pin" key as such since it's no longer a tap (and very often these
@@ -578,9 +578,6 @@ export class ContentHandler {
       !isTouchClickEvent(event) &&
       this.popupState?.display.mode === 'pinned'
     ) {
-      // Update the current point so we can determine if the window should still
-      // be showing if we unpin.
-      this.currentPoint = { x: event.clientX, y: event.clientY };
       this.lastMouseTarget = event.target;
       return;
     }
@@ -2421,13 +2418,13 @@ export class ContentHandler {
     // Unfortunately this won't necessarily help if the user has since moused
     // over an iframe since our last recorded mouse position and target element
     // will be based on the last mousemove event we received in _this_ frame.
-    if (this.currentPoint && this.lastMouseTarget) {
+    if (this.lastMouseTarget) {
       const mouseMoveEvent = new MouseEvent('mousemove', {
         bubbles: true,
-        screenX: this.currentPoint.x,
-        screenY: this.currentPoint.y,
-        clientX: this.currentPoint.x,
-        clientY: this.currentPoint.y,
+        screenX: this.lastMouseMovePoint.x,
+        screenY: this.lastMouseMovePoint.y,
+        clientX: this.lastMouseMovePoint.x,
+        clientY: this.lastMouseMovePoint.y,
         ctrlKey: false,
         shiftKey: false,
         altKey: false,

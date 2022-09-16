@@ -8,7 +8,8 @@ app.
 
 ## [Unreleased]
 
-(Nothing yet)
+- Fixed a bug where changing tabs after pinning the popup could cause the popup
+  to have the wrong size.
 
 ## [1.12.4] - 2022-09-12
 
