@@ -108,7 +108,8 @@ import { removeSafeAreaProvider, SafeAreaProvider } from './safe-area-provider';
 import { isForeignObjectElement, isSvgDoc, isSvgSvgElement } from './svg';
 import {
   getBestFitSize,
-  getTargetProps,
+  getPageTargetProps,
+  selectionSizesToScreenCoords,
   TargetProps,
   textBoxSizeLengths,
 } from './target-props';
@@ -116,7 +117,7 @@ import { TextHighlighter } from './text-highlighter';
 import { TextRange, textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
 import { TouchClickTracker } from './touch-click-tracker';
-import { getScrollOffset } from './scroll-offset';
+import { getScrollOffset, toPageCoords, toScreenCoords } from './scroll-offset';
 import { hasModifiers, normalizeKey, normalizeKeys } from './keyboard';
 import { isSafari } from '../utils/ua-utils';
 
@@ -163,12 +164,12 @@ export class ContentHandler {
   // The current point is used both by the text handling window to detect
   // redundant mouse moves and by the topmost window to know where to position
   // the popup.
-  private currentPoint: Point | undefined;
+  private currentPagePoint: Point | undefined;
 
   // We keep track of the last element that was the target of a mouse move so
   // that we can popup the window later using its properties.
   private lastMouseTarget: Element | null = null;
-  private lastMouseMovePoint = { x: -1, y: -1 };
+  private lastMouseMoveScreenPoint = { x: -1, y: -1 };
 
   // Safari-only redundant mousemove event handling
   //
@@ -530,8 +531,8 @@ export class ContentHandler {
           event.metaKey ||
           event.ctrlKey ||
           this.ignoreNextMouseMove) &&
-        this.lastMouseMovePoint.x === event.clientX &&
-        this.lastMouseMovePoint.y === event.clientY
+        this.lastMouseMoveScreenPoint.x === event.clientX &&
+        this.lastMouseMoveScreenPoint.y === event.clientY
       ) {
         // We need to ignore the mousemove event corresponding to the keyup
         // event too.
@@ -541,7 +542,7 @@ export class ContentHandler {
 
       this.ignoreNextMouseMove = false;
     }
-    this.lastMouseMovePoint = { x: event.clientX, y: event.clientY };
+    this.lastMouseMoveScreenPoint = { x: event.clientX, y: event.clientY };
 
     // If we start moving the mouse, we should stop trying to recognize a tap on
     // the "pin" key as such since it's no longer a tap (and very often these
@@ -640,7 +641,10 @@ export class ContentHandler {
       // We still want to set the current position and element information so
       // that if the user presses the hold-to-show keys later we can show the
       // popup immediately.
-      this.currentPoint = { x: event.clientX, y: event.clientY };
+      this.currentPagePoint = toPageCoords({
+        x: event.clientX,
+        y: event.clientY,
+      });
       this.lastMouseTarget = event.target;
       return;
     }
@@ -673,7 +677,7 @@ export class ContentHandler {
       fromTouch: isTouchClickEvent(event),
       matchText,
       matchImages,
-      point: { x: event.clientX, y: event.clientY },
+      screenPoint: { x: event.clientX, y: event.clientY },
       eventElement: event.target,
       dictMode,
     });
@@ -883,13 +887,13 @@ export class ContentHandler {
       // We don't do this when the there is a text box in focus because we
       // we risk interfering with the text selection when, for example, the
       // hold-to-show key is Ctrl and the user presses Ctrl+V etc.
-      if (!textBoxInFocus && this.currentPoint && this.lastMouseTarget) {
+      if (!textBoxInFocus && this.currentPagePoint && this.lastMouseTarget) {
         void this.tryToUpdatePopup({
           fromPuck: false,
           fromTouch: false,
           matchText: !!(matchedHoldToShowKeys & HoldToShowKeyType.Text),
           matchImages: !!(matchedHoldToShowKeys & HoldToShowKeyType.Images),
-          point: this.currentPoint,
+          screenPoint: toScreenCoords(this.currentPagePoint),
           eventElement: this.lastMouseTarget,
           dictMode: 'default',
         });
@@ -1304,7 +1308,7 @@ export class ContentHandler {
 
       case 'popupHidden':
         this.currentTextRange = undefined;
-        this.currentPoint = undefined;
+        this.currentPagePoint = undefined;
         this.copyState = { kind: 'inactive' };
         this.popupState = undefined;
         break;
@@ -1351,24 +1355,31 @@ export class ContentHandler {
 
           // Translate the point from the iframe's coordinate system to ours.
           const { point } = request;
-          this.currentPoint = {
+          this.currentPagePoint = toPageCoords({
             x: point.x + iframeOriginPoint.x,
             y: point.y + iframeOriginPoint.y,
-          };
+          });
 
           // Similarly translate any text box sizes.
           let targetProps = request.targetProps as TargetProps;
           if (targetProps.textBoxSizes) {
+            const scrollOffset = getScrollOffset();
             targetProps = JSON.parse(JSON.stringify(targetProps));
             const { textBoxSizes } = targetProps;
             for (const size of textBoxSizeLengths) {
               const { left, top, width, height } = textBoxSizes![size];
-              textBoxSizes![size] = {
-                left: left + iframeOriginPoint.x,
-                top: top + iframeOriginPoint.y,
-                width,
-                height,
-              };
+
+              // We pass sizes around in screen coordinates but store them in
+              // page coordinates.
+              textBoxSizes![size] = toPageCoords(
+                {
+                  left: left + iframeOriginPoint.x,
+                  top: top + iframeOriginPoint.y,
+                  width,
+                  height,
+                },
+                scrollOffset
+              );
             }
           }
 
@@ -1440,7 +1451,7 @@ export class ContentHandler {
       return;
     }
 
-    if (this.currentPoint) {
+    if (this.currentPagePoint) {
       this.showDictionary('next');
     }
   }
@@ -1644,7 +1655,7 @@ export class ContentHandler {
     currentElement?: Element | null;
   } = {}) {
     this.currentTextRange = undefined;
-    this.currentPoint = undefined;
+    this.currentPagePoint = undefined;
     this.lastMouseTarget = null;
     this.copyState = { kind: 'inactive' };
 
@@ -1679,7 +1690,7 @@ export class ContentHandler {
     fromTouch,
     matchText,
     matchImages,
-    point,
+    screenPoint,
     eventElement,
     dictMode,
   }: {
@@ -1687,7 +1698,7 @@ export class ContentHandler {
     fromTouch: boolean;
     matchText: boolean;
     matchImages: boolean;
-    point: Point;
+    screenPoint: Point;
     eventElement: Element;
     dictMode: 'default' | 'kanji';
   }) {
@@ -1695,7 +1706,7 @@ export class ContentHandler {
       matchCurrency: !!this.config.fx,
       matchText,
       matchImages,
-      point,
+      point: screenPoint,
       maxLength: ContentHandler.MAX_LENGTH,
     });
 
@@ -1705,7 +1716,7 @@ export class ContentHandler {
     // In that case, we still want to store the current point so that if those
     // keys are pressed later, we can show the pop-up immediately.
     if (!textAtPoint && (!matchText || !matchImages)) {
-      this.currentPoint = point;
+      this.currentPagePoint = toPageCoords(screenPoint);
     }
 
     // Check if the text range was the same as the last time.
@@ -1737,20 +1748,22 @@ export class ContentHandler {
       return;
     }
 
-    this.currentPoint = point;
+    this.currentPagePoint = toPageCoords(screenPoint);
     this.currentTextRange = textAtPoint?.textRange || undefined;
+
+    const pageTargetProps = getPageTargetProps({
+      fromPuck,
+      fromTouch,
+      target: eventElement,
+      textRange: textAtPoint?.textRange || undefined,
+    });
 
     const lookupParams = {
       dictMode,
       meta: textAtPoint.meta,
       source: null,
       text: textAtPoint.text,
-      targetProps: getTargetProps({
-        fromPuck,
-        fromTouch,
-        target: eventElement,
-        textRange: textAtPoint?.textRange || undefined,
-      }),
+      targetProps: pageTargetProps,
       wordLookup: !!textAtPoint.textRange,
     };
 
@@ -1760,7 +1773,14 @@ export class ContentHandler {
       void browser.runtime.sendMessage({
         ...lookupParams,
         type: 'top:lookup',
-        point,
+        // We use screen coordinates for values we pass between frames
+        point: screenPoint,
+        targetProps: {
+          ...pageTargetProps,
+          textBoxSizes: selectionSizesToScreenCoords(
+            pageTargetProps.textBoxSizes
+          ),
+        },
         source: {
           // The background page will fill in our frame ID for us
           src: document.location.href,
@@ -2086,7 +2106,9 @@ export class ContentHandler {
 
     // First work out our constraints, i.e. where _not_ to put the popup
 
-    const cursorPos = this.currentPoint ? { ...this.currentPoint } : undefined;
+    const cursorPos = this.currentPagePoint
+      ? toScreenCoords(this.currentPagePoint)
+      : undefined;
     let cursorClearance: MarginBox;
     if (this.currentTargetProps?.fromPuck && this.puck) {
       const { top, bottom, left, right } = this.puck.getPuckClearance();
@@ -2117,11 +2139,13 @@ export class ContentHandler {
     // We don't want to add _all_ of it since we might have a selection that
     // wraps lines and that would produce a massive area that would be too hard
     // to avoid.
-    const { textBoxSizes } = this.currentTargetProps || {};
+    const { textBoxSizes: pageTextBoxSizes } = this.currentTargetProps || {};
+    const screenTextBoxSizes = selectionSizesToScreenCoords(pageTextBoxSizes);
+
     const isVerticalText = !!this.currentTargetProps?.isVerticalText;
-    if (textBoxSizes && cursorPos) {
+    if (screenTextBoxSizes && cursorPos) {
       const bbox = getBestFitSize({
-        sizes: textBoxSizes,
+        sizes: screenTextBoxSizes,
         length: this.getHighlightLengthForCurrentResult(),
       });
       if (bbox) {
@@ -2142,7 +2166,7 @@ export class ContentHandler {
         // `cursorClearance` is relative to this.currentPoint, i.e. the original
         // value of mousePos, so we need to supply that value when converting to
         // a rect.)
-        const firstCharBbox = textBoxSizes[1];
+        const firstCharBbox = screenTextBoxSizes[1];
         cursorPos.x = Math.max(0, firstCharBbox.left + firstCharBbox.width / 2);
         cursorPos.y = Math.max(0, firstCharBbox.top + firstCharBbox.height / 2);
 
@@ -2222,8 +2246,8 @@ export class ContentHandler {
         direction,
         side,
         lookupPoint: this.getPopupLookupPoint({
-          currentPoint: this.currentPoint,
-          firstCharBbox: textBoxSizes?.[1],
+          currentPagePoint: this.currentPagePoint,
+          firstCharBbox: screenTextBoxSizes?.[1],
         }),
       },
       contentType: this.currentTargetProps?.contentType || 'text',
@@ -2421,10 +2445,10 @@ export class ContentHandler {
     if (this.lastMouseTarget) {
       const mouseMoveEvent = new MouseEvent('mousemove', {
         bubbles: true,
-        screenX: this.lastMouseMovePoint.x,
-        screenY: this.lastMouseMovePoint.y,
-        clientX: this.lastMouseMovePoint.x,
-        clientY: this.lastMouseMovePoint.y,
+        screenX: this.lastMouseMoveScreenPoint.x,
+        screenY: this.lastMouseMoveScreenPoint.y,
+        clientX: this.lastMouseMoveScreenPoint.x,
+        clientY: this.lastMouseMoveScreenPoint.y,
         ctrlKey: false,
         shiftKey: false,
         altKey: false,
@@ -2496,10 +2520,10 @@ export class ContentHandler {
   }
 
   getPopupLookupPoint({
-    currentPoint,
+    currentPagePoint,
     firstCharBbox,
   }: {
-    currentPoint?: Point;
+    currentPagePoint?: Point;
     firstCharBbox?: Rect;
   }): NonNullable<PopupState['pos']>['lookupPoint'] {
     const { scrollX, scrollY } = getScrollOffset();
@@ -2512,10 +2536,10 @@ export class ContentHandler {
       return { x, y, marginX, marginY };
     }
 
-    return currentPoint
+    return currentPagePoint
       ? {
-          x: currentPoint.x + scrollX,
-          y: currentPoint.y + scrollY,
+          x: currentPagePoint.x,
+          y: currentPagePoint.y,
           marginX: 10,
           marginY: 10,
         }

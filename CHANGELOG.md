@@ -10,6 +10,7 @@ app.
 
 - Fixed a bug where changing tabs after pinning the popup could cause the popup
   to have the wrong size.
+- Fixed a bug where the popup would be mispositioned after scrolling.
 
 ## [1.12.4] - 2022-09-12
 

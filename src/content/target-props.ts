@@ -4,6 +4,7 @@ import { isTextInputNode, isVerticalText } from '../utils/dom-utils';
 import { getGdocsRangeBboxes, isGdocsSpan } from './gdocs-canvas';
 import { TextRange } from './text-range';
 import { getContentType } from './content-type';
+import { getScrollOffset, toPageCoords, toScreenCoords } from './scroll-offset';
 
 /// Properties about the target element from which we started lookup needed
 /// so that we can correctly position the popup in a way that doesn't overlap
@@ -39,7 +40,7 @@ export const textBoxSizeLengths: ReadonlyArray<keyof SelectionSizes> = [
   1, 4, 8, 12, 16,
 ];
 
-export function getTargetProps({
+export function getPageTargetProps({
   fromPuck,
   fromTouch,
   target,
@@ -50,19 +51,30 @@ export function getTargetProps({
   target: Element;
   textRange: TextRange | undefined;
 }): TargetProps {
+  let textBoxSizes: SelectionSizes | undefined;
+  if (textRange) {
+    textBoxSizes = getInitialClientBboxofTextSelection(textRange);
+
+    // Return as page coordinates
+    if (textBoxSizes) {
+      const scrollOffset = getScrollOffset();
+      for (const size of textBoxSizeLengths) {
+        textBoxSizes[size] = toPageCoords(textBoxSizes[size], scrollOffset);
+      }
+    }
+  }
+
   return {
     contentType: getContentType(target),
     fromPuck,
     fromTouch,
     hasTitle: !!((target as HTMLElement) || null)?.title,
-    textBoxSizes: textRange
-      ? getInitialBboxOfTextSelection(textRange)
-      : undefined,
+    textBoxSizes,
     isVerticalText: isVerticalText(target),
   };
 }
 
-function getInitialBboxOfTextSelection(
+function getInitialClientBboxofTextSelection(
   textRange: TextRange
 ): SelectionSizes | undefined {
   // Check we actually have some text selection available
@@ -135,4 +147,19 @@ export function getBestFitSize({
     textBoxSizeLengths[textBoxSizeLengths.length - 1];
 
   return sizes[bestFitSize];
+}
+
+export function selectionSizesToScreenCoords(
+  sizes: Readonly<SelectionSizes> | undefined
+): SelectionSizes | undefined {
+  if (!sizes) {
+    return undefined;
+  }
+
+  const converted = { ...sizes };
+  const scrollOffset = getScrollOffset();
+  for (const size of textBoxSizeLengths) {
+    converted[size] = toScreenCoords(sizes[size], scrollOffset);
+  }
+  return converted;
 }
