@@ -8,6 +8,10 @@ app.
 
 ## [Unreleased]
 
+(Nothing yet)
+
+## [1.12.5] - 2022-09-17
+
 - Fixed a bug where changing tabs after pinning the popup could cause the popup
   to have the wrong size.
 - Fixed a bug where the popup would be mispositioned after scrolling.
@@ -914,7 +918,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.4...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.5...HEAD
+[1.12.5]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.4...v1.12.5
 [1.12.4]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.3...v1.12.4
 [1.12.3]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.2...v1.12.3
 [1.12.2]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.0...v1.12.2
