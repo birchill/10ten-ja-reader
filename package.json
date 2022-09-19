@@ -91,7 +91,7 @@
     "ts-jest": "29.0.1",
     "ts-loader": "9.3.1",
     "ts-node": "10.9.1",
-    "web-ext-plugin": "2.1.1",
+    "web-ext-plugin": "2.2.0",
     "webextension-polyfill-ts": "0.26.0",
     "webpack": "5.74.0",
     "webpack-bugsnag-plugins": "1.8.0",
