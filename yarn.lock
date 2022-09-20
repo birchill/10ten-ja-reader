@@ -344,10 +344,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@birchill/discriminator@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@birchill/discriminator/-/discriminator-0.1.0.tgz#a6f6ccc55701d2072e6b8b7e9199c38d16cc5749"
-  integrity sha512-VAPyxxm8/VDBjsttMR6SEZOiW5tgzmoASHxDJ+Jk3V6bN2PVsS+ooClYXfDpNN/b6NdmGyYS95tXREcO+GXung==
+"@birchill/discriminator@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@birchill/discriminator/-/discriminator-0.2.0.tgz#9dc19b0b737f38f3ac641c40777be6991b908fae"
+  integrity sha512-Gd5FjdCLO4FRMOquCNIFgdJvR0vlq7cNmQJpfql2ftOnJnnzoP/egqcoKoU2EEfpNIAQiw6e2JAhEeaezR1RXQ==
 
 "@birchill/jpdict-idb@1.2.2":
   version "1.2.2"
