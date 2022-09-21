@@ -12,8 +12,8 @@ export const PopupStateSchema = s.type({
       y: s.number(),
       width: s.number(),
       height: s.number(),
-      direction: s.enums(['vertical', 'horizontal', 'disjoint'] as const),
-      side: s.enums(['before', 'after', 'disjoint'] as const),
+      direction: s.enums(['vertical', 'horizontal', 'disjoint']),
+      side: s.enums(['before', 'after', 'disjoint']),
       // Reference lookup point we should use for determining if a mouse move is
       // "between" the lookup point and the popup.
       lookupPoint: s.optional(
@@ -49,7 +49,7 @@ export const PopupStateSchema = s.type({
   ),
 
   // The type of content the popup is positioned relative to.
-  contentType: s.enums(['text', 'image'] as const),
+  contentType: s.enums(['text', 'image']),
 
   // The particular appearance and behavior of the popup
   display: discriminator('mode', {
