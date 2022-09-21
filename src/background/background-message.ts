@@ -31,7 +31,7 @@ export const BackgroundMessageSchema = discriminator('type', {
 
   // Lookup-related messages
   lookup: s.type({
-    dictMode: s.enums(['default', 'kanji'] as const),
+    dictMode: s.enums(['default', 'kanji']),
     // We don't validate the contents of meta (yet)
     meta: s.optional(s.type({})),
     point: s.type({
@@ -61,7 +61,7 @@ export const BackgroundMessageSchema = discriminator('type', {
   nextDictionary: s.type({ frame: s.literal('top') }),
   toggleDefinition: s.type({ frame: s.literal('top') }),
   movePopup: s.type({
-    direction: s.enums(['up', 'down'] as const),
+    direction: s.enums(['up', 'down']),
     frame: s.literal('top'),
   }),
 
@@ -70,7 +70,7 @@ export const BackgroundMessageSchema = discriminator('type', {
   exitCopyMode: s.type({ frame: s.literal('top') }),
   nextCopyEntry: s.type({ frame: s.literal('top') }),
   copyCurrentEntry: s.type({
-    copyType: s.enums(['entry', 'tab', 'word'] as const),
+    copyType: s.enums(['entry', 'tab', 'word']),
     frame: s.literal('top'),
   }),
 });
