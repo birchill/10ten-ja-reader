@@ -8,7 +8,8 @@ app.
 
 ## [Unreleased]
 
-(Nothing yet)
+- (Chrome, Edge) Fixed the browser icon getting stuck at 100%
+  ([#1003](https://github.com/birchill/10ten-ja-reader/issues/1003)).
 
 ## [1.12.5] - 2022-09-17
 
