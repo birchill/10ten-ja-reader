@@ -7764,10 +7764,10 @@ strip-json-comments@~2.0.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
   integrity sha1-PFMZQukIwml8DsNEhYwobHygpgo=
 
-superstruct@0.16.5:
-  version "0.16.5"
-  resolved "https://registry.yarnpkg.com/superstruct/-/superstruct-0.16.5.tgz#7b7e1f1f8bf6ab141c660e501ac57026e42c09c0"
-  integrity sha512-GBa1VPdCUDAIrsoMVy2lzE/hKQnieUlc1JVoVzJ2YLx47SoPY4AqF85Ht1bPg5r+8I0v54GbaRdNTnYQ0p+T+Q==
+superstruct@0.16.6:
+  version "0.16.6"
+  resolved "https://registry.yarnpkg.com/superstruct/-/superstruct-0.16.6.tgz#722076963d774cb3b4899e6170d0efc83a56f3ac"
+  integrity sha512-uworWpRbC15vL6st+paJg58atj5Ji5innQMQAOp214q2f2VgB6rQm04XXBoOYWpGGgkZkjzOijFz3uUBl3CF0A==
 
 superstruct@^0.16.0:
   version "0.16.0"
