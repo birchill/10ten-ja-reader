@@ -5,7 +5,9 @@ on:
 
 jobs:
   publish-firefox:
-    runs-on: ubuntu-latest
+    # Force using Ubuntu 20 for now because the Ubuntu 22 image does not yet
+    # include Firefox https://github.com/actions/runner-images/issues/6399
+    runs-on: ubuntu-20.04
     name: Publish to AMO
 
     steps:
