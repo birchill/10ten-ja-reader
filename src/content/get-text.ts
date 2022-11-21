@@ -654,13 +654,18 @@ function getTextFromTextNode({
   // nikkei.com has a somewhat similar structure but without using or setting
   // width/height to 1px. Instead it uses an opacity of 0 to hide the covering
   // link so we need to check for that too.
-  const isVisible = (element: Element) =>
-    getComputedStyle(element).opacity !== '0' &&
-    bboxIncludesPoint({
-      bbox: element.getBoundingClientRect(),
-      margin: 5,
-      point,
-    });
+  const isVisible = (element: Element) => {
+    return (
+      getComputedStyle(element).opacity !== '0' &&
+      // If the element is display: contents the bounding box will be empty
+      (getComputedStyle(element).display === 'contents' ||
+        bboxIncludesPoint({
+          bbox: element.getBoundingClientRect(),
+          margin: 5,
+          point,
+        }))
+    );
+  };
 
   // Get the ancestor node for all inline nodes
   let inlineAncestor = startNode.parentElement;

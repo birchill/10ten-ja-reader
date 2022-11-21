@@ -1127,6 +1127,52 @@ describe('getTextAtPoint', () => {
     );
   });
 
+  it('should treat rb elements elements as inline regardless of their computed style', () => {
+    // Based on the markup in renshuu.org
+    testDiv.innerHTML =
+      '<div><ruby style="display:inline-table"><rb style="display:table-row-group"><span>引</span></rb><rt style="display:table-header-group">ひ</rt></ruby><ruby style="display:inline-table"><rb style="display:table-row-group">く</rb><rt style="display:table-header-group">&nbsp;</rt></ruby></div>';
+    const hiNode = testDiv.firstChild!.firstChild!.firstChild!.firstChild!
+      .firstChild as Text;
+    const kuNode = testDiv.firstChild!.childNodes[1].firstChild!
+      .firstChild as Text;
+    const bbox = getBboxForOffset(hiNode, 0);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(result, '引く', [hiNode, 0, 1], [kuNode, 0, 1]);
+  });
+
+  it('should parse base text from simulated mono ruby', () => {
+    // The key part here is the display: contents part
+    testDiv.innerHTML =
+      '<ruby style="display: inline-grid; grid-template-rows: [rt] auto [base] auto; justify-items: center; padding-top: .25rem; row-gap: .25rem"><span style="padding-left: .5rem; padding-right: .5rem; margin-left: -0.5rem; margin-right: -0.5rem; display: contents"><span>東</span><span>京</span></span><rt style="user-select: none; padding-top: .25rem; padding-bottom: .25rem; line-height: 1; font-size: .875rem; display: contents"><span style="grid-row: rt"><>とう</span></span><span style="grid-row: rt"><span>きょう</span></span></rt></ruby>';
+
+    const tokyoStart = testDiv.querySelector('ruby > span > span')!
+      .firstChild as Text;
+    const tokyoNoKyo = testDiv.querySelector('ruby > span > span:nth-child(2)')!
+      .firstChild as Text;
+    const bbox = getBboxForOffset(tokyoStart, 0);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(
+      result,
+      '東京',
+      [tokyoStart, 0, 1],
+      [tokyoNoKyo, 0, 1]
+    );
+  });
+
   it('should find text in SVG content', () => {
     testDiv.innerHTML = '<svg><text y="1em">あいうえお</text></svg>';
     const textNode = testDiv.firstChild!.firstChild!.firstChild as Text;
@@ -1168,26 +1214,6 @@ describe('getTextAtPoint', () => {
       [middleTextNode, 0, 1],
       [innerA, 0, 1]
     );
-  });
-
-  it('should treat rb elements elements as inline regardless of their computed style', () => {
-    // Based on the markup in renshuu.org
-    testDiv.innerHTML =
-      '<div><ruby style="display:inline-table"><rb style="display:table-row-group"><span>引</span></rb><rt style="display:table-header-group">ひ</rt></ruby><ruby style="display:inline-table"><rb style="display:table-row-group">く</rb><rt style="display:table-header-group">&nbsp;</rt></ruby></div>';
-    const hiNode = testDiv.firstChild!.firstChild!.firstChild!.firstChild!
-      .firstChild as Text;
-    const kuNode = testDiv.firstChild!.childNodes[1].firstChild!
-      .firstChild as Text;
-    const bbox = getBboxForOffset(hiNode, 0);
-
-    const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
-    });
-
-    assertTextResultEqual(result, '引く', [hiNode, 0, 1], [kuNode, 0, 1]);
   });
 
   it('should find text in input elements', () => {
