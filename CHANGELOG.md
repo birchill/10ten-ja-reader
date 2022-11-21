@@ -11,6 +11,9 @@ app.
 - (Chrome, Edge) Fixed the browser icon getting stuck at 100%
   ([#1003](https://github.com/birchill/10ten-ja-reader/issues/1003)).
 
+- (Firefox) Fixed occasional flicker on loading Web pages over slow connections
+  when the extension is enabled.
+
 ## [1.12.5] - 2022-09-17
 
 - Fixed a bug where changing tabs after pinning the popup could cause the popup

@@ -123,11 +123,10 @@ export class LookupPuck {
     private onLookupDisabled: () => void
   ) {}
 
-  // @see SafeAreaConsumerDelegate
-  onSafeAreaUpdated(): void {
+  private readonly onSafeAreaUpdated = () => {
     this.cachedViewportDimensions = null;
     this.setPositionWithinSafeArea(this.puckX, this.puckY);
-  }
+  };
 
   private setPosition({
     x,
@@ -300,12 +299,7 @@ export class LookupPuck {
       right: safeAreaRight,
       bottom: safeAreaBottom,
       left: safeAreaLeft,
-    } = this.safeAreaProvider.getSafeArea() || {
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
-    };
+    } = this.safeAreaProvider.getSafeArea();
 
     const { viewportWidth, viewportHeight } =
       this.getViewportDimensions(document);
@@ -948,7 +942,7 @@ export class LookupPuck {
     this.enabledState = enabledState;
 
     if (enabledState === 'disabled') {
-      this.safeAreaProvider.delegate = null;
+      this.safeAreaProvider.removeEventListener(this.onSafeAreaUpdated);
       if (this.puck) {
         this.stopDraggingPuck();
         this.puck.removeEventListener('pointerdown', this.onPuckPointerDown);
@@ -964,7 +958,7 @@ export class LookupPuck {
     // Avoid redoing any of this setup (that's common between both 'active'
     // and 'inactive').
     if (previousState === 'disabled') {
-      this.safeAreaProvider.delegate = this;
+      this.safeAreaProvider.addEventListener(this.onSafeAreaUpdated);
       if (this.puck) {
         this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
 

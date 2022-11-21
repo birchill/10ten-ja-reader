@@ -340,8 +340,6 @@ export class ContentHandler {
       }
     });
 
-    this.setUpSafeAreaProvider();
-
     // If we are an iframe, check if the popup is currently showing
     if (!this.isTopMostWindow()) {
       void browser.runtime.sendMessage({ type: 'top:isPopupShowing' });
@@ -352,11 +350,6 @@ export class ContentHandler {
     if (document.location.host === 'docs.google.com') {
       injectGdocsStyles();
     }
-  }
-
-  setUpSafeAreaProvider() {
-    this.safeAreaProvider.render();
-    this.safeAreaProvider.enable();
   }
 
   applyPuckConfig() {
@@ -448,11 +441,10 @@ export class ContentHandler {
 
     this.textHighlighter.detach();
     this.copyState = { kind: 'inactive' };
-    this.safeAreaProvider?.unmount();
+    this.safeAreaProvider.destroy();
     this.touchClickTracker.destroy();
 
     removePopup();
-    removeSafeAreaProvider();
     removeGdocsStyles();
   }
 
@@ -2175,12 +2167,7 @@ export class ContentHandler {
       }
     }
 
-    const safeArea = this.safeAreaProvider?.getSafeArea() || {
-      top: 0,
-      right: 0,
-      left: 0,
-      bottom: 0,
-    };
+    const safeArea = this.safeAreaProvider.getSafeArea();
 
     // Work out its size
 
