@@ -17,6 +17,7 @@ import { renderMetadata } from './metadata';
 import { renderName } from './names';
 import { html } from '../../utils/builder';
 import { getSelectedIndex } from './selected-index';
+import { popupHasSelectedText } from './selection';
 import { getLangTag } from './lang-tag';
 import { renderStar } from './icons';
 import { CopyState } from './copy-state';
@@ -85,6 +86,10 @@ export function renderWordEntries({
     });
 
     entryDiv.addEventListener('click', () => {
+      if (popupHasSelectedText(container)) {
+        return;
+      }
+
       const trigger = lastPointerType === 'mouse' ? 'mouse' : 'touch';
       options.onStartCopy?.(index + numNames, trigger);
     });
@@ -271,6 +276,10 @@ function renderNamePreview(
     });
 
     nameEntry.addEventListener('click', () => {
+      if (popupHasSelectedText(container)) {
+        return;
+      }
+
       const trigger = lastPointerType === 'mouse' ? 'mouse' : 'touch';
       onStartCopy?.(index, trigger);
     });

@@ -9,6 +9,7 @@ import { getLangTag } from './lang-tag';
 import { renderMetadata } from './metadata';
 import { PopupOptions } from './popup';
 import { getSelectedIndex } from './selected-index';
+import { popupHasSelectedText } from './selection';
 
 export function renderNamesEntries({
   entries,
@@ -53,6 +54,10 @@ export function renderNamesEntries({
       lastPointerType = evt.pointerType;
     });
     entryDiv.addEventListener('click', () => {
+      if (popupHasSelectedText(namesTable)) {
+        return;
+      }
+
       const trigger = lastPointerType === 'mouse' ? 'mouse' : 'touch';
       options.onStartCopy?.(index, trigger);
     });
