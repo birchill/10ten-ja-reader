@@ -33,6 +33,7 @@ export const enum Reason {
   Continuous,
   Ki,
   SuruNoun,
+  ZaruWoEnai,
 }
 
 export const deinflectL10NKeys: { [key: number]: string } = {
@@ -68,9 +69,11 @@ export const deinflectL10NKeys: { [key: number]: string } = {
   [Reason.Continuous]: 'deinflect_continuous',
   [Reason.Ki]: 'deinflect_ki',
   [Reason.SuruNoun]: 'deinflect_suru_noun',
+  [Reason.ZaruWoEnai]: 'deinflect_zaru_wo_enai',
 };
 
 const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
+  // -------------- 12 --------------
   [
     'いらっしゃいませんでした',
     'いらっしゃる',
@@ -78,6 +81,7 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
     Type.GodanVerb,
     Reason.PolitePastNegative,
   ],
+  // -------------- 11 --------------
   [
     'おっしゃいませんでした',
     'おっしゃる',
@@ -85,6 +89,7 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
     Type.GodanVerb,
     Reason.PolitePastNegative,
   ],
+  // -------------- 9 --------------
   [
     'いらっしゃいました',
     'いらっしゃる',
@@ -99,6 +104,7 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
     Type.IAdj,
     Reason.PolitePastNegative,
   ],
+  // -------------- 8 --------------
   [
     'いらっしゃいます',
     'いらっしゃる',
@@ -120,6 +126,7 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
     Type.GodanVerb,
     Reason.PolitePastNegative,
   ],
+  // -------------- 7 --------------
   [
     'いませんでした',
     'う',
@@ -205,6 +212,7 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
     Type.GodanVerb,
     Reason.PolitePastNegative,
   ],
+  // -------------- 6 --------------
   [
     'いらっしゃい',
     'いらっしゃる',
@@ -220,6 +228,8 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
     Reason.Imperative,
   ],
   ['くありません', 'い', Type.Initial, Type.IAdj, Reason.PoliteNegative],
+  ['ざるをえない', 'ない', Type.IAdj, Type.VNai, Reason.ZaruWoEnai],
+  ['ざるを得ない', 'ない', Type.IAdj, Type.VNai, Reason.ZaruWoEnai],
   [
     'ませんでした',
     'る',
@@ -229,6 +239,7 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
   ],
   ['のたもうたら', 'のたまう', Type.Initial, Type.GodanVerb, Reason.Tara],
   ['のたもうたり', 'のたまう', Type.Initial, Type.GodanVerb, Reason.Tari],
+  // -------------- 5 --------------
   ['いましょう', 'う', Type.Initial, Type.GodanVerb, Reason.PoliteVolitional],
   ['仰いました', '仰る', Type.Initial, Type.GodanVerb, Reason.PolitePast],
   ['おっしゃい', 'おっしゃる', Type.Initial, Type.GodanVerb, Reason.MasuStem],
@@ -236,6 +247,10 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
   ['きましょう', 'く', Type.Initial, Type.GodanVerb, Reason.PoliteVolitional],
   ['きましょう', 'くる', Type.Initial, Type.KuruVerb, Reason.PoliteVolitional],
   ['ぎましょう', 'ぐ', Type.Initial, Type.GodanVerb, Reason.PoliteVolitional],
+  ['ざるえない', 'ない', Type.IAdj, Type.VNai, Reason.ZaruWoEnai],
+  ['ざる得ない', 'ない', Type.IAdj, Type.VNai, Reason.ZaruWoEnai],
+  ['ざるをえぬ', 'ない', Type.IAdj, Type.VNai, Reason.ZaruWoEnai],
+  ['ざるを得ぬ', 'ない', Type.IAdj, Type.VNai, Reason.ZaruWoEnai],
   ['しましょう', 'す', Type.Initial, Type.GodanVerb, Reason.PoliteVolitional],
   ['しましょう', 'する', Type.Initial, Type.SuruVerb, Reason.PoliteVolitional],
   ['しましょう', 'す', Type.Initial, Type.SuruVerb, Reason.PoliteVolitional],
@@ -246,6 +261,7 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
   ['びましょう', 'ぶ', Type.Initial, Type.GodanVerb, Reason.PoliteVolitional],
   ['みましょう', 'む', Type.Initial, Type.GodanVerb, Reason.PoliteVolitional],
   ['りましょう', 'る', Type.Initial, Type.GodanVerb, Reason.PoliteVolitional],
+  // -------------- 4 --------------
   ['いじゃう', 'ぐ', Type.GodanVerb, Type.GodanVerb, Reason.Chau],
   ['いすぎる', 'う', Type.IchidanVerb, Type.GodanVerb, Reason.Sugiru],
   ['いちゃう', 'く', Type.GodanVerb, Type.GodanVerb, Reason.Chau],
@@ -287,6 +303,8 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
     Type.KuruVerb,
     Reason.PotentialOrPassive,
   ],
+  ['ざるえぬ', 'ない', Type.IAdj, Type.VNai, Reason.ZaruWoEnai],
+  ['ざる得ぬ', 'ない', Type.IAdj, Type.VNai, Reason.ZaruWoEnai],
   [
     'しすぎる',
     'す',
@@ -433,6 +451,7 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
   ['副うたり', '副う', Type.Initial, Type.GodanVerb, Reason.Tari],
   ['厭うたら', '厭う', Type.Initial, Type.GodanVerb, Reason.Tara],
   ['厭うたり', '厭う', Type.Initial, Type.GodanVerb, Reason.Tari],
+  // -------------- 3 --------------
   ['いそう', 'う', Type.Initial, Type.GodanVerb, Reason.Sou],
   ['いたい', 'う', Type.IAdj, Type.GodanVerb, Reason.Tai],
   ['いたら', 'く', Type.Initial, Type.GodanVerb, Reason.Tara],
@@ -451,8 +470,8 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
   ['かせる', 'く', Type.IchidanVerb, Type.GodanVerb, Reason.Causative],
   ['がせる', 'ぐ', Type.IchidanVerb, Type.GodanVerb, Reason.Causative],
   ['かった', 'い', Type.Initial, Type.IAdj, Reason.Past],
-  ['かない', 'く', Type.IAdj, Type.GodanVerb, Reason.Negative],
-  ['がない', 'ぐ', Type.IAdj, Type.GodanVerb, Reason.Negative],
+  ['かない', 'く', Type.IAdj | Type.VNai, Type.GodanVerb, Reason.Negative],
+  ['がない', 'ぐ', Type.IAdj | Type.VNai, Type.GodanVerb, Reason.Negative],
   ['かれる', 'く', Type.IchidanVerb, Type.GodanVerb, Reason.Passive],
   ['がれる', 'ぐ', Type.IchidanVerb, Type.GodanVerb, Reason.Passive],
   ['きそう', 'く', Type.Initial, Type.GodanVerb, Reason.Sou],
@@ -468,11 +487,11 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
   ['きます', 'く', Type.Initial, Type.GodanVerb, Reason.Polite],
   ['きます', 'くる', Type.Initial, Type.KuruVerb, Reason.Polite],
   ['ぎます', 'ぐ', Type.Initial, Type.GodanVerb, Reason.Polite],
-  ['くない', 'い', Type.IAdj, Type.IAdj, Reason.Negative],
+  ['くない', 'い', Type.IAdj | Type.VNai, Type.IAdj, Reason.Negative],
   ['ければ', 'い', Type.Initial, Type.IAdj, Reason.Ba],
   ['こうた', 'こう', Type.Initial, Type.GodanVerb, Reason.Past],
   ['こうて', 'こう', Type.Initial, Type.GodanVerb, Reason.Te],
-  ['こない', 'くる', Type.IAdj, Type.KuruVerb, Reason.Negative],
+  ['こない', 'くる', Type.IAdj | Type.VNai, Type.KuruVerb, Reason.Negative],
   ['こよう', 'くる', Type.Initial, Type.KuruVerb, Reason.Volitional],
   ['これる', 'くる', Type.IchidanVerb, Type.KuruVerb, Reason.Potential],
   ['来れる', '来る', Type.IchidanVerb, Type.KuruVerb, Reason.Potential],
@@ -486,7 +505,7 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
     Type.GodanVerb | Type.SuruVerb,
     Reason.Causative,
   ],
-  ['さない', 'す', Type.IAdj, Type.GodanVerb, Reason.Negative],
+  ['さない', 'す', Type.IAdj | Type.VNai, Type.GodanVerb, Reason.Negative],
   [
     'される',
     'す',
@@ -513,7 +532,7 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
   ['してる', 'する', Type.IchidanVerb, Type.SuruVerb, Reason.Continuous],
   ['しとく', 'す', Type.GodanVerb, Type.GodanVerb | Type.SuruVerb, Reason.Toku],
   ['しとく', 'する', Type.GodanVerb, Type.SuruVerb, Reason.Toku],
-  ['しない', 'する', Type.IAdj, Type.SuruVerb, Reason.Negative],
+  ['しない', 'する', Type.IAdj | Type.VNai, Type.SuruVerb, Reason.Negative],
   ['します', 'す', Type.Initial, Type.GodanVerb | Type.SuruVerb, Reason.Polite],
   ['します', 'する', Type.Initial, Type.SuruVerb, Reason.Polite],
   ['しよう', 'する', Type.Initial, Type.SuruVerb, Reason.Volitional],
@@ -528,7 +547,7 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
   ['そうた', 'そう', Type.Initial, Type.GodanVerb, Reason.Past],
   ['そうて', 'そう', Type.Initial, Type.GodanVerb, Reason.Te],
   ['たせる', 'つ', Type.IchidanVerb, Type.GodanVerb, Reason.Causative],
-  ['たない', 'つ', Type.IAdj, Type.GodanVerb, Reason.Negative],
+  ['たない', 'つ', Type.IAdj | Type.VNai, Type.GodanVerb, Reason.Negative],
   ['たれる', 'つ', Type.IchidanVerb, Type.GodanVerb, Reason.Passive],
   ['ちそう', 'つ', Type.Initial, Type.GodanVerb, Reason.Sou],
   ['ちたい', 'つ', Type.IAdj, Type.GodanVerb, Reason.Tai],
@@ -569,13 +588,13 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
     Reason.Nasai,
   ],
   ['なせる', 'ぬ', Type.IchidanVerb, Type.GodanVerb, Reason.Causative],
-  ['なない', 'ぬ', Type.IAdj, Type.GodanVerb, Reason.Negative],
+  ['なない', 'ぬ', Type.IAdj | Type.VNai, Type.GodanVerb, Reason.Negative],
   ['なれる', 'ぬ', Type.IchidanVerb, Type.GodanVerb, Reason.Passive],
   ['にそう', 'ぬ', Type.Initial, Type.GodanVerb, Reason.Sou],
   ['にたい', 'ぬ', Type.IAdj, Type.GodanVerb, Reason.Tai],
   ['にます', 'ぬ', Type.Initial, Type.GodanVerb, Reason.Polite],
   ['ばせる', 'ぶ', Type.IchidanVerb, Type.GodanVerb, Reason.Causative],
-  ['ばない', 'ぶ', Type.IAdj, Type.GodanVerb, Reason.Negative],
+  ['ばない', 'ぶ', Type.IAdj | Type.VNai, Type.GodanVerb, Reason.Negative],
   ['ばれる', 'ぶ', Type.IchidanVerb, Type.GodanVerb, Reason.Passive],
   ['びそう', 'ぶ', Type.Initial, Type.GodanVerb, Reason.Sou],
   ['びたい', 'ぶ', Type.IAdj, Type.GodanVerb, Reason.Tai],
@@ -583,13 +602,13 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
   ['ました', 'る', Type.Initial, Type.IchidanVerb, Reason.PolitePast],
   ['ませる', 'む', Type.IchidanVerb, Type.GodanVerb, Reason.Causative],
   ['ません', 'る', Type.Initial, Type.IchidanVerb, Reason.PoliteNegative],
-  ['まない', 'む', Type.IAdj, Type.GodanVerb, Reason.Negative],
+  ['まない', 'む', Type.IAdj | Type.VNai, Type.GodanVerb, Reason.Negative],
   ['まれる', 'む', Type.IchidanVerb, Type.GodanVerb, Reason.Passive],
   ['みそう', 'む', Type.Initial, Type.GodanVerb, Reason.Sou],
   ['みたい', 'む', Type.IAdj, Type.GodanVerb, Reason.Tai],
   ['みます', 'む', Type.Initial, Type.GodanVerb, Reason.Polite],
   ['らせる', 'る', Type.IchidanVerb, Type.GodanVerb, Reason.Causative],
-  ['らない', 'る', Type.IAdj, Type.GodanVerb, Reason.Negative],
+  ['らない', 'る', Type.IAdj | Type.VNai, Type.GodanVerb, Reason.Negative],
   [
     'られる',
     'る',
@@ -602,7 +621,7 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
   ['りたい', 'る', Type.IAdj, Type.GodanVerb, Reason.Tai],
   ['ります', 'る', Type.Initial, Type.GodanVerb, Reason.Polite],
   ['わせる', 'う', Type.IchidanVerb, Type.GodanVerb, Reason.Causative],
-  ['わない', 'う', Type.IAdj, Type.GodanVerb, Reason.Negative],
+  ['わない', 'う', Type.IAdj | Type.VNai, Type.GodanVerb, Reason.Negative],
   ['われる', 'う', Type.IchidanVerb, Type.GodanVerb, Reason.Passive],
   ['んだら', 'ぬ', Type.Initial, Type.GodanVerb, Reason.Tara],
   ['んだら', 'ぶ', Type.Initial, Type.GodanVerb, Reason.Tara],
@@ -640,6 +659,7 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
   ['副うて', '副う', Type.Initial, Type.GodanVerb, Reason.Te],
   ['厭うた', '厭う', Type.Initial, Type.GodanVerb, Reason.Past],
   ['厭うて', '厭う', Type.Initial, Type.GodanVerb, Reason.Te],
+  // -------------- 2 --------------
   ['いた', 'く', Type.Initial, Type.GodanVerb, Reason.Past],
   ['いだ', 'ぐ', Type.Initial, Type.GodanVerb, Reason.Past],
   ['いて', 'く', Type.Initial, Type.GodanVerb, Reason.Te],
@@ -677,6 +697,7 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
   ['して', 'する', Type.Initial, Type.SuruVerb, Reason.Te],
   ['しろ', 'す', Type.Initial, Type.SuruVerb, Reason.Imperative],
   ['しろ', 'する', Type.Initial, Type.SuruVerb, Reason.Imperative],
+  ['する', '', Type.SuruVerb, Type.NounVS, Reason.SuruNoun],
   ['せず', 'する', Type.Initial, Type.SuruVerb, Reason.Zu],
   ['せぬ', 'する', Type.Initial, Type.SuruVerb, Reason.Negative],
   ['せん', 'する', Type.Initial, Type.SuruVerb, Reason.Negative],
@@ -713,7 +734,13 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
   ],
   ['とう', 'つ', Type.Initial, Type.GodanVerb, Reason.Volitional],
   ['とく', 'る', Type.GodanVerb, Type.IchidanVerb | Type.KuruVerb, Reason.Toku],
-  ['ない', 'る', Type.IAdj, Type.IchidanVerb | Type.KuruVerb, Reason.Negative],
+  [
+    'ない',
+    'る',
+    Type.IAdj | Type.VNai,
+    Type.IchidanVerb | Type.KuruVerb,
+    Reason.Negative,
+  ],
   ['なず', 'ぬ', Type.Initial, Type.GodanVerb, Reason.Zu],
   ['なぬ', 'ぬ', Type.Initial, Type.GodanVerb, Reason.Negative],
   ['なん', 'ぬ', Type.Initial, Type.GodanVerb, Reason.Negative],
@@ -767,6 +794,7 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
   ['んで', 'ぬ', Type.Initial, Type.GodanVerb, Reason.Te],
   ['んで', 'ぶ', Type.Initial, Type.GodanVerb, Reason.Te],
   ['んで', 'む', Type.Initial, Type.GodanVerb, Reason.Te],
+  // -------------- 1 --------------
   ['い', 'いる', Type.Initial, Type.IchidanVerb, Reason.MasuStem],
   ['い', 'う', Type.Initial, Type.GodanVerb, Reason.MasuStem],
   ['い', 'る', Type.Initial, Type.KuruVerb, Reason.Imperative],
@@ -826,10 +854,10 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
   ['れ', 'る', Type.Initial, Type.GodanVerb, Reason.Imperative],
   ['れ', 'れる', Type.Initial, Type.IchidanVerb, Reason.MasuStem],
   ['ろ', 'る', Type.Initial, Type.IchidanVerb, Reason.Imperative],
-  ['する', '', Type.SuruVerb, Type.NounVS, Reason.SuruNoun],
 ];
 
 const enum Type {
+  // Final word type
   IchidanVerb = 1 << 0, // i.e. ru-verbs
   GodanVerb = 1 << 1, // i.e. u-verbs
   IAdj = 1 << 2,
@@ -837,8 +865,9 @@ const enum Type {
   SuruVerb = 1 << 4,
   NounVS = 1 << 5,
   All = IchidanVerb | GodanVerb | IAdj | KuruVerb | SuruVerb | NounVS,
-  // From-type only:
-  Initial = 1 << 7, // i.e. original word before any deinflection
+  // Intermediate types
+  Initial = 1 << 6, // original word before any deinflection (from-type only)
+  VNai = 1 << 7,
 }
 
 export { Type as WordType };
@@ -1021,6 +1050,14 @@ export function deinflect(word: string): CandidateWord[] {
             firstReasonChain[0] === Reason.PotentialOrPassive
           ) {
             firstReasonChain.splice(0, 1, Reason.CausativePassive);
+          } else if (
+            // If we're inflecting a Vない type word back to V, then we don't want
+            // to add the "negative" reason since it's already expected to be in
+            // negative form.
+            thisCandidate.type === Type.VNai &&
+            rule.reason === Reason.Negative
+          ) {
+            // Do nothing
           } else {
             firstReasonChain.unshift(rule.reason);
           }
@@ -1040,7 +1077,7 @@ export function deinflect(word: string): CandidateWord[] {
     }
   } while (++i < result.length);
 
-  // Post-process to check the results are valid
+  // Post-process to filter out any lingering intermediate forms
   result = result.filter((r) => r.type & Type.All);
 
   return result;

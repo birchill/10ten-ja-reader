@@ -234,4 +234,24 @@ describe('deinflect', () => {
     expect(match).toBeDefined();
     expect(match!.reasons).not.toContainEqual([Reason.Continuous]);
   });
+
+  it('deinflects ざるを得ない', () => {
+    const cases = [
+      ['闘わざるを得なかった', '闘う'],
+      ['闘わざるをえなかった', '闘う'],
+      ['やらざるを得ぬ', 'やる'],
+      ['やらざるをえぬ', 'やる'],
+      ['闘わざる得なかった', '闘う'],
+      ['闘わざるえなかった', '闘う'],
+      ['やらざる得ぬ', 'やる'],
+      ['やらざるえぬ', 'やる'],
+    ];
+    for (const [inflected, plain] of cases) {
+      const result = deinflect(inflected);
+      const match = result.find((candidate) => candidate.word == plain);
+      expect(match).toBeDefined();
+      // The ざるを得ない reason should be the first one in the list
+      expect(match!.reasons[0][0]).toBe(Reason.ZaruWoEnai);
+    }
+  });
 });
