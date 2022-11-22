@@ -982,42 +982,53 @@ export function deinflect(word: string): CandidateWord[] {
         }
 
         // If we already have a candidate for this word with the same
-        // to-type(s), expand the possible reasons.
+        // 'to' type(s), expand the possible reasons.
         //
-        // If the to-type(s) differ, then we'll add a separate candidate
+        // If the 'to' type(s) differ, then we'll add a separate candidate
         // and just hope that when we go to match against dictionary words
         // we'll filter out the mismatching one(s).
         if (resultIndex[newWord]) {
           const candidate = result[resultIndex[newWord]];
           if (candidate.type === rule.toType) {
+            // Start a new reason chain
             candidate.reasons.unshift([rule.reason]);
             continue;
           }
         }
         resultIndex[newWord] = result.length;
 
+        //
+        // Start a new candidate
+        //
+
         // Deep clone multidimensional array
         const reasons = [];
         for (const array of thisCandidate.reasons) {
-          reasons.push(Array.from(array));
+          reasons.push([...array]);
         }
+
+        // Add our new reason in
+        //
+        // If we already have reason chains, prepend to the first chain
         if (reasons.length) {
-          const firstReason = reasons[0];
-          // This is a bit hacky but the alternative is to add the
-          // full-form causative passive inflections to the deinflection
-          // dictionary and then try to merge the results.
+          const firstReasonChain = reasons[0];
+
+          // Rather having causative + passive, combine the two rules into
+          // "causative passive":
           if (
             rule.reason === Reason.Causative &&
-            firstReason.length &&
-            firstReason[0] === Reason.PotentialOrPassive
+            firstReasonChain.length &&
+            firstReasonChain[0] === Reason.PotentialOrPassive
           ) {
-            firstReason.splice(0, 1, Reason.CausativePassive);
+            firstReasonChain.splice(0, 1, Reason.CausativePassive);
           } else {
-            firstReason.unshift(rule.reason);
+            firstReasonChain.unshift(rule.reason);
           }
         } else {
+          // Add new reason to the start of the chain
           reasons.push([rule.reason]);
         }
+
         const candidate: CandidateWord = {
           reasons,
           type: rule.toType,
@@ -1034,5 +1045,3 @@ export function deinflect(word: string): CandidateWord[] {
 
   return result;
 }
-
-export default deinflect;
