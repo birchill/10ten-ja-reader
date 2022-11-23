@@ -538,24 +538,31 @@
   /* Make room for the borders
    * (and to compensate for the extra margin we added to the wrapper above) */
   font-size: 90%;
+  border: 0 dotted currentcolor;
+  --border-width: 1.5px;
+}
+
+.w-kana > .w-binary.-hi-contrast > * {
+  border-color: var(--hi-contrast-pitch-accent);
+  --border-width: 2px;
 }
 
 .w-kana > .w-binary > .h-l {
-  border-top: 1.5px dotted currentcolor !important;
-  border-right: 1.5px dotted currentcolor !important;
+  border-top-width: var(--border-width);
+  border-right-width: var(--border-width);
 }
 
 .w-kana > .w-binary > .l-h {
-  border-bottom: 1.5px dotted currentcolor !important;
-  border-right: 1.5px dotted currentcolor !important;
+  border-bottom-width: var(--border-width);
+  border-right-width: var(--border-width);
 }
 
 .w-kana > .w-binary > .h {
-  border-top: 1.5px dotted currentcolor !important;
+  border-top-width: var(--border-width);
 }
 
 .w-kana > .w-binary > .l {
-  border-bottom: 1.5px dotted currentcolor !important;
+  border-bottom-width: var(--border-width);
 }
 
 .w-romaji {

@@ -23,8 +23,7 @@
               >__MSG_options_highlight_matched_text__</label>
           </div>
           <div id="highlight-style-section">
-            <p>__MSG_options_highlight_style_label__<span
-              class=new-badge>__MSG_options_new_badge_text__</span></p>
+            <p>__MSG_options_highlight_style_label__</p>
             <fieldset>
               <div
                 class="highlightstyle-select icon-radio -with-labels -bw-inactive"
@@ -100,10 +99,12 @@
             <label for=showDefinitions>__MSG_options_show_definitions__</label>
           </div>
           <div class="browser-style">
-            <label for="accentDisplay">__MSG_options_accent_display_label__</label>
+            <label for="accentDisplay">__MSG_options_accent_display_label__<span
+              class=new-badge>__MSG_options_updated_badge_text__</span></label>
             <select id="accentDisplay" name="accentDisplay" class="browser-style">
               <option value="downstep">__MSG_options_accent_display_downstep__</option>
               <option value="binary">__MSG_options_accent_display_binary__</option>
+              <option value="binary-hi-contrast">__MSG_options_accent_display_binary_high_contrast__</option>
               <option value="none">__MSG_options_accent_display_none__</option>
             </select>
           </div>
@@ -121,8 +122,7 @@
         </div>
         <div class="panel-section panel-section-formElements">
           <div id="mouse-interactivity-section" class="needs-mouse">
-            <p>__MSG_options_mouse_interactivity_label__<span
-              class=new-badge>__MSG_options_new_badge_text__</span></p>
+            <p>__MSG_options_mouse_interactivity_label__</p>
             <fieldset>
               <div
                 class="interactivity-select icon-radio -with-labels -bw-inactive"

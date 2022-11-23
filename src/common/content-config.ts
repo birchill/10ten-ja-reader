@@ -29,7 +29,11 @@ export interface KeyboardKeys {
   startCopy: string[];
 }
 
-export type AccentDisplay = 'downstep' | 'binary' | 'none';
+export type AccentDisplay =
+  | 'downstep'
+  | 'binary'
+  | 'binary-hi-contrast'
+  | 'none';
 
 export type PartOfSpeechDisplay = 'expl' | 'code' | 'none';
 

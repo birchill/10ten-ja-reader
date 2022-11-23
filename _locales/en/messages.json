@@ -1459,6 +1459,10 @@
     "message": "Binary pitch ⎾⏋",
     "description": "Label for displaying the pitch accent using box outlines to show high and low"
   },
+  "options_accent_display_binary_high_contrast": {
+    "message": "Binary pitch (high contrast)",
+    "description": "Label for displaying the pitch accent using box outlines with higher contrast"
+  },
   "options_accent_display_downstep": {
     "message": "Downstep ꜜ",
     "description": "Label for displaying the pitch accent down-step as a small downward arrow ꜜ"
@@ -1887,6 +1891,10 @@
   "options_update_retry_button_label": {
     "message": "Retry",
     "description": "Label for the button to retry the database update after a failure"
+  },
+  "options_updated_badge_text": {
+    "message": "Updated!",
+    "description": "Text on the little badges highlighting updated settings"
   },
   "options_words_data_name": {
     "message": "word data",

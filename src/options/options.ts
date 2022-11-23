@@ -305,11 +305,18 @@ function renderPopupPreview(theme: string): HTMLElement {
       break;
 
     case 'binary':
+    case 'binary-hi-contrast':
       {
         spanKana.append(
           html(
             'span',
-            { class: 'w-binary' },
+            {
+              class: `w-binary${
+                config.accentDisplay === 'binary-hi-contrast'
+                  ? ' -hi-contrast'
+                  : ''
+              }`,
+            },
             html('span', { class: 'h-l' }, 'り'),
             html('span', { class: 'l' }, 'かい')
           )
@@ -606,8 +613,6 @@ function configureHoldToShowKeys() {
   }
 }
 
-const NEW_POPUP_KEYS = ['closePopup', 'pinPopup'];
-
 function addPopupKeys() {
   const grid = document.getElementById('key-grid')!;
 
@@ -669,17 +674,6 @@ function addPopupKeys() {
       { class: 'key-description' },
       browser.i18n.getMessage(setting.l10nKey)
     );
-
-    // Add new label if needed
-    if (NEW_POPUP_KEYS.includes(setting.name)) {
-      keyDescription.append(
-        html(
-          'span',
-          { class: 'new-badge' },
-          browser.i18n.getMessage('options_new_badge_text')
-        )
-      );
-    }
 
     // Copy keys has an extended description.
     if (setting.name === 'startCopy') {
@@ -846,8 +840,8 @@ function createKanjiReferences() {
   )}, minmax(min-content, max-content))`;
 }
 
-// Expire current set of badges on Oct 10 (ten-ten)
-const NEW_EXPIRY = new Date(2022, 9, 10);
+// Expire current set of badges on Jan 31
+const NEW_EXPIRY = new Date(2023, 0, 31);
 
 function expireNewBadges() {
   if (new Date() < NEW_EXPIRY) {

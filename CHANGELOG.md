@@ -8,7 +8,8 @@ app.
 
 ## [Unreleased]
 
-- Added support for parasing ざるを得ない endings, e.g. 闘わざるをえなかった
+- Added support for parasing ざるを得ない endings, e.g. 闘わざるをえなかった.
+- Added an option for higher contrast pitch accent markings.
 - (Chrome, Edge) Fixed the browser icon getting stuck at 100%
   ([#1003](https://github.com/birchill/10ten-ja-reader/issues/1003)).
 - (Firefox) Fixed occasional flicker on loading Web pages over slow connections

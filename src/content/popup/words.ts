@@ -397,6 +397,9 @@ function renderKana(
 
   // Generate binary pitch display
   const wrapperSpan = html('span', { class: 'w-binary' });
+  if (options.accentDisplay === 'binary-hi-contrast') {
+    wrapperSpan.classList.add('-hi-contrast');
+  }
 
   // Accent position 0 (heiban: LHHHHH) and accent position 1 (atamadaka: HLLLL)
   // are sufficiently similar that we handle them together.
