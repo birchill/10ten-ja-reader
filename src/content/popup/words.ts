@@ -43,6 +43,15 @@ export function renderWordEntries({
     container.append(html('div', { class: 'title', lang: 'ja' }, title));
   }
 
+  // Pre-filter metadata
+  //
+  // If we have word matches longer than shogi metadata we drop the shogi
+  // metadata because the shogi shorthand in particular can turn up false
+  // positives on words like ドクター and ドキュメンテーション.
+  if (options.meta?.type === 'shogi' && matchLen >= options.meta.matchLen) {
+    delete options.meta;
+  }
+
   if (options.meta) {
     const metadata = renderMetadata({
       fxData: options.fxData,

@@ -15,6 +15,7 @@ app.
   when the extension is enabled.
 - Fixed lookup of Japanese inside `display: contents` containers.
 - Made the copy overlay not show if the user has selected text in the popup.
+- Made shogi shorthand matches not show up when there is a longer word match.
 
 ## [1.12.5] - 2022-09-17
 
