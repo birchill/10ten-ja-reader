@@ -18,6 +18,7 @@ app.
 - Fixed lookup of Japanese inside `display: contents` containers.
 - Made the copy overlay not show if the user has selected text in the popup.
 - Made shogi shorthand matches not show up when there is a longer word match.
+- Added inflection for できる so that 連絡できなかった is parsed as a single unit.
 - Updated explanation text for passive deinflections to indicate that they may
   simply be sonkeigo
   ([#187](https://github.com/birchill/10ten-ja-reader/issues/187)).

@@ -580,6 +580,7 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
     Type.IchidanVerb | Type.KuruVerb,
     Reason.Continuous,
   ],
+  ['できる', 'する', Type.IchidanVerb, Type.SuruVerb, Reason.Potential],
   ['とうた', 'とう', Type.Initial, Type.GodanVerb, Reason.Past],
   ['とうて', 'とう', Type.Initial, Type.GodanVerb, Reason.Te],
   ['ないで', 'ない', Type.Initial, Type.VNai, Reason.NegativeTe],
