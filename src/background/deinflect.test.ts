@@ -254,4 +254,21 @@ describe('deinflect', () => {
       expect(match!.reasons[0][0]).toBe(Reason.ZaruWoEnai);
     }
   });
+
+  it('deinflects ないで', () => {
+    const cases = [
+      ['遊ばないで', '遊ぶ'],
+      ['やらないで', 'やる'],
+      ['食べないで', '食べる'],
+      ['しないで', 'する'],
+      ['こないで', 'くる'],
+      ['来ないで', '来る'],
+    ];
+    for (const [inflected, plain] of cases) {
+      const result = deinflect(inflected);
+      const match = result.find((candidate) => candidate.word == plain);
+      expect(match).toBeDefined();
+      expect(match!.reasons[0][0]).toBe(Reason.NegativeTe);
+    }
+  });
 });

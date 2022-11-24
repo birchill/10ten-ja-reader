@@ -34,6 +34,7 @@ export const enum Reason {
   Ki,
   SuruNoun,
   ZaruWoEnai,
+  NegativeTe,
 }
 
 export const deinflectL10NKeys: { [key: number]: string } = {
@@ -70,6 +71,7 @@ export const deinflectL10NKeys: { [key: number]: string } = {
   [Reason.Ki]: 'deinflect_ki',
   [Reason.SuruNoun]: 'deinflect_suru_noun',
   [Reason.ZaruWoEnai]: 'deinflect_zaru_wo_enai',
+  [Reason.NegativeTe]: 'deinflect_negative_te',
 };
 
 const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
@@ -580,6 +582,7 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
   ],
   ['とうた', 'とう', Type.Initial, Type.GodanVerb, Reason.Past],
   ['とうて', 'とう', Type.Initial, Type.GodanVerb, Reason.Te],
+  ['ないで', 'ない', Type.Initial, Type.VNai, Reason.NegativeTe],
   [
     'なさい',
     'る',

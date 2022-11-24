@@ -369,6 +369,9 @@
   "deinflect_negative": {
     "message": "否定形"
   },
+  "deinflect_negative_te": {
+    "message": "否定形 -て "
+  },
   "deinflect_noun": {
     "message": "名词化"
   },

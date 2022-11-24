@@ -369,6 +369,9 @@
   "deinflect_negative": {
     "message": "negative"
   },
+  "deinflect_negative_te": {
+    "message": "negative -te"
+  },
   "deinflect_noun": {
     "message": "noun"
   },
