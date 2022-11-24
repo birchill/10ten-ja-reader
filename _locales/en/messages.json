@@ -376,7 +376,7 @@
     "message": "noun"
   },
   "deinflect_passive": {
-    "message": "passive"
+    "message": "passive or respectful"
   },
   "deinflect_past": {
     "message": "past"
@@ -400,7 +400,7 @@
     "message": "potential"
   },
   "deinflect_potential_or_passive": {
-    "message": "potential or passive"
+    "message": "potential or passive or respectful"
   },
   "deinflect_sou": {
     "message": "-sou"

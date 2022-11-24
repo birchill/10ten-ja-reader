@@ -376,7 +376,7 @@
     "message": "名詞"
   },
   "deinflect_passive": {
-    "message": "受身形"
+    "message": "受身形・尊敬語"
   },
   "deinflect_past": {
     "message": "過去形"
@@ -400,7 +400,7 @@
     "message": "可能形"
   },
   "deinflect_potential_or_passive": {
-    "message": "可能形・受身形"
+    "message": "可能形・受身形・尊敬語"
   },
   "deinflect_sou": {
     "message": "そう形"

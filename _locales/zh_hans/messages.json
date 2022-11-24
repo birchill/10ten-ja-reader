@@ -376,7 +376,7 @@
     "message": "名词化"
   },
   "deinflect_passive": {
-    "message": "被动形"
+    "message": "被动形或敬语"
   },
   "deinflect_past": {
     "message": "过去形"
@@ -400,7 +400,7 @@
     "message": "可能形"
   },
   "deinflect_potential_or_passive": {
-    "message": "可能或被动形"
+    "message": "可能或被动或敬语的"
   },
   "deinflect_sou": {
     "message": "-そう"
