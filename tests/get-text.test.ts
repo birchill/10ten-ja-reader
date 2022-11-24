@@ -1173,7 +1173,12 @@ describe('getTextAtPoint', () => {
     );
   });
 
-  it('should find text in SVG content', () => {
+  it('should find text in SVG content', function () {
+    // Skipping on Firefox due to bug: https://bugzilla.mozilla.org/show_bug.cgi?id=1801581
+    if (navigator.userAgent.indexOf('Firefox')) {
+      this.skip();
+    }
+
     testDiv.innerHTML = '<svg><text y="1em">あいうえお</text></svg>';
     const textNode = testDiv.firstChild!.firstChild!.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 0);
