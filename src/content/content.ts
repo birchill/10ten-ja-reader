@@ -880,7 +880,7 @@ export class ContentHandler {
     // If the user pressed the hold-to-show key combination, show the popup
     // if possible.
     //
-    // It's important we only do this whehn the popup is not visible, however,
+    // It's important we only do this when the popup is not visible, however,
     // since these keys may overlap with the keys we've defined for pinning the
     // popup--which only apply when the popup is visible.
     const matchedHoldToShowKeys = this.isHoldToShowKeyStroke(event);
