@@ -9,7 +9,7 @@ app.
 ## [Unreleased]
 
 - Added support for parsing ざるを得ない endings, e.g. 闘わざるをえなかった.
-- Added support for parsing ～ないで, e.g. 払わないですんだ。
+- Added support for parsing ～ないで, e.g. 払わないですんだ.
 - Added an option for higher contrast pitch accent markings.
 - (Chrome, Edge) Fixed the browser icon getting stuck at 100%
   ([#1003](https://github.com/birchill/10ten-ja-reader/issues/1003)).
@@ -18,6 +18,10 @@ app.
 - Made the popup show for sites that make nested contents fullscreen such as
   Crunchyroll
   ([#1015](https://github.com/birchill/10ten-ja-reader/issues/1015)).
+- Made the touchscreen puck trigger showing text boxes on
+  [mokuro](https://github.com/kha-white/mokuro) that normally only show on
+  hover
+  ([#1009](https://github.com/birchill/10ten-ja-reader/issues/1009)).
 - Fixed lookup of Japanese inside `display: contents` containers.
 - Made the copy overlay not show if the user has selected text in the popup.
 - Made shogi shorthand matches not show up when there is a longer word match.
