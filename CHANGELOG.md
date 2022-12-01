@@ -15,6 +15,9 @@ app.
   ([#1003](https://github.com/birchill/10ten-ja-reader/issues/1003)).
 - (Firefox) Fixed occasional flicker on loading Web pages over slow connections
   when the extension is enabled.
+- Made the popup show for sites that make nested contents fullscreen such as
+  Crunchyroll
+  ([#1015](https://github.com/birchill/10ten-ja-reader/issues/1015)).
 - Fixed lookup of Japanese inside `display: contents` containers.
 - Made the copy overlay not show if the user has selected text in the popup.
 - Made shogi shorthand matches not show up when there is a longer word match.

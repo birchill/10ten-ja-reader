@@ -459,6 +459,17 @@ export class ContentHandler {
   }
 
   isTopMostWindow() {
+    // If a descendant of an iframe is being displayed full-screen, that iframe
+    // can temporarily act as the topmost window.
+    if (document.fullscreenElement) {
+      if (document.fullscreenElement.tagName === 'IFRAME') {
+        return false;
+      }
+      if (document.fullscreenElement.ownerDocument === document) {
+        return true;
+      }
+    }
+
     return (
       this.isEffectiveTopMostWindow || window.self === this.getTopMostWindow()
     );
@@ -1201,6 +1212,16 @@ export class ContentHandler {
   onFullScreenChange() {
     if (this.popupState?.display.mode === 'pinned') {
       this.unpinPopup();
+    }
+
+    // If entering / leaving fullscreen caused a change in who is the topmost
+    // window we might have some setup / clean up to do.
+    if (this.isTopMostWindow()) {
+      this.applyPuckConfig();
+    } else {
+      removePopup();
+      this.clearResult();
+      this.tearDownPuck();
     }
   }
 
