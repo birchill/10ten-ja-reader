@@ -10,7 +10,7 @@ app.
 
 (Nothing yet)
 
-## [1.13.4] - 2022-12-02
+## [1.13.5] - 2022-12-02
 
 - Added support for parsing ざるを得ない endings, e.g. 闘わざるをえなかった.
 - Added support for parsing ～ないで, e.g. 払わないですんだ.
@@ -944,8 +944,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.13.4...HEAD
-[1.13.4]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.5...v1.13.4
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.13.5...HEAD
+[1.13.5]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.5...v1.13.5
 [1.12.5]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.4...v1.12.5
 [1.12.4]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.3...v1.12.4
 [1.12.3]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.2...v1.12.3
