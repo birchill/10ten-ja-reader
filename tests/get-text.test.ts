@@ -178,6 +178,24 @@ describe('getTextAtPoint', () => {
     );
   });
 
+  it('should find text in a block cousin if there the grandparent is inline-block', () => {
+    // Based on https://www.kanshudo.com/grammar/%E3%81%AA%E3%81%84%E3%81%A7%E3%83%BB%E3%81%AA%E3%81%8F%E3%81%A6%E3%83%BB%E3%81%9A%E3%81%AB
+    testDiv.innerHTML =
+      '<a><span style="display: inline-block"><div>あら</div><div>洗</div></span>わないで</a>';
+
+    const baseTextNode = testDiv.firstElementChild?.firstElementChild
+      ?.children[1]?.firstChild as Text;
+    const bbox = getBboxForOffset(baseTextNode, 0);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+    assert.strictEqual(result?.text, '洗わないで');
+  });
+
   it('should find text in a cousin for an inline node', () => {
     testDiv.innerHTML =
       '<span><span>あい</span></span>う<span>え<span>お</span></span>';

@@ -23,6 +23,8 @@ app.
   hover
   ([#1009](https://github.com/birchill/10ten-ja-reader/issues/1009)).
 - Fixed lookup of Japanese inside `display: contents` containers.
+- Fixed lookup of Japanese with certain combinations of `display: inline-block`
+  such as is used on Kanshudo.
 - Made the copy overlay not show if the user has selected text in the popup.
 - Made shogi shorthand matches not show up when there is a longer word match.
 - Added inflection for できる so that 連絡できなかった is parsed as a single unit.

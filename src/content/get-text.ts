@@ -595,19 +595,25 @@ function getTextFromTextNode({
     // styling since sites like renshuu.org do faux-ruby styling where they
     // give these elements styles like 'display: table-row-group'.
     //
+    // We also make an exception for <span> because pdf.js uses
+    // absolutely-positioned (and hence `display: block`) spans to lay out
+    // characters in vertical text.
+    //
     // Furthermore, we treat inline-block as inline because YouTube puts
     // okurigana in a separate inline-block span when using ruby.
     //
-    // Finally, we make an exception for span too because pdf.js uses
-    // absolutely-positioned (and hence `display: block`) spans to lay out
-    // characters in vertical text.
+    // Finally, if an element's parent is inline-block, then the element will
+    // still be laid out "inline" so we allow that too (and that appears to be
+    // used by Kanshudo at least).
     //
     // Given all these exceptions, I wonder if we should even both checking
     // the display property.
     (['RB', 'RUBY', 'SPAN'].includes(element.tagName) ||
       ['inline', 'inline-block', 'ruby', 'ruby-base', 'ruby-text'].includes(
         getComputedStyle(element).display!
-      ));
+      ) ||
+      (element.parentElement &&
+        getComputedStyle(element.parentElement)?.display === 'inline-block'));
 
   // Set up a check that each ancestor is visible and actually contains the
   // point we're looking up.
