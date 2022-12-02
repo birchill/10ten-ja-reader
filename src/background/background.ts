@@ -430,7 +430,11 @@ async function toggle(tab: Tabs.Tab) {
   await tabManager.toggleTab(tab, config.contentConfig);
 }
 
-browser.browserAction.onClicked.addListener(toggle);
+if (__MV3__) {
+  browser.action.onClicked.addListener(toggle);
+} else {
+  browser.browserAction.onClicked.addListener(toggle);
+}
 browser.composeAction?.onClicked.addListener(toggle);
 
 // We can sometimes find ourselves in a situation where we have a backlog of

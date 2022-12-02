@@ -163,12 +163,13 @@ const chromeConfig = buildExtConfig({
   distFolder: 'dist-chrome',
   includeRikaichampName: true,
   isChrome: true,
+  mv3: true,
   needsClipboardWrite: false,
-  supportsChromeStyle: true,
   supportsExtensionSourceMaps: false,
   supportsMatchAboutBlank: true,
   supportsOfflineEnabledField: true,
   target: 'chromium',
+  useServiceWorker: true,
 });
 
 const edgeConfig = buildExtConfig({
@@ -176,10 +177,12 @@ const edgeConfig = buildExtConfig({
   distFolder: 'dist-edge',
   includeRikaichampName: true,
   isEdge: true,
+  mv3: true,
   needsClipboardWrite: false,
   supportsExtensionSourceMaps: false,
   supportsMatchAboutBlank: true,
   target: 'chromium',
+  useServiceWorker: true,
 });
 
 const safariConfig = buildExtConfig({
@@ -234,11 +237,11 @@ function buildExtConfig({
   isSafari = false,
   includeRikaichampName = false,
   mailExtension = false,
+  mv3 = false,
   needsClipboardWrite = true,
   supportsAlphaVersion = false,
   supportsBrowserSpecificSettings = false,
   supportsBrowserStyle = false,
-  supportsChromeStyle = false,
   supportsExtensionSourceMaps = true,
   supportsMatchAboutBlank = false,
   supportsOfflineEnabledField = false,
@@ -246,6 +249,7 @@ function buildExtConfig({
   supportsTabContextType = false,
   target,
   useEventPage = false,
+  useServiceWorker = false,
 }) {
   const preprocessorFeatures = [];
 
@@ -273,6 +277,10 @@ function buildExtConfig({
     preprocessorFeatures.push('mail_extension');
   }
 
+  if (mv3) {
+    preprocessorFeatures.push('mv3');
+  }
+
   if (needsClipboardWrite) {
     preprocessorFeatures.push('needs_clipboard_write');
   }
@@ -287,10 +295,6 @@ function buildExtConfig({
 
   if (supportsBrowserStyle) {
     preprocessorFeatures.push('supports_browser_style');
-  }
-
-  if (supportsChromeStyle) {
-    preprocessorFeatures.push('supports_chrome_style');
   }
 
   if (supportsMatchAboutBlank) {
@@ -309,9 +313,14 @@ function buildExtConfig({
     preprocessorFeatures.push('use_event_page');
   }
 
+  if (useServiceWorker) {
+    preprocessorFeatures.push('use_service_worker');
+  }
+
   const plugins = [
     new webpack.DefinePlugin({
       __ACTIVE_TAB_ONLY__: activeTabOnly,
+      __MV3__: mv3,
       __SUPPORTS_SVG_ICONS__: supportsSvgIcons,
       __SUPPORTS_TAB_CONTEXT_TYPE__: supportsTabContextType,
       __VERSION__: `'${pjson.version}'`,
@@ -392,46 +401,42 @@ function buildExtConfig({
 
   plugins.push(new CopyWebpackPlugin({ patterns: copyPatterns }));
 
+  let webExtOptions = {
+    artifactsDir,
+    buildPackage,
+    overwriteDest: true,
+    sourceDir: path.resolve(__dirname, distFolder),
+  };
+
   if (target === 'firefox') {
-    plugins.push(
-      new WebExtPlugin({
-        artifactsDir,
-        buildPackage,
-        firefox,
-        firefoxProfile,
-        keepProfileChanges,
-        overwriteDest: true,
-        profileCreateIfMissing,
-        startUrl: ['tests/playground.html'],
-        sourceDir: path.resolve(__dirname, distFolder),
-      })
-    );
+    webExtOptions = {
+      ...webExtOptions,
+      firefox,
+      firefoxProfile,
+      keepProfileChanges,
+      profileCreateIfMissing,
+      startUrl: ['tests/playground.html'],
+    };
   } else if (target === 'chromium') {
-    plugins.push(
-      new WebExtPlugin({
-        artifactsDir,
-        buildPackage,
-        chromiumBinary: chromium,
-        chromiumProfile,
-        firefoxProfile,
-        keepProfileChanges,
-        overwriteDest: true,
-        profileCreateIfMissing,
-        startUrl: [path.resolve(__dirname, 'tests', 'playground.html')],
-        sourceDir: path.resolve(__dirname, distFolder),
-        target: 'chromium',
-      })
-    );
-  } else {
-    plugins.push(
-      new WebExtPlugin({
-        artifactsDir,
-        buildPackage,
-        overwriteDest: true,
-        sourceDir: path.resolve(__dirname, distFolder),
-      })
-    );
+    webExtOptions = {
+      ...webExtOptions,
+      chromiumBinary: chromium,
+      chromiumProfile,
+      startUrl: [path.resolve(__dirname, 'tests', 'playground.html')],
+      // web-ext lint doesn't yet handle some of the chromium MV3 manifest
+      // like allowing a service worker background script or having an empty
+      // extension ID.
+      runLint: false,
+      target: 'chromium',
+    };
+  } else if (target === 'edge') {
+    // web-ext lint doesn't yet handle some of the chromium MV3 manifest like
+    // allowing a service worker background script or having an empty
+    // extension ID.
+    webExtOptions.runLint = false;
   }
+
+  plugins.push(new WebExtPlugin(webExtOptions));
 
   return {
     ...commonExtConfig,

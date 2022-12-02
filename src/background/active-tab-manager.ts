@@ -262,23 +262,47 @@ export default class ActiveTabManager implements TabManager {
 
   private async injectScript(tabId: number, frameId?: number): Promise<void> {
     // Inject the script
-    await browser.tabs.executeScript(tabId, {
-      allFrames: typeof frameId === 'undefined',
-      file: '/10ten-ja-content.js',
-      runAt: 'document_start',
-      frameId,
-    });
+    if (__MV3__) {
+      await browser.scripting.executeScript({
+        target: {
+          tabId,
+          allFrames: typeof frameId === 'undefined',
+          frameIds: frameId ? [frameId] : undefined,
+        },
+        files: ['/10ten-ja-content.js'],
+        injectImmediately: true,
+      });
+    } else {
+      await browser.tabs.executeScript(tabId, {
+        allFrames: typeof frameId === 'undefined',
+        file: '/10ten-ja-content.js',
+        runAt: 'document_start',
+        frameId,
+      });
+    }
 
     // See if we should inject the Google Docs bootstrap script too
     try {
       const tabDetails = await browser.tabs.get(tabId);
       if (tabDetails.url?.startsWith('https://docs.google.com')) {
-        await browser.tabs.executeScript(tabId, {
-          allFrames: typeof frameId === 'undefined',
-          file: '/10ten-ja-gdocs-bootstrap.js',
-          runAt: 'document_start',
-          frameId,
-        });
+        if (__MV3__) {
+          await browser.scripting.executeScript({
+            target: {
+              tabId,
+              allFrames: typeof frameId === 'undefined',
+              frameIds: frameId ? [frameId] : undefined,
+            },
+            files: ['/10ten-ja-gdocs-bootstrap.js'],
+            injectImmediately: true,
+          });
+        } else {
+          await browser.tabs.executeScript(tabId, {
+            allFrames: typeof frameId === 'undefined',
+            file: '/10ten-ja-gdocs-bootstrap.js',
+            runAt: 'document_start',
+            frameId,
+          });
+        }
       }
     } catch {
       console.warn('Failed to get tab for injecting Google docs bootstrap');

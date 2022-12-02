@@ -485,7 +485,7 @@ function configureCommands() {
     try {
       const shortcut = getFormToggleKeyValue();
       await browser.commands.update({
-        name: '_execute_browser_action',
+        name: __MV3__ ? '_execute_action' : '_execute_browser_action',
         shortcut: shortcut.toString(),
       });
       setToggleKeyWarningState('ok');
@@ -574,7 +574,11 @@ async function getConfiguredToggleKeyValue(): Promise<Command | null> {
   }
 
   for (const command of commands) {
-    if (command.name === '_execute_browser_action' && command.shortcut) {
+    if (
+      command.name ===
+        (__MV3__ ? '_execute_action' : '_execute_browser_action') &&
+      command.shortcut
+    ) {
       return Command.fromString(command.shortcut);
     }
   }

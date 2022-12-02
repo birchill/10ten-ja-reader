@@ -126,7 +126,7 @@ async function addToggleMenu(
 
   // We'd like to use:
   //
-  //   command: '_execute_browser_action'
+  //   command: '_execute_(browser_)action'
   //
   // here instead of onclick but:
   //

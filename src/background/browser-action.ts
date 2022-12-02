@@ -12,13 +12,15 @@ interface BrowserActionState {
   toolbarIcon: 'default' | 'sky';
 }
 
+const action = __MV3__ ? browser.action : browser.browserAction;
+
 // Chrome makes the tooltip disappear for a second or so if we try updating it
 // while it is showing so if we update it too quickly it becomes impossible to
 // read. Instead we need to throttle our updates. 2.5s or so seems like a good
 // balance between being up-to-date and being readable.
 const throttledSetTitle = throttle(
   (...args: Parameters<Action.Static['setTitle']>) => {
-    void browser.browserAction.setTitle(...args);
+    void action.setTitle(...args);
   },
   2500
 );
@@ -156,16 +158,16 @@ async function doUpdateBrowserAction({
     // a constant error signal.
     jpdictState.updateError.name !== 'QuotaExceededError'
   ) {
-    await browser.browserAction.setBadgeText({ text: '!', tabId });
+    await action.setBadgeText({ text: '!', tabId });
     await browser.composeAction?.setBadgeText({ text: '!' });
-    await browser.browserAction.setBadgeBackgroundColor({
+    await action.setBadgeBackgroundColor({
       color: 'yellow',
       tabId,
     });
     await browser.composeAction?.setBadgeBackgroundColor({ color: 'yellow' });
     tooltip = browser.i18n.getMessage('command_toggle_update_error');
   } else {
-    await browser.browserAction.setBadgeText({ text: '', tabId });
+    await action.setBadgeText({ text: '', tabId });
     await browser.composeAction?.setBadgeText({ text: '' });
   }
 
@@ -179,7 +181,7 @@ async function setIcon(iconFilename: string, tabId?: number): Promise<void> {
   // just fail silently if we try.
   if (__SUPPORTS_SVG_ICONS__) {
     const details = { path: `images/${iconFilename}.svg` };
-    await browser.browserAction.setIcon({ ...details, tabId });
+    await action.setIcon({ ...details, tabId });
     await browser.composeAction?.setIcon(details);
   } else {
     const details = {
@@ -189,7 +191,7 @@ async function setIcon(iconFilename: string, tabId?: number): Promise<void> {
         48: `images/${iconFilename}-48.png`,
       },
     };
-    await browser.browserAction.setIcon({ ...details, tabId });
+    await action.setIcon({ ...details, tabId });
     await browser.composeAction?.setIcon(details);
   }
 }

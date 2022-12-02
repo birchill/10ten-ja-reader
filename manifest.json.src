@@ -1,5 +1,9 @@
 {
+  /*#if mv3*/
+  "manifest_version": 3,
+  /*#else*/
   "manifest_version": 2,
+  /*#endif*/
   /*#if include_rikaichamp_name*/
   "name": "10ten Japanese Reader (Rikaichamp)",
   /*#else*/
@@ -59,6 +63,9 @@
     "menus",
     "messagesModify",
     /*#endif*/
+    /*#if mv3*/
+    "scripting",
+    /*#endif*/
     "storage",
     "unlimitedStorage"
   ],
@@ -66,8 +73,32 @@
     /*#if use_event_page */
     "persistent": false,
     /*#endif*/
+    /*#if use_service_worker*/
+    "service_worker": "10ten-ja-background.js"
+    /*#else*/
     "scripts": ["10ten-ja-background.js"]
+    /*#endif*/
   },
+  /*#if mv3*/
+  "action": {
+    /*#if supports_browser_style*/
+    "browser_style": false,
+    /*#endif*/
+    /*#if supports_svg_icons*/
+    "default_icon": "images/10ten-disabled.svg",
+    /*#else*/
+    "default_icon": {
+      "16": "images/10ten-disabled-16.png",
+      "32": "images/10ten-disabled-32.png",
+      "48": "images/10ten-disabled-48.png"
+    },
+    /*#endif*/
+    /*#if mail_extension*/
+    "default_label": "",
+    /*#endif*/
+    "default_title": "__MSG_command_toggle_disabled__"
+  },
+  /*#else*/
   "browser_action": {
     /*#if supports_browser_style*/
     "browser_style": false,
@@ -86,6 +117,7 @@
     /*#endif*/
     "default_title": "__MSG_command_toggle_disabled__"
   },
+  /*#endif*/
   /*#if mail_extension*/
   "compose_action": {
     "browser_style": false,
@@ -97,9 +129,6 @@
   "options_ui": {
     /*#if supports_browser_style*/
     "browser_style": true,
-    /*#endif*/
-    /*#if supports_chrome_style*/
-    "chrome_style": true,
     /*#endif*/
     "page": "options.html"
   },
@@ -122,17 +151,26 @@
     }
   ],
   /*#endif*/
+  /*#if mv3*/
+  "web_accessible_resources": [{
+    "resources": [ "docs/introducing-the-mouse.html" ],
+    "matches": [ "<all_urls>" ],
+    "use_dynamic_url": true
+  }],
+  /*#else*/
   "web_accessible_resources": [
-    "css/popup.css",
-    "docs/introducing-the-mouse.html",
-    "images/warning-red.svg",
-    "images/warning-yellow.svg"
+    "docs/introducing-the-mouse.html"
   ],
+  /*#endif*/
   /*#if supports_offline_enabled_field */
   "offline_enabled": true,
   /*#endif*/
   "commands": {
+    /*#if mv3*/
+    "_execute_action": {
+    /*#else*/
     "_execute_browser_action": {
+    /*#endif*/
       "suggested_key": {
         /*#if is_safari*/
         "default": "Alt+R",
