@@ -9,7 +9,7 @@ import {
   UpdateState,
 } from '@birchill/jpdict-idb';
 import { kanaToHiragana } from '@birchill/normal-jp';
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
 import { ExtensionStorageError } from '../common/extension-storage-error';
 import { normalizeInput } from '../utils/normalize-input';

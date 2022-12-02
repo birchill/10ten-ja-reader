@@ -1,4 +1,4 @@
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
 import { Point } from '../utils/geometry';
 import { WithRequired } from '../utils/type-helpers';
@@ -18,15 +18,6 @@ export type IframeSourceParams = WithRequired<
   IframeSearchParams,
   'frameId' | 'currentSrc' | 'dimensions'
 >;
-
-declare module 'webextension-polyfill-ts' {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace Runtime {
-    interface Static {
-      getFrameId(target: WindowProxy | HTMLIFrameElement): number;
-    }
-  }
-}
 
 export function findIframeElement(
   params: IframeSearchParams

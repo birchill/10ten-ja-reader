@@ -1,4 +1,4 @@
-import Browser from 'webextension-polyfill-ts';
+import { Tabs } from 'webextension-polyfill';
 
 import { ContentConfig } from '../common/content-config';
 
@@ -7,7 +7,7 @@ import { IndividualFrameMessage, TopFrameMessage } from './background-message';
 export interface TabManager {
   init(config: ContentConfig): Promise<void>;
   getEnabledState(): Promise<Array<EnabledState>>;
-  toggleTab(tab: Browser.Tabs.Tab, config: ContentConfig): Promise<void>;
+  toggleTab(tab: Tabs.Tab, config: ContentConfig): Promise<void>;
   updateConfig(config: ContentConfig): Promise<void>;
   sendMessageToFrame<T extends Omit<IndividualFrameMessage, 'frame'>>(params: {
     tabId: number;

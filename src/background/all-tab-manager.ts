@@ -1,6 +1,6 @@
 import Bugsnag from '@bugsnag/browser';
 import * as s from 'superstruct';
-import Browser, { browser } from 'webextension-polyfill-ts';
+import browser, { Runtime, Tabs, Windows } from 'webextension-polyfill';
 
 import { ContentConfig } from '../common/content-config';
 import { ExtensionStorageError } from '../common/extension-storage-error';
@@ -57,7 +57,7 @@ export default class AllTabManager implements TabManager {
     browser.runtime.onMessage.addListener(
       (
         request: unknown,
-        sender: Browser.Runtime.MessageSender
+        sender: Runtime.MessageSender
       ): void | Promise<any> => {
         if (!s.is(request, BackgroundRequestSchema)) {
           return;
@@ -168,7 +168,7 @@ export default class AllTabManager implements TabManager {
   // Toggling related interface
   //
 
-  async toggleTab(_tab: Browser.Tabs.Tab, config: ContentConfig) {
+  async toggleTab(_tab: Tabs.Tab, config: ContentConfig) {
     // Update our local copy of the config
     this.config = config;
 
@@ -431,7 +431,7 @@ export default class AllTabManager implements TabManager {
 }
 
 async function sendMessageToAllTabs(message: BackgroundMessage): Promise<void> {
-  const allTabs: Array<Browser.Tabs.Tab> = [];
+  const allTabs: Array<Tabs.Tab> = [];
 
   // We could probably always just use `browser.tabs.query` but for some reason
   // I decided to use browser.window.getAll. We use `browser.tabs.query` as a
@@ -441,8 +441,8 @@ async function sendMessageToAllTabs(message: BackgroundMessage): Promise<void> {
   // tabs.query is not particularly reliable (e.g. when the user is dragging
   // tabs it will fail).
   if (browser.windows) {
-    let windows: Array<Browser.Windows.Window> = [];
-    const windowTypes: Array<Browser.Windows.MailWindowType> = ['normal'];
+    let windows: Array<Windows.Window> = [];
+    const windowTypes: Array<Windows.MailWindowType> = ['normal'];
     // Firefox will just return an empty array if we pass a window type it
     // doesn't recognize so we need to "feature-detect" if we are in a mail
     // extension context or not. For now the presence/absence of the

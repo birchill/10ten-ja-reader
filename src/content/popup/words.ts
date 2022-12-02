@@ -7,7 +7,7 @@ import {
   ReadingInfo,
 } from '@birchill/jpdict-idb';
 import { countMora, moraSubstring } from '@birchill/normal-jp';
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
 import { Sense, WordResult } from '../../background/search-result';
 import { NamePreview } from '../query';

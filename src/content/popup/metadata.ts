@@ -1,4 +1,4 @@
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
 import { ContentConfig } from '../../common/content-config';
 import { CurrencyMeta } from '../currency';

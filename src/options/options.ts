@@ -7,7 +7,7 @@ import {
   MajorDataSeries,
 } from '@birchill/jpdict-idb';
 import Bugsnag from '@bugsnag/browser';
-import Browser, { browser } from 'webextension-polyfill-ts';
+import browser, { Runtime } from 'webextension-polyfill';
 
 import { CopyKeys, CopyNextKeyStrings } from '../common/copy-keys';
 import { Config, DEFAULT_KEY_SETTINGS } from '../common/config';
@@ -936,7 +936,7 @@ function fillVals() {
   }
 }
 
-let browserPort: Browser.Runtime.Port | undefined;
+let browserPort: Runtime.Port | undefined;
 
 function isDbStateUpdatedMessage(
   event: unknown
@@ -1006,7 +1006,7 @@ window.onload = async () => {
   //
   // Nevertheless, we check that `browserPort` is not undefined before trying to
   // re-connect just in case some browsers behave differently here.
-  browserPort.onDisconnect.addListener((port: Browser.Runtime.Port) => {
+  browserPort.onDisconnect.addListener((port: Runtime.Port) => {
     // Firefox annotates `port` with an `error` but Chrome does not.
     const error =
       isObject((port as any).error) &&

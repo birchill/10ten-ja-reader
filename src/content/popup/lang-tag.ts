@@ -1,4 +1,4 @@
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
 // Cache language tag since we fetch it a lot
 let langTag: string | null = null;

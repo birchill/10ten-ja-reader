@@ -1,5 +1,5 @@
 import { MajorDataSeries } from '@birchill/jpdict-idb';
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
 import { QueryResult } from '../query';
 import { DisplayMode } from '../popup-state';

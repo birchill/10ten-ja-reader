@@ -1,9 +1,9 @@
-import Browser, { browser } from 'webextension-polyfill-ts';
+import browser, { Menus, Tabs } from 'webextension-polyfill';
 
 import { TabManager } from './tab-manager';
 
 export type ContextMenusInit = {
-  onToggleMenu: (tab: Browser.Tabs.Tab) => void;
+  onToggleMenu: (tab: Tabs.Tab) => void;
   onTogglePuck: (enabled: boolean) => void;
   tabManager: TabManager;
   toggleMenuEnabled: boolean;
@@ -107,7 +107,7 @@ async function addToggleMenu(
   enabled: boolean,
   onClick: ContextMenusInit['onToggleMenu']
 ) {
-  const contexts: Array<Browser.Menus.ContextType> = [
+  const contexts: Array<Menus.ContextType> = [
     'browser_action',
     'editable',
     'frame',
@@ -158,7 +158,7 @@ async function addEnablePuckMenu(
 }
 
 async function createMenuItem(
-  createProperties: Browser.Menus.CreateCreatePropertiesType
+  createProperties: Menus.CreateCreatePropertiesType
 ) {
   return new Promise<void>((resolve) => {
     contextMenus.create(createProperties, () => {

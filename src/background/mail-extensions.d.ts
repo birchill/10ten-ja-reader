@@ -1,10 +1,10 @@
-import { Events, Tabs } from 'webextension-polyfill-ts';
+import type { Events, Tabs } from 'webextension-polyfill';
 
 // Mail extension extensions
 //
 // (Just the parts we use)
 
-declare module 'webextension-polyfill-ts' {
+declare module 'webextension-polyfill' {
   type OnClickDataModifiersItemEnum =
     | 'Shift'
     | 'Alt'
@@ -62,6 +62,18 @@ declare module 'webextension-polyfill-ts' {
   interface RegisteredScript {
     unregister: () => void;
   }
+
+  const composeAction: ComposeAction.Static | undefined;
+  const composeScripts:
+    | {
+        register(options: RegisteredScriptOptions): Promise<RegisteredScript>;
+      }
+    | undefined;
+  const messageDisplayScripts:
+    | {
+        register(options: RegisteredScriptOptions): Promise<RegisteredScript>;
+      }
+    | undefined;
 
   interface Browser {
     composeAction?: ComposeAction.Static;

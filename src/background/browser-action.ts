@@ -1,5 +1,5 @@
 import { allMajorDataSeries } from '@birchill/jpdict-idb';
-import Browser, { browser } from 'webextension-polyfill-ts';
+import browser, { Action } from 'webextension-polyfill';
 
 import { getLocalizedDataSeriesLabel } from '../common/data-series-labels';
 import { throttle } from '../utils/throttle';
@@ -17,7 +17,7 @@ interface BrowserActionState {
 // read. Instead we need to throttle our updates. 2.5s or so seems like a good
 // balance between being up-to-date and being readable.
 const throttledSetTitle = throttle(
-  (...args: Parameters<Browser.Action.Static['setTitle']>) => {
+  (...args: Parameters<Action.Static['setTitle']>) => {
     void browser.browserAction.setTitle(...args);
   },
   2500

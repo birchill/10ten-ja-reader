@@ -1,6 +1,6 @@
 import Bugsnag from '@bugsnag/browser';
 import * as s from 'superstruct';
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
 import { ExtensionStorageError } from '../common/extension-storage-error';
 

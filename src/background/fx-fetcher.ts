@@ -1,5 +1,5 @@
 import Bugsnag from '@bugsnag/browser';
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 import * as s from 'superstruct';
 
 import { fetchWithTimeout } from '../utils/fetch';

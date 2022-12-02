@@ -1,6 +1,6 @@
 import { AbortError, PartOfSpeech } from '@birchill/jpdict-idb';
 import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
 import { isOnlyDigits } from '../utils/char-range';
 import { toRomaji } from '../utils/romaji';

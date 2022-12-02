@@ -1,6 +1,6 @@
 import Bugsnag from '@bugsnag/js';
 import * as s from 'superstruct';
-import Browser, { browser } from 'webextension-polyfill-ts';
+import browser, { Runtime, Tabs } from 'webextension-polyfill';
 
 import { ContentConfig } from '../common/content-config';
 
@@ -14,7 +14,7 @@ import {
 
 type EnabledTab = {
   frames: Array<{ initialSrc: string }>;
-  port: Browser.Runtime.Port | undefined;
+  port: Runtime.Port | undefined;
   src: string;
 };
 
@@ -43,7 +43,7 @@ export default class ActiveTabManager implements TabManager {
     browser.runtime.onMessage.addListener(
       (
         request: unknown,
-        sender: Browser.Runtime.MessageSender
+        sender: Runtime.MessageSender
       ): void | Promise<any> => {
         // Basic sanity checks
         if (!s.is(request, BackgroundRequestSchema)) {
@@ -90,7 +90,7 @@ export default class ActiveTabManager implements TabManager {
   // Port management
   //
 
-  private onConnect(port: Browser.Runtime.Port) {
+  private onConnect(port: Runtime.Port) {
     // If we get a connection, store the port. We don't actually use this at
     // the moment, except as a means to keep the background page alive while
     // we have an enabled tab somewhere.
@@ -139,7 +139,7 @@ export default class ActiveTabManager implements TabManager {
   // Toggling related interface
   //
 
-  async toggleTab(tab: Browser.Tabs.Tab, config: ContentConfig) {
+  async toggleTab(tab: Tabs.Tab, config: ContentConfig) {
     if (typeof tab.id === 'undefined') {
       return;
     }

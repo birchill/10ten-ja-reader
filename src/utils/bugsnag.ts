@@ -1,5 +1,5 @@
 import Bugsnag, { Event as BugsnagEvent } from '@bugsnag/browser';
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
 import { getReleaseStage } from './release-stage';
 

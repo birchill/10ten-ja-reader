@@ -1,5 +1,5 @@
 import { DataSeries } from '@birchill/jpdict-idb';
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
 const labels: { [series in DataSeries]: string } = {
   kanji: 'options_kanji_data_name',

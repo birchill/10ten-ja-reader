@@ -82,7 +82,7 @@ const mockBrowser = {
   },
 };
 
-jest.mock('webextension-polyfill-ts', () => ({ browser: mockBrowser }));
+jest.mock('webextension-polyfill', () => mockBrowser);
 
 import { searchWords, translate } from './jpdict';
 import { WordResult, WordSearchResult } from './search-result';

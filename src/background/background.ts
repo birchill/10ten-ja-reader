@@ -49,7 +49,7 @@ import '../../manifest.json.src';
 import { AbortError } from '@birchill/jpdict-idb';
 import Bugsnag from '@bugsnag/browser';
 import * as s from 'superstruct';
-import Browser, { browser } from 'webextension-polyfill-ts';
+import browser, { Runtime, Tabs } from 'webextension-polyfill';
 
 import { Config } from '../common/config';
 import {
@@ -296,13 +296,13 @@ async function onDbStatusUpdated(state: JpdictStateWithFallback) {
 // Database listeners
 //
 
-const dbListeners: Array<Browser.Runtime.Port> = [];
+const dbListeners: Array<Runtime.Port> = [];
 
 function isDbListenerMessage(event: unknown): event is DbListenerMessage {
   return typeof event === 'object' && typeof (event as any).type === 'string';
 }
 
-browser.runtime.onConnect.addListener((port: Browser.Runtime.Port) => {
+browser.runtime.onConnect.addListener((port: Runtime.Port) => {
   if (port.name !== 'options') {
     return;
   }
@@ -345,7 +345,7 @@ browser.runtime.onConnect.addListener((port: Browser.Runtime.Port) => {
   });
 });
 
-function notifyDbListeners(specifiedListener?: Browser.Runtime.Port) {
+function notifyDbListeners(specifiedListener?: Runtime.Port) {
   if (!dbListeners.length) {
     return;
   }
@@ -425,7 +425,7 @@ async function searchOther({
 // Browser event handlers
 //
 
-async function toggle(tab: Browser.Tabs.Tab) {
+async function toggle(tab: Tabs.Tab) {
   await config.ready;
   await tabManager.toggleTab(tab, config.contentConfig);
 }
@@ -443,10 +443,7 @@ let pendingSearchOtherRequest:
   | undefined;
 
 browser.runtime.onMessage.addListener(
-  (
-    request: unknown,
-    sender: Browser.Runtime.MessageSender
-  ): void | Promise<any> => {
+  (request: unknown, sender: Runtime.MessageSender): void | Promise<any> => {
     if (!s.is(request, BackgroundRequestSchema)) {
       console.warn(`Unrecognized request: ${JSON.stringify(request)}`);
       Bugsnag.notify(

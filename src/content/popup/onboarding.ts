@@ -1,4 +1,4 @@
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
 import { html, svg } from '../../utils/builder';
 import { isSafari, isThunderbird } from '../../utils/ua-utils';

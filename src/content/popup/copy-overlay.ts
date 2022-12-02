@@ -1,5 +1,5 @@
 import { MajorDataSeries } from '@birchill/jpdict-idb';
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
 import { CopyType } from '../../common/copy-keys';
 import { ReferenceAbbreviation } from '../../common/refs';

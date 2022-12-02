@@ -1,4 +1,4 @@
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
 // The following code is based __very__ heavily on
 // https://github.com/piroor/webextensions-lib-l10n

@@ -4,7 +4,7 @@ import {
   KanjiResult,
   LangSource,
 } from '@birchill/jpdict-idb';
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
 import { NameResult, Sense, WordResult } from '../background/search-result';
 import { CopyType } from '../common/copy-keys';

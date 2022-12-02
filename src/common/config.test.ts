@@ -4,7 +4,7 @@
 
 const mockBrowser: any = {};
 
-jest.mock('webextension-polyfill-ts', () => ({ browser: mockBrowser }));
+jest.mock('webextension-polyfill', () => mockBrowser);
 
 import { Config } from './config';
 import { DbLanguageId } from './db-languages';

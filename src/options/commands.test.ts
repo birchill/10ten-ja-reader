@@ -1,8 +1,6 @@
-jest.mock('webextension-polyfill-ts', () => ({
-  browser: {
-    i18n: {
-      getMessage: (key: string) => key,
-    },
+jest.mock('webextension-polyfill', () => ({
+  i18n: {
+    getMessage: (key: string) => key,
   },
 }));
 

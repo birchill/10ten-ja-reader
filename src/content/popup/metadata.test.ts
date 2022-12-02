@@ -4,12 +4,10 @@
 
 let locale: 'en' | 'ja' | 'zh_hans' = 'en';
 
-jest.mock('webextension-polyfill-ts', () => ({
-  browser: {
-    i18n: {
-      getMessage: (id: string, replacements?: string | Array<string>) =>
-        mockGetMessage(locale, id, replacements),
-    },
+jest.mock('webextension-polyfill', () => ({
+  i18n: {
+    getMessage: (id: string, replacements?: string | Array<string>) =>
+      mockGetMessage(locale, id, replacements),
   },
 }));
 

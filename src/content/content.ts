@@ -47,7 +47,7 @@
 
 import type { MajorDataSeries } from '@birchill/jpdict-idb';
 import * as s from 'superstruct';
-import Browser, { browser } from 'webextension-polyfill-ts';
+import browser, { Runtime } from 'webextension-polyfill';
 
 import { BackgroundMessageSchema } from '../background/background-message';
 import { ContentConfig } from '../common/content-config';
@@ -2667,7 +2667,7 @@ declare global {
   // - Ensure the background page is kept alive so long as we have an enabled
   //   tab when the background page is running as an event page.
   //
-  let port: Browser.Runtime.Port | undefined;
+  let port: Runtime.Port | undefined;
 
   window.readerScriptVer = __VERSION__;
   window.removeReaderScript = () => {

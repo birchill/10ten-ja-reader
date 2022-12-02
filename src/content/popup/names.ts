@@ -1,5 +1,5 @@
 import { NameTranslation } from '@birchill/jpdict-idb';
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
 import { NameResult } from '../../background/search-result';
 import { getDob } from '../../utils/age';

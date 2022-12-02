@@ -1,5 +1,5 @@
 import { KanjiResult } from '@birchill/jpdict-idb';
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
 import {
   getReferenceValue,

@@ -38,7 +38,7 @@ const mockBrowser = {
   },
 };
 
-jest.mock('webextension-polyfill-ts', () => ({ browser: mockBrowser }));
+jest.mock('webextension-polyfill', () => mockBrowser);
 
 import { getEntryToCopy, getFieldsToCopy, getWordToCopy } from './copy-text';
 

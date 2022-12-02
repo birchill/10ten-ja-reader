@@ -11,7 +11,7 @@
 //   passing to the content process.
 
 import Bugsnag from '@bugsnag/browser';
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
 import { FxLocalData, getLocalFxData } from '../background/fx-data';
 import { getHoverCapabilityMql, getMouseCapabilityMql } from '../utils/device';
