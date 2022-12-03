@@ -1,4 +1,4 @@
-import Bugsnag from '@bugsnag/js';
+import Bugsnag from '@birchill/bugsnag-zero';
 
 import { JpdictBackend, JpdictListener } from '../background/jpdict-backend';
 import { JpdictEvent } from '../background/jpdict-events';
@@ -12,7 +12,7 @@ export class JpdictWorkerBackend implements JpdictBackend {
     this.worker = new Worker('./10ten-ja-jpdict.js', { type: 'module' });
     this.worker.onmessageerror = (event: MessageEvent) => {
       console.error(`Worker error: ${JSON.stringify(event)}`);
-      Bugsnag.notify(`Worker error: ${JSON.stringify(event)}`);
+      void Bugsnag.notify(`Worker error: ${JSON.stringify(event)}`);
     };
 
     this.worker.onmessage = async (event: MessageEvent) => {

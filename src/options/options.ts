@@ -6,7 +6,7 @@ import {
   DataSeriesState,
   MajorDataSeries,
 } from '@birchill/jpdict-idb';
-import Bugsnag from '@bugsnag/browser';
+import Bugsnag from '@birchill/bugsnag-zero';
 import browser, { Runtime } from 'webextension-polyfill';
 
 import { CopyKeys, CopyNextKeyStrings } from '../common/copy-keys';
@@ -790,7 +790,7 @@ function fillInLanguages() {
   select.addEventListener('change', () => {
     if (!isDbLanguageId(select.value)) {
       const msg = `Got unexpected language code: ${select.value}`;
-      Bugsnag.notify(new Error(msg));
+      void Bugsnag.notify(new Error(msg));
       console.error(msg);
       return;
     }
@@ -895,7 +895,7 @@ function fillVals() {
     })
     .catch((e) => {
       console.error(e);
-      Bugsnag.notify(e);
+      void Bugsnag.notify(e);
     });
 
   // Note that this setting is hidden when we detect the device does not likely
@@ -1031,7 +1031,7 @@ window.onload = async () => {
         }
         browserPort = browser.runtime.connect(undefined, { name: 'options' });
       } catch (e) {
-        Bugsnag.notify(e);
+        void Bugsnag.notify(e);
       }
     }, 1000);
   });

@@ -1,5 +1,21 @@
-import Bugsnag, { Event as BugsnagEvent } from '@bugsnag/browser';
+import Bugsnag, {
+  appDuration,
+  browserContext,
+  browserHandledRejectionBreadcrumbs,
+  browserNotifyUnhandledExceptions,
+  browserNotifyUnhandledRejections,
+  Event as BugsnagEvent,
+  consoleBreadcrumbs,
+  deviceOrientation,
+  errorBreadcrumbs,
+  fetchBreadcrumbs,
+  interactionBreadcrumbs,
+  limitEvents,
+  navigationBreadcrumbs,
+} from '@birchill/bugsnag-zero';
 import browser from 'webextension-polyfill';
+import { ExtensionStorageError } from '../common/extension-storage-error';
+import { isObject } from './is-object';
 
 import { getReleaseStage } from './release-stage';
 
@@ -77,45 +93,53 @@ function getRandomNumber(length: number): number {
 export function startBugsnag() {
   const manifest = browser.runtime.getManifest();
 
+  const plugins = [
+    appDuration,
+    browserContext,
+    browserHandledRejectionBreadcrumbs,
+    browserNotifyUnhandledExceptions,
+    browserNotifyUnhandledRejections,
+    deviceOrientation,
+    errorBreadcrumbs,
+    fetchBreadcrumbs,
+    interactionBreadcrumbs,
+    limitEvents(20),
+    navigationBreadcrumbs,
+  ];
+
+  if (getReleaseStage() !== 'development') {
+    plugins.push(consoleBreadcrumbs);
+  }
+
   Bugsnag.start({
     apiKey: 'e707c9ae84265d122b019103641e6462',
     appVersion: (manifest as any).version_name || manifest.version,
-    autoTrackSessions: false,
     collectUserIp: false,
-    enabledBreadcrumbTypes: ['log', 'error', 'request'],
-    logger: null,
     onError: async (event: BugsnagEvent) => {
       // Fill out the user ID
-      //
-      // Bugsnag will generate a unique device ID, store it in local storage,
-      // and use that as the user ID but that won't help us once we move to
-      // MV3 (no local storage) or if we try to use it in a content script
-      // (different local storage context) so we use our own ID that we store
-      // in extension local storage.
-      event.setUser(await getExtensionInstallId());
+      event.user = { id: await getExtensionInstallId() };
 
       // Group download errors by URL and error code
-      if (
-        event.errors[0].errorClass === 'DownloadError' &&
-        event.originalError &&
-        typeof event.originalError.url !== 'undefined'
-      ) {
+      if (isDownloadError(event.originalError)) {
         event.groupingHash =
           String(event.originalError.code) + event.originalError.url;
+        if (!event.request) {
+          event.request = {};
+        }
         event.request.url = event.originalError.url;
       }
 
       // Group extension errors by action and key
-      if (
-        event.errors[0].errorClass === 'ExtensionStorageError' &&
-        event.originalError
-      ) {
+      if (event.originalError instanceof ExtensionStorageError) {
         const { key, action } = event.originalError;
         event.groupingHash = `${action}:${key}`;
       }
 
       // Update release stage here since we can only fetch this async but
       // bugsnag doesn't allow updating the instance after initializing.
+      if (!event.app) {
+        event.app = {};
+      }
       event.app.releaseStage = getReleaseStage();
 
       // Update paths in stack trace so that:
@@ -129,7 +153,7 @@ export function startBugsnag() {
       //
       // See: https://docs.bugsnag.com/platforms/javascript/faq/?#how-can-i-get-error-reports-from-browser-extensions
       const basePath = `https://github.com/birchill/10ten-ja-reader/releases/download/v${manifest.version}`;
-      for (const error of event.errors) {
+      for (const error of event.exceptions) {
         for (const frame of error.stacktrace) {
           frame.file = frame.file.replace(
             /^(moz-extension|chrome-extension|extension|safari-extension):\/\/[0-9a-z-]+/,
@@ -139,10 +163,13 @@ export function startBugsnag() {
       }
 
       // If we get a QuotaExceededError, report how much disk space was available.
-      if (event.errors[0].errorClass === 'QuotaExceededError') {
+      if (event.exceptions[0].errorClass === 'QuotaExceededError') {
         try {
           const { quota, usage } = await navigator.storage.estimate();
-          event.addMetadata('storage', { quota, usage });
+          if (!event.metaData) {
+            event.metaData = {};
+          }
+          event.metaData.storage = { quota, usage };
         } catch {
           console.warn('Failed to get storage estimate');
         }
@@ -151,4 +178,21 @@ export function startBugsnag() {
       return true;
     },
   });
+}
+
+// Common demonimator between jpdict-idb's DownloadError type and
+// fx-fetcher.ts's DownloadError.
+type CommonDownloadError = {
+  name: 'DownloadError';
+  url?: string;
+  code: number | string;
+};
+
+function isDownloadError(error: unknown): error is CommonDownloadError {
+  return (
+    isObject(error) &&
+    typeof error.name === 'string' &&
+    (typeof error.url === 'string' || typeof error.url === 'undefined') &&
+    (typeof error.code === 'number' || typeof error.url === 'string')
+  );
 }

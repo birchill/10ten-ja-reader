@@ -1,4 +1,4 @@
-import { Client as BugsnagClient } from '@bugsnag/browser';
+import { Client as BugsnagClient } from '@birchill/bugsnag-zero';
 import {
   Gloss,
   GLOSS_TYPE_MAX,
@@ -107,7 +107,7 @@ export class FlatFileDatabase {
             // useful yet. But for now at least it means Firefox 56 doesn't
             // break altogether.
             if (this.bugsnag) {
-              this.bugsnag.notify('[Pre FF57] Load timed out');
+              void this.bugsnag.notify('[Pre FF57] Load timed out');
             }
             throw new Error(`Load of ${url} timed out.`);
           }

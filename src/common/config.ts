@@ -10,7 +10,7 @@
 // * Provides a snapshot of all options with their default values filled-in for
 //   passing to the content process.
 
-import Bugsnag from '@bugsnag/browser';
+import Bugsnag from '@birchill/bugsnag-zero';
 import browser from 'webextension-polyfill';
 
 import { FxLocalData, getLocalFxData } from '../background/fx-data';
@@ -417,21 +417,17 @@ export class Config {
     // can update them automatically.
     if (value === this.getDefaultLang()) {
       browser.storage.sync.remove('dictLang').catch(() => {
-        Bugsnag.notify(
+        void Bugsnag.notify(
           new ExtensionStorageError({ key: 'dictLang', action: 'remove' }),
-          (event) => {
-            event.severity = 'warning';
-          }
+          { severity: 'warning' }
         );
       });
       delete this.settings.dictLang;
     } else {
       browser.storage.sync.set({ dictLang: value }).catch(() => {
-        Bugsnag.notify(
+        void Bugsnag.notify(
           new ExtensionStorageError({ key: 'dictLang', action: 'set' }),
-          (event) => {
-            event.severity = 'warning';
-          }
+          { severity: 'warning' }
         );
       });
       this.settings.dictLang = value;

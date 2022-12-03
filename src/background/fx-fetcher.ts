@@ -1,4 +1,4 @@
-import Bugsnag from '@bugsnag/browser';
+import Bugsnag from '@birchill/bugsnag-zero';
 import browser from 'webextension-polyfill';
 import * as s from 'superstruct';
 
@@ -60,9 +60,7 @@ export class FxFetcher {
     browser.alarms.onAlarm.addListener((alarm) => {
       if (alarm.name === 'fx-update') {
         Bugsnag.leaveBreadcrumb('Running FX data update from alarm');
-        this.fetchData().catch((e) => {
-          Bugsnag.notify(e);
-        });
+        this.fetchData().catch((e) => Bugsnag.notify(e));
       }
     });
 
@@ -74,9 +72,7 @@ export class FxFetcher {
     void getLocalFxData().then((fxData) => {
       if (!fxData) {
         Bugsnag.leaveBreadcrumb('No stored FX data. Doing initial fetch.');
-        this.fetchData().catch((e) => {
-          Bugsnag.notify(e);
-        });
+        this.fetchData().catch((e) => Bugsnag.notify(e));
       } else {
         Bugsnag.leaveBreadcrumb(
           `Got stored FX data from ${new Date(
@@ -206,7 +202,7 @@ export class FxFetcher {
         this.fetchState = { type: 'waiting to retry', retryCount, timeout };
       } else {
         console.error(error);
-        Bugsnag.notify(error as any);
+        void Bugsnag.notify(error);
         this.fetchState = { type: 'idle', didFail: true };
       }
     }
@@ -271,7 +267,7 @@ export class FxFetcher {
         browser.alarms.create('fx-update', { when: nextRun });
       } catch (e) {
         console.error(e);
-        Bugsnag.notify(e);
+        void Bugsnag.notify(e);
       }
     }
   }

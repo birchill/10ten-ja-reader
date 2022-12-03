@@ -1,4 +1,4 @@
-import Bugsnag from '@bugsnag/browser';
+import Bugsnag from '@birchill/bugsnag-zero';
 import * as s from 'superstruct';
 import browser from 'webextension-polyfill';
 
@@ -29,20 +29,12 @@ export async function getLocalFxData(
     if (validated) {
       return validated;
     } else if (error) {
-      Bugsnag.notify(error, (event) => {
-        event.severity = 'warning';
-      });
+      void Bugsnag.notify(error, { severity: 'warning' });
     }
   } catch (e) {
-    Bugsnag.notify(
-      new ExtensionStorageError({
-        key: 'fx',
-        action: 'get',
-      }),
-      (event) => {
-        event.severity = 'warning';
-        event.addMetadata('error', { error: e });
-      }
+    void Bugsnag.notify(
+      new ExtensionStorageError({ key: 'fx', action: 'get' }),
+      { severity: 'warning', metadata: { error: e } }
     );
   }
 
@@ -67,9 +59,7 @@ function getStorageChangeCallback(onChange: (data: FxLocalData) => void) {
       if (validated) {
         onChange(validated);
       } else {
-        Bugsnag.notify(error, (event) => {
-          event.severity = 'warning';
-        });
+        void Bugsnag.notify(error, { severity: 'warning' });
       }
     }
   };

@@ -1,4 +1,4 @@
-import Bugsnag from '@bugsnag/js';
+import Bugsnag from '@birchill/bugsnag-zero';
 import * as s from 'superstruct';
 import browser, { Runtime, Tabs } from 'webextension-polyfill';
 
@@ -129,7 +129,7 @@ export default class ActiveTabManager implements TabManager {
         result.push({ enabled, tabId: tab.id });
       }
     } catch (e) {
-      Bugsnag.notify(e);
+      void Bugsnag.notify(e);
     }
 
     return result;
@@ -159,7 +159,7 @@ export default class ActiveTabManager implements TabManager {
       try {
         await browser.tabs.sendMessage(tab.id, { type: 'disable', frame: '*' });
       } catch (e) {
-        Bugsnag.notify(e);
+        void Bugsnag.notify(e);
       }
 
       this.notifyListeners(false, tab.id);
@@ -209,7 +209,7 @@ export default class ActiveTabManager implements TabManager {
       try {
         await this.injectScript(tabId, frameId);
       } catch (e) {
-        Bugsnag.notify(e);
+        void Bugsnag.notify(e);
 
         enabled = false;
         // Drop the enabled tab from our list, but only if we're dealing with
@@ -501,7 +501,7 @@ export default class ActiveTabManager implements TabManager {
         });
       } catch (e) {
         console.error(e);
-        Bugsnag.notify(e);
+        void Bugsnag.notify(e);
       }
     }
   }

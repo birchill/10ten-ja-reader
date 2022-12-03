@@ -1,4 +1,4 @@
-import Bugsnag from '@bugsnag/browser';
+import Bugsnag from '@birchill/bugsnag-zero';
 import {
   DataSeries,
   DataSeriesState,
@@ -201,9 +201,7 @@ export async function initDb({
           const error = new Error(event.message);
           error.name = event.name;
           error.stack = event.stack;
-          Bugsnag.notify(error, (event) => {
-            event.severity = event.severity as 'error' | 'warning';
-          });
+          void Bugsnag.notify(error, { severity: event.severity });
         }
         break;
     }
@@ -242,14 +240,9 @@ async function getLastUpdateTime(): Promise<number | null> {
   } catch {
     // Extension storage can sometimes randomly fail with 'An unexpected error
     // occurred'. Ignore, but log it.
-    Bugsnag.notify(
-      new ExtensionStorageError({
-        key: 'lastDbUpdateTime',
-        action: 'get',
-      }),
-      (event) => {
-        event.severity = 'warning';
-      }
+    void Bugsnag.notify(
+      new ExtensionStorageError({ key: 'lastDbUpdateTime', action: 'get' }),
+      { severity: 'warning' }
     );
   }
 
@@ -276,14 +269,9 @@ async function setLastUpdateTime(time: number | null) {
       /* Ignore */
     });
   } catch {
-    Bugsnag.notify(
-      new ExtensionStorageError({
-        key: 'lastDbUpdateTime',
-        action: 'set',
-      }),
-      (event) => {
-        event.severity = 'warning';
-      }
+    void Bugsnag.notify(
+      new ExtensionStorageError({ key: 'lastDbUpdateTime', action: 'set' }),
+      { severity: 'warning' }
     );
   }
 }
@@ -449,9 +437,7 @@ export async function searchKanji(
       return;
     }
 
-    Bugsnag.notify(message, (event) => {
-      event.severity = 'warning';
-    });
+    void Bugsnag.notify(message, { severity: 'warning' });
   };
 
   let result;
@@ -463,7 +449,7 @@ export async function searchKanji(
     });
   } catch (e) {
     console.error(e);
-    Bugsnag.notify(e || '(Error looking up kanji)');
+    void Bugsnag.notify(e || '(Error looking up kanji)');
     return null;
   }
 

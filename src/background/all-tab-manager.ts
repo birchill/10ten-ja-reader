@@ -1,4 +1,4 @@
-import Bugsnag from '@bugsnag/browser';
+import Bugsnag from '@birchill/bugsnag-zero';
 import * as s from 'superstruct';
 import browser, { Runtime, Tabs, Windows } from 'webextension-polyfill';
 
@@ -44,7 +44,7 @@ export default class AllTabManager implements TabManager {
 
     // Try to enable the active tab in each window
     if (this.enabled) {
-      this.enableActiveTabs().catch(Bugsnag.notify);
+      this.enableActiveTabs().catch((e) => Bugsnag.notify(e));
     }
 
     // Since we only enable the content script in the active tabs, if any other
@@ -109,11 +109,9 @@ export default class AllTabManager implements TabManager {
     try {
       getEnabledResult = await browser.storage.local.get('enabled');
     } catch {
-      Bugsnag.notify(
+      void Bugsnag.notify(
         new ExtensionStorageError({ key: 'enabled', action: 'get' }),
-        (event) => {
-          event.severity = 'warning';
-        }
+        { severity: 'warning' }
       );
       return false;
     }

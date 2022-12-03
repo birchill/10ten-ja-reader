@@ -47,7 +47,7 @@
 import '../../manifest.json.src';
 
 import { AbortError } from '@birchill/jpdict-idb';
-import Bugsnag from '@bugsnag/browser';
+import Bugsnag from '@birchill/bugsnag-zero';
 import * as s from 'superstruct';
 import browser, { Runtime, Tabs } from 'webextension-polyfill';
 
@@ -113,7 +113,7 @@ tabManager.addListener(
     try {
       await config.ready;
     } catch (e) {
-      Bugsnag.notify(e || '(No error)');
+      void Bugsnag.notify(e || '(No error)');
       return;
     }
 
@@ -200,7 +200,7 @@ config.addChangeListener(async (changes) => {
             : showPuck === 'show',
       });
     } catch (e) {
-      Bugsnag.notify(e);
+      void Bugsnag.notify(e);
     }
   }
 
@@ -361,7 +361,7 @@ function notifyDbListeners(specifiedListener?: Runtime.Port) {
       listener.postMessage(message);
     } catch (e) {
       console.error('Error posting message', e);
-      Bugsnag.notify(e || '(Error posting message update message)');
+      void Bugsnag.notify(e || '(Error posting message update message)');
     }
   }
 }
@@ -450,12 +450,9 @@ browser.runtime.onMessage.addListener(
   (request: unknown, sender: Runtime.MessageSender): void | Promise<any> => {
     if (!s.is(request, BackgroundRequestSchema)) {
       console.warn(`Unrecognized request: ${JSON.stringify(request)}`);
-      Bugsnag.notify(
-        `Unrecognized request: ${JSON.stringify(request)}`,
-        (event) => {
-          event.severity = 'warning';
-        }
-      );
+      void Bugsnag.notify(`Unrecognized request: ${JSON.stringify(request)}`, {
+        severity: 'warning',
+      });
       return;
     }
 
@@ -523,7 +520,7 @@ browser.runtime.onMessage.addListener(
             if (e.name === 'AbortError') {
               return 'aborted';
             }
-            Bugsnag.notify(e);
+            void Bugsnag.notify(e);
             return null;
           } finally {
             if (pendingSearchWordsRequest?.input === request.input) {
@@ -553,7 +550,7 @@ browser.runtime.onMessage.addListener(
             if (e.name === 'AbortError') {
               return 'aborted';
             }
-            Bugsnag.notify(e);
+            void Bugsnag.notify(e);
             return null;
           } finally {
             if (pendingSearchOtherRequest?.input === request.input) {
@@ -748,7 +745,7 @@ void (async () => {
       });
     } catch (e) {
       console.error('Failed to register message display or compose scripts', e);
-      Bugsnag.notify(e);
+      void Bugsnag.notify(e);
     }
   }
 })();

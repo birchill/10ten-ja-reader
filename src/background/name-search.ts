@@ -1,4 +1,4 @@
-import Bugsnag from '@bugsnag/browser';
+import Bugsnag from '@birchill/bugsnag-zero';
 import { AbortError, getNames, NameResult } from '@birchill/jpdict-idb';
 import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
 
@@ -62,7 +62,7 @@ export async function nameSearch({
         names = await getNames(variant);
       } catch (e) {
         console.error(e);
-        Bugsnag.notify(e || '(Error looking up names)');
+        void Bugsnag.notify(e || '(Error looking up names)');
         return null;
       }
 
