@@ -120,6 +120,7 @@ import { TouchClickTracker } from './touch-click-tracker';
 import { getScrollOffset, toPageCoords, toScreenCoords } from './scroll-offset';
 import { hasModifiers, normalizeKey, normalizeKeys } from './keyboard';
 import { isSafari } from '../utils/ua-utils';
+import { getMouseCapabilityMql } from '../utils/device';
 
 const enum HoldToShowKeyType {
   Text = 1 << 0,
@@ -396,25 +397,28 @@ export class ContentHandler {
       this.puck?.setIcon(config.toolbarIcon);
     }
 
+    // Even if `config.popupInteractive` is false, if there's no mouse we should
+    // force it to true.
+    //
+    // TODO: Register a listener for this and update accordingly.
+    const popupInteractive =
+      config.popupInteractive || !getMouseCapabilityMql()?.matches;
     const popupInteractivityChanged =
-      !!config.popupInteractive !== !!this.config?.popupInteractive;
+      popupInteractive !== !!this.config?.popupInteractive;
+
     const puckConfigChanged = config.showPuck !== this.config?.showPuck;
 
-    // TODO: We should update the tab display if that value changes but we
-    // actually need to regenerate the popup in that case since we only generate
-    // the HTML for the tabs when tabDisplay is not 'none'.
+    // TODO: We should check which keys have changed and regenerate the pop-up
+    // if needed.
 
-    // TODO: We should probably check which keys have changed and regenerate
-    // the pop-up if needed but currently you need to change tabs to tweak
-    // the config so the popup probably won't be showing anyway.
-    this.config = { ...config };
+    this.config = { ...config, popupInteractive };
 
     if (popupInteractivityChanged && this.isTopMostWindow()) {
       // We can't use updatePopup here since it will try to re-use the existing
       // popup display mode but we specifically want to change it in this case
       // (but, ideally, retain the same position etc.)
       this.showPopup({
-        displayMode: config.popupInteractive ? 'hover' : 'static',
+        displayMode: popupInteractive ? 'hover' : 'static',
         fixPosition: true,
       });
     }

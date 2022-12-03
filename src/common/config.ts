@@ -14,7 +14,7 @@ import Bugsnag from '@birchill/bugsnag-zero';
 import browser from 'webextension-polyfill';
 
 import { FxLocalData, getLocalFxData } from '../background/fx-data';
-import { getHoverCapabilityMql, getMouseCapabilityMql } from '../utils/device';
+import { getHoverCapabilityMql } from '../utils/device';
 import { isObject } from '../utils/is-object';
 import { stripFields } from '../utils/strip-fields';
 
@@ -166,7 +166,6 @@ export class Config {
   private changeListeners: ChangeCallback[] = [];
   private previousDefaultLang: DbLanguageId;
   private hoverCapabilityMql: MediaQueryList | undefined;
-  private mouseCapabilityMql = getMouseCapabilityMql();
 
   constructor() {
     this.readyPromise = this.readSettings().then(async () => {
@@ -1059,9 +1058,7 @@ export class Config {
       kanjiReferences: this.kanjiReferences,
       keys: this.keysNormalized,
       noTextHighlight: this.noTextHighlight,
-      popupInteractive:
-        // Force the value to true if we don't have a mouse
-        this.popupInteractive || !this.mouseCapabilityMql?.matches,
+      popupInteractive: this.popupInteractive,
       popupStyle: this.popupStyle,
       posDisplay: this.posDisplay,
       readingOnly: this.readingOnly,
