@@ -13,8 +13,6 @@ import browser from 'webextension-polyfill';
 
 import { ExtensionStorageError } from '../common/extension-storage-error';
 import { normalizeInput } from '../utils/normalize-input';
-import { JpdictWorkerMessage } from '../worker/jpdict-worker-messages';
-import * as messages from '../worker/jpdict-worker-messages';
 
 import { FlatFileDatabaseLoader, FlatFileDatabaseLoadState } from './flat-file';
 import {
@@ -25,6 +23,9 @@ import {
 } from './search-result';
 import { GetWordsFunction, wordSearch } from './word-search';
 import { nameSearch } from './name-search';
+import { JpdictWorkerBackend } from '../worker/jpdict-worker-backend';
+import { JpdictBackend, JpdictLocalBackend } from './jpdict-backend';
+import { JpdictEvent } from './jpdict-events';
 
 //
 // Exported types
@@ -64,15 +65,11 @@ export type JpdictStateWithFallback = Omit<JpdictState, 'words'> & {
 const UPDATE_THRESHOLD_MS = 12 * 60 * 60 * 1000; // 12 hours
 
 //
-// Worker setup
+// Backend setup
 //
 
-const jpdictWorker = new Worker('./10ten-ja-jpdict.js', { type: 'module' });
-
-jpdictWorker.onmessageerror = (event: MessageEvent) => {
-  console.error(`Worker error: ${JSON.stringify(event)}`);
-  Bugsnag.notify(`Worker error: ${JSON.stringify(event)}`);
-};
+const backend: JpdictBackend =
+  'Worker' in self ? new JpdictWorkerBackend() : new JpdictLocalBackend();
 
 // Local state tracking
 //
@@ -161,16 +158,15 @@ export async function initDb({
   Bugsnag.leaveBreadcrumb(`Got last update time of ${lastUpdateTime}`);
 
   // Register the listener
-  jpdictWorker.onmessage = async (event: MessageEvent) => {
-    const message = event.data as JpdictWorkerMessage;
-    switch (message.type) {
+  backend.addEventListener(async (event: JpdictEvent) => {
+    switch (event.type) {
       case 'dbstateupdated':
         {
           // Prepare the new state while preserving the existing fallback state.
           const state = {
-            ...message.state,
+            ...event.state,
             words: {
-              ...message.state.words,
+              ...event.state.words,
               fallbackState: dbState.words.fallbackState,
             },
           };
@@ -191,27 +187,27 @@ export async function initDb({
         break;
 
       case 'dbupdatecomplete':
-        if (message.lastCheck) {
-          void setLastUpdateTime(message.lastCheck.getTime());
+        if (event.lastCheck) {
+          void setLastUpdateTime(event.lastCheck.getTime());
         }
         break;
 
       case 'breadcrumb':
-        Bugsnag.leaveBreadcrumb(message.message);
+        Bugsnag.leaveBreadcrumb(event.message);
         break;
 
       case 'error':
         {
-          const error = new Error(message.message);
-          error.name = message.name;
-          error.stack = message.stack;
+          const error = new Error(event.message);
+          error.name = event.name;
+          error.stack = event.stack;
           Bugsnag.notify(error, (event) => {
-            event.severity = message.severity as 'error' | 'warning';
+            event.severity = event.severity as 'error' | 'warning';
           });
         }
         break;
     }
-  };
+  });
 
   // Make sure updates to the fallback database loading state are also reported.
   //
@@ -226,7 +222,7 @@ export async function initDb({
   };
 
   // Fetch the initial state
-  jpdictWorker.postMessage(messages.queryState());
+  backend.queryState();
 
   // If we updated within the minimum window then we're done.
   if (lastUpdateTime && Date.now() - lastUpdateTime < UPDATE_THRESHOLD_MS) {
@@ -292,16 +288,16 @@ async function setLastUpdateTime(time: number | null) {
   }
 }
 
-export function updateDb({ lang, force }: { lang: string; force: boolean }) {
-  jpdictWorker.postMessage(messages.updateDb({ lang, force }));
+export function updateDb(params: { lang: string; force: boolean }) {
+  backend.updateDb(params);
 }
 
 export function cancelUpdateDb() {
-  jpdictWorker.postMessage(messages.cancelDbUpdate());
+  backend.cancelUpdateDb();
 }
 
 export function deleteDb() {
-  jpdictWorker.postMessage(messages.deleteDb());
+  backend.deleteDb();
   void setLastUpdateTime(null);
 }
 

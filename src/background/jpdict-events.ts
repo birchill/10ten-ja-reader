@@ -15,7 +15,7 @@ export const updateDb = ({
   force,
 });
 
-export const cancelDbUpdate = () => ({ type: <const>'cancelupdate' });
+export const cancelUpdateDb = () => ({ type: <const>'cancelupdate' });
 
 export const deleteDb = () => ({ type: <const>'delete' });
 
@@ -47,10 +47,10 @@ export const notifyError = ({
   stack: error.stack,
 });
 
-export type JpdictWorkerMessage =
+export type JpdictEvent =
   | ReturnType<typeof queryState>
   | ReturnType<typeof updateDb>
-  | ReturnType<typeof cancelDbUpdate>
+  | ReturnType<typeof cancelUpdateDb>
   | ReturnType<typeof deleteDb>
   | ReturnType<typeof notifyDbStateUpdated>
   | ReturnType<typeof notifyDbUpdateComplete>
