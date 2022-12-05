@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill';
 
-import { ContentConfig } from '../../common/content-config';
+import { ContentConfigParams } from '../../common/content-config-params';
 import { CurrencyMeta } from '../currency';
 import { convertMeasure, MeasureMeta } from '../measure';
 import { SelectionMeta } from '../meta';
@@ -16,7 +16,7 @@ export function renderMetadata({
   matchLen,
   meta,
 }: {
-  fxData: ContentConfig['fx'];
+  fxData: ContentConfigParams['fx'];
   isCombinedResult: boolean;
   matchLen: number;
   meta: SelectionMeta;
@@ -169,7 +169,7 @@ function renderUnit(
 
 function renderCurrencyInfo(
   meta: CurrencyMeta,
-  fxData: NonNullable<ContentConfig['fx']>
+  fxData: NonNullable<ContentConfigParams['fx']>
 ): HTMLElement {
   const metaDiv = html(
     'div',

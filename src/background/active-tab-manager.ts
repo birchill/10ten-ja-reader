@@ -2,7 +2,7 @@ import Bugsnag from '@birchill/bugsnag-zero';
 import * as s from 'superstruct';
 import browser, { Runtime, Tabs } from 'webextension-polyfill';
 
-import { ContentConfig } from '../common/content-config';
+import { ContentConfigParams } from '../common/content-config-params';
 
 import { IndividualFrameMessage, TopFrameMessage } from './background-message';
 import { BackgroundRequestSchema } from './background-request';
@@ -19,7 +19,7 @@ type EnabledTab = {
 };
 
 export default class ActiveTabManager implements TabManager {
-  private config: ContentConfig | undefined;
+  private config: ContentConfigParams | undefined;
   // It's ok to initialize this to an empty array even if we're being run as an
   // event page that's just been resumed since we only track enabled tabs and
   // any enabled tabs will set up a message port that will keep the background
@@ -28,7 +28,7 @@ export default class ActiveTabManager implements TabManager {
   private enabledTabs: Array<EnabledTab> = [];
   private listeners: Array<EnabledChangedCallback> = [];
 
-  async init(config: ContentConfig): Promise<void> {
+  async init(config: ContentConfigParams): Promise<void> {
     this.config = config;
 
     // Notify listeners when the active tab changes
@@ -139,7 +139,7 @@ export default class ActiveTabManager implements TabManager {
   // Toggling related interface
   //
 
-  async toggleTab(tab: Tabs.Tab, config: ContentConfig) {
+  async toggleTab(tab: Tabs.Tab, config: ContentConfigParams) {
     if (typeof tab.id === 'undefined') {
       return;
     }
@@ -480,7 +480,7 @@ export default class ActiveTabManager implements TabManager {
   // Config updates
   //
 
-  async updateConfig(config: ContentConfig) {
+  async updateConfig(config: ContentConfigParams) {
     // Ignore redundant changes
     if (JSON.stringify(this.config) === JSON.stringify(config)) {
       return;

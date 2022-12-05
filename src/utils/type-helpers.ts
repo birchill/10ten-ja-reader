@@ -10,3 +10,5 @@ export type ExpandRecursively<T> = T extends object
     ? { [K in keyof O]: ExpandRecursively<O[K]> }
     : never
   : T;
+
+export type Entries<T> = { [K in keyof T]: [K, T[K]] }[keyof T][];

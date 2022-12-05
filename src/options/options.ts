@@ -15,7 +15,7 @@ import {
   AccentDisplay,
   PartOfSpeechDisplay,
   TabDisplay,
-} from '../common/content-config';
+} from '../common/content-config-params';
 import { getLocalizedDataSeriesLabel } from '../common/data-series-labels';
 import { dbLanguageMeta, isDbLanguageId } from '../common/db-languages';
 import {

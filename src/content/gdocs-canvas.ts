@@ -1,4 +1,4 @@
-import { HighlightStyle } from '../common/content-config';
+import { HighlightStyle } from '../common/content-config-params';
 import { empty, SVG_NS } from '../utils/dom-utils';
 import { Point, Rect } from '../utils/geometry';
 

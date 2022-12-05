@@ -2,9 +2,9 @@ import { MajorDataSeries } from '@birchill/jpdict-idb';
 
 import {
   AccentDisplay,
-  ContentConfig,
+  ContentConfigParams,
   PartOfSpeechDisplay,
-} from '../../common/content-config';
+} from '../../common/content-config-params';
 import { CopyType } from '../../common/copy-keys';
 import { ReferenceAbbreviation } from '../../common/refs';
 
@@ -49,7 +49,7 @@ export interface PopupOptions {
   dictToShow: MajorDataSeries;
   dictLang?: string;
   displayMode: DisplayMode;
-  fxData: ContentConfig['fx'];
+  fxData: ContentConfigParams['fx'];
   kanjiReferences: Array<ReferenceAbbreviation>;
   meta?: SelectionMeta;
   onCancelCopy?: () => void;

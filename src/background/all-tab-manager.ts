@@ -2,7 +2,7 @@ import Bugsnag from '@birchill/bugsnag-zero';
 import * as s from 'superstruct';
 import browser, { Runtime, Tabs, Windows } from 'webextension-polyfill';
 
-import { ContentConfig } from '../common/content-config';
+import { ContentConfigParams } from '../common/content-config-params';
 import { ExtensionStorageError } from '../common/extension-storage-error';
 import { requestIdleCallback } from '../utils/request-idle-callback';
 
@@ -25,13 +25,13 @@ type Tab = {
 };
 
 export default class AllTabManager implements TabManager {
-  private config: ContentConfig | undefined;
+  private config: ContentConfigParams | undefined;
   private enabled = false;
   private listeners: Array<EnabledChangedCallback> = [];
   private tabs: Array<Tab> = [];
   private tabsCleanupTask: number | undefined;
 
-  async init(config: ContentConfig): Promise<void> {
+  async init(config: ContentConfigParams): Promise<void> {
     this.config = config;
 
     // Try to fetch our previous enabled state from local storage
@@ -166,7 +166,7 @@ export default class AllTabManager implements TabManager {
   // Toggling related interface
   //
 
-  async toggleTab(_tab: Tabs.Tab, config: ContentConfig) {
+  async toggleTab(_tab: Tabs.Tab, config: ContentConfigParams) {
     // Update our local copy of the config
     this.config = config;
 
@@ -231,7 +231,7 @@ export default class AllTabManager implements TabManager {
   // Config updates
   //
 
-  async updateConfig(config: ContentConfig) {
+  async updateConfig(config: ContentConfigParams) {
     // Ignore redundant changes
     if (JSON.stringify(this.config) === JSON.stringify(config)) {
       return;

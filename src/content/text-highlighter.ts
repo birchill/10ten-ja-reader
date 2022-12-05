@@ -1,4 +1,4 @@
-import { HighlightStyle } from '../common/content-config';
+import { HighlightStyle } from '../common/content-config-params';
 import { html } from '../utils/builder';
 import {
   isContentEditableNode,

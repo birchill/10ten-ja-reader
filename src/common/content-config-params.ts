@@ -39,7 +39,7 @@ export type PartOfSpeechDisplay = 'expl' | 'code' | 'none';
 
 export type TabDisplay = 'top' | 'left' | 'right' | 'none';
 
-export interface ContentConfig {
+export interface ContentConfigParams {
   // Indicates the type of display to use for showing pitch accent information.
   accentDisplay: AccentDisplay;
 

@@ -50,7 +50,7 @@ import * as s from 'superstruct';
 import browser, { Runtime } from 'webextension-polyfill';
 
 import { BackgroundMessageSchema } from '../background/background-message';
-import { ContentConfig } from '../common/content-config';
+import { ContentConfigParams } from '../common/content-config-params';
 import { CopyKeys, CopyType } from '../common/copy-keys';
 import { isEditableNode } from '../utils/dom-utils';
 import {
@@ -120,7 +120,7 @@ import { TouchClickTracker } from './touch-click-tracker';
 import { getScrollOffset, toPageCoords, toScreenCoords } from './scroll-offset';
 import { hasModifiers, normalizeKey, normalizeKeys } from './keyboard';
 import { isSafari } from '../utils/ua-utils';
-import { getMouseCapabilityMql } from '../utils/device';
+import { ContentConfig, ContentConfigChange } from './content-config';
 
 const enum HoldToShowKeyType {
   Text = 1 << 0,
@@ -264,8 +264,8 @@ export class ContentHandler {
   // Consulted in order to determine popup positioning
   private puck: LookupPuck | null = null;
 
-  constructor(config: ContentConfig) {
-    this.config = config;
+  constructor(config: ContentConfigParams) {
+    this.config = new ContentConfig(config);
     this.textHighlighter = new TextHighlighter();
 
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -276,6 +276,9 @@ export class ContentHandler {
     this.onFullScreenChange = this.onFullScreenChange.bind(this);
     this.onInterFrameMessage = this.onInterFrameMessage.bind(this);
     this.onBackgroundMessage = this.onBackgroundMessage.bind(this);
+
+    this.onConfigChange = this.onConfigChange.bind(this);
+    this.config.addListener(this.onConfigChange);
 
     window.addEventListener('mousemove', this.onMouseMove);
     window.addEventListener('mousedown', this.onMouseDown);
@@ -386,49 +389,48 @@ export class ContentHandler {
     removePuck();
   }
 
-  setConfig(config: Readonly<ContentConfig>) {
-    // Update the style of the popup/puck
-    if (this.config && config.popupStyle !== this.config.popupStyle) {
-      setPopupStyle(config.popupStyle);
-      this.puck?.setTheme(config.popupStyle);
-    }
+  setConfig(config: Readonly<ContentConfigParams>) {
+    this.config.set(config);
+  }
 
-    if (this.config && config.toolbarIcon !== this.config.toolbarIcon) {
-      this.puck?.setIcon(config.toolbarIcon);
-    }
+  onConfigChange(changes: readonly ContentConfigChange[]) {
+    // TODO: Currently `ContentConfig` only reports changes to the following
+    // keys. We should expand the set to include the various popup parameters
+    // and update the popup as needed.
 
-    // Even if `config.popupInteractive` is false, if there's no mouse we should
-    // force it to true.
-    //
-    // TODO: Register a listener for this and update accordingly.
-    const popupInteractive =
-      config.popupInteractive || !getMouseCapabilityMql()?.matches;
-    const popupInteractivityChanged =
-      popupInteractive !== !!this.config?.popupInteractive;
+    for (const { key, value } of changes) {
+      switch (key) {
+        case 'popupInteractive':
+          if (this.isTopMostWindow()) {
+            // We can't use updatePopup here since it will try to re-use the existing
+            // popup display mode but we specifically want to change it in this case
+            // (but, ideally, retain the same position etc.)
+            this.showPopup({
+              displayMode: value ? 'hover' : 'static',
+              fixPosition: true,
+            });
+          }
+          break;
 
-    const puckConfigChanged = config.showPuck !== this.config?.showPuck;
+        case 'popupStyle':
+          setPopupStyle(value);
+          this.puck?.setTheme(value);
+          break;
 
-    // TODO: We should check which keys have changed and regenerate the pop-up
-    // if needed.
+        case 'showPuck':
+          this.applyPuckConfig();
+          break;
 
-    this.config = { ...config, popupInteractive };
-
-    if (popupInteractivityChanged && this.isTopMostWindow()) {
-      // We can't use updatePopup here since it will try to re-use the existing
-      // popup display mode but we specifically want to change it in this case
-      // (but, ideally, retain the same position etc.)
-      this.showPopup({
-        displayMode: popupInteractive ? 'hover' : 'static',
-        fixPosition: true,
-      });
-    }
-
-    if (puckConfigChanged) {
-      this.applyPuckConfig();
+        case 'toolbarIcon':
+          this.puck?.setIcon(value);
+          break;
+      }
     }
   }
 
   detach() {
+    this.config.removeListener(this.onConfigChange);
+
     window.removeEventListener('mousemove', this.onMouseMove);
     window.removeEventListener('mousedown', this.onMouseDown);
     window.removeEventListener('keydown', this.onKeyDown, { capture: true });
@@ -2729,7 +2731,7 @@ declare global {
 
         enable({
           tabId: request.id,
-          config: request.config as ContentConfig,
+          config: request.config as ContentConfigParams,
         });
         break;
 
@@ -2754,7 +2756,7 @@ declare global {
     config,
   }: {
     tabId?: number;
-    config: ContentConfig;
+    config: ContentConfigParams;
   }) {
     if (contentHandler) {
       contentHandler.setConfig(config);

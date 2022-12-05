@@ -20,12 +20,12 @@ import { stripFields } from '../utils/strip-fields';
 
 import {
   AccentDisplay,
-  ContentConfig,
+  ContentConfigParams,
   HighlightStyle,
   KeyboardKeys,
   PartOfSpeechDisplay,
   TabDisplay,
-} from './content-config';
+} from './content-config-params';
 import { DbLanguageId, dbLanguages } from './db-languages';
 import { ExtensionStorageError } from './extension-storage-error';
 import {
@@ -1034,7 +1034,7 @@ export class Config {
   }
 
   // Get all the options the content process cares about at once
-  get contentConfig(): ContentConfig {
+  get contentConfig(): ContentConfigParams {
     return {
       accentDisplay: this.accentDisplay,
       dictLang: this.dictLang,
