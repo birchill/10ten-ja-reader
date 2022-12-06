@@ -694,7 +694,12 @@ browser.runtime.onInstalled.addListener(async (details) => {
   // Request persistent storage permission
   if (navigator.storage) {
     let persisted = await navigator.storage.persisted();
-    if (!persisted && (await shouldRequestPersistentStorage())) {
+    if (
+      !persisted &&
+      // navigator.storage.persist is not available in ServiceWorker contexts
+      'persist' in navigator.storage &&
+      (await shouldRequestPersistentStorage())
+    ) {
       persisted = await navigator.storage.persist();
       if (persisted) {
         Bugsnag.leaveBreadcrumb('Got persistent storage permission');
