@@ -29,7 +29,10 @@ export function fetchWithTimeout(
   let didTimeout = false;
   let timeoutId: number | undefined;
   if (timeout && timeout !== Infinity) {
-    timeoutId = window.setTimeout(() => {
+    // This should be safe to use even in service workers because if the worker
+    // is terminated before the timeout happens, presumably the fetch will be
+    // cancelled anyway.
+    timeoutId = self.setTimeout(() => {
       didTimeout = true;
       controller.abort();
     }, timeout);

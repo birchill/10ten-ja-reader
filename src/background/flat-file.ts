@@ -94,7 +94,7 @@ export class FlatFileDatabase {
           requestOptions = { signal: controller.signal };
         }
 
-        timeoutId = window.setTimeout(() => {
+        timeoutId = self.setTimeout(() => {
           timeoutId = undefined;
           if (controller) {
             console.error(`Load of ${url} timed out. Aborting.`);

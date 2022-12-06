@@ -193,12 +193,13 @@ export class FxFetcher {
           { error }
         );
 
-        // We're using setTimeout here but in the case of event pages (as we
-        // use on some platforms) these are not guaranteed to run.
+        // We're using setTimeout here but in the case of event pages or service
+        // workers (as we use on some platforms) these are not guaranteed to
+        // run.
         //
         // That's fine though because if the background page gets killed then
         // when it restarts it will trigger a new fetch anyway.
-        const timeout = window.setTimeout(() => this.fetchData(), 10_000);
+        const timeout = self.setTimeout(() => this.fetchData(), 10_000);
         this.fetchState = { type: 'waiting to retry', retryCount, timeout };
       } else {
         console.error(error);
