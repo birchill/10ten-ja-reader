@@ -393,6 +393,10 @@ export class ContentHandler {
     this.config.set(config);
   }
 
+  get canHover() {
+    return this.config.canHover;
+  }
+
   onConfigChange(changes: readonly ContentConfigChange[]) {
     for (const { key, value } of changes) {
       switch (key) {
@@ -449,6 +453,10 @@ export class ContentHandler {
 
         case 'toolbarIcon':
           this.puck?.setIcon(value);
+          break;
+
+        case 'canHover':
+          void browser.runtime.sendMessage({ type: 'canHoverChanged', value });
           break;
       }
     }
@@ -2835,6 +2843,13 @@ declare global {
       .catch((e) => {
         console.warn(e);
       });
+
+    // Let the background know the current state of hover devices since this
+    // might be its first chance to access the DOM.
+    void browser.runtime.sendMessage({
+      type: 'canHoverChanged',
+      value: contentHandler.canHover,
+    });
 
     window.addEventListener('pageshow', onPageShow);
     window.addEventListener('pagehide', onPageHide);

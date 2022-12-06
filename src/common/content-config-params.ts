@@ -99,7 +99,7 @@ export interface ContentConfigParams {
   showPriority: boolean;
 
   // Should we show the puck or not?
-  showPuck: 'show' | 'hide';
+  showPuck: 'show' | 'hide' | 'auto';
 
   // True if we should show romaji alongside each reading.
   showRomaji: boolean;

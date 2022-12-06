@@ -1,10 +1,18 @@
 import { ContentConfigParams } from '../common/content-config-params';
-import { getMouseCapabilityMql } from '../utils/device';
-import { Entries } from '../utils/type-helpers';
+import { getHoverCapabilityMql, getMouseCapabilityMql } from '../utils/device';
+import { Entries, Overwrite } from '../utils/type-helpers';
 
-export type ContentConfigChange = {
-  [K in keyof ContentConfigParams]: { key: K; value: ContentConfigParams[K] };
-}[keyof ContentConfigParams];
+export type ContentConfigChange =
+  | Overwrite<
+      {
+        [K in keyof ContentConfigParams]: {
+          key: K;
+          value: ContentConfigParams[K];
+        };
+      },
+      { showPuck: { key: 'showPuck'; value: 'hide' | 'show' } }
+    >[keyof ContentConfigParams]
+  | { key: 'canHover'; value: boolean };
 
 export type ContentConfigListener = (
   changes: readonly ContentConfigChange[]
@@ -13,16 +21,28 @@ export type ContentConfigListener = (
 export class ContentConfig implements ContentConfigParams {
   private params: ContentConfigParams;
   private mouseCapabilityMql = getMouseCapabilityMql();
+  private hoverCapabilityMql = getHoverCapabilityMql();
   listeners: Array<ContentConfigListener> = [];
 
   constructor(params: Readonly<ContentConfigParams>) {
     this.set(params);
 
     this.onMouseCapabilityChange = this.onMouseCapabilityChange.bind(this);
+    this.onHoverCapabilityChange = this.onHoverCapabilityChange.bind(this);
   }
 
   set(params: Readonly<ContentConfigParams>) {
-    const before = this.params ? { ...this.params } : {};
+    const before: Partial<ContentConfig> = {};
+    if (this.params) {
+      for (const key of Object.keys(params)) {
+        const contentKey = key as keyof ContentConfig;
+        if (typeof this[contentKey] === 'undefined') {
+          continue;
+        }
+        (before[contentKey] satisfies ContentConfig[typeof contentKey]) =
+          this[contentKey];
+      }
+    }
 
     this.params = { ...params };
 
@@ -57,6 +77,10 @@ export class ContentConfig implements ContentConfigParams {
         'change',
         this.onMouseCapabilityChange
       );
+      this.hoverCapabilityMql?.addEventListener(
+        'change',
+        this.onHoverCapabilityChange
+      );
     }
   }
 
@@ -69,6 +93,10 @@ export class ContentConfig implements ContentConfigParams {
       this.mouseCapabilityMql?.removeEventListener(
         'change',
         this.onMouseCapabilityChange
+      );
+      this.hoverCapabilityMql?.removeEventListener(
+        'change',
+        this.onHoverCapabilityChange
       );
     }
   }
@@ -136,8 +164,12 @@ export class ContentConfig implements ContentConfigParams {
   get showPriority() {
     return this.params.showPriority;
   }
-  get showPuck() {
-    return this.params.showPuck;
+  get showPuck(): 'show' | 'hide' {
+    return this.params.showPuck === 'auto'
+      ? this.canHover
+        ? 'hide'
+        : 'show'
+      : this.params.showPuck;
   }
   get showRomaji() {
     return this.params.showRomaji;
@@ -149,6 +181,11 @@ export class ContentConfig implements ContentConfigParams {
     return this.params.toolbarIcon;
   }
 
+  // Extra computed properties
+  get canHover() {
+    return !!this.hoverCapabilityMql?.matches;
+  }
+
   private onMouseCapabilityChange() {
     // If this.params.popupInteractive is false then any change to the
     // mouseCapabilityMql will cause the computed value of `popupInteractive` to
@@ -156,6 +193,15 @@ export class ContentConfig implements ContentConfigParams {
     if (!this.params.popupInteractive) {
       this.notifyListeners([
         { key: 'popupInteractive', value: this.popupInteractive },
+      ]);
+    }
+  }
+
+  private onHoverCapabilityChange(event: MediaQueryListEvent) {
+    if (this.params.showPuck === 'auto') {
+      this.notifyListeners([
+        { key: 'showPuck', value: this.showPuck },
+        { key: 'canHover', value: event.matches },
       ]);
     }
   }

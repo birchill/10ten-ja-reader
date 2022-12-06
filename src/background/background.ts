@@ -129,7 +129,7 @@ tabManager.addListener(
     await updateContextMenus({
       tabEnabled: enabled,
       toggleMenuEnabled: config.contextMenuEnable,
-      showPuck: config.contentConfig.showPuck === 'show',
+      showPuck: config.computedShowPuck === 'show',
     });
 
     // If we have enabled a tab, make sure we update our FX data.
@@ -182,8 +182,14 @@ config.addChangeListener(async (changes) => {
   // Update context menus as needed
   const toggleMenuEnabled: boolean | undefined =
     changes.contextMenuEnable?.newValue;
-  const showPuck: 'show' | 'hide' | undefined =
-    changes['computed:showPuck']?.newValue;
+  let showPuck: 'show' | 'hide' | undefined;
+  if (
+    changes.hasOwnProperty('showPuck') ||
+    changes.hasOwnProperty('canHover')
+  ) {
+    showPuck = config.computedShowPuck;
+  }
+
   if (
     typeof toggleMenuEnabled !== 'undefined' ||
     typeof showPuck !== 'undefined'
@@ -195,9 +201,9 @@ config.addChangeListener(async (changes) => {
             ? config.contextMenuEnable
             : toggleMenuEnabled,
         showPuck:
-          typeof showPuck === 'undefined'
-            ? config.contentConfig.showPuck === 'show'
-            : showPuck === 'show',
+          (typeof showPuck === 'undefined'
+            ? config.computedShowPuck
+            : showPuck) === 'show',
       });
     } catch (e) {
       void Bugsnag.notify(e);
@@ -233,7 +239,7 @@ void config.ready.then(async () => {
     },
     tabManager,
     toggleMenuEnabled: config.contextMenuEnable,
-    showPuck: config.contentConfig.showPuck === 'show',
+    showPuck: config.computedShowPuck === 'show',
   });
 });
 
@@ -580,6 +586,10 @@ browser.runtime.onMessage.addListener(
 
       case 'dismissedMouseOnboarding':
         config.setHasDismissedMouseOnboarding();
+        break;
+
+      case 'canHoverChanged':
+        config.canHover = request.value;
         break;
 
       //

@@ -12,3 +12,8 @@ export type ExpandRecursively<T> = T extends object
   : T;
 
 export type Entries<T> = { [K in keyof T]: [K, T[K]] }[keyof T][];
+
+/**
+ * Intersection of T & U but with the types of U being used where they overlap.
+ */
+export type Overwrite<T, U> = Omit<T, Extract<keyof T, keyof U>> & U;

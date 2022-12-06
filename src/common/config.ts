@@ -14,7 +14,6 @@ import Bugsnag from '@birchill/bugsnag-zero';
 import browser from 'webextension-polyfill';
 
 import { FxLocalData, getLocalFxData } from '../background/fx-data';
-import { getHoverCapabilityMql } from '../utils/device';
 import { isObject } from '../utils/is-object';
 import { stripFields } from '../utils/strip-fields';
 
@@ -71,6 +70,7 @@ interface Settings {
   kanjiReferencesV2?: KanjiReferenceFlagsV2;
   keys?: Partial<StoredKeyboardKeys>;
   localSettings?: {
+    canHover?: boolean;
     hasUpgradedFromPreMouse?: boolean;
     numLookupsWithMouseOnboarding?: number;
     popupInteractive?: boolean;
@@ -165,7 +165,6 @@ export class Config {
   private readyPromise: Promise<void>;
   private changeListeners: ChangeCallback[] = [];
   private previousDefaultLang: DbLanguageId;
-  private hoverCapabilityMql: MediaQueryList | undefined;
 
   constructor() {
     this.readyPromise = this.readSettings().then(async () => {
@@ -178,8 +177,6 @@ export class Config {
 
     this.onLanguageChange = this.onLanguageChange.bind(this);
     window.addEventListener('languagechange', this.onLanguageChange);
-
-    this.onHoverCapabilityChange = this.onHoverCapabilityChange.bind(this);
   }
 
   private async readSettings() {
@@ -198,7 +195,6 @@ export class Config {
     }
     this.settings = settings;
     await this.upgradeSettings();
-    this.maybeListenToHoverCapabilityChanges();
   }
 
   private async upgradeSettings() {
@@ -287,13 +283,6 @@ export class Config {
       return;
     }
 
-    // Fill out computed values
-    if (updatedChanges.hasOwnProperty('showPuck')) {
-      updatedChanges['computed:showPuck'] = {
-        newValue: this.contentConfig.showPuck,
-      };
-    }
-
     for (const listener of this.changeListeners) {
       listener(updatedChanges);
     }
@@ -371,6 +360,28 @@ export class Config {
 
     this.settings.accentDisplay = value;
     void browser.storage.sync.set({ accentDisplay: value });
+  }
+
+  // canHover (local): Defaults to true
+
+  get canHover(): boolean {
+    return this.settings.localSettings?.canHover ?? true;
+  }
+
+  set canHover(value: boolean) {
+    const storedSetting = this.settings.localSettings?.canHover;
+    if (storedSetting === value) {
+      return;
+    }
+
+    const localSettings = { ...this.settings.localSettings };
+    if (value) {
+      delete localSettings.canHover;
+    } else {
+      localSettings.canHover = false;
+    }
+    this.settings.localSettings = localSettings;
+    void browser.storage.local.set({ settings: localSettings });
   }
 
   // contextMenuEnable: Defaults to true
@@ -879,43 +890,15 @@ export class Config {
       localSettings.showPuck = value;
     }
     this.settings.localSettings = localSettings;
-    // We should make sure to set up the MediaQueryList _before_ updating local
-    // storage since this will ensure that this.hoverCapabilityMql is
-    // initialized before any StorageChange is dispatched.
-    this.maybeListenToHoverCapabilityChanges();
     void browser.storage.local.set({ settings: localSettings });
   }
 
-  private maybeListenToHoverCapabilityChanges() {
-    if (this.showPuck === 'auto') {
-      this.hoverCapabilityMql =
-        this.hoverCapabilityMql || getHoverCapabilityMql();
-      this.hoverCapabilityMql?.addEventListener(
-        'change',
-        this.onHoverCapabilityChange
-      );
-    } else {
-      this.hoverCapabilityMql?.removeEventListener(
-        'change',
-        this.onHoverCapabilityChange
-      );
-    }
-  }
-
-  private onHoverCapabilityChange(event: MediaQueryListEvent) {
-    if (this.showPuck !== 'auto') {
-      return;
-    }
-
-    const changes: ChangeDict = {
-      'computed:showPuck': {
-        newValue: event.matches ? 'hide' : 'show',
-      },
-    };
-
-    for (const listener of this.changeListeners) {
-      listener(changes);
-    }
+  get computedShowPuck(): 'show' | 'hide' {
+    return this.showPuck !== 'auto'
+      ? this.showPuck
+      : this.canHover
+      ? 'hide'
+      : 'show';
   }
 
   // showRomaji: Defaults to false
@@ -1064,12 +1047,7 @@ export class Config {
       readingOnly: this.readingOnly,
       showKanjiComponents: this.showKanjiComponents,
       showPriority: this.showPriority,
-      showPuck:
-        this.showPuck === 'auto'
-          ? this.hoverCapabilityMql?.matches
-            ? 'hide'
-            : 'show'
-          : this.showPuck,
+      showPuck: this.showPuck,
       showRomaji: this.showRomaji,
       tabDisplay: this.tabDisplay,
       toolbarIcon: this.toolbarIcon,
