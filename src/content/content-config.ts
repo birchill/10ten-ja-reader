@@ -17,6 +17,8 @@ export class ContentConfig implements ContentConfigParams {
 
   constructor(params: Readonly<ContentConfigParams>) {
     this.set(params);
+
+    this.onMouseCapabilityChange = this.onMouseCapabilityChange.bind(this);
   }
 
   set(params: Readonly<ContentConfigParams>) {
@@ -44,13 +46,31 @@ export class ContentConfig implements ContentConfigParams {
   }
 
   addListener(listener: ContentConfigListener) {
+    const hadListeners = this.listeners.length !== 0;
+
     if (!this.listeners.includes(listener)) {
       this.listeners.push(listener);
+    }
+
+    if (!hadListeners) {
+      this.mouseCapabilityMql?.addEventListener(
+        'change',
+        this.onMouseCapabilityChange
+      );
     }
   }
 
   removeListener(listener: ContentConfigListener) {
+    const hadListeners = this.listeners.length !== 0;
+
     this.listeners = this.listeners.filter((l) => l !== listener);
+
+    if (hadListeners && this.listeners.length === 0) {
+      this.mouseCapabilityMql?.removeEventListener(
+        'change',
+        this.onMouseCapabilityChange
+      );
+    }
   }
 
   private notifyListeners(changes: readonly ContentConfigChange[]) {
@@ -127,5 +147,16 @@ export class ContentConfig implements ContentConfigParams {
   }
   get toolbarIcon() {
     return this.params.toolbarIcon;
+  }
+
+  private onMouseCapabilityChange() {
+    // If this.params.popupInteractive is false then any change to the
+    // mouseCapabilityMql will cause the computed value of `popupInteractive` to
+    // change.
+    if (!this.params.popupInteractive) {
+      this.notifyListeners([
+        { key: 'popupInteractive', value: this.popupInteractive },
+      ]);
+    }
   }
 }
