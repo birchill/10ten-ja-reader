@@ -176,7 +176,7 @@ export class Config {
     browser.storage.onChanged.addListener(this.onChange);
 
     this.onLanguageChange = this.onLanguageChange.bind(this);
-    window.addEventListener('languagechange', this.onLanguageChange);
+    self.addEventListener('languagechange', this.onLanguageChange);
   }
 
   private async readSettings() {
