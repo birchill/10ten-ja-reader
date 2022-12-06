@@ -394,17 +394,43 @@ export class ContentHandler {
   }
 
   onConfigChange(changes: readonly ContentConfigChange[]) {
-    // TODO: Currently `ContentConfig` only reports changes to the following
-    // keys. We should expand the set to include the various popup parameters
-    // and update the popup as needed.
-
     for (const { key, value } of changes) {
       switch (key) {
+        case 'accentDisplay':
+        case 'posDisplay':
+        case 'readingOnly':
+        case 'showKanjiComponents':
+        case 'showPriority':
+        case 'tabDisplay':
+          if (this.isTopMostWindow()) {
+            this.updatePopup({ fixPosition: true });
+          }
+          break;
+
+        case 'showRomaji':
+          // Enabling romaji currently means we need to re-run the lookup
+          if (
+            this.isTopMostWindow() &&
+            this.currentLookupParams &&
+            this.currentTargetProps
+          ) {
+            const lookupParams: Parameters<typeof this.lookupText>[0] = {
+              dictMode: 'default',
+              ...this.currentLookupParams,
+              targetProps: this.currentTargetProps,
+            };
+
+            if (this.isTopMostWindow()) {
+              void this.lookupText(lookupParams);
+            }
+          }
+          break;
+
         case 'popupInteractive':
           if (this.isTopMostWindow()) {
-            // We can't use updatePopup here since it will try to re-use the existing
-            // popup display mode but we specifically want to change it in this case
-            // (but, ideally, retain the same position etc.)
+            // We can't use updatePopup here since it will try to re-use the
+            // existing popup display mode but we specifically want to change it
+            // in this case (but, ideally, retain the same position etc.)
             this.showPopup({
               displayMode: value ? 'hover' : 'static',
               fixPosition: true,

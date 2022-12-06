@@ -20,18 +20,7 @@ export class ContentConfig implements ContentConfigParams {
   }
 
   set(params: Readonly<ContentConfigParams>) {
-    const before: Partial<ContentConfigParams> = {};
-    const keysWeCareAbout: Array<keyof ContentConfigParams> = [
-      'popupInteractive',
-      'popupStyle',
-      'showPuck',
-      'toolbarIcon',
-    ];
-    if (this.params) {
-      for (const key of keysWeCareAbout) {
-        (before[key] satisfies ContentConfigParams[typeof key]) = this[key];
-      }
-    }
+    const before = this.params ? { ...this.params } : {};
 
     this.params = { ...params };
 
@@ -39,6 +28,13 @@ export class ContentConfig implements ContentConfigParams {
     for (const [key, value] of Object.entries(
       before
     ) as Entries<ContentConfigParams>) {
+      // Currently we are only interested in a few keys that happen to have
+      // primitive values. If we ever want to report on changes to array/object
+      // values we'll need to do a deep equality check.
+      if (typeof value === 'object') {
+        continue;
+      }
+
       if (this[key] !== value) {
         changes.push({ key, value: this[key] } as ContentConfigChange);
       }
