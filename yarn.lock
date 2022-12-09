@@ -336,10 +336,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@birchill/bugsnag-zero@0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@birchill/bugsnag-zero/-/bugsnag-zero-0.5.0.tgz#f7b9b670839f2c107518bbfd32ab113db67f21cb"
-  integrity sha512-LG40Vh6XpKlP+t0Q8P/hDg+M8JLpIYX1EOUhaHo4tIGAoyiIevTQdIWI1/qiXHbVKe5E0MdRSRzUCNUtyGjNrg==
+"@birchill/bugsnag-zero@0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@birchill/bugsnag-zero/-/bugsnag-zero-0.5.1.tgz#23ea7726019e0a406cb43e5c17623ab313aadef5"
+  integrity sha512-OH6AsQy7i7/oEu5TryVdwfnkD2iKKLMBEhhq/3CPZZb6R3hZ8HCwcd780htio6FJW7wAMpxfu8Opt74W084GPg==
   dependencies:
     aws-lambda "^1.0.7"
     ua-parser-js "^1.0.32"
