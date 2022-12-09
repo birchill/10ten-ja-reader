@@ -2704,6 +2704,7 @@ declare global {
   // - Provide an extra means to ensure the tab is removed from the list of
   //   enabled tabs when the tab is destroyed (in case we fail to get a pagehide
   //   event), and
+  //
   // - Ensure the background page is kept alive so long as we have an enabled
   //   tab when the background page is running as an event page.
   //
@@ -2748,6 +2749,21 @@ declare global {
       // Ignore
     });
   }
+
+  // Poll the background page until it finishes updating
+  void (async function checkIfUpdating() {
+    try {
+      const isDbUpdating = await browser.runtime.sendMessage({
+        type: 'isDbUpdating',
+      });
+      if (isDbUpdating) {
+        // Wait 20s between checks
+        setTimeout(checkIfUpdating, 20_000);
+      }
+    } catch {
+      // Ignore, probably we're out of date with the background
+    }
+  })();
 
   async function onMessage(request: unknown): Promise<string> {
     s.assert(request, BackgroundMessageSchema);

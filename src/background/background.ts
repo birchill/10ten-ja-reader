@@ -46,7 +46,7 @@
 
 import '../../manifest.json.src';
 
-import { AbortError } from '@birchill/jpdict-idb';
+import { AbortError, allDataSeries } from '@birchill/jpdict-idb';
 import Bugsnag from '@birchill/bugsnag-zero';
 import * as s from 'superstruct';
 import browser, { Runtime, Tabs } from 'webextension-polyfill';
@@ -102,14 +102,6 @@ tabManager.addListener(
     tabId?: number | undefined;
     anyEnabled: boolean;
   }) => {
-    // Typically we will run initJpDict from onStartup or onInstalled but if we
-    // are in development mode and reloading the extension neither of those
-    // callbacks will be called so make sure the database is initialized here.
-    if (enabled) {
-      Bugsnag.leaveBreadcrumb('Triggering database update from enableTab...');
-      initJpDict().catch((e) => Bugsnag.notify(e));
-    }
-
     try {
       await config.ready;
     } catch (e) {
@@ -268,7 +260,6 @@ let jpdictState: JpdictStateWithFallback = {
   updateState: { type: 'idle', lastCheck: null },
 };
 
-// Don't run initJpDict more that we need to
 let dbInitialized = false;
 
 async function initJpDict() {
@@ -279,6 +270,9 @@ async function initJpDict() {
   await config.ready;
   await initDb({ lang: config.dictLang, onUpdate: onDbStatusUpdated });
 }
+
+Bugsnag.leaveBreadcrumb('Running initJpDict from startup...');
+initJpDict();
 
 async function onDbStatusUpdated(state: JpdictStateWithFallback) {
   jpdictState = state;
@@ -296,6 +290,20 @@ async function onDbStatusUpdated(state: JpdictStateWithFallback) {
   }
 
   notifyDbListeners();
+}
+
+function isDbUpdating() {
+  if (!dbInitialized) {
+    return true;
+  }
+
+  for (const series of allDataSeries) {
+    if (jpdictState[series].state === 'init') {
+      return true;
+    }
+  }
+
+  return jpdictState.updateState.type !== 'idle';
 }
 
 //
@@ -592,6 +600,9 @@ browser.runtime.onMessage.addListener(
         config.canHover = request.value;
         break;
 
+      case 'isDbUpdating':
+        return Promise.resolve(isDbUpdating());
+
       //
       // Forwarded messages
       //
@@ -709,9 +720,6 @@ browser.runtime.onInstalled.addListener(async (details) => {
     }
   }
 
-  Bugsnag.leaveBreadcrumb('Running initJpDict from onInstalled...');
-  initJpDict().catch((e) => Bugsnag.notify(e));
-
   if (
     details.reason === 'update' &&
     details.previousVersion &&
@@ -740,11 +748,6 @@ browser.runtime.onInstalled.addListener(async (details) => {
       config.setHasUpgradedFromPreMouse();
     });
   }
-});
-
-browser.runtime.onStartup.addListener(async () => {
-  Bugsnag.leaveBreadcrumb('Running initJpDict from onStartup...');
-  initJpDict().catch((e) => Bugsnag.notify(e));
 });
 
 // Mail extension steps

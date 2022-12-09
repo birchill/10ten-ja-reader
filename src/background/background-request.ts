@@ -22,6 +22,7 @@ export const BackgroundRequestSchema = discriminator('type', {
   enabled: s.type({
     src: s.string(),
   }),
+  isDbUpdating: s.type({}),
   options: s.type({}),
   searchWords: SearchRequestSchema,
   searchOther: SearchRequestSchema,
