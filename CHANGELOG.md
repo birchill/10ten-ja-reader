@@ -8,7 +8,7 @@ app.
 
 ## [Unreleased]
 
-(Nothing yet)
+- (Chrome, Edge) Migrated to Manifest version 3.
 
 ## [1.13.5] - 2022-12-02
 
