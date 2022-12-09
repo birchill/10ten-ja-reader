@@ -3,6 +3,8 @@ import browser, { Action } from 'webextension-polyfill';
 
 import { getLocalizedDataSeriesLabel } from '../common/data-series-labels';
 import { throttle } from '../utils/throttle';
+import { isSafari } from '../utils/ua-utils';
+
 import { JpdictStateWithFallback } from './jpdict';
 
 interface BrowserActionState {
@@ -191,7 +193,23 @@ async function setIcon(iconFilename: string, tabId?: number): Promise<void> {
         48: `images/${iconFilename}-48.png`,
       },
     };
-    await action.setIcon({ ...details, tabId });
+    // In Safari (both 15.x and 16.1 and Technology Preview, at the time of
+    // writing) the Promise returned by setIcon might simply never resolve.
+    // No exception is thrown, it just doesn't resolve.
+    //
+    // As a result, if we await setIcon we'll by waiting for a long time and all
+    // the while, subsequent calls to updateBrowserAction while see there's an
+    // ongoing call and just queue up their parameters meaning that the end
+    // result is that the icon never updates.
+    //
+    // As a result we simply don't wait on setIcon when we're on Safari. We
+    // really only need to wait on it for Chrome/Edge anyway since setIcon is
+    // not FIFO there.
+    if (isSafari()) {
+      void action.setIcon({ ...details, tabId });
+    } else {
+      await action.setIcon({ ...details, tabId });
+    }
     await browser.composeAction?.setIcon(details);
   }
 }

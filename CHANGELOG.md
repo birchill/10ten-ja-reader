@@ -9,6 +9,7 @@ app.
 ## [Unreleased]
 
 - (Chrome, Edge) Migrated to Manifest version 3.
+- (Safari) Fixed a bug where the toolbar icon would get stuck not updating.
 
 ## [1.13.5] - 2022-12-02
 
