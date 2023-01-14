@@ -6435,10 +6435,10 @@ prettier-plugin-md-nocjsp@1.5.0:
   resolved "https://registry.yarnpkg.com/prettier-plugin-md-nocjsp/-/prettier-plugin-md-nocjsp-1.5.0.tgz#8f2b4b0751a36e44c0b906db0a12cb5825f0ca10"
   integrity sha512-rrGFV1cOSz9P0cM1GeD0LYEJ92ptq2qlTngTRS+k22CFRgh+06HHfKy0uhb38Xtr6yLiFwXFCoXrlhS483bqqg==
 
-prettier@2.8.2:
-  version "2.8.2"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.2.tgz#c4ea1b5b454d7c4b59966db2e06ed7eec5dfd160"
-  integrity sha512-BtRV9BcncDyI2tsuS19zzhzoxD8Dh8LiCx7j7tHzrkz8GFXAexeWFdi22mjE1d16dftH2qNaytVxqiRTGlMfpw==
+prettier@2.8.3:
+  version "2.8.3"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.3.tgz#ab697b1d3dd46fb4626fbe2f543afe0cc98d8632"
+  integrity sha512-tJ/oJ4amDihPoufT5sM0Z1SKEuKay8LfVAMlbbhnnkvt6BUserZylqo2PN+p9KeljLr0OHa2rXHU1T8reeoTrw==
 
 pretty-format@^29.0.0, pretty-format@^29.3.1:
   version "29.3.1"
