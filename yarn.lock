@@ -7281,10 +7281,10 @@ semver-diff@^4.0.0:
   dependencies:
     semver "^7.3.5"
 
-semver-parser@4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/semver-parser/-/semver-parser-4.0.1.tgz#68a550c93d1dd9cd5119b65e027666ab7c0aedd5"
-  integrity sha512-ZdnhLJSeLkc9fXEwqdvVXqrVJ8jq/vhGlFfsMhOE4oIiSZlvUC6Ar4NAbdj+H5DEkhFjyhucce7BO8VL/rpY9g==
+semver-parser@4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/semver-parser/-/semver-parser-4.0.4.tgz#94d37cf5c50c6b817522308870a54f40d6b279d2"
+  integrity sha512-PCaFxeGs6CWZopBAlGmSQcC3ezJvxheCm6rTQmElbj6OdoPwxh1iIQJ5LABqUkxmttWHxJUM1+LcIEUbJX9YMw==
 
 "semver@2 || 3 || 4 || 5", semver@^5.6.0:
   version "5.7.1"
