@@ -49,6 +49,7 @@ async function main() {
     '_locales',
     'css',
     'data',
+    'docs',
     'html',
     'images',
     'lib',
