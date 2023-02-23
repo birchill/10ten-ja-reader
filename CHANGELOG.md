@@ -11,7 +11,7 @@ app.
 - (Chrome, Edge) Migrated to Manifest version 3.
 - (Safari) Fixed a bug where the toolbar icon would get stuck not updating.
 
-## [1.13.6] - TBD (Firefox, Thunderbird only)
+## [1.13.6] - 2023-02-23 (Firefox, Thunderbird only)
 
 - Fixed breakage on Firefox beta
   ([#1080](https://github.com/birchill/10ten-ja-reader/issues/1080)).
