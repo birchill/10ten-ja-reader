@@ -1,11 +1,11 @@
 <div align="center">
   <img src="images/10ten-ja-reader.svg" alt="10ten Japanese Reader" width="200" height="200" />
   <h1>10ten Japanese Reader</h1>
-  
+
   <p>
     Hi fellow Japanese reader! Formerly known as Rikaichamp, this browser extension lets you look up Japanese words with the hover of a mouse or tap of a screen. 
   </p>
-  
+
   <p>
     <a href="https://twitter.com/10tenstudy"><img src="https://img.shields.io/twitter/follow/10tenstudy" alt="Follow @10tenstudy"></a>
     <a href=""><img src="https://github.com/birchill/10ten-ja-reader/workflows/Automated%20tests/badge.svg" alt="automated test status" /></a>

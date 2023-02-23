@@ -9,7 +9,7 @@ export class JpdictWorkerBackend implements JpdictBackend {
   private listeners: Array<JpdictListener> = [];
 
   constructor() {
-    this.worker = new Worker('./10ten-ja-jpdict.js', { type: 'module' });
+    this.worker = new Worker('./10ten-ja-jpdict.js');
     this.worker.onmessageerror = (event: MessageEvent) => {
       console.error(`Worker error: ${JSON.stringify(event)}`);
       void Bugsnag.notify(`Worker error: ${JSON.stringify(event)}`);
