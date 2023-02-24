@@ -13,5 +13,6 @@
     "strictNullChecks": true,
     "target": "es2019"
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*"],
+  "exclude": ["./utils/sync-manifest-version.mts"]
 }
