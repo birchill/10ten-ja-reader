@@ -21,11 +21,12 @@
     "start:firefox": "webpack -w",
     "start:edge": "webpack -w --env target=chrome --env chromium=edge",
     "start:chrome": "webpack -w --env target=chrome",
+    "sync-manifest-version": "ts-node --esm -P tsconfig-mts.json utils/sync-manifest-version.mts",
     "test": "yarn lint && yarn test:unit && yarn test:browser",
     "test:unit": "jest",
     "test:browser": "karma start --single-run",
     "update-snapshot": "ts-node utils/update-snapshot",
-    "version": "node utils/sync-manifest-version.mjs && git add manifest.json.src && ts-node utils/sync-xcode && git add xcode13/\"10ten Japanese Reader\".xcodeproj/project.pbxproj",
+    "version": "yarn sync-manifest-version && git add manifest.json.src && ts-node utils/sync-xcode && git add xcode13/\"10ten Japanese Reader\".xcodeproj/project.pbxproj",
     "zip-src": "ts-node utils/zip-src"
   },
   "repository": {
