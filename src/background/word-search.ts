@@ -289,5 +289,12 @@ function entryMatchesType(entry: DictionaryWordResult, type: number): boolean {
     return true;
   }
 
+  if (
+    type & WordType.Suffix &&
+    hasMatchingSense((pos) => pos === 'suf' || pos === 'n-suf')
+  ) {
+    return true;
+  }
+
   return false;
 }

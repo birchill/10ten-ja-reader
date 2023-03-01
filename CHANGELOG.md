@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+- Added support for looking up suffixes with rendaku
+  ([#1090](https://github.com/birchill/10ten-ja-reader/issues/1090)).
 - (Chrome, Edge) Migrated to Manifest version 3.
 - (Safari) Fixed a bug where the toolbar icon would get stuck not updating.
 

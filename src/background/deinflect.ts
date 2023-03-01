@@ -1,4 +1,5 @@
 import { kanaToHiragana } from '@birchill/normal-jp';
+import { stripFirstDakuten } from './dakuten';
 
 export const enum Reason {
   PolitePastNegative,
@@ -868,10 +869,11 @@ const enum Type {
   KuruVerb = 1 << 3,
   SuruVerb = 1 << 4,
   NounVS = 1 << 5,
-  All = IchidanVerb | GodanVerb | IAdj | KuruVerb | SuruVerb | NounVS,
+  Suffix = 1 << 6,
+  All = IchidanVerb | GodanVerb | IAdj | KuruVerb | SuruVerb | NounVS | Suffix,
   // Intermediate types
-  Initial = 1 << 6, // original word before any deinflection (from-type only)
-  VNai = 1 << 7,
+  Initial = 1 << 7, // original word before any deinflection (from-type only)
+  VNai = 1 << 8,
 }
 
 export { Type as WordType };
@@ -1070,19 +1072,21 @@ export function deinflect(word: string): CandidateWord[] {
           reasons.push([rule.reason]);
         }
 
-        const candidate: CandidateWord = {
-          reasons,
-          type: rule.toType,
-          word: newWord,
-        };
-
-        result.push(candidate);
+        result.push({ word: newWord, reasons, type: rule.toType });
       }
     }
   } while (++i < result.length);
 
   // Post-process to filter out any lingering intermediate forms
   result = result.filter((r) => r.type & Type.All);
+
+  // Rendaku rules -- unlike other deinflections, this applies to the start
+  // of the input and we don't currently apply it recursively since we only use
+  // the result if it exactly matches a suffix entry.
+  const withoutDakuten = stripFirstDakuten(word);
+  if (withoutDakuten !== word) {
+    result.push({ word: withoutDakuten, reasons: [], type: Type.Suffix });
+  }
 
   return result;
 }

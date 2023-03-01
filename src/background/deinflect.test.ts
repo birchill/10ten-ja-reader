@@ -271,4 +271,17 @@ describe('deinflect', () => {
       expect(match!.reasons[0][0]).toBe(Reason.NegativeTe);
     }
   });
+
+  it('deinflects rendaku', () => {
+    const cases = [
+      ['ぐらし', 'くらし'],
+      ['だくさん', 'たくさん'],
+    ];
+    for (const [inflected, plain] of cases) {
+      const result = deinflect(inflected);
+      const match = result.find((candidate) => candidate.word == plain);
+      expect(match).toBeDefined();
+      expect(match!.type).toBe(WordType.Suffix);
+    }
+  });
 });
