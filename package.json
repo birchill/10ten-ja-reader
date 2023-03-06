@@ -68,7 +68,7 @@
     "copy-webpack-plugin": "11.0.0",
     "css-loader": "6.7.3",
     "eslint": "8.35.0",
-    "eslint-config-prettier": "8.6.0",
+    "eslint-config-prettier": "8.7.0",
     "fast-glob": "3.2.12",
     "file-loader": "6.2.0",
     "form-data": "4.0.0",
