@@ -52,7 +52,7 @@
     "@actions/github": "5.1.1",
     "@types/archiver": "5.3.2",
     "@types/chai": "4.3.4",
-    "@types/jest": "29.4.1",
+    "@types/jest": "29.5.0",
     "@types/karma": "6.3.3",
     "@types/karma-webpack": "2.0.11",
     "@types/mocha": "10.0.1",
