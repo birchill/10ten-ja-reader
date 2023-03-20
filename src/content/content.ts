@@ -123,6 +123,7 @@ import { isSafari } from '../utils/ua-utils';
 import { ContentConfig, ContentConfigChange } from './content-config';
 
 const enum HoldToShowKeyType {
+  None = 0,
   Text = 1 << 0,
   Images = 1 << 1,
   All = Text | Images,
@@ -1187,7 +1188,7 @@ export class ContentHandler {
   isHoldToShowKeyStroke(event: KeyboardEvent): HoldToShowKeyType {
     // Check if it is a modifier at all
     if (!['Alt', 'AltGraph', 'Control'].includes(event.key)) {
-      return 0;
+      return HoldToShowKeyType.None;
     }
 
     const definedKeys =
