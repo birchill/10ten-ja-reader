@@ -421,23 +421,24 @@ function adjustForRangeBoundary({
 
   // Check the first character in the new element is actually the one under the
   // cursor.
-  const firstTextNode = Array.from(elemFromPoint.childNodes).find(
-    (elem) => elem.nodeType === Node.TEXT_NODE
+  const firstNonEmptyTextNode = Array.from(elemFromPoint.childNodes).find(
+    (elem): elem is Text =>
+      elem.nodeType === Node.TEXT_NODE && !!(elem as Text).length
   );
-  if (!firstTextNode) {
+  if (!firstNonEmptyTextNode) {
     return range;
   }
 
   const firstCharRange = new Range();
-  firstCharRange.setStart(firstTextNode, 0);
-  firstCharRange.setEnd(firstTextNode, 1);
+  firstCharRange.setStart(firstNonEmptyTextNode, 0);
+  firstCharRange.setEnd(firstNonEmptyTextNode, 1);
 
   const firstCharBbox = firstCharRange.getBoundingClientRect();
   if (!bboxIncludesPoint({ bbox: firstCharBbox, point })) {
     return range;
   }
 
-  firstCharRange.setEnd(firstTextNode, 0);
+  firstCharRange.setEnd(firstNonEmptyTextNode, 0);
   return firstCharRange;
 }
 
