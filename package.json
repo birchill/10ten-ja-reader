@@ -108,7 +108,7 @@
     "@birchill/jpdict-idb": "1.2.2",
     "@birchill/normal-jp": "1.4.0",
     "husky": "8.0.3",
-    "lint-staged": "13.2.0",
+    "lint-staged": "13.2.1",
     "lru_map": "0.4.1",
     "superstruct": "1.0.3",
     "typescript": "5.0.3",
