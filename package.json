@@ -111,7 +111,7 @@
     "lint-staged": "13.2.1",
     "lru_map": "0.4.1",
     "superstruct": "1.0.3",
-    "typescript": "5.0.3",
+    "typescript": "5.0.4",
     "web-ext": "7.6.0",
     "webextension-polyfill": "^0.10.0"
   },
