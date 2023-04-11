@@ -178,7 +178,7 @@ describe('getTextAtPoint', () => {
     );
   });
 
-  it('should find text in a block cousin if there the grandparent is inline-block', () => {
+  it('should find text in a block cousin if the grandparent is inline-block', () => {
     // Based on https://www.kanshudo.com/grammar/%E3%81%AA%E3%81%84%E3%81%A7%E3%83%BB%E3%81%AA%E3%81%8F%E3%81%A6%E3%83%BB%E3%81%9A%E3%81%AB
     testDiv.innerHTML =
       '<a><span style="display: inline-block"><div>あら</div><div>洗</div></span>わないで</a>';
@@ -238,13 +238,62 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(result, 'うえお', [lastTextNode, 0, 3]);
   });
 
-  it('should dig into the content behind covering links', () => {
+  it('should dig into the content behind covering links hidden with geometry', () => {
     // The following is based very heavily on the structure of article previews
-    // in asahi.com as of 2021-05-22 although nikkei.com is similar
+    // in asahi.com as of 2021-05-22.
     testDiv.innerHTML =
       '<div><a href="/articles/" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1"><span aria-hidden="true" style="display: block; width: 1px; height: 1px; overflow: hidden">あいうえお</span></a><div><div style="position: relative; width: 100%"><h2 style="z-index: auto"><a href="/articles/" id="innerLink">あいうえお</a></h2></div></div>';
 
     const textNode = testDiv.querySelector('#innerLink')!.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 1);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(result, 'いうえお', [textNode, 1, 5]);
+  });
+
+  it('should dig into the content behind covering links hidden with opacity', () => {
+    // The following is based on the structure of article previews from
+    // nikkei.com
+    testDiv.innerHTML =
+      '<a href="/articles/" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; overflow: hidden; opacity: 0">オーバーレイ</a><div style="padding-left: 20px"><h2 style="width: 100%"><a href="/articles/"><span id="innerSpan">あいうえお</span></a></h2></div>';
+
+    const textNode = testDiv.querySelector('#innerSpan')!.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 1);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(result, 'いうえお', [textNode, 1, 5]);
+  });
+
+  it('should find text in user-select: all content', () => {
+    testDiv.innerHTML = '<span style="user-select: all">あいうえお</span>';
+    const textNode = testDiv.firstChild!.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 1);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(result, 'いうえお', [textNode, 1, 5]);
+  });
+
+  it('should find text in user-select: none content', () => {
+    testDiv.innerHTML = '<span style="user-select: none">あいうえお</span>';
+    const textNode = testDiv.firstChild!.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 1);
 
     const result = getTextAtPoint({
@@ -775,6 +824,7 @@ describe('getTextAtPoint', () => {
 
     for (const move of moves) {
       empty(testDiv);
+      clearPreviousResult();
       testDiv.append(`${move}です`);
       const textNode = testDiv.firstChild as Text;
       const bbox = getBboxForOffset(textNode, 0);
@@ -817,6 +867,7 @@ describe('getTextAtPoint', () => {
 
     // Try again with an all kanji match that should be treated as a number
     empty(testDiv);
+    clearPreviousResult();
     testDiv.append('八三銀です');
     result = getTextAtPoint({
       point: {
@@ -1268,11 +1319,11 @@ describe('getTextAtPoint', () => {
     // _should_ have returned the previous character to what it did).
     //
     // As a result, this may need tweaking from time to time. For now,
-    // hopefully 15px does the trick on all browsers and platforms we test on.
+    // hopefully these values do the trick on all browsers and platforms we test
+    // on.
     const offset = isChromium() ? 13 : 15;
 
     const result = getTextAtPoint({
-      // Just guess here...
       point: { x: bbox.left + offset, y: bbox.top + bbox.height / 2 },
     });
 
