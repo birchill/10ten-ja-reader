@@ -72,7 +72,7 @@ export function isTextInputNode(
   );
 }
 
-export const isTextNode = (node: Node | null): node is CharacterData =>
+export const isTextNode = (node: Node | null): node is Text =>
   !!node && node.nodeType === Node.TEXT_NODE;
 
 export function isSvg(node: Node): boolean {
