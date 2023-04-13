@@ -3939,6 +3939,17 @@ firefox-profile@4.2.2:
     minimist "^1.2.5"
     xml2js "~0.4.23"
 
+firefox-profile@4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/firefox-profile/-/firefox-profile-4.3.2.tgz#01f423c8a899695ef46d46f997d5f91c9dc5c93d"
+  integrity sha512-/C+Eqa0YgIsQT2p66p7Ygzqe7NlE/GNTbhw2SBCm5V3OsWDPITNdTPEcH2Q2fe7eMpYYNPKdUcuVioZBZiR6kA==
+  dependencies:
+    adm-zip "~0.5.x"
+    fs-extra "~9.0.1"
+    ini "~2.0.0"
+    minimist "^1.2.5"
+    xml2js "^0.5.0"
+
 first-chunk-stream@3.0.0, first-chunk-stream@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/first-chunk-stream/-/first-chunk-stream-3.0.0.tgz#06972a66263505ed82b2c4db93c1b5e078a6576a"
@@ -8498,10 +8509,10 @@ web-ext-plugin@2.7.0:
   dependencies:
     web-ext "^7.4.0"
 
-web-ext@7.6.0:
-  version "7.6.0"
-  resolved "https://registry.yarnpkg.com/web-ext/-/web-ext-7.6.0.tgz#b18343bcc4a89b3b708e3fa81d26f917fcc2d402"
-  integrity sha512-VF3itErsAH15Lsp/0S21v/m5t0OifFTwft9F4lAbagmeuJd6eIeuif4cFkfKQ+jVpI2x30Pey9qiE4bdKYc5CA==
+web-ext@7.6.1:
+  version "7.6.1"
+  resolved "https://registry.yarnpkg.com/web-ext/-/web-ext-7.6.1.tgz#cadfdd98cdeb7fdd6edadc6e1746705e140f180a"
+  integrity sha512-zU7nCiUiNgrZbiF1M9f1HJmwoeyKqb/QTahsEF8ke6aBFQYK6x3NcASi7Mrd7vUrPUvhWLvWB1YFC72VZnARAg==
   dependencies:
     "@babel/runtime" "7.21.0"
     "@devicefarmer/adbkit" "3.2.3"
@@ -8512,7 +8523,7 @@ web-ext@7.6.0:
     debounce "1.2.1"
     decamelize "6.0.0"
     es6-error "4.1.1"
-    firefox-profile "4.2.2"
+    firefox-profile "4.3.2"
     fs-extra "11.1.0"
     fx-runner "1.3.0"
     import-fresh "3.3.0"
@@ -8873,6 +8884,14 @@ xml2js@0.4.19:
   dependencies:
     sax ">=0.6.0"
     xmlbuilder "~9.0.1"
+
+xml2js@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/xml2js/-/xml2js-0.5.0.tgz#d9440631fbb2ed800203fad106f2724f62c493b7"
+  integrity sha512-drPFnkQJik/O+uPKpqSgr22mpuFHqKdbS835iAQrUC73L2F5WkboIRd63ai/2Yg6I1jzifPFKH2NTK+cfglkIA==
+  dependencies:
+    sax ">=0.6.0"
+    xmlbuilder "~11.0.0"
 
 xml2js@~0.4.23:
   version "0.4.23"
