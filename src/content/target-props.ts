@@ -91,7 +91,7 @@ function getInitialClientBboxofTextSelection(
   // version of Google docs is probably not often used on mobile devices.
   //
   // However, it's fairly easy to calculate these bboxes and doing so means we
-  // get a more consistent vertical gutter as non-Google docs cases so for now
+  // get a more consistent vertical gutter in non-Google docs cases so for now
   // we put up with the complexity.
   const node = textRange[0].node;
   const gDocsStartSpan = isGdocsSpan(node) ? node : undefined;
@@ -118,6 +118,11 @@ function getInitialClientBboxofTextSelection(
       } else if (range) {
         range.setEnd(node, end);
         result[size] = range.getClientRects()[0];
+
+        // Sometimes getClientRects can return an empty array
+        if (!result[size]) {
+          return undefined;
+        }
       }
 
       lastEnd = end;
