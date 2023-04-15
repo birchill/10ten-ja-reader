@@ -8,7 +8,6 @@ app.
 
 ## [Unreleased]
 
-- (Chrome, Edge) Migrated to Manifest version 3.
 - (Chrome, Edge, Safari) Fixed a bug where overlays would be broken on
   [MangaDex](https://mangadex.org/)
   ([#1110](https://github.com/birchill/10ten-ja-reader/issues/1110)).

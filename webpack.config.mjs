@@ -163,13 +163,11 @@ const chromeConfig = buildExtConfig({
   distFolder: 'dist-chrome',
   includeRikaichampName: true,
   isChrome: true,
-  mv3: true,
   needsClipboardWrite: false,
   supportsExtensionSourceMaps: false,
   supportsMatchAboutBlank: true,
   supportsOfflineEnabledField: true,
   target: 'chromium',
-  useServiceWorker: true,
 });
 
 const edgeConfig = buildExtConfig({
@@ -177,12 +175,10 @@ const edgeConfig = buildExtConfig({
   distFolder: 'dist-edge',
   includeRikaichampName: true,
   isEdge: true,
-  mv3: true,
   needsClipboardWrite: false,
   supportsExtensionSourceMaps: false,
   supportsMatchAboutBlank: true,
   target: 'chromium',
-  useServiceWorker: true,
 });
 
 const safariConfig = buildExtConfig({
