@@ -15,6 +15,8 @@ app.
 - (Chrome, Edge, Safari) Fixed a bug where overlays would be broken on
   [MangaDex](https://mangadex.org/)
   ([#1110](https://github.com/birchill/10ten-ja-reader/issues/1110)).
+- (Safari) Improved popup placement when looking up words at the start of
+  a line.
 - (Safari) Fixed a bug where the toolbar icon would get stuck not updating.
 
 ## [1.13.6] - 2023-02-23 (Firefox, Thunderbird only)
