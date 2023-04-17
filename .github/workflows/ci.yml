@@ -19,7 +19,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3.6.0
         with:
-          node-version: '16.x'
+          node-version: '18.x'
           cache: 'yarn'
 
       # Check the build works. No need to run the build:edge target since it's
@@ -57,7 +57,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3.6.0
         with:
-          node-version: '16.x'
+          node-version: '18.x'
           cache: 'yarn'
 
       - name: Install dependencies
