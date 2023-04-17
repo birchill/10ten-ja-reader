@@ -1,7 +1,10 @@
 import { html } from '../utils/builder';
 import { isTextInputNode, isTextNode, SVG_NS } from '../utils/dom-utils';
 import { bboxIncludesPoint, Point } from '../utils/geometry';
-import { getRangeForSingleCodepoint } from '../utils/range';
+import {
+  getBboxForSingleCodepointRange,
+  getRangeForSingleCodepoint,
+} from '../utils/range';
 import { isChromium } from '../utils/ua-utils';
 
 import { isGdocsOverlayElem } from './gdocs-canvas';
@@ -294,8 +297,9 @@ function getVisualOffset({
     direction: 'backwards',
   });
 
-  const previousCharacterBbox = range.getBoundingClientRect();
-  return bboxIncludesPoint({ bbox: previousCharacterBbox, point })
+  const previousCharacterBbox = getBboxForSingleCodepointRange(range);
+  return previousCharacterBbox &&
+    bboxIncludesPoint({ bbox: previousCharacterBbox, point })
     ? range.startOffset
     : position.offset;
 }
@@ -448,7 +452,10 @@ function getDistanceFromTextNode(
 
   // Get bbox of first character in range (since that's where we select from).
   const range = getRangeForSingleCodepoint({ source: node, offset });
-  const bbox = range.getBoundingClientRect();
+  const bbox = getBboxForSingleCodepointRange(range);
+  if (!bbox) {
+    return null;
+  }
 
   // Find the distance from the cursor to the closest edge of that character
   // since if we have a large font size the two distances could be quite
@@ -662,8 +669,8 @@ function adjustForRangeBoundary({
     offset: 0,
   });
 
-  const firstCharBbox = firstCharRange.getBoundingClientRect();
-  if (!bboxIncludesPoint({ bbox: firstCharBbox, point })) {
+  const firstCharBbox = getBboxForSingleCodepointRange(firstCharRange);
+  if (!firstCharBbox || !bboxIncludesPoint({ bbox: firstCharBbox, point })) {
     return range;
   }
 

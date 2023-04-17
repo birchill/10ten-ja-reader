@@ -117,12 +117,21 @@ function getInitialClientBboxofTextSelection(
         })[0];
       } else if (range) {
         range.setEnd(node, end);
-        result[size] = range.getClientRects()[0];
+
+        // Safari will sometimes return zero-width bboxes when the range starts
+        // on a new line so we should make sure to choose the wider bbox.
+        const bbox = [...range.getClientRects()].reduce<DOMRect | undefined>(
+          (result, bbox) =>
+            (result?.width || 0) >= bbox.width ? result : bbox,
+          undefined
+        );
 
         // Sometimes getClientRects can return an empty array
-        if (!result[size]) {
+        if (!bbox) {
           return undefined;
         }
+
+        result[size] = bbox;
       }
 
       lastEnd = end;

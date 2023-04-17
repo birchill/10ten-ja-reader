@@ -1,5 +1,8 @@
 import { bboxIncludesPoint, Point } from '../utils/geometry';
-import { getRangeForSingleCodepoint } from '../utils/range';
+import {
+  getBboxForSingleCodepointRange,
+  getRangeForSingleCodepoint,
+} from '../utils/range';
 
 import { getContentType } from './content-type';
 import { getTextFromAnnotatedCanvas } from './gdocs-canvas';
@@ -168,9 +171,11 @@ function getFirstCharBbox(position: CursorPosition): DOMRect | undefined {
   });
 
   // Skip empty ranges
-  return firstCharRange.startOffset !== firstCharRange.endOffset
-    ? firstCharRange.getBoundingClientRect()
-    : undefined;
+  if (firstCharRange.collapsed) {
+    return undefined;
+  }
+
+  return getBboxForSingleCodepointRange(firstCharRange);
 }
 
 function getTextNodeStart({

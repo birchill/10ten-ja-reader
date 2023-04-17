@@ -34,3 +34,20 @@ export function getRangeForSingleCodepoint({
 
   return range;
 }
+
+export function getBboxForSingleCodepointRange(
+  range: Range
+): DOMRect | undefined {
+  // In Safari when a range is at the start of a line, getClientRects()
+  // returns two bounding boxes: an empty (zero-width) one at the end of the
+  // line and a non-empty one for the first character at the start of the line.
+  //
+  // Worse still, getBoundingClientRect() returns the union of the two producing
+  // a massive (and very wrong) bounding box.
+  //
+  // Here we get the individual client rects and then return the widest one.
+  return [...range.getClientRects()].reduce<DOMRect | undefined>(
+    (result, bbox) => ((result?.width || 0) >= bbox.width ? result : bbox),
+    undefined
+  );
+}
