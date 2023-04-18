@@ -1,5 +1,10 @@
 import { html } from '../utils/builder';
-import { isTextInputNode, isTextNode, SVG_NS } from '../utils/dom-utils';
+import {
+  isElement,
+  isTextInputNode,
+  isTextNode,
+  SVG_NS,
+} from '../utils/dom-utils';
 import { bboxIncludesPoint, Point } from '../utils/geometry';
 import {
   getBboxForSingleCodepointRange,
@@ -508,7 +513,18 @@ function caretRangeFromPoint({
 
   let range = document.caretRangeFromPoint(point.x, point.y);
 
-  // TODO: Shadow DOM handling
+  // Unlike `document.caretPositionFromPoint` in Gecko,
+  // `document.caretRangeFromPoint` in Blink/WebKit doesn't dig into shadow DOM
+  // so we need to do it manually.
+  range = range ? expandShadowDomInRange({ range, point }) : null;
+
+  // Check if we are now pointing at an input text node.
+  if (isTextInputNode(range?.startContainer)) {
+    return getCursorPositionFromTextInput({
+      input: range!.startContainer,
+      point,
+    });
+  }
 
   // Range adjustment for Safari
   range = adjustForRangeBoundary({ range, point });
@@ -542,10 +558,40 @@ function getCursorPositionFromTextInput({
   }
 
   // Create the element
-  const mirrorElement = html('div', {}, input.value);
+  const mirrorElement = createMirrorElement(input);
+
+  // Read the offset
+  const result = caretRangeFromPoint({ point, element: mirrorElement });
+  if (result) {
+    // Adjust the offset before we drop the mirror element
+    if (isTextNodePosition(result)) {
+      result.offset = getVisualOffset({ position: result, point });
+    }
+
+    result.offsetNode = input;
+  }
+
+  // Drop the element
+  mirrorElement.remove();
+
+  return result;
+}
+
+function createMirrorElement(source: HTMLElement): HTMLElement {
+  // Create the element
+  const mirrorElement = html('div');
+
+  // Fill in the text content
+  if (isTextInputNode(source)) {
+    mirrorElement.append(source.value);
+  } else {
+    for (const child of source.childNodes) {
+      mirrorElement.append(child.cloneNode(true));
+    }
+  }
 
   // Set its styles to be the same
-  const cs = document.defaultView!.getComputedStyle(input);
+  const cs = document.defaultView!.getComputedStyle(source);
   for (let i = 0; i < cs.length; i++) {
     const prop = cs.item(i);
     mirrorElement.style.setProperty(prop, cs.getPropertyValue(prop));
@@ -563,7 +609,7 @@ function getCursorPositionFromTextInput({
     } = cs;
 
     const width =
-      input.offsetWidth -
+      source.offsetWidth -
       parseFloat(paddingLeft) -
       parseFloat(paddingRight) -
       parseFloat(borderLeftWidth) -
@@ -573,7 +619,7 @@ function getCursorPositionFromTextInput({
     }
 
     const height =
-      input.offsetHeight -
+      source.offsetHeight -
       parseFloat(paddingTop) -
       parseFloat(paddingBottom) -
       parseFloat(borderTopWidth) -
@@ -585,7 +631,7 @@ function getCursorPositionFromTextInput({
 
   // Set its position in the document to be to be the same
   mirrorElement.style.position = 'absolute';
-  const bbox = input.getBoundingClientRect();
+  const bbox = source.getBoundingClientRect();
 
   // We need to factor in the document scroll position too
   const top = bbox.top + document.documentElement.scrollTop;
@@ -602,24 +648,134 @@ function getCursorPositionFromTextInput({
   document.documentElement.appendChild(mirrorElement);
 
   // Match the scroll position
-  const { scrollLeft, scrollTop } = input;
+  const { scrollLeft, scrollTop } = source;
   mirrorElement.scrollTo(scrollLeft, scrollTop);
 
-  // Read the offset
-  const result = caretRangeFromPoint({ point, element: mirrorElement });
-  if (result) {
-    // Adjust the offset before we drop the mirror element
-    if (isTextNodePosition(result)) {
-      result.offset = getVisualOffset({ position: result, point });
-    }
+  return mirrorElement;
+}
 
-    result.offsetNode = input;
+function expandShadowDomInRange({
+  range,
+  point,
+}: {
+  range: Range;
+  point: Point;
+}): Range {
+  if (!isElement(range.startContainer)) {
+    return range;
   }
 
-  // Drop the element
+  const shadowRoot = getShadowRoot(range.startContainer);
+  if (!shadowRoot) {
+    return range;
+  }
+
+  // See if we can find a shadow element at the given point
+  const shadowElement = getShadowElementAtPoint({ shadowRoot, point });
+  if (
+    !(shadowElement instanceof HTMLElement) ||
+    shadowElement === range.startContainer
+  ) {
+    return range;
+  }
+
+  // If we got a text input element, return it as a range
+  if (isTextInputNode(shadowElement)) {
+    const range = new Range();
+    range.setStart(shadowElement, 0);
+    range.setEnd(shadowElement, 0);
+    return range;
+  }
+
+  // Check if the element has text
+  if ((shadowElement.textContent || '').trim() === '') {
+    return range;
+  }
+
+  // Make up a mirror element in the light DOM that we can run
+  // `document.caretRangeFromPoint` on.
+  const mirrorElement = createMirrorElement(shadowElement);
+  const newRange = document.caretRangeFromPoint(point.x, point.y);
+  if (!newRange || !mirrorElement.contains(newRange.startContainer)) {
+    mirrorElement.remove();
+    return range;
+  }
+
+  // Translate the range in the light DOM to the one in the shadow DOM
+  const path: number[] = [];
+  for (
+    let node = newRange.startContainer, depth = 0;
+    node.parentElement && node !== mirrorElement && depth < 10;
+    node = node.parentElement, depth++
+  ) {
+    const index = [...node.parentElement.childNodes].indexOf(node as ChildNode);
+    path.unshift(index);
+  }
+
+  // We need to store the offset before removing the mirror element or else
+  // the range will be updated
+  const offset = newRange.startOffset;
   mirrorElement.remove();
 
-  return result;
+  let shadowNode: Node | undefined = shadowElement;
+  while (shadowNode && path.length) {
+    shadowNode = shadowNode.childNodes[path.shift()!];
+  }
+
+  if (!isTextNode(shadowNode)) {
+    return range;
+  }
+
+  const shadowRange = new Range();
+  shadowRange.setStart(shadowNode, offset);
+  shadowRange.setEnd(shadowNode, offset);
+  return shadowRange;
+}
+
+// In Chrome, at least for `display: contents` elements, `caretRangeFromPoint`
+// will return the _parent_ element so we need to dig down to find the node
+// with the shadowRoot, if any.
+function getShadowRoot(element: Element): ShadowRoot | null {
+  if (element.shadowRoot) {
+    return element.shadowRoot;
+  }
+
+  for (const child of element.children) {
+    if (getComputedStyle(child).display === 'contents') {
+      const shadowRoot = getShadowRoot(child);
+      if (shadowRoot) {
+        return shadowRoot;
+      }
+    }
+  }
+
+  return null;
+}
+
+function getShadowElementAtPoint({
+  shadowRoot,
+  point,
+}: {
+  shadowRoot: ShadowRoot;
+  point: Point;
+}): Element | null {
+  // Find the first visible element in the shadow tree under the cursor
+  const hitElements = shadowRoot.elementsFromPoint(point.x, point.y);
+  const hitElement = hitElements.find(
+    (elem) =>
+      (getComputedStyle(elem).display === 'contents' || isVisible(elem)) &&
+      shadowRoot.contains(elem)
+  );
+
+  // Recursively visit shadow roots
+  if (hitElement?.shadowRoot) {
+    return getShadowElementAtPoint({
+      shadowRoot: hitElement.shadowRoot,
+      point,
+    });
+  }
+
+  return hitElement || null;
 }
 
 // On Safari, if you pass a point into caretRangeFromPoint that is less than
