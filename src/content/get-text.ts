@@ -68,6 +68,7 @@ export function getTextAtPoint({
   const [position, scanNode] = matchText
     ? getTextNodeStart({ elements, maxLength, point })
     : [null, null];
+  console.log('text node start', position, scanNode);
 
   // Check if we have a cache hit on the position
   //
@@ -79,6 +80,7 @@ export function getTextAtPoint({
     position.offsetNode === previousResult?.position?.offsetNode &&
     position.offset === previousResult?.position?.offset
   ) {
+    console.log('Re-using previous result', previousResult.result);
     return previousResult.result;
   }
 
@@ -90,11 +92,13 @@ export function getTextAtPoint({
     : undefined;
 
   if (position && isTextNodePosition(synthesizedPosition)) {
+    console.log('Scanning text...', synthesizedPosition);
     const result = scanText({
       startPosition: synthesizedPosition,
       matchCurrency,
       maxLength,
     });
+    console.log('... result', result);
 
     if (result) {
       console.assert(
