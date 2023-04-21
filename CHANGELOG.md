@@ -14,7 +14,7 @@ app.
   [#1033](https://github.com/birchill/10ten-ja-reader/issues/1033)).
 - (Chrome, Edge, Safari) Added support for looking up text in shadow DOM
   elements such as are used on Bing Chat
-  [#1130](https://github.com/birchill/10ten-ja-reader/issues/1130)).
+  ([#1130](https://github.com/birchill/10ten-ja-reader/issues/1130)).
 - (Chrome, Edge, Safari) Fixed a bug where overlays would be broken on
   [MangaDex](https://mangadex.org/)
   ([#1110](https://github.com/birchill/10ten-ja-reader/issues/1110)).
