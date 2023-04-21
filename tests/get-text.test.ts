@@ -307,7 +307,7 @@ describe('getTextAtPoint', () => {
   });
 
   it('should read shadow DOM content', () => {
-    // To simulate a custom element, we set the container to display: contents
+    // Often custom elements are set to display: contents so we set that here
     const container = document.createElement('div');
     container.style.display = 'contents';
     container.attachShadow({ mode: 'open' });
