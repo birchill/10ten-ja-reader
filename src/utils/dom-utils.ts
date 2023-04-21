@@ -53,7 +53,7 @@ export function isFocusable(element?: any): element is Focusable {
 }
 
 export function isTextInputNode(
-  node: Node | null
+  node: Node | null | undefined
 ): node is HTMLInputElement | HTMLTextAreaElement {
   const allowedInputTypes = [
     'button',
@@ -72,10 +72,13 @@ export function isTextInputNode(
   );
 }
 
-export const isTextNode = (node: Node | null): node is Text =>
+export const isTextNode = (node: Node | null | undefined): node is Text =>
   !!node && node.nodeType === Node.TEXT_NODE;
 
-export function isSvg(node: Node): boolean {
+export const isElement = (node: Node | null | undefined): node is Element =>
+  !!node && node.nodeType === Node.ELEMENT_NODE;
+
+export function isSvg(node: Node): node is SVGElement {
   return node.nodeType === Node.ELEMENT_NODE
     ? node instanceof SVGElement
     : node.parentElement instanceof SVGElement;

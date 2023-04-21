@@ -306,6 +306,29 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(result, 'いうえお', [textNode, 1, 5]);
   });
 
+  it('should read shadow DOM content', () => {
+    // Often custom elements are set to display: contents so we set that here
+    const container = document.createElement('div');
+    container.style.display = 'contents';
+    container.attachShadow({ mode: 'open' });
+    testDiv.append(container);
+
+    container.shadowRoot!.innerHTML = '<div>テスト</div>';
+
+    const textNode = container.shadowRoot!.firstElementChild!
+      .firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(result, 'テスト', [textNode, 0, 3]);
+  });
+
   it('should ignore non-Japanese characters', () => {
     testDiv.append('あいabc');
     const textNode = testDiv.firstChild as Text;

@@ -1,3 +1,5 @@
+import { isElement, isTextNode } from './dom-utils';
+
 export type Rect = {
   left: number;
   top: number;
@@ -61,14 +63,39 @@ export function bboxIncludesPoint({
   margin = 0,
   point,
 }: {
-  bbox: DOMRect;
+  bbox: Rect;
   margin?: number;
   point: Point;
 }): boolean {
   return (
     bbox.left - margin <= point.x &&
-    bbox.right + margin >= point.x &&
+    bbox.left + bbox.width + margin >= point.x &&
     bbox.top - margin <= point.y &&
-    bbox.bottom + margin >= point.y
+    bbox.top + bbox.height + margin >= point.y
   );
+}
+
+// DOM geometry utils
+
+export function getBboxForNodeList(nodes: NodeList): Rect | null {
+  return [...nodes].reduce<Rect | null>((bbox, child) => {
+    let thisBbox: Rect | null = null;
+    if (isTextNode(child)) {
+      const range = new Range();
+      range.selectNode(child);
+      thisBbox = range.getBoundingClientRect();
+    } else if (isElement(child)) {
+      if (getComputedStyle(child).display === 'none') {
+        thisBbox = getBboxForNodeList(child.childNodes);
+      } else {
+        thisBbox = child.getBoundingClientRect();
+      }
+    }
+
+    if (!thisBbox) {
+      return bbox;
+    }
+
+    return bbox ? union(bbox, thisBbox) : thisBbox;
+  }, null);
 }

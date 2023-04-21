@@ -1,5 +1,5 @@
-<!doctype html>
-<meta charset=utf-8>
+<!DOCTYPE html>
+<meta charset="utf-8" />
 <body>
   <p>Mixing 日本語 with イングリッシュ.</p>
   <p>この言葉を<b>強</b>調してる。</p>
@@ -121,42 +121,145 @@
   </ul>
   <h3>Starting number tests</h3>
   <ul>
-    <li>1つ
-    <li>14日
+    <li>1つ</li>
+    <li>14日</li>
   </ul>
 
   <h3>Currency tests</h3>
   <ul>
-    <li>8万8千円
-    <li>￥88、000
-    <li>¥ 88,000.00
-    <li>価格 88,000 <span>円</span>です。
-    <li>9万8800円
-    <li>100億円
-    <li>25.1万円
+    <li>8万8千円</li>
+    <li>￥88、000</li>
+    <li>¥ 88,000.00</li>
+    <li>価格 88,000 <span>円</span>です。</li>
+    <li>9万8800円</li>
+    <li>100億円</li>
+    <li>25.1万円</li>
   </ul>
 
   <h3>Number tests</h3>
   <ul>
-    <li>九十八
-    <li>9万8800
-    <li>365億
-    <li>25.103億
-    <li>100億 (should not match - has dictionary entry)
-    <li>二十 (should not match - has dictionary entry)
-    <li>九十 (should not match - has dictionary entry)
-    <li>88、000 (should not match - no kanji)
+    <li>九十八</li>
+    <li>9万8800</li>
+    <li>365億</li>
+    <li>25.103億</li>
+    <li>100億 (should not match - has dictionary entry)</li>
+    <li>二十 (should not match - has dictionary entry)</li>
+    <li>九十 (should not match - has dictionary entry)</li>
+    <li>88、000 (should not match - no kanji)</li>
   </ul>
 
   <h3>Shogi tests</h3>
   <ul>
-    <li>☗８三銀引成です
-    <li>８三銀引成です
-    <li>☖２四同歩
-    <li>２四𠔼歩
-    <li>２四𠔼歩
-    <li>８三↑
+    <li>☗８三銀引成です</li>
+    <li>８三銀引成です</li>
+    <li>☖２四同歩</li>
+    <li>２四𠔼歩</li>
+    <li>２四𠔼歩</li>
+    <li>８三↑</li>
   </ul>
+
+  <h3>Shadow DOM tests (Blink/WebKit only)</h3>
+  <script>
+    class MyElement extends HTMLElement {
+      constructor() {
+        super();
+
+        const shadowRoot = this.attachShadow({ mode: 'open' });
+        const para = document.createElement('p');
+        shadowRoot.appendChild(para);
+        para.append('日本語 (Custom element)');
+      }
+    }
+
+    customElements.define('my-elem', MyElement);
+  </script>
+  <my-elem></my-elem>
+  <div id="shadow-dom-container"></div>
+  <script>
+    const groupContainer = document.getElementById('shadow-dom-container');
+
+    // Direct text node children
+    {
+      const container = document.createElement('div');
+      groupContainer.append(container);
+      const shadowRoot = container.attachShadow({ mode: 'open' });
+      shadowRoot.append('日本語の');
+      const styledSpan = document.createElement('span');
+      styledSpan.style.color = 'red';
+      styledSpan.append('特別な');
+      shadowRoot.append(styledSpan);
+      shadowRoot.append('テキスト');
+      shadowRoot.append('(plain text nodes in shadow DOM)');
+    }
+
+    // Various other combinations
+    const cases = [
+      '<p>日本語 (element in shadow DOM element)</p>',
+      '<p style="margin-top: 15px; margin-left: 10px">日本語 (element with margin in shadow DOM)</p>',
+      '<p style="margin-top: 15px; margin-left: 10px; border: 5px solid blue">日本語 (element with margin+border in shadow DOM)</p>',
+      '<p style="margin-top: 15px; margin-left: 10px; border: 5px solid blue; box-sizing: border-box">日本語 (element with margin+border in shadow DOM, box-sizing: border-box)</p>',
+      '<p style="margin-top: 15px; margin-left: 10px; border: 5px solid blue; box-sizing: content-box">日本語 (element with margin in shadow DOM, box-sizing: content-box)</p>',
+      '<p style="width: 80px"><b>これは</b>日本語<span style="color: red">だよ</span>。 (element in shadow DOM with inlines and line wrapping)</p>',
+    ];
+
+    for (const source of cases) {
+      const container = document.createElement('div');
+      groupContainer.append(container);
+      const shadowRoot = container.attachShadow({ mode: 'open' });
+      shadowRoot.innerHTML = source;
+    }
+
+    // The Bing Chat test case
+    {
+      // First nest shadow DOMs to simulate that part (Bing Chat does a _lot_ of
+      // nesting of custom elements)
+      const outerContainer = document.createElement('div');
+      groupContainer.append(outerContainer);
+      const outerShadowRoot = outerContainer.attachShadow({ mode: 'open' });
+
+      const innerContainer = document.createElement('div');
+      outerShadowRoot.append(innerContainer);
+      const innerShadowRoot = innerContainer.attachShadow({ mode: 'open' });
+
+      // Now add some styles - this helps to ensure that the footnotes cause
+      // subsequent text to shift in a way that requires us to copy the style of
+      // child elements
+      const style = document.createElement('style');
+      style.append(`
+        sup {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 10px;
+          font-weight: 600;
+          vertical-align: top;
+          top: -1px;
+          margin: 0px 2px;
+          min-width: 14px;
+          height: 14px;
+          border-radius: 3px;
+          text-decoration-color: transparent;
+          color: var(--cib-color-brand-tertiary-foreground);
+          background: var(--cib-color-brand-tertiary-background);
+          outline: transparent solid  1px;
+        }
+      `);
+      innerShadowRoot.append(style);
+
+      // ... and HTML markup
+      const innerElem = document.createElement('div');
+      innerShadowRoot.append(innerElem);
+      innerElem.innerHTML =
+        '<div class="ac-container ac-adaptiveCard" style=""><div class="ac-textBlock" style=""><p><a class="tooltip-target" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-2-group" h="ID=SERP,5027.1">今日の天気は曇り、23度です。</a><a href="https://bing.com/search?q=%E4%BB%8A%E6%97%A5%E3%81%AE%E3%81%8A%E5%A4%A9%E6%B0%97" class="ac-anchor sup-target" target="_blank" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-2" aria-label="" h="ID=SERP,5027.1"><sup>1</sup></a><a class="tooltip-target" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-4-group" h="ID=SERP,5027.1"> 今日の最高気温は23.49度、最低気温は17.99度です。</a><a href="https://bing.com/search?q=%E4%BB%8A%E6%97%A5%E3%81%AE%E3%81%8A%E5%A4%A9%E6%B0%97" class="ac-anchor sup-target" target="_blank" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-4" aria-label="" h="ID=SERP,5027.1"><sup>1</sup></a><a class="tooltip-target" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-6-group" h="ID=SERP,5027.1"> 降水確率は0%です。</a><a href="https://bing.com/search?q=%E4%BB%8A%E6%97%A5%E3%81%AE%E3%81%8A%E5%A4%A9%E6%B0%97" class="ac-anchor sup-target" target="_blank" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-6" aria-label="" h="ID=SERP,5027.1"><sup>1</sup></a><a class="tooltip-target" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-8-group" h="ID=SERP,5027.1"> 明日は晴れ、最高気温は23.93度、最低気温は13.13度です。</a><a href="https://bing.com/search?q=%E4%BB%8A%E6%97%A5%E3%81%AE%E3%81%8A%E5%A4%A9%E6%B0%97" class="ac-anchor sup-target" target="_blank" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-8" aria-label="" h="ID=SERP,5027.1"><sup>1</sup></a></p></div><div class="ac-horizontal-separator" aria-hidden="true" style=""></div></div>';
+
+      const explanationElem = document.createElement('div');
+      innerShadowRoot.append(explanationElem);
+      explanationElem.append(
+        '(In particular we want to check that towards the end of the line)'
+      );
+    }
+  </script>
 
   <h3>Flickering test</h3>
   <style>
@@ -169,7 +272,14 @@
     }
   </style>
   <a id="flicker" href="#">This is a link.</a>
-  <div style="max-width: 400px; max-height: 300px; border: 1px dotted grey; overflow: auto">
+  <div
+    style="
+      max-width: 400px;
+      max-height: 300px;
+      border: 1px dotted grey;
+      overflow: auto;
+    "
+  >
     <div id="fullscreen" style="padding: 10px; background: white">
       <button id="fullscreen-btn">Toggle fullscreen</button>
       <p>
