@@ -596,32 +596,37 @@ function createMirrorElement(source: HTMLElement, text?: string): HTMLElement {
   // Create the element
   const mirrorElement = html('div');
 
-  // Fill in the text content
+  // Fill in the text/child content
   if (text !== undefined) {
     mirrorElement.append(text);
   } else {
-    // Unfortunately it's not enough to duplicate the `Text` node that we're
-    // trying to fetch the cursor position on.
+    // If we don't have a specific string to use, we duplicate all the source
+    // element's children.
     //
-    // That text node could be a child amongst other inline nodes and if we
-    // don't duplicate them, it won't get the correct position.
+    // Often we'll know which `Text` child of the source element we're
+    // interested in but unfortunately it's not enough to duplicate that one
+    // `Text` child in isolation since it could appear amongst other inline
+    // siblings and if we don't duplicate them, it won't get the correct
+    // position.
     //
-    // Furthermore, we can't get just the position of the text node itself
-    // because it might wrap over several lines and although we can get the bbox
-    // for each line via getClientRects(), we don't know what _characters_ are
-    // in each box (unless we create progressively longer Ranges and check the
-    // bboxes on _all_ of them).
+    // We _can_ get the position of the text node, but it might wrap over
+    // several lines and we need to duplicate that wrapping too in order to get
+    // the correct positioning.
     //
-    // Ultimately, despite our best efforts, we can't faithfully reproduce
-    // arbitrary content by cloning since it can includes things like
-    // pseudo-elements which we'd have to walk all the stylesheets in order to
-    // faithfully reproduce, so we probably should do some sort of bisection to
-    // determine the characters in each text run and just create an element for
-    // the specific run we're interested in.
+    // We can get the bbox for each line via getClientRects() but we don't know
+    // what _characters_ are in each box.
     //
-    // Until the we get around to doing that, however, we just recreate the
-    // child elements since this seems to be sufficient for every case we've
-    // encountered so far.
+    // In order to do that we'd probably need to make up many ranges and bisect
+    // them until we could assign characters to boxes but that's quite involved
+    // so currently we just duplicate all the descendant elements.
+    //
+    // That has some limitations such as not being able to reproduce
+    // pseudo-elements so in future we probably should attempt to get just the
+    // text and bounding box for the range we're interested in and reproducing
+    // that.
+    //
+    // For now, however, this approach of duplicating all the descendants works
+    // for all the content we've encountered.
     const childNodes = source.shadowRoot
       ? source.shadowRoot.childNodes
       : source.childNodes;
@@ -673,20 +678,19 @@ function createMirrorElement(source: HTMLElement, text?: string): HTMLElement {
   mirrorElement.style.position = 'absolute';
   const bbox = source.getBoundingClientRect();
 
-  // Bear in mind that the bbox returned by getBoundingClientRect is the
-  // position exclusive of margins and is in screen coordinates.
+  // Fetch the top/left coordinates, bearing in mind that the bbox returned by
+  // getBoundingClientRect is the position exclusive of margins and is in screen
+  // coordinates.
   const marginTop = parseFloat(cs.marginTop);
   const marginLeft = parseFloat(cs.marginLeft);
-  const { x: left, y: top } = toPageCoords({
-    x: bbox.left - marginLeft,
-    y: bbox.top - marginTop,
-  });
+  const screenPoint = { x: bbox.left - marginLeft, y: bbox.top - marginTop };
+  const { x: left, y: top } = toPageCoords(screenPoint);
 
   mirrorElement.style.top = top + 'px';
   mirrorElement.style.left = left + 'px';
 
-  // Finally, make sure it is on top
-  mirrorElement.style.zIndex = '10000';
+  // Finally, make sure our element is on top
+  mirrorElement.style.zIndex = '2147483647';
 
   // Append the element to the document. We need to do this before adjusting
   // the scroll offset or else it won't update.
@@ -732,6 +736,10 @@ function expandShadowDomInRange({
     return range;
   }
 
+  // Get the shadowRoot at the given point, if any.
+  //
+  // (This is complicated by the fact in Blink, `caretRangeFromPoint` seems to
+  // return the _parent_ of elements with a shadow root.)
   const shadowRoot = getShadowRoot({ element: range.startContainer, point });
   if (!shadowRoot) {
     return range;
@@ -815,12 +823,13 @@ function getShadowRoot({
 }
 
 function getBboxForShadowHost(element: Element): Rect | null {
-  if (getComputedStyle(element).display !== 'contents') {
-    return element.getBoundingClientRect();
+  // For display: contents, `getBoundingClientRect()` will return an empty
+  // bounding box so we need to return the contents of the shadow root instead.
+  if (getComputedStyle(element).display === 'contents') {
+    return getBboxForNodeList(element.shadowRoot!.childNodes);
   }
 
-  // Otherwise, get the union of every child in the shadow DOM
-  return getBboxForNodeList(element.shadowRoot!.childNodes);
+  return element.getBoundingClientRect();
 }
 
 function getShadowNodeAtPoint({
