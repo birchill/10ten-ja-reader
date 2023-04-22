@@ -8,6 +8,10 @@ app.
 
 ## [Unreleased]
 
+(Nothing yet)
+
+## [1.14.0] - 2023-04-22
+
 - Rewrote text lookup to better handle cases of hidden content (including
   `user-select: all` content), avoid lingering popups, and improve performance
   (Fixes [#990](https://github.com/birchill/10ten-ja-reader/issues/990) and
@@ -961,7 +965,9 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.13.5...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.14.0...HEAD
+[1.14.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.13.6...v1.14.0
+[1.13.6]: https://github.com/birchill/10ten-ja-reader/compare/v1.13.5...v1.13.6
 [1.13.5]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.5...v1.13.5
 [1.12.5]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.4...v1.12.5
 [1.12.4]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.3...v1.12.4
