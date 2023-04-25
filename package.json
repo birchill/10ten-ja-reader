@@ -112,7 +112,7 @@
     "lru_map": "0.4.1",
     "superstruct": "1.0.3",
     "typescript": "5.0.4",
-    "web-ext": "7.6.1",
+    "web-ext": "7.6.2",
     "webextension-polyfill": "^0.10.0"
   },
   "webExt": {
