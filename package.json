@@ -60,7 +60,7 @@
     "@types/yargs": "17.0.24",
     "@typescript-eslint/eslint-plugin": "5.59.1",
     "@typescript-eslint/parser": "5.59.1",
-    "all-contributors-cli": "6.24.0",
+    "all-contributors-cli": "6.25.0",
     "archiver": "5.3.1",
     "byline": "5.0.0",
     "chai": "4.3.7",
