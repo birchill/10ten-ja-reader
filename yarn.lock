@@ -8931,10 +8931,10 @@ xml2js@~0.4.23:
     sax ">=0.6.0"
     xmlbuilder "~11.0.0"
 
-xmlbuilder2@3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/xmlbuilder2/-/xmlbuilder2-3.0.2.tgz#fc499688b35a916f269e7b459c2fa02bb5c0822a"
-  integrity sha512-h4MUawGY21CTdhV4xm3DG9dgsqyhDkZvVJBx88beqX8wJs3VgyGQgAn5VreHuae6unTQxh115aMK5InCVmOIKw==
+xmlbuilder2@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/xmlbuilder2/-/xmlbuilder2-3.1.0.tgz#eb2ff101e3920f227c20272afe4990b1aac28cbc"
+  integrity sha512-QAfrowmLOGPh99FbflhSYC6jkNKhP6MtF9A5vIwbOKR+V03MOttdEuFrMzmmramYJoTJimGeyB8PnX9ouIjM7w==
   dependencies:
     "@oozcitak/dom" "1.15.10"
     "@oozcitak/infra" "1.0.8"
