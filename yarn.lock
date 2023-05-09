@@ -356,16 +356,16 @@
   resolved "https://registry.yarnpkg.com/@birchill/discriminator/-/discriminator-0.2.0.tgz#9dc19b0b737f38f3ac641c40777be6991b908fae"
   integrity sha512-Gd5FjdCLO4FRMOquCNIFgdJvR0vlq7cNmQJpfql2ftOnJnnzoP/egqcoKoU2EEfpNIAQiw6e2JAhEeaezR1RXQ==
 
-"@birchill/jpdict-idb@1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-1.2.2.tgz#03944103905adcf740e6e75f696e57158cb6cba8"
-  integrity sha512-OXi8iAFUsCSZleJwa0CY7hhDbTYK/2phpJ/6qIt9mWN0KzdPAgVpCc6j/B4iGPnlFGITOGA++qpG7NLg2CfOvQ==
+"@birchill/jpdict-idb@1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-1.3.0.tgz#612a6fbc2faa29ce47824922897637d196450750"
+  integrity sha512-0SgmPUGHeoLs4gC3hdvRe5/0XkDrbeYJocMVA1W+5L+J1V24vpoxDFeTbt/WiYlFKA33KyH8qEv9rqcQgY5YLw==
   dependencies:
     "@birchill/json-equalish" "^1.1.2"
     "@birchill/normal-jp" "^1.4.0"
-    idb "^7.0.2"
+    idb "^7.1.1"
     safari-14-idb-fix "^3.0.0"
-    superstruct "^0.16.0"
+    superstruct "^1.0.3"
 
 "@birchill/json-equalish@^1.1.2":
   version "1.1.2"
@@ -4532,7 +4532,7 @@ icss-utils@^5.0.0, icss-utils@^5.1.0:
   resolved "https://registry.yarnpkg.com/icss-utils/-/icss-utils-5.1.0.tgz#c6be6858abd013d768e98366ae47e25d5887b1ae"
   integrity sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==
 
-idb@^7.0.2:
+idb@^7.1.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/idb/-/idb-7.1.1.tgz#d910ded866d32c7ced9befc5bfdf36f572ced72b"
   integrity sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==
@@ -7945,15 +7945,10 @@ strip-json-comments@~2.0.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
   integrity sha512-4gB8na07fecVVkOI6Rs4e7T6NOTki5EmL7TUduTs6bu3EdnSycntVJ4re8kgZA+wx9IueI2Y11bfbgwtzuE0KQ==
 
-superstruct@1.0.3:
+superstruct@1.0.3, superstruct@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/superstruct/-/superstruct-1.0.3.tgz#de626a5b49c6641ff4d37da3c7598e7a87697046"
   integrity sha512-8iTn3oSS8nRGn+C2pgXSKPI3jmpm6FExNazNpjvqS6ZUJQCej3PUXEKM8NjHBOs54ExM+LPW/FBRhymrdcCiSg==
-
-superstruct@^0.16.0:
-  version "0.16.7"
-  resolved "https://registry.yarnpkg.com/superstruct/-/superstruct-0.16.7.tgz#78bb71209d71e6107a260afc166580b137bd243a"
-  integrity sha512-4ZZTrXlP4XzCrgh4vOfPDL6dL7zZm5aPl78eczwFSrwvxtsEnKRrSGID6Sbt0agycUoo4auRdWSNTX+oQ3KFyA==
 
 supports-color@8.1.1, supports-color@^8.0.0:
   version "8.1.1"

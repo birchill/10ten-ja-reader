@@ -1418,6 +1418,10 @@
     "message": "服务",
     "description": "Label used to describe senses with the 'serv' (service) annotation"
   },
+  "misc_label_ship": {
+    "message": "船名",
+    "description": "Label used to describe senses with the 'ship' (ship) annotation"
+  },
   "misc_label_sl": {
     "message": "俚语",
     "description": "Label used to describe senses with the 'sl' (slang) annotation"
