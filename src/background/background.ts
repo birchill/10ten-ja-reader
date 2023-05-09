@@ -463,10 +463,17 @@ let pendingSearchOtherRequest:
 browser.runtime.onMessage.addListener(
   (request: unknown, sender: Runtime.MessageSender): void | Promise<any> => {
     if (!s.is(request, BackgroundRequestSchema)) {
+      // We can sometimes get requests here from other extensions?
+      //
+      // We've observed requests such as the following:
+      //
+      //   {"type":"cs-frame-forget"}
+      //   {"action":"requestBackendReadySignal"}
+      //   {"type":"cs-frame-connect","data":{"isDark":true}}
+      //
+      // Curiously in all cases the user agent was not identified so I'm not
+      // sure if this can happen in all browsers or not.
       console.warn(`Unrecognized request: ${JSON.stringify(request)}`);
-      void Bugsnag.notify(`Unrecognized request: ${JSON.stringify(request)}`, {
-        severity: 'warning',
-      });
       return;
     }
 
