@@ -85,7 +85,7 @@
     "source-map-loader": "4.0.1",
     "terser-webpack-plugin": "5.3.9",
     "ts-jest": "29.1.0",
-    "ts-loader": "9.4.2",
+    "ts-loader": "9.4.3",
     "ts-node": "10.9.1",
     "web-ext-plugin": "2.7.0",
     "webpack": "5.83.1",
