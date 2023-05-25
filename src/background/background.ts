@@ -272,7 +272,10 @@ async function initJpDict() {
 }
 
 Bugsnag.leaveBreadcrumb('Running initJpDict from startup...');
-initJpDict();
+initJpDict().catch((e) => {
+  console.error(e);
+  void Bugsnag.notify(e);
+});
 
 async function onDbStatusUpdated(state: JpdictStateWithFallback) {
   jpdictState = state;
