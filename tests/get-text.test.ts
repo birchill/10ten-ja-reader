@@ -1267,7 +1267,7 @@ describe('getTextAtPoint', () => {
 
   it('should find text in SVG content', function () {
     // Skipping on Firefox due to bug: https://bugzilla.mozilla.org/show_bug.cgi?id=1801581
-    if (navigator.userAgent.indexOf('Firefox')) {
+    if (navigator.userAgent.indexOf('Firefox') !== -1) {
       this.skip();
     }
 
