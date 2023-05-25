@@ -3,7 +3,7 @@
   <h1>10ten Japanese Reader</h1>
 
   <p>
-    Hi fellow Japanese reader! Formerly known as Rikaichamp, this browser extension lets you look up Japanese words with the hover of a mouse or tap of a screen. 
+    Hi fellow Japanese reader! Formerly known as Rikaichamp, this browser extension lets you look up Japanese words with the hover of a mouse or tap of a screen.
   </p>
 
   <p>
