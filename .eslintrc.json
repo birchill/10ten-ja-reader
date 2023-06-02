@@ -27,7 +27,7 @@
       }
     }
   ],
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "vitest"],
   "rules": {
     "linebreak-style": ["error", "unix"],
     "no-constant-condition": ["error", { "checkLoops": false }],
@@ -49,6 +49,7 @@
         "allowSeparatedGroups": true
       }
     ],
+    "vitest/no-identical-title": ["error"],
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-floating-promises": [

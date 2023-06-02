@@ -1,44 +1,46 @@
+import { describe, expect, it, vi } from 'vitest';
+
 // Mock browser.i18n.getMessage
-const mockBrowser = {
-  i18n: {
-    getMessage: (id: string, replacements?: Array<string>) => {
-      switch (id) {
-        case 'content_kanji_base_radical':
-          return `from ${replacements ? replacements[0] : '?'} (${
-            replacements ? replacements[1] : '?'
-          })`;
-        case 'content_kanji_components_label':
-          return 'components';
-        case 'content_kanji_radical_label':
-          return 'radical';
-        case 'content_kanji_kentei_level_pre':
-          return `Pre-${replacements ? replacements[0] : '?'}`;
-        case 'content_kanji_kentei_level':
-          return `${replacements ? replacements[0] : '?'}`;
-        case 'gloss_type_short_expl':
-          return 'expl.';
-        case 'gloss_type_short_lit':
-          return 'lit.';
-        case 'gloss_type_short_fig':
-          return 'fig.';
-        case 'ref_label_radical':
-          return 'Radical';
-        case 'ref_label_nelson_r':
-          return 'Radical (Nelson)';
-        case 'ref_label_kk':
-          return 'Kanji Kentei';
-        case 'ref_label_jlpt':
-          return 'JLPT';
-        case 'ref_label_unicode':
-          return 'Unicode';
-        default:
-          return 'Unrecognized string ID';
-      }
+vi.mock('webextension-polyfill', () => ({
+  default: {
+    i18n: {
+      getMessage: (id: string, replacements?: Array<string>) => {
+        switch (id) {
+          case 'content_kanji_base_radical':
+            return `from ${replacements ? replacements[0] : '?'} (${
+              replacements ? replacements[1] : '?'
+            })`;
+          case 'content_kanji_components_label':
+            return 'components';
+          case 'content_kanji_radical_label':
+            return 'radical';
+          case 'content_kanji_kentei_level_pre':
+            return `Pre-${replacements ? replacements[0] : '?'}`;
+          case 'content_kanji_kentei_level':
+            return `${replacements ? replacements[0] : '?'}`;
+          case 'gloss_type_short_expl':
+            return 'expl.';
+          case 'gloss_type_short_lit':
+            return 'lit.';
+          case 'gloss_type_short_fig':
+            return 'fig.';
+          case 'ref_label_radical':
+            return 'Radical';
+          case 'ref_label_nelson_r':
+            return 'Radical (Nelson)';
+          case 'ref_label_kk':
+            return 'Kanji Kentei';
+          case 'ref_label_jlpt':
+            return 'JLPT';
+          case 'ref_label_unicode':
+            return 'Unicode';
+          default:
+            return 'Unrecognized string ID';
+        }
+      },
     },
   },
-};
-
-jest.mock('webextension-polyfill', () => mockBrowser);
+}));
 
 import { getEntryToCopy, getFieldsToCopy, getWordToCopy } from './copy-text';
 

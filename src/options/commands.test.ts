@@ -1,6 +1,10 @@
-jest.mock('webextension-polyfill', () => ({
-  i18n: {
-    getMessage: (key: string) => key,
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('webextension-polyfill', () => ({
+  default: {
+    i18n: {
+      getMessage: (key: string) => key,
+    },
   },
 }));
 

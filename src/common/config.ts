@@ -92,7 +92,7 @@ type StorageChange = {
   newValue?: any;
 };
 type ChangeDict = { [field: string]: StorageChange };
-type ChangeCallback = (changes: ChangeDict) => void;
+export type ChangeCallback = (changes: ChangeDict) => void;
 
 // A single key description. We use this definition for storing the default keys
 // since it allows storing as an array (so we can determine the order the

@@ -1,21 +1,27 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
+
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 let locale: 'en' | 'ja' | 'zh_hans' = 'en';
 
-jest.mock('webextension-polyfill', () => ({
-  i18n: {
-    getMessage: (id: string, replacements?: string | Array<string>) =>
-      mockGetMessage(locale, id, replacements),
-  },
-}));
+vi.mock('webextension-polyfill', async () => {
+  const { mockGetMessage } = await import('./mock-get-message');
+  return {
+    default: {
+      i18n: {
+        getMessage: (id: string, replacements?: string | Array<string>) =>
+          mockGetMessage(locale, id, replacements),
+      },
+    },
+  };
+});
 
 import { ShogiMeta } from '../shogi';
 import { clearLangTagCache } from './lang-tag';
 
 import { renderMetadata } from './metadata';
-import { mockGetMessage } from './mock-get-message';
 
 function setLocale(localeToSet: 'en' | 'ja' | 'zh_hans') {
   locale = localeToSet;

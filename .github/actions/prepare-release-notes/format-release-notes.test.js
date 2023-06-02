@@ -1,4 +1,5 @@
-const { formatReleaseNotes } = require('./format-release-notes.js');
+import { describe, expect, it } from 'vitest';
+import { formatReleaseNotes } from './format-release-notes';
 
 describe('formatReleaseNotes', () => {
   it('fetches the matching set of notes', () => {
