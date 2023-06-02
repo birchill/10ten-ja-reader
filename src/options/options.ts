@@ -46,6 +46,7 @@ import { getThemeClass } from '../utils/themes';
 
 import { Command, CommandParams, isValidKey } from './commands';
 import { translateDoc } from './l10n';
+import { possiblyHasPhysicalKeyboard } from '../utils/device';
 
 startBugsnag();
 
@@ -67,6 +68,9 @@ function completeForm() {
   }
   if (isSafari()) {
     document.documentElement.classList.add('safari');
+  }
+  if (possiblyHasPhysicalKeyboard()) {
+    document.documentElement.classList.add('has-keyboard');
   }
 
   // Pop-up

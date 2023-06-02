@@ -12,41 +12,25 @@ export function isTouchDevice(): boolean {
   return 'TouchEvent' in window;
 }
 
-export function probablyHasPhysicalKeyboard(): boolean {
-  // Unfortunately, there's no good media query for this yet.
-  //
-  //   https://github.com/w3c/csswg-drafts/issues/3871
-  //
-  // One approach we _could_ try is to see if we are a mobile touchscreen
-  // device, and if we're NOT, assume we have a keyboard.
-  //
-  // Browsers pretend they don't support touch events for touchscreen desktops
-  // when you use certain legacy touch event handlers to feature detect. See:
-  //
-  //   https://groups.google.com/a/chromium.org/forum/#!msg/blink-dev/KV6kqDJpYiE/YFM28ZNBBAAJ
-  //   https://bugzilla.mozilla.org/show_bug.cgi?id=1412485
-  //   https://github.com/w3c/touch-events/issues/64
-  //
-  // (But note there are browser-specific differences such as Firefox reporting
-  // false for 'TouchEvent' in window on non-touch devices while Chrome reports
-  // true.)
-  //
-  // So we could exploit that to filter out touchscreen mobile devices. However,
-  // that's not going to work properly for feature phones like KaiOS that are
-  // mobile but don't have a proper keyboard.
-  //
-  // Instead, we test for a mouse-like device, and if we have one, assume we
-  // also have a keyboard. It's not right, but it should work for most devices
-  // until the CSSWG gets around to speccing something for this.
-  //
-  // This approach also happens to work when we enable touch simulation (and
-  // reload) in Firefox DevTools.
-  //
-  // For Chrome/Edge we could possibly check for navigator.keyboard but other
-  // browsers are unlikely to implement this API because it's a fingerprinting
-  // nightmare and as it stands the spec does not define what we should expect
-  // the value of this property to be for a device without a physical keyboard.
-  return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+export function possiblyHasPhysicalKeyboard(): boolean {
+  const desktopOsStrings = ['Windows', 'Win32', 'Win64', 'Mac', 'Linux'];
+
+  return (
+    // In general, if the device has a fine pointer (e.g. mouse) we assume
+    // it also has a keyboard.
+    window.matchMedia('(hover) and (pointer: fine)').matches ||
+    // However, we've encountered at least one notebook device which returns
+    // `any-pointer: coarse` and `any-hover: none` for its trackpad on Firefox.
+    //
+    // That seems to be a bug somewhere (at very least, a trackpad can hover)
+    // in either Firefox or the OS/device driver, we shouldn't prevent users of
+    // such a device from being able to configure the keyboard so we _also_
+    // assume we have a keyboard when we're on an OS that we know to be
+    // a desktop OS.
+    desktopOsStrings.some(
+      (osString) => navigator.userAgent.indexOf(osString) !== -1
+    )
+  );
 }
 
 // Detect if the primary input means is capable of hovering. If it is NOT
