@@ -488,17 +488,19 @@ fieldset.bordered {
  *
  * Note that 'not' here negates the _whole_ media query.
  */
+.needs-keyboard {
+  display: none;
+}
+.has-keyboard .needs-keyboard {
+  display: block;
+}
 @media not screen and (hover) and (pointer: fine) {
   .needs-keyboard {
     display: none;
   }
 }
 
-/*
- * This media query is exactly the same as the above but maybe they will
- * differ one day?
- */
-@media not screen and (hover) and (pointer: fine) {
+@media not screen and (any-hover: hover) and (any-pointer: fine) {
   .needs-mouse {
     display: none;
   }

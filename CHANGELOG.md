@@ -8,7 +8,7 @@ app.
 
 ## [Unreleased]
 
-(Nothing yet)
+- Fix keyboard detection for some devices.
 
 ## [1.14.0] - 2023-04-22
 
