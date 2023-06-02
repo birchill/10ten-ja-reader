@@ -1,8 +1,10 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
 import { readFile } from 'fs';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import createFetchMock from 'vitest-fetch-mock';
 
 class Worker {
   constructor() {}
@@ -12,96 +14,106 @@ class Worker {
 (window as any).Worker = Worker;
 
 // Mock browser.runtime.getURL and browser.i18n.getMessage
-const mockBrowser = {
-  runtime: { getURL: jest.fn((url) => url) },
-  i18n: {
-    getMessage: (id: string) => {
-      switch (id) {
-        case 'deinflect_polite_past_negative':
-          return 'polite past negative';
-        case 'deinflect_polite_negative':
-          return 'polite negative';
-        case 'deinflect_polite_volitional':
-          return 'polite volitional';
-        case 'deinflect_chau':
-          return '-chau';
-        case 'deinflect_sugiru':
-          return '-sugiru';
-        case 'deinflect_nasai':
-          return '-nasai';
-        case 'deinflect_polite_past':
-          return 'polite past';
-        case 'deinflect_tara':
-          return '-tara';
-        case 'deinflect_tari':
-          return '-tari';
-        case 'deinflect_causative':
-          return 'causative';
-        case 'deinflect_potential_or_passive':
-          return 'potential or passive';
-        case 'deinflect_toku':
-          return '-te oku';
-        case 'deinflect_sou':
-          return '-sou';
-        case 'deinflect_tai':
-          return '-tai';
-        case 'deinflect_polite':
-          return 'polite';
-        case 'deinflect_past':
-          return 'past';
-        case 'deinflect_negative':
-          return 'negative';
-        case 'deinflect_passive':
-          return 'passive';
-        case 'deinflect_ba':
-          return '-ba';
-        case 'deinflect_volitional':
-          return 'volitional';
-        case 'deinflect_potential':
-          return 'potential';
-        case 'deinflect_causative_passive':
-          return 'causative passive';
-        case 'deinflect_te':
-          return '-te';
-        case 'deinflect_zu':
-          return '-zu';
-        case 'deinflect_imperative':
-          return 'imperative';
-        case 'deinflect_masu_stem':
-          return 'masu stem';
-        case 'deinflect_adv':
-          return 'adv';
-        case 'deinflect_noun':
-          return 'noun';
-        case 'deinflect_imperative_negative':
-          return 'imperative negative';
-        default:
-          return 'Unrecognized string ID';
-      }
+vi.mock('webextension-polyfill', () => ({
+  default: {
+    runtime: {
+      getURL: (url: string) => url,
+    },
+    i18n: {
+      getMessage: (id: string) => {
+        switch (id) {
+          case 'deinflect_polite_past_negative':
+            return 'polite past negative';
+          case 'deinflect_polite_negative':
+            return 'polite negative';
+          case 'deinflect_polite_volitional':
+            return 'polite volitional';
+          case 'deinflect_chau':
+            return '-chau';
+          case 'deinflect_sugiru':
+            return '-sugiru';
+          case 'deinflect_nasai':
+            return '-nasai';
+          case 'deinflect_polite_past':
+            return 'polite past';
+          case 'deinflect_tara':
+            return '-tara';
+          case 'deinflect_tari':
+            return '-tari';
+          case 'deinflect_causative':
+            return 'causative';
+          case 'deinflect_potential_or_passive':
+            return 'potential or passive';
+          case 'deinflect_toku':
+            return '-te oku';
+          case 'deinflect_sou':
+            return '-sou';
+          case 'deinflect_tai':
+            return '-tai';
+          case 'deinflect_polite':
+            return 'polite';
+          case 'deinflect_past':
+            return 'past';
+          case 'deinflect_negative':
+            return 'negative';
+          case 'deinflect_passive':
+            return 'passive';
+          case 'deinflect_ba':
+            return '-ba';
+          case 'deinflect_volitional':
+            return 'volitional';
+          case 'deinflect_potential':
+            return 'potential';
+          case 'deinflect_causative_passive':
+            return 'causative passive';
+          case 'deinflect_te':
+            return '-te';
+          case 'deinflect_zu':
+            return '-zu';
+          case 'deinflect_imperative':
+            return 'imperative';
+          case 'deinflect_masu_stem':
+            return 'masu stem';
+          case 'deinflect_adv':
+            return 'adv';
+          case 'deinflect_noun':
+            return 'noun';
+          case 'deinflect_imperative_negative':
+            return 'imperative negative';
+          default:
+            return 'Unrecognized string ID';
+        }
+      },
     },
   },
-};
+}));
 
-jest.mock('webextension-polyfill', () => mockBrowser);
+const fetchMocker = createFetchMock(vi);
+fetchMocker.enableMocks();
 
 import { searchWords, translate } from './jpdict';
 import { WordResult, WordSearchResult } from './search-result';
 
-// Mock fetch
-window.fetch = jest.fn().mockImplementation(
-  (url) =>
-    new Promise((resolve, reject) => {
-      readFile(`${__dirname}/../../${url}`, function (err, data) {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve({ text: () => data.toString() });
-      });
-    })
-);
-
 describe('searchWords', () => {
+  beforeEach(() => {
+    fetchMocker.mockResponse(
+      (req) =>
+        new Promise((resolve, reject) => {
+          readFile(`${__dirname}/../../${req.url}`, function (err, data) {
+            if (err) {
+              reject(err);
+              return;
+            }
+            resolve(data.toString());
+          });
+        })
+    );
+  });
+
+  afterEach(() => {
+    vi.resetAllMocks();
+  });
+
   it('finds an exact match', async () => {
     const [result] = await searchWords({
       input: '蛋白質',

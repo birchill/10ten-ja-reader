@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { extractShogiMetadata } from './shogi';
 
 describe('extractShogiMetadata', () => {

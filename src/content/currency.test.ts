@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { extractCurrencyMetadata } from './currency';
 
 describe('extractCurrencyMetadata', () => {

@@ -92,7 +92,10 @@ export class FlatFileDatabase {
         // It turns out some people are still using Firefox < 57. :/
         if (typeof AbortController === 'function') {
           controller = new AbortController();
-          requestOptions = { signal: controller.signal };
+          // Very weird, but with TS 5.0 and module set to "es2020", when
+          // building with webpack, TS thinks the type of `controller` at this
+          // point is `AbortController | undefined` !?
+          requestOptions = { signal: controller!.signal };
         }
 
         timeoutId = self.setTimeout(() => {

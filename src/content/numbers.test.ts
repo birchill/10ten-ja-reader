@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { extractNumberMetadata, parseNumber } from './numbers';
 
 describe('parseNumber', () => {
