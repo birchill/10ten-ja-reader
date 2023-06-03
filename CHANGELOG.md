@@ -8,6 +8,10 @@ app.
 
 ## [Unreleased]
 
+(Nothing yet)
+
+## [1.14.1] - 2023-06-03
+
 - Fix keyboard detection for some devices.
 
 ## [1.14.0] - 2023-04-22
@@ -965,7 +969,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.14.0...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.14.1...HEAD
+[1.14.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.14.0...v1.14.1
 [1.14.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.13.6...v1.14.0
 [1.13.6]: https://github.com/birchill/10ten-ja-reader/compare/v1.13.5...v1.13.6
 [1.13.5]: https://github.com/birchill/10ten-ja-reader/compare/v1.12.5...v1.13.5
