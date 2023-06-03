@@ -65,7 +65,7 @@
     "combined-stream2": "1.1.2",
     "copy-webpack-plugin": "11.0.0",
     "css-loader": "6.8.1",
-    "eslint": "8.41.0",
+    "eslint": "8.42.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-vitest": "^0.2.5",
     "fake-indexeddb": "^4.0.1",
