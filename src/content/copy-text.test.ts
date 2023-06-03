@@ -354,7 +354,7 @@ describe('getEntryToCopy', () => {
               g: [
                 {
                   str: 'being out and active in the world (of a hero, etc.)',
-                  type: 3,
+                  type: 'fig',
                 },
               ],
               pos: ['n', 'vs'],

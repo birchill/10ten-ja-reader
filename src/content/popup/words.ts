@@ -1,6 +1,5 @@
 import {
   Gloss,
-  GlossType,
   groupSenses,
   KanjiInfo,
   LangSource,
@@ -655,15 +654,8 @@ function appendGlosses(glosses: Array<Gloss>, parent: ParentNode) {
       parent.append('; ');
     }
 
-    if (gloss.type && gloss.type !== GlossType.Tm) {
-      const typeCode = {
-        [GlossType.Expl]: 'expl',
-        [GlossType.Fig]: 'fig',
-        [GlossType.Lit]: 'lit',
-      }[gloss.type];
-      const typeStr = typeCode
-        ? browser.i18n.getMessage(`gloss_type_label_${typeCode}`)
-        : '';
+    if (gloss.type && gloss.type !== 'tm' && gloss.type !== 'none') {
+      const typeStr = browser.i18n.getMessage(`gloss_type_label_${gloss.type}`);
       if (typeStr) {
         parent.append(
           html('span', { class: 'w-type', lang: getLangTag() }, `(${typeStr}) `)
@@ -672,7 +664,7 @@ function appendGlosses(glosses: Array<Gloss>, parent: ParentNode) {
     }
 
     parent.append(gloss.str);
-    if (gloss.type === GlossType.Tm) {
+    if (gloss.type === 'tm') {
       parent.append('™');
     }
   }

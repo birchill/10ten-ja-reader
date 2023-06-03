@@ -1,9 +1,4 @@
-import {
-  Dialect,
-  GlossType,
-  KanjiResult,
-  LangSource,
-} from '@birchill/jpdict-idb';
+import { Dialect, KanjiResult, LangSource } from '@birchill/jpdict-idb';
 import browser from 'webextension-polyfill';
 
 import { NameResult, Sense, WordResult } from '../background/search-result';
@@ -214,14 +209,6 @@ function serializeDefinition(entry: WordResult): string {
   }
 }
 
-const glossTypes: { [type in GlossType]: string | undefined } = {
-  [GlossType.Expl]: 'expl',
-  [GlossType.Lit]: 'lit',
-  [GlossType.Fig]: 'fig',
-  [GlossType.Tm]: 'tm',
-  [GlossType.None]: undefined,
-};
-
 // Match the formatting in Edict
 const dialects: { [dial in Dialect]: string } = {
   bra: 'bra:',
@@ -253,16 +240,16 @@ function serializeSense(sense: Sense): string {
   const glosses: Array<string> = [];
   for (const g of sense.g) {
     let gloss = '';
-    if (g.type && g.type !== GlossType.Tm) {
+    if (g.type && g.type !== 'tm' && g.type !== 'none') {
       const glossTypeStr = browser.i18n.getMessage(
-        `gloss_type_short_${glossTypes[g.type]}`
+        `gloss_type_short_${g.type}`
       );
       if (glossTypeStr) {
         gloss = `(${glossTypeStr}) `;
       }
     }
     gloss += g.str;
-    if (g.type === GlossType.Tm) {
+    if (g.type === 'tm') {
       gloss += '™';
     }
     glosses.push(gloss);
