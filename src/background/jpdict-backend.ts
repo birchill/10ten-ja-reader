@@ -111,10 +111,10 @@ export class JpdictLocalBackend implements JpdictBackend {
         }
       }
 
-      this.db = new JpdictIdb({ verbose: true });
-      this.db.addChangeListener(this.doDbStateNotification);
-
       try {
+        this.db = new JpdictIdb({ verbose: true });
+        this.db.addChangeListener(this.doDbStateNotification);
+
         await this.db.ready;
         return this.db;
       } catch (e) {
