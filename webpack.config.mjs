@@ -108,6 +108,9 @@ const commonExtConfig = {
           },
           mangle: false,
           format: {
+            // Chrome sometimes doesn't like the generated output claiming it's
+            // not valid UTF-8 (it is) so we need to force ASCII output.
+            ascii_only: true,
             beautify: true,
             // Drop any embedded source mapping URLs but preserve other comments
             // (superstruct has these, for example)

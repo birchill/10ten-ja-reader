@@ -8,7 +8,7 @@ app.
 
 ## [Unreleased]
 
-(Nothing yet)
+- Fix generated source encoding to avoid Chrome bug.
 
 ## [1.14.1] - 2023-06-03
 
