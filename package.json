@@ -99,7 +99,7 @@
     "yargs": "17.7.2"
   },
   "dependencies": {
-    "@birchill/bugsnag-zero": "0.5.1",
+    "@birchill/bugsnag-zero": "0.6.0",
     "@birchill/discriminator": "0.2.0",
     "@birchill/jpdict-idb": "2.0.1",
     "@birchill/normal-jp": "1.4.0",
