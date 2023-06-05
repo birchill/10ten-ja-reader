@@ -10,7 +10,7 @@ app.
 
 (Nothing yet)
 
-## [1.42.1] - 2023-06-05 (Chrome, Edge only)
+## [1.14.3] - 2023-06-05 (Chrome, Edge only)
 
 - (Chrome, Edge) Fix generated source encoding to avoid Chrome bug.
 
@@ -973,8 +973,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.14.2...HEAD
-[1.14.2]: https://github.com/birchill/10ten-ja-reader/compare/v1.14.1...v1.14.2
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.14.3...HEAD
+[1.14.3]: https://github.com/birchill/10ten-ja-reader/compare/v1.14.1...v1.14.3
 [1.14.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.14.0...v1.14.1
 [1.14.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.13.6...v1.14.0
 [1.13.6]: https://github.com/birchill/10ten-ja-reader/compare/v1.13.5...v1.13.6
