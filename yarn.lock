@@ -74,10 +74,10 @@
   dependencies:
     regenerator-runtime "^0.13.11"
 
-"@birchill/bugsnag-zero@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@birchill/bugsnag-zero/-/bugsnag-zero-0.5.1.tgz#23ea7726019e0a406cb43e5c17623ab313aadef5"
-  integrity sha512-OH6AsQy7i7/oEu5TryVdwfnkD2iKKLMBEhhq/3CPZZb6R3hZ8HCwcd780htio6FJW7wAMpxfu8Opt74W084GPg==
+"@birchill/bugsnag-zero@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@birchill/bugsnag-zero/-/bugsnag-zero-0.6.0.tgz#303d9ad52f6fa3d28327a0c0c9b765a7e234dbd4"
+  integrity sha512-8Ai1Ncp3vMBgJEsa2/K4kymu0ReReL6jh+fwrsnMu9yJmNwkutefxU1dbWuOa/EtxELCQhfesoYU+Gz04qrV6w==
   dependencies:
     aws-lambda "^1.0.7"
     ua-parser-js "^1.0.32"
