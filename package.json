@@ -89,7 +89,7 @@
     "vitest": "^0.32.0",
     "vitest-fetch-mock": "^0.2.2",
     "vitest-github-actions-reporter": "^0.10.0",
-    "web-ext-plugin": "2.8.0",
+    "web-ext-plugin": "2.8.1",
     "webpack": "5.88.1",
     "webpack-bugsnag-plugins": "1.8.0",
     "webpack-cli": "5.1.4",
