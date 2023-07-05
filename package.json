@@ -79,7 +79,7 @@
     "mocha": "10.2.0",
     "playwright": "1.35.1",
     "playwright-test": "^10.0.0",
-    "prettier": "2.8.8",
+    "prettier": "3.0.0",
     "prettier-plugin-md-nocjsp": "1.5.1",
     "semver-parser": "4.1.4",
     "source-map-loader": "4.0.1",
