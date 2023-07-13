@@ -526,7 +526,7 @@ const htmlTests = [
                 g: [
                   { str: 'wagon' },
                   { str: 'yamatogoto' },
-                  { str: 'six-stringed native Japanese zither', type: 1 },
+                  { str: 'six-stringed native Japanese zither', type: 'expl' },
                 ],
                 pos: ['n'],
                 misc: ['abbr'],
