@@ -1082,6 +1082,10 @@
     "message": "Latin",
     "description": "Label used to describe senses whose source language is 'la' (Latin)"
   },
+  "lang_label_lt": {
+    "message": "Lithuanian",
+    "description": "Label used to describe senses whose source language is 'lt' (Lithuanian)"
+  },
   "lang_label_mi": {
     "message": "Maori",
     "description": "Label used to describe senses whose source language is 'mi' (Maori)"
