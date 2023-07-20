@@ -8,7 +8,7 @@ app.
 
 ## [Unreleased]
 
-(Nothing yet)
+- Added a setting for changing the font-size of the popup
 
 ## [1.14.3] - 2023-06-05 (Chrome, Edge only)
 

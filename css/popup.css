@@ -39,6 +39,10 @@
   z-index: 2147483647 !important;
 }
 
+:root, :host {
+  --base-font-size: 14px;
+}
+
 .container {
   position: absolute;
   left: var(--left, auto);
@@ -198,6 +202,18 @@
   flex-grow: 1;
 }
 
+.window {
+  font-size: var(--base-font-size);
+}
+
+.window.font-large {
+  --base-font-size: 17px;
+}
+
+.window.font-xl {
+  --base-font-size: 19px;
+}
+
 /* Tab bar */
 
 .tab-bar {
@@ -228,13 +244,20 @@
 .tabs .tab {
   flex-grow: 1;
   list-style: none;
-  font-size: 0.8em;
+  font-size: calc(var(--base-font-size) * 0.8);
   -webkit-user-select: none;
   user-select: none;
 }
 
+/* Make the tabs bigger in interactive mode so they are easier to click */
 .container.interactive .tabs .tab {
-  font-size: 1em;
+  font-size: var(--base-font-size);
+}
+
+/* Don't increase the tab font size too much or else it looks childish */
+.window.font-large .tabs .tab,
+.window.font-xl .tabs .tab {
+  font-size: calc(var(--base-font-size) * 0.8);
 }
 
 .tabs .tab button {
@@ -259,7 +282,7 @@
 
 @media (max-width: 400px) {
   .window[data-tab-side='top'] .tabs .tab button span:lang(en) {
-    font-size: 0.7em;
+    font-size: calc(var(--base-font-size) * 0.7);
   }
 }
 
@@ -482,21 +505,21 @@
 .wordlist {
   display: flex;
   flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
-.entry,
-.more {
-  margin-top: 3px;
-  margin-bottom: 3px;
+.entry, .more {
   padding: 4px 14px;
 }
 
-.wordlist > .entry:first-child {
-  margin-top: 8px;
+.window.font-large .wordlist {
+  gap: 12px;
 }
 
-.wordlist > .entry:last-child {
-  margin-bottom: 8px;
+.window.font-xl .wordlist {
+  gap: 16px;
 }
 
 .entry,
@@ -505,7 +528,7 @@
 }
 
 .w-kanji {
-  font-size: 18px;
+  font-size: calc(18 / 14 * var(--base-font-size));
   margin-right: 0.7em;
   color: var(--primary-highlight);
 }
@@ -518,7 +541,7 @@
 }
 
 .w-kana {
-  font-size: 18px;
+  font-size: calc(18 / 14 * var(--base-font-size));
   margin-right: 0.3em;
 }
 
@@ -566,7 +589,7 @@
 }
 
 .w-romaji {
-  font-size: 14px;
+  font-size: var(--base-font-size);
   margin-right: 0.3em;
 }
 
@@ -582,7 +605,7 @@
 .w-kanji .w-head-info,
 .w-kana .w-head-info {
   margin-left: 0.3em;
-  font-size: 10px;
+  font-size: calc(10 / 14 * var(--base-font-size));
 }
 
 .w-kanji .svgicon,
@@ -601,16 +624,16 @@
 }
 
 .w-conj {
-  font-size: 12px;
+  font-size: calc(12 / 14 * var(--base-font-size));
   color: var(--conj-color);
 }
 
 .w-def {
-  font-size: 13px;
+  font-size: calc(13 / 14 * var(--base-font-size));
 }
 
 .w-def .w-inf {
-  font-size: 12px;
+  font-size: calc(12 / 14 * var(--base-font-size));
 }
 
 /* Give group headings a bit more space. They typically consist of a series of
@@ -647,13 +670,13 @@
 
 .w-def ol li {
   list-style-type: decimal !important;
-  font-size: 13px;
+  font-size: calc(13 / 14 * var(--base-font-size));
   line-height: 1.5;
 }
 
 .w-def ul li {
   list-style-type: circle !important;
-  font-size: 13px;
+  font-size: calc(13 / 14 * var(--base-font-size));
   line-height: 1.5;
 }
 
@@ -663,11 +686,11 @@
 }
 
 .w-def .w-type {
-  font-size: 12px;
+  font-size: calc(12 / 14 * var(--base-font-size));
 }
 
 .w-def .tag {
-  font-size: 10px;
+  font-size: calc(10 / 14 * var(--base-font-size));
   border: 1px solid var(--tag-border) !important;
   border-radius: 3px;
   margin-left: 0.5em;
@@ -709,7 +732,7 @@
 
 .w-def .w-lsrc,
 .w-def .w-lsrc * {
-  font-size: 12px;
+  font-size: calc(12 / 14 * var(--base-font-size));
 }
 
 .window:not(.-has-overlay) .entry.-selected {
@@ -803,7 +826,7 @@
 .title {
   background: var(--title-bg);
   color: var(--title-fg);
-  font-size: 10px;
+  font-size: calc(10 / 14 * var(--base-font-size));
   padding: 10px 14px 6px;
   border-radius: 5px 5px 0 0;
   margin-bottom: 3px;
@@ -830,11 +853,7 @@
 }
 
 .name-table .entry {
-  /*
-   * Something goes funny with the margins in multicol so that the entries
-   * no longer line up.
-   */
-  margin-top: 0;
+  margin-bottom: 3px;
 }
 
 .name-table .w-def div {
@@ -863,7 +882,7 @@
 .kanji-table .kanji {
   color: var(--primary-highlight);
   line-height: 1;
-  font-size: 60px;
+  font-size: calc(60 / 14 * var(--base-font-size));
   font-family: serif;
   text-align: center;
   margin-inline-end: 20px;
@@ -898,7 +917,7 @@
 
 .kanji-table .readings {
   color: var(--reading-highlight);
-  font-size: 14px;
+  font-size: var(--base-font-size);
   margin-top: 4px;
   margin-bottom: 10px;
 }
@@ -909,7 +928,7 @@
 
 .kanji-table .nanorilabel {
   color: var(--reading-label);
-  font-size: 11px;
+  font-size: calc(11 / 14 * var(--base-font-size));
 }
 
 /* kanji: meta */
@@ -920,7 +939,7 @@
 }
 
 .kanji-table .meta .tag {
-  font-size: 12px;
+  font-size: calc(12 / 14 * var(--base-font-size));
   border: 1px solid currentcolor !important;
   border-radius: 3px;
   padding: 2px;
@@ -930,7 +949,7 @@
 /* kanji: meanings */
 
 .kanji-table .meanings {
-  font-size: 14px;
+  font-size: var(--base-font-size);
   margin-bottom: 10px;
 }
 
@@ -938,6 +957,8 @@
 
 .kanji-table .misc {
   display: flex;
+  align-items: baseline;
+  font-size: calc(13 / 14 * var(--base-font-size));
 }
 
 .kanji-table .misc > * {
@@ -950,14 +971,8 @@
   margin-left: 12px;
 }
 
-.kanji-table .misc .strokes span,
-.kanji-table .misc .freq span,
-.kanji-table .misc .grade span {
-  font-size: 13px;
-}
-
-.kanji-table .misc .freq .denom {
-  font-size: 9px;
+.kanji-table .misc .frequency .denom {
+  font-size: calc(10 / 14 * var(--base-font-size));
 }
 
 .kanji-table .misc .svgicon {
@@ -992,7 +1007,7 @@
 .kanji-table .components .meaning,
 .kanji-table .components .-baseradical td {
   vertical-align: top;
-  font-size: 11px;
+  font-size: calc(11 / 14 * var(--base-font-size));
   padding-top: 0.3em;
   padding-bottom: 0.3em;
   padding-left: 1em;
@@ -1060,7 +1075,7 @@
 
 .references .name,
 .references .value {
-  font-size: 12px;
+  font-size: calc(12 / 14 * var(--base-font-size));
 }
 
 .references .value {
@@ -1075,7 +1090,16 @@
   position: relative;
   width: 100%;
   background: var(--status-bg);
-  max-height: 3em;
+  max-height: calc(4 * var(--base-font-size));
+}
+
+.window.font-xl .status-bar {
+  font-size: calc(0.8 * var(--base-font-size));
+}
+
+.status-bar > .status {
+  display: flex;
+  align-items: baseline;
 }
 
 .status-bar > * {
@@ -1088,7 +1112,7 @@
 
 .status-bar kbd {
   color: rgb(10, 10, 10);
-  font-size: 0.8rem;
+  font-size: 0.8em;
   font-family: monospace;
   height: 1.2rem;
   padding: 0.2rem;
@@ -1273,7 +1297,7 @@
 /* Meta: currency */
 
 .meta.currency > .main {
-  font-size: 18px;
+  font-size: calc(18 / 14 * var(--base-font-size));
 }
 
 .meta.currency > .main .equation-part {
@@ -1283,13 +1307,13 @@
 
 .meta.currency .main .curr {
   opacity: 0.6;
-  font-size: 14px;
+  font-size: var(--base-font-size);
   margin-right: 0.3em;
 }
 
 .meta.currency > .timestamp {
   opacity: 0.6;
-  font-size: 10px;
+  font-size: calc(10 / 14 * var(--base-font-size));
 }
 
 /* Meta: era */
@@ -1298,7 +1322,7 @@
 .meta.era .era-name ruby,
 .meta.era .equals,
 .meta.era .seireki {
-  font-size: 22px;
+  font-size: calc(22 / 14 * var(--base-font-size));
 }
 
 .meta.era .era-name,
@@ -1307,7 +1331,7 @@
 }
 
 .meta.era .era-name rt {
-  font-size: 12px;
+  font-size: calc(12 / 14 * var(--base-font-size));
 }
 
 .meta.era .seireki {
@@ -1317,7 +1341,7 @@
 /* Meta: measure */
 
 .meta.measure .main {
-  font-size: 18px;
+  font-size: calc(18 / 14 * var(--base-font-size));
 }
 
 .meta.measure .unit {
@@ -1340,7 +1364,7 @@
 /* Meta: shogi */
 
 .meta.shogi .label {
-  font-size: 10px;
+  font-size: calc(10 / 14 * var(--base-font-size));
   border: 1px solid var(--tag-border) !important;
   border-radius: 3px;
   margin-right: 0.5em;
@@ -1431,7 +1455,7 @@
 }
 
 .copy-overlay .copy-options li button {
-  font-size: 16px;
+  font-size: calc(16 / 14 * var(--base-font-size));
   font-weight: 600;
   width: 100%;
   min-height: 60px;
@@ -1447,11 +1471,11 @@
 }
 
 .copy-overlay .copy-options .copy-preview {
-  margin-top: 4px;
+  margin-top: calc(4 / 14 * var(--base-font-size));
   display: flex;
   white-space: nowrap;
   color: #817470;
-  font-size: 12px;
+  font-size: calc(12 / 14 * var(--base-font-size));
   font-weight: 400;
   max-width: 200px;
   overflow: hidden;

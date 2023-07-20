@@ -117,6 +117,9 @@ export class ContentConfig implements ContentConfigParams {
   get fx() {
     return this.params.fx;
   }
+  get fontSize() {
+    return this.params.fontSize;
+  }
   get hasDismissedMouseOnboarding() {
     return this.params.hasDismissedMouseOnboarding;
   }

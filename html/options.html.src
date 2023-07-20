@@ -99,8 +99,7 @@
             <label for=showDefinitions>__MSG_options_show_definitions__</label>
           </div>
           <div class="browser-style">
-            <label for="accentDisplay">__MSG_options_accent_display_label__<span
-              class=new-badge>__MSG_options_updated_badge_text__</span></label>
+            <label for="accentDisplay">__MSG_options_accent_display_label__</label>
             <select id="accentDisplay" name="accentDisplay" class="browser-style">
               <option value="downstep">__MSG_options_accent_display_downstep__</option>
               <option value="binary">__MSG_options_accent_display_binary__</option>
@@ -114,6 +113,15 @@
               <option value="expl">__MSG_options_pos_display_expl__</option>
               <option value="code">__MSG_options_pos_display_code__</option>
               <option value="none">__MSG_options_pos_display_none__</option>
+            </select>
+          </div>
+          <div class="browser-style">
+            <label for="fontSize">__MSG_options_font_size_label__<span
+              class=new-badge>__MSG_options_new_badge_text__</span></label>
+            <select id="fontSize" name="fontSize" class="browser-style">
+              <option value="normal">__MSG_options_font_size_normal__</option>
+              <option value="large">__MSG_options_font_size_large__</option>
+              <option value="xl">__MSG_options_font_size_xl__</option>
             </select>
           </div>
         </div>
