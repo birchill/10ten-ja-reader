@@ -20,6 +20,7 @@ import { stripFields } from '../utils/strip-fields';
 import {
   AccentDisplay,
   ContentConfigParams,
+  FontSize,
   HighlightStyle,
   KeyboardKeys,
   PartOfSpeechDisplay,
@@ -62,6 +63,7 @@ interface Settings {
   accentDisplay?: AccentDisplay;
   contextMenuEnable?: boolean;
   dictLang?: DbLanguageId;
+  fontSize?: FontSize;
   fxCurrency?: string;
   hasDismissedMouseOnboarding?: boolean;
   highlightStyle?: HighlightStyle;
@@ -482,6 +484,31 @@ export class Config {
       for (const listener of this.changeListeners) {
         listener(changes);
       }
+    }
+  }
+
+  // fontSize: Defaults to normal
+
+  get fontSize(): FontSize {
+    return typeof this.settings.fontSize === 'undefined'
+      ? 'normal'
+      : this.settings.fontSize;
+  }
+
+  set fontSize(value: FontSize) {
+    if (
+      typeof this.settings.fontSize !== 'undefined' &&
+      this.settings.fontSize === value
+    ) {
+      return;
+    }
+
+    if (value === 'normal') {
+      this.settings.fontSize = undefined;
+      void browser.storage.sync.remove('fontSize');
+    } else {
+      this.settings.fontSize = value;
+      void browser.storage.sync.set({ fontSize: value });
     }
   }
 
@@ -1029,6 +1056,7 @@ export class Config {
               timestamp: this.fxData.timestamp,
             }
           : undefined,
+      fontSize: this.fontSize,
       hasDismissedMouseOnboarding: this.hasDismissedMouseOnboarding,
       hasUpgradedFromPreMouse: this.hasUpgradedFromPreMouse,
       highlightStyle: this.highlightStyle,

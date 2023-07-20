@@ -87,6 +87,7 @@ import {
   removePopup,
   renderPopup,
   renderPopupArrow,
+  setFontSize,
   setPopupStyle,
   showOverlay,
 } from './popup/popup';
@@ -410,6 +411,10 @@ export class ContentHandler {
           if (this.isTopMostWindow()) {
             this.updatePopup({ fixPosition: true });
           }
+          break;
+
+        case 'fontSize':
+          setFontSize(value);
           break;
 
         case 'showRomaji':
@@ -2109,6 +2114,7 @@ export class ContentHandler {
       dictToShow: this.currentDict,
       displayMode,
       fxData: this.config.fx,
+      fontSize: this.config.fontSize,
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentLookupParams?.meta,
       onCancelCopy: () => this.exitCopyMode(),

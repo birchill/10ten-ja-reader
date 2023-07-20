@@ -35,6 +35,8 @@ export type AccentDisplay =
   | 'binary-hi-contrast'
   | 'none';
 
+export type FontSize = 'normal' | 'large' | 'xl';
+
 export type PartOfSpeechDisplay = 'expl' | 'code' | 'none';
 
 export type TabDisplay = 'top' | 'left' | 'right' | 'none';
@@ -49,6 +51,9 @@ export interface ContentConfigParams {
   // The preferred currency to convert to, along with its rate and the timestamp
   // for the rate.
   fx: { currency: string; rate: number; timestamp: number } | undefined;
+
+  // The font size to use for the popup.
+  fontSize: FontSize;
 
   // True if the user has performed any action that means we should no longer
   // show the mouse onboarding banner.

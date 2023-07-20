@@ -13,6 +13,7 @@ import { CopyKeys, CopyNextKeyStrings } from '../common/copy-keys';
 import { Config, DEFAULT_KEY_SETTINGS } from '../common/config';
 import {
   AccentDisplay,
+  FontSize,
   PartOfSpeechDisplay,
   TabDisplay,
 } from '../common/content-config-params';
@@ -198,6 +199,11 @@ function completeForm() {
     renderPopupStyleSelect();
   });
 
+  document.getElementById('fontSize')!.addEventListener('input', (event) => {
+    config.fontSize = (event.target as HTMLSelectElement).value as FontSize;
+    renderPopupStyleSelect();
+  });
+
   const mouseInteractivityOptions = Array.from(
     document.querySelectorAll('input[type=radio][name=mouseInteractivity]')
   );
@@ -288,6 +294,9 @@ function renderPopupPreview(theme: string): HTMLElement {
   const popupPreview = html('div', {
     class: `popup-preview window theme-${theme}`,
   });
+  if (config.fontSize !== 'normal') {
+    popupPreview.classList.add(`font-${config.fontSize}`);
+  }
 
   const entry = html('div', { class: 'entry' });
   popupPreview.appendChild(entry);
@@ -848,8 +857,8 @@ function createKanjiReferences() {
   )}, minmax(min-content, max-content))`;
 }
 
-// Expire current set of badges on Jan 31
-const NEW_EXPIRY = new Date(2023, 0, 31);
+// Expire current set of badges on Sep 30
+const NEW_EXPIRY = new Date(2023, 8, 30);
 
 function expireNewBadges() {
   if (new Date() < NEW_EXPIRY) {
@@ -872,6 +881,7 @@ function fillVals() {
   optform.showDefinitions.checked = !config.readingOnly;
   optform.accentDisplay.value = config.accentDisplay;
   optform.posDisplay.value = config.posDisplay;
+  optform.fontSize.value = config.fontSize;
   optform.highlightText.checked = !config.noTextHighlight;
   optform.contextMenuEnable.checked = config.contextMenuEnable;
   optform.showKanjiComponents.checked = config.showKanjiComponents;

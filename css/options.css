@@ -350,6 +350,7 @@ fieldset.bordered {
   min-width: 180px;
   text-align: left;
   width: revert !important;
+  padding: 8px 0;
 }
 
 /*

@@ -3,6 +3,7 @@ import { MajorDataSeries } from '@birchill/jpdict-idb';
 import {
   AccentDisplay,
   ContentConfigParams,
+  FontSize,
   PartOfSpeechDisplay,
 } from '../../common/content-config-params';
 import { CopyType } from '../../common/copy-keys';
@@ -49,6 +50,7 @@ export interface PopupOptions {
   dictToShow: MajorDataSeries;
   dictLang?: string;
   displayMode: DisplayMode;
+  fontSize?: FontSize;
   fxData: ContentConfigParams['fx'];
   kanjiReferences: Array<ReferenceAbbreviation>;
   meta?: SelectionMeta;
@@ -79,6 +81,7 @@ export function renderPopup(
   const windowElem = resetContainer({
     host: container,
     displayMode: options.displayMode,
+    fontSize: options.fontSize || 'normal',
     popupStyle: options.popupStyle,
   });
 
@@ -88,6 +91,7 @@ export function renderPopup(
     result.resultType !== 'db-unavailable' &&
     !result.title &&
     options.tabDisplay !== 'none';
+
   if (showTabs) {
     windowElem.append(
       renderTabBar({
@@ -273,10 +277,12 @@ function getDefaultContainer(): HTMLElement {
 function resetContainer({
   host,
   displayMode,
+  fontSize,
   popupStyle,
 }: {
   host: HTMLElement;
   displayMode: DisplayMode;
+  fontSize: FontSize;
   popupStyle: string;
 }): HTMLElement {
   const container = html('div', { class: 'container' });
@@ -290,6 +296,11 @@ function resetContainer({
 
   // Set theme
   windowDiv.classList.add(getThemeClass(popupStyle));
+
+  // Font size
+  if (fontSize !== 'normal') {
+    windowDiv.classList.add(`font-${fontSize}`);
+  }
 
   if (host.shadowRoot) {
     host.shadowRoot.append(container);
@@ -325,6 +336,23 @@ function getPopupContainer(): HTMLElement | null {
 
 export function removePopup() {
   removeContentContainer(['rikaichamp-window', 'tenten-ja-window']);
+}
+
+export function setFontSize(size: FontSize) {
+  const popupWindow = getPopupWindow();
+  if (!popupWindow) {
+    return;
+  }
+
+  for (const className of popupWindow.classList.values()) {
+    if (className.startsWith('font-')) {
+      popupWindow.classList.remove(className);
+    }
+  }
+
+  if (size !== 'normal') {
+    popupWindow.classList.add(`font-${size}`);
+  }
 }
 
 export function setPopupStyle(style: string) {

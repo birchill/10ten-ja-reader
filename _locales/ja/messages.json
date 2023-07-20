@@ -1630,6 +1630,22 @@
     "message": "ライセンス",
     "description": "The keyword in options_edrdg_license to link to the license"
   },
+  "options_font_size_label": {
+    "message": "フォントサイズ",
+    "description": "Label for font size drop-down."
+  },
+  "options_font_size_large": {
+    "message": "大きい",
+    "description": "Label for larger font size option."
+  },
+  "options_font_size_normal": {
+    "message": "標準",
+    "description": "Label for default font size option."
+  },
+  "options_font_size_xl": {
+    "message": "特大",
+    "description": "Label for largest font size option."
+  },
   "options_general_heading": {
     "message": "一般",
     "description": "Heading for common preferences."
