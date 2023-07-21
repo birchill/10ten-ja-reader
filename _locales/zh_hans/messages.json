@@ -1658,7 +1658,10 @@
   },
   "options_highlight_style_label": {
     "message": "高亮显示风格",
-    "description": "Title for the section for selection the highlight color"
+    "description": "Title for the section for selection the highlight style"
+  },
+  "options_highlight_style_none": {
+    "message": "无"
   },
   "options_highlight_style_yellow": {
     "message": "黄色"

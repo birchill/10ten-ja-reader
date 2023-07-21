@@ -1,3 +1,26 @@
+/*
+ * Container styles
+ */
+
+:root, body {
+  font: message-box;
+  font-size: 15px;
+  color: #222426;
+}
+
+@media (max-width: 400px) {
+  :root, body {
+    font-size: 12px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: rgb(28,27,34);
+    color: lightgrey;
+  }
+}
+
 :root.firefox {
   /*
    * Stop Firefox's scrollbars from disappearing and re-appearing triggering
@@ -8,26 +31,8 @@
   overflow: hidden;
 }
 
-/*
- * Reproduce some styles from Firefox's browser_styles for other browsers' sake
- */
-:root:not(.firefox) * {
+* {
   box-sizing: border-box;
-}
-
-:root:not(.firefox) .browser-style {
-  text-align: left;
-  margin-bottom: 6px;
-}
-
-:root:not(.firefox) .browser-style > input[type='text']:disabled,
-:root:not(.firefox) textarea.browser-style:disabled {
-  opacity: 0.5;
-}
-
-:root:not(.firefox) .panel-section-formElements {
-  padding-top: 16px;
-  padding-bottom: 16px;
 }
 
 :root.chromium:not(.edge) body {
@@ -41,24 +46,6 @@
 }
 
 /*
- * If we are using Firefox's browser styles for headings, drop the extra margin
- * we'd otherwise add for headings.
- */
-:root.firefox h2 {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-/*
- * Fix Firefox browser_styles which doesn't seem to define disabled colors
- * for checkboxes.
- */
-:root.firefox .browser-style > input[type='checkbox']:checked:disabled {
-  background-color: gray;
-  border-color: darkgray;
-}
-
-/*
  * Hide contents until it is ready / translated.
  */
 :root > * {
@@ -68,35 +55,83 @@
   opacity: 0;
 }
 
+/*
+ * Device detection
+ */
+
+.needs-keyboard {
+  display: none;
+}
+
+.has-keyboard .needs-keyboard {
+  display: block;
+}
+
+@media not screen and (any-hover: hover) and (any-pointer: fine) {
+  .needs-mouse {
+    display: none;
+  }
+}
+
+/*
+ * Container style
+ */
+
+#optform {
+  padding: 0 10px;
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+/*
+ * Section styles
+ */
+
+.section-header {
+  font-size: 1.46em;
+  font-weight: 300;
+  line-height: 1.3em;
+  margin: 8px 0;
+}
+
+.section-header:nth-of-type(n+2) {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid lightgrey;
+}
+
+.section-content {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.spacer {
+  height: 16px;
+}
+
+/*
+ * Form styles
+ */
+
 fieldset {
   padding: 0;
   border: none;
 }
 
-#tenten-ja-options,
-#tenten-ja-options td {
-  padding: 0 10px;
-  font-family: sans-serif;
-  font-size: 10pt;
+.checkbox-row {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  margin: 8px 0;
+  gap: 8px;
 }
 
-#tenten-ja-options a {
-  color: #0996f8;
-  text-decoration-style: dotted;
+.checkbox-row > :not(input) {
+  flex: 1;
+  line-height: 1.4em;
 }
 
-#tenten-ja-options a:visited {
-  color: #0996f8;
-}
-
-/*
- * extensions.css sets buttons to have height: 24px which means if they wrap
- * the label extends outside the button itself.
- *
- * In general we don't want these buttons to wrap, but if they do we should make
- * them look nice.
- */
-#tenten-ja-options button.browser-style {
+button {
   /* Don't wrap buttons */
   white-space: nowrap;
   /* If they do wrap, however, make them look nice */
@@ -105,18 +140,52 @@ fieldset {
   text-align: center;
 }
 
-.checkbox-row {
-  display: flex;
-  flex-direction: row;
-  align-items: start;
+select {
+  appearance: none;
+  color: inherit;
+  font: message-box;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 7px 30px 7px 15px;
+  margin: 4px 8px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  background-color: #eeeeef;
+  background-image:
+      url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2012%22%20width%3D%2212%22%20height%3D%2212%22%20fill%3D%22%23222426%22%3E%3Cpath%20d%3D%22m6.25%209%203.615-3.615a.5.5%200%200%200%200-.707.5.5%200%200%200-.707%200L6%207.825%202.855%204.68a.5.5%200%200%200-.707.707L5.76%209l.48%201z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px top 50%;
+  background-size: 12px auto;
 }
-.checkbox-row > :not(input) {
-  margin-inline-start: 6px;
-  flex: 1;
+
+select:hover:not(:focus) {
+  background-color: #dededf;
 }
-:root.firefox .checkbox-row > :not(input) {
-  /* Line up better with Firefox's browser checkmarks */
-  margin-top: 4px;
+
+@media (prefers-color-scheme: dark) {
+  select {
+    background-color: #2c2b32;
+    background-image:
+        url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2012%22%20width%3D%2212%22%20height%3D%2212%22%20fill%3D%22lightgrey%22%3E%3Cpath%20d%3D%22m6.25%209%203.615-3.615a.5.5%200%200%200%200-.707.5.5%200%200%200-.707%200L6%207.825%202.855%204.68a.5.5%200%200%200-.707.707L5.76%209l.48%201z%22%2F%3E%3C%2Fsvg%3E");
+  }
+
+  select:hover:not(:focus) {
+    background-color: #3b3a41;
+  }
+}
+
+/*
+ * Link styles
+ */
+
+a {
+  color: #0996f8;
+  text-decoration-style: dotted;
+}
+
+a:visited {
+  color: #0996f8;
 }
 
 /*
@@ -211,6 +280,38 @@ fieldset {
   background: #ccc;
 }
 
+@media (prefers-color-scheme: dark) {
+  .icon-radio.-with-labels > label {
+    border-color: rgba(249,249,250,0.2);
+    background: #1c1b22;
+  }
+
+  .icon-radio.-with-labels > label .icon {
+    background: #2c2b32;
+  }
+
+  .icon-radio.-with-labels > label:hover .icon {
+    background: #3b3a41;
+  }
+
+  .icon-radio.-with-labels > label .text {
+    border-top-color: rgba(249,249,250,0.2);
+  }
+
+  .icon-radio.-with-labels > label .text .radio {
+    background: #3b3a41;
+    border-color: rgba(249,249,250,0.2);
+  }
+
+  .icon-radio.-with-labels > input[type='radio']:checked + label .text .radio {
+    background: black;
+  }
+
+  .icon-radio.-with-labels > input[type='radio']:not(:checked) + label:hover .text .radio {
+    background: #2c2b32;
+  }
+}
+
 /*
  * Custom radio variant: black and white for inactive options
  */
@@ -221,55 +322,6 @@ fieldset {
 .icon-radio.-bw-inactive > input[type='radio']:not(:checked) + label:hover,
 .icon-radio.-bw-inactive > input[type='radio']:not(:checked) + label:active {
   filter: none;
-}
-
-/*
- * Highlight style selection
- */
-
-.highlightstyle-select {
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-}
-
-@media (max-width: 300px) {
-  .highlightstyle-select {
-    grid-template-columns: 1fr;
-  }
-}
-
-.highlightstyle-select > label .icon {
-  font-size: 25px;
-  padding: 16px 8px;
-}
-
-.highlightstyle-select > label .icon .text-fade {
-  -webkit-mask: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
-  mask: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
-}
-
-.highlightstyle-select > label .highlight.yellow {
-  background: #fff394;
-  color: #1d1a19;
-}
-
-.highlightstyle-select > label .highlight.blue {
-  background: #2589ed;
-  color: white;
-}
-
-#highlight-style-section {
-  display: none;
-}
-
-@supports selector(::highlight(yer)) {
-  #highlight-style-section {
-    display: revert;
-  }
-}
-
-#highlight-style-section .highlightstyle-select {
-  margin-bottom: 1.5em;
 }
 
 /*
@@ -302,6 +354,69 @@ fieldset.bordered {
   margin-bottom: 1em;
   line-height: 1.5;
   font-style: italic;
+}
+
+/*
+ * Highlight style selection
+ */
+
+.highlightstyle-select {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.highlightstyle-select > label .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  padding: 16px 8px;
+  /* Make the icons the same width as the toolbar icons above */
+  min-width: calc(48px + 32px * 2);
+  min-height: calc(48px + 16px * 2);
+}
+
+@media (max-width: 400px) {
+  .highlightstyle-select > label .icon {
+    font-size: 20px;
+    min-width: auto;
+    min-height: auto;
+  }
+}
+
+@media (max-width: 300px) {
+  .highlightstyle-select > label .icon {
+    font-size: 15px;
+  }
+}
+
+.highlightstyle-select > label .icon .text-fade {
+  -webkit-mask: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
+  mask: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
+}
+
+.highlightstyle-select > label .highlight.yellow {
+  background: #fff394;
+  color: #1d1a19;
+}
+
+.highlightstyle-select > label .highlight.blue {
+  background: #2589ed;
+  color: white;
+}
+
+#highlight-style-section {
+  display: none;
+}
+
+@supports selector(::highlight(yer)) {
+  #highlight-style-section {
+    display: revert;
+  }
+
+  #old-highlight-setting-section {
+    display: none;
+  }
 }
 
 /*
@@ -353,6 +468,13 @@ fieldset.bordered {
   padding: 8px 0;
 }
 
+@media (prefers-color-scheme: dark) {
+  .popupstyle-select > input[type='radio']:checked + label {
+    border-color: rgba(249,249,250,0.2);
+    background: #3b3a41;
+  }
+}
+
 /*
  * Interactivity selection
  */
@@ -384,8 +506,20 @@ fieldset.bordered {
 }
 
 /*
+ * Select grid
+ */
+.select-grid {
+  display: inline-grid;
+  grid-template-columns: repeat(2, auto);
+  column-gap: 16px;
+  row-gap: 8px;
+  align-items: baseline;
+}
+
+/*
  * New badge
  */
+
 .new-badge {
   font-size: 12px;
   line-height: 12px;
@@ -399,11 +533,20 @@ fieldset.bordered {
   background: #fee2e2;
 
   display: inline-block;
+  margin-top: 5px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .new-badge {
+    color: #fee2e2;
+    background: #991b1b;
+  }
 }
 
 /*
  * Learn more
  */
+
 .info {
   background: #eff6ff;
   border-radius: 12px;
@@ -433,6 +576,13 @@ fieldset.bordered {
 
 .info .icon {
   width: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .info {
+    background: #102a76;
+    color: #dbe9fb;
+  }
 }
 
 /*
@@ -484,38 +634,19 @@ fieldset.bordered {
   clip-path: url(#popup-outline);
 }
 
-/* See notes in device.ts:probablyHasPhysicalKeyboard for how we arrived at this
- * media query.
- *
- * Note that 'not' here negates the _whole_ media query.
- */
-.needs-keyboard {
-  display: none;
-}
-.has-keyboard .needs-keyboard {
-  display: block;
-}
-@media not screen and (hover) and (pointer: fine) {
-  .needs-keyboard {
-    display: none;
-  }
-}
-
-@media not screen and (any-hover: hover) and (any-pointer: fine) {
-  .needs-mouse {
-    display: none;
-  }
-}
-
 .key-grid {
   display: grid;
   grid-template-columns: minmax(12em, auto) 1fr;
+  align-items: baseline;
+  row-gap: 4px;
+  column-gap: 16px;
 }
 
 .key .key-box {
   font-size: 10pt;
   height: 2.5em;
   padding: 0.5em;
+  margin: 2px 0;
   text-align: center;
   border-radius: 0.7em;
   background: white;
@@ -542,15 +673,8 @@ fieldset.bordered {
   margin-inline-end: 0.5em;
 }
 
-/*
- * For text boxes, we let browser_styles define the border color
- *
- * (But we only have browser_style on Firefox at the moment.)
- */
-:root:not(.firefox) .key input[type='text'] {
-  border: 1px solid #909090;
-}
 .key input[type='text'] {
+  border: 1px solid #909090;
   border-bottom-width: 3px !important;
   width: 6em;
 
@@ -559,28 +683,6 @@ fieldset.bordered {
    */
   color: transparent;
   text-shadow: 0 0 0 black;
-}
-/*
- * We shouldn't need this but extensions.css 'disabled' selector is broken.
- *
- * See: https://bugzilla.mozilla.org/show_bug.cgi?id=1484501
- */
-:root.firefox .key input[type='text']:disabled:hover {
-  border-color: #b1b1b1;
-}
-/*
- * When the textbox is in a chrome page, it gets an extra inner div as anonymous
- * content so we need to make sure that gets centered too or else extensions.css
- * will reset it to text-align: start.
- *
- * Actually... this doesn't work. It looks like Web Extensions are not allowed
- * to style anonymous content so there is no way for us to override the styles
- * set by extensions.css which _is_ allowed to style it.
- *
- * See https://bugzilla.mozilla.org/show_bug.cgi?id=1484502
- */
-.key input[type='text'] > .anonymous-div {
-  text-align: center;
 }
 .key input[type='checkbox'] {
   /*
@@ -598,15 +700,6 @@ fieldset.bordered {
 }
 .key input[type='checkbox']:disabled + label .key-box {
   opacity: 0.5;
-}
-.key-description {
-  padding: 0.5em;
-  /*
-   * This magic number makes the baseline of the first line line-up with the
-   * labels on the keys.
-   */
-  padding-block-start: 0.8em;
-  padding-inline-start: 1.5em;
 }
 .key-description .icon {
   display: inline-block;
@@ -646,6 +739,10 @@ fieldset.bordered {
   color: #aaa;
 }
 
+.key-and-icon-grid .icon .cursor .outline {
+  fill: currentColor;
+}
+
 .key-list {
   margin: 0;
   margin-top: 1em;
@@ -669,6 +766,24 @@ fieldset.bordered {
   display: none;
 }
 
+@media (prefers-color-scheme: dark) {
+  .key .key-box {
+    background: #2c2b32;
+  }
+
+  .key input[type='text'] {
+    text-shadow: 0 0 0 lightgrey;
+  }
+
+  .key-and-icon-grid .icon {
+    color: lightgrey;
+  }
+
+  .key-and-icon-grid .icon .cursor .outline {
+    fill: #222426;
+  }
+}
+
 .dict-lang #lang {
   width: 10em;
 }
@@ -680,6 +795,18 @@ fieldset.bordered {
   border: 1px solid hsl(43, 77%, 27%);
   border-radius: 8px;
   color: hsl(43, 77%, 27%);
+}
+
+.dict-lang .note li {
+  line-height: 1.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  .dict-lang .note {
+    background-color: hsl(42.9, 84.8%, 12.9%);
+    border-color: hsl(43.6, 71.4%, 37.1%);
+    color: hsl(45, 35.3%, 80%);
+  }
 }
 
 /*
@@ -745,6 +872,20 @@ fieldset.bordered {
   color: hsl(43, 77%, 27%);
 }
 
+@media (prefers-color-scheme: dark) {
+  .panel-section-db-summary > .db-summary-status.-error {
+    background: rgb(89, 0, 0);
+    border-color: rgba(248, 218, 218, 0.4);
+    color: rgb(248, 218, 218);
+  }
+
+  .panel-section-db-summary > .db-summary-status.-warning {
+    background-color: hsl(42.9, 84.8%, 12.9%);
+    border-color: hsl(43.6, 71.4%, 37.1%);
+    color: hsl(45, 35.3%, 80%);
+  }
+}
+
 .panel-section-db-summary .db-summary-version-grid {
   flex-grow: 1;
   display: grid;
@@ -766,6 +907,12 @@ fieldset.bordered {
   font-size: 9pt;
 }
 
+@media (prefers-color-scheme: dark) {
+  .panel-section-db-summary .db-source-version {
+    color: rgb(152, 152, 152)
+  }
+}
+
 .panel-section-db-summary .db-summary-info {
   flex-grow: 1;
 }
@@ -785,6 +932,7 @@ fieldset.bordered {
 }
 
 .panel-section-db-summary .last-check {
+  margin-top: 6px;
   font-style: italic;
   font-size: 11px;
 }
@@ -795,4 +943,12 @@ fieldset.bordered {
   border-radius: 8px;
   padding: 8px 16px;
   color: #700;
+}
+
+@media (prefers-color-scheme: dark) {
+  .panel-section-db-summary .db-admin {
+    background: rgb(89, 0, 0);
+    border-color: rgba(248, 218, 218, 0.4);
+    color: rgb(248, 218, 218);
+  }
 }

@@ -8,7 +8,8 @@ app.
 
 ## [Unreleased]
 
-- Added a setting for changing the font-size of the popup
+- Added a setting for changing the font size of the popup.
+- Made options page support dark mode.
 
 ## [1.14.3] - 2023-06-05 (Chrome, Edge only)
 

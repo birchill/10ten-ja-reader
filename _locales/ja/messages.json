@@ -1657,8 +1657,11 @@
     "message": "青"
   },
   "options_highlight_style_label": {
-    "message": "ハイライトテーマ",
-    "description": "Title for the section for selection the highlight color"
+    "message": "文字ハイライトのスタイル",
+    "description": "Title for the section for selection the highlight style"
+  },
+  "options_highlight_style_none": {
+    "message": "なし"
   },
   "options_highlight_style_yellow": {
     "message": "黄色"

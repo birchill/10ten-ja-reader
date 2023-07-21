@@ -142,9 +142,15 @@ function completeForm() {
   for (const option of highlightStyleOptions) {
     option.addEventListener('change', (event) => {
       const highlightStyle = (event.target as HTMLInputElement).value as
+        | 'none'
         | 'yellow'
         | 'blue';
-      config.highlightStyle = highlightStyle;
+      if (highlightStyle === 'none') {
+        config.noTextHighlight = true;
+      } else {
+        config.highlightStyle = highlightStyle;
+        config.noTextHighlight = false;
+      }
     });
   }
 
@@ -643,7 +649,7 @@ function addPopupKeys() {
       continue;
     }
 
-    const keyBlock = html('div', { class: 'key browser-style' });
+    const keyBlock = html('div', { class: 'key' });
 
     for (const key of setting.keys) {
       const keyInput = html('input', {
@@ -839,7 +845,7 @@ function createKanjiReferences() {
     container.append(
       html(
         'div',
-        { class: 'browser-style checkbox-row' },
+        { class: 'checkbox-row' },
         checkbox,
         html('label', { for: `ref-${ref}` }, full)
       )
@@ -875,7 +881,9 @@ function expireNewBadges() {
 
 function fillVals() {
   const optform = document.getElementById('optform') as HTMLFormElement;
-  optform.highlightStyle.value = config.highlightStyle;
+  optform.highlightStyle.value = config.noTextHighlight
+    ? 'none'
+    : config.highlightStyle;
   optform.showPriority.checked = config.showPriority;
   optform.showRomaji.checked = config.showRomaji;
   optform.showDefinitions.checked = !config.readingOnly;
@@ -1176,10 +1184,7 @@ function updateDatabaseStatus(event: DbStateUpdatedMessage) {
     case 'idle': {
       // We should probably skip this when we are offline, but for now it
       // doesn't really matter.
-      const updateButton = html('button', {
-        class: 'browser-style',
-        type: 'button',
-      });
+      const updateButton = html('button', { type: 'button' });
       const isUnavailable = allDataSeries.some(
         (series) => event.state[series].state === 'unavailable'
       );
@@ -1205,7 +1210,7 @@ function updateDatabaseStatus(event: DbStateUpdatedMessage) {
     case 'updating': {
       const cancelButton = html(
         'button',
-        { class: 'browser-style', type: 'button' },
+        { type: 'button' },
         browser.i18n.getMessage('options_cancel_update_button_label')
       );
       cancelButton.addEventListener('click', cancelDatabaseUpdate);
