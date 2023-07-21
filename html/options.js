@@ -261,6 +261,9 @@ class Config {
 const config = new Config();
 
 function completeForm() {
+  if (possiblyHasPhysicalKeyboard()) {
+    document.documentElement.classList.add('has-keyboard');
+  }
   const popupStyleSelect = document.getElementById('popupstyle-select');
   const themes = ['default', 'light', 'blue', 'lightblue', 'black', 'yellow'];
 
@@ -297,7 +300,6 @@ function completeForm() {
   for (const setting of config.DEFAULT_KEY_SETTINGS) {
     const keyBlock = document.createElement('div');
     keyBlock.classList.add('key');
-    keyBlock.classList.add('browser-style');
     for (const key of setting.keys) {
       const keyInput = document.createElement('input');
       keyInput.setAttribute('type', 'checkbox');
@@ -498,6 +500,17 @@ async function fillVals() {
   for (const [abbrev, setting] of Object.entries(config.kanjiReferences)) {
     document.getElementById(abbrev).checked = setting;
   }
+}
+
+function possiblyHasPhysicalKeyboard() {
+  const desktopOsStrings = ['Windows', 'Win32', 'Win64', 'Mac', 'Linux'];
+
+  return (
+    window.matchMedia('(hover) and (pointer: fine)').matches ||
+    desktopOsStrings.some(
+      (osString) => navigator.userAgent.indexOf(osString) !== -1
+    )
+  );
 }
 
 window.onload = () => {
