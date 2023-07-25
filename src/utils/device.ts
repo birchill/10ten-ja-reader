@@ -1,3 +1,5 @@
+import { isIOS } from './ua-utils';
+
 export function isTouchDevice(): boolean {
   if (window.PointerEvent && 'maxTouchPoints' in navigator) {
     return navigator.maxTouchPoints > 0;
@@ -27,9 +29,11 @@ export function possiblyHasPhysicalKeyboard(): boolean {
     // such a device from being able to configure the keyboard so we _also_
     // assume we have a keyboard when we're on an OS that we know to be
     // a desktop OS.
-    desktopOsStrings.some(
+    (desktopOsStrings.some(
       (osString) => navigator.userAgent.indexOf(osString) !== -1
-    )
+    ) &&
+      // Exclude iOS, however, because the UA string there has "like Mac OS X"
+      !isIOS())
   );
 }
 
