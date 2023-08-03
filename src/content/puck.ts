@@ -22,13 +22,13 @@ export interface PuckRenderOptions {
   theme: string;
 }
 
-export function isPuckMouseEvent(
-  mouseEvent: MouseEvent
-): mouseEvent is PuckMouseEvent {
-  return !!(mouseEvent as PuckMouseEvent).fromPuck;
+export function isPuckPointerEvent(
+  pointerEvent: PointerEvent
+): pointerEvent is PuckPointerEvent {
+  return !!(pointerEvent as PuckPointerEvent).fromPuck;
 }
 
-export interface PuckMouseEvent extends MouseEvent {
+export interface PuckPointerEvent extends PointerEvent {
   fromPuck: true;
 }
 
@@ -343,6 +343,10 @@ export class LookupPuck {
   }
 
   readonly onWindowPointerMove = (event: PointerEvent) => {
+    if (isPuckPointerEvent(event)) {
+      return;
+    }
+
     if (
       !this.puck ||
       !this.earthWidth ||
@@ -475,15 +479,16 @@ export class LookupPuck {
       return;
     }
 
-    const mouseEvent = new MouseEvent('mousemove', {
+    const pointerEvent = new PointerEvent('pointermove', {
       // Make sure the event bubbles up to the listener on the window
       bubbles: true,
       clientX: targetX,
       clientY: targetY,
+      pointerType: 'mouse',
     });
-    (mouseEvent as PuckMouseEvent).fromPuck = true;
+    (pointerEvent as PuckPointerEvent).fromPuck = true;
 
-    target.dispatchEvent(mouseEvent);
+    target.dispatchEvent(pointerEvent);
   };
 
   private restoreContent() {
