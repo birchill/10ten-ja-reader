@@ -47,7 +47,7 @@ import { getThemeClass } from '../utils/themes';
 
 import { Command, CommandParams, isValidKey } from './commands';
 import { translateDoc } from './l10n';
-import { possiblyHasPhysicalKeyboard } from '../utils/device';
+import { isTouchDevice, possiblyHasPhysicalKeyboard } from '../utils/device';
 
 startBugsnag();
 
@@ -72,6 +72,9 @@ function completeForm() {
   }
   if (possiblyHasPhysicalKeyboard()) {
     document.documentElement.classList.add('has-keyboard');
+  }
+  if (isTouchDevice()) {
+    document.documentElement.classList.add('has-touch');
   }
 
   // Pop-up
@@ -219,6 +222,12 @@ function completeForm() {
       config.popupInteractive = popupInteractive === 'enable';
     });
   }
+
+  document
+    .getElementById('enableTapLookup')!
+    .addEventListener('click', (event) => {
+      config.enableTapLookup = (event.target as HTMLInputElement).checked;
+    });
 
   const tabDisplayOptions = Array.from(
     document.querySelectorAll('input[type=radio][name=tabDisplay]')
@@ -897,6 +906,7 @@ function fillVals() {
     ? 'enable'
     : 'disable';
   optform.popupStyle.value = config.popupStyle;
+  optform.enableTapLookup.checked = config.enableTapLookup;
   optform.tabDisplay.value = config.tabDisplay;
   optform.toolbarIcon.value = config.toolbarIcon;
   optform.showPuck.value = config.showPuck;

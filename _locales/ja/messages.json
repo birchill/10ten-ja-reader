@@ -1914,6 +1914,10 @@
     "message": "天",
     "description": "Alt text for the 天 toolbar icon"
   },
+  "options_touch_enable_tap_lookup": {
+    "message": "タップでテキストを調べる",
+    "description": "Checkbox label for setting to enable looking up by tapping a word"
+  },
   "options_update_check_button_label": {
     "message": "更新を確認",
     "description": "Label for the button to check for database updates"

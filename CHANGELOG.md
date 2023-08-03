@@ -10,6 +10,8 @@ app.
 
 - Added a setting for changing the font size of the popup.
 - Made options page support dark mode.
+- Added an option to disable looking up by tapping on them on touchscreen devices
+  ([#1005](https://github.com/birchill/10ten-ja-reader/issues/1005)).
 
 ## [1.14.3] - 2023-06-05 (Chrome, Edge only)
 

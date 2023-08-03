@@ -73,6 +73,14 @@
   }
 }
 
+.needs-touch {
+  display: none;
+}
+
+.has-touch .needs-touch {
+  display: block;
+}
+
 /*
  * Container style
  */

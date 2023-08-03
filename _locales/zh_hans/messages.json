@@ -1914,6 +1914,10 @@
     "message": "天",
     "description": "Alt text for the 天 toolbar icon"
   },
+  "options_touch_enable_tap_lookup": {
+    "message": "点击查询文本",
+    "description": "Checkbox label for setting to enable looking up by tapping a word"
+  },
   "options_update_check_button_label": {
     "message": "检查更新",
     "description": "Label for the button to check for database updates"

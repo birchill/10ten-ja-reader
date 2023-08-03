@@ -340,6 +340,10 @@ export class ContentHandler {
       (event.target || document.body).dispatchEvent(mouseMoveEvent);
     };
 
+    if (!this.config.enableTapLookup) {
+      this.touchClickTracker.disable();
+    }
+
     void hasReasonableTimerResolution().then((isReasonable) => {
       if (isReasonable) {
         this.hidePopupWhenMovingAtSpeed = true;
@@ -411,6 +415,12 @@ export class ContentHandler {
           if (this.isTopMostWindow()) {
             this.updatePopup({ fixPosition: true });
           }
+          break;
+
+        case 'enableTapLookup':
+          value
+            ? this.touchClickTracker.enable()
+            : this.touchClickTracker.disable();
           break;
 
         case 'fontSize':

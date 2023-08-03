@@ -48,6 +48,10 @@ export interface ContentConfigParams {
   // The preferred language for dictionary content.
   dictLang: string;
 
+  // Whether or not tapping text should trigger a look up on touchscreen
+  // devices.
+  enableTapLookup: boolean;
+
   // The preferred currency to convert to, along with its rate and the timestamp
   // for the rate.
   fx: { currency: string; rate: number; timestamp: number } | undefined;

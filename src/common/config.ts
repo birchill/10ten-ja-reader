@@ -63,6 +63,7 @@ interface Settings {
   accentDisplay?: AccentDisplay;
   contextMenuEnable?: boolean;
   dictLang?: DbLanguageId;
+  enableTapLookup?: boolean;
   fontSize?: FontSize;
   fxCurrency?: string;
   hasDismissedMouseOnboarding?: boolean;
@@ -484,6 +485,27 @@ export class Config {
       for (const listener of this.changeListeners) {
         listener(changes);
       }
+    }
+  }
+
+  // enableTapLookup: Defaults to true
+
+  get enableTapLookup(): boolean {
+    return this.settings.enableTapLookup ?? true;
+  }
+
+  set enableTapLookup(value: boolean) {
+    const storedSetting = this.settings.enableTapLookup;
+    if (storedSetting === value) {
+      return;
+    }
+
+    if (value) {
+      void browser.storage.sync.remove('enableTapLookup');
+      delete this.settings.enableTapLookup;
+    } else {
+      void browser.storage.sync.set({ enableTapLookup: value });
+      this.settings.enableTapLookup = value;
     }
   }
 
@@ -1048,6 +1070,7 @@ export class Config {
     return {
       accentDisplay: this.accentDisplay,
       dictLang: this.dictLang,
+      enableTapLookup: this.enableTapLookup,
       fx:
         this.fxData && this.fxCurrency in this.fxData.rates
           ? {
