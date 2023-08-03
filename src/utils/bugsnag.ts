@@ -12,6 +12,7 @@ import Bugsnag, {
   interactionBreadcrumbs,
   limitEvents,
   navigationBreadcrumbs,
+  stringifyValues,
 } from '@birchill/bugsnag-zero';
 import browser from 'webextension-polyfill';
 import { ExtensionStorageError } from '../common/extension-storage-error';
@@ -105,6 +106,7 @@ export function startBugsnag() {
     interactionBreadcrumbs,
     limitEvents(20),
     navigationBreadcrumbs,
+    stringifyValues,
   ];
 
   if (getReleaseStage() !== 'development') {
