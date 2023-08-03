@@ -64,6 +64,7 @@ import {
 import { mod } from '../utils/mod';
 import { stripFields } from '../utils/strip-fields';
 import { WithRequired } from '../utils/type-helpers';
+import { isSafari } from '../utils/ua-utils';
 
 import { copyText } from './clipboard';
 import { CopyEntry, getTextToCopy } from './copy-text';
@@ -99,9 +100,9 @@ import {
 } from './popup-position';
 import { clearPopupTimeout, DisplayMode, PopupState } from './popup-state';
 import {
-  isPuckMouseEvent,
+  isPuckPointerEvent,
   LookupPuck,
-  PuckMouseEvent,
+  PuckPointerEvent,
   removePuck,
 } from './puck';
 import { query, QueryResult } from './query';
@@ -120,7 +121,6 @@ import { hasReasonableTimerResolution } from './timer-precision';
 import { TouchClickTracker } from './touch-click-tracker';
 import { getScrollOffset, toPageCoords, toScreenCoords } from './scroll-offset';
 import { hasModifiers, normalizeKey, normalizeKeys } from './keyboard';
-import { isSafari } from '../utils/ua-utils';
 import { ContentConfig, ContentConfigChange } from './content-config';
 
 const enum HoldToShowKeyType {
@@ -174,10 +174,10 @@ export class ContentHandler {
   private lastMouseTarget: Element | null = null;
   private lastMouseMoveScreenPoint = { x: -1, y: -1 };
 
-  // Safari-only redundant mousemove event handling
+  // Safari-only redundant pointermove/mousemove event handling
   //
-  // See notes in `onMouseMove` for why we need to do this.
-  private ignoreNextMouseMove = false;
+  // See notes in `onPointerMove` for why we need to do this.
+  private ignoreNextPointerMove = false;
 
   // Track the state of the popup
   //
@@ -270,7 +270,7 @@ export class ContentHandler {
     this.config = new ContentConfig(config);
     this.textHighlighter = new TextHighlighter();
 
-    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onPointerMove = this.onPointerMove.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
@@ -282,7 +282,7 @@ export class ContentHandler {
     this.onConfigChange = this.onConfigChange.bind(this);
     this.config.addListener(this.onConfigChange);
 
-    window.addEventListener('mousemove', this.onMouseMove);
+    window.addEventListener('pointermove', this.onPointerMove);
     window.addEventListener('mousedown', this.onMouseDown);
     window.addEventListener('keydown', this.onKeyDown, { capture: true });
     window.addEventListener('keyup', this.onKeyUp, { capture: true });
@@ -318,26 +318,27 @@ export class ContentHandler {
       // (b) the object spread operator only deals with enumerable _own_
       //     properties so we can't just spread the values from `event` into a
       //     new object, and
-      // (c) we use `getModifierState` etc. on `MouseEvent` elsewhere so we
-      //     actually need to generate a `MouseEvent` object rather than just a
-      //     property bag.
-      const mouseMoveEvent = new MouseEvent('mousemove', {
+      // (c) we use `getModifierState` etc. on `PointerEvent` elsewhere so we
+      //     actually need to generate a `PointerEvent` object rather than just
+      //     a property bag.
+      const pointerMoveEvent = new PointerEvent('pointermove', {
+        altKey: event.altKey,
         bubbles: true,
-        screenX: event.screenX,
-        screenY: event.screenY,
+        button: 0,
+        buttons: 0,
         clientX: event.clientX,
         clientY: event.clientY,
         ctrlKey: event.ctrlKey,
-        shiftKey: event.shiftKey,
-        altKey: event.altKey,
         metaKey: event.metaKey,
-        button: 0,
-        buttons: 0,
+        pointerType: 'mouse',
         relatedTarget: event.relatedTarget,
+        screenX: event.screenX,
+        screenY: event.screenY,
+        shiftKey: event.shiftKey,
       });
-      (mouseMoveEvent as TouchClickEvent).fromTouch = true;
+      (pointerMoveEvent as TouchClickEvent).fromTouch = true;
 
-      (event.target || document.body).dispatchEvent(mouseMoveEvent);
+      (event.target || document.body).dispatchEvent(pointerMoveEvent);
     };
 
     if (!this.config.enableTapLookup) {
@@ -481,7 +482,7 @@ export class ContentHandler {
   detach() {
     this.config.removeListener(this.onConfigChange);
 
-    window.removeEventListener('mousemove', this.onMouseMove);
+    window.removeEventListener('pointermove', this.onPointerMove);
     window.removeEventListener('mousedown', this.onMouseDown);
     window.removeEventListener('keydown', this.onKeyDown, { capture: true });
     window.removeEventListener('keyup', this.onKeyUp, { capture: true });
@@ -556,11 +557,11 @@ export class ContentHandler {
     this.frameId = frameId;
   }
 
-  onMouseMove(event: MouseEvent) {
+  onPointerMove(event: PointerEvent) {
     this.typingMode = false;
 
-    // Safari has an odd bug where it dispatches extra mousemove events when you
-    // press any modifier key (e.g. Shift).
+    // Safari has an odd bug where it dispatches extra pointermove/mousemove
+    // events when you press any modifier key (e.g. Shift).
     //
     // It goes something like this:
     //
@@ -583,23 +584,28 @@ export class ContentHandler {
     // https://bugs.webkit.org/show_bug.cgi?id=16271
     // which was apparently fixed in July 2021 but in September 2022 I can still
     // reproduce it, at least with the control key.
+    //
+    // 2023-08-03: It looks like this was finally fixed in May 2023 in
+    // https://github.com/WebKit/WebKit/pull/14221
+    // It will be some time before that's available in release Safari everywhere
+    // we care about.
     if (isSafari()) {
       if (
         (event.shiftKey ||
           event.altKey ||
           event.metaKey ||
           event.ctrlKey ||
-          this.ignoreNextMouseMove) &&
+          this.ignoreNextPointerMove) &&
         this.lastMouseMoveScreenPoint.x === event.clientX &&
         this.lastMouseMoveScreenPoint.y === event.clientY
       ) {
         // We need to ignore the mousemove event corresponding to the keyup
         // event too.
-        this.ignoreNextMouseMove = !this.ignoreNextMouseMove;
+        this.ignoreNextPointerMove = !this.ignoreNextPointerMove;
         return;
       }
 
-      this.ignoreNextMouseMove = false;
+      this.ignoreNextPointerMove = false;
     }
     this.lastMouseMoveScreenPoint = { x: event.clientX, y: event.clientY };
 
@@ -625,6 +631,19 @@ export class ContentHandler {
 
     // Ignore mouse events while buttons are being pressed.
     if (event.buttons) {
+      return;
+    }
+
+    // If we are ignoring taps, ignore events that are not from the mouse
+    //
+    // You might think, "Why don't we just listen for mousemove events in the
+    // first place?" but iOS Safari will dispatch mousemove events for touch
+    // events too (e.g. if you start to select text) and we need to ignore them
+    // so we need to know what kind of "mousemove" event we got.
+    //
+    // If we are NOT ignoring taps then we probably should allow other pointer
+    // types since it's probably useful to look up things with a pen?
+    if (!this.config.enableTapLookup && event.pointerType !== 'mouse') {
       return;
     }
 
@@ -678,7 +697,7 @@ export class ContentHandler {
     // events, not puck events.
     const contentsToMatch =
       this.getActiveHoldToShowKeys(event) |
-      (isPuckMouseEvent(event) || isTouchClickEvent(event)
+      (isPuckPointerEvent(event) || isTouchClickEvent(event)
         ? HoldToShowKeyType.All
         : 0);
     const matchText = !!(contentsToMatch & HoldToShowKeyType.Text);
@@ -732,7 +751,7 @@ export class ContentHandler {
     this.lastMouseTarget = event.target;
 
     void this.tryToUpdatePopup({
-      fromPuck: isPuckMouseEvent(event),
+      fromPuck: isPuckPointerEvent(event),
       fromTouch: isTouchClickEvent(event),
       matchText,
       matchImages,
@@ -742,8 +761,8 @@ export class ContentHandler {
     });
   }
 
-  isEnRouteToPopup(event: MouseEvent) {
-    if (isPuckMouseEvent(event) || isTouchClickEvent(event)) {
+  isEnRouteToPopup(event: PointerEvent) {
+    if (isPuckPointerEvent(event) || isTouchClickEvent(event)) {
       return false;
     }
 
@@ -865,7 +884,7 @@ export class ContentHandler {
     return true;
   }
 
-  shouldThrottlePopup(event: MouseEvent) {
+  shouldThrottlePopup(event: PointerEvent) {
     if (!this.hidePopupWhenMovingAtSpeed) {
       return false;
     }
@@ -1215,7 +1234,7 @@ export class ContentHandler {
 
   // Test if hold-to-show keys are set for a given a UI event
   getActiveHoldToShowKeys(
-    event: MouseEvent | KeyboardEvent
+    event: PointerEvent | KeyboardEvent
   ): HoldToShowKeyType {
     const areKeysDownForSetting = (
       setting: 'holdToShowKeys' | 'holdToShowImageKeys'
@@ -1252,7 +1271,7 @@ export class ContentHandler {
     );
   }
 
-  hasPinKeysPressed(event: MouseEvent): boolean {
+  hasPinKeysPressed(event: PointerEvent): boolean {
     const pinPopupKeys = this.config.keys.pinPopup;
     const hasAltGraph = event.getModifierState('AltGraph');
     return (
@@ -1304,13 +1323,14 @@ export class ContentHandler {
     event.preventDefault();
 
     const { clientX, clientY } = event.data;
-    const mouseEvent = new MouseEvent('mousemove', {
+    const pointerEvent = new PointerEvent('pointermove', {
       // Make sure the event bubbles up to the listener on the window
       bubbles: true,
       clientX,
       clientY,
+      pointerType: 'mouse',
     });
-    (mouseEvent as PuckMouseEvent).fromPuck = true;
+    (pointerEvent as PuckPointerEvent).fromPuck = true;
 
     const documentBody = window.self.document.body;
     if (!documentBody) {
@@ -1318,7 +1338,7 @@ export class ContentHandler {
       return;
     }
 
-    documentBody.dispatchEvent(mouseEvent);
+    documentBody.dispatchEvent(pointerEvent);
   }
 
   async onBackgroundMessage(request: unknown): Promise<string> {
@@ -2652,12 +2672,12 @@ export class ContentHandler {
 }
 
 export function isTouchClickEvent(
-  mouseEvent: MouseEvent
-): mouseEvent is TouchClickEvent {
-  return !!(mouseEvent as TouchClickEvent).fromTouch;
+  pointerEvent: PointerEvent
+): pointerEvent is TouchClickEvent {
+  return !!(pointerEvent as TouchClickEvent).fromTouch;
 }
 
-export interface TouchClickEvent extends MouseEvent {
+export interface TouchClickEvent extends PointerEvent {
   fromTouch: true;
 }
 
