@@ -114,6 +114,9 @@ export class ContentConfig implements ContentConfigParams {
   get dictLang() {
     return this.params.dictLang;
   }
+  get enableTapLookup() {
+    return this.params.enableTapLookup;
+  }
   get fx() {
     return this.params.fx;
   }

@@ -1,6 +1,7 @@
 export class TouchClickTracker {
   private wasTouch = false;
   private ignoring = false;
+  private disabled = false;
   onTouchClick?: (event: MouseEvent) => void;
 
   constructor() {
@@ -8,18 +9,29 @@ export class TouchClickTracker {
     this.onTouchEnd = this.onTouchEnd.bind(this);
     this.onClick = this.onClick.bind(this);
 
-    window.addEventListener('touchstart', this.onTouchStart, { passive: true });
-    window.addEventListener('touchend', this.onTouchEnd, { passive: true });
-    // We need to register for clicks on the _body_ because if there is no
-    // click handler on the body element, iOS won't generate click events
-    // from touch taps.
-    document.body?.addEventListener('click', this.onClick);
+    this.addEventListeners();
   }
 
   destroy() {
-    window.removeEventListener('touchstart', this.onTouchStart);
-    window.removeEventListener('touchend', this.onTouchEnd);
-    document.body?.removeEventListener('click', this.onClick);
+    this.removeEventListeners();
+  }
+
+  disable() {
+    if (this.disabled) {
+      return;
+    }
+
+    this.disabled = true;
+    this.removeEventListeners();
+  }
+
+  enable() {
+    if (!this.disabled) {
+      return;
+    }
+
+    this.disabled = false;
+    this.addEventListeners();
   }
 
   startIgnoringClicks() {
@@ -28,6 +40,21 @@ export class TouchClickTracker {
 
   stopIgnoringClicks() {
     this.ignoring = false;
+  }
+
+  private addEventListeners() {
+    window.addEventListener('touchstart', this.onTouchStart, { passive: true });
+    window.addEventListener('touchend', this.onTouchEnd, { passive: true });
+    // We need to register for clicks on the _body_ because if there is no
+    // click handler on the body element, iOS won't generate click events
+    // from touch taps.
+    document.body?.addEventListener('click', this.onClick);
+  }
+
+  private removeEventListeners() {
+    window.removeEventListener('touchstart', this.onTouchStart);
+    window.removeEventListener('touchend', this.onTouchEnd);
+    document.body?.removeEventListener('click', this.onClick);
   }
 
   private onTouchStart() {

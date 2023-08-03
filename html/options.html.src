@@ -218,6 +218,17 @@
             </a>
           </div>
         </div>
+        <div id=touch-interactivity-section class=needs-touch>
+          <div class="checkbox-row">
+            <input
+              type="checkbox"
+              id="enableTapLookup"
+              name="enableTapLookup"
+            />
+            <label for="enableTapLookup">__MSG_options_touch_enable_tap_lookup__<span
+              class=new-badge>__MSG_options_new_badge_text__</span></label>
+          </div>
+        </div>
         <p>__MSG_options_tab_position_label__</p>
         <fieldset>
           <div
