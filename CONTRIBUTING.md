@@ -80,6 +80,18 @@ Other options include:
 
 (I believe the latter two options only apply to Firefox.)
 
+### Firefox for Android
+
+Instructions are [here](https://extensionworkshop.com/documentation/develop/developing-extensions-for-firefox-for-android/).
+
+Once you've set up `adb` correctly and got the device ID, you should be able to run:
+
+```
+yarn web-ext run -t firefox-android --adb-device <device ID> --firefox-apk org.mozilla.fenix
+```
+
+That will use the version of `web-ext` installed by this project.
+
 ## Testing
 
 ```
