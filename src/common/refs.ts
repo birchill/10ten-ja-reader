@@ -10,6 +10,8 @@ const SUPPORTED_REFERENCES = [
   'nelson_r',
   // Kanji kentei (from misc field)
   'kk',
+  // WaniKani level (from misc field)
+  'wk',
   // Pinyin reading
   'py',
   // JLPT level (from misc field)
@@ -47,7 +49,7 @@ const SUPPORTED_REFERENCES = [
   'sh_desc',
 ] as const;
 
-export type ReferenceAbbreviation = typeof SUPPORTED_REFERENCES[number];
+export type ReferenceAbbreviation = (typeof SUPPORTED_REFERENCES)[number];
 
 export function getReferencesForLang(lang: DbLanguageId) {
   if (lang !== 'fr') {
@@ -73,6 +75,7 @@ const REFERENCE_ABBREV_MAPPING: {
   I: 'sh_desc',
   U: 'unicode',
   Y: 'py',
+  WK: 'wk',
 } as const;
 
 export function convertLegacyReference(
@@ -143,6 +146,10 @@ const REFERENCE_LABELS: {
   sh_desc: {
     full: 'The Kanji Dictionary (Spahn)',
     short: 'Kanji Dictionary',
+  },
+  wk: {
+    full: 'WaniKani level',
+    short: 'WaniKani',
   },
 } as const;
 
@@ -253,6 +260,9 @@ export function getReferenceValue(
 
     case 'unicode':
       return `U+${entry.c.codePointAt(0)!.toString(16).toUpperCase()}`;
+
+    case 'wk':
+      return entry.misc.wk ? String(entry.misc.wk) : '';
 
     default:
       return entry.refs[ref] ? String(entry.refs[ref]) : '';

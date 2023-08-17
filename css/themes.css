@@ -39,6 +39,11 @@
   --cell-highlight-bg: #ede7c9;
   --cell-highlight-fg: #3e3a39;
 
+  --wanikani-highlight: rgba(21, 42, 137);
+  --wanikani-border: rgba(21, 42, 137, 0.4);
+  --selected-wanikani-highlight: rgb(14, 29, 94);
+  --selected-wanikani-border: rgb(14, 29, 94, 0.6);
+
   --selected-bg: #fff8bf;
   --hover-bg: rgb(255, 250, 210);
   --selected-reading-highlight: #3e3a39;
@@ -101,6 +106,10 @@
   --cell-highlight-bg: #17588e;
   --cell-highlight-fg: var(--primary-highlight);
 
+  --wanikani-highlight: rgb(255, 212, 238);
+  --wanikani-border: rgb(255, 212, 238, 0.6);
+  --selected-wanikani-highlight: rgb(181, 0, 109);
+
   --selected-highlight: var(--bg-color);
   --selected-bg: rgb(220, 225, 255);
   --hover-bg: rgb(233, 238, 255, 0.8);
@@ -141,6 +150,10 @@
   --hi-contrast-pitch-accent: white;
   --cell-highlight-bg: #504c4b;
   --cell-highlight-fg: #f0ecea;
+
+  --wanikani-highlight: rgb(255, 168, 220);
+  --wanikani-border: rgb(255, 168, 220, 0.5);
+  --selected-wanikani-highlight: rgb(244, 119, 194);
 
   --selected-bg: #555;
   --hover-bg: #484844;
@@ -199,6 +212,10 @@
   --cell-highlight-bg: #cae6fc;
   --cell-highlight-fg: var(--primary-highlight);
 
+  --wanikani-highlight: rgb(209, 5, 127);
+  --wanikani-border: rgb(209, 5, 127, 0.4);
+  --selected-wanikani-highlight: rgb(181, 0, 109);
+
   --selected-highlight: var(--primary-highlight);
   --selected-bg: #fffac5;
   --hover-bg: #fffde5;
@@ -239,6 +256,11 @@
   --hi-contrast-pitch-accent: var(--primary-highlight);
   --cell-highlight-bg: #fffde5;
   --cell-highlight-fg: #3e3a39;
+
+  --wanikani-highlight: rgb(5, 73, 129);
+  --wanikani-border: rgb(5, 73, 129, 0.4);
+  --selected-wanikani-highlight: rgb(3, 47, 83);
+  --selected-wanikani-border: rgb(3, 47, 83, 0.5);
 
   --selected-bg: #e3f2fe;
   --hover-bg: #fdfdf4;

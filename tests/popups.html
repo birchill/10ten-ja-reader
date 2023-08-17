@@ -101,6 +101,7 @@
         dictToShow: getDictFromResult(test.queryResult),
         popupStyle: 'blue',
         showDefinitions: !test.extraConfig || !test.extraConfig.readingOnly,
+        showWaniKaniVocabLevels: true,
       });
       popup.classList.add('-inline');
     }
@@ -680,7 +681,7 @@
             s: [{ g: [{ str: 'Korean (language)' }], pos: ['n'], match: true }],
           },
           {
-            k: [{ ent: '韓国', p: ['n1', 'nf01'], match: true }],
+            k: [{ ent: '韓国', p: ['n1', 'nf01'], wk: 29, match: true }],
             r: [{ ent: 'かんこく', p: ['n1', 'nf01'], a: 0, match: true }],
             s: [
               {
@@ -799,6 +800,7 @@
         dictToShow: 'words',
         popupStyle: theme,
         showDefinitions: true,
+        showWaniKaniVocabLevels: true,
         onClosePopup: () => {},
         onShowSettings: () => {},
         onTogglePin: () => {},

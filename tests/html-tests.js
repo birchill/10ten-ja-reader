@@ -345,7 +345,7 @@ const htmlTests = [
         data: [
           {
             k: [
-              { ent: '走る', p: ['i1', 'n1', 'nf10'], match: true },
+              { ent: '走る', p: ['i1', 'n1', 'nf10'], wk: 5, match: true },
               { ent: '奔る', match: false },
               { ent: '趨る', match: false },
             ],
@@ -421,7 +421,7 @@ const htmlTests = [
             s: [{ g: [{ str: 'Korean (language)' }], pos: ['n'], match: true }],
           },
           {
-            k: [{ ent: '韓国', p: ['n1', 'nf01'], match: true }],
+            k: [{ ent: '韓国', p: ['n1', 'nf01'], wk: 29, match: true }],
             r: [{ ent: 'かんこく', p: ['n1', 'nf01'], a: 0, match: true }],
             s: [
               {
@@ -575,7 +575,7 @@ const htmlTests = [
             s: [{ g: [{ str: 'Korean (language)' }], pos: ['n'], match: true }],
           },
           {
-            k: [{ ent: '韓国', p: ['n1', 'nf01'], match: true }],
+            k: [{ ent: '韓国', p: ['n1', 'nf01'], wk: 29, match: true }],
             r: [{ ent: 'かんこく', p: ['n1', 'nf01'], a: 0, match: true }],
             s: [
               {
@@ -736,7 +736,7 @@ const htmlTests = [
         type: 'words',
         data: [
           {
-            k: [{ ent: '韓国', p: ['n1', 'nf01'], match: true }],
+            k: [{ ent: '韓国', p: ['n1', 'nf01'], wk: 29, match: true }],
             r: [{ ent: 'かんこく', p: ['n1', 'nf01'], a: 0, match: true }],
             s: [
               {

@@ -92,6 +92,10 @@
           <label for=showPriority>__MSG_options_show_priority__</label>
         </div>
         <div class="checkbox-row">
+          <input type=checkbox id=showWaniKaniLevel name=showWaniKaniLevel>
+          <label for=showWaniKaniLevel>__MSG_options_show_wanikani_levels__<span class=new-badge>__MSG_options_new_badge_text__</span></label>
+        </div>
+        <div class="checkbox-row">
           <input type=checkbox id=showRomaji name=showRomaji>
           <label for=showRomaji>__MSG_options_show_romaji__</label>
         </div>

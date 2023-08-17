@@ -182,6 +182,15 @@ function completeForm() {
       renderPopupStyleSelect();
     });
 
+  document
+    .getElementById('showWaniKaniLevel')!
+    .addEventListener('click', (event) => {
+      config.showWaniKaniVocabLevels = (
+        event.target as HTMLInputElement
+      ).checked;
+      renderPopupStyleSelect();
+    });
+
   document.getElementById('showRomaji')!.addEventListener('click', (event) => {
     config.showRomaji = (event.target as HTMLInputElement).checked;
     renderPopupStyleSelect();
@@ -322,6 +331,9 @@ function renderPopupPreview(theme: string): HTMLElement {
   const spanKanji = html('span', { class: 'w-kanji' }, '理解');
   if (config.showPriority) {
     spanKanji.append(renderStar('full'));
+  }
+  if (config.showWaniKaniVocabLevels) {
+    spanKanji.appendChild(html('span', { class: 'wk-level' }, 'WK 21'));
   }
   headingDiv.appendChild(spanKanji);
 
@@ -894,6 +906,7 @@ function fillVals() {
     ? 'none'
     : config.highlightStyle;
   optform.showPriority.checked = config.showPriority;
+  optform.showWaniKaniLevel.checked = config.showWaniKaniVocabLevels;
   optform.showRomaji.checked = config.showRomaji;
   optform.showDefinitions.checked = !config.readingOnly;
   optform.accentDisplay.value = config.accentDisplay;

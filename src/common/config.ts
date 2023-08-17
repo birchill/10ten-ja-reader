@@ -86,6 +86,7 @@ interface Settings {
   showKanjiComponents?: boolean;
   showPriority?: boolean;
   showRomaji?: boolean;
+  showWaniKaniVocabLevels?: boolean;
   tabDisplay?: TabDisplay;
   toolbarIcon?: 'default' | 'sky';
 }
@@ -160,6 +161,7 @@ const OFF_BY_DEFAULT_REFERENCES: Set<ReferenceAbbreviation> = new Set([
   'kanji_in_context',
   'kodansha_compact',
   'maniette',
+  'wk',
 ]);
 
 export class Config {
@@ -957,15 +959,37 @@ export class Config {
   }
 
   set showRomaji(value: boolean) {
-    if (
-      typeof this.settings.showRomaji !== 'undefined' &&
-      this.settings.showRomaji === value
-    ) {
+    if (this.settings.showRomaji === value) {
       return;
     }
 
-    this.settings.showRomaji = value;
-    void browser.storage.sync.set({ showRomaji: value });
+    if (!value) {
+      delete this.settings.showRomaji;
+      void browser.storage.sync.remove('showRomaji');
+    } else {
+      this.settings.showRomaji = value;
+      void browser.storage.sync.set({ showRomaji: value });
+    }
+  }
+
+  // showWaniKaniVocabLevels: Defaults to false
+
+  get showWaniKaniVocabLevels(): boolean {
+    return !!this.settings.showWaniKaniVocabLevels;
+  }
+
+  set showWaniKaniVocabLevels(value: boolean) {
+    if (this.settings.showWaniKaniVocabLevels === value) {
+      return;
+    }
+
+    if (!value) {
+      delete this.settings.showWaniKaniVocabLevels;
+      void browser.storage.sync.remove('showWaniKaniVocabLevels');
+    } else {
+      this.settings.showWaniKaniVocabLevels = value;
+      void browser.storage.sync.set({ showWaniKaniVocabLevels: value });
+    }
   }
 
   // tabDisplay: Defaults to 'top'
@@ -1100,6 +1124,7 @@ export class Config {
       showPriority: this.showPriority,
       showPuck: this.showPuck,
       showRomaji: this.showRomaji,
+      showWaniKaniVocabLevels: this.showWaniKaniVocabLevels,
       tabDisplay: this.tabDisplay,
       toolbarIcon: this.toolbarIcon,
     };

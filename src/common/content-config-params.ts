@@ -113,6 +113,9 @@ export interface ContentConfigParams {
   // True if we should show romaji alongside each reading.
   showRomaji: boolean;
 
+  // True if we should show WaniKani level information next to kanji headwords.
+  showWaniKaniVocabLevels: boolean;
+
   // Indicates the orientation / visibility of the popup tab bar.
   tabDisplay: TabDisplay;
 

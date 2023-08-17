@@ -51,7 +51,7 @@ export function getWordToCopy(entry: CopyEntry): string {
   switch (entry.type) {
     case 'word':
       {
-        let headwords =
+        let headwords: Headword[] =
           entry.data.k && entry.data.k.length
             ? entry.data.k.filter((k) => !k.i?.includes('sK'))
             : entry.data.r.filter((r) => !r.i?.includes('sk'));
@@ -59,10 +59,10 @@ export function getWordToCopy(entry: CopyEntry): string {
         // Only show matches -- unless our only matches were search-only
         // terms -- in which case we want to include all headwords.
         if (headwords.some((h) => h.match)) {
-          headwords = headwords.filter((entry: Headword) => entry.match);
+          headwords = headwords.filter((entry) => entry.match);
         }
 
-        result = headwords.map((entry: Headword) => entry.ent).join(', ');
+        result = headwords.map((entry) => entry.ent).join(', ');
       }
       break;
 

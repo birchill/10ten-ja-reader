@@ -69,6 +69,7 @@ export interface PopupOptions {
   showMouseOnboarding?: boolean;
   showPriority: boolean;
   showKanjiComponents?: boolean;
+  showWaniKaniVocabLevels?: boolean;
   switchDictionaryKeys: ReadonlyArray<string>;
   tabDisplay: 'top' | 'left' | 'right' | 'none';
 }

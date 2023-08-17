@@ -1876,6 +1876,10 @@
   "options_show_romaji": {
     "message": "Show romaji"
   },
+  "options_show_wanikani_levels": {
+    "message": "Show WaniKani levels",
+    "description": "Label for enabling display of WaniKani level information alongside kanji headwords"
+  },
   "options_tab_position_label": {
     "message": "Tab position",
     "description": "Heading for the radio buttons to choose the popup tab position"
