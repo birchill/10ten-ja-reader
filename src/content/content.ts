@@ -2173,9 +2173,9 @@ export class ContentHandler {
       showKanjiComponents: this.config.showKanjiComponents,
       showMouseOnboarding,
       showPriority: this.config.showPriority,
-      showWaniKaniVocabLevels: this.config.showWaniKaniVocabLevels,
       switchDictionaryKeys: this.config.keys.nextDictionary,
       tabDisplay: this.config.tabDisplay,
+      waniKaniVocabDisplay: this.config.waniKaniVocabDisplay,
     };
 
     const popup = renderPopup(this.currentSearchResult, popupOptions);

@@ -86,9 +86,9 @@ interface Settings {
   showKanjiComponents?: boolean;
   showPriority?: boolean;
   showRomaji?: boolean;
-  showWaniKaniVocabLevels?: boolean;
   tabDisplay?: TabDisplay;
   toolbarIcon?: 'default' | 'sky';
+  waniKaniVocabDisplay?: 'hide' | 'show-matches';
 }
 
 type StorageChange = {
@@ -972,23 +972,23 @@ export class Config {
     }
   }
 
-  // showWaniKaniVocabLevels: Defaults to false
+  // waniKaniVocabDisplay: Defaults to 'hide'
 
-  get showWaniKaniVocabLevels(): boolean {
-    return !!this.settings.showWaniKaniVocabLevels;
+  get waniKaniVocabDisplay(): 'hide' | 'show-matches' {
+    return this.settings.waniKaniVocabDisplay || 'hide';
   }
 
-  set showWaniKaniVocabLevels(value: boolean) {
-    if (this.settings.showWaniKaniVocabLevels === value) {
+  set waniKaniVocabDisplay(value: 'hide' | 'show-matches') {
+    if (this.settings.waniKaniVocabDisplay === value) {
       return;
     }
 
-    if (!value) {
-      delete this.settings.showWaniKaniVocabLevels;
+    if (value === 'hide') {
+      delete this.settings.waniKaniVocabDisplay;
       void browser.storage.sync.remove('showWaniKaniVocabLevels');
     } else {
-      this.settings.showWaniKaniVocabLevels = value;
-      void browser.storage.sync.set({ showWaniKaniVocabLevels: value });
+      this.settings.waniKaniVocabDisplay = value;
+      void browser.storage.sync.set({ waniKaniVocabDisplay: value });
     }
   }
 
@@ -1124,9 +1124,9 @@ export class Config {
       showPriority: this.showPriority,
       showPuck: this.showPuck,
       showRomaji: this.showRomaji,
-      showWaniKaniVocabLevels: this.showWaniKaniVocabLevels,
       tabDisplay: this.tabDisplay,
       toolbarIcon: this.toolbarIcon,
+      waniKaniVocabDisplay: this.waniKaniVocabDisplay,
     };
   }
 }

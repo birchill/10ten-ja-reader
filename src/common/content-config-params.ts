@@ -113,13 +113,17 @@ export interface ContentConfigParams {
   // True if we should show romaji alongside each reading.
   showRomaji: boolean;
 
-  // True if we should show WaniKani level information next to kanji headwords.
-  showWaniKaniVocabLevels: boolean;
-
   // Indicates the orientation / visibility of the popup tab bar.
   tabDisplay: TabDisplay;
 
   // The icon we show on the toolbar. We mirror this in the puck so we need to
   // let the content script now about it.
   toolbarIcon: 'default' | 'sky';
+
+  // If we should show WaniKani level information next to kanji headwords.
+  //
+  // (We make this an enum type in case in future we want to add a further mode
+  // where we guess the level for words not in the WaniKani database based on
+  // the kanji they contain.)
+  waniKaniVocabDisplay: 'hide' | 'show-matches';
 }

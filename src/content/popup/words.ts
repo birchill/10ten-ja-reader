@@ -169,7 +169,7 @@ export function renderWordEntries({
         if (options.showPriority) {
           appendPriorityMark(kanji.p, headwordSpan);
         }
-        if (options.showWaniKaniVocabLevels && kanji.wk) {
+        if (options.waniKaniVocabDisplay !== 'hide' && kanji.wk) {
           appendWaniKaniLevelTag(kanji.wk, headwordSpan);
         }
       }

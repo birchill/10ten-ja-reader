@@ -180,14 +180,14 @@ export class ContentConfig implements ContentConfigParams {
   get showRomaji() {
     return this.params.showRomaji;
   }
-  get showWaniKaniVocabLevels() {
-    return this.params.showWaniKaniVocabLevels;
-  }
   get tabDisplay() {
     return this.params.tabDisplay;
   }
   get toolbarIcon() {
     return this.params.toolbarIcon;
+  }
+  get waniKaniVocabDisplay() {
+    return this.params.waniKaniVocabDisplay;
   }
 
   // Extra computed properties
