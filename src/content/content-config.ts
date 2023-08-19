@@ -186,6 +186,9 @@ export class ContentConfig implements ContentConfigParams {
   get toolbarIcon() {
     return this.params.toolbarIcon;
   }
+  get waniKaniVocabDisplay() {
+    return this.params.waniKaniVocabDisplay;
+  }
 
   // Extra computed properties
   get canHover() {

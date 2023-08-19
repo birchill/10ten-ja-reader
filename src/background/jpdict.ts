@@ -310,7 +310,7 @@ export async function searchWords({
 }): Promise<
   [
     result: WordSearchResult | null,
-    dbStatus: 'updating' | 'unavailable' | undefined
+    dbStatus: 'updating' | 'unavailable' | undefined,
   ]
 > {
   let [word, inputLengths] = normalizeInput(input);

@@ -100,7 +100,7 @@
   "dependencies": {
     "@birchill/bugsnag-zero": "0.6.3",
     "@birchill/discriminator": "0.2.0",
-    "@birchill/jpdict-idb": "2.0.1",
+    "@birchill/jpdict-idb": "2.1.1",
     "@birchill/normal-jp": "1.4.0",
     "husky": "8.0.3",
     "lint-staged": "14.0.0",

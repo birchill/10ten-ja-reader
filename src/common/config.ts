@@ -88,6 +88,7 @@ interface Settings {
   showRomaji?: boolean;
   tabDisplay?: TabDisplay;
   toolbarIcon?: 'default' | 'sky';
+  waniKaniVocabDisplay?: 'hide' | 'show-matches';
 }
 
 type StorageChange = {
@@ -957,15 +958,37 @@ export class Config {
   }
 
   set showRomaji(value: boolean) {
-    if (
-      typeof this.settings.showRomaji !== 'undefined' &&
-      this.settings.showRomaji === value
-    ) {
+    if (this.settings.showRomaji === value) {
       return;
     }
 
-    this.settings.showRomaji = value;
-    void browser.storage.sync.set({ showRomaji: value });
+    if (!value) {
+      delete this.settings.showRomaji;
+      void browser.storage.sync.remove('showRomaji');
+    } else {
+      this.settings.showRomaji = value;
+      void browser.storage.sync.set({ showRomaji: value });
+    }
+  }
+
+  // waniKaniVocabDisplay: Defaults to 'hide'
+
+  get waniKaniVocabDisplay(): 'hide' | 'show-matches' {
+    return this.settings.waniKaniVocabDisplay || 'hide';
+  }
+
+  set waniKaniVocabDisplay(value: 'hide' | 'show-matches') {
+    if (this.settings.waniKaniVocabDisplay === value) {
+      return;
+    }
+
+    if (value === 'hide') {
+      delete this.settings.waniKaniVocabDisplay;
+      void browser.storage.sync.remove('showWaniKaniVocabLevels');
+    } else {
+      this.settings.waniKaniVocabDisplay = value;
+      void browser.storage.sync.set({ waniKaniVocabDisplay: value });
+    }
   }
 
   // tabDisplay: Defaults to 'top'
@@ -1102,6 +1125,7 @@ export class Config {
       showRomaji: this.showRomaji,
       tabDisplay: this.tabDisplay,
       toolbarIcon: this.toolbarIcon,
+      waniKaniVocabDisplay: this.waniKaniVocabDisplay,
     };
   }
 }

@@ -169,6 +169,9 @@ export function renderWordEntries({
         if (options.showPriority) {
           appendPriorityMark(kanji.p, headwordSpan);
         }
+        if (options.waniKaniVocabDisplay !== 'hide' && kanji.wk) {
+          appendWaniKaniLevelTag(kanji.wk, headwordSpan);
+        }
       }
       headingDiv.append(kanjiSpan);
     }
@@ -360,6 +363,10 @@ function appendPriorityMark(
   }
 
   parent.append(renderStar(highPriority ? 'full' : 'hollow'));
+}
+
+function appendWaniKaniLevelTag(level: number, parent: ParentNode) {
+  parent.append(html('span', { class: 'wk-level' }, String(level)));
 }
 
 function renderKana(

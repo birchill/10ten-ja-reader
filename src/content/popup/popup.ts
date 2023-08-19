@@ -71,6 +71,7 @@ export interface PopupOptions {
   showKanjiComponents?: boolean;
   switchDictionaryKeys: ReadonlyArray<string>;
   tabDisplay: 'top' | 'left' | 'right' | 'none';
+  waniKaniVocabDisplay: 'hide' | 'show-matches';
 }
 
 export function renderPopup(

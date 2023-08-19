@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <meta charset="utf-8" />
 <title>Generated popup content inspector</title>
 <link href="../css/popup.css" rel="stylesheet" />
@@ -101,6 +101,7 @@
         dictToShow: getDictFromResult(test.queryResult),
         popupStyle: 'blue',
         showDefinitions: !test.extraConfig || !test.extraConfig.readingOnly,
+        waniKaniVocabDisplay: 'show-matches',
       });
       popup.classList.add('-inline');
     }
@@ -680,7 +681,7 @@
             s: [{ g: [{ str: 'Korean (language)' }], pos: ['n'], match: true }],
           },
           {
-            k: [{ ent: '韓国', p: ['n1', 'nf01'], match: true }],
+            k: [{ ent: '韓国', p: ['n1', 'nf01'], wk: 29, match: true }],
             r: [{ ent: 'かんこく', p: ['n1', 'nf01'], a: 0, match: true }],
             s: [
               {
@@ -802,6 +803,7 @@
         onClosePopup: () => {},
         onShowSettings: () => {},
         onTogglePin: () => {},
+        waniKaniVocabDisplay: 'show-matches',
       });
       popup.classList.add('-inline');
     }
@@ -1067,7 +1069,10 @@
       }
 
       {
-        addHeading(`Tab display: ${tabDisplay} (with status bar and onboarding)`, 3);
+        addHeading(
+          `Tab display: ${tabDisplay} (with status bar and onboarding)`,
+          3
+        );
         const popup = contentHandler._renderPopup(
           { ...kankokuWordsResult, resultType: 'db-updating' },
           {
@@ -1140,26 +1145,24 @@
           `Tab display: ${tabDisplay} (interactive version with copy overlay)`,
           3
         );
-        const popup = contentHandler._renderPopup(kankokuWordsResult,
-          {
-            ...config,
-            container: createPopupContainer(),
-            copyState: {
-              kind: 'active',
-              index: 1,
-              mode: 'touch',
-            },
-            dictToShow: 'words',
-            displayMode: 'hover',
-            popupStyle: 'default',
-            showDefinitions: true,
-            switchDictionaryKeys: ['Shift', 'Enter'],
-            tabDisplay,
-            onClosePopup: () => {},
-            onShowSettings: () => {},
-            onTogglePin: () => {},
-          }
-        );
+        const popup = contentHandler._renderPopup(kankokuWordsResult, {
+          ...config,
+          container: createPopupContainer(),
+          copyState: {
+            kind: 'active',
+            index: 1,
+            mode: 'touch',
+          },
+          dictToShow: 'words',
+          displayMode: 'hover',
+          popupStyle: 'default',
+          showDefinitions: true,
+          switchDictionaryKeys: ['Shift', 'Enter'],
+          tabDisplay,
+          onClosePopup: () => {},
+          onShowSettings: () => {},
+          onTogglePin: () => {},
+        });
 
         popup.classList.add('-inline');
         popup.style.setProperty('--min-height', '400px');

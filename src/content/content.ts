@@ -2175,6 +2175,7 @@ export class ContentHandler {
       showPriority: this.config.showPriority,
       switchDictionaryKeys: this.config.keys.nextDictionary,
       tabDisplay: this.config.tabDisplay,
+      waniKaniVocabDisplay: this.config.waniKaniVocabDisplay,
     };
 
     const popup = renderPopup(this.currentSearchResult, popupOptions);

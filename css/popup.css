@@ -540,6 +540,35 @@
   opacity: 0.6;
 }
 
+.w-kanji .wk-level {
+  display: inline-block;
+  font-size: calc(10 / 14 * var(--base-font-size));
+  border-radius: 3px;
+  border: 1px solid var(--primary-highlight);
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+  padding: 3px 3px 2px;
+  line-height: 1;
+  white-space: nowrap;
+  transform: translateY(-3px);
+}
+
+.w-kanji .wk-level::before {
+  display: inline-block;
+  content: 'WK';
+  margin-right: 0.2em;
+}
+
+.window .entry.-selected .w-kanji .wk-level {
+  border-color: var(--selected-highlight);
+}
+
+@media (hover) {
+  .container.interactive .entry:hover .w-kanji .wk-level {
+    border-color: var(--selected-highlight);
+  }
+}
+
 .w-kana {
   font-size: calc(18 / 14 * var(--base-font-size));
   margin-right: 0.3em;
