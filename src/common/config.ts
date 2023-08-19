@@ -161,7 +161,6 @@ const OFF_BY_DEFAULT_REFERENCES: Set<ReferenceAbbreviation> = new Set([
   'kanji_in_context',
   'kodansha_compact',
   'maniette',
-  'wk',
 ]);
 
 export class Config {
