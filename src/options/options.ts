@@ -333,7 +333,7 @@ function renderPopupPreview(theme: string): HTMLElement {
     spanKanji.append(renderStar('full'));
   }
   if (config.waniKaniVocabDisplay === 'show-matches') {
-    spanKanji.appendChild(html('span', { class: 'wk-level' }, 'WK 21'));
+    spanKanji.appendChild(html('span', { class: 'wk-level' }, '21'));
   }
   headingDiv.appendChild(spanKanji);
 

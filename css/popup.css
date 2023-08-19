@@ -543,25 +543,32 @@
 .w-kanji .wk-level {
   display: inline-block;
   font-size: calc(10 / 14 * var(--base-font-size));
-  color: var(--wanikani-highlight);
+  color: var(--primary-highlight);
   border-radius: 3px;
-  border: 1px solid var(--wanikani-border, var(--wanikani-highlight));
+  border: 1px solid var(--primary-highlight);
   margin-left: 0.5em;
   margin-right: 0.5em;
   padding: 3px 3px 2px;
   line-height: 1;
   white-space: nowrap;
+  transform: translateY(-3px);
+}
+
+.w-kanji .wk-level::before {
+  display: inline-block;
+  content: 'WK';
+  margin-right: 0.2em;
 }
 
 .window .entry.-selected .w-kanji .wk-level {
-  color: var(--selected-wanikani-highlight, var(--wanikani-highlight));
-  border-color: var(--selected-wanikani-border, var(--selected-wanikani-highlight, var(--wanikani-border, var(--wanikani-highlight))));
+  color: var(--selected-highlight);
+  border-color: var(--selected-highlight);
 }
 
 @media (hover) {
   .container.interactive .entry:hover .w-kanji .wk-level {
-    color: var(--selected-wanikani-highlight, var(--wanikani-highlight));
-    border-color: var(--selected-wanikani-border, var(--selected-wanikani-highlight, var(--wanikani-border, var(--wanikani-highlight))));
+    color: var(--selected-highlight);
+    border-color: var(--selected-highlight);
   }
 }
 
