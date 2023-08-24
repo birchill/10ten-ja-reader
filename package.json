@@ -61,7 +61,7 @@
     "all-contributors-cli": "6.26.1",
     "archiver": "6.0.0",
     "byline": "5.0.0",
-    "chai": "4.3.7",
+    "chai": "4.3.8",
     "combined-stream2": "1.1.2",
     "copy-webpack-plugin": "11.0.0",
     "css-loader": "6.8.1",
