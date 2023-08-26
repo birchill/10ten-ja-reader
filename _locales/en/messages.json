@@ -1632,7 +1632,11 @@
   },
   "options_expand_all_entries": {
     "message": "Expand all entries",
-    "description": "Leading text for options to automatically expand word entries"
+    "description": "Leading text for options to automatically expand word or kanji entries"
+  },
+  "options_expand_kanji_label": {
+    "message": "Kanji",
+    "description": "Label for checkbox to enable automatically expanding kanji entries"
   },
   "options_expand_words_label": {
     "message": "Words",
@@ -1752,7 +1756,7 @@
   },
   "options_mouse_onboarding_learn_mode": {
     "message": "Learn more about how mouse interaction works",
-    "descripion": "Text for the link to the mouse onboarding page"
+    "description": "Text for the link to the mouse onboarding page"
   },
   "options_name_data_name": {
     "message": "name data",

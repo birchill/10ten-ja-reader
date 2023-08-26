@@ -999,8 +999,29 @@
 
 /* Kanji display */
 
+.kanjilist {
+  /*
+   * Make each kanji item have the same height so that when we scroll the next
+   * one into view it fits.
+   */
+  display: grid;
+  grid-auto-rows: 1fr;
+}
+
+/*
+ * If the list has been expanded, however, there is no need to space the kanji
+ * items out evenly.
+ */
+.expandable.expanded .kanjilist {
+  grid-auto-rows: auto;
+}
+
 .kanji-table {
   padding: 10px 18px;
+  scroll-snap-align: start;
+  /* Make sure it's possible to scroll all the way to the bottom of each kanji
+   * table. */
+  scroll-margin-bottom: var(--expand-button-allowance);
 }
 
 /* kanji: top part of the kanji table */
@@ -1039,14 +1060,13 @@
   }
 }
 
-.window:not(.-has-overlay).-copy-active .kanji-table .kanji {
+.window:not(.-has-overlay) .kanji-table.-selected .kanji {
   color: var(--selected-highlight);
   background: var(--selected-bg);
   border-radius: 2px;
 }
 
-.window:not(.-has-overlay).-copy-finished .kanji-table .kanji,
-.window:not(.-has-overlay).-copy-error .kanji-table .kanji {
+.window:not(.-has-overlay) .kanji-table.-flash .kanji {
   animation: tenten-ja-flash 0.5s;
 }
 

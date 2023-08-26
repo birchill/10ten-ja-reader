@@ -13,6 +13,22 @@ export function updateExpandable(
   }
 ) {
   if (options.isExpanded) {
+    // We style kanji content differently depending on whether or not we're in
+    // the (manually) expanded state.
+    //
+    // Specifically, when we're not expanded, we lay out the kanji in a grid
+    // such that each kanji table has the same height so that you can scroll
+    // through the kanji one-by-one and even if later kanji tables are bigger,
+    // they still fit in the popup.
+    //
+    // When the popup is expanded, however, that's not necessary. Ironically,
+    // that means that the "expanded" state is actually smaller than the
+    // "collapsed" state.
+    expandable.classList.add('expanded');
+
+    // In all cases, if we're in the (manually) expanded state we never need to
+    // worry about constraining the height or showing the expand button so we're
+    // done here.
     return;
   }
 

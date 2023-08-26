@@ -228,6 +228,12 @@ function completeForm() {
       (event.target as HTMLInputElement).checked
     );
   });
+  document.getElementById('expandKanji')!.addEventListener('click', (event) => {
+    config.toggleAutoExpand(
+      'kanji',
+      (event.target as HTMLInputElement).checked
+    );
+  });
 
   const mouseInteractivityOptions = Array.from(
     document.querySelectorAll('input[type=radio][name=mouseInteractivity]')
@@ -933,6 +939,7 @@ function fillVals() {
   optform.fontSize.value = config.fontSize;
   const { autoExpand } = config;
   optform.expandWords.checked = autoExpand.includes('words');
+  optform.expandKanji.checked = autoExpand.includes('kanji');
   optform.highlightText.checked = !config.noTextHighlight;
   optform.contextMenuEnable.checked = config.contextMenuEnable;
   optform.showKanjiComponents.checked = config.showKanjiComponents;

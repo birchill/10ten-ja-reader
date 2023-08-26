@@ -31,6 +31,7 @@ export type NamePreview = {
 
 export interface QueryOptions {
   includeRomaji: boolean;
+  metaMatchLen?: number;
   wordLookup: boolean;
   updateQueryResult: (result: QueryResult | null) => void;
 }
@@ -173,7 +174,7 @@ async function queryWords(
   }
 
   if (isTranslateResult(searchResult)) {
-    let title = text.substr(0, searchResult.textLen);
+    let title = text.substring(0, searchResult.textLen);
     if (text.length > searchResult.textLen) {
       title += '...';
     }
@@ -217,6 +218,10 @@ async function queryOther(
     type: 'searchOther',
     input: text,
     includeRomaji: options.includeRomaji,
+    wordsMatchLen: Math.max(
+      words?.words?.matchLen || 0,
+      options.metaMatchLen || 0
+    ),
   };
 
   let searchResult: SearchOtherResult | 'aborted' | null;

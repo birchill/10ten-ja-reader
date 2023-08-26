@@ -38,7 +38,7 @@ export type AccentDisplay =
   | 'binary-hi-contrast'
   | 'none';
 
-export type AutoExpandableEntry = 'words';
+export type AutoExpandableEntry = 'words' | 'kanji';
 
 export type FontSize = 'normal' | 'large' | 'xl';
 

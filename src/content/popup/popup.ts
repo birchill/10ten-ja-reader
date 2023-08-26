@@ -27,7 +27,7 @@ import { renderCloseButton } from './close';
 import { renderCopyOverlay } from './copy-overlay';
 import { CopyState } from './copy-state';
 import { updateExpandable } from './expandable';
-import { renderKanjiEntry } from './kanji';
+import { renderKanjiEntries } from './kanji';
 import { renderMetadata } from './metadata';
 import { renderNamesEntries } from './names';
 import { renderMouseOnboarding } from './onboarding';
@@ -98,16 +98,22 @@ export function renderPopup(
     options.tabDisplay !== 'none';
 
   if (showTabs) {
+    const enabledTabs = {
+      words: !!result?.words || !!options.meta,
+      kanji: !!result?.kanji,
+      names: !!result?.names,
+    };
+
     windowElem.append(
       renderTabBar({
         closeShortcuts: options.closeShortcuts,
         displayMode: options.displayMode,
+        enabledTabs,
         onClosePopup: options.onClosePopup,
         onShowSettings: options.onShowSettings,
         onSwitchDictionary: options.onSwitchDictionary,
         onTogglePin: options.onTogglePin,
         pinShortcuts: options.pinShortcuts,
-        queryResult: result,
         selectedTab: options.dictToShow,
       })
     );
@@ -122,7 +128,11 @@ export function renderPopup(
   switch (resultToShow?.type) {
     case 'kanji':
       contentContainer.append(
-        renderKanjiEntry({ entry: resultToShow.data, options })
+        html(
+          'div',
+          { class: 'expandable' },
+          renderKanjiEntries({ entries: resultToShow.data, options })
+        )
       );
       break;
 

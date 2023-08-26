@@ -61,7 +61,11 @@ import { stripFields } from '../utils/strip-fields';
 import { Split } from '../utils/type-helpers';
 
 import TabManager from './all-tab-manager';
-import { BackgroundRequestSchema, SearchRequest } from './background-request';
+import {
+  BackgroundRequestSchema,
+  SearchOtherRequest,
+  SearchRequest,
+} from './background-request';
 import { setDefaultToolbarIcon, updateBrowserAction } from './browser-action';
 import { initContextMenus, updateContextMenus } from './context-menus';
 import { FxFetcher } from './fx-fetcher';
@@ -408,21 +412,23 @@ async function searchWords({
 
 async function searchOther({
   input,
+  wordsMatchLen,
   abortSignal,
-}: SearchRequest & {
+}: SearchOtherRequest & {
   abortSignal: AbortSignal;
 }): Promise<SearchOtherResult | null> {
-  // Kanji
-  const kanjiResult = await searchKanji([...input][0]);
-  const kanji = typeof kanjiResult === 'string' ? null : kanjiResult;
+  // Names
+  const nameResult = await searchNames({ abortSignal, input });
+  const names = typeof nameResult === 'string' ? null : nameResult;
 
   if (abortSignal.aborted) {
     throw new AbortError();
   }
 
-  // Names
-  const nameResult = await searchNames({ abortSignal, input });
-  const names = typeof nameResult === 'string' ? null : nameResult;
+  // Kanji
+  const longestMatch = Math.max(wordsMatchLen, names?.matchLen ?? 0);
+  const kanjiResult = await searchKanji(input.slice(0, longestMatch || 1));
+  const kanji = typeof kanjiResult === 'string' ? null : kanjiResult;
 
   if (abortSignal.aborted) {
     throw new AbortError();
@@ -432,10 +438,7 @@ async function searchOther({
     return null;
   }
 
-  return {
-    kanji,
-    names,
-  };
+  return { kanji, names };
 }
 
 //
