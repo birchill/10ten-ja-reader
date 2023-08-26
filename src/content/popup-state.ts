@@ -14,6 +14,8 @@ export const PopupStateSchema = s.type({
       height: s.number(),
       direction: s.enums(['vertical', 'horizontal', 'disjoint']),
       side: s.enums(['before', 'after', 'disjoint']),
+      // Whether or not the popup is allowed to overlap the lookup point.
+      allowOverlap: s.boolean(),
       // Reference lookup point we should use for determining if a mouse move is
       // "between" the lookup point and the popup.
       lookupPoint: s.optional(

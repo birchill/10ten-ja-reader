@@ -78,8 +78,28 @@ export function renderWordEntries({
   }
 
   let lastPointerType = 'touch';
+  let longestMatch = 0;
 
   for (const [index, entry] of entries.entries()) {
+    // Work out where the fold is so we can make later entries appear in the
+    // scrolled-out-of-view range.
+    const matchLength = Math.max(
+      ...entry.k
+        .filter((k) => k.matchRange)
+        .map((k) => k.matchRange![1] - k.matchRange![0]),
+      ...entry.r
+        .filter((r) => r.matchRange)
+        .map((r) => r.matchRange![1] - r.matchRange![0]),
+      0
+    );
+    if (matchLength < longestMatch) {
+      container.append(html('div', { class: 'fold-point' }));
+      // Prevent adding any more fold points
+      longestMatch = -Infinity;
+    } else if (!longestMatch) {
+      longestMatch = matchLength;
+    }
+
     const entryDiv = html('div', { class: 'entry' });
     container.append(entryDiv);
 
@@ -116,15 +136,16 @@ export function renderWordEntries({
     // be hidden since they don't apply to the kana.
     //
     // This is because we mostly only show matching kana headwords and so if we
-    // start showing kanji that don't correspond to the kana headwords the
+    // start showing kanji that don't correspond to the kana headwords, the
     // result will be misleading.
     //
     // For example, take the string さいだん. Entry 1385120 has readings
-    // さいだん and せつだん but さいだん is specifically bound to the 截断 kanji.
+    // さいだん and せつだん but さいだん is specifically bound to the 截断
+    // kanji.
     //
-    // As a result if we look up さいだん we'll mark the さいだん kana headword as a
-    // match and the 截断 kanji headword too. As per our usual processing, we'll
-    // only show the さいだん kana headword, however, not せつだん.
+    // As a result if we look up さいだん we'll mark the さいだん kana headword
+    // as a match and the 截断 kanji headword too. As per our usual processing,
+    // we'll only show the さいだん kana headword, however, not せつだん.
     //
     // If we were also to show the unmatched 切断 kanji headword we'd end up
     // displaying:

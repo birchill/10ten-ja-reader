@@ -1630,6 +1630,14 @@
     "message": "许可协议",
     "description": "The keyword in options_edrdg_license to link to the license"
   },
+  "options_expand_all_entries": {
+    "message": "展开所有结果",
+    "description": "Leading text for options to automatically expand word entries"
+  },
+  "options_expand_words_label": {
+    "message": "单词",
+    "description": "Label for checkbox to enable automatically expanding word entries"
+  },
   "options_font_size_label": {
     "message": "字体大小",
     "description": "Label for font size drop-down."
@@ -1694,7 +1702,7 @@
   },
   "options_lang_kanji_only": {
     "message": "（仅汉字）",
-    "decsription": "Annotation added to language labels for languages where only the kanji data has been translated (i.e. but not the word data)"
+    "description": "Annotation added to language labels for languages where only the kanji data has been translated (i.e. but not the word data)"
   },
   "options_lang_warning_always_en": {
     "message": "单词释义的英语版会固定显示。"
@@ -1716,7 +1724,7 @@
   },
   "options_lang_words_only": {
     "message": "（仅单词）",
-    "decsription": "Annotation added to language labels for languages where only the word data has been translated (i.e. but not the kanji data)"
+    "description": "Annotation added to language labels for languages where only the word data has been translated (i.e. but not the kanji data)"
   },
   "options_last_database_check": {
     "message": "上次检查更新 $lastcheck$",
@@ -1786,6 +1794,9 @@
   },
   "options_popup_copy_word_kanji": {
     "message": "复制词语或汉字"
+  },
+  "options_popup_expand_popup": {
+    "message": "展开窗口"
   },
   "options_popup_interactivity_heading": {
     "message": "窗口交互",
@@ -1951,6 +1962,10 @@
   "popup_close_label": {
     "message": "关闭",
     "description": "The aria-label associated with the button to close the popup"
+  },
+  "popup_expand_label": {
+    "message": "展开",
+    "description": "The title associated with the button to expand the popup"
   },
   "popup_pin_label": {
     "message": "固定弹出窗口",

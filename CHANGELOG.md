@@ -8,6 +8,13 @@ app.
 
 ## [Unreleased]
 
+- Collapsed the popup window to only show the most relevant results by default
+  ([#1036](https://github.com/birchill/10ten-ja-reader/issues/1036)).
+  - You can restore the old behavior by choosing "Expand all entries → Words"
+    from the settings screen.
+  - You can view other entries by scrolling the popup window or by expanding it
+    to show all entries by clicking the downward triangle button or pressing
+    <kbd>x</kbd> on the keyboard.
 - Added a setting for changing the font size of the popup.
 - Made options page support dark mode.
 - Added an option to disable looking up by tapping on them on touchscreen devices

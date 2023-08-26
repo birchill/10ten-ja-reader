@@ -21,7 +21,8 @@
 
 .theme-light {
   --text-color: #1d1a19;
-  --bg-color: #fefef2;
+  --bg-rgb: 254, 254, 242;
+  --bg-color: rgb(var(--bg-rgb));
   --border-color: #b1ad96;
 
   --primary-highlight: #c11f2a;
@@ -54,6 +55,9 @@
 
   --status-button-color: #615f52;
   --status-button-primary-text-color: var(--status-bg);
+
+  --expand-button-rgb: 177, 173, 150;
+  --expand-button-color: rgb(var(--expand-button-rgb));
 }
 
 .window.theme-light .w-def .tag-fem,
@@ -83,7 +87,8 @@
 
 .theme-blue {
   --text-color: white;
-  --bg-color: #446ea0;
+  --bg-rgb: 68, 110, 160;
+  --bg-color: rgb(var(--bg-rgb));
   --border-color: #17588e;
 
   --primary-highlight: #bcdffe;
@@ -116,6 +121,9 @@
 
   --status-button-color: white;
   --status-button-primary-text-color: var(--bg-color);
+
+  --expand-button-rgb: 144, 173, 197;
+  --expand-button-color: rgb(var(--expand-button-rgb));
 }
 
 /*
@@ -124,7 +132,8 @@
 
 .theme-black {
   --text-color: white;
-  --bg-color: #1d1a19;
+  --bg-rgb: 29, 26, 25;
+  --bg-color: rgb(var(--bg-rgb));
   --border-color: #999493;
 
   --primary-highlight: #3fa8de;
@@ -163,6 +172,9 @@
 
   --status-button-color: white;
   --status-button-primary-text-color: var(--bg-color);
+
+  --expand-button-rgb: 130, 126, 125;
+  --expand-button-color: rgb(var(--expand-button-rgb));
 }
 
 .window.theme-black .w-def .tag-masc,
@@ -181,7 +193,8 @@
 
 .theme-lightblue {
   --text-color: #1d1a19;
-  --bg-color: #e3f2fe;
+  --bg-rgb: 227, 242, 254;
+  --bg-color: rgb(var(--bg-rgb));
   --border-color: #65b7fc;
 
   --primary-highlight: #17588e;
@@ -214,6 +227,9 @@
 
   --status-button-color: var(--primary-highlight);
   --status-button-primary-text-color: var(--bg-color);
+
+  --expand-button-rgb: 140, 186, 224;
+  --expand-button-color: rgb(var(--expand-button-rgb));
 }
 
 /*
@@ -222,7 +238,8 @@
 
 .theme-yellow {
   --text-color: #1d1a19;
-  --bg-color: #fff8bf;
+  --bg-rgb: 255, 248, 191;
+  --bg-color: rgb(var(--bg-rgb));
   --border-color: #ffd600;
 
   --primary-highlight: #17588e;
@@ -255,4 +272,7 @@
 
   --status-button-color: var(--primary-highlight);
   --status-button-primary-text-color: var(--status-bg);
+
+  --expand-button-rgb: 209, 195, 122;
+  --expand-button-color: rgb(var(--expand-button-rgb));
 }

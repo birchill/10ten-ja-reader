@@ -54,6 +54,7 @@ const INTERACTIVE_MARGIN_TO_POPUP = 10;
 const NON_INTERACTIVE_MARGIN_TO_POPUP = 25;
 
 export function getPopupPosition({
+  allowVerticalOverlap,
   cursorClearance,
   cursorPos,
   fixedPosition,
@@ -64,6 +65,9 @@ export function getPopupPosition({
   safeArea: initialSafeArea,
   pointerType,
 }: {
+  // Allow overlapping with the cursor position in order to avoid constraining
+  // the height
+  allowVerticalOverlap: boolean;
   cursorClearance: MarginBox;
   cursorPos?: Point;
   fixedPosition?: PopupPositionConstraints;
@@ -109,6 +113,7 @@ export function getPopupPosition({
 
   if (fixedPosition) {
     return getFixedPosition({
+      allowVerticalOverlap,
       cursorClearance,
       cursorPos,
       fixedPosition,
@@ -124,6 +129,7 @@ export function getPopupPosition({
 
   if (positionMode === PopupPositionMode.Auto) {
     return getAutoPosition({
+      allowVerticalOverlap,
       cursorClearance,
       cursorPos,
       interactive,
@@ -137,6 +143,10 @@ export function getPopupPosition({
       pointerType,
     });
   }
+
+  //
+  // Manual positioning
+  //
 
   const availableStageHeight = stageHeight - (safeArea.top + safeArea.bottom);
 
@@ -183,6 +193,7 @@ export function getPopupPosition({
 }
 
 function getFixedPosition({
+  allowVerticalOverlap,
   cursorClearance,
   cursorPos,
   fixedPosition,
@@ -194,6 +205,7 @@ function getFixedPosition({
   stageWidth,
   stageHeight,
 }: {
+  allowVerticalOverlap: boolean;
   cursorClearance: MarginBox;
   cursorPos?: Point;
   fixedPosition: PopupPositionConstraints;
@@ -208,10 +220,11 @@ function getFixedPosition({
   // Work out our safe area in screen coordinates (as opposed to an inset).
   let { left: safeLeft, top: safeTop } = safeArea;
   let safeRight = stageWidth - safeArea.right;
-  let safeBottom = stageHeight - safeArea.bottom;
+  const stageBottom = stageHeight - safeArea.bottom;
+  let safeBottom = stageBottom;
 
   // Convert inputs to screen coordinates
-  const screenY = fixedPosition.y - scrollY;
+  let screenY = fixedPosition.y - scrollY;
   let screenX = fixedPosition.x - scrollX;
 
   // See if we can further constrain the area to place the popup in based on
@@ -235,14 +248,23 @@ function getFixedPosition({
     }
   }
 
-  // Work out if we need to constrain the height
-  //
-  // In order to be consistent with getAutoPosition, we don't constrain the
-  // height when we are not interactive
-  const constrainHeight =
-    interactive && screenY + popupSize.height > safeBottom
-      ? safeBottom - screenY
-      : null;
+  // Height constraints
+  let constrainHeight = null;
+  let verticalOverflow = Math.max(screenY + popupSize.height - safeBottom, 0);
+
+  // See if we can unconstrain the height by overlapping the cursor.
+  if (verticalOverflow && allowVerticalOverlap) {
+    const nudgeAmount = Math.min(verticalOverflow, screenY - safeTop);
+    screenY -= nudgeAmount;
+    verticalOverflow = Math.max(screenY + popupSize.height - stageBottom, 0);
+  }
+
+  if (
+    verticalOverflow &&
+    shouldConstrainHeight({ interactive, direction, side })
+  ) {
+    constrainHeight = popupSize.height - verticalOverflow;
+  }
 
   // The x position and width will depend on if we are anchoring to the left or
   // right.
@@ -269,7 +291,25 @@ function getFixedPosition({
   };
 }
 
+function shouldConstrainHeight(options: {
+  interactive: boolean;
+  direction: 'vertical' | 'horizontal' | 'disjoint';
+  side: 'before' | 'after' | 'disjoint';
+}) {
+  // If we're not interactive, we don't want to constrain the height because
+  // the user can't scroll the popup to see the rest of the content (but they
+  // _can_ scroll the page).
+  //
+  // However, if the popup is positioned above the cursor, we need to constrain
+  // the height otherwise it will cover up the cursor.
+  return (
+    options.interactive ||
+    (options.direction === 'vertical' && options.side === 'before')
+  );
+}
+
 function getAutoPosition({
+  allowVerticalOverlap,
   cursorClearance,
   cursorPos,
   interactive,
@@ -282,6 +322,7 @@ function getAutoPosition({
   stageHeight,
   pointerType,
 }: {
+  allowVerticalOverlap: boolean;
   cursorClearance: MarginBox;
   cursorPos?: Point;
   interactive: boolean;
@@ -295,6 +336,7 @@ function getAutoPosition({
   pointerType: 'cursor' | 'puck';
 }): PopupPosition {
   const extendedPosition = getScreenAutoPosition({
+    allowVerticalOverlap,
     cursorClearance,
     cursorPos,
     interactive,
@@ -311,22 +353,13 @@ function getAutoPosition({
         ...extendedPosition.position,
         x: extendedPosition.position.x + scrollX,
         y: extendedPosition.position.y + scrollY,
-        // When in interactive mode, the user can scroll the popup so we can
-        // constrain the height.
-        //
-        // Otherwise, we the typically allow the popup to overflow the viewport
-        // and let the user use their mouse wheel to see the rest of the
-        // popup (i.e. we remove any constraint on the height).
-        //
-        // However, if we're positioning the popup vertically _above_ the target
-        // text, we don't want it to cover the text so we should constrain it in
-        // that case too.
-        constrainHeight:
-          interactive ||
-          extendedPosition.axis === 'horizontal' ||
-          extendedPosition.side === 'before'
-            ? extendedPosition.position.constrainHeight
-            : null,
+        constrainHeight: shouldConstrainHeight({
+          interactive,
+          direction: extendedPosition.axis,
+          side: extendedPosition.side,
+        })
+          ? extendedPosition.position.constrainHeight
+          : null,
       }
     : {
         x: scrollX,
@@ -345,6 +378,7 @@ type ExtendedPopupPosition = {
 };
 
 function getScreenAutoPosition({
+  allowVerticalOverlap,
   cursorClearance,
   cursorPos,
   interactive,
@@ -355,6 +389,7 @@ function getScreenAutoPosition({
   stageHeight,
   pointerType,
 }: {
+  allowVerticalOverlap: boolean;
   cursorClearance: MarginBox;
   cursorPos?: Point;
   interactive: boolean;
@@ -441,22 +476,49 @@ function getScreenAutoPosition({
   //    inline direction (i.e. it's in "landscape mode" as far as the block
   //    direction is concerned) then putting the popup to the side could be
   //    quite helpful so we should check all the possible positions.
+  let bestPosition: ExtendedPopupPosition | undefined;
   if (
     !isSmallLandscapeScreen({
       isVerticalText,
       safeBoundaries: { safeLeft, safeRight, safeTop, safeBottom },
     })
   ) {
-    const bestBlockPosition = blockCandidates.sort(
-      sizeComparator(popupSize)
-    )[0];
-    if (bestBlockPosition) {
-      return bestBlockPosition;
-    }
+    bestPosition = blockCandidates.sort(sizeComparator(popupSize))[0];
   }
 
   // Otherwise, use the layout with the greatest width/area.
-  return candidates.sort(sizeComparator(popupSize))[0];
+  if (!bestPosition) {
+    bestPosition = candidates.sort(sizeComparator(popupSize))[0];
+  }
+  if (!bestPosition) {
+    return undefined;
+  }
+
+  // Now that we have our best position, see if we can unconstrain it by
+  // allowing overlap.
+  if (
+    allowVerticalOverlap &&
+    bestPosition.axis === 'vertical' &&
+    bestPosition.position.constrainHeight
+  ) {
+    const { position } = bestPosition;
+
+    // Nudge up the top
+    const nudgeAmount = Math.min(
+      popupSize.height - position.constrainHeight!,
+      position.y - safeTop
+    );
+    position.y -= nudgeAmount;
+
+    // See if we are still constrained
+    if (position.y + popupSize.height > safeBottom) {
+      position.constrainHeight = safeBottom - position.y;
+    } else {
+      position.constrainHeight = null;
+    }
+  }
+
+  return bestPosition;
 }
 
 function calculatePosition({
@@ -486,10 +548,10 @@ function calculatePosition({
   // (e.g. horizontal position when we are laying the popup out on the vertical
   // axis).
 
-  // We want the popup to actually be positioned slight "before" the target
-  // position so that if we are showing an arrow from the popup to the target
-  // position there is enough slack to position the arrow inside the popup and
-  // still have it line up with the target.
+  // We want the popup to be positioned slightly "before" the target position so
+  // that if we are showing an arrow from the popup to the target position there
+  // is enough slack to position the arrow inside the popup and still have it
+  // line up with the target.
   //
   // Graphically,
   //

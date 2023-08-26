@@ -3,7 +3,7 @@ export type HighlightStyle = 'yellow' | 'blue';
 // Keyboard shortcut keys. Each of these is an array of keycodes (as reported
 // by KeyboardEvent.key). The array may be empty in which case the action is
 // effectively disabled.
-export interface KeyboardKeys {
+export type KeyboardKeys = {
   // The key(s) to toggle display of the definition vs reading-only.
   toggleDefinition: string[];
 
@@ -12,6 +12,9 @@ export interface KeyboardKeys {
 
   // The key(s) to force kanji-only lookup.
   kanjiLookup: string[];
+
+  // The key(s) to expand the popup content.
+  expandPopup: string[];
 
   // The key(s) to close the popup.
   closePopup: string[];
@@ -27,13 +30,15 @@ export interface KeyboardKeys {
 
   // The key(s) to entry copy mode.
   startCopy: string[];
-}
+};
 
 export type AccentDisplay =
   | 'downstep'
   | 'binary'
   | 'binary-hi-contrast'
   | 'none';
+
+export type AutoExpandableEntry = 'words';
 
 export type FontSize = 'normal' | 'large' | 'xl';
 
@@ -44,6 +49,10 @@ export type TabDisplay = 'top' | 'left' | 'right' | 'none';
 export interface ContentConfigParams {
   // Indicates the type of display to use for showing pitch accent information.
   accentDisplay: AccentDisplay;
+
+  // Which sections should have their entries expanded automatically rather than
+  // being collapsed to show only the top entries.
+  autoExpand: Array<AutoExpandableEntry>;
 
   // The preferred language for dictionary content.
   dictLang: string;

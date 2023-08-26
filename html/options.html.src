@@ -125,6 +125,13 @@
             <option value="large">__MSG_options_font_size_large__</option>
             <option value="xl">__MSG_options_font_size_xl__</option>
           </select>
+          <div>__MSG_options_expand_all_entries__<span class=new-badge>__MSG_options_new_badge_text__</span></div>
+          <div class=auto-expand-checkboxes>
+            <div>
+              <input type=checkbox id=expandWords name=expandWords>
+              <label for=expandWords>__MSG_options_expand_words_label__</label>
+            </div>
+          </div>
         </div>
       </div>
       <h1 class=section-header>__MSG_options_popup_interactivity_heading__</h1>

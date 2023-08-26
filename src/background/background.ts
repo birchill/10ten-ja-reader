@@ -687,6 +687,7 @@ browser.runtime.onMessage.addListener(
       case 'top:clearResult':
       case 'top:nextDictionary':
       case 'top:toggleDefinition':
+      case 'top:expandPopup':
       case 'top:movePopup':
       case 'top:enterCopyMode':
       case 'top:exitCopyMode':

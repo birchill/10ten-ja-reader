@@ -19,6 +19,7 @@ import { stripFields } from '../utils/strip-fields';
 
 import {
   AccentDisplay,
+  AutoExpandableEntry,
   ContentConfigParams,
   FontSize,
   HighlightStyle,
@@ -61,6 +62,7 @@ type StoredKeyboardKeys = Omit<
 
 interface Settings {
   accentDisplay?: AccentDisplay;
+  autoExpand?: Array<AutoExpandableEntry>;
   contextMenuEnable?: boolean;
   dictLang?: DbLanguageId;
   enableTapLookup?: boolean;
@@ -126,6 +128,12 @@ export const DEFAULT_KEY_SETTINGS: KeySetting[] = [
     keys: ['d'],
     enabledKeys: [],
     l10nKey: 'options_popup_toggle_definition',
+  },
+  {
+    name: 'expandPopup',
+    keys: ['x'],
+    enabledKeys: ['x'],
+    l10nKey: 'options_popup_expand_popup',
   },
   {
     name: 'closePopup',
@@ -364,6 +372,35 @@ export class Config {
 
     this.settings.accentDisplay = value;
     void browser.storage.sync.set({ accentDisplay: value });
+  }
+
+  // autoExpand: Defaults to an empty array
+
+  get autoExpand(): Array<AutoExpandableEntry> {
+    return typeof this.settings.autoExpand === 'undefined'
+      ? []
+      : [...new Set(this.settings.autoExpand)];
+  }
+
+  toggleAutoExpand(type: AutoExpandableEntry, value: boolean) {
+    const enabled = new Set(this.settings.autoExpand);
+    if (value === enabled.has(type)) {
+      return;
+    }
+
+    if (value) {
+      enabled.add(type);
+    } else {
+      enabled.delete(type);
+    }
+
+    if (enabled.size) {
+      this.settings.autoExpand = [...enabled];
+      void browser.storage.sync.set({ autoExpand: [...enabled] });
+    } else {
+      delete this.settings.autoExpand;
+      void browser.storage.sync.remove('autoExpand');
+    }
   }
 
   // canHover (local): Defaults to true
@@ -1092,6 +1129,7 @@ export class Config {
   get contentConfig(): ContentConfigParams {
     return {
       accentDisplay: this.accentDisplay,
+      autoExpand: this.autoExpand,
       dictLang: this.dictLang,
       enableTapLookup: this.enableTapLookup,
       fx:

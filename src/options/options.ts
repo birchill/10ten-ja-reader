@@ -222,6 +222,13 @@ function completeForm() {
     renderPopupStyleSelect();
   });
 
+  document.getElementById('expandWords')!.addEventListener('click', (event) => {
+    config.toggleAutoExpand(
+      'words',
+      (event.target as HTMLInputElement).checked
+    );
+  });
+
   const mouseInteractivityOptions = Array.from(
     document.querySelectorAll('input[type=radio][name=mouseInteractivity]')
   );
@@ -659,6 +666,7 @@ function configureHoldToShowKeys() {
 
 function addPopupKeys() {
   const grid = document.getElementById('key-grid')!;
+  const newKeys = ['expandPopup'];
 
   for (const setting of DEFAULT_KEY_SETTINGS) {
     // Don't show the copy entry if the clipboard API is not available
@@ -749,6 +757,16 @@ function addPopupKeys() {
       }
 
       keyDescription.appendChild(copyKeyList);
+    }
+
+    if (newKeys.includes(setting.name)) {
+      keyDescription.append(
+        html(
+          'span',
+          { class: 'new-badge' },
+          browser.i18n.getMessage('options_new_badge_text')
+        )
+      );
     }
 
     grid.appendChild(keyDescription);
@@ -913,6 +931,8 @@ function fillVals() {
   optform.accentDisplay.value = config.accentDisplay;
   optform.posDisplay.value = config.posDisplay;
   optform.fontSize.value = config.fontSize;
+  const { autoExpand } = config;
+  optform.expandWords.checked = autoExpand.includes('words');
   optform.highlightText.checked = !config.noTextHighlight;
   optform.contextMenuEnable.checked = config.contextMenuEnable;
   optform.showKanjiComponents.checked = config.showKanjiComponents;

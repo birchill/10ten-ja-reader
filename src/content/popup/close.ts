@@ -14,7 +14,7 @@ export function renderCloseButton(
   const closeButton = html(
     'button',
     {
-      'aria-label': browser.i18n.getMessage('popup_close_label'),
+      'aria-label': label,
       title,
       class: 'close-button',
       type: 'button',
