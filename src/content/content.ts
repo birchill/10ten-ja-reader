@@ -50,7 +50,10 @@ import * as s from 'superstruct';
 import browser, { Runtime } from 'webextension-polyfill';
 
 import { BackgroundMessageSchema } from '../background/background-message';
-import { ContentConfigParams } from '../common/content-config-params';
+import {
+  AutoExpandableEntry,
+  ContentConfigParams,
+} from '../common/content-config-params';
 import { CopyKeys, CopyType } from '../common/copy-keys';
 import { isEditableNode } from '../utils/dom-utils';
 import {
@@ -90,7 +93,6 @@ import {
   renderPopupArrow,
   setFontSize,
   setPopupStyle,
-  showOverlay,
 } from './popup/popup';
 import { CopyState, getCopyMode } from './popup/copy-state';
 import {
@@ -260,6 +262,9 @@ export class ContentHandler {
   // Manual positioning support
   private popupPositionMode: PopupPositionMode = PopupPositionMode.Auto;
 
+  // Content collapsing
+  private isPopupExpanded = false;
+
   // Consulted in order to determine safe area
   private safeAreaProvider: SafeAreaProvider = new SafeAreaProvider();
 
@@ -414,7 +419,7 @@ export class ContentHandler {
         case 'showPriority':
         case 'tabDisplay':
           if (this.isTopMostWindow()) {
-            this.updatePopup({ fixPosition: true });
+            this.updatePopup();
           }
           break;
 
@@ -451,10 +456,10 @@ export class ContentHandler {
           if (this.isTopMostWindow()) {
             // We can't use updatePopup here since it will try to re-use the
             // existing popup display mode but we specifically want to change it
-            // in this case (but, ideally, retain the same position etc.)
+            // in this case.
             this.showPopup({
+              allowOverlap: this.popupState?.pos?.allowOverlap,
               displayMode: value ? 'hover' : 'static',
-              fixPosition: true,
             });
           }
           break;
@@ -498,6 +503,7 @@ export class ContentHandler {
 
     this.textHighlighter.detach();
     this.copyState = { kind: 'inactive' };
+    this.isPopupExpanded = false;
     this.safeAreaProvider.destroy();
     this.touchClickTracker.destroy();
 
@@ -1100,6 +1106,7 @@ export class ContentHandler {
     const [
       nextDictionary,
       toggleDefinition,
+      expandPopup,
       closePopup,
       pinPopup,
       movePopupUp,
@@ -1108,6 +1115,7 @@ export class ContentHandler {
     ] = [
       normalizeKeys(keys.nextDictionary),
       normalizeKeys(keys.toggleDefinition),
+      normalizeKeys(keys.expandPopup),
       normalizeKeys(keys.closePopup),
       normalizeKeys(keys.pinPopup),
       normalizeKeys(keys.movePopupUp),
@@ -1158,6 +1166,8 @@ export class ContentHandler {
       }
     } else if (this.copyState.kind !== 'inactive' && key === 'ESC') {
       this.exitCopyMode();
+    } else if (expandPopup.includes(key)) {
+      this.expandPopup();
     }
     // This needs to come _after_ the above check so that if the user has
     // configured Escape to close the popup but they are in copy mode, we first
@@ -1390,7 +1400,7 @@ export class ContentHandler {
 
           // We don't need to worry about clearing any timeout that may have
           // been set in `this.popupState.ghost.timeout` because that timeout
-          // is cleared by the top-most window (which we are are not).
+          // is cleared by the top-most window (which we are not).
           this.popupState = { ...request.state, pos };
         }
         break;
@@ -1399,6 +1409,7 @@ export class ContentHandler {
         this.currentTextRange = undefined;
         this.currentPagePoint = undefined;
         this.copyState = { kind: 'inactive' };
+        this.isPopupExpanded = false;
         this.popupState = undefined;
         break;
 
@@ -1510,6 +1521,10 @@ export class ContentHandler {
         this.toggleDefinition();
         break;
 
+      case 'expandPopup':
+        this.expandPopup();
+        break;
+
       case 'movePopup':
         this.movePopup(request.direction);
         break;
@@ -1553,6 +1568,20 @@ export class ContentHandler {
 
     this.config.readingOnly = !this.config.readingOnly;
     this.updatePopup();
+  }
+
+  expandPopup() {
+    if (!this.isTopMostWindow()) {
+      void browser.runtime.sendMessage({ type: 'top:expandPopup' });
+      return;
+    }
+
+    if (this.isPopupExpanded) {
+      return;
+    }
+
+    this.isPopupExpanded = true;
+    this.updatePopup({ allowOverlap: true, fixPosition: true });
   }
 
   movePopup(direction: 'up' | 'down') {
@@ -1599,13 +1628,13 @@ export class ContentHandler {
       return;
     }
 
-    this.updatePopup({ fixPosition: true });
+    this.updatePopup({ allowOverlap: true, fixPosition: true });
   }
 
   exitCopyMode() {
-    // Use the existing copyState to determine if we need to maintain a minimum
-    // size for the popup.
-    const fixMinHeight = this.shouldFixMinHeightForCopyMode();
+    // Use the existing copyState to determine if we need to maintain the popup
+    // size and position.
+    const fixPopup = this.shouldFixPopupWhenExitingCopyMode();
 
     // As with enterCopyMode, we mirror the copyMode state in both iframe and
     // topmost window.
@@ -1616,10 +1645,10 @@ export class ContentHandler {
       return;
     }
 
-    this.updatePopup({ fixPosition: true, fixMinHeight });
+    this.updatePopup({ fixPosition: fixPopup, fixMinHeight: fixPopup });
   }
 
-  private shouldFixMinHeightForCopyMode() {
+  private shouldFixPopupWhenExitingCopyMode() {
     return (
       getCopyMode(this.copyState) === 'mouse' &&
       // If the popup is pinned, there's no need to fix the height
@@ -1683,9 +1712,9 @@ export class ContentHandler {
       index: this.copyState.index,
     });
     if (!copyEntry) {
-      const fixMinHeight = this.shouldFixMinHeightForCopyMode();
+      const fixPopup = this.shouldFixPopupWhenExitingCopyMode();
       this.copyState = { kind: 'inactive' };
-      this.updatePopup({ fixPosition: true, fixMinHeight });
+      this.updatePopup({ fixPosition: fixPopup, fixMinHeight: fixPopup });
     }
 
     return copyEntry;
@@ -1696,7 +1725,7 @@ export class ContentHandler {
       return;
     }
 
-    const fixMinHeight = this.shouldFixMinHeightForCopyMode();
+    const fixPopup = this.shouldFixPopupWhenExitingCopyMode();
     const { index, mode } = this.copyState;
     try {
       await copyText(message);
@@ -1706,7 +1735,7 @@ export class ContentHandler {
       this.copyState = { kind: 'error', index, mode };
     }
 
-    this.updatePopup({ fixPosition: true, fixMinHeight });
+    this.updatePopup({ fixPosition: fixPopup, fixMinHeight: fixPopup });
 
     // Reset the copy state so that it doesn't re-appear next time we re-render
     // the popup.
@@ -1905,6 +1934,9 @@ export class ContentHandler {
     // Presumably the text or dictionary has changed so break out of copy mode
     this.copyState = { kind: 'inactive' };
 
+    // Likewise reset the expanded state
+    this.isPopupExpanded = false;
+
     const queryResult = await query(text, {
       includeRomaji: this.config.showRomaji,
       wordLookup,
@@ -2037,8 +2069,14 @@ export class ContentHandler {
     // Exit copy state if we are changing tabs
     this.copyState = { kind: 'inactive' };
 
+    // Reset expanded state since we are changing tabs
+    this.isPopupExpanded = false;
+
     this.highlightTextForCurrentResult();
-    this.updatePopup({ fixPosition: options?.fixPopupPosition });
+    this.updatePopup({
+      allowOverlap: options?.fixPopupPosition,
+      fixPosition: options?.fixPopupPosition,
+    });
   }
 
   highlightTextForCurrentResult() {
@@ -2080,6 +2118,7 @@ export class ContentHandler {
 
   showPopup(
     options: {
+      allowOverlap?: boolean;
       displayMode?: DisplayMode;
       fixPosition?: boolean;
       fixMinHeight?: boolean;
@@ -2095,6 +2134,7 @@ export class ContentHandler {
       return;
     }
 
+    const allowOverlap = options.allowOverlap || false;
     const displayMode =
       options.displayMode || this.getInitialDisplayMode('ghost');
 
@@ -2145,10 +2185,21 @@ export class ContentHandler {
       displayMode,
       fxData: this.config.fx,
       fontSize: this.config.fontSize,
+      expandShortcuts: this.config.keys.expandPopup,
+      isExpanded:
+        this.isPopupExpanded ||
+        this.config.autoExpand.includes(
+          this.currentDict as AutoExpandableEntry
+        ) ||
+        // When selecting items by keyboard, expand the content so the user can
+        // see what else is available to select.
+        (this.copyState.kind === 'active' &&
+          this.copyState.mode === 'keyboard'),
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentLookupParams?.meta,
       onCancelCopy: () => this.exitCopyMode(),
       onDismissMouseOnboarding,
+      onExpandPopup: () => this.expandPopup(),
       onStartCopy: (index: number, trigger: 'touch' | 'mouse') =>
         this.enterCopyMode({ trigger, index }),
       onCopy: (copyType: CopyType) => this.copyCurrentEntry(copyType),
@@ -2272,9 +2323,21 @@ export class ContentHandler {
 
     let popupSize = getPopupDimensions(popup);
 
+    // Apply any min height to the popup
+
+    let minHeight = 0;
+    if (
+      options.fixMinHeight &&
+      this.popupState?.pos &&
+      popupSize.height < this.popupState.pos.height
+    ) {
+      popupSize.height = this.popupState.pos.height;
+      minHeight = this.popupState.pos.height;
+    }
+
     // Finally get the popup position
 
-    let {
+    const {
       x: popupX,
       y: popupY,
       constrainWidth,
@@ -2282,6 +2345,7 @@ export class ContentHandler {
       direction,
       side,
     } = getPopupPosition({
+      allowVerticalOverlap: allowOverlap || !!options.fixMinHeight,
       cursorClearance,
       cursorPos,
       fixedPosition: options?.fixPosition ? this.getFixedPosition() : undefined,
@@ -2292,25 +2356,6 @@ export class ContentHandler {
       safeArea,
       pointerType: this.currentTargetProps?.fromPuck ? 'puck' : 'cursor',
     });
-
-    // If we are showing the copy overlay, we don't constrain the height of
-    // the popup since it may cause the buttons on the overlay to be clipped
-    // or scrolled out of view.
-    if (constrainHeight && showOverlay(this.copyState)) {
-      constrainHeight = null;
-    }
-
-    // Determine if we need to set a minimum height
-
-    let minHeight: number | null = null;
-    if (
-      options.fixMinHeight &&
-      constrainHeight === null &&
-      this.popupState?.pos &&
-      popupSize.height < this.popupState.pos.height
-    ) {
-      minHeight = this.popupState.pos.height;
-    }
 
     // Store the popup's display mode so that:
     //
@@ -2328,9 +2373,10 @@ export class ContentHandler {
         x: popupX,
         y: popupY,
         width: constrainWidth ?? popupSize.width,
-        height: constrainHeight ?? minHeight ?? popupSize.height,
+        height: constrainHeight ?? popupSize.height,
         direction,
         side,
+        allowOverlap,
         lookupPoint: this.getPopupLookupPoint({
           currentPagePoint: this.currentPagePoint,
           firstCharBbox: screenTextBoxSizes?.[1],
@@ -2477,7 +2523,13 @@ export class ContentHandler {
     return display;
   }
 
-  updatePopup(options: { fixPosition?: boolean; fixMinHeight?: boolean } = {}) {
+  updatePopup(
+    options: {
+      allowOverlap?: boolean;
+      fixPosition?: boolean;
+      fixMinHeight?: boolean;
+    } = {}
+  ) {
     if (!this.isTopMostWindow()) {
       console.warn('Called updatePopup within iframe');
       return;
@@ -2485,6 +2537,7 @@ export class ContentHandler {
 
     const displayMode = this.popupState?.display.mode;
     this.showPopup({
+      allowOverlap: options.allowOverlap ?? this.popupState?.pos?.allowOverlap,
       displayMode,
       fixPosition: options.fixPosition,
       fixMinHeight: options.fixMinHeight,
@@ -2503,6 +2556,7 @@ export class ContentHandler {
     // we'll expand the tab bar so we should re-position it as necessary since
     // it might take more space.
     this.showPopup({
+      allowOverlap: this.popupState?.pos?.allowOverlap,
       displayMode: 'pinned',
       fixPosition: this.config.popupInteractive,
     });
@@ -2515,6 +2569,7 @@ export class ContentHandler {
     }
 
     this.showPopup({
+      allowOverlap: this.popupState?.pos?.allowOverlap,
       displayMode: this.getInitialDisplayMode('hover'),
       fixPosition: this.config.popupInteractive,
     });
@@ -2570,7 +2625,11 @@ export class ContentHandler {
       return;
     }
 
-    this.showPopup({ displayMode: 'hover', fixPosition: false });
+    this.showPopup({
+      allowOverlap: this.popupState?.pos?.allowOverlap,
+      displayMode: 'hover',
+      fixPosition: false,
+    });
   }
 
   hidePopup() {

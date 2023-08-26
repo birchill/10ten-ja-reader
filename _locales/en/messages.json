@@ -1630,6 +1630,14 @@
     "message": "licence",
     "description": "The keyword in options_edrdg_license to link to the license"
   },
+  "options_expand_all_entries": {
+    "message": "Expand all entries",
+    "description": "Leading text for options to automatically expand word entries"
+  },
+  "options_expand_words_label": {
+    "message": "Words",
+    "description": "Label for checkbox to enable automatically expanding word entries"
+  },
   "options_font_size_label": {
     "message": "Font size",
     "description": "Label for font size drop-down."
@@ -1694,7 +1702,7 @@
   },
   "options_lang_kanji_only": {
     "message": " (kanji only)",
-    "decsription": "Annotation added to language labels for languages where only the kanji data has been translated (i.e. but not the word data)"
+    "description": "Annotation added to language labels for languages where only the kanji data has been translated (i.e. but not the word data)"
   },
   "options_lang_warning_always_en": {
     "message": "English word definitions are always shown."
@@ -1716,7 +1724,7 @@
   },
   "options_lang_words_only": {
     "message": " (words only)",
-    "decsription": "Annotation added to language labels for languages where only the word data has been translated (i.e. but not the kanji data)"
+    "description": "Annotation added to language labels for languages where only the word data has been translated (i.e. but not the kanji data)"
   },
   "options_last_database_check": {
     "message": "Last check $lastcheck$",
@@ -1786,6 +1794,9 @@
   },
   "options_popup_copy_word_kanji": {
     "message": "Copy word or kanji"
+  },
+  "options_popup_expand_popup": {
+    "message": "Expand popup"
   },
   "options_popup_interactivity_heading": {
     "message": "Popup interactivity",
@@ -1951,6 +1962,10 @@
   "popup_close_label": {
     "message": "Close",
     "description": "The aria-label associated with the button to close the popup"
+  },
+  "popup_expand_label": {
+    "message": "Expand",
+    "description": "The title associated with the button to expand the popup"
   },
   "popup_pin_label": {
     "message": "Pin popup",

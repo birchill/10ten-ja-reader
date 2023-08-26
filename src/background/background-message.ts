@@ -60,6 +60,7 @@ export const BackgroundMessageSchema = discriminator('type', {
   clearResult: s.type({ frame: s.literal('top') }),
   nextDictionary: s.type({ frame: s.literal('top') }),
   toggleDefinition: s.type({ frame: s.literal('top') }),
+  expandPopup: s.type({ frame: s.literal('top') }),
   movePopup: s.type({
     direction: s.enums(['up', 'down']),
     frame: s.literal('top'),

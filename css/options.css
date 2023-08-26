@@ -2,21 +2,23 @@
  * Container styles
  */
 
-:root, body {
+:root,
+body {
   font: message-box;
   font-size: 15px;
   color: #222426;
 }
 
 @media (max-width: 400px) {
-  :root, body {
+  :root,
+  body {
     font-size: 12px;
   }
 }
 
 @media (prefers-color-scheme: dark) {
   body {
-    background: rgb(28,27,34);
+    background: rgb(28, 27, 34);
     color: lightgrey;
   }
 }
@@ -102,7 +104,7 @@
   margin: 8px 0;
 }
 
-.section-header:nth-of-type(n+2) {
+.section-header:nth-of-type(n + 2) {
   margin-top: 16px;
   padding-top: 16px;
   border-top: 1px solid lightgrey;
@@ -160,8 +162,7 @@ select {
   border: none;
   border-radius: 4px;
   background-color: #eeeeef;
-  background-image:
-      url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2012%22%20width%3D%2212%22%20height%3D%2212%22%20fill%3D%22%23222426%22%3E%3Cpath%20d%3D%22m6.25%209%203.615-3.615a.5.5%200%200%200%200-.707.5.5%200%200%200-.707%200L6%207.825%202.855%204.68a.5.5%200%200%200-.707.707L5.76%209l.48%201z%22%2F%3E%3C%2Fsvg%3E");
+  background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2012%22%20width%3D%2212%22%20height%3D%2212%22%20fill%3D%22%23222426%22%3E%3Cpath%20d%3D%22m6.25%209%203.615-3.615a.5.5%200%200%200%200-.707.5.5%200%200%200-.707%200L6%207.825%202.855%204.68a.5.5%200%200%200-.707.707L5.76%209l.48%201z%22%2F%3E%3C%2Fsvg%3E');
   background-repeat: no-repeat;
   background-position: right 10px top 50%;
   background-size: 12px auto;
@@ -174,8 +175,7 @@ select:hover:not(:focus) {
 @media (prefers-color-scheme: dark) {
   select {
     background-color: #2c2b32;
-    background-image:
-        url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2012%22%20width%3D%2212%22%20height%3D%2212%22%20fill%3D%22lightgrey%22%3E%3Cpath%20d%3D%22m6.25%209%203.615-3.615a.5.5%200%200%200%200-.707.5.5%200%200%200-.707%200L6%207.825%202.855%204.68a.5.5%200%200%200-.707.707L5.76%209l.48%201z%22%2F%3E%3C%2Fsvg%3E");
+    background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2012%22%20width%3D%2212%22%20height%3D%2212%22%20fill%3D%22lightgrey%22%3E%3Cpath%20d%3D%22m6.25%209%203.615-3.615a.5.5%200%200%200%200-.707.5.5%200%200%200-.707%200L6%207.825%202.855%204.68a.5.5%200%200%200-.707.707L5.76%209l.48%201z%22%2F%3E%3C%2Fsvg%3E');
   }
 
   select:hover:not(:focus) {
@@ -208,7 +208,9 @@ a:visited {
   border: 1px solid transparent;
   text-align: center;
   cursor: pointer;
-  transition: background-color 0.3s, opacity 0.3s;
+  transition:
+    background-color 0.3s,
+    opacity 0.3s;
   border-radius: 5px;
 }
 
@@ -284,13 +286,17 @@ a:visited {
   box-shadow: inset 0 0 0 2.5px #0996f8;
 }
 
-.icon-radio.-with-labels > input[type='radio']:not(:checked) + label:hover .text .radio {
+.icon-radio.-with-labels
+  > input[type='radio']:not(:checked)
+  + label:hover
+  .text
+  .radio {
   background: #ccc;
 }
 
 @media (prefers-color-scheme: dark) {
   .icon-radio.-with-labels > label {
-    border-color: rgba(249,249,250,0.2);
+    border-color: rgba(249, 249, 250, 0.2);
     background: #1c1b22;
   }
 
@@ -303,19 +309,23 @@ a:visited {
   }
 
   .icon-radio.-with-labels > label .text {
-    border-top-color: rgba(249,249,250,0.2);
+    border-top-color: rgba(249, 249, 250, 0.2);
   }
 
   .icon-radio.-with-labels > label .text .radio {
     background: #3b3a41;
-    border-color: rgba(249,249,250,0.2);
+    border-color: rgba(249, 249, 250, 0.2);
   }
 
   .icon-radio.-with-labels > input[type='radio']:checked + label .text .radio {
     background: black;
   }
 
-  .icon-radio.-with-labels > input[type='radio']:not(:checked) + label:hover .text .radio {
+  .icon-radio.-with-labels
+    > input[type='radio']:not(:checked)
+    + label:hover
+    .text
+    .radio {
     background: #2c2b32;
   }
 }
@@ -399,7 +409,13 @@ fieldset.bordered {
 }
 
 .highlightstyle-select > label .icon .text-fade {
-  -webkit-mask: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
+  -webkit-mask: linear-gradient(
+    90deg,
+    transparent,
+    black 20%,
+    black 80%,
+    transparent
+  );
   mask: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
 }
 
@@ -445,7 +461,9 @@ fieldset.bordered {
 .popupstyle-select > label {
   min-width: 200px;
   padding: 0.5em;
-  transition: background-color 0.3s, opacity 0.3s;
+  transition:
+    background-color 0.3s,
+    opacity 0.3s;
 }
 
 .popupstyle-select > input[type='radio']:checked + label {
@@ -478,9 +496,19 @@ fieldset.bordered {
 
 @media (prefers-color-scheme: dark) {
   .popupstyle-select > input[type='radio']:checked + label {
-    border-color: rgba(249,249,250,0.2);
+    border-color: rgba(249, 249, 250, 0.2);
     background: #3b3a41;
   }
+}
+
+/*
+ * Auto-expand section
+ */
+
+.auto-expand-checkboxes {
+  display: flex;
+  gap: 20px;
+  padding: 10px;
 }
 
 /*
@@ -917,7 +945,7 @@ fieldset.bordered {
 
 @media (prefers-color-scheme: dark) {
   .panel-section-db-summary .db-source-version {
-    color: rgb(152, 152, 152)
+    color: rgb(152, 152, 152);
   }
 }
 

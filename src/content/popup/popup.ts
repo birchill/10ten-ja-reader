@@ -26,6 +26,7 @@ import { renderArrow } from './arrow';
 import { renderCloseButton } from './close';
 import { renderCopyOverlay } from './copy-overlay';
 import { CopyState } from './copy-state';
+import { updateExpandable } from './expandable';
 import { renderKanjiEntry } from './kanji';
 import { renderMetadata } from './metadata';
 import { renderNamesEntries } from './names';
@@ -52,6 +53,8 @@ export interface PopupOptions {
   displayMode: DisplayMode;
   fontSize?: FontSize;
   fxData: ContentConfigParams['fx'];
+  expandShortcuts?: ReadonlyArray<string>;
+  isExpanded: boolean;
   kanjiReferences: Array<ReferenceAbbreviation>;
   meta?: SelectionMeta;
   onCancelCopy?: () => void;
@@ -59,6 +62,7 @@ export interface PopupOptions {
   onCopy?: (copyType: CopyType) => void;
   onClosePopup?: () => void;
   onDismissMouseOnboarding?: (options?: { disable?: boolean }) => void;
+  onExpandPopup?: () => void;
   onShowSettings?: () => void;
   onSwitchDictionary?: (newDict: MajorDataSeries) => void;
   onTogglePin?: () => void;
@@ -140,14 +144,18 @@ export function renderPopup(
     case 'words':
       {
         contentContainer.append(
-          renderWordEntries({
-            entries: resultToShow.data,
-            matchLen: resultToShow.matchLen,
-            more: resultToShow.more,
-            namePreview: result!.namePreview,
-            options,
-            title: result!.title,
-          })
+          html(
+            'div',
+            { class: 'expandable' },
+            renderWordEntries({
+              entries: resultToShow.data,
+              matchLen: resultToShow.matchLen,
+              more: resultToShow.more,
+              namePreview: result!.namePreview,
+              options,
+              title: result!.title,
+            })
+          )
         );
 
         if (options.showMouseOnboarding) {
@@ -260,6 +268,27 @@ export function renderPopup(
   } else {
     windowElem.append(contentWrapper);
   }
+
+  // Collapse expandable containers
+  for (const expandable of contentContainer.querySelectorAll<HTMLElement>(
+    '.expandable'
+  )) {
+    updateExpandable(expandable, {
+      ...options,
+      showKeyboardShortcut: options.displayMode === 'static',
+    });
+  }
+
+  // Scroll any selected items into view.
+  //
+  // We need to wait until after the popup has been positioned, however, as
+  // otherwise we won't know if it's in view or not.
+  requestAnimationFrame(() => {
+    const selectedElem =
+      contentContainer.querySelector('.expandable .-selected') ||
+      contentContainer.querySelector('.-flash');
+    selectedElem?.scrollIntoView({ block: 'nearest' });
+  });
 
   return container;
 }

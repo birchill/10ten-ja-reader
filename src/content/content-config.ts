@@ -47,13 +47,18 @@ export class ContentConfig implements ContentConfigParams {
     this.params = { ...params };
 
     const changes: ContentConfigChange[] = [];
+    const objectKeysWeCareAbout = ['autoExpand'];
     for (const [key, value] of Object.entries(
       before
     ) as Entries<ContentConfigParams>) {
-      // Currently we are only interested in a few keys that happen to have
-      // primitive values. If we ever want to report on changes to array/object
-      // values we'll need to do a deep equality check.
+      // We don't care about changes to most object-typed settings
       if (typeof value === 'object') {
+        if (
+          objectKeysWeCareAbout.includes(key) &&
+          JSON.stringify(value) !== JSON.stringify(this[key])
+        ) {
+          changes.push({ key, value: this[key] } as ContentConfigChange);
+        }
         continue;
       }
 
@@ -110,6 +115,9 @@ export class ContentConfig implements ContentConfigParams {
 
   get accentDisplay() {
     return this.params.accentDisplay;
+  }
+  get autoExpand() {
+    return this.params.autoExpand;
   }
   get dictLang() {
     return this.params.dictLang;

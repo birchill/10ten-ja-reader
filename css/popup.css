@@ -39,7 +39,8 @@
   z-index: 2147483647 !important;
 }
 
-:root, :host {
+:root,
+:host {
   --base-font-size: 14px;
 }
 
@@ -127,8 +128,10 @@
 
   contain: content;
   border-radius: 5px;
-  box-shadow: 0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
-    1px 2px 1px rgba(100, 100, 100, 0.15), 2px 4px 8px rgba(100, 100, 100, 0.15);
+  box-shadow:
+    0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
+    1px 2px 1px rgba(100, 100, 100, 0.15),
+    2px 4px 8px rgba(100, 100, 100, 0.15);
   font: normal 14px sans-serif;
 
   color: var(--text-color);
@@ -167,7 +170,7 @@
 
 @supports not (scrollbar-width: thin) {
   .window .content::-webkit-scrollbar {
-    width: 5px;
+    width: 7px;
     background-color: var(--scrollbar-bg);
   }
 
@@ -500,6 +503,103 @@
   display: none;
 }
 
+/* Expandable container */
+
+.window .content .expandable {
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+@supports (scrollbar-width: thin) {
+  .window .content .expandable {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-fg) var(--scrollbar-bg);
+  }
+}
+
+@supports not (scrollbar-width: thin) {
+  .window .content .expandable::-webkit-scrollbar {
+    width: 7px;
+    background-color: var(--scrollbar-bg);
+  }
+
+  .window .content .expandable::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-fg);
+  }
+}
+
+.window .content .expandable .fold-point {
+  display: contents;
+}
+
+/* Expand button */
+
+.window .content .expand-button {
+  /* Box layout */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 8px;
+
+  /* Positioning */
+  position: sticky;
+  bottom: 0;
+
+  /* Reset button styles */
+  appearance: none;
+  border: 0;
+  margin: 0;
+  cursor: pointer;
+  font: inherit;
+  line-height: 1;
+  text-decoration: none;
+
+  /* Colors */
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--bg-rgb), 0.3),
+    var(--bg-color) 80%
+  );
+  color: rgba(var(--expand-button-rgb), 0.8);
+}
+
+.window .content {
+  /* Extra space to add to the end of the content so the expand button doesn't
+   * overlap with the last entry. */
+  --expand-button-allowance: 35px;
+}
+
+.window .content .expand-button:hover {
+  color: var(--expand-button-color);
+  /* Use outline instead of border so it doesn't affect the layout (even if we
+   * try to reserve space for the border using a transparent border it will not
+   * blend with the underlying element since you can't have a fully transparent
+   * border on a non-transparent background. */
+  outline: 1px var(--expand-button-color) dotted;
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--bg-rgb), 0.8),
+    var(--bg-color) 80%
+  );
+}
+
+.window .content .expand-button .icon {
+  width: 16px;
+  height: 16px;
+  flex-grow: 1;
+}
+
+.window .content .expand-button kbd {
+  color: var(--expand-button-color);
+  font-family: monospace;
+  font-weight: 800;
+  padding: 0.1rem 0.2rem;
+  border-radius: 0.2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--expand-button-color) !important;
+}
+
 /* Word display */
 
 .wordlist {
@@ -510,7 +610,15 @@
   margin-bottom: 8px;
 }
 
-.entry, .more {
+.wordlist .entry {
+  scroll-snap-align: start;
+  /* This matches the margin at the top of the word list */
+  scroll-margin-top: 8px;
+  scroll-margin-bottom: var(--expand-button-allowance);
+}
+
+.entry,
+.more {
   padding: 4px 14px;
 }
 
@@ -1166,7 +1274,9 @@
 
 .window.-copy-finished .status-bar > .status {
   opacity: 0;
-  animation: fade-in 0.4s linear forwards, fade-out 0.3s 0.9s forwards;
+  animation:
+    fade-in 0.4s linear forwards,
+    fade-out 0.3s 0.9s forwards;
 }
 
 .window.-copy-finished .status-bar {
@@ -1282,6 +1392,8 @@
   margin-top: 8px;
   margin-bottom: 3px;
   background: var(--meta-bg);
+  scroll-snap-align: start;
+  scroll-margin-top: 8px;
 }
 
 .wordlist .bonus-name .more {
@@ -1298,6 +1410,8 @@
   margin-bottom: 3px;
   padding: 3px 14px;
   background: var(--meta-bg);
+  scroll-snap-align: start;
+  scroll-margin-top: 8px;
 }
 
 .wordlist .meta:last-child,
@@ -1492,7 +1606,8 @@
   padding: 8px 32px;
   border-radius: 16px;
   --shadow-color: 0deg 0% 0%;
-  box-shadow: 0.2px 0.6px 0.5px hsl(var(--shadow-color) / 0.12),
+  box-shadow:
+    0.2px 0.6px 0.5px hsl(var(--shadow-color) / 0.12),
     0.4px 1.2px 1.1px -1.5px hsl(var(--shadow-color) / 0.09),
     1.4px 3.7px 3.3px -3px hsl(var(--shadow-color) / 0.06),
     3.8px 10.3px 9.1px -4.4px hsl(var(--shadow-color) / 0.04);
@@ -1637,7 +1752,8 @@
 .arrow.-bottom::before {
   transform: rotate(45deg);
   margin-top: calc(var(--square-side) / -2);
-  box-shadow: 0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
+  box-shadow:
+    0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
     2px 2px 1px rgba(100, 100, 100, 0.15),
     4px 4px 8px rgba(100, 100, 100, 0.15);
 }
@@ -1648,7 +1764,8 @@
 
 .arrow.-top::before {
   transform: rotate(225deg);
-  box-shadow: 0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
+  box-shadow:
+    0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
     -1px 2px 1px rgba(100, 100, 100, 0.15);
 }
 
@@ -1659,7 +1776,8 @@
 .arrow.-right::before {
   transform: rotate(225deg);
   margin-left: calc(var(--square-side) / -2);
-  box-shadow: 0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
+  box-shadow:
+    0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
     -2px 2px 1px rgba(100, 100, 100, 0.15),
     -2px 2px 8px rgba(100, 100, 100, 0.15);
 }
