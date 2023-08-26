@@ -10,6 +10,15 @@ const SearchRequestSchema = s.type({
 
 export type SearchRequest = s.Infer<typeof SearchRequestSchema>;
 
+const SearchOtherRequestSchema = s.assign(
+  SearchRequestSchema,
+  s.type({
+    wordsMatchLen: s.number(),
+  })
+);
+
+export type SearchOtherRequest = s.Infer<typeof SearchOtherRequestSchema>;
+
 export const BackgroundRequestSchema = discriminator('type', {
   //
   // Requests for the background page
@@ -25,7 +34,7 @@ export const BackgroundRequestSchema = discriminator('type', {
   isDbUpdating: s.type({}),
   options: s.type({}),
   searchWords: SearchRequestSchema,
-  searchOther: SearchRequestSchema,
+  searchOther: SearchOtherRequestSchema,
   showMouseOnboarding: s.type({}),
   toggleDefinition: s.type({}),
   translate: s.type({

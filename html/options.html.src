@@ -131,6 +131,10 @@
               <input type=checkbox id=expandWords name=expandWords>
               <label for=expandWords>__MSG_options_expand_words_label__</label>
             </div>
+            <div>
+              <input type=checkbox id=expandKanji name=expandKanji>
+              <label for=expandKanji>__MSG_options_expand_kanji_label__</label>
+            </div>
           </div>
         </div>
       </div>

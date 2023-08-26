@@ -1939,6 +1939,7 @@ export class ContentHandler {
 
     const queryResult = await query(text, {
       includeRomaji: this.config.showRomaji,
+      metaMatchLen: meta?.matchLen,
       wordLookup,
       updateQueryResult: (queryResult: QueryResult | null) => {
         void this.applyQueryResult({
@@ -2000,7 +2001,7 @@ export class ContentHandler {
     if (queryResult) {
       switch (dictMode) {
         case 'default':
-          if (!queryResult.words) {
+          if (!queryResult.words && !meta) {
             // Prefer the names dictionary if we have a names result of more
             // than one character or if we have no kanji results.
             //
@@ -2050,7 +2051,10 @@ export class ContentHandler {
       let next = (cycleOrder.indexOf(this.currentDict) + 1) % cycleOrder.length;
       while (cycleOrder[next] !== this.currentDict) {
         const nextDict = cycleOrder[next];
-        if (this.currentSearchResult[nextDict]) {
+        if (
+          this.currentSearchResult[nextDict] ||
+          (nextDict === 'words' && !!this.currentLookupParams?.meta)
+        ) {
           dict = nextDict;
           break;
         }
@@ -2192,9 +2196,11 @@ export class ContentHandler {
           this.currentDict as AutoExpandableEntry
         ) ||
         // When selecting items by keyboard, expand the content so the user can
-        // see what else is available to select.
+        // see what else is available to select, but not for kanji since it
+        // would make the window massive.
         (this.copyState.kind === 'active' &&
-          this.copyState.mode === 'keyboard'),
+          this.copyState.mode === 'keyboard' &&
+          this.currentDict !== 'kanji'),
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentLookupParams?.meta,
       onCancelCopy: () => this.exitCopyMode(),

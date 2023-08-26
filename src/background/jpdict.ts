@@ -413,14 +413,8 @@ export async function translate({
 // ---------------------------------------------------------------------------
 
 export async function searchKanji(
-  kanji: string
+  input: string
 ): Promise<KanjiSearchResult | null | 'unavailable' | 'updating'> {
-  // Pre-check (might not be needed anymore)
-  const codepoint = kanji.codePointAt(0);
-  if (!codepoint || codepoint < 0x3000) {
-    return null;
-  }
-
   const kanjiStatus = getDataSeriesStatus('kanji');
   const radicalStatus = getDataSeriesStatus('radicals');
   if (kanjiStatus === 'unavailable' || radicalStatus === 'unavailable') {
@@ -430,6 +424,39 @@ export async function searchKanji(
   if (kanjiStatus === 'updating' || radicalStatus === 'updating') {
     return 'updating';
   }
+
+  // Do some very elementary filtering on kanji
+  //
+  // We know that the input should be mostly Japanese so we just do some very
+  // basic filtering to drop any hiragana / katakana.
+  //
+  // We _could_ do a more thoroughgoing check based on all the different Unicode
+  // ranges but they're constantly being expanded and if some obscure character
+  // ends up in the kanji database we want to show it even if it doesn't match
+  // our expectations of what characters are kanji.
+  const kanjiLastIndex = new Map<string, number>();
+  const kanji = [
+    ...new Set(
+      [...input].filter((c, i) => {
+        const cp = c.codePointAt(0)!;
+        const isKanji =
+          // Don't bother looking up Latin text
+          cp >= 0x3000 &&
+          // Or hiragana (yeah, 0x1b0001 is also hiragana but this is good enough)
+          !(cp >= 0x3040 && cp <= 0x309f) &&
+          // Or katakana
+          !(cp >= 0x30a0 && cp <= 0x30ff) &&
+          !(cp >= 0x31f0 && cp <= 0x31ff) &&
+          // Or half-width katakana
+          !(cp >= 0xff65 && cp <= 0xff9f);
+        if (isKanji) {
+          kanjiLastIndex.set(c, i);
+        }
+
+        return isKanji;
+      })
+    ),
+  ];
 
   const logWarningMessage = (message: string) => {
     // Ignore certain warnings that are not currently meaningful
@@ -443,7 +470,7 @@ export async function searchKanji(
   let result;
   try {
     result = await getKanji({
-      kanji: [kanji],
+      kanji,
       lang: dbState.kanji.version?.lang ?? 'en',
       logWarningMessage,
     });
@@ -457,15 +484,11 @@ export async function searchKanji(
     return null;
   }
 
-  if (result.length > 1) {
-    logWarningMessage(`Got more than one result for ${kanji}`);
-  }
+  // Work out what the last matched character was
+  const matchLen =
+    Math.max(...result.map((r) => kanjiLastIndex.get(r.c) || 0)) + 1;
 
-  return {
-    type: 'kanji',
-    data: result[0],
-    matchLen: 1,
-  };
+  return { type: 'kanji', data: result, matchLen };
 }
 
 // ---------------------------------------------------------------------------

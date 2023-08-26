@@ -1,12 +1,12 @@
 import type {
-  NameResult as HikibikiNameResult,
-  WordResult as HikibikiWordResult,
+  NameResult as JpdictNameResult,
+  WordResult as JpdictWordResult,
   KanjiResult,
 } from '@birchill/jpdict-idb';
 
 // Words
 
-export type DictionaryWordResult = HikibikiWordResult;
+export type DictionaryWordResult = JpdictWordResult;
 
 export type WordResult = DictionaryWordResult & {
   reason?: string;
@@ -28,13 +28,13 @@ export interface WordSearchResult {
 
 export interface KanjiSearchResult {
   type: 'kanji';
-  data: KanjiResult;
-  matchLen: 1;
+  data: Array<KanjiResult>;
+  matchLen: number;
 }
 
 // Names
 
-export type NameResult = HikibikiNameResult & {
+export type NameResult = JpdictNameResult & {
   matchLen: number;
 };
 

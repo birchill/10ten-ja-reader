@@ -15,6 +15,8 @@ app.
   - You can view other entries by scrolling the popup window or by expanding it
     to show all entries by clicking the downward triangle button or pressing
     <kbd>x</kbd> on the keyboard.
+- Made the popup show kanji details for all kanji in the longest matched word
+  ([#1138](https://github.com/birchill/10ten-ja-reader/issues/1138)).
 - Added a setting for changing the font size of the popup.
 - Made options page support dark mode.
 - Added an option to disable looking up by tapping on them on touchscreen devices

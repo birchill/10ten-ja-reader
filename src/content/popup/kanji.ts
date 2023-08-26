@@ -10,17 +10,56 @@ import { html } from '../../utils/builder';
 import { renderFrequency, renderPencil, renderPerson } from './icons';
 import { getLangTag } from './lang-tag';
 import { PopupOptions } from './popup';
+import { getSelectedIndex } from './selected-index';
 import { popupHasSelectedText } from './selection';
 
-export function renderKanjiEntry({
-  entry,
+export function renderKanjiEntries({
+  entries,
   options,
 }: {
-  entry: KanjiResult;
+  entries: ReadonlyArray<KanjiResult>;
   options: PopupOptions;
 }): HTMLElement {
+  const container = html('div', { class: 'kanjilist entry-data' });
+
+  const selectedIndex = getSelectedIndex(options, entries.length);
+  for (const [i, entry] of entries.entries()) {
+    if (i === 1) {
+      container.append(html('div', { class: 'fold-point' }));
+    }
+    container.append(
+      renderKanjiEntry({
+        entry,
+        index: i,
+        options,
+        selectState:
+          selectedIndex === i
+            ? options.copyState.kind === 'active'
+              ? 'selected'
+              : 'flash'
+            : 'unselected',
+      })
+    );
+  }
+
+  return container;
+}
+
+function renderKanjiEntry({
+  entry,
+  index,
+  options,
+  selectState,
+}: {
+  entry: KanjiResult;
+  index: number;
+  options: PopupOptions;
+  selectState: 'unselected' | 'selected' | 'flash';
+}): HTMLElement {
   // Main table
-  const table = html('div', { class: 'kanji-table entry-data' });
+  const table = html('div', { class: 'kanji-table' });
+  table.classList.toggle('-selected', selectState === 'selected');
+  table.classList.toggle('-flash', selectState === 'flash');
 
   // Top part
   const topPart = html('div', { class: 'top-part' });
@@ -38,7 +77,7 @@ export function renderKanjiEntry({
     }
 
     const trigger = lastPointerType === 'mouse' ? 'mouse' : 'touch';
-    options.onStartCopy?.(0, trigger);
+    options.onStartCopy?.(index, trigger);
   });
   topPart.append(kanjiDiv);
 
@@ -181,8 +220,12 @@ function renderReadings(entry: KanjiResult): HTMLElement {
       readingsDiv.append(reading);
     } else {
       readingsDiv.append(
-        reading.substr(0, highlightIndex),
-        html('span', { class: 'okurigana' }, reading.substr(highlightIndex + 1))
+        reading.substring(0, highlightIndex),
+        html(
+          'span',
+          { class: 'okurigana' },
+          reading.substring(highlightIndex + 1)
+        )
       );
     }
 

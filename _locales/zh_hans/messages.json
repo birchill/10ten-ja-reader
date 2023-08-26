@@ -1632,7 +1632,11 @@
   },
   "options_expand_all_entries": {
     "message": "展开所有结果",
-    "description": "Leading text for options to automatically expand word entries"
+    "description": "Leading text for options to automatically expand word or kanji entries"
+  },
+  "options_expand_kanji_label": {
+    "message": "汉字",
+    "description": "Label for checkbox to enable automatically expanding kanji entries"
   },
   "options_expand_words_label": {
     "message": "单词",
@@ -1752,7 +1756,7 @@
   },
   "options_mouse_onboarding_learn_mode": {
     "message": "鼠标操作详解",
-    "descripion": "Text for the link to the mouse onboarding page"
+    "description": "Text for the link to the mouse onboarding page"
   },
   "options_name_data_name": {
     "message": "名字数据库",

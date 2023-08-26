@@ -1,7 +1,6 @@
 import { MajorDataSeries } from '@birchill/jpdict-idb';
 import browser from 'webextension-polyfill';
 
-import { QueryResult } from '../query';
 import { DisplayMode } from '../popup-state';
 import { html } from '../../utils/builder';
 import { getMouseCapabilityMql } from '../../utils/device';
@@ -19,22 +18,22 @@ import { getLangTag } from './lang-tag';
 export function renderTabBar({
   closeShortcuts,
   displayMode,
+  enabledTabs,
   onClosePopup,
   onShowSettings,
   onSwitchDictionary,
   onTogglePin,
   pinShortcuts,
-  queryResult,
   selectedTab,
 }: {
   closeShortcuts?: ReadonlyArray<string>;
   displayMode: DisplayMode;
+  enabledTabs: Record<MajorDataSeries, boolean>;
   onClosePopup?: () => void;
   onShowSettings?: () => void;
   onSwitchDictionary?: (newDict: MajorDataSeries) => void;
   onTogglePin?: () => void;
   pinShortcuts?: ReadonlyArray<string>;
-  queryResult?: QueryResult;
   selectedTab: MajorDataSeries;
 }): HTMLElement {
   const tabBar = html('div', { class: 'tab-bar', lang: getLangTag() });
@@ -58,7 +57,7 @@ export function renderTabBar({
 
     if (series === selectedTab) {
       li.setAttribute('aria-selected', 'true');
-    } else if (!queryResult || !queryResult[series]) {
+    } else if (!enabledTabs[series]) {
       li.classList.add('disabled');
     }
 
