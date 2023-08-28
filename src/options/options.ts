@@ -908,8 +908,8 @@ function createKanjiReferences() {
   )}, minmax(min-content, max-content))`;
 }
 
-// Expire current set of badges on Sep 30
-const NEW_EXPIRY = new Date(2023, 8, 30);
+// Expire current set of badges on Oct 10
+const NEW_EXPIRY = new Date(2023, 9, 10);
 
 function expireNewBadges() {
   if (new Date() < NEW_EXPIRY) {
