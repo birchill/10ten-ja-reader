@@ -21,7 +21,10 @@ export function normalizeInput(input: string): [string, number[]] {
     const char = fullWidthInput.codePointAt(i)!;
     // If we find a character out of range, we need to trim both normalized
     // and inputLengths
-    if (char <= 0x3002 && char != 0x200c) {
+    if (
+      (char <= 0x2e80 && char != 0x200c) ||
+      (char >= 0x3000 && char <= 0x3002)
+    ) {
       let outputIndex = 0;
       while (inputLengths[outputIndex] < i) {
         outputIndex++;

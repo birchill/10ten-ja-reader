@@ -105,7 +105,12 @@
   resolved "https://registry.yarnpkg.com/@birchill/json-equalish/-/json-equalish-1.1.2.tgz#6547834e6ce2331a969a1aa13c485f19b7428c9f"
   integrity sha512-oXsOtXbuxai0iq8bXZKa0S2AkGEEhigu2WcZUbYwRbv4EtHJvT6jqSg5kNtWeI+6frv7ixIbJbuWP6AbNtj7Sw==
 
-"@birchill/normal-jp@1.4.0", "@birchill/normal-jp@^1.4.0":
+"@birchill/normal-jp@1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.5.0.tgz#9ffc7227a636ffcf3dd7c39dfdb0af4cbd4d7d38"
+  integrity sha512-yL0XXk6Wl4jrJtfT2HJ/NDiZoepgJMWx3CLM0MzUyXFVFWvdgVPe+DWjH/z6Rps7tDqSS6CtVXL9hW0qncpAUA==
+
+"@birchill/normal-jp@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.4.0.tgz#b58f6146f9b754431f7d93c2d48aca9ee45ee1a3"
   integrity sha512-iMeOw4BJS1Z0wqMyC3eYoZN+ANDlg1VQ+dZy56UEwNEaY+hzkR6nYT0DKpDRVRp5oJbpf7rEJQ6gfmD7AWJv2A==

@@ -20,6 +20,10 @@ export const zeroWidthNonJoiner = /[\u200c]/;
 //   purpose, but this is included in the U+3001~U+30FF range.)
 export const whiteCircle = /[\u25cb]/;
 
+// U+2E80~U+2EF3 is the CJK radicals supplement block
+// U+2F00~U+2FD5 is the Kangxi radicals block
+export const radicals = /[\u2e80-\u2ef3\u2f00-\u2fd5]/u;
+
 // * U+3000~U+3039 is ideographic punctuation but we skip:
 //
 //    U+3000 (ideographic space),
@@ -124,6 +128,7 @@ export const japaneseChar = getCombinedCharRange([
   fullWidthAlphanumerics,
   zeroWidthNonJoiner,
   whiteCircle,
+  radicals,
   nonDelimitingIdeographicPunctuation,
   hiragana,
   katakana,

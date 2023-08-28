@@ -21,10 +21,12 @@ app.
 - Made options page support dark mode.
 - Added an option to disable looking up by tapping on them on touchscreen devices
   ([#1005](https://github.com/birchill/10ten-ja-reader/issues/1005)).
-- Add WaniKani data to word and kanji display
+- Added WaniKani data to word and kanji display
   ([#838](https://github.com/birchill/10ten-ja-reader/issues/838)).
   This can be enabled from the options page under the "Popup style" and
   "Kanji dictionary" sections.
+- Added handling for kanji incorrectly encoded as radicals
+  ([#1205](https://github.com/birchill/10ten-ja-reader/issues/1205)).
 
 ## [1.14.3] - 2023-06-05 (Chrome, Edge only)
 
