@@ -672,7 +672,6 @@ function configureHoldToShowKeys() {
 
 function addPopupKeys() {
   const grid = document.getElementById('key-grid')!;
-  const newKeys = ['expandPopup'];
 
   for (const setting of DEFAULT_KEY_SETTINGS) {
     // Don't show the copy entry if the clipboard API is not available
@@ -765,7 +764,7 @@ function addPopupKeys() {
       keyDescription.appendChild(copyKeyList);
     }
 
-    if (newKeys.includes(setting.name)) {
+    if (NEW_KEYS.includes(setting.name)) {
       keyDescription.append(
         html(
           'span',
@@ -887,14 +886,18 @@ function createKanjiReferences() {
       });
     });
 
-    container.append(
-      html(
-        'div',
-        { class: 'checkbox-row' },
-        checkbox,
-        html('label', { for: `ref-${ref}` }, full)
-      )
-    );
+    const label = html('label', { for: `ref-${ref}` }, full);
+    if (NEW_REFERENCES.includes(ref)) {
+      label.append(
+        html(
+          'span',
+          { class: 'new-badge' },
+          browser.i18n.getMessage('options_new_badge_text')
+        )
+      );
+    }
+
+    container.append(html('div', { class: 'checkbox-row' }, checkbox, label));
   }
 
   // We want to match the arrangement of references when they are displayed,
@@ -910,6 +913,8 @@ function createKanjiReferences() {
 
 // Expire current set of badges on Oct 10
 const NEW_EXPIRY = new Date(2023, 9, 10);
+const NEW_KEYS = ['expandPopup'];
+const NEW_REFERENCES = ['wk'];
 
 function expireNewBadges() {
   if (new Date() < NEW_EXPIRY) {
