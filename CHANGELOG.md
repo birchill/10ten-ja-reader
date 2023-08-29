@@ -29,6 +29,7 @@ app.
   ([#1205](https://github.com/birchill/10ten-ja-reader/issues/1205)).
 - Fixed handling of pages with `<frameset>` elements and nested `<iframe>`s
   ([#1241](https://github.com/birchill/10ten-ja-reader/issues/1241)).
+- Fixed highlight styles on pages with strict CSP settings.
 
 ## [1.14.3] - 2023-06-05 (Chrome, Edge only)
 

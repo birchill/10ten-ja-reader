@@ -1,3 +1,5 @@
+import browser from 'webextension-polyfill';
+
 import { HighlightStyle } from '../common/content-config-params';
 import { html } from '../utils/builder';
 import {
@@ -478,26 +480,12 @@ export class TextHighlighter {
       return;
     }
 
-    //
-    // These styles need to be synchronized with the preview styles in
-    // options.css
-    //
-    // Don't forget the Google Docs styles in gdocs-canvas.ts too!
-    //
     document.head.append(
-      html(
-        'style',
-        { id: 'tenten-selection-styles' },
-        `
-::highlight(tenten-selection) {
-  background: #fff394;
-  color: #1d1a19;
-}
-::highlight(tenten-selection-blue) {
-  background: #2589ed;
-  color: white;
-}`
-      )
+      html('link', {
+        id: 'tenten-selection-styles',
+        rel: 'stylesheet',
+        href: browser.runtime.getURL('css/selection.css'),
+      })
     );
   }
 
@@ -508,7 +496,10 @@ export class TextHighlighter {
 
 // Iterator for a TextRange that enforces the supplied length
 class TextRangeWithLength implements Iterable<NodeRange> {
-  constructor(public textRange: TextRange, public length: number) {}
+  constructor(
+    public textRange: TextRange,
+    public length: number
+  ) {}
 
   [Symbol.iterator](): Iterator<NodeRange> {
     let i = 0;

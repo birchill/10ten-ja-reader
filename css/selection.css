@@ -1,0 +1,16 @@
+/*
+ * These styles need to be synchronized with the preview styles in
+ * options.css
+ *
+ * Don't forget the Google Docs styles in gdocs-canvas.ts too!
+ */
+
+::highlight(tenten-selection) {
+  background: #fff394;
+  color: #1d1a19;
+}
+
+::highlight(tenten-selection-blue) {
+  background: #2589ed;
+  color: white;
+}
