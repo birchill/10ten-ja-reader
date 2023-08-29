@@ -1,7 +1,8 @@
-const core = require('@actions/core');
-const github = require('@actions/github');
-const fs = require('fs');
-const path = require('path');
+import * as core from '@actions/core';
+import * as github from '@actions/github';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import * as process from 'node:process';
 
 async function main() {
   const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
@@ -24,12 +25,10 @@ async function main() {
     target_commitish: sha,
   });
 
-  const root = path.join(__dirname, '..', '..', '..');
-
   // Upload Firefox asset
   const firefoxPackageName = core.getInput('firefox_package_name');
   const firefoxPackagePath = path.join(
-    root,
+    github.context.workspace,
     'dist-firefox-package',
     firefoxPackageName
   );
@@ -44,7 +43,7 @@ async function main() {
   // Upload Chrome asset
   const chromePackageName = core.getInput('chrome_package_name');
   const chromePackagePath = path.join(
-    root,
+    github.context.workspace,
     'dist-chrome-package',
     chromePackageName
   );
@@ -58,7 +57,11 @@ async function main() {
 
   // Upload Edge asset
   const edgePackageName = core.getInput('edge_package_name');
-  const edgePackagePath = path.join(root, 'dist-edge-package', edgePackageName);
+  const edgePackagePath = path.join(
+    github.context.workspace,
+    'dist-edge-package',
+    edgePackageName
+  );
   await octokit.rest.repos.uploadReleaseAsset({
     owner,
     repo,
@@ -70,7 +73,7 @@ async function main() {
   // Upload Thunderbird asset
   const thunderbirdPackageName = core.getInput('thunderbird_package_name');
   const thunderbirdPackagePath = path.join(
-    root,
+    github.context.workspace,
     'dist-thunderbird-package',
     thunderbirdPackageName
   );
@@ -84,7 +87,7 @@ async function main() {
 
   // Upload source asset
   const sourcePackagePath = path.join(
-    root,
+    github.context.workspace,
     'dist-src',
     `10ten-ja-reader-${version}-src.zip`
   );
@@ -97,7 +100,9 @@ async function main() {
   });
 
   // Upload raw source files
-  for (const file of fs.readdirSync(path.join(root, 'dist-firefox'))) {
+  for (const file of fs.readdirSync(
+    path.join(github.context.workspace, 'dist-firefox')
+  )) {
     // Too lazy to import @actions/glob...
     if (!file.startsWith('10ten-ja-') || !file.endsWith('.js')) {
       continue;
@@ -108,7 +113,9 @@ async function main() {
       repo,
       release_id: release.data.id,
       name: file,
-      data: fs.readFileSync(path.join(root, 'dist-firefox', file)),
+      data: fs.readFileSync(
+        path.join(github.context.workspace, 'dist-firefox', file)
+      ),
     });
   }
 

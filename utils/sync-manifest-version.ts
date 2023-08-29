@@ -1,17 +1,17 @@
 /* eslint-env node */
-import * as fs from 'fs';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
+import * as fs from 'node:fs';
+import * as url from 'node:url';
 import { parseSemVer } from 'semver-parser';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function main() {
   console.log('Synchronizing version number in manifest...');
 
   // Read version
   const packageJson = JSON.parse(
-    fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8')
+    fs.readFileSync(
+      url.fileURLToPath(new URL('../package.json', import.meta.url)),
+      'utf8'
+    )
   );
   const originalVersionString = packageJson.version;
   if (!originalVersionString) {
@@ -40,7 +40,9 @@ function main() {
     : `"version": "${major}.${minor}.${patch}",`;
 
   // Update the manifest
-  const manifestPath = path.join(__dirname, '..', 'manifest.json.src');
+  const manifestPath = url.fileURLToPath(
+    new URL('../manifest.json.src', import.meta.url)
+  );
   const manifestSrc = fs.readFileSync(manifestPath, 'utf8');
   const existingVersionInfo =
     /(\/\*#if supports_alpha_version\*\/.*?\/\*#endif\*\/)|("version": "\d+\.\d+\.\d+",)/s;
