@@ -2,13 +2,26 @@ import { assert } from 'chai';
 import { browser } from './browser-polyfill';
 (window as any).browser = browser;
 
-import { TextHighlighter } from '../src/content/text-highlighter';
+// Make sure the browser polyfill believes we are in an extension context
+(window as any).chrome = {
+  runtime: {
+    id: 'test',
+  },
+};
+
+import type { TextHighlighter as TextHighlighterClass } from '../src/content/text-highlighter';
+
+let TextHighlighter: typeof TextHighlighterClass;
 
 mocha.setup('bdd');
 
 describe('TextHighligher', () => {
   let testDiv: HTMLDivElement;
-  let subject: TextHighlighter;
+  let subject: TextHighlighterClass;
+
+  before(async () => {
+    ({ TextHighlighter } = await import('../src/content/text-highlighter'));
+  });
 
   beforeEach(() => {
     subject = new TextHighlighter();
