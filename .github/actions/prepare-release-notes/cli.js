@@ -1,7 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+import * as console from 'node:console';
+import * as fs from 'node:fs';
+import * as process from 'node:process';
+import * as url from 'node:url';
 
-const { formatReleaseNotes } = require('./format-release-notes.js');
+import { formatReleaseNotes } from './format-release-notes.js';
 
 async function main() {
   let version = process.argv[2];
@@ -13,9 +15,9 @@ async function main() {
     version = 'Unreleased';
   }
 
-  const root = path.join(__dirname, '..', '..', '..');
-
-  const changeLogPath = path.join(root, 'CHANGELOG.md');
+  const changeLogPath = url.fileURLToPath(
+    new URL('../../../CHANGELOG.md', import.meta.url)
+  );
   const changeLogContents = fs.readFileSync(changeLogPath, 'utf8');
 
   const releaseNotes = formatReleaseNotes({

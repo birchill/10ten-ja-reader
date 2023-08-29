@@ -4,7 +4,7 @@
  * @param {{ changeLog: string; version: string }} options
  * @returns {string}
  */
-function formatReleaseNotes({ changeLog, version }) {
+export function formatReleaseNotes({ changeLog, version }) {
   // Get the lines of the changelog for the specified version
   const lines = changeLog.split(/\r\n|\r|\n/g);
   const start = lines.findIndex((line) => line.startsWith(`## [${version}]`));
@@ -60,8 +60,8 @@ function formatReleaseNotes({ changeLog, version }) {
   // 4. Strip various other markdown
   //
   // Based on https://github.com/stiang/remove-markdown/blob/master/index.js
-  humanNotes = humanNotes.replace(/\[([^\]]*?)\][\[\(].*?[\]\)]/g, '$1');
-  humanNotes = humanNotes.replace(/([\*]+)(\S)(.*?\S)??\1/g, '$2$3');
+  humanNotes = humanNotes.replace(/\[([^\]]*?)\][[(].*?[\])]/g, '$1');
+  humanNotes = humanNotes.replace(/([*]+)(\S)(.*?\S)??\1/g, '$2$3');
   humanNotes = humanNotes.replace(
     /(^|\W)([_]+)(\S)(.*?\S)??\2($|\W)/g,
     '$1$3$4$5'
@@ -180,5 +180,3 @@ function getBrowserAnnotations(line) {
 
   return hasABrowser ? includedBrowsers : null;
 }
-
-exports.formatReleaseNotes = formatReleaseNotes;

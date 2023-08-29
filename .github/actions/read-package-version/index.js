@@ -1,15 +1,14 @@
 import * as core from '@actions/core';
-import * as fs from 'fs';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
+import * as github from '@actions/github';
+import * as fs from 'node:fs';
+import * as process from 'node:process';
+import * as url from 'node:url';
 import { parseSemVer } from 'semver-parser';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 try {
   const packageJson = JSON.parse(
     fs.readFileSync(
-      path.join(__dirname, '..', '..', '..', 'package.json'),
+      url.fileURLToPath(new URL('package.json', github.context.workspace)),
       'utf8'
     )
   );
@@ -19,7 +18,7 @@ try {
     process.exit(1);
   }
 
-  console.log(`Version is: ${versionString}`);
+  core.info(`Version is: ${versionString}`);
   core.setOutput('version', versionString);
 
   const { major, minor, patch, pre, matches } = parseSemVer(versionString);
@@ -31,24 +30,24 @@ try {
   const firefoxPackageName = `10ten_japanese_reader_rikaichamp_-${major}.${minor}.${patch}${
     pre || ''
   }.zip`;
-  console.log(`Firefox package name: ${firefoxPackageName}`);
+  core.info(`Firefox package name: ${firefoxPackageName}`);
   core.setOutput('firefox_package_name', firefoxPackageName);
 
   const chromePackageName = `10ten_japanese_reader_rikaichamp_-${major}.${minor}.${patch}.zip`;
-  console.log(`Chrome package name: ${chromePackageName}`);
+  core.info(`Chrome package name: ${chromePackageName}`);
   core.setOutput('chrome_package_name', chromePackageName);
 
   const edgePackageName = `10ten_japanese_reader_rikaichamp_-${major}.${minor}.${patch}.zip`;
-  console.log(`Edge package name: ${edgePackageName}`);
+  core.info(`Edge package name: ${edgePackageName}`);
   core.setOutput('edge_package_name', edgePackageName);
 
   const thunderbirdPackageName = `10ten_japanese_reader_rikaichamp_-${major}.${minor}.${patch}${
     pre || ''
   }.zip`;
-  console.log(`Thunderbird package name: ${thunderbirdPackageName}`);
+  core.info(`Thunderbird package name: ${thunderbirdPackageName}`);
   core.setOutput('thunderbird_package_name', thunderbirdPackageName);
 
-  console.log(`Pre-release status: ${!!pre}`);
+  core.info(`Pre-release status: ${!!pre}`);
   core.setOutput('prerelease', !!pre);
 } catch (error) {
   core.setFailed(error.message);

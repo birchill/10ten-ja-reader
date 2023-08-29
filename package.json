@@ -21,7 +21,7 @@
     "start:firefox": "webpack -w",
     "start:edge": "webpack -w --env target=chrome --env chromium=edge",
     "start:chrome": "webpack -w --env target=chrome",
-    "sync-manifest-version": "tsx utils/sync-manifest-version.mts",
+    "sync-manifest-version": "tsx utils/sync-manifest-version",
     "test": "yarn lint && yarn test:unit && yarn test:firefox && yarn test:chromium",
     "test:unit": "vitest run",
     "test:firefox": "playwright-test \"tests/**/*.test.ts\" --browser firefox",
@@ -48,6 +48,7 @@
     "url": "https://github.com/birchill/10ten-ja-reader/issues"
   },
   "homepage": "https://github.com/birchill/10ten-ja-reader#readme",
+  "type": "module",
   "devDependencies": {
     "@actions/core": "1.10.0",
     "@actions/github": "5.1.1",
