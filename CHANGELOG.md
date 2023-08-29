@@ -27,6 +27,8 @@ app.
   "Kanji dictionary" sections.
 - Added handling for kanji incorrectly encoded as radicals
   ([#1205](https://github.com/birchill/10ten-ja-reader/issues/1205)).
+- Fixed handling of pages with `<frameset>` elements and nested `<iframe>`s
+  ([#1241](https://github.com/birchill/10ten-ja-reader/issues/1241)).
 
 ## [1.14.3] - 2023-06-05 (Chrome, Edge only)
 
