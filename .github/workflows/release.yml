@@ -1,0 +1,43 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'
+        required: true
+        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3.6.0
+      - uses: actions/setup-node@v3.8.1
+        with:
+          node-version: 18
+          cache: yarn
+
+      - name: Set Git username
+        run: |-
+          git config --global user.name "Release"
+          git config --global user.email "actions@users.noreply.github.com"
+
+      - name: Install
+        run: yarn install --frozen-lockfile
+
+      - name: Update word snapshot
+        run: yarn update-snapshot
+
+      - name: Commit and push if it changed
+        run: |-
+          git add -A
+          timestamp=$(date -u)
+          git commit -m "chore: Update word snapshot (${timestamp})" || exit 0
+          git push
+
+      - name: Create release
+        run: yarn release-it --ci -i ${{ inputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY }}

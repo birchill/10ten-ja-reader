@@ -19,8 +19,8 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3.8.1
         with:
-          node-version: '18.x'
-          cache: 'yarn'
+          node-version: 18
+          cache: yarn
 
       # Check the build works. No need to run the build:edge target since it's
       # almost identical to build:chrome
@@ -43,60 +43,3 @@ jobs:
         run: |
           yarn package:firefox
           yarn package:chrome
-
-  release:
-    runs-on: ubuntu-latest
-    needs: test
-    if: startsWith(github.ref, 'refs/tags/v')
-    name: Release
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup node
-        uses: actions/setup-node@v3.8.1
-        with:
-          node-version: '18.x'
-          cache: 'yarn'
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Build assets
-        env:
-          RELEASE_BUILD: 1
-          BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY }}
-        run: |
-          yarn package:firefox
-          yarn package:chrome
-          yarn package:edge
-          yarn package:thunderbird
-          yarn zip-src
-
-      - name: Read package version
-        id: read_package_version
-        uses: ./.github/actions/read-package-version
-
-      - name: Prepare release notes
-        id: prepare_release_notes
-        uses: ./.github/actions/prepare-release-notes
-        with:
-          version: ${{ steps.read_package_version.outputs.version }}
-
-      - name: Create release
-        id: create_release
-        uses: ./.github/actions/create-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          edge_package_name: ${{ steps.read_package_version.outputs.edge_package_name }}
-          chrome_package_name: ${{ steps.read_package_version.outputs.chrome_package_name }}
-          firefox_package_name: ${{ steps.read_package_version.outputs.firefox_package_name }}
-          thunderbird_package_name: ${{ steps.read_package_version.outputs.thunderbird_package_name }}
-          prerelease: ${{ steps.read_package_version.outputs.prerelease }}
-          release_notes: ${{ steps.prepare_release_notes.outputs.text }}
-          version: ${{ steps.read_package_version.outputs.version }}
-
-      - name: Show Release URL
-        run: echo "View and publish the release at ${{ steps.create_release.outputs.url }}"
