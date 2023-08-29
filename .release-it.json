@@ -1,0 +1,25 @@
+{
+  "git": {
+    "commitMessage": "chore: release v${version}",
+    "requireBranch": "main",
+    "tagName": "v${version}"
+  },
+  "github": {
+    "draft": true,
+    "release": true,
+    "releaseNotes": "node ./bin/release-notes.js ${version}",
+    "assets": ["release-assets/*"]
+  },
+  "npm": {
+    "publish": false
+  },
+  "hooks": {
+    "after:bump": "./bin/build-assets.sh"
+  },
+  "plugins": {
+    "@release-it/keep-a-changelog": {
+      "addUnreleased": true,
+      "addVersionUrl": true
+    }
+  }
+}

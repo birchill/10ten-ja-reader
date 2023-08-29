@@ -1,8 +1,9 @@
 import archiver from 'archiver';
-import path from 'path';
-import fs from 'fs';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import * as url from 'node:url';
 
-const DEST_DIR = path.join(__dirname, '..', 'dist-src');
+const DEST_DIR = url.fileURLToPath(new URL('../dist-src', import.meta.url));
 
 async function main() {
   console.log('Creating dest directory...');
@@ -43,7 +44,7 @@ async function main() {
 
   archive.pipe(zipFile);
 
-  const rootDir = path.join(__dirname, '..');
+  const rootDir = url.fileURLToPath(new URL('..', import.meta.url));
 
   const dirs = [
     '_locales',
@@ -89,9 +90,10 @@ async function ensureDir(dir: string) {
 }
 
 function getPackageVersion() {
-  const packageJson = JSON.parse(
-    fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8')
+  const packageJsonPath = url.fileURLToPath(
+    new URL('../package.json', import.meta.url)
   );
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
   const versionString = packageJson.version;
   if (!versionString) {
     throw new Error('Could not find version in package.json');

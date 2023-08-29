@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import * as process from 'node:process';
 import * as url from 'node:url';
 
-import { formatReleaseNotes } from './format-release-notes.js';
+import { formatReleaseNotes } from './release-notes/format-release-notes.js';
 
 async function main() {
   let version = process.argv[2];
@@ -16,7 +16,7 @@ async function main() {
   }
 
   const changeLogPath = url.fileURLToPath(
-    new URL('../../../CHANGELOG.md', import.meta.url)
+    new URL('../CHANGELOG.md', import.meta.url)
   );
   const changeLogContents = fs.readFileSync(changeLogPath, 'utf8');
 

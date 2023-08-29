@@ -15,8 +15,8 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3.8.1
         with:
-          node-version: '18.x'
-          cache: 'yarn'
+          node-version: 18
+          cache: yarn
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile

@@ -126,22 +126,16 @@ testing old browsers.
 
 ## Releasing
 
-```
-yarn version --new-version 1.2.3
-# or for a pre-release version (NOTE: The 'dash' is important!)
-yarn version --new-version 1.2.3-pre1
+We now trigger releases by running the release workflow from Actions.
 
-# Then...
-git push --follow-tags
-```
+That will create a draft release that you need to publish before anything gets
+uploaded.
 
-If you want to bump the version _without_ triggering a new release use:
+If you need to test the release process locally, you can use:
 
 ```
-yarn version --new-version 1.2.3 --no-git-tag-version
+yarn release --dry-run -V
 ```
-
-After pushing to GitHub the release action will run and spit out a draft release.
 
 ### Releasing on Safari
 
