@@ -1,14 +1,15 @@
+// @ts-check
 import * as core from '@actions/core';
-import * as github from '@actions/github';
 import * as fs from 'node:fs';
 import * as process from 'node:process';
 import * as url from 'node:url';
 import { parseSemVer } from 'semver-parser';
 
 try {
+  const workspace = /** @type string */ (process.env.GITHUB_WORKSPACE);
   const packageJson = JSON.parse(
     fs.readFileSync(
-      url.fileURLToPath(new URL('package.json', github.context.workspace)),
+      url.fileURLToPath(new URL('package.json', workspace)),
       'utf8'
     )
   );

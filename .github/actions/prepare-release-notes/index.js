@@ -1,18 +1,16 @@
+// @ts-check
 import * as core from '@actions/core';
-import * as github from '@actions/github';
 import * as fs from 'node:fs';
+import * as process from 'node:process';
 import * as url from 'node:url';
 
-async function main() {
-  const { formatReleaseNotes } = await import(
-    new URL('format-release-notes.js', import.meta.url)
-  );
+import { formatReleaseNotes } from './format-release-notes.js';
 
+async function main() {
   const version = core.getInput('version').toLowerCase();
 
-  const changeLogPath = url.fileURLToPath(
-    new URL('CHANGELOG.md', github.context.workspace)
-  );
+  const workspace = /** @type string */ (process.env.GITHUB_WORKSPACE);
+  const changeLogPath = url.fileURLToPath(new URL('CHANGELOG.md', workspace));
   const changeLogContents = fs.readFileSync(changeLogPath, 'utf8');
 
   const releaseNotes = formatReleaseNotes({

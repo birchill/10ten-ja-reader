@@ -1,3 +1,4 @@
+// @ts-check
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as fs from 'node:fs';
@@ -5,7 +6,9 @@ import * as path from 'node:path';
 import * as process from 'node:process';
 
 async function main() {
-  const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+  const octokit = github.getOctokit(
+    /** @type string */ (process.env.GITHUB_TOKEN)
+  );
   const {
     repo: { owner, repo },
     sha,
@@ -13,6 +16,7 @@ async function main() {
   const prerelease = core.getInput('prerelease').toLowerCase() === 'true';
   const releaseNotes = core.getInput('release_notes') || '';
   const version = core.getInput('version').toLowerCase();
+  const workspace = /** @type string */ (process.env.GITHUB_WORKSPACE);
 
   const release = await octokit.rest.repos.createRelease({
     owner,
@@ -28,7 +32,7 @@ async function main() {
   // Upload Firefox asset
   const firefoxPackageName = core.getInput('firefox_package_name');
   const firefoxPackagePath = path.join(
-    github.context.workspace,
+    workspace,
     'dist-firefox-package',
     firefoxPackageName
   );
@@ -37,13 +41,15 @@ async function main() {
     repo,
     release_id: release.data.id,
     name: `10ten-ja-reader-${version}-firefox.zip`,
+    // eslint-disable-next-line
+    // @ts-ignore: (typings are wrong, uploadReleaseAsset accepts a string or Buffer)
     data: fs.readFileSync(firefoxPackagePath),
   });
 
   // Upload Chrome asset
   const chromePackageName = core.getInput('chrome_package_name');
   const chromePackagePath = path.join(
-    github.context.workspace,
+    workspace,
     'dist-chrome-package',
     chromePackageName
   );
@@ -52,13 +58,15 @@ async function main() {
     repo,
     release_id: release.data.id,
     name: `10ten-ja-reader-${version}-chrome.zip`,
+    // eslint-disable-next-line
+    // @ts-ignore: (typings are wrong, uploadReleaseAsset accepts a string or Buffer)
     data: fs.readFileSync(chromePackagePath),
   });
 
   // Upload Edge asset
   const edgePackageName = core.getInput('edge_package_name');
   const edgePackagePath = path.join(
-    github.context.workspace,
+    workspace,
     'dist-edge-package',
     edgePackageName
   );
@@ -67,13 +75,15 @@ async function main() {
     repo,
     release_id: release.data.id,
     name: `10ten-ja-reader-${version}-edge.zip`,
+    // eslint-disable-next-line
+    // @ts-ignore: (typings are wrong, uploadReleaseAsset accepts a string or Buffer)
     data: fs.readFileSync(edgePackagePath),
   });
 
   // Upload Thunderbird asset
   const thunderbirdPackageName = core.getInput('thunderbird_package_name');
   const thunderbirdPackagePath = path.join(
-    github.context.workspace,
+    workspace,
     'dist-thunderbird-package',
     thunderbirdPackageName
   );
@@ -82,12 +92,14 @@ async function main() {
     repo,
     release_id: release.data.id,
     name: `10ten-ja-reader-${version}-thunderbird.zip`,
+    // eslint-disable-next-line
+    // @ts-ignore: (typings are wrong, uploadReleaseAsset accepts a string or Buffer)
     data: fs.readFileSync(thunderbirdPackagePath),
   });
 
   // Upload source asset
   const sourcePackagePath = path.join(
-    github.context.workspace,
+    workspace,
     'dist-src',
     `10ten-ja-reader-${version}-src.zip`
   );
@@ -96,13 +108,13 @@ async function main() {
     repo,
     release_id: release.data.id,
     name: `10ten-ja-reader-${version}-src.zip`,
+    // eslint-disable-next-line
+    // @ts-ignore: (typings are wrong, uploadReleaseAsset accepts a string or Buffer)
     data: fs.readFileSync(sourcePackagePath),
   });
 
   // Upload raw source files
-  for (const file of fs.readdirSync(
-    path.join(github.context.workspace, 'dist-firefox')
-  )) {
+  for (const file of fs.readdirSync(path.join(workspace, 'dist-firefox'))) {
     // Too lazy to import @actions/glob...
     if (!file.startsWith('10ten-ja-') || !file.endsWith('.js')) {
       continue;
@@ -113,9 +125,9 @@ async function main() {
       repo,
       release_id: release.data.id,
       name: file,
-      data: fs.readFileSync(
-        path.join(github.context.workspace, 'dist-firefox', file)
-      ),
+      // eslint-disable-next-line
+      // @ts-ignore: (typings are wrong, uploadReleaseAsset accepts a string or Buffer)
+      data: fs.readFileSync(path.join(workspace, 'dist-firefox', file)),
     });
   }
 
