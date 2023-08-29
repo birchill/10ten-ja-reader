@@ -21,7 +21,7 @@ export type IframeSourceParams = WithRequired<
 
 export function findIframeElement(
   params: IframeSearchParams
-): HTMLIFrameElement | undefined {
+): HTMLIFrameElement | HTMLFrameElement | undefined {
   // First collect together all the iframes we can.
   const iframes = getIframes(document);
   if (!iframes.length) {
@@ -85,8 +85,13 @@ export function findIframeElement(
   return candidates[0];
 }
 
-function getIframes(doc: Document): Array<HTMLIFrameElement> {
-  const iframes = Array.from(doc.getElementsByTagName('iframe'));
+function getIframes(
+  doc: Document
+): Array<HTMLIFrameElement | HTMLFrameElement> {
+  const iframes = [
+    ...doc.getElementsByTagName('iframe'),
+    ...doc.getElementsByTagName('frame'),
+  ];
 
   // For same-origin iframes, fetch their child iframe elements recursively.
   for (const iframe of iframes) {
@@ -113,7 +118,7 @@ function getIframes(doc: Document): Array<HTMLIFrameElement> {
   return iframes;
 }
 
-function getIframeDimensions(elem: HTMLIFrameElement): {
+function getIframeDimensions(elem: HTMLIFrameElement | HTMLFrameElement): {
   width: number;
   height: number;
 } {
@@ -138,10 +143,16 @@ function getIframeDimensions(elem: HTMLIFrameElement): {
 }
 
 let cachedOrigin:
-  | { iframe: HTMLIFrameElement; origin: Point; resizeObserver: ResizeObserver }
+  | {
+      iframe: HTMLIFrameElement | HTMLFrameElement;
+      origin: Point;
+      resizeObserver: ResizeObserver;
+    }
   | undefined;
 
-export function getIframeOrigin(iframeElement: HTMLIFrameElement): Point {
+export function getIframeOrigin(
+  iframeElement: HTMLIFrameElement | HTMLFrameElement
+): Point {
   if (cachedOrigin?.iframe === iframeElement) {
     return cachedOrigin.origin;
   } else if (cachedOrigin) {
@@ -149,27 +160,59 @@ export function getIframeOrigin(iframeElement: HTMLIFrameElement): Point {
     cachedOrigin = undefined;
   }
 
-  let { left: x, top: y } = iframeElement.getBoundingClientRect();
-
-  // The bounding client rect includes the element and its borders and padding.
-  // However, the coordinates within the iframe are minus the borders and
-  // padding.
-  //
-  // Note that if these values change, the ResizeObserver _should_ fire because
-  // it is supposed to fire when either the iframe's border box _or_ content box
-  // size changes.
-  const cs = getComputedStyle(iframeElement);
-  x += parseFloat(cs.borderLeftWidth);
-  x += parseFloat(cs.paddingLeft);
-  y += parseFloat(cs.borderTopWidth);
-  y += parseFloat(cs.paddingTop);
-
   const resizeObserver = new ResizeObserver(() => {
     cachedOrigin = undefined;
     resizeObserver.disconnect();
   });
 
-  resizeObserver.observe(iframeElement);
+  let x = 0;
+  let y = 0;
+
+  let currentIframe: HTMLIFrameElement | HTMLFrameElement | null =
+    iframeElement;
+  let iterationCount = 0;
+  while (currentIframe && iterationCount < 20) {
+    // I don't _think_ you can ever have circular references of iframes but just
+    // in case, we'll limit the number of iterations.
+    iterationCount++;
+
+    let { left: currentX, top: currentY } =
+      currentIframe.getBoundingClientRect();
+
+    // The bounding client rect includes the element and its borders and padding.
+    // However, the coordinates within the iframe are minus the borders and
+    // padding.
+    //
+    // Note that if these values change, the ResizeObserver _should_ fire because
+    // it is supposed to fire when either the iframe's border box _or_ content box
+    // size changes.
+    const cs = getComputedStyle(currentIframe);
+    currentX += parseFloat(cs.borderLeftWidth);
+    currentY += parseFloat(cs.paddingLeft);
+    currentX += parseFloat(cs.borderTopWidth);
+    currentY += parseFloat(cs.paddingTop);
+
+    x += currentX;
+    y += currentY;
+
+    resizeObserver.observe(currentIframe);
+
+    // See if there are parent iframes we need to account for.
+    try {
+      const parentIframe: Element | null | undefined =
+        currentIframe.ownerDocument.defaultView?.frameElement;
+      if (
+        parentIframe instanceof HTMLIFrameElement ||
+        parentIframe instanceof HTMLFrameElement
+      ) {
+        currentIframe = parentIframe;
+      } else {
+        currentIframe = null;
+      }
+    } catch {
+      currentIframe = null;
+    }
+  }
 
   cachedOrigin = {
     iframe: iframeElement,
