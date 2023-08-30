@@ -13,6 +13,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3.6.0
+        with:
+          token: ${{ secrets.PUSH_TOKEN }}
+
       - uses: actions/setup-node@v3.8.1
         with:
           node-version: 18
