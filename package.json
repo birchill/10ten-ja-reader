@@ -16,7 +16,7 @@
     "package:edge": "webpack --env target=edge --env package",
     "package:thunderbird": "webpack --env target=thunderbird --env package",
     "postinstall": "if-env RELEASE_BUILD=1 || husky install",
-    "release": "release-it",
+    "release": "release-it --verbose",
     "sort-i18n-keys": "tsx utils/sort-keys",
     "start:firefox": "webpack -w",
     "start:edge": "webpack -w --env target=chrome --env chromium=edge",
