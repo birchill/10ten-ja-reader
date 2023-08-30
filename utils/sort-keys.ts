@@ -1,6 +1,7 @@
 import fg from 'fast-glob';
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import * as url from 'node:url';
 
 // This is a very, very bare-bones utility to sort the keys in a locale
 // file.
@@ -66,7 +67,7 @@ async function main() {
 }
 
 function getLocaleFiles(): Array<string> {
-  const localeDir = path.join(__dirname, '..', '_locales');
+  const localeDir = url.fileURLToPath(new URL('../_locales', import.meta.url));
   return fg.sync('**/messages.json', { cwd: localeDir, absolute: true });
 }
 
