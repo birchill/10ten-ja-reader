@@ -1,9 +1,10 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import * as url from 'node:url';
 import { Browser, chromium } from 'playwright';
 import { create, fragment } from 'xmlbuilder2';
 
-const DEST_FOLDER = path.join(__dirname, '..', 'images');
+const DEST_FOLDER = url.fileURLToPath(new URL('../images', import.meta.url));
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 async function main() {
