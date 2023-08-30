@@ -1,13 +1,14 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as url from 'node:url';
 
 async function main() {
   console.log('Synchronizing version number in XCode project...');
 
   // Read version
-  const packageJson = JSON.parse(
-    fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8')
+  const packageJsonPath = url.fileURLToPath(
+    new URL('../package.json', import.meta.url)
   );
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
   const versionString = packageJson.version;
   if (!versionString) {
     console.error('Could not find version in package.json');
@@ -18,12 +19,11 @@ async function main() {
   //
   // Note that if we're updating this path, we'll want to update the 'git add'
   // command in package.json too.
-  const projectPath = path.join(
-    __dirname,
-    '..',
-    'xcode13',
-    '10ten Japanese Reader.xcodeproj',
-    'project.pbxproj'
+  const projectPath = url.fileURLToPath(
+    new URL(
+      '../xcode13/10ten Japanese Reader.xcodeproj/project.pbxproj',
+      import.meta.url
+    )
   );
   const originalContents = fs.readFileSync(projectPath, 'utf8');
 
