@@ -1,10 +1,11 @@
 import fg from 'fast-glob';
-import * as fs from 'fs';
-import * as path from 'path';
-import yargs from 'yargs';
+import * as fs from 'node:fs';
+import * as process from 'node:process';
+import * as url from 'node:url';
+import yargs from 'yargs/yargs';
 
 async function main() {
-  const args = await yargs
+  const args = await yargs(process.argv.slice(2))
     .option('locale', {
       alias: 'l',
       type: 'string',
@@ -41,7 +42,9 @@ async function main() {
       enData,
     });
   } else {
-    const localeDir = path.join(__dirname, '..', '_locales');
+    const localeDir = url.fileURLToPath(
+      new URL('../_locales', import.meta.url)
+    );
     const localeFiles = fg.sync('**/messages.json', {
       cwd: localeDir,
       absolute: true,
@@ -81,12 +84,8 @@ interface L18NData {
 }
 
 function readEnData(): L18NData {
-  const messageFile = path.join(
-    __dirname,
-    '..',
-    '_locales',
-    'en',
-    'messages.json'
+  const messageFile = url.fileURLToPath(
+    new URL('../_locales/en/messages.json', import.meta.url)
   );
 
   const data = fs.readFileSync(messageFile, { encoding: 'utf8' });
@@ -106,12 +105,8 @@ async function checkLocale({
 }) {
   console.log(`Checking keys for '${locale}' locale...`);
 
-  const messageFile = path.join(
-    __dirname,
-    '..',
-    '_locales',
-    locale,
-    'messages.json'
+  const messageFile = url.fileURLToPath(
+    new URL(`../_locales/${locale}/messages.json`, import.meta.url)
   );
   if (!fs.existsSync(messageFile)) {
     throw new Error(`Could not find message file: ${messageFile}`);
