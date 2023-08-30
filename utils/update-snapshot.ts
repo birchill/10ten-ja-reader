@@ -1,14 +1,14 @@
 import { kanaToHiragana } from '@birchill/normal-jp';
-import * as https from 'https';
-import * as fs from 'fs';
-import * as path from 'path';
+import * as https from 'node:https';
+import * as fs from 'node:fs';
 import {
   Readable,
   Transform,
   TransformCallback,
   TransformOptions,
-} from 'stream';
-import { createBrotliDecompress } from 'zlib';
+} from 'node:stream';
+import * as url from 'node:url';
+import { createBrotliDecompress } from 'node:zlib';
 
 const BASE_URL = 'https://data.10ten.study';
 
@@ -24,7 +24,9 @@ async function main() {
   const index = new Map<string, Array<number>>();
   let charOffset = 0;
 
-  const dataFilePath = path.join(__dirname, '..', 'data', 'words.ljson');
+  const dataFilePath = url.fileURLToPath(
+    new URL('../data/words.ljson', import.meta.url)
+  );
   const dataStream = fs.createWriteStream(dataFilePath);
   for (const id of ids) {
     // Make ID field nullable so we can delete it later.
@@ -61,7 +63,9 @@ async function main() {
   console.log(`Wrote ${dataFilePath}.`);
 
   // Write index, sorted by key
-  const indexFilePath = path.join(__dirname, '..', 'data', 'words.idx');
+  const indexFilePath = url.fileURLToPath(
+    new URL('../data/words.idx', import.meta.url)
+  );
   const indexStream = fs.createWriteStream(indexFilePath);
   const sortedKeys = [...index.keys()].sort();
   for (const key of sortedKeys) {
