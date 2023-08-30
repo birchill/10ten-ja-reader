@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+## [1.15.0] - 2023-08-30
+
 - Collapsed the popup window to only show the most relevant results by default
   ([#1036](https://github.com/birchill/10ten-ja-reader/issues/1036)).
   - You can restore the old behavior by choosing "Expand all entries → Words"
@@ -994,7 +996,7 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.14.3...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.15.0...HEAD
 [1.14.3]: https://github.com/birchill/10ten-ja-reader/compare/v1.14.1...v1.14.3
 [1.14.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.14.0...v1.14.1
 [1.14.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.13.6...v1.14.0
@@ -1112,3 +1114,5 @@ app.
 [0.0.6]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/birchill/10ten-ja-reader/releases/tag/v0.0.4
+
+[1.15.0]: https://github.com/birchill/10ten-ja-reader/releases/tag/v1.15.0
