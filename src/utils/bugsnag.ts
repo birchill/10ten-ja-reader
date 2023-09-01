@@ -179,6 +179,7 @@ export function startBugsnag() {
 
       return true;
     },
+    plugins,
   });
 }
 
