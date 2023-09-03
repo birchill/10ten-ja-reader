@@ -14,8 +14,7 @@
     "publish": false
   },
   "hooks": {
-    "after:bump": "./bin/build-assets.sh",
-    "after:release": "echo 'Draft release: ${releaseUrl}' >> $GITHUB_STEP_SUMMARY"
+    "after:bump": "./bin/build-assets.sh"
   },
   "plugins": {
     "@release-it/keep-a-changelog": {
