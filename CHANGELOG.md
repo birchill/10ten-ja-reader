@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- Fixed selection styles not applying in Chrome/Edge
+  ([#1297](https://github.com/birchill/10ten-ja-reader/issues/1297)).
+
 ## [1.15.0] - 2023-08-30
 
 - Collapsed the popup window to only show the most relevant results by default
