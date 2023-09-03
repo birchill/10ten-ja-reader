@@ -150,12 +150,16 @@
   /*#endif*/
   /*#if mv3*/
   "web_accessible_resources": [{
-    "resources": [ "docs/introducing-the-mouse.html" ],
+    "resources": [
+      "css/selection.css",
+      "docs/introducing-the-mouse.html"
+    ],
     "matches": [ "<all_urls>" ],
     "use_dynamic_url": true
   }],
   /*#else*/
   "web_accessible_resources": [
+    "css/selection.css",
     "docs/introducing-the-mouse.html"
   ],
   /*#endif*/
