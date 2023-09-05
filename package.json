@@ -61,7 +61,7 @@
     "@typescript-eslint/eslint-plugin": "6.5.0",
     "@typescript-eslint/parser": "6.5.0",
     "all-contributors-cli": "6.26.1",
-    "archiver": "6.0.0",
+    "archiver": "6.0.1",
     "byline": "5.0.0",
     "chai": "4.3.8",
     "combined-stream2": "1.1.2",
