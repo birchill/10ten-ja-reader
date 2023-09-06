@@ -6281,7 +6281,7 @@ p-timeout@^5.0.2:
   resolved "https://registry.yarnpkg.com/p-timeout/-/p-timeout-5.1.0.tgz#b3c691cf4415138ce2d9cfe071dba11f0fee085b"
   integrity sha512-auFDyzzzGZZZdHz3BtET9VEz0SE/uMEAx7uWfGPucfzEwwe/xH0iVeZibQmANYE/hp9T2+UUZT5m+BKyrDp3Ew==
 
-p-timeout@^6.0.0:
+p-timeout@^6.0.0, p-timeout@^6.1.2:
   version "6.1.2"
   resolved "https://registry.yarnpkg.com/p-timeout/-/p-timeout-6.1.2.tgz#22b8d8a78abf5e103030211c5fc6dee1166a6aa5"
   integrity sha512-UbD77BuZ9Bc9aABo74gfXhNvzC9Tx7SxtHSh1fxvx3jTLLYvmVhiQZZrJzqqU0jKbN32kb5VOKiLEQI/3bIjgQ==
@@ -6558,9 +6558,9 @@ playwright-core@1.37.1:
   integrity sha512-17EuQxlSIYCmEMwzMqusJ2ztDgJePjrbttaefgdsiqeLWidjYz9BxXaTaZWxH1J95SHGk6tjE+dwgWILJoUZfA==
 
 playwright-test@^12.1.2:
-  version "12.2.0"
-  resolved "https://registry.yarnpkg.com/playwright-test/-/playwright-test-12.2.0.tgz#f4d2479d378deebd3acbd358d636e9f0f4527cd9"
-  integrity sha512-r2myEWFItONCVTwj91Bz29NMUgKZOwlZpQ9KuaLAluC+kXmSJfLwkSJoyk+riWLigOWyuntEqeAjjnx7t6t1iw==
+  version "12.3.0"
+  resolved "https://registry.yarnpkg.com/playwright-test/-/playwright-test-12.3.0.tgz#b6127366554448b142dc3b9f4ae96fe21ff52755"
+  integrity sha512-5H0AzuVS37GQ7JbniCwDCJ9zAjsUNwfD46nrzS9JvyAQqTQgBfXpxdevUHOrm+w4ILoqnyMnjsDQR1chdxTvsw==
   dependencies:
     acorn-loose "^8.3.0"
     assert "^2.0.0"
@@ -6580,6 +6580,7 @@ playwright-test@^12.1.2:
     merge-options "^3.0.4"
     nanoid "^4.0.2"
     ora "^7.0.1"
+    p-timeout "^6.1.2"
     p-wait-for "5.0.2"
     path-browserify "^1.0.1"
     playwright-core "1.37.1"
