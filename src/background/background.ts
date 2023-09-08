@@ -505,38 +505,6 @@ browser.runtime.onMessage.addListener(
           controller: new AbortController(),
         };
 
-        // Detect if this was likely a lookup that resulted in the mouse
-        // onboarding being shown so we can set a hard limit on how many times
-        // we show it.
-        //
-        // Specifically, if the user has done over a thousand lookups on this
-        // device and _still_ hasn't dismissed the onboarding, they're probably
-        // never going to (or have hit some snag where they _can't_).
-        // In that case, we should dismiss it for them instead of continuing to
-        // bother them.
-        //
-        // The following logic roughly mimicks the conditions used in the content
-        // script to determine if we should show the onboarding but doesn't
-        // account for whether or not the user is looking up using the puck or
-        // touch. As a result, if the user is consistently using the puck/touch,
-        // we may decide we no longer need to show the onboarding and, if the
-        // user later decides to try using the mouse, they'll miss our beautiful
-        // onboarding notice.
-        //
-        // That's probably ok, however, and saves us having to thread the "was
-        // a mouse lookup?" state all the way from the content thread.
-        if (
-          config.popupInteractive &&
-          !config.hasDismissedMouseOnboarding &&
-          config.hasUpgradedFromPreMouse
-        ) {
-          config.incrementNumLookupsWithMouseOnboarding();
-
-          if (config.numLookupsWithMouseOnboarding > 1000) {
-            config.setHasDismissedMouseOnboarding();
-          }
-        }
-
         return (async () => {
           try {
             return await searchWords({
@@ -586,11 +554,6 @@ browser.runtime.onMessage.addListener(
           }
         })();
 
-      case 'showMouseOnboarding':
-        return browser.tabs.create({
-          url: browser.runtime.getURL('docs/introducing-the-mouse.html'),
-        });
-
       case 'translate':
         return translate({
           text: request.input,
@@ -603,10 +566,6 @@ browser.runtime.onMessage.addListener(
 
       case 'disableMouseInteraction':
         config.popupInteractive = false;
-        break;
-
-      case 'dismissedMouseOnboarding':
-        config.setHasDismissedMouseOnboarding();
         break;
 
       case 'canHoverChanged':
@@ -744,23 +703,6 @@ browser.runtime.onInstalled.addListener(async (details) => {
         browser.runtime.getManifest().version
       }`
     );
-
-    const [major, minor] = details.previousVersion.split('.').map(Number);
-    if (major === 1 && minor < 12) {
-      // Wait for config to load before trying to update it or else we'll
-      // clobber the other local settings.
-      void config.ready.then(() => {
-        config.setHasUpgradedFromPreMouse();
-      });
-    }
-  }
-
-  // If we are still developing pre-1.12, act like we are upgrading so we can
-  // test the onboarding banner.
-  if (details.temporary && __VERSION__ === '1.11.0') {
-    void config.ready.then(() => {
-      config.setHasUpgradedFromPreMouse();
-    });
   }
 });
 

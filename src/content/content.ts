@@ -2142,43 +2142,6 @@ export class ContentHandler {
     const displayMode =
       options.displayMode || this.getInitialDisplayMode('ghost');
 
-    // Determine if we should show the mouse onboarding
-    const wasTriggeredByMouse =
-      this.currentTargetProps &&
-      !this.currentTargetProps.fromPuck &&
-      !this.currentTargetProps.fromTouch;
-    const showMouseOnboarding =
-      this.config.popupInteractive &&
-      !this.config.hasDismissedMouseOnboarding &&
-      this.config.hasUpgradedFromPreMouse &&
-      wasTriggeredByMouse;
-
-    const onDismissMouseOnboarding = showMouseOnboarding
-      ? (options?: { disable?: true }) => {
-          // We _don't_ set the "dismissed mouse onboarding" flag when the user
-          // clicks the "Disable" button because the `popupInteractive` setting
-          // is a local setting (i.e. not synced) and the user will likely want to
-          // see the Disable onboarding button on any synchronized devices so
-          // they can disable mouse interaction there too.
-          //
-          // Instead, we rely on the fact that we only show the onboarding when
-          // interactivity is enabled and if the user _re-enables_ interactivity
-          // we will make sure the "dismissed mouse onboarding" flag gets set
-          // then.
-          if (!options?.disable) {
-            void browser.runtime.sendMessage({
-              type: 'dismissedMouseOnboarding',
-            });
-          }
-
-          if (options?.disable) {
-            void browser.runtime.sendMessage({
-              type: 'disableMouseInteraction',
-            });
-          }
-        }
-      : undefined;
-
     const popupOptions: PopupOptions = {
       accentDisplay: this.config.accentDisplay,
       closeShortcuts: this.config.keys.closePopup,
@@ -2204,7 +2167,6 @@ export class ContentHandler {
       kanjiReferences: this.config.kanjiReferences,
       meta: this.currentLookupParams?.meta,
       onCancelCopy: () => this.exitCopyMode(),
-      onDismissMouseOnboarding,
       onExpandPopup: () => this.expandPopup(),
       onStartCopy: (index: number, trigger: 'touch' | 'mouse') =>
         this.enterCopyMode({ trigger, index }),
@@ -2228,7 +2190,6 @@ export class ContentHandler {
       posDisplay: this.config.posDisplay,
       showDefinitions: !this.config.readingOnly,
       showKanjiComponents: this.config.showKanjiComponents,
-      showMouseOnboarding,
       showPriority: this.config.showPriority,
       switchDictionaryKeys: this.config.keys.nextDictionary,
       tabDisplay: this.config.tabDisplay,

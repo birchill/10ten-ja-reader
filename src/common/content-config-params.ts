@@ -68,13 +68,6 @@ export interface ContentConfigParams {
   // The font size to use for the popup.
   fontSize: FontSize;
 
-  // True if the user has performed any action that means we should no longer
-  // show the mouse onboarding banner.
-  hasDismissedMouseOnboarding: boolean;
-
-  // True if the user has upgraded from a version prior to 1.12
-  hasUpgradedFromPreMouse: boolean;
-
   // The colors etc. to use for highlighting text when using the CSS Highlight
   // API etc.
   highlightStyle: HighlightStyle;
