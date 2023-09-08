@@ -1072,32 +1072,6 @@
       }
 
       {
-        addHeading(
-          `Tab display: ${tabDisplay} (with status bar and onboarding)`,
-          3
-        );
-        const popup = contentHandler._renderPopup(
-          { ...kankokuWordsResult, resultType: 'db-updating' },
-          {
-            ...config,
-            container: createPopupContainer(),
-            dictToShow: 'words',
-            popupStyle: 'default',
-            showDefinitions: true,
-            showMouseOnboarding: true,
-            switchDictionaryKeys: ['Shift', 'Enter'],
-            tabDisplay,
-            onClosePopup: () => {},
-            onShowSettings: () => {},
-            onTogglePin: () => {},
-          }
-        );
-
-        popup.classList.add('-inline');
-        popup.style.setProperty('--min-height', '600px');
-      }
-
-      {
         addHeading(`Tab display: ${tabDisplay} (interactive version)`, 3);
         const popup = contentHandler._renderPopup(kankokuWordsResult, {
           ...config,
@@ -1422,54 +1396,6 @@
         );
         popup.classList.add('-inline');
       }
-    }
-
-    // Mouse onboarding
-
-    addHeading('Mouse onboarding');
-
-    for (const theme of themes) {
-      const label = document.createElement('div');
-      label.classList.add('label');
-      label.append(`Theme: ${theme}`);
-      container.append(label);
-
-      const popup = contentHandler._renderPopup(kankokuWordsResult, {
-        ...config,
-        container: createPopupContainer(),
-        displayMode: 'float',
-        dictToShow: 'words',
-        popupStyle: theme,
-        showDefinitions: true,
-        showMouseOnboarding: true,
-        onClosePopup: () => {},
-        onShowSettings: () => {},
-        onTogglePin: () => {},
-      });
-      popup.classList.add('-inline');
-    }
-
-    addHeading('Mouse onboarding + copy overlay');
-
-    {
-      const popup = contentHandler._renderPopup(kankokuWordsResult, {
-        ...config,
-        container: createPopupContainer(),
-        copyState: {
-          kind: 'active',
-          index: 1,
-          mode: 'touch',
-        },
-        displayMode: 'float',
-        dictToShow: 'words',
-        popupStyle: themes[0],
-        showDefinitions: true,
-        showMouseOnboarding: true,
-        onClosePopup: () => {},
-        onShowSettings: () => {},
-        onTogglePin: () => {},
-      });
-      popup.classList.add('-inline');
     }
   </script>
 </body>

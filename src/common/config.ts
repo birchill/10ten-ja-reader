@@ -68,7 +68,6 @@ interface Settings {
   enableTapLookup?: boolean;
   fontSize?: FontSize;
   fxCurrency?: string;
-  hasDismissedMouseOnboarding?: boolean;
   highlightStyle?: HighlightStyle;
   holdToShowKeys?: string;
   holdToShowImageKeys?: string;
@@ -76,8 +75,6 @@ interface Settings {
   keys?: Partial<StoredKeyboardKeys>;
   localSettings?: {
     canHover?: boolean;
-    hasUpgradedFromPreMouse?: boolean;
-    numLookupsWithMouseOnboarding?: number;
     popupInteractive?: boolean;
     showPuck?: 'show' | 'hide';
   };
@@ -239,6 +236,25 @@ export class Config {
         // anyway.
         console.error('Failed to upgrade kanji references settings');
       }
+    }
+
+    // If we have old mouse onboarding prefs, drop them
+    if (this.settings.hasOwnProperty('hasDismissedMouseOnboarding')) {
+      await browser.storage.sync.remove('hasDismissedMouseOnboarding');
+    }
+
+    if (
+      this.settings.localSettings?.hasOwnProperty('hasUpgradedFromPreMouse') ||
+      this.settings.localSettings?.hasOwnProperty(
+        'numLookupsWithMouseOnboarding'
+      )
+    ) {
+      const localSettings = { ...this.settings.localSettings };
+      delete (localSettings as Record<string, unknown>).hasUpgradedFromPreMouse;
+      delete (localSettings as Record<string, unknown>)
+        .numLookupsWithMouseOnboarding;
+      this.settings.localSettings = localSettings;
+      void browser.storage.local.set({ settings: localSettings });
     }
   }
 
@@ -848,19 +864,6 @@ export class Config {
     }
     this.settings.localSettings = localSettings;
     void browser.storage.local.set({ settings: localSettings });
-
-    // We currently _don't_ set the `hasDismissedMouseOnboarding` property when
-    // the user disables interactivity using the onboarding Disable button.
-    //
-    // That's because this `popupInteractive` setting is a local setting and the
-    // user will likely _want_ the onboarding to show up on synchronized devices
-    // so they can easily click "Disable" there too.
-    //
-    // However, if they re-enable interactivity, we should make sure that flag
-    // is set so they no longer get bothered by the popup.
-    if (value) {
-      this.setHasDismissedMouseOnboarding();
-    }
   }
 
   // popupStyle: Defaults to 'default'
@@ -1081,51 +1084,6 @@ export class Config {
     }
   }
 
-  // Mouse onboarding-related prefs (to be removed eventually)
-
-  get hasDismissedMouseOnboarding(): boolean {
-    return !!this.settings.hasDismissedMouseOnboarding;
-  }
-
-  setHasDismissedMouseOnboarding() {
-    if (this.hasDismissedMouseOnboarding) {
-      return;
-    }
-
-    this.settings.hasDismissedMouseOnboarding = true;
-    void browser.storage.sync.set({ hasDismissedMouseOnboarding: true });
-  }
-
-  get hasUpgradedFromPreMouse(): boolean {
-    return !!this.settings.localSettings?.hasUpgradedFromPreMouse;
-  }
-
-  setHasUpgradedFromPreMouse() {
-    if (this.hasUpgradedFromPreMouse) {
-      return;
-    }
-
-    const localSettings = { ...this.settings.localSettings };
-    localSettings.hasUpgradedFromPreMouse = true;
-    this.settings.localSettings = localSettings;
-    void browser.storage.local.set({ settings: localSettings });
-  }
-
-  get numLookupsWithMouseOnboarding(): number {
-    return this.settings.localSettings?.numLookupsWithMouseOnboarding ?? 0;
-  }
-
-  incrementNumLookupsWithMouseOnboarding() {
-    const localSettings = { ...this.settings.localSettings };
-    if (localSettings.numLookupsWithMouseOnboarding) {
-      localSettings.numLookupsWithMouseOnboarding++;
-    } else {
-      localSettings.numLookupsWithMouseOnboarding = 1;
-    }
-    this.settings.localSettings = localSettings;
-    void browser.storage.local.set({ settings: localSettings });
-  }
-
   // Get all the options the content process cares about at once
   get contentConfig(): ContentConfigParams {
     return {
@@ -1142,8 +1100,6 @@ export class Config {
             }
           : undefined,
       fontSize: this.fontSize,
-      hasDismissedMouseOnboarding: this.hasDismissedMouseOnboarding,
-      hasUpgradedFromPreMouse: this.hasUpgradedFromPreMouse,
       highlightStyle: this.highlightStyle,
       holdToShowKeys: this.holdToShowKeys
         ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)

@@ -30,7 +30,6 @@ import { updateExpandable } from './expandable';
 import { renderKanjiEntries } from './kanji';
 import { renderMetadata } from './metadata';
 import { renderNamesEntries } from './names';
-import { renderMouseOnboarding } from './onboarding';
 import { renderCopyDetails, renderUpdatingStatus } from './status';
 import { renderTabBar } from './tabs';
 import { renderWordEntries } from './words';
@@ -61,7 +60,6 @@ export interface PopupOptions {
   onStartCopy?: StartCopyCallback;
   onCopy?: (copyType: CopyType) => void;
   onClosePopup?: () => void;
-  onDismissMouseOnboarding?: (options?: { disable?: boolean }) => void;
   onExpandPopup?: () => void;
   onShowSettings?: () => void;
   onSwitchDictionary?: (newDict: MajorDataSeries) => void;
@@ -70,7 +68,6 @@ export interface PopupOptions {
   posDisplay: PartOfSpeechDisplay;
   popupStyle: string;
   showDefinitions: boolean;
-  showMouseOnboarding?: boolean;
   showPriority: boolean;
   showKanjiComponents?: boolean;
   switchDictionaryKeys: ReadonlyArray<string>;
@@ -167,14 +164,6 @@ export function renderPopup(
             })
           )
         );
-
-        if (options.showMouseOnboarding) {
-          contentContainer.append(
-            renderMouseOnboarding({
-              onDismiss: options.onDismissMouseOnboarding,
-            })
-          );
-        }
       }
       break;
 

@@ -41,7 +41,6 @@ import {
   isFirefox,
   isMac,
   isSafari,
-  isThunderbird,
 } from '../utils/ua-utils';
 import { getThemeClass } from '../utils/themes';
 
@@ -86,31 +85,6 @@ function completeForm() {
     .addEventListener('change', () => {
       setTabDisplayTheme(config.popupStyle);
     });
-
-  const mouseOnboardingLink = document.getElementById(
-    'mouse-onboarding-link'
-  ) as HTMLAnchorElement;
-  // Safari doesn't support opening extension pages, at least not with our
-  // current permissions.
-  //
-  // (Trust me, I tried over and over again to make Safari open these but it
-  // just flat our rejects any safari-web-extension:// URLs.)
-  mouseOnboardingLink.href = isSafari()
-    ? 'https://10ten.study/reader/docs/mouse-onboarding.html'
-    : browser.runtime.getURL('docs/introducing-the-mouse.html');
-
-  // Thunderbird doesn't seem to open extension URLs from links and if we give
-  // it a regular Web page then it opens it in the user's browser, instead of
-  // a Thunderbird tab so instead we override the click event to force opening
-  // a new tab.
-  if (isThunderbird()) {
-    mouseOnboardingLink.addEventListener('click', (event: MouseEvent) => {
-      void browser.tabs.create({
-        url: browser.runtime.getURL('docs/introducing-the-mouse.html'),
-      });
-      event.preventDefault();
-    });
-  }
 
   // Keyboard
   configureCommands();

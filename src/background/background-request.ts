@@ -26,7 +26,6 @@ export const BackgroundRequestSchema = discriminator('type', {
   canHoverChanged: s.type({ value: s.boolean() }),
   disabled: s.type({}),
   disableMouseInteraction: s.type({}),
-  dismissedMouseOnboarding: s.type({}),
   'enable?': s.type({}),
   enabled: s.type({
     src: s.string(),
@@ -35,7 +34,6 @@ export const BackgroundRequestSchema = discriminator('type', {
   options: s.type({}),
   searchWords: SearchRequestSchema,
   searchOther: SearchOtherRequestSchema,
-  showMouseOnboarding: s.type({}),
   toggleDefinition: s.type({}),
   translate: s.type({
     input: s.string(),
