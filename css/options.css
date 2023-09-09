@@ -621,6 +621,10 @@ fieldset.bordered {
   }
 }
 
+#touch-interactivity-section {
+  margin-top: 12px;
+}
+
 /*
  * Tab side selection
  */
