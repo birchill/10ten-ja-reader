@@ -230,6 +230,7 @@
               class=new-badge>__MSG_options_new_badge_text__</span></label>
           </div>
         </div>
+        <div class="spacer" role="presentation"></div>
         <p>__MSG_options_tab_position_label__</p>
         <fieldset>
           <div
