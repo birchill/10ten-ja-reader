@@ -90,10 +90,10 @@
   resolved "https://registry.yarnpkg.com/@birchill/discriminator/-/discriminator-0.2.0.tgz#9dc19b0b737f38f3ac641c40777be6991b908fae"
   integrity sha512-Gd5FjdCLO4FRMOquCNIFgdJvR0vlq7cNmQJpfql2ftOnJnnzoP/egqcoKoU2EEfpNIAQiw6e2JAhEeaezR1RXQ==
 
-"@birchill/jpdict-idb@2.1.2":
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-2.1.2.tgz#bfe0d81d12b00cc7e1deeec0f1e5f69df34f5c7f"
-  integrity sha512-bdUy20rB/++1EtwO2IhTSpHtKvZUvUNnSOcfr10Qk5wG3jOK7/9/gx3Q1HQrt9++iucUDF47uVW5MYqroVdO8A==
+"@birchill/jpdict-idb@2.1.3":
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-2.1.3.tgz#e664c1627f2ca9669e063319f3d539d7b240825d"
+  integrity sha512-BzGIjnmVohuKlxUd6g5cJJpbULo9LOaL8LVJEZgA1L2EkvW5YlpxB+YNJDl73TRO7Gwl1tWu3tAyL8zxlWyDPw==
   dependencies:
     "@birchill/json-equalish" "^1.1.2"
     "@birchill/normal-jp" "^1.5.0"
