@@ -14,5 +14,5 @@
     "strictNullChecks": true,
     "target": "es2020"
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*", "./*.ts"]
 }
