@@ -443,10 +443,10 @@ function buildExtConfig({
     devtool,
     module: {
       ...commonExtConfig.module,
-      rules: extendArray(
-        commonExtConfig.module.rules,
-        getPreprocessorConfig(...preprocessorFeatures)
-      ),
+      rules: [
+        ...commonExtConfig.module.rules,
+        getPreprocessorConfig(...preprocessorFeatures),
+      ],
     },
     output: {
       path: path.resolve(__dirname, distFolder),
@@ -474,10 +474,4 @@ function getPreprocessorConfig(...features) {
       },
     ],
   };
-}
-
-function extendArray(array, ...newElems) {
-  const result = array.slice();
-  result.push(...newElems);
-  return result;
 }
