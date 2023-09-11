@@ -1,5 +1,3 @@
-import '../../html/options.html.src';
-
 import {
   allDataSeries,
   allMajorDataSeries,
