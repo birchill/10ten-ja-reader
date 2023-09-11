@@ -1,7 +1,9 @@
 /* eslint-env node */
 /* eslint @typescript-eslint/no-var-requires: 0 */
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import * as path from 'path';
+import sveltePreprocess from 'svelte-preprocess';
 import TerserPlugin from 'terser-webpack-plugin';
 import { fileURLToPath } from 'url';
 import WebExtPlugin from 'web-ext-plugin';
@@ -39,18 +41,58 @@ const commonConfig = {
     rules: [
       {
         test: /\.css$/,
-        use: ['css-loader'],
+        oneOf: [
+          {
+            // These CSS files should be able to be imported into JS so we don't
+            // want to use mini-css-extract-plugin for them.
+            resource: /(popup|puck|safe-area-provider)\.css$/,
+            use: ['css-loader'],
+          },
+          {
+            use: [
+              'css-loader',
+              MiniCssExtractPlugin.loader,
+              {
+                loader: 'css-loader',
+                options: {
+                  url: false,
+                },
+              },
+            ],
+          },
+        ],
       },
       {
         test: /\.ts$/,
         use: 'ts-loader',
         exclude: /node_modules/,
       },
+      {
+        test: /\.svelte$/,
+        use: {
+          loader: 'svelte-loader',
+          options: {
+            emitCss: true,
+            preprocess: sveltePreprocess(),
+          },
+        },
+      },
+      {
+        test: /node_modules\/svelte\/.*\.mjs$/,
+        resolve: {
+          fullySpecified: false,
+        },
+      },
       { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
     ],
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    alias: {
+      svelte: path.resolve('node_modules', 'svelte/src/runtime'),
+    },
+    extensions: ['.ts', '.js', '.svelte'],
+    mainFields: ['svelte', 'browser', 'module', 'main'],
+    conditionNames: ['svelte', 'browser', 'import'],
   },
 };
 
@@ -71,6 +113,7 @@ const testConfig = {
       __SUPPORTS_TAB_CONTEXT_TYPE__: false,
       __VERSION__: `'${pjson.version}'`,
     }),
+    new MiniCssExtractPlugin(),
   ],
 };
 
@@ -323,6 +366,9 @@ function buildExtConfig({
       __SUPPORTS_SVG_ICONS__: supportsSvgIcons,
       __SUPPORTS_TAB_CONTEXT_TYPE__: supportsTabContextType,
       __VERSION__: `'${pjson.version}'`,
+    }),
+    new MiniCssExtractPlugin({
+      filename: ({ chunk }) => `${chunk.name.replace('/js/', '/css/')}.css`,
     }),
   ];
 
