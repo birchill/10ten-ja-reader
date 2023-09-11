@@ -388,6 +388,7 @@ function buildExtConfig({
     // One day we might decide to inject popup.css into the options page
     // script too, but for now we duplicate this content.
     'css/*',
+    { from: '*.html', context: 'html' },
     supportsSvgIcons ? 'images/*.svg' : 'images/*',
     'data/*',
     '_locales/**/*',
