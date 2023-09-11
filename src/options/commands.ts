@@ -254,15 +254,6 @@ export class Command {
     return new Command(params.key, modifier, secondaryModifier);
   }
 
-  static isValid(params: CommandParams): boolean {
-    try {
-      Command.fromParams(params);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
   // This should be taken to mean "Command" when on Mac
   get ctrl(): boolean {
     return this._modifier === 'Ctrl' || this._secondaryModifier === 'Ctrl';
