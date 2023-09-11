@@ -2086,11 +2086,6 @@ bl@^5.0.0:
     inherits "^2.0.4"
     readable-stream "^3.4.0"
 
-bluebird@^2.6.2, bluebird@^2.8.1:
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-2.11.0.tgz#534b9033c022c9579c56ba3b3e5a5caafbb650e1"
-  integrity sha512-UfFSr22dmHPQqPP9XWHRhq+gWnHCYguQGkXQlbyPtW5qTnhFWA8/iXg765tH0cAjy7l/zPJ1aBTO0g5XgA7kvQ==
-
 bluebird@~3.7:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
@@ -2228,11 +2223,6 @@ bunyan@1.8.15:
     moment "^2.19.3"
     mv "~2"
     safe-json-stringify "~1"
-
-byline@5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/byline/-/byline-5.0.0.tgz#741c5216468eadc457b03410118ad77de8c1ddb1"
-  integrity sha512-s6webAy+R4SR8XVuJWt2V2rGvhnrhxN+9S15GNuTK3wKPOXFF6RNc+8ug2XhH+2s4f+uudG4kUVYmYOQWL2g0Q==
 
 c8@^8.0.1:
   version "8.0.1"
@@ -2587,15 +2577,6 @@ columnify@1.6.0:
     strip-ansi "^6.0.1"
     wcwidth "^1.0.0"
 
-combined-stream2@1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/combined-stream2/-/combined-stream2-1.1.2.tgz#f6e14b7a015666f8c7b0a1fac506240164ac3570"
-  integrity sha512-sVqUHJmbdVm+HZWy4l34BPLczxI4fltN4Bm2vcvASsqBIXW4xFb4TRkwM8bw/UUXK9/OdHdAwi2cRYVEKrxzbg==
-  dependencies:
-    bluebird "^2.8.1"
-    debug "^2.1.1"
-    stream-length "^1.0.1"
-
 combined-stream@^1.0.6, combined-stream@^1.0.8, combined-stream@~1.0.6:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/combined-stream/-/combined-stream-1.0.8.tgz#c3d45a8b34fd730631a110a8a2520682b31d5a7f"
@@ -2905,7 +2886,7 @@ debug@4, debug@4.3.4, debug@^4.1.1, debug@^4.3.2, debug@^4.3.4, debug@~4.3.1:
   dependencies:
     ms "2.1.2"
 
-debug@^2.1.1, debug@^2.6.9:
+debug@^2.6.9:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
   integrity sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==
@@ -7969,13 +7950,6 @@ stream-combiner@~0.0.4:
   integrity sha512-rT00SPnTVyRsaSz5zgSPma/aHSOic5U1prhYdRy5HS2kTZviFpmDgzilbtsJsxiroqACmayynDN/9VzIbX5DOw==
   dependencies:
     duplexer "~0.1.1"
-
-stream-length@^1.0.1:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/stream-length/-/stream-length-1.0.2.tgz#8277f3cbee49a4daabcfdb4e2f4a9b5e9f2c9f00"
-  integrity sha512-aI+qKFiwoDV4rsXiS7WRoCt+v2RX1nUj17+KJC5r2gfh5xoSJIfP6Y3Do/HtvesFcTSWthIuJ3l1cvKQY/+nZg==
-  dependencies:
-    bluebird "^2.6.2"
 
 stream-to-array@~2.3.0:
   version "2.3.0"
