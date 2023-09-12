@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- Fixed popup changing width in some cases (e.g. when tabs are hidden and
+  scrollbars are configured to always show)
+  ([#1314](https://github.com/birchill/10ten-ja-reader/issues/1314)).
 - Make the `x` key close the popup if it is configured to _both_ close it and
   expand it.
 
