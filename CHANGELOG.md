@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- Make the `x` key close the popup if it is configured to _both_ close it and
+  expand it.
+
 ## [1.15.1] - 2023-09-03
 
 - Fixed selection styles not applying in Chrome/Edge
@@ -1002,6 +1005,7 @@ app.
 - Initial version (yes, it took me four attempts to publish).
 
 [unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.15.1...HEAD
+[1.15.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.15.0...v1.15.1
 [1.15.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.14.3...v1.15.0
 [1.14.3]: https://github.com/birchill/10ten-ja-reader/compare/v1.14.1...v1.14.3
 [1.14.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.14.0...v1.14.1
@@ -1120,5 +1124,3 @@ app.
 [0.0.6]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/birchill/10ten-ja-reader/releases/tag/v0.0.4
-
-[1.15.1]: https://github.com/birchill/10ten-ja-reader/releases/tag/v1.15.1
