@@ -508,6 +508,7 @@
 .window .content .expandable {
   overflow: auto;
   overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
 @supports (scrollbar-width: thin) {
