@@ -17,5 +17,5 @@ outputs:
   release_notes:
     description: 'The release notes for the given target'
 runs:
-  using: 'node16'
-  main: 'index.js'
+  using: node20
+  main: index.js
