@@ -290,5 +290,3 @@ export class Command {
     return parts.join('+');
   }
 }
-
-export default Command;
