@@ -1,3 +1,4 @@
+/// <reference path="./mail-extensions.d.ts" />
 import { allMajorDataSeries } from '@birchill/jpdict-idb';
 import browser, { Action } from 'webextension-polyfill';
 

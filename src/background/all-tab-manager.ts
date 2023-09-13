@@ -1,3 +1,4 @@
+/// <reference path="./mail-extensions.d.ts" />
 import Bugsnag from '@birchill/bugsnag-zero';
 import * as s from 'superstruct';
 import browser, { Runtime, Tabs, Windows } from 'webextension-polyfill';
