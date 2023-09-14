@@ -1,3 +1,4 @@
+/// <reference path="../common/constants.d.ts" />
 import {
   allDataSeries,
   allMajorDataSeries,
