@@ -1,4 +1,7 @@
 {
   "$schema": "http://json.schemastore.org/cosmos-config",
-  "plugins": ["react-cosmos-plugin-webpack"]
+  "plugins": ["react-cosmos-plugin-webpack"],
+  "webpack": {
+    "configPath": "./cosmos-webpack.config.js"
+  }
 }
