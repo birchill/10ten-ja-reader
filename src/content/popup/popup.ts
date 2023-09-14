@@ -1,3 +1,4 @@
+/// <reference path="../../common/css.d.ts" />
 import { MajorDataSeries } from '@birchill/jpdict-idb';
 
 import {

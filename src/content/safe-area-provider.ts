@@ -1,3 +1,4 @@
+/// <reference path="../common/css.d.ts" />
 import { PaddingBox } from '../utils/geometry';
 import {
   getOrCreateEmptyContainer,

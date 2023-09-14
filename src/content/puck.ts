@@ -1,3 +1,4 @@
+/// <reference path="../common/css.d.ts" />
 import { SVG_NS } from '../utils/dom-utils';
 import { MarginBox } from '../utils/geometry';
 import { getThemeClass } from '../utils/themes';
