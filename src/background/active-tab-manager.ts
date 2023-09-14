@@ -1,3 +1,4 @@
+/// <reference path="../common/constants.d.ts" />
 import Bugsnag from '@birchill/bugsnag-zero';
 import * as s from 'superstruct';
 import browser, { Runtime, Tabs } from 'webextension-polyfill';

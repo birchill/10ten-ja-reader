@@ -1,3 +1,4 @@
+/// <reference path="../common/constants.d.ts" />
 import browser, { Menus, Tabs } from 'webextension-polyfill';
 
 import { TabManager } from './tab-manager';
