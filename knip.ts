@@ -8,6 +8,11 @@ const config: KnipConfig = {
     // can't be expected to follow. Hopefully we'll eventually remove this
     // quirk and use the same tab manager everywhere.
     'src/background/active-tab-manager.ts',
+    // Included by popups.html until we set up a better way of doing component
+    // tests
+    'tests/html-tests.js',
+    // Likewise for options.html
+    'tests/options.js',
   ],
   ignore: [
     // knip's GitHub actions plugin doesn't know how to handle custom actions
