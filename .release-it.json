@@ -7,14 +7,14 @@
   "github": {
     "draft": true,
     "release": true,
-    "releaseNotes": "node ./bin/release-notes.js ${version}",
+    "releaseNotes": "node ./scripts/release-notes.js ${version}",
     "assets": ["release-assets/*"]
   },
   "npm": {
     "publish": false
   },
   "hooks": {
-    "after:bump": "./bin/build-assets.sh"
+    "after:bump": "./scripts/build-assets.sh"
   },
   "plugins": {
     "@release-it/keep-a-changelog": {
