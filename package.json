@@ -78,7 +78,7 @@
     "jsonwebtoken": "9.0.2",
     "knip": "2.24.1",
     "mocha": "10.2.0",
-    "playwright": "1.37.1",
+    "playwright": "1.38.0",
     "playwright-test": "^12.1.2",
     "prettier": "3.0.3",
     "release-it": "16.1.5",
