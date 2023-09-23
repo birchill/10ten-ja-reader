@@ -2,6 +2,9 @@ import type { KnipConfig } from 'knip';
 
 const config: KnipConfig = {
   entry: [
+    // knip's GitHub actions plugin doesn't know how to recognize custom actions
+    // yet.
+    '.github/actions/parse-release/index.js',
     // Utility script used by update docs pages.
     'docs/update/update.js',
     // A utility we used to generate all the icon variations once that might yet
@@ -21,12 +24,14 @@ const config: KnipConfig = {
     'xcode13/Shared \\(App\\)/Resources/Script.js',
   ],
   ignore: [
-    // knip's GitHub actions plugin doesn't know how to handle custom actions
-    // yet and we'll possibly drop this in future so we just ignore it for now.
-    '.github/actions/parse-release/index.js',
     // The tailwind config file is just here for when we need to manually update
     // the docs.
     'docs/update/tailwind.config.js',
+  ],
+  ignoreDependencies: [
+    // Used by our browser test and automatically detected by playwright-test.
+    'mocha',
+    '@types/mocha',
   ],
   webpack: {
     entry: [
