@@ -6476,20 +6476,15 @@ pkg-types@^1.0.3:
     mlly "^1.2.0"
     pathe "^1.1.0"
 
-playwright-core@1.38.0:
-  version "1.38.0"
-  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.38.0.tgz#cb8e135da1c0b1918b070642372040ed9aa7009a"
-  integrity sha512-f8z1y8J9zvmHoEhKgspmCvOExF2XdcxMW8jNRuX4vkQFrzV4MlZ55iwb5QeyiFQgOFCUolXiRHgpjSEnqvO48g==
-
 playwright-core@1.38.1:
   version "1.38.1"
   resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.38.1.tgz#75a3c470aa9576b7d7c4e274de3d79977448ba08"
   integrity sha512-tQqNFUKa3OfMf4b2jQ7aGLB8o9bS3bOY0yMEtldtC2+spf8QXG9zvXLTXUeRsoNuxEYMgLYR+NXfAa1rjKRcrg==
 
 playwright-test@^12.1.2:
-  version "12.3.4"
-  resolved "https://registry.yarnpkg.com/playwright-test/-/playwright-test-12.3.4.tgz#c93303c33b8d96ab61048bc15a03b9fb10b30035"
-  integrity sha512-BpftAouoCSt/vlbFjo9qomOJv4XV2RhS2L0dDHo6haonMbUNDSC6dOxL7a33roa+t4G2gRUEBLEGkgJYf4uVwA==
+  version "12.3.5"
+  resolved "https://registry.yarnpkg.com/playwright-test/-/playwright-test-12.3.5.tgz#ecda5d6e972f283ba0fdb3f729c7f72203bd7b51"
+  integrity sha512-OUYH4+NIIaUQkkVKuQ5/YqSc/Mir297hzIyS+tGzVUWnLV+V5DTAxefPeDYH3DSKN/QOSoiT3h5NuWphTHcHww==
   dependencies:
     acorn-loose "^8.3.0"
     assert "^2.1.0"
@@ -6511,7 +6506,7 @@ playwright-test@^12.1.2:
     ora "^7.0.1"
     p-timeout "^6.1.2"
     path-browserify "^1.0.1"
-    playwright-core "1.38.0"
+    playwright-core "1.38.1"
     polka "^0.5.2"
     premove "^4.0.0"
     process "^0.11.10"
