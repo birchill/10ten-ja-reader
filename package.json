@@ -76,7 +76,7 @@
     "if-env": "1.0.4",
     "jsdom": "^22.1.0",
     "jsonwebtoken": "9.0.2",
-    "knip": "2.25.2",
+    "knip": "2.30.0",
     "mocha": "10.2.0",
     "playwright": "1.38.1",
     "playwright-test": "^12.1.2",
