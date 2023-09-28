@@ -1,0 +1,14 @@
+{
+  "name": "react-polyfill",
+  "version": "4.0.0",
+  "private": true,
+  "description": "A wrapper around preact-compat so react-cosmos will load Preact instead of React",
+  "main": "../node_modules/preact/compat/dist/compat.js",
+  "module": "../node_modules/preact/compat/dist/compat.module.js",
+  "umd:main": "../node_modules/preact/compat/dist/compat.umd.js",
+  "source": "../node_modules/preact/compat/src/index.js",
+  "types": "../node_modules/preact/compat/src/index.d.ts",
+  "peerDependencies": {
+    "preact": "^10.0.0"
+  }
+}

@@ -1,3 +1,3 @@
 export function DbStatus() {
-  return <div></div>;
+  return <div>DbStatus</div>;
 }

@@ -42,19 +42,14 @@ const commonConfig = {
         use: ['css-loader'],
       },
       {
-        test: /\.ts$/,
-        use: 'ts-loader',
+        test: /\.tsx?$/,
         exclude: /node_modules/,
+        use: 'ts-loader',
       },
       { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
     ],
   },
   resolve: {
-    alias: {
-      react: 'preact/compat',
-      'react-dom/test-utils': 'preact/test-utils',
-      'react-dom': 'preact/compat',
-    },
     extensions: ['.ts', '.tsx', '.js'],
   },
 };
