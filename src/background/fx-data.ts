@@ -4,7 +4,7 @@ import browser from 'webextension-polyfill';
 
 import { ExtensionStorageError } from '../common/extension-storage-error';
 
-export const FxLocalDataSchema = s.type({
+const FxLocalDataSchema = s.type({
   timestamp: s.min(s.integer(), 0),
   rates: s.record(s.string(), s.number()),
   updated: s.min(s.integer(), 0),

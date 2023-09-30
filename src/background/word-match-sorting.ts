@@ -15,7 +15,7 @@ export function sortMatchesByPriority(
   return results;
 }
 
-export function getPriority(result: WordResult): number {
+function getPriority(result: WordResult): number {
   const scores: Array<number> = [0];
 
   // Scores from kanji readings

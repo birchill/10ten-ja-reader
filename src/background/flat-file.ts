@@ -31,7 +31,7 @@ type FlatFileDatabaseEvent =
 
 type FlatFileDatabaseListener = (event: FlatFileDatabaseEvent) => void;
 
-export class FlatFileDatabase {
+class FlatFileDatabase {
   bugsnag?: BugsnagClient;
   listeners: Array<FlatFileDatabaseListener> = [];
   loaded: Promise<any>;
@@ -98,24 +98,27 @@ export class FlatFileDatabase {
           requestOptions = { signal: controller!.signal };
         }
 
-        timeoutId = self.setTimeout(() => {
-          timeoutId = undefined;
-          if (controller) {
-            console.error(`Load of ${url} timed out. Aborting.`);
-            if (this.bugsnag) {
-              this.bugsnag.leaveBreadcrumb(makeBreadcrumb('Aborting: ', url));
+        timeoutId = self.setTimeout(
+          () => {
+            timeoutId = undefined;
+            if (controller) {
+              console.error(`Load of ${url} timed out. Aborting.`);
+              if (this.bugsnag) {
+                this.bugsnag.leaveBreadcrumb(makeBreadcrumb('Aborting: ', url));
+              }
+              controller.abort();
+            } else {
+              // TODO: This error doesn't actually propagate and do anything
+              // useful yet. But for now at least it means Firefox 56 doesn't
+              // break altogether.
+              if (this.bugsnag) {
+                void this.bugsnag.notify('[Pre FF57] Load timed out');
+              }
+              throw new Error(`Load of ${url} timed out.`);
             }
-            controller.abort();
-          } else {
-            // TODO: This error doesn't actually propagate and do anything
-            // useful yet. But for now at least it means Firefox 56 doesn't
-            // break altogether.
-            if (this.bugsnag) {
-              void this.bugsnag.notify('[Pre FF57] Load timed out');
-            }
-            throw new Error(`Load of ${url} timed out.`);
-          }
-        }, TIMEOUT_MS * (attempts + 1));
+          },
+          TIMEOUT_MS * (attempts + 1)
+        );
 
         const response = await fetch(url, requestOptions);
         const responseText = await response.text();
@@ -267,7 +270,7 @@ interface RawWordRecord {
   s: Array<RawWordSense>;
 }
 
-export function toDictionaryWordResult({
+function toDictionaryWordResult({
   entry,
   matchingText,
   offset,

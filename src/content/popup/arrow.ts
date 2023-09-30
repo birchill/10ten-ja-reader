@@ -61,8 +61,3 @@ export function renderArrow({
     }
   }
 }
-
-export function removeArrow() {
-  const hostElem = document.getElementById('tenten-ja-window');
-  hostElem?.shadowRoot?.querySelector('.arrow-container')?.remove();
-}
