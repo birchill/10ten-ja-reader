@@ -4,6 +4,10 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const pjson = require('./package.json');
 
+// This separate webpack config is needed because react-cosmos doesn't support
+// webpack configurations that export multiple configurations:
+//
+// https://webpack.js.org/configuration/configuration-types/#exporting-multiple-configurations
 const config = {
   mode: 'development',
   module: {
