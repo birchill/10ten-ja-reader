@@ -428,7 +428,7 @@ export function isPopupWindowHostElem(target: EventTarget | null): boolean {
   return target instanceof HTMLElement && target.id === 'tenten-ja-window';
 }
 
-export function showOverlay(copyState: CopyState): boolean {
+function showOverlay(copyState: CopyState): boolean {
   return (
     (copyState.kind === 'active' || copyState.kind === 'error') &&
     (copyState.mode === 'touch' || copyState.mode === 'mouse')

@@ -83,12 +83,4 @@ export type IndividualFrameMessage =
   | { type: 'popupShown'; frame: number | 'children'; state: PopupState };
 // ^ This last bit is because I'm terrible at TypeScript meta programming
 
-export type ChildFramesMessage =
-  | Extract<BackgroundMessage, { frame: 'children' }>
-  | {
-      type: 'popupShown';
-      frame: number | 'children';
-      state: PopupState;
-    };
-
 export type TopFrameMessage = Extract<BackgroundMessage, { frame: 'top' }>;
