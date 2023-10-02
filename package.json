@@ -64,7 +64,7 @@
     "chai": "4.3.10",
     "copy-webpack-plugin": "11.0.0",
     "css-loader": "6.8.1",
-    "eslint": "8.49.0",
+    "eslint": "8.50.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-plugin-vitest": "^0.3.0",
     "fake-indexeddb": "^4.0.2",
