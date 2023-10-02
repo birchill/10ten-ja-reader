@@ -40,6 +40,7 @@ export function isIOS(): boolean {
   );
 }
 
+/** @public */
 export function isThunderbird(): boolean {
   return navigator.userAgent.indexOf('Thunderbird/') !== -1;
 }

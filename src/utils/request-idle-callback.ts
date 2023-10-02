@@ -17,10 +17,13 @@ type IdleCallbackHandle = number;
 
 type IdleRequestCallback = (deadline: IdleDeadline) => void;
 
+/** @public */
 export let requestIdleCallback: (
   callback: IdleRequestCallback,
   options?: IdleRequestOptions
 ) => IdleCallbackHandle;
+
+/** @public */
 export let cancelIdleCallback: (handle: IdleCallbackHandle) => void;
 
 if ((self as any).requestIdleCallback && (self as any).cancelIdleCallback) {
@@ -44,6 +47,7 @@ if ((self as any).requestIdleCallback && (self as any).cancelIdleCallback) {
   };
 }
 
+/** @public */
 export function requestIdleCallbackPromise(
   options?: IdleRequestOptions
 ): Promise<void> {

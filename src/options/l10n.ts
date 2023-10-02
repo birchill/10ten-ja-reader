@@ -37,5 +37,3 @@ export function translateDoc() {
     }
   }
 }
-
-export default translateDoc;

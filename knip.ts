@@ -33,6 +33,10 @@ const config: KnipConfig = {
     'mocha',
     '@types/mocha',
   ],
+  ignoreExportsUsedInFile: {
+    interface: true,
+    type: true,
+  },
   webpack: {
     // I think there may be a bug in knip where if you specify webpack config at
     // all (e.g. just to specify the `entry` member), the `config` member

@@ -1,3 +1,4 @@
+/** @public */
 export class TimeoutError extends Error {
   constructor(...params: any[]) {
     super(...params);
