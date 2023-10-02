@@ -37,6 +37,9 @@ jobs:
         run: |
           yarn test
 
+      - name: knip
+        run: yarn knip
+
       # Check packaging doesn't error. Again, no need to worry about the
       # package:edge target.
       - name: Package
