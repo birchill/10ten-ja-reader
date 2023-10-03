@@ -1,8 +1,10 @@
-import browser from 'webextension-polyfill';
+import { useLocale } from '../common/i18n';
 
 export function DbStatus() {
+  const { t } = useLocale();
+
   // XXX Need to linkify this
-  const attribution = browser.i18n.getMessage('options_data_source');
+  const attribution = t('options_data_source');
   // XXX Need to do license and accent attribution too
 
   return (
