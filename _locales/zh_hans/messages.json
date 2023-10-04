@@ -1537,7 +1537,7 @@
     }
   },
   "options_data_source": {
-    "message": "本词典含有来自 JMDict/EDICT，KANJIDIC 和 JMnedict/ENAMDICT 的资料。",
+    "message": "本词典含有来自 JMdict/EDICT，KANJIDIC 和 JMnedict/ENAMDICT 的资料。",
     "description": "Attribute of source data. The strings 'JMdict/EDICT', 'KANJIDIC' and 'JMnedict/ENAMDICT' must appear so that they can be link-ified to the corresponding project home pages."
   },
   "options_database_initializing": {
