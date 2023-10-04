@@ -23,7 +23,9 @@ export function I18nProvider(props: RenderableProps<{}>) {
 
   useLayoutEffect(() => {
     (async () => {
-      try {
+      // We need to use a build-time constant here to avoid importing locale
+      // messages into the package in regular extension contexts.
+      if (__EXTENSION_CONTEXT__) {
         // The browser polyfill will refuse to load in non-extension contexts
         const browser = await import('webextension-polyfill');
         setT(
@@ -31,7 +33,7 @@ export function I18nProvider(props: RenderableProps<{}>) {
             browser.i18n.getMessage(key, substitutions)
         );
         setIsLoading(false);
-      } catch {
+      } else {
         // Assume we are in a non-extension context and just default to using
         // English.
         const { default: enMessages } = await import(
