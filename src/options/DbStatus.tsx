@@ -5,7 +5,9 @@ export function DbStatus() {
   const { t } = useLocale();
 
   const attribution = t('options_data_source');
-  // XXX Need to do license and accent attribution too
+  const license = t('options_edrdg_license');
+  const licenseKeyword = t('options_edrdg_license_keyword');
+  const accentAttribution = t('options_accent_data_source');
 
   return (
     <div class="section-content panel-section-db-summary">
@@ -27,6 +29,20 @@ export function DbStatus() {
             },
           ]}
         />
+        <Linkify
+          text={license}
+          links={[
+            {
+              keyword: 'Electronic Dictionary Research and Development Group',
+              href: 'https://www.edrdg.org/',
+            },
+            {
+              keyword: licenseKeyword,
+              href: 'https://www.edrdg.org/edrdg/licence.html',
+            },
+          ]}
+        />
+        <p>{accentAttribution}</p>
       </div>
       <div class="db-summary-status"></div>
       <div class="db-admin" style="display: none">
