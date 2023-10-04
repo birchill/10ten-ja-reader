@@ -1,5 +1,11 @@
 import { RenderableProps, createContext } from 'preact';
-import { useContext, useLayoutEffect, useMemo, useState } from 'preact/hooks';
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'preact/hooks';
 import { isObject } from '../utils/is-object';
 
 export type TranslateFunctionType = (
@@ -7,18 +13,36 @@ export type TranslateFunctionType = (
   substitutions?: string | Array<string>
 ) => string;
 
+export type SetLocaleFunctionType = (locale: LocaleType) => void;
+
 export type i18nContextType = {
   t: TranslateFunctionType;
+  setLocale: SetLocaleFunctionType;
 };
 
 export const i18nContext = createContext<i18nContextType>({
   t: () => 'Not initialized',
+  setLocale: () => {
+    throw new Error('Not initialized');
+  },
 });
 
-export function I18nProvider(props: RenderableProps<{}>) {
+const SUPPORTED_LOCALES = ['en', 'ja', 'zh_hans'] as const;
+type LocaleType = (typeof SUPPORTED_LOCALES)[number];
+
+type I18nProviderProps = {
+  locale?: LocaleType;
+};
+
+export function I18nProvider(props: RenderableProps<I18nProviderProps>) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [t, setT] = useState<TranslateFunctionType>(
     () => () => 'Not initialized'
+  );
+  const [setLocale, setSetLocale] = useState<SetLocaleFunctionType>(
+    () => () => {
+      throw new Error('Not initialized');
+    }
   );
 
   useLayoutEffect(() => {
@@ -26,30 +50,62 @@ export function I18nProvider(props: RenderableProps<{}>) {
       // We need to use a build-time constant here to avoid importing locale
       // messages into the package in regular extension contexts.
       if (__EXTENSION_CONTEXT__) {
-        // The browser polyfill will refuse to load in non-extension contexts
         const browser = await import('webextension-polyfill');
         setT(
           () => (key: string, substitutions?: string | Array<string>) =>
             browser.i18n.getMessage(key, substitutions)
         );
+        setSetLocale(() => {
+          throw new Error(
+            'Setting the locale is not yet supported in extension contexts'
+          );
+        });
         setIsLoading(false);
       } else {
-        // Assume we are in a non-extension context and just default to using
-        // English.
-        const { default: enMessages } = await import(
-          '../../_locales/en/messages.json'
-        );
-        const messages = parseLocale(enMessages);
+        const messages: Record<LocaleType, LocaleData> = {
+          en: new Map(),
+          ja: new Map(),
+          zh_hans: new Map(),
+        };
+
+        for (const locale of SUPPORTED_LOCALES) {
+          const { default: localeMessages } = await import(
+            `../../_locales/${locale}/messages.json`
+          );
+          messages[locale] = parseLocale(localeMessages);
+        }
+
         setT(
           () => (key: string, substitutions?: string | Array<string>) =>
-            localizeMessage(key, messages, substitutions)
+            localizeMessage(key, messages[props.locale || 'en'], substitutions)
         );
+        setSetLocale(() => (locale: LocaleType) => {
+          if (!SUPPORTED_LOCALES.includes(locale)) {
+            throw new Error(`Unsupported locale ${locale}`);
+          }
+
+          setT(
+            () => (key: string, substitutions?: string | Array<string>) =>
+              localizeMessage(key, messages[locale], substitutions)
+          );
+        });
+
         setIsLoading(false);
       }
     })();
   }, []);
 
-  const value = useMemo(() => ({ t }), [t]);
+  if (!__EXTENSION_CONTEXT__) {
+    useEffect(() => {
+      if (isLoading) {
+        return;
+      }
+
+      setLocale(props.locale || 'en');
+    }, [isLoading, props.locale]);
+  }
+
+  const value = useMemo(() => ({ t, setLocale }), [t, setLocale]);
 
   return (
     <i18nContext.Provider value={value}>
