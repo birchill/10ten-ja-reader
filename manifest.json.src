@@ -20,7 +20,8 @@
       /*#else*/
       "strict_min_version": "69.0"
       /*#endif*/
-    }
+    },
+    "gecko_android": {}
   },
   /*#endif*/
   "description": "__MSG_extension_description__",
