@@ -18,7 +18,7 @@
       /*#if mail_extension */
       "strict_min_version": "91.0"
       /*#else*/
-      "strict_min_version": "69.0"
+      "strict_min_version": "113.0"
       /*#endif*/
     },
     "gecko_android": {}
