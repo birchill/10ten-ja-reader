@@ -1,3 +1,9 @@
+@config "../tailwind.options.config.js";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /*
  * Container styles
  */
@@ -5,7 +11,7 @@
 :root,
 body {
   font: message-box;
-  font-size: 15px;
+  font-size: 16px;
   color: #222426;
 }
 
@@ -45,16 +51,6 @@ body {
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
-}
-
-/*
- * Hide contents until it is ready / translated.
- */
-:root > * {
-  transition: opacity 0.25s ease-out;
-}
-:root:not(.initialized) > * {
-  opacity: 0;
 }
 
 /*

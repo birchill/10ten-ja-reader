@@ -1,6 +1,7 @@
 /* eslint-env node */
 /* eslint @typescript-eslint/no-var-requires: 0 */
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import * as path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import { fileURLToPath } from 'url';
@@ -39,7 +40,11 @@ const commonConfig = {
     rules: [
       {
         test: /\.css$/,
-        use: ['css-loader'],
+        use: [
+          { loader: MiniCssExtractPlugin.loader },
+          'css-loader',
+          'postcss-loader',
+        ],
       },
       {
         test: /\.tsx?$/,
@@ -326,6 +331,7 @@ function buildExtConfig({
       __SUPPORTS_TAB_CONTEXT_TYPE__: supportsTabContextType,
       __VERSION__: `'${pjson.version}'`,
     }),
+    new MiniCssExtractPlugin(),
   ];
 
   if (activeTabOnly) {

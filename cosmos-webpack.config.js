@@ -1,4 +1,5 @@
 import webpack from 'webpack';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
@@ -14,7 +15,11 @@ const config = {
     rules: [
       {
         test: /\.css$/,
-        use: ['css-loader'],
+        use: [
+          { loader: MiniCssExtractPlugin.loader },
+          'css-loader',
+          'postcss-loader',
+        ],
       },
       {
         test: /\.tsx?$/,
@@ -40,6 +45,7 @@ const config = {
       __SUPPORTS_TAB_CONTEXT_TYPE__: false,
       __VERSION__: `'${pjson.version}'`,
     }),
+    new MiniCssExtractPlugin(),
   ],
 };
 

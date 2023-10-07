@@ -8,7 +8,7 @@ type Props = {
 
 export function DbStatus(props: Props) {
   return (
-    <div class="section-content panel-section-db-summary">
+    <div class="section-content panel-section-db-summary py-4">
       <DbSummaryBlurb />
       <DbSummaryStatus dbState={props.dbState} />
       <div class="db-admin" hidden>

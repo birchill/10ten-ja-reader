@@ -1,5 +1,7 @@
 import { DbStatus } from './DbStatus';
 
+import '../../css/options.css';
+
 export default {
   offline: () => (
     <DbStatus
