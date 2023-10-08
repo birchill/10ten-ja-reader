@@ -81,7 +81,7 @@
     "semver-parser": "4.1.4",
     "source-map-loader": "4.0.1",
     "terser-webpack-plugin": "5.3.9",
-    "ts-loader": "9.4.4",
+    "ts-loader": "9.5.0",
     "tsx": "3.13.0",
     "vitest": "^0.34.3",
     "vitest-fetch-mock": "^0.2.2",
