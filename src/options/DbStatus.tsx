@@ -82,6 +82,8 @@ function IdleStateSummary(props: { dbState: JpdictState }) {
   const { t } = useLocale();
   const { updateError } = props.dbState;
 
+  const quota = useStorageQuota(updateError?.name === 'QuotaExceededError');
+
   if (updateError?.name === 'OfflineError') {
     return (
       <div class="db-summary-status -warning">
@@ -89,8 +91,6 @@ function IdleStateSummary(props: { dbState: JpdictState }) {
       </div>
     );
   }
-
-  const quota = useStorageQuota(updateError?.name === 'QuotaExceededError');
 
   if (updateError && updateError?.name !== 'AbortError') {
     let errorMessage: string | undefined;
