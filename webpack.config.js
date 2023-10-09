@@ -331,7 +331,9 @@ function buildExtConfig({
       __SUPPORTS_TAB_CONTEXT_TYPE__: supportsTabContextType,
       __VERSION__: `'${pjson.version}'`,
     }),
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'css/options.css',
+    }),
   ];
 
   if (activeTabOnly) {
