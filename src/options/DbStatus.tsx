@@ -1,6 +1,10 @@
-import { useLocale } from '../common/i18n';
-import { Linkify } from './Linkify';
+import { useEffect, useState } from 'preact/hooks';
 import { JpdictState } from '../background/jpdict';
+import { useLocale } from '../common/i18n';
+import { isFirefox } from '../utils/ua-utils';
+
+import { Linkify } from './Linkify';
+import { formatDate, formatSize } from './format';
 
 type Props = {
   dbState: JpdictState;
@@ -78,7 +82,7 @@ function IdleStateSummary(props: { dbState: JpdictState }) {
   const { t } = useLocale();
   const { updateError } = props.dbState;
 
-  if (!!updateError && updateError.name === 'OfflineError') {
+  if (updateError?.name === 'OfflineError') {
     return (
       <div class="db-summary-status -warning">
         <div class="db-summary-info">{t('options_offline_explanation')}</div>
@@ -86,7 +90,63 @@ function IdleStateSummary(props: { dbState: JpdictState }) {
     );
   }
 
+  const quota = useStorageQuota(updateError?.name === 'QuotaExceededError');
+
+  if (updateError && updateError?.name !== 'AbortError') {
+    let errorMessage: string | undefined;
+    if (updateError.name === 'QuotaExceededError' && quota !== undefined) {
+      errorMessage = t('options_db_update_quota_error', formatSize(quota));
+    }
+
+    if (!errorMessage) {
+      errorMessage = t('options_db_update_error', updateError.message);
+    }
+
+    return (
+      <div class="db-summary-status -error">
+        <div class="db-summary-info">{errorMessage}</div>
+        {updateError.nextRetry && (
+          <div>
+            {t('options_db_update_retry', formatDate(updateError.nextRetry))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   // TODO Other cases
 
   return <div class="db-summary-status"></div>;
+}
+
+function useStorageQuota(enable: boolean): number | undefined {
+  const [quota, setQuota] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    if (!enable) {
+      setQuota(undefined);
+      return;
+    }
+
+    navigator.storage
+      .estimate()
+      .then(({ quota }) => {
+        if (typeof quota !== 'undefined') {
+          // For Firefox, typically origins get a maximum of 20% of the global
+          // limit. When we have unlimitedStorage permission, however, we can
+          // use up to the full amount of the global limit. The storage API,
+          // however, still returns 20% as the quota, so multiplying by 5 will
+          // give the actual quota.
+          if (isFirefox()) {
+            quota *= 5;
+          }
+        }
+        setQuota(quota);
+      })
+      .catch(() => {
+        // Ignore. This UA likely doesn't support the navigator.storage API
+      });
+  }, [enable]);
+
+  return quota;
 }
