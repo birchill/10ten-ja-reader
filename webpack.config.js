@@ -2,6 +2,7 @@
 /* eslint @typescript-eslint/no-var-requires: 0 */
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import * as path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import { fileURLToPath } from 'url';
@@ -40,10 +41,23 @@ const commonConfig = {
     rules: [
       {
         test: /\.css$/,
-        use: [
-          { loader: MiniCssExtractPlugin.loader },
-          'css-loader',
-          'postcss-loader',
+        // This is a bit convoluted for the time being because, at least for
+        // now, we _don't_ want to run MiniCssExtractPlugin on popup.css because
+        // in popup.ts we want to get the styles inline (but we still want the
+        // file to be available in the package so we can include it in
+        // options.html).
+        oneOf: [
+          {
+            test: /options.css/,
+            use: [
+              { loader: MiniCssExtractPlugin.loader },
+              'css-loader',
+              'postcss-loader',
+            ],
+          },
+          {
+            use: ['css-loader'],
+          },
         ],
       },
       {
@@ -331,6 +345,10 @@ function buildExtConfig({
       __SUPPORTS_TAB_CONTEXT_TYPE__: supportsTabContextType,
       __VERSION__: `'${pjson.version}'`,
     }),
+    new HtmlWebpackPlugin({
+      filename: 'options.html',
+      template: './src/options/options.html',
+    }),
     new MiniCssExtractPlugin({
       filename: 'css/options.css',
     }),
@@ -398,7 +416,6 @@ function buildExtConfig({
     // One day we might decide to inject popup.css into the options page
     // script too, but for now we duplicate this content.
     'css/*',
-    { from: '*.html', context: 'html' },
     supportsSvgIcons ? 'images/*.svg' : 'images/*',
     'data/*',
     '_locales/**/*',

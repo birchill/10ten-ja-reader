@@ -1,0 +1,744 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1"
+    />
+    <title>10ten Japanese Reader options</title>
+    <link rel="stylesheet" type="text/css" href="css/popup.css" />
+  </head>
+  <body>
+    <form id="optform" name="optform">
+      <h1 class="section-header">__MSG_options_general_heading__</h1>
+      <div class="section-content">
+        <p>__MSG_options_toolbar_icon_label__</p>
+        <fieldset>
+          <div
+            class="toolbaricon-select icon-radio -with-labels -bw-inactive"
+            id="toolbaricon-select"
+          >
+            <input
+              type="radio"
+              name="toolbarIcon"
+              value="default"
+              id="toolbaricon-default"
+            />
+            <label for="toolbaricon-default">
+              <div class="icon">
+                <img
+                  src="/images/10ten.svg"
+                  alt="__MSG_options_toolbar_icon_default_alt__"
+                  class="image"
+                />
+              </div>
+              <div class="text">
+                <span class="radio"></span
+                >__MSG_options_toolbar_icon_classic_label__
+              </div>
+            </label>
+            <input
+              type="radio"
+              name="toolbarIcon"
+              value="sky"
+              id="toolbaricon-sky"
+            />
+            <label for="toolbaricon-sky">
+              <div class="icon">
+                <img
+                  src="/images/10ten-sky.svg"
+                  alt="__MSG_options_toolbar_icon_sky_alt__"
+                  class="image"
+                />
+              </div>
+              <div class="text">
+                <span class="radio"></span
+                >__MSG_options_toolbar_icon_kanji_label__
+              </div>
+            </label>
+          </div>
+        </fieldset>
+        <div id="highlight-style-section">
+          <p>__MSG_options_highlight_style_label__</p>
+          <fieldset>
+            <div
+              class="highlightstyle-select icon-radio -with-labels -bw-inactive"
+              id="highlightstyle-select"
+            >
+              <input
+                type="radio"
+                name="highlightStyle"
+                value="none"
+                id="highlightstyle-none"
+              />
+              <label for="highlightstyle-none">
+                <div class="icon">
+                  <span class="text-fade">に<span>点々</span>と</span>
+                </div>
+                <div class="text">
+                  <span class="radio"></span
+                  >__MSG_options_highlight_style_none__
+                </div>
+              </label>
+              <input
+                type="radio"
+                name="highlightStyle"
+                value="yellow"
+                id="highlightstyle-yellow"
+              />
+              <label for="highlightstyle-yellow">
+                <div class="icon">
+                  <span class="text-fade"
+                    >に<span class="highlight yellow">点々</span>と</span
+                  >
+                </div>
+                <div class="text">
+                  <span class="radio"></span
+                  >__MSG_options_highlight_style_yellow__
+                </div>
+              </label>
+              <input
+                type="radio"
+                name="highlightStyle"
+                value="blue"
+                id="highlightstyle-blue"
+              />
+              <label for="highlightstyle-blue">
+                <div class="icon">
+                  <span class="text-fade"
+                    >に<span class="highlight blue">点々</span>と</span
+                  >
+                </div>
+                <div class="text">
+                  <span class="radio"></span
+                  >__MSG_options_highlight_style_blue__
+                </div>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+        <div class="spacer" role="presentation"></div>
+        <div class="checkbox-row" id="old-highlight-setting-section">
+          <input type="checkbox" id="highlightText" name="highlightText" />
+          <label for="highlightText"
+            >__MSG_options_highlight_matched_text__</label
+          >
+        </div>
+        <div class="checkbox-row">
+          <input
+            type="checkbox"
+            id="contextMenuEnable"
+            name="contextMenuEnable"
+          />
+          <label for="contextMenuEnable"
+            >__MSG_options_show_context_menu_item__</label
+          >
+        </div>
+      </div>
+      <h1 class="section-header">__MSG_options_popup_style_heading__</h1>
+      <div class="section-content">
+        <fieldset>
+          <!-- Extra div because Chrome can't do flex in fieldset -->
+          <div
+            class="popupstyle-select icon-radio -centered"
+            id="popupstyle-select"
+          ></div>
+        </fieldset>
+        <div class="checkbox-row">
+          <input type="checkbox" id="showPriority" name="showPriority" />
+          <label for="showPriority">__MSG_options_show_priority__</label>
+        </div>
+        <div class="checkbox-row">
+          <input
+            type="checkbox"
+            id="showWaniKaniLevel"
+            name="showWaniKaniLevel"
+          />
+          <label for="showWaniKaniLevel"
+            >__MSG_options_show_wanikani_levels__<span class="new-badge"
+              >__MSG_options_new_badge_text__</span
+            ></label
+          >
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="showRomaji" name="showRomaji" />
+          <label for="showRomaji">__MSG_options_show_romaji__</label>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="showDefinitions" name="showDefinitions" />
+          <label for="showDefinitions">__MSG_options_show_definitions__</label>
+        </div>
+        <div class="spacer" role="presentation"></div>
+        <div class="select-grid">
+          <label for="accentDisplay"
+            >__MSG_options_accent_display_label__</label
+          >
+          <select id="accentDisplay" name="accentDisplay">
+            <option value="downstep">
+              __MSG_options_accent_display_downstep__
+            </option>
+            <option value="binary">
+              __MSG_options_accent_display_binary__
+            </option>
+            <option value="binary-hi-contrast">
+              __MSG_options_accent_display_binary_high_contrast__
+            </option>
+            <option value="none">__MSG_options_accent_display_none__</option>
+          </select>
+          <label for="posDisplay">__MSG_options_pos_display_label__</label>
+          <select id="posDisplay" name="posDisplay">
+            <option value="expl">__MSG_options_pos_display_expl__</option>
+            <option value="code">__MSG_options_pos_display_code__</option>
+            <option value="none">__MSG_options_pos_display_none__</option>
+          </select>
+          <label for="fontSize"
+            >__MSG_options_font_size_label__<span class="new-badge"
+              >__MSG_options_new_badge_text__</span
+            ></label
+          >
+          <select id="fontSize" name="fontSize">
+            <option value="normal">__MSG_options_font_size_normal__</option>
+            <option value="large">__MSG_options_font_size_large__</option>
+            <option value="xl">__MSG_options_font_size_xl__</option>
+          </select>
+          <div>
+            __MSG_options_expand_all_entries__<span class="new-badge"
+              >__MSG_options_new_badge_text__</span
+            >
+          </div>
+          <div class="auto-expand-checkboxes">
+            <div>
+              <input type="checkbox" id="expandWords" name="expandWords" />
+              <label for="expandWords"
+                >__MSG_options_expand_words_label__</label
+              >
+            </div>
+            <div>
+              <input type="checkbox" id="expandKanji" name="expandKanji" />
+              <label for="expandKanji"
+                >__MSG_options_expand_kanji_label__</label
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <h1 class="section-header">
+        __MSG_options_popup_interactivity_heading__
+      </h1>
+      <div class="section-content">
+        <div id="mouse-interactivity-section" class="needs-mouse">
+          <p>__MSG_options_mouse_interactivity_label__</p>
+          <fieldset>
+            <div
+              class="interactivity-select icon-radio -with-labels -bw-inactive"
+              id="interactivity-select"
+            >
+              <input
+                type="radio"
+                name="mouseInteractivity"
+                value="disable"
+                id="interactivity-disable"
+              />
+              <label for="interactivity-disable">
+                <div class="icon">
+                  <svg viewBox="0 0 200 150" class="svg theme-light">
+                    <defs>
+                      <clipPath id="interactive-popup-outline-1">
+                        <rect
+                          x="1"
+                          y="50"
+                          rx="5"
+                          width="198"
+                          height="90"
+                          fill="black"
+                        />
+                      </clipPath>
+                    </defs>
+                    <!-- Popup outline -->
+                    <rect
+                      x="1"
+                      y="50"
+                      rx="5"
+                      width="198"
+                      height="90"
+                      fill="var(--bg-color)"
+                      stroke="var(--border-color)"
+                      stroke-width="0.5"
+                    />
+                    <!-- Tab background -->
+                    <rect
+                      x="60"
+                      y="50"
+                      width="140"
+                      height="15"
+                      fill="var(--cell-highlight-bg)"
+                      clip-path="url(#interactive-popup-outline-1)"
+                    />
+                    <!-- Highlighted part -->
+                    <text x="10" y="25" fill="#bbb" font-weight="bold">
+                      点々と家が建つ…
+                    </text>
+                    <use
+                      href="#cursor"
+                      x="40"
+                      y="10"
+                      width="20.5"
+                      color="#888"
+                    />
+                  </svg>
+                </div>
+                <div class="text">
+                  <span class="radio"></span
+                  >__MSG_options_mouse_interactivity_disable__
+                </div>
+              </label>
+              <input
+                type="radio"
+                name="mouseInteractivity"
+                value="enable"
+                id="interactivity-enable"
+              />
+              <label for="interactivity-enable">
+                <div class="icon">
+                  <svg viewBox="0 0 200 150" class="svg theme-light">
+                    <defs>
+                      <clipPath id="interactive-popup-outline-2">
+                        <rect
+                          x="1"
+                          y="50"
+                          rx="5"
+                          width="198"
+                          height="100"
+                          fill="black"
+                        />
+                      </clipPath>
+                    </defs>
+                    <!-- Popup outline (with arrow) -->
+                    <path
+                      d="M6 50h10l15-15l15 15h148a5 5 90 0 1 5 5v89a5 5 90 0 1-5 5h-188a5
+                      5 90 0 1-5-5v-89a5 5 90 0 1 5-5Z"
+                      fill="var(--bg-color)"
+                      stroke="var(--border-color)"
+                      stroke-width="0.5"
+                    />
+                    <!-- Tab background -->
+                    <rect
+                      x="60"
+                      y="50"
+                      width="140"
+                      height="25"
+                      fill="var(--cell-highlight-bg)"
+                      clip-path="url(#interactive-popup-outline-2)"
+                    />
+                    <!-- Close button -->
+                    <g transform="translate(185 62.5)">
+                      <circle r="8" fill="var(--bg-color)" />
+                      <path
+                        d="M-3-3l6 6m0-6l-6 6"
+                        stroke="var(--text-color)"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-opacity="0.7"
+                      />
+                    </g>
+                    <!-- Text outline -->
+                    <text x="10" y="25" fill="#bbb" font-weight="bold">
+                      点々と家が建つ…
+                    </text>
+                    <!-- Highlighted part -->
+                    <rect
+                      x="5"
+                      y="85"
+                      rx="5"
+                      width="190"
+                      height="30"
+                      fill="var(--hover-bg)"
+                    />
+                    <!-- Cursor trail -->
+                    <use
+                      href="#cursor"
+                      x="25"
+                      y="10"
+                      width="16"
+                      color="#888"
+                      opacity="0.2"
+                    />
+                    <use
+                      href="#cursor"
+                      x="25"
+                      y="32"
+                      width="19"
+                      color="#888"
+                      opacity="0.25"
+                    />
+                    <use
+                      href="#cursor"
+                      x="30"
+                      y="60"
+                      width="23"
+                      color="#888"
+                      opacity="0.32"
+                    />
+                    <use href="#hand" x="34" y="95" width="35" color="#888" />
+                  </svg>
+                </div>
+                <div class="text">
+                  <span class="radio"></span
+                  >__MSG_options_mouse_interactivity_enable__
+                </div>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+        <div id="touch-interactivity-section" class="needs-touch">
+          <div class="checkbox-row">
+            <input
+              type="checkbox"
+              id="enableTapLookup"
+              name="enableTapLookup"
+            />
+            <label for="enableTapLookup"
+              >__MSG_options_touch_enable_tap_lookup__<span class="new-badge"
+                >__MSG_options_new_badge_text__</span
+              ></label
+            >
+          </div>
+        </div>
+        <div class="spacer" role="presentation"></div>
+        <p>__MSG_options_tab_position_label__</p>
+        <fieldset>
+          <div
+            class="tabdisplay-select icon-radio -with-labels -bw-inactive"
+            id="tabdisplay-select"
+          >
+            <input
+              type="radio"
+              name="tabDisplay"
+              value="top"
+              id="tabdisplay-top"
+            />
+            <label for="tabdisplay-top">
+              <div class="icon">
+                <svg viewBox="0 0 48 48" class="svg theme-light">
+                  <defs>
+                    <clipPath id="popup-outline">
+                      <rect
+                        x="1"
+                        y="1"
+                        rx="5"
+                        width="46"
+                        height="46"
+                        fill="black"
+                      />
+                    </clipPath>
+                    <rect
+                      id="tabicon-popup"
+                      x="1"
+                      y="1"
+                      rx="5"
+                      width="46"
+                      height="46"
+                    />
+                  </defs>
+                  <use href="#tabicon-popup" class="popup" />
+                  <rect x="16" y="1" width="32" height="8" class="tab" />
+                </svg>
+              </div>
+              <div class="text">
+                <span class="radio"></span>__MSG_options_tab_position_top__
+              </div>
+            </label>
+            <input
+              type="radio"
+              name="tabDisplay"
+              value="left"
+              id="tabdisplay-left"
+            />
+            <label for="tabdisplay-left">
+              <div class="icon">
+                <svg viewBox="0 0 48 48" class="svg theme-light">
+                  <use href="#tabicon-popup" class="popup" />
+                  <rect x="0" y="8" width="8" height="40" class="tab" />
+                </svg>
+              </div>
+              <div class="text">
+                <span class="radio"></span>__MSG_options_tab_position_left__
+              </div>
+            </label>
+            <input
+              type="radio"
+              name="tabDisplay"
+              value="right"
+              id="tabdisplay-right"
+            />
+            <label for="tabdisplay-right">
+              <div class="icon">
+                <svg viewBox="0 0 48 48" class="svg theme-light">
+                  <use href="#tabicon-popup" class="popup" />
+                  <rect x="40" y="8" width="8" height="40" class="tab" />
+                </svg>
+              </div>
+              <div class="text">
+                <span class="radio"></span>__MSG_options_tab_position_right__
+              </div>
+            </label>
+            <input
+              type="radio"
+              name="tabDisplay"
+              value="none"
+              id="tabdisplay-none"
+            />
+            <label for="tabdisplay-none">
+              <div class="icon">
+                <svg viewBox="0 0 48 48" class="svg theme-light">
+                  <use href="#tabicon-popup" class="popup" />
+                </svg>
+              </div>
+              <div class="text">
+                <span class="radio"></span>__MSG_options_tab_position_none__
+              </div>
+            </label>
+          </div>
+        </fieldset>
+      </div>
+      <h1 class="section-header currency-heading">
+        __MSG_options_currency_conversion_heading__
+      </h1>
+      <div class="section-content currency-body">
+        <label for="fxCurrency">__MSG_options_currency_label__</label>
+        <select id="fxCurrency" name="fxCurrency"></select>
+      </div>
+      <h1 class="section-header needs-keyboard">
+        __MSG_options_keyboard_heading__
+      </h1>
+      <div class="section-content needs-keyboard">
+        <div class="key-grid">
+          <div class="key command">
+            <input type="checkbox" id="toggle-alt" />
+            <label for="toggle-alt"><span class="key-box">Alt</span></label>
+            <input type="checkbox" id="toggle-macctrl" />
+            <label for="toggle-macctrl"
+              ><span class="key-box">Control</span></label
+            >
+            <input type="checkbox" id="toggle-ctrl" />
+            <label for="toggle-ctrl"
+              ><span class="key-box" data-mac="Command">Ctrl</span></label
+            >
+            <input type="checkbox" id="toggle-shift" />
+            <label for="toggle-shift"><span class="key-box">Shift</span></label>
+            <input
+              size="1"
+              type="text"
+              value="R"
+              disabled
+              id="toggle-key"
+              class="key-box"
+            />
+          </div>
+          <div class="key-description">
+            __MSG_command_toggle_description__
+            <div class="icon" id="toggle-key-icon"></div>
+          </div>
+          <div
+            class="key-extended-explanation"
+            id="browser-commands-alternative"
+          >
+            __MSG_options_browser_commands_no_toggle_key__
+          </div>
+        </div>
+        <p>__MSG_options_show_popup_subheading__</p>
+        <fieldset class="bordered">
+          <p class="section-explanation">
+            __MSG_options_show_popup_explanation__
+          </p>
+          <div class="key-and-icon-grid">
+            <div class="row-label">
+              __MSG_options_show_popup_text_subheading__
+            </div>
+            <div class="key holdtoshowkeys">
+              <input type="checkbox" id="show-text-alt" value="Alt" />
+              <label for="show-text-alt"
+                ><span class="key-box">Alt</span></label
+              >
+              <input type="checkbox" id="show-text-ctrl" value="Ctrl" />
+              <label for="show-text-ctrl"
+                ><span class="key-box">Ctrl</span></label
+              >
+            </div>
+            <div>
+              <svg viewBox="0 0 120 90" class="icon">
+                <g fill="currentColor">
+                  <path
+                    d="M22.8 38.2l1-.9 2 1.8-.7.7h-2.3v3.4l-2.5.2v-.5h-4.9c-.3.6-.6 1.1-.9 1.7l.5.1v.5h5.9l1-.8 2.3 1.8-.7.6v5.1l-2.5.3V51h-6v1l-2.5.3v-5.2c-1.5 1.5-2.9 2.6-4.3 3.3l-1.2-1c2.6-1.9 4.5-4.1 5.7-6.6h-3l-.5-1.3H13c.3-.6.4-1.2.5-1.8H7.8l-.5-1.3h6.5l.2-1.7h-4l-.4-1.3h10.5l1.1-.7 2.3 1.4-.8.8v1.3zM21 46.5h-6v3.2h6v-3.2zm-.7-6.8h-4c-.1.6-.3 1.2-.5 1.8h4.5v-1.8zm0-3h-3.5l-.2 1.7h3.8v-1.7zM28.4 37.6c-.1-.4-.4-.8-.8-1.4l1-.8c1.2.7 2.3 1.4 3 2-.8 2-1.6 3.9-2.2 5.9-.3 1-.5 1.6-.5 2 0 .7.1 1.2.2 1.5l1.8-2.7.8 1.1-1.2 2.7c-.2.4-.2.7-.2.9 0 .3.2.7.5 1.2l-.7 1c-.2.3-.4.4-.8.5-.4.1-.7.1-.9-.2-.5-.3-.8-.9-.9-1.9-.4-2.7-.3-5.2.2-7.7.3-1.1.5-2.1.7-3 .1-.4.1-.8 0-1.1zm5.2 4.4l-1.2-2 .7-.9c.6.4 1.2.7 2 .7.5.1 1.3 0 2.3-.2v-1.4c0-.8-.1-1.4-.2-1.6-.1-.3-.3-.6-.9-1.1l.9-.8 3 1.3c-.4.9-.6 1.7-.6 2.5v.9c.8-.2 1.6-.5 2.3-.9l1.4 2c-1.1.4-2.4.8-3.8 1 0 2.3.1 3.9.2 4.8 1.2.4 2.5 1 3.9 1.8l-.9 1.5-.5.7c-1.1-.7-2-1.2-2.4-1.4-.2.9-.6 1.5-1.2 1.9-.5.3-1.2.4-2 .5-.7.1-1.4 0-2-.2-1.1-.4-1.8-.9-2.1-1.6-.3-.7-.4-1.4-.2-2 .2-.6.6-1 1.2-1.2.5-.2 1.1-.3 2-.4.8 0 1.5.1 1.9.2-.2-1.4-.2-2.8-.2-4.1h-3.6zm2.5 7c.8 0 1.2-.3 1.4-.9-1.1-.4-2.1-.5-2.7-.2-.3.2-.4.4-.2.6.4.4.9.5 1.5.5zM90 37c-.2-.5-.5-1-.9-1.5l1.2-.7c1.5.8 2.4 1.4 2.8 1.7-.5.7-.9 1.4-1 2 1.1-.4 1.9-.8 2.3-1l.8.8 1 1.2c-1 .4-2.7.8-4.8 1.2-.8 2.9-1.6 5.3-2.3 7-.7 1.8-1.4 3.1-1.9 3.9l-2-1.9c.7-1.1 1.4-2.3 2-3.6.8-1.6 1.4-3.2 1.8-4.9-.7.2-1.4.4-2.1.5l-1.6-2.2.8-.9c.5.3 1 .5 1.3.5.4.1 1.2 0 2.3-.2 0-.4.2-1.1.3-1.9zm1.7 12c-.2-1.2.3-2.3 1.5-3.2l1 .6c-.5.6-.7 1.1-.6 1.6.1.3.3.5.6.6.4.2.9.2 1.6.2 1.4 0 2.8-.2 4.2-.6l1.1 2.4c-2 .7-4.2.8-6.6.5-.7-.2-1.3-.4-1.8-.8-.6-.4-.9-.8-1-1.3zm2-5.6l-1.1-.9c.7-.6 1.5-1.1 2.3-1.3 1.1-.4 2.3-.4 3.4-.2.9.2 1.7.5 2.5 1l-1.2 1.8c-.9-.3-1.6-.3-2.3 0l-2 1-1-.8 1.7-1.3c-.5-.1-1.3.1-2.3.7zm5-3.9c-.8-1.2-1.7-2.1-2.7-2.8l.9-.9c1.3.5 2.4 1.2 3.3 2.3l-1.5 1.4zm1.7-1.6c-.8-.9-1.8-1.7-3-2.3l.9-.9c1.4.3 2.6.9 3.6 1.8l-1.5 1.4zM108.6 47.2c.6.6.9 1.4.9 2.2 0 .8-.3 1.6-.9 2.2s-1.4.9-2.2.9c-.8 0-1.6-.3-2.2-.9s-.9-1.4-.9-2.2c0-.8.3-1.6.9-2.2s1.4-.9 2.2-.9c.9 0 1.6.3 2.2.9zm-3.2 1.2c-.3.3-.4.6-.4 1s.1.8.4 1c.3.3.6.4 1 .4s.8-.1 1-.4c.3-.3.4-.6.4-1s-.1-.8-.4-1c-.3-.3-.6-.4-1-.4s-.7.2-1 .4z"
+                  />
+                  <path d="M77.3 41.1l1.3-1.4h-1.3z" />
+                  <path
+                    d="M44.2 32.2v22.4h40.3V32.2H44.2zm17.5 20.4c-2.9-1.9-5.1-4.6-6.7-8.1-.4 1-.9 2-1.6 3-.7 1-1.7 2-3 2.9-1.1.8-2.4 1.6-3.8 2.3l-1-.9c1.7-1.1 2.9-2 3.7-2.7.6-.6 1.3-1.5 2-2.5.8-1.1 1.3-2.4 1.6-3.9H47l-.5-1.3h6.6c.1-1.1.2-2.2.2-3v-.7h-7l-.5-1.3h13.8l1.5-1 2.3 1.6-.7.7h-6.9v.3c0 .8-.1 1.9-.2 3.1H59l1.4-.9 2.2 1.6-.7.7h-6.1c1.6 3.2 4.2 5.8 7.9 7.8l-2 2.3zm21.2-12.9h-3.4l1.6 1.5c-1.7 1.6-2.9 2.6-3.8 3.2v5.8c0 1.4-.7 2.1-2.2 2.1h-1.6c-.3-.6-.8-.9-1.6-1.1V50h2.2c.4 0 .6-.2.6-.6v-3.3c-2 1.4-4.8 2.5-8.6 3.4l-1-1.2c4.4-1.6 7.6-3.2 9.6-5v-3.4h-9.1l-.5-1.3h9.5v-4.1l2.5.2v3.9h2.5l1.5-1.1 2.3 1.7-.5.5z"
+                  />
+                </g>
+                <g transform="translate(60 50)" class="cursor">
+                  <path
+                    fill="white"
+                    d="M2.3 2.94l6.9 26.2 4.6-5.8 7.1 7.9 5.4-3.7-5.9-9.1 6.8-3.5z"
+                  />
+                  <path
+                    class="outline"
+                    d="M.9.14c-.7.3-1 1-.8 1.8l7.7 28.6c.2.8 1 1.3 1.8 1.1.3-.1.6-.3.9-.6l3.9-5.7 6 7.4c.5.6 1.5.7 2.1.2l5.4-4.4c.6-.5.7-1.5.2-2.1l-6-7.4 6.3-2.7c.8-.3 1.1-1.2.8-2-.1-.3-.4-.6-.7-.8L2.2.14c-.4-.2-.9-.2-1.3 0zm2.9 4.3l20.5 10.4-5.2 2.2c-.8.3-1.1 1.2-.8 2 .1.1.1.3.2.4l6.3 7.8-3.1 2.5-6.3-7.8c-.5-.6-1.5-.7-2.1-.2l-.3.3-3.2 4.6c0-.1-6-22.2-6-22.2z"
+                  />
+                </g>
+              </svg>
+            </div>
+            <div class="row-label">
+              __MSG_options_show_popup_images_subheading__
+            </div>
+            <div class="key holdtoshowimagekeys">
+              <input type="checkbox" id="show-images-alt" value="Alt" />
+              <label for="show-images-alt"
+                ><span class="key-box">Alt</span></label
+              >
+              <input type="checkbox" id="show-images-ctrl" value="Ctrl" />
+              <label for="show-images-ctrl"
+                ><span class="key-box">Ctrl</span></label
+              >
+            </div>
+            <div>
+              <svg viewBox="0 0 120 90" class="icon">
+                <svg
+                  viewBox="0 0 120 90"
+                  preserveAspectRatio="xMinYMin"
+                  x="15"
+                  y="5"
+                  width="85"
+                >
+                  <path
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-miterlimit="10"
+                    stroke-width="5"
+                    d="M105 87H15C8.4 87 3 81.6 3 75V15C3 8.4 8.4 3 15 3h90c6.6 0 12 5.4 12 12v60c0 6.6-5.4 12-12 12z"
+                  />
+                  <path
+                    fill="currentColor"
+                    d="M101.2 83.7c-7-7.9-13-18-17.7-30.1-1.3-3.3-2.3-6.4-3.2-9 .8-.3 1.7-.6 2.4-1.1 5.1-3.1 6.7-9.8 3.6-14.9s-9.8-6.7-14.9-3.6c-3.4 2.1-5.4 5.9-5.2 9.8H43.9c-.9 0-1.8.7-2 1.6 0 .1-1.6 7.5-5.4 17.1-4.7 12.1-10.7 22.2-17.7 30.2-.5.6-.6 1.4-.3 2.1s1 1.2 1.8 1.2h79.4c.8 0 1.5-.5 1.8-1.2.3-.7.2-1.6-.3-2.1zM73.5 28.4c3.2-2 7.4-1 9.4 2.3 2 3.2 1 7.4-2.3 9.4-.5.3-1 .5-1.5.7-.7-2.7-1.1-4.3-1.1-4.3-.2-.9-1-1.6-2-1.6h-5.8c-.1-2.6 1.1-5.1 3.3-6.5zm-28 10.4h29.1c.6 2.5 2 7.7 4.4 14.2-.7.4-1.2.8-1.7 1.2-.8.6-1.3 1-2.5 1-1.1 0-1.6-.4-2.5-1-1-.8-2.4-1.9-5-1.9-2.5 0-3.9 1.1-4.9 1.9-.8.7-1.3 1-2.4 1-1.1 0-1.6-.4-2.4-1-1-.8-2.4-1.9-4.9-1.9-2.6 0-3.9 1.1-4.9 1.9-.8.7-1.3 1-2.4 1-1.2 0-1.7-.4-2.5-1-.5-.4-1-.8-1.7-1.1 2.3-6.6 3.6-11.8 4.3-14.3z"
+                  />
+                  <path
+                    fill="currentColor"
+                    d="M84 45.5c-.9.6-1.2 1.8-.7 2.7l2.2 3.7c.4.6 1 1 1.7 1 .4 0 .7-.1 1-.3.9-.6 1.2-1.8.7-2.7l-2.2-3.7c-.5-1-1.8-1.3-2.7-.7zM89.9 37.3c-.3 1.1.4 2.2 1.5 2.4l4.2 1c.2 0 .3.1.5.1.9 0 1.7-.6 1.9-1.5.3-1.1-.4-2.2-1.5-2.4l-4.2-1c-1.1-.3-2.1.3-2.4 1.4zM90 28.3c.4 0 .7-.1 1-.3l3.7-2.2c.9-.6 1.2-1.8.7-2.7-.6-.9-1.8-1.2-2.8-.7L89 24.6c-.9.6-1.2 1.8-.7 2.7.4.7 1.1 1 1.7 1zM80.2 21.4c.2 0 .3.1.5.1.9 0 1.7-.6 1.9-1.5l1-4.2c.3-1.1-.4-2.2-1.5-2.4-1.1-.3-2.2.4-2.4 1.5l-1 4.2c-.3 1 .4 2.1 1.5 2.3zM67.5 22.3c.4.6 1 1 1.7 1 .4 0 .7-.1 1-.3.9-.6 1.2-1.8.7-2.7l-2.2-3.7c-.6-.9-1.8-1.2-2.8-.7-.9.6-1.2 1.8-.7 2.7l2.3 3.7zM57.7 31.6l4.2 1c.2 0 .3.1.5.1.9 0 1.7-.6 1.9-1.5.3-1.1-.4-2.2-1.5-2.4l-4.2-1c-1.1-.3-2.2.4-2.4 1.5-.2 1 .4 2.1 1.5 2.3z"
+                  />
+                </svg>
+                <g transform="translate(60 50)" class="cursor">
+                  <path
+                    fill="white"
+                    d="M2.3 2.94l6.9 26.2 4.6-5.8 7.1 7.9 5.4-3.7-5.9-9.1 6.8-3.5z"
+                  />
+                  <path
+                    class="outline"
+                    d="M.9.14c-.7.3-1 1-.8 1.8l7.7 28.6c.2.8 1 1.3 1.8 1.1.3-.1.6-.3.9-.6l3.9-5.7 6 7.4c.5.6 1.5.7 2.1.2l5.4-4.4c.6-.5.7-1.5.2-2.1l-6-7.4 6.3-2.7c.8-.3 1.1-1.2.8-2-.1-.3-.4-.6-.7-.8L2.2.14c-.4-.2-.9-.2-1.3 0zm2.9 4.3l20.5 10.4-5.2 2.2c-.8.3-1.1 1.2-.8 2 .1.1.1.3.2.4l6.3 7.8-3.1 2.5-6.3-7.8c-.5-.6-1.5-.7-2.1-.2l-.3.3-3.2 4.6c0-.1-6-22.2-6-22.2z"
+                  />
+                </g>
+              </svg>
+            </div>
+          </div>
+        </fieldset>
+        <p>__MSG_options_popup_keys_subheading__</p>
+        <div class="key-grid" id="key-grid"></div>
+      </div>
+      <h1 class="section-header">__MSG_options_lookup_puck_heading__</h1>
+      <div class="section-content">
+        <p>__MSG_options_show_puck_label__</p>
+        <input type="radio" name="showPuck" id="showPuck-auto" value="auto" />
+        <label for="showPuck-auto">__MSG_options_show_puck_option_auto__</label>
+        <input type="radio" name="showPuck" id="showPuck-show" value="show" />
+        <label for="showPuck-show">__MSG_options_show_puck_option_show__</label>
+        <input type="radio" name="showPuck" id="showPuck-hide" value="hide" />
+        <label for="showPuck-hide">__MSG_options_show_puck_option_hide__</label>
+      </div>
+      <h1 class="section-header">
+        __MSG_options_dictionary_language_heading__
+      </h1>
+      <div class="section-content dict-lang">
+        <select id="lang" name="lang"></select>
+        <div class="note">
+          <p>__MSG_options_lang_warning_please_note__</p>
+          <ul>
+            <li>__MSG_options_lang_warning_other_lang_when_available__</li>
+            <li>__MSG_options_lang_warning_always_en__</li>
+            <li>__MSG_options_lang_warning_names_en_only__</li>
+            <li>__MSG_options_lang_warning_change_lang_redownload__</li>
+            <li>__MSG_options_lang_warning_temporary_en_fallback__</li>
+          </ul>
+        </div>
+      </div>
+      <h1 class="section-header">__MSG_options_kanji_dictionary_heading__</h1>
+      <div class="section-content panel-section-grid" id="kanji-reference-list">
+        <div class="checkbox-row static">
+          <input
+            type="checkbox"
+            id="showKanjiComponents"
+            name="showKanjiComponents"
+          />
+          <label for="showKanjiComponents"
+            >__MSG_options_kanji_components__</label
+          >
+        </div>
+      </div>
+      <h1 class="section-header">__MSG_options_dictionary_data_heading__</h1>
+      <div class="section-content panel-section-db-summary">
+        <div class="db-summary-blurb"></div>
+        <div class="db-summary-status"></div>
+        <div class="db-admin" style="display: none">
+          <span>Database testing features: </span>
+          <button id="deleteDatabase">Delete database</button>
+        </div>
+      </div>
+      <div id="db-summary-mount-point"></div>
+    </form>
+    <!-- Common SVG symbols -->
+    <svg width="0" height="0" role="presentation">
+      <defs>
+        <symbol id="cursor" viewBox="0 0 29.3 33.3" width="29.3" height="33.3">
+          <path
+            fill="white"
+            d="M2.3 2.94l6.9 26.2 4.6-5.8 7.1 7.9 5.4-3.7-5.9-9.1 6.8-3.5z"
+          />
+          <path
+            fill="currentColor"
+            d="M.9.14c-.7.3-1 1-.8 1.8l7.7 28.6c.2.8 1 1.3 1.8 1.1.3-.1.6-.3.9-.6l3.9-5.7 6 7.4c.5.6 1.5.7 2.1.2l5.4-4.4c.6-.5.7-1.5.2-2.1l-6-7.4 6.3-2.7c.8-.3 1.1-1.2.8-2-.1-.3-.4-.6-.7-.8L2.2.14c-.4-.2-.9-.2-1.3 0zm2.9 4.3l20.5 10.4-5.2 2.2c-.8.3-1.1 1.2-.8 2 .1.1.1.3.2.4l6.3 7.8-3.1 2.5-6.3-7.8c-.5-.6-1.5-.7-2.1-.2l-.3.3-3.2 4.6c0-.1-6-22.2-6-22.2z"
+          />
+        </symbol>
+        <symbol id="hand" viewBox="0 0 100 100" width="30" height="30">
+          <g transform="translate(100) scale(-1,1)">
+            <path
+              d="M43.065 92c-10.482 0-19.339-4.042-24.301-11.088C15.101 75.707
+              13 68.753 13 61.831V56c0-5.214 3.875-8.664 7.522-9.262a7.03 7.03
+              0 0 1 1.156-.088c.876 0 1.744.13 2.582.256.659.099 1.338.2
+              1.828.2.063
+              0 .115-.002.158-.004.101-.14.233-.347.33-.499.136-.214.274-.429.416-.633
+              1.708-2.445 5.168-3.723 7.704-3.723l.106.001c1.162.016 2.243.368
+              3.197.679.463.151 1.075.351
+              1.412.395.199-.16.521-.509.745-.752.214-.233.426-.461.64-.674
+              1.974-1.966 5.037-2.667 7.246-2.667.462 0 .918.029
+              1.354.087l.229.034c.881.14 1.679.396 2.375.762V15.923c0-5.026
+              3.642-7.739 7.068-7.739 3.444 0 6.932 2.609 6.932 7.597V51.5c0
+              .3.011.715.029 1.206l.054 1.164a36.363 36.363
+              0 0 1 .903-.982c3.463-3.597 7.166-5.606 11.329-6.151a8.917 8.917
+              0 0 1 1.159-.077c3.549 0 6.525 2.199 7.408 5.473.853 3.167-.554
+              6.351-3.583 8.11-4.848 2.819-9.382 8.29-11.763 12.512C65.664 86.062
+              56.877 92 43.065 92z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              fill="white"
+              stroke="currentColor"
+              stroke-width="6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-miterlimit="10"
+            />
+          </g>
+        </symbol>
+      </defs>
+    </svg>
+  </body>
+  <script src="10ten-ja-options.js"></script>
+</html>

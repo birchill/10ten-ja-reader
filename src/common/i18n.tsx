@@ -55,7 +55,7 @@ export function I18nProvider(props: RenderableProps<I18nProviderProps>) {
           () => (key: string, substitutions?: string | Array<string>) =>
             browser.i18n.getMessage(key, substitutions)
         );
-        setSetLocale(() => {
+        setSetLocale(() => () => {
           throw new Error(
             'Setting the locale is not yet supported in extension contexts'
           );

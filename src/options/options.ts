@@ -6,6 +6,7 @@ import {
   MajorDataSeries,
 } from '@birchill/jpdict-idb';
 import Bugsnag from '@birchill/bugsnag-zero';
+import { h, render } from 'preact';
 import browser, { Runtime } from 'webextension-polyfill';
 
 import { CopyKeys, CopyNextKeyStrings } from '../common/copy-keys';
@@ -24,6 +25,7 @@ import {
   deleteDb,
   updateDb,
 } from '../common/db-listener-messages';
+import { I18nProvider } from '../common/i18n';
 import {
   getReferenceLabelsForLang,
   getReferencesForLang,
@@ -31,6 +33,7 @@ import {
 import { renderStar } from '../content/popup/icons';
 import { startBugsnag } from '../utils/bugsnag';
 import { html } from '../utils/builder';
+import { isTouchDevice, possiblyHasPhysicalKeyboard } from '../utils/device';
 import { empty } from '../utils/dom-utils';
 import { isObject } from '../utils/is-object';
 import {
@@ -44,8 +47,10 @@ import {
 import { getThemeClass } from '../utils/themes';
 
 import { Command, CommandParams, isValidKey } from './commands';
+import { DbStatus } from './DbStatus';
 import { translateDoc } from './l10n';
-import { isTouchDevice, possiblyHasPhysicalKeyboard } from '../utils/device';
+
+import './options.css';
 
 startBugsnag();
 
@@ -1097,6 +1102,12 @@ window.onunload = () => {
 };
 
 function updateDatabaseSummary(event: DbStateUpdatedMessage) {
+  const dbSummaryPoint = document.getElementById('db-summary-mount-point')!;
+  render(
+    h(I18nProvider, null, h(DbStatus, { dbState: event.state })),
+    dbSummaryPoint
+  );
+
   updateDatabaseBlurb();
   updateDatabaseStatus(event);
 }
