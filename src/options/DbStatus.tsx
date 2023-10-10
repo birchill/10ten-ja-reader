@@ -6,6 +6,7 @@ import {
   allDataSeries,
 } from '@birchill/jpdict-idb';
 import { useEffect, useState } from 'preact/hooks';
+import type { Browser } from 'webextension-polyfill';
 
 import { JpdictState } from '../background/jpdict';
 import { useLocale } from '../common/i18n';
@@ -18,11 +19,15 @@ import { formatDate, formatSize } from './format';
 
 type Props = {
   dbState: JpdictState;
+  forceDevMode?: boolean;
   onCancelDbUpdate?: () => void;
+  onDeleteDb?: () => void;
   onUpdateDb?: () => void;
 };
 
 export function DbStatus(props: Props) {
+  const devMode = useIsDevMode();
+
   return (
     <div class="section-content panel-section-db-summary py-4">
       <DbSummaryBlurb />
@@ -31,10 +36,12 @@ export function DbStatus(props: Props) {
         onCancelDbUpdate={props.onCancelDbUpdate}
         onUpdateDb={props.onUpdateDb}
       />
-      <div class="db-admin" hidden>
-        <span>Database testing features: </span>
-        <button id="deleteDatabase">Delete database</button>
-      </div>
+      {(devMode || !!props.forceDevMode) && (
+        <div class="db-admin">
+          <span>Database testing features: </span>
+          <button onClick={props.onDeleteDb}>Delete database</button>
+        </div>
+      )}
     </div>
   );
 }
@@ -140,8 +147,6 @@ function DbSummaryStatus(props: {
       <CancelUpdateButton onClick={props.onCancelDbUpdate} />
     </div>
   );
-
-  // TODO Enable the "delete database" button
 }
 
 function IdleStateSummary(props: {
@@ -371,4 +376,31 @@ function CancelUpdateButton(props: { onClick?: () => void }) {
       </button>
     </div>
   );
+}
+
+declare global {
+  const browser: Browser | undefined;
+}
+
+function useIsDevMode(): boolean {
+  const [isDevMode, setIsDevMode] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (typeof browser === 'undefined' || !browser.management) {
+      return;
+    }
+
+    browser.management
+      .getSelf()
+      .then((info) => {
+        if (info.installType === 'development') {
+          setIsDevMode(true);
+        }
+      })
+      .catch(() => {
+        // Ignore
+      });
+  }, []);
+
+  return isDevMode;
 }

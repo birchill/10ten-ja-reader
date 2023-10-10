@@ -149,4 +149,7 @@ export default {
       }}
     />
   ),
+  'admin controls': () => (
+    <DbStatus dbState={ONE_ZERO_ZERO_DB_STATE} forceDevMode />
+  ),
 };

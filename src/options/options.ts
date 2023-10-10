@@ -1111,6 +1111,7 @@ function updateDatabaseSummary(event: DbStateUpdatedMessage) {
       h(DbStatus, {
         dbState: event.state,
         onCancelDbUpdate: cancelDatabaseUpdate,
+        onDeleteDb: deleteDatabase,
         onUpdateDb: triggerDatabaseUpdate,
       })
     ),
@@ -1468,17 +1469,13 @@ function linkify(
 }
 
 function triggerDatabaseUpdate() {
-  if (!browserPort) {
-    return;
-  }
-
-  browserPort.postMessage(updateDb());
+  browserPort?.postMessage(updateDb());
 }
 
 function cancelDatabaseUpdate() {
-  if (!browserPort) {
-    return;
-  }
+  browserPort?.postMessage(cancelDbUpdate());
+}
 
-  browserPort.postMessage(cancelDbUpdate());
+function deleteDatabase() {
+  browserPort?.postMessage(deleteDb());
 }
