@@ -895,10 +895,15 @@
   dependencies:
     "@types/chai" "*"
 
-"@types/chai@*", "@types/chai@4.3.6", "@types/chai@^4.3.5":
+"@types/chai@*", "@types/chai@^4.3.5":
   version "4.3.6"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.3.6.tgz#7b489e8baf393d5dd1266fb203ddd4ea941259e6"
   integrity sha512-VOVRLM1mBxIRxydiViqPcKn6MIxZytrbMpd6RJLIWKxUNr3zux8no0Oc7kJx0WAPIitgZ0gkrDS+btlqQpubpw==
+
+"@types/chai@4.3.7":
+  version "4.3.7"
+  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.3.7.tgz#5457bc3dce72f20ae533366682a6298471d1c610"
+  integrity sha512-/k+vesl92vMvMygmQrFe9Aimxi6oQXFUX9mA5HanTrKUSAMoLauSi6PNFOdRw0oeqilaW600GNx2vSaT2f8aIQ==
 
 "@types/eslint-scope@^3.7.3":
   version "3.7.4"
