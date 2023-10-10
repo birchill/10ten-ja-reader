@@ -8,6 +8,7 @@ import { useEffect, useState } from 'preact/hooks';
 
 import { JpdictState } from '../background/jpdict';
 import { useLocale } from '../common/i18n';
+import { localizedDataSeriesKey } from '../common/data-series-labels';
 import { classes } from '../utils/classes';
 import { isFirefox } from '../utils/ua-utils';
 
@@ -77,13 +78,55 @@ function DbSummaryBlurb() {
 }
 
 function DbSummaryStatus(props: { dbState: JpdictState }) {
+  const { t } = useLocale();
+
   if (props.dbState.updateState.type === 'idle') {
     return <IdleStateSummary dbState={props.dbState} />;
   }
 
-  // TODO Other cases
+  if (props.dbState.updateState.type === 'checking') {
+    return (
+      <div class="db-summary-status">
+        <div class="db-summary-info">{t('options_checking_for_updates')}</div>
+      </div>
+    );
+  }
 
-  return <div class="db-summary-status"></div>;
+  const {
+    dbState: {
+      updateState: {
+        series,
+        totalProgress,
+        version: { major, minor, patch },
+      },
+    },
+  } = props;
+  const versionString = `${major}.${minor}.${patch}`;
+
+  const progressAsPercent = Math.round(totalProgress * 100);
+  const dbLabel = t(localizedDataSeriesKey[series]);
+
+  return (
+    <div class="db-summary-status">
+      <div class="db-summary-info">
+        <progress
+          class="progress"
+          max={100}
+          id="update-progress"
+          value={totalProgress * 100}
+        />
+        <label class="label" for="update-progress">
+          {t('options_downloading_data', [
+            dbLabel,
+            versionString,
+            String(progressAsPercent),
+          ])}
+        </label>
+      </div>
+    </div>
+  );
+
+  // TODO Action buttons
 }
 
 function IdleStateSummary(props: { dbState: JpdictState }) {

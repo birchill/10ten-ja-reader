@@ -26,6 +26,53 @@ const EMPTY_DB_STATE: JpdictState = {
   },
 };
 
+const ONE_ZERO_ZERO_DB_STATE: JpdictState = {
+  words: {
+    state: 'ok',
+    version: {
+      major: 1,
+      minor: 0,
+      patch: 0,
+      dateOfCreation: '2023-10-10',
+      lang: 'en',
+    },
+  },
+  kanji: {
+    state: 'ok',
+    version: {
+      major: 1,
+      minor: 0,
+      patch: 0,
+      dateOfCreation: '2023-10-10',
+      lang: 'en',
+    },
+  },
+  radicals: {
+    state: 'ok',
+    version: {
+      major: 1,
+      minor: 0,
+      patch: 0,
+      dateOfCreation: '2023-10-10',
+      lang: 'en',
+    },
+  },
+  names: {
+    state: 'ok',
+    version: {
+      major: 1,
+      minor: 0,
+      patch: 0,
+      dateOfCreation: '2023-10-10',
+      lang: 'en',
+    },
+  },
+  updateState: {
+    type: 'idle',
+    lastCheck: null,
+  },
+};
+
 export default {
   offline: () => (
     <DbStatus
@@ -66,52 +113,36 @@ export default {
       }}
     />
   ),
-  'up to date': () => (
+  'up to date': () => <DbStatus dbState={ONE_ZERO_ZERO_DB_STATE} />,
+  checking: () => (
     <DbStatus
       dbState={{
-        words: {
-          state: 'ok',
-          version: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            dateOfCreation: '2023-10-10',
-            lang: 'en',
-          },
-        },
-        kanji: {
-          state: 'ok',
-          version: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            dateOfCreation: '2023-10-10',
-            lang: 'en',
-          },
-        },
-        radicals: {
-          state: 'ok',
-          version: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            dateOfCreation: '2023-10-10',
-            lang: 'en',
-          },
-        },
-        names: {
-          state: 'ok',
-          version: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            dateOfCreation: '2023-10-10',
-            lang: 'en',
-          },
-        },
+        ...ONE_ZERO_ZERO_DB_STATE,
         updateState: {
-          type: 'idle',
-          lastCheck: null,
+          type: 'checking',
+          series: 'words',
+          lastCheck: new Date(),
+        },
+      }}
+    />
+  ),
+  updating: () => (
+    <DbStatus
+      dbState={{
+        ...ONE_ZERO_ZERO_DB_STATE,
+        updateState: {
+          type: 'updating',
+          series: 'words',
+          fileProgress: 0.5,
+          totalProgress: 0.8,
+          version: {
+            major: 1,
+            minor: 0,
+            patch: 1,
+            dateOfCreation: '2023-10-11',
+            lang: 'en',
+          },
+          lastCheck: new Date(),
         },
       }}
     />

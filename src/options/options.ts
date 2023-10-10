@@ -17,7 +17,7 @@ import {
   PartOfSpeechDisplay,
   TabDisplay,
 } from '../common/content-config-params';
-import { getLocalizedDataSeriesLabel } from '../common/data-series-labels';
+import { localizedDataSeriesKey } from '../common/data-series-labels';
 import { dbLanguageMeta, isDbLanguageId } from '../common/db-languages';
 import {
   cancelDbUpdate,
@@ -1205,7 +1205,9 @@ function updateDatabaseStatus(event: DbStateUpdatedMessage) {
       const versionString = `${major}.${minor}.${patch}`;
 
       const progressAsPercent = Math.round(updateState.totalProgress * 100);
-      const dbLabel = getLocalizedDataSeriesLabel(updateState.series);
+      const dbLabel = browser.i18n.getMessage(
+        localizedDataSeriesKey[updateState.series]
+      );
       labelElem.textContent = browser.i18n.getMessage(
         'options_downloading_data',
         [dbLabel, versionString, String(progressAsPercent)]
