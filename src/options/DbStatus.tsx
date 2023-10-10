@@ -1,4 +1,9 @@
-import { type DataSeriesState, allMajorDataSeries } from '@birchill/jpdict-idb';
+import {
+  type DataSeriesState,
+  allMajorDataSeries,
+  type DataVersion,
+  MajorDataSeries,
+} from '@birchill/jpdict-idb';
 import { useEffect, useState } from 'preact/hooks';
 
 import { JpdictState } from '../background/jpdict';
@@ -102,9 +107,18 @@ function IdleStateSummary(props: { dbState: JpdictState }) {
     );
   }
 
-  // TODO Other cases
-
-  return <div class="db-summary-status"></div>;
+  return (
+    <div class="db-summary-status">
+      <div class="db-summary-version-grid">
+        {allMajorDataSeries.map((series) => {
+          const versionInfo = props.dbState[series].version;
+          return versionInfo ? (
+            <DataSeriesVersion series={series} version={versionInfo} />
+          ) : null;
+        })}
+      </div>
+    </div>
+  );
 }
 
 function useErrorDetails(dbState: JpdictState): {
@@ -196,4 +210,52 @@ function useStorageQuota(enable: boolean): number | undefined {
   }, [enable]);
 
   return quota;
+}
+
+function DataSeriesVersion(props: {
+  series: MajorDataSeries;
+  version: DataVersion;
+}) {
+  const { t } = useLocale();
+
+  const titleKeys: { [series in MajorDataSeries]: string } = {
+    kanji: 'options_kanji_data_title',
+    names: 'options_name_data_title',
+    words: 'options_words_data_title',
+  };
+  const { major, minor, patch, lang } = props.version;
+  const titleString = t(
+    titleKeys[props.series],
+    `${major}.${minor}.${patch} (${lang})`
+  );
+
+  const sourceNames: { [series in MajorDataSeries]: string } = {
+    kanji: 'KANJIDIC',
+    names: 'JMnedict/ENAMDICT',
+    words: 'JMdict/EDICT',
+  };
+
+  const { databaseVersion, dateOfCreation } = props.version;
+
+  const sourceName = sourceNames[props.series];
+  let sourceString;
+  if (databaseVersion && databaseVersion !== 'n/a') {
+    sourceString = t('options_data_series_version_and_date', [
+      sourceName,
+      databaseVersion,
+      dateOfCreation,
+    ]);
+  } else {
+    sourceString = t('options_data_series_date_only', [
+      sourceName,
+      dateOfCreation,
+    ]);
+  }
+
+  return (
+    <>
+      <div class="db-source-title">{titleString}</div>
+      <div class="db-source-version">{sourceString}</div>
+    </>
+  );
 }

@@ -66,4 +66,54 @@ export default {
       }}
     />
   ),
+  'up to date': () => (
+    <DbStatus
+      dbState={{
+        words: {
+          state: 'ok',
+          version: {
+            major: 1,
+            minor: 0,
+            patch: 0,
+            dateOfCreation: '2023-10-10',
+            lang: 'en',
+          },
+        },
+        kanji: {
+          state: 'ok',
+          version: {
+            major: 1,
+            minor: 0,
+            patch: 0,
+            dateOfCreation: '2023-10-10',
+            lang: 'en',
+          },
+        },
+        radicals: {
+          state: 'ok',
+          version: {
+            major: 1,
+            minor: 0,
+            patch: 0,
+            dateOfCreation: '2023-10-10',
+            lang: 'en',
+          },
+        },
+        names: {
+          state: 'ok',
+          version: {
+            major: 1,
+            minor: 0,
+            patch: 0,
+            dateOfCreation: '2023-10-10',
+            lang: 'en',
+          },
+        },
+        updateState: {
+          type: 'idle',
+          lastCheck: null,
+        },
+      }}
+    />
+  ),
 };
