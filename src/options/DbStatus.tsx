@@ -37,7 +37,7 @@ export function DbStatus(props: Props) {
         onUpdateDb={props.onUpdateDb}
       />
       {(devMode || !!props.forceDevMode) && (
-        <div class="db-admin">
+        <div class="rounded-lg border border-solid bg-red-50 px-5 py-2 text-red-900 dark:border-red-200/50 dark:bg-red-900/80 dark:text-red-100">
           <span>Database testing features: </span>
           <button onClick={props.onDeleteDb}>Delete database</button>
         </div>
