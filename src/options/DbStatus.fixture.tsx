@@ -43,4 +43,27 @@ export default {
       }}
     />
   ),
+  initializing: () => (
+    <DbStatus
+      dbState={{
+        ...EMPTY_DB_STATE,
+        words: {
+          state: 'init',
+          version: null,
+        },
+      }}
+    />
+  ),
+  empty: () => <DbStatus dbState={EMPTY_DB_STATE} />,
+  unavailable: () => (
+    <DbStatus
+      dbState={{
+        ...EMPTY_DB_STATE,
+        words: {
+          state: 'unavailable',
+          version: null,
+        },
+      }}
+    />
+  ),
 };

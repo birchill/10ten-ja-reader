@@ -1,6 +1,9 @@
+import { type DataSeriesState, allMajorDataSeries } from '@birchill/jpdict-idb';
 import { useEffect, useState } from 'preact/hooks';
+
 import { JpdictState } from '../background/jpdict';
 import { useLocale } from '../common/i18n';
+import { classes } from '../utils/classes';
 import { isFirefox } from '../utils/ua-utils';
 
 import { Linkify } from './Linkify';
@@ -80,35 +83,20 @@ function DbSummaryStatus(props: { dbState: JpdictState }) {
 
 function IdleStateSummary(props: { dbState: JpdictState }) {
   const { t } = useLocale();
-  const { updateError } = props.dbState;
 
-  const quota = useStorageQuota(updateError?.name === 'QuotaExceededError');
-
-  if (updateError?.name === 'OfflineError') {
+  const errorDetails = useErrorDetails(props.dbState);
+  if (errorDetails) {
+    const { class: errorClass, errorMessage, nextRetry } = errorDetails;
     return (
-      <div class="db-summary-status -warning">
-        <div class="db-summary-info">{t('options_offline_explanation')}</div>
-      </div>
-    );
-  }
-
-  if (updateError && updateError?.name !== 'AbortError') {
-    let errorMessage: string | undefined;
-    if (updateError.name === 'QuotaExceededError' && quota !== undefined) {
-      errorMessage = t('options_db_update_quota_error', formatSize(quota));
-    }
-
-    if (!errorMessage) {
-      errorMessage = t('options_db_update_error', updateError.message);
-    }
-
-    return (
-      <div class="db-summary-status -error">
+      <div
+        class={classes(
+          'db-summary-status',
+          errorClass === 'error' ? '-error' : '-warning'
+        )}
+      >
         <div class="db-summary-info">{errorMessage}</div>
-        {updateError.nextRetry && (
-          <div>
-            {t('options_db_update_retry', formatDate(updateError.nextRetry))}
-          </div>
+        {nextRetry && (
+          <div>{t('options_db_update_retry', formatDate(nextRetry))}</div>
         )}
       </div>
     );
@@ -117,6 +105,65 @@ function IdleStateSummary(props: { dbState: JpdictState }) {
   // TODO Other cases
 
   return <div class="db-summary-status"></div>;
+}
+
+function useErrorDetails(dbState: JpdictState): {
+  class: 'warning' | 'error';
+  errorMessage: string;
+  nextRetry?: Date;
+} | null {
+  const { t } = useLocale();
+
+  const { updateError } = dbState;
+  const quota = useStorageQuota(updateError?.name === 'QuotaExceededError');
+
+  // Offline errors
+  if (updateError?.name === 'OfflineError') {
+    return { class: 'warning', errorMessage: t('options_offline_explanation') };
+  }
+
+  // Quote exceeded errors have a special message.
+  if (updateError?.name === 'QuotaExceededError' && quota !== undefined) {
+    return {
+      class: 'error',
+      errorMessage: t('options_db_update_quota_error', formatSize(quota)),
+      nextRetry: updateError.nextRetry,
+    };
+  }
+
+  // Generic update errors
+  if (updateError && updateError?.name !== 'AbortError') {
+    return {
+      class: 'error',
+      errorMessage: t('options_db_update_error'),
+      nextRetry: updateError.nextRetry,
+    };
+  }
+
+  // Check if we have any version info
+  const hasVersionInfo = allMajorDataSeries.some(
+    (series) => !!dbState[series].version
+  );
+  if (hasVersionInfo) {
+    return null;
+  }
+
+  // Otherwise, return a suitable summary error
+  const summaryStates: Array<[DataSeriesState, string]> = [
+    ['init', 'options_database_initializing'],
+    ['unavailable', 'options_database_unavailable'],
+    ['empty', 'options_no_database'],
+  ];
+  for (const [state, key] of summaryStates) {
+    if (allMajorDataSeries.some((series) => dbState[series].state === state)) {
+      return {
+        class: 'error',
+        errorMessage: t(key),
+      };
+    }
+  }
+
+  return null;
 }
 
 function useStorageQuota(enable: boolean): number | undefined {
