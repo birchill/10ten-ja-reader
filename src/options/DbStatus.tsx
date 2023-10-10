@@ -3,6 +3,7 @@ import {
   allMajorDataSeries,
   type DataVersion,
   MajorDataSeries,
+  allDataSeries,
 } from '@birchill/jpdict-idb';
 import { useEffect, useState } from 'preact/hooks';
 
@@ -17,13 +18,15 @@ import { formatDate, formatSize } from './format';
 
 type Props = {
   dbState: JpdictState;
+  onCancelDbUpdate?: () => void;
+  onUpdateDb?: () => void;
 };
 
 export function DbStatus(props: Props) {
   return (
     <div class="section-content panel-section-db-summary py-4">
       <DbSummaryBlurb />
-      <DbSummaryStatus dbState={props.dbState} />
+      <DbSummaryStatus dbState={props.dbState} onUpdateDb={props.onUpdateDb} />
       <div class="db-admin" hidden>
         <span>Database testing features: </span>
         <button id="deleteDatabase">Delete database</button>
@@ -77,17 +80,28 @@ function DbSummaryBlurb() {
   );
 }
 
-function DbSummaryStatus(props: { dbState: JpdictState }) {
+function DbSummaryStatus(props: {
+  dbState: JpdictState;
+  onCancelDbUpdate?: () => void;
+  onUpdateDb?: () => void;
+}) {
   const { t } = useLocale();
 
   if (props.dbState.updateState.type === 'idle') {
-    return <IdleStateSummary dbState={props.dbState} />;
+    return (
+      <IdleStateSummary dbState={props.dbState} onUpdateDb={props.onUpdateDb} />
+    );
   }
 
   if (props.dbState.updateState.type === 'checking') {
     return (
       <div class="db-summary-status">
         <div class="db-summary-info">{t('options_checking_for_updates')}</div>
+        <div class="db-summary-button">
+          <button type="button" onClick={props.onCancelDbUpdate}>
+            {t('options_cancel_update_button_label')}
+          </button>
+        </div>
       </div>
     );
   }
@@ -123,14 +137,31 @@ function DbSummaryStatus(props: { dbState: JpdictState }) {
           ])}
         </label>
       </div>
+      <div class="db-summary-button">
+        <button type="button" onClick={props.onCancelDbUpdate}>
+          {t('options_cancel_update_button_label')}
+        </button>
+      </div>
     </div>
   );
 
-  // TODO Action buttons
+  // TODO Enable the "delete database" button
 }
 
-function IdleStateSummary(props: { dbState: JpdictState }) {
+function IdleStateSummary(props: {
+  dbState: JpdictState;
+  onUpdateDb?: () => void;
+}) {
   const { t } = useLocale();
+
+  const isUnavailable = allDataSeries.some(
+    (series) => props.dbState[series].state === 'unavailable'
+  );
+  const buttonLabel = t(
+    isUnavailable
+      ? 'options_update_retry_button_label'
+      : 'options_update_check_button_label'
+  );
 
   const errorDetails = useErrorDetails(props.dbState);
   if (errorDetails) {
@@ -146,6 +177,19 @@ function IdleStateSummary(props: { dbState: JpdictState }) {
         {nextRetry && (
           <div>{t('options_db_update_retry', formatDate(nextRetry))}</div>
         )}
+        <div class="db-summary-button">
+          <button type="button" onClick={props.onUpdateDb}>
+            {buttonLabel}
+          </button>
+          {props.dbState.updateState.lastCheck && (
+            <div class="last-check">
+              {t(
+                'options_last_database_check',
+                formatDate(props.dbState.updateState.lastCheck)
+              )}
+            </div>
+          )}
+        </div>
       </div>
     );
   }
@@ -159,6 +203,19 @@ function IdleStateSummary(props: { dbState: JpdictState }) {
             <DataSeriesVersion series={series} version={versionInfo} />
           ) : null;
         })}
+      </div>
+      <div class="db-summary-button">
+        <button type="button" onClick={props.onUpdateDb}>
+          {buttonLabel}
+        </button>
+        {props.dbState.updateState.lastCheck && (
+          <div class="last-check">
+            {t(
+              'options_last_database_check',
+              formatDate(props.dbState.updateState.lastCheck)
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

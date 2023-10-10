@@ -1105,7 +1105,15 @@ window.onunload = () => {
 function updateDatabaseSummary(event: DbStateUpdatedMessage) {
   const dbSummaryPoint = document.getElementById('db-summary-mount-point')!;
   render(
-    h(I18nProvider, null, h(DbStatus, { dbState: event.state })),
+    h(
+      I18nProvider,
+      null,
+      h(DbStatus, {
+        dbState: event.state,
+        onCancelDbUpdate: cancelDatabaseUpdate,
+        onUpdateDb: triggerDatabaseUpdate,
+      })
+    ),
     dbSummaryPoint
   );
 

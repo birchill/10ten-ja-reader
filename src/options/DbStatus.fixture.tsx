@@ -3,6 +3,8 @@ import { DbStatus } from './DbStatus';
 
 import './options.css';
 
+const now = new Date();
+
 const EMPTY_DB_STATE: JpdictState = {
   words: {
     state: 'empty',
@@ -69,7 +71,7 @@ const ONE_ZERO_ZERO_DB_STATE: JpdictState = {
   },
   updateState: {
     type: 'idle',
-    lastCheck: null,
+    lastCheck: now,
   },
 };
 
@@ -121,7 +123,7 @@ export default {
         updateState: {
           type: 'checking',
           series: 'words',
-          lastCheck: new Date(),
+          lastCheck: now,
         },
       }}
     />
@@ -142,7 +144,7 @@ export default {
             dateOfCreation: '2023-10-11',
             lang: 'en',
           },
-          lastCheck: new Date(),
+          lastCheck: now,
         },
       }}
     />
