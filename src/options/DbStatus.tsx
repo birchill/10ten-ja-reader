@@ -26,7 +26,11 @@ export function DbStatus(props: Props) {
   return (
     <div class="section-content panel-section-db-summary py-4">
       <DbSummaryBlurb />
-      <DbSummaryStatus dbState={props.dbState} onUpdateDb={props.onUpdateDb} />
+      <DbSummaryStatus
+        dbState={props.dbState}
+        onCancelDbUpdate={props.onCancelDbUpdate}
+        onUpdateDb={props.onUpdateDb}
+      />
       <div class="db-admin" hidden>
         <span>Database testing features: </span>
         <button id="deleteDatabase">Delete database</button>
@@ -97,11 +101,7 @@ function DbSummaryStatus(props: {
     return (
       <div class="db-summary-status">
         <div class="db-summary-info">{t('options_checking_for_updates')}</div>
-        <div class="db-summary-button">
-          <button type="button" onClick={props.onCancelDbUpdate}>
-            {t('options_cancel_update_button_label')}
-          </button>
-        </div>
+        <CancelUpdateButton onClick={props.onCancelDbUpdate} />
       </div>
     );
   }
@@ -137,11 +137,7 @@ function DbSummaryStatus(props: {
           ])}
         </label>
       </div>
-      <div class="db-summary-button">
-        <button type="button" onClick={props.onCancelDbUpdate}>
-          {t('options_cancel_update_button_label')}
-        </button>
-      </div>
+      <CancelUpdateButton onClick={props.onCancelDbUpdate} />
     </div>
   );
 
@@ -153,14 +149,8 @@ function IdleStateSummary(props: {
   onUpdateDb?: () => void;
 }) {
   const { t } = useLocale();
-
   const isUnavailable = allDataSeries.some(
     (series) => props.dbState[series].state === 'unavailable'
-  );
-  const buttonLabel = t(
-    isUnavailable
-      ? 'options_update_retry_button_label'
-      : 'options_update_check_button_label'
   );
 
   const errorDetails = useErrorDetails(props.dbState);
@@ -177,19 +167,11 @@ function IdleStateSummary(props: {
         {nextRetry && (
           <div>{t('options_db_update_retry', formatDate(nextRetry))}</div>
         )}
-        <div class="db-summary-button">
-          <button type="button" onClick={props.onUpdateDb}>
-            {buttonLabel}
-          </button>
-          {props.dbState.updateState.lastCheck && (
-            <div class="last-check">
-              {t(
-                'options_last_database_check',
-                formatDate(props.dbState.updateState.lastCheck)
-              )}
-            </div>
-          )}
-        </div>
+        <UpdateButton
+          label={isUnavailable ? 'retry' : 'check'}
+          lastCheck={props.dbState.updateState.lastCheck}
+          onClick={props.onUpdateDb}
+        />
       </div>
     );
   }
@@ -204,19 +186,11 @@ function IdleStateSummary(props: {
           ) : null;
         })}
       </div>
-      <div class="db-summary-button">
-        <button type="button" onClick={props.onUpdateDb}>
-          {buttonLabel}
-        </button>
-        {props.dbState.updateState.lastCheck && (
-          <div class="last-check">
-            {t(
-              'options_last_database_check',
-              formatDate(props.dbState.updateState.lastCheck)
-            )}
-          </div>
-        )}
-      </div>
+      <UpdateButton
+        label={isUnavailable ? 'retry' : 'check'}
+        lastCheck={props.dbState.updateState.lastCheck}
+        onClick={props.onUpdateDb}
+      />
     </div>
   );
 }
@@ -357,5 +331,44 @@ function DataSeriesVersion(props: {
       <div class="db-source-title">{titleString}</div>
       <div class="db-source-version">{sourceString}</div>
     </>
+  );
+}
+
+function UpdateButton(props: {
+  label: 'retry' | 'check';
+  lastCheck?: Date | null;
+  onClick?: () => void;
+}) {
+  const { t } = useLocale();
+
+  const buttonLabel = t(
+    props.label === 'retry'
+      ? 'options_update_retry_button_label'
+      : 'options_update_check_button_label'
+  );
+
+  return (
+    <div class="db-summary-button">
+      <button type="button" onClick={props.onClick}>
+        {buttonLabel}
+      </button>
+      {props.lastCheck && (
+        <div class="last-check">
+          {t('options_last_database_check', formatDate(props.lastCheck))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CancelUpdateButton(props: { onClick?: () => void }) {
+  const { t } = useLocale();
+
+  return (
+    <div class="db-summary-button">
+      <button type="button" onClick={props.onClick}>
+        {t('options_cancel_update_button_label')}
+      </button>
+    </div>
   );
 }
