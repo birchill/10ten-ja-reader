@@ -75,9 +75,20 @@ const ONE_ZERO_ZERO_DB_STATE: JpdictState = {
   },
 };
 
+function CompareDbStatus(
+  props: Omit<Parameters<typeof DbStatus>[0], 'oldStyles'>
+) {
+  return (
+    <>
+      <DbStatus {...props} />
+      <DbStatus {...props} oldStyles />
+    </>
+  );
+}
+
 export default {
   offline: () => (
-    <DbStatus
+    <CompareDbStatus
       dbState={{
         ...EMPTY_DB_STATE,
         updateError: { name: 'OfflineError', message: 'Offline' },
@@ -85,7 +96,7 @@ export default {
     />
   ),
   'quota exceeded': () => (
-    <DbStatus
+    <CompareDbStatus
       dbState={{
         ...EMPTY_DB_STATE,
         updateError: { name: 'QuotaExceededError', message: 'Quota exceeded' },
@@ -93,7 +104,7 @@ export default {
     />
   ),
   initializing: () => (
-    <DbStatus
+    <CompareDbStatus
       dbState={{
         ...EMPTY_DB_STATE,
         words: {
@@ -103,9 +114,9 @@ export default {
       }}
     />
   ),
-  empty: () => <DbStatus dbState={EMPTY_DB_STATE} />,
+  empty: () => <CompareDbStatus dbState={EMPTY_DB_STATE} />,
   unavailable: () => (
-    <DbStatus
+    <CompareDbStatus
       dbState={{
         ...EMPTY_DB_STATE,
         words: {
@@ -115,9 +126,9 @@ export default {
       }}
     />
   ),
-  'up to date': () => <DbStatus dbState={ONE_ZERO_ZERO_DB_STATE} />,
+  'up to date': () => <CompareDbStatus dbState={ONE_ZERO_ZERO_DB_STATE} />,
   checking: () => (
-    <DbStatus
+    <CompareDbStatus
       dbState={{
         ...ONE_ZERO_ZERO_DB_STATE,
         updateState: {
@@ -129,7 +140,7 @@ export default {
     />
   ),
   updating: () => (
-    <DbStatus
+    <CompareDbStatus
       dbState={{
         ...ONE_ZERO_ZERO_DB_STATE,
         updateState: {
@@ -150,6 +161,6 @@ export default {
     />
   ),
   'admin controls': () => (
-    <DbStatus dbState={ONE_ZERO_ZERO_DB_STATE} forceDevMode />
+    <CompareDbStatus dbState={ONE_ZERO_ZERO_DB_STATE} forceDevMode />
   ),
 };
