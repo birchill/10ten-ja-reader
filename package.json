@@ -74,7 +74,7 @@
     "jsdom": "^22.1.0",
     "knip": "^2.33.2",
     "mocha": "10.2.0",
-    "playwright": "1.38.1",
+    "playwright": "1.39.0",
     "playwright-test": "^12.1.2",
     "prettier": "3.0.3",
     "release-it": "16.2.1",
