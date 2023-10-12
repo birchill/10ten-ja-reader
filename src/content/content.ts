@@ -2965,5 +2965,3 @@ declare global {
     void browser.runtime.sendMessage({ type: 'disabled' });
   }
 })();
-
-export default ContentHandler;
