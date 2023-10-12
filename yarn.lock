@@ -87,10 +87,10 @@
     aws-lambda "^1.0.7"
     ua-parser-js "^1.0.32"
 
-"@birchill/discriminator@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@birchill/discriminator/-/discriminator-0.2.0.tgz#9dc19b0b737f38f3ac641c40777be6991b908fae"
-  integrity sha512-Gd5FjdCLO4FRMOquCNIFgdJvR0vlq7cNmQJpfql2ftOnJnnzoP/egqcoKoU2EEfpNIAQiw6e2JAhEeaezR1RXQ==
+"@birchill/discriminator@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@birchill/discriminator/-/discriminator-0.3.0.tgz#77d09d754e1ed14fc6fbc94af16724bc4f46d97b"
+  integrity sha512-IXkLc1FZLSjFUcPYUnAdg+AWPHC9vPz8hS2IDwPAvnAipeNKIkzQ/B4WY5z14UO1Ex0aOdlHtgwUUXc/Ngkhyg==
 
 "@birchill/jpdict-idb@2.1.3":
   version "2.1.3"
