@@ -37,23 +37,9 @@ const config: KnipConfig = {
     interface: true,
     type: true,
   },
-  webpack: {
-    // I think there may be a bug in knip where if you specify webpack config at
-    // all (e.g. just to specify the `entry` member), the `config` member
-    // defaults to `[]` and hence knip won't use it's default path for finding
-    // the webpack config. So we have to specify it explicitly.
-    config: 'webpack.config.js',
-    entry: [
-      // Our webpack setup is very complicated. It's not surprising knip can't
-      // untagle it.
-      'webpack.config.js',
-      'tests/content-loader.ts',
-      'src/content/content.ts',
-      'src/content/gdocs-bootstrap.ts',
-      'src/background/background.ts',
-      'src/options/options.ts',
-      'src/worker/jpdict-worker.ts',
-    ],
+  playwright: {
+    // Knip doesn't recognize the globs in package.json scripts
+    entry: 'tests/**/*.test.{js,ts}',
   },
 };
 
