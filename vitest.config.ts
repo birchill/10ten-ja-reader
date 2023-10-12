@@ -4,7 +4,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     include: [
-      './src/**/*.test.{js,mjs,cjs,ts,mts,cts}',
+      './{scripts,src}/**/*.test.{js,mjs,cjs,ts,mts,cts}',
       '.github/actions/**/*.test.{js,mjs,cjs,ts,mts,cts}',
     ],
     reporters: process.env.GITHUB_ACTIONS
