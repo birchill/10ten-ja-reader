@@ -67,7 +67,7 @@
     "eslint": "8.51.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-plugin-vitest": "^0.3.0",
-    "fake-indexeddb": "^4.0.2",
+    "fake-indexeddb": "^5.0.0",
     "fast-glob": "3.3.1",
     "file-loader": "6.2.0",
     "if-env": "1.0.4",
