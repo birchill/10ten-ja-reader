@@ -11,7 +11,7 @@
     "check-keys": "tsx scripts/check-keys",
     "cosmos": "node --experimental-policy=cosmos-policy.json node_modules/react-cosmos/bin/cosmos.js",
     "cosmos-export": "node --experimental-policy=cosmos-policy.json node_modules/react-cosmos/bin/cosmos-export.js",
-    "lint": "web-ext lint -w && eslint src/",
+    "lint": "web-ext lint && eslint src/",
     "package": "webpack --env package",
     "package:firefox": "webpack --env package",
     "package:chrome": "webpack --env target=chrome --env package",
