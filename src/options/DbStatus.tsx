@@ -22,26 +22,18 @@ type Props = {
   onCancelDbUpdate?: () => void;
   onDeleteDb?: () => void;
   onUpdateDb?: () => void;
-  oldStyles?: boolean;
 };
 
 export function DbStatus(props: Props) {
   return (
-    <div
-      class={
-        props.oldStyles
-          ? 'section-content panel-section-db-summary'
-          : 'firefox:p-4 flex flex-col gap-4 py-4'
-      }
-    >
+    <div class="firefox:p-4 flex flex-col gap-4 py-4">
       <DbSummaryBlurb />
       <DbSummaryStatus
         dbState={props.dbState}
         onCancelDbUpdate={props.onCancelDbUpdate}
         onUpdateDb={props.onUpdateDb}
-        oldStyles={props.oldStyles}
       />
-      {(props.devMode) && (
+      {props.devMode && (
         <div class="rounded-lg border border-solid border-red-900 bg-red-50 px-4 py-2 text-red-900 dark:border-red-200/50 dark:bg-red-900/30 dark:text-red-50">
           <span>Database testing features: </span>
           <button onClick={props.onDeleteDb}>Delete database</button>
@@ -102,32 +94,19 @@ function DbSummaryStatus(props: {
   dbState: JpdictState;
   onCancelDbUpdate?: () => void;
   onUpdateDb?: () => void;
-  oldStyles?: boolean;
 }) {
   const { t } = useLocale();
 
   if (props.dbState.updateState.type === 'idle') {
     return (
-      <IdleStateSummary
-        dbState={props.dbState}
-        onUpdateDb={props.onUpdateDb}
-        oldStyles={props.oldStyles}
-      />
+      <IdleStateSummary dbState={props.dbState} onUpdateDb={props.onUpdateDb} />
     );
   }
 
   if (props.dbState.updateState.type === 'checking') {
     return (
-      <div
-        class={
-          props.oldStyles
-            ? 'db-summary-status'
-            : 'flex flex-wrap items-center gap-x-4 gap-y-2'
-        }
-      >
-        <div class={props.oldStyles ? 'db-summary-info' : 'grow'}>
-          {t('options_checking_for_updates')}
-        </div>
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <div class="grow">{t('options_checking_for_updates')}</div>
         <CancelUpdateButton onClick={props.onCancelDbUpdate} />
       </div>
     );
@@ -148,24 +127,15 @@ function DbSummaryStatus(props: {
   const dbLabel = t(localizedDataSeriesKey[series]);
 
   return (
-    <div
-      class={
-        props.oldStyles
-          ? 'db-summary-status'
-          : 'flex flex-wrap items-center gap-x-4 gap-y-2'
-      }
-    >
-      <div class={props.oldStyles ? 'db-summary-info' : 'grow'}>
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+      <div class="grow">
         <progress
-          class={props.oldStyles ? 'progress' : 'mb-2 block'}
+          class="mb-2 block"
           max={100}
           id="update-progress"
           value={totalProgress * 100}
         />
-        <label
-          class={props.oldStyles ? 'label' : 'block italic'}
-          for="update-progress"
-        >
+        <label class="block italic" for="update-progress">
           {t('options_downloading_data', [
             dbLabel,
             versionString,
@@ -181,7 +151,6 @@ function DbSummaryStatus(props: {
 function IdleStateSummary(props: {
   dbState: JpdictState;
   onUpdateDb?: () => void;
-  oldStyles?: boolean;
 }) {
   const { t } = useLocale();
   const isUnavailable = allDataSeries.some(
@@ -194,21 +163,13 @@ function IdleStateSummary(props: {
     return (
       <div
         class={classes(
-          props.oldStyles
-            ? 'db-summary-status'
-            : 'flex flex-wrap items-center gap-x-4 gap-y-2',
+          'flex flex-wrap items-center gap-x-4 gap-y-2',
           errorClass === 'error'
-            ? props.oldStyles
-              ? '-error'
-              : 'rounded-lg border border-solid border-red-900 bg-red-50 px-4 py-2 text-red-900 dark:border-red-200/50 dark:bg-red-900/30 dark:text-red-50'
-            : props.oldStyles
-            ? '-warning'
+            ? 'rounded-lg border border-solid border-red-900 bg-red-50 px-4 py-2 text-red-900 dark:border-red-200/50 dark:bg-red-900/30 dark:text-red-50'
             : 'rounded-lg border border-solid border-yellow-800 bg-yellow-50 px-4 py-2 text-yellow-800 dark:border-yellow-400/50 dark:bg-yellow-900/50 dark:text-yellow-50'
         )}
       >
-        <div class={props.oldStyles ? 'db-summary-info' : 'grow'}>
-          {errorMessage}
-        </div>
+        <div class="grow">{errorMessage}</div>
         {nextRetry && (
           <div>{t('options_db_update_retry', formatDate(nextRetry))}</div>
         )}
@@ -216,35 +177,18 @@ function IdleStateSummary(props: {
           label={isUnavailable ? 'retry' : 'check'}
           lastCheck={props.dbState.updateState.lastCheck}
           onClick={props.onUpdateDb}
-          oldStyles={props.oldStyles}
         />
       </div>
     );
   }
 
   return (
-    <div
-      class={
-        props.oldStyles
-          ? 'db-summary-status'
-          : 'flex flex-wrap items-center gap-4'
-      }
-    >
-      <div
-        class={
-          props.oldStyles
-            ? 'db-summary-version-grid'
-            : 'grid grow auto-cols-fr grid-flow-col grid-rows-[repeat(2,_auto)] gap-x-2 min-[500px]:gap-x-4'
-        }
-      >
+    <div class="flex flex-wrap items-center gap-4">
+      <div class="grid grow auto-cols-fr grid-flow-col grid-rows-[repeat(2,_auto)] gap-x-2 min-[500px]:gap-x-4">
         {allMajorDataSeries.map((series) => {
           const versionInfo = props.dbState[series].version;
           return versionInfo ? (
-            <DataSeriesVersion
-              series={series}
-              version={versionInfo}
-              oldStyles={props.oldStyles}
-            />
+            <DataSeriesVersion series={series} version={versionInfo} />
           ) : null;
         })}
       </div>
@@ -252,7 +196,6 @@ function IdleStateSummary(props: {
         label={isUnavailable ? 'retry' : 'check'}
         lastCheck={props.dbState.updateState.lastCheck}
         onClick={props.onUpdateDb}
-        oldStyles={props.oldStyles}
       />
     </div>
   );
@@ -352,7 +295,6 @@ function useStorageQuota(enable: boolean): number | undefined {
 function DataSeriesVersion(props: {
   series: MajorDataSeries;
   version: DataVersion;
-  oldStyles?: boolean;
 }) {
   const { t } = useLocale();
 
@@ -393,15 +335,7 @@ function DataSeriesVersion(props: {
   return (
     <>
       <div>{titleString}</div>
-      <div
-        class={
-          props.oldStyles
-            ? 'db-source-version'
-            : 'text-sm text-zinc-500 dark:text-zinc-400'
-        }
-      >
-        {sourceString}
-      </div>
+      <div class="text-sm text-zinc-500 dark:text-zinc-400">{sourceString}</div>
     </>
   );
 }
@@ -410,7 +344,6 @@ function UpdateButton(props: {
   label: 'retry' | 'check';
   lastCheck?: Date | null;
   onClick?: () => void;
-  oldStyles?: boolean;
 }) {
   const { t } = useLocale();
 
@@ -426,7 +359,7 @@ function UpdateButton(props: {
         {buttonLabel}
       </button>
       {props.lastCheck && (
-        <div class={props.oldStyles ? 'last-check' : 'mt-1.5 text-xs italic'}>
+        <div class="mt-1.5 text-xs italic">
           {t('options_last_database_check', formatDate(props.lastCheck))}
         </div>
       )}
