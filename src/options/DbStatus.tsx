@@ -6,6 +6,7 @@ import {
   allDataSeries,
 } from '@birchill/jpdict-idb';
 import { useEffect, useState } from 'preact/hooks';
+import { variantProps, VariantPropsOf } from 'classname-variants/react';
 
 import { JpdictState } from '../background/jpdict';
 import { useLocale } from '../common/i18n';
@@ -15,6 +16,7 @@ import { isFirefox } from '../utils/ua-utils';
 
 import { Linkify } from './Linkify';
 import { formatDate, formatSize } from './format';
+import { RenderableProps } from 'preact';
 
 type Props = {
   dbState: JpdictState;
@@ -105,10 +107,10 @@ function DbSummaryStatus(props: {
 
   if (props.dbState.updateState.type === 'checking') {
     return (
-      <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <div class="grow">{t('options_checking_for_updates')}</div>
+      <DbSummaryContainer>
+        <div>{t('options_checking_for_updates')}</div>
         <CancelUpdateButton onClick={props.onCancelDbUpdate} />
-      </div>
+      </DbSummaryContainer>
     );
   }
 
@@ -127,8 +129,8 @@ function DbSummaryStatus(props: {
   const dbLabel = t(localizedDataSeriesKey[series]);
 
   return (
-    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <div class="grow">
+    <DbSummaryContainer>
+      <div>
         <progress
           class="mb-2 block"
           max={100}
@@ -144,8 +146,40 @@ function DbSummaryStatus(props: {
         </label>
       </div>
       <CancelUpdateButton onClick={props.onCancelDbUpdate} />
-    </div>
+    </DbSummaryContainer>
   );
+}
+
+const dbSummaryContainerProps = variantProps({
+  base: 'flex flex-wrap items-center gap-x-4 gap-y-2 [&>:first-child]:grow',
+  variants: {
+    errorClass: {
+      none: '',
+      warning: classes(
+        'rounded-lg border border-solid px-4 py-2',
+        // Light mode
+        'border-yellow-800 bg-yellow-50 text-yellow-800',
+        // Dark mode
+        'dark:border-yellow-400/50 dark:bg-yellow-900/50 dark:text-yellow-50'
+      ),
+      error: classes(
+        'rounded-lg border border-solid px-4 py-2',
+        // Light mode
+        'border-red-900 bg-red-50 text-red-900',
+        // Dark mode
+        'dark:border-red-200/50 dark:bg-red-900/30 dark:text-red-50'
+      ),
+    },
+  },
+  defaultVariants: {
+    errorClass: 'none',
+  },
+});
+
+function DbSummaryContainer(
+  props: RenderableProps<VariantPropsOf<typeof dbSummaryContainerProps>>
+) {
+  return <div {...dbSummaryContainerProps(props)}>{props.children}</div>;
 }
 
 function IdleStateSummary(props: {
@@ -161,15 +195,8 @@ function IdleStateSummary(props: {
   if (errorDetails) {
     const { class: errorClass, errorMessage, nextRetry } = errorDetails;
     return (
-      <div
-        class={classes(
-          'flex flex-wrap items-center gap-x-4 gap-y-2',
-          errorClass === 'error'
-            ? 'rounded-lg border border-solid border-red-900 bg-red-50 px-4 py-2 text-red-900 dark:border-red-200/50 dark:bg-red-900/30 dark:text-red-50'
-            : 'rounded-lg border border-solid border-yellow-800 bg-yellow-50 px-4 py-2 text-yellow-800 dark:border-yellow-400/50 dark:bg-yellow-900/50 dark:text-yellow-50'
-        )}
-      >
-        <div class="grow">{errorMessage}</div>
+      <DbSummaryContainer errorClass={errorClass}>
+        <div>{errorMessage}</div>
         {nextRetry && (
           <div>{t('options_db_update_retry', formatDate(nextRetry))}</div>
         )}
@@ -178,13 +205,13 @@ function IdleStateSummary(props: {
           lastCheck={props.dbState.updateState.lastCheck}
           onClick={props.onUpdateDb}
         />
-      </div>
+      </DbSummaryContainer>
     );
   }
 
   return (
-    <div class="flex flex-wrap items-center gap-4">
-      <div class="grid grow auto-cols-fr grid-flow-col grid-rows-[repeat(2,_auto)] gap-x-2 min-[500px]:gap-x-4">
+    <DbSummaryContainer>
+      <div class="grid auto-cols-fr grid-flow-col grid-rows-[repeat(2,_auto)] gap-x-2 min-[500px]:gap-x-4">
         {allMajorDataSeries.map((series) => {
           const versionInfo = props.dbState[series].version;
           return versionInfo ? (
@@ -192,12 +219,14 @@ function IdleStateSummary(props: {
           ) : null;
         })}
       </div>
-      <UpdateButton
-        label={isUnavailable ? 'retry' : 'check'}
-        lastCheck={props.dbState.updateState.lastCheck}
-        onClick={props.onUpdateDb}
-      />
-    </div>
+      <div class="mt-2">
+        <UpdateButton
+          label={isUnavailable ? 'retry' : 'check'}
+          lastCheck={props.dbState.updateState.lastCheck}
+          onClick={props.onUpdateDb}
+        />
+      </div>
+    </DbSummaryContainer>
   );
 }
 
@@ -354,7 +383,7 @@ function UpdateButton(props: {
   );
 
   return (
-    <div class="db-summary-button">
+    <div>
       <button type="button" onClick={props.onClick}>
         {buttonLabel}
       </button>
@@ -371,10 +400,8 @@ function CancelUpdateButton(props: { onClick?: () => void }) {
   const { t } = useLocale();
 
   return (
-    <div class="db-summary-button">
-      <button type="button" onClick={props.onClick}>
-        {t('options_cancel_update_button_label')}
-      </button>
-    </div>
+    <button type="button" onClick={props.onClick}>
+      {t('options_cancel_update_button_label')}
+    </button>
   );
 }
