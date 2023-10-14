@@ -133,11 +133,12 @@
     ]
   },
   "prettier": {
-    "singleQuote": true,
-    "trailingComma": "es5",
     "bracketSpacing": true,
     "plugins": [
       "prettier-plugin-tailwindcss"
-    ]
+    ],
+    "singleQuote": true,
+    "tailwindFunctions": ["classes"],
+    "trailingComma": "es5"
   }
 }
