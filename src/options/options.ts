@@ -1045,7 +1045,7 @@ window.onload = async () => {
         );
       }
 
-      updateDatabaseSummary(event);
+      void updateDatabaseSummary(event);
     }
   });
 

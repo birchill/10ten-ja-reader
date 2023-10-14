@@ -1,4 +1,4 @@
-import { RenderableProps, createContext } from 'preact';
+import { createContext, RenderableProps } from 'preact';
 import {
   useContext,
   useEffect,
@@ -46,7 +46,7 @@ export function I18nProvider(props: RenderableProps<I18nProviderProps>) {
   );
 
   useLayoutEffect(() => {
-    (async () => {
+    void (async () => {
       // We need to use a build-time constant here to avoid importing locale
       // messages into the package in regular extension contexts.
       if (__EXTENSION_CONTEXT__) {
@@ -118,7 +118,7 @@ export function useLocale(): i18nContextType {
   return useContext(i18nContext);
 }
 
-let warnedMissingKeys = new Set<string>();
+const warnedMissingKeys = new Set<string>();
 
 // Based on https://searchfox.org/mozilla-central/rev/37d9d6f0a77147292a87ab2d7f5906a62644f455/toolkit/components/extensions/ExtensionCommon.sys.mjs#2017
 function localizeMessage(
@@ -129,7 +129,7 @@ function localizeMessage(
   // Message names are case-insensitive, so normalize them to lower-case.
   message = message.toLowerCase();
   if (messages.has(message)) {
-    let str = messages.get(message)!;
+    const str = messages.get(message)!;
 
     if (!str.includes('$')) {
       return str;
@@ -191,7 +191,7 @@ type LocaleData = Map<string, string>;
 //
 // From: https://searchfox.org/mozilla-central/rev/37d9d6f0a77147292a87ab2d7f5906a62644f455/toolkit/components/extensions/ExtensionCommon.sys.mjs#2114
 function parseLocale(messages: unknown): LocaleData {
-  let result = new Map();
+  const result = new Map();
 
   // Chrome does not document the semantics of its localization
   // system very well. It handles replacements by pre-processing
@@ -208,8 +208,8 @@ function parseLocale(messages: unknown): LocaleData {
     throw new Error('Invalid locale data');
   }
 
-  for (let key of Object.keys(messages)) {
-    let msg = messages[key];
+  for (const key of Object.keys(messages)) {
+    const msg = messages[key];
 
     if (!isObject(msg) || typeof msg.message != 'string') {
       throw new Error(
@@ -221,13 +221,13 @@ function parseLocale(messages: unknown): LocaleData {
     // to lower-case.
     const placeholders = new Map();
     if ('placeholders' in msg && isObject(msg.placeholders)) {
-      for (let key of Object.keys(msg.placeholders)) {
+      for (const key of Object.keys(msg.placeholders)) {
         placeholders.set(key.toLowerCase(), msg.placeholders[key]);
       }
     }
 
     const replacer = (_match: string, name: string) => {
-      let replacement = placeholders.get(name.toLowerCase());
+      const replacement = placeholders.get(name.toLowerCase());
       if (isObject(replacement) && 'content' in replacement) {
         return replacement.content;
       }

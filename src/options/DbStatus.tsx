@@ -1,9 +1,9 @@
 import {
-  type DataSeriesState,
+  allDataSeries,
   allMajorDataSeries,
+  type DataSeriesState,
   type DataVersion,
   MajorDataSeries,
-  allDataSeries,
 } from '@birchill/jpdict-idb';
 import { useEffect, useState } from 'preact/hooks';
 import { variantProps, VariantPropsOf } from 'classname-variants/react';

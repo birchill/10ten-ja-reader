@@ -3,8 +3,9 @@ import { useLayoutEffect } from 'preact/hooks';
 import { useSelect } from 'react-cosmos/client';
 
 import { I18nProvider } from '../common/i18n';
+import { EmptyProps } from '../utils/type-helpers';
 
-export default ({ children }: RenderableProps<{}>) => {
+export default ({ children }: RenderableProps<EmptyProps>) => {
   const [locale] = useSelect('locale', {
     options: ['en', 'ja', 'zh_hans'],
   });
