@@ -84,7 +84,7 @@
     "postcss": "8.4.31",
     "postcss-loader": "7.3.3",
     "prettier": "3.0.3",
-    "prettier-plugin-tailwindcss": "0.5.5",
+    "prettier-plugin-tailwindcss": "0.5.6",
     "react-cosmos": "6.0.0-beta.6",
     "react-cosmos-plugin-webpack": "6.0.0-beta.6",
     "release-it": "16.2.1",
@@ -138,7 +138,6 @@
     "bracketSpacing": true,
     "plugins": [
       "prettier-plugin-tailwindcss"
-    ],
-    "pluginSearchDirs": false
+    ]
   }
 }
