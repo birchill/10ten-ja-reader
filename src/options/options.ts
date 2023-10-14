@@ -7,7 +7,7 @@ import {
 } from '@birchill/jpdict-idb';
 import Bugsnag from '@birchill/bugsnag-zero';
 import { h, render } from 'preact';
-import browser, { Runtime } from 'webextension-polyfill';
+import browser, { Management, Runtime } from 'webextension-polyfill';
 
 import { CopyKeys, CopyNextKeyStrings } from '../common/copy-keys';
 import { Config, DEFAULT_KEY_SETTINGS } from '../common/config';
@@ -1102,14 +1102,26 @@ window.onunload = () => {
   }
 };
 
-function updateDatabaseSummary(event: DbStateUpdatedMessage) {
+let addonInfo: Management.ExtensionInfo | undefined;
+
+async function getAddonInfo(): Promise<Management.ExtensionInfo> {
+  if (!addonInfo) {
+    addonInfo = await browser.management.getSelf();
+  }
+
+  return addonInfo;
+}
+
+async function updateDatabaseSummary(event: DbStateUpdatedMessage) {
   const dbSummaryPoint = document.getElementById('db-summary-mount-point')!;
+  const devMode = (await getAddonInfo()).installType === 'development';
   render(
     h(
       I18nProvider,
       null,
       h(DbStatus, {
         dbState: event.state,
+        devMode,
         onCancelDbUpdate: cancelDatabaseUpdate,
         onDeleteDb: deleteDatabase,
         onUpdateDb: triggerDatabaseUpdate,

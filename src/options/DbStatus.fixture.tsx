@@ -161,6 +161,6 @@ export default {
     />
   ),
   'admin controls': () => (
-    <CompareDbStatus dbState={ONE_ZERO_ZERO_DB_STATE} forceDevMode />
+    <CompareDbStatus dbState={ONE_ZERO_ZERO_DB_STATE} devMode />
   ),
 };

@@ -6,7 +6,6 @@ import {
   allDataSeries,
 } from '@birchill/jpdict-idb';
 import { useEffect, useState } from 'preact/hooks';
-import type { Browser } from 'webextension-polyfill';
 
 import { JpdictState } from '../background/jpdict';
 import { useLocale } from '../common/i18n';
@@ -19,7 +18,7 @@ import { formatDate, formatSize } from './format';
 
 type Props = {
   dbState: JpdictState;
-  forceDevMode?: boolean;
+  devMode?: boolean;
   onCancelDbUpdate?: () => void;
   onDeleteDb?: () => void;
   onUpdateDb?: () => void;
@@ -27,8 +26,6 @@ type Props = {
 };
 
 export function DbStatus(props: Props) {
-  const devMode = useIsDevMode();
-
   return (
     <div
       class={
@@ -44,7 +41,7 @@ export function DbStatus(props: Props) {
         onUpdateDb={props.onUpdateDb}
         oldStyles={props.oldStyles}
       />
-      {(devMode || !!props.forceDevMode) && (
+      {(props.devMode) && (
         <div class="rounded-lg border border-solid border-red-900 bg-red-50 px-4 py-2 text-red-900 dark:border-red-200/50 dark:bg-red-900/30 dark:text-red-50">
           <span>Database testing features: </span>
           <button onClick={props.onDeleteDb}>Delete database</button>
@@ -447,31 +444,4 @@ function CancelUpdateButton(props: { onClick?: () => void }) {
       </button>
     </div>
   );
-}
-
-declare global {
-  const browser: Browser | undefined;
-}
-
-function useIsDevMode(): boolean {
-  const [isDevMode, setIsDevMode] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (typeof browser === 'undefined' || !browser.management) {
-      return;
-    }
-
-    browser.management
-      .getSelf()
-      .then((info) => {
-        if (info.installType === 'development') {
-          setIsDevMode(true);
-        }
-      })
-      .catch(() => {
-        // Ignore
-      });
-  }, []);
-
-  return isDevMode;
 }
