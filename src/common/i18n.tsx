@@ -20,7 +20,7 @@ export type i18nContextType = {
   setLocale: SetLocaleFunctionType;
 };
 
-export const i18nContext = createContext<i18nContextType>({
+const i18nContext = createContext<i18nContextType>({
   t: () => 'Not initialized',
   setLocale: () => {
     throw new Error('Not initialized');

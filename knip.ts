@@ -24,23 +24,16 @@ const config: KnipConfig = {
     'xcode13/Shared \\(App\\)/Resources/Script.js',
   ],
   ignore: [
-    // The tailwind config file is just here for when we need to manually update
-    // the docs.
-    'docs/update/tailwind.config.js',
-    // Ignore React Cosmos fixtures.
+    // Ignore React Cosmos fixtures and decorators.
     'src/**/*.fixture.tsx',
+    'src/**/cosmos.decorator.tsx',
   ],
   ignoreDependencies: [
     // Used by our browser test and automatically detected by playwright-test.
     'mocha',
     '@types/mocha',
-    // Used by React Cosmos
-    'react',
-    'react-dom',
-    // React Cosmos plugins (which knip doesn't know how to parse yet)
+    // Knip doesn't know how to parse React Cosmos plugins (yet).
     'react-cosmos-plugin-webpack',
-    // Plugins required by React Cosmos but not explicitly referenced
-    'html-webpack-plugin',
   ],
   ignoreExportsUsedInFile: {
     interface: true,
@@ -50,11 +43,16 @@ const config: KnipConfig = {
     // Knip doesn't recognize the globs in package.json scripts
     entry: 'tests/**/*.test.{js,ts}',
   },
+  postcss: {
+    // Knip doesn't look for .cjs files by default.
+    config: ['postcss.config.cjs'],
+  },
+  tailwind: {
+    config: ['**/tailwind.config.js'],
+  },
   webpack: {
-    entry: [
-      // Webpack config used by React Cosmos
-      'cosmos-webpack.config.js',
-    ],
+    // Knip won't know to look for the special (cosmos-webpack.config.js) file.
+    config: ['cosmos-webpack.config.js', 'webpack.config.js'],
   },
 };
 
