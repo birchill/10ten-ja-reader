@@ -7,14 +7,13 @@
       content="width=device-width, initial-scale=1, minimum-scale=1"
     />
     <title>10ten Japanese Reader options</title>
-    <link rel="stylesheet" type="text/css" href="./options/options.css" />
-    <link rel="stylesheet" type="text/css" href="../css/popup.css" />
+    <link rel="stylesheet" type="text/css" href="css/popup.css" />
   </head>
   <body>
     <form id="optform" name="optform">
-      <h1 class="section-header">General</h1>
+      <h1 class="section-header">__MSG_options_general_heading__</h1>
       <div class="section-content">
-        <p>Toolbar icon</p>
+        <p>__MSG_options_toolbar_icon_label__</p>
         <fieldset>
           <div
             class="toolbaricon-select icon-radio -with-labels -bw-inactive"
@@ -28,9 +27,16 @@
             />
             <label for="toolbaricon-default">
               <div class="icon">
-                <img src="../images/10ten.svg" alt="default" class="image" />
+                <img
+                  src="/images/10ten.svg"
+                  alt="__MSG_options_toolbar_icon_default_alt__"
+                  class="image"
+                />
               </div>
-              <div class="text"><span class="radio"></span>Classic</div>
+              <div class="text">
+                <span class="radio"></span
+                >__MSG_options_toolbar_icon_classic_label__
+              </div>
             </label>
             <input
               type="radio"
@@ -40,14 +46,21 @@
             />
             <label for="toolbaricon-sky">
               <div class="icon">
-                <img src="../images/10ten-sky.svg" alt="sky" class="image" />
+                <img
+                  src="/images/10ten-sky.svg"
+                  alt="__MSG_options_toolbar_icon_sky_alt__"
+                  class="image"
+                />
               </div>
-              <div class="text"><span class="radio"></span>Kanji</div>
+              <div class="text">
+                <span class="radio"></span
+                >__MSG_options_toolbar_icon_kanji_label__
+              </div>
             </label>
           </div>
         </fieldset>
         <div id="highlight-style-section">
-          <p>Text highlight style</p>
+          <p>__MSG_options_highlight_style_label__</p>
           <fieldset>
             <div
               class="highlightstyle-select icon-radio -with-labels -bw-inactive"
@@ -63,7 +76,10 @@
                 <div class="icon">
                   <span class="text-fade">に<span>点々</span>と</span>
                 </div>
-                <div class="text"><span class="radio"></span>None</div>
+                <div class="text">
+                  <span class="radio"></span
+                  >__MSG_options_highlight_style_none__
+                </div>
               </label>
               <input
                 type="radio"
@@ -77,7 +93,10 @@
                     >に<span class="highlight yellow">点々</span>と</span
                   >
                 </div>
-                <div class="text"><span class="radio"></span>Yellow</div>
+                <div class="text">
+                  <span class="radio"></span
+                  >__MSG_options_highlight_style_yellow__
+                </div>
               </label>
               <input
                 type="radio"
@@ -91,7 +110,10 @@
                     >に<span class="highlight blue">点々</span>と</span
                   >
                 </div>
-                <div class="text"><span class="radio"></span>Blue</div>
+                <div class="text">
+                  <span class="radio"></span
+                  >__MSG_options_highlight_style_blue__
+                </div>
               </label>
             </div>
           </fieldset>
@@ -99,7 +121,9 @@
         <div class="spacer" role="presentation"></div>
         <div class="checkbox-row" id="old-highlight-setting-section">
           <input type="checkbox" id="highlightText" name="highlightText" />
-          <label for="highlightText">Highlight matched text</label>
+          <label for="highlightText"
+            >__MSG_options_highlight_matched_text__</label
+          >
         </div>
         <div class="checkbox-row">
           <input
@@ -108,13 +132,14 @@
             name="contextMenuEnable"
           />
           <label for="contextMenuEnable"
-            >Show &ldquo;Enable 10ten reader&rdquo; in context menu</label
+            >__MSG_options_show_context_menu_item__</label
           >
         </div>
       </div>
-      <h1 class="section-header">Popup style</h1>
+      <h1 class="section-header">__MSG_options_popup_style_heading__</h1>
       <div class="section-content">
         <fieldset>
+          <!-- Extra div because Chrome can't do flex in fieldset -->
           <div
             class="popupstyle-select icon-radio -centered"
             id="popupstyle-select"
@@ -122,10 +147,7 @@
         </fieldset>
         <div class="checkbox-row">
           <input type="checkbox" id="showPriority" name="showPriority" />
-          <label for="showPriority"
-            >Show indicators next to common (★) and somewhat common (☆)
-            words</label
-          >
+          <label for="showPriority">__MSG_options_show_priority__</label>
         </div>
         <div class="checkbox-row">
           <input
@@ -134,61 +156,79 @@
             name="showWaniKaniLevel"
           />
           <label for="showWaniKaniLevel"
-            >Show WaniKani levels<span class="new-badge">New!</span></label
+            >__MSG_options_show_wanikani_levels__<span class="new-badge"
+              >__MSG_options_new_badge_text__</span
+            ></label
           >
         </div>
         <div class="checkbox-row">
           <input type="checkbox" id="showRomaji" name="showRomaji" />
-          <label for="showRomaji">Show romaji</label>
+          <label for="showRomaji">__MSG_options_show_romaji__</label>
         </div>
         <div class="checkbox-row">
           <input type="checkbox" id="showDefinitions" name="showDefinitions" />
-          <label for="showDefinitions">Show definitions</label>
+          <label for="showDefinitions">__MSG_options_show_definitions__</label>
         </div>
         <div class="spacer" role="presentation"></div>
         <div class="select-grid">
-          <label for="accentDisplay">Accent display</label>
+          <label for="accentDisplay"
+            >__MSG_options_accent_display_label__</label
+          >
           <select id="accentDisplay" name="accentDisplay">
-            <option value="downpitch">Downpitch ꜜ</option>
-            <option value="binary">Binary pitch ⎾⏋</option>
+            <option value="downstep">
+              __MSG_options_accent_display_downstep__
+            </option>
+            <option value="binary">
+              __MSG_options_accent_display_binary__
+            </option>
             <option value="binary-hi-contrast">
-              Binary pitch (high contrast)
+              __MSG_options_accent_display_binary_high_contrast__
             </option>
-            <option value="none">None</option>
+            <option value="none">__MSG_options_accent_display_none__</option>
           </select>
-          <label for="showPos">Part of speech display</label>
-          <select id="showPos" name="showPos">
-            <option value="expl">
-              Explanation (e.g. &ldquo;-u verb&rdquo;)
-            </option>
-            <option value="code">Code (e.g. &ldquo;v5r&rdquo;)</option>
-            <option value="none">None</option>
+          <label for="posDisplay">__MSG_options_pos_display_label__</label>
+          <select id="posDisplay" name="posDisplay">
+            <option value="expl">__MSG_options_pos_display_expl__</option>
+            <option value="code">__MSG_options_pos_display_code__</option>
+            <option value="none">__MSG_options_pos_display_none__</option>
           </select>
           <label for="fontSize"
-            >Font size<span class="new-badge">New!</span></label
+            >__MSG_options_font_size_label__<span class="new-badge"
+              >__MSG_options_new_badge_text__</span
+            ></label
           >
           <select id="fontSize" name="fontSize">
-            <option value="normal">Normal</option>
-            <option value="large">Large</option>
-            <option value="xl">Extra large</option>
+            <option value="normal">__MSG_options_font_size_normal__</option>
+            <option value="large">__MSG_options_font_size_large__</option>
+            <option value="xl">__MSG_options_font_size_xl__</option>
           </select>
-          <div>Expand all entries<span class="new-badge">New!</span></div>
+          <div>
+            __MSG_options_expand_all_entries__<span class="new-badge"
+              >__MSG_options_new_badge_text__</span
+            >
+          </div>
           <div class="auto-expand-checkboxes">
             <div>
               <input type="checkbox" id="expandWords" name="expandWords" />
-              <label for="expandWords">Words</label>
+              <label for="expandWords"
+                >__MSG_options_expand_words_label__</label
+              >
             </div>
             <div>
               <input type="checkbox" id="expandKanji" name="expandKanji" />
-              <label for="expandKanji">Kanji</label>
+              <label for="expandKanji"
+                >__MSG_options_expand_kanji_label__</label
+              >
             </div>
           </div>
         </div>
       </div>
-      <h1 class="section-header">Popup interactivity</h1>
+      <h1 class="section-header">
+        __MSG_options_popup_interactivity_heading__
+      </h1>
       <div class="section-content">
         <div id="mouse-interactivity-section" class="needs-mouse">
-          <p>Mouse interaction</p>
+          <p>__MSG_options_mouse_interactivity_label__</p>
           <fieldset>
             <div
               class="interactivity-select icon-radio -with-labels -bw-inactive"
@@ -202,7 +242,7 @@
               />
               <label for="interactivity-disable">
                 <div class="icon">
-                  <svg viewBox="0 0 200 150" class="svg tabicon theme-light">
+                  <svg viewBox="0 0 200 150" class="svg theme-light">
                     <defs>
                       <clipPath id="interactive-popup-outline-1">
                         <rect
@@ -248,7 +288,10 @@
                     />
                   </svg>
                 </div>
-                <div class="text"><span class="radio"></span>Disable</div>
+                <div class="text">
+                  <span class="radio"></span
+                  >__MSG_options_mouse_interactivity_disable__
+                </div>
               </label>
               <input
                 type="radio"
@@ -340,7 +383,10 @@
                     <use href="#hand" x="34" y="95" width="35" color="#888" />
                   </svg>
                 </div>
-                <div class="text"><span class="radio"></span>Enable</div>
+                <div class="text">
+                  <span class="radio"></span
+                  >__MSG_options_mouse_interactivity_enable__
+                </div>
               </label>
             </div>
           </fieldset>
@@ -353,12 +399,14 @@
               name="enableTapLookup"
             />
             <label for="enableTapLookup"
-              >Look up text by tapping<span class="new-badge">New!</span></label
+              >__MSG_options_touch_enable_tap_lookup__<span class="new-badge"
+                >__MSG_options_new_badge_text__</span
+              ></label
             >
           </div>
         </div>
         <div class="spacer" role="presentation"></div>
-        <p>Tab position</p>
+        <p>__MSG_options_tab_position_label__</p>
         <fieldset>
           <div
             class="tabdisplay-select icon-radio -with-labels -bw-inactive"
@@ -397,22 +445,9 @@
                   <rect x="16" y="1" width="32" height="8" class="tab" />
                 </svg>
               </div>
-              <div class="text"><span class="radio"></span>Top</div>
-            </label>
-            <input
-              type="radio"
-              name="tabDisplay"
-              value="right"
-              id="tabdisplay-right"
-            />
-            <label for="tabdisplay-right">
-              <div class="icon">
-                <svg viewBox="0 0 48 48" class="svg theme-light">
-                  <use href="#tabicon-popup" class="popup" />
-                  <rect x="40" y="8" width="8" height="40" class="tab" />
-                </svg>
+              <div class="text">
+                <span class="radio"></span>__MSG_options_tab_position_top__
               </div>
-              <div class="text"><span class="radio"></span>Right</div>
             </label>
             <input
               type="radio"
@@ -427,7 +462,26 @@
                   <rect x="0" y="8" width="8" height="40" class="tab" />
                 </svg>
               </div>
-              <div class="text"><span class="radio"></span>Left</div>
+              <div class="text">
+                <span class="radio"></span>__MSG_options_tab_position_left__
+              </div>
+            </label>
+            <input
+              type="radio"
+              name="tabDisplay"
+              value="right"
+              id="tabdisplay-right"
+            />
+            <label for="tabdisplay-right">
+              <div class="icon">
+                <svg viewBox="0 0 48 48" class="svg theme-light">
+                  <use href="#tabicon-popup" class="popup" />
+                  <rect x="40" y="8" width="8" height="40" class="tab" />
+                </svg>
+              </div>
+              <div class="text">
+                <span class="radio"></span>__MSG_options_tab_position_right__
+              </div>
             </label>
             <input
               type="radio"
@@ -441,27 +495,36 @@
                   <use href="#tabicon-popup" class="popup" />
                 </svg>
               </div>
-              <div class="text"><span class="radio"></span>None</div>
+              <div class="text">
+                <span class="radio"></span>__MSG_options_tab_position_none__
+              </div>
             </label>
           </div>
         </fieldset>
       </div>
-      <h1 class="section-header currency-heading">Currency conversion</h1>
+      <h1 class="section-header currency-heading">
+        __MSG_options_currency_conversion_heading__
+      </h1>
       <div class="section-content currency-body">
-        <label for="fxCurrency">Currency</label>
-        <select id="fxCurrency" name="fxCurrency">
-          <option value="AUD">AUD - Australian Dollars</option>
-          <option value="USD">USD - US Dollars</option>
-        </select>
+        <label for="fxCurrency">__MSG_options_currency_label__</label>
+        <select id="fxCurrency" name="fxCurrency"></select>
       </div>
-      <h2 class="section-header needs-keyboard">Keyboard</h2>
+      <h1 class="section-header needs-keyboard">
+        __MSG_options_keyboard_heading__
+      </h1>
       <div class="section-content needs-keyboard">
         <div class="key-grid">
-          <div class="key">
+          <div class="key command">
             <input type="checkbox" id="toggle-alt" />
             <label for="toggle-alt"><span class="key-box">Alt</span></label>
+            <input type="checkbox" id="toggle-macctrl" />
+            <label for="toggle-macctrl"
+              ><span class="key-box">Control</span></label
+            >
             <input type="checkbox" id="toggle-ctrl" />
-            <label for="toggle-ctrl"><span class="key-box">Ctrl</span></label>
+            <label for="toggle-ctrl"
+              ><span class="key-box" data-mac="Command">Ctrl</span></label
+            >
             <input type="checkbox" id="toggle-shift" />
             <label for="toggle-shift"><span class="key-box">Shift</span></label>
             <input
@@ -469,28 +532,39 @@
               type="text"
               value="R"
               disabled
-              class="hotkey key-box"
               id="toggle-key"
+              class="key-box"
             />
           </div>
           <div class="key-description">
-            Toggle 10ten reader on/off
-            <div class="icon -warning" id="toggle-key-icon"></div>
+            __MSG_command_toggle_description__
+            <div class="icon" id="toggle-key-icon"></div>
+          </div>
+          <div
+            class="key-extended-explanation"
+            id="browser-commands-alternative"
+          >
+            __MSG_options_browser_commands_no_toggle_key__
           </div>
         </div>
-        <p>Show popup:</p>
+        <p>__MSG_options_show_popup_subheading__</p>
         <fieldset class="bordered">
           <p class="section-explanation">
-            If selected, the following keys must be held down when the mouse is
-            over an item in order to display the popup.
+            __MSG_options_show_popup_explanation__
           </p>
           <div class="key-and-icon-grid">
-            <div class="row-label">Text</div>
-            <div class="key">
-              <input type="checkbox" id="show-alt" />
-              <label for="toggle-alt"><span class="key-box">Alt</span></label>
-              <input type="checkbox" id="show-ctrl" />
-              <label for="toggle-ctrl"><span class="key-box">Ctrl</span></label>
+            <div class="row-label">
+              __MSG_options_show_popup_text_subheading__
+            </div>
+            <div class="key holdtoshowkeys">
+              <input type="checkbox" id="show-text-alt" value="Alt" />
+              <label for="show-text-alt"
+                ><span class="key-box">Alt</span></label
+              >
+              <input type="checkbox" id="show-text-ctrl" value="Ctrl" />
+              <label for="show-text-ctrl"
+                ><span class="key-box">Ctrl</span></label
+              >
             </div>
             <div>
               <svg viewBox="0 0 120 90" class="icon">
@@ -515,12 +589,18 @@
                 </g>
               </svg>
             </div>
-            <div class="row-label">Images</div>
-            <div class="key">
-              <input type="checkbox" id="show-alt" />
-              <label for="toggle-alt"><span class="key-box">Alt</span></label>
-              <input type="checkbox" id="show-ctrl" />
-              <label for="toggle-ctrl"><span class="key-box">Ctrl</span></label>
+            <div class="row-label">
+              __MSG_options_show_popup_images_subheading__
+            </div>
+            <div class="key holdtoshowimagekeys">
+              <input type="checkbox" id="show-images-alt" value="Alt" />
+              <label for="show-images-alt"
+                ><span class="key-box">Alt</span></label
+              >
+              <input type="checkbox" id="show-images-ctrl" value="Ctrl" />
+              <label for="show-images-ctrl"
+                ><span class="key-box">Ctrl</span></label
+              >
             </div>
             <div>
               <svg viewBox="0 0 120 90" class="icon">
@@ -561,174 +641,50 @@
             </div>
           </div>
         </fieldset>
-        <p>Pop-up keys:</p>
-        <div class="key-grid" id="key-grid">
-          <div class="key">
-            <input type="checkbox" id="key-x" name="key-x" data-key="x" />
-            <label for="key-x"><span class="key-box">x</span></label>
-          </div>
-          <div class="key-description">Key description</div>
-          <div class="key">
-            <input type="checkbox" id="key-y" name="key-y" data-key="y" />
-            <label for="key-y"><span class="key-box">y</span></label>
-            <input type="checkbox" id="key-z" name="key-z" data-key="z" />
-            <label for="key-z"><span class="key-box">z</span></label>
-          </div>
-          <div class="key-description">Key description</div>
-        </div>
+        <p>__MSG_options_popup_keys_subheading__</p>
+        <div class="key-grid" id="key-grid"></div>
       </div>
-      <h1 class="section-header">Lookup puck</h1>
+      <h1 class="section-header">__MSG_options_lookup_puck_heading__</h1>
       <div class="section-content">
-        <p>Show lookup puck:</p>
-        <input
-          type="radio"
-          name="showPuck"
-          id="showPuck-auto"
-          value="auto"
-          checked
-        />
-        <label for="showPuck-auto">Auto</label>
+        <p>__MSG_options_show_puck_label__</p>
+        <input type="radio" name="showPuck" id="showPuck-auto" value="auto" />
+        <label for="showPuck-auto">__MSG_options_show_puck_option_auto__</label>
         <input type="radio" name="showPuck" id="showPuck-show" value="show" />
-        <label for="showPuck-show">Show</label>
+        <label for="showPuck-show">__MSG_options_show_puck_option_show__</label>
         <input type="radio" name="showPuck" id="showPuck-hide" value="hide" />
-        <label for="showPuck-hide">Hide</label>
+        <label for="showPuck-hide">__MSG_options_show_puck_option_hide__</label>
       </div>
-      <h1 class="section-header">Dictionary language</h1>
+      <h1 class="section-header">
+        __MSG_options_dictionary_language_heading__
+      </h1>
       <div class="section-content dict-lang">
-        <select id="lang" name="lang">
-          <option value="de">Deutsch (words only)</option>
-          <option value="en">English</option>
-          <option value="es">Español</option>
-          <option value="fr">Français</option>
-          <option value="hu">Magyar (words only)</option>
-          <option value="nl">Nederland (words only)</option>
-          <option value="pt">Português (kanji only)</option>
-          <option value="ru">Русский (words only)</option>
-          <option value="sl">Slovenščina (words only)</option>
-          <option value="sv">Svenska (words only)</option>
-        </select>
+        <select id="lang" name="lang"></select>
         <div class="note">
-          <p>Please note that:</p>
+          <p>__MSG_options_lang_warning_please_note__</p>
           <ul>
-            <li>
-              Word definitions for languages other than English are only shown
-              when available.
-            </li>
-            <li>English word definitions are always shown.</li>
-            <li>The names dictionary is only available in English.</li>
-            <li>
-              Changing the language will cause the corresponding data files to
-              be re-downloaded.
-            </li>
-            <li>
-              While updating language data, English definitions may be used
-              temporarily.
-            </li>
+            <li>__MSG_options_lang_warning_other_lang_when_available__</li>
+            <li>__MSG_options_lang_warning_always_en__</li>
+            <li>__MSG_options_lang_warning_names_en_only__</li>
+            <li>__MSG_options_lang_warning_change_lang_redownload__</li>
+            <li>__MSG_options_lang_warning_temporary_en_fallback__</li>
           </ul>
         </div>
       </div>
-      <h1 class="section-header">Kanji dictionary</h1>
-      <div class="section-content panel-section-db-summary">
-        <div class="panel-section-grid">
-          <div class="checkbox-row">
-            <input
-              type="checkbox"
-              id="showKanjiComponents"
-              name="showKanjiComponents"
-            />
-            <label for="showKanjiComponents">Kanji components</label>
-          </div>
-          <div class="checkbox-row">
-            <input type="checkbox" id="H" name="H" />
-            <label for="H">Halpern</label>
-          </div>
-          <div class="checkbox-row">
-            <input type="checkbox" id="L" name="L" />
-            <label for="L">Heisig</label>
-          </div>
-          <div class="checkbox-row">
-            <input type="checkbox" id="E" name="E" />
-            <label for="E">Henshall</label>
-          </div>
-          <div class="checkbox-row">
-            <input type="checkbox" id="DK" name="DK" />
-            <label for="DK">Kanji Learners Dictionary</label>
-          </div>
-          <div class="checkbox-row">
-            <input type="checkbox" id="N" name="N" />
-            <label for="N">Nelson</label>
-          </div>
-          <div class="checkbox-row">
-            <input type="checkbox" id="V" name="V" />
-            <label for="V">New Nelson</label>
-          </div>
-          <div class="checkbox-row">
-            <input type="checkbox" id="Y" name="Y" />
-            <label for="Y">PinYin</label>
-          </div>
-          <div class="checkbox-row">
-            <input type="checkbox" id="P" name="P" />
-            <label for="P">Skip Pattern</label>
-          </div>
-          <div class="checkbox-row">
-            <input type="checkbox" id="IN" name="IN" />
-            <label for="IN">Tuttle Kanji &amp; Kana</label>
-          </div>
-          <div class="checkbox-row">
-            <input type="checkbox" id="I" name="I" />
-            <label for="I">Tuttle Kanji Dictionary</label>
-          </div>
-          <div class="checkbox-row">
-            <input type="checkbox" id="U" name="U" />
-            <label for="U">Unicode</label>
-          </div>
+      <h1 class="section-header">__MSG_options_kanji_dictionary_heading__</h1>
+      <div class="section-content panel-section-grid" id="kanji-reference-list">
+        <div class="checkbox-row static">
+          <input
+            type="checkbox"
+            id="showKanjiComponents"
+            name="showKanjiComponents"
+          />
+          <label for="showKanjiComponents"
+            >__MSG_options_kanji_components__</label
+          >
         </div>
       </div>
-      <h1 class="section-header">Dictionary data</h1>
-      <div class="section-content panel-section-db-summary">
-        <div class="db-summary-blurb">
-          Includes data from
-          <a
-            href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project"
-            target="_blank"
-            rel="noopener"
-            >KANJIDIC</a
-          >. This data is the property of the
-          <a href="https://www.edrdg.org/" target="_blank" rel="noopener"
-            >Electronic Dictionary Research and Development Group</a
-          >, and is used in conformance with the Group's
-          <a
-            href="https://www.edrdg.org/edrdg/licence.html"
-            target="_blank"
-            rel="noopener"
-            >licence</a
-          >.
-          <p>
-            The pitch accent data was provided by Uros Ozvatic through his free
-            database.
-          </p>
-        </div>
-        <div class="db-summary-status">
-          <div class="db-summary-version-grid">
-            <div class="db-source-title">Words data v1.0.3 (de)</div>
-            <div class="db-source-version">
-              Based on JMdict/ENAMDICT 2020-219 from 2020-08-07.
-            </div>
-            <div class="db-source-title">Kanji data v1.0.3 (de)</div>
-            <div class="db-source-version">
-              Based on KANJIDIC 2020-219 from 2020-08-07.
-            </div>
-            <div class="db-source-title">Name data v2.1.1 (en)</div>
-            <div class="db-source-version">
-              Based on JMnedict/ENAMDICT from 2020-08-07.
-            </div>
-          </div>
-          <div class="db-summary-button">
-            <button type="button">Check for updates</button>
-            <div class="last-check">Last check 2019-10-13 17:04.</div>
-          </div>
-        </div>
-      </div>
+      <h1 class="section-header">__MSG_options_dictionary_data_heading__</h1>
+      <div id="db-summary-mount-point"></div>
     </form>
     <!-- Common SVG symbols -->
     <svg width="0" height="0" role="presentation">
@@ -776,10 +732,5 @@
       </defs>
     </svg>
   </body>
-  <script src="options.js"></script>
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      document.documentElement.classList.add('initialized');
-    });
-  </script>
+  <script src="10ten-ja-options.js"></script>
 </html>

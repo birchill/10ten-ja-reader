@@ -34,8 +34,7 @@ jobs:
       - name: Run tests
         env:
           CI: true
-        run: |
-          yarn test
+        run: yarn test
 
       - name: knip
         run: yarn knip
@@ -46,3 +45,6 @@ jobs:
         run: |
           yarn package:firefox
           yarn package:chrome
+
+      - name: Verify cosmos setup
+        run: yarn cosmos-export

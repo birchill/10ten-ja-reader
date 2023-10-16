@@ -1537,7 +1537,7 @@
     }
   },
   "options_data_source": {
-    "message": "使用しているデータにJMDict/EDICT、KANJIDICおよびJMnedict/ENAMDICTのデータが含まれております。",
+    "message": "使用しているデータにJMdict/EDICT、KANJIDICおよびJMnedict/ENAMDICTのデータが含まれております。",
     "description": "Attribute of source data. The strings 'JMdict/EDICT', 'KANJIDIC' and 'JMnedict/ENAMDICT' must appear so that they can be link-ified to the corresponding project home pages."
   },
   "options_database_initializing": {

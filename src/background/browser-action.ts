@@ -3,7 +3,7 @@
 import { allMajorDataSeries } from '@birchill/jpdict-idb';
 import browser, { Action } from 'webextension-polyfill';
 
-import { getLocalizedDataSeriesLabel } from '../common/data-series-labels';
+import { localizedDataSeriesKey } from '../common/data-series-labels';
 import { throttle } from '../utils/throttle';
 import { isSafari } from '../utils/ua-utils';
 
@@ -131,7 +131,7 @@ async function doUpdateBrowserAction({
             seriesColors[series]
           );
         }
-        const dbLabel = getLocalizedDataSeriesLabel(series);
+        const dbLabel = browser.i18n.getMessage(localizedDataSeriesKey[series]);
         const progressAsPercent = Math.round(totalProgress * 100);
         tooltip = browser.i18n.getMessage('command_toggle_downloading', [
           dbLabel,

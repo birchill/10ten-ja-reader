@@ -1,6 +1,8 @@
 /* eslint-env node */
 /* eslint @typescript-eslint/no-var-requires: 0 */
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import * as path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import { fileURLToPath } from 'url';
@@ -39,18 +41,40 @@ const commonConfig = {
     rules: [
       {
         test: /\.css$/,
-        use: ['css-loader'],
+        // This is a bit convoluted for the time being because, at least for
+        // now, we _don't_ want to run MiniCssExtractPlugin on popup.css because
+        // in popup.ts we want to get the styles inline (but we still want the
+        // file to be available in the package so we can include it in
+        // options.html).
+        oneOf: [
+          {
+            test: /options.css/,
+            use: [
+              { loader: MiniCssExtractPlugin.loader },
+              'css-loader',
+              'postcss-loader',
+            ],
+          },
+          {
+            use: ['css-loader'],
+          },
+        ],
       },
       {
-        test: /\.ts$/,
-        use: 'ts-loader',
+        test: /\.tsx?$/,
         exclude: /node_modules/,
+        use: 'ts-loader',
       },
       { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
     ],
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    alias: {
+      react: 'preact/compat',
+      'react-dom/test-utils': 'preact/test-utils',
+      'react-dom': 'preact/compat',
+    },
+    extensions: ['.ts', '.tsx', '.js'],
   },
 };
 
@@ -67,6 +91,7 @@ const testConfig = {
   plugins: [
     new webpack.DefinePlugin({
       __ACTIVE_TAB_ONLY__: false,
+      __EXTENSION_CONTEXT__: true,
       __SUPPORTS_SVG_ICONS__: false,
       __SUPPORTS_TAB_CONTEXT_TYPE__: false,
       __VERSION__: `'${pjson.version}'`,
@@ -319,10 +344,18 @@ function buildExtConfig({
   const plugins = [
     new webpack.DefinePlugin({
       __ACTIVE_TAB_ONLY__: activeTabOnly,
+      __EXTENSION_CONTEXT__: true,
       __MV3__: mv3,
       __SUPPORTS_SVG_ICONS__: supportsSvgIcons,
       __SUPPORTS_TAB_CONTEXT_TYPE__: supportsTabContextType,
       __VERSION__: `'${pjson.version}'`,
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'options.html',
+      template: './src/options/options.html',
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'css/options.css',
     }),
   ];
 
@@ -388,7 +421,6 @@ function buildExtConfig({
     // One day we might decide to inject popup.css into the options page
     // script too, but for now we duplicate this content.
     'css/*',
-    { from: '*.html', context: 'html' },
     supportsSvgIcons ? 'images/*.svg' : 'images/*',
     'data/*',
     '_locales/**/*',

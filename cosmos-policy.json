@@ -1,0 +1,12 @@
+{
+  "dependencies": true,
+  "scopes": {
+    "": {
+      "cascade": true,
+      "integrity": true,
+      "dependencies": {
+        "react": "./node_modules/preact/compat/dist/compat.mjs"
+      }
+    }
+  }
+}

@@ -6,6 +6,7 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:tailwindcss/recommended",
     "prettier"
   ],
   "parser": "@typescript-eslint/parser",
@@ -49,6 +50,8 @@
         "allowSeparatedGroups": true
       }
     ],
+    "tailwindcss/classnames-order": "off",
+    "tailwindcss/no-custom-classname": "off",
     "vitest/no-identical-title": ["error"],
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-explicit-any": "off",

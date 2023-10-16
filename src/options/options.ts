@@ -1,12 +1,7 @@
 /// <reference path="../common/constants.d.ts" />
-import {
-  allDataSeries,
-  allMajorDataSeries,
-  DataSeriesState,
-  MajorDataSeries,
-} from '@birchill/jpdict-idb';
 import Bugsnag from '@birchill/bugsnag-zero';
-import browser, { Runtime } from 'webextension-polyfill';
+import { h, render } from 'preact';
+import browser, { type Runtime } from 'webextension-polyfill';
 
 import { CopyKeys, CopyNextKeyStrings } from '../common/copy-keys';
 import { Config, DEFAULT_KEY_SETTINGS } from '../common/config';
@@ -16,7 +11,6 @@ import {
   PartOfSpeechDisplay,
   TabDisplay,
 } from '../common/content-config-params';
-import { getLocalizedDataSeriesLabel } from '../common/data-series-labels';
 import { dbLanguageMeta, isDbLanguageId } from '../common/db-languages';
 import {
   cancelDbUpdate,
@@ -24,6 +18,7 @@ import {
   deleteDb,
   updateDb,
 } from '../common/db-listener-messages';
+import { I18nProvider } from '../common/i18n';
 import {
   getReferenceLabelsForLang,
   getReferencesForLang,
@@ -31,6 +26,7 @@ import {
 import { renderStar } from '../content/popup/icons';
 import { startBugsnag } from '../utils/bugsnag';
 import { html } from '../utils/builder';
+import { isTouchDevice, possiblyHasPhysicalKeyboard } from '../utils/device';
 import { empty } from '../utils/dom-utils';
 import { isObject } from '../utils/is-object';
 import {
@@ -44,8 +40,11 @@ import {
 import { getThemeClass } from '../utils/themes';
 
 import { Command, CommandParams, isValidKey } from './commands';
+import { DbStatus } from './DbStatus';
 import { translateDoc } from './l10n';
-import { isTouchDevice, possiblyHasPhysicalKeyboard } from '../utils/device';
+
+import './options.css';
+import { getReleaseStage } from '../utils/release-stage';
 
 startBugsnag();
 
@@ -243,22 +242,6 @@ function completeForm() {
     .addEventListener('click', (event) => {
       config.showKanjiComponents = (event.target as HTMLInputElement).checked;
     });
-
-  if (browser.management) {
-    void browser.management.getSelf().then((info) => {
-      if (info.installType === 'development') {
-        (document.querySelector('.db-admin') as HTMLElement).style.display =
-          'block';
-        document
-          .getElementById('deleteDatabase')!
-          .addEventListener('click', () => {
-            if (browserPort) {
-              browserPort.postMessage(deleteDb());
-            }
-          });
-      }
-    });
-  }
 }
 
 function renderPopupStyleSelect() {
@@ -1047,7 +1030,7 @@ window.onload = async () => {
         );
       }
 
-      updateDatabaseSummary(event);
+      void updateDatabaseSummary(event);
     }
   });
 
@@ -1096,400 +1079,32 @@ window.onunload = () => {
   }
 };
 
-function updateDatabaseSummary(event: DbStateUpdatedMessage) {
-  updateDatabaseBlurb();
-  updateDatabaseStatus(event);
-}
-
-function updateDatabaseBlurb() {
-  const blurb = document.querySelector('.db-summary-blurb')!;
-  empty(blurb);
-
-  const attribution = browser.i18n.getMessage('options_data_source');
-  blurb.append(
-    linkify(attribution, [
-      {
-        keyword: 'JMdict/EDICT',
-        href: 'https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project',
-      },
-      {
-        keyword: 'KANJIDIC',
-        href: 'https://www.edrdg.org/wiki/index.php/KANJIDIC_Project',
-      },
-      {
-        keyword: 'JMnedict/ENAMDICT',
-        href: 'https://www.edrdg.org/enamdict/enamdict_doc.html',
-      },
-    ])
+async function updateDatabaseSummary(event: DbStateUpdatedMessage) {
+  const dbSummaryPoint = document.getElementById('db-summary-mount-point')!;
+  render(
+    h(
+      I18nProvider,
+      null,
+      h(DbStatus, {
+        dbState: event.state,
+        devMode: getReleaseStage() === 'development',
+        onCancelDbUpdate: cancelDatabaseUpdate,
+        onDeleteDb: deleteDatabase,
+        onUpdateDb: triggerDatabaseUpdate,
+      })
+    ),
+    dbSummaryPoint
   );
-
-  const license = browser.i18n.getMessage('options_edrdg_license');
-  const licenseKeyword = browser.i18n.getMessage(
-    'options_edrdg_license_keyword'
-  );
-
-  blurb.append(
-    linkify(license, [
-      {
-        keyword: 'Electronic Dictionary Research and Development Group',
-        href: 'https://www.edrdg.org/',
-      },
-      {
-        keyword: licenseKeyword,
-        href: 'https://www.edrdg.org/edrdg/licence.html',
-      },
-    ])
-  );
-
-  const accentAttribution = browser.i18n.getMessage(
-    'options_accent_data_source'
-  );
-  blurb.append(html('p', {}, accentAttribution));
-}
-
-function updateDatabaseStatus(event: DbStateUpdatedMessage) {
-  const { updateState } = event.state;
-
-  const statusElem = document.querySelector('.db-summary-status')!;
-  empty(statusElem);
-  statusElem.classList.remove('-error');
-  statusElem.classList.remove('-warning');
-
-  // Fill out the info part
-
-  switch (updateState.type) {
-    case 'idle':
-      void updateIdleStateSummary(event, statusElem);
-      break;
-
-    case 'checking':
-      statusElem.append(
-        html(
-          'div',
-          { class: 'db-summary-info' },
-          browser.i18n.getMessage('options_checking_for_updates')
-        )
-      );
-      break;
-
-    case 'updating': {
-      const infoDiv = html(
-        'div',
-        { class: 'db-summary-info' },
-        html('progress', {
-          class: 'progress',
-          max: '100',
-          value: String(updateState.totalProgress * 100),
-          id: 'update-progress',
-        })
-      );
-
-      const labelElem = html('label', {
-        class: 'label',
-        for: 'update-progress',
-      });
-
-      const { major, minor, patch } = updateState.version;
-      const versionString = `${major}.${minor}.${patch}`;
-
-      const progressAsPercent = Math.round(updateState.totalProgress * 100);
-      const dbLabel = getLocalizedDataSeriesLabel(updateState.series);
-      labelElem.textContent = browser.i18n.getMessage(
-        'options_downloading_data',
-        [dbLabel, versionString, String(progressAsPercent)]
-      );
-
-      infoDiv.append(labelElem);
-      statusElem.append(infoDiv);
-      break;
-    }
-  }
-
-  // Add the action button info if any
-
-  const buttonDiv = html('div', { class: 'db-summary-button' });
-
-  switch (updateState.type) {
-    case 'idle': {
-      // We should probably skip this when we are offline, but for now it
-      // doesn't really matter.
-      const updateButton = html('button', { type: 'button' });
-      const isUnavailable = allDataSeries.some(
-        (series) => event.state[series].state === 'unavailable'
-      );
-      updateButton.textContent = browser.i18n.getMessage(
-        updateState.type === 'idle' && !isUnavailable
-          ? 'options_update_check_button_label'
-          : 'options_update_retry_button_label'
-      );
-      updateButton.addEventListener('click', triggerDatabaseUpdate);
-      buttonDiv.append(updateButton);
-
-      if (updateState.lastCheck) {
-        const lastCheckString = browser.i18n.getMessage(
-          'options_last_database_check',
-          formatDate(updateState.lastCheck)
-        );
-        buttonDiv.append(html('div', { class: 'last-check' }, lastCheckString));
-      }
-      break;
-    }
-
-    case 'checking':
-    case 'updating': {
-      const cancelButton = html(
-        'button',
-        { type: 'button' },
-        browser.i18n.getMessage('options_cancel_update_button_label')
-      );
-      cancelButton.addEventListener('click', cancelDatabaseUpdate);
-      buttonDiv.append(cancelButton);
-      break;
-    }
-  }
-
-  statusElem.append(buttonDiv);
-}
-
-async function updateIdleStateSummary(
-  event: DbStateUpdatedMessage,
-  statusElem: Element
-) {
-  const { updateError } = event.state;
-
-  if (!!updateError && updateError.name === 'OfflineError') {
-    statusElem.classList.add('-warning');
-    statusElem.append(
-      html(
-        'div',
-        { class: 'db-summary-info' },
-        browser.i18n.getMessage('options_offline_explanation')
-      )
-    );
-    return;
-  }
-
-  if (!!updateError && updateError.name !== 'AbortError') {
-    const infoDiv = html('div', { class: 'db-summary-info' });
-
-    let errorMessage: string | undefined;
-    if (updateError.name === 'QuotaExceededError') {
-      try {
-        let { quota } = await navigator.storage.estimate();
-        if (typeof quota !== 'undefined') {
-          // For Firefox, typically origins get a maximum of 20% of the global
-          // limit. When we have unlimitedStorage permission, however, we can
-          // use up to the full amount of the global limit. The storage API,
-          // however, still returns 20% as the quota, so multiplying by 5 will
-          // give the actual quota.
-          if (isFirefox()) {
-            quota *= 5;
-          }
-          errorMessage = browser.i18n.getMessage(
-            'options_db_update_quota_error',
-            formatSize(quota)
-          );
-        }
-      } catch {
-        // Ignore. This UA likely doesn't support the navigator.storage API
-      }
-    }
-
-    if (!errorMessage) {
-      errorMessage = browser.i18n.getMessage(
-        'options_db_update_error',
-        updateError.message
-      );
-    }
-    infoDiv.append(html('div', {}, errorMessage));
-
-    if (updateError.nextRetry) {
-      infoDiv.append(
-        html(
-          'div',
-          {},
-          browser.i18n.getMessage(
-            'options_db_update_next_retry',
-            formatDate(updateError.nextRetry)
-          )
-        )
-      );
-    }
-
-    statusElem.classList.add('-error');
-    statusElem.append(infoDiv);
-
-    return;
-  }
-
-  // If we have no version information, seem if we have a suitable summary to
-  // display instead.
-  const hasVersionInfo = allMajorDataSeries.some(
-    (series) => !!event.state[series].version
-  );
-  if (!hasVersionInfo) {
-    const summaryStates: Array<[DataSeriesState, string]> = [
-      ['init', 'options_db_initializing'],
-      ['empty', 'options_no_database'],
-      ['unavailable', 'options_database_unavailable'],
-    ];
-    for (const [state, key] of summaryStates) {
-      if (
-        allMajorDataSeries.some((series) => event.state[series].state === state)
-      ) {
-        statusElem.classList.toggle('-error', state === 'unavailable');
-        statusElem.append(
-          html(
-            'div',
-            { class: 'db-summary-info' },
-            browser.i18n.getMessage(key)
-          )
-        );
-        return;
-      }
-    }
-  }
-
-  const gridDiv = html('div', { class: 'db-summary-version-grid' });
-
-  for (const series of allMajorDataSeries) {
-    const versionInfo = event.state[series].version;
-    if (!versionInfo) {
-      continue;
-    }
-
-    const { major, minor, patch, lang } = versionInfo;
-    const titleKeys: { [series in MajorDataSeries]: string } = {
-      kanji: 'options_kanji_data_title',
-      names: 'options_name_data_title',
-      words: 'options_words_data_title',
-    };
-    const titleString = browser.i18n.getMessage(
-      titleKeys[series],
-      `${major}.${minor}.${patch} (${lang})`
-    );
-    gridDiv.append(html('div', { class: 'db-source-title' }, titleString));
-
-    const sourceNames: { [series in MajorDataSeries]: string } = {
-      kanji: 'KANJIDIC',
-      names: 'JMnedict/ENAMDICT',
-      words: 'JMdict/EDICT',
-    };
-    const sourceName = sourceNames[series];
-
-    const { databaseVersion, dateOfCreation } = versionInfo;
-
-    let sourceString;
-    if (databaseVersion && databaseVersion !== 'n/a') {
-      sourceString = browser.i18n.getMessage(
-        'options_data_series_version_and_date',
-        [sourceName, databaseVersion, dateOfCreation]
-      );
-    } else {
-      sourceString = browser.i18n.getMessage('options_data_series_date_only', [
-        sourceName,
-        dateOfCreation,
-      ]);
-    }
-    gridDiv.append(html('div', { class: 'db-source-version' }, sourceString));
-  }
-
-  statusElem.append(gridDiv);
-}
-
-function linkify(
-  source: string,
-  replacements: Array<{ keyword: string; href: string }>
-): DocumentFragment {
-  const matchedReplacements: Array<{
-    index: number;
-    keyword: string;
-    href: string;
-  }> = [];
-
-  for (const replacement of replacements) {
-    const index = source.indexOf(replacement.keyword);
-    if (index !== -1) {
-      matchedReplacements.push({ index, ...replacement });
-    }
-  }
-  matchedReplacements.sort((a, b) => a.index - b.index);
-
-  const result = new DocumentFragment();
-  let position = 0;
-
-  for (const replacement of matchedReplacements) {
-    if (position < replacement.index) {
-      result.append(source.substring(position, replacement.index));
-    }
-
-    result.append(
-      html(
-        'a',
-        {
-          href: replacement.href,
-          target: '_blank',
-          rel: 'noopener',
-        },
-        replacement.keyword
-      )
-    );
-
-    position = replacement.index + replacement.keyword.length;
-  }
-
-  if (position < source.length) {
-    result.append(source.substring(position, source.length));
-  }
-
-  return result;
-}
-
-// Our special date formatting that is a simplified ISO 8601 in local time
-// without seconds.
-function formatDate(date: Date): string {
-  const pad = (n: number) => (n < 10 ? '0' + n : n);
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
-    date.getDate()
-  )} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
-}
-
-function formatSize(sizeInBytes: number): string {
-  const kilobyte = 1024;
-  const megabyte = kilobyte * 1024;
-  const gigabyte = megabyte * 1024;
-  const terabyte = gigabyte * 1024;
-
-  // We don't bother localizing any of this. Anyone able to make sense of a
-  // file size, can probably understand an English file size prefix.
-  if (sizeInBytes >= terabyte) {
-    return (sizeInBytes / terabyte).toFixed(3) + 'Tb';
-  }
-  if (sizeInBytes >= gigabyte) {
-    return (sizeInBytes / gigabyte).toFixed(2) + 'Gb';
-  }
-  if (sizeInBytes >= megabyte) {
-    return (sizeInBytes / megabyte).toFixed(1) + 'Mb';
-  }
-  if (sizeInBytes >= kilobyte) {
-    return Math.round(sizeInBytes / kilobyte) + 'Kb';
-  }
-
-  return sizeInBytes + ' bytes';
 }
 
 function triggerDatabaseUpdate() {
-  if (!browserPort) {
-    return;
-  }
-
-  browserPort.postMessage(updateDb());
+  browserPort?.postMessage(updateDb());
 }
 
 function cancelDatabaseUpdate() {
-  if (!browserPort) {
-    return;
-  }
+  browserPort?.postMessage(cancelDbUpdate());
+}
 
-  browserPort.postMessage(cancelDbUpdate());
+function deleteDatabase() {
+  browserPort?.postMessage(deleteDb());
 }

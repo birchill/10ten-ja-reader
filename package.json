@@ -9,7 +9,9 @@
     "build:safari": "webpack --env target=safari",
     "build:thunderbird": "webpack --env target=thunderbird",
     "check-keys": "tsx scripts/check-keys",
-    "lint": "web-ext lint -w && eslint src/",
+    "cosmos": "node --experimental-policy=cosmos-policy.json node_modules/react-cosmos/bin/cosmos.js",
+    "cosmos-export": "node --experimental-policy=cosmos-policy.json node_modules/react-cosmos/bin/cosmos-export.js",
+    "lint": "web-ext lint && eslint src/",
     "package": "webpack --env package",
     "package:firefox": "webpack --env package",
     "package:chrome": "webpack --env target=chrome --env package",
@@ -53,6 +55,7 @@
     "@actions/core": "1.10.1",
     "@actions/github": "6.0.0",
     "@release-it/keep-a-changelog": "4.0.0",
+    "@tailwindcss/typography": "0.5.10",
     "@types/archiver": "5.3.3",
     "@types/chai": "4.3.8",
     "@types/mocha": "10.0.2",
@@ -66,20 +69,29 @@
     "css-loader": "6.8.1",
     "eslint": "8.51.0",
     "eslint-config-prettier": "9.0.0",
+    "eslint-plugin-tailwindcss": "3.13.0",
     "eslint-plugin-vitest": "^0.3.0",
     "fake-indexeddb": "^5.0.0",
     "fast-glob": "3.3.1",
     "file-loader": "6.2.0",
+    "html-webpack-plugin": "5.5.3",
     "if-env": "1.0.4",
     "jsdom": "^22.1.0",
     "knip": "^2.33.2",
+    "mini-css-extract-plugin": "2.7.6",
     "mocha": "10.2.0",
     "playwright": "1.39.0",
     "playwright-test": "^12.1.2",
+    "postcss": "8.4.31",
+    "postcss-loader": "7.3.3",
     "prettier": "3.0.3",
+    "prettier-plugin-tailwindcss": "0.5.6",
+    "react-cosmos": "6.0.0-beta.6",
+    "react-cosmos-plugin-webpack": "6.0.0-beta.6",
     "release-it": "16.2.1",
     "semver-parser": "4.1.4",
     "source-map-loader": "4.0.1",
+    "tailwindcss": "3.3.3",
     "terser-webpack-plugin": "5.3.9",
     "ts-loader": "9.5.0",
     "tsx": "3.13.0",
@@ -100,9 +112,11 @@
     "@birchill/discriminator": "0.3.0",
     "@birchill/jpdict-idb": "2.1.3",
     "@birchill/normal-jp": "1.5.0",
+    "classname-variants": "1.3.2",
     "husky": "8.0.3",
     "lint-staged": "15.0.0",
     "lru_map": "0.4.1",
+    "preact": "10.18.1",
     "superstruct": "1.0.3",
     "typescript": "5.2.2",
     "web-ext": "7.8.0",
@@ -121,8 +135,14 @@
     ]
   },
   "prettier": {
+    "bracketSpacing": true,
+    "plugins": [
+      "prettier-plugin-tailwindcss"
+    ],
     "singleQuote": true,
-    "trailingComma": "es5",
-    "bracketSpacing": true
+    "tailwindFunctions": [
+      "classes"
+    ],
+    "trailingComma": "es5"
   }
 }

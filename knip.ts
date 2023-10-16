@@ -14,6 +14,8 @@ const config: KnipConfig = {
     // can't be expected to follow. Hopefully we'll eventually remove this
     // quirk and use the same tab manager everywhere.
     'src/background/active-tab-manager.ts',
+    // React Cosmos decorators
+    'src/**/cosmos.decorator.tsx',
     // Included by popups.html until we set up a better way of doing component
     // tests.
     'tests/html-tests.js',
@@ -24,14 +26,15 @@ const config: KnipConfig = {
     'xcode13/Shared \\(App\\)/Resources/Script.js',
   ],
   ignore: [
-    // The tailwind config file is just here for when we need to manually update
-    // the docs.
-    'docs/update/tailwind.config.js',
+    // Ignore React Cosmos fixtures
+    'src/**/*.fixture.tsx',
   ],
   ignoreDependencies: [
     // Used by our browser test and automatically detected by playwright-test.
     'mocha',
     '@types/mocha',
+    // Knip doesn't know how to parse React Cosmos plugins (yet).
+    'react-cosmos-plugin-webpack',
   ],
   ignoreExportsUsedInFile: {
     interface: true,
@@ -40,6 +43,17 @@ const config: KnipConfig = {
   playwright: {
     // Knip doesn't recognize the globs in package.json scripts
     entry: 'tests/**/*.test.{js,ts}',
+  },
+  postcss: {
+    // Knip doesn't look for .cjs files by default.
+    config: ['postcss.config.cjs'],
+  },
+  tailwind: {
+    config: ['**/tailwind.config.js'],
+  },
+  webpack: {
+    // Knip won't know to look for the special (cosmos-webpack.config.js) file.
+    config: ['cosmos-webpack.config.js', 'webpack.config.js'],
   },
 };
 
