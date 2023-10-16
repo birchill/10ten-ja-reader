@@ -1,6 +1,7 @@
 .DS_Store
 **/*.xcuserstate
 **/xcuserdata/**
+cosmos-export
 coverage
 node_modules
 tests/content-loader.js
