@@ -1,7 +1,7 @@
 /// <reference path="../common/constants.d.ts" />
 import Bugsnag from '@birchill/bugsnag-zero';
 import { h, render } from 'preact';
-import browser, { Management, Runtime } from 'webextension-polyfill';
+import browser, { type Runtime } from 'webextension-polyfill';
 
 import { CopyKeys, CopyNextKeyStrings } from '../common/copy-keys';
 import { Config, DEFAULT_KEY_SETTINGS } from '../common/config';
@@ -44,6 +44,7 @@ import { DbStatus } from './DbStatus';
 import { translateDoc } from './l10n';
 
 import './options.css';
+import { getReleaseStage } from '../utils/release-stage';
 
 startBugsnag();
 
@@ -241,22 +242,6 @@ function completeForm() {
     .addEventListener('click', (event) => {
       config.showKanjiComponents = (event.target as HTMLInputElement).checked;
     });
-
-  if (browser.management) {
-    void browser.management.getSelf().then((info) => {
-      if (info.installType === 'development') {
-        (document.querySelector('.db-admin') as HTMLElement).style.display =
-          'block';
-        document
-          .getElementById('deleteDatabase')!
-          .addEventListener('click', () => {
-            if (browserPort) {
-              browserPort.postMessage(deleteDb());
-            }
-          });
-      }
-    });
-  }
 }
 
 function renderPopupStyleSelect() {
@@ -1094,26 +1079,15 @@ window.onunload = () => {
   }
 };
 
-let addonInfo: Management.ExtensionInfo | undefined;
-
-async function getAddonInfo(): Promise<Management.ExtensionInfo> {
-  if (!addonInfo) {
-    addonInfo = await browser.management.getSelf();
-  }
-
-  return addonInfo;
-}
-
 async function updateDatabaseSummary(event: DbStateUpdatedMessage) {
   const dbSummaryPoint = document.getElementById('db-summary-mount-point')!;
-  const devMode = (await getAddonInfo()).installType === 'development';
   render(
     h(
       I18nProvider,
       null,
       h(DbStatus, {
         dbState: event.state,
-        devMode,
+        devMode: getReleaseStage() === 'development',
         onCancelDbUpdate: cancelDatabaseUpdate,
         onDeleteDb: deleteDatabase,
         onUpdateDb: triggerDatabaseUpdate,
