@@ -204,6 +204,7 @@ const edgeConfig = buildExtConfig({
   includeRikaichampName: true,
   isEdge: true,
   needsClipboardWrite: false,
+  optionsInTab: true,
   supportsExtensionSourceMaps: false,
   supportsMatchAboutBlank: true,
   target: 'chromium',
@@ -263,6 +264,7 @@ function buildExtConfig({
   mailExtension = false,
   mv3 = false,
   needsClipboardWrite = true,
+  optionsInTab = false,
   supportsAlphaVersion = false,
   supportsBrowserSpecificSettings = false,
   supportsBrowserStyle = false,
@@ -307,6 +309,10 @@ function buildExtConfig({
 
   if (needsClipboardWrite) {
     preprocessorFeatures.push('needs_clipboard_write');
+  }
+
+  if (optionsInTab) {
+    preprocessorFeatures.push('options_in_tab');
   }
 
   if (supportsAlphaVersion) {

@@ -128,6 +128,9 @@
   },
   /*#endif*/
   "options_ui": {
+    /*#if options_in_tab */
+    "open_in_tab": true,
+    /*#endif*/
     "page": "options.html"
   },
   /*#if !active_tab_only*/
