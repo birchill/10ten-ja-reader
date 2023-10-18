@@ -13,6 +13,7 @@ app.
   ([#1314](https://github.com/birchill/10ten-ja-reader/issues/1314)).
 - Make the `x` key close the popup if it is configured to _both_ close it and
   expand it.
+- Made the options page show up in a new tab on Edge.
 
 ## [1.15.1] - 2023-09-03
 
