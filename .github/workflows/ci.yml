@@ -26,7 +26,7 @@ jobs:
       # almost identical to build:chrome
       - name: Build
         run: |
-          yarn install --frozen-lockfile
+          yarn install --frozen-lockfile --network-timeout 300000
           yarn build:firefox
           yarn build:chrome
           yarn build:thunderbird
