@@ -18,6 +18,13 @@ jobs:
           node-version: 18
           cache: yarn
 
+      # See https://github.com/yarnpkg/yarn/issues/1874
+      #     https://github.com/yarnpkg/yarn/issues/3728
+      - name: Pre-install node-gyp
+        run: |-
+          npm install -g node-gyp
+          node-gyp install
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 

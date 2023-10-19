@@ -22,10 +22,17 @@ jobs:
           node-version: 18
           cache: yarn
 
+      # See https://github.com/yarnpkg/yarn/issues/1874
+      #     https://github.com/yarnpkg/yarn/issues/3728
+      - name: Pre-install node-gyp
+        run: |-
+          npm install -g node-gyp
+          node-gyp install
+
       # Check the build works. No need to run the build:edge target since it's
       # almost identical to build:chrome
       - name: Build
-        run: |
+        run: |-
           yarn install --frozen-lockfile --network-timeout 300000
           yarn build:firefox
           yarn build:chrome
@@ -42,7 +49,7 @@ jobs:
       # Check packaging doesn't error. Again, no need to worry about the
       # package:edge target.
       - name: Package
-        run: |
+        run: |-
           yarn package:firefox
           yarn package:chrome
 
