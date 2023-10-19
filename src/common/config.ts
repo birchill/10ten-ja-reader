@@ -305,6 +305,13 @@ export class Config {
             updatedChanges[key].newValue = this[key];
           }
           break;
+
+        // Rename the kanji reference key since the name we use to store it
+        // differs from the name we expose via our API.
+        case 'kanjiReferencesV2':
+          updatedChanges.kanjiReferences = changes.kanjiReferencesV2;
+          delete updatedChanges.kanjiReferencesV2;
+          break;
       }
     }
 
