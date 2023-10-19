@@ -1,7 +1,7 @@
 /// <reference path="../common/constants.d.ts" />
 import Bugsnag from '@birchill/bugsnag-zero';
 import { h, render } from 'preact';
-import browser, { type Runtime } from 'webextension-polyfill';
+import browser from 'webextension-polyfill';
 
 import { CopyKeys, CopyNextKeyStrings } from '../common/copy-keys';
 import { Config, DEFAULT_KEY_SETTINGS } from '../common/config';
@@ -13,13 +13,6 @@ import {
 } from '../common/content-config-params';
 import { dbLanguageMeta, isDbLanguageId } from '../common/db-languages';
 import {
-  cancelDbUpdate,
-  DbStateUpdatedMessage,
-  deleteDb,
-  updateDb,
-} from '../common/db-listener-messages';
-import { I18nProvider } from '../common/i18n';
-import {
   getReferenceLabelsForLang,
   getReferencesForLang,
 } from '../common/refs';
@@ -28,7 +21,6 @@ import { startBugsnag } from '../utils/bugsnag';
 import { html } from '../utils/builder';
 import { isTouchDevice, possiblyHasPhysicalKeyboard } from '../utils/device';
 import { empty } from '../utils/dom-utils';
-import { isObject } from '../utils/is-object';
 import {
   isChromium,
   isEdge,
@@ -40,11 +32,10 @@ import {
 import { getThemeClass } from '../utils/themes';
 
 import { Command, CommandParams, isValidKey } from './commands';
-import { DbStatus } from './DbStatus';
 import { translateDoc } from './l10n';
+import { OptionsPage } from './OptionsPage';
 
 import './options.css';
-import { getReleaseStage } from '../utils/release-stage';
 
 startBugsnag();
 
@@ -127,6 +118,9 @@ function completeForm() {
         config.noTextHighlight = false;
       }
     });
+
+    const container = document.getElementById('container')!;
+    render(h(OptionsPage, null), container);
   }
 
   document
@@ -974,18 +968,6 @@ function fillVals() {
   }
 }
 
-let browserPort: Runtime.Port | undefined;
-
-function isDbStateUpdatedMessage(
-  event: unknown
-): event is DbStateUpdatedMessage {
-  return (
-    typeof event === 'object' &&
-    typeof (event as any).type === 'string' &&
-    (event as any).type === 'dbstateupdated'
-  );
-}
-
 function updateFormFromConfig() {
   // If the language changes, the set of references we should show might also
   // change. We need to do this before calling `fillVals` since that will take
@@ -1005,106 +987,8 @@ window.onload = async () => {
   }
 
   config.addChangeListener(updateFormFromConfig);
-
-  // Listen to changes to the database.
-  browserPort = browser.runtime.connect(undefined, { name: 'options' });
-  browserPort.onMessage.addListener((event: unknown) => {
-    if (isDbStateUpdatedMessage(event)) {
-      // For Runtime.Port.postMessage Chrome appears to serialize objects using
-      // JSON serialization (not structured cloned). As a result, any Date
-      // objects will be transformed into strings.
-      //
-      // Ideally we'd introduce a new type for these deserialized objects that
-      // converts `Date` to `Date | string` but that is likely to take a full
-      // day of TypeScript wrestling so instead we just manually reach into
-      // this object and convert the fields known to possibly contain dates
-      // into dates.
-      if (typeof event.state.updateState.lastCheck === 'string') {
-        event.state.updateState.lastCheck = new Date(
-          event.state.updateState.lastCheck
-        );
-      }
-      if (typeof event.state.updateError?.nextRetry === 'string') {
-        event.state.updateError.nextRetry = new Date(
-          event.state.updateError.nextRetry
-        );
-      }
-
-      void updateDatabaseSummary(event);
-    }
-  });
-
-  // It's possible this might be disconnected on iOS which doesn't seem to
-  // keep inactive ports alive.
-  //
-  // Note that according to the docs, this should not be called when _we_ call
-  // disconnect():
-  //
-  //  https://developer.chrome.com/docs/extensions/mv3/messaging/#port-lifetime
-  //
-  // Nevertheless, we check that `browserPort` is not undefined before trying to
-  // re-connect just in case some browsers behave differently here.
-  browserPort.onDisconnect.addListener((port: Runtime.Port) => {
-    // Firefox annotates `port` with an `error` but Chrome does not.
-    const error =
-      isObject((port as any).error) &&
-      typeof (port as any).error.message === 'string'
-        ? (port as any).error.message
-        : browser.runtime.lastError;
-    Bugsnag.leaveBreadcrumb(
-      `Options page disconnected from background page: ${error}`
-    );
-
-    // Wait a moment and try to reconnect
-    setTimeout(() => {
-      try {
-        // Check that browserPort is still set to _something_. If it is
-        // undefined it probably means we are shutting down.
-        if (!browserPort) {
-          return;
-        }
-        browserPort = browser.runtime.connect(undefined, { name: 'options' });
-      } catch (e) {
-        void Bugsnag.notify(e);
-      }
-    }, 1000);
-  });
 };
 
 window.onunload = () => {
   config.removeChangeListener(updateFormFromConfig);
-  if (browserPort) {
-    browserPort.disconnect();
-    browserPort = undefined;
-  }
 };
-
-async function updateDatabaseSummary(event: DbStateUpdatedMessage) {
-  const dbSummaryPoint = document.getElementById('db-summary-mount-point')!;
-  render(
-    h(
-      I18nProvider,
-      null,
-      h(DbStatus, {
-        dbState: event.state,
-        devMode: getReleaseStage() === 'development',
-        onCancelDbUpdate: cancelDatabaseUpdate,
-        onDeleteDb: deleteDatabase,
-        onUpdateDb: triggerDatabaseUpdate,
-      })
-    ),
-    dbSummaryPoint
-  );
-}
-
-function triggerDatabaseUpdate() {
-  browserPort?.postMessage(updateDb());
-}
-
-function cancelDatabaseUpdate() {
-  browserPort?.postMessage(cancelDbUpdate());
-}
-
-function deleteDatabase() {
-  browserPort?.postMessage(deleteDb());
-}
