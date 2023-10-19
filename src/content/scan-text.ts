@@ -99,7 +99,7 @@ export function scanText({
       }
 
       // Check if we should further expand the set of allowed characters in
-      // order to recognize certains types of metadata-type strings (e.g. years
+      // order to recognize certain types of metadata-type strings (e.g. years
       // or floor space measurements).
       ({ textDelimiter, textEnd } = lookForMetadata({
         currentText,
