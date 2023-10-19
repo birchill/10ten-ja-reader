@@ -357,7 +357,10 @@ function buildExtConfig({
       __VERSION__: `'${pjson.version}'`,
     }),
     new HtmlWebpackPlugin({
+      chunks: ['10ten-ja-options'],
       filename: 'options.html',
+      minify: false,
+      scriptLoading: 'blocking',
       template: './src/options/options.html',
     }),
     new MiniCssExtractPlugin({
