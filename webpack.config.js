@@ -51,7 +51,7 @@ const commonConfig = {
             test: /options.css/,
             use: [
               { loader: MiniCssExtractPlugin.loader },
-              'css-loader',
+              { loader: 'css-loader', options: { url: false } },
               'postcss-loader',
             ],
           },
