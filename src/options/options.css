@@ -854,29 +854,3 @@ fieldset.bordered {
     color: hsl(45, 35.3%, 80%);
   }
 }
-
-/*
- * Grid layout panel
- */
-
-.panel-section-grid {
-  display: grid;
-  width: 95%;
-  grid-template-columns: repeat(2, minmax(250px, 1fr));
-  grid-column-gap: 1em;
-  grid-auto-flow: column;
-  padding-top: 16px;
-  padding-bottom: 16px;
-}
-:root.firefox .panel-section-grid {
-  margin-left: 16px;
-  margin-right: 16px;
-}
-
-/* Edge options window is tiny */
-@media (max-width: 500px) {
-  .panel-section-grid {
-    grid-template-columns: minmax(250px, 1fr);
-    grid-auto-flow: row;
-  }
-}
