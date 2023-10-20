@@ -7,6 +7,8 @@ import {
   type ReferenceAbbreviation,
 } from '../common/refs';
 
+import { CheckboxRow } from './CheckboxRow';
+
 type Props = {
   dictLang: DbLanguageId;
   enabledReferences: Array<ReferenceAbbreviation>;
@@ -43,11 +45,11 @@ export function KanjiReferenceSetting(props: Props) {
 
   return (
     <div
-      class="section-content panel-section-grid"
+      class="firefox:mx-4 grid w-[95%] grid-cols-[minmax(250px,1fr)] gap-x-4 py-4 min-[500px]:grid-flow-col min-[500px]:grid-cols-[repeat(2,minmax(250px,1fr))]"
       style={{ gridTemplateRows }}
     >
       {references.map(({ ref, full }) => (
-        <div class="checkbox-row">
+        <CheckboxRow>
           <input
             type="checkbox"
             id={`ref-${ref}`}
@@ -67,7 +69,7 @@ export function KanjiReferenceSetting(props: Props) {
             }}
           />
           <label for={`ref-${ref}`}>{full}</label>
-        </div>
+        </CheckboxRow>
       ))}
     </div>
   );
