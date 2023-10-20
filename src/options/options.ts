@@ -12,10 +12,6 @@ import {
   TabDisplay,
 } from '../common/content-config-params';
 import { dbLanguageMeta, isDbLanguageId } from '../common/db-languages';
-import {
-  getReferenceLabelsForLang,
-  getReferencesForLang,
-} from '../common/refs';
 import { renderStar } from '../content/popup/icons';
 import { startBugsnag } from '../utils/bugsnag';
 import { html } from '../utils/builder';
@@ -87,9 +83,6 @@ function completeForm() {
   // Language
   fillInLanguages();
 
-  // Kanji
-  createKanjiReferences();
-
   // l10n
   translateDoc();
 
@@ -120,7 +113,7 @@ function completeForm() {
     });
 
     const container = document.getElementById('container')!;
-    render(h(OptionsPage, null), container);
+    render(h(OptionsPage, { config }), container);
   }
 
   document
@@ -230,12 +223,6 @@ function completeForm() {
   document.getElementById('fxCurrency')!.addEventListener('input', (event) => {
     config.fxCurrency = (event.target as HTMLSelectElement).value;
   });
-
-  document
-    .getElementById('showKanjiComponents')!
-    .addEventListener('click', (event) => {
-      config.showKanjiComponents = (event.target as HTMLInputElement).checked;
-    });
 }
 
 function renderPopupStyleSelect() {
@@ -811,63 +798,9 @@ function fillInLanguages() {
   });
 }
 
-function createKanjiReferences() {
-  const container = document.getElementById(
-    'kanji-reference-list'
-  ) as HTMLDivElement;
-
-  // Remove any non-static entries
-  for (const child of Array.from(container.children)) {
-    if (!child.classList.contains('static')) {
-      child.remove();
-    }
-  }
-
-  const referenceNames = getReferenceLabelsForLang(
-    config.dictLang,
-    browser.i18n.getMessage
-  );
-  for (const { ref, full } of referenceNames) {
-    const checkbox = html('input', {
-      type: 'checkbox',
-      id: `ref-${ref}`,
-      name: ref,
-    });
-    checkbox.addEventListener('click', (event) => {
-      config.updateKanjiReferences({
-        [ref]: (event.target as HTMLInputElement).checked,
-      });
-    });
-
-    const label = html('label', { for: `ref-${ref}` }, full);
-    if (NEW_REFERENCES.includes(ref)) {
-      label.append(
-        html(
-          'span',
-          { class: 'new-badge' },
-          browser.i18n.getMessage('options_new_badge_text')
-        )
-      );
-    }
-
-    container.append(html('div', { class: 'checkbox-row' }, checkbox, label));
-  }
-
-  // We want to match the arrangement of references when they are displayed,
-  // that is, in a vertically flowing grid. See comments where we generate the
-  // popup styles for more explanation.
-  //
-  // We need to add 1 to the number of references, however, to accommodate the
-  // "Kanji components" item.
-  container.style.gridTemplateRows = `repeat(${Math.ceil(
-    (referenceNames.length + 1) / 2
-  )}, minmax(min-content, max-content))`;
-}
-
 // Expire current set of badges on Oct 10
 const NEW_EXPIRY = new Date(2023, 9, 10);
 const NEW_KEYS = ['expandPopup'];
-const NEW_REFERENCES = ['wk'];
 
 function expireNewBadges() {
   if (new Date() < NEW_EXPIRY) {
@@ -900,7 +833,6 @@ function fillVals() {
   optform.expandKanji.checked = autoExpand.includes('kanji');
   optform.highlightText.checked = !config.noTextHighlight;
   optform.contextMenuEnable.checked = config.contextMenuEnable;
-  optform.showKanjiComponents.checked = config.showKanjiComponents;
   optform.mouseInteractivity.value = config.popupInteractive
     ? 'enable'
     : 'disable';
@@ -961,22 +893,6 @@ function fillVals() {
   for (const option of langOptions) {
     option.selected = option.value === dictLang;
   }
-
-  const enabledReferences = new Set(config.kanjiReferences);
-  for (const ref of getReferencesForLang(config.dictLang)) {
-    const checkbox = document.getElementById(`ref-${ref}`) as HTMLInputElement;
-    if (checkbox) {
-      checkbox.checked = enabledReferences.has(ref);
-    }
-  }
-}
-
-function updateFormFromConfig() {
-  // If the language changes, the set of references we should show might also
-  // change. We need to do this before calling `fillVals` since that will take
-  // care of ticking the right boxes.
-  createKanjiReferences();
-  fillVals();
 }
 
 window.onload = async () => {
@@ -989,9 +905,9 @@ window.onload = async () => {
     document.documentElement.classList.add('initialized');
   }
 
-  config.addChangeListener(updateFormFromConfig);
+  config.addChangeListener(fillVals);
 };
 
 window.onunload = () => {
-  config.removeChangeListener(updateFormFromConfig);
+  config.removeChangeListener(fillVals);
 };
