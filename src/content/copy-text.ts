@@ -4,10 +4,11 @@ import browser from 'webextension-polyfill';
 import { NameResult, Sense, WordResult } from '../background/search-result';
 import { CopyType } from '../common/copy-keys';
 import {
-  getReferenceValue,
   getSelectedReferenceLabels,
   ReferenceAbbreviation,
 } from '../common/refs';
+
+import { getReferenceValue } from './reference-value';
 
 export type CopyEntry =
   | { type: 'word'; data: WordResult }
