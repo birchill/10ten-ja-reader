@@ -823,7 +823,10 @@ function createKanjiReferences() {
     }
   }
 
-  const referenceNames = getReferenceLabelsForLang(config.dictLang);
+  const referenceNames = getReferenceLabelsForLang(
+    config.dictLang,
+    browser.i18n.getMessage
+  );
   for (const { ref, full } of referenceNames) {
     const checkbox = html('input', {
       type: 'checkbox',

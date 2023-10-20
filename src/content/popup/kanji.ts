@@ -349,7 +349,10 @@ function renderReferences(
     lang: getLangTag(),
   });
 
-  const referenceNames = getSelectedReferenceLabels(options.kanjiReferences);
+  const referenceNames = getSelectedReferenceLabels(
+    options.kanjiReferences,
+    browser.i18n.getMessage
+  );
   let numReferences = 0;
   for (const ref of referenceNames) {
     // Don't show the Nelson radical if it's the same as the regular radical
