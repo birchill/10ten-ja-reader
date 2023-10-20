@@ -1,6 +1,5 @@
-import browser from 'webextension-polyfill';
-
 import { DbLanguageId } from './db-languages';
+import { TranslateFunctionType } from './i18n';
 
 const SUPPORTED_REFERENCES = [
   // The radical for the kanji (number and character, from rad field)
@@ -165,7 +164,8 @@ const REFERENCE_LABELS: {
 type ReferenceAndLabel = { ref: ReferenceAbbreviation } & ReferenceLabel;
 
 export function getReferenceLabelsForLang(
-  lang: string
+  lang: string,
+  t: TranslateFunctionType
 ): Array<ReferenceAndLabel> {
   const result: Array<ReferenceAndLabel> = [];
 
@@ -173,7 +173,7 @@ export function getReferenceLabelsForLang(
     if (lang !== 'fr' && ref === 'maniette') {
       continue;
     }
-    result.push({ ref, ...getLabelForReference(ref) });
+    result.push({ ref, ...getLabelForReference(ref, t) });
   }
 
   // Sort by short version first since this is what will be shown in the pop-up.
@@ -183,7 +183,8 @@ export function getReferenceLabelsForLang(
 }
 
 export function getSelectedReferenceLabels(
-  selectedRefs: ReadonlyArray<ReferenceAbbreviation>
+  selectedRefs: ReadonlyArray<ReferenceAbbreviation>,
+  t: TranslateFunctionType
 ): Array<ReferenceAndLabel> {
   const result: Array<ReferenceAndLabel> = [];
   const selectedRefsSet = new Set<ReferenceAbbreviation>(selectedRefs);
@@ -192,7 +193,7 @@ export function getSelectedReferenceLabels(
     if (!selectedRefsSet.has(ref)) {
       continue;
     }
-    result.push({ ref, ...getLabelForReference(ref) });
+    result.push({ ref, ...getLabelForReference(ref, t) });
   }
 
   // Sort by short version first since this is what will be shown in the pop-up.
@@ -201,25 +202,28 @@ export function getSelectedReferenceLabels(
   return result;
 }
 
-function getLabelForReference(ref: ReferenceAbbreviation): ReferenceLabel {
+function getLabelForReference(
+  ref: ReferenceAbbreviation,
+  t: TranslateFunctionType
+): ReferenceLabel {
   switch (ref) {
     case 'radical':
-      return { full: browser.i18n.getMessage('ref_label_radical') };
+      return { full: t('ref_label_radical') };
 
     case 'nelson_r':
-      return { full: browser.i18n.getMessage('ref_label_nelson_r') };
+      return { full: t('ref_label_nelson_r') };
 
     case 'kk':
-      return { full: browser.i18n.getMessage('ref_label_kk') };
+      return { full: t('ref_label_kk') };
 
     case 'jlpt':
-      return { full: browser.i18n.getMessage('ref_label_jlpt') };
+      return { full: t('ref_label_jlpt') };
 
     case 'py':
-      return { full: browser.i18n.getMessage('ref_label_py') };
+      return { full: t('ref_label_py') };
 
     case 'unicode':
-      return { full: browser.i18n.getMessage('ref_label_unicode') };
+      return { full: t('ref_label_unicode') };
 
     default:
       return REFERENCE_LABELS[ref];

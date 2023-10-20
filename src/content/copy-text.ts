@@ -173,7 +173,10 @@ export function getEntryToCopy(
         }
 
         if (kanjiReferences.length) {
-          const labels = getSelectedReferenceLabels(kanjiReferences);
+          const labels = getSelectedReferenceLabels(
+            kanjiReferences,
+            browser.i18n.getMessage
+          );
           for (const label of labels) {
             if (
               label.ref === 'nelson_r' &&
@@ -349,7 +352,10 @@ export function getFieldsToCopy(
           result += `\t${components}`;
         }
         if (kanjiReferences.length) {
-          const labels = getSelectedReferenceLabels(kanjiReferences);
+          const labels = getSelectedReferenceLabels(
+            kanjiReferences,
+            browser.i18n.getMessage
+          );
           for (const label of labels) {
             // For some common types we don't produce the label
             switch (label.ref) {
