@@ -1,11 +1,10 @@
 import { KanjiResult } from '@birchill/jpdict-idb';
 import browser from 'webextension-polyfill';
 
-import {
-  getReferenceValue,
-  getSelectedReferenceLabels,
-} from '../../common/refs';
+import { getSelectedReferenceLabels } from '../../common/refs';
 import { html } from '../../utils/builder';
+
+import { getReferenceValue } from '../reference-value';
 
 import { renderFrequency, renderPencil, renderPerson } from './icons';
 import { getLangTag } from './lang-tag';

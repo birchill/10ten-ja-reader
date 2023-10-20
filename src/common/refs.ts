@@ -1,4 +1,3 @@
-import { KanjiResult } from '@birchill/jpdict-idb';
 import browser from 'webextension-polyfill';
 
 import { DbLanguageId } from './db-languages';
@@ -225,59 +224,4 @@ function getLabelForReference(ref: ReferenceAbbreviation): ReferenceLabel {
     default:
       return REFERENCE_LABELS[ref];
   }
-}
-
-export function getReferenceValue(
-  entry: KanjiResult,
-  ref: ReferenceAbbreviation
-): string {
-  switch (ref) {
-    case 'nelson_r': {
-      // If the Nelson radical is empty, it means it's the same as the regular
-      // radical so we should fall through to that branch.
-      if (entry.rad.nelson) {
-        return `${entry.rad.nelson} ${String.fromCodePoint(
-          entry.rad.nelson + 0x2eff
-        )}`;
-      }
-      // Fall through
-    }
-
-    case 'radical': {
-      const { rad } = entry;
-      const radChar = rad.base ? rad.base.b || rad.base.k : rad.b || rad.k;
-      return `${rad.x} ${radChar}`;
-    }
-
-    case 'kk':
-      return renderKanKen(entry.misc.kk);
-
-    case 'jlpt':
-      return entry.misc.jlpt ? String(entry.misc.jlpt) : '';
-
-    case 'py':
-      return entry.r.py ? entry.r.py.join(', ') : '';
-
-    case 'unicode':
-      return `U+${entry.c.codePointAt(0)!.toString(16).toUpperCase()}`;
-
-    case 'wk':
-      return entry.misc.wk ? String(entry.misc.wk) : '';
-
-    default:
-      return entry.refs[ref] ? String(entry.refs[ref]) : '';
-  }
-}
-
-function renderKanKen(level: number | undefined): string {
-  if (!level) {
-    return '—';
-  }
-  if (level === 15) {
-    return browser.i18n.getMessage('content_kanji_kentei_level_pre', ['1']);
-  }
-  if (level === 25) {
-    return browser.i18n.getMessage('content_kanji_kentei_level_pre', ['2']);
-  }
-  return browser.i18n.getMessage('content_kanji_kentei_level', [String(level)]);
 }
