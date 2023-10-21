@@ -1,15 +1,11 @@
-import { useCallback } from 'preact/hooks';
-
 import type { Config } from '../common/config';
 import { I18nProvider, useLocale } from '../common/i18n';
-import { ReferenceAbbreviation } from '../common/refs';
 import { getReleaseStage } from '../utils/release-stage';
 
 import { DbStatus } from './DbStatus';
 import { KanjiReferenceSettings } from './KanjiReferenceSettings';
 import { SectionHeading } from './SectionHeading';
 import { useDb } from './use-db';
-import { useConfigValue } from './use-config-value';
 
 type Props = {
   config: Config;
@@ -29,35 +25,10 @@ function OptionsPageInner(props: Props) {
     useDb();
   const releaseStage = getReleaseStage();
 
-  const dictLang = useConfigValue(props.config, 'dictLang');
-  const enabledReferences = useConfigValue(props.config, 'kanjiReferences');
-  const showKanjiComponents = useConfigValue(
-    props.config,
-    'showKanjiComponents'
-  );
-  const onToggleReference = useCallback(
-    (ref: ReferenceAbbreviation, value: boolean) => {
-      props.config.updateKanjiReferences({ [ref]: value });
-    },
-    [props.config]
-  );
-  const onToggleKanjiComponents = useCallback(
-    (value: boolean) => {
-      props.config.showKanjiComponents = value;
-    },
-    [props.config]
-  );
-
   return (
     <>
       <SectionHeading>{t('options_kanji_dictionary_heading')}</SectionHeading>
-      <KanjiReferenceSettings
-        dictLang={dictLang}
-        enabledReferences={enabledReferences}
-        showKanjiComponents={showKanjiComponents}
-        onToggleReference={onToggleReference}
-        onToggleKanjiComponents={onToggleKanjiComponents}
-      />
+      <KanjiReferenceSettings config={props.config} />
       <SectionHeading>{t('options_dictionary_data_heading')}</SectionHeading>
       <DbStatus
         dbState={dbState}
