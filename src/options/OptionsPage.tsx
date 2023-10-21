@@ -6,7 +6,7 @@ import { ReferenceAbbreviation } from '../common/refs';
 import { getReleaseStage } from '../utils/release-stage';
 
 import { DbStatus } from './DbStatus';
-import { KanjiReferenceSetting } from './KanjiReferenceSetting';
+import { KanjiReferenceSettings } from './KanjiReferenceSettings';
 import { SectionHeading } from './SectionHeading';
 import { useDb } from './use-db';
 import { useConfigValue } from './use-config-value';
@@ -51,7 +51,7 @@ function OptionsPageInner(props: Props) {
   return (
     <>
       <SectionHeading>{t('options_kanji_dictionary_heading')}</SectionHeading>
-      <KanjiReferenceSetting
+      <KanjiReferenceSettings
         dictLang={dictLang}
         enabledReferences={enabledReferences}
         showKanjiComponents={showKanjiComponents}

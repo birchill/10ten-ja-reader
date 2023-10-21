@@ -3,7 +3,7 @@ import { useSelect } from 'react-cosmos/client';
 
 import { DbLanguageId, dbLanguages } from '../common/db-languages';
 import { ReferenceAbbreviation } from '../common/refs';
-import { KanjiReferenceSetting } from './KanjiReferenceSetting';
+import { KanjiReferenceSettings } from './KanjiReferenceSettings';
 
 import './options.css';
 
@@ -31,7 +31,7 @@ export default function () {
   const [showKanjiComponents, setShowKanjiComponents] = useState(true);
 
   return (
-    <KanjiReferenceSetting
+    <KanjiReferenceSettings
       dictLang={dictLang}
       enabledReferences={enabledReferences}
       showKanjiComponents={showKanjiComponents}

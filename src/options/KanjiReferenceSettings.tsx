@@ -17,7 +17,7 @@ type Props = {
   onToggleKanjiComponents: (value: boolean) => void;
 };
 
-export function KanjiReferenceSetting(props: Props) {
+export function KanjiReferenceSettings(props: Props) {
   const { t } = useLocale();
   const lang = t('lang_tag');
 
