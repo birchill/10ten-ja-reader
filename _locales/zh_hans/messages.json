@@ -78,7 +78,7 @@
     "description": "Label for key to copy a word to the clipboard"
   },
   "content_copy_overlay_cancel_button": {
-    "message": "キャンセル",
+    "message": "取消",
     "description": "Label for the cancel button"
   },
   "content_copy_overlay_copy_title": {
@@ -285,7 +285,7 @@
     "message": "服务"
   },
   "content_names_tag_ship": {
-    "message": "船"
+    "message": "船名"
   },
   "content_names_tag_station": {
     "message": "车站"
@@ -579,7 +579,7 @@
     "description": "Label applied to senses with the 'Christn' field"
   },
   "field_label_cloth": {
-    "message": "衣服",
+    "message": "服装",
     "description": "Label applied to senses with the 'cloth' field"
   },
   "field_label_comp": {
@@ -839,7 +839,7 @@
     "description": "Label applied to senses with the 'tradem' field"
   },
   "field_label_tv": {
-    "message": "电视机",
+    "message": "电视",
     "description": "Label applied to senses with the 'tv' field"
   },
   "field_label_vidg": {
@@ -883,15 +883,15 @@
     "description": "Short annotation given to kana headwords with gikun (meaning as reading) or jukujikun (special kanji reading)"
   },
   "head_info_label_ikana": {
-    "message": "非标",
+    "message": "非标准",
     "description": "Short annotation given to (mostly?) kana headwords that have rare use of kana"
   },
   "head_info_label_ikanji": {
-    "message": "非标",
+    "message": "非标准",
     "description": "Short annotation given to kanji headwords that have rare use of kanji"
   },
   "head_info_label_io": {
-    "message": "非标",
+    "message": "非标准",
     "description": "Short annotation given to kanji headwords that have rare use of okurigana"
   },
   "head_info_label_okana": {
@@ -1151,7 +1151,7 @@
     "description": "Label used to describe senses whose source language is 'th' (Thai)"
   },
   "lang_label_tl": {
-    "message": "他加祿語",
+    "message": "他加禄语",
     "description": "Label used to describe senses whose source language is 'tl' (Tagalog)"
   },
   "lang_label_tr": {
@@ -1263,7 +1263,7 @@
     "description": "Label used to describe senses with the 'doc' (document) annotation"
   },
   "misc_label_euph": {
-    "message": "委婉的",
+    "message": "委婉",
     "description": "Label used to describe senses with the 'euph' (euphemistic) annotation"
   },
   "misc_label_ev": {
@@ -1467,7 +1467,7 @@
     "description": "Label for not showing pitch accent information"
   },
   "options_browser_commands_no_toggle_key": {
-    "message": "您无法在浏览器中在此处更改此快捷键。",
+    "message": "由于您使用的浏览器的限制，您无法在此处更改此快捷键。",
     "description": "Descriptive text used for other browsers which do not permit configuring extension keys from the extension itself."
   },
   "options_browser_commands_no_toggle_key_chrome": {
@@ -1499,7 +1499,7 @@
     "description": "Heading for the section for configuring currency conversion"
   },
   "options_currency_label": {
-    "message": "货币",
+    "message": "币种",
     "description": "Label for the drop-down box for choosing the currency"
   },
   "options_currency_none_label": {
@@ -1627,7 +1627,7 @@
     "description": "Label for font size drop-down."
   },
   "options_font_size_large": {
-    "message": "大号",
+    "message": "大字体",
     "description": "Label for larger font size option."
   },
   "options_font_size_normal": {
@@ -1635,7 +1635,7 @@
     "description": "Label for default font size option."
   },
   "options_font_size_xl": {
-    "message": "特大号",
+    "message": "特大字体",
     "description": "Label for largest font size option."
   },
   "options_general_heading": {
@@ -1646,7 +1646,7 @@
     "message": "匹配词条高亮显示"
   },
   "options_highlight_style_blue": {
-    "message": "蓝色的"
+    "message": "蓝色"
   },
   "options_highlight_style_label": {
     "message": "高亮显示风格",
@@ -1776,10 +1776,10 @@
     "message": "复制词语或汉字"
   },
   "options_popup_expand_popup": {
-    "message": "展开窗口"
+    "message": "展开弹出窗口"
   },
   "options_popup_interactivity_heading": {
-    "message": "窗口交互",
+    "message": "弹出窗口交互",
     "description": "Heading for the section for configuring popup interactivity features"
   },
   "options_popup_kanji_lookup": {
@@ -1892,14 +1892,14 @@
     "description": "Text label for the radio button to show tabs on top"
   },
   "options_toolbar_icon_classic_label": {
-    "message": "经典的"
+    "message": "经典"
   },
   "options_toolbar_icon_default_alt": {
     "message": "默认",
     "description": "Alt text for the default toolbar icon"
   },
   "options_toolbar_icon_kanji_label": {
-    "message": "中国文字"
+    "message": "汉字"
   },
   "options_toolbar_icon_label": {
     "message": "工具栏图标",
@@ -1910,7 +1910,7 @@
     "description": "Alt text for the 天 toolbar icon"
   },
   "options_touch_enable_tap_lookup": {
-    "message": "点击查询文本",
+    "message": "点触文本以查询",
     "description": "Checkbox label for setting to enable looking up by tapping a word"
   },
   "options_update_check_button_label": {
