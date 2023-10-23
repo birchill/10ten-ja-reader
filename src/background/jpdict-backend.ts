@@ -163,6 +163,71 @@ export class JpdictLocalBackend implements JpdictBackend {
       this.currentUpdate = undefined;
     }
 
+    // Firefox 112+ has an unfortunate bug where, when we try to clear an
+    // objectStore, it just hangs:
+    //
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=1860486
+    //
+    // Until that bug is fixed (or we replace our database storage entirely), we
+    // need to detect when we are likely to want to clear an object store and
+    // simply blow away the whole database and replace it.
+    //
+    // That's quite unfortunate because it means we'll need to download all the
+    // names data again which is massive but it's better than having the user be
+    // stuck.
+    if (isFirefoxWithBuggyObjectStoreClear()) {
+      // Check if we need to replace the data, i.e. if running an update is
+      // likely to try and clear a data series' object store.
+      //
+      // There are basically two cases where this happens:
+      //
+      // 1. We are changing the language
+      //
+      // 2. The major/minor version of a data series has changed
+      //
+      // Working out if the language is changed is hard. Not all series have all
+      // languages so a mismatch between the passed-in `lang` and the series'
+      // language doesn't necessarily mean that the language has changed.
+      //
+      // Instead, if there are _no_ series that match the language we can assume
+      // it has changed.
+      const langChanged =
+        this.db &&
+        this.db.kanji.state === 'ok' &&
+        this.db.kanji.version?.lang !== lang &&
+        this.db.radicals.state === 'ok' &&
+        this.db.radicals.version?.lang !== lang &&
+        this.db.words.state === 'ok' &&
+        this.db.words.version?.lang !== lang;
+
+      // Working out if the major/minor version has changed is impossible
+      // without either:
+      //
+      // 1. Duplicating the logic to download the version info metadata here and
+      //    comparing it, or
+      //
+      // 2. Passing some sort of flag into `updateWithRetry` to indicate that
+      //    if the version has changed we should replace the database.
+      //
+      // Both are very invasive so we'll just have to commit to not updating the
+      // major/minor version until either the bug is fixed in Firefox or we
+      // replace our database storage.
+
+      if (langChanged) {
+        try {
+          this.notifyListeners(
+            leaveBreadcrumb({
+              message:
+                'Detected language change on buggy version of Firefox. Replacing database.',
+            })
+          );
+          await this.initDb();
+        } catch (error) {
+          this.notifyListeners(notifyError({ error }));
+        }
+      }
+    }
+
     const onUpdateError =
       (series: DataSeries) =>
       (params: { error: Error; nextRetry?: Date; retryCount?: number }) => {
@@ -316,4 +381,13 @@ function getLatestCheckTime(db: JpdictIdb): Date | null {
   );
 
   return latestCheckAsNumber !== 0 ? new Date(latestCheckAsNumber) : null;
+}
+
+function isFirefoxWithBuggyObjectStoreClear() {
+  const userAgent = navigator.userAgent;
+  const firefoxMatch = /Firefox\/(\d+)/.exec(userAgent);
+  if (firefoxMatch && firefoxMatch[1]) {
+    return parseInt(firefoxMatch[1], 10) >= 112;
+  }
+  return false;
 }
