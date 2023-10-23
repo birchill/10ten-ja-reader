@@ -8,12 +8,15 @@ app.
 
 ## [Unreleased]
 
-- Fixed popup changing width in some cases (e.g. when tabs are hidden and
+- Fixed the popup changing width in some cases (e.g. when tabs are hidden and
   scrollbars are configured to always show)
   ([#1314](https://github.com/birchill/10ten-ja-reader/issues/1314)).
 - Make the `x` key close the popup if it is configured to _both_ close it and
   expand it.
 - Made the options page show up in a new tab on Edge.
+- Added a workaround for a
+  [Firefox bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1860486) that would
+  cause 10ten to hang when changing dictionary language.
 
 ## [1.15.1] - 2023-09-03
 
