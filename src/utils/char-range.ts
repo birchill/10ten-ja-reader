@@ -138,6 +138,8 @@ function isCharacterClassRange(re: RegExp): boolean {
 // typically delimit words.
 /** @public */
 export const japaneseChar = getCombinedCharRange([
+  // We include half-width numbers so we can recognize things like 小1
+  halfWidthNumbers,
   fullWidthAlphanumerics,
   zeroWidthNonJoiner,
   whiteCircle,
@@ -174,18 +176,40 @@ export function getNegatedCharRange(range: RegExp): RegExp {
 
 export const nonJapaneseChar = getNegatedCharRange(japaneseChar);
 
-export const nonJapaneseCharOrNumber = getNegatedCharRange(
-  getCombinedCharRange([japaneseChar, halfWidthNumbers, /[,、.．]/])
-);
-
 export function hasKatakana(text: string): boolean {
   return katakana.test(text);
 }
 
-const numberStartRegex = /^[0-9０-９一二三四五六七八九十百]/;
+export function startsWithDigit(input: string): boolean {
+  const c = input.length ? input.charCodeAt(0) : 0;
+  return (c >= 48 && c <= 57) || (c >= 65296 && c <= 65305);
+}
 
-export function startsWithNumber(input: string): boolean {
-  return !!input.length && numberStartRegex.test(input);
+const kanjiNumerals = [
+  '〇',
+  '一',
+  '二',
+  '三',
+  '四',
+  '五',
+  '六',
+  '七',
+  '八',
+  '九',
+  '十',
+  '百',
+  '千',
+  '万',
+  '億',
+  '兆',
+  '京',
+];
+
+export function startsWithNumeral(input: string): boolean {
+  return (
+    startsWithDigit(input) ||
+    (!!input.length && kanjiNumerals.includes(input[0]))
+  );
 }
 
 const onlyDigits = /^[0-9０-９,，、.．]+$/;

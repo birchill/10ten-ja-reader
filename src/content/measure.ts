@@ -1,14 +1,15 @@
 import {
   getCombinedCharRange,
   getNegatedCharRange,
-  startsWithNumber,
+  startsWithDigit,
+  startsWithNumeral,
 } from '../utils/char-range';
 
 import { parseNumber } from './numbers';
 
 export function lookForMeasure({
   nodeText,
-  textDelimiter: originalTextDelimeter,
+  textDelimiter: originalTextDelimiter,
 }: {
   nodeText: string;
   textDelimiter: RegExp;
@@ -16,16 +17,14 @@ export function lookForMeasure({
   textDelimiter: RegExp;
   textEnd: number;
 } | null {
-  if (!startsWithNumber(nodeText)) {
+  if (!startsWithNumeral(nodeText)) {
     return null;
   }
 
-  // getTextFromTextNode should already have expanded this range to include
-  // half-width numbers and serparators so we just need to add the units and
-  // space characters.
+  const includeSeparators = startsWithDigit(nodeText);
   const japaneseOrUnit = getCombinedCharRange([
-    getNegatedCharRange(originalTextDelimeter),
-    /[\sm2㎡²]/,
+    getNegatedCharRange(originalTextDelimiter),
+    includeSeparators ? /[\sm2㎡²,、.．]/ : /[\sm2㎡²]/,
   ]);
   const textDelimiter = getNegatedCharRange(japaneseOrUnit);
 

@@ -419,6 +419,21 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(result, 'あ\u200cい\u200cう\u200c', [textNode, 0, 6]);
   });
 
+  it('should include trailing half-width numerals', () => {
+    testDiv.append('小1。');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(result, '小1', [textNode, 0, 2]);
+  });
+
   it('should include the year when recognizing years', () => {
     testDiv.append('昭和56年に');
     const textNode = testDiv.firstChild as Text;
@@ -431,7 +446,7 @@ describe('getTextAtPoint', () => {
       },
     });
 
-    assertTextResultEqual(result, '昭和56年', [textNode, 0, 5]);
+    assertTextResultEqual(result, '昭和56年に', [textNode, 0, 6]);
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
@@ -473,7 +488,7 @@ describe('getTextAtPoint', () => {
       },
     });
 
-    assertTextResultEqual(result, '昭和５6年', [textNode, 0, 5]);
+    assertTextResultEqual(result, '昭和５6年に', [textNode, 0, 6]);
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
@@ -495,7 +510,7 @@ describe('getTextAtPoint', () => {
       },
     });
 
-    assertTextResultEqual(result, '昭和 56 年', [textNode, 0, 7]);
+    assertTextResultEqual(result, '昭和 56 年に', [textNode, 0, 8]);
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
@@ -517,7 +532,7 @@ describe('getTextAtPoint', () => {
       },
     });
 
-    assertTextResultEqual(result, '昭和56', [textNode, 0, 4]);
+    assertTextResultEqual(result, '昭和56に', [textNode, 0, 5]);
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
@@ -542,10 +557,10 @@ describe('getTextAtPoint', () => {
 
     assertTextResultEqual(
       result,
-      '昭和56年',
+      '昭和56年に',
       [firstTextNode, 0, 2],
       [middleTextNode, 0, 2],
-      [lastTextNode, 0, 1]
+      [lastTextNode, 0, 2]
     );
     assert.deepEqual(result!.meta, {
       type: 'era',
@@ -570,9 +585,9 @@ describe('getTextAtPoint', () => {
 
     assertTextResultEqual(
       result,
-      '昭和  56年',
+      '昭和  56年に',
       [firstTextNode, 0, 3],
-      [middleTextNode, 0, 4]
+      [middleTextNode, 0, 5]
     );
     assert.deepEqual(result!.meta, {
       type: 'era',
@@ -586,6 +601,7 @@ describe('getTextAtPoint', () => {
     testDiv.innerHTML = '昭和<span>56年</span>に';
     const firstTextNode = testDiv.firstChild as Text;
     const middleTextNode = testDiv.childNodes[1].firstChild as Text;
+    const finalTextNode = testDiv.lastChild as Text;
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = getTextAtPoint({
@@ -597,9 +613,10 @@ describe('getTextAtPoint', () => {
 
     assertTextResultEqual(
       result,
-      '昭和56年',
+      '昭和56年に',
       [firstTextNode, 0, 2],
-      [middleTextNode, 0, 3]
+      [middleTextNode, 0, 3],
+      [finalTextNode, 0, 1]
     );
     assert.deepEqual(result!.meta, {
       type: 'era',
@@ -678,7 +695,7 @@ describe('getTextAtPoint', () => {
     });
   });
 
-  it('should stop at delimeters (even when matching years)', () => {
+  it('should stop at delimiters (even when matching years)', () => {
     testDiv.append('昭和三大馬鹿査定」発言に');
     const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 0);
@@ -719,7 +736,7 @@ describe('getTextAtPoint', () => {
     });
   });
 
-  it('should recognize Japanese yen values that start with ￥', () => {
+  it('should recognize Japanese yen values that start with ￥ (full-width)', () => {
     testDiv.append('価格￥8万8千です');
     const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 2);
@@ -739,7 +756,7 @@ describe('getTextAtPoint', () => {
     });
   });
 
-  it('should recognize Japanese yen values that start with ¥', () => {
+  it('should recognize Japanese yen values that start with ¥ (half-width)', () => {
     testDiv.append('価格¥ 8万8千です');
     const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 2);
@@ -756,6 +773,32 @@ describe('getTextAtPoint', () => {
       type: 'currency',
       value: 88000,
       matchLen: 6,
+    });
+  });
+
+  it('should recognize Japanese yen values that start with ¥ in a separate span', () => {
+    testDiv.innerHTML = '<span>¥</span> 88,000です';
+    const firstTextNode = testDiv.childNodes[0].firstChild as Text;
+    const secondTextNode = testDiv.childNodes[1] as Text;
+    const bbox = getBboxForOffset(firstTextNode, 0);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(
+      result,
+      '¥ 88,000です',
+      [firstTextNode, 0, 1],
+      [secondTextNode, 0, 9]
+    );
+    assert.deepEqual(result!.meta, {
+      type: 'currency',
+      value: 88000,
+      matchLen: 8,
     });
   });
 
