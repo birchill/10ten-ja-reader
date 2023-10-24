@@ -46,6 +46,8 @@ describe('parseNumber', () => {
     expect(parseNumber('54.321万')).toEqual(543_210);
     expect(parseNumber('987.654321万')).toBeCloseTo(9_876_543.21, 5);
     expect(parseNumber('1.2億')).toEqual(120000000);
+    // As seen here: https://www.athome.co.jp/kodate/1008941087/
+    expect(parseNumber('39,800万')).toEqual(398_000_000);
 
     // Bogus inputs
 

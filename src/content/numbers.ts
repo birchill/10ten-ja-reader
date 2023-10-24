@@ -109,6 +109,20 @@ export function parseNumber(inputText: string): number | null {
   }
 
   let numbers = digits as Array<number>;
+
+  // Special case where we have a series of digits followed by a power of ten,
+  // e.g. 39,800万円. These don't follow the usual rules of numbers so we treat
+  // them separately.
+  if (
+    numbers.length > 1 &&
+    numbers.slice(0, -1).every((d) => d >= 0 && d < 10) &&
+    numbers[numbers.length - 1]! >= 100
+  ) {
+    const powerOfTen = numbers.pop()!;
+    const multiplier = numbers.reduce((acc, d) => acc * 10 + d, 0);
+    return multiplier * powerOfTen;
+  }
+
   let result = 0;
 
   while (numbers.length > 1) {
