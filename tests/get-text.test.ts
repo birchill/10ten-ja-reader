@@ -736,6 +736,32 @@ describe('getTextAtPoint', () => {
     });
   });
 
+  it('should recognize slightly odd Japanese yen values', () => {
+    testDiv.innerHTML = '<span>39,800</span><span>万円</span>';
+    const firstTextNode = testDiv.firstChild!.firstChild as Text;
+    const secondTextNode = testDiv.childNodes[1].firstChild as Text;
+    const bbox = getBboxForOffset(firstTextNode, 0);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(
+      result,
+      '39,800万円',
+      [firstTextNode, 0, 6],
+      [secondTextNode, 0, 2]
+    );
+    assert.deepEqual(result!.meta, {
+      type: 'currency',
+      value: 398000000,
+      matchLen: 8,
+    });
+  });
+
   it('should recognize Japanese yen values that start with ￥ (full-width)', () => {
     testDiv.append('価格￥8万8千です');
     const textNode = testDiv.firstChild as Text;
