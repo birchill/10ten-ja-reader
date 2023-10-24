@@ -33,9 +33,9 @@ export function lookForMetadata({
 } {
   return (
     (matchCurrency
-      ? lookForCurrency({ nodeText, textDelimiter })
+      ? lookForCurrency({ currentText, nodeText, textDelimiter })
       : undefined) ||
-    lookForEra({ currentText, nodeText, textEnd }) ||
+    lookForEra({ currentText, nodeText, textEnd, textDelimiter }) ||
     lookForShogi({ nodeText, textDelimiter }) ||
     lookForMeasure({ nodeText, textDelimiter }) || {
       textDelimiter,

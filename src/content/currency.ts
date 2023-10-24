@@ -1,7 +1,7 @@
 import {
   getCombinedCharRange,
   getNegatedCharRange,
-  halfWidthNumbers,
+  startsWithNumeral,
 } from '../utils/char-range';
 
 import { parseNumber } from './numbers';
@@ -13,25 +13,30 @@ export type CurrencyMeta = {
 };
 
 export function lookForCurrency({
+  currentText,
   nodeText,
-  textDelimiter: originalTextDelimeter,
+  textDelimiter: originalTextDelimiter,
 }: {
+  currentText: string;
   nodeText: string;
   textDelimiter: RegExp;
 }): {
   textDelimiter: RegExp;
   textEnd: number;
 } | null {
-  // We only need to expand the search range if it starts with a currency
-  // symbol. For the 8千円 case, the regular text lookup will find the necessary
-  // text.
-  if (nodeText.length && nodeText[0] !== '¥' && nodeText[0] !== '￥') {
+  // If the source text might be a currency, expand our text delimiter to allow
+  // extra symbols that would normally be ignored.
+  const sourceText = currentText + nodeText;
+  const mightBeCurrency =
+    sourceText[0] === '¥' ||
+    sourceText[0] === '￥' ||
+    (startsWithNumeral(sourceText) && sourceText.indexOf('円') > 0);
+  if (!mightBeCurrency) {
     return null;
   }
 
   const japaneseOrPrice = getCombinedCharRange([
-    getNegatedCharRange(originalTextDelimeter),
-    halfWidthNumbers,
+    getNegatedCharRange(originalTextDelimiter),
     /[¥￥\s,、.．。]/,
   ]);
   const textDelimiter = getNegatedCharRange(japaneseOrPrice);

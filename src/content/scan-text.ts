@@ -1,8 +1,4 @@
-import {
-  nonJapaneseChar,
-  nonJapaneseCharOrNumber,
-  startsWithNumber,
-} from '../utils/char-range';
+import { nonJapaneseChar } from '../utils/char-range';
 import { CursorPosition } from './get-cursor-position';
 import { GetTextAtPointResult } from './get-text';
 import { extractGetTextMetadata, lookForMetadata } from './meta';
@@ -91,12 +87,6 @@ export function scanText({
       const currentText =
         result.text +
         nodeText.substring(0, textEnd === -1 ? undefined : textEnd);
-
-      // If the source starts with a number, expand our text delimeter to allow
-      // reading the rest of the number since it might be something like 5つ.
-      if (!currentText.length && startsWithNumber(nodeText)) {
-        textDelimiter = nonJapaneseCharOrNumber;
-      }
 
       // Check if we should further expand the set of allowed characters in
       // order to recognize certain types of metadata-type strings (e.g. years

@@ -66,7 +66,7 @@ export type ShogiMeta = {
 
 export function lookForShogi({
   nodeText,
-  textDelimiter: originalTextDelimeter,
+  textDelimiter: originalTextDelimiter,
 }: {
   nodeText: string;
   textDelimiter: RegExp;
@@ -79,28 +79,28 @@ export function lookForShogi({
   }
 
   // If the test starts with one of the shogi side indicators, then we assume
-  // that the text is a shogi move and we can use the shogi delimeter.
+  // that the text is a shogi move and we can use the shogi delimiter.
   if (['▲', '△', '☗', '☖'].includes(nodeText[0])) {
     return {
-      textDelimiter: shogiDelimeter,
-      textEnd: nodeText.search(shogiDelimeter),
+      textDelimiter: shogiDelimiter,
+      textEnd: nodeText.search(shogiDelimiter),
     };
   }
 
   // Otherwise, if it starts with an Arabic number followed by a kanji number
   // OR it starts with one of the characters meaning "same position" then
-  // expand the delimeter range to include all the shogi characters.
+  // expand the delimiter range to include all the shogi characters.
   if (!unprefixedShogiStart.test(nodeText)) {
     return null;
   }
 
-  const expandedDelimeter = getCombinedCharRange([
-    getNegatedCharRange(originalTextDelimeter),
+  const expandedDelimiter = getCombinedCharRange([
+    getNegatedCharRange(originalTextDelimiter),
     /[↑]/,
     // All the other characters such as 𠔼丶フゝ・○ etc. should already be
     // covered by `japaneseChar` so we don't need to add them here.
   ]);
-  const textDelimiter = getNegatedCharRange(expandedDelimeter);
+  const textDelimiter = getNegatedCharRange(expandedDelimiter);
 
   return {
     textDelimiter,
@@ -109,7 +109,7 @@ export function lookForShogi({
 }
 
 // This needs to be kept in sync with the regexes below.
-const shogiDelimeter =
+const shogiDelimiter =
   /[^▲△☗☖1-9１-９一二三四五六七八九同仝－𠔼ド歩兵丶フゝ・香禾キ↑桂土銀ヨ角ク飛ヒ乙金人と成ナ馬マウ龍竜立リ玉王○打引寄上行入右左直行入不生]/u;
 const unprefixedShogiStart = /^[1-9１-９][一二三四五六七八九]|[同仝－𠔼ド]/u;
 

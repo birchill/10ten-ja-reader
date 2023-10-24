@@ -1,27 +1,39 @@
+import { getCombinedCharRange, getNegatedCharRange } from '../utils/char-range';
 import { parseNumber } from './numbers';
-
-const nonEraCharacter = /[^\s0-9０-９一二三四五六七八九十百元年]/;
 
 export function lookForEra({
   currentText,
   nodeText,
+  textDelimiter: originalTextDelimiter,
   textEnd,
 }: {
   currentText: string;
   nodeText: string;
+  textDelimiter: RegExp;
   textEnd: number;
 }): {
   textDelimiter: RegExp;
   textEnd: number;
 } | null {
+  // We only want to _extend_ the current range so if `textEnd` is already -1
+  // (i.e. end of the text) then we don't need to do anything.
   if (textEnd < 0 || !startsWithEraName(currentText)) {
     return null;
   }
 
-  const endOfEra = nodeText.substring(textEnd).search(nonEraCharacter);
+  // The original text delimiter should include all the characters needed to
+  // match Japanese years except spaces between the era and the year, and
+  // spaces between the year and the final 年 character, if any.
+  const japaneseOrSpace = getCombinedCharRange([
+    getNegatedCharRange(originalTextDelimiter),
+    /[\s]/,
+  ]);
+  const textDelimiter = getNegatedCharRange(japaneseOrSpace);
+
+  const endOfEra = nodeText.substring(textEnd).search(textDelimiter);
 
   return {
-    textDelimiter: nonEraCharacter,
+    textDelimiter,
     textEnd: endOfEra === -1 ? -1 : textEnd + endOfEra,
   };
 }

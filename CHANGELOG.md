@@ -13,6 +13,7 @@ app.
   ([#1314](https://github.com/birchill/10ten-ja-reader/issues/1314)).
 - Make the `x` key close the popup if it is configured to _both_ close it and
   expand it.
+- Fixed recognition of words that end in half-width numerals like 小1.
 - Made the options page show up in a new tab on Edge.
 - Added a workaround for a
   [Firefox bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1860486) that would
