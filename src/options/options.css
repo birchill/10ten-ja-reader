@@ -829,28 +829,3 @@ fieldset.bordered {
     fill: #222426;
   }
 }
-
-.dict-lang #lang {
-  width: 10em;
-}
-
-.dict-lang .note {
-  margin-top: 1em;
-  padding: 8px 16px;
-  background: hsl(45, 100%, 96%);
-  border: 1px solid hsl(43, 77%, 27%);
-  border-radius: 8px;
-  color: hsl(43, 77%, 27%);
-}
-
-.dict-lang .note li {
-  line-height: 1.5;
-}
-
-@media (prefers-color-scheme: dark) {
-  .dict-lang .note {
-    background-color: hsl(42.9, 84.8%, 12.9%);
-    border-color: hsl(43.6, 71.4%, 37.1%);
-    color: hsl(45, 35.3%, 80%);
-  }
-}
