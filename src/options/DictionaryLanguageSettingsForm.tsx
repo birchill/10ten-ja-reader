@@ -8,6 +8,7 @@ import {
   isDbLanguageId,
 } from '../common/db-languages';
 import { useLocale } from '../common/i18n';
+import { classes } from '../utils/classes';
 
 type Props = {
   dictLang: DbLanguageId;
@@ -33,8 +34,8 @@ export function DictionaryLanguageSettingsForm(props: Props) {
   );
 
   return (
-    <div class="section-content dict-lang">
-      <select id="lang" name="lang" onChange={onChange}>
+    <div class="py-4">
+      <select id="lang" class="w-40" name="lang" onChange={onChange}>
         {dbLanguageMeta.map(([id, data]) => {
           let label = data.name;
           if (data.hasWords && !data.hasKanji) {
@@ -49,7 +50,13 @@ export function DictionaryLanguageSettingsForm(props: Props) {
           );
         })}
       </select>
-      <div class="note">
+      <div
+        class={classes(
+          'mt-4 rounded-lg border border-solid px-4 py-2 leading-normal',
+          'border-yellow-800 bg-yellow-50 text-yellow-800',
+          'dark:border-yellow-400/50 dark:bg-yellow-900/50 dark:text-yellow-50'
+        )}
+      >
         <p>{t('options_lang_warning_please_note')}</p>
         <ul>
           <li>{t('options_lang_warning_other_lang_when_available')}</li>
