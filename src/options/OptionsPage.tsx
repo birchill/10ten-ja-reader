@@ -3,6 +3,7 @@ import { I18nProvider, useLocale } from '../common/i18n';
 import { getReleaseStage } from '../utils/release-stage';
 
 import { DbStatus } from './DbStatus';
+import { DictionaryLanguageSettings } from './DictionaryLanguageSettings';
 import { KanjiReferenceSettings } from './KanjiReferenceSettings';
 import { SectionHeading } from './SectionHeading';
 import { useDb } from './use-db';
@@ -27,6 +28,10 @@ function OptionsPageInner(props: Props) {
 
   return (
     <>
+      <SectionHeading>
+        {t('options_dictionary_language_heading')}
+      </SectionHeading>
+      <DictionaryLanguageSettings config={props.config} />
       <SectionHeading>{t('options_kanji_dictionary_heading')}</SectionHeading>
       <KanjiReferenceSettings config={props.config} />
       <SectionHeading>{t('options_dictionary_data_heading')}</SectionHeading>

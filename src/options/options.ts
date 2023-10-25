@@ -11,7 +11,6 @@ import {
   PartOfSpeechDisplay,
   TabDisplay,
 } from '../common/content-config-params';
-import { dbLanguageMeta, isDbLanguageId } from '../common/db-languages';
 import { renderStar } from '../content/popup/icons';
 import { startBugsnag } from '../utils/bugsnag';
 import { html } from '../utils/builder';
@@ -79,9 +78,6 @@ function completeForm() {
 
   // Puck
   configurePuckSettings();
-
-  // Language
-  fillInLanguages();
 
   // l10n
   translateDoc();
@@ -774,30 +770,6 @@ function configurePuckSettings() {
   }
 }
 
-function fillInLanguages() {
-  const select = document.querySelector('select#lang') as HTMLSelectElement;
-
-  for (const [id, data] of dbLanguageMeta) {
-    let label = data.name;
-    if (data.hasWords && !data.hasKanji) {
-      label += browser.i18n.getMessage('options_lang_words_only');
-    } else if (!data.hasWords && data.hasKanji) {
-      label += browser.i18n.getMessage('options_lang_kanji_only');
-    }
-    select.append(html('option', { value: id }, label));
-  }
-
-  select.addEventListener('change', () => {
-    if (!isDbLanguageId(select.value)) {
-      const msg = `Got unexpected language code: ${select.value}`;
-      void Bugsnag.notify(new Error(msg));
-      console.error(msg);
-      return;
-    }
-    config.dictLang = select.value;
-  });
-}
-
 // Expire current set of badges on Oct 10
 const NEW_EXPIRY = new Date(2023, 9, 10);
 const NEW_KEYS = ['expandPopup'];
@@ -885,13 +857,6 @@ function fillVals() {
       checkbox.checked =
         !!checkbox.dataset.key && keys.includes(checkbox.dataset.key);
     }
-  }
-
-  const langSelect = document.querySelector('select#lang') as HTMLSelectElement;
-  const langOptions = langSelect.querySelectorAll('option');
-  const dictLang = config.dictLang;
-  for (const option of langOptions) {
-    option.selected = option.value === dictLang;
   }
 }
 
