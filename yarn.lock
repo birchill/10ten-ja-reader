@@ -8138,10 +8138,10 @@ semver-diff@^4.0.0:
   dependencies:
     semver "^7.3.5"
 
-semver-parser@4.1.4:
-  version "4.1.4"
-  resolved "https://registry.yarnpkg.com/semver-parser/-/semver-parser-4.1.4.tgz#152c172b9df80a5b826c66fb47080656c691f5e3"
-  integrity sha512-U0IqwT7n99QS5/L8erhYGXBiiZH4M8t6YIlUuloY+mZpXkQOmH0V7Xf5oMytTpasjCjJCbrfysK01fIRbyDyrQ==
+semver-parser@4.1.6:
+  version "4.1.6"
+  resolved "https://registry.yarnpkg.com/semver-parser/-/semver-parser-4.1.6.tgz#9d6b1e06bab8d727d117d522991ca1999c67323d"
+  integrity sha512-i37y4KxCbaYXIwQKLLUC2nsFYxCeiguMrS6lfv4rU0aHd59fSAypcE+jGib2sbQRcJp2C2NL5ngKAqpKqd0SJw==
 
 "semver@2 || 3 || 4 || 5":
   version "5.7.2"
