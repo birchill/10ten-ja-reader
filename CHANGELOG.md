@@ -19,6 +19,10 @@ app.
 - Added a workaround for a
   [Firefox bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1860486) that would
   cause 10ten to hang when changing dictionary language.
+- Fixed the toggle key setting in Firefox to allow using <kbd>,</kbd>,
+  <kbd>.</kbd>, <kbd>Home</kbd>, <kbd>End</kbd>, <kbd>PageUp</kbd>,
+  <kbd>PageDown</kbd>, <kbd>Space</kbd>, <kbd>Insert</kbd>, <kbd>Delete</kbd>,
+  <kbd>Up</kbd>, <kbd>Down</kbd>, <kbd>Left</kbd>, and <kbd>Right</kbd>.
 
 ## [1.15.1] - 2023-09-03
 
