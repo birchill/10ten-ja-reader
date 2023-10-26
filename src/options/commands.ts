@@ -1,28 +1,29 @@
 import browser from 'webextension-polyfill';
 
-export interface CommandParams {
-  ctrl?: boolean;
-  alt?: boolean;
-  shift?: boolean;
-  macCtrl?: boolean;
-  key: string;
-}
+const PRIMARY_MODIFIERS = ['Ctrl', 'Alt', 'MacCtrl'] as const;
 
-const PRIMARY_MODIFIER_MAP: { [key: string]: PrimaryModifier } = {
-  Ctrl: 'Ctrl',
-  Command: 'Ctrl',
+type PrimaryModifier = (typeof PRIMARY_MODIFIERS)[number];
+
+const SECONDARY_MODIFIERS = [...PRIMARY_MODIFIERS, 'Shift'] as const;
+
+type SecondaryModifier = (typeof SECONDARY_MODIFIERS)[number];
+
+// Conversion from various input formats to standard modifier syntax.
+//
+// We use lowercase for the inputs to make it easier to do a case-insensitive
+// comparison with input from the user since at least Edge in some locales seems
+// to uppercase modifiers.
+const MODIFIER_MAP: { [key: string]: SecondaryModifier } = {
+  ctrl: 'Ctrl',
+  command: 'Ctrl',
   '⌘': 'Ctrl',
-  Strg: 'Ctrl',
-  Alt: 'Alt',
+  strg: 'Ctrl',
+  alt: 'Alt',
   '⌥': 'Alt',
-  Alternatif: 'Alt',
-  MacCtrl: 'MacCtrl',
+  alternatif: 'Alt',
+  macctrl: 'MacCtrl',
   '⌃': 'MacCtrl',
-};
-
-const SECONDARY_MODIFIER_MAP: { [key: string]: SecondaryModifier } = {
-  ...PRIMARY_MODIFIER_MAP,
-  Shift: 'Shift',
+  shift: 'Shift',
   '⇧': 'Shift',
 };
 
@@ -33,136 +34,112 @@ const MEDIA_KEYS = [
   'MediaStop',
 ];
 
-const SPECIAL_KEYS = [
-  'Comma',
-  'Period',
-  'Home',
-  'End',
-  'PageUp',
-  'PageDown',
-  'Space',
-  'Insert',
-  'Delete',
-  'Up',
-  'Down',
-  'Left',
-  'Right',
-];
-
-const isFunctionKey = (key: string): boolean => /^F([1-9]|(1[0-2]))$/.test(key);
-
-export const isValidKey = (key: string): boolean =>
-  /^[A-Z0-9]$/.test(key) || isFunctionKey(key) || SPECIAL_KEYS.includes(key);
-
-type PrimaryModifier = 'Ctrl' | 'Alt' | 'MacCtrl';
-type SecondaryModifier = 'Ctrl' | 'Alt' | 'MacCtrl' | 'Shift';
+export type CommandParams = {
+  ctrl?: boolean;
+  alt?: boolean;
+  shift?: boolean;
+  macCtrl?: boolean;
+  key: string;
+};
 
 export class Command {
-  private _modifier?: PrimaryModifier;
-  private _secondaryModifier?: SecondaryModifier;
-  private _key: string;
+  #modifier?: PrimaryModifier;
+  #secondaryModifier?: SecondaryModifier;
+  #key: string;
 
   constructor(
     key: string,
     modifier?: PrimaryModifier,
     secondaryModifier?: SecondaryModifier
   ) {
-    console.assert(
-      MEDIA_KEYS.includes(key) || isValidKey(key),
-      `Set invalid key ${key}. Probably should have used one of the fromXXX methods`
-    );
-    console.assert(
-      MEDIA_KEYS.includes(key) ||
-        isFunctionKey(key) ||
-        typeof modifier !== 'undefined',
-      'Should have a modifier unless we are using a media key or function key. Probably should have used one of the fromXXX methods'
-    );
-
-    this._key = key;
-    this._modifier = modifier;
-    this._secondaryModifier = secondaryModifier;
+    this.#key = key;
+    this.#modifier = modifier;
+    this.#secondaryModifier = secondaryModifier;
   }
 
   static fromString(value: string): Command {
+    value = value.trim();
+
     if (MEDIA_KEYS.includes(value)) {
       return new Command(value);
     }
 
     // Normally keys take the form Alt+Ctrl+R etc. but Chrome on Mac represents
     // the different modifiers as ⌥⇧⌃⌘.
-    let parts = value
+    const parts: Array<string> = value
       .split(/([⌥⇧⌃⌘])|\+/)
       .filter(Boolean)
-      .map((key) => key.trim());
+      .map((key) => key.trim())
+      .map((key) => MODIFIER_MAP[key.toLowerCase()] || key);
 
-    // Normalize the case of modifiers.
-    //
-    // On Edge, at least on the German locale, the modifiers appear to be
-    // uppercased.
-    const modifiers = new Map(
-      [...new Set(Object.values(SECONDARY_MODIFIER_MAP))].map((m) => [
-        m.toLowerCase(),
-        m,
-      ])
-    );
-    parts = parts.map((p) => modifiers.get(p.toLowerCase()) || p);
-
+    // Validate we have a suitable number of components.
     if (!parts.length || parts.length > 3) {
       throw new Error(
         browser.i18n.getMessage('error_command_could_not_parse', value)
       );
     }
 
-    const key = parts[parts.length - 1];
-    if (!key.length) {
+    // The last part is the key
+    let key = parts.pop();
+    if (!key?.length) {
       throw new Error(browser.i18n.getMessage('error_command_has_no_key'));
     }
 
-    if (!isValidKey(key)) {
-      throw new Error(
-        browser.i18n.getMessage('error_command_key_is_not_allowed', key)
-      );
+    // Single character keys should be uppercase
+    if (key.length === 1) {
+      key = key.toUpperCase();
     }
 
-    if (
-      !isFunctionKey(key) &&
-      (parts.length < 2 || !PRIMARY_MODIFIER_MAP.hasOwnProperty(parts[0]))
-    ) {
-      console.warn(`Unexpected command string: ${value}`);
+    // We need at least one modifier unless the key is a function key
+    if (!isFunctionKey(key) && !parts.length) {
       throw new Error(
         browser.i18n.getMessage('error_command_is_missing_modifier_key')
       );
     }
 
+    // Swap the primary and secondary modifiers if necessary
+    //
+    // We've seen this on Chrome which can produce ⇧⌘K
+    let [primary, secondary] = parts;
+    if (
+      primary &&
+      !isPrimaryModifier(primary) &&
+      secondary &&
+      isPrimaryModifier(secondary)
+    ) {
+      [primary, secondary] = [secondary, primary];
+    }
+
+    // Now validate our modifiers
     let modifier: PrimaryModifier | undefined;
-    if (parts.length > 1) {
-      if (!PRIMARY_MODIFIER_MAP.hasOwnProperty(parts[0])) {
+    if (primary) {
+      if (!isPrimaryModifier(primary)) {
         throw new Error(
           browser.i18n.getMessage(
             'error_command_disallowed_modifier_key',
-            parts[0]
+            primary
           )
         );
       }
 
-      modifier = PRIMARY_MODIFIER_MAP[parts[0]];
+      modifier = primary;
     }
 
     let secondaryModifier: SecondaryModifier | undefined;
-    if (parts.length > 2) {
-      if (!SECONDARY_MODIFIER_MAP.hasOwnProperty(parts[1])) {
+    if (secondary) {
+      if (!isSecondaryModifier(secondary)) {
         throw new Error(
           browser.i18n.getMessage(
             'error_command_disallowed_modifier_key',
-            parts[1]
+            secondary
           )
         );
       }
 
-      secondaryModifier = SECONDARY_MODIFIER_MAP[parts[1]];
+      secondaryModifier = secondary;
     }
 
-    // There are a few other checks we could do such as:
+    // There are a few other checks we _could_ do such as:
     //
     // - Checking that we don't have BOTH Ctrl and Command (since Ctrl maps to
     //   Command on Macs and Command doesn't exist on other platforms).
@@ -185,29 +162,24 @@ export class Command {
       return new Command(params.key);
     }
 
-    if (!params.key.length) {
+    let key = params.key.trim();
+    if (key.length === 1) {
+      key = key.toUpperCase();
+    }
+
+    if (!key.length) {
       throw new Error(browser.i18n.getMessage('error_command_has_no_key'));
     }
 
-    if (!isValidKey(params.key)) {
-      throw new Error(
-        browser.i18n.getMessage('error_command_key_is_not_allowed', params.key)
-      );
-    }
-
-    if (
-      !isFunctionKey(params.key) &&
-      !(params.alt || params.ctrl || params.macCtrl)
-    ) {
-      console.warn(`Unexpected command params: ${JSON.stringify(params)}`);
+    if (!isFunctionKey(key) && !(params.alt || params.ctrl || params.macCtrl)) {
       throw new Error(
         browser.i18n.getMessage('error_command_is_missing_modifier_key')
       );
     }
 
-    // Function key + Shift is not allowed
+    // Function key + Shift only is not allowed
     if (
-      isFunctionKey(params.key) &&
+      isFunctionKey(key) &&
       params.shift &&
       !(params.alt || params.ctrl || params.macCtrl)
     ) {
@@ -251,42 +223,75 @@ export class Command {
       }
     }
 
-    return new Command(params.key, modifier, secondaryModifier);
+    return new Command(key, modifier, secondaryModifier);
+  }
+
+  isValid(): boolean {
+    return isValidKey(this.#key);
   }
 
   // This should be taken to mean "Command" when on Mac
   get ctrl(): boolean {
-    return this._modifier === 'Ctrl' || this._secondaryModifier === 'Ctrl';
+    return this.#modifier === 'Ctrl' || this.#secondaryModifier === 'Ctrl';
   }
 
   get alt(): boolean {
-    return this._modifier === 'Alt' || this._secondaryModifier === 'Alt';
+    return this.#modifier === 'Alt' || this.#secondaryModifier === 'Alt';
   }
 
   get shift(): boolean {
-    return this._secondaryModifier === 'Shift';
+    return this.#secondaryModifier === 'Shift';
   }
 
   get macCtrl(): boolean {
     return (
-      this._modifier === 'MacCtrl' || this._secondaryModifier === 'MacCtrl'
+      this.#modifier === 'MacCtrl' || this.#secondaryModifier === 'MacCtrl'
     );
   }
 
   get key(): string {
-    return this._key;
+    return this.#key;
   }
 
   toString(): string {
     const parts: Array<string> = [];
-    if (this._modifier) {
-      parts.push(this._modifier!);
+    if (this.#modifier) {
+      parts.push(this.#modifier!);
     }
-    if (this._secondaryModifier) {
-      parts.push(this._secondaryModifier!);
+    if (this.#secondaryModifier) {
+      parts.push(this.#secondaryModifier!);
     }
-    parts.push(this._key!);
+    parts.push(this.#key!);
 
     return parts.join('+');
   }
 }
+
+function isPrimaryModifier(key: string): key is PrimaryModifier {
+  return PRIMARY_MODIFIERS.includes(key as PrimaryModifier);
+}
+
+function isSecondaryModifier(key: string): key is SecondaryModifier {
+  return SECONDARY_MODIFIERS.includes(key as PrimaryModifier);
+}
+
+const isFunctionKey = (key: string) => /^F([1-9]|(1[0-2]))$/.test(key);
+
+const SPECIAL_KEYS = [
+  'Comma',
+  'Period',
+  'Home',
+  'End',
+  'PageUp',
+  'PageDown',
+  'Space',
+  'Insert',
+  'Delete',
+  'Up',
+  'Down',
+  'Left',
+  'Right',
+];
+
+export const isValidKey = (key: string): boolean =>
+  /^[A-Z0-9]$/.test(key) || isFunctionKey(key) || SPECIAL_KEYS.includes(key);

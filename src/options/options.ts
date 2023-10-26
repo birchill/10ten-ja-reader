@@ -464,7 +464,17 @@ function configureCommands() {
       key: getControl('key')?.value || '',
     };
 
-    return Command.fromParams(params);
+    const command = Command.fromParams(params);
+    if (!command.isValid()) {
+      throw new Error(
+        browser.i18n.getMessage(
+          'error_command_key_is_not_allowed',
+          getControl('key')?.value
+        )
+      );
+    }
+
+    return command;
   };
 
   const updateToggleKey = async () => {
@@ -565,7 +575,12 @@ async function getConfiguredToggleKeyValue(): Promise<Command | null> {
         (__MV3__ ? '_execute_action' : '_execute_browser_action') &&
       command.shortcut
     ) {
-      return Command.fromString(command.shortcut);
+      try {
+        return Command.fromString(command.shortcut);
+      } catch (e) {
+        console.error(`Failed to parse key: ${command.shortcut}`);
+        void Bugsnag.notify(e);
+      }
     }
   }
 
