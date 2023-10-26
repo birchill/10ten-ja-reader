@@ -5,6 +5,7 @@ import { getReleaseStage } from '../utils/release-stage';
 import { DbStatus } from './DbStatus';
 import { DictionaryLanguageSettings } from './DictionaryLanguageSettings';
 import { KanjiReferenceSettings } from './KanjiReferenceSettings';
+import { PuckSettings } from './PuckSettings';
 import { SectionHeading } from './SectionHeading';
 import { useDb } from './use-db';
 
@@ -28,6 +29,8 @@ function OptionsPageInner(props: Props) {
 
   return (
     <>
+      <SectionHeading>{t('options_lookup_puck_heading')}</SectionHeading>
+      <PuckSettings config={props.config} />
       <SectionHeading>
         {t('options_dictionary_language_heading')}
       </SectionHeading>
