@@ -35,6 +35,7 @@ describe('Command', () => {
     const tests = [
       { input: 'Alt+T', expected: expected(['alt'], 'T') },
       { input: 'ALT+T', expected: expected(['alt'], 'T') },
+      { input: 'Alt+t', expected: expected(['alt'], 'T') },
       { input: 'Alt+Shift+T', expected: expected(['alt', 'shift'], 'T') },
       { input: 'Alt + Shift + T', expected: expected(['alt', 'shift'], 'T') },
       { input: 'F11', expected: expected([], 'F11') },
@@ -44,44 +45,61 @@ describe('Command', () => {
       { input: '⌥⇧R', expected: expected(['alt', 'shift'], 'R') },
       { input: '⌃⌘R', expected: expected(['macCtrl', 'ctrl'], 'R') },
       { input: '⌃⇧R', expected: expected(['macCtrl', 'shift'], 'R') },
+      { input: '⇧⌘K', expected: expected(['ctrl', 'shift'], 'K') },
       // We've seen this on Edge at least once
       { input: 'Alternatif+T', expected: expected(['alt'], 'T') },
       // And this on Opera
       { input: 'Strg + R', expected: expected(['ctrl'], 'R') },
     ];
     for (const test of tests) {
-      const command = Command.fromString(test.input);
-      expect({
-        alt: command.alt,
-        ctrl: command.ctrl,
-        shift: command.shift,
-        macCtrl: command.macCtrl,
-        key: command.key,
-      }).toEqual(test.expected);
+      let command: Command;
+      expect(() => {
+        command = Command.fromString(test.input);
+      }, `Should parse ${test.input}`).not.toThrow();
+      expect(
+        {
+          alt: command!.alt,
+          ctrl: command!.ctrl,
+          shift: command!.shift,
+          macCtrl: command!.macCtrl,
+          key: command!.key,
+        },
+        test.input
+      ).toEqual(test.expected);
     }
   });
 
   it('rejects invalid command strings', () => {
     const tests = [
       'T', // No modifier
-      'Alt+t', // Lowercase
       'Shift+T', // Shift can't be primary modifier
       'Alt+Shift+Ctrl+T', // Too many modifiers
       '+T',
-      'Alt+あ', // Not in A-Z range
       'F0', // Not a valid function key
       'F13',
       'F22',
       '', // Empty key
       'Alt+',
       'Alt',
-      'Alt+MediaStop', // Media key plus modifier
     ];
 
     for (const test of tests) {
       expect(() => {
         Command.fromString(test);
-      }).toThrow();
+      }, `Command.fromString("${test}") should throw`).toThrow();
+    }
+  });
+
+  it('allows but indicates invalid keys', () => {
+    const tests = [
+      'Alt+あ', // Not in A-Z range
+      'Alt+MediaStop', // Media key plus modifier
+    ];
+
+    for (const test of tests) {
+      expect(Command.fromString(test).isValid(), `${test} is invalid`).toBe(
+        false
+      );
     }
   });
 
@@ -96,6 +114,7 @@ describe('Command', () => {
   it('handles valid param objects', () => {
     const tests = [
       { input: { alt: true, key: 'T' }, expected: expected(['alt'], 'T') },
+      { input: { alt: true, key: 't' }, expected: expected(['alt'], 'T') },
       {
         input: { alt: true, shift: true, key: 'T' },
         expected: expected(['alt', 'shift'], 'T'),
@@ -123,10 +142,8 @@ describe('Command', () => {
   it('rejects invalid param objects', () => {
     const tests = [
       { key: 'T' }, // No modifier
-      { alt: true, key: 't' }, // Lowercase
       { shift: true, key: 'T' }, // Shift can't be primary modifier
       { alt: true, shift: true, ctrl: true, key: 'T' }, // Too many modifiers
-      { alt: true, key: 'あ' }, // Not in A-Z range
       { key: 'F0' }, // No modifier
       { key: 'F13' },
       { key: 'F22' },
@@ -135,9 +152,12 @@ describe('Command', () => {
     ];
 
     for (const test of tests) {
-      expect(() => {
-        Command.fromParams(test);
-      }).toThrow();
+      expect(
+        () => {
+          Command.fromParams(test);
+        },
+        `Should reject invalid: ${JSON.stringify(test)}`
+      ).toThrow();
     }
   });
 });
