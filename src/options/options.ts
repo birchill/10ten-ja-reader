@@ -502,8 +502,18 @@ function configureCommands() {
   ) as HTMLInputElement;
   toggleKeyTextbox.addEventListener('keydown', (event) => {
     let key = event.key;
+
+    // Translate single letter keys to uppercase.
     if (event.key.length === 1) {
       key = key.toUpperCase();
+    }
+
+    // For keys like , or . we want to use event.code instead.
+    key = isValidKey(event.code) ? event.code : key;
+
+    // For the arrow keys we need to translate ArrowLeft to Left etc.
+    if (key.startsWith('Arrow')) {
+      key = key.slice('Arrow'.length);
     }
 
     if (!isValidKey(key)) {
