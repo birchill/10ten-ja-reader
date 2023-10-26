@@ -76,9 +76,6 @@ function completeForm() {
   addPopupKeys();
   translateKeys();
 
-  // Puck
-  configurePuckSettings();
-
   // l10n
   translateDoc();
 
@@ -778,23 +775,6 @@ function translateKeys() {
   }
 }
 
-function configurePuckSettings() {
-  const showPuckOptions = Array.from(
-    document.querySelectorAll<HTMLInputElement>(
-      'input[type=radio][name=showPuck]'
-    )
-  );
-  for (const option of showPuckOptions) {
-    option.addEventListener('change', (event) => {
-      const setting = (event.target as HTMLInputElement).value as
-        | 'auto'
-        | 'show'
-        | 'hide';
-      config.showPuck = setting;
-    });
-  }
-}
-
 // Expire current set of badges on Oct 10
 const NEW_EXPIRY = new Date(2023, 9, 10);
 const NEW_KEYS = ['expandPopup'];
@@ -837,7 +817,6 @@ function fillVals() {
   optform.enableTapLookup.checked = config.enableTapLookup;
   optform.tabDisplay.value = config.tabDisplay;
   optform.toolbarIcon.value = config.toolbarIcon;
-  optform.showPuck.value = config.showPuck;
 
   renderCurrencyList(config.fxCurrency, config.fxCurrencies);
 
