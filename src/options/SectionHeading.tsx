@@ -22,7 +22,7 @@ export function SectionHeading(props: RenderableProps<EmptyProps>) {
   //  }
   //
   return (
-    <h1 class="mt-4 border-0 border-t border-solid border-t-gray-300 pt-4 text-2xl font-light">
+    <h1 class="mb-2 mt-4 border-0 border-t border-solid border-t-zinc-300 pt-4 text-2xl font-light">
       {props.children}
     </h1>
   );

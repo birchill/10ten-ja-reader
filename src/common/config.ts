@@ -29,6 +29,7 @@ import {
 } from './content-config-params';
 import { DbLanguageId, dbLanguages } from './db-languages';
 import { ExtensionStorageError } from './extension-storage-error';
+import { PopupKeys, StoredKeyboardKeys } from './popup-keys';
 import {
   convertLegacyReference,
   getReferencesForLang,
@@ -50,15 +51,6 @@ import {
 // being either enabled or disabled we capture the user's intention more
 // accurately. Anything not set should use the default setting.
 type KanjiReferenceFlagsV2 = { [key in ReferenceAbbreviation]?: boolean };
-
-// Although we separate out the keys for moving a pop-up up or down when we
-// report the keys to the content page, we store them as a single setting.
-type StoredKeyboardKeys = Omit<
-  KeyboardKeys,
-  'movePopupUp' | 'movePopupDown'
-> & {
-  movePopupDownOrUp: string[];
-};
 
 interface Settings {
   accentDisplay?: AccentDisplay;
@@ -96,67 +88,6 @@ type StorageChange = {
 };
 type ChangeDict = { [field: string]: StorageChange };
 export type ChangeCallback = (changes: ChangeDict) => void;
-
-// A single key description. We use this definition for storing the default keys
-// since it allows storing as an array (so we can determine the order the
-// options are displayed in) and storing a description along with each key.
-interface KeySetting {
-  name: keyof StoredKeyboardKeys;
-  keys: string[];
-  enabledKeys: string[];
-  l10nKey: string;
-}
-
-export const DEFAULT_KEY_SETTINGS: KeySetting[] = [
-  {
-    name: 'nextDictionary',
-    keys: ['Shift', 'Enter', 'n'],
-    enabledKeys: ['Shift', 'Enter'],
-    l10nKey: 'options_popup_switch_dictionaries',
-  },
-  {
-    name: 'kanjiLookup',
-    keys: ['Shift'],
-    enabledKeys: [],
-    l10nKey: 'options_popup_kanji_lookup',
-  },
-  {
-    name: 'toggleDefinition',
-    keys: ['d'],
-    enabledKeys: [],
-    l10nKey: 'options_popup_toggle_definition',
-  },
-  {
-    name: 'expandPopup',
-    keys: ['x'],
-    enabledKeys: ['x'],
-    l10nKey: 'options_popup_expand_popup',
-  },
-  {
-    name: 'closePopup',
-    keys: ['Esc', 'x'],
-    enabledKeys: ['Esc'],
-    l10nKey: 'options_popup_close_popup',
-  },
-  {
-    name: 'pinPopup',
-    keys: ['Alt', 'Ctrl', 'Space'],
-    enabledKeys: ['Ctrl'],
-    l10nKey: 'options_popup_pin_popup',
-  },
-  {
-    name: 'movePopupDownOrUp',
-    keys: ['j,k'],
-    enabledKeys: [],
-    l10nKey: 'options_popup_move_popup_down_or_up',
-  },
-  {
-    name: 'startCopy',
-    keys: ['c'],
-    enabledKeys: ['c'],
-    l10nKey: 'options_popup_start_copy',
-  },
-];
 
 // The following references were added to this extension in a later version and
 // so we turn them off by default to avoid overwhelming users with too many
@@ -311,6 +242,22 @@ export class Config {
         case 'kanjiReferencesV2':
           updatedChanges.kanjiReferences = changes.kanjiReferencesV2;
           delete updatedChanges.kanjiReferencesV2;
+          break;
+
+        // In some cases, the pinPopup key is calculated from the holdToShowKeys
+        // value so we might need to report that too.
+        case 'holdToShowKeys':
+          // If...
+          if (
+            // We are already reporting a change to `keys`, or
+            Object.keys(updatedChanges).includes('keys') ||
+            // The pinPopup key is already explicitly set
+            this.settings.keys?.pinPopup
+          ) {
+            // ... we don't need to report a change
+            break;
+          }
+          updatedChanges.keys = { newValue: this.keys };
           break;
       }
     }
@@ -767,7 +714,7 @@ export class Config {
   // enabledKeys member.
 
   private getDefaultEnabledKeys(): StoredKeyboardKeys {
-    return DEFAULT_KEY_SETTINGS.reduce<Partial<StoredKeyboardKeys>>(
+    return PopupKeys.reduce<Partial<StoredKeyboardKeys>>(
       (defaultKeys, setting) => {
         defaultKeys[setting.name] = setting.enabledKeys;
         return defaultKeys;
@@ -792,9 +739,7 @@ export class Config {
       const holdToShowKeys = this.holdToShowKeys?.split('+');
       if (holdToShowKeys?.length === 1) {
         const holdToShowKey = holdToShowKeys[0];
-        const availableKeys = DEFAULT_KEY_SETTINGS.find(
-          (k) => k.name === 'pinPopup'
-        );
+        const availableKeys = PopupKeys.find((k) => k.name === 'pinPopup');
         if (availableKeys?.keys.includes(holdToShowKey)) {
           keys.pinPopup = [holdToShowKey];
         }

@@ -1,10 +1,8 @@
 /// <reference path="../common/constants.d.ts" />
-import Bugsnag from '@birchill/bugsnag-zero';
 import { h, render } from 'preact';
 import browser from 'webextension-polyfill';
 
-import { CopyKeys, CopyNextKeyStrings } from '../common/copy-keys';
-import { Config, DEFAULT_KEY_SETTINGS } from '../common/config';
+import { Config } from '../common/config';
 import {
   AccentDisplay,
   FontSize,
@@ -14,19 +12,17 @@ import {
 import { renderStar } from '../content/popup/icons';
 import { startBugsnag } from '../utils/bugsnag';
 import { html } from '../utils/builder';
-import { isTouchDevice, possiblyHasPhysicalKeyboard } from '../utils/device';
+import { isTouchDevice } from '../utils/device';
 import { empty } from '../utils/dom-utils';
 import {
   isChromium,
   isEdge,
   isFenix,
   isFirefox,
-  isMac,
   isSafari,
 } from '../utils/ua-utils';
 import { getThemeClass } from '../utils/themes';
 
-import { Command, CommandParams, isValidKey } from './commands';
 import { translateDoc } from './l10n';
 import { OptionsPage } from './OptionsPage';
 
@@ -53,9 +49,6 @@ function completeForm() {
   if (isSafari()) {
     document.documentElement.classList.add('safari');
   }
-  if (possiblyHasPhysicalKeyboard()) {
-    document.documentElement.classList.add('has-keyboard');
-  }
   if (isTouchDevice()) {
     document.documentElement.classList.add('has-touch');
   }
@@ -69,12 +62,6 @@ function completeForm() {
     .addEventListener('change', () => {
       setTabDisplayTheme(config.popupStyle);
     });
-
-  // Keyboard
-  configureCommands();
-  configureHoldToShowKeys();
-  addPopupKeys();
-  translateKeys();
 
   // l10n
   translateDoc();
@@ -410,374 +397,8 @@ function renderCurrencyList(
   fxCurrency.value = selectedCurrency;
 }
 
-function configureCommands() {
-  // Disable any controls associated with configuring browser.commands if the
-  // necessary APIs are not available.
-  const canConfigureCommands =
-    browser.commands &&
-    typeof browser.commands.update === 'function' &&
-    typeof browser.commands.reset === 'function';
-
-  const browserCommandControls =
-    document.querySelectorAll('.key.command input');
-  for (const control of browserCommandControls) {
-    (control as HTMLInputElement).disabled = !canConfigureCommands;
-  }
-
-  const explanationBlock = document.getElementById(
-    'browser-commands-alternative'
-  ) as HTMLDivElement;
-  explanationBlock.style.display = canConfigureCommands ? 'none' : 'revert';
-
-  if (!canConfigureCommands) {
-    if (isEdge()) {
-      explanationBlock.textContent = browser.i18n.getMessage(
-        'options_browser_commands_no_toggle_key_edge'
-      );
-    } else if (isChromium()) {
-      explanationBlock.textContent = browser.i18n.getMessage(
-        'options_browser_commands_no_toggle_key_chrome'
-      );
-    } else {
-      explanationBlock.textContent = browser.i18n.getMessage(
-        'options_browser_commands_no_toggle_key'
-      );
-    }
-    return;
-  }
-
-  const getFormToggleKeyValue = (): Command => {
-    const getControl = (part: string): HTMLInputElement | null => {
-      return document.getElementById(
-        `toggle-${part}`
-      ) as HTMLInputElement | null;
-    };
-
-    const params: CommandParams = {
-      alt: getControl('alt')?.checked,
-      ctrl: getControl('ctrl')?.checked,
-      macCtrl: getControl('macctrl')?.checked,
-      shift: getControl('shift')?.checked,
-      key: getControl('key')?.value || '',
-    };
-
-    const command = Command.fromParams(params);
-    if (!command.isValid()) {
-      throw new Error(
-        browser.i18n.getMessage(
-          'error_command_key_is_not_allowed',
-          getControl('key')?.value
-        )
-      );
-    }
-
-    return command;
-  };
-
-  const updateToggleKey = async () => {
-    try {
-      const shortcut = getFormToggleKeyValue();
-      await browser.commands.update({
-        name: __MV3__ ? '_execute_action' : '_execute_browser_action',
-        shortcut: shortcut.toString(),
-      });
-      setToggleKeyWarningState('ok');
-    } catch (e) {
-      setToggleKeyWarningState('error', e.message);
-    }
-  };
-
-  const toggleKeyCheckboxes = document.querySelectorAll(
-    '.command input[type=checkbox][id^=toggle-]'
-  );
-  for (const checkbox of toggleKeyCheckboxes) {
-    checkbox.addEventListener('click', updateToggleKey);
-  }
-
-  const toggleKeyTextbox = document.getElementById(
-    'toggle-key'
-  ) as HTMLInputElement;
-  toggleKeyTextbox.addEventListener('keydown', (event) => {
-    let key = event.key;
-
-    // Translate single letter keys to uppercase.
-    if (event.key.length === 1) {
-      key = key.toUpperCase();
-    }
-
-    // For keys like , or . we want to use event.code instead.
-    key = isValidKey(event.code) ? event.code : key;
-
-    // For the arrow keys we need to translate ArrowLeft to Left etc.
-    if (key.startsWith('Arrow')) {
-      key = key.slice('Arrow'.length);
-    }
-
-    if (!isValidKey(key)) {
-      // Most printable keys are one character in length so make sure we don't
-      // allow the default action of adding them to the text input. For other
-      // keys we don't handle though (e.g. Tab) we probably want to allow the
-      // default action.
-      if (event.key.length === 1) {
-        event.preventDefault();
-      }
-      return;
-    }
-
-    toggleKeyTextbox.value = key;
-    event.preventDefault();
-    void updateToggleKey();
-  });
-
-  toggleKeyTextbox.addEventListener('compositionstart', () => {
-    toggleKeyTextbox.value = '';
-  });
-  toggleKeyTextbox.addEventListener('compositionend', () => {
-    toggleKeyTextbox.value = toggleKeyTextbox.value.toUpperCase();
-    void updateToggleKey();
-  });
-}
-
-type WarningState = 'ok' | 'warning' | 'error';
-
-function setToggleKeyWarningState(state: WarningState, message?: string) {
-  const icon = document.getElementById('toggle-key-icon')!;
-  icon.classList.toggle('-warning', state === 'warning');
-  icon.classList.toggle('-error', state === 'error');
-  if (message) {
-    icon.setAttribute('title', message);
-  } else {
-    icon.removeAttribute('title');
-  }
-}
-
-async function getConfiguredToggleKeyValue(): Promise<Command | null> {
-  // Firefox for Android does not support the browser.commands API at all
-  // but probably not many people want to use keyboard shortcuts on Android
-  // anyway so we can just return null from here in that case.
-  if (!browser.commands) {
-    return null;
-  }
-
-  const commands = await browser.commands.getAll();
-
-  // Safari (14.1.1) has a very broken implementation of
-  // chrome.commands.getAll(). It returns an object but it has no properties
-  // and is not iterable.
-  //
-  // There's not much we can do in that case so we just hard code the default
-  // key since Safari also has no way of changing shortcut keys. Hopefully
-  // Safari will fix chrome.commands.getAll() before or at the same time it
-  // provides a way of re-assigning shortcut keys.
-  if (
-    typeof commands === 'object' &&
-    typeof commands[Symbol.iterator] !== 'function'
-  ) {
-    return new Command('R', 'MacCtrl', 'Ctrl');
-  }
-
-  for (const command of commands) {
-    if (
-      command.name ===
-        (__MV3__ ? '_execute_action' : '_execute_browser_action') &&
-      command.shortcut
-    ) {
-      try {
-        return Command.fromString(command.shortcut);
-      } catch (e) {
-        console.error(`Failed to parse key: ${command.shortcut}`);
-        void Bugsnag.notify(e);
-      }
-    }
-  }
-
-  return null;
-}
-
-function configureHoldToShowKeys() {
-  const getHoldToShowKeysValue = (
-    checkboxes: NodeListOf<HTMLInputElement>
-  ): string | null => {
-    const parts: Array<string> = [];
-
-    for (const checkbox of checkboxes) {
-      if ((checkbox as HTMLInputElement).checked) {
-        parts.push((checkbox as HTMLInputElement).value);
-      }
-    }
-    if (!parts.length) {
-      return null;
-    }
-    return parts.join('+');
-  };
-
-  const settings = ['holdToShowKeys', 'holdToShowImageKeys'] as const;
-  for (const setting of settings) {
-    const checkboxes = document.querySelectorAll<HTMLInputElement>(
-      `.${setting.toLowerCase()} input[type=checkbox][id^=show-]`
-    );
-
-    for (const checkbox of checkboxes) {
-      checkbox.addEventListener('click', () => {
-        config[setting] = getHoldToShowKeysValue(checkboxes);
-      });
-    }
-  }
-}
-
-function addPopupKeys() {
-  const grid = document.getElementById('key-grid')!;
-
-  for (const setting of DEFAULT_KEY_SETTINGS) {
-    // Don't show the copy entry if the clipboard API is not available
-    if (
-      setting.name === 'startCopy' &&
-      (!navigator.clipboard ||
-        typeof navigator.clipboard.writeText !== 'function')
-    ) {
-      continue;
-    }
-
-    const keyBlock = html('div', { class: 'key' });
-
-    for (const key of setting.keys) {
-      const keyInput = html('input', {
-        type: 'checkbox',
-        class: `key-${setting.name}`,
-        id: `key-${setting.name}-${key}`,
-        name: `key-${setting.name}-${key}`,
-      });
-      keyInput.dataset.key = key;
-      keyBlock.append(keyInput);
-      keyBlock.append(' '); // <-- Mimick the whitespace in the template file
-
-      keyInput.addEventListener('click', () => {
-        const checkedKeys = document.querySelectorAll(
-          `input[type=checkbox].key-${setting.name}:checked`
-        );
-        config.updateKeys({
-          [setting.name]: Array.from(checkedKeys).map(
-            (checkbox) => (checkbox as HTMLInputElement).dataset.key
-          ),
-        });
-      });
-
-      const keyLabel = html('label', { for: `key-${setting.name}-${key}` });
-
-      // We need to add an extra span inside in order to be able to get
-      // consistent layout when using older versions of extensions.css that put
-      // the checkbox in a pseudo.
-      if (setting.name === 'movePopupDownOrUp') {
-        const [down, up] = key.split(',', 2);
-        keyLabel.append(html('span', { class: 'key-box' }, down));
-        keyLabel.append(html('span', { class: 'or' }, '/'));
-        keyLabel.append(html('span', { class: 'key-box' }, up));
-      } else {
-        keyLabel.append(html('span', { class: 'key-box' }, key));
-      }
-
-      keyBlock.append(keyLabel);
-    }
-
-    grid.append(keyBlock);
-
-    const keyDescription = html(
-      'div',
-      { class: 'key-description' },
-      browser.i18n.getMessage(setting.l10nKey)
-    );
-
-    // Copy keys has an extended description.
-    if (setting.name === 'startCopy') {
-      const copyKeyList = html('ul', { class: 'key-list' });
-
-      const copyKeys: Array<{
-        key: string;
-        l10nKey: string;
-      }> = CopyKeys.map(({ key, optionsString }) => ({
-        key,
-        l10nKey: optionsString,
-      }));
-      copyKeys.push({
-        // We just show the first key here. This matches what we show in the
-        // pop-up too.
-        key: setting.keys[0],
-        l10nKey: CopyNextKeyStrings.optionsString,
-      });
-
-      for (const copyKey of copyKeys) {
-        copyKeyList.append(
-          html(
-            'li',
-            { class: 'key' },
-            html('label', {}, html('span', { class: 'key-box' }, copyKey.key)),
-            browser.i18n.getMessage(copyKey.l10nKey)
-          )
-        );
-      }
-
-      keyDescription.appendChild(copyKeyList);
-    }
-
-    if (NEW_KEYS.includes(setting.name)) {
-      keyDescription.append(
-        html(
-          'span',
-          { class: 'new-badge' },
-          browser.i18n.getMessage('options_new_badge_text')
-        )
-      );
-    }
-
-    grid.appendChild(keyDescription);
-  }
-}
-
-function translateKeys() {
-  const mac = isMac();
-
-  // Hide MacCtrl key if we're not on Mac
-  const macCtrlInput = document.getElementById(
-    'toggle-macctrl'
-  ) as HTMLInputElement | null;
-  const labels = macCtrlInput?.labels ? Array.from(macCtrlInput.labels) : [];
-  if (macCtrlInput) {
-    macCtrlInput.style.display = mac ? 'revert' : 'none';
-  }
-  for (const label of labels) {
-    label.style.display = mac ? 'revert' : 'none';
-  }
-
-  if (!mac) {
-    return;
-  }
-
-  const keyLabels = document.querySelectorAll<HTMLSpanElement>(
-    '.key > label > span'
-  );
-  for (const label of keyLabels) {
-    // Look for a special key on the label saying what it really is.
-    //
-    // We need to do this because we have an odd situation where the 'commands'
-    // manifest.json property treats 'Ctrl' as 'Command' but in all other cases
-    // where we see 'Ctrl', it should actually be 'Control'.
-    //
-    // So to cover this, we stick data-mac="Command" on any labels that map to
-    // 'commands'.
-    const labelText = label.dataset['mac'] || label.textContent;
-    if (labelText === 'Command') {
-      label.textContent = '⌘';
-    } else if (labelText === 'Ctrl') {
-      label.textContent = 'Control';
-    } else if (labelText === 'Alt') {
-      label.textContent = '⌥';
-    }
-  }
-}
-
 // Expire current set of badges on Oct 10
 const NEW_EXPIRY = new Date(2023, 9, 10);
-const NEW_KEYS = ['expandPopup'];
 
 function expireNewBadges() {
   if (new Date() < NEW_EXPIRY) {
@@ -819,49 +440,6 @@ function fillVals() {
   optform.toolbarIcon.value = config.toolbarIcon;
 
   renderCurrencyList(config.fxCurrency, config.fxCurrencies);
-
-  getConfiguredToggleKeyValue()
-    .then((toggleCommand) => {
-      const getToggleControl = (part: string): HTMLInputElement =>
-        document.getElementById(`toggle-${part}`) as HTMLInputElement;
-      getToggleControl('alt').checked = !!toggleCommand?.alt;
-      getToggleControl('ctrl').checked = !!toggleCommand?.ctrl;
-      getToggleControl('shift').checked = !!toggleCommand?.shift;
-      if (getToggleControl('macctrl')) {
-        getToggleControl('macctrl').checked = !!toggleCommand?.macCtrl;
-      }
-      getToggleControl('key').value = toggleCommand?.key || '';
-    })
-    .catch((e) => {
-      console.error(e);
-      void Bugsnag.notify(e);
-    });
-
-  // Note that this setting is hidden when we detect the device does not likely
-  // have a physical keyboard.
-  const holdToShowSettings = ['holdToShowKeys', 'holdToShowImageKeys'] as const;
-  for (const setting of holdToShowSettings) {
-    const holdKeyParts: Array<string> =
-      typeof config[setting] === 'string' ? config[setting]!.split('+') : [];
-    const holdKeyCheckboxes = document.querySelectorAll(
-      `.${setting.toLowerCase()} input[type=checkbox][id^=show-]`
-    );
-    for (const checkbox of holdKeyCheckboxes) {
-      (checkbox as HTMLInputElement).checked = holdKeyParts.includes(
-        (checkbox as HTMLInputElement).value
-      );
-    }
-  }
-
-  for (const [setting, keys] of Object.entries(config.keys)) {
-    const checkboxes = document.querySelectorAll<HTMLInputElement>(
-      `input[type=checkbox].key-${setting}`
-    );
-    for (const checkbox of checkboxes) {
-      checkbox.checked =
-        !!checkbox.dataset.key && keys.includes(checkbox.dataset.key);
-    }
-  }
 }
 
 window.onload = async () => {

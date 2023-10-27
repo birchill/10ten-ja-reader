@@ -1,10 +1,12 @@
 import type { Config } from '../common/config';
 import { I18nProvider, useLocale } from '../common/i18n';
+import { possiblyHasPhysicalKeyboard } from '../utils/device';
 import { getReleaseStage } from '../utils/release-stage';
 
 import { DbStatus } from './DbStatus';
 import { DictionaryLanguageSettings } from './DictionaryLanguageSettings';
 import { KanjiReferenceSettings } from './KanjiReferenceSettings';
+import { KeyboardSettings } from './KeyboardSettings';
 import { PuckSettings } from './PuckSettings';
 import { SectionHeading } from './SectionHeading';
 import { useDb } from './use-db';
@@ -26,9 +28,16 @@ function OptionsPageInner(props: Props) {
   const { dbState, startDatabaseUpdate, cancelDatabaseUpdate, deleteDatabase } =
     useDb();
   const releaseStage = getReleaseStage();
+  const hasKeyboard = possiblyHasPhysicalKeyboard();
 
   return (
     <>
+      {hasKeyboard && (
+        <>
+          <SectionHeading>{t('options_keyboard_heading')}</SectionHeading>
+          <KeyboardSettings config={props.config} />
+        </>
+      )}
       <SectionHeading>{t('options_lookup_puck_heading')}</SectionHeading>
       <PuckSettings config={props.config} />
       <SectionHeading>

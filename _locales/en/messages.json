@@ -1680,6 +1680,10 @@
     "message": "Kanji dictionary",
     "description": "Heading for options to configure what information is displayed from the kanji dictionary"
   },
+  "options_key_alternative": {
+    "message": "or",
+    "description": "The delimeter used between alternative popup keys"
+  },
   "options_keyboard_heading": {
     "message": "Keyboard",
     "description": "Heading for options to configure keyboard commands"
