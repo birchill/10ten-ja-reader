@@ -1,5 +1,3 @@
-import browser from 'webextension-polyfill';
-
 const PRIMARY_MODIFIERS = ['Ctrl', 'Alt', 'MacCtrl'] as const;
 
 type PrimaryModifier = (typeof PRIMARY_MODIFIERS)[number];
@@ -42,6 +40,30 @@ export type CommandParams = {
   key: string;
 };
 
+export class CommandError extends Error {
+  // This is just an l10n key
+  code: string;
+  // And these are substitutions
+  substitutions: string | Array<string> | undefined;
+
+  constructor(
+    code: string,
+    substitutions?: string | Array<string> | undefined,
+    ...params: any[]
+  ) {
+    super(...params);
+    Object.setPrototypeOf(this, CommandError.prototype);
+
+    if (typeof (Error as any).captureStackTrace === 'function') {
+      (Error as any).captureStackTrace(this, CommandError);
+    }
+
+    this.name = 'CommandError';
+    this.code = code;
+    this.substitutions = substitutions;
+  }
+}
+
 export class Command {
   #modifier?: PrimaryModifier;
   #secondaryModifier?: SecondaryModifier;
@@ -74,15 +96,13 @@ export class Command {
 
     // Validate we have a suitable number of components.
     if (!parts.length || parts.length > 3) {
-      throw new Error(
-        browser.i18n.getMessage('error_command_could_not_parse', value)
-      );
+      throw new CommandError('error_command_could_not_parse', value);
     }
 
     // The last part is the key
     let key = parts.pop();
     if (!key?.length) {
-      throw new Error(browser.i18n.getMessage('error_command_has_no_key'));
+      throw new CommandError('error_command_has_no_key');
     }
 
     // Single character keys should be uppercase
@@ -92,9 +112,7 @@ export class Command {
 
     // We need at least one modifier unless the key is a function key
     if (!isFunctionKey(key) && !parts.length) {
-      throw new Error(
-        browser.i18n.getMessage('error_command_is_missing_modifier_key')
-      );
+      throw new CommandError('error_command_is_missing_modifier_key');
     }
 
     // Swap the primary and secondary modifiers if necessary
@@ -114,11 +132,9 @@ export class Command {
     let modifier: PrimaryModifier | undefined;
     if (primary) {
       if (!isPrimaryModifier(primary)) {
-        throw new Error(
-          browser.i18n.getMessage(
-            'error_command_disallowed_modifier_key',
-            primary
-          )
+        throw new CommandError(
+          'error_command_disallowed_modifier_key',
+          primary
         );
       }
 
@@ -128,11 +144,9 @@ export class Command {
     let secondaryModifier: SecondaryModifier | undefined;
     if (secondary) {
       if (!isSecondaryModifier(secondary)) {
-        throw new Error(
-          browser.i18n.getMessage(
-            'error_command_disallowed_modifier_key',
-            secondary
-          )
+        throw new CommandError(
+          'error_command_disallowed_modifier_key',
+          secondary
         );
       }
 
@@ -155,9 +169,7 @@ export class Command {
   static fromParams(params: CommandParams): Command {
     if (MEDIA_KEYS.includes(params.key)) {
       if (params.alt || params.ctrl || params.shift) {
-        throw new Error(
-          browser.i18n.getMessage('error_command_media_key_with_modifier_key')
-        );
+        throw new CommandError('error_command_media_key_with_modifier_key');
       }
       return new Command(params.key);
     }
@@ -168,13 +180,11 @@ export class Command {
     }
 
     if (!key.length) {
-      throw new Error(browser.i18n.getMessage('error_command_has_no_key'));
+      throw new CommandError('error_command_has_no_key');
     }
 
     if (!isFunctionKey(key) && !(params.alt || params.ctrl || params.macCtrl)) {
-      throw new Error(
-        browser.i18n.getMessage('error_command_is_missing_modifier_key')
-      );
+      throw new CommandError('error_command_is_missing_modifier_key');
     }
 
     // Function key + Shift only is not allowed
@@ -183,12 +193,7 @@ export class Command {
       params.shift &&
       !(params.alt || params.ctrl || params.macCtrl)
     ) {
-      throw new Error(
-        browser.i18n.getMessage(
-          'error_command_disallowed_modifier_key',
-          'Shift'
-        )
-      );
+      throw new CommandError('error_command_disallowed_modifier_key', 'Shift');
     }
 
     const modifierCount = [
@@ -198,9 +203,7 @@ export class Command {
       params.macCtrl ? 1 : 0,
     ].reduce((value, currentValue) => currentValue + value);
     if (modifierCount > 2) {
-      throw new Error(
-        browser.i18n.getMessage('error_command_too_many_modifiers')
-      );
+      throw new CommandError('error_command_too_many_modifiers');
     }
 
     let modifier: PrimaryModifier | undefined;

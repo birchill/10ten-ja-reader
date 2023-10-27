@@ -9,6 +9,9 @@ export default {
   content: ['./src/options/**/*.{html,ts,tsx}'],
   theme: {
     extend: {
+      backgroundImage: {
+        'warning-red': "url('/images/warning-red.svg')",
+      },
       colors: {
         black: '#1d1a19',
         blue: {
@@ -62,6 +65,12 @@ export default {
         },
         purple: colors.violet,
       },
+      gridTemplateColumns: {
+        keys: 'minmax(12em, auto) 1fr',
+      },
+      fontFamily: {
+        inherit: 'inherit',
+      },
     },
     screens: {
       // This breakpoint corresponds to a point between the width of a mobile
@@ -74,6 +83,19 @@ export default {
   plugins: [
     plugin(({ addVariant }) => {
       addVariant('firefox', ':root.firefox &');
+    }),
+    plugin(({ addUtilities }) => {
+      addUtilities({
+        '.transparent-caret': {
+          color: 'transparent',
+          'text-shadow': '0 0 0 black',
+        },
+        '@media (prefers-color-scheme: dark)': {
+          '.transparent-caret': {
+            'text-shadow': '0 0 0 white',
+          },
+        },
+      });
     }),
   ],
 };
