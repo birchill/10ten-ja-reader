@@ -1,4 +1,5 @@
 import webpack from 'webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 import { createRequire } from 'module';
@@ -44,6 +45,12 @@ const config = {
       __SUPPORTS_SVG_ICONS__: false,
       __SUPPORTS_TAB_CONTEXT_TYPE__: false,
       __VERSION__: `'${pjson.version}'`,
+    }),
+    // Ultimately we should be able to re-use the same options.html template
+    // file but until we finish converting all the options over to Preact, that
+    // file contains a bunch of things we don't need.
+    new HtmlWebpackPlugin({
+      template: './src/options/cosmos.html',
     }),
     new MiniCssExtractPlugin(),
   ],
