@@ -9,6 +9,7 @@ import {
   isValidKey,
 } from './commands';
 import { KeyBox, KeyCheckbox, KeyInput } from './KeyBox';
+import { Linkify } from './Linkify';
 
 type Props = {
   disabled?: 'chrome' | 'edge' | 'other';
@@ -182,16 +183,44 @@ export function ToggleKeyForm(props: Props) {
         )}
       </div>
       {!!props.disabled && (
-        <div class="col-span-2 my-2 rounded-lg border border-solid border-zinc-500 px-4 py-2">
-          {t(
-            props.disabled === 'chrome'
-              ? 'options_browser_commands_no_toggle_key_chrome'
-              : props.disabled === 'edge'
-              ? 'options_browser_commands_no_toggle_key_edge'
-              : 'options_browser_commands_no_toggle_key'
-          )}
+        <div
+          class="col-span-2 my-2 rounded-lg border border-solid border-zinc-500 px-4 py-2"
+          onClick={handleChromeLinks}
+        >
+          <Linkify
+            text={t(
+              props.disabled === 'chrome'
+                ? 'options_browser_commands_no_toggle_key_chrome'
+                : props.disabled === 'edge'
+                ? 'options_browser_commands_no_toggle_key_edge'
+                : 'options_browser_commands_no_toggle_key'
+            )}
+            links={[
+              {
+                keyword: 'chrome://extensions/shortcuts',
+                href: 'chrome://extensions/shortcuts',
+              },
+              {
+                keyword: 'edge://extensions/shortcuts',
+                href: 'edge://extensions/shortcuts',
+              },
+            ]}
+          />
         </div>
       )}
     </div>
   );
+}
+
+declare const chrome: any;
+
+function handleChromeLinks(e: MouseEvent) {
+  if (
+    e.target instanceof HTMLAnchorElement &&
+    (e.target.href.startsWith('chrome://') ||
+      e.target.href.startsWith('edge://'))
+  ) {
+    chrome.tabs.create({ url: e.target.href });
+    e.preventDefault();
+  }
 }
