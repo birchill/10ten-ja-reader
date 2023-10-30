@@ -16,21 +16,21 @@
         <p>__MSG_options_toolbar_icon_label__</p>
         <fieldset>
           <div
-            class="toolbaricon-select icon-radio -with-labels -bw-inactive"
             id="toolbaricon-select"
+            class="toolbaricon-select icon-radio -with-labels -bw-inactive"
           >
             <input
-              type="radio"
               name="toolbarIcon"
-              value="default"
               id="toolbaricon-default"
+              type="radio"
+              value="default"
             />
             <label for="toolbaricon-default">
               <div class="icon">
                 <img
+                  class="image"
                   src="/images/10ten.svg"
                   alt="__MSG_options_toolbar_icon_default_alt__"
-                  class="image"
                 />
               </div>
               <div class="text">
@@ -39,17 +39,17 @@
               </div>
             </label>
             <input
-              type="radio"
               name="toolbarIcon"
-              value="sky"
               id="toolbaricon-sky"
+              type="radio"
+              value="sky"
             />
             <label for="toolbaricon-sky">
               <div class="icon">
                 <img
+                  class="image"
                   src="/images/10ten-sky.svg"
                   alt="__MSG_options_toolbar_icon_sky_alt__"
-                  class="image"
                 />
               </div>
               <div class="text">
@@ -63,14 +63,14 @@
           <p>__MSG_options_highlight_style_label__</p>
           <fieldset>
             <div
-              class="highlightstyle-select icon-radio -with-labels -bw-inactive"
               id="highlightstyle-select"
+              class="highlightstyle-select icon-radio -with-labels -bw-inactive"
             >
               <input
-                type="radio"
                 name="highlightStyle"
-                value="none"
                 id="highlightstyle-none"
+                type="radio"
+                value="none"
               />
               <label for="highlightstyle-none">
                 <div class="icon">
@@ -82,10 +82,10 @@
                 </div>
               </label>
               <input
-                type="radio"
                 name="highlightStyle"
-                value="yellow"
                 id="highlightstyle-yellow"
+                type="radio"
+                value="yellow"
               />
               <label for="highlightstyle-yellow">
                 <div class="icon">
@@ -99,10 +99,10 @@
                 </div>
               </label>
               <input
-                type="radio"
                 name="highlightStyle"
-                value="blue"
                 id="highlightstyle-blue"
+                type="radio"
+                value="blue"
               />
               <label for="highlightstyle-blue">
                 <div class="icon">
@@ -119,17 +119,17 @@
           </fieldset>
         </div>
         <div class="spacer" role="presentation"></div>
-        <div class="checkbox-row" id="old-highlight-setting-section">
-          <input type="checkbox" id="highlightText" name="highlightText" />
+        <div id="old-highlight-setting-section" class="checkbox-row">
+          <input id="highlightText" name="highlightText" type="checkbox" />
           <label for="highlightText"
             >__MSG_options_highlight_matched_text__</label
           >
         </div>
         <div class="checkbox-row">
           <input
-            type="checkbox"
             id="contextMenuEnable"
             name="contextMenuEnable"
+            type="checkbox"
           />
           <label for="contextMenuEnable"
             >__MSG_options_show_context_menu_item__</label
@@ -141,19 +141,19 @@
         <fieldset>
           <!-- Extra div because Chrome can't do flex in fieldset -->
           <div
-            class="popupstyle-select icon-radio -centered"
             id="popupstyle-select"
+            class="popupstyle-select icon-radio -centered"
           ></div>
         </fieldset>
         <div class="checkbox-row">
-          <input type="checkbox" id="showPriority" name="showPriority" />
+          <input id="showPriority" name="showPriority" type="checkbox" />
           <label for="showPriority">__MSG_options_show_priority__</label>
         </div>
         <div class="checkbox-row">
           <input
-            type="checkbox"
             id="showWaniKaniLevel"
             name="showWaniKaniLevel"
+            type="checkbox"
           />
           <label for="showWaniKaniLevel"
             >__MSG_options_show_wanikani_levels__<span class="new-badge"
@@ -162,11 +162,11 @@
           >
         </div>
         <div class="checkbox-row">
-          <input type="checkbox" id="showRomaji" name="showRomaji" />
+          <input id="showRomaji" name="showRomaji" type="checkbox" />
           <label for="showRomaji">__MSG_options_show_romaji__</label>
         </div>
         <div class="checkbox-row">
-          <input type="checkbox" id="showDefinitions" name="showDefinitions" />
+          <input id="showDefinitions" name="showDefinitions" type="checkbox" />
           <label for="showDefinitions">__MSG_options_show_definitions__</label>
         </div>
         <div class="spacer" role="presentation"></div>
@@ -209,13 +209,13 @@
           </div>
           <div class="auto-expand-checkboxes">
             <div>
-              <input type="checkbox" id="expandWords" name="expandWords" />
+              <input id="expandWords" name="expandWords" type="checkbox" />
               <label for="expandWords"
                 >__MSG_options_expand_words_label__</label
               >
             </div>
             <div>
-              <input type="checkbox" id="expandKanji" name="expandKanji" />
+              <input id="expandKanji" name="expandKanji" type="checkbox" />
               <label for="expandKanji"
                 >__MSG_options_expand_kanji_label__</label
               >
@@ -231,18 +231,18 @@
           <p>__MSG_options_mouse_interactivity_label__</p>
           <fieldset>
             <div
-              class="interactivity-select icon-radio -with-labels -bw-inactive"
               id="interactivity-select"
+              class="interactivity-select icon-radio -with-labels -bw-inactive"
             >
               <input
-                type="radio"
                 name="mouseInteractivity"
-                value="disable"
                 id="interactivity-disable"
+                type="radio"
+                value="disable"
               />
               <label for="interactivity-disable">
                 <div class="icon">
-                  <svg viewBox="0 0 200 150" class="svg theme-light">
+                  <svg class="svg theme-light" viewBox="0 0 200 150">
                     <defs>
                       <clipPath id="interactive-popup-outline-1">
                         <rect
@@ -294,14 +294,14 @@
                 </div>
               </label>
               <input
-                type="radio"
                 name="mouseInteractivity"
-                value="enable"
                 id="interactivity-enable"
+                type="radio"
+                value="enable"
               />
               <label for="interactivity-enable">
                 <div class="icon">
-                  <svg viewBox="0 0 200 150" class="svg theme-light">
+                  <svg class="svg theme-light" viewBox="0 0 200 150">
                     <defs>
                       <clipPath id="interactive-popup-outline-2">
                         <rect
@@ -394,9 +394,9 @@
         <div id="touch-interactivity-section" class="needs-touch">
           <div class="checkbox-row">
             <input
-              type="checkbox"
               id="enableTapLookup"
               name="enableTapLookup"
+              type="checkbox"
             />
             <label for="enableTapLookup"
               >__MSG_options_touch_enable_tap_lookup__<span class="new-badge"
@@ -409,18 +409,18 @@
         <p>__MSG_options_tab_position_label__</p>
         <fieldset>
           <div
-            class="tabdisplay-select icon-radio -with-labels -bw-inactive"
             id="tabdisplay-select"
+            class="tabdisplay-select icon-radio -with-labels -bw-inactive"
           >
             <input
-              type="radio"
               name="tabDisplay"
-              value="top"
               id="tabdisplay-top"
+              type="radio"
+              value="top"
             />
             <label for="tabdisplay-top">
               <div class="icon">
-                <svg viewBox="0 0 48 48" class="svg theme-light">
+                <svg class="svg theme-light" viewBox="0 0 48 48">
                   <defs>
                     <clipPath id="popup-outline">
                       <rect
@@ -441,8 +441,8 @@
                       height="46"
                     />
                   </defs>
-                  <use href="#tabicon-popup" class="popup" />
-                  <rect x="16" y="1" width="32" height="8" class="tab" />
+                  <use class="popup" href="#tabicon-popup" />
+                  <rect class="tab" x="16" y="1" width="32" height="8" />
                 </svg>
               </div>
               <div class="text">
@@ -450,16 +450,16 @@
               </div>
             </label>
             <input
-              type="radio"
               name="tabDisplay"
-              value="left"
               id="tabdisplay-left"
+              type="radio"
+              value="left"
             />
             <label for="tabdisplay-left">
               <div class="icon">
-                <svg viewBox="0 0 48 48" class="svg theme-light">
-                  <use href="#tabicon-popup" class="popup" />
-                  <rect x="0" y="8" width="8" height="40" class="tab" />
+                <svg class="svg theme-light" viewBox="0 0 48 48">
+                  <use class="popup" href="#tabicon-popup" />
+                  <rect class="tab" x="0" y="8" width="8" height="40" />
                 </svg>
               </div>
               <div class="text">
@@ -467,16 +467,16 @@
               </div>
             </label>
             <input
-              type="radio"
               name="tabDisplay"
-              value="right"
               id="tabdisplay-right"
+              type="radio"
+              value="right"
             />
             <label for="tabdisplay-right">
               <div class="icon">
-                <svg viewBox="0 0 48 48" class="svg theme-light">
-                  <use href="#tabicon-popup" class="popup" />
-                  <rect x="40" y="8" width="8" height="40" class="tab" />
+                <svg class="svg theme-light" viewBox="0 0 48 48">
+                  <use class="popup" href="#tabicon-popup" />
+                  <rect class="tab" x="40" y="8" width="8" height="40" />
                 </svg>
               </div>
               <div class="text">
@@ -484,15 +484,15 @@
               </div>
             </label>
             <input
-              type="radio"
               name="tabDisplay"
-              value="none"
               id="tabdisplay-none"
+              type="radio"
+              value="none"
             />
             <label for="tabdisplay-none">
               <div class="icon">
-                <svg viewBox="0 0 48 48" class="svg theme-light">
-                  <use href="#tabicon-popup" class="popup" />
+                <svg class="svg theme-light" viewBox="0 0 48 48">
+                  <use class="popup" href="#tabicon-popup" />
                 </svg>
               </div>
               <div class="text">
