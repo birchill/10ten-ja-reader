@@ -1584,6 +1584,10 @@
   "options_dictionary_language_heading": {
     "message": "词典语言"
   },
+  "options_disable_toggle_shortcut": {
+    "message": "切换快捷键禁用",
+    "description": "Label for button to disable the toggle shortcut"
+  },
   "options_downloading_data": {
     "message": "正在下载​$datatype$​，版本 $version$​（​$progress$​%）……",
     "description": "Label while we are downloading updates",
@@ -1828,6 +1832,10 @@
   "options_pos_display_none": {
     "message": "无",
     "description": "Label for hiding part-of-speech labels"
+  },
+  "options_restore_toggle_shortcut": {
+    "message": "恢复切换快捷键",
+    "description": "Label for button to restore the toggle shortcut"
   },
   "options_show_context_menu_item": {
     "message": "右键菜单中添加“启用 10ten reader”",

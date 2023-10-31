@@ -11,10 +11,12 @@ import {
 import { KeyBox, KeyCheckbox, KeyInput } from './KeyBox';
 import { Linkify } from './Linkify';
 
+export const ResetShortcut = Symbol('reset');
+
 type Props = {
   disabled?: 'chrome' | 'edge' | 'other';
   isMac: boolean;
-  onChangeToggleKey: (key: Command) => void;
+  onChangeToggleKey: (key: Command | typeof ResetShortcut | undefined) => void;
   toggleKey?: Command;
 };
 
@@ -40,6 +42,12 @@ export function ToggleKeyForm(props: Props) {
     shift: !!props?.toggleKey?.shift,
     key: props.toggleKey?.key || '',
   });
+  const isEmpty =
+    !formState.alt &&
+    !formState.macCtrl &&
+    !formState.ctrl &&
+    !formState.shift &&
+    !formState.key.length;
 
   // Any time the input toggle key changes, however, we should reset the form
   // state to match and clear any error.
@@ -176,7 +184,7 @@ export function ToggleKeyForm(props: Props) {
             value={formState.key || ''}
           />
         </div>
-        <div class="grow">
+        <div>
           {t('command_toggle_description')}
           {!!toggleKeyError?.length && (
             <div
@@ -185,6 +193,39 @@ export function ToggleKeyForm(props: Props) {
               title={toggleKeyError}
             />
           )}
+        </div>
+        <div>
+          <button
+            class="cursor-pointer appearance-none rounded-md border-none bg-transparent p-0.5 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-600 dark:text-zinc-400 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
+            disabled={!!props.disabled}
+            title={
+              isEmpty
+                ? t('options_restore_toggle_shortcut')
+                : t('options_disable_toggle_shortcut')
+            }
+            type="button"
+            onClick={() => {
+              props.onChangeToggleKey(isEmpty ? ResetShortcut : undefined);
+              setToggleKeyError(undefined);
+            }}
+          >
+            {isEmpty ? (
+              <svg class="block h-5 w-5 fill-current" viewBox="0 0 16 16">
+                <path d="M8.54,2.11l.66-.65A.78.78,0,0,0,9.2.38a.76.76,0,0,0-1.08,0L6.19,2.31A.81.81,0,0,0,6,2.55a.8.8,0,0,0-.06.3A.72.72,0,0,0,6,3.14a.74.74,0,0,0,.17.25L8.12,5.32a.73.73,0,0,0,.54.22.76.76,0,0,0,.54-.22.78.78,0,0,0,0-1.08l-.58-.58A4.38,4.38,0,1,1,3.68,8.82a.76.76,0,0,0-1.5.28,5.92,5.92,0,1,0,6.36-7Z" />
+                <circle cx={2.673} cy={6.71} r={0.965} />
+              </svg>
+            ) : (
+              <svg class="block h-5 w-5" viewBox="0 0 24 24">
+                <path
+                  d="M6 18L18 6M6 6l12 12"
+                  stroke="currentColor"
+                  strokeWidth={3}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
       {!!props.disabled && (

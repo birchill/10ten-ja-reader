@@ -1584,6 +1584,10 @@
   "options_dictionary_language_heading": {
     "message": "辞書の言語"
   },
+  "options_disable_toggle_shortcut": {
+    "message": "オン・オフを切り替えるショートカットを無効にする",
+    "description": "Label for button to disable the toggle shortcut"
+  },
   "options_downloading_data": {
     "message": "$datatype$​バージョン​$version$​を読み込み中 (​$progress$​%)…",
     "description": "Label while we are downloading updates",
@@ -1828,6 +1832,10 @@
   "options_pos_display_none": {
     "message": "なし",
     "description": "Label for hiding part-of-speech labels"
+  },
+  "options_restore_toggle_shortcut": {
+    "message": "オン・オフを切り替えるショートカットを復元する",
+    "description": "Label for button to restore the toggle shortcut"
   },
   "options_show_context_menu_item": {
     "message": "コンテキストメニューに「10ten readerを有効にする」を表示",

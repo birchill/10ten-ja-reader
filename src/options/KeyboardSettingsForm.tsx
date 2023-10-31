@@ -4,7 +4,7 @@ import { StoredKeyboardKeys } from '../common/popup-keys';
 import type { Command } from './commands';
 import { PopupKeysForm } from './PopupKeysForm';
 import { type HoldToShowSetting, ShowPopupKeysForm } from './ShowPopupKeysForm';
-import { ToggleKeyForm } from './ToggleKeyForm';
+import { ResetShortcut, ToggleKeyForm } from './ToggleKeyForm';
 
 type Props = {
   holdToShowImageKeys: HoldToShowSetting;
@@ -12,7 +12,7 @@ type Props = {
   isMac: boolean;
   onChangeHoldToShowImageKeys: (value: HoldToShowSetting) => void;
   onChangeHoldToShowKeys: (value: HoldToShowSetting) => void;
-  onChangeToggleKey: (key: Command) => void;
+  onChangeToggleKey: (key: Command | typeof ResetShortcut | undefined) => void;
   onUpdatePopupKey: (
     name: keyof StoredKeyboardKeys,
     keys: Array<string>

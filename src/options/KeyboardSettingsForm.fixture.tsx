@@ -6,6 +6,7 @@ import { isMac } from '../utils/ua-utils';
 
 import { Command } from './commands';
 import { KeyboardSettingsForm } from './KeyboardSettingsForm';
+import { ResetShortcut } from './ToggleKeyForm';
 
 import './options.css';
 
@@ -34,8 +35,14 @@ export default function () {
     }
   }, [toggleCommandString]);
 
-  const onChangeToggleKey = (key: Command) => {
-    setToggleCommandString(key.toString());
+  const onChangeToggleKey = (
+    key: Command | typeof ResetShortcut | undefined
+  ) => {
+    if (key === ResetShortcut) {
+      setToggleCommandString('Ctrl+Alt+R');
+    } else {
+      setToggleCommandString(key?.toString() || '');
+    }
   };
 
   // Hold-to-show keys
