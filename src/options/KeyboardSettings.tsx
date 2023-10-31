@@ -10,6 +10,7 @@ import { useConfigValue } from './use-config-value';
 import type { HoldToShowSetting } from './ShowPopupKeysForm';
 import type { Config } from '../common/config';
 import { StoredKeyboardKeys } from '../common/popup-keys';
+import { ResetShortcut } from './ToggleKeyForm';
 
 const mac = isMac();
 
@@ -64,16 +65,25 @@ export function KeyboardSettings(props: { config: Config }) {
     };
   }, []);
 
-  const onChangeToggleKey = (key: Command) => {
+  const onChangeToggleKey = (
+    key: Command | typeof ResetShortcut | undefined
+  ) => {
     void (async () => {
       try {
-        await browser.commands.update({
-          name: __MV3__ ? '_execute_action' : '_execute_browser_action',
-          shortcut: key.toString(),
-        });
-        setToggleKey(key);
+        if (key === ResetShortcut) {
+          await browser.commands.reset(
+            __MV3__ ? '_execute_action' : '_execute_browser_action'
+          );
+          setToggleKey(await getToggleKey());
+        } else {
+          await browser.commands.update({
+            name: __MV3__ ? '_execute_action' : '_execute_browser_action',
+            shortcut: key ? key.toString() : '',
+          });
+          setToggleKey(key);
+        }
       } catch (e) {
-        console.error(`Failed to set toggle key to ${key.toString()}`, e);
+        console.error(`Failed to set toggle key to ${key?.toString()}`, e);
         void Bugsnag.notify(e);
 
         // Set the key back to its previous value

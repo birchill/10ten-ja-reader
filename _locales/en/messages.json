@@ -1584,6 +1584,10 @@
   "options_dictionary_language_heading": {
     "message": "Dictionary language"
   },
+  "options_disable_toggle_shortcut": {
+    "message": "Disable toggle shortcut",
+    "description": "Label for button to disable the toggle shortcut"
+  },
   "options_downloading_data": {
     "message": "Downloading $datatype$ version $version$ (​$progress$​%)…",
     "description": "Label while we are downloading updates",
@@ -1828,6 +1832,10 @@
   "options_pos_display_none": {
     "message": "None",
     "description": "Label for hiding part-of-speech labels"
+  },
+  "options_restore_toggle_shortcut": {
+    "message": "Restore toggle shortcut",
+    "description": "Label for button to restore the toggle shortcut"
   },
   "options_show_context_menu_item": {
     "message": "Show “Enable 10ten reader” in context menu",
