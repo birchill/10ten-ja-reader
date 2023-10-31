@@ -116,75 +116,80 @@ export function ToggleKeyForm(props: Props) {
   };
 
   return (
-    <div class="grid-cols-keys grid items-center gap-x-6 gap-y-1">
-      <div class="flex flex-wrap gap-2">
-        <KeyCheckbox
-          checked={formState.alt}
-          disabled={!!props.disabled}
-          onClick={onToggleKeyChange}
-          ref={altKeyRef}
-        >
-          <KeyBox label="Alt" isMac={props.isMac} />
-          <span class="ml-2">+</span>
-        </KeyCheckbox>
-        {props.isMac && (
+    <>
+      <div class="flex items-center gap-x-6 gap-y-1">
+        <div class="flex flex-wrap gap-2">
           <KeyCheckbox
-            checked={formState.macCtrl}
+            checked={formState.alt}
             disabled={!!props.disabled}
             onClick={onToggleKeyChange}
-            ref={macCtrlKeyRef}
+            ref={altKeyRef}
           >
-            <KeyBox label="Control" isMac={props.isMac} />
+            <KeyBox label="Alt" isMac={props.isMac} />
             <span class="ml-2">+</span>
           </KeyCheckbox>
-        )}
-        <KeyCheckbox
-          checked={formState.ctrl}
-          disabled={!!props.disabled}
-          onClick={onToggleKeyChange}
-          ref={ctrlKeyRef}
-        >
-          <KeyBox label="Ctrl" isMac={props.isMac} />
-          <span class="ml-2">+</span>
-        </KeyCheckbox>
-        <KeyCheckbox
-          checked={formState.shift}
-          disabled={!!props.disabled}
-          onClick={onToggleKeyChange}
-          ref={shiftKeyRef}
-        >
-          <KeyBox label="Shift" isMac={props.isMac} />
-          <span class="ml-2">+</span>
-        </KeyCheckbox>
-        <KeyInput
-          disabled={!!props.disabled}
-          onKeyDown={onToggleKeyDown}
-          onCompositionStart={(event: JSX.TargetedEvent<HTMLInputElement>) => {
-            event.currentTarget.value = '';
-          }}
-          onCompositionEnd={(event: JSX.TargetedEvent<HTMLInputElement>) => {
-            event.currentTarget.value = event.currentTarget.value.toUpperCase();
-            onToggleKeyChange();
-          }}
-          ref={keyRef}
-          size={1}
-          type="text"
-          value={formState.key || ''}
-        />
-      </div>
-      <div>
-        {t('command_toggle_description')}
-        {!!toggleKeyError?.length && (
-          <div
-            class="bg-warning-red ml-2 inline-block h-6 w-6 bg-cover bg-no-repeat align-top"
-            id="toggle-key-icon"
-            title={toggleKeyError}
+          {props.isMac && (
+            <KeyCheckbox
+              checked={formState.macCtrl}
+              disabled={!!props.disabled}
+              onClick={onToggleKeyChange}
+              ref={macCtrlKeyRef}
+            >
+              <KeyBox label="Control" isMac={props.isMac} />
+              <span class="ml-2">+</span>
+            </KeyCheckbox>
+          )}
+          <KeyCheckbox
+            checked={formState.ctrl}
+            disabled={!!props.disabled}
+            onClick={onToggleKeyChange}
+            ref={ctrlKeyRef}
+          >
+            <KeyBox label="Ctrl" isMac={props.isMac} />
+            <span class="ml-2">+</span>
+          </KeyCheckbox>
+          <KeyCheckbox
+            checked={formState.shift}
+            disabled={!!props.disabled}
+            onClick={onToggleKeyChange}
+            ref={shiftKeyRef}
+          >
+            <KeyBox label="Shift" isMac={props.isMac} />
+            <span class="ml-2">+</span>
+          </KeyCheckbox>
+          <KeyInput
+            disabled={!!props.disabled}
+            onKeyDown={onToggleKeyDown}
+            onCompositionStart={(
+              event: JSX.TargetedEvent<HTMLInputElement>
+            ) => {
+              event.currentTarget.value = '';
+            }}
+            onCompositionEnd={(event: JSX.TargetedEvent<HTMLInputElement>) => {
+              event.currentTarget.value =
+                event.currentTarget.value.toUpperCase();
+              onToggleKeyChange();
+            }}
+            ref={keyRef}
+            size={1}
+            type="text"
+            value={formState.key || ''}
           />
-        )}
+        </div>
+        <div class="grow">
+          {t('command_toggle_description')}
+          {!!toggleKeyError?.length && (
+            <div
+              class="bg-warning-red ml-2 inline-block h-6 w-6 bg-cover bg-no-repeat align-top"
+              id="toggle-key-icon"
+              title={toggleKeyError}
+            />
+          )}
+        </div>
       </div>
       {!!props.disabled && (
         <div
-          class="col-span-2 my-2 rounded-lg border border-solid border-zinc-500 px-4 py-2"
+          class="my-2 rounded-lg border border-solid border-zinc-500 px-4 py-2"
           onClick={handleChromeLinks}
         >
           <Linkify
@@ -208,7 +213,7 @@ export function ToggleKeyForm(props: Props) {
           />
         </div>
       )}
-    </div>
+    </>
   );
 }
 
