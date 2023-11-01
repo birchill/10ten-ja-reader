@@ -11,8 +11,8 @@ app.
 - Fixed the popup changing width in some cases (e.g. when tabs are hidden and
   scrollbars are configured to always show)
   ([#1314](https://github.com/birchill/10ten-ja-reader/issues/1314)).
-- Make the `x` key close the popup if it is configured to _both_ close it and
-  expand it.
+- Added handling to avoid the <kbd>x</kbd> key being assigned to both closing
+  the popup _and_ expanding it.
 - Fixed recognition of words that end in half-width numerals like 小1.
 - Added parsing for ill-formed numbers like 39,800万円.
 - Made the options page show up in a new tab on Edge.
