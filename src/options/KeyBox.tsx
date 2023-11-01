@@ -1,7 +1,6 @@
 import type { ComponentProps, RenderableProps } from 'preact';
-import { useState } from 'preact/hooks';
+import { useId } from 'preact/hooks';
 
-import { cheapUuid } from '../common/uuid';
 import { classes } from '../utils/classes';
 import { forwardRef } from 'preact/compat';
 
@@ -54,7 +53,7 @@ export const KeyCheckbox = forwardRef<
   HTMLInputElement,
   RenderableProps<CheckboxProps>
 >((props: CheckboxProps, ref) => {
-  const [id] = useState(cheapUuid());
+  const id = useId();
 
   // If we use align-items: normal etc. the checkboxes line up with the label
   // text nicely but we want to use align-items: baseline (`items-baseline`) so
