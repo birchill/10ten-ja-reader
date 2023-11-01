@@ -1446,7 +1446,7 @@ export class ContentHandler {
 
           let iframeOriginPoint;
           if (!iframe) {
-            console.warn("Couldn't find iframe element");
+            console.warn("[10ten-ja-reader] Couldn't find iframe element");
             // Just use the top-left corner since that's probably better than
             // not showing the popup at all.
             iframeOriginPoint = { x: 0, y: 0 };
@@ -1623,7 +1623,7 @@ export class ContentHandler {
     if (!this.isTopMostWindow()) {
       console.assert(
         trigger === 'keyboard',
-        "We probably should't be receiving touch or mouse events in the iframe"
+        "[10ten-ja-reader] We probably should't be receiving touch or mouse events in the iframe"
       );
       void browser.runtime.sendMessage({ type: 'top:enterCopyMode' });
       return;
@@ -1699,7 +1699,7 @@ export class ContentHandler {
 
   private getCopyEntry(): CopyEntry | null {
     if (this.copyState.kind !== 'active') {
-      console.error('Expected to be in copy mode');
+      console.error('[10ten-ja-reader] Expected to be in copy mode');
       return null;
     }
 
@@ -2499,7 +2499,7 @@ export class ContentHandler {
     } = {}
   ) {
     if (!this.isTopMostWindow()) {
-      console.warn('Called updatePopup within iframe');
+      console.warn('[10ten-ja-reader] Called updatePopup within iframe');
       return;
     }
 
