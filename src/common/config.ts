@@ -746,6 +746,26 @@ export class Config {
       }
     }
 
+    // When we first released the `expandPopup` key ('x') we didn't notice
+    // that it was already possible to assign 'x' to `closePopup`.
+    //
+    // We _could_ try to make it so that if you assign 'x' to `expandPopup` we
+    // remove it from `closePopup`. But it might be slightly more useful to
+    // allow it to be assigned to both and simply report it as being assigned to
+    // `closePopup` in that case.
+    //
+    // That has the advantages that:
+    //
+    // 1. If you go to enable it for `closePopup` and notice that doing so
+    //    clears it from `expandPopup`, you can just untick it from `closePopup`
+    //    and it will automatically be restored to `expandPopup`.
+    //
+    // 2. We need to handle the case when they're both selected anyway since
+    //    it's already possible to get it into that state in a released version.
+    if (keys.expandPopup.includes('x') && keys.closePopup.includes('x')) {
+      keys.expandPopup = keys.expandPopup.filter((k) => k !== 'x');
+    }
+
     return keys;
   }
 

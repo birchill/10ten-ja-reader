@@ -1167,20 +1167,14 @@ export class ContentHandler {
       }
     } else if (this.copyState.kind !== 'inactive' && key === 'ESC') {
       this.exitCopyMode();
+    } else if (expandPopup.includes(key)) {
+      this.expandPopup();
     }
     // This needs to come _after_ the above check so that if the user has
     // configured Escape to close the popup but they are in copy mode, we first
     // escape copy mode (and if they press it a second time we close the popup).
     else if (closePopup.includes(key)) {
       this.clearResult();
-    }
-    // This needs to come after the check for a close popup key because that
-    // feature came first and allows a user to configure 'x' to close the popup.
-    //
-    // If 'x' ends up being set for _both_ closing the popup and expanding it,
-    // we should make it close the popup.
-    else if (expandPopup.includes(key)) {
-      this.expandPopup();
     } else if (
       pinPopup.includes(key) &&
       // We don't want to detect a pin keystroke if we are still in the ghost
