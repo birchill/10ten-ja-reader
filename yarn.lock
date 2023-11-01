@@ -9541,14 +9541,14 @@ wcwidth@^1.0.0, wcwidth@^1.0.1:
   dependencies:
     defaults "^1.0.3"
 
-web-ext-plugin@2.8.1:
-  version "2.8.1"
-  resolved "https://registry.yarnpkg.com/web-ext-plugin/-/web-ext-plugin-2.8.1.tgz#668ae1e3a5d08046f502d2e3c52cebe222d1fd98"
-  integrity sha512-3W/KU5yM8LCcwnQKF/zAtf4JKXPAue4l82cFP8EDM62H+yg5pGaJhs9MGQd18gX6w9f+IzZtndr/YnZVfj4VXw==
+web-ext-plugin@2.9.0:
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/web-ext-plugin/-/web-ext-plugin-2.9.0.tgz#f3d4057e3be87169089b5cbcc9f50f5164bcf179"
+  integrity sha512-0L6EJ/CHHY6XeP6ad5txfoI+JTKheNOZjD4gmQwOQFyvx59gT/BD5g1pagJxdOW9T9WCATClvHvRAIsmmzLbvA==
   dependencies:
-    web-ext "^7.6.2"
+    web-ext "^7.8.0"
 
-web-ext@7.8.0, web-ext@^7.6.2:
+web-ext@7.8.0, web-ext@^7.8.0:
   version "7.8.0"
   resolved "https://registry.yarnpkg.com/web-ext/-/web-ext-7.8.0.tgz#710cd73af79e3ac26fd4883b8894a3f6fd692d5d"
   integrity sha512-ta+VjbNfK5q0pqRmrlH/DQMdJ89sAJFfgcvpqoUoe2gPxLu18zZ5mIakGvyjmfjrkJLOZ2NCNF7suj/qd6xaEQ==
