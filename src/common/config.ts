@@ -382,7 +382,7 @@ export class Config {
 
   set canHover(value: boolean) {
     const storedSetting = this.settings.localSettings?.canHover;
-    if (storedSetting === value) {
+    if (storedSetting === value || (storedSetting === undefined && value)) {
       return;
     }
 
