@@ -9,17 +9,19 @@ import { countMora, moraSubstring } from '@birchill/normal-jp';
 import browser from 'webextension-polyfill';
 
 import { Sense, WordResult } from '../../background/search-result';
-import { NamePreview } from '../query';
-import { PopupOptions, StartCopyCallback } from './popup';
+import { PartOfSpeechDisplay } from '../../common/content-config-params';
+import { html } from '../../utils/builder';
 
+import { NamePreview } from '../query';
+
+import { CopyState } from './copy-state';
+import { renderStar } from './icons';
+import { getLangTag } from './lang-tag';
 import { renderMetadata } from './metadata';
 import { renderName } from './names';
-import { html } from '../../utils/builder';
+import { PopupOptions, StartCopyCallback } from './popup';
 import { getSelectedIndex } from './selected-index';
 import { popupHasSelectedText } from './selection';
-import { getLangTag } from './lang-tag';
-import { renderStar } from './icons';
-import { CopyState } from './copy-state';
 
 export function renderWordEntries({
   entries,
@@ -283,6 +285,15 @@ export function renderWordEntries({
     }
 
     if (options.showDefinitions) {
+      // If we have hidden all the kanji headwords, then we shouldn't show
+      // "usually kana" annotations on definitions.
+      if (!matchingKanji.length) {
+        entry.s = entry.s.map((s) => ({
+          ...s,
+          misc: s.misc?.filter((m) => m !== 'uk'),
+        }));
+      }
+
       entryDiv.append(renderDefinitions(entry, options));
     }
   }
@@ -487,7 +498,13 @@ function renderKana(
   return wrapperSpan;
 }
 
-function renderDefinitions(entry: WordResult, options: PopupOptions) {
+function renderDefinitions(
+  entry: WordResult,
+  options: {
+    dictLang?: string;
+    posDisplay: PartOfSpeechDisplay;
+  }
+) {
   const senses = entry.s.filter((s) => s.match);
   if (!senses.length) {
     return '';
@@ -611,7 +628,10 @@ function renderDefinitions(entry: WordResult, options: PopupOptions) {
   return definitionsDiv;
 }
 
-function renderSense(sense: Sense, options: PopupOptions): DocumentFragment {
+function renderSense(
+  sense: Sense,
+  options: { posDisplay: PartOfSpeechDisplay }
+): DocumentFragment {
   const fragment = document.createDocumentFragment();
 
   if (options.posDisplay !== 'none') {
