@@ -28,6 +28,8 @@ app.
 - Made matches on search-only headwords show the search-only version too
   (e.g. 磨ガラス, ペイチン)
   ([#1361](https://github.com/birchill/10ten-ja-reader/issues/1361)).
+- Hid the "usually kana" annotation when no kanji headwords are shown
+  (also [#1361](https://github.com/birchill/10ten-ja-reader/issues/1361)).
 
 ## [1.15.1] - 2023-09-03
 
