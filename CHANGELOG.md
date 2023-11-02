@@ -25,6 +25,9 @@ app.
   <kbd>Delete</kbd>, <kbd>Up</kbd>, <kbd>Down</kbd>, <kbd>Left</kbd>,
   and <kbd>Right</kbd>.
 - Made it possible to clear the toggle key in Firefox/Thunderbird.
+- Made matches on search-only headwords show the search-only version too
+  (e.g. 磨ガラス, ペイチン)
+  ([#1361](https://github.com/birchill/10ten-ja-reader/issues/1361)).
 
 ## [1.15.1] - 2023-09-03
 

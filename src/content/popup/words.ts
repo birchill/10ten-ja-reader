@@ -127,9 +127,17 @@ export function renderWordEntries({
 
     const matchedOnKana = entry.r.some((r) => r.matchRange);
 
-    // Exclude any search-only kanji headwords
+    // Exclude any search-only kanji headwords unless we ONLY matched on
+    // search-only kanji.
+    const matchedOnlyOnSearchOnlyKanji =
+      !matchedOnKana && entry.k.every((k) => !k.match || k.i?.includes('sK'));
+
     const kanjiHeadwords = entry.k
-      ? entry.k.filter((k) => !k.i?.includes('sK'))
+      ? entry.k.filter(
+          (k) =>
+            !k.i?.includes('sK') ||
+            (matchedOnlyOnSearchOnlyKanji && k.matchRange)
+        )
       : [];
 
     // If we matched on kana, then any headwords which are _not_ matches should
@@ -156,7 +164,6 @@ export function renderWordEntries({
     const matchingKanji = matchedOnKana
       ? kanjiHeadwords.filter((k) => k.match)
       : kanjiHeadwords;
-    const hasKanjiMatch = matchingKanji.some((k) => k.match);
 
     // Sort matched kanji entries first
     matchingKanji.sort((a, b) => Number(b.match) - Number(a.match));
@@ -168,16 +175,16 @@ export function renderWordEntries({
         }
 
         let headwordSpan = kanjiSpan;
+        const ki = new Set(kanji.i || []);
         if (
-          // Dim the non-matching kanji unless there are none (e.g. because we
-          // matched on a search-only kanji headword).
-          (hasKanjiMatch && !kanji.match) ||
-          // Dim any kanji "matches" where the reading is irregular, old, or
-          // rare.
-          (matchedOnKana &&
-            (kanji.i?.includes('iK') ||
-              kanji.i?.includes('oK') ||
-              kanji.i?.includes('rK')))
+          // Always dim search-only kanji
+          ki.has('sK') ||
+          // Dim the non-matching kanji unless there are none because we
+          // matched only on search-only kanji headwords.
+          (!kanji.match && !matchedOnlyOnSearchOnlyKanji) ||
+          // If we matched on the reading, dim any kanji headwords that are
+          // irregular, old, or rare.
+          (matchedOnKana && (ki.has('iK') || ki.has('oK') || ki.has('rK')))
         ) {
           const dimmedSpan = html('span', { class: 'dimmed' });
           kanjiSpan.append(dimmedSpan);
@@ -214,10 +221,14 @@ export function renderWordEntries({
           r.i?.includes('sk')
       );
 
+    // For search-only kanji, we show them only if they are the ONLY matches.
+    const matchedOnlyOnSearchOnlyKana =
+      matchedOnKana && entry.r.every((r) => !r.match || r.i?.includes('sk'));
+
     const matchingKana = entry.r.filter(
       (r) =>
-        // Exclude search-only kana forms
-        !r.i?.includes('sk') &&
+        // Don't include search-only kana unless they are the _only_ matches
+        (!r.i?.includes('sk') || matchedOnlyOnSearchOnlyKana) &&
         (r.match ||
           (matchedOnIrregularKana &&
             !r.i?.includes('ik') &&
@@ -232,12 +243,14 @@ export function renderWordEntries({
           kanaSpan.append(html('span', { class: 'separator' }, '、'));
         }
 
-        // If we looked up by kanji, dim any kana headwords that are irregular
-        // or old.
+        // Dim irrelevant headwords
         let headwordSpan = kanaSpan;
         if (
-          !matchedOnKana &&
-          (kana.i?.includes('ik') || kana.i?.includes('ok'))
+          // Always dim search-only headwords
+          kana.i?.includes('sk') ||
+          // If we looked up by kanji, dim any kana headwords that are irregular
+          // or old.
+          (!matchedOnKana && (kana.i?.includes('ik') || kana.i?.includes('ok')))
         ) {
           const dimmedSpan = html('span', { class: 'dimmed' });
           kanaSpan.append(dimmedSpan);
@@ -355,6 +368,11 @@ function appendHeadwordInfo(
       ok: 'okana',
       uK: 'ukanji',
       rK: 'rkanji',
+      // We normally don't show search-only kanji/kana headwords unless they are
+      // exact matches. In those cases we should probably just indicate them as
+      // "irregular" kanji/kana.
+      sK: 'ikanji',
+      sk: 'ikana',
     };
     const key = specialKeys.hasOwnProperty(i)
       ? specialKeys[i as KanjiInfo | ReadingInfo]
