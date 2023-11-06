@@ -199,10 +199,6 @@ function completeForm() {
       config.tabDisplay = tabDisplay;
     });
   }
-
-  document.getElementById('fxCurrency')!.addEventListener('input', (event) => {
-    config.fxCurrency = (event.target as HTMLSelectElement).value;
-  });
 }
 
 function renderPopupStyleSelect() {
@@ -355,48 +351,6 @@ function setTabDisplayTheme(theme: string) {
   }
 }
 
-function renderCurrencyList(
-  selectedCurrency: string,
-  currencies: Array<string> | undefined
-) {
-  const heading = document.querySelector<HTMLDivElement>('.currency-heading')!;
-  const body = document.querySelector<HTMLDivElement>('.currency-body')!;
-
-  if (!currencies || !currencies.length) {
-    heading.style.display = 'none';
-    body.style.display = 'none';
-    return;
-  }
-
-  heading.style.display = 'revert';
-  body.style.display = 'revert';
-
-  // Drop all the existing currencies since the set of currencies may have
-  // changed
-  const fxCurrency = document.getElementById('fxCurrency') as HTMLSelectElement;
-  while (fxCurrency.options.length) {
-    fxCurrency.options.remove(0);
-  }
-
-  // Re-add them
-  const currencyNames = Intl.DisplayNames
-    ? new Intl.DisplayNames(['en'], { type: 'currency' })
-    : undefined;
-  const options = ['none', ...currencies];
-  for (const currency of options) {
-    let label: string;
-    if (currency === 'none') {
-      label = browser.i18n.getMessage('options_currency_none_label');
-    } else {
-      label = currencyNames
-        ? `${currency} - ${currencyNames.of(currency)}`
-        : currency;
-    }
-    fxCurrency.options.add(new Option(label, currency));
-  }
-  fxCurrency.value = selectedCurrency;
-}
-
 // Expire current set of badges on Oct 10
 const NEW_EXPIRY = new Date(2023, 9, 10);
 
@@ -438,8 +392,6 @@ function fillVals() {
   optform.enableTapLookup.checked = config.enableTapLookup;
   optform.tabDisplay.value = config.tabDisplay;
   optform.toolbarIcon.value = config.toolbarIcon;
-
-  renderCurrencyList(config.fxCurrency, config.fxCurrencies);
 }
 
 window.onload = async () => {
