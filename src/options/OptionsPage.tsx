@@ -3,6 +3,7 @@ import { I18nProvider, useLocale } from '../common/i18n';
 import { possiblyHasPhysicalKeyboard } from '../utils/device';
 import { getReleaseStage } from '../utils/release-stage';
 
+import { CurrencySettings } from './CurrencySettings';
 import { DbStatus } from './DbStatus';
 import { DictionaryLanguageSettings } from './DictionaryLanguageSettings';
 import { KanjiReferenceSettings } from './KanjiReferenceSettings';
@@ -32,6 +33,10 @@ function OptionsPageInner(props: Props) {
 
   return (
     <>
+      {/* For the currency settings, the CurrencySettings component renders the
+          section heading since we want to hide it when no currencies are
+          available. */}
+      <CurrencySettings config={props.config} />
       {hasKeyboard && (
         <>
           <SectionHeading>{t('options_keyboard_heading')}</SectionHeading>
