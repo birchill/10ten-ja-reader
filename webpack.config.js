@@ -194,6 +194,7 @@ const chromeConfig = buildExtConfig({
   isChrome: true,
   mv3: true,
   needsClipboardWrite: false,
+  optionsInTab: true,
   supportsExtensionSourceMaps: false,
   supportsMatchAboutBlank: true,
   supportsOfflineEnabledField: true,
