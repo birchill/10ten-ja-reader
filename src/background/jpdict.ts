@@ -147,6 +147,9 @@ let lastUpdateTime: number | null = null;
 // Public API
 //
 
+let initPromise: Promise<void> | undefined;
+let initComplete = false;
+
 export async function initDb({
   lang,
   onUpdate,
@@ -154,6 +157,16 @@ export async function initDb({
   lang: string;
   onUpdate: (status: JpdictStateWithFallback) => void;
 }) {
+  if (initPromise) {
+    await initPromise;
+    return;
+  }
+
+  let resolveInitPromise: () => void;
+  initPromise = new Promise((resolve) => {
+    resolveInitPromise = resolve;
+  });
+
   lastUpdateTime = await getLastUpdateTime();
   Bugsnag.leaveBreadcrumb(`Got last update time of ${lastUpdateTime}`);
 
@@ -182,7 +195,16 @@ export async function initDb({
 
           dbState = state;
 
-          onUpdate(state);
+          try {
+            onUpdate(state);
+          } catch (e) {
+            void Bugsnag.notify(e);
+          }
+
+          if (!initComplete) {
+            initComplete = true;
+            resolveInitPromise();
+          }
         }
         break;
 
@@ -222,13 +244,14 @@ export async function initDb({
   // Fetch the initial state
   backend.queryState();
 
-  // If we updated within the minimum window then we're done.
+  // If we updated within the minimum window then we don't need to update
   if (lastUpdateTime && Date.now() - lastUpdateTime < UPDATE_THRESHOLD_MS) {
     Bugsnag.leaveBreadcrumb('Downloaded data is up-to-date');
-    return;
+  } else {
+    updateDb({ lang, force: false });
   }
 
-  updateDb({ lang, force: false });
+  await initPromise;
 }
 
 async function getLastUpdateTime(): Promise<number | null> {

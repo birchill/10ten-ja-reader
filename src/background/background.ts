@@ -268,19 +268,24 @@ let jpdictState: JpdictStateWithFallback = {
 
 let dbInitialized = false;
 
-async function initJpDict() {
+const dbReady = (async () => {
   if (dbInitialized) {
-    return;
+    return true;
   }
-  dbInitialized = true;
+
+  Bugsnag.leaveBreadcrumb('Initializing dictionary...');
+
   await config.ready;
   await initDb({ lang: config.dictLang, onUpdate: onDbStatusUpdated });
-}
 
-Bugsnag.leaveBreadcrumb('Running initJpDict from startup...');
-initJpDict().catch((e) => {
+  dbInitialized = true;
+
+  return true;
+})().catch((e) => {
   console.error(e);
   void Bugsnag.notify(e);
+
+  return false;
 });
 
 async function onDbStatusUpdated(state: JpdictStateWithFallback) {
@@ -400,6 +405,8 @@ async function searchWords({
 }: SearchRequest & {
   abortSignal: AbortSignal;
 }): Promise<SearchWordsResult | null> {
+  await dbReady;
+
   const [words, dbStatus] = await jpdictSearchWords({
     abortSignal,
     input,
@@ -419,6 +426,8 @@ async function searchOther({
 }: SearchOtherRequest & {
   abortSignal: AbortSignal;
 }): Promise<SearchOtherResult | null> {
+  await dbReady;
+
   // Names
   const nameResult = await searchNames({ abortSignal, input });
   const names = typeof nameResult === 'string' ? null : nameResult;
@@ -557,10 +566,12 @@ browser.runtime.onMessage.addListener(
         })();
 
       case 'translate':
-        return translate({
-          text: request.input,
-          includeRomaji: request.includeRomaji,
-        });
+        return dbReady.then(() =>
+          translate({
+            text: request.input,
+            includeRomaji: request.includeRomaji,
+          })
+        );
 
       case 'toggleDefinition':
         config.toggleReadingOnly();
