@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+- (Chrome, Edge) Enabled Manifest Version 3.
+- (Firefox, Thunderbird) Enabled non-persistent event pages.
 - Fixed the popup changing width in some cases (e.g. when tabs are hidden and
   scrollbars are configured to always show)
   ([#1314](https://github.com/birchill/10ten-ja-reader/issues/1314)).
