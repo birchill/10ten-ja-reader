@@ -47,7 +47,7 @@ jobs:
           git push
 
       - name: Create release
-        run: yarn release-it --ci -i ${{ inputs.version }}
+        run: yarn release-it --ci -i ${{ inputs.version }} -VV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY }}
