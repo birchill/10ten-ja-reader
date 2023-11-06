@@ -45,7 +45,7 @@ export function KanjiReferenceSettingsForm(props: Props) {
 
   return (
     <div
-      class="firefox:mx-4 grid w-[95%] grid-cols-[minmax(250px,1fr)] gap-x-4 py-4 sm:grid-flow-col sm:grid-cols-[repeat(2,minmax(250px,1fr))]"
+      class="grid w-[95%] grid-cols-[minmax(250px,1fr)] gap-x-4 py-4 sm:grid-flow-col sm:grid-cols-[repeat(2,minmax(250px,1fr))]"
       style={{ gridTemplateRows }}
     >
       {references.map(({ ref, full }) => (

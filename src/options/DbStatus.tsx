@@ -28,7 +28,7 @@ type Props = {
 
 export function DbStatus(props: Props) {
   return (
-    <div class="firefox:p-4 flex flex-col gap-4 py-4">
+    <div class="flex flex-col gap-4 py-4">
       <DbSummaryBlurb />
       <DbSummaryStatus
         dbState={props.dbState}
