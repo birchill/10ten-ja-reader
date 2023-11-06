@@ -160,6 +160,7 @@ const firefoxConfig = buildExtConfig({
   supportsSvgIcons: true,
   supportsTabContextType: true,
   target: 'firefox',
+  useEventPage: true,
 });
 
 if (process.env.RELEASE_BUILD && process.env.BUGSNAG_API_KEY) {
@@ -191,11 +192,13 @@ const chromeConfig = buildExtConfig({
   distFolder: 'dist-chrome',
   includeRikaichampName: true,
   isChrome: true,
+  mv3: true,
   needsClipboardWrite: false,
   supportsExtensionSourceMaps: false,
   supportsMatchAboutBlank: true,
   supportsOfflineEnabledField: true,
   target: 'chromium',
+  useServiceWorker: true,
 });
 
 const edgeConfig = buildExtConfig({
@@ -203,11 +206,13 @@ const edgeConfig = buildExtConfig({
   distFolder: 'dist-edge',
   includeRikaichampName: true,
   isEdge: true,
+  mv3: true,
   needsClipboardWrite: false,
   optionsInTab: true,
   supportsExtensionSourceMaps: false,
   supportsMatchAboutBlank: true,
   target: 'chromium',
+  useServiceWorker: true,
 });
 
 const safariConfig = buildExtConfig({
@@ -233,6 +238,7 @@ const thunderbirdConfig = buildExtConfig({
   supportsBrowserStyle: true,
   supportsSvgIcons: true,
   supportsTabContextType: true,
+  useEventPage: true,
 });
 
 export default (env) => {
