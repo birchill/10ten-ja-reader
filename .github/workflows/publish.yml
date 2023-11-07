@@ -37,6 +37,18 @@ jobs:
           release_id: ${{ github.event.release.id }}
           target: Firefox
 
+      - name: Download Firefox binary
+        uses: robinraju/release-downloader@v1.8
+        with:
+          releaseId: ${{ github.event.release.id }}
+          fileName: ${{ steps.parse_firefox_release.outputs.addon_asset_name }}
+
+      - name: Download source archive
+        uses: robinraju/release-downloader@v1.8
+        with:
+          releaseId: ${{ github.event.release.id }}
+          fileName: ${{ steps.parse_firefox_release.outputs.src_asset_name }}
+
       - name: Publish
         uses: birchill/amo-upload@main
         if: ${{ !steps.parse_firefox_release.outputs.skip }}
@@ -46,7 +58,6 @@ jobs:
           addon_id: 10ten-ja-reader
           amo_jwt_iss: ${{ secrets.AMO_JWT_ISS }}
           amo_jwt_secret: ${{ secrets.AMO_JWT_SECRET }}
-          release_id: ${{ github.event.release.id }}
-          addon_asset_name: ${{ steps.parse_firefox_release.outputs.addon_asset_name }}
-          src_asset_name: ${{ steps.parse_firefox_release.outputs.src_asset_name }}
+          addon_file: ${{ steps.parse_firefox_release.outputs.addon_asset_name }}
+          src_file: ${{ steps.parse_firefox_release.outputs.src_asset_name }}
           release_notes: ${{ steps.parse_firefox_release.outputs.release_notes }}
