@@ -10,7 +10,7 @@ async function main() {
 
   const rawTarget = core.getInput('target');
   const normalizedTarget = normalizeTarget(rawTarget);
-  if (normalizedTarget !== 'Firefox') {
+  if (normalizedTarget !== 'Firefox' && normalizedTarget !== 'Edge') {
     throw new Error(`Unsupported target: ${rawTarget}`);
   }
   core.info(`Target: ${normalizedTarget}`);
@@ -27,7 +27,7 @@ async function main() {
   let addonAsset;
   const { assets } = release.data;
   for (const asset of assets) {
-    if (asset.name.endsWith('-firefox.zip')) {
+    if (asset.name.endsWith(`-${normalizedTarget.toLowerCase()}.zip`)) {
       addonAsset = asset;
       break;
     }
@@ -65,7 +65,7 @@ async function main() {
   body = body.replace(/\r?\n/g, '\n');
 
   const matches = body.match(
-    new RegExp(`${normalizedTarget}:\\s*\n([\\s\\S]*?)(\n\n|\n-->)`)
+    new RegExp(`${normalizedTarget}:\\s*\\n([\\s\\S]*?)(\\n\\n|\\n-->)`)
   );
   if (!matches || matches.length < 2 || !matches[1].length) {
     core.warning(
