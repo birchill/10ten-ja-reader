@@ -60,7 +60,7 @@
     "@types/chai": "4.3.10",
     "@types/mocha": "10.0.3",
     "@types/webextension-polyfill": "^0.10.5",
-    "@types/yargs": "17.0.29",
+    "@types/yargs": "17.0.31",
     "@typescript-eslint/eslint-plugin": "6.9.1",
     "@typescript-eslint/parser": "6.9.1",
     "archiver": "6.0.1",
