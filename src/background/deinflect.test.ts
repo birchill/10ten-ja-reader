@@ -180,6 +180,43 @@ describe('deinflect', () => {
     }
   });
 
+  it('deinflects ござる', () => {
+    const cases = [
+      ['ございます', 'ござる', Reason.Polite],
+      ['ご座います', 'ご座る', Reason.Polite],
+      ['御座います', '御座る', Reason.Polite],
+      ['ございません', 'ござる', Reason.PoliteNegative],
+      ['ご座いません', 'ご座る', Reason.PoliteNegative],
+      ['御座いません', '御座る', Reason.PoliteNegative],
+      ['ございませんでした', 'ござる', Reason.PolitePastNegative],
+      ['ご座いませんでした', 'ご座る', Reason.PolitePastNegative],
+      ['御座いませんでした', '御座る', Reason.PolitePastNegative],
+    ];
+
+    for (const [inflected, plain, reason] of cases) {
+      const result = deinflect(inflected as string);
+      const match = result.find((candidate) => candidate.word == plain);
+      expect(match).toMatchObject({ reasons: [[reason]], word: plain });
+    }
+  });
+
+  it('deinflects くださる', () => {
+    const cases = [
+      ['くださいます', 'くださる', Reason.Polite],
+      ['下さいます', '下さる', Reason.Polite],
+      ['くださいません', 'くださる', Reason.PoliteNegative],
+      ['下さいません', '下さる', Reason.PoliteNegative],
+      ['くださいませんでした', 'くださる', Reason.PolitePastNegative],
+      ['下さいませんでした', '下さる', Reason.PolitePastNegative],
+    ];
+
+    for (const [inflected, plain, reason] of cases) {
+      const result = deinflect(inflected as string);
+      const match = result.find((candidate) => candidate.word == plain);
+      expect(match).toMatchObject({ reasons: [[reason]], word: plain });
+    }
+  });
+
   it('deinflects the continuous form', () => {
     const cases: Array<[string, string, number, Array<Reason> | undefined]> = [
       // U-verbs

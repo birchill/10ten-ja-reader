@@ -32,6 +32,9 @@ app.
   ([#1361](https://github.com/birchill/10ten-ja-reader/issues/1361)).
 - Hid the "usually kana" annotation when no kanji headwords are shown
   (also [#1361](https://github.com/birchill/10ten-ja-reader/issues/1361)).
+- Added ability to recognize (deinflect) a few more irregular verbs like
+  ございません and くださいます
+  ([#1431](https://github.com/birchill/10ten-ja-reader/issues/1431)).
 
 ## [1.15.1] - 2023-09-03
 

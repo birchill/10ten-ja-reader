@@ -91,6 +91,14 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
     Type.GodanVerb,
     Reason.PolitePastNegative,
   ],
+  // -------------- 10 --------------
+  [
+    'くださいませんでした',
+    'くださる',
+    Type.Initial,
+    Type.GodanVerb,
+    Reason.PolitePastNegative,
+  ],
   // -------------- 9 --------------
   [
     'いらっしゃいました',
@@ -104,6 +112,36 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
     'い',
     Type.Initial,
     Type.IAdj,
+    Reason.PolitePastNegative,
+  ],
+  [
+    '下さいませんでした',
+    '下さる',
+    Type.Initial,
+    Type.GodanVerb,
+    Reason.PolitePastNegative,
+  ],
+  [
+    'ございませんでした',
+    'ござる',
+    Type.Initial,
+    // Actually Yondan verb but we allow Yondan verbs to match Godan verbs when
+    // we evaluate candidates.
+    Type.GodanVerb,
+    Reason.PolitePastNegative,
+  ],
+  [
+    'ご座いませんでした',
+    'ご座る',
+    Type.Initial,
+    Type.GodanVerb,
+    Reason.PolitePastNegative,
+  ],
+  [
+    '御座いませんでした',
+    '御座る',
+    Type.Initial,
+    Type.GodanVerb,
     Reason.PolitePastNegative,
   ],
   // -------------- 8 --------------
@@ -157,6 +195,13 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
     Type.Initial,
     Type.GodanVerb,
     Reason.PolitePastNegative,
+  ],
+  [
+    'くださいません',
+    'くださる',
+    Type.Initial,
+    Type.GodanVerb,
+    Reason.PoliteNegative,
   ],
   [
     'しませんでした',
@@ -230,6 +275,35 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
     Reason.Imperative,
   ],
   ['くありません', 'い', Type.Initial, Type.IAdj, Reason.PoliteNegative],
+  ['くださいます', 'くださる', Type.Initial, Type.GodanVerb, Reason.Polite],
+  [
+    '下さいません',
+    '下さる',
+    Type.Initial,
+    Type.GodanVerb,
+    Reason.PoliteNegative,
+  ],
+  [
+    'ございません',
+    'ござる',
+    Type.Initial,
+    Type.GodanVerb,
+    Reason.PoliteNegative,
+  ],
+  [
+    'ご座いません',
+    'ご座る',
+    Type.Initial,
+    Type.GodanVerb,
+    Reason.PoliteNegative,
+  ],
+  [
+    '御座いません',
+    '御座る',
+    Type.Initial,
+    Type.GodanVerb,
+    Reason.PoliteNegative,
+  ],
   ['ざるをえない', 'ない', Type.IAdj, Type.VNai, Reason.ZaruWoEnai],
   ['ざるを得ない', 'ない', Type.IAdj, Type.VNai, Reason.ZaruWoEnai],
   [
@@ -249,6 +323,10 @@ const deinflectRuleData: Array<[string, string, number, number, Reason]> = [
   ['きましょう', 'く', Type.Initial, Type.GodanVerb, Reason.PoliteVolitional],
   ['きましょう', 'くる', Type.Initial, Type.KuruVerb, Reason.PoliteVolitional],
   ['ぎましょう', 'ぐ', Type.Initial, Type.GodanVerb, Reason.PoliteVolitional],
+  ['下さいます', '下さる', Type.Initial, Type.GodanVerb, Reason.Polite],
+  ['ございます', 'ござる', Type.Initial, Type.GodanVerb, Reason.Polite],
+  ['ご座います', 'ご座る', Type.Initial, Type.GodanVerb, Reason.Polite],
+  ['御座います', '御座る', Type.Initial, Type.GodanVerb, Reason.Polite],
   ['ざるえない', 'ない', Type.IAdj, Type.VNai, Reason.ZaruWoEnai],
   ['ざる得ない', 'ない', Type.IAdj, Type.VNai, Reason.ZaruWoEnai],
   ['ざるをえぬ', 'ない', Type.IAdj, Type.VNai, Reason.ZaruWoEnai],
