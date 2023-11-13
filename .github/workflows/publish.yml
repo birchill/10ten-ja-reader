@@ -61,3 +61,54 @@ jobs:
           addon_file: ${{ steps.parse_firefox_release.outputs.addon_asset_name }}
           src_file: ${{ steps.parse_firefox_release.outputs.src_asset_name }}
           release_notes: ${{ steps.parse_firefox_release.outputs.release_notes }}
+
+  publish-edge:
+    runs-on: ubuntu-latest
+    name: Publish to Edge store
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4.0.0
+        with:
+          node-version: 18
+          cache: yarn
+
+      # See https://github.com/yarnpkg/yarn/issues/1874
+      #     https://github.com/yarnpkg/yarn/issues/3728
+      - name: Pre-install node-gyp
+        run: |-
+          npm install -g node-gyp
+          node-gyp install
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Get Edge release details
+        id: parse_edge_release
+        uses: ./.github/actions/parse-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ github.event.release.id }}
+          target: Edge
+
+      - name: Download Edge binary
+        uses: robinraju/release-downloader@v1.8
+        with:
+          releaseId: ${{ github.event.release.id }}
+          fileName: ${{ steps.parse_edge_release.outputs.addon_asset_name }}
+
+      - name: Publish
+        uses: birchill/edge-addon-upload@main
+        if: ${{ !steps.parse_edge_release.outputs.skip }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          access_token_url: ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
+          addon_file: ${{ steps.parse_edge_release.outputs.addon_asset_name }}
+          client_id: ${{ secrets.EDGE_CLIENT_ID }}
+          client_secret: ${{ secrets.EDGE_CLIENT_SECRET }}
+          product_id: ${{ secrets.EDGE_PRODUCT_ID }}
