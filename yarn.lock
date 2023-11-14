@@ -1716,11 +1716,6 @@ arrify@^1.0.1:
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-1.0.1.tgz#898508da2226f380df904728456849c1501a4b0d"
   integrity sha512-3CYzex9M9FGQjCGMGyi6/31c8GJbgb0qGyrx5HWxPd0aCwh4cB2YjMb2Xf9UuoogrMrlO9cTqnB5rI5GHZTcUA==
 
-arrify@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/arrify/-/arrify-3.0.0.tgz#ccdefb8eaf2a1d2ab0da1ca2ce53118759fd46bc"
-  integrity sha512-tLkvA81vQG/XqE2mjDkGQHoOINtMHtysSnemrmoGe6PydDPMRbVugqyk4A6V/WDWEfm3l+0d8anA9r8cv/5Jaw==
-
 asn1@~0.2.3:
   version "0.2.6"
   resolved "https://registry.yarnpkg.com/asn1/-/asn1-0.2.6.tgz#0d3a7bb6e64e02a90c0303b31f292868ea09a08d"
@@ -2603,6 +2598,14 @@ cookie@0.5.0:
   resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.5.0.tgz#d1f5d71adec6558c58f389987c366aa47e994f8b"
   integrity sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==
 
+copy-file@^11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/copy-file/-/copy-file-11.0.0.tgz#903f0a5a34e5534eaf775352ac9381359c13f258"
+  integrity sha512-mFsNh/DIANLqFt5VHZoGirdg7bK5+oTWlhnGu6tgRhzBlnEKWaPX2xrFaLltii/6rmhqFMJqffUgknuRdpYlHw==
+  dependencies:
+    graceful-fs "^4.2.11"
+    p-event "^6.0.0"
+
 copy-webpack-plugin@11.0.0:
   version "11.0.0"
   resolved "https://registry.yarnpkg.com/copy-webpack-plugin/-/copy-webpack-plugin-11.0.0.tgz#96d4dbdb5f73d02dd72d0528d1958721ab72e04a"
@@ -2645,26 +2648,15 @@ cosmiconfig@8.3.6, cosmiconfig@^8.2.0:
     parse-json "^5.2.0"
     path-type "^4.0.0"
 
-cp-file@^10.0.0:
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/cp-file/-/cp-file-10.0.0.tgz#bbae9ecb9f505951b862880d2901e1f56de7a4dc"
-  integrity sha512-vy2Vi1r2epK5WqxOLnskeKeZkdZvTKfFZQCplE3XWsP+SUJyd5XAUFC9lFgTjjXJF2GMne/UML14iEmkAaDfFg==
+cpy@^11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/cpy/-/cpy-11.0.0.tgz#9629d1bce02f78d34dcec887547ada37a3cf29ec"
+  integrity sha512-vA71mFQyIxCrqvP/9JBLCj05UJV/+WpvAxZK2/EiK5ndD090cjuChfJ3ExVVuZXHoTJ/3HLedOPYDWyxnNHjrg==
   dependencies:
-    graceful-fs "^4.2.10"
-    nested-error-stacks "^2.1.1"
-    p-event "^5.0.1"
-
-cpy@^10.1.0:
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/cpy/-/cpy-10.1.0.tgz#85517387036b9be480f6424e54089261fc6f4bab"
-  integrity sha512-VC2Gs20JcTyeQob6UViBLnyP0bYHkBh6EiKzot9vi2DmeGlFT9Wd7VG3NBrkNx/jYvFBeyDOMMHdHQhbtKLgHQ==
-  dependencies:
-    arrify "^3.0.0"
-    cp-file "^10.0.0"
-    globby "^13.1.4"
+    copy-file "^11.0.0"
+    globby "^13.2.2"
     junk "^4.0.1"
     micromatch "^4.0.5"
-    nested-error-stacks "^2.1.1"
     p-filter "^3.0.0"
     p-map "^6.0.0"
 
@@ -4374,7 +4366,7 @@ globalthis@^1.0.3:
   dependencies:
     define-properties "^1.1.3"
 
-globby@14.0.0:
+globby@14.0.0, globby@^14.0.0:
   version "14.0.0"
   resolved "https://registry.yarnpkg.com/globby/-/globby-14.0.0.tgz#ea9c062a3614e33f516804e778590fcf055256b9"
   integrity sha512-/1WM/LNHRAOH9lZta77uGbq0dAEQM+XjNesWwhlERDVenqothRbnzTrL3/LrIoEPPjeUHC3vrS6TwoyxeHs7MQ==
@@ -4398,7 +4390,7 @@ globby@^11.1.0:
     merge2 "^1.4.1"
     slash "^3.0.0"
 
-globby@^13.1.1, globby@^13.1.3, globby@^13.1.4, globby@^13.2.2:
+globby@^13.1.1, globby@^13.1.3, globby@^13.2.2:
   version "13.2.2"
   resolved "https://registry.yarnpkg.com/globby/-/globby-13.2.2.tgz#63b90b1bf68619c2135475cbd4e71e66aa090592"
   integrity sha512-Y1zNGV+pzQdh7H39l9zgB4PJqjRNqydvdYCDG4HFXM4XuvSaQQlEc91IU1yALL8gUTDomgBAfz3XJdmUS+oo0w==
@@ -4455,7 +4447,7 @@ graceful-fs@4.2.10:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.10.tgz#147d3a006da4ca3ce14728c7aefc287c367d7a6c"
   integrity sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==
 
-graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.10, graceful-fs@^4.2.11, graceful-fs@^4.2.4, graceful-fs@^4.2.6, graceful-fs@^4.2.9:
+graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.11, graceful-fs@^4.2.4, graceful-fs@^4.2.6, graceful-fs@^4.2.9:
   version "4.2.11"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.11.tgz#4183e4e8bf08bb6e05bbb2f7d2e0c8f712ca40e3"
   integrity sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==
@@ -6308,11 +6300,6 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-nested-error-stacks@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.1.1.tgz#26c8a3cee6cc05fbcf1e333cd2fc3e003326c0b5"
-  integrity sha512-9iN1ka/9zmX1ZvLV9ewJYEk9h7RyRRtqdK0woXcqohu8EWIerfPUjYJPg0ULy0UqP7cslmdGc8xKDJcojlKiaw==
-
 netmask@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/netmask/-/netmask-2.0.2.tgz#8b01a07644065d536383835823bc52004ebac5e7"
@@ -6639,12 +6626,12 @@ p-defer@^1.0.0:
   resolved "https://registry.yarnpkg.com/p-defer/-/p-defer-1.0.0.tgz#9f6eb182f6c9aa8cd743004a7d4f96b196b0fb0c"
   integrity sha512-wB3wfAxZpk2AzOfUMJNL+d36xothRSyj8EXOa4f6GMqYDN9BJaaSISbsk+wS9abmnebVw95C2Kb5t85UmpCxuw==
 
-p-event@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/p-event/-/p-event-5.0.1.tgz#614624ec02ae7f4f13d09a721c90586184af5b0c"
-  integrity sha512-dd589iCQ7m1L0bmC5NLlVYfy3TbBEsMUfWx9PyAgPeIcFZ/E2yaTZ4Rz4MiBmmJShviiftHVXOqfnfzJ6kyMrQ==
+p-event@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/p-event/-/p-event-6.0.0.tgz#ebb53ff3563268849219d660f8eae1055cb51051"
+  integrity sha512-Xbfxd0CfZmHLGKXH32k1JKjQYX6Rkv0UtQdaFJ8OyNcf+c0oWCeXHc1C4CX/IESZLmcvfPa5aFIO/vCr5gqtag==
   dependencies:
-    p-timeout "^5.0.2"
+    p-timeout "^6.1.2"
 
 p-filter@^3.0.0:
   version "3.0.0"
@@ -6726,11 +6713,6 @@ p-memoize@4.0.1:
   dependencies:
     mem "^6.0.1"
     mimic-fn "^3.0.0"
-
-p-timeout@^5.0.2:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/p-timeout/-/p-timeout-5.1.0.tgz#b3c691cf4415138ce2d9cfe071dba11f0fee085b"
-  integrity sha512-auFDyzzzGZZZdHz3BtET9VEz0SE/uMEAx7uWfGPucfzEwwe/xH0iVeZibQmANYE/hp9T2+UUZT5m+BKyrDp3Ew==
 
 p-timeout@^6.1.2:
   version "6.1.2"
@@ -7073,10 +7055,10 @@ playwright-core@1.39.0:
   resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.39.0.tgz#efeaea754af4fb170d11845b8da30b2323287c63"
   integrity sha512-+k4pdZgs1qiM+OUkSjx96YiKsXsmb59evFoqv8SKO067qBA+Z2s/dCzJij/ZhdQcs2zlTAgRKfeiiLm8PQ2qvw==
 
-playwright-test@^12.4.3:
-  version "12.4.3"
-  resolved "https://registry.yarnpkg.com/playwright-test/-/playwright-test-12.4.3.tgz#cc3b6a7f28b1f92d10bb1ca655bf12b69f33b01f"
-  integrity sha512-51nFyab0RSOM23dTq34C61hAx0e13Scab6U5VJW7RjFhpEkQXBeq46R7WNeY0mHaYEUaLYdSch51ceibtQ4Tzg==
+playwright-test@^13.0.0:
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/playwright-test/-/playwright-test-13.0.0.tgz#52e553bec5d794dc3cacb25a367458c5a32b57e5"
+  integrity sha512-RXzfJEpLR6mIx95MaOmb2J8kRuZGsl0WggaO71YiH/lIS+Q1RspUhNuEXvHq3LY3Tt//UTQnPJs24vOk740PnQ==
   dependencies:
     acorn-loose "^8.3.0"
     assert "^2.1.0"
@@ -7084,13 +7066,13 @@ playwright-test@^12.4.3:
     c8 "^8.0.1"
     camelcase "^8.0.0"
     chokidar "^3.5.3"
-    cpy "^10.1.0"
+    cpy "^11.0.0"
     esbuild "0.19.5"
     esbuild-plugin-wasm "^1.1.0"
     events "^3.3.0"
     execa "^8.0.1"
     exit-hook "^4.0.0"
-    globby "^13.2.2"
+    globby "^14.0.0"
     kleur "^4.1.5"
     lilconfig "^2.1.0"
     lodash "^4.17.21"
