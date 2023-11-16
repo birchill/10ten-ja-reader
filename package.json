@@ -84,7 +84,7 @@
     "playwright-test": "^13.0.0",
     "postcss": "8.4.31",
     "postcss-loader": "7.3.3",
-    "prettier": "3.0.3",
+    "prettier": "3.1.0",
     "prettier-plugin-organize-attributes": "1.0.0",
     "prettier-plugin-tailwindcss": "0.5.7",
     "react-cosmos": "6.0.0-beta.6",
