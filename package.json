@@ -117,7 +117,7 @@
     "husky": "8.0.3",
     "lint-staged": "15.1.0",
     "lru_map": "0.4.1",
-    "preact": "10.18.2",
+    "preact": "10.19.2",
     "superstruct": "1.0.3",
     "typescript": "5.2.2",
     "web-ext": "7.8.0",
