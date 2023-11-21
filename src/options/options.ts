@@ -7,7 +7,6 @@ import {
   AccentDisplay,
   FontSize,
   PartOfSpeechDisplay,
-  TabDisplay,
 } from '../common/content-config-params';
 import { renderStar } from '../content/popup/icons';
 import { startBugsnag } from '../utils/bugsnag';
@@ -189,16 +188,6 @@ function completeForm() {
     .addEventListener('click', (event) => {
       config.enableTapLookup = (event.target as HTMLInputElement).checked;
     });
-
-  const tabDisplayOptions = Array.from(
-    document.querySelectorAll('input[type=radio][name=tabDisplay]')
-  );
-  for (const option of tabDisplayOptions) {
-    option.addEventListener('change', (event) => {
-      const tabDisplay = (event.target as HTMLInputElement).value as TabDisplay;
-      config.tabDisplay = tabDisplay;
-    });
-  }
 }
 
 function renderPopupStyleSelect() {
@@ -390,7 +379,6 @@ function fillVals() {
     : 'disable';
   optform.popupStyle.value = config.popupStyle;
   optform.enableTapLookup.checked = config.enableTapLookup;
-  optform.tabDisplay.value = config.tabDisplay;
   optform.toolbarIcon.value = config.toolbarIcon;
 }
 
