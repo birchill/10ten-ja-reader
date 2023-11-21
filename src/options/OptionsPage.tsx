@@ -8,6 +8,7 @@ import { DbStatus } from './DbStatus';
 import { DictionaryLanguageSettings } from './DictionaryLanguageSettings';
 import { KanjiReferenceSettings } from './KanjiReferenceSettings';
 import { KeyboardSettings } from './KeyboardSettings';
+import { PopupInteractivitySettings } from './PopupInteractivitySettings';
 import { PuckSettings } from './PuckSettings';
 import { SectionHeading } from './SectionHeading';
 import { useDb } from './use-db';
@@ -33,6 +34,7 @@ function OptionsPageInner(props: Props) {
 
   return (
     <>
+      <PopupInteractivitySettings config={props.config} />
       {/* For the currency settings, the CurrencySettings component renders the
           section heading since we want to hide it when no currencies are
           available. */}
