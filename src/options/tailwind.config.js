@@ -86,6 +86,9 @@ export default {
     }),
     plugin(({ addUtilities }) => {
       addUtilities({
+        '.outline-auto': {
+          'outline-style': 'auto',
+        },
         '.transparent-caret': {
           color: 'transparent',
           'text-shadow': '0 0 0 black',
