@@ -14,17 +14,17 @@ export const IconRadio = forwardRef<HTMLInputElement, InputProps>(
     const id = useId();
 
     return (
-      <>
+      <div>
         <input
           ref={ref}
           id={id}
           type="radio"
-          class="sr-only"
+          class="peer sr-only"
           {...{ ...props, children: undefined }}
         />
         <label
           class={classes(
-            'group cursor-pointer rounded-md border border-solid',
+            'peer-focus-visible:outline-auto group cursor-pointer rounded-md border border-solid',
             'text-center transition duration-300',
             !props.checked &&
               'opacity-50 grayscale hover:opacity-100 hover:grayscale-0 active:opacity-100 active:grayscale-0',
@@ -50,7 +50,7 @@ export const IconRadio = forwardRef<HTMLInputElement, InputProps>(
             </div>
           )}
         </label>
-      </>
+      </div>
     );
   }
 );
