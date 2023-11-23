@@ -68,7 +68,9 @@ export function KanjiReferenceSettingsForm(props: Props) {
               }
             }}
           />
-          <label for={`ref-${ref}`}>{full}</label>
+          <label class="cursor-pointer select-none" for={`ref-${ref}`}>
+            {full}
+          </label>
         </CheckboxRow>
       ))}
     </div>
