@@ -77,14 +77,6 @@ body {
   }
 }
 
-.needs-touch {
-  display: none;
-}
-
-.has-touch .needs-touch {
-  display: block;
-}
-
 /*
  * Container style
  */
@@ -621,8 +613,4 @@ fieldset.bordered {
     background: #102a76;
     color: #dbe9fb;
   }
-}
-
-#touch-interactivity-section {
-  margin-top: 12px;
 }

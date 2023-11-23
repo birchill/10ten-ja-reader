@@ -11,7 +11,6 @@ import {
 import { renderStar } from '../content/popup/icons';
 import { startBugsnag } from '../utils/bugsnag';
 import { html } from '../utils/builder';
-import { isTouchDevice } from '../utils/device';
 import { empty } from '../utils/dom-utils';
 import {
   isChromium,
@@ -47,9 +46,6 @@ function completeForm() {
   }
   if (isSafari()) {
     document.documentElement.classList.add('safari');
-  }
-  if (isTouchDevice()) {
-    document.documentElement.classList.add('has-touch');
   }
 
   // Pop-up
@@ -182,12 +178,6 @@ function completeForm() {
       config.popupInteractive = popupInteractive === 'enable';
     });
   }
-
-  document
-    .getElementById('enableTapLookup')!
-    .addEventListener('click', (event) => {
-      config.enableTapLookup = (event.target as HTMLInputElement).checked;
-    });
 }
 
 function renderPopupStyleSelect() {
@@ -378,7 +368,6 @@ function fillVals() {
     ? 'enable'
     : 'disable';
   optform.popupStyle.value = config.popupStyle;
-  optform.enableTapLookup.checked = config.enableTapLookup;
   optform.toolbarIcon.value = config.toolbarIcon;
 }
 

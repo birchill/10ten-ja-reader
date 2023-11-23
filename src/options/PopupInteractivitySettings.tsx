@@ -2,20 +2,28 @@ import { useCallback } from 'preact/hooks';
 
 import type { Config } from '../common/config';
 import { TabDisplay } from '../common/content-config-params';
-import { useLocale } from '../common/i18n';
+import { useHasTouch } from '../utils/use-has-touch';
 
-import { TabDisplayRadio } from './TabDisplayRadio';
 import { useConfigValue } from './use-config-value';
+import { PopupInteractivitySettingsForm } from './PopupInteractivitySettingsForm';
 
 type Props = {
   config: Config;
 };
 
 export function PopupInteractivitySettings(props: Props) {
-  const { t } = useLocale();
-  const tabDisplay = useConfigValue(props.config, 'tabDisplay');
+  const hasTouch = useHasTouch();
   const theme = useConfigValue(props.config, 'popupStyle');
 
+  const enableTapLookup = useConfigValue(props.config, 'enableTapLookup');
+  const onChangeEnableTapLookup = useCallback(
+    (value: boolean) => {
+      props.config.enableTapLookup = value;
+    },
+    [props.config]
+  );
+
+  const tabDisplay = useConfigValue(props.config, 'tabDisplay');
   const onChangeTabDisplay = useCallback(
     (value: TabDisplay) => {
       props.config.tabDisplay = value;
@@ -24,16 +32,13 @@ export function PopupInteractivitySettings(props: Props) {
   );
 
   return (
-    <>
-      <p>{t('options_tab_position_label')}</p>
-      <TabDisplayRadio
-        onChange={onChangeTabDisplay}
-        theme={theme}
-        value={tabDisplay}
-      />
-      {/* TODO: This should go _before_ the options_tab_position_label paragraph
-          once we migrate the other content into this component. */}
-      <div class="h-4" />
-    </>
+    <PopupInteractivitySettingsForm
+      enableTapLookup={enableTapLookup}
+      hasTouch={hasTouch}
+      onChangeEnableTapLookup={onChangeEnableTapLookup}
+      onChangeTabDisplay={onChangeTabDisplay}
+      tabDisplay={tabDisplay}
+      theme={theme}
+    />
   );
 }
