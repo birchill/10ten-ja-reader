@@ -13,6 +13,8 @@ app.
 - Fixed the popup changing width in some cases (e.g. when tabs are hidden and
   scrollbars are configured to always show)
   ([#1314](https://github.com/birchill/10ten-ja-reader/issues/1314)).
+- (Firefox) Made the lookup puck handle taps and double-taps correctly on
+  Firefox for Android.
 - Added handling to avoid the <kbd>x</kbd> key being assigned to both closing
   the popup _and_ expanding it.
 - Fixed recognition of words that end in half-width numerals like 小1.

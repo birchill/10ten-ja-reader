@@ -655,10 +655,7 @@ export class LookupPuck {
       // Carry across the timeout from 'firstclick', as we still want to
       // transition back to 'idle' if no 'pointerdown' event came within
       // the hysteresis period of the preceding 'firstclick' state.
-      this.clickState = {
-        ...this.clickState,
-        kind: 'secondpointerdown',
-      };
+      this.clickState = { ...this.clickState, kind: 'secondpointerdown' };
     }
 
     event.preventDefault();
@@ -687,10 +684,19 @@ export class LookupPuck {
   // detecting the second tap of a double-tap gesture.
   //
   // When the pointer events are _not_ swallowed, because we call preventDefault
-  // on the pointerdown / pointerup events, we these functions should never be
+  // on the pointerdown / pointerup events, these functions should never be
   // called.
 
   private readonly onPuckMouseDown = (event: MouseEvent) => {
+    // This is only needed for iOS Safari and on Firefox for Android, calling
+    // preventDefault on a pointerdown event will _not_ prevent it from
+    // triggering subsequent mousedown/mouseup events (see
+    // https://codepen.io/birtles/pen/rNPKNQJ) so we should _not_ run this code
+    // on platforms other than iOS.
+    if (!isIOS()) {
+      return;
+    }
+
     if (this.enabledState === 'disabled' || !this.puck) {
       return;
     }
@@ -726,6 +732,15 @@ export class LookupPuck {
   };
 
   private readonly onPuckMouseUp = (event: MouseEvent) => {
+    // This is only needed for iOS Safari and on Firefox for Android, calling
+    // preventDefault on a pointerdown event will _not_ prevent it from
+    // triggering subsequent mousedown/mouseup events (see
+    // https://codepen.io/birtles/pen/rNPKNQJ) so we should _not_ run this code
+    // on platforms other than iOS.
+    if (!isIOS()) {
+      return;
+    }
+
     if (this.enabledState === 'disabled' || !this.puck) {
       return;
     }
@@ -1075,15 +1090,15 @@ export class LookupPuck {
         // We've tried everything to avoid this (touch-action: none,
         // -webkit-user-select: none, etc. etc.) but it just sometimes does it.
         //
-        // Furthermore, when debugging, after about ~1hr or so it will somtimes
+        // Furthermore, when debugging, after about ~1hr or so it will sometimes
         // _stop_ eating these events, leading you to believe you've fixed it
         // only for it to start eating them again a few minutes later.
         //
-        // However, in this case it sill dispatches _mouse_ events so we listen
+        // However, in this case it still dispatches _mouse_ events so we listen
         // to them and trigger the necessary state transitions when needed.
         //
         // Note that the mere _presence_ of the mousedown handler is also needed
-        // to prevent double-tap being interpreted as a zoon.
+        // to prevent double-tap being interpreted as a zoom.
         this.puck.addEventListener('mousedown', this.onPuckMouseDown);
         this.puck.addEventListener('mouseup', this.onPuckMouseUp);
       }
