@@ -4,6 +4,7 @@ import browser from 'webextension-polyfill';
 import { DisplayMode } from '../popup-state';
 import { html } from '../../utils/builder';
 import { getMouseCapabilityMql } from '../../utils/device';
+import { isFenix } from '../../utils/ua-utils';
 
 import { renderCloseButton } from './close';
 import {
@@ -97,7 +98,15 @@ export function renderTabBar({
     tabBar.append(renderPinButton(onTogglePin, pinShortcuts || []));
   }
 
-  if (onShowSettings) {
+  // Firefox for Android has a bug that when calling
+  // `browser.runtime.openOptionsPage` a new tab is opened but nothing is
+  // displayed.
+  //
+  // See: https://bugzilla.mozilla.org/show_bug.cgi?id=1795449
+  //
+  // Until that is fixed, we don't show the settings button on Firefox for
+  // Android to avoid confusion.
+  if (onShowSettings && !isFenix()) {
     tabBar.append(renderSettingsButton(onShowSettings));
   }
 
