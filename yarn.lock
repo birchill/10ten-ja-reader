@@ -1085,10 +1085,10 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/quickjs-emscripten/-/quickjs-emscripten-0.23.0.tgz#db4ecfd499a9765ab24002c3b696d02e6d32a12c"
   integrity sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==
 
-"@types/archiver@6.0.1":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/@types/archiver/-/archiver-6.0.1.tgz#a95b3572d1e8c5bf0372ccd4ec5c82d639a31f91"
-  integrity sha512-F2+JkmDYvtQrtb2YldwL0apRB1/WB6ub+1zVF/bKp3TOygUMFqfOLuw5Fj62Q+DPwJUFz1eocMxJMu7yVpplZA==
+"@types/archiver@6.0.2":
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/@types/archiver/-/archiver-6.0.2.tgz#0daf8c83359cbde69de1e4b33dcade6a48a929e2"
+  integrity sha512-KmROQqbQzKGuaAbmK+ZcytkJ51+YqDa7NmbXjmtC5YBLSyQYo21YaUnQ3HbaPFKL1ooo6RQ6OPYPIDyxfpDDXw==
   dependencies:
     "@types/readdir-glob" "*"
 
