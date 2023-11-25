@@ -125,7 +125,52 @@ export function ToggleKeyForm(props: Props) {
 
   return (
     <>
-      <div class="flex items-center gap-x-6 gap-y-1">
+      <div class="flex flex-row-reverse flex-wrap items-center justify-end gap-x-6 gap-y-2">
+        <div class="flex grow flex-wrap gap-x-6">
+          <div class="w-min grow">
+            {t('command_toggle_description')}
+            {!!toggleKeyError?.length && (
+              <div
+                class="bg-warning-red ml-2 inline-block h-6 w-6 bg-cover bg-no-repeat align-top"
+                id="toggle-key-icon"
+                title={toggleKeyError}
+              />
+            )}
+          </div>
+          <div>
+            <button
+              class="cursor-pointer appearance-none rounded-md border-none bg-transparent p-0.5 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-600 dark:text-zinc-400 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
+              disabled={!!props.disabled}
+              title={
+                isEmpty
+                  ? t('options_restore_toggle_shortcut')
+                  : t('options_disable_toggle_shortcut')
+              }
+              type="button"
+              onClick={() => {
+                props.onChangeToggleKey(isEmpty ? ResetShortcut : undefined);
+                setToggleKeyError(undefined);
+              }}
+            >
+              {isEmpty ? (
+                <svg class="block h-5 w-5 fill-current" viewBox="0 0 16 16">
+                  <path d="M8.54,2.11l.66-.65A.78.78,0,0,0,9.2.38a.76.76,0,0,0-1.08,0L6.19,2.31A.81.81,0,0,0,6,2.55a.8.8,0,0,0-.06.3A.72.72,0,0,0,6,3.14a.74.74,0,0,0,.17.25L8.12,5.32a.73.73,0,0,0,.54.22.76.76,0,0,0,.54-.22.78.78,0,0,0,0-1.08l-.58-.58A4.38,4.38,0,1,1,3.68,8.82a.76.76,0,0,0-1.5.28,5.92,5.92,0,1,0,6.36-7Z" />
+                  <circle cx={2.673} cy={6.71} r={0.965} />
+                </svg>
+              ) : (
+                <svg class="block h-5 w-5" viewBox="0 0 24 24">
+                  <path
+                    d="M6 18L18 6M6 6l12 12"
+                    stroke="currentColor"
+                    strokeWidth={3}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              )}
+            </button>
+          </div>
+        </div>
         <div class="flex flex-wrap gap-2">
           <KeyCheckbox
             checked={formState.alt}
@@ -213,49 +258,6 @@ export function ToggleKeyForm(props: Props) {
             type="text"
             value={formState.key || ''}
           />
-        </div>
-        <div>
-          {t('command_toggle_description')}
-          {!!toggleKeyError?.length && (
-            <div
-              class="bg-warning-red ml-2 inline-block h-6 w-6 bg-cover bg-no-repeat align-top"
-              id="toggle-key-icon"
-              title={toggleKeyError}
-            />
-          )}
-        </div>
-        <div>
-          <button
-            class="cursor-pointer appearance-none rounded-md border-none bg-transparent p-0.5 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-600 dark:text-zinc-400 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
-            disabled={!!props.disabled}
-            title={
-              isEmpty
-                ? t('options_restore_toggle_shortcut')
-                : t('options_disable_toggle_shortcut')
-            }
-            type="button"
-            onClick={() => {
-              props.onChangeToggleKey(isEmpty ? ResetShortcut : undefined);
-              setToggleKeyError(undefined);
-            }}
-          >
-            {isEmpty ? (
-              <svg class="block h-5 w-5 fill-current" viewBox="0 0 16 16">
-                <path d="M8.54,2.11l.66-.65A.78.78,0,0,0,9.2.38a.76.76,0,0,0-1.08,0L6.19,2.31A.81.81,0,0,0,6,2.55a.8.8,0,0,0-.06.3A.72.72,0,0,0,6,3.14a.74.74,0,0,0,.17.25L8.12,5.32a.73.73,0,0,0,.54.22.76.76,0,0,0,.54-.22.78.78,0,0,0,0-1.08l-.58-.58A4.38,4.38,0,1,1,3.68,8.82a.76.76,0,0,0-1.5.28,5.92,5.92,0,1,0,6.36-7Z" />
-                <circle cx={2.673} cy={6.71} r={0.965} />
-              </svg>
-            ) : (
-              <svg class="block h-5 w-5" viewBox="0 0 24 24">
-                <path
-                  d="M6 18L18 6M6 6l12 12"
-                  stroke="currentColor"
-                  strokeWidth={3}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            )}
-          </button>
         </div>
       </div>
       {!!props.disabled && (
