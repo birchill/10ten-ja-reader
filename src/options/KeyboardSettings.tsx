@@ -2,7 +2,7 @@ import Bugsnag from '@birchill/bugsnag-zero';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import browser, { type Commands } from 'webextension-polyfill';
 
-import { isChromium, isEdge, isMac } from '../utils/ua-utils';
+import { isChromium, isEdge, isMac, isSafari } from '../utils/ua-utils';
 
 import { KeyboardSettingsForm } from './KeyboardSettingsForm';
 import { Command, CommandError } from './commands';
@@ -174,6 +174,8 @@ async function getToggleKey(): Promise<Command | undefined> {
   // key since Safari also has no way of changing shortcut keys. Hopefully
   // Safari will fix chrome.commands.getAll() before or at the same time it
   // provides a way of re-assigning shortcut keys.
+  //
+  // (See notes below for more recent versions of Safari.)
   if (
     typeof commands === 'object' &&
     typeof commands[Symbol.iterator] !== 'function'
@@ -198,6 +200,14 @@ async function getToggleKey(): Promise<Command | undefined> {
         void Bugsnag.notify(error);
       }
     }
+  }
+
+  // In Safari 17.1, getAll returns an array of opaque WBSWebExtensionCommand
+  // objects.
+  //
+  // Again, just return the hard-coded default key in this case.
+  if (isSafari()) {
+    return new Command('R', 'MacCtrl', 'Ctrl');
   }
 
   return undefined;
