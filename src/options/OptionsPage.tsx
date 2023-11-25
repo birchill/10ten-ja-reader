@@ -34,7 +34,12 @@ function OptionsPageInner(props: Props) {
 
   return (
     <>
-      <PopupInteractivitySettings config={props.config} />
+      <SectionHeading>
+        {t('options_popup_interactivity_heading')}
+      </SectionHeading>
+      <div class="py-4">
+        <PopupInteractivitySettings config={props.config} />
+      </div>
       {/* For the currency settings, the CurrencySettings component renders the
           section heading since we want to hide it when no currencies are
           available. */}

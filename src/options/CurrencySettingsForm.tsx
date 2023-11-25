@@ -22,7 +22,7 @@ export function CurrencySettingsForm(props: Props) {
   ];
 
   return (
-    <div class="section-content currency-body">
+    <>
       <label for="fxCurrency">{t('options_currency_label')}</label>
       <select
         id="fxCurrency"
@@ -37,6 +37,6 @@ export function CurrencySettingsForm(props: Props) {
           </option>
         ))}
       </select>
-    </div>
+    </>
   );
 }
