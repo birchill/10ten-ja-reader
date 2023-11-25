@@ -68,16 +68,6 @@ body {
 }
 
 /*
- * Device detection
- */
-
-@media not screen and (any-hover: hover) and (any-pointer: fine) {
-  .needs-mouse {
-    display: none;
-  }
-}
-
-/*
  * Container style
  */
 
@@ -503,36 +493,6 @@ fieldset.bordered {
   display: flex;
   gap: 20px;
   padding: 10px;
-}
-
-/*
- * Interactivity selection
- */
-
-.interactivity-select {
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-}
-
-@media (max-width: 500px) {
-  .interactivity-select {
-    grid-template-columns: 1fr;
-  }
-}
-
-.interactivity-select > label .icon {
-  padding: 8px 16px;
-  text-align: center;
-}
-
-.interactivity-select > label .icon .svg {
-  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.25));
-  width: 150px;
-}
-
-#mouse-interactivity-section .info {
-  margin-top: 1em;
-  margin-bottom: 1.5em;
 }
 
 /*

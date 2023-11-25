@@ -19,7 +19,6 @@ import {
   isFirefox,
   isSafari,
 } from '../utils/ua-utils';
-import { getThemeClass } from '../utils/themes';
 
 import { translateDoc } from './l10n';
 import { OptionsPage } from './OptionsPage';
@@ -50,13 +49,6 @@ function completeForm() {
 
   // Pop-up
   renderPopupStyleSelect();
-  setTabDisplayTheme(config.popupStyle);
-  // Refresh the theme used in the tab preview if the dark mode setting changes
-  window
-    .matchMedia('(prefers-color-scheme: dark)')
-    .addEventListener('change', () => {
-      setTabDisplayTheme(config.popupStyle);
-    });
 
   // l10n
   translateDoc();
@@ -168,16 +160,6 @@ function completeForm() {
       (event.target as HTMLInputElement).checked
     );
   });
-
-  const mouseInteractivityOptions = Array.from(
-    document.querySelectorAll('input[type=radio][name=mouseInteractivity]')
-  );
-  for (const option of mouseInteractivityOptions) {
-    option.addEventListener('change', (event) => {
-      const popupInteractive = (event.target as HTMLInputElement).value;
-      config.popupInteractive = popupInteractive === 'enable';
-    });
-  }
 }
 
 function renderPopupStyleSelect() {
@@ -196,7 +178,6 @@ function renderPopupStyleSelect() {
 
     input.addEventListener('click', () => {
       config.popupStyle = theme;
-      setTabDisplayTheme(theme);
     });
 
     const label = html('label', { for: `popupstyle-${theme}` });
@@ -312,24 +293,6 @@ function renderPopupPreview(theme: string): HTMLElement {
   return popupPreview;
 }
 
-function setTabDisplayTheme(theme: string) {
-  const tabIcons = Array.from(
-    document.querySelectorAll(
-      '.interactivity-select .icon .svg, .tabdisplay-select .icon .svg'
-    )
-  );
-
-  const themeClass = getThemeClass(theme);
-  for (const tabIcon of tabIcons) {
-    for (const className of tabIcon.classList.values()) {
-      if (className.startsWith('theme-')) {
-        tabIcon.classList.remove(className);
-      }
-    }
-    tabIcon.classList.add(themeClass);
-  }
-}
-
 // Expire current set of badges on Oct 10
 const NEW_EXPIRY = new Date(2023, 9, 10);
 
@@ -364,9 +327,6 @@ function fillVals() {
   optform.expandKanji.checked = autoExpand.includes('kanji');
   optform.highlightText.checked = !config.noTextHighlight;
   optform.contextMenuEnable.checked = config.contextMenuEnable;
-  optform.mouseInteractivity.value = config.popupInteractive
-    ? 'enable'
-    : 'disable';
   optform.popupStyle.value = config.popupStyle;
   optform.toolbarIcon.value = config.toolbarIcon;
 }

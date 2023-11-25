@@ -32,11 +32,13 @@ export function CurrencySettings(props: Props) {
       <SectionHeading>
         {t('options_currency_conversion_heading')}
       </SectionHeading>
-      <CurrencySettingsForm
-        currencies={fxCurrencies}
-        selectedCurrency={fxCurrency}
-        onChange={onChangeCurrency}
-      />
+      <div class="py-4">
+        <CurrencySettingsForm
+          currencies={fxCurrencies}
+          selectedCurrency={fxCurrency}
+          onChange={onChangeCurrency}
+        />
+      </div>
     </>
   );
 }
