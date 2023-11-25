@@ -178,7 +178,21 @@ function getCursorPositionForElement({
 
   // If the position is in a text input element or Google Docs element return it
   // immediately.
-  if (isTextInputPosition(position) || isGdocsOverlayPosition(position)) {
+  if (isTextInputPosition(position)) {
+    // For a textarea we still need to check it overlaps since at least in
+    // Firefox, if it is display: block, caretPositionFromPoint might return it
+    // even when the point is outside the element.
+    //
+    // And although we've never encountered such a case, we should probably
+    // check that the element is visible too.
+    return positionIntersectsPoint(position, point) &&
+      isVisible(position.offsetNode)
+      ? position
+      : null;
+  }
+
+  // For Google Docs, presumably the element is overlapping and visible.
+  if (isGdocsOverlayPosition(position)) {
     return position;
   }
 
