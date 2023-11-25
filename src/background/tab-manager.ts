@@ -7,7 +7,10 @@ import { IndividualFrameMessage, TopFrameMessage } from './background-message';
 export interface TabManager {
   init(config: ContentConfigParams): Promise<void>;
   getEnabledState(): Promise<Array<EnabledState>>;
-  toggleTab(tab: Tabs.Tab, config: ContentConfigParams): Promise<void>;
+  toggleTab(
+    tab: Tabs.Tab | undefined,
+    config: ContentConfigParams
+  ): Promise<void>;
   updateConfig(config: ContentConfigParams): Promise<void>;
   sendMessageToFrame<T extends Omit<IndividualFrameMessage, 'frame'>>(params: {
     tabId: number;

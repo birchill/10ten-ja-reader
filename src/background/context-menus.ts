@@ -1,115 +1,92 @@
 /// <reference path="../common/constants.d.ts" />
 import browser, { Menus, Tabs } from 'webextension-polyfill';
 
-import { TabManager } from './tab-manager';
+import { isFenix } from '../utils/ua-utils';
 
-export type ContextMenusInit = {
-  onToggleMenu: (tab: Tabs.Tab) => void;
-  onTogglePuck: (enabled: boolean) => void;
-  tabManager: TabManager;
-  toggleMenuEnabled: boolean;
-  showPuck: boolean;
-};
-
-let onToggleMenu: ContextMenusInit['onToggleMenu'] | undefined;
-let onTogglePuck: ContextMenusInit['onTogglePuck'] | undefined;
-let tabManager: TabManager | undefined;
-
-let toggleMenuCreated = false;
-let enablePuckMenuCreated = false;
+const TOGGLE_MENU_ID = 'context-toggle';
+const ENABLE_PUCK_MENU_ID = 'context-enable-puck';
 
 // Thunderbird does not support contextMenus, only menus.
 const contextMenus = browser.contextMenus || browser.menus;
 
-export async function initContextMenus(
-  options: ContextMenusInit
-): Promise<void> {
-  onToggleMenu = options.onToggleMenu;
-  onTogglePuck = options.onTogglePuck;
-  tabManager = options.tabManager;
-
-  const { toggleMenuEnabled, showPuck } = options;
-
-  await updateContextMenus({ toggleMenuEnabled, showPuck });
+export function registerMenuListeners(options: {
+  onToggleMenu: (tab: Tabs.Tab | undefined) => void;
+  onTogglePuck: (enabled: boolean) => void;
+}) {
+  contextMenus.onClicked.addListener((info, tab) => {
+    if (info.menuItemId === TOGGLE_MENU_ID) {
+      options.onToggleMenu(tab);
+    } else if (info.menuItemId === ENABLE_PUCK_MENU_ID) {
+      options.onTogglePuck(!!info.checked);
+    }
+  });
 }
 
-export async function updateContextMenus({
-  tabEnabled,
-  toggleMenuEnabled,
-  showPuck,
-}: {
-  tabEnabled?: boolean;
+/**
+ * Create / update the context menu items based on the current state.
+ *
+ * This is a little bit of a funny function because:
+ *
+ * 1. We can't programmatically tell if a menu item exists or not.
+ *
+ * 2. Firefox will destroy the context menu if an add-on is disabled.
+ *    See bug 1771328 / bug 1817287.
+ *
+ *    The proposed workaround is to simply unconditionally create the menus at
+ *    the top-level and ignore any errors that occur if the menu already
+ *    exists.
+ *
+ *    See: https://bugzilla.mozilla.org/show_bug.cgi?id=1771328#c1
+ *
+ * As a result of that, we simply try to create each menu item each time and, if
+ * it fails, we try to update it instead.
+ */
+export async function updateContextMenus(options: {
+  tabEnabled: boolean;
   toggleMenuEnabled: boolean;
   showPuck: boolean;
-}): Promise<void> {
-  // This can happen when the background page initializes the tab manager (in
-  // order to determine the tab enabled state) and it ends up notifying about
-  // the enabled state before the background page has a chance to call
-  // initContextMenus.
-  if (!tabManager || !onToggleMenu || !onTogglePuck) {
+}) {
+  // Fenix does not support context menus (but I'm not sure if it actually sets
+  // contextMenus to undefined).
+  if (!contextMenus || isFenix()) {
     return;
   }
 
-  // Resolve the tabEnabled state
-  if (typeof tabEnabled === 'undefined') {
-    // Determining if the tab is enabled or not is not straightforward since
-    // different windows can have different enabled states.
-    //
-    // So if we get multiple windows, we should try to find out which one is the
-    // current window and use that.
-    const enabledStates = await tabManager.getEnabledState();
-    tabEnabled = false;
-    if (enabledStates.length === 1) {
-      tabEnabled = enabledStates[0].enabled;
-    } else if (enabledStates.length > 1) {
+  const { tabEnabled, toggleMenuEnabled, showPuck } = options;
+
+  if (toggleMenuEnabled) {
+    try {
+      await addToggleMenu(tabEnabled);
+    } catch {
       try {
-        const currentWindowTabs = await browser.tabs.query({
-          active: true,
-          currentWindow: true,
-        });
-        const match = currentWindowTabs.length
-          ? enabledStates.find((s) => s.tabId === currentWindowTabs[0].id)
-          : undefined;
-        tabEnabled = !!match?.enabled;
+        await contextMenus.update(TOGGLE_MENU_ID, { checked: tabEnabled });
       } catch {
         // Ignore
       }
     }
-  }
-
-  // Update the toggle menu
-  if (toggleMenuEnabled) {
-    if (!toggleMenuCreated) {
-      await addToggleMenu(tabEnabled, onToggleMenu);
-      toggleMenuCreated = true;
-    } else {
-      await updateMenuItemCheckedState('context-toggle', tabEnabled);
-    }
   } else {
-    toggleMenuCreated = false;
-    await removeMenuItem('context-toggle');
+    await removeMenuItem(TOGGLE_MENU_ID);
   }
 
-  // Update the enable puck menu -- we only show this item if the tab is enabled
+  // We only show the enable puck menu if the tab is enabled
   if (tabEnabled) {
-    if (!enablePuckMenuCreated) {
-      await addEnablePuckMenu(showPuck, onTogglePuck);
-      enablePuckMenuCreated = true;
-    } else {
-      await updateMenuItemCheckedState('context-enable-puck', showPuck);
+    try {
+      await addEnablePuckMenu(showPuck);
+    } catch {
+      try {
+        await contextMenus.update(ENABLE_PUCK_MENU_ID, { checked: showPuck });
+      } catch {
+        // Ignore
+      }
     }
   } else {
-    enablePuckMenuCreated = false;
-    await removeMenuItem('context-enable-puck');
+    await removeMenuItem(ENABLE_PUCK_MENU_ID);
   }
 }
 
-async function addToggleMenu(
-  enabled: boolean,
-  onClick: ContextMenusInit['onToggleMenu']
-) {
+async function addToggleMenu(enabled: boolean) {
   const contexts: Array<Menus.ContextType> = [
-    'browser_action',
+    __MV3__ ? 'action' : 'browser_action',
     'editable',
     'frame',
     'image',
@@ -125,35 +102,21 @@ async function addToggleMenu(
     contexts.push('tab');
   }
 
-  // We'd like to use:
-  //
-  //   command: '_execute_(browser_)action'
-  //
-  // here instead of onclick but:
-  //
-  // a) Chrome etc. don't support that
-  // b) Firefox passes the wrong tab ID to the callback when the command is
-  //    activated from the context menu of a non-active tab.
   return createMenuItem({
-    id: 'context-toggle',
+    id: TOGGLE_MENU_ID,
     type: 'checkbox',
     title: browser.i18n.getMessage('menu_enable_extension'),
-    onclick: (_info, tab) => onClick(tab),
     contexts,
     checked: enabled,
   });
 }
 
-async function addEnablePuckMenu(
-  enabled: boolean,
-  onClick: ContextMenusInit['onTogglePuck']
-) {
+async function addEnablePuckMenu(enabled: boolean) {
   return createMenuItem({
-    id: 'context-enable-puck',
+    id: ENABLE_PUCK_MENU_ID,
     type: 'checkbox',
     title: browser.i18n.getMessage('menu_enable_puck'),
-    onclick: (info) => onClick(!!info.checked),
-    contexts: ['browser_action'],
+    contexts: [__MV3__ ? 'action' : 'browser_action'],
     checked: enabled,
   });
 }
@@ -161,34 +124,21 @@ async function addEnablePuckMenu(
 async function createMenuItem(
   createProperties: Menus.CreateCreatePropertiesType
 ) {
-  return new Promise<void>((resolve) => {
+  // It's important we don't handle errors here so that the caller can detect a
+  // failure to create the menu item and try to update the existing one instead.
+  return new Promise<void>((resolve, reject) => {
     contextMenus.create(createProperties, () => {
-      // This is just to silence Safari which will complain if the menu
       if (browser.runtime.lastError) {
-        // Very interesting
+        reject(browser.runtime.lastError);
       }
       resolve();
     });
-  }).catch(() => {
-    // Give up. We're probably on a platform that doesn't support the
-    // contextMenus/menus API such as Firefox for Android.
   });
 }
 
 async function removeMenuItem(menuItemId: string) {
   try {
     await contextMenus.remove(menuItemId);
-  } catch {
-    // Ignore
-  }
-}
-
-async function updateMenuItemCheckedState(
-  menuItemId: string,
-  checked: boolean
-) {
-  try {
-    await contextMenus.update(menuItemId, { checked });
   } catch {
     // Ignore
   }
