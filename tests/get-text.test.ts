@@ -1498,7 +1498,7 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(result, 'いうえお', [textAreaNode, 1, 5]);
   });
 
-  it('should NOT report results in textarea elements when the mouse is far away', () => {
+  it('should NOT report results in textarea elements when at the end', () => {
     testDiv.innerHTML = '<textarea cols=80>あいうえお</textarea>';
     const textAreaNode = testDiv.firstChild as HTMLTextAreaElement;
 
@@ -1507,6 +1507,24 @@ describe('getTextAtPoint', () => {
     const bbox = textAreaNode.getBoundingClientRect();
 
     const result = getTextAtPoint({ point: { x: bbox.right - 10, y: 5 } });
+
+    assert.strictEqual(result, null);
+  });
+
+  it('should NOT report results in textarea elements when the mouse is outside', () => {
+    testDiv.innerHTML = '<textarea cols=80>あいうえお</textarea>';
+    const textAreaNode = testDiv.firstChild as HTMLTextAreaElement;
+
+    // The display: block part is important here since it will cause
+    // caretPositionFromPoint to return the element even if it doesn't overlap.
+    //
+    // This is is why the textarea on pastebin.com was broken.
+    textAreaNode.style.display = 'block';
+    textAreaNode.style.marginLeft = '100px';
+    textAreaNode.style.fontSize = '20px';
+    const bbox = textAreaNode.getBoundingClientRect();
+
+    const result = getTextAtPoint({ point: { x: bbox.left - 50, y: 5 } });
 
     assert.strictEqual(result, null);
   });

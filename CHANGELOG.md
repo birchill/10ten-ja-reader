@@ -28,6 +28,9 @@ app.
   <kbd>PageUp</kbd>, <kbd>PageDown</kbd>, <kbd>Space</kbd>, <kbd>Insert</kbd>,
   <kbd>Delete</kbd>, <kbd>Up</kbd>, <kbd>Down</kbd>, <kbd>Left</kbd>,
   and <kbd>Right</kbd>.
+- Fixed lookup misbehaving on Firefox with `<textarea>`s with `display: block`
+  such as on pastebin.com
+  ([#1403](https://github.com/birchill/10ten-ja-reader/issues/1403)).
 - Made it possible to clear the toggle key in Firefox/Thunderbird.
 - Made matches on search-only headwords show the search-only version too
   (e.g. 磨ガラス, ペイチン)
