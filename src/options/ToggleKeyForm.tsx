@@ -143,7 +143,7 @@ export function ToggleKeyForm(props: Props) {
               onClick={onToggleKeyChange}
               ref={macCtrlKeyRef}
             >
-              <KeyBox label="Control" isMac={props.isMac} />
+              <KeyBox label="Ctrl" isMac={props.isMac} />
               <span class="ml-2">+</span>
             </KeyCheckbox>
           )}
@@ -153,7 +153,37 @@ export function ToggleKeyForm(props: Props) {
             onClick={onToggleKeyChange}
             ref={ctrlKeyRef}
           >
-            <KeyBox label="Ctrl" isMac={props.isMac} />
+            <KeyBox
+              // A few notes about modifier keys on Mac
+              //
+              // In DOM, `ctrlKey` corresponds to "Control" on Mac (and "Ctrl"
+              // on PC).
+              // `metaKey` represents the "Command" (⌘) key.
+              // Ref: https://w3c.github.io/uievents/#dom-keyboardevent-ctrlkey
+              //
+              // In Web extension command shortcuts, "Ctrl" is mapped to
+              // "Command".
+              // `macCtrl` is used for "Control".
+              // Ref: https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/manifest.json/commands#key_combinations
+              //
+              // This deviation probably makes sense in the context of
+              // specifying a cross-platform keyboard shortcut because if your
+              // shortcut is Ctrl+R on Windows it would most naturally be ⌘+R
+              // on Mac.
+              //
+              // Now, for the shortcut keys _we_ handle (i.e. the popup shortcut
+              // keys) we use DOM conventions. That is, we pass "Ctrl" to the
+              // content script and have it check if `ctrlKey` is true.
+              //
+              // As a result, when we describe these keys to the user, they
+              // should show "Control", and that's what KeyBox does when it sees
+              // a label of "Ctrl".
+              //
+              // However, for the special case of the toggle key, the "Ctrl" we
+              // get from the manifest/browser etc. should be shown as "Command".
+              label={props.isMac ? 'Command' : 'Ctrl'}
+              isMac={props.isMac}
+            />
             <span class="ml-2">+</span>
           </KeyCheckbox>
           <KeyCheckbox
@@ -238,8 +268,8 @@ export function ToggleKeyForm(props: Props) {
               props.disabled === 'chrome'
                 ? 'options_browser_commands_no_toggle_key_chrome'
                 : props.disabled === 'edge'
-                ? 'options_browser_commands_no_toggle_key_edge'
-                : 'options_browser_commands_no_toggle_key'
+                  ? 'options_browser_commands_no_toggle_key_edge'
+                  : 'options_browser_commands_no_toggle_key'
             )}
             links={[
               {
