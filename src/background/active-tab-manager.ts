@@ -140,8 +140,8 @@ export default class ActiveTabManager implements TabManager {
   // Toggling related interface
   //
 
-  async toggleTab(tab: Tabs.Tab, config: ContentConfigParams) {
-    if (typeof tab.id === 'undefined') {
+  async toggleTab(tab: Tabs.Tab | undefined, config: ContentConfigParams) {
+    if (typeof tab?.id === 'undefined') {
       return;
     }
 

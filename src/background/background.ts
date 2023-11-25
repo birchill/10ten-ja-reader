@@ -69,8 +69,9 @@ import {
   SearchRequest,
 } from './background-request';
 import { setDefaultToolbarIcon, updateBrowserAction } from './browser-action';
-import { initContextMenus, updateContextMenus } from './context-menus';
+import { registerMenuListeners, updateContextMenus } from './context-menus';
 import { FxFetcher } from './fx-fetcher';
+import { isCurrentTabEnabled } from './is-current-tab-enabled';
 import {
   cancelUpdateDb,
   deleteDb,
@@ -193,7 +194,9 @@ config.addChangeListener(async (changes) => {
     typeof showPuck !== 'undefined'
   ) {
     try {
+      const tabEnabled = await isCurrentTabEnabled(tabManager);
       await updateContextMenus({
+        tabEnabled,
         toggleMenuEnabled:
           typeof toggleMenuEnabled === 'undefined'
             ? config.contextMenuEnable
@@ -230,12 +233,10 @@ void config.ready.then(async () => {
   // a number of other things.
   await tabManager.init(config.contentConfig);
 
-  await initContextMenus({
-    onToggleMenu: toggle,
-    onTogglePuck: (enabled: boolean) => {
-      config.showPuck = enabled ? 'show' : 'hide';
-    },
-    tabManager,
+  const tabEnabled = await isCurrentTabEnabled(tabManager);
+
+  await updateContextMenus({
+    tabEnabled,
     toggleMenuEnabled: config.contextMenuEnable,
     showPuck: config.computedShowPuck === 'show',
   });
@@ -456,7 +457,7 @@ async function searchOther({
 // Browser event handlers
 //
 
-async function toggle(tab: Tabs.Tab) {
+async function toggle(tab?: Tabs.Tab) {
   await config.ready;
   await tabManager.toggleTab(tab, config.contentConfig);
 }
@@ -717,6 +718,13 @@ browser.runtime.onInstalled.addListener(async (details) => {
       }`
     );
   }
+});
+
+registerMenuListeners({
+  onToggleMenu: toggle,
+  onTogglePuck: (enabled: boolean) => {
+    config.showPuck = enabled ? 'show' : 'hide';
+  },
 });
 
 // Mail extension steps

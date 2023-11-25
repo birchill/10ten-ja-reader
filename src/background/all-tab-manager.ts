@@ -167,7 +167,7 @@ export default class AllTabManager implements TabManager {
   // Toggling related interface
   //
 
-  async toggleTab(_tab: Tabs.Tab, config: ContentConfigParams) {
+  async toggleTab(_tab: Tabs.Tab | undefined, config: ContentConfigParams) {
     // Update our local copy of the config
     this.config = config;
 
