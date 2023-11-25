@@ -37,6 +37,8 @@ app.
 - Added ability to recognize (deinflect) a few more irregular verbs like
   ございません and くださいます
   ([#1431](https://github.com/birchill/10ten-ja-reader/issues/1431)).
+- Hid settings button in popup on Firefox for Android until
+  [bug 1795449](https://bugzilla.mozilla.org/show_bug.cgi?id=1795449) is fixed.
 
 ## [1.15.1] - 2023-09-03
 
