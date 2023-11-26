@@ -76,7 +76,7 @@
     "file-loader": "6.2.0",
     "html-webpack-plugin": "5.5.3",
     "if-env": "1.0.4",
-    "jsdom": "^22.1.0",
+    "jsdom": "^23.0.0",
     "knip": "^2.35.0",
     "mini-css-extract-plugin": "2.7.6",
     "mocha": "10.2.0",
