@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+- (Chrome, Edge) Removed `"scripting"` from list of permissions.
+
 ## [1.16.0] - 2023-11-27
 
 - (Chrome, Edge) Enabled Manifest Version 3.

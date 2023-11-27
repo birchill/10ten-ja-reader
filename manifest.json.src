@@ -68,7 +68,7 @@
     "menus",
     "messagesModify",
     /*#endif*/
-    /*#if mv3*/
+    /*#if mv3&&active_tab_only*/
     "scripting",
     /*#endif*/
     "storage",
