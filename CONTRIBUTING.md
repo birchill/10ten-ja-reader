@@ -167,6 +167,24 @@ Pre-release checks:
   `yarn zip-src` and verify that the generated zip file can actually be used to
   build the add-on for Firefox.
 
+  e.g.
+
+  ```
+  yarn zip-src
+  mkdir ~/test-src
+  cp dist-src/10ten-ja-reader-<version>-src.zip ~/test-src/test.zip
+  cd ~/test-src
+  unzip test.zip
+  # Check it builds
+  yarn install
+  yarn build:firefox
+  # Check it runs
+  yarn start:firefox
+  # Clean up
+  cd ..
+  rm -rf ~/test-src
+  ```
+
   Otherwise the submission will likely be rejected from AMO.
 
 - It's also good to check that the release notes are being parsed correctly by
