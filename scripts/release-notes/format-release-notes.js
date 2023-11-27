@@ -54,7 +54,7 @@ export function formatReleaseNotes({ changeLog, version }) {
   // 2. Drop any issue references
   humanNotes = humanNotes.replaceAll(/ \(?\[#\d+\]\([^)]+\)\)?/g, '');
 
-  // 3. Drop any shout outs
+  // 3. Drop any shout-outs
   humanNotes = humanNotes.replaceAll(/ thanks to \[@[^\]]+\]\([^)]+\)/g, '');
 
   // 4. Strip various other markdown
@@ -67,6 +67,11 @@ export function formatReleaseNotes({ changeLog, version }) {
     '$1$3$4$5'
   );
   humanNotes = humanNotes.replace(/`(.+?)`/g, '$1');
+
+  // 5. Drop <kbd> annotations
+  // (Not doing a generic HTML strip because I'm not sure if we'd actually want
+  // to keep the text content of all HTML elements.)
+  humanNotes = humanNotes.replace(/<kbd>(.+?)<\/kbd>/g, '$1');
 
   // Generate specific notes for each browser
   notes += `\n\n<!--\n${getBrowserNotes({

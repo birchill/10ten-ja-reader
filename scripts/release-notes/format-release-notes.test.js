@@ -129,6 +129,7 @@ Thunderbird:
 - (Chrome, Safari) Chrome and Safari-only item
 - (edge,random) Edge point
 - (Bonus!) New feature!
+- Added keyboard shortcut <kbd>Ctrl</kbd>+<kbd>A</kbd>!
     `,
         version: '1.7.1',
       })
@@ -141,6 +142,7 @@ Thunderbird:
 - (Chrome, Safari) Chrome and Safari-only item
 - (edge,random) Edge point
 - (Bonus!) New feature!
+- Added keyboard shortcut <kbd>Ctrl</kbd>+<kbd>A</kbd>!
 
 <!--
 Firefox:
@@ -150,6 +152,7 @@ Firefox:
 • Firefox-only item
   ◦ Sub-item
 • (Bonus!) New feature!
+• Added keyboard shortcut Ctrl+A!
 
 Chrome:
 • Release note with an issue number.
@@ -157,6 +160,7 @@ Chrome:
 • Release note with an issue number and an attribution.
 • Chrome and Safari-only item
 • (Bonus!) New feature!
+• Added keyboard shortcut Ctrl+A!
 
 Edge:
 • Release note with an issue number.
@@ -164,6 +168,7 @@ Edge:
 • Release note with an issue number and an attribution.
 • Edge point
 • (Bonus!) New feature!
+• Added keyboard shortcut Ctrl+A!
 
 Safari:
 • Release note with an issue number.
@@ -171,12 +176,14 @@ Safari:
 • Release note with an issue number and an attribution.
 • Chrome and Safari-only item
 • (Bonus!) New feature!
+• Added keyboard shortcut Ctrl+A!
 
 Thunderbird:
 • Release note with an issue number.
 • Release note with an attribution
 • Release note with an issue number and an attribution.
 • (Bonus!) New feature!
+• Added keyboard shortcut Ctrl+A!
 -->`);
   });
 
