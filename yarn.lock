@@ -151,7 +151,7 @@
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz#1d572bfbbe14b7704e0ba0f39b74815b84870d70"
   integrity sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==
 
-"@ericcornelissen/bash-parser@^0.5.2":
+"@ericcornelissen/bash-parser@0.5.2":
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/@ericcornelissen/bash-parser/-/bash-parser-0.5.2.tgz#5eb3bc52020d97fbaebc63b5168ca0aa0b2e8418"
   integrity sha512-4pIMTa1nEFfMXitv7oaNEWOdM+zpOZavesa5GaiWTgda6Zk32CFGxjUp/iIaN0PwgUW1yTq/fztSjbpE8SLGZQ==
@@ -674,7 +674,7 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@npmcli/map-workspaces@^3.0.4":
+"@npmcli/map-workspaces@3.0.4":
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/@npmcli/map-workspaces/-/map-workspaces-3.0.4.tgz#15ad7d854292e484f7ba04bc30187a8320dba799"
   integrity sha512-Z0TbvXkRbacjFFLpVpV0e2mheCh+WzQpcqL+4xp49uNJOxOnIAPZyXtUxZ5Qn3QBTGKA11Exjd9a5411rBrhDg==
@@ -904,10 +904,10 @@
     semver "^7.3.5"
     validate-npm-package-name "^4.0.0"
 
-"@pnpm/npm-resolver@17.0.0":
-  version "17.0.0"
-  resolved "https://registry.yarnpkg.com/@pnpm/npm-resolver/-/npm-resolver-17.0.0.tgz#b3e72d41d7b3b00bb47ff9bbb4ce09f11b210c9a"
-  integrity sha512-XCeFga+Am3rsTO+8IIuIPb6VsZ+iCiv5QJW61YDl4XuiqoyCFzNyGgGfv05n45lIfK0Gg1jA2ewlo0LpGelCUw==
+"@pnpm/npm-resolver@18.0.0":
+  version "18.0.0"
+  resolved "https://registry.yarnpkg.com/@pnpm/npm-resolver/-/npm-resolver-18.0.0.tgz#e7023b07b2e12836a2e3d354fc9fed3e1cccc4a3"
+  integrity sha512-FGHmnRjSf7tQHagk6bMrUtHvZbz3ROUoGRDrpMyqJo///+S7SZt/hSDS77PhZ7T6PRXipkFyUtRkqtHmGKFCAg==
   dependencies:
     "@pnpm/core-loggers" "9.0.4"
     "@pnpm/error" "5.0.2"
@@ -926,7 +926,7 @@
     parse-npm-tarball-url "^3.0.0"
     path-temp "^2.1.0"
     ramda "npm:@pnpm/ramda@0.28.1"
-    rename-overwrite "^4.0.3"
+    rename-overwrite "^4.0.4"
     semver "^7.5.4"
     ssri "10.0.5"
     version-selector-type "^3.0.0"
@@ -950,13 +950,13 @@
   resolved "https://registry.yarnpkg.com/@pnpm/types/-/types-9.4.0.tgz#243b62eea4beab0bb65f1ecec1dfb6f739bba9bd"
   integrity sha512-IRDuIuNobLRQe0UyY2gbrrTzYS46tTNvOEfL6fOf0Qa8NyxUzeXz946v7fQuQE3LSBf8ENBC5SXhRmDl+mBEqA==
 
-"@pnpm/workspace.pkgs-graph@2.0.10":
-  version "2.0.10"
-  resolved "https://registry.yarnpkg.com/@pnpm/workspace.pkgs-graph/-/workspace.pkgs-graph-2.0.10.tgz#2ad0ad1b103d3307474cc3189ea5f84cdf3a9065"
-  integrity sha512-iGZZ23li6Ya68kHx3oaWPCN4JMzJ0njmmmWDRxUcHkc+nxtxTwpEM/FRl7yG1nBo39YwX2XTtou22h2nKipHnw==
+"@pnpm/workspace.pkgs-graph@^2.0.10":
+  version "2.0.11"
+  resolved "https://registry.yarnpkg.com/@pnpm/workspace.pkgs-graph/-/workspace.pkgs-graph-2.0.11.tgz#37ae4e0e470c3df8252e9d91076bf7ec62e7b250"
+  integrity sha512-VRX7E7pX92C0akCMYGzsTqJoOwQS7/8R40pAPK7smgaEpKeEgVThqnIXt+wPdseD5CzS7OzMaIWlT3WXr3O5rQ==
   dependencies:
     "@pnpm/npm-package-arg" "^1.0.0"
-    "@pnpm/npm-resolver" "17.0.0"
+    "@pnpm/npm-resolver" "18.0.0"
     "@pnpm/resolve-workspace-range" "5.0.1"
     ramda "npm:@pnpm/ramda@0.28.1"
 
@@ -1061,7 +1061,7 @@
     chalk "^2.3.0"
     shell-quote "^1.6.1"
 
-"@snyk/github-codeowners@^1.1.0":
+"@snyk/github-codeowners@1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@snyk/github-codeowners/-/github-codeowners-1.1.0.tgz#45b99732c3c38b5f5b47e43d2b0c9db67a6d2bcc"
   integrity sha512-lGFf08pbkEac0NYgVf4hdANpAgApRjNByLXB+WBip3qj1iendOIyAwP2GKkKbQMNVy2r1xxDf0ssfWscoiC+Vw==
@@ -3272,7 +3272,7 @@ eastasianwidth@^0.2.0:
   resolved "https://registry.yarnpkg.com/eastasianwidth/-/eastasianwidth-0.2.0.tgz#696ce2ec0aa0e6ea93a397ffcf24aa7840c827cb"
   integrity sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==
 
-easy-table@^1.2.0:
+easy-table@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/easy-table/-/easy-table-1.2.0.tgz#ba9225d7138fee307bfd4f0b5bc3c04bdc7c54eb"
   integrity sha512-OFzVOv03YpvtcWGe5AayU5G2hgybsg3iqA6drU8UaoZyB9jLGMTrz9+asnLp/E+6qPh88yEI1gvyZFZ41dmgww==
@@ -3963,7 +3963,7 @@ fast-fifo@^1.1.0, fast-fifo@^1.2.0:
   resolved "https://registry.yarnpkg.com/fast-fifo/-/fast-fifo-1.3.2.tgz#286e31de96eb96d38a97899815740ba2a4f3640c"
   integrity sha512-/d9sfos4yxzpwkDkuN7k2SqFKtYNmCTzgfEpz82x34IM9/zc8KGxQoXg1liNC/izpRM/MBdt44Nmx41ZWqk+FQ==
 
-fast-glob@3.3.2, fast-glob@^3.2.11, fast-glob@^3.2.12, fast-glob@^3.2.5, fast-glob@^3.2.9, fast-glob@^3.3.0, fast-glob@^3.3.2:
+fast-glob@3.3.2, fast-glob@^3.2.11, fast-glob@^3.2.5, fast-glob@^3.2.9, fast-glob@^3.3.0, fast-glob@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.3.2.tgz#a904501e57cfdd2ffcded45e99a54fef55e46129"
   integrity sha512-oX2ruAFQwf/Orj8m737Y5adxDQO0LAB7/S5MnxCdTNDd4p6BsyIVsv9JQsATbTSq8KHRpLwIHbVlUNatxd+1Ow==
@@ -4584,7 +4584,7 @@ globby@^11.1.0:
     merge2 "^1.4.1"
     slash "^3.0.0"
 
-globby@^13.1.1, globby@^13.1.2, globby@^13.1.3, globby@^13.2.2:
+globby@^13.1.1, globby@^13.1.2, globby@^13.2.2:
   version "13.2.2"
   resolved "https://registry.yarnpkg.com/globby/-/globby-13.2.2.tgz#63b90b1bf68619c2135475cbd4e71e66aa090592"
   integrity sha512-Y1zNGV+pzQdh7H39l9zgB4PJqjRNqydvdYCDG4HFXM4XuvSaQQlEc91IU1yALL8gUTDomgBAfz3XJdmUS+oo0w==
@@ -5762,31 +5762,30 @@ kleur@^4.1.5:
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-4.1.5.tgz#95106101795f7050c6c650f350c683febddb1780"
   integrity sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==
 
-knip@^2.35.0:
-  version "2.41.3"
-  resolved "https://registry.yarnpkg.com/knip/-/knip-2.41.3.tgz#6ee76c543fbf5c22e416dceb4e8e3fc95ae583c6"
-  integrity sha512-ooHaOfiieytMFSYnhhwk+TKFD3kGPNXIxpoLimEFf4nUpmthBOVKyawDjHvl23uJmPkqI6OOQqyQnK6dCUX+xQ==
+knip@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/knip/-/knip-3.0.1.tgz#86bbee78991c89660afa8b49e5354cb8c083e4ac"
+  integrity sha512-l7LN+O2vwthUOMa9OtU7viFGH9auWW4y0dad22EBpcXsqKP8Y9XJSO6ASe2bbFZPZ3Ov655XOESXAyhqT8CmhQ==
   dependencies:
-    "@ericcornelissen/bash-parser" "^0.5.2"
-    "@npmcli/map-workspaces" "^3.0.4"
+    "@ericcornelissen/bash-parser" "0.5.2"
+    "@npmcli/map-workspaces" "3.0.4"
     "@pkgjs/parseargs" "0.11.0"
     "@pnpm/logger" "5.0.0"
-    "@pnpm/workspace.pkgs-graph" "2.0.10"
-    "@snyk/github-codeowners" "^1.1.0"
+    "@pnpm/workspace.pkgs-graph" "^2.0.10"
+    "@snyk/github-codeowners" "1.1.0"
     chalk "^5.2.0"
-    easy-table "^1.2.0"
-    fast-glob "^3.2.12"
-    globby "^13.1.3"
+    easy-table "1.2.0"
+    fast-glob "3.3.2"
+    globby "^14.0.0"
     jiti "1.21.0"
-    js-yaml "^4.1.0"
-    micromatch "^4.0.5"
-    minimist "^1.2.8"
-    pretty-ms "^8.0.0"
-    strip-json-comments "^5.0.0"
-    summary "^2.1.0"
-    typescript "^5.0.2"
+    js-yaml "4.1.0"
+    micromatch "4.0.5"
+    minimist "1.2.8"
+    pretty-ms "8.0.0"
+    strip-json-comments "5.0.1"
+    summary "2.1.0"
     zod "3.22.4"
-    zod-validation-error "1.5.0"
+    zod-validation-error "2.1.0"
 
 latest-version@^7.0.0:
   version "7.0.0"
@@ -6312,7 +6311,7 @@ minimist-options@^4.0.2:
     is-plain-obj "^1.1.0"
     kind-of "^6.0.3"
 
-minimist@^1.2.0, minimist@^1.2.5, minimist@^1.2.6, minimist@^1.2.8:
+minimist@1.2.8, minimist@^1.2.0, minimist@^1.2.5, minimist@^1.2.6:
   version "1.2.8"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.8.tgz#c1a464e7693302e082a075cee0c057741ac4772c"
   integrity sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==
@@ -7459,7 +7458,7 @@ pretty-format@^29.5.0:
     ansi-styles "^5.0.0"
     react-is "^18.0.0"
 
-pretty-ms@^8.0.0:
+pretty-ms@8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/pretty-ms/-/pretty-ms-8.0.0.tgz#a35563b2a02df01e595538f86d7de54ca23194a3"
   integrity sha512-ASJqOugUF1bbzI35STMBUpZqdfYKlJugy6JBziGi2EE+AL5JPJGSzvpeVXojxrr0ViUYoToUjb5kjSEGf7Y83Q==
@@ -7947,7 +7946,7 @@ release-it@17.0.0:
     wildcard-match "5.1.2"
     yargs-parser "21.1.1"
 
-rename-overwrite@^4.0.3:
+rename-overwrite@^4.0.4:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/rename-overwrite/-/rename-overwrite-4.0.4.tgz#254f0fa91610fa467c233482109ae1dc2f365736"
   integrity sha512-5MC+p5npnyaJlFkwTHb0pqU2mkUkkW65ZWH8qwxcDlv+5nchtalcdzG+gaaianbWWwvwxi7vu7WSg6jdCweKug==
@@ -8863,7 +8862,7 @@ strip-json-comments@5.0.0:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-5.0.0.tgz#ec101b766476a703031bc607e3c712569de2aa06"
   integrity sha512-V1LGY4UUo0jgwC+ELQ2BNWfPa17TIuwBLg+j1AA/9RPzKINl1lhxVEu2r+ZTTO8aetIsUzE5Qj6LMSBkoGYKKw==
 
-strip-json-comments@^5.0.0:
+strip-json-comments@5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-5.0.1.tgz#0d8b7d01b23848ed7dbdf4baaaa31a8250d8cfa0"
   integrity sha512-0fk9zBqO67Nq5M/m45qHCJxylV/DhBlIOVExqgOMiCCrzrhU6tCibRXNqE3jwJLftzE9SNuZtYbpzcO+i9FiKw==
@@ -8893,7 +8892,7 @@ sucrase@^3.32.0:
     pirates "^4.0.1"
     ts-interface-checker "^0.1.9"
 
-summary@^2.1.0:
+summary@2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/summary/-/summary-2.1.0.tgz#be8a49a0aa34eb6ceea56042cae88f8add4b0885"
   integrity sha512-nMIjMrd5Z2nuB2RZCKJfFMjgS3fygbeyGk9PxPPaJR1RIcyN9yn4A63Isovzm3ZtQuEkLBVgMdPup8UeLH7aQw==
@@ -9362,7 +9361,7 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
 
-typescript@5.2.2, typescript@^5.0.2:
+typescript@5.2.2:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.2.2.tgz#5ebb5e5a5b75f085f22bc3f8460fba308310fa78"
   integrity sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==
@@ -10251,10 +10250,10 @@ zip-stream@^5.0.1:
     compress-commons "^5.0.1"
     readable-stream "^3.6.0"
 
-zod-validation-error@1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/zod-validation-error/-/zod-validation-error-1.5.0.tgz#2b355007a1c3b7fb04fa476bfad4e7b3fd5491e3"
-  integrity sha512-/7eFkAI4qV0tcxMBB/3+d2c1P6jzzZYdYSlBuAklzMuCrJu5bzJfHS0yVAS87dRHVlhftd6RFJDIvv03JgkSbw==
+zod-validation-error@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/zod-validation-error/-/zod-validation-error-2.1.0.tgz#208eac75237dfed47c0018d2fe8fd03501bfc9ac"
+  integrity sha512-VJh93e2wb4c3tWtGgTa0OF/dTt/zoPCPzXq4V11ZjxmEAFaPi/Zss1xIZdEB5RD8GD00U0/iVXgqkF77RV7pdQ==
 
 zod@3.22.4:
   version "3.22.4"
