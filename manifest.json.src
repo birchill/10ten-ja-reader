@@ -20,8 +20,12 @@
       /*#else*/
       "strict_min_version": "113.0"
       /*#endif*/
+    /*#if mail_extension */
+    }
+    /*#else*/
     },
     "gecko_android": {}
+    /*#endif*/
   },
   /*#endif*/
   "description": "__MSG_extension_description__",
