@@ -101,7 +101,7 @@
     "html-webpack-plugin": "5.5.3",
     "if-env": "1.0.4",
     "jsdom": "^23.0.0",
-    "knip": "^2.35.0",
+    "knip": "^3.0.0",
     "mini-css-extract-plugin": "2.7.6",
     "mocha": "10.2.0",
     "playwright": "1.40.0",
