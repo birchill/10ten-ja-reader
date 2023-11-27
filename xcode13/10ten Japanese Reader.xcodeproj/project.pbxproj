@@ -13,8 +13,8 @@
 		D306F44A2692C553002FA4FD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D306F4482692C553002FA4FD /* Main.storyboard */; };
 		D306F4532692C553002FA4FD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D306F4522692C553002FA4FD /* AppDelegate.swift */; };
 		D306F4562692C553002FA4FD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D306F4542692C553002FA4FD /* Main.storyboard */; };
-		D306F45E2692C553002FA4FD /* 10ten Japanese Reader Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = D306F45D2692C553002FA4FD /* 10ten Japanese Reader Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		D306F4682692C553002FA4FD /* 10ten Japanese Reader Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = D306F4672692C553002FA4FD /* 10ten Japanese Reader Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D306F45E2692C553002FA4FD /* 10ten Japanese Reader Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D306F45D2692C553002FA4FD /* 10ten Japanese Reader Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D306F4682692C553002FA4FD /* 10ten Japanese Reader Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D306F4672692C553002FA4FD /* 10ten Japanese Reader Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		D306F46D2692C553002FA4FD /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = D306F4312692C54F002FA4FD /* Main.html */; };
 		D306F46E2692C553002FA4FD /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = D306F4312692C54F002FA4FD /* Main.html */; };
 		D306F46F2692C553002FA4FD /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D306F4332692C54F002FA4FD /* Icon.png */; };
@@ -113,26 +113,26 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		D306F4802692C553002FA4FD /* Embed App Extensions */ = {
+		D306F4802692C553002FA4FD /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				D306F45E2692C553002FA4FD /* 10ten Japanese Reader Extension.appex in Embed App Extensions */,
+				D306F45E2692C553002FA4FD /* 10ten Japanese Reader Extension.appex in Embed Foundation Extensions */,
 			);
-			name = "Embed App Extensions";
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D306F4872692C553002FA4FD /* Embed App Extensions */ = {
+		D306F4872692C553002FA4FD /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				D306F4682692C553002FA4FD /* 10ten Japanese Reader Extension.appex in Embed App Extensions */,
+				D306F4682692C553002FA4FD /* 10ten Japanese Reader Extension.appex in Embed Foundation Extensions */,
 			);
-			name = "Embed App Extensions";
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -379,7 +379,7 @@
 				D306F43A2692C553002FA4FD /* Sources */,
 				D306F43B2692C553002FA4FD /* Frameworks */,
 				D306F43C2692C553002FA4FD /* Resources */,
-				D306F4802692C553002FA4FD /* Embed App Extensions */,
+				D306F4802692C553002FA4FD /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -398,7 +398,7 @@
 				D306F44C2692C553002FA4FD /* Sources */,
 				D306F44D2692C553002FA4FD /* Frameworks */,
 				D306F44E2692C553002FA4FD /* Resources */,
-				D306F4872692C553002FA4FD /* Embed App Extensions */,
+				D306F4872692C553002FA4FD /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -452,7 +452,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1300;
-				LastUpgradeCheck = 1330;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					D306F43D2692C553002FA4FD = {
 						CreatedOnToolsVersion = 13.0;
@@ -718,9 +718,11 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -778,9 +780,11 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -937,6 +941,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 65;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = H3RB7C8768;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -950,7 +955,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.16.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.birchill.tenten-ja-reader.Extension";
 				PRODUCT_NAME = "10ten Japanese Reader Extension";
@@ -967,6 +972,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 65;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = H3RB7C8768;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -980,7 +986,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.16.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.birchill.tenten-ja-reader.Extension";
 				PRODUCT_NAME = "10ten Japanese Reader Extension";
@@ -1001,6 +1007,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 65;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = H3RB7C8768;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1014,7 +1021,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.16.1;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -1038,6 +1045,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 65;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = H3RB7C8768;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1051,7 +1059,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.16.1;
 				OTHER_LDFLAGS = (
 					"-framework",
