@@ -46,27 +46,20 @@ async function main() {
 
   const rootDir = url.fileURLToPath(new URL('..', import.meta.url));
 
-  const dirs = [
-    '_locales',
-    'css',
-    'data',
-    'docs',
-    'html',
-    'images',
-    'lib',
-    'src',
-    'tests',
-  ];
+  const dirs = ['_locales', 'css', 'data', 'docs', 'images', 'src', 'tests'];
   for (const dir of dirs) {
     archive.directory(path.join(rootDir, dir), dir);
   }
 
   const files = [
+    'CHANGELOG.md',
     'CONTRIBUTING.md',
     'manifest.json.src',
     'package.json',
+    'postcss.config.cjs',
     'README.md',
     'tsconfig.json',
+    'vitest.config.ts',
     'webpack.config.js',
     'yarn.lock',
   ];
@@ -74,7 +67,7 @@ async function main() {
     archive.file(path.join(rootDir, file), { name: file });
   }
 
-  archive.finalize();
+  await archive.finalize();
 
   await finishWritePromise;
 
