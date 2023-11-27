@@ -1,0 +1,12 @@
+{
+  "attributeGroups": ["^(id|name)$", "^class$", "$DEFAULT", "^data-"],
+  "bracketSpacing": true,
+  "plugins": [
+    "prettier-plugin-organize-attributes",
+    "prettier-plugin-packagejson",
+    "prettier-plugin-tailwindcss"
+  ],
+  "singleQuote": true,
+  "tailwindFunctions": ["classes"],
+  "trailingComma": "es5"
+}
