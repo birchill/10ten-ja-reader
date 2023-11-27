@@ -10,38 +10,44 @@ app.
 
 - (Chrome, Edge) Enabled Manifest Version 3.
 - (Firefox, Thunderbird) Enabled non-persistent event pages.
-- Fixed the popup changing width in some cases (e.g. when tabs are hidden and
-  scrollbars are configured to always show)
-  ([#1314](https://github.com/birchill/10ten-ja-reader/issues/1314)).
-- (Firefox) Made the lookup puck handle taps and double-taps correctly on
-  Firefox for Android.
-- Added handling to avoid the <kbd>x</kbd> key being assigned to both closing
-  the popup _and_ expanding it.
-- Fixed recognition of words that end in half-width numerals like 小1.
-- Added parsing for ill-formed numbers like 39,800万円.
 - (Chrome, Edge) Made the options page show up in a new tab.
-- Added a workaround for a
-  [Firefox bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1860486) that would
-  cause 10ten to hang when changing dictionary language.
-- Fixed the toggle key setting in Firefox/Thunderbird to allow using
-  <kbd>,</kbd>, <kbd>.</kbd>, <kbd>Home</kbd>, <kbd>End</kbd>,
-  <kbd>PageUp</kbd>, <kbd>PageDown</kbd>, <kbd>Space</kbd>, <kbd>Insert</kbd>,
-  <kbd>Delete</kbd>, <kbd>Up</kbd>, <kbd>Down</kbd>, <kbd>Left</kbd>,
-  and <kbd>Right</kbd>.
-- Fixed lookup misbehaving on Firefox with `<textarea>`s with `display: block`
-  such as on pastebin.com
-  ([#1403](https://github.com/birchill/10ten-ja-reader/issues/1403)).
-- Made it possible to clear the toggle key in Firefox/Thunderbird.
-- Made matches on search-only headwords show the search-only version too
-  (e.g. 磨ガラス, ペイチン)
-  ([#1361](https://github.com/birchill/10ten-ja-reader/issues/1361)).
-- Hid the "usually kana" annotation when no kanji headwords are shown
-  (also [#1361](https://github.com/birchill/10ten-ja-reader/issues/1361)).
-- Added ability to recognize (deinflect) a few more irregular verbs like
-  ございません and くださいます
-  ([#1431](https://github.com/birchill/10ten-ja-reader/issues/1431)).
-- Hid settings button in popup on Firefox for Android until
-  [bug 1795449](https://bugzilla.mozilla.org/show_bug.cgi?id=1795449) is fixed.
+- (Safari) Fixed some bugs with the background page waking up.
+- Lookup fixes
+  - Fixed recognition of words that end in half-width numerals like 小1.
+  - Added parsing for ill-formed numbers like 39,800万円.
+  - (Firefox) Fixed lookup misbehaving on Firefox with `<textarea>`s with
+    `display: block` such as on pastebin.com
+    ([#1403](https://github.com/birchill/10ten-ja-reader/issues/1403)).
+  - Made matches on search-only headwords show the search-only version too
+    (e.g. 磨ガラス, ペイチン)
+    ([#1361](https://github.com/birchill/10ten-ja-reader/issues/1361)).
+  - Hid the "usually kana" annotation when no kanji headwords are shown
+    (also [#1361](https://github.com/birchill/10ten-ja-reader/issues/1361)).
+  - Added ability to recognize (deinflect) a few more irregular verbs like
+    ございません and くださいます
+    ([#1431](https://github.com/birchill/10ten-ja-reader/issues/1431)).
+- Keyboard fixes
+  - Added handling to avoid the <kbd>x</kbd> key being assigned to both closing
+    the popup _and_ expanding it.
+  - (Firefox, Thunderbird) Fixed the toggle key setting to allow using
+    <kbd>,</kbd>, <kbd>.</kbd>, <kbd>Home</kbd>, <kbd>End</kbd>,
+    <kbd>PageUp</kbd>, <kbd>PageDown</kbd>, <kbd>Space</kbd>, <kbd>Insert</kbd>,
+    <kbd>Delete</kbd>, <kbd>Up</kbd>, <kbd>Down</kbd>, <kbd>Left</kbd>,
+    and <kbd>Right</kbd>.
+  - (Firefox, Thunderbird) Made it possible to clear the toggle key.
+- Other bug fixes
+  - (Firefox) Added a workaround for a
+    [Firefox bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1860486) that
+    would cause 10ten to hang when changing dictionary language.
+  - Fixed the popup changing width in some cases (e.g. when tabs are hidden and
+    scrollbars are configured to always show)
+    ([#1314](https://github.com/birchill/10ten-ja-reader/issues/1314)).
+- (Firefox) Android fixes
+  - Made the lookup puck handle taps and double-taps correctly on
+    Firefox for Android.
+  - Hid settings button in popup on Firefox for Android until
+    [bug 1795449](https://bugzilla.mozilla.org/show_bug.cgi?id=1795449) is
+    fixed.
 
 ## [1.15.1] - 2023-09-03
 
