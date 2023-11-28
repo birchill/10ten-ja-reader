@@ -95,34 +95,6 @@ function completeForm() {
       config.toolbarIcon = toolbarIcon;
     });
   }
-
-  document
-    .getElementById('showPriority')!
-    .addEventListener('click', (event) => {
-      config.showPriority = (event.target as HTMLInputElement).checked;
-      renderPopupStyleSelect();
-    });
-
-  document
-    .getElementById('showWaniKaniLevel')!
-    .addEventListener('click', (event) => {
-      config.waniKaniVocabDisplay = (event.target as HTMLInputElement).checked
-        ? 'show-matches'
-        : 'hide';
-      renderPopupStyleSelect();
-    });
-
-  document.getElementById('showRomaji')!.addEventListener('click', (event) => {
-    config.showRomaji = (event.target as HTMLInputElement).checked;
-    renderPopupStyleSelect();
-  });
-
-  document
-    .getElementById('showDefinitions')!
-    .addEventListener('click', (event) => {
-      config.readingOnly = !(event.target as HTMLInputElement).checked;
-      renderPopupStyleSelect();
-    });
 }
 
 function renderPopupStyleSelect() {
@@ -277,15 +249,12 @@ function fillVals() {
   optform.highlightStyle.value = config.noTextHighlight
     ? 'none'
     : config.highlightStyle;
-  optform.showPriority.checked = config.showPriority;
-  optform.showWaniKaniLevel.checked =
-    config.waniKaniVocabDisplay === 'show-matches';
-  optform.showRomaji.checked = config.showRomaji;
-  optform.showDefinitions.checked = !config.readingOnly;
   optform.highlightText.checked = !config.noTextHighlight;
   optform.contextMenuEnable.checked = config.contextMenuEnable;
   optform.popupStyle.value = config.popupStyle;
   optform.toolbarIcon.value = config.toolbarIcon;
+
+  renderPopupStyleSelect();
 }
 
 window.onload = async () => {
