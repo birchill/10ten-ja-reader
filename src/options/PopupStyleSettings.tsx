@@ -16,6 +16,41 @@ type Props = {
 };
 
 export function PopupStyleSettings(props: Props) {
+  const showPriority = useConfigValue(props.config, 'showPriority');
+  const onChangeShowPriority = useCallback(
+    (value: boolean) => {
+      props.config.showPriority = value;
+    },
+    [props.config]
+  );
+
+  const waniKaniVocabDisplay = useConfigValue(
+    props.config,
+    'waniKaniVocabDisplay'
+  );
+  const onChangeShowWaniKaniLevel = useCallback(
+    (value: boolean) => {
+      props.config.waniKaniVocabDisplay = value ? 'show-matches' : 'hide';
+    },
+    [props.config]
+  );
+
+  const showRomaji = useConfigValue(props.config, 'showRomaji');
+  const onChangeShowRomaji = useCallback(
+    (value: boolean) => {
+      props.config.showRomaji = value;
+    },
+    [props.config]
+  );
+
+  const showDefinitions = !useConfigValue(props.config, 'readingOnly');
+  const onChangeShowDefinitions = useCallback(
+    (value: boolean) => {
+      props.config.readingOnly = !value;
+    },
+    [props.config]
+  );
+
   const accentDisplay = useConfigValue(props.config, 'accentDisplay');
   const onChangeAccentDisplay = useCallback(
     (value: AccentDisplay) => {
@@ -58,7 +93,15 @@ export function PopupStyleSettings(props: Props) {
         onChangeAutoExpand={onChangeAutoExpand}
         onChangeFontSize={onChangeFontSize}
         onChangePosDisplay={onChangePosDisplay}
+        onChangeShowDefinitions={onChangeShowDefinitions}
+        onChangeShowPriority={onChangeShowPriority}
+        onChangeShowRomaji={onChangeShowRomaji}
+        onChangeShowWaniKaniLevel={onChangeShowWaniKaniLevel}
         posDisplay={posDisplay}
+        showDefinitions={showDefinitions}
+        showPriority={showPriority}
+        showRomaji={showRomaji}
+        showWaniKaniLevel={waniKaniVocabDisplay === 'show-matches'}
       />
     </div>
   );

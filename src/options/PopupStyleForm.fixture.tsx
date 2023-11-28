@@ -12,6 +12,11 @@ import { PopupStyleForm } from './PopupStyleForm';
 import './options.css';
 
 export default function () {
+  const [showPriority, setShowPriority] = useState<boolean>(true);
+  const [showWaniKaniLevel, setShowWaniKaniLevel] = useState<boolean>(false);
+  const [showRomaji, setShowRomaji] = useState<boolean>(false);
+  const [showDefinitions, setShowDefinitions] = useState<boolean>(true);
+
   const [accentDisplay, setAccentDisplay] = useState<AccentDisplay>('binary');
 
   const [autoExpand, setAutoExpand] = useState<Array<AutoExpandableEntry>>([]);
@@ -34,7 +39,15 @@ export default function () {
       onChangeAutoExpand={onChangeAutoExpand}
       onChangeFontSize={setFontSize}
       onChangePosDisplay={setPosDisplay}
+      onChangeShowDefinitions={setShowDefinitions}
+      onChangeShowPriority={setShowPriority}
+      onChangeShowRomaji={setShowRomaji}
+      onChangeShowWaniKaniLevel={setShowWaniKaniLevel}
       posDisplay={posDisplay}
+      showDefinitions={showDefinitions}
+      showPriority={showPriority}
+      showRomaji={showRomaji}
+      showWaniKaniLevel={showWaniKaniLevel}
     />
   );
 }

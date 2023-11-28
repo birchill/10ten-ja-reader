@@ -960,8 +960,8 @@ export class Config {
     return this.showPuck !== 'auto'
       ? this.showPuck
       : this.canHover
-      ? 'hide'
-      : 'show';
+        ? 'hide'
+        : 'show';
   }
 
   // showRomaji: Defaults to false
@@ -997,7 +997,7 @@ export class Config {
 
     if (value === 'hide') {
       delete this.settings.waniKaniVocabDisplay;
-      void browser.storage.sync.remove('showWaniKaniVocabLevels');
+      void browser.storage.sync.remove('waniKaniVocabDisplay');
     } else {
       this.settings.waniKaniVocabDisplay = value;
       void browser.storage.sync.set({ waniKaniVocabDisplay: value });
