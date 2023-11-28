@@ -78,8 +78,8 @@ export function useDb(): {
     //
     //  https://developer.chrome.com/docs/extensions/mv3/messaging/#port-lifetime
     //
-    // Nevertheless, we check that `browserPort` is not undefined before trying to
-    // re-connect just in case some browsers behave differently here.
+    // Nevertheless, we check that `browserPort` is not undefined before trying
+    // to re-connect just in case some browsers behave differently here.
     browserPort.onDisconnect.addListener((port: Runtime.Port) => {
       // Firefox annotates `port` with an `error` but Chrome does not.
       const error =
@@ -88,8 +88,11 @@ export function useDb(): {
           ? (port as any).error.message
           : browser.runtime.lastError;
       Bugsnag.leaveBreadcrumb(
-        `Options page disconnected from background page: ${error}`
+        `Options page disconnected from background page${
+          error ? `: ${error}` : ''
+        }`
       );
+      browserPortRef.current = undefined;
 
       // Wait a moment and try to reconnect
       setTimeout(() => {
@@ -97,13 +100,17 @@ export function useDb(): {
           // Check that browserPort is still set to _something_. If it is
           // undefined it probably means we are shutting down.
           if (!browserPort) {
+            Bugsnag.leaveBreadcrumb(
+              'Not reconnecting to background page because we are probably shutting down'
+            );
             return;
           }
           browserPort = browser.runtime.connect(undefined, { name: 'options' });
+          browserPortRef.current = browserPort;
         } catch (e) {
           void Bugsnag.notify(e);
         }
-      }, 1000);
+      }, 700);
     });
 
     window.addEventListener('unload', () => {
