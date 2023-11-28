@@ -7,13 +7,16 @@ const TOGGLE_MENU_ID = 'context-toggle';
 const ENABLE_PUCK_MENU_ID = 'context-enable-puck';
 
 // Thunderbird does not support contextMenus, only menus.
-const contextMenus = browser.contextMenus || browser.menus;
+//
+// iOS does not support either.
+const contextMenus: browser.ContextMenus.Static | undefined =
+  browser.contextMenus || browser.menus;
 
 export function registerMenuListeners(options: {
   onToggleMenu: (tab: Tabs.Tab | undefined) => void;
   onTogglePuck: (enabled: boolean) => void;
 }) {
-  contextMenus.onClicked.addListener((info, tab) => {
+  contextMenus?.onClicked.addListener((info, tab) => {
     if (info.menuItemId === TOGGLE_MENU_ID) {
       options.onToggleMenu(tab);
     } else if (info.menuItemId === ENABLE_PUCK_MENU_ID) {
@@ -127,6 +130,11 @@ async function createMenuItem(
   // It's important we don't handle errors here so that the caller can detect a
   // failure to create the menu item and try to update the existing one instead.
   return new Promise<void>((resolve, reject) => {
+    if (!contextMenus) {
+      reject(new Error('contextMenus is undefined'));
+      return;
+    }
+
     contextMenus.create(createProperties, () => {
       if (browser.runtime.lastError) {
         reject(browser.runtime.lastError);
@@ -138,7 +146,7 @@ async function createMenuItem(
 
 async function removeMenuItem(menuItemId: string) {
   try {
-    await contextMenus.remove(menuItemId);
+    await contextMenus?.remove(menuItemId);
   } catch {
     // Ignore
   }
