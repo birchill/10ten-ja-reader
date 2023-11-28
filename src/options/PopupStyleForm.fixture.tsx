@@ -30,11 +30,11 @@ export default function () {
       accentDisplay={accentDisplay}
       autoExpand={autoExpand}
       fontSize={fontSize}
-      posDisplay={posDisplay}
       onChangeAccentDisplay={setAccentDisplay}
       onChangeAutoExpand={onChangeAutoExpand}
       onChangeFontSize={setFontSize}
       onChangePosDisplay={setPosDisplay}
+      posDisplay={posDisplay}
     />
   );
 }

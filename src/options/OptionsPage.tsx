@@ -8,6 +8,7 @@ import { DictionaryLanguageSettings } from './DictionaryLanguageSettings';
 import { KanjiReferenceSettings } from './KanjiReferenceSettings';
 import { KeyboardSettings } from './KeyboardSettings';
 import { PopupInteractivitySettings } from './PopupInteractivitySettings';
+import { PopupStyleSettings } from './PopupStyleSettings';
 import { PuckSettings } from './PuckSettings';
 
 type Props = {
@@ -19,6 +20,7 @@ export function OptionsPage(props: Props) {
 
   return (
     <I18nProvider>
+      <PopupStyleSettings config={props.config} />
       <PopupInteractivitySettings config={props.config} />
       <CurrencySettings config={props.config} />
       {hasKeyboard && <KeyboardSettings config={props.config} />}

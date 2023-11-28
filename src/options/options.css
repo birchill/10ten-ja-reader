@@ -486,27 +486,6 @@ fieldset.bordered {
 }
 
 /*
- * Auto-expand section
- */
-
-.auto-expand-checkboxes {
-  display: flex;
-  gap: 20px;
-  padding: 10px;
-}
-
-/*
- * Select grid
- */
-.select-grid {
-  display: inline-grid;
-  grid-template-columns: repeat(2, auto);
-  column-gap: 16px;
-  row-gap: 8px;
-  align-items: baseline;
-}
-
-/*
  * New badge
  */
 
