@@ -3,11 +3,6 @@ import { h, render } from 'preact';
 import browser from 'webextension-polyfill';
 
 import { Config } from '../common/config';
-import {
-  AccentDisplay,
-  FontSize,
-  PartOfSpeechDisplay,
-} from '../common/content-config-params';
 import { renderStar } from '../content/popup/icons';
 import { startBugsnag } from '../utils/bugsnag';
 import { html } from '../utils/builder';
@@ -128,38 +123,6 @@ function completeForm() {
       config.readingOnly = !(event.target as HTMLInputElement).checked;
       renderPopupStyleSelect();
     });
-
-  document
-    .getElementById('accentDisplay')!
-    .addEventListener('input', (event) => {
-      config.accentDisplay = (event.target as HTMLSelectElement)
-        .value as AccentDisplay;
-      renderPopupStyleSelect();
-    });
-
-  document.getElementById('posDisplay')!.addEventListener('input', (event) => {
-    config.posDisplay = (event.target as HTMLSelectElement)
-      .value as PartOfSpeechDisplay;
-    renderPopupStyleSelect();
-  });
-
-  document.getElementById('fontSize')!.addEventListener('input', (event) => {
-    config.fontSize = (event.target as HTMLSelectElement).value as FontSize;
-    renderPopupStyleSelect();
-  });
-
-  document.getElementById('expandWords')!.addEventListener('click', (event) => {
-    config.toggleAutoExpand(
-      'words',
-      (event.target as HTMLInputElement).checked
-    );
-  });
-  document.getElementById('expandKanji')!.addEventListener('click', (event) => {
-    config.toggleAutoExpand(
-      'kanji',
-      (event.target as HTMLInputElement).checked
-    );
-  });
 }
 
 function renderPopupStyleSelect() {
@@ -319,12 +282,6 @@ function fillVals() {
     config.waniKaniVocabDisplay === 'show-matches';
   optform.showRomaji.checked = config.showRomaji;
   optform.showDefinitions.checked = !config.readingOnly;
-  optform.accentDisplay.value = config.accentDisplay;
-  optform.posDisplay.value = config.posDisplay;
-  optform.fontSize.value = config.fontSize;
-  const { autoExpand } = config;
-  optform.expandWords.checked = autoExpand.includes('words');
-  optform.expandKanji.checked = autoExpand.includes('kanji');
   optform.highlightText.checked = !config.noTextHighlight;
   optform.contextMenuEnable.checked = config.contextMenuEnable;
   optform.popupStyle.value = config.popupStyle;

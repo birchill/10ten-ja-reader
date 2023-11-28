@@ -11,11 +11,11 @@ type Props = {
   accentDisplay: AccentDisplay;
   autoExpand: Array<AutoExpandableEntry>;
   fontSize: FontSize;
-  posDisplay: PartOfSpeechDisplay;
   onChangeAccentDisplay: (value: AccentDisplay) => void;
   onChangeAutoExpand: (entry: AutoExpandableEntry, checked: boolean) => void;
   onChangeFontSize: (value: FontSize) => void;
   onChangePosDisplay: (value: PartOfSpeechDisplay) => void;
+  posDisplay: PartOfSpeechDisplay;
 };
 
 export function PopupStyleForm(props: Props) {
