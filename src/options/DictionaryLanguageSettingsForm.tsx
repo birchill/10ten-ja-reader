@@ -34,7 +34,7 @@ export function DictionaryLanguageSettingsForm(props: Props) {
   );
 
   return (
-    <div class="py-4">
+    <>
       <select id="lang" class="w-40" name="lang" onChange={onChange}>
         {dbLanguageMeta.map(([id, data]) => {
           let label = data.name;
@@ -66,6 +66,6 @@ export function DictionaryLanguageSettingsForm(props: Props) {
           <li>{t('options_lang_warning_temporary_en_fallback')}</li>
         </ul>
       </div>
-    </div>
+    </>
   );
 }

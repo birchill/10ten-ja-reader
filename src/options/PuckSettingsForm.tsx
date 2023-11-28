@@ -28,7 +28,7 @@ export function PuckSettingsForm(props: Props) {
   );
 
   return (
-    <div class="py-4">
+    <>
       <p class="mt-0">{t('options_show_puck_label')}</p>
       {(['auto', 'show', 'hide'] as const).map((value) => (
         <>
@@ -45,6 +45,6 @@ export function PuckSettingsForm(props: Props) {
           </label>
         </>
       ))}
-    </div>
+    </>
   );
 }

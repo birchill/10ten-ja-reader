@@ -26,7 +26,7 @@ export function KeyboardSettingsForm(props: Props) {
   const { t } = useLocale();
 
   return (
-    <div class="section-content">
+    <>
       <ToggleKeyForm
         disabled={props.toggleKeyDisabled}
         isMac={props.isMac}
@@ -47,6 +47,6 @@ export function KeyboardSettingsForm(props: Props) {
         keys={props.popupKeys}
         onUpdateKey={props.onUpdatePopupKey}
       />
-    </div>
+    </>
   );
 }

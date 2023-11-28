@@ -1,11 +1,11 @@
 import { useCallback } from 'preact/hooks';
 
 import type { Config } from '../common/config';
+import { useLocale } from '../common/i18n';
 
 import { CurrencySettingsForm } from './CurrencySettingsForm';
 import { useConfigValue } from './use-config-value';
 import { SectionHeading } from './SectionHeading';
-import { useLocale } from '../common/i18n';
 
 type Props = {
   config: Config;

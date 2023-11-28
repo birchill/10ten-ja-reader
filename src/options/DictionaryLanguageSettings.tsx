@@ -2,15 +2,18 @@ import { useCallback } from 'preact/hooks';
 
 import type { Config } from '../common/config';
 import { DbLanguageId } from '../common/db-languages';
+import { useLocale } from '../common/i18n';
 
 import { DictionaryLanguageSettingsForm } from './DictionaryLanguageSettingsForm';
 import { useConfigValue } from './use-config-value';
+import { SectionHeading } from './SectionHeading';
 
 type Props = {
   config: Config;
 };
 
 export function DictionaryLanguageSettings(props: Props) {
+  const { t } = useLocale();
   const dictLang = useConfigValue(props.config, 'dictLang');
   const onChangeDictLang = useCallback(
     (value: DbLanguageId) => {
@@ -20,9 +23,16 @@ export function DictionaryLanguageSettings(props: Props) {
   );
 
   return (
-    <DictionaryLanguageSettingsForm
-      dictLang={dictLang}
-      onChangeDictLang={onChangeDictLang}
-    />
+    <>
+      <SectionHeading>
+        {t('options_dictionary_language_heading')}
+      </SectionHeading>
+      <div class="py-4">
+        <DictionaryLanguageSettingsForm
+          dictLang={dictLang}
+          onChangeDictLang={onChangeDictLang}
+        />
+      </div>
+    </>
   );
 }

@@ -2,17 +2,20 @@ import { useCallback } from 'preact/hooks';
 
 import type { Config } from '../common/config';
 import { TabDisplay } from '../common/content-config-params';
+import { useLocale } from '../common/i18n';
 import { useHasMouse } from '../utils/use-has-mouse';
 import { useHasTouch } from '../utils/use-has-touch';
 
 import { useConfigValue } from './use-config-value';
 import { PopupInteractivitySettingsForm } from './PopupInteractivitySettingsForm';
+import { SectionHeading } from './SectionHeading';
 
 type Props = {
   config: Config;
 };
 
 export function PopupInteractivitySettings(props: Props) {
+  const { t } = useLocale();
   const hasMouse = useHasMouse();
   const hasTouch = useHasTouch();
   const theme = useConfigValue(props.config, 'popupStyle');
@@ -42,16 +45,23 @@ export function PopupInteractivitySettings(props: Props) {
   );
 
   return (
-    <PopupInteractivitySettingsForm
-      enableTapLookup={enableTapLookup}
-      hasMouse={hasMouse}
-      hasTouch={hasTouch}
-      mouseInteractivity={mouseInteractivity}
-      onChangeEnableTapLookup={onChangeEnableTapLookup}
-      onChangeMouseInteractivity={onChangeMouseInteractivity}
-      onChangeTabDisplay={onChangeTabDisplay}
-      tabDisplay={tabDisplay}
-      theme={theme}
-    />
+    <>
+      <SectionHeading>
+        {t('options_popup_interactivity_heading')}
+      </SectionHeading>
+      <div class="py-4">
+        <PopupInteractivitySettingsForm
+          enableTapLookup={enableTapLookup}
+          hasMouse={hasMouse}
+          hasTouch={hasTouch}
+          mouseInteractivity={mouseInteractivity}
+          onChangeEnableTapLookup={onChangeEnableTapLookup}
+          onChangeMouseInteractivity={onChangeMouseInteractivity}
+          onChangeTabDisplay={onChangeTabDisplay}
+          tabDisplay={tabDisplay}
+          theme={theme}
+        />
+      </div>
+    </>
   );
 }
