@@ -13,6 +13,9 @@ app.
 - Made options page more robust with regards to reconnecting to the background
   page (mostly only affects Safari).
 - (Safari) Handle `contextMenus` not being defined on iOS.
+- (Thunderbird) Made workaround for
+  [Gecko bug 1860486](https://bugzilla.mozilla.org/show_bug.cgi?id=1860486)
+  apply to Thunderbird too.
 
 ## [1.16.1] - 2023-11-27
 
