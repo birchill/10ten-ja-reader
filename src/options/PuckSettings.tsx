@@ -1,15 +1,18 @@
 import { useCallback } from 'preact/hooks';
 
 import type { Config } from '../common/config';
+import { useLocale } from '../common/i18n';
 
 import { PuckSettingsForm, type ShowPuckSetting } from './PuckSettingsForm';
 import { useConfigValue } from './use-config-value';
+import { SectionHeading } from './SectionHeading';
 
 type Props = {
   config: Config;
 };
 
 export function PuckSettings(props: Props) {
+  const { t } = useLocale();
   const showPuck = useConfigValue(props.config, 'showPuck');
   const onChangeShowPuck = useCallback(
     (value: ShowPuckSetting) => {
@@ -18,5 +21,12 @@ export function PuckSettings(props: Props) {
     [props.config]
   );
 
-  return <PuckSettingsForm showPuck={showPuck} onChange={onChangeShowPuck} />;
+  return (
+    <>
+      <SectionHeading>{t('options_lookup_puck_heading')}</SectionHeading>
+      <div class="py-4">
+        <PuckSettingsForm showPuck={showPuck} onChange={onChangeShowPuck} />
+      </div>
+    </>
+  );
 }

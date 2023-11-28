@@ -1,16 +1,19 @@
 import { useCallback } from 'preact/hooks';
 
 import type { Config } from '../common/config';
+import { useLocale } from '../common/i18n';
 import type { ReferenceAbbreviation } from '../common/refs';
 
 import { KanjiReferenceSettingsForm } from './KanjiReferenceSettingsForm';
 import { useConfigValue } from './use-config-value';
+import { SectionHeading } from './SectionHeading';
 
 type Props = {
   config: Config;
 };
 
 export function KanjiReferenceSettings(props: Props) {
+  const { t } = useLocale();
   const dictLang = useConfigValue(props.config, 'dictLang');
   const enabledReferences = useConfigValue(props.config, 'kanjiReferences');
   const showKanjiComponents = useConfigValue(
@@ -31,12 +34,17 @@ export function KanjiReferenceSettings(props: Props) {
   );
 
   return (
-    <KanjiReferenceSettingsForm
-      dictLang={dictLang}
-      enabledReferences={enabledReferences}
-      showKanjiComponents={showKanjiComponents}
-      onToggleReference={onToggleReference}
-      onToggleKanjiComponents={onToggleKanjiComponents}
-    />
+    <>
+      <SectionHeading>{t('options_kanji_dictionary_heading')}</SectionHeading>
+      <div class="py-4">
+        <KanjiReferenceSettingsForm
+          dictLang={dictLang}
+          enabledReferences={enabledReferences}
+          showKanjiComponents={showKanjiComponents}
+          onToggleReference={onToggleReference}
+          onToggleKanjiComponents={onToggleKanjiComponents}
+        />
+      </div>
+    </>
   );
 }

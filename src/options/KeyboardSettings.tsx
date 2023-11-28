@@ -2,15 +2,17 @@ import Bugsnag from '@birchill/bugsnag-zero';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import browser, { type Commands } from 'webextension-polyfill';
 
+import type { Config } from '../common/config';
+import { useLocale } from '../common/i18n';
+import { StoredKeyboardKeys } from '../common/popup-keys';
 import { isChromium, isEdge, isMac, isSafari } from '../utils/ua-utils';
 
 import { KeyboardSettingsForm } from './KeyboardSettingsForm';
 import { Command, CommandError } from './commands';
 import { useConfigValue } from './use-config-value';
 import type { HoldToShowSetting } from './ShowPopupKeysForm';
-import type { Config } from '../common/config';
-import { StoredKeyboardKeys } from '../common/popup-keys';
 import { ResetShortcut } from './ToggleKeyForm';
+import { SectionHeading } from './SectionHeading';
 
 const mac = isMac();
 
@@ -19,6 +21,8 @@ type CommandChangeCallback = Parameters<
 >[0];
 
 export function KeyboardSettings(props: { config: Config }) {
+  const { t } = useLocale();
+
   //
   // Toggle key
   //
@@ -141,18 +145,23 @@ export function KeyboardSettings(props: { config: Config }) {
   );
 
   return (
-    <KeyboardSettingsForm
-      holdToShowKeys={holdToShowKeys}
-      holdToShowImageKeys={holdToShowImageKeys}
-      isMac={mac}
-      toggleKey={toggleKey}
-      toggleKeyDisabled={toggleKeyDisabled}
-      onChangeToggleKey={onChangeToggleKey}
-      onChangeHoldToShowKeys={setHoldToShowKeys}
-      onChangeHoldToShowImageKeys={setHoldToShowImageKeys}
-      onUpdatePopupKey={onUpdatePopupKey}
-      popupKeys={popupKeys}
-    />
+    <>
+      <SectionHeading>{t('options_keyboard_heading')}</SectionHeading>
+      <div class="py-4">
+        <KeyboardSettingsForm
+          holdToShowKeys={holdToShowKeys}
+          holdToShowImageKeys={holdToShowImageKeys}
+          isMac={mac}
+          toggleKey={toggleKey}
+          toggleKeyDisabled={toggleKeyDisabled}
+          onChangeToggleKey={onChangeToggleKey}
+          onChangeHoldToShowKeys={setHoldToShowKeys}
+          onChangeHoldToShowImageKeys={setHoldToShowImageKeys}
+          onUpdatePopupKey={onUpdatePopupKey}
+          popupKeys={popupKeys}
+        />
+      </div>
+    </>
   );
 }
 
