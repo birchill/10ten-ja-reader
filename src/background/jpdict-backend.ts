@@ -163,8 +163,8 @@ export class JpdictLocalBackend implements JpdictBackend {
       this.currentUpdate = undefined;
     }
 
-    // Firefox 112+ has an unfortunate bug where, when we try to clear an
-    // objectStore, it just hangs:
+    // Firefox 112+ (and presumably Thunderbird 112+) has an unfortunate bug
+    // where, when we try to clear an objectStore, it just hangs:
     //
     // https://bugzilla.mozilla.org/show_bug.cgi?id=1860486
     //
@@ -175,7 +175,7 @@ export class JpdictLocalBackend implements JpdictBackend {
     // That's quite unfortunate because it means we'll need to download all the
     // names data again which is massive but it's better than having the user be
     // stuck.
-    if (isFirefoxWithBuggyObjectStoreClear()) {
+    if (hasBuggyObjectStoreClear()) {
       // Check if we need to replace the data, i.e. if running an update is
       // likely to try and clear a data series' object store.
       //
@@ -383,11 +383,11 @@ function getLatestCheckTime(db: JpdictIdb): Date | null {
   return latestCheckAsNumber !== 0 ? new Date(latestCheckAsNumber) : null;
 }
 
-function isFirefoxWithBuggyObjectStoreClear() {
+function hasBuggyObjectStoreClear() {
   const userAgent = navigator.userAgent;
-  const firefoxMatch = /Firefox\/(\d+)/.exec(userAgent);
-  if (firefoxMatch && firefoxMatch[1]) {
-    return parseInt(firefoxMatch[1], 10) >= 112;
+  const firefoxOrThunderbird = /(?:Firefox|Thunderbird)\/(\d+)/.exec(userAgent);
+  if (firefoxOrThunderbird && firefoxOrThunderbird[1]) {
+    return parseInt(firefoxOrThunderbird[1], 10) >= 112;
   }
   return false;
 }
