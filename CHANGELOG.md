@@ -10,6 +10,8 @@ app.
 
 - (Chrome, Edge) Fixed online handling in currency fetching when running as a
   service worker.
+- Made options page more robust with regards to reconnecting to the background
+  page (mostly only affects Safari).
 
 ## [1.16.1] - 2023-11-27
 
