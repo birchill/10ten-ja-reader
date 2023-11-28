@@ -6,7 +6,7 @@ export function CheckboxRow(
   return (
     <div
       {...props}
-      class="my-2 flex items-baseline gap-2 [&>:not(input)]:flex-1 [&>:not(input)]:leading-snug"
+      class="flex items-baseline gap-2 [&>:not(input)]:flex-1 [&>:not(input)]:leading-snug [&>label]:cursor-pointer [&>label]:select-none"
     >
       {props.children}
     </div>

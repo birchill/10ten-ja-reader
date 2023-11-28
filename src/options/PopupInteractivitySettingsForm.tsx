@@ -34,20 +34,22 @@ export function PopupInteractivitySettingsForm(props: Props) {
         </div>
       )}
       {props.hasTouch && (
-        <CheckboxRow>
-          <input
-            checked={props.enableTapLookup}
-            id="enableTapLookup"
-            name="enableTapLookup"
-            onClick={(event: JSX.TargetedEvent<HTMLInputElement>) => {
-              props.onChangeEnableTapLookup(event.currentTarget.checked);
-            }}
-            type="checkbox"
-          />
-          <label class="cursor-pointer select-none" for="enableTapLookup">
-            {t('options_touch_enable_tap_lookup')}
-          </label>
-        </CheckboxRow>
+        <div class="my-1">
+          <CheckboxRow>
+            <input
+              checked={props.enableTapLookup}
+              id="enableTapLookup"
+              name="enableTapLookup"
+              onClick={(event: JSX.TargetedEvent<HTMLInputElement>) => {
+                props.onChangeEnableTapLookup(event.currentTarget.checked);
+              }}
+              type="checkbox"
+            />
+            <label class="cursor-pointer select-none" for="enableTapLookup">
+              {t('options_touch_enable_tap_lookup')}
+            </label>
+          </CheckboxRow>
+        </div>
       )}
       <div class="flex flex-col gap-4">
         <p class="m-0">{t('options_tab_position_label')}</p>
