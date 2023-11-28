@@ -1851,17 +1851,17 @@
     "message": "画像"
   },
   "options_show_popup_subheading": {
-    "message": "ポップアップを表示する"
+    "message": "ポップアップを表示"
   },
   "options_show_popup_text_subheading": {
     "message": "テキスト"
   },
   "options_show_priority": {
-    "message": "頻度の高い（★）又はある程度の高い（☆）のマーカーを表示する",
+    "message": "頻度の高い（★）又はある程度の高い（☆）のマーカーを表示",
     "description": "Label for enabling the ★ and ☆ markers next to dictionary headwords to indicate they occur frequently  or somewhat frequently respectively"
   },
   "options_show_puck_label": {
-    "message": "丸いボタンを表示する：",
+    "message": "丸いボタンを表示：",
     "description": "Leading text for options for when to display the puck"
   },
   "options_show_puck_option_auto": {
@@ -1880,7 +1880,7 @@
     "message": "ローマ字を表示"
   },
   "options_show_wanikani_levels": {
-    "message": "WaniKaniレベル情報を表示する",
+    "message": "WaniKaniレベル情報を表示",
     "description": "Label for enabling display of WaniKani level information alongside kanji headwords"
   },
   "options_tab_position_label": {
