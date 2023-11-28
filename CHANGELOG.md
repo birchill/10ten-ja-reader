@@ -12,6 +12,7 @@ app.
   service worker.
 - Made options page more robust with regards to reconnecting to the background
   page (mostly only affects Safari).
+- (Safari) Handle `contextMenus` not being defined on iOS.
 
 ## [1.16.1] - 2023-11-27
 
