@@ -1,19 +1,92 @@
-import { AutoExpandableEntry } from '../common/content-config-params';
+import {
+  AccentDisplay,
+  AutoExpandableEntry,
+  FontSize,
+  PartOfSpeechDisplay,
+} from '../common/content-config-params';
 import { useLocale } from '../common/i18n';
 import { CheckboxRow } from './CheckboxRow';
 
 type Props = {
+  accentDisplay: AccentDisplay;
   autoExpand: Array<AutoExpandableEntry>;
+  fontSize: FontSize;
+  posDisplay: PartOfSpeechDisplay;
+  onChangeAccentDisplay: (value: AccentDisplay) => void;
   onChangeAutoExpand: (entry: AutoExpandableEntry, checked: boolean) => void;
+  onChangeFontSize: (value: FontSize) => void;
+  onChangePosDisplay: (value: PartOfSpeechDisplay) => void;
 };
 
 export function PopupStyleForm(props: Props) {
   const { t } = useLocale();
 
   return (
-    <div class="grid w-fit grid-cols-[repeat(2,auto)] items-baseline gap-x-2 gap-y-4">
+    <div class="grid w-fit grid-cols-[repeat(2,auto)] items-baseline gap-4">
+      <label for="accentDisplay">{t('options_accent_display_label')}</label>
+      <select
+        id="accentDisplay"
+        name="accentDisplay"
+        onChange={(evt) => {
+          props.onChangeAccentDisplay(evt.currentTarget.value as AccentDisplay);
+        }}
+      >
+        <option value="downstep" selected={props.accentDisplay === 'downstep'}>
+          {t('options_accent_display_downstep')}
+        </option>
+        <option value="binary" selected={props.accentDisplay === 'binary'}>
+          {t('options_accent_display_binary')}
+        </option>
+        <option
+          value="binary-hi-contrast"
+          selected={props.accentDisplay === 'binary-hi-contrast'}
+        >
+          {t('options_accent_display_binary_high_contrast')}
+        </option>
+        <option value="none" selected={props.accentDisplay === 'none'}>
+          {t('options_accent_display_none')}
+        </option>
+      </select>
+      <label for="posDisplay">{t('options_pos_display_label')}</label>
+      <select
+        id="posDisplay"
+        name="posDisplay"
+        onChange={(evt) => {
+          props.onChangePosDisplay(
+            evt.currentTarget.value as PartOfSpeechDisplay
+          );
+        }}
+      >
+        <option value="expl" selected={props.posDisplay === 'expl'}>
+          {t('options_pos_display_expl')}
+        </option>
+        <option value="code" selected={props.posDisplay === 'code'}>
+          {t('options_pos_display_code')}
+        </option>
+        <option value="none" selected={props.posDisplay === 'none'}>
+          {t('options_pos_display_none')}
+        </option>
+      </select>
+      <label for="fontSize">{t('options_font_size_label')}</label>
+      <select
+        id="fontSize"
+        name="fontSize"
+        onChange={(evt) => {
+          props.onChangeFontSize(evt.currentTarget.value as FontSize);
+        }}
+      >
+        <option value="normal" selected={props.fontSize === 'normal'}>
+          {t('options_font_size_normal')}
+        </option>
+        <option value="large" selected={props.fontSize === 'large'}>
+          {t('options_font_size_large')}
+        </option>
+        <option value="xl" selected={props.fontSize === 'xl'}>
+          {t('options_font_size_xl')}
+        </option>
+      </select>
       <div>{t('options_expand_all_entries')}</div>
-      <div class="flex gap-5">
+      <div class="flex gap-5 px-2 pt-1">
         <CheckboxRow>
           <input
             id="expandWords"
