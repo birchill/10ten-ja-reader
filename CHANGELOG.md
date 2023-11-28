@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- (Chrome, Edge) Fixed online handling in currency fetching when running as a
+  service worker.
+
 ## [1.16.1] - 2023-11-27
 
 - (Chrome, Edge) Removed `"scripting"` from list of permissions.

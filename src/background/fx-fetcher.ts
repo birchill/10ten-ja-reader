@@ -8,6 +8,8 @@ import { getReleaseStage } from '../utils/release-stage';
 import { getLocalFxData } from './fx-data';
 import { isError } from '../utils/is-error';
 
+declare let self: (Window | ServiceWorkerGlobalScope) & typeof globalThis;
+
 const FxDataSchema = s.type({
   timestamp: s.min(s.integer(), 0),
   rates: s.record(s.string(), s.number()),
@@ -86,9 +88,9 @@ export class FxFetcher {
 
   private async fetchData() {
     // Don't try fetching if we are offline
-    if (!navigator.onLine) {
+    if (!self.navigator.onLine) {
       Bugsnag.leaveBreadcrumb('Deferring FX data update until we are online');
-      window.addEventListener('online', () => {
+      self.addEventListener('online', () => {
         Bugsnag.leaveBreadcrumb(
           'Fetching FX data update now that we are online'
         );
@@ -105,7 +107,7 @@ export class FxFetcher {
 
     // Abort any timeout to retry
     if (this.fetchState.type === 'waiting to retry') {
-      window.clearTimeout(this.fetchState.timeout);
+      self.clearTimeout(this.fetchState.timeout);
     }
 
     // Update our state
