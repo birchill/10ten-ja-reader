@@ -1,12 +1,8 @@
 /// <reference path="../common/constants.d.ts" />
 import { h, render } from 'preact';
-import browser from 'webextension-polyfill';
 
 import { Config } from '../common/config';
-import { renderStar } from '../content/popup/icons';
 import { startBugsnag } from '../utils/bugsnag';
-import { html } from '../utils/builder';
-import { empty } from '../utils/dom-utils';
 import {
   isChromium,
   isEdge,
@@ -41,9 +37,6 @@ function completeForm() {
   if (isSafari()) {
     document.documentElement.classList.add('safari');
   }
-
-  // Pop-up
-  renderPopupStyleSelect();
 
   // l10n
   translateDoc();
@@ -97,137 +90,6 @@ function completeForm() {
   }
 }
 
-function renderPopupStyleSelect() {
-  const popupStyleSelect = document.getElementById('popupstyle-select')!;
-  empty(popupStyleSelect);
-  const themes = ['default', 'light', 'blue', 'lightblue', 'black', 'yellow'];
-
-  for (const theme of themes) {
-    const input = html('input', {
-      type: 'radio',
-      name: 'popupStyle',
-      value: theme,
-      id: `popupstyle-${theme}`,
-    });
-    popupStyleSelect.appendChild(input);
-
-    input.addEventListener('click', () => {
-      config.popupStyle = theme;
-    });
-
-    const label = html('label', { for: `popupstyle-${theme}` });
-    popupStyleSelect.appendChild(label);
-
-    // The default theme alternates between light and dark so we need to
-    // generate two popup previews and overlay them.
-    if (theme === 'default') {
-      label.appendChild(
-        html(
-          'div',
-          { class: 'overlay' },
-          renderPopupPreview('light'),
-          renderPopupPreview('black')
-        )
-      );
-    } else {
-      label.appendChild(renderPopupPreview(theme));
-    }
-  }
-}
-
-function renderPopupPreview(theme: string): HTMLElement {
-  const popupPreview = html('div', {
-    class: `popup-preview window theme-${theme}`,
-  });
-  if (config.fontSize !== 'normal') {
-    popupPreview.classList.add(`font-${config.fontSize}`);
-  }
-
-  const entry = html('div', { class: 'entry' });
-  popupPreview.appendChild(entry);
-
-  const headingDiv = html('div', {});
-  entry.append(headingDiv);
-
-  const spanKanji = html('span', { class: 'w-kanji' }, '理解');
-  if (config.showPriority) {
-    spanKanji.append(renderStar('full'));
-  }
-  if (config.waniKaniVocabDisplay === 'show-matches') {
-    spanKanji.appendChild(html('span', { class: 'wk-level' }, '21'));
-  }
-  headingDiv.appendChild(spanKanji);
-
-  const spanKana = html('span', { class: 'w-kana' });
-
-  switch (config.accentDisplay) {
-    case 'downstep':
-      spanKana.textContent = 'りꜜかい';
-      break;
-
-    case 'binary':
-    case 'binary-hi-contrast':
-      {
-        spanKana.append(
-          html(
-            'span',
-            {
-              class: `w-binary${
-                config.accentDisplay === 'binary-hi-contrast'
-                  ? ' -hi-contrast'
-                  : ''
-              }`,
-            },
-            html('span', { class: 'h-l' }, 'り'),
-            html('span', { class: 'l' }, 'かい')
-          )
-        );
-      }
-      break;
-
-    case 'none':
-      spanKana.textContent = 'りかい';
-      break;
-  }
-
-  if (config.showPriority) {
-    spanKana.append(renderStar('full'));
-  }
-  headingDiv.appendChild(spanKana);
-
-  if (config.showRomaji) {
-    headingDiv.appendChild(html('span', { class: 'w-romaji' }, 'rikai'));
-  }
-
-  if (!config.readingOnly) {
-    const spanDef = html('span', { class: 'w-def' });
-
-    if (config.posDisplay !== 'none') {
-      const posSpan = html('span', { class: 'w-pos tag' });
-      switch (config.posDisplay) {
-        case 'expl':
-          posSpan.append(
-            ['n', 'vs']
-              .map((pos) => browser.i18n.getMessage(`pos_label_${pos}`) || pos)
-              .join(', ')
-          );
-          break;
-
-        case 'code':
-          posSpan.append('n, vs');
-          break;
-      }
-      spanDef.append(posSpan);
-    }
-
-    spanDef.append('\u200bunderstanding');
-
-    entry.appendChild(spanDef);
-  }
-
-  return popupPreview;
-}
-
 // Expire current set of badges on Oct 10
 const NEW_EXPIRY = new Date(2023, 9, 10);
 
@@ -251,10 +113,7 @@ function fillVals() {
     : config.highlightStyle;
   optform.highlightText.checked = !config.noTextHighlight;
   optform.contextMenuEnable.checked = config.contextMenuEnable;
-  optform.popupStyle.value = config.popupStyle;
   optform.toolbarIcon.value = config.toolbarIcon;
-
-  renderPopupStyleSelect();
 }
 
 window.onload = async () => {

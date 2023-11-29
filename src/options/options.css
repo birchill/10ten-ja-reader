@@ -227,15 +227,6 @@ a:visited {
 }
 
 /*
- * Custom radio variant: centered
- */
-
-.icon-radio.-centered {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/*
  * Custom radio variant: label along the bottom
  */
 
@@ -438,64 +429,6 @@ fieldset.bordered {
 
   #old-highlight-setting-section {
     display: none;
-  }
-}
-
-/*
- * Popup-style selection
- */
-
-.popupstyle-select {
-  grid-template-columns: 1fr 1fr;
-  margin-bottom: 1em;
-}
-
-@media (max-width: 500px) {
-  .popupstyle-select {
-    grid-template-columns: 1fr;
-  }
-}
-
-.popupstyle-select > label {
-  min-width: 200px;
-  padding: 0.5em;
-  transition:
-    background-color 0.3s,
-    opacity 0.3s;
-}
-
-.popupstyle-select > input[type='radio']:checked + label {
-  border-color: #aaa;
-  background: #ddd;
-}
-
-.popupstyle-select > label .overlay {
-  display: grid;
-}
-
-.popupstyle-select > label .overlay > * {
-  grid-column: 1 / 2;
-  grid-row: 1 / 1;
-}
-
-.popupstyle-select > label .overlay > :nth-child(2) {
-  -webkit-mask: linear-gradient(-45deg, black 50%, transparent 50%);
-  mask: linear-gradient(-45deg, black 50%, transparent 50%);
-}
-
-.popup-preview {
-  position: static;
-  display: inline-block;
-  min-width: 180px;
-  text-align: left;
-  width: revert !important;
-  padding: 8px 0;
-}
-
-@media (prefers-color-scheme: dark) {
-  .popupstyle-select > input[type='radio']:checked + label {
-    border-color: rgba(249, 249, 250, 0.2);
-    background: #3b3a41;
   }
 }
 
