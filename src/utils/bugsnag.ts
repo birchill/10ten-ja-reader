@@ -158,7 +158,7 @@ export function startBugsnag() {
       for (const error of event.exceptions) {
         for (const frame of error.stacktrace) {
           frame.file = frame.file.replace(
-            /^(moz-extension|chrome-extension|extension|safari-extension):\/\/[0-9a-z-]+/,
+            /^(moz-extension|chrome-extension|extension|safari-extension|safari-web-extension):\/\/[0-9a-z-]+/,
             basePath
           );
         }
