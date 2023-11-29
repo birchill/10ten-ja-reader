@@ -8,6 +8,20 @@
   @import '../../css/themes.css';
 }
 
+@layer utilities {
+  .stacked {
+    display: grid;
+  }
+  .stacked > * {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+
+  .cover-tl {
+    -webkit-mask: linear-gradient(-45deg, black 50%, transparent 50%);
+    mask: linear-gradient(-45deg, black 50%, transparent 50%);
+  }
+}
+
 /*
  * Container styles
  */
