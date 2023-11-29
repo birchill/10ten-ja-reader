@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+- Added localizations for newly-introduced field tags.
+
 ## [1.16.2] - 2023-11-28
 
 - (Chrome, Edge) Fixed online handling in currency fetching when running as a

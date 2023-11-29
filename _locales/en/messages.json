@@ -558,6 +558,10 @@
     "message": "botany",
     "description": "Label applied to senses with the 'bot' field"
   },
+  "field_label_boxing": {
+    "message": "boxing",
+    "description": "Label applied to senses with the 'boxing' field"
+  },
   "field_label_Buddh": {
     "message": "Buddhism",
     "description": "Label applied to senses with the 'Buddh' field"
@@ -574,9 +578,17 @@
     "message": "chemistry",
     "description": "Label applied to senses with the 'chem' field"
   },
+  "field_label_chmyth": {
+    "message": "Chinese myth.",
+    "description": "Label applied to senses with the 'chmyth' field"
+  },
   "field_label_Christn": {
     "message": "Christianity",
     "description": "Label applied to senses with the 'Christn' field"
+  },
+  "field_label_civeng": {
+    "message": "civil eng.",
+    "description": "Label applied to senses with the 'civeng' field"
   },
   "field_label_cloth": {
     "message": "clothing",
@@ -621,6 +633,10 @@
   "field_label_ent": {
     "message": "entomology",
     "description": "Label applied to senses with the 'ent' field"
+  },
+  "field_label_figskt": {
+    "message": "figure skating",
+    "description": "Label applied to senses with the 'figskt' field"
   },
   "field_label_film": {
     "message": "film",
@@ -682,6 +698,14 @@
     "message": "horse racing",
     "description": "Label applied to senses with the 'horse' field"
   },
+  "field_label_internet": {
+    "message": "Internet",
+    "description": "Label applied to senses with the 'internet' field"
+  },
+  "field_label_jpmyth": {
+    "message": "Japanese myth.",
+    "description": "Label applied to senses with the 'jpmyth' field"
+  },
   "field_label_kabuki": {
     "message": "kabuki",
     "description": "Label applied to senses with the 'kabuki' field"
@@ -730,9 +754,17 @@
     "message": "military",
     "description": "Label applied to senses with the 'mil' field"
   },
+  "field_label_min": {
+    "message": "mineralogy",
+    "description": "Label applied to senses with the 'min' field"
+  },
   "field_label_mining": {
     "message": "mining",
     "description": "Label applied to senses with the 'mining' field"
+  },
+  "field_label_motor": {
+    "message": "motorsport",
+    "description": "Label applied to senses with the 'motor' field"
   },
   "field_label_music": {
     "message": "music",
@@ -782,6 +814,10 @@
     "message": "printing",
     "description": "Label applied to senses with the 'print' field"
   },
+  "field_label_prowres": {
+    "message": "wrestling",
+    "description": "Label applied to senses with the 'prowres' field"
+  },
   "field_label_psy": {
     "message": "psychiatry",
     "description": "Label applied to senses with the 'psy' field"
@@ -830,6 +866,10 @@
     "message": "sumo",
     "description": "Label applied to senses with the 'sumo' field"
   },
+  "field_label_surg": {
+    "message": "surgery",
+    "description": "Label applied to senses with the 'surg' field"
+  },
   "field_label_telec": {
     "message": "telecommunications",
     "description": "Label applied to senses with the 'telec' field"
@@ -841,6 +881,10 @@
   "field_label_tv": {
     "message": "TV",
     "description": "Label applied to senses with the 'tv' field"
+  },
+  "field_label_vet": {
+    "message": "veterinary",
+    "description": "Label applied to senses with the 'vet' field"
   },
   "field_label_vidg": {
     "message": "video games",
