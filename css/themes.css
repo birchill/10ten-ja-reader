@@ -30,6 +30,9 @@
   --conj-color: #ad565c;
 
   --tag-border: rgba(0, 0, 0, 0.3);
+  --bunpro-vocab: #104f8c;
+  --bunpro-grammar: #9f3833;
+  --bunpro-src: #54534b;
 
   --title-fg: var(--text-color);
   --title-bg: #ede7c9;
@@ -96,6 +99,9 @@
   --conj-color: #fff394;
 
   --tag-border: rgba(255, 255, 255, 0.4);
+  --bunpro-vocab: #b4d1ed;
+  --bunpro-grammar: #ffc6c4;
+  --bunpro-src: #cde1ef;
 
   --title-bg: var(--cell-highlight-bg);
   --title-fg: var(--text-color);
@@ -141,6 +147,9 @@
   --conj-color: #c1a4a0;
 
   --tag-border: rgba(255, 255, 255, 0.4);
+  --bunpro-vocab: #64a6e5;
+  --bunpro-grammar: #da918e;
+  --bunpro-src: #c5c0af;
 
   --title-bg: #3e3a39;
   --title-fg: #ede8e6;
@@ -202,6 +211,9 @@
   --conj-color: #817470;
 
   --tag-border: rgba(0, 0, 0, 0.3);
+  --bunpro-vocab: #185692;
+  --bunpro-grammar: #b42822;
+  --bunpro-src: #475865;
 
   --title-fg: var(--text-color);
   --title-bg: #bcdffe;
@@ -247,6 +259,9 @@
   --conj-color: #fc7600;
 
   --tag-border: rgba(0, 0, 0, 0.3);
+  --bunpro-vocab: #0e3f6e;
+  --bunpro-grammar: #ba332d;
+  --bunpro-src: #525047;
 
   --title-bg: #fffde5;
   --title-fg: var(--text-color);

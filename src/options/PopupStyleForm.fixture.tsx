@@ -17,6 +17,7 @@ export default function () {
 
   const [showPriority, setShowPriority] = useState<boolean>(true);
   const [showWaniKaniLevel, setShowWaniKaniLevel] = useState<boolean>(false);
+  const [showBunproDecks, setShowBunproDecks] = useState<boolean>(false);
   const [showRomaji, setShowRomaji] = useState<boolean>(false);
   const [showDefinitions, setShowDefinitions] = useState<boolean>(true);
 
@@ -42,12 +43,14 @@ export default function () {
       onChangeAutoExpand={onChangeAutoExpand}
       onChangeFontSize={setFontSize}
       onChangePosDisplay={setPosDisplay}
+      onChangeShowBunproDecks={setShowBunproDecks}
       onChangeShowDefinitions={setShowDefinitions}
       onChangeShowPriority={setShowPriority}
       onChangeShowRomaji={setShowRomaji}
       onChangeShowWaniKaniLevel={setShowWaniKaniLevel}
       onChangeTheme={setTheme}
       posDisplay={posDisplay}
+      showBunproDecks={showBunproDecks}
       showDefinitions={showDefinitions}
       showPriority={showPriority}
       showRomaji={showRomaji}

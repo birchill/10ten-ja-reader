@@ -202,6 +202,12 @@ export function renderWordEntries({
         if (options.waniKaniVocabDisplay !== 'hide' && kanji.wk) {
           appendWaniKaniLevelTag(kanji.wk, headwordSpan);
         }
+        if (options.bunproDisplay && kanji.bv) {
+          appendBunproTag(kanji.bv, 'vocab', headwordSpan);
+        }
+        if (options.bunproDisplay && kanji.bg) {
+          appendBunproTag(kanji.bg, 'grammar', headwordSpan);
+        }
       }
       headingDiv.append(kanjiSpan);
     }
@@ -263,6 +269,12 @@ export function renderWordEntries({
         appendHeadwordInfo(kana.i, headwordSpan);
         if (options.showPriority) {
           appendPriorityMark(kana.p, headwordSpan);
+        }
+        if (options.bunproDisplay && kana.bv) {
+          appendBunproTag(kana.bv, 'vocab', headwordSpan);
+        }
+        if (options.bunproDisplay && kana.bg) {
+          appendBunproTag(kana.bg, 'grammar', headwordSpan);
         }
       }
       headingDiv.append(kanaSpan);
@@ -417,6 +429,26 @@ function appendPriorityMark(
 
 function appendWaniKaniLevelTag(level: number, parent: ParentNode) {
   parent.append(html('span', { class: 'wk-level' }, String(level)));
+}
+
+function appendBunproTag(
+  data: { l: number; src?: string },
+  type: 'vocab' | 'grammar',
+  parent: ParentNode
+) {
+  const label = browser.i18n.getMessage(
+    type === 'vocab' ? 'popup_bp_vocab_tag' : 'popup_bp_grammar_tag',
+    [String(data.l)]
+  );
+  const outerSpan = html(
+    'span',
+    { class: `bp-tag -${type}` },
+    html('span', {}, label)
+  );
+  if (data.src) {
+    outerSpan.append(html('span', { class: 'bp-src' }, data.src));
+  }
+  parent.append(outerSpan);
 }
 
 function renderKana(

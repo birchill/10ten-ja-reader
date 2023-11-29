@@ -55,6 +55,7 @@ type KanjiReferenceFlagsV2 = { [key in ReferenceAbbreviation]?: boolean };
 interface Settings {
   accentDisplay?: AccentDisplay;
   autoExpand?: Array<AutoExpandableEntry>;
+  bunproDisplay?: boolean;
   contextMenuEnable?: boolean;
   dictLang?: DbLanguageId;
   enableTapLookup?: boolean;
@@ -394,6 +395,26 @@ export class Config {
     }
     this.settings.localSettings = localSettings;
     void browser.storage.local.set({ settings: localSettings });
+  }
+
+  // bunproDisplay: Defaults to false
+
+  get bunproDisplay(): boolean {
+    return !!this.settings.bunproDisplay;
+  }
+
+  set bunproDisplay(value: boolean) {
+    if (this.settings.bunproDisplay === (value || undefined)) {
+      return;
+    }
+
+    if (!value) {
+      delete this.settings.bunproDisplay;
+      void browser.storage.sync.remove('bunproDisplay');
+    } else {
+      this.settings.bunproDisplay = value;
+      void browser.storage.sync.set({ bunproDisplay: value });
+    }
   }
 
   // contextMenuEnable: Defaults to true
@@ -1061,6 +1082,7 @@ export class Config {
     return {
       accentDisplay: this.accentDisplay,
       autoExpand: this.autoExpand,
+      bunproDisplay: this.bunproDisplay,
       dictLang: this.dictLang,
       enableTapLookup: this.enableTapLookup,
       fx:
