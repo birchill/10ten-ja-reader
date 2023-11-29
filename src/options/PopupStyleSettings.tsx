@@ -1,21 +1,33 @@
 import { useCallback } from 'preact/hooks';
 
 import type { Config } from '../common/config';
-
-import { PopupStyleForm } from './PopupStyleForm';
-import { useConfigValue } from './use-config-value';
 import {
   AccentDisplay,
   AutoExpandableEntry,
   FontSize,
   PartOfSpeechDisplay,
 } from '../common/content-config-params';
+import { useLocale } from '../common/i18n';
+
+import { PopupStyleForm } from './PopupStyleForm';
+import { SectionHeading } from './SectionHeading';
+import { useConfigValue } from './use-config-value';
 
 type Props = {
   config: Config;
 };
 
 export function PopupStyleSettings(props: Props) {
+  const { t } = useLocale();
+
+  const theme = useConfigValue(props.config, 'popupStyle');
+  const onChangeTheme = useCallback(
+    (value: string) => {
+      props.config.popupStyle = value;
+    },
+    [props.config]
+  );
+
   const showPriority = useConfigValue(props.config, 'showPriority');
   const onChangeShowPriority = useCallback(
     (value: boolean) => {
@@ -84,25 +96,30 @@ export function PopupStyleSettings(props: Props) {
   );
 
   return (
-    <div class="pb-4">
-      <PopupStyleForm
-        accentDisplay={accentDisplay}
-        autoExpand={autoExpand}
-        fontSize={fontSize}
-        onChangeAccentDisplay={onChangeAccentDisplay}
-        onChangeAutoExpand={onChangeAutoExpand}
-        onChangeFontSize={onChangeFontSize}
-        onChangePosDisplay={onChangePosDisplay}
-        onChangeShowDefinitions={onChangeShowDefinitions}
-        onChangeShowPriority={onChangeShowPriority}
-        onChangeShowRomaji={onChangeShowRomaji}
-        onChangeShowWaniKaniLevel={onChangeShowWaniKaniLevel}
-        posDisplay={posDisplay}
-        showDefinitions={showDefinitions}
-        showPriority={showPriority}
-        showRomaji={showRomaji}
-        showWaniKaniLevel={waniKaniVocabDisplay === 'show-matches'}
-      />
-    </div>
+    <>
+      <SectionHeading>{t('options_popup_style_heading')}</SectionHeading>
+      <div class="py-4">
+        <PopupStyleForm
+          accentDisplay={accentDisplay}
+          autoExpand={autoExpand}
+          fontSize={fontSize}
+          onChangeAccentDisplay={onChangeAccentDisplay}
+          onChangeAutoExpand={onChangeAutoExpand}
+          onChangeFontSize={onChangeFontSize}
+          onChangePosDisplay={onChangePosDisplay}
+          onChangeShowDefinitions={onChangeShowDefinitions}
+          onChangeShowPriority={onChangeShowPriority}
+          onChangeShowRomaji={onChangeShowRomaji}
+          onChangeShowWaniKaniLevel={onChangeShowWaniKaniLevel}
+          onChangeTheme={onChangeTheme}
+          posDisplay={posDisplay}
+          showDefinitions={showDefinitions}
+          showPriority={showPriority}
+          showRomaji={showRomaji}
+          showWaniKaniLevel={waniKaniVocabDisplay === 'show-matches'}
+          theme={theme}
+        />
+      </div>
+    </>
   );
 }

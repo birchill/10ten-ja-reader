@@ -5,7 +5,9 @@ import {
   PartOfSpeechDisplay,
 } from '../common/content-config-params';
 import { useLocale } from '../common/i18n';
+
 import { CheckboxRow } from './CheckboxRow';
+import { PopupThemeRadio } from './PopupThemeRadio';
 
 type Props = {
   accentDisplay: AccentDisplay;
@@ -19,11 +21,13 @@ type Props = {
   onChangeShowPriority: (value: boolean) => void;
   onChangeShowRomaji: (value: boolean) => void;
   onChangeShowWaniKaniLevel: (value: boolean) => void;
+  onChangeTheme: (theme: string) => void;
   posDisplay: PartOfSpeechDisplay;
   showDefinitions: boolean;
   showPriority: boolean;
   showRomaji: boolean;
   showWaniKaniLevel: boolean;
+  theme: string;
 };
 
 export function PopupStyleForm(props: Props) {
@@ -31,6 +35,9 @@ export function PopupStyleForm(props: Props) {
 
   return (
     <>
+      <div class="mx-auto w-max pb-6">
+        <PopupThemeRadio {...props} />
+      </div>
       <div class="flex flex-col gap-3 pb-6">
         <CheckboxRow>
           <input

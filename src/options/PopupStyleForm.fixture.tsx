@@ -10,8 +10,11 @@ import {
 import { PopupStyleForm } from './PopupStyleForm';
 
 import './options.css';
+import '../../css/popup.css';
 
 export default function () {
+  const [theme, setTheme] = useState<string>('default');
+
   const [showPriority, setShowPriority] = useState<boolean>(true);
   const [showWaniKaniLevel, setShowWaniKaniLevel] = useState<boolean>(false);
   const [showRomaji, setShowRomaji] = useState<boolean>(false);
@@ -43,11 +46,13 @@ export default function () {
       onChangeShowPriority={setShowPriority}
       onChangeShowRomaji={setShowRomaji}
       onChangeShowWaniKaniLevel={setShowWaniKaniLevel}
+      onChangeTheme={setTheme}
       posDisplay={posDisplay}
       showDefinitions={showDefinitions}
       showPriority={showPriority}
       showRomaji={showRomaji}
       showWaniKaniLevel={showWaniKaniLevel}
+      theme={theme}
     />
   );
 }
