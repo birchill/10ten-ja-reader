@@ -1,7 +1,7 @@
 import type { ComponentProps, JSX } from 'preact';
-
 import { forwardRef } from 'preact/compat';
 import { useId } from 'preact/hooks';
+
 import { classes } from '../utils/classes';
 
 type InputProps = Omit<
