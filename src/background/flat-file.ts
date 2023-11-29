@@ -288,7 +288,7 @@ function toDictionaryWordResult({
     id: offset,
     k: mergeMeta(entry.k, entry.km, (key, meta) => ({
       ent: key,
-      ...meta,
+      ...(meta ? stripFields(meta, ['bv', 'bg']) : undefined),
       match:
         (kanjiMatch && kanaToHiragana(key) === matchingText) || !kanjiMatch,
       matchRange:
@@ -296,7 +296,7 @@ function toDictionaryWordResult({
     })),
     r: mergeMeta(entry.r, entry.rm, (key, meta) => ({
       ent: key,
-      ...meta,
+      ...(meta ? stripFields(meta, ['bv', 'bg']) : undefined),
       match: (kanaMatch && kanaToHiragana(key) === matchingText) || !kanaMatch,
       matchRange:
         kanaToHiragana(key) === matchingText ? [0, key.length] : undefined,
