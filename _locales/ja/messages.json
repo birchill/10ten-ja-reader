@@ -558,6 +558,10 @@
     "message": "植物学",
     "description": "Label applied to senses with the 'bot' field"
   },
+  "field_label_boxing": {
+    "message": "ボクシング",
+    "description": "Label applied to senses with the 'boxing' field"
+  },
   "field_label_Buddh": {
     "message": "仏教",
     "description": "Label applied to senses with the 'Buddh' field"
@@ -574,9 +578,17 @@
     "message": "化学",
     "description": "Label applied to senses with the 'chem' field"
   },
+  "field_label_chmyth": {
+    "message": "中国神話",
+    "description": "Label applied to senses with the 'chmyth' field"
+  },
   "field_label_Christn": {
     "message": "キリスト教",
     "description": "Label applied to senses with the 'Christn' field"
+  },
+  "field_label_civeng": {
+    "message": "土木",
+    "description": "Label applied to senses with the 'civeng' field"
   },
   "field_label_cloth": {
     "message": "服装",
@@ -621,6 +633,10 @@
   "field_label_ent": {
     "message": "昆虫学",
     "description": "Label applied to senses with the 'ent' field"
+  },
+  "field_label_figskt": {
+    "message": "フィギュア",
+    "description": "Label applied to senses with the 'figskt' field"
   },
   "field_label_film": {
     "message": "映画",
@@ -682,6 +698,14 @@
     "message": "競馬",
     "description": "Label applied to senses with the 'horse' field"
   },
+  "field_label_internet": {
+    "message": "インターネット",
+    "description": "Label applied to senses with the 'internet' field"
+  },
+  "field_label_jpmyth": {
+    "message": "日本神話",
+    "description": "Label applied to senses with the 'jpmyth' field"
+  },
   "field_label_kabuki": {
     "message": "歌舞伎",
     "description": "Label applied to senses with the 'kabuki' field"
@@ -730,9 +754,17 @@
     "message": "軍事",
     "description": "Label applied to senses with the 'mil' field"
   },
+  "field_label_min": {
+    "message": "鉱物学",
+    "description": "Label applied to senses with the 'min' field"
+  },
   "field_label_mining": {
     "message": "鉱業",
     "description": "Label applied to senses with the 'mining' field"
+  },
+  "field_label_motor": {
+    "message": "モータースポーツ",
+    "description": "Label applied to senses with the 'motor' field"
   },
   "field_label_music": {
     "message": "音楽",
@@ -782,6 +814,10 @@
     "message": "印刷",
     "description": "Label applied to senses with the 'print' field"
   },
+  "field_label_prowres": {
+    "message": "プロレス",
+    "description": "Label applied to senses with the 'prowres' field"
+  },
   "field_label_psy": {
     "message": "精神科",
     "description": "Label applied to senses with the 'psy' field"
@@ -830,6 +866,10 @@
     "message": "相撲",
     "description": "Label applied to senses with the 'sumo' field"
   },
+  "field_label_surg": {
+    "message": "外科",
+    "description": "Label applied to senses with the 'surg' field"
+  },
   "field_label_telec": {
     "message": "通信",
     "description": "Label applied to senses with the 'telec' field"
@@ -841,6 +881,10 @@
   "field_label_tv": {
     "message": "テレビ",
     "description": "Label applied to senses with the 'tv' field"
+  },
+  "field_label_vet": {
+    "message": "獣医学",
+    "description": "Label applied to senses with the 'vet' field"
   },
   "field_label_vidg": {
     "message": "ゲーム",
