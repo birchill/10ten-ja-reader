@@ -1881,6 +1881,10 @@
     "message": "恢复切换快捷键",
     "description": "Label for button to restore the toggle shortcut"
   },
+  "options_show_bunpro_decks": {
+    "message": "显示 Bunpro 套牌信息",
+    "description": "Label for enabling display of Bunpro vocab and grammar deck information alongside headwords"
+  },
   "options_show_context_menu_item": {
     "message": "右键菜单中添加“启用 10ten reader”",
     "description": "Option to enable context menu item with label `menu_enable_extension`"
@@ -1992,6 +1996,26 @@
       "version": {
         "content": "$1",
         "example": "2.0.0"
+      }
+    }
+  },
+  "popup_bp_grammar_tag": {
+    "message": "BP N​$level$​ 语法",
+    "description": "The tag shown alongside a headword that is part of a Bunpro vocab deck indicating what level deck it is from",
+    "placeholders": {
+      "level": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "popup_bp_vocab_tag": {
+    "message": "BP N​$level$​ 单词",
+    "description": "The tag shown alongside a headword that is part of a Bunpro vocab deck indicating what level deck it is from",
+    "placeholders": {
+      "level": {
+        "content": "$1",
+        "example": "5"
       }
     }
   },

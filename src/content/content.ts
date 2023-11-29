@@ -2145,6 +2145,7 @@ export class ContentHandler {
 
     const popupOptions: PopupOptions = {
       accentDisplay: this.config.accentDisplay,
+      bunproDisplay: this.config.bunproDisplay,
       closeShortcuts: this.config.keys.closePopup,
       copyNextKey: this.config.keys.startCopy[0] || '',
       copyState: this.copyState,

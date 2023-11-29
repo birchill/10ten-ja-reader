@@ -24,6 +24,9 @@ export default function () {
     defaultValue: 'expl',
     options: ['expl', 'code', 'none'],
   });
+  const [showBunproDecks] = useValue<boolean>('showBunproDecks', {
+    defaultValue: false,
+  });
   const [showDefinitions] = useValue<boolean>('showDefinitions', {
     defaultValue: true,
   });
@@ -43,12 +46,13 @@ export default function () {
   });
 
   return (
-    <div class="w-max">
+    <div class="w-fit">
       <PopupThemeRadio
         accentDisplay={accentDisplay}
         fontSize={fontSize}
         onChangeTheme={setTheme}
         posDisplay={posDisplay}
+        showBunproDecks={showBunproDecks}
         showDefinitions={showDefinitions}
         showPriority={showPriority}
         showRomaji={showRomaji}

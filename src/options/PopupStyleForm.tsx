@@ -7,6 +7,7 @@ import {
 import { useLocale } from '../common/i18n';
 
 import { CheckboxRow } from './CheckboxRow';
+import { NewBadge } from './NewBadge';
 import { PopupThemeRadio } from './PopupThemeRadio';
 
 type Props = {
@@ -17,12 +18,14 @@ type Props = {
   onChangeAutoExpand: (entry: AutoExpandableEntry, checked: boolean) => void;
   onChangeFontSize: (value: FontSize) => void;
   onChangePosDisplay: (value: PartOfSpeechDisplay) => void;
+  onChangeShowBunproDecks: (value: boolean) => void;
   onChangeShowDefinitions: (value: boolean) => void;
   onChangeShowPriority: (value: boolean) => void;
   onChangeShowRomaji: (value: boolean) => void;
   onChangeShowWaniKaniLevel: (value: boolean) => void;
   onChangeTheme: (theme: string) => void;
   posDisplay: PartOfSpeechDisplay;
+  showBunproDecks: boolean;
   showDefinitions: boolean;
   showPriority: boolean;
   showRomaji: boolean;
@@ -35,7 +38,7 @@ export function PopupStyleForm(props: Props) {
 
   return (
     <>
-      <div class="mx-auto w-max pb-6">
+      <div class="mx-auto w-fit pb-6">
         <PopupThemeRadio {...props} />
       </div>
       <div class="flex flex-col gap-3 pb-6">
@@ -63,6 +66,21 @@ export function PopupStyleForm(props: Props) {
           />
           <label for="showWaniKaniLevel">
             {t('options_show_wanikani_levels')}
+          </label>
+        </CheckboxRow>
+        <CheckboxRow>
+          <input
+            id="showBunproDecks"
+            name="showBunproDecks"
+            type="checkbox"
+            checked={props.showBunproDecks}
+            onChange={(e) =>
+              props.onChangeShowBunproDecks(e.currentTarget.checked)
+            }
+          />
+          <label for="showBunproDecks">
+            {t('options_show_bunpro_decks')}
+            <NewBadge expiry={new Date('2024-02-01')} />
           </label>
         </CheckboxRow>
         <CheckboxRow>

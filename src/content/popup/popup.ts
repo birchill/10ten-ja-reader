@@ -44,6 +44,7 @@ export type StartCopyCallback = (
 
 export interface PopupOptions {
   accentDisplay: AccentDisplay;
+  bunproDisplay: boolean;
   closeShortcuts?: ReadonlyArray<string>;
   container?: HTMLElement;
   copyNextKey: string;

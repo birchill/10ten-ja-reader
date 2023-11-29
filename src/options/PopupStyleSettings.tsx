@@ -47,6 +47,14 @@ export function PopupStyleSettings(props: Props) {
     [props.config]
   );
 
+  const showBunproDecks = useConfigValue(props.config, 'bunproDisplay');
+  const onChangeShowBunproDecks = useCallback(
+    (value: boolean) => {
+      props.config.bunproDisplay = value;
+    },
+    [props.config]
+  );
+
   const showRomaji = useConfigValue(props.config, 'showRomaji');
   const onChangeShowRomaji = useCallback(
     (value: boolean) => {
@@ -107,12 +115,14 @@ export function PopupStyleSettings(props: Props) {
           onChangeAutoExpand={onChangeAutoExpand}
           onChangeFontSize={onChangeFontSize}
           onChangePosDisplay={onChangePosDisplay}
+          onChangeShowBunproDecks={onChangeShowBunproDecks}
           onChangeShowDefinitions={onChangeShowDefinitions}
           onChangeShowPriority={onChangeShowPriority}
           onChangeShowRomaji={onChangeShowRomaji}
           onChangeShowWaniKaniLevel={onChangeShowWaniKaniLevel}
           onChangeTheme={onChangeTheme}
           posDisplay={posDisplay}
+          showBunproDecks={showBunproDecks}
           showDefinitions={showDefinitions}
           showPriority={showPriority}
           showRomaji={showRomaji}

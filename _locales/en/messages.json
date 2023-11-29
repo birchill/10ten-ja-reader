@@ -1881,6 +1881,10 @@
     "message": "Restore toggle shortcut",
     "description": "Label for button to restore the toggle shortcut"
   },
+  "options_show_bunpro_decks": {
+    "message": "Show Bunpro deck information",
+    "description": "Label for enabling display of Bunpro vocab and grammar deck information alongside headwords"
+  },
   "options_show_context_menu_item": {
     "message": "Show “Enable 10ten reader” in context menu",
     "description": "Option to enable context menu item with label `menu_enable_extension`"
@@ -1992,6 +1996,26 @@
       "version": {
         "content": "$1",
         "example": "2.0.0"
+      }
+    }
+  },
+  "popup_bp_grammar_tag": {
+    "message": "BP N​$level$​ Grammar",
+    "description": "The tag shown alongside a headword that is part of a Bunpro vocab deck indicating what level deck it is from",
+    "placeholders": {
+      "level": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "popup_bp_vocab_tag": {
+    "message": "BP N​$level$​ Vocab",
+    "description": "The tag shown alongside a headword that is part of a Bunpro vocab deck indicating what level deck it is from",
+    "placeholders": {
+      "level": {
+        "content": "$1",
+        "example": "5"
       }
     }
   },

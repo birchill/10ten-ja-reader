@@ -119,6 +119,9 @@ export class ContentConfig implements ContentConfigParams {
   get autoExpand() {
     return this.params.autoExpand;
   }
+  get bunproDisplay() {
+    return this.params.bunproDisplay;
+  }
   get dictLang() {
     return this.params.dictLang;
   }

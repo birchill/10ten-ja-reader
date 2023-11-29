@@ -54,6 +54,9 @@ export interface ContentConfigParams {
   // being collapsed to show only the top entries.
   autoExpand: Array<AutoExpandableEntry>;
 
+  // Whether or not we should show Bunpro deck information alongside headwords.
+  bunproDisplay: boolean;
+
   // The preferred language for dictionary content.
   dictLang: string;
 

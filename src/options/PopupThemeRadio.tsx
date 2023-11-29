@@ -16,6 +16,7 @@ type Props = {
   fontSize: FontSize;
   onChangeTheme: (theme: string) => void;
   posDisplay: PartOfSpeechDisplay;
+  showBunproDecks: boolean;
   showDefinitions: boolean;
   showPriority: boolean;
   showRomaji: boolean;
@@ -90,6 +91,7 @@ type PopupPreviewProps = {
   accentDisplay: AccentDisplay;
   fontSize: FontSize;
   posDisplay: PartOfSpeechDisplay;
+  showBunproDecks: boolean;
   showDefinitions: boolean;
   showPriority: boolean;
   showWaniKaniLevel: boolean;
@@ -98,6 +100,7 @@ type PopupPreviewProps = {
 };
 
 function PopupPreview(props: PopupPreviewProps) {
+  const { t } = useLocale();
   const themeClass = useThemeClass(props.theme);
 
   return (
@@ -114,6 +117,11 @@ function PopupPreview(props: PopupPreviewProps) {
             理解
             {props.showPriority && <Star />}
             {props.showWaniKaniLevel && <span class="wk-level">21</span>}
+            {props.showBunproDecks && (
+              <span class="bp-tag -vocab">
+                <span>{t('popup_bp_vocab_tag', ['3'])}</span>
+              </span>
+            )}
           </span>
           <span class="w-kana">
             {renderKana(props.accentDisplay)}
