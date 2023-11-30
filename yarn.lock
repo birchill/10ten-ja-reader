@@ -9402,9 +9402,9 @@ undici-types@~5.26.4:
   integrity sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==
 
 undici@^5.25.4:
-  version "5.27.2"
-  resolved "https://registry.yarnpkg.com/undici/-/undici-5.27.2.tgz#a270c563aea5b46cc0df2550523638c95c5d4411"
-  integrity sha512-iS857PdOEy/y3wlM3yRp+6SNQQ6xU0mmZcwRSriqk+et/cwWAtwmIGf6WkoDN2EK/AMdCO/dfXzIwi+rFMrjjQ==
+  version "5.28.1"
+  resolved "https://registry.yarnpkg.com/undici/-/undici-5.28.1.tgz#1052d37bd1a2e8cf3e188d7caebff833fdc06fa7"
+  integrity sha512-xcIIvj1LOQH9zAL54iWFkuDEaIVEjLrru7qRpa3GrEEHk6OBhb/LycuUY2m7VCcTuDeLziXCxobQVyKExyGeIA==
   dependencies:
     "@fastify/busboy" "^2.0.0"
 
@@ -9674,9 +9674,9 @@ vitest-fetch-mock@^0.2.2:
     cross-fetch "^3.0.6"
 
 vitest-github-actions-reporter@^0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/vitest-github-actions-reporter/-/vitest-github-actions-reporter-0.11.0.tgz#7b6c4456d54c2805b24a157b45608cac798baf66"
-  integrity sha512-zvWOGyGmyZUIJ/veyRkfiMaiktZYfiBsRVdkOP0CiZDhQPZYhoFO/nFwBPn3LLIlBROFfLT+QjRtivocwuyPww==
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/vitest-github-actions-reporter/-/vitest-github-actions-reporter-0.11.1.tgz#42ffaaf9d3b182cfb7552532f9d1e290190914e0"
+  integrity sha512-ZHHB0wBgOPhMYCB17WKVlJZa+5SdudBZFoVoebwfq3ioIUTeLQGYHwh85vpdJAxRghLP8d0qI/6eCTueGyDVXA==
   dependencies:
     "@actions/core" "^1.10.0"
 
