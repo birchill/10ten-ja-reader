@@ -44,12 +44,6 @@ function completeForm() {
   // Auto-expire new badges
   expireNewBadges();
 
-  document
-    .getElementById('highlightText')!
-    .addEventListener('click', (event) => {
-      config.noTextHighlight = !(event.target as HTMLInputElement).checked;
-    });
-
   const highlightStyleOptions = Array.from(
     document.querySelectorAll('input[type=radio][name=highlightStyle]')
   );
@@ -70,12 +64,6 @@ function completeForm() {
     const container = document.getElementById('container')!;
     render(h(OptionsPage, { config }), container);
   }
-
-  document
-    .getElementById('contextMenuEnable')!
-    .addEventListener('click', (event) => {
-      config.contextMenuEnable = (event.target as HTMLInputElement).checked;
-    });
 
   const toolbarIconOptions = Array.from(
     document.querySelectorAll('input[type=radio][name=toolbarIcon]')
@@ -111,8 +99,6 @@ function fillVals() {
   optform.highlightStyle.value = config.noTextHighlight
     ? 'none'
     : config.highlightStyle;
-  optform.highlightText.checked = !config.noTextHighlight;
-  optform.contextMenuEnable.checked = config.contextMenuEnable;
   optform.toolbarIcon.value = config.toolbarIcon;
 }
 

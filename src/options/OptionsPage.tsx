@@ -5,6 +5,7 @@ import { possiblyHasPhysicalKeyboard } from '../utils/device';
 import { CurrencySettings } from './CurrencySettings';
 import { DictionaryDataSettings } from './DictionaryDataSettings';
 import { DictionaryLanguageSettings } from './DictionaryLanguageSettings';
+import { GeneralSettings } from './GeneralSettings';
 import { KanjiReferenceSettings } from './KanjiReferenceSettings';
 import { KeyboardSettings } from './KeyboardSettings';
 import { PopupInteractivitySettings } from './PopupInteractivitySettings';
@@ -20,6 +21,7 @@ export function OptionsPage(props: Props) {
 
   return (
     <I18nProvider>
+      <GeneralSettings config={props.config} />
       <PopupStyleSettings config={props.config} />
       <PopupInteractivitySettings config={props.config} />
       <CurrencySettings config={props.config} />
