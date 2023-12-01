@@ -426,10 +426,6 @@ fieldset.bordered {
   #highlight-style-section {
     display: revert;
   }
-
-  #old-highlight-setting-section {
-    display: none;
-  }
 }
 
 /*
