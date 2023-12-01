@@ -44,7 +44,7 @@ export function useDb(): {
     let browserPort = browser.runtime.connect(undefined, { name: 'options' });
     browserPortRef.current = browserPort;
 
-    browserPort.onMessage.addListener((event: unknown) => {
+    const onMessage = (event: unknown) => {
       if (isDbStateUpdatedMessage(event)) {
         // For Runtime.Port.postMessage Chrome appears to serialize objects
         // using JSON serialization (not structured cloned). As a result, any
@@ -68,10 +68,10 @@ export function useDb(): {
 
         setDbState(event.state);
       }
-    });
+    };
 
     // It's possible this might be disconnected on iOS which doesn't seem to
-    // keep inactive ports alive.
+    // keep inactive ports alive. I've observed this happening on Chrome too.
     //
     // Note that according to the docs, this should not be called when _we_ call
     // disconnect():
@@ -80,7 +80,7 @@ export function useDb(): {
     //
     // Nevertheless, we check that `browserPort` is not undefined before trying
     // to re-connect just in case some browsers behave differently here.
-    browserPort.onDisconnect.addListener((port: Runtime.Port) => {
+    const onDisconnect = (port: Runtime.Port) => {
       // Firefox annotates `port` with an `error` but Chrome does not.
       const error =
         isObject((port as any).error) &&
@@ -107,14 +107,24 @@ export function useDb(): {
           }
           browserPort = browser.runtime.connect(undefined, { name: 'options' });
           browserPortRef.current = browserPort;
+          Bugsnag.leaveBreadcrumb(
+            'Options page reconnected to background page'
+          );
+
+          browserPort.onMessage.addListener(onMessage);
+          browserPort.onDisconnect.addListener(onDisconnect);
         } catch (e) {
           void Bugsnag.notify(e);
         }
       }, 700);
-    });
+    };
+
+    browserPort.onMessage.addListener(onMessage);
+    browserPort.onDisconnect.addListener(onDisconnect);
 
     window.addEventListener('unload', () => {
       browserPort?.disconnect();
+      browserPortRef.current = undefined;
     });
 
     return () => {
