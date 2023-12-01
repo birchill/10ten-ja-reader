@@ -11,28 +11,62 @@ export function getRangeForSingleCodepoint({
   offset: number;
   direction?: 'forwards' | 'backwards';
 }): Range {
-  const codepoints = [...source.data];
-  let codepointStart = 0;
-  let lastCodepointLength = 0;
-  while (codepointStart < offset && codepoints.length) {
-    lastCodepointLength = codepoints.shift()!.length;
-    codepointStart += lastCodepointLength;
+  // Adjust the offset if it's in the middle of a surrogate pair.
+  if (
+    direction === 'forwards' &&
+    offset < source.data.length &&
+    isLowSurrogate(source.data.charCodeAt(offset))
+  ) {
+    if (offset < source.data.length - 1) {
+      offset++;
+    } else {
+      offset--;
+    }
+  } else if (
+    direction === 'backwards' &&
+    offset > 0 &&
+    isHighSurrogate(source.data.charCodeAt(offset - 1))
+  ) {
+    offset++;
   }
 
-  const rangeStart =
-    direction === 'forwards'
-      ? codepointStart
-      : codepointStart - lastCodepointLength;
-  const rangeEnd =
-    direction === 'forwards'
-      ? rangeStart + (codepoints[0]?.length ?? 0)
-      : codepointStart;
+  let end: number;
+  if (direction === 'forwards') {
+    // If the offset is at the start of a surrogate pair, we need to include
+    // the low surrogate as well.
+    if (offset >= source.data.length) {
+      end = offset;
+    } else if (isHighSurrogate(source.data.charCodeAt(offset))) {
+      end = offset + 2;
+    } else {
+      end = offset + 1;
+    }
+  } else {
+    if (offset <= 0) {
+      end = offset;
+    } else if (isLowSurrogate(source.data.charCodeAt(offset - 1))) {
+      end = offset - 2;
+    } else {
+      end = offset - 1;
+    }
+  }
 
   const range = new Range();
-  range.setStart(source, rangeStart);
-  range.setEnd(source, rangeEnd);
+  range.setStart(
+    source,
+    Math.max(Math.min(offset, end, source.data.length), 0)
+  );
+  range.setEnd(source, Math.min(Math.max(offset, end, 0), source.data.length));
 
   return range;
+}
+
+function isLowSurrogate(codepoint: number): boolean {
+  return codepoint >= 0xdc00 && codepoint <= 0xdfff;
+}
+
+function isHighSurrogate(codepoint: number): boolean {
+  return codepoint >= 0xd800 && codepoint <= 0xdbff;
 }
 
 export function getBboxForSingleCodepointRange(

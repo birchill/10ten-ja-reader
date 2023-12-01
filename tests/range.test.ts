@@ -4,7 +4,7 @@ import { getRangeForSingleCodepoint } from '../src/utils/range';
 
 mocha.setup('bdd');
 
-describe('getTextAtPoint', () => {
+describe('getRangeForSingleCodepoint', () => {
   it('should handle non-BMP characters', () => {
     const source = new Text('𠏹沢');
 
@@ -29,6 +29,20 @@ describe('getTextAtPoint', () => {
     range = getRangeForSingleCodepoint({ source, offset: 1 });
     assert.strictEqual(range.startOffset, 2);
     assert.strictEqual(range.endOffset, 3);
+
+    // Mid-character when it's the last character
+    range = getRangeForSingleCodepoint({ source: new Text('𠏹'), offset: 1 });
+    assert.strictEqual(range.startOffset, 0);
+    assert.strictEqual(range.endOffset, 2);
+
+    // Mid-character when it's the first character
+    range = getRangeForSingleCodepoint({
+      source: new Text('𠏹'),
+      offset: 1,
+      direction: 'backwards',
+    });
+    assert.strictEqual(range.startOffset, 0);
+    assert.strictEqual(range.endOffset, 2);
   });
 
   it('should handle out of range offsets', () => {
