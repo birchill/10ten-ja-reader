@@ -1,5 +1,3 @@
-import { useState } from 'preact/hooks';
-
 import { useLocale } from '../common/i18n';
 
 import { CheckboxRow } from './CheckboxRow';
@@ -9,17 +7,15 @@ type Props = {
   highlightText: boolean;
   onChangeContextMenuEnable: (value: boolean) => void;
   onChangeHighlightText: (value: boolean) => void;
+  supportsCssHighlight: boolean;
 };
 
 export function GeneralSettingsForm(props: Props) {
   const { t } = useLocale();
-  const [supportsCssHighlight] = useState(
-    CSS.supports('selector(::highlight(yer))')
-  );
 
   return (
     <div class="flex flex-col gap-3">
-      {!supportsCssHighlight && (
+      {!props.supportsCssHighlight && (
         <CheckboxRow>
           <input
             id="highlightText"

@@ -1,4 +1,4 @@
-import { useCallback } from 'preact/hooks';
+import { useCallback, useState } from 'preact/hooks';
 
 import type { Config } from '../common/config';
 
@@ -26,6 +26,10 @@ export function GeneralSettings(props: Props) {
     [props.config]
   );
 
+  const [supportsCssHighlight] = useState(
+    CSS.supports('selector(::highlight(yer))')
+  );
+
   return (
     <div class="pb-4">
       <GeneralSettingsForm
@@ -33,6 +37,7 @@ export function GeneralSettings(props: Props) {
         highlightText={highlightText}
         onChangeContextMenuEnable={onChangeContextMenuEnable}
         onChangeHighlightText={onChangeHighlightText}
+        supportsCssHighlight={supportsCssHighlight}
       />
     </div>
   );
