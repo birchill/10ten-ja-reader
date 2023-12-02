@@ -41,9 +41,6 @@ function completeForm() {
   // l10n
   translateDoc();
 
-  // Auto-expire new badges
-  expireNewBadges();
-
   const toolbarIconOptions = Array.from(
     document.querySelectorAll('input[type=radio][name=toolbarIcon]')
   );
@@ -58,22 +55,6 @@ function completeForm() {
 
   const container = document.getElementById('container')!;
   render(h(OptionsPage, { config }), container);
-}
-
-// Expire current set of badges on Oct 10
-const NEW_EXPIRY = new Date(2023, 9, 10);
-
-function expireNewBadges() {
-  if (new Date() < NEW_EXPIRY) {
-    return;
-  }
-
-  const badges = document.querySelectorAll('.new-badge');
-  for (const badge of badges) {
-    if (badge instanceof HTMLElement) {
-      badge.style.display = 'none';
-    }
-  }
 }
 
 function fillVals() {
