@@ -82,7 +82,7 @@
     "@tailwindcss/typography": "0.5.10",
     "@types/archiver": "6.0.2",
     "@types/chai": "4.3.11",
-    "@types/mocha": "10.0.4",
+    "@types/mocha": "10.0.6",
     "@types/webextension-polyfill": "^0.10.5",
     "@types/yargs": "17.0.31",
     "@typescript-eslint/eslint-plugin": "6.11.0",
