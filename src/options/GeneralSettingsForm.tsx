@@ -1,12 +1,14 @@
+import { HighlightStyle } from '../common/content-config-params';
 import { useLocale } from '../common/i18n';
 
 import { CheckboxRow } from './CheckboxRow';
+import { HighlightStyleRadio } from './HighlightStyleRadio';
 
 type Props = {
   contextMenuEnable: boolean;
-  highlightText: boolean;
+  highlightStyle: HighlightStyle | 'none';
   onChangeContextMenuEnable: (value: boolean) => void;
-  onChangeHighlightText: (value: boolean) => void;
+  onChangeHighlightStyle: (value: HighlightStyle | 'none') => void;
   supportsCssHighlight: boolean;
 };
 
@@ -15,15 +17,26 @@ export function GeneralSettingsForm(props: Props) {
 
   return (
     <div class="flex flex-col gap-3">
+      {props.supportsCssHighlight && (
+        <div class="pb-2">
+          <p>{t('options_highlight_style_label')}</p>
+          <HighlightStyleRadio
+            value={props.highlightStyle}
+            onChange={props.onChangeHighlightStyle}
+          />
+        </div>
+      )}
       {!props.supportsCssHighlight && (
         <CheckboxRow>
           <input
             id="highlightText"
             name="highlightText"
             type="checkbox"
-            checked={props.highlightText}
+            checked={props.highlightStyle !== 'none'}
             onChange={(e) =>
-              props.onChangeHighlightText(e.currentTarget.checked)
+              props.onChangeHighlightStyle(
+                e.currentTarget.checked ? 'yellow' : 'none'
+              )
             }
           />
           <label for="highlightText">

@@ -1,13 +1,19 @@
 import { useState } from 'preact/hooks';
-import { useValue } from 'react-cosmos/client';
+import { useSelect, useValue } from 'react-cosmos/client';
 
+import { HighlightStyle } from '../common/content-config-params';
 import { GeneralSettingsForm } from './GeneralSettingsForm';
 
 import './options.css';
 
 export default function () {
   const [contextMenuEnable, setContextMenuEnable] = useState(true);
-  const [highlightText, setHighlightText] = useState(true);
+  const [highlightStyle, setHighlightStyle] = useSelect<
+    HighlightStyle | 'none'
+  >('value', {
+    options: ['none', 'yellow', 'blue'],
+    defaultValue: 'yellow',
+  });
   const [supportsCssHighlight] = useValue<boolean>('CSS Highlight API', {
     defaultValue: true,
   });
@@ -15,9 +21,9 @@ export default function () {
   return (
     <GeneralSettingsForm
       contextMenuEnable={contextMenuEnable}
-      highlightText={highlightText}
+      highlightStyle={highlightStyle}
       onChangeContextMenuEnable={setContextMenuEnable}
-      onChangeHighlightText={setHighlightText}
+      onChangeHighlightStyle={setHighlightStyle}
       supportsCssHighlight={supportsCssHighlight}
     />
   );
