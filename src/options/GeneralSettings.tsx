@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'preact/hooks';
 
 import type { Config } from '../common/config';
+import { HighlightStyle } from '../common/content-config-params';
 
 import { GeneralSettingsForm } from './GeneralSettingsForm';
 import { useConfigValue } from './use-config-value';
@@ -10,10 +11,18 @@ type Props = {
 };
 
 export function GeneralSettings(props: Props) {
-  const highlightText = !useConfigValue(props.config, 'noTextHighlight');
-  const onChangeHighlightText = useCallback(
-    (value: boolean) => {
-      props.config.noTextHighlight = !value;
+  const noTextHighlight = useConfigValue(props.config, 'noTextHighlight');
+  const rawHighlightStyle = useConfigValue(props.config, 'highlightStyle');
+  const highlightStyle = noTextHighlight ? 'none' : rawHighlightStyle;
+
+  const onChangeHighlightStyle = useCallback(
+    (value: HighlightStyle | 'none') => {
+      if (value === 'none') {
+        props.config.noTextHighlight = true;
+      } else {
+        props.config.highlightStyle = value;
+        props.config.noTextHighlight = false;
+      }
     },
     [props.config]
   );
@@ -34,9 +43,9 @@ export function GeneralSettings(props: Props) {
     <div class="pb-4">
       <GeneralSettingsForm
         contextMenuEnable={contextMenuEnable}
-        highlightText={highlightText}
+        highlightStyle={highlightStyle}
         onChangeContextMenuEnable={onChangeContextMenuEnable}
-        onChangeHighlightText={onChangeHighlightText}
+        onChangeHighlightStyle={onChangeHighlightStyle}
         supportsCssHighlight={supportsCssHighlight}
       />
     </div>

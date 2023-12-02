@@ -9,6 +9,11 @@
 }
 
 @layer utilities {
+  .cover-tl {
+    -webkit-mask: linear-gradient(-45deg, black 50%, transparent 50%);
+    mask: linear-gradient(-45deg, black 50%, transparent 50%);
+  }
+
   .stacked {
     display: grid;
   }
@@ -16,9 +21,21 @@
     grid-area: 1 / 1 / 2 / 2;
   }
 
-  .cover-tl {
-    -webkit-mask: linear-gradient(-45deg, black 50%, transparent 50%);
-    mask: linear-gradient(-45deg, black 50%, transparent 50%);
+  .fade-ends-x {
+    -webkit-mask: linear-gradient(
+      90deg,
+      transparent,
+      black 20%,
+      black 80%,
+      transparent
+    );
+    mask: linear-gradient(
+      90deg,
+      transparent,
+      black 20%,
+      black 80%,
+      transparent
+    );
   }
 }
 
@@ -361,71 +378,6 @@ fieldset.bordered {
   margin-bottom: 1em;
   line-height: 1.5;
   font-style: italic;
-}
-
-/*
- * Highlight style selection
- */
-
-.highlightstyle-select {
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-
-.highlightstyle-select > label .icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 25px;
-  padding: 16px 8px;
-  /* Make the icons the same width as the toolbar icons above */
-  min-width: calc(48px + 32px * 2);
-  min-height: calc(48px + 16px * 2);
-}
-
-@media (max-width: 400px) {
-  .highlightstyle-select > label .icon {
-    font-size: 20px;
-    min-width: auto;
-    min-height: auto;
-  }
-}
-
-@media (max-width: 300px) {
-  .highlightstyle-select > label .icon {
-    font-size: 15px;
-  }
-}
-
-.highlightstyle-select > label .icon .text-fade {
-  -webkit-mask: linear-gradient(
-    90deg,
-    transparent,
-    black 20%,
-    black 80%,
-    transparent
-  );
-  mask: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
-}
-
-.highlightstyle-select > label .highlight.yellow {
-  background: #fff394;
-  color: #1d1a19;
-}
-
-.highlightstyle-select > label .highlight.blue {
-  background: #2589ed;
-  color: white;
-}
-
-#highlight-style-section {
-  display: none;
-}
-
-@supports selector(::highlight(yer)) {
-  #highlight-style-section {
-    display: revert;
-  }
 }
 
 /*

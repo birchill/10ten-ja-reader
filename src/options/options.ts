@@ -44,27 +44,6 @@ function completeForm() {
   // Auto-expire new badges
   expireNewBadges();
 
-  const highlightStyleOptions = Array.from(
-    document.querySelectorAll('input[type=radio][name=highlightStyle]')
-  );
-  for (const option of highlightStyleOptions) {
-    option.addEventListener('change', (event) => {
-      const highlightStyle = (event.target as HTMLInputElement).value as
-        | 'none'
-        | 'yellow'
-        | 'blue';
-      if (highlightStyle === 'none') {
-        config.noTextHighlight = true;
-      } else {
-        config.highlightStyle = highlightStyle;
-        config.noTextHighlight = false;
-      }
-    });
-
-    const container = document.getElementById('container')!;
-    render(h(OptionsPage, { config }), container);
-  }
-
   const toolbarIconOptions = Array.from(
     document.querySelectorAll('input[type=radio][name=toolbarIcon]')
   );
@@ -76,6 +55,9 @@ function completeForm() {
       config.toolbarIcon = toolbarIcon;
     });
   }
+
+  const container = document.getElementById('container')!;
+  render(h(OptionsPage, { config }), container);
 }
 
 // Expire current set of badges on Oct 10
@@ -96,9 +78,6 @@ function expireNewBadges() {
 
 function fillVals() {
   const optform = document.getElementById('optform') as HTMLFormElement;
-  optform.highlightStyle.value = config.noTextHighlight
-    ? 'none'
-    : config.highlightStyle;
   optform.toolbarIcon.value = config.toolbarIcon;
 }
 
