@@ -42,11 +42,6 @@ function completeForm() {
 }
 
 window.onload = async () => {
-  try {
-    await config.ready;
-    completeForm();
-  } finally {
-    // Reveal contents now that it is complete
-    document.documentElement.classList.add('initialized');
-  }
+  await config.ready;
+  completeForm();
 };
