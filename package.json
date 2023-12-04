@@ -121,7 +121,7 @@
     "terser-webpack-plugin": "5.3.9",
     "ts-loader": "9.5.1",
     "tsx": "4.6.2",
-    "vitest": "^0.34.6",
+    "vitest": "^1.0.0",
     "vitest-fetch-mock": "^0.2.2",
     "vitest-github-actions-reporter": "^0.11.1",
     "web-ext-plugin": "2.9.0",
