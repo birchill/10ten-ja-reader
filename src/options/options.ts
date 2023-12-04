@@ -11,7 +11,6 @@ import {
   isSafari,
 } from '../utils/ua-utils';
 
-import { translateDoc } from './l10n';
 import { OptionsPage } from './OptionsPage';
 
 import './options.css';
@@ -37,9 +36,6 @@ function completeForm() {
   if (isSafari()) {
     document.documentElement.classList.add('safari');
   }
-
-  // l10n
-  translateDoc();
 
   const container = document.getElementById('container')!;
   render(h(OptionsPage, { config }), container);
