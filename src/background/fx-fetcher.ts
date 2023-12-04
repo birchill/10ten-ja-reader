@@ -269,7 +269,7 @@ export class FxFetcher {
         );
         browser.alarms.create('fx-update', { when: nextRun });
       } catch (e) {
-        console.error(e);
+        console.error('Error creating alarm for FX data update', e);
         void Bugsnag.notify(e);
       }
     }

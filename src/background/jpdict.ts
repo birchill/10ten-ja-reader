@@ -498,7 +498,7 @@ export async function searchKanji(
       logWarningMessage,
     });
   } catch (e) {
-    console.error(e);
+    console.error('Error looking up kanji', e);
     void Bugsnag.notify(e || '(Error looking up kanji)');
     return null;
   }
