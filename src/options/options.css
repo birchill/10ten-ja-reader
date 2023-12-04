@@ -84,54 +84,6 @@ body {
   margin-right: auto;
 }
 
-/*
- * Section styles
- */
-
-.section-header {
-  font-size: 1.46em;
-  font-weight: 300;
-  line-height: 1.3em;
-  margin: 8px 0;
-}
-
-.section-header:nth-of-type(n + 2) {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid lightgrey;
-}
-
-.section-content {
-  padding-top: 16px;
-  padding-bottom: 16px;
-}
-
-.spacer {
-  height: 16px;
-}
-
-/*
- * Form styles
- */
-
-fieldset {
-  padding: 0;
-  border: none;
-}
-
-.checkbox-row {
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  margin: 8px 0;
-  gap: 8px;
-}
-
-.checkbox-row > :not(input) {
-  flex: 1;
-  line-height: 1.4em;
-}
-
 button {
   /* Don't wrap buttons */
   white-space: nowrap;
