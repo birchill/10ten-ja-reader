@@ -2,8 +2,10 @@ import { useCallback, useState } from 'preact/hooks';
 
 import type { Config } from '../common/config';
 import { HighlightStyle } from '../common/content-config-params';
+import { useLocale } from '../common/i18n';
 
 import { GeneralSettingsForm } from './GeneralSettingsForm';
+import { SectionHeading } from './SectionHeading';
 import { useConfigValue } from './use-config-value';
 
 type Props = {
@@ -11,6 +13,16 @@ type Props = {
 };
 
 export function GeneralSettings(props: Props) {
+  const { t } = useLocale();
+
+  const toolbarIcon = useConfigValue(props.config, 'toolbarIcon');
+  const onChangeToolbarIcon = useCallback(
+    (value: 'default' | 'sky') => {
+      props.config.toolbarIcon = value;
+    },
+    [props.config]
+  );
+
   const noTextHighlight = useConfigValue(props.config, 'noTextHighlight');
   const rawHighlightStyle = useConfigValue(props.config, 'highlightStyle');
   const highlightStyle = noTextHighlight ? 'none' : rawHighlightStyle;
@@ -40,14 +52,19 @@ export function GeneralSettings(props: Props) {
   );
 
   return (
-    <div class="pb-4">
-      <GeneralSettingsForm
-        contextMenuEnable={contextMenuEnable}
-        highlightStyle={highlightStyle}
-        onChangeContextMenuEnable={onChangeContextMenuEnable}
-        onChangeHighlightStyle={onChangeHighlightStyle}
-        supportsCssHighlight={supportsCssHighlight}
-      />
-    </div>
+    <>
+      <SectionHeading>{t('options_general_heading')}</SectionHeading>
+      <div class="py-4">
+        <GeneralSettingsForm
+          contextMenuEnable={contextMenuEnable}
+          highlightStyle={highlightStyle}
+          onChangeContextMenuEnable={onChangeContextMenuEnable}
+          onChangeHighlightStyle={onChangeHighlightStyle}
+          onChangeToolbarIcon={onChangeToolbarIcon}
+          supportsCssHighlight={supportsCssHighlight}
+          toolbarIcon={toolbarIcon}
+        />
+      </div>
+    </>
   );
 }
