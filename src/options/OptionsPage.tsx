@@ -21,15 +21,17 @@ export function OptionsPage(props: Props) {
 
   return (
     <I18nProvider>
-      <GeneralSettings config={props.config} />
-      <PopupStyleSettings config={props.config} />
-      <PopupInteractivitySettings config={props.config} />
-      <CurrencySettings config={props.config} />
-      {hasKeyboard && <KeyboardSettings config={props.config} />}
-      <PuckSettings config={props.config} />
-      <DictionaryLanguageSettings config={props.config} />
-      <KanjiReferenceSettings config={props.config} />
-      <DictionaryDataSettings />
+      <div class="mx-auto max-w-[780px] px-2">
+        <GeneralSettings config={props.config} />
+        <PopupStyleSettings config={props.config} />
+        <PopupInteractivitySettings config={props.config} />
+        <CurrencySettings config={props.config} />
+        {hasKeyboard && <KeyboardSettings config={props.config} />}
+        <PuckSettings config={props.config} />
+        <DictionaryLanguageSettings config={props.config} />
+        <KanjiReferenceSettings config={props.config} />
+        <DictionaryDataSettings />
+      </div>
     </I18nProvider>
   );
 }

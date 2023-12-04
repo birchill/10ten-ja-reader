@@ -78,22 +78,10 @@ body {
   box-sizing: border-box;
 }
 
-:root.safari body,
-:root.chromium body,
-:root.edge body {
+:root.safari body {
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
-}
-
-/*
- * Container style
- */
-
-#optform {
-  padding: 0 10px;
-  max-width: 780px;
-  margin: 0 auto;
 }
 
 /*
