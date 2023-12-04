@@ -1,4 +1,5 @@
 import webpack from 'webpack';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
@@ -53,6 +54,9 @@ const config = {
       template: './src/options/cosmos.html',
     }),
     new MiniCssExtractPlugin(),
+    new CopyWebpackPlugin({
+      patterns: ['images/*'],
+    }),
   ],
 };
 

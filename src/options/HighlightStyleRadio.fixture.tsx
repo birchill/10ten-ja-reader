@@ -1,7 +1,7 @@
 import { useSelect } from 'react-cosmos/client';
 
-import { HighlightStyleRadio } from './HighlightStyleRadio';
 import { HighlightStyle } from '../common/content-config-params';
+import { HighlightStyleRadio } from './HighlightStyleRadio';
 
 import './options.css';
 
