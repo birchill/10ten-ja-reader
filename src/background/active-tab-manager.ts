@@ -501,7 +501,7 @@ export default class ActiveTabManager implements TabManager {
           frame: '*',
         });
       } catch (e) {
-        console.error(e);
+        console.error('Error sending enable message to tabs', e);
         void Bugsnag.notify(e);
       }
     }

@@ -283,7 +283,7 @@ const dbReady = (async () => {
 
   return true;
 })().catch((e) => {
-  console.error(e);
+  console.error('Error initializing dictionary', e);
   void Bugsnag.notify(e);
 
   return false;

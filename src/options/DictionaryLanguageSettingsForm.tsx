@@ -23,8 +23,8 @@ export function DictionaryLanguageSettingsForm(props: Props) {
       const value = event.currentTarget.value;
       if (!isDbLanguageId(value)) {
         const msg = `Got unexpected language code: ${value}`;
-        void Bugsnag.notify(new Error(msg));
         console.error(msg);
+        void Bugsnag.notify(new Error(msg));
         return;
       }
 

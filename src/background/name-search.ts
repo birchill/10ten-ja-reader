@@ -61,7 +61,7 @@ export async function nameSearch({
       try {
         names = await getNames(variant);
       } catch (e) {
-        console.error(e);
+        console.error('Error looking up names', e);
         void Bugsnag.notify(e || '(Error looking up names)');
         return null;
       }
