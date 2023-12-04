@@ -41,40 +41,16 @@ function completeForm() {
   // l10n
   translateDoc();
 
-  const toolbarIconOptions = Array.from(
-    document.querySelectorAll('input[type=radio][name=toolbarIcon]')
-  );
-  for (const option of toolbarIconOptions) {
-    option.addEventListener('change', (event) => {
-      const toolbarIcon = (event.target as HTMLInputElement).value as
-        | 'default'
-        | 'sky';
-      config.toolbarIcon = toolbarIcon;
-    });
-  }
-
   const container = document.getElementById('container')!;
   render(h(OptionsPage, { config }), container);
-}
-
-function fillVals() {
-  const optform = document.getElementById('optform') as HTMLFormElement;
-  optform.toolbarIcon.value = config.toolbarIcon;
 }
 
 window.onload = async () => {
   try {
     await config.ready;
     completeForm();
-    fillVals();
   } finally {
     // Reveal contents now that it is complete
     document.documentElement.classList.add('initialized');
   }
-
-  config.addChangeListener(fillVals);
-};
-
-window.onunload = () => {
-  config.removeChangeListener(fillVals);
 };

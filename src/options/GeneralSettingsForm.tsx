@@ -3,13 +3,16 @@ import { useLocale } from '../common/i18n';
 
 import { CheckboxRow } from './CheckboxRow';
 import { HighlightStyleRadio } from './HighlightStyleRadio';
+import { ToolbarIconRadio } from './ToolbarIconRadio';
 
 type Props = {
   contextMenuEnable: boolean;
   highlightStyle: HighlightStyle | 'none';
   onChangeContextMenuEnable: (value: boolean) => void;
   onChangeHighlightStyle: (value: HighlightStyle | 'none') => void;
+  onChangeToolbarIcon: (value: 'default' | 'sky') => void;
   supportsCssHighlight: boolean;
+  toolbarIcon: 'default' | 'sky';
 };
 
 export function GeneralSettingsForm(props: Props) {
@@ -17,15 +20,23 @@ export function GeneralSettingsForm(props: Props) {
 
   return (
     <div class="flex flex-col gap-3">
+      <p class="m-0">{t('options_toolbar_icon_label')}</p>
+      <ToolbarIconRadio
+        value={props.toolbarIcon}
+        onChange={props.onChangeToolbarIcon}
+      />
       {props.supportsCssHighlight && (
-        <div class="pb-2">
-          <p>{t('options_highlight_style_label')}</p>
+        <>
+          <p class="m-0">{t('options_highlight_style_label')}</p>
           <HighlightStyleRadio
             value={props.highlightStyle}
             onChange={props.onChangeHighlightStyle}
           />
-        </div>
+        </>
       )}
+      {/* Make sure there is a bit of a gap between the graphical radio
+        buttons and the checkbox(es) */}
+      <div />
       {!props.supportsCssHighlight && (
         <CheckboxRow>
           <input

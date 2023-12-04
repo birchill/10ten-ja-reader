@@ -7,10 +7,17 @@ import { GeneralSettingsForm } from './GeneralSettingsForm';
 import './options.css';
 
 export default function () {
+  const [toolbarIcon, setToolbarIcon] = useSelect<'default' | 'sky'>(
+    'toolbarIcon',
+    {
+      options: ['default', 'sky'],
+      defaultValue: 'default',
+    }
+  );
   const [contextMenuEnable, setContextMenuEnable] = useState(true);
   const [highlightStyle, setHighlightStyle] = useSelect<
     HighlightStyle | 'none'
-  >('value', {
+  >('highlightStyle', {
     options: ['none', 'yellow', 'blue'],
     defaultValue: 'yellow',
   });
@@ -24,7 +31,9 @@ export default function () {
       highlightStyle={highlightStyle}
       onChangeContextMenuEnable={setContextMenuEnable}
       onChangeHighlightStyle={setHighlightStyle}
+      onChangeToolbarIcon={setToolbarIcon}
       supportsCssHighlight={supportsCssHighlight}
+      toolbarIcon={toolbarIcon}
     />
   );
 }
