@@ -90,14 +90,14 @@
   resolved "https://registry.yarnpkg.com/@birchill/discriminator/-/discriminator-0.3.0.tgz#77d09d754e1ed14fc6fbc94af16724bc4f46d97b"
   integrity sha512-IXkLc1FZLSjFUcPYUnAdg+AWPHC9vPz8hS2IDwPAvnAipeNKIkzQ/B4WY5z14UO1Ex0aOdlHtgwUUXc/Ngkhyg==
 
-"@birchill/jpdict-idb@2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-2.2.0.tgz#c179be471aa266b781f06bf77c5614041adc74ae"
-  integrity sha512-1ghf7KafcCad27mNcQjxMCa9JV/KLoBjXHI0GlNijBfq9WAD21++7OGqGeype9/BG4ifLmDq+cFoXYgTkNWQRg==
+"@birchill/jpdict-idb@2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-2.2.1.tgz#c619724ddce70fe055ddf9580f63a8d42f5cd0b7"
+  integrity sha512-TCXYdwXsrHy+faKXHMsb7t99V5ggzK9TBBa8aaL0BcST/1Ip6B/d8aaqBtSKqP/qYZT1eEmZfzHysjwpcG4vKA==
   dependencies:
     "@birchill/json-equalish" "^1.1.2"
     "@birchill/normal-jp" "^1.5.0"
-    idb "^7.1.1"
+    idb "^8.0.0"
     superstruct "^1.0.3"
 
 "@birchill/json-equalish@^1.1.2":
@@ -4926,10 +4926,10 @@ icss-utils@^5.0.0, icss-utils@^5.1.0:
   resolved "https://registry.yarnpkg.com/icss-utils/-/icss-utils-5.1.0.tgz#c6be6858abd013d768e98366ae47e25d5887b1ae"
   integrity sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==
 
-idb@^7.1.1:
-  version "7.1.1"
-  resolved "https://registry.yarnpkg.com/idb/-/idb-7.1.1.tgz#d910ded866d32c7ced9befc5bfdf36f572ced72b"
-  integrity sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==
+idb@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/idb/-/idb-8.0.0.tgz#33d7ed894ed36e23bcb542fb701ad579bfaad41f"
+  integrity sha512-l//qvlAKGmQO31Qn7xdzagVPPaHTxXx199MhrAFuVBTPqydcPYBWjkrbv4Y0ktB+GmWOiwHl237UUOrLmQxLvw==
 
 identity-function@^1.0.0:
   version "1.0.0"
