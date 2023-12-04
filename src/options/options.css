@@ -78,11 +78,9 @@ body {
   box-sizing: border-box;
 }
 
-:root.chromium:not(.edge) body {
-  min-width: 600px;
-}
-
-:root.safari body {
+:root.safari body,
+:root.chromium body,
+:root.edge body {
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
