@@ -19,8 +19,6 @@ const config: KnipConfig = {
     // Included by popups.html until we set up a better way of doing component
     // tests.
     'tests/html-tests.js',
-    // Likewise for options.html
-    'tests/options.js',
     // This is referenced in xcode13/Shared (App)/Base.lproj/Main.html but knip
     // doesn't know how to parse that.
     'xcode13/Shared \\(App\\)/Resources/Script.js',
