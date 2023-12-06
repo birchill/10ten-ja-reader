@@ -27,12 +27,31 @@ type Tab = {
 
 export default class AllTabManager implements TabManager {
   private config: ContentConfigParams | undefined;
+  private initPromise: Promise<void> | undefined;
+  private initComplete = false;
   private enabled = false;
   private listeners: Array<EnabledChangedCallback> = [];
   private tabs: Array<Tab> = [];
   private tabsCleanupTask: number | undefined;
 
   async init(config: ContentConfigParams): Promise<void> {
+    if (this.initPromise) {
+      if (JSON.stringify(this.config) !== JSON.stringify(config)) {
+        const error = new Error(
+          'AllTabManager::init called multiple times with different configurations'
+        );
+        console.error(error);
+        void Bugsnag.notify(error);
+      }
+      return this.initPromise;
+    }
+
+    this.initPromise = this.doInit(config);
+
+    return this.initPromise;
+  }
+
+  private async doInit(config: ContentConfigParams): Promise<void> {
     this.config = config;
 
     // Try to fetch our previous enabled state from local storage
@@ -103,6 +122,8 @@ export default class AllTabManager implements TabManager {
         }
       }
     );
+
+    this.initComplete = true;
   }
 
   private async getStoredEnabledState(): Promise<boolean> {
@@ -168,6 +189,12 @@ export default class AllTabManager implements TabManager {
   //
 
   async toggleTab(_tab: Tabs.Tab | undefined, config: ContentConfigParams) {
+    if (!this.initPromise) {
+      throw new Error('Should have called init before toggleTab');
+    }
+
+    await this.initPromise;
+
     // Update our local copy of the config
     this.config = config;
 
@@ -411,11 +438,12 @@ export default class AllTabManager implements TabManager {
       this.listeners.push(listener);
     }
 
-    // Call with initial state, after spinning the event loop to give the client
-    // a chance to initialize.
-    setTimeout(() => {
+    if (this.initComplete) {
       listener({ enabled: this.enabled, anyEnabled: this.enabled });
-    }, 0);
+    }
+
+    // If we are still initializing, all the listeners will get notified at the
+    // end of initialization if we are enabled.
   }
 
   removeListener(listener: EnabledChangedCallback) {

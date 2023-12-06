@@ -11,6 +11,8 @@ app.
 - Added option to show Bunpro vocabulary and grammar labels next to words
   ([#1383](https://github.com/birchill/10ten-ja-reader/issues/1383)).
 - Added localizations for newly-introduced field tags.
+- Fixed a bug where it would take two clicks to enable the add-on sometimes
+  ([#1491](https://github.com/birchill/10ten-ja-reader/issues/1491)).
 - Fixed slow lookup for long text spans
   ([#1423](https://github.com/birchill/10ten-ja-reader/issues/1423)).
 - Fixed options page becoming disconnected from the background page (again).
