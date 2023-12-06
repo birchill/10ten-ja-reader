@@ -21,7 +21,7 @@ export function OptionsPage(props: Props) {
 
   return (
     <I18nProvider>
-      <div class="mx-auto max-w-[780px] px-2">
+      <div class="mx-auto max-w-[780px] px-6 pt-6">
         <GeneralSettings config={props.config} />
         <PopupStyleSettings config={props.config} />
         <PopupInteractivitySettings config={props.config} />

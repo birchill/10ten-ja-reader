@@ -16,6 +16,7 @@
     font: message-box;
     font-size: 15px;
     color: #222426;
+    margin: 0;
   }
 
   @media (max-width: 400px) {
