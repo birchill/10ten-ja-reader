@@ -7,12 +7,14 @@ import {
   RawKanjiMeta,
   RawReadingMeta,
   RawWordSense,
+  WordResult,
 } from '@birchill/jpdict-idb';
 import { kanaToHiragana } from '@birchill/normal-jp';
 import { LRUMap } from 'lru_map';
 import browser from 'webextension-polyfill';
 
 import { stripFields } from '../utils/strip-fields';
+import { Overwrite } from '../utils/type-helpers';
 
 import { DictionaryWordResult, Sense } from './search-result';
 import { sortMatchesByPriority } from './word-match-sorting';
@@ -288,7 +290,7 @@ function toDictionaryWordResult({
     id: offset,
     k: mergeMeta(entry.k, entry.km, (key, meta) => ({
       ent: key,
-      ...(meta ? stripFields(meta, ['bv', 'bg']) : undefined),
+      ...meta,
       match:
         (kanjiMatch && kanaToHiragana(key) === matchingText) || !kanjiMatch,
       matchRange:
@@ -296,7 +298,7 @@ function toDictionaryWordResult({
     })),
     r: mergeMeta(entry.r, entry.rm, (key, meta) => ({
       ent: key,
-      ...(meta ? stripFields(meta, ['bv', 'bg']) : undefined),
+      ...meta,
       match: (kanaMatch && kanaToHiragana(key) === matchingText) || !kanaMatch,
       matchRange:
         kanaToHiragana(key) === matchingText ? [0, key.length] : undefined,
@@ -305,10 +307,19 @@ function toDictionaryWordResult({
   };
 }
 
+type WithExtraMetadata<T> = Overwrite<
+  T,
+  {
+    wk: WordResult['k'][0]['wk'];
+    bv: WordResult['k'][0]['bv'];
+    bg: WordResult['k'][0]['bv'];
+  }
+>;
+
 function mergeMeta<MetaType extends RawKanjiMeta | RawReadingMeta, MergedType>(
   keys: Array<string> | undefined,
   metaArray: Array<0 | MetaType> | undefined,
-  merge: (key: string, meta?: MetaType) => MergedType
+  merge: (key: string, meta?: WithExtraMetadata<MetaType>) => MergedType
 ): Array<MergedType> {
   const result: Array<MergedType> = [];
 
@@ -317,7 +328,76 @@ function mergeMeta<MetaType extends RawKanjiMeta | RawReadingMeta, MergedType>(
       metaArray && metaArray.length >= i + 1 && metaArray[i] !== 0
         ? (metaArray[i] as MetaType)
         : undefined;
-    result.push(merge(key, meta));
+
+    // The following is taken from jpdict-idb's `makeWordResult` function.
+    //
+    // WaniKani levels are stored in the `p` (priority) field for simplicity
+    // in the form `wk{N}` where N is the level number.
+    // We need to extract any such levels and store them in the `wk` field
+    // instead.
+    //
+    // Likewise for Bunpro levels which need to be combined with an `bv` /
+    // `bg` fields since these contain the original source text for a fuzzy
+    // match.
+    let wk: number | undefined;
+    let bv: number | undefined;
+    let bg: number | undefined;
+
+    const p = meta?.p?.filter((p) => {
+      if (/^wk\d+$/.test(p)) {
+        const wkLevel = parseInt(p.slice(2), 10);
+        if (typeof wk === 'undefined' || wkLevel < wk) {
+          wk = wkLevel;
+        }
+        return false;
+      }
+
+      if (/^bv\d+$/.test(p)) {
+        const bvLevel = parseInt(p.slice(2), 10);
+        if (typeof bv === 'undefined' || bvLevel < bv) {
+          bv = bvLevel;
+        }
+        return false;
+      }
+
+      if (/^bg\d+$/.test(p)) {
+        const bgLevel = parseInt(p.slice(2), 10);
+        if (typeof bg === 'undefined' || bgLevel < bg) {
+          bg = bgLevel;
+        }
+        return false;
+      }
+
+      return true;
+    });
+
+    if (p?.length) {
+      meta!.p = p;
+    } else {
+      delete meta?.p;
+    }
+
+    const extendedMeta = meta as WithExtraMetadata<MetaType> | undefined;
+
+    if (wk) {
+      extendedMeta!.wk = wk;
+    }
+
+    if (typeof bv === 'number') {
+      extendedMeta!.bv = Object.assign(
+        { l: bv },
+        meta?.bv ? { src: meta?.bv } : undefined
+      );
+    }
+
+    if (typeof bg === 'number') {
+      extendedMeta!.bg = Object.assign(
+        { l: bg },
+        meta?.bg ? { src: meta?.bg } : undefined
+      );
+    }
+
+    result.push(merge(key, extendedMeta));
   }
 
   return result;
