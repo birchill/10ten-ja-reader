@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+- Added localization and handling for new `rk` (rarely-used kana form) tag.
+
 ## [1.17.0] - 2023-12-06
 
 - Added option to show Bunpro vocabulary and grammar labels next to words
