@@ -226,6 +226,7 @@ export function renderWordEntries({
           !r.match ||
           r.i?.includes('ik') ||
           r.i?.includes('ok') ||
+          r.i?.includes('rk') ||
           r.i?.includes('sk')
       );
 
@@ -241,6 +242,7 @@ export function renderWordEntries({
           (matchedOnIrregularKana &&
             !r.i?.includes('ik') &&
             !r.i?.includes('ok') &&
+            !r.i?.includes('rk') &&
             !r.i?.includes('sk')))
     );
 
@@ -256,9 +258,12 @@ export function renderWordEntries({
         if (
           // Always dim search-only headwords
           kana.i?.includes('sk') ||
-          // If we looked up by kanji, dim any kana headwords that are irregular
-          // or old.
-          (!matchedOnKana && (kana.i?.includes('ik') || kana.i?.includes('ok')))
+          // If we looked up by kanji, dim any kana headwords that are
+          // irregular, old, or rare.
+          (!matchedOnKana &&
+            (kana.i?.includes('ik') ||
+              kana.i?.includes('ok') ||
+              kana.i?.includes('rk')))
         ) {
           const dimmedSpan = html('span', { class: 'dimmed' });
           kanaSpan.append(dimmedSpan);
@@ -391,6 +396,7 @@ function appendHeadwordInfo(
       ok: 'okana',
       uK: 'ukanji',
       rK: 'rkanji',
+      rk: 'rkana',
       // We normally don't show search-only kanji/kana headwords unless they are
       // exact matches. In those cases we should probably just indicate them as
       // "irregular" kanji/kana.
