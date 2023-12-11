@@ -3687,9 +3687,9 @@ eslint-plugin-tailwindcss@3.13.0:
     postcss "^8.4.4"
 
 eslint-plugin-vitest@^0.3.10:
-  version "0.3.13"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-vitest/-/eslint-plugin-vitest-0.3.13.tgz#6490d3f1709d33af9b56d3bf82e69b57afe972f2"
-  integrity sha512-k3itP/Nn/Y8s1TAVll8c3g/L3UPSp3FqE1TKULa8GJPkFZhq/K2O6F64ENRhLOmcOSSWRkJK2ZA8g8RH1w7C1g==
+  version "0.3.15"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-vitest/-/eslint-plugin-vitest-0.3.15.tgz#2daf4deb73836c5a6e662e2b88646a1772ee025a"
+  integrity sha512-ZUUd9ARKR3p0W7zoWg0irmQW9aM+SlJYZOoFOBemmgwQIHLxtdRLodQGP48nYf8jLdCGFDQqPyaltQQKsa9UMw==
   dependencies:
     "@typescript-eslint/utils" "^6.13.2"
 
