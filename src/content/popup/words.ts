@@ -394,7 +394,6 @@ function appendHeadwordInfo(
       ik: 'ikana',
       oK: 'okanji',
       ok: 'okana',
-      uK: 'ukanji',
       rK: 'rkanji',
       rk: 'rkana',
       // We normally don't show search-only kanji/kana headwords unless they are

@@ -954,10 +954,6 @@
     "message": "少用汉字",
     "description": "Short annotation given to kanji headwords that use rarely-used kanji forms"
   },
-  "head_info_label_ukanji": {
-    "message": "多用汉字",
-    "description": "Short annotation given to kana headwords that are normally written in kanji alone"
-  },
   "lang_label_af": {
     "message": "南非语",
     "description": "Label used to describe senses whose source language is 'af' (Afrikaans)"
