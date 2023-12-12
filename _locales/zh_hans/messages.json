@@ -947,7 +947,7 @@
     "description": "Short annotation given to kanji headwords that use out-dated kanji"
   },
   "head_info_label_rkana": {
-    "message": "少用汉字",
+    "message": "少用假名",
     "description": "Short annotation given to kana headwords that use rarely-used kana forms"
   },
   "head_info_label_rkanji": {
