@@ -744,7 +744,7 @@ function renderSense(
     );
   }
 
-  if (sense.lsrc && sense.lsrc.length) {
+  if (sense.lsrc?.length) {
     fragment.append(renderLangSources(sense.lsrc));
   }
 
@@ -773,41 +773,39 @@ function appendGlosses(glosses: Array<Gloss>, parent: ParentNode) {
   }
 }
 
-function renderLangSources(sources: Array<LangSource>): DocumentFragment {
-  const container = document.createDocumentFragment();
+function renderLangSources(sources: Array<LangSource>): HTMLElement {
+  const sourceLangSpan = html('span', { class: 'w-lsrc', lang: getLangTag() });
 
-  for (const lsrc of sources) {
-    container.append(' ');
+  const startsWithWasei = sources[0]?.wasei;
+  sourceLangSpan.append(
+    browser.i18n.getMessage(
+      startsWithWasei ? 'lang_lsrc_wasei_prefix' : 'lang_lsrc_prefix'
+    )
+  );
 
-    let prefix = lsrc.wasei
-      ? browser.i18n.getMessage('lang_label_wasei')
-      : undefined;
-    if (!prefix) {
-      prefix =
-        browser.i18n.getMessage(`lang_label_${lsrc.lang || 'en'}`) || lsrc.lang;
+  for (const [i, lsrc] of sources.entries()) {
+    if (i) {
+      sourceLangSpan.append(', ');
     }
 
-    const wrapperSpan = html(
-      'span',
-      { class: 'w-lsrc', lang: getLangTag() },
-      '('
-    );
+    const lang =
+      browser.i18n.getMessage(`lang_label_${lsrc.lang || 'en'}`) ||
+      lsrc.lang ||
+      'English';
+    const prefix = lsrc.wasei
+      ? browser.i18n.getMessage('lang_lsrc_wasei', [lang])
+      : lang;
 
-    if (prefix && lsrc.src) {
-      prefix = `${prefix}: `;
-    }
-    if (prefix) {
-      wrapperSpan.append(prefix);
-    }
+    sourceLangSpan.append(lsrc.src ? `${prefix}: ` : prefix);
 
     if (lsrc.src) {
-      wrapperSpan.append(html('span', { lang: lsrc.lang }, lsrc.src));
+      sourceLangSpan.append(
+        html('span', { lang: lsrc.lang || 'en' }, lsrc.src)
+      );
     }
-
-    wrapperSpan.append(')');
-
-    container.append(wrapperSpan);
   }
 
-  return container;
+  sourceLangSpan.append(browser.i18n.getMessage('lang_lsrc_suffix'));
+
+  return sourceLangSpan;
 }

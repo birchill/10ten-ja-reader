@@ -9,6 +9,8 @@ app.
 ## [Unreleased]
 
 - Added localization and handling for new `rk` (rarely-used kana form) tag.
+- Improved rendering of source language information
+  ([#1468](https://github.com/birchill/10ten-ja-reader/issues/1468)).
 
 ## [1.17.0] - 2023-12-06
 
