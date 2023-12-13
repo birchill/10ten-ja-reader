@@ -1111,7 +1111,7 @@
     "description": "Label used to describe senses whose source language is 'lt' (Lithuanian)"
   },
   "lang_label_mi": {
-    "message": "Maori",
+    "message": "Māori",
     "description": "Label used to describe senses whose source language is 'mi' (Maori)"
   },
   "lang_label_ml": {
@@ -1218,10 +1218,6 @@
     "message": "Vietnamese",
     "description": "Label used to describe senses whose source language is 'vi' (Vietnamese)"
   },
-  "lang_label_wasei": {
-    "message": "wasei",
-    "description": "Label used to describe senses that are Japanese constructions (of English, presumably, as opposed to wasei kango)"
-  },
   "lang_label_yi": {
     "message": "Yiddish",
     "description": "Label used to describe senses whose source language is 'yi' (Yiddish)"
@@ -1229,6 +1225,27 @@
   "lang_label_zh": {
     "message": "Chinese",
     "description": "Label used to describe senses whose source language is 'zh' (Chinese)"
+  },
+  "lang_lsrc_prefix": {
+    "message": " (from ",
+    "description": "The start of the text used to indicate a source language, e.g. ' (from English)'"
+  },
+  "lang_lsrc_suffix": {
+    "message": ")",
+    "description": "The end of the text used to indicate a source language"
+  },
+  "lang_lsrc_wasei": {
+    "message": "wasei $lang$",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "English"
+      }
+    }
+  },
+  "lang_lsrc_wasei_prefix": {
+    "message": " (",
+    "description": "The start of the text used to indicate a source language when the first source language is waseigo, e.g. ' (wasei English)'"
   },
   "lang_tag": {
     "message": "en",
