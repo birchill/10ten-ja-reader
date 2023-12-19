@@ -16,7 +16,7 @@ jobs:
         with:
           token: ${{ secrets.PUSH_TOKEN }}
 
-      - uses: actions/setup-node@v4.0.0
+      - uses: actions/setup-node@v4.0.1
         with:
           node-version: 18
           cache: yarn
