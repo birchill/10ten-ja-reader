@@ -61,7 +61,7 @@ function Radio(props: {
   return (
     <span
       class={classes(
-        'inline-block h-4 w-4 rounded-full border border-solid border-zinc-500 bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-700',
+        'inline-block size-4 rounded-full border border-solid border-zinc-500 bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-700',
         props.checked
           ? 'border-blue-700 bg-white shadow-[inset_0_0_0_2.5px_theme(colors.blue.500)] dark:bg-zinc-900'
           : 'group-hover:bg-zinc-200 dark:group-hover:bg-zinc-600'

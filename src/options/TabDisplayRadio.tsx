@@ -104,7 +104,7 @@ function PopupIconBase(props: RenderableProps<IconProps>) {
   return (
     <div class="flex items-center justify-center px-4 py-3">
       <svg
-        class={`${props.themeClass} h-12 w-12 drop-shadow-[0_1px_1px_rgba(0,0,0,0.25)]`}
+        class={`${props.themeClass} size-12 drop-shadow-[0_1px_1px_rgba(0,0,0,0.25)]`}
         viewBox="0 0 48 48"
       >
         <use
