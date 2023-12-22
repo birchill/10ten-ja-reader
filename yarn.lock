@@ -5986,10 +5986,10 @@ kleur@^4.1.5:
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-4.1.5.tgz#95106101795f7050c6c650f350c683febddb1780"
   integrity sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==
 
-knip@3.8.2:
-  version "3.8.2"
-  resolved "https://registry.yarnpkg.com/knip/-/knip-3.8.2.tgz#ee7b62cfc469e8ca9c89eeba86247b0c6d36993b"
-  integrity sha512-OKpEuFrwdGpcnTwo092Z41zjoHW9q0TA4tyNwnx1zGEcxjomgpt+dKTmPxQ31iOVvv5GbUYpeQS9S7dyRDusVw==
+knip@3.8.4:
+  version "3.8.4"
+  resolved "https://registry.yarnpkg.com/knip/-/knip-3.8.4.tgz#fc6ba349d1a5ef2957bd7d3e507bd36f67f08193"
+  integrity sha512-pmgUD7LSe3tRf84qogBnIe8uXcfTR+bjbVwW+TrKeHLayOhpw5Xa2vSqXOQ68fMQ8lBrpp8cW+c+hsYMc2YE+w==
   dependencies:
     "@ericcornelissen/bash-parser" "0.5.2"
     "@npmcli/map-workspaces" "3.0.4"
