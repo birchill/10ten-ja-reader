@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+- Fixed support for Google Docs on chromium browsers (Chrome, Edge, Opera, etc.)
+  ([#1529](https://github.com/birchill/10ten-ja-reader/issues/1529)).
 - Added localization and handling for new `rk` (rarely-used kana form) tag.
 - Improved rendering of source language information
   ([#1468](https://github.com/birchill/10ten-ja-reader/issues/1468)).
