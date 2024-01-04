@@ -1081,6 +1081,7 @@ app.
 - Initial version (yes, it took me four attempts to publish).
 
 [unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.17.1...HEAD
+[1.17.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.17.0...v1.17.1
 [1.17.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.16.2...v1.17.0
 [1.16.2]: https://github.com/birchill/10ten-ja-reader/compare/v1.16.1...v1.16.2
 [1.16.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.16.0...v1.16.1
@@ -1204,5 +1205,3 @@ app.
 [0.0.6]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/birchill/10ten-ja-reader/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/birchill/10ten-ja-reader/releases/tag/v0.0.4
-
-[1.17.1]: https://github.com/birchill/10ten-ja-reader/releases/tag/v1.17.1
