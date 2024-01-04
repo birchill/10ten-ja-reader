@@ -525,9 +525,11 @@ function getDistanceFromTextNode(
 function caretRangeFromPoint({
   point,
   element,
+  limitToDescendants = false,
 }: {
   point: Point;
   element: Element;
+  limitToDescendants?: boolean;
 }): CursorPosition | null {
   // Special handling for text boxes.
   //
@@ -542,13 +544,20 @@ function caretRangeFromPoint({
 
   let range = document.caretRangeFromPoint(point.x, point.y);
 
+  if (
+    !range ||
+    (limitToDescendants && !element.contains(range.startContainer))
+  ) {
+    return null;
+  }
+
   // Unlike `document.caretPositionFromPoint` in Gecko,
   // `document.caretRangeFromPoint` in Blink/WebKit doesn't dig into shadow DOM
   // so we need to do it manually.
-  range = range ? expandShadowDomInRange({ range, point }) : null;
+  range = expandShadowDomInRange({ range, point });
 
   // Check if we are now pointing at an input text node.
-  if (isTextInputNode(range?.startContainer)) {
+  if (isTextInputNode(range.startContainer)) {
     return getCursorPositionFromTextInput({
       input: range!.startContainer,
       point,
@@ -576,6 +585,11 @@ function getCursorPositionFromTextInput({
   input: HTMLInputElement | HTMLTextAreaElement;
   point: Point;
 }): CursorPosition | null {
+  // Empty input elements
+  if (!input.value.trim().length) {
+    return null;
+  }
+
   // This is only called when the platform APIs failed to give us the correct
   // result so we need to synthesize an element with the same layout as the
   // text area, read the text position, then drop it.
@@ -590,7 +604,20 @@ function getCursorPositionFromTextInput({
   const mirrorElement = createMirrorElement(input, input.value);
 
   // Read the offset
-  const result = caretRangeFromPoint({ point, element: mirrorElement });
+  //
+  // We need to be careful not to allow caretRangeFromPoint to visit elements
+  // outside the mirror element or else we can end up in a case of infinite
+  // recursion where we pick up the same input element all over again.
+  //
+  // We _could_ just call `document.caretRangeFromPoint` here which would avoid
+  // recursion but then we'd miss out on the position adjustment we do in
+  // `caretRangeFromPoint` (which maybe would be ok? It's what we do for shadow
+  // DOM after all?).
+  const result = caretRangeFromPoint({
+    point,
+    element: mirrorElement,
+    limitToDescendants: true,
+  });
   if (result) {
     // Adjust the offset before we drop the mirror element
     if (isTextNodePosition(result)) {

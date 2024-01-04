@@ -13,6 +13,8 @@ app.
 - Added localization and handling for new `rk` (rarely-used kana form) tag.
 - Improved rendering of source language information
   ([#1468](https://github.com/birchill/10ten-ja-reader/issues/1468)).
+- (Safari) Fixed a case where 10ten would hang the browser tab when looking up
+  text in a text field.
 
 ## [1.17.0] - 2023-12-06
 
