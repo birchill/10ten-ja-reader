@@ -385,9 +385,13 @@ function getLatestCheckTime(db: JpdictIdb): Date | null {
 
 function hasBuggyObjectStoreClear() {
   const userAgent = navigator.userAgent;
-  const firefoxOrThunderbird = /(?:Firefox|Thunderbird)\/(\d+)/.exec(userAgent);
-  if (firefoxOrThunderbird && firefoxOrThunderbird[1]) {
-    return parseInt(firefoxOrThunderbird[1], 10) >= 112;
+  const firefoxOrThunderbird = /(Firefox|Thunderbird)\/(\d+)/.exec(userAgent);
+  if (firefoxOrThunderbird && firefoxOrThunderbird[2]) {
+    const version = parseInt(firefoxOrThunderbird[2], 10);
+    // The bug has been fixed in Firefox 123.
+    return (
+      version >= 112 && (firefoxOrThunderbird[1] !== 'Firefox' || version < 123)
+    );
   }
   return false;
 }
