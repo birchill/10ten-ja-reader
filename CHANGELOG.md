@@ -8,13 +8,13 @@ app.
 
 ## [Unreleased]
 
-- Fixed support for Google Docs on chromium browsers (Chrome, Edge, Opera, etc.)
+- (Chrome, Edge) Fixed support for Google Docs on chromium browsers
   ([#1529](https://github.com/birchill/10ten-ja-reader/issues/1529)).
-- Added localization and handling for new `rk` (rarely-used kana form) tag.
+- (Safari) Fixed a case where the browser tab would hang when looking up
+  text in a text field.
 - Improved rendering of source language information
   ([#1468](https://github.com/birchill/10ten-ja-reader/issues/1468)).
-- (Safari) Fixed a case where 10ten would hang the browser tab when looking up
-  text in a text field.
+- Added localization and handling for new `rk` (rarely-used kana form) tag.
 
 ## [1.17.0] - 2023-12-06
 
