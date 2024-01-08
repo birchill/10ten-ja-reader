@@ -267,6 +267,8 @@ export class Config {
       return;
     }
 
+    Bugsnag.leaveBreadcrumb('Settings change', updatedChanges);
+
     for (const listener of this.changeListeners) {
       listener(updatedChanges);
     }

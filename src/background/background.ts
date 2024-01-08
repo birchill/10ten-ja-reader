@@ -500,7 +500,12 @@ browser.runtime.onMessage.addListener(
         return browser.runtime.openOptionsPage();
 
       case 'searchWords':
+        Bugsnag.leaveBreadcrumb('Searching for words', {
+          ...request,
+          input: 'x'.repeat(request.input.length),
+        });
         if (pendingSearchWordsRequest) {
+          Bugsnag.leaveBreadcrumb('Canceling previous search');
           pendingSearchWordsRequest.controller.abort();
           pendingSearchWordsRequest = undefined;
         }
@@ -537,7 +542,12 @@ browser.runtime.onMessage.addListener(
         })();
 
       case 'searchOther':
+        Bugsnag.leaveBreadcrumb('Searching for non-words', {
+          ...request,
+          input: 'x'.repeat(request.input.length),
+        });
         if (pendingSearchOtherRequest) {
+          Bugsnag.leaveBreadcrumb('Canceling previous search');
           pendingSearchOtherRequest.controller.abort();
           pendingSearchOtherRequest = undefined;
         }
@@ -567,22 +577,37 @@ browser.runtime.onMessage.addListener(
         })();
 
       case 'translate':
-        return dbReady.then(() =>
-          translate({
-            text: request.input,
-            includeRomaji: request.includeRomaji,
-          })
-        );
+        Bugsnag.leaveBreadcrumb('Translating string', {
+          ...request,
+          input: 'x'.repeat(request.input.length),
+        });
+        return dbReady
+          .then(() =>
+            translate({
+              text: request.input,
+              includeRomaji: request.includeRomaji,
+            })
+          )
+          .catch((e) => {
+            if (e.name === 'AbortError') {
+              return 'aborted';
+            }
+            void Bugsnag.notify(e);
+            return null;
+          });
 
       case 'toggleDefinition':
+        Bugsnag.leaveBreadcrumb('Toggling definitions on/off');
         config.toggleReadingOnly();
         break;
 
       case 'disableMouseInteraction':
+        Bugsnag.leaveBreadcrumb('Disabling mouse interaction');
         config.popupInteractive = false;
         break;
 
       case 'canHoverChanged':
+        Bugsnag.leaveBreadcrumb('Changing hover ability setting', request);
         config.canHover = request.value;
         break;
 
