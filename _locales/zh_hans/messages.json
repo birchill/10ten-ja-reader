@@ -1214,6 +1214,10 @@
     "message": "乌尔都语",
     "description": "Label used to describe senses whose source language is 'ur' (Urdu)"
   },
+  "lang_label_uz": {
+    "message": "乌兹别克语",
+    "description": "Label used to describe senses whose source language is 'uz' (Uzbek)"
+  },
   "lang_label_vi": {
     "message": "越南语",
     "description": "Label used to describe senses whose source language is 'vi' (Vietnamese)"
