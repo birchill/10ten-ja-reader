@@ -89,7 +89,7 @@
     "@typescript-eslint/parser": "6.18.1",
     "archiver": "6.0.1",
     "chai": "5.0.0",
-    "copy-webpack-plugin": "12.0.0",
+    "copy-webpack-plugin": "12.0.1",
     "css-loader": "6.9.0",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
