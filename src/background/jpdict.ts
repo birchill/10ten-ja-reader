@@ -263,10 +263,7 @@ async function getLastUpdateTime(): Promise<number | null> {
   } catch {
     // Extension storage can sometimes randomly fail with 'An unexpected error
     // occurred'. Ignore, but log it.
-    void Bugsnag.notify(
-      new ExtensionStorageError({ key: 'lastDbUpdateTime', action: 'get' }),
-      { severity: 'warning' }
-    );
+    console.warn('Failed to get last update time from storage');
   }
 
   return null;
