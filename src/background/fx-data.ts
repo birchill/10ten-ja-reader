@@ -2,8 +2,6 @@ import Bugsnag from '@birchill/bugsnag-zero';
 import * as s from 'superstruct';
 import browser from 'webextension-polyfill';
 
-import { ExtensionStorageError } from '../common/extension-storage-error';
-
 const FxLocalDataSchema = s.type({
   timestamp: s.min(s.integer(), 0),
   rates: s.record(s.string(), s.number()),
@@ -28,14 +26,11 @@ export async function getLocalFxData(
 
     if (validated) {
       return validated;
-    } else if (error) {
+    } else {
       void Bugsnag.notify(error, { severity: 'warning' });
     }
-  } catch (e) {
-    void Bugsnag.notify(
-      new ExtensionStorageError({ key: 'fx', action: 'get' }),
-      { severity: 'warning', metadata: { error: e } }
-    );
+  } catch {
+    console.warn('Failed to get fx data from storage');
   }
 
   return undefined;
