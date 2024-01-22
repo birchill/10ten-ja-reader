@@ -10,7 +10,7 @@ import {
 import * as url from 'node:url';
 import { createBrotliDecompress } from 'node:zlib';
 
-const BASE_URL = 'https://data.10ten.study';
+const BASE_URL = 'https://data.10ten.life';
 
 async function main() {
   // Download the latest data

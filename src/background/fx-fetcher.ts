@@ -120,7 +120,7 @@ export class FxFetcher {
     };
 
     // Set up base URL
-    let url = 'https://data.10ten.study/fx/jpy.json';
+    let url = 'https://data.10ten.life/fx/jpy.json';
 
     // Set up query string
     const manifest = browser.runtime.getManifest();
