@@ -745,6 +745,45 @@ browser.runtime.onInstalled.addListener(async (details) => {
   }
 });
 
+browser.runtime.onPerformanceWarning?.addListener(async (details) => {
+  // We'd really like to know which site this is happening on so we can debug
+  // and try to fix it.
+  //
+  // It's hard to be sure what is an acceptable amount of information to send,
+  // however.
+  //
+  // We'd like to report the full URL but even after stripping query strings,
+  // there's still the possibility of leaking private information such as with
+  // capability URLs.
+  //
+  // The hostname is probably safe but ideally we'd add an opt-out before
+  // sending that.
+  //
+  // Example code for fetching the hostname:
+  //
+  // let host: string | undefined;
+  // if (typeof details.tabId === 'number' && details.tabId) {
+  //   try {
+  //     const rawUrl = (await browser.tabs.get(details.tabId)).url;
+  //     if (rawUrl) {
+  //       const urlObj = new URL(rawUrl);
+  //       host = urlObj.hostname;
+  //     }
+  //   } catch {
+  //     /* Ignore */
+  //   }
+  // }
+  //
+  // For now we'll just see if we get these reports at all and decide if we need
+  // more information to fix them.
+  void Bugsnag.notify(
+    { name: 'PerformanceWarning', message: details.description },
+    {
+      metadata: { 'Performance warning': details },
+    }
+  );
+});
+
 registerMenuListeners({
   onToggleMenu: toggle,
   onTogglePuck: (enabled: boolean) => {
