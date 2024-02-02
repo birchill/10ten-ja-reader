@@ -1081,7 +1081,9 @@ export class ContentHandler {
     }
 
     const pinPopup = normalizeKeys(this.config.keys.pinPopup);
-    const key = normalizeKey(event.key);
+    // On Chrome, if we auto-fill a text box, the event.key member can be
+    // undefined.
+    const key = event.key ? normalizeKey(event.key) : '';
     if (pinPopup.includes(key)) {
       if (this.pinToggleState === 'keydown' && this.togglePin()) {
         event.preventDefault();
