@@ -7595,35 +7595,26 @@ react-cosmos-core@^6.0.1:
     lodash-es "4.17.21"
     react-is "18.2.0"
 
-react-cosmos-dom@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/react-cosmos-dom/-/react-cosmos-dom-6.0.1.tgz#e1cda9daa890c64d665783f0969c3d20a6cd07f3"
-  integrity sha512-K+fsULpY7rkGv3Ls3/tCOAW/tpFEkU+FYRLzy2wVblFVQTlPHAOopELFyxTevcYfNasFS388RZxoHew6MBNqfw==
+react-cosmos-dom@^6.0.3:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/react-cosmos-dom/-/react-cosmos-dom-6.0.3.tgz#711593c81a03b7c9128de4070951f2434dfb19f9"
+  integrity sha512-JGHcvfbNCvU45mKk5C+5IX/2w5ph5PvzDg6yEzj72exPEUSRBNeD0bvcCsx/BiaEVBUOicUOlsBSH1ZAi7/NUA==
   dependencies:
     lodash-es "4.17.21"
     react-cosmos-core "^6.0.1"
-    react-cosmos-renderer "^6.0.1"
+    react-cosmos-renderer "^6.0.3"
 
-react-cosmos-plugin-webpack@6.0.2:
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/react-cosmos-plugin-webpack/-/react-cosmos-plugin-webpack-6.0.2.tgz#59dd3c4a5e2a80010e4235e244fb36ec72575061"
-  integrity sha512-BjthvOKWYoF2XDOiz0deOj5uRBOyTndF19nTRIHWOrUxktLiK6VBvLURiG3lAQb5eO3rgZHLKB0GI/eIyyBEig==
+react-cosmos-plugin-webpack@6.0.3:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/react-cosmos-plugin-webpack/-/react-cosmos-plugin-webpack-6.0.3.tgz#07566c3c41b7820eb550159853f55a5de90421f1"
+  integrity sha512-NDK+W8Bj6bJVahriF6QRuUncQsiiCfIN0lGp+qvs9adcZSVXKIwraVzREc39qRz9QEzeDkVblQC6ROfxnbodhg==
   dependencies:
     lodash-es "4.17.21"
     react-cosmos-core "^6.0.1"
-    react-cosmos-dom "^6.0.1"
+    react-cosmos-dom "^6.0.3"
     react-error-overlay "6.0.9"
     webpack-dev-middleware "6.1.1"
     webpack-hot-middleware "2.26.0"
-
-react-cosmos-renderer@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/react-cosmos-renderer/-/react-cosmos-renderer-6.0.1.tgz#7654aee7f10074ca9a01747e3465d1269434daaa"
-  integrity sha512-ACkiMX1zSSNmwmAd6H/70aK8328C7xa8bgozp2EtY5Z5LGPzVs8qifEH6H4cqff3u0L/BUCf1DujVNJOGVKRMw==
-  dependencies:
-    lodash-es "4.17.21"
-    react-cosmos-core "^6.0.1"
-    react-is "18.2.0"
 
 react-cosmos-renderer@^6.0.3:
   version "6.0.3"
