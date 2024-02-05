@@ -107,7 +107,7 @@
     "playwright-test": "^14.0.0",
     "postcss": "8.4.33",
     "postcss-loader": "8.0.0",
-    "prettier": "3.2.4",
+    "prettier": "3.2.5",
     "prettier-plugin-organize-attributes": "1.0.0",
     "prettier-plugin-packagejson": "2.4.10",
     "prettier-plugin-tailwindcss": "0.5.11",
