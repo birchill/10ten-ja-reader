@@ -295,7 +295,7 @@ export function renderPopup(
 }
 
 function getDefaultContainer(): HTMLElement {
-  return getOrCreateEmptyContainer({
+  const defaultContainer = getOrCreateEmptyContainer({
     id: 'tenten-ja-window',
     styles: popupStyles.toString(),
     // Make sure the popup container appears _before_ the puck container so that
@@ -303,6 +303,15 @@ function getDefaultContainer(): HTMLElement {
     before: LookupPuck.id,
     legacyIds: ['rikaichamp-window'],
   });
+
+  // Make sure our popup doesn't get inverted by Wikipedia's (experimental) dark
+  // mode.
+  if (document.location.hostname.endsWith('wikipedia.org')) {
+    defaultContainer.classList.add('mw-no-invert');
+    defaultContainer.style.filter = 'inherit';
+  }
+
+  return defaultContainer;
 }
 
 function resetContainer({

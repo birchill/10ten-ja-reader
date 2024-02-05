@@ -8,6 +8,10 @@ app.
 
 ## [Unreleased]
 
+- Stopped popup being inverted when Wikipedia's experimental dark mode is
+  enabled
+  ([#1590](https://github.com/birchill/10ten-ja-reader/issues/1590)).
+
 ## [1.17.1] - 2024-01-04
 
 - (Chrome, Edge) Fixed support for Google Docs on chromium browsers
