@@ -105,7 +105,7 @@
     "mocha": "10.2.0",
     "playwright": "1.41.2",
     "playwright-test": "^14.0.0",
-    "postcss": "8.4.33",
+    "postcss": "8.4.34",
     "postcss-loader": "8.0.0",
     "prettier": "3.2.5",
     "prettier-plugin-organize-attributes": "1.0.0",
