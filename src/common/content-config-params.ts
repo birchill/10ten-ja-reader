@@ -1,3 +1,5 @@
+import { PuckState } from './puck-state';
+
 export type HighlightStyle = 'yellow' | 'blue';
 
 // Keyboard shortcut keys. Each of these is an array of keycodes (as reported
@@ -102,6 +104,10 @@ export interface ContentConfigParams {
 
   // Indicates the type of display to use for part-of-speech labels.
   posDisplay: PartOfSpeechDisplay;
+
+  // The state of the puck on the screen (e.g. position, orientation, active
+  // state etc.)
+  puckState: PuckState | undefined;
 
   // True if only the reading (and not the definition) should be shown.
   readingOnly: boolean;

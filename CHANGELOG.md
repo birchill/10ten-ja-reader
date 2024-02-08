@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- Made the puck persist its position, orientation, and active state between
+  pages
+  ([#1561](https://github.com/birchill/10ten-ja-reader/issues/1561)).
 - Stopped popup being inverted when Wikipedia's experimental dark mode is
   enabled
   ([#1590](https://github.com/birchill/10ten-ja-reader/issues/1590)).

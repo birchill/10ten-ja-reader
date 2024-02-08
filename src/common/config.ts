@@ -30,6 +30,7 @@ import {
 import { DbLanguageId, dbLanguages } from './db-languages';
 import { ExtensionStorageError } from './extension-storage-error';
 import { PopupKeys, StoredKeyboardKeys } from './popup-keys';
+import { PuckState } from './puck-state';
 import {
   convertLegacyReference,
   getReferencesForLang,
@@ -70,6 +71,7 @@ interface Settings {
     canHover?: boolean;
     popupInteractive?: boolean;
     showPuck?: 'show' | 'hide';
+    puckState?: PuckState;
   };
   noTextHighlight?: boolean;
   popupStyle?: string;
@@ -976,7 +978,15 @@ export class Config {
       localSettings.showPuck = value;
     }
     this.settings.localSettings = localSettings;
-    void browser.storage.local.set({ settings: localSettings });
+
+    // If value is 'hide' we should reset the puck state but since that writes
+    // to the same key in local storage we should wait for the current write to
+    // complete first.
+    void browser.storage.local.set({ settings: localSettings }).finally(() => {
+      if (value === 'hide') {
+        this.puckState = undefined;
+      }
+    });
   }
 
   get computedShowPuck(): 'show' | 'hide' {
@@ -985,6 +995,29 @@ export class Config {
       : this.canHover
         ? 'hide'
         : 'show';
+  }
+
+  // Puck state (local): Defaults to undefined
+
+  get puckState(): PuckState | undefined {
+    return this.settings.localSettings?.puckState;
+  }
+
+  set puckState(value: PuckState | undefined) {
+    const storedSetting = this.settings.localSettings?.puckState;
+    if (JSON.stringify(storedSetting) === JSON.stringify(value)) {
+      return;
+    }
+
+    const localSettings = { ...this.settings.localSettings };
+    if (!value) {
+      delete localSettings.puckState;
+    } else {
+      localSettings.puckState = value;
+    }
+    this.settings.localSettings = localSettings;
+
+    void browser.storage.local.set({ settings: localSettings });
   }
 
   // showRomaji: Defaults to false
@@ -1109,6 +1142,7 @@ export class Config {
       popupInteractive: this.popupInteractive,
       popupStyle: this.popupStyle,
       posDisplay: this.posDisplay,
+      puckState: this.puckState,
       readingOnly: this.readingOnly,
       showKanjiComponents: this.showKanjiComponents,
       showPriority: this.showPriority,

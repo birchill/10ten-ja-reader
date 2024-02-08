@@ -611,6 +611,10 @@ browser.runtime.onMessage.addListener(
         config.canHover = request.value;
         break;
 
+      case 'puckStateChanged':
+        config.puckState = request.value;
+        break;
+
       case 'isDbUpdating':
         return Promise.resolve(isDbUpdating());
 
