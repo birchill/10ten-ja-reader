@@ -383,8 +383,18 @@ export class ContentHandler {
 
   setUpPuck() {
     if (!this.puck) {
-      this.puck = new LookupPuck(this.safeAreaProvider, () => {
-        this.clearResult();
+      this.puck = new LookupPuck({
+        initialPosition: this.config.puckState,
+        safeAreaProvider: this.safeAreaProvider,
+        onLookupDisabled: () => {
+          this.clearResult();
+        },
+        onPuckStateChanged: (state) => {
+          void browser.runtime.sendMessage({
+            type: 'puckStateChanged',
+            value: state,
+          });
+        },
       });
     }
 
@@ -392,7 +402,9 @@ export class ContentHandler {
       icon: this.config.toolbarIcon,
       theme: this.config.popupStyle,
     });
-    this.puck.setEnabledState('active');
+    this.puck.setEnabledState(
+      this.config.puckState?.active === false ? 'inactive' : 'active'
+    );
   }
 
   tearDownPuck() {
@@ -468,6 +480,12 @@ export class ContentHandler {
         case 'popupStyle':
           setPopupStyle(value);
           this.puck?.setTheme(value);
+          break;
+
+        case 'puckState':
+          if (value) {
+            this.puck?.setState(value);
+          }
           break;
 
         case 'showPuck':

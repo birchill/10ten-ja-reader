@@ -32,6 +32,14 @@ export const BackgroundRequestSchema = discriminator('type', {
   }),
   isDbUpdating: s.type({}),
   options: s.type({}),
+  puckStateChanged: s.type({
+    value: s.object({
+      x: s.number(),
+      y: s.number(),
+      orientation: s.enums(['above', 'below']),
+      active: s.boolean(),
+    }),
+  }),
   searchWords: SearchRequestSchema,
   searchOther: SearchOtherRequestSchema,
   toggleDefinition: s.type({}),

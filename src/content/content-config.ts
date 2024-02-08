@@ -47,7 +47,7 @@ export class ContentConfig implements ContentConfigParams {
     this.params = { ...params };
 
     const changes: ContentConfigChange[] = [];
-    const objectKeysWeCareAbout = ['autoExpand'];
+    const objectKeysWeCareAbout = ['autoExpand', 'puckState'];
     for (const [key, value] of Object.entries(
       before
     ) as Entries<ContentConfigParams>) {
@@ -67,7 +67,9 @@ export class ContentConfig implements ContentConfigParams {
       }
     }
 
-    this.notifyListeners(changes);
+    if (changes.length) {
+      this.notifyListeners(changes);
+    }
   }
 
   addListener(listener: ContentConfigListener) {
@@ -162,6 +164,9 @@ export class ContentConfig implements ContentConfigParams {
   }
   get posDisplay() {
     return this.params.posDisplay;
+  }
+  get puckState() {
+    return this.params.puckState;
   }
   get readingOnly() {
     return this.params.readingOnly;

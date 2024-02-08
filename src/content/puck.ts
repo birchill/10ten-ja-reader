@@ -1,4 +1,5 @@
 /// <reference path="../common/css.d.ts" />
+import { PuckState } from '../common/puck-state';
 import { SVG_NS } from '../utils/dom-utils';
 import { MarginBox } from '../utils/geometry';
 import { getThemeClass } from '../utils/themes';
@@ -83,6 +84,8 @@ function clearClickTimeout(clickState: ClickState) {
 //   furthermore looks up words.
 export type PuckEnabledState = 'disabled' | 'inactive' | 'active';
 
+export type InitialPuckPosition = Omit<PuckState, 'active'>;
+
 type RestoreContentParams = { root: Element; restore: () => void };
 
 export class LookupPuck {
@@ -130,10 +133,36 @@ export class LookupPuck {
   // to its original state when we have finished with it.
   private contentToRestore: RestoreContentParams | undefined;
 
-  constructor(
-    private safeAreaProvider: SafeAreaProvider,
-    private onLookupDisabled: () => void
-  ) {}
+  private safeAreaProvider: SafeAreaProvider;
+
+  // Callbacks
+  private onLookupDisabled: () => void;
+  private onPuckStateChanged: (puckState: PuckState) => void;
+
+  constructor({
+    initialPosition,
+    safeAreaProvider,
+    onLookupDisabled,
+    onPuckStateChanged,
+  }: {
+    initialPosition?: InitialPuckPosition;
+    safeAreaProvider: SafeAreaProvider;
+    onLookupDisabled: () => void;
+    onPuckStateChanged: (puckState: PuckState) => void;
+  }) {
+    if (initialPosition) {
+      this.puckX = initialPosition.x;
+      this.puckY = initialPosition.y;
+      this.targetOrientation = initialPosition.orientation;
+    } else {
+      // Initially position the puck in the bottom-right corner of the screen
+      this.puckX = Number.MAX_SAFE_INTEGER;
+      this.puckY = Number.MAX_SAFE_INTEGER;
+    }
+    this.safeAreaProvider = safeAreaProvider;
+    this.onLookupDisabled = onLookupDisabled;
+    this.onPuckStateChanged = onPuckStateChanged;
+  }
 
   private readonly onSafeAreaUpdated = () => {
     this.cachedViewportDimensions = null;
@@ -767,12 +796,14 @@ export class LookupPuck {
     this.setEnabledState(
       this.enabledState === 'active' ? 'inactive' : 'active'
     );
+    this.notifyPuckStateChanged();
   };
 
   private readonly onPuckDoubleClick = () => {
     this.targetOrientation =
       this.targetOrientation === 'above' ? 'below' : 'above';
     this.setPositionWithinSafeArea(this.puckX, this.puckY);
+    this.notifyPuckStateChanged();
   };
 
   // May be called manually (without an event), or upon 'pointerup' or
@@ -786,6 +817,7 @@ export class LookupPuck {
     if (this.puck) {
       this.puck.classList.remove('dragging');
       this.setPositionWithinSafeArea(this.puckX, this.puckY);
+      this.notifyPuckStateChanged();
     }
 
     window.removeEventListener('pointermove', this.onWindowPointerMove, {
@@ -929,11 +961,7 @@ export class LookupPuck {
         extraAltitudeToClearIos15SafariSafeAreaActivationZone;
     }
 
-    // Place in the bottom-right of the safe area
-    this.setPositionWithinSafeArea(
-      Number.MAX_SAFE_INTEGER,
-      Number.MAX_SAFE_INTEGER
-    );
+    this.setPositionWithinSafeArea(this.puckX, this.puckY);
 
     // Add event listeners
     //
@@ -1074,6 +1102,12 @@ export class LookupPuck {
       window.removeEventListener('pointerup', this.noOpEventHandler);
       clearClickTimeout(this.clickState);
       this.clickState = { kind: 'idle' };
+
+      // Reset puck position
+      this.puckX = Number.MAX_SAFE_INTEGER;
+      this.puckY = Number.MAX_SAFE_INTEGER;
+      this.targetOrientation = 'above';
+
       return;
     }
 
@@ -1120,6 +1154,33 @@ export class LookupPuck {
       this.onLookupDisabled();
       return;
     }
+  }
+
+  setState(state: PuckState): void {
+    if (this.enabledState === 'disabled') {
+      return;
+    }
+
+    this.targetOrientation = state.orientation;
+    this.setPositionWithinSafeArea(state.x, state.y);
+
+    const updatedEnabledState = state.active ? 'active' : 'inactive';
+    if (this.enabledState !== updatedEnabledState) {
+      this.setEnabledState(updatedEnabledState);
+    }
+  }
+
+  notifyPuckStateChanged(): void {
+    if (this.enabledState === 'disabled') {
+      return;
+    }
+
+    this.onPuckStateChanged({
+      x: this.puckX,
+      y: this.puckY,
+      orientation: this.targetOrientation,
+      active: this.enabledState === 'active',
+    });
   }
 
   highlightMatch(): void {
