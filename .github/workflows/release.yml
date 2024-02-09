@@ -12,14 +12,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.PUSH_TOKEN }}
 
       - uses: actions/setup-node@v4.0.1
         with:
-          node-version: 18
+          node-version: 20
           cache: yarn
 
       - name: Set Git username
