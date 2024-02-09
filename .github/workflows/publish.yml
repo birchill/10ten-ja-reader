@@ -15,7 +15,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4.0.1
         with:
-          node-version: 18
+          node-version: 20
           cache: yarn
 
       # See https://github.com/yarnpkg/yarn/issues/1874
@@ -73,7 +73,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4.0.1
         with:
-          node-version: 18
+          node-version: 20
           cache: yarn
 
       # See https://github.com/yarnpkg/yarn/issues/1874
