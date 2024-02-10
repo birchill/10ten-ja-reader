@@ -1179,6 +1179,30 @@ describe('getTextAtPoint', () => {
     );
   });
 
+  it('should skip content in ruby transcriptions that have nested spans', () => {
+    testDiv.innerHTML =
+      '<p><span>次々と</span><ruby>仕<rt><span>し</span></rt>掛<rt><span>か</span></rt></ruby><span>けられる。</span></p>';
+    const shiNode = testDiv.firstChild!.childNodes[1].firstChild as Text;
+    const kaNode = testDiv.firstChild!.childNodes[1].childNodes[2] as Text;
+    const kerareruNode = testDiv.firstChild!.childNodes[2].firstChild as Text;
+    const bbox = getBboxForOffset(shiNode, 0);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(
+      result,
+      '仕掛けられる',
+      [shiNode, 0, 1],
+      [kaNode, 0, 1],
+      [kerareruNode, 0, 4]
+    );
+  });
+
   it('should return the ruby base text when rb elements are used', () => {
     testDiv.innerHTML =
       '<ruby><rb>振</rb><rp>(</rp><rt>ふ</rt><rp>)</rp>り<rb>仮</rb><rp>(</rp><rt>が</rt><rp>)</rp><rb>名</rb><rp>(</rp><rt>な</rt><rp>)</rp></ruby>';
