@@ -27,7 +27,7 @@ export function scanText({
   if (!isRubyAnnotationElement(inlineAncestor)) {
     filter = {
       acceptNode: (node) =>
-        isRubyAnnotationElement(node.parentElement)
+        node.parentElement?.closest('rp, rt')
           ? NodeFilter.FILTER_REJECT
           : NodeFilter.FILTER_ACCEPT,
     };
@@ -153,7 +153,7 @@ export function scanText({
 }
 
 function isRubyAnnotationElement(element: Element | null) {
-  return element && ['RP', 'RT'].includes(element.tagName);
+  return element?.matches('rp, rt');
 }
 
 function isInline(element: Element | null) {
