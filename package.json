@@ -119,7 +119,7 @@
     "tailwindcss": "3.4.1",
     "terser-webpack-plugin": "5.3.10",
     "ts-loader": "9.5.1",
-    "tsx": "4.7.0",
+    "tsx": "4.7.1",
     "vitest": "1.2.2",
     "vitest-fetch-mock": "^0.2.2",
     "vitest-github-actions-reporter": "^0.11.1",
