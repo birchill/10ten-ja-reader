@@ -309,7 +309,7 @@ describe('getEntryToCopy', () => {
           romaji: ['kankokugo'],
         },
       })
-    ).toEqual('韓国語 [かんこくご] (kankokugo) (n) Korean (language)');
+    ).toEqual('韓国語 [かんこくご] (kankokugo)\n(n) Korean (language)');
   });
 
   it('prepares text and extended metadata from a word search', () => {
@@ -338,7 +338,7 @@ describe('getEntryToCopy', () => {
         },
       })
     ).toEqual(
-      "ホルモン (1) (n,adj-no) hormone (de: Hormon) (2) (n,adj-no) (ksb:) cows' or pigs' offal (entrails) (from 放る物)"
+      "ホルモン\n(1) (n,adj-no) hormone (de: Hormon)\n(2) (n,adj-no) (ksb:) cows' or pigs' offal (entrails) (from 放る物)"
     );
   });
 
@@ -366,7 +366,7 @@ describe('getEntryToCopy', () => {
         },
       })
     ).toEqual(
-      "虎嘯 [こしょう] (1) (n,vs) tiger's howling (2) (n,vs) (fig.) being out and active in the world (of a hero, etc.)"
+      "虎嘯 [こしょう]\n(1) (n,vs) tiger's howling\n(2) (n,vs) (fig.) being out and active in the world (of a hero, etc.)"
     );
   });
 
@@ -414,7 +414,7 @@ describe('getEntryToCopy', () => {
         },
       })
     ).toEqual(
-      '引き裂く, 引裂く [ひきさく] (1) (v5k,vt) to tear up; to tear off; to rip up; to tear to pieces (2) (v5k,vt) to (forcibly) separate (a couple, family, etc.); to force apart; to tear apart'
+      '引き裂く, 引裂く [ひきさく]\n(1) (v5k,vt) to tear up; to tear off; to rip up; to tear to pieces\n(2) (v5k,vt) to (forcibly) separate (a couple, family, etc.); to force apart; to tear apart'
     );
   });
 
@@ -441,7 +441,7 @@ describe('getEntryToCopy', () => {
           ],
         },
       })
-    ).toEqual('カネロニ, カネローニ (n) (food) cannelloni; canneloni (it)');
+    ).toEqual('カネロニ, カネローニ\n(n) (food) cannelloni; canneloni (it)');
   });
 
   it('prepares text from name search results', () => {
@@ -456,7 +456,7 @@ describe('getEntryToCopy', () => {
           matchLen: 3,
         },
       })
-    ).toEqual('いぶ喜, いぶ希, いぶ記 [いぶき] (fem) Ibuki');
+    ).toEqual('いぶ喜, いぶ希, いぶ記 [いぶき]\n(fem) Ibuki');
   });
 
   it('prepares text from kanji search results', () => {

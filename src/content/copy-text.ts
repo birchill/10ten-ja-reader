@@ -108,23 +108,24 @@ export function getEntryToCopy(
           result += ` (${entry.data.romaji.join(', ')})`;
         }
 
-        result += ' ' + serializeDefinition(entry.data);
+        result +=
+          '\n' + serializeDefinition(entry.data, { oneSensePerLine: true });
       }
       break;
 
     case 'name':
       result = entry.data.k
-        ? `${entry.data.k.join(', ')} [${entry.data.r.join(', ')}]`
-        : entry.data.r.join(', ');
+        ? `${entry.data.k.join(', ')} [${entry.data.r.join(', ')}]\n`
+        : entry.data.r.join(', ') + '\n';
 
       for (const [i, tr] of entry.data.tr.entries()) {
         if (i) {
           result += '; ';
         }
         if (tr.type) {
-          result += ` (${tr.type.join(', ')})`;
+          result += `(${tr.type.join(', ')}) `;
         }
-        result += ' ' + tr.det.join(', ');
+        result += tr.det.join(', ');
       }
       break;
 
@@ -197,7 +198,10 @@ export function getEntryToCopy(
   return result!;
 }
 
-function serializeDefinition(entry: WordResult): string {
+function serializeDefinition(
+  entry: WordResult,
+  options: { oneSensePerLine: boolean } = { oneSensePerLine: false }
+): string {
   const senses = entry.s;
   if (senses.length > 1) {
     const nativeSenses = senses
@@ -207,7 +211,9 @@ function serializeDefinition(entry: WordResult): string {
       .filter((s) => !s.lang || s.lang === 'en')
       .map((s, index) => `(${index + 1}) ${serializeSense(s)}`);
 
-    return [...nativeSenses, ...enSenses].join(' ');
+    return [...nativeSenses, ...enSenses].join(
+      options.oneSensePerLine ? '\n' : ' '
+    );
   } else {
     return serializeSense(senses[0]);
   }
