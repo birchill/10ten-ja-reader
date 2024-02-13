@@ -15,8 +15,6 @@ export type CopyEntry =
   | { type: 'name'; data: NameResult }
   | { type: 'kanji'; data: KanjiResult };
 
-type Headword = WordResult['k'][0] | WordResult['r'][0];
-
 export function getTextToCopy({
   entry,
   copyType,
@@ -52,10 +50,9 @@ export function getWordToCopy(entry: CopyEntry): string {
   switch (entry.type) {
     case 'word':
       {
-        let headwords: Headword[] =
-          entry.data.k && entry.data.k.length
-            ? entry.data.k.filter((k) => !k.i?.includes('sK'))
-            : entry.data.r.filter((r) => !r.i?.includes('sk'));
+        let headwords = entry.data.k?.length
+          ? entry.data.k.filter((k) => !k.i?.includes('sK'))
+          : entry.data.r.filter((r) => !r.i?.includes('sk'));
 
         // Only show matches -- unless our only matches were search-only
         // terms -- in which case we want to include all headwords.
@@ -79,6 +76,25 @@ export function getWordToCopy(entry: CopyEntry): string {
   return result!;
 }
 
+// We include all headwords except search-only / rare headwords unless we
+// matched on them.
+//
+// We choose to include search-only / rare headwords if we matched on them since
+// it's quite possible that if a user matched on a rare headword such as a rare
+// kanji they'd like to copy it to the clipboard for further searching.
+
+function isRelevantKanjiHeadword(
+  k: Extract<CopyEntry, { type: 'word' }>['data']['k'][number]
+) {
+  return (!k.i?.includes('sK') && !k.i?.includes('rK')) || k.matchRange;
+}
+
+function isRelevantKanaHeadword(
+  r: Extract<CopyEntry, { type: 'word' }>['data']['r'][number]
+) {
+  return (!r.i?.includes('sk') && !r.i?.includes('rk')) || r.matchRange;
+}
+
 export function getEntryToCopy(
   entry: CopyEntry,
   {
@@ -95,10 +111,10 @@ export function getEntryToCopy(
     case 'word':
       {
         const kanjiHeadwords = entry.data.k
-          ? entry.data.k.filter((k) => !k.i?.includes('sK')).map((k) => k.ent)
+          ? entry.data.k.filter(isRelevantKanjiHeadword).map((k) => k.ent)
           : [];
         const kanaHeadwords = entry.data.r
-          .filter((r) => !r.i?.includes('sk'))
+          .filter(isRelevantKanaHeadword)
           .map((r) => r.ent);
 
         result = kanjiHeadwords.length
@@ -303,14 +319,14 @@ export function getFieldsToCopy(
       result =
         entry.data.k && entry.data.k.length
           ? entry.data.k
-              .filter((k) => !k.i?.includes('sK'))
+              .filter(isRelevantKanjiHeadword)
               .map((k) => k.ent)
               .join('; ')
           : '';
       result +=
         '\t' +
         entry.data.r
-          .filter((r) => !r.i?.includes('sk'))
+          .filter(isRelevantKanaHeadword)
           .map((r) => r.ent)
           .join('; ');
       if (entry.data.romaji?.length) {
