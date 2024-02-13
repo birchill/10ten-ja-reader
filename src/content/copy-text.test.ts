@@ -444,6 +444,107 @@ describe('getEntryToCopy', () => {
     ).toEqual('カネロニ, カネローニ\n(n) (food) cannelloni; canneloni (it)');
   });
 
+  it('simplifies the result of a word search when the corresponding flags are set', () => {
+    expect(
+      getEntryToCopy(
+        {
+          type: 'word',
+          data: {
+            id: 1589220,
+            k: [
+              {
+                ent: '落ち着く',
+                p: ['i1'],
+                match: true,
+                wk: 14,
+                bv: { l: 2 },
+                matchRange: [0, 4],
+              },
+              { ent: '落ちつく', p: ['n2', 'nf36'], match: false },
+              { ent: '落着く', match: false },
+              { ent: '落ち付く', i: ['rK'], match: false },
+              { ent: '落付く', i: ['sK'], match: false },
+            ],
+            r: [
+              { ent: 'おちつく', p: ['i1', 'n2', 'nf36'], a: 0, match: true },
+            ],
+            s: [
+              {
+                g: [
+                  { str: 'to calm down' },
+                  { str: 'to compose oneself' },
+                  { str: 'to regain presence of mind' },
+                  { str: 'to relax' },
+                ],
+                pos: ['v5k', 'vi'],
+                match: true,
+              },
+              {
+                g: [
+                  { str: 'to calm down' },
+                  { str: 'to settle down' },
+                  { str: 'to die down' },
+                  { str: 'to become stable' },
+                  { str: 'to abate' },
+                ],
+                pos: ['v5k', 'vi'],
+                match: true,
+              },
+              {
+                g: [
+                  { str: 'to settle down (in a location, job, etc.)' },
+                  { str: 'to settle in' },
+                ],
+                pos: ['v5k', 'vi'],
+                match: true,
+              },
+              {
+                g: [
+                  {
+                    str: 'to be settled (of an arrangement, conclusion, etc.)',
+                  },
+                  { str: 'to be fixed' },
+                  { str: 'to have been reached' },
+                ],
+                pos: ['v5k', 'vi'],
+                match: true,
+              },
+              {
+                g: [
+                  { str: 'to harmonize with' },
+                  { str: 'to harmonise with' },
+                  { str: 'to match' },
+                  { str: 'to suit' },
+                  { str: 'to fit' },
+                ],
+                pos: ['v5k', 'vi'],
+                match: true,
+              },
+              {
+                g: [
+                  { str: 'to be unobtrusive' },
+                  { str: 'to be quiet' },
+                  { str: 'to be subdued' },
+                ],
+                pos: ['v5k', 'vi'],
+                xref: [{ k: '落ち着いた', r: 'おちついた', sense: 3 }],
+                inf: 'usu. before a noun as 落ち着いた',
+                match: true,
+              },
+            ],
+          },
+        },
+        {
+          includeAllSenses: false,
+          includeLessCommonHeadwords: false,
+          includePartOfSpeech: false,
+        }
+      )
+    ).toEqual(
+      '落ち着く [おちつく] to calm down; to compose oneself; to regain presence of mind; to relax'
+    );
+  });
+
   it('prepares text from name search results', () => {
     expect(
       getEntryToCopy({
@@ -666,6 +767,107 @@ describe('getFieldsToCopy', () => {
         },
       })
     ).toEqual('\tカネロニ; カネローニ\t(n) (food) cannelloni; canneloni (it)');
+  });
+
+  it('simplifies the result of a word search when the corresponding flags are set', () => {
+    expect(
+      getFieldsToCopy(
+        {
+          type: 'word',
+          data: {
+            id: 1589220,
+            k: [
+              {
+                ent: '落ち着く',
+                p: ['i1'],
+                match: true,
+                wk: 14,
+                bv: { l: 2 },
+                matchRange: [0, 4],
+              },
+              { ent: '落ちつく', p: ['n2', 'nf36'], match: false },
+              { ent: '落着く', match: false },
+              { ent: '落ち付く', i: ['rK'], match: false },
+              { ent: '落付く', i: ['sK'], match: false },
+            ],
+            r: [
+              { ent: 'おちつく', p: ['i1', 'n2', 'nf36'], a: 0, match: true },
+            ],
+            s: [
+              {
+                g: [
+                  { str: 'to calm down' },
+                  { str: 'to compose oneself' },
+                  { str: 'to regain presence of mind' },
+                  { str: 'to relax' },
+                ],
+                pos: ['v5k', 'vi'],
+                match: true,
+              },
+              {
+                g: [
+                  { str: 'to calm down' },
+                  { str: 'to settle down' },
+                  { str: 'to die down' },
+                  { str: 'to become stable' },
+                  { str: 'to abate' },
+                ],
+                pos: ['v5k', 'vi'],
+                match: true,
+              },
+              {
+                g: [
+                  { str: 'to settle down (in a location, job, etc.)' },
+                  { str: 'to settle in' },
+                ],
+                pos: ['v5k', 'vi'],
+                match: true,
+              },
+              {
+                g: [
+                  {
+                    str: 'to be settled (of an arrangement, conclusion, etc.)',
+                  },
+                  { str: 'to be fixed' },
+                  { str: 'to have been reached' },
+                ],
+                pos: ['v5k', 'vi'],
+                match: true,
+              },
+              {
+                g: [
+                  { str: 'to harmonize with' },
+                  { str: 'to harmonise with' },
+                  { str: 'to match' },
+                  { str: 'to suit' },
+                  { str: 'to fit' },
+                ],
+                pos: ['v5k', 'vi'],
+                match: true,
+              },
+              {
+                g: [
+                  { str: 'to be unobtrusive' },
+                  { str: 'to be quiet' },
+                  { str: 'to be subdued' },
+                ],
+                pos: ['v5k', 'vi'],
+                xref: [{ k: '落ち着いた', r: 'おちついた', sense: 3 }],
+                inf: 'usu. before a noun as 落ち着いた',
+                match: true,
+              },
+            ],
+          },
+        },
+        {
+          includeAllSenses: false,
+          includeLessCommonHeadwords: false,
+          includePartOfSpeech: false,
+        }
+      )
+    ).toEqual(
+      '落ち着く\tおちつく\tto calm down; to compose oneself; to regain presence of mind; to relax'
+    );
   });
 
   it('prepares text from name search results', () => {
