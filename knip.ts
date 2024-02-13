@@ -33,8 +33,6 @@ const config: KnipConfig = {
     '@types/mocha',
     // Knip doesn't know how to parse React Cosmos plugins (yet).
     'react-cosmos-plugin-webpack',
-    // Since Husky 9, knip fails to find husky dependencies
-    'lint-staged',
   ],
   ignoreExportsUsedInFile: {
     interface: true,
