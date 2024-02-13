@@ -2423,10 +2423,10 @@ ci-info@^3.2.0:
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-3.9.0.tgz#4279a62028a7b1f262f3473fc9605f5e218c59b4"
   integrity sha512-NIxF55hv4nSqQswkAeiOi1r83xy8JldOFDTWiug55KBu9Jnblncd2U6ViHmYgHf01TPZS77NJBhBMKdWj9HQMQ==
 
-classname-variants@1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/classname-variants/-/classname-variants-1.3.2.tgz#d8f77d241beabf6848d6a3fb1310155994786629"
-  integrity sha512-1KunzRErM/xTmlNenjiqxjA4iJuTYG6dzomAzl3g6z1Hfs8S4zeLFUGu+rXp4JExQni8nqJ/yYA6QqLGACefFg==
+classname-variants@1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/classname-variants/-/classname-variants-1.3.3.tgz#2624e852bbda1c782eda85e36cc9cb54778062a0"
+  integrity sha512-lMJajfEuF4RLmjUWUWbdyausHUFPYNkSIpAZDbFBxQBnnMtyjgpAt0URuQLsh5PozffPZ5Gk4eGA3lZptm+gXA==
 
 clean-css@^5.2.2:
   version "5.3.3"
