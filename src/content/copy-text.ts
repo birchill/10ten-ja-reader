@@ -3,6 +3,7 @@ import browser from 'webextension-polyfill';
 
 import { NameResult, Sense, WordResult } from '../background/search-result';
 import { CopyType } from '../common/copy-keys';
+import { highPriorityLabels } from '../common/priority-labels';
 import {
   getSelectedReferenceLabels,
   ReferenceAbbreviation,
@@ -18,23 +19,35 @@ export type CopyEntry =
 export function getTextToCopy({
   entry,
   copyType,
+  includeAllSenses = true,
+  includeLessCommonHeadwords = true,
+  includePartOfSpeech = true,
   kanjiReferences = [] as Array<ReferenceAbbreviation>,
   showKanjiComponents = true,
 }: {
   entry: CopyEntry;
   copyType: CopyType;
+  includeAllSenses?: boolean;
+  includeLessCommonHeadwords?: boolean;
+  includePartOfSpeech?: boolean;
   kanjiReferences?: Array<ReferenceAbbreviation>;
   showKanjiComponents?: boolean;
 }): string {
   switch (copyType) {
     case 'entry':
       return getEntryToCopy(entry, {
+        includeAllSenses,
+        includeLessCommonHeadwords,
+        includePartOfSpeech,
         kanjiReferences,
         showKanjiComponents,
       });
 
     case 'tab':
       return getFieldsToCopy(entry, {
+        includeAllSenses,
+        includeLessCommonHeadwords,
+        includePartOfSpeech,
         kanjiReferences,
         showKanjiComponents,
       });
@@ -76,31 +89,18 @@ export function getWordToCopy(entry: CopyEntry): string {
   return result!;
 }
 
-// We include all headwords except search-only / rare headwords unless we
-// matched on them.
-//
-// We choose to include search-only / rare headwords if we matched on them since
-// it's quite possible that if a user matched on a rare headword such as a rare
-// kanji they'd like to copy it to the clipboard for further searching.
-
-function isRelevantKanjiHeadword(
-  k: Extract<CopyEntry, { type: 'word' }>['data']['k'][number]
-) {
-  return (!k.i?.includes('sK') && !k.i?.includes('rK')) || k.matchRange;
-}
-
-function isRelevantKanaHeadword(
-  r: Extract<CopyEntry, { type: 'word' }>['data']['r'][number]
-) {
-  return (!r.i?.includes('sk') && !r.i?.includes('rk')) || r.matchRange;
-}
-
 export function getEntryToCopy(
   entry: CopyEntry,
   {
+    includeAllSenses = true,
+    includeLessCommonHeadwords = true,
+    includePartOfSpeech = true,
     kanjiReferences = [] as Array<ReferenceAbbreviation>,
     showKanjiComponents = true,
   }: {
+    includeAllSenses?: boolean;
+    includeLessCommonHeadwords?: boolean;
+    includePartOfSpeech?: boolean;
     kanjiReferences?: Array<ReferenceAbbreviation>;
     showKanjiComponents?: boolean;
   } = {}
@@ -111,11 +111,13 @@ export function getEntryToCopy(
     case 'word':
       {
         const kanjiHeadwords = entry.data.k
-          ? entry.data.k.filter(isRelevantKanjiHeadword).map((k) => k.ent)
+          ? filterRelevantKanjiHeadwords(entry.data.k, {
+              includeLessCommonHeadwords,
+            }).map((k) => k.ent)
           : [];
-        const kanaHeadwords = entry.data.r
-          .filter(isRelevantKanaHeadword)
-          .map((r) => r.ent);
+        const kanaHeadwords = filterRelevantKanaHeadwords(entry.data.r, {
+          includeLessCommonHeadwords,
+        }).map((r) => r.ent);
 
         result = kanjiHeadwords.length
           ? `${kanjiHeadwords.join(', ')} [${kanaHeadwords.join(', ')}]`
@@ -125,20 +127,25 @@ export function getEntryToCopy(
         }
 
         result +=
-          '\n' + serializeDefinition(entry.data, { oneSensePerLine: true });
+          (includeAllSenses ? '\n' : ' ') +
+          serializeDefinition(entry.data, {
+            includeAllSenses,
+            includePartOfSpeech,
+            oneSensePerLine: true,
+          });
       }
       break;
 
     case 'name':
       result = entry.data.k
-        ? `${entry.data.k.join(', ')} [${entry.data.r.join(', ')}]\n`
-        : entry.data.r.join(', ') + '\n';
+        ? `${entry.data.k.join(', ')} [${entry.data.r.join(', ')}]${includeAllSenses ? '\n' : ' '}`
+        : entry.data.r.join(', ') + (includeAllSenses ? '\n' : ' ');
 
       for (const [i, tr] of entry.data.tr.entries()) {
         if (i) {
           result += '; ';
         }
-        if (tr.type) {
+        if (includePartOfSpeech && tr.type) {
           result += `(${tr.type.join(', ')}) `;
         }
         result += tr.det.join(', ');
@@ -214,24 +221,111 @@ export function getEntryToCopy(
   return result!;
 }
 
+type KanjiHeadword = WordResult['k'][number];
+
+const highPriorityLabelsSet = new Set(highPriorityLabels);
+
+function filterRelevantKanjiHeadwords(
+  headwords: Array<KanjiHeadword>,
+  {
+    includeLessCommonHeadwords,
+  }: {
+    includeLessCommonHeadwords: boolean;
+  }
+) {
+  if (includeLessCommonHeadwords) {
+    // Exclude search-only / rare headwords unless we matched on them.
+    //
+    // The reason we include search-only / rare headwords if we matched on them
+    // is that it's quite possible that if a user matched on a rare headword
+    // such as a rare kanji they'd like to copy it to the clipboard for further
+    // searching.
+    return headwords.filter(
+      (k) => (!k.i?.includes('sK') && !k.i?.includes('rK')) || k.matchRange
+    );
+  }
+
+  const commonHeadwords = headwords.filter(
+    (k) => !k.i?.includes('sK') && !k.i?.includes('rK')
+  );
+
+  const highPriorityHeadwords = commonHeadwords.filter((k) =>
+    k.p?.some((p) => highPriorityLabelsSet.has(p))
+  );
+  if (highPriorityHeadwords.length) {
+    return highPriorityHeadwords;
+  }
+
+  const hasPriorityHeadwords = commonHeadwords.filter((k) => k.p?.length);
+  if (hasPriorityHeadwords.length) {
+    return hasPriorityHeadwords;
+  }
+
+  return commonHeadwords;
+}
+
+type KanaHeadword = WordResult['r'][number];
+
+function filterRelevantKanaHeadwords(
+  headwords: Array<KanaHeadword>,
+  {
+    includeLessCommonHeadwords,
+  }: {
+    includeLessCommonHeadwords: boolean;
+  }
+) {
+  if (includeLessCommonHeadwords) {
+    return headwords.filter(
+      (k) => (!k.i?.includes('sk') && !k.i?.includes('rk')) || k.matchRange
+    );
+  }
+
+  const commonHeadwords = headwords.filter(
+    (k) => !k.i?.includes('sk') && !k.i?.includes('rk')
+  );
+
+  const highPriorityHeadwords = commonHeadwords.filter((k) =>
+    k.p?.some((p) => highPriorityLabelsSet.has(p))
+  );
+  if (highPriorityHeadwords.length) {
+    return highPriorityHeadwords;
+  }
+
+  const hasPriorityHeadwords = commonHeadwords.filter((k) => k.p?.length);
+  if (hasPriorityHeadwords.length) {
+    return hasPriorityHeadwords;
+  }
+
+  return commonHeadwords;
+}
+
 function serializeDefinition(
   entry: WordResult,
-  options: { oneSensePerLine: boolean } = { oneSensePerLine: false }
+  {
+    includeAllSenses = true,
+    includePartOfSpeech = true,
+    oneSensePerLine = false,
+  }: {
+    includeAllSenses?: boolean;
+    includePartOfSpeech?: boolean;
+    oneSensePerLine?: boolean;
+  } = {}
 ): string {
   const senses = entry.s;
-  if (senses.length > 1) {
+  if (senses.length > 1 && includeAllSenses) {
     const nativeSenses = senses
       .filter((s) => s.lang && s.lang !== 'en')
-      .map((s) => `• ${serializeSense(s)}`);
+      .map((s) => `• ${serializeSense(s, { includePartOfSpeech })}`);
     const enSenses = senses
       .filter((s) => !s.lang || s.lang === 'en')
-      .map((s, index) => `(${index + 1}) ${serializeSense(s)}`);
+      .map(
+        (s, index) =>
+          `(${index + 1}) ${serializeSense(s, { includePartOfSpeech })}`
+      );
 
-    return [...nativeSenses, ...enSenses].join(
-      options.oneSensePerLine ? '\n' : ' '
-    );
+    return [...nativeSenses, ...enSenses].join(oneSensePerLine ? '\n' : ' ');
   } else {
-    return serializeSense(senses[0]);
+    return serializeSense(senses[0], { includePartOfSpeech });
   }
 }
 
@@ -251,10 +345,15 @@ const dialects: { [dial in Dialect]: string } = {
   ok: 'rkb:',
 };
 
-function serializeSense(sense: Sense): string {
+function serializeSense(
+  sense: Sense,
+  { includePartOfSpeech = true }: { includePartOfSpeech?: boolean } = {}
+): string {
   let result = '';
 
-  result += sense.pos ? `(${sense.pos.join(',')}) ` : '';
+  if (includePartOfSpeech && sense.pos) {
+    result += `(${sense.pos.join(',')}) `;
+  }
   result += sense.field ? `(${sense.field.join(',')}) ` : '';
   result += sense.misc ? `(${sense.misc.join(',')}) ` : '';
   result += sense.dial
@@ -305,9 +404,15 @@ function serializeLangSrc(lsrc: LangSource) {
 export function getFieldsToCopy(
   entry: CopyEntry,
   {
+    includeAllSenses = true,
+    includeLessCommonHeadwords = true,
+    includePartOfSpeech = true,
     kanjiReferences = [] as Array<ReferenceAbbreviation>,
     showKanjiComponents = true,
   }: {
+    includeAllSenses?: boolean;
+    includeLessCommonHeadwords?: boolean;
+    includePartOfSpeech?: boolean;
     kanjiReferences?: Array<ReferenceAbbreviation>;
     showKanjiComponents?: boolean;
   } = {}
@@ -316,24 +421,30 @@ export function getFieldsToCopy(
 
   switch (entry.type) {
     case 'word':
-      result =
-        entry.data.k && entry.data.k.length
-          ? entry.data.k
-              .filter(isRelevantKanjiHeadword)
-              .map((k) => k.ent)
-              .join('; ')
-          : '';
+      result = entry.data.k
+        ? filterRelevantKanjiHeadwords(entry.data.k, {
+            includeLessCommonHeadwords,
+          })
+            .map((k) => k.ent)
+            .join('; ')
+        : '';
       result +=
         '\t' +
-        entry.data.r
-          .filter(isRelevantKanaHeadword)
+        filterRelevantKanaHeadwords(entry.data.r, {
+          includeLessCommonHeadwords,
+        })
           .map((r) => r.ent)
           .join('; ');
       if (entry.data.romaji?.length) {
         result += '\t' + entry.data.romaji.join('; ');
       }
 
-      result += '\t' + serializeDefinition(entry.data);
+      result +=
+        '\t' +
+        serializeDefinition(entry.data, {
+          includeAllSenses,
+          includePartOfSpeech,
+        });
       break;
 
     case 'name':
@@ -343,7 +454,7 @@ export function getFieldsToCopy(
           if (i) {
             definition += '; ';
           }
-          if (tr.type) {
+          if (includePartOfSpeech && tr.type) {
             definition += `(${tr.type.join(', ')}) `;
           }
           definition += tr.det.join(', ');

@@ -10,6 +10,7 @@ import browser from 'webextension-polyfill';
 
 import { Sense, WordResult } from '../../background/search-result';
 import { PartOfSpeechDisplay } from '../../common/content-config-params';
+import { highPriorityLabels } from '../../common/priority-labels';
 import { html } from '../../utils/builder';
 
 import { NamePreview } from '../query';
@@ -420,14 +421,8 @@ function appendPriorityMark(
   }
 
   // These are the ones that are annotated with a (P) in the EDICT file.
-  const highPriorityLabels = ['i1', 'n1', 's1', 's2', 'g1'];
-  let highPriority = false;
-  for (const p of priority) {
-    if (highPriorityLabels.includes(p)) {
-      highPriority = true;
-      break;
-    }
-  }
+  const highPriorityLabelsSet = new Set(highPriorityLabels);
+  const highPriority = priority.some((p) => highPriorityLabelsSet.has(p));
 
   parent.append(renderStar(highPriority ? 'full' : 'hollow'));
 }
