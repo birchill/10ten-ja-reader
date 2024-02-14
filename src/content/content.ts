@@ -1710,6 +1710,9 @@ export class ContentHandler {
     const textToCopy = getTextToCopy({
       entry: copyEntry,
       copyType,
+      includeAllSenses: this.config.copySenses !== 'first',
+      includePartOfSpeech: this.config.copyPos !== 'none',
+      includeLessCommonHeadwords: this.config.copyHeadwords !== 'common',
       kanjiReferences: this.config.kanjiReferences,
       showKanjiComponents: this.config.showKanjiComponents,
     });

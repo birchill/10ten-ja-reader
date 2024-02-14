@@ -59,6 +59,15 @@ export interface ContentConfigParams {
   // Whether or not we should show Bunpro deck information alongside headwords.
   bunproDisplay: boolean;
 
+  // Whether to copy only common headwords or all the non-rare headwords
+  copyHeadwords: 'common' | 'regular';
+
+  // Whether to copy the part of speech (as a code) or not.
+  copyPos: 'code' | 'none';
+
+  // Whether to copy the first sense or all senses.
+  copySenses: 'first' | 'all';
+
   // The preferred language for dictionary content.
   dictLang: string;
 

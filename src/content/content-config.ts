@@ -121,6 +121,15 @@ export class ContentConfig implements ContentConfigParams {
   get autoExpand() {
     return this.params.autoExpand;
   }
+  get copyHeadwords() {
+    return this.params.copyHeadwords;
+  }
+  get copyPos() {
+    return this.params.copyPos;
+  }
+  get copySenses() {
+    return this.params.copySenses;
+  }
   get bunproDisplay() {
     return this.params.bunproDisplay;
   }
