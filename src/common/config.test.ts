@@ -8,7 +8,7 @@ import {
   describe,
   expect,
   it,
-  type SpyInstance,
+  type MockInstance,
   vi,
 } from 'vitest';
 
@@ -156,7 +156,7 @@ type ChangeDict = { [field: string]: StorageChange };
 type Listener = (changes: ChangeDict, areaName: StorageName) => void;
 
 describe('Config', () => {
-  let languageGetter: SpyInstance<string[], readonly string[]>;
+  let languageGetter: MockInstance<string[], readonly string[]>;
 
   beforeEach(() => {
     languageGetter = vi.spyOn(window.navigator, 'languages', 'get');
@@ -172,6 +172,9 @@ describe('Config', () => {
 
     expect(config.accentDisplay).toEqual('binary');
     expect(config.contextMenuEnable).toEqual(true);
+    expect(config.copyHeadwords).toEqual('regular');
+    expect(config.copyPos).toEqual('code');
+    expect(config.copySenses).toEqual('all');
     expect(config.dictLang).toEqual('fr');
     expect(config.fxCurrency).toEqual('USD');
     expect(config.highlightStyle).toEqual('yellow');

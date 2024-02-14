@@ -58,6 +58,9 @@ interface Settings {
   autoExpand?: Array<AutoExpandableEntry>;
   bunproDisplay?: boolean;
   contextMenuEnable?: boolean;
+  copyHeadwords?: 'common' | 'regular';
+  copyPos?: 'code' | 'none';
+  copySenses?: 'first' | 'all';
   dictLang?: DbLanguageId;
   enableTapLookup?: boolean;
   fontSize?: FontSize;
@@ -330,6 +333,85 @@ export class Config {
     this.changeListeners.splice(index, 1);
   }
 
+  //
+  // Property accessors
+  //
+
+  // Ultimately we want to do away with all this boilerplate and use decorators
+  // to generate this code.
+  //
+  // Something like:
+  //
+  //   function syncedPref<T>(defaultValue: T) {
+  //     return (
+  //       _value: {
+  //         get: () => T;
+  //         set: (value: T) => void;
+  //       },
+  //       context: {
+  //         kind: 'accessor';
+  //         name: keyof Settings;
+  //         static: boolean;
+  //         private: boolean;
+  //         access: {
+  //           get: (object: Config) => T;
+  //           set: (object: Config, value: T) => void;
+  //         };
+  //         addInitializer(initializer: () => void): void;
+  //       }
+  //     ): {
+  //       get?: (this: Config) => T;
+  //       set?: (this: Config, value: unknown) => void;
+  //       init?: (this: Config, initialValue: T) => T;
+  //     } | void => {
+  //       return {
+  //         get: () => this.settings[context.name] ?? defaultValue,
+  //         set: (value: T) => {
+  //           if (this.settings[context.name] === value) {
+  //             return;
+  //           }
+  //
+  //           if (value === defaultValue) {
+  //             delete this.settings[context.name];
+  //             void browser.storage.sync.remove(context.name);
+  //           } else {
+  //             this.settings[context.name] = value;
+  //             void browser.storage.sync.set({ [context.name]: value });
+  //           }
+  //         },
+  //       };
+  //     };
+  //   }
+  //
+  // Usage:
+  //
+  //   @syncedPref<'common' | 'regular' | undefined>('regular')
+  //   accessor copyHeadwords: 'common' | 'regular' | undefined;
+  //
+  // (Come to think of it, once we do that each accessor will have its own
+  // storage so we can skip writing to this.settings and just use
+  // _value.get.call(this) etc.)
+  //
+  // (Also, we should make the generated getter/setter exclude `undefined` from
+  // `T`).
+  //
+  // Unfortunately, while TypeScript can transpile that, we use vitest for our
+  // unit tests which uses esbuild under the hood which doesn't yet support
+  // decorators and in any case, won't transpile them:
+  //
+  //   https://github.com/evanw/esbuild/issues/104
+  //
+  // Our options are either to use SWC (which runs the risk of behaving a bit
+  // differently to TypeScript) or try to get TSC to transpile the relevant
+  // files, e.g. using https://github.com/thomaschaaf/esbuild-plugin-tsc
+  //
+  // Unfortunately apparently vitest doesn't support esbuild plugins so that
+  // last option probably won't work.
+  //
+  // Decorators are being implemented in browsers (e.g. Firefox bug:
+  // https://bugzilla.mozilla.org/show_bug.cgi?id=1781212) so one day they should
+  // be available in esbuild and vitest too.
+
   // accentDisplay: Defaults to binary
 
   get accentDisplay(): AccentDisplay {
@@ -440,6 +522,66 @@ export class Config {
 
     this.settings.contextMenuEnable = value;
     void browser.storage.sync.set({ contextMenuEnable: value });
+  }
+
+  // copyHeadwords: Defaults to 'regular'
+
+  get copyHeadwords(): 'common' | 'regular' {
+    return this.settings.copyHeadwords || 'regular';
+  }
+
+  set copyHeadwords(value: 'common' | 'regular') {
+    if (this.settings.copyHeadwords === value) {
+      return;
+    }
+
+    if (value === 'regular') {
+      delete this.settings.copyHeadwords;
+      void browser.storage.sync.remove('copyHeadwords');
+    } else {
+      this.settings.copyHeadwords = value;
+      void browser.storage.sync.set({ copyHeadwords: value });
+    }
+  }
+
+  // copyPos: Defaults to 'code'
+
+  get copyPos(): 'code' | 'none' {
+    return this.settings.copyPos || 'code';
+  }
+
+  set copyPos(value: 'code' | 'none') {
+    if (this.settings.copyPos === value) {
+      return;
+    }
+
+    if (value === 'code') {
+      delete this.settings.copyPos;
+      void browser.storage.sync.remove('copyPos');
+    } else {
+      this.settings.copyPos = value;
+      void browser.storage.sync.set({ copyPos: value });
+    }
+  }
+
+  // copySenses: Defaults to 'all'
+
+  get copySenses(): 'first' | 'all' {
+    return this.settings.copySenses || 'all';
+  }
+
+  set copySenses(value: 'first' | 'all') {
+    if (this.settings.copySenses === value) {
+      return;
+    }
+
+    if (value === 'all') {
+      delete this.settings.copySenses;
+      void browser.storage.sync.remove('copySenses');
+    } else {
+      this.settings.copySenses = value;
+      void browser.storage.sync.set({ copySenses: value });
+    }
   }
 
   // dictLang: Defaults to the first match from navigator.languages found in
@@ -1118,6 +1260,9 @@ export class Config {
       accentDisplay: this.accentDisplay,
       autoExpand: this.autoExpand,
       bunproDisplay: this.bunproDisplay,
+      copyHeadwords: this.copyHeadwords,
+      copyPos: this.copyPos,
+      copySenses: this.copySenses,
       dictLang: this.dictLang,
       enableTapLookup: this.enableTapLookup,
       fx:
