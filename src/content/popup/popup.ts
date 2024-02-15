@@ -49,6 +49,11 @@ export interface PopupOptions {
   container?: HTMLElement;
   copyNextKey: string;
   copyState: CopyState;
+  copy?: {
+    includeAllSenses: boolean;
+    includeLessCommonHeadwords: boolean;
+    includePartOfSpeech: boolean;
+  };
   dictToShow: MajorDataSeries;
   dictLang?: string;
   displayMode: DisplayMode;
@@ -203,6 +208,10 @@ export function renderPopup(
         html('div', {}, ...contentContainer.children),
         renderCopyOverlay({
           copyState: options.copyState,
+          includeAllSenses: options.copy?.includeAllSenses !== false,
+          includeLessCommonHeadwords:
+            options.copy?.includeLessCommonHeadwords !== false,
+          includePartOfSpeech: options.copy?.includePartOfSpeech !== false,
           kanjiReferences: options.kanjiReferences,
           onCancelCopy: options.onCancelCopy,
           onCopy: options.onCopy,

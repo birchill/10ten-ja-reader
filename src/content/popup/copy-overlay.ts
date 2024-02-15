@@ -15,6 +15,9 @@ import { getLangTag } from './lang-tag';
 
 export function renderCopyOverlay({
   copyState,
+  includeAllSenses,
+  includeLessCommonHeadwords,
+  includePartOfSpeech,
   kanjiReferences,
   onCancelCopy,
   onCopy,
@@ -23,6 +26,9 @@ export function renderCopyOverlay({
   showKanjiComponents,
 }: {
   copyState: CopyState;
+  includeAllSenses: boolean;
+  includeLessCommonHeadwords: boolean;
+  includePartOfSpeech: boolean;
   kanjiReferences: Array<ReferenceAbbreviation>;
   onCancelCopy?: () => void;
   onCopy?: (copyType: CopyType) => void;
@@ -77,6 +83,9 @@ export function renderCopyOverlay({
           entry: entryToCopy,
           copyType: 'entry',
           getMessage: browser.i18n.getMessage.bind(browser),
+          includeAllSenses,
+          includeLessCommonHeadwords,
+          includePartOfSpeech,
           kanjiReferences,
           showKanjiComponents,
         })
@@ -96,6 +105,9 @@ export function renderCopyOverlay({
           entry: entryToCopy,
           copyType: 'tab',
           getMessage: browser.i18n.getMessage.bind(browser),
+          includeAllSenses,
+          includeLessCommonHeadwords,
+          includePartOfSpeech,
           kanjiReferences,
           showKanjiComponents,
         }).replace(/\t/g, ' → ')
