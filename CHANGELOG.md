@@ -11,6 +11,12 @@ app.
 - Made the puck persist its position, orientation, and active state between
   pages
   ([#1561](https://github.com/birchill/10ten-ja-reader/issues/1561)).
+- Updated the clipboard copy feature:
+  - Added a new setting to copy a simplified version of the entry that may be
+    more suitable for making flashcards etc.
+    ([#1305](https://github.com/birchill/10ten-ja-reader/issues/1305)).
+  - Definitions are now separated by line breaks.
+  - Rare headwords are excluded from the result unless we matched on them.
 - Fixed a case of 10ten not looking up text with ruby correctly in Ttsu reader
   ([#1313](https://github.com/birchill/10ten-ja-reader/issues/1313)).
 - Made copying a dictionary entry separate the senses on new lines

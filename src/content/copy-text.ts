@@ -1,8 +1,12 @@
 import { Dialect, KanjiResult, LangSource } from '@birchill/jpdict-idb';
-import browser from 'webextension-polyfill';
 
-import { NameResult, Sense, WordResult } from '../background/search-result';
-import { CopyType } from '../common/copy-keys';
+import type {
+  NameResult,
+  Sense,
+  WordResult,
+} from '../background/search-result';
+import type { CopyType } from '../common/copy-keys';
+import type { TranslateFunctionType } from '../common/i18n';
 import { highPriorityLabels } from '../common/priority-labels';
 import {
   getSelectedReferenceLabels,
@@ -19,6 +23,7 @@ export type CopyEntry =
 export function getTextToCopy({
   entry,
   copyType,
+  getMessage,
   includeAllSenses = true,
   includeLessCommonHeadwords = true,
   includePartOfSpeech = true,
@@ -27,6 +32,7 @@ export function getTextToCopy({
 }: {
   entry: CopyEntry;
   copyType: CopyType;
+  getMessage: TranslateFunctionType;
   includeAllSenses?: boolean;
   includeLessCommonHeadwords?: boolean;
   includePartOfSpeech?: boolean;
@@ -36,6 +42,7 @@ export function getTextToCopy({
   switch (copyType) {
     case 'entry':
       return getEntryToCopy(entry, {
+        getMessage,
         includeAllSenses,
         includeLessCommonHeadwords,
         includePartOfSpeech,
@@ -45,6 +52,7 @@ export function getTextToCopy({
 
     case 'tab':
       return getFieldsToCopy(entry, {
+        getMessage,
         includeAllSenses,
         includeLessCommonHeadwords,
         includePartOfSpeech,
@@ -92,18 +100,20 @@ export function getWordToCopy(entry: CopyEntry): string {
 export function getEntryToCopy(
   entry: CopyEntry,
   {
+    getMessage,
     includeAllSenses = true,
     includeLessCommonHeadwords = true,
     includePartOfSpeech = true,
     kanjiReferences = [] as Array<ReferenceAbbreviation>,
     showKanjiComponents = true,
   }: {
+    getMessage: TranslateFunctionType;
     includeAllSenses?: boolean;
     includeLessCommonHeadwords?: boolean;
     includePartOfSpeech?: boolean;
     kanjiReferences?: Array<ReferenceAbbreviation>;
     showKanjiComponents?: boolean;
-  } = {}
+  }
 ): string {
   let result: string;
 
@@ -129,6 +139,7 @@ export function getEntryToCopy(
         result +=
           (includeAllSenses ? '\n' : ' ') +
           serializeDefinition(entry.data, {
+            getMessage,
             includeAllSenses,
             includePartOfSpeech,
             oneSensePerLine: true,
@@ -165,9 +176,7 @@ export function getEntryToCopy(
           result += ` (${r.na.join('、')})`;
         }
         result += ` ${m.join(', ')}`;
-        const radicalLabel = browser.i18n.getMessage(
-          'content_kanji_radical_label'
-        );
+        const radicalLabel = getMessage('content_kanji_radical_label');
         result += `; ${radicalLabel}: ${rad.b || rad.k}（${rad.na.join(
           '、'
         )}）`;
@@ -176,15 +185,10 @@ export function getEntryToCopy(
           const baseReadings = rad.base.na.join('、');
           result +=
             ' ' +
-            browser.i18n.getMessage('content_kanji_base_radical', [
-              baseChar,
-              baseReadings,
-            ]);
+            getMessage('content_kanji_base_radical', [baseChar, baseReadings]);
         }
         if (showKanjiComponents && comp.length) {
-          const componentsLabel = browser.i18n.getMessage(
-            'content_kanji_components_label'
-          );
+          const componentsLabel = getMessage('content_kanji_components_label');
           const components: Array<string> = [];
           for (const component of comp) {
             components.push(
@@ -199,7 +203,7 @@ export function getEntryToCopy(
         if (kanjiReferences.length) {
           const labels = getSelectedReferenceLabels(
             kanjiReferences,
-            browser.i18n.getMessage
+            getMessage
           );
           for (const label of labels) {
             if (
@@ -210,7 +214,7 @@ export function getEntryToCopy(
               continue;
             }
             result += `; ${label.short || label.full} ${
-              getReferenceValue(entry.data, label.ref) || '-'
+              getReferenceValue(entry.data, label.ref, getMessage) || '-'
             }`;
           }
         }
@@ -302,30 +306,34 @@ function filterRelevantKanaHeadwords(
 function serializeDefinition(
   entry: WordResult,
   {
+    getMessage,
     includeAllSenses = true,
     includePartOfSpeech = true,
     oneSensePerLine = false,
   }: {
+    getMessage: TranslateFunctionType;
     includeAllSenses?: boolean;
     includePartOfSpeech?: boolean;
     oneSensePerLine?: boolean;
-  } = {}
+  }
 ): string {
   const senses = entry.s;
   if (senses.length > 1 && includeAllSenses) {
     const nativeSenses = senses
       .filter((s) => s.lang && s.lang !== 'en')
-      .map((s) => `• ${serializeSense(s, { includePartOfSpeech })}`);
+      .map(
+        (s) => `• ${serializeSense(s, { getMessage, includePartOfSpeech })}`
+      );
     const enSenses = senses
       .filter((s) => !s.lang || s.lang === 'en')
       .map(
         (s, index) =>
-          `(${index + 1}) ${serializeSense(s, { includePartOfSpeech })}`
+          `(${index + 1}) ${serializeSense(s, { getMessage, includePartOfSpeech })}`
       );
 
     return [...nativeSenses, ...enSenses].join(oneSensePerLine ? '\n' : ' ');
   } else {
-    return serializeSense(senses[0], { includePartOfSpeech });
+    return serializeSense(senses[0], { getMessage, includePartOfSpeech });
   }
 }
 
@@ -347,7 +355,10 @@ const dialects: { [dial in Dialect]: string } = {
 
 function serializeSense(
   sense: Sense,
-  { includePartOfSpeech = true }: { includePartOfSpeech?: boolean } = {}
+  {
+    getMessage,
+    includePartOfSpeech = true,
+  }: { getMessage: TranslateFunctionType; includePartOfSpeech?: boolean }
 ): string {
   let result = '';
 
@@ -366,9 +377,7 @@ function serializeSense(
   for (const g of sense.g) {
     let gloss = '';
     if (g.type && g.type !== 'tm' && g.type !== 'none') {
-      const glossTypeStr = browser.i18n.getMessage(
-        `gloss_type_short_${g.type}`
-      );
+      const glossTypeStr = getMessage(`gloss_type_short_${g.type}`);
       if (glossTypeStr) {
         gloss = `(${glossTypeStr}) `;
       }
@@ -404,18 +413,20 @@ function serializeLangSrc(lsrc: LangSource) {
 export function getFieldsToCopy(
   entry: CopyEntry,
   {
+    getMessage,
     includeAllSenses = true,
     includeLessCommonHeadwords = true,
     includePartOfSpeech = true,
     kanjiReferences = [] as Array<ReferenceAbbreviation>,
     showKanjiComponents = true,
   }: {
+    getMessage: TranslateFunctionType;
     includeAllSenses?: boolean;
     includeLessCommonHeadwords?: boolean;
     includePartOfSpeech?: boolean;
     kanjiReferences?: Array<ReferenceAbbreviation>;
     showKanjiComponents?: boolean;
-  } = {}
+  }
 ): string {
   let result: string;
 
@@ -442,6 +453,7 @@ export function getFieldsToCopy(
       result +=
         '\t' +
         serializeDefinition(entry.data, {
+          getMessage,
           includeAllSenses,
           includePartOfSpeech,
         });
@@ -487,7 +499,7 @@ export function getFieldsToCopy(
         if (kanjiReferences.length) {
           const labels = getSelectedReferenceLabels(
             kanjiReferences,
-            browser.i18n.getMessage
+            getMessage
           );
           for (const label of labels) {
             // For some common types we don't produce the label
@@ -499,12 +511,13 @@ export function getFieldsToCopy(
                 // unicode) or if they don't exist we want to produce an empty
                 // value (not '-') hence why we don't include the ... || '-'
                 // from the next block.
-                result += '\t' + getReferenceValue(entry.data, label.ref);
+                result +=
+                  '\t' + getReferenceValue(entry.data, label.ref, getMessage);
                 break;
 
               default:
                 result += `\t${label.short || label.full} ${
-                  getReferenceValue(entry.data, label.ref) || '-'
+                  getReferenceValue(entry.data, label.ref, getMessage) || '-'
                 }`;
                 break;
             }
