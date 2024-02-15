@@ -43,7 +43,11 @@ export function renderCopyOverlay({
 
   // Heading
   const wordToCopy = entryToCopy
-    ? getTextToCopy({ entry: entryToCopy, copyType: 'word' })
+    ? getTextToCopy({
+        entry: entryToCopy,
+        copyType: 'word',
+        getMessage: browser.i18n.getMessage.bind(browser),
+      })
     : null;
   const heading = wordToCopy
     ? browser.i18n.getMessage(
@@ -72,6 +76,7 @@ export function renderCopyOverlay({
       ? getTextToCopy({
           entry: entryToCopy,
           copyType: 'entry',
+          getMessage: browser.i18n.getMessage.bind(browser),
           kanjiReferences,
           showKanjiComponents,
         })
@@ -90,6 +95,7 @@ export function renderCopyOverlay({
       ? getTextToCopy({
           entry: entryToCopy,
           copyType: 'tab',
+          getMessage: browser.i18n.getMessage.bind(browser),
           kanjiReferences,
           showKanjiComponents,
         }).replace(/\t/g, ' → ')

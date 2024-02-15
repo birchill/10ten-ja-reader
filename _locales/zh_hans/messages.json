@@ -1559,6 +1559,14 @@
     "message": "兼容性",
     "description": "Heading for the section for configuring site compatibility"
   },
+  "options_copy_heading": {
+    "message": "复制到剪贴板",
+    "description": "Heading for the section for configuring the copy to clipboard feature"
+  },
+  "options_copy_preview": {
+    "message": "预览",
+    "description": "Label preceding the copy text preview"
+  },
   "options_currency_conversion_heading": {
     "message": "货币转换",
     "description": "Heading for the section for configuring currency conversion"
@@ -1951,6 +1959,10 @@
   "options_show_wanikani_levels": {
     "message": "显示 WaniKani 等级信息",
     "description": "Label for enabling display of WaniKani level information alongside kanji headwords"
+  },
+  "options_simplified_copy": {
+    "message": "复制简化条目摘要",
+    "description": "Heading for the section for configuring the copy to clipboard feature"
   },
   "options_tab_position_label": {
     "message": "标签栏位置",

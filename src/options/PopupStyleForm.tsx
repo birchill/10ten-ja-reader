@@ -7,7 +7,6 @@ import {
 import { useLocale } from '../common/i18n';
 
 import { CheckboxRow } from './CheckboxRow';
-import { NewBadge } from './NewBadge';
 import { PopupThemeRadio } from './PopupThemeRadio';
 
 type Props = {
@@ -78,10 +77,7 @@ export function PopupStyleForm(props: Props) {
               props.onChangeShowBunproDecks(e.currentTarget.checked)
             }
           />
-          <label for="showBunproDecks">
-            {t('options_show_bunpro_decks')}
-            <NewBadge expiry={new Date('2024-02-01')} />
-          </label>
+          <label for="showBunproDecks">{t('options_show_bunpro_decks')}</label>
         </CheckboxRow>
         <CheckboxRow>
           <input

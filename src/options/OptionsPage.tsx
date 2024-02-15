@@ -3,6 +3,7 @@ import { I18nProvider } from '../common/i18n';
 import { possiblyHasPhysicalKeyboard } from '../utils/device';
 
 import { CurrencySettings } from './CurrencySettings';
+import { CopySettings } from './CopySettings';
 import { DictionaryDataSettings } from './DictionaryDataSettings';
 import { DictionaryLanguageSettings } from './DictionaryLanguageSettings';
 import { GeneralSettings } from './GeneralSettings';
@@ -27,6 +28,7 @@ export function OptionsPage(props: Props) {
         <PopupInteractivitySettings config={props.config} />
         <CurrencySettings config={props.config} />
         {hasKeyboard && <KeyboardSettings config={props.config} />}
+        <CopySettings config={props.config} />
         <PuckSettings config={props.config} />
         <DictionaryLanguageSettings config={props.config} />
         <KanjiReferenceSettings config={props.config} />

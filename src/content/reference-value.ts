@@ -1,11 +1,12 @@
 import type { KanjiResult } from '@birchill/jpdict-idb';
-import browser from 'webextension-polyfill';
 
+import type { TranslateFunctionType } from '../common/i18n';
 import type { ReferenceAbbreviation } from '../common/refs';
 
 export function getReferenceValue(
   entry: KanjiResult,
-  ref: ReferenceAbbreviation
+  ref: ReferenceAbbreviation,
+  t: TranslateFunctionType
 ): string {
   switch (ref) {
     case 'nelson_r': {
@@ -26,7 +27,7 @@ export function getReferenceValue(
     }
 
     case 'kk':
-      return renderKanKen(entry.misc.kk);
+      return renderKanKen(entry.misc.kk, t);
 
     case 'jlpt':
       return entry.misc.jlpt ? String(entry.misc.jlpt) : '';
@@ -45,15 +46,18 @@ export function getReferenceValue(
   }
 }
 
-function renderKanKen(level: number | undefined): string {
+function renderKanKen(
+  level: number | undefined,
+  t: TranslateFunctionType
+): string {
   if (!level) {
     return '—';
   }
   if (level === 15) {
-    return browser.i18n.getMessage('content_kanji_kentei_level_pre', ['1']);
+    return t('content_kanji_kentei_level_pre', ['1']);
   }
   if (level === 25) {
-    return browser.i18n.getMessage('content_kanji_kentei_level_pre', ['2']);
+    return t('content_kanji_kentei_level_pre', ['2']);
   }
-  return browser.i18n.getMessage('content_kanji_kentei_level', [String(level)]);
+  return t('content_kanji_kentei_level', [String(level)]);
 }

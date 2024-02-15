@@ -368,7 +368,12 @@ function renderReferences(
     const referenceCell = html('div', { class: 'ref' });
     referenceTable.append(referenceCell);
 
-    const value = getReferenceValue(entry, ref.ref) || '-';
+    const value =
+      getReferenceValue(
+        entry,
+        ref.ref,
+        browser.i18n.getMessage.bind(browser)
+      ) || '-';
     referenceCell.append(
       html('span', { class: 'name' }, ref.short || ref.full),
       html(
