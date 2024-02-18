@@ -9842,10 +9842,10 @@ webpack-utf8-bom@1.4.0:
   resolved "https://registry.yarnpkg.com/webpack-utf8-bom/-/webpack-utf8-bom-1.4.0.tgz#8ae14392c5d72922674c5d79a460093ba1a38062"
   integrity sha512-VsGG9GKqcXtOk9028DLPuoTzsdGPUUpCJkK6EV//1LrkthrDQO7+mrQl6Zq9B+KuOXGdbzsFU7ADuMYpaiUaZg==
 
-webpack@5.90.1:
-  version "5.90.1"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.90.1.tgz#62ab0c097d7cbe83d32523dbfbb645cdb7c3c01c"
-  integrity sha512-SstPdlAC5IvgFnhiRok8hqJo/+ArAbNv7rhU4fnWGHNVfN59HSQFaxZDSAL3IFG2YmqxuRs+IU33milSxbPlog==
+webpack@5.90.2:
+  version "5.90.2"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.90.2.tgz#189686a8a292427076db9907d495625345805fab"
+  integrity sha512-ziXu8ABGr0InCMEYFnHrYweinHK2PWrMqnwdHk2oK3rRhv/1B+2FnfwYv5oD+RrknK/Pp/Hmyvu+eAsaMYhzCw==
   dependencies:
     "@types/eslint-scope" "^3.7.3"
     "@types/estree" "^1.0.5"
