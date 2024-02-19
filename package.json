@@ -90,7 +90,7 @@
     "archiver": "6.0.1",
     "chai": "5.1.0",
     "copy-webpack-plugin": "12.0.2",
-    "css-loader": "6.9.1",
+    "css-loader": "6.10.0",
     "eslint": "8.56.0",
     "eslint-plugin-tailwindcss": "3.14.2",
     "eslint-plugin-vitest": "0.3.22",
