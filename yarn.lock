@@ -77,10 +77,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@birchill/bugsnag-zero@0.6.7":
-  version "0.6.7"
-  resolved "https://registry.yarnpkg.com/@birchill/bugsnag-zero/-/bugsnag-zero-0.6.7.tgz#f88f6722ccf266a439f24c95d863faa62ffa5aab"
-  integrity sha512-9oBF5FYE5m0mrJrcLv5yHvY2JC4Qzu25R6XcyN8ZJvFe5eDACDko9/VqvcWXsasSUPGeXYJ5TLlOyLt7Dj6eTg==
+"@birchill/bugsnag-zero@0.6.8":
+  version "0.6.8"
+  resolved "https://registry.yarnpkg.com/@birchill/bugsnag-zero/-/bugsnag-zero-0.6.8.tgz#0eb175d5972a0361f7cc0ed0dd980b8394c1232f"
+  integrity sha512-cYVhil0G7ZwUqrI9fdHyMzkdWLaWz4Lvoac7YaAcwxHQgGPLFLZdS/bVcFKJqEDHcPjnfBkmI7j0FMhaH3/Z3g==
   dependencies:
     ua-parser-js "^1.0.32"
 
