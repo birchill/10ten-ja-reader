@@ -5636,10 +5636,10 @@ kleur@^4.1.5:
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-4.1.5.tgz#95106101795f7050c6c650f350c683febddb1780"
   integrity sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==
 
-knip@5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/knip/-/knip-5.0.1.tgz#8967bf4ba179f2c3227e87610ca9a73dd97212f4"
-  integrity sha512-rvZbe2JIpx+3i+ZC3XpLpKPp6oII9f5w1MOMsXwS1JnuYVuNd4R2i4eon2hFds9a+pf8F10DC1Gvt1W8SIBw3A==
+knip@5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/knip/-/knip-5.0.2.tgz#56c8dc315c53095789192a17b95e4444981e098a"
+  integrity sha512-ylmXi/CaR1rjOl8KqLsei7075cCsHttMNFwoYlBM7WMvd2Rd4oOfic9KqJFkDONXedsEsiiwnI3+u6GT6KOUuw==
   dependencies:
     "@ericcornelissen/bash-parser" "0.5.2"
     "@nodelib/fs.walk" "2.0.0"
@@ -5663,7 +5663,7 @@ knip@5.0.1:
     strip-json-comments "5.0.1"
     summary "2.1.0"
     zod "3.22.4"
-    zod-validation-error "3.0.0"
+    zod-validation-error "3.0.2"
 
 latest-version@^7.0.0:
   version "7.0.0"
@@ -10215,10 +10215,10 @@ zip-stream@^5.0.1:
     compress-commons "^5.0.1"
     readable-stream "^3.6.0"
 
-zod-validation-error@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/zod-validation-error/-/zod-validation-error-3.0.0.tgz#69dee45a03ccf9739456bddb50b4d27f121c6f45"
-  integrity sha512-x+agsJJG9rvC7axF0xqTEdZhJkLHyIZkdOAWDJSmwGPzxNHMHwtU6w2yDOAAP6yuSfTAUhAMJRBfhVGY64ySEQ==
+zod-validation-error@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/zod-validation-error/-/zod-validation-error-3.0.2.tgz#35a0f15e998d7fc88a569d50a9c1dbc3fb1abaae"
+  integrity sha512-21xGaDmnU7lJZ4J63n5GXWqi+rTzGy3gDHbuZ1jP6xrK/DEQGyOqs/xW7eH96tIfCOYm+ecCuT0bfajBRKEVUw==
 
 zod@3.22.4:
   version "3.22.4"
