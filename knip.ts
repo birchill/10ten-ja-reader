@@ -2,9 +2,6 @@ import type { KnipConfig } from 'knip';
 
 const config: KnipConfig = {
   entry: [
-    // knip's GitHub actions plugin doesn't know how to recognize custom actions
-    // yet.
-    '.github/actions/parse-release/index.js',
     // Utility script used by update docs pages.
     'docs/update/update.js',
     // A utility we used to generate all the icon variations once that might yet
@@ -42,16 +39,8 @@ const config: KnipConfig = {
     // Knip doesn't recognize the globs in package.json scripts
     entry: 'tests/**/*.test.{js,ts}',
   },
-  postcss: {
-    // Knip doesn't look for .cjs files by default.
-    config: ['postcss.config.cjs'],
-  },
   tailwind: {
     config: ['**/tailwind.config.js'],
-  },
-  webpack: {
-    // Knip won't know to look for the special (cosmos-webpack.config.js) file.
-    config: ['cosmos-webpack.config.js', 'webpack.config.js'],
   },
 };
 

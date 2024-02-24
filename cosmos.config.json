@@ -5,6 +5,6 @@
     "containerQuerySelector": "#container"
   },
   "webpack": {
-    "configPath": "./cosmos-webpack.config.js"
+    "configPath": "./webpack.config.cosmos.js"
   }
 }
