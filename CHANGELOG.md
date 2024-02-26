@@ -19,8 +19,6 @@ app.
   - Rare headwords are excluded from the result unless we matched on them.
 - Fixed a case of 10ten not looking up text with ruby correctly in Ttsu reader
   ([#1313](https://github.com/birchill/10ten-ja-reader/issues/1313)).
-- Made copying a dictionary entry separate the senses on new lines
-  ([#1305](https://github.com/birchill/10ten-ja-reader/issues/1305)).
 - Stopped popup being inverted when Wikipedia's experimental dark mode is
   enabled
   ([#1590](https://github.com/birchill/10ten-ja-reader/issues/1590)).
