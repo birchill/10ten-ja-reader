@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+## [1.18.0] - 2024-02-26
+
 - Made the puck persist its position, orientation, and active state between
   pages
   ([#1561](https://github.com/birchill/10ten-ja-reader/issues/1561)).
@@ -1095,7 +1097,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.17.1...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.18.0...HEAD
+[1.18.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.17.1...v1.18.0
 [1.17.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.17.0...v1.17.1
 [1.17.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.16.2...v1.17.0
 [1.16.2]: https://github.com/birchill/10ten-ja-reader/compare/v1.16.1...v1.16.2
