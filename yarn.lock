@@ -7974,10 +7974,10 @@ relaxed-json@1.0.3:
     chalk "^2.4.2"
     commander "^2.6.0"
 
-release-it@17.0.5:
-  version "17.0.5"
-  resolved "https://registry.yarnpkg.com/release-it/-/release-it-17.0.5.tgz#cd984a34f931d04452a170bb6a52ea0a46d3ecb8"
-  integrity sha512-97FcBu/2IjPd4qMvliZSnavpCO0+BWi8lZr+BgVJTXs6ihX8HLPucYR5RsgUUcZoGKj3beO8cunrsMuvEWTzGQ==
+release-it@17.1.1:
+  version "17.1.1"
+  resolved "https://registry.yarnpkg.com/release-it/-/release-it-17.1.1.tgz#59925d2a84c23cd8bd4a649b7fa7a96bad801427"
+  integrity sha512-b+4Tu2eb5f2wIdIe5E9hre0evbMQrXp/kRq0natHsHYJVqu1Bd4/h2a+swFi0faGmC3cJdB16uYR6LscG9SchQ==
   dependencies:
     "@iarna/toml" "2.2.5"
     "@octokit/rest" "20.0.2"
