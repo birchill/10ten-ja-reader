@@ -2,11 +2,12 @@ import Bugsnag from '@birchill/bugsnag-zero';
 import browser from 'webextension-polyfill';
 import * as s from 'superstruct';
 
+import { ExtensionStorageError } from '../common/extension-storage-error';
 import { fetchWithTimeout } from '../utils/fetch';
+import { isError } from '../utils/is-error';
 import { getReleaseStage } from '../utils/release-stage';
 
 import { getLocalFxData } from './fx-data';
-import { isError } from '../utils/is-error';
 
 declare let self: (Window | ServiceWorkerGlobalScope) & typeof globalThis;
 
@@ -132,6 +133,7 @@ export class FxFetcher {
     url += `?${queryParams.toString()}`;
 
     // Do the fetch
+    let fxData: s.Infer<typeof FxDataSchema> | undefined;
     try {
       const response = await fetchWithTimeout(url, {
         mode: 'cors',
@@ -147,19 +149,7 @@ export class FxFetcher {
       const result = await response.json();
       s.assert(result, FxDataSchema);
 
-      // Store the response
-      //
-      // If this fails (e.g. due to a QuotaExceededError) there's not much we
-      // can do since we communicate the FX data with other components via
-      // local storage.
-      const updated = Date.now();
-      await browser.storage.local.set({
-        fx: { ...result, updated },
-      });
-
-      // Update our local state now that everything succeeded
-      this.updated = updated;
-      this.fetchState = { type: 'idle' };
+      fxData = result;
     } catch (e: unknown) {
       // Convert network errors disguised as TypeErrors to DownloadErrors
       let error = e;
@@ -206,6 +196,28 @@ export class FxFetcher {
       } else {
         console.error(error);
         void Bugsnag.notify(error);
+        this.fetchState = { type: 'idle', didFail: true };
+      }
+    }
+
+    if (fxData) {
+      // Store the response
+      //
+      // If this fails (e.g. due to a QuotaExceededError) there's not much we
+      // can do since we communicate the FX data with other components via
+      // local storage.
+      const updated = Date.now();
+      try {
+        await browser.storage.local.set({ fx: { ...fxData, updated } });
+
+        // Update our local state now that everything succeeded
+        this.updated = updated;
+        this.fetchState = { type: 'idle' };
+      } catch {
+        void Bugsnag.notify(
+          new ExtensionStorageError({ key: 'fx', action: 'set' }),
+          { severity: 'warning' }
+        );
         this.fetchState = { type: 'idle', didFail: true };
       }
     }
