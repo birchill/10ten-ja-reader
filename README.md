@@ -17,7 +17,7 @@
 - [Installing](#installing)
 - [Features](#features)
 - [Usage](#usage)
-- [Building from source](#building-from-source)
+- [Building from source](#building-a-release-from-source)
 - [Contributing](#contributing)
 - [Contributors](#contributors)
 
