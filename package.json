@@ -93,7 +93,7 @@
     "css-loader": "6.10.0",
     "eslint": "8.57.0",
     "eslint-plugin-tailwindcss": "3.14.3",
-    "eslint-plugin-vitest": "0.3.22",
+    "eslint-plugin-vitest": "0.3.23",
     "fake-indexeddb": "5.0.2",
     "fast-glob": "3.3.2",
     "file-loader": "6.2.0",
