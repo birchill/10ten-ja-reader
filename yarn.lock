@@ -3553,10 +3553,10 @@ eslint-plugin-tailwindcss@3.14.3:
     fast-glob "^3.2.5"
     postcss "^8.4.4"
 
-eslint-plugin-vitest@0.3.23:
-  version "0.3.23"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-vitest/-/eslint-plugin-vitest-0.3.23.tgz#6be793e19e10fac4dd9a7419ea7a0d66a27f6e75"
-  integrity sha512-WBwYGC+PRjj3AU86hcfTyUFZG9S4VGMBsuspcFQTkjYnKrjCxmhCVTdCyQjU9E75fR8UQfB4UPEuktnPrMBZyA==
+eslint-plugin-vitest@0.3.24:
+  version "0.3.24"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-vitest/-/eslint-plugin-vitest-0.3.24.tgz#0331b251a7b851d0aa1895bd277d1fe85379703c"
+  integrity sha512-MjxQCfOzLVJwi5EBHZYtv6zKHVUMRDh269D3KHCxHW0skoJhNDgE5MKvuxQ0Rh6B1aa6KuGUcvffRCdtN4Bg7A==
   dependencies:
     "@typescript-eslint/utils" "^7.1.1"
 
