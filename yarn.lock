@@ -5501,11 +5501,6 @@ jose@4.13.1:
   resolved "https://registry.yarnpkg.com/jose/-/jose-4.13.1.tgz#449111bb5ab171db85c03f1bd2cb1647ca06db1c"
   integrity sha512-MSJQC5vXco5Br38mzaQKiq9mwt7lwj2eXpgpRyQYNHYt2lq1PjkWa7DLXX0WVcQLE9HhMh3jPiufS7fhJf+CLQ==
 
-js-base64@3.7.6:
-  version "3.7.6"
-  resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-3.7.6.tgz#6ccb5d761b48381fd819f9ce04998866dbcbbc99"
-  integrity sha512-NPrWuHFxFUknr1KqJRDgUQPexQF0uIJWjeT+2KjEePhitQxQEx5EJBG1lVn5/hc8aLycTpXrDOgPQ6Zq+EDiTA==
-
 js-base64@3.7.7:
   version "3.7.7"
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-3.7.7.tgz#e51b84bf78fbf5702b9541e2cb7bfcb893b43e79"
@@ -7695,19 +7690,19 @@ rc@1.2.8:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-cosmos-core@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/react-cosmos-core/-/react-cosmos-core-6.0.1.tgz#9887e17a589f1fd1645df764cab15ff6b12928d8"
-  integrity sha512-nKFTNjn3SUDHxBDmdyypBWQ4uuEGQ4LMHSKJqCLJCW1h1rYF4rcOdG8q+hSJsdaiopzGzgIMjXLqdCOR2z1X7g==
-  dependencies:
-    js-base64 "3.7.6"
-    lodash-es "4.17.21"
-    react-is "18.2.0"
-
 react-cosmos-core@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/react-cosmos-core/-/react-cosmos-core-6.1.0.tgz#11173f4a4e7601724af0af73b9f309d2f32fb3a3"
   integrity sha512-rllBL1bNTnTAPQGnfxrVcDZTxZqdeG7aXzGWJhH5TJpvKnkUamvllrhZHfEjhF7s7pIOt6HmvVn6Xmahv6PefQ==
+  dependencies:
+    js-base64 "3.7.7"
+    lodash-es "4.17.21"
+    react-is "18.2.0"
+
+react-cosmos-core@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/react-cosmos-core/-/react-cosmos-core-6.1.1.tgz#aee69fe2367c821ec1181ec8f9048b94fac9318c"
+  integrity sha512-LdnltfcjBqJamAR1zruW0pIpiTfdbdH12NSi6IkIDbZ51mY6Tqkz3v0uT5cjmUiqVclJ90OV+pYkVlXvBd+wRg==
   dependencies:
     js-base64 "3.7.7"
     lodash-es "4.17.21"
@@ -7734,15 +7729,6 @@ react-cosmos-plugin-webpack@6.1.0:
     webpack-dev-middleware "6.1.1"
     webpack-hot-middleware "2.26.1"
 
-react-cosmos-renderer@^6.0.3:
-  version "6.0.3"
-  resolved "https://registry.yarnpkg.com/react-cosmos-renderer/-/react-cosmos-renderer-6.0.3.tgz#715b1de0f028fb850c390e321ec9fc526ff12339"
-  integrity sha512-It+z+Y/oZDiFbpt3mjLgaAdtlgo+SOmUmilaFzKI9kA7BvGrkWposaytpBFThLQSamje3Fvxt+Ii+zuFQDpVCw==
-  dependencies:
-    lodash-es "4.17.21"
-    react-cosmos-core "^6.0.1"
-    react-is "18.2.0"
-
 react-cosmos-renderer@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/react-cosmos-renderer/-/react-cosmos-renderer-6.1.0.tgz#bf3acfbde1ce90a307d9b11dc1fba0ea2cce8aa6"
@@ -7752,18 +7738,27 @@ react-cosmos-renderer@^6.1.0:
     react-cosmos-core "^6.1.0"
     react-is "18.2.0"
 
-react-cosmos-ui@^6.0.3:
-  version "6.0.3"
-  resolved "https://registry.yarnpkg.com/react-cosmos-ui/-/react-cosmos-ui-6.0.3.tgz#0b33027056a193f572fd66067acd7f8e2ecd41ef"
-  integrity sha512-01vaYIkIESH2bfna+KtWb2Xzv0cZmQQ5D7sr9CMfmTPJB/tuakArPGgL92haUoX4XQbu1tQPoQankeDJLq+IzA==
+react-cosmos-renderer@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/react-cosmos-renderer/-/react-cosmos-renderer-6.1.1.tgz#09bfa465c7ca4acf495b92abb4b25db2dbf2e133"
+  integrity sha512-1+DPSxYQrISEkSNDVl3WeLmSHcZfUuAhxEJvBA4HiHvuJEl9W1TsYlbu41YlZ88AX617KYYZ6Swcnq5+EFjEnw==
   dependencies:
     lodash-es "4.17.21"
-    react-cosmos-core "^6.0.1"
+    react-cosmos-core "^6.1.1"
+    react-is "18.2.0"
 
-react-cosmos@6.0.3:
-  version "6.0.3"
-  resolved "https://registry.yarnpkg.com/react-cosmos/-/react-cosmos-6.0.3.tgz#d63a7cc9c58df52af3ec5db94c6ff02a38ef2a9f"
-  integrity sha512-zUhPS0F1V92on89L4tspojY1BCHzN9AculsYDKbX8PLja3+ZEcCmBy5JxVSgbTf9OonnmzW1Cv08QZ8/9DoT0A==
+react-cosmos-ui@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/react-cosmos-ui/-/react-cosmos-ui-6.1.1.tgz#69fc1906be14a4ee87217bddf61c64407dae107c"
+  integrity sha512-G0+Tanx3dHFSoEFRtvf53nUWe+8lv+MA/TLWfiXnK7WeLtmEzZUvBTdtA2hGOu/8IbIgq+toyPAzOXCb/g0pdQ==
+  dependencies:
+    lodash-es "4.17.21"
+    react-cosmos-core "^6.1.1"
+
+react-cosmos@6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/react-cosmos/-/react-cosmos-6.1.1.tgz#d3e6cadf0baabb5aa188a12945a9803091892ee2"
+  integrity sha512-C40I3npZOLMJMOV73BVcp1L9/eG/h1zB4+7ihMQE62img3qFy3CDEwBUwwp/YmIMRF1LXrIvhGU0TA7kig/YSw==
   dependencies:
     "@skidding/launch-editor" "2.2.3"
     chokidar "3.5.3"
@@ -7774,9 +7769,9 @@ react-cosmos@6.0.3:
     micromatch "4.0.5"
     open "8.4.2"
     pem "1.14.8"
-    react-cosmos-core "^6.0.1"
-    react-cosmos-renderer "^6.0.3"
-    react-cosmos-ui "^6.0.3"
+    react-cosmos-core "^6.1.1"
+    react-cosmos-renderer "^6.1.1"
+    react-cosmos-ui "^6.1.1"
     ws "8.16.0"
     yargs "17.7.2"
 
@@ -8791,7 +8786,16 @@ string-template@^1.0.0:
   resolved "https://registry.yarnpkg.com/string-template/-/string-template-1.0.0.tgz#9e9f2233dc00f218718ec379a28a5673ecca8b96"
   integrity sha512-SLqR3GBUXuoPP5MmYtD7ompvXiG87QjT6lzOszyXjTM86Uu7At7vNnt2xgyTLq5o9T4IxTYFyGxcULqpsmsfdg==
 
-"string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
+"string-width-cjs@npm:string-width@^4.2.0":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
+  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
+  dependencies:
+    emoji-regex "^8.0.0"
+    is-fullwidth-code-point "^3.0.0"
+    strip-ansi "^6.0.1"
+
+string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -8873,7 +8877,14 @@ string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
+  dependencies:
+    ansi-regex "^5.0.1"
+
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -10102,7 +10113,7 @@ workerpool@6.2.1:
   resolved "https://registry.yarnpkg.com/workerpool/-/workerpool-6.2.1.tgz#46fc150c17d826b86a008e5a4508656777e9c343"
   integrity sha512-ILEIE97kDZvF9Wb9f6h5aXK4swSlKGUcOEGiIYb2OOu/IrDU9iwj0fD//SsA6E5ibwJxpEvhullJY4Sl4GcpAw==
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
@@ -10115,6 +10126,15 @@ wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-6.2.0.tgz#e9393ba07102e6c91a3b221478f0257cd2856e53"
   integrity sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==
+  dependencies:
+    ansi-styles "^4.0.0"
+    string-width "^4.1.0"
+    strip-ansi "^6.0.0"
+
+wrap-ansi@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
+  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
   dependencies:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"
