@@ -7704,15 +7704,6 @@ rc@1.2.8:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-cosmos-core@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/react-cosmos-core/-/react-cosmos-core-6.1.0.tgz#11173f4a4e7601724af0af73b9f309d2f32fb3a3"
-  integrity sha512-rllBL1bNTnTAPQGnfxrVcDZTxZqdeG7aXzGWJhH5TJpvKnkUamvllrhZHfEjhF7s7pIOt6HmvVn6Xmahv6PefQ==
-  dependencies:
-    js-base64 "3.7.7"
-    lodash-es "4.17.21"
-    react-is "18.2.0"
-
 react-cosmos-core@^6.1.1:
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/react-cosmos-core/-/react-cosmos-core-6.1.1.tgz#aee69fe2367c821ec1181ec8f9048b94fac9318c"
@@ -7722,35 +7713,26 @@ react-cosmos-core@^6.1.1:
     lodash-es "4.17.21"
     react-is "18.2.0"
 
-react-cosmos-dom@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/react-cosmos-dom/-/react-cosmos-dom-6.1.0.tgz#86934a723355b1064dd7405a34751d0b32e3834e"
-  integrity sha512-PO+NNDvqfoWLjOoLHrG+orDKtFA2gQzTzO/MSyUawpiGw+AoOVn95lNOeoipXf2t1DdeasqJzjfC2ZJWFxfmLQ==
+react-cosmos-dom@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/react-cosmos-dom/-/react-cosmos-dom-6.1.1.tgz#dcb1138bc720d4cba31884ea67780bf548b9ae63"
+  integrity sha512-x4lb7eJUDreh6x8b4A2nVC8HjSIxlNWHX3Pl4fPwOuu6BnLgtY6Ycqw1TEE2/T1YX9LFsjM38kB2tSjyRxhEwA==
   dependencies:
     lodash-es "4.17.21"
-    react-cosmos-core "^6.1.0"
-    react-cosmos-renderer "^6.1.0"
+    react-cosmos-core "^6.1.1"
+    react-cosmos-renderer "^6.1.1"
 
-react-cosmos-plugin-webpack@6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/react-cosmos-plugin-webpack/-/react-cosmos-plugin-webpack-6.1.0.tgz#330169e95c258426fc56fed529161948842e9993"
-  integrity sha512-sdyP10qlyZKeRsv6Vrd/dmbZSWG/s1YE6RraewZK+t8ert26F1akXv5tiUOmcG5nxY9NTQEXex9VCpD3mZ2t3g==
+react-cosmos-plugin-webpack@6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/react-cosmos-plugin-webpack/-/react-cosmos-plugin-webpack-6.1.1.tgz#08e7a57904acff526e645fbc2f548cce9819c12d"
+  integrity sha512-jRGtlnscwfQquNRtGtJZg4dndsfsKbvFPHnnfVrF05sjzRk11SZUOquJR0jP+3Zy8Tzjwt4QHYjGfwAxisqIWw==
   dependencies:
     lodash-es "4.17.21"
-    react-cosmos-core "^6.1.0"
-    react-cosmos-dom "^6.1.0"
+    react-cosmos-core "^6.1.1"
+    react-cosmos-dom "^6.1.1"
     react-error-overlay "6.0.9"
     webpack-dev-middleware "6.1.1"
     webpack-hot-middleware "2.26.1"
-
-react-cosmos-renderer@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/react-cosmos-renderer/-/react-cosmos-renderer-6.1.0.tgz#bf3acfbde1ce90a307d9b11dc1fba0ea2cce8aa6"
-  integrity sha512-182ltMxAPweeq3hU68sMkQcBDvBV3g53FVv4IEQw4+uNtrXnfQadPZ2Z6XrEuEcvUTF/gq9R9rAtpPLfBnINIA==
-  dependencies:
-    lodash-es "4.17.21"
-    react-cosmos-core "^6.1.0"
-    react-is "18.2.0"
 
 react-cosmos-renderer@^6.1.1:
   version "6.1.1"
