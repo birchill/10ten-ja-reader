@@ -802,10 +802,10 @@
   dependencies:
     "@pnpm/types" "9.4.2"
 
-"@pnpm/error@5.0.2":
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/@pnpm/error/-/error-5.0.2.tgz#153d18fe9eeaeb02e48e9dc45b042f4c962b3822"
-  integrity sha512-0TEm+tWNYm+9uh6DSKyRbv8pv/6b4NL0PastLvMxIoqZbBZ5Zj1cYi332R9xsSUi31ZOsu2wpgn/bC7DA9hrjg==
+"@pnpm/error@5.0.3":
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/@pnpm/error/-/error-5.0.3.tgz#4dbb9f4acb0b30c373b3ca5024cdf495f03f4380"
+  integrity sha512-ONJU5cUeoeJSy50qOYsMZQHTA/9QKmGgh1ATfEpCLgtbdwqUiwD9MxHNeXUYYI/pocBCz6r1ZCFqiQvO+8SUKA==
   dependencies:
     "@pnpm/constants" "7.1.1"
 
@@ -857,13 +857,13 @@
     semver "^7.3.5"
     validate-npm-package-name "^4.0.0"
 
-"@pnpm/npm-resolver@18.1.0":
-  version "18.1.0"
-  resolved "https://registry.yarnpkg.com/@pnpm/npm-resolver/-/npm-resolver-18.1.0.tgz#bbafcdf88391ee84e2dc78c2b599b54dbbc8f8e3"
-  integrity sha512-fUYKX/iHiHldL0VRVvkQI35YK2jWhZEkPO6rrGke8309+LKAo12v833nBttMDpQrtHefmqhB4mhCzQq6L2Xqmg==
+"@pnpm/npm-resolver@18.1.1":
+  version "18.1.1"
+  resolved "https://registry.yarnpkg.com/@pnpm/npm-resolver/-/npm-resolver-18.1.1.tgz#64a259825db6dc4e4615f5b67464c1cd174850bf"
+  integrity sha512-NptzncmMD5ZMimbjWkGpMzuBRhlCY+sh7mzypPdBOTNlh5hmEQe/VaRKjNK4V9/b0C/llElkvIePL6acybu86w==
   dependencies:
     "@pnpm/core-loggers" "9.0.6"
-    "@pnpm/error" "5.0.2"
+    "@pnpm/error" "5.0.3"
     "@pnpm/fetching-types" "5.0.0"
     "@pnpm/graceful-fs" "3.2.0"
     "@pnpm/resolve-workspace-range" "5.0.1"
@@ -903,13 +903,13 @@
   resolved "https://registry.yarnpkg.com/@pnpm/types/-/types-9.4.2.tgz#0a34c3c41d5452461d8d8958374a727f9c46cfb2"
   integrity sha512-g1hcF8Nv4gd76POilz9gD4LITAPXOe5nX4ijgr8ixCbLQZfcpYiMfJ+C1RlMNRUDo8vhlNB4O3bUlxmT6EAQXA==
 
-"@pnpm/workspace.pkgs-graph@^2.0.14":
-  version "2.0.14"
-  resolved "https://registry.yarnpkg.com/@pnpm/workspace.pkgs-graph/-/workspace.pkgs-graph-2.0.14.tgz#3ea12b8d95987e64bc98876422ea7ad578cd022a"
-  integrity sha512-SBXXyWDkPEoaLTjLRyQzRHoBYH+P0NLcIjX1yPUxuJiMTvGOMzjpLWTuxYNVe/P0V0VQMrjpJFaJPjlViNLhzg==
+"@pnpm/workspace.pkgs-graph@^2.0.15":
+  version "2.0.15"
+  resolved "https://registry.yarnpkg.com/@pnpm/workspace.pkgs-graph/-/workspace.pkgs-graph-2.0.15.tgz#98bf425705206f672e3ea39bd8b549a22b7849a9"
+  integrity sha512-Txxd5FzzVfBfGCTngISaxFlJzZhzdS8BUrCEtAWJfZOFbQzpWy27rzkaS7TaWW2dHiFcCVYzPI/2vgxfeRansA==
   dependencies:
     "@pnpm/npm-package-arg" "^1.0.0"
-    "@pnpm/npm-resolver" "18.1.0"
+    "@pnpm/npm-resolver" "18.1.1"
     "@pnpm/resolve-workspace-range" "5.0.1"
     ramda "npm:@pnpm/ramda@0.28.1"
 
@@ -5719,17 +5719,17 @@ kleur@^4.1.5:
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-4.1.5.tgz#95106101795f7050c6c650f350c683febddb1780"
   integrity sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==
 
-knip@5.0.3:
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/knip/-/knip-5.0.3.tgz#a69756332515bc41721e4fa7f1ca52fa6f2f62e4"
-  integrity sha512-U4bCIkf4aZ3zZSrBaNE8xIdqX1QVhIHXpwUoAW7odx7oajMwa76hUDd9KjlFlb6qAPjdUuTGHjDszIgpfg+Ndg==
+knip@5.0.4:
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/knip/-/knip-5.0.4.tgz#7aa8963bf8ea2cfad2b7c7b899dc4897d0c3bc67"
+  integrity sha512-NW8tPh2UBOQUi5ArHthjyZTmkCdjUWXNPYX3By63Ntg2dpNkqAU4nSs5wDFz858mLs9PsIPWauiWgHgLAZwDPw==
   dependencies:
     "@ericcornelissen/bash-parser" "0.5.2"
     "@nodelib/fs.walk" "2.0.0"
     "@npmcli/map-workspaces" "3.0.4"
     "@npmcli/package-json" "5.0.0"
     "@pnpm/logger" "5.0.0"
-    "@pnpm/workspace.pkgs-graph" "^2.0.14"
+    "@pnpm/workspace.pkgs-graph" "^2.0.15"
     "@snyk/github-codeowners" "1.1.0"
     "@types/picomatch" "2.3.3"
     easy-table "1.2.0"
@@ -5741,12 +5741,11 @@ knip@5.0.3:
     picocolors "1.0.0"
     picomatch "4.0.1"
     pretty-ms "9.0.0"
-    semver "7.6.0"
     smol-toml "1.1.4"
     strip-json-comments "5.0.1"
     summary "2.1.0"
     zod "3.22.4"
-    zod-validation-error "3.0.2"
+    zod-validation-error "3.0.3"
 
 latest-version@^7.0.0:
   version "7.0.0"
@@ -10344,10 +10343,10 @@ zip-stream@^6.0.1:
     compress-commons "^6.0.2"
     readable-stream "^4.0.0"
 
-zod-validation-error@3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/zod-validation-error/-/zod-validation-error-3.0.2.tgz#35a0f15e998d7fc88a569d50a9c1dbc3fb1abaae"
-  integrity sha512-21xGaDmnU7lJZ4J63n5GXWqi+rTzGy3gDHbuZ1jP6xrK/DEQGyOqs/xW7eH96tIfCOYm+ecCuT0bfajBRKEVUw==
+zod-validation-error@3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/zod-validation-error/-/zod-validation-error-3.0.3.tgz#d2e0bbb1bb5fcf0ae406095180dc3c31d8145b8e"
+  integrity sha512-cETTrcMq3Ze58vhdR0zD37uJm/694I6mAxcf/ei5bl89cC++fBNxrC2z8lkFze/8hVMPwrbtrwXHR2LB50fpHw==
 
 zod@3.22.4:
   version "3.22.4"
