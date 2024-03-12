@@ -238,15 +238,7 @@ function filterRelevantKanjiHeadwords(
   }
 ) {
   if (includeLessCommonHeadwords) {
-    // Exclude search-only / rare headwords unless we matched on them.
-    //
-    // The reason we include search-only / rare headwords if we matched on them
-    // is that it's quite possible that if a user matched on a rare headword
-    // such as a rare kanji they'd like to copy it to the clipboard for further
-    // searching.
-    return headwords.filter(
-      (k) => (!k.i?.includes('sK') && !k.i?.includes('rK')) || k.matchRange
-    );
+    return headwords.filter((k) => !k.i?.includes('sK'));
   }
 
   const commonHeadwords = headwords.filter(
@@ -279,9 +271,7 @@ function filterRelevantKanaHeadwords(
   }
 ) {
   if (includeLessCommonHeadwords) {
-    return headwords.filter(
-      (k) => (!k.i?.includes('sk') && !k.i?.includes('rk')) || k.matchRange
-    );
+    return headwords.filter((k) => !k.i?.includes('sk'));
   }
 
   const commonHeadwords = headwords.filter(

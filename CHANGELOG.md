@@ -8,6 +8,10 @@ app.
 
 ## [Unreleased]
 
+- Made copying to the clipboard include rare headwords again when not using
+  simplified copy mode
+  ([#1665](https://github.com/birchill/10ten-ja-reader/issues/1665)).
+
 ## [1.18.0] - 2024-02-26
 
 - Made the puck persist its position, orientation, and active state between
