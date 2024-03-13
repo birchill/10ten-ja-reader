@@ -11,6 +11,9 @@ app.
 - Made it possible to change tabs in the popup by swiping horizontally
   thanks to [@StarScape](https://github.com/StarScape)
   ([#1656](https://github.com/birchill/10ten-ja-reader/issues/1656)).
+- Included a font for displaying the popup to avoid issues with sites that
+  override system fonts
+  ([#1560](https://github.com/birchill/10ten-ja-reader/issues/1560)).
 - Made copying to the clipboard include rare headwords again when not using
   simplified copy mode
   ([#1665](https://github.com/birchill/10ten-ja-reader/issues/1665)).

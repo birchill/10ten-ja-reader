@@ -4,8 +4,8 @@
 *:lang(en),
 *:lang(fr),
 *:lang(es) {
-  /* Meiryo renders more crisply than Arial on Windows */
-  font-family: Meiryo, sans-serif;
+  font-family: '10ten Inter', sans-serif;
+  font-feature-settings: 'calt', 'case', 'cv01', 'cv03', 'cv04', 'cv11', 'ss03';
 }
 
 :host {

@@ -46,7 +46,16 @@ async function main() {
 
   const rootDir = url.fileURLToPath(new URL('..', import.meta.url));
 
-  const dirs = ['_locales', 'css', 'data', 'docs', 'images', 'src', 'tests'];
+  const dirs = [
+    '_locales',
+    'css',
+    'data',
+    'docs',
+    'fonts',
+    'images',
+    'src',
+    'tests',
+  ];
   for (const dir of dirs) {
     archive.directory(path.join(rootDir, dir), dir);
   }

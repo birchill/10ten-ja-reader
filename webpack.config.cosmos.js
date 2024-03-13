@@ -52,7 +52,7 @@ const config = {
     }),
     new MiniCssExtractPlugin(),
     new CopyWebpackPlugin({
-      patterns: ['images/*'],
+      patterns: ['fonts/*', 'images/*'],
     }),
   ],
 };

@@ -1,5 +1,6 @@
 /// <reference path="../../common/css.d.ts" />
 import { MajorDataSeries } from '@birchill/jpdict-idb';
+import browser from 'webextension-polyfill';
 
 import {
   AccentDisplay,
@@ -12,6 +13,7 @@ import { ReferenceAbbreviation } from '../../common/refs';
 
 import { html } from '../../utils/builder';
 import { Point } from '../../utils/geometry';
+import { getHash } from '../../utils/hash';
 import { getThemeClass } from '../../utils/themes';
 
 import {
@@ -36,6 +38,7 @@ import { onHorizontalSwipe } from './swipe';
 import { renderTabBar } from './tabs';
 import { renderWordEntries } from './words';
 
+import popupDocStyles from '../../../css/popup-doc.css';
 import popupStyles from '../../../css/popup.css';
 
 export type StartCopyCallback = (
@@ -87,6 +90,13 @@ export function renderPopup(
   result: QueryResult | undefined,
   options: PopupOptions
 ): HTMLElement | null {
+  // We add most styles to the shadow DOM but it turns out that browsers don't
+  // load @font-face fonts from the shadow DOM [1], so we need to add @font-face
+  // definitions to the main document.
+  //
+  // [1] e.g see https://issues.chromium.org/issues/41085401
+  addDocStyles();
+
   const container = options.container || getDefaultContainer();
   const windowElem = resetContainer({
     host: container,
@@ -327,6 +337,25 @@ function getDefaultContainer(): HTMLElement {
   return defaultContainer;
 }
 
+function addDocStyles() {
+  let docStyles = popupDocStyles.toString();
+  docStyles = docStyles.replace(/\.\.\/(fonts\/[^']+)/g, (_match, url) =>
+    browser.runtime.getURL(url)
+  );
+  const styleHash = getHash(docStyles);
+
+  let styleElement = document.getElementById('tenten-ja-styles');
+  if (!styleElement) {
+    styleElement = document.createElement('style');
+    styleElement.id = 'tenten-ja-styles';
+    styleElement.dataset.hash = styleHash;
+    styleElement.textContent = docStyles;
+    (document.head || document.documentElement).appendChild(styleElement);
+  } else if (styleElement.dataset.hash !== styleHash) {
+    styleElement.textContent = docStyles;
+  }
+}
+
 function resetContainer({
   host,
   displayMode,
@@ -389,6 +418,7 @@ function getPopupContainer(): HTMLElement | null {
 
 export function removePopup() {
   removeContentContainer(['rikaichamp-window', 'tenten-ja-window']);
+  document.getElementById('tenten-ja-styles')?.remove();
 }
 
 export function setFontSize(size: FontSize) {
