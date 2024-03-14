@@ -39,7 +39,7 @@ async function main() {
   });
 
   const finishWritePromise = new Promise((resolve) => {
-    archive.on('close', resolve);
+    zipFile.on('close', resolve);
   });
 
   archive.pipe(zipFile);
