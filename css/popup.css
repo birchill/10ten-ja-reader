@@ -12,6 +12,7 @@
 .w-romaji {
   font-family: '10ten Inter', sans-serif;
   font-feature-settings: 'calt', 'case', 'cv01', 'cv03', 'cv04', 'cv11', 'ss03';
+  font-weight: 300;
 }
 
 :host {
