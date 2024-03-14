@@ -89,7 +89,7 @@ type NotLocalizedReferences = Exclude<
   ReferenceAbbreviation,
   LocalizedReferences
 >;
-type ReferenceLabel = { full: string; short?: string };
+type ReferenceLabel = { full: string; short?: string; lang: string };
 
 // Note that when adding or modifying labels here, it is important that the full
 // and short versions sort roughly the same so that they appear to be in
@@ -106,48 +106,62 @@ const REFERENCE_LABELS: {
   conning: {
     full: "Conning - Kodansha Kanji Learner's Course",
     short: 'Conning',
+    lang: 'en',
   },
   sh_kk2: {
     full: 'Kanji & Kana (Hadamitzky, Tuttle, 2011)',
     short: 'Kanji & Kana',
+    lang: 'en',
   },
   halpern_njecd: {
     full: 'Halpern - New Japanese-English Character Dictionary',
     short: 'Halpern',
+    lang: 'en',
   },
   halpern_kkld_2ed: {
     full: "Kanji Learner's Dictionary (Halpbern, Kodansha, 2nd ed.)",
     short: "Kanji Learner's Dictionary",
+    lang: 'en',
   },
-  heisig6: { full: 'Heisig - Rembering the Kanji (6th ed.)', short: 'Heisig' },
+  heisig6: {
+    full: 'Heisig - Rembering the Kanji (6th ed.)',
+    short: 'Heisig',
+    lang: 'en',
+  },
   henshall: {
     full: 'Henshall - A Guide to Remembering Japanese Characters',
     short: 'Henshall',
+    lang: 'en',
   },
-  busy_people: { full: 'Japanese for Busy People' },
-  kanji_in_context: { full: 'Kanji in Context' },
+  busy_people: { full: 'Japanese for Busy People', lang: 'en' },
+  kanji_in_context: { full: 'Kanji in Context', lang: 'en' },
   kodansha_compact: {
     full: 'Compact Kanji Guide (Kodansha)',
     short: 'Compact Kanji Guide',
+    lang: 'en',
   },
-  maniette: { full: 'Les Kanjis dans la tete' },
+  maniette: { full: 'Les Kanjis dans la tete', lang: 'fr' },
   nelson_c: {
     full: "Classic Nelson - Modern Reader's Japanese-English Character Dictionary",
     short: 'Classic Nelson',
+    lang: 'en',
   },
   nelson_n: {
     full: 'New Nelson Japanese-English Character Dictionary',
     short: 'New Nelson',
+    lang: 'en',
   },
-  py: { full: 'Pinyin' },
-  skip: { full: 'SKIP' },
+  py: { full: 'Pinyin', lang: 'en' },
+  skip: { full: 'SKIP', lang: 'en' },
   sh_desc: {
     full: 'The Kanji Dictionary (Spahn)',
     short: 'Kanji Dictionary',
+    lang: 'en',
   },
   wk: {
     full: 'WaniKani level',
     short: 'WaniKani',
+    lang: 'en',
   },
 } as const;
 
@@ -206,24 +220,26 @@ function getLabelForReference(
   ref: ReferenceAbbreviation,
   t: TranslateFunctionType
 ): ReferenceLabel {
+  const lang = t('lang_tag');
+
   switch (ref) {
     case 'radical':
-      return { full: t('ref_label_radical') };
+      return { full: t('ref_label_radical'), lang };
 
     case 'nelson_r':
-      return { full: t('ref_label_nelson_r') };
+      return { full: t('ref_label_nelson_r'), lang };
 
     case 'kk':
-      return { full: t('ref_label_kk') };
+      return { full: t('ref_label_kk'), lang };
 
     case 'jlpt':
-      return { full: t('ref_label_jlpt') };
+      return { full: t('ref_label_jlpt'), lang };
 
     case 'py':
-      return { full: t('ref_label_py') };
+      return { full: t('ref_label_py'), lang };
 
     case 'unicode':
-      return { full: t('ref_label_unicode') };
+      return { full: t('ref_label_unicode'), lang };
 
     default:
       return REFERENCE_LABELS[ref];
