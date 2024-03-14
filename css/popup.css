@@ -1,9 +1,15 @@
 @charset "UTF-8";
 @import 'themes.css';
 
+*:lang(de),
 *:lang(en),
+*:lang(es),
 *:lang(fr),
-*:lang(es) {
+*:lang(nl),
+*:lang(pt),
+*:lang(sl),
+*:lang(sv),
+.w-romaji {
   font-family: '10ten Inter', sans-serif;
   font-feature-settings: 'calt', 'case', 'cv01', 'cv03', 'cv04', 'cv11', 'ss03';
 }

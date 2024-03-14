@@ -161,6 +161,7 @@
   /*#if mv3*/
   "web_accessible_resources": [{
     "resources": [
+      "css/popup-doc.css",
       "css/selection.css",
       "docs/introducing-the-mouse.html",
       "fonts/*.woff2"
@@ -170,9 +171,10 @@
   }],
   /*#else*/
   "web_accessible_resources": [
+    "css/popup-doc.css",
     "css/selection.css",
     "docs/introducing-the-mouse.html",
-    "fonts/Inter-4.0.woff2"
+    "fonts/*.woff2"
   ],
   /*#endif*/
   /*#if supports_offline_enabled_field */

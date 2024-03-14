@@ -116,9 +116,13 @@ function PopupPreview(props: PopupPreviewProps) {
           <span class="w-kanji">
             理解
             {props.showPriority && <Star />}
-            {props.showWaniKaniLevel && <span class="wk-level">21</span>}
+            {props.showWaniKaniLevel && (
+              <span class="wk-level" lang="en">
+                21
+              </span>
+            )}
             {props.showBunproDecks && (
-              <span class="bp-tag -vocab">
+              <span class="bp-tag -vocab" lang="en">
                 <span>{t('popup_bp_vocab_tag', ['3'])}</span>
               </span>
             )}
@@ -127,10 +131,14 @@ function PopupPreview(props: PopupPreviewProps) {
             {renderKana(props.accentDisplay)}
             {props.showPriority && <Star />}
           </span>
-          {props.showRomaji && <span class="w-romaji">rikai</span>}
+          {props.showRomaji && (
+            <span class="w-romaji" lang="ja">
+              rikai
+            </span>
+          )}
         </div>
         {props.showDefinitions && (
-          <span class="w-def">
+          <span class="w-def" lang="en">
             {renderPos(props.posDisplay)}
             {'\u200bunderstanding'}
           </span>
@@ -178,9 +186,10 @@ function renderPos(posDisplay: PartOfSpeechDisplay) {
   switch (posDisplay) {
     case 'expl':
       return (
-        <span class="w-pos tag">{`${t('pos_label_n')},  ${t(
-          'pos_label_vs'
-        )}`}</span>
+        <span
+          class="w-pos tag"
+          lang={t('lang_tag')}
+        >{`${t('pos_label_n')},  ${t('pos_label_vs')}`}</span>
       );
 
     case 'code':

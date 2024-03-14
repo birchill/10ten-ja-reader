@@ -13,7 +13,6 @@ import { ReferenceAbbreviation } from '../../common/refs';
 
 import { html } from '../../utils/builder';
 import { Point } from '../../utils/geometry';
-import { getHash } from '../../utils/hash';
 import { getThemeClass } from '../../utils/themes';
 
 import {
@@ -38,7 +37,6 @@ import { onHorizontalSwipe } from './swipe';
 import { renderTabBar } from './tabs';
 import { renderWordEntries } from './words';
 
-import popupDocStyles from '../../../css/popup-doc.css';
 import popupStyles from '../../../css/popup.css';
 
 export type StartCopyCallback = (
@@ -338,22 +336,17 @@ function getDefaultContainer(): HTMLElement {
 }
 
 function addDocStyles() {
-  let docStyles = popupDocStyles.toString();
-  docStyles = docStyles.replace(/\.\.\/(fonts\/[^']+)/g, (_match, url) =>
-    browser.runtime.getURL(url)
-  );
-  const styleHash = getHash(docStyles);
-
-  let styleElement = document.getElementById('tenten-ja-styles');
-  if (!styleElement) {
-    styleElement = document.createElement('style');
-    styleElement.id = 'tenten-ja-styles';
-    styleElement.dataset.hash = styleHash;
-    styleElement.textContent = docStyles;
-    (document.head || document.documentElement).appendChild(styleElement);
-  } else if (styleElement.dataset.hash !== styleHash) {
-    styleElement.textContent = docStyles;
+  if (document.getElementById('tenten-doc-styles')) {
+    return;
   }
+
+  (document.head || document.documentElement).append(
+    html('link', {
+      id: 'tenten-doc-styles',
+      rel: 'stylesheet',
+      href: browser.runtime.getURL('css/popup-doc.css'),
+    })
+  );
 }
 
 function resetContainer({
@@ -418,7 +411,7 @@ function getPopupContainer(): HTMLElement | null {
 
 export function removePopup() {
   removeContentContainer(['rikaichamp-window', 'tenten-ja-window']);
-  document.getElementById('tenten-ja-styles')?.remove();
+  document.getElementById('tenten-doc-styles')?.remove();
 }
 
 export function setFontSize(size: FontSize) {

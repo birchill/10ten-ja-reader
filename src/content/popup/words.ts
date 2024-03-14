@@ -428,7 +428,7 @@ function appendPriorityMark(
 }
 
 function appendWaniKaniLevelTag(level: number, parent: ParentNode) {
-  parent.append(html('span', { class: 'wk-level' }, String(level)));
+  parent.append(html('span', { class: 'wk-level', lang: 'en' }, String(level)));
 }
 
 function appendBunproTag(
@@ -442,7 +442,7 @@ function appendBunproTag(
   );
   const outerSpan = html(
     'span',
-    { class: `bp-tag -${type}` },
+    { class: `bp-tag -${type}`, lang: getLangTag() },
     html('span', {}, label)
   );
   if (data.src) {
