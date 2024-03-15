@@ -634,7 +634,7 @@
 }
 
 .w-kanji {
-  font-size: calc(18 / 14 * var(--base-font-size));
+  font-size: calc(20 / 14 * var(--base-font-size));
   margin-right: 0.7em;
   color: var(--primary-highlight);
 }
