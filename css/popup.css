@@ -125,13 +125,13 @@
     0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
     1px 2px 1px rgba(100, 100, 100, 0.15),
     2px 4px 8px rgba(100, 100, 100, 0.15);
-  font: normal 14px sans-serif;
+  font: normal 14px;
 
   color: var(--text-color);
   background: var(--bg-color);
   border: 1px solid var(--border-color);
 
-  font-family: '10ten Inter', sans-serif;
+  font-family: '10ten Inter', '10ten Noto Sans JP', sans-serif;
   font-feature-settings: 'calt', 'case', 'cv01', 'cv03', 'cv04', 'cv11', 'ss03';
   font-weight: 300;
 }
@@ -1061,7 +1061,6 @@
   color: var(--primary-highlight);
   line-height: 1;
   font-size: calc(60 / 14 * var(--base-font-size));
-  font-family: serif;
   text-align: center;
   margin-inline-end: 20px;
   padding-top: 0.1em;
