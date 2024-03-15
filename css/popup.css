@@ -1,20 +1,6 @@
 @charset "UTF-8";
 @import 'themes.css';
 
-*:lang(de),
-*:lang(en),
-*:lang(es),
-*:lang(fr),
-*:lang(nl),
-*:lang(pt),
-*:lang(sl),
-*:lang(sv),
-.w-romaji {
-  font-family: '10ten Inter', sans-serif;
-  font-feature-settings: 'calt', 'case', 'cv01', 'cv03', 'cv04', 'cv11', 'ss03';
-  font-weight: 300;
-}
-
 :host {
   /*
    * The following is because there appears to be some (yet unidentified) add-on
@@ -144,6 +130,10 @@
   color: var(--text-color);
   background: var(--bg-color);
   border: 1px solid var(--border-color);
+
+  font-family: '10ten Inter', sans-serif;
+  font-feature-settings: 'calt', 'case', 'cv01', 'cv03', 'cv04', 'cv11', 'ss03';
+  font-weight: 300;
 }
 
 /* When the tabs are shown on top, make the window have a consistent width
