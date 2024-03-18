@@ -1,5 +1,5 @@
 /// <reference path="../../common/css.d.ts" />
-import { allMajorDataSeries, MajorDataSeries } from '@birchill/jpdict-idb';
+import { MajorDataSeries } from '@birchill/jpdict-idb';
 
 import {
   AccentDisplay,
@@ -36,6 +36,7 @@ import { renderTabBar } from './tabs';
 import { renderWordEntries } from './words';
 
 import popupStyles from '../../../css/popup.css';
+import { onHorizontalSwipe } from './swipe';
 
 export type StartCopyCallback = (
   index: number,
@@ -69,7 +70,7 @@ export interface PopupOptions {
   onClosePopup?: () => void;
   onExpandPopup?: () => void;
   onShowSettings?: () => void;
-  onSwitchDictionary?: (newDict: MajorDataSeries) => void;
+  onSwitchDictionary?: (newDict: MajorDataSeries | 'next' | 'prev') => void;
   onTogglePin?: () => void;
   pinShortcuts?: ReadonlyArray<string>;
   posDisplay: PartOfSpeechDisplay;
@@ -127,8 +128,7 @@ export function renderPopup(
 
     onHorizontalSwipe(contentContainer, (direction) => {
       if (options.onSwitchDictionary) {
-        const fn = direction === 'left' ? prevDictionaryTab : nextDictionaryTab;
-        options.onSwitchDictionary(fn(options.dictToShow, enabledTabs));
+        options.onSwitchDictionary(direction === 'left' ? 'prev' : 'next');
       }
     });
   }
@@ -497,92 +497,4 @@ function getPopupArrow(): HTMLElement | null {
   return hostElem && hostElem.shadowRoot
     ? hostElem.shadowRoot.querySelector('.arrow')
     : null;
-}
-
-type HorizontalSwipeDirection = 'right' | 'left';
-
-function onHorizontalSwipe(
-  element: HTMLElement,
-  handler: (swipeDirection: HorizontalSwipeDirection) => void
-) {
-  // Min x distance traveled to be considered swipe
-  const xMinThreshold = 150;
-  // Max y distance that can be traveled before it is no longer considered a horizontal swipe
-  const yMaxThreshold = 100;
-  // Max time allowed to travel that distance
-  const allowedTime = 200;
-
-  let startTime = 0;
-  let startX: number;
-  let startY: number;
-
-  element.addEventListener(
-    'touchstart',
-    function (e) {
-      startX = e.changedTouches[0].pageX;
-      startY = e.changedTouches[0].pageY;
-      startTime = Date.now();
-    },
-    false
-  );
-
-  element.addEventListener(
-    'touchmove',
-    function (e) {
-      // Prevent dragging viewport
-      e.preventDefault();
-    },
-    false
-  );
-
-  element.addEventListener(
-    'touchend',
-    function (e) {
-      const touch = e.changedTouches[0];
-      const deltaX = touch.pageX - startX;
-      const deltaY = touch.pageY - startY;
-      const elapsedTime = Date.now() - startTime;
-
-      // Check that elapsed time is within specified, horizontal dist traveled >= threshold, and vertical dist traveled <= 100
-      const isSwipe =
-        elapsedTime <= allowedTime &&
-        Math.abs(deltaX) >= xMinThreshold &&
-        Math.abs(deltaY) <= yMaxThreshold;
-      if (isSwipe) {
-        const dir: HorizontalSwipeDirection = deltaX < 0 ? 'right' : 'left';
-        handler(dir);
-      }
-    },
-    false
-  );
-}
-
-function nextDictionaryTab(
-  currentDict: MajorDataSeries,
-  enabledTabs: Record<MajorDataSeries, boolean>
-): MajorDataSeries {
-  let i = allMajorDataSeries.indexOf(currentDict);
-  do {
-    if (i < allMajorDataSeries.length) {
-      i++;
-    } else {
-      i = 0;
-    }
-  } while (!enabledTabs[allMajorDataSeries[i]]);
-  return allMajorDataSeries[i];
-}
-
-function prevDictionaryTab(
-  currentDict: MajorDataSeries,
-  enabledTabs: Record<MajorDataSeries, boolean>
-): MajorDataSeries {
-  let i = allMajorDataSeries.indexOf(currentDict);
-  do {
-    if (i > 0) {
-      i--;
-    } else {
-      i = allMajorDataSeries.length - 1;
-    }
-  } while (!enabledTabs[allMajorDataSeries[i]]);
-  return allMajorDataSeries[i];
 }
