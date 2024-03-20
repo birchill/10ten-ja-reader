@@ -56,7 +56,7 @@ import {
   ContentConfigParams,
 } from '../common/content-config-params';
 import { CopyKeys, CopyType } from '../common/copy-keys';
-import { isEditableNode } from '../utils/dom-utils';
+import { isEditableNode, isInteractiveElement } from '../utils/dom-utils';
 import {
   addMarginToPoint,
   getMarginAroundPoint,
@@ -301,10 +301,7 @@ export class ContentHandler {
 
     this.touchClickTracker.onTouchClick = (event: MouseEvent) => {
       // Ignore clicks on interactive elements
-      if (
-        event.target instanceof HTMLAnchorElement ||
-        event.target instanceof HTMLButtonElement
-      ) {
+      if (event.target instanceof Node && isInteractiveElement(event.target)) {
         return;
       }
 
