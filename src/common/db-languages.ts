@@ -11,7 +11,7 @@ export const dbLanguages = <const>[
   'sv',
 ];
 
-export type DbLanguageId = typeof dbLanguages[number];
+export type DbLanguageId = (typeof dbLanguages)[number];
 
 export const dbLanguageMeta: Array<
   [DbLanguageId, { name: string; hasKanji?: boolean; hasWords?: boolean }]

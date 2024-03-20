@@ -46,6 +46,9 @@ jobs:
       - name: knip
         run: yarn knip
 
+      - name: Check formatting
+        run: yarn prettier --check _locales css scripts src tests "*.{js,json,md,ts}"
+
       # Check packaging doesn't error. Again, no need to worry about the
       # package:edge target.
       - name: Package
