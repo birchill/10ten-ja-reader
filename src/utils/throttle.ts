@@ -16,11 +16,14 @@ export function throttle<T extends (...args: Array<any>) => any>(
       run();
     } else {
       self.clearTimeout(lastInvocationTimeout);
-      lastInvocationTimeout = self.setTimeout(function () {
-        if (Date.now() - lastRan! >= limit) {
-          run();
-        }
-      }, limit - (Date.now() - lastRan));
+      lastInvocationTimeout = self.setTimeout(
+        function () {
+          if (Date.now() - lastRan! >= limit) {
+            run();
+          }
+        },
+        limit - (Date.now() - lastRan)
+      );
     }
   };
 }
