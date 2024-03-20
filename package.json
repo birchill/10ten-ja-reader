@@ -79,7 +79,6 @@
     "@actions/core": "1.10.1",
     "@actions/github": "6.0.0",
     "@release-it/keep-a-changelog": "5.0.0",
-    "@stylistic/eslint-plugin-js": "^1.7.0",
     "@tailwindcss/typography": "0.5.10",
     "@types/archiver": "6.0.2",
     "@types/chai": "4.3.12",

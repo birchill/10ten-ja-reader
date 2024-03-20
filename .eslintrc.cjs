@@ -28,7 +28,7 @@ module.exports = {
       },
     },
   ],
-  plugins: ['@typescript-eslint', 'vitest', '@stylistic/js'],
+  plugins: ['@typescript-eslint', 'vitest'],
   rules: {
     'linebreak-style': ['error', 'unix'],
     'no-constant-condition': ['error', { checkLoops: false }],
@@ -68,16 +68,6 @@ module.exports = {
         types: 'never',
         lib: 'never',
       },
-    ],
-    '@stylistic/js/max-len': [
-      'warn',
-      {
-        'code': 120,
-        'comments': 80,
-        'ignoreUrls': true,
-        'ignoreStrings': true,
-        'ignoreRegExpLiterals': true,
-      }
     ],
   },
 };
