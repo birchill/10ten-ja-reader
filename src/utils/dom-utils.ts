@@ -39,6 +39,25 @@ export function isEditableNode(node: Node | null): boolean {
   return isTextInputNode(node) || isContentEditableNode(node);
 }
 
+/**
+ * Tests whether an element is 'interactive', i.e. an element
+ * that we should not do lookups on when tapped on mobile.
+ */
+export function isInteractiveElement(node: Node | null) {
+  return (
+    isContentEditableNode(node) ||
+    (isElement(node) &&
+      (node.tagName === 'A' ||
+        node.tagName === 'BUTTON' ||
+        node.tagName === 'INPUT' ||
+        node.tagName === 'TEXTAREA' ||
+        node.tagName === 'SELECT' ||
+        node.tagName === 'DATALIST' ||
+        node.tagName === 'OPTGROUP' ||
+        node.tagName === 'OPTION'))
+  );
+}
+
 export interface Focusable {
   focus(): void;
 }
