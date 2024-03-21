@@ -11,6 +11,10 @@ app.
 - Made copying to the clipboard include rare headwords again when not using
   simplified copy mode
   ([#1665](https://github.com/birchill/10ten-ja-reader/issues/1665)).
+- Made the popup no longer show when tapping on text boxes and other interactive
+  elements
+  thanks to [@StarScape](https://github.com/StarScape)
+  ([#1678](https://github.com/birchill/10ten-ja-reader/issues/1678)).
 
 ## [1.18.0] - 2024-02-26
 
