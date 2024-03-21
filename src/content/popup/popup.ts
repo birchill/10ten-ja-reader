@@ -32,11 +32,11 @@ import { renderKanjiEntries } from './kanji';
 import { renderMetadata } from './metadata';
 import { renderNamesEntries } from './names';
 import { renderCopyDetails, renderUpdatingStatus } from './status';
+import { onHorizontalSwipe } from './swipe';
 import { renderTabBar } from './tabs';
 import { renderWordEntries } from './words';
 
 import popupStyles from '../../../css/popup.css';
-import { onHorizontalSwipe } from './swipe';
 
 export type StartCopyCallback = (
   index: number,
@@ -126,7 +126,9 @@ export function renderPopup(
 
     windowElem.dataset.tabSide = options.tabDisplay || 'top';
 
+    console.log('Hello1');
     onHorizontalSwipe(contentContainer, (direction) => {
+      console.log('Hello?');
       if (options.onSwitchDictionary) {
         options.onSwitchDictionary(direction === 'left' ? 'prev' : 'next');
       }

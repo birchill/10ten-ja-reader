@@ -2085,9 +2085,10 @@ export class ContentHandler {
     } else if (dictToShow === 'prev') {
       dict = this.currentDict;
 
-      let prev =
-        (cycleOrder.length + (cycleOrder.indexOf(this.currentDict) - 1)) %
-        cycleOrder.length;
+      let prev = mod(
+        cycleOrder.indexOf(this.currentDict) - 1,
+        cycleOrder.length
+      );
       while (cycleOrder[prev] !== this.currentDict) {
         const prevDict = cycleOrder[prev];
         if (
@@ -2097,7 +2098,7 @@ export class ContentHandler {
           dict = prevDict;
           break;
         }
-        prev = --prev % cycleOrder.length;
+        prev = mod(--prev, cycleOrder.length);
       }
     } else {
       dict = dictToShow;

@@ -21,7 +21,7 @@ export function onHorizontalSwipe(
     function (e) {
       startX = e.changedTouches[0].pageX;
       startY = e.changedTouches[0].pageY;
-      startTime = Date.now();
+      startTime = performance.now();
     },
     false
   );
@@ -41,7 +41,7 @@ export function onHorizontalSwipe(
       const touch = e.changedTouches[0];
       const deltaX = touch.pageX - startX;
       const deltaY = touch.pageY - startY;
-      const elapsedTime = Date.now() - startTime;
+      const elapsedTime = performance.now() - startTime;
 
       // Check that elapsed time is within specified, horizontal dist
       // traveled >= threshold, and vertical dist traveled <= 100
@@ -50,8 +50,7 @@ export function onHorizontalSwipe(
         Math.abs(deltaX) >= xMinThreshold &&
         Math.abs(deltaY) <= yMaxThreshold;
       if (isSwipe) {
-        const dir: HorizontalSwipeDirection = deltaX < 0 ? 'right' : 'left';
-        handler(dir);
+        handler(deltaX < 0 ? 'right' : 'left');
       }
     },
     false
