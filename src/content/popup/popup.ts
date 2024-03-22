@@ -32,6 +32,7 @@ import { renderKanjiEntries } from './kanji';
 import { renderMetadata } from './metadata';
 import { renderNamesEntries } from './names';
 import { renderCopyDetails, renderUpdatingStatus } from './status';
+import { onHorizontalSwipe } from './swipe';
 import { renderTabBar } from './tabs';
 import { renderWordEntries } from './words';
 
@@ -69,7 +70,7 @@ export interface PopupOptions {
   onClosePopup?: () => void;
   onExpandPopup?: () => void;
   onShowSettings?: () => void;
-  onSwitchDictionary?: (newDict: MajorDataSeries) => void;
+  onSwitchDictionary?: (newDict: MajorDataSeries | 'next' | 'prev') => void;
   onTogglePin?: () => void;
   pinShortcuts?: ReadonlyArray<string>;
   posDisplay: PartOfSpeechDisplay;
@@ -93,6 +94,7 @@ export function renderPopup(
     fontSize: options.fontSize || 'normal',
     popupStyle: options.popupStyle,
   });
+  const contentContainer = html('div', { class: 'content' });
 
   const hasResult = result && (result.words || result.kanji || result.names);
   const showTabs =
@@ -123,9 +125,11 @@ export function renderPopup(
     );
 
     windowElem.dataset.tabSide = options.tabDisplay || 'top';
-  }
 
-  const contentContainer = html('div', { class: 'content' });
+    onHorizontalSwipe(contentContainer, (direction) => {
+      options.onSwitchDictionary?.(direction === 'left' ? 'prev' : 'next');
+    });
+  }
 
   const resultToShow = result?.[options.dictToShow];
 

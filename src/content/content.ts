@@ -2057,7 +2057,7 @@ export class ContentHandler {
   }
 
   showDictionary(
-    dictToShow: 'next' | MajorDataSeries,
+    dictToShow: 'next' | 'prev' | MajorDataSeries,
     options: { fixPopupPosition?: boolean } = {}
   ) {
     if (!this.currentSearchResult) {
@@ -2065,11 +2065,11 @@ export class ContentHandler {
     }
 
     let dict: MajorDataSeries;
+    const cycleOrder: Array<MajorDataSeries> = ['words', 'kanji', 'names'];
 
-    if (dictToShow == 'next') {
+    if (dictToShow === 'next') {
       dict = this.currentDict;
 
-      const cycleOrder: Array<MajorDataSeries> = ['words', 'kanji', 'names'];
       let next = (cycleOrder.indexOf(this.currentDict) + 1) % cycleOrder.length;
       while (cycleOrder[next] !== this.currentDict) {
         const nextDict = cycleOrder[next];
@@ -2081,6 +2081,24 @@ export class ContentHandler {
           break;
         }
         next = ++next % cycleOrder.length;
+      }
+    } else if (dictToShow === 'prev') {
+      dict = this.currentDict;
+
+      let prev = mod(
+        cycleOrder.indexOf(this.currentDict) - 1,
+        cycleOrder.length
+      );
+      while (cycleOrder[prev] !== this.currentDict) {
+        const prevDict = cycleOrder[prev];
+        if (
+          this.currentSearchResult[prevDict] ||
+          (prevDict === 'words' && !!this.currentLookupParams?.meta)
+        ) {
+          dict = prevDict;
+          break;
+        }
+        prev = mod(--prev, cycleOrder.length);
       }
     } else {
       dict = dictToShow;
@@ -2207,7 +2225,7 @@ export class ContentHandler {
           // Ignore
         });
       },
-      onSwitchDictionary: (dict: MajorDataSeries) => {
+      onSwitchDictionary: (dict: MajorDataSeries | 'next' | 'prev') => {
         this.showDictionary(dict, { fixPopupPosition: true });
       },
       onTogglePin: () => {
