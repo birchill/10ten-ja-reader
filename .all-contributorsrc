@@ -115,7 +115,17 @@
         "bug",
         "ideas"
       ]
+    },
+    {
+      "login": "StarScape",
+      "name": "Jack Arrington",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4681820?v=4",
+      "profile": "https://jackarrington.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "commitType": "docs"
 }
