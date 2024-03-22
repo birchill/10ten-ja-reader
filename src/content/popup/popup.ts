@@ -126,12 +126,8 @@ export function renderPopup(
 
     windowElem.dataset.tabSide = options.tabDisplay || 'top';
 
-    console.log('Hello1');
     onHorizontalSwipe(contentContainer, (direction) => {
-      console.log('Hello?');
-      if (options.onSwitchDictionary) {
-        options.onSwitchDictionary(direction === 'left' ? 'prev' : 'next');
-      }
+      options.onSwitchDictionary?.(direction === 'left' ? 'prev' : 'next');
     });
   }
 
