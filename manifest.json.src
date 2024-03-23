@@ -164,7 +164,6 @@
       "css/popup-doc.css",
       "css/selection.css",
       "docs/introducing-the-mouse.html",
-      "fonts/*.ttf",
       "fonts/*.woff2"
     ],
     "matches": [ "<all_urls>" ],
@@ -175,7 +174,6 @@
     "css/popup-doc.css",
     "css/selection.css",
     "docs/introducing-the-mouse.html",
-    "fonts/*.ttf",
     "fonts/*.woff2"
   ],
   /*#endif*/
