@@ -1,5 +1,6 @@
 /// <reference path="../../common/css.d.ts" />
 import { MajorDataSeries } from '@birchill/jpdict-idb';
+import browser from 'webextension-polyfill';
 
 import {
   AccentDisplay,
@@ -87,6 +88,13 @@ export function renderPopup(
   result: QueryResult | undefined,
   options: PopupOptions
 ): HTMLElement | null {
+  // We add most styles to the shadow DOM but it turns out that browsers don't
+  // load @font-face fonts from the shadow DOM [1], so we need to add @font-face
+  // definitions to the main document.
+  //
+  // [1] e.g see https://issues.chromium.org/issues/41085401
+  addDocStyles();
+
   const container = options.container || getDefaultContainer();
   const windowElem = resetContainer({
     host: container,
@@ -327,6 +335,20 @@ function getDefaultContainer(): HTMLElement {
   return defaultContainer;
 }
 
+function addDocStyles() {
+  if (document.getElementById('tenten-doc-styles')) {
+    return;
+  }
+
+  (document.head || document.documentElement).append(
+    html('link', {
+      id: 'tenten-doc-styles',
+      rel: 'stylesheet',
+      href: browser.runtime.getURL('css/popup-doc.css'),
+    })
+  );
+}
+
 function resetContainer({
   host,
   displayMode,
@@ -389,6 +411,7 @@ function getPopupContainer(): HTMLElement | null {
 
 export function removePopup() {
   removeContentContainer(['rikaichamp-window', 'tenten-ja-window']);
+  document.getElementById('tenten-doc-styles')?.remove();
 }
 
 export function setFontSize(size: FontSize) {

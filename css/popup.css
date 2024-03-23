@@ -1,13 +1,6 @@
 @charset "UTF-8";
 @import 'themes.css';
 
-*:lang(en),
-*:lang(fr),
-*:lang(es) {
-  /* Meiryo renders more crisply than Arial on Windows */
-  font-family: Meiryo, sans-serif;
-}
-
 :host {
   /*
    * The following is because there appears to be some (yet unidentified) add-on
@@ -132,11 +125,15 @@
     0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
     1px 2px 1px rgba(100, 100, 100, 0.15),
     2px 4px 8px rgba(100, 100, 100, 0.15);
-  font: normal 14px sans-serif;
+  font: normal 14px;
 
   color: var(--text-color);
   background: var(--bg-color);
   border: 1px solid var(--border-color);
+
+  font-family: '10ten Inter', '10ten Noto Sans JP', sans-serif;
+  font-feature-settings: 'calt', 'case', 'cv01', 'cv03', 'cv04', 'cv11', 'ss03';
+  font-weight: 300;
 }
 
 /* When the tabs are shown on top, make the window have a consistent width
@@ -637,7 +634,7 @@
 }
 
 .w-kanji {
-  font-size: calc(18 / 14 * var(--base-font-size));
+  font-size: calc(20 / 14 * var(--base-font-size));
   margin-right: 0.7em;
   color: var(--primary-highlight);
 }
@@ -1064,7 +1061,6 @@
   color: var(--primary-highlight);
   line-height: 1;
   font-size: calc(60 / 14 * var(--base-font-size));
-  font-family: serif;
   text-align: center;
   margin-inline-end: 20px;
   padding-top: 0.1em;
@@ -1169,6 +1165,8 @@
   margin-block-start: 10px;
   /* Subtract the padding at the start of the row so the text lines up */
   margin-inline-start: -1em;
+  /* Use consistent line-height since we mix fonts in the same line */
+  line-height: 1.5;
 }
 
 .kanji-table .components table {
@@ -1230,6 +1228,9 @@
   margin-left: calc(-1 * var(--bg-overhang));
   margin-right: calc(-1 * var(--bg-overhang));
   width: calc(100% + 2 * var(--bg-overhang));
+  /* Because the English and Japanese fonts differ in line height, if we don't
+   * set an explicit line height they will not line up correctly. */
+  line-height: 1.5;
 }
 
 @media (max-width: 450px) {
@@ -1590,6 +1591,7 @@
 .copy-overlay .copy-options .copy-preview {
   margin-top: calc(4 / 14 * var(--base-font-size));
   display: flex;
+  align-items: center;
   white-space: nowrap;
   color: #817470;
   font-size: calc(12 / 14 * var(--base-font-size));
@@ -1617,6 +1619,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  line-height: 1.5;
 }
 
 .copy-overlay .copy-options button.-icon-label .icon,

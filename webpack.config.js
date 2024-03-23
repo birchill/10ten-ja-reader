@@ -56,7 +56,7 @@ const commonConfig = {
             ],
           },
           {
-            use: ['css-loader'],
+            use: [{ loader: 'css-loader', options: { url: false } }],
           },
         ],
       },
@@ -439,6 +439,7 @@ function buildExtConfig({
     'css/*',
     supportsSvgIcons ? 'images/*.svg' : 'images/*',
     'data/*',
+    'fonts/*',
     '_locales/**/*',
     // Update page assets
     { from: 'docs/update/update.css', to: 'docs' },

@@ -375,7 +375,7 @@ function renderReferences(
         browser.i18n.getMessage.bind(browser)
       ) || '-';
     referenceCell.append(
-      html('span', { class: 'name' }, ref.short || ref.full),
+      html('span', { class: 'name', lang: ref.lang }, ref.short || ref.full),
       html(
         'span',
         {

@@ -458,7 +458,7 @@ export class TextHighlighter {
       return;
     }
 
-    document.head.append(
+    (document.head || document.documentElement).append(
       html('link', {
         id: 'tenten-selection-styles',
         rel: 'stylesheet',

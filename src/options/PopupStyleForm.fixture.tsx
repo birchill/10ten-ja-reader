@@ -10,6 +10,7 @@ import {
 import { PopupStyleForm } from './PopupStyleForm';
 
 import './options.css';
+import '../../css/popup-doc.css';
 import '../../css/popup.css';
 
 export default function () {
