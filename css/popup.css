@@ -1165,6 +1165,8 @@
   margin-block-start: 10px;
   /* Subtract the padding at the start of the row so the text lines up */
   margin-inline-start: -1em;
+  /* Use consistent line-height since we mix fonts in the same line */
+  line-height: 1.5;
 }
 
 .kanji-table .components table {
@@ -1226,6 +1228,9 @@
   margin-left: calc(-1 * var(--bg-overhang));
   margin-right: calc(-1 * var(--bg-overhang));
   width: calc(100% + 2 * var(--bg-overhang));
+  /* Because the English and Japanese fonts differ in line height, if we don't
+   * set an explicit line height they will not line up correctly. */
+  line-height: 1.5;
 }
 
 @media (max-width: 450px) {
@@ -1586,6 +1591,7 @@
 .copy-overlay .copy-options .copy-preview {
   margin-top: calc(4 / 14 * var(--base-font-size));
   display: flex;
+  align-items: center;
   white-space: nowrap;
   color: #817470;
   font-size: calc(12 / 14 * var(--base-font-size));
@@ -1613,6 +1619,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  line-height: 1.5;
 }
 
 .copy-overlay .copy-options button.-icon-label .icon,
