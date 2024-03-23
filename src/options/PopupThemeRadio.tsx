@@ -116,7 +116,11 @@ function PopupPreview(props: PopupPreviewProps) {
           <span class="w-kanji">
             理解
             {props.showPriority && <Star />}
-            {props.showWaniKaniLevel && <span class="wk-level">21</span>}
+            {props.showWaniKaniLevel && (
+              <span class="wk-level">
+                <span>21</span>
+              </span>
+            )}
             {props.showBunproDecks && (
               <span class="bp-tag -vocab">
                 <span>{t('popup_bp_vocab_tag', ['3'])}</span>
