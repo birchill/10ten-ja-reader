@@ -17,7 +17,7 @@ import { stripFields } from '../utils/strip-fields';
 import { Overwrite } from '../utils/type-helpers';
 
 import { DictionaryWordResult, Sense } from './search-result';
-import { sortMatchesByPriority } from './word-match-sorting';
+import { sortWordResults } from './word-match-sorting';
 
 interface FlatFileDatabaseOptions {
   // Although the v7 API of bugsnag-js can operate on a singleton client we
@@ -199,7 +199,7 @@ class FlatFileDatabase {
     }
 
     // Sort before capping the number of results
-    sortMatchesByPriority(result);
+    sortWordResults(result);
     result.splice(maxResults);
 
     return result;
