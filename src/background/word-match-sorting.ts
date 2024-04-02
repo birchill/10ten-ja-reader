@@ -8,11 +8,80 @@ import { WordResult } from './search-result';
 
 // As with Array.prototype.sort, sorts `results` in-place, but returns the
 // result to support chaining.
-export function sortMatchesByPriority(
-  results: Array<WordResult>
-): Array<WordResult> {
-  results.sort((a, b) => getPriority(b) - getPriority(a));
+export function sortWordResults(results: Array<WordResult>): Array<WordResult> {
+  const sortMeta: Map<number, { priority: number; type: number }> = new Map();
+
+  for (const result of results) {
+    // Determine the headword match type
+    //
+    // 1 = match on a kanji, or kana which is not just the reading for a kanji
+    // 2 = match on a kana reading for a kanji
+    const kanaReading = result.r.find((r) => !!r.matchRange);
+    const rt = kanaReading ? getKanaHeadwordType(kanaReading, result) : 1;
+
+    // Priority
+    const priority = getPriority(result);
+
+    sortMeta.set(result.id, { priority, type: rt });
+  }
+
+  results.sort((a, b) => {
+    const metaA = sortMeta.get(a.id)!;
+    const metaB = sortMeta.get(b.id)!;
+
+    if (metaA.type !== metaB.type) {
+      return metaA.type - metaB.type;
+    }
+
+    return metaB.priority - metaA.priority;
+  });
+
   return results;
+}
+
+function getKanaHeadwordType(
+  r: WordResult['r'][number],
+  result: WordResult
+): 1 | 2 {
+  // We don't want to prioritize readings marked as `ok` etc. or else we'll end
+  // up prioritizing words like `檜` and `羆` being prioritized when searching
+  // for `ひ`.
+  const isReadingObscure =
+    r.i?.includes('ok') ||
+    r.i?.includes('rk') ||
+    r.i?.includes('sk') ||
+    r.i?.includes('ik');
+
+  if (isReadingObscure) {
+    return 2;
+  }
+
+  // Kana headwords are type 1 (i.e. they are a primary headword, not just a
+  // reading for a kanji headword) if:
+  //
+  // (a) the entry has no kanji headwords or all the kanji headwords are marked
+  //     as `rK`, `sK`, or `iK`.
+  if (
+    !result.k.length ||
+    result.k.every(
+      (k) => k.i?.includes('rK') || k.i?.includes('sK') || k.i?.includes('iK')
+    )
+  ) {
+    return 1;
+  }
+
+  // (b) all senses for the entry have a `uk` (usually kana) `misc` field
+  //     and the reading is not marked as `ok` (old kana usage).
+  //
+  // We wanted to make the condition here be just one sense being marked as `uk`
+  // but then you get words like `梓` being prioritized when searching for `し`
+  // because of one sense out of many being usually kana.
+  if (result.s.every((s) => s.misc?.includes('uk'))) {
+    return 1;
+  }
+
+  // (c) the headword is marked as `nokanji`
+  return r.app === 0 ? 1 : 2;
 }
 
 function getPriority(result: WordResult): number {

@@ -21,6 +21,10 @@ app.
   elements
   thanks to [@StarScape](https://github.com/StarScape)
   ([#1678](https://github.com/birchill/10ten-ja-reader/issues/1678)).
+- When searching using just kana (e.g. し and ヤク), made kana matches be
+  prioritized
+  ([#1610](https://github.com/birchill/10ten-ja-reader/issues/1610)
+  [#1657](https://github.com/birchill/10ten-ja-reader/issues/1657)).
 
 ## [1.18.0] - 2024-02-26
 
