@@ -17,6 +17,7 @@ import {
   WordSearchResult,
 } from './search-result';
 import { endsInYoon } from './yoon';
+import { sortWordResults } from './word-match-sorting';
 
 export type GetWordsFunction = (params: {
   input: string;
@@ -101,15 +102,19 @@ export async function wordSearch({
       // we can update our longest match length.
       longestMatch = Math.max(longestMatch, inputLengths[input.length]);
 
-      // Process each match into a suitable result
-      for (const wordResult of wordResults) {
-        result.data.push(wordResult);
-
-        if (result.data.length >= maxResults) {
-          result.more = true;
-          break;
-        }
+      // Add the results to the list
+      //
+      // TODO: This is not right. If we end up with exactly maxResults, we
+      // shouldn't set `more` to true unless we know that there were actually
+      // more results. Fixing this will require changing the signature
+      // GetWordsFunction, however.
+      if (result.data.length + wordResults.length >= maxResults) {
+        result.more = true;
       }
+
+      result.data.push(
+        ...wordResults.slice(0, maxResults - result.data.length)
+      );
 
       // Continue refining this variant excluding all others
       input = variant;
@@ -175,6 +180,10 @@ async function lookupCandidates({
     result.push(...wordResults);
   }
 
+  // The results are currently sorted for each candidate lookup but we really
+  // want to sort _across_ all the candidate lookups.
+  sortWordResults(result);
+
   return result;
 }
 
@@ -233,10 +242,7 @@ async function lookupCandidate({
   const result: Array<WordResult> = [];
 
   for (const match of matches) {
-    const wordResult: WordResult = {
-      ...match,
-      reason,
-    };
+    const wordResult: WordResult = { ...match, reason };
 
     if (includeRomaji) {
       wordResult.romaji = match.r.map((r) => toRomaji(r.ent));
