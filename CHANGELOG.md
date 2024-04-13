@@ -25,6 +25,9 @@ app.
   prioritized
   ([#1610](https://github.com/birchill/10ten-ja-reader/issues/1610)
   [#1657](https://github.com/birchill/10ten-ja-reader/issues/1657)).
+- Fixed sorting between various deinflected results so that 進む appears before
+  進ぶ when looking up 進んでいます
+  ([#1722](https://github.com/birchill/10ten-ja-reader/issues/1722)).
 
 ## [1.18.0] - 2024-02-26
 
