@@ -38,13 +38,13 @@ jobs:
           target: Firefox
 
       - name: Download Firefox binary
-        uses: robinraju/release-downloader@v1.9
+        uses: robinraju/release-downloader@v1.10
         with:
           releaseId: ${{ github.event.release.id }}
           fileName: ${{ steps.parse_firefox_release.outputs.addon_asset_name }}
 
       - name: Download source archive
-        uses: robinraju/release-downloader@v1.9
+        uses: robinraju/release-downloader@v1.10
         with:
           releaseId: ${{ github.event.release.id }}
           fileName: ${{ steps.parse_firefox_release.outputs.src_asset_name }}
@@ -96,7 +96,7 @@ jobs:
           target: Edge
 
       - name: Download Edge binary
-        uses: robinraju/release-downloader@v1.9
+        uses: robinraju/release-downloader@v1.10
         with:
           releaseId: ${{ github.event.release.id }}
           fileName: ${{ steps.parse_edge_release.outputs.addon_asset_name }}
