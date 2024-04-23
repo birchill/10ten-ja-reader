@@ -21,13 +21,13 @@
 
 .theme-light {
   --text-color: #1d1a19;
-  --bg-rgb: 254, 254, 242;
+  --bg-rgb: 254, 254, 244;
   --bg-color: rgb(var(--bg-rgb));
   --border-color: #b1ad96;
 
-  --primary-highlight: #c11f2a;
-  --reading-highlight: #615f52;
-  --conj-color: #ad565c;
+  --primary-highlight: hsl(356, 73%, 40%);
+  --reading-highlight: hsl(52, 8.5%, 30%);
+  --conj-color: hsl(356, 55%, 41%);
 
   --tag-border: rgba(0, 0, 0, 0.3);
   --bunpro-vocab: #104f8c;
@@ -37,14 +37,15 @@
   --title-fg: var(--text-color);
   --title-bg: #ede7c9;
 
-  --reading-label: #918d7b;
-  --okurigana-color: #ad565c;
+  --reading-label: hsl(49, 9.1%, 42%);
+  --okurigana-color: hsl(356, 73%, 40%);
   --hi-contrast-pitch-accent: var(--primary-highlight);
-  --cell-highlight-bg: #ede7c9;
-  --cell-highlight-fg: #3e3a39;
+  --cell-highlight-bg: hsl(50, 50%, 90%);
+  --cell-highlight-fg: hsl(12, 4.2%, 20%);
 
   --selected-bg: #fff8bf;
   --hover-bg: rgb(255, 250, 210);
+  --selected-conj-color: hsl(356, 70%, 40%);
   --selected-reading-highlight: #3e3a39;
 
   --meta-bg: var(--cell-highlight-bg);
