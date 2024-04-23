@@ -786,7 +786,7 @@
 }
 
 .w-def {
-  font-size: calc(13 / 14 * var(--base-font-size));
+  font-size: var(--base-font-size);
 }
 
 .w-def .w-inf {
@@ -827,13 +827,13 @@
 
 .w-def ol li {
   list-style-type: decimal !important;
-  font-size: calc(13 / 14 * var(--base-font-size));
+  font-size: var(--base-font-size);
   line-height: 1.5;
 }
 
 .w-def ul li {
   list-style-type: circle !important;
-  font-size: calc(13 / 14 * var(--base-font-size));
+  font-size: var(--base-font-size);
   line-height: 1.5;
 }
 
