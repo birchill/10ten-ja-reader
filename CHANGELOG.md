@@ -28,6 +28,8 @@ app.
 - Fixed sorting between various deinflected results so that 進む appears before
   進ぶ when looking up 進んでいます
   ([#1722](https://github.com/birchill/10ten-ja-reader/issues/1722)).
+- Made the popup update after the database update is complete
+  ([#1677](https://github.com/birchill/10ten-ja-reader/issues/1677)).
 
 ## [1.18.0] - 2024-02-26
 

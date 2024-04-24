@@ -274,6 +274,10 @@ export default class AllTabManager implements TabManager {
     await sendMessageToAllTabs({ type: 'enable', config, frame: '*' });
   }
 
+  async notifyDbUpdated() {
+    await sendMessageToAllTabs({ type: 'dbUpdated', frame: '*' });
+  }
+
   //
   // Frame management
   //

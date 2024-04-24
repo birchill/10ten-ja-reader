@@ -290,6 +290,11 @@ const dbReady = (async () => {
 });
 
 async function onDbStatusUpdated(state: JpdictStateWithFallback) {
+  const dbWasUnavailable =
+    jpdictState.words.state === 'empty' ||
+    jpdictState.words.state === 'unavailable';
+  const dbWasUpdating = jpdictState.updateState.type === 'updating';
+
   jpdictState = state;
 
   // Update all the different windows separately since they may have differing
@@ -305,6 +310,12 @@ async function onDbStatusUpdated(state: JpdictStateWithFallback) {
   }
 
   notifyDbListeners();
+
+  const dbIsAvailable = jpdictState.words.state === 'ok';
+  const dbIsUpdating = jpdictState.updateState.type === 'updating';
+  if ((dbWasUnavailable || dbWasUpdating) && dbIsAvailable && !dbIsUpdating) {
+    await tabManager.notifyDbUpdated();
+  }
 }
 
 function isDbUpdating() {

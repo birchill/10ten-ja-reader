@@ -507,6 +507,21 @@ export default class ActiveTabManager implements TabManager {
     }
   }
 
+  async notifyDbUpdated() {
+    const tabIds = Object.keys(this.enabledTabs).map(Number);
+    for (const tabId of tabIds) {
+      try {
+        await browser.tabs.sendMessage(tabId, {
+          type: 'dbUpdated',
+          frame: '*',
+        });
+      } catch (e) {
+        console.error('Error sending dbUpdated message to tabs', e);
+        void Bugsnag.notify(e);
+      }
+    }
+  }
+
   //
   // Listeners
   //

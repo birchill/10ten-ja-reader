@@ -11,6 +11,7 @@ export const BackgroundMessageSchema = discriminator('type', {
     id: s.optional(s.number()),
     frame: s.literal('*'),
   }),
+  dbUpdated: s.type({ frame: s.literal('*') }),
   isTopMost: s.type({ frame: s.number() }),
 
   //

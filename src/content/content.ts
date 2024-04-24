@@ -456,9 +456,7 @@ export class ContentHandler {
               targetProps: this.currentTargetProps,
             };
 
-            if (this.isTopMostWindow()) {
-              void this.lookupText(lookupParams);
-            }
+            void this.lookupText(lookupParams);
           }
           break;
 
@@ -497,6 +495,24 @@ export class ContentHandler {
           void browser.runtime.sendMessage({ type: 'canHoverChanged', value });
           break;
       }
+    }
+  }
+
+  onDbUpdated() {
+    // Re-trigger lookup now that the database has been updated (typically going
+    // from being in the initial updating state to the updated state).
+    if (
+      this.isTopMostWindow() &&
+      this.currentLookupParams &&
+      this.currentTargetProps
+    ) {
+      const lookupParams: Parameters<typeof this.lookupText>[0] = {
+        dictMode: 'default',
+        ...this.currentLookupParams,
+        targetProps: this.currentTargetProps,
+      };
+
+      void this.lookupText(lookupParams);
     }
   }
 
@@ -2898,6 +2914,10 @@ declare global {
       case 'disable':
         console.assert(request.frame === '*');
         disable();
+        break;
+
+      case 'dbUpdated':
+        contentHandler?.onDbUpdated();
         break;
 
       case 'isTopMost':
