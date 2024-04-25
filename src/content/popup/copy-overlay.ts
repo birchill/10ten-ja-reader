@@ -52,7 +52,7 @@ export function renderCopyOverlay({
     ? getTextToCopy({
         entry: entryToCopy,
         copyType: 'word',
-        getMessage: browser.i18n.getMessage.bind(browser),
+        getMessage: browser.i18n.getMessage.bind(browser.i18n),
       })
     : null;
   const heading = wordToCopy
@@ -82,7 +82,7 @@ export function renderCopyOverlay({
       ? getTextToCopy({
           entry: entryToCopy,
           copyType: 'entry',
-          getMessage: browser.i18n.getMessage.bind(browser),
+          getMessage: browser.i18n.getMessage.bind(browser.i18n),
           includeAllSenses,
           includeLessCommonHeadwords,
           includePartOfSpeech,
@@ -104,7 +104,7 @@ export function renderCopyOverlay({
       ? getTextToCopy({
           entry: entryToCopy,
           copyType: 'tab',
-          getMessage: browser.i18n.getMessage.bind(browser),
+          getMessage: browser.i18n.getMessage.bind(browser.i18n),
           includeAllSenses,
           includeLessCommonHeadwords,
           includePartOfSpeech,

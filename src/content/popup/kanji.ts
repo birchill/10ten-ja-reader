@@ -351,7 +351,7 @@ function renderReferences(
 
   const referenceNames = getSelectedReferenceLabels(
     options.kanjiReferences,
-    browser.i18n.getMessage
+    browser.i18n.getMessage.bind(browser.i18n)
   );
   let numReferences = 0;
   for (const ref of referenceNames) {
@@ -372,7 +372,7 @@ function renderReferences(
       getReferenceValue(
         entry,
         ref.ref,
-        browser.i18n.getMessage.bind(browser)
+        browser.i18n.getMessage.bind(browser.i18n)
       ) || '-';
     referenceCell.append(
       html('span', { class: 'name', lang: ref.lang }, ref.short || ref.full),

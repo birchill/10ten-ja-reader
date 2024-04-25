@@ -1723,7 +1723,7 @@ export class ContentHandler {
     const textToCopy = getTextToCopy({
       entry: copyEntry,
       copyType,
-      getMessage: browser.i18n.getMessage.bind(browser),
+      getMessage: browser.i18n.getMessage.bind(browser.i18n),
       includeAllSenses: this.config.copySenses !== 'first',
       includePartOfSpeech: this.config.copyPos !== 'none',
       includeLessCommonHeadwords: this.config.copyHeadwords !== 'common',
