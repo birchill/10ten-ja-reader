@@ -8,7 +8,7 @@
 
   <p>
     <a href="https://twitter.com/10tenstudy"><img src="https://img.shields.io/twitter/follow/10tenstudy" alt="Follow @10tenstudy"></a>
-    <a href=""><img src="https://github.com/birchill/10ten-ja-reader/workflows/Automated%20tests/badge.svg" alt="automated test status" /></a>
+    <a href=""><img src="https://github.com/birchill/10ten-ja-reader/workflows/CI/badge.svg" alt="automated test status" /></a>
   </p>
 </div>
 
