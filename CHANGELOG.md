@@ -30,6 +30,8 @@ app.
   ([#1722](https://github.com/birchill/10ten-ja-reader/issues/1722)).
 - Made the popup update after the database update is complete
   ([#1677](https://github.com/birchill/10ten-ja-reader/issues/1677)).
+- Made senses no longer be restricted when matching on search-only headwords
+  ([#1551](https://github.com/birchill/10ten-ja-reader/issues/1551)).
 
 ## [1.18.0] - 2024-02-26
 
