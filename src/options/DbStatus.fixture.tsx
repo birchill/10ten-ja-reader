@@ -149,5 +149,18 @@ export default {
       }}
     />
   ),
+  'update error': () => (
+    <DbStatus
+      dbState={{
+        ...ONE_ZERO_ZERO_DB_STATE,
+        updateError: {
+          name: 'Error',
+          message:
+            'Version file https://data.10ten.life/jpdict/reader/version-en.json not accessible (NetworkError when attempting to fetch resource.)',
+          nextRetry: new Date(),
+        },
+      }}
+    />
+  ),
   'admin controls': () => <DbStatus dbState={ONE_ZERO_ZERO_DB_STATE} devMode />,
 };

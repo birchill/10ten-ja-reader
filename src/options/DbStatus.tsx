@@ -198,7 +198,9 @@ function IdleStateSummary(props: {
       <DbSummaryContainer errorClass={errorClass}>
         <div>{errorMessage}</div>
         {nextRetry && (
-          <div>{t('options_db_update_retry', formatDate(nextRetry))}</div>
+          <div class="grow self-start">
+            {t('options_db_update_next_retry', formatDate(nextRetry))}
+          </div>
         )}
         <UpdateButton
           label={isUnavailable ? 'retry' : 'check'}
@@ -258,7 +260,7 @@ function useErrorDetails(dbState: JpdictState): {
   if (updateError && updateError?.name !== 'AbortError') {
     return {
       class: 'error',
-      errorMessage: t('options_db_update_error'),
+      errorMessage: t('options_db_update_error', updateError.message),
       nextRetry: updateError.nextRetry,
     };
   }
