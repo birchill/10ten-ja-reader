@@ -274,7 +274,12 @@ function useErrorDetails(dbState: JpdictState): {
   // Otherwise, return a suitable summary error
   const summaryStates: Array<[DataSeriesState, string]> = [
     ['init', 'options_database_initializing'],
-    ['unavailable', 'options_database_unavailable'],
+    [
+      'unavailable',
+      isFirefox()
+        ? 'options_database_unavailable_firefox'
+        : 'options_database_unavailable',
+    ],
     ['empty', 'options_no_database'],
   ];
   for (const [state, key] of summaryStates) {
