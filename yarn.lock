@@ -2512,10 +2512,10 @@ ci-info@^3.2.0:
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-3.9.0.tgz#4279a62028a7b1f262f3473fc9605f5e218c59b4"
   integrity sha512-NIxF55hv4nSqQswkAeiOi1r83xy8JldOFDTWiug55KBu9Jnblncd2U6ViHmYgHf01TPZS77NJBhBMKdWj9HQMQ==
 
-classname-variants@1.3.3:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/classname-variants/-/classname-variants-1.3.3.tgz#2624e852bbda1c782eda85e36cc9cb54778062a0"
-  integrity sha512-lMJajfEuF4RLmjUWUWbdyausHUFPYNkSIpAZDbFBxQBnnMtyjgpAt0URuQLsh5PozffPZ5Gk4eGA3lZptm+gXA==
+classname-variants@1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/classname-variants/-/classname-variants-1.5.0.tgz#eca983a0d06b84083cbf04a77349359caedf49e1"
+  integrity sha512-wYrz9JlKUvR1YD1+ZXyUeKIqKowdOOMybQiz7ehTYqfzTxZZmb0B+p92hS9M5RvcZ1RnCvcweatWMPxAC4+RmA==
 
 clean-css@^5.2.2:
   version "5.3.3"
