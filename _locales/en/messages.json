@@ -1621,6 +1621,10 @@
     "message": "Database storage unavailable",
     "description": "Label when IndexedDB is unusable"
   },
+  "options_database_unavailable_firefox": {
+    "message": "Database storage unavailable. This may be due to Firefox being set to “Never remember history”.",
+    "description": "Label when IndexedDB is unusable with Firefox-specific help."
+  },
   "options_db_update_error": {
     "message": "Update failed: $errormessage$",
     "description": "Label when we failed to update the data for some reason",

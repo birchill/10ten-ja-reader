@@ -1621,6 +1621,10 @@
     "message": "数据库存储不可用",
     "description": "Label when IndexedDB is unusable"
   },
+  "options_database_unavailable_firefox": {
+    "message": "数据库存储不可用。请检查Firefox是否设置为‘不记录历史’。",
+    "description": "Label when IndexedDB is unusable with Firefox-specific help."
+  },
   "options_db_update_error": {
     "message": "更新失败：​$errormessage$",
     "description": "Label when we failed to update the data for some reason",

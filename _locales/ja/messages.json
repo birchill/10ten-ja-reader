@@ -1621,6 +1621,10 @@
     "message": "データベースストレージ利用不可",
     "description": "Label when IndexedDB is unusable"
   },
+  "options_database_unavailable_firefox": {
+    "message": "データベースストレージ利用不可。Firefoxが「履歴を一切記憶させない」に設定されているかどうかご確認ください。",
+    "description": "Label when IndexedDB is unusable with Firefox-specific help."
+  },
   "options_db_update_error": {
     "message": "更新失敗しました。「​$errormessage$​」",
     "description": "Label when we failed to update the data for some reason",
