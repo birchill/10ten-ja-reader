@@ -1,16 +1,15 @@
 import { KanjiResult } from '@birchill/jpdict-idb';
+import { h, render } from 'preact';
 import browser from 'webextension-polyfill';
 
-import { getSelectedReferenceLabels } from '../../common/refs';
 import { html } from '../../utils/builder';
-
-import { getReferenceValue } from '../reference-value';
 
 import { renderFrequency, renderPencil, renderPerson } from './icons';
 import { getLangTag } from './lang-tag';
 import { PopupOptions } from './popup';
 import { getSelectedIndex } from './selected-index';
 import { popupHasSelectedText } from './selection';
+import { KanjiReferencesTable } from './KanjiReferencesTable';
 
 export function renderKanjiEntries({
   entries,
@@ -344,80 +343,14 @@ function renderReferences(
   entry: KanjiResult,
   options: PopupOptions
 ): HTMLElement {
-  const referenceTable = html('div', {
-    class: 'references',
-    lang: getLangTag(),
-  });
-
-  const referenceNames = getSelectedReferenceLabels(
-    options.kanjiReferences,
-    browser.i18n.getMessage.bind(browser.i18n)
+  const containerElement = html('div', { lang: getLangTag() }); // temp solution, remove container when containing element is reactified.
+  render(
+    h(KanjiReferencesTable, {
+      entry: entry,
+      kanjiReferences: options.kanjiReferences,
+    }),
+    containerElement
   );
-  let numReferences = 0;
-  for (const ref of referenceNames) {
-    // Don't show the Nelson radical if it's the same as the regular radical
-    // (in which case it will be empty) and we're showing the regular radical.
-    if (
-      ref.ref === 'nelson_r' &&
-      !entry.rad.nelson &&
-      options.kanjiReferences.includes('radical')
-    ) {
-      continue;
-    }
 
-    const referenceCell = html('div', { class: 'ref' });
-    referenceTable.append(referenceCell);
-
-    const value =
-      getReferenceValue(
-        entry,
-        ref.ref,
-        browser.i18n.getMessage.bind(browser.i18n)
-      ) || '-';
-    referenceCell.append(
-      html('span', { class: 'name', lang: ref.lang }, ref.short || ref.full),
-      html(
-        'span',
-        {
-          class: 'value',
-          lang:
-            ref.ref === 'radical' || ref.ref === 'nelson_r' ? 'ja' : undefined,
-        },
-        value
-      )
-    );
-
-    numReferences++;
-  }
-
-  // The layout we want is something in-between what CSS grid and CSS multicol
-  // can do. See:
-  //
-  //   https://twitter.com/brianskold/status/1186198347184398336
-  //
-  // In the stylesheet we make let the table flow horizontally, but then here
-  // where we know the number of rows, we update it to produce the desired
-  // vertical flow.
-  if (numReferences > 1) {
-    referenceTable.style.gridAutoFlow = 'column';
-    referenceTable.style.gridTemplateRows = `repeat(${Math.ceil(
-      numReferences / 2
-    )}, minmax(min-content, max-content))`;
-  }
-
-  // Now we go through and toggle the styles to get the desired alternating
-  // effect.
-  //
-  // We can't easily use nth-child voodoo here because we need to
-  // handle unbalanced columns etc. We also can't easily do this in the loop
-  // where we generate the cells because we don't know how many references we
-  // will generate at that point.
-  for (const [index, cell] of [...referenceTable.children].entries()) {
-    const row = index % Math.ceil(numReferences / 2);
-    if (row % 2 === 0) {
-      cell.classList.add('-highlight');
-    }
-  }
-
-  return referenceTable;
+  return containerElement;
 }

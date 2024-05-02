@@ -56,6 +56,10 @@
       "prettier --write",
       "eslint --fix"
     ],
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
     "_locales/**/messages.json": [
       "yarn sort-i18n-keys"
     ]
