@@ -17,11 +17,13 @@ export type SetLocaleFunctionType = (locale: LocaleType) => void;
 
 export type i18nContextType = {
   t: TranslateFunctionType;
+  langTag: string | undefined;
   setLocale: SetLocaleFunctionType;
 };
 
 const i18nContext = createContext<i18nContextType>({
   t: () => 'Not initialized',
+  langTag: undefined,
   setLocale: () => {
     throw new Error('Not initialized');
   },
@@ -105,7 +107,8 @@ export function I18nProvider(props: RenderableProps<I18nProviderProps>) {
     }, [isLoading, props.locale]);
   }
 
-  const value = useMemo(() => ({ t, setLocale }), [t, setLocale]);
+  const langTag = useMemo(() => t('lang_tag'), [t, props.locale]);
+  const value = { t, setLocale, langTag };
 
   return (
     <i18nContext.Provider value={value}>
