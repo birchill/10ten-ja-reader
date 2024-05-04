@@ -1,12 +1,14 @@
 import { KanjiResult } from '@birchill/jpdict-idb';
+import { useMemo } from 'preact/hooks';
 
+import { I18nProvider, useLocale } from '../../common/i18n';
 import {
   getSelectedReferenceLabels,
   ReferenceAbbreviation,
 } from '../../common/refs';
+import { classes } from '../../utils/classes';
+
 import { getReferenceValue } from '../reference-value';
-import { I18nProvider, useLocale } from '../../common/i18n';
-import { useMemo } from 'preact/hooks';
 
 // Temporary solution to give reference table access
 // to the I18n context while this is the only React element.
@@ -101,7 +103,7 @@ export function KanjiReferencesTable({ entry, kanjiReferences }: Props) {
       style={{ gridAutoFlow, gridTemplateRows }}
     >
       {referenceTableInfo.map((cellInfo) => (
-        <div className={`ref${cellInfo.highlight ? ' -highlight' : ''}`}>
+        <div class={classes('ref', cellInfo.highlight && '-highlight')}>
           <span class="name" lang={cellInfo.name.lang}>
             {cellInfo.name.value}
           </span>
