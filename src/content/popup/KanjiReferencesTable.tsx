@@ -1,12 +1,14 @@
 import { KanjiResult } from '@birchill/jpdict-idb';
+import { useMemo } from 'preact/hooks';
 
+import { useLocale } from '../../common/i18n';
 import {
   getSelectedReferenceLabels,
   ReferenceAbbreviation,
 } from '../../common/refs';
+import { classes } from '../../utils/classes';
+
 import { getReferenceValue } from '../reference-value';
-import { useLocale } from '../../common/i18n';
-import { useMemo } from 'preact/hooks';
 
 type Props = {
   entry: KanjiResult;
@@ -86,7 +88,7 @@ export function KanjiReferencesTable({ entry, kanjiReferences }: Props) {
       style={{ gridAutoFlow, gridTemplateRows }}
     >
       {referenceTableInfo.map((cellInfo) => (
-        <div className={`ref${cellInfo.highlight ? ' -highlight' : ''}`}>
+        <div class={classes('ref', cellInfo.highlight && '-highlight')}>
           <span class="name" lang={cellInfo.name.lang}>
             {cellInfo.name.value}
           </span>

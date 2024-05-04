@@ -52,11 +52,7 @@
     "zip-src": "tsx scripts/zip-src"
   },
   "lint-staged": {
-    "*.ts": [
-      "prettier --write",
-      "eslint --fix"
-    ],
-    "*.{ts,tsx}": [
+    "*.{js,jsx,ts,tsx}": [
       "prettier --write",
       "eslint --fix"
     ],
