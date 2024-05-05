@@ -81,7 +81,7 @@
     "@release-it/keep-a-changelog": "5.0.0",
     "@tailwindcss/typography": "0.5.13",
     "@types/archiver": "6.0.2",
-    "@types/chai": "4.3.14",
+    "@types/chai": "4.3.16",
     "@types/mocha": "10.0.6",
     "@types/webextension-polyfill": "^0.10.7",
     "@types/yargs": "17.0.32",
