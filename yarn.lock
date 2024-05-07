@@ -7050,15 +7050,20 @@ pkg-types@^1.0.3:
     mlly "^1.2.0"
     pathe "^1.1.0"
 
-playwright-core@1.43.1, playwright-core@^1.41.1:
+playwright-core@1.43.1:
   version "1.43.1"
   resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.43.1.tgz#0eafef9994c69c02a1a3825a4343e56c99c03b02"
   integrity sha512-EI36Mto2Vrx6VF7rm708qSnesVQKbxEWvPrfA1IPY6HgczBplDx7ENtx+K2n4kJ41sLLkuGfmb0ZLSSXlDhqPg==
 
+playwright-core@^1.41.1:
+  version "1.44.0"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.44.0.tgz#316c4f0bca0551ffb88b6eb1c97bc0d2d861b0d5"
+  integrity sha512-ZTbkNpFfYcGWohvTTl+xewITm7EOuqIqex0c7dNZ+aXsbrLj0qI8XlGKfPpipjm0Wny/4Lt4CJsWJk1stVS5qQ==
+
 playwright-test@^14.0.0:
-  version "14.1.2"
-  resolved "https://registry.yarnpkg.com/playwright-test/-/playwright-test-14.1.2.tgz#f9d4b7458da70e5dfbbb72b8f2d38fb05f947e66"
-  integrity sha512-s8ovYbuZB+7N3GVzqVfE5o5IwXEJEnVL/6L1uvp5IRjqkUGFy1y7CPT63jFbtv6sZb/a3SC5j4woJixZObI4NQ==
+  version "14.1.3"
+  resolved "https://registry.yarnpkg.com/playwright-test/-/playwright-test-14.1.3.tgz#9d422336348ba54cee74feb2855ec3dfa667b8e0"
+  integrity sha512-tb9vtHuYaFVKh1wekdeLwDY+I92oXlT42pcRTz4LvQhmWEplimlXLSdtIDvAAome00IRVShQ/zo7WmZLf7SmuQ==
   dependencies:
     acorn-loose "^8.3.0"
     assert "^2.1.0"
