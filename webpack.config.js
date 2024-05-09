@@ -91,11 +91,14 @@ const testConfig = {
   plugins: [
     new webpack.DefinePlugin({
       __ACTIVE_TAB_ONLY__: false,
-      __EXTENSION_CONTEXT__: true,
       __SUPPORTS_SVG_ICONS__: false,
       __SUPPORTS_TAB_CONTEXT_TYPE__: false,
       __VERSION__: `'${pjson.version}'`,
     }),
+    new webpack.NormalModuleReplacementPlugin(
+      /\/i18n$/,
+      path.resolve(__dirname, 'src', 'common', 'i18n.polyfill.tsx')
+    ),
   ],
 };
 
@@ -357,7 +360,6 @@ function buildExtConfig({
   const plugins = [
     new webpack.DefinePlugin({
       __ACTIVE_TAB_ONLY__: activeTabOnly,
-      __EXTENSION_CONTEXT__: true,
       __MV3__: mv3,
       __SUPPORTS_SVG_ICONS__: supportsSvgIcons,
       __SUPPORTS_TAB_CONTEXT_TYPE__: supportsTabContextType,

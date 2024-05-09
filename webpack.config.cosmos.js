@@ -2,10 +2,14 @@ import webpack from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const pjson = require('./package.json');
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // This separate webpack config is needed because react-cosmos doesn't support
 // webpack configurations that export multiple configurations:
@@ -42,11 +46,14 @@ const config = {
   plugins: [
     new webpack.DefinePlugin({
       __ACTIVE_TAB_ONLY__: false,
-      __EXTENSION_CONTEXT__: false,
       __SUPPORTS_SVG_ICONS__: false,
       __SUPPORTS_TAB_CONTEXT_TYPE__: false,
       __VERSION__: `'${pjson.version}'`,
     }),
+    new webpack.NormalModuleReplacementPlugin(
+      /\/i18n$/,
+      path.resolve(__dirname, 'src', 'common', 'i18n.polyfill.tsx')
+    ),
     new HtmlWebpackPlugin({
       template: './src/options/options.html',
     }),
