@@ -6,6 +6,7 @@ coverage
 node_modules
 tests/content-loader.js
 tests/content-loader.js.map
+tests/_locales_*.js
 dist-chrome
 dist-chrome-package
 dist-edge
