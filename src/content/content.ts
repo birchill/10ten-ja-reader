@@ -100,7 +100,7 @@ import {
   getPopupPosition,
   PopupPositionConstraints,
   PopupPositionMode,
-} from './popup-position';
+} from './popup/popup-position';
 import { clearPopupTimeout, DisplayMode, PopupState } from './popup-state';
 import {
   isPuckPointerEvent,

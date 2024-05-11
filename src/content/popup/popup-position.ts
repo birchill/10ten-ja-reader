@@ -1,6 +1,6 @@
-import { MarginBox, PaddingBox, Point } from '../utils/geometry';
+import { MarginBox, PaddingBox, Point } from '../../utils/geometry';
 
-import { getScrollOffset } from './scroll-offset';
+import { getScrollOffset } from '../scroll-offset';
 
 export const enum PopupPositionMode {
   Start,
