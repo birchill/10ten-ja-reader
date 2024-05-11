@@ -7,8 +7,8 @@ import { html } from '../../utils/builder';
 import { KanjiReferencesTable } from './KanjiReferencesTable';
 import { renderFrequency, renderPencil, renderPerson } from './icons';
 import { getLangTag } from './lang-tag';
-import { PopupOptions } from './render-popup';
 import { getSelectedIndex } from './selected-index';
+import { ShowPopupOptions } from './show-popup';
 import { popupHasSelectedText } from './selection';
 
 export function renderKanjiEntries({
@@ -16,11 +16,11 @@ export function renderKanjiEntries({
   options,
 }: {
   entries: ReadonlyArray<KanjiResult>;
-  options: PopupOptions;
+  options: ShowPopupOptions;
 }): HTMLElement {
   const container = html('div', { class: 'kanjilist entry-data' });
 
-  const selectedIndex = getSelectedIndex(options, entries.length);
+  const selectedIndex = getSelectedIndex(options.copyState, entries.length);
   for (const [i, entry] of entries.entries()) {
     if (i === 1) {
       container.append(html('div', { class: 'fold-point' }));
@@ -51,7 +51,7 @@ function renderKanjiEntry({
 }: {
   entry: KanjiResult;
   index: number;
-  options: PopupOptions;
+  options: ShowPopupOptions;
   selectState: 'unselected' | 'selected' | 'flash';
 }): HTMLElement {
   // Main table
@@ -341,7 +341,7 @@ function renderMiscRow(entry: KanjiResult): HTMLElement {
 
 function renderReferences(
   entry: KanjiResult,
-  options: PopupOptions
+  options: ShowPopupOptions
 ): HTMLElement {
   // Temporary React root container
   const containerElement = html('div');

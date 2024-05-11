@@ -1,15 +1,7 @@
 /// <reference path="../../common/css.d.ts" />
-import { MajorDataSeries } from '@birchill/jpdict-idb';
 import browser from 'webextension-polyfill';
 
-import {
-  AccentDisplay,
-  ContentConfigParams,
-  FontSize,
-  PartOfSpeechDisplay,
-} from '../../common/content-config-params';
-import { CopyType } from '../../common/copy-keys';
-import { ReferenceAbbreviation } from '../../common/refs';
+import { FontSize } from '../../common/content-config-params';
 
 import { html } from '../../utils/builder';
 import { Point } from '../../utils/geometry';
@@ -19,7 +11,6 @@ import {
   getOrCreateEmptyContainer,
   removeContentContainer,
 } from '../content-container';
-import { SelectionMeta } from '../meta';
 import { DisplayMode } from '../popup-state';
 import { LookupPuck } from '../puck';
 import { QueryResult } from '../query';
@@ -33,60 +24,16 @@ import { renderKanjiEntries } from './kanji';
 import { renderMetadata } from './metadata';
 import { renderNamesEntries } from './names';
 import { renderCopyDetails, renderUpdatingStatus } from './status';
+import { ShowPopupOptions } from './show-popup';
 import { onHorizontalSwipe } from './swipe';
 import { renderTabBar } from './tabs';
 import { renderWordEntries } from './words';
 
 import popupStyles from '../../../css/popup.css';
 
-export type StartCopyCallback = (
-  index: number,
-  trigger: 'touch' | 'mouse'
-) => void;
-
-export interface PopupOptions {
-  accentDisplay: AccentDisplay;
-  bunproDisplay: boolean;
-  closeShortcuts?: ReadonlyArray<string>;
-  container?: HTMLElement;
-  copyNextKey: string;
-  copyState: CopyState;
-  copy?: {
-    includeAllSenses: boolean;
-    includeLessCommonHeadwords: boolean;
-    includePartOfSpeech: boolean;
-  };
-  dictToShow: MajorDataSeries;
-  dictLang?: string;
-  displayMode: DisplayMode;
-  fontSize?: FontSize;
-  fxData: ContentConfigParams['fx'];
-  expandShortcuts?: ReadonlyArray<string>;
-  isExpanded: boolean;
-  kanjiReferences: Array<ReferenceAbbreviation>;
-  meta?: SelectionMeta;
-  onCancelCopy?: () => void;
-  onStartCopy?: StartCopyCallback;
-  onCopy?: (copyType: CopyType) => void;
-  onClosePopup?: () => void;
-  onExpandPopup?: () => void;
-  onShowSettings?: () => void;
-  onSwitchDictionary?: (newDict: MajorDataSeries | 'next' | 'prev') => void;
-  onTogglePin?: () => void;
-  pinShortcuts?: ReadonlyArray<string>;
-  posDisplay: PartOfSpeechDisplay;
-  popupStyle: string;
-  showDefinitions: boolean;
-  showPriority: boolean;
-  showKanjiComponents?: boolean;
-  switchDictionaryKeys: ReadonlyArray<string>;
-  tabDisplay: 'top' | 'left' | 'right' | 'none';
-  waniKaniVocabDisplay: 'hide' | 'show-matches';
-}
-
 export function renderPopup(
   result: QueryResult | undefined,
-  options: PopupOptions
+  options: ShowPopupOptions
 ): HTMLElement | null {
   // We add most styles to the shadow DOM but it turns out that browsers don't
   // load @font-face fonts from the shadow DOM [1], so we need to add @font-face

@@ -7,8 +7,8 @@ import { html } from '../../utils/builder';
 
 import { getLangTag } from './lang-tag';
 import { renderMetadata } from './metadata';
-import { PopupOptions } from './render-popup';
 import { getSelectedIndex } from './selected-index';
+import { ShowPopupOptions } from './show-popup';
 import { popupHasSelectedText } from './selection';
 
 export function renderNamesEntries({
@@ -20,7 +20,7 @@ export function renderNamesEntries({
   entries: Array<NameResult>;
   matchLen: number;
   more: boolean;
-  options: PopupOptions;
+  options: ShowPopupOptions;
 }): HTMLElement {
   const namesTable = html('div', { class: 'name-table entry-data' });
 
@@ -41,7 +41,7 @@ export function renderNamesEntries({
   }
 
   let lastPointerType = 'touch';
-  const selectedIndex = getSelectedIndex(options, entries.length);
+  const selectedIndex = getSelectedIndex(options.copyState, entries.length);
   for (const [index, entry] of entries.entries()) {
     const entryDiv = renderName(entry);
     if (index === selectedIndex) {

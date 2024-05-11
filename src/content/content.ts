@@ -92,11 +92,8 @@ import {
   setFontSize,
   setPopupStyle,
 } from './popup/popup';
-import {
-  type PopupOptions,
-  renderPopup,
-  renderPopupArrow,
-} from './popup/render-popup';
+import { renderPopup, renderPopupArrow } from './popup/render-popup';
+import { showPopup, type ShowPopupOptions } from './popup/show-popup';
 import { CopyState, getCopyMode } from './popup/copy-state';
 import {
   getPopupPosition,
@@ -2200,7 +2197,7 @@ export class ContentHandler {
     const displayMode =
       options.displayMode || this.getInitialDisplayMode('ghost');
 
-    const popupOptions: PopupOptions = {
+    const popupOptions: ShowPopupOptions = {
       accentDisplay: this.config.accentDisplay,
       bunproDisplay: this.config.bunproDisplay,
       closeShortcuts: this.config.keys.closePopup,
@@ -2260,7 +2257,7 @@ export class ContentHandler {
       waniKaniVocabDisplay: this.config.waniKaniVocabDisplay,
     };
 
-    const popup = renderPopup(this.currentSearchResult, popupOptions);
+    const popup = showPopup(this.currentSearchResult, popupOptions);
     if (!popup) {
       this.clearResult({ currentElement: this.lastMouseTarget });
       return;
