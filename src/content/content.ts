@@ -88,13 +88,15 @@ import {
   hidePopup,
   isPopupVisible,
   isPopupWindowHostElem,
-  type PopupOptions,
   removePopup,
-  renderPopup,
-  renderPopupArrow,
   setFontSize,
   setPopupStyle,
 } from './popup/popup';
+import {
+  type PopupOptions,
+  renderPopup,
+  renderPopupArrow,
+} from './popup/render-popup';
 import { CopyState, getCopyMode } from './popup/copy-state';
 import {
   getPopupPosition,

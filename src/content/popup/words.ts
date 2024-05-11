@@ -20,7 +20,7 @@ import { renderStar } from './icons';
 import { getLangTag } from './lang-tag';
 import { renderMetadata } from './metadata';
 import { renderName } from './names';
-import { PopupOptions, StartCopyCallback } from './popup';
+import type { PopupOptions, StartCopyCallback } from './render-popup';
 import { getSelectedIndex } from './selected-index';
 import { popupHasSelectedText } from './selection';
 
