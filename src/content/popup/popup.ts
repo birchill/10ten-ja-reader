@@ -19,20 +19,6 @@ export function removePopup() {
   document.getElementById('tenten-doc-styles')?.remove();
 }
 
-export function getPopupDimensions(hostElem: HTMLElement): {
-  width: number;
-  height: number;
-} {
-  // Measure the size of the inner window so that we don't include the padding
-  // for the shadow
-  const windowElem = hostElem.shadowRoot?.querySelector('.window');
-  const width =
-    (windowElem instanceof HTMLElement ? windowElem.offsetWidth : 0) || 200;
-  const height =
-    windowElem instanceof HTMLElement ? windowElem.offsetHeight : 0;
-  return { width, height };
-}
-
 export function isPopupWindowHostElem(target: EventTarget | null): boolean {
   return target instanceof HTMLElement && target.id === 'tenten-ja-window';
 }
