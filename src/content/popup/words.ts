@@ -20,7 +20,7 @@ import { renderStar } from './icons';
 import { getLangTag } from './lang-tag';
 import { renderMetadata } from './metadata';
 import { renderName } from './names';
-import type { PopupOptions, StartCopyCallback } from './render-popup';
+import type { ShowPopupOptions, StartCopyCallback } from './show-popup';
 import { getSelectedIndex } from './selected-index';
 import { popupHasSelectedText } from './selection';
 
@@ -36,7 +36,7 @@ export function renderWordEntries({
   matchLen: number;
   more: boolean;
   namePreview: NamePreview | undefined;
-  options: PopupOptions;
+  options: ShowPopupOptions;
   title: string | undefined;
 }): HTMLElement {
   const container = html('div', { class: 'wordlist entry-data' });
@@ -68,7 +68,7 @@ export function renderWordEntries({
 
   const numNames = namePreview?.names.length ?? 0;
   const totalEntries = entries.length + numNames;
-  const selectedIndex = getSelectedIndex(options, totalEntries);
+  const selectedIndex = getSelectedIndex(options.copyState, totalEntries);
 
   if (namePreview) {
     container.append(
@@ -455,7 +455,7 @@ function appendBunproTag(
 
 function renderKana(
   kana: WordResult['r'][0],
-  options: PopupOptions
+  options: ShowPopupOptions
 ): string | Element {
   const accents = kana.a;
   if (

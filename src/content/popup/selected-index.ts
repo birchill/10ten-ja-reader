@@ -1,7 +1,7 @@
-import { PopupOptions } from './render-popup';
+import type { CopyState } from './copy-state';
 
-export function getSelectedIndex(options: PopupOptions, numEntries: number) {
-  return options.copyState.kind !== 'inactive' && numEntries
-    ? options.copyState.index % numEntries
+export function getSelectedIndex(copyState: CopyState, numEntries: number) {
+  return copyState.kind !== 'inactive' && numEntries
+    ? copyState.index % numEntries
     : -1;
 }
