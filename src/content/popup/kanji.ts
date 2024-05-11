@@ -7,7 +7,7 @@ import { html } from '../../utils/builder';
 import { KanjiReferencesTable } from './KanjiReferencesTable';
 import { renderFrequency, renderPencil, renderPerson } from './icons';
 import { getLangTag } from './lang-tag';
-import { PopupOptions } from './popup';
+import { PopupOptions } from './render-popup';
 import { getSelectedIndex } from './selected-index';
 import { popupHasSelectedText } from './selection';
 

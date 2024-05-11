@@ -7,7 +7,7 @@ import { html } from '../../utils/builder';
 
 import { getLangTag } from './lang-tag';
 import { renderMetadata } from './metadata';
-import { PopupOptions } from './popup';
+import { PopupOptions } from './render-popup';
 import { getSelectedIndex } from './selected-index';
 import { popupHasSelectedText } from './selection';
 
