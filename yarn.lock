@@ -9554,13 +9554,10 @@ web-streams-polyfill@^3.0.3:
   resolved "https://registry.yarnpkg.com/web-streams-polyfill/-/web-streams-polyfill-3.3.2.tgz#32e26522e05128203a7de59519be3c648004343b"
   integrity sha512-3pRGuxRF5gpuZc0W+EpwQRmCD7gRqcDOMt688KmdlDAgAyaB1XlN0zq2njfDNm44XVdIouE7pZ6GzbdyH47uIQ==
 
-webextension-polyfill@^0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/webextension-polyfill/-/webextension-polyfill-0.11.0.tgz#1640c0d27192424fd5b420237acbe453f88c8246"
-  integrity sha512-YUBSKQA0iCx2YtM75VFgvvcx1hLKaGGiph6a6UaUdSgk32VT9SzrcDAKBjeGHXoAZTnNBqS5skA4VfoKMXhEBA==
-  dependencies:
-    webpack "^5.91.0"
-    webpack-cli "^5.1.4"
+webextension-polyfill@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/webextension-polyfill/-/webextension-polyfill-0.12.0.tgz#f62c57d2cd42524e9fbdcee494c034cae34a3d69"
+  integrity sha512-97TBmpoWJEE+3nFBQ4VocyCdLKfw54rFaJ6EVQYLBCXqCIpLSZkwGgASpv4oPt9gdKCJ80RJlcmNzNn008Ag6Q==
 
 webidl-conversions@^3.0.0:
   version "3.0.1"
@@ -9581,7 +9578,7 @@ webpack-bugsnag-plugins@1.8.0:
     bugsnag-build-reporter "^2.0.0"
     run-parallel-limit "^1.0.6"
 
-webpack-cli@5.1.4, webpack-cli@^5.1.4:
+webpack-cli@5.1.4:
   version "5.1.4"
   resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-5.1.4.tgz#c8e046ba7eaae4911d7e71e2b25b776fcc35759b"
   integrity sha512-pIDJHIEI9LR0yxHXQ+Qh95k2EvXpWzZ5l+d+jIo+RdSm9MiHfzazIxwwni/p7+x4eJZuvG1AJwgC4TNQ7NRgsg==
@@ -9646,7 +9643,7 @@ webpack-utf8-bom@1.4.0:
   resolved "https://registry.yarnpkg.com/webpack-utf8-bom/-/webpack-utf8-bom-1.4.0.tgz#8ae14392c5d72922674c5d79a460093ba1a38062"
   integrity sha512-VsGG9GKqcXtOk9028DLPuoTzsdGPUUpCJkK6EV//1LrkthrDQO7+mrQl6Zq9B+KuOXGdbzsFU7ADuMYpaiUaZg==
 
-webpack@5.91.0, webpack@^5.91.0:
+webpack@5.91.0:
   version "5.91.0"
   resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.91.0.tgz#ffa92c1c618d18c878f06892bbdc3373c71a01d9"
   integrity sha512-rzVwlLeBWHJbmgTC/8TvAcu5vpJNII+MelQpylD4jNERPwpBJOE2lEcko1zJX3QJeLjTTAnQxn/OJ8bjDzVQaw==
