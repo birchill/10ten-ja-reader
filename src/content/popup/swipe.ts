@@ -27,15 +27,6 @@ export function onHorizontalSwipe(
   );
 
   element.addEventListener(
-    'touchmove',
-    function (e) {
-      // Prevent dragging viewport
-      e.preventDefault();
-    },
-    false
-  );
-
-  element.addEventListener(
     'touchend',
     function (e) {
       const touch = e.changedTouches[0];
