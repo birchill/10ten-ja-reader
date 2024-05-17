@@ -127,6 +127,10 @@ That will use the version of `web-ext` installed by this project.
 As with the build instructions above, after running `yarn build:safari` you
 should be able to run using Xcode.
 
+Note that Xcode will default to signing with Brian Birtles' ([@birtles](https://github.com/birtles)) team. You may need to override the team name to your personal team—however, please don't commit the configuration files this will change to this repo. This is clunky, but unavoidable for open source projects with Xcode.
+
+Also, if you already have 10ten Japanese Reader installed on your device, you may get signing errors when trying to test the development version. An uninstall and reinstall should fix these.
+
 ## Testing
 
 ```
