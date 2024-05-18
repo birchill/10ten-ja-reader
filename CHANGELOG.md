@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+- Changed puck behavior to no longer hold the popup window like a regular
+  mouse event would ([#1767](https://github.com/birchill/10ten-ja-reader/discussions/1767)).
 - Made it possible to change tabs in the popup by swiping horizontally
   thanks to [@StarScape](https://github.com/StarScape)
   ([#1656](https://github.com/birchill/10ten-ja-reader/issues/1656)).
