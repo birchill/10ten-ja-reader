@@ -438,7 +438,12 @@ export class LookupPuck {
       viewportOffsetTop;
 
     // See what we are pointing at
-    let target = document.elementFromPoint(targetX, targetY);
+    let target =
+      document
+        .elementsFromPoint(targetX, targetY)
+        // Ignore any element in the 10ten popup itself; we don't want
+        // the puck moon to hold the popup open like a mouse event does.
+        .find((target) => !target.closest('#tenten-ja-window')) || null;
 
     // Check if we need to adjust the content to look it up.
     //
