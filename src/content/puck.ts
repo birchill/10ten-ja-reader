@@ -88,13 +88,15 @@ export type InitialPuckPosition = Omit<PuckState, 'active'>;
 
 type RestoreContentParams = { root: Element; restore: () => void };
 
+export const LookupPuckId = 'tenten-ja-puck';
+
+const clickHysteresis = 300;
+
 export class LookupPuck {
-  public static id = 'tenten-ja-puck';
   private puck: HTMLDivElement | undefined;
   private enabledState: PuckEnabledState = 'disabled';
 
   private clickState: ClickState = { kind: 'idle' };
-  private static readonly clickHysteresis = 300;
 
   private puckX: number;
   private puckY: number;
@@ -683,7 +685,7 @@ export class LookupPuck {
           if (this.clickState.kind === 'firstpointerdown') {
             this.clickState = { kind: 'dragging' };
           }
-        }, LookupPuck.clickHysteresis),
+        }, clickHysteresis),
       };
     } else if (this.clickState.kind === 'firstclick') {
       // Carry across the timeout from 'firstclick', as we still want to
@@ -856,7 +858,7 @@ export class LookupPuck {
           } else if (this.clickState.kind === 'secondpointerdown') {
             this.clickState = { kind: 'dragging' };
           }
-        }, LookupPuck.clickHysteresis),
+        }, clickHysteresis),
       };
     } else if (this.clickState.kind === 'secondpointerdown') {
       clearClickTimeout(this.clickState);
@@ -872,7 +874,7 @@ export class LookupPuck {
   render({ icon, theme }: PuckRenderOptions): void {
     // Set up shadow tree
     const container = getOrCreateEmptyContainer({
-      id: LookupPuck.id,
+      id: LookupPuckId,
       styles: puckStyles.toString(),
     });
 
@@ -1208,5 +1210,5 @@ export class LookupPuck {
 }
 
 export function removePuck(): void {
-  removeContentContainer(LookupPuck.id);
+  removeContentContainer(LookupPuckId);
 }
