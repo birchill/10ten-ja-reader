@@ -87,11 +87,12 @@ import {
   hidePopup,
   isPopupVisible,
   isPopupWindowHostElem,
+  lazyShowPopup,
   removePopup,
   setFontSize,
   setPopupStyle,
 } from './popup/popup';
-import { showPopup, type ShowPopupOptions } from './popup/show-popup';
+import { type ShowPopupOptions } from './popup/show-popup';
 import { type CopyState, getCopyMode } from './popup/copy-state';
 import {
   type PopupPositionConstraints,
@@ -461,7 +462,7 @@ export class ContentHandler {
             // We can't use updatePopup here since it will try to re-use the
             // existing popup display mode but we specifically want to change it
             // in this case.
-            this.showPopup({
+            void this.showPopup({
               allowOverlap: this.popupState?.pos?.allowOverlap,
               displayMode: value ? 'hover' : 'static',
             });
@@ -2065,7 +2066,7 @@ export class ContentHandler {
     this.currentTargetProps = targetProps;
 
     this.highlightTextForCurrentResult();
-    this.showPopup();
+    void this.showPopup();
   }
 
   showDictionary(
@@ -2172,7 +2173,7 @@ export class ContentHandler {
     );
   }
 
-  showPopup(
+  async showPopup(
     options: {
       allowOverlap?: boolean;
       displayMode?: DisplayMode;
@@ -2271,7 +2272,20 @@ export class ContentHandler {
       waniKaniVocabDisplay: this.config.waniKaniVocabDisplay,
     };
 
-    const showPopupResult = showPopup(this.currentSearchResult, popupOptions);
+    let showPopupResult: Awaited<ReturnType<typeof lazyShowPopup>>;
+    try {
+      showPopupResult = await lazyShowPopup(
+        this.currentSearchResult,
+        popupOptions
+      );
+    } catch (e) {
+      // If we made overlapping requests, ignore any obsolete results.
+      if (e.name !== 'AbortError') {
+        console.error(e);
+      }
+      return;
+    }
+
     if (!showPopupResult) {
       this.clearResult({ currentElement: this.lastMouseTarget });
       return;
@@ -2317,6 +2331,7 @@ export class ContentHandler {
     //
     // Tell child iframes
     //
+
     let childState = this.popupState!;
     if (this.currentLookupParams?.source) {
       childState = this.getTranslatedPopupState(
@@ -2462,7 +2477,7 @@ export class ContentHandler {
     }
 
     const displayMode = this.popupState?.display.mode;
-    this.showPopup({
+    void this.showPopup({
       allowOverlap: options.allowOverlap ?? this.popupState?.pos?.allowOverlap,
       displayMode,
       fixPosition: options.fixPosition,
@@ -2481,7 +2496,7 @@ export class ContentHandler {
     // the popup is rendered with the narrow tab bar, when we go to pin it
     // we'll expand the tab bar so we should re-position it as necessary since
     // it might take more space.
-    this.showPopup({
+    void this.showPopup({
       allowOverlap: this.popupState?.pos?.allowOverlap,
       displayMode: 'pinned',
       fixPosition: this.config.popupInteractive,
@@ -2494,7 +2509,7 @@ export class ContentHandler {
       return;
     }
 
-    this.showPopup({
+    void this.showPopup({
       allowOverlap: this.popupState?.pos?.allowOverlap,
       displayMode: this.getInitialDisplayMode('hover'),
       fixPosition: this.config.popupInteractive,
@@ -2551,7 +2566,7 @@ export class ContentHandler {
       return;
     }
 
-    this.showPopup({
+    void this.showPopup({
       allowOverlap: this.popupState?.pos?.allowOverlap,
       displayMode: 'hover',
       fixPosition: false,
