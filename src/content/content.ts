@@ -91,7 +91,6 @@ import {
   setFontSize,
   setPopupStyle,
 } from './popup/popup';
-import { renderPopup } from './popup/render-popup';
 import { showPopup, type ShowPopupOptions } from './popup/show-popup';
 import { type CopyState, getCopyMode } from './popup/copy-state';
 import {
@@ -2653,9 +2652,6 @@ export class ContentHandler {
       },
     };
   }
-
-  // Expose the renderPopup callback so that we can test it
-  _renderPopup = renderPopup;
 }
 
 export function isTouchClickEvent(
