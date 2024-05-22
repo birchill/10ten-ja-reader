@@ -9,7 +9,7 @@ import { getThemeClass } from '../../utils/themes';
 
 import { getOrCreateEmptyContainer } from '../content-container';
 import { DisplayMode } from '../popup-state';
-import { LookupPuck } from '../puck';
+import { LookupPuckId } from '../puck';
 import { QueryResult } from '../query';
 
 import { renderArrow } from './arrow';
@@ -266,7 +266,7 @@ function getDefaultContainer(): HTMLElement {
     styles: popupStyles.toString(),
     // Make sure the popup container appears _before_ the puck container so that
     // we can assign them the same z-index and have the puck appear on top.
-    before: LookupPuck.id,
+    before: LookupPuckId,
     legacyIds: ['rikaichamp-window'],
   });
 
