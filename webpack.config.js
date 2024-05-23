@@ -14,13 +14,24 @@ import {
 } from 'webpack-bugsnag-plugins';
 import BomPlugin from 'webpack-utf8-bom';
 
+//
+// Import package.json
+//
+
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const pjson = require('./package.json');
 
+//
+// __dirname shim
+//
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Look for an --env arguments to pass along when running Firefox / Chrome
+//
+// Env arguments processing
+//
+
 const env = Object.fromEntries(
   process.argv
     .filter((_arg, index, args) => index && args[index - 1] === '--env')
@@ -41,11 +52,10 @@ const commonConfig = {
     rules: [
       {
         test: /\.css$/,
-        // This is a bit convoluted for the time being because, at least for
-        // now, we _don't_ want to run MiniCssExtractPlugin on popup.css because
-        // in popup.ts we want to get the styles inline (but we still want the
-        // file to be available in the package so we can include it in
-        // options.html).
+        // This is a bit convoluted because, at least for now, we _don't_ want
+        // to run MiniCssExtractPlugin on popup.css because in render-popup.ts
+        // we want to get the styles inline (but we still want the file to be
+        // available in the package so we can include it in options.html).
         oneOf: [
           {
             test: /options.css/,
@@ -77,6 +87,10 @@ const commonConfig = {
     extensions: ['.ts', '.tsx', '.js'],
   },
 };
+
+//
+// Test configuration
+//
 
 const testConfig = {
   ...commonConfig,
@@ -244,6 +258,10 @@ const thunderbirdConfig = buildExtConfig({
   supportsTabContextType: true,
   useEventPage: true,
 });
+
+//
+// Exported configurations
+//
 
 export default (env) => {
   const configs = [testConfig];
