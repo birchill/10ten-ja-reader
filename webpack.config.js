@@ -177,32 +177,9 @@ const firefoxConfig = getExtConfig({
   supportsSvgIcons: true,
   supportsTabContextType: true,
   target: 'firefox',
+  uploadToBugsnag: !!process.env.RELEASE_BUILD,
   useEventPage: true,
 });
-
-if (process.env.RELEASE_BUILD && process.env.BUGSNAG_API_KEY) {
-  firefoxConfig.plugins.push(
-    new BugsnagBuildReporterPlugin(
-      {
-        apiKey: process.env.BUGSNAG_API_KEY,
-        appVersion: pjson.version,
-      },
-      {}
-    )
-  );
-  firefoxConfig.plugins.push(
-    new BugsnagSourceMapUploaderPlugin(
-      {
-        apiKey: process.env.BUGSNAG_API_KEY,
-        appVersion: pjson.version,
-        ignoredBundleExtensions: ['.css', '.json', '.idx', '.svg', '.html'],
-        publicPath: `https://github.com/birchill/10ten-ja-reader/releases/download/v${pjson.version}/`,
-        overwrite: true,
-      },
-      {}
-    )
-  );
-}
 
 const chromeConfig = getExtConfig({
   artifactsDir: 'dist-chrome-package',
@@ -304,6 +281,7 @@ export default (env) => {
  * @property {boolean} [supportsTabContextType]
  * @property {string} [target]
  * @property {'extension' | 'lazy-modules'} type
+ * @property {boolean} [uploadToBugsnag]
  * @property {boolean} [useEventPage]
  * @property {boolean} [useServiceWorker]
  */
@@ -488,6 +466,34 @@ function getExtConfig(options) {
   }
 
   plugins.push(new WebExtPlugin(webExtOptions));
+
+  //
+  // Plugins: Bugsnag
+  //
+
+  if (options.uploadToBugsnag && process.env.BUGNSAG_API_KEY) {
+    plugins.push(
+      new BugsnagBuildReporterPlugin(
+        {
+          apiKey: process.env.BUGSNAG_API_KEY,
+          appVersion: pjson.version,
+        },
+        {}
+      )
+    );
+    plugins.push(
+      new BugsnagSourceMapUploaderPlugin(
+        {
+          apiKey: process.env.BUGSNAG_API_KEY,
+          appVersion: pjson.version,
+          ignoredBundleExtensions: ['.css', '.json', '.idx', '.svg', '.html'],
+          publicPath: `https://github.com/birchill/10ten-ja-reader/releases/download/v${pjson.version}/`,
+          overwrite: true,
+        },
+        {}
+      )
+    );
+  }
 
   //
   // Devtools
