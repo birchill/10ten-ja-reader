@@ -90,15 +90,13 @@ export function KanjiReferencesTable({ entry, kanjiReferences }: Props) {
       {referenceTableInfo.map((cellInfo) => (
         <div
           class={classes(
-            'ref flex justify-between rounded-lg px-[--bg-overhang] py-0.5',
+            'ref flex justify-between rounded-lg px-[--bg-overhang] py-0.5 text-sm leading-normal [--bg-overhang:8px]',
             cellInfo.highlight &&
               'bg-[--cell-highlight-bg] text-[--cell-highlight-fg]'
           )}
         >
-          <span class="name" lang={cellInfo.name.lang}>
-            {cellInfo.name.value}
-          </span>
-          <span class="value" lang={cellInfo.value.lang}>
+          <span lang={cellInfo.name.lang}>{cellInfo.name.value}</span>
+          <span class="ml-2" lang={cellInfo.value.lang}>
             {cellInfo.value.value}
           </span>
         </div>

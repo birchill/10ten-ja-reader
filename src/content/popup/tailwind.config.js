@@ -13,6 +13,12 @@ export default {
         '2xl': 'calc(1.25 * var(--base-font-size))',
         '3xl': 'calc(1.5 * var(--base-font-size))',
       },
+      fontSize: {
+        sm: [
+          'calc(12 / 14 * var(--base-font-size))',
+          { lineHeight: 'calc(1.25 * var(--base-font-size))' },
+        ],
+      },
       spacing: {
         0.5: 'calc(0.125 * var(--base-font-size))',
         1: 'calc(0.25 * var(--base-font-size))',

@@ -1227,7 +1227,6 @@
   /* kanji: references */
 
   .references {
-    --bg-overhang: 8px;
     margin-top: 12px;
     display: grid;
     grid-template-columns: repeat(2, minmax(200px, 1fr));
@@ -1235,24 +1234,12 @@
     margin-left: calc(-1 * var(--bg-overhang));
     margin-right: calc(-1 * var(--bg-overhang));
     width: calc(100% + 2 * var(--bg-overhang));
-    /* Because the English and Japanese fonts differ in line height, if we don't
-    * set an explicit line height they will not line up correctly. */
-    line-height: 1.5;
   }
 
   @media (max-width: 450px) {
     .references {
       grid-template-columns: revert;
     }
-  }
-
-  .references .name,
-  .references .value {
-    font-size: calc(12 / 14 * var(--base-font-size));
-  }
-
-  .references .value {
-    margin-left: 0.5em;
   }
 
   /*
