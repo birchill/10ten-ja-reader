@@ -116,56 +116,6 @@ const testConfig = {
   ],
 };
 
-const commonExtConfig = {
-  ...commonConfig,
-  // We turn on production mode simply so we can drop unused code from the
-  // bundle -- otherwise we'll end up injecting a bunch of unrelated code like
-  // Russian token stopwords into the content script.
-  //
-  // We _could_ use mode: 'development' and then set optimization as follows:
-  //
-  //   optimization: {
-  //      minimize: true,
-  //      minimizer: [...(as below)...],
-  //      usedExports: true
-  //   }
-  //
-  // but then we'd end up including a bunch of unneeded comments from modules
-  // that get pruned.
-  mode: 'production',
-  entry: {
-    '10ten-ja-content': './src/content/content.ts',
-    '10ten-ja-gdocs-bootstrap': './src/content/gdocs-bootstrap.ts',
-    '10ten-ja-background': './src/background/background.ts',
-    '10ten-ja-options': './src/options/options.ts',
-    '10ten-ja-jpdict': './src/worker/jpdict-worker.ts',
-  },
-  optimization: {
-    minimizer: [
-      new TerserPlugin({
-        terserOptions: {
-          compress: {
-            defaults: false,
-            unused: true,
-          },
-          mangle: false,
-          format: {
-            // Chrome sometimes doesn't like the generated output claiming it's
-            // not valid UTF-8 (it is) so we need to force ASCII output.
-            ascii_only: true,
-            beautify: true,
-            // Drop any embedded source mapping URLs but preserve other comments
-            // (superstruct has these, for example)
-            comments: /^(?!# sourceMappingURL=)/,
-            indent_level: 2,
-            keep_numbers: true,
-          },
-        },
-      }),
-    ],
-  },
-};
-
 const firefoxConfig = getExtConfig({
   artifactsDir: 'dist-firefox-package',
   distFolder: 'dist-firefox',
@@ -541,13 +491,59 @@ function getExtConfig(options) {
   }
 
   return {
-    ...commonExtConfig,
+    ...commonConfig,
     devtool,
+    entry: {
+      '10ten-ja-content': './src/content/content.ts',
+      '10ten-ja-gdocs-bootstrap': './src/content/gdocs-bootstrap.ts',
+      '10ten-ja-background': './src/background/background.ts',
+      '10ten-ja-options': './src/options/options.ts',
+      '10ten-ja-jpdict': './src/worker/jpdict-worker.ts',
+    },
+    // We turn on production mode simply so we can drop unused code from the
+    // bundle -- otherwise we'll end up injecting a bunch of unrelated code like
+    // Russian token stopwords into the content script.
+    //
+    // We _could_ use mode: 'development' and then set optimization as follows:
+    //
+    //   optimization: {
+    //      minimize: true,
+    //      minimizer: [...(as below)...],
+    //      usedExports: true
+    //   }
+    //
+    // but then we'd end up including a bunch of unneeded comments from modules
+    // that get pruned.
+    mode: 'production',
     module: {
-      ...commonExtConfig.module,
+      ...commonConfig.module,
       rules: [
-        ...commonExtConfig.module.rules,
+        ...commonConfig.module.rules,
         getPreprocessorConfig(...preprocessorFeatures),
+      ],
+    },
+    optimization: {
+      minimizer: [
+        new TerserPlugin({
+          terserOptions: {
+            compress: {
+              defaults: false,
+              unused: true,
+            },
+            mangle: false,
+            format: {
+              // Chrome sometimes doesn't like the generated output claiming it's
+              // not valid UTF-8 (it is) so we need to force ASCII output.
+              ascii_only: true,
+              beautify: true,
+              // Drop any embedded source mapping URLs but preserve other comments
+              // (superstruct has these, for example)
+              comments: /^(?!# sourceMappingURL=)/,
+              indent_level: 2,
+              keep_numbers: true,
+            },
+          },
+        }),
       ],
     },
     output: {
