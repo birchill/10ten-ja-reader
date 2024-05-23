@@ -3,9 +3,9 @@
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import * as path from 'path';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import TerserPlugin from 'terser-webpack-plugin';
-import { fileURLToPath } from 'url';
 import WebExtPlugin from 'web-ext-plugin';
 import webpack from 'webpack';
 import {
