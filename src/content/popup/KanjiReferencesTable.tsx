@@ -88,7 +88,13 @@ export function KanjiReferencesTable({ entry, kanjiReferences }: Props) {
       style={{ gridAutoFlow, gridTemplateRows }}
     >
       {referenceTableInfo.map((cellInfo) => (
-        <div class={classes('ref', cellInfo.highlight && '-highlight')}>
+        <div
+          class={classes(
+            'ref flex justify-between rounded-lg px-[--bg-overhang] py-0.5',
+            cellInfo.highlight &&
+              'bg-[--cell-highlight-bg] text-[--cell-highlight-fg]'
+          )}
+        >
           <span class="name" lang={cellInfo.name.lang}>
             {cellInfo.name.value}
           </span>

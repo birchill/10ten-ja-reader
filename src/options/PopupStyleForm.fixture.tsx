@@ -11,7 +11,7 @@ import { PopupStyleForm } from './PopupStyleForm';
 
 import './options.css';
 import '../../css/popup-doc.css';
-import '../../css/popup.css';
+import '../content/popup/popup.css';
 
 export default function () {
   const [theme, setTheme] = useState<string>('default');

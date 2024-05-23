@@ -10,7 +10,7 @@ import { PopupThemeRadio } from './PopupThemeRadio';
 
 import './options.css';
 import '../../css/popup-doc.css';
-import '../../css/popup.css';
+import '../content/popup/popup.css';
 
 export default function () {
   const [accentDisplay] = useSelect<AccentDisplay>('accentDisplay', {

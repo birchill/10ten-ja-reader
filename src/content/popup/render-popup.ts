@@ -20,14 +20,14 @@ import { updateExpandable } from './expandable';
 import { renderKanjiEntries } from './kanji';
 import { renderMetadata } from './metadata';
 import { renderNamesEntries } from './names';
+import { getPopupContainer } from './popup-container';
 import { renderCopyDetails, renderUpdatingStatus } from './status';
 import { ShowPopupOptions } from './show-popup';
 import { onHorizontalSwipe } from './swipe';
 import { renderTabBar } from './tabs';
 import { renderWordEntries } from './words';
 
-import popupStyles from '../../../css/popup.css';
-import { getPopupContainer } from './popup-container';
+import popupStyles from './popup.css?inline';
 
 export function renderPopup(
   result: QueryResult | undefined,
