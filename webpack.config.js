@@ -116,92 +116,93 @@ const testConfig = {
   ],
 };
 
-const firefoxConfig = getExtConfig({
-  artifactsDir: 'dist-firefox-package',
-  distFolder: 'dist-firefox',
-  includeRikaichampName: true,
-  supportsAlphaVersion: true,
-  supportsBrowserSpecificSettings: true,
-  supportsBrowserStyle: true,
-  supportsMatchAboutBlank: true,
-  supportsSvgIcons: true,
-  supportsTabContextType: true,
-  target: 'firefox',
-  uploadToBugsnag: !!process.env.RELEASE_BUILD,
-  useEventPage: true,
-});
-
-const chromeConfig = getExtConfig({
-  artifactsDir: 'dist-chrome-package',
-  distFolder: 'dist-chrome',
-  includeRikaichampName: true,
-  isChrome: true,
-  mv3: true,
-  needsClipboardWrite: false,
-  optionsInTab: true,
-  supportsExtensionSourceMaps: false,
-  supportsMatchAboutBlank: true,
-  supportsOfflineEnabledField: true,
-  target: 'chromium',
-  useServiceWorker: true,
-});
-
-const edgeConfig = getExtConfig({
-  artifactsDir: 'dist-edge-package',
-  distFolder: 'dist-edge',
-  includeRikaichampName: true,
-  isEdge: true,
-  mv3: true,
-  needsClipboardWrite: false,
-  optionsInTab: true,
-  supportsExtensionSourceMaps: false,
-  supportsMatchAboutBlank: true,
-  target: 'chromium',
-  useServiceWorker: true,
-});
-
-const safariConfig = getExtConfig({
-  activeTabOnly: true,
-  // Safari defaults to loading JS as Latin so make sure we add a UTF-8 BOM
-  addBom: true,
-  artifactsDir: 'dist-safari-package',
-  distFolder: 'dist-safari',
-  isSafari: true,
-  supportsBrowserSpecificSettings: true,
-  supportsBrowserStyle: true,
-  supportsExtensionSourceMaps: false,
-  useEventPage: true,
-});
-
-const thunderbirdConfig = getExtConfig({
-  artifactsDir: 'dist-thunderbird-package',
-  distFolder: 'dist-thunderbird',
-  includeRikaichampName: true,
-  mailExtension: true,
-  supportsAlphaVersion: true,
-  supportsBrowserSpecificSettings: true,
-  supportsBrowserStyle: true,
-  supportsSvgIcons: true,
-  supportsTabContextType: true,
-  useEventPage: true,
-});
-
 //
 // Exported configurations
 //
 
 export default (env) => {
   const configs = [testConfig];
+
   if (env && env.target === 'chrome') {
-    configs.push({ ...chromeConfig, name: 'extension' });
+    configs.push(
+      getExtConfig({
+        artifactsDir: 'dist-chrome-package',
+        distFolder: 'dist-chrome',
+        includeRikaichampName: true,
+        isChrome: true,
+        mv3: true,
+        needsClipboardWrite: false,
+        optionsInTab: true,
+        supportsExtensionSourceMaps: false,
+        supportsMatchAboutBlank: true,
+        supportsOfflineEnabledField: true,
+        target: 'chromium',
+        useServiceWorker: true,
+      })
+    );
   } else if (env && env.target === 'edge') {
-    configs.push({ ...edgeConfig, name: 'extension' });
+    configs.push(
+      getExtConfig({
+        artifactsDir: 'dist-edge-package',
+        distFolder: 'dist-edge',
+        includeRikaichampName: true,
+        isEdge: true,
+        mv3: true,
+        needsClipboardWrite: false,
+        optionsInTab: true,
+        supportsExtensionSourceMaps: false,
+        supportsMatchAboutBlank: true,
+        target: 'chromium',
+        useServiceWorker: true,
+      })
+    );
   } else if (env && env.target === 'safari') {
-    configs.push({ ...safariConfig, name: 'extension' });
+    configs.push(
+      getExtConfig({
+        activeTabOnly: true,
+        // Safari defaults to loading JS as Latin so make sure we add a UTF-8 BOM
+        addBom: true,
+        artifactsDir: 'dist-safari-package',
+        distFolder: 'dist-safari',
+        isSafari: true,
+        supportsBrowserSpecificSettings: true,
+        supportsBrowserStyle: true,
+        supportsExtensionSourceMaps: false,
+        useEventPage: true,
+      })
+    );
   } else if (env && env.target === 'thunderbird') {
-    configs.push({ ...thunderbirdConfig, name: 'extension' });
+    configs.push(
+      getExtConfig({
+        artifactsDir: 'dist-thunderbird-package',
+        distFolder: 'dist-thunderbird',
+        includeRikaichampName: true,
+        mailExtension: true,
+        supportsAlphaVersion: true,
+        supportsBrowserSpecificSettings: true,
+        supportsBrowserStyle: true,
+        supportsSvgIcons: true,
+        supportsTabContextType: true,
+        useEventPage: true,
+      })
+    );
   } else {
-    configs.push({ ...firefoxConfig, name: 'extension' });
+    configs.push(
+      getExtConfig({
+        artifactsDir: 'dist-firefox-package',
+        distFolder: 'dist-firefox',
+        includeRikaichampName: true,
+        supportsAlphaVersion: true,
+        supportsBrowserSpecificSettings: true,
+        supportsBrowserStyle: true,
+        supportsMatchAboutBlank: true,
+        supportsSvgIcons: true,
+        supportsTabContextType: true,
+        target: 'firefox',
+        uploadToBugsnag: !!process.env.RELEASE_BUILD,
+        useEventPage: true,
+      })
+    );
   }
 
   return configs;
@@ -492,6 +493,7 @@ function getExtConfig(options) {
 
   return {
     ...commonConfig,
+    name: 'extension',
     devtool,
     entry: {
       '10ten-ja-content': './src/content/content.ts',
