@@ -3,6 +3,7 @@ export default {
   prefix: 'tp-',
   corePlugins: { preflight: false },
   content: ['./src/content/popup/**/*.{ts,tsx}'],
+  blocklist: ['!entry', '!kanji'],
   theme: {
     extend: {
       borderRadius: {
