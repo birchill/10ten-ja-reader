@@ -92,7 +92,7 @@
     "copy-webpack-plugin": "12.0.2",
     "css-loader": "7.1.2",
     "eslint": "8.57.0",
-    "eslint-plugin-tailwindcss": "3.15.2",
+    "eslint-plugin-tailwindcss": "3.17.0",
     "eslint-plugin-vitest": "0.4.1",
     "fake-indexeddb": "6.0.0",
     "fast-glob": "3.3.2",
