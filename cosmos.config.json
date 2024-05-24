@@ -1,6 +1,9 @@
 {
   "$schema": "http://json.schemastore.org/cosmos-config",
-  "plugins": ["react-cosmos-plugin-webpack"],
+  "plugins": [
+    "react-cosmos-plugin-boolean-input",
+    "react-cosmos-plugin-webpack"
+  ],
   "dom": {
     "containerQuerySelector": "#container"
   },

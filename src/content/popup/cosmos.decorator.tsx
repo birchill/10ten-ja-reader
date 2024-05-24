@@ -1,22 +1,30 @@
 import type { RenderableProps } from 'preact';
-import { useSelect } from 'react-cosmos/client';
+import { useFixtureInput, useFixtureSelect } from 'react-cosmos/client';
 
 import { I18nProvider } from '../../common/i18n';
 import { EmptyProps } from '../../utils/type-helpers';
 
 export default ({ children }: RenderableProps<EmptyProps>) => {
-  const [locale] = useSelect('locale', {
+  const [locale] = useFixtureSelect('locale', {
     options: ['en', 'ja', 'zh_hans'],
   });
 
-  const [themeName] = useSelect('theme', {
+  const [themeName] = useFixtureSelect('theme', {
     options: ['black', 'light', 'blue', 'lightblue', 'yellow'],
     defaultValue: 'light',
   });
 
-  const [fontSize] = useSelect('font size', {
+  const [fontSize] = useFixtureSelect('font size', {
     options: ['normal', 'large', 'xl'],
   });
+
+  // This is here so that we can test that components do not change when the
+  // root font size of the document changes (i.e. test that we are NOT using
+  // `rem` units).
+  const [massivePageFontSize] = useFixtureInput(
+    'massive page font size',
+    false
+  );
 
   return (
     <I18nProvider locale={locale}>
@@ -24,6 +32,7 @@ export default ({ children }: RenderableProps<EmptyProps>) => {
         className={`theme-${themeName}`}
         style={{
           '--base-font-size': `var(--${fontSize}-font-size)`,
+          fontSize: massivePageFontSize ? '50px' : undefined,
         }}
       >
         {children}

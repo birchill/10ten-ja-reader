@@ -7516,6 +7516,11 @@ react-cosmos-dom@^6.1.1:
     react-cosmos-core "^6.1.1"
     react-cosmos-renderer "^6.1.1"
 
+react-cosmos-plugin-boolean-input@6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/react-cosmos-plugin-boolean-input/-/react-cosmos-plugin-boolean-input-6.1.1.tgz#6c3809bf631db5ca49c77f85146915ff7ffad8e2"
+  integrity sha512-yxAF2Skx+i51BYUX3PcZZJAoxV3PFCc+7MVCPQV4EjywBulSxPMijO3uzhkJdezvH/zhsC80J6YGz/EgxwuL9w==
+
 react-cosmos-plugin-webpack@6.1.1:
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/react-cosmos-plugin-webpack/-/react-cosmos-plugin-webpack-6.1.1.tgz#08e7a57904acff526e645fbc2f548cce9819c12d"

@@ -33,6 +33,7 @@ const config: KnipConfig = {
     'mocha',
     '@types/mocha',
     // Knip doesn't know how to parse React Cosmos plugins (yet).
+    'react-cosmos-plugin-boolean-input',
     'react-cosmos-plugin-webpack',
   ],
   ignoreExportsUsedInFile: {
