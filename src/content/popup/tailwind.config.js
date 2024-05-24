@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  prefix: 'tp-',
   corePlugins: { preflight: false },
   content: ['./src/content/popup/**/*.{ts,tsx}'],
   theme: {
