@@ -40,7 +40,11 @@
 
   :root,
   :host {
-    --base-font-size: 14px;
+    --normal-font-size: 14px;
+    --large-font-size: 17px;
+    --xl-font-size: 19px;
+
+    --base-font-size: var(--normal-font-size);
   }
 
   .container {
@@ -214,11 +218,11 @@
   }
 
   .window.font-large {
-    --base-font-size: 17px;
+    --base-font-size: var(--large-font-size);
   }
 
   .window.font-xl {
-    --base-font-size: 19px;
+    --base-font-size: var(--xl-font-size);
   }
 
   /* Tab bar */
@@ -1243,8 +1247,8 @@
   }
 
   /*
-  * Status bar
-  */
+   * Status bar
+   */
 
   .status-bar {
     position: relative;

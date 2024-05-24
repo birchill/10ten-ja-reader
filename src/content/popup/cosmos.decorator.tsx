@@ -14,9 +14,20 @@ export default ({ children }: RenderableProps<EmptyProps>) => {
     defaultValue: 'light',
   });
 
+  const [fontSize] = useSelect('font size', {
+    options: ['normal', 'large', 'xl'],
+  });
+
   return (
     <I18nProvider locale={locale}>
-      <div className={`theme-${themeName}`}>{children}</div>
+      <div
+        className={`theme-${themeName}`}
+        style={{
+          '--base-font-size': `var(--${fontSize}-font-size)`,
+        }}
+      >
+        {children}
+      </div>
     </I18nProvider>
   );
 };
