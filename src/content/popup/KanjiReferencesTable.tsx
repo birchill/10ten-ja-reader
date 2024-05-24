@@ -83,14 +83,14 @@ export function KanjiReferencesTable({ entry, kanjiReferences }: Props) {
 
   return (
     <div
-      class="references"
+      class="references tp-grid tp-mt-3.5 tp-grid-cols-[repeat(2,minmax(200px,1fr))] tp-gap-x-2 tp-mx-[calc(-1*var(--bg-overhang))] tp-w-[calc(100%+2*var(--bg-overhang))] max-[450px]:tp-grid-cols-none [--bg-overhang:8px]"
       lang={langTag}
       style={{ gridAutoFlow, gridTemplateRows }}
     >
       {referenceTableInfo.map((cellInfo) => (
         <div
           class={classes(
-            'ref tp-flex tp-justify-between tp-rounded-lg tp-px-[--bg-overhang] tp-py-0.5 tp-text-sm tp-leading-normal [--bg-overhang:8px]',
+            'tp-flex tp-justify-between tp-rounded-lg tp-px-[--bg-overhang] tp-py-0.5 tp-text-sm tp-leading-normal',
             cellInfo.highlight &&
               'tp-bg-[--cell-highlight-bg] tp-text-[--cell-highlight-fg]'
           )}
