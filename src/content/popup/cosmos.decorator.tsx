@@ -3,6 +3,7 @@ import { useFixtureInput, useFixtureSelect } from 'react-cosmos/client';
 
 import { I18nProvider } from '../../common/i18n';
 import { EmptyProps } from '../../utils/type-helpers';
+import { useLayoutEffect } from 'preact/hooks';
 
 export default ({ children }: RenderableProps<EmptyProps>) => {
   const [locale] = useFixtureSelect('locale', {
@@ -23,13 +24,20 @@ export default ({ children }: RenderableProps<EmptyProps>) => {
   // `rem` units).
   const [massivePageFontSize] = useFixtureInput('rem unit check', false);
 
+  useLayoutEffect(() => {
+    if (massivePageFontSize) {
+      window.document.documentElement.style.fontSize = '50px';
+    } else {
+      window.document.documentElement.style.fontSize = '';
+    }
+  }, [massivePageFontSize]);
+
   return (
     <I18nProvider locale={locale}>
       <div
         className={`theme-${themeName}`}
         style={{
           '--base-font-size': `var(--${fontSize}-font-size)`,
-          fontSize: massivePageFontSize ? '50px' : undefined,
         }}
       >
         {children}
