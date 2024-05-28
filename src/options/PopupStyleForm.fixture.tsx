@@ -10,8 +10,8 @@ import {
 import { PopupStyleForm } from './PopupStyleForm';
 
 import './options.css';
-import '../../css/popup-doc.css';
 import '../content/popup/popup.css';
+import '../../css/popup-doc.css';
 
 export default function () {
   const [theme, setTheme] = useState<string>('default');
