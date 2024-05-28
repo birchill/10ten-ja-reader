@@ -21,10 +21,7 @@ export default ({ children }: RenderableProps<EmptyProps>) => {
   // This is here so that we can test that components do not change when the
   // root font size of the document changes (i.e. test that we are NOT using
   // `rem` units).
-  const [massivePageFontSize] = useFixtureInput(
-    'massive page font size',
-    false
-  );
+  const [massivePageFontSize] = useFixtureInput('rem unit check', false);
 
   return (
     <I18nProvider locale={locale}>
