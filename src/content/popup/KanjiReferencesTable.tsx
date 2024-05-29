@@ -83,16 +83,28 @@ export function KanjiReferencesTable({ entry, kanjiReferences }: Props) {
 
   return (
     <div
-      class="references"
+      class={classes(
+        'tp-grid tp-grid-cols-[repeat(2,minmax(200px,1fr))] tp-gap-x-2',
+        'max-[450px]:tp-grid-cols-none',
+        'tp-mt-3.5',
+        '[--bg-overhang:8px]',
+        '-tp-mx-[--bg-overhang] tp-w-[calc(100%+2*var(--bg-overhang))]'
+      )}
       lang={langTag}
       style={{ gridAutoFlow, gridTemplateRows }}
     >
       {referenceTableInfo.map((cellInfo) => (
-        <div class={classes('ref', cellInfo.highlight && '-highlight')}>
-          <span class="name" lang={cellInfo.name.lang}>
-            {cellInfo.name.value}
-          </span>
-          <span class="value" lang={cellInfo.value.lang}>
+        <div
+          class={classes(
+            'tp-flex tp-justify-between',
+            'tp-rounded-lg tp-px-[--bg-overhang] tp-py-0.5',
+            'tp-text-sm tp-leading-normal',
+            cellInfo.highlight &&
+              'tp-bg-[--cell-highlight-bg] tp-text-[--cell-highlight-fg]'
+          )}
+        >
+          <span lang={cellInfo.name.lang}>{cellInfo.name.value}</span>
+          <span class="tp-ml-2" lang={cellInfo.value.lang}>
             {cellInfo.value.value}
           </span>
         </div>

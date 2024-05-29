@@ -1,0 +1,1733 @@
+@config "./tailwind.config.js";
+
+@import '../../../css/themes.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  :host {
+    /*
+     * The following is because there appears to be some (yet unidentified)
+     * add-on that sets `position: absolute` on various div elements. As a
+     * result, our popup will end up being positioned at the very end of the
+     * page unless we ensure we set left/top ourselves.
+     *
+     * See: https://github.com/birchill/10ten-ja-reader/issues/947
+     */
+    position: revert !important;
+
+    /*
+     * However, supposing our rule above loses out to the interfering add-on?
+     *
+     * Assuming said add-on sets `position: absolute` on the popup we can make it
+     * work for us by setting the left/top/bottom/right properties.
+     */
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    pointer-events: none !important;
+
+    /*
+     * It's conceivable add-ons might interfere with our z-index too so make
+     * sure that's covered.
+     */
+    z-index: 2147483647 !important;
+  }
+
+  :root,
+  :host {
+    --normal-font-size: 14px;
+    --large-font-size: 17px;
+    --xl-font-size: 19px;
+
+    --base-font-size: var(--normal-font-size);
+  }
+
+  .container {
+    position: absolute;
+    left: var(--left, auto);
+    top: var(--top, auto);
+
+    /*
+    * Use the empirical maximum z-index since some sites (e.g. TimeTree) use this
+    * for their popups.
+    */
+    z-index: 2147483647;
+
+    /* Make sure the drop shadow on the window doesn't get cut off */
+    padding-right: 4px;
+    padding-bottom: 4px;
+
+    overflow-y: visible;
+    pointer-events: all;
+  }
+
+  .container:not(.interactive) {
+    pointer-events: none;
+  }
+
+  /*
+  * Variation on the interactive container when it is not yet actually
+  * interactive.
+  */
+  .container.interactive.ghost {
+    pointer-events: none;
+  }
+
+  .container.interactive.ghost .window {
+    border-style: dashed;
+  }
+
+  .container.hidden {
+    display: none;
+  }
+
+  .-inline > .container {
+    position: revert;
+    z-index: revert;
+    pointer-events: revert;
+  }
+
+  /*
+  * When the popup is interactive we make the window scrollable, but for
+  * non-interactive cases we just fade it out.
+  *
+  * To make the window scrollable we need to set the max-height on the
+  * window itself.
+  *
+  * For the fade-effect, however, we set the max-height and fade effect
+  * on the container so that the mask doesn't end up clipping the drop shadow
+  * on the popup.
+  */
+  .container.interactive .window {
+    max-height: var(--max-height, none);
+  }
+
+  .container:not(.interactive) {
+    max-height: var(--max-height, none);
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      black calc(var(--max-height) - 5px),
+      transparent
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      black calc(var(--max-height) - 5px),
+      transparent
+    );
+  }
+
+  .container .window {
+    min-height: var(--min-height, none);
+  }
+
+  .window {
+    max-width: var(--max-width, 600px);
+    max-width: var(--max-width, min(600px, calc(100vw - 30px)));
+
+    contain: content;
+    border-radius: 5px;
+    box-shadow:
+      0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
+      1px 2px 1px rgba(100, 100, 100, 0.15),
+      2px 4px 8px rgba(100, 100, 100, 0.15);
+    font: normal 14px;
+
+    color: var(--text-color);
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+
+    font-family: '10ten Inter', '10ten Noto Sans JP', sans-serif;
+    font-feature-settings: 'calt', 'case', 'cv01', 'cv03', 'cv04', 'cv11',
+      'ss03';
+    font-weight: 380;
+  }
+
+  /* When the tabs are shown on top, make the window have a consistent width
+    so the tabs don't jump around. */
+  .window[data-tab-side='top'] {
+    display: flex;
+    max-width: none;
+    /* Fallback for the below */
+    width: 500px;
+    /* The 30px here is to accommodate scrollbars on Windows plus a bit of
+      padding. */
+    width: min(500px, calc(100vw - 30px));
+  }
+
+  .container:not(.hidden) .window {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container.interactive .content {
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  @supports (scrollbar-width: thin) {
+    .window .content {
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-fg) var(--scrollbar-bg);
+    }
+  }
+
+  @supports not (scrollbar-width: thin) {
+    .window .content::-webkit-scrollbar {
+      width: 7px;
+      background-color: var(--scrollbar-bg);
+    }
+
+    .window .content::-webkit-scrollbar-thumb {
+      background-color: var(--scrollbar-fg);
+    }
+  }
+
+  .window .status-bar-wrapper {
+    flex-grow: 1;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .window .status-bar-wrapper > :first-child {
+    flex-grow: 1;
+  }
+
+  .window .status-bar-wrapper > .status-bar {
+    flex-shrink: 0;
+  }
+
+  .window .content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .window .content > :first-child {
+    flex-grow: 1;
+  }
+
+  .window {
+    font-size: var(--base-font-size);
+  }
+
+  .window.font-large {
+    --base-font-size: var(--large-font-size);
+  }
+
+  .window.font-xl {
+    --base-font-size: var(--xl-font-size);
+  }
+
+  /* Tab bar */
+
+  .tab-bar {
+    flex-shrink: 0;
+
+    display: flex;
+    padding: 0;
+    margin: 0;
+    /* Safari appears to need the following */
+    overflow: hidden;
+
+    background: var(--cell-highlight-bg);
+    color: var(--cell-highlight-fg);
+
+    /* Make sure we are above the content area. This is mostly needed when we are
+    * showing the copy overlay since the entry data might overflow its region in
+    * that case. */
+    z-index: 1;
+  }
+
+  .tabs {
+    flex-grow: 1;
+    display: flex;
+    padding: 0;
+    margin: 0;
+  }
+
+  .tabs .tab {
+    flex-grow: 1;
+    list-style: none;
+    font-size: calc(var(--base-font-size) * 0.8);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Make the tabs bigger in interactive mode so they are easier to click */
+  .container.interactive .tabs .tab {
+    font-size: var(--base-font-size);
+  }
+
+  /* Don't increase the tab font size too much or else it looks childish */
+  .window.font-large .tabs .tab,
+  .window.font-xl .tabs .tab {
+    font-size: calc(var(--base-font-size) * 0.8);
+  }
+
+  .tabs .tab button {
+    /* Reset button styles */
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    margin: 0;
+    border: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.5em 18px;
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  @media (max-width: 400px) {
+    .window[data-tab-side='top'] .tabs .tab button span:lang(en) {
+      font-size: calc(var(--base-font-size) * 0.7);
+    }
+  }
+
+  @media (max-width: 350px) {
+    .window[data-tab-side='top'] .tabs .tab {
+      flex-grow: 0;
+    }
+    .window[data-tab-side='top'] .tabs .tab button span {
+      display: none;
+    }
+    .window[data-tab-side='top'] .tabs .tab button .icon {
+      margin-right: 0px;
+    }
+  }
+
+  .container.interactive .tabs .tab button {
+    padding: 0.7em 18px;
+  }
+
+  .tabs .tab button .icon {
+    display: block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    /* Push the icon up a little so it looks more aligned with the text */
+    margin-bottom: 1px;
+    fill: currentcolor;
+  }
+
+  .container.interactive .tabs .tab button .icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .tabs .tab[aria-selected] {
+    background: var(--bg-color);
+  }
+
+  .tabs .tab[aria-selected] button {
+    color: var(--text-color);
+  }
+
+  .tabs .tab:not([aria-selected]) button {
+    opacity: 0.8;
+    color: var(--cell-highlight-fg);
+  }
+
+  .tabs .tab:not([aria-selected]):hover {
+    filter: brightness(1.1);
+  }
+
+  .tabs .tab:not([aria-selected]):hover button {
+    opacity: 1;
+  }
+
+  .tabs .tab.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .container:not(.interactive) .settings,
+  .container:not(.interactive) .pin,
+  .container:not(.interactive) .close {
+    display: none;
+  }
+
+  .tab-bar .settings,
+  .tab-bar .pin,
+  .tab-bar .close {
+    flex-shrink: 0;
+    align-self: center;
+    margin: 2px;
+  }
+
+  .window .close-button-wrapper {
+    flex-grow: 1;
+
+    display: flex;
+    overflow: auto;
+  }
+
+  .window .close-button-wrapper .close {
+    z-index: 1;
+    flex: 0 0 auto;
+    margin: 4px;
+    /* Drop margin since the meta element should have sufficient padding */
+    margin-left: 0px;
+  }
+
+  /*
+  * The following uses .close .close-button because we have two configurations:
+  * a) The close button is a child of the tab bar
+  * b) The close button is a child of the close-button-wrapper
+  */
+  .settings-button,
+  .pin-button,
+  .close .close-button {
+    appearance: none;
+    border: none;
+    line-height: 1;
+    padding: 6px;
+    border-radius: 20px;
+    color: var(--text-color);
+  }
+
+  .settings-button,
+  .pin-button {
+    cursor: pointer;
+    background: transparent;
+  }
+
+  .settings-button:hover,
+  .pin-button:hover,
+  .close .close-button {
+    background: var(--bg-color);
+  }
+
+  .settings-button:hover,
+  .pin-button:hover,
+  .close .close-button:hover {
+    filter: brightness(1.1);
+  }
+
+  .settings-button svg,
+  .pin-button svg,
+  .close .close-button svg {
+    display: block;
+    width: 15px;
+    height: 15px;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-opacity: 0.7;
+    fill-opacity: 0.7;
+    fill: none;
+  }
+
+  .settings-button svg,
+  .pin-button svg {
+    stroke-width: 2px;
+  }
+
+  .close .close-button svg {
+    stroke-width: 5px;
+  }
+
+  .settings-button:hover svg,
+  .pin-button:hover svg,
+  .close .close-button:hover svg {
+    stroke-opacity: 1;
+    fill-opacity: 1;
+  }
+
+  .container.pinned .pin-button svg path {
+    fill: currentColor;
+  }
+
+  /* Tab bar on the side */
+
+  .container:not(.hidden) .window[data-tab-side='left'],
+  .container:not(.hidden) .window[data-tab-side='right'] {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .container .window[data-tab-side='left'] .tab-bar,
+  .container .window[data-tab-side='right'] .tab-bar {
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .container .window[data-tab-side='right'] .tab-bar {
+    order: 1;
+  }
+
+  .container .window[data-tab-side='left'] .tab-bar .tabs,
+  .container .window[data-tab-side='right'] .tab-bar .tabs {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container .window[data-tab-side='left'] .tab-bar .settings,
+  .container .window[data-tab-side='right'] .tab-bar .settings {
+    margin-bottom: 0.5em;
+  }
+
+  .container .window[data-tab-side='top'] .tab-bar .close {
+    margin-left: 1em;
+  }
+
+  .container .window[data-tab-side='left'] .tab-bar .close,
+  .container .window[data-tab-side='right'] .tab-bar .close {
+    order: -1;
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+  }
+
+  .container .window[data-tab-side='left'] .tabs .tab,
+  .container .window[data-tab-side='right'] .tabs .tab {
+    flex-grow: 0;
+  }
+
+  .container .window[data-tab-side='left'] .tabs .tab button,
+  .container .window[data-tab-side='right'] .tabs .tab button {
+    padding: 0.7em;
+  }
+
+  .container .window[data-tab-side='left'] .tabs .tab button svg,
+  .container .window[data-tab-side='right'] .tabs .tab button svg {
+    margin: 0;
+  }
+
+  .container .window[data-tab-side='left'] .tabs .tab button span,
+  .container .window[data-tab-side='right'] .tabs .tab button span {
+    display: none;
+  }
+
+  /* Expandable container */
+
+  .window .content .expandable {
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  @supports (scrollbar-width: thin) {
+    .window .content .expandable {
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-fg) var(--scrollbar-bg);
+    }
+  }
+
+  @supports not (scrollbar-width: thin) {
+    .window .content .expandable::-webkit-scrollbar {
+      width: 7px;
+      background-color: var(--scrollbar-bg);
+    }
+
+    .window .content .expandable::-webkit-scrollbar-thumb {
+      background-color: var(--scrollbar-fg);
+    }
+  }
+
+  .window .content .expandable .fold-point {
+    display: contents;
+  }
+
+  /* Expand button */
+
+  .window .content .expand-button {
+    /* Box layout */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 8px;
+
+    /* Positioning */
+    position: sticky;
+    bottom: 0;
+
+    /* Reset button styles */
+    appearance: none;
+    border: 0;
+    margin: 0;
+    cursor: pointer;
+    font: inherit;
+    line-height: 1;
+    text-decoration: none;
+
+    /* Colors */
+    background: linear-gradient(
+      to bottom,
+      rgba(var(--bg-rgb), 0.3),
+      var(--bg-color) 80%
+    );
+    color: rgba(var(--expand-button-rgb), 0.8);
+  }
+
+  .window .content {
+    /* Extra space to add to the end of the content so the expand button doesn't
+    * overlap with the last entry. */
+    --expand-button-allowance: 35px;
+  }
+
+  .window .content .expand-button:hover {
+    color: var(--expand-button-color);
+    /* Use outline instead of border so it doesn't affect the layout (even if we
+    * try to reserve space for the border using a transparent border it will not
+    * blend with the underlying element since you can't have a fully transparent
+    * border on a non-transparent background. */
+    outline: 1px var(--expand-button-color) dotted;
+    background: linear-gradient(
+      to bottom,
+      rgba(var(--bg-rgb), 0.8),
+      var(--bg-color) 80%
+    );
+  }
+
+  .window .content .expand-button .icon {
+    width: 16px;
+    height: 16px;
+    flex-grow: 1;
+  }
+
+  .window .content .expand-button kbd {
+    color: var(--expand-button-color);
+    font-family: monospace;
+    font-weight: 800;
+    padding: 0.1rem 0.2rem;
+    border-radius: 0.2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--expand-button-color) !important;
+  }
+
+  /* Word display */
+
+  .wordlist {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+
+  .wordlist .entry {
+    scroll-snap-align: start;
+    /* This matches the margin at the top of the word list */
+    scroll-margin-top: 8px;
+    scroll-margin-bottom: var(--expand-button-allowance);
+  }
+
+  .entry,
+  .more {
+    padding: 4px 14px;
+  }
+
+  .window.font-large .wordlist {
+    gap: 12px;
+  }
+
+  .window.font-xl .wordlist {
+    gap: 16px;
+  }
+
+  .entry,
+  .entry * {
+    line-height: 1.3;
+  }
+
+  .w-kanji {
+    font-size: calc(20 / 14 * var(--base-font-size));
+    margin-right: 0.7em;
+    color: var(--primary-highlight);
+  }
+
+  .w-kanji .dimmed,
+  .w-kanji .separator,
+  .w-kana .dimmed,
+  .w-kana .separator {
+    opacity: 0.6;
+  }
+
+  .w-kanji .wk-level,
+  .w-kanji .bp-tag,
+  .w-kana .bp-tag {
+    display: inline-block;
+    font-size: calc(10 / 14 * var(--base-font-size));
+    border-radius: 3px;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    padding: 3px 3px 2px;
+    line-height: 1;
+    white-space: nowrap;
+    transform: translateY(-3px);
+  }
+
+  .w-kanji .wk-level {
+    border: 1px solid var(--primary-highlight);
+  }
+
+  .w-kanji .wk-level::before {
+    display: inline-block;
+    content: 'WK';
+    margin-right: 0.2em;
+  }
+
+  .window .entry.-selected .w-kanji .wk-level {
+    border-color: var(--selected-highlight);
+  }
+
+  @media (hover) {
+    .container.interactive .entry:hover .w-kanji .wk-level {
+      border-color: var(--selected-highlight);
+    }
+  }
+
+  .w-kanji .bp-tag.-vocab,
+  .w-kana .bp-tag.-vocab {
+    border: 1px solid var(--bunpro-vocab);
+    color: var(--bunpro-vocab);
+  }
+  .w-kanji .bp-tag.-grammar,
+  .w-kana .bp-tag.-grammar {
+    border: 1px solid var(--bunpro-grammar);
+    color: var(--bunpro-grammar);
+  }
+
+  .w-kanji .bp-tag .bp-src,
+  .w-kana .bp-tag .bp-src {
+    margin-left: 0.3em;
+    color: var(--bunpro-src);
+  }
+
+  .w-kana {
+    font-size: calc(18 / 14 * var(--base-font-size));
+    margin-right: 0.3em;
+  }
+
+  .w-kana > .w-heiban {
+    border-top: 1.5px dotted currentcolor !important;
+  }
+
+  .w-kana > .w-binary {
+    /* Add a gap below so the border doesn't overlap with the definition */
+    display: inline-block;
+    margin-bottom: 0.2em;
+  }
+
+  .w-kana > .w-binary > * {
+    /* Drop gaps between borders */
+    margin: 0;
+    /* Make room for the borders
+    * (and to compensate for the extra margin we added to the wrapper above) */
+    font-size: 90%;
+    border: 0 dotted currentcolor;
+    --border-width: 1.5px;
+  }
+
+  .w-kana > .w-binary.-hi-contrast > * {
+    border-color: var(--hi-contrast-pitch-accent);
+    --border-width: 2px;
+  }
+
+  .w-kana > .w-binary > .h-l {
+    border-top-width: var(--border-width);
+    border-right-width: var(--border-width);
+  }
+
+  .w-kana > .w-binary > .l-h {
+    border-bottom-width: var(--border-width);
+    border-right-width: var(--border-width);
+  }
+
+  .w-kana > .w-binary > .h {
+    border-top-width: var(--border-width);
+  }
+
+  .w-kana > .w-binary > .l {
+    border-bottom-width: var(--border-width);
+  }
+
+  .w-romaji {
+    font-size: var(--base-font-size);
+    margin-right: 0.3em;
+  }
+
+  .w-kana + .w-romaji {
+    margin-left: 0.3em;
+  }
+
+  .w-kana,
+  .w-romaji {
+    color: var(--reading-highlight);
+  }
+
+  .w-kanji .w-head-info,
+  .w-kana .w-head-info {
+    margin-left: 0.3em;
+    font-size: calc(10 / 14 * var(--base-font-size));
+  }
+
+  .w-kanji .svgicon,
+  .w-kana .svgicon {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-left: 3px;
+    margin-right: 3px;
+    fill: currentcolor;
+  }
+
+  .w-kanji .svgicon path,
+  .w-kana .svgicon path {
+    fill: currentcolor;
+  }
+
+  .w-conj {
+    font-size: calc(12 / 14 * var(--base-font-size));
+    color: var(--conj-color);
+  }
+
+  .w-def {
+    font-size: var(--base-font-size);
+  }
+
+  .w-def .w-inf {
+    font-size: calc(12 / 14 * var(--base-font-size));
+  }
+
+  /* Give group headings a bit more space. They typically consist of a series of
+  * which can easily look cramped when there are tags on the line above or below
+  * it. */
+  .w-def .w-group-head {
+    margin-top: 2px;
+    margin-bottom: 3px;
+  }
+
+  /* Especially when we have group headings amongst other definitions, we want a
+  * bit more vertical space before they start. */
+  .w-def ol + .w-group-head {
+    margin-top: 6px;
+  }
+
+  .w-def ul {
+    padding-left: 1.5em;
+    margin: 0;
+  }
+
+  /* Add a little breathing space between native language definitions and
+  * subsequent English definitions. */
+  .w-def ul + .w-group-head,
+  .w-def ul + ol {
+    margin-top: 6px;
+  }
+
+  .w-def ol {
+    padding-left: 1.5em;
+    list-style-type: decimal !important;
+    margin: 0;
+  }
+
+  .w-def ol li {
+    list-style-type: decimal !important;
+    font-size: var(--base-font-size);
+    line-height: 1.5;
+  }
+
+  .w-def ul li {
+    list-style-type: circle !important;
+    font-size: var(--base-font-size);
+    line-height: 1.5;
+  }
+
+  .w-def.foreign,
+  .w-def .foreign {
+    opacity: 0.85;
+  }
+
+  .w-def .w-type {
+    font-size: calc(12 / 14 * var(--base-font-size));
+  }
+
+  .w-def .tag {
+    font-size: calc(10 / 14 * var(--base-font-size));
+    border: 1px solid var(--tag-border) !important;
+    border-radius: 3px;
+    margin-left: 0.5em;
+    padding: 0px 3px;
+    white-space: nowrap;
+  }
+
+  .w-def .tag-fem {
+    background: var(--tag-pink);
+  }
+
+  .w-def .tag-masc {
+    background: var(--tag-blue);
+  }
+
+  .w-def .tag-place {
+    background: var(--tag-green);
+  }
+
+  .w-def .w-field {
+    background: var(--tag-green);
+  }
+
+  .w-def .w-misc {
+    background: var(--tag-blue);
+  }
+
+  .w-def .w-dial {
+    background: var(--tag-pink);
+  }
+
+  .w-def .w-pos,
+  .w-def .w-field,
+  .w-def .w-misc,
+  .w-def .w-dial {
+    margin-left: 0em;
+    margin-right: 0.5em;
+  }
+
+  .w-def .w-lsrc,
+  .w-def .w-lsrc * {
+    font-size: calc(12 / 14 * var(--base-font-size));
+  }
+
+  .window:not(.-has-overlay) .entry.-selected {
+    color: var(--selected-highlight);
+    background: var(--selected-bg);
+    border-radius: 2px;
+  }
+
+  @media (hover) {
+    .container.interactive .entry:not(:hover) {
+      transition: background-color 0.08s ease-out;
+    }
+    .container.interactive .entry:hover {
+      color: var(--selected-highlight);
+      background: var(--hover-bg);
+      border-radius: 2px;
+      cursor: pointer;
+    }
+    .container.interactive .entry.-selected:hover {
+      background: var(--selected-bg);
+    }
+  }
+
+  .window .entry.-selected .w-def .tag {
+    color: var(--selected-tag-color);
+    border-color: var(--selected-tag-border) !important;
+  }
+
+  @media (hover) {
+    .container.interactive .entry:hover .w-def .tag {
+      color: var(--selected-tag-color);
+      border-color: var(--selected-tag-border) !important;
+    }
+  }
+
+  .window .entry.-selected .w-kanji {
+    color: var(--selected-highlight);
+  }
+
+  @media (hover) {
+    .container.interactive .entry:hover .w-kanji {
+      color: var(--selected-highlight);
+    }
+  }
+
+  .window .entry.-selected .w-kana,
+  .window .entry.-selected .w-romaji {
+    color: var(--selected-reading-highlight);
+  }
+
+  @media (hover) {
+    .container.interactive .entry:hover .w-kana,
+    .container.interactive .entry:hover .w-romaji {
+      color: var(--selected-reading-highlight);
+    }
+  }
+
+  .window .entry.-selected .w-def,
+  .window .entry.-selected .w-def * {
+    color: var(--selected-def-color);
+  }
+
+  @media (hover) {
+    .container.interactive .entry:hover .w-def,
+    .container.interactive .entry:hover .w-def * {
+      color: var(--selected-def-color);
+    }
+  }
+
+  .window .entry.-selected .w-conj {
+    color: var(--selected-conj-color);
+  }
+
+  @media (hover) {
+    .container.interactive .entry:hover .w-conj {
+      color: var(--selected-conj-color);
+    }
+  }
+
+  .window .entry.-flash {
+    animation: tenten-ja-flash 0.5s;
+  }
+
+  @keyframes tenten-ja-flash {
+    from {
+      background: white;
+      color: white;
+    }
+  }
+
+  .title {
+    background: var(--title-bg);
+    color: var(--title-fg);
+    font-size: calc(10 / 14 * var(--base-font-size));
+    padding: 10px 14px 6px;
+    border-radius: 5px 5px 0 0;
+    margin-bottom: 3px;
+  }
+
+  .name-table {
+    padding-bottom: 6px;
+    margin-top: 8px;
+  }
+
+  .name-table.-multicol {
+    column-count: 2;
+    column-gap: 1em;
+  }
+
+  .name-table.-multicol .entry {
+    /* Avoid column breaks within an entry */
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .name-table.-multicol .meta {
+    column-span: all;
+  }
+
+  .name-table .entry {
+    margin-bottom: 3px;
+  }
+
+  .name-table .w-def div {
+    margin-bottom: 2px;
+  }
+
+  /* Kanji display */
+
+  .kanjilist {
+    /*
+    * Make each kanji item have the same height so that when we scroll the next
+    * one into view it fits.
+    */
+    display: grid;
+    grid-auto-rows: 1fr;
+  }
+
+  /*
+  * If the list has been expanded, however, there is no need to space the kanji
+  * items out evenly.
+  */
+  .expandable.expanded .kanjilist {
+    grid-auto-rows: auto;
+  }
+
+  .kanji-table {
+    padding: 10px 18px;
+    scroll-snap-align: start;
+    /* Make sure it's possible to scroll all the way to the bottom of each kanji
+    * table. */
+    scroll-margin-bottom: var(--expand-button-allowance);
+  }
+
+  /* kanji: top part of the kanji table */
+
+  .kanji-table .top-part {
+    display: flex;
+    margin-bottom: 12px;
+  }
+
+  .kanji-table .top-part > *:nth-child(2) {
+    flex-grow: 1;
+  }
+
+  /* kanji: character itself */
+
+  .kanji-table .kanji {
+    color: var(--primary-highlight);
+    line-height: 1;
+    font-size: calc(60 / 14 * var(--base-font-size));
+    text-align: center;
+    margin-inline-end: 20px;
+    padding-top: 0.1em;
+    text-shadow: rgba(0, 0, 0, 0.2) 1px 1px 4px;
+  }
+
+  @media (hover) {
+    .container.interactive .kanji:not(:hover) {
+      transition: background-color 0.1s ease-out;
+    }
+    .container.interactive .kanji:hover {
+      color: var(--selected-highlight);
+      background: var(--hover-bg);
+      border-radius: 2px;
+      cursor: pointer;
+    }
+  }
+
+  .window:not(.-has-overlay) .kanji-table.-selected .kanji {
+    color: var(--selected-highlight);
+    background: var(--selected-bg);
+    border-radius: 2px;
+  }
+
+  .window:not(.-has-overlay) .kanji-table.-flash .kanji {
+    animation: tenten-ja-flash 0.5s;
+  }
+
+  /* kanji: readings */
+
+  .kanji-table .readings {
+    color: var(--reading-highlight);
+    font-size: var(--base-font-size);
+    margin-top: 4px;
+    margin-bottom: 10px;
+  }
+
+  .kanji-table .okurigana {
+    color: var(--okurigana-color);
+  }
+
+  .kanji-table .nanorilabel {
+    color: var(--reading-label);
+    font-size: calc(11 / 14 * var(--base-font-size));
+  }
+
+  /* kanji: meta */
+
+  .kanji-table .meta {
+    margin-left: -5px;
+    margin-bottom: 4px;
+  }
+
+  .kanji-table .meta .tag {
+    font-size: calc(12 / 14 * var(--base-font-size));
+    border: 1px solid currentcolor !important;
+    border-radius: 3px;
+    padding: 2px;
+    margin: 2px;
+  }
+
+  /* kanji: meanings */
+
+  .kanji-table .meanings {
+    font-size: var(--base-font-size);
+    margin-bottom: 10px;
+  }
+
+  /* kanji: grade, freq, strokes */
+
+  .kanji-table .misc {
+    display: flex;
+    align-items: baseline;
+    font-size: calc(13 / 14 * var(--base-font-size));
+  }
+
+  .kanji-table .misc > * {
+    flex-grow: 1;
+    display: flex;
+    align-items: baseline;
+  }
+
+  .kanji-table .misc > :not(:first-child) {
+    margin-left: 12px;
+  }
+
+  .kanji-table .misc .frequency .denom {
+    font-size: calc(10 / 14 * var(--base-font-size));
+  }
+
+  .kanji-table .misc .svgicon {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 6px;
+    fill: currentcolor;
+  }
+
+  /* kanji: components */
+
+  .kanji-table .components {
+    margin-block-start: 10px;
+    /* Subtract the padding at the start of the row so the text lines up */
+    margin-inline-start: -1em;
+    /* Use consistent line-height since we mix fonts in the same line */
+    line-height: 1.5;
+  }
+
+  .kanji-table .components table {
+    border-collapse: collapse;
+
+    /*
+    * There's something odd in Firefox where, when you're viewing a text/plain
+    * document, the .window { color: white } rule doesn't inherit into the
+    * table so we have to explicitly re-establish the color there.
+    */
+    color: var(--text-color);
+  }
+
+  .kanji-table .components .char,
+  .kanji-table .components .reading,
+  .kanji-table .components .meaning,
+  .kanji-table .components .-baseradical td {
+    vertical-align: top;
+    font-size: calc(11 / 14 * var(--base-font-size));
+    padding-top: 0.3em;
+    padding-bottom: 0.3em;
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+
+  .kanji-table .components .reading {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .kanji-table .components .-radical * {
+    background: var(--cell-highlight-bg);
+    color: var(--cell-highlight-fg);
+  }
+
+  .kanji-table .components .-radical .char {
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+  }
+
+  .kanji-table .components .-radical .meaning {
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+  }
+
+  .kanji-table .components .-baseradical td {
+    color: var(--cell-highlight-fg);
+    font-style: italic;
+  }
+
+  /*
+   * Status bar
+   */
+
+  .status-bar {
+    position: relative;
+    width: 100%;
+    background: var(--status-bg);
+    max-height: calc(4 * var(--base-font-size));
+  }
+
+  .window.font-xl .status-bar {
+    font-size: calc(0.8 * var(--base-font-size));
+  }
+
+  .status-bar > .status {
+    display: flex;
+    align-items: baseline;
+  }
+
+  .status-bar > * {
+    padding: 5px 8px 5px;
+  }
+
+  .status-bar.-subdued {
+    opacity: 0.7;
+  }
+
+  .status-bar kbd {
+    color: rgb(10, 10, 10);
+    font-size: 0.8em;
+    font-family: monospace;
+    height: 1.2rem;
+    padding: 0.2rem;
+    border-radius: 0.2rem;
+    background: white;
+    border: 1px solid #909090 !important;
+  }
+
+  .status-bar .spinner {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 7px;
+    fill: currentcolor;
+    animation: spin-ccw 0.8s linear infinite;
+  }
+
+  .window.-copy-finished .status-bar > .keys,
+  .window.-copy-error .status-bar > .keys {
+    animation: fade-out 0.4s linear forwards;
+  }
+
+  .window.-copy-finished .status-bar > .status {
+    opacity: 0;
+    animation:
+      fade-in 0.4s linear forwards,
+      fade-out 0.3s 0.9s forwards;
+  }
+
+  .window.-copy-finished .status-bar {
+    animation: roll-up 0.3s 1s forwards;
+  }
+
+  @keyframes fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes fade-in {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes roll-up {
+    to {
+      max-height: 0;
+    }
+  }
+
+  @keyframes spin-ccw {
+    to {
+      transform: rotate(-360deg);
+    }
+  }
+
+  .window.-copy-error .status-bar > .status {
+    opacity: 0;
+    animation: fade-in 0.4s linear forwards;
+    background: rgba(255, 204, 204, 0.8);
+    color: #b43e3e;
+  }
+
+  /*
+  * Bonus name
+  */
+
+  .wordlist .bonus-name {
+    margin-top: 8px;
+    margin-bottom: 3px;
+    background: var(--meta-bg);
+    scroll-snap-align: start;
+    scroll-margin-top: 8px;
+  }
+
+  .wordlist .bonus-name .more {
+    padding: 0px 14px;
+  }
+
+  /*
+  * Meta information
+  */
+
+  .wordlist .meta,
+  .name-table .meta {
+    margin-top: 8px;
+    margin-bottom: 3px;
+    padding: 3px 14px;
+    background: var(--meta-bg);
+    scroll-snap-align: start;
+    scroll-margin-top: 8px;
+  }
+
+  .wordlist .meta:last-child,
+  .name-table .meta:last-child {
+    margin-bottom: 8px;
+  }
+
+  .wordlist .meta.-metaonly {
+    background: transparent;
+  }
+
+  .wordlist .meta.era,
+  .wordlist .meta.measure > *,
+  .name-table .meta.era,
+  .name-table .meta.measure > * {
+    display: flex;
+    align-items: baseline;
+  }
+
+  .wordlist .meta .equals,
+  .name-table .meta .equals {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  /* Meta: currency */
+
+  .meta.currency > .main {
+    font-size: calc(18 / 14 * var(--base-font-size));
+  }
+
+  .meta.currency > .main .equation-part {
+    display: inline-flex;
+    align-items: baseline;
+  }
+
+  .meta.currency .main .curr {
+    opacity: 0.6;
+    font-size: var(--base-font-size);
+    margin-right: 0.3em;
+  }
+
+  .meta.currency > .timestamp {
+    opacity: 0.6;
+    font-size: calc(10 / 14 * var(--base-font-size));
+  }
+
+  /* Meta: era */
+
+  .meta.era .era-name,
+  .meta.era .era-name ruby,
+  .meta.era .equals,
+  .meta.era .seireki {
+    font-size: calc(22 / 14 * var(--base-font-size));
+  }
+
+  .meta.era .era-name,
+  .meta.era .era-name * {
+    color: var(--primary-highlight);
+  }
+
+  .meta.era .era-name rt {
+    font-size: calc(12 / 14 * var(--base-font-size));
+  }
+
+  .meta.era .seireki {
+    color: var(--reading-highlight);
+  }
+
+  /* Meta: measure */
+
+  .meta.measure .main {
+    font-size: calc(18 / 14 * var(--base-font-size));
+  }
+
+  .meta.measure .unit {
+    padding-left: 3px;
+  }
+
+  .meta.measure .alt {
+    opacity: 0.6;
+    margin-top: 3px;
+  }
+
+  /* Meta: number */
+
+  .meta.number {
+    line-height: 1;
+    padding-bottom: 6px;
+    padding-top: 6px;
+  }
+
+  /* Meta: shogi */
+
+  .meta.shogi .label {
+    font-size: calc(10 / 14 * var(--base-font-size));
+    border: 1px solid var(--tag-border) !important;
+    border-radius: 3px;
+    margin-right: 0.5em;
+    padding: 0px 3px;
+    white-space: nowrap;
+  }
+
+  /*
+  * Copy overlay for when the popup is interactive
+  */
+  .copy-overlay {
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    /* It's important to align to the top so that if the popup is very long we
+    * don't end up putting the copy buttons off screen somewhere. */
+    justify-content: start;
+    align-items: center;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    isolation: isolate;
+    overflow: hidden;
+
+    /* We fade the background so we always want a dark foreground color here,
+    * regardless of the theme. */
+    color: #1d1a19;
+  }
+
+  /* Blurring for the entry area when the copy overlay is showing */
+  .window.-has-overlay .content .grid-stack > :first-child {
+    pointer-events: none;
+    filter: blur(20px);
+    transition: filter 0.3s ease-in-out;
+  }
+
+  .window.-has-overlay .content .grid-stack > .copy-overlay {
+    background: hsla(0, 0%, 97%, 0.6);
+    transition: background-color 0.3s ease-in-out;
+  }
+
+  /* If the overlay is showing, don't constrain the window height since it might
+  * mean that the buttons on the overlay get cut off. */
+  .window.-has-overlay {
+    max-height: none;
+  }
+
+  /* Let the size of the overlay determine the overall size of the popup contents.
+  *
+  * This prevents the window from suddenly getting very large when we drop the
+  * max-height definition above.
+  *
+  * Ideally we'd only do this if we were actually going to constrain the height
+  * anyway, but that's hard to detect so we just do this unconditionally and so
+  * far it seems to work ok. */
+  .window.-has-overlay .content .grid-stack > .entry-data {
+    position: absolute;
+    width: 100%;
+  }
+
+  .copy-overlay .copy-heading {
+    opacity: 0.8;
+  }
+
+  .copy-overlay .copy-options {
+    max-width: 90%;
+    list-style: none;
+    margin: 0 8px;
+    padding: 0;
+  }
+
+  .copy-overlay .copy-options li {
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+
+  /* Reset some button styles */
+  .copy-overlay button {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .copy-overlay .copy-options li button {
+    font-size: calc(16 / 14 * var(--base-font-size));
+    font-weight: 600;
+    width: 100%;
+    min-height: 60px;
+    background: white;
+    padding: 8px 32px;
+    border-radius: 16px;
+    --shadow-color: 0deg 0% 0%;
+    box-shadow:
+      0.2px 0.6px 0.5px hsl(var(--shadow-color) / 0.12),
+      0.4px 1.2px 1.1px -1.5px hsl(var(--shadow-color) / 0.09),
+      1.4px 3.7px 3.3px -3px hsl(var(--shadow-color) / 0.06),
+      3.8px 10.3px 9.1px -4.4px hsl(var(--shadow-color) / 0.04);
+    border: 0.1px solid hsla(0deg, 0%, 0%, 0.1);
+  }
+
+  .copy-overlay .copy-options .copy-preview {
+    margin-top: calc(4 / 14 * var(--base-font-size));
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    color: #817470;
+    font-size: calc(12 / 14 * var(--base-font-size));
+    font-weight: 400;
+    max-width: 200px;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, black 180px, transparent);
+    mask-image: linear-gradient(to right, black 180px, transparent);
+  }
+
+  .copy-overlay .copy-options .copy-preview .icon {
+    flex-shrink: 0;
+    width: 1.2em;
+    height: 1.2em;
+    margin-right: 6px;
+    opacity: 0.6;
+  }
+
+  .copy-overlay .copy-options .copy-preview span {
+    min-width: 0;
+  }
+
+  .copy-overlay .copy-options button.-icon-label,
+  .copy-overlay .cancel-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1.5;
+  }
+
+  .copy-overlay .copy-options button.-icon-label .icon,
+  .copy-overlay .cancel-button .icon {
+    width: 1.2em;
+    height: 1.2em;
+    margin-right: 6px;
+    margin-top: -0.2em;
+    opacity: 0.6;
+  }
+
+  .copy-overlay .cancel-button {
+    padding: 12px 36px;
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+  /*
+  * Utility: grid stack
+  */
+
+  .grid-stack,
+  .-stack {
+    display: grid;
+    grid-template-rows: [stack-start] auto [stack-end];
+  }
+
+  .grid-stack > *,
+  .-stack > * {
+    grid-column: 1 / -1;
+    grid-row: stack-start / stack-end;
+  }
+
+  /*
+  * Arrow
+  */
+  .arrow {
+    position: absolute;
+    overflow: hidden;
+
+    /* Desired width of the arrow */
+    --arrow-width: 20px;
+
+    /*
+    * Amount of room to allow for the shadow.
+    */
+    --shadow-radius: 8px;
+    --shadow-margin: calc(var(--shadow-radius) / 2);
+
+    /*
+    * Crop the arrow region to show half the arrow plus allow room for margins.
+    */
+    width: calc(var(--arrow-width) + 2 * var(--shadow-margin));
+    height: calc(var(--arrow-width) / 2 + var(--shadow-margin));
+
+    z-index: 2147483647;
+  }
+
+  .arrow.-left,
+  .arrow.-right {
+    width: calc(var(--arrow-width) / 2 + var(--shadow-margin));
+    height: calc(var(--arrow-width) + 2 * var(--shadow-margin));
+  }
+
+  .arrow::before {
+    position: absolute;
+    content: '';
+
+    /* Make sure the border is included in the size. */
+    box-sizing: border-box;
+
+    /* Don't inherit any rounded corners. */
+    border-radius: 0;
+
+    /*
+    * When the box is rotated, it should have width <arrow-width>. That makes the
+    * length of one side of the box equal to:
+    *
+    *    (<arrow-width> / 2) / sin 45
+    */
+    --sin-45: 0.707106781;
+    --square-side: calc(var(--arrow-width) / 2 / var(--sin-45));
+    width: var(--square-side);
+    height: var(--square-side);
+
+    /*
+    * The rotated square will overshoot the left / top side and need to be
+    * shifted in by:
+    *
+    *   (<arrow-width> - <square side>) / 2
+    *
+    * But we also want to shift it in so that the box-shadow is not clipped when
+    * we clip the parent so we add a suitable margin for that.
+    */
+    --overhang: calc((var(--arrow-width) - var(--square-side)) / 2);
+    margin-left: calc(var(--overhang) + var(--shadow-margin));
+    margin-top: calc(var(--overhang) + var(--shadow-margin));
+
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+  }
+
+  .arrow.-bottom {
+    margin-top: -1px;
+  }
+
+  .arrow.-bottom::before {
+    transform: rotate(45deg);
+    margin-top: calc(var(--square-side) / -2);
+    box-shadow:
+      0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
+      2px 2px 1px rgba(100, 100, 100, 0.15),
+      4px 4px 8px rgba(100, 100, 100, 0.15);
+  }
+
+  .arrow.-top {
+    margin-top: 1px;
+  }
+
+  .arrow.-top::before {
+    transform: rotate(225deg);
+    box-shadow:
+      0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
+      -1px 2px 1px rgba(100, 100, 100, 0.15);
+  }
+
+  .arrow.-right {
+    margin-left: -1px;
+  }
+
+  .arrow.-right::before {
+    transform: rotate(225deg);
+    margin-left: calc(var(--square-side) / -2);
+    box-shadow:
+      0px 0.5px 0.5px rgba(100, 100, 100, 0.15),
+      -2px 2px 1px rgba(100, 100, 100, 0.15),
+      -2px 2px 8px rgba(100, 100, 100, 0.15);
+  }
+
+  .arrow.-left {
+    margin-left: 1px;
+  }
+
+  .arrow.-left::before {
+    transform: rotate(45deg);
+  }
+}

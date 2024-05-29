@@ -12,7 +12,7 @@ import {
 import { getIframeOrigin } from './iframes';
 import type { SafeAreaProvider } from './safe-area-provider';
 
-import puckStyles from '../../css/puck.css';
+import puckStyles from '../../css/puck.css?inline';
 
 interface ViewportDimensions {
   viewportWidth: number;

@@ -5,7 +5,7 @@ import {
   removeContentContainer,
 } from './content-container';
 
-import safeAreaProviderStyles from '../../css/safe-area-provider.css';
+import safeAreaProviderStyles from '../../css/safe-area-provider.css?inline';
 
 export type SafeAreaChangeListener = (safeArea: PaddingBox | null) => void;
 
