@@ -111,16 +111,14 @@ export function parseNumber(inputText: string): number | null {
   let numbers = digits as Array<number>;
 
   // Special case where we have a series of digits followed by a power of ten,
-  // e.g. 39,800万円. These don't follow the usual rules of numbers so we treat
-  // them separately.
-  if (
-    numbers.length > 1 &&
-    numbers.slice(0, -1).every((d) => d >= 0 && d < 10) &&
-    numbers[numbers.length - 1]! >= 100
-  ) {
-    const powerOfTen = numbers.pop()!;
-    const multiplier = numbers.reduce((acc, d) => acc * 10 + d, 0);
-    return multiplier * powerOfTen;
+  // e.g. 39,800万円 and 11,786百万. These don't follow the usual rules of
+  // numbers so we treat them separately.
+  const digitsAndPowersOfTen = getDigitsAndPowersOfTen(numbers);
+  if (digitsAndPowersOfTen) {
+    const [digits, powersOfTen] = digitsAndPowersOfTen;
+    const multiplier = digits.reduce((acc, d) => acc * 10 + d, 0);
+    const base = powersOfTen.reduce((acc, p) => acc * p, 1);
+    return multiplier * base;
   }
 
   let result = 0;
@@ -171,6 +169,26 @@ export function parseNumber(inputText: string): number | null {
   }
 
   return result + (numbers.length ? numbers[0] : 0);
+}
+
+function getDigitsAndPowersOfTen(
+  arr: Array<number>
+): [Array<number>, Array<number>] | null {
+  let lastPowerOfTen = arr.length;
+  while (lastPowerOfTen && arr[lastPowerOfTen - 1] >= 100) {
+    --lastPowerOfTen;
+  }
+
+  if (lastPowerOfTen === 0 || lastPowerOfTen === arr.length) {
+    return null;
+  }
+
+  const digits = arr.slice(0, lastPowerOfTen);
+  if (!digits.every((d) => d >= 0 && d < 10)) {
+    return null;
+  }
+
+  return [digits, arr.slice(lastPowerOfTen)];
 }
 
 function validSequence(c1: number, c2: number): boolean {

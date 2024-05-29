@@ -8,14 +8,16 @@ app.
 
 ## [Unreleased]
 
-- Changed puck behavior to no longer hold the popup window like a regular
-  mouse event would ([#1767](https://github.com/birchill/10ten-ja-reader/discussions/1767)).
 - Made it possible to change tabs in the popup by swiping horizontally
   thanks to [@StarScape](https://github.com/StarScape)
   ([#1656](https://github.com/birchill/10ten-ja-reader/issues/1656)).
 - Bundled fonts used by the popup to provide consistent display and avoid issues
   with sites that patch system fonts
   ([#1560](https://github.com/birchill/10ten-ja-reader/issues/1560)).
+- Changed puck behavior to no longer hold the popup window like a regular
+  mouse event would
+  thanks to [@StarScape](https://github.com/StarScape)
+  ([#1767](https://github.com/birchill/10ten-ja-reader/discussions/1767)).
 - Made copying to the clipboard include rare headwords again when not using
   simplified copy mode
   ([#1665](https://github.com/birchill/10ten-ja-reader/issues/1665)).
@@ -34,6 +36,9 @@ app.
   ([#1677](https://github.com/birchill/10ten-ja-reader/issues/1677)).
 - Made senses no longer be restricted when matching on search-only headwords
   ([#1551](https://github.com/birchill/10ten-ja-reader/issues/1551)).
+- Fixed translation of odd numbers with digits and multiple powers of ten like
+  11,786百万円
+  ([#1399](https://github.com/birchill/10ten-ja-reader/issues/1399)).
 
 ## [1.18.0] - 2024-02-26
 
