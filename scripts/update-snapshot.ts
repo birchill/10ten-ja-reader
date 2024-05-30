@@ -79,6 +79,7 @@ async function main() {
 main()
   .then(() => {
     console.log('Done.');
+    process.exit(0);
   })
   .catch((e) => {
     console.error('Unhandled error');
