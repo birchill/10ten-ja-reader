@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+## [1.19.0] - 2024-05-30
+
 - Made it possible to change tabs in the popup by swiping horizontally
   thanks to [@StarScape](https://github.com/StarScape)
   ([#1656](https://github.com/birchill/10ten-ja-reader/issues/1656)).
@@ -1129,7 +1131,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.18.0...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.19.0...HEAD
+[1.19.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.17.1...v1.18.0
 [1.17.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.17.0...v1.17.1
 [1.17.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.16.2...v1.17.0
