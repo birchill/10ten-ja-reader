@@ -7565,10 +7565,10 @@ prettier-plugin-packagejson@2.5.0:
     sort-package-json "2.10.0"
     synckit "0.9.0"
 
-prettier-plugin-tailwindcss@0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/prettier-plugin-tailwindcss/-/prettier-plugin-tailwindcss-0.6.0.tgz#faa7a5090d3cd63a7424ba85b134c894b125a78d"
-  integrity sha512-l5F3iG54XbOq/2DOPP/YA+c6VE3/qXrcBccntq2v7PSxtEc+J6SwsuTyDHxoFK1+jAlcU/hECBfzn6MON6ENBg==
+prettier-plugin-tailwindcss@0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/prettier-plugin-tailwindcss/-/prettier-plugin-tailwindcss-0.6.1.tgz#6cb1f5f3e1a8d8b5ea3f97d19be516d9ce9931bf"
+  integrity sha512-AnbeYZu0WGj+QgKciUgdMnRxrqcxltleZPgdwfA5104BHM3siBLONN/HLW1yS2HvzSNkzpQ/JAj+LN0jcJO+0w==
 
 prettier@3.2.5:
   version "3.2.5"
