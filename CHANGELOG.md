@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- Fixed kanji incorrectly encoded as radicals not being displayed in kanji tab
+  ([#1205](https://github.com/birchill/10ten-ja-reader/issues/1205#issuecomment-1783641017)).
+
 ## [1.19.0] - 2024-05-30
 
 - Made it possible to change tabs in the popup by swiping horizontally

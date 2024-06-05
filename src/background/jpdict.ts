@@ -445,6 +445,9 @@ export async function searchKanji(
     return 'updating';
   }
 
+  // Normalize the input in order to be able to parse radicals as kanji.
+  const [normalized] = normalizeInput(input);
+
   // Do some very elementary filtering on kanji
   //
   // We know that the input should be mostly Japanese so we just do some very
@@ -457,7 +460,7 @@ export async function searchKanji(
   const kanjiLastIndex = new Map<string, number>();
   const kanji = [
     ...new Set(
-      [...input].filter((c, i) => {
+      [...normalized].filter((c, i) => {
         const cp = c.codePointAt(0)!;
         const isKanji =
           // Don't bother looking up Latin text
