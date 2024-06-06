@@ -1,8 +1,9 @@
-import { FontSize } from '../../common/content-config-params';
+import type { FontFace, FontSize } from '../../common/content-config-params';
 import { getThemeClass } from '../../utils/themes';
 
 import { removeContentContainer } from '../content-container';
 
+import { addFontStyles, removeFontStyles } from './font-styles';
 import { getPopupContainer } from './popup-container';
 
 export function isPopupVisible(): boolean {
@@ -16,11 +17,26 @@ export function hidePopup() {
 
 export function removePopup() {
   removeContentContainer(['rikaichamp-window', 'tenten-ja-window']);
-  document.getElementById('tenten-doc-styles')?.remove();
+  removeFontStyles();
 }
 
 export function isPopupWindowHostElem(target: EventTarget | null): boolean {
   return target instanceof HTMLElement && target.id === 'tenten-ja-window';
+}
+
+export function setFontFace(fontFace: FontFace) {
+  const popupWindow = getPopupWindow();
+  if (!popupWindow) {
+    return;
+  }
+
+  if (fontFace === 'bundled') {
+    addFontStyles();
+    popupWindow.classList.add('bundled-fonts');
+  } else {
+    removeFontStyles();
+    popupWindow.classList.remove('bundled-fonts');
+  }
 }
 
 export function setFontSize(size: FontSize) {

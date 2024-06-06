@@ -161,7 +161,7 @@
   /*#if mv3*/
   "web_accessible_resources": [{
     "resources": [
-      "css/popup-doc.css",
+      "css/popup-fonts.css",
       "css/selection.css",
       "docs/introducing-the-mouse.html",
       "fonts/*.woff2"
@@ -171,7 +171,7 @@
   }],
   /*#else*/
   "web_accessible_resources": [
-    "css/popup-doc.css",
+    "css/popup-fonts.css",
     "css/selection.css",
     "docs/introducing-the-mouse.html",
     "fonts/*.woff2"

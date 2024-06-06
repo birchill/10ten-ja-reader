@@ -1,20 +1,24 @@
-import {
+import type {
   AccentDisplay,
   AutoExpandableEntry,
+  FontFace,
   FontSize,
   PartOfSpeechDisplay,
 } from '../common/content-config-params';
 import { useLocale } from '../common/i18n';
 
 import { CheckboxRow } from './CheckboxRow';
+import { NewBadge } from './NewBadge';
 import { PopupThemeRadio } from './PopupThemeRadio';
 
 type Props = {
   accentDisplay: AccentDisplay;
   autoExpand: Array<AutoExpandableEntry>;
+  fontFace: FontFace;
   fontSize: FontSize;
   onChangeAccentDisplay: (value: AccentDisplay) => void;
   onChangeAutoExpand: (entry: AutoExpandableEntry, checked: boolean) => void;
+  onChangeFontFace: (value: FontFace) => void;
   onChangeFontSize: (value: FontSize) => void;
   onChangePosDisplay: (value: PartOfSpeechDisplay) => void;
   onChangeShowBunproDecks: (value: boolean) => void;
@@ -168,6 +172,24 @@ export function PopupStyleForm(props: Props) {
           </option>
           <option value="xl" selected={props.fontSize === 'xl'}>
             {t('options_font_size_xl')}
+          </option>
+        </select>
+        <label for="fontFace">
+          {t('options_font_face_label')}
+          <NewBadge expiry={new Date('2024-08-15')} />
+        </label>
+        <select
+          id="fontFace"
+          name="fontFace"
+          onChange={(evt) => {
+            props.onChangeFontFace(evt.currentTarget.value as FontFace);
+          }}
+        >
+          <option value="bundled" selected={props.fontFace === 'bundled'}>
+            {t('options_font_face_bundled')}
+          </option>
+          <option value="system" selected={props.fontFace === 'system'}>
+            {t('options_font_face_system')}
           </option>
         </select>
         <div>{t('options_expand_all_entries')}</div>

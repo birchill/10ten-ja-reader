@@ -42,6 +42,8 @@ export type AccentDisplay =
 
 export type AutoExpandableEntry = 'words' | 'kanji';
 
+export type FontFace = 'bundled' | 'system';
+
 export type FontSize = 'normal' | 'large' | 'xl';
 
 export type PartOfSpeechDisplay = 'expl' | 'code' | 'none';
@@ -78,6 +80,9 @@ export interface ContentConfigParams {
   // The preferred currency to convert to, along with its rate and the timestamp
   // for the rate.
   fx: { currency: string; rate: number; timestamp: number } | undefined;
+
+  // The fonts to use in the popup.
+  fontFace: FontFace;
 
   // The font size to use for the popup.
   fontSize: FontSize;

@@ -1,7 +1,8 @@
 import { useSelect, useValue } from 'react-cosmos/client';
 
-import {
+import type {
   AccentDisplay,
+  FontFace,
   FontSize,
   PartOfSpeechDisplay,
 } from '../common/content-config-params';
@@ -10,12 +11,16 @@ import { PopupThemeRadio } from './PopupThemeRadio';
 
 import './options.css';
 import '../content/popup/popup.css';
-import '../../css/popup-doc.css';
+import '../../css/popup-fonts.css';
 
 export default function () {
   const [accentDisplay] = useSelect<AccentDisplay>('accentDisplay', {
     defaultValue: 'binary',
     options: ['downstep', 'binary', 'binary-hi-contrast', 'none'],
+  });
+  const [fontFace] = useSelect<FontFace>('fontFace', {
+    defaultValue: 'bundled',
+    options: ['bundled', 'system'],
   });
   const [fontSize] = useSelect<FontSize>('fontSize', {
     defaultValue: 'normal',
@@ -50,6 +55,7 @@ export default function () {
     <div class="w-fit">
       <PopupThemeRadio
         accentDisplay={accentDisplay}
+        fontFace={fontFace}
         fontSize={fontSize}
         onChangeTheme={setTheme}
         posDisplay={posDisplay}

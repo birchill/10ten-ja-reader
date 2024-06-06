@@ -141,6 +141,10 @@
     background: var(--bg-color);
     border: 1px solid var(--border-color);
 
+    font-family: Meiryo, sans-serif;
+  }
+
+  .window.bundled-fonts {
     font-family: '10ten Inter', '10ten Noto Sans JP', sans-serif;
     font-feature-settings: 'calt', 'case', 'cv01', 'cv03', 'cv04', 'cv11',
       'ss03';
