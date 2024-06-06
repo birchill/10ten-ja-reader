@@ -1,9 +1,10 @@
 import { useCallback } from 'preact/hooks';
 
 import type { Config } from '../common/config';
-import {
+import type {
   AccentDisplay,
   AutoExpandableEntry,
+  FontFace,
   FontSize,
   PartOfSpeechDisplay,
 } from '../common/content-config-params';
@@ -103,6 +104,14 @@ export function PopupStyleSettings(props: Props) {
     [props.config]
   );
 
+  const fontFace = useConfigValue(props.config, 'fontFace');
+  const onChangeFontFace = useCallback(
+    (value: FontFace) => {
+      props.config.fontFace = value;
+    },
+    [props.config]
+  );
+
   return (
     <>
       <SectionHeading>{t('options_popup_style_heading')}</SectionHeading>
@@ -110,9 +119,11 @@ export function PopupStyleSettings(props: Props) {
         <PopupStyleForm
           accentDisplay={accentDisplay}
           autoExpand={autoExpand}
+          fontFace={fontFace}
           fontSize={fontSize}
           onChangeAccentDisplay={onChangeAccentDisplay}
           onChangeAutoExpand={onChangeAutoExpand}
+          onChangeFontFace={onChangeFontFace}
           onChangeFontSize={onChangeFontSize}
           onChangePosDisplay={onChangePosDisplay}
           onChangeShowBunproDecks={onChangeShowBunproDecks}

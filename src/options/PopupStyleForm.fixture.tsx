@@ -1,8 +1,9 @@
 import { useState } from 'preact/hooks';
 
-import {
+import type {
   AccentDisplay,
   AutoExpandableEntry,
+  FontFace,
   FontSize,
   PartOfSpeechDisplay,
 } from '../common/content-config-params';
@@ -11,7 +12,7 @@ import { PopupStyleForm } from './PopupStyleForm';
 
 import './options.css';
 import '../content/popup/popup.css';
-import '../../css/popup-doc.css';
+import '../../css/popup-fonts.css';
 
 export default function () {
   const [theme, setTheme] = useState<string>('default');
@@ -34,14 +35,17 @@ export default function () {
   const [posDisplay, setPosDisplay] = useState<PartOfSpeechDisplay>('expl');
 
   const [fontSize, setFontSize] = useState<FontSize>('normal');
+  const [fontFace, setFontFace] = useState<FontFace>('bundled');
 
   return (
     <PopupStyleForm
       accentDisplay={accentDisplay}
       autoExpand={autoExpand}
+      fontFace={fontFace}
       fontSize={fontSize}
       onChangeAccentDisplay={setAccentDisplay}
       onChangeAutoExpand={onChangeAutoExpand}
+      onChangeFontFace={setFontFace}
       onChangeFontSize={setFontSize}
       onChangePosDisplay={setPosDisplay}
       onChangeShowBunproDecks={setShowBunproDecks}

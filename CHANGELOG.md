@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+- Added an option to use system fonts instead of bundled fonts
+  ([#1799](https://github.com/birchill/10ten-ja-reader/issues/1799)).
 - Fixed kanji incorrectly encoded as radicals not being displayed in kanji tab
   ([#1205](https://github.com/birchill/10ten-ja-reader/issues/1205#issuecomment-1783641017)).
 

@@ -2,8 +2,9 @@ import type { ComponentProps } from 'preact';
 import { forwardRef } from 'preact/compat';
 import { useId } from 'preact/hooks';
 
-import {
+import type {
   AccentDisplay,
+  FontFace,
   FontSize,
   PartOfSpeechDisplay,
 } from '../common/content-config-params';
@@ -13,6 +14,7 @@ import { useThemeClass } from '../utils/use-theme-class';
 
 type Props = {
   accentDisplay: AccentDisplay;
+  fontFace: FontFace;
   fontSize: FontSize;
   onChangeTheme: (theme: string) => void;
   posDisplay: PartOfSpeechDisplay;
@@ -89,6 +91,7 @@ const PopupRadio = forwardRef<HTMLInputElement, InputProps>(
 
 type PopupPreviewProps = {
   accentDisplay: AccentDisplay;
+  fontFace: FontFace;
   fontSize: FontSize;
   posDisplay: PartOfSpeechDisplay;
   showBunproDecks: boolean;
@@ -108,6 +111,7 @@ function PopupPreview(props: PopupPreviewProps) {
       class={classes(
         themeClass,
         'window inline-block min-w-[180px] py-2 text-left',
+        props.fontFace === 'bundled' && 'bundled-fonts',
         props.fontSize !== 'normal' && `font-${props.fontSize}`
       )}
     >

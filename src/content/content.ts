@@ -88,6 +88,7 @@ import {
   isPopupVisible,
   isPopupWindowHostElem,
   removePopup,
+  setFontFace,
   setFontSize,
   setPopupStyle,
 } from './popup/popup';
@@ -433,6 +434,10 @@ export class ContentHandler {
           value
             ? this.touchClickTracker.enable()
             : this.touchClickTracker.disable();
+          break;
+
+        case 'fontFace':
+          setFontFace(value);
           break;
 
         case 'fontSize':
@@ -2215,6 +2220,7 @@ export class ContentHandler {
       displayMode,
       fixedPosition: options?.fixPosition ? this.getFixedPosition() : undefined,
       fixMinHeight: options.fixMinHeight,
+      fontFace: this.config.fontFace,
       fontSize: this.config.fontSize,
       fxData: this.config.fx,
       getCursorClearanceAndPos: this.getCursorClearanceAndPos.bind(

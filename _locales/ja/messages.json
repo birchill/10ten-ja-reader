@@ -1703,6 +1703,18 @@
     "message": "単語",
     "description": "Label for checkbox to enable automatically expanding word entries"
   },
+  "options_font_face_bundled": {
+    "message": "搭載フォント",
+    "description": "Label for bundled font option."
+  },
+  "options_font_face_label": {
+    "message": "フォントフェイス",
+    "description": "Label for font face drop-down."
+  },
+  "options_font_face_system": {
+    "message": "システムフォント",
+    "description": "Label for system font option."
+  },
   "options_font_size_label": {
     "message": "フォントサイズ",
     "description": "Label for font size drop-down."

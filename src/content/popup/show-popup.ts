@@ -3,6 +3,7 @@ import type { MajorDataSeries } from '@birchill/jpdict-idb';
 import type {
   AccentDisplay,
   ContentConfigParams,
+  FontFace,
   FontSize,
   PartOfSpeechDisplay,
 } from '../../common/content-config-params';
@@ -46,6 +47,7 @@ export type ShowPopupOptions = {
   displayMode: DisplayMode;
   fixedPosition?: PopupPositionConstraints;
   fixMinHeight?: boolean;
+  fontFace?: FontFace;
   fontSize?: FontSize;
   fxData: ContentConfigParams['fx'];
   getCursorClearanceAndPos: () => { cursorClearance: Box; cursorPos?: Point };

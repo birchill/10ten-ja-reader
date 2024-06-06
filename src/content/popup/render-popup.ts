@@ -1,7 +1,5 @@
 /// <reference path="../../common/css.d.ts" />
-import browser from 'webextension-polyfill';
-
-import { FontSize } from '../../common/content-config-params';
+import type { FontFace, FontSize } from '../../common/content-config-params';
 
 import { html } from '../../utils/builder';
 import { Point } from '../../utils/geometry';
@@ -17,6 +15,7 @@ import { renderCloseButton } from './close';
 import { renderCopyOverlay } from './copy-overlay';
 import { CopyState } from './copy-state';
 import { updateExpandable } from './expandable';
+import { addFontStyles, removeFontStyles } from './font-styles';
 import { renderKanjiEntries } from './kanji';
 import { renderMetadata } from './metadata';
 import { renderNamesEntries } from './names';
@@ -38,12 +37,17 @@ export function renderPopup(
   // definitions to the main document.
   //
   // [1] e.g see https://issues.chromium.org/issues/41085401
-  addDocStyles();
+  if (!options.fontFace || options.fontFace === 'bundled') {
+    addFontStyles();
+  } else {
+    removeFontStyles();
+  }
 
   const container = options.container || getDefaultContainer();
   const windowElem = resetContainer({
     host: container,
     displayMode: options.displayMode,
+    fontFace: options.fontFace || 'bundled',
     fontSize: options.fontSize || 'normal',
     popupStyle: options.popupStyle,
   });
@@ -280,28 +284,16 @@ function getDefaultContainer(): HTMLElement {
   return defaultContainer;
 }
 
-function addDocStyles() {
-  if (document.getElementById('tenten-doc-styles')) {
-    return;
-  }
-
-  (document.head || document.documentElement).append(
-    html('link', {
-      id: 'tenten-doc-styles',
-      rel: 'stylesheet',
-      href: browser.runtime.getURL('css/popup-doc.css'),
-    })
-  );
-}
-
 function resetContainer({
   host,
   displayMode,
+  fontFace,
   fontSize,
   popupStyle,
 }: {
   host: HTMLElement;
   displayMode: DisplayMode;
+  fontFace: FontFace;
   fontSize: FontSize;
   popupStyle: string;
 }): HTMLElement {
@@ -316,6 +308,11 @@ function resetContainer({
 
   // Set theme
   windowDiv.classList.add(getThemeClass(popupStyle));
+
+  // Font face
+  if (fontFace === 'bundled') {
+    windowDiv.classList.add('bundled-fonts');
+  }
 
   // Font size
   if (fontSize !== 'normal') {

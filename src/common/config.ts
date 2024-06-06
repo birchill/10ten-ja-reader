@@ -17,10 +17,11 @@ import { FxLocalData, getLocalFxData } from '../background/fx-data';
 import { isObject } from '../utils/is-object';
 import { stripFields } from '../utils/strip-fields';
 
-import {
+import type {
   AccentDisplay,
   AutoExpandableEntry,
   ContentConfigParams,
+  FontFace,
   FontSize,
   HighlightStyle,
   KeyboardKeys,
@@ -63,6 +64,7 @@ interface Settings {
   copySenses?: 'first' | 'all';
   dictLang?: DbLanguageId;
   enableTapLookup?: boolean;
+  fontFace?: FontFace;
   fontSize?: FontSize;
   fxCurrency?: string;
   highlightStyle?: HighlightStyle;
@@ -685,6 +687,32 @@ export class Config {
     }
   }
 
+  // fontFace: Defaults to 'bundled'
+
+  get fontFace(): FontFace {
+    return this.settings.fontFace === undefined
+      ? 'bundled'
+      : this.settings.fontFace;
+  }
+
+  set fontFace(value: FontFace) {
+    if (
+      (this.settings.fontFace !== undefined &&
+        this.settings.fontFace === value) ||
+      (typeof this.settings.fontFace === 'undefined' && value === 'bundled')
+    ) {
+      return;
+    }
+
+    if (value !== 'bundled') {
+      this.settings.fontFace = value;
+      void browser.storage.sync.set({ fontFace: value });
+    } else {
+      this.settings.fontFace = undefined;
+      void browser.storage.sync.remove('fontFace');
+    }
+  }
+
   // fontSize: Defaults to normal
 
   get fontSize(): FontSize {
@@ -1273,6 +1301,7 @@ export class Config {
               timestamp: this.fxData.timestamp,
             }
           : undefined,
+      fontFace: this.fontFace,
       fontSize: this.fontSize,
       highlightStyle: this.highlightStyle,
       holdToShowKeys: this.holdToShowKeys
