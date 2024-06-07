@@ -17,7 +17,6 @@ declare module 'webextension-polyfill' {
     button?: number;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace ComposeAction {
     interface Static {
       onClicked: Events.Event<
@@ -35,7 +34,6 @@ declare module 'webextension-polyfill' {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Windows {
     type MailWindowType =
       | WindowType
