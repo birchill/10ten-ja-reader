@@ -55,17 +55,14 @@ describe('Command', () => {
       let command: Command;
       expect(() => {
         command = Command.fromString(test.input);
-      }, `Should parse ${test.input}`).not.toThrow();
-      expect(
-        {
-          alt: command!.alt,
-          ctrl: command!.ctrl,
-          shift: command!.shift,
-          macCtrl: command!.macCtrl,
-          key: command!.key,
-        },
-        test.input
-      ).toEqual(test.expected);
+      }).not.toThrow();
+      expect({
+        alt: command!.alt,
+        ctrl: command!.ctrl,
+        shift: command!.shift,
+        macCtrl: command!.macCtrl,
+        key: command!.key,
+      }).toEqual(test.expected);
     }
   });
 
@@ -86,7 +83,7 @@ describe('Command', () => {
     for (const test of tests) {
       expect(() => {
         Command.fromString(test);
-      }, `Command.fromString("${test}") should throw`).toThrow();
+      }).toThrow();
     }
   });
 
@@ -97,9 +94,7 @@ describe('Command', () => {
     ];
 
     for (const test of tests) {
-      expect(Command.fromString(test).isValid(), `${test} is invalid`).toBe(
-        false
-      );
+      expect(Command.fromString(test).isValid()).toBe(false);
     }
   });
 
@@ -152,12 +147,9 @@ describe('Command', () => {
     ];
 
     for (const test of tests) {
-      expect(
-        () => {
-          Command.fromParams(test);
-        },
-        `Should reject invalid: ${JSON.stringify(test)}`
-      ).toThrow();
+      expect(() => {
+        Command.fromParams(test);
+      }).toThrow();
     }
   });
 });
