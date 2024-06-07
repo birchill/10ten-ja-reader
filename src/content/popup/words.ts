@@ -12,6 +12,7 @@ import { Sense, WordResult } from '../../background/search-result';
 import { PartOfSpeechDisplay } from '../../common/content-config-params';
 import { highPriorityLabels } from '../../common/priority-labels';
 import { html } from '../../utils/builder';
+import { getFilteredTags } from '../../utils/verb-tags';
 
 import { NamePreview } from '../query';
 
@@ -592,7 +593,11 @@ function renderDefinitions(
         // Group heading
         const groupHeading = html('p', { class: 'w-group-head' });
 
-        for (const pos of group.pos) {
+        // Verb class tags were added to proverbs for inflection handling but
+        // aren't user-facing. Filter them out here.
+        const filteredPos = getFilteredTags(group.pos, group.misc);
+
+        for (const pos of filteredPos) {
           const posSpan = html('span', { class: 'w-pos tag' });
           if (options.posDisplay === 'expl') {
             posSpan.lang = getLangTag();
@@ -668,8 +673,12 @@ function renderSense(
 ): DocumentFragment {
   const fragment = document.createDocumentFragment();
 
+  // Verb class tags were added to proverbs for inflection handling but
+  // aren't user-facing. Filter them out here.
+  const filteredPos = getFilteredTags(sense.pos, sense.misc);
+
   if (options.posDisplay !== 'none') {
-    for (const pos of sense.pos || []) {
+    for (const pos of filteredPos) {
       const posSpan = html('span', { class: 'w-pos tag' });
       switch (options.posDisplay) {
         case 'expl':

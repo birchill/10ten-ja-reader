@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+- Fixed verb class tags being shown on proverbs
+  ([#1469](https://github.com/birchill/10ten-ja-reader/issues/1469)).
 - Added an option to use system fonts instead of bundled fonts
   ([#1799](https://github.com/birchill/10ten-ja-reader/issues/1799)).
 - (Safari) Fixed an issue with the popup stalling when looking up words using
