@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+## [1.19.1] - 2024-06-08
+
 - Added an option to use system fonts instead of bundled fonts
   ([#1799](https://github.com/birchill/10ten-ja-reader/issues/1799)).
 - (Safari) Fixed an issue with the popup stalling when looking up words using
@@ -1143,7 +1145,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.19.0...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.19.1...HEAD
+[1.19.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.19.0...v1.19.1
 [1.19.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.17.1...v1.18.0
 [1.17.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.17.0...v1.17.1
