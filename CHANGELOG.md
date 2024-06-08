@@ -8,13 +8,14 @@ app.
 
 ## [Unreleased]
 
-- Fixed verb class tags being shown on proverbs
-  ([#1469](https://github.com/birchill/10ten-ja-reader/issues/1469)).
 - Added an option to use system fonts instead of bundled fonts
   ([#1799](https://github.com/birchill/10ten-ja-reader/issues/1799)).
 - (Safari) Fixed an issue with the popup stalling when looking up words using
-  the puck on
+  the puck
   ([#1802](https://github.com/birchill/10ten-ja-reader/issues/1802)).
+- Fixed verb class tags being shown on proverbs
+  thanks to [@Enellis](https://github.com/Enellis)
+  ([#1469](https://github.com/birchill/10ten-ja-reader/issues/1469)).
 - Fixed kanji incorrectly encoded as radicals not being displayed in kanji tab
   thanks to [@Enellis](https://github.com/Enellis)
   ([#1205](https://github.com/birchill/10ten-ja-reader/issues/1205#issuecomment-1783641017)).
