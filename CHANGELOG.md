@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- Fixed recognition of continuous forms of verbs with irregular te form.
+  ([#1811](https://github.com/birchill/10ten-ja-reader/pull/1811)).
+
 ## [1.19.1] - 2024-06-08
 
 - Added an option to use system fonts instead of bundled fonts

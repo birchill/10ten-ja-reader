@@ -180,6 +180,36 @@ describe('deinflect', () => {
     }
   });
 
+  it('deinflects continuous forms of other irregular verbs', () => {
+    const cases: [string, string, Reason[]][] = [
+      ['請うている', '請う', [Reason.Continuous]],
+      ['乞うている', '乞う', [Reason.Continuous]],
+      ['恋うている', '恋う', [Reason.Continuous]],
+      ['こうてる', 'こう', [Reason.Continuous]],
+      ['問うてる', '問う', [Reason.Continuous]],
+      ['とうてる', 'とう', [Reason.Continuous]],
+      ['負うていた', '負う', [Reason.Continuous, Reason.Past]],
+      ['おうていた', 'おう', [Reason.Continuous, Reason.Past]],
+      ['沿うていた', '沿う', [Reason.Continuous, Reason.Past]],
+      ['添うてた', '添う', [Reason.Continuous, Reason.Past]],
+      ['副うてた', '副う', [Reason.Continuous, Reason.Past]],
+      ['そうてた', 'そう', [Reason.Continuous, Reason.Past]],
+      ['厭うていて', '厭う', [Reason.Continuous, Reason.Te]],
+      ['いとうていて', 'いとう', [Reason.Continuous, Reason.Te]],
+      ['のたもうてて', 'のたまう', [Reason.Continuous, Reason.Te]],
+    ];
+
+    for (const [inflected, plain, reasons] of cases) {
+      const result = deinflect(inflected);
+      const match = result.find((candidate) => candidate.word == plain);
+      expect(match).toEqual({
+        reasons: [reasons],
+        type: 2,
+        word: plain,
+      });
+    }
+  });
+
   it('deinflects ござる', () => {
     const cases = [
       ['ございます', 'ござる', Reason.Polite],
