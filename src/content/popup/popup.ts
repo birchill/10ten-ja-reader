@@ -20,10 +20,6 @@ export function removePopup() {
   removeFontStyles();
 }
 
-export function isPopupWindowHostElem(target: EventTarget | null): boolean {
-  return target instanceof HTMLElement && target.id === 'tenten-ja-window';
-}
-
 export function setFontFace(fontFace: FontFace) {
   const popupWindow = getPopupWindow();
   if (!popupWindow) {

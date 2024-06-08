@@ -10,6 +10,7 @@ import {
   removeContentContainer,
 } from './content-container';
 import { getIframeOrigin } from './iframes';
+import { isPopupWindowHostElem } from './popup/popup-container';
 import type { SafeAreaProvider } from './safe-area-provider';
 
 import puckStyles from '../../css/puck.css?inline';
@@ -445,7 +446,7 @@ export class LookupPuck {
         .elementsFromPoint(targetX, targetY)
         // Ignore any element in the 10ten popup itself; we don't want
         // the puck moon to hold the popup open like a mouse event does.
-        .find((target) => !target.closest('#tenten-ja-window')) || null;
+        .find((target) => !isPopupWindowHostElem(target)) || null;
 
     // Check if we need to adjust the content to look it up.
     //
