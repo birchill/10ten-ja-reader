@@ -39,6 +39,8 @@ export function scanText({
     NodeFilter.SHOW_TEXT,
     filter
   );
+
+  /* eslint-disable curly */
   while (treeWalker.referenceNode !== startNode && treeWalker.nextNode());
 
   if (treeWalker.referenceNode !== startNode) {

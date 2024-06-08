@@ -33,6 +33,7 @@ export default [
     },
 
     rules: {
+      curly: 'error',
       'linebreak-style': ['error', 'unix'],
 
       'no-constant-condition': [

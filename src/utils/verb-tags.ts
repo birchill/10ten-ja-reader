@@ -66,8 +66,12 @@ function getFilteredTags(
   pos: string[] | undefined,
   misc: string[] | undefined
 ) {
-  if (pos === undefined) return [];
-  if (misc === undefined) return pos;
+  if (pos === undefined) {
+    return [];
+  }
+  if (misc === undefined) {
+    return pos;
+  }
 
   if (misc.includes(proverbTag)) {
     return pos.filter((tag) => !verbTags.includes(tag));
