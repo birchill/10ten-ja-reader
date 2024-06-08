@@ -18,6 +18,7 @@ import {
 import { isChromium } from '../utils/ua-utils';
 
 import { isGdocsOverlayElem } from './gdocs-canvas';
+import { isPopupWindowHostElem } from './popup/popup-container';
 import { toPageCoords } from './scroll-offset';
 
 declare global {
@@ -546,6 +547,10 @@ function caretRangeFromPoint({
 
   if (
     !range ||
+    // Normally we don't perform a lookup if we detect a pointermove event over
+    // the popup window, but when using the puck we allow it as otherwise when
+    // the puck pointer passes over the window, we'll fail to dismiss it.
+    isPopupWindowHostElem(range.startContainer) ||
     (limitToDescendants && !element.contains(range.startContainer))
   ) {
     return null;
@@ -678,9 +683,14 @@ function createMirrorElement(source: HTMLElement, text?: string): HTMLElement {
 
   // Set its styles to be the same
   const cs = document.defaultView!.getComputedStyle(source);
+  const stylesToSet: Record<string, string> = {};
   for (let i = 0; i < cs.length; i++) {
     const prop = cs.item(i);
-    mirrorElement.style.setProperty(prop, cs.getPropertyValue(prop));
+    stylesToSet[prop] = cs.getPropertyValue(prop);
+  }
+
+  for (const [name, value] of Object.entries(stylesToSet)) {
+    mirrorElement.style.setProperty(name, value);
   }
 
   // Special handling for Chromium which does _not_ include the scrollbars in
@@ -754,9 +764,14 @@ function cloneNodeWithStyles(node: Node): Node {
 
   const clone = node.cloneNode(false) as HTMLElement | SVGElement;
   const cs = document.defaultView!.getComputedStyle(node);
+  const stylesToSet: Record<string, string> = {};
   for (let i = 0; i < cs.length; i++) {
     const prop = cs.item(i);
-    clone.style.setProperty(prop, cs.getPropertyValue(prop));
+    stylesToSet[prop] = cs.getPropertyValue(prop);
+  }
+
+  for (const [name, value] of Object.entries(stylesToSet)) {
+    clone.style.setProperty(name, value);
   }
 
   for (const child of node.childNodes) {

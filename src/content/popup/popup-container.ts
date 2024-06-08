@@ -4,3 +4,9 @@ export function getPopupContainer(): HTMLElement | null {
     ? hostElem.shadowRoot.querySelector('.container')
     : null;
 }
+
+export function isPopupWindowHostElem(
+  target: EventTarget | Node | null
+): boolean {
+  return target instanceof HTMLElement && target.id === 'tenten-ja-window';
+}

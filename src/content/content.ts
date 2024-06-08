@@ -86,12 +86,12 @@ import { SelectionMeta } from './meta';
 import {
   hidePopup,
   isPopupVisible,
-  isPopupWindowHostElem,
   removePopup,
   setFontFace,
   setFontSize,
   setPopupStyle,
 } from './popup/popup';
+import { isPopupWindowHostElem } from './popup/popup-container';
 import { showPopup, type ShowPopupOptions } from './popup/show-popup';
 import { type CopyState, getCopyMode } from './popup/copy-state';
 import {
