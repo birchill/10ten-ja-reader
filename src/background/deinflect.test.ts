@@ -167,6 +167,10 @@ describe('deinflect', () => {
       ['厭うた', '厭う'],
       ['いとうた', 'いとう'],
       ['のたもうた', 'のたまう'],
+      ['たまうた', 'たまう'],
+      ['たもうた', 'たもう'],
+      ['給うた', '給う'],
+      ['賜うた', '賜う'],
     ];
 
     for (const [inflected, plain] of cases) {
@@ -197,6 +201,10 @@ describe('deinflect', () => {
       ['厭うていて', '厭う', [Reason.Continuous, Reason.Te]],
       ['いとうていて', 'いとう', [Reason.Continuous, Reason.Te]],
       ['のたもうてて', 'のたまう', [Reason.Continuous, Reason.Te]],
+      ['たまうている', 'たまう', [Reason.Continuous]],
+      ['たもうていた', 'たもう', [Reason.Continuous, Reason.Past]],
+      ['給うてた', '給う', [Reason.Continuous, Reason.Past]],
+      ['賜うてて', '賜う', [Reason.Continuous, Reason.Te]],
     ];
 
     for (const [inflected, plain, reasons] of cases) {
