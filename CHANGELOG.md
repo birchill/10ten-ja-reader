@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+- Added support for irregular verb forms of 給う
+  ([#1470](https://github.com/birchill/10ten-ja-reader/issues/1470)).
 - Fixed recognition of continuous forms of verbs with irregular te form.
   ([#1811](https://github.com/birchill/10ten-ja-reader/pull/1811)).
 

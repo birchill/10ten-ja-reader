@@ -202,6 +202,8 @@ const deinflectRuleData: Array<
   ['すぎる', '', Type.IchidanVerb, Type.MasuStem, Reason.Sugiru],
   ['たせる', 'つ', Type.IchidanVerb, Type.GodanVerb, Reason.Causative],
   ['たない', 'つ', Type.IAdj | Type.VNai, Type.GodanVerb, Reason.Negative],
+  ['たまう', 'たまう', Type.TaTeStem, Type.GodanVerb, Reason.None],
+  ['たもう', 'たもう', Type.TaTeStem, Type.GodanVerb, Reason.None],
   ['たれる', 'つ', Type.IchidanVerb, Type.GodanVerb, Reason.Passive],
   ['ちゃう', 'る', Type.GodanVerb, Type.IchidanVerb | Type.KuruVerb, Reason.Chau],
   ['ちゃう', '', Type.GodanVerb, Type.TaTeStem, Reason.Chau],
@@ -344,6 +346,8 @@ const deinflectRuleData: Array<
   ['添う', '添う', Type.TaTeStem, Type.GodanVerb, Reason.None],
   ['副う', '副う', Type.TaTeStem, Type.GodanVerb, Reason.None],
   ['厭う', '厭う', Type.TaTeStem, Type.GodanVerb, Reason.None],
+  ['給う', '給う', Type.TaTeStem, Type.GodanVerb, Reason.None],
+  ['賜う', '賜う', Type.TaTeStem, Type.GodanVerb, Reason.None],
   // -------------- 1 --------------
   ['い', 'いる', Type.Initial, Type.IchidanVerb, Reason.MasuStem],
   ['い', 'う', Type.MasuStem, Type.GodanVerb, Reason.MasuStem],
