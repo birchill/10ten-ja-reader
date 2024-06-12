@@ -16,6 +16,7 @@ export const enum Reason {
   Sou,
   Tai,
   Polite,
+  Respectful,
   Past,
   Negative,
   Passive,
@@ -38,6 +39,7 @@ export const enum Reason {
 }
 
 export const deinflectL10NKeys: { [key: number]: string } = {
+  [Reason.Respectful]: 'deinflect_respectful',
   [Reason.PolitePastNegative]: 'deinflect_polite_past_negative',
   [Reason.PoliteNegative]: 'deinflect_polite_negative',
   [Reason.PoliteVolitional]: 'deinflect_polite_volitional',

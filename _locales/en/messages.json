@@ -382,6 +382,9 @@
   "deinflect_potential_or_passive": {
     "message": "potential or passive or respectful"
   },
+  "deinflect_respectful": {
+    "message": "respectful"
+  },
   "deinflect_sou": {
     "message": "-sou"
   },

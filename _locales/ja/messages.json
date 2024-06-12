@@ -382,6 +382,9 @@
   "deinflect_potential_or_passive": {
     "message": "可能形・受身形・尊敬語"
   },
+  "deinflect_respectful": {
+    "message": "尊敬語"
+  },
   "deinflect_sou": {
     "message": "そう形"
   },
