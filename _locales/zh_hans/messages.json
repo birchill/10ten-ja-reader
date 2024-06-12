@@ -382,6 +382,9 @@
   "deinflect_potential_or_passive": {
     "message": "可能或被动或敬语的"
   },
+  "deinflect_respectful": {
+    "message": "尊敬语"
+  },
   "deinflect_sou": {
     "message": "-そう"
   },
