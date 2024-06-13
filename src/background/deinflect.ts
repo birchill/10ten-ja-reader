@@ -530,7 +530,12 @@ export function deinflect(word: string): CandidateWord[] {
         }
 
         // If we already have a candidate for this word with the same
-        // 'to' type(s), expand the possible reasons.
+        // 'to' type(s), expand the possible reasons by starting a new
+        // reason chain.
+        //
+        // We do not want to start a new reason chain with the 'none'
+        // reason, as it cannot stand on its own and needs a preceding
+        // rule to make sense.
         //
         // If the 'to' type(s) differ, then we'll add a separate candidate
         // and just hope that when we go to match against dictionary words
@@ -538,8 +543,10 @@ export function deinflect(word: string): CandidateWord[] {
         if (resultIndex[newWord]) {
           const candidate = result[resultIndex[newWord]];
           if (candidate.type === rule.toType) {
-            // Start a new reason chain
-            candidate.reasons.unshift([rule.reason]);
+            if (rule.reason !== Reason.None) {
+              // Start a new reason chain
+              candidate.reasons.unshift([rule.reason]);
+            }
             continue;
           }
         }
