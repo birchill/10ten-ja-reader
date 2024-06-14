@@ -456,7 +456,7 @@ export interface CandidateWord {
   // Each array is a sequence of rules applied in turn.
   // There may be multiple arrays when multiple sequences of rules were applied
   // to produce word.
-  reasons: Array<Array<Reason>>;
+  reasonChains: Array<Array<Reason>>;
   // For a de-inflected word, this is a bitfield comprised of flags from the
   // WordType enum describing the possible types of word this could represent
   // (e.g. godan verb, i-adj). If a word looked up in the dictionary does not
@@ -479,7 +479,7 @@ export function deinflect(word: string): CandidateWord[] {
     // to match all rules except the TaTe/DaDe-stems, as they don't make
     // sense on their own.
     type: 0xffff ^ (Type.TaTeStem | Type.DaDeStem),
-    reasons: [],
+    reasonChains: [],
   };
   result.push(original);
   resultIndex[word] = 0;
@@ -496,9 +496,9 @@ export function deinflect(word: string): CandidateWord[] {
     // form. However, we should just stop immediately after de-inflecting to
     // the plain form.
     if (
-      thisCandidate.reasons.length === 1 &&
-      thisCandidate.reasons[0].length === 1 &&
-      thisCandidate.reasons[0][0] === Reason.MasuStem
+      thisCandidate.reasonChains.length === 1 &&
+      thisCandidate.reasonChains[0].length === 1 &&
+      thisCandidate.reasonChains[0][0] === Reason.MasuStem
     ) {
       continue;
     }
@@ -545,7 +545,7 @@ export function deinflect(word: string): CandidateWord[] {
           if (candidate.type === rule.toType) {
             if (rule.reason !== Reason.None) {
               // Start a new reason chain
-              candidate.reasons.unshift([rule.reason]);
+              candidate.reasonChains.unshift([rule.reason]);
             }
             continue;
           }
@@ -557,16 +557,16 @@ export function deinflect(word: string): CandidateWord[] {
         //
 
         // Deep clone multidimensional array
-        const reasons = [];
-        for (const array of thisCandidate.reasons) {
-          reasons.push([...array]);
+        const reasonChains = [];
+        for (const array of thisCandidate.reasonChains) {
+          reasonChains.push([...array]);
         }
 
         // Add our new reason in
         //
         // If we already have reason chains, prepend to the first chain
-        if (reasons.length) {
-          const firstReasonChain = reasons[0];
+        if (reasonChains.length) {
+          const firstReasonChain = reasonChains[0];
 
           // Rather having causative + passive, combine the two rules into
           // "causative passive":
@@ -593,11 +593,11 @@ export function deinflect(word: string): CandidateWord[] {
           }
         } else {
           // Add new reason to the start of the chain
-          reasons.push([rule.reason]);
+          reasonChains.push([rule.reason]);
         }
 
         const candidate: CandidateWord = {
-          reasons,
+          reasonChains: reasonChains,
           type: rule.toType,
           word: newWord,
         };
