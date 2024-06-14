@@ -223,10 +223,10 @@ async function lookupCandidate({
 
   // Generate the reason string
   let reason: string | undefined;
-  if (candidate.reasons.length) {
+  if (candidate.reasonChains.length) {
     reason =
       '< ' +
-      candidate.reasons
+      candidate.reasonChains
         .map((reasonList) =>
           reasonList
             .map((reason) => browser.i18n.getMessage(deinflectL10NKeys[reason]))

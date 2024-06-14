@@ -7,7 +7,7 @@ describe('deinflect', () => {
     const result = deinflect('走ります');
     const match = result.find((candidate) => candidate.word === '走る');
     expect(match).toEqual({
-      reasons: [[Reason.Polite]],
+      reasonChains: [[Reason.Polite]],
       type: 2,
       word: '走る',
     });
@@ -17,7 +17,7 @@ describe('deinflect', () => {
     const result = deinflect('踊りたくなかった');
     const match = result.find((candidate) => candidate.word === '踊る');
     expect(match).toEqual({
-      reasons: [[Reason.Tai, Reason.Negative, Reason.Past]],
+      reasonChains: [[Reason.Tai, Reason.Negative, Reason.Past]],
       type: 2,
       word: '踊る',
     });
@@ -36,10 +36,10 @@ describe('deinflect', () => {
       ['走ッた', '走る', [[Reason.Past]], 2],
     ];
 
-    for (const [inflected, plain, reasons, type] of cases) {
+    for (const [inflected, plain, reasonChains, type] of cases) {
       const result = deinflect(inflected as string);
       const match = result.find((candidate) => candidate.word == plain);
-      expect(match).toMatchObject({ reasons, type, word: plain });
+      expect(match).toMatchObject({ reasonChains, type, word: plain });
     }
   });
 
@@ -47,7 +47,7 @@ describe('deinflect', () => {
     const result = deinflect('食べ');
     const match = result.find((candidate) => candidate.word === '食べる');
     expect(match).toEqual({
-      reasons: [[Reason.MasuStem]],
+      reasonChains: [[Reason.MasuStem]],
       type: 1,
       word: '食べる',
     });
@@ -72,7 +72,7 @@ describe('deinflect', () => {
       const result = deinflect(inflected as string);
       const match = result.find((candidate) => candidate.word == plain);
       expect(match).toEqual({
-        reasons: [[Reason.Negative]],
+        reasonChains: [[Reason.Negative]],
         type: type,
         word: plain,
       });
@@ -83,7 +83,7 @@ describe('deinflect', () => {
     const result = deinflect('食べられぬ');
     const match = result.find((candidate) => candidate.word === '食べる');
     expect(match).toEqual({
-      reasons: [[Reason.PotentialOrPassive, Reason.Negative]],
+      reasonChains: [[Reason.PotentialOrPassive, Reason.Negative]],
       type: 9,
       word: '食べる',
     });
@@ -93,7 +93,7 @@ describe('deinflect', () => {
     const result = deinflect('き');
     const match = result.find((candidate) => candidate.word === 'くる');
     expect(match).toEqual({
-      reasons: [[Reason.MasuStem]],
+      reasonChains: [[Reason.MasuStem]],
       type: 8,
       word: 'くる',
     });
@@ -103,7 +103,7 @@ describe('deinflect', () => {
     const result = deinflect('美しき');
     const match = result.find((candidate) => candidate.word === '美しい');
     expect(match).toEqual({
-      reasons: [[Reason.Ki]],
+      reasonChains: [[Reason.Ki]],
       type: WordType.IAdj,
       word: '美しい',
     });
@@ -113,7 +113,7 @@ describe('deinflect', () => {
     const result = deinflect('兼した');
     const match = result.find((candidate) => candidate.word === '兼す');
     expect(match).toEqual({
-      reasons: [[Reason.Past]],
+      reasonChains: [[Reason.Past]],
       type: 18,
       word: '兼す',
     });
@@ -137,7 +137,7 @@ describe('deinflect', () => {
       const result = deinflect(inflected as string);
       const match = result.find((candidate) => candidate.word == plain);
       expect(match).toEqual({
-        reasons: [[reason]],
+        reasonChains: [[reason]],
         type,
         word: plain,
       });
@@ -177,7 +177,7 @@ describe('deinflect', () => {
       const result = deinflect(inflected);
       const match = result.find((candidate) => candidate.word == plain);
       expect(match).toEqual({
-        reasons: [[Reason.Past]],
+        reasonChains: [[Reason.Past]],
         type: 2,
         word: plain,
       });
@@ -211,7 +211,7 @@ describe('deinflect', () => {
       const result = deinflect(inflected);
       const match = result.find((candidate) => candidate.word == plain);
       expect(match).toEqual({
-        reasons: [reasons],
+        reasonChains: [reasons],
         type: 2,
         word: plain,
       });
@@ -234,7 +234,7 @@ describe('deinflect', () => {
     for (const [inflected, plain, reason] of cases) {
       const result = deinflect(inflected as string);
       const match = result.find((candidate) => candidate.word == plain);
-      expect(match).toMatchObject({ reasons: [[reason]], word: plain });
+      expect(match).toMatchObject({ reasonChains: [[reason]], word: plain });
     }
   });
 
@@ -251,7 +251,7 @@ describe('deinflect', () => {
     for (const [inflected, plain, reason] of cases) {
       const result = deinflect(inflected as string);
       const match = result.find((candidate) => candidate.word == plain);
-      expect(match).toMatchObject({ reasons: [[reason]], word: plain });
+      expect(match).toMatchObject({ reasonChains: [[reason]], word: plain });
     }
   });
 
@@ -299,7 +299,7 @@ describe('deinflect', () => {
       const result = deinflect(inflected);
       const match = result.find((candidate) => candidate.word == plain);
       expect(match).toEqual({
-        reasons: reasons ? [reasons] : [[Reason.Continuous]],
+        reasonChains: reasons ? [reasons] : [[Reason.Continuous]],
         type,
         word: plain,
       });
@@ -309,7 +309,7 @@ describe('deinflect', () => {
     const result = deinflect('食べて');
     const match = result.find((candidate) => candidate.word == '食べる');
     expect(match).toBeDefined();
-    expect(match!.reasons).not.toContainEqual([Reason.Continuous]);
+    expect(match!.reasonChains).not.toContainEqual([Reason.Continuous]);
   });
 
   it('deinflects ざるを得ない', () => {
@@ -328,7 +328,7 @@ describe('deinflect', () => {
       const match = result.find((candidate) => candidate.word == plain);
       expect(match).toBeDefined();
       // The ざるを得ない reason should be the first one in the list
-      expect(match!.reasons[0][0]).toBe(Reason.ZaruWoEnai);
+      expect(match!.reasonChains[0][0]).toBe(Reason.ZaruWoEnai);
     }
   });
 
@@ -345,7 +345,7 @@ describe('deinflect', () => {
       const result = deinflect(inflected);
       const match = result.find((candidate) => candidate.word == plain);
       expect(match).toBeDefined();
-      expect(match!.reasons[0][0]).toBe(Reason.NegativeTe);
+      expect(match!.reasonChains[0][0]).toBe(Reason.NegativeTe);
     }
   });
 });
