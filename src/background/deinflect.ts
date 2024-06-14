@@ -449,14 +449,15 @@ export function deinflect(word: string): CandidateWord[] {
   do {
     const thisCandidate = result[i];
 
-    // Don't deinflect masu-stem results any further since they should already
-    // be the plain form.
+    // Don't deinflect masu-stem results of Ichidan verbs any further since
+    // they should already be the plain form.
     //
     // Without this we would take something like 食べて, try deinflecting it as
     // a masu stem into 食べてる and then try de-inflecting it as a continuous
     // form. However, we should just stop immediately after de-inflecting to
     // the plain form.
     if (
+      thisCandidate.type & Type.IchidanVerb &&
       thisCandidate.reasonChains.length === 1 &&
       thisCandidate.reasonChains[0].length === 1 &&
       thisCandidate.reasonChains[0][0] === Reason.MasuStem
