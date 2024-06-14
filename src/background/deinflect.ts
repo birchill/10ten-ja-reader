@@ -132,6 +132,11 @@ type DeinflectRule = {
 const deinflectRuleData: Array<
   [from: string, to: string, fromType: number, toType: number, reasons: Array<Reason>]
 > = [
+  // -------------- 7 --------------
+  ['ていらっしゃい', '', Type.Initial, Type.TaTeStem, [Reason.Respectful, Reason.Continuous, Reason.Imperative]],
+  ['ていらっしゃる', '', Type.GodanVerb, Type.TaTeStem, [Reason.Respectful, Reason.Continuous]],
+  ['でいらっしゃい', '', Type.Initial, Type.DaDeStem, [Reason.Respectful, Reason.Continuous, Reason.Imperative]],
+  ['でいらっしゃる', '', Type.GodanVerb, Type.DaDeStem, [Reason.Respectful, Reason.Continuous]],
   // -------------- 6 --------------
   ['いらっしゃい', 'いらっしゃる', Type.MasuStem, Type.GodanVerb, [Reason.MasuStem]],
   ['いらっしゃい', 'いらっしゃる', Type.Initial, Type.GodanVerb, [Reason.Imperative]],
@@ -139,6 +144,12 @@ const deinflectRuleData: Array<
   ['ざるをえない', 'ない', Type.IAdj, Type.VNai, [Reason.ZaruWoEnai]],
   ['ざるを得ない', 'ない', Type.IAdj, Type.VNai, [Reason.ZaruWoEnai]],
   ['ませんでした', '', Type.Initial, Type.MasuStem, [Reason.PolitePastNegative]],
+  ['てらっしゃい', '', Type.Initial, Type.TaTeStem, [Reason.Respectful, Reason.Continuous, Reason.Imperative]],
+  ['てらっしゃい', 'てらっしゃる', Type.MasuStem, Type.GodanVerb, [Reason.MasuStem]],
+  ['てらっしゃる', '', Type.GodanVerb, Type.TaTeStem, [Reason.Respectful, Reason.Continuous]],
+  ['でらっしゃい', '', Type.Initial, Type.DaDeStem, [Reason.Respectful, Reason.Continuous, Reason.Imperative]],
+  ['でらっしゃい', 'でらっしゃる', Type.MasuStem, Type.GodanVerb, [Reason.MasuStem]],
+  ['でらっしゃる', '', Type.GodanVerb, Type.DaDeStem, [Reason.Respectful, Reason.Continuous]],
   // -------------- 5 --------------
   ['おっしゃい', 'おっしゃる', Type.MasuStem, Type.GodanVerb, [Reason.MasuStem]],
   ['おっしゃい', 'おっしゃる', Type.Initial, Type.GodanVerb, [Reason.Imperative]],
