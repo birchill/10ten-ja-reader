@@ -261,6 +261,21 @@ describe('deinflect', () => {
     }
   });
 
+  it('deinflects いらっしゃる', () => {
+    // prettier-ignore
+    const cases = [
+      ['いらっしゃいます', 'いらっしゃる', [[Reason.Polite]]],
+      ['いらっしゃい', 'いらっしゃる', [[Reason.Imperative], [Reason.MasuStem]]],
+      ['いらっしゃって', 'いらっしゃる', [[Reason.Te]]],
+    ];
+
+    for (const [inflected, plain, reasonChains] of cases) {
+      const result = deinflect(inflected as string);
+      const match = result.find((candidate) => candidate.word == plain);
+      expect(match).toMatchObject({ reasonChains: reasonChains, word: plain });
+    }
+  });
+
   it('deinflects the continuous form', () => {
     const cases: Array<[string, string, number, Array<Reason> | undefined]> = [
       // U-verbs
@@ -316,6 +331,35 @@ describe('deinflect', () => {
     const match = result.find((candidate) => candidate.word == '食べる');
     expect(match).toBeDefined();
     expect(match!.reasonChains).not.toContainEqual([Reason.Continuous]);
+  });
+
+  it('deinflects respectful continuous forms', () => {
+    // prettier-ignore
+    const cases: Array<[string, string, Array<Reason>]> = [
+      ['分かっていらっしゃる', '分かる', [Reason.Respectful, Reason.Continuous]],
+      ['分かっていらっしゃい', '分かる', [Reason.Respectful, Reason.Continuous, Reason.Imperative]],
+      ['分かってらっしゃる', '分かる', [Reason.Respectful, Reason.Continuous]],
+      ['分かってらっしゃい', '分かる', [Reason.Respectful, Reason.Continuous, Reason.Imperative]],
+      ['読んでいらっしゃる', '読む', [Reason.Respectful, Reason.Continuous]],
+      ['読んでいらっしゃい', '読む', [Reason.Respectful, Reason.Continuous, Reason.Imperative]],
+      ['読んでらっしゃる', '読む', [Reason.Respectful, Reason.Continuous]],
+      ['読んでらっしゃい', '読む', [Reason.Respectful, Reason.Continuous, Reason.Imperative]],
+      ['起きていらっしゃる', '起きる', [Reason.Respectful, Reason.Continuous]],
+      ['起きていらっしゃい', '起きる', [Reason.Respectful, Reason.Continuous, Reason.Imperative]],
+      ['起きてらっしゃる', '起きる', [Reason.Respectful, Reason.Continuous]],
+      ['起きてらっしゃい', '起きる', [Reason.Respectful, Reason.Continuous, Reason.Imperative]],
+      ['分かっていらっしゃいます', '分かる', [Reason.Respectful, Reason.Continuous, Reason.Polite]],
+      ['分かってらっしゃいます', '分かる', [Reason.Respectful, Reason.Continuous, Reason.Polite]],
+      ['分かっていらっしゃって', '分かる', [Reason.Respectful, Reason.Continuous, Reason.Te]],
+      ['分かってらっしゃって', '分かる', [Reason.Respectful, Reason.Continuous, Reason.Te]],
+    ];
+
+    for (const [inflected, plain, reasons] of cases) {
+      const result = deinflect(inflected);
+      const match = result.find((candidate) => candidate.word == plain);
+      expect(match).toBeDefined();
+      expect(match!.reasonChains).toEqual([reasons]);
+    }
   });
 
   it('deinflects ざるを得ない', () => {
