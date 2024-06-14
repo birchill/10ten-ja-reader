@@ -362,6 +362,25 @@ describe('deinflect', () => {
     }
   });
 
+  it('deinflects なさる as respectful speech for する', () => {
+    // prettier-ignore
+    const cases: Array<[string, string, Array<Array<Reason>>]> = [
+      ['なさい', 'なさる', [[Reason.Imperative], [Reason.MasuStem]]],
+      ['食べなさい', '食べる', [[Reason.Respectful, Reason.Imperative]]],
+      ['帰りなさいませ', '帰る', [[Reason.Respectful, Reason.Polite, Reason.Imperative]]],
+      ['仕事なさる', '仕事', [[Reason.SuruNoun, Reason.Respectful]]],
+      ['エンジョイなさって', 'エンジョイ', [[Reason.SuruNoun, Reason.Respectful, Reason.Te]]],
+      ['喜びなさった', '喜ぶ', [[Reason.Respectful, Reason.Past]]],
+    ];
+
+    for (const [inflected, plain, reasonChains] of cases) {
+      const result = deinflect(inflected);
+      const match = result.find((candidate) => candidate.word == plain);
+      expect(match).toBeDefined();
+      expect(match!.reasonChains).toEqual(reasonChains);
+    }
+  });
+
   it('deinflects ざるを得ない', () => {
     const cases = [
       ['闘わざるを得なかった', '闘う'],
