@@ -381,6 +381,22 @@ describe('deinflect', () => {
     }
   });
 
+  it('deinflects になる as respectful speech', () => {
+    // prettier-ignore
+    const cases: Array<[string, string, Array<Reason>]> = [
+      ['到着になります', '到着', [Reason.SuruNoun, Reason.Respectful, Reason.Polite]],
+      ['読みになります', '読む', [Reason.Respectful, Reason.Polite]],
+      ['見えになります', '見える', [Reason.Respectful, Reason.Polite]],
+    ];
+
+    for (const [inflected, plain, reasons] of cases) {
+      const result = deinflect(inflected);
+      const match = result.find((candidate) => candidate.word == plain);
+      expect(match).toBeDefined();
+      expect(match!.reasonChains).toEqual([reasons]);
+    }
+  });
+
   it('deinflects ざるを得ない', () => {
     const cases = [
       ['闘わざるを得なかった', '闘う'],

@@ -230,6 +230,8 @@ const deinflectRuleData: Array<
   ['なせる', 'ぬ', Type.IchidanVerb, Type.GodanVerb, [Reason.Causative]],
   ['なない', 'ぬ', Type.IAdj | Type.VNai, Type.GodanVerb, [Reason.Negative]],
   ['なれる', 'ぬ', Type.IchidanVerb, Type.GodanVerb, [Reason.Passive]],
+  ['になる', '', Type.GodanVerb, Type.MasuStem, [Reason.Respectful]],
+  ['になる', '', Type.GodanVerb, Type.NounVS, [Reason.SuruNoun, Reason.Respectful]],
   ['ばせる', 'ぶ', Type.IchidanVerb, Type.GodanVerb, [Reason.Causative]],
   ['ばない', 'ぶ', Type.IAdj | Type.VNai, Type.GodanVerb, [Reason.Negative]],
   ['ばれる', 'ぶ', Type.IchidanVerb, Type.GodanVerb, [Reason.Passive]],
