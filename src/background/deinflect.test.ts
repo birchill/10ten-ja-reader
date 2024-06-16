@@ -397,6 +397,31 @@ describe('deinflect', () => {
     }
   });
 
+  it('deinflects humble or Kansai dialect continuous forms', () => {
+    // prettier-ignore
+    const cases: Array<[string, string, Array<Reason>]> = [
+      ['行っておる', '行く', [Reason.HumbleOrKansaiDialect, Reason.Continuous]],
+      ['行っており', '行く', [Reason.HumbleOrKansaiDialect, Reason.Continuous, Reason.MasuStem]],
+      ['行っとる', '行く', [Reason.HumbleOrKansaiDialect, Reason.Continuous]],
+      ['行っとり', '行く', [Reason.HumbleOrKansaiDialect, Reason.Continuous, Reason.MasuStem]],
+      ['読んでおる', '読む', [Reason.HumbleOrKansaiDialect, Reason.Continuous]],
+      ['読んでおり', '読む', [Reason.HumbleOrKansaiDialect, Reason.Continuous, Reason.MasuStem]],
+      ['読んどる', '読む', [Reason.HumbleOrKansaiDialect, Reason.Continuous]],
+      ['読んどり', '読む', [Reason.HumbleOrKansaiDialect, Reason.Continuous, Reason.MasuStem]],
+      ['起きておる', '起きる', [Reason.HumbleOrKansaiDialect, Reason.Continuous]],
+      ['起きており', '起きる', [Reason.HumbleOrKansaiDialect, Reason.Continuous, Reason.MasuStem]],
+      ['起きとる', '起きる', [Reason.HumbleOrKansaiDialect, Reason.Continuous]],
+      ['起きとり', '起きる', [Reason.HumbleOrKansaiDialect, Reason.Continuous, Reason.MasuStem]],
+    ];
+
+    for (const [inflected, plain, reasons] of cases) {
+      const result = deinflect(inflected);
+      const match = result.find((candidate) => candidate.word == plain);
+      expect(match).toBeDefined();
+      expect(match!.reasonChains).toEqual([reasons]);
+    }
+  });
+
   it('deinflects ざるを得ない', () => {
     const cases = [
       ['闘わざるを得なかった', '闘う'],
