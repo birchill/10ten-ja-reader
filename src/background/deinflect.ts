@@ -286,6 +286,7 @@ const deinflectRuleData: Array<
   ['さん', 'す', Type.Initial, Type.GodanVerb, [Reason.Negative]],
   ['しろ', 'す', Type.Initial, Type.SuruVerb, [Reason.Imperative]],
   ['しろ', 'する', Type.Initial, Type.SuruVerb, [Reason.Imperative]],
+  ['する', '', Type.SuruVerb, Type.MasuStem, [Reason.Humble]],
   ['する', '', Type.SuruVerb, Type.NounVS, [Reason.SuruNoun]],
   ['せず', 'する', Type.Initial, Type.SuruVerb, [Reason.Zu]],
   ['せぬ', 'する', Type.Initial, Type.SuruVerb, [Reason.Negative]],

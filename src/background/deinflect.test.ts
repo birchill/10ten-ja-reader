@@ -441,6 +441,20 @@ describe('deinflect', () => {
     }
   });
 
+  it('deinflects masu-stem + する forms as humble speech', () => {
+    const cases: Array<[string, string, Array<Reason>]> = [
+      ['聞きしたい', '聞く', [Reason.Humble, Reason.Tai]],
+      ['送りします', '送る', [Reason.Humble, Reason.Polite]],
+    ];
+
+    for (const [inflected, plain, reasons] of cases) {
+      const result = deinflect(inflected);
+      const match = result.find((candidate) => candidate.word == plain);
+      expect(match).toBeDefined();
+      expect(match!.reasonChains).toEqual([reasons]);
+    }
+  });
+
   it('deinflects ざるを得ない', () => {
     const cases = [
       ['闘わざるを得なかった', '闘う'],
