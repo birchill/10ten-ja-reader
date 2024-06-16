@@ -186,6 +186,8 @@ const deinflectRuleData: Array<
   ['来られる', '来る', Type.IchidanVerb, Type.KuruVerb, [Reason.PotentialOrPassive]],
   ['來られる', '來る', Type.IchidanVerb, Type.KuruVerb, [Reason.PotentialOrPassive]],
   // -------------- 3 --------------
+  ['いたす', '', Type.GodanVerb, Type.MasuStem, [Reason.Humble]],
+  ['いたす', '', Type.GodanVerb, Type.NounVS, [Reason.SuruNoun, Reason.Humble]],
   ['かせる', 'く', Type.IchidanVerb, Type.GodanVerb, [Reason.Causative]],
   ['がせる', 'ぐ', Type.IchidanVerb, Type.GodanVerb, [Reason.Causative]],
   ['かった', 'い', Type.Initial, Type.IAdj, [Reason.Past]],
@@ -255,6 +257,8 @@ const deinflectRuleData: Array<
   ['わない', 'う', Type.IAdj | Type.VNai, Type.GodanVerb, [Reason.Negative]],
   ['われる', 'う', Type.IchidanVerb, Type.GodanVerb, [Reason.Passive]],
   // -------------- 2 --------------
+  ['致す', '', Type.GodanVerb, Type.MasuStem, [Reason.Humble]],
+  ['致す', '', Type.GodanVerb, Type.NounVS, [Reason.SuruNoun, Reason.Humble]],
   ['えば', 'う', Type.Initial, Type.GodanVerb, [Reason.Ba]],
   ['える', 'う', Type.IchidanVerb, Type.GodanVerb, [Reason.Potential]],
   ['おう', 'う', Type.Initial, Type.GodanVerb, [Reason.Volitional]],
