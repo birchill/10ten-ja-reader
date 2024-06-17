@@ -48,7 +48,7 @@ describe('deinflect', () => {
     const match = result.find((candidate) => candidate.word === '食べる');
     expect(match).toEqual({
       reasonChains: [[Reason.MasuStem]],
-      type: 1,
+      type: WordType.IchidanVerb | WordType.KuruVerb,
       word: '食べる',
     });
   });
