@@ -156,7 +156,8 @@ const deinflectRuleData: Array<
   ['ざる得ぬ', 'ない', Type.IAdj, Type.VNai, [Reason.ZaruWoEnai]],
   ['たされる', 'つ', Type.IchidanVerb, Type.GodanVerb, [Reason.CausativePassive]],
   ['なされる', 'ぬ', Type.IchidanVerb, Type.GodanVerb, [Reason.CausativePassive]],
-  ['のたもう', 'のたまう', Type.TaTeStem, Type.GodanVerb, []],
+  ['のたまう', 'のたまう', Type.TaTeStem, Type.GodanVerb, []],
+  ['のたもう', 'のたもう', Type.TaTeStem, Type.GodanVerb, []],
   ['ばされる', 'ぶ', Type.IchidanVerb, Type.GodanVerb, [Reason.CausativePassive]],
   ['まされる', 'む', Type.IchidanVerb, Type.GodanVerb, [Reason.CausativePassive]],
   ['ましょう', '', Type.Initial, Type.MasuStem, [Reason.PoliteVolitional]],
@@ -333,6 +334,8 @@ const deinflectRuleData: Array<
   ['厭う', '厭う', Type.TaTeStem, Type.GodanVerb, []],
   ['給う', '給う', Type.TaTeStem, Type.GodanVerb, []],
   ['賜う', '賜う', Type.TaTeStem, Type.GodanVerb, []],
+  ['宣う', '宣う', Type.TaTeStem, Type.GodanVerb, []],
+  ['曰う', '曰う', Type.TaTeStem, Type.GodanVerb, []],
   // -------------- 1 --------------
   ['い', 'う', Type.MasuStem, Type.GodanVerb, [Reason.MasuStem]],
   ['い', 'く', Type.TaTeStem, Type.GodanVerb, []],
