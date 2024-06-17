@@ -115,7 +115,7 @@ export function startBugsnag() {
 
   Bugsnag.start({
     apiKey: 'e707c9ae84265d122b019103641e6462',
-    appVersion: (manifest as any).version_name || manifest.version,
+    appVersion: manifest.version_name || manifest.version,
     collectUserIp: false,
     onError: async (event: BugsnagEvent) => {
       // Fill out the user ID
@@ -154,7 +154,7 @@ export function startBugsnag() {
       // frames from extensions.
       //
       // See: https://docs.bugsnag.com/platforms/javascript/faq/?#how-can-i-get-error-reports-from-browser-extensions
-      const basePath = `https://github.com/birchill/10ten-ja-reader/releases/download/v${manifest.version}`;
+      const basePath = `https://github.com/birchill/10ten-ja-reader/releases/download/v${manifest.version_name || manifest.version}`;
       for (const error of event.exceptions) {
         for (const frame of error.stacktrace) {
           frame.file = frame.file.replace(
