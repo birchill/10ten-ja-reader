@@ -331,6 +331,9 @@
   "deinflect_continuous": {
     "message": "進行形"
   },
+  "deinflect_humble": {
+    "message": "謙譲語"
+  },
   "deinflect_humble_or_kansai_dialect": {
     "message": "謙譲語・関西弁"
   },
