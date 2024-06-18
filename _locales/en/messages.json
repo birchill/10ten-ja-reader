@@ -331,6 +331,9 @@
   "deinflect_continuous": {
     "message": "continuous"
   },
+  "deinflect_humble": {
+    "message": "humble"
+  },
   "deinflect_humble_or_kansai_dialect": {
     "message": "humble or Kansai dialect"
   },

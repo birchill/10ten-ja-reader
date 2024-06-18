@@ -331,6 +331,9 @@
   "deinflect_continuous": {
     "message": "现在进行形"
   },
+  "deinflect_humble": {
+    "message": "谦让语"
+  },
   "deinflect_humble_or_kansai_dialect": {
     "message": "谦让语或关西方言"
   },
