@@ -8,10 +8,25 @@ app.
 
 ## [Unreleased]
 
+- Extended the support for honorific speech
+  ([#1822](https://github.com/birchill/10ten-ja-reader/pull/1822)).
+  - Added imperative for くださる.
+  - Added addtional forms of ます.
+    - たら・たり and て-form
+    - Imperative
+  - Added respectful speech.
+    - Continuous form (ていらっしゃる, てらっしゃる)
+    - なさる
+    - になる
+  - Added humble speech.
+    - Continuous form (ておる, とる)
+    - masu-stem + する
+    - 致す
+  - Fixed recognition of irregular verb forms of 宣う.
 - Added support for irregular verb forms of 給う
   thanks to [@Enellis](https://github.com/Enellis)
   ([#1470](https://github.com/birchill/10ten-ja-reader/issues/1470)).
-- Fixed recognition of continuous forms of verbs with irregular te form.
+- Fixed recognition of continuous forms of verbs with irregular te form
   thanks to [@Enellis](https://github.com/Enellis)
   ([#1811](https://github.com/birchill/10ten-ja-reader/pull/1811)).
 - Fixed duplicate matching of names with both 新字体 and 旧字体
