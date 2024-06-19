@@ -9,9 +9,13 @@ app.
 ## [Unreleased]
 
 - Added support for irregular verb forms of 給う
+  thanks to [@Enellis](https://github.com/Enellis)
   ([#1470](https://github.com/birchill/10ten-ja-reader/issues/1470)).
 - Fixed recognition of continuous forms of verbs with irregular te form.
+  thanks to [@Enellis](https://github.com/Enellis)
   ([#1811](https://github.com/birchill/10ten-ja-reader/pull/1811)).
+- Fixed duplicate matching of names with both 新字体 and 旧字体
+  ([#1830](https://github.com/birchill/10ten-ja-reader/issues/1830)).
 
 ## [1.19.1] - 2024-06-08
 
