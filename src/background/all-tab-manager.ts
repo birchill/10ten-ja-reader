@@ -130,9 +130,12 @@ export default class AllTabManager implements TabManager {
     let getEnabledResult;
     try {
       getEnabledResult = await browser.storage.local.get('enabled');
-    } catch {
+    } catch (e) {
       void Bugsnag.notify(
-        new ExtensionStorageError({ key: 'enabled', action: 'get' }),
+        new ExtensionStorageError(
+          { key: 'enabled', action: 'get' },
+          { cause: e }
+        ),
         { severity: 'warning' }
       );
       return false;

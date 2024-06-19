@@ -288,9 +288,12 @@ async function setLastUpdateTime(time: number | null) {
     browser.storage.local.remove('lastUpdateKanjiDb').catch(() => {
       /* Ignore */
     });
-  } catch {
+  } catch (e) {
     void Bugsnag.notify(
-      new ExtensionStorageError({ key: 'lastDbUpdateTime', action: 'set' }),
+      new ExtensionStorageError(
+        { key: 'lastDbUpdateTime', action: 'set' },
+        { cause: e }
+      ),
       { severity: 'warning' }
     );
   }

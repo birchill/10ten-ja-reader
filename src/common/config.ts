@@ -607,17 +607,23 @@ export class Config {
     // that if we later support one of the user's more preferred languages we
     // can update them automatically.
     if (value === this.getDefaultLang()) {
-      browser.storage.sync.remove('dictLang').catch(() => {
+      browser.storage.sync.remove('dictLang').catch((e) => {
         void Bugsnag.notify(
-          new ExtensionStorageError({ key: 'dictLang', action: 'remove' }),
+          new ExtensionStorageError(
+            { key: 'dictLang', action: 'remove' },
+            { cause: e }
+          ),
           { severity: 'warning' }
         );
       });
       delete this.settings.dictLang;
     } else {
-      browser.storage.sync.set({ dictLang: value }).catch(() => {
+      browser.storage.sync.set({ dictLang: value }).catch((e) => {
         void Bugsnag.notify(
-          new ExtensionStorageError({ key: 'dictLang', action: 'set' }),
+          new ExtensionStorageError(
+            { key: 'dictLang', action: 'set' },
+            { cause: e }
+          ),
           { severity: 'warning' }
         );
       });
