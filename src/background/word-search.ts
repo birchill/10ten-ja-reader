@@ -40,7 +40,7 @@ export async function wordSearch({
   includeRomaji: boolean;
 }): Promise<WordSearchResult | null> {
   let longestMatch = 0;
-  let have: Set<number> = new Set();
+  let have = new Set<number>();
   const result: WordSearchResult = {
     type: 'words',
     data: [],
