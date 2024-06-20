@@ -1,10 +1,10 @@
 import { useLocale } from '../common/i18n';
 import { StoredKeyboardKeys } from '../common/popup-keys';
 
-import type { Command } from './commands';
 import { PopupKeysForm } from './PopupKeysForm';
 import { type HoldToShowSetting, ShowPopupKeysForm } from './ShowPopupKeysForm';
 import { ResetShortcut, ToggleKeyForm } from './ToggleKeyForm';
+import type { Command } from './commands';
 
 type Props = {
   holdToShowImageKeys: HoldToShowSetting;

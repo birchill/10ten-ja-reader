@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill';
 
 import { html } from '../../utils/builder';
+
 import { renderCross } from './icons';
 
 export function renderCloseButton(

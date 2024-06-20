@@ -1,5 +1,5 @@
-import { getHash } from '../utils/hash';
 import { HTML_NS, SVG_NS } from '../utils/dom-utils';
+import { getHash } from '../utils/hash';
 
 import { isForeignObjectElement, isSvgDoc } from './svg';
 

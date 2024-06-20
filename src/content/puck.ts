@@ -1,4 +1,6 @@
 /// <reference path="../common/css.d.ts" />
+import puckStyles from '../../css/puck.css?inline';
+
 import { PuckState } from '../common/puck-state';
 import { SVG_NS } from '../utils/dom-utils';
 import { MarginBox } from '../utils/geometry';
@@ -12,8 +14,6 @@ import {
 import { getIframeOrigin } from './iframes';
 import { isPopupWindowHostElem } from './popup/popup-container';
 import type { SafeAreaProvider } from './safe-area-provider';
-
-import puckStyles from '../../css/puck.css?inline';
 
 interface ViewportDimensions {
   viewportWidth: number;

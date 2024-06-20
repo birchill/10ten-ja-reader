@@ -1,4 +1,7 @@
+import { ContentHandler } from '../src/content/content';
+
 import { browser } from './browser-polyfill';
+
 (window as any).browser = browser;
 
 // Make sure the browser polyfill believes we are in an extension context
@@ -7,8 +10,6 @@ import { browser } from './browser-polyfill';
     id: 'test',
   },
 };
-
-import { ContentHandler } from '../src/content/content';
 
 declare global {
   interface Window {

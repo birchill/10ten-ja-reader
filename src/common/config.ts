@@ -9,7 +9,6 @@
 //
 // * Provides a snapshot of all options with their default values filled-in for
 //   passing to the content process.
-
 import Bugsnag from '@birchill/bugsnag-zero';
 import browser from 'webextension-polyfill';
 
@@ -33,9 +32,9 @@ import { ExtensionStorageError } from './extension-storage-error';
 import { PopupKeys, StoredKeyboardKeys } from './popup-keys';
 import { PuckState } from './puck-state';
 import {
+  ReferenceAbbreviation,
   convertLegacyReference,
   getReferencesForLang,
-  ReferenceAbbreviation,
 } from './refs';
 
 // We represent the set of references that have been turned on as a series

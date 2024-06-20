@@ -1,15 +1,15 @@
 import { html } from '../utils/builder';
 import {
+  SVG_NS,
   isElement,
   isTextInputNode,
   isTextNode,
-  SVG_NS,
 } from '../utils/dom-utils';
 import {
-  bboxIncludesPoint,
-  getBboxForNodeList,
   Point,
   Rect,
+  bboxIncludesPoint,
+  getBboxForNodeList,
 } from '../utils/geometry';
 import {
   getBboxForSingleCodepointRange,

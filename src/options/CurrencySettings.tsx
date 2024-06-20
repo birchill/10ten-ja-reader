@@ -4,8 +4,8 @@ import type { Config } from '../common/config';
 import { useLocale } from '../common/i18n';
 
 import { CurrencySettingsForm } from './CurrencySettingsForm';
-import { useConfigValue } from './use-config-value';
 import { SectionHeading } from './SectionHeading';
+import { useConfigValue } from './use-config-value';
 
 type Props = {
   config: Config;

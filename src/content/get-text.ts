@@ -1,4 +1,4 @@
-import { bboxIncludesPoint, Point } from '../utils/geometry';
+import { Point, bboxIncludesPoint } from '../utils/geometry';
 import {
   getBboxForSingleCodepointRange,
   getRangeForSingleCodepoint,

@@ -1,16 +1,18 @@
 import {
-  allMajorDataSeries,
-  cancelUpdateWithRetry,
-  clearCachedVersionInfo,
   DataSeries,
   JpdictIdb,
   MajorDataSeries,
-  toUpdateErrorState,
   UpdateErrorState,
+  allMajorDataSeries,
+  cancelUpdateWithRetry,
+  clearCachedVersionInfo,
+  toUpdateErrorState,
   updateWithRetry,
 } from '@birchill/jpdict-idb';
 
 import { requestIdleCallbackPromise } from '../utils/request-idle-callback';
+
+import { JpdictState } from './jpdict';
 import {
   JpdictEvent,
   leaveBreadcrumb,
@@ -18,7 +20,6 @@ import {
   notifyDbUpdateComplete,
   notifyError,
 } from './jpdict-events';
-import { JpdictState } from './jpdict';
 
 export type JpdictListener = (event: JpdictEvent) => void;
 
@@ -340,7 +341,7 @@ export class JpdictLocalBackend implements JpdictBackend {
     const lastCheck = getLatestCheckTime(this.db);
     const updateState = this.currentUpdate
       ? this.db[this.currentUpdate.series].updateState
-      : { type: <const>'idle', lastCheck };
+      : { type: 'idle' as const, lastCheck };
 
     const state: JpdictState = {
       words: {

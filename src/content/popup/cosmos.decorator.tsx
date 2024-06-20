@@ -1,9 +1,9 @@
 import type { RenderableProps } from 'preact';
+import { useLayoutEffect } from 'preact/hooks';
 import { useFixtureInput, useFixtureSelect } from 'react-cosmos/client';
 
 import { I18nProvider } from '../../common/i18n';
 import { EmptyProps } from '../../utils/type-helpers';
-import { useLayoutEffect } from 'preact/hooks';
 
 export default ({ children }: RenderableProps<EmptyProps>) => {
   const [locale] = useFixtureSelect('locale', {

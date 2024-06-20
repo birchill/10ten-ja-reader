@@ -5,8 +5,8 @@ import { DbLanguageId } from '../common/db-languages';
 import { useLocale } from '../common/i18n';
 
 import { DictionaryLanguageSettingsForm } from './DictionaryLanguageSettingsForm';
-import { useConfigValue } from './use-config-value';
 import { SectionHeading } from './SectionHeading';
+import { useConfigValue } from './use-config-value';
 
 type Props = {
   config: Config;

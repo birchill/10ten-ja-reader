@@ -1,3 +1,5 @@
+// sort-imports-ignore
+
 /**
  * @vitest-environment jsdom
  */

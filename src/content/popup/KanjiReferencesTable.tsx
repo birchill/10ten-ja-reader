@@ -3,8 +3,8 @@ import { useMemo } from 'preact/hooks';
 
 import { useLocale } from '../../common/i18n';
 import {
-  getSelectedReferenceLabels,
   ReferenceAbbreviation,
+  getSelectedReferenceLabels,
 } from '../../common/refs';
 import { classes } from '../../utils/classes';
 

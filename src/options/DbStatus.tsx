@@ -1,22 +1,22 @@
 import {
-  allDataSeries,
-  allMajorDataSeries,
   type DataSeriesState,
   type DataVersion,
   MajorDataSeries,
+  allDataSeries,
+  allMajorDataSeries,
 } from '@birchill/jpdict-idb';
+import { VariantPropsOf, variantProps } from 'classname-variants/react';
+import { RenderableProps } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
-import { variantProps, VariantPropsOf } from 'classname-variants/react';
 
 import { JpdictState } from '../background/jpdict';
-import { useLocale } from '../common/i18n';
 import { localizedDataSeriesKey } from '../common/data-series-labels';
+import { useLocale } from '../common/i18n';
 import { classes } from '../utils/classes';
 import { isFirefox } from '../utils/ua-utils';
 
 import { Linkify } from './Linkify';
 import { formatDate, formatSize } from './format';
-import { RenderableProps } from 'preact';
 
 type Props = {
   dbState: JpdictState;

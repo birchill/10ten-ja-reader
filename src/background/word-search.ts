@@ -7,17 +7,17 @@ import { toRomaji } from '../utils/romaji';
 
 import {
   CandidateWord,
+  WordType,
   deinflect,
   deinflectL10NKeys,
-  WordType,
 } from './deinflect';
 import {
   DictionaryWordResult,
   WordResult,
   WordSearchResult,
 } from './search-result';
-import { endsInYoon } from './yoon';
 import { sortWordResults } from './word-match-sorting';
+import { endsInYoon } from './yoon';
 
 export type GetWordsFunction = (params: {
   input: string;

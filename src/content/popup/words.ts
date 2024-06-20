@@ -1,9 +1,9 @@
 import {
   Gloss,
-  groupSenses,
   KanjiInfo,
   LangSource,
   ReadingInfo,
+  groupSenses,
 } from '@birchill/jpdict-idb';
 import { countMora, moraSubstring } from '@birchill/normal-jp';
 import browser from 'webextension-polyfill';
@@ -21,9 +21,9 @@ import { renderStar } from './icons';
 import { getLangTag } from './lang-tag';
 import { renderMetadata } from './metadata';
 import { renderName } from './names';
-import type { ShowPopupOptions, StartCopyCallback } from './show-popup';
 import { getSelectedIndex } from './selected-index';
 import { popupHasSelectedText } from './selection';
+import type { ShowPopupOptions, StartCopyCallback } from './show-popup';
 
 export function renderWordEntries({
   entries,

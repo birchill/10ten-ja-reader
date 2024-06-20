@@ -1,10 +1,10 @@
 import Bugsnag, {
+  Event as BugsnagEvent,
   appDuration,
   browserContext,
   browserHandledRejectionBreadcrumbs,
   browserNotifyUnhandledExceptions,
   browserNotifyUnhandledRejections,
-  Event as BugsnagEvent,
   consoleBreadcrumbs,
   deviceOrientation,
   errorBreadcrumbs,
@@ -15,9 +15,10 @@ import Bugsnag, {
   stringifyValues,
 } from '@birchill/bugsnag-zero';
 import browser from 'webextension-polyfill';
-import { ExtensionStorageError } from '../common/extension-storage-error';
-import { isObject } from './is-object';
 
+import { ExtensionStorageError } from '../common/extension-storage-error';
+
+import { isObject } from './is-object';
 import { getReleaseStage } from './release-stage';
 
 const getExtensionInstallId = async (): Promise<string> => {

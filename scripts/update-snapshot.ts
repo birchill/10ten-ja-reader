@@ -1,6 +1,6 @@
 import { kanaToHiragana } from '@birchill/normal-jp';
-import * as https from 'node:https';
 import * as fs from 'node:fs';
+import * as https from 'node:https';
 import {
   Readable,
   Transform,

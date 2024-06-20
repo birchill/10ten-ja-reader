@@ -1,5 +1,6 @@
 /// <reference path="../common/constants.d.ts" />
 /// <reference path="./mail-extensions.d.ts" />
+
 /*
 
   10ten Japanese Reader
@@ -45,13 +46,12 @@
   when modifying any of the files. - Jon
 
 */
-
-import '../../manifest.json.src';
-
-import { AbortError, allDataSeries } from '@birchill/jpdict-idb';
 import Bugsnag from '@birchill/bugsnag-zero';
+import { AbortError, allDataSeries } from '@birchill/jpdict-idb';
 import * as s from 'superstruct';
 import browser, { Runtime, Tabs } from 'webextension-polyfill';
+
+import '../../manifest.json.src';
 
 import { Config } from '../common/config';
 import {
@@ -73,11 +73,11 @@ import { registerMenuListeners, updateContextMenus } from './context-menus';
 import { FxFetcher } from './fx-fetcher';
 import { isCurrentTabEnabled } from './is-current-tab-enabled';
 import {
+  JpdictStateWithFallback,
   cancelUpdateDb,
   deleteDb,
   initDb,
   searchWords as jpdictSearchWords,
-  JpdictStateWithFallback,
   searchKanji,
   searchNames,
   translate,

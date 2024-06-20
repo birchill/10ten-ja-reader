@@ -1,11 +1,11 @@
-import webpack from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import { createRequire } from 'node:module';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import webpack from 'webpack';
 
-import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const pjson = require('./package.json');
 

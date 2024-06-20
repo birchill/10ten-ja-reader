@@ -1,6 +1,6 @@
 import type { JpdictState } from '../background/jpdict';
-import { DbStatus } from './DbStatus';
 
+import { DbStatus } from './DbStatus';
 import './options.css';
 
 const now = new Date();

@@ -1,4 +1,4 @@
-import { createContext, RenderableProps } from 'preact';
+import { RenderableProps, createContext } from 'preact';
 import {
   useContext,
   useEffect,

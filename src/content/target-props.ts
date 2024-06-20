@@ -1,10 +1,10 @@
-import { Rect } from '../utils/geometry';
 import { isTextInputNode, isVerticalText } from '../utils/dom-utils';
+import { Rect } from '../utils/geometry';
 
-import { getGdocsRangeBboxes, isGdocsSpan } from './gdocs-canvas';
-import { TextRange } from './text-range';
 import { getContentType } from './content-type';
+import { getGdocsRangeBboxes, isGdocsSpan } from './gdocs-canvas';
 import { getScrollOffset, toPageCoords, toScreenCoords } from './scroll-offset';
+import { TextRange } from './text-range';
 
 /// Properties about the target element from which we started lookup needed
 /// so that we can correctly position the popup in a way that doesn't overlap

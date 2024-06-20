@@ -1,11 +1,11 @@
 import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
 import tsParser from '@typescript-eslint/parser';
 import tailwind from 'eslint-plugin-tailwindcss';
 import vitest from 'eslint-plugin-vitest';
 import globals from 'globals';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import tseslint from 'typescript-eslint';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,14 +36,6 @@ export default [
       'prefer-const': ['error', { destructuring: 'all' }],
       quotes: ['error', 'single', { avoidEscape: true }],
       semi: ['error', 'always'],
-      'sort-imports': [
-        'error',
-        {
-          ignoreCase: true,
-          ignoreDeclarationSort: true,
-          allowSeparatedGroups: true,
-        },
-      ],
 
       'tailwindcss/classnames-order': 'off',
       'tailwindcss/no-custom-classname': 'off',

@@ -1,3 +1,5 @@
+// sort-imports-ignore
+
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('webextension-polyfill', () => ({

@@ -1,7 +1,6 @@
 import { useSelect } from 'react-cosmos/client';
 
 import { ToolbarIconRadio } from './ToolbarIconRadio';
-
 import './options.css';
 
 export default function () {

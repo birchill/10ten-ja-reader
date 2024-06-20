@@ -1,8 +1,8 @@
 import type { ComponentProps, RenderableProps } from 'preact';
+import { forwardRef } from 'preact/compat';
 import { useId } from 'preact/hooks';
 
 import { classes } from '../utils/classes';
-import { forwardRef } from 'preact/compat';
 
 type KeyboxProps = {
   label: string;

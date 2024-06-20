@@ -1,4 +1,5 @@
 import { getCombinedCharRange, getNegatedCharRange } from '../utils/char-range';
+
 import { parseNumber } from './numbers';
 
 export function lookForEra({

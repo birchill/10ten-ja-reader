@@ -3,9 +3,9 @@ import {
   extractCurrencyMetadata,
   lookForCurrency,
 } from './currency';
-import { extractMeasureMetadata, lookForMeasure, MeasureMeta } from './measure';
-import { extractNumberMetadata, NumberMeta } from './numbers';
-import { extractShogiMetadata, lookForShogi, ShogiMeta } from './shogi';
+import { MeasureMeta, extractMeasureMetadata, lookForMeasure } from './measure';
+import { NumberMeta, extractNumberMetadata } from './numbers';
+import { ShogiMeta, extractShogiMetadata, lookForShogi } from './shogi';
 import { EraMeta, extractEraMetadata, lookForEra } from './years';
 
 export type SelectionMeta =

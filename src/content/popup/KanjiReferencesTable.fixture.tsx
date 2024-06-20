@@ -1,4 +1,5 @@
 import { ReferenceAbbreviation } from '../../common/refs';
+
 import { KanjiReferencesTable } from './KanjiReferencesTable';
 
 const TEST_ENTRY = {

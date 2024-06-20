@@ -1,4 +1,5 @@
 import { nonJapaneseChar } from '../utils/char-range';
+
 import { CursorPosition } from './get-cursor-position';
 import { GetTextAtPointResult } from './get-text';
 import { extractGetTextMetadata, lookForMetadata } from './meta';
@@ -62,7 +63,7 @@ export function scanText({
     // be the same node. We only tend to reach that case, however, when our
     // offset corresponds to the end of the text so we just detect that case
     // earlier on and don't bother checking it here.
-    node = <Text>treeWalker.nextNode();
+    node = treeWalker.nextNode() as Text;
     offset = 0;
   } while (node);
   // (This should probably not traverse block siblings but oh well)
@@ -136,7 +137,7 @@ export function scanText({
       start: offset,
       end: node.data.length,
     });
-    node = <Text>treeWalker.nextNode();
+    node = treeWalker.nextNode() as Text;
     offset = 0;
   } while (
     node &&

@@ -8,8 +8,8 @@ import { KanjiReferencesTable } from './KanjiReferencesTable';
 import { renderFrequency, renderPencil, renderPerson } from './icons';
 import { getLangTag } from './lang-tag';
 import { getSelectedIndex } from './selected-index';
-import { ShowPopupOptions } from './show-popup';
 import { popupHasSelectedText } from './selection';
+import { ShowPopupOptions } from './show-popup';
 
 export function renderKanjiEntries({
   entries,

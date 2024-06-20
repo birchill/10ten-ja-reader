@@ -3,8 +3,8 @@ import { useMemo } from 'preact/hooks';
 import { DbLanguageId } from '../common/db-languages';
 import { useLocale } from '../common/i18n';
 import {
-  getReferenceLabelsForLang,
   type ReferenceAbbreviation,
+  getReferenceLabelsForLang,
 } from '../common/refs';
 
 import { CheckboxRow } from './CheckboxRow';

@@ -1,6 +1,6 @@
 import { useSelect, useValue } from 'react-cosmos/client';
-import { MouseInteractivityRadio } from './MouseInteractivityRadio';
 
+import { MouseInteractivityRadio } from './MouseInteractivityRadio';
 import './options.css';
 
 export default function () {

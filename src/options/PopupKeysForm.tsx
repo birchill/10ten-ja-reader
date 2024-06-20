@@ -1,12 +1,12 @@
 import { useRef } from 'preact/hooks';
 
-import { PopupKeys, type StoredKeyboardKeys } from '../common/popup-keys';
-import { useLocale } from '../common/i18n';
 import { CopyKeys, CopyNextKeyStrings } from '../common/copy-keys';
+import { useLocale } from '../common/i18n';
+import { PopupKeys, type StoredKeyboardKeys } from '../common/popup-keys';
 import { classes } from '../utils/classes';
 
-import { NewBadge } from './NewBadge';
 import { KeyBox, KeyCheckbox } from './KeyBox';
+import { NewBadge } from './NewBadge';
 
 const newKeys = ['expandPopup'];
 

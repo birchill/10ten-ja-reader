@@ -4,10 +4,9 @@ import { useSelect, useValue } from 'react-cosmos/client';
 import { PopupKeys, StoredKeyboardKeys } from '../common/popup-keys';
 import { isMac } from '../utils/ua-utils';
 
-import { Command } from './commands';
 import { KeyboardSettingsForm } from './KeyboardSettingsForm';
 import { ResetShortcut } from './ToggleKeyForm';
-
+import { Command } from './commands';
 import './options.css';
 
 export default function () {
