@@ -33,7 +33,7 @@ jobs:
       # almost identical to build:chrome
       - name: Build
         run: |-
-          yarn install --frozen-lockfile --network-timeout 300000
+          yarn install --frozen-lockfile
           yarn build:firefox
           yarn build:chrome
           yarn build:thunderbird
@@ -42,12 +42,6 @@ jobs:
         env:
           CI: true
         run: yarn test
-
-      - name: knip
-        run: yarn knip
-
-      - name: Check formatting
-        run: yarn prettier --check _locales css scripts src tests "*.{js,json,md,ts}"
 
       # Check packaging doesn't error. Again, no need to worry about the
       # package:edge target.
@@ -58,3 +52,36 @@ jobs:
 
       - name: Verify cosmos setup
         run: yarn cosmos-export
+
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: 20
+          cache: yarn
+
+      # See https://github.com/yarnpkg/yarn/issues/1874
+      #     https://github.com/yarnpkg/yarn/issues/3728
+      - name: Pre-install node-gyp
+        run: |-
+          npm install -g node-gyp
+          node-gyp install
+
+      - name: Install
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn eslint scripts src tests "*.{cjs,js,json,ts}"
+
+      - name: Check formatting
+        run: yarn prettier --check _locales css scripts src tests "*.{js,json,md,ts}"
+
+      - name: knip
+        run: yarn knip
