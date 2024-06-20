@@ -1,4 +1,3 @@
-/* eslint-env node */
 /* eslint @typescript-eslint/no-var-requires: 0 */
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
