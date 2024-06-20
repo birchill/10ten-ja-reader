@@ -32,7 +32,11 @@ export function CurrencySettingsForm(props: Props) {
         }}
       >
         {options.map(([value, label]) => (
-          <option value={value} selected={value === props.selectedCurrency}>
+          <option
+            key={value}
+            value={value}
+            selected={value === props.selectedCurrency}
+          >
             {label}
           </option>
         ))}

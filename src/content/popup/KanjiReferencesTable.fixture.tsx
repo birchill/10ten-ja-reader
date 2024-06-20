@@ -76,8 +76,8 @@ function ReferencesVariant({
   );
 }
 
-export default function () {
-  return (
+export default {
+  default: (
     <div
       style={{
         background: 'var(--bg-color)',
@@ -166,5 +166,5 @@ export default function () {
         ]}
       />
     </div>
-  );
-}
+  ),
+};

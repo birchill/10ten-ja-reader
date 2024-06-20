@@ -6,7 +6,7 @@ import { HighlightStyle } from '../common/content-config-params';
 import { GeneralSettingsForm } from './GeneralSettingsForm';
 import './options.css';
 
-export default function () {
+export default function GeneralSettingsFormFixture() {
   const [toolbarIcon, setToolbarIcon] = useSelect<'default' | 'sky'>(
     'toolbarIcon',
     {

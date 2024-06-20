@@ -95,6 +95,7 @@ export function KanjiReferencesTable({ entry, kanjiReferences }: Props) {
     >
       {referenceTableInfo.map((cellInfo) => (
         <div
+          key={cellInfo.name.value}
           class={classes(
             'tp-flex tp-justify-between',
             'tp-rounded-lg tp-px-[--bg-overhang] tp-py-0.5',

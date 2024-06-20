@@ -5,7 +5,9 @@ import { useSelect } from 'react-cosmos/client';
 import { I18nProvider } from '../common/i18n';
 import { EmptyProps } from '../utils/type-helpers';
 
-export default ({ children }: RenderableProps<EmptyProps>) => {
+export default function OptionsDecorator({
+  children,
+}: RenderableProps<EmptyProps>) {
   const [locale] = useSelect('locale', {
     options: ['en', 'ja', 'zh_hans'],
   });
@@ -18,4 +20,4 @@ export default ({ children }: RenderableProps<EmptyProps>) => {
   }, []);
 
   return <I18nProvider locale={locale}>{children}</I18nProvider>;
-};
+}

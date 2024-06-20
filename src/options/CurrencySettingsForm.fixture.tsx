@@ -3,7 +3,7 @@ import { useState } from 'preact/hooks';
 import { CurrencySettingsForm } from './CurrencySettingsForm';
 import './options.css';
 
-export default function () {
+export default function CurrentSettingsFormFixture() {
   const [value, setValue] = useState('JPY');
 
   return (

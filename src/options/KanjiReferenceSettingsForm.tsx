@@ -49,7 +49,7 @@ export function KanjiReferenceSettingsForm(props: Props) {
       style={{ gridTemplateRows }}
     >
       {references.map(({ ref, full }) => (
-        <CheckboxRow>
+        <CheckboxRow key={ref}>
           <input
             type="checkbox"
             id={`ref-${ref}`}
