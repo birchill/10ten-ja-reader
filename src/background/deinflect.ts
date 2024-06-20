@@ -619,7 +619,7 @@ export function deinflect(word: string): CandidateWord[] {
         }
 
         const candidate: CandidateWord = {
-          reasonChains: reasonChains,
+          reasonChains,
           type: rule.toType,
           word: newWord,
         };
