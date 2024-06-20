@@ -425,8 +425,8 @@ describe('deinflect', () => {
   it('deinflects 致す as humble speech for する', () => {
     // prettier-ignore
     const cases: Array<[string, string, Array<Reason>]> = [
-      ['お願いいたします','お願い',[Reason.SuruNoun, Reason.Humble, Reason.Polite]],
-      ['お願い致します','お願い',[Reason.SuruNoun, Reason.Humble, Reason.Polite]],
+      ['お願いいたします','お願い', [Reason.SuruNoun, Reason.Humble, Reason.Polite]],
+      ['お願い致します','お願い', [Reason.SuruNoun, Reason.Humble, Reason.Polite]],
       ['待ちいたします', '待つ', [Reason.Humble, Reason.Polite]],
       ['待ち致します', '待つ', [Reason.Humble, Reason.Polite]],
       ['食べいたします', '食べる', [Reason.Humble, Reason.Polite]],
