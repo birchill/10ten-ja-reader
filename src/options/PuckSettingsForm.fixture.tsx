@@ -1,7 +1,6 @@
 import { useState } from 'preact/hooks';
 
 import { PuckSettingsForm, type ShowPuckSetting } from './PuckSettingsForm';
-
 import './options.css';
 
 export default function () {

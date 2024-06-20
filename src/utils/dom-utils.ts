@@ -85,9 +85,9 @@ export function isTextInputNode(
   return (
     !!node &&
     node.nodeType === Node.ELEMENT_NODE &&
-    (((<Element>node).tagName === 'INPUT' &&
-      allowedInputTypes.includes((<HTMLInputElement>node).type)) ||
-      (<Element>node).tagName === 'TEXTAREA')
+    (((node as Element).tagName === 'INPUT' &&
+      allowedInputTypes.includes((node as HTMLInputElement).type)) ||
+      (node as Element).tagName === 'TEXTAREA')
   );
 }
 

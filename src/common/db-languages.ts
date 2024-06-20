@@ -1,4 +1,4 @@
-export const dbLanguages = <const>[
+export const dbLanguages = [
   'de',
   'en',
   'es',
@@ -9,7 +9,7 @@ export const dbLanguages = <const>[
   'ru',
   'sl',
   'sv',
-];
+] as const;
 
 export type DbLanguageId = (typeof dbLanguages)[number];
 

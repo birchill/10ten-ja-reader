@@ -2,6 +2,7 @@ import type { JSX } from 'preact';
 
 import { TabDisplay } from '../common/content-config-params';
 import { useLocale } from '../common/i18n';
+
 import { CheckboxRow } from './CheckboxRow';
 import { MouseInteractivityRadio } from './MouseInteractivityRadio';
 import { TabDisplayRadio } from './TabDisplayRadio';

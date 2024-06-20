@@ -1,7 +1,6 @@
 import { useState } from 'preact/hooks';
 
 import { CurrencySettingsForm } from './CurrencySettingsForm';
-
 import './options.css';
 
 export default function () {

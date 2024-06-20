@@ -1,7 +1,8 @@
+// sort-imports-ignore
+
 /**
  * @vitest-environment jsdom
  */
-
 import { readFile } from 'fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import createFetchMock from 'vitest-fetch-mock';

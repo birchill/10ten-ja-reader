@@ -19,13 +19,13 @@ import { toScreenCoords } from '../scroll-offset';
 import { isForeignObjectElement, isSvgDoc, isSvgSvgElement } from '../svg';
 
 import type { CopyState } from './copy-state';
-import { renderPopup, renderPopupArrow } from './render-popup';
 import {
-  getPopupPosition,
   type PopupPosition,
   type PopupPositionConstraints,
   type PopupPositionMode,
+  getPopupPosition,
 } from './popup-position';
+import { renderPopup, renderPopupArrow } from './render-popup';
 
 // There are a _lot_ of options here. Once we've converted the popup to Preact
 // we should be able to move some of this state into component state.

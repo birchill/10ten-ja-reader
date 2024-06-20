@@ -3,8 +3,8 @@ import { useSelect } from 'react-cosmos/client';
 
 import { DbLanguageId, dbLanguages } from '../common/db-languages';
 import { ReferenceAbbreviation } from '../common/refs';
-import { KanjiReferenceSettingsForm } from './KanjiReferenceSettingsForm';
 
+import { KanjiReferenceSettingsForm } from './KanjiReferenceSettingsForm';
 import './options.css';
 
 export default function () {

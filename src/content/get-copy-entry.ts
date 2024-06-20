@@ -1,4 +1,5 @@
 import { MajorDataSeries } from '@birchill/jpdict-idb';
+
 import { CopyEntry } from './copy-text';
 import { QueryResult } from './query';
 

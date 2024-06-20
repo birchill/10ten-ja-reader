@@ -3,18 +3,22 @@ import {
   DataSeries,
   DataSeriesState,
   DataVersion,
-  getKanji,
-  getWords as idbGetWords,
   UpdateErrorState,
   UpdateState,
+  getKanji,
+  getWords as idbGetWords,
 } from '@birchill/jpdict-idb';
 import { kanaToHiragana } from '@birchill/normal-jp';
 import browser from 'webextension-polyfill';
 
 import { ExtensionStorageError } from '../common/extension-storage-error';
 import { normalizeInput } from '../utils/normalize-input';
+import { JpdictWorkerBackend } from '../worker/jpdict-worker-backend';
 
-import { FlatFileDatabaseLoader, FlatFileDatabaseLoadState } from './flat-file';
+import { FlatFileDatabaseLoadState, FlatFileDatabaseLoader } from './flat-file';
+import { JpdictBackend, JpdictLocalBackend } from './jpdict-backend';
+import { JpdictEvent } from './jpdict-events';
+import { nameSearch } from './name-search';
 import {
   KanjiSearchResult,
   NameSearchResult,
@@ -22,10 +26,6 @@ import {
   WordSearchResult,
 } from './search-result';
 import { GetWordsFunction, wordSearch } from './word-search';
-import { nameSearch } from './name-search';
-import { JpdictWorkerBackend } from '../worker/jpdict-worker-backend';
-import { JpdictBackend, JpdictLocalBackend } from './jpdict-backend';
-import { JpdictEvent } from './jpdict-events';
 
 //
 // Exported types

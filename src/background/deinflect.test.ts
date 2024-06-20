@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { deinflect, Reason, WordType } from './deinflect';
+import { Reason, WordType, deinflect } from './deinflect';
 
 describe('deinflect', () => {
   it('performs de-inflection', () => {

@@ -1,6 +1,6 @@
 import Bugsnag from '@birchill/bugsnag-zero';
-import browser from 'webextension-polyfill';
 import * as s from 'superstruct';
+import browser from 'webextension-polyfill';
 
 import { ExtensionStorageError } from '../common/extension-storage-error';
 import { fetchWithTimeout } from '../utils/fetch';

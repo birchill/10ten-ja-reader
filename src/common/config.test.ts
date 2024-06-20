@@ -1,14 +1,15 @@
+// sort-imports-ignore
+
 /**
  * @vitest-environment jsdom
  */
-
 import {
+  type MockInstance,
   afterEach,
   beforeEach,
   describe,
   expect,
   it,
-  type MockInstance,
   vi,
 } from 'vitest';
 

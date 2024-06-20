@@ -2,14 +2,15 @@ import type { JSX } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 
 import { useLocale } from '../common/i18n';
+
+import { KeyBox, KeyCheckbox, KeyInput } from './KeyBox';
+import { Linkify } from './Linkify';
 import {
   Command,
   CommandError,
   type CommandParams,
   isValidKey,
 } from './commands';
-import { KeyBox, KeyCheckbox, KeyInput } from './KeyBox';
-import { Linkify } from './Linkify';
 
 export const ResetShortcut = Symbol('reset');
 

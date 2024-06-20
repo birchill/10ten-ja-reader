@@ -1,7 +1,7 @@
 import { JpdictState } from '../background/jpdict';
 import { serializeError } from '../utils/serialize-error';
 
-export const queryState = () => ({ type: <const>'querystate' });
+export const queryState = () => ({ type: 'querystate' as const });
 
 export const updateDb = ({
   lang,
@@ -10,38 +10,38 @@ export const updateDb = ({
   lang: string;
   force: boolean;
 }) => ({
-  type: <const>'update',
+  type: 'update' as const,
   lang,
   force,
 });
 
-export const cancelUpdateDb = () => ({ type: <const>'cancelupdate' });
+export const cancelUpdateDb = () => ({ type: 'cancelupdate' as const });
 
-export const deleteDb = () => ({ type: <const>'delete' });
+export const deleteDb = () => ({ type: 'delete' as const });
 
 export const notifyDbStateUpdated = (state: JpdictState) => ({
-  type: <const>'dbstateupdated',
+  type: 'dbstateupdated' as const,
   state,
 });
 
 export const notifyDbUpdateComplete = (lastCheck: Date | null) => ({
-  type: <const>'dbupdatecomplete',
+  type: 'dbupdatecomplete' as const,
   lastCheck,
 });
 
 export const leaveBreadcrumb = ({ message }: { message: string }) => ({
-  type: <const>'breadcrumb',
+  type: 'breadcrumb' as const,
   message,
 });
 
 export const notifyError = ({
   error,
-  severity = <const>'error',
+  severity = 'error',
 }: {
   error: Error;
   severity?: 'error' | 'warning';
 }) => ({
-  type: <const>'error',
+  type: 'error' as const,
   severity,
   ...serializeError(error),
   stack: error.stack,

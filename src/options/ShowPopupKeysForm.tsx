@@ -1,6 +1,7 @@
 import { useRef } from 'preact/hooks';
 
 import { useLocale } from '../common/i18n';
+
 import { KeyBox, KeyCheckbox } from './KeyBox';
 
 export type HoldToShowSetting = {

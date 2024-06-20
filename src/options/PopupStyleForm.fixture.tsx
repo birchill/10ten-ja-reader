@@ -1,5 +1,7 @@
 import { useState } from 'preact/hooks';
 
+import '../../css/popup-fonts.css';
+
 import type {
   AccentDisplay,
   AutoExpandableEntry,
@@ -7,12 +9,10 @@ import type {
   FontSize,
   PartOfSpeechDisplay,
 } from '../common/content-config-params';
+import '../content/popup/popup.css';
 
 import { PopupStyleForm } from './PopupStyleForm';
-
 import './options.css';
-import '../content/popup/popup.css';
-import '../../css/popup-fonts.css';
 
 export default function () {
   const [theme, setTheme] = useState<string>('default');

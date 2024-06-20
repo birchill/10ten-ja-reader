@@ -2,8 +2,8 @@ import type { Config } from '../common/config';
 import { I18nProvider } from '../common/i18n';
 import { possiblyHasPhysicalKeyboard } from '../utils/device';
 
-import { CurrencySettings } from './CurrencySettings';
 import { CopySettings } from './CopySettings';
+import { CurrencySettings } from './CurrencySettings';
 import { DictionaryDataSettings } from './DictionaryDataSettings';
 import { DictionaryLanguageSettings } from './DictionaryLanguageSettings';
 import { GeneralSettings } from './GeneralSettings';

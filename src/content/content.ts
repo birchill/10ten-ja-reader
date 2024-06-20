@@ -1,4 +1,5 @@
 /// <reference path="../common/constants.d.ts" />
+
 /*
 
   10ten Japanese Reader
@@ -45,7 +46,6 @@
   when modifying any of the files. - Jon
 
 */
-
 import type { MajorDataSeries } from '@birchill/jpdict-idb';
 import * as s from 'superstruct';
 import browser, { Runtime } from 'webextension-polyfill';
@@ -58,11 +58,11 @@ import {
 import { CopyKeys, CopyType } from '../common/copy-keys';
 import { isEditableNode, isInteractiveElement } from '../utils/dom-utils';
 import {
-  addMarginToPoint,
-  getMarginAroundPoint,
   MarginBox,
   Point,
   Rect,
+  addMarginToPoint,
+  getMarginAroundPoint,
   union,
 } from '../utils/geometry';
 import { mod } from '../utils/mod';
@@ -71,18 +71,22 @@ import { WithRequired } from '../utils/type-helpers';
 import { isSafari } from '../utils/ua-utils';
 
 import { copyText } from './clipboard';
+import { ContentConfig, ContentConfigChange } from './content-config';
 import { CopyEntry, getTextToCopy } from './copy-text';
 import { injectGdocsStyles, removeGdocsStyles } from './gdocs-canvas';
 import { getCopyEntryFromResult } from './get-copy-entry';
 import { getTextAtPoint } from './get-text';
 import {
+  IframeSearchParams,
+  IframeSourceParams,
   findIframeElement,
   getIframeOrigin,
   getWindowDimensions,
-  IframeSearchParams,
-  IframeSourceParams,
 } from './iframes';
+import { hasModifiers, normalizeKey, normalizeKeys } from './keyboard';
 import { SelectionMeta } from './meta';
+import { DisplayMode, PopupState, clearPopupTimeout } from './popup-state';
+import { type CopyState, getCopyMode } from './popup/copy-state';
 import {
   hidePopup,
   isPopupVisible,
@@ -92,36 +96,32 @@ import {
   setPopupStyle,
 } from './popup/popup';
 import { isPopupWindowHostElem } from './popup/popup-container';
-import { showPopup, type ShowPopupOptions } from './popup/show-popup';
-import { type CopyState, getCopyMode } from './popup/copy-state';
 import {
   type PopupPositionConstraints,
   PopupPositionMode,
 } from './popup/popup-position';
-import { clearPopupTimeout, DisplayMode, PopupState } from './popup-state';
+import { type ShowPopupOptions, showPopup } from './popup/show-popup';
 import {
-  isPuckPointerEvent,
   LookupPuck,
   PuckPointerEvent,
+  isPuckPointerEvent,
   removePuck,
 } from './puck';
-import { query, QueryResult } from './query';
-import { removeSafeAreaProvider, SafeAreaProvider } from './safe-area-provider';
+import { QueryResult, query } from './query';
+import { SafeAreaProvider, removeSafeAreaProvider } from './safe-area-provider';
+import { getScrollOffset, toPageCoords, toScreenCoords } from './scroll-offset';
 import {
+  type SelectionSizes,
+  type TargetProps,
   getBestFitSize,
   getPageTargetProps,
-  type SelectionSizes,
   selectionSizesToScreenCoords,
-  type TargetProps,
   textBoxSizeLengths,
 } from './target-props';
 import { TextHighlighter } from './text-highlighter';
 import { TextRange, textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
 import { TouchClickTracker } from './touch-click-tracker';
-import { getScrollOffset, toPageCoords, toScreenCoords } from './scroll-offset';
-import { hasModifiers, normalizeKey, normalizeKeys } from './keyboard';
-import { ContentConfig, ContentConfigChange } from './content-config';
 
 const enum HoldToShowKeyType {
   None = 0,

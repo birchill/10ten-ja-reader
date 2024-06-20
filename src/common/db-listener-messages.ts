@@ -1,22 +1,22 @@
 import { JpdictState } from '../background/jpdict';
 
 export const notifyDbStateUpdated = (state: JpdictState) => ({
-  type: <const>'dbstateupdated',
+  type: 'dbstateupdated' as const,
   state,
 });
 
 export type DbStateUpdatedMessage = ReturnType<typeof notifyDbStateUpdated>;
 
 export const updateDb = () => ({
-  type: <const>'updatedb',
+  type: 'updatedb' as const,
 });
 
 export const cancelDbUpdate = () => ({
-  type: <const>'cancelupdatedb',
+  type: 'cancelupdatedb' as const,
 });
 
 export const deleteDb = () => ({
-  type: <const>'deletedb',
+  type: 'deletedb' as const,
 });
 
 export type DbListenerMessage =

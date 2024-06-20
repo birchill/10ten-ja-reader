@@ -6,9 +6,9 @@ import { useLocale } from '../common/i18n';
 import { useHasMouse } from '../utils/use-has-mouse';
 import { useHasTouch } from '../utils/use-has-touch';
 
-import { useConfigValue } from './use-config-value';
 import { PopupInteractivitySettingsForm } from './PopupInteractivitySettingsForm';
 import { SectionHeading } from './SectionHeading';
+import { useConfigValue } from './use-config-value';
 
 type Props = {
   config: Config;

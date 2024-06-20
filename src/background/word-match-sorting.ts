@@ -3,7 +3,6 @@
 // We only use it for sorting in the case where we've fallen back to the
 // flat file database so it doesn't need to be perfect or even keep in sync
 // with changes to jpdict-idb. It's really just a stop-gap measure.
-
 import { WordResult } from './search-result';
 
 // As with Array.prototype.sort, sorts `results` in-place, but returns the

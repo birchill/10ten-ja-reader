@@ -8,11 +8,11 @@ import { StoredKeyboardKeys } from '../common/popup-keys';
 import { isChromium, isEdge, isMac, isSafari } from '../utils/ua-utils';
 
 import { KeyboardSettingsForm } from './KeyboardSettingsForm';
-import { Command, CommandError } from './commands';
-import { useConfigValue } from './use-config-value';
+import { SectionHeading } from './SectionHeading';
 import type { HoldToShowSetting } from './ShowPopupKeysForm';
 import { ResetShortcut } from './ToggleKeyForm';
-import { SectionHeading } from './SectionHeading';
+import { Command, CommandError } from './commands';
+import { useConfigValue } from './use-config-value';
 
 const mac = isMac();
 

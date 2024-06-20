@@ -1,14 +1,16 @@
 import browser from 'webextension-polyfill';
 
 import { ContentConfigParams } from '../../common/content-config-params';
+import { html } from '../../utils/builder';
+
 import { CurrencyMeta } from '../currency';
-import { convertMeasure, MeasureMeta } from '../measure';
+import { MeasureMeta, convertMeasure } from '../measure';
 import { SelectionMeta } from '../meta';
 import { NumberMeta } from '../numbers';
+import { ShogiMeta, serializeShogi, serializeShogiDest } from '../shogi';
 import { EraInfo, EraMeta, getEraInfo } from '../years';
-import { html } from '../../utils/builder';
+
 import { getLangTag } from './lang-tag';
-import { serializeShogi, serializeShogiDest, ShogiMeta } from '../shogi';
 
 export function renderMetadata({
   fxData,

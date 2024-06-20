@@ -1,8 +1,8 @@
 import { useState } from 'preact/hooks';
 
 import { DbLanguageId } from '../common/db-languages';
-import { DictionaryLanguageSettingsForm } from './DictionaryLanguageSettingsForm';
 
+import { DictionaryLanguageSettingsForm } from './DictionaryLanguageSettingsForm';
 import './options.css';
 
 export default function () {

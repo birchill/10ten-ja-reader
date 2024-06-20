@@ -5,8 +5,8 @@ import { useLocale } from '../common/i18n';
 import type { ReferenceAbbreviation } from '../common/refs';
 
 import { KanjiReferenceSettingsForm } from './KanjiReferenceSettingsForm';
-import { useConfigValue } from './use-config-value';
 import { SectionHeading } from './SectionHeading';
+import { useConfigValue } from './use-config-value';
 
 type Props = {
   config: Config;

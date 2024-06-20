@@ -4,8 +4,8 @@ import browser, { Runtime } from 'webextension-polyfill';
 
 import { JpdictState } from '../background/jpdict';
 import {
-  cancelDbUpdate,
   DbStateUpdatedMessage,
+  cancelDbUpdate,
   deleteDb,
   updateDb,
 } from '../common/db-listener-messages';

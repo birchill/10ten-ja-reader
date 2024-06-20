@@ -12,7 +12,6 @@ import {
 } from '../utils/ua-utils';
 
 import { OptionsPage } from './OptionsPage';
-
 import './options.css';
 
 startBugsnag();

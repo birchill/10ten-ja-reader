@@ -1,7 +1,18 @@
 {
   "attributeGroups": ["^(id|name)$", "^class$", "$DEFAULT", "^data-"],
   "bracketSpacing": true,
+  "importOrder": [
+    "^\\.\\./\\.\\./\\.\\./\\.\\./\\.\\./",
+    "^\\.\\./\\.\\./\\.\\./\\.\\./",
+    "^\\.\\./\\.\\./\\.\\./",
+    "^\\.\\./\\.\\./",
+    "^\\.\\./",
+    "^\\./"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
   "plugins": [
+    "@trivago/prettier-plugin-sort-imports",
     "prettier-plugin-organize-attributes",
     "prettier-plugin-packagejson",
     "prettier-plugin-tailwindcss"

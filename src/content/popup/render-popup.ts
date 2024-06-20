@@ -1,6 +1,5 @@
 /// <reference path="../../common/css.d.ts" />
 import type { FontFace, FontSize } from '../../common/content-config-params';
-
 import { html } from '../../utils/builder';
 import { Point } from '../../utils/geometry';
 import { getThemeClass } from '../../utils/themes';
@@ -20,13 +19,12 @@ import { renderKanjiEntries } from './kanji';
 import { renderMetadata } from './metadata';
 import { renderNamesEntries } from './names';
 import { getPopupContainer } from './popup-container';
-import { renderCopyDetails, renderUpdatingStatus } from './status';
+import popupStyles from './popup.css?inline';
 import { ShowPopupOptions } from './show-popup';
+import { renderCopyDetails, renderUpdatingStatus } from './status';
 import { onHorizontalSwipe } from './swipe';
 import { renderTabBar } from './tabs';
 import { renderWordEntries } from './words';
-
-import popupStyles from './popup.css?inline';
 
 export function renderPopup(
   result: QueryResult | undefined,

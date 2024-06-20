@@ -9,8 +9,8 @@ import type { CopyType } from '../common/copy-keys';
 import type { TranslateFunctionType } from '../common/i18n';
 import { highPriorityLabels } from '../common/priority-labels';
 import {
-  getSelectedReferenceLabels,
   ReferenceAbbreviation,
+  getSelectedReferenceLabels,
 } from '../common/refs';
 
 import { getReferenceValue } from './reference-value';

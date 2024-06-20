@@ -1,5 +1,9 @@
+// sort-imports-ignore
+
 import { assert } from 'chai';
+
 import { browser } from './browser-polyfill';
+
 (window as any).browser = browser;
 
 // Make sure the browser polyfill believes we are in an extension context

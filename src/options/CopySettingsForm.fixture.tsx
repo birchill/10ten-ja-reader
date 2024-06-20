@@ -2,7 +2,6 @@ import { useState } from 'preact/hooks';
 import { useValue } from 'react-cosmos/client';
 
 import { CopySettingsForm } from './CopySettingsForm';
-
 import './options.css';
 
 export default function () {

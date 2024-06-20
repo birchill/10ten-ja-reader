@@ -2,8 +2,8 @@ import { useState } from 'preact/hooks';
 import { useSelect, useValue } from 'react-cosmos/client';
 
 import { HighlightStyle } from '../common/content-config-params';
-import { GeneralSettingsForm } from './GeneralSettingsForm';
 
+import { GeneralSettingsForm } from './GeneralSettingsForm';
 import './options.css';
 
 export default function () {

@@ -1,11 +1,12 @@
 /// <reference path="../common/css.d.ts" />
+import safeAreaProviderStyles from '../../css/safe-area-provider.css?inline';
+
 import { PaddingBox } from '../utils/geometry';
+
 import {
   getOrCreateEmptyContainer,
   removeContentContainer,
 } from './content-container';
-
-import safeAreaProviderStyles from '../../css/safe-area-provider.css?inline';
 
 export type SafeAreaChangeListener = (safeArea: PaddingBox | null) => void;
 

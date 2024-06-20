@@ -8,8 +8,8 @@ import { html } from '../../utils/builder';
 import { getLangTag } from './lang-tag';
 import { renderMetadata } from './metadata';
 import { getSelectedIndex } from './selected-index';
-import { ShowPopupOptions } from './show-popup';
 import { popupHasSelectedText } from './selection';
+import { ShowPopupOptions } from './show-popup';
 
 export function renderNamesEntries({
   entries,

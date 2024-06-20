@@ -1,7 +1,8 @@
 import { useSelect } from 'react-cosmos/client';
-import { TabDisplayRadio } from './TabDisplayRadio';
+
 import { TabDisplay } from '../common/content-config-params';
 
+import { TabDisplayRadio } from './TabDisplayRadio';
 import './options.css';
 
 export default function () {
