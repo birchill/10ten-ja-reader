@@ -15,12 +15,8 @@ export default [
   ...tseslint.configs.recommended,
   ...tailwind.configs['flat/recommended'],
   {
-    plugins: { vitest },
-
     languageOptions: {
-      globals: {
-        ...globals.browser,
-      },
+      globals: { ...globals.browser },
 
       parser: tsParser,
       ecmaVersion: 2022,
@@ -35,48 +31,22 @@ export default [
     rules: {
       curly: 'error',
       'linebreak-style': ['error', 'unix'],
-
-      'no-constant-condition': [
-        'error',
-        {
-          checkLoops: false,
-        },
-      ],
-
+      'no-constant-condition': ['error', { checkLoops: false }],
       'no-prototype-builtins': 'off',
-
-      'prefer-const': [
-        'error',
-        {
-          destructuring: 'all',
-        },
-      ],
-
-      quotes: [
-        'error',
-        'single',
-        {
-          avoidEscape: true,
-        },
-      ],
-
+      'prefer-const': ['error', { destructuring: 'all' }],
+      quotes: ['error', 'single', { avoidEscape: true }],
       semi: ['error', 'always'],
-
       'sort-imports': [
         'error',
         {
           ignoreCase: true,
           ignoreDeclarationSort: true,
-          ignoreMemberSort: false,
           allowSeparatedGroups: true,
         },
       ],
 
       'tailwindcss/classnames-order': 'off',
       'tailwindcss/no-custom-classname': 'off',
-
-      ...vitest.configs.recommended.rules,
-      'vitest/no-identical-title': ['error'],
 
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
@@ -100,20 +70,44 @@ export default [
     },
   },
   {
-    files: ['**/*.js', '**/*.mjs', 'tests/**/*', 'scripts/**/*'],
-
+    files: ['src/**/*.test.ts'],
+    plugins: { vitest },
+    rules: {
+      ...vitest.configs.recommended.rules,
+      'vitest/no-identical-title': ['error'],
+    },
+  },
+  {
+    files: [
+      '*.{cjs,js,ts}',
+      'scripts/**/*.{cjs,js,ts}',
+      'tests/**/*.{cjs,js,ts}',
+    ],
     languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: 'module',
-
       parserOptions: {
         project: null,
       },
     },
-
     rules: {
       '@typescript-eslint/no-floating-promises': 'off',
       '@typescript-eslint/no-misused-promises': 'off',
+    },
+  },
+  {
+    files: ['*.cjs', 'scripts/**/*.cjs'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+      sourceType: 'commonjs',
+    },
+  },
+  {
+    files: ['*.{js,ts}', 'scripts/**/*.{js,ts}'],
+    languageOptions: {
+      globals: {
+        ...globals.nodeBuiltin,
+      },
     },
   },
 ];
