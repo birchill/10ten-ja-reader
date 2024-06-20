@@ -14,7 +14,7 @@ import '../content/popup/popup.css';
 import { PopupStyleForm } from './PopupStyleForm';
 import './options.css';
 
-export default function () {
+export default function PopupStyleFormFixture() {
   const [theme, setTheme] = useState<string>('default');
 
   const [showPriority, setShowPriority] = useState<boolean>(true);

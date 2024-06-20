@@ -9,7 +9,7 @@ import { ResetShortcut } from './ToggleKeyForm';
 import { Command } from './commands';
 import './options.css';
 
-export default function () {
+export default function KeyboardSettingsFormFixture() {
   const [mac] = useValue('Mac?', { defaultValue: isMac() });
 
   // Toggle key

@@ -3,7 +3,7 @@ import { useSelect, useValue } from 'react-cosmos/client';
 import { MouseInteractivityRadio } from './MouseInteractivityRadio';
 import './options.css';
 
-export default function () {
+export default function MouseInteractivityRadioFixture() {
   const [value, setValue] = useValue<boolean>('enabled', {
     defaultValue: true,
   });

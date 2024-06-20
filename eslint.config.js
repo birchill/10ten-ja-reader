@@ -1,5 +1,6 @@
 import eslint from '@eslint/js';
 import tsParser from '@typescript-eslint/parser';
+import reactRecommended from 'eslint-plugin-react/configs/recommended.js';
 import tailwind from 'eslint-plugin-tailwindcss';
 import vitest from 'eslint-plugin-vitest';
 import globals from 'globals';
@@ -14,6 +15,7 @@ export default [
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   ...tailwind.configs['flat/recommended'],
+  reactRecommended,
   {
     languageOptions: {
       globals: { ...globals.browser },
@@ -23,8 +25,18 @@ export default [
       sourceType: 'module',
 
       parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
         project: 'tsconfig.json',
         tsconfigRootDir: __dirname,
+      },
+    },
+
+    settings: {
+      react: {
+        version: '16.0',
+        pragma: 'h',
       },
     },
 
@@ -36,6 +48,10 @@ export default [
       'prefer-const': ['error', { destructuring: 'all' }],
       quotes: ['error', 'single', { avoidEscape: true }],
       semi: ['error', 'always'],
+
+      'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off',
+      'react/no-unknown-property': 'off',
 
       'tailwindcss/classnames-order': 'off',
       'tailwindcss/no-custom-classname': 'off',

@@ -13,7 +13,7 @@ import '../content/popup/popup.css';
 import { PopupThemeRadio } from './PopupThemeRadio';
 import './options.css';
 
-export default function () {
+export default function PopupThemeRadioFixture() {
   const [accentDisplay] = useSelect<AccentDisplay>('accentDisplay', {
     defaultValue: 'binary',
     options: ['downstep', 'binary', 'binary-hi-contrast', 'none'],

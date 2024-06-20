@@ -5,7 +5,7 @@ import { TabDisplay } from '../common/content-config-params';
 import { TabDisplayRadio } from './TabDisplayRadio';
 import './options.css';
 
-export default function () {
+export default function TabDisplayRadioFixture() {
   const [value, setValue] = useSelect<TabDisplay>('value', {
     options: ['top', 'left', 'right', 'none'],
     defaultValue: 'top',

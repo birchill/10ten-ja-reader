@@ -7,7 +7,7 @@ import { ReferenceAbbreviation } from '../common/refs';
 import { KanjiReferenceSettingsForm } from './KanjiReferenceSettingsForm';
 import './options.css';
 
-export default function () {
+export default function KanjiReferenceSettingsFormFixture() {
   const [dictLang] = useSelect<DbLanguageId>('dictLang', {
     // I suspect the React Cosmos typings here are incorrect with regard to
     // constness.

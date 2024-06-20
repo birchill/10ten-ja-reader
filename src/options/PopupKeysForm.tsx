@@ -116,7 +116,7 @@ function PopupKey(props: {
                 optionsString: CopyNextKeyStrings.optionsString,
               },
             ].map(({ key, optionsString }) => (
-              <li class="flex list-none items-baseline gap-3">
+              <li key={key} class="flex list-none items-baseline gap-3">
                 <KeyBox label={key} />
                 {t(optionsString)}
               </li>

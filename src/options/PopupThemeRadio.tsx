@@ -32,6 +32,7 @@ export function PopupThemeRadio(props: Props) {
       {['default', 'light', 'blue', 'lightblue', 'black', 'yellow'].map(
         (theme) => (
           <PopupRadio
+            key={theme}
             name="popupStyle"
             value={theme}
             checked={props.theme === theme}

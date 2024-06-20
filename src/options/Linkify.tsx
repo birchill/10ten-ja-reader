@@ -46,7 +46,12 @@ export function Linkify(props: Props) {
         typeof part === 'string' ? (
           part
         ) : (
-          <a href={part.href} target="_blank" rel="noopener">
+          <a
+            key={part.keyword}
+            href={part.href}
+            target="_blank"
+            rel="noreferrer"
+          >
             {part.keyword}
           </a>
         )

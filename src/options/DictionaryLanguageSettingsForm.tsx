@@ -44,7 +44,7 @@ export function DictionaryLanguageSettingsForm(props: Props) {
             label += t('options_lang_kanji_only');
           }
           return (
-            <option value={id} selected={id === props.dictLang}>
+            <option key={id} value={id} selected={id === props.dictLang}>
               {label}
             </option>
           );

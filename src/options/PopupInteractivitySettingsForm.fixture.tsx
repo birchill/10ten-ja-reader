@@ -6,7 +6,7 @@ import { TabDisplay } from '../common/content-config-params';
 import { PopupInteractivitySettingsForm } from './PopupInteractivitySettingsForm';
 import './options.css';
 
-export default function () {
+export default function PopupInteractivitySettingsFormFixture() {
   const [hasMouse] = useValue<boolean>('mouse enabled?', {
     defaultValue: true,
   });
