@@ -81,6 +81,9 @@ export interface ContentConfigParams {
   // for the rate.
   fx: { currency: string; rate: number; timestamp: number } | undefined;
 
+  // The user's preferred units
+  preferredUnits: 'metric' | 'imperial';
+
   // The fonts to use in the popup.
   fontFace: FontFace;
 

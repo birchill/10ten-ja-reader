@@ -2223,6 +2223,7 @@ export class ContentHandler {
       fontFace: this.config.fontFace,
       fontSize: this.config.fontSize,
       fxData: this.config.fx,
+      preferredUnits: this.config.preferredUnits,
       getCursorClearanceAndPos: this.getCursorClearanceAndPos.bind(
         this,
         screenTextBoxSizes

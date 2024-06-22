@@ -142,6 +142,9 @@ export class ContentConfig implements ContentConfigParams {
   get fx() {
     return this.params.fx;
   }
+  get preferredUnits() {
+    return this.params.preferredUnits;
+  }
   get fontFace() {
     return this.params.fontFace;
   }

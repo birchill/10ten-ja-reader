@@ -66,6 +66,7 @@ interface Settings {
   fontFace?: FontFace;
   fontSize?: FontSize;
   fxCurrency?: string;
+  preferredUnits?: 'metric' | 'imperial';
   highlightStyle?: HighlightStyle;
   holdToShowKeys?: string;
   holdToShowImageKeys?: string;
@@ -401,6 +402,9 @@ export class Config {
   // decorators and in any case, won't transpile them:
   //
   //   https://github.com/evanw/esbuild/issues/104
+  //
+  // UPDATE: Looks like support was added for decorators as of esbuild v0.21.3
+  // https://github.com/evanw/esbuild/releases/tag/v0.21.3
   //
   // Our options are either to use SWC (which runs the risk of behaving a bit
   // differently to TypeScript) or try to get TSC to transpile the relevant
@@ -769,6 +773,21 @@ export class Config {
     return this.fxData
       ? Object.keys(this.fxData.rates).sort((a, b) => a.localeCompare(b))
       : undefined;
+  }
+
+  get preferredUnits(): 'metric' | 'imperial' {
+    return typeof this.settings.preferredUnits === 'string'
+      ? this.settings.preferredUnits
+      : 'metric';
+  }
+
+  set preferredUnits(value: 'metric' | 'imperial') {
+    if (this.settings.preferredUnits === value) {
+      return;
+    }
+
+    this.settings.preferredUnits = value;
+    void browser.storage.sync.set({ preferredUnits: value });
   }
 
   // highlightStyle: Defaults to 'yellow'
@@ -1306,6 +1325,7 @@ export class Config {
               timestamp: this.fxData.timestamp,
             }
           : undefined,
+      preferredUnits: this.preferredUnits,
       fontFace: this.fontFace,
       fontSize: this.fontSize,
       highlightStyle: this.highlightStyle,

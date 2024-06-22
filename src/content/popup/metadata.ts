@@ -14,11 +14,13 @@ import { getLangTag } from './lang-tag';
 
 export function renderMetadata({
   fxData,
+  preferredUnits,
   isCombinedResult,
   matchLen,
   meta,
 }: {
   fxData: ContentConfigParams['fx'];
+  preferredUnits: ContentConfigParams['preferredUnits'];
   isCombinedResult: boolean;
   matchLen: number;
   meta: SelectionMeta;
@@ -34,7 +36,7 @@ export function renderMetadata({
       break;
 
     case 'measure':
-      return renderMeasureInfo(meta);
+      return renderMeasureInfo(meta, preferredUnits);
 
     case 'currency':
       return fxData ? renderCurrencyInfo(meta, fxData) : null;
@@ -76,8 +78,11 @@ function renderEraInfo(meta: EraMeta, eraInfo: EraInfo): HTMLElement {
   );
 }
 
-function renderMeasureInfo(meta: MeasureMeta): HTMLElement {
-  const converted = convertMeasure(meta);
+function renderMeasureInfo(
+  meta: MeasureMeta,
+  preferredUnits: ContentConfigParams['preferredUnits']
+): HTMLElement {
+  const converted = convertMeasure(meta, preferredUnits);
 
   const metaDiv = html(
     'div',
