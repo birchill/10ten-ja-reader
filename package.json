@@ -85,7 +85,7 @@
     "@types/archiver": "6.0.2",
     "@types/chai": "4.3.16",
     "@types/eslint__js": "8.42.3",
-    "@types/mocha": "10.0.6",
+    "@types/mocha": "10.0.7",
     "@types/webextension-polyfill": "^0.10.7",
     "@types/yargs": "17.0.32",
     "@typescript-eslint/parser": "7.12.0",
