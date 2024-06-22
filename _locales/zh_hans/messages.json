@@ -2028,6 +2028,22 @@
     "message": "点触文本以查询",
     "description": "Checkbox label for setting to enable looking up by tapping a word"
   },
+  "options_unit_conversion_heading": {
+    "message": "单位转换",
+    "description": "Heading for the section for configuring unit conversion"
+  },
+  "options_units_imperial_label": {
+    "message": "英制",
+    "description": "Label for the 'imperial' drop-down item"
+  },
+  "options_units_label": {
+    "message": "单位制",
+    "description": "Label for the drop-down box for choosing the preferred units"
+  },
+  "options_units_metric_label": {
+    "message": "公制",
+    "description": "Label for the 'metric' drop-down item"
+  },
   "options_update_check_button_label": {
     "message": "检查更新",
     "description": "Label for the button to check for database updates"
