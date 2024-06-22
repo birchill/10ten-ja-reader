@@ -2223,7 +2223,6 @@ export class ContentHandler {
       fontFace: this.config.fontFace,
       fontSize: this.config.fontSize,
       fxData: this.config.fx,
-      preferredUnits: this.config.preferredUnits,
       getCursorClearanceAndPos: this.getCursorClearanceAndPos.bind(
         this,
         screenTextBoxSizes
@@ -2268,6 +2267,7 @@ export class ContentHandler {
       popupStyle: this.config.popupStyle,
       posDisplay: this.config.posDisplay,
       positionMode: this.popupPositionMode,
+      preferredUnits: this.config.preferredUnits,
       previousHeight: this.popupState?.pos?.height,
       safeArea: this.safeAreaProvider.getSafeArea(),
       showDefinitions: !this.config.readingOnly,

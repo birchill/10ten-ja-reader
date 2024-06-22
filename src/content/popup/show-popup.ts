@@ -50,7 +50,6 @@ export type ShowPopupOptions = {
   fontFace?: FontFace;
   fontSize?: FontSize;
   fxData: ContentConfigParams['fx'];
-  preferredUnits: 'metric' | 'imperial';
   getCursorClearanceAndPos: () => { cursorClearance: Box; cursorPos?: Point };
   expandShortcuts?: ReadonlyArray<string>;
   interactive: boolean;
@@ -71,6 +70,7 @@ export type ShowPopupOptions = {
   posDisplay: PartOfSpeechDisplay;
   positionMode: PopupPositionMode;
   popupStyle: string;
+  preferredUnits: 'metric' | 'imperial';
   previousHeight?: number;
   safeArea: Box;
   showDefinitions: boolean;

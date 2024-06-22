@@ -81,9 +81,6 @@ export interface ContentConfigParams {
   // for the rate.
   fx: { currency: string; rate: number; timestamp: number } | undefined;
 
-  // The user's preferred units
-  preferredUnits: 'metric' | 'imperial';
-
   // The fonts to use in the popup.
   fontFace: FontFace;
 
@@ -121,6 +118,9 @@ export interface ContentConfigParams {
 
   // Indicates the type of display to use for part-of-speech labels.
   posDisplay: PartOfSpeechDisplay;
+
+  // The user's preferred units for unit conversion
+  preferredUnits: 'metric' | 'imperial';
 
   // The state of the puck on the screen (e.g. position, orientation, active
   // state etc.)

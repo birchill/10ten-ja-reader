@@ -66,7 +66,6 @@ interface Settings {
   fontFace?: FontFace;
   fontSize?: FontSize;
   fxCurrency?: string;
-  preferredUnits?: 'metric' | 'imperial';
   highlightStyle?: HighlightStyle;
   holdToShowKeys?: string;
   holdToShowImageKeys?: string;
@@ -81,6 +80,7 @@ interface Settings {
   noTextHighlight?: boolean;
   popupStyle?: string;
   posDisplay?: PartOfSpeechDisplay;
+  preferredUnits?: 'metric' | 'imperial';
   readingOnly?: boolean;
   showKanjiComponents?: boolean;
   showPriority?: boolean;
@@ -775,21 +775,6 @@ export class Config {
       : undefined;
   }
 
-  get preferredUnits(): 'metric' | 'imperial' {
-    return typeof this.settings.preferredUnits === 'string'
-      ? this.settings.preferredUnits
-      : 'metric';
-  }
-
-  set preferredUnits(value: 'metric' | 'imperial') {
-    if (this.settings.preferredUnits === value) {
-      return;
-    }
-
-    this.settings.preferredUnits = value;
-    void browser.storage.sync.set({ preferredUnits: value });
-  }
-
   // highlightStyle: Defaults to 'yellow'
 
   get highlightStyle(): HighlightStyle {
@@ -1103,6 +1088,21 @@ export class Config {
     void browser.storage.sync.set({ posDisplay: value });
   }
 
+  // preferredUnits: Defaults to 'metric'
+
+  get preferredUnits(): 'metric' | 'imperial' {
+    return this.settings.preferredUnits || 'metric';
+  }
+
+  set preferredUnits(value: 'metric' | 'imperial') {
+    if (this.settings.preferredUnits === value) {
+      return;
+    }
+
+    this.settings.preferredUnits = value;
+    void browser.storage.sync.set({ preferredUnits: value });
+  }
+
   // readingOnly: Defaults to false
 
   get readingOnly(): boolean {
@@ -1325,7 +1325,6 @@ export class Config {
               timestamp: this.fxData.timestamp,
             }
           : undefined,
-      preferredUnits: this.preferredUnits,
       fontFace: this.fontFace,
       fontSize: this.fontSize,
       highlightStyle: this.highlightStyle,
@@ -1341,6 +1340,7 @@ export class Config {
       popupInteractive: this.popupInteractive,
       popupStyle: this.popupStyle,
       posDisplay: this.posDisplay,
+      preferredUnits: this.preferredUnits,
       puckState: this.puckState,
       readingOnly: this.readingOnly,
       showKanjiComponents: this.showKanjiComponents,

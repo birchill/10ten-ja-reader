@@ -1,5 +1,7 @@
 import { useLocale } from '../common/i18n';
 
+import { NewBadge } from './NewBadge';
+
 type Props = {
   selectedUnits: 'metric' | 'imperial';
   onChange: (currency: string) => void;
@@ -16,6 +18,7 @@ export function UnitSettingsForm(props: Props) {
   return (
     <>
       <label for="preferredUnits">{t('options_units_label')}</label>
+      <NewBadge expiry={new Date('2024-09-30')} />
       <select
         id="preferredUnits"
         name="preferredUnits"

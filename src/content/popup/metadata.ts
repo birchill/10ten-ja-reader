@@ -156,6 +156,8 @@ function renderUnit(
 
   if (unit === 'm2') {
     unitSpan.append('m', html('sup', {}, '2'));
+  } else if (unit === 'sq ft') {
+    unitSpan.append('ft', html('sup', {}, '2'));
   } else if (showRuby) {
     unitSpan.append(
       html(
