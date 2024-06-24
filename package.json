@@ -61,7 +61,7 @@
     ]
   },
   "dependencies": {
-    "@birchill/bugsnag-zero": "0.6.8",
+    "@birchill/bugsnag-zero": "0.6.9",
     "@birchill/discriminator": "0.3.0",
     "@birchill/jpdict-idb": "2.5.0",
     "@birchill/normal-jp": "1.5.0",
