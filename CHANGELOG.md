@@ -9,6 +9,7 @@ app.
 ## [Unreleased]
 
 - Extended the support for honorific speech
+  thanks to [@Enellis](https://github.com/Enellis)
   ([#1822](https://github.com/birchill/10ten-ja-reader/pull/1822)).
   - Added imperative for くださる.
   - Added addtional forms of ます.
@@ -29,10 +30,11 @@ app.
 - Fixed recognition of continuous forms of verbs with irregular te form
   thanks to [@Enellis](https://github.com/Enellis)
   ([#1811](https://github.com/birchill/10ten-ja-reader/pull/1811)).
+- Added supported for doing unit conversions to imperial units
+  thanks to [@StarScape](https://github.com/StarScape)
+  ([#1836](https://github.com/birchill/10ten-ja-reader/pull/1836))
 - Fixed duplicate matching of names with both 新字体 and 旧字体
   ([#1830](https://github.com/birchill/10ten-ja-reader/issues/1830)).
-- Added supported for doing unit conversions to imperial units
-  ([#1836](https://github.com/birchill/10ten-ja-reader/pull/1836))
 
 ## [1.19.1] - 2024-06-08
 
