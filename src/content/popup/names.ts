@@ -27,6 +27,7 @@ export function renderNamesEntries({
   if (options.meta) {
     const metadata = renderMetadata({
       fxData: options.fxData,
+      preferredUnits: options.preferredUnits,
       isCombinedResult: true,
       matchLen,
       meta: options.meta,

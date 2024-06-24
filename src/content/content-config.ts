@@ -177,6 +177,9 @@ export class ContentConfig implements ContentConfigParams {
   get posDisplay() {
     return this.params.posDisplay;
   }
+  get preferredUnits() {
+    return this.params.preferredUnits;
+  }
   get puckState() {
     return this.params.puckState;
   }

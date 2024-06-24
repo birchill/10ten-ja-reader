@@ -186,6 +186,7 @@ function getShogiMove(
 ): string | undefined {
   const params: Parameters<typeof renderMetadata>[0] = {
     fxData: undefined,
+    preferredUnits: 'metric',
     isCombinedResult: false,
     matchLen: 5, // Not used
     meta: {

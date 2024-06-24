@@ -12,6 +12,7 @@ import { KeyboardSettings } from './KeyboardSettings';
 import { PopupInteractivitySettings } from './PopupInteractivitySettings';
 import { PopupStyleSettings } from './PopupStyleSettings';
 import { PuckSettings } from './PuckSettings';
+import { UnitSettings } from './UnitSettings';
 
 type Props = {
   config: Config;
@@ -27,6 +28,7 @@ export function OptionsPage(props: Props) {
         <PopupStyleSettings config={props.config} />
         <PopupInteractivitySettings config={props.config} />
         <CurrencySettings config={props.config} />
+        <UnitSettings config={props.config} />
         {hasKeyboard && <KeyboardSettings config={props.config} />}
         <CopySettings config={props.config} />
         <PuckSettings config={props.config} />

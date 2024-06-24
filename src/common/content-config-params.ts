@@ -119,6 +119,9 @@ export interface ContentConfigParams {
   // Indicates the type of display to use for part-of-speech labels.
   posDisplay: PartOfSpeechDisplay;
 
+  // The user's preferred units for unit conversion
+  preferredUnits: 'metric' | 'imperial';
+
   // The state of the puck on the screen (e.g. position, orientation, active
   // state etc.)
   puckState: PuckState | undefined;

@@ -141,6 +141,7 @@ export function renderPopup(
 
         const metadata = renderMetadata({
           fxData: options.fxData,
+          preferredUnits: options.preferredUnits,
           isCombinedResult: false,
           matchLen: 0,
           meta: options.meta,

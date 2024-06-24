@@ -31,6 +31,8 @@ app.
   ([#1811](https://github.com/birchill/10ten-ja-reader/pull/1811)).
 - Fixed duplicate matching of names with both 新字体 and 旧字体
   ([#1830](https://github.com/birchill/10ten-ja-reader/issues/1830)).
+- Added supported for doing unit conversions to imperial units
+  ([#1836](https://github.com/birchill/10ten-ja-reader/pull/1836))
 
 ## [1.19.1] - 2024-06-08
 

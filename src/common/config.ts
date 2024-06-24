@@ -80,6 +80,7 @@ interface Settings {
   noTextHighlight?: boolean;
   popupStyle?: string;
   posDisplay?: PartOfSpeechDisplay;
+  preferredUnits?: 'metric' | 'imperial';
   readingOnly?: boolean;
   showKanjiComponents?: boolean;
   showPriority?: boolean;
@@ -401,6 +402,9 @@ export class Config {
   // decorators and in any case, won't transpile them:
   //
   //   https://github.com/evanw/esbuild/issues/104
+  //
+  // UPDATE: Looks like support was added for decorators as of esbuild v0.21.3
+  // https://github.com/evanw/esbuild/releases/tag/v0.21.3
   //
   // Our options are either to use SWC (which runs the risk of behaving a bit
   // differently to TypeScript) or try to get TSC to transpile the relevant
@@ -1084,6 +1088,21 @@ export class Config {
     void browser.storage.sync.set({ posDisplay: value });
   }
 
+  // preferredUnits: Defaults to 'metric'
+
+  get preferredUnits(): 'metric' | 'imperial' {
+    return this.settings.preferredUnits || 'metric';
+  }
+
+  set preferredUnits(value: 'metric' | 'imperial') {
+    if (this.settings.preferredUnits === value) {
+      return;
+    }
+
+    this.settings.preferredUnits = value;
+    void browser.storage.sync.set({ preferredUnits: value });
+  }
+
   // readingOnly: Defaults to false
 
   get readingOnly(): boolean {
@@ -1321,6 +1340,7 @@ export class Config {
       popupInteractive: this.popupInteractive,
       popupStyle: this.popupStyle,
       posDisplay: this.posDisplay,
+      preferredUnits: this.preferredUnits,
       puckState: this.puckState,
       readingOnly: this.readingOnly,
       showKanjiComponents: this.showKanjiComponents,

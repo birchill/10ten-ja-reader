@@ -2028,6 +2028,22 @@
     "message": "Look up text by tapping",
     "description": "Checkbox label for setting to enable looking up by tapping a word"
   },
+  "options_unit_conversion_heading": {
+    "message": "Unit conversion",
+    "description": "Heading for the section for configuring unit conversion"
+  },
+  "options_units_imperial_label": {
+    "message": "Imperial",
+    "description": "Label for the 'imperial' drop-down item"
+  },
+  "options_units_label": {
+    "message": "Preferred units",
+    "description": "Label for the drop-down box for choosing the preferred units"
+  },
+  "options_units_metric_label": {
+    "message": "Metric",
+    "description": "Label for the 'metric' drop-down item"
+  },
   "options_update_check_button_label": {
     "message": "Check for updates",
     "description": "Label for the button to check for database updates"
