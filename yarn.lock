@@ -6205,10 +6205,10 @@ kleur@^4.1.5:
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-4.1.5.tgz#95106101795f7050c6c650f350c683febddb1780"
   integrity sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==
 
-knip@5.22.0:
-  version "5.22.0"
-  resolved "https://registry.yarnpkg.com/knip/-/knip-5.22.0.tgz#e91620d833ed9331efc3e1dc079c5d8ab5c12f21"
-  integrity sha512-ijGbuB/622oL/rhg5kPR7U26xebu7czEu50RAxjh66YXkpvXW67Dv9Oz48yBSbGFMEWylX9aOe+NeHJbVe68jw==
+knip@5.23.0:
+  version "5.23.0"
+  resolved "https://registry.yarnpkg.com/knip/-/knip-5.23.0.tgz#655bec539375571baa8cebe059d64ae9ceb4fd41"
+  integrity sha512-kHXcxmbbpTa+ZPx29KfAbBGP6TK81wXjvHyUPTCbGNFwOVnVUminesaO/of+9KleCzw3pUPiK/k4UsEu+aFK4Q==
   dependencies:
     "@ericcornelissen/bash-parser" "0.5.3"
     "@nodelib/fs.walk" "2.0.0"
