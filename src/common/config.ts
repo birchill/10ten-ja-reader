@@ -179,7 +179,11 @@ export class Config {
 
     // If we have old mouse onboarding prefs, drop them
     if (this.settings.hasOwnProperty('hasDismissedMouseOnboarding')) {
-      await browser.storage.sync.remove('hasDismissedMouseOnboarding');
+      try {
+        await browser.storage.sync.remove('hasDismissedMouseOnboarding');
+      } catch {
+        // Ignore
+      }
     }
 
     if (
@@ -193,7 +197,11 @@ export class Config {
       delete (localSettings as Record<string, unknown>)
         .numLookupsWithMouseOnboarding;
       this.settings.localSettings = localSettings;
-      void browser.storage.local.set({ settings: localSettings });
+      try {
+        await browser.storage.local.set({ settings: localSettings });
+      } catch {
+        // Ignore
+      }
     }
   }
 

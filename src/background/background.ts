@@ -609,21 +609,29 @@ browser.runtime.onMessage.addListener(
 
       case 'toggleDefinition':
         Bugsnag.leaveBreadcrumb('Toggling definitions on/off');
-        config.toggleReadingOnly();
+        void config.ready.then(() => {
+          config.toggleReadingOnly();
+        });
         break;
 
       case 'disableMouseInteraction':
         Bugsnag.leaveBreadcrumb('Disabling mouse interaction');
-        config.popupInteractive = false;
+        void config.ready.then(() => {
+          config.popupInteractive = false;
+        });
         break;
 
       case 'canHoverChanged':
         Bugsnag.leaveBreadcrumb('Changing hover ability setting', request);
-        config.canHover = request.value;
+        void config.ready.then(() => {
+          config.canHover = request.value;
+        });
         break;
 
       case 'puckStateChanged':
-        config.puckState = request.value;
+        void config.ready.then(() => {
+          config.puckState = request.value;
+        });
         break;
 
       case 'isDbUpdating':
