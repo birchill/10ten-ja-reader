@@ -89,11 +89,10 @@ const enum Type {
   All = IchidanVerb | GodanVerb | IAdj | KuruVerb | SuruVerb | NounVS,
   // Intermediate types
   Initial = 1 << 6, // original word before any deinflection (from-type only)
-  VNai = 1 << 7,
-  TaTeStem = 1 << 8,
-  DaDeStem = 1 << 9,
-  MasuStem = 1 << 10,
-  IrrealisStem = 1 << 11,
+  TaTeStem = 1 << 7,
+  DaDeStem = 1 << 8,
+  MasuStem = 1 << 9,
+  IrrealisStem = 1 << 10,
 }
 
 export { Type as WordType };
@@ -144,8 +143,8 @@ const deinflectRuleData: Array<
   ['いらっしゃい', 'いらっしゃる', Type.MasuStem, Type.GodanVerb, [Reason.MasuStem]],
   ['いらっしゃい', 'いらっしゃる', Type.Initial, Type.GodanVerb, [Reason.Imperative]],
   ['くありません', 'い', Type.Initial, Type.IAdj, [Reason.PoliteNegative]],
-  ['ざるをえない', 'ない', Type.IAdj, Type.VNai, [Reason.ZaruWoEnai]],
-  ['ざるを得ない', 'ない', Type.IAdj, Type.VNai, [Reason.ZaruWoEnai]],
+  ['ざるをえない', '', Type.IAdj, Type.IrrealisStem, [Reason.ZaruWoEnai]],
+  ['ざるを得ない', '', Type.IAdj, Type.IrrealisStem, [Reason.ZaruWoEnai]],
   ['ませんでした', '', Type.Initial, Type.MasuStem, [Reason.PolitePastNegative]],
   ['てらっしゃい', '', Type.Initial, Type.TaTeStem, [Reason.Respectful, Reason.Continuous, Reason.Imperative]],
   ['てらっしゃい', 'てらっしゃる', Type.MasuStem, Type.GodanVerb, [Reason.MasuStem]],
@@ -156,10 +155,10 @@ const deinflectRuleData: Array<
   // -------------- 5 --------------
   ['おっしゃい', 'おっしゃる', Type.MasuStem, Type.GodanVerb, [Reason.MasuStem]],
   ['おっしゃい', 'おっしゃる', Type.Initial, Type.GodanVerb, [Reason.Imperative]],
-  ['ざるえない', 'ない', Type.IAdj, Type.VNai, [Reason.ZaruWoEnai]],
-  ['ざる得ない', 'ない', Type.IAdj, Type.VNai, [Reason.ZaruWoEnai]],
-  ['ざるをえぬ', 'ない', Type.IAdj, Type.VNai, [Reason.ZaruWoEnai]],
-  ['ざるを得ぬ', 'ない', Type.IAdj, Type.VNai, [Reason.ZaruWoEnai]],
+  ['ざるえない', '', Type.IAdj, Type.IrrealisStem, [Reason.ZaruWoEnai]],
+  ['ざる得ない', '', Type.IAdj, Type.IrrealisStem, [Reason.ZaruWoEnai]],
+  ['ざるをえぬ', '', Type.IAdj, Type.IrrealisStem, [Reason.ZaruWoEnai]],
+  ['ざるを得ぬ', '', Type.IAdj, Type.IrrealisStem, [Reason.ZaruWoEnai]],
   // -------------- 4 --------------
   ['かったら', 'い', Type.Initial, Type.IAdj, [Reason.Tara]],
   ['かったり', 'い', Type.Initial, Type.IAdj, [Reason.Tari]],
@@ -167,8 +166,9 @@ const deinflectRuleData: Array<
   ['ください', 'くださる', Type.Initial, Type.GodanVerb, [Reason.Imperative]],
   ['こさせる', 'くる', Type.IchidanVerb, Type.KuruVerb, [Reason.Causative]],
   ['こられる', 'くる', Type.IchidanVerb, Type.KuruVerb, [Reason.PotentialOrPassive]],
-  ['ざるえぬ', 'ない', Type.IAdj, Type.VNai, [Reason.ZaruWoEnai]],
-  ['ざる得ぬ', 'ない', Type.IAdj, Type.VNai, [Reason.ZaruWoEnai]],
+  ['ざるえぬ', '', Type.IAdj, Type.IrrealisStem, [Reason.ZaruWoEnai]],
+  ['ざる得ぬ', '', Type.IAdj, Type.IrrealisStem, [Reason.ZaruWoEnai]],
+  ['しないで', 'する', Type.Initial, Type.SuruVerb, [Reason.NegativeTe]],
   ['のたまう', 'のたまう', Type.TaTeStem, Type.GodanVerb, []],
   ['のたもう', 'のたもう', Type.TaTeStem, Type.GodanVerb, []],
   ['ましたら', '', Type.Initial, Type.MasuStem, [Reason.Polite, Reason.Tara]],
@@ -180,7 +180,7 @@ const deinflectRuleData: Array<
   ['かった', 'い', Type.Initial, Type.IAdj, [Reason.Past]],
   ['下さい', '下さる', Type.MasuStem, Type.GodanVerb, [Reason.MasuStem]],
   ['下さい', '下さる', Type.Initial, Type.GodanVerb, [Reason.Imperative]],
-  ['くない', 'い', Type.IAdj | Type.VNai, Type.IAdj, [Reason.Negative]],
+  ['くない', 'い', Type.IAdj, Type.IAdj, [Reason.Negative]],
   ['ければ', 'い', Type.Initial, Type.IAdj, [Reason.Ba]],
   ['こよう', 'くる', Type.Initial, Type.KuruVerb, [Reason.Volitional]],
   ['これる', 'くる', Type.IchidanVerb, Type.KuruVerb, [Reason.Potential]],
@@ -193,7 +193,7 @@ const deinflectRuleData: Array<
   ['させる', 'する', Type.IchidanVerb, Type.SuruVerb, [Reason.Causative]],
   ['される', '', Type.IchidanVerb, Type.IrrealisStem, [Reason.CausativePassive]],
   ['される', 'する', Type.IchidanVerb, Type.SuruVerb, [Reason.Passive]],
-  ['しない', 'する', Type.IAdj | Type.VNai, Type.SuruVerb, [Reason.Negative]],
+  ['しない', 'する', Type.IAdj, Type.SuruVerb, [Reason.Negative]],
   ['しよう', 'する', Type.Initial, Type.SuruVerb, [Reason.Volitional]],
   ['じゃう', '', Type.GodanVerb, Type.DaDeStem, [Reason.Chau]],
   ['すぎる', 'い', Type.IchidanVerb, Type.IAdj, [Reason.Sugiru]],
@@ -206,7 +206,7 @@ const deinflectRuleData: Array<
   ['でいる', '', Type.IchidanVerb, Type.DaDeStem, [Reason.Continuous]],
   ['でおる', '', Type.GodanVerb, Type.DaDeStem, [Reason.HumbleOrKansaiDialect, Reason.Continuous]],
   ['できる', 'する', Type.IchidanVerb, Type.SuruVerb, [Reason.Potential]],
-  ['ないで', 'ない', Type.Initial, Type.VNai, [Reason.NegativeTe]],
+  ['ないで', '', Type.Initial, Type.IrrealisStem, [Reason.NegativeTe]],
   ['なさい', '', Type.Initial, Type.MasuStem, [Reason.Respectful, Reason.Imperative]],
   ['なさい', 'なさる', Type.MasuStem, Type.GodanVerb, [Reason.MasuStem]],
   ['なさい', 'なさる', Type.Initial, Type.GodanVerb, [Reason.Imperative]],
@@ -266,7 +266,7 @@ const deinflectRuleData: Array<
   ['とる', '', Type.GodanVerb, Type.TaTeStem, [Reason.HumbleOrKansaiDialect, Reason.Continuous]],
   ['どく', '', Type.GodanVerb, Type.DaDeStem, [Reason.Toku]],
   ['どる', '', Type.GodanVerb, Type.DaDeStem, [Reason.HumbleOrKansaiDialect, Reason.Continuous]],
-  ['ない', '', Type.IAdj | Type.VNai, Type.IrrealisStem, [Reason.Negative]],
+  ['ない', '', Type.IAdj, Type.IrrealisStem, [Reason.Negative]],
   ['ねば', 'ぬ', Type.Initial, Type.GodanVerb, [Reason.Ba]],
   ['ねる', 'ぬ', Type.IchidanVerb, Type.GodanVerb, [Reason.Potential]],
   ['のう', 'ぬ', Type.Initial, Type.GodanVerb, [Reason.Volitional]],
@@ -555,13 +555,8 @@ export function deinflect(word: string): CandidateWord[] {
               firstReasonChain.splice(0, 1, Reason.CausativePassive);
             } else if (
               // Add the "masu" reason only if the word is solely the masu stem.
-              (rule.reasons[0] === Reason.MasuStem &&
-                firstReasonChain.length) ||
-              // If we're inflecting a Vない type word back to V, then we don't want
-              // to add the "negative" reason since it's already expected to be in
-              // negative form.
-              (thisCandidate.type === Type.VNai &&
-                rule.reasons[0] === Reason.Negative)
+              rule.reasons[0] === Reason.MasuStem &&
+              firstReasonChain.length
             ) {
               // Do nothing
             } else {
