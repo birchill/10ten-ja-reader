@@ -106,7 +106,7 @@
     "jsdom": "^24.0.0",
     "knip": "5.23.1",
     "mini-css-extract-plugin": "2.9.0",
-    "mocha": "10.4.0",
+    "mocha": "10.5.2",
     "playwright": "1.45.0",
     "playwright-test": "^14.0.0",
     "postcss": "8.4.38",
