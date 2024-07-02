@@ -72,7 +72,7 @@
     "preact": "10.22.0",
     "superstruct": "1.0.4",
     "typescript": "5.5.2",
-    "web-ext": "8.0.0",
+    "web-ext": "8.2.0",
     "webextension-polyfill": "^0.12.0"
   },
   "devDependencies": {
