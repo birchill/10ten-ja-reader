@@ -42,7 +42,6 @@
     "release": "release-it --verbose",
     "sort-i18n-keys": "tsx scripts/sort-keys",
     "start:chrome": "webpack -w --env target=chrome",
-    "start:chrome-electron": "webpack -w --env target=chrome-electron",
     "start:edge": "webpack -w --env target=chrome --env chromium=edge",
     "start:firefox": "webpack -w",
     "sync-manifest-version": "tsx scripts/sync-manifest-version",
