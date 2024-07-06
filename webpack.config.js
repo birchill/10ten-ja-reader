@@ -139,6 +139,23 @@ export default (env) => {
         useServiceWorker: true,
       })
     );
+  } else if (env && env.target === 'chrome-electron') {
+    configs.push(
+      getExtConfig({
+        artifactsDir: 'dist-chrome-electron-package',
+        distFolder: 'dist-chrome-electron',
+        includeRikaichampName: true,
+        isChrome: true,
+        mv3: false,
+        needsClipboardWrite: false,
+        optionsInTab: true,
+        supportsExtensionSourceMaps: false,
+        supportsMatchAboutBlank: true,
+        supportsOfflineEnabledField: true,
+        target: 'chromium',
+        useServiceWorker: false,
+      })
+    );
   } else if (env && env.target === 'edge') {
     configs.push(
       getExtConfig({
