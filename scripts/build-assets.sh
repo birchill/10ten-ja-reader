@@ -53,7 +53,7 @@ mv dist-chrome-package/10ten_japanese_reader_rikaichamp_-${version}.zip release-
 
 # Chrome-Electron package
 RELEASE_BUILD=1 yarn package:chrome-electron
-mv dist-chrome-electron-package/10ten_japanese_reader_rikaichamp_-${version}.zip release-assets/10ten-ja-reader-${version}-chrome.zip
+mv dist-chrome-electron-package/10ten_japanese_reader_rikaichamp_-${version}.zip release-assets/10ten-ja-reader-${version}-chrome-electron.zip
 
 # Edge package
 RELEASE_BUILD=1 yarn package:edge
