@@ -157,7 +157,7 @@ type ChangeDict = { [field: string]: StorageChange };
 type Listener = (changes: ChangeDict, areaName: StorageName) => void;
 
 describe('Config', () => {
-  let languageGetter: MockInstance<string[], readonly string[]>;
+  let languageGetter: MockInstance<() => ReadonlyArray<string>>;
 
   beforeEach(() => {
     languageGetter = vi.spyOn(window.navigator, 'languages', 'get');
