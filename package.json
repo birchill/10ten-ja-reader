@@ -121,7 +121,7 @@
     "react-cosmos": "6.1.1",
     "react-cosmos-plugin-boolean-input": "6.1.1",
     "react-cosmos-plugin-webpack": "6.1.1",
-    "release-it": "17.4.1",
+    "release-it": "17.5.0",
     "semver-parser": "4.1.6",
     "source-map-loader": "5.0.0",
     "tailwindcss": "3.4.4",
