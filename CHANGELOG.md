@@ -33,6 +33,9 @@ app.
 - Added supported for doing unit conversions to imperial units
   thanks to [@StarScape](https://github.com/StarScape)
   ([#1836](https://github.com/birchill/10ten-ja-reader/pull/1836))
+- Added links from WaniKani annoations in the words and kanji tabs to the
+  corresponding page on the WaniKani homepage
+  ([#1876](https://github.com/birchill/10ten-ja-reader/pull/1876)).
 - Fixed a condition that could cause some preferences to be overwritten causing,
   for example, the puck to suddenly disappear.
 - Fixed duplicate matching of names with both 新字体 and 旧字体

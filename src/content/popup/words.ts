@@ -118,8 +118,13 @@ export function renderWordEntries({
       lastPointerType = evt.pointerType;
     });
 
-    entryDiv.addEventListener('click', () => {
+    entryDiv.addEventListener('click', (evt) => {
       if (popupHasSelectedText(container)) {
+        return;
+      }
+
+      // Don't trigger copy mode if we clicked a nested link
+      if (evt.target instanceof HTMLAnchorElement) {
         return;
       }
 
@@ -203,7 +208,7 @@ export function renderWordEntries({
           appendPriorityMark(kanji.p, headwordSpan);
         }
         if (options.waniKaniVocabDisplay !== 'hide' && kanji.wk) {
-          appendWaniKaniLevelTag(kanji.wk, headwordSpan);
+          appendWaniKaniLevelTag(kanji.wk, kanji.ent, headwordSpan);
         }
         if (options.bunproDisplay && kanji.bv) {
           appendBunproTag(kanji.bv, 'vocab', headwordSpan);
@@ -429,9 +434,23 @@ function appendPriorityMark(
   parent.append(renderStar(highPriority ? 'full' : 'hollow'));
 }
 
-function appendWaniKaniLevelTag(level: number, parent: ParentNode) {
+function appendWaniKaniLevelTag(
+  level: number,
+  ent: string,
+  parent: ParentNode
+) {
   parent.append(
-    html('span', { class: 'wk-level' }, html('span', {}, String(level)))
+    html(
+      'a',
+      {
+        class: 'wk-level',
+        href: `https://wanikani.com/vocabulary/${encodeURIComponent(ent)}`,
+        target: '_blank',
+        rel: 'noreferrer',
+        title: browser.i18n.getMessage('content_wk_link_title', ent),
+      },
+      html('span', {}, String(level))
+    )
   );
 }
 

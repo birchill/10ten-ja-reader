@@ -1,4 +1,5 @@
 import { KanjiResult } from '@birchill/jpdict-idb';
+import type { RenderableProps } from 'preact';
 import { useMemo } from 'preact/hooks';
 
 import { useLocale } from '../../common/i18n';
@@ -34,6 +35,7 @@ export function KanjiReferencesTable({ entry, kanjiReferences }: Props) {
 
       const value = getReferenceValue(entry, ref.ref, t) || '-';
       referenceTableInfo.push({
+        ref: ref.ref,
         name: {
           lang: ref.lang,
           value: ref.short || ref.full,
@@ -94,22 +96,62 @@ export function KanjiReferencesTable({ entry, kanjiReferences }: Props) {
       style={{ gridAutoFlow, gridTemplateRows }}
     >
       {referenceTableInfo.map((cellInfo) => (
-        <div
+        <ReferenceEntryWrapper
+          c={entry.c}
+          highlight={cellInfo.highlight}
+          refCode={cellInfo.ref}
           key={cellInfo.name.value}
-          class={classes(
-            'tp-flex tp-justify-between',
-            'tp-rounded-lg tp-px-[--bg-overhang] tp-py-0.5',
-            'tp-text-sm tp-leading-normal',
-            cellInfo.highlight &&
-              'tp-bg-[--cell-highlight-bg] tp-text-[--cell-highlight-fg]'
-          )}
         >
           <span lang={cellInfo.name.lang}>{cellInfo.name.value}</span>
           <span class="tp-ml-2" lang={cellInfo.value.lang}>
             {cellInfo.value.value}
           </span>
-        </div>
+        </ReferenceEntryWrapper>
       ))}
     </div>
   );
+}
+
+function ReferenceEntryWrapper(
+  props: RenderableProps<{
+    c: string;
+    highlight: boolean;
+    refCode: ReferenceAbbreviation;
+  }>
+) {
+  const { t } = useLocale();
+
+  const href =
+    props.refCode === 'wk'
+      ? `https://wanikani.com/kanji/${encodeURIComponent(props.c)}`
+      : undefined;
+
+  const containerStyles = classes(
+    'tp-flex tp-justify-between',
+    'tp-rounded-lg tp-px-[--bg-overhang] tp-py-0.5',
+    'tp-text-sm tp-leading-normal',
+    href && 'tp-cursor-pointer hover:tp-bg-[--cell-bg-hover]',
+    href
+      ? 'tp-text-[--cell-link-fg] hover:tp-bg-[--cell-bg-hover]'
+      : props.highlight
+        ? 'tp-text-[--cell-highlight-fg]'
+        : '',
+    props.highlight && 'tp-bg-[--cell-highlight-bg]'
+  );
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        class={containerStyles}
+        title={t('content_wk_link_title', props.c)}
+      >
+        {props.children}
+      </a>
+    );
+  } else {
+    return <div class={containerStyles}>{props.children}</div>;
+  }
 }
