@@ -167,4 +167,25 @@ export default {
       />
     </div>
   ),
+  'WaniKani links': (
+    <div
+      style={{
+        background: 'var(--bg-color)',
+        color: 'var(--text-color)',
+        padding: '18px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '40px',
+      }}
+    >
+      <ReferencesVariant
+        title="Highlighted row"
+        references={['unicode', 'wk']}
+      />
+      <ReferencesVariant
+        title="Un-highlighted row"
+        references={['conning', 'henshall', 'unicode', 'wk']}
+      />
+    </div>
+  ),
 };

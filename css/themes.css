@@ -6,7 +6,6 @@
   --tag-pink: #f24b59aa;
   --tag-blue: #2698fbaa;
 
-  --selected-highlight: var(--primary-highlight);
   --selected-bg: #fffde5;
   --selected-reading-highlight: #2e7d32;
   --selected-conj-color: #fc7600;
@@ -42,7 +41,10 @@
   --hi-contrast-pitch-accent: var(--primary-highlight);
   --cell-highlight-bg: hsl(50, 50%, 90%);
   --cell-highlight-fg: hsl(12, 4.2%, 20%);
+  --cell-bg-hover: oklch(from var(--cell-highlight-bg) calc(l - 0.03) c h);
+  --cell-link-fg: var(--primary-highlight);
 
+  --selected-highlight: var(--primary-highlight);
   --selected-bg: #fff8bf;
   --hover-bg: rgb(255, 250, 210);
   --selected-conj-color: hsl(356, 70%, 40%);
@@ -112,6 +114,8 @@
   --hi-contrast-pitch-accent: white;
   --cell-highlight-bg: #17588e;
   --cell-highlight-fg: var(--primary-highlight);
+  --cell-bg-hover: oklch(from var(--cell-highlight-bg) calc(l - 0.03) c h);
+  --cell-link-fg: var(--reading-highlight);
 
   --selected-highlight: var(--bg-color);
   --selected-bg: rgb(220, 225, 255);
@@ -160,6 +164,8 @@
   --hi-contrast-pitch-accent: white;
   --cell-highlight-bg: #504c4b;
   --cell-highlight-fg: #f0ecea;
+  --cell-bg-hover: oklch(from var(--cell-highlight-bg) calc(l - 0.08) c h);
+  --cell-link-fg: var(--primary-highlight);
 
   --selected-bg: #555;
   --hover-bg: #484844;
@@ -224,6 +230,8 @@
   --hi-contrast-pitch-accent: var(--primary-highlight);
   --cell-highlight-bg: #cae6fc;
   --cell-highlight-fg: var(--primary-highlight);
+  --cell-bg-hover: oklch(from var(--cell-highlight-bg) calc(l - 0.03) c h);
+  --cell-link-fg: var(--primary-highlight);
 
   --selected-highlight: var(--primary-highlight);
   --selected-bg: #fffac5;
@@ -272,6 +280,8 @@
   --hi-contrast-pitch-accent: var(--primary-highlight);
   --cell-highlight-bg: #fffde5;
   --cell-highlight-fg: #3e3a39;
+  --cell-bg-hover: hsl(from var(--cell-highlight-bg) h s calc(l + 3.5));
+  --cell-link-fg: var(--primary-highlight);
 
   --selected-bg: #e3f2fe;
   --hover-bg: #fdfdf4;

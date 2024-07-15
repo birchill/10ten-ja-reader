@@ -299,6 +299,16 @@
   "content_names_tag_work": {
     "message": "work"
   },
+  "content_wk_link_title": {
+    "message": "Show WaniKani page for $content$",
+    "description": "Tooltip for kanji and vocab links to WaniKani pages.",
+    "placeholders": {
+      "content": {
+        "content": "$1",
+        "example": "光"
+      }
+    }
+  },
   "currency_data_updated_label": {
     "message": "Updated $updated$",
     "description": "Caption added to popup explaining when the currency data was last refreshed",

@@ -676,7 +676,22 @@
   }
 
   .w-kanji .wk-level {
+    color: var(--primary-highlight);
     border: 1px solid var(--primary-highlight);
+  }
+
+  /*
+   * Make sure to only show the dotted link underline when the popup is
+   * interactive.
+   */
+  .w-kanji .wk-level,
+  .w-kanji .wk-level::before {
+    text-decoration: none;
+  }
+
+  .container.interactive .w-kanji .wk-level,
+  .container.interactive .w-kanji .wk-level::before {
+    text-decoration: underline dotted;
   }
 
   .w-kanji .wk-level::before {
@@ -690,7 +705,12 @@
   }
 
   @media (hover) {
+    .container.interactive .w-kanji .wk-level:hover {
+      background: color(from var(--selected-highlight) srgb r g b / 0.1);
+    }
+
     .container.interactive .entry:hover .w-kanji .wk-level {
+      color: var(--selected-highlight);
       border-color: var(--selected-highlight);
     }
   }
