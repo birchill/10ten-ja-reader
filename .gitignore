@@ -8,7 +8,9 @@ tests/content-loader.js
 tests/content-loader.js.map
 tests/_locales_*.js
 dist-chrome
+dist-chrome-electron
 dist-chrome-package
+dist-chrome-electron-package
 dist-edge
 dist-edge-package
 dist-firefox
