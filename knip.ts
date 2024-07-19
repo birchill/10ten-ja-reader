@@ -11,8 +11,6 @@ const config: KnipConfig = {
     // can't be expected to follow. Hopefully we'll eventually remove this
     // quirk and use the same tab manager everywhere.
     'src/background/active-tab-manager.ts',
-    // React Cosmos decorators
-    'src/**/cosmos.decorator.tsx',
     // Included by popups.html until we set up a better way of doing component
     // tests.
     'tests/html-tests.js',
@@ -21,8 +19,6 @@ const config: KnipConfig = {
     'xcode13/Shared \\(App\\)/Resources/Script.js',
   ],
   ignore: [
-    // Ignore React Cosmos fixtures
-    'src/**/*.fixture.tsx',
     // Ignore conditionally-compiled i18n polyfill
     'src/common/i18n.polyfill.tsx',
     // Ignore the locale files compiled by the i18n polyfill
@@ -32,9 +28,6 @@ const config: KnipConfig = {
     // Used by our browser test and automatically detected by playwright-test.
     'mocha',
     '@types/mocha',
-    // Knip doesn't know how to parse React Cosmos plugins (yet).
-    'react-cosmos-plugin-boolean-input',
-    'react-cosmos-plugin-webpack',
   ],
   ignoreExportsUsedInFile: {
     interface: true,
