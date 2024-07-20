@@ -4,6 +4,7 @@ import browser from 'webextension-polyfill';
 
 import { html } from '../../utils/builder';
 
+import { KanjiComponents } from './KanjiComponents';
 import { KanjiReferencesTable } from './KanjiReferencesTable';
 import { renderFrequency, renderPencil, renderPerson } from './icons';
 import { getLangTag } from './lang-tag';
@@ -101,96 +102,16 @@ function renderKanjiEntry({
   );
 
   // -- -- Kanji components
-  if (
-    typeof options.showKanjiComponents === 'undefined' ||
-    options.showKanjiComponents
-  ) {
+  if (options.showKanjiComponents !== false) {
     topRightPart.append(renderKanjiComponents(entry));
   }
 
   // Reference row
-  if (options.kanjiReferences && options.kanjiReferences.length) {
+  if (options.kanjiReferences?.length) {
     table.append(renderReferences(entry, options));
   }
 
   return table;
-}
-
-function renderKanjiComponents(entry: KanjiResult): HTMLElement {
-  const componentsDiv = html('div', { class: 'components' });
-
-  const componentsTable = html('table', {});
-  componentsDiv.append(componentsTable);
-
-  // The radical row is special. It has special highlighting, we show all
-  // readings and meanings (not just the first of each), and we also show
-  // the base radical, if any.
-  const addRadicalRow = () => {
-    const { rad } = entry;
-
-    componentsTable.append(
-      html(
-        'tr',
-        { class: '-radical' },
-        html('td', { class: 'char', lang: 'ja' }, (rad.b || rad.k)!),
-        html('td', { class: 'reading', lang: 'ja' }, rad.na.join('、')),
-        html('td', { class: 'meaning', lang: rad.m_lang }, rad.m.join(', '))
-      )
-    );
-
-    if (rad.base) {
-      const baseChar = (rad.base.b || rad.base.k)!;
-      const baseReadings = rad.base.na.join('、');
-      const fromText = browser.i18n.getMessage('content_kanji_base_radical', [
-        baseChar,
-        baseReadings,
-      ]);
-
-      componentsTable.append(
-        html(
-          'tr',
-          { class: '-baseradical', lang: getLangTag() },
-          html('td', { colspan: '3' }, fromText)
-        )
-      );
-    }
-  };
-
-  // Typically, the radical will also be one of the components, but in case it's
-  // not (the data is frequently hand-edited, after all), make sure we add it
-  // first.
-  if (
-    !entry.comp.some((comp) => comp.c === entry.rad.b || comp.c === entry.rad.k)
-  ) {
-    addRadicalRow();
-  }
-
-  for (const component of entry.comp) {
-    if (component.c === entry.rad.b || component.c === entry.rad.k) {
-      addRadicalRow();
-      continue;
-    }
-
-    componentsTable.append(
-      html(
-        'tr',
-        {},
-        html('td', { class: 'char', lang: 'ja' }, component.c),
-        html(
-          'td',
-          { class: 'reading', lang: 'ja' },
-          component.na.length ? component.na[0] : '-'
-        ),
-        html(
-          'td',
-          { class: 'meaning', lang: component.m_lang },
-          component.m.length ? component.m[0] : '-'
-        )
-      )
-    );
-  }
-
-  return componentsDiv;
 }
 
 function renderReadings(entry: KanjiResult): HTMLElement {
@@ -339,6 +260,13 @@ function renderMiscRow(entry: KanjiResult): HTMLElement {
   return miscInfoDiv;
 }
 
+function renderKanjiComponents(entry: KanjiResult): HTMLElement {
+  // Temporary React root container
+  const containerElement = html('div');
+  render(h(KanjiComponents, entry), containerElement);
+  return containerElement;
+}
+
 function renderReferences(
   entry: KanjiResult,
   options: ShowPopupOptions
@@ -347,7 +275,7 @@ function renderReferences(
   const containerElement = html('div');
   render(
     h(KanjiReferencesTable, {
-      entry: entry,
+      entry,
       kanjiReferences: options.kanjiReferences,
     }),
     containerElement
