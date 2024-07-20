@@ -299,6 +299,16 @@
   "content_names_tag_work": {
     "message": "work"
   },
+  "content_sk_match_src": {
+    "message": "From $src$",
+    "description": "The text used to show the sK/sk (search only) text that was used to look up the entry",
+    "placeholders": {
+      "src": {
+        "content": "$1",
+        "example": "御久しぶり"
+      }
+    }
+  },
   "content_wk_link_title": {
     "message": "Show WaniKani page for $content$",
     "description": "Tooltip for kanji and vocab links to WaniKani pages.",
