@@ -41,7 +41,7 @@
   --hi-contrast-pitch-accent: var(--primary-highlight);
   --cell-highlight-bg: hsl(50, 50%, 90%);
   --cell-highlight-fg: hsl(12, 4.2%, 20%);
-  --cell-bg-hover: oklch(from var(--cell-highlight-bg) calc(l - 0.03) c h);
+  --cell-bg-hover: hsl(50.4, 35.2%, 86.1%);
   --cell-link-fg: var(--primary-highlight);
 
   --selected-highlight: var(--primary-highlight);
@@ -114,7 +114,7 @@
   --hi-contrast-pitch-accent: white;
   --cell-highlight-bg: #17588e;
   --cell-highlight-fg: var(--primary-highlight);
-  --cell-bg-hover: oklch(from var(--cell-highlight-bg) calc(l - 0.03) c h);
+  --cell-bg-hover: hsl(206.3, 86%, 28%);
   --cell-link-fg: var(--reading-highlight);
 
   --selected-highlight: var(--bg-color);
@@ -164,7 +164,7 @@
   --hi-contrast-pitch-accent: white;
   --cell-highlight-bg: #504c4b;
   --cell-highlight-fg: #f0ecea;
-  --cell-bg-hover: oklch(from var(--cell-highlight-bg) calc(l - 0.08) c h);
+  --cell-bg-hover: hsl(12, 4.4%, 22.2%);
   --cell-link-fg: var(--primary-highlight);
 
   --selected-bg: #555;
@@ -230,7 +230,7 @@
   --hi-contrast-pitch-accent: var(--primary-highlight);
   --cell-highlight-bg: #cae6fc;
   --cell-highlight-fg: var(--primary-highlight);
-  --cell-bg-hover: oklch(from var(--cell-highlight-bg) calc(l - 0.03) c h);
+  --cell-bg-hover: hsl(206.4, 65.8%, 85.1%);
   --cell-link-fg: var(--primary-highlight);
 
   --selected-highlight: var(--primary-highlight);
@@ -280,7 +280,7 @@
   --hi-contrast-pitch-accent: var(--primary-highlight);
   --cell-highlight-bg: #fffde5;
   --cell-highlight-fg: #3e3a39;
-  --cell-bg-hover: hsl(from var(--cell-highlight-bg) h s calc(l + 3.5));
+  --cell-bg-hover: rgb(255, 254, 247);
   --cell-link-fg: var(--primary-highlight);
 
   --selected-bg: #e3f2fe;
