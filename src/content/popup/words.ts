@@ -137,17 +137,33 @@ export function renderWordEntries({
 
     const matchedOnKana = entry.r.some((r) => r.matchRange);
 
-    // Exclude any search-only kanji headwords unless we ONLY matched on
-    // search-only kanji.
+    // If we matched on a search-only kanji or kana headword we want to show it
+    // prior to the main entry.
     const matchedOnlyOnSearchOnlyKanji =
       !matchedOnKana && entry.k.every((k) => !k.match || k.i?.includes('sK'));
+    const matchedOnlyOnSearchOnlyKana =
+      matchedOnKana && entry.r.every((r) => !r.match || r.i?.includes('sk'));
+    const searchOnlyMatch = matchedOnKana
+      ? matchedOnlyOnSearchOnlyKana
+        ? entry.r.find((r) => !!r.matchRange)?.ent
+        : undefined
+      : matchedOnlyOnSearchOnlyKanji
+        ? entry.k.find((k) => !!k.matchRange)?.ent
+        : undefined;
+
+    if (searchOnlyMatch) {
+      const searchOnlyDiv = html(
+        'div',
+        {
+          class: 'tp-mb-1 tp-text-sm tp-opacity-70',
+        },
+        browser.i18n.getMessage('content_sk_match_src', searchOnlyMatch)
+      );
+      headingDiv.append(searchOnlyDiv);
+    }
 
     const kanjiHeadwords = entry.k
-      ? entry.k.filter(
-          (k) =>
-            !k.i?.includes('sK') ||
-            (matchedOnlyOnSearchOnlyKanji && k.matchRange)
-        )
+      ? entry.k.filter((k) => !k.i?.includes('sK'))
       : [];
 
     // If we matched on kana, then any headwords which are _not_ matches should
@@ -239,13 +255,9 @@ export function renderWordEntries({
       );
 
     // For search-only kanji, we show them only if they are the ONLY matches.
-    const matchedOnlyOnSearchOnlyKana =
-      matchedOnKana && entry.r.every((r) => !r.match || r.i?.includes('sk'));
-
     const matchingKana = entry.r.filter(
       (r) =>
-        // Don't include search-only kana unless they are the _only_ matches
-        (!r.i?.includes('sk') || matchedOnlyOnSearchOnlyKana) &&
+        !r.i?.includes('sk') &&
         (r.match ||
           (matchedOnIrregularKana &&
             !r.i?.includes('ik') &&
@@ -264,14 +276,12 @@ export function renderWordEntries({
         // Dim irrelevant headwords
         let headwordSpan = kanaSpan;
         if (
-          // Always dim search-only headwords
-          kana.i?.includes('sk') ||
           // If we looked up by kanji, dim any kana headwords that are
           // irregular, old, or rare.
-          (!matchedOnKana &&
-            (kana.i?.includes('ik') ||
-              kana.i?.includes('ok') ||
-              kana.i?.includes('rk')))
+          !matchedOnKana &&
+          (kana.i?.includes('ik') ||
+            kana.i?.includes('ok') ||
+            kana.i?.includes('rk'))
         ) {
           const dimmedSpan = html('span', { class: 'dimmed' });
           kanaSpan.append(dimmedSpan);
