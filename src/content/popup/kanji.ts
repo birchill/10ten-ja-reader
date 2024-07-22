@@ -262,7 +262,7 @@ function renderMiscRow(entry: KanjiResult): HTMLElement {
 
 function renderKanjiComponents(entry: KanjiResult): HTMLElement {
   // Temporary React root container
-  const containerElement = html('div');
+  const containerElement = html('div', { class: 'tp-mt-3' });
   render(h(KanjiComponents, entry), containerElement);
   return containerElement;
 }

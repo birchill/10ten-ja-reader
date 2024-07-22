@@ -89,9 +89,7 @@ function TestCase({ title, ...props }: { title: string } & Props) {
   return (
     <div>
       <h2>{title}</h2>
-      <div class="kanji-table">
-        <KanjiComponents {...props} />
-      </div>
+      <KanjiComponents {...props} />
     </div>
   );
 }

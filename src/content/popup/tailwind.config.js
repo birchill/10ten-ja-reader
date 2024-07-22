@@ -16,6 +16,11 @@ export default {
         '3xl': 'calc(1.5 * var(--base-font-size))',
       },
       fontSize: {
+        // Compare to https://github.com/tailwindlabs/tailwindcss/blob/6ab289343deaa61095a8f55799239ce0f1ee41ea/packages/tailwindcss/theme.css#L374-L400
+        xs: [
+          'calc(11 / 14 * var(--base-font-size))',
+          { lineHeight: 'var(--base-font-size)' },
+        ],
         sm: [
           'calc(12 / 14 * var(--base-font-size))',
           { lineHeight: 'calc(1.25 * var(--base-font-size))' },
