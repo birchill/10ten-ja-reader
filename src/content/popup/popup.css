@@ -1194,64 +1194,6 @@
     fill: currentcolor;
   }
 
-  /* kanji: components */
-
-  .kanji-table .components {
-    margin-block-start: 10px;
-    /* Subtract the padding at the start of the row so the text lines up */
-    margin-inline-start: -1em;
-    /* Use consistent line-height since we mix fonts in the same line */
-    line-height: 1.5;
-  }
-
-  .kanji-table .components table {
-    border-collapse: collapse;
-
-    /*
-    * There's something odd in Firefox where, when you're viewing a text/plain
-    * document, the .window { color: white } rule doesn't inherit into the
-    * table so we have to explicitly re-establish the color there.
-    */
-    color: var(--text-color);
-  }
-
-  .kanji-table .components .char,
-  .kanji-table .components .reading,
-  .kanji-table .components .meaning,
-  .kanji-table .components .-baseradical td {
-    vertical-align: top;
-    font-size: calc(11 / 14 * var(--base-font-size));
-    padding-top: 0.3em;
-    padding-bottom: 0.3em;
-    padding-left: 1em;
-    padding-right: 1em;
-  }
-
-  .kanji-table .components .reading {
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-  }
-
-  .kanji-table .components .-radical * {
-    background: var(--cell-highlight-bg);
-    color: var(--cell-highlight-fg);
-  }
-
-  .kanji-table .components .-radical .char {
-    border-top-left-radius: 0.5rem;
-    border-bottom-left-radius: 0.5rem;
-  }
-
-  .kanji-table .components .-radical .meaning {
-    border-top-right-radius: 0.5rem;
-    border-bottom-right-radius: 0.5rem;
-  }
-
-  .kanji-table .components .-baseradical td {
-    color: var(--cell-highlight-fg);
-    font-style: italic;
-  }
-
   /*
    * Status bar
    */

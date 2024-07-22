@@ -10,8 +10,14 @@ export function KanjiComponents(props: Props) {
   );
 
   return (
-    <div class="components">
-      <table>
+    <div>
+      <table
+        // There's something odd in Firefox where, when you're viewing a
+        // text/plain document, the text color rule on the window doesn't
+        // inherit into the table so we have to explicitly re-establish the
+        // color here.
+        class="-tp-mx-3 tp-border-collapse tp-text-[--text-color] tp-text-xs tp-leading-normal"
+      >
         {/* Typically, the radical will also be one of the components, but in
          * case it's not (the data is frequently hand-edited, after all),
          * make sure we add it first. */}
@@ -22,14 +28,14 @@ export function KanjiComponents(props: Props) {
           }
 
           return (
-            <tr key={comp.c}>
-              <td class="char" lang="ja">
+            <tr key={comp.c} class="*:tp-align-top *:tp-py-1">
+              <td class="tp-px-3" lang="ja">
                 {comp.c}
               </td>
-              <td class="reading" lang="ja">
+              <td class="tp-px-1.5" lang="ja">
                 {comp.na[0] || '-'}
               </td>
-              <td class="meaning" lang={comp.m_lang}>
+              <td class="tp-px-3" lang={comp.m_lang}>
                 {comp.m[0] || '-'}
               </td>
             </tr>
@@ -45,20 +51,23 @@ function RadicalRow(props: ExpandedRadical) {
 
   return (
     <>
-      <tr class="-radical">
-        <td class="char" lang="ja">
+      <tr class="*:tp-bg-[--cell-highlight-bg] *:tp-text-[--cell-highlight-fg] *:tp-align-top *:tp-py-1">
+        <td class="tp-px-3 tp-rounded-s-md" lang="ja">
           {props.b || props.k}
         </td>
-        <td class="reading" lang="ja">
+        <td class="tp-px-1.5" lang="ja">
           {props.na.join('、')}
         </td>
-        <td class="meaning" lang={props.m_lang}>
+        <td class="tp-px-3 tp-rounded-e-md" lang={props.m_lang}>
           {props.m.join(', ')}
         </td>
       </tr>
       {!!props.base && (
         <tr class="-baseradical" lang={langTag}>
-          <td colspan={3}>
+          <td
+            colspan={3}
+            class="tp-text-[--cell-highlight-fg] tp-align-top tp-py-1 tp-px-3 tp-italic"
+          >
             {t('content_kanji_base_radical', [
               (props.base.b || props.base.k)!,
               props.base.na.join('、'),
