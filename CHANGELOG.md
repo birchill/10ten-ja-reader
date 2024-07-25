@@ -11,19 +11,18 @@ app.
 - Extended the support for honorific speech
   thanks to [@Enellis](https://github.com/Enellis)
   ([#1822](https://github.com/birchill/10ten-ja-reader/pull/1822)).
-  - Added imperative for くださる.
-  - Added addtional forms of ます.
+  - Added imperative for くださる
+  - Added addtional forms of ます
     - たら・たり and て-form
     - Imperative
-  - Added respectful speech.
+  - Added respectful speech
     - Continuous form (ていらっしゃる, てらっしゃる)
     - なさる
     - になる
-  - Added humble speech.
+  - Added humble speech
     - Continuous form (ておる, とる)
-    - masu-stem + する
     - 致す
-  - Fixed recognition of irregular verb forms of 宣う.
+  - Fixed recognition of irregular verb forms of 宣う
 - Added support for irregular verb forms of 給う
   thanks to [@Enellis](https://github.com/Enellis)
   ([#1470](https://github.com/birchill/10ten-ja-reader/issues/1470)).
