@@ -130,7 +130,8 @@ function ReferenceEntryWrapper(
     'tp-flex tp-justify-between',
     'tp-rounded-lg tp-px-[--bg-overhang] tp-py-0.5',
     'tp-text-sm tp-leading-normal',
-    href && 'tp-cursor-pointer hover:tp-bg-[--cell-bg-hover]',
+    href &&
+      'tp-cursor-pointer hover:tp-bg-[--cell-bg-hover] tp-underline-offset-2',
     href
       ? 'tp-text-[--cell-link-fg] hover:tp-bg-[--cell-bg-hover]'
       : props.highlight

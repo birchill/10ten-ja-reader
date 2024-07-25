@@ -678,6 +678,7 @@
   .w-kanji .wk-level {
     color: var(--primary-highlight);
     border: 1px solid var(--primary-highlight);
+    text-underline-offset: 2px;
   }
 
   /*
