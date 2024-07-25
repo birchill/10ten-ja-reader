@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+## [1.20.0] - 2024-07-25
+
 - Extended the support for honorific speech
   thanks to [@Enellis](https://github.com/Enellis)
   ([#1822](https://github.com/birchill/10ten-ja-reader/pull/1822)).
@@ -1180,7 +1182,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.19.1...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.20.0...HEAD
+[1.20.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.19.1...v1.20.0
 [1.19.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.19.0...v1.19.1
 [1.19.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.17.1...v1.18.0
