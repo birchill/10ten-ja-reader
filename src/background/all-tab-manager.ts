@@ -4,7 +4,6 @@ import * as s from 'superstruct';
 import browser, { Runtime, Tabs, Windows } from 'webextension-polyfill';
 
 import { ContentConfigParams } from '../common/content-config-params';
-import { ExtensionStorageError } from '../common/extension-storage-error';
 import { requestIdleCallback } from '../utils/request-idle-callback';
 
 import {
@@ -130,14 +129,8 @@ export default class AllTabManager implements TabManager {
     let getEnabledResult;
     try {
       getEnabledResult = await browser.storage.local.get('enabled');
-    } catch (e) {
-      void Bugsnag.notify(
-        new ExtensionStorageError(
-          { key: 'enabled', action: 'get' },
-          { cause: e }
-        ),
-        { severity: 'warning' }
-      );
+    } catch {
+      // This error occurs too frequently to be useful to report to Bugsnag.
       return false;
     }
 
