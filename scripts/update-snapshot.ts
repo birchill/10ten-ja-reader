@@ -59,7 +59,7 @@ async function main() {
 
     dataStream.write(line);
   }
-  dataStream.end();
+  await new Promise((resolve) => dataStream.end(resolve));
   console.log(`Wrote ${dataFilePath}.`);
 
   // Write index, sorted by key
@@ -72,7 +72,7 @@ async function main() {
     const lineNumbers = index.get(key)!;
     indexStream.write(`${key},${lineNumbers.join(',')}\n`);
   }
-  indexStream.end();
+  await new Promise((resolve) => indexStream.end(resolve));
   console.log(`Wrote ${indexFilePath}.`);
 }
 
