@@ -213,9 +213,9 @@ export class FxFetcher {
         // Update our local state now that everything succeeded
         this.updated = updated;
         this.fetchState = { type: 'idle' };
-      } catch {
+      } catch (e) {
         void Bugsnag.notify(
-          new ExtensionStorageError({ key: 'fx', action: 'set' }),
+          new ExtensionStorageError({ key: 'fx', action: 'set' }, { cause: e }),
           { severity: 'warning' }
         );
         this.fetchState = { type: 'idle', didFail: true };
