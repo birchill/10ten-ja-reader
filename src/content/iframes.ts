@@ -105,6 +105,7 @@ function getIframes(
     // will throw a SecurityError which we can detect and it won't print
     // anything to the console.
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       iframe.contentWindow?.frameElement;
     } catch {
       continue;

@@ -431,9 +431,11 @@ export class ContentHandler {
           break;
 
         case 'enableTapLookup':
-          value
-            ? this.touchClickTracker.enable()
-            : this.touchClickTracker.disable();
+          if (value) {
+            this.touchClickTracker.enable();
+          } else {
+            this.touchClickTracker.disable();
+          }
           break;
 
         case 'fontFace':
@@ -2260,7 +2262,11 @@ export class ContentHandler {
         this.showDictionary(dict, { fixPopupPosition: true });
       },
       onTogglePin: () => {
-        displayMode === 'pinned' ? this.unpinPopup() : this.pinPopup();
+        if (displayMode === 'pinned') {
+          this.unpinPopup();
+        } else {
+          this.pinPopup();
+        }
       },
       pinShortcuts: this.config.keys.pinPopup,
       pointerType: this.currentTargetProps?.fromPuck ? 'puck' : 'cursor',
