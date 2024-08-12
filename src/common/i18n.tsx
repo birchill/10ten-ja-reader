@@ -19,8 +19,7 @@ const contextValue: i18nContextType = {
 
 const i18nContext = createContext<i18nContextType>(contextValue);
 
-const SUPPORTED_LOCALES = ['en', 'ja', 'zh_hans'] as const;
-type LocaleType = (typeof SUPPORTED_LOCALES)[number];
+type LocaleType = 'en' | 'ja' | 'zh_hans';
 
 type I18nProviderProps = {
   locale?: LocaleType;
