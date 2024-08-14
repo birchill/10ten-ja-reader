@@ -45,15 +45,15 @@ export default class ActiveTabManager implements TabManager {
       (
         request: unknown,
         sender: Runtime.MessageSender
-      ): void | Promise<any> => {
+      ): undefined | Promise<any> => {
         // Basic sanity checks
         if (!s.is(request, BackgroundRequestSchema)) {
-          return;
+          return undefined;
         }
 
         // We only handle messages from tabs
         if (!sender.tab || typeof sender.tab.id !== 'number') {
-          return;
+          return undefined;
         }
 
         switch (request.type) {
@@ -83,6 +83,8 @@ export default class ActiveTabManager implements TabManager {
             );
             break;
         }
+
+        return undefined;
       }
     );
   }

@@ -54,13 +54,13 @@ const getExtensionInstallId = async (): Promise<string> => {
   try {
     let storedInstallId = (await browser.storage.local.get('installid'))
       ?.installid;
-    if (!storedInstallId) {
+    if (typeof storedInstallId !== 'string') {
       const installId = getRandomId();
       await browser.storage.local.set({ installid: installId });
       storedInstallId = installId;
     }
 
-    return storedInstallId;
+    return storedInstallId as string;
   } catch {
     // Ignore because we are probably already in the middle of reporting an error
   }

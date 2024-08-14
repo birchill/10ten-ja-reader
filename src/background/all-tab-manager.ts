@@ -77,15 +77,15 @@ export default class AllTabManager implements TabManager {
       (
         request: unknown,
         sender: Runtime.MessageSender
-      ): void | Promise<any> => {
+      ): undefined | Promise<any> => {
         if (!s.is(request, BackgroundRequestSchema)) {
-          return;
+          return undefined;
         }
 
         switch (request.type) {
           case 'enable?':
             if (!sender.tab || typeof sender.tab.id !== 'number') {
-              return;
+              return undefined;
             }
 
             void this.enableTab(sender.tab.id, sender.frameId);
@@ -97,7 +97,7 @@ export default class AllTabManager implements TabManager {
               typeof sender.tab.id !== 'number' ||
               typeof sender.frameId !== 'number'
             ) {
-              return;
+              return undefined;
             }
 
             this.updateFrames({
@@ -119,6 +119,8 @@ export default class AllTabManager implements TabManager {
             });
             break;
         }
+
+        return undefined;
       }
     );
 

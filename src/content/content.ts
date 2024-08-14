@@ -2877,7 +2877,7 @@ declare global {
     }
 
     browser.runtime
-      .sendMessage({
+      .sendMessage<unknown, { frameId: number } | undefined>({
         type: 'enabled',
         src: document.location.href,
       })
@@ -2885,6 +2885,7 @@ declare global {
         if (!resp) {
           return;
         }
+
         const { frameId } = resp;
         if (contentHandler) {
           contentHandler.setFrameId(frameId);
