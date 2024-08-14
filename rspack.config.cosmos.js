@@ -97,7 +97,7 @@ const config = {
     }),
     new rspack.CssExtractRspackPlugin(),
     new rspack.CopyRspackPlugin({
-      patterns: ['fonts/*', 'images/*'],
+      patterns: ['css/*', 'fonts/*', 'images/*'],
     }),
   ],
 };
