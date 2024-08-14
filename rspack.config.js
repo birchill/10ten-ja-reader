@@ -1,13 +1,12 @@
 /* eslint @typescript-eslint/no-var-requires: 0 */
-import CopyWebpackPlugin from 'copy-webpack-plugin';
+import rspack from '@rspack/core';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { createRequire } from 'node:module';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import TerserPlugin from 'terser-webpack-plugin';
 import WebExtPlugin from 'web-ext-plugin';
-import webpack from 'webpack';
 import {
   BugsnagBuildReporterPlugin,
   BugsnagSourceMapUploaderPlugin,
@@ -58,8 +57,12 @@ const commonConfig = {
             use: ['postcss-loader'],
           },
           {
+            type: 'javascript/auto',
+            // We need to use the CssExtractRspackPlugin.loader here (as opposed
+            // to Rspack's native CSS handling) simply to that we can tell
+            // css-loader not to parser URLs or generate source maps.
             use: [
-              { loader: MiniCssExtractPlugin.loader },
+              { loader: rspack.CssExtractRspackPlugin.loader },
               {
                 loader: 'css-loader',
                 options: { url: false, sourceMap: false },
@@ -70,9 +73,46 @@ const commonConfig = {
         ],
       },
       {
-        test: /\.tsx?$/,
+        test: /\.ts$/,
         exclude: /node_modules/,
-        use: 'ts-loader',
+        use: {
+          loader: 'builtin:swc-loader',
+          /** @type {import('@rspack/core').SwcLoaderOptions} */
+          options: {
+            sourceMap: true,
+            jsc: {
+              parser: { syntax: 'typescript' },
+              target: 'es2020',
+            },
+          },
+        },
+        type: 'javascript/auto',
+      },
+      {
+        test: /\.tsx$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'builtin:swc-loader',
+          /** @type {import('@rspack/core').SwcLoaderOptions} */
+          options: {
+            sourceMap: true,
+            jsc: {
+              parser: {
+                syntax: 'typescript',
+                tsx: true,
+              },
+              transform: {
+                react: {
+                  runtime: 'automatic',
+                  throwIfNamespace: true,
+                  useBuiltins: true,
+                },
+              },
+              target: 'es2020',
+            },
+          },
+        },
+        type: 'javascript/auto',
       },
       { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
     ],
@@ -102,13 +142,13 @@ const testConfig = {
     filename: '[name].js',
   },
   plugins: [
-    new webpack.DefinePlugin({
+    new rspack.DefinePlugin({
       __ACTIVE_TAB_ONLY__: false,
       __SUPPORTS_SVG_ICONS__: false,
       __SUPPORTS_TAB_CONTEXT_TYPE__: false,
       __VERSION__: `'${pjson.version}'`,
     }),
-    new webpack.NormalModuleReplacementPlugin(
+    new rspack.NormalModuleReplacementPlugin(
       /\/i18n$/,
       path.resolve(__dirname, 'src', 'common', 'i18n.polyfill.tsx')
     ),
@@ -336,13 +376,14 @@ function getExtConfig(options) {
   //
 
   const plugins = [
-    new webpack.DefinePlugin({
+    new rspack.DefinePlugin({
       __ACTIVE_TAB_ONLY__: !!options.activeTabOnly,
       __MV3__: !!options.mv3,
       __SUPPORTS_SVG_ICONS__: !!options.supportsSvgIcons,
       __SUPPORTS_TAB_CONTEXT_TYPE__: !!options.supportsTabContextType,
       __VERSION__: `'${pjson.version}'`,
     }),
+    new ForkTsCheckerWebpackPlugin(),
     new HtmlWebpackPlugin({
       chunks: ['10ten-ja-options'],
       filename: 'options.html',
@@ -350,18 +391,17 @@ function getExtConfig(options) {
       scriptLoading: 'blocking',
       template: './src/options/options.html',
     }),
-    new MiniCssExtractPlugin({
-      filename: (pathData) => {
-        return pathData.chunk.name === '10ten-ja-options'
+    new rspack.CssExtractRspackPlugin({
+      filename: (pathData) =>
+        pathData.chunk.name === '10ten-ja-options'
           ? 'css/options.css'
-          : 'css/[name].css';
-      },
+          : 'css/[name].css',
     }),
   ];
 
   if (options.activeTabOnly) {
     plugins.push(
-      new webpack.NormalModuleReplacementPlugin(
+      new rspack.NormalModuleReplacementPlugin(
         /all-tab-manager$/,
         path.resolve(__dirname, 'src', 'background', 'active-tab-manager.ts')
       )
@@ -389,7 +429,7 @@ function getExtConfig(options) {
     { from: '*.js', context: 'docs/update', to: 'docs' },
   ];
 
-  plugins.push(new CopyWebpackPlugin({ patterns: copyPatterns }));
+  plugins.push(new rspack.CopyRspackPlugin({ patterns: copyPatterns }));
 
   //
   // Plugins: web-ext
@@ -484,7 +524,7 @@ function getExtConfig(options) {
   // can achieve that by setting `devtool` to false and then doing:
   //
   //  plugins.push(
-  //    new webpack.SourceMapDevToolPlugin({
+  //    new rspack.SourceMapDevToolPlugin({
   //      test: /.js$/,
   //      exclude: '10ten-ja-content.js',
   //      filename: '[file].map',
@@ -492,7 +532,7 @@ function getExtConfig(options) {
   //    })
   //  );
   //  plugins.push(
-  //    new webpack.SourceMapDevToolPlugin({
+  //    new rspack.SourceMapDevToolPlugin({
   //      test: '10ten-ja-content.js',
   //      filename: '[file].map',
   //      noSources: false,
@@ -519,6 +559,9 @@ function getExtConfig(options) {
       // options page.
       popup: './src/content/popup/popup.css',
     },
+    experiments: {
+      css: true,
+    },
     // We turn on production mode simply so we can drop unused code from the
     // bundle -- otherwise we'll end up injecting a bunch of unrelated code like
     // Russian token stopwords into the content script.
@@ -543,6 +586,9 @@ function getExtConfig(options) {
     },
     optimization: {
       minimizer: [
+        // In future we should be able to use rspack.SwcJsMinimizerRspackPlugin
+        // here instead but currently it doesn't respect some options like
+        // 'beautify' so it will produce different output.
         new TerserPlugin({
           terserOptions: {
             compress: {
@@ -566,6 +612,7 @@ function getExtConfig(options) {
       ],
     },
     output: {
+      clean: true,
       path: path.resolve(__dirname, options.distFolder),
       publicPath: '/',
       filename: '[name].js',
