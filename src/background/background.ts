@@ -490,7 +490,10 @@ let pendingSearchOtherRequest:
   | undefined;
 
 browser.runtime.onMessage.addListener(
-  (request: unknown, sender: Runtime.MessageSender): void | Promise<any> => {
+  (
+    request: unknown,
+    sender: Runtime.MessageSender
+  ): undefined | Promise<any> => {
     if (!s.is(request, BackgroundRequestSchema)) {
       // We can sometimes get requests here from other extensions?
       //
@@ -503,7 +506,7 @@ browser.runtime.onMessage.addListener(
       // Curiously in all cases the user agent was not identified so I'm not
       // sure if this can happen in all browsers or not.
       console.warn(`Unrecognized request: ${JSON.stringify(request)}`);
-      return;
+      return undefined;
     }
 
     switch (request.type) {
@@ -733,6 +736,8 @@ browser.runtime.onMessage.addListener(
         }
         break;
     }
+
+    return undefined;
   }
 );
 
