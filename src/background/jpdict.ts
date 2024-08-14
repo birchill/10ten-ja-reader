@@ -11,7 +11,6 @@ import {
 import { kanaToHiragana } from '@birchill/normal-jp';
 import browser from 'webextension-polyfill';
 
-import { ExtensionStorageError } from '../common/extension-storage-error';
 import { normalizeInput } from '../utils/normalize-input';
 import { JpdictWorkerBackend } from '../worker/jpdict-worker-backend';
 
@@ -288,14 +287,8 @@ async function setLastUpdateTime(time: number | null) {
     browser.storage.local.remove('lastUpdateKanjiDb').catch(() => {
       /* Ignore */
     });
-  } catch (e) {
-    void Bugsnag.notify(
-      new ExtensionStorageError(
-        { key: 'lastDbUpdateTime', action: 'set' },
-        { cause: e }
-      ),
-      { severity: 'warning' }
-    );
+  } catch {
+    // Don't notify Bugsnag because this is a common error in Firefox.
   }
 }
 

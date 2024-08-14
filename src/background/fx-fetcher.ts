@@ -2,7 +2,6 @@ import Bugsnag from '@birchill/bugsnag-zero';
 import * as s from 'superstruct';
 import browser from 'webextension-polyfill';
 
-import { ExtensionStorageError } from '../common/extension-storage-error';
 import { fetchWithTimeout } from '../utils/fetch';
 import { isError } from '../utils/is-error';
 import { getReleaseStage } from '../utils/release-stage';
@@ -213,11 +212,9 @@ export class FxFetcher {
         // Update our local state now that everything succeeded
         this.updated = updated;
         this.fetchState = { type: 'idle' };
-      } catch (e) {
-        void Bugsnag.notify(
-          new ExtensionStorageError({ key: 'fx', action: 'set' }, { cause: e }),
-          { severity: 'warning' }
-        );
+      } catch {
+        // Don't report to Bugsnag because this is really common in Firefox for
+        // some reason.
         this.fetchState = { type: 'idle', didFail: true };
       }
     }
