@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- Fixed matching of 0年
+  ([#1912](https://github.com/birchill/10ten-ja-reader/pull/1912)).
+
 ## [1.20.0] - 2024-07-25
 
 - Extended the support for honorific speech

@@ -358,6 +358,9 @@ export function extractEraMetadata(text: string): EraMeta | undefined {
   let year: number | null = 0;
   if (typeof matches[1] !== 'undefined') {
     year = parseNumber(matches[1]);
+    if (typeof year === 'number' && year < 1) {
+      year = null;
+    }
   }
 
   if (year === null) {
