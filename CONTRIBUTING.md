@@ -91,7 +91,7 @@ For manual testing you can use:
 yarn start:firefox # or yarn start:chrome
 ```
 
-This will run the app using the webpack runner in Firefox (or Chrome) with
+This will run the app using the rspack runner in Firefox (or Chrome) with
 automatic reloading.
 
 To run a specific version of Firefox:

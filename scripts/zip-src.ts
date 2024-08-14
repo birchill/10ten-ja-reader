@@ -67,9 +67,9 @@ async function main() {
     'package.json',
     'postcss.config.cjs',
     'README.md',
+    'rspack.config.js',
     'tsconfig.json',
     'vitest.config.ts',
-    'webpack.config.js',
     'yarn.lock',
   ];
   for (const file of files) {

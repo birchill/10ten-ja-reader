@@ -2,12 +2,12 @@
   "$schema": "http://json.schemastore.org/cosmos-config",
   "plugins": [
     "react-cosmos-plugin-boolean-input",
-    "react-cosmos-plugin-webpack"
+    "react-cosmos-plugin-rspack"
   ],
   "dom": {
     "containerQuerySelector": "#container"
   },
-  "webpack": {
-    "configPath": "./webpack.config.cosmos.js"
+  "rspack": {
+    "configPath": "./rspack.config.cosmos.js"
   }
 }

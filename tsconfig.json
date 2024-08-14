@@ -3,6 +3,7 @@
     "allowJs": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
     "lib": ["dom", "dom.iterable", "es2020", "ES2020.Intl", "webworker"],
