@@ -25,6 +25,10 @@ export default {
           'calc(12 / 14 * var(--base-font-size))',
           { lineHeight: 'calc(1.25 * var(--base-font-size))' },
         ],
+        smish: [
+          'calc(13 / 14 * var(--base-font-size))',
+          { lineHeight: 'calc(1.4 * var(--base-font-size))' },
+        ],
         base: [
           'var(--base-font-size)',
           { lineHeight: 'calc(1.5 * var(--base-font-size))' },
