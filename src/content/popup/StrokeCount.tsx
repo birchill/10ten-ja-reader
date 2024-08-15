@@ -11,7 +11,7 @@ export function StrokeCount(props: Props) {
       : t('content_kanji_strokes_label', [String(props.sc)]);
 
   return (
-    <div class="tp-flex tp-gap-1.5 tp-items-baseline">
+    <div class="tp-flex tp-gap-1.5 tp-items-center tp-text-smish">
       <svg
         class="tp-block tp-h-[12px] tp-w-[12px] tp-fill-current tp-opacity-50"
         role="presentation"
