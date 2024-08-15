@@ -96,42 +96,6 @@ export function renderCross(): SVGElement {
   );
 }
 
-export function renderFrequency(frequency: number | undefined): SVGElement {
-  return svg(
-    'svg',
-    {
-      viewBox: '0 0 8 8',
-      role: 'presentation',
-    },
-    svg('rect', {
-      x: '0',
-      y: '5',
-      width: '2',
-      height: '3',
-      rx: '0.5',
-      ry: '0.5',
-      opacity: !frequency ? '0.5' : undefined,
-    }),
-    svg('rect', {
-      x: '3',
-      y: '3',
-      width: '2',
-      height: '5',
-      rx: '0.5',
-      ry: '0.5',
-      opacity: !frequency || frequency >= (2500 * 2) / 3 ? '0.5' : undefined,
-    }),
-    svg('rect', {
-      x: '6',
-      width: '2',
-      height: '8',
-      rx: '0.5',
-      ry: '0.5',
-      opacity: !frequency || frequency >= 2500 / 3 ? '0.5' : undefined,
-    })
-  );
-}
-
 export function renderKanjiIcon(): SVGElement {
   return svg(
     'svg',
@@ -149,29 +113,6 @@ export function renderKanjiIcon(): SVGElement {
     }),
     svg('path', {
       d: 'M8.5,7H5V6h5V7H9.5l-1,1H12V9H8v2a1,1,0,0,1-.24.71A1.15,1.15,0,0,1,7,12H6V11H7V9H3V8H7.5ZM8,4h4V6H11V5H4V6H3V4H7V3H8Z',
-    })
-  );
-}
-
-export function renderPencil(): SVGElement {
-  return svg(
-    'svg',
-    {
-      role: 'presentation',
-      viewBox: '0 0 16 16',
-    },
-    svg('circle', {
-      cx: '14.5',
-      cy: '1.5',
-      r: '1.5',
-    }),
-    svg('polyline', {
-      points: '13 4.5 4 13.5 1 15 2.5 12 11.5 3',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '1.5',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round',
     })
   );
 }
