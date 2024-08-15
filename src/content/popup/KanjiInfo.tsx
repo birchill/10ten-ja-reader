@@ -27,7 +27,7 @@ export function KanjiInfo(props: Props) {
           <KanjiMeta tags={props.misc.meta} />
         </div>
       )}
-      <div class="tp-text-base" lang={props.m_lang}>
+      <div class="tp-text-base tp-leading-snug" lang={props.m_lang}>
         {props.m.join(', ')}
       </div>
       <div class="tp-flex tp-items-base tp-gap-3.5 *:tp-grow" lang={langTag}>
