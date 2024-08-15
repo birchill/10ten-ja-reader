@@ -25,6 +25,10 @@ export default {
           'calc(12 / 14 * var(--base-font-size))',
           { lineHeight: 'calc(1.25 * var(--base-font-size))' },
         ],
+        base: [
+          'var(--base-font-size)',
+          { lineHeight: 'calc(1.5 * var(--base-font-size))' },
+        ],
       },
       spacing: {
         0.5: 'calc(0.125 * var(--base-font-size))',
