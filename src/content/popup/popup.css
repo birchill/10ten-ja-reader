@@ -1065,64 +1065,11 @@
   }
 
   /*
-  * If the list has been expanded, however, there is no need to space the kanji
-  * items out evenly.
-  */
+   * If the list has been expanded, however, there is no need to space the kanji
+   * items out evenly.
+   */
   .expandable.expanded .kanjilist {
     grid-auto-rows: auto;
-  }
-
-  .kanji-table {
-    padding: 10px 18px;
-    scroll-snap-align: start;
-    /* Make sure it's possible to scroll all the way to the bottom of each kanji
-    * table. */
-    scroll-margin-bottom: var(--expand-button-allowance);
-  }
-
-  /* kanji: top part of the kanji table */
-
-  .kanji-table .top-part {
-    display: flex;
-    margin-bottom: 12px;
-  }
-
-  .kanji-table .top-part > *:nth-child(2) {
-    flex-grow: 1;
-  }
-
-  /* kanji: character itself */
-
-  .kanji-table .kanji {
-    color: var(--primary-highlight);
-    line-height: 1;
-    font-size: calc(60 / 14 * var(--base-font-size));
-    text-align: center;
-    margin-inline-end: 20px;
-    padding-top: 0.1em;
-    text-shadow: rgba(0, 0, 0, 0.2) 1px 1px 4px;
-  }
-
-  @media (hover) {
-    .container.interactive .kanji:not(:hover) {
-      transition: background-color 0.1s ease-out;
-    }
-    .container.interactive .kanji:hover {
-      color: var(--selected-highlight);
-      background: var(--hover-bg);
-      border-radius: 2px;
-      cursor: pointer;
-    }
-  }
-
-  .window:not(.-has-overlay) .kanji-table.-selected .kanji {
-    color: var(--selected-highlight);
-    background: var(--selected-bg);
-    border-radius: 2px;
-  }
-
-  .window:not(.-has-overlay) .kanji-table.-flash .kanji {
-    animation: tenten-ja-flash 0.5s;
   }
 
   /*

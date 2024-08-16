@@ -22,7 +22,7 @@ import { getLangTag } from './lang-tag';
 import { renderMetadata } from './metadata';
 import { renderName } from './names';
 import { getSelectedIndex } from './selected-index';
-import { popupHasSelectedText } from './selection';
+import { containerHasSelectedText } from './selection';
 import type { ShowPopupOptions, StartCopyCallback } from './show-popup';
 
 export function renderWordEntries({
@@ -119,7 +119,7 @@ export function renderWordEntries({
     });
 
     entryDiv.addEventListener('click', (evt) => {
-      if (popupHasSelectedText(container)) {
+      if (containerHasSelectedText(container)) {
         return;
       }
 
@@ -367,7 +367,7 @@ function renderNamePreview(
     });
 
     nameEntry.addEventListener('click', () => {
-      if (popupHasSelectedText(container)) {
+      if (containerHasSelectedText(container)) {
         return;
       }
 

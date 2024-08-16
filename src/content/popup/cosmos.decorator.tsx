@@ -5,6 +5,8 @@ import { useFixtureInput, useFixtureSelect } from 'react-cosmos/client';
 import { I18nProvider } from '../../common/i18n';
 import { EmptyProps } from '../../utils/type-helpers';
 
+import { PopupOptionsProvider } from './options-context';
+
 export default function PopupDecorator({
   children,
 }: RenderableProps<EmptyProps>) {
@@ -26,6 +28,9 @@ export default function PopupDecorator({
   // `rem` units).
   const [massivePageFontSize] = useFixtureInput('rem unit check', false);
 
+  // For when the popup is marked as being interactive
+  const [interactive] = useFixtureInput('interactive', true);
+
   useLayoutEffect(() => {
     if (massivePageFontSize) {
       window.document.documentElement.style.fontSize = '50px';
@@ -36,14 +41,16 @@ export default function PopupDecorator({
 
   return (
     <I18nProvider locale={locale}>
-      <div
-        className={`theme-${themeName} window bundled-fonts`}
-        style={{
-          '--base-font-size': `var(--${fontSize}-font-size)`,
-        }}
-      >
-        {children}
-      </div>
+      <PopupOptionsProvider interactive={interactive}>
+        <div
+          className={`theme-${themeName} window bundled-fonts`}
+          style={{
+            '--base-font-size': `var(--${fontSize}-font-size)`,
+          }}
+        >
+          {children}
+        </div>
+      </PopupOptionsProvider>
     </I18nProvider>
   );
 }

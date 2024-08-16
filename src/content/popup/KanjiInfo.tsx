@@ -35,7 +35,7 @@ export function KanjiInfo(props: Props) {
         <FrequencyIndicator frequency={props.misc.freq} />
         <GradeIndicator gr={props.misc.gr} />
       </div>
-      {!!props.showComponents && (
+      {props.showComponents !== false && (
         <KanjiComponents rad={props.rad} comp={props.comp} />
       )}
     </div>
