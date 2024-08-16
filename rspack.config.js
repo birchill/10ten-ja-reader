@@ -1,7 +1,6 @@
 /* eslint @typescript-eslint/no-var-requires: 0 */
 import rspack from '@rspack/core';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { createRequire } from 'node:module';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -384,7 +383,7 @@ function getExtConfig(options) {
       __VERSION__: `'${pjson.version}'`,
     }),
     new ForkTsCheckerWebpackPlugin(),
-    new HtmlWebpackPlugin({
+    new rspack.HtmlRspackPlugin({
       chunks: ['10ten-ja-options'],
       filename: 'options.html',
       minify: false,
