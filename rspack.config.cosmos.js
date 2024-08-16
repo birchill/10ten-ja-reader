@@ -1,5 +1,4 @@
 import rspack from '@rspack/core';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { createRequire } from 'node:module';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -92,7 +91,7 @@ const config = {
       /\/i18n$/,
       path.resolve(__dirname, 'src', 'common', 'i18n.polyfill.tsx')
     ),
-    new HtmlWebpackPlugin({
+    new rspack.HtmlRspackPlugin({
       template: './src/options/options.html',
     }),
     new rspack.CssExtractRspackPlugin(),
