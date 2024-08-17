@@ -79,8 +79,7 @@ function KanjiCharacter(props: KanjiCharacterProps) {
     <div
       class={classes(
         'tp-text-[--primary-highlight] tp-text-big-kanji tp-text-center tp-pt-2 tp-rounded-md',
-        // XXX Fix shadow for dark theme
-        '[text-shadow:rgba(0,0,0,0.2)_1px_1px_4px]',
+        '[text-shadow:var(--shadow-color)_1px_1px_4px]',
         ...(interactive
           ? [
               'hh:hover:tp-text-[--selected-highlight]',
