@@ -94,7 +94,10 @@ export default {
   },
   plugins: [
     plugin(({ addVariant }) => {
-      addVariant('no-overlay', '[data-type="window"]:not[data-has-overlay] &');
+      addVariant(
+        'no-overlay',
+        '[data-type="window"]:not([data-has-overlay]) &'
+      );
     }),
   ],
 };
