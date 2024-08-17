@@ -26,7 +26,17 @@ export function KanjiEntry(props: Props) {
 
   return (
     <div
-      class="tp-flex tp-flex-col tp-gap-3.5 tp-px-5 tp-py-3"
+      class={classes(
+        'tp-flex tp-flex-col tp-gap-3.5 tp-px-5 tp-py-3',
+        // Set the -selected / -flash class since we use that we scroll into
+        // view any selected item during / after copying.
+        //
+        // Once everything is converted to Preact we hopefully won't need this
+        // anymore (since we'll do minimal DOM updates) but if we do, then we
+        // should prefer using a data attribute to a CSS class.
+        props.selectState === 'selected' && '-selected',
+        props.selectState === 'flash' && '-flash'
+      )}
       ref={kanjiTable}
     >
       <div class="tp-flex tp-gap-[20px]">
