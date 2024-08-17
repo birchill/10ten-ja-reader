@@ -21,8 +21,6 @@ export type Props = {
 
 export function KanjiEntry(props: Props) {
   const kanjiTable = useRef<HTMLDivElement>(null);
-  const lastPointerType = useRef<string>('touch');
-  const { interactive } = usePopupOptions();
 
   return (
     <div
@@ -40,46 +38,17 @@ export function KanjiEntry(props: Props) {
       ref={kanjiTable}
     >
       <div class="tp-flex tp-gap-[20px]">
-        <div
-          class={classes(
-            'tp-text-[--primary-highlight] tp-text-big-kanji tp-text-center tp-pt-2 tp-rounded-md',
-            // XXX Fix shadow for dark theme
-            '[text-shadow:rgba(0,0,0,0.2)_1px_1px_4px]',
-            ...(interactive
-              ? [
-                  'hh:hover:tp-text-[--selected-highlight]',
-                  'hh:hover:tp-bg-[--hover-bg]',
-                  'hh:hover:tp-cursor-pointer',
-                  // Fade _out_ the color change
-                  'hh:tp-transition-colors hh:interactive:tp-duration-100',
-                  'hh:tp-ease-out',
-                  'hh:hover:tp-transition-none',
-                ]
-              : []),
-            // Ensure any selection colors are applied before fading in the
-            // overlay
-            props.selectState === 'selected' &&
-              'no-overlay:tp-text-[--selected-highlight] no-overlay:tp-bg-[--selected-bg]',
-            // Run the flash animation, but not until the overlay has
-            // disappeared.
-            props.selectState === 'flash' && 'no-overlay:tp-animate-flash'
-          )}
-          lang="ja"
-          onPointerUp={(evt) => {
-            lastPointerType.current = evt.pointerType;
-          }}
-          onClick={() => {
+        <KanjiCharacter
+          c={props.entry.c}
+          onClick={(trigger) => {
             if (containerHasSelectedText(kanjiTable.current!)) {
               return;
             }
 
-            const trigger =
-              lastPointerType.current === 'mouse' ? 'mouse' : 'touch';
             props.onStartCopy?.(props.index, trigger);
           }}
-        >
-          {props.entry.c}
-        </div>
+          selectState={props.selectState}
+        />
         <div class="tp-mt-1.5 tp-grow">
           <KanjiInfo {...props.entry} showComponents={props.showComponents} />
         </div>
@@ -92,6 +61,55 @@ export function KanjiEntry(props: Props) {
           />
         </div>
       )}
+    </div>
+  );
+}
+
+type KanjiCharacterProps = {
+  c: string;
+  onClick?: (trigger: 'touch' | 'mouse') => void;
+  selectState: 'unselected' | 'selected' | 'flash';
+};
+
+function KanjiCharacter(props: KanjiCharacterProps) {
+  const lastPointerType = useRef<string>('touch');
+  const { interactive } = usePopupOptions();
+
+  return (
+    <div
+      class={classes(
+        'tp-text-[--primary-highlight] tp-text-big-kanji tp-text-center tp-pt-2 tp-rounded-md',
+        // XXX Fix shadow for dark theme
+        '[text-shadow:rgba(0,0,0,0.2)_1px_1px_4px]',
+        ...(interactive
+          ? [
+              'hh:hover:tp-text-[--selected-highlight]',
+              'hh:hover:tp-bg-[--hover-bg]',
+              'hh:hover:tp-cursor-pointer',
+              // Fade _out_ the color change
+              'hh:tp-transition-colors hh:interactive:tp-duration-100',
+              'hh:tp-ease-out',
+              'hh:hover:tp-transition-none',
+            ]
+          : []),
+        // Ensure any selection colors are applied before fading in the
+        // overlay
+        props.selectState === 'selected' &&
+          'no-overlay:tp-text-[--selected-highlight] no-overlay:tp-bg-[--selected-bg]',
+        // Run the flash animation, but not until the overlay has
+        // disappeared.
+        props.selectState === 'flash' && 'no-overlay:tp-animate-flash'
+      )}
+      lang="ja"
+      onPointerUp={(evt) => {
+        lastPointerType.current = evt.pointerType;
+      }}
+      onClick={() => {
+        const trigger = lastPointerType.current === 'mouse' ? 'mouse' : 'touch';
+        props.onClick?.(trigger);
+      }}
+    >
+      {props.c}
     </div>
   );
 }
