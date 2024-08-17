@@ -26,13 +26,14 @@ export function KanjiEntry(props: Props) {
 
   return (
     <div
-      class="kanji-table tp-flex tp-flex-col tp-gap-3.5 tp-px-5 tp-py-3"
+      class="tp-flex tp-flex-col tp-gap-3.5 tp-px-5 tp-py-3"
       ref={kanjiTable}
     >
       <div class="tp-flex tp-gap-[20px]">
         <div
           class={classes(
             'tp-text-[--primary-highlight] tp-text-big-kanji tp-text-center tp-pt-2 tp-rounded-md',
+            // XXX Fix shadow for dark theme
             '[text-shadow:rgba(0,0,0,0.2)_1px_1px_4px]',
             ...(interactive
               ? [
