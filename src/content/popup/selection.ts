@@ -1,4 +1,4 @@
-export function popupHasSelectedText(container: HTMLElement) {
+export function containerHasSelectedText(container: HTMLElement) {
   const selection = window.getSelection();
   return (
     selection &&

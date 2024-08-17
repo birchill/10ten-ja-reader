@@ -23,6 +23,7 @@
   --bg-rgb: 254, 254, 244;
   --bg-color: rgb(var(--bg-rgb));
   --border-color: #b1ad96;
+  --shadow-color: rgba(0, 0, 0, 0.2);
 
   --primary-highlight: hsl(356, 73%, 40%);
   --reading-highlight: hsl(52, 8.5%, 35%);
@@ -96,6 +97,7 @@
   --bg-rgb: 68, 110, 160;
   --bg-color: rgb(var(--bg-rgb));
   --border-color: #17588e;
+  --shadow-color: rgba(0, 0, 0, 0.2);
 
   --primary-highlight: #bcdffe;
   --reading-highlight: #c0ffc0;
@@ -146,6 +148,7 @@
   --bg-rgb: 29, 26, 25;
   --bg-color: rgb(var(--bg-rgb));
   --border-color: #999493;
+  --shadow-color: rgba(255, 255, 255, 0.2);
 
   --primary-highlight: #4bbffb;
   --reading-highlight: #7beb7e;
@@ -199,10 +202,6 @@
   --tag-border: rgba(255, 255, 255, 0.3);
 }
 
-.window.theme-black .kanji-table:not(.-copy) .kanji {
-  text-shadow: rgba(255, 255, 255, 0.2) 1px 1px 4px;
-}
-
 /*
  * Theme - lightblue
  */
@@ -212,6 +211,7 @@
   --bg-rgb: 227, 242, 254;
   --bg-color: rgb(var(--bg-rgb));
   --border-color: #65b7fc;
+  --shadow-color: rgba(0, 0, 0, 0.2);
 
   --primary-highlight: #17588e;
   --reading-highlight: #2e7d32;
@@ -262,6 +262,7 @@
   --bg-rgb: 255, 248, 191;
   --bg-color: rgb(var(--bg-rgb));
   --border-color: #ffd600;
+  --shadow-color: rgba(0, 0, 0, 0.2);
 
   --primary-highlight: #17588e;
   --reading-highlight: #2e7d32;

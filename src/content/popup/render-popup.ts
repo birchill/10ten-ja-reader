@@ -184,7 +184,12 @@ export function renderPopup(
 
     // Set the overlay styles for the window, but wait a moment so we can
     // transition the styles in.
-    requestAnimationFrame(() => windowElem.classList.add('-has-overlay'));
+    requestAnimationFrame(() => {
+      // TODO: Drop the class and just keep the data attribute once we've
+      // converted everything to Tailwind
+      windowElem.classList.add('-has-overlay');
+      windowElem.dataset.hasOverlay = 'true';
+    });
   }
 
   // Set copy styles
@@ -297,7 +302,10 @@ function resetContainer({
   popupStyle: string;
 }): HTMLElement {
   const container = html('div', { class: 'container' });
-  const windowDiv = html('div', { class: 'window' });
+  const windowDiv = html('div', {
+    class: 'window',
+    'data-type': 'window',
+  });
   container.append(windowDiv);
 
   // Set initial and interactive status

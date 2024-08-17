@@ -1,3 +1,5 @@
+import plugin from 'tailwindcss/plugin';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   prefix: 'tp-',
@@ -5,6 +7,17 @@ export default {
   content: ['./src/content/popup/**/*.{ts,tsx}'],
   blocklist: ['!entry', '!kanji'],
   theme: {
+    animation: {
+      flash: 'flash 0.5s',
+    },
+    keyframes: {
+      flash: {
+        from: {
+          background: 'white',
+          color: 'white',
+        },
+      },
+    },
     extend: {
       borderRadius: {
         sm: 'calc(0.125 * var(--base-font-size))',
@@ -33,6 +46,14 @@ export default {
           'var(--base-font-size)',
           { lineHeight: 'calc(1.5 * var(--base-font-size))' },
         ],
+        'big-kanji': [
+          'calc(60 / 14 * var(--base-font-size))',
+          { lineHeight: 1 },
+        ],
+      },
+      screens: {
+        // Variant to only match on devices that actually support hovering
+        hh: { raw: '(hover)' },
       },
       spacing: {
         0.5: 'calc(0.125 * var(--base-font-size))',
@@ -71,4 +92,12 @@ export default {
       },
     },
   },
+  plugins: [
+    plugin(({ addVariant }) => {
+      addVariant(
+        'no-overlay',
+        '[data-type="window"]:not([data-has-overlay]) &'
+      );
+    }),
+  ],
 };

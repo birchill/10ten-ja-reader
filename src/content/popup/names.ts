@@ -8,7 +8,7 @@ import { html } from '../../utils/builder';
 import { getLangTag } from './lang-tag';
 import { renderMetadata } from './metadata';
 import { getSelectedIndex } from './selected-index';
-import { popupHasSelectedText } from './selection';
+import { containerHasSelectedText } from './selection';
 import { ShowPopupOptions } from './show-popup';
 
 export function renderNamesEntries({
@@ -55,7 +55,7 @@ export function renderNamesEntries({
       lastPointerType = evt.pointerType;
     });
     entryDiv.addEventListener('click', () => {
-      if (popupHasSelectedText(namesTable)) {
+      if (containerHasSelectedText(namesTable)) {
         return;
       }
 
