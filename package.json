@@ -69,7 +69,7 @@
     "@birchill/normal-jp": "1.5.0",
     "classname-variants": "1.5.0",
     "husky": "9.1.4",
-    "lint-staged": "15.2.8",
+    "lint-staged": "15.2.9",
     "lru_map": "0.4.1",
     "preact": "10.23.1",
     "superstruct": "2.0.2",
