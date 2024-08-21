@@ -16,42 +16,40 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup node
         uses: actions/setup-node@v4.0.3
         with:
           node-version: 20
-          cache: yarn
-
-      # See https://github.com/yarnpkg/yarn/issues/1874
-      #     https://github.com/yarnpkg/yarn/issues/3728
-      - name: Pre-install node-gyp
-        run: |-
-          npm install -g node-gyp
-          node-gyp install
+          cache: pnpm
 
       # Check the build works. No need to run the build:edge target since it's
       # almost identical to build:chrome
       - name: Build
         run: |-
-          yarn install --frozen-lockfile
-          yarn build:firefox
-          yarn build:chrome
-          yarn build:thunderbird
+          pnpm install --frozen-lockfile
+          pnpm build:firefox
+          pnpm build:chrome
+          pnpm build:thunderbird
 
       - name: Run tests
         env:
           CI: true
-        run: yarn test
+        run: pnpm test
 
       # Check packaging doesn't error. Again, no need to worry about the
       # package:edge target.
       - name: Package
         run: |-
-          yarn package:firefox
-          yarn package:chrome
+          pnpm package:firefox
+          pnpm package:chrome
 
       - name: Verify cosmos setup
-        run: yarn cosmos-export
+        run: pnpm cosmos-export
 
   lint:
     runs-on: ubuntu-latest
@@ -61,27 +59,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup node
         uses: actions/setup-node@v4.0.3
         with:
           node-version: 20
-          cache: yarn
-
-      # See https://github.com/yarnpkg/yarn/issues/1874
-      #     https://github.com/yarnpkg/yarn/issues/3728
-      - name: Pre-install node-gyp
-        run: |-
-          npm install -g node-gyp
-          node-gyp install
+          cache: pnpm
 
       - name: Install
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: yarn eslint scripts src tests "*.{cjs,js,json,ts}"
+        run: pnpm eslint scripts src tests "*.{cjs,js,json,ts}"
 
       - name: Check formatting
-        run: yarn prettier --check _locales css scripts src tests "*.{js,json,md,ts}"
+        run: pnpm prettier --check _locales css scripts src tests "*.{js,json,md,ts}"
 
       - name: knip
-        run: yarn knip
+        run: pnpm knip

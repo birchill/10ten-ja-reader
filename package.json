@@ -45,12 +45,12 @@
     "start:edge": "rspack -w --env target=chrome --env chromium=edge",
     "start:firefox": "rspack -w",
     "sync-manifest-version": "tsx scripts/sync-manifest-version",
-    "test": "yarn lint && yarn test:unit && yarn test:firefox && yarn test:chromium",
+    "test": "pnpm lint && pnpm test:unit && pnpm test:firefox && pnpm test:chromium",
     "test:chromium": "playwright-test \"tests/**/*.test.ts\"",
     "test:firefox": "playwright-test \"tests/**/*.test.ts\" --browser firefox",
     "test:unit": "vitest run",
     "update-snapshot": "tsx scripts/update-snapshot",
-    "version": "yarn sync-manifest-version && git add manifest.json.src && tsx scripts/sync-xcode && git add xcode13/\"10ten Japanese Reader\".xcodeproj/project.pbxproj",
+    "version": "pnpm sync-manifest-version && git add manifest.json.src && tsx scripts/sync-xcode && git add xcode13/\"10ten Japanese Reader\".xcodeproj/project.pbxproj",
     "zip-src": "tsx scripts/zip-src"
   },
   "lint-staged": {
@@ -59,7 +59,7 @@
       "eslint --fix"
     ],
     "_locales/**/messages.json": [
-      "yarn sort-i18n-keys"
+      "pnpm sort-i18n-keys"
     ]
   },
   "dependencies": {

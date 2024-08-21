@@ -70,7 +70,7 @@ async function main() {
     'rspack.config.js',
     'tsconfig.json',
     'vitest.config.ts',
-    'yarn.lock',
+    'pnpm-lock.yaml',
   ];
   for (const file of files) {
     archive.file(path.join(rootDir, file), { name: file });
