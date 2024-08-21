@@ -284,7 +284,10 @@ function getCaretPosition({
   point: Point;
   element: Element;
 }): CursorPosition | null {
-  if (document.caretPositionFromPoint) {
+  // Don't use Chromium's caretPositionFromPoint for now since it's broken:
+  //
+  // https://issues.chromium.org/issues/361129497
+  if (document.caretPositionFromPoint && !isChromium()) {
     const position = document.caretPositionFromPoint(point.x, point.y);
     return position?.offsetNode
       ? { offset: position.offset, offsetNode: position.offsetNode }
