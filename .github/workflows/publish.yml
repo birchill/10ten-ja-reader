@@ -12,21 +12,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup node
         uses: actions/setup-node@v4.0.3
         with:
           node-version: 20
-          cache: yarn
-
-      # See https://github.com/yarnpkg/yarn/issues/1874
-      #     https://github.com/yarnpkg/yarn/issues/3728
-      - name: Pre-install node-gyp
-        run: |-
-          npm install -g node-gyp
-          node-gyp install
+          cache: pnpm
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Get Firefox release details
         id: parse_firefox_release
@@ -70,21 +68,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup node
         uses: actions/setup-node@v4.0.3
         with:
           node-version: 20
-          cache: yarn
-
-      # See https://github.com/yarnpkg/yarn/issues/1874
-      #     https://github.com/yarnpkg/yarn/issues/3728
-      - name: Pre-install node-gyp
-        run: |-
-          npm install -g node-gyp
-          node-gyp install
+          cache: pnpm
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Get Edge release details
         id: parse_edge_release

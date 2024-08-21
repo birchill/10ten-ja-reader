@@ -17,28 +17,26 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.PUSH_TOKEN }}
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - uses: actions/setup-node@v4.0.3
         with:
           node-version: 20
-          cache: yarn
+          cache: pnpm
 
       - name: Set Git username
         run: |-
           git config --global user.name "Release"
           git config --global user.email "actions@users.noreply.github.com"
 
-      # See https://github.com/yarnpkg/yarn/issues/1874
-      #     https://github.com/yarnpkg/yarn/issues/3728
-      - name: Pre-install node-gyp
-        run: |-
-          npm install -g node-gyp
-          node-gyp install
-
       - name: Install
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Update word snapshot
-        run: yarn update-snapshot
+        run: pnpm update-snapshot
 
       - name: Commit and push if it changed
         run: |-
@@ -48,7 +46,7 @@ jobs:
           git push
 
       - name: Create release
-        run: yarn release-it --ci -i ${{ inputs.version }} -VV
+        run: pnpm release-it --ci -i ${{ inputs.version }} -VV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY }}

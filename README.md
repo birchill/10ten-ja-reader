@@ -129,8 +129,10 @@ following commands:
 
 ```
 export RELEASE_BUILD=1
-yarn install
-yarn package:firefox # Or `yarn package` for versions 0.5.8 and earlier
+pnpm install
+pnpm package:firefox
+# Or `yarn package:firefox` for versions 0.20.0 and earlier
+# Or `yarn package` for versions 0.5.8 and earlier
 ```
 
 (Note that you may ignore the `.js` files associated with each release.
@@ -138,12 +140,12 @@ These are published simply to provide a public URL for each version of the
 source files to associating stack traces from error reports.)
 
 The above builds the package for **Firefox**.
-Use `yarn package:chrome` to build the Chrome package, `yarn package:edge` for
-Edge, `yarn package:safari` for Safari, or `yarn package:thunderbird` for
+Use `pnpm package:chrome` to build the Chrome package, `pnpm package:edge` for
+Edge, `pnpm package:safari` for Safari, or `pnpm package:thunderbird` for
 Thunderbird.
 
-**Note:** For versions prior to and including 0.5.5 `yarn install` will try to
-install `husky` but fail so you will need to run `yarn install --ignore-scripts`.
+**Note:** For versions prior to and including 0.5.5 `pnpm install` will try to
+install `husky` but fail so you will need to run `pnpm install --ignore-scripts`.
 
 To build the latest trunk version please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
