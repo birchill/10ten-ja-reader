@@ -330,11 +330,7 @@ export default class AllTabManager implements TabManager {
     tabId: number;
     frameId: number;
   }): string | undefined {
-    if (!(frameId in this.tabs[tabId].frames)) {
-      return undefined;
-    }
-
-    return this.tabs[tabId].frames[frameId].initialSrc;
+    return this.tabs[tabId]?.frames[frameId]?.initialSrc;
   }
 
   private updateFrames({
