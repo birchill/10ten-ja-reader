@@ -30,8 +30,16 @@ declare global {
     getClientRect(): DOMRect | null;
   }
 
+  type CaretPositionFromPointOptions = {
+    shadowRoots?: Array<ShadowRoot>;
+  };
+
   interface Document {
-    caretPositionFromPoint?: (x: number, y: number) => CaretPosition | null;
+    caretPositionFromPoint?: (
+      x: number,
+      y: number,
+      options?: CaretPositionFromPointOptions
+    ) => CaretPosition | null;
   }
 }
 
@@ -284,11 +292,11 @@ function getCaretPosition({
   point: Point;
   element: Element;
 }): CursorPosition | null {
-  // Don't use Chromium's caretPositionFromPoint for now since it's broken:
-  //
-  // https://issues.chromium.org/issues/361129497
-  if (document.caretPositionFromPoint && !isChromium()) {
-    const position = document.caretPositionFromPoint(point.x, point.y);
+  if (typeof document.caretPositionFromPoint === 'function') {
+    const shadowRoots = getDescendantShadowRoots(element);
+    const position = document.caretPositionFromPoint(point.x, point.y, {
+      shadowRoots,
+    });
     return position?.offsetNode
       ? { offset: position.offset, offsetNode: position.offsetNode }
       : null;
@@ -784,6 +792,12 @@ function cloneNodeWithStyles(node: Node): Node {
   return clone;
 }
 
+// --------------------------------------------------------------------------
+//
+// Shadow DOM helpers
+//
+// --------------------------------------------------------------------------
+
 function expandShadowDomInRange({
   range,
   point,
@@ -879,6 +893,28 @@ function getShadowRoot({
   }
 
   return null;
+}
+
+function getDescendantShadowRoots(root: Element): Array<ShadowRoot> {
+  const shadowRoots: Array<ShadowRoot> = [];
+
+  function traverse(element: Element) {
+    if (element.shadowRoot) {
+      shadowRoots.push(element.shadowRoot);
+
+      for (const child of element.shadowRoot.children) {
+        traverse(child);
+      }
+    }
+
+    for (const child of element.children) {
+      traverse(child);
+    }
+  }
+
+  traverse(root);
+
+  return shadowRoots;
 }
 
 function getBboxForShadowHost(element: Element): Rect | null {
@@ -1030,6 +1066,12 @@ function getRangeForShadowElement({
   shadowRange.setEnd(shadowTarget, offset);
   return shadowRange;
 }
+
+// --------------------------------------------------------------------------
+//
+// More caretRangeFromPoint helpers
+//
+// --------------------------------------------------------------------------
 
 // On Safari, if you pass a point into caretRangeFromPoint that is less than
 // about 60~70% of the way across the first character in a text node it will

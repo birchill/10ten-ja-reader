@@ -8,6 +8,7 @@ app.
 
 ## [Unreleased]
 
+- Fixed handling of shadow DOM content in Chrome 128+ and Firefox Nightly.
 - Fixed matching of 0年
   ([#1912](https://github.com/birchill/10ten-ja-reader/pull/1912)).
 
