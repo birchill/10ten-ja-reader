@@ -329,6 +329,57 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(result, 'テスト', [textNode, 0, 3]);
   });
 
+  it('should read nested shadow DOM content', () => {
+    const outerContainer = document.createElement('div');
+    testDiv.append(outerContainer);
+    const outerShadowRoot = outerContainer.attachShadow({ mode: 'open' });
+
+    const innerContainer = document.createElement('div');
+    outerShadowRoot.append(innerContainer);
+    const innerShadowRoot = innerContainer.attachShadow({ mode: 'open' });
+
+    // Add some styles to ensure that we actually copy the styles
+    const styleElem = document.createElement('style');
+    styleElem.append(`
+      sup {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 600;
+        vertical-align: top;
+        top: -1px;
+        margin: 0px 2px;
+        min-width: 14px;
+        height: 14px;
+        border-radius: 3px;
+        text-decoration-color: transparent;
+        outline: transparent solid 1px;
+      }
+    `);
+    innerShadowRoot.append(styleElem);
+
+    // ... and HTML markup
+    const innerElem = document.createElement('div');
+    innerShadowRoot.append(innerElem);
+    innerElem.innerHTML =
+      '<div><div><p><a>今日の天気は曇り、23度です。</a><a href="https://bing.com/search?q=%E4%BB%8A%E6%97%A5%E3%81%AE%E3%81%8A%E5%A4%A9%E6%B0%97" target="_blank"><sup>1</sup></a><a>今日の最高気温は23.49度、最低気温は17.99度です。</a><a href="https://bing.com/search?q=%E4%BB%8A%E6%97%A5%E3%81%AE%E3%81%8A%E5%A4%A9%E6%B0%97" target="_blank"><sup>1</sup></a><a>降水確率は0%です。</a><a href="https://bing.com/search?q=%E4%BB%8A%E6%97%A5%E3%81%AE%E3%81%8A%E5%A4%A9%E6%B0%97" target="_blank"><sup>1</sup></a><a class="target">明日は晴れ、最高気温は23.93度、最低気温は13.13度です。</a></p></div></div>';
+
+    const textNode = innerShadowRoot.querySelector('.target')!
+      .firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 3);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(result, '晴れ', [textNode, 3, 5]);
+  });
+
   it('should ignore non-Japanese characters', () => {
     testDiv.append('あいabc');
     const textNode = testDiv.firstChild as Text;
