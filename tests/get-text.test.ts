@@ -1474,16 +1474,10 @@ describe('getTextAtPoint', () => {
     // Chrome and Firefox will likely use different default fonts and
     // furthermore they follow different code paths.
     //
-    // On Chrome we create a mirror element for the text box and look up that
-    // instead. That might end up using different fonts for all we know.
-    // Furthermore, for the mirror element we end up applying the "previous
-    // character adjustment" (where we try to detect if caretPositionFromPoint
-    // _should_ have returned the previous character to what it did).
-    //
     // As a result, this may need tweaking from time to time. For now,
     // hopefully these values do the trick on all browsers and platforms we test
     // on.
-    const offset = isChromium() ? 13 : 15;
+    const offset = isChromium() ? 11 : 15;
 
     const result = getTextAtPoint({
       point: { x: bbox.left + offset, y: bbox.top + bbox.height / 2 },
@@ -1521,7 +1515,7 @@ describe('getTextAtPoint', () => {
     const bbox = inputNode.getBoundingClientRect();
 
     // See notes above about how we arrived at this offset.
-    const offset = isChromium() ? 13 : 15;
+    const offset = isChromium() ? 11 : 15;
 
     const result = getTextAtPoint({
       point: {
@@ -1566,7 +1560,7 @@ describe('getTextAtPoint', () => {
     const bbox = textAreaNode.getBoundingClientRect();
 
     // See notes above about how we arrived at this offset.
-    const offset = isChromium() ? 13 : 15;
+    const offset = isChromium() ? 10 : 15;
 
     const result = getTextAtPoint({ point: { x: bbox.left + offset, y: 5 } });
 
