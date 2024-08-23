@@ -61,8 +61,8 @@ importers:
         specifier: 5.0.0
         version: 5.0.0(release-it@17.6.0(typescript@5.5.4))
       '@rspack/cli':
-        specifier: 1.0.0-beta.5
-        version: 1.0.0-beta.5(@rspack/core@1.0.0-beta.5)(@types/express@4.17.21)(webpack@5.93.0)
+        specifier: 1.0.0-rc.0
+        version: 1.0.0-rc.0(@rspack/core@1.0.0-beta.5)(@types/express@4.17.21)(webpack@5.93.0)
       '@rspack/core':
         specifier: 1.0.0-beta.5
         version: 1.0.0-beta.5
@@ -1176,8 +1176,8 @@ packages:
   '@rspack/binding@1.0.0-beta.5':
     resolution: {integrity: sha512-GT0cxYzD4jrXaB4eaGu1N/l32InSWelDREvqg1MDjZAYZlYreN2yFiA8Ds5+RqPz53csup1WWHFMqYcNH9KipQ==}
 
-  '@rspack/cli@1.0.0-beta.5':
-    resolution: {integrity: sha512-5ier7yaLSifS4n5XQ68GBWJF2VWdziGsYOMzCHd6ocht0wGgaAJoXQsiX0sKz9wQi+WS3Pd0qyH0zFwr0uBEfQ==}
+  '@rspack/cli@1.0.0-rc.0':
+    resolution: {integrity: sha512-A40ErO4P6i9kIwbFUIuSZilADc1bKkfW0Q2IiFbKrYA8qbdRzs92hzChuAgarf8PM5px0FLiH2VxDCWyLhz5ng==}
     hasBin: true
     peerDependencies:
       '@rspack/core': ^1.0.0-alpha
@@ -1191,8 +1191,8 @@ packages:
       '@swc/helpers':
         optional: true
 
-  '@rspack/dev-server@1.0.0-beta.5':
-    resolution: {integrity: sha512-eYtI3nE3EULMT3Uan+vUvx5IhGu2RmObk6Ug2A8ay2Sr1E/k3H4zyyE9b4oPc1GlNVTbVo7Aswta2+U9BcEBkQ==}
+  '@rspack/dev-server@1.0.0-rc.0':
+    resolution: {integrity: sha512-64sRAnuNXraRhfoUhVSq5zLmebWg2FvUUBniN8kFJf1bRgb5uzxdOTxdeBn+bqJg9e1KjizfCaYG9XMHlI9NRA==}
     peerDependencies:
       '@rspack/core': '*'
 
@@ -6999,11 +6999,11 @@ snapshots:
       '@rspack/binding-win32-ia32-msvc': 1.0.0-beta.5
       '@rspack/binding-win32-x64-msvc': 1.0.0-beta.5
 
-  '@rspack/cli@1.0.0-beta.5(@rspack/core@1.0.0-beta.5)(@types/express@4.17.21)(webpack@5.93.0)':
+  '@rspack/cli@1.0.0-rc.0(@rspack/core@1.0.0-beta.5)(@types/express@4.17.21)(webpack@5.93.0)':
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
       '@rspack/core': 1.0.0-beta.5
-      '@rspack/dev-server': 1.0.0-beta.5(@rspack/core@1.0.0-beta.5)(@types/express@4.17.21)(webpack@5.93.0)
+      '@rspack/dev-server': 1.0.0-rc.0(@rspack/core@1.0.0-beta.5)(@types/express@4.17.21)(webpack@5.93.0)
       colorette: 2.0.19
       exit-hook: 3.2.0
       interpret: 3.1.1
@@ -7027,7 +7027,7 @@ snapshots:
       '@rspack/lite-tapable': 1.0.0
       caniuse-lite: 1.0.30001651
 
-  '@rspack/dev-server@1.0.0-beta.5(@rspack/core@1.0.0-beta.5)(@types/express@4.17.21)(webpack@5.93.0)':
+  '@rspack/dev-server@1.0.0-rc.0(@rspack/core@1.0.0-beta.5)(@types/express@4.17.21)(webpack@5.93.0)':
     dependencies:
       '@rspack/core': 1.0.0-beta.5
       chokidar: 3.6.0
@@ -10752,7 +10752,7 @@ snapshots:
       ky: 1.7.0
       registry-auth-token: 5.0.2
       registry-url: 6.0.1
-      semver: 7.6.2
+      semver: 7.6.3
 
   package-json@8.1.1:
     dependencies:
@@ -11523,7 +11523,7 @@ snapshots:
 
   semver-diff@4.0.0:
     dependencies:
-      semver: 7.6.2
+      semver: 7.6.3
 
   semver-parser@4.1.6: {}
 
@@ -12270,7 +12270,7 @@ snapshots:
       is-npm: 6.0.0
       latest-version: 9.0.0
       pupa: 3.1.0
-      semver: 7.6.2
+      semver: 7.6.3
       semver-diff: 4.0.0
       xdg-basedir: 5.1.0
 
@@ -12504,7 +12504,7 @@ snapshots:
 
   webpack-dev-middleware@7.4.1(webpack@5.93.0):
     dependencies:
-      colorette: 2.0.19
+      colorette: 2.0.20
       memfs: 4.11.1
       mime-types: 2.1.35
       on-finished: 2.4.1
@@ -12525,7 +12525,7 @@ snapshots:
       ansi-html-community: 0.0.8
       bonjour-service: 1.2.1
       chokidar: 3.6.0
-      colorette: 2.0.19
+      colorette: 2.0.20
       compression: 1.7.4
       connect-history-api-fallback: 2.0.0
       default-gateway: 6.0.3
