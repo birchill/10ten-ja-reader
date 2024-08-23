@@ -130,6 +130,34 @@ export function KanjiStrokeAnimation(props: Props) {
           )}
         </svg>
       </button>
+      <div>
+        <svg class="tp-w-big-kanji" viewBox="0 0 100 20">
+          <rect
+            width={100}
+            height={20}
+            rx={10}
+            ry={10}
+            fill="white"
+            fill-opacity="20"
+          />
+          {/* Hit area for scrubber */}
+          <rect
+            x={-10}
+            width={40}
+            height={20}
+            fill="none"
+            class="tp-cursor-pointer tp-peer"
+            pointer-events="all"
+          />
+          <circle
+            cx={10}
+            cy={10}
+            r={6}
+            class="tp-fill-[--primary-highlight] tp-opacity-50 peer-hover:tp-opacity-100"
+            pointer-events="none"
+          />
+        </svg>
+      </div>
     </div>
   );
 }
