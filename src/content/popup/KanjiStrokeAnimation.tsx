@@ -1,6 +1,6 @@
 import { useLayoutEffect, useMemo, useRef } from 'preact/hooks';
 
-export type Props = { st: Array<string> };
+export type Props = { st: string };
 
 const STROKE_SPEED = 150; // User units / second
 const STROKE_GAP = 250; // ms
@@ -8,15 +8,9 @@ const FREEZE_LENGTH = 1000; // ms
 
 export function KanjiStrokeAnimation(props: Props) {
   const animatedStrokeContainer = useRef<SVGGElement>(null);
-  const subpaths = useMemo(
-    () => props.st.flatMap((path) => path.split(/(?=[Mm][0-9])/)),
-    [props.st]
-  );
+  const subpaths = useMemo(() => props.st.split(/(?=[Mm][0-9])/), [props.st]);
 
   const currentAnimations = useRef<Array<Animation>>([]);
-
-  // XXX Rework the upstream data to concatenate all the paths into a single
-  // string.
 
   // XXX Pause control
   // XXX Timeline with little icons
