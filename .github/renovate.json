@@ -11,6 +11,10 @@
     {
       "matchDepTypes": ["devDependencies"],
       "addLabels": ["dev"]
+    },
+    {
+      "matchPackagePatterns": ["^@rspack/"],
+      "groupName": "rspack"
     }
   ]
 }
