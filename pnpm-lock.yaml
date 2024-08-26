@@ -113,7 +113,7 @@ importers:
         version: 3.17.4(tailwindcss@3.4.10)
       eslint-plugin-vitest:
         specifier: 0.5.4
-        version: 0.5.4(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)(vitest@2.0.5(@types/node@22.4.2)(jsdom@24.1.1)(terser@5.31.6))
+        version: 0.5.4(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)(vitest@2.0.5(@types/node@22.4.2)(jsdom@25.0.0)(terser@5.31.6))
       fake-indexeddb:
         specifier: 6.0.0
         version: 6.0.0
@@ -133,8 +133,8 @@ importers:
         specifier: 1.0.4
         version: 1.0.4
       jsdom:
-        specifier: ^24.0.0
-        version: 24.1.1
+        specifier: ^25.0.0
+        version: 25.0.0
       knip:
         specifier: 5.27.3
         version: 5.27.3(@types/node@22.4.2)(typescript@5.5.4)
@@ -200,13 +200,13 @@ importers:
         version: 8.2.0(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)
       vitest:
         specifier: 2.0.5
-        version: 2.0.5(@types/node@22.4.2)(jsdom@24.1.1)(terser@5.31.6)
+        version: 2.0.5(@types/node@22.4.2)(jsdom@25.0.0)(terser@5.31.6)
       vitest-fetch-mock:
         specifier: ^0.3.0
-        version: 0.3.0(vitest@2.0.5(@types/node@22.4.2)(jsdom@24.1.1)(terser@5.31.6))
+        version: 0.3.0(vitest@2.0.5(@types/node@22.4.2)(jsdom@25.0.0)(terser@5.31.6))
       vitest-github-actions-reporter:
         specifier: ^0.11.1
-        version: 0.11.1(vitest@2.0.5(@types/node@22.4.2)(jsdom@24.1.1)(terser@5.31.6))
+        version: 0.11.1(vitest@2.0.5(@types/node@22.4.2)(jsdom@25.0.0)(terser@5.31.6))
       web-ext-plugin:
         specifier: 2.10.0
         version: 2.10.0(body-parser@1.20.2)(express@4.19.2)
@@ -3701,8 +3701,8 @@ packages:
   jsbn@1.1.0:
     resolution: {integrity: sha512-4bYVV3aAMtDTTu4+xsDYa6sy9GyJ69/amsu9sYF2zqjiEoZA5xJi3BrfX3uY+/IekIu7MwdObdbDWpoZdBv3/A==}
 
-  jsdom@24.1.1:
-    resolution: {integrity: sha512-5O1wWV99Jhq4DV7rCLIoZ/UIhyQeDR7wHVyZAHAshbrvZsLs+Xzz7gtwnlJTJDjleiTKh54F4dXrX70vJQTyJQ==}
+  jsdom@25.0.0:
+    resolution: {integrity: sha512-OhoFVT59T7aEq75TVw9xxEfkXgacpqAhQaYgP9y/fDqWQCMB/b1H66RfmPm/MaeaAIU9nDwMOVTlPN51+ao6CQ==}
     engines: {node: '>=18'}
     peerDependencies:
       canvas: ^2.11.2
@@ -8764,12 +8764,12 @@ snapshots:
       postcss: 8.4.41
       tailwindcss: 3.4.10
 
-  eslint-plugin-vitest@0.5.4(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)(vitest@2.0.5(@types/node@22.4.2)(jsdom@24.1.1)(terser@5.31.6)):
+  eslint-plugin-vitest@0.5.4(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)(vitest@2.0.5(@types/node@22.4.2)(jsdom@25.0.0)(terser@5.31.6)):
     dependencies:
       '@typescript-eslint/utils': 7.18.0(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)
       eslint: 9.9.1(jiti@1.21.6)
     optionalDependencies:
-      vitest: 2.0.5(@types/node@22.4.2)(jsdom@24.1.1)(terser@5.31.6)
+      vitest: 2.0.5(@types/node@22.4.2)(jsdom@25.0.0)(terser@5.31.6)
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -10017,7 +10017,7 @@ snapshots:
 
   jsbn@1.1.0: {}
 
-  jsdom@24.1.1:
+  jsdom@25.0.0:
     dependencies:
       cssstyle: 4.0.1
       data-urls: 5.0.0
@@ -12340,19 +12340,19 @@ snapshots:
       fsevents: 2.3.3
       terser: 5.31.6
 
-  vitest-fetch-mock@0.3.0(vitest@2.0.5(@types/node@22.4.2)(jsdom@24.1.1)(terser@5.31.6)):
+  vitest-fetch-mock@0.3.0(vitest@2.0.5(@types/node@22.4.2)(jsdom@25.0.0)(terser@5.31.6)):
     dependencies:
       cross-fetch: 4.0.0
-      vitest: 2.0.5(@types/node@22.4.2)(jsdom@24.1.1)(terser@5.31.6)
+      vitest: 2.0.5(@types/node@22.4.2)(jsdom@25.0.0)(terser@5.31.6)
     transitivePeerDependencies:
       - encoding
 
-  vitest-github-actions-reporter@0.11.1(vitest@2.0.5(@types/node@22.4.2)(jsdom@24.1.1)(terser@5.31.6)):
+  vitest-github-actions-reporter@0.11.1(vitest@2.0.5(@types/node@22.4.2)(jsdom@25.0.0)(terser@5.31.6)):
     dependencies:
       '@actions/core': 1.10.1
-      vitest: 2.0.5(@types/node@22.4.2)(jsdom@24.1.1)(terser@5.31.6)
+      vitest: 2.0.5(@types/node@22.4.2)(jsdom@25.0.0)(terser@5.31.6)
 
-  vitest@2.0.5(@types/node@22.4.2)(jsdom@24.1.1)(terser@5.31.6):
+  vitest@2.0.5(@types/node@22.4.2)(jsdom@25.0.0)(terser@5.31.6):
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@vitest/expect': 2.0.5
@@ -12375,7 +12375,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.4.2
-      jsdom: 24.1.1
+      jsdom: 25.0.0
     transitivePeerDependencies:
       - less
       - lightningcss
