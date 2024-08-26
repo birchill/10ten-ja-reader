@@ -175,8 +175,8 @@ importers:
         specifier: 6.1.1
         version: 6.1.1
       react-cosmos-plugin-rspack:
-        specifier: 0.3.3
-        version: 0.3.3(@rspack/core@1.0.0-rc.0)(react-cosmos@6.1.1(@types/express@4.17.21))(webpack@5.93.0)
+        specifier: 0.4.0
+        version: 0.4.0(@rspack/core@1.0.0-rc.0)(react-cosmos@6.1.1(@types/express@4.17.21))(webpack@5.93.0)
       release-it:
         specifier: 17.6.0
         version: 17.6.0(typescript@5.5.4)
@@ -4839,10 +4839,10 @@ packages:
   react-cosmos-plugin-boolean-input@6.1.1:
     resolution: {integrity: sha512-yxAF2Skx+i51BYUX3PcZZJAoxV3PFCc+7MVCPQV4EjywBulSxPMijO3uzhkJdezvH/zhsC80J6YGz/EgxwuL9w==}
 
-  react-cosmos-plugin-rspack@0.3.3:
-    resolution: {integrity: sha512-dz/+NbyquGi3YQnVQpdBAw9+qJg0oaQVzSHouZeAv1rk8U+IOtpnN+dlnYmkTgfB9mM0r8fz8VvTAaJKAVg3cQ==}
+  react-cosmos-plugin-rspack@0.4.0:
+    resolution: {integrity: sha512-Ef9nzzQPqQBBnfV5Eck4xyR4vLdigAeFSAnmUya+d7YRhWgTvwOMOSKAisqbtMhJ1JiqrQgxQxrN/0O+BqMg5A==}
     peerDependencies:
-      '@rspack/core': '>=1.0.0-beta.0'
+      '@rspack/core': '>=1.0.0-rc.0'
       react-cosmos: '>=6.0.0'
 
   react-cosmos-renderer@6.1.1:
@@ -5951,8 +5951,8 @@ packages:
     engines: {node: '>= 10.13.0'}
     hasBin: true
 
-  webpack-dev-middleware@7.3.0:
-    resolution: {integrity: sha512-xD2qnNew+F6KwOGZR7kWdbIou/ud7cVqLEXeK1q0nHcNsX/u7ul/fSdlOTX4ntSL5FNFy7ZJJXbf0piF591JYw==}
+  webpack-dev-middleware@7.4.1:
+    resolution: {integrity: sha512-/t6KpZw/bnmCR0VKILjJT05mWecbf1aIM2VxCJUvBbg0iXqaQJFxbJ4PCrsY4iBH7PGwnccm4BYyoP1G+lGfAA==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
       webpack: ^5.0.0
@@ -5960,8 +5960,8 @@ packages:
       webpack:
         optional: true
 
-  webpack-dev-middleware@7.4.1:
-    resolution: {integrity: sha512-/t6KpZw/bnmCR0VKILjJT05mWecbf1aIM2VxCJUvBbg0iXqaQJFxbJ4PCrsY4iBH7PGwnccm4BYyoP1G+lGfAA==}
+  webpack-dev-middleware@7.4.2:
+    resolution: {integrity: sha512-xOO8n6eggxnwYpy1NlzUKpvrjfJTvae5/D6WOK0S2LSo7vjmo5gCM1DbLUmFqrMTJP+W/0YZNctm7jasWvLuBA==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
       webpack: ^5.0.0
@@ -11177,12 +11177,12 @@ snapshots:
 
   react-cosmos-plugin-boolean-input@6.1.1: {}
 
-  react-cosmos-plugin-rspack@0.3.3(@rspack/core@1.0.0-rc.0)(react-cosmos@6.1.1(@types/express@4.17.21))(webpack@5.93.0):
+  react-cosmos-plugin-rspack@0.4.0(@rspack/core@1.0.0-rc.0)(react-cosmos@6.1.1(@types/express@4.17.21))(webpack@5.93.0):
     dependencies:
       '@rspack/core': 1.0.0-rc.0
       react-cosmos: 6.1.1(@types/express@4.17.21)
       react-cosmos-dom: 6.1.1
-      webpack-dev-middleware: 7.3.0(webpack@5.93.0)
+      webpack-dev-middleware: 7.4.2(webpack@5.93.0)
       webpack-hot-middleware: 2.26.1
     transitivePeerDependencies:
       - webpack
@@ -12491,7 +12491,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  webpack-dev-middleware@7.3.0(webpack@5.93.0):
+  webpack-dev-middleware@7.4.1(webpack@5.93.0):
     dependencies:
       colorette: 2.0.20
       memfs: 4.11.1
@@ -12502,7 +12502,7 @@ snapshots:
     optionalDependencies:
       webpack: 5.93.0
 
-  webpack-dev-middleware@7.4.1(webpack@5.93.0):
+  webpack-dev-middleware@7.4.2(webpack@5.93.0):
     dependencies:
       colorette: 2.0.20
       memfs: 4.11.1
