@@ -8,7 +8,8 @@ const FREEZE_LENGTH = 1000; // ms
 
 export function KanjiStrokeAnimation(props: Props) {
   const animatedStrokeContainer = useRef<SVGGElement>(null);
-  const subpaths = useMemo(() => props.st.split(/(?=[Mm][0-9])/), [props.st]);
+  const scrubberContainer = useRef<SVGGElement>(null);
+  const subpaths = useMemo(() => props.st.split(/(?=M[0-9])/), [props.st]);
 
   const currentAnimations = useRef<Array<Animation>>([]);
 
@@ -24,9 +25,7 @@ export function KanjiStrokeAnimation(props: Props) {
     });
   };
 
-  // XXX Scrubber
-
-  // Calculate the animation parameters for each stroke
+  // Update the animation parameters
   useLayoutEffect(() => {
     if (!animatedStrokeContainer.current) {
       currentAnimations.current = [];
@@ -34,6 +33,8 @@ export function KanjiStrokeAnimation(props: Props) {
     }
 
     const animations: Array<Animation> = [];
+
+    // Stroke animations
     const paths = Array.from(
       animatedStrokeContainer.current.querySelectorAll('path')
     );
@@ -60,16 +61,26 @@ export function KanjiStrokeAnimation(props: Props) {
             offset: [0, startOffset, endOffset, 1],
             easing: 'cubic-bezier(.28,.08,.79,.6)',
           },
-          {
-            duration: totalDuration,
-            iterations: Infinity,
-          }
+          { duration: totalDuration, iterations: Infinity }
         )
       );
       if (paused) {
         animations.at(-1)!.pause();
       }
       cumulativeDuration += duration + STROKE_GAP;
+    }
+
+    // Scrubber animation
+    if (scrubberContainer.current) {
+      animations.push(
+        scrubberContainer.current.animate(
+          {
+            transform: ['translate(0)', 'translate(80px)', 'translate(80px)'],
+            offset: [0, (totalDuration - FREEZE_LENGTH) / totalDuration],
+          },
+          { duration: totalDuration, iterations: Infinity }
+        )
+      );
     }
 
     currentAnimations.current = animations;
@@ -140,22 +151,24 @@ export function KanjiStrokeAnimation(props: Props) {
             fill="white"
             fill-opacity="20"
           />
-          {/* Hit area for scrubber */}
-          <rect
-            x={-10}
-            width={40}
-            height={20}
-            fill="none"
-            class="tp-cursor-pointer tp-peer"
-            pointer-events="all"
-          />
-          <circle
-            cx={10}
-            cy={10}
-            r={6}
-            class="tp-fill-[--primary-highlight] tp-opacity-50 peer-hover:tp-opacity-100"
-            pointer-events="none"
-          />
+          <g ref={scrubberContainer}>
+            {/* Hit region for scrubber */}
+            <rect
+              x={-10}
+              width={40}
+              height={20}
+              fill="none"
+              class="tp-cursor-pointer tp-peer"
+              pointer-events="all"
+            />
+            <circle
+              cx={10}
+              cy={10}
+              r={6}
+              class="tp-fill-[--primary-highlight] tp-opacity-50 peer-hover:tp-opacity-100"
+              pointer-events="none"
+            />
+          </g>
         </svg>
       </div>
     </div>
