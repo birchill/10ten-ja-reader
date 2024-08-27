@@ -144,8 +144,8 @@ export function KanjiStrokeAnimation(props: Props) {
           <g ref={scrubberContainer}>
             {/* Hit region for scrubber */}
             <rect
-              x={-10}
-              width={40}
+              x={-5}
+              width={30}
               height={20}
               fill="none"
               class="tp-cursor-pointer tp-peer"
