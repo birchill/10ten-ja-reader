@@ -107,7 +107,7 @@ export function KanjiStrokeAnimation(props: Props) {
         xmlns="http://www.w3.org/2000/svg"
       >
         <g
-          stroke-width="5"
+          stroke-width="4"
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke="var(--text-color)"
@@ -119,7 +119,7 @@ export function KanjiStrokeAnimation(props: Props) {
           ))}
         </g>
         <g
-          stroke-width="5"
+          stroke-width="4"
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke="var(--primary-highlight)"
