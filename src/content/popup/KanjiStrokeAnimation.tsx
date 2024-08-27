@@ -1,4 +1,12 @@
-import { useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
+import type { RefObject } from 'preact';
+import {
+  type MutableRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+} from 'preact/hooks';
 
 export type Props = { st: string };
 
@@ -6,24 +14,22 @@ const STROKE_SPEED = 150; // User units / second
 const STROKE_GAP = 250; // ms
 const FREEZE_LENGTH = 1000; // ms
 
+// This is deliberately larger than the actual range the scrubber dot moves
+// (80px) so that you have a bit more control over seeking.
+const SCRUBBER_RANGE = 100; // px in SVG user unit space
+
 export function KanjiStrokeAnimation(props: Props) {
   const animatedStrokeContainer = useRef<SVGGElement>(null);
+  const scrubberSvg = useRef<SVGSVGElement>(null);
   const scrubberContainer = useRef<SVGGElement>(null);
   const subpaths = useMemo(() => props.st.split(/(?=M[0-9])/), [props.st]);
 
   const currentAnimations = useRef<Array<Animation>>([]);
 
-  const [paused, setPaused] = useState<boolean>(false);
-  const onTogglePause = () => {
-    setPaused((paused) => {
-      if (paused) {
-        currentAnimations.current.forEach((animation) => animation.play());
-      } else {
-        currentAnimations.current.forEach((animation) => animation.pause());
-      }
-      return !paused;
-    });
-  };
+  const { onScrubberPointerDown, applySeek } = useDraggableScrubber(
+    scrubberSvg,
+    currentAnimations
+  );
 
   // Update the animation parameters
   useLayoutEffect(() => {
@@ -64,9 +70,6 @@ export function KanjiStrokeAnimation(props: Props) {
           { duration: totalDuration, iterations: Infinity }
         )
       );
-      if (paused) {
-        animations.at(-1)!.pause();
-      }
       cumulativeDuration += duration + STROKE_GAP;
     }
 
@@ -83,6 +86,9 @@ export function KanjiStrokeAnimation(props: Props) {
       );
     }
 
+    // If we are currently seeking, fast-forward to the appropriate point
+    applySeek(animations);
+
     currentAnimations.current = animations;
 
     return () => {
@@ -92,7 +98,7 @@ export function KanjiStrokeAnimation(props: Props) {
   }, [subpaths]);
 
   return (
-    <div class="tp-flex tp-flex-col tp-items-center tp-gap-3">
+    <div class="tp-flex tp-flex-col tp-items-center tp-gap-2">
       <svg
         class="tp-h-big-kanji tp-w-big-kanji"
         viewBox="0 0 109 109"
@@ -125,24 +131,8 @@ export function KanjiStrokeAnimation(props: Props) {
           ))}
         </g>
       </svg>
-      <button
-        class="tp-inline-flex tp-opacity-50 hover:tp-opacity-100 tp-items-center tp-justify-center tp-border-none tp-bg-white/20 tp-rounded-full tp-p-2 tp-appearance-none tp-cursor-pointer tp-select-none focus:tp-outline-none"
-        onClick={onTogglePause}
-        type="button"
-      >
-        <svg class="tp-h-4 tp-w-4 tp-fill-[--text-color]" viewBox="0 0 24 24">
-          {paused ? (
-            <path d="M24 12c0 .4-.1.8-.32 1.15-.21.35-.51.64-.88.84L3.52 23.74c-.34.17-.73.26-1.12.26-.43 0-.86-.12-1.23-.34a2.3 2.3 0 01-.86-.83C.1 22.5 0 22.1 0 21.7V2.3c0-.4.11-.79.32-1.13A2.43 2.43 0 012.33 0c.42-.01.83.08 1.2.26l19.24 9.73c.01 0 .01.02.03.02.37.2.67.49.88.84.21.35.32.74.32 1.15z" />
-          ) : (
-            <>
-              <rect width={8} height={24} rx={4} />
-              <rect x={16} width={8} height={24} rx={4} />
-            </>
-          )}
-        </svg>
-      </button>
       <div>
-        <svg class="tp-w-big-kanji" viewBox="0 0 100 20">
+        <svg class="tp-w-big-kanji" viewBox="0 0 100 20" ref={scrubberSvg}>
           <rect
             width={100}
             height={20}
@@ -160,6 +150,7 @@ export function KanjiStrokeAnimation(props: Props) {
               fill="none"
               class="tp-cursor-pointer tp-peer"
               pointer-events="all"
+              onPointerDown={onScrubberPointerDown}
             />
             <circle
               cx={10}
@@ -173,4 +164,126 @@ export function KanjiStrokeAnimation(props: Props) {
       </div>
     </div>
   );
+}
+
+function useDraggableScrubber(
+  scrubberSvg: RefObject<SVGSVGElement>,
+  currentAnimations: MutableRef<Array<Animation>>
+): {
+  onScrubberPointerDown: (event: PointerEvent) => void;
+  applySeek: (animations: Array<Animation>) => void;
+} {
+  const seekState = useRef<{ scrubberStart: number; offset: number } | null>(
+    null
+  );
+
+  // The following callback needs to be stable so that the caller doesn't need
+  // to mark it as a dependency in their effects.
+
+  const applySeek = useCallback((animations: Array<Animation>) => {
+    if (!seekState.current) {
+      return;
+    }
+
+    for (const animation of animations) {
+      if (animation.playState !== 'paused') {
+        animation.pause();
+      }
+      const timing = animation.effect!.getComputedTiming();
+      animation.currentTime =
+        seekState.current.offset *
+        ((timing.duration as number) - FREEZE_LENGTH);
+    }
+  }, []);
+
+  // The following callbacks need to be stable so we can unregister them from
+  // the window when dragging stops or the component unmounts.
+
+  const onPointerMove = useCallback((event: PointerEvent) => {
+    if (!seekState.current || !scrubberSvg.current) {
+      return;
+    }
+
+    // Calculate the offset of the scrubber
+    const [svgX] = toSvgCoords(scrubberSvg.current, event.clientX, 0);
+    const offset = Math.min(
+      Math.max((svgX - seekState.current.scrubberStart) / SCRUBBER_RANGE, 0),
+      1
+    );
+    seekState.current.offset = offset;
+
+    // Seek each of the animations to the equivalent point
+    applySeek(currentAnimations.current);
+  }, []);
+
+  const onPointerUpOrCancel = useCallback(() => {
+    if (!seekState.current) {
+      return;
+    }
+
+    currentAnimations.current.forEach((animation) => animation.play());
+    seekState.current = null;
+
+    window.removeEventListener('pointermove', onPointerMove);
+    window.removeEventListener('pointerup', onPointerUpOrCancel);
+    window.removeEventListener('pointercancel', onPointerUpOrCancel);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (seekState.current) {
+        window.removeEventListener('pointermove', onPointerMove);
+        window.removeEventListener('pointerup', onPointerUpOrCancel);
+        window.removeEventListener('pointercancel', onPointerUpOrCancel);
+      }
+    };
+  }, []);
+
+  const onPointerDown = (event: PointerEvent) => {
+    if (seekState.current || !scrubberSvg.current) {
+      return;
+    }
+
+    // Work out how far we are into the animation
+    if (currentAnimations.current.length === 0) {
+      return;
+    }
+    const animationTiming =
+      currentAnimations.current[0].effect!.getComputedTiming();
+    const iterationProgress = animationTiming.progress as number;
+    const iterationDuration = animationTiming.duration as number;
+    const strokeAnimationProgress = Math.min(
+      iterationProgress *
+        (iterationDuration / (iterationDuration - FREEZE_LENGTH)),
+      1
+    );
+
+    // Based on that, work out where the scrubber should start
+    const [svgX] = toSvgCoords(scrubberSvg.current, event.clientX, 0);
+    const scrubberStart = svgX - strokeAnimationProgress * SCRUBBER_RANGE;
+    seekState.current = { scrubberStart, offset: strokeAnimationProgress };
+
+    // Pause the animations
+    currentAnimations.current.forEach((animation) => animation.pause());
+
+    // Register the move/up/cancel events
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUpOrCancel);
+    window.addEventListener('pointercancel', onPointerUpOrCancel);
+  };
+
+  return { onScrubberPointerDown: onPointerDown, applySeek };
+}
+
+function toSvgCoords(
+  svg: SVGSVGElement,
+  x: number,
+  y: number
+): [number, number] {
+  const ctm = svg.getScreenCTM()!;
+  const point = svg.createSVGPoint();
+  point.x = x;
+  point.y = y;
+  const transformed = point.matrixTransform(ctm.inverse());
+  return [transformed.x, transformed.y];
 }
