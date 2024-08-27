@@ -35,7 +35,7 @@ export function KanjiStrokeAnimation(props: Props) {
 
   // Update the animation parameters
   useLayoutEffect(() => {
-    if (!animatedStrokeContainer.current || !props.isActive) {
+    if (!animatedStrokeContainer.current || props.isActive === false) {
       currentAnimations.current = [];
       return;
     }
@@ -99,6 +99,8 @@ export function KanjiStrokeAnimation(props: Props) {
     };
   }, [subpaths, props.isActive]);
 
+  const strokeWidth = subpaths.length > 16 ? 4 : 5;
+
   return (
     <div class="tp-flex tp-flex-col tp-items-center tp-gap-2">
       <svg
@@ -107,7 +109,7 @@ export function KanjiStrokeAnimation(props: Props) {
         xmlns="http://www.w3.org/2000/svg"
       >
         <g
-          stroke-width="4"
+          stroke-width={strokeWidth}
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke="var(--text-color)"
@@ -119,7 +121,7 @@ export function KanjiStrokeAnimation(props: Props) {
           ))}
         </g>
         <g
-          stroke-width="4"
+          stroke-width={strokeWidth}
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke="var(--primary-highlight)"
