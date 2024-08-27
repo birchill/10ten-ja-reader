@@ -138,8 +138,8 @@ export function KanjiStrokeAnimation(props: Props) {
             height={20}
             rx={10}
             ry={10}
-            fill="white"
-            fill-opacity="20"
+            fill="var(--primary-highlight)"
+            fill-opacity="0.1"
           />
           <g ref={scrubberContainer}>
             {/* Hit region for scrubber */}
