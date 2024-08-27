@@ -26,6 +26,13 @@ export async function isCurrentTabEnabled(
       currentWindow: true,
     });
 
+    // We've received at least one error report where `currentWindowTabs` was
+    // `undefined` on Safari. That shouldn't ever happen, but let's handle it just
+    // in case.
+    if (!currentWindowTabs) {
+      return false;
+    }
+
     // Typically there's only one active tab per window so let's just query that
     // (rather than introducing something potentially O(n^2)).
     const activeTab = currentWindowTabs[0];
