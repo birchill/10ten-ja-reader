@@ -1,17 +1,19 @@
 import type { KanjiResult } from '@birchill/jpdict-idb';
-import { useRef } from 'preact/hooks';
+import { useRef, useState } from 'preact/hooks';
 
 import type { ReferenceAbbreviation } from '../../common/refs';
 import { classes } from '../../utils/classes';
 
 import { KanjiInfo } from './KanjiInfo';
 import { KanjiReferencesTable } from './KanjiReferencesTable';
+import { KanjiStrokeAnimation } from './KanjiStrokeAnimation';
 import { usePopupOptions } from './options-context';
 import { containerHasSelectedText } from './selection';
 import type { StartCopyCallback } from './show-popup';
 
 export type Props = {
-  entry: KanjiResult;
+  // TODO: Drop this once we update jpdict-idb to include the st member
+  entry: KanjiResult & { st?: string };
   index: number;
   kanjiReferences: Array<ReferenceAbbreviation>;
   onStartCopy?: StartCopyCallback;
@@ -21,6 +23,9 @@ export type Props = {
 
 export function KanjiEntry(props: Props) {
   const kanjiTable = useRef<HTMLDivElement>(null);
+  const [showStrokeAnimation, setShowStrokeAnimation] = useState(false);
+  const toggleShowStrokeAnimation = () =>
+    setShowStrokeAnimation((prev) => !prev);
 
   return (
     <div
@@ -48,9 +53,18 @@ export function KanjiEntry(props: Props) {
             props.onStartCopy?.(props.index, trigger);
           }}
           selectState={props.selectState}
+          showAnimation={showStrokeAnimation}
+          st={props.entry.st}
         />
         <div class="tp-mt-1.5 tp-grow">
-          <KanjiInfo {...props.entry} showComponents={props.showComponents} />
+          <KanjiInfo
+            {...props.entry}
+            isPlayingStrokeAnimation={showStrokeAnimation}
+            showComponents={props.showComponents}
+            onToggleStrokeAnimation={
+              props.entry.st?.length ? toggleShowStrokeAnimation : undefined
+            }
+          />
         </div>
       </div>
       {!!props.kanjiReferences.length && (
@@ -69,9 +83,47 @@ type KanjiCharacterProps = {
   c: string;
   onClick?: (trigger: 'touch' | 'mouse') => void;
   selectState: 'unselected' | 'selected' | 'flash';
+  showAnimation?: boolean;
+  st?: string;
 };
 
 function KanjiCharacter(props: KanjiCharacterProps) {
+  return (
+    <div class="stacked tp-isolate">
+      <div
+        class={classes(
+          'tp-transition-opacity tp-mix-blend-plus-lighter',
+          props.showAnimation && 'tp-opacity-0 tp-pointer-events-none'
+        )}
+      >
+        <StaticKanjiCharacter
+          c={props.c}
+          onClick={props.onClick}
+          selectState={props.selectState}
+        />
+      </div>
+      {props.st && (
+        <div
+          class={classes(
+            'tp-transition-opacity tp-mix-blend-plus-lighter',
+            !props.showAnimation && 'tp-opacity-0 tp-pointer-events-none'
+          )}
+        >
+          <KanjiStrokeAnimation
+            // XXX: Don't set this to true until the fade-in animation has
+            // finished
+            // XXX: Don't set this to false until the fade-out animation has
+            // finished
+            isActive={props.showAnimation}
+            st={props.st}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StaticKanjiCharacter(props: KanjiCharacterProps) {
   const lastPointerType = useRef<string>('touch');
   const { interactive } = usePopupOptions();
 

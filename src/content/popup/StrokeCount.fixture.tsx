@@ -31,7 +31,7 @@ export default {
           <StrokeCount
             sc={11}
             onToggleAnimation={togglePaused}
-            isPlaying={!paused}
+            isPlayingAnimation={!paused}
           />
         </div>
       </div>

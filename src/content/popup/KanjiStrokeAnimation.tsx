@@ -8,7 +8,7 @@ import {
   useRef,
 } from 'preact/hooks';
 
-export type Props = { st: string };
+export type Props = { isActive?: boolean; st: string };
 
 const STROKE_SPEED = 150; // User units / second
 const STROKE_GAP = 250; // ms
@@ -35,7 +35,7 @@ export function KanjiStrokeAnimation(props: Props) {
 
   // Update the animation parameters
   useLayoutEffect(() => {
-    if (!animatedStrokeContainer.current) {
+    if (!animatedStrokeContainer.current || !props.isActive) {
       currentAnimations.current = [];
       return;
     }
@@ -97,7 +97,7 @@ export function KanjiStrokeAnimation(props: Props) {
       currentAnimations.current.forEach((animation) => animation.cancel());
       currentAnimations.current = [];
     };
-  }, [subpaths]);
+  }, [subpaths, props.isActive]);
 
   return (
     <div class="tp-flex tp-flex-col tp-items-center tp-gap-2">
