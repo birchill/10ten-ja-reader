@@ -28,8 +28,10 @@ export function KanjiStrokeAnimation(props: Props) {
 
   const currentAnimations = useRef<Array<Animation>>([]);
 
-  const { applySeek, onScrubberPointerDown, onTimelineClick } =
-    useDraggableScrubber(timelineSvg, currentAnimations);
+  const { applySeek, onScrubberPointerDown, onTimelineClick } = useScrubber(
+    timelineSvg,
+    currentAnimations
+  );
 
   // Update the animation parameters
   useLayoutEffect(() => {
@@ -171,7 +173,7 @@ export function KanjiStrokeAnimation(props: Props) {
   );
 }
 
-function useDraggableScrubber(
+function useScrubber(
   timelineSvg: RefObject<SVGSVGElement>,
   currentAnimations: MutableRef<Array<Animation>>
 ): {
