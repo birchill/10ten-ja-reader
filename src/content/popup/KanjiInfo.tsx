@@ -13,9 +13,7 @@ export type Props = Pick<
   KanjiResult,
   'r' | 'misc' | 'm' | 'm_lang' | 'rad' | 'comp'
 > & {
-  isPlayingStrokeAnimation?: boolean;
   showComponents?: boolean;
-  onToggleStrokeAnimation?: () => void;
 };
 
 export function KanjiInfo(props: Props) {
@@ -33,11 +31,7 @@ export function KanjiInfo(props: Props) {
         {props.m.join(', ')}
       </div>
       <div class="tp-flex tp-items-base tp-gap-3.5 *:tp-grow" lang={langTag}>
-        <StrokeCount
-          isPlayingAnimation={props.isPlayingStrokeAnimation}
-          onToggleAnimation={props.onToggleStrokeAnimation}
-          sc={props.misc.sc}
-        />
+        <StrokeCount sc={props.misc.sc} />
         <FrequencyIndicator frequency={props.misc.freq} />
         <GradeIndicator gr={props.misc.gr} />
       </div>

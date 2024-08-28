@@ -1575,12 +1575,3 @@
     transform: rotate(45deg);
   }
 }
-
-@layer utilities {
-  .stacked {
-    display: grid;
-  }
-  .stacked > * {
-    grid-area: 1 / 1 / 2 / 2;
-  }
-}
