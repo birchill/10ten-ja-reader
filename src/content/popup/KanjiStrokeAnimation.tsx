@@ -6,7 +6,10 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
+  useState,
 } from 'preact/hooks';
+
+import { classes } from '../../utils/classes';
 
 export type Props = { isActive?: boolean; st: string };
 
@@ -32,6 +35,8 @@ export function KanjiStrokeAnimation(props: Props) {
     timelineSvg,
     currentAnimations
   );
+
+  const [isPlaying, setIsPlaying] = useState(false);
 
   // Update the animation parameters
   useLayoutEffect(() => {
@@ -168,6 +173,117 @@ export function KanjiStrokeAnimation(props: Props) {
               class="tp-fill-[--primary-highlight] tp-opacity-50 peer-hover:tp-opacity-100"
               pointer-events="none"
             />
+          </g>
+        </svg>
+      </div>
+      <div>
+        <svg class="tp-w-big-kanji" viewBox="0 0 100 20">
+          {/* Play/stop button */}
+          <g
+            onClick={() => setIsPlaying((prev) => !prev)}
+            pointer-events="all"
+            class="tp-cursor-pointer tp-opacity-50 hover:tp-opacity-100 tp-transition-transform tp-duration-500"
+            style={{
+              transform: isPlaying ? 'none' : 'translate(40px)',
+            }}
+          >
+            {/* Play/stop button hit region */}
+            <rect width={20} height={20} fill="none" />
+            <path
+              d={
+                isPlaying
+                  ? 'M20 10v6a4 4 0 01-4 4l-12 0c0 0 0 0 0 0a4 4 90 01-4-4v-12a4 4 90 014-4c0 0 0 0 0 0l12 0a4 4 0 014 4z'
+                  : 'M20 10v0a2 2 0 01-1 1.7l-16.1 8.1c-.3.1-.6.2-.9.2a2 2 90 01-2-2v-16a2 2 90 012-2c.3 0 .7.1 1 .2l16 8.1a2 2 0 011 1.7z'
+              }
+              fill="var(--primary-highlight)"
+              class="tp-transition-[d] tp-duration-500"
+              transform="scale(0.7)"
+              transform-origin="10px 10px"
+            />
+          </g>
+          {/* Timeline and scrubber */}
+          <g
+            style={{
+              transform: isPlaying ? 'translate(20px)' : 'translate(60px)',
+            }}
+            class={classes(
+              'tp-transition-transform tp-duration-500',
+              isPlaying ? 'tp-delay-100' : 'tp-pointer-events-none'
+            )}
+          >
+            {/* Timeline */}
+            <g
+              fill="var(--primary-highlight)"
+              opacity="0.1"
+              style={{
+                transform: isPlaying ? 'scale(1)' : 'scale(0)',
+                transformOrigin: '10px 10px',
+              }}
+              class={classes(
+                'tp-transition-transform',
+                !isPlaying && 'tp-delay-[450ms]'
+              )}
+            >
+              {/* Timeline middle rectangle */}
+              <rect
+                x={10}
+                width={60}
+                height={20}
+                style={{
+                  transform: isPlaying ? 'scale(1)' : 'scale(0, 1)',
+                  transformOrigin: '10px 10px',
+                }}
+                class={classes(
+                  'tp-transition-transform tp-duration-500',
+                  isPlaying && 'tp-delay-100'
+                )}
+              />
+              {/* Timeline rounded left end */}
+              <path d="M10 0a10 10 0 0 0 0 20z" />
+              {/* Timeline rounded right end */}
+              <path
+                d="M70 0a10 10 0 0 1 0 20z"
+                style={{
+                  transform: isPlaying ? 'translate(0)' : 'translate(-60px)',
+                }}
+                class={classes(
+                  'tp-transition-transform tp-duration-500',
+                  isPlaying && 'tp-delay-100'
+                )}
+              />
+            </g>
+            {/* Scrubber group -- translation animation is applied here */}
+            <g>
+              {/* Scrubber scale group */}
+              <g
+                style={{
+                  transform: isPlaying ? 'scale(1)' : 'scale(0)',
+                  transformOrigin: `${TIMELINE_PADDING}px 10px`,
+                }}
+                class={classes(
+                  'tp-transition-transform',
+                  !isPlaying ? 'tp-delay-[400ms]' : 'tp-delay-50'
+                )}
+              >
+                {/* Hit region for scrubber */}
+                <rect
+                  x={-5}
+                  width={30}
+                  height={20}
+                  fill="none"
+                  class="tp-cursor-pointer tp-peer"
+                  pointer-events="all"
+                  onPointerDown={onScrubberPointerDown}
+                />
+                <circle
+                  cx={TIMELINE_PADDING}
+                  cy={10}
+                  r={6}
+                  class="tp-fill-[--primary-highlight] tp-opacity-50 peer-hover:tp-opacity-100"
+                  pointer-events="none"
+                />
+              </g>
+            </g>
           </g>
         </svg>
       </div>
