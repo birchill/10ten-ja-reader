@@ -11,17 +11,20 @@ import {
 
 import { classes } from '../../utils/classes';
 
-export type Props = { isActive?: boolean; st: string };
+export type Props = { st: string };
 
 const STROKE_SPEED = 150; // User units / second
 const STROKE_GAP = 250; // ms
 const FREEZE_LENGTH = 1000; // ms
 
-const SCRUBBER_RANGE = 80; // px in SVG user unit space
-// This is deliberately larger than the actual range the scrubber moves
+const TIMELINE_RANGE = 55; // px in SVG user unit space
+
+// This is a bit larger than the actual range the scrubber moves
 // so that you have a bit more control over seeking.
-const SCRUBBER_DRAG_RANGE = 100; // px in SVG user unit space
-const TIMELINE_PADDING = 10; // px in SVG user unit space
+const SCRUBBER_DRAG_RANGE = TIMELINE_RANGE + 10; // px in SVG user unit space
+
+// How far the timeline is from the left edge of the SVG
+const TIMELINE_OFFSET = 35; // px in SVG user unit space
 
 export function KanjiStrokeAnimation(props: Props) {
   const animatedStrokeContainer = useRef<SVGGElement>(null);
@@ -40,7 +43,7 @@ export function KanjiStrokeAnimation(props: Props) {
 
   // Update the animation parameters
   useLayoutEffect(() => {
-    if (!animatedStrokeContainer.current || props.isActive === false) {
+    if (!animatedStrokeContainer.current || !isPlaying) {
       currentAnimations.current = [];
       return;
     }
@@ -85,7 +88,11 @@ export function KanjiStrokeAnimation(props: Props) {
       animations.push(
         scrubberContainer.current.animate(
           {
-            transform: ['translate(0)', 'translate(80px)', 'translate(80px)'],
+            transform: [
+              'translate(0)',
+              `translate(${TIMELINE_RANGE}px)`,
+              `translate(${TIMELINE_RANGE}px)`,
+            ],
             offset: [0, (totalDuration - FREEZE_LENGTH) / totalDuration],
           },
           { duration: totalDuration, iterations: Infinity }
@@ -102,7 +109,7 @@ export function KanjiStrokeAnimation(props: Props) {
       currentAnimations.current.forEach((animation) => animation.cancel());
       currentAnimations.current = [];
     };
-  }, [subpaths, props.isActive]);
+  }, [subpaths, isPlaying]);
 
   const strokeWidth = subpaths.length > 16 ? 4 : 5;
 
@@ -131,7 +138,7 @@ export function KanjiStrokeAnimation(props: Props) {
           stroke-linejoin="round"
           stroke="var(--primary-highlight)"
           stroke-dasharray="100 100"
-          stroke-dashoffset="100"
+          stroke-dashoffset={isPlaying ? 100 : 0}
           fill="none"
           ref={animatedStrokeContainer}
         >
@@ -141,48 +148,12 @@ export function KanjiStrokeAnimation(props: Props) {
         </g>
       </svg>
       <div>
-        <svg
-          class="tp-w-big-kanji"
-          viewBox="0 0 100 20"
-          ref={timelineSvg}
-          onClick={onTimelineClick}
-        >
-          <rect
-            width={100}
-            height={20}
-            rx={10}
-            ry={10}
-            fill="var(--primary-highlight)"
-            fill-opacity="0.1"
-          />
-          <g ref={scrubberContainer}>
-            {/* Hit region for scrubber */}
-            <rect
-              x={-5}
-              width={30}
-              height={20}
-              fill="none"
-              class="tp-cursor-pointer tp-peer"
-              pointer-events="all"
-              onPointerDown={onScrubberPointerDown}
-            />
-            <circle
-              cx={TIMELINE_PADDING}
-              cy={10}
-              r={6}
-              class="tp-fill-[--primary-highlight] tp-opacity-50 peer-hover:tp-opacity-100"
-              pointer-events="none"
-            />
-          </g>
-        </svg>
-      </div>
-      <div>
-        <svg class="tp-w-big-kanji" viewBox="0 0 100 20">
+        <svg class="tp-w-big-kanji" ref={timelineSvg} viewBox="0 0 100 20">
           {/* Play/stop button */}
           <g
             onClick={() => setIsPlaying((prev) => !prev)}
             pointer-events="all"
-            class="tp-cursor-pointer tp-opacity-50 hover:tp-opacity-100 tp-transition-transform tp-duration-500"
+            class="tp-cursor-pointer tp-opacity-30 hover:tp-opacity-100 tp-fill-[--text-color] hover:tp-fill-[--primary-highlight] tp-transition-transform tp-duration-500"
             style={{
               transform: isPlaying ? 'none' : 'translate(40px)',
             }}
@@ -195,7 +166,6 @@ export function KanjiStrokeAnimation(props: Props) {
                   ? 'M20 10v6a4 4 0 01-4 4l-12 0c0 0 0 0 0 0a4 4 90 01-4-4v-12a4 4 90 014-4c0 0 0 0 0 0l12 0a4 4 0 014 4z'
                   : 'M20 10v0a2 2 0 01-1 1.7l-16.1 8.1c-.3.1-.6.2-.9.2a2 2 90 01-2-2v-16a2 2 90 012-2c.3 0 .7.1 1 .2l16 8.1a2 2 0 011 1.7z'
               }
-              fill="var(--primary-highlight)"
               class="tp-transition-[d] tp-duration-500"
               transform="scale(0.7)"
               transform-origin="10px 10px"
@@ -204,7 +174,7 @@ export function KanjiStrokeAnimation(props: Props) {
           {/* Timeline and scrubber */}
           <g
             style={{
-              transform: isPlaying ? 'translate(20px)' : 'translate(60px)',
+              transform: isPlaying ? 'translate(25px)' : 'translate(65px)',
             }}
             class={classes(
               'tp-transition-transform tp-duration-500',
@@ -223,11 +193,14 @@ export function KanjiStrokeAnimation(props: Props) {
                 'tp-transition-transform',
                 !isPlaying && 'tp-delay-[450ms]'
               )}
+              onClick={onTimelineClick}
             >
               {/* Timeline middle rectangle */}
               <rect
                 x={10}
-                width={60}
+                // Add an extra pixel to the width to avoid a gap between the
+                // scrubber and the right end of the timeline.
+                width={TIMELINE_RANGE + 1}
                 height={20}
                 style={{
                   transform: isPlaying ? 'scale(1)' : 'scale(0, 1)',
@@ -242,9 +215,11 @@ export function KanjiStrokeAnimation(props: Props) {
               <path d="M10 0a10 10 0 0 0 0 20z" />
               {/* Timeline rounded right end */}
               <path
-                d="M70 0a10 10 0 0 1 0 20z"
+                d={`M${TIMELINE_RANGE + 10} 0a10 10 0 0 1 0 20z`}
                 style={{
-                  transform: isPlaying ? 'translate(0)' : 'translate(-60px)',
+                  transform: isPlaying
+                    ? 'translate(0)'
+                    : `translate(-${TIMELINE_RANGE}px)`,
                 }}
                 class={classes(
                   'tp-transition-transform tp-duration-500',
@@ -253,12 +228,12 @@ export function KanjiStrokeAnimation(props: Props) {
               />
             </g>
             {/* Scrubber group -- translation animation is applied here */}
-            <g>
+            <g ref={scrubberContainer}>
               {/* Scrubber scale group */}
               <g
                 style={{
                   transform: isPlaying ? 'scale(1)' : 'scale(0)',
-                  transformOrigin: `${TIMELINE_PADDING}px 10px`,
+                  transformOrigin: '10px 10px',
                 }}
                 class={classes(
                   'tp-transition-transform',
@@ -276,7 +251,7 @@ export function KanjiStrokeAnimation(props: Props) {
                   onPointerDown={onScrubberPointerDown}
                 />
                 <circle
-                  cx={TIMELINE_PADDING}
+                  cx={10}
                   cy={10}
                   r={6}
                   class="tp-fill-[--primary-highlight] tp-opacity-50 peer-hover:tp-opacity-100"
@@ -408,7 +383,7 @@ function useScrubber(
 
     const [svgX] = toSvgCoords(timelineSvg.current, event.clientX, 0);
     const offset = Math.min(
-      Math.max((svgX - TIMELINE_PADDING) / SCRUBBER_RANGE, 0),
+      Math.max((svgX - TIMELINE_OFFSET) / TIMELINE_RANGE, 0),
       1
     );
 
