@@ -11,7 +11,11 @@ import {
 
 import { classes } from '../../utils/classes';
 
-export type Props = { st: string };
+export type Props = {
+  onClick?: (trigger: 'touch' | 'mouse') => void;
+  selectState: 'unselected' | 'selected' | 'flash';
+  st: string;
+};
 
 const STROKE_SPEED = 150; // User units / second
 const STROKE_GAP = 250; // ms
@@ -27,21 +31,23 @@ const SCRUBBER_DRAG_RANGE = TIMELINE_RANGE + 10; // px in SVG user unit space
 const TIMELINE_OFFSET = 35; // px in SVG user unit space
 
 export function KanjiStrokeAnimation(props: Props) {
+  // References
   const animatedStrokeContainer = useRef<SVGGElement>(null);
   const timelineSvg = useRef<SVGSVGElement>(null);
   const scrubberContainer = useRef<SVGGElement>(null);
-  const subpaths = useMemo(() => props.st.split(/(?=M[0-9])/), [props.st]);
 
+  // Animation state
+  const [isPlaying, setIsPlaying] = useState(false);
   const currentAnimations = useRef<Array<Animation>>([]);
 
+  // Scrubber handling
   const { applySeek, onScrubberPointerDown, onTimelineClick } = useScrubber(
     timelineSvg,
     currentAnimations
   );
 
-  const [isPlaying, setIsPlaying] = useState(false);
-
   // Update the animation parameters
+  const subpaths = useMemo(() => props.st.split(/(?=M[0-9])/), [props.st]);
   useLayoutEffect(() => {
     if (!animatedStrokeContainer.current || !isPlaying) {
       currentAnimations.current = [];
@@ -111,14 +117,41 @@ export function KanjiStrokeAnimation(props: Props) {
     };
   }, [subpaths, isPlaying]);
 
+  // Rendering parameters
   const strokeWidth = subpaths.length > 16 ? 4 : 5;
+
+  // Copy state
+  const lastPointerType = useRef<string>('touch');
 
   return (
     <div class="tp-flex tp-flex-col tp-items-center tp-gap-2">
       <svg
-        class="tp-h-big-kanji tp-w-big-kanji"
+        class={classes(
+          'tp-group',
+          'tp-h-big-kanji tp-w-big-kanji tp-rounded-md',
+          'hh:hover:tp-bg-[--hover-bg]',
+          'hh:hover:tp-cursor-pointer',
+          // Fade _out_ the color change
+          'hh:tp-transition-colors hh:interactive:tp-duration-100',
+          'hh:tp-ease-out',
+          'hh:hover:tp-transition-none',
+          // Ensure any selection colors are applied before fading in the
+          // overlay
+          props.selectState === 'selected' &&
+            'no-overlay:tp-text-[--selected-highlight] no-overlay:tp-bg-[--selected-bg]',
+          // Run the flash animation, but not until the overlay has
+          // disappeared.
+          props.selectState === 'flash' && 'no-overlay:tp-animate-flash'
+        )}
         viewBox="0 0 109 109"
-        xmlns="http://www.w3.org/2000/svg"
+        onPointerUp={(evt) => {
+          lastPointerType.current = evt.pointerType;
+        }}
+        onClick={() => {
+          const trigger =
+            lastPointerType.current === 'mouse' ? 'mouse' : 'touch';
+          props.onClick?.(trigger);
+        }}
       >
         <g
           stroke-width={strokeWidth}
@@ -133,6 +166,14 @@ export function KanjiStrokeAnimation(props: Props) {
           ))}
         </g>
         <g
+          class={classes(
+            'tp-stroke-[--primary-highlight] hh:group-hover:tp-stroke-[--selected-highlight]',
+            'hh:tp-transition-colors hh:interactive:tp-duration-100',
+            'hh:tp-ease-out',
+            'hh:hover:tp-transition-none',
+            props.selectState === 'selected' &&
+              'no-overlay:tp-stroke-[--selected-highlight]'
+          )}
           stroke-width={strokeWidth}
           stroke-linecap="round"
           stroke-linejoin="round"

@@ -38,7 +38,7 @@ export function KanjiEntry(props: Props) {
       )}
       ref={kanjiTable}
     >
-      <div class="tp-flex tp-gap-[20px]">
+      <div class="tp-flex tp-items-start tp-gap-[20px]">
         <KanjiCharacter
           c={props.entry.c}
           onClick={(trigger) => {
@@ -75,8 +75,16 @@ type KanjiCharacterProps = {
 };
 
 function KanjiCharacter(props: KanjiCharacterProps) {
-  return props.st ? (
-    <KanjiStrokeAnimation st={props.st} />
+  const { interactive } = usePopupOptions();
+
+  // There's no way to trigger the animation when we're not in "mouse
+  // interactive" mode so just show the static character in that case.
+  return props.st && interactive ? (
+    <KanjiStrokeAnimation
+      onClick={props.onClick}
+      selectState={props.selectState}
+      st={props.st}
+    />
   ) : (
     <StaticKanjiCharacter
       c={props.c}
