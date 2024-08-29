@@ -21,7 +21,7 @@ const STROKE_SPEED = 150; // User units / second
 const STROKE_GAP = 250; // ms
 const FREEZE_LENGTH = 1000; // ms
 
-const TIMELINE_RANGE = 55; // px in SVG user unit space
+const TIMELINE_RANGE = 50; // px in SVG user unit space
 
 // This is a bit larger than the actual range the scrubber moves
 // so that you have a bit more control over seeking.
@@ -189,7 +189,7 @@ export function KanjiStrokeAnimation(props: Props) {
         </g>
       </svg>
       <div>
-        <svg class="tp-w-big-kanji" ref={timelineSvg} viewBox="0 0 100 20">
+        <svg class="tp-w-big-kanji" ref={timelineSvg} viewBox="0 0 100 25">
           {/* Play/stop button */}
           <g
             onClick={() => setIsPlaying((prev) => !prev)}
@@ -200,16 +200,16 @@ export function KanjiStrokeAnimation(props: Props) {
             }}
           >
             {/* Play/stop button hit region */}
-            <rect width={20} height={20} fill="none" />
+            <rect width={25} height={25} fill="none" />
             <path
               d={
                 isPlaying
-                  ? 'M20 10v6a4 4 0 01-4 4l-12 0c0 0 0 0 0 0a4 4 90 01-4-4v-12a4 4 90 014-4c0 0 0 0 0 0l12 0a4 4 0 014 4z'
-                  : 'M20 10v0a2 2 0 01-1 1.7l-16.1 8.1c-.3.1-.6.2-.9.2a2 2 90 01-2-2v-16a2 2 90 012-2c.3 0 .7.1 1 .2l16 8.1a2 2 0 011 1.7z'
+                  ? 'M20 12.5v6a4 4 0 01-4 4l-12 0c0 0 0 0 0 0a4 4 90 01-4-4v-12a4 4 90 014-4c0 0 0 0 0 0l12 0a4 4 0 014 4z'
+                  : 'M20 12.5v0a2 2 0 01-1 1.7l-16.1 8.1c-.3.1-.6.2-.9.2a2 2 90 01-2-2v-16a2 2 90 012-2c.3 0 .7.1 1 .2l16 8.1a2 2 0 011 1.7z'
               }
               class="tp-transition-[d] tp-duration-500"
-              transform="scale(0.7)"
-              transform-origin="10px 10px"
+              transform="scale(0.9)"
+              transform-origin="10px 12.5px"
             />
           </g>
           {/* Timeline and scrubber */}
@@ -228,7 +228,7 @@ export function KanjiStrokeAnimation(props: Props) {
               opacity="0.1"
               style={{
                 transform: isPlaying ? 'scale(1)' : 'scale(0)',
-                transformOrigin: '10px 10px',
+                transformOrigin: '12.5px 12.5px',
               }}
               class={classes(
                 'tp-transition-transform',
@@ -238,14 +238,14 @@ export function KanjiStrokeAnimation(props: Props) {
             >
               {/* Timeline middle rectangle */}
               <rect
-                x={10}
+                x={12.5}
                 // Add an extra pixel to the width to avoid a gap between the
                 // scrubber and the right end of the timeline.
                 width={TIMELINE_RANGE + 1}
-                height={20}
+                height={25}
                 style={{
                   transform: isPlaying ? 'scale(1)' : 'scale(0, 1)',
-                  transformOrigin: '10px 10px',
+                  transformOrigin: '12.5px 12.5px',
                 }}
                 class={classes(
                   'tp-transition-transform tp-duration-500',
@@ -253,10 +253,10 @@ export function KanjiStrokeAnimation(props: Props) {
                 )}
               />
               {/* Timeline rounded left end */}
-              <path d="M10 0a10 10 0 0 0 0 20z" />
+              <path d="M12.5 0a12.5 12.5 0 0 0 0 25z" />
               {/* Timeline rounded right end */}
               <path
-                d={`M${TIMELINE_RANGE + 10} 0a10 10 0 0 1 0 20z`}
+                d={`M${TIMELINE_RANGE + 12.5} 0a12.5 12.5 0 0 1 0 25z`}
                 style={{
                   transform: isPlaying
                     ? 'translate(0)'
@@ -274,7 +274,7 @@ export function KanjiStrokeAnimation(props: Props) {
               <g
                 style={{
                   transform: isPlaying ? 'scale(1)' : 'scale(0)',
-                  transformOrigin: '10px 10px',
+                  transformOrigin: '12.5px 12.5px',
                 }}
                 class={classes(
                   'tp-transition-transform',
@@ -285,7 +285,7 @@ export function KanjiStrokeAnimation(props: Props) {
                 <rect
                   x={-5}
                   width={30}
-                  height={20}
+                  height={25}
                   fill="none"
                   class="tp-cursor-pointer tp-peer"
                   pointer-events="all"
@@ -294,9 +294,9 @@ export function KanjiStrokeAnimation(props: Props) {
                   onTouchStart={(evt) => evt.preventDefault()}
                 />
                 <circle
-                  cx={10}
-                  cy={10}
-                  r={6}
+                  cx={12.5}
+                  cy={12.5}
+                  r={8}
                   class="tp-fill-[--primary-highlight] tp-opacity-50 peer-hover:tp-opacity-100"
                   pointer-events="none"
                 />
