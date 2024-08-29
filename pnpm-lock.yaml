@@ -136,8 +136,8 @@ importers:
         specifier: ^25.0.0
         version: 25.0.0
       knip:
-        specifier: 5.27.3
-        version: 5.27.3(@types/node@22.4.2)(typescript@5.5.4)
+        specifier: 5.27.4
+        version: 5.27.4(@types/node@22.4.2)(typescript@5.5.4)
       mocha:
         specifier: 10.7.3
         version: 10.7.3
@@ -3735,8 +3735,8 @@ packages:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
 
-  knip@5.27.3:
-    resolution: {integrity: sha512-X0zYs0viwENUtp+FZE2Ig6vQZYvKOz8TvuQkWSWMOXiEDoiMAF+NuDczVD9Dhupicfew0YKpYamHhKtNP+f8+g==}
+  knip@5.27.4:
+    resolution: {integrity: sha512-7t1yqIKxaVGYD1cLI4raVLWi9cNqv+JNbngc8mgvTVJbomnxOg1pjxgCGEztB7eVgD+6VEwf7Jg5WHXzk+Kbpw==}
     engines: {node: '>=18.6.0'}
     hasBin: true
     peerDependencies:
@@ -9942,7 +9942,7 @@ snapshots:
 
   kleur@4.1.5: {}
 
-  knip@5.27.3(@types/node@22.4.2)(typescript@5.5.4):
+  knip@5.27.4(@types/node@22.4.2)(typescript@5.5.4):
     dependencies:
       '@nodelib/fs.walk': 1.2.8
       '@snyk/github-codeowners': 1.1.0
