@@ -309,6 +309,14 @@
       }
     }
   },
+  "content_stroke_animation_play": {
+    "message": "播放笔顺动画",
+    "description": "Tooltip to show when hovering over the play button for the stroke animation"
+  },
+  "content_stroke_animation_stop": {
+    "message": "停止笔顺动画",
+    "description": "Tooltip to show when hovering over the stop button for the stroke animation"
+  },
   "content_wk_link_title": {
     "message": "显示 '​$content$​' 的WaniKani页面",
     "description": "Tooltip for kanji and vocab links to WaniKani pages.",

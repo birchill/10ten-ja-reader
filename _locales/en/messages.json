@@ -309,6 +309,14 @@
       }
     }
   },
+  "content_stroke_animation_play": {
+    "message": "Play stroke animation",
+    "description": "Tooltip to show when hovering over the play button for the stroke animation"
+  },
+  "content_stroke_animation_stop": {
+    "message": "Stop stroke animation",
+    "description": "Tooltip to show when hovering over the stop button for the stroke animation"
+  },
   "content_wk_link_title": {
     "message": "Show WaniKani page for $content$",
     "description": "Tooltip for kanji and vocab links to WaniKani pages.",

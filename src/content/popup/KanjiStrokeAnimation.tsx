@@ -9,6 +9,7 @@ import {
   useState,
 } from 'preact/hooks';
 
+import { useLocale } from '../../common/i18n';
 import { classes } from '../../utils/classes';
 
 export type Props = {
@@ -31,6 +32,8 @@ const SCRUBBER_DRAG_RANGE = TIMELINE_RANGE + 10; // px in SVG user unit space
 const TIMELINE_OFFSET = 35; // px in SVG user unit space
 
 export function KanjiStrokeAnimation(props: Props) {
+  const { t } = useLocale();
+
   // References
   const animatedStrokeContainer = useRef<SVGGElement>(null);
   const timelineSvg = useRef<SVGSVGElement>(null);
@@ -199,6 +202,13 @@ export function KanjiStrokeAnimation(props: Props) {
               transform: isPlaying ? 'none' : 'translate(40px)',
             }}
           >
+            <title>
+              {t(
+                isPlaying
+                  ? 'content_stroke_animation_stop'
+                  : 'content_stroke_animation_play'
+              )}
+            </title>
             {/* Play/stop button hit region */}
             <rect width={25} height={25} fill="none" />
             <path
