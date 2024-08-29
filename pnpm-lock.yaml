@@ -175,8 +175,8 @@ importers:
         specifier: 6.2.0
         version: 6.2.0
       react-cosmos-plugin-rspack:
-        specifier: 0.5.0
-        version: 0.5.0(@rspack/core@1.0.0-rc.1)(react-cosmos@6.2.0(@types/express@4.17.21))(webpack@5.94.0)
+        specifier: 1.0.0
+        version: 1.0.0(@rspack/core@1.0.0-rc.1)(react-cosmos@6.2.0(@types/express@4.17.21))(webpack@5.94.0)
       release-it:
         specifier: 17.6.0
         version: 17.6.0(typescript@5.5.4)
@@ -4795,10 +4795,10 @@ packages:
   react-cosmos-plugin-boolean-input@6.2.0:
     resolution: {integrity: sha512-alkhKo6C0o5jsL/0Snuj97QORsv2lSKmr1w+l6LN4gK/I+/o7dq1bXLRJNRhjq0Wvp3UqYDE0fIzPfjiySPZCg==}
 
-  react-cosmos-plugin-rspack@0.5.0:
-    resolution: {integrity: sha512-0nXw6hzRyRC26zGoroXGDshbL0cXjHd4kVvScHo5kOSqciyGiM+rOyKPpMYERr+OgsBw+lOO05B8a3g1Ehagvg==}
+  react-cosmos-plugin-rspack@1.0.0:
+    resolution: {integrity: sha512-FZ7SJs8Jc+AZ+2x1R0shCZgBY6y0ni3hJJo/gSmAb1orILMC7hvlH9uebnLdwAg0m8zmeZ45ClJT3BC3ik54DQ==}
     peerDependencies:
-      '@rspack/core': '>=1.0.0-rc.0'
+      '@rspack/core': '>=1.0.0'
       react-cosmos: '>=6.0.0'
 
   react-cosmos-renderer@6.2.0:
@@ -11006,7 +11006,7 @@ snapshots:
 
   react-cosmos-plugin-boolean-input@6.2.0: {}
 
-  react-cosmos-plugin-rspack@0.5.0(@rspack/core@1.0.0-rc.1)(react-cosmos@6.2.0(@types/express@4.17.21))(webpack@5.94.0):
+  react-cosmos-plugin-rspack@1.0.0(@rspack/core@1.0.0-rc.1)(react-cosmos@6.2.0(@types/express@4.17.21))(webpack@5.94.0):
     dependencies:
       '@rspack/core': 1.0.0-rc.1
       react-cosmos: 6.2.0(@types/express@4.17.21)
