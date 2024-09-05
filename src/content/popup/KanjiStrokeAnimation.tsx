@@ -187,7 +187,15 @@ export function KanjiStrokeAnimation(props: Props) {
           ref={animatedStrokeContainer}
         >
           {subpaths.map((path, index) => (
-            <path key={index} d={path} fill="none" pathLength={100} />
+            <path
+              key={index}
+              d={path}
+              fill="none"
+              // We use 99.5 instead of 100 to work around path length
+              // inaccuracies in Chrome. Without this you'd occasionally see a
+              // dot at the end of a stroke that should be invisible.
+              pathLength={99.5}
+            />
           ))}
         </g>
       </svg>
