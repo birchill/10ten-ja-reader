@@ -15,8 +15,8 @@ importers:
         specifier: 0.3.0
         version: 0.3.0(superstruct@2.0.2)
       '@birchill/jpdict-idb':
-        specifier: 2.5.0
-        version: 2.5.0
+        specifier: 2.6.0
+        version: 2.6.0
       '@birchill/normal-jp':
         specifier: 1.5.0
         version: 1.5.0
@@ -330,8 +330,8 @@ packages:
     peerDependencies:
       superstruct: '>0.16.0 <2.0.0'
 
-  '@birchill/jpdict-idb@2.5.0':
-    resolution: {integrity: sha512-1P/4ZcaSmJFtUjnhL85+uFXjwnGjQHZ2jqghU/W2NAuQVLMfcQvuBTUFNYmbKS70RHOpGu7V3CWHaaF8gflJVw==}
+  '@birchill/jpdict-idb@2.6.0':
+    resolution: {integrity: sha512-/hz+fyPynuZcTNaBFUGO1x3ikUuY4HcIlvWe7v03YGIAo28EwJ9B0Os+P+BePHLOyZ2y3EJNeIKrNFvd55/vTw==}
     engines: {node: '>=16.0.0'}
 
   '@birchill/json-equalish@1.1.2':
@@ -5399,10 +5399,6 @@ packages:
   summary@2.1.0:
     resolution: {integrity: sha512-nMIjMrd5Z2nuB2RZCKJfFMjgS3fygbeyGk9PxPPaJR1RIcyN9yn4A63Isovzm3ZtQuEkLBVgMdPup8UeLH7aQw==}
 
-  superstruct@1.0.4:
-    resolution: {integrity: sha512-7JpaAoX2NGyoFlI9NBh66BQXGONc+uE+MRS5i2iOBKuS4e+ccgMDjATgZldkah+33DakBxDHiss9kvUcGAO8UQ==}
-    engines: {node: '>=14.0.0'}
-
   superstruct@2.0.2:
     resolution: {integrity: sha512-uV+TFRZdXsqXTL2pRvujROjdZQ4RAlBUS5BTh9IGm+jTqQntYThciG/qu57Gs69yjnVUSqdxF9YLmSnpupBW9A==}
     engines: {node: '>=14.0.0'}
@@ -6319,12 +6315,12 @@ snapshots:
     dependencies:
       superstruct: 2.0.2
 
-  '@birchill/jpdict-idb@2.5.0':
+  '@birchill/jpdict-idb@2.6.0':
     dependencies:
       '@birchill/json-equalish': 1.1.2
       '@birchill/normal-jp': 1.5.0
       idb: 8.0.0
-      superstruct: 1.0.4
+      superstruct: 2.0.2
 
   '@birchill/json-equalish@1.1.2': {}
 
@@ -11759,8 +11755,6 @@ snapshots:
       ts-interface-checker: 0.1.13
 
   summary@2.1.0: {}
-
-  superstruct@1.0.4: {}
 
   superstruct@2.0.2: {}
 
