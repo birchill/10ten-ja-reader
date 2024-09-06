@@ -75,7 +75,7 @@
     "superstruct": "2.0.2",
     "typescript": "5.5.4",
     "web-ext": "8.2.0",
-    "webextension-polyfill": "^0.12.0"
+    "webextension-polyfill": "0.12.0"
   },
   "devDependencies": {
     "@actions/core": "1.10.1",
@@ -90,7 +90,7 @@
     "@types/chai": "4.3.19",
     "@types/eslint__js": "8.42.3",
     "@types/mocha": "10.0.7",
-    "@types/webextension-polyfill": "^0.12.0",
+    "@types/webextension-polyfill": "0.12.1",
     "@types/yargs": "17.0.33",
     "@typescript-eslint/parser": "8.4.0",
     "archiver": "7.0.1",
