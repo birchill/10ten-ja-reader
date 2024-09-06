@@ -12,8 +12,7 @@ import { containerHasSelectedText } from './selection';
 import type { StartCopyCallback } from './show-popup';
 
 export type Props = {
-  // TODO: Drop this once we update jpdict-idb to include the st member
-  entry: KanjiResult & { st?: string };
+  entry: KanjiResult;
   index: number;
   kanjiReferences: Array<ReferenceAbbreviation>;
   onStartCopy?: StartCopyCallback;
