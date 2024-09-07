@@ -145,8 +145,8 @@ importers:
         specifier: 1.47.0
         version: 1.47.0
       playwright-test:
-        specifier: 14.1.4
-        version: 14.1.4
+        specifier: 14.1.5
+        version: 14.1.5
       postcss:
         specifier: 8.4.45
         version: 8.4.45
@@ -2852,6 +2852,7 @@ packages:
   follow-redirects@1.15.8:
     resolution: {integrity: sha512-xgrmBhBToVKay1q2Tao5LI26B83UhrB/vM1avwVSDzt8rx3rO6AizBAaF46EgksTVr+rFTQaqZZ9MVBfUe4nig==}
     engines: {node: '>=4.0'}
+    deprecated: Browser detection issues fixed in v1.15.9
     peerDependencies:
       debug: '*'
     peerDependenciesMeta:
@@ -4498,8 +4499,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  playwright-test@14.1.4:
-    resolution: {integrity: sha512-dnSS6m3LI/amvAl9xKI01Ow/dMLmbkiFsogVnXd0MHYls5RQHx/RTWOLhCmIE9lwlldFFAKZYLID7HPWTExe7Q==}
+  playwright-test@14.1.5:
+    resolution: {integrity: sha512-1uZlAy4pul3rWlgmuWKYexLv6Z00CjTsMrgbm9cG5PftF7/Bls5JzO0KQiSX5c3/sNlrHUCq2az+fvz8214KUw==}
     engines: {node: '>=16.0.0'}
     hasBin: true
 
@@ -10743,7 +10744,7 @@ snapshots:
 
   playwright-core@1.47.0: {}
 
-  playwright-test@14.1.4:
+  playwright-test@14.1.5:
     dependencies:
       acorn-loose: 8.4.0
       assert: 2.1.0
