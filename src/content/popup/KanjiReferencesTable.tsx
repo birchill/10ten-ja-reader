@@ -132,7 +132,7 @@ function ReferenceEntryWrapper(
     href &&
       'tp-cursor-pointer hover:tp-bg-[--cell-bg-hover] tp-underline-offset-2',
     href
-      ? 'tp-text-[--cell-link-fg] hover:tp-bg-[--cell-bg-hover]'
+      ? 'tp-text-[--cell-link-fg]'
       : props.highlight
         ? 'tp-text-[--cell-highlight-fg]'
         : '',

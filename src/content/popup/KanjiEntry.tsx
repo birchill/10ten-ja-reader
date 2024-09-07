@@ -6,6 +6,7 @@ import { classes } from '../../utils/classes';
 
 import { KanjiInfo } from './KanjiInfo';
 import { KanjiReferencesTable } from './KanjiReferencesTable';
+import { KanjiStrokeAnimation } from './KanjiStrokeAnimation';
 import { usePopupOptions } from './options-context';
 import { containerHasSelectedText } from './selection';
 import type { StartCopyCallback } from './show-popup';
@@ -37,7 +38,7 @@ export function KanjiEntry(props: Props) {
       )}
       ref={kanjiTable}
     >
-      <div class="tp-flex tp-gap-[20px]">
+      <div class="tp-flex tp-items-start tp-gap-[20px]">
         <KanjiCharacter
           c={props.entry.c}
           onClick={(trigger) => {
@@ -48,6 +49,7 @@ export function KanjiEntry(props: Props) {
             props.onStartCopy?.(props.index, trigger);
           }}
           selectState={props.selectState}
+          st={props.entry.st}
         />
         <div class="tp-mt-1.5 tp-grow">
           <KanjiInfo {...props.entry} showComponents={props.showComponents} />
@@ -69,9 +71,30 @@ type KanjiCharacterProps = {
   c: string;
   onClick?: (trigger: 'touch' | 'mouse') => void;
   selectState: 'unselected' | 'selected' | 'flash';
+  st?: string;
 };
 
 function KanjiCharacter(props: KanjiCharacterProps) {
+  const { interactive } = usePopupOptions();
+
+  // There's no way to trigger the animation when we're not in "mouse
+  // interactive" mode so just show the static character in that case.
+  return props.st && interactive ? (
+    <KanjiStrokeAnimation
+      onClick={props.onClick}
+      selectState={props.selectState}
+      st={props.st}
+    />
+  ) : (
+    <StaticKanjiCharacter
+      c={props.c}
+      onClick={props.onClick}
+      selectState={props.selectState}
+    />
+  );
+}
+
+function StaticKanjiCharacter(props: KanjiCharacterProps) {
   const lastPointerType = useRef<string>('touch');
   const { interactive } = usePopupOptions();
 

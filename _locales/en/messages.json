@@ -309,6 +309,14 @@
       }
     }
   },
+  "content_stroke_animation_play": {
+    "message": "Play stroke animation",
+    "description": "Tooltip to show when hovering over the play button for the stroke animation"
+  },
+  "content_stroke_animation_stop": {
+    "message": "Stop stroke animation",
+    "description": "Tooltip to show when hovering over the stop button for the stroke animation"
+  },
   "content_wk_link_title": {
     "message": "Show WaniKani page for $content$",
     "description": "Tooltip for kanji and vocab links to WaniKani pages.",
@@ -2005,6 +2013,10 @@
   "options_simplified_copy": {
     "message": "Copy simplified entry summary",
     "description": "Heading for the section for configuring the copy to clipboard feature"
+  },
+  "options_stroke_data_source": {
+    "message": "The kanji stroke data is provided by the KanjiVG project, which is copyright Ulrich Apel. The data is released under the Creative Commons Attribution-Share Alike 3.0 license.",
+    "description": "Attribution for pitch accent data as described here: https://github.com/mifunetoshiro/kanjium"
   },
   "options_tab_position_label": {
     "message": "Tab position",

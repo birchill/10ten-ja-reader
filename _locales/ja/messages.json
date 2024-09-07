@@ -309,6 +309,14 @@
       }
     }
   },
+  "content_stroke_animation_play": {
+    "message": "筆順アニメーションを再生",
+    "description": "Tooltip to show when hovering over the play button for the stroke animation"
+  },
+  "content_stroke_animation_stop": {
+    "message": "筆順アニメーションを停止",
+    "description": "Tooltip to show when hovering over the stop button for the stroke animation"
+  },
   "content_wk_link_title": {
     "message": "WaniKaniで「​$content$​」のページを表示",
     "description": "Tooltip for kanji and vocab links to WaniKani pages.",
@@ -2005,6 +2013,10 @@
   "options_simplified_copy": {
     "message": "簡略化されたエントリーをコピー",
     "description": "Heading for the section for configuring the copy to clipboard feature"
+  },
+  "options_stroke_data_source": {
+    "message": "このアプリで使用されている漢字の筆順データは、Ulrich Apel氏が著作権を有するKanjiVGプロジェクトから提供されています。このデータはCreative Commons Attribution-Share Alike 3.0ライセンスの下で提供されています。",
+    "description": "Attribution for pitch accent data as described here: https://github.com/mifunetoshiro/kanjium"
   },
   "options_tab_position_label": {
     "message": "タブ位置",

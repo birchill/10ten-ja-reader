@@ -309,6 +309,14 @@
       }
     }
   },
+  "content_stroke_animation_play": {
+    "message": "播放笔顺动画",
+    "description": "Tooltip to show when hovering over the play button for the stroke animation"
+  },
+  "content_stroke_animation_stop": {
+    "message": "停止笔顺动画",
+    "description": "Tooltip to show when hovering over the stop button for the stroke animation"
+  },
   "content_wk_link_title": {
     "message": "显示 '​$content$​' 的WaniKani页面",
     "description": "Tooltip for kanji and vocab links to WaniKani pages.",
@@ -2005,6 +2013,10 @@
   "options_simplified_copy": {
     "message": "复制简化条目摘要",
     "description": "Heading for the section for configuring the copy to clipboard feature"
+  },
+  "options_stroke_data_source": {
+    "message": "本应用程序中的汉字笔画数据由Ulrich Apel版权所有的KanjiVG项目提供。该数据根据Creative Commons Attribution-Share Alike 3.0许可证发布。",
+    "description": "Attribution for pitch accent data as described here: https://github.com/mifunetoshiro/kanjium"
   },
   "options_tab_position_label": {
     "message": "标签栏位置",

@@ -52,6 +52,7 @@ function DbSummaryBlurb() {
   const license = t('options_edrdg_license');
   const licenseKeyword = t('options_edrdg_license_keyword');
   const accentAttribution = t('options_accent_data_source');
+  const strokeAttribution = t('options_stroke_data_source');
 
   return (
     <>
@@ -88,6 +89,21 @@ function DbSummaryBlurb() {
         />
       </p>
       <p class="m-0">{accentAttribution}</p>
+      <p class="m-0">
+        <Linkify
+          text={strokeAttribution}
+          links={[
+            {
+              keyword: 'KanjiVG',
+              href: 'https://kanjivg.tagaini.net',
+            },
+            {
+              keyword: 'Creative Commons Attribution-Share Alike 3.0',
+              href: 'https://creativecommons.org/licenses/by-sa/3.0/',
+            },
+          ]}
+        />
+      </p>
     </>
   );
 }

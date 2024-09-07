@@ -89,6 +89,7 @@ export default {
         72: 'calc(18 * var(--base-font-size))',
         80: 'calc(20 * var(--base-font-size))',
         96: 'calc(24 * var(--base-font-size))',
+        'big-kanji': 'calc(60 / 14 * var(--base-font-size))',
       },
     },
   },
