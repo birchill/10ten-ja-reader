@@ -249,6 +249,8 @@ export function KanjiStrokeAnimation(props: Props) {
                   class="tp-cursor-pointer tp-peer"
                   pointer-events="all"
                   onPointerDown={onScrubberPointerDown}
+                  // This is needed to prevent the container from scrolling
+                  onTouchStart={(evt) => evt.preventDefault()}
                 />
                 <circle
                   cx={10}
