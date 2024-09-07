@@ -127,7 +127,7 @@ export function KanjiStrokeAnimation(props: Props) {
   const lastPointerType = useRef<string>('touch');
 
   return (
-    <div class="tp-flex tp-flex-col tp-items-center tp-gap-2">
+    <div class="tp-flex tp-flex-col tp-items-center tp-gap-3">
       <svg
         class={classes(
           'tp-group',
@@ -192,12 +192,22 @@ export function KanjiStrokeAnimation(props: Props) {
         </g>
       </svg>
       <div>
-        <svg class="tp-w-big-kanji" ref={timelineSvg} viewBox="0 0 100 25">
+        {/* The content is only 25 user units high but we make it 50 so that we
+         * can expand the hit regions vertically since iOS Safari doesn't do
+         * very good hit detection of small targets. */}
+        <svg
+          class="tp-w-big-kanji"
+          ref={timelineSvg}
+          viewBox="0 0 100 50"
+          style={{
+            webkitTapHighlightColor: 'transparent',
+          }}
+        >
           {/* Play/stop button */}
           <g
             onClick={() => setIsPlaying((prev) => !prev)}
             pointer-events="all"
-            class="tp-cursor-pointer tp-opacity-30 hover:tp-opacity-100 tp-fill-[--text-color] hover:tp-fill-[--primary-highlight] tp-transition-transform tp-duration-500"
+            class="tp-cursor-pointer tp-opacity-30 hh:hover:tp-opacity-100 tp-fill-[--text-color] hh:hover:tp-fill-[--primary-highlight] tp-transition-transform tp-duration-500"
             style={{
               transform: isPlaying ? 'none' : 'translate(40px)',
             }}
@@ -210,7 +220,12 @@ export function KanjiStrokeAnimation(props: Props) {
               )}
             </title>
             {/* Play/stop button hit region */}
-            <rect width={25} height={25} fill="none" />
+            <rect
+              x={isPlaying ? 0 : -40}
+              width={isPlaying ? 25 : 100}
+              height={50}
+              fill="none"
+            />
             <path
               d={
                 isPlaying
@@ -293,9 +308,9 @@ export function KanjiStrokeAnimation(props: Props) {
               >
                 {/* Hit region for scrubber */}
                 <rect
-                  x={-5}
-                  width={30}
-                  height={25}
+                  x={-10}
+                  width={40}
+                  height={50}
                   fill="none"
                   class="tp-cursor-pointer tp-peer"
                   pointer-events="all"
