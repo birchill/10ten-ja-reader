@@ -46,19 +46,26 @@ async function main() {
 
   const rootDir = url.fileURLToPath(new URL('..', import.meta.url));
 
-  const dirs = [
-    '_locales',
-    'css',
-    'data',
-    'docs',
-    'fonts',
-    'images',
-    'src',
-    'tests',
-  ];
+  const dirs = ['_locales', 'css', 'data', 'docs', 'fonts', 'images'];
   for (const dir of dirs) {
     archive.directory(path.join(rootDir, dir), dir);
   }
+
+  // Add only the critical files from the tests folder
+  //
+  // These are needed for the build task to work and for the start:firefox and
+  // start:chrome tasks to show something useful.
+  archive.file(path.join(rootDir, 'tests', 'content-loader.ts'), {
+    name: 'tests/content-loader.ts',
+  });
+  archive.file(path.join(rootDir, 'tests', 'browser-polyfill.ts'), {
+    name: 'tests/browser-polyfill.ts',
+  });
+  archive.glob('tests/playground.*', { cwd: rootDir });
+  archive.glob('tests/playground-*.*', { cwd: rootDir });
+
+  // Add `src` while excluding fixtures
+  archive.glob('src/**/*', { cwd: rootDir, ignore: '**/*.fixture.tsx' });
 
   const files = [
     'CHANGELOG.md',
@@ -69,7 +76,6 @@ async function main() {
     'README.md',
     'rspack.config.js',
     'tsconfig.json',
-    'vitest.config.ts',
     'pnpm-lock.yaml',
   ];
   for (const file of files) {
