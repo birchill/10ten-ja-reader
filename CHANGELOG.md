@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+## [1.21.1] - 2024-09-14
+
 - (Chrome,Edge) Fixed a bug in stroke animation
 - (Safari) Fixed data location
 
@@ -1193,7 +1195,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.21.0...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.21.1...HEAD
+[1.21.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.21.0...v1.21.1
 [1.21.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.20.0...v1.21.0
 [1.20.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.19.1...v1.20.0
 [1.19.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.19.0...v1.19.1
