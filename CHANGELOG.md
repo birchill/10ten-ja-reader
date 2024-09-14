@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- (Chrome,Edge) Fixed a bug in stroke animation
+- (Safari) Fixed data location
+
 ## [1.21.0] - 2024-09-12
 
 - **Added stroke animations to the kanji tab**
