@@ -142,8 +142,8 @@ importers:
         specifier: 10.7.3
         version: 10.7.3
       playwright:
-        specifier: 1.47.0
-        version: 1.47.0
+        specifier: 1.47.1
+        version: 1.47.1
       playwright-test:
         specifier: 14.1.6
         version: 14.1.6
@@ -4510,13 +4510,18 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  playwright-core@1.47.1:
+    resolution: {integrity: sha512-i1iyJdLftqtt51mEk6AhYFaAJCDx0xQ/O5NU8EKaWFgMjItPVma542Nh/Aq8aLCjIJSzjaiEQGW/nyqLkGF1OQ==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   playwright-test@14.1.6:
     resolution: {integrity: sha512-kp92+VIaPYYzHtcflt3EJHVsJRxgkmMKrKICGb6EQjaF4I7mOe1zPPMbucwmDPKZaOBC0txejaMDIBFlmFgyFw==}
     engines: {node: '>=16.0.0'}
     hasBin: true
 
-  playwright@1.47.0:
-    resolution: {integrity: sha512-jOWiRq2pdNAX/mwLiwFYnPHpEZ4rM+fRSQpRHwEwZlP2PUANvL3+aJOF/bvISMhFD30rqMxUB4RJx9aQbfh4Ww==}
+  playwright@1.47.1:
+    resolution: {integrity: sha512-SUEKi6947IqYbKxRiqnbUobVZY4bF1uu+ZnZNJX9DfU1tlf2UhWfvVjLf01pQx9URsOr18bFVUKXmanYWhbfkw==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -10767,6 +10772,8 @@ snapshots:
 
   playwright-core@1.47.0: {}
 
+  playwright-core@1.47.1: {}
+
   playwright-test@14.1.6:
     dependencies:
       acorn-loose: 8.4.0
@@ -10806,9 +10813,9 @@ snapshots:
     transitivePeerDependencies:
       - monocart-coverage-reports
 
-  playwright@1.47.0:
+  playwright@1.47.1:
     dependencies:
-      playwright-core: 1.47.0
+      playwright-core: 1.47.1
     optionalDependencies:
       fsevents: 2.3.2
 

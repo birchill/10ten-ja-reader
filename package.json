@@ -109,7 +109,7 @@
     "jsdom": "^25.0.0",
     "knip": "5.30.2",
     "mocha": "10.7.3",
-    "playwright": "1.47.0",
+    "playwright": "1.47.1",
     "playwright-test": "14.1.6",
     "postcss": "8.4.45",
     "postcss-import": "16.1.0",
