@@ -76,8 +76,8 @@ importers:
         specifier: 6.0.2
         version: 6.0.2
       '@types/chai':
-        specifier: 4.3.19
-        version: 4.3.19
+        specifier: 5.0.0
+        version: 5.0.0
       '@types/eslint__js':
         specifier: 8.42.3
         version: 8.42.3
@@ -1253,8 +1253,8 @@ packages:
   '@types/bonjour@3.5.13':
     resolution: {integrity: sha512-z9fJ5Im06zvUL548KvYNecEVlA7cVDkGUi6kZusb04mpyEFKCIZJvloCcmpmLaIahDpOQGHaHmG6imtPMmPXGQ==}
 
-  '@types/chai@4.3.19':
-    resolution: {integrity: sha512-2hHHvQBVE2FiSK4eN0Br6snX9MtolHaTo/batnLjlGRhoQzlCL61iVpxoqO7SfFyOw+P/pwv+0zNHzKoGWz9Cw==}
+  '@types/chai@5.0.0':
+    resolution: {integrity: sha512-+DwhEHAaFPPdJ2ral3kNHFQXnTfscEEFsUxzD+d7nlcLrFK23JtNjH71RGasTcHb88b4vVi4mTyfpf8u2L8bdA==}
 
   '@types/connect-history-api-fallback@1.5.4':
     resolution: {integrity: sha512-n6Cr2xS1h4uAulPRdlw6Jl6s1oG8KrVilPN2yUITEs+K48EzMJJ3W1xy8K5eWuFvjp3R74AOIGSmp2UfBJ8HFw==}
@@ -6994,7 +6994,7 @@ snapshots:
     dependencies:
       '@types/node': 22.5.4
 
-  '@types/chai@4.3.19': {}
+  '@types/chai@5.0.0': {}
 
   '@types/connect-history-api-fallback@1.5.4':
     dependencies:
