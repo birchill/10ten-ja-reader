@@ -99,7 +99,7 @@
     "eslint": "9.11.1",
     "eslint-plugin-react": "7.36.1",
     "eslint-plugin-tailwindcss": "3.17.4",
-    "eslint-plugin-vitest": "0.5.4",
+    "@vitest/eslint-plugin": "1.0.1",
     "fake-indexeddb": "6.0.0",
     "fast-glob": "3.3.2",
     "file-loader": "6.2.0",
