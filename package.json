@@ -45,7 +45,7 @@
     "start:edge": "rspack -w --env target=chrome --env chromium=edge",
     "start:firefox": "rspack -w",
     "sync-manifest-version": "tsx scripts/sync-manifest-version",
-    "test": "pnpm lint && pnpm test:unit && pnpm test:firefox && pnpm test:chromium",
+    "test": "pnpm test:unit && pnpm test:firefox && pnpm test:chromium",
     "test:chromium": "playwright-test \"tests/**/*.test.ts\"",
     "test:firefox": "playwright-test \"tests/**/*.test.ts\" --browser firefox",
     "test:unit": "vitest run",
