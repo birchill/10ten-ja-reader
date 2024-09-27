@@ -107,7 +107,7 @@
     "globals": "15.9.0",
     "if-env": "1.0.4",
     "jsdom": "^25.0.0",
-    "knip": "5.30.5",
+    "knip": "5.30.6",
     "mocha": "10.7.3",
     "playwright": "1.47.2",
     "playwright-test": "14.1.6",
