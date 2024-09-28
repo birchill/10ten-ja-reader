@@ -98,7 +98,7 @@
     "chai": "5.1.1",
     "css-loader": "7.1.2",
     "eslint": "9.11.1",
-    "eslint-plugin-react": "7.36.1",
+    "eslint-plugin-react": "7.37.0",
     "eslint-plugin-tailwindcss": "3.17.4",
     "fake-indexeddb": "6.0.0",
     "fast-glob": "3.3.2",
