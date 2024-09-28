@@ -239,6 +239,8 @@ const deinflectRuleData: Array<
   ['ごう', 'ぐ', Type.Initial, Type.GodanVerb, [Reason.Volitional]],
   ['しろ', 'す', Type.Initial, Type.SuruVerb, [Reason.Imperative]],
   ['しろ', 'する', Type.Initial, Type.SuruVerb, [Reason.Imperative]],
+  ['すぎ', 'い', Type.Initial, Type.IAdj, [Reason.Sugiru]],
+  ['すぎ', '', Type.Initial, Type.MasuStem, [Reason.Sugiru]],
   ['する', '', Type.SuruVerb, Type.NounVS, [Reason.SuruNoun]],
   ['せず', 'する', Type.Initial, Type.SuruVerb, [Reason.Zu]],
   ['せぬ', 'する', Type.Initial, Type.SuruVerb, [Reason.Negative]],
