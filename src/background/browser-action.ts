@@ -24,7 +24,21 @@ const action = __MV3__ ? browser.action : browser.browserAction;
 // balance between being up-to-date and being readable.
 const throttledSetTitle = throttle(
   (...args: Parameters<Action.Static['setTitle']>) => {
-    void action.setTitle(...args);
+    try {
+      action.setTitle(...args).catch((e) => {
+        // Safari seems to frequently throw an exception when calling this
+        // method:
+        //
+        // "Invalid call to action.setTitle(). Tab not found."
+        //
+        // I'm not sure why.
+        console.warn(e);
+      });
+    } catch (e) {
+      // I think Safari might actually throw an exception synchronously here
+      // as opposed to rejecting the Promise.
+      console.warn(e);
+    }
   },
   2500
 );
