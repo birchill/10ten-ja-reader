@@ -2,6 +2,7 @@ export class TouchClickTracker {
   private wasTouch = false;
   private ignoring = false;
   private disabled = false;
+  private clickHandlerRegistered = false;
   onTouchClick?: (event: MouseEvent) => void;
 
   constructor() {
@@ -49,15 +50,21 @@ export class TouchClickTracker {
     // click handler on the body element, iOS won't generate click events
     // from touch taps.
     document.body?.addEventListener('click', this.onClick);
+    this.clickHandlerRegistered = !!document.body;
   }
 
   private removeEventListeners() {
     window.removeEventListener('touchstart', this.onTouchStart);
     window.removeEventListener('touchend', this.onTouchEnd);
     document.body?.removeEventListener('click', this.onClick);
+    this.clickHandlerRegistered = false;
   }
 
   private onTouchStart() {
+    if (!this.clickHandlerRegistered) {
+      document.body?.addEventListener('click', this.onClick);
+      this.clickHandlerRegistered = !!document.body;
+    }
     this.wasTouch = false;
   }
 
