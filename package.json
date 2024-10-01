@@ -104,7 +104,7 @@
     "fast-glob": "3.3.2",
     "file-loader": "6.2.0",
     "fork-ts-checker-webpack-plugin": "9.0.2",
-    "globals": "15.9.0",
+    "globals": "15.10.0",
     "if-env": "1.0.4",
     "jsdom": "^25.0.0",
     "knip": "5.30.6",
