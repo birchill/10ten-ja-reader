@@ -497,6 +497,14 @@
     "message": "津軽弁",
     "description": "Label used to describe senses whose dialect is 'tsug' (Tsugaru dialect)"
   },
+  "entry_priority_label_high": {
+    "message": "非常に頻出",
+    "description": "Tooltip label used when user hovers over the filled star icon (★) to indicate a very frequent word"
+  },
+  "entry_priority_label_regular": {
+    "message": "やや頻出",
+    "description": "Tooltip label used when user hovers over the unfilled star icon (☆) to indicate a somewhat frequent word"
+  },
   "error_command_could_not_parse": {
     "message": "「​$command$​」の構文解析が失敗しました",
     "placeholders": {
@@ -1984,7 +1992,7 @@
     "message": "テキスト"
   },
   "options_show_priority": {
-    "message": "頻度の高い（★）又はある程度の高い（☆）のマーカーを表示",
+    "message": "非常に頻出する単語（★）およびやや頻出する単語（☆）のマーカーを表示",
     "description": "Label for enabling the ★ and ☆ markers next to dictionary headwords to indicate they occur frequently  or somewhat frequently respectively"
   },
   "options_show_puck_label": {

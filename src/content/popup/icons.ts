@@ -1,3 +1,5 @@
+import browser from 'webextension-polyfill';
+
 import { svg } from '../../utils/builder';
 
 export function renderBook(): SVGElement {
@@ -179,6 +181,11 @@ export function renderSpinner(): SVGElement {
 }
 
 export function renderStar(style: 'full' | 'hollow'): SVGElement {
+  const message =
+    style === 'full'
+      ? 'entry_priority_label_high'
+      : 'entry_priority_label_regular';
+
   return svg(
     'svg',
     {
@@ -186,6 +193,7 @@ export function renderStar(style: 'full' | 'hollow'): SVGElement {
       viewBox: '0 0 98.6 93.2',
       style: 'opacity: 0.5',
     },
+    svg('title', {}, browser.i18n.getMessage(message)),
     svg('path', {
       d:
         style === 'full'
