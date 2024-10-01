@@ -475,7 +475,7 @@ function getExtConfig(options) {
   // Plugins: Bugsnag
   //
 
-  if (options.uploadToBugsnag && process.env.BUGNSAG_API_KEY) {
+  if (options.uploadToBugsnag && process.env.BUGSNAG_API_KEY) {
     plugins.push(
       new BugsnagBuildReporterPlugin(
         {
