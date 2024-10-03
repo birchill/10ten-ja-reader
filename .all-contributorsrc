@@ -143,6 +143,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "maiself",
+      "name": "Mai Lavelle",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6334580?v=4",
+      "profile": "https://github.com/maiself",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
