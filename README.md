@@ -180,6 +180,9 @@ Thank you to everyone who has contributed including the following people ([emoji
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Enellis"><img src="https://avatars.githubusercontent.com/u/6263698?v=4?s=100" width="100px;" alt="Eneas"/><br /><sub><b>Eneas</b></sub></a><br /><a href="https://github.com/birchill/10ten-ja-reader/commits?author=Enellis" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ph0ngp"><img src="https://avatars.githubusercontent.com/u/7910929?v=4?s=100" width="100px;" alt="Phong Phan"/><br /><sub><b>Phong Phan</b></sub></a><br /><a href="https://github.com/birchill/10ten-ja-reader/commits?author=ph0ngp" title="Code">💻</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/maiself"><img src="https://avatars.githubusercontent.com/u/6334580?v=4?s=100" width="100px;" alt="Mai Lavelle"/><br /><sub><b>Mai Lavelle</b></sub></a><br /><a href="https://github.com/birchill/10ten-ja-reader/commits?author=maiself" title="Code">💻</a></td>
+    </tr>
   </tbody>
 </table>
 
