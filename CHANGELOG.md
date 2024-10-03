@@ -10,6 +10,9 @@ app.
 
 - Added support for irregular verb forms of 揺蕩う
   ([#1962](https://github.com/birchill/10ten-ja-reader/issues/1962)).
+- Made tap detection more reliable
+  thanks to [@maiself](https://github.com/maiself)
+  ([#2014](https://github.com/birchill/10ten-ja-reader/pull/2014)).
 
 ## [1.21.1] - 2024-09-14
 
