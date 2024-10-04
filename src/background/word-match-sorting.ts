@@ -1,16 +1,27 @@
 // This is duplicated from jpdict-idb's sorting of entries.
 //
-// We only use it for sorting in the case where we've fallen back to the
-// flat file database so it doesn't need to be perfect or even keep in sync
-// with changes to jpdict-idb. It's really just a stop-gap measure.
+// We use it for sorting:
+//
+// 1) Between various deinflected results (e.g. so that 進む comes before 進ぶ
+//    when looking up 進んでいます), and
+//
+// 2) In the case where we've fallen back to the flat file database.
+//
 import { WordResult } from './search-result';
 
 // As with Array.prototype.sort, sorts `results` in-place, but returns the
 // result to support chaining.
 export function sortWordResults(results: Array<WordResult>): Array<WordResult> {
-  const sortMeta: Map<number, { priority: number; type: number }> = new Map();
+  const sortMeta: Map<
+    number,
+    { length?: number; priority: number; type: number }
+  > = new Map();
 
   for (const result of results) {
+    const length = (
+      result.k.find((k) => k.matchRange) || result.r.find((r) => r.matchRange)
+    )?.ent.length;
+
     // Determine the headword match type
     //
     // 1 = match on a kanji, or kana which is not just the reading for a kanji
@@ -21,12 +32,20 @@ export function sortWordResults(results: Array<WordResult>): Array<WordResult> {
     // Priority
     const priority = getPriority(result);
 
-    sortMeta.set(result.id, { priority, type: rt });
+    sortMeta.set(result.id, { length, priority, type: rt });
   }
 
   results.sort((a, b) => {
     const metaA = sortMeta.get(a.id)!;
     const metaB = sortMeta.get(b.id)!;
+
+    if (
+      metaA.length !== undefined &&
+      metaB.length !== undefined &&
+      metaA.length !== metaB.length
+    ) {
+      return metaB.length - metaA.length;
+    }
 
     if (metaA.type !== metaB.type) {
       return metaA.type - metaB.type;

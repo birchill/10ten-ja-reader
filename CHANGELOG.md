@@ -14,6 +14,7 @@ app.
   thanks to [@maiself](https://github.com/maiself)
   ([#2014](https://github.com/birchill/10ten-ja-reader/pull/2014)).
 - Added handling for 戶 and 內 kyūjitai.
+- Fixed sorting of deinflected results in some cases (e.g. 見とれる).
 
 ## [1.21.1] - 2024-09-14
 
