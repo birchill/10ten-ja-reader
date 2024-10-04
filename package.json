@@ -66,7 +66,7 @@
     "@birchill/bugsnag-zero": "0.6.9",
     "@birchill/discriminator": "0.3.0",
     "@birchill/jpdict-idb": "2.6.0",
-    "@birchill/normal-jp": "1.5.1",
+    "@birchill/normal-jp": "1.5.2",
     "classname-variants": "1.5.0",
     "husky": "9.1.6",
     "lint-staged": "15.2.10",
