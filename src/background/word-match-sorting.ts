@@ -88,18 +88,36 @@ function getKanaHeadwordType(
     return 1;
   }
 
-  // (b) all senses for the entry have a `uk` (usually kana) `misc` field
-  //     and the reading is not marked as `ok` (old kana usage).
+  // (b) most of the English senses for the entry have a `uk` (usually kana)
+  //     `misc` field and the reading is not marked as `ok` (old kana usage).
   //
   // We wanted to make the condition here be just one sense being marked as `uk`
   // but then you get words like `梓` being prioritized when searching for `し`
   // because of one sense out of many being usually kana.
-  if (result.s.every((s) => s.misc?.includes('uk'))) {
+  //
+  // Furthermore, we don't want to require _all_ senses to be marked as `uk` or
+  // else that will mean that 成る fails to be prioritized when searching for
+  // `なる` because one sense out of 11 is not marked as `uk`.
+  if (mostMatchedEnSensesAreUk(result.s)) {
     return 1;
   }
 
   // (c) the headword is marked as `nokanji`
   return r.app === 0 ? 1 : 2;
+}
+
+function mostMatchedEnSensesAreUk(senses: WordResult['s']): boolean {
+  const matchedEnSenses = senses.filter(
+    (s) => s.match && (s.lang === undefined || s.lang === 'en')
+  );
+  if (matchedEnSenses.length === 0) {
+    return false;
+  }
+
+  const ukEnSenseCount = matchedEnSenses.filter((s) =>
+    s.misc?.includes('uk')
+  ).length;
+  return ukEnSenseCount >= matchedEnSenses.length / 2;
 }
 
 function getPriority(result: WordResult): number {
