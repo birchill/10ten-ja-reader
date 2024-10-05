@@ -508,6 +508,13 @@ export function deinflect(word: string): CandidateWord[] {
           continue;
         }
 
+        // Continue if the rule introduces a duplicate in the reason chain,
+        // as it wouldn't make sense grammatically.
+        const ruleReasons = new Set(rule.reasons);
+        if (thisCandidate.reasonChains.flat().some((r) => ruleReasons.has(r))) {
+          continue;
+        }
+
         // If we already have a candidate for this word with the same
         // 'to' type(s), expand the possible reasons by starting a new
         // reason chain.

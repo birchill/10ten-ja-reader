@@ -23,6 +23,25 @@ describe('deinflect', () => {
     });
   });
 
+  it('does NOT allow duplicates in the reason chain', () => {
+    const cases = [
+      '見させさせる', // causative < causative
+      '見させてさせる', // causative < continuous < causative
+      '見ていている', // continuous < continuous
+      '見てさせている', // continuous < causative < continuous
+      '見とけとく', // -te oku < potential < -te oku
+    ];
+
+    for (const inflected of cases) {
+      const result = deinflect(inflected);
+      const match = result.find(
+        (candidate) =>
+          candidate.word === '見る' && candidate.type & WordType.IchidanVerb
+      );
+      expect(match).toBeUndefined();
+    }
+  });
+
   it('deinflects kana variations', () => {
     const cases = [
       ['走ります', '走る', [[Reason.Polite]], 2],
