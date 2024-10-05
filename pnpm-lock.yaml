@@ -15,8 +15,8 @@ importers:
         specifier: 0.3.0
         version: 0.3.0(superstruct@2.0.2)
       '@birchill/jpdict-idb':
-        specifier: 2.6.0
-        version: 2.6.0
+        specifier: 2.6.1
+        version: 2.6.1
       '@birchill/normal-jp':
         specifier: 1.5.2
         version: 1.5.2
@@ -332,8 +332,8 @@ packages:
     peerDependencies:
       superstruct: '>0.16.0 <2.0.0'
 
-  '@birchill/jpdict-idb@2.6.0':
-    resolution: {integrity: sha512-/hz+fyPynuZcTNaBFUGO1x3ikUuY4HcIlvWe7v03YGIAo28EwJ9B0Os+P+BePHLOyZ2y3EJNeIKrNFvd55/vTw==}
+  '@birchill/jpdict-idb@2.6.1':
+    resolution: {integrity: sha512-WGXJSvFnfQ8/Y+fWo7rxgAjrPwRZHP0kvdQxAMz6GwFC6eTxtG++oTg3BOkxHBywhvlRjqELYNFZMzZ7vzN4sQ==}
     engines: {node: '>=16.0.0'}
 
   '@birchill/json-equalish@1.1.2':
@@ -6290,7 +6290,7 @@ snapshots:
     dependencies:
       superstruct: 2.0.2
 
-  '@birchill/jpdict-idb@2.6.0':
+  '@birchill/jpdict-idb@2.6.1':
     dependencies:
       '@birchill/json-equalish': 1.1.2
       '@birchill/normal-jp': 1.5.2
