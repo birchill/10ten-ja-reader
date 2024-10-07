@@ -497,6 +497,14 @@
     "message": "津轻方言",
     "description": "Label used to describe senses whose dialect is 'tsug' (Tsugaru dialect)"
   },
+  "entry_priority_label_high": {
+    "message": "高频词",
+    "description": "Tooltip label used when user hovers over the filled star icon (★) to indicate a very frequent word"
+  },
+  "entry_priority_label_regular": {
+    "message": "中高频词",
+    "description": "Tooltip label used when user hovers over the unfilled star icon (☆) to indicate a somewhat frequent word"
+  },
   "error_command_could_not_parse": {
     "message": "无法解析命令 $command$",
     "placeholders": {
@@ -1984,7 +1992,7 @@
     "message": "文本"
   },
   "options_show_priority": {
-    "message": "显示高频率（★）和较高频率（☆）的标志",
+    "message": "显示高频词（★）和中高频词（☆）的标志",
     "description": "Label for enabling the ★ and ☆ markers next to dictionary headwords to indicate they occur frequently  or somewhat frequently respectively"
   },
   "options_show_puck_label": {

@@ -497,6 +497,14 @@
     "message": "Tsugaru dialect",
     "description": "Label used to describe senses whose dialect is 'tsug' (Tsugaru dialect)"
   },
+  "entry_priority_label_high": {
+    "message": "Very common word",
+    "description": "Tooltip label used when user hovers over the filled star icon (★) to indicate a very frequent word"
+  },
+  "entry_priority_label_regular": {
+    "message": "Somewhat common word",
+    "description": "Tooltip label used when user hovers over the unfilled star icon (☆) to indicate a somewhat frequent word"
+  },
   "error_command_could_not_parse": {
     "message": "Could not parse command $command$",
     "placeholders": {
@@ -1984,7 +1992,7 @@
     "message": "Text"
   },
   "options_show_priority": {
-    "message": "Show indicators next to common (★) and somewhat common (☆) words",
+    "message": "Show indicators next to very common (★) and somewhat common (☆) words",
     "description": "Label for enabling the ★ and ☆ markers next to dictionary headwords to indicate they occur frequently  or somewhat frequently respectively"
   },
   "options_show_puck_label": {
