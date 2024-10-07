@@ -517,6 +517,18 @@ export function deinflect(word: string): CandidateWord[] {
         // Continue if the rule introduces a duplicate in the reason chain,
         // as it wouldn't make sense grammatically.
         const ruleReasons = new Set(rule.reasons);
+
+        // Also, avoid matches such as 'potential < potential or passive' or
+        // 'potential < causative', which are grammatically incorrect.
+        // This is an issue when handling irregular forms like 罰せられる,
+        // where the structure could be misinterpreted as
+        // 'irregular < potential < potential or passive' instead of the correct
+        // 'irregular < potential or passive'.
+        if (ruleReasons.has(Reason.Potential)) {
+          ruleReasons.add(Reason.PotentialOrPassive);
+          ruleReasons.add(Reason.Causative);
+        }
+
         if (thisCandidate.reasonChains.flat().some((r) => ruleReasons.has(r))) {
           continue;
         }
