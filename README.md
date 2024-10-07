@@ -53,8 +53,7 @@
   <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/jou-conversion-cropped.png" alt="Screenshot showing translation of 四畳半 into 7.29 square meters" title="Area translation" width="640">
 
 - Recognition of a wide range of grammatical forms
-  (e.g. vs-c verbs like 兼した,
-  irregular verbs like いらっしゃいます,
+  (e.g. irregular verbs like いらっしゃいます,
   continuous forms like 食べてた,
   ん as a negative form like 分からん、知らん,
   words with ー like じーちゃん、頑張ろー、そーゆー,
