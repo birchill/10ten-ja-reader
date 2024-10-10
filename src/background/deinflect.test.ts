@@ -128,6 +128,64 @@ describe('deinflect', () => {
     });
   });
 
+  it('deinflects all forms of する', () => {
+    const cases = [
+      ['した', [Reason.Past]],
+      ['しよう', [Reason.Volitional]],
+      ['しない', [Reason.Negative]],
+      ['せぬ', [Reason.Negative]],
+      ['せん', [Reason.Negative]],
+      ['せず', [Reason.Zu]],
+      ['される', [Reason.Passive]],
+      ['させる', [Reason.Causative]],
+      ['しろ', [Reason.Imperative]],
+      ['せよ', [Reason.Imperative]],
+      ['すれば', [Reason.Ba]],
+      ['できる', [Reason.Potential]],
+    ];
+
+    for (const [inflected, reasons] of cases) {
+      const result = deinflect(inflected as string);
+      const match = result.find(
+        (candidate) =>
+          candidate.word == 'する' && candidate.type & WordType.SuruVerb
+      );
+      expect(match).toBeDefined();
+      expect(match!.reasonChains).toEqual([reasons]);
+    }
+  });
+
+  it('deinflects additional forms of special class suru-verbs', () => {
+    const cases = [
+      ['発する', '発せさせる', [Reason.Irregular, Reason.Causative]],
+      ['発する', '発せられる', [Reason.Irregular, Reason.PotentialOrPassive]],
+      ['発する', '発しさせる', [Reason.Irregular, Reason.Causative]],
+      ['発する', '発しられる', [Reason.Irregular, Reason.PotentialOrPassive]],
+      // 五段化
+      ['発する', '発さない', [Reason.Irregular, Reason.Negative]],
+      ['発する', '発さず', [Reason.Irregular, Reason.Zu]],
+      ['発する', '発そう', [Reason.Irregular, Reason.Volitional]],
+      ['愛する', '愛せる', [Reason.Irregular, Reason.Potential]],
+      ['愛する', '愛せば', [Reason.Irregular, Reason.Ba]],
+      ['愛する', '愛せ', [Reason.Irregular, Reason.Imperative]],
+      // ずる / vz class verbs
+      ['信ずる', '信ぜぬ', [Reason.Irregular, Reason.Negative]],
+      ['信ずる', '信ぜず', [Reason.Irregular, Reason.Zu]],
+      ['信ずる', '信ぜさせる', [Reason.Irregular, Reason.Causative]],
+      ['信ずる', '信ぜられる', [Reason.Irregular, Reason.PotentialOrPassive]],
+      ['信ずる', '信ずれば', [Reason.Irregular, Reason.Ba]],
+      ['信ずる', '信ぜよ', [Reason.Irregular, Reason.Imperative]],
+    ];
+
+    for (const [plain, inflected, reasons] of cases) {
+      const result = deinflect(inflected as string);
+      const match = result.find((candidate) => candidate.word == plain);
+      expect(match).toBeDefined();
+      expect(match!.type).toEqual(WordType.SpecialSuruVerb);
+      expect(match!.reasonChains).toEqual([reasons]);
+    }
+  });
+
   it('deinflects irregular forms of 行く', () => {
     const cases = [
       ['行った', '行く', Reason.Past, 2],

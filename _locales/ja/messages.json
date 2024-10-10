@@ -371,6 +371,9 @@
   "deinflect_imperative_negative": {
     "message": "否定命令形"
   },
+  "deinflect_irregular": {
+    "message": "不規則"
+  },
   "deinflect_ki": {
     "message": "連体形"
   },
