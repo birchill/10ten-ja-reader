@@ -371,6 +371,9 @@
   "deinflect_imperative_negative": {
     "message": "imperative negative"
   },
+  "deinflect_irregular": {
+    "message": "irregular"
+  },
   "deinflect_ki": {
     "message": "-ki"
   },

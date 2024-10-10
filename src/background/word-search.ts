@@ -286,7 +286,14 @@ function entryMatchesType(entry: DictionaryWordResult, type: number): boolean {
 
   if (
     type & WordType.SuruVerb &&
-    hasMatchingSense((pos) => pos.startsWith('vs-'))
+    hasMatchingSense((pos) => pos === 'vs-i' || pos === 'vs-s')
+  ) {
+    return true;
+  }
+
+  if (
+    type & WordType.SpecialSuruVerb &&
+    hasMatchingSense((pos) => pos === 'vs-s' || pos === 'vz')
   ) {
     return true;
   }
