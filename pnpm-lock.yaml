@@ -127,8 +127,8 @@ importers:
         specifier: 9.0.2
         version: 9.0.2(typescript@5.6.3)(webpack@5.95.0)
       globals:
-        specifier: 15.10.0
-        version: 15.10.0
+        specifier: 15.11.0
+        version: 15.11.0
       if-env:
         specifier: 1.0.4
         version: 1.0.4
@@ -3050,8 +3050,8 @@ packages:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
     engines: {node: '>=18'}
 
-  globals@15.10.0:
-    resolution: {integrity: sha512-tqFIbz83w4Y5TCbtgjZjApohbuh7K9BxGYFm7ifwDR240tvdb7P9x+/9VvUKlmkPoiknoJtanI8UOrqxS3a7lQ==}
+  globals@15.11.0:
+    resolution: {integrity: sha512-yeyNSjdbyVaWurlwCpcA6XNBrHTMIeDdj0/hnvX/OLJ9ekOXYbLsLinH/MucQyGvNnXhidTdNhTtJaffL2sMfw==}
     engines: {node: '>=18'}
 
   globalthis@1.0.4:
@@ -9296,7 +9296,7 @@ snapshots:
 
   globals@14.0.0: {}
 
-  globals@15.10.0: {}
+  globals@15.11.0: {}
 
   globalthis@1.0.4:
     dependencies:
