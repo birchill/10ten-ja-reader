@@ -93,6 +93,7 @@ jobs:
 
       - name: Download Edge binary
         uses: robinraju/release-downloader@v1.11
+        if: ${{ !steps.parse_edge_release.outputs.skip }}
         with:
           releaseId: ${{ github.event.release.id }}
           fileName: ${{ steps.parse_edge_release.outputs.addon_asset_name }}
@@ -108,3 +109,51 @@ jobs:
           client_id: ${{ secrets.EDGE_CLIENT_ID }}
           client_secret: ${{ secrets.EDGE_CLIENT_SECRET }}
           product_id: ${{ secrets.EDGE_PRODUCT_ID }}
+
+  publish-chrome:
+    runs-on: ubuntu-latest
+    name: Publish to Chrome Web Store
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Setup node
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Get Chrome release details
+        id: parse_chrome_release
+        uses: ./.github/actions/parse-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ github.event.release.id }}
+          target: Chrome
+
+      - name: Download Chrome binary
+        uses: robinraju/release-downloader@v1.11
+        if: ${{ !steps.parse_chrome_release.outputs.skip }}
+        with:
+          releaseId: ${{ github.event.release.id }}
+          fileName: ${{ steps.parse_chrome_release.outputs.addon_asset_name }}
+
+      - name: Publish
+        uses: mnao305/chrome-extension-upload@v5.0.0
+        if: ${{ !steps.parse_chrome_release.outputs.skip }}
+        with:
+          file-path: ${{ steps.parse_chrome_release.outputs.addon_asset_name }}
+          extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
+          client-id: ${{ secrets.CHROME_CLIENT_ID }}
+          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}

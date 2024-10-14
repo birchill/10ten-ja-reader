@@ -10,7 +10,11 @@ async function main() {
 
   const rawTarget = core.getInput('target');
   const normalizedTarget = normalizeTarget(rawTarget);
-  if (normalizedTarget !== 'Firefox' && normalizedTarget !== 'Edge') {
+  if (
+    normalizedTarget !== 'Firefox' &&
+    normalizedTarget !== 'Edge' &&
+    normalizedTarget !== 'Chrome'
+  ) {
     throw new Error(`Unsupported target: ${rawTarget}`);
   }
   core.info(`Target: ${normalizedTarget}`);
