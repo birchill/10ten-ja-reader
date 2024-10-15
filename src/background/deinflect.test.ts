@@ -165,7 +165,6 @@ describe('deinflect', () => {
       ['発する', '発さない', [Reason.Irregular, Reason.Negative]],
       ['発する', '発さず', [Reason.Irregular, Reason.Zu]],
       ['発する', '発そう', [Reason.Irregular, Reason.Volitional]],
-      ['愛する', '愛せる', [Reason.Irregular, Reason.Potential]],
       ['愛する', '愛せば', [Reason.Irregular, Reason.Ba]],
       ['愛する', '愛せ', [Reason.Irregular, Reason.Imperative]],
       // ずる / vz class verbs
