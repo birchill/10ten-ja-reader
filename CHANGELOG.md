@@ -16,6 +16,10 @@ app.
 - Added handling for 戶 and 內 kyūjitai.
 - Added deinflection for additional forms of -sugiru
   ([#2033](https://github.com/birchill/10ten-ja-reader/pull/2033)).
+- Added deinflection for irregular forms of `vs-s` and `vz` class suru verbs
+  ([#2038](https://github.com/birchill/10ten-ja-reader/pull/2038)).
+- Removed deinflection of `vs-c` class verbs, as they are not used in modern
+  Japanese.
 - Fixed unreasonable matches caused by duplicates in the deinflection reason chain
   ([#1966](https://github.com/birchill/10ten-ja-reader/issues/1966)).
 - Fixed sorting of deinflected results in some cases (e.g. 見とれる).
