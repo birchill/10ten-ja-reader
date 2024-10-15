@@ -268,7 +268,6 @@ const deinflectRuleData: Array<
   ['せん', 'する', Type.Initial, Type.SuruVerb, [Reason.Negative]],
   ['せば', 'す', Type.Initial, Type.GodanVerb, [Reason.Ba]],
   ['せば', 'する', Type.Initial, Type.SpecialSuruVerb, [Reason.Irregular, Reason.Ba]],
-  ['せる', 'する', Type.IchidanVerb, Type.SpecialSuruVerb, [Reason.Irregular, Reason.Potential]],
   ['せよ', 'する', Type.Initial, Type.SuruVerb, [Reason.Imperative]],
   ['せる', 'す', Type.IchidanVerb, Type.GodanVerb, [Reason.Potential]],
   ['せる', '', Type.IchidanVerb, Type.IrrealisStem, [Reason.Causative]],
