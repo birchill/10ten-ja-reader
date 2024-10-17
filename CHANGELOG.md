@@ -10,6 +10,8 @@ app.
 
 - (Chrome) Fixed language code for Chinese localization
   ([#2051](https://github.com/birchill/10ten-ja-reader/issues/2051)).
+- Added deinflection for -得る
+  ([#2060](https://github.com/birchill/10ten-ja-reader/pull/2060)).
 
 ## [1.22.0] - 2024-10-17
 

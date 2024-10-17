@@ -359,6 +359,9 @@
   "deinflect_continuous": {
     "message": "现在进行形"
   },
+  "deinflect_eru_uru": {
+    "message": "-得る"
+  },
   "deinflect_humble": {
     "message": "谦让语"
   },

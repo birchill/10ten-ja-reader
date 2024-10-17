@@ -549,4 +549,21 @@ describe('deinflect', () => {
       expect(match!.reasonChains[0][0]).toBe(Reason.NegativeTe);
     }
   });
+
+  it('deinflects -得る', () => {
+    const cases = [
+      ['し得る', 'する'],
+      ['しえる', 'する'],
+      ['しうる', 'する'],
+      ['来得る', '来る'],
+      ['あり得る', 'ある'],
+      ['考え得る', '考える'],
+    ];
+    for (const [inflected, plain] of cases) {
+      const result = deinflect(inflected);
+      const match = result.find((candidate) => candidate.word == plain);
+      expect(match).toBeDefined();
+      expect(match!.reasonChains).toEqual([[Reason.EruUru]]);
+    }
+  });
 });
