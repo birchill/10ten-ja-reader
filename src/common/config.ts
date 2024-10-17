@@ -15,6 +15,7 @@ import browser from 'webextension-polyfill';
 import { FxLocalData, getLocalFxData } from '../background/fx-data';
 import { isObject } from '../utils/is-object';
 import { stripFields } from '../utils/strip-fields';
+import { isSafari } from '../utils/ua-utils';
 
 import type {
   AccentDisplay,
@@ -210,7 +211,9 @@ export class Config {
   }
 
   private async onChange(changes: ChangeDict, areaName: string) {
-    if (areaName !== 'sync' && areaName !== 'local') {
+    // Safari bug https://bugs.webkit.org/show_bug.cgi?id=281644 means that
+    // `areaName` is undefined in Safari 18.
+    if (!isSafari() && areaName !== 'sync' && areaName !== 'local') {
       return;
     }
 
@@ -219,10 +222,18 @@ export class Config {
     await this.readSettings();
 
     // Extract the changes in a suitable form
-    const updatedChanges =
-      areaName === 'sync'
-        ? { ...changes }
-        : this.extractLocalSettingChanges(changes);
+    //
+    // We should be able to key this on `areaName` but since Safari 18 doesn't
+    // set that properly, we have to inspect the actual changes instead.
+    let updatedChanges = { ...changes };
+    if (typeof updatedChanges.settings !== 'undefined') {
+      const localSettings = updatedChanges.settings;
+      delete updatedChanges.settings;
+      updatedChanges = {
+        ...updatedChanges,
+        ...this.extractLocalSettingChanges(localSettings),
+      };
+    }
 
     // Fill in default setting values
     for (const key of Object.keys(updatedChanges)) {
@@ -303,13 +314,12 @@ export class Config {
   }
 
   private extractLocalSettingChanges(
-    changes: Readonly<ChangeDict>
+    settingsChange: StorageChange
   ): ChangeDict {
-    if (typeof changes.settings !== 'object' || !isObject(changes.settings)) {
+    if (!isObject(settingsChange)) {
       return {};
     }
 
-    const settingsChange = changes.settings;
     const settings = [
       ...new Set([
         ...Object.keys(settingsChange.newValue || {}),
