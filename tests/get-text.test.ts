@@ -899,6 +899,26 @@ describe('getTextAtPoint', () => {
     });
   });
 
+  it('should recognize Japanese yen values with metric suffixes', () => {
+    testDiv.append('1k 円 for 240 blank cards...');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(result, '1k 円 ', [textNode, 0, 5]);
+    assert.deepEqual(result?.meta, {
+      type: 'currency',
+      value: 1_000,
+      matchLen: 4,
+    });
+  });
+
   it('should recognize 畳 measurements', () => {
     testDiv.append('面積：6畳です');
     const textNode = testDiv.firstChild as Text;

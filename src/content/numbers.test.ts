@@ -58,6 +58,10 @@ describe('parseNumber', () => {
     // Putting the powers of ten in the wrong order
     expect(parseNumber('七十二百一')).toStrictEqual(null);
 
+    // Don't handle metric suffixes for bare numbers--we only allow them when
+    // part of a currency.
+    expect(parseNumber('40k')).toStrictEqual(null);
+
     // Completely invalid inputs
     expect(parseNumber('abc')).toStrictEqual(null);
     expect(parseNumber('')).toStrictEqual(null);
@@ -79,6 +83,7 @@ describe('extractNumberMetadata', () => {
     expect(extractNumberMetadata('43.2')).toStrictEqual(undefined);
     expect(extractNumberMetadata('４３．２')).toStrictEqual(undefined);
     expect(extractNumberMetadata('４３。２')).toStrictEqual(undefined);
+    expect(extractNumberMetadata('40k')).toStrictEqual(undefined);
 
     // Shouldn't be zero
     expect(extractNumberMetadata('〇〇〇')).toStrictEqual(undefined);
