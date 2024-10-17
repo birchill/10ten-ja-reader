@@ -30,14 +30,17 @@ export function lookForCurrency({
   const mightBeCurrency =
     sourceText[0] === '¥' ||
     sourceText[0] === '￥' ||
-    (startsWithNumeral(sourceText) && sourceText.indexOf('円') > 0);
+    sourceText.startsWith('JPY') ||
+    (startsWithNumeral(sourceText) &&
+      (sourceText.indexOf('円') > 0 ||
+        sourceText.toLowerCase().indexOf('yen') > 0));
   if (!mightBeCurrency) {
     return null;
   }
 
   const japaneseOrPrice = getCombinedCharRange([
     getNegatedCharRange(originalTextDelimiter),
-    /[¥￥\s,、.．。kKmMbBtT]/,
+    /[¥￥\s,、.．。kKmMbBtTyYeEnNJPY]/,
   ]);
   const textDelimiter = getNegatedCharRange(japaneseOrPrice);
 
@@ -48,7 +51,7 @@ export function lookForCurrency({
 }
 
 const currencyRegex =
-  /([￥¥]\s*([0-9.,０-９。．、〇一二三四五六七八九十百千万億兆京]+)([kKmMbBtT]\b)?)|(([0-9.,０-９。．、〇一二三四五六七八九十百千万億兆京]+)([kKmMbBtT])?\s*円)/;
+  /((?:[￥¥]|JPY)\s*([0-9.,０-９。．、〇一二三四五六七八九十百千万億兆京]+)([kKmMbBtT]\b)?)|(([0-9.,０-９。．、〇一二三四五六七八九十百千万億兆京]+)([kKmMbBtT])?\s*(?:円|(?:[yY][eE][nN]\b)))/;
 
 export function extractCurrencyMetadata(
   text: string

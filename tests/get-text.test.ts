@@ -919,6 +919,46 @@ describe('getTextAtPoint', () => {
     });
   });
 
+  it("should recognize Japanese yen values a 'yen' suffix", () => {
+    testDiv.append('100 yen');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(result, '100 yen', [textNode, 0, 7]);
+    assert.deepEqual(result?.meta, {
+      type: 'currency',
+      value: 100,
+      matchLen: 7,
+    });
+  });
+
+  it("should recognize Japanese yen values with a 'JPY' prefix", () => {
+    testDiv.append('JPY 100');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result = getTextAtPoint({
+      point: {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    assertTextResultEqual(result, 'JPY 100', [textNode, 0, 7]);
+    assert.deepEqual(result?.meta, {
+      type: 'currency',
+      value: 100,
+      matchLen: 7,
+    });
+  });
+
   it('should recognize 畳 measurements', () => {
     testDiv.append('面積：6畳です');
     const textNode = testDiv.firstChild as Text;
