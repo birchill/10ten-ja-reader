@@ -129,5 +129,22 @@ describe('extractCurrencyMetadata', () => {
       value: 40,
       matchLen: 3,
     });
+
+    // "yen" suffix / "JPY" prefix
+    expect(extractCurrencyMetadata('1,000 yen')).toEqual({
+      type: 'currency',
+      value: 1_000,
+      matchLen: 9,
+    });
+    expect(extractCurrencyMetadata('200 Yen')).toEqual({
+      type: 'currency',
+      value: 200,
+      matchLen: 7,
+    });
+    expect(extractCurrencyMetadata('JPY 20万')).toEqual({
+      type: 'currency',
+      value: 200_000,
+      matchLen: 7,
+    });
   });
 });

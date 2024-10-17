@@ -13,7 +13,8 @@ app.
 - Made tap detection more reliable
   thanks to [@maiself](https://github.com/maiself)
   ([#2014](https://github.com/birchill/10ten-ja-reader/pull/2014)).
-- Added handling for metric suffixes on currencies (e.g. 40k円)
+- Added handling for metric suffixes on currencies (e.g. 40k円) as well as
+  "yen" suffixes (e.g. 200k yen) and "JPY" prefixes (e.g. JPY 1,000)
   ([#2000](https://github.com/birchill/10ten-ja-reader/pull/2000)).
 - Added handling for 戶 and 內 kyūjitai.
 - Added deinflection for additional forms of -sugiru
