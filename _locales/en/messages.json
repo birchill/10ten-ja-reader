@@ -359,6 +359,9 @@
   "deinflect_continuous": {
     "message": "continuous"
   },
+  "deinflect_eru_uru": {
+    "message": "-eru/-uru"
+  },
   "deinflect_humble": {
     "message": "humble"
   },
