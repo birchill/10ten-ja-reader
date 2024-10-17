@@ -37,7 +37,7 @@ export function lookForCurrency({
 
   const japaneseOrPrice = getCombinedCharRange([
     getNegatedCharRange(originalTextDelimiter),
-    /[¥￥\s,、.．。]/,
+    /[¥￥\s,、.．。kKmMbBtT]/,
   ]);
   const textDelimiter = getNegatedCharRange(japaneseOrPrice);
 
@@ -48,7 +48,7 @@ export function lookForCurrency({
 }
 
 const currencyRegex =
-  /([￥¥]\s*([0-9.,０-９。．、〇一二三四五六七八九十百千万億兆京]+))|(([0-9.,０-９。．、〇一二三四五六七八九十百千万億兆京]+)\s*円)/;
+  /([￥¥]\s*([0-9.,０-９。．、〇一二三四五六七八九十百千万億兆京]+)([kKmMbBtT]\b)?)|(([0-9.,０-９。．、〇一二三四五六七八九十百千万億兆京]+)([kKmMbBtT])?\s*円)/;
 
 export function extractCurrencyMetadata(
   text: string
@@ -58,15 +58,37 @@ export function extractCurrencyMetadata(
     return undefined;
   }
 
-  const valueStr = matches[2] ?? matches[4];
+  const valueStr = matches[2] ?? matches[5];
 
   if (!valueStr) {
     return undefined;
   }
 
-  const value = parseNumber(valueStr);
-  if (!value) {
+  let value = parseNumber(valueStr);
+  if (value === null) {
     return undefined;
+  }
+
+  // Handle metric suffixes---we handle them here instead of in parseNumber
+  // because we only support them when they are part of a currency.
+  const metricSuffix = matches[2] ? matches[3] : matches[6];
+  switch (metricSuffix) {
+    case 'k':
+    case 'K':
+      value *= 1_000;
+      break;
+    case 'm':
+    case 'M':
+      value *= 1_000_000;
+      break;
+    case 'b':
+    case 'B':
+      value *= 1_000_000_000;
+      break;
+    case 't':
+    case 'T':
+      value *= 1_000_000_000_000;
+      break;
   }
 
   return { type: 'currency', value, matchLen: matches[0].length };
