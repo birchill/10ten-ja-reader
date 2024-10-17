@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- (Safari) added workaround for [Safari storage API
+  regression](https://bugs.webkit.org/show_bug.cgi?id=281644)
+  ([#2045](https://github.com/birchill/10ten-ja-reader/issues/2045)).
 - Added support for irregular verb forms of 揺蕩う
   ([#1962](https://github.com/birchill/10ten-ja-reader/issues/1962)).
 - Made tap detection more reliable
