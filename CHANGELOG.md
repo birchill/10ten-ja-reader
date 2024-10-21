@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- (Chrome) Fixed language code for Chinese localization
+  ([#2051](https://github.com/birchill/10ten-ja-reader/issues/2051)).
+
 ## [1.22.0] - 2024-10-17
 
 - (Safari) added workaround for [Safari storage API

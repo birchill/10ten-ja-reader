@@ -9,7 +9,7 @@ export default function OptionsDecorator({
   children,
 }: RenderableProps<EmptyProps>) {
   const [locale] = useSelect('locale', {
-    options: ['en', 'ja', 'zh_hans'],
+    options: ['en', 'ja', 'zh_CN'],
   });
 
   // This is only temporary until we have converted all options to Preact at

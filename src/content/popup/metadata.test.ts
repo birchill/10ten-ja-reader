@@ -6,7 +6,7 @@
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-let locale: 'en' | 'ja' | 'zh_hans' = 'en';
+let locale: 'en' | 'ja' | 'zh_CN' = 'en';
 
 vi.mock('webextension-polyfill', async () => {
   const { mockGetMessage } = await import('./mock-get-message');
@@ -25,7 +25,7 @@ import { clearLangTagCache } from './lang-tag';
 
 import { renderMetadata } from './metadata';
 
-function setLocale(localeToSet: 'en' | 'ja' | 'zh_hans') {
+function setLocale(localeToSet: 'en' | 'ja' | 'zh_CN') {
   locale = localeToSet;
   clearLangTagCache();
 }
@@ -42,7 +42,7 @@ describe('renderShogiInfo', () => {
     expect(getShogiMove({ dest: [8, 3], piece: 's' }, 'ja')).toBe(
       '銀将を８三に'
     );
-    expect(getShogiMove({ dest: [8, 3], piece: 's' }, 'zh_hans')).toBe(
+    expect(getShogiMove({ dest: [8, 3], piece: 's' }, 'zh_CN')).toBe(
       '銀将を８三に'
     );
   });
@@ -52,7 +52,7 @@ describe('renderShogiInfo', () => {
       "silver general to previous move's position"
     );
     expect(getShogiMove({ piece: 's' }, 'ja')).toBe('銀将を同じ場所に');
-    expect(getShogiMove({ piece: 's' }, 'zh_hans')).toBe('銀将を同じ場所に');
+    expect(getShogiMove({ piece: 's' }, 'zh_CN')).toBe('銀将を同じ場所に');
   });
 
   it('renders a shogi move with a destination indicated as being the same', () => {
@@ -62,7 +62,7 @@ describe('renderShogiInfo', () => {
     expect(getShogiMove({ dest: [8, 3, 1], piece: 's' }, 'ja')).toBe(
       '銀将を８三（同じ場所）に'
     );
-    expect(getShogiMove({ dest: [8, 3, 1], piece: 's' }, 'zh_hans')).toBe(
+    expect(getShogiMove({ dest: [8, 3, 1], piece: 's' }, 'zh_CN')).toBe(
       '銀将を８三（同じ場所）に'
     );
   });
@@ -79,7 +79,7 @@ describe('renderShogiInfo', () => {
       getShogiMove({ side: 'black', dest: [2, 5], piece: 'pro_b' }, 'ja')
     ).toBe('先手が竜馬を２五に');
     expect(
-      getShogiMove({ side: 'black', dest: [2, 5], piece: 'pro_b' }, 'zh_hans')
+      getShogiMove({ side: 'black', dest: [2, 5], piece: 'pro_b' }, 'zh_CN')
     ).toBe('先手が竜馬を２五に');
   });
 
@@ -108,7 +108,7 @@ describe('renderShogiInfo', () => {
           piece: 'g',
           movement: 'right',
         },
-        'zh_hans'
+        'zh_CN'
       )
     ).toBe('金将を５二に右から動かす');
   });
@@ -141,7 +141,7 @@ describe('renderShogiInfo', () => {
           piece: 'g',
           movement: 'drop',
         },
-        'zh_hans'
+        'zh_CN'
       )
     ).toBe('後手が金将を５六に打つ');
   });
@@ -174,7 +174,7 @@ describe('renderShogiInfo', () => {
           piece: 's',
           promotion: false,
         },
-        'zh_hans'
+        'zh_CN'
       )
     ).toBe('先手が銀将を４四に（成らない）');
   });
@@ -182,7 +182,7 @@ describe('renderShogiInfo', () => {
 
 function getShogiMove(
   meta: Omit<ShogiMeta, 'type' | 'matchLen'>,
-  localeToUse?: 'en' | 'ja' | 'zh_hans'
+  localeToUse?: 'en' | 'ja' | 'zh_CN'
 ): string | undefined {
   const params: Parameters<typeof renderMetadata>[0] = {
     fxData: undefined,
