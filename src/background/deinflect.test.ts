@@ -163,6 +163,7 @@ describe('deinflect', () => {
       ['発する', '発しられる', [Reason.Irregular, Reason.PotentialOrPassive]],
       // 五段化
       ['発する', '発さない', [Reason.Irregular, Reason.Negative]],
+      ['発する', '発さないで', [Reason.Irregular, Reason.NegativeTe]],
       ['発する', '発さず', [Reason.Irregular, Reason.Zu]],
       ['発する', '発そう', [Reason.Irregular, Reason.Volitional]],
       ['愛する', '愛せば', [Reason.Irregular, Reason.Ba]],
