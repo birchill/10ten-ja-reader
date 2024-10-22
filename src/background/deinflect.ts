@@ -177,6 +177,7 @@ const deinflectRuleData: Array<
   ['ください', 'くださる', Type.Initial, Type.GodanVerb, [Reason.Imperative]],
   ['こさせる', 'くる', Type.IchidanVerb, Type.KuruVerb, [Reason.Causative]],
   ['こられる', 'くる', Type.IchidanVerb, Type.KuruVerb, [Reason.PotentialOrPassive]],
+  ['さないで', 'する', Type.Initial, Type.SpecialSuruVerb, [Reason.Irregular, Reason.NegativeTe]],
   ['ざるえぬ', '', Type.IAdj, Type.IrrealisStem, [Reason.ZaruWoEnai]],
   ['ざる得ぬ', '', Type.IAdj, Type.IrrealisStem, [Reason.ZaruWoEnai]],
   ['しないで', 'する', Type.Initial, Type.SuruVerb, [Reason.NegativeTe]],
