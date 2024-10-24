@@ -73,8 +73,8 @@ importers:
         specifier: 4.3.0
         version: 4.3.0(prettier@3.3.3)
       '@types/archiver':
-        specifier: 6.0.2
-        version: 6.0.2
+        specifier: 6.0.3
+        version: 6.0.3
       '@types/chai':
         specifier: 5.0.0
         version: 5.0.0
@@ -1254,8 +1254,8 @@ packages:
       '@vue/compiler-sfc':
         optional: true
 
-  '@types/archiver@6.0.2':
-    resolution: {integrity: sha512-KmROQqbQzKGuaAbmK+ZcytkJ51+YqDa7NmbXjmtC5YBLSyQYo21YaUnQ3HbaPFKL1ooo6RQ6OPYPIDyxfpDDXw==}
+  '@types/archiver@6.0.3':
+    resolution: {integrity: sha512-a6wUll6k3zX6qs5KlxIggs1P1JcYJaTCx2gnlr+f0S1yd2DoaEwoIK10HmBaLnZwWneBz+JBm0dwcZu0zECBcQ==}
 
   '@types/body-parser@1.19.5':
     resolution: {integrity: sha512-fB3Zu92ucau0iQ0JMCFQE7b/dv8Ot07NI3KaZIkIUNXq82k4eBAqUaneXfleGY9JWskeS9y+u0nXMyspcuQrCg==}
@@ -6865,7 +6865,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@types/archiver@6.0.2':
+  '@types/archiver@6.0.3':
     dependencies:
       '@types/readdir-glob': 1.1.5
 
