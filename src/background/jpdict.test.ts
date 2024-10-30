@@ -67,6 +67,8 @@ vi.mock('webextension-polyfill', () => ({
             return 'potential';
           case 'deinflect_causative_passive':
             return 'causative passive';
+          case 'deinflect_continuous':
+            return 'continuous';
           case 'deinflect_te':
             return '-te';
           case 'deinflect_zu':
@@ -82,7 +84,7 @@ vi.mock('webextension-polyfill', () => ({
           case 'deinflect_imperative_negative':
             return 'imperative negative';
           default:
-            return 'Unrecognized string ID';
+            return `Unrecognized string ID: ${id}`;
         }
       },
     },
@@ -354,13 +356,42 @@ describe('searchWords', () => {
     // - 選手
     //
     // If we trim the list before sorting, however, we'll fail to include 選手.
-    const allKanji = result!.data
-      .map(getKanji)
-      .reduce((acc, val) => acc.concat(val), []);
+    const allKanji = result!.data.flatMap(getKanji);
     expect(allKanji).toContain('選手');
 
     // Check that we still respect the max-length limit though
     expect(result!.data).toHaveLength(5);
+  });
+
+  it('sorts 進む before 進ぶ when looking up 進んでいます', async () => {
+    const [result] = await searchWords({ input: '進んでいます' });
+    expect(result).toBeDefined();
+
+    const kanji = result!.data.map(getKanji);
+    expect(kanji[0]).toContainEqual('進む');
+    expect(kanji[1]).toContainEqual('進ぶ');
+  });
+
+  it('sorts 見とれる before 見る when looking up 見とれる', async () => {
+    const [result] = await searchWords({ input: '見とれる' });
+    expect(result).toBeDefined();
+
+    const kanji = result!.data.map(getKanji);
+    expect(kanji[0]).toContainEqual('見とれる');
+
+    const miruPos = kanji.findIndex((entry) => entry.includes('見る'));
+    expect(miruPos).toBeGreaterThan(0);
+  });
+
+  it('sorts 同じ before 同じる when looking up 同じ', async () => {
+    const [result] = await searchWords({ input: '同じ' });
+    expect(result).toBeDefined();
+
+    const kanji = result!.data.map(getKanji);
+    expect(kanji[0]).toContainEqual('同じ');
+
+    const doujiruPos = kanji.findIndex((entry) => entry.includes('同じる'));
+    expect(doujiruPos).toBeGreaterThan(0);
   });
 });
 

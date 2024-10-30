@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+- Fixed sorting of word results
+  (see [#1966](https://github.com/birchill/10ten-ja-reader/issues/1966#issuecomment-2426690974)).
 - (Chrome) Fixed language code for Chinese localization
   ([#2051](https://github.com/birchill/10ten-ja-reader/issues/2051)).
 - Added deinflection for -得る
