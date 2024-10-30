@@ -7,20 +7,24 @@
 //
 // 2) In the case where we've fallen back to the flat file database.
 //
-import { WordResult } from './search-result';
+import type { CandidateWordResult, WordResult } from './search-result';
 
 // As with Array.prototype.sort, sorts `results` in-place, but returns the
 // result to support chaining.
-export function sortWordResults(results: Array<WordResult>): Array<WordResult> {
+export function sortWordResults(
+  results: Array<CandidateWordResult>
+): Array<CandidateWordResult> {
   const sortMeta: Map<
     number,
-    { length?: number; priority: number; type: number }
+    { reasons: number; priority: number; type: number }
   > = new Map();
 
   for (const result of results) {
-    const length = (
-      result.k.find((k) => k.matchRange) || result.r.find((r) => r.matchRange)
-    )?.ent.length;
+    const reasons =
+      result.reasonChains?.reduce<number>(
+        (max, chain) => Math.max(max, chain.length),
+        0
+      ) || 0;
 
     // Determine the headword match type
     //
@@ -32,19 +36,15 @@ export function sortWordResults(results: Array<WordResult>): Array<WordResult> {
     // Priority
     const priority = getPriority(result);
 
-    sortMeta.set(result.id, { length, priority, type: rt });
+    sortMeta.set(result.id, { reasons, priority, type: rt });
   }
 
   results.sort((a, b) => {
     const metaA = sortMeta.get(a.id)!;
     const metaB = sortMeta.get(b.id)!;
 
-    if (
-      metaA.length !== undefined &&
-      metaB.length !== undefined &&
-      metaA.length !== metaB.length
-    ) {
-      return metaB.length - metaA.length;
+    if (metaA.reasons !== metaB.reasons) {
+      return metaA.reasons - metaB.reasons;
     }
 
     if (metaA.type !== metaB.type) {

@@ -4,6 +4,7 @@ import browser from 'webextension-polyfill';
 
 import { isOnlyDigits } from '../utils/char-range';
 import { toRomaji } from '../utils/romaji';
+import { stripFields } from '../utils/strip-fields';
 
 import {
   CandidateWord,
@@ -11,7 +12,8 @@ import {
   deinflect,
   deinflectL10NKeys,
 } from './deinflect';
-import {
+import type {
+  CandidateWordResult,
   DictionaryWordResult,
   WordResult,
   WordSearchResult,
@@ -106,7 +108,7 @@ export async function wordSearch({
       //
       // TODO: This is not right. If we end up with exactly maxResults, we
       // shouldn't set `more` to true unless we know that there were actually
-      // more results. Fixing this will require changing the signature
+      // more results. Fixing this will require changing the signature of
       // GetWordsFunction, however.
       if (result.data.length + wordResults.length >= maxResults) {
         result.more = true;
@@ -156,7 +158,7 @@ async function lookupCandidates({
   maxResults: number;
   showInflections: boolean;
 }): Promise<Array<WordResult>> {
-  const result: Array<WordResult> = [];
+  const candidateResults: Array<CandidateWordResult> = [];
 
   const candidates: Array<CandidateWord> = deinflect(input);
   for (const [candidateIndex, candidate] of candidates.entries()) {
@@ -167,43 +169,65 @@ async function lookupCandidates({
     let wordResults = await lookupCandidate({
       candidate,
       getWords,
-      includeRomaji,
-      originalInput: input,
       isDeinflection: candidateIndex !== 0,
       maxResults,
-      showInflections,
     });
 
     // Drop redundant results
     wordResults = wordResults.filter((word) => !existingEntries.has(word.id));
 
-    result.push(...wordResults);
+    candidateResults.push(...wordResults);
   }
 
   // The results are currently sorted for each candidate lookup but we really
   // want to sort _across_ all the candidate lookups.
-  sortWordResults(result);
+  sortWordResults(candidateResults);
 
-  return result;
+  // Convert to a flattened WordResult
+  return candidateResults.map((result) => {
+    const wordResult: WordResult = stripFields(result, ['reasonChains']);
+
+    // Generate the reason string
+    let reason: string | undefined;
+    const { reasonChains } = result;
+    if (reasonChains?.length) {
+      reason =
+        '< ' +
+        reasonChains
+          .map((reasonList) =>
+            reasonList
+              .map((reason) =>
+                browser.i18n.getMessage(deinflectL10NKeys[reason])
+              )
+              .join(' < ')
+          )
+          .join(browser.i18n.getMessage('deinflect_alternate'));
+      if (showInflections) {
+        reason += ` < ${input}`;
+      }
+
+      wordResult.reason = reason;
+    }
+
+    if (includeRomaji) {
+      wordResult.romaji = wordResult.r.map((r) => toRomaji(r.ent));
+    }
+
+    return wordResult;
+  });
 }
 
 async function lookupCandidate({
   candidate,
   getWords,
-  includeRomaji,
-  originalInput: input,
   isDeinflection,
   maxResults,
-  showInflections,
 }: {
   candidate: CandidateWord;
   getWords: GetWordsFunction;
-  includeRomaji: boolean;
-  originalInput: string;
   isDeinflection: boolean;
   maxResults: number;
-  showInflections: boolean;
-}): Promise<Array<WordResult>> {
+}): Promise<Array<CandidateWordResult>> {
   let matches = await getWords({ input: candidate.word, maxResults });
 
   // The deinflection code doesn't know anything about the actual words. It just
@@ -217,41 +241,10 @@ async function lookupCandidate({
     (match) => !isDeinflection || entryMatchesType(match, candidate.type)
   );
 
-  if (!matches.length) {
-    return [];
-  }
-
-  // Generate the reason string
-  let reason: string | undefined;
-  if (candidate.reasonChains.length) {
-    reason =
-      '< ' +
-      candidate.reasonChains
-        .map((reasonList) =>
-          reasonList
-            .map((reason) => browser.i18n.getMessage(deinflectL10NKeys[reason]))
-            .join(' < ')
-        )
-        .join(browser.i18n.getMessage('deinflect_alternate'));
-    if (showInflections) {
-      reason += ` < ${input}`;
-    }
-  }
-
-  // Process each match into a suitable result
-  const result: Array<WordResult> = [];
-
-  for (const match of matches) {
-    const wordResult: WordResult = { ...match, reason };
-
-    if (includeRomaji) {
-      wordResult.romaji = match.r.map((r) => toRomaji(r.ent));
-    }
-
-    result.push(wordResult);
-  }
-
-  return result;
+  return matches.map((match) => ({
+    ...match,
+    reasonChains: candidate.reasonChains,
+  }));
 }
 
 // Tests if a given entry matches the type of a generated deflection

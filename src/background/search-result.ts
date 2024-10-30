@@ -4,9 +4,15 @@ import type {
   KanjiResult,
 } from '@birchill/jpdict-idb';
 
+import { Reason } from './deinflect';
+
 // Words
 
 export type DictionaryWordResult = JpdictWordResult;
+
+export type CandidateWordResult = DictionaryWordResult & {
+  reasonChains?: Array<Array<Reason>>;
+};
 
 export type WordResult = DictionaryWordResult & {
   reason?: string;
