@@ -3,9 +3,17 @@
 /**
  * @vitest-environment jsdom
  */
-import { readFile } from 'fs';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import createFetchMock from 'vitest-fetch-mock';
+import fetchMock from 'fetch-mock';
+import { readFile } from 'node:fs';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 class Worker {
   constructor() {}
@@ -91,29 +99,37 @@ vi.mock('webextension-polyfill', () => ({
   },
 }));
 
-const fetchMocker = createFetchMock(vi);
-fetchMocker.enableMocks();
-
 import { searchWords, translate } from './jpdict';
 import { WordResult, WordSearchResult } from './search-result';
 
 describe('searchWords', () => {
-  beforeEach(() => {
-    fetchMocker.mockResponse(
-      (req) =>
+  beforeAll(() => {
+    fetchMock.mockGlobal();
+    fetchMock.route(
+      '*',
+      ({ url }) =>
         new Promise((resolve, reject) => {
-          readFile(`${__dirname}/../../${req.url}`, function (err, data) {
-            if (err) {
-              reject(err);
-              return;
+          readFile(
+            `${__dirname}/../../${new URL(url).pathname}`,
+            (err, data) => {
+              if (err) {
+                reject(err);
+                return;
+              }
+              resolve(data.toString());
             }
-            resolve(data.toString());
-          });
+          );
         })
     );
   });
 
+  afterAll(() => {
+    fetchMock.unmockGlobal();
+    fetchMock.removeRoutes();
+  });
+
   afterEach(() => {
+    fetchMock.clearHistory();
     vi.resetAllMocks();
   });
 
