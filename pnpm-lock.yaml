@@ -12,8 +12,8 @@ importers:
         specifier: 0.6.9
         version: 0.6.9
       '@birchill/discriminator':
-        specifier: 0.3.0
-        version: 0.3.0(superstruct@2.0.2)
+        specifier: 0.3.1
+        version: 0.3.1(superstruct@2.0.2)
       '@birchill/jpdict-idb':
         specifier: 2.6.1
         version: 2.6.1
@@ -326,11 +326,11 @@ packages:
     resolution: {integrity: sha512-jCBweDlK6+nH6QVyrtS3YDdVlz0uSODDaN4xR6CvCAT6Fa7RTzeT8cKS7CamzHlSsUmRRrPptymcc7rw1yIoPQ==}
     engines: {node: '>=12.0.0'}
 
-  '@birchill/discriminator@0.3.0':
-    resolution: {integrity: sha512-IXkLc1FZLSjFUcPYUnAdg+AWPHC9vPz8hS2IDwPAvnAipeNKIkzQ/B4WY5z14UO1Ex0aOdlHtgwUUXc/Ngkhyg==}
+  '@birchill/discriminator@0.3.1':
+    resolution: {integrity: sha512-vc7dbXbcURpbFUBFnoa++Cb6ywoI3Ky6lyIL/pp7YuhcDn2gQUSoeWTeUZa02vUmEF7r/NH2YY2jj1irsNa7Ww==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
-      superstruct: '>0.16.0 <2.0.0'
+      superstruct: '>0.16.0 <3.0.0'
 
   '@birchill/jpdict-idb@2.6.1':
     resolution: {integrity: sha512-WGXJSvFnfQ8/Y+fWo7rxgAjrPwRZHP0kvdQxAMz6GwFC6eTxtG++oTg3BOkxHBywhvlRjqELYNFZMzZ7vzN4sQ==}
@@ -6155,7 +6155,7 @@ snapshots:
     dependencies:
       ua-parser-js: 1.0.39
 
-  '@birchill/discriminator@0.3.0(superstruct@2.0.2)':
+  '@birchill/discriminator@0.3.1(superstruct@2.0.2)':
     dependencies:
       superstruct: 2.0.2
 
