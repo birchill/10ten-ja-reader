@@ -8,6 +8,11 @@ app.
 
 ## [Unreleased]
 
+- Added precise conversion of Japanese era dates, including those preceding
+  the adoption of the Gregorian calendar in Japan, with accurate calculations
+  for the timespan of specific years and months
+  (e.g. 元治元年, 慶応4年閏4月, 明治5年12月2日)
+  ([#2093](https://github.com/birchill/10ten-ja-reader/pull/2093)).
 - Fixed sorting of word results
   (see [#1966](https://github.com/birchill/10ten-ja-reader/issues/1966#issuecomment-2426690974)).
 - (Chrome) Fixed language code for Chinese localization

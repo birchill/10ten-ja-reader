@@ -501,7 +501,10 @@ describe('getTextAtPoint', () => {
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
+      reading: 'しょうわ',
       year: 56,
+      month: undefined,
+      day: undefined,
       matchLen: 5,
     });
   });
@@ -522,7 +525,10 @@ describe('getTextAtPoint', () => {
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
+      reading: 'しょうわ',
       year: 56,
+      month: undefined,
+      day: undefined,
       matchLen: 5,
     });
   });
@@ -543,7 +549,10 @@ describe('getTextAtPoint', () => {
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
+      reading: 'しょうわ',
       year: 56,
+      month: undefined,
+      day: undefined,
       matchLen: 5,
     });
   });
@@ -565,7 +574,10 @@ describe('getTextAtPoint', () => {
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
+      reading: 'しょうわ',
       year: 56,
+      month: undefined,
+      day: undefined,
       matchLen: 7,
     });
   });
@@ -587,7 +599,10 @@ describe('getTextAtPoint', () => {
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
+      reading: 'しょうわ',
       year: 56,
+      month: undefined,
+      day: undefined,
       matchLen: 4,
     });
   });
@@ -616,7 +631,10 @@ describe('getTextAtPoint', () => {
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
+      reading: 'しょうわ',
       year: 56,
+      month: undefined,
+      day: undefined,
       matchLen: 5,
     });
   });
@@ -643,7 +661,10 @@ describe('getTextAtPoint', () => {
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
+      reading: 'しょうわ',
       year: 56,
+      month: undefined,
+      day: undefined,
       matchLen: 7,
     });
   });
@@ -672,7 +693,10 @@ describe('getTextAtPoint', () => {
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
+      reading: 'しょうわ',
       year: 56,
+      month: undefined,
+      day: undefined,
       matchLen: 5,
     });
   });
@@ -693,7 +717,10 @@ describe('getTextAtPoint', () => {
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '令和',
+      reading: 'れいわ',
       year: 0,
+      month: undefined,
+      day: undefined,
       matchLen: 4,
     });
   });
@@ -720,7 +747,10 @@ describe('getTextAtPoint', () => {
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
+      reading: 'しょうわ',
       year: 0,
+      month: undefined,
+      day: undefined,
       matchLen: 5,
     });
   });
@@ -741,7 +771,10 @@ describe('getTextAtPoint', () => {
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
+      reading: 'しょうわ',
       year: 56,
+      month: undefined,
+      day: undefined,
       matchLen: 6,
     });
   });
@@ -762,7 +795,10 @@ describe('getTextAtPoint', () => {
     assert.deepEqual(result!.meta, {
       type: 'era',
       era: '昭和',
+      reading: 'しょうわ',
       year: 3,
+      month: undefined,
+      day: undefined,
       matchLen: 3,
     });
   });
