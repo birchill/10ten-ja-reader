@@ -69,6 +69,7 @@ import {
   SearchRequest,
 } from './background-request';
 import { setDefaultToolbarIcon, updateBrowserAction } from './browser-action';
+import { calculateEraDateTimeSpan } from './calculate-date';
 import { registerMenuListeners, updateContextMenus } from './context-menus';
 import { FxFetcher } from './fx-fetcher';
 import { isCurrentTabEnabled } from './is-current-tab-enabled';
@@ -589,6 +590,10 @@ browser.runtime.onMessage.addListener(
             }
           }
         })();
+
+      case 'calculateEraDateTimeSpan':
+        Bugsnag.leaveBreadcrumb('Calculating era date time span', request);
+        return Promise.resolve(calculateEraDateTimeSpan(request));
 
       case 'translate':
         Bugsnag.leaveBreadcrumb('Translating string', {

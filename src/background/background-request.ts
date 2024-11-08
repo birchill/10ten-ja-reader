@@ -42,6 +42,12 @@ export const BackgroundRequestSchema = discriminator('type', {
   }),
   searchWords: SearchRequestSchema,
   searchOther: SearchOtherRequestSchema,
+  calculateEraDateTimeSpan: s.type({
+    era: s.string(),
+    year: s.number(),
+    month: s.optional(s.number()),
+    day: s.optional(s.number()),
+  }),
   toggleDefinition: s.type({}),
   translate: s.type({
     input: s.string(),

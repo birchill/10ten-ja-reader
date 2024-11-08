@@ -77,6 +77,10 @@ const config = {
       react: 'preact/compat',
       'react-dom/test-utils': 'preact/test-utils',
       'react-dom': 'preact/compat',
+      'webextension-polyfill': path.resolve(
+        __dirname,
+        'tests/browser-polyfill.ts'
+      ),
     },
     extensions: ['.ts', '.tsx', '.js'],
   },

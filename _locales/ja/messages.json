@@ -115,6 +115,10 @@
     "message": "辞書データを更新中のため、一部のデータのみ表示されています。",
     "description": "Status bar message shown while the dictionary is being updated and only a snapshot can be shown."
   },
+  "content_era_info_invalid": {
+    "message": "該当なし",
+    "description": "Message shown when we fail to calculate the corresponding Gregorian date of a pre-Gregorian era"
+  },
   "content_kanji_base_radical": {
     "message": "部 $char$ (​$readings$​)",
     "description": "The string used to describe the base radical",
