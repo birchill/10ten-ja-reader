@@ -3,10 +3,10 @@ import {
   extractCurrencyMetadata,
   lookForCurrency,
 } from './currency';
+import { EraMeta, extractEraMetadata, lookForEra } from './dates';
 import { MeasureMeta, extractMeasureMetadata, lookForMeasure } from './measure';
 import { NumberMeta, extractNumberMetadata } from './numbers';
 import { ShogiMeta, extractShogiMetadata, lookForShogi } from './shogi';
-import { EraMeta, extractEraMetadata, lookForEra } from './years';
 
 export type SelectionMeta =
   | CurrencyMeta
