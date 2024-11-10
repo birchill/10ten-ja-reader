@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { startsWithEraName } from './years';
+import { startsWithEraName } from './dates';
 
 describe('startsWithEraName', () => {
   it('detects strings that start with an era name', () => {
