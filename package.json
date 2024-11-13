@@ -93,7 +93,7 @@
     "@types/webextension-polyfill": "0.12.1",
     "@types/yargs": "17.0.33",
     "@typescript-eslint/parser": "8.14.0",
-    "@vitest/eslint-plugin": "1.1.8",
+    "@vitest/eslint-plugin": "1.1.10",
     "archiver": "7.0.1",
     "chai": "5.1.2",
     "css-loader": "7.1.2",
