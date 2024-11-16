@@ -102,7 +102,7 @@
     "eslint-plugin-tailwindcss": "3.17.5",
     "fake-indexeddb": "6.0.0",
     "fast-glob": "3.3.2",
-    "fetch-mock": "12.1.0",
+    "fetch-mock": "12.2.0",
     "file-loader": "6.2.0",
     "fork-ts-checker-webpack-plugin": "9.0.2",
     "globals": "15.12.0",
