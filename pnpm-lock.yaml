@@ -68,7 +68,7 @@ importers:
         version: 1.1.1
       '@tailwindcss/typography':
         specifier: 0.5.15
-        version: 0.5.15(tailwindcss@3.4.14)
+        version: 0.5.15(tailwindcss@3.4.15)
       '@trivago/prettier-plugin-sort-imports':
         specifier: 4.3.0
         version: 4.3.0(prettier@3.3.3)
@@ -113,7 +113,7 @@ importers:
         version: 7.37.2(eslint@9.14.0(jiti@2.4.0))
       eslint-plugin-tailwindcss:
         specifier: 3.17.5
-        version: 3.17.5(tailwindcss@3.4.14)
+        version: 3.17.5(tailwindcss@3.4.15)
       fake-indexeddb:
         specifier: 6.0.0
         version: 6.0.0
@@ -190,8 +190,8 @@ importers:
         specifier: 5.0.0
         version: 5.0.0(webpack@5.96.1)
       tailwindcss:
-        specifier: 3.4.14
-        version: 3.4.14
+        specifier: 3.4.15
+        version: 3.4.15
       terser-webpack-plugin:
         specifier: 5.3.10
         version: 5.3.10(webpack@5.96.1)
@@ -5299,8 +5299,8 @@ packages:
     resolution: {integrity: sha512-qd/R7n5rQTRFi+Zf2sk5XVVd9UQl6ZkduPFC3S7WEGJAmetDTjY3qPN50eSKzwuzEyQKy5TN2TiZdkIjos2L6A==}
     engines: {node: '>=8.0.0'}
 
-  tailwindcss@3.4.14:
-    resolution: {integrity: sha512-IcSvOcTRcUtQQ7ILQL5quRDg7Xs93PdJEk1ZLbhhvJc7uj/OAhYOnruEiwnGgBvUtaUAJ8/mhSw1o8L2jCiENA==}
+  tailwindcss@3.4.15:
+    resolution: {integrity: sha512-r4MeXnfBmSOuKUWmXe6h2CcyfzJCEk4F0pptO5jlnYSIViUkVmsawj80N5h2lO3gwcmSb4n3PuN+e+GC1Guylw==}
     engines: {node: '>=14.0.0'}
     hasBin: true
 
@@ -6102,7 +6102,7 @@ snapshots:
       '@babel/helper-validator-identifier': 7.25.7
       chalk: 2.4.2
       js-tokens: 4.0.0
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   '@babel/parser@7.25.7':
     dependencies:
@@ -6856,13 +6856,13 @@ snapshots:
       ignore: 5.3.2
       p-map: 4.0.0
 
-  '@tailwindcss/typography@0.5.15(tailwindcss@3.4.14)':
+  '@tailwindcss/typography@0.5.15(tailwindcss@3.4.15)':
     dependencies:
       lodash.castarray: 4.4.0
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
-      tailwindcss: 3.4.14
+      tailwindcss: 3.4.15
 
   '@tootallnate/quickjs-emscripten@0.23.0': {}
 
@@ -8462,11 +8462,11 @@ snapshots:
       string.prototype.matchall: 4.0.11
       string.prototype.repeat: 1.0.0
 
-  eslint-plugin-tailwindcss@3.17.5(tailwindcss@3.4.14):
+  eslint-plugin-tailwindcss@3.17.5(tailwindcss@3.4.15):
     dependencies:
       fast-glob: 3.3.2
       postcss: 8.4.49
-      tailwindcss: 3.4.14
+      tailwindcss: 3.4.15
 
   eslint-scope@5.1.1:
     dependencies:
@@ -11534,7 +11534,7 @@ snapshots:
       typical: 5.2.0
       wordwrapjs: 4.0.1
 
-  tailwindcss@3.4.14:
+  tailwindcss@3.4.15:
     dependencies:
       '@alloc/quick-lru': 5.2.0
       arg: 5.0.2
@@ -11549,7 +11549,7 @@ snapshots:
       micromatch: 4.0.8
       normalize-path: 3.0.0
       object-hash: 3.0.0
-      picocolors: 1.1.0
+      picocolors: 1.1.1
       postcss: 8.4.49
       postcss-import: 15.1.0(postcss@8.4.49)
       postcss-js: 4.0.1(postcss@8.4.49)
@@ -11823,7 +11823,7 @@ snapshots:
     dependencies:
       browserslist: 4.24.0
       escalade: 3.2.0
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   update-notifier@7.3.1:
     dependencies:
