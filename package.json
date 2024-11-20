@@ -111,7 +111,7 @@
     "knip": "5.37.1",
     "mocha": "10.8.2",
     "playwright": "1.48.2",
-    "playwright-test": "14.1.6",
+    "playwright-test": "14.1.7",
     "postcss": "8.4.49",
     "postcss-import": "16.1.0",
     "postcss-loader": "8.1.1",

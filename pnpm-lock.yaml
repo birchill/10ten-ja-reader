@@ -148,8 +148,8 @@ importers:
         specifier: 1.48.2
         version: 1.48.2
       playwright-test:
-        specifier: 14.1.6
-        version: 14.1.6
+        specifier: 14.1.7
+        version: 14.1.7
       postcss:
         specifier: 8.4.49
         version: 8.4.49
@@ -4385,18 +4385,13 @@ packages:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==}
     engines: {node: '>= 6'}
 
-  playwright-core@1.47.2:
-    resolution: {integrity: sha512-3JvMfF+9LJfe16l7AbSmU555PaTl2tPyQsVInqm3id16pdDfvZ8TTZ/pyzmkbDrZTQefyzU7AIHlZqQnxpqHVQ==}
-    engines: {node: '>=18'}
-    hasBin: true
-
   playwright-core@1.48.2:
     resolution: {integrity: sha512-sjjw+qrLFlriJo64du+EK0kJgZzoQPsabGF4lBvsid+3CNIZIYLgnMj9V6JY5VhM2Peh20DJWIVpVljLLnlawA==}
     engines: {node: '>=18'}
     hasBin: true
 
-  playwright-test@14.1.6:
-    resolution: {integrity: sha512-kp92+VIaPYYzHtcflt3EJHVsJRxgkmMKrKICGb6EQjaF4I7mOe1zPPMbucwmDPKZaOBC0txejaMDIBFlmFgyFw==}
+  playwright-test@14.1.7:
+    resolution: {integrity: sha512-pskq/DFHdtoj+SPFAuUpAVFxFx3LybgW2bxlTgBOoWTMUgS0PXC4O+tdELxC0D1z4r48uloWo283LB6uvXnHCw==}
     engines: {node: '>=16.0.0'}
     hasBin: true
 
@@ -10483,11 +10478,9 @@ snapshots:
 
   pirates@4.0.6: {}
 
-  playwright-core@1.47.2: {}
-
   playwright-core@1.48.2: {}
 
-  playwright-test@14.1.6:
+  playwright-test@14.1.7:
     dependencies:
       acorn-loose: 8.4.0
       assert: 2.1.0
@@ -10510,7 +10503,7 @@ snapshots:
       ora: 8.1.0
       p-timeout: 6.1.2
       path-browserify: 1.0.1
-      playwright-core: 1.47.2
+      playwright-core: 1.48.2
       polka: 0.5.2
       premove: 4.0.0
       process: 0.11.10
