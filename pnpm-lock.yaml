@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@birchill/bugsnag-zero':
-        specifier: 0.6.9
-        version: 0.6.9
+        specifier: 0.7.0
+        version: 0.7.0
       '@birchill/discriminator':
         specifier: 0.3.1
         version: 0.3.1(superstruct@2.0.2)
@@ -322,8 +322,8 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@birchill/bugsnag-zero@0.6.9':
-    resolution: {integrity: sha512-jCBweDlK6+nH6QVyrtS3YDdVlz0uSODDaN4xR6CvCAT6Fa7RTzeT8cKS7CamzHlSsUmRRrPptymcc7rw1yIoPQ==}
+  '@birchill/bugsnag-zero@0.7.0':
+    resolution: {integrity: sha512-2f7tlX/5ison9BIDrPB+cRnOr5f1ik7llcVCVeIM7y/bxBLkSnubc4iIGZnOKXaXuEIC3ZMf40iXsCecPYXTLA==}
     engines: {node: '>=12.0.0'}
 
   '@birchill/discriminator@0.3.1':
@@ -5568,10 +5568,6 @@ packages:
     resolution: {integrity: sha512-dvdQgNDNJo+8B2uBQoqdb11eUCE1JQXhvjC/CZtgvZseVd5TYMXnq0+vuUemXbd/Se29cTaUuPX3YIc2xgbvIg==}
     engines: {node: '>=8'}
 
-  ua-parser-js@1.0.39:
-    resolution: {integrity: sha512-k24RCVWlEcjkdOxYmVJgeD/0a1TiSpqLg+ZalVGV9lsnr4yqu0w7tX/x2xX6G4zpkgQnRf89lxuZ1wsbjXM8lw==}
-    hasBin: true
-
   unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
 
@@ -6147,9 +6143,7 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@birchill/bugsnag-zero@0.6.9':
-    dependencies:
-      ua-parser-js: 1.0.39
+  '@birchill/bugsnag-zero@0.7.0': {}
 
   '@birchill/discriminator@0.3.1(superstruct@2.0.2)':
     dependencies:
@@ -11784,8 +11778,6 @@ snapshots:
   typical@4.0.0: {}
 
   typical@5.2.0: {}
-
-  ua-parser-js@1.0.39: {}
 
   unbox-primitive@1.0.2:
     dependencies:
