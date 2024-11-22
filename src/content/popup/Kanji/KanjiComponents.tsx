@@ -1,6 +1,6 @@
 import type { ExpandedRadical, KanjiResult } from '@birchill/jpdict-idb';
 
-import { useLocale } from '../../common/i18n';
+import { useLocale } from '../../../common/i18n';
 
 export type Props = Pick<KanjiResult, 'rad' | 'comp'>;
 

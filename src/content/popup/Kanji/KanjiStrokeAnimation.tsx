@@ -9,8 +9,8 @@ import {
   useState,
 } from 'preact/hooks';
 
-import { useLocale } from '../../common/i18n';
-import { classes } from '../../utils/classes';
+import { useLocale } from '../../../common/i18n';
+import { classes } from '../../../utils/classes';
 
 export type Props = {
   onClick?: (trigger: 'touch' | 'mouse') => void;

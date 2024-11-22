@@ -1,6 +1,6 @@
 import type { KanjiResult } from '@birchill/jpdict-idb';
 
-import { useLocale } from '../../common/i18n';
+import { useLocale } from '../../../common/i18n';
 
 import { FrequencyIndicator } from './FrequencyIndicator';
 import { GradeIndicator } from './GradeIndicator';
