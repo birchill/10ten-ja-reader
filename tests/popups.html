@@ -109,51 +109,6 @@
 
     const themes = ['light', 'blue', 'lightblue', 'black', 'yellow'];
 
-    // Name tag test
-
-    addHeading('Name tags');
-
-    const nameTagTest = {
-      names: {
-        type: 'names',
-        data: [
-          {
-            k: ['中野'],
-            r: ['なかの'],
-            tr: [{ type: ['place', 'surname'], det: ['Nakano'] }],
-          },
-          {
-            k: ['中野'],
-            r: ['なかのざき'],
-            tr: [{ type: ['surname'], det: ['Nakanozaki'] }],
-          },
-          {
-            k: ['中'],
-            r: ['あたり'],
-            tr: [{ type: ['fem', 'surname'], det: ['Atari'] }],
-          },
-        ],
-        more: false,
-        matchLen: 2,
-      },
-    };
-
-    for (const theme of themes) {
-      const label = document.createElement('div');
-      label.classList.add('label');
-      label.append(`Theme: ${theme}`);
-      container.append(label);
-
-      const popup = contentHandler._renderPopup(nameTagTest, {
-        ...config,
-        container: createPopupContainer(),
-        dictToShow: 'names',
-        popupStyle: theme,
-        showDefinitions: true,
-      });
-      popup.classList.add('-inline');
-    }
-
     // Special tests for names + currency
     {
       addLabel('Currency + names');
