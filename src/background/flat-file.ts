@@ -309,7 +309,7 @@ type WithExtraMetadata<T> = Overwrite<
   {
     wk: WordResult['k'][0]['wk'];
     bv: WordResult['k'][0]['bv'];
-    bg: WordResult['k'][0]['bv'];
+    bg: WordResult['k'][0]['bg'];
   }
 >;
 
