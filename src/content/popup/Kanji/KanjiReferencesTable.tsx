@@ -2,14 +2,14 @@ import { KanjiResult } from '@birchill/jpdict-idb';
 import type { RenderableProps } from 'preact';
 import { useMemo } from 'preact/hooks';
 
-import { useLocale } from '../../common/i18n';
+import { useLocale } from '../../../common/i18n';
 import {
   ReferenceAbbreviation,
   getSelectedReferenceLabels,
-} from '../../common/refs';
-import { classes } from '../../utils/classes';
+} from '../../../common/refs';
+import { classes } from '../../../utils/classes';
 
-import { getReferenceValue } from '../reference-value';
+import { getReferenceValue } from '../../reference-value';
 
 type Props = {
   entry: KanjiResult;

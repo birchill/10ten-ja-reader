@@ -1,4 +1,4 @@
-import { ReferenceAbbreviation } from '../../common/refs';
+import { ReferenceAbbreviation } from '../../../common/refs';
 
 import { KanjiReferencesTable } from './KanjiReferencesTable';
 

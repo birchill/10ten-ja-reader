@@ -1,4 +1,4 @@
-import { useLocale } from '../../common/i18n';
+import { useLocale } from '../../../common/i18n';
 
 export type Props = { frequency?: number };
 

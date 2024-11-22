@@ -1,15 +1,15 @@
 import type { KanjiResult } from '@birchill/jpdict-idb';
 import { useRef } from 'preact/hooks';
 
-import type { ReferenceAbbreviation } from '../../common/refs';
-import { classes } from '../../utils/classes';
+import type { ReferenceAbbreviation } from '../../../common/refs';
+import { classes } from '../../../utils/classes';
 
+import { usePopupOptions } from './../options-context';
+import { containerHasSelectedText } from './../selection';
+import type { StartCopyCallback } from './../show-popup';
 import { KanjiInfo } from './KanjiInfo';
 import { KanjiReferencesTable } from './KanjiReferencesTable';
 import { KanjiStrokeAnimation } from './KanjiStrokeAnimation';
-import { usePopupOptions } from './options-context';
-import { containerHasSelectedText } from './selection';
-import type { StartCopyCallback } from './show-popup';
 
 export type Props = {
   entry: KanjiResult;
