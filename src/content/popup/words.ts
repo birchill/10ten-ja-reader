@@ -6,6 +6,7 @@ import {
   groupSenses,
 } from '@birchill/jpdict-idb';
 import { countMora, moraSubstring } from '@birchill/normal-jp';
+import { h, render } from 'preact';
 import browser from 'webextension-polyfill';
 
 import { Sense, WordResult } from '../../background/search-result';
@@ -16,11 +17,11 @@ import { getFilteredTags } from '../../utils/verb-tags';
 
 import { NamePreview } from '../query';
 
+import { NameEntry } from './Names/NameEntry';
 import { CopyState } from './copy-state';
 import { renderStar } from './icons';
 import { getLangTag } from './lang-tag';
 import { renderMetadata } from './metadata';
-import { renderName } from './names';
 import { getSelectedIndex } from './selected-index';
 import { containerHasSelectedText } from './selection';
 import type { ShowPopupOptions, StartCopyCallback } from './show-popup';
@@ -357,10 +358,14 @@ function renderNamePreview(
   let lastPointerType = 'touch';
 
   for (const [index, name] of names.entries()) {
-    const nameEntry = renderName(name);
+    const nameEntry = html('div');
+
+    let selectState: 'unselected' | 'selected' | 'flash' = 'unselected';
     if (index === selectedIndex) {
-      nameEntry.classList.add(copyKind === 'active' ? '-selected' : '-flash');
+      selectState = copyKind === 'active' ? 'selected' : 'flash';
     }
+
+    render(h(NameEntry, { entry: name, selectState: selectState }), nameEntry);
 
     nameEntry.addEventListener('pointerup', (evt) => {
       lastPointerType = evt.pointerType;
