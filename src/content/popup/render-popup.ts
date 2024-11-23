@@ -145,11 +145,11 @@ export function renderPopup(
           isCombinedResult: false,
           matchLen: 0,
           meta: options.meta,
+          metaonly: true,
         });
         if (!metadata) {
           return null;
         }
-        metadata.classList.add('-metaonly');
 
         contentContainer.append(
           html('div', { class: 'wordlist entry-data' }, metadata)
