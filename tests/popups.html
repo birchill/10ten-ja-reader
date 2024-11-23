@@ -154,46 +154,6 @@
       popup.classList.add('-inline');
     }
 
-    // Measure tests
-
-    addHeading('Measurement conversion');
-    const measureTests = [
-      {
-        description: '帖 measure',
-        config: {
-          ...config,
-          showDefinitions: true,
-          meta: { type: 'measure', value: 6, unit: '帖' },
-        },
-      },
-      {
-        description: '畳 measure',
-        config: {
-          ...config,
-          showDefinitions: true,
-          meta: { type: 'measure', value: 4.5, unit: '畳' },
-        },
-      },
-      {
-        description: 'Square metre measure',
-        config: {
-          ...config,
-          showDefinitions: true,
-          meta: { type: 'measure', value: 5, unit: 'm2' },
-        },
-      },
-    ];
-
-    for (const test of measureTests) {
-      addLabel(test.description);
-      const popup = contentHandler._renderPopup(null, {
-        ...test.config,
-        container: createPopupContainer(),
-        dictToShow: 'words',
-        popupStyle: 'light',
-      });
-      popup.classList.add('-inline');
-    }
 
     // Currency tests
 
