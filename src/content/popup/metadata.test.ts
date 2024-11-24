@@ -8,31 +8,26 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 let locale: 'en' | 'ja' | 'zh_CN' = 'en';
 
-vi.mock('webextension-polyfill', async () => {
+vi.mock('../../common/i18n', async () => {
   const { mockGetMessage } = await import('./mock-get-message');
   return {
-    default: {
-      i18n: {
-        getMessage: (id: string, replacements?: string | Array<string>) =>
+    useLocale: () => {
+      return {
+        t: (id: string, replacements?: string | Array<string>) =>
           mockGetMessage(locale, id, replacements),
-      },
+        langTag: locale,
+      };
     },
   };
 });
 
 import { ShogiMeta } from '../shogi';
-import { clearLangTagCache } from './lang-tag';
 
 import { renderMetadata } from './metadata';
 
-function setLocale(localeToSet: 'en' | 'ja' | 'zh_CN') {
-  locale = localeToSet;
-  clearLangTagCache();
-}
-
 describe('renderShogiInfo', () => {
   afterEach(() => {
-    setLocale('en');
+    locale = 'en';
   });
 
   it('renders a shogi move with a piece and destination', () => {
@@ -198,18 +193,19 @@ function getShogiMove(
 
   const prevLocale = locale;
   if (localeToUse) {
-    setLocale(localeToUse);
+    locale = localeToUse;
   }
 
   let result =
-    renderMetadata(params)?.querySelector('.value')?.textContent ?? undefined;
+    renderMetadata(params)?.querySelector('#shogi-move')?.textContent ??
+    undefined;
 
   // Drop any zero-width spaces since we only add them for Safari's sake and
   // they're not expected to affect the visual result
   result = result?.replace(/\u200b/g, '');
 
   if (prevLocale !== localeToUse) {
-    setLocale(prevLocale);
+    locale = prevLocale;
   }
 
   return result;
