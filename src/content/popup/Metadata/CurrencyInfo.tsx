@@ -10,23 +10,23 @@ type Props = {
 
 export function CurrencyInfo({ meta, fxData }: Props) {
   return (
-    <div class="meta currency" lang="ja">
-      <div class="main">
+    <div lang="ja">
+      <div class="tp-text-xl">
         {/* LHS */}
-        <div class="equation-part">
-          <span class="curr">JPY</span>
-          <span class="src">
+        <div class="tp-inline-flex tp-items-baseline tp-gap-1">
+          <span class="tp-opacity-60 tp-text-base">JPY</span>
+          <span>
             {new Intl.NumberFormat('ja-JP', {
               style: 'currency',
               currency: 'JPY',
             }).format(meta.value)}
           </span>
-          <span class="equals">≈</span>
+          <span class="tp-mx-1.5">≈</span>
         </div>
         {/* RHS */}
-        <div class="equation-part">
-          <span class="curr">{fxData.currency}</span>
-          <span class="value">
+        <div class="tp-inline-flex tp-items-baseline tp-gap-1">
+          <span class="tp-opacity-60 tp-text-base">{fxData.currency}</span>
+          <span>
             <CurrencyValue
               currency={fxData.currency}
               value={meta.value * fxData.rate}
@@ -49,7 +49,7 @@ function TimeStamp({ timestamp }: { timestamp: number }) {
   });
   const expl = t('currency_data_updated_label', timestampAsString);
 
-  return <div class="timestamp">{expl}</div>;
+  return <div class="tp-opacity-60 tp-text-2xs">{expl}</div>;
 }
 
 function CurrencyValue({

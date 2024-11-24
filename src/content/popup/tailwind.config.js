@@ -30,6 +30,10 @@ export default {
       },
       fontSize: {
         // Compare to https://github.com/tailwindlabs/tailwindcss/blob/6ab289343deaa61095a8f55799239ce0f1ee41ea/packages/tailwindcss/theme.css#L374-L400
+        '2xs': [
+          'calc(10 / 14 * var(--base-font-size))',
+          { lineHeight: 'calc(0.9 * var(--base-font-size))' },
+        ],
         xs: [
           'calc(11 / 14 * var(--base-font-size))',
           { lineHeight: 'var(--base-font-size)' },
