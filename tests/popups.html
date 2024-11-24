@@ -271,37 +271,6 @@
       popup.classList.add('-inline');
     }
 
-    // Shogi tests
-
-    addHeading('Shogi move parsing');
-    const shogiTests = [
-      {
-        description: 'Shogi move',
-        config: {
-          ...config,
-          showDefinitions: true,
-          meta: {
-            type: 'shogi',
-            matchLen: 4,
-            side: 'black',
-            dest: [2, 5],
-            piece: 'pro_b',
-          },
-        },
-      },
-    ];
-
-    for (const test of shogiTests) {
-      addLabel(test.description);
-      const popup = contentHandler._renderPopup(null, {
-        ...test.config,
-        container: createPopupContainer(),
-        dictToShow: 'words',
-        popupStyle: 'light',
-      });
-      popup.classList.add('-inline');
-    }
-
     // Interactive mode tests
 
     addHeading('Interactive mode');
