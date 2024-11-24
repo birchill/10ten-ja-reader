@@ -75,7 +75,7 @@ export function ShogiInfo({ meta }: Props) {
       </span>
       <span lang="ja">{serializeShogi(meta)}</span>
       <span class="tp-px-1.5">=</span>
-      <span>{move}</span>
+      <span id="shogi-move">{move}</span>
     </div>
   );
 }
