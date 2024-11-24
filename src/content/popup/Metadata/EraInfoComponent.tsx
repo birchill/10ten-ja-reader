@@ -12,18 +12,18 @@ export function EraInfoComponent(props: Props) {
       : props.meta.year - 1 + props.eraInfo.start;
 
   return (
-    <div class="meta era" lang="ja">
-      <span class="era-name">
+    <div class="tp-text-2xl tp-flex tp-items-baseline" lang="ja">
+      <span class="tp-text-[--primary-highlight]">
         <ruby>
           {props.meta.era}
           <rp>(</rp>
-          <rt>{props.eraInfo.reading}</rt>
+          <rt class="tp-text-sm">{props.eraInfo.reading}</rt>
           <rp>)</rp>
           {props.meta.year === 0 ? '元年' : `${props.meta.year}年`}
         </ruby>
       </span>
-      <span class="equals">=</span>
-      <span class="seireki">{`${seireki}年`}</span>
+      <span class="tp-px-1.5">=</span>
+      <span class="tp-text-[--reading-highlight]">{`${seireki}年`}</span>
     </div>
   );
 }
