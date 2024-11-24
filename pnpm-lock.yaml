@@ -172,14 +172,14 @@ importers:
         specifier: 0.6.9
         version: 0.6.9(@trivago/prettier-plugin-sort-imports@4.3.0(prettier@3.3.3))(prettier-plugin-organize-attributes@1.0.0(prettier@3.3.3))(prettier@3.3.3)
       react-cosmos:
-        specifier: 6.2.0
-        version: 6.2.0(@types/express@4.17.21)
+        specifier: 6.2.1
+        version: 6.2.1(@types/express@4.17.21)
       react-cosmos-plugin-boolean-input:
         specifier: 6.2.0
         version: 6.2.0
       react-cosmos-plugin-rspack:
         specifier: 1.0.0
-        version: 1.0.0(@rspack/core@1.1.2)(react-cosmos@6.2.0(@types/express@4.17.21))(webpack@5.96.1)
+        version: 1.0.0(@rspack/core@1.1.2)(react-cosmos@6.2.1(@types/express@4.17.21))(webpack@5.96.1)
       release-it:
         specifier: 17.10.0
         version: 17.10.0(typescript@5.6.3)
@@ -3146,6 +3146,15 @@ packages:
       '@types/express':
         optional: true
 
+  http-proxy-middleware@2.0.7:
+    resolution: {integrity: sha512-fgVY8AV7qU7z/MmXJ/rxwbrtQH4jBQ9m7kp3llF0liB7glmFeVZFBepQb32T3y8n8k2+AEYuMPCpinYW+/CuRA==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      '@types/express': ^4.17.13
+    peerDependenciesMeta:
+      '@types/express':
+        optional: true
+
   http-proxy@1.18.1:
     resolution: {integrity: sha512-7mz/721AbnJwIVbnaSv1Cz3Am0ZLT/UBwkC92VlxhXv/k/BBQfM2fXElQNC27BVGr0uwUpplYPQM9LnaBMR5NQ==}
     engines: {node: '>=8.0.0'}
@@ -4701,8 +4710,8 @@ packages:
   react-cosmos-ui@6.2.0:
     resolution: {integrity: sha512-Vvh85sIr8MDPc9dmrzXp4b/9M9oM8fzCnpapgY7Kf26hepDzwlrVg/GXaTnlyisNnQEtVkNRSxPeE3/NuD+xrg==}
 
-  react-cosmos@6.2.0:
-    resolution: {integrity: sha512-MHxyU8InppDP+lQOK8eJNRqL4K4JR8SdND8J2YZ7Xk1qGR3z/CLh13418gDfzEVnjK8rBEmxbx/lR5sQhBCxnw==}
+  react-cosmos@6.2.1:
+    resolution: {integrity: sha512-7yAuGFZc5Q4n7QeY7a4OY3svuIR1SoaENVC6Enu34Jmg2zg0wBPowVUHrGOiL/He787dup+leLVGuUYwHzHnmg==}
     hasBin: true
 
   react-is@16.13.1:
@@ -9248,6 +9257,18 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
+  http-proxy-middleware@2.0.7(@types/express@4.17.21):
+    dependencies:
+      '@types/http-proxy': 1.17.15
+      http-proxy: 1.18.1
+      is-glob: 4.0.3
+      is-plain-obj: 3.0.0
+      micromatch: 4.0.8
+    optionalDependencies:
+      '@types/express': 4.17.21
+    transitivePeerDependencies:
+      - debug
+
   http-proxy@1.18.1:
     dependencies:
       eventemitter3: 4.0.7
@@ -10753,10 +10774,10 @@ snapshots:
 
   react-cosmos-plugin-boolean-input@6.2.0: {}
 
-  react-cosmos-plugin-rspack@1.0.0(@rspack/core@1.1.2)(react-cosmos@6.2.0(@types/express@4.17.21))(webpack@5.96.1):
+  react-cosmos-plugin-rspack@1.0.0(@rspack/core@1.1.2)(react-cosmos@6.2.1(@types/express@4.17.21))(webpack@5.96.1):
     dependencies:
       '@rspack/core': 1.1.2
-      react-cosmos: 6.2.0(@types/express@4.17.21)
+      react-cosmos: 6.2.1(@types/express@4.17.21)
       react-cosmos-dom: 6.2.0
       webpack-dev-middleware: 7.4.2(webpack@5.96.1)
       webpack-hot-middleware: 2.26.1
@@ -10774,13 +10795,13 @@ snapshots:
       lodash-es: 4.17.21
       react-cosmos-core: 6.2.0
 
-  react-cosmos@6.2.0(@types/express@4.17.21):
+  react-cosmos@6.2.1(@types/express@4.17.21):
     dependencies:
       '@skidding/launch-editor': 2.2.3
       chokidar: 3.6.0
       express: 4.19.2
       glob: 10.4.5
-      http-proxy-middleware: 2.0.6(@types/express@4.17.21)
+      http-proxy-middleware: 2.0.7(@types/express@4.17.21)
       lodash-es: 4.17.21
       micromatch: 4.0.7
       open: 10.1.0
