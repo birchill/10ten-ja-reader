@@ -14,6 +14,9 @@ app.
   ([#2051](https://github.com/birchill/10ten-ja-reader/issues/2051)).
 - Added deinflection for -得る
   ([#2060](https://github.com/birchill/10ten-ja-reader/pull/2060)).
+- Made the kanji references table more responsive
+  thanks to [@StarScape](https://github.com/StarScape)
+  ([#2115](https://github.com/birchill/10ten-ja-reader/pull/2115)).
 
 ## [1.22.0] - 2024-10-17
 
