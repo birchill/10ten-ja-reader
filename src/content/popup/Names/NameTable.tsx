@@ -35,18 +35,20 @@ export const NameTable = (props: NameTableProps) => {
 
   return (
     <div
-      class={classes('name-table', entries.length > 4 ? '-multicol' : '')}
+      class={classes('tp-my-2', entries.length > 4 ? 'tp-columns-2' : '')}
       ref={namesTable}
     >
-      {props.meta && (
-        <MetadataContainer
-          fxData={props.fxData}
-          preferredUnits={props.preferredUnits}
-          isCombinedResult={true}
-          matchLen={props.matchLen}
-          meta={props.meta}
-        />
-      )}
+      <div style={{ 'column-span': 'all' }}>
+        {props.meta && (
+          <MetadataContainer
+            fxData={props.fxData}
+            preferredUnits={props.preferredUnits}
+            isCombinedResult
+            matchLen={props.matchLen}
+            meta={props.meta}
+          />
+        )}
+      </div>
 
       {entries.map((entry, index) => {
         let selectState: 'unselected' | 'selected' | 'flash' = 'unselected';
@@ -78,7 +80,7 @@ export const NameTable = (props: NameTableProps) => {
           />
         );
       })}
-      {more && <span class="more">…</span>}
+      {more && <span class="tp-px-4">…</span>}
     </div>
   );
 };

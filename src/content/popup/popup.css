@@ -1025,34 +1025,6 @@
     margin-bottom: 3px;
   }
 
-  .name-table {
-    padding-bottom: 6px;
-    margin-top: 8px;
-  }
-
-  .name-table.-multicol {
-    column-count: 2;
-    column-gap: 1em;
-  }
-
-  .name-table.-multicol .entry {
-    /* Avoid column breaks within an entry */
-    page-break-inside: avoid;
-    break-inside: avoid;
-  }
-
-  .name-table.-multicol .meta {
-    column-span: all;
-  }
-
-  .name-table .entry {
-    margin-bottom: 3px;
-  }
-
-  .name-table .w-def div {
-    margin-bottom: 2px;
-  }
-
   /* Kanji display */
 
   .kanjilist {
@@ -1187,8 +1159,7 @@
   * Meta information
   */
 
-  .wordlist .meta,
-  .name-table .meta {
+  .wordlist .meta {
     margin-top: 8px;
     margin-bottom: 3px;
     padding: 3px 14px;
@@ -1197,8 +1168,7 @@
     scroll-margin-top: 8px;
   }
 
-  .wordlist .meta:last-child,
-  .name-table .meta:last-child {
+  .wordlist .meta:last-child {
     margin-bottom: 8px;
   }
 
@@ -1207,15 +1177,12 @@
   }
 
   .wordlist .meta.era,
-  .wordlist .meta.measure > *,
-  .name-table .meta.era,
-  .name-table .meta.measure > * {
+  .wordlist .meta.measure > * {
     display: flex;
     align-items: baseline;
   }
 
-  .wordlist .meta .equals,
-  .name-table .meta .equals {
+  .wordlist .meta .equals {
     padding-left: 5px;
     padding-right: 5px;
   }
