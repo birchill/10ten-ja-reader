@@ -54,8 +54,12 @@ export default {
           'calc(18 / 14 * var(--base-font-size))',
           { lineHeight: 'calc(1.75 * var(--base-font-size))' },
         ],
+        '1.5xl': [
+          'calc(20 / 14 * var(--base-font-size))',
+          { lineHeight: 'calc(1.85 * var(--base-font-size))' },
+        ],
         '2xl': [
-          'calc(21 / 14 * var(--base-font-size))',
+          'calc(22 / 14 * var(--base-font-size))',
           { lineHeight: 'calc(2 * var(--base-font-size))' },
         ],
         'big-kanji': [
