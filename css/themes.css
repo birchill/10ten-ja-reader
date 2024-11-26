@@ -65,23 +65,32 @@
 
   --expand-button-rgb: 177, 173, 150;
   --expand-button-color: rgb(var(--expand-button-rgb));
+
+  --tag-green-bg: #43a04722;
+  --tag-green-text: #215723;
+  --tag-green-border: #43a047aa;
+
+  --tag-pink-bg: #f24b5922;
+  --tag-pink-text: #7a282f;
+  --tag-pink-border: #f24b5966;
+
+  --tag-blue-bg: #2698fb22;
+  --tag-blue-text: #144977;
+  --tag-blue-border: #2698fbaa;
 }
 
-.window.theme-light .w-def .tag-fem,
 .window.theme-light .w-def .w-dial {
   background: #f24b5922;
   color: #7a282f;
   --tag-border: #f24b5966;
 }
 
-.window.theme-light .w-def .tag-masc,
 .window.theme-light .w-def .w-misc {
   background: #2698fb22;
   color: #144977;
   --tag-border: #2698fbaa;
 }
 
-.window.theme-light .w-def .tag-place,
 .window.theme-light .w-def .w-field {
   background: #43a04722;
   color: #215723;
@@ -194,9 +203,11 @@
 
   --expand-button-rgb: 130, 126, 125;
   --expand-button-color: rgb(var(--expand-button-rgb));
+
+  --tag-blue-bg: #2698fb88;
+  --tag-blue-border: rgba(255, 255, 255, 0.3);
 }
 
-.window.theme-black .w-def .tag-masc,
 .window.theme-black .w-def .w-misc {
   --tag-blue-bg: #2698fb88;
   --tag-border: rgba(255, 255, 255, 0.3);
