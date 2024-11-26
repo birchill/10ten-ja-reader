@@ -2,9 +2,9 @@
 
 :root,
 :host {
-  --tag-green: #43a047aa;
-  --tag-pink: #f24b59aa;
-  --tag-blue: #2698fbaa;
+  --tag-green-bg: #43a047aa;
+  --tag-pink-bg: #f24b59aa;
+  --tag-blue-bg: #2698fbaa;
 
   --selected-bg: #fffde5;
   --selected-reading-highlight: #2e7d32;
@@ -198,7 +198,7 @@
 
 .window.theme-black .w-def .tag-masc,
 .window.theme-black .w-def .w-misc {
-  --tag-blue: #2698fb88;
+  --tag-blue-bg: #2698fb88;
   --tag-border: rgba(255, 255, 255, 0.3);
 }
 

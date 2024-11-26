@@ -892,27 +892,27 @@
   }
 
   .w-def .tag-fem {
-    background: var(--tag-pink);
+    background: var(--tag-pink-bg);
   }
 
   .w-def .tag-masc {
-    background: var(--tag-blue);
+    background: var(--tag-blue-bg);
   }
 
   .w-def .tag-place {
-    background: var(--tag-green);
+    background: var(--tag-green-bg);
   }
 
   .w-def .w-field {
-    background: var(--tag-green);
+    background: var(--tag-green-bg);
   }
 
   .w-def .w-misc {
-    background: var(--tag-blue);
+    background: var(--tag-blue-bg);
   }
 
   .w-def .w-dial {
-    background: var(--tag-pink);
+    background: var(--tag-pink-bg);
   }
 
   .w-def .w-pos,
