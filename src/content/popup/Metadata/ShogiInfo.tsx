@@ -67,7 +67,7 @@ export function ShogiInfo({ meta }: Props) {
       <span
         class={classes(
           'tp-text-2xs tp-rounded tp-mr-1 tp-px-1 whitespace-nowrap',
-          '!tp-border-solid !tp-border !tp-border-[--tag-border]'
+          'tp-border-solid tp-border tp-border-[--tag-border]'
         )}
         lang={langTag}
       >
