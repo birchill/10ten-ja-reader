@@ -1,12 +1,12 @@
 @config "./tailwind.config.js";
 
+@import '../../css/themes.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  @import '../../css/themes.css';
-
   /*
    * Container styles
    */
