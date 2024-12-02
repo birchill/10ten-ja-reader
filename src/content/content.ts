@@ -101,6 +101,7 @@ import {
   PopupPositionMode,
 } from './popup/popup-position';
 import { type ShowPopupOptions, showPopup } from './popup/show-popup';
+import { showWordsTab } from './popup/tabs';
 import {
   LookupPuck,
   PuckPointerEvent,
@@ -2042,17 +2043,8 @@ export class ContentHandler {
     if (queryResult) {
       switch (dictMode) {
         case 'default':
-          if (!queryResult.words && !meta) {
-            // Prefer the names dictionary if we have a names result of more
-            // than one character or if we have no kanji results.
-            //
-            // Otherwise, follow the usual fallback order words -> kanji ->
-            // names.
-            dict =
-              (queryResult.names && queryResult.names.matchLen > 1) ||
-              !queryResult.kanji
-                ? 'names'
-                : 'kanji';
+          if (!showWordsTab(queryResult, !!meta)) {
+            dict = queryResult.names ? 'names' : 'kanji';
           }
           break;
 
@@ -2094,7 +2086,11 @@ export class ContentHandler {
         const nextDict = cycleOrder[next];
         if (
           this.currentSearchResult[nextDict] ||
-          (nextDict === 'words' && !!this.currentLookupParams?.meta)
+          (nextDict === 'words' &&
+            showWordsTab(
+              this.currentSearchResult,
+              !!this.currentLookupParams?.meta
+            ))
         ) {
           dict = nextDict;
           break;

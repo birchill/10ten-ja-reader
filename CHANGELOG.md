@@ -17,6 +17,8 @@ app.
 - Made the kanji references table more responsive
   thanks to [@StarScape](https://github.com/StarScape)
   ([#2115](https://github.com/birchill/10ten-ja-reader/pull/2115)).
+- Fixed displaying metadata in the names tab
+  ([#2129](https://github.com/birchill/10ten-ja-reader/pull/2129)).
 
 ## [1.22.0] - 2024-10-17
 

@@ -6,6 +6,7 @@ import { getMouseCapabilityMql } from '../../utils/device';
 import { isFenix } from '../../utils/ua-utils';
 
 import { DisplayMode } from '../popup-state';
+import type { QueryResult } from '../query';
 
 import { renderCloseButton } from './close';
 import {
@@ -156,4 +157,17 @@ function renderSettingsButton(onShowSettings: () => void): HTMLElement {
   settingsButton.onclick = onShowSettings;
 
   return html('div', { class: 'settings' }, settingsButton);
+}
+
+// We have some slightly complicated logic to determine if we show the words
+// tab.
+//
+// Basically, we show the words tab if there are word results OR we have
+// metadata to show and NO name results (since if we have name results we can
+// show the metadata there instead).
+export function showWordsTab(
+  queryResult: QueryResult,
+  hasMeta: boolean
+): boolean {
+  return !!queryResult.words || (hasMeta && !queryResult.names);
 }
