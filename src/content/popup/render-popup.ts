@@ -23,7 +23,7 @@ import popupStyles from './popup.css?inline';
 import { ShowPopupOptions } from './show-popup';
 import { renderCopyDetails, renderUpdatingStatus } from './status';
 import { onHorizontalSwipe } from './swipe';
-import { renderTabBar } from './tabs';
+import { renderTabBar, showWordsTab } from './tabs';
 import { renderWordEntries } from './words';
 
 export function renderPopup(
@@ -60,7 +60,7 @@ export function renderPopup(
 
   if (showTabs) {
     const enabledTabs = {
-      words: !!result?.words || !!options.meta,
+      words: showWordsTab(result, !!options.meta),
       kanji: !!result?.kanji,
       names: !!result?.names,
     };
