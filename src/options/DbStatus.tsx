@@ -149,7 +149,7 @@ function DbSummaryStatus(props: {
       <div>
         <progress
           class="mb-2 block"
-          max={100}
+          max="100"
           id="update-progress"
           value={totalProgress * 100}
         />
