@@ -1,4 +1,4 @@
-export const browser = {
+const browser = {
   runtime: {
     getURL: () => '#',
     sendMessage: () => new Promise((resolve) => resolve),
@@ -424,6 +424,7 @@ export const browser = {
     },
   },
 };
+export default browser;
 
 declare global {
   interface Window {
