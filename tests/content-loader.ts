@@ -1,6 +1,6 @@
 import { ContentHandler } from '../src/content/content';
 
-import { browser } from './browser-polyfill';
+import browser from './browser-polyfill';
 
 (window as any).browser = browser;
 
