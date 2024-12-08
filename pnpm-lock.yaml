@@ -208,8 +208,8 @@ importers:
         specifier: ^0.11.1
         version: 0.11.1(vitest@2.1.8(@types/node@22.7.4)(jsdom@25.0.1)(terser@5.34.1))
       web-ext-plugin:
-        specifier: 2.10.0
-        version: 2.10.0(body-parser@1.20.2)(express@4.19.2)
+        specifier: 2.11.0
+        version: 2.11.0(body-parser@1.20.2)(express@4.19.2)
       webpack:
         specifier: 5.96.1
         version: 5.96.1
@@ -5732,8 +5732,8 @@ packages:
   wcwidth@1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
 
-  web-ext-plugin@2.10.0:
-    resolution: {integrity: sha512-o4ikGMk2W5MxPFO0IdcV6WVY7Mo0Ngh//k+jOxsdCBmxs6WhllZRE9y3pER/YcI/Cv3qZaPn1OA/+JROZ6ipaw==}
+  web-ext-plugin@2.11.0:
+    resolution: {integrity: sha512-3udKxekO804q/JW68YOEIlZdsSXEuU27DfCDa9kes0uWNebO/+WuMXnDrcTpC7nQJbSOxKUfiH1zqinI7qwLyA==}
 
   web-ext@8.3.0:
     resolution: {integrity: sha512-mXSOiDtmm3n0KNpSuQ65fJpypAoNLAmZv3QkdlVbJ6etn0BK+hl/k+tjHefSIKdbzGUIeFbhn2oxWMe9Tdyrdg==}
@@ -11937,7 +11937,7 @@ snapshots:
     dependencies:
       defaults: 1.0.4
 
-  web-ext-plugin@2.10.0(body-parser@1.20.2)(express@4.19.2):
+  web-ext-plugin@2.11.0(body-parser@1.20.2)(express@4.19.2):
     dependencies:
       web-ext: 8.3.0(body-parser@1.20.2)(express@4.19.2)
     transitivePeerDependencies:

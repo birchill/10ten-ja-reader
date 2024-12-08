@@ -131,7 +131,7 @@
     "typescript-eslint": "8.15.0",
     "vitest": "2.1.8",
     "vitest-github-actions-reporter": "^0.11.1",
-    "web-ext-plugin": "2.10.0",
+    "web-ext-plugin": "2.11.0",
     "webpack": "5.96.1",
     "webpack-bugsnag-plugins": "1.8.0",
     "webpack-preprocessor": "0.1.12",
