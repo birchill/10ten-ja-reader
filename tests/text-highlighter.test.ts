@@ -2,7 +2,7 @@
 
 import { assert } from 'chai';
 
-import { browser } from './browser-polyfill';
+import browser from './browser-polyfill';
 
 (window as any).browser = browser;
 

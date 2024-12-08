@@ -1,8 +1,9 @@
+import { useMemo } from 'preact/hooks';
+
 import { ContentConfigParams } from '../../../common/content-config-params';
 import { classes } from '../../../utils/classes';
 
 import { SelectionMeta } from '../../meta';
-import { getEraInfo } from '../../years';
 
 import { CurrencyInfo } from './CurrencyInfo';
 import { EraInfoComponent } from './EraInfoComponent';
@@ -27,38 +28,26 @@ export function MetadataContainer({
   meta,
   metaonly = false,
 }: Props) {
-  let metadata = undefined;
-  switch (meta.type) {
-    case 'era': {
-      const eraInfo = getEraInfo(meta.era);
-      if (eraInfo) {
-        metadata = <EraInfoComponent meta={meta} eraInfo={eraInfo} />;
-      }
-      break;
-    }
-    case 'measure': {
-      metadata = <MeasureInfo meta={meta} preferredUnits={preferredUnits} />;
-      break;
-    }
-    case 'currency': {
-      if (fxData) {
-        metadata = <CurrencyInfo meta={meta} fxData={fxData} />;
-      }
-      break;
-    }
-    case 'number': {
-      if (meta.matchLen > matchLen) {
-        metadata = (
+  const metadata = useMemo(() => {
+    switch (meta.type) {
+      case 'era':
+        return <EraInfoComponent meta={meta} />;
+
+      case 'measure':
+        return <MeasureInfo meta={meta} preferredUnits={preferredUnits} />;
+
+      case 'currency':
+        return fxData ? <CurrencyInfo meta={meta} fxData={fxData} /> : null;
+
+      case 'number':
+        return meta.matchLen > matchLen ? (
           <NumberInfo meta={meta} isCombinedResult={isCombinedResult} />
-        );
-      }
-      break;
+        ) : null;
+
+      case 'shogi':
+        return <ShogiInfo meta={meta} />;
     }
-    case 'shogi': {
-      metadata = <ShogiInfo meta={meta} />;
-      break;
-    }
-  }
+  }, [meta]);
 
   return metadata ? (
     <div

@@ -1,7 +1,15 @@
-export const browser = {
+import { BackgroundRequest } from '../src/background/background-request';
+import { calculateEraDateTimeSpan } from '../src/background/calculate-date';
+
+const browser = {
   runtime: {
     getURL: () => '#',
-    sendMessage: () => new Promise((resolve) => resolve),
+    sendMessage: (request: BackgroundRequest) => {
+      if (request.type === 'calculateEraDateTimeSpan') {
+        return Promise.resolve(calculateEraDateTimeSpan(request));
+      }
+      return Promise.resolve();
+    },
     onMessage: {
       addListener: () => {
         // Probably should do something with this...
@@ -424,6 +432,7 @@ export const browser = {
     },
   },
 };
+export default browser;
 
 declare global {
   interface Window {

@@ -36,6 +36,7 @@ const config: KnipConfig = {
   playwright: {
     // Knip doesn't recognize the globs in package.json scripts
     entry: 'tests/**/*.test.{js,ts}',
+    config: 'playwright-test.config.js',
   },
   tailwind: {
     config: ['**/tailwind.config.js'],
