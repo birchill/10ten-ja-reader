@@ -80,7 +80,7 @@
   "devDependencies": {
     "@actions/core": "1.11.1",
     "@actions/github": "6.0.0",
-    "@eslint/js": "9.15.0",
+    "@eslint/js": "9.16.0",
     "@release-it/keep-a-changelog": "5.0.0",
     "@rspack/cli": "1.1.5",
     "@rspack/core": "1.1.5",
@@ -97,7 +97,7 @@
     "archiver": "7.0.1",
     "chai": "5.1.2",
     "css-loader": "7.1.2",
-    "eslint": "9.15.0",
+    "eslint": "9.16.0",
     "eslint-plugin-react": "7.37.2",
     "eslint-plugin-tailwindcss": "3.17.5",
     "fake-indexeddb": "6.0.0",
