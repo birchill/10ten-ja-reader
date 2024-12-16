@@ -172,14 +172,14 @@ importers:
         specifier: 0.6.9
         version: 0.6.9(@trivago/prettier-plugin-sort-imports@4.3.0(prettier@3.4.2))(prettier-plugin-organize-attributes@1.0.0(prettier@3.4.2))(prettier@3.4.2)
       react-cosmos:
-        specifier: 6.2.1
-        version: 6.2.1(@types/express@4.17.21)
+        specifier: 6.2.3
+        version: 6.2.3(@types/express@4.17.21)
       react-cosmos-plugin-boolean-input:
         specifier: 6.2.0
         version: 6.2.0
       react-cosmos-plugin-rspack:
         specifier: 1.0.0
-        version: 1.0.0(@rspack/core@1.1.6)(react-cosmos@6.2.1(@types/express@4.17.21))(webpack@5.97.1)
+        version: 1.0.0(@rspack/core@1.1.6)(react-cosmos@6.2.3(@types/express@4.17.21))(webpack@5.97.1)
       release-it:
         specifier: 17.10.0
         version: 17.10.0(typescript@5.6.3)
@@ -2144,6 +2144,10 @@ packages:
     resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
     engines: {node: '>= 0.6'}
 
+  cookie@0.7.1:
+    resolution: {integrity: sha512-6DnInpx7SJ2AK3+CTUE/ZM0vWTUboZCegxhC2xiIydHR9jNuTAASBrfEpHhiGOZw/nX51bHt6YQl8jsGo4y/0w==}
+    engines: {node: '>= 0.6'}
+
   copy-file@11.0.0:
     resolution: {integrity: sha512-mFsNh/DIANLqFt5VHZoGirdg7bK5+oTWlhnGu6tgRhzBlnEKWaPX2xrFaLltii/6rmhqFMJqffUgknuRdpYlHw==}
     engines: {node: '>=18'}
@@ -2718,6 +2722,10 @@ packages:
 
   express@4.21.0:
     resolution: {integrity: sha512-VqcNGcj/Id5ZT1LZ/cfihi3ttTn+NJmkli2eZADigjq29qTlWi/hAQ43t/VLPq8+UX06FCEx3ByOYet6ZFblng==}
+    engines: {node: '>= 0.10.0'}
+
+  express@4.21.2:
+    resolution: {integrity: sha512-28HqgMZAmih1Czt9ny7qr6ek2qddF4FclbMzwhCREB6OFfH+rXAnuNCwo1/wFvrtbgsQDb4kSbX9de9lFbrXnA==}
     engines: {node: '>= 0.10.0'}
 
   external-editor@3.1.0:
@@ -3890,10 +3898,6 @@ packages:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
 
-  micromatch@4.0.7:
-    resolution: {integrity: sha512-LPP/3KorzCwBxfeUuZmaR6bG2kdeHSbe0P2tY3FLRU4vYrjYz5hI4QZwV0njUx3jeuKe67YukQ1LSPZBKDqO/Q==}
-    engines: {node: '>=8.6'}
-
   micromatch@4.0.8:
     resolution: {integrity: sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==}
     engines: {node: '>=8.6'}
@@ -4305,6 +4309,9 @@ packages:
   path-to-regexp@0.1.10:
     resolution: {integrity: sha512-7lf7qcQidTku0Gu3YDPc8DJ1q7OOucfa/BSsIwjuh56VU7katFvuM8hULfkwB3Fns/rsVF7PwPKVw1sl5KQS9w==}
 
+  path-to-regexp@0.1.12:
+    resolution: {integrity: sha512-RA1GjUVMnvYFxuqovrEqZoxxW5NUZqbwKtYz/Tt7nXerk0LbLblQmrsgdeOxV5SFHf0UDggjS/bSeOZwt1pmEQ==}
+
   path-to-regexp@0.1.7:
     resolution: {integrity: sha512-5DFkuoqlv1uYQKxy8omFBeJPQcdoE07Kv2sferDCrAq1ohOU+MSDswDIbnx3YAM60qIOnYa53wBhXW0EbMonrQ==}
 
@@ -4326,9 +4333,10 @@ packages:
   pause-stream@0.0.11:
     resolution: {integrity: sha512-e3FBlXLmN/D1S+zHzanP4E/4Z60oFAa3O051qt1pxa7DEJWKAyil6upYVXCWadEnuoqa4Pkc9oUx9zsxYeRv8A==}
 
-  pem@1.14.8:
-    resolution: {integrity: sha512-ZpbOf4dj9/fQg5tQzTqv4jSKJQsK7tPl0pm4/pvPcZVjZcJg7TMfr3PBk6gJH97lnpJDu4e4v8UUqEz5daipCg==}
+  pem@1.15.1:
+    resolution: {integrity: sha512-kNNaflLX8Cpb3mrDNxSy8qIwpsNFKgBZx9pgFhbj4h+Rid4j2SMYQxcjtIjyhJg8/lwJTL+A3NHdD0M+UwyrCw==}
     engines: {node: '>=14.0.0'}
+    deprecated: this package has been deprecated - published by mistake
 
   pend@1.2.0:
     resolution: {integrity: sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==}
@@ -4702,11 +4710,11 @@ packages:
   react-cosmos-renderer@6.2.0:
     resolution: {integrity: sha512-XWuZcyslVB32QwJ3ODuu/rV14fcbXOoFNhUUos+Ox4PNvZtu43HxfUK62S9OZiwdI++Hx+dxH4akdaDDkZ82AQ==}
 
-  react-cosmos-ui@6.2.0:
-    resolution: {integrity: sha512-Vvh85sIr8MDPc9dmrzXp4b/9M9oM8fzCnpapgY7Kf26hepDzwlrVg/GXaTnlyisNnQEtVkNRSxPeE3/NuD+xrg==}
+  react-cosmos-ui@6.2.3:
+    resolution: {integrity: sha512-V9BDVfP1W+5MTS/SDyRKl1OJPuOkDiMAAuFjasKKZEj5mYR0DdEryjg4bboSo+g/3VMxdWOCTJ7a6pVGzAx0uQ==}
 
-  react-cosmos@6.2.1:
-    resolution: {integrity: sha512-7yAuGFZc5Q4n7QeY7a4OY3svuIR1SoaENVC6Enu34Jmg2zg0wBPowVUHrGOiL/He787dup+leLVGuUYwHzHnmg==}
+  react-cosmos@6.2.3:
+    resolution: {integrity: sha512-4dy0niyZW+6spwmlSzXqAQoH0kvWgc+RZsAFPlPxJlW5FCdEwnITrrJZ7XCQjBpmQLdes5Gpd4lkKFyxKeughQ==}
     hasBin: true
 
   react-is@16.13.1:
@@ -6439,7 +6447,7 @@ snapshots:
   '@eslint/eslintrc@2.1.4':
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.7(supports-color@8.1.1)
+      debug: 4.4.0
       espree: 9.6.1
       globals: 13.24.0
       ignore: 5.3.2
@@ -6488,7 +6496,7 @@ snapshots:
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
-      debug: 4.3.7(supports-color@8.1.1)
+      debug: 4.4.0
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -7068,7 +7076,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/typescript-estree': 8.15.0(typescript@5.6.3)
       '@typescript-eslint/utils': 8.15.0(eslint@9.16.0(jiti@2.4.0))(typescript@5.6.3)
-      debug: 4.3.7(supports-color@8.1.1)
+      debug: 4.4.0
       eslint: 9.16.0(jiti@2.4.0)
       ts-api-utils: 1.3.0(typescript@5.6.3)
     optionalDependencies:
@@ -7575,6 +7583,7 @@ snapshots:
       unpipe: 1.0.0
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   body-parser@1.20.3:
     dependencies:
@@ -7947,6 +7956,8 @@ snapshots:
   cookie-signature@1.0.6: {}
 
   cookie@0.6.0: {}
+
+  cookie@0.7.1: {}
 
   copy-file@11.0.0:
     dependencies:
@@ -8509,7 +8520,7 @@ snapshots:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.5
-      debug: 4.3.7(supports-color@8.1.1)
+      debug: 4.4.0
       doctrine: 3.0.0
       escape-string-regexp: 4.0.0
       eslint-scope: 7.2.2
@@ -8752,6 +8763,7 @@ snapshots:
       vary: 1.1.2
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   express@4.21.0:
     dependencies:
@@ -8775,6 +8787,42 @@ snapshots:
       on-finished: 2.4.1
       parseurl: 1.3.3
       path-to-regexp: 0.1.10
+      proxy-addr: 2.0.7
+      qs: 6.13.0
+      range-parser: 1.2.1
+      safe-buffer: 5.2.1
+      send: 0.19.0
+      serve-static: 1.16.2
+      setprototypeof: 1.2.0
+      statuses: 2.0.1
+      type-is: 1.6.18
+      utils-merge: 1.0.1
+      vary: 1.1.2
+    transitivePeerDependencies:
+      - supports-color
+
+  express@4.21.2:
+    dependencies:
+      accepts: 1.3.8
+      array-flatten: 1.1.1
+      body-parser: 1.20.3
+      content-disposition: 0.5.4
+      content-type: 1.0.5
+      cookie: 0.7.1
+      cookie-signature: 1.0.6
+      debug: 2.6.9
+      depd: 2.0.0
+      encodeurl: 2.0.0
+      escape-html: 1.0.3
+      etag: 1.8.1
+      finalhandler: 1.3.1
+      fresh: 0.5.2
+      http-errors: 2.0.0
+      merge-descriptors: 1.0.3
+      methods: 1.1.2
+      on-finished: 2.4.1
+      parseurl: 1.3.3
+      path-to-regexp: 0.1.12
       proxy-addr: 2.0.7
       qs: 6.13.0
       range-parser: 1.2.1
@@ -8880,6 +8928,7 @@ snapshots:
       unpipe: 1.0.0
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   finalhandler@1.3.1:
     dependencies:
@@ -9067,7 +9116,7 @@ snapshots:
     dependencies:
       basic-ftp: 5.0.5
       data-uri-to-buffer: 6.0.2
-      debug: 4.3.7(supports-color@8.1.1)
+      debug: 4.4.0
       fs-extra: 11.2.0
     transitivePeerDependencies:
       - supports-color
@@ -9932,7 +9981,8 @@ snapshots:
       type-fest: 0.13.1
       yargs-parser: 18.1.3
 
-  merge-descriptors@1.0.1: {}
+  merge-descriptors@1.0.1:
+    optional: true
 
   merge-descriptors@1.0.3: {}
 
@@ -9945,11 +9995,6 @@ snapshots:
   merge2@1.4.1: {}
 
   methods@1.1.2: {}
-
-  micromatch@4.0.7:
-    dependencies:
-      braces: 3.0.3
-      picomatch: 2.3.1
 
   micromatch@4.0.8:
     dependencies:
@@ -10300,7 +10345,7 @@ snapshots:
     dependencies:
       '@tootallnate/quickjs-emscripten': 0.23.0
       agent-base: 7.1.1
-      debug: 4.3.7(supports-color@8.1.1)
+      debug: 4.4.0
       get-uri: 6.0.3
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.5
@@ -10384,7 +10429,10 @@ snapshots:
 
   path-to-regexp@0.1.10: {}
 
-  path-to-regexp@0.1.7: {}
+  path-to-regexp@0.1.12: {}
+
+  path-to-regexp@0.1.7:
+    optional: true
 
   path-type@4.0.0: {}
 
@@ -10398,7 +10446,7 @@ snapshots:
     dependencies:
       through: 2.3.8
 
-  pem@1.14.8:
+  pem@1.15.1:
     dependencies:
       es6-promisify: 7.0.0
       md5: 2.3.0
@@ -10699,6 +10747,7 @@ snapshots:
   qs@6.11.0:
     dependencies:
       side-channel: 1.0.6
+    optional: true
 
   qs@6.13.0:
     dependencies:
@@ -10754,10 +10803,10 @@ snapshots:
 
   react-cosmos-plugin-boolean-input@6.2.0: {}
 
-  react-cosmos-plugin-rspack@1.0.0(@rspack/core@1.1.6)(react-cosmos@6.2.1(@types/express@4.17.21))(webpack@5.97.1):
+  react-cosmos-plugin-rspack@1.0.0(@rspack/core@1.1.6)(react-cosmos@6.2.3(@types/express@4.17.21))(webpack@5.97.1):
     dependencies:
       '@rspack/core': 1.1.6
-      react-cosmos: 6.2.1(@types/express@4.17.21)
+      react-cosmos: 6.2.3(@types/express@4.17.21)
       react-cosmos-dom: 6.2.0
       webpack-dev-middleware: 7.4.2(webpack@5.97.1)
       webpack-hot-middleware: 2.26.1
@@ -10770,25 +10819,25 @@ snapshots:
       react-cosmos-core: 6.2.0
       react-is: 18.3.1
 
-  react-cosmos-ui@6.2.0:
+  react-cosmos-ui@6.2.3:
     dependencies:
       lodash-es: 4.17.21
       react-cosmos-core: 6.2.0
 
-  react-cosmos@6.2.1(@types/express@4.17.21):
+  react-cosmos@6.2.3(@types/express@4.17.21):
     dependencies:
       '@skidding/launch-editor': 2.2.3
       chokidar: 3.6.0
-      express: 4.19.2
+      express: 4.21.2
       glob: 10.4.5
       http-proxy-middleware: 2.0.7(@types/express@4.17.21)
       lodash-es: 4.17.21
-      micromatch: 4.0.7
+      micromatch: 4.0.8
       open: 10.1.0
-      pem: 1.14.8
+      pem: 1.15.1
       react-cosmos-core: 6.2.0
       react-cosmos-renderer: 6.2.0
-      react-cosmos-ui: 6.2.0
+      react-cosmos-ui: 6.2.3
       ws: 8.18.0
       yargs: 17.7.2
     transitivePeerDependencies:
@@ -11109,6 +11158,7 @@ snapshots:
       statuses: 2.0.1
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   send@0.19.0:
     dependencies:
@@ -11152,6 +11202,7 @@ snapshots:
       send: 0.18.0
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   serve-static@1.16.2:
     dependencies:
@@ -11252,7 +11303,7 @@ snapshots:
   socks-proxy-agent@8.0.4:
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.7(supports-color@8.1.1)
+      debug: 4.4.0
       socks: 2.8.3
     transitivePeerDependencies:
       - supports-color
@@ -11321,7 +11372,7 @@ snapshots:
 
   spdy-transport@3.0.0:
     dependencies:
-      debug: 4.3.7(supports-color@8.1.1)
+      debug: 4.4.0
       detect-node: 2.1.0
       hpack.js: 2.1.6
       obuf: 1.1.2
@@ -11332,7 +11383,7 @@ snapshots:
 
   spdy@4.0.2:
     dependencies:
-      debug: 4.3.7(supports-color@8.1.1)
+      debug: 4.4.0
       handle-thing: 2.0.1
       http-deceiver: 1.2.7
       select-hose: 2.0.0
