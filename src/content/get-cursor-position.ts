@@ -21,28 +21,6 @@ import { isGdocsOverlayElem } from './gdocs-canvas';
 import { isPopupWindowHostElem } from './popup/popup-container';
 import { toPageCoords } from './scroll-offset';
 
-declare global {
-  // The following definitions were dropped from lib.dom.d.ts in TypeScript 4.4
-  // since only Firefox supports them.
-  interface CaretPosition {
-    readonly offsetNode: Node;
-    readonly offset: number;
-    getClientRect(): DOMRect | null;
-  }
-
-  type CaretPositionFromPointOptions = {
-    shadowRoots?: Array<ShadowRoot>;
-  };
-
-  interface Document {
-    caretPositionFromPoint?: (
-      x: number,
-      y: number,
-      options?: CaretPositionFromPointOptions
-    ) => CaretPosition | null;
-  }
-}
-
 export type CursorPosition<T extends Node = Node> = {
   offset: number;
   offsetNode: T;
