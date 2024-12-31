@@ -1,6 +1,5 @@
 /// <reference path="../common/constants.d.ts" />
 /// <reference path="./mail-extensions.d.ts" />
-
 /*
 
   10ten Japanese Reader
