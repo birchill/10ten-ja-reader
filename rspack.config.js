@@ -1,7 +1,6 @@
 /* eslint @typescript-eslint/no-var-requires: 0 */
 import rspack from '@rspack/core';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
-import { createRequire } from 'node:module';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import TerserPlugin from 'terser-webpack-plugin';
@@ -12,12 +11,7 @@ import {
 } from 'webpack-bugsnag-plugins';
 import BomPlugin from 'webpack-utf8-bom';
 
-//
-// Import package.json
-//
-
-const require = createRequire(import.meta.url);
-const pjson = require('./package.json');
+import pjson from './package.json' with { type: 'json' };
 
 //
 // __dirname shim
