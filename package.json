@@ -107,7 +107,7 @@
     "fork-ts-checker-webpack-plugin": "9.0.2",
     "globals": "15.14.0",
     "if-env": "1.0.4",
-    "jsdom": "^25.0.1",
+    "jsdom": "^26.0.0",
     "knip": "5.41.1",
     "mocha": "11.0.1",
     "playwright": "1.49.1",
