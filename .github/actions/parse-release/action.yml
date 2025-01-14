@@ -17,5 +17,5 @@ outputs:
   release_notes:
     description: 'The release notes for the given target'
 runs:
-  using: node20
+  using: node22
   main: index.js

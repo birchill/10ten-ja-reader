@@ -24,7 +24,7 @@ jobs:
 
       - uses: actions/setup-node@v4.1.0
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
 
       - name: Set Git username
