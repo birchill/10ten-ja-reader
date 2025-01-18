@@ -24,6 +24,10 @@ app.
   ([#2115](https://github.com/birchill/10ten-ja-reader/pull/2115)).
 - Fixed displaying metadata in the names tab
   ([#2129](https://github.com/birchill/10ten-ja-reader/pull/2129)).
+- Added support for characters in the
+  [Enclosed Ideographic Supplement block](https://ja.wiktionary.org/wiki/%E3%82%AB%E3%83%86%E3%82%B4%E3%83%AA:Unicode_Enclosed_Ideographic_Supplement)
+  (e.g. 🈀, 🈁, 🈴)
+  ([#2192](https://github.com/birchill/10ten-ja-reader/pull/2192)).
 
 ## [1.22.0] - 2024-10-17
 
