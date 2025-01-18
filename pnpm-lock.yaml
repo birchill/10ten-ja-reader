@@ -18,8 +18,8 @@ importers:
         specifier: 2.6.1
         version: 2.6.1
       '@birchill/normal-jp':
-        specifier: 1.5.2
-        version: 1.5.2
+        specifier: 1.6.0
+        version: 1.6.0
       classname-variants:
         specifier: 1.5.0
         version: 1.5.0
@@ -322,8 +322,8 @@ packages:
   '@birchill/json-equalish@1.1.2':
     resolution: {integrity: sha512-oXsOtXbuxai0iq8bXZKa0S2AkGEEhigu2WcZUbYwRbv4EtHJvT6jqSg5kNtWeI+6frv7ixIbJbuWP6AbNtj7Sw==}
 
-  '@birchill/normal-jp@1.5.2':
-    resolution: {integrity: sha512-FcETRUNQcfJ8Jc+f3uh5nEejTcwZRUqZVDW0svyKR1wUKo6Z5UdeXMffu0e3jQbWxxrZc7Pc8JuNQONXo9fvbw==}
+  '@birchill/normal-jp@1.6.0':
+    resolution: {integrity: sha512-mYZr4JZElWUwzs8QaOzp9ufi4VzVmi+1ERU+nGb4kSW66s80Te1c88zUx+jnl3RmUzP7Q/WENEvuYNH9+eOPdg==}
 
   '@bugsnag/source-maps@2.3.3':
     resolution: {integrity: sha512-DCCXhiY1CdCy3Eo6SS/qHnBuyrXY0jyefsJBpXemwI5eXEAR0KrhnhxbGU7Ga/8ysssD1A22J5488BYH1t4pgQ==}
@@ -6328,13 +6328,13 @@ snapshots:
   '@birchill/jpdict-idb@2.6.1':
     dependencies:
       '@birchill/json-equalish': 1.1.2
-      '@birchill/normal-jp': 1.5.2
+      '@birchill/normal-jp': 1.6.0
       idb: 8.0.0
       superstruct: 2.0.2
 
   '@birchill/json-equalish@1.1.2': {}
 
-  '@birchill/normal-jp@1.5.2': {}
+  '@birchill/normal-jp@1.6.0': {}
 
   '@bugsnag/source-maps@2.3.3':
     dependencies:
