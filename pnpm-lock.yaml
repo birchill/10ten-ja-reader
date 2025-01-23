@@ -169,8 +169,8 @@ importers:
         specifier: 2.5.8
         version: 2.5.8(prettier@3.4.2)
       prettier-plugin-tailwindcss:
-        specifier: 0.6.10
-        version: 0.6.10(@trivago/prettier-plugin-sort-imports@5.2.1(prettier@3.4.2))(prettier-plugin-organize-attributes@1.0.0(prettier@3.4.2))(prettier@3.4.2)
+        specifier: 0.6.11
+        version: 0.6.11(@trivago/prettier-plugin-sort-imports@5.2.1(prettier@3.4.2))(prettier-plugin-organize-attributes@1.0.0(prettier@3.4.2))(prettier@3.4.2)
       react-cosmos:
         specifier: 6.2.3
         version: 6.2.3(@types/express@4.17.21)
@@ -4695,8 +4695,8 @@ packages:
       prettier:
         optional: true
 
-  prettier-plugin-tailwindcss@0.6.10:
-    resolution: {integrity: sha512-ndj2WLDaMzACnr1gAYZiZZLs5ZdOeBYgOsbBmHj3nvW/6q8h8PymsXiEnKvj/9qgCCAoHyvLOisoQdIcsDvIgw==}
+  prettier-plugin-tailwindcss@0.6.11:
+    resolution: {integrity: sha512-YxaYSIvZPAqhrrEpRtonnrXdghZg1irNg4qrjboCXrpybLWVs55cW2N3juhspVJiO0JBvYJT8SYsJpc8OQSnsA==}
     engines: {node: '>=14.21.3'}
     peerDependencies:
       '@ianvs/prettier-plugin-sort-imports': '*'
@@ -11037,7 +11037,7 @@ snapshots:
     optionalDependencies:
       prettier: 3.4.2
 
-  prettier-plugin-tailwindcss@0.6.10(@trivago/prettier-plugin-sort-imports@5.2.1(prettier@3.4.2))(prettier-plugin-organize-attributes@1.0.0(prettier@3.4.2))(prettier@3.4.2):
+  prettier-plugin-tailwindcss@0.6.11(@trivago/prettier-plugin-sort-imports@5.2.1(prettier@3.4.2))(prettier-plugin-organize-attributes@1.0.0(prettier@3.4.2))(prettier@3.4.2):
     dependencies:
       prettier: 3.4.2
     optionalDependencies:
