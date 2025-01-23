@@ -105,7 +105,17 @@ function getInitialClientBboxofTextSelection(
 
   const result: Partial<SelectionSizes> = {};
   for (const size of textBoxSizeLengths) {
-    const end = Math.min(textRange[0].start + size, textRange[0].end);
+    // Adjust the size if it falls in the middle of a surrogate pair
+    let adjustedSize = size;
+    const lastChar = textRange[0].node.textContent?.charCodeAt(
+      textRange[0].start + size - 1
+    );
+    // Look for a high surrogate
+    if (lastChar && (lastChar & 0xfc00) === 0xd800) {
+      adjustedSize += 1;
+    }
+
+    const end = Math.min(textRange[0].start + adjustedSize, textRange[0].end);
     if (end <= lastEnd) {
       result[size] = lastSize!;
     } else {
