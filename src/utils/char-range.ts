@@ -95,6 +95,10 @@ export const halfwidthKatakanaChar = /[\uff66-\uff9f]/;
 /** @public */
 export const hentaigana = /[\u{1b002}-\u{1b0ff}]/u;
 
+// U+1F200-U+1F2FF is the Enclosed Ideographic Supplement block
+/** @public */
+export const enclosedIdeographicSupplement = /[\u{1f200}-\u{1f2ff}]/u;
+
 export function getCombinedCharRange(ranges: Array<RegExp>): RegExp {
   let source = '[';
   let flags = '';
@@ -156,6 +160,7 @@ export const japaneseChar = getCombinedCharRange([
   rareKanji,
   halfwidthKatakanaChar,
   hentaigana,
+  enclosedIdeographicSupplement,
 ]);
 
 export function getNegatedCharRange(range: RegExp): RegExp {
