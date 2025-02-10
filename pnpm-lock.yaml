@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@birchill/bugsnag-zero':
-        specifier: 0.7.0
-        version: 0.7.0
+        specifier: 0.7.1
+        version: 0.7.1
       '@birchill/discriminator':
         specifier: 0.3.1
         version: 0.3.1(superstruct@2.0.2)
@@ -305,8 +305,8 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@birchill/bugsnag-zero@0.7.0':
-    resolution: {integrity: sha512-2f7tlX/5ison9BIDrPB+cRnOr5f1ik7llcVCVeIM7y/bxBLkSnubc4iIGZnOKXaXuEIC3ZMf40iXsCecPYXTLA==}
+  '@birchill/bugsnag-zero@0.7.1':
+    resolution: {integrity: sha512-Fk575RP349peS9caicli857kbA5E6cF2SCQAR9MJLDP0pTg8KjxiBFp+xJsq1yaJLmtSzHpRRMTH59eaQJ9MOg==}
     engines: {node: '>=12.0.0'}
 
   '@birchill/discriminator@0.3.1':
@@ -6274,7 +6274,7 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@birchill/bugsnag-zero@0.7.0': {}
+  '@birchill/bugsnag-zero@0.7.1': {}
 
   '@birchill/discriminator@0.3.1(superstruct@2.0.2)':
     dependencies:
