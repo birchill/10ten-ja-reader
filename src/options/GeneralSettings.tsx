@@ -8,9 +8,7 @@ import { GeneralSettingsForm } from './GeneralSettingsForm';
 import { SectionHeading } from './SectionHeading';
 import { useConfigValue } from './use-config-value';
 
-type Props = {
-  config: Config;
-};
+type Props = { config: Config };
 
 export function GeneralSettings(props: Props) {
   const { t } = useLocale();

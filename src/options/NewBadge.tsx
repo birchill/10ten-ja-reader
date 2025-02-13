@@ -1,8 +1,6 @@
 import { useLocale } from '../common/i18n';
 
-type Props = {
-  expiry: Date;
-};
+type Props = { expiry: Date };
 
 export function NewBadge(props: Props) {
   const { t } = useLocale();

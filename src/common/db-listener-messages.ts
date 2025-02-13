@@ -7,17 +7,11 @@ export const notifyDbStateUpdated = (state: JpdictState) => ({
 
 export type DbStateUpdatedMessage = ReturnType<typeof notifyDbStateUpdated>;
 
-export const updateDb = () => ({
-  type: 'updatedb' as const,
-});
+export const updateDb = () => ({ type: 'updatedb' as const });
 
-export const cancelDbUpdate = () => ({
-  type: 'cancelupdatedb' as const,
-});
+export const cancelDbUpdate = () => ({ type: 'cancelupdatedb' as const });
 
-export const deleteDb = () => ({
-  type: 'deletedb' as const,
-});
+export const deleteDb = () => ({ type: 'deletedb' as const });
 
 export type DbListenerMessage =
   | ReturnType<typeof notifyDbStateUpdated>

@@ -439,15 +439,7 @@ function getScreenAutoPosition({
         target: { x, y },
         side,
       });
-      candidates.push(
-        position
-          ? {
-              axis,
-              side,
-              position,
-            }
-          : undefined
-      );
+      candidates.push(position ? { axis, side, position } : undefined);
     }
   }
 

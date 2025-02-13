@@ -1,12 +1,6 @@
-type LinkSpec = {
-  keyword: string;
-  href: string;
-};
+type LinkSpec = { keyword: string; href: string };
 
-type Props = {
-  text: string;
-  links: Array<LinkSpec>;
-};
+type Props = { text: string; links: Array<LinkSpec> };
 
 export function Linkify(props: Props) {
   const matchedReplacements: Array<{

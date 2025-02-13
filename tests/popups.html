@@ -183,11 +183,7 @@
         data: [
           {
             c: '士',
-            r: {
-              on: ['シ'],
-              kun: ['さむらい'],
-              na: ['お', 'ま'],
-            },
+            r: { on: ['シ'], kun: ['さむらい'], na: ['お', 'ま'] },
             m: ['gentleman', 'scholar', 'samurai', 'samurai radical (no. 33)'],
             rad: {
               x: 33,
@@ -214,13 +210,7 @@
               sh_desc: '3p0.1',
               conning: 350,
             },
-            misc: {
-              sc: 3,
-              gr: 4,
-              freq: 526,
-              jlpt: 1,
-              kk: 7,
-            },
+            misc: { sc: 3, gr: 4, freq: 526, jlpt: 1, kk: 7 },
             m_lang: 'en',
             comp: [],
           },
@@ -565,11 +555,7 @@
         const popup = contentHandler._renderPopup(kankokuWordsResult, {
           ...config,
           container: createPopupContainer(),
-          copyState: {
-            kind: 'active',
-            index: 1,
-            mode: 'touch',
-          },
+          copyState: { kind: 'active', index: 1, mode: 'touch' },
           dictToShow: 'words',
           displayMode: 'hover',
           popupStyle: 'default',
@@ -692,11 +678,7 @@
             data: [
               {
                 c: '士',
-                r: {
-                  on: ['シ'],
-                  kun: ['さむらい'],
-                  na: ['お', 'ま'],
-                },
+                r: { on: ['シ'], kun: ['さむらい'], na: ['お', 'ま'] },
                 m: [
                   'gentleman',
                   'scholar',
@@ -728,13 +710,7 @@
                   sh_desc: '3p0.1',
                   conning: 350,
                 },
-                misc: {
-                  sc: 3,
-                  gr: 4,
-                  freq: 526,
-                  jlpt: 1,
-                  kk: 7,
-                },
+                misc: { sc: 3, gr: 4, freq: 526, jlpt: 1, kk: 7 },
                 m_lang: 'en',
                 comp: [],
               },
@@ -748,11 +724,7 @@
       const testConfig = {
         ...config,
         copyNextKey: 'c',
-        copyState: {
-          kind: 'active',
-          index: 1,
-          mode: 'keyboard',
-        },
+        copyState: { kind: 'active', index: 1, mode: 'keyboard' },
         dictToShow: getDictFromResult(test.queryResult),
         onClosePopup: () => {},
         onShowSettings: () => {},
@@ -776,10 +748,7 @@
         addLabel(`Theme: ${theme}`);
         const popup = contentHandler._renderPopup(test.queryResult, {
           ...testConfig,
-          copyState: {
-            ...testConfig.copyState,
-            mode: 'touch',
-          },
+          copyState: { ...testConfig.copyState, mode: 'touch' },
           container: createPopupContainer(),
           displayMode: 'touch',
           popupStyle: theme,
@@ -792,11 +761,7 @@
       const testConfig = {
         ...config,
         copyNextKey: 'c',
-        copyState: {
-          kind: 'error',
-          index: 1,
-          mode: 'keyboard',
-        },
+        copyState: { kind: 'error', index: 1, mode: 'keyboard' },
         dictToShow: getDictFromResult(highlightTests[0].queryResult),
         onClosePopup: () => {},
         onShowSettings: () => {},
@@ -825,10 +790,7 @@
           highlightTests[0].queryResult,
           {
             ...testConfig,
-            copyState: {
-              ...testConfig.copyState,
-              mode: 'touch',
-            },
+            copyState: { ...testConfig.copyState, mode: 'touch' },
             container: createPopupContainer(),
             displayMode: 'touch',
             popupStyle: theme,

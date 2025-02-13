@@ -36,17 +36,13 @@ export interface PuckPointerEvent extends PointerEvent {
 }
 
 type ClickState =
-  | {
-      kind: 'idle';
-    }
+  | { kind: 'idle' }
   | {
       kind: 'firstpointerdown';
       // This is the timeout we use to detect if it's a drag or not
       timeout: number;
     }
-  | {
-      kind: 'dragging';
-    }
+  | { kind: 'dragging' }
   | {
       kind: 'firstclick';
       // This is the timeout we use to detect if it's a double-click or not
@@ -367,12 +363,7 @@ export class LookupPuck {
       clampedY -= 15;
     }
 
-    this.setPosition({
-      x: clampedX,
-      y: clampedY,
-      safeAreaLeft,
-      safeAreaRight,
-    });
+    this.setPosition({ x: clampedX, y: clampedY, safeAreaLeft, safeAreaRight });
   }
 
   readonly onWindowPointerMove = (event: PointerEvent) => {
@@ -752,10 +743,7 @@ export class LookupPuck {
     //
     // Eventually we should find a way to share this code better with that
     // function.
-    this.clickState = {
-      ...this.clickState,
-      kind: 'secondpointerdown',
-    };
+    this.clickState = { ...this.clickState, kind: 'secondpointerdown' };
 
     event.preventDefault();
 

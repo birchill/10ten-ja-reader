@@ -233,10 +233,7 @@ function useHoldToShowKeysSetting(
       typeof value === 'string'
         ? value.split('+').map((part) => part.trim().toLowerCase())
         : [];
-    return {
-      ctrl: parts.includes('ctrl'),
-      alt: parts.includes('alt'),
-    };
+    return { ctrl: parts.includes('ctrl'), alt: parts.includes('alt') };
   }, [value]);
 
   const setValue = useCallback(

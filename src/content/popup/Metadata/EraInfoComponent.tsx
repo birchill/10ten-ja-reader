@@ -14,9 +14,7 @@ import {
 // This approach may be revisited once the entire popup is refactored to use Preact.
 let lastTimeSpan: EraInfoTimeSpan | undefined = undefined;
 
-type Props = {
-  meta: EraMeta;
-};
+type Props = { meta: EraMeta };
 
 export function EraInfoComponent(props: Props) {
   const { t } = useLocale();

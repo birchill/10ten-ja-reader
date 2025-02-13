@@ -24,10 +24,7 @@ export type QueryResult = {
   resultType: 'db-unavailable' | 'db-updating' | 'initial' | 'full';
 };
 
-export type NamePreview = {
-  names: Array<NameResult>;
-  more: boolean;
-};
+export type NamePreview = { names: Array<NameResult>; more: boolean };
 
 export interface QueryOptions {
   includeRomaji: boolean;
@@ -43,11 +40,7 @@ type QueryCacheEntry =
       wordsQuery: Promise<QueryResult | null>;
       fullQuery: Promise<QueryResult | null>;
     }
-  | {
-      key: string;
-      state: 'complete';
-      result: QueryResult;
-    };
+  | { key: string; state: 'complete'; result: QueryResult };
 
 let queryCache: Array<QueryCacheEntry> = [];
 
@@ -100,11 +93,7 @@ export async function query(
       } else if (result.resultType === 'full') {
         const cacheIndex = queryCache.findIndex((q) => q.key === key);
         if (cacheIndex !== -1) {
-          queryCache[cacheIndex] = {
-            key,
-            state: 'complete',
-            result,
-          };
+          queryCache[cacheIndex] = { key, state: 'complete', result };
         }
       } else {
         queryCache = queryCache.filter((q) => q.key !== key);
@@ -125,12 +114,7 @@ export async function query(
     return result === 'aborted' || !result?.words ? null : result;
   });
 
-  queryCache.push({
-    key,
-    state: 'searching',
-    wordsQuery,
-    fullQuery,
-  });
+  queryCache.push({ key, state: 'searching', wordsQuery, fullQuery });
 
   void fullQuery.then((result) => options.updateQueryResult(result));
 

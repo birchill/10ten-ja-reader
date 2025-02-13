@@ -37,11 +37,7 @@ export class JpdictLocalBackend implements JpdictBackend {
   private db: JpdictIdb | undefined;
   private dbIsInitialized: Promise<boolean>;
   private currentUpdate:
-    | {
-        lang: string;
-        series: MajorDataSeries;
-        forceUpdate: boolean;
-      }
+    | { lang: string; series: MajorDataSeries; forceUpdate: boolean }
     | undefined;
 
   private lastUpdateError: UpdateErrorState | undefined;
@@ -344,22 +340,13 @@ export class JpdictLocalBackend implements JpdictBackend {
       : { type: 'idle' as const, lastCheck };
 
     const state: JpdictState = {
-      words: {
-        state: this.db.words.state,
-        version: this.db.words.version,
-      },
-      kanji: {
-        state: this.db.kanji.state,
-        version: this.db.kanji.version,
-      },
+      words: { state: this.db.words.state, version: this.db.words.version },
+      kanji: { state: this.db.kanji.state, version: this.db.kanji.version },
       radicals: {
         state: this.db.radicals.state,
         version: this.db.radicals.version,
       },
-      names: {
-        state: this.db.names.state,
-        version: this.db.names.version,
-      },
+      names: { state: this.db.names.state, version: this.db.names.version },
       updateState,
       updateError: this.lastUpdateError,
     };

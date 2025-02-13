@@ -91,10 +91,7 @@ interface Settings {
   waniKaniVocabDisplay?: 'hide' | 'show-matches';
 }
 
-type StorageChange = {
-  oldValue?: any;
-  newValue?: any;
-};
+type StorageChange = { oldValue?: any; newValue?: any };
 type ChangeDict = { [field: string]: StorageChange };
 export type ChangeCallback = (changes: ChangeDict) => void;
 
@@ -166,9 +163,7 @@ export class Config {
 
       this.settings.kanjiReferencesV2 = newSettings;
       try {
-        await browser.storage.sync.set({
-          kanjiReferencesV2: newSettings,
-        });
+        await browser.storage.sync.set({ kanjiReferencesV2: newSettings });
       } catch {
         // If we failed to store the upgraded settings that's fine since at
         // least the in-memory version of the settings has been upgraded.
@@ -1012,10 +1007,7 @@ export class Config {
 
   updateKeys(keys: Partial<StoredKeyboardKeys>) {
     const existingSettings = this.settings.keys || {};
-    this.settings.keys = {
-      ...existingSettings,
-      ...keys,
-    };
+    this.settings.keys = { ...existingSettings, ...keys };
 
     void browser.storage.sync.set({ keys: this.settings.keys });
   }

@@ -7,17 +7,8 @@ export default {
   content: ['./src/content/popup/**/*.{ts,tsx}'],
   blocklist: ['!entry', '!kanji'],
   theme: {
-    animation: {
-      flash: 'flash 0.5s',
-    },
-    keyframes: {
-      flash: {
-        from: {
-          background: 'white',
-          color: 'white',
-        },
-      },
-    },
+    animation: { flash: 'flash 0.5s' },
+    keyframes: { flash: { from: { background: 'white', color: 'white' } } },
     extend: {
       borderRadius: {
         sm: 'calc(0.125 * var(--base-font-size))',

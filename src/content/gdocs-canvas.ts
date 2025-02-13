@@ -39,10 +39,7 @@ export function getTextFromAnnotatedCanvas({
 }: {
   maxLength?: number;
   point: Point;
-}): {
-  position: CursorPosition | null;
-  text: string;
-} {
+}): { position: CursorPosition | null; text: string } {
   const elem = document.elementFromPoint(point.x, point.y);
   if (!elem || !isGdocsSpan(elem)) {
     return { position: null, text: '' };
@@ -101,13 +98,7 @@ export function getTextFromAnnotatedCanvas({
     currentSpan = nextSpan;
   }
 
-  return {
-    position: {
-      offset: start,
-      offsetNode: elem,
-    },
-    text,
-  };
+  return { position: { offset: start, offsetNode: elem }, text };
 }
 
 function getDocScale(gdocsSpanElem: SVGElement) {

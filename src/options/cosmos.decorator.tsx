@@ -8,9 +8,7 @@ import { EmptyProps } from '../utils/type-helpers';
 export default function OptionsDecorator({
   children,
 }: RenderableProps<EmptyProps>) {
-  const [locale] = useSelect('locale', {
-    options: ['en', 'ja', 'zh_CN'],
-  });
+  const [locale] = useSelect('locale', { options: ['en', 'ja', 'zh_CN'] });
 
   // This is only temporary until we have converted all options to Preact at
   // which point we should be able to remove the CSS rules that hide the

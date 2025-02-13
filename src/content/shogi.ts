@@ -71,10 +71,7 @@ export function lookForShogi({
 }: {
   nodeText: string;
   textDelimiter: RegExp;
-}): {
-  textDelimiter: RegExp;
-  textEnd: number;
-} | null {
+}): { textDelimiter: RegExp; textEnd: number } | null {
   if (!nodeText.length) {
     return null;
   }
@@ -103,10 +100,7 @@ export function lookForShogi({
   ]);
   const textDelimiter = getNegatedCharRange(expandedDelimiter);
 
-  return {
-    textDelimiter,
-    textEnd: nodeText.search(textDelimiter),
-  };
+  return { textDelimiter, textEnd: nodeText.search(textDelimiter) };
 }
 
 // This needs to be kept in sync with the regexes below.

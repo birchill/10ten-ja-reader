@@ -1,23 +1,10 @@
 import { isElement, isTextNode } from './dom-utils';
 
-export type Rect = {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-};
+export type Rect = { left: number; top: number; width: number; height: number };
 
-export type Point = {
-  x: number;
-  y: number;
-};
+export type Point = { x: number; y: number };
 
-export type Box = {
-  top: number;
-  right: number;
-  bottom: number;
-  left: number;
-};
+export type Box = { top: number; right: number; bottom: number; left: number };
 
 /// Measures from some box (or point) outwards
 export type MarginBox = Box;

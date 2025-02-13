@@ -9,11 +9,7 @@ export const updateDb = ({
 }: {
   lang: string;
   force: boolean;
-}) => ({
-  type: 'update' as const,
-  lang,
-  force,
-});
+}) => ({ type: 'update' as const, lang, force });
 
 export const cancelUpdateDb = () => ({ type: 'cancelupdate' as const });
 

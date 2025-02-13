@@ -1,8 +1,6 @@
 const config = {
   buildConfig: {
-    alias: {
-      'webextension-polyfill': './tests/browser-polyfill',
-    },
+    alias: { 'webextension-polyfill': './tests/browser-polyfill' },
   },
 };
 

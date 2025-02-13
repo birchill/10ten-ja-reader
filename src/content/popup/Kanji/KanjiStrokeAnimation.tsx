@@ -207,18 +207,14 @@ export function KanjiStrokeAnimation(props: Props) {
           class="tp-w-big-kanji"
           ref={timelineSvg}
           viewBox="0 0 100 50"
-          style={{
-            webkitTapHighlightColor: 'transparent',
-          }}
+          style={{ webkitTapHighlightColor: 'transparent' }}
         >
           {/* Play/stop button */}
           <g
             onClick={() => setIsPlaying((prev) => !prev)}
             pointer-events="all"
             class="tp-cursor-pointer tp-opacity-30 hh:hover:tp-opacity-100 tp-fill-[--text-color] hh:hover:tp-fill-[--primary-highlight] tp-transition-transform tp-duration-500"
-            style={{
-              transform: isPlaying ? 'none' : 'translate(40px)',
-            }}
+            style={{ transform: isPlaying ? 'none' : 'translate(40px)' }}
           >
             <title>
               {t(
@@ -471,11 +467,7 @@ function useScrubber(
     }
   }, []);
 
-  return {
-    onScrubberPointerDown,
-    onTimelineClick,
-    applySeek,
-  };
+  return { onScrubberPointerDown, onTimelineClick, applySeek };
 }
 
 function toSvgCoords(

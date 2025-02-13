@@ -63,14 +63,10 @@ declare module 'webextension-polyfill' {
 
   const composeAction: ComposeAction.Static | undefined;
   const composeScripts:
-    | {
-        register(options: RegisteredScriptOptions): Promise<RegisteredScript>;
-      }
+    | { register(options: RegisteredScriptOptions): Promise<RegisteredScript> }
     | undefined;
   const messageDisplayScripts:
-    | {
-        register(options: RegisteredScriptOptions): Promise<RegisteredScript>;
-      }
+    | { register(options: RegisteredScriptOptions): Promise<RegisteredScript> }
     | undefined;
 
   interface Browser {

@@ -14,9 +14,7 @@ export class TimeoutError extends Error {
 
 export function fetchWithTimeout(
   resource: RequestInfo,
-  options?: {
-    timeout?: number | null;
-  } & RequestInit
+  options?: { timeout?: number | null } & RequestInit
 ): Promise<Response> {
   const controller = new AbortController();
   if (options?.signal) {
@@ -40,10 +38,7 @@ export function fetchWithTimeout(
   }
 
   const responsePromise = new Promise<Response>((resolve, reject) => {
-    fetch(resource, {
-      ...options,
-      signal: controller.signal,
-    })
+    fetch(resource, { ...options, signal: controller.signal })
       .then((response) => {
         if (timeoutId) {
           self.clearTimeout(timeoutId);

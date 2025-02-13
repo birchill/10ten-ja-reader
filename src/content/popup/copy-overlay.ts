@@ -64,11 +64,7 @@ export function renderCopyOverlay({
   copyOverlay.append(
     html(
       'div',
-      {
-        role: 'heading',
-        class: 'copy-heading',
-        lang: getLangTag(),
-      },
+      { role: 'heading', class: 'copy-heading', lang: getLangTag() },
       heading
     )
   );
@@ -154,10 +150,7 @@ export function renderCopyOverlay({
   // Cancel button
   const cancelButton = html(
     'button',
-    {
-      class: 'cancel-button',
-      lang: getLangTag(),
-    },
+    { class: 'cancel-button', lang: getLangTag() },
     svg(
       'svg',
       {

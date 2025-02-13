@@ -21,9 +21,7 @@ async function main() {
 
   const zipFile = fs.createWriteStream(path.join(DEST_DIR, zipFilename));
 
-  const archive = archiver('zip', {
-    zlib: { level: 9 },
-  });
+  const archive = archiver('zip', { zlib: { level: 9 } });
 
   archive.on('warning', (err: any) => {
     if (err?.code === 'ENOENT') {

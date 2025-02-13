@@ -8,9 +8,7 @@ import { KanjiReferenceSettingsForm } from './KanjiReferenceSettingsForm';
 import { SectionHeading } from './SectionHeading';
 import { useConfigValue } from './use-config-value';
 
-type Props = {
-  config: Config;
-};
+type Props = { config: Config };
 
 export function KanjiReferenceSettings(props: Props) {
   const { t } = useLocale();

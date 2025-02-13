@@ -151,10 +151,7 @@ async function getCurrentVersionInfo(
 //
 // ---------------------------------------------------------------------------
 
-type JsonRecord = {
-  id: number;
-  deleted?: boolean;
-};
+type JsonRecord = { id: number; deleted?: boolean };
 
 async function readJsonRecords(currentVersion: {
   major: number;

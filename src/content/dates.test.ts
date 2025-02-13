@@ -67,13 +67,7 @@ describe('era date conversion', () => {
     ];
 
     for (const [text, matchLength, era, year, month, day] of cases) {
-      const parsed = {
-        era,
-        year,
-        month,
-        day,
-        matchLength,
-      };
+      const parsed = { era, year, month, day, matchLength };
 
       const result = parseEraDate(text);
 

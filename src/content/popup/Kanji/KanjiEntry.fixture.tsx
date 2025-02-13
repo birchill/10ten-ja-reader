@@ -6,11 +6,7 @@ export default {
       index={0}
       entry={{
         c: '士',
-        r: {
-          on: ['シ'],
-          kun: ['さむらい'],
-          na: ['お', 'ま'],
-        },
+        r: { on: ['シ'], kun: ['さむらい'], na: ['お', 'ま'] },
         m: ['gentleman', 'scholar', 'samurai', 'samurai radical (no. 33)'],
         rad: {
           x: 33,
@@ -37,13 +33,7 @@ export default {
           sh_desc: '3p0.1',
           conning: 350,
         },
-        misc: {
-          sc: 3,
-          gr: 4,
-          freq: 526,
-          jlpt: 1,
-          kk: 7,
-        },
+        misc: { sc: 3, gr: 4, freq: 526, jlpt: 1, kk: 7 },
         m_lang: 'en',
         comp: [],
         cf: [],
@@ -107,20 +97,9 @@ export default {
           sh_desc: '5d3.1',
           conning: 236,
         },
-        misc: {
-          sc: 8,
-          gr: 3,
-          freq: 124,
-          jlpt: 2,
-          kk: 8,
-        },
+        misc: { sc: 8, gr: 3, freq: 124, jlpt: 2, kk: 8 },
         comp: [
-          {
-            c: '⼝',
-            na: ['くち'],
-            m: ['mouth'],
-            m_lang: 'en',
-          },
+          { c: '⼝', na: ['くち'], m: ['mouth'], m_lang: 'en' },
           {
             c: '⽲',
             na: ['のぎ'],

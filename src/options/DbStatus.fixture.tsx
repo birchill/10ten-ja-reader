@@ -6,26 +6,11 @@ import './options.css';
 const now = new Date();
 
 const EMPTY_DB_STATE: JpdictState = {
-  words: {
-    state: 'empty',
-    version: null,
-  },
-  kanji: {
-    state: 'empty',
-    version: null,
-  },
-  radicals: {
-    state: 'empty',
-    version: null,
-  },
-  names: {
-    state: 'empty',
-    version: null,
-  },
-  updateState: {
-    type: 'idle',
-    lastCheck: null,
-  },
+  words: { state: 'empty', version: null },
+  kanji: { state: 'empty', version: null },
+  radicals: { state: 'empty', version: null },
+  names: { state: 'empty', version: null },
+  updateState: { type: 'idle', lastCheck: null },
 };
 
 const ONE_ZERO_ZERO_DB_STATE: JpdictState = {
@@ -69,10 +54,7 @@ const ONE_ZERO_ZERO_DB_STATE: JpdictState = {
       lang: 'en',
     },
   },
-  updateState: {
-    type: 'idle',
-    lastCheck: now,
-  },
+  updateState: { type: 'idle', lastCheck: now },
 };
 
 export default {
@@ -94,13 +76,7 @@ export default {
   ),
   initializing: () => (
     <DbStatus
-      dbState={{
-        ...EMPTY_DB_STATE,
-        words: {
-          state: 'init',
-          version: null,
-        },
-      }}
+      dbState={{ ...EMPTY_DB_STATE, words: { state: 'init', version: null } }}
     />
   ),
   empty: () => <DbStatus dbState={EMPTY_DB_STATE} />,
@@ -108,10 +84,7 @@ export default {
     <DbStatus
       dbState={{
         ...EMPTY_DB_STATE,
-        words: {
-          state: 'unavailable',
-          version: null,
-        },
+        words: { state: 'unavailable', version: null },
       }}
     />
   ),
@@ -120,11 +93,7 @@ export default {
     <DbStatus
       dbState={{
         ...ONE_ZERO_ZERO_DB_STATE,
-        updateState: {
-          type: 'checking',
-          series: 'words',
-          lastCheck: now,
-        },
+        updateState: { type: 'checking', series: 'words', lastCheck: now },
       }}
     />
   ),

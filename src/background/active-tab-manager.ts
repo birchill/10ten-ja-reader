@@ -185,11 +185,7 @@ export default class ActiveTabManager implements TabManager {
     // enabledTabs at that point.
     const isRootFrame = typeof frameId === 'undefined' || frameId === 0;
     if (isRootFrame && !(tabId in this.enabledTabs)) {
-      this.enabledTabs[tabId] = {
-        frames: [],
-        port: undefined,
-        src: '',
-      };
+      this.enabledTabs[tabId] = { frames: [], port: undefined, src: '' };
     }
 
     // If we are dealing with a single frame, try calling to see if the content
@@ -330,12 +326,7 @@ export default class ActiveTabManager implements TabManager {
     // Now send the enable message.
     await browser.tabs.sendMessage(
       tabId,
-      {
-        type: 'enable',
-        config: this.config,
-        id: tabId,
-        frame: '*',
-      },
+      { type: 'enable', config: this.config, id: tabId, frame: '*' },
       { frameId }
     );
   }

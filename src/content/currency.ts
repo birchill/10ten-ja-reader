@@ -20,10 +20,7 @@ export function lookForCurrency({
   currentText: string;
   nodeText: string;
   textDelimiter: RegExp;
-}): {
-  textDelimiter: RegExp;
-  textEnd: number;
-} | null {
+}): { textDelimiter: RegExp; textEnd: number } | null {
   // If the source text might be a currency, expand our text delimiter to allow
   // extra symbols that would normally be ignored.
   const sourceText = currentText + nodeText;
@@ -44,10 +41,7 @@ export function lookForCurrency({
   ]);
   const textDelimiter = getNegatedCharRange(japaneseOrPrice);
 
-  return {
-    textDelimiter,
-    textEnd: nodeText.search(textDelimiter),
-  };
+  return { textDelimiter, textEnd: nodeText.search(textDelimiter) };
 }
 
 const currencyRegex =

@@ -3,15 +3,11 @@ import plugin from 'tailwindcss/plugin';
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  corePlugins: {
-    preflight: false,
-  },
+  corePlugins: { preflight: false },
   content: ['./src/options/**/*.{html,ts,tsx}'],
   theme: {
     extend: {
-      backgroundImage: {
-        'warning-red': "url('/images/warning-red.svg')",
-      },
+      backgroundImage: { 'warning-red': "url('/images/warning-red.svg')" },
       colors: {
         black: '#1d1a19',
         blue: {
@@ -65,12 +61,8 @@ export default {
         },
         purple: colors.violet,
       },
-      gridTemplateColumns: {
-        keys: 'minmax(12em, auto) 1fr',
-      },
-      fontFamily: {
-        inherit: 'inherit',
-      },
+      gridTemplateColumns: { keys: 'minmax(12em, auto) 1fr' },
+      fontFamily: { inherit: 'inherit' },
     },
     screens: {
       // This breakpoint corresponds to a point between the width of a mobile
@@ -86,17 +78,13 @@ export default {
     }),
     plugin(({ addUtilities }) => {
       addUtilities({
-        '.outline-auto': {
-          'outline-style': 'auto',
-        },
+        '.outline-auto': { 'outline-style': 'auto' },
         '.transparent-caret': {
           color: 'transparent',
           'text-shadow': '0 0 0 black',
         },
         '@media (prefers-color-scheme: dark)': {
-          '.transparent-caret': {
-            'text-shadow': '0 0 0 white',
-          },
+          '.transparent-caret': { 'text-shadow': '0 0 0 white' },
         },
       });
     }),

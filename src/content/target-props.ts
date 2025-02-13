@@ -27,13 +27,7 @@ export type TargetProps = {
 // We don't want to be doing IPC calls as part of the popup positioning so we
 // just return a set of standard sizes and let the topmost window choose the
 // best fit.
-export type SelectionSizes = {
-  1: Rect;
-  4: Rect;
-  8: Rect;
-  12: Rect;
-  16: Rect;
-};
+export type SelectionSizes = { 1: Rect; 4: Rect; 8: Rect; 12: Rect; 16: Rect };
 
 // Guaranteed to be arranged in ascending order
 export const textBoxSizeLengths: ReadonlyArray<keyof SelectionSizes> = [

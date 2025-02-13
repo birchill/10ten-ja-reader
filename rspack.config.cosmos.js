@@ -18,10 +18,7 @@ const config = {
         test: /\.css$/,
         use: [
           { loader: rspack.CssExtractRspackPlugin.loader },
-          {
-            loader: 'css-loader',
-            options: { url: false, sourceMap: false },
-          },
+          { loader: 'css-loader', options: { url: false, sourceMap: false } },
           'postcss-loader',
         ],
       },
@@ -33,10 +30,7 @@ const config = {
           /** @type {import('@rspack/core').SwcLoaderOptions} */
           options: {
             sourceMap: true,
-            jsc: {
-              parser: { syntax: 'typescript' },
-              target: 'es2020',
-            },
+            jsc: { parser: { syntax: 'typescript' }, target: 'es2020' },
           },
         },
         type: 'javascript/auto',
@@ -50,10 +44,7 @@ const config = {
           options: {
             sourceMap: true,
             jsc: {
-              parser: {
-                syntax: 'typescript',
-                tsx: true,
-              },
+              parser: { syntax: 'typescript', tsx: true },
               transform: {
                 react: {
                   runtime: 'automatic',
@@ -93,13 +84,9 @@ const config = {
       /\/i18n$/,
       path.resolve(__dirname, 'src', 'common', 'i18n.polyfill.tsx')
     ),
-    new rspack.HtmlRspackPlugin({
-      template: './src/options/options.html',
-    }),
+    new rspack.HtmlRspackPlugin({ template: './src/options/options.html' }),
     new rspack.CssExtractRspackPlugin(),
-    new rspack.CopyRspackPlugin({
-      patterns: ['css/*', 'fonts/*', 'images/*'],
-    }),
+    new rspack.CopyRspackPlugin({ patterns: ['css/*', 'fonts/*', 'images/*'] }),
   ],
 };
 

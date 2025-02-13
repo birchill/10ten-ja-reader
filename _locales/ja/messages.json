@@ -15,14 +15,8 @@
     "message": "$datatype$​を読み込み中 (​$progress$​%)…",
     "description": "Tooltip for toolbar button when downloading updates.",
     "placeholders": {
-      "datatype": {
-        "content": "$1",
-        "example": "radical data"
-      },
-      "progress": {
-        "content": "$2",
-        "example": "12"
-      }
+      "datatype": { "content": "$1", "example": "radical data" },
+      "progress": { "content": "$2", "example": "12" }
     }
   },
   "command_toggle_enabled": {
@@ -88,12 +82,7 @@
   "content_copy_overlay_copy_title_with_word": {
     "message": "「​$word$​」をコピー",
     "description": "Title shown at the top of the copy overlay. It includes the matching headwords / kanji",
-    "placeholders": {
-      "word": {
-        "content": "$1",
-        "example": "選ぶ"
-      }
-    }
+    "placeholders": { "word": { "content": "$1", "example": "選ぶ" } }
   },
   "content_copy_overlay_entry_button": {
     "message": "項目",
@@ -123,14 +112,8 @@
     "message": "部 $char$ (​$readings$​)",
     "description": "The string used to describe the base radical",
     "placeholders": {
-      "char": {
-        "content": "$1",
-        "example": "⾡"
-      },
-      "readings": {
-        "content": "$2",
-        "example": "しんにょう、しんにゅう"
-      }
+      "char": { "content": "$1", "example": "⾡" },
+      "readings": { "content": "$2", "example": "しんにょう、しんにゅう" }
     }
   },
   "content_kanji_components_label": {
@@ -148,12 +131,7 @@
   "content_kanji_grade_label": {
     "message": "$grade$​年生",
     "description": "The label for kanji in grades 1 - 6",
-    "placeholders": {
-      "grade": {
-        "content": "$1",
-        "example": "3"
-      }
-    }
+    "placeholders": { "grade": { "content": "$1", "example": "3" } }
   },
   "content_kanji_grade_name_use": {
     "message": "人名用",
@@ -161,21 +139,11 @@
   },
   "content_kanji_kentei_level": {
     "message": "$level$​級",
-    "placeholders": {
-      "level": {
-        "content": "$1",
-        "example": "3"
-      }
-    }
+    "placeholders": { "level": { "content": "$1", "example": "3" } }
   },
   "content_kanji_kentei_level_pre": {
     "message": "準​$level$​級",
-    "placeholders": {
-      "level": {
-        "content": "$1",
-        "example": "2"
-      }
-    }
+    "placeholders": { "level": { "content": "$1", "example": "2" } }
   },
   "content_kanji_meta_kokuji": {
     "message": "国字",
@@ -196,12 +164,7 @@
   "content_kanji_strokes_label": {
     "message": "$strokes$ 画",
     "description": "The description of the number of strokes",
-    "placeholders": {
-      "strokes": {
-        "content": "$1",
-        "example": "7"
-      }
-    }
+    "placeholders": { "strokes": { "content": "$1", "example": "7" } }
   },
   "content_kanji_strokes_label_1": {
     "message": "1画",
@@ -209,109 +172,42 @@
   },
   "content_names_age": {
     "message": "$years$歳",
-    "placeholders": {
-      "years": {
-        "content": "$1",
-        "example": "73"
-      }
-    }
+    "placeholders": { "years": { "content": "$1", "example": "73" } }
   },
   "content_names_age_approx": {
     "message": "約$years$歳",
-    "placeholders": {
-      "years": {
-        "content": "$1",
-        "example": "73"
-      }
-    }
+    "placeholders": { "years": { "content": "$1", "example": "73" } }
   },
-  "content_names_tag_char": {
-    "message": "キャラクター"
-  },
-  "content_names_tag_company": {
-    "message": "社名"
-  },
-  "content_names_tag_creat": {
-    "message": "生き物"
-  },
-  "content_names_tag_dei": {
-    "message": "神"
-  },
-  "content_names_tag_doc": {
-    "message": "文書"
-  },
-  "content_names_tag_ev": {
-    "message": "イベント"
-  },
-  "content_names_tag_fem": {
-    "message": "女"
-  },
-  "content_names_tag_fict": {
-    "message": "フィクション"
-  },
-  "content_names_tag_given": {
-    "message": "名"
-  },
-  "content_names_tag_group": {
-    "message": "グループ"
-  },
-  "content_names_tag_leg": {
-    "message": "伝説"
-  },
-  "content_names_tag_masc": {
-    "message": "男"
-  },
-  "content_names_tag_myth": {
-    "message": "神話"
-  },
-  "content_names_tag_obj": {
-    "message": "オブジェ"
-  },
-  "content_names_tag_org": {
-    "message": "組織"
-  },
-  "content_names_tag_oth": {
-    "message": "その他"
-  },
-  "content_names_tag_person": {
-    "message": "姓名"
-  },
-  "content_names_tag_place": {
-    "message": "地名"
-  },
-  "content_names_tag_product": {
-    "message": "品名"
-  },
-  "content_names_tag_relig": {
-    "message": "宗教"
-  },
-  "content_names_tag_serv": {
-    "message": "サービス"
-  },
-  "content_names_tag_ship": {
-    "message": "船舶"
-  },
-  "content_names_tag_station": {
-    "message": "駅"
-  },
-  "content_names_tag_surname": {
-    "message": "姓"
-  },
-  "content_names_tag_unclass": {
-    "message": "人名"
-  },
-  "content_names_tag_work": {
-    "message": "作品"
-  },
+  "content_names_tag_char": { "message": "キャラクター" },
+  "content_names_tag_company": { "message": "社名" },
+  "content_names_tag_creat": { "message": "生き物" },
+  "content_names_tag_dei": { "message": "神" },
+  "content_names_tag_doc": { "message": "文書" },
+  "content_names_tag_ev": { "message": "イベント" },
+  "content_names_tag_fem": { "message": "女" },
+  "content_names_tag_fict": { "message": "フィクション" },
+  "content_names_tag_given": { "message": "名" },
+  "content_names_tag_group": { "message": "グループ" },
+  "content_names_tag_leg": { "message": "伝説" },
+  "content_names_tag_masc": { "message": "男" },
+  "content_names_tag_myth": { "message": "神話" },
+  "content_names_tag_obj": { "message": "オブジェ" },
+  "content_names_tag_org": { "message": "組織" },
+  "content_names_tag_oth": { "message": "その他" },
+  "content_names_tag_person": { "message": "姓名" },
+  "content_names_tag_place": { "message": "地名" },
+  "content_names_tag_product": { "message": "品名" },
+  "content_names_tag_relig": { "message": "宗教" },
+  "content_names_tag_serv": { "message": "サービス" },
+  "content_names_tag_ship": { "message": "船舶" },
+  "content_names_tag_station": { "message": "駅" },
+  "content_names_tag_surname": { "message": "姓" },
+  "content_names_tag_unclass": { "message": "人名" },
+  "content_names_tag_work": { "message": "作品" },
   "content_sk_match_src": {
     "message": "「​$src$​」から",
     "description": "The text used to show the sK/sk (search only) text that was used to look up the entry",
-    "placeholders": {
-      "src": {
-        "content": "$1",
-        "example": "御久しぶり"
-      }
-    }
+    "placeholders": { "src": { "content": "$1", "example": "御久しぶり" } }
   },
   "content_stroke_animation_play": {
     "message": "筆順アニメーションを再生",
@@ -324,141 +220,57 @@
   "content_wk_link_title": {
     "message": "WaniKaniで「​$content$​」のページを表示",
     "description": "Tooltip for kanji and vocab links to WaniKani pages.",
-    "placeholders": {
-      "content": {
-        "content": "$1",
-        "example": "光"
-      }
-    }
+    "placeholders": { "content": { "content": "$1", "example": "光" } }
   },
   "currency_data_updated_label": {
     "message": "$updated$​に更新済み",
     "description": "Caption added to popup explaining when the currency data was last refreshed",
     "placeholders": {
-      "updated": {
-        "content": "$1",
-        "example": "Sep 16, 2021, 10:03 AM"
-      }
+      "updated": { "content": "$1", "example": "Sep 16, 2021, 10:03 AM" }
     }
   },
-  "deinflect_adv": {
-    "message": "副詞"
-  },
+  "deinflect_adv": { "message": "副詞" },
   "deinflect_alternate": {
     "message": "又は",
     "description": "Separator to use between de-inflection reasons when there are multiple possibilities"
   },
-  "deinflect_ba": {
-    "message": "ば形"
-  },
-  "deinflect_causative": {
-    "message": "使役形"
-  },
-  "deinflect_causative_passive": {
-    "message": "使役受身形"
-  },
-  "deinflect_chau": {
-    "message": "ちゃう形"
-  },
-  "deinflect_continuous": {
-    "message": "進行形"
-  },
-  "deinflect_eru_uru": {
-    "message": "-得る"
-  },
-  "deinflect_humble": {
-    "message": "謙譲語"
-  },
-  "deinflect_humble_or_kansai_dialect": {
-    "message": "謙譲語・関西弁"
-  },
-  "deinflect_imperative": {
-    "message": "命令形"
-  },
-  "deinflect_imperative_negative": {
-    "message": "否定命令形"
-  },
-  "deinflect_irregular": {
-    "message": "不規則"
-  },
-  "deinflect_ki": {
-    "message": "連体形"
-  },
-  "deinflect_masu_stem": {
-    "message": "連用形"
-  },
-  "deinflect_negative": {
-    "message": "否定形"
-  },
-  "deinflect_negative_te": {
-    "message": "否定て形"
-  },
-  "deinflect_noun": {
-    "message": "名詞"
-  },
-  "deinflect_passive": {
-    "message": "受身形・尊敬語"
-  },
-  "deinflect_past": {
-    "message": "過去形"
-  },
-  "deinflect_polite": {
-    "message": "丁寧形"
-  },
-  "deinflect_polite_negative": {
-    "message": "否定丁寧形"
-  },
-  "deinflect_polite_past": {
-    "message": "過去丁寧形"
-  },
-  "deinflect_polite_past_negative": {
-    "message": "否定過去丁寧形"
-  },
-  "deinflect_polite_volitional": {
-    "message": "意向丁寧形"
-  },
-  "deinflect_potential": {
-    "message": "可能形"
-  },
-  "deinflect_potential_or_passive": {
-    "message": "可能形・受身形・尊敬語"
-  },
-  "deinflect_respectful": {
-    "message": "尊敬語"
-  },
-  "deinflect_sou": {
-    "message": "そう形"
-  },
-  "deinflect_sugiru": {
-    "message": "すぎる形"
-  },
-  "deinflect_suru_noun": {
-    "message": "-する"
-  },
-  "deinflect_tai": {
-    "message": "たい形"
-  },
-  "deinflect_tara": {
-    "message": "たら形"
-  },
-  "deinflect_tari": {
-    "message": "たり形"
-  },
-  "deinflect_te": {
-    "message": "て形"
-  },
-  "deinflect_toku": {
-    "message": "ておく"
-  },
-  "deinflect_volitional": {
-    "message": "意向形"
-  },
-  "deinflect_zaru_wo_enai": {
-    "message": "ざるを得ない"
-  },
-  "deinflect_zu": {
-    "message": "ず形"
-  },
+  "deinflect_ba": { "message": "ば形" },
+  "deinflect_causative": { "message": "使役形" },
+  "deinflect_causative_passive": { "message": "使役受身形" },
+  "deinflect_chau": { "message": "ちゃう形" },
+  "deinflect_continuous": { "message": "進行形" },
+  "deinflect_eru_uru": { "message": "-得る" },
+  "deinflect_humble": { "message": "謙譲語" },
+  "deinflect_humble_or_kansai_dialect": { "message": "謙譲語・関西弁" },
+  "deinflect_imperative": { "message": "命令形" },
+  "deinflect_imperative_negative": { "message": "否定命令形" },
+  "deinflect_irregular": { "message": "不規則" },
+  "deinflect_ki": { "message": "連体形" },
+  "deinflect_masu_stem": { "message": "連用形" },
+  "deinflect_negative": { "message": "否定形" },
+  "deinflect_negative_te": { "message": "否定て形" },
+  "deinflect_noun": { "message": "名詞" },
+  "deinflect_passive": { "message": "受身形・尊敬語" },
+  "deinflect_past": { "message": "過去形" },
+  "deinflect_polite": { "message": "丁寧形" },
+  "deinflect_polite_negative": { "message": "否定丁寧形" },
+  "deinflect_polite_past": { "message": "過去丁寧形" },
+  "deinflect_polite_past_negative": { "message": "否定過去丁寧形" },
+  "deinflect_polite_volitional": { "message": "意向丁寧形" },
+  "deinflect_potential": { "message": "可能形" },
+  "deinflect_potential_or_passive": { "message": "可能形・受身形・尊敬語" },
+  "deinflect_respectful": { "message": "尊敬語" },
+  "deinflect_sou": { "message": "そう形" },
+  "deinflect_sugiru": { "message": "すぎる形" },
+  "deinflect_suru_noun": { "message": "-する" },
+  "deinflect_tai": { "message": "たい形" },
+  "deinflect_tara": { "message": "たら形" },
+  "deinflect_tari": { "message": "たり形" },
+  "deinflect_te": { "message": "て形" },
+  "deinflect_toku": { "message": "ておく" },
+  "deinflect_volitional": { "message": "意向形" },
+  "deinflect_zaru_wo_enai": { "message": "ざるを得ない" },
+  "deinflect_zu": { "message": "ず形" },
   "dial_label_9s": {
     "message": "九州弁",
     "description": "Label used to describe senses whose dialect is '9s' (Kyushu dialect)"
@@ -517,36 +329,19 @@
   },
   "error_command_could_not_parse": {
     "message": "「​$command$​」の構文解析が失敗しました",
-    "placeholders": {
-      "command": {
-        "content": "$1",
-        "example": "Ctrl+T "
-      }
-    }
+    "placeholders": { "command": { "content": "$1", "example": "Ctrl+T " } }
   },
   "error_command_disallowed_modifier_key": {
     "message": "「​$modifier$​」という修飾キーは利用できません",
-    "placeholders": {
-      "modifier": {
-        "content": "$1",
-        "example": "Meta"
-      }
-    }
+    "placeholders": { "modifier": { "content": "$1", "example": "Meta" } }
   },
-  "error_command_has_no_key": {
-    "message": "キーを設定してください"
-  },
+  "error_command_has_no_key": { "message": "キーを設定してください" },
   "error_command_is_missing_modifier_key": {
     "message": "機能キーまたメディアキーの利用以外の場合、修飾キーも設定してください"
   },
   "error_command_key_is_not_allowed": {
     "message": "「​$key$​」というキーは利用できません",
-    "placeholders": {
-      "key": {
-        "content": "$1",
-        "example": "Enter"
-      }
-    }
+    "placeholders": { "key": { "content": "$1", "example": "Enter" } }
   },
   "error_command_media_key_with_modifier_key": {
     "message": "メディアキーと修飾キーとの組み合わせは利用できません"
@@ -1292,12 +1087,7 @@
   },
   "lang_lsrc_wasei": {
     "message": "和製​$lang$",
-    "placeholders": {
-      "lang": {
-        "content": "$1",
-        "example": "英語"
-      }
-    }
+    "placeholders": { "lang": { "content": "$1", "example": "英語" } }
   },
   "lang_lsrc_wasei_prefix": {
     "message": "（",
@@ -1634,31 +1424,16 @@
   "options_data_series_date_only": {
     "message": "$generated$​に生成された​$source$​のデータに基づいている。",
     "placeholders": {
-      "source": {
-        "content": "$1",
-        "example": "KANJIDIC"
-      },
-      "generated": {
-        "content": "$2",
-        "example": "2019-10-19"
-      }
+      "source": { "content": "$1", "example": "KANJIDIC" },
+      "generated": { "content": "$2", "example": "2019-10-19" }
     }
   },
   "options_data_series_version_and_date": {
     "message": "$generated$​に生成された​$source$ $version$​のデータに基づいている。",
     "placeholders": {
-      "source": {
-        "content": "$1",
-        "example": "KANJIDIC"
-      },
-      "version": {
-        "content": "$2",
-        "example": "2019-282"
-      },
-      "generated": {
-        "content": "$3",
-        "example": "2019-10-19"
-      }
+      "source": { "content": "$1", "example": "KANJIDIC" },
+      "version": { "content": "$2", "example": "2019-282" },
+      "generated": { "content": "$3", "example": "2019-10-19" }
     }
   },
   "options_data_source": {
@@ -1681,20 +1456,14 @@
     "message": "更新失敗しました。「​$errormessage$​」",
     "description": "Label when we failed to update the data for some reason",
     "placeholders": {
-      "errormessage": {
-        "content": "$1",
-        "example": "Version file not found"
-      }
+      "errormessage": { "content": "$1", "example": "Version file not found" }
     }
   },
   "options_db_update_next_retry": {
     "message": "$nextretry$​に再試行予定",
     "description": "Label used when there is a scheduled retry",
     "placeholders": {
-      "nextretry": {
-        "content": "$1",
-        "example": "2019-10-14 17:44"
-      }
+      "nextretry": { "content": "$1", "example": "2019-10-14 17:44" }
     }
   },
   "options_db_update_quota_error": {
@@ -1707,12 +1476,8 @@
       }
     }
   },
-  "options_dictionary_data_heading": {
-    "message": "辞書データ"
-  },
-  "options_dictionary_language_heading": {
-    "message": "辞書の言語"
-  },
+  "options_dictionary_data_heading": { "message": "辞書データ" },
+  "options_dictionary_language_heading": { "message": "辞書の言語" },
   "options_disable_toggle_shortcut": {
     "message": "オン・オフを切り替えるショートカットを無効にする",
     "description": "Label for button to disable the toggle shortcut"
@@ -1721,18 +1486,9 @@
     "message": "$datatype$​バージョン​$version$​を読み込み中 (​$progress$​%)…",
     "description": "Label while we are downloading updates",
     "placeholders": {
-      "datatype": {
-        "content": "$1",
-        "example": "kanji data"
-      },
-      "version": {
-        "content": "$2",
-        "example": "1.0.3"
-      },
-      "progress": {
-        "content": "$3",
-        "example": "60"
-      }
+      "datatype": { "content": "$1", "example": "kanji data" },
+      "version": { "content": "$2", "example": "1.0.3" },
+      "progress": { "content": "$3", "example": "60" }
     }
   },
   "options_edrdg_license": {
@@ -1790,19 +1546,13 @@
   "options_highlight_matched_text": {
     "message": "照合される文字列をハイライト"
   },
-  "options_highlight_style_blue": {
-    "message": "青"
-  },
+  "options_highlight_style_blue": { "message": "青" },
   "options_highlight_style_label": {
     "message": "文字ハイライトのスタイル",
     "description": "Title for the section for selection the highlight style"
   },
-  "options_highlight_style_none": {
-    "message": "なし"
-  },
-  "options_highlight_style_yellow": {
-    "message": "黄色"
-  },
+  "options_highlight_style_none": { "message": "なし" },
+  "options_highlight_style_yellow": { "message": "黄色" },
   "options_kanji_components": {
     "message": "漢字構成",
     "description": "Option to define if radicals are displayed or not"
@@ -1814,12 +1564,7 @@
   "options_kanji_data_title": {
     "message": "漢字データ v​$version$",
     "description": "The kanji data series title and version",
-    "placeholders": {
-      "version": {
-        "content": "$1",
-        "example": "2.0.0"
-      }
-    }
+    "placeholders": { "version": { "content": "$1", "example": "2.0.0" } }
   },
   "options_kanji_dictionary_heading": {
     "message": "漢字辞典",
@@ -1849,9 +1594,7 @@
   "options_lang_warning_other_lang_when_available": {
     "message": "英語以外の単語の定義は利用可能な場合のみに表示されます。"
   },
-  "options_lang_warning_please_note": {
-    "message": "ご了承ください："
-  },
+  "options_lang_warning_please_note": { "message": "ご了承ください：" },
   "options_lang_warning_temporary_en_fallback": {
     "message": "単語データを更新する途中、英語のデータが一時的に利用されることがあります。"
   },
@@ -1863,22 +1606,15 @@
     "message": "更新確認時刻 $lastcheck$",
     "description": "Status to show when we last checked for an update",
     "placeholders": {
-      "lastcheck": {
-        "content": "$1",
-        "example": "2019-10-12"
-      }
+      "lastcheck": { "content": "$1", "example": "2019-10-12" }
     }
   },
   "options_lookup_puck_heading": {
     "message": "検索用の丸いボタン",
     "description": "Heading for the section containing options controlling the lookup puck used on touch devices"
   },
-  "options_mouse_interactivity_disable": {
-    "message": "無効"
-  },
-  "options_mouse_interactivity_enable": {
-    "message": "有効"
-  },
+  "options_mouse_interactivity_disable": { "message": "無効" },
+  "options_mouse_interactivity_enable": { "message": "有効" },
   "options_mouse_interactivity_label": {
     "message": "マウスの操作",
     "description": "Label for section for enabling mouse/touch interactivity in the popup"
@@ -1890,12 +1626,7 @@
   "options_name_data_title": {
     "message": "人名データ v​$version$",
     "description": "The name data series title and version",
-    "placeholders": {
-      "version": {
-        "content": "$1",
-        "example": "2.0.0"
-      }
-    }
+    "placeholders": { "version": { "content": "$1", "example": "2.0.0" } }
   },
   "options_new_badge_text": {
     "message": "新機能！",
@@ -1909,24 +1640,14 @@
     "message": "この端末は只今オフラインになっているため、更新の確認ができませんでした。オフラインになりましたら、更新確認を行います。",
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
-  "options_popup_close_popup": {
-    "message": "ポップアップを閉じる"
-  },
-  "options_popup_copy_entry": {
-    "message": "項目をコピーする"
-  },
+  "options_popup_close_popup": { "message": "ポップアップを閉じる" },
+  "options_popup_copy_entry": { "message": "項目をコピーする" },
   "options_popup_copy_fields": {
     "message": "タブ区切りフィールドをコピーする"
   },
-  "options_popup_copy_next": {
-    "message": "次の項目を選択する"
-  },
-  "options_popup_copy_word_kanji": {
-    "message": "単語又は漢字をコピーする"
-  },
-  "options_popup_expand_popup": {
-    "message": "ポップアップを展開する"
-  },
+  "options_popup_copy_next": { "message": "次の項目を選択する" },
+  "options_popup_copy_word_kanji": { "message": "単語又は漢字をコピーする" },
+  "options_popup_expand_popup": { "message": "ポップアップを展開する" },
   "options_popup_interactivity_heading": {
     "message": "ポップアップの双方向性",
     "description": "Heading for the section for configuring popup interactivity features"
@@ -1935,26 +1656,18 @@
     "message": "漢字の結果のみ調べる",
     "description": "Label for the key to force looking up the kanji dictionary only"
   },
-  "options_popup_keys_subheading": {
-    "message": "ポップアップキー"
-  },
+  "options_popup_keys_subheading": { "message": "ポップアップキー" },
   "options_popup_move_popup_down_or_up": {
     "message": "ポップアップを下・上にずらす",
     "description": "Note that it is important that down comes before up"
   },
-  "options_popup_pin_popup": {
-    "message": "ポップアップをピン留めする"
-  },
-  "options_popup_start_copy": {
-    "message": "コピーモードを有効にする"
-  },
+  "options_popup_pin_popup": { "message": "ポップアップをピン留めする" },
+  "options_popup_start_copy": { "message": "コピーモードを有効にする" },
   "options_popup_style_heading": {
     "message": "ポップアップ外観",
     "description": "Heading for options to configure popup display"
   },
-  "options_popup_switch_dictionaries": {
-    "message": "辞書を切り替える"
-  },
+  "options_popup_switch_dictionaries": { "message": "辞書を切り替える" },
   "options_popup_toggle_definition": {
     "message": "定義の表示・非表示を切り替える"
   },
@@ -1986,21 +1699,13 @@
     "message": "コンテキストメニューに「10ten readerを有効にする」を表示",
     "description": "Option to enable context menu item with label `menu_enable_extension`"
   },
-  "options_show_definitions": {
-    "message": "定義を表示"
-  },
+  "options_show_definitions": { "message": "定義を表示" },
   "options_show_popup_explanation": {
     "message": "以下のキーが選択された場合、キーを押しながら対象するコンテンツにマウスを合わせるとポップアップが表示されます。"
   },
-  "options_show_popup_images_subheading": {
-    "message": "画像"
-  },
-  "options_show_popup_subheading": {
-    "message": "ポップアップを表示"
-  },
-  "options_show_popup_text_subheading": {
-    "message": "テキスト"
-  },
+  "options_show_popup_images_subheading": { "message": "画像" },
+  "options_show_popup_subheading": { "message": "ポップアップを表示" },
+  "options_show_popup_text_subheading": { "message": "テキスト" },
   "options_show_priority": {
     "message": "非常に頻出する単語（★）およびやや頻出する単語（☆）のマーカーを表示",
     "description": "Label for enabling the ★ and ☆ markers next to dictionary headwords to indicate they occur frequently  or somewhat frequently respectively"
@@ -2021,9 +1726,7 @@
     "message": "表示",
     "description": "Option to always show the puck"
   },
-  "options_show_romaji": {
-    "message": "ローマ字を表示"
-  },
+  "options_show_romaji": { "message": "ローマ字を表示" },
   "options_show_wanikani_levels": {
     "message": "WaniKaniレベル情報を表示",
     "description": "Label for enabling display of WaniKani level information alongside kanji headwords"
@@ -2056,16 +1759,12 @@
     "message": "上",
     "description": "Text label for the radio button to show tabs on top"
   },
-  "options_toolbar_icon_classic_label": {
-    "message": "クラシック"
-  },
+  "options_toolbar_icon_classic_label": { "message": "クラシック" },
   "options_toolbar_icon_default_alt": {
     "message": "既定",
     "description": "Alt text for the default toolbar icon"
   },
-  "options_toolbar_icon_kanji_label": {
-    "message": "漢字"
-  },
+  "options_toolbar_icon_kanji_label": { "message": "漢字" },
   "options_toolbar_icon_label": {
     "message": "ツールバーアイコン",
     "description": "Heading for the radio buttons to choose the toolbar icon"
@@ -2113,32 +1812,17 @@
   "options_words_data_title": {
     "message": "単語データ v​$version$",
     "description": "The word data series title and version",
-    "placeholders": {
-      "version": {
-        "content": "$1",
-        "example": "2.0.0"
-      }
-    }
+    "placeholders": { "version": { "content": "$1", "example": "2.0.0" } }
   },
   "popup_bp_grammar_tag": {
     "message": "BP N​$level$​ 文法",
     "description": "The tag shown alongside a headword that is part of a Bunpro vocab deck indicating what level deck it is from",
-    "placeholders": {
-      "level": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
+    "placeholders": { "level": { "content": "$1", "example": "5" } }
   },
   "popup_bp_vocab_tag": {
     "message": "BP N​$level$​ 単語",
     "description": "The tag shown alongside a headword that is part of a Bunpro vocab deck indicating what level deck it is from",
-    "placeholders": {
-      "level": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
+    "placeholders": { "level": { "content": "$1", "example": "5" } }
   },
   "popup_close_label": {
     "message": "閉じる",
@@ -2548,146 +2232,66 @@
     "message": "Unicode",
     "description": "The label used when presenting the Unicode codepoint of the kanji"
   },
-  "shogi_dest_same": {
-    "message": "同じ場所"
-  },
-  "shogi_dest_same_suffix": {
-    "message": "（同じ場所）"
-  },
-  "shogi_label": {
-    "message": "将棋"
-  },
+  "shogi_dest_same": { "message": "同じ場所" },
+  "shogi_dest_same_suffix": { "message": "（同じ場所）" },
+  "shogi_label": { "message": "将棋" },
   "shogi_move_piece_dest": {
     "message": "$piece$​を​$dest$​に",
     "placeholders": {
-      "piece": {
-        "content": "$1"
-      },
-      "dest": {
-        "content": "$2"
-      }
+      "piece": { "content": "$1" },
+      "dest": { "content": "$2" }
     }
   },
   "shogi_move_piece_dest_movement": {
     "message": "$piece$​を​$dest$​に​$movement$",
     "placeholders": {
-      "piece": {
-        "content": "$1"
-      },
-      "dest": {
-        "content": "$2"
-      },
-      "movement": {
-        "content": "$3"
-      }
+      "piece": { "content": "$1" },
+      "dest": { "content": "$2" },
+      "movement": { "content": "$3" }
     }
   },
   "shogi_move_side_piece_dest": {
     "message": "$side$​が​$piece$​を​$dest$​に",
     "placeholders": {
-      "side": {
-        "content": "$1"
-      },
-      "piece": {
-        "content": "$2"
-      },
-      "dest": {
-        "content": "$3"
-      }
+      "side": { "content": "$1" },
+      "piece": { "content": "$2" },
+      "dest": { "content": "$3" }
     }
   },
   "shogi_move_side_piece_dest_movement": {
     "message": "$side$​が​$piece$​を​$dest$​に​$movement$",
     "placeholders": {
-      "side": {
-        "content": "$1"
-      },
-      "piece": {
-        "content": "$2"
-      },
-      "dest": {
-        "content": "$3"
-      },
-      "movement": {
-        "content": "$4"
-      }
+      "side": { "content": "$1" },
+      "piece": { "content": "$2" },
+      "dest": { "content": "$3" },
+      "movement": { "content": "$4" }
     }
   },
-  "shogi_movement_down": {
-    "message": "下げる"
-  },
-  "shogi_movement_drop": {
-    "message": "打つ"
-  },
-  "shogi_movement_horiz": {
-    "message": "左右に動かす"
-  },
-  "shogi_movement_left": {
-    "message": "左から動かす"
-  },
-  "shogi_movement_right": {
-    "message": "右から動かす"
-  },
-  "shogi_movement_up": {
-    "message": "上げる"
-  },
-  "shogi_movement_vert": {
-    "message": "まっすぐ上げる"
-  },
-  "shogi_not_promoted_suffix": {
-    "message": "（成らない）"
-  },
-  "shogi_piece_b": {
-    "message": "角行"
-  },
-  "shogi_piece_g": {
-    "message": "金将"
-  },
-  "shogi_piece_k": {
-    "message": "王将"
-  },
-  "shogi_piece_l": {
-    "message": "香車"
-  },
-  "shogi_piece_n": {
-    "message": "桂馬"
-  },
-  "shogi_piece_p": {
-    "message": "歩兵"
-  },
-  "shogi_piece_pro_b": {
-    "message": "竜馬"
-  },
-  "shogi_piece_pro_l": {
-    "message": "成香"
-  },
-  "shogi_piece_pro_n": {
-    "message": "成桂"
-  },
-  "shogi_piece_pro_p": {
-    "message": "と金"
-  },
-  "shogi_piece_pro_r": {
-    "message": "竜王"
-  },
-  "shogi_piece_pro_s": {
-    "message": "成銀"
-  },
-  "shogi_piece_r": {
-    "message": "飛車"
-  },
-  "shogi_piece_s": {
-    "message": "銀将"
-  },
-  "shogi_promoted_suffix": {
-    "message": "（成る）"
-  },
-  "shogi_side_black": {
-    "message": "先手"
-  },
-  "shogi_side_white": {
-    "message": "後手"
-  },
+  "shogi_movement_down": { "message": "下げる" },
+  "shogi_movement_drop": { "message": "打つ" },
+  "shogi_movement_horiz": { "message": "左右に動かす" },
+  "shogi_movement_left": { "message": "左から動かす" },
+  "shogi_movement_right": { "message": "右から動かす" },
+  "shogi_movement_up": { "message": "上げる" },
+  "shogi_movement_vert": { "message": "まっすぐ上げる" },
+  "shogi_not_promoted_suffix": { "message": "（成らない）" },
+  "shogi_piece_b": { "message": "角行" },
+  "shogi_piece_g": { "message": "金将" },
+  "shogi_piece_k": { "message": "王将" },
+  "shogi_piece_l": { "message": "香車" },
+  "shogi_piece_n": { "message": "桂馬" },
+  "shogi_piece_p": { "message": "歩兵" },
+  "shogi_piece_pro_b": { "message": "竜馬" },
+  "shogi_piece_pro_l": { "message": "成香" },
+  "shogi_piece_pro_n": { "message": "成桂" },
+  "shogi_piece_pro_p": { "message": "と金" },
+  "shogi_piece_pro_r": { "message": "竜王" },
+  "shogi_piece_pro_s": { "message": "成銀" },
+  "shogi_piece_r": { "message": "飛車" },
+  "shogi_piece_s": { "message": "銀将" },
+  "shogi_promoted_suffix": { "message": "（成る）" },
+  "shogi_side_black": { "message": "先手" },
+  "shogi_side_white": { "message": "後手" },
   "tabs_kanji_label": {
     "message": "漢字",
     "description": "The label for the kanji dictionary tab"

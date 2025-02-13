@@ -203,11 +203,7 @@ describe('deinflect', () => {
     for (const [inflected, plain, reason, type] of cases) {
       const result = deinflect(inflected as string);
       const match = result.find((candidate) => candidate.word == plain);
-      expect(match).toEqual({
-        reasonChains: [[reason]],
-        type,
-        word: plain,
-      });
+      expect(match).toEqual({ reasonChains: [[reason]], type, word: plain });
     }
   });
 
@@ -289,11 +285,7 @@ describe('deinflect', () => {
     for (const [inflected, plain, reasons] of cases) {
       const result = deinflect(inflected);
       const match = result.find((candidate) => candidate.word == plain);
-      expect(match).toEqual({
-        reasonChains: [reasons],
-        type: 2,
-        word: plain,
-      });
+      expect(match).toEqual({ reasonChains: [reasons], type: 2, word: plain });
     }
   });
 

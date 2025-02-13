@@ -9,10 +9,7 @@ import './options.css';
 export default function GeneralSettingsFormFixture() {
   const [toolbarIcon, setToolbarIcon] = useSelect<'default' | 'sky'>(
     'toolbarIcon',
-    {
-      options: ['default', 'sky'],
-      defaultValue: 'default',
-    }
+    { options: ['default', 'sky'], defaultValue: 'default' }
   );
   const [contextMenuEnable, setContextMenuEnable] = useState(true);
   const [highlightStyle, setHighlightStyle] = useSelect<

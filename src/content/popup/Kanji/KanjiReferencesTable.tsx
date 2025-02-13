@@ -36,10 +36,7 @@ export function KanjiReferencesTable({ entry, kanjiReferences }: Props) {
       const value = getReferenceValue(entry, ref.ref, t) || '-';
       referenceTableInfo.push({
         ref: ref.ref,
-        name: {
-          lang: ref.lang,
-          value: ref.short || ref.full,
-        },
+        name: { lang: ref.lang, value: ref.short || ref.full },
         value: {
           lang:
             ref.ref === 'radical' || ref.ref === 'nelson_r' ? 'ja' : undefined,

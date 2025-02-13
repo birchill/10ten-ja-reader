@@ -14,12 +14,7 @@ export function renderCloseButton(
     : label;
   const closeButton = html(
     'button',
-    {
-      'aria-label': label,
-      title,
-      class: 'close-button',
-      type: 'button',
-    },
+    { 'aria-label': label, title, class: 'close-button', type: 'button' },
     renderCross()
   );
   closeButton.onclick = (event: MouseEvent) => {

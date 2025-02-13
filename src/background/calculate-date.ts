@@ -130,8 +130,5 @@ function calculateTimeSpanOfEraYearOrMonth(
   const earlierEndDate =
     endOfEraDate < endOfTimeSpan ? endOfEraDate : endOfTimeSpan;
 
-  return {
-    dateStart: laterStartDate,
-    dateEnd: earlierEndDate,
-  };
+  return { dateStart: laterStartDate, dateEnd: earlierEndDate };
 }

@@ -7,11 +7,7 @@ import browser from './browser-polyfill';
 (window as any).browser = browser;
 
 // Make sure the browser polyfill believes we are in an extension context
-(window as any).chrome = {
-  runtime: {
-    id: 'test',
-  },
-};
+(window as any).chrome = { runtime: { id: 'test' } };
 
 import type { TextHighlighter as TextHighlighterClass } from '../src/content/text-highlighter';
 

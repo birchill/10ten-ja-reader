@@ -17,9 +17,7 @@ export function renderNamesEntries({
   more: boolean;
   options: ShowPopupOptions;
 }): HTMLElement {
-  const containerElement = html('div', {
-    class: 'entry-data',
-  });
+  const containerElement = html('div', { class: 'entry-data' });
 
   render(
     h(NameTable, {

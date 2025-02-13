@@ -16,9 +16,7 @@ export default function KeyboardSettingsFormFixture() {
 
   const [toggleCommandString, setToggleCommandString] = useValue(
     'toggle command',
-    {
-      defaultValue: 'Ctrl+Alt+R',
-    }
+    { defaultValue: 'Ctrl+Alt+R' }
   );
   const [toggleKeyDisabled] = useSelect('toggle key disabled', {
     options: ['none', 'chrome', 'edge', 'other'],

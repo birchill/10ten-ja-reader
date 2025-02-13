@@ -93,10 +93,7 @@ function DbSummaryBlurb() {
         <Linkify
           text={strokeAttribution}
           links={[
-            {
-              keyword: 'KanjiVG',
-              href: 'https://kanjivg.tagaini.net',
-            },
+            { keyword: 'KanjiVG', href: 'https://kanjivg.tagaini.net' },
             {
               keyword: 'Creative Commons Attribution-Share Alike 3.0',
               href: 'https://creativecommons.org/licenses/by-sa/3.0/',
@@ -187,9 +184,7 @@ const dbSummaryContainerProps = variantProps({
       ),
     },
   },
-  defaultVariants: {
-    errorClass: 'none',
-  },
+  defaultVariants: { errorClass: 'none' },
 });
 
 function DbSummaryContainer(
@@ -248,7 +243,9 @@ function IdleStateSummary(props: {
   );
 }
 
-function useErrorDetails(dbState: JpdictState): {
+function useErrorDetails(
+  dbState: JpdictState
+): {
   class: 'warning' | 'error';
   errorMessage: string;
   nextRetry?: Date;
@@ -302,10 +299,7 @@ function useErrorDetails(dbState: JpdictState): {
   ];
   for (const [state, key] of summaryStates) {
     if (allMajorDataSeries.some((series) => dbState[series].state === state)) {
-      return {
-        class: 'error',
-        errorMessage: t(key),
-      };
+      return { class: 'error', errorMessage: t(key) };
     }
   }
 

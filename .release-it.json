@@ -10,9 +10,7 @@
     "releaseNotes": "node ./scripts/release-notes.js ${version}",
     "assets": ["release-assets/*"]
   },
-  "npm": {
-    "publish": false
-  },
+  "npm": { "publish": false },
   "hooks": {
     "after:bump": "./scripts/build-assets.sh",
     "after:release": "echo 'Draft release: ${releaseUrl}' >> $GITHUB_STEP_SUMMARY"

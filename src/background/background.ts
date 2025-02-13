@@ -247,23 +247,10 @@ void config.ready.then(async () => {
 //
 
 let jpdictState: JpdictStateWithFallback = {
-  words: {
-    state: 'init',
-    version: null,
-    fallbackState: 'unloaded',
-  },
-  kanji: {
-    state: 'init',
-    version: null,
-  },
-  radicals: {
-    state: 'init',
-    version: null,
-  },
-  names: {
-    state: 'init',
-    version: null,
-  },
+  words: { state: 'init', version: null, fallbackState: 'unloaded' },
+  kanji: { state: 'init', version: null },
+  radicals: { state: 'init', version: null },
+  names: { state: 'init', version: null },
   updateState: { type: 'idle', lastCheck: null },
 };
 
@@ -425,10 +412,7 @@ async function searchWords({
     includeRomaji,
   });
 
-  return {
-    words,
-    dbStatus,
-  };
+  return { words, dbStatus };
 }
 
 async function searchOther({
@@ -810,9 +794,7 @@ browser.runtime.onPerformanceWarning?.addListener(async (details) => {
   // more information to fix them.
   void Bugsnag.notify(
     { name: 'PerformanceWarning', message: details.description },
-    {
-      metadata: { 'Performance warning': details },
-    }
+    { metadata: { 'Performance warning': details } }
   );
 });
 

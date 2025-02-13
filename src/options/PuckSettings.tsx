@@ -7,9 +7,7 @@ import { PuckSettingsForm, type ShowPuckSetting } from './PuckSettingsForm';
 import { SectionHeading } from './SectionHeading';
 import { useConfigValue } from './use-config-value';
 
-type Props = {
-  config: Config;
-};
+type Props = { config: Config };
 
 export function PuckSettings(props: Props) {
   const { t } = useLocale();

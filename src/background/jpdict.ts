@@ -31,30 +31,16 @@ import { GetWordsFunction, wordSearch } from './word-search';
 //
 
 export type JpdictState = {
-  words: {
-    state: DataSeriesState;
-    version: DataVersion | null;
-  };
-  kanji: {
-    state: DataSeriesState;
-    version: DataVersion | null;
-  };
-  radicals: {
-    state: DataSeriesState;
-    version: DataVersion | null;
-  };
-  names: {
-    state: DataSeriesState;
-    version: DataVersion | null;
-  };
+  words: { state: DataSeriesState; version: DataVersion | null };
+  kanji: { state: DataSeriesState; version: DataVersion | null };
+  radicals: { state: DataSeriesState; version: DataVersion | null };
+  names: { state: DataSeriesState; version: DataVersion | null };
   updateState: UpdateState;
   updateError?: UpdateErrorState;
 };
 
 export type JpdictStateWithFallback = Omit<JpdictState, 'words'> & {
-  words: JpdictState['words'] & {
-    fallbackState: FlatFileDatabaseLoadState;
-  };
+  words: JpdictState['words'] & { fallbackState: FlatFileDatabaseLoadState };
 };
 
 //
@@ -76,23 +62,10 @@ const backend: JpdictBackend =
 // when it is being updated since this can block for several seconds.
 
 let dbState: JpdictStateWithFallback = {
-  words: {
-    state: 'init',
-    version: null,
-    fallbackState: 'unloaded',
-  },
-  kanji: {
-    state: 'init',
-    version: null,
-  },
-  radicals: {
-    state: 'init',
-    version: null,
-  },
-  names: {
-    state: 'init',
-    version: null,
-  },
+  words: { state: 'init', version: null, fallbackState: 'unloaded' },
+  kanji: { state: 'init', version: null },
+  radicals: { state: 'init', version: null },
+  names: { state: 'init', version: null },
   updateState: { type: 'idle', lastCheck: null },
 };
 
@@ -275,9 +248,7 @@ async function setLastUpdateTime(time: number | null) {
   // Extension storage can randomly fail with "An unexpected error occurred".
   try {
     if (time) {
-      await browser.storage.local.set({
-        lastDbUpdateTime: time,
-      });
+      await browser.storage.local.set({ lastDbUpdateTime: time });
     } else {
       await browser.storage.local.remove('lastDbUpdateTime');
     }

@@ -5,9 +5,7 @@ import { KeyboardKeys } from './content-config-params';
 export type StoredKeyboardKeys = Omit<
   KeyboardKeys,
   'movePopupUp' | 'movePopupDown'
-> & {
-  movePopupDownOrUp: string[];
-};
+> & { movePopupDownOrUp: string[] };
 
 // A single key description. We use this definition for storing the default keys
 // since it allows storing as an array (so we can determine the order the

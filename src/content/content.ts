@@ -1095,9 +1095,7 @@ export class ContentHandler {
     } else if (textBoxInFocus) {
       // If we are focussed on a textbox and the keystroke wasn't one we handle
       // one, enter typing mode and hide the pop-up.
-      this.clearResult({
-        currentElement: this.lastMouseTarget,
-      });
+      this.clearResult({ currentElement: this.lastMouseTarget });
       this.typingMode = true;
     }
   }
@@ -1810,9 +1808,7 @@ export class ContentHandler {
   // the scroll position does not change.
   clearResult({
     currentElement = null,
-  }: {
-    currentElement?: Element | null;
-  } = {}) {
+  }: { currentElement?: Element | null } = {}) {
     this.currentTextRange = undefined;
     this.currentPagePoint = undefined;
     this.lastMouseTarget = null;
@@ -2360,12 +2356,7 @@ export class ContentHandler {
       };
     } else {
       const tooltipClearance = this.currentTargetProps?.hasTitle ? 20 : 0;
-      cursorClearance = {
-        top: 0,
-        right: 0,
-        bottom: tooltipClearance,
-        left: 0,
-      };
+      cursorClearance = { top: 0, right: 0, bottom: tooltipClearance, left: 0 };
     }
 
     // Add the first part of the matched text to the cursor clearance.
@@ -2863,9 +2854,7 @@ declare global {
     // We only need to do that if we're the root-most frame, however.
     if (typeof tabId !== 'undefined' && isTopMostWindow() && !port) {
       try {
-        port = browser.runtime.connect(undefined, {
-          name: `tab-${tabId}`,
-        });
+        port = browser.runtime.connect(undefined, { name: `tab-${tabId}` });
       } catch (e) {
         console.error(e);
       }

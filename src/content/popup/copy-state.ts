@@ -1,9 +1,7 @@
 import { CopyType } from '../../common/copy-keys';
 
 export type CopyState =
-  | {
-      kind: 'inactive';
-    }
+  | { kind: 'inactive' }
   | {
       kind: 'active';
       index: number;
@@ -24,11 +22,7 @@ export type CopyState =
       index: number;
       mode: 'touch' | 'mouse' | 'keyboard';
     }
-  | {
-      kind: 'error';
-      index: number;
-      mode: 'touch' | 'mouse' | 'keyboard';
-    };
+  | { kind: 'error'; index: number; mode: 'touch' | 'mouse' | 'keyboard' };
 
 // Convenience method to extract the mode
 export function getCopyMode(
