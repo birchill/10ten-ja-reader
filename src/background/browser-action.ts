@@ -178,10 +178,7 @@ async function doUpdateBrowserAction({
   ) {
     await action.setBadgeText({ text: '!', tabId });
     await browser.composeAction?.setBadgeText({ text: '!' });
-    await action.setBadgeBackgroundColor({
-      color: 'yellow',
-      tabId,
-    });
+    await action.setBadgeBackgroundColor({ color: 'yellow', tabId });
     await browser.composeAction?.setBadgeBackgroundColor({ color: 'yellow' });
     tooltip = browser.i18n.getMessage('command_toggle_update_error');
   } else {

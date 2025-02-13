@@ -56,9 +56,7 @@ export function getReferencesForLang(lang: DbLanguageId) {
   return SUPPORTED_REFERENCES;
 }
 
-const REFERENCE_ABBREV_MAPPING: {
-  [key: string]: ReferenceAbbreviation;
-} = {
+const REFERENCE_ABBREV_MAPPING: { [key: string]: ReferenceAbbreviation } = {
   CO: 'conning',
   H: 'halpern_njecd',
   L: 'heisig6',
@@ -100,9 +98,7 @@ type ReferenceLabel = { full: string; short?: string; lang: string };
 // showing an initial "The" in the long label but still sorting by the short
 // label (which does not include the "The"). Such exceptions aside, however, the
 // full and short versions should generally start with the same first few words.
-const REFERENCE_LABELS: {
-  [key in NotLocalizedReferences]: ReferenceLabel;
-} = {
+const REFERENCE_LABELS: { [key in NotLocalizedReferences]: ReferenceLabel } = {
   conning: {
     full: "Conning - Kodansha Kanji Learner's Course",
     short: 'Conning',
@@ -158,11 +154,7 @@ const REFERENCE_LABELS: {
     short: 'Kanji Dictionary',
     lang: 'en',
   },
-  wk: {
-    full: 'WaniKani level',
-    short: 'WaniKani',
-    lang: 'en',
-  },
+  wk: { full: 'WaniKani level', short: 'WaniKani', lang: 'en' },
 } as const;
 
 // Get an array matching reference abbreviations to suitable names.

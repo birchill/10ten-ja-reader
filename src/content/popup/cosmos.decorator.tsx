@@ -44,9 +44,7 @@ export default function PopupDecorator({
       <PopupOptionsProvider interactive={interactive}>
         <div
           className={`theme-${themeName} window bundled-fonts`}
-          style={{
-            '--base-font-size': `var(--${fontSize}-font-size)`,
-          }}
+          style={{ '--base-font-size': `var(--${fontSize}-font-size)` }}
         >
           {children}
         </div>

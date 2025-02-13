@@ -2,13 +2,7 @@ import { KanjiReadings } from './KanjiReadings';
 
 export default {
   default: (
-    <KanjiReadings
-      r={{
-        on: ['シ'],
-        kun: ['さむらい'],
-        na: ['お', 'ま'],
-      }}
-    />
+    <KanjiReadings r={{ on: ['シ'], kun: ['さむらい'], na: ['お', 'ま'] }} />
   ),
   wide: (
     <KanjiReadings

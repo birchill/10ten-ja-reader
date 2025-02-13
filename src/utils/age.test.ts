@@ -24,16 +24,10 @@ describe('annotateAge', () => {
   it('recognizes a backwards age', () => {
     expect(
       getDob('Kei Komuro (10.5.1991-; lawyer who married Princess Mako)')
-    ).toEqual({
-      date: new Date(1991, 9, 5),
-      approx: false,
-    });
+    ).toEqual({ date: new Date(1991, 9, 5), approx: false });
     expect(
       getDob('Mako Komuro (10.31.1991-; former imperial princess)')
-    ).toEqual({
-      date: new Date(1991, 9, 31),
-      approx: false,
-    });
+    ).toEqual({ date: new Date(1991, 9, 31), approx: false });
   });
   it('ignores the age of a deceased person', () => {
     expect(getDob('Tsutomu Hata (1935.8.24-2017.8.28)')).toBe(null);

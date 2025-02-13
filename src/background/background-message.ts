@@ -35,10 +35,7 @@ export const BackgroundMessageSchema = discriminator('type', {
     dictMode: s.enums(['default', 'kanji']),
     // We don't validate the contents of meta (yet)
     meta: s.optional(s.type({})),
-    point: s.type({
-      x: s.number(),
-      y: s.number(),
-    }),
+    point: s.type({ x: s.number(), y: s.number() }),
     // Likewise, we don't validate target props (yet)
     targetProps: s.type({}),
     text: s.string(),
@@ -48,10 +45,7 @@ export const BackgroundMessageSchema = discriminator('type', {
       frameId: s.number(),
       initialSrc: s.optional(s.string()),
       currentSrc: s.string(),
-      dimensions: s.type({
-        width: s.number(),
-        height: s.number(),
-      }),
+      dimensions: s.type({ width: s.number(), height: s.number() }),
     }),
     frame: s.literal('top'),
   }),

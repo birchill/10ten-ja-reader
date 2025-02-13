@@ -4,10 +4,7 @@ import { useLocale } from '../common/i18n';
 
 import { KeyBox, KeyCheckbox } from './KeyBox';
 
-export type HoldToShowSetting = {
-  alt: boolean;
-  ctrl: boolean;
-};
+export type HoldToShowSetting = { alt: boolean; ctrl: boolean };
 
 type Props = {
   isMac: boolean;

@@ -7,9 +7,7 @@ import { SectionHeading } from './SectionHeading';
 import { UnitSettingsForm } from './UnitSettingsForm';
 import { useConfigValue } from './use-config-value';
 
-type Props = {
-  config: Config;
-};
+type Props = { config: Config };
 
 export function UnitSettings(props: Props) {
   const { t } = useLocale();

@@ -29,18 +29,13 @@ const config: KnipConfig = {
     'mocha',
     '@types/mocha',
   ],
-  ignoreExportsUsedInFile: {
-    interface: true,
-    type: true,
-  },
+  ignoreExportsUsedInFile: { interface: true, type: true },
   playwright: {
     // Knip doesn't recognize the globs in package.json scripts
     entry: 'tests/**/*.test.{js,ts}',
     config: 'playwright-test.config.js',
   },
-  tailwind: {
-    config: ['**/tailwind.config.js'],
-  },
+  tailwind: { config: ['**/tailwind.config.js'] },
 };
 
 export default config;

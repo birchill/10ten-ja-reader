@@ -1,9 +1,6 @@
 import { NumberMeta } from '../../numbers';
 
-type Props = {
-  meta: NumberMeta;
-  isCombinedResult: boolean;
-};
+type Props = { meta: NumberMeta; isCombinedResult: boolean };
 
 export function NumberInfo({ meta, isCombinedResult }: Props) {
   return (

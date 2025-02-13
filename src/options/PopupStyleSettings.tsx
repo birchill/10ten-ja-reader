@@ -14,9 +14,7 @@ import { PopupStyleForm } from './PopupStyleForm';
 import { SectionHeading } from './SectionHeading';
 import { useConfigValue } from './use-config-value';
 
-type Props = {
-  config: Config;
-};
+type Props = { config: Config };
 
 export function PopupStyleSettings(props: Props) {
   const { t } = useLocale();

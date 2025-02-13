@@ -39,9 +39,7 @@ export default function PopupThemeRadioFixture() {
   const [showPriority] = useValue<boolean>('showPriority', {
     defaultValue: true,
   });
-  const [showRomaji] = useValue<boolean>('showRomaji', {
-    defaultValue: false,
-  });
+  const [showRomaji] = useValue<boolean>('showRomaji', { defaultValue: false });
   const [showWaniKaniLevel] = useValue<boolean>('showWaniKaniLevel', {
     defaultValue: false,
   });

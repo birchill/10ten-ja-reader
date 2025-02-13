@@ -302,10 +302,7 @@ function resetContainer({
   popupStyle: string;
 }): HTMLElement {
   const container = html('div', { class: 'container' });
-  const windowDiv = html('div', {
-    class: 'window',
-    'data-type': 'window',
-  });
+  const windowDiv = html('div', { class: 'window', 'data-type': 'window' });
   container.append(windowDiv);
 
   // Set initial and interactive status

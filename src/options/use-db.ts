@@ -12,22 +12,10 @@ import {
 import { isObject } from '../utils/is-object';
 
 const initialDbstate: JpdictState = {
-  words: {
-    state: 'init',
-    version: null,
-  },
-  kanji: {
-    state: 'init',
-    version: null,
-  },
-  radicals: {
-    state: 'init',
-    version: null,
-  },
-  names: {
-    state: 'init',
-    version: null,
-  },
+  words: { state: 'init', version: null },
+  kanji: { state: 'init', version: null },
+  radicals: { state: 'init', version: null },
+  names: { state: 'init', version: null },
   updateState: { type: 'idle', lastCheck: null },
 };
 

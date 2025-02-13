@@ -96,9 +96,7 @@ export function TabDisplayRadio(props: Props) {
   );
 }
 
-type IconProps = {
-  themeClass: string;
-};
+type IconProps = { themeClass: string };
 
 function PopupIconBase(props: RenderableProps<IconProps>) {
   return (

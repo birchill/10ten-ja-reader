@@ -16,10 +16,7 @@ export type TranslateFunctionType = (
 
 export type SetLocaleFunctionType = (locale: LocaleType) => void;
 
-export type i18nContextType = {
-  t: TranslateFunctionType;
-  langTag: string;
-};
+export type i18nContextType = { t: TranslateFunctionType; langTag: string };
 
 const i18nContext = createContext<i18nContextType>({
   t: () => 'Not initialized',
@@ -29,9 +26,7 @@ const i18nContext = createContext<i18nContextType>({
 const SUPPORTED_LOCALES = ['en', 'ja', 'zh_CN'] as const;
 type LocaleType = (typeof SUPPORTED_LOCALES)[number];
 
-type I18nProviderProps = {
-  locale?: LocaleType;
-};
+type I18nProviderProps = { locale?: LocaleType };
 
 export function I18nProvider(props: RenderableProps<I18nProviderProps>) {
   const [isLoading, setIsLoading] = useState<boolean>(true);

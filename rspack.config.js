@@ -73,10 +73,7 @@ const commonConfig = {
           /** @type {import('@rspack/core').SwcLoaderOptions} */
           options: {
             sourceMap: true,
-            jsc: {
-              parser: { syntax: 'typescript' },
-              target: 'es2020',
-            },
+            jsc: { parser: { syntax: 'typescript' }, target: 'es2020' },
           },
         },
         type: 'javascript/auto',
@@ -90,10 +87,7 @@ const commonConfig = {
           options: {
             sourceMap: true,
             jsc: {
-              parser: {
-                syntax: 'typescript',
-                tsx: true,
-              },
+              parser: { syntax: 'typescript', tsx: true },
               transform: {
                 react: {
                   runtime: 'automatic',
@@ -127,13 +121,8 @@ const commonConfig = {
 const testConfig = {
   ...commonConfig,
   name: 'tests',
-  entry: {
-    'content-loader': './tests/content-loader.ts',
-  },
-  output: {
-    path: path.resolve(__dirname, 'tests'),
-    filename: '[name].js',
-  },
+  entry: { 'content-loader': './tests/content-loader.ts' },
+  output: { path: path.resolve(__dirname, 'tests'), filename: '[name].js' },
   plugins: [
     new rspack.DefinePlugin({
       __ACTIVE_TAB_ONLY__: false,
@@ -472,10 +461,7 @@ function getExtConfig(options) {
   if (options.uploadToBugsnag && process.env.BUGSNAG_API_KEY) {
     plugins.push(
       new BugsnagBuildReporterPlugin(
-        {
-          apiKey: process.env.BUGSNAG_API_KEY,
-          appVersion: pjson.version,
-        },
+        { apiKey: process.env.BUGSNAG_API_KEY, appVersion: pjson.version },
         {}
       )
     );
@@ -552,9 +538,7 @@ function getExtConfig(options) {
       // options page.
       popup: './src/content/popup/popup.css',
     },
-    experiments: {
-      css: true,
-    },
+    experiments: { css: true },
     // We turn on production mode simply so we can drop unused code from the
     // bundle -- otherwise we'll end up injecting a bunch of unrelated code like
     // Russian token stopwords into the content script.
@@ -584,10 +568,7 @@ function getExtConfig(options) {
         // 'beautify' so it will produce different output.
         new TerserPlugin({
           terserOptions: {
-            compress: {
-              defaults: false,
-              unused: true,
-            },
+            compress: { defaults: false, unused: true },
             mangle: false,
             format: {
               // Chrome sometimes doesn't like the generated output claiming it's
@@ -618,12 +599,7 @@ function getPreprocessorConfig(...features) {
   return {
     test: /\.src$/,
     use: [
-      {
-        loader: 'file-loader',
-        options: {
-          name: '[name]',
-        },
-      },
+      { loader: 'file-loader', options: { name: '[name]' } },
       {
         loader:
           'webpack-preprocessor?' +

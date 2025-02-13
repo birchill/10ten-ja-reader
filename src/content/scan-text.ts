@@ -72,10 +72,7 @@ export function scanText({
     return null;
   }
 
-  const result: GetTextAtPointResult = {
-    text: '',
-    textRange: [],
-  };
+  const result: GetTextAtPointResult = { text: '', textRange: [] };
 
   let textDelimiter = nonJapaneseChar;
 
@@ -122,21 +119,13 @@ export function scanText({
       // The text node has disallowed characters mid-way through so
       // return up to that point.
       result.text += nodeText.substring(0, textEnd);
-      result.textRange!.push({
-        node,
-        start: offset,
-        end: offset + textEnd,
-      });
+      result.textRange!.push({ node, start: offset, end: offset + textEnd });
       break;
     }
 
     // The whole text node is allowed characters, keep going.
     result.text += nodeText;
-    result.textRange!.push({
-      node,
-      start: offset,
-      end: node.data.length,
-    });
+    result.textRange!.push({ node, start: offset, end: node.data.length });
     node = treeWalker.nextNode() as Text;
     offset = 0;
   } while (

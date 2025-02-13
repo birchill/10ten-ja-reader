@@ -7,10 +7,7 @@ export type TranslateFunctionType = (
   substitutions?: string | Array<string>
 ) => string;
 
-export type i18nContextType = {
-  t: TranslateFunctionType;
-  langTag: string;
-};
+export type i18nContextType = { t: TranslateFunctionType; langTag: string };
 
 const contextValue: i18nContextType = {
   t: browser.i18n.getMessage.bind(browser.i18n),
@@ -21,9 +18,7 @@ const i18nContext = createContext<i18nContextType>(contextValue);
 
 type LocaleType = 'en' | 'ja' | 'zh_CN';
 
-type I18nProviderProps = {
-  locale?: LocaleType;
-};
+type I18nProviderProps = { locale?: LocaleType };
 
 export function I18nProvider(props: RenderableProps<I18nProviderProps>) {
   if (props.locale !== undefined) {

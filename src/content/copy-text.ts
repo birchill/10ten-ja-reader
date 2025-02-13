@@ -231,11 +231,7 @@ const highPriorityLabelsSet = new Set(highPriorityLabels);
 
 function filterRelevantKanjiHeadwords(
   headwords: Array<KanjiHeadword>,
-  {
-    includeLessCommonHeadwords,
-  }: {
-    includeLessCommonHeadwords: boolean;
-  }
+  { includeLessCommonHeadwords }: { includeLessCommonHeadwords: boolean }
 ) {
   if (includeLessCommonHeadwords) {
     return headwords.filter((k) => !k.i?.includes('sK'));
@@ -264,11 +260,7 @@ type KanaHeadword = WordResult['r'][number];
 
 function filterRelevantKanaHeadwords(
   headwords: Array<KanaHeadword>,
-  {
-    includeLessCommonHeadwords,
-  }: {
-    includeLessCommonHeadwords: boolean;
-  }
+  { includeLessCommonHeadwords }: { includeLessCommonHeadwords: boolean }
 ) {
   if (includeLessCommonHeadwords) {
     return headwords.filter((k) => !k.i?.includes('sk'));

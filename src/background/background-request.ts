@@ -12,9 +12,7 @@ export type SearchRequest = s.Infer<typeof SearchRequestSchema>;
 
 const SearchOtherRequestSchema = s.assign(
   SearchRequestSchema,
-  s.type({
-    wordsMatchLen: s.number(),
-  })
+  s.type({ wordsMatchLen: s.number() })
 );
 
 export type SearchOtherRequest = s.Infer<typeof SearchOtherRequestSchema>;
@@ -27,9 +25,7 @@ export const BackgroundRequestSchema = discriminator('type', {
   disabled: s.type({}),
   disableMouseInteraction: s.type({}),
   'enable?': s.type({}),
-  enabled: s.type({
-    src: s.string(),
-  }),
+  enabled: s.type({ src: s.string() }),
   isDbUpdating: s.type({}),
   options: s.type({}),
   puckStateChanged: s.type({
@@ -67,9 +63,7 @@ export const BackgroundRequestSchema = discriminator('type', {
     frameId: s.number(),
     state: s.optional(PopupStateSchema),
   }),
-  'children:popupShown': s.type({
-    state: s.optional(PopupStateSchema),
-  }),
+  'children:popupShown': s.type({ state: s.optional(PopupStateSchema) }),
   'children:popupHidden': s.type({}),
   'top:isPopupShowing': s.type({}),
 
@@ -85,10 +79,7 @@ export const BackgroundRequestSchema = discriminator('type', {
     // Parameters for designating the iframe source properties
     source: s.type({
       src: s.string(),
-      dimensions: s.type({
-        width: s.number(),
-        height: s.number(),
-      }),
+      dimensions: s.type({ width: s.number(), height: s.number() }),
     }),
   }),
   'top:pinPopup': s.type({}),

@@ -3,11 +3,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('webextension-polyfill', () => ({
-  default: {
-    i18n: {
-      getMessage: (key: string) => key,
-    },
-  },
+  default: { i18n: { getMessage: (key: string) => key } },
 }));
 
 import { Command } from './commands';

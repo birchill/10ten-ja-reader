@@ -249,10 +249,7 @@ const preGregorianEras = new Map<string, string>([
   ['明治', 'めいじ'],
 ]);
 
-type GregorianEraInfo = {
-  reading: string;
-  start: number;
-};
+type GregorianEraInfo = { reading: string; start: number };
 
 const gregorianEras: Record<string, GregorianEraInfo> = {
   // --------------------------------------------------------------
@@ -298,10 +295,7 @@ export function lookForEra({
   nodeText: string;
   textDelimiter: RegExp;
   textEnd: number;
-}): {
-  textDelimiter: RegExp;
-  textEnd: number;
-} | null {
+}): { textDelimiter: RegExp; textEnd: number } | null {
   // We only want to _extend_ the current range so if `textEnd` is already -1
   // (i.e. end of the text) then we don't need to do anything.
   if (textEnd < 0 || !startsWithEraName(currentText)) {
@@ -319,10 +313,7 @@ export function lookForEra({
 
   const endOfEra = nodeText.substring(textEnd).search(textDelimiter);
 
-  return {
-    textDelimiter,
-    textEnd: endOfEra === -1 ? -1 : textEnd + endOfEra,
-  };
+  return { textDelimiter, textEnd: endOfEra === -1 ? -1 : textEnd + endOfEra };
 }
 
 export function startsWithEraName(text: string): boolean {
@@ -385,16 +376,9 @@ function isGregorianYear(era: string, year: number): boolean {
   return false;
 }
 
-export type EraInfoDate = {
-  year: number;
-  month?: number;
-  day?: number;
-};
+export type EraInfoDate = { year: number; month?: number; day?: number };
 
-export type EraInfoTimeSpan = {
-  dateStart: EraInfoDate;
-  dateEnd?: EraInfoDate;
-};
+export type EraInfoTimeSpan = { dateStart: EraInfoDate; dateEnd?: EraInfoDate };
 
 export async function getEraInfoTimeSpan(
   meta: EraMeta
@@ -407,11 +391,7 @@ export async function getEraInfoTimeSpan(
     const eraInfo = gregorianEras[meta.era];
 
     const gregorianYear = eraInfo.start + year - 1;
-    const date = {
-      year: gregorianYear,
-      month: meta.month,
-      day: meta.day,
-    };
+    const date = { year: gregorianYear, month: meta.month, day: meta.day };
 
     return { dateStart: date };
   }

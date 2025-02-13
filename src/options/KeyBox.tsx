@@ -4,10 +4,7 @@ import { useId } from 'preact/hooks';
 
 import { classes } from '../utils/classes';
 
-type KeyboxProps = {
-  label: string;
-  isMac?: boolean;
-};
+type KeyboxProps = { label: string; isMac?: boolean };
 
 export function KeyBox(props: KeyboxProps) {
   return (

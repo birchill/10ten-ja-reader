@@ -146,8 +146,8 @@
 
   .window.bundled-fonts {
     font-family: '10ten Inter', '10ten Noto Sans JP', sans-serif;
-    font-feature-settings: 'calt', 'case', 'cv01', 'cv03', 'cv04', 'cv11',
-      'ss03';
+    font-feature-settings:
+      'calt', 'case', 'cv01', 'cv03', 'cv04', 'cv11', 'ss03';
     font-weight: 380;
   }
 

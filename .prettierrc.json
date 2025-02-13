@@ -11,6 +11,7 @@
   ],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
+  "objectWrap": "collapse",
   "plugins": [
     "@trivago/prettier-plugin-sort-imports",
     "prettier-plugin-organize-attributes",

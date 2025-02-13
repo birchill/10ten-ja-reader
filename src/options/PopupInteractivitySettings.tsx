@@ -10,9 +10,7 @@ import { PopupInteractivitySettingsForm } from './PopupInteractivitySettingsForm
 import { SectionHeading } from './SectionHeading';
 import { useConfigValue } from './use-config-value';
 
-type Props = {
-  config: Config;
-};
+type Props = { config: Config };
 
 export function PopupInteractivitySettings(props: Props) {
   const { t } = useLocale();

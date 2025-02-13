@@ -27,20 +27,14 @@ export function lookForMetadata({
   matchCurrency: boolean;
   textEnd: number;
   textDelimiter: RegExp;
-}): {
-  textDelimiter: RegExp;
-  textEnd: number;
-} {
+}): { textDelimiter: RegExp; textEnd: number } {
   return (
     (matchCurrency
       ? lookForCurrency({ currentText, nodeText, textDelimiter })
       : undefined) ||
     lookForEra({ currentText, nodeText, textEnd, textDelimiter }) ||
     lookForShogi({ nodeText, textDelimiter }) ||
-    lookForMeasure({ nodeText, textDelimiter }) || {
-      textDelimiter,
-      textEnd,
-    }
+    lookForMeasure({ nodeText, textDelimiter }) || { textDelimiter, textEnd }
   );
 }
 

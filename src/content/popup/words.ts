@@ -155,9 +155,7 @@ export function renderWordEntries({
     if (searchOnlyMatch) {
       const searchOnlyDiv = html(
         'div',
-        {
-          class: 'tp-mb-1 tp-text-sm tp-opacity-70',
-        },
+        { class: 'tp-mb-1 tp-text-sm tp-opacity-70' },
         browser.i18n.getMessage('content_sk_match_src', searchOnlyMatch)
       );
       headingDiv.append(searchOnlyDiv);
@@ -570,10 +568,7 @@ function renderKana(
 
 function renderDefinitions(
   entry: WordResult,
-  options: {
-    dictLang?: string;
-    posDisplay: PartOfSpeechDisplay;
-  }
+  options: { dictLang?: string; posDisplay: PartOfSpeechDisplay }
 ) {
   const senses = entry.s.filter((s) => s.match);
   if (!senses.length) {
@@ -649,10 +644,7 @@ function renderDefinitions(
           groupHeading.append(
             html(
               'span',
-              {
-                class: 'w-misc tag',
-                lang: getLangTag(),
-              },
+              { class: 'w-misc tag', lang: getLangTag() },
               browser.i18n.getMessage(
                 `misc_label_${misc.replace(/-/g, '_')}`
               ) || misc

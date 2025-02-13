@@ -83,10 +83,7 @@ export function getTextAtPoint({
   }
 
   const synthesizedPosition = position
-    ? {
-        offsetNode: scanNode || position.offsetNode,
-        offset: position.offset,
-      }
+    ? { offsetNode: scanNode || position.offsetNode, offset: position.offset }
     : undefined;
 
   if (position && isTextNodePosition(synthesizedPosition)) {
@@ -203,10 +200,7 @@ function getTextNodeStart({
   // Similarly, if we have a Google Docs node, synthesize a node to scan.
   if (isGdocsOverlayPosition(position)) {
     let text = '';
-    ({ position, text } = getTextFromAnnotatedCanvas({
-      maxLength,
-      point,
-    }));
+    ({ position, text } = getTextFromAnnotatedCanvas({ maxLength, point }));
 
     return position ? [position, document.createTextNode(text)] : [null, null];
   }

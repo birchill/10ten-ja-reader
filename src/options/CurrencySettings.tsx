@@ -7,9 +7,7 @@ import { CurrencySettingsForm } from './CurrencySettingsForm';
 import { SectionHeading } from './SectionHeading';
 import { useConfigValue } from './use-config-value';
 
-type Props = {
-  config: Config;
-};
+type Props = { config: Config };
 
 export function CurrencySettings(props: Props) {
   const { t } = useLocale();

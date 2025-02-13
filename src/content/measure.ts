@@ -13,10 +13,7 @@ export function lookForMeasure({
 }: {
   nodeText: string;
   textDelimiter: RegExp;
-}): {
-  textDelimiter: RegExp;
-  textEnd: number;
-} | null {
+}): { textDelimiter: RegExp; textEnd: number } | null {
   if (!startsWithNumeral(nodeText)) {
     return null;
   }
@@ -28,10 +25,7 @@ export function lookForMeasure({
   ]);
   const textDelimiter = getNegatedCharRange(japaneseOrUnit);
 
-  return {
-    textDelimiter,
-    textEnd: nodeText.search(textDelimiter),
-  };
+  return { textDelimiter, textEnd: nodeText.search(textDelimiter) };
 }
 
 export type MeasureMeta = {
@@ -88,12 +82,7 @@ export function extractMeasureMetadata(text: string): MeasureMeta | undefined {
     value += 0.5;
   }
 
-  return {
-    type: 'measure',
-    unit,
-    value,
-    matchLen: matches[0].length,
-  };
+  return { type: 'measure', unit, value, matchLen: matches[0].length };
 }
 
 export type ConvertedMeasure = {

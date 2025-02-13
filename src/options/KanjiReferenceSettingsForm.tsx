@@ -23,10 +23,7 @@ export function KanjiReferenceSettingsForm(props: Props) {
 
   const references = useMemo(() => {
     return [
-      {
-        ref: 'kanjiComponents',
-        full: t('options_kanji_components'),
-      },
+      { ref: 'kanjiComponents', full: t('options_kanji_components') },
       ...getReferenceLabelsForLang(props.dictLang, t),
     ];
   }, [props.dictLang, lang]);

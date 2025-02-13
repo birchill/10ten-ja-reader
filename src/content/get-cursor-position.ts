@@ -562,10 +562,7 @@ function caretRangeFromPoint({
   range = adjustForRangeBoundary({ range, point });
 
   return range
-    ? {
-        offsetNode: range.startContainer,
-        offset: range.startOffset,
-      }
+    ? { offsetNode: range.startContainer, offset: range.startOffset }
     : null;
 }
 

@@ -25,20 +25,13 @@ export default [
       sourceType: 'module',
 
       parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-        },
+        ecmaFeatures: { jsx: true },
         project: 'tsconfig.json',
         tsconfigRootDir: __dirname,
       },
     },
 
-    settings: {
-      react: {
-        version: '16.0',
-        pragma: 'h',
-      },
-    },
+    settings: { react: { version: '16.0', pragma: 'h' } },
 
     rules: {
       curly: 'error',
@@ -69,11 +62,7 @@ export default [
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/triple-slash-reference': [
         'error',
-        {
-          path: 'always',
-          types: 'never',
-          lib: 'never',
-        },
+        { path: 'always', types: 'never', lib: 'never' },
       ],
     },
   },
@@ -91,11 +80,7 @@ export default [
       'scripts/**/*.{cjs,js,ts}',
       'tests/**/*.{cjs,js,ts}',
     ],
-    languageOptions: {
-      parserOptions: {
-        project: null,
-      },
-    },
+    languageOptions: { parserOptions: { project: null } },
     rules: {
       '@typescript-eslint/no-floating-promises': 'off',
       '@typescript-eslint/no-misused-promises': 'off',
@@ -103,19 +88,10 @@ export default [
   },
   {
     files: ['*.cjs', 'scripts/**/*.cjs'],
-    languageOptions: {
-      globals: {
-        ...globals.node,
-      },
-      sourceType: 'commonjs',
-    },
+    languageOptions: { globals: { ...globals.node }, sourceType: 'commonjs' },
   },
   {
     files: ['*.{js,ts}', 'scripts/**/*.{js,ts}'],
-    languageOptions: {
-      globals: {
-        ...globals.nodeBuiltin,
-      },
-    },
+    languageOptions: { globals: { ...globals.nodeBuiltin } },
   },
 ];

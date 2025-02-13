@@ -113,10 +113,7 @@ export default class AllTabManager implements TabManager {
               return;
             }
 
-            this.dropFrame({
-              tabId: sender.tab.id,
-              frameId: sender.frameId,
-            });
+            this.dropFrame({ tabId: sender.tab.id, frameId: sender.frameId });
             break;
         }
 
@@ -352,10 +349,7 @@ export default class AllTabManager implements TabManager {
         tab.frames = [];
       }
     } else {
-      this.tabs[tabId] = {
-        src: frameId === 0 ? src : '',
-        frames: [],
-      };
+      this.tabs[tabId] = { src: frameId === 0 ? src : '', frames: [] };
     }
 
     const tab = this.tabs[tabId];

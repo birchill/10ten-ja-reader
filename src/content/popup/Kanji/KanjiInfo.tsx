@@ -12,9 +12,7 @@ import { StrokeCount } from './StrokeCount';
 export type Props = Pick<
   KanjiResult,
   'r' | 'misc' | 'm' | 'm_lang' | 'rad' | 'comp'
-> & {
-  showComponents?: boolean;
-};
+> & { showComponents?: boolean };
 
 export function KanjiInfo(props: Props) {
   const { langTag } = useLocale();

@@ -34,10 +34,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 1);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'いうえお', [textNode, 1, 5]);
@@ -110,10 +107,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(firstTextNode, 1);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(
@@ -131,10 +125,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(firstTextNode, 1);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'い', [firstTextNode, 1, 2]);
@@ -165,10 +156,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assert.strictEqual(
@@ -188,10 +176,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(baseTextNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
     assert.strictEqual(result?.text, '洗わないで');
   });
@@ -206,10 +191,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(
@@ -229,10 +211,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(firstTextNode, 1);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.right + 0.5,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.right + 0.5, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'うえお', [lastTextNode, 0, 3]);
@@ -248,10 +227,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 1);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'いうえお', [textNode, 1, 5]);
@@ -267,10 +243,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 1);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'いうえお', [textNode, 1, 5]);
@@ -282,10 +255,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 1);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'いうえお', [textNode, 1, 5]);
@@ -297,10 +267,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 1);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'いうえお', [textNode, 1, 5]);
@@ -320,10 +287,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'テスト', [textNode, 0, 3]);
@@ -371,10 +335,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 3);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '晴れ', [textNode, 3, 5]);
@@ -386,10 +347,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'あい', [textNode, 0, 2]);
@@ -401,10 +359,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 3);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'あい', [textNode, 3, 5]);
@@ -416,10 +371,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 2);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assert.strictEqual(result, null);
@@ -431,10 +383,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'あい', [textNode, 0, 2]);
@@ -446,10 +395,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'ｷﾞﾝｺｳ㘆豈', [textNode, 0, 7]);
@@ -461,10 +407,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'あ\u200cい\u200cう\u200c', [textNode, 0, 6]);
@@ -476,10 +419,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '小1', [textNode, 0, 2]);
@@ -491,10 +431,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '昭和56年に', [textNode, 0, 6]);
@@ -515,10 +452,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '昭和５６年に', [textNode, 0, 6]);
@@ -539,10 +473,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '昭和５6年に', [textNode, 0, 6]);
@@ -564,10 +495,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '昭和 56 年に', [textNode, 0, 8]);
@@ -589,10 +517,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '昭和56に', [textNode, 0, 5]);
@@ -615,10 +540,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(
@@ -646,10 +568,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(
@@ -677,10 +596,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(
@@ -707,10 +623,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '令和元年に', [textNode, 0, 5]);
@@ -732,10 +645,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(
@@ -761,10 +671,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '昭和五十六年に', [textNode, 0, 7]);
@@ -785,10 +692,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '昭和三大馬鹿査定', [textNode, 0, 8]);
@@ -809,10 +713,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 2);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '8万8千円です', [textNode, 2, 9]);
@@ -830,10 +731,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(
@@ -855,10 +753,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 2);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '￥8万8千です', [textNode, 2, 9]);
@@ -875,10 +770,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 2);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '¥ 8万8千です', [textNode, 2, 10]);
@@ -896,10 +788,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(
@@ -921,10 +810,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 2);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '8,800円です', [textNode, 2, 10]);
@@ -941,10 +827,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '1k 円 ', [textNode, 0, 5]);
@@ -961,10 +844,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '100 yen', [textNode, 0, 7]);
@@ -981,10 +861,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'JPY 100', [textNode, 0, 7]);
@@ -1001,10 +878,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 3);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '6畳です', [textNode, 3, 7]);
@@ -1022,10 +896,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 3);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '4.5 m²です', [textNode, 3, 11]);
@@ -1043,10 +914,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 3);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '8万8千キロメートル', [textNode, 3, 13]);
@@ -1069,10 +937,7 @@ describe('getTextAtPoint', () => {
       const bbox = getBboxForOffset(textNode, 0);
 
       const result = getTextAtPoint({
-        point: {
-          x: bbox.left,
-          y: bbox.top + bbox.height / 2,
-        },
+        point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
       });
 
       assert.deepEqual(
@@ -1097,10 +962,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     let result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
     assert.isUndefined(result?.meta);
 
@@ -1109,10 +971,7 @@ describe('getTextAtPoint', () => {
     clearPreviousResult();
     testDiv.append('八三銀です');
     result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
     assert.deepEqual(result!.meta, {
       type: 'number',
@@ -1128,10 +987,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
     assert.deepEqual(result!.meta, {
       type: 'shogi',
@@ -1258,10 +1114,7 @@ describe('getTextAtPoint', () => {
     const bbox = firstEmptyNode.getBoundingClientRect();
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(
@@ -1280,10 +1133,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(whitespaceOnlyTextNode, 1);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.right,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.right, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(
@@ -1308,10 +1158,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(
@@ -1335,10 +1182,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(shiNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(
@@ -1360,10 +1204,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(fuNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
     assertTextResultEqual(
       result,
@@ -1385,10 +1226,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(fuNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
     assertTextResultEqual(
       result,
@@ -1406,10 +1244,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(senNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 4,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 4 },
     });
 
     assertTextResultEqual(result, 'せん', [senNode, 0, 2]);
@@ -1423,10 +1258,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(seNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 4,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 4 },
     });
 
     assertTextResultEqual(result, 'せん', [seNode, 0, 1], [nNode, 0, 1]);
@@ -1445,10 +1277,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(kanjiNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(
@@ -1470,10 +1299,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(hiNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, '引く', [hiNode, 0, 1], [kuNode, 0, 1]);
@@ -1491,10 +1317,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(tokyoStart, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(
@@ -1511,10 +1334,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(textNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.right + 1,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.right + 1, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'いうえお', [textNode, 1, 5]);
@@ -1532,10 +1352,7 @@ describe('getTextAtPoint', () => {
     const bbox = getBboxForOffset(firstTextNode, 0);
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + 1,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + 1, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(
@@ -1592,10 +1409,7 @@ describe('getTextAtPoint', () => {
     const bbox = inputNode.getBoundingClientRect();
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + 1,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + 1, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'あいうえお', [inputNode, 0, 5]);
@@ -1614,10 +1428,7 @@ describe('getTextAtPoint', () => {
     const offset = isChromium() ? 11 : 15;
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + offset,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + offset, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'いう', [inputNode, 1, 3]);
@@ -1633,10 +1444,7 @@ describe('getTextAtPoint', () => {
     const bbox = inputNode.getBoundingClientRect();
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + 20,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + 20, y: bbox.top + bbox.height / 2 },
     });
 
     assert.strictEqual(
@@ -1702,10 +1510,7 @@ describe('getTextAtPoint', () => {
     const bbox = imgNode.getBoundingClientRect();
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'あいうえお');
@@ -1719,10 +1524,7 @@ describe('getTextAtPoint', () => {
     const bbox = imgNode.getBoundingClientRect();
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
       matchText: false,
       matchImages: true,
     });
@@ -1736,10 +1538,7 @@ describe('getTextAtPoint', () => {
     const bbox = span.getBoundingClientRect();
 
     const result = getTextAtPoint({
-      point: {
-        x: bbox.left + bbox.width / 2,
-        y: bbox.top + bbox.height / 2,
-      },
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
       matchText: false,
       matchImages: true,
     });
@@ -1754,20 +1553,14 @@ describe('getTextAtPoint', () => {
     // Fetch once
     const bboxJP = getBboxForOffset(textNode, 6);
     const result = getTextAtPoint({
-      point: {
-        x: bboxJP.left + 1,
-        y: bboxJP.top + bboxJP.height / 2,
-      },
+      point: { x: bboxJP.left + 1, y: bboxJP.top + bboxJP.height / 2 },
     });
     assertTextResultEqual(result, 'あいうえお', [textNode, 6, 11]);
 
     // Fetch again
     const bboxEN = getBboxForOffset(textNode, 5);
     const secondResult = getTextAtPoint({
-      point: {
-        x: bboxJP.left - 1,
-        y: bboxEN.top + bboxEN.height / 2,
-      },
+      point: { x: bboxJP.left - 1, y: bboxEN.top + bboxEN.height / 2 },
     });
     assert.strictEqual(
       result,
@@ -1783,10 +1576,7 @@ describe('getTextAtPoint', () => {
     // Fetch once
     const bboxJP = getBboxForOffset(textNode, 6);
     const result = getTextAtPoint({
-      point: {
-        x: bboxJP.left + 1,
-        y: bboxJP.top + bboxJP.height / 2,
-      },
+      point: { x: bboxJP.left + 1, y: bboxJP.top + bboxJP.height / 2 },
     });
     assertTextResultEqual(result, 'あいうえお', [textNode, 6, 11]);
 

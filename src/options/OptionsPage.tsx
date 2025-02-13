@@ -14,9 +14,7 @@ import { PopupStyleSettings } from './PopupStyleSettings';
 import { PuckSettings } from './PuckSettings';
 import { UnitSettings } from './UnitSettings';
 
-type Props = {
-  config: Config;
-};
+type Props = { config: Config };
 
 export function OptionsPage(props: Props) {
   const hasKeyboard = possiblyHasPhysicalKeyboard();

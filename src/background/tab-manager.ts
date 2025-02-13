@@ -35,7 +35,4 @@ export type EnabledChangedCallback = (params: {
   anyEnabled: boolean;
 }) => void;
 
-export type EnabledState = {
-  enabled: boolean;
-  tabId: number | undefined;
-};
+export type EnabledState = { enabled: boolean; tabId: number | undefined };

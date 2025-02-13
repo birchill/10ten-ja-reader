@@ -177,14 +177,7 @@ describe('getWordToCopy', () => {
             { ent: '引裂く', match: false },
             { ent: '引きさく', match: true, i: ['sK'], matchRange: [0, 4] },
           ],
-          r: [
-            {
-              ent: 'ひきさく',
-              p: ['i1'],
-              a: 3,
-              match: true,
-            },
-          ],
+          r: [{ ent: 'ひきさく', p: ['i1'], a: 3, match: true }],
           s: [
             {
               g: [
@@ -258,11 +251,7 @@ describe('getWordToCopy', () => {
         type: 'kanji',
         data: {
           c: '士',
-          r: {
-            on: ['シ'],
-            kun: ['さむらい'],
-            na: ['お', 'ま'],
-          },
+          r: { on: ['シ'], kun: ['さむらい'], na: ['お', 'ま'] },
           m: ['gentleman', 'scholar', 'samurai', 'samurai radical (no. 33)'],
           rad: {
             x: 33,
@@ -273,13 +262,7 @@ describe('getWordToCopy', () => {
             m_lang: 'en',
           },
           refs: {},
-          misc: {
-            sc: 3,
-            gr: 4,
-            freq: 526,
-            jlpt: 1,
-            kk: 7,
-          },
+          misc: { sc: 3, gr: 4, freq: 526, jlpt: 1, kk: 7 },
           m_lang: 'en',
           comp: [],
           cf: [],
@@ -596,13 +579,7 @@ describe('getEntryToCopy', () => {
               na: ['てへん'],
               m: ['hand'],
               m_lang: 'en',
-              base: {
-                b: '⼿',
-                k: '手',
-                na: ['て'],
-                m: ['hand'],
-                m_lang: 'en',
-              },
+              base: { b: '⼿', k: '手', na: ['て'], m: ['hand'], m_lang: 'en' },
             },
             refs: {
               nelson_c: 1854,
@@ -621,13 +598,7 @@ describe('getEntryToCopy', () => {
               sh_desc: '3c4.10',
               conning: 1951,
             },
-            misc: {
-              sc: 7,
-              gr: 8,
-              freq: 726,
-              jlpt: 2,
-              kk: 4,
-            },
+            misc: { sc: 7, gr: 8, freq: 726, jlpt: 2, kk: 4 },
             comp: [
               {
                 c: '⼇',
@@ -647,12 +618,7 @@ describe('getEntryToCopy', () => {
                 m: ['winter'],
                 m_lang: 'en',
               },
-              {
-                c: '⺘',
-                na: ['てへん'],
-                m: ['hand'],
-                m_lang: 'en',
-              },
+              { c: '⺘', na: ['てへん'], m: ['hand'], m_lang: 'en' },
             ],
             m_lang: 'en',
             cf: [],
@@ -937,13 +903,7 @@ describe('getFieldsToCopy', () => {
               na: ['てへん'],
               m: ['hand'],
               m_lang: 'en',
-              base: {
-                b: '⼿',
-                k: '手',
-                na: ['て'],
-                m: ['hand'],
-                m_lang: 'en',
-              },
+              base: { b: '⼿', k: '手', na: ['て'], m: ['hand'], m_lang: 'en' },
             },
             refs: {
               nelson_c: 1854,
@@ -962,13 +922,7 @@ describe('getFieldsToCopy', () => {
               sh_desc: '3c4.10',
               conning: 1951,
             },
-            misc: {
-              sc: 7,
-              gr: 8,
-              freq: 726,
-              jlpt: 2,
-              kk: 4,
-            },
+            misc: { sc: 7, gr: 8, freq: 726, jlpt: 2, kk: 4 },
             comp: [
               {
                 c: '⼇',
@@ -988,12 +942,7 @@ describe('getFieldsToCopy', () => {
                 m: ['winter'],
                 m_lang: 'en',
               },
-              {
-                c: '⺘',
-                na: ['てへん'],
-                m: ['hand'],
-                m_lang: 'en',
-              },
+              { c: '⺘', na: ['てへん'], m: ['hand'], m_lang: 'en' },
             ],
             m_lang: 'en',
             cf: [],

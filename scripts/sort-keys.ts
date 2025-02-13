@@ -2,6 +2,7 @@ import fg from 'fast-glob';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as url from 'node:url';
+import * as prettier from 'prettier';
 
 // This is a very, very bare-bones utility to sort the keys in a locale
 // file.
@@ -62,7 +63,10 @@ async function main() {
     }
 
     // Write to file
-    fs.writeFileSync(file, JSON.stringify(ordered, null, 2) + '\n');
+    fs.writeFileSync(
+      file,
+      await prettier.format(JSON.stringify(ordered), { parser: 'json' })
+    );
   }
 }
 

@@ -25,9 +25,7 @@ class Worker {
 // Mock browser.runtime.getURL and browser.i18n.getMessage
 vi.mock('webextension-polyfill', () => ({
   default: {
-    runtime: {
-      getURL: (url: string) => url,
-    },
+    runtime: { getURL: (url: string) => url },
     i18n: {
       getMessage: (id: string) => {
         switch (id) {
@@ -361,10 +359,7 @@ describe('searchWords', () => {
     entry.k ? entry.k.map((k) => k.ent) : [];
 
   it('orders words by priority before truncating the list', async () => {
-    const [result] = await searchWords({
-      input: 'せんしゅ',
-      max: 5,
-    });
+    const [result] = await searchWords({ input: 'せんしゅ', max: 5 });
     // There should be at least the following common entries that match:
     //
     // - 先取

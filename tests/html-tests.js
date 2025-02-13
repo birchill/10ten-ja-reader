@@ -295,9 +295,7 @@ const htmlTests = [
         matchLen: 3,
       },
     },
-    extraConfig: {
-      readingOnly: true,
-    },
+    extraConfig: { readingOnly: true },
   },
   {
     description: 'a word search result with mixed languages',
@@ -629,12 +627,7 @@ const htmlTests = [
     queryResult: {
       names: {
         type: 'names',
-        data: [
-          {
-            r: ['あがさ'],
-            tr: [{ type: ['fem'], det: ['Agasa'] }],
-          },
-        ],
+        data: [{ r: ['あがさ'], tr: [{ type: ['fem'], det: ['Agasa'] }] }],
         more: false,
         matchLen: 3,
       },
@@ -696,11 +689,7 @@ const htmlTests = [
             r: ['くさやなぎ'],
             tr: [{ type: ['surname'], det: ['Kusayanagi'] }],
           },
-          {
-            k: ['日'],
-            r: ['じつ'],
-            tr: [{ type: ['given'], det: ['Jitsu'] }],
-          },
+          { k: ['日'], r: ['じつ'], tr: [{ type: ['given'], det: ['Jitsu'] }] },
           {
             k: ['日'],
             r: ['たかにち'],
@@ -711,31 +700,19 @@ const htmlTests = [
             r: ['たちもり'],
             tr: [{ type: ['surname'], det: ['Tachimori'] }],
           },
-          {
-            k: ['日'],
-            r: ['にち'],
-            tr: [{ type: ['place'], det: ['Nichi'] }],
-          },
+          { k: ['日'], r: ['にち'], tr: [{ type: ['place'], det: ['Nichi'] }] },
           {
             k: ['日'],
             r: ['にちれん'],
             tr: [{ type: ['unclass'], det: ['Nichiren'] }],
           },
-          {
-            k: ['日'],
-            r: ['にっ'],
-            tr: [{ type: ['place'], det: ['Ni'] }],
-          },
+          { k: ['日'], r: ['にっ'], tr: [{ type: ['place'], det: ['Ni'] }] },
           {
             k: ['日'],
             r: ['にっしゅう'],
             tr: [{ type: ['given'], det: ['Nisshuu'] }],
           },
-          {
-            k: ['日'],
-            r: ['ひ'],
-            tr: [{ type: ['place'], det: ['Hi'] }],
-          },
+          { k: ['日'], r: ['ひ'], tr: [{ type: ['place'], det: ['Hi'] }] },
           {
             k: ['日'],
             r: ['ひかる'],

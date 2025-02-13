@@ -23,18 +23,8 @@ export default {
           m_lang: 'en',
         }}
         comp={[
-          {
-            c: '⿂',
-            na: ['うお'],
-            m: ['fish'],
-            m_lang: 'en',
-          },
-          {
-            c: '⾭',
-            na: ['あお'],
-            m: ['blue', 'green'],
-            m_lang: 'en',
-          },
+          { c: '⿂', na: ['うお'], m: ['fish'], m_lang: 'en' },
+          { c: '⾭', na: ['あお'], m: ['blue', 'green'], m_lang: 'en' },
         ]}
       />
       <TestCase
@@ -46,13 +36,7 @@ export default {
           na: ['てへん'],
           m: ['hand'],
           m_lang: 'en',
-          base: {
-            b: '⼿',
-            k: '手',
-            na: ['て'],
-            m: ['hand'],
-            m_lang: 'en',
-          },
+          base: { b: '⼿', k: '手', na: ['て'], m: ['hand'], m_lang: 'en' },
         }}
         comp={[
           {
@@ -73,12 +57,7 @@ export default {
             m: ['winter'],
             m_lang: 'en',
           },
-          {
-            c: '⺘',
-            na: ['てへん'],
-            m: ['hand'],
-            m_lang: 'en',
-          },
+          { c: '⺘', na: ['てへん'], m: ['hand'], m_lang: 'en' },
         ]}
       />
     </div>

@@ -40,9 +40,7 @@ export interface KanjiSearchResult {
 
 // Names
 
-export type NameResult = JpdictNameResult & {
-  matchLen: number;
-};
+export type NameResult = JpdictNameResult & { matchLen: number };
 
 export interface NameSearchResult {
   type: 'names';

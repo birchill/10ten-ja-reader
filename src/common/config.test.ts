@@ -139,20 +139,13 @@ const { mockStorage } = vi.hoisted(() => {
   return { mockStorage: new MockStorage() };
 });
 
-vi.mock('webextension-polyfill', () => ({
-  default: {
-    storage: mockStorage,
-  },
-}));
+vi.mock('webextension-polyfill', () => ({ default: { storage: mockStorage } }));
 
 import { ChangeCallback, Config } from './config';
 import { DbLanguageId } from './db-languages';
 
 type StorageName = 'sync' | 'local';
-type StorageChange = {
-  oldValue?: any;
-  newValue?: any;
-};
+type StorageChange = { oldValue?: any; newValue?: any };
 type ChangeDict = { [field: string]: StorageChange };
 type Listener = (changes: ChangeDict, areaName: StorageName) => void;
 
@@ -269,13 +262,7 @@ describe('Config', () => {
 
   it('upgrades reference settings', async () => {
     await mockStorage.sync.set({
-      kanjiReferences: {
-        E: true,
-        U: true,
-        P: false,
-        L: false,
-        Y: true,
-      },
+      kanjiReferences: { E: true, U: true, P: false, L: false, Y: true },
     });
 
     const config = new Config();

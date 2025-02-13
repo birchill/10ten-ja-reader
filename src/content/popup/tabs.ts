@@ -129,12 +129,7 @@ function renderPinButton(
     : label;
   const pinButton = html(
     'button',
-    {
-      'aria-label': label,
-      title,
-      class: 'pin-button',
-      type: 'button',
-    },
+    { 'aria-label': label, title, class: 'pin-button', type: 'button' },
     renderPin()
   );
   pinButton.onclick = onTogglePin;

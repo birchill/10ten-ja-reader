@@ -3,9 +3,7 @@ import { classes } from '../../../utils/classes';
 
 import { ShogiMeta, serializeShogi, serializeShogiDest } from '../../shogi';
 
-type Props = {
-  meta: ShogiMeta;
-};
+type Props = { meta: ShogiMeta };
 
 export function ShogiInfo({ meta }: Props) {
   const { t, langTag } = useLocale();

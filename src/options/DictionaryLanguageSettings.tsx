@@ -8,9 +8,7 @@ import { DictionaryLanguageSettingsForm } from './DictionaryLanguageSettingsForm
 import { SectionHeading } from './SectionHeading';
 import { useConfigValue } from './use-config-value';
 
-type Props = {
-  config: Config;
-};
+type Props = { config: Config };
 
 export function DictionaryLanguageSettings(props: Props) {
   const { t } = useLocale();

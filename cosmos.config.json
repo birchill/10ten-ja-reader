@@ -4,10 +4,6 @@
     "react-cosmos-plugin-boolean-input",
     "react-cosmos-plugin-rspack"
   ],
-  "dom": {
-    "containerQuerySelector": "#container"
-  },
-  "rspack": {
-    "configPath": "./rspack.config.cosmos.js"
-  }
+  "dom": { "containerQuerySelector": "#container" },
+  "rspack": { "configPath": "./rspack.config.cosmos.js" }
 }
