@@ -95,7 +95,7 @@
     "@typescript-eslint/parser": "8.24.0",
     "@vitest/eslint-plugin": "1.1.31",
     "archiver": "7.0.1",
-    "chai": "5.1.2",
+    "chai": "5.2.0",
     "css-loader": "7.1.2",
     "eslint": "9.20.1",
     "eslint-plugin-react": "7.37.4",
