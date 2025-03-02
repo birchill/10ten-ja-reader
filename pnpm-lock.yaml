@@ -211,8 +211,8 @@ importers:
         specifier: 5.98.0
         version: 5.98.0
       webpack-bugsnag-plugins:
-        specifier: 1.8.0
-        version: 1.8.0(webpack@5.98.0)
+        specifier: 1.9.0
+        version: 1.9.0(webpack@5.98.0)
       webpack-preprocessor:
         specifier: 0.1.12
         version: 0.1.12
@@ -5848,8 +5848,8 @@ packages:
     resolution: {integrity: sha512-VwddBukDzu71offAQR975unBIGqfKZpM+8ZX6ySk8nYhVoo5CYaZyzt3YBvYtRtO+aoGlqxPg/B87NGVZ/fu6g==}
     engines: {node: '>=12'}
 
-  webpack-bugsnag-plugins@1.8.0:
-    resolution: {integrity: sha512-ELQGDqs3j4DWw2r5pejtdmFVSo7evamTSqnZhPWWdS0/ix0fWFRCHsDknZ5KkNjKDXN1a9Epgu6RFI7WxofQuw==}
+  webpack-bugsnag-plugins@1.9.0:
+    resolution: {integrity: sha512-thtWmDSlutL6xEsSjadvN/+0B/8rVZ8qgjlcZ+M/D6iIKIkXasuWaS8kicHxjF8FxuYLHo19cwRj7aDB5oSWLQ==}
     peerDependencies:
       webpack: ^3.0.0 || ^4.0.0 || ^5.0.0
 
@@ -12140,7 +12140,7 @@ snapshots:
 
   webidl-conversions@7.0.0: {}
 
-  webpack-bugsnag-plugins@1.8.0(webpack@5.98.0):
+  webpack-bugsnag-plugins@1.9.0(webpack@5.98.0):
     dependencies:
       '@bugsnag/source-maps': 2.3.3
       bugsnag-build-reporter: 2.0.0
