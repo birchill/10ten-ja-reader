@@ -114,7 +114,7 @@
     "postcss": "8.5.3",
     "postcss-import": "16.1.0",
     "postcss-loader": "8.1.1",
-    "prettier": "3.5.2",
+    "prettier": "3.5.3",
     "prettier-plugin-organize-attributes": "1.0.0",
     "prettier-plugin-packagejson": "2.5.10",
     "prettier-plugin-tailwindcss": "0.6.11",
