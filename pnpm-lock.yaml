@@ -118,8 +118,8 @@ importers:
         specifier: 3.3.3
         version: 3.3.3
       fetch-mock:
-        specifier: 12.4.0
-        version: 12.4.0
+        specifier: 12.5.2
+        version: 12.5.2
       file-loader:
         specifier: 6.2.0
         version: 6.2.0(webpack@5.98.0)
@@ -2923,8 +2923,8 @@ packages:
       picomatch:
         optional: true
 
-  fetch-mock@12.4.0:
-    resolution: {integrity: sha512-qW5NIJpz915Tnt9NUkJDvhmurR32AU0AuEHfYN2eevD0kXVosDqVLVBdpSlF8SDw/pYgbvryYtFUfN924/twTA==}
+  fetch-mock@12.5.2:
+    resolution: {integrity: sha512-b5KGDFmdmado2MPQjZl6ix3dAG3iwCitb0XQwN72y2s9VnWZ3ObaGNy+bkpm1390foiLDybdJ7yjRGKD36kATw==}
     engines: {node: '>=18.11.0'}
 
   figures@6.1.0:
@@ -3603,10 +3603,6 @@ packages:
   is-string@1.1.1:
     resolution: {integrity: sha512-BtEeSsoaQjlSPBemMQIrY1MY0uM6vnS1g5fmufYOtnxLGUZM2178PKbhsk7Ffv58IX+ZtcvoGwccYsh0PglkAA==}
     engines: {node: '>= 0.4'}
-
-  is-subset-of@3.1.10:
-    resolution: {integrity: sha512-avvaYgVmYWyaZ1NDFiv4y9JGkrE2je3op1Po4VYKKJKR8H2qVPsg1GZuuXl5elCTxTlwAIsrAjWAs4BVrISFRw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   is-symbol@1.1.1:
     resolution: {integrity: sha512-9gGx6GTtCQM73BgmHQXfDmLtfjjTUDSyoxTCbp5WtoixAhfgsDirWIcVQ/IHpvI5Vgd5i/J5F7B9cN/WlVbC/w==}
@@ -5620,10 +5616,6 @@ packages:
 
   typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
-
-  typedescriptor@3.0.2:
-    resolution: {integrity: sha512-hyVbaCUd18UiXk656g/imaBLMogpdijIEpnhWYrSda9rhvO4gOU16n2nh7xG5lv/rjumnZzGOdz0CEGTmFe0fQ==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   typescript-eslint@8.24.1:
     resolution: {integrity: sha512-cw3rEdzDqBs70TIcb0Gdzbt6h11BSs2pS0yaq7hDWDBtCCSei1pPSUXE9qUdQ/Wm9NgFg8mKtMt1b8fTHIl1jA==}
@@ -9006,12 +8998,11 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.2
 
-  fetch-mock@12.4.0:
+  fetch-mock@12.5.2:
     dependencies:
       '@types/glob-to-regexp': 0.4.4
       dequal: 2.0.3
       glob-to-regexp: 0.4.1
-      is-subset-of: 3.1.10
       regexparam: 3.0.0
 
   figures@6.1.0:
@@ -9665,10 +9656,6 @@ snapshots:
     dependencies:
       call-bound: 1.0.3
       has-tostringtag: 1.0.2
-
-  is-subset-of@3.1.10:
-    dependencies:
-      typedescriptor: 3.0.2
 
   is-symbol@1.1.1:
     dependencies:
@@ -11876,8 +11863,6 @@ snapshots:
       reflect.getprototypeof: 1.0.9
 
   typedarray@0.0.6: {}
-
-  typedescriptor@3.0.2: {}
 
   typescript-eslint@8.24.1(eslint@9.21.0(jiti@2.4.2))(typescript@5.7.3):
     dependencies:
