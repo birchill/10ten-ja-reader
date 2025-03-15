@@ -2,7 +2,6 @@ import eslint from '@eslint/js';
 import tsParser from '@typescript-eslint/parser';
 import vitest from '@vitest/eslint-plugin';
 import reactRecommended from 'eslint-plugin-react/configs/recommended.js';
-import tailwind from 'eslint-plugin-tailwindcss';
 import globals from 'globals';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -14,7 +13,6 @@ const __dirname = path.dirname(__filename);
 export default [
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
-  ...tailwind.configs['flat/recommended'],
   reactRecommended,
   {
     languageOptions: {
