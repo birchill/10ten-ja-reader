@@ -3,7 +3,6 @@ import plugin from 'tailwindcss/plugin';
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  corePlugins: { preflight: false },
   content: ['./src/options/**/*.{html,ts,tsx}'],
   theme: {
     extend: {
@@ -82,9 +81,9 @@ export default {
         '.transparent-caret': {
           color: 'transparent',
           'text-shadow': '0 0 0 black',
-        },
-        '@media (prefers-color-scheme: dark)': {
-          '.transparent-caret': { 'text-shadow': '0 0 0 white' },
+          '@media (prefers-color-scheme: dark)': {
+            '.transparent-caret': { 'text-shadow': '0 0 0 white' },
+          },
         },
       });
     }),

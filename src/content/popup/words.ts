@@ -155,7 +155,7 @@ export function renderWordEntries({
     if (searchOnlyMatch) {
       const searchOnlyDiv = html(
         'div',
-        { class: 'tp-mb-1 tp-text-sm tp-opacity-70' },
+        { class: 'tp:mb-1 tp:text-sm tp:opacity-70' },
         browser.i18n.getMessage('content_sk_match_src', searchOnlyMatch)
       );
       headingDiv.append(searchOnlyDiv);

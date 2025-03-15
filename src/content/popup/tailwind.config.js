@@ -2,8 +2,6 @@ import plugin from 'tailwindcss/plugin';
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  prefix: 'tp-',
-  corePlugins: { preflight: false },
   content: ['./src/content/popup/**/*.{ts,tsx}'],
   blocklist: ['!entry', '!kanji'],
   theme: {
@@ -57,10 +55,6 @@ export default {
           'calc(60 / 14 * var(--base-font-size))',
           { lineHeight: 1 },
         ],
-      },
-      screens: {
-        // Variant to only match on devices that actually support hovering
-        hh: { raw: '(hover)' },
       },
       spacing: {
         0.5: 'calc(0.125 * var(--base-font-size))',

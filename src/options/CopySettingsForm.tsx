@@ -34,7 +34,7 @@ export function CopySettingsForm(props: Props) {
         <p class="m-0 mb-2 text-xs text-zinc-500 dark:text-zinc-400">
           {t('options_copy_preview')}
         </p>
-        <code class="whitespace-pre-wrap text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        <code class="text-sm font-medium whitespace-pre-wrap text-zinc-700 dark:text-zinc-300">
           {getTextToCopy({
             entry: {
               type: 'word',

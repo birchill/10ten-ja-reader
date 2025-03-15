@@ -19,7 +19,7 @@ export function ShowPopupKeysForm(props: Props) {
 
   return (
     <fieldset class="border border-solid border-zinc-300 px-6 py-3 dark:border-zinc-500">
-      <p class="my-3 italic leading-6">{t('options_show_popup_explanation')}</p>
+      <p class="my-3 leading-6 italic">{t('options_show_popup_explanation')}</p>
       <div class="grid auto-cols-max items-center gap-x-8">
         <div class="col-span-2">{t('options_show_popup_text_subheading')}</div>
         <KeyCheckboxes
