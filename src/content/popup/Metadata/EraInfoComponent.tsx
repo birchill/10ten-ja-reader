@@ -31,13 +31,13 @@ export function EraInfoComponent(props: Props) {
   }, [props.meta]);
 
   return (
-    <div class="tp-text-2xl tp-flex tp-items-baseline" lang="ja">
-      <span class="tp-text-[--primary-highlight]">
+    <div class="tp:text-2xl tp:flex tp:items-baseline" lang="ja">
+      <span class="tp:text-(--primary-highlight)">
         {props.meta.reading ? (
           <ruby>
             {props.meta.era}
             <rp>(</rp>
-            <rt class="tp-text-sm">{props.meta.reading}</rt>
+            <rt class="tp:text-sm">{props.meta.reading}</rt>
             <rp>)</rp>
           </ruby>
         ) : (
@@ -47,11 +47,11 @@ export function EraInfoComponent(props: Props) {
         {props.meta.month && `${props.meta.month}月`.replace('-', '閏')}
         {props.meta.day && `${props.meta.day}日`}
       </span>
-      <span class="tp-px-1.5">=</span>
+      <span class="tp:px-1.5">=</span>
       {timeSpan ? (
         <EraTimeSpan meta={props.meta} timeSpan={timeSpan} />
       ) : (
-        <span class="tp-text-[--reading-highlight]">
+        <span class="tp:text-(--reading-highlight)">
           {t('content_era_info_invalid')}
         </span>
       )}
@@ -67,7 +67,7 @@ function EraTimeSpan({
   timeSpan: EraInfoTimeSpan;
 }) {
   return (
-    <span class="tp-text-[--reading-highlight]">
+    <span class="tp:text-(--reading-highlight)">
       <EraDate meta={meta} date={timeSpan.dateStart} />
       {timeSpan.dateEnd && (
         <span>
@@ -86,14 +86,14 @@ function EraDate({ meta, date }: { meta: EraMeta; date: EraInfoDate }) {
       {date.month && (
         <span
           class={classes(
-            !meta.month && 'tp-text-base tp-filter tp-brightness-90'
+            !meta.month && 'tp:text-base tp:filter tp:brightness-90'
           )}
         >{`${date.month}月`}</span>
       )}
       {date.day && (
         <span
           class={classes(
-            !meta.day && 'tp-text-base tp-filter tp-brightness-90'
+            !meta.day && 'tp:text-base tp:filter tp:brightness-90'
           )}
         >{`${date.day}日`}</span>
       )}

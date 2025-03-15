@@ -2,7 +2,6 @@ import plugin from 'tailwindcss/plugin';
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  prefix: 'tp-',
   content: ['./src/content/popup/**/*.{ts,tsx}'],
   blocklist: ['!entry', '!kanji'],
   theme: {

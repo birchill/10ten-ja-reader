@@ -24,7 +24,7 @@ export function NameEntry(props: Props) {
   return (
     <div
       class={classes(
-        'tp-group tp-flex tp-flex-col tp-px-4 tp-py-1.5 tp-break-inside-avoid',
+        'tp:group tp:flex tp:flex-col tp:px-4 tp:py-1.5 tp:break-inside-avoid',
         // See comment in KanjiEntry.tsx about the future plans for these
         // CSS classes.
         props.selectState === 'selected' && '-selected',
@@ -32,36 +32,36 @@ export function NameEntry(props: Props) {
         // Ensure any selection colors are applied before fading in the
         // overlay
         props.selectState === 'selected' &&
-          'no-overlay:tp-text-[--selected-highlight] no-overlay:tp-bg-[--selected-bg]',
+          'tp:no-overlay:text-(--selected-highlight) tp:no-overlay:bg-(--selected-bg)',
         // Run the flash animation, but not until the overlay has
         // disappeared.
-        props.selectState === 'flash' && 'no-overlay:tp-animate-flash',
+        props.selectState === 'flash' && 'tp:no-overlay:animate-flash',
         ...(interactive
           ? [
-              'hh:hover:tp-bg-[--hover-bg]',
-              'hh:hover:tp-cursor-pointer',
+              'tp:hh:hover:bg-(--hover-bg)',
+              'tp:hh:hover:cursor-pointer',
               // Fade _out_ the color change
-              'hh:tp-transition-colors hh:interactive:tp-duration-100',
-              'hh:tp-ease-out',
-              'hh:hover:tp-transition-none',
+              'tp:hh:transition-colors tp:hh:interactive:duration-100',
+              'tp:hh:ease-out',
+              'tp:hh:hover:transition-none',
             ]
           : [])
       )}
       onPointerUp={props.onPointerUp}
       onClick={props.onClick}
     >
-      <div class="tp-space-x-4" lang="ja">
+      <div class="tp:space-x-4" lang="ja">
         {props.entry.k?.length && (
           <KanjiEntries k={props.entry.k} selectState={props.selectState} />
         )}
         <span
           class={classes(
-            'tp-text-xl',
+            'tp:text-xl',
             props.selectState === 'selected'
-              ? 'no-overlay:tp-text-[--selected-reading-highlight]'
-              : 'tp-text-[--reading-highlight]',
+              ? 'tp:no-overlay:text-(--selected-reading-highlight)'
+              : 'tp:text-(--reading-highlight)',
             interactive &&
-              'hh:group-hover:tp-text-[--selected-reading-highlight]'
+              'tp:hh:group-hover:text-(--selected-reading-highlight)'
           )}
         >
           {kana}
@@ -100,11 +100,11 @@ function KanjiEntries({
   return (
     <span
       class={classes(
-        'tp-text-1.5xl',
+        'tp:text-1.5xl',
         selectState === 'selected'
-          ? 'no-overlay:tp-text-[--selected-highlight]'
-          : 'tp-text-[--primary-highlight]',
-        interactive && 'hh:group-hover:tp-text-[--selected-highlight]'
+          ? 'tp:no-overlay:text-(--selected-highlight)'
+          : 'tp:text-(--primary-highlight)',
+        interactive && 'tp:hh:group-hover:text-(--selected-highlight)'
       )}
     >
       {kanji}
@@ -157,12 +157,12 @@ function NameTranslationComponent({
 
   return (
     // ENAMDICT only has English glosses
-    <div class="tp-text-base tp-space-x-1.5" lang="en">
+    <div class="tp:text-base tp:space-x-1.5" lang="en">
       <span
         class={classes(
           selectState === 'selected' &&
-            'no-overlay:tp-text-[--selected-def-color]',
-          interactive && 'hh:group-hover:tp-text-[--selected-def-color]'
+            'tp:no-overlay:text-(--selected-def-color)',
+          interactive && 'tp:hh:group-hover:text-(--selected-def-color)'
         )}
       >
         {translation.det.map(annotateDetailFn).join(', ')}
@@ -196,22 +196,22 @@ function Tag({
   return tagText ? (
     <span
       class={classes(
-        'tp-text-2xs tp-px-1 tp-whitespace-nowrap',
-        'tp-rounded tp-border-solid tp-border',
-        'tp-bg-[var(--color-tag-bg,transparent)]',
+        'tp:text-2xs tp:px-1 tp:whitespace-nowrap',
+        'tp:rounded tp:border-solid tp:border',
+        'tp:bg-[var(--color-tag-bg,transparent)]',
         ...(selectState === 'selected'
           ? [
-              'no-overlay:tp-border-(--selected-tag-border)',
-              'no-overlay:tp-text-(--selected-tag-color)',
+              'tp:no-overlay:border-(--selected-tag-border)',
+              'tp:no-overlay:text-(--selected-tag-color)',
             ]
           : [
-              'tp-border-[var(--color-tag-border,var(--tag-border))]',
-              'tp-text-[var(--color-tag-text-color,var(--text-color))]',
+              'tp:border-[var(--color-tag-border,var(--tag-border))]',
+              'tp:text-[var(--color-tag-text-color,var(--text-color))]',
             ]),
         interactive &&
           classes(
-            'hh:group-hover:tp-border-[--selected-tag-border]',
-            'hh:group-hover:tp-text-[--selected-tag-color]'
+            'tp:hh:group-hover:border-(--selected-tag-border)',
+            'tp:hh:group-hover:text-(--selected-tag-color)'
           )
       )}
       style={

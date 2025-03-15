@@ -35,7 +35,7 @@ export const NameTable = (props: NameTableProps) => {
 
   return (
     <div
-      class={classes('tp-my-2', entries.length > 4 ? 'tp-columns-2' : '')}
+      class={classes('tp:my-2', entries.length > 4 ? 'tp:columns-2' : '')}
       ref={namesTable}
     >
       <div style={{ 'column-span': 'all' }}>
@@ -80,7 +80,7 @@ export const NameTable = (props: NameTableProps) => {
           />
         );
       })}
-      {more && <span class="tp-px-4">…</span>}
+      {more && <span class="tp:px-4">…</span>}
     </div>
   );
 };
