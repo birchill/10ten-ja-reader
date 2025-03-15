@@ -1,10 +1,49 @@
+@import 'tailwindcss';
+
+@import '../../css/themes.css' layer(base);
+
 @config "./tailwind.config.js";
 
-@import '../../css/themes.css';
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+@utility cover-tl {
+  -webkit-mask: linear-gradient(-45deg, black 50%, transparent 50%);
+  mask: linear-gradient(-45deg, black 50%, transparent 50%);
+}
+
+@utility stacked {
+  display: grid;
+  & > * {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+}
+
+@utility fade-ends-x {
+  -webkit-mask: linear-gradient(
+    90deg,
+    transparent,
+    black 20%,
+    black 80%,
+    transparent
+  );
+  mask: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
+}
 
 @layer base {
   /*
@@ -106,36 +145,5 @@
 
   a:visited {
     color: #0996f8;
-  }
-}
-
-@layer utilities {
-  .cover-tl {
-    -webkit-mask: linear-gradient(-45deg, black 50%, transparent 50%);
-    mask: linear-gradient(-45deg, black 50%, transparent 50%);
-  }
-
-  .stacked {
-    display: grid;
-  }
-  .stacked > * {
-    grid-area: 1 / 1 / 2 / 2;
-  }
-
-  .fade-ends-x {
-    -webkit-mask: linear-gradient(
-      90deg,
-      transparent,
-      black 20%,
-      black 80%,
-      transparent
-    );
-    mask: linear-gradient(
-      90deg,
-      transparent,
-      black 20%,
-      black 80%,
-      transparent
-    );
   }
 }
