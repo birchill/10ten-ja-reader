@@ -82,9 +82,9 @@ export default {
         '.transparent-caret': {
           color: 'transparent',
           'text-shadow': '0 0 0 black',
-        },
-        '@media (prefers-color-scheme: dark)': {
-          '.transparent-caret': { 'text-shadow': '0 0 0 white' },
+          '@media (prefers-color-scheme: dark)': {
+            '.transparent-caret': { 'text-shadow': '0 0 0 white' },
+          },
         },
       });
     }),
