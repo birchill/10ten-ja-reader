@@ -201,8 +201,8 @@ function Tag({
         'tp-bg-[var(--color-tag-bg,transparent)]',
         ...(selectState === 'selected'
           ? [
-              'no-overlay:tp-border-[var(--selected-tag-border)]',
-              'no-overlay:tp-text-[var(--selected-tag-color)]',
+              'no-overlay:tp-border-(--selected-tag-border)',
+              'no-overlay:tp-text-(--selected-tag-color)',
             ]
           : [
               'tp-border-[var(--color-tag-border,var(--tag-border))]',

@@ -213,7 +213,7 @@ export function KanjiStrokeAnimation(props: Props) {
           <g
             onClick={() => setIsPlaying((prev) => !prev)}
             pointer-events="all"
-            class="tp-cursor-pointer tp-opacity-30 hh:hover:tp-opacity-100 tp-fill-[--text-color] hh:hover:tp-fill-[--primary-highlight] tp-transition-transform tp-duration-500"
+            class="tp-cursor-pointer tp-opacity-30 hh:hover:tp-opacity-100 tp-fill-(--text-color) hh:hover:tp-fill-(--primary-highlight) tp-transition-transform tp-duration-500"
             style={{ transform: isPlaying ? 'none' : 'translate(40px)' }}
           >
             <title>
@@ -326,7 +326,7 @@ export function KanjiStrokeAnimation(props: Props) {
                   cx={12.5}
                   cy={12.5}
                   r={8}
-                  class="tp-fill-[--primary-highlight] tp-opacity-50 peer-hover:tp-opacity-100"
+                  class="tp-fill-(--primary-highlight) tp-opacity-50 peer-hover:tp-opacity-100"
                   pointer-events="none"
                 />
               </g>
