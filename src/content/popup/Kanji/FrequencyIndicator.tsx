@@ -6,9 +6,9 @@ export function FrequencyIndicator(props: Props) {
   const { t } = useLocale();
 
   return (
-    <div class="tp-flex tp-gap-1.5 tp-items-center tp-text-smish">
+    <div class="tp:flex tp:gap-1.5 tp:items-center tp:text-smish">
       <svg
-        class="tp-block tp-h-[12px] tp-w-[12px] tp-fill-current"
+        class="tp:block tp:h-[12px] tp:w-[12px] tp:fill-current"
         role="presentation"
         viewBox="0 0 8 8"
       >
@@ -49,7 +49,7 @@ export function FrequencyIndicator(props: Props) {
         {props.frequency ? (
           <>
             {`${t('content_kanji_frequency_label')} ${props.frequency.toLocaleString()}`}
-            <span class="tp-text-xs"> / {Number(2500).toLocaleString()}</span>
+            <span class="tp:text-xs"> / {Number(2500).toLocaleString()}</span>
           </>
         ) : (
           '-'

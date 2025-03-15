@@ -8,7 +8,7 @@ export function KanjiReadings(props: Props) {
   const { t, langTag } = useLocale();
 
   return (
-    <div lang="ja" class="tp-text-[--reading-highlight] tp-text-base">
+    <div lang="ja" class="tp:text-(--reading-highlight) tp:text-base">
       {props.r.on?.join('、') || null}
       {props.r.kun?.map((k, i) => {
         const hasPreceding = i !== 0 || !!props.r.on?.length;
@@ -22,7 +22,7 @@ export function KanjiReadings(props: Props) {
       {props.r.na?.length ? (
         <>
           <br />
-          <span class="tp-text-[--reading-label] tp-text-xs" lang={langTag}>
+          <span class="tp:text-(--reading-label) tp:text-xs" lang={langTag}>
             {t('content_kanji_nanori_label')}
           </span>{' '}
           {props.r.na.join('、')}
@@ -47,7 +47,7 @@ function KunReading(props: { k: string }) {
   ) : (
     <>
       {props.k.substring(0, highlightIndex)}
-      <span class="tp-text-[--okurigana-color]">
+      <span class="tp:text-(--okurigana-color)">
         {props.k.substring(highlightIndex + 1)}
       </span>
     </>

@@ -127,24 +127,24 @@ export function KanjiStrokeAnimation(props: Props) {
   const lastPointerType = useRef<string>('touch');
 
   return (
-    <div class="tp-flex tp-flex-col tp-items-center tp-gap-3">
+    <div class="tp:flex tp:flex-col tp:items-center tp:gap-3">
       <svg
         class={classes(
-          'tp-group',
-          'tp-h-big-kanji tp-w-big-kanji tp-rounded-md',
-          'hh:hover:tp-bg-[--hover-bg]',
-          'hh:hover:tp-cursor-pointer',
+          'tp:group',
+          'tp:h-big-kanji tp:w-big-kanji tp:rounded-md',
+          'tp:hh:hover:bg-(--hover-bg)',
+          'tp:hh:hover:cursor-pointer',
           // Fade _out_ the color change
-          'hh:tp-transition-colors hh:interactive:tp-duration-100',
-          'hh:tp-ease-out',
-          'hh:hover:tp-transition-none',
+          'tp:hh:transition-colors tp:hh:interactive:duration-100',
+          'tp:hh:ease-out',
+          'tp:hh:hover:transition-none',
           // Ensure any selection colors are applied before fading in the
           // overlay
           props.selectState === 'selected' &&
-            'no-overlay:tp-text-[--selected-highlight] no-overlay:tp-bg-[--selected-bg]',
+            'tp:no-overlay:text-(--selected-highlight) tp:no-overlay:bg-(--selected-bg)',
           // Run the flash animation, but not until the overlay has
           // disappeared.
-          props.selectState === 'flash' && 'no-overlay:tp-animate-flash'
+          props.selectState === 'flash' && 'tp:no-overlay:animate-flash'
         )}
         viewBox="0 0 109 109"
         onPointerUp={(evt) => {
@@ -170,12 +170,12 @@ export function KanjiStrokeAnimation(props: Props) {
         </g>
         <g
           class={classes(
-            'tp-stroke-[--primary-highlight] hh:group-hover:tp-stroke-[--selected-highlight]',
-            'hh:tp-transition-colors hh:interactive:tp-duration-100',
-            'hh:tp-ease-out',
-            'hh:hover:tp-transition-none',
+            'tp:stroke-(--primary-highlight) tp:hh:group-hover:stroke-(--selected-highlight)',
+            'tp:hh:transition-colors tp:hh:interactive:duration-100',
+            'tp:hh:ease-out',
+            'tp:hh:hover:transition-none',
             props.selectState === 'selected' &&
-              'no-overlay:tp-stroke-[--selected-highlight]'
+              'tp:no-overlay:stroke-(--selected-highlight)'
           )}
           stroke-width={strokeWidth}
           stroke-linecap="round"
@@ -204,7 +204,7 @@ export function KanjiStrokeAnimation(props: Props) {
          * can expand the hit regions vertically since iOS Safari doesn't do
          * very good hit detection of small targets. */}
         <svg
-          class="tp-w-big-kanji"
+          class="tp:w-big-kanji"
           ref={timelineSvg}
           viewBox="0 0 100 50"
           style={{ webkitTapHighlightColor: 'transparent' }}
@@ -213,7 +213,7 @@ export function KanjiStrokeAnimation(props: Props) {
           <g
             onClick={() => setIsPlaying((prev) => !prev)}
             pointer-events="all"
-            class="tp-cursor-pointer tp-opacity-30 hh:hover:tp-opacity-100 tp-fill-(--text-color) hh:hover:tp-fill-(--primary-highlight) tp-transition-transform tp-duration-500"
+            class="tp:cursor-pointer tp:opacity-30 to:hh:hover:opacity-100 tp:fill-(--text-color) tp:hh:hover:fill-(--primary-highlight) tp:transition-transform tp:duration-500"
             style={{ transform: isPlaying ? 'none' : 'translate(40px)' }}
           >
             <title>
@@ -236,7 +236,7 @@ export function KanjiStrokeAnimation(props: Props) {
                   ? 'M20 12.5v6a4 4 0 01-4 4l-12 0c0 0 0 0 0 0a4 4 90 01-4-4v-12a4 4 90 014-4c0 0 0 0 0 0l12 0a4 4 0 014 4z'
                   : 'M20 12.5v0a2 2 0 01-1 1.7l-16.1 8.1c-.3.1-.6.2-.9.2a2 2 90 01-2-2v-16a2 2 90 012-2c.3 0 .7.1 1 .2l16 8.1a2 2 0 011 1.7z'
               }
-              class="tp-transition-[d] tp-duration-500"
+              class="tp:transition-[d] tp:duration-500"
               transform="scale(0.9)"
               transform-origin="10px 12.5px"
             />
@@ -247,8 +247,8 @@ export function KanjiStrokeAnimation(props: Props) {
               transform: isPlaying ? 'translate(25px)' : 'translate(65px)',
             }}
             class={classes(
-              'tp-transition-transform tp-duration-500',
-              isPlaying ? 'tp-delay-100' : 'tp-pointer-events-none'
+              'tp:transition-transform tp:duration-500',
+              isPlaying ? 'tp:delay-100' : 'tp:pointer-events-none'
             )}
           >
             {/* Timeline */}
@@ -260,8 +260,8 @@ export function KanjiStrokeAnimation(props: Props) {
                 transformOrigin: '12.5px 12.5px',
               }}
               class={classes(
-                'tp-transition-transform',
-                !isPlaying && 'tp-delay-[450ms]'
+                'tp:transition-transform',
+                !isPlaying && 'tp:delay-[450ms]'
               )}
               onClick={onTimelineClick}
             >
@@ -277,8 +277,8 @@ export function KanjiStrokeAnimation(props: Props) {
                   transformOrigin: '12.5px 12.5px',
                 }}
                 class={classes(
-                  'tp-transition-transform tp-duration-500',
-                  isPlaying && 'tp-delay-100'
+                  'tp:transition-transform tp:duration-500',
+                  isPlaying && 'tp:delay-100'
                 )}
               />
               {/* Timeline rounded left end */}
@@ -292,8 +292,8 @@ export function KanjiStrokeAnimation(props: Props) {
                     : `translate(-${TIMELINE_RANGE}px)`,
                 }}
                 class={classes(
-                  'tp-transition-transform tp-duration-500',
-                  isPlaying && 'tp-delay-100'
+                  'tp:transition-transform tp:duration-500',
+                  isPlaying && 'tp:delay-100'
                 )}
               />
             </g>
@@ -306,8 +306,8 @@ export function KanjiStrokeAnimation(props: Props) {
                   transformOrigin: '12.5px 12.5px',
                 }}
                 class={classes(
-                  'tp-transition-transform',
-                  !isPlaying ? 'tp-delay-[400ms]' : 'tp-delay-50'
+                  'tp:transition-transform',
+                  !isPlaying ? 'tp:delay-[400ms]' : 'tp:delay-50'
                 )}
               >
                 {/* Hit region for scrubber */}
@@ -316,7 +316,7 @@ export function KanjiStrokeAnimation(props: Props) {
                   width={40}
                   height={50}
                   fill="none"
-                  class="tp-cursor-pointer tp-peer"
+                  class="tp:cursor-pointer tp:peer"
                   pointer-events="all"
                   onPointerDown={onScrubberPointerDown}
                   // This is needed to prevent the container from scrolling
@@ -326,7 +326,7 @@ export function KanjiStrokeAnimation(props: Props) {
                   cx={12.5}
                   cy={12.5}
                   r={8}
-                  class="tp-fill-(--primary-highlight) tp-opacity-50 peer-hover:tp-opacity-100"
+                  class="tp:fill-(--primary-highlight) tp:opacity-50 tp:peer-hover:opacity-100"
                   pointer-events="none"
                 />
               </g>
