@@ -105,13 +105,13 @@ function StaticKanjiCharacter(props: KanjiCharacterProps) {
         '[text-shadow:var(--shadow-color)_1px_1px_4px]',
         ...(interactive
           ? [
-              'tp:hh:hover:text-(--selected-highlight)',
-              'tp:hh:hover:bg-(--hover-bg)',
-              'tp:hh:hover:cursor-pointer',
+              'tp:hover:text-(--selected-highlight)',
+              'tp:hover:bg-(--hover-bg)',
+              'tp:hover:cursor-pointer',
               // Fade _out_ the color change
-              'tp:hh:transition-colors tp:hh:interactive:duration-100',
-              'tp:hh:ease-out',
-              'tp:hh:hover:transition-none',
+              'tp:transition-colors tp:interactive:duration-100',
+              'tp:ease-out',
+              'tp:hover:transition-none',
             ]
           : []),
         // Ensure any selection colors are applied before fading in the

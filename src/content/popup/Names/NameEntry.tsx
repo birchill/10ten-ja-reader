@@ -38,12 +38,12 @@ export function NameEntry(props: Props) {
         props.selectState === 'flash' && 'tp:no-overlay:animate-flash',
         ...(interactive
           ? [
-              'tp:hh:hover:bg-(--hover-bg)',
-              'tp:hh:hover:cursor-pointer',
+              'tp:hover:bg-(--hover-bg)',
+              'tp:hover:cursor-pointer',
               // Fade _out_ the color change
-              'tp:hh:transition-colors tp:hh:interactive:duration-100',
-              'tp:hh:ease-out',
-              'tp:hh:hover:transition-none',
+              'tp:transition-colors tp:interactive:duration-100',
+              'tp:ease-out',
+              'tp:hover:transition-none',
             ]
           : [])
       )}
@@ -60,8 +60,7 @@ export function NameEntry(props: Props) {
             props.selectState === 'selected'
               ? 'tp:no-overlay:text-(--selected-reading-highlight)'
               : 'tp:text-(--reading-highlight)',
-            interactive &&
-              'tp:hh:group-hover:text-(--selected-reading-highlight)'
+            interactive && 'tp:group-hover:text-(--selected-reading-highlight)'
           )}
         >
           {kana}
@@ -104,7 +103,7 @@ function KanjiEntries({
         selectState === 'selected'
           ? 'tp:no-overlay:text-(--selected-highlight)'
           : 'tp:text-(--primary-highlight)',
-        interactive && 'tp:hh:group-hover:text-(--selected-highlight)'
+        interactive && 'tp:group-hover:text-(--selected-highlight)'
       )}
     >
       {kanji}
@@ -162,7 +161,7 @@ function NameTranslationComponent({
         class={classes(
           selectState === 'selected' &&
             'tp:no-overlay:text-(--selected-def-color)',
-          interactive && 'tp:hh:group-hover:text-(--selected-def-color)'
+          interactive && 'tp:group-hover:text-(--selected-def-color)'
         )}
       >
         {translation.det.map(annotateDetailFn).join(', ')}
@@ -210,8 +209,8 @@ function Tag({
             ]),
         interactive &&
           classes(
-            'tp:hh:group-hover:border-(--selected-tag-border)',
-            'tp:hh:group-hover:text-(--selected-tag-color)'
+            'tp:group-hover:border-(--selected-tag-border)',
+            'tp:group-hover:text-(--selected-tag-color)'
           )
       )}
       style={
