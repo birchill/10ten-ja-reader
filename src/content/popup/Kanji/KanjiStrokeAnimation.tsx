@@ -132,12 +132,12 @@ export function KanjiStrokeAnimation(props: Props) {
         class={classes(
           'tp:group',
           'tp:h-big-kanji tp:w-big-kanji tp:rounded-md',
-          'tp:hh:hover:bg-(--hover-bg)',
-          'tp:hh:hover:cursor-pointer',
+          'tp:hover:bg-(--hover-bg)',
+          'tp:hover:cursor-pointer',
           // Fade _out_ the color change
-          'tp:hh:transition-colors tp:hh:interactive:duration-100',
-          'tp:hh:ease-out',
-          'tp:hh:hover:transition-none',
+          'tp:transition-colors tp:interactive:duration-100',
+          'tp:ease-out',
+          'tp:hover:transition-none',
           // Ensure any selection colors are applied before fading in the
           // overlay
           props.selectState === 'selected' &&
@@ -170,10 +170,10 @@ export function KanjiStrokeAnimation(props: Props) {
         </g>
         <g
           class={classes(
-            'tp:stroke-(--primary-highlight) tp:hh:group-hover:stroke-(--selected-highlight)',
-            'tp:hh:transition-colors tp:hh:interactive:duration-100',
-            'tp:hh:ease-out',
-            'tp:hh:hover:transition-none',
+            'tp:stroke-(--primary-highlight) tp:group-hover:stroke-(--selected-highlight)',
+            'tp:transition-colors tp:interactive:duration-100',
+            'tp:ease-out',
+            'tp:hover:transition-none',
             props.selectState === 'selected' &&
               'tp:no-overlay:stroke-(--selected-highlight)'
           )}
@@ -213,7 +213,7 @@ export function KanjiStrokeAnimation(props: Props) {
           <g
             onClick={() => setIsPlaying((prev) => !prev)}
             pointer-events="all"
-            class="tp:cursor-pointer tp:opacity-30 to:hh:hover:opacity-100 tp:fill-(--text-color) tp:hh:hover:fill-(--primary-highlight) tp:transition-transform tp:duration-500"
+            class="tp:cursor-pointer tp:opacity-30 to:hover:opacity-100 tp:fill-(--text-color) tp:hover:fill-(--primary-highlight) tp:transition-transform tp:duration-500"
             style={{ transform: isPlaying ? 'none' : 'translate(40px)' }}
           >
             <title>

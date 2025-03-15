@@ -56,10 +56,6 @@ export default {
           { lineHeight: 1 },
         ],
       },
-      screens: {
-        // Variant to only match on devices that actually support hovering
-        hh: { raw: '(hover)' },
-      },
       spacing: {
         0.5: 'calc(0.125 * var(--base-font-size))',
         1: 'calc(0.25 * var(--base-font-size))',
