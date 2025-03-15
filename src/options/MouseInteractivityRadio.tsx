@@ -24,7 +24,7 @@ export function MouseInteractivityRadio(props: Props) {
       >
         <div class="flex items-center justify-center px-4 py-3">
           <svg
-            class={`${themeClass} w-[150px] select-none drop-shadow-[0_1px_1px_rgba(0,0,0,0.25)]`}
+            class={`${themeClass} w-[150px] drop-shadow-[0_1px_1px_rgba(0,0,0,0.25)] select-none`}
             viewBox="0 0 200 150"
           >
             <use href="#interactivity-disabled-popup" />
@@ -40,7 +40,7 @@ export function MouseInteractivityRadio(props: Props) {
       >
         <div class="flex items-center justify-center px-4 py-3">
           <svg
-            class={`${themeClass} w-[150px] select-none drop-shadow-[0_1px_1px_rgba(0,0,0,0.25)]`}
+            class={`${themeClass} w-[150px] drop-shadow-[0_1px_1px_rgba(0,0,0,0.25)] select-none`}
             viewBox="0 0 200 150"
           >
             <use href="#interactivity-enabled-popup" />
