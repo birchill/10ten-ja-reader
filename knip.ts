@@ -28,6 +28,12 @@ const config: KnipConfig = {
     // Used by our browser test and automatically detected by playwright-test.
     'mocha',
     '@types/mocha',
+    // Now that we no longer use a tailwind.config.js file, the tailwindcss
+    // plugin doesn't seem to recognize that Tailwind is being used?
+    //
+    // Technically it's a transitive dependency of @tailwindcss/postcss so
+    // perhaps the problem is the postcss plugin?
+    'tailwindcss',
   ],
   ignoreExportsUsedInFile: { interface: true, type: true },
   playwright: {
@@ -35,7 +41,6 @@ const config: KnipConfig = {
     entry: 'tests/**/*.test.{js,ts}',
     config: 'playwright-test.config.js',
   },
-  tailwind: { config: ['**/tailwind.config.js'] },
 };
 
 export default config;

@@ -1,5 +1,5 @@
 @charset "UTF-8";
-@import 'themes.css';
+@import './themes.css';
 
 :root,
 :host {

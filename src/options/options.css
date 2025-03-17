@@ -1,141 +1,215 @@
-@config "./tailwind.config.js";
+/*
+ * Disable preflight styles:
+ * https://tailwindcss.com/docs/preflight#disabling-preflight
+ */
+@layer theme, base, components, utilities;
 
-@import '../../css/themes.css';
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities) source('./');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import '../../css/themes.css' layer(base);
 
-@layer base {
-  /*
-   * Container styles
-   */
+@theme {
+  --color-black: #1d1a19;
 
-  :root,
-  body {
-    font: message-box;
-    font-size: 15px;
-    color: #222426;
-    margin: 0;
-  }
+  --color-blue-50: #e3f4fe;
+  --color-blue-100: #bcdffe;
+  --color-blue-200: #97c9ec;
+  --color-blue-300: #65b7fc;
+  --color-blue-400: #44a7fc;
+  --color-blue-500: #2698fb;
+  --color-blue-600: #2589ed;
+  --color-blue-700: #2277d9;
+  --color-blue-800: #1f66c7;
+  --color-blue-900: #1a47a8;
 
-  @media (max-width: 400px) {
-    :root,
-    body {
-      font-size: 12px;
-    }
-  }
+  --color-yellow-50: #fffde0;
+  --color-yellow-100: #fffbcc;
+  --color-yellow-200: #fff7a3;
+  --color-yellow-300: #fff07a;
+  --color-yellow-400: #ffe952;
+  --color-yellow-500: #ffe029;
+  --color-yellow-600: #ffd500;
+  --color-yellow-700: #c7a200;
+  --color-yellow-800: #8f7000;
+  --color-yellow-900: #574200;
 
-  @media (prefers-color-scheme: dark) {
-    body {
-      background: rgb(28, 27, 34);
-      color: lightgrey;
-    }
-  }
+  --color-red-50: #ffebef;
+  --color-red-100: #ffccd5;
+  --color-red-200: #f0989f;
+  --color-red-300: #e66f79;
+  --color-red-400: #f24b59;
+  --color-red-500: #f83540;
+  --color-red-600: #e92a3f;
+  --color-red-700: #d71f38;
+  --color-red-800: #ca1631;
+  --color-red-900: #b71e34;
 
-  :root.firefox {
-    /*
-     * Stop Firefox's scrollbars from disappearing and re-appearing triggering
-     * possible infinite updates.
-     *
-     * See: https://github.com/birchill/10ten-ja-reader/issues/708
-     */
-    overflow: hidden;
-  }
+  --color-green-50: #e8f5e9;
+  --color-green-100: #c8e6c9;
+  --color-green-200: #a5d6a7;
+  --color-green-300: #ffef67;
+  --color-green-400: #66b36a;
+  --color-green-500: #1db954;
+  --color-green-600: #4caf50;
+  --color-green-700: #43a047;
+  --color-green-800: #2e7d32;
+  --color-green-900: #1b5e20;
 
-  * {
-    box-sizing: border-box;
-  }
-
-  :root.safari body {
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  button {
-    /* Don't wrap buttons */
-    white-space: nowrap;
-    /* If they do wrap, however, make them look nice */
-    height: auto;
-    min-height: 24px;
-    text-align: center;
-  }
-
-  select {
-    appearance: none;
-    color: inherit;
-    font: message-box;
-    font-size: 15px;
-    font-weight: 600;
-    padding: 7px 30px 7px 15px;
-    margin: 4px 8px;
-    cursor: pointer;
-    border: none;
-    border-radius: 4px;
-    background-color: #eeeeef;
-    background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2012%22%20width%3D%2212%22%20height%3D%2212%22%20fill%3D%22%23222426%22%3E%3Cpath%20d%3D%22m6.25%209%203.615-3.615a.5.5%200%200%200%200-.707.5.5%200%200%200-.707%200L6%207.825%202.855%204.68a.5.5%200%200%200-.707.707L5.76%209l.48%201z%22%2F%3E%3C%2Fsvg%3E');
-    background-repeat: no-repeat;
-    background-position: right 10px top 50%;
-    background-size: 12px auto;
-  }
-
-  select:hover:not(:focus) {
-    background-color: #dededf;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    select {
-      background-color: #2c2b32;
-      background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2012%22%20width%3D%2212%22%20height%3D%2212%22%20fill%3D%22lightgrey%22%3E%3Cpath%20d%3D%22m6.25%209%203.615-3.615a.5.5%200%200%200%200-.707.5.5%200%200%200-.707%200L6%207.825%202.855%204.68a.5.5%200%200%200-.707.707L5.76%209l.48%201z%22%2F%3E%3C%2Fsvg%3E');
-    }
-
-    select:hover:not(:focus) {
-      background-color: #3b3a41;
-    }
-  }
+  --keys-cols: minmax(12em, auto) 1fr;
 
   /*
-   * Link styles
+   * This breakpoint corresponds to a point between the width of a mobile
+   * device the width of the Firefox settings screen.
+   *
+   * The default value of 640px is wider than the Firefox settings screen.
    */
+  --breakpoint-sm: 500px;
 
-  a {
-    color: #0996f8;
-    text-decoration-style: dotted;
-  }
+  --warning-red: url('/images/warning-red.svg');
+}
 
-  a:visited {
-    color: #0996f8;
+@utility cover-tl {
+  -webkit-mask: linear-gradient(-45deg, black 50%, transparent 50%);
+  mask: linear-gradient(-45deg, black 50%, transparent 50%);
+}
+
+@utility stacked {
+  display: grid;
+  & > * {
+    grid-area: 1 / 1 / 2 / 2;
   }
 }
 
-@layer utilities {
-  .cover-tl {
-    -webkit-mask: linear-gradient(-45deg, black 50%, transparent 50%);
-    mask: linear-gradient(-45deg, black 50%, transparent 50%);
+@utility fade-ends-x {
+  -webkit-mask: linear-gradient(
+    90deg,
+    transparent,
+    black 20%,
+    black 80%,
+    transparent
+  );
+  mask: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
+}
+
+@utility outline-auto {
+  outline-style: auto;
+}
+
+@utility transparent-caret {
+  color: transparent;
+  text-shadow: 0 0 0 black;
+
+  @variant dark {
+    text-shadow: 0 0 0 white;
+  }
+}
+
+/*
+ * Global styles
+ *
+ * These are not put in a layer as otherwise they will have lower specificity
+ * than the styles specified in extensions.css (the browser's settings page
+ * stylesheet).
+ */
+
+/*
+ * Container styles
+ */
+
+:root,
+body {
+  font: message-box;
+  font-size: 15px;
+  color: #222426;
+  margin: 0;
+}
+
+@media (max-width: 400px) {
+  :root,
+  body {
+    font-size: 12px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: rgb(28, 27, 34);
+    color: lightgrey;
+  }
+}
+
+:root.firefox {
+  /*
+    * Stop Firefox's scrollbars from disappearing and re-appearing triggering
+    * possible infinite updates.
+    *
+    * See: https://github.com/birchill/10ten-ja-reader/issues/708
+    */
+  overflow: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+:root.safari body {
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+button {
+  /* Don't wrap buttons */
+  white-space: nowrap;
+  /* If they do wrap, however, make them look nice */
+  height: auto;
+  min-height: 24px;
+  text-align: center;
+}
+
+select {
+  appearance: none;
+  color: inherit;
+  font: message-box;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 7px 30px 7px 15px;
+  margin: 4px 8px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  background-color: #eeeeef;
+  background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2012%22%20width%3D%2212%22%20height%3D%2212%22%20fill%3D%22%23222426%22%3E%3Cpath%20d%3D%22m6.25%209%203.615-3.615a.5.5%200%200%200%200-.707.5.5%200%200%200-.707%200L6%207.825%202.855%204.68a.5.5%200%200%200-.707.707L5.76%209l.48%201z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 10px top 50%;
+  background-size: 12px auto;
+}
+
+select:hover:not(:focus) {
+  background-color: #dededf;
+}
+
+@media (prefers-color-scheme: dark) {
+  select {
+    background-color: #2c2b32;
+    background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2012%22%20width%3D%2212%22%20height%3D%2212%22%20fill%3D%22lightgrey%22%3E%3Cpath%20d%3D%22m6.25%209%203.615-3.615a.5.5%200%200%200%200-.707.5.5%200%200%200-.707%200L6%207.825%202.855%204.68a.5.5%200%200%200-.707.707L5.76%209l.48%201z%22%2F%3E%3C%2Fsvg%3E');
   }
 
-  .stacked {
-    display: grid;
+  select:hover:not(:focus) {
+    background-color: #3b3a41;
   }
-  .stacked > * {
-    grid-area: 1 / 1 / 2 / 2;
-  }
+}
 
-  .fade-ends-x {
-    -webkit-mask: linear-gradient(
-      90deg,
-      transparent,
-      black 20%,
-      black 80%,
-      transparent
-    );
-    mask: linear-gradient(
-      90deg,
-      transparent,
-      black 20%,
-      black 80%,
-      transparent
-    );
-  }
+/*
+  * Link styles
+  */
+
+a {
+  color: #0996f8;
+  text-decoration-style: dotted;
+}
+
+a:visited {
+  color: #0996f8;
 }

@@ -21,7 +21,7 @@ export function PopupKeysForm(props: Props) {
     navigator.clipboard && typeof navigator.clipboard.writeText === 'function';
 
   return (
-    <div class="grid-cols-keys grid items-baseline gap-x-8 gap-y-2">
+    <div class="grid grid-cols-(--keys-cols) items-baseline gap-x-8 gap-y-2">
       {PopupKeys.filter(
         (key) => key.name !== 'startCopy' || hasClipboardApi
       ).map((key) => (

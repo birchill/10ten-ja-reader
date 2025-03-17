@@ -1,11 +1,63 @@
-@config "./tailwind.config.js";
+/*
+ * Disable preflight styles:
+ * https://tailwindcss.com/docs/preflight#disabling-preflight
+ */
+@layer theme, base, components, utilities;
 
-@import '../../../css/themes.css';
+@import 'tailwindcss/theme.css' layer(theme) prefix(tp);
+@import 'tailwindcss/utilities.css' layer(utilities) prefix(tp) source('./');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import '../../../css/themes.css' layer(base);
 
+@custom-variant no-overlay ([data-type="window"]:not([data-has-overlay]) &);
+
+@theme {
+  --animate-flash: 'flash 0.5s';
+
+  @keyframes flash {
+    from {
+      background: white;
+      color: white;
+    }
+  }
+
+  /**
+   * Compare to
+   * https://github.com/tailwindlabs/tailwindcss/blob/48957c541122f77ff22a09f81545b14ae7d7ae80/packages/tailwindcss/theme.css#L299-L324
+   */
+  --text-2xs: calc(10 / 14 * var(--base-font-size));
+  --text-2xs--line-height: calc(0.9 * var(--base-font-size));
+  --text-xs: calc(11 / 14 * var(--base-font-size));
+  --text-xs--line-height: var(--base-font-size);
+  --text-sm: calc(12 / 14 * var(--base-font-size));
+  --text-sm--line-height: calc(1.25 * var(--base-font-size));
+  --text-smish: calc(13 / 14 * var(--base-font-size));
+  --text-smish--line-height: calc(1.4 * var(--base-font-size));
+  --text-base: var(--base-font-size);
+  --text-base--line-height: calc(1.5 * var(--base-font-size));
+  --text-xl: calc(18 / 14 * var(--base-font-size));
+  --text-xl--line-height: calc(1.75 * var(--base-font-size));
+  --text-1.5xl: calc(20 / 14 * var(--base-font-size));
+  --text-1.5xl--line-height: calc(1.85 * var(--base-font-size));
+  --text-2xl: calc(22 / 14 * var(--base-font-size));
+  --text-2xl--line-height: calc(2 * var(--base-font-size));
+  --text-big-kanji: calc(60 / 14 * var(--base-font-size));
+  --text-big-kanji--line-height: 1;
+
+  --spacing: calc(0.25 * var(--base-font-size));
+
+  --radius-xs: calc(0.125 * var(--base-font-size));
+  --radius-sm: calc(0.25 * var(--base-font-size));
+  --radius-md: calc(0.375 * var(--base-font-size));
+  --radius-lg: calc(0.5 * var(--base-font-size));
+  --radius-xl: calc(0.75 * var(--base-font-size));
+  --radius-2xl: calc(1.25 * var(--base-font-size));
+  --radius-3xl: calc(1.5 * var(--base-font-size));
+}
+
+/*
+ * TODO Convert the following to more Tailwind-like utilities.
+ */
 @layer components {
   :host {
     /*

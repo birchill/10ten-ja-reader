@@ -40,7 +40,7 @@ export function PuckSettingsForm(props: Props) {
             onChange={onChange}
             checked={props.showPuck === value}
           />
-          <label class="ml-1 mr-2" for={`showPuck-${value}`}>
+          <label class="mr-2 ml-1" for={`showPuck-${value}`}>
             {t(labelKeys[value])}
           </label>
         </>

@@ -12,13 +12,13 @@ export function MeasureInfo(props: Props) {
   const converted = convertMeasure(props.meta, props.preferredUnits);
 
   return (
-    <div class="tp-flex tp-flex-col tp-items-baseline" lang="ja">
-      <span class="tp-text-xl">
+    <div class="tp:flex tp:flex-col tp:items-baseline" lang="ja">
+      <span class="tp:text-xl">
         <span>
           {props.meta.value.toLocaleString()}
           <Unit unit={props.meta.unit} />
         </span>
-        <span class="tp-px-1.5">=</span>
+        <span class="tp:px-1.5">=</span>
         <span>
           <Value value={converted.value} />
           <Unit unit={converted.unit} showRuby={false} />
@@ -52,14 +52,14 @@ function AlternativeMeasureComponent({ alt }: { alt: AlternateMeasure }) {
   const expl = t(`measure_expl_${type}`);
 
   return (
-    <div class="tp-opacity-60 tp-mt-0.5" key={type}>
+    <div class="tp:opacity-60 tp:mt-0.5" key={type}>
       <span>
         {label && <span>{label}</span>}
         {expl && <span lang={langTag}>{expl}</span>}
         {alt}
       </span>
-      <span class="tp-px-1.5">=</span>
-      <span class="tp-space-x-1">
+      <span class="tp:px-1.5">=</span>
+      <span class="tp:space-x-1">
         <Value value={value} />
         <Unit unit={unit} showRuby={false} />
       </span>

@@ -37,7 +37,7 @@ export function TabDisplayRadio(props: Props) {
         >
           <PopupIconBase themeClass={themeClass}>
             <rect
-              class="fill-[--cell-highlight-bg] stroke-[--border-color] stroke-[0.5px]"
+              class="fill-(--cell-highlight-bg) stroke-(--border-color) stroke-[0.5px]"
               clipPath="url(#popup-outline)"
               x="16"
               y="1"
@@ -55,7 +55,7 @@ export function TabDisplayRadio(props: Props) {
         >
           <PopupIconBase themeClass={themeClass}>
             <rect
-              class="fill-[--cell-highlight-bg] stroke-[--border-color] stroke-[0.5px]"
+              class="fill-(--cell-highlight-bg) stroke-(--border-color) stroke-[0.5px]"
               clipPath="url(#popup-outline)"
               x="0"
               y="8"
@@ -73,7 +73,7 @@ export function TabDisplayRadio(props: Props) {
         >
           <PopupIconBase themeClass={themeClass}>
             <rect
-              class="fill-[--cell-highlight-bg] stroke-[--border-color] stroke-[0.5px]"
+              class="fill-(--cell-highlight-bg) stroke-(--border-color) stroke-[0.5px]"
               clipPath="url(#popup-outline)"
               x="40"
               y="8"
@@ -106,7 +106,7 @@ function PopupIconBase(props: RenderableProps<IconProps>) {
         viewBox="0 0 48 48"
       >
         <use
-          class="fill-[--bg-color] stroke-[--border-color] stroke-[0.5px]"
+          class="fill-(--bg-color) stroke-(--border-color) stroke-[0.5px]"
           href="#tabicon-popup"
         />
         {props.children}

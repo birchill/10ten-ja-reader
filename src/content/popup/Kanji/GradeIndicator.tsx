@@ -25,9 +25,9 @@ export function GradeIndicator(props: Props) {
   }
 
   return (
-    <div class="tp-flex tp-gap-1.5 tp-items-center tp-text-smish">
+    <div class="tp:flex tp:gap-1.5 tp:items-center tp:text-smish">
       <svg
-        class="tp-block tp-h-[12px] tp-w-[12px] tp-fill-current tp-opacity-50"
+        class="tp:block tp:h-[12px] tp:w-[12px] tp:fill-current tp:opacity-50"
         role="presentation"
         viewBox="0 0 16 16"
       >

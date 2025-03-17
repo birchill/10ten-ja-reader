@@ -25,7 +25,7 @@ export const IconRadio = forwardRef<HTMLInputElement, InputProps>(
         <label
           class={classes(
             'peer-focus-visible:outline-auto group cursor-pointer rounded-md border border-solid',
-            'text-center transition duration-300',
+            'transition duration-300',
             !props.checked &&
               'opacity-50 grayscale hover:opacity-100 hover:grayscale-0 active:opacity-100 active:grayscale-0',
             props.label

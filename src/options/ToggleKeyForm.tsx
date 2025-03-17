@@ -132,7 +132,7 @@ export function ToggleKeyForm(props: Props) {
             {t('command_toggle_description')}
             {!!toggleKeyError?.length && (
               <div
-                class="bg-warning-red ml-2 inline-block size-6 bg-cover bg-no-repeat align-top"
+                class="ml-2 inline-block size-6 bg-(image:--warning-red) bg-cover bg-no-repeat align-top"
                 id="toggle-key-icon"
                 title={toggleKeyError}
               />

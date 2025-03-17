@@ -76,7 +76,7 @@ const PopupRadio = forwardRef<HTMLInputElement, InputProps>(
         <label
           class={classes(
             'peer-focus-visible:outline-auto group block cursor-pointer rounded-md border border-solid p-2',
-            'border-transparent text-center transition duration-300',
+            'border-transparent transition duration-300',
             props.checked
               ? 'border-zinc-300 bg-zinc-200 dark:border-zinc-500 dark:bg-zinc-600'
               : 'opacity-50 hover:opacity-100 active:opacity-100'
