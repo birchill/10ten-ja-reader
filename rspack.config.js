@@ -404,11 +404,6 @@ function getExtConfig(options) {
     'data/*',
     'fonts/*',
     '_locales/**/*',
-    // Update page assets
-    { from: 'docs/update/update.css', to: 'docs' },
-    { from: '*.html', context: 'docs/update', to: 'docs' },
-    { from: '*.png', context: 'docs/update/img', to: 'docs/img' },
-    { from: '*.js', context: 'docs/update', to: 'docs' },
   ];
 
   plugins.push(new rspack.CopyRspackPlugin({ patterns: copyPatterns }));

@@ -85,7 +85,6 @@
     "@rspack/cli": "1.2.8",
     "@rspack/core": "1.2.8",
     "@tailwindcss/postcss": "4.0.14",
-    "@tailwindcss/typography": "0.5.16",
     "@trivago/prettier-plugin-sort-imports": "5.2.2",
     "@types/archiver": "6.0.3",
     "@types/chai": "5.2.0",
