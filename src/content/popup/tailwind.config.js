@@ -2,7 +2,6 @@ import plugin from 'tailwindcss/plugin';
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./src/content/popup/**/*.{ts,tsx}'],
   blocklist: ['!entry', '!kanji'],
   theme: {
     animation: { flash: 'flash 0.5s' },
