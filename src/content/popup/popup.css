@@ -11,6 +11,16 @@
 
 @config "./tailwind.config.js";
 
+@theme {
+  --radius-xs: calc(0.125 * var(--base-font-size));
+  --radius-sm: calc(0.25 * var(--base-font-size));
+  --radius-md: calc(0.375 * var(--base-font-size));
+  --radius-lg: calc(0.5 * var(--base-font-size));
+  --radius-xl: calc(0.75 * var(--base-font-size));
+  --radius-2xl: calc(1.25 * var(--base-font-size));
+  --radius-3xl: calc(1.5 * var(--base-font-size));
+}
+
 /*
  * TODO Convert the following to more Tailwind-like utilities.
  */

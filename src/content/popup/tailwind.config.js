@@ -7,15 +7,6 @@ export default {
     animation: { flash: 'flash 0.5s' },
     keyframes: { flash: { from: { background: 'white', color: 'white' } } },
     extend: {
-      borderRadius: {
-        sm: 'calc(0.125 * var(--base-font-size))',
-        DEFAULT: 'calc(0.25 * var(--base-font-size))',
-        md: 'calc(0.375 * var(--base-font-size))',
-        lg: 'calc(0.5 * var(--base-font-size))',
-        xl: 'calc(0.75 * var(--base-font-size))',
-        '2xl': 'calc(1.25 * var(--base-font-size))',
-        '3xl': 'calc(1.5 * var(--base-font-size))',
-      },
       fontSize: {
         // Compare to https://github.com/tailwindlabs/tailwindcss/blob/6ab289343deaa61095a8f55799239ce0f1ee41ea/packages/tailwindcss/theme.css#L374-L400
         '2xs': [

@@ -10,7 +10,7 @@ export function KanjiMeta(props: Props) {
       {props.tags.map((tag) => (
         <span
           key={tag}
-          class="tp:text-sm tp:border tp:border-current tp:border-solid tp:rounded tp:py-0.5 tp:px-1"
+          class="tp:text-sm tp:border tp:border-current tp:border-solid tp:rounded-sm tp:py-0.5 tp:px-1"
           lang={langTag}
         >
           {t(`content_kanji_meta_${tag.replace(' ', '_')}`)}

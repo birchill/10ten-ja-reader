@@ -196,7 +196,7 @@ function Tag({
     <span
       class={classes(
         'tp:text-2xs tp:px-1 tp:whitespace-nowrap',
-        'tp:rounded tp:border-solid tp:border',
+        'tp:rounded-sm tp:border-solid tp:border',
         'tp:bg-[var(--color-tag-bg,transparent)]',
         ...(selectState === 'selected'
           ? [

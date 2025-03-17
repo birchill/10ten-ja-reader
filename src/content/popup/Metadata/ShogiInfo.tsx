@@ -64,7 +64,7 @@ export function ShogiInfo({ meta }: Props) {
     <div>
       <span
         class={classes(
-          'tp:text-2xs tp:rounded tp:mr-1 tp:px-1 tp:whitespace-nowrap',
+          'tp:text-2xs tp:rounded-sm tp:mr-1 tp:px-1 tp:whitespace-nowrap',
           'tp:border-solid tp:border tp:border-(--tag-border)'
         )}
         lang={langTag}
