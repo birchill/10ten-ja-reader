@@ -34,7 +34,7 @@
   mask: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
 }
 
-@theme inline {
+@theme {
   --color-black: #1d1a19;
 
   --color-blue-50: #e3f4fe;
@@ -80,18 +80,6 @@
   --color-green-700: #43a047;
   --color-green-800: #2e7d32;
   --color-green-900: #1b5e20;
-
-  --color-purple-50: var(--color-violet-50);
-  --color-purple-100: var(--color-violet-100);
-  --color-purple-200: var(--color-violet-200);
-  --color-purple-300: var(--color-violet-300);
-  --color-purple-400: var(--color-violet-400);
-  --color-purple-500: var(--color-violet-500);
-  --color-purple-600: var(--color-violet-600);
-  --color-purple-700: var(--color-violet-700);
-  --color-purple-800: var(--color-violet-800);
-  --color-purple-900: var(--color-violet-900);
-  --color-purple-950: var(--color-violet-950);
 }
 
 @theme {
