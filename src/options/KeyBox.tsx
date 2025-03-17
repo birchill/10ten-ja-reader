@@ -83,7 +83,7 @@ export const KeyInput = forwardRef<HTMLInputElement, InputProps>(
     return (
       <input
         class={classes(
-          'transparent-caret my-0.5 h-9 w-20 p-2 text-center font-[inherit] text-sm',
+          'transparent-caret my-0.5 h-9 w-20 p-2 text-center! font-[inherit] text-sm',
           'rounded-lg border border-solid border-zinc-400 bg-white dark:bg-zinc-800',
           'border-b-[3px] border-b-zinc-500 disabled:opacity-50'
         )}
