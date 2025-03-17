@@ -131,7 +131,7 @@ export function KanjiStrokeAnimation(props: Props) {
       <svg
         class={classes(
           'tp:group',
-          'tp:h-big-kanji tp:w-big-kanji tp:rounded-md',
+          'tp:h-(--text-big-kanji) tp:w-(--text-big-kanji) tp:rounded-md',
           'tp:hover:bg-(--hover-bg)',
           'tp:hover:cursor-pointer',
           // Fade _out_ the color change
@@ -204,7 +204,7 @@ export function KanjiStrokeAnimation(props: Props) {
          * can expand the hit regions vertically since iOS Safari doesn't do
          * very good hit detection of small targets. */}
         <svg
-          class="tp:w-big-kanji"
+          class="tp:w-(--text-big-kanji)"
           ref={timelineSvg}
           viewBox="0 0 100 50"
           style={{ webkitTapHighlightColor: 'transparent' }}
