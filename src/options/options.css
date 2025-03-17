@@ -80,6 +80,8 @@
   --color-green-700: #43a047;
   --color-green-800: #2e7d32;
   --color-green-900: #1b5e20;
+
+  --keys-cols: minmax(12em, auto) 1fr;
 }
 
 @theme {

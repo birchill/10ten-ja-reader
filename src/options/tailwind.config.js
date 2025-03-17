@@ -3,10 +3,6 @@ import plugin from 'tailwindcss/plugin';
 /** @type {import('tailwindcss').Config} */
 export default {
   theme: {
-    extend: {
-      gridTemplateColumns: { keys: 'minmax(12em, auto) 1fr' },
-      fontFamily: { inherit: 'inherit' },
-    },
     screens: {
       // This breakpoint corresponds to a point between the width of a mobile
       // device the width of the Firefox settings screen.
