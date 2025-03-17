@@ -9,31 +9,6 @@
 
 @import '../../css/themes.css' layer(base);
 
-@config "./tailwind.config.js";
-
-@utility cover-tl {
-  -webkit-mask: linear-gradient(-45deg, black 50%, transparent 50%);
-  mask: linear-gradient(-45deg, black 50%, transparent 50%);
-}
-
-@utility stacked {
-  display: grid;
-  & > * {
-    grid-area: 1 / 1 / 2 / 2;
-  }
-}
-
-@utility fade-ends-x {
-  -webkit-mask: linear-gradient(
-    90deg,
-    transparent,
-    black 20%,
-    black 80%,
-    transparent
-  );
-  mask: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
-}
-
 @theme {
   --color-black: #1d1a19;
 
@@ -92,6 +67,42 @@
   --breakpoint-sm: 500px;
 
   --warning-red: url('/images/warning-red.svg');
+}
+
+@utility cover-tl {
+  -webkit-mask: linear-gradient(-45deg, black 50%, transparent 50%);
+  mask: linear-gradient(-45deg, black 50%, transparent 50%);
+}
+
+@utility stacked {
+  display: grid;
+  & > * {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+}
+
+@utility fade-ends-x {
+  -webkit-mask: linear-gradient(
+    90deg,
+    transparent,
+    black 20%,
+    black 80%,
+    transparent
+  );
+  mask: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
+}
+
+@utility outline-auto {
+  outline-style: auto;
+}
+
+@utility transparent-caret {
+  color: transparent;
+  text-shadow: 0 0 0 black;
+
+  @variant dark {
+    text-shadow: 0 0 0 white;
+  }
 }
 
 /*
