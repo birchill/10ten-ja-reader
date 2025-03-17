@@ -34,6 +34,10 @@
   mask: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
 }
 
+@theme {
+  --warning-red: url('/images/warning-red.svg');
+}
+
 /*
  * Global styles
  *

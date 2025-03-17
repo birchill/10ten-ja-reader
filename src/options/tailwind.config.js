@@ -5,7 +5,6 @@ import plugin from 'tailwindcss/plugin';
 export default {
   theme: {
     extend: {
-      backgroundImage: { 'warning-red': "url('/images/warning-red.svg')" },
       colors: {
         black: '#1d1a19',
         blue: {
