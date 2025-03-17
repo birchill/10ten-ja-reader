@@ -9,7 +9,7 @@
 
 @import '../../../css/themes.css' layer(base);
 
-@config "./tailwind.config.js";
+@custom-variant no-overlay ([data-type="window"]:not([data-has-overlay]) &);
 
 @theme {
   --animate-flash: 'flash 0.5s';
