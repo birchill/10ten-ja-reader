@@ -2,15 +2,6 @@ import plugin from 'tailwindcss/plugin';
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  theme: {
-    screens: {
-      // This breakpoint corresponds to a point between the width of a mobile
-      // device the width of the Firefox settings screen.
-      //
-      // The default value of 640px is wider than the Firefox settings screen.
-      sm: '500px',
-    },
-  },
   plugins: [
     plugin(({ addVariant }) => {
       addVariant('firefox', ':root.firefox &');
