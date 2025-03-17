@@ -3,9 +3,6 @@ import plugin from 'tailwindcss/plugin';
 /** @type {import('tailwindcss').Config} */
 export default {
   plugins: [
-    plugin(({ addVariant }) => {
-      addVariant('firefox', ':root.firefox &');
-    }),
     plugin(({ addUtilities }) => {
       addUtilities({
         '.outline-auto': { 'outline-style': 'auto' },

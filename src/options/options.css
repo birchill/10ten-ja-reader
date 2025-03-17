@@ -90,9 +90,7 @@
    * The default value of 640px is wider than the Firefox settings screen.
    */
   --breakpoint-sm: 500px;
-}
 
-@theme {
   --warning-red: url('/images/warning-red.svg');
 }
 
