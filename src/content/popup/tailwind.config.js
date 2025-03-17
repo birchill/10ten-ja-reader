@@ -2,7 +2,6 @@ import plugin from 'tailwindcss/plugin';
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  blocklist: ['!entry', '!kanji'],
   theme: {
     animation: { flash: 'flash 0.5s' },
     keyframes: { flash: { from: { background: 'white', color: 'white' } } },
