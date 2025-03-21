@@ -85,7 +85,7 @@ export function KanjiReferencesTable({ entry, kanjiReferences }: Props) {
       class={classes(
         'tp:grid tp:grid-cols-[repeat(2,minmax(min-content,1fr))] tp:gap-x-2',
         'tp:max-[450px]:grid-cols-none',
-        '[--bg-overhang:8px]',
+        'tp:[--bg-overhang:8px]',
         'tp:-mx-(--bg-overhang) tp:w-[calc(100%+2*var(--bg-overhang))]'
       )}
       lang={langTag}
