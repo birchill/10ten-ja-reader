@@ -25,12 +25,13 @@ const TEST_ENTRY = {
   },
   m: ['day', 'sun', 'Japan', 'counter for days'],
   rad: {
-    x: 72,
-    b: '⽇',
-    k: '日',
-    na: ['ひ'],
-    m: ['day', 'sun', 'Japan', 'counter for days'],
-    m_lang: 'en',
+    x: {
+      r: 72,
+      c: '⽇',
+      na: ['ひ'],
+      m: ['day', 'sun', 'Japan', 'counter for days'],
+      m_lang: 'en',
+    },
   },
   refs: {
     nelson_c: 2097,
