@@ -145,13 +145,13 @@
     "message": "Pre-​$level$",
     "placeholders": { "level": { "content": "$1", "example": "2" } }
   },
+  "content_kanji_meta_ghost_kanji": {
+    "message": "ghost kanji",
+    "description": "Meta label for ghost characters/kanji"
+  },
   "content_kanji_meta_kokuji": {
     "message": "kokuji",
     "description": "Meta label for kokuji (kanji originated in Japan)"
-  },
-  "content_kanji_meta_phantom_kanji": {
-    "message": "phantom kanji",
-    "description": "Meta label for phantom kanji/ghost characters"
   },
   "content_kanji_nanori_label": {
     "message": "Names (名乗り)",

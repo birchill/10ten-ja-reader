@@ -6,26 +6,24 @@ export default {
       index={0}
       entry={{
         c: '士',
-        r: { on: ['シ'], kun: ['さむらい'], na: ['お', 'ま'] },
+        r: { py: ['shi4'], on: ['シ'], kun: ['さむらい'], na: ['お', 'ま'] },
         m: ['gentleman', 'scholar', 'samurai', 'samurai radical (no. 33)'],
         rad: {
-          x: 33,
-          b: '⼠',
-          k: '士',
-          na: ['さむらい'],
-          m: ['gentleman', 'scholar', 'samurai'],
-          m_lang: 'en',
+          x: {
+            r: 33,
+            c: '⼠',
+            na: ['さむらい'],
+            m: ['gentleman', 'scholar', 'samurai'],
+            m_lang: 'en',
+          },
         },
         refs: {
           nelson_c: 1160,
           nelson_n: 1117,
           halpern_njecd: 3405,
-          halpern_kkld: 2129,
           halpern_kkld_2ed: 2877,
-          heisig: 319,
           heisig6: 341,
           henshall: 494,
-          sh_kk: 572,
           sh_kk2: 581,
           kanji_in_context: 755,
           kodansha_compact: 393,
@@ -33,11 +31,11 @@ export default {
           sh_desc: '3p0.1',
           conning: 350,
         },
-        misc: { sc: 3, gr: 4, freq: 526, jlpt: 1, kk: 7 },
+        misc: { sc: 3, gr: 5, freq: 526, jlpt: 1, kk: 6, wk: 13, jlptn: 2 },
+        st: 'M13.1 55c3.9.9 7.7.4 11.4.1 18.8-1.4 45-3 61.9-3.3q5-.1 9.7.8M52.3 17.3q1.6 1.7 1.7 4.2l.3 66M21.8 89.5c2.7.8 5.8.5 8.6.4 12.7-.6 34-2 45.9-2.2q4.4 0 8.7.7',
         m_lang: 'en',
         comp: [],
         cf: [],
-        st: 'M13.13 54.98c3.87.9 7.66.43 11.36.16 18.76-1.39 44.96-3.08 61.9-3.32 3.22-.05 6.57.08 9.74.76M52.25 17.25A6.12 6.12 0 0 1 54 21.5c0 1.03.25 58.62.25 66M21.75 89.45c2.73.83 5.82.54 8.62.42 12.73-.57 33.94-2.04 45.88-2.17 2.97-.03 5.83.21 8.75.74',
       }}
       kanjiReferences={['radical', 'nelson_r', 'kk', 'unicode', 'henshall']}
       selectState="unselected"
@@ -74,13 +72,14 @@ export default {
         },
         m: ['harmony', 'Japanese style', 'peace', 'soften', 'Japan'],
         rad: {
-          x: 30,
-          b: '⼝',
-          k: '口',
-          na: ['くち'],
-          m: ['mouth'],
-          m_lang: 'en',
-          nelson: 115,
+          x: { r: 30, c: '⼝', na: ['くち'], m: ['mouth'], m_lang: 'en' },
+          nelson: {
+            r: 115,
+            c: '⽲',
+            na: ['のぎ'],
+            m: ['two branch tree', 'grain'],
+            m_lang: 'en',
+          },
         },
         refs: {
           nelson_c: 3268,
@@ -105,6 +104,7 @@ export default {
             na: ['のぎ'],
             m: ['two branch tree', 'grain'],
             m_lang: 'en',
+            is_rad: true,
           },
         ],
         m_lang: 'en',
@@ -130,15 +130,16 @@ export default {
         r: { kun: ['もみ'], on: ['ジョウ'] },
         m: ['toad', 'mantis'],
         rad: {
-          x: 142,
-          b: '⾍',
-          k: '虫',
-          na: ['むし'],
-          m: ['insect', 'bug', 'temper'],
-          m_lang: 'en',
+          x: {
+            r: 142,
+            c: '⾍',
+            na: ['むし'],
+            m: ['insect', 'bug', 'temper'],
+            m_lang: 'en',
+          },
         },
         refs: { skip: '1-6-11', sh_desc: '6d11.4', nelson_n: 5374 },
-        misc: { sc: 17, meta: ['phantom kanji', 'kokuji'] },
+        misc: { sc: 17, meta: ['ghost kanji', 'kokuji'] },
         comp: [
           {
             c: '⼍',
@@ -161,6 +162,7 @@ export default {
             m: ['insect', 'bug', 'temper'],
             m_lang: 'en',
             k: '虫',
+            is_rad: true,
           },
           {
             c: '⺌',
@@ -190,13 +192,7 @@ export default {
         },
         m: ['steam', 'heat', 'sultry', 'foment', 'get musty'],
         rad: {
-          x: 140,
-          b: '⺾',
-          k: '艹',
-          na: ['くさかんむり'],
-          m: ['grass'],
-          m_lang: 'en',
-          base: { b: '⾋', k: '艸', na: ['くさ'], m: ['grass'], m_lang: 'en' },
+          x: { r: 140, c: '⾋', na: ['くさ'], m: ['grass'], m_lang: 'en' },
         },
         refs: {
           nelson_c: 4002,
@@ -216,10 +212,18 @@ export default {
         comp: [
           {
             c: '⺾',
+            k: '艸',
             na: ['くさかんむり'],
             m: ['grass'],
             m_lang: 'en',
-            k: '艸',
+            base: {
+              c: '⾋',
+              k: '艸',
+              na: ['くさ'],
+              m: ['grass'],
+              m_lang: 'en',
+            },
+            is_rad: true,
           },
           { c: '了', na: ['リョウ'], m: ['complete', 'finish'], m_lang: 'en' },
           { c: '⽔', na: ['みず'], m: ['water'], m_lang: 'en', k: '水' },
@@ -252,13 +256,7 @@ export default {
         },
         m: ['steam', 'heat', 'sultry', 'foment', 'get musty'],
         rad: {
-          x: 140,
-          b: '⺾',
-          k: '艹',
-          na: ['くさかんむり'],
-          m: ['grass'],
-          m_lang: 'en',
-          base: { b: '⾋', k: '艸', na: ['くさ'], m: ['grass'], m_lang: 'en' },
+          x: { r: 140, c: '⾋', na: ['くさ'], m: ['grass'], m_lang: 'en' },
         },
         refs: {
           nelson_c: 4002,
@@ -278,10 +276,18 @@ export default {
         comp: [
           {
             c: '⺾',
+            k: '艸',
             na: ['くさかんむり'],
             m: ['grass'],
             m_lang: 'en',
-            k: '艸',
+            base: {
+              c: '⾋',
+              k: '艸',
+              na: ['くさ'],
+              m: ['grass'],
+              m_lang: 'en',
+            },
+            is_rad: true,
           },
           { c: '了', na: ['リョウ'], m: ['complete', 'finish'], m_lang: 'en' },
           { c: '⽔', na: ['みず'], m: ['water'], m_lang: 'en', k: '水' },

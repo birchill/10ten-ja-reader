@@ -6,12 +6,13 @@ export default {
       r={{ on: ['シ'], kun: ['さむらい'], na: ['お', 'ま'] }}
       m={['gentleman', 'scholar', 'samurai', 'samurai radical (no. 33)']}
       rad={{
-        x: 33,
-        b: '⼠',
-        k: '士',
-        na: ['さむらい'],
-        m: ['gentleman', 'scholar', 'samurai'],
-        m_lang: 'en',
+        x: {
+          r: 33,
+          c: '⼠',
+          na: ['さむらい'],
+          m: ['gentleman', 'scholar', 'samurai'],
+          m_lang: 'en',
+        },
       }}
       misc={{ sc: 3, gr: 4, freq: 526, jlpt: 1, kk: 7 }}
       m_lang="en"
@@ -46,13 +47,14 @@ export default {
       }}
       m={['harmony', 'Japanese style', 'peace', 'soften', 'Japan']}
       rad={{
-        x: 30,
-        b: '⼝',
-        k: '口',
-        na: ['くち'],
-        m: ['mouth'],
-        m_lang: 'en',
-        nelson: 115,
+        x: { r: 30, c: '⼝', na: ['くち'], m: ['mouth'], m_lang: 'en' },
+        nelson: {
+          r: 115,
+          c: '⽲',
+          na: ['のぎ'],
+          m: ['two branch tree', 'grain'],
+          m_lang: 'en',
+        },
       }}
       misc={{ sc: 8, gr: 3, freq: 124, jlpt: 2, kk: 8 }}
       comp={[
@@ -62,6 +64,7 @@ export default {
           na: ['のぎ'],
           m: ['two branch tree', 'grain'],
           m_lang: 'en',
+          is_rad: true,
         },
       ]}
       m_lang="en"
@@ -73,14 +76,15 @@ export default {
       r={{ kun: ['もみ'], on: ['ジョウ'] }}
       m={['toad', 'mantis']}
       rad={{
-        x: 142,
-        b: '⾍',
-        k: '虫',
-        na: ['むし'],
-        m: ['insect', 'bug', 'temper'],
-        m_lang: 'en',
+        x: {
+          r: 142,
+          c: '⾍',
+          na: ['むし'],
+          m: ['insect', 'bug', 'temper'],
+          m_lang: 'en',
+        },
       }}
-      misc={{ sc: 17, meta: ['phantom kanji', 'kokuji'] }}
+      misc={{ sc: 17, meta: ['ghost kanji', 'kokuji'] }}
       comp={[
         {
           c: '⼍',
@@ -103,6 +107,7 @@ export default {
           m: ['insect', 'bug', 'temper'],
           m_lang: 'en',
           k: '虫',
+          is_rad: true,
         },
         {
           c: '⺌',

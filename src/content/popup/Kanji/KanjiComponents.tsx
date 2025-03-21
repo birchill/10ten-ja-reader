@@ -1,80 +1,86 @@
-import type { ExpandedRadical, KanjiResult } from '@birchill/jpdict-idb';
+import type { KanjiResult } from '@birchill/jpdict-idb';
 
 import { useLocale } from '../../../common/i18n';
+import { classes } from '../../../utils/classes';
 
-export type Props = Pick<KanjiResult, 'rad' | 'comp'>;
+export type Props = { comp: KanjiResult['comp'] };
 
 export function KanjiComponents(props: Props) {
-  const componentsIncludesRadical = props.comp.some(
-    (comp) => comp.c === props.rad.b || comp.c === props.rad.k
-  );
-
   return (
     <div>
-      <table
+      <div
         // There's something odd in Firefox where, when you're viewing a
         // text/plain document, the text color rule on the window doesn't
         // inherit into the table so we have to explicitly re-establish the
         // color here.
-        class="tp:-mx-3 tp:border-collapse tp:text-[--text-color] tp:text-xs tp:leading-normal"
+        class="tp:-mx-3 tp:grid tp:grid-cols-[max-content_max-content_auto] tp:gap-y-2 tp:text-[--text-color] tp:text-xs tp:leading-normal"
       >
-        {/* Typically, the radical will also be one of the components, but in
-         * case it's not (the data is frequently hand-edited, after all),
-         * make sure we add it first. */}
-        {!componentsIncludesRadical && <RadicalRow {...props.rad} />}
-        {props.comp.map((comp) => {
-          if (comp.c === props.rad.b || comp.c === props.rad.k) {
-            return <RadicalRow key={comp.c} {...props.rad} />;
-          }
-
-          return (
-            <tr key={comp.c} class="tp:*:align-top tp:*:py-1">
-              <td class="tp:px-3" lang="ja">
-                {comp.c}
-              </td>
-              <td class="tp:px-1.5" lang="ja">
-                {comp.na[0] || '-'}
-              </td>
-              <td class="tp:px-3" lang={comp.m_lang}>
-                {comp.m[0] || '-'}
-              </td>
-            </tr>
-          );
-        })}
-      </table>
+        {props.comp.map((c) => (
+          <KanjiComponent key={c.c} comp={c} />
+        ))}
+      </div>
     </div>
   );
 }
 
-function RadicalRow(props: ExpandedRadical) {
-  const { t, langTag } = useLocale();
+function KanjiComponent(props: { comp: KanjiResult['comp'][0] }) {
+  const { comp } = props;
 
   return (
     <>
-      <tr class="tp:*:bg-(--cell-highlight-bg) tp:*:text-(--cell-highlight-fg) tp:*:align-top tp:*:py-1">
-        <td class="tp:px-3 tp:rounded-s-md" lang="ja">
-          {props.b || props.k}
-        </td>
-        <td class="tp:px-1.5" lang="ja">
-          {props.na.join('、')}
-        </td>
-        <td class="tp:px-3 tp:rounded-e-md" lang={props.m_lang}>
-          {props.m.join(', ')}
-        </td>
-      </tr>
-      {!!props.base && (
-        <tr class="-baseradical" lang={langTag}>
-          <td
-            colspan={3}
-            class="tp:text-(--cell-highlight-fg) tp:align-top tp:py-1 tp:px-3 tp:italic"
-          >
-            {t('content_kanji_base_radical', [
-              (props.base.b || props.base.k)!,
-              props.base.na.join('、'),
-            ])}
-          </td>
-        </tr>
+      <span
+        lang="ja"
+        class={classes(
+          'tp:pl-3 tp:pr-2',
+          props.comp.is_rad &&
+            'tp:rounded-l-lg tp:bg-(--cell-highlight-bg) tp:text-(--cell-highlight-fg) tp:py-1'
+        )}
+      >
+        {comp.c}
+      </span>
+      <span
+        lang="ja"
+        class={classes(
+          'tp:px-2',
+          comp.is_rad &&
+            'tp:bg-(--cell-highlight-bg) tp:text-(--cell-highlight-fg) tp:py-1'
+        )}
+      >
+        {comp.na?.length
+          ? comp.is_rad
+            ? comp.na.join('、')
+            : comp.na[0]
+          : '-'}
+      </span>
+      <span
+        lang={comp.m_lang}
+        class={classes(
+          'tp:pl-2 tp:pr-3',
+          comp.is_rad &&
+            'tp:rounded-r-lg tp:bg-(--cell-highlight-bg) tp:text-(--cell-highlight-fg) tp:py-1'
+        )}
+      >
+        {comp.m?.length ? (comp.is_rad ? comp.m.join(', ') : comp.m[0]) : '-'}
+      </span>
+      {comp.base && <BaseRadical {...comp.base} />}
+      {comp.sub?.length && (
+        <div class="tp:col-start-2 tp:col-end-4 tp:-mx-3 tp:grid tp:grid-cols-[max-content_max-content_auto] tp:gap-y-1 tp:pr-3 tp:pl-2">
+          {comp.sub?.map((c) => <KanjiComponent key={c.c} comp={c} />)}
+        </div>
       )}
     </>
+  );
+}
+
+function BaseRadical(props: NonNullable<KanjiResult['comp'][0]['base']>) {
+  const { t, langTag } = useLocale();
+
+  return (
+    <span
+      lang={langTag}
+      class="tp:col-start-2 tp:col-end-4 tp:-mt-1 tp:pl-2 tp:pr-3 tp:italic tp:text-(--cell-highlight-fg)"
+    >
+      {t('content_kanji_base_radical', [props.c, props.na[0] || '-'])}
+    </span>
   );
 }

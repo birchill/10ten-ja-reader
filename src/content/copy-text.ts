@@ -177,25 +177,16 @@ export function getEntryToCopy(
         }
         result += ` ${m.join(', ')}`;
         const radicalLabel = getMessage('content_kanji_radical_label');
-        result += `; ${radicalLabel}: ${rad.b || rad.k}（${rad.na.join(
-          '、'
-        )}）`;
-        if (rad.base) {
-          const baseChar = (rad.base.b || rad.base.k)!;
-          const baseReadings = rad.base.na.join('、');
-          result +=
-            ' ' +
-            getMessage('content_kanji_base_radical', [baseChar, baseReadings]);
-        }
+        result += `; ${radicalLabel}: ${rad.x.c} (${rad.x.na.join('、')})`;
         if (showKanjiComponents && comp.length) {
           const componentsLabel = getMessage('content_kanji_components_label');
           const components: Array<string> = [];
           for (const component of comp) {
-            components.push(
-              `${component.c} (${
-                component.na.length ? component.na[0] + ', ' : ''
-              }${component.m.length ? component.m[0] : ''})`
-            );
+            let serialized = serializeComponent(component);
+            if (component.sub?.length) {
+              serialized += ` [${component.sub.map(serializeComponent).join(', ')}]`;
+            }
+            components.push(serialized);
           }
           result += `; ${componentsLabel}: ${components.join(', ')}`;
         }
@@ -392,6 +383,12 @@ function serializeLangSrc(lsrc: LangSource) {
   return parts.join(': ');
 }
 
+function serializeComponent(comp: KanjiResult['comp'][0]): string {
+  return `${comp.c} (${
+    comp.na.length ? comp.na[0] + ', ' : ''
+  }${comp.m?.length ? comp.m[0] : ''})`;
+}
+
 export function getFieldsToCopy(
   entry: CopyEntry,
   {
@@ -475,7 +472,13 @@ export function getFieldsToCopy(
         result += `\t${(r.na || []).join('、')}`;
         result += `\t${m.join(', ')}`;
         if (showKanjiComponents) {
-          const components = comp.map((comp) => comp.c).join('');
+          let components = '';
+          for (const rootComp of comp) {
+            components += rootComp.c;
+            if (rootComp.sub?.length) {
+              components += `(${rootComp.sub.map((sub) => sub.c).join('')})`;
+            }
+          }
           result += `\t${components}`;
         }
         if (kanjiReferences.length) {
