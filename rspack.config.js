@@ -230,6 +230,9 @@ export default (env) => {
         artifactsDir: 'dist-firefox-package',
         distFolder: 'dist-firefox',
         includeRikaichampName: true,
+        // When we decide to set `mv3` to true, we should probably bump the
+        // minimum Gecko version to 128 due to bug 1771328
+        // (https://bugzilla.mozilla.org/show_bug.cgi?id=1771328).
         supportsAlphaVersion: true,
         supportsBrowserSpecificSettings: true,
         supportsBrowserStyle: true,
