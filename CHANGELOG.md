@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- Fixed the popup getting stuck to the top-left in Facebook
+  ([#2303](https://github.com/birchill/10ten-ja-reader/pull/2303)).
+
 ## [1.23.0] - 2025-01-23
 
 - Added precise conversion of Japanese era dates, including those preceding

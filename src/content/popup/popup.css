@@ -101,8 +101,8 @@
 
   .container {
     position: absolute;
-    left: var(--left, auto);
-    top: var(--top, auto);
+    left: var(--tenten-left, auto);
+    top: var(--tenten-top, auto);
 
     /*
     * Use the empirical maximum z-index since some sites (e.g. TimeTree) use this
@@ -156,30 +156,30 @@
   * on the popup.
   */
   .container.interactive .window {
-    max-height: var(--max-height, none);
+    max-height: var(--tenten-max-height, none);
   }
 
   .container:not(.interactive) {
-    max-height: var(--max-height, none);
+    max-height: var(--tenten-max-height, none);
     -webkit-mask-image: linear-gradient(
       to bottom,
-      black calc(var(--max-height) - 5px),
+      black calc(var(--tenten-max-height) - 5px),
       transparent
     );
     mask-image: linear-gradient(
       to bottom,
-      black calc(var(--max-height) - 5px),
+      black calc(var(--tenten-max-height) - 5px),
       transparent
     );
   }
 
   .container .window {
-    min-height: var(--min-height, none);
+    min-height: var(--tenten-min-height, none);
   }
 
   .window {
-    max-width: var(--max-width, 600px);
-    max-width: var(--max-width, min(600px, calc(100vw - 30px)));
+    max-width: var(--tenten-max-width, 600px);
+    max-width: var(--tenten-max-width, min(600px, calc(100vw - 30px)));
 
     contain: content;
     border-radius: 5px;

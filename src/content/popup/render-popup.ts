@@ -331,10 +331,10 @@ function resetContainer({
 
   // Reset the container position and size so that we can consistently measure
   // the size of the popup.
-  host.style.removeProperty('--left');
-  host.style.removeProperty('--top');
-  host.style.removeProperty('--max-width');
-  host.style.removeProperty('--max-height');
+  host.style.removeProperty('--tenten-left');
+  host.style.removeProperty('--tenten-top');
+  host.style.removeProperty('--tenten-max-width');
+  host.style.removeProperty('--tenten-max-height');
 
   return windowDiv;
 }
