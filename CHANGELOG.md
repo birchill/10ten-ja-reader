@@ -10,6 +10,7 @@ app.
 
 - Fixed the popup getting stuck to the top-left in Facebook
   ([#2303](https://github.com/birchill/10ten-ja-reader/pull/2303)).
+- Switched kanji data to new schema so we can show subcomponents.
 
 ## [1.23.0] - 2025-01-23
 
