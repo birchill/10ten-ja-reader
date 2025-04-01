@@ -43,7 +43,7 @@ export type ShowPopupOptions = {
     includePartOfSpeech: boolean;
   };
   dictToShow: MajorDataSeries;
-  dictLang?: string;
+  dictLang: string;
   displayMode: DisplayMode;
   fixedPosition?: PopupPositionConstraints;
   fixMinHeight?: boolean;

@@ -1,5 +1,3 @@
-import browser from 'webextension-polyfill';
-
 import { svg } from '../../utils/builder';
 
 export function renderBook(): SVGElement {
@@ -134,24 +132,5 @@ export function renderSpinner(): SVGElement {
       d: 'M8.54,2.11l.66-.65A.78.78,0,0,0,9.2.38a.76.76,0,0,0-1.08,0L6.19,2.31A.81.81,0,0,0,6,2.55a.8.8,0,0,0-.06.3A.72.72,0,0,0,6,3.14a.74.74,0,0,0,.17.25L8.12,5.32a.73.73,0,0,0,.54.22.76.76,0,0,0,.54-.22.78.78,0,0,0,0-1.08l-.58-.58A4.38,4.38,0,1,1,3.68,8.82a.76.76,0,0,0-1.5.28,5.92,5.92,0,1,0,6.36-7Z',
     }),
     svg('circle', { cx: '2.673', cy: '6.71', r: '0.965' })
-  );
-}
-
-export function renderStar(style: 'full' | 'hollow'): SVGElement {
-  const message =
-    style === 'full'
-      ? 'entry_priority_label_high'
-      : 'entry_priority_label_regular';
-
-  return svg(
-    'svg',
-    { class: 'svgicon', viewBox: '0 0 98.6 93.2', style: 'opacity: 0.5' },
-    svg('title', {}, browser.i18n.getMessage(message)),
-    svg('path', {
-      d:
-        style === 'full'
-          ? 'M98 34a4 4 0 00-3-1l-30-4L53 2a4 4 0 00-7 0L33 29 4 33a4 4 0 00-3 6l22 20-6 29a4 4 0 004 5 4 4 0 002 0l26-15 26 15a4 4 0 002 0 4 4 0 004-4 4 4 0 000-1l-6-29 22-20a4 4 0 001-5z'
-          : 'M77 93a4 4 0 004-4 4 4 0 000-1l-6-29 22-20a4 4 0 00-2-6l-30-4L53 2a4 4 0 00-7 0L33 29 4 33a4 4 0 00-3 6l22 20-6 29a4 4 0 004 5 4 4 0 002 0l26-15 26 15a4 4 0 002 0zm-5-12L51 70a4 4 0 00-4 0L27 81l5-22a4 4 0 00-1-4L13 40l23-3a4 4 0 004-2l9-21 10 21a4 4 0 003 2l23 3-17 15a4 4 0 00-1 4z',
-    })
   );
 }

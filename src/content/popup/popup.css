@@ -790,17 +790,17 @@
     margin-right: 0.3em;
   }
 
-  .w-kana > .w-heiban {
+  .w-kana .w-heiban {
     border-top: 1.5px dotted currentcolor !important;
   }
 
-  .w-kana > .w-binary {
+  .w-kana .w-binary {
     /* Add a gap below so the border doesn't overlap with the definition */
     display: inline-block;
     margin-bottom: 0.2em;
   }
 
-  .w-kana > .w-binary > * {
+  .w-kana .w-binary > * {
     /* Drop gaps between borders */
     margin: 0;
     /* Make room for the borders
@@ -810,26 +810,26 @@
     --border-width: 1.5px;
   }
 
-  .w-kana > .w-binary.-hi-contrast > * {
+  .w-kana .w-binary.-hi-contrast > * {
     border-color: var(--hi-contrast-pitch-accent);
     --border-width: 2px;
   }
 
-  .w-kana > .w-binary > .h-l {
+  .w-kana .w-binary > .h-l {
     border-top-width: var(--border-width);
     border-right-width: var(--border-width);
   }
 
-  .w-kana > .w-binary > .l-h {
+  .w-kana .w-binary > .l-h {
     border-bottom-width: var(--border-width);
     border-right-width: var(--border-width);
   }
 
-  .w-kana > .w-binary > .h {
+  .w-kana .w-binary > .h {
     border-top-width: var(--border-width);
   }
 
-  .w-kana > .w-binary > .l {
+  .w-kana .w-binary > .l {
     border-bottom-width: var(--border-width);
   }
 
