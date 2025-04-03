@@ -206,6 +206,10 @@ export default (env) => {
         supportsBrowserSpecificSettings: true,
         supportsBrowserStyle: true,
         supportsExtensionSourceMaps: false,
+        // Safari supports `match_about_blank` etc. as of Safari 18.4[1] but we
+        // don't enable it until Safari 18.4 has been sufficiently deployed.
+        //
+        // [1] https://webkit.org/blog/16574/webkit-features-in-safari-18-4/#expanded-subframe-injection
         useEventPage: true,
       })
     );
@@ -267,7 +271,8 @@ export default (env) => {
  * @property {boolean} [supportsBrowserSpecificSettings]
  * @property {boolean} [supportsBrowserStyle]
  * @property {boolean} [supportsExtensionSourceMaps]
- * @property {boolean} [supportsMatchAboutBlank]
+ * @property {boolean} [supportsMatchAboutBlank] - Whether the target supports
+ * the `match_about_blank` and `match_origin_as_fallback` properties.
  * @property {boolean} [supportsOfflineEnabledField]
  * @property {boolean} [supportsSvgIcons]
  * @property {boolean} [supportsTabContextType]

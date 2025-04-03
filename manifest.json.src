@@ -144,6 +144,7 @@
       "matches": ["http://*/*", "https://*/*", "file:///*"],
       /*#if supports_match_about_blank*/
       "match_about_blank": true,
+      "match_origin_as_fallback": true,
       /*#endif*/
       "js": ["10ten-ja-content.js"],
       "all_frames": true,
