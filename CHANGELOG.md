@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- (Edge) Fix manifest to exclude `match_origin_as_fallback` property (this time
+  for sure).
+
 ## [1.24.1] - 2025-04-03
 
 - (Edge) Fix manifest to exclude `match_origin_as_fallback` property.
