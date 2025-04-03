@@ -164,7 +164,6 @@
     "resources": [
       "css/popup-fonts.css",
       "css/selection.css",
-      "docs/introducing-the-mouse.html",
       "fonts/*.woff2"
     ],
     "matches": [ "<all_urls>" ]
@@ -173,7 +172,6 @@
   "web_accessible_resources": [
     "css/popup-fonts.css",
     "css/selection.css",
-    "docs/introducing-the-mouse.html",
     "fonts/*.woff2"
   ],
   /*#endif*/
