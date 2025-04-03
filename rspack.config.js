@@ -156,6 +156,7 @@ export default (env) => {
         optionsInTab: true,
         supportsExtensionSourceMaps: false,
         supportsMatchAboutBlank: true,
+        supportsMatchOriginAsFallback: true,
         supportsOfflineEnabledField: true,
         target: 'chromium',
         useServiceWorker: true,
@@ -173,6 +174,7 @@ export default (env) => {
         optionsInTab: true,
         supportsExtensionSourceMaps: false,
         supportsMatchAboutBlank: true,
+        supportsMatchOriginAsFallback: true,
         supportsOfflineEnabledField: true,
         target: 'chromium',
         useServiceWorker: false,
@@ -190,6 +192,8 @@ export default (env) => {
         optionsInTab: true,
         supportsExtensionSourceMaps: false,
         supportsMatchAboutBlank: true,
+        // It seems like Edge's validator doesn't recognize
+        // `match_origin_as_fallback` so we don't mark it as true here
         target: 'chromium',
         useServiceWorker: true,
       })
@@ -206,8 +210,9 @@ export default (env) => {
         supportsBrowserSpecificSettings: true,
         supportsBrowserStyle: true,
         supportsExtensionSourceMaps: false,
-        // Safari supports `match_about_blank` etc. as of Safari 18.4[1] but we
-        // don't enable it until Safari 18.4 has been sufficiently deployed.
+        // As of Safari 18.4, Safari supports `match_about_blank` and
+        // `match_origin_as_fallback`[1] but we don't enable it until
+        // Safari 18.4 has been sufficiently widely deployed.
         //
         // [1] https://webkit.org/blog/16574/webkit-features-in-safari-18-4/#expanded-subframe-injection
         useEventPage: true,
@@ -241,6 +246,7 @@ export default (env) => {
         supportsBrowserSpecificSettings: true,
         supportsBrowserStyle: true,
         supportsMatchAboutBlank: true,
+        supportsMatchOriginAsFallback: true,
         supportsSvgIcons: true,
         supportsTabContextType: true,
         target: 'firefox',
@@ -272,7 +278,9 @@ export default (env) => {
  * @property {boolean} [supportsBrowserStyle]
  * @property {boolean} [supportsExtensionSourceMaps]
  * @property {boolean} [supportsMatchAboutBlank] - Whether the target supports
- * the `match_about_blank` and `match_origin_as_fallback` properties.
+ * the `match_about_blank` property.
+ * @property {boolean} [supportsMatchOriginAsFallback] - Whether the target
+ * supports the `match_origin_as_fallback` property.
  * @property {boolean} [supportsOfflineEnabledField]
  * @property {boolean} [supportsSvgIcons]
  * @property {boolean} [supportsTabContextType]
@@ -343,6 +351,10 @@ function getExtConfig(options) {
 
   if (options.supportsMatchAboutBlank) {
     preprocessorFeatures.push('supports_match_about_blank');
+  }
+
+  if (options.supportsMatchOriginAsFallback) {
+    preprocessorFeatures.push('supports_match_origin_as_fallback');
   }
 
   if (options.supportsOfflineEnabledField) {
