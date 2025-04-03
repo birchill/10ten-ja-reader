@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+- (Edge) Fix manifest to exclude `match_origin_as_fallback` property.
+
 ## [1.24.0] - 2025-04-03
 
 - Fixed the popup getting stuck to the top-left in Facebook
