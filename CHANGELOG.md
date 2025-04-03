@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+## [1.24.1] - 2025-04-03
+
 - (Edge) Fix manifest to exclude `match_origin_as_fallback` property.
 
 ## [1.24.0] - 2025-04-03
@@ -1251,7 +1253,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.24.0...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.24.1...HEAD
+[1.24.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.24.0...v1.24.1
 [1.24.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.23.0...v1.24.0
 [1.23.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.22.0...v1.23.0
 [1.22.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.21.1...v1.22.0
