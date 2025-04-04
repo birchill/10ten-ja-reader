@@ -13,7 +13,7 @@ export function getReferenceValue(
       // If the Nelson radical is empty, it means it's the same as the regular
       // radical so we should fall through to that branch.
       if (entry.rad.nelson) {
-        return `${entry.rad.nelson} ${entry.rad.nelson.c + 0x2eff}`;
+        return `${entry.rad.nelson.r} ${entry.rad.nelson.c}`;
       }
       // Fall through
     }
