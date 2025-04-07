@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- Fixed a bug when displaying Nelson radicals
+  ([#2315](https://github.com/birchill/10ten-ja-reader/pull/2315)).
+
 ## [1.24.2] - 2025-04-03
 
 - (Edge) Fix manifest to exclude `match_origin_as_fallback` property (this time
