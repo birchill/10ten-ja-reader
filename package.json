@@ -102,7 +102,7 @@
     "fast-glob": "3.3.3",
     "fetch-mock": "12.5.2",
     "file-loader": "6.2.0",
-    "fork-ts-checker-webpack-plugin": "9.0.3",
+    "fork-ts-checker-webpack-plugin": "9.1.0",
     "globals": "16.0.0",
     "if-env": "1.0.4",
     "jsdom": "^26.0.0",
