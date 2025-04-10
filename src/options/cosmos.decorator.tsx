@@ -17,5 +17,9 @@ export default function OptionsDecorator({
     document.documentElement.classList.add('initialized');
   }, []);
 
-  return <I18nProvider locale={locale}>{children}</I18nProvider>;
+  return (
+    <I18nProvider locale={locale}>
+      <div class="options">{children}</div>
+    </I18nProvider>
+  );
 }

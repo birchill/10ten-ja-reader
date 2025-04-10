@@ -37,6 +37,11 @@ function completeForm() {
   }
 
   const container = document.getElementById('container')!;
+
+  // We add the `options` class to prevent style clashes in React Cosmos:
+  // https://github.com/react-cosmos/react-cosmos/discussions/1638.
+  container.classList.add('options');
+
   render(h(OptionsPage, { config }), container);
 }
 
