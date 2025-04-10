@@ -159,7 +159,7 @@ body {
   margin-right: auto;
 }
 
-button {
+.options button {
   /* Don't wrap buttons */
   white-space: nowrap;
   /* If they do wrap, however, make them look nice */
@@ -168,7 +168,7 @@ button {
   text-align: center;
 }
 
-select {
+.options select {
   appearance: none;
   color: inherit;
   font: message-box;
@@ -186,17 +186,17 @@ select {
   background-size: 12px auto;
 }
 
-select:hover:not(:focus) {
+.options select:hover:not(:focus) {
   background-color: #dededf;
 }
 
 @media (prefers-color-scheme: dark) {
-  select {
+  .options select {
     background-color: #2c2b32;
     background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2012%22%20width%3D%2212%22%20height%3D%2212%22%20fill%3D%22lightgrey%22%3E%3Cpath%20d%3D%22m6.25%209%203.615-3.615a.5.5%200%200%200%200-.707.5.5%200%200%200-.707%200L6%207.825%202.855%204.68a.5.5%200%200%200-.707.707L5.76%209l.48%201z%22%2F%3E%3C%2Fsvg%3E');
   }
 
-  select:hover:not(:focus) {
+  .options select:hover:not(:focus) {
     background-color: #3b3a41;
   }
 }
@@ -205,11 +205,11 @@ select:hover:not(:focus) {
   * Link styles
   */
 
-a {
+.options a {
   color: #0996f8;
   text-decoration-style: dotted;
 }
 
-a:visited {
+.options a:visited {
   color: #0996f8;
 }
