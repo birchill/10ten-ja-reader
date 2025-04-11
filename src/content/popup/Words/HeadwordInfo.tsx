@@ -32,7 +32,7 @@ export function HeadwordInfo({ info }: { info: Array<string> }) {
       : i;
 
     return (
-      <span key={i} class="w-head-info" lang={langTag}>
+      <span key={i} class="tp:ml-1 tp:text-2xs" lang={langTag}>
         ({t(`head_info_label_${key}`) || i})
       </span>
     );

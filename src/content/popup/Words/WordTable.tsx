@@ -2,13 +2,18 @@ import { Fragment } from 'preact';
 import { useRef } from 'preact/hooks';
 
 import type { WordResult } from '../../../background/search-result';
-import { ContentConfigParams } from '../../../common/content-config-params';
+import {
+  ContentConfigParams,
+  FontSize,
+} from '../../../common/content-config-params';
+import { classes } from '../../../utils/classes';
 
 import { SelectionMeta } from '../../meta';
 import { NamePreview as QueryNamePreview } from '../../query';
 
 import { MetadataContainer } from '../Metadata/MetadataContainer';
 import { CopyState } from '../copy-state';
+import { usePopupOptions } from '../options-context';
 import { getSelectedIndex } from '../selected-index';
 import { containerHasSelectedText } from '../selection';
 import { StartCopyCallback } from '../show-popup';
@@ -33,6 +38,7 @@ export type WordTableProps = {
 
 export const WordTable = (props: WordTableProps) => {
   const { entries, more } = props;
+  const { fontSize } = usePopupOptions();
 
   const wordTable = useRef<HTMLDivElement>(null);
 
@@ -53,10 +59,24 @@ export const WordTable = (props: WordTableProps) => {
   const lastPointerType = useRef('touch');
   let longestMatch = 0;
 
+  const gapClassMap: Record<FontSize, string> = {
+    normal: 'tp:gap-1',
+    large: 'tp:gap-1.5',
+    xl: 'tp:gap-2',
+  };
+  const gap = gapClassMap[fontSize || 'normal'];
+
   return (
-    <div class="wordlist" ref={wordTable}>
+    <div class={classes('tp:flex tp:flex-col tp:my-2', gap)} ref={wordTable}>
       {props.title && (
-        <div class="title" lang="ja">
+        <div
+          class={classes(
+            'tp:bg-(--title-bg) tp:text-(--title-fg) tp:text-2xs',
+            'tp:mb-0.5 tp:pt-3 tp:pb-2 tp:px-4',
+            'tp:rounded-t-md'
+          )}
+          lang="ja"
+        >
           {props.title}
         </div>
       )}
@@ -109,7 +129,7 @@ export const WordTable = (props: WordTableProps) => {
 
         return (
           <Fragment key={entry.id}>
-            {addFoldPoint && <div class="fold-point" />}
+            {addFoldPoint && <div class="fold-point tp:contents" />}
 
             <WordEntry
               entry={entry}
@@ -140,7 +160,7 @@ export const WordTable = (props: WordTableProps) => {
         );
       })}
 
-      {more && <div class="more">…</div>}
+      {more && <div class="tp:px-4">…</div>}
     </div>
   );
 };

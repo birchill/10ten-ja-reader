@@ -6,6 +6,7 @@ import { html } from '../../utils/builder';
 import { NamePreview } from '../query';
 
 import { WordTable } from './Words/WordTable';
+import { PopupOptionsProvider } from './options-context';
 import type { ShowPopupOptions } from './show-popup';
 
 export function renderWordEntries({
@@ -26,21 +27,26 @@ export function renderWordEntries({
   const containerElement = html('div', { class: 'entry-data' });
 
   render(
-    h(WordTable, {
-      entries,
-      matchLen,
-      more,
-      namePreview,
-      title,
-      meta: options.meta,
-      config: {
-        readingOnly: !options.showDefinitions,
-        fx: options.fxData,
-        ...options,
-      },
-      copyState: options.copyState,
-      onStartCopy: options.onStartCopy,
-    }),
+    h(
+      PopupOptionsProvider,
+      { ...options },
+      h(WordTable, {
+        entries,
+        matchLen,
+        more,
+        namePreview,
+        title,
+        meta: options.meta,
+        config: {
+          readingOnly: !options.showDefinitions,
+          fx: options.fxData,
+          fontSize: options.fontSize || 'normal',
+          ...options,
+        },
+        copyState: options.copyState,
+        onStartCopy: options.onStartCopy,
+      })
+    ),
     containerElement
   );
 

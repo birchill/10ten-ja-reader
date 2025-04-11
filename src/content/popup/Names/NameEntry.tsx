@@ -5,6 +5,7 @@ import { useLocale } from '../../../common/i18n';
 import { getDob } from '../../../utils/age';
 import { classes } from '../../../utils/classes';
 
+import { Tag } from '../Tag';
 import { usePopupOptions } from '../options-context';
 
 type SelectState = 'unselected' | 'selected' | 'flash';
@@ -118,11 +119,10 @@ function NameTranslationComponent({
   translation: NameTranslation;
   selectState: SelectState;
 }) {
+  const { t, langTag } = useLocale();
   const { interactive } = usePopupOptions();
 
   function annotateAge(text: string): string {
-    const { t } = useLocale();
-
     const dob = getDob(text);
     if (!dob) {
       return text;
@@ -167,62 +167,14 @@ function NameTranslationComponent({
         {translation.det.map(annotateDetailFn).join(', ')}
       </span>
       {translation.type?.map((tag) => (
-        <Tag tag={tag} selectState={selectState} key={tag} />
+        <Tag
+          tagType={tag}
+          text={t(`content_names_tag_${tag}`)}
+          selectState={selectState}
+          langTag={langTag}
+          key={tag}
+        />
       ))}
     </div>
   );
-}
-
-function Tag({
-  tag,
-  selectState,
-}: {
-  tag: string;
-  selectState: 'unselected' | 'selected' | 'flash';
-}) {
-  const { t, langTag } = useLocale();
-  const { interactive } = usePopupOptions();
-
-  const tagText = t(`content_names_tag_${tag}`);
-
-  const tagColors: Record<string, string> = {
-    fem: 'pink',
-    masc: 'blue',
-    place: 'green',
-  };
-  const tagColor = tagColors[tag];
-
-  return tagText ? (
-    <span
-      class={classes(
-        'tp:text-2xs tp:px-1 tp:whitespace-nowrap',
-        'tp:rounded-sm tp:border-solid tp:border',
-        'tp:bg-[var(--color-tag-bg,transparent)]',
-        ...(selectState === 'selected'
-          ? [
-              'tp:no-overlay:border-(--selected-tag-border)',
-              'tp:no-overlay:text-(--selected-tag-color)',
-            ]
-          : [
-              'tp:border-[var(--color-tag-border,var(--tag-border))]',
-              'tp:text-[var(--color-tag-text-color,var(--text-color))]',
-            ]),
-        interactive &&
-          classes(
-            'tp:group-hover:border-(--selected-tag-border)',
-            'tp:group-hover:text-(--selected-tag-color)'
-          )
-      )}
-      style={
-        tagColor && {
-          '--color-tag-bg': `var(--tag-${tagColor}-bg)`,
-          '--color-tag-border': `var(--tag-${tagColor}-border)`,
-          '--color-tag-text-color': `var(--tag-${tagColor}-text)`,
-        }
-      }
-      lang={langTag}
-    >
-      {tagText}
-    </span>
-  ) : null;
 }
