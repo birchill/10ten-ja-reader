@@ -7,6 +7,7 @@ import { highPriorityLabels } from '../../../common/priority-labels';
 import { classes } from '../../../utils/classes';
 
 import { Star } from '../Icons/Star';
+import { usePopupOptions } from '../options-context';
 
 import { Definitions } from './Definitions';
 import { HeadwordInfo } from './HeadwordInfo';
@@ -36,6 +37,7 @@ export type WordEntryProps = {
 export function WordEntry(props: WordEntryProps) {
   const { entry } = props;
   const { t, langTag } = useLocale();
+  const { interactive } = usePopupOptions();
 
   const matchedOnKana = entry.r.some((r) => r.matchRange);
 
@@ -127,8 +129,37 @@ export function WordEntry(props: WordEntryProps) {
   }
 
   return (
-    <div class="entry" onPointerUp={props.onPointerUp} onClick={props.onClick}>
-      <div>
+    <div
+      class={classes(
+        'tp:group tp:px-4 tp:py-1.5',
+        'tp:snap-start tp:scroll-mt-2 tp:scroll-mb-(--expand-button-allowance)',
+        // See comment in KanjiEntry.tsx about the future plans for these
+        // CSS classes.
+        props.selectState === 'selected' && '-selected',
+        props.selectState === 'flash' && '-flash',
+        // Ensure any selection colors are applied before fading in the
+        // overlay
+        props.selectState === 'selected' &&
+          'tp:no-overlay:bg-(--selected-bg) tp:no-overlay:rounded-xs',
+        // Run the flash animation, but not until the overlay has
+        // disappeared.
+        props.selectState === 'flash' && 'tp:no-overlay:animate-flash',
+        ...(interactive
+          ? [
+              'tp:hover:bg-(--hover-bg)',
+              'tp:hover:rounded-xs',
+              'tp:hover:cursor-pointer',
+              // Fade _out_ the color change
+              'tp:transition-colors tp:interactive:duration-100',
+              'tp:ease-out',
+              'tp:hover:transition-none',
+            ]
+          : [])
+      )}
+      onPointerUp={props.onPointerUp}
+      onClick={props.onClick}
+    >
+      <div class="tp:space-x-4">
         {searchOnlyMatch && (
           <div class="tp:mb-1 tp:text-sm tp:opacity-70">
             {t('content_sk_match_src', searchOnlyMatch)}
@@ -136,7 +167,16 @@ export function WordEntry(props: WordEntryProps) {
         )}
 
         {matchingKanji.length > 0 && (
-          <span class="w-kanji" lang="ja">
+          <span
+            class={classes(
+              'tp:text-1.5xl',
+              props.selectState === 'selected'
+                ? 'tp:text-(--selected-highlight)'
+                : 'tp:text-(--primary-highlight)',
+              interactive && 'tp:group-hover:text-(--selected-highlight)'
+            )}
+            lang="ja"
+          >
             {matchingKanji.map((kanji, index) => {
               const ki = new Set(kanji.i || []);
 
@@ -153,16 +193,25 @@ export function WordEntry(props: WordEntryProps) {
 
               return (
                 <Fragment key={kanji.ent}>
-                  {index > 0 && <span class="separator">、</span>}
-                  <span class={classes(dimmed && 'dimmed')}>
-                    {kanji.ent}
-                    {!!kanji.i?.length && <HeadwordInfo info={kanji.i} />}
-                    {props.config.showPriority && !!kanji.p?.length && (
-                      <PriorityMark priority={kanji.p} />
-                    )}
+                  {index > 0 && <span class="tp:opacity-60">、</span>}
+                  <span
+                    class={classes('tp:space-x-2', dimmed && 'tp:opacity-60')}
+                  >
+                    <span class="tp:space-x-1">
+                      <span>{kanji.ent}</span>
+                      {!!kanji.i?.length && <HeadwordInfo info={kanji.i} />}
+                      {props.config.showPriority && !!kanji.p?.length && (
+                        <PriorityMark priority={kanji.p} />
+                      )}
+                    </span>
+
                     {props.config.waniKaniVocabDisplay !== 'hide' &&
                       kanji.wk && (
-                        <WaniKanjiLevelTag level={kanji.wk} ent={kanji.ent} />
+                        <WaniKanjiLevelTag
+                          level={kanji.wk}
+                          ent={kanji.ent}
+                          selectState={props.selectState}
+                        />
                       )}
                     {props.config.bunproDisplay && kanji.bv && (
                       <BunproTag data={kanji.bv} type="vocab" />
@@ -178,7 +227,17 @@ export function WordEntry(props: WordEntryProps) {
         )}
 
         {matchingKana.length > 0 && (
-          <span class="w-kana" lang="ja">
+          <span
+            class={classes(
+              'tp:text-xl',
+              props.selectState === 'selected'
+                ? 'tp:text-(--selected-reading-highlight)'
+                : 'tp:text-(--reading-highlight)',
+              interactive &&
+                'tp:group-hover:text-(--selected-reading-highlight)'
+            )}
+            lang="ja"
+          >
             {matchingKana.map((kana, index) => {
               // Dim irrelevant headwords
               const dimmed =
@@ -191,16 +250,22 @@ export function WordEntry(props: WordEntryProps) {
 
               return (
                 <Fragment key={kana.ent}>
-                  {index > 0 && <span class="separator">、</span>}
-                  <span class={dimmed ? 'dimmed' : undefined}>
-                    <Reading
-                      kana={kana}
-                      accentDisplay={props.config.accentDisplay}
-                    />
-                    {!!kana.i?.length && <HeadwordInfo info={kana.i} />}
-                    {props.config.showPriority && !!kana.p?.length && (
-                      <PriorityMark priority={kana.p} />
-                    )}
+                  {index > 0 && <span class="tp:opacity-60">、</span>}
+                  <span
+                    class={classes('tp:space-x-2', dimmed && 'tp:opacity-60')}
+                  >
+                    <span class="tp:space-x-1">
+                      <span>
+                        <Reading
+                          kana={kana}
+                          accentDisplay={props.config.accentDisplay}
+                        />
+                      </span>
+                      {!!kana.i?.length && <HeadwordInfo info={kana.i} />}
+                      {props.config.showPriority && !!kana.p?.length && (
+                        <PriorityMark priority={kana.p} />
+                      )}
+                    </span>
                     {props.config.bunproDisplay && kana.bv && (
                       <BunproTag data={kana.bv} type="vocab" />
                     )}
@@ -215,20 +280,43 @@ export function WordEntry(props: WordEntryProps) {
         )}
 
         {!!entry.romaji?.length && (
-          <span class="w-romaji" lang="ja">
+          <span
+            class={classes(
+              'tp:text-base',
+              props.selectState === 'selected'
+                ? 'tp:text-(--selected-reading-highlight)'
+                : 'tp:text-(--reading-highlight)',
+              interactive &&
+                'tp:group-hover:text-(--selected-reading-highlight)'
+            )}
+            lang="ja"
+          >
             {entry.romaji.join(', ')}
           </span>
         )}
 
         {entry.reason && (
-          <span class="w-conj" lang={langTag}>
+          <span
+            class={classes(
+              'tp:text-sm',
+              props.selectState === 'selected'
+                ? 'tp:text-(--selected-conj-color)'
+                : 'tp:text-(--conj-color)',
+              interactive && 'tp:group-hover:text-(--selected-conj-color)'
+            )}
+            lang={langTag}
+          >
             {`(${entry.reason})`}
           </span>
         )}
       </div>
 
       {!props.config.readingOnly && (
-        <Definitions entry={entry} options={props.config} />
+        <Definitions
+          entry={entry}
+          options={props.config}
+          selectState={props.selectState}
+        />
       )}
     </div>
   );
@@ -242,12 +330,41 @@ function PriorityMark({ priority }: { priority: Array<string> }) {
   return <Star style={highPriority ? 'full' : 'hollow'} />;
 }
 
-function WaniKanjiLevelTag({ level, ent }: { level: number; ent: string }) {
+function WaniKanjiLevelTag({
+  level,
+  ent,
+  selectState,
+}: {
+  level: number;
+  ent: string;
+  selectState: SelectState;
+}) {
   const { t } = useLocale();
+  const { interactive } = usePopupOptions();
 
   return (
     <a
-      class="wk-level"
+      class={classes(
+        'tp:mx-1 tp:px-1 tp:py-2',
+        'tp:text-(--primary-highlight) tp:text-2xs tp:leading-1',
+        'tp:rounded-sm tp:border-solid tp:border',
+        'tp:inline-block tp:underline-offset-2 tp:whitespace-nowrap tp:-translate-y-1',
+        'tp:before:inline-block tp:before:content-["WK"] tp:before:mr-0.5',
+        selectState === 'selected'
+          ? 'tp:no-overlay:border-(--selected-highlight)'
+          : 'tp:border-(--primary-highlight)',
+        ...(interactive
+          ? [
+              'tp:before:underline tp:before:decoration-dotted tp:decoration-dotted',
+              'tp:hover:bg-(--hover-bg-color)',
+              'tp:group-hover:text-(--selected-highlight) tp:group-hover:border-(--selected-highlight)',
+            ]
+          : ['tp:before:no-underline tp:no-underline'])
+      )}
+      style={{
+        '--hover-bg-color':
+          'color(from var(--selected-highlight) srgb r g b / 0.1)',
+      }}
       href={`https://wanikani.com/vocabulary/${encodeURIComponent(ent)}`}
       target="_blank"
       rel="noreferrer"
@@ -273,9 +390,19 @@ function BunproTag({
   );
 
   return (
-    <span class={`bp-tag -${type}`}>
+    <span
+      class={classes(
+        'tp:text-2xs tp:text-(--color-bp)',
+        'tp:mx-1 tp:px-1 tp:py-2 tp:leading-1',
+        'tp:inline-block tp:whitespace-nowrap tp:-translate-y-1',
+        'tp:rounded-sm tp:border tp:border-solid tp:border-(--color-bp)'
+      )}
+      style={{ '--color-bp': `var(--bunpro-${type})` }}
+    >
       <span>{label}</span>
-      {data.src && <span class="bp-src">{data.src}</span>}
+      {data.src && (
+        <span class="tp:text-(--bunpro-src) tp:ml-0.5">{data.src}</span>
+      )}
     </span>
   );
 }
