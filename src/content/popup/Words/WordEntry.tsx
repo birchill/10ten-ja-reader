@@ -197,6 +197,7 @@ export function WordEntry(props: WordEntryProps) {
                       kana={kana}
                       accentDisplay={props.config.accentDisplay}
                     />
+                    {!!kana.i?.length && <HeadwordInfo info={kana.i} />}
                     {props.config.showPriority && !!kana.p?.length && (
                       <PriorityMark priority={kana.p} />
                     )}
