@@ -129,7 +129,7 @@
     "vitest": "3.1.1",
     "vitest-github-actions-reporter": "^0.11.1",
     "web-ext-plugin": "2.11.0",
-    "webpack": "5.98.0",
+    "webpack": "5.99.5",
     "webpack-bugsnag-plugins": "1.9.0",
     "webpack-preprocessor": "0.1.12",
     "webpack-utf8-bom": "1.4.0",
