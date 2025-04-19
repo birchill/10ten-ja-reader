@@ -62,7 +62,7 @@ importers:
         version: 7.0.0(release-it@19.0.1(@types/node@22.7.4))
       '@rspack/cli':
         specifier: 1.3.5
-        version: 1.3.5(@rspack/core@1.3.5)(@types/express@4.17.21)(webpack@5.99.5)
+        version: 1.3.5(@rspack/core@1.3.5)(@types/express@4.17.21)(webpack@5.99.6)
       '@rspack/core':
         specifier: 1.3.5
         version: 1.3.5
@@ -101,7 +101,7 @@ importers:
         version: 5.2.0
       css-loader:
         specifier: 7.1.2
-        version: 7.1.2(@rspack/core@1.3.5)(webpack@5.99.5)
+        version: 7.1.2(@rspack/core@1.3.5)(webpack@5.99.6)
       eslint:
         specifier: 9.24.0
         version: 9.24.0(jiti@2.4.2)
@@ -119,10 +119,10 @@ importers:
         version: 12.5.2
       file-loader:
         specifier: 6.2.0
-        version: 6.2.0(webpack@5.99.5)
+        version: 6.2.0(webpack@5.99.6)
       fork-ts-checker-webpack-plugin:
         specifier: 9.1.0
-        version: 9.1.0(typescript@5.8.3)(webpack@5.99.5)
+        version: 9.1.0(typescript@5.8.3)(webpack@5.99.6)
       globals:
         specifier: 16.0.0
         version: 16.0.0
@@ -149,7 +149,7 @@ importers:
         version: 8.5.3
       postcss-loader:
         specifier: 8.1.1
-        version: 8.1.1(@rspack/core@1.3.5)(postcss@8.5.3)(typescript@5.8.3)(webpack@5.99.5)
+        version: 8.1.1(@rspack/core@1.3.5)(postcss@8.5.3)(typescript@5.8.3)(webpack@5.99.6)
       prettier:
         specifier: 3.5.3
         version: 3.5.3
@@ -170,7 +170,7 @@ importers:
         version: 6.2.3
       react-cosmos-plugin-rspack:
         specifier: 1.0.0
-        version: 1.0.0(@rspack/core@1.3.5)(react-cosmos@6.2.3(@types/express@4.17.21))(webpack@5.99.5)
+        version: 1.0.0(@rspack/core@1.3.5)(react-cosmos@6.2.3(@types/express@4.17.21))(webpack@5.99.6)
       release-it:
         specifier: 19.0.1
         version: 19.0.1(@types/node@22.7.4)
@@ -179,13 +179,13 @@ importers:
         version: 4.1.8
       source-map-loader:
         specifier: 5.0.0
-        version: 5.0.0(webpack@5.99.5)
+        version: 5.0.0(webpack@5.99.6)
       tailwindcss:
         specifier: 4.1.4
         version: 4.1.4
       terser-webpack-plugin:
         specifier: 5.3.14
-        version: 5.3.14(webpack@5.99.5)
+        version: 5.3.14(webpack@5.99.6)
       tsx:
         specifier: 4.19.3
         version: 4.19.3
@@ -202,17 +202,17 @@ importers:
         specifier: 2.11.0
         version: 2.11.0(body-parser@1.20.3)
       webpack:
-        specifier: 5.99.5
-        version: 5.99.5
+        specifier: 5.99.6
+        version: 5.99.6
       webpack-bugsnag-plugins:
         specifier: 1.9.0
-        version: 1.9.0(webpack@5.99.5)
+        version: 1.9.0(webpack@5.99.6)
       webpack-preprocessor:
         specifier: 0.1.12
         version: 0.1.12
       webpack-utf8-bom:
         specifier: 1.4.0
-        version: 1.4.0(webpack@5.99.5)
+        version: 1.4.0(webpack@5.99.6)
       xmlbuilder2:
         specifier: 3.1.1
         version: 3.1.1
@@ -4197,10 +4197,6 @@ packages:
     resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
     engines: {node: '>= 0.6'}
 
-  mime-db@1.53.0:
-    resolution: {integrity: sha512-oHlN/w+3MQ3rba9rqFr6V/ypF10LSkdwUysQL7GkXoTgIWeV+tcXGA852TBxH+gsh8UWoyhR1hKcoMJTuWflpg==}
-    engines: {node: '>= 0.6'}
-
   mime-db@1.54.0:
     resolution: {integrity: sha512-aU5EJuIN2WDemCcAp2vFBfp/m4EAhWJnUNSSw0ixs7/kXbd6Pg64EmwJkNdFhB8aWt1sH2CTXrLxo/iAGV3oPQ==}
     engines: {node: '>= 0.6'}
@@ -6016,8 +6012,8 @@ packages:
     peerDependencies:
       webpack: ^4.x.x || ^5.0.0
 
-  webpack@5.99.5:
-    resolution: {integrity: sha512-q+vHBa6H9qwBLUlHL4Y7L0L1/LlyBKZtS9FHNCQmtayxjI5RKC9yD8gpvLeqGv5lCQp1Re04yi0MF40pf30Pvg==}
+  webpack@5.99.6:
+    resolution: {integrity: sha512-TJOLrJ6oeccsGWPl7ujCYuc0pIq2cNsuD6GZDma8i5o5Npvcco/z+NKvZSFsP0/x6SShVb0+X2JK/JHUjKY9dQ==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     peerDependencies:
@@ -7200,11 +7196,11 @@ snapshots:
       '@rspack/binding-win32-ia32-msvc': 1.3.5
       '@rspack/binding-win32-x64-msvc': 1.3.5
 
-  '@rspack/cli@1.3.5(@rspack/core@1.3.5)(@types/express@4.17.21)(webpack@5.99.5)':
+  '@rspack/cli@1.3.5(@rspack/core@1.3.5)(@types/express@4.17.21)(webpack@5.99.6)':
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
       '@rspack/core': 1.3.5
-      '@rspack/dev-server': 1.1.1(@rspack/core@1.3.5)(@types/express@4.17.21)(webpack@5.99.5)
+      '@rspack/dev-server': 1.1.1(@rspack/core@1.3.5)(@types/express@4.17.21)(webpack@5.99.6)
       colorette: 2.0.20
       exit-hook: 4.0.0
       interpret: 3.1.1
@@ -7227,7 +7223,7 @@ snapshots:
       '@rspack/lite-tapable': 1.0.1
       caniuse-lite: 1.0.30001707
 
-  '@rspack/dev-server@1.1.1(@rspack/core@1.3.5)(@types/express@4.17.21)(webpack@5.99.5)':
+  '@rspack/dev-server@1.1.1(@rspack/core@1.3.5)(@types/express@4.17.21)(webpack@5.99.6)':
     dependencies:
       '@rspack/core': 1.3.5
       chokidar: 3.6.0
@@ -7235,8 +7231,8 @@ snapshots:
       http-proxy-middleware: 2.0.7(@types/express@4.17.21)
       mime-types: 2.1.35
       p-retry: 6.2.0
-      webpack-dev-middleware: 7.4.2(webpack@5.99.5)
-      webpack-dev-server: 5.2.0(webpack@5.99.5)
+      webpack-dev-middleware: 7.4.2(webpack@5.99.6)
+      webpack-dev-server: 5.2.0(webpack@5.99.6)
       ws: 8.18.1
     transitivePeerDependencies:
       - '@types/express'
@@ -8316,7 +8312,7 @@ snapshots:
 
   compressible@2.0.18:
     dependencies:
-      mime-db: 1.53.0
+      mime-db: 1.54.0
 
   compression@1.7.4:
     dependencies:
@@ -8433,7 +8429,7 @@ snapshots:
     dependencies:
       type-fest: 1.4.0
 
-  css-loader@7.1.2(@rspack/core@1.3.5)(webpack@5.99.5):
+  css-loader@7.1.2(@rspack/core@1.3.5)(webpack@5.99.6):
     dependencies:
       icss-utils: 5.1.0(postcss@8.5.3)
       postcss: 8.5.3
@@ -8445,7 +8441,7 @@ snapshots:
       semver: 7.6.3
     optionalDependencies:
       '@rspack/core': 1.3.5
-      webpack: 5.99.5
+      webpack: 5.99.6
 
   css-select@5.1.0:
     dependencies:
@@ -9240,11 +9236,11 @@ snapshots:
     dependencies:
       flat-cache: 4.0.1
 
-  file-loader@6.2.0(webpack@5.99.5):
+  file-loader@6.2.0(webpack@5.99.6):
     dependencies:
       loader-utils: 2.0.4
       schema-utils: 3.3.0
-      webpack: 5.99.5
+      webpack: 5.99.6
 
   fill-range@7.1.1:
     dependencies:
@@ -9316,7 +9312,7 @@ snapshots:
       cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
-  fork-ts-checker-webpack-plugin@9.1.0(typescript@5.8.3)(webpack@5.99.5):
+  fork-ts-checker-webpack-plugin@9.1.0(typescript@5.8.3)(webpack@5.99.6):
     dependencies:
       '@babel/code-frame': 7.26.2
       chalk: 4.1.2
@@ -9331,7 +9327,7 @@ snapshots:
       semver: 7.7.1
       tapable: 2.2.1
       typescript: 5.8.3
-      webpack: 5.99.5
+      webpack: 5.99.6
 
   form-data@3.0.1:
     dependencies:
@@ -10354,8 +10350,6 @@ snapshots:
 
   mime-db@1.52.0: {}
 
-  mime-db@1.53.0: {}
-
   mime-db@1.54.0: {}
 
   mime-types@2.1.35:
@@ -10924,7 +10918,7 @@ snapshots:
 
   possible-typed-array-names@1.0.0: {}
 
-  postcss-loader@8.1.1(@rspack/core@1.3.5)(postcss@8.5.3)(typescript@5.8.3)(webpack@5.99.5):
+  postcss-loader@8.1.1(@rspack/core@1.3.5)(postcss@8.5.3)(typescript@5.8.3)(webpack@5.99.6):
     dependencies:
       cosmiconfig: 9.0.0(typescript@5.8.3)
       jiti: 1.21.6
@@ -10932,7 +10926,7 @@ snapshots:
       semver: 7.6.3
     optionalDependencies:
       '@rspack/core': 1.3.5
-      webpack: 5.99.5
+      webpack: 5.99.6
     transitivePeerDependencies:
       - typescript
 
@@ -11112,12 +11106,12 @@ snapshots:
 
   react-cosmos-plugin-boolean-input@6.2.3: {}
 
-  react-cosmos-plugin-rspack@1.0.0(@rspack/core@1.3.5)(react-cosmos@6.2.3(@types/express@4.17.21))(webpack@5.99.5):
+  react-cosmos-plugin-rspack@1.0.0(@rspack/core@1.3.5)(react-cosmos@6.2.3(@types/express@4.17.21))(webpack@5.99.6):
     dependencies:
       '@rspack/core': 1.3.5
       react-cosmos: 6.2.3(@types/express@4.17.21)
       react-cosmos-dom: 6.2.0
-      webpack-dev-middleware: 7.4.2(webpack@5.99.5)
+      webpack-dev-middleware: 7.4.2(webpack@5.99.6)
       webpack-hot-middleware: 2.26.1
     transitivePeerDependencies:
       - webpack
@@ -11620,11 +11614,11 @@ snapshots:
 
   source-map-js@1.2.1: {}
 
-  source-map-loader@5.0.0(webpack@5.99.5):
+  source-map-loader@5.0.0(webpack@5.99.6):
     dependencies:
       iconv-lite: 0.6.3
       source-map-js: 1.2.1
-      webpack: 5.99.5
+      webpack: 5.99.6
 
   source-map-support@0.5.21:
     dependencies:
@@ -11878,14 +11872,14 @@ snapshots:
       type-fest: 2.19.0
       unique-string: 3.0.0
 
-  terser-webpack-plugin@5.3.14(webpack@5.99.5):
+  terser-webpack-plugin@5.3.14(webpack@5.99.6):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       jest-worker: 27.5.1
       schema-utils: 4.3.0
       serialize-javascript: 6.0.2
       terser: 5.34.1
-      webpack: 5.99.5
+      webpack: 5.99.6
 
   terser@5.34.1:
     dependencies:
@@ -12320,12 +12314,12 @@ snapshots:
 
   webidl-conversions@7.0.0: {}
 
-  webpack-bugsnag-plugins@1.9.0(webpack@5.99.5):
+  webpack-bugsnag-plugins@1.9.0(webpack@5.99.6):
     dependencies:
       '@bugsnag/source-maps': 2.3.3
       bugsnag-build-reporter: 2.0.0
       run-parallel-limit: 1.1.0
-      webpack: 5.99.5
+      webpack: 5.99.6
 
   webpack-bundle-analyzer@4.10.2:
     dependencies:
@@ -12345,7 +12339,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  webpack-dev-middleware@7.4.2(webpack@5.99.5):
+  webpack-dev-middleware@7.4.2(webpack@5.99.6):
     dependencies:
       colorette: 2.0.20
       memfs: 4.12.0
@@ -12354,9 +12348,9 @@ snapshots:
       range-parser: 1.2.1
       schema-utils: 4.2.0
     optionalDependencies:
-      webpack: 5.99.5
+      webpack: 5.99.6
 
-  webpack-dev-server@5.2.0(webpack@5.99.5):
+  webpack-dev-server@5.2.0(webpack@5.99.6):
     dependencies:
       '@types/bonjour': 3.5.13
       '@types/connect-history-api-fallback': 1.5.4
@@ -12383,10 +12377,10 @@ snapshots:
       serve-index: 1.9.1
       sockjs: 0.3.24
       spdy: 4.0.2
-      webpack-dev-middleware: 7.4.2(webpack@5.99.5)
+      webpack-dev-middleware: 7.4.2(webpack@5.99.6)
       ws: 8.18.1
     optionalDependencies:
-      webpack: 5.99.5
+      webpack: 5.99.6
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -12405,11 +12399,11 @@ snapshots:
 
   webpack-sources@3.2.3: {}
 
-  webpack-utf8-bom@1.4.0(webpack@5.99.5):
+  webpack-utf8-bom@1.4.0(webpack@5.99.6):
     dependencies:
-      webpack: 5.99.5
+      webpack: 5.99.6
 
-  webpack@5.99.5:
+  webpack@5.99.6:
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.6
@@ -12431,7 +12425,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.0
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.14(webpack@5.99.5)
+      terser-webpack-plugin: 5.3.14(webpack@5.99.6)
       watchpack: 2.4.2
       webpack-sources: 3.2.3
     transitivePeerDependencies:
