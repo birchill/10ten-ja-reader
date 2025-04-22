@@ -56,7 +56,6 @@ function AlternativeMeasureComponent({ alt }: { alt: AlternateMeasure }) {
       <span>
         {label && <span>{label}</span>}
         {expl && <span lang={langTag}>{expl}</span>}
-        {alt}
       </span>
       <span class="tp:px-1.5">=</span>
       <span class="tp:space-x-1">
