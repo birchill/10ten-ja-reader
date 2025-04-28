@@ -72,7 +72,7 @@ const commonConfig = {
           loader: 'builtin:swc-loader',
           /** @type {import('@rspack/core').SwcLoaderOptions} */
           options: {
-            sourceMap: true,
+            sourceMaps: true,
             jsc: { parser: { syntax: 'typescript' }, target: 'es2020' },
           },
         },
@@ -85,7 +85,7 @@ const commonConfig = {
           loader: 'builtin:swc-loader',
           /** @type {import('@rspack/core').SwcLoaderOptions} */
           options: {
-            sourceMap: true,
+            sourceMaps: true,
             jsc: {
               parser: { syntax: 'typescript', tsx: true },
               transform: {
