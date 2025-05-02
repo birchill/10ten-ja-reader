@@ -133,8 +133,8 @@ importers:
         specifier: ^26.0.0
         version: 26.1.0
       knip:
-        specifier: 5.50.5
-        version: 5.50.5(@types/node@22.7.4)(typescript@5.8.3)
+        specifier: 5.52.0
+        version: 5.52.0(@types/node@22.7.4)(typescript@5.8.3)
       mocha:
         specifier: 11.1.0
         version: 11.1.0
@@ -2639,9 +2639,6 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  easy-table@1.2.0:
-    resolution: {integrity: sha512-OFzVOv03YpvtcWGe5AayU5G2hgybsg3iqA6drU8UaoZyB9jLGMTrz9+asnLp/E+6qPh88yEI1gvyZFZ41dmgww==}
-
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
@@ -3816,8 +3813,8 @@ packages:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
 
-  knip@5.50.5:
-    resolution: {integrity: sha512-I3mfebuG5x8i/mJJA41xjnmHMbLw75ymbDxlS7HMP+4CjY+jXEDSJyP3A2xmI5JF5/o47Fr8D7Pq3BVT0/nQPw==}
+  knip@5.52.0:
+    resolution: {integrity: sha512-Jac+wJvfrGSYp664sQbEMPCs9m4z0VSdvzSZAgvVIA9gXuE+a2I2O5YnDpiitHTZ2eGbbMNJyewO/4me6LFMHQ==}
     engines: {node: '>=18.18.0'}
     hasBin: true
     peerDependencies:
@@ -8321,12 +8318,6 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  easy-table@1.2.0:
-    dependencies:
-      ansi-regex: 5.0.1
-    optionalDependencies:
-      wcwidth: 1.0.1
-
   ee-first@1.1.1: {}
 
   electron-to-chromium@1.5.32: {}
@@ -9732,11 +9723,10 @@ snapshots:
 
   kleur@4.1.5: {}
 
-  knip@5.50.5(@types/node@22.7.4)(typescript@5.8.3):
+  knip@5.52.0(@types/node@22.7.4)(typescript@5.8.3):
     dependencies:
       '@nodelib/fs.walk': 1.2.8
       '@types/node': 22.7.4
-      easy-table: 1.2.0
       enhanced-resolve: 5.18.1
       fast-glob: 3.3.3
       jiti: 2.4.2
