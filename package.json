@@ -107,7 +107,7 @@
     "if-env": "1.0.4",
     "jsdom": "^26.0.0",
     "knip": "5.52.0",
-    "mocha": "11.1.0",
+    "mocha": "11.2.2",
     "playwright": "1.52.0",
     "playwright-test": "14.1.9",
     "postcss": "8.5.3",
