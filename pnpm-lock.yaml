@@ -205,8 +205,8 @@ importers:
         specifier: 5.99.9
         version: 5.99.9
       webpack-bugsnag-plugins:
-        specifier: 2.2.0
-        version: 2.2.0(webpack@5.99.9)
+        specifier: 2.2.1
+        version: 2.2.1(webpack@5.99.9)
       webpack-preprocessor:
         specifier: 0.1.12
         version: 0.1.12
@@ -5858,8 +5858,8 @@ packages:
     resolution: {integrity: sha512-VwddBukDzu71offAQR975unBIGqfKZpM+8ZX6ySk8nYhVoo5CYaZyzt3YBvYtRtO+aoGlqxPg/B87NGVZ/fu6g==}
     engines: {node: '>=12'}
 
-  webpack-bugsnag-plugins@2.2.0:
-    resolution: {integrity: sha512-KWY4StU6jSJWpGYN634dp7tazdGlswBtuVqEGV3sU2q2EiDqyMVhmdc2P+K1fSzcfE8mysXCN03yysYdF8UwQQ==}
+  webpack-bugsnag-plugins@2.2.1:
+    resolution: {integrity: sha512-NrR1inReW1IMzW6SjuUaH2JCoa0xp81R20bxqLBqhmfgFaRHdW2lJJ/ug5eVYULduSLLQoPN1Hsmh8yYjLTPWA==}
     peerDependencies:
       webpack: ^3.0.0 || ^4.0.0 || ^5.0.0
 
@@ -6082,11 +6082,6 @@ packages:
     resolution: {integrity: sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==}
     engines: {node: '>=18'}
 
-  yaml@2.7.0:
-    resolution: {integrity: sha512-+hSoy/QHluxmC9kCIJyL/uyFmLmc+e5CFR5Wa+bpIhIj85LVb9ZH2nVnqrHoSvKogwODv0ClqZkmiSSaIH5LTA==}
-    engines: {node: '>= 14'}
-    hasBin: true
-
   yaml@2.8.0:
     resolution: {integrity: sha512-4lLa/EcQCB0cJkyts+FpIRx5G/llPxfP6VQU5KByHEhLxY3IJCH0f0Hy1MHI8sClTvsIb8qwRJ6R/ZdlDJ/leQ==}
     engines: {node: '>= 14.6'}
@@ -6253,7 +6248,7 @@ snapshots:
 
   '@bugsnag/cli@3.0.0':
     dependencies:
-      yaml: 2.7.0
+      yaml: 2.8.0
 
   '@csstools/color-helpers@5.0.2': {}
 
@@ -12107,7 +12102,7 @@ snapshots:
 
   webidl-conversions@7.0.0: {}
 
-  webpack-bugsnag-plugins@2.2.0(webpack@5.99.9):
+  webpack-bugsnag-plugins@2.2.1(webpack@5.99.9):
     dependencies:
       '@bugsnag/cli': 3.0.0
       run-parallel-limit: 1.1.0
@@ -12378,8 +12373,6 @@ snapshots:
   y18n@5.0.8: {}
 
   yallist@5.0.0: {}
-
-  yaml@2.7.0: {}
 
   yaml@2.8.0: {}
 
