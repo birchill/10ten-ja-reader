@@ -489,7 +489,9 @@ async function sendMessageToAllTabs(message: BackgroundMessage): Promise<void> {
   }
 
   for (const tab of allTabs) {
-    if (!tab.id) {
+    // In both Firefox and Chrome, somehow `tab` can sometimes be `null` it
+    // seems.
+    if (!tab?.id) {
       continue;
     }
 
