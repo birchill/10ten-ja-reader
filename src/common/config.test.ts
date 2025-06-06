@@ -390,4 +390,11 @@ describe('Config', () => {
     await noChangePromise;
     expect(config.dictLang).toEqual('pt');
   });
+
+  it('removes Shift from kanjiLookup when used as hold-to-show key', () => {
+    const config = new Config();
+    config.holdToShowKeys = 'Alt+Shift';
+    config.updateKeys({ kanjiLookup: ['Shift'] });
+    expect(config.keys.kanjiLookup).not.toContain('Shift');
+  });
 });

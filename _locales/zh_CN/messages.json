@@ -1605,6 +1605,10 @@
       "lastcheck": { "content": "$1", "example": "2019-10-12" }
     }
   },
+  "options_lookup_kanji_tooltip": {
+    "message": "当 Shift 键被设为“显示弹出窗口”键时，不能将其用于“只查询汉字结果”。",
+    "description": "Tooltip explaining why the checkbox for activating Shift for kanji lookup is disabled"
+  },
   "options_lookup_puck_heading": {
     "message": "用于触摸屏的圆形按钮",
     "description": "Heading for the section containing options controlling the lookup puck used on touch devices"

@@ -46,6 +46,9 @@ export function KeyboardSettingsForm(props: Props) {
         isMac={props.isMac}
         keys={props.popupKeys}
         onUpdateKey={props.onUpdatePopupKey}
+        isHoldToShowShiftEnabled={
+          props.holdToShowKeys.shift || props.holdToShowImageKeys.shift
+        }
       />
     </>
   );

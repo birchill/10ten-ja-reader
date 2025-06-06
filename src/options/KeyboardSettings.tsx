@@ -233,7 +233,11 @@ function useHoldToShowKeysSetting(
       typeof value === 'string'
         ? value.split('+').map((part) => part.trim().toLowerCase())
         : [];
-    return { ctrl: parts.includes('ctrl'), alt: parts.includes('alt') };
+    return {
+      ctrl: parts.includes('ctrl'),
+      alt: parts.includes('alt'),
+      shift: parts.includes('shift'),
+    };
   }, [value]);
 
   const setValue = useCallback(
@@ -244,6 +248,9 @@ function useHoldToShowKeysSetting(
       }
       if (value.alt) {
         parts.push('Alt');
+      }
+      if (value.shift) {
+        parts.push('Shift');
       }
       config[key] = parts.length ? parts.join('+') : null;
     },
