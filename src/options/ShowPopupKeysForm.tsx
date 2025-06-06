@@ -4,7 +4,7 @@ import { useLocale } from '../common/i18n';
 
 import { KeyBox, KeyCheckbox } from './KeyBox';
 
-export type HoldToShowSetting = { alt: boolean; ctrl: boolean };
+export type HoldToShowSetting = { alt: boolean; ctrl: boolean; shift: boolean };
 
 type Props = {
   isMac: boolean;
@@ -65,10 +65,12 @@ type KeyCheckboxesProps = {
 function KeyCheckboxes(props: KeyCheckboxesProps) {
   const altRef = useRef<HTMLInputElement>(null);
   const ctrlRef = useRef<HTMLInputElement>(null);
+  const shiftRef = useRef<HTMLInputElement>(null);
   const onChange = () => {
     props.onChange({
       alt: altRef.current?.checked ?? false,
       ctrl: ctrlRef.current?.checked ?? false,
+      shift: shiftRef.current?.checked ?? false,
     });
   };
 
@@ -82,6 +84,22 @@ function KeyCheckboxes(props: KeyCheckboxesProps) {
       </span>
       <KeyCheckbox checked={props.value.ctrl} onClick={onChange} ref={ctrlRef}>
         <KeyBox label="Ctrl" isMac={props.isMac} />
+      </KeyCheckbox>
+      <span
+        class={
+          !props.value.shift || (!props.value.alt && !props.value.ctrl)
+            ? 'opacity-50'
+            : ''
+        }
+      >
+        +
+      </span>
+      <KeyCheckbox
+        checked={props.value.shift}
+        onClick={onChange}
+        ref={shiftRef}
+      >
+        <KeyBox label="Shift" isMac={props.isMac} />
       </KeyCheckbox>
     </div>
   );

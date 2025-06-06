@@ -1266,7 +1266,7 @@ export class ContentHandler {
   // Test if an incoming keyboard event matches the hold-to-show key sequence.
   isHoldToShowKeyStroke(event: KeyboardEvent): HoldToShowKeyType {
     // Check if it is a modifier at all
-    if (!['Alt', 'AltGraph', 'Control'].includes(event.key)) {
+    if (!['Alt', 'AltGraph', 'Control', 'Shift'].includes(event.key)) {
       return HoldToShowKeyType.None;
     }
 
@@ -1302,6 +1302,9 @@ export class ContentHandler {
         return false;
       }
       if (this.config[setting].includes('Ctrl') && !event.ctrlKey) {
+        return false;
+      }
+      if (this.config[setting].includes('Shift') && !event.shiftKey) {
         return false;
       }
 
