@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+- Added Shift as a possible keybinding for hold to show
+  ([#2409](https://github.com/birchill/10ten-ja-reader/pull/2409)).
 - Fixed a bug when displaying Nelson radicals
   ([#2315](https://github.com/birchill/10ten-ja-reader/pull/2315)).
 - Fixed a bug that prevented the flash animation after copying an entry from playing

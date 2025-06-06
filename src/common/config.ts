@@ -266,15 +266,21 @@ export class Config {
           delete updatedChanges.kanjiReferencesV2;
           break;
 
-        // In some cases, the pinPopup key is calculated from the holdToShowKeys
-        // value so we might need to report that too.
+        // In some cases, the pinPopup and kanjiLookup keys are calculated from
+        // the holdToShow(Image)Keys value so we might need to report that too.
         case 'holdToShowKeys':
+        case 'holdToShowImageKeys':
           // If...
           if (
             // We are already reporting a change to `keys`, or
             Object.keys(updatedChanges).includes('keys') ||
-            // The pinPopup key is already explicitly set
-            this.settings.keys?.pinPopup
+            // The pinPopup key is already explicitly set and
+            (this.settings.keys?.pinPopup &&
+              // The change doesn't involve the shift key
+              !(
+                updatedChanges[key].newValue?.includes('Shift') ||
+                updatedChanges[key].oldValue?.includes('Shift')
+              ))
           ) {
             // ... we don't need to report a change
             break;
@@ -961,6 +967,15 @@ export class Config {
           keys.pinPopup = [holdToShowKey];
         }
       }
+    }
+
+    // If shift is activated as a hold to show key, we need to deactivate the
+    // shift key for kanji lookups.
+    if (
+      this.holdToShowKeys?.includes('Shift') ||
+      this.holdToShowImageKeys?.includes('Shift')
+    ) {
+      keys.kanjiLookup = keys.kanjiLookup.filter((key) => key !== 'Shift');
     }
 
     // When we first released the `expandPopup` key ('x') we didn't notice
