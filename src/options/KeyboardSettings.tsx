@@ -227,6 +227,7 @@ function useHoldToShowKeysSetting(
   key: 'holdToShowKeys' | 'holdToShowImageKeys'
 ): [HoldToShowSetting, (value: HoldToShowSetting) => void] {
   const value = useConfigValue(config, key);
+  const kanjiLookupKeys = useConfigValue(config, 'keys').kanjiLookup;
 
   const setting = useMemo(() => {
     const parts: Array<string> =
@@ -251,10 +252,18 @@ function useHoldToShowKeysSetting(
       }
       if (value.shift) {
         parts.push('Shift');
+
+        // Deselect "Lookup kanji results only" if Shift is chosen for "hold to show",
+        // since it also uses the Shift key.
+        if (kanjiLookupKeys.includes('Shift')) {
+          config.updateKeys({
+            kanjiLookup: kanjiLookupKeys.filter((key) => key !== 'Shift'),
+          });
+        }
       }
       config[key] = parts.length ? parts.join('+') : null;
     },
-    [config, key]
+    [config, key, kanjiLookupKeys]
   );
 
   return [setting, setValue];
