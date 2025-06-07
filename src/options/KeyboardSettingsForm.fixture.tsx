@@ -45,12 +45,14 @@ export default function KeyboardSettingsFormFixture() {
   // Hold-to-show keys
 
   const [holdToShowKeys, setHoldToShowKeys] = useState({
-    ctrl: true,
-    alt: false,
+    ctrl: false,
+    alt: true,
+    shift: true,
   });
   const [holdToShowImageKeys, setHoldToShowImageKeys] = useState({
     ctrl: true,
     alt: false,
+    shift: false,
   });
 
   // Popup keys
