@@ -75,6 +75,8 @@ function PopupKey(props: {
             .slice(0, i)
             .some((key) => props.value.includes(key));
           const orEnabled = checked && priorEnabled;
+          const disableKanjiLookup =
+            props.name === 'kanjiLookup' && props.isHoldToShowShiftEnabled;
 
           return (
             <>
@@ -87,8 +89,11 @@ function PopupKey(props: {
                 checked={checked}
                 onClick={onClick}
                 value={key}
-                disabled={
-                  props.name === 'kanjiLookup' && props.isHoldToShowShiftEnabled
+                disabled={disableKanjiLookup}
+                title={
+                  disableKanjiLookup
+                    ? 'Shift cannot be selected for Kanji Lookup when it is a hold-to-show key.'
+                    : undefined
                 }
               >
                 {props.name === 'movePopupDownOrUp' ? (
