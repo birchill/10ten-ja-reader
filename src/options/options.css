@@ -213,3 +213,12 @@ body {
 .options a:visited {
   color: #0996f8;
 }
+
+/*
+ * We have to set the link color for the popup preview explicitly, otherwise
+ * the WaniKani level tag will be affected by the above link styles.
+ */
+.options #popup-preview a,
+.options #popup-preview a:visited {
+  color: inherit;
+}
