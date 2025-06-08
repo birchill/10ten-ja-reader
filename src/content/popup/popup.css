@@ -12,7 +12,7 @@
 @custom-variant no-overlay ([data-type="window"]:not([data-has-overlay]) &);
 
 @theme {
-  --animate-flash: 'flash 0.5s';
+  --animate-flash: flash 0.5s;
 
   @keyframes flash {
     from {

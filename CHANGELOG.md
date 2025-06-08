@@ -10,6 +10,8 @@ app.
 
 - Fixed a bug when displaying Nelson radicals
   ([#2315](https://github.com/birchill/10ten-ja-reader/pull/2315)).
+- Fixed a bug that prevented the flash animation after copying an entry from playing
+  ([#2415](https://github.com/birchill/10ten-ja-reader/pull/2415)).
 
 ## [1.24.2] - 2025-04-03
 
