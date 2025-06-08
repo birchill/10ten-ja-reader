@@ -359,7 +359,7 @@ function WaniKanjiLevelTag({
               'tp:hover:bg-(--hover-bg-color)',
               'tp:group-hover:text-(--selected-highlight) tp:group-hover:border-(--selected-highlight)',
             ]
-          : ['tp:before:no-underline tp:no-underline'])
+          : ['tp:before:no-underline tp:no-underline tp:pointer-events-none'])
       )}
       style={{
         '--hover-bg-color':
