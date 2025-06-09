@@ -20,7 +20,14 @@
       color: white;
     }
   }
+}
 
+/*
+ * Theme variables referencing other variables have to be inlined, otherwise,
+ * updates to the referenced variables will not propagate as expected.
+ * See https://tailwindcss.com/docs/theme#referencing-other-variables
+ */
+@theme inline {
   /**
    * Compare to
    * https://github.com/tailwindlabs/tailwindcss/blob/48957c541122f77ff22a09f81545b14ae7d7ae80/packages/tailwindcss/theme.css#L299-L324

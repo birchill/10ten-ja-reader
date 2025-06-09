@@ -12,6 +12,8 @@ app.
   ([#2315](https://github.com/birchill/10ten-ja-reader/pull/2315)).
 - Fixed a bug that prevented the flash animation after copying an entry from playing
   ([#2415](https://github.com/birchill/10ten-ja-reader/pull/2415)).
+- Fixed a bug where changing the font size in the settings wouldn't apply to the `Kanji` and `Names` tabs
+  ([#2418](https://github.com/birchill/10ten-ja-reader/pull/2418)).
 
 ## [1.24.2] - 2025-04-03
 
