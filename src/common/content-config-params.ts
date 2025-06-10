@@ -94,10 +94,10 @@ export interface ContentConfigParams {
   // Modifier keys which must be held down in order for the pop-up to shown.
   //
   // This should be a Set but Chrome can't send Sets by sendMessage :(
-  holdToShowKeys: Array<'Alt' | 'Ctrl'>;
+  holdToShowKeys: Array<'Alt' | 'Ctrl' | 'Shift'>;
 
   // As above but specifically for images.
-  holdToShowImageKeys: Array<'Alt' | 'Ctrl'>;
+  holdToShowImageKeys: Array<'Alt' | 'Ctrl' | 'Shift'>;
 
   // References to show in the kanji view.
   kanjiReferences: Array<import('./refs').ReferenceAbbreviation>;

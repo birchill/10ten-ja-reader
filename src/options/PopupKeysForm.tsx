@@ -14,6 +14,7 @@ type Props = {
   isMac: boolean;
   keys: StoredKeyboardKeys;
   onUpdateKey: (key: keyof StoredKeyboardKeys, value: Array<string>) => void;
+  isHoldToShowShiftEnabled: boolean;
 };
 
 export function PopupKeysForm(props: Props) {
@@ -33,6 +34,7 @@ export function PopupKeysForm(props: Props) {
           name={key.name}
           onUpdate={props.onUpdateKey}
           value={props.keys[key.name]}
+          isHoldToShowShiftEnabled={props.isHoldToShowShiftEnabled}
         />
       ))}
     </div>
@@ -46,6 +48,7 @@ function PopupKey(props: {
   name: keyof StoredKeyboardKeys;
   onUpdate: (key: keyof StoredKeyboardKeys, value: Array<string>) => void;
   value: Array<string>;
+  isHoldToShowShiftEnabled: boolean;
 }) {
   const { t } = useLocale();
 
@@ -72,6 +75,8 @@ function PopupKey(props: {
             .slice(0, i)
             .some((key) => props.value.includes(key));
           const orEnabled = checked && priorEnabled;
+          const disableKanjiLookup =
+            props.name === 'kanjiLookup' && props.isHoldToShowShiftEnabled;
 
           return (
             <>
@@ -80,7 +85,17 @@ function PopupKey(props: {
                   {t('options_key_alternative')}
                 </span>
               )}
-              <KeyCheckbox checked={checked} onClick={onClick} value={key}>
+              <KeyCheckbox
+                checked={checked}
+                onClick={onClick}
+                value={key}
+                disabled={disableKanjiLookup}
+                title={
+                  disableKanjiLookup
+                    ? 'Shift cannot be selected for Kanji Lookup when it is a hold-to-show key.'
+                    : undefined
+                }
+              >
                 {props.name === 'movePopupDownOrUp' ? (
                   (() => {
                     const [down, up] = key.split(',', 2);

@@ -1605,6 +1605,10 @@
       "lastcheck": { "content": "$1", "example": "2019-10-12" }
     }
   },
+  "options_lookup_kanji_tooltip": {
+    "message": "Shift cannot be selected for kanji lookup when it is a hold-to-show key.",
+    "description": "Tooltip explaining why the checkbox for activating Shift for kanji lookup is disabled"
+  },
   "options_lookup_puck_heading": {
     "message": "用于触摸屏的圆形按钮",
     "description": "Heading for the section containing options controlling the lookup puck used on touch devices"

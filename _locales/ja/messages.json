@@ -1609,6 +1609,10 @@
       "lastcheck": { "content": "$1", "example": "2019-10-12" }
     }
   },
+  "options_lookup_kanji_tooltip": {
+    "message": "「Shift」は、「ポップアップを表示」のキーとして設定されている場合、「漢字の結果のみ調べる」用には選択できません。",
+    "description": "Tooltip explaining why the checkbox for activating Shift for kanji lookup is disabled"
+  },
   "options_lookup_puck_heading": {
     "message": "検索用の丸いボタン",
     "description": "Heading for the section containing options controlling the lookup puck used on touch devices"
