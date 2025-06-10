@@ -22,7 +22,10 @@ export function NamePreview({
   const lastPointerType = useRef('touch');
 
   return (
-    <div class="bonus-name" ref={namesPreview}>
+    <div
+      class="tp:mt-2 tp:mb-1 tp:bg-(--meta-bg) tp:snap-start tp:scroll-mt-5"
+      ref={namesPreview}
+    >
       {namePreview.names.map((name, index) => {
         let selectState: 'unselected' | 'selected' | 'flash' = 'unselected';
         if (index === selectedIndex) {
@@ -53,7 +56,7 @@ export function NamePreview({
         );
       })}
 
-      {namePreview.more && <span class="more">…</span>}
+      {namePreview.more && <span class="tp:px-4">…</span>}
     </div>
   );
 }

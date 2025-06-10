@@ -60,7 +60,7 @@ function renderKanjiEntry({
   render(
     h(
       PopupOptionsProvider,
-      { interactive: options.interactive },
+      { ...options },
       h(KanjiEntry, {
         entry,
         index,

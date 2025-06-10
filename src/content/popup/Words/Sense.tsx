@@ -4,17 +4,20 @@ import { Fragment } from 'preact';
 import { Sense as WordResultSense } from '../../../background/search-result';
 import { PartOfSpeechDisplay } from '../../../common/content-config-params';
 import { useLocale } from '../../../common/i18n';
-import { classes } from '../../../utils/classes';
 import { getFilteredTags } from '../../../utils/verb-tags';
+
+import { Tag } from '../Tag';
 
 export function Sense({
   sense,
   posDisplay,
+  selectState,
 }: {
   sense: WordResultSense;
   posDisplay: PartOfSpeechDisplay;
+  selectState: 'unselected' | 'selected' | 'flash';
 }) {
-  const { t, langTag } = useLocale();
+  const { t } = useLocale();
 
   // Verb class tags were added to proverbs for inflection handling but
   // aren't user-facing. Filter them out here.
@@ -22,42 +25,56 @@ export function Sense({
 
   return (
     <>
-      {posDisplay !== 'none' &&
-        filteredPos.map((pos) => (
-          <span
-            key={pos}
-            class="w-pos tag"
-            lang={classes(posDisplay === 'expl' && langTag)}
-          >
-            {posDisplay === 'expl'
-              ? t(`pos_label_${pos.replace(/-/g, '_')}`) || pos
-              : posDisplay === 'code' && pos}
-          </span>
+      <span class="tp:*:mr-1">
+        {posDisplay !== 'none' &&
+          filteredPos.map((pos) => (
+            <Tag
+              key={pos}
+              tagType="pos"
+              text={
+                posDisplay === 'expl'
+                  ? t(`pos_label_${pos.replace(/-/g, '_')}`) || pos
+                  : posDisplay === 'code'
+                    ? pos
+                    : undefined
+              }
+              selectState={selectState}
+            />
+          ))}
+
+        {sense.field?.map((field) => (
+          <Tag
+            key={field}
+            tagType="field"
+            text={t(`field_label_${field}`) || field}
+            selectState={selectState}
+          />
         ))}
 
-      {sense.field?.map((field) => (
-        <span key={field} class="w-field tag" lang={langTag}>
-          {t(`field_label_${field}`) || field}
-        </span>
-      ))}
+        {sense.misc?.map((misc) => (
+          <Tag
+            key={misc}
+            tagType="misc"
+            text={t(`misc_label_${misc.replace(/-/g, '_')}`) || misc}
+            selectState={selectState}
+          />
+        ))}
 
-      {sense.misc?.map((misc) => (
-        <span key={misc} class="w-misc tag" lang={langTag}>
-          {t(`misc_label_${misc.replace(/-/g, '_')}`) || misc}
-        </span>
-      ))}
-
-      {sense.dial?.map((dial) => (
-        <span key={dial} class="w-dial tag" lang={langTag}>
-          {t(`dial_label_${dial}`) || dial}
-        </span>
-      ))}
+        {sense.dial?.map((dial) => (
+          <Tag
+            key={dial}
+            tagType="dial"
+            text={t(`dial_label_${dial}`) || dial}
+            selectState={selectState}
+          />
+        ))}
+      </span>
 
       <Glosses glosses={sense.g} />
 
       {sense.inf && (
         <span
-          class="w-inf"
+          class="tp:text-sm"
           // Mark inf as Japanese because it often contains Japanese text
           lang="ja"
         >{` (${sense.inf})`}</span>
@@ -81,7 +98,7 @@ function Glosses({ glosses }: { glosses: Array<Gloss> }) {
       <Fragment key={gloss.str}>
         {index > 0 && '; '}
         {typeStr && (
-          <span class="w-type" lang={langTag}>{`(${typeStr}) `}</span>
+          <span class="tp:text-sm" lang={langTag}>{`(${typeStr}) `}</span>
         )}
 
         {gloss.str}
@@ -97,7 +114,7 @@ function LangSources({ sources }: { sources: Array<LangSource> }) {
   const startsWithWasei = sources[0]?.wasei;
 
   return (
-    <span class="w-lsrc" lang={langTag}>
+    <span class="tp:text-sm" lang={langTag}>
       {t(startsWithWasei ? 'lang_lsrc_wasei_prefix' : 'lang_lsrc_prefix')}
 
       {sources.map((lsrc, index) => {
