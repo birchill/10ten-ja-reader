@@ -124,7 +124,7 @@
     "source-map-loader": "5.0.0",
     "tailwindcss": "4.1.10",
     "terser-webpack-plugin": "5.3.14",
-    "tsx": "4.19.4",
+    "tsx": "4.20.3",
     "typescript-eslint": "8.33.1",
     "vitest": "3.2.3",
     "vitest-github-actions-reporter": "^0.11.1",
