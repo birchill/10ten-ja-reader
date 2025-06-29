@@ -127,7 +127,17 @@ export function WordEntry(props: WordEntryProps) {
   }
 
   return (
-    <div class="entry" onPointerUp={props.onPointerUp} onClick={props.onClick}>
+    <div
+      class={classes(
+        'entry',
+        // See comment in KanjiEntry.tsx about the future plans for these
+        // CSS classes.
+        props.selectState === 'selected' && '-selected',
+        props.selectState === 'flash' && '-flash'
+      )}
+      onPointerUp={props.onPointerUp}
+      onClick={props.onClick}
+    >
       <div>
         {searchOnlyMatch && (
           <div class="tp:mb-1 tp:text-sm tp:opacity-70">
