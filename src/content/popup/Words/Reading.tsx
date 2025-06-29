@@ -30,7 +30,16 @@ export function Reading({
       // At the same time we want to distinguish between heiban and
       // "no accent information". So we indicate heiban with a dotted line
       // across the top instead.
-      return <span class="w-heiban">{kana.ent}</span>;
+      return (
+        <span
+          class={classes(
+            'tp:border-dotted tp:border-current',
+            'tp:border-0 tp:border-t-[1.5px]'
+          )}
+        >
+          {kana.ent}
+        </span>
+      );
     } else {
       return (
         moraSubstring(kana.ent, 0, accentPos) +
@@ -42,23 +51,45 @@ export function Reading({
 
   // Generate binary pitch display
   const moraCount = countMora(kana.ent);
+
+  const highLow = classes(
+    'tp:border-0',
+    'tp:border-t-(length:--border-width)',
+    'tp:border-r-(length:--border-width)'
+  );
+  const lowHigh = classes(
+    'tp:border-0',
+    'tp:border-b-(length:--border-width)',
+    'tp:border-r-(length:--border-width)'
+  );
+  const high = classes('tp:border-0', 'tp:border-t-(length:--border-width)');
+  const low = classes('tp:border-0', 'tp:border-b-(length:--border-width)');
+
   return (
     <span
       class={classes(
-        'w-binary',
-        accentDisplay === 'binary-hi-contrast' && '-hi-contrast'
+        'tp:inline-block tp:mb-1',
+        'tp:*:m-0 tp:*:text-[90%] tp:*:border-dotted',
+        accentDisplay === 'binary-hi-contrast'
+          ? 'tp:*:border-(--hi-contrast-pitch-accent)'
+          : 'tp:*:border-current'
       )}
+      style={
+        accentDisplay === 'binary-hi-contrast'
+          ? { '--border-width': '2px' }
+          : { '--border-width': '1.5px' }
+      }
     >
       {accentPos === 0 || accentPos === 1 ? (
         // Accent position 0 (heiban: LHHHHH) and accent position 1 (atamadaka: HLLLL)
         // are sufficiently similar that we handle them together.
         <>
-          <span class={accentPos ? 'h-l' : moraCount > 1 ? 'l-h' : 'h'}>
+          <span class={accentPos ? highLow : moraCount > 1 ? lowHigh : high}>
             {moraSubstring(kana.ent, 0, 1)}
           </span>
 
           {moraCount > 1 && (
-            <span class={accentPos ? 'l' : 'h'}>
+            <span class={accentPos ? low : high}>
               {moraSubstring(kana.ent, 1)}
             </span>
           )}
@@ -66,11 +97,11 @@ export function Reading({
       ) : (
         // Otherwise we have nakadaka (LHHHHL) or odaka (LHHHH)
         <>
-          <span class="l-h">{moraSubstring(kana.ent, 0, 1)}</span>
-          <span class="h-l">{moraSubstring(kana.ent, 1, accentPos)}</span>
+          <span class={lowHigh}>{moraSubstring(kana.ent, 0, 1)}</span>
+          <span class={highLow}>{moraSubstring(kana.ent, 1, accentPos)}</span>
 
           {accentPos < moraCount && (
-            <span class="l">{moraSubstring(kana.ent, accentPos)}</span>
+            <span class={low}>{moraSubstring(kana.ent, accentPos)}</span>
           )}
         </>
       )}

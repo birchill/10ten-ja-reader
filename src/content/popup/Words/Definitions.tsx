@@ -5,16 +5,22 @@ import { useLocale } from '../../../common/i18n';
 import { classes } from '../../../utils/classes';
 import { getFilteredTags } from '../../../utils/verb-tags';
 
+import { Tag } from '../Tag';
+import { usePopupOptions } from '../options-context';
+
 import { Sense } from './Sense';
 
 export function Definitions({
   entry,
   options,
+  selectState,
 }: {
   entry: WordResult;
   options: { dictLang?: string; posDisplay: PartOfSpeechDisplay };
+  selectState: 'unselected' | 'selected' | 'flash';
 }) {
   const { t, langTag } = useLocale();
+  const { interactive } = usePopupOptions();
 
   const senses = entry.s.filter((s) => s.match);
   if (!senses.length) {
@@ -25,15 +31,21 @@ export function Definitions({
     return (
       <div
         class={classes(
-          'w-def',
+          'tp:text-base',
+          selectState === 'selected' && 'tp:text-(--selected-def-color)',
+          interactive && 'tp:group-hover:text-(--selected-def-color)',
           options.dictLang &&
             options.dictLang !== 'en' &&
             senses[0].lang !== options.dictLang &&
-            'foreign'
+            'tp:opacity-85'
         )}
         lang={senses[0].lang || 'en'}
       >
-        <Sense sense={senses[0]} posDisplay={options.posDisplay} />
+        <Sense
+          sense={senses[0]}
+          posDisplay={options.posDisplay}
+          selectState={selectState}
+        />
       </div>
     );
   }
@@ -59,12 +71,26 @@ export function Definitions({
   let startIndex = 1;
 
   return (
-    <div class="w-def">
+    <div
+      class={classes(
+        'tp:text-base',
+        selectState === 'selected' && 'tp:text-(--selected-def-color)',
+        interactive && 'tp:group-hover:text-(--selected-def-color)'
+      )}
+    >
       {nativeSenses.length > 0 && (
-        <ul>
+        <ul class="tp:pl-6 tp:m-0">
           {nativeSenses.map((sense, index) => (
-            <li key={index} lang={sense.lang || 'en'}>
-              <Sense sense={sense} posDisplay={options.posDisplay} />
+            <li
+              class="tp:list-[circle] tp:leading-6"
+              key={index}
+              lang={sense.lang || 'en'}
+            >
+              <Sense
+                sense={sense}
+                posDisplay={options.posDisplay}
+                selectState={selectState}
+              />
             </li>
           ))}
         </ul>
@@ -81,45 +107,63 @@ export function Definitions({
           return (
             <>
               {/*  Group heading */}
-              <p class="w-group-head">
+              <p class="tp:mt-1 tp:mb-0.5 tp:space-x-1.5">
                 {filteredPos.map((pos) => (
-                  <span
+                  <Tag
                     key={pos}
-                    lang={isExpl ? langTag : undefined}
-                    class="w-pos tag"
-                  >
-                    {isExpl
-                      ? t(`pos_label_${pos.replace(/-/g, '_')}`) || pos
-                      : pos}
-                  </span>
+                    tagType="pos"
+                    text={
+                      isExpl
+                        ? t(`pos_label_${pos.replace(/-/g, '_')}`) || pos
+                        : pos
+                    }
+                    langTag={langTag}
+                    selectState={selectState}
+                  />
                 ))}
 
                 {group.misc.map((misc) => (
-                  <span key={misc} class="w-misc tag" lang={langTag}>
-                    {t(`misc_label_${misc.replace(/-/g, '_')}`) || misc}
-                  </span>
+                  <Tag
+                    key={misc}
+                    tagType="misc"
+                    text={t(`misc_label_${misc.replace(/-/g, '_')}`) || misc}
+                    langTag={langTag}
+                    selectState={selectState}
+                  />
                 ))}
 
                 {
                   // If there is no group heading, just add a '-' placeholder
                   !group.pos.length && !group.misc.length && (
-                    <span class="w-pos tag">-</span>
+                    <Tag
+                      tagType="pos"
+                      text="-"
+                      langTag={langTag}
+                      selectState={selectState}
+                    />
                   )
                 }
               </p>
 
               {/* Group items */}
-              <ol start={startIndex}>
+              <ol class="tp:m-0 tp:pl-6 tp:list-decimal" start={startIndex}>
                 {group.senses.map((sense, index) => {
                   startIndex++;
 
                   return (
                     <li
                       key={index}
-                      class={isForeign ? 'foreign' : undefined}
+                      class={classes(
+                        'tp:list-decimal tp:leading-6',
+                        isForeign && 'tp:opacity-85'
+                      )}
                       lang={sense.lang || 'en'}
                     >
-                      <Sense sense={sense} posDisplay={options.posDisplay} />
+                      <Sense
+                        sense={sense}
+                        posDisplay={options.posDisplay}
+                        selectState={selectState}
+                      />
                     </li>
                   );
                 })}
@@ -129,14 +173,21 @@ export function Definitions({
         })
       ) : (
         <div>
-          <ol>
+          <ol class="tp:m-0 tp:pl-6 tp:list-decimal">
             {enSenses.map((sense, index) => (
               <li
                 key={index}
-                class={isForeign ? 'foreign' : undefined}
+                class={classes(
+                  'tp:list-decimal tp:leading-6',
+                  isForeign && 'tp:opacity-85'
+                )}
                 lang={sense.lang || 'en'}
               >
-                <Sense sense={sense} posDisplay={options.posDisplay} />
+                <Sense
+                  sense={sense}
+                  posDisplay={options.posDisplay}
+                  selectState={selectState}
+                />
               </li>
             ))}
           </ol>
