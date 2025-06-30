@@ -11,11 +11,9 @@ import { Tag } from '../Tag';
 export function Sense({
   sense,
   posDisplay,
-  selectState,
 }: {
   sense: WordResultSense;
   posDisplay: PartOfSpeechDisplay;
-  selectState: 'unselected' | 'selected' | 'flash';
 }) {
   const { t, langTag } = useLocale();
 
@@ -39,7 +37,6 @@ export function Sense({
                     : undefined
               }
               langTag={langTag}
-              selectState={selectState}
             />
           ))}
 
@@ -49,7 +46,6 @@ export function Sense({
             tagType="field"
             text={t(`field_label_${field}`) || field}
             langTag={langTag}
-            selectState={selectState}
           />
         ))}
 
@@ -59,7 +55,6 @@ export function Sense({
             tagType="misc"
             text={t(`misc_label_${misc.replace(/-/g, '_')}`) || misc}
             langTag={langTag}
-            selectState={selectState}
           />
         ))}
 
@@ -69,7 +64,6 @@ export function Sense({
             tagType="dial"
             text={t(`dial_label_${dial}`) || dial}
             langTag={langTag}
-            selectState={selectState}
           />
         ))}
       </span>

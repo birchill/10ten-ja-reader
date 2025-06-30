@@ -13,11 +13,9 @@ import { Sense } from './Sense';
 export function Definitions({
   entry,
   options,
-  selectState,
 }: {
   entry: WordResult;
   options: { dictLang?: string; posDisplay: PartOfSpeechDisplay };
-  selectState: 'unselected' | 'selected' | 'flash';
 }) {
   const { t, langTag } = useLocale();
   const { interactive } = usePopupOptions();
@@ -32,7 +30,7 @@ export function Definitions({
       <div
         class={classes(
           'tp:text-base',
-          selectState === 'selected' && 'tp:text-(--selected-def-color)',
+          'tp:group-data-selected:text-(--selected-def-color)',
           interactive && 'tp:group-hover:text-(--selected-def-color)',
           options.dictLang &&
             options.dictLang !== 'en' &&
@@ -41,11 +39,7 @@ export function Definitions({
         )}
         lang={senses[0].lang || 'en'}
       >
-        <Sense
-          sense={senses[0]}
-          posDisplay={options.posDisplay}
-          selectState={selectState}
-        />
+        <Sense sense={senses[0]} posDisplay={options.posDisplay} />
       </div>
     );
   }
@@ -74,7 +68,7 @@ export function Definitions({
     <div
       class={classes(
         'tp:text-base',
-        selectState === 'selected' && 'tp:text-(--selected-def-color)',
+        'tp:group-data-selected:text-(--selected-def-color)',
         interactive && 'tp:group-hover:text-(--selected-def-color)'
       )}
     >
@@ -86,11 +80,7 @@ export function Definitions({
               key={index}
               lang={sense.lang || 'en'}
             >
-              <Sense
-                sense={sense}
-                posDisplay={options.posDisplay}
-                selectState={selectState}
-              />
+              <Sense sense={sense} posDisplay={options.posDisplay} />
             </li>
           ))}
         </ul>
@@ -118,7 +108,6 @@ export function Definitions({
                         : pos
                     }
                     langTag={langTag}
-                    selectState={selectState}
                   />
                 ))}
 
@@ -128,19 +117,13 @@ export function Definitions({
                     tagType="misc"
                     text={t(`misc_label_${misc.replace(/-/g, '_')}`) || misc}
                     langTag={langTag}
-                    selectState={selectState}
                   />
                 ))}
 
                 {
                   // If there is no group heading, just add a '-' placeholder
                   !group.pos.length && !group.misc.length && (
-                    <Tag
-                      tagType="pos"
-                      text="-"
-                      langTag={langTag}
-                      selectState={selectState}
-                    />
+                    <Tag tagType="pos" text="-" langTag={langTag} />
                   )
                 }
               </p>
@@ -159,11 +142,7 @@ export function Definitions({
                       )}
                       lang={sense.lang || 'en'}
                     >
-                      <Sense
-                        sense={sense}
-                        posDisplay={options.posDisplay}
-                        selectState={selectState}
-                      />
+                      <Sense sense={sense} posDisplay={options.posDisplay} />
                     </li>
                   );
                 })}
@@ -183,11 +162,7 @@ export function Definitions({
                 )}
                 lang={sense.lang || 'en'}
               >
-                <Sense
-                  sense={sense}
-                  posDisplay={options.posDisplay}
-                  selectState={selectState}
-                />
+                <Sense sense={sense} posDisplay={options.posDisplay} />
               </li>
             ))}
           </ol>

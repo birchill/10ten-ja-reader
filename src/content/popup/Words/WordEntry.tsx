@@ -139,11 +139,11 @@ export function WordEntry(props: WordEntryProps) {
         props.selectState === 'flash' && '-flash',
         // Ensure any selection colors are applied before fading in the
         // overlay
-        props.selectState === 'selected' &&
-          'tp:no-overlay:bg-(--selected-bg) tp:no-overlay:rounded-xs',
+        'tp:no-overlay:data-selected:bg-(--selected-bg)',
+        'tp:no-overlay:data-selected:rounded-xs',
         // Run the flash animation, but not until the overlay has
         // disappeared.
-        props.selectState === 'flash' && 'tp:no-overlay:animate-flash',
+        'tp:no-overlay:data-flash:animate-flash',
         ...(interactive
           ? [
               'tp:hover:bg-(--hover-bg)',
@@ -156,6 +156,8 @@ export function WordEntry(props: WordEntryProps) {
             ]
           : [])
       )}
+      data-selected={props.selectState === 'selected' || undefined}
+      data-flash={props.selectState === 'flash' || undefined}
       onPointerUp={props.onPointerUp}
       onClick={props.onClick}
     >
@@ -170,9 +172,8 @@ export function WordEntry(props: WordEntryProps) {
           <span
             class={classes(
               'tp:text-1.5xl',
-              props.selectState === 'selected'
-                ? 'tp:text-(--selected-highlight)'
-                : 'tp:text-(--primary-highlight)',
+              'tp:text-(--primary-highlight)',
+              'tp:group-data-selected:text-(--selected-highlight)',
               interactive && 'tp:group-hover:text-(--selected-highlight)'
             )}
             lang="ja"
@@ -207,11 +208,7 @@ export function WordEntry(props: WordEntryProps) {
 
                     {props.config.waniKaniVocabDisplay !== 'hide' &&
                       kanji.wk && (
-                        <WaniKanjiLevelTag
-                          level={kanji.wk}
-                          ent={kanji.ent}
-                          selectState={props.selectState}
-                        />
+                        <WaniKanjiLevelTag level={kanji.wk} ent={kanji.ent} />
                       )}
                     {props.config.bunproDisplay && kanji.bv && (
                       <BunproTag data={kanji.bv} type="vocab" />
@@ -230,9 +227,8 @@ export function WordEntry(props: WordEntryProps) {
           <span
             class={classes(
               'tp:text-xl',
-              props.selectState === 'selected'
-                ? 'tp:text-(--selected-reading-highlight)'
-                : 'tp:text-(--reading-highlight)',
+              'tp:text-(--reading-highlight)',
+              'tp:group-data-selected:text-(--selected-reading-highlight)',
               interactive &&
                 'tp:group-hover:text-(--selected-reading-highlight)'
             )}
@@ -283,9 +279,8 @@ export function WordEntry(props: WordEntryProps) {
           <span
             class={classes(
               'tp:text-base',
-              props.selectState === 'selected'
-                ? 'tp:text-(--selected-reading-highlight)'
-                : 'tp:text-(--reading-highlight)',
+              'tp:text-(--reading-highlight)',
+              'tp:group-data-selected:text-(--selected-reading-highlight)',
               interactive &&
                 'tp:group-hover:text-(--selected-reading-highlight)'
             )}
@@ -299,9 +294,8 @@ export function WordEntry(props: WordEntryProps) {
           <span
             class={classes(
               'tp:text-sm',
-              props.selectState === 'selected'
-                ? 'tp:text-(--selected-conj-color)'
-                : 'tp:text-(--conj-color)',
+              'tp:text-(--conj-color)',
+              'tp:group-data-selected:text-(--selected-conj-color)',
               interactive && 'tp:group-hover:text-(--selected-conj-color)'
             )}
             lang={langTag}
@@ -312,11 +306,7 @@ export function WordEntry(props: WordEntryProps) {
       </div>
 
       {!props.config.readingOnly && (
-        <Definitions
-          entry={entry}
-          options={props.config}
-          selectState={props.selectState}
-        />
+        <Definitions entry={entry} options={props.config} />
       )}
     </div>
   );
@@ -330,15 +320,7 @@ function PriorityMark({ priority }: { priority: Array<string> }) {
   return <Star style={highPriority ? 'full' : 'hollow'} />;
 }
 
-function WaniKanjiLevelTag({
-  level,
-  ent,
-  selectState,
-}: {
-  level: number;
-  ent: string;
-  selectState: SelectState;
-}) {
+function WaniKanjiLevelTag({ level, ent }: { level: number; ent: string }) {
   const { t } = useLocale();
   const { interactive } = usePopupOptions();
 
@@ -350,9 +332,8 @@ function WaniKanjiLevelTag({
         'tp:rounded-sm tp:border-solid tp:border',
         'tp:inline-block tp:underline-offset-2 tp:whitespace-nowrap tp:-translate-y-1',
         'tp:before:inline-block tp:before:content-["WK"] tp:before:mr-0.5',
-        selectState === 'selected'
-          ? 'tp:no-overlay:border-(--selected-highlight)'
-          : 'tp:border-(--primary-highlight)',
+        'tp:border-(--primary-highlight)',
+        'tp:no-overlay:group-data-selected:border-(--selected-highlight)',
         ...(interactive
           ? [
               'tp:before:underline tp:before:decoration-dotted tp:decoration-dotted',

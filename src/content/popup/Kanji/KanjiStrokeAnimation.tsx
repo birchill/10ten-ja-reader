@@ -14,7 +14,6 @@ import { classes } from '../../../utils/classes';
 
 export type Props = {
   onClick?: (trigger: 'touch' | 'mouse') => void;
-  selectState: 'unselected' | 'selected' | 'flash';
   st: string;
 };
 
@@ -130,7 +129,7 @@ export function KanjiStrokeAnimation(props: Props) {
     <div class="tp:flex tp:flex-col tp:items-center tp:gap-3">
       <svg
         class={classes(
-          'tp:group',
+          'tp:group/kanji-anim',
           'tp:h-(--tp-text-big-kanji) tp:w-(--tp-text-big-kanji) tp:rounded-md',
           'tp:hover:bg-(--hover-bg)',
           'tp:hover:cursor-pointer',
@@ -140,11 +139,11 @@ export function KanjiStrokeAnimation(props: Props) {
           'tp:hover:transition-none',
           // Ensure any selection colors are applied before fading in the
           // overlay
-          props.selectState === 'selected' &&
-            'tp:no-overlay:text-(--selected-highlight) tp:no-overlay:bg-(--selected-bg)',
+          'tp:no-overlay:group-data-selected:text-(--selected-highlight)',
+          'tp:no-overlay:group-data-selected:bg-(--selected-bg)',
           // Run the flash animation, but not until the overlay has
           // disappeared.
-          props.selectState === 'flash' && 'tp:no-overlay:animate-flash'
+          'tp:no-overlay:group-data-flash:animate-flash'
         )}
         viewBox="0 0 109 109"
         onPointerUp={(evt) => {
@@ -170,12 +169,11 @@ export function KanjiStrokeAnimation(props: Props) {
         </g>
         <g
           class={classes(
-            'tp:stroke-(--primary-highlight) tp:group-hover:stroke-(--selected-highlight)',
+            'tp:stroke-(--primary-highlight) tp:group-hover/kanji-anim:stroke-(--selected-highlight)',
             'tp:transition-colors tp:interactive:duration-100',
             'tp:ease-out',
             'tp:hover:transition-none',
-            props.selectState === 'selected' &&
-              'tp:no-overlay:stroke-(--selected-highlight)'
+            'tp:no-overlay:group-data-selected:stroke-(--selected-highlight)'
           )}
           stroke-width={strokeWidth}
           stroke-linecap="round"

@@ -26,6 +26,7 @@ export function KanjiEntry(props: Props) {
   return (
     <div
       class={classes(
+        'tp:group',
         'tp:flex tp:flex-col tp:gap-3.5 tp:px-5 tp:py-3',
         // Set the -selected / -flash class since we use that we scroll into
         // view any selected item during / after copying.
@@ -36,6 +37,8 @@ export function KanjiEntry(props: Props) {
         props.selectState === 'selected' && '-selected',
         props.selectState === 'flash' && '-flash'
       )}
+      data-selected={props.selectState === 'selected' || undefined}
+      data-flash={props.selectState === 'flash' || undefined}
       ref={kanjiTable}
     >
       <div class="tp:flex tp:items-start tp:gap-[20px]">
@@ -48,7 +51,6 @@ export function KanjiEntry(props: Props) {
 
             props.onStartCopy?.(props.index, trigger);
           }}
-          selectState={props.selectState}
           st={props.entry.st}
         />
         <div class="tp:mt-1.5 tp:grow">
@@ -70,7 +72,6 @@ export function KanjiEntry(props: Props) {
 type KanjiCharacterProps = {
   c: string;
   onClick?: (trigger: 'touch' | 'mouse') => void;
-  selectState: 'unselected' | 'selected' | 'flash';
   st?: string;
 };
 
@@ -80,17 +81,9 @@ function KanjiCharacter(props: KanjiCharacterProps) {
   // There's no way to trigger the animation when we're not in "mouse
   // interactive" mode so just show the static character in that case.
   return props.st && interactive ? (
-    <KanjiStrokeAnimation
-      onClick={props.onClick}
-      selectState={props.selectState}
-      st={props.st}
-    />
+    <KanjiStrokeAnimation onClick={props.onClick} st={props.st} />
   ) : (
-    <StaticKanjiCharacter
-      c={props.c}
-      onClick={props.onClick}
-      selectState={props.selectState}
-    />
+    <StaticKanjiCharacter c={props.c} onClick={props.onClick} />
   );
 }
 
@@ -116,11 +109,11 @@ function StaticKanjiCharacter(props: KanjiCharacterProps) {
           : []),
         // Ensure any selection colors are applied before fading in the
         // overlay
-        props.selectState === 'selected' &&
-          'tp:no-overlay:text-(--selected-highlight) tp:no-overlay:bg-(--selected-bg)',
+        'tp:no-overlay:group-data-selected:text-(--selected-highlight)',
+        'tp:no-overlay:group-data-selected:bg-(--selected-bg)',
         // Run the flash animation, but not until the overlay has
         // disappeared.
-        props.selectState === 'flash' && 'tp:no-overlay:animate-flash'
+        'tp:no-overlay:group-data-flash:animate-flash'
       )}
       lang="ja"
       onPointerUp={(evt) => {

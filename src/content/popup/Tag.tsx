@@ -6,12 +6,10 @@ export function Tag({
   tagType,
   text,
   langTag,
-  selectState,
 }: {
   tagType: string;
   text?: string;
   langTag: string;
-  selectState: 'unselected' | 'selected' | 'flash';
 }) {
   const { interactive } = usePopupOptions();
 
@@ -31,15 +29,10 @@ export function Tag({
         'tp:text-2xs tp:px-1 tp:whitespace-nowrap',
         'tp:rounded-sm tp:border-solid tp:border',
         'tp:bg-[var(--color-tag-bg,transparent)]',
-        ...(selectState === 'selected'
-          ? [
-              'tp:no-overlay:border-(--selected-tag-border)',
-              'tp:no-overlay:text-(--selected-tag-color)',
-            ]
-          : [
-              'tp:border-[var(--color-tag-border,var(--tag-border))]',
-              'tp:text-[var(--color-tag-text-color,var(--text-color))]',
-            ]),
+        'tp:border-[var(--color-tag-border,var(--tag-border))]',
+        'tp:text-[var(--color-tag-text-color,var(--text-color))]',
+        'tp:no-overlay:group-data-selected:border-(--selected-tag-border)',
+        'tp:no-overlay:group-data-selected:text-(--selected-tag-color)',
         interactive &&
           classes(
             'tp:group-hover:border-(--selected-tag-border)',
