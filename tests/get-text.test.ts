@@ -273,6 +273,73 @@ describe('getTextAtPoint', () => {
     assertTextResultEqual(result, 'いうえお', [textNode, 1, 5]);
   });
 
+  it('should find Plex subtitle content', () => {
+    // This doesn't actually properly test Plex subtitle content. In particular,
+    // it doesn't seem to accurately recreate the situation where
+    // document.createPositionFromPoint() fails to pick up `pointer-events:
+    // none` content which is what we observe on the real content. I don't know
+    // why (something to do with abspos?) but it at least covers the hiding of
+    // the overlay element.
+    testDiv.innerHTML = `
+<style>
+.libjass-subs {
+  line-height: 0;
+}
+.libjass-subs, .libjass-subs * {
+  -webkit-animation-fill-mode: both !important;
+  animation-fill-mode: both !important;
+  pointer-events: none;
+}
+.libjass-subs {
+  overflow: hidden;
+}
+</style>
+<div class="PlayerContainer-container-DtCwJl">
+  <div class="Player-fullPlayerContainer-wBDz23">
+    <div class="Subtitles-measure-fffGGG">
+      <div
+        class="Subtitles-renderer-f7uT59 libjass-wrapper"
+        id="id-132"
+        role="alert"
+      >
+        <div
+          class="libjass-subs paused"
+          style="width: 1430px; height: 1013.33px; left: 0px; top: 0px"
+        >
+          <div class="layer layer0">
+            <div class="an an2">
+              <div
+                style="margin: 35.185px 37.24px; min-width: 1355.52px"
+                data-dialogue-id="2-69"
+              >
+                <span style="display: inline-block"
+                  ><span id="testnode" style="font: 48.953px / 56.296px 'Arial', Arial, Helvetica, sans-serif, 'Segoe UI Symbol'; letter-spacing: 0px; opacity: 1; color: rgb(255, 255, 255);">情けなさすぎるわよ</span
+                  ></span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="libjass-font-measure" style="font-family: 'Arial', Arial, Helvetica, sans-serif, 'Segoe UI Symbol'; font-size: 360px;">M</div>
+      </div>
+    </div>
+    <div
+      class="PlayPauseOverlay-overlay-lF71cy PlayPauseOverlay-hiddenCursor-GpErBJ"
+      style="cursor: none; display: block; height: 100%; left: 0; position: absolute; top: 0; width: 100%"
+    ></div>
+  </div>
+</div>`;
+
+    const textNode = testDiv.querySelector('#testnode')!.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result = getTextAtPoint({
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
+    });
+
+    assertTextResultEqual(result, '情けなさすぎるわよ', [textNode, 0, 9]);
+  });
+
   it('should read shadow DOM content', () => {
     // Often custom elements are set to display: contents so we set that here
     const container = document.createElement('div');

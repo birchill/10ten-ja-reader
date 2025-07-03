@@ -79,27 +79,39 @@ export function getCursorPosition({
         continue;
       }
 
-      // Skip elements that are already visible
+      // Skip elements that are already visible, with two exceptions:
       //
-      // We need special handling here to account for "covering links".
+      // 1. We need special handling here to account for "covering links".
       //
-      // Normally we can just check if the current element is invisible or not
-      // but for asahi.com we have a special case where it effectively makes the
-      // covering content invisible by setting the dimensions of a _child_
-      // element to 1x1.
+      //    Normally we can just check if the current element is invisible or
+      //    not but for asahi.com we have a special case where it effectively
+      //    makes the covering content invisible by setting the dimensions of a
+      //    _child_ element to 1x1.
       //
-      // To detect that case we check for a non-auto z-index since that has
-      // proven to be the most reliable indicator of this pattern. If we simply
-      // decide to treat the element as invisible whenever its bounding box
-      // doesn't line up, we'll run this too often and cause a performance
-      // regression when the the cursor is moving around empty space on the Web
-      // page.
+      //    To detect that case we check for a non-auto z-index since that has
+      //    proven to be the most reliable indicator of this pattern. If we
+      //    simply decide to treat the element as invisible whenever its
+      //    bounding box doesn't line up, we'll run this too often and cause a
+      //    performance regression when the cursor is moving around empty space
+      //    on the Web page.
       //
-      // We only do this for the initial lookup for now because so far that's
-      // proved sufficient (and is probably cheaper than trying to perform this
-      // check on every element in the hit list).
+      //    We only do this for the initial lookup for now because so far that's
+      //    proved sufficient (and is probably cheaper than trying to perform
+      //    this check on every element in the hit list).
+      //
+      // 2. For Plex subtitles, there is a Play/Pause overlay element that
+      //    covers the whole screen and is not technically invisible
+      //    (e.g. by having zero opacity etc.), it's simply empty and has no
+      //    background or anything else defined on it.
+      //
+      //    It has a class like `PlayPauseOverlay-overlay-lF71cy` so we could
+      //    just look for that but it's probably a bit more robust to try to
+      //    detect an element with no children and no background.
+      //
       const treatElementAsInvisible =
-        firstElement && getComputedStyle(element).zIndex !== 'auto';
+        firstElement &&
+        (getComputedStyle(element).zIndex !== 'auto' ||
+          isVisiblyEmptyElement(element));
       if (!treatElementAsInvisible && isVisible(element)) {
         continue;
       }
@@ -183,26 +195,52 @@ function getCursorPositionForElement({
     return position;
   }
 
-  // If we have any other kind of node, see if we need to override the
-  // user-select style to get a better result.
-  //
-  // This addresses two issues:
-  //
-  // 1. In Firefox, content with `user-select: all` will cause
-  //    caretPositionFromPoint to return the parent element.
-  //
-  // 2. In Safari, content with `-webkit-user-select: none` will not be found by
-  //    caretRangeFromPoint.
-  //
   if (!isTextNodePosition(position)) {
-    const userSelectResult = lookupPointWithNormalizedUserSelect({
-      point,
-      element,
-    });
+    let adjustedPosition: CursorPosition | null = null;
+
+    // If we have a non-text node, there are a few things we can try to
+    // get a better result.
+    //
+    // 1. For Plex subtitles, the subtitles are rendered inside a `libjass-subs`
+    //    container which has the following CSS:
+    //
+    //    .libjass-subs, .libjass-subs * {
+    //       ...
+    //       pointer-events: none;
+    //    }
+    //
+    //    As a result, `position` will point to the parent element (with class
+    //    `Subtitles-renderer-f7uT59 libjass-wrapper`) and not the text in the
+    //    subtitles.
+    //
+    //    If we're pretty sure we're looking at such subtitles, we should force
+    //    all the descendants to have pointer-events: auto while we do the
+    //    lookup.
+    if (position && isSubtitleContainer(position.offsetNode)) {
+      adjustedPosition = lookupPointWithOverridenPointerEvents({
+        point,
+        element: position.offsetNode,
+      });
+    } else {
+      // 2. Try forcing `user-select: 'text'`
+      //
+      //    This addresses two issues:
+      //
+      //    a. In Firefox, content with `user-select: all` will cause
+      //       caretPositionFromPoint to return the parent element.
+      //
+      //    b. In Safari, content with `-webkit-user-select: none` will not be
+      //       found by caretRangeFromPoint.
+      //
+      adjustedPosition = lookupPointWithNormalizedUserSelect({
+        point,
+        element,
+      });
+    }
 
     // If we got back a text node, prefer it to our previous result
-    if (isTextNodePosition(userSelectResult)) {
-      position = userSelectResult;
+    if (isTextNodePosition(adjustedPosition)) {
+      position = adjustedPosition;
     }
   }
 
@@ -242,6 +280,31 @@ function isVisible(element: Element) {
 
   const { opacity, visibility } = getComputedStyle(element);
   return opacity !== '0' && visibility !== 'hidden';
+}
+
+/** Detect if an element will probably not render anything, even if it's
+ * technically visible. */
+function isVisiblyEmptyElement(element: Element) {
+  // Elements that, even if empty, will render something meaningful
+  const replacedElements = [
+    'IMG',
+    'VIDEO',
+    'CANVAS',
+    'IFRAME',
+    'EMBED',
+    'OBJECT',
+    'INPUT',
+  ];
+
+  return (
+    element instanceof HTMLElement &&
+    !replacedElements.includes(element.tagName) &&
+    !element.hasChildNodes() &&
+    getComputedStyle(element).backgroundColor === 'rgba(0, 0, 0, 0)' &&
+    getComputedStyle(element).backgroundImage === 'none'
+    // We could check for border styles etc. but typically if an element is
+    // simply rendering a border, we still want to treat it as empty.
+  );
 }
 
 function lookupPoint({
@@ -317,6 +380,54 @@ function getVisualOffset({
     bboxIncludesPoint({ bbox: previousCharacterBbox, point })
     ? range.startOffset
     : position.offset;
+}
+
+function isSubtitleContainer(node: Node): node is Element {
+  return (
+    node instanceof Element &&
+    (node.classList.contains('libjass-wrapper') ||
+      Array.from(node.children).some((child) =>
+        child.classList.contains('libjass-subs')
+      ))
+  );
+}
+
+function lookupPointWithOverridenPointerEvents({
+  point,
+  element,
+}: {
+  point: Point;
+  element: Element;
+}): CursorPosition | null {
+  const stylesToRestore = new Map<Element, string | null>();
+  overridePointerEvents(element, stylesToRestore);
+
+  if (!stylesToRestore.size) {
+    return null;
+  }
+
+  const result = lookupPoint({ point, element });
+
+  restoreStyles(stylesToRestore);
+
+  return result;
+}
+
+function overridePointerEvents(
+  element: Element,
+  stylesToRestore: Map<Element, string | null>
+) {
+  if (element instanceof HTMLElement || element instanceof SVGElement) {
+    const { pointerEvents } = getComputedStyle(element);
+    if (pointerEvents === 'none') {
+      stylesToRestore.set(element, element.getAttribute('style'));
+      element.style.setProperty('pointer-events', 'auto', 'important');
+    }
+  }
+
+  for (const child of element.children) {
+    overridePointerEvents(child, stylesToRestore);
+  }
 }
 
 function lookupPointWithNormalizedUserSelect({

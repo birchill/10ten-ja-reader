@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+- Added support for looking up subtitles in Plex video content
+  ([#976](https://github.com/birchill/10ten-ja-reader/pull/976)).
 - Added Shift as a possible keybinding for hold to show
   ([#2409](https://github.com/birchill/10ten-ja-reader/pull/2409)).
 - Fixed a bug when displaying Nelson radicals
