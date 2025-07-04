@@ -79,15 +79,15 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
         }
 
         SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionBundleIdentifier) { error in
-            guard error == nil else {
-                // Insert code to inform the user that something went wrong.
-                return
-            }
-
-            DispatchQueue.main.async {
-                NSApplication.shared.terminate(nil)
+            if let error = error {
+                print("Error launching extension preferences: \(error)")
+            } else {
+                DispatchQueue.main.async {
+                    NSApplication.shared.terminate(nil)
+                }
             }
         }
+
 #endif
     }
 
