@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+## [1.25.0] - 2025-07-04
+
 - Added support for looking up subtitles in Plex video content
   ([#976](https://github.com/birchill/10ten-ja-reader/pull/976)).
 - Added Shift as a possible keybinding for hold to show
@@ -1269,7 +1271,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.24.2...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.25.0...HEAD
+[1.25.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.24.2...v1.25.0
 [1.24.2]: https://github.com/birchill/10ten-ja-reader/compare/v1.24.1...v1.24.2
 [1.24.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.24.0...v1.24.1
 [1.24.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.23.0...v1.24.0
