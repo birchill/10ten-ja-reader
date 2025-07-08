@@ -65,7 +65,9 @@ function KanjiComponent(props: { comp: KanjiResult['comp'][0] }) {
       {comp.base && <BaseRadical {...comp.base} />}
       {comp.sub?.length && (
         <div class="tp:col-start-2 tp:col-end-4 tp:-mx-3 tp:grid tp:grid-cols-[max-content_max-content_auto] tp:gap-y-1 tp:pr-3 tp:pl-2">
-          {comp.sub?.map((c) => <KanjiComponent key={c.c} comp={c} />)}
+          {comp.sub?.map((c) => (
+            <KanjiComponent key={c.c} comp={c} />
+          ))}
         </div>
       )}
     </>

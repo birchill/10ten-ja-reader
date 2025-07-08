@@ -786,7 +786,6 @@ app.
 ## [0.4.0] - 2021-04-08
 
 - Switched to using IndexedDB database for looking up words
-
   - **Non-English definitions are now supported**
   - Rikaichamp now uses much less memory
   - All dictionaries are automatically updated weekly by downloading
