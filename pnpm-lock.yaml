@@ -205,8 +205,8 @@ importers:
         specifier: 5.99.9
         version: 5.99.9
       webpack-bugsnag-plugins:
-        specifier: 2.2.2
-        version: 2.2.2(webpack@5.99.9)
+        specifier: 2.2.3
+        version: 2.2.3(webpack@5.99.9)
       webpack-preprocessor:
         specifier: 0.1.12
         version: 0.1.12
@@ -5875,8 +5875,8 @@ packages:
     resolution: {integrity: sha512-VwddBukDzu71offAQR975unBIGqfKZpM+8ZX6ySk8nYhVoo5CYaZyzt3YBvYtRtO+aoGlqxPg/B87NGVZ/fu6g==}
     engines: {node: '>=12'}
 
-  webpack-bugsnag-plugins@2.2.2:
-    resolution: {integrity: sha512-ICsCiXA/8JMMmKOL3CJigFZEmYJGDuFuDZfZraOzDhwKgMDi411JFnE8/L5PfEhbwaOzhgn/4raU0bCyy+1W9Q==}
+  webpack-bugsnag-plugins@2.2.3:
+    resolution: {integrity: sha512-hL8+iVqJ7Gns6v8uyT4aKL4FlyqdUpat7JxUVjlHx6R7gmODuRwFckupaKMgz54mlwDR2P/wjmTfuE6Bn42Vzg==}
     peerDependencies:
       webpack: ^3.0.0 || ^4.0.0 || ^5.0.0
 
@@ -12110,7 +12110,7 @@ snapshots:
 
   webidl-conversions@7.0.0: {}
 
-  webpack-bugsnag-plugins@2.2.2(webpack@5.99.9):
+  webpack-bugsnag-plugins@2.2.3(webpack@5.99.9):
     dependencies:
       '@bugsnag/cli': 3.0.0
       run-parallel-limit: 1.1.0
