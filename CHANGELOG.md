@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- (Safari) Fixed random jumps in the words list
+  ([#2457](https://github.com/birchill/10ten-ja-reader/issues/2457)).
+
 ## [1.25.0] - 2025-07-04
 
 - Added support for looking up subtitles in Plex video content
