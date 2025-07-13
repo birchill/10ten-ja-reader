@@ -62,7 +62,7 @@ importers:
         version: 7.0.0(release-it@19.0.3(@types/node@22.7.4))
       '@rspack/cli':
         specifier: 1.4.6
-        version: 1.4.6(@rspack/core@1.4.6)(@types/express@4.17.21)(webpack@5.99.9)
+        version: 1.4.6(@rspack/core@1.4.6)(@types/express@4.17.21)(webpack@5.100.1)
       '@rspack/core':
         specifier: 1.4.6
         version: 1.4.6
@@ -101,7 +101,7 @@ importers:
         version: 5.2.1
       css-loader:
         specifier: 7.1.2
-        version: 7.1.2(@rspack/core@1.4.6)(webpack@5.99.9)
+        version: 7.1.2(@rspack/core@1.4.6)(webpack@5.100.1)
       eslint:
         specifier: 9.30.1
         version: 9.30.1(jiti@2.4.2)
@@ -119,10 +119,10 @@ importers:
         version: 12.5.3
       file-loader:
         specifier: 6.2.0
-        version: 6.2.0(webpack@5.99.9)
+        version: 6.2.0(webpack@5.100.1)
       fork-ts-checker-webpack-plugin:
         specifier: 9.1.0
-        version: 9.1.0(typescript@5.8.3)(webpack@5.99.9)
+        version: 9.1.0(typescript@5.8.3)(webpack@5.100.1)
       globals:
         specifier: 16.3.0
         version: 16.3.0
@@ -149,7 +149,7 @@ importers:
         version: 8.5.6
       postcss-loader:
         specifier: 8.1.1
-        version: 8.1.1(@rspack/core@1.4.6)(postcss@8.5.6)(typescript@5.8.3)(webpack@5.99.9)
+        version: 8.1.1(@rspack/core@1.4.6)(postcss@8.5.6)(typescript@5.8.3)(webpack@5.100.1)
       prettier:
         specifier: 3.6.2
         version: 3.6.2
@@ -170,7 +170,7 @@ importers:
         version: 7.0.0
       react-cosmos-plugin-rspack:
         specifier: 2.0.0
-        version: 2.0.0(@rspack/core@1.4.6)(react-cosmos@7.0.0(@types/express@4.17.21))(webpack@5.99.9)
+        version: 2.0.0(@rspack/core@1.4.6)(react-cosmos@7.0.0(@types/express@4.17.21))(webpack@5.100.1)
       release-it:
         specifier: 19.0.3
         version: 19.0.3(@types/node@22.7.4)
@@ -179,13 +179,13 @@ importers:
         version: 4.1.8
       source-map-loader:
         specifier: 5.0.0
-        version: 5.0.0(webpack@5.99.9)
+        version: 5.0.0(webpack@5.100.1)
       tailwindcss:
         specifier: 4.1.11
         version: 4.1.11
       terser-webpack-plugin:
         specifier: 5.3.14
-        version: 5.3.14(webpack@5.99.9)
+        version: 5.3.14(webpack@5.100.1)
       tsx:
         specifier: 4.20.3
         version: 4.20.3
@@ -202,17 +202,17 @@ importers:
         specifier: 2.11.0
         version: 2.11.0(body-parser@1.20.3)
       webpack:
-        specifier: 5.99.9
-        version: 5.99.9
+        specifier: 5.100.1
+        version: 5.100.1
       webpack-bugsnag-plugins:
         specifier: 2.2.3
-        version: 2.2.3(webpack@5.99.9)
+        version: 2.2.3(webpack@5.100.1)
       webpack-preprocessor:
         specifier: 0.1.12
         version: 0.1.12
       webpack-utf8-bom:
         specifier: 1.4.0
-        version: 1.4.0(webpack@5.99.9)
+        version: 1.4.0(webpack@5.100.1)
       xmlbuilder2:
         specifier: 3.1.1
         version: 3.1.1
@@ -1668,6 +1668,9 @@ packages:
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
 
+  '@types/estree@1.0.8':
+    resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
+
   '@types/express-serve-static-core@4.19.6':
     resolution: {integrity: sha512-N4LZ2xG7DatVqhCZzOGb1Yi5lMbXSZcmdLDe9EzSndPV2HpWYWzRbaerl2n27irrm94EPpprqa8KpskPT085+A==}
 
@@ -1947,6 +1950,12 @@ packages:
   accepts@1.3.8:
     resolution: {integrity: sha512-PYAthTa2m2VKxuvSD3DPC/Gy+U+sOA1LAuT8mkmRuvw+NACSaeXEQ+NHcVF7rONl6qcaxV3Uuemwawk+7+SJLw==}
     engines: {node: '>= 0.6'}
+
+  acorn-import-phases@1.0.3:
+    resolution: {integrity: sha512-jtKLnfoOzm28PazuQ4dVBcE9Jeo6ha1GAJvq3N0LlNOszmTfx+wSycBehn+FN0RnyeR77IBxN/qVYMw0Rlj0Xw==}
+    engines: {node: '>=10.13.0'}
+    peerDependencies:
+      acorn: ^8.14.0
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -5957,8 +5966,8 @@ packages:
   webpack-preprocessor@0.1.12:
     resolution: {integrity: sha512-zqwSznL718VWQuVWyS86kne7C8aJnQVKBzMfsSAt4NHEExqyEPBVZk90aGv0LjKgCJ/Nl0nf0Fo1FnApqm8Hqw==}
 
-  webpack-sources@3.2.3:
-    resolution: {integrity: sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==}
+  webpack-sources@3.3.3:
+    resolution: {integrity: sha512-yd1RBzSGanHkitROoPFd6qsrxt+oFhg/129YzheDGqeustzX0vTZJZsSsQjVQC4yzBQ56K55XU8gaNCtIzOnTg==}
     engines: {node: '>=10.13.0'}
 
   webpack-utf8-bom@1.4.0:
@@ -5966,8 +5975,8 @@ packages:
     peerDependencies:
       webpack: ^4.x.x || ^5.0.0
 
-  webpack@5.99.9:
-    resolution: {integrity: sha512-brOPwM3JnmOa+7kd3NsmOUOwbDAj8FT9xDsG3IW0MgbN9yZV7Oi/s/+MNQ/EcSMqw7qfoRyXPoeEWT8zLVdVGg==}
+  webpack@5.100.1:
+    resolution: {integrity: sha512-YJB/ESPUe2Locd0NKXmw72Dx8fZQk1gTzI6rc9TAT4+Sypbnhl8jd8RywB1bDsDF9Dy1RUR7gn3q/ZJTd0OZZg==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     peerDependencies:
@@ -7215,11 +7224,11 @@ snapshots:
       '@rspack/binding-win32-ia32-msvc': 1.4.6
       '@rspack/binding-win32-x64-msvc': 1.4.6
 
-  '@rspack/cli@1.4.6(@rspack/core@1.4.6)(@types/express@4.17.21)(webpack@5.99.9)':
+  '@rspack/cli@1.4.6(@rspack/core@1.4.6)(@types/express@4.17.21)(webpack@5.100.1)':
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
       '@rspack/core': 1.4.6
-      '@rspack/dev-server': 1.1.3(@rspack/core@1.4.6)(@types/express@4.17.21)(webpack@5.99.9)
+      '@rspack/dev-server': 1.1.3(@rspack/core@1.4.6)(@types/express@4.17.21)(webpack@5.100.1)
       colorette: 2.0.20
       exit-hook: 4.0.0
       interpret: 3.1.1
@@ -7241,13 +7250,13 @@ snapshots:
       '@rspack/binding': 1.4.6
       '@rspack/lite-tapable': 1.0.1
 
-  '@rspack/dev-server@1.1.3(@rspack/core@1.4.6)(@types/express@4.17.21)(webpack@5.99.9)':
+  '@rspack/dev-server@1.1.3(@rspack/core@1.4.6)(@types/express@4.17.21)(webpack@5.100.1)':
     dependencies:
       '@rspack/core': 1.4.6
       chokidar: 3.6.0
       http-proxy-middleware: 2.0.9(@types/express@4.17.21)
       p-retry: 6.2.0
-      webpack-dev-server: 5.2.2(webpack@5.99.9)
+      webpack-dev-server: 5.2.2(webpack@5.100.1)
       ws: 8.18.1
     transitivePeerDependencies:
       - '@types/express'
@@ -7398,14 +7407,16 @@ snapshots:
   '@types/eslint-scope@3.7.7':
     dependencies:
       '@types/eslint': 9.6.1
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.8
 
   '@types/eslint@9.6.1':
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.8
       '@types/json-schema': 7.0.15
 
   '@types/estree@1.0.6': {}
+
+  '@types/estree@1.0.8': {}
 
   '@types/express-serve-static-core@4.19.6':
     dependencies:
@@ -7787,6 +7798,10 @@ snapshots:
     dependencies:
       mime-types: 2.1.35
       negotiator: 0.6.3
+
+  acorn-import-phases@1.0.3(acorn@8.15.0):
+    dependencies:
+      acorn: 8.15.0
 
   acorn-jsx@5.3.2(acorn@8.15.0):
     dependencies:
@@ -8482,7 +8497,7 @@ snapshots:
     dependencies:
       type-fest: 1.4.0
 
-  css-loader@7.1.2(@rspack/core@1.4.6)(webpack@5.99.9):
+  css-loader@7.1.2(@rspack/core@1.4.6)(webpack@5.100.1):
     dependencies:
       icss-utils: 5.1.0(postcss@8.5.6)
       postcss: 8.5.6
@@ -8494,7 +8509,7 @@ snapshots:
       semver: 7.6.3
     optionalDependencies:
       '@rspack/core': 1.4.6
-      webpack: 5.99.9
+      webpack: 5.100.1
 
   css-select@5.1.0:
     dependencies:
@@ -9278,11 +9293,11 @@ snapshots:
     dependencies:
       flat-cache: 4.0.1
 
-  file-loader@6.2.0(webpack@5.99.9):
+  file-loader@6.2.0(webpack@5.100.1):
     dependencies:
       loader-utils: 2.0.4
       schema-utils: 3.3.0
-      webpack: 5.99.9
+      webpack: 5.100.1
 
   fill-range@7.1.1:
     dependencies:
@@ -9341,7 +9356,7 @@ snapshots:
       cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
-  fork-ts-checker-webpack-plugin@9.1.0(typescript@5.8.3)(webpack@5.99.9):
+  fork-ts-checker-webpack-plugin@9.1.0(typescript@5.8.3)(webpack@5.100.1):
     dependencies:
       '@babel/code-frame': 7.26.2
       chalk: 4.1.2
@@ -9356,7 +9371,7 @@ snapshots:
       semver: 7.7.1
       tapable: 2.2.1
       typescript: 5.8.3
-      webpack: 5.99.9
+      webpack: 5.100.1
 
   formatly@0.2.4:
     dependencies:
@@ -10902,7 +10917,7 @@ snapshots:
 
   possible-typed-array-names@1.0.0: {}
 
-  postcss-loader@8.1.1(@rspack/core@1.4.6)(postcss@8.5.6)(typescript@5.8.3)(webpack@5.99.9):
+  postcss-loader@8.1.1(@rspack/core@1.4.6)(postcss@8.5.6)(typescript@5.8.3)(webpack@5.100.1):
     dependencies:
       cosmiconfig: 9.0.0(typescript@5.8.3)
       jiti: 1.21.6
@@ -10910,7 +10925,7 @@ snapshots:
       semver: 7.6.3
     optionalDependencies:
       '@rspack/core': 1.4.6
-      webpack: 5.99.9
+      webpack: 5.100.1
     transitivePeerDependencies:
       - typescript
 
@@ -11078,12 +11093,12 @@ snapshots:
 
   react-cosmos-plugin-boolean-input@7.0.0: {}
 
-  react-cosmos-plugin-rspack@2.0.0(@rspack/core@1.4.6)(react-cosmos@7.0.0(@types/express@4.17.21))(webpack@5.99.9):
+  react-cosmos-plugin-rspack@2.0.0(@rspack/core@1.4.6)(react-cosmos@7.0.0(@types/express@4.17.21))(webpack@5.100.1):
     dependencies:
       '@rspack/core': 1.4.6
       react-cosmos: 7.0.0(@types/express@4.17.21)
       react-cosmos-dom: 7.0.0
-      webpack-dev-middleware: 7.4.2(webpack@5.99.9)
+      webpack-dev-middleware: 7.4.2(webpack@5.100.1)
       webpack-hot-middleware: 2.26.1
     transitivePeerDependencies:
       - webpack
@@ -11561,11 +11576,11 @@ snapshots:
 
   source-map-js@1.2.1: {}
 
-  source-map-loader@5.0.0(webpack@5.99.9):
+  source-map-loader@5.0.0(webpack@5.100.1):
     dependencies:
       iconv-lite: 0.6.3
       source-map-js: 1.2.1
-      webpack: 5.99.9
+      webpack: 5.100.1
 
   source-map-support@0.5.21:
     dependencies:
@@ -11804,14 +11819,14 @@ snapshots:
       type-fest: 2.19.0
       unique-string: 3.0.0
 
-  terser-webpack-plugin@5.3.14(webpack@5.99.9):
+  terser-webpack-plugin@5.3.14(webpack@5.100.1):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       jest-worker: 27.5.1
       schema-utils: 4.3.0
       serialize-javascript: 6.0.2
       terser: 5.34.1
-      webpack: 5.99.9
+      webpack: 5.100.1
 
   terser@5.34.1:
     dependencies:
@@ -12222,11 +12237,11 @@ snapshots:
 
   webidl-conversions@7.0.0: {}
 
-  webpack-bugsnag-plugins@2.2.3(webpack@5.99.9):
+  webpack-bugsnag-plugins@2.2.3(webpack@5.100.1):
     dependencies:
       '@bugsnag/cli': 3.0.0
       run-parallel-limit: 1.1.0
-      webpack: 5.99.9
+      webpack: 5.100.1
 
   webpack-bundle-analyzer@4.10.2:
     dependencies:
@@ -12246,7 +12261,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  webpack-dev-middleware@7.4.2(webpack@5.99.9):
+  webpack-dev-middleware@7.4.2(webpack@5.100.1):
     dependencies:
       colorette: 2.0.20
       memfs: 4.12.0
@@ -12255,9 +12270,9 @@ snapshots:
       range-parser: 1.2.1
       schema-utils: 4.3.2
     optionalDependencies:
-      webpack: 5.99.9
+      webpack: 5.100.1
 
-  webpack-dev-server@5.2.2(webpack@5.99.9):
+  webpack-dev-server@5.2.2(webpack@5.100.1):
     dependencies:
       '@types/bonjour': 3.5.13
       '@types/connect-history-api-fallback': 1.5.4
@@ -12285,10 +12300,10 @@ snapshots:
       serve-index: 1.9.1
       sockjs: 0.3.24
       spdy: 4.0.2
-      webpack-dev-middleware: 7.4.2(webpack@5.99.9)
+      webpack-dev-middleware: 7.4.2(webpack@5.100.1)
       ws: 8.18.1
     optionalDependencies:
-      webpack: 5.99.9
+      webpack: 5.100.1
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -12305,21 +12320,22 @@ snapshots:
     dependencies:
       lodash: 4.17.21
 
-  webpack-sources@3.2.3: {}
+  webpack-sources@3.3.3: {}
 
-  webpack-utf8-bom@1.4.0(webpack@5.99.9):
+  webpack-utf8-bom@1.4.0(webpack@5.100.1):
     dependencies:
-      webpack: 5.99.9
+      webpack: 5.100.1
 
-  webpack@5.99.9:
+  webpack@5.100.1:
     dependencies:
       '@types/eslint-scope': 3.7.7
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.8
       '@types/json-schema': 7.0.15
       '@webassemblyjs/ast': 1.14.1
       '@webassemblyjs/wasm-edit': 1.14.1
       '@webassemblyjs/wasm-parser': 1.14.1
-      acorn: 8.14.0
+      acorn: 8.15.0
+      acorn-import-phases: 1.0.3(acorn@8.15.0)
       browserslist: 4.24.0
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.18.1
@@ -12334,9 +12350,9 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.2
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.14(webpack@5.99.9)
+      terser-webpack-plugin: 5.3.14(webpack@5.100.1)
       watchpack: 2.4.2
-      webpack-sources: 3.2.3
+      webpack-sources: 3.3.3
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild
