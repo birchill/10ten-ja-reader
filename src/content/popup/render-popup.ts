@@ -119,7 +119,7 @@ export function renderPopup(
         contentContainer.append(
           html(
             'div',
-            { class: 'expandable tp:snap-y tp:snap-mandatory' },
+            { class: 'expandable' },
             renderWordEntries({
               entries: resultToShow.data,
               matchLen: resultToShow.matchLen,
