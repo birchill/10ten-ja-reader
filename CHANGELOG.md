@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+## [1.25.1] - 2025-07-22
+
 - (Safari) Fixed random jumps in the words list
   ([#2457](https://github.com/birchill/10ten-ja-reader/issues/2457)).
 
@@ -1273,7 +1275,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.25.0...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.25.1...HEAD
+[1.25.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.25.0...v1.25.1
 [1.25.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.24.2...v1.25.0
 [1.24.2]: https://github.com/birchill/10ten-ja-reader/compare/v1.24.1...v1.24.2
 [1.24.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.24.0...v1.24.1
