@@ -476,7 +476,11 @@ function getExtConfig(options) {
   if (options.uploadToBugsnag && process.env.BUGSNAG_API_KEY) {
     plugins.push(
       new BugsnagBuildReporterPlugin(
-        { apiKey: process.env.BUGSNAG_API_KEY, appVersion: pjson.version },
+        {
+          apiKey: process.env.BUGSNAG_API_KEY,
+          appVersion: pjson.version,
+          logLevel: 'debug',
+        },
         {}
       )
     );
@@ -487,6 +491,7 @@ function getExtConfig(options) {
           appVersion: pjson.version,
           ignoredBundleExtensions: ['.css', '.json', '.idx', '.svg', '.html'],
           publicPath: `https://github.com/birchill/10ten-ja-reader/releases/download/v${pjson.version}/`,
+          logLevel: 'debug',
           overwrite: true,
         },
         {}
