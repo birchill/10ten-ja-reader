@@ -109,7 +109,7 @@
     "knip": "5.62.0",
     "mocha": "11.7.1",
     "playwright": "1.54.2",
-    "playwright-test": "14.1.11",
+    "playwright-test": "14.1.12",
     "postcss": "8.5.6",
     "postcss-loader": "8.1.1",
     "prettier": "3.6.2",
