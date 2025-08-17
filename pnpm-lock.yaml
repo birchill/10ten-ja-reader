@@ -21,8 +21,8 @@ importers:
         specifier: 1.6.0
         version: 1.6.0
       classname-variants:
-        specifier: 1.5.0
-        version: 1.5.0
+        specifier: 1.6.0
+        version: 1.6.0
       husky:
         specifier: 9.1.7
         version: 9.1.7
@@ -2287,8 +2287,8 @@ packages:
   citty@0.1.6:
     resolution: {integrity: sha512-tskPPKEs8D2KPafUypv2gxwJP8h/OaJmC82QQGGDQcHvXX43xF2VDACcJVmZ0EuSxkpO9Kc4MlrA3q0+FG58AQ==}
 
-  classname-variants@1.5.0:
-    resolution: {integrity: sha512-wYrz9JlKUvR1YD1+ZXyUeKIqKowdOOMybQiz7ehTYqfzTxZZmb0B+p92hS9M5RvcZ1RnCvcweatWMPxAC4+RmA==}
+  classname-variants@1.6.0:
+    resolution: {integrity: sha512-Pe3sXt0TZyM39guUlYQ1HtvJqAi4g+FbisH4utk7Qf+kTvT9zEGyqTi39MccaQfmzx0WTedQP6wyW64VNuHIcw==}
 
   cli-boxes@3.0.0:
     resolution: {integrity: sha512-/lzGpEWL/8PfI0BmBOPRwp0c/wFNX1RdUML3jK/RcSBA9T8mZDdQpqYBKtCFTOfQbwPqWEOpjqW+Fnayc0969g==}
@@ -8048,7 +8048,7 @@ snapshots:
     dependencies:
       consola: 3.4.2
 
-  classname-variants@1.5.0: {}
+  classname-variants@1.6.0: {}
 
   cli-boxes@3.0.0: {}
 
