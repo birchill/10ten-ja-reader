@@ -36,7 +36,7 @@ async function main() {
     throw err;
   });
 
-  const finishWritePromise = new Promise((resolve) => {
+  const finishWritePromise = new Promise<void>((resolve) => {
     zipFile.on('close', resolve);
   });
 
