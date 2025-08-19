@@ -2,8 +2,6 @@ import type { KnipConfig } from 'knip';
 
 const config: KnipConfig = {
   entry: [
-    // Utility script used by update docs pages.
-    'docs/update/update.js',
     // A utility we used to generate all the icon variations once that might yet
     // be useful again some day.
     'scripts/generate-icons.ts',
