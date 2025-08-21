@@ -20,7 +20,9 @@ const SUPPORTED_REFERENCES = [
   'conning',
   // New Japanese-English Character Dictionary
   'halpern_njecd',
-  // Learners Dictionary 2nd ed.
+  // Halpern's Kodansha Kanji Dictionary (2013)
+  'halpern_kkd',
+  // Kodansha Learners Dictionary 2nd ed.
   'halpern_kkld_2ed',
   // Remembering the Kanji (6th ed.)
   'heisig6',
@@ -110,12 +112,17 @@ const REFERENCE_LABELS: { [key in NotLocalizedReferences]: ReferenceLabel } = {
     lang: 'en',
   },
   halpern_njecd: {
-    full: 'Halpern - New Japanese-English Character Dictionary',
-    short: 'Halpern',
+    full: "NTC's New Japanese-English Character Dictionary (Halpern)",
+    short: 'NTC',
+    lang: 'en',
+  },
+  halpern_kkd: {
+    full: 'The Kodansha Kanji Dictionary (Halpbern)',
+    short: 'Kodansha Kanji Dictionary',
     lang: 'en',
   },
   halpern_kkld_2ed: {
-    full: "Kanji Learner's Dictionary (Halpbern, Kodansha, 2nd ed.)",
+    full: "The Kodansha Kanji Learner's Dictionary (Halpbern, 2nd ed.)",
     short: "Kanji Learner's Dictionary",
     lang: 'en',
   },
