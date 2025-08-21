@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- Added references for
+  [The Kodansha Kanji Dictionary](https://www.kanji.org/dictionaries/KKD/kaneirev.htm).
+
 ## [1.25.1] - 2025-07-22
 
 - (Safari) Fixed random jumps in the words list
