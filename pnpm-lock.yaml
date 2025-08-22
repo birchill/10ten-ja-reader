@@ -97,8 +97,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       chai:
-        specifier: 5.2.1
-        version: 5.2.1
+        specifier: 6.0.1
+        version: 6.0.1
       css-loader:
         specifier: 7.1.2
         version: 7.1.2(@rspack/core@1.4.11)(webpack@5.101.3)
@@ -2179,6 +2179,10 @@ packages:
 
   chai@5.2.1:
     resolution: {integrity: sha512-5nFxhUrX0PqtyogoYOA8IPswy5sZFTOsBFl/9bNsmDLgsxYTzSZQJDPppDnZPTQbzSEm0hqGjWPzRemQCYbD6A==}
+    engines: {node: '>=18'}
+
+  chai@6.0.1:
+    resolution: {integrity: sha512-/JOoU2//6p5vCXh00FpNgtlw0LjvhGttaWc+y7wpW9yjBm3ys0dI8tSKZxIOgNruz5J0RleccatSIC3uxEZP0g==}
     engines: {node: '>=18'}
 
   chalk@2.4.2:
@@ -7835,6 +7839,8 @@ snapshots:
       deep-eql: 5.0.2
       loupe: 3.2.0
       pathval: 2.0.1
+
+  chai@6.0.1: {}
 
   chalk@2.4.2:
     dependencies:
