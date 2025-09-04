@@ -4,7 +4,7 @@ import browser, { type Commands } from 'webextension-polyfill';
 
 import type { Config } from '../common/config';
 import { useLocale } from '../common/i18n';
-import { StoredKeyboardKeys } from '../common/popup-keys';
+import type { StoredKeyboardKeys } from '../common/popup-keys';
 import { isChromium, isEdge, isMac, isSafari } from '../utils/ua-utils';
 
 import { KeyboardSettingsForm } from './KeyboardSettingsForm';

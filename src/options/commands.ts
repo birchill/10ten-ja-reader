@@ -49,7 +49,7 @@ export class CommandError extends Error {
   constructor(
     code: string,
     substitutions?: string | Array<string> | undefined,
-    ...params: any[]
+    ...params: Array<any>
   ) {
     super(...params);
     Object.setPrototypeOf(this, CommandError.prototype);

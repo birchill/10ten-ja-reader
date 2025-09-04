@@ -1,4 +1,4 @@
-import { ShogiMeta } from '../../shogi';
+import type { ShogiMeta } from '../../shogi';
 
 import { ShogiInfo } from './ShogiInfo';
 

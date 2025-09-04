@@ -1,8 +1,9 @@
 import { useState } from 'preact/hooks';
 import { useSelect } from 'react-cosmos/client';
 
-import { DbLanguageId, dbLanguages } from '../common/db-languages';
-import { ReferenceAbbreviation } from '../common/refs';
+import type { DbLanguageId } from '../common/db-languages';
+import { dbLanguages } from '../common/db-languages';
+import type { ReferenceAbbreviation } from '../common/refs';
 
 import { KanjiReferenceSettingsForm } from './KanjiReferenceSettingsForm';
 import './options.css';
@@ -11,7 +12,7 @@ export default function KanjiReferenceSettingsFormFixture() {
   const [dictLang] = useSelect<DbLanguageId>('dictLang', {
     // I suspect the React Cosmos typings here are incorrect with regard to
     // constness.
-    options: dbLanguages as unknown as DbLanguageId[],
+    options: dbLanguages as unknown as Array<DbLanguageId>,
     defaultValue: 'en',
   });
 

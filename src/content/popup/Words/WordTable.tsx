@@ -2,24 +2,25 @@ import { Fragment } from 'preact';
 import { useRef } from 'preact/hooks';
 
 import type { WordResult } from '../../../background/search-result';
-import {
+import type {
   ContentConfigParams,
   FontSize,
 } from '../../../common/content-config-params';
 import { classes } from '../../../utils/classes';
 
-import { SelectionMeta } from '../../meta';
-import { NamePreview as QueryNamePreview } from '../../query';
+import type { SelectionMeta } from '../../meta';
+import type { NamePreview as QueryNamePreview } from '../../query';
 
 import { MetadataContainer } from '../Metadata/MetadataContainer';
-import { CopyState } from '../copy-state';
+import type { CopyState } from '../copy-state';
 import { usePopupOptions } from '../options-context';
 import { getSelectedIndex } from '../selected-index';
 import { containerHasSelectedText } from '../selection';
-import { StartCopyCallback } from '../show-popup';
+import type { StartCopyCallback } from '../show-popup';
 
 import { NamePreview } from './NamePreview';
-import { WordEntry, WordEntryConfig } from './WordEntry';
+import type { WordEntryConfig } from './WordEntry';
+import { WordEntry } from './WordEntry';
 
 type WordTableConfig = WordEntryConfig &
   Pick<ContentConfigParams, 'preferredUnits' | 'fx'>;

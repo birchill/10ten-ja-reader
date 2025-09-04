@@ -48,32 +48,28 @@
 import Bugsnag from '@birchill/bugsnag-zero';
 import { AbortError, allDataSeries } from '@birchill/jpdict-idb';
 import * as s from 'superstruct';
-import browser, { Runtime, Tabs } from 'webextension-polyfill';
+import type { Runtime, Tabs } from 'webextension-polyfill';
+import browser from 'webextension-polyfill';
 
 import '../../manifest.json.src';
 
 import { Config } from '../common/config';
-import {
-  DbListenerMessage,
-  notifyDbStateUpdated,
-} from '../common/db-listener-messages';
+import type { DbListenerMessage } from '../common/db-listener-messages';
+import { notifyDbStateUpdated } from '../common/db-listener-messages';
 import { startBugsnag } from '../utils/bugsnag';
 import { omit } from '../utils/omit';
-import { Split } from '../utils/type-helpers';
+import type { Split } from '../utils/type-helpers';
 
 import TabManager from './all-tab-manager';
-import {
-  BackgroundRequestSchema,
-  SearchOtherRequest,
-  SearchRequest,
-} from './background-request';
+import type { SearchOtherRequest, SearchRequest } from './background-request';
+import { BackgroundRequestSchema } from './background-request';
 import { setDefaultToolbarIcon, updateBrowserAction } from './browser-action';
 import { calculateEraDateTimeSpan } from './calculate-date';
 import { registerMenuListeners, updateContextMenus } from './context-menus';
 import { FxFetcher } from './fx-fetcher';
 import { isCurrentTabEnabled } from './is-current-tab-enabled';
+import type { JpdictStateWithFallback } from './jpdict';
 import {
-  JpdictStateWithFallback,
   cancelUpdateDb,
   deleteDb,
   initDb,
@@ -84,7 +80,7 @@ import {
   updateDb,
 } from './jpdict';
 import { shouldRequestPersistentStorage } from './quota-management';
-import { SearchOtherResult, SearchWordsResult } from './search-result';
+import type { SearchOtherResult, SearchWordsResult } from './search-result';
 
 //
 // Setup bugsnag

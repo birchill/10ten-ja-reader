@@ -1,4 +1,4 @@
-import { JpdictState } from '../background/jpdict';
+import type { JpdictState } from '../background/jpdict';
 
 export const notifyDbStateUpdated = (state: JpdictState) => ({
   type: 'dbstateupdated' as const,

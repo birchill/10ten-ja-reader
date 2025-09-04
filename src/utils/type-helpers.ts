@@ -5,7 +5,7 @@ export type Split<
   D extends string,
 > = S extends `${infer T}${D}${infer U}` ? [T, ...Split<U, D>] : [S];
 
-export type Entries<T> = { [K in keyof T]: [K, T[K]] }[keyof T][];
+export type Entries<T> = Array<{ [K in keyof T]: [K, T[K]] }[keyof T]>;
 
 /**
  * Intersection of T & U but with the types of U being used where they overlap.

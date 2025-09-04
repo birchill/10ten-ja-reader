@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill';
 
-import { Point } from '../utils/geometry';
-import { WithRequired } from '../utils/type-helpers';
+import type { Point } from '../utils/geometry';
+import type { WithRequired } from '../utils/type-helpers';
 
 export type IframeSearchParams = {
   frameId?: number;

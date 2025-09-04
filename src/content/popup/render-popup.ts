@@ -1,18 +1,18 @@
 /// <reference path="../../common/css.d.ts" />
 import type { FontFace, FontSize } from '../../common/content-config-params';
 import { html } from '../../utils/builder';
-import { Point } from '../../utils/geometry';
+import type { Point } from '../../utils/geometry';
 import { getThemeClass } from '../../utils/themes';
 
 import { getOrCreateEmptyContainer } from '../content-container';
-import { DisplayMode } from '../popup-state';
+import type { DisplayMode } from '../popup-state';
 import { LookupPuckId } from '../puck';
-import { QueryResult } from '../query';
+import type { QueryResult } from '../query';
 
 import { renderArrow } from './arrow';
 import { renderCloseButton } from './close';
 import { renderCopyOverlay } from './copy-overlay';
-import { CopyState } from './copy-state';
+import type { CopyState } from './copy-state';
 import { updateExpandable } from './expandable';
 import { addFontStyles, removeFontStyles } from './font-styles';
 import { renderKanjiEntries } from './kanji';
@@ -20,7 +20,7 @@ import { renderMetadata } from './metadata';
 import { renderNamesEntries } from './names';
 import { getPopupContainer } from './popup-container';
 import popupStyles from './popup.css?inline';
-import { ShowPopupOptions } from './show-popup';
+import type { ShowPopupOptions } from './show-popup';
 import { renderCopyDetails, renderUpdatingStatus } from './status';
 import { onHorizontalSwipe } from './swipe';
 import { renderTabBar, showWordsTab } from './tabs';

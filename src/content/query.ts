@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill';
 
-import { BackgroundRequest } from '../background/background-request';
-import {
+import type { BackgroundRequest } from '../background/background-request';
+import type {
   KanjiSearchResult,
   NameResult,
   NameSearchResult,

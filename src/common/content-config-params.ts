@@ -1,4 +1,5 @@
-import { PuckState } from './puck-state';
+import type { PuckState } from './puck-state';
+import type { ReferenceAbbreviation } from './refs';
 
 export type HighlightStyle = 'yellow' | 'blue';
 
@@ -7,31 +8,31 @@ export type HighlightStyle = 'yellow' | 'blue';
 // effectively disabled.
 export type KeyboardKeys = {
   // The key(s) to toggle display of the definition vs reading-only.
-  toggleDefinition: string[];
+  toggleDefinition: Array<string>;
 
   // The key(s) to cycle through the available dictionaries.
-  nextDictionary: string[];
+  nextDictionary: Array<string>;
 
   // The key(s) to force kanji-only lookup.
-  kanjiLookup: string[];
+  kanjiLookup: Array<string>;
 
   // The key(s) to expand the popup content.
-  expandPopup: string[];
+  expandPopup: Array<string>;
 
   // The key(s) to close the popup.
-  closePopup: string[];
+  closePopup: Array<string>;
 
   // The key(s) to pin the popup.
-  pinPopup: string[];
+  pinPopup: Array<string>;
 
   // The key(s) to move the popup up.
-  movePopupUp: string[];
+  movePopupUp: Array<string>;
 
   // The key(s) to move the popup down.
-  movePopupDown: string[];
+  movePopupDown: Array<string>;
 
   // The key(s) to entry copy mode.
-  startCopy: string[];
+  startCopy: Array<string>;
 };
 
 export type AccentDisplay =
@@ -100,7 +101,7 @@ export interface ContentConfigParams {
   holdToShowImageKeys: Array<'Alt' | 'Ctrl' | 'Shift'>;
 
   // References to show in the kanji view.
-  kanjiReferences: Array<import('./refs').ReferenceAbbreviation>;
+  kanjiReferences: Array<ReferenceAbbreviation>;
 
   // Keyboard shortcut keys. Each of these is an array of keycodes (as reported
   // by KeyboardEvent.key). The array may be empty in which case the action is

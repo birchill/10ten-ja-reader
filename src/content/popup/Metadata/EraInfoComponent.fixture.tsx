@@ -1,4 +1,4 @@
-import { EraInfoTimeSpan, EraMeta } from '../../dates';
+import type { EraInfoTimeSpan, EraMeta } from '../../dates';
 
 import { EraInfoComponent } from './EraInfoComponent';
 

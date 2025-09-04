@@ -1,4 +1,5 @@
-import { Point, bboxIncludesPoint } from '../utils/geometry';
+import type { Point } from '../utils/geometry';
+import { bboxIncludesPoint } from '../utils/geometry';
 import {
   getBboxForSingleCodepointRange,
   getRangeForSingleCodepoint,
@@ -6,16 +7,16 @@ import {
 
 import { getContentType } from './content-type';
 import { getTextFromAnnotatedCanvas } from './gdocs-canvas';
+import type { CursorPosition } from './get-cursor-position';
 import {
-  CursorPosition,
   getCursorPosition,
   isGdocsOverlayPosition,
   isTextInputPosition,
   isTextNodePosition,
 } from './get-cursor-position';
-import { SelectionMeta } from './meta';
+import type { SelectionMeta } from './meta';
 import { scanText } from './scan-text';
-import { TextRange } from './text-range';
+import type { TextRange } from './text-range';
 
 export type GetTextAtPointResult = {
   text: string;
@@ -180,7 +181,7 @@ function getTextNodeStart({
   maxLength,
   point,
 }: {
-  elements: readonly Element[];
+  elements: ReadonlyArray<Element>;
   maxLength?: number;
   point: Point;
 }): [position: CursorPosition, scanNode: Text | null] | [null, null] {

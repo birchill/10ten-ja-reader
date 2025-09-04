@@ -1,4 +1,4 @@
-import { MeasureMeta } from '../../measure';
+import type { MeasureMeta } from '../../measure';
 
 import { MeasureInfo } from './MeasureInfo';
 

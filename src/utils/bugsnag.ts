@@ -1,5 +1,5 @@
+import type { Event as BugsnagEvent } from '@birchill/bugsnag-zero';
 import Bugsnag, {
-  Event as BugsnagEvent,
   appDuration,
   browserContext,
   browserHandledRejectionBreadcrumbs,

@@ -3,7 +3,7 @@ import { useLayoutEffect } from 'preact/hooks';
 import { useSelect } from 'react-cosmos/client';
 
 import { I18nProvider } from '../common/i18n';
-import { EmptyProps } from '../utils/type-helpers';
+import type { EmptyProps } from '../utils/type-helpers';
 
 export default function OptionsDecorator({
   children,

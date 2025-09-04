@@ -1,4 +1,4 @@
-import { Dialect, KanjiResult, LangSource } from '@birchill/jpdict-idb';
+import type { Dialect, KanjiResult, LangSource } from '@birchill/jpdict-idb';
 
 import type {
   NameResult,
@@ -8,10 +8,8 @@ import type {
 import type { CopyType } from '../common/copy-keys';
 import type { TranslateFunctionType } from '../common/i18n';
 import { highPriorityLabels } from '../common/priority-labels';
-import {
-  ReferenceAbbreviation,
-  getSelectedReferenceLabels,
-} from '../common/refs';
+import type { ReferenceAbbreviation } from '../common/refs';
+import { getSelectedReferenceLabels } from '../common/refs';
 
 import { getReferenceValue } from './reference-value';
 

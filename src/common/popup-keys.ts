@@ -1,23 +1,23 @@
-import { KeyboardKeys } from './content-config-params';
+import type { KeyboardKeys } from './content-config-params';
 
 // Although we separate out the keys for moving a pop-up up or down when we
 // report the keys to the content page, we store them as a single setting.
 export type StoredKeyboardKeys = Omit<
   KeyboardKeys,
   'movePopupUp' | 'movePopupDown'
-> & { movePopupDownOrUp: string[] };
+> & { movePopupDownOrUp: Array<string> };
 
 // A single key description. We use this definition for storing the default keys
 // since it allows storing as an array (so we can determine the order the
 // options are displayed in) and storing a description along with each key.
 export type KeySetting = {
   name: keyof StoredKeyboardKeys;
-  keys: string[];
-  enabledKeys: string[];
+  keys: Array<string>;
+  enabledKeys: Array<string>;
   l10nKey: string;
 };
 
-export const PopupKeys: KeySetting[] = [
+export const PopupKeys: Array<KeySetting> = [
   {
     name: 'nextDictionary',
     keys: ['Shift', 'Enter', 'n'],

@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks';
 import { useSelect, useValue } from 'react-cosmos/client';
 
-import { TabDisplay } from '../common/content-config-params';
+import type { TabDisplay } from '../common/content-config-params';
 
 import { PopupInteractivitySettingsForm } from './PopupInteractivitySettingsForm';
 import './options.css';

@@ -13,7 +13,7 @@ declare module 'webextension-polyfill' {
     | 'MacCtrl';
 
   interface OnClickData {
-    modifiers: OnClickDataModifiersItemEnum[];
+    modifiers: Array<OnClickDataModifiersItemEnum>;
     button?: number;
   }
 
@@ -42,11 +42,11 @@ declare module 'webextension-polyfill' {
       | 'messageDisplay';
 
     interface MailGetAllGetInfoType extends GetInfo {
-      windowTypes?: MailWindowType[];
+      windowTypes?: Array<MailWindowType>;
     }
 
     interface Static {
-      getAll(getInfo?: MailGetAllGetInfoType): Promise<Window[]>;
+      getAll(getInfo?: MailGetAllGetInfoType): Promise<Array<Window>>;
     }
   }
 

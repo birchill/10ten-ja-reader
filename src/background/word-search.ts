@@ -1,4 +1,5 @@
-import { AbortError, PartOfSpeech } from '@birchill/jpdict-idb';
+import type { PartOfSpeech } from '@birchill/jpdict-idb';
+import { AbortError } from '@birchill/jpdict-idb';
 import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
 import browser from 'webextension-polyfill';
 
@@ -6,12 +7,8 @@ import { isOnlyDigits } from '../utils/char-range';
 import { omit } from '../utils/omit';
 import { toRomaji } from '../utils/romaji';
 
-import {
-  CandidateWord,
-  WordType,
-  deinflect,
-  deinflectL10NKeys,
-} from './deinflect';
+import type { CandidateWord } from './deinflect';
+import { WordType, deinflect, deinflectL10NKeys } from './deinflect';
 import type {
   CandidateWordResult,
   DictionaryWordResult,

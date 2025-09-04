@@ -1,12 +1,10 @@
-import { KanjiResult } from '@birchill/jpdict-idb';
+import type { KanjiResult } from '@birchill/jpdict-idb';
 import type { RenderableProps } from 'preact';
 import { useMemo } from 'preact/hooks';
 
 import { useLocale } from '../../../common/i18n';
-import {
-  ReferenceAbbreviation,
-  getSelectedReferenceLabels,
-} from '../../../common/refs';
+import type { ReferenceAbbreviation } from '../../../common/refs';
+import { getSelectedReferenceLabels } from '../../../common/refs';
 import { classes } from '../../../utils/classes';
 
 import { getReferenceValue } from '../../reference-value';

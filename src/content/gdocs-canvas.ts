@@ -1,8 +1,8 @@
-import { HighlightStyle } from '../common/content-config-params';
+import type { HighlightStyle } from '../common/content-config-params';
 import { SVG_NS, empty } from '../utils/dom-utils';
-import { Point, Rect } from '../utils/geometry';
+import type { Point, Rect } from '../utils/geometry';
 
-import { CursorPosition } from './get-cursor-position';
+import type { CursorPosition } from './get-cursor-position';
 
 export function injectGdocsStyles() {
   removeGdocsStyles();

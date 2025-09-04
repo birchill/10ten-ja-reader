@@ -444,7 +444,7 @@ export interface CandidateWord {
 }
 
 // Returns an array of possible de-inflected versions of |word|.
-export function deinflect(word: string): CandidateWord[] {
+export function deinflect(word: string): Array<CandidateWord> {
   let result: Array<CandidateWord> = [];
   const resultIndex: { [index: string]: number } = {};
   const ruleGroups = getDeinflectRuleGroups();

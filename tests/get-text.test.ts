@@ -1,10 +1,7 @@
 import { assert } from 'chai';
 
-import {
-  GetTextAtPointResult,
-  clearPreviousResult,
-  getTextAtPoint,
-} from '../src/content/get-text';
+import type { GetTextAtPointResult } from '../src/content/get-text';
+import { clearPreviousResult, getTextAtPoint } from '../src/content/get-text';
 import { empty } from '../src/utils/dom-utils';
 import { isChromium } from '../src/utils/ua-utils';
 

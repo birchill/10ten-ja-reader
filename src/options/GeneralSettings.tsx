@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'preact/hooks';
 
 import type { Config } from '../common/config';
-import { HighlightStyle } from '../common/content-config-params';
+import type { HighlightStyle } from '../common/content-config-params';
 import { useLocale } from '../common/i18n';
 
 import { GeneralSettingsForm } from './GeneralSettingsForm';

@@ -1,13 +1,13 @@
 import { useRef } from 'preact/hooks';
 
 import type { NameResult } from '../../../background/search-result';
-import { ContentConfigParams } from '../../../common/content-config-params';
+import type { ContentConfigParams } from '../../../common/content-config-params';
 import { classes } from '../../../utils/classes';
 
-import { SelectionMeta } from '../../meta';
+import type { SelectionMeta } from '../../meta';
 
 import { MetadataContainer } from '../Metadata/MetadataContainer';
-import { CopyState } from '../copy-state';
+import type { CopyState } from '../copy-state';
 import { getSelectedIndex } from '../selected-index';
 import { containerHasSelectedText } from '../selection';
 import type { StartCopyCallback } from '../show-popup';

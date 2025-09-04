@@ -1,7 +1,7 @@
 import { useCallback } from 'preact/hooks';
 
 import type { Config } from '../common/config';
-import { DbLanguageId } from '../common/db-languages';
+import type { DbLanguageId } from '../common/db-languages';
 import { useLocale } from '../common/i18n';
 
 import { DictionaryLanguageSettingsForm } from './DictionaryLanguageSettingsForm';

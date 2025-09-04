@@ -1,7 +1,7 @@
 import { Fragment } from 'preact';
 
-import { WordResult } from '../../../background/search-result';
-import { ContentConfigParams } from '../../../common/content-config-params';
+import type { WordResult } from '../../../background/search-result';
+import type { ContentConfigParams } from '../../../common/content-config-params';
 import { useLocale } from '../../../common/i18n';
 import { highPriorityLabels } from '../../../common/priority-labels';
 import { classes } from '../../../utils/classes';

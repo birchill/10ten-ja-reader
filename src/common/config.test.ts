@@ -141,8 +141,9 @@ const { mockStorage } = vi.hoisted(() => {
 
 vi.mock('webextension-polyfill', () => ({ default: { storage: mockStorage } }));
 
-import { ChangeCallback, Config } from './config';
-import { DbLanguageId } from './db-languages';
+import type { ChangeCallback } from './config';
+import { Config } from './config';
+import type { DbLanguageId } from './db-languages';
 
 type StorageName = 'sync' | 'local';
 type StorageChange = { oldValue?: any; newValue?: any };

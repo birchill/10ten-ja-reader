@@ -1,7 +1,7 @@
 /// <reference path="../common/css.d.ts" />
 import safeAreaProviderStyles from '../../css/safe-area-provider.css?inline';
 
-import { PaddingBox } from '../utils/geometry';
+import type { PaddingBox } from '../utils/geometry';
 
 import {
   getOrCreateEmptyContainer,
@@ -130,7 +130,7 @@ export class SafeAreaProvider {
     }
   }
 
-  private readonly onResizeObserved = (entries: ResizeObserverEntry[]) => {
+  private readonly onResizeObserved = (entries: Array<ResizeObserverEntry>) => {
     for (const entry of entries) {
       if (entry.contentRect) {
         // contentRect has changed, so invalidate our cached safe area insets.

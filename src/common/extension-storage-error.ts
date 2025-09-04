@@ -4,7 +4,7 @@ export class ExtensionStorageError extends Error {
 
   constructor(
     { key, action }: { key: string; action: 'set' | 'get' | 'remove' },
-    ...params: any[]
+    ...params: Array<any>
   ) {
     super(...params);
     Object.setPrototypeOf(this, ExtensionStorageError.prototype);

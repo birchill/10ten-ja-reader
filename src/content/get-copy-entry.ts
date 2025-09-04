@@ -1,7 +1,7 @@
-import { MajorDataSeries } from '@birchill/jpdict-idb';
+import type { MajorDataSeries } from '@birchill/jpdict-idb';
 
-import { CopyEntry } from './copy-text';
-import { QueryResult } from './query';
+import type { CopyEntry } from './copy-text';
+import type { QueryResult } from './query';
 
 export function getCopyEntryFromResult({
   series,

@@ -1,7 +1,7 @@
 import { nonJapaneseChar } from '../utils/char-range';
 
-import { CursorPosition } from './get-cursor-position';
-import { GetTextAtPointResult } from './get-text';
+import type { CursorPosition } from './get-cursor-position';
+import type { GetTextAtPointResult } from './get-text';
 import { extractGetTextMetadata, lookForMetadata } from './meta';
 
 export function scanText({

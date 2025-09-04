@@ -1,7 +1,7 @@
-import { WordResult } from '@birchill/jpdict-idb';
+import type { WordResult } from '@birchill/jpdict-idb';
 import { countMora, moraSubstring } from '@birchill/normal-jp';
 
-import { AccentDisplay } from '../../../common/content-config-params';
+import type { AccentDisplay } from '../../../common/content-config-params';
 import { classes } from '../../../utils/classes';
 
 export function Reading({

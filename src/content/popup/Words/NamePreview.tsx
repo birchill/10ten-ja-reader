@@ -1,11 +1,11 @@
 import { useRef } from 'preact/hooks';
 
-import { NamePreview as QueryNamePreview } from '../../query';
+import type { NamePreview as QueryNamePreview } from '../../query';
 
 import { NameEntry } from '../Names/NameEntry';
-import { CopyState } from '../copy-state';
+import type { CopyState } from '../copy-state';
 import { containerHasSelectedText } from '../selection';
-import { StartCopyCallback } from '../show-popup';
+import type { StartCopyCallback } from '../show-popup';
 
 export function NamePreview({
   namePreview,

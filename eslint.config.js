@@ -47,6 +47,11 @@ export default [
       'tailwindcss/classnames-order': 'off',
       'tailwindcss/no-custom-classname': 'off',
 
+      '@typescript-eslint/array-type': ['error', { default: 'generic' }],
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        { prefer: 'type-imports' },
+      ],
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': [

@@ -1,4 +1,4 @@
-import { Point } from '../../utils/geometry';
+import type { Point } from '../../utils/geometry';
 import { getThemeClass } from '../../utils/themes';
 
 const POPUP_ROUNDING = 5;

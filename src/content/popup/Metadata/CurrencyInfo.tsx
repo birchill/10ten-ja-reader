@@ -1,7 +1,7 @@
-import { ContentConfigParams } from '../../../common/content-config-params';
+import type { ContentConfigParams } from '../../../common/content-config-params';
 import { useLocale } from '../../../common/i18n';
 
-import { CurrencyMeta } from '../../currency';
+import type { CurrencyMeta } from '../../currency';
 
 type Props = {
   meta: CurrencyMeta;

@@ -1,5 +1,6 @@
 /// <reference path="../common/constants.d.ts" />
-import browser, { Menus, Tabs } from 'webextension-polyfill';
+import type { Menus, Tabs } from 'webextension-polyfill';
+import browser from 'webextension-polyfill';
 
 import { isFenix } from '../utils/ua-utils';
 

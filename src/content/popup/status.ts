@@ -1,15 +1,15 @@
-import { MajorDataSeries } from '@birchill/jpdict-idb';
+import type { MajorDataSeries } from '@birchill/jpdict-idb';
 import browser from 'webextension-polyfill';
 
+import type { CopyType } from '../../common/copy-keys';
 import {
   CopyKanjiKeyStrings,
   CopyKeys,
   CopyNextKeyStrings,
-  CopyType,
 } from '../../common/copy-keys';
 import { html } from '../../utils/builder';
 
-import { CopyState } from './copy-state';
+import type { CopyState } from './copy-state';
 import { renderSpinner } from './icons';
 import { getLangTag } from './lang-tag';
 

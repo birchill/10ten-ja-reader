@@ -1,9 +1,9 @@
 import { h, render } from 'preact';
 
-import { WordResult } from '../../background/search-result';
+import type { WordResult } from '../../background/search-result';
 import { html } from '../../utils/builder';
 
-import { NamePreview } from '../query';
+import type { NamePreview } from '../query';
 
 import { WordTable } from './Words/WordTable';
 import { PopupOptionsProvider } from './options-context';

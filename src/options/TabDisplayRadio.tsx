@@ -1,6 +1,6 @@
 import type { RenderableProps } from 'preact';
 
-import { TabDisplay } from '../common/content-config-params';
+import type { TabDisplay } from '../common/content-config-params';
 import { useLocale } from '../common/i18n';
 import { useThemeClass } from '../utils/use-theme-class';
 

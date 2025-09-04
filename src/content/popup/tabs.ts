@@ -1,11 +1,11 @@
-import { MajorDataSeries } from '@birchill/jpdict-idb';
+import type { MajorDataSeries } from '@birchill/jpdict-idb';
 import browser from 'webextension-polyfill';
 
 import { html } from '../../utils/builder';
 import { getMouseCapabilityMql } from '../../utils/device';
 import { isFenix } from '../../utils/ua-utils';
 
-import { DisplayMode } from '../popup-state';
+import type { DisplayMode } from '../popup-state';
 import type { QueryResult } from '../query';
 
 import { renderCloseButton } from './close';

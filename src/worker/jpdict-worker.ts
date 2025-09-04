@@ -1,5 +1,6 @@
 import { JpdictLocalBackend } from '../background/jpdict-backend';
-import { JpdictEvent, notifyError } from '../background/jpdict-events';
+import type { JpdictEvent } from '../background/jpdict-events';
+import { notifyError } from '../background/jpdict-events';
 
 declare let self: DedicatedWorkerGlobalScope;
 

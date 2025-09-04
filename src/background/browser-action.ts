@@ -1,13 +1,14 @@
 /// <reference path="../common/constants.d.ts" />
 /// <reference path="./mail-extensions.d.ts" />
 import { allMajorDataSeries } from '@birchill/jpdict-idb';
-import browser, { Action } from 'webextension-polyfill';
+import type { Action } from 'webextension-polyfill';
+import browser from 'webextension-polyfill';
 
 import { localizedDataSeriesKey } from '../common/data-series-labels';
 import { throttle } from '../utils/throttle';
 import { isSafari } from '../utils/ua-utils';
 
-import { JpdictStateWithFallback } from './jpdict';
+import type { JpdictStateWithFallback } from './jpdict';
 
 interface BrowserActionState {
   enabled: boolean;
