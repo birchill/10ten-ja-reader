@@ -23,6 +23,10 @@
   }
 }
 
+@theme {
+  --color-black: #1d1a19;
+}
+
 /*
  * Theme variables referencing other variables have to be inlined, otherwise,
  * updates to the referenced variables will not propagate as expected.
@@ -798,25 +802,6 @@
   /*
    * Copy overlay for when the popup is interactive
    */
-  .copy-overlay {
-    box-sizing: border-box;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    /* It's important to align to the top so that if the popup is very long we
-     * don't end up putting the copy buttons off screen somewhere. */
-    justify-content: start;
-    align-items: center;
-    padding-top: 24px;
-    padding-bottom: 24px;
-    isolation: isolate;
-    overflow: hidden;
-
-    /* We fade the background so we always want a dark foreground color here,
-     * regardless of the theme. */
-    color: #1d1a19;
-  }
-
   .copy-overlay .copy-heading {
     opacity: 0.8;
   }
