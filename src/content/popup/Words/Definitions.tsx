@@ -1,6 +1,7 @@
-import { WordResult, groupSenses } from '@birchill/jpdict-idb';
+import type { WordResult } from '@birchill/jpdict-idb';
+import { groupSenses } from '@birchill/jpdict-idb';
 
-import { PartOfSpeechDisplay } from '../../../common/content-config-params';
+import type { PartOfSpeechDisplay } from '../../../common/content-config-params';
 import { useLocale } from '../../../common/i18n';
 import { classes } from '../../../utils/classes';
 import { getFilteredTags } from '../../../utils/verb-tags';

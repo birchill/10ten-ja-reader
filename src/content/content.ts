@@ -47,44 +47,46 @@
 */
 import type { MajorDataSeries } from '@birchill/jpdict-idb';
 import * as s from 'superstruct';
-import browser, { Runtime } from 'webextension-polyfill';
+import type { Runtime } from 'webextension-polyfill';
+import browser from 'webextension-polyfill';
 
 import { BackgroundMessageSchema } from '../background/background-message';
-import {
+import type {
   AutoExpandableEntry,
   ContentConfigParams,
 } from '../common/content-config-params';
-import { CopyKeys, CopyType } from '../common/copy-keys';
+import type { CopyType } from '../common/copy-keys';
+import { CopyKeys } from '../common/copy-keys';
 import { isEditableNode, isInteractiveElement } from '../utils/dom-utils';
+import type { MarginBox, Point, Rect } from '../utils/geometry';
 import {
-  MarginBox,
-  Point,
-  Rect,
   addMarginToPoint,
   getMarginAroundPoint,
   union,
 } from '../utils/geometry';
 import { mod } from '../utils/mod';
 import { omit } from '../utils/omit';
-import { WithRequired } from '../utils/type-helpers';
+import type { WithRequired } from '../utils/type-helpers';
 import { isSafari } from '../utils/ua-utils';
 
 import { copyText } from './clipboard';
-import { ContentConfig, ContentConfigChange } from './content-config';
-import { CopyEntry, getTextToCopy } from './copy-text';
+import type { ContentConfigChange } from './content-config';
+import { ContentConfig } from './content-config';
+import type { CopyEntry } from './copy-text';
+import { getTextToCopy } from './copy-text';
 import { injectGdocsStyles, removeGdocsStyles } from './gdocs-canvas';
 import { getCopyEntryFromResult } from './get-copy-entry';
 import { getTextAtPoint } from './get-text';
+import type { IframeSearchParams, IframeSourceParams } from './iframes';
 import {
-  IframeSearchParams,
-  IframeSourceParams,
   findIframeElement,
   getIframeOrigin,
   getWindowDimensions,
 } from './iframes';
 import { hasModifiers, normalizeKey, normalizeKeys } from './keyboard';
-import { SelectionMeta } from './meta';
-import { DisplayMode, PopupState, clearPopupTimeout } from './popup-state';
+import type { SelectionMeta } from './meta';
+import type { DisplayMode, PopupState } from './popup-state';
+import { clearPopupTimeout } from './popup-state';
 import { type CopyState, getCopyMode } from './popup/copy-state';
 import {
   hidePopup,
@@ -101,13 +103,10 @@ import {
 } from './popup/popup-position';
 import { type ShowPopupOptions, showPopup } from './popup/show-popup';
 import { showWordsTab } from './popup/tabs';
-import {
-  LookupPuck,
-  PuckPointerEvent,
-  isPuckPointerEvent,
-  removePuck,
-} from './puck';
-import { QueryResult, query } from './query';
+import type { PuckPointerEvent } from './puck';
+import { LookupPuck, isPuckPointerEvent, removePuck } from './puck';
+import type { QueryResult } from './query';
+import { query } from './query';
 import { SafeAreaProvider, removeSafeAreaProvider } from './safe-area-provider';
 import { getScrollOffset, toPageCoords, toScreenCoords } from './scroll-offset';
 import {
@@ -119,7 +118,8 @@ import {
   textBoxSizeLengths,
 } from './target-props';
 import { TextHighlighter } from './text-highlighter';
-import { TextRange, textRangesEqual } from './text-range';
+import type { TextRange } from './text-range';
+import { textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
 import { TouchClickTracker } from './touch-click-tracker';
 
@@ -416,7 +416,7 @@ export class ContentHandler {
     return this.config.canHover;
   }
 
-  onConfigChange(changes: readonly ContentConfigChange[]) {
+  onConfigChange(changes: ReadonlyArray<ContentConfigChange>) {
     for (const { key, value } of changes) {
       switch (key) {
         case 'accentDisplay':
@@ -2671,7 +2671,7 @@ declare global {
     postMessage<T = any>(
       message: T,
       targetOrigin: string,
-      transfer?: Transferable[]
+      transfer?: Array<Transferable>
     ): void;
     readerScriptVer?: string;
     removeReaderScript?: () => void;

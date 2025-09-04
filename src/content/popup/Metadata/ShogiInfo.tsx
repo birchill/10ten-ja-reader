@@ -1,7 +1,8 @@
 import { useLocale } from '../../../common/i18n';
 import { classes } from '../../../utils/classes';
 
-import { ShogiMeta, serializeShogi, serializeShogiDest } from '../../shogi';
+import type { ShogiMeta } from '../../shogi';
+import { serializeShogi, serializeShogiDest } from '../../shogi';
 
 type Props = { meta: ShogiMeta };
 

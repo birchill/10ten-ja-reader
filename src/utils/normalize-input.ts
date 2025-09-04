@@ -6,7 +6,7 @@ import { halfToFullWidthNum, toNormalized } from '@birchill/normal-jp';
 // That allows us to use .length, .substring etc. on the matched string.
 // If we make this return the positions of Unicode codepoints we will need to
 // update all users of this output to be non-BMP character aware.
-export function normalizeInput(input: string): [string, number[]] {
+export function normalizeInput(input: string): [string, Array<number>] {
   // Convert to full-width, normalize decomposed characters, expand combined
   // characters etc.
   const fullWidthInput = halfToFullWidthNum(input);

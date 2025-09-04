@@ -6,7 +6,7 @@ export async function hasReasonableTimerResolution(): Promise<boolean> {
   // times then we can assume that we're not doing timer clamping of the sort
   // that would confuse our speed calculations.
   const numSamples = 5;
-  const samples: number[] = [];
+  const samples: Array<number> = [];
   samples.push(performance.now());
   for (let i = 1; i < numSamples; i++) {
     await waitALittle();

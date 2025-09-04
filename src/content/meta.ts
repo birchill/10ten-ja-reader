@@ -1,12 +1,13 @@
-import {
-  CurrencyMeta,
-  extractCurrencyMetadata,
-  lookForCurrency,
-} from './currency';
-import { EraMeta, extractEraMetadata, lookForEra } from './dates';
-import { MeasureMeta, extractMeasureMetadata, lookForMeasure } from './measure';
-import { NumberMeta, extractNumberMetadata } from './numbers';
-import { ShogiMeta, extractShogiMetadata, lookForShogi } from './shogi';
+import type { CurrencyMeta } from './currency';
+import { extractCurrencyMetadata, lookForCurrency } from './currency';
+import type { EraMeta } from './dates';
+import { extractEraMetadata, lookForEra } from './dates';
+import type { MeasureMeta } from './measure';
+import { extractMeasureMetadata, lookForMeasure } from './measure';
+import type { NumberMeta } from './numbers';
+import { extractNumberMetadata } from './numbers';
+import type { ShogiMeta } from './shogi';
+import { extractShogiMetadata, lookForShogi } from './shogi';
 
 export type SelectionMeta =
   | CurrencyMeta

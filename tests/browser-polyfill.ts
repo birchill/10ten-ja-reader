@@ -1,4 +1,4 @@
-import { BackgroundRequest } from '../src/background/background-request';
+import type { BackgroundRequest } from '../src/background/background-request';
 import { calculateEraDateTimeSpan } from '../src/background/calculate-date';
 
 const browser = {

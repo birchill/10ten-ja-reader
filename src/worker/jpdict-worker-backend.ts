@@ -1,7 +1,10 @@
 import Bugsnag from '@birchill/bugsnag-zero';
 
-import { JpdictBackend, JpdictListener } from '../background/jpdict-backend';
-import { JpdictEvent } from '../background/jpdict-events';
+import type {
+  JpdictBackend,
+  JpdictListener,
+} from '../background/jpdict-backend';
+import type { JpdictEvent } from '../background/jpdict-events';
 import * as events from '../background/jpdict-events';
 
 export class JpdictWorkerBackend implements JpdictBackend {

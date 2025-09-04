@@ -5,12 +5,8 @@ import {
   isTextInputNode,
   isTextNode,
 } from '../utils/dom-utils';
-import {
-  Point,
-  Rect,
-  bboxIncludesPoint,
-  getBboxForNodeList,
-} from '../utils/geometry';
+import type { Point, Rect } from '../utils/geometry';
+import { bboxIncludesPoint, getBboxForNodeList } from '../utils/geometry';
 import {
   getBboxForSingleCodepointRange,
   getRangeForSingleCodepoint,
@@ -36,7 +32,7 @@ export function getCursorPosition({
   elements: initialElements,
 }: {
   point: Point;
-  elements: readonly Element[];
+  elements: ReadonlyArray<Element>;
 }): CursorPosition | null {
   if (!initialElements.length) {
     return null;
@@ -1123,7 +1119,7 @@ function getRangeForShadowElement({
   }
 
   // Translate the range in the light DOM to the one in the shadow DOM
-  const path: number[] = [];
+  const path: Array<number> = [];
   for (
     let node = newRange.startContainer, depth = 0;
     node.parentElement && node !== mirrorElement && depth < 10;

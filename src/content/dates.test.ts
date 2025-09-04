@@ -1,14 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { BackgroundRequest } from '../background/background-request';
+import type { BackgroundRequest } from '../background/background-request';
 import { calculateEraDateTimeSpan } from '../background/calculate-date';
 
-import {
-  EraInfoDate,
-  getEraInfoTimeSpan,
-  parseEraDate,
-  startsWithEraName,
-} from './dates';
+import type { EraInfoDate } from './dates';
+import { getEraInfoTimeSpan, parseEraDate, startsWithEraName } from './dates';
 
 vi.mock('webextension-polyfill', () => ({
   default: {

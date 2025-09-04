@@ -1,7 +1,7 @@
 import Bugsnag from '@birchill/bugsnag-zero';
 import browser from 'webextension-polyfill';
 
-import { TabManager } from './tab-manager';
+import type { TabManager } from './tab-manager';
 
 // Determining if the tab is enabled or not is not straightforward since
 // different windows can have different enabled states.

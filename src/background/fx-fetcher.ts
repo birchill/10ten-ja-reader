@@ -21,7 +21,7 @@ class DownloadError extends Error {
   code: number;
   url: string;
 
-  constructor(url: string, code: number, ...params: any[]) {
+  constructor(url: string, code: number, ...params: Array<any>) {
     super(...params);
     Object.setPrototypeOf(this, DownloadError.prototype);
 

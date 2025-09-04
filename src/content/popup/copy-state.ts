@@ -1,4 +1,4 @@
-import { CopyType } from '../../common/copy-keys';
+import type { CopyType } from '../../common/copy-keys';
 
 export type CopyState =
   | { kind: 'inactive' }

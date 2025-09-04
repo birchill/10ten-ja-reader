@@ -1,4 +1,4 @@
-import { KanjiInfo, ReadingInfo } from '@birchill/jpdict-idb';
+import type { KanjiInfo, ReadingInfo } from '@birchill/jpdict-idb';
 
 import { useLocale } from '../../../common/i18n';
 

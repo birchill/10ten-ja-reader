@@ -1,9 +1,9 @@
 import { useMemo } from 'preact/hooks';
 
-import { ContentConfigParams } from '../../../common/content-config-params';
+import type { ContentConfigParams } from '../../../common/content-config-params';
 import { classes } from '../../../utils/classes';
 
-import { SelectionMeta } from '../../meta';
+import type { SelectionMeta } from '../../meta';
 
 import { CurrencyInfo } from './CurrencyInfo';
 import { EraInfoComponent } from './EraInfoComponent';

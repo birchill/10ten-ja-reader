@@ -1,4 +1,4 @@
-import { KanjiResult } from '@birchill/jpdict-idb';
+import type { KanjiResult } from '@birchill/jpdict-idb';
 import { h, render } from 'preact';
 
 import { html } from '../../utils/builder';
@@ -6,7 +6,7 @@ import { html } from '../../utils/builder';
 import { KanjiEntry } from './Kanji/KanjiEntry';
 import { PopupOptionsProvider } from './options-context';
 import { getSelectedIndex } from './selected-index';
-import { ShowPopupOptions } from './show-popup';
+import type { ShowPopupOptions } from './show-popup';
 
 export function renderKanjiEntries({
   entries,

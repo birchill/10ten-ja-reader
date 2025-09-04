@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'preact/hooks';
 import { useSelect, useValue } from 'react-cosmos/client';
 
-import { PopupKeys, StoredKeyboardKeys } from '../common/popup-keys';
+import type { StoredKeyboardKeys } from '../common/popup-keys';
+import { PopupKeys } from '../common/popup-keys';
 import { isMac } from '../utils/ua-utils';
 
 import { KeyboardSettingsForm } from './KeyboardSettingsForm';
@@ -63,7 +64,10 @@ export default function KeyboardSettingsFormFixture() {
       return defaultKeys;
     }, {}) as StoredKeyboardKeys
   );
-  const updatePopupKey = (name: keyof StoredKeyboardKeys, keys: string[]) => {
+  const updatePopupKey = (
+    name: keyof StoredKeyboardKeys,
+    keys: Array<string>
+  ) => {
     setPopupKeys({ ...popupKeys, [name]: keys });
   };
 

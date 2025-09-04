@@ -1,7 +1,7 @@
 import { useCallback } from 'preact/hooks';
 
 import type { Config } from '../common/config';
-import { TabDisplay } from '../common/content-config-params';
+import type { TabDisplay } from '../common/content-config-params';
 import { useLocale } from '../common/i18n';
 import { useHasMouse } from '../utils/use-has-mouse';
 import { useHasTouch } from '../utils/use-has-touch';

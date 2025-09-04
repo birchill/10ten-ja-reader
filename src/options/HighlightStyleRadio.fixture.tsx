@@ -1,6 +1,6 @@
 import { useSelect } from 'react-cosmos/client';
 
-import { HighlightStyle } from '../common/content-config-params';
+import type { HighlightStyle } from '../common/content-config-params';
 
 import { HighlightStyleRadio } from './HighlightStyleRadio';
 import './options.css';

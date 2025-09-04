@@ -63,8 +63,8 @@ const verbTags = [
 ];
 
 function getFilteredTags(
-  pos: string[] | undefined,
-  misc: string[] | undefined
+  pos: Array<string> | undefined,
+  misc: Array<string> | undefined
 ) {
   if (pos === undefined) {
     return [];

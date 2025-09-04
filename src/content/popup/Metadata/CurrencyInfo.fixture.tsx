@@ -1,6 +1,6 @@
-import { ContentConfigParams } from '../../../common/content-config-params';
+import type { ContentConfigParams } from '../../../common/content-config-params';
 
-import { CurrencyMeta } from '../../currency';
+import type { CurrencyMeta } from '../../currency';
 
 import { CurrencyInfo } from './CurrencyInfo';
 

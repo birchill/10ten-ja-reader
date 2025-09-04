@@ -1,4 +1,4 @@
-import { HighlightStyle } from '../common/content-config-params';
+import type { HighlightStyle } from '../common/content-config-params';
 import { useLocale } from '../common/i18n';
 
 import { CheckboxRow } from './CheckboxRow';

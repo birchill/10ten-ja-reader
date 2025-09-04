@@ -254,7 +254,7 @@ describe('deinflect', () => {
   });
 
   it('deinflects continuous forms of other irregular verbs', () => {
-    const cases: [string, string, Reason[]][] = [
+    const cases: Array<[string, string, Array<Reason>]> = [
       ['請うている', '請う', [Reason.Continuous]],
       ['乞うている', '乞う', [Reason.Continuous]],
       ['恋うている', '恋う', [Reason.Continuous]],

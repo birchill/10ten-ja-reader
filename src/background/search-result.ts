@@ -4,7 +4,7 @@ import type {
   KanjiResult,
 } from '@birchill/jpdict-idb';
 
-import { Reason } from './deinflect';
+import type { Reason } from './deinflect';
 
 // Words
 

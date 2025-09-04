@@ -1,4 +1,4 @@
-import { JpdictState } from '../background/jpdict';
+import type { JpdictState } from '../background/jpdict';
 import { serializeError } from '../utils/serialize-error';
 
 export const queryState = () => ({ type: 'querystate' as const });

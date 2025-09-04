@@ -1,18 +1,19 @@
 /// <reference path="./mail-extensions.d.ts" />
 import Bugsnag from '@birchill/bugsnag-zero';
 import * as s from 'superstruct';
-import browser, { Runtime, Tabs, Windows } from 'webextension-polyfill';
+import type { Runtime, Tabs, Windows } from 'webextension-polyfill';
+import browser from 'webextension-polyfill';
 
-import { ContentConfigParams } from '../common/content-config-params';
+import type { ContentConfigParams } from '../common/content-config-params';
 import { requestIdleCallback } from '../utils/request-idle-callback';
 
-import {
+import type {
   BackgroundMessage,
   IndividualFrameMessage,
   TopFrameMessage,
 } from './background-message';
 import { BackgroundRequestSchema } from './background-request';
-import {
+import type {
   EnabledChangedCallback,
   EnabledState,
   TabManager,

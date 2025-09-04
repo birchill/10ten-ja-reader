@@ -1,8 +1,8 @@
-import { Gloss, LangSource } from '@birchill/jpdict-idb';
+import type { Gloss, LangSource } from '@birchill/jpdict-idb';
 import { Fragment } from 'preact';
 
-import { Sense as WordResultSense } from '../../../background/search-result';
-import { PartOfSpeechDisplay } from '../../../common/content-config-params';
+import type { Sense as WordResultSense } from '../../../background/search-result';
+import type { PartOfSpeechDisplay } from '../../../common/content-config-params';
 import { useLocale } from '../../../common/i18n';
 import { getFilteredTags } from '../../../utils/verb-tags';
 

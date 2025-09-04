@@ -1,13 +1,17 @@
 /// <reference path="../common/constants.d.ts" />
 import Bugsnag from '@birchill/bugsnag-zero';
 import * as s from 'superstruct';
-import browser, { Runtime, Tabs } from 'webextension-polyfill';
+import type { Runtime, Tabs } from 'webextension-polyfill';
+import browser from 'webextension-polyfill';
 
-import { ContentConfigParams } from '../common/content-config-params';
+import type { ContentConfigParams } from '../common/content-config-params';
 
-import { IndividualFrameMessage, TopFrameMessage } from './background-message';
+import type {
+  IndividualFrameMessage,
+  TopFrameMessage,
+} from './background-message';
 import { BackgroundRequestSchema } from './background-request';
-import {
+import type {
   EnabledChangedCallback,
   EnabledState,
   TabManager,

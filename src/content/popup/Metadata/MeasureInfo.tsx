@@ -1,7 +1,8 @@
-import { ContentConfigParams } from '../../../common/content-config-params';
+import type { ContentConfigParams } from '../../../common/content-config-params';
 import { useLocale } from '../../../common/i18n';
 
-import { AlternateMeasure, MeasureMeta, convertMeasure } from '../../measure';
+import type { AlternateMeasure, MeasureMeta } from '../../measure';
+import { convertMeasure } from '../../measure';
 
 type Props = {
   meta: MeasureMeta;

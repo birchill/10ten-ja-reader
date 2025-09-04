@@ -1,8 +1,10 @@
-import {
+import type {
   DataSeries,
-  JpdictIdb,
   MajorDataSeries,
   UpdateErrorState,
+} from '@birchill/jpdict-idb';
+import {
+  JpdictIdb,
   allMajorDataSeries,
   cancelUpdateWithRetry,
   clearCachedVersionInfo,
@@ -12,9 +14,9 @@ import {
 
 import { requestIdleCallbackPromise } from '../utils/request-idle-callback';
 
-import { JpdictState } from './jpdict';
+import type { JpdictState } from './jpdict';
+import type { JpdictEvent } from './jpdict-events';
 import {
-  JpdictEvent,
   leaveBreadcrumb,
   notifyDbStateUpdated,
   notifyDbUpdateComplete,

@@ -1,4 +1,4 @@
-import { Point, Rect } from '../utils/geometry';
+import type { Point, Rect } from '../utils/geometry';
 
 export type ScrollOffset = { scrollX: number; scrollY: number };
 

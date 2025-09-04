@@ -1,4 +1,4 @@
-import { MarginBox, PaddingBox, Point } from '../../utils/geometry';
+import type { MarginBox, PaddingBox, Point } from '../../utils/geometry';
 
 import { getScrollOffset } from '../scroll-offset';
 

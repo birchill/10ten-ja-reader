@@ -12,7 +12,8 @@
 import Bugsnag from '@birchill/bugsnag-zero';
 import browser from 'webextension-polyfill';
 
-import { FxLocalData, getLocalFxData } from '../background/fx-data';
+import type { FxLocalData } from '../background/fx-data';
+import { getLocalFxData } from '../background/fx-data';
 import { isObject } from '../utils/is-object';
 import { omit } from '../utils/omit';
 import { isSafari } from '../utils/ua-utils';
@@ -28,15 +29,14 @@ import type {
   PartOfSpeechDisplay,
   TabDisplay,
 } from './content-config-params';
-import { DbLanguageId, dbLanguages } from './db-languages';
+import type { DbLanguageId } from './db-languages';
+import { dbLanguages } from './db-languages';
 import { ExtensionStorageError } from './extension-storage-error';
-import { PopupKeys, StoredKeyboardKeys } from './popup-keys';
-import { PuckState } from './puck-state';
-import {
-  ReferenceAbbreviation,
-  convertLegacyReference,
-  getReferencesForLang,
-} from './refs';
+import type { StoredKeyboardKeys } from './popup-keys';
+import { PopupKeys } from './popup-keys';
+import type { PuckState } from './puck-state';
+import type { ReferenceAbbreviation } from './refs';
+import { convertLegacyReference, getReferencesForLang } from './refs';
 
 // We represent the set of references that have been turned on as a series
 // of true or false values.
@@ -111,7 +111,7 @@ export class Config {
   private fxData: FxLocalData | undefined;
   private settings: Settings = {};
   private readyPromise: Promise<void>;
-  private changeListeners: ChangeCallback[] = [];
+  private changeListeners: Array<ChangeCallback> = [];
   private previousDefaultLang: DbLanguageId;
 
   constructor() {

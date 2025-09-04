@@ -1,7 +1,7 @@
 import { h, render } from 'preact';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { ShogiMeta } from '../shogi';
+import type { ShogiMeta } from '../shogi';
 
 import { ShogiInfo } from './Metadata/ShogiInfo';
 

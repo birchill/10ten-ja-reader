@@ -1,7 +1,8 @@
-import { RenderableProps, createContext } from 'preact';
+import type { RenderableProps } from 'preact';
+import { createContext } from 'preact';
 import { useContext } from 'preact/hooks';
 
-import { FontSize } from '../../common/content-config-params';
+import type { FontSize } from '../../common/content-config-params';
 
 // Not every popup option belongs here. This is really just for cross-cutting
 // options that we want to be able to toggle from the Cosmos UI.

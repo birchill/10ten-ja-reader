@@ -1,30 +1,32 @@
 import Bugsnag from '@birchill/bugsnag-zero';
-import {
+import type {
   DataSeries,
   DataSeriesState,
   DataVersion,
   UpdateErrorState,
   UpdateState,
-  getKanji,
-  getWords as idbGetWords,
 } from '@birchill/jpdict-idb';
+import { getKanji, getWords as idbGetWords } from '@birchill/jpdict-idb';
 import { kanaToHiragana } from '@birchill/normal-jp';
 import browser from 'webextension-polyfill';
 
 import { normalizeInput } from '../utils/normalize-input';
 import { JpdictWorkerBackend } from '../worker/jpdict-worker-backend';
 
-import { FlatFileDatabaseLoadState, FlatFileDatabaseLoader } from './flat-file';
-import { JpdictBackend, JpdictLocalBackend } from './jpdict-backend';
-import { JpdictEvent } from './jpdict-events';
+import type { FlatFileDatabaseLoadState } from './flat-file';
+import { FlatFileDatabaseLoader } from './flat-file';
+import type { JpdictBackend } from './jpdict-backend';
+import { JpdictLocalBackend } from './jpdict-backend';
+import type { JpdictEvent } from './jpdict-events';
 import { nameSearch } from './name-search';
-import {
+import type {
   KanjiSearchResult,
   NameSearchResult,
   TranslateResult,
   WordSearchResult,
 } from './search-result';
-import { GetWordsFunction, wordSearch } from './word-search';
+import type { GetWordsFunction } from './word-search';
+import { wordSearch } from './word-search';
 
 //
 // Exported types

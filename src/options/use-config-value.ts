@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
 
-import { type ChangeCallback, Config } from '../common/config';
+import type { Config } from '../common/config';
+import { type ChangeCallback } from '../common/config';
 
 export function useConfigValue<K extends keyof Config>(
   config: Config,

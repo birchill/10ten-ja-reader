@@ -1,10 +1,10 @@
 import { h, render } from 'preact';
 
-import { NameResult } from '../../background/search-result';
+import type { NameResult } from '../../background/search-result';
 import { html } from '../../utils/builder';
 
 import { NameTable } from './Names/NameTable';
-import { ShowPopupOptions } from './show-popup';
+import type { ShowPopupOptions } from './show-popup';
 
 export function renderNamesEntries({
   entries,

@@ -1,6 +1,6 @@
-import { ContentConfigParams } from '../common/content-config-params';
+import type { ContentConfigParams } from '../common/content-config-params';
 import { getHoverCapabilityMql, getMouseCapabilityMql } from '../utils/device';
-import { Entries, Overwrite } from '../utils/type-helpers';
+import type { Entries, Overwrite } from '../utils/type-helpers';
 
 export type ContentConfigChange =
   | Overwrite<
@@ -15,7 +15,7 @@ export type ContentConfigChange =
   | { key: 'canHover'; value: boolean };
 
 export type ContentConfigListener = (
-  changes: readonly ContentConfigChange[]
+  changes: ReadonlyArray<ContentConfigChange>
 ) => void;
 
 export class ContentConfig implements ContentConfigParams {
@@ -46,7 +46,7 @@ export class ContentConfig implements ContentConfigParams {
 
     this.params = { ...params };
 
-    const changes: ContentConfigChange[] = [];
+    const changes: Array<ContentConfigChange> = [];
     const objectKeysWeCareAbout = ['autoExpand', 'puckState'];
     for (const [key, value] of Object.entries(
       before
@@ -108,7 +108,7 @@ export class ContentConfig implements ContentConfigParams {
     }
   }
 
-  private notifyListeners(changes: readonly ContentConfigChange[]) {
+  private notifyListeners(changes: ReadonlyArray<ContentConfigChange>) {
     const listenersCopy = this.listeners.slice();
     for (const listener of listenersCopy) {
       listener(changes);

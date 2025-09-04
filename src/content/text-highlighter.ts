@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill';
 
-import { HighlightStyle } from '../common/content-config-params';
+import type { HighlightStyle } from '../common/content-config-params';
 import { html } from '../utils/builder';
 import {
   isContentEditableNode,
@@ -16,7 +16,7 @@ import {
   highlightGdocsRange,
   isGdocsSpan,
 } from './gdocs-canvas';
-import { NodeRange, TextRange } from './text-range';
+import type { NodeRange, TextRange } from './text-range';
 
 export class TextHighlighter {
   private selectedWindow: Window | null = null;

@@ -1,6 +1,6 @@
-import { NameTranslation } from '@birchill/jpdict-idb';
+import type { NameTranslation } from '@birchill/jpdict-idb';
 
-import { NameResult } from '../../../background/search-result';
+import type { NameResult } from '../../../background/search-result';
 import { useLocale } from '../../../common/i18n';
 import { getDob } from '../../../utils/age';
 import { classes } from '../../../utils/classes';
@@ -75,7 +75,7 @@ export function NameEntry(props: Props) {
   );
 }
 
-function KanjiEntries({ k }: { k: string[] }) {
+function KanjiEntries({ k }: { k: Array<string> }) {
   const { interactive } = usePopupOptions();
 
   const MAX_KANJI = 15;

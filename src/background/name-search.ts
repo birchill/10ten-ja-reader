@@ -1,10 +1,11 @@
 import Bugsnag from '@birchill/bugsnag-zero';
-import { AbortError, NameResult, getNames } from '@birchill/jpdict-idb';
+import type { NameResult } from '@birchill/jpdict-idb';
+import { AbortError, getNames } from '@birchill/jpdict-idb';
 import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
 
 import { isOnlyDigits } from '../utils/char-range';
 
-import { NameSearchResult } from './search-result';
+import type { NameSearchResult } from './search-result';
 import { endsInYoon } from './yoon';
 
 export async function nameSearch({

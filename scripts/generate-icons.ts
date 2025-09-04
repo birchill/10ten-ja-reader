@@ -1,7 +1,8 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as url from 'node:url';
-import { Browser, chromium } from 'playwright';
+import type { Browser } from 'playwright';
+import { chromium } from 'playwright';
 import { create, fragment } from 'xmlbuilder2';
 
 const DEST_FOLDER = url.fileURLToPath(new URL('../images', import.meta.url));

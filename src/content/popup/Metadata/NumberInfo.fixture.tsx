@@ -1,4 +1,4 @@
-import { NumberMeta } from '../../numbers';
+import type { NumberMeta } from '../../numbers';
 
 import { NumberInfo } from './NumberInfo';
 

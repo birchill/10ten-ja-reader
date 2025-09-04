@@ -98,7 +98,7 @@ vi.mock('webextension-polyfill', () => ({
 }));
 
 import { searchWords, translate } from './jpdict';
-import { WordResult, WordSearchResult } from './search-result';
+import type { WordResult, WordSearchResult } from './search-result';
 
 describe('searchWords', () => {
   beforeAll(() => {

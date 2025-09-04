@@ -1,6 +1,6 @@
 import { useMemo } from 'preact/hooks';
 
-import { DbLanguageId } from '../common/db-languages';
+import type { DbLanguageId } from '../common/db-languages';
 import { useLocale } from '../common/i18n';
 import {
   type ReferenceAbbreviation,

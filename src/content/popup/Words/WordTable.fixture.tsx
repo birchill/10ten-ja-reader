@@ -1,7 +1,7 @@
-import { WordResult } from '@birchill/jpdict-idb';
+import type { WordResult } from '@birchill/jpdict-idb';
 import { useFixtureInput, useFixtureSelect } from 'react-cosmos/client';
 
-import {
+import type {
   AccentDisplay,
   PartOfSpeechDisplay,
 } from '../../../common/content-config-params';

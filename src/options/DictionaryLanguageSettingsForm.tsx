@@ -2,11 +2,8 @@ import Bugsnag from '@birchill/bugsnag-zero';
 import type { JSX } from 'preact';
 import { useCallback } from 'preact/hooks';
 
-import {
-  DbLanguageId,
-  dbLanguageMeta,
-  isDbLanguageId,
-} from '../common/db-languages';
+import type { DbLanguageId } from '../common/db-languages';
+import { dbLanguageMeta, isDbLanguageId } from '../common/db-languages';
 import { useLocale } from '../common/i18n';
 import { classes } from '../utils/classes';
 

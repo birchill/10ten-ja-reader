@@ -1,9 +1,9 @@
 import { h, render } from 'preact';
 
-import { ContentConfigParams } from '../../common/content-config-params';
+import type { ContentConfigParams } from '../../common/content-config-params';
 import { html } from '../../utils/builder';
 
-import { SelectionMeta } from '../meta';
+import type { SelectionMeta } from '../meta';
 
 import { MetadataContainer } from './Metadata/MetadataContainer';
 

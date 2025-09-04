@@ -1,15 +1,16 @@
+import type { MajorDataSeries } from '@birchill/jpdict-idb';
 import {
   type DataSeriesState,
   type DataVersion,
-  MajorDataSeries,
   allDataSeries,
   allMajorDataSeries,
 } from '@birchill/jpdict-idb';
-import { VariantPropsOf, variantProps } from 'classname-variants/react';
-import { RenderableProps } from 'preact';
+import type { VariantPropsOf } from 'classname-variants/react';
+import { variantProps } from 'classname-variants/react';
+import type { RenderableProps } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 
-import { JpdictState } from '../background/jpdict';
+import type { JpdictState } from '../background/jpdict';
 import { localizedDataSeriesKey } from '../common/data-series-labels';
 import { useLocale } from '../common/i18n';
 import { classes } from '../utils/classes';

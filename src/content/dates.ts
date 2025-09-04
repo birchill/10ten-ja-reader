@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill';
 
-import { BackgroundRequest } from '../background/background-request';
+import type { BackgroundRequest } from '../background/background-request';
 import { getCombinedCharRange, getNegatedCharRange } from '../utils/char-range';
 
 import { parseNumber } from './numbers';

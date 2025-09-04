@@ -1,5 +1,5 @@
-import { DbLanguageId } from './db-languages';
-import { TranslateFunctionType } from './i18n';
+import type { DbLanguageId } from './db-languages';
+import type { TranslateFunctionType } from './i18n';
 
 const SUPPORTED_REFERENCES = [
   // The radical for the kanji (number and character, from rad field)
