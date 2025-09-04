@@ -2025,7 +2025,7 @@ export class ContentHandler {
     if (
       !this.currentLookupParams ||
       JSON.stringify(lookupParams) !==
-        JSON.stringify(omit(this.currentLookupParams, ['source']))
+        JSON.stringify(omit(this.currentLookupParams, 'source'))
     ) {
       return;
     }

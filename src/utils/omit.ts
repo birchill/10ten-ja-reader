@@ -7,7 +7,7 @@ type DistributiveOmit<T, K extends PropertyKey> = T extends unknown
  */
 export function omit<T, K extends keyof T>(
   o: T,
-  fields: Array<K>
+  ...fields: Array<K>
 ): DistributiveOmit<T, K> {
   const result = { ...o };
   for (const field of fields) {

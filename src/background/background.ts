@@ -643,7 +643,7 @@ browser.runtime.onMessage.addListener(
           if (sender.tab?.id) {
             tabManager.sendMessageToFrame({
               tabId: sender.tab.id,
-              message: { ...omit(request, ['frameId']), type },
+              message: { ...omit(request, 'frameId'), type },
               frameId: request.frameId,
             });
           }

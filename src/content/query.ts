@@ -164,7 +164,7 @@ async function queryWords(
     }
     queryResult = {
       words: {
-        ...omit(searchResult, ['dbStatus', 'textLen']),
+        ...omit(searchResult, 'dbStatus', 'textLen'),
         type: 'words',
         matchLen: searchResult.textLen,
       },
@@ -172,7 +172,7 @@ async function queryWords(
       resultType,
     };
   } else {
-    queryResult = { ...omit(searchResult, ['dbStatus']), resultType };
+    queryResult = { ...omit(searchResult, 'dbStatus'), resultType };
   }
 
   return queryResult;

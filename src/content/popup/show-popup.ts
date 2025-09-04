@@ -212,7 +212,7 @@ export function showPopup(
       width: popupPos.constrainWidth ?? popupSize.width,
       height: popupPos.constrainHeight ?? popupSize.height,
     },
-    pos: omit(popupPos, ['constrainWidth', 'constrainHeight']),
+    pos: omit(popupPos, 'constrainWidth', 'constrainHeight'),
   };
 }
 

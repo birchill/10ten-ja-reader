@@ -1015,7 +1015,7 @@ export class Config {
       );
 
     return {
-      ...omit(storedKeys, ['movePopupDownOrUp']),
+      ...omit(storedKeys, 'movePopupDownOrUp'),
       movePopupDown: down,
       movePopupUp: up,
     };
