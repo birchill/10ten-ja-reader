@@ -10,7 +10,7 @@ import type {
 import type { CopyType } from '../../common/copy-keys';
 import type { ReferenceAbbreviation } from '../../common/refs';
 import type { Box, Point } from '../../utils/geometry';
-import { stripFields } from '../../utils/strip-fields';
+import { omit } from '../../utils/omit';
 
 import type { SelectionMeta } from '../meta';
 import type { DisplayMode } from '../popup-state';
@@ -212,7 +212,7 @@ export function showPopup(
       width: popupPos.constrainWidth ?? popupSize.width,
       height: popupPos.constrainHeight ?? popupSize.height,
     },
-    pos: stripFields(popupPos, ['constrainWidth', 'constrainHeight']),
+    pos: omit(popupPos, ['constrainWidth', 'constrainHeight']),
   };
 }
 

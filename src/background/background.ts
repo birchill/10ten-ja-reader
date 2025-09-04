@@ -58,7 +58,7 @@ import {
   notifyDbStateUpdated,
 } from '../common/db-listener-messages';
 import { startBugsnag } from '../utils/bugsnag';
-import { stripFields } from '../utils/strip-fields';
+import { omit } from '../utils/omit';
 import { Split } from '../utils/type-helpers';
 
 import TabManager from './all-tab-manager';
@@ -643,7 +643,7 @@ browser.runtime.onMessage.addListener(
           if (sender.tab?.id) {
             tabManager.sendMessageToFrame({
               tabId: sender.tab.id,
-              message: { ...stripFields(request, ['frameId']), type },
+              message: { ...omit(request, ['frameId']), type },
               frameId: request.frameId,
             });
           }
