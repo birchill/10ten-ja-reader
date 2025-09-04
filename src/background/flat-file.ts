@@ -403,7 +403,7 @@ function mergeMeta<MetaType extends RawKanjiMeta | RawReadingMeta, MergedType>(
 function expandSenses(senses: Array<RawWordSense>): Array<Sense> {
   return senses.map((sense) => ({
     g: expandGlosses(sense),
-    ...omit(sense, ['g', 'gt']),
+    ...omit(sense, 'g', 'gt'),
     match: true,
   }));
 }

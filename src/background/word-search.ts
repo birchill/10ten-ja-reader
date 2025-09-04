@@ -185,7 +185,7 @@ async function lookupCandidates({
 
   // Convert to a flattened WordResult
   return candidateResults.map((result) => {
-    const wordResult: WordResult = omit(result, ['reasonChains']);
+    const wordResult: WordResult = omit(result, 'reasonChains');
 
     // Generate the reason string
     let reason: string | undefined;
