@@ -10,6 +10,7 @@
 @import '../../../css/themes.css' layer(base);
 
 @custom-variant no-overlay ([data-type="window"]:not([data-has-overlay]) &);
+@custom-variant has-overlay ([data-type="window"][data-has-overlay] &);
 
 @theme {
   --animate-flash: flash 0.5s;
@@ -60,6 +61,14 @@
   --radius-xl: calc(0.75 * var(--base-font-size));
   --radius-2xl: calc(1.25 * var(--base-font-size));
   --radius-3xl: calc(1.5 * var(--base-font-size));
+}
+
+@utility stacked {
+  display: grid;
+
+  & > * {
+    grid-area: 1 / 1 / 2 / 2;
+  }
 }
 
 /*
@@ -787,31 +796,15 @@
   }
 
   /*
-  * Bonus name
-  */
-
-  .wordlist .bonus-name {
-    margin-top: 8px;
-    margin-bottom: 3px;
-    background: var(--meta-bg);
-    scroll-snap-align: start;
-    scroll-margin-top: 8px;
-  }
-
-  .wordlist .bonus-name .more {
-    padding: 0px 14px;
-  }
-
-  /*
-  * Copy overlay for when the popup is interactive
-  */
+   * Copy overlay for when the popup is interactive
+   */
   .copy-overlay {
     box-sizing: border-box;
     width: 100%;
     display: flex;
     flex-direction: column;
     /* It's important to align to the top so that if the popup is very long we
-    * don't end up putting the copy buttons off screen somewhere. */
+     * don't end up putting the copy buttons off screen somewhere. */
     justify-content: start;
     align-items: center;
     padding-top: 24px;
@@ -820,39 +813,8 @@
     overflow: hidden;
 
     /* We fade the background so we always want a dark foreground color here,
-    * regardless of the theme. */
+     * regardless of the theme. */
     color: #1d1a19;
-  }
-
-  /* Blurring for the entry area when the copy overlay is showing */
-  .window.-has-overlay .content .grid-stack > :first-child {
-    pointer-events: none;
-    filter: blur(20px);
-    transition: filter 0.3s ease-in-out;
-  }
-
-  .window.-has-overlay .content .grid-stack > .copy-overlay {
-    background: hsla(0, 0%, 97%, 0.6);
-    transition: background-color 0.3s ease-in-out;
-  }
-
-  /* If the overlay is showing, don't constrain the window height since it might
-  * mean that the buttons on the overlay get cut off. */
-  .window.-has-overlay {
-    max-height: none;
-  }
-
-  /* Let the size of the overlay determine the overall size of the popup contents.
-  *
-  * This prevents the window from suddenly getting very large when we drop the
-  * max-height definition above.
-  *
-  * Ideally we'd only do this if we were actually going to constrain the height
-  * anyway, but that's hard to detect so we just do this unconditionally and so
-  * far it seems to work ok. */
-  .window.-has-overlay .content .grid-stack > .entry-data {
-    position: absolute;
-    width: 100%;
   }
 
   .copy-overlay .copy-heading {
@@ -950,24 +912,8 @@
   }
 
   /*
-  * Utility: grid stack
-  */
-
-  .grid-stack,
-  .-stack {
-    display: grid;
-    grid-template-rows: [stack-start] auto [stack-end];
-  }
-
-  .grid-stack > *,
-  .-stack > * {
-    grid-column: 1 / -1;
-    grid-row: stack-start / stack-end;
-  }
-
-  /*
-  * Arrow
-  */
+   * Arrow
+   */
   .arrow {
     position: absolute;
     overflow: hidden;

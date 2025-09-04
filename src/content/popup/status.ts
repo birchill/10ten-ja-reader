@@ -33,7 +33,7 @@ export function renderCopyDetails({
   }
 
   const statusDiv = html('div', {
-    class: 'status-bar -stack',
+    class: 'status-bar tp:stacked',
     lang: getLangTag(),
   });
 
