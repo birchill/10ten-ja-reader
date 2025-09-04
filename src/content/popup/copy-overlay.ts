@@ -36,7 +36,10 @@ export function renderCopyOverlay({
   series: MajorDataSeries;
   showKanjiComponents?: boolean;
 }): HTMLDivElement {
-  const copyOverlay = html('div', { class: 'copy-overlay' });
+  const copyOverlay = html('div', {
+    class:
+      'copy-overlay tp:has-overlay:bg-[hsla(0,0%,97%,0.6)] tp:has-overlay:[transition:background-color_0.3s_ease-in-out]',
+  });
 
   // Work out what we would copy so we can generate suitable preview text
   const entryToCopy = result

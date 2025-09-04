@@ -1,6 +1,7 @@
 /// <reference path="../../common/css.d.ts" />
 import type { FontFace, FontSize } from '../../common/content-config-params';
 import { html } from '../../utils/builder';
+import { classes } from '../../utils/classes';
 import type { Point } from '../../utils/geometry';
 import { getThemeClass } from '../../utils/themes';
 
@@ -41,14 +42,15 @@ export function renderPopup(
     removeFontStyles();
   }
 
-  const container = options.container || getDefaultContainer();
+  const host = options.container || getDefaultContainer();
   const windowElem = resetContainer({
-    host: container,
+    host,
     displayMode: options.displayMode,
     fontFace: options.fontFace || 'bundled',
     fontSize: options.fontSize || 'normal',
     popupStyle: options.popupStyle,
   });
+
   const contentContainer = html('div', { class: 'content' });
 
   const hasResult = result && (result.words || result.kanji || result.names);
@@ -85,6 +87,13 @@ export function renderPopup(
       options.onSwitchDictionary?.(direction === 'left' ? 'prev' : 'next');
     });
   }
+
+  const overlayContainer = html('div', {
+    class:
+      'tp:stacked tp:grow tp:has-overlay:[&>:first-child]:pointer-events-none tp:[&>:first-child]:has-overlay:blur-[20px] tp:has-overlay:[&>:first-child]:[transition:filter_0.3s_ease-in-out]',
+    'data-type': 'overlay-container',
+  });
+  windowElem.append(overlayContainer);
 
   const resultToShow = result?.[options.dictToShow];
 
@@ -160,34 +169,25 @@ export function renderPopup(
 
   // Render the copy overlay if needed
   if (showOverlay(options.copyState)) {
-    contentContainer.append(
-      html(
-        'div',
-        { class: 'grid-stack' },
-        // Dictionary content
-        html('div', {}, ...contentContainer.children),
-        renderCopyOverlay({
-          copyState: options.copyState,
-          includeAllSenses: options.copy?.includeAllSenses !== false,
-          includeLessCommonHeadwords:
-            options.copy?.includeLessCommonHeadwords !== false,
-          includePartOfSpeech: options.copy?.includePartOfSpeech !== false,
-          kanjiReferences: options.kanjiReferences,
-          onCancelCopy: options.onCancelCopy,
-          onCopy: options.onCopy,
-          result: resultToShow ? result : undefined,
-          series: options.dictToShow,
-          showKanjiComponents: options.showKanjiComponents,
-        })
-      )
+    overlayContainer.append(
+      renderCopyOverlay({
+        copyState: options.copyState,
+        includeAllSenses: options.copy?.includeAllSenses !== false,
+        includeLessCommonHeadwords:
+          options.copy?.includeLessCommonHeadwords !== false,
+        includePartOfSpeech: options.copy?.includePartOfSpeech !== false,
+        kanjiReferences: options.kanjiReferences,
+        onCancelCopy: options.onCancelCopy,
+        onCopy: options.onCopy,
+        result: resultToShow ? result : undefined,
+        series: options.dictToShow,
+        showKanjiComponents: options.showKanjiComponents,
+      })
     );
 
     // Set the overlay styles for the window, but wait a moment so we can
     // transition the styles in.
     requestAnimationFrame(() => {
-      // TODO: Drop the class and just keep the data attribute once we've
-      // converted everything to Tailwind
-      windowElem.classList.add('-has-overlay');
       windowElem.dataset.hasOverlay = 'true';
     });
   }
@@ -236,13 +236,13 @@ export function renderPopup(
       html(
         'div',
         { class: 'close-button-wrapper' },
-        contentWrapper,
+        overlayContainer,
         renderCloseButton(options.onClosePopup, options.closeShortcuts || [])
       )
     );
-  } else {
-    windowElem.append(contentWrapper);
   }
+
+  overlayContainer.insertBefore(contentWrapper, overlayContainer.firstChild);
 
   // Collapse expandable containers
   for (const expandable of contentContainer.querySelectorAll<HTMLElement>(
@@ -265,7 +265,7 @@ export function renderPopup(
     selectedElem?.scrollIntoView({ block: 'nearest' });
   });
 
-  return container;
+  return host;
 }
 
 function getDefaultContainer(): HTMLElement {
@@ -302,7 +302,26 @@ function resetContainer({
   popupStyle: string;
 }): HTMLElement {
   const container = html('div', { class: 'container' });
-  const windowDiv = html('div', { class: 'window', 'data-type': 'window' });
+  const windowDiv = html('div', {
+    class: classes(
+      'window',
+      // If the overlay is showing, don't constrain the window height since it
+      // might mean that the buttons on the overlay get cut off.
+      'tp:has-overlay:max-h-none',
+      // Let the size of the overlay determine the overall size of the popup
+      // contents.
+      //
+      // This prevents the window from suddenly getting very large when we drop
+      // the max-height definition above.
+      //
+      // Ideally we'd only do this if we were actually going to constrain the
+      // height anyway, but that's hard to detect so we just do this
+      // unconditionally and so far it seems to work ok.
+      'tp:has-overlay:[&.entry-data]:absolute',
+      'tp:has-overlay:[&.entry-data]:w-full'
+    ),
+    'data-type': 'window',
+  });
   container.append(windowDiv);
 
   // Set initial and interactive status
