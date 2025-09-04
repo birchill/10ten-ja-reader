@@ -3,8 +3,8 @@ import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
 import browser from 'webextension-polyfill';
 
 import { isOnlyDigits } from '../utils/char-range';
+import { omit } from '../utils/omit';
 import { toRomaji } from '../utils/romaji';
-import { stripFields } from '../utils/strip-fields';
 
 import {
   CandidateWord,
@@ -185,7 +185,7 @@ async function lookupCandidates({
 
   // Convert to a flattened WordResult
   return candidateResults.map((result) => {
-    const wordResult: WordResult = stripFields(result, ['reasonChains']);
+    const wordResult: WordResult = omit(result, ['reasonChains']);
 
     // Generate the reason string
     let reason: string | undefined;

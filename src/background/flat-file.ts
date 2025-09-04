@@ -13,7 +13,7 @@ import { kanaToHiragana } from '@birchill/normal-jp';
 import { LRUMap } from 'lru_map';
 import browser from 'webextension-polyfill';
 
-import { stripFields } from '../utils/strip-fields';
+import { omit } from '../utils/omit';
 import { Overwrite } from '../utils/type-helpers';
 
 import { DictionaryWordResult, Sense } from './search-result';
@@ -403,7 +403,7 @@ function mergeMeta<MetaType extends RawKanjiMeta | RawReadingMeta, MergedType>(
 function expandSenses(senses: Array<RawWordSense>): Array<Sense> {
   return senses.map((sense) => ({
     g: expandGlosses(sense),
-    ...stripFields(sense, ['g', 'gt']),
+    ...omit(sense, ['g', 'gt']),
     match: true,
   }));
 }

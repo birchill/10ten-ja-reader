@@ -14,7 +14,7 @@ import browser from 'webextension-polyfill';
 
 import { FxLocalData, getLocalFxData } from '../background/fx-data';
 import { isObject } from '../utils/is-object';
-import { stripFields } from '../utils/strip-fields';
+import { omit } from '../utils/omit';
 import { isSafari } from '../utils/ua-utils';
 
 import type {
@@ -1015,7 +1015,7 @@ export class Config {
       );
 
     return {
-      ...stripFields(storedKeys, ['movePopupDownOrUp']),
+      ...omit(storedKeys, ['movePopupDownOrUp']),
       movePopupDown: down,
       movePopupUp: up,
     };

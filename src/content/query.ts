@@ -11,7 +11,7 @@ import {
   WordSearchResult,
 } from '../background/search-result';
 import { hasKatakana } from '../utils/char-range';
-import { stripFields } from '../utils/strip-fields';
+import { omit } from '../utils/omit';
 
 export type QueryResult = {
   words: WordSearchResult | null;
@@ -164,7 +164,7 @@ async function queryWords(
     }
     queryResult = {
       words: {
-        ...stripFields(searchResult, ['dbStatus', 'textLen']),
+        ...omit(searchResult, ['dbStatus', 'textLen']),
         type: 'words',
         matchLen: searchResult.textLen,
       },
@@ -172,7 +172,7 @@ async function queryWords(
       resultType,
     };
   } else {
-    queryResult = { ...stripFields(searchResult, ['dbStatus']), resultType };
+    queryResult = { ...omit(searchResult, ['dbStatus']), resultType };
   }
 
   return queryResult;

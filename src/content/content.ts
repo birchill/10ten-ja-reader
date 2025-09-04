@@ -65,7 +65,7 @@ import {
   union,
 } from '../utils/geometry';
 import { mod } from '../utils/mod';
-import { stripFields } from '../utils/strip-fields';
+import { omit } from '../utils/omit';
 import { WithRequired } from '../utils/type-helpers';
 import { isSafari } from '../utils/ua-utils';
 
@@ -2025,7 +2025,7 @@ export class ContentHandler {
     if (
       !this.currentLookupParams ||
       JSON.stringify(lookupParams) !==
-        JSON.stringify(stripFields(this.currentLookupParams, ['source']))
+        JSON.stringify(omit(this.currentLookupParams, ['source']))
     ) {
       return;
     }
