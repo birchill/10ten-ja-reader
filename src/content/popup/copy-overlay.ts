@@ -4,6 +4,7 @@ import browser from 'webextension-polyfill';
 import type { CopyType } from '../../common/copy-keys';
 import type { ReferenceAbbreviation } from '../../common/refs';
 import { html, svg } from '../../utils/builder';
+import { classes } from '../../utils/classes';
 
 import { getTextToCopy } from '../copy-text';
 import { getCopyEntryFromResult } from '../get-copy-entry';
@@ -37,8 +38,19 @@ export function renderCopyOverlay({
   showKanjiComponents?: boolean;
 }): HTMLDivElement {
   const copyOverlay = html('div', {
-    class:
-      'copy-overlay tp:has-overlay:bg-[hsla(0,0%,97%,0.6)] tp:has-overlay:[transition:background-color_0.3s_ease-in-out]',
+    class: classes(
+      'copy-overlay',
+      'tp:border-box tp:w-full tp:flex tp:flex-col',
+      // It's important to align to the top so that if the popup is very long we
+      // don't end up putting the copy buttons off screen somewhere.
+      'tp:justify-start tp:items-center',
+      'tp:py-7 tp:isolate tp:overflow-hidden',
+      // We fade the background so we always want a dark foreground color here,
+      // regardless of the theme.
+      'tp:text-black',
+      'tp:has-overlay:bg-[hsla(0,0%,97%,0.6)]',
+      'tp:has-overlay:[transition:background-color_0.3s_ease-in-out]'
+    ),
   });
 
   // Work out what we would copy so we can generate suitable preview text
