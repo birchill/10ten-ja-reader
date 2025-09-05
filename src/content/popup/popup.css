@@ -25,6 +25,13 @@
 
 @theme {
   --color-black: #1d1a19;
+  --color-overlay-gray: oklch(0.5697 0.0174 37.83);
+
+  --shadow-overlay-button:
+    0.2px 0.6px 0.5px hsl(0deg 0% 0% / 12%),
+    0.4px 1.2px 1.1px -1.5px hsl(0deg 0% 0% / 9%),
+    1.4px 3.7px 3.3px -3px hsl(0deg 0% 0% / 6%),
+    3.8px 10.3px 9.1px -4.4px hsl(0deg 0% 0% / 4%);
 }
 
 /*
@@ -47,6 +54,8 @@
   --text-smish--line-height: calc(1.4 * var(--base-font-size));
   --text-base: var(--base-font-size);
   --text-base--line-height: calc(1.5 * var(--base-font-size));
+  --text-lg: calc(16 / 14 * var(--base-font-size));
+  --text-lg--line-height: calc(1.75 * var(--base-font-size));
   --text-xl: calc(18 / 14 * var(--base-font-size));
   --text-xl--line-height: calc(1.75 * var(--base-font-size));
   --text-1.5xl: calc(20 / 14 * var(--base-font-size));
@@ -797,103 +806,6 @@
     animation: fade-in 0.4s linear forwards;
     background: rgba(255, 204, 204, 0.8);
     color: #b43e3e;
-  }
-
-  /*
-   * Copy overlay for when the popup is interactive
-   */
-  .copy-overlay .copy-heading {
-    opacity: 0.8;
-  }
-
-  .copy-overlay .copy-options {
-    max-width: 90%;
-    list-style: none;
-    margin: 0 8px;
-    padding: 0;
-  }
-
-  .copy-overlay .copy-options li {
-    margin-top: 12px;
-    margin-bottom: 12px;
-  }
-
-  /* Reset some button styles */
-  .copy-overlay button {
-    -webkit-appearance: none;
-    appearance: none;
-    background: transparent;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font: inherit;
-    color: inherit;
-    cursor: pointer;
-  }
-
-  .copy-overlay .copy-options li button {
-    font-size: calc(16 / 14 * var(--base-font-size));
-    font-weight: 600;
-    width: 100%;
-    min-height: 60px;
-    background: white;
-    padding: 8px 32px;
-    border-radius: 16px;
-    --shadow-color: 0deg 0% 0%;
-    box-shadow:
-      0.2px 0.6px 0.5px hsl(var(--shadow-color) / 0.12),
-      0.4px 1.2px 1.1px -1.5px hsl(var(--shadow-color) / 0.09),
-      1.4px 3.7px 3.3px -3px hsl(var(--shadow-color) / 0.06),
-      3.8px 10.3px 9.1px -4.4px hsl(var(--shadow-color) / 0.04);
-    border: 0.1px solid hsla(0deg, 0%, 0%, 0.1);
-  }
-
-  .copy-overlay .copy-options .copy-preview {
-    margin-top: calc(4 / 14 * var(--base-font-size));
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-    color: #817470;
-    font-size: calc(12 / 14 * var(--base-font-size));
-    font-weight: 400;
-    max-width: 200px;
-    overflow: hidden;
-    -webkit-mask-image: linear-gradient(to right, black 180px, transparent);
-    mask-image: linear-gradient(to right, black 180px, transparent);
-  }
-
-  .copy-overlay .copy-options .copy-preview .icon {
-    flex-shrink: 0;
-    width: 1.2em;
-    height: 1.2em;
-    margin-right: 6px;
-    opacity: 0.6;
-  }
-
-  .copy-overlay .copy-options .copy-preview span {
-    min-width: 0;
-  }
-
-  .copy-overlay .copy-options button.-icon-label,
-  .copy-overlay .cancel-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    line-height: 1.5;
-  }
-
-  .copy-overlay .copy-options button.-icon-label .icon,
-  .copy-overlay .cancel-button .icon {
-    width: 1.2em;
-    height: 1.2em;
-    margin-right: 6px;
-    margin-top: -0.2em;
-    opacity: 0.6;
-  }
-
-  .copy-overlay .cancel-button {
-    padding: 12px 36px;
-    color: rgba(0, 0, 0, 0.4);
   }
 
   /*
