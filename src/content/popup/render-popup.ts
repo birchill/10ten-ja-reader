@@ -89,8 +89,13 @@ export function renderPopup(
   }
 
   const overlayContainer = html('div', {
-    class:
-      'tp:stacked tp:grow tp:has-overlay:[&>:first-child]:pointer-events-none tp:[&>:first-child]:has-overlay:blur-[20px] tp:has-overlay:[&>:first-child]:[transition:filter_0.3s_ease-in-out]',
+    class: classes(
+      'tp:stacked tp:grow',
+      'tp:has-overlay:[&>:first-child]:pointer-events-none',
+      'tp:has-overlay:[&>:first-child]:starting:blur-none',
+      'tp:has-overlay:[&>:first-child]:blur-[20px]',
+      'tp:has-overlay:[&>:first-child]:[transition:filter_0.3s_ease-in-out]'
+    ),
     'data-type': 'overlay-container',
   });
   windowElem.append(overlayContainer);
@@ -185,11 +190,7 @@ export function renderPopup(
       })
     );
 
-    // Set the overlay styles for the window, but wait a moment so we can
-    // transition the styles in.
-    requestAnimationFrame(() => {
-      windowElem.dataset.hasOverlay = 'true';
-    });
+    windowElem.dataset.hasOverlay = 'true';
   }
 
   // Set copy styles

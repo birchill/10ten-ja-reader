@@ -48,6 +48,7 @@ export function renderCopyOverlay({
       // We fade the background so we always want a dark foreground color here,
       // regardless of the theme.
       'tp:text-black',
+      'tp:has-overlay:starting:bg-transparent',
       'tp:has-overlay:bg-[hsla(0,0%,97%,0.6)]',
       'tp:has-overlay:[transition:background-color_0.3s_ease-in-out]'
     ),
