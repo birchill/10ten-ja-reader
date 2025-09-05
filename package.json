@@ -111,6 +111,7 @@
     "playwright": "1.55.0",
     "playwright-test": "14.1.12",
     "postcss": "8.5.6",
+    "postcss-load-config": "6.0.1",
     "postcss-loader": "8.1.1",
     "prettier": "3.6.2",
     "prettier-plugin-organize-attributes": "1.0.0",
