@@ -1305,13 +1305,14 @@ describe('getTextAtPoint', () => {
   it('should return the rt text if it is positioned over an rt element', () => {
     testDiv.innerHTML = '<ruby>仙<rt>せん</rt>台<rt>だい</ruby>';
     const senNode = testDiv.firstChild!.childNodes[1].firstChild as Text;
+    const daiNode = testDiv.firstChild!.childNodes[3].firstChild as Text;
     const bbox = getBboxForOffset(senNode, 0);
 
     const result = getTextAtPoint({
       point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 4 },
     });
 
-    assertTextResultEqual(result, 'せん', [senNode, 0, 2]);
+    assertTextResultEqual(result, 'せんだい', [senNode, 0, 2], [daiNode, 0, 2]);
   });
 
   it('should return the rt text if it is positioned over a child of an rt element', () => {
@@ -1319,13 +1320,41 @@ describe('getTextAtPoint', () => {
     const seNode = testDiv.firstChild!.childNodes[1].firstChild!
       .firstChild as Text;
     const nNode = testDiv.firstChild!.childNodes[1].lastChild as Text;
+    const daiNode = testDiv.firstChild!.childNodes[3].firstChild as Text;
     const bbox = getBboxForOffset(seNode, 0);
 
     const result = getTextAtPoint({
       point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 4 },
     });
 
-    assertTextResultEqual(result, 'せん', [seNode, 0, 1], [nNode, 0, 1]);
+    assertTextResultEqual(
+      result,
+      'せんだい',
+      [seNode, 0, 1],
+      [nNode, 0, 1],
+      [daiNode, 0, 2]
+    );
+  });
+
+  it('should return the appropriate level of rt text for nested ruby', () => {
+    testDiv.innerHTML = `<ruby><ruby>牧<rt>ぼく</rt></ruby><rt>まき</rt></ruby
+      ><ruby><ruby>場<rt>じょう</rt></ruby><rt>ば</rt></ruby>`;
+    const bokuNode = testDiv.firstChild.firstChild.childNodes[1]
+      .firstChild as Text;
+    const jouNode = testDiv.childNodes[1].firstChild.childNodes[1]
+      .firstChild as Text;
+    const bbox = getBboxForOffset(bokuNode, 0);
+
+    const result = getTextAtPoint({
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 4 },
+    });
+
+    assertTextResultEqual(
+      result,
+      'ぼくじょう',
+      [bokuNode, 0, 2],
+      [jouNode, 0, 3]
+    );
   });
 
   it('should traverse okurigana in inline-block elements too', () => {
