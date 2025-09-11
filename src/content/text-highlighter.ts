@@ -84,8 +84,8 @@ export class TextHighlighter {
     const canUseHighlightApi = this.canUseHighlightApi({ textRange, length });
 
     // If there is already something selected in the page that is *not*
-    // what we selected then generally want to leave it alone, unless of course
-    // we're able to use the CSS Highlight API.
+    // what we selected then generally we want to leave it alone unless,
+    // of course, we're able to use the CSS Highlight API.
     //
     // The one exception to this is if the selection is in a contenteditable
     // node. In that case we want to store and restore it to mimic the behavior
@@ -391,30 +391,39 @@ export class TextHighlighter {
     // and blur it.
     this.clearTextBoxSelection(null);
 
-    const startNode = textRange[0].node;
-    const startOffset = textRange[0].start;
-    let endNode = startNode;
-    let endOffset = startOffset;
-
-    for (const { node, end } of new TextRangeWithLength(textRange, length)) {
-      endNode = node;
-      endOffset = end;
-    }
-
     if (canUseHighlightApi) {
-      const range = new StaticRange({
-        startContainer: startNode,
-        startOffset,
-        endContainer: endNode,
-        endOffset,
-      });
+      const ranges: Array<StaticRange> = [];
+      for (const { node, start, end } of new TextRangeWithLength(
+        textRange,
+        length
+      )) {
+        ranges.push(
+          new StaticRange({
+            startContainer: node,
+            startOffset: start,
+            endContainer: node,
+            endOffset: end,
+          })
+        );
+      }
       CSS.highlights!.set(
         style === 'blue' ? 'tenten-selection-blue' : 'tenten-selection',
-        new Highlight(range)
+        new Highlight(...ranges)
       );
       this.ensureHighlightStyles();
       this.selectedText = null;
     } else {
+      const startNode = textRange[0].node;
+      const startOffset = textRange[0].start;
+
+      let endNode = startNode;
+      let endOffset = textRange[0].end;
+
+      for (const { node, end } of new TextRangeWithLength(textRange, length)) {
+        endNode = node;
+        endOffset = end;
+      }
+
       const range = startNode.ownerDocument!.createRange();
       range.setStart(startNode, startOffset);
       range.setEnd(endNode, endOffset);
