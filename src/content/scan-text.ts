@@ -15,30 +15,58 @@ export function scanText({
 }): GetTextAtPointResult | null {
   const { offsetNode: startNode, offset: startOffset } = startPosition;
 
-  // Get the ancestor node for all inline nodes
-  let inlineAncestor = startNode.parentElement;
-  while (isInline(inlineAncestor) && !isRubyAnnotationElement(inlineAncestor)) {
-    inlineAncestor = inlineAncestor!.parentElement;
+  // Get the ancestor for all inline nodes we intend to traverse
+  let inlineScope = startNode.parentElement;
+  while (isEffectiveInline(inlineScope)) {
+    inlineScope = inlineScope!.parentElement;
   }
 
-  // Skip ruby annotation elements when traversing. However, don't do that
-  // if the inline ancestor is itself a ruby annotation element or else
-  // we'll never be able to find the starting point within the tree walker.
-  let filter: NodeFilter | undefined;
-  if (!isRubyAnnotationElement(inlineAncestor)) {
-    filter = {
-      acceptNode: (node) =>
-        node.parentElement?.closest('rp, rt')
-          ? NodeFilter.FILTER_REJECT
-          : NodeFilter.FILTER_ACCEPT,
+  // When traversing, we generally want to skip the content in <rt> and <rp>
+  // elements.
+  //
+  // If we started in an <rt> element, however, we want to visit the <rt>
+  // content of any <ruby> elements we visit and _not_ the base text content.
+  //
+  // In fact, it's a bit more complicated still due to fact that <ruby> can be
+  // nested. This is pretty rare, but it's probably fair to say that we
+  // generally want to only read <rt> content at the same level of nesting.
+  const rtLevel = getRtLevel(startNode);
+
+  // If we started inside an <rp> element, however, we don't want to skip <rp>
+  // elements or else we'll never be able to find our starting point.
+  //
+  // However, <rp> elements `display: none` via a UA stylesheet and are really
+  // only supposed to contain parentheses and so on. It's very unlikely we'll
+  // ever find useful text inside them so we should just bail if we find
+  // ourselves inside one.
+  if (startNode.parentElement?.closest('rp')) {
+    return null;
+  }
+
+  let acceptNode: (node: Node) => number;
+  if (rtLevel > 0) {
+    acceptNode = (node) => {
+      if (!node.parentElement?.closest('ruby')) {
+        return NodeFilter.FILTER_ACCEPT;
+      }
+
+      const nodeRtLevel = getRtLevel(node);
+      return nodeRtLevel === rtLevel
+        ? NodeFilter.FILTER_ACCEPT
+        : NodeFilter.FILTER_REJECT;
     };
+  } else {
+    acceptNode = (node) =>
+      node.parentElement?.closest('rp, rt')
+        ? NodeFilter.FILTER_REJECT
+        : NodeFilter.FILTER_ACCEPT;
   }
 
   // Setup a treewalker starting at the current node
   const treeWalker = document.createNodeIterator(
-    inlineAncestor || startNode,
+    inlineScope || startNode,
     NodeFilter.SHOW_TEXT,
-    filter
+    { acceptNode }
   );
 
   /* eslint-disable curly */
@@ -130,8 +158,9 @@ export function scanText({
     offset = 0;
   } while (
     node &&
-    inlineAncestor &&
-    (node.parentElement === inlineAncestor || isInline(node.parentElement))
+    inlineScope &&
+    (node.parentElement === inlineScope ||
+      isEffectiveInline(node.parentElement))
   );
 
   // Check if we didn't find any suitable characters
@@ -144,11 +173,7 @@ export function scanText({
   return result;
 }
 
-function isRubyAnnotationElement(element: Element | null) {
-  return element?.matches('rp, rt');
-}
-
-function isInline(element: Element | null) {
+function isEffectiveInline(element: Element | null) {
   return (
     element &&
     // We always treat <rb> and <ruby> tags as inline regardless of the styling
@@ -165,14 +190,35 @@ function isInline(element: Element | null) {
     // Finally, if an element's parent is inline-block, then the element will
     // still be laid out "inline" so we allow that too (and that appears to be
     // used by Kanshudo at least).
-    //
-    // Given all these exceptions, I wonder if we should even both checking
-    // the display property.
     (['RB', 'RUBY', 'SPAN'].includes(element.tagName) ||
-      ['inline', 'inline-block', 'ruby', 'ruby-base', 'ruby-text'].includes(
-        getComputedStyle(element).display!
-      ) ||
+      [
+        'inline',
+        'inline-block',
+        'inline-flex',
+        'inline-grid',
+        'ruby',
+        'ruby-base',
+        'ruby-text',
+      ].includes(getComputedStyle(element).display!) ||
       (element.parentElement &&
         getComputedStyle(element.parentElement)?.display === 'inline-block'))
   );
+}
+
+function getRtLevel(node: Node): number {
+  const rtParent = node.parentElement?.closest('rt');
+  if (!rtParent) {
+    return 0;
+  }
+
+  let level = 0;
+  let elem: HTMLElement | null = rtParent.parentElement;
+  while (elem) {
+    if (elem.tagName === 'RUBY') {
+      level++;
+    }
+    elem = elem.parentElement;
+  }
+
+  return level;
 }
