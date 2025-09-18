@@ -169,10 +169,10 @@ export class ContentHandler {
   // the popup.
   private currentPagePoint: Point | undefined;
 
-  // We keep track of the last element that was the target of a mouse move so
+  // We keep track of the last element that was the target of a pointer move so
   // that we can popup the window later using its properties.
-  private lastMouseTarget: Element | null = null;
-  private lastMouseMoveScreenPoint = { x: -1, y: -1 };
+  private lastPointerTarget: Element | null = null;
+  private lastPointerMoveScreenPoint = { x: -1, y: -1 };
 
   // Safari-only redundant pointermove/mousemove event handling
   //
@@ -637,8 +637,8 @@ export class ContentHandler {
           event.metaKey ||
           event.ctrlKey ||
           this.ignoreNextPointerMove) &&
-        this.lastMouseMoveScreenPoint.x === event.clientX &&
-        this.lastMouseMoveScreenPoint.y === event.clientY
+        this.lastPointerMoveScreenPoint.x === event.clientX &&
+        this.lastPointerMoveScreenPoint.y === event.clientY
       ) {
         // We need to ignore the mousemove event corresponding to the keyup
         // event too.
@@ -648,7 +648,7 @@ export class ContentHandler {
 
       this.ignoreNextPointerMove = false;
     }
-    this.lastMouseMoveScreenPoint = { x: event.clientX, y: event.clientY };
+    this.lastPointerMoveScreenPoint = { x: event.clientX, y: event.clientY };
 
     // If we start moving the mouse, we should stop trying to recognize a tap on
     // the "pin" key as such since it's no longer a tap (and very often these
@@ -698,7 +698,7 @@ export class ContentHandler {
       !isTouchClickEvent(event) &&
       this.popupState?.display.mode === 'pinned'
     ) {
-      this.lastMouseTarget = event.target;
+      this.lastPointerTarget = event.target;
       return;
     }
 
@@ -764,7 +764,7 @@ export class ContentHandler {
         x: event.clientX,
         y: event.clientY,
       });
-      this.lastMouseTarget = event.target;
+      this.lastPointerTarget = event.target;
       return;
     }
 
@@ -789,7 +789,7 @@ export class ContentHandler {
 
     // Record the last mouse target in case we need to trigger the popup
     // again.
-    this.lastMouseTarget = event.target;
+    this.lastPointerTarget = event.target;
 
     void this.tryToUpdatePopup({
       fromPuck: isPuckPointerEvent(event),
@@ -1006,14 +1006,14 @@ export class ContentHandler {
       // We don't do this when the there is a text box in focus because we
       // we risk interfering with the text selection when, for example, the
       // hold-to-show key is Ctrl and the user presses Ctrl+V etc.
-      if (!textBoxInFocus && this.currentPagePoint && this.lastMouseTarget) {
+      if (!textBoxInFocus && this.currentPagePoint && this.lastPointerTarget) {
         void this.tryToUpdatePopup({
           fromPuck: false,
           fromTouch: false,
           matchText: !!(matchedHoldToShowKeys & HoldToShowKeyType.Text),
           matchImages: !!(matchedHoldToShowKeys & HoldToShowKeyType.Images),
           screenPoint: toScreenCoords(this.currentPagePoint),
-          eventElement: this.lastMouseTarget,
+          eventElement: this.lastPointerTarget,
           dictMode: 'default',
         });
       }
@@ -1095,7 +1095,7 @@ export class ContentHandler {
     } else if (textBoxInFocus) {
       // If we are focussed on a textbox and the keystroke wasn't one we handle
       // one, enter typing mode and hide the pop-up.
-      this.clearResult({ currentElement: this.lastMouseTarget });
+      this.clearResult({ currentElement: this.lastPointerTarget });
       this.typingMode = true;
     }
   }
@@ -1259,7 +1259,7 @@ export class ContentHandler {
 
     // If we entered typing mode clear the highlight.
     if (this.typingMode) {
-      this.clearResult({ currentElement: this.lastMouseTarget });
+      this.clearResult({ currentElement: this.lastPointerTarget });
     }
   }
 
@@ -1523,7 +1523,7 @@ export class ContentHandler {
 
           // We are doing a lookup based on an iframe's contents so we should
           // clear any mouse target we previously stored.
-          this.lastMouseTarget = null;
+          this.lastPointerTarget = null;
 
           const meta = request.meta as SelectionMeta | undefined;
           void this.lookupText({
@@ -1814,7 +1814,7 @@ export class ContentHandler {
   }: { currentElement?: Element | null } = {}) {
     this.currentTextRange = undefined;
     this.currentPagePoint = undefined;
-    this.lastMouseTarget = null;
+    this.lastPointerTarget = null;
     this.copyState = { kind: 'inactive' };
 
     clearPopupTimeout(this.popupState);
@@ -2031,7 +2031,7 @@ export class ContentHandler {
     }
 
     if (!queryResult && !meta) {
-      this.clearResult({ currentElement: this.lastMouseTarget });
+      this.clearResult({ currentElement: this.lastPointerTarget });
       return;
     }
 
@@ -2187,7 +2187,7 @@ export class ContentHandler {
     }
 
     if (!this.currentSearchResult && !this.currentLookupParams?.meta) {
-      this.clearResult({ currentElement: this.lastMouseTarget });
+      this.clearResult({ currentElement: this.lastPointerTarget });
       return;
     }
 
@@ -2245,7 +2245,7 @@ export class ContentHandler {
         this.enterCopyMode({ trigger, index }),
       onCopy: (copyType: CopyType) => this.copyCurrentEntry(copyType),
       onClosePopup: () => {
-        this.clearResult({ currentElement: this.lastMouseTarget });
+        this.clearResult({ currentElement: this.lastPointerTarget });
       },
       onShowSettings: () => {
         browser.runtime.sendMessage({ type: 'options' }).catch(() => {
@@ -2280,7 +2280,7 @@ export class ContentHandler {
 
     const showPopupResult = showPopup(this.currentSearchResult, popupOptions);
     if (!showPopupResult) {
-      this.clearResult({ currentElement: this.lastMouseTarget });
+      this.clearResult({ currentElement: this.lastPointerTarget });
       return;
     }
     const { size: popupSize, pos: popupPos } = showPopupResult;
@@ -2511,13 +2511,13 @@ export class ContentHandler {
     // Unfortunately this won't necessarily help if the user has since moused
     // over an iframe since our last recorded mouse position and target element
     // will be based on the last mousemove event we received in _this_ frame.
-    if (this.lastMouseTarget) {
+    if (this.lastPointerTarget) {
       const mouseMoveEvent = new MouseEvent('mousemove', {
         bubbles: true,
-        screenX: this.lastMouseMoveScreenPoint.x,
-        screenY: this.lastMouseMoveScreenPoint.y,
-        clientX: this.lastMouseMoveScreenPoint.x,
-        clientY: this.lastMouseMoveScreenPoint.y,
+        screenX: this.lastPointerMoveScreenPoint.x,
+        screenY: this.lastPointerMoveScreenPoint.y,
+        clientX: this.lastPointerMoveScreenPoint.x,
+        clientY: this.lastPointerMoveScreenPoint.y,
         ctrlKey: false,
         shiftKey: false,
         altKey: false,
@@ -2525,7 +2525,7 @@ export class ContentHandler {
         button: 0,
         buttons: 0,
       });
-      this.lastMouseTarget.dispatchEvent(mouseMoveEvent);
+      this.lastPointerTarget.dispatchEvent(mouseMoveEvent);
     }
   }
 
