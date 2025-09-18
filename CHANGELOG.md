@@ -11,6 +11,8 @@ app.
 - Added references for
   [The Kodansha Kanji Dictionary](https://www.kanji.org/dictionaries/KKD/kaneirev.htm).
 - Improved scanning of ruby transcription text.
+- Made popup work for Notion popups like the calendar
+  ([#2530](https://github.com/birchill/10ten-ja-reader/issues/2530)).
 
 ## [1.25.1] - 2025-07-22
 
