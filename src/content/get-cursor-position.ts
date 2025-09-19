@@ -652,9 +652,8 @@ function caretRangeFromPoint({
     return null;
   }
 
-  // Unlike `document.caretPositionFromPoint` in Gecko,
-  // `document.caretRangeFromPoint` in Blink/WebKit doesn't dig into shadow DOM
-  // so we need to do it manually.
+  // `document.caretRangeFromPoint` doesn't dig into shadow DOM so we need to
+  // do it manually.
   range = expandShadowDomInRange({ range, point });
 
   // Check if we are now pointing at an input text node.
