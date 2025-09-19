@@ -4,6 +4,7 @@ import {
   getBboxForSingleCodepointRange,
   getRangeForSingleCodepoint,
 } from '../utils/range';
+import type { Overwrite } from '../utils/type-helpers';
 
 import { getContentType } from './content-type';
 import { getTextFromAnnotatedCanvas } from './gdocs-canvas';
@@ -14,18 +15,19 @@ import {
   isTextInputPosition,
   isTextNodePosition,
 } from './get-cursor-position';
-import type { SelectionMeta } from './meta';
-import { scanText } from './scan-text';
+import { type ScanTextResult, scanText } from './scan-text';
 import type { TextRange } from './text-range';
 
-export type GetTextAtPointResult = {
-  text: string;
-  // Contains the set of nodes and their ranges where text was found.
-  // This will be null if, for example, the result is the text from an element's
-  // title attribute.
-  textRange: TextRange | null;
-  // Extra metadata we parsed in the process
-  meta?: SelectionMeta;
+export type GetTextAtPointResult = Overwrite<
+  ScanTextResult,
+  {
+    // This will be null if, for example, the result is the text from an element's
+    // title attribute.
+    textRange: TextRange | null;
+  }
+> & {
+  // The element where the text began
+  startElement: Element;
 };
 
 // Cache of previous result (since often the mouse position will change but
@@ -88,23 +90,27 @@ export function getTextAtPoint({
     : undefined;
 
   if (position && isTextNodePosition(synthesizedPosition)) {
-    const result = scanText({
+    const scanResult = scanText({
       startPosition: synthesizedPosition,
       matchCurrency,
       maxLength,
     });
 
-    if (result) {
+    if (scanResult) {
       console.assert(
-        !!result.textRange,
-        'There should be a text range when getting text from a text node'
+        position.offsetNode.parentElement,
+        'Nodes in our position should have a parent element'
       );
+      const result: GetTextAtPointResult = {
+        ...scanResult,
+        startElement: position.offsetNode.parentElement!,
+      };
 
       // If we synthesized a text node, substitute the original node into the
       // result.
       if (position.offsetNode !== synthesizedPosition.offsetNode) {
         console.assert(
-          result.textRange?.length === 1,
+          result.textRange!.length === 1,
           'When using a synthesized text node there should be a single range'
         );
         console.assert(
@@ -121,6 +127,7 @@ export function getTextAtPoint({
         result,
         firstCharBbox: getFirstCharBbox(position),
       };
+
       return result;
     }
   }
@@ -130,7 +137,7 @@ export function getTextAtPoint({
   if (elem) {
     const text = getTextFromRandomElement({ elem, matchImages, matchText });
     if (text) {
-      const result = { text, textRange: null };
+      const result = { text, textRange: null, startElement: elem };
       previousResult = { point, position: undefined, result };
       return result;
     }

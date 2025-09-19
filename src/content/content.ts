@@ -692,9 +692,9 @@ export class ContentHandler {
       return;
     }
 
-    // We don't know how to deal with anything that's not an element
-    if (!(event.target instanceof Element)) {
-      return;
+    let targetElement: Element | null = null;
+    if (event.target instanceof Element) {
+      targetElement = event.target;
     }
 
     // Ignore mouse moves if we are pinned
@@ -702,7 +702,7 @@ export class ContentHandler {
       !isTouchClickEvent(event) &&
       this.popupState?.display.mode === 'pinned'
     ) {
-      this.lastPointerTarget = event.target;
+      this.lastPointerTarget = targetElement;
       return;
     }
 
@@ -758,7 +758,7 @@ export class ContentHandler {
     // want to close the popup.)
     if (!contentsToMatch && this.popupState?.display.mode !== 'hover') {
       if (this.popupState) {
-        this.clearResult({ currentElement: event.target });
+        this.clearResult({ currentElement: targetElement });
       }
 
       // We still want to set the current position and element information so
@@ -768,7 +768,7 @@ export class ContentHandler {
         x: event.clientX,
         y: event.clientY,
       });
-      this.lastPointerTarget = event.target;
+      this.lastPointerTarget = targetElement;
       return;
     }
 
@@ -781,7 +781,7 @@ export class ContentHandler {
 
     // If the mouse is moving too quickly, don't show the popup
     if (this.shouldThrottlePopup(event)) {
-      this.clearResult({ currentElement: event.target });
+      this.clearResult({ currentElement: targetElement });
       return;
     }
 
@@ -793,7 +793,7 @@ export class ContentHandler {
 
     // Record the last mouse target in case we need to trigger the popup
     // again.
-    this.lastPointerTarget = event.target;
+    this.lastPointerTarget = targetElement;
 
     void this.tryToUpdatePopup({
       fromPuck: isPuckPointerEvent(event),
@@ -801,7 +801,7 @@ export class ContentHandler {
       matchText,
       matchImages,
       screenPoint: { x: event.clientX, y: event.clientY },
-      eventElement: event.target,
+      eventElement: targetElement,
       dictMode,
     });
   }
@@ -1861,7 +1861,10 @@ export class ContentHandler {
     matchText: boolean;
     matchImages: boolean;
     screenPoint: Point;
-    eventElement: Element;
+    // The `eventElement` is only used for determining if we need to preserve
+    // the scroll position when clearing an existing result by determining if we
+    // are still interacting with the same element.
+    eventElement: Element | null;
     dictMode: 'default' | 'kanji';
   }) {
     const textAtPoint = getTextAtPoint({
@@ -1916,7 +1919,7 @@ export class ContentHandler {
     const pageTargetProps = getPageTargetProps({
       fromPuck,
       fromTouch,
-      target: eventElement,
+      target: textAtPoint.startElement,
       textRange: textAtPoint?.textRange || undefined,
     });
 
