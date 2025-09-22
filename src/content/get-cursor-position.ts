@@ -334,6 +334,21 @@ function getCaretPosition({
     const position = document.caretPositionFromPoint(point.x, point.y, {
       shadowRoots,
     });
+
+    //
+    // Chrome reports the wrong offset for multi-line <textarea> elements so
+    // fall back to caretRangeFromPoint in that case.
+    //
+    // https://issues.chromium.org/issues/446475645
+    //
+    if (
+      isChromium() &&
+      position?.offsetNode.nodeType === Node.ELEMENT_NODE &&
+      (position.offsetNode as Element).tagName === 'TEXTAREA'
+    ) {
+      return caretRangeFromPoint({ point, element });
+    }
+
     return position?.offsetNode
       ? { offset: position.offset, offsetNode: position.offsetNode }
       : null;
@@ -616,8 +631,7 @@ function getDistanceFromTextNode(
 
 /**
  * Wrapper for document.caretRangeFromPoint that fixes some deficiencies when
- * compared with caretPositionFromPoint (at least with regards to the Firefox
- * implementation of caretPositionFromPoint).
+ * compared with caretPositionFromPoint.
  */
 function caretRangeFromPoint({
   point,
