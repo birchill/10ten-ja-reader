@@ -29,6 +29,11 @@
 
   --rest-x-offset: -20px;
   --rest-y-offset: -20px;
+
+  /* Prevent iOS magnifying glass */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 .puck.lookup-inactive {
   opacity: 0.65;
@@ -109,6 +114,7 @@
    * (50px / 2) + (10px / 2) = 30px
    */
   --minimum-moon-offset-y: 30px;
+  --minimum-moon-offset-x: 30px;
 
   /*
    * Depending on whether the moon is above or below the earth, some extra
@@ -116,6 +122,14 @@
    */
   --extra-altitude-to-clear-above-thumb: 30px;
   --extra-altitude-to-clear-below-thumb: 60px;
+
+  /*
+   * Depending on whether the user's handedness is set to left or right, some
+   * extra altitude needs to be added to the orbit so that the thumb doesn't
+   * cover it whenever the moon is on the dominant-hand side.
+   */
+  --extra-altitude-to-clear-beside-thumb-non-hand-side: 30px;
+  --extra-altitude-to-clear-beside-thumb-hand-side: 80px;
 
   /*
    * By adding this extra clearance, we avoid the iOS 15 Safari full-size URL
@@ -140,4 +154,32 @@
 
 .puck.hold-position:not(.dragging) .moon {
   opacity: 0.75;
+}
+
+/* This icon needs to be a bit bigger than the logos to be legible */
+.switching-direction-to-vertical.logo,
+.switching-direction-to-horizontal.logo {
+  width: 40px;
+  height: 40px;
+}
+
+#switching-direction-icon-arrows-path {
+  transform-origin: 50% 50%;
+}
+
+.switching-direction-to-vertical #switching-direction-icon-arrows-path {
+  animation: rotate-arrow 0.4s ease-in-out forwards;
+}
+
+.switching-direction-to-horizontal #switching-direction-icon-arrows-path {
+  animation: rotate-arrow 0.4s ease-in-out reverse forwards;
+}
+
+@keyframes rotate-arrow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-90deg);
+  }
 }

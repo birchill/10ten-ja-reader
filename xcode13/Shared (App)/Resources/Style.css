@@ -393,3 +393,38 @@ span.smalla {
     opacity: 0;
   }
 }
+
+#hold-tap-moon {
+  animation: hold-tap-move 4.6s infinite;
+}
+
+@keyframes hold-tap-move {
+  0%, 17% {
+    transform: none;
+  }
+  35%, 65% {
+    transform: translate(40px, 40px);
+  }
+  83%, 100% {
+    transform: none;
+  }
+}
+
+#hold-tap-highlight {
+  animation: hold-tap-flash 4.6s infinite step-end;
+}
+
+@keyframes hold-tap-flash {
+  0%, 17% {
+    opacity: 1;
+  }
+  19%, 46% {
+    opacity: 0;
+  }
+  48%, 65% {
+    opacity: 1;
+  }
+  67%, 100% {
+    opacity: 0;
+  }
+}
