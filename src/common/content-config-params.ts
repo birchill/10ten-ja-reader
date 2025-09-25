@@ -92,6 +92,10 @@ export interface ContentConfigParams {
   // API etc.
   highlightStyle: HighlightStyle;
 
+  // When in vertical reading mode, should we add extra space to the left/right
+  // depending on the handedness of user, so that the moon clears the thumb?
+  handedness: 'unset' | 'left' | 'right';
+
   // Modifier keys which must be held down in order for the pop-up to shown.
   //
   // This should be a Set but Chrome can't send Sets by sendMessage :(

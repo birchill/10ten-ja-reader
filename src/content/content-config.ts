@@ -151,6 +151,9 @@ export class ContentConfig implements ContentConfigParams {
   get highlightStyle() {
     return this.params.highlightStyle;
   }
+  get handedness() {
+    return this.params.handedness;
+  }
   get holdToShowKeys() {
     return this.params.holdToShowKeys;
   }

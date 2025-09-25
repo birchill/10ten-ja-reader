@@ -391,6 +391,7 @@ export class ContentHandler {
             value: state,
           });
         },
+        config: this.config,
       });
     }
 
@@ -500,6 +501,8 @@ export class ContentHandler {
           void browser.runtime.sendMessage({ type: 'canHoverChanged', value });
           break;
       }
+
+      this.puck?.updateConfig(this.config);
     }
   }
 
@@ -2357,7 +2360,7 @@ export class ContentHandler {
       // (so we don't make corresponding adjustments to left/right), we can at
       // least be reasonably sure that the thumb extends downwards!
       const extraMarginToClearThumb =
-        this.puck.getTargetOrientation() === 'above' ? 100 : 0;
+        this.puck.getTargetOrientation().moonSide === 'above' ? 100 : 0;
       cursorClearance = {
         top,
         right,

@@ -1535,6 +1535,22 @@
     "message": "一般",
     "description": "Heading for common preferences."
   },
+  "options_handedness_label": {
+    "message": "利き手:",
+    "description": "Leading text for options for handedness of user."
+  },
+  "options_handedness_option_left": {
+    "message": "左利き",
+    "description": "Option to have handedness set to left, so extra space will be displayed between moon and earth on the _left_ side when in vertical reading mode."
+  },
+  "options_handedness_option_right": {
+    "message": "右利き",
+    "description": "Option to have handedness set to right, so extra space will be displayed between moon and earth on the _right_ side when in vertical reading mode."
+  },
+  "options_handedness_option_unset": {
+    "message": "未設定",
+    "description": "Option to have handedness unset, so _no_ extra space will be displayed between moon and earth on either side when in vertical reading mode."
+  },
   "options_highlight_matched_text": {
     "message": "照合される文字列をハイライト"
   },

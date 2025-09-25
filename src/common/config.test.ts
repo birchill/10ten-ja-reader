@@ -221,6 +221,7 @@ describe('Config', () => {
     expect(config.showKanjiComponents).toEqual(true);
     expect(config.showPriority).toEqual(true);
     expect(config.showPuck).toEqual('auto');
+    expect(config.handedness).toEqual('unset');
     expect(config.showRomaji).toEqual(false);
     expect(config.tabDisplay).toEqual('top');
     expect(config.toolbarIcon).toEqual('default');

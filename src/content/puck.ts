@@ -1,7 +1,9 @@
 /// <reference path="../common/css.d.ts" />
 import puckStyles from '../../css/puck.css?inline';
 
+import type { ContentConfigParams } from '../common/content-config-params';
 import type { PuckState } from '../common/puck-state';
+import { debounce } from '../utils/debounce';
 import { SVG_NS } from '../utils/dom-utils';
 import type { MarginBox } from '../utils/geometry';
 import { getThemeClass } from '../utils/themes';
@@ -41,8 +43,17 @@ type ClickState =
       kind: 'firstpointerdown';
       // This is the timeout we use to detect if it's a drag or not
       timeout: number;
+      // This is the timeout we use to detect if it's a click and hold event
+      clickAndHoldTimeout: number;
     }
-  | { kind: 'dragging' }
+  | {
+      kind: 'dragging';
+      // Can get to the 'dragging' state via either:
+      // - 'firstpointerdown' (click, hold)
+      // - 'secondpointerdown' (click, release, click, hold)
+      // In either case, the click and hold timeout needs to carry over into the drag.
+      clickAndHoldTimeout: number;
+    }
   | {
       kind: 'firstclick';
       // This is the timeout we use to detect if it's a double-click or not
@@ -52,6 +63,9 @@ type ClickState =
       kind: 'secondpointerdown';
       // This is the same timeout as we start when we enter the firstclick state
       timeout: number;
+      // This is the timeout we use to detect if it's a click and hold event.
+      // Tap-tap-hold is still a valid way to trigger the click-and-hold.
+      clickAndHoldTimeout: number;
     };
 
 interface ClickStateBase<T extends string> {
@@ -59,6 +73,11 @@ interface ClickStateBase<T extends string> {
 }
 interface ClickStateWithTimeout<T extends string> extends ClickStateBase<T> {
   timeout: number;
+}
+
+interface ClickStateWithClickAndHoldTimeout<T extends string>
+  extends ClickStateBase<T> {
+  clickAndHoldTimeout: number;
 }
 
 function clickStateHasTimeout<T extends ClickState['kind']>(
@@ -70,6 +89,21 @@ function clickStateHasTimeout<T extends ClickState['kind']>(
 function clearClickTimeout(clickState: ClickState) {
   if (clickStateHasTimeout(clickState)) {
     clearTimeout(clickState.timeout);
+  }
+}
+
+function clickStateHasClickAndHoldTimeout<T extends ClickState['kind']>(
+  clickState: ClickStateBase<T>
+): clickState is ClickStateWithClickAndHoldTimeout<T> {
+  return (
+    typeof (clickState as ClickStateWithClickAndHoldTimeout<T>)
+      .clickAndHoldTimeout === 'number'
+  );
+}
+
+function clearClickAndHoldTimeout(clickState: ClickState) {
+  if (clickStateHasClickAndHoldTimeout(clickState)) {
+    clearTimeout(clickState.clickAndHoldTimeout);
   }
 }
 
@@ -88,8 +122,10 @@ type RestoreContentParams = { root: Element; restore: () => void };
 export const LookupPuckId = 'tenten-ja-puck';
 
 const clickHysteresis = 300;
+const clickAndHoldHysteresis = 800;
 
 export class LookupPuck {
+  private config: ContentConfigParams | undefined;
   private puck: HTMLDivElement | undefined;
   private enabledState: PuckEnabledState = 'disabled';
 
@@ -108,11 +144,22 @@ export class LookupPuck {
   // The translateY value to apply to the moon when it is orbiting below the
   // earth. Expressed as an absolute (positive) value.
   private targetAbsoluteOffsetYBelow: number;
+  // The translateX value to apply to the moon when it is orbiting to the
+  // left or right of earth and on the same side as the user's hand. Expressed
+  // as an absolute (positive) value.
+  private targetAbsoluteOffsetXHandSide: number;
+  // The translateX value to apply to the moon when it is orbiting to the
+  // left or right of earth and on the opposite side from the user's hand (or
+  // handedness is unset). Expressed as an absolute (positive) value.
+  private targetAbsoluteOffsetXNonHandSide: number;
   // The translate (X and Y) values applied to the moon whilst it is being
   // dragged. They are measured relative to the midpoint of the moon (which is
   // also the midpoint of the earth).
   private targetOffset: { x: number; y: number } = { x: 0, y: 0 };
-  private targetOrientation: 'above' | 'below' = 'above';
+  private targetOrientation: PuckState['orientation'] = {
+    readingDirection: 'horizontal',
+    moonSide: 'above',
+  };
   private cachedViewportDimensions: ViewportDimensions | null = null;
 
   // We need to detect if the browser has a buggy position:fixed behavior
@@ -143,11 +190,13 @@ export class LookupPuck {
     safeAreaProvider,
     onLookupDisabled,
     onPuckStateChanged,
+    config,
   }: {
     initialPosition?: InitialPuckPosition;
     safeAreaProvider: SafeAreaProvider;
     onLookupDisabled: () => void;
     onPuckStateChanged: (puckState: PuckState) => void;
+    config: ContentConfigParams;
   }) {
     if (initialPosition) {
       this.puckX = initialPosition.x;
@@ -161,6 +210,7 @@ export class LookupPuck {
     this.safeAreaProvider = safeAreaProvider;
     this.onLookupDisabled = onLookupDisabled;
     this.onPuckStateChanged = onPuckStateChanged;
+    this.config = config;
   }
 
   private readonly onSafeAreaUpdated = () => {
@@ -173,11 +223,15 @@ export class LookupPuck {
     y,
     safeAreaLeft,
     safeAreaRight,
+    safeAreaTop,
+    safeAreaBottom,
   }: {
     x: number;
     y: number;
     safeAreaLeft: number;
     safeAreaRight: number;
+    safeAreaTop: number;
+    safeAreaBottom: number;
   }) {
     this.puckX = x;
     this.puckY = y;
@@ -187,28 +241,38 @@ export class LookupPuck {
       this.puck.style.transform = `translate(${this.puckX}px, ${this.puckY}px)`;
     }
 
-    // Calculate the corresponding target point (that is, the moon)
+    const isHorizontal =
+      this.targetOrientation.readingDirection === 'horizontal';
 
     // First determine the actual range of motion of the moon, taking into
     // account any safe area on either side of the screen.
-    const { viewportWidth } = this.getViewportDimensions(document);
-    const safeAreaWidth = viewportWidth - safeAreaLeft - safeAreaRight;
+    const { viewportWidth, viewportHeight } =
+      this.getViewportDimensions(document);
+    const safeAreaWidthOrHeight = isHorizontal
+      ? viewportWidth - safeAreaLeft - safeAreaRight
+      : viewportHeight - safeAreaTop - safeAreaBottom;
 
     // Now work out where the moon is within that range such that it is
     //
-    // * 0 when the the left side of the earth is touching the left safe area
+    // * 0 when the the left or top side of the earth is touching the left or top safe area
     //   inset, and
-    // * 1 when the right side of the earth is touching the right safe area
+    // * 1 when the right or bottom side of the earth is touching the right or bottom safe area
     //   inset.
     const clamp = (num: number, min: number, max: number) =>
       Math.min(Math.max(num, min), max);
-    const horizontalPortion = clamp(
-      (this.puckX - safeAreaLeft) / (safeAreaWidth - this.earthWidth),
+    // 'major' here refers to the major axis--either the x or y for horizontal
+    // or vertical reading direction, respectively.
+    const majorPortion = clamp(
+      isHorizontal
+        ? (this.puckX - safeAreaLeft) /
+            (safeAreaWidthOrHeight - this.earthWidth)
+        : (this.puckY - safeAreaTop) /
+            (safeAreaWidthOrHeight - this.earthHeight),
       0,
       1
     );
 
-    // Then we calculate the horizontal offset. We need to ensure that we
+    // Then we calculate the major axis offset. We need to ensure that we
     // produce enough displacement that we can reach to the other edge of the
     // safe area in either direction.
 
@@ -225,7 +289,9 @@ export class LookupPuck {
 
     // However, we may need to extend that to reach the other side of the safe
     // area.
-    const safeAreaExtent = Math.max(safeAreaLeft, safeAreaRight);
+    const safeAreaExtent = isHorizontal
+      ? Math.max(safeAreaLeft, safeAreaRight)
+      : Math.max(safeAreaTop, safeAreaBottom);
     const requiredReach = safeAreaExtent + radiusOfEarth;
     const requiredRadius = requiredReach / Math.sin(range / 2);
 
@@ -233,24 +299,36 @@ export class LookupPuck {
     const offsetRadius = Math.max(preferredRadius, requiredRadius);
 
     // Now finally we can calculate the horizontal offset.
-    const angle = horizontalPortion * range - range / 2;
-    const offsetX = Math.sin(angle) * offsetRadius;
+    const angle = majorPortion * range - range / 2;
 
-    // For the vertical offset, we don't actually extend the moon out by the
-    // same radius but instead try to keep a fixed vertical offset since that
-    // makes scanning horizontally easier and allows us to tweak that offset to
-    // make room for the user's thumb.
-    const offsetYOrientationFactor =
-      this.targetOrientation === 'above' ? -1 : 1;
-    const offsetY =
-      (this.targetOrientation === 'above'
-        ? this.targetAbsoluteOffsetYAbove
-        : this.targetAbsoluteOffsetYBelow) * offsetYOrientationFactor;
+    // For the minor-axis offset, we don't actually extend the moon out by the
+    // same radius but instead try to keep a fixed offset along that axis since
+    // that makes scanning easier and allows us to tweak that offset to make
+    // room for the user's thumb.
+    const orientationFactor =
+      this.targetOrientation.moonSide === 'above' ||
+      this.targetOrientation.moonSide === 'left'
+        ? -1
+        : 1;
+
+    const offsetX = !isHorizontal
+      ? (this.config?.handedness === this.targetOrientation.moonSide
+          ? this.targetAbsoluteOffsetXHandSide
+          : this.targetAbsoluteOffsetXNonHandSide) * orientationFactor
+      : Math.sin(angle) * offsetRadius;
+    const offsetY = isHorizontal
+      ? (this.targetOrientation.moonSide === 'above'
+          ? this.targetAbsoluteOffsetYAbove
+          : this.targetAbsoluteOffsetYBelow) * orientationFactor
+      : Math.sin(angle) * offsetRadius;
 
     // At rest, make the target land on the surface of the puck.
-    const restOffsetX = Math.sin(angle) * radiusOfEarth;
-    const restOffsetY =
-      Math.cos(angle) * radiusOfEarth * offsetYOrientationFactor;
+    const restOffsetX = isHorizontal
+      ? Math.sin(angle) * radiusOfEarth
+      : Math.cos(angle) * radiusOfEarth * orientationFactor;
+    const restOffsetY = isHorizontal
+      ? Math.cos(angle) * radiusOfEarth * orientationFactor
+      : Math.sin(angle) * radiusOfEarth;
 
     this.targetOffset = { x: offsetX, y: offsetY };
 
@@ -273,11 +351,11 @@ export class LookupPuck {
 
     return {
       top:
-        this.targetOrientation === 'above'
+        this.targetOrientation.moonSide === 'above'
           ? moonVerticalClearance
           : earthVerticalClearance,
       bottom:
-        this.targetOrientation === 'above'
+        this.targetOrientation.moonSide === 'above'
           ? earthVerticalClearance
           : moonVerticalClearance,
       left:
@@ -289,7 +367,7 @@ export class LookupPuck {
     };
   }
 
-  public getTargetOrientation(): 'above' | 'below' {
+  public getTargetOrientation(): PuckState['orientation'] {
     return this.targetOrientation;
   }
 
@@ -363,7 +441,14 @@ export class LookupPuck {
       clampedY -= 15;
     }
 
-    this.setPosition({ x: clampedX, y: clampedY, safeAreaLeft, safeAreaRight });
+    this.setPosition({
+      x: clampedX,
+      y: clampedY,
+      safeAreaLeft,
+      safeAreaRight,
+      safeAreaTop,
+      safeAreaBottom,
+    });
   }
 
   readonly onWindowPointerMove = (event: PointerEvent) => {
@@ -387,6 +472,9 @@ export class LookupPuck {
     }
 
     event.preventDefault();
+
+    // Click-and-hold event only triggers if user doesn't start dragging
+    clearClickAndHoldTimeout(this.clickState);
 
     let { clientX, clientY } = event;
 
@@ -675,15 +763,34 @@ export class LookupPuck {
         kind: 'firstpointerdown',
         timeout: window.setTimeout(() => {
           if (this.clickState.kind === 'firstpointerdown') {
-            this.clickState = { kind: 'dragging' };
+            this.clickState = {
+              kind: 'dragging',
+              clickAndHoldTimeout: this.clickState.clickAndHoldTimeout,
+            };
           }
         }, clickHysteresis),
+        // Since the timeout period for click-and-hold is longer than the
+        // drag timeout, we will have already transitioned to the 'dragging'
+        // state by the time this timeout triggers.
+        clickAndHoldTimeout: window.setTimeout(() => {
+          if (this.clickState.kind === 'dragging') {
+            this.onPuckClickAndHold();
+          }
+        }, clickAndHoldHysteresis),
       };
     } else if (this.clickState.kind === 'firstclick') {
       // Carry across the timeout from 'firstclick', as we still want to
       // transition back to 'idle' if no 'pointerdown' event came within
       // the hysteresis period of the preceding 'firstclick' state.
-      this.clickState = { ...this.clickState, kind: 'secondpointerdown' };
+      this.clickState = {
+        ...this.clickState,
+        kind: 'secondpointerdown',
+        clickAndHoldTimeout: window.setTimeout(() => {
+          if (this.clickState.kind === 'dragging') {
+            this.onPuckClickAndHold();
+          }
+        }, clickAndHoldHysteresis),
+      };
     }
 
     event.preventDefault();
@@ -743,7 +850,15 @@ export class LookupPuck {
     //
     // Eventually we should find a way to share this code better with that
     // function.
-    this.clickState = { ...this.clickState, kind: 'secondpointerdown' };
+    this.clickState = {
+      ...this.clickState,
+      kind: 'secondpointerdown',
+      clickAndHoldTimeout: window.setTimeout(() => {
+        if (this.clickState.kind === 'dragging') {
+          this.onPuckClickAndHold();
+        }
+      }, clickAndHoldHysteresis),
+    };
 
     event.preventDefault();
 
@@ -796,10 +911,32 @@ export class LookupPuck {
   };
 
   private readonly onPuckDoubleClick = () => {
-    this.targetOrientation =
-      this.targetOrientation === 'above' ? 'below' : 'above';
+    if (this.targetOrientation.readingDirection === 'horizontal') {
+      this.targetOrientation.moonSide =
+        this.targetOrientation.moonSide === 'above' ? 'below' : 'above';
+    } else {
+      this.targetOrientation.moonSide =
+        this.targetOrientation.moonSide === 'left' ? 'right' : 'left';
+    }
+
     this.setPositionWithinSafeArea(this.puckX, this.puckY);
     this.notifyPuckStateChanged();
+  };
+
+  private readonly onPuckClickAndHold = () => {
+    // Vibrate for touch feedback (note this will only work on Android)
+    if ('vibrate' in navigator) {
+      navigator.vibrate(50);
+    }
+    this.targetOrientation =
+      this.targetOrientation.readingDirection === 'horizontal'
+        ? { readingDirection: 'vertical', moonSide: 'left' }
+        : { readingDirection: 'horizontal', moonSide: 'above' };
+    this.notifyPuckStateChanged();
+    this.setPositionWithinSafeArea(this.puckX, this.puckY);
+    // Temporaily sets the puck icon to a bidirectional arrow
+    // that will rotate to show the new reading direction.
+    this.setIcon('arrow');
   };
 
   // May be called manually (without an event), or upon 'pointerup' or
@@ -824,6 +961,7 @@ export class LookupPuck {
 
     if (!event || event.type === 'pointercancel') {
       clearClickTimeout(this.clickState);
+      clearClickAndHoldTimeout(this.clickState);
       this.clickState = { kind: 'idle' };
       return;
     }
@@ -835,6 +973,7 @@ export class LookupPuck {
     if (this.clickState.kind === 'firstpointerdown') {
       // Prevent 'firstpointerdown' transitioning to 'dragging' state.
       clearClickTimeout(this.clickState);
+      clearClickAndHoldTimeout(this.clickState);
 
       // Wait for the hysteresis period to expire before calling
       // this.onPuckSingleClick() (to rule out a double-click).
@@ -845,12 +984,13 @@ export class LookupPuck {
             this.clickState = { kind: 'idle' };
             this.onPuckSingleClick();
           } else if (this.clickState.kind === 'secondpointerdown') {
-            this.clickState = { kind: 'dragging' };
+            this.clickState = { ...this.clickState, kind: 'dragging' };
           }
         }, clickHysteresis),
       };
     } else if (this.clickState.kind === 'secondpointerdown') {
       clearClickTimeout(this.clickState);
+      clearClickAndHoldTimeout(this.clickState);
       this.clickState = { kind: 'idle' };
       this.onPuckDoubleClick();
     } else if (this.clickState.kind === 'dragging') {
@@ -921,6 +1061,11 @@ export class LookupPuck {
           getComputedStyle(moon).getPropertyValue('--minimum-moon-offset-y')
         ) || 0;
 
+      const minimumMoonOffsetX =
+        parseFloat(
+          getComputedStyle(moon).getPropertyValue('--minimum-moon-offset-x')
+        ) || 0;
+
       // Depending on whether the moon is above or below the earth, some extra
       // altitude needs to be added to the orbit so that the thumb doesn't cover
       // it.
@@ -933,7 +1078,23 @@ export class LookupPuck {
       const extraAltitudeToClearBelowThumb =
         parseFloat(
           getComputedStyle(moon).getPropertyValue(
-            '--extra-altitude-to-clear-above-thumb'
+            '--extra-altitude-to-clear-below-thumb'
+          )
+        ) || 0;
+
+      // Same thing goes for when we are in vertical reading mode and want to
+      // add extra altitude for the side that the user's handedness is set to
+      // (if any).
+      const extraAltitudeToClearBesideThumbNonHandSide =
+        parseFloat(
+          getComputedStyle(moon).getPropertyValue(
+            '--extra-altitude-to-clear-beside-thumb-non-hand-side'
+          )
+        ) || 0;
+      const extraAltitudeToClearBesideThumbHandSide =
+        parseFloat(
+          getComputedStyle(moon).getPropertyValue(
+            '--extra-altitude-to-clear-beside-thumb-hand-side'
           )
         ) || 0;
 
@@ -955,6 +1116,13 @@ export class LookupPuck {
         minimumMoonOffsetY +
         extraAltitudeToClearBelowThumb +
         extraAltitudeToClearIos15SafariSafeAreaActivationZone;
+
+      // Use the same extra altitude value for both the left and right side
+      // orbits, since we can't know the handedness of the user.
+      this.targetAbsoluteOffsetXNonHandSide =
+        minimumMoonOffsetX + extraAltitudeToClearBesideThumbNonHandSide;
+      this.targetAbsoluteOffsetXHandSide =
+        minimumMoonOffsetX + extraAltitudeToClearBesideThumbHandSide;
     }
 
     this.setPositionWithinSafeArea(this.puckX, this.puckY);
@@ -979,8 +1147,13 @@ export class LookupPuck {
     this.checkForBuggyPositionFixed();
   }
 
-  private renderIcon(icon: 'default' | 'sky'): SVGSVGElement {
-    return icon === 'default' ? this.renderDefaultIcon() : this.renderSkyIcon();
+  private renderIcon(icon: 'default' | 'sky' | 'arrow'): SVGSVGElement {
+    if (icon === 'sky') {
+      return this.renderSkyIcon();
+    } else if (icon === 'arrow') {
+      return this.renderArrowIcon();
+    }
+    return this.renderDefaultIcon();
   }
 
   private renderDefaultIcon(): SVGSVGElement {
@@ -1035,6 +1208,32 @@ export class LookupPuck {
     return icon;
   }
 
+  private renderArrowIcon(): SVGSVGElement {
+    const icon = document.createElementNS(SVG_NS, 'svg');
+    icon.setAttribute('viewBox', '0 0 30 30');
+
+    const arrowsPath = document.createElementNS(SVG_NS, 'path');
+    arrowsPath.id = 'switching-direction-icon-arrows-path';
+    arrowsPath.setAttribute(
+      'd',
+      'M22.229 16.244V13.75h4.335v-2.682L29.83 15l-3.266 3.932v-2.688zm-14.458.006v-2.505H3.436v-2.677L.17 15l3.266 3.932v-2.683z'
+    );
+    icon.append(arrowsPath);
+
+    const textPath = document.createElementNS(SVG_NS, 'path');
+    textPath.setAttribute(
+      'd',
+      'M20.907 9.25q1.296.492 1.986 1.38t.69 2.028q0 1.428-.996 2.394t-2.796 1.038l-.744-1.26q1.836-.072 2.532-.648t.696-1.596q0-.732-.438-1.296t-1.278-.876q-.564 1.572-1.416 2.658t-2.172 1.86-1.944.774-1.17-.69-.546-1.662q0-1.152.804-2.202t2.34-1.686q.084-.816.204-1.5a29 29 0 0 1-2.28-.06l-.12-1.296q.672.06 1.32.06t1.32-.036q.18-.804.264-1.116l1.38.156q.072.012.072.036t-.024.048q-.132.168-.324.804 1.32-.12 2.196-.288l.276 1.116q-1.176.288-2.808.48-.108.432-.216 1.212.732-.12 1.164-.12t.72.024q.06-.288.108-.6.012-.168.156-.12l1.176.36q-.048.288-.132.624m-1.62.936a9.4 9.4 0 0 0-1.704.204q-.048.6-.048 1.122t.084 1.278q1.128-1.236 1.668-2.604m-2.724 3.6q-.204-1.272-.204-2.94-.996.66-1.38 1.398t-.384 1.422q0 .78.576.78.516 0 1.392-.66'
+    );
+    textPath.setAttribute(
+      'transform',
+      'matrix(1.12977 0 0 1.15672 -5.841 2.499)'
+    );
+    icon.append(textPath);
+
+    return icon;
+  }
+
   setTheme(theme: string) {
     if (!this.puck) {
       return;
@@ -1049,7 +1248,7 @@ export class LookupPuck {
     this.puck.classList.add(getThemeClass(theme));
   }
 
-  setIcon(icon: 'default' | 'sky') {
+  setIcon(icon: 'default' | 'sky' | 'arrow') {
     if (!this.puck) {
       return;
     }
@@ -1060,13 +1259,34 @@ export class LookupPuck {
       return;
     }
 
-    const classes = logo.getAttribute('class') || '';
+    let classes = [...logo.classList];
+    classes = classes.filter((c) => !c.startsWith('switching-direction-to-'));
 
     logo.remove();
     const newLogo = this.renderIcon(icon);
-    newLogo.setAttribute('class', classes);
+
+    // Special case for the arrow icon.
+    // The icon only gets set to the arrow when transitioning reading
+    // directions. It animates the arrow turning and then changes back.
+    if (icon === 'arrow') {
+      classes.push(
+        `switching-direction-to-${this.targetOrientation.readingDirection}`
+      );
+      newLogo.addEventListener('animationend', (e) => {
+        if (e.animationName === 'rotate-arrow') {
+          // Restore original icon after a delay since last direction switch
+          this.restoreIconAfterDebounce();
+        }
+      });
+    }
+
+    newLogo.setAttribute('class', classes.join(' '));
     logoParent.append(newLogo);
   }
+
+  private readonly restoreIconAfterDebounce = debounce(() => {
+    this.setIcon(this.config?.toolbarIcon ?? 'default');
+  }, clickAndHoldHysteresis * 2.25);
 
   unmount(): void {
     this.restoreContent();
@@ -1097,12 +1317,16 @@ export class LookupPuck {
       }
       window.removeEventListener('pointerup', this.noOpEventHandler);
       clearClickTimeout(this.clickState);
+      clearClickAndHoldTimeout(this.clickState);
       this.clickState = { kind: 'idle' };
 
       // Reset puck position
       this.puckX = Number.MAX_SAFE_INTEGER;
       this.puckY = Number.MAX_SAFE_INTEGER;
-      this.targetOrientation = 'above';
+      this.targetOrientation = {
+        readingDirection: 'horizontal',
+        moonSide: 'above',
+      };
 
       return;
     }
@@ -1195,6 +1419,12 @@ export class LookupPuck {
 
   clearHighlight(): void {
     this.puck?.classList.remove('hold-position');
+  }
+
+  updateConfig(config: ContentConfigParams): void {
+    this.config = config;
+    // Recalculate positions in case handedness changed
+    this.setPositionWithinSafeArea(this.puckX, this.puckY);
   }
 }
 
