@@ -391,14 +391,12 @@ export class ContentHandler {
             value: state,
           });
         },
-        config: this.config,
+        handedness: this.config.handedness,
+        toolbarIcon: this.config.toolbarIcon,
       });
     }
 
-    this.puck.render({
-      icon: this.config.toolbarIcon,
-      theme: this.config.popupStyle,
-    });
+    this.puck.render({ theme: this.config.popupStyle });
     this.puck.setEnabledState(
       this.config.puckState?.active === false ? 'inactive' : 'active'
     );
@@ -447,6 +445,10 @@ export class ContentHandler {
 
         case 'fontSize':
           setFontSize(value);
+          break;
+
+        case 'handedness':
+          this.puck?.setHandedness(value);
           break;
 
         case 'showRomaji':
@@ -501,8 +503,6 @@ export class ContentHandler {
           void browser.runtime.sendMessage({ type: 'canHoverChanged', value });
           break;
       }
-
-      this.puck?.updateConfig(this.config);
     }
   }
 
@@ -2356,16 +2356,26 @@ export class ContentHandler {
     if (this.currentTargetProps?.fromPuck && this.puck) {
       const { top, bottom, left, right } = this.puck.getPuckClearance();
 
-      // Although we can't tell whether the left or right thumb is in use
-      // (so we don't make corresponding adjustments to left/right), we can at
-      // least be reasonably sure that the thumb extends downwards!
-      const extraMarginToClearThumb =
+      // We want to add some margin on the side
+      // of the user's thumb, if we know it.
+      const extraBottomMarginToClearThumb =
         this.puck.getTargetOrientation().moonSide === 'above' ? 100 : 0;
+      // For left and right, we only want to add a margin if the handedness is set
+      const extraLeftMarginToClearThumb =
+        this.config.handedness === 'left' &&
+        this.puck.getTargetOrientation().moonSide === 'left'
+          ? 100
+          : 0;
+      const extraRightMarginToClearThumb =
+        this.config.handedness === 'right' &&
+        this.puck.getTargetOrientation().moonSide === 'right'
+          ? 100
+          : 0;
       cursorClearance = {
         top,
-        right,
-        bottom: bottom + extraMarginToClearThumb,
-        left,
+        right: right + extraRightMarginToClearThumb,
+        bottom: bottom + extraBottomMarginToClearThumb,
+        left: left + extraLeftMarginToClearThumb,
       };
     } else {
       const tooltipClearance = this.currentTargetProps?.hasTitle ? 20 : 0;
