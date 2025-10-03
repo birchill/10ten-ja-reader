@@ -11,6 +11,8 @@ app.
 - Added references for
   [The Kodansha Kanji Dictionary](https://www.kanji.org/dictionaries/KKD/kaneirev.htm).
 - Improved scanning of ruby transcription text.
+- Added vertical reading mode to puck, allowing puck earth to orbit on the sides rather
+  than just the top or bottom (https://github.com/birchill/10ten-ja-reader/pull/2557).
 
 ## [1.25.1] - 2025-07-22
 
