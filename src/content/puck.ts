@@ -23,7 +23,6 @@ interface ViewportDimensions {
 }
 
 export interface PuckRenderOptions {
-  icon: 'default' | 'sky';
   theme: string;
 }
 
@@ -42,7 +41,7 @@ type ClickState =
   | {
       kind: 'firstpointerdown';
       // This is the timeout we use to detect if it's a drag or not
-      timeout: number;
+      singleClickTimeout: number;
       // This is the timeout we use to detect if it's a click and hold event
       clickAndHoldTimeout: number;
     }
@@ -57,12 +56,12 @@ type ClickState =
   | {
       kind: 'firstclick';
       // This is the timeout we use to detect if it's a double-click or not
-      timeout: number;
+      doubleClickTimeout: number;
     }
   | {
       kind: 'secondpointerdown';
       // This is the same timeout as we start when we enter the firstclick state
-      timeout: number;
+      doubleClickTimeout: number;
       // This is the timeout we use to detect if it's a click and hold event.
       // Tap-tap-hold is still a valid way to trigger the click-and-hold.
       clickAndHoldTimeout: number;
@@ -71,25 +70,46 @@ type ClickState =
 interface ClickStateBase<T extends string> {
   kind: T;
 }
-interface ClickStateWithTimeout<T extends string> extends ClickStateBase<T> {
-  timeout: number;
+
+interface ClickStateWithClickTimeout<T extends string>
+  extends ClickStateBase<T> {
+  singleClickTimeout: number;
+}
+
+function clickStateHasSingleClickTimeout<T extends ClickState['kind']>(
+  clickState: ClickStateBase<T>
+): clickState is ClickStateWithClickTimeout<T> {
+  return (
+    typeof (clickState as ClickStateWithClickTimeout<T>).singleClickTimeout ===
+    'number'
+  );
+}
+
+interface ClickStateWithDoubleClickTimeout<T extends string>
+  extends ClickStateBase<T> {
+  doubleClickTimeout: number;
+}
+
+function clickStateHasDoubleClickTimeout<T extends ClickState['kind']>(
+  clickState: ClickStateBase<T>
+): clickState is ClickStateWithDoubleClickTimeout<T> {
+  return (
+    typeof (clickState as ClickStateWithDoubleClickTimeout<T>)
+      .doubleClickTimeout === 'number'
+  );
+}
+
+function clearClickTimeout(clickState: ClickState) {
+  if (clickStateHasSingleClickTimeout(clickState)) {
+    clearTimeout(clickState.singleClickTimeout);
+  } else if (clickStateHasDoubleClickTimeout(clickState)) {
+    clearTimeout(clickState.doubleClickTimeout);
+  }
 }
 
 interface ClickStateWithClickAndHoldTimeout<T extends string>
   extends ClickStateBase<T> {
   clickAndHoldTimeout: number;
-}
-
-function clickStateHasTimeout<T extends ClickState['kind']>(
-  clickState: ClickStateBase<T>
-): clickState is ClickStateWithTimeout<T> {
-  return typeof (clickState as ClickStateWithTimeout<T>).timeout === 'number';
-}
-
-function clearClickTimeout(clickState: ClickState) {
-  if (clickStateHasTimeout(clickState)) {
-    clearTimeout(clickState.timeout);
-  }
 }
 
 function clickStateHasClickAndHoldTimeout<T extends ClickState['kind']>(
@@ -125,7 +145,6 @@ const clickHysteresis = 300;
 const clickAndHoldHysteresis = 800;
 
 export class LookupPuck {
-  private config: ContentConfigParams | undefined;
   private puck: HTMLDivElement | undefined;
   private enabledState: PuckEnabledState = 'disabled';
 
@@ -162,6 +181,9 @@ export class LookupPuck {
   };
   private cachedViewportDimensions: ViewportDimensions | null = null;
 
+  private handedness: ContentConfigParams['handedness'];
+  private toolbarIcon: ContentConfigParams['toolbarIcon'];
+
   // We need to detect if the browser has a buggy position:fixed behavior
   // (as is currently the case for Safari
   // https://bugs.webkit.org/show_bug.cgi?id=207089)
@@ -190,13 +212,15 @@ export class LookupPuck {
     safeAreaProvider,
     onLookupDisabled,
     onPuckStateChanged,
-    config,
+    handedness,
+    toolbarIcon,
   }: {
     initialPosition?: InitialPuckPosition;
     safeAreaProvider: SafeAreaProvider;
     onLookupDisabled: () => void;
     onPuckStateChanged: (puckState: PuckState) => void;
-    config: ContentConfigParams;
+    handedness: ContentConfigParams['handedness'];
+    toolbarIcon: ContentConfigParams['toolbarIcon'];
   }) {
     if (initialPosition) {
       this.puckX = initialPosition.x;
@@ -210,7 +234,8 @@ export class LookupPuck {
     this.safeAreaProvider = safeAreaProvider;
     this.onLookupDisabled = onLookupDisabled;
     this.onPuckStateChanged = onPuckStateChanged;
-    this.config = config;
+    this.handedness = handedness;
+    this.toolbarIcon = toolbarIcon;
   }
 
   private readonly onSafeAreaUpdated = () => {
@@ -312,7 +337,7 @@ export class LookupPuck {
         : 1;
 
     const offsetX = !isHorizontal
-      ? (this.config?.handedness === this.targetOrientation.moonSide
+      ? (this.handedness === this.targetOrientation.moonSide
           ? this.targetAbsoluteOffsetXHandSide
           : this.targetAbsoluteOffsetXNonHandSide) * orientationFactor
       : Math.sin(angle) * offsetRadius;
@@ -761,7 +786,7 @@ export class LookupPuck {
       // being fired every time the puck gets parked.
       this.clickState = {
         kind: 'firstpointerdown',
-        timeout: window.setTimeout(() => {
+        singleClickTimeout: window.setTimeout(() => {
           if (this.clickState.kind === 'firstpointerdown') {
             this.clickState = {
               kind: 'dragging',
@@ -774,6 +799,9 @@ export class LookupPuck {
         // state by the time this timeout triggers.
         clickAndHoldTimeout: window.setTimeout(() => {
           if (this.clickState.kind === 'dragging') {
+            // We don't want to transition out of the dragging state.
+            // User can click-and-hold and then start dragging without
+            // lifting up their finger again.
             this.onPuckClickAndHold();
           }
         }, clickAndHoldHysteresis),
@@ -934,7 +962,7 @@ export class LookupPuck {
         : { readingDirection: 'horizontal', moonSide: 'above' };
     this.notifyPuckStateChanged();
     this.setPositionWithinSafeArea(this.puckX, this.puckY);
-    // Temporaily sets the puck icon to a bidirectional arrow
+    // Temporarily sets the puck icon to a bidirectional arrow
     // that will rotate to show the new reading direction.
     this.setIcon('arrow');
   };
@@ -979,7 +1007,7 @@ export class LookupPuck {
       // this.onPuckSingleClick() (to rule out a double-click).
       this.clickState = {
         kind: 'firstclick',
-        timeout: window.setTimeout(() => {
+        doubleClickTimeout: window.setTimeout(() => {
           if (this.clickState.kind === 'firstclick') {
             this.clickState = { kind: 'idle' };
             this.onPuckSingleClick();
@@ -1000,7 +1028,7 @@ export class LookupPuck {
 
   private readonly noOpEventHandler = () => {};
 
-  render({ icon, theme }: PuckRenderOptions): void {
+  render({ theme }: PuckRenderOptions): void {
     // Set up shadow tree
     const container = getOrCreateEmptyContainer({
       id: LookupPuckId,
@@ -1016,7 +1044,7 @@ export class LookupPuck {
     this.puck.append(earth);
 
     // Brand the earth
-    const logoSvg = this.renderIcon(icon);
+    const logoSvg = this.renderIcon(this.toolbarIcon);
     logoSvg.classList.add('logo');
     earth.append(logoSvg);
 
@@ -1216,18 +1244,15 @@ export class LookupPuck {
     arrowsPath.id = 'switching-direction-icon-arrows-path';
     arrowsPath.setAttribute(
       'd',
-      'M22.229 16.244V13.75h4.335v-2.682L29.83 15l-3.266 3.932v-2.688zm-14.458.006v-2.505H3.436v-2.677L.17 15l3.266 3.932v-2.683z'
+      'M22.2 16.2v-2.4h4.4V11l3.2 3.9-3.2 4v-2.8h-4.4ZM7.8 16.2v-2.5H3.4v-2.6L.2 15l3.2 4v-2.8h4.4Z'
     );
     icon.append(arrowsPath);
 
     const textPath = document.createElementNS(SVG_NS, 'path');
+    textPath.setAttribute('fill-rule', 'nonzero');
     textPath.setAttribute(
       'd',
-      'M20.907 9.25q1.296.492 1.986 1.38t.69 2.028q0 1.428-.996 2.394t-2.796 1.038l-.744-1.26q1.836-.072 2.532-.648t.696-1.596q0-.732-.438-1.296t-1.278-.876q-.564 1.572-1.416 2.658t-2.172 1.86-1.944.774-1.17-.69-.546-1.662q0-1.152.804-2.202t2.34-1.686q.084-.816.204-1.5a29 29 0 0 1-2.28-.06l-.12-1.296q.672.06 1.32.06t1.32-.036q.18-.804.264-1.116l1.38.156q.072.012.072.036t-.024.048q-.132.168-.324.804 1.32-.12 2.196-.288l.276 1.116q-1.176.288-2.808.48-.108.432-.216 1.212.732-.12 1.164-.12t.72.024q.06-.288.108-.6.012-.168.156-.12l1.176.36q-.048.288-.132.624m-1.62.936a9.4 9.4 0 0 0-1.704.204q-.048.6-.048 1.122t.084 1.278q1.128-1.236 1.668-2.604m-2.724 3.6q-.204-1.272-.204-2.94-.996.66-1.38 1.398t-.384 1.422q0 .78.576.78.516 0 1.392-.66'
-    );
-    textPath.setAttribute(
-      'transform',
-      'matrix(1.12977 0 0 1.15672 -5.841 2.499)'
+      'M17.8 13.2a5 5 0 0 1 2.2 1.6c.5.7.8 1.5.8 2.3 0 1.1-.4 2-1.1 2.8-.8.8-1.8 1.2-3.2 1.2l-.8-1.4c1.4-.1 2.3-.4 2.8-.8.6-.4.8-1 .8-1.8 0-.6-.1-1.1-.5-1.5-.3-.5-.8-.8-1.4-1a11 11 0 0 1-1.6 3c-.7.9-1.5 1.6-2.5 2.2a5 5 0 0 1-2.2.9c-.4 0-.9-.3-1.3-.8a3 3 0 0 1-.6-2c0-.8.3-1.7 1-2.5.5-.8 1.4-1.5 2.5-2l.3-1.7h-2.6l-.1-1.6a16.4 16.4 0 0 0 3 0l.2-1.2 1.6.2-.3 1 2.5-.3.3 1.2c-.9.3-2 .5-3.2.6l-.2 1.4a8.4 8.4 0 0 1 2.1-.1l.1-.7c0-.1 0-.2.2-.1l1.3.4-.1.7Zm-1.9 1-1.9.3a16.7 16.7 0 0 0 0 2.8c1-1 1.5-2 2-3Zm-3 4.2c-.2-1-.3-2-.3-3.4-.7.6-1.2 1-1.5 1.7-.3.5-.5 1-.5 1.6 0 .6.3 1 .7 1 .4 0 1-.3 1.6-.9Z'
     );
     icon.append(textPath);
 
@@ -1268,6 +1293,7 @@ export class LookupPuck {
     // Special case for the arrow icon.
     // The icon only gets set to the arrow when transitioning reading
     // directions. It animates the arrow turning and then changes back.
+    // It does not change the local `toolbarIcon` value.
     if (icon === 'arrow') {
       classes.push(
         `switching-direction-to-${this.targetOrientation.readingDirection}`
@@ -1278,14 +1304,22 @@ export class LookupPuck {
           this.restoreIconAfterDebounce();
         }
       });
+    } else {
+      this.toolbarIcon = icon;
     }
 
     newLogo.setAttribute('class', classes.join(' '));
     logoParent.append(newLogo);
   }
 
+  setHandedness(handedness: ContentConfigParams['handedness']) {
+    this.handedness = handedness;
+    // Recalculate position in case handedness has changed
+    this.setPositionWithinSafeArea(this.puckX, this.puckY);
+  }
+
   private readonly restoreIconAfterDebounce = debounce(() => {
-    this.setIcon(this.config?.toolbarIcon ?? 'default');
+    this.setIcon(this.toolbarIcon);
   }, clickAndHoldHysteresis * 2.25);
 
   unmount(): void {
@@ -1419,12 +1453,6 @@ export class LookupPuck {
 
   clearHighlight(): void {
     this.puck?.classList.remove('hold-position');
-  }
-
-  updateConfig(config: ContentConfigParams): void {
-    this.config = config;
-    // Recalculate positions in case handedness changed
-    this.setPositionWithinSafeArea(this.puckX, this.puckY);
   }
 }
 
