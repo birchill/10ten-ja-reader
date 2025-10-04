@@ -1,8 +1,22 @@
 import { nonJapaneseChar } from '../utils/char-range';
 
 import type { CursorPosition } from './get-cursor-position';
-import type { GetTextAtPointResult } from './get-text';
-import { extractGetTextMetadata, lookForMetadata } from './meta';
+import {
+  type SelectionMeta,
+  extractGetTextMetadata,
+  lookForMetadata,
+} from './meta';
+import type { TextRange } from './text-range';
+
+export type ScanTextResult = {
+  text: string;
+  // Contains the set of nodes and their ranges where text was found.
+  // This will be null if, for example, the result is the text from an element's
+  // title attribute.
+  textRange: TextRange;
+  // Extra metadata we parsed in the process
+  meta?: SelectionMeta;
+};
 
 export function scanText({
   startPosition,
@@ -12,7 +26,7 @@ export function scanText({
   startPosition: CursorPosition<Text>;
   matchCurrency: boolean;
   maxLength?: number;
-}): GetTextAtPointResult | null {
+}): ScanTextResult | null {
   const { offsetNode: startNode, offset: startOffset } = startPosition;
 
   // Get the ancestor for all inline nodes we intend to traverse
@@ -100,7 +114,7 @@ export function scanText({
     return null;
   }
 
-  const result: GetTextAtPointResult = { text: '', textRange: [] };
+  const result: ScanTextResult = { text: '', textRange: [] };
 
   let textDelimiter = nonJapaneseChar;
 

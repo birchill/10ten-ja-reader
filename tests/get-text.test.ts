@@ -3,7 +3,6 @@ import { assert } from 'chai';
 import type { GetTextAtPointResult } from '../src/content/get-text';
 import { clearPreviousResult, getTextAtPoint } from '../src/content/get-text';
 import { empty } from '../src/utils/dom-utils';
-import { isChromium } from '../src/utils/ua-utils';
 
 mocha.setup('bdd');
 
@@ -1337,12 +1336,10 @@ describe('getTextAtPoint', () => {
   });
 
   it('should return the appropriate level of rt text for nested ruby', () => {
-    testDiv.innerHTML = `<ruby><ruby>牧<rt>ぼく</rt></ruby><rt>まき</rt></ruby
-      ><ruby><ruby>場<rt>じょう</rt></ruby><rt>ば</rt></ruby>`;
-    const bokuNode = testDiv.firstChild.firstChild.childNodes[1]
-      .firstChild as Text;
-    const jouNode = testDiv.childNodes[1].firstChild.childNodes[1]
-      .firstChild as Text;
+    testDiv.innerHTML = `<ruby><ruby>牧<rt id=boku>ぼく</rt></ruby><rt>まき</rt></ruby
+      ><ruby><ruby>場<rt id=jou>じょう</rt></ruby><rt>ば</rt></ruby>`;
+    const bokuNode = testDiv.querySelector('#boku')!.firstChild as Text;
+    const jouNode = testDiv.querySelector('#jou')!.firstChild as Text;
     const bbox = getBboxForOffset(bokuNode, 0);
 
     const result = getTextAtPoint({
@@ -1462,31 +1459,11 @@ describe('getTextAtPoint', () => {
     testDiv.innerHTML = '<input type="text" value="あいうえお">';
     const inputNode = testDiv.firstChild as HTMLInputElement;
 
-    // There doesn't seem to be any API for getting the character offsets inside
-    // an <input> or <textarea> element so we just grab the bbox of the
-    // element itself and guess where the second character would be.
-    //
-    // We're at the mercy of available fonts and UA stylesheets here but
-    // hopefully we can just set styles and so on until we get close enough on
-    // all the platforms we care about.
-    inputNode.style.padding = '0px';
-    inputNode.style.fontSize = '10px';
-    inputNode.style.fontFamily = 'monospace';
+    makeMonospace(inputNode, 20);
     const bbox = inputNode.getBoundingClientRect();
 
-    // The following is determined empirically based on what seems to work both
-    // on Windows and on Linux (in CI) for both Firefox and Chrome.
-    //
-    // Chrome and Firefox will likely use different default fonts and
-    // furthermore they follow different code paths.
-    //
-    // As a result, this may need tweaking from time to time. For now,
-    // hopefully these values do the trick on all browsers and platforms we test
-    // on.
-    const offset = isChromium() ? 11 : 15;
-
     const result = getTextAtPoint({
-      point: { x: bbox.left + offset, y: bbox.top + bbox.height / 2 },
+      point: { x: bbox.left + 20, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'いうえお', [inputNode, 1, 5]);
@@ -1496,9 +1473,7 @@ describe('getTextAtPoint', () => {
     testDiv.innerHTML = '<input type="text" value="あいうえお">';
     const inputNode = testDiv.firstChild as HTMLInputElement;
 
-    inputNode.style.padding = '0px';
-    inputNode.style.fontSize = '10px';
-    inputNode.style.fontFamily = 'monospace';
+    makeMonospace(inputNode, 20);
     const bbox = inputNode.getBoundingClientRect();
 
     const result = getTextAtPoint({
@@ -1512,16 +1487,11 @@ describe('getTextAtPoint', () => {
     testDiv.innerHTML = '<div><input type="text" value="あいう">えお</div>';
     const inputNode = testDiv.firstChild!.firstChild as HTMLInputElement;
 
-    inputNode.style.padding = '0px';
-    inputNode.style.fontSize = '10px';
-    inputNode.style.fontFamily = 'monospace';
+    makeMonospace(inputNode, 20);
     const bbox = inputNode.getBoundingClientRect();
 
-    // See notes above about how we arrived at this offset.
-    const offset = isChromium() ? 11 : 15;
-
     const result = getTextAtPoint({
-      point: { x: bbox.left + offset, y: bbox.top + bbox.height / 2 },
+      point: { x: bbox.left + 20, y: bbox.top + bbox.height / 2 },
     });
 
     assertTextResultEqual(result, 'いう', [inputNode, 1, 3]);
@@ -1531,9 +1501,7 @@ describe('getTextAtPoint', () => {
     testDiv.innerHTML = '<input type="password" value="あいうえお">';
     const inputNode = testDiv.firstChild as HTMLInputElement;
 
-    inputNode.style.padding = '0px';
-    inputNode.style.fontSize = '10px';
-    inputNode.style.fontFamily = 'monospace';
+    makeMonospace(inputNode, 20);
     const bbox = inputNode.getBoundingClientRect();
 
     const result = getTextAtPoint({
@@ -1551,15 +1519,10 @@ describe('getTextAtPoint', () => {
     testDiv.innerHTML = '<textarea>あいうえお</textarea>';
     const textAreaNode = testDiv.firstChild as HTMLTextAreaElement;
 
-    textAreaNode.style.padding = '0px';
-    textAreaNode.style.fontSize = '10px';
-    textAreaNode.style.fontFamily = 'monospace';
+    makeMonospace(textAreaNode, 20);
     const bbox = textAreaNode.getBoundingClientRect();
 
-    // See notes above about how we arrived at this offset.
-    const offset = isChromium() ? 10 : 15;
-
-    const result = getTextAtPoint({ point: { x: bbox.left + offset, y: 5 } });
+    const result = getTextAtPoint({ point: { x: bbox.left + 20, y: 5 } });
 
     assertTextResultEqual(result, 'いうえお', [textAreaNode, 1, 5]);
   });
@@ -1691,10 +1654,6 @@ function assertTextResultEqual(
   ...ranges: Array<[Node, number, number]>
 ) {
   assert.isNotNull(result, 'Result should not be null');
-  if (result === null) {
-    return;
-  }
-
   assert.strictEqual(result.text, text, 'Result text should match');
 
   // Title only case
@@ -1762,4 +1721,16 @@ function getBboxForOffset(node: Node, start: number) {
   range.setStart(node, start);
   range.setEnd(node, start + 1);
   return range.getBoundingClientRect();
+}
+
+// We can't get glyph metrics for characters in text inputs (<input> or
+// <textarea>) so we just set various CSS properties to try to ensure characters
+// have a known width and spacing from which we can estimate positions.
+function makeMonospace(elem: HTMLElement, advance: number) {
+  elem.style.padding = '0px';
+  elem.style.fontSize = `${advance}px`;
+  elem.style.fontFamily = 'monospace';
+  elem.style.fontKerning = 'none';
+  elem.style.fontVariantLigatures = 'none';
+  elem.style.letterSpacing = `calc(${advance}px - 1ic)`;
 }

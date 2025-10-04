@@ -1,20 +1,15 @@
 {
-  "extends": ["config:base", ":dependencyDashboard"],
+  "extends": ["config:recommended", ":dependencyDashboard"],
   "labels": ["dependencies"],
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
       "matchCurrentVersion": "!/^0/",
       "automerge": true,
-      "automergeType": "branch"
+      "automergeType": "branch",
+      "minimumReleaseAge": "1 day"
     },
-    {
-      "matchDepTypes": ["devDependencies"],
-      "addLabels": ["dev"]
-    },
-    {
-      "matchPackagePatterns": ["^@rspack/"],
-      "groupName": "rspack"
-    }
+    { "matchDepTypes": ["devDependencies"], "addLabels": ["dev"] },
+    { "matchPackagePatterns": ["^@rspack/"], "groupName": "rspack" }
   ]
 }
