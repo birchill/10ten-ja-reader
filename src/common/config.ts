@@ -67,6 +67,7 @@ interface Settings {
   fontFace?: FontFace;
   fontSize?: FontSize;
   fxCurrency?: string;
+  handedness?: 'left' | 'right';
   highlightStyle?: HighlightStyle;
   holdToShowKeys?: string;
   holdToShowImageKeys?: string;
@@ -795,6 +796,27 @@ export class Config {
       : undefined;
   }
 
+  // handedness: Defaults to 'unset'
+
+  get handedness(): 'unset' | 'left' | 'right' {
+    return this.settings.handedness ?? 'unset';
+  }
+
+  set handedness(value: 'unset' | 'left' | 'right') {
+    const storedSetting = this.settings.handedness ?? 'unset';
+    if (storedSetting === value) {
+      return;
+    }
+
+    if (value === 'unset') {
+      delete this.settings.handedness;
+      void browser.storage.sync.remove('handedness');
+    } else {
+      this.settings.handedness = value;
+      void browser.storage.sync.set({ handedness: value });
+    }
+  }
+
   // highlightStyle: Defaults to 'yellow'
 
   get highlightStyle(): HighlightStyle {
@@ -1354,6 +1376,7 @@ export class Config {
       fontFace: this.fontFace,
       fontSize: this.fontSize,
       highlightStyle: this.highlightStyle,
+      handedness: this.handedness,
       holdToShowKeys: this.holdToShowKeys
         ? (this.holdToShowKeys.split('+') as Array<'Ctrl' | 'Alt'>)
         : [],
