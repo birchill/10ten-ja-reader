@@ -11,6 +11,7 @@ app.
 - Added references for
   [The Kodansha Kanji Dictionary](https://www.kanji.org/dictionaries/KKD/kaneirev.htm).
 - Improved scanning of ruby transcription text.
+- Revert changes from [PR #1773](https://github.com/birchill/10ten-ja-reader/pull/1773). Puck can hold popup open again ([#2564](https://github.com/birchill/10ten-ja-reader/pull/2564)).
 
 ## [1.25.1] - 2025-07-22
 

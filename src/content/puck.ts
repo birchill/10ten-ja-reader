@@ -12,7 +12,6 @@ import {
   removeContentContainer,
 } from './content-container';
 import { getIframeOrigin } from './iframes';
-import { isPopupWindowHostElem } from './popup/popup-container';
 import type { SafeAreaProvider } from './safe-area-provider';
 
 interface ViewportDimensions {
@@ -432,12 +431,7 @@ export class LookupPuck {
       viewportOffsetTop;
 
     // See what we are pointing at
-    let target =
-      document
-        .elementsFromPoint(targetX, targetY)
-        // Ignore any element in the 10ten popup itself; we don't want
-        // the puck moon to hold the popup open like a mouse event does.
-        .find((target) => !isPopupWindowHostElem(target)) || null;
+    let target = document.elementFromPoint(targetX, targetY);
 
     // Check if we need to adjust the content to look it up.
     //
