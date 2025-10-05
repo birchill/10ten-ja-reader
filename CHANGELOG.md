@@ -11,7 +11,13 @@ app.
 - Added references for
   [The Kodansha Kanji Dictionary](https://www.kanji.org/dictionaries/KKD/kaneirev.htm).
 - Improved scanning of ruby transcription text.
-- Revert changes from [PR #1773](https://github.com/birchill/10ten-ja-reader/pull/1773). Puck can hold popup open again ([#2564](https://github.com/birchill/10ten-ja-reader/pull/2564)).
+- Revert changes from [PR #1773](https://github.com/birchill/10ten-ja-reader/pull/1773).
+  Puck can hold popup open again ([#2564](https://github.com/birchill/10ten-ja-reader/pull/2564)).
+- Made popup work for Notion popups like the calendar
+  ([#2530](https://github.com/birchill/10ten-ja-reader/issues/2530)).
+- Fixed handling of multi-line text areas in Chrome/Edge due to
+  [Chromium bug](https://issues.chromium.org/issues/446475645)
+  ([#2541](https://github.com/birchill/10ten-ja-reader/issues/2541)).
 
 ## [1.25.1] - 2025-07-22
 
