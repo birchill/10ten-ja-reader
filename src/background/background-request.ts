@@ -32,7 +32,16 @@ export const BackgroundRequestSchema = discriminator('type', {
     value: s.object({
       x: s.number(),
       y: s.number(),
-      orientation: s.enums(['above', 'below']),
+      orientation: s.union([
+        s.object({
+          readingDirection: s.literal('horizontal'),
+          moonSide: s.enums(['above', 'below']),
+        }),
+        s.object({
+          readingDirection: s.literal('vertical'),
+          moonSide: s.enums(['left', 'right']),
+        }),
+      ]),
       active: s.boolean(),
     }),
   }),
