@@ -2356,8 +2356,8 @@ export class ContentHandler {
     if (this.currentTargetProps?.fromPuck && this.puck) {
       const { top, bottom, left, right } = this.puck.getPuckClearance();
 
-      // We want to add some margin on the side
-      // of the user's thumb, if we know it.
+      // We want to add some margin on the side of the user's thumb,
+      // if we know it.
       const extraBottomMarginToClearThumb =
         this.puck.getTargetOrientation().moonSide === 'above' ? 100 : 0;
       // For left and right, we only want to add a margin if the handedness is set
