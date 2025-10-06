@@ -14,6 +14,8 @@ app.
 - Added vertical reading mode to puck, allowing puck earth to orbit on the sides
   rather than just the top or bottom
   ([#2557](https://github.com/birchill/10ten-ja-reader/pull/2557)).
+- Revert changes from [PR #1773](https://github.com/birchill/10ten-ja-reader/pull/1773).
+  Puck can hold popup open again ([#2564](https://github.com/birchill/10ten-ja-reader/pull/2564)).
 - Made popup work for Notion popups like the calendar
   ([#2530](https://github.com/birchill/10ten-ja-reader/issues/2530)).
 - Fixed handling of multi-line text areas in Chrome/Edge due to
