@@ -1533,6 +1533,22 @@
     "message": "一般",
     "description": "Heading for common preferences."
   },
+  "options_handedness_label": {
+    "message": "利手:",
+    "description": "Leading text for options for handedness of user."
+  },
+  "options_handedness_option_left": {
+    "message": "惯用左手",
+    "description": "Option to have handedness set to left, so extra space will be displayed between moon and earth on the _left_ side when in vertical reading mode."
+  },
+  "options_handedness_option_right": {
+    "message": "惯用右手",
+    "description": "Option to have handedness set to right, so extra space will be displayed between moon and earth on the _right_ side when in vertical reading mode."
+  },
+  "options_handedness_option_unset": {
+    "message": "未设置",
+    "description": "Option to have handedness unset, so _no_ extra space will be displayed between moon and earth on either side when in vertical reading mode."
+  },
   "options_highlight_matched_text": { "message": "匹配词条高亮显示" },
   "options_highlight_style_blue": { "message": "蓝色" },
   "options_highlight_style_label": {
