@@ -1,5 +1,10 @@
 import { nonJapaneseChar } from '../utils/char-range';
 
+import {
+  type SourceContext,
+  type SourceRuby,
+  trimSourceContext,
+} from './flashcards/source-context';
 import type { CursorPosition } from './get-cursor-position';
 import {
   type SelectionMeta,
@@ -10,10 +15,23 @@ import type { TextRange } from './text-range';
 
 export type ScanTextResult = {
   text: string;
-  // Contains the set of nodes and their ranges where text was found.
-  // This will be null if, for example, the result is the text from an element's
-  // title attribute.
+
+  /**
+   * Contains the set of nodes and their ranges where text was found.
+   *
+   * This will be null if, for example, the result is the text from an element's
+   * title attribute.
+   */
   textRange: TextRange;
+
+  /**
+   * Contains the surrounding text content.
+   *
+   * This will be null if the result is the text from an element's title
+   * attribute.
+   */
+  sourceContext: SourceContext | null;
+
   // Extra metadata we parsed in the process
   meta?: SelectionMeta;
 };
@@ -35,91 +53,152 @@ export function scanText({
     inlineScope = inlineScope!.parentElement;
   }
 
-  // When traversing, we generally want to skip the content in <rt> and <rp>
-  // elements.
+  // If we started inside an <rp> element, bail.
   //
-  // If we started in an <rt> element, however, we want to visit the <rt>
-  // content of any <ruby> elements we visit and _not_ the base text content.
-  //
-  // In fact, it's a bit more complicated still due to fact that <ruby> can be
-  // nested. This is pretty rare, but it's probably fair to say that we
-  // generally want to only read <rt> content at the same level of nesting.
-  const rtLevel = getRtLevel(startNode);
-
-  // If we started inside an <rp> element, however, we don't want to skip <rp>
-  // elements or else we'll never be able to find our starting point.
-  //
-  // However, <rp> elements `display: none` via a UA stylesheet and are really
-  // only supposed to contain parentheses and so on. It's very unlikely we'll
-  // ever find useful text inside them so we should just bail if we find
-  // ourselves inside one.
+  // <rp> elements are `display: none` via a UA stylesheet and are really only
+  // supposed to contain parentheses and so on. It's very unlikely we'll ever
+  // find useful text inside them.
   if (startNode.parentElement?.closest('rp')) {
     return null;
   }
 
-  let acceptNode: (node: Node) => number;
+  // When traversing, we generally want to skip the content in <rt> and <rp>
+  // elements.
+  //
+  // If we started in an <rt> element, however, we want to include the <rt>
+  // content of any <ruby> elements we visit and _not_ the base text content.
+  //
+  // In fact, it's even more complicated due to fact that <ruby> can be
+  // nested. This is pretty rare, but it's probably fair to say that we
+  // generally want to only read <rt> content at the same level of nesting.
+  const rtLevel = getRtLevel(startNode);
+
+  // Set up our filter for which nodes to include in our output text
+  let includeNodeText: (node: Node) => node is Text;
   if (rtLevel > 0) {
-    acceptNode = (node) => {
-      if (!node.parentElement?.closest('ruby')) {
-        return NodeFilter.FILTER_ACCEPT;
+    includeNodeText = (node): node is Text => {
+      if (node.nodeType !== Node.TEXT_NODE) {
+        return false;
       }
 
-      const nodeRtLevel = getRtLevel(node);
-      return nodeRtLevel === rtLevel
-        ? NodeFilter.FILTER_ACCEPT
-        : NodeFilter.FILTER_REJECT;
+      if (!node.parentElement?.closest('ruby')) {
+        return true;
+      }
+
+      return getRtLevel(node) === rtLevel;
     };
   } else {
-    acceptNode = (node) =>
-      node.parentElement?.closest('rp, rt')
-        ? NodeFilter.FILTER_REJECT
-        : NodeFilter.FILTER_ACCEPT;
+    includeNodeText = (node): node is Text =>
+      node.nodeType === Node.TEXT_NODE &&
+      !node.parentElement?.closest('rp, rt');
   }
 
-  // Setup a treewalker starting at the current node
-  const treeWalker = document.createNodeIterator(
+  // Setup a node iterator starting at the current node
+  const nodeIterator = document.createNodeIterator(
     inlineScope || startNode,
-    NodeFilter.SHOW_TEXT,
-    { acceptNode }
+    // We need to include elements simply so we can detect empty ruby parts
+    NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT
   );
 
-  /* eslint-disable curly */
-  while (treeWalker.referenceNode !== startNode && treeWalker.nextNode());
+  const sourceContext: SourceContext = {
+    prelude: [],
+    source: [],
+    sourceOffset: 0,
+  };
 
-  if (treeWalker.referenceNode !== startNode) {
+  const preludeBuilder = new SourceContextBuilder(
+    sourceContext.prelude,
+    rtLevel
+  );
+
+  do {
+    const { referenceNode } = nodeIterator;
+    if (referenceNode === startNode) {
+      break;
+    }
+
+    preludeBuilder.add(referenceNode);
+  } while (nodeIterator.nextNode());
+
+  if (nodeIterator.referenceNode !== startNode) {
     console.error('Could not find node in tree', startNode);
     return null;
   }
 
   // Look for start, skipping any initial whitespace
-  let node = startNode;
+  let node: Text | null = startNode;
   let offset = startOffset;
   do {
-    const nodeText = node.data.substring(offset);
-    const textStart = nodeText.search(/\S/);
-    if (textStart !== -1) {
-      offset += textStart;
-      break;
+    if (includeNodeText(node)) {
+      const nodeText = node.data.substring(offset);
+      const textStart = nodeText.search(/\S/);
+      if (textStart !== -1) {
+        offset += textStart;
+        break;
+      }
     }
+
+    preludeBuilder.add(node);
+
     // Curiously with our synthesized text nodes, the next node can sometimes
     // be the same node. We only tend to reach that case, however, when our
     // offset corresponds to the end of the text so we just detect that case
     // earlier on and don't bother checking it here.
-    node = treeWalker.nextNode() as Text;
+    let nextNode = nodeIterator.nextNode() as Text | Element | null;
+    while (nextNode && nextNode.nodeType !== Node.TEXT_NODE) {
+      preludeBuilder.add(nextNode);
+      nextNode = nodeIterator.nextNode() as Text | Element | null;
+    }
+    node = nextNode as Text | null;
+
+    // Don't traverse block siblings
+    if (inlineScope && !inlineScope.contains(node)) {
+      node = null;
+      break;
+    }
+
     offset = 0;
   } while (node);
-  // (This should probably not traverse block siblings but oh well)
 
   if (!node) {
     return null;
   }
 
-  const result: ScanTextResult = { text: '', textRange: [] };
+  // If we are in the same ruby as our prelude context, then inherit that
+  // context.
+  let sourceBuilder: SourceContextBuilder;
+  const rubyElement = getOutermostRuby(node);
+
+  if (preludeBuilder.inSameRubyElement(rubyElement)) {
+    sourceBuilder = SourceContextBuilder.InheritExistingRubyContext(
+      sourceContext.source,
+      preludeBuilder
+    );
+    sourceContext.inTranscription = rtLevel > 0;
+    sourceContext.sourceOffset =
+      sourceBuilder.getRubyOffset(sourceContext.inTranscription) + offset;
+  } else if (rubyElement) {
+    preludeBuilder.flush();
+    sourceContext.sourceOffset = offset;
+    sourceBuilder = new SourceContextBuilder(sourceContext.source, rtLevel);
+  } else {
+    preludeBuilder.flush();
+    if (offset > 0) {
+      sourceContext.prelude.push(
+        collapseWhitespace(node.data.substring(0, offset))
+      );
+    }
+    sourceBuilder = new SourceContextBuilder(sourceContext.source, rtLevel);
+  }
+
+  const result: ScanTextResult = { text: '', textRange: [], sourceContext };
 
   let textDelimiter = nonJapaneseChar;
 
   // Look for range ends
   do {
+    sourceBuilder.add(node, offset);
+
     const nodeText = node.data.substring(offset);
     let textEnd = nodeText.search(textDelimiter);
 
@@ -161,14 +240,21 @@ export function scanText({
       // The text node has disallowed characters mid-way through so
       // return up to that point.
       result.text += nodeText.substring(0, textEnd);
-      result.textRange!.push({ node, start: offset, end: offset + textEnd });
+      result.textRange.push({ node, start: offset, end: offset + textEnd });
       break;
     }
 
     // The whole text node is allowed characters, keep going.
     result.text += nodeText;
-    result.textRange!.push({ node, start: offset, end: node.data.length });
-    node = treeWalker.nextNode() as Text;
+    result.textRange.push({ node, start: offset, end: node.data.length });
+
+    let nextNode = nodeIterator.nextNode() as Text | Element | null;
+    while (nextNode && !includeNodeText(nextNode)) {
+      sourceBuilder.add(nextNode);
+      nextNode = nodeIterator.nextNode() as Text | Element | null;
+    }
+    node = nextNode as Text | null;
+
     offset = 0;
   } while (
     node &&
@@ -182,10 +268,27 @@ export function scanText({
     return null;
   }
 
+  // Continue adding source context after the found text
+  let nextNode: Text | Element | null = node;
+  while (nextNode && inlineScope) {
+    nextNode = nodeIterator.nextNode() as Text | Element | null;
+    if (nextNode) {
+      sourceBuilder.add(nextNode);
+    }
+  }
+  sourceBuilder.flush();
+
+  trimSourceContext(sourceContext, result.text.length);
   result.meta = extractGetTextMetadata({ text: result.text, matchCurrency });
 
   return result;
 }
+
+// ----------------------------------------------------------------------------
+//
+// DOM helpers
+//
+// ----------------------------------------------------------------------------
 
 function isEffectiveInline(element: Element | null) {
   return (
@@ -219,20 +322,205 @@ function isEffectiveInline(element: Element | null) {
   );
 }
 
+// ----------------------------------------------------------------------------
+//
+// Ruby helpers
+//
+// ----------------------------------------------------------------------------
+
 function getRtLevel(node: Node): number {
-  const rtParent = node.parentElement?.closest('rt');
+  const element =
+    node.nodeType === Node.ELEMENT_NODE
+      ? (node as Element)
+      : node.parentElement;
+  const rtParent = element?.closest('rt');
   if (!rtParent) {
     return 0;
   }
 
-  let level = 0;
-  let elem: HTMLElement | null = rtParent.parentElement;
-  while (elem) {
-    if (elem.tagName === 'RUBY') {
-      level++;
-    }
-    elem = elem.parentElement;
+  return getRubyLevel(rtParent);
+}
+
+function getRubyLevel(node: Node): number {
+  let level =
+    node.nodeType === Node.ELEMENT_NODE && (node as Element).tagName === 'RUBY'
+      ? 1
+      : 0;
+
+  let rubyAncestor = node.parentElement?.closest('ruby');
+  while (rubyAncestor) {
+    level++;
+    rubyAncestor = rubyAncestor.parentElement?.closest('ruby');
   }
 
   return level;
+}
+
+function getOutermostRuby(node: Node): HTMLElement | null {
+  let result: HTMLElement | null = null;
+
+  let rubyAncestor = (
+    node.nodeType === Node.ELEMENT_NODE ? (node as Element) : node.parentElement
+  )?.closest('ruby');
+
+  while (rubyAncestor) {
+    result = rubyAncestor;
+    rubyAncestor = rubyAncestor.parentElement?.closest('ruby');
+  }
+
+  return result;
+}
+
+// ----------------------------------------------------------------------------
+//
+// Source context helpers
+//
+// ----------------------------------------------------------------------------
+
+class SourceContextBuilder {
+  private target: Array<string | SourceRuby> = [];
+  private preferredRtLevel: number;
+
+  // Track our ruby state
+  private rubyContext: {
+    ruby: SourceRuby;
+    rubyElement: HTMLElement;
+    rtElement: HTMLElement | null;
+    rtLevel: number;
+  } | null = null;
+
+  constructor(target: Array<string | SourceRuby>, rtLevel: number) {
+    this.target = target;
+    this.preferredRtLevel = rtLevel;
+  }
+
+  static InheritExistingRubyContext(
+    target: Array<string | SourceRuby>,
+    other: SourceContextBuilder
+  ) {
+    const result = new SourceContextBuilder(target, other.preferredRtLevel);
+    result.rubyContext = other.rubyContext;
+    other.rubyContext = null;
+    return result;
+  }
+
+  flush() {
+    if (this.rubyContext) {
+      this.target.push(this.rubyContext.ruby);
+      this.rubyContext = null;
+    }
+  }
+
+  add(node: Node, offset: number = 0) {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      if (
+        this.rubyContext &&
+        (node as Element).tagName === 'RT' &&
+        getRtLevel(node) === this.rubyContext.rtLevel
+      ) {
+        // Handle missing base span
+        if (this.rubyContext.rtElement) {
+          this.rubyContext.ruby.base.push('');
+        }
+        this.rubyContext.ruby.transcription.push('');
+        this.rubyContext.rtElement = node as HTMLElement;
+      }
+
+      return;
+    }
+
+    const textNode = node as Text;
+    const rubyElement = getOutermostRuby(node);
+
+    // Case 1: Not inside a ruby
+    if (!rubyElement) {
+      this.flush();
+      this.target.push(collapseWhitespace(textNode.data.substring(offset)));
+      return;
+    }
+
+    // Case 2: Inside an <rp> element - ignore
+    if (textNode.parentElement?.closest('rp')) {
+      return;
+    }
+
+    const nodeRtLevel = getRtLevel(node);
+    const textContent = collapseWhitespace(textNode.data);
+
+    // Case 3: Inside ruby base text
+    if (nodeRtLevel === 0) {
+      if (!this.rubyContext || this.rubyContext.rubyElement !== rubyElement) {
+        this.flush();
+
+        const rubyLevel = getRubyLevel(node);
+        const rtLevel = Math.min(this.preferredRtLevel, rubyLevel) || rubyLevel;
+
+        this.rubyContext = {
+          ruby: { base: [textContent], transcription: [] },
+          rubyElement,
+          rtElement: null,
+          rtLevel,
+        };
+      } else if (this.rubyContext.rtElement) {
+        this.rubyContext.ruby.base.push(textContent);
+        this.rubyContext.rtElement = null;
+      } else {
+        const last = this.rubyContext.ruby.base.at(-1) || '';
+        this.rubyContext.ruby.base.splice(-1, 1, last + textContent);
+      }
+      return;
+    }
+
+    // Case 4: Inside ruby transcription text
+    if (this.rubyContext && nodeRtLevel !== this.rubyContext.rtLevel) {
+      // If we started inside an <rt> element but at a different level of
+      // nesting, then we ignore this text.
+      return;
+    }
+
+    const rtElement = node.parentElement!.closest('rt') as HTMLElement;
+    if (!this.rubyContext || this.rubyContext.rubyElement !== rubyElement) {
+      this.flush();
+      this.rubyContext = {
+        ruby: { base: [''], transcription: [textContent] },
+        rubyElement,
+        rtElement,
+        rtLevel: Math.min(nodeRtLevel, this.preferredRtLevel) || nodeRtLevel,
+      };
+    } else if (this.rubyContext.rtElement === rtElement) {
+      const last = this.rubyContext.ruby.transcription.at(-1) || '';
+      this.rubyContext.ruby.transcription.splice(-1, 1, last + textContent);
+    } else {
+      this.rubyContext.ruby.transcription.push(textContent);
+      this.rubyContext.rtElement = rtElement;
+    }
+  }
+
+  inSameRubyElement(other: HTMLElement | null) {
+    return this.rubyContext && this.rubyContext.rubyElement === other;
+  }
+
+  getRubyOffset(inTranscription: boolean) {
+    if (!this.rubyContext) {
+      return 0;
+    }
+
+    const parts = inTranscription
+      ? this.rubyContext.ruby.transcription
+      : this.rubyContext.ruby.base;
+    return parts.reduce((sum, part) => sum + part.length, 0);
+  }
+}
+
+function collapseWhitespace(text: string) {
+  // We could make this take the corresponding Text node and look at the
+  // computed value of `white-space-collapse` and not collapse whitespaces if
+  // it's set to `preserve` or `preserve-spaces` but since we don't currently
+  // preserve newlines in any case it's hard to imagine a situation where that
+  // would actually be useful. (If we preserved spaces, we could imagine poetry
+  // etc. being relevant.)
+  //
+  // Also, although we read computed styles in some other places, in general
+  // we prefer to avoid it in case we end up triggering a style flush.
+  return text.replace(/[\r\n]/g, '').replace(/\s+/g, ' ');
 }

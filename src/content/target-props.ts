@@ -79,7 +79,7 @@ function getInitialClientBboxofTextSelection(
     return undefined;
   }
 
-  // All this fiddling we do do get bboxes for Google docs spans is possibly
+  // All this fiddling we do to get bboxes for Google docs spans is possibly
   // not necessary. The bboxes are mostly useful on mobile devices when we are
   // trying to position the popup to the side of the selection, but the Web
   // version of Google docs is probably not often used on mobile devices.

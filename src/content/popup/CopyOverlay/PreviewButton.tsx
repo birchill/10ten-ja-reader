@@ -16,7 +16,7 @@ export function PreviewButton({ label, lang, previewText, ...rest }: Props) {
       lang={lang}
       class={classes(
         'tp:appearance-none',
-        'tp:m-0 tp:cursor-pointer tp:appearance-none tp:bg-white tp:px-8 tp:py-2',
+        'tp:m-0 tp:px-8 tp:py-2',
         'tp:min-h-[60px]',
         'tp:rounded-2xl tp:border-[length:0.1px] tp:border-[hsl(0_0%_0%/10%)]',
         'tp:cursor-pointer tp:bg-white',
