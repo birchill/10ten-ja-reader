@@ -395,10 +395,13 @@ export class ContentHandler {
         },
         handedness: this.config.handedness,
         toolbarIcon: this.config.toolbarIcon,
+        theme: this.config.popupStyle,
+        fontSize: this.config.fontSize,
+        fontFace: this.config.fontFace,
       });
     }
 
-    this.puck.render({ theme: this.config.popupStyle });
+    this.puck.render();
     this.puck.setEnabledState(
       this.config.puckState?.active === false ? 'inactive' : 'active'
     );
@@ -443,10 +446,12 @@ export class ContentHandler {
 
         case 'fontFace':
           setFontFace(value);
+          this.puck?.setFontFace(value);
           break;
 
         case 'fontSize':
           setFontSize(value);
+          this.puck?.setFontSize(value);
           break;
 
         case 'handedness':

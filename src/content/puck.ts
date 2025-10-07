@@ -1,7 +1,14 @@
 /// <reference path="../common/css.d.ts" />
+import browser from 'webextension-polyfill';
+
+import puckOnboardingStyles from '../../css/puck-onboarding.css?inline';
 import puckStyles from '../../css/puck.css?inline';
 
-import type { ContentConfigParams } from '../common/content-config-params';
+import type {
+  ContentConfigParams,
+  FontFace,
+  FontSize,
+} from '../common/content-config-params';
 import type { PuckState } from '../common/puck-state';
 import { debounce } from '../utils/debounce';
 import { SVG_NS } from '../utils/dom-utils';
@@ -139,9 +146,12 @@ export type InitialPuckPosition = Omit<PuckState, 'active'>;
 type RestoreContentParams = { root: Element; restore: () => void };
 
 export const LookupPuckId = 'tenten-ja-puck';
+export const OnboardingTooltipId = 'tenten-ja-puck-onboarding';
 
 const clickHysteresis = 300;
 const clickAndHoldHysteresis = 800;
+const onboardingAutoHideDuration = 8000;
+const verticalModeOnboardingSeenKey = 'tenten-puck-vertical-onboarding-seen';
 
 export class LookupPuck {
   private puck: HTMLDivElement | undefined;
@@ -180,8 +190,12 @@ export class LookupPuck {
   };
   private cachedViewportDimensions: ViewportDimensions | null = null;
 
+  // Values passed down from user preferences
   private handedness: ContentConfigParams['handedness'];
   private toolbarIcon: ContentConfigParams['toolbarIcon'];
+  private theme: string;
+  private fontSize: FontSize;
+  private fontFace: FontFace;
 
   // We need to detect if the browser has a buggy position:fixed behavior
   // (as is currently the case for Safari
@@ -206,6 +220,10 @@ export class LookupPuck {
   private onLookupDisabled: () => void;
   private onPuckStateChanged: (puckState: PuckState) => void;
 
+  // Onboarding tooltip state
+  private onboardingTooltip: HTMLDivElement | undefined;
+  private onboardingTimeout: number | undefined;
+
   constructor({
     initialPosition,
     safeAreaProvider,
@@ -213,6 +231,9 @@ export class LookupPuck {
     onPuckStateChanged,
     handedness,
     toolbarIcon,
+    theme,
+    fontSize,
+    fontFace,
   }: {
     initialPosition?: InitialPuckPosition;
     safeAreaProvider: SafeAreaProvider;
@@ -220,6 +241,9 @@ export class LookupPuck {
     onPuckStateChanged: (puckState: PuckState) => void;
     handedness: ContentConfigParams['handedness'];
     toolbarIcon: ContentConfigParams['toolbarIcon'];
+    theme: ContentConfigParams['popupStyle'];
+    fontSize: FontSize;
+    fontFace: FontFace;
   }) {
     if (initialPosition) {
       this.puckX = initialPosition.x;
@@ -235,6 +259,9 @@ export class LookupPuck {
     this.onPuckStateChanged = onPuckStateChanged;
     this.handedness = handedness;
     this.toolbarIcon = toolbarIcon;
+    this.theme = theme;
+    this.fontSize = fontSize;
+    this.fontFace = fontFace;
   }
 
   private readonly onSafeAreaUpdated = () => {
@@ -950,10 +977,18 @@ export class LookupPuck {
     if ('vibrate' in navigator) {
       navigator.vibrate(50);
     }
-    this.targetOrientation =
-      this.targetOrientation.readingDirection === 'horizontal'
-        ? { readingDirection: 'vertical', moonSide: 'left' }
-        : { readingDirection: 'horizontal', moonSide: 'above' };
+
+    const wasHorizontal =
+      this.targetOrientation.readingDirection === 'horizontal';
+    this.targetOrientation = wasHorizontal
+      ? { readingDirection: 'vertical', moonSide: 'left' }
+      : { readingDirection: 'horizontal', moonSide: 'above' };
+
+    // Show onboarding tooltip if this is the first time switching to vertical
+    if (wasHorizontal && !this.hasSeenOnboarding()) {
+      this.showOnboardingTooltip();
+    }
+
     this.notifyPuckStateChanged();
     this.setPositionWithinSafeArea(this.puckX, this.puckY);
     // Temporarily sets the puck icon to a bidirectional arrow
@@ -1022,7 +1057,7 @@ export class LookupPuck {
 
   private readonly noOpEventHandler = () => {};
 
-  render({ theme }: PuckRenderOptions): void {
+  render(): void {
     // Set up shadow tree
     const container = getOrCreateEmptyContainer({
       id: LookupPuckId,
@@ -1049,7 +1084,7 @@ export class LookupPuck {
     container.shadowRoot!.append(this.puck);
 
     // Set theme styles
-    this.puck.classList.add(getThemeClass(theme));
+    this.puck.classList.add(getThemeClass(this.theme));
 
     // Calculate the earth size (which is equal to the puck's overall size)
     if (!this.earthWidth || !this.earthHeight) {
@@ -1254,6 +1289,8 @@ export class LookupPuck {
   }
 
   setTheme(theme: string) {
+    this.theme = theme;
+
     if (!this.puck) {
       return;
     }
@@ -1312,12 +1349,115 @@ export class LookupPuck {
     this.setPositionWithinSafeArea(this.puckX, this.puckY);
   }
 
+  setFontFace(fontFace: FontFace) {
+    if (!this.onboardingTooltip) {
+      return;
+    }
+
+    if (fontFace === 'bundled') {
+      this.onboardingTooltip.classList.remove('system-fonts');
+      this.onboardingTooltip.classList.add('bundled-fonts');
+    } else {
+      this.onboardingTooltip.classList.remove('bundled-fonts');
+      this.onboardingTooltip.classList.add('system-fonts');
+    }
+
+    this.fontFace = fontFace;
+  }
+
+  setFontSize(size: FontSize) {
+    if (!this.onboardingTooltip) {
+      return;
+    }
+
+    for (const className of this.onboardingTooltip.classList.values()) {
+      if (className.startsWith('font-')) {
+        this.onboardingTooltip.classList.remove(className);
+      }
+    }
+
+    this.onboardingTooltip.classList.add(`font-${size}`);
+
+    this.fontSize = size;
+  }
+
   private readonly restoreIconAfterDebounce = debounce(() => {
     this.setIcon(this.toolbarIcon);
   }, clickAndHoldHysteresis * 2.25);
 
+  private hasSeenOnboarding(): boolean {
+    return localStorage.getItem(verticalModeOnboardingSeenKey) === 'true';
+  }
+
+  private markOnboardingSeen() {
+    localStorage.setItem(verticalModeOnboardingSeenKey, 'true');
+  }
+
+  private showOnboardingTooltip() {
+    const container = getOrCreateEmptyContainer({
+      id: OnboardingTooltipId,
+      styles: puckOnboardingStyles.toString(),
+    });
+
+    // Tooltip elem
+    const tooltip = document.createElement('div');
+    tooltip.classList.add('vertical-onboarding-tooltip');
+    tooltip.classList.add(getThemeClass(this.theme));
+
+    // Message elem
+    const message = document.createElement('p');
+    message.classList.add('vertical-onboarding-message');
+    message.textContent = browser.i18n.getMessage(
+      'puck_vertical_mode_onboarding_message'
+    );
+
+    // OK button elem
+    const button = document.createElement('button');
+    button.classList.add('vertical-onboarding-ok-button');
+    button.textContent = browser.i18n.getMessage(
+      'puck_vertical_mode_onboarding_ok_label'
+    );
+    button.addEventListener('click', () => {
+      this.hideOnboardingTooltip();
+    });
+
+    tooltip.append(message, button);
+    container.shadowRoot!.append(tooltip);
+
+    this.onboardingTooltip = tooltip;
+    this.setFontFace(this.fontFace);
+    this.setFontSize(this.fontSize);
+
+    // Auto-hide the button after a duration
+    this.onboardingTimeout = window.setTimeout(() => {
+      this.hideOnboardingTooltip();
+    }, onboardingAutoHideDuration);
+
+    this.markOnboardingSeen();
+  }
+
+  private hideOnboardingTooltip() {
+    if (this.onboardingTimeout) {
+      clearTimeout(this.onboardingTimeout);
+      this.onboardingTimeout = undefined;
+    }
+
+    if (!this.onboardingTooltip) {
+      return;
+    }
+
+    this.onboardingTooltip.classList.add('fade-out');
+    this.onboardingTooltip.addEventListener('animationend', (e) => {
+      if (e.animationName === 'fade-out') {
+        removeContentContainer(OnboardingTooltipId);
+        this.onboardingTooltip = undefined;
+      }
+    });
+  }
+
   unmount(): void {
     this.restoreContent();
+    this.hideOnboardingTooltip();
     removePuck();
     window.visualViewport?.removeEventListener(
       'resize',
