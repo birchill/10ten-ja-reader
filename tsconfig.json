@@ -6,7 +6,14 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
-    "lib": ["dom", "dom.iterable", "es2020", "ES2020.Intl", "webworker"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "es2020",
+      "ES2020.Intl",
+      "es2022",
+      "webworker"
+    ],
     "module": "es2020",
     "moduleResolution": "bundler",
     "noImplicitAny": true,

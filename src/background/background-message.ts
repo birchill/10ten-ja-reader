@@ -4,6 +4,18 @@ import * as s from 'superstruct';
 import type { PopupState } from '../content/popup-state';
 import { PopupStateSchema } from '../content/popup-state';
 
+const SourceRubySchema = s.object({
+  base: s.array(s.string()),
+  transcription: s.array(s.string()),
+});
+
+const SourceContextSchema = s.object({
+  prelude: s.array(s.union([s.string(), SourceRubySchema])),
+  source: s.array(s.union([s.string(), SourceRubySchema])),
+  sourceOffset: s.number(),
+  inTranscription: s.optional(s.boolean()),
+});
+
 export const BackgroundMessageSchema = discriminator('type', {
   disable: s.type({ frame: s.literal('*') }),
   enable: s.type({
@@ -48,6 +60,8 @@ export const BackgroundMessageSchema = discriminator('type', {
       currentSrc: s.string(),
       dimensions: s.type({ width: s.number(), height: s.number() }),
     }),
+    // The surrounding context of `text`
+    sourceContext: s.nullable(SourceContextSchema),
     frame: s.literal('top'),
   }),
   pinPopup: s.type({ frame: s.literal('top') }),

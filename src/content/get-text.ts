@@ -137,7 +137,12 @@ export function getTextAtPoint({
   if (elem) {
     const text = getTextFromRandomElement({ elem, matchImages, matchText });
     if (text) {
-      const result = { text, textRange: null, startElement: elem };
+      const result = {
+        text,
+        textRange: null,
+        startElement: elem,
+        sourceContext: null,
+      };
       previousResult = { point, position: undefined, result };
       return result;
     }

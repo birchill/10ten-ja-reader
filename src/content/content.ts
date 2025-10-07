@@ -74,6 +74,7 @@ import type { ContentConfigChange } from './content-config';
 import { ContentConfig } from './content-config';
 import type { CopyEntry } from './copy-text';
 import { getTextToCopy } from './copy-text';
+import type { SourceContext } from './flashcards/source-context';
 import { injectGdocsStyles, removeGdocsStyles } from './gdocs-canvas';
 import { getCopyEntryFromResult } from './get-copy-entry';
 import { getTextAtPoint } from './get-text';
@@ -129,6 +130,15 @@ const enum HoldToShowKeyType {
   Images = 1 << 1,
   All = Text | Images,
 }
+
+// This should be enough for most (but not all) entries for now.
+//
+// See https://github.com/birchill/10ten-ja-reader/issues/319#issuecomment-655545971
+// for a snapshot of the entry lengths by frequency.
+//
+// Once we have switched all databases to IndexedDB, we should investigate the
+// performance impact of increasing this further.
+export const MAX_LOOKUP_LENGTH = 16;
 
 export class ContentHandler {
   // The content script is injected into every frame in a page but we delegate
@@ -228,15 +238,6 @@ export class ContentHandler {
   // Top-most window concerns
   //
 
-  // This should be enough for most (but not all) entries for now.
-  //
-  // See https://github.com/birchill/10ten-ja-reader/issues/319#issuecomment-655545971
-  // for a snapshot of the entry lengths by frequency.
-  //
-  // Once we have switched all databases to IndexedDB, we should investigate the
-  // performance impact of increasing this further.
-  private static MAX_LENGTH = 16;
-
   private isEffectiveTopMostWindow = false;
 
   private currentLookupParams:
@@ -245,6 +246,7 @@ export class ContentHandler {
         wordLookup: boolean;
         meta?: SelectionMeta;
         source: IframeSourceParams | null;
+        sourceContext: SourceContext | null;
       }
     | undefined;
   private currentSearchResult: QueryResult | undefined;
@@ -1875,7 +1877,7 @@ export class ContentHandler {
       matchText,
       matchImages,
       point: screenPoint,
-      maxLength: ContentHandler.MAX_LENGTH,
+      maxLength: MAX_LOOKUP_LENGTH,
     });
 
     // We might have failed to find a match because we didn't have the
@@ -1930,6 +1932,7 @@ export class ContentHandler {
       dictMode,
       meta: textAtPoint.meta,
       source: null,
+      sourceContext: textAtPoint.sourceContext,
       text: textAtPoint.text,
       targetProps: pageTargetProps,
       wordLookup: !!textAtPoint.textRange,
@@ -1968,6 +1971,7 @@ export class ContentHandler {
     dictMode,
     meta,
     source,
+    sourceContext,
     text,
     targetProps,
     wordLookup,
@@ -1975,11 +1979,18 @@ export class ContentHandler {
     dictMode: 'default' | 'kanji';
     meta?: SelectionMeta;
     source: IframeSourceParams | null;
+    sourceContext: SourceContext | null;
     targetProps: TargetProps;
     text: string;
     wordLookup: boolean;
   }) {
-    this.currentLookupParams = { text, meta, wordLookup, source };
+    this.currentLookupParams = {
+      text,
+      meta,
+      wordLookup,
+      source,
+      sourceContext,
+    };
 
     // Presumably the text or dictionary has changed so break out of copy mode
     this.copyState = { kind: 'inactive' };
@@ -2035,7 +2046,9 @@ export class ContentHandler {
     if (
       !this.currentLookupParams ||
       JSON.stringify(lookupParams) !==
-        JSON.stringify(omit(this.currentLookupParams, 'source'))
+        JSON.stringify(
+          omit(this.currentLookupParams, 'source', 'sourceContext')
+        )
     ) {
       return;
     }
