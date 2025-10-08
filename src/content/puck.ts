@@ -149,7 +149,7 @@ export const LookupPuckId = 'tenten-ja-puck';
 export const OnboardingTooltipId = 'tenten-ja-puck-onboarding';
 
 const clickHysteresis = 300;
-const clickAndHoldHysteresis = 800;
+const clickAndHoldHysteresis = 1000;
 const onboardingAutoHideDuration = 8000;
 const verticalModeOnboardingSeenKey = 'tenten-puck-vertical-onboarding-seen';
 
@@ -189,6 +189,7 @@ export class LookupPuck {
     moonSide: 'above',
   };
   private cachedViewportDimensions: ViewportDimensions | null = null;
+  private ring: SVGElement | undefined;
 
   // Values passed down from user preferences
   private handedness: ContentConfigParams['handedness'];
@@ -526,6 +527,7 @@ export class LookupPuck {
 
     // Click-and-hold event only triggers if user doesn't start dragging
     clearClickAndHoldTimeout(this.clickState);
+    this.cancelClickAndHoldAnimation();
 
     let { clientX, clientY } = event;
 
@@ -848,6 +850,8 @@ export class LookupPuck {
     this.puck.classList.add('dragging');
     this.puck.setPointerCapture(event.pointerId);
 
+    this.beginDelayedClickAndHoldAnimation();
+
     // We need to register in the capture phase because Bibi reader (which
     // apparently is based on Epub.js) registers a pointermove handler on the
     // window in the capture phase and calls `stopPropagation()` on the events
@@ -910,6 +914,8 @@ export class LookupPuck {
     };
 
     event.preventDefault();
+
+    this.beginDelayedClickAndHoldAnimation();
 
     // See note in onPointerDown for why we need to register in the capture
     // phase.
@@ -1010,6 +1016,8 @@ export class LookupPuck {
       this.notifyPuckStateChanged();
     }
 
+    this.cancelClickAndHoldAnimation();
+
     window.removeEventListener('pointermove', this.onWindowPointerMove, {
       capture: true,
     });
@@ -1067,6 +1075,20 @@ export class LookupPuck {
     // Create puck elem
     this.puck = document.createElement('div');
     this.puck.classList.add('puck');
+
+    // This fills as the user begins pressing and holding the puck
+    const clickAndHoldRing = document.createElementNS(SVG_NS, 'svg');
+    clickAndHoldRing.classList.add('click-and-hold-ring');
+    clickAndHoldRing.setAttribute('width', '120');
+    clickAndHoldRing.setAttribute('height', '120');
+    clickAndHoldRing.setAttribute('viewBox', '0 0 120 120');
+    this.ring = document.createElementNS(SVG_NS, 'circle');
+    this.ring.classList.add('ring-fill');
+    this.ring.setAttribute('cx', '60');
+    this.ring.setAttribute('cy', '60');
+    this.ring.setAttribute('r', '20');
+    clickAndHoldRing.append(this.ring);
+    this.puck.append(clickAndHoldRing);
 
     const earth = document.createElement('div');
     earth.classList.add('earth');
@@ -1384,6 +1406,26 @@ export class LookupPuck {
   private readonly restoreIconAfterDebounce = debounce(() => {
     this.setIcon(this.toolbarIcon);
   }, clickAndHoldHysteresis * 2.25);
+
+  private beginDelayedClickAndHoldAnimation() {
+    if (!this.ring) {
+      return;
+    }
+
+    const baseDelay = 200; // ms to wait before ring starts filling
+    const totalDuration = clickAndHoldHysteresis - baseDelay + 300;
+    const popDelay = baseDelay + 50;
+    const fill = `fill-ring ${totalDuration}ms ${baseDelay}ms ease-out forwards`;
+    const pop = `pop-and-fade ${totalDuration}ms ${popDelay}ms ease-out forwards`;
+
+    this.ring.style.animation = `${fill}, ${pop}`;
+  }
+
+  private cancelClickAndHoldAnimation() {
+    if (this.ring) {
+      this.ring.style.animation = 'none';
+    }
+  }
 
   private hasSeenOnboarding(): boolean {
     return localStorage.getItem(verticalModeOnboardingSeenKey) === 'true';

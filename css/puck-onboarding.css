@@ -8,7 +8,7 @@
    * value. The tooltip gets inserted after the puck in the DOM, so it will
    * appear on top.
    */
-  z-index: 2147483647;  
+  z-index: 2147483647;
 
   position: fixed;
   bottom: 20px;
