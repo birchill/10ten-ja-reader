@@ -28,10 +28,6 @@ interface ViewportDimensions {
   viewportHeight: number;
 }
 
-export interface PuckRenderOptions {
-  theme: string;
-}
-
 export function isPuckPointerEvent(
   pointerEvent: PointerEvent
 ): pointerEvent is PuckPointerEvent {
@@ -146,7 +142,7 @@ export type InitialPuckPosition = Omit<PuckState, 'active'>;
 type RestoreContentParams = { root: Element; restore: () => void };
 
 export const LookupPuckId = 'tenten-ja-puck';
-export const OnboardingTooltipId = 'tenten-ja-puck-onboarding';
+const OnboardingTooltipId = 'tenten-ja-puck-onboarding';
 
 const clickHysteresis = 300;
 const clickAndHoldHysteresis = 1000;
