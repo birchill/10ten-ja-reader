@@ -336,12 +336,12 @@ function resetContainer({
   // Font face
   if (fontFace === 'bundled') {
     windowDiv.classList.add('bundled-fonts');
+  } else {
+    windowDiv.classList.add('system-fonts');
   }
 
   // Font size
-  if (fontSize !== 'normal') {
-    windowDiv.classList.add(`font-${fontSize}`);
-  }
+  windowDiv.classList.add(`font-${fontSize}`);
 
   if (host.shadowRoot) {
     host.shadowRoot.append(container);

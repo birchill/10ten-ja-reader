@@ -2220,6 +2220,14 @@
     "message": "動一（ずる）",
     "description": "Short part-of-speech label shown next to Ichidan verb - zuru verb (alternative form of -jiru verbs) entries"
   },
+  "puck_vertical_mode_onboarding_message": {
+    "message": "縦書きモードが有効になりました！横書きモードに戻すには、もう一度丸いボタンを長押ししてください。",
+    "description": "Onboarding message shown when user activates vertical reading mode for the first time"
+  },
+  "puck_vertical_mode_onboarding_ok_label": {
+    "message": "OK",
+    "description": "Button text to dismiss the vertical reading mode onboarding tooltip"
+  },
   "ref_label_jlpt": {
     "message": "日本語能力試験",
     "description": "The label used when presenting the level the kanji appears in in the old JLPT system"

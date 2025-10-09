@@ -1,7 +1,14 @@
 /// <reference path="../common/css.d.ts" />
+import browser from 'webextension-polyfill';
+
+import puckOnboardingStyles from '../../css/puck-onboarding.css?inline';
 import puckStyles from '../../css/puck.css?inline';
 
-import type { ContentConfigParams } from '../common/content-config-params';
+import type {
+  ContentConfigParams,
+  FontFace,
+  FontSize,
+} from '../common/content-config-params';
 import type { PuckState } from '../common/puck-state';
 import { debounce } from '../utils/debounce';
 import { SVG_NS } from '../utils/dom-utils';
@@ -19,10 +26,6 @@ import type { SafeAreaProvider } from './safe-area-provider';
 interface ViewportDimensions {
   viewportWidth: number;
   viewportHeight: number;
-}
-
-export interface PuckRenderOptions {
-  theme: string;
 }
 
 export function isPuckPointerEvent(
@@ -139,9 +142,12 @@ export type InitialPuckPosition = Omit<PuckState, 'active'>;
 type RestoreContentParams = { root: Element; restore: () => void };
 
 export const LookupPuckId = 'tenten-ja-puck';
+const OnboardingTooltipId = 'tenten-ja-puck-onboarding';
 
 const clickHysteresis = 300;
-const clickAndHoldHysteresis = 800;
+const clickAndHoldHysteresis = 1000;
+const onboardingAutoHideDuration = 8000;
+const verticalModeOnboardingSeenKey = 'tenten-puck-vertical-onboarding-seen';
 
 export class LookupPuck {
   private puck: HTMLDivElement | undefined;
@@ -179,9 +185,14 @@ export class LookupPuck {
     moonSide: 'above',
   };
   private cachedViewportDimensions: ViewportDimensions | null = null;
+  private ring: SVGElement | undefined;
 
+  // Values passed down from user preferences
   private handedness: ContentConfigParams['handedness'];
   private toolbarIcon: ContentConfigParams['toolbarIcon'];
+  private theme: string;
+  private fontSize: FontSize;
+  private fontFace: FontFace;
 
   // We need to detect if the browser has a buggy position:fixed behavior
   // (as is currently the case for Safari
@@ -206,6 +217,10 @@ export class LookupPuck {
   private onLookupDisabled: () => void;
   private onPuckStateChanged: (puckState: PuckState) => void;
 
+  // Onboarding tooltip state
+  private onboardingTooltip: HTMLDivElement | undefined;
+  private onboardingTimeout: number | undefined;
+
   constructor({
     initialPosition,
     safeAreaProvider,
@@ -213,6 +228,9 @@ export class LookupPuck {
     onPuckStateChanged,
     handedness,
     toolbarIcon,
+    theme,
+    fontSize,
+    fontFace,
   }: {
     initialPosition?: InitialPuckPosition;
     safeAreaProvider: SafeAreaProvider;
@@ -220,6 +238,9 @@ export class LookupPuck {
     onPuckStateChanged: (puckState: PuckState) => void;
     handedness: ContentConfigParams['handedness'];
     toolbarIcon: ContentConfigParams['toolbarIcon'];
+    theme: ContentConfigParams['popupStyle'];
+    fontSize: FontSize;
+    fontFace: FontFace;
   }) {
     if (initialPosition) {
       this.puckX = initialPosition.x;
@@ -235,6 +256,9 @@ export class LookupPuck {
     this.onPuckStateChanged = onPuckStateChanged;
     this.handedness = handedness;
     this.toolbarIcon = toolbarIcon;
+    this.theme = theme;
+    this.fontSize = fontSize;
+    this.fontFace = fontFace;
   }
 
   private readonly onSafeAreaUpdated = () => {
@@ -499,6 +523,7 @@ export class LookupPuck {
 
     // Click-and-hold event only triggers if user doesn't start dragging
     clearClickAndHoldTimeout(this.clickState);
+    this.cancelClickAndHoldAnimation();
 
     let { clientX, clientY } = event;
 
@@ -821,6 +846,8 @@ export class LookupPuck {
     this.puck.classList.add('dragging');
     this.puck.setPointerCapture(event.pointerId);
 
+    this.beginDelayedClickAndHoldAnimation();
+
     // We need to register in the capture phase because Bibi reader (which
     // apparently is based on Epub.js) registers a pointermove handler on the
     // window in the capture phase and calls `stopPropagation()` on the events
@@ -883,6 +910,8 @@ export class LookupPuck {
     };
 
     event.preventDefault();
+
+    this.beginDelayedClickAndHoldAnimation();
 
     // See note in onPointerDown for why we need to register in the capture
     // phase.
@@ -950,10 +979,18 @@ export class LookupPuck {
     if ('vibrate' in navigator) {
       navigator.vibrate(50);
     }
-    this.targetOrientation =
-      this.targetOrientation.readingDirection === 'horizontal'
-        ? { readingDirection: 'vertical', moonSide: 'left' }
-        : { readingDirection: 'horizontal', moonSide: 'above' };
+
+    const wasHorizontal =
+      this.targetOrientation.readingDirection === 'horizontal';
+    this.targetOrientation = wasHorizontal
+      ? { readingDirection: 'vertical', moonSide: 'left' }
+      : { readingDirection: 'horizontal', moonSide: 'above' };
+
+    // Show onboarding tooltip if this is the first time switching to vertical
+    if (wasHorizontal && !this.hasSeenOnboarding()) {
+      this.showOnboardingTooltip();
+    }
+
     this.notifyPuckStateChanged();
     this.setPositionWithinSafeArea(this.puckX, this.puckY);
     // Temporarily sets the puck icon to a bidirectional arrow
@@ -974,6 +1011,8 @@ export class LookupPuck {
       this.setPositionWithinSafeArea(this.puckX, this.puckY);
       this.notifyPuckStateChanged();
     }
+
+    this.cancelClickAndHoldAnimation();
 
     window.removeEventListener('pointermove', this.onWindowPointerMove, {
       capture: true,
@@ -1022,7 +1061,7 @@ export class LookupPuck {
 
   private readonly noOpEventHandler = () => {};
 
-  render({ theme }: PuckRenderOptions): void {
+  render(): void {
     // Set up shadow tree
     const container = getOrCreateEmptyContainer({
       id: LookupPuckId,
@@ -1032,6 +1071,20 @@ export class LookupPuck {
     // Create puck elem
     this.puck = document.createElement('div');
     this.puck.classList.add('puck');
+
+    // This fills as the user begins pressing and holding the puck
+    const clickAndHoldRing = document.createElementNS(SVG_NS, 'svg');
+    clickAndHoldRing.classList.add('click-and-hold-ring');
+    clickAndHoldRing.setAttribute('width', '120');
+    clickAndHoldRing.setAttribute('height', '120');
+    clickAndHoldRing.setAttribute('viewBox', '0 0 120 120');
+    this.ring = document.createElementNS(SVG_NS, 'circle');
+    this.ring.classList.add('ring-fill');
+    this.ring.setAttribute('cx', '60');
+    this.ring.setAttribute('cy', '60');
+    this.ring.setAttribute('r', '20');
+    clickAndHoldRing.append(this.ring);
+    this.puck.append(clickAndHoldRing);
 
     const earth = document.createElement('div');
     earth.classList.add('earth');
@@ -1049,7 +1102,7 @@ export class LookupPuck {
     container.shadowRoot!.append(this.puck);
 
     // Set theme styles
-    this.puck.classList.add(getThemeClass(theme));
+    this.puck.classList.add(getThemeClass(this.theme));
 
     // Calculate the earth size (which is equal to the puck's overall size)
     if (!this.earthWidth || !this.earthHeight) {
@@ -1254,6 +1307,8 @@ export class LookupPuck {
   }
 
   setTheme(theme: string) {
+    this.theme = theme;
+
     if (!this.puck) {
       return;
     }
@@ -1312,12 +1367,135 @@ export class LookupPuck {
     this.setPositionWithinSafeArea(this.puckX, this.puckY);
   }
 
+  setFontFace(fontFace: FontFace) {
+    if (!this.onboardingTooltip) {
+      return;
+    }
+
+    if (fontFace === 'bundled') {
+      this.onboardingTooltip.classList.remove('system-fonts');
+      this.onboardingTooltip.classList.add('bundled-fonts');
+    } else {
+      this.onboardingTooltip.classList.remove('bundled-fonts');
+      this.onboardingTooltip.classList.add('system-fonts');
+    }
+
+    this.fontFace = fontFace;
+  }
+
+  setFontSize(size: FontSize) {
+    if (!this.onboardingTooltip) {
+      return;
+    }
+
+    for (const className of this.onboardingTooltip.classList.values()) {
+      if (className.startsWith('font-')) {
+        this.onboardingTooltip.classList.remove(className);
+      }
+    }
+
+    this.onboardingTooltip.classList.add(`font-${size}`);
+
+    this.fontSize = size;
+  }
+
   private readonly restoreIconAfterDebounce = debounce(() => {
     this.setIcon(this.toolbarIcon);
   }, clickAndHoldHysteresis * 2.25);
 
+  private beginDelayedClickAndHoldAnimation() {
+    if (!this.ring) {
+      return;
+    }
+
+    const baseDelay = 200; // ms to wait before ring starts filling
+    const totalDuration = clickAndHoldHysteresis - baseDelay + 300;
+    const popDelay = baseDelay + 50;
+    const fill = `fill-ring ${totalDuration}ms ${baseDelay}ms ease-out forwards`;
+    const pop = `pop-and-fade ${totalDuration}ms ${popDelay}ms ease-out forwards`;
+
+    this.ring.style.animation = `${fill}, ${pop}`;
+  }
+
+  private cancelClickAndHoldAnimation() {
+    if (this.ring) {
+      this.ring.style.animation = 'none';
+    }
+  }
+
+  private hasSeenOnboarding(): boolean {
+    return localStorage.getItem(verticalModeOnboardingSeenKey) === 'true';
+  }
+
+  private markOnboardingSeen() {
+    localStorage.setItem(verticalModeOnboardingSeenKey, 'true');
+  }
+
+  private showOnboardingTooltip() {
+    const container = getOrCreateEmptyContainer({
+      id: OnboardingTooltipId,
+      styles: puckOnboardingStyles.toString(),
+    });
+
+    // Tooltip elem
+    const tooltip = document.createElement('div');
+    tooltip.classList.add('vertical-onboarding-tooltip');
+    tooltip.classList.add(getThemeClass(this.theme));
+
+    // Message elem
+    const message = document.createElement('p');
+    message.classList.add('vertical-onboarding-message');
+    message.textContent = browser.i18n.getMessage(
+      'puck_vertical_mode_onboarding_message'
+    );
+
+    // OK button elem
+    const button = document.createElement('button');
+    button.classList.add('vertical-onboarding-ok-button');
+    button.textContent = browser.i18n.getMessage(
+      'puck_vertical_mode_onboarding_ok_label'
+    );
+    button.addEventListener('click', () => {
+      this.hideOnboardingTooltip();
+    });
+
+    tooltip.append(message, button);
+    container.shadowRoot!.append(tooltip);
+
+    this.onboardingTooltip = tooltip;
+    this.setFontFace(this.fontFace);
+    this.setFontSize(this.fontSize);
+
+    // Auto-hide the button after a duration
+    this.onboardingTimeout = window.setTimeout(() => {
+      this.hideOnboardingTooltip();
+    }, onboardingAutoHideDuration);
+
+    this.markOnboardingSeen();
+  }
+
+  private hideOnboardingTooltip() {
+    if (this.onboardingTimeout) {
+      clearTimeout(this.onboardingTimeout);
+      this.onboardingTimeout = undefined;
+    }
+
+    if (!this.onboardingTooltip) {
+      return;
+    }
+
+    this.onboardingTooltip.classList.add('fade-out');
+    this.onboardingTooltip.addEventListener('animationend', (e) => {
+      if (e.animationName === 'fade-out') {
+        removeContentContainer(OnboardingTooltipId);
+        this.onboardingTooltip = undefined;
+      }
+    });
+  }
+
   unmount(): void {
     this.restoreContent();
+    this.hideOnboardingTooltip();
     removePuck();
     window.visualViewport?.removeEventListener(
       'resize',

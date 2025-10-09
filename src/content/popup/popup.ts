@@ -28,10 +28,12 @@ export function setFontFace(fontFace: FontFace) {
 
   if (fontFace === 'bundled') {
     addFontStyles();
+    popupWindow.classList.remove('system-fonts');
     popupWindow.classList.add('bundled-fonts');
   } else {
     removeFontStyles();
     popupWindow.classList.remove('bundled-fonts');
+    popupWindow.classList.add('system-fonts');
   }
 }
 
@@ -47,9 +49,7 @@ export function setFontSize(size: FontSize) {
     }
   }
 
-  if (size !== 'normal') {
-    popupWindow.classList.add(`font-${size}`);
-  }
+  popupWindow.classList.add(`font-${size}`);
 }
 
 export function setPopupStyle(style: string) {

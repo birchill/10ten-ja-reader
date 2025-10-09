@@ -7,6 +7,8 @@
   --tenten-puck-safe-area-inset-right: env(safe-area-inset-right, 0px);
   --tenten-puck-safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
   --tenten-puck-safe-area-inset-left: env(safe-area-inset-left, 0px);
+  --earth-radius: 25px;
+  --scale-factor-when-dragging: 1.2;
 }
 
 .puck {
@@ -59,10 +61,9 @@
 }
 
 .earth {
-  width: 50px;
-  height: 50px;
+  width: calc(2 * var(--earth-radius));
+  height: calc(2 * var(--earth-radius));
   transition: transform 0.3s;
-  --scale-factor-when-dragging: 1.2;
 
   display: flex;
   justify-content: center;
@@ -154,6 +155,70 @@
 
 .puck.hold-position:not(.dragging) .moon {
   opacity: 0.75;
+}
+
+svg.click-and-hold-ring {
+  --ring-scale: 1;
+  /* Give it a little padding around the outside of the earth */
+  --ring-radius: var(--earth-radius) + 10px;
+  /* Add extra space for stroke width and pop animation scale */
+  width: calc((2 * var(--ring-radius)) + 60px);
+  height: calc((2 * var(--ring-radius)) + 60px);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-90deg) scale(var(--ring-scale));
+  transform-origin: center;
+  pointer-events: none;
+  transition:
+    width 0.3s,
+    height 0.3s,
+    transform 0.3s;
+}
+
+.puck.dragging .click-and-hold-ring {
+  --ring-scale: var(--scale-factor-when-dragging);
+}
+
+.ring-fill {
+  fill: none;
+  stroke: var(--puck-ring-color);
+  stroke-linecap: butt;
+  /*
+   * This works by creating one giant dash that is the circumference of the
+   * entire circle, then offsetting by that same amount to push it out of view
+   * at start. Then stroke-dashoffset is animated back to 0 to bring it into
+   * view, giving the illusion of 
+   */
+  stroke-dasharray: calc(2 * pi * var(--ring-radius));
+  stroke-dashoffset: calc(2 * pi * var(--ring-radius));
+  transform-origin: center;
+}
+
+@keyframes fill-ring {
+  from {
+    stroke-width: 10;
+    stroke-dashoffset: calc(2 * pi * var(--ring-radius));
+  }
+  to {
+    stroke-dashoffset: 0;
+    stroke-width: 40;
+  }
+}
+
+@keyframes pop-and-fade {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
 }
 
 /* This icon needs to be a bit bigger than the logos to be legible */
