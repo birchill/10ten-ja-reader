@@ -69,6 +69,7 @@ export function CopySettingsForm(props: Props) {
                   },
                 ],
                 romaji: props.showRomaji ? ['tenten'] : undefined,
+                matchLen: 2,
               },
             },
             copyType: 'entry',

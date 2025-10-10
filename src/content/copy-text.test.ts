@@ -59,6 +59,7 @@ describe('getWordToCopy', () => {
             },
           ],
           romaji: ['rikai'],
+          matchLen: 2,
         },
       })
     ).toEqual('理解');
@@ -89,6 +90,7 @@ describe('getWordToCopy', () => {
             },
           ],
           reason: '< -te',
+          matchLen: 2,
         },
       })
     ).toEqual('選ぶ');
@@ -115,6 +117,7 @@ describe('getWordToCopy', () => {
             },
           ],
           romaji: ['rikai'],
+          matchLen: 2,
         },
       })
     ).toEqual('理解');
@@ -161,6 +164,7 @@ describe('getWordToCopy', () => {
               match: true,
             },
           ],
+          matchLen: 4,
         },
       })
     ).toEqual('引き裂く, 引裂く');
@@ -199,6 +203,7 @@ describe('getWordToCopy', () => {
               match: true,
             },
           ],
+          matchLen: 4,
         },
       })
     ).toEqual('引き裂く, 引裂く');
@@ -225,6 +230,7 @@ describe('getWordToCopy', () => {
               match: true,
             },
           ],
+          matchLen: 4,
         },
       })
     ).toEqual('カネロニ, カネローニ');
@@ -285,6 +291,7 @@ describe('getEntryToCopy', () => {
             r: [{ ent: 'かんこくご', p: ['s1'], a: 0, match: true }],
             s: [{ pos: ['n'], g: [{ str: 'Korean (language)' }], match: true }],
             romaji: ['kankokugo'],
+            matchLen: 3,
           },
         },
         { getMessage }
@@ -316,6 +323,7 @@ describe('getEntryToCopy', () => {
                 match: true,
               },
             ],
+            matchLen: 4,
           },
         },
         { getMessage }
@@ -351,6 +359,7 @@ describe('getEntryToCopy', () => {
                 match: true,
               },
             ],
+            matchLen: 2,
           },
         },
         { getMessage }
@@ -402,6 +411,7 @@ describe('getEntryToCopy', () => {
                 match: true,
               },
             ],
+            matchLen: 4,
           },
         },
         { getMessage }
@@ -433,6 +443,7 @@ describe('getEntryToCopy', () => {
                 match: true,
               },
             ],
+            matchLen: 4,
           },
         },
         { getMessage }
@@ -528,6 +539,7 @@ describe('getEntryToCopy', () => {
                 match: true,
               },
             ],
+            matchLen: 4,
           },
         },
         {
@@ -676,6 +688,7 @@ describe('getFieldsToCopy', () => {
               },
             ],
             romaji: ['kankoku'],
+            matchLen: 2,
           },
         },
         { getMessage }
@@ -727,6 +740,7 @@ describe('getFieldsToCopy', () => {
                 match: true,
               },
             ],
+            matchLen: 4,
           },
         },
         { getMessage }
@@ -758,6 +772,7 @@ describe('getFieldsToCopy', () => {
                 match: true,
               },
             ],
+            matchLen: 4,
           },
         },
         { getMessage }
@@ -853,6 +868,7 @@ describe('getFieldsToCopy', () => {
                 match: true,
               },
             ],
+            matchLen: 4,
           },
         },
         {

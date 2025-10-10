@@ -78,12 +78,15 @@ export async function wordSearch({
       }
     }
 
+    const currentInputLength = inputLengths[input.length];
+
     for (const variant of variations) {
       const wordResults = await lookupCandidates({
         abortSignal,
         existingEntries: have,
         getWords,
         input: variant,
+        inputLength: currentInputLength,
         includeRomaji,
         maxResults,
         showInflections,
@@ -99,7 +102,7 @@ export async function wordSearch({
 
       // And now that we know we will add at least one entry for this candidate
       // we can update our longest match length.
-      longestMatch = Math.max(longestMatch, inputLengths[input.length]);
+      longestMatch = Math.max(longestMatch, currentInputLength);
 
       // Add the results to the list
       //
@@ -144,6 +147,7 @@ async function lookupCandidates({
   getWords,
   includeRomaji,
   input,
+  inputLength,
   maxResults,
   showInflections,
 }: {
@@ -152,6 +156,7 @@ async function lookupCandidates({
   getWords: GetWordsFunction;
   includeRomaji: boolean;
   input: string;
+  inputLength: number;
   maxResults: number;
   showInflections: boolean;
 }): Promise<Array<WordResult>> {
@@ -182,7 +187,10 @@ async function lookupCandidates({
 
   // Convert to a flattened WordResult
   return candidateResults.map((result) => {
-    const wordResult: WordResult = omit(result, 'reasonChains');
+    const wordResult: WordResult = {
+      ...omit(result, 'reasonChains'),
+      matchLen: inputLength,
+    };
 
     // Generate the reason string
     let reason: string | undefined;

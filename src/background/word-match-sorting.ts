@@ -7,13 +7,16 @@
 //
 // 2) In the case where we've fallen back to the flat file database.
 //
-import type { CandidateWordResult, WordResult } from './search-result';
+import type {
+  CandidateWordResult,
+  DictionaryWordResult,
+} from './search-result';
 
 // As with Array.prototype.sort, sorts `results` in-place, but returns the
 // result to support chaining.
-export function sortWordResults(
-  results: Array<CandidateWordResult>
-): Array<CandidateWordResult> {
+export function sortWordResults<T extends CandidateWordResult>(
+  results: Array<T>
+): Array<T> {
   const sortMeta: Map<
     number,
     { reasons: number; priority: number; type: number }
@@ -58,8 +61,8 @@ export function sortWordResults(
 }
 
 function getKanaHeadwordType(
-  r: WordResult['r'][number],
-  result: WordResult
+  r: DictionaryWordResult['r'][number],
+  result: DictionaryWordResult
 ): 1 | 2 {
   // We don't want to prioritize readings marked as `ok` etc. or else we'll end
   // up prioritizing words like `檜` and `羆` being prioritized when searching
@@ -106,7 +109,7 @@ function getKanaHeadwordType(
   return r.app === 0 ? 1 : 2;
 }
 
-function mostMatchedEnSensesAreUk(senses: WordResult['s']): boolean {
+function mostMatchedEnSensesAreUk(senses: DictionaryWordResult['s']): boolean {
   const matchedEnSenses = senses.filter(
     (s) => s.match && (s.lang === undefined || s.lang === 'en')
   );
@@ -120,7 +123,7 @@ function mostMatchedEnSensesAreUk(senses: WordResult['s']): boolean {
   return ukEnSenseCount >= matchedEnSenses.length / 2;
 }
 
-function getPriority(result: WordResult): number {
+function getPriority(result: DictionaryWordResult): number {
   const scores: Array<number> = [0];
 
   // Scores from kanji readings
