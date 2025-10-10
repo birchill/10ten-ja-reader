@@ -66,6 +66,7 @@ const KOTOBA: QueryResult = {
             match: true,
           },
         ],
+        matchLen: 2,
       },
       {
         id: 1956230,
@@ -81,6 +82,7 @@ const KOTOBA: QueryResult = {
             match: true,
           },
         ],
+        matchLen: 1,
       },
     ],
     more: false,

@@ -120,6 +120,7 @@ const demoEntry: WordResult = {
   r: [{ ent: 'りかい', p: ['i1', 'n1', 'nf02'], a: 1, match: true }],
   s: [{ g: [{ str: 'understanding' }], pos: ['n', 'vt'], match: true }],
   romaji: ['rikai'],
+  matchLen: 2,
 };
 
 function PopupPreview(props: PopupPreviewProps) {

@@ -17,6 +17,7 @@ export type CandidateWordResult = DictionaryWordResult & {
 export type WordResult = DictionaryWordResult & {
   reason?: string;
   romaji?: Array<string>;
+  matchLen: number;
 };
 
 export type Sense = WordResult['s'][0];

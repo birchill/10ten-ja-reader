@@ -1,6 +1,6 @@
-import type { WordResult } from '@birchill/jpdict-idb';
 import { useFixtureInput, useFixtureSelect } from 'react-cosmos/client';
 
+import type { WordResult } from '../../../background/search-result';
 import type {
   AccentDisplay,
   PartOfSpeechDisplay,
@@ -28,7 +28,7 @@ const namePreviewData = {
   more: true,
 };
 
-const entry_data: Array<[string, Array<WordResult>]> = [
+const entryData: Array<[string, Array<WordResult>]> = [
   [
     'default',
     [
@@ -73,6 +73,7 @@ const entry_data: Array<[string, Array<WordResult>]> = [
             match: true,
           },
         ],
+        matchLen: 1,
       },
       {
         id: 2083100,
@@ -96,6 +97,7 @@ const entry_data: Array<[string, Array<WordResult>]> = [
             match: true,
           },
         ],
+        matchLen: 1,
       },
       {
         id: 1461140,
@@ -133,6 +135,7 @@ const entry_data: Array<[string, Array<WordResult>]> = [
             match: true,
           },
         ],
+        matchLen: 1,
       },
       {
         id: 2728160,
@@ -155,6 +158,7 @@ const entry_data: Array<[string, Array<WordResult>]> = [
             match: true,
           },
         ],
+        matchLen: 1,
       },
     ],
   ],
@@ -186,13 +190,14 @@ const entry_data: Array<[string, Array<WordResult>]> = [
             match: true,
           },
         ],
+        matchLen: 5,
       },
     ],
   ],
 ];
 
 export default Object.fromEntries(
-  entry_data.map((entry) => [
+  entryData.map((entry) => [
     entry[0],
     () => {
       const [accentDisplay] = useFixtureSelect<AccentDisplay>('accentDisplay', {
