@@ -15,7 +15,7 @@ export type CandidateWordResult = DictionaryWordResult & {
 };
 
 export type WordResult = DictionaryWordResult & {
-  reason?: string;
+  reasonChains?: Array<Array<Reason>>;
   romaji?: Array<string>;
   matchLen: number;
 };

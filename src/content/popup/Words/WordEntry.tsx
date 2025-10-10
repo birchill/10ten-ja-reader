@@ -8,6 +8,7 @@ import { classes } from '../../../utils/classes';
 
 import { Star } from '../Icons/Star';
 import { usePopupOptions } from '../options-context';
+import { serializeReasonChains } from '../serialize-reasons';
 
 import { Definitions } from './Definitions';
 import { HeadwordInfo } from './HeadwordInfo';
@@ -290,7 +291,7 @@ export function WordEntry(props: WordEntryProps) {
           </span>
         )}
 
-        {entry.reason && (
+        {!!entry.reasonChains?.length && (
           <span
             class={classes(
               'tp:text-sm',
@@ -300,7 +301,7 @@ export function WordEntry(props: WordEntryProps) {
             )}
             lang={langTag}
           >
-            {`(${entry.reason})`}
+            {`(${serializeReasonChains(entry.reasonChains, t)})`}
           </span>
         )}
       </div>

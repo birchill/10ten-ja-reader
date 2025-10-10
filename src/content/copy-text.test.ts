@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
+import { Reason } from '../background/deinflect';
+
 import { getEntryToCopy, getFieldsToCopy, getWordToCopy } from './copy-text';
 
 const getMessage = (id: string, replacements?: string | Array<string>) => {
@@ -89,7 +91,7 @@ describe('getWordToCopy', () => {
               match: true,
             },
           ],
-          reason: '< -te',
+          reasonChains: [[Reason.Te]],
           matchLen: 2,
         },
       })
