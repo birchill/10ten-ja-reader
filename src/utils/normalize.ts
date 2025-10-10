@@ -6,39 +6,42 @@ import { halfToFullWidthNum, toNormalized } from '@birchill/normal-jp';
 // That allows us to use .length, .substring etc. on the matched string.
 // If we make this return the positions of Unicode codepoints we will need to
 // update all users of this output to be non-BMP character aware.
-export function normalizeInput(input: string): [string, Array<number>] {
+function normalize(
+  input: string,
+  {
+    makeNumbersFullWidth = true,
+    stripZwnj = true,
+  }: { makeNumbersFullWidth?: boolean; stripZwnj?: boolean } = {}
+): [string, Array<number>] {
+  let normalized = input;
+
   // Convert to full-width, normalize decomposed characters, expand combined
   // characters etc.
-  const fullWidthInput = halfToFullWidthNum(input);
-  let [normalized, inputLengths] = toNormalized(fullWidthInput);
+  if (makeNumbersFullWidth) {
+    normalized = halfToFullWidthNum(normalized);
+  }
+
+  let inputLengths: Array<number>;
+  [normalized, inputLengths] = toNormalized(normalized);
 
   // Strip out any zero-width non-joiners (as Google Docs sometimes likes to
   // stick them between every single character).
-  [normalized, inputLengths] = stripZwnj(normalized, inputLengths);
-
-  // Truncate if we find characters outside the expected range.
-  for (let i = 0; i < fullWidthInput.length; ++i) {
-    const char = fullWidthInput.codePointAt(i)!;
-    // If we find a character out of range, we need to trim both normalized
-    // and inputLengths
-    if (
-      (char <= 0x2e80 && char != 0x200c) ||
-      (char >= 0x3000 && char <= 0x3002)
-    ) {
-      let outputIndex = 0;
-      while (inputLengths[outputIndex] < i) {
-        outputIndex++;
-      }
-      normalized = normalized.substring(0, outputIndex);
-      inputLengths = inputLengths.slice(0, outputIndex ? outputIndex + 1 : 0);
-      break;
-    }
+  if (stripZwnj) {
+    [normalized, inputLengths] = doStripZwnj(normalized, inputLengths);
   }
 
   return [normalized, inputLengths];
 }
 
-function stripZwnj(
+export function normalizeInput(input: string): [string, Array<number>] {
+  return normalize(input);
+}
+
+export function normalizeContext(input: string): [string, Array<number>] {
+  return normalize(input, { makeNumbersFullWidth: false });
+}
+
+function doStripZwnj(
   input: string,
   inputLengths: Array<number>
 ): [string, Array<number>] {

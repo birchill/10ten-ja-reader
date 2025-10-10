@@ -10,7 +10,7 @@ import { getKanji, getWords as idbGetWords } from '@birchill/jpdict-idb';
 import { kanaToHiragana } from '@birchill/normal-jp';
 import browser from 'webextension-polyfill';
 
-import { normalizeInput } from '../utils/normalize-input';
+import { normalizeInput } from '../utils/normalize';
 import { JpdictWorkerBackend } from '../worker/jpdict-worker-backend';
 
 import type { FlatFileDatabaseLoadState } from './flat-file';

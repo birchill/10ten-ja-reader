@@ -1,4 +1,5 @@
 import { nonJapaneseChar } from '../utils/char-range';
+import { normalizeContext } from '../utils/normalize';
 
 import {
   type SourceContext,
@@ -184,9 +185,7 @@ export function scanText({
   } else {
     preludeBuilder.flush();
     if (offset > 0) {
-      sourceContext.prelude.push(
-        collapseWhitespace(node.data.substring(0, offset))
-      );
+      preludeBuilder.add(new Text(node.data.substring(0, offset)));
     }
     sourceBuilder = new SourceContextBuilder(sourceContext.source, rtLevel);
   }
@@ -435,7 +434,9 @@ class SourceContextBuilder {
     // Case 1: Not inside a ruby
     if (!rubyElement) {
       this.flush();
-      this.target.push(collapseWhitespace(textNode.data.substring(offset)));
+      this.target.push(
+        normalizeSourceContextText(textNode.data.substring(offset))
+      );
       return;
     }
 
@@ -445,7 +446,7 @@ class SourceContextBuilder {
     }
 
     const nodeRtLevel = getRtLevel(node);
-    const textContent = collapseWhitespace(textNode.data);
+    const textContent = normalizeSourceContextText(textNode.data);
 
     // Case 3: Inside ruby base text
     if (nodeRtLevel === 0) {
@@ -510,6 +511,10 @@ class SourceContextBuilder {
       : this.rubyContext.ruby.base;
     return parts.reduce((sum, part) => sum + part.length, 0);
   }
+}
+
+function normalizeSourceContextText(text: string) {
+  return normalizeContext(collapseWhitespace(text))[0];
 }
 
 function collapseWhitespace(text: string) {
