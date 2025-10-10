@@ -97,8 +97,90 @@ vi.mock('webextension-polyfill', () => ({
   },
 }));
 
+import { deinflectL10NKeys, type Reason } from './deinflect';
 import { searchWords, translate } from './jpdict';
 import type { WordResult, WordSearchResult } from './search-result';
+
+// Helper function to serialize reason chains for testing
+function serializeReasonChains(reasonChains: Array<Array<Reason>>): string {
+  return (
+    '< ' +
+    reasonChains
+      .map((reasonList) =>
+        reasonList
+          .map((reason) => {
+            const key = deinflectL10NKeys[reason];
+            // Use the mocked getMessage function
+            switch (key) {
+              case 'deinflect_polite_past_negative':
+                return 'polite past negative';
+              case 'deinflect_polite_negative':
+                return 'polite negative';
+              case 'deinflect_polite_volitional':
+                return 'polite volitional';
+              case 'deinflect_chau':
+                return '-chau';
+              case 'deinflect_sugiru':
+                return '-sugiru';
+              case 'deinflect_nasai':
+                return '-nasai';
+              case 'deinflect_polite_past':
+                return 'polite past';
+              case 'deinflect_tara':
+                return '-tara';
+              case 'deinflect_tari':
+                return '-tari';
+              case 'deinflect_causative':
+                return 'causative';
+              case 'deinflect_potential_or_passive':
+                return 'potential or passive';
+              case 'deinflect_toku':
+                return '-te oku';
+              case 'deinflect_sou':
+                return '-sou';
+              case 'deinflect_tai':
+                return '-tai';
+              case 'deinflect_polite':
+                return 'polite';
+              case 'deinflect_past':
+                return 'past';
+              case 'deinflect_negative':
+                return 'negative';
+              case 'deinflect_passive':
+                return 'passive';
+              case 'deinflect_ba':
+                return '-ba';
+              case 'deinflect_volitional':
+                return 'volitional';
+              case 'deinflect_potential':
+                return 'potential';
+              case 'deinflect_causative_passive':
+                return 'causative passive';
+              case 'deinflect_continuous':
+                return 'continuous';
+              case 'deinflect_te':
+                return '-te';
+              case 'deinflect_zu':
+                return '-zu';
+              case 'deinflect_imperative':
+                return 'imperative';
+              case 'deinflect_masu_stem':
+                return 'masu stem';
+              case 'deinflect_adv':
+                return 'adv';
+              case 'deinflect_noun':
+                return 'noun';
+              case 'deinflect_imperative_negative':
+                return 'imperative negative';
+              default:
+                return `Unrecognized string ID: ${key}`;
+            }
+          })
+          .join(' < ')
+      )
+      .join(' or ')
+  );
+}
 
 describe('searchWords', () => {
   beforeAll(() => {
@@ -224,29 +306,35 @@ describe('searchWords', () => {
     // Ichidan/ru-verb -- られる ending could be potential or passive
     let [result] = await searchWords({ input: '止められます' });
     let match = getMatchWithKana(result!, 'とめる');
-    expect(match!.reason).toEqual('< potential or passive < polite');
+    expect(serializeReasonChains(match!.reasonChains!)).toEqual(
+      '< potential or passive < polite'
+    );
 
     // Godan/u-verb -- られる ending is passive
     [result] = await searchWords({ input: '止まられます' });
     match = getMatchWithKana(result!, 'とまる');
-    expect(match!.reason).toEqual('< passive < polite');
+    expect(serializeReasonChains(match!.reasonChains!)).toEqual(
+      '< passive < polite'
+    );
 
     // Godan/u-verb -- れる ending is potential
     [result] = await searchWords({ input: '止まれます' });
     match = getMatchWithKana(result!, 'とまる');
-    expect(match!.reason).toEqual('< potential < polite');
+    expect(serializeReasonChains(match!.reasonChains!)).toEqual(
+      '< potential < polite'
+    );
   });
 
   it('chooses the right de-inflection for causative and passives', async () => {
     // su-verb -- される ending is passive
     let [result] = await searchWords({ input: '起こされる' });
     let match = getMatchWithKana(result!, 'おこす');
-    expect(match!.reason).toEqual('< passive');
+    expect(serializeReasonChains(match!.reasonChains!)).toEqual('< passive');
 
     // su-verb -- させる ending is causative
     [result] = await searchWords({ input: '起こさせる' });
     match = getMatchWithKana(result!, 'おこす');
-    expect(match!.reason).toEqual('< causative');
+    expect(serializeReasonChains(match!.reasonChains!)).toEqual('< causative');
   });
 
   it('chooses the right de-inflection for causative passive', async () => {
@@ -272,7 +360,9 @@ describe('searchWords', () => {
     for (const [inflected, plain] of pairs) {
       const [result] = await searchWords({ input: inflected });
       const match = getMatchWithKana(result!, plain);
-      expect(match!.reason).toEqual('< causative passive');
+      expect(serializeReasonChains(match!.reasonChains!)).toEqual(
+        '< causative passive'
+      );
     }
 
     // Check for the exceptions:
@@ -280,30 +370,40 @@ describe('searchWords', () => {
     // (1) su-verbs: causative passive is させられる only, される is passive
     let [result] = await searchWords({ input: '起こさせられる' });
     let match = getMatchWithKana(result!, 'おこす');
-    expect(match!.reason).toEqual('< causative passive');
+    expect(serializeReasonChains(match!.reasonChains!)).toEqual(
+      '< causative passive'
+    );
 
     [result] = await searchWords({ input: '起こされる' });
     match = getMatchWithKana(result!, 'おこす');
-    expect(match!.reason).toEqual('< passive');
+    expect(serializeReasonChains(match!.reasonChains!)).toEqual('< passive');
 
     // (2) ichidan verbs
     [result] = await searchWords({ input: '食べさせられる' });
     match = getMatchWithKana(result!, 'たべる');
-    expect(match!.reason).toEqual('< causative passive');
+    expect(serializeReasonChains(match!.reasonChains!)).toEqual(
+      '< causative passive'
+    );
 
     // (4) kuru verbs
     [result] = await searchWords({ input: '来させられる' });
     match = getMatchWithKana(result!, 'くる');
-    expect(match!.reason).toEqual('< causative passive');
+    expect(serializeReasonChains(match!.reasonChains!)).toEqual(
+      '< causative passive'
+    );
 
     [result] = await searchWords({ input: 'こさせられる' });
     match = getMatchWithKana(result!, 'くる');
-    expect(match!.reason).toEqual('< causative passive');
+    expect(serializeReasonChains(match!.reasonChains!)).toEqual(
+      '< causative passive'
+    );
 
     // Check combinations
     [result] = await searchWords({ input: '買わされませんでした' });
     match = getMatchWithKana(result!, 'かう');
-    expect(match!.reason).toEqual('< causative passive < polite past negative');
+    expect(serializeReasonChains(match!.reasonChains!)).toEqual(
+      '< causative passive < polite past negative'
+    );
   });
 
   const getMatchWithKanjiOrKana = (
@@ -337,7 +437,9 @@ describe('searchWords', () => {
     for (const [inflected, plain] of pairs) {
       const [result] = await searchWords({ input: inflected });
       const match = getMatchWithKanjiOrKana(result!, plain);
-      expect(match!.reason).toEqual(expect.stringMatching(/^< -te oku/));
+      expect(serializeReasonChains(match!.reasonChains!)).toEqual(
+        expect.stringMatching(/^< -te oku/)
+      );
     }
   });
 

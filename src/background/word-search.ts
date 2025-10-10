@@ -1,14 +1,12 @@
 import type { PartOfSpeech } from '@birchill/jpdict-idb';
 import { AbortError } from '@birchill/jpdict-idb';
 import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
-import browser from 'webextension-polyfill';
 
 import { isOnlyDigits } from '../utils/char-range';
-import { omit } from '../utils/omit';
 import { toRomaji } from '../utils/romaji';
 
 import type { CandidateWord } from './deinflect';
-import { WordType, deinflect, deinflectL10NKeys } from './deinflect';
+import { WordType, deinflect } from './deinflect';
 import type {
   CandidateWordResult,
   DictionaryWordResult,
@@ -61,9 +59,6 @@ export async function wordSearch({
       break;
     }
 
-    // If we include a de-inflected substring we show it in the reasons string.
-    const showInflections = !!result.data.length;
-
     const variations = [input];
 
     // Generate variations on this substring
@@ -89,7 +84,6 @@ export async function wordSearch({
         inputLength: currentInputLength,
         includeRomaji,
         maxResults,
-        showInflections,
       });
 
       if (!wordResults.length) {
@@ -149,7 +143,6 @@ async function lookupCandidates({
   input,
   inputLength,
   maxResults,
-  showInflections,
 }: {
   abortSignal?: AbortSignal;
   existingEntries: Set<number>;
@@ -158,7 +151,6 @@ async function lookupCandidates({
   input: string;
   inputLength: number;
   maxResults: number;
-  showInflections: boolean;
 }): Promise<Array<WordResult>> {
   const candidateResults: Array<CandidateWordResult> = [];
 
@@ -187,32 +179,7 @@ async function lookupCandidates({
 
   // Convert to a flattened WordResult
   return candidateResults.map((result) => {
-    const wordResult: WordResult = {
-      ...omit(result, 'reasonChains'),
-      matchLen: inputLength,
-    };
-
-    // Generate the reason string
-    let reason: string | undefined;
-    const { reasonChains } = result;
-    if (reasonChains?.length) {
-      reason =
-        '< ' +
-        reasonChains
-          .map((reasonList) =>
-            reasonList
-              .map((reason) =>
-                browser.i18n.getMessage(deinflectL10NKeys[reason])
-              )
-              .join(' < ')
-          )
-          .join(browser.i18n.getMessage('deinflect_alternate'));
-      if (showInflections) {
-        reason += ` < ${input}`;
-      }
-
-      wordResult.reason = reason;
-    }
+    const wordResult: WordResult = { ...result, matchLen: inputLength };
 
     if (includeRomaji) {
       wordResult.romaji = wordResult.r.map((r) => toRomaji(r.ent));
