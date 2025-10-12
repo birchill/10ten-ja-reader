@@ -109,8 +109,8 @@ importers:
         specifier: 7.37.5
         version: 7.37.5(eslint@9.37.0(jiti@2.6.0))
       fake-indexeddb:
-        specifier: 6.2.2
-        version: 6.2.2
+        specifier: 6.2.3
+        version: 6.2.3
       fast-glob:
         specifier: 3.3.3
         version: 3.3.3
@@ -2960,8 +2960,8 @@ packages:
   exsolve@1.0.7:
     resolution: {integrity: sha512-VO5fQUzZtI6C+vx4w/4BWJpg3s/5l+6pRQEHzFRM8WFi4XffSP1Z+4qi7GbjWbvRQEbdIco5mIMq+zX4rPuLrw==}
 
-  fake-indexeddb@6.2.2:
-    resolution: {integrity: sha512-SGbf7fzjeHz3+12NO1dYigcYn4ivviaeULV5yY5rdGihBvvgwMds4r4UBbNIUMwkze57KTDm32rq3j1Az8mzEw==}
+  fake-indexeddb@6.2.3:
+    resolution: {integrity: sha512-idzJXFtDIHNShFZ9ssS8IdsRgAP0t9zwWvSdCKsWK2dgh2xcXA6/2Oteaxar5GJqmwzZXCrKRO6F5IEiR4yJzw==}
     engines: {node: '>=18'}
 
   fast-content-type-parse@3.0.0:
@@ -8872,7 +8872,7 @@ snapshots:
 
   exsolve@1.0.7: {}
 
-  fake-indexeddb@6.2.2: {}
+  fake-indexeddb@6.2.3: {}
 
   fast-content-type-parse@3.0.0: {}
 
