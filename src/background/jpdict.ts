@@ -359,10 +359,11 @@ export async function translate({
     more: false,
   };
 
-  let skip: number;
-  while (text.length > 0) {
+  let offset = 0;
+
+  while (offset < text.length) {
     const [searchResult, dbStatus] = await searchWords({
-      input: text,
+      input: text.slice(offset),
       max: 1,
       includeRomaji,
     });
@@ -373,25 +374,24 @@ export async function translate({
         break;
       }
 
-      // Just take first match
-      result.data.push(searchResult.data[0]);
-      skip = searchResult.matchLen;
+      // Just take the first match
+      result.data.push({ ...searchResult.data[0], sourceOffset: offset });
+
+      offset += searchResult.matchLen;
     } else {
-      skip = 1;
+      offset++;
     }
 
     if (searchResult && dbStatus) {
       result.dbStatus = dbStatus;
     }
-
-    text = text.substring(skip);
   }
 
   if (result.data.length === 0) {
     return null;
   }
 
-  result.textLen -= text.length;
+  result.textLen = offset;
   return result;
 }
 
