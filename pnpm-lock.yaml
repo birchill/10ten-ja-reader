@@ -133,8 +133,8 @@ importers:
         specifier: ^27.0.0
         version: 27.0.0(postcss@8.5.6)
       knip:
-        specifier: 5.64.3
-        version: 5.64.3(@types/node@24.3.0)(typescript@5.9.3)
+        specifier: 5.65.0
+        version: 5.65.0(@types/node@24.3.0)(typescript@5.9.3)
       mocha:
         specifier: 11.7.4
         version: 11.7.4
@@ -3883,8 +3883,8 @@ packages:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
 
-  knip@5.64.3:
-    resolution: {integrity: sha512-P9dZetEZfSBwNBFwj55CAnPAMdzVLTTscWx6rdB8eBmPqXPji8F3L+hhWi+Xp+u9O6Xp2ClRDq2JENSK8Z04Qg==}
+  knip@5.65.0:
+    resolution: {integrity: sha512-wMSca3O1JGs/JgEQx7uZUZYMnZvGqhNjL4b2w8LJGxFzEckNWcvyHopsCwkC7M6aeWgIASCT9vCFDXklvvey3g==}
     engines: {node: '>=18.18.0'}
     hasBin: true
     peerDependencies:
@@ -9926,7 +9926,7 @@ snapshots:
 
   kleur@4.1.5: {}
 
-  knip@5.64.3(@types/node@24.3.0)(typescript@5.9.3):
+  knip@5.65.0(@types/node@24.3.0)(typescript@5.9.3):
     dependencies:
       '@nodelib/fs.walk': 1.2.8
       '@types/node': 24.3.0
