@@ -18,6 +18,7 @@ export type WordResult = DictionaryWordResult & {
   reasonChains?: Array<Array<Reason>>;
   romaji?: Array<string>;
   matchLen: number;
+  sourceOffset?: number;
 };
 
 export type Sense = WordResult['s'][0];
