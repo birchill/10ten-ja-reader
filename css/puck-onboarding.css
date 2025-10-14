@@ -69,15 +69,28 @@
   }
 }
 
-.vertical-onboarding-message {
+.vertical-onboarding-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vertical-onboarding-title {
+  margin: 0;
+  padding: 0;
+  font-size: calc(var(--base-font-size) * 1.1);
+  font-weight: 600;
+}
+
+.vertical-onboarding-body {
   margin: 0;
   padding: 0;
   color: inherit;
-  flex: 1;
 }
 
 .vertical-onboarding-ok-button {
-  padding: 6px 14px;
+  padding: 10px 14px;
   background: var(--text-color);
   color: var(--title-bg);
   border: none;
@@ -86,9 +99,16 @@
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: filter 0.2s;
   flex-shrink: 0;
   white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .vertical-onboarding-tooltip {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .vertical-onboarding-ok-button:hover {

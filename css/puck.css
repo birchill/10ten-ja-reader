@@ -170,10 +170,6 @@ svg.click-and-hold-ring {
   transform: translate(-50%, -50%) rotate(-90deg) scale(var(--ring-scale));
   transform-origin: center;
   pointer-events: none;
-  transition:
-    width 0.3s,
-    height 0.3s,
-    transform 0.3s;
 }
 
 .puck.dragging .click-and-hold-ring {
@@ -188,7 +184,7 @@ svg.click-and-hold-ring {
    * This works by creating one giant dash that is the circumference of the
    * entire circle, then offsetting by that same amount to push it out of view
    * at start. Then stroke-dashoffset is animated back to 0 to bring it into
-   * view, giving the illusion of 
+   * view, giving the illusion of a filling ring.
    */
   stroke-dasharray: calc(2 * pi * var(--ring-radius));
   stroke-dashoffset: calc(2 * pi * var(--ring-radius));

@@ -28,10 +28,6 @@ interface ViewportDimensions {
   viewportHeight: number;
 }
 
-export interface PuckRenderOptions {
-  theme: string;
-}
-
 export function isPuckPointerEvent(
   pointerEvent: PointerEvent
 ): pointerEvent is PuckPointerEvent {
@@ -146,7 +142,7 @@ export type InitialPuckPosition = Omit<PuckState, 'active'>;
 type RestoreContentParams = { root: Element; restore: () => void };
 
 export const LookupPuckId = 'tenten-ja-puck';
-export const OnboardingTooltipId = 'tenten-ja-puck-onboarding';
+const OnboardingTooltipId = 'tenten-ja-puck-onboarding';
 
 const clickHysteresis = 300;
 const clickAndHoldHysteresis = 1000;
@@ -991,8 +987,12 @@ export class LookupPuck {
       : { readingDirection: 'horizontal', moonSide: 'above' };
 
     // Show onboarding tooltip if this is the first time switching to vertical
-    if (wasHorizontal && !this.hasSeenOnboarding()) {
-      this.showOnboardingTooltip();
+    if (wasHorizontal) {
+      void this.hasSeenOnboarding().then((hasSeen) => {
+        if (!hasSeen) {
+          this.showOnboardingTooltip();
+        }
+      });
     }
 
     this.notifyPuckStateChanged();
@@ -1413,7 +1413,10 @@ export class LookupPuck {
     }
 
     const baseDelay = 200; // ms to wait before ring starts filling
-    const totalDuration = clickAndHoldHysteresis - baseDelay + 300;
+    // Extra 100 ms is to match the time needed for the moon to complete its
+    // transform. I've tried extracting that into a CSS var and using it in
+    // both places, but it didn't seem to work.
+    const totalDuration = clickAndHoldHysteresis - baseDelay + 100;
     const popDelay = baseDelay + 50;
     const fill = `fill-ring ${totalDuration}ms ${baseDelay}ms ease-out forwards`;
     const pop = `pop-and-fade ${totalDuration}ms ${popDelay}ms ease-out forwards`;
@@ -1427,12 +1430,15 @@ export class LookupPuck {
     }
   }
 
-  private hasSeenOnboarding(): boolean {
-    return localStorage.getItem(verticalModeOnboardingSeenKey) === 'true';
+  private async hasSeenOnboarding(): Promise<boolean> {
+    const results = await browser.storage.local.get(
+      verticalModeOnboardingSeenKey
+    );
+    return results[verticalModeOnboardingSeenKey] === true;
   }
 
   private markOnboardingSeen() {
-    localStorage.setItem(verticalModeOnboardingSeenKey, 'true');
+    return browser.storage.local.set({ [verticalModeOnboardingSeenKey]: true });
   }
 
   private showOnboardingTooltip() {
@@ -1446,24 +1452,36 @@ export class LookupPuck {
     tooltip.classList.add('vertical-onboarding-tooltip');
     tooltip.classList.add(getThemeClass(this.theme));
 
-    // Message elem
-    const message = document.createElement('p');
-    message.classList.add('vertical-onboarding-message');
-    message.textContent = browser.i18n.getMessage(
-      'puck_vertical_mode_onboarding_message'
+    const content = document.createElement('div');
+    content.classList.add('vertical-onboarding-content');
+
+    // Title
+    const title = document.createElement('h3');
+    title.classList.add('vertical-onboarding-title');
+    title.textContent = browser.i18n.getMessage(
+      'vertical_mode_onboarding_tooltip_title'
     );
 
-    // OK button elem
+    // Body
+    const body = document.createElement('p');
+    body.classList.add('vertical-onboarding-body');
+    body.textContent = browser.i18n.getMessage(
+      'vertical_mode_onboarding_tooltip_body'
+    );
+
+    content.append(title, body);
+
+    // OK button
     const button = document.createElement('button');
     button.classList.add('vertical-onboarding-ok-button');
     button.textContent = browser.i18n.getMessage(
-      'puck_vertical_mode_onboarding_ok_label'
+      'vertical_mode_onboarding_tooltip_ok_button_label'
     );
     button.addEventListener('click', () => {
       this.hideOnboardingTooltip();
     });
 
-    tooltip.append(message, button);
+    tooltip.append(content, button);
     container.shadowRoot!.append(tooltip);
 
     this.onboardingTooltip = tooltip;
@@ -1474,6 +1492,21 @@ export class LookupPuck {
     this.onboardingTimeout = window.setTimeout(() => {
       this.hideOnboardingTooltip();
     }, onboardingAutoHideDuration);
+
+    // Dismiss tooltip on click outside of it
+    window.addEventListener(
+      'mousedown',
+      (event: MouseEvent) => {
+        if (
+          this.onboardingTooltip &&
+          !this.onboardingTooltip.contains(event.target as Node)
+        ) {
+          // Hide with slight delay
+          setTimeout(() => this.hideOnboardingTooltip(), 250);
+        }
+      },
+      { capture: true }
+    );
 
     this.markOnboardingSeen();
   }

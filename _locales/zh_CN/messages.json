@@ -2212,14 +2212,6 @@
     "message": "动一（ずる）",
     "description": "Short part-of-speech label shown next to Ichidan verb - zuru verb (alternative form of -jiru verbs) entries"
   },
-  "puck_vertical_mode_onboarding_message": {
-    "message": "已启用竖排阅读模式！要返回横排阅读模式，请再次长按圆球。",
-    "description": "Onboarding message shown when user activates vertical reading mode for the first time"
-  },
-  "puck_vertical_mode_onboarding_ok_label": {
-    "message": "确定",
-    "description": "Button text to dismiss the vertical reading mode onboarding tooltip"
-  },
   "ref_label_jlpt": {
     "message": "JLPT",
     "description": "The label used when presenting the level the kanji appears in in the old JLPT system"
@@ -2315,5 +2307,17 @@
   "tabs_words_label": {
     "message": "单词",
     "description": "The label for the words dictionary tab"
+  },
+  "vertical_mode_onboarding_tooltip_body": {
+    "message": "要返回横排阅读模式，请再次长按圆球。",
+    "description": "Body text for the vertical reading mode onboarding tooltip"
+  },
+  "vertical_mode_onboarding_tooltip_ok_button_label": {
+    "message": "确定",
+    "description": "Button text to dismiss the vertical reading mode onboarding tooltip"
+  },
+  "vertical_mode_onboarding_tooltip_title": {
+    "message": "已启用竖排阅读模式",
+    "description": "Title for the vertical reading mode onboarding tooltip"
   }
 }
