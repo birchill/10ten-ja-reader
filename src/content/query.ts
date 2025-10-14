@@ -232,6 +232,7 @@ async function queryOther(
     words: words?.words ?? null,
     names: searchResult.names,
     kanji: searchResult.kanji,
+    title: words?.title,
     resultType: 'full',
   });
 }
