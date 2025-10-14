@@ -138,7 +138,7 @@ function PopupPreview(props: PopupPreviewProps) {
         themeClass,
         'window inline-block min-w-[180px] py-2 text-left',
         props.fontFace === 'bundled' && 'bundled-fonts',
-        props.fontSize !== 'normal' && `font-${props.fontSize}`
+        `font-${props.fontSize}`
       )}
     >
       <PopupOptionsProvider interactive={false}>

@@ -59,6 +59,7 @@
 
   --puck-bg: var(--title-bg);
   --puck-bg-highlight: var(--bg-color);
+  --puck-ring-color: #ddd198;
 
   --status-button-color: #615f52;
   --status-button-primary-text-color: var(--status-bg);
@@ -140,6 +141,7 @@
 
   --puck-bg: var(--bg-color);
   --puck-bg-highlight: #5f87bb;
+  --puck-ring-color: #3a5e88;
 
   --status-button-color: white;
   --status-button-primary-text-color: var(--bg-color);
@@ -197,6 +199,7 @@
 
   --puck-bg: var(--bg-color);
   --puck-bg-highlight: #555;
+  --puck-ring-color: #3296d0;
 
   --status-button-color: white;
   --status-button-primary-text-color: var(--bg-color);
@@ -256,6 +259,7 @@
 
   --puck-bg: #c5e0f5;
   --puck-bg-highlight: var(--bg-color);
+  --puck-ring-color: var(--title-bg);
 
   --status-button-color: var(--primary-highlight);
   --status-button-primary-text-color: var(--bg-color);
@@ -307,6 +311,7 @@
 
   --puck-bg: #ffeeaa;
   --puck-bg-highlight: var(--bg-color);
+  --puck-ring-color: #ffe16a;
 
   --status-button-color: var(--primary-highlight);
   --status-button-primary-text-color: var(--status-bg);

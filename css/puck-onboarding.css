@@ -1,0 +1,120 @@
+@charset "UTF-8";
+@import './themes.css';
+@import './font-settings.css';
+
+.vertical-onboarding-tooltip {
+  /*
+   * Use the same z-index as the popup and puck. This is the empirical maximum
+   * value. The tooltip gets inserted after the puck in the DOM, so it will
+   * appear on top.
+   */
+  z-index: 2147483647;
+
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: max-content;
+  max-width: 75vw;
+  padding: 16px 20px;
+
+  background: var(--bg-color);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow:
+    0px 2px 4px var(--shadow-color),
+    0px 4px 8px var(--shadow-color);
+
+  /*
+   We still respect the user's font-size choice, but the text here is a bit
+   smaller relative to the popup.
+   */
+  font-size: calc(var(--base-font-size) * 0.9);
+  line-height: 1.5;
+  color: var(--text-color);
+
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+
+  animation: slide-up 0.3s ease-out;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.vertical-onboarding-tooltip.fade-out {
+  animation: fade-out 0.2s ease-out forwards;
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.vertical-onboarding-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vertical-onboarding-title {
+  margin: 0;
+  padding: 0;
+  font-size: calc(var(--base-font-size) * 1.1);
+  font-weight: 600;
+}
+
+.vertical-onboarding-body {
+  margin: 0;
+  padding: 0;
+  color: inherit;
+}
+
+.vertical-onboarding-ok-button {
+  padding: 10px 14px;
+  background: var(--text-color);
+  color: var(--title-bg);
+  border: none;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: filter 0.2s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .vertical-onboarding-tooltip {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.vertical-onboarding-ok-button:hover {
+  filter: brightness(0.9);
+}
+
+.vertical-onboarding-ok-button:active {
+  filter: brightness(0.8);
+}

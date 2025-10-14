@@ -2311,5 +2311,17 @@
   "tabs_words_label": {
     "message": "Words",
     "description": "The label for the words dictionary tab"
+  },
+  "vertical_mode_onboarding_tooltip_body": {
+    "message": "To switch to horizontal reading mode, press and hold the puck again.",
+    "description": "Body text for the vertical reading mode onboarding tooltip"
+  },
+  "vertical_mode_onboarding_tooltip_ok_button_label": {
+    "message": "OK",
+    "description": "Button text to dismiss the vertical reading mode onboarding tooltip"
+  },
+  "vertical_mode_onboarding_tooltip_title": {
+    "message": "Vertical reading mode activated",
+    "description": "Title for the vertical reading mode onboarding tooltip"
   }
 }
