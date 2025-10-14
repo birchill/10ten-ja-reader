@@ -21,6 +21,7 @@ app.
 - Fixed handling of multi-line text areas in Chrome/Edge due to
   [Chromium bug](https://issues.chromium.org/issues/446475645)
   ([#2541](https://github.com/birchill/10ten-ja-reader/issues/2541)).
+- Fixed showing of title field when looking up `alt` and `title` attributes.
 
 ## [1.25.1] - 2025-07-22
 
