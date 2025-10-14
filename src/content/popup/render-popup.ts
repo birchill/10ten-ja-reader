@@ -251,6 +251,7 @@ export function renderPopup(
   )) {
     updateExpandable(expandable, {
       ...options,
+      isExpanded: options.isExpanded || !!result?.title,
       showKeyboardShortcut: options.displayMode === 'static',
     });
   }
