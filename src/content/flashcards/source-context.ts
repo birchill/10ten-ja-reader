@@ -167,8 +167,8 @@ function trimPreludeWhitespace(
 //
 // ----------------------------------------------------------------------------
 
-const MAX_SOURCE_CONTEXT_PRELUDE_LENGTH = 40;
-const MAX_SOURCE_CONTEXT_POSTLUDE_LENGTH = 40;
+export const MAX_SOURCE_CONTEXT_PRELUDE_LENGTH = 40;
+export const MAX_SOURCE_CONTEXT_POSTLUDE_LENGTH = 40;
 
 function trimPreludeByMaxLength(
   prelude: Array<string | SourceRuby>

@@ -7,6 +7,10 @@ import {
 import type { Overwrite } from '../utils/type-helpers';
 
 import { getContentType } from './content-type';
+import {
+  MAX_SOURCE_CONTEXT_POSTLUDE_LENGTH,
+  MAX_SOURCE_CONTEXT_PRELUDE_LENGTH,
+} from './flashcards/source-context';
 import { getTextFromAnnotatedCanvas } from './gdocs-canvas';
 import type { CursorPosition } from './get-cursor-position';
 import {
@@ -212,10 +216,30 @@ function getTextNodeStart({
 
   // Similarly, if we have a Google Docs node, synthesize a node to scan.
   if (isGdocsOverlayPosition(position)) {
-    let text = '';
-    ({ position, text } = getTextFromAnnotatedCanvas({ maxLength, point }));
+    let maxGdocsLength = MAX_SOURCE_CONTEXT_POSTLUDE_LENGTH;
+    if (maxLength) {
+      maxGdocsLength += maxLength;
+    }
+    let text;
+    let prelude;
+    ({ position, text, prelude } = getTextFromAnnotatedCanvas({
+      maxLength: maxGdocsLength,
+      maxPreludeLength: MAX_SOURCE_CONTEXT_PRELUDE_LENGTH,
+      point,
+    }));
 
-    return position ? [position, document.createTextNode(text)] : [null, null];
+    if (!position || !text.length) {
+      return [null, null];
+    }
+
+    const scanNode = document.createTextNode(text);
+    if (prelude.length) {
+      const container = document.createElement('span');
+      container.appendChild(document.createTextNode(prelude));
+      container.appendChild(scanNode);
+    }
+
+    return [position, scanNode];
   }
 
   return [position, null];
