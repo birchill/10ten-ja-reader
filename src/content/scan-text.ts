@@ -50,8 +50,8 @@ export function scanText({
 
   // Get the ancestor for all inline nodes we intend to traverse
   let inlineScope = startNode.parentElement;
-  while (isEffectiveInline(inlineScope)) {
-    inlineScope = inlineScope!.parentElement;
+  while (isEffectiveInline(inlineScope) && inlineScope.parentElement) {
+    inlineScope = inlineScope.parentElement;
   }
 
   // If we started inside an <rp> element, bail.
@@ -289,9 +289,9 @@ export function scanText({
 //
 // ----------------------------------------------------------------------------
 
-function isEffectiveInline(element: Element | null) {
+function isEffectiveInline(element: Element | null): element is Element {
   return (
-    element &&
+    !!element &&
     // We always treat <rb> and <ruby> tags as inline regardless of the styling
     // since sites like renshuu.org do faux-ruby styling where they give these
     // elements styles like 'display: table-row-group'.
@@ -316,7 +316,7 @@ function isEffectiveInline(element: Element | null) {
         'ruby-base',
         'ruby-text',
       ].includes(getComputedStyle(element).display!) ||
-      (element.parentElement &&
+      (!!element.parentElement &&
         getComputedStyle(element.parentElement)?.display === 'inline-block'))
   );
 }
