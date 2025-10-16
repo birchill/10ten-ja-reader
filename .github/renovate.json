@@ -9,11 +9,14 @@
       "automergeType": "branch",
       "minimumReleaseAge": "1 day"
     },
-    { "matchDepTypes": ["devDependencies"], "addLabels": ["dev"] },
     {
-      "matchPackagePatterns": ["^@rspack/"],
+      "matchDepTypes": ["devDependencies"],
+      "addLabels": ["dev"]
+    },
+    {
       "groupName": "rspack",
-      "allowedVersions": "!/^1\\.5\\.8$/"
+      "allowedVersions": "!/^1\\.5\\.8$/",
+      "matchPackageNames": ["/^@rspack//"]
     }
   ]
 }
