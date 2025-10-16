@@ -13,7 +13,7 @@
     {
       "matchPackagePatterns": ["^@rspack/"],
       "groupName": "rspack",
-      "allowedVersions": "!1.5.8"
+      "allowedVersions": "!/^1\\.5\\.8$/"
     }
   ]
 }
