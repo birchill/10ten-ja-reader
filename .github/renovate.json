@@ -10,6 +10,10 @@
       "minimumReleaseAge": "1 day"
     },
     { "matchDepTypes": ["devDependencies"], "addLabels": ["dev"] },
-    { "matchPackagePatterns": ["^@rspack/"], "groupName": "rspack" }
+    {
+      "matchPackagePatterns": ["^@rspack/"],
+      "groupName": "rspack",
+      "ignoreVersions": ["1.5.8"]
+    }
   ]
 }
