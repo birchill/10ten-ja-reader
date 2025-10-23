@@ -87,7 +87,7 @@
     "@tailwindcss/postcss": "4.1.14",
     "@trivago/prettier-plugin-sort-imports": "5.2.2",
     "@types/archiver": "6.0.3",
-    "@types/chai": "5.2.2",
+    "@types/chai": "5.2.3",
     "@types/mocha": "10.0.10",
     "@types/webextension-polyfill": "0.12.4",
     "@types/yargs": "17.0.33",
