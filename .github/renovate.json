@@ -7,7 +7,7 @@
       "matchCurrentVersion": "!/^0/",
       "automerge": true,
       "automergeType": "branch",
-      "minimumReleaseAge": "1 day"
+      "minimumReleaseAge": "3 days"
     },
     {
       "matchDepTypes": ["devDependencies"],
