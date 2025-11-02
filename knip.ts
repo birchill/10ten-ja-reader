@@ -22,23 +22,17 @@ const config: KnipConfig = {
     // Ignore the locale files compiled by the i18n polyfill
     'tests/_locales_*.js',
   ],
+  ignoreFiles: [
+    'css/selection.css',
+    'xcode13/Shared (App)/Resources/Style.css',
+  ],
   ignoreDependencies: [
     // Used by our browser test and automatically detected by playwright-test.
     'mocha',
     '@types/mocha',
-    // Now that we no longer use a tailwind.config.js file, the tailwindcss
-    // plugin doesn't seem to recognize that Tailwind is being used?
-    //
-    // Technically it's a transitive dependency of @tailwindcss/postcss so
-    // perhaps the problem is the postcss plugin?
-    'tailwindcss',
   ],
   ignoreExportsUsedInFile: { interface: true, type: true },
-  playwright: {
-    // Knip doesn't recognize the globs in package.json scripts
-    entry: 'tests/**/*.test.{js,ts}',
-    config: 'playwright-test.config.js',
-  },
+  playwright: 'playwright-test.config.js',
 };
 
 export default config;
