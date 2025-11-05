@@ -128,7 +128,6 @@
     "tsx": "4.20.6",
     "typescript-eslint": "8.46.2",
     "vitest": "4.0.5",
-    "vitest-github-actions-reporter": "^0.11.1",
     "web-ext-plugin": "2.12.0",
     "webpack": "5.102.1",
     "webpack-bugsnag-plugins": "2.2.3",
