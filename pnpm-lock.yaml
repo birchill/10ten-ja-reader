@@ -59,7 +59,7 @@ importers:
         version: 9.37.0
       '@release-it/keep-a-changelog':
         specifier: 7.0.0
-        version: 7.0.0(release-it@19.0.5(@types/node@24.3.0))
+        version: 7.0.0(release-it@19.0.6(@types/node@24.3.0))
       '@rspack/cli':
         specifier: 1.6.0
         version: 1.6.0(@rspack/core@1.6.0)(@types/express@4.17.23)(webpack@5.102.1)
@@ -175,8 +175,8 @@ importers:
         specifier: 2.0.0
         version: 2.0.0(@rspack/core@1.6.0)(react-cosmos@7.0.0(@types/express@4.17.23))(webpack@5.102.1)
       release-it:
-        specifier: 19.0.5
-        version: 19.0.5(@types/node@24.3.0)
+        specifier: 19.0.6
+        version: 19.0.6(@types/node@24.3.0)
       semver-parser:
         specifier: 4.1.8
         version: 4.1.8
@@ -2179,8 +2179,8 @@ packages:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
 
-  c12@3.3.0:
-    resolution: {integrity: sha512-K9ZkuyeJQeqLEyqldbYLG3wjqwpw4BVaAqvmxq3GYKK0b1A/yYQdIcJxkzAOWcNVWhJpRXAPfZFueekiY/L8Dw==}
+  c12@3.3.1:
+    resolution: {integrity: sha512-LcWQ01LT9tkoUINHgpIOv3mMs+Abv7oVCrtpMRi1PaapVEpWoMga5WuT7/DqFTu7URP9ftbOmimNw1KNIGh9DQ==}
     peerDependencies:
       magicast: ^0.3.5
     peerDependenciesMeta:
@@ -2671,8 +2671,8 @@ packages:
     resolution: {integrity: sha512-1gxPBJpI/pcjQhKgIU91II6Wkay+dLcN3M6rf2uwP8hRur3HtQXjVrdAK3sjC0piaEuxzMwjXChcETiJl47lAQ==}
     engines: {node: '>=18'}
 
-  dotenv@17.2.2:
-    resolution: {integrity: sha512-Sf2LSQP+bOlhKWWyhFsn0UsfdK/kCWRv1iuA2gXAwt3dyNabr6QSj00I2V10pidqz69soatm9ZwZvpQMTIOd5Q==}
+  dotenv@17.2.3:
+    resolution: {integrity: sha512-JVUnt+DUIzu87TABbhPmNfVdBDt18BLOWjMUFJMSi/Qqg7NTYtabbvSNJGOJ7afbRuv9D/lngizHtP7QyLQ+9w==}
     engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
@@ -4823,8 +4823,8 @@ packages:
     resolution: {integrity: sha512-+crtS5QjFRqFCoQmvGduwYWEBng99ZvmFvF+cUJkGYF1L1BfU8C6Zp9T7f5vPAwyLkUExpvK+ANVZmGU49qi4Q==}
     engines: {node: '>=12'}
 
-  release-it@19.0.5:
-    resolution: {integrity: sha512-bYlUKC0TQroBKi8jQUeoxLHql4d9Fx/2EQLHPKUobXTNSiTS2WY8vlgdHZRhRjVEMyAWwyadJVKfFZnRJuRn4Q==}
+  release-it@19.0.6:
+    resolution: {integrity: sha512-XTCNZ2mV9wjASQmc2bcQjA+ImJiFMijbFSyQE6lDmP1Plq17acjYaoY5FmJb5Lh/Nv4UDwfRlKQMv1DvHFKf1g==}
     engines: {node: ^20.12.0 || >=22.0.0}
     hasBin: true
 
@@ -6849,10 +6849,10 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
-  '@release-it/keep-a-changelog@7.0.0(release-it@19.0.5(@types/node@24.3.0))':
+  '@release-it/keep-a-changelog@7.0.0(release-it@19.0.6(@types/node@24.3.0))':
     dependencies:
       detect-newline: 4.0.1
-      release-it: 19.0.5(@types/node@24.3.0)
+      release-it: 19.0.6(@types/node@24.3.0)
       semver: 7.7.2
       string-template: 1.0.0
 
@@ -7826,12 +7826,12 @@ snapshots:
 
   bytes@3.1.2: {}
 
-  c12@3.3.0:
+  c12@3.3.1:
     dependencies:
       chokidar: 4.0.3
       confbox: 0.2.2
       defu: 6.1.4
-      dotenv: 17.2.2
+      dotenv: 17.2.3
       exsolve: 1.0.7
       giget: 2.0.0
       jiti: 2.6.1
@@ -8310,7 +8310,7 @@ snapshots:
     dependencies:
       type-fest: 4.41.0
 
-  dotenv@17.2.2: {}
+  dotenv@17.2.3: {}
 
   dunder-proto@1.0.1:
     dependencies:
@@ -10716,13 +10716,13 @@ snapshots:
     dependencies:
       rc: 1.2.8
 
-  release-it@19.0.5(@types/node@24.3.0):
+  release-it@19.0.6(@types/node@24.3.0):
     dependencies:
       '@nodeutils/defaults-deep': 1.1.0
       '@octokit/rest': 22.0.0
       '@phun-ky/typeof': 2.0.3
       async-retry: 1.3.3
-      c12: 3.3.0
+      c12: 3.3.1
       ci-info: 4.3.0
       eta: 4.0.1
       git-url-parse: 16.1.0
@@ -11919,7 +11919,7 @@ snapshots:
     dependencies:
       ansi-styles: 6.2.1
       string-width: 7.2.0
-      strip-ansi: 7.1.0
+      strip-ansi: 7.1.2
 
   wrappy@1.0.2: {}
 
