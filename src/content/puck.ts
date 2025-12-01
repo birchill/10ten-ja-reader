@@ -1508,7 +1508,7 @@ export class LookupPuck {
       { capture: true }
     );
 
-    this.markOnboardingSeen();
+    void this.markOnboardingSeen();
   }
 
   private hideOnboardingTooltip() {
