@@ -266,7 +266,7 @@ export class FxFetcher {
         Bugsnag.leaveBreadcrumb(
           `Scheduling next FX data update for ${new Date(nextRun)}`
         );
-        browser.alarms.create('fx-update', { when: nextRun });
+        await browser.alarms.create('fx-update', { when: nextRun });
       } catch (e) {
         console.error('Error creating alarm for FX data update', e);
         void Bugsnag.notify(e);
