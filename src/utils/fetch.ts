@@ -1,5 +1,6 @@
-/** @public */
-export class TimeoutError extends Error {
+import { isAbortError } from './is-abort-error';
+
+class TimeoutError extends Error {
   constructor(...params: Array<any>) {
     super(...params);
     Object.setPrototypeOf(this, TimeoutError.prototype);
@@ -12,16 +13,13 @@ export class TimeoutError extends Error {
   }
 }
 
-export function fetchWithTimeout(
+export async function fetchWithTimeout(
   resource: RequestInfo,
   options?: { timeout?: number | null } & RequestInit
 ): Promise<Response> {
   const controller = new AbortController();
-  if (options?.signal) {
-    options.signal.addEventListener('abort', () => {
-      controller.abort();
-    });
-  }
+  const onAbort = () => controller.abort();
+  options?.signal?.addEventListener('abort', onAbort);
 
   // Set up timeout callback
   const { timeout = 5000 } = options || {};
@@ -37,22 +35,24 @@ export function fetchWithTimeout(
     }, timeout);
   }
 
-  const responsePromise = new Promise<Response>((resolve, reject) => {
-    fetch(resource, { ...options, signal: controller.signal })
-      .then((response) => {
-        if (timeoutId) {
-          self.clearTimeout(timeoutId);
-        }
-        resolve(response);
-      })
-      .catch((e) => {
-        if (e?.name === 'AbortError' && didTimeout) {
-          reject(new TimeoutError());
-        } else {
-          reject(e);
-        }
-      });
-  });
+  try {
+    const response = await fetch(resource, {
+      ...options,
+      signal: controller.signal,
+    });
 
-  return responsePromise;
+    if (timeoutId) {
+      self.clearTimeout(timeoutId);
+    }
+
+    return response;
+  } catch (e) {
+    if (isAbortError(e) && didTimeout) {
+      throw new TimeoutError();
+    }
+
+    throw e;
+  } finally {
+    options?.signal?.removeEventListener('abort', onAbort);
+  }
 }

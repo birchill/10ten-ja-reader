@@ -1,3 +1,5 @@
+import { DownloadError } from '@birchill/jpdict-idb';
+
 import type { JpdictState } from '../background/jpdict';
 import { isError } from '../utils/is-error';
 import { serializeError } from '../utils/serialize-error';
@@ -37,12 +39,16 @@ export const notifyError = ({
 }: {
   error: unknown;
   severity?: 'error' | 'warning';
-}) => ({
-  type: 'error' as const,
-  severity,
-  ...serializeError(error),
-  stack: isError(error) ? error.stack : undefined,
-});
+}) => {
+  const url = error instanceof DownloadError ? error.url : undefined;
+  return {
+    type: 'error' as const,
+    severity,
+    ...serializeError(error),
+    url,
+    stack: isError(error) ? error.stack : undefined,
+  };
+};
 
 export type JpdictEvent =
   | ReturnType<typeof queryState>
