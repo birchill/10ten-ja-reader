@@ -225,7 +225,7 @@ function IdleStateSummary(props: {
 
   return (
     <DbSummaryContainer>
-      <div class="grid auto-cols-fr grid-flow-col grid-rows-[repeat(2,_auto)] gap-x-2 sm:gap-x-4">
+      <div class="grid auto-cols-fr grid-flow-col grid-rows-[repeat(2,auto)] gap-x-2 sm:gap-x-4">
         {allMajorDataSeries.map((series) => {
           const versionInfo = props.dbState[series].version;
           return versionInfo ? (

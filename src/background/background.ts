@@ -56,7 +56,7 @@ import '../../manifest.json.src';
 import { Config } from '../common/config';
 import type { DbListenerMessage } from '../common/db-listener-messages';
 import { notifyDbStateUpdated } from '../common/db-listener-messages';
-import { startBugsnag } from '../utils/bugsnag';
+import { isAbortError, startBugsnag } from '../utils/bugsnag';
 import { omit } from '../utils/omit';
 import type { Split } from '../utils/type-helpers';
 
@@ -523,7 +523,7 @@ browser.runtime.onMessage.addListener(
               abortSignal: pendingSearchWordsRequest.controller.signal,
             });
           } catch (e) {
-            if (e.name === 'AbortError') {
+            if (isAbortError(e)) {
               return 'aborted';
             }
             void Bugsnag.notify(e);
@@ -558,7 +558,7 @@ browser.runtime.onMessage.addListener(
               abortSignal: pendingSearchOtherRequest.controller.signal,
             });
           } catch (e) {
-            if (e.name === 'AbortError') {
+            if (isAbortError(e)) {
               return 'aborted';
             }
             void Bugsnag.notify(e);
@@ -587,7 +587,7 @@ browser.runtime.onMessage.addListener(
             })
           )
           .catch((e) => {
-            if (e.name === 'AbortError') {
+            if (isAbortError(e)) {
               return 'aborted';
             }
             void Bugsnag.notify(e);

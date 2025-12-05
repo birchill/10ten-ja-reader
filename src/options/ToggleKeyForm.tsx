@@ -2,6 +2,7 @@ import type { JSX } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 
 import { useLocale } from '../common/i18n';
+import { isError } from '../utils/is-error';
 
 import { KeyBox, KeyCheckbox, KeyInput } from './KeyBox';
 import { Linkify } from './Linkify';
@@ -86,7 +87,9 @@ export function ToggleKeyForm(props: Props) {
       setToggleKeyError(
         e instanceof CommandError
           ? t(e.code, e.substitutions)
-          : e.message || String(e)
+          : isError(e)
+            ? e.message
+            : String(e)
       );
     }
   };

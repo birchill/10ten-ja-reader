@@ -14,6 +14,7 @@ import Bugsnag, {
   navigationBreadcrumbs,
   stringifyValues,
 } from '@birchill/bugsnag-zero';
+import type { AbortError, DownloadErrorCode } from '@birchill/jpdict-idb';
 import browser from 'webextension-polyfill';
 
 import { ExtensionStorageError } from '../common/extension-storage-error';
@@ -189,14 +190,67 @@ export function startBugsnag() {
 type CommonDownloadError = {
   name: 'DownloadError';
   url?: string;
-  code: number | string;
+  code: number | DownloadErrorCode;
 };
 
-function isDownloadError(error: unknown): error is CommonDownloadError {
+function isDownloadError(e: unknown): e is CommonDownloadError {
   return (
-    isObject(error) &&
-    typeof error.name === 'string' &&
-    (typeof error.url === 'string' || typeof error.url === 'undefined') &&
-    (typeof error.code === 'number' || typeof error.url === 'string')
+    isObject(e) &&
+    e.name === 'DownloadError' &&
+    (typeof e.url === 'string' || typeof e.url === 'undefined') &&
+    (typeof e.code === 'number' || typeof e.url === 'string')
   );
+}
+
+// XXX This probably belongs in another file
+
+type AbortDomException = DOMException & { name: 'AbortError' };
+
+export function isAbortError(e: unknown): e is AbortError | AbortDomException {
+  return isObject(e) && 'name' in e && e.name === 'AbortError';
+}
+
+type DownloadTelemetry = {
+  t: 'dl_failed';
+  etype: 'timeout' | 'network' | 'inaccessible' | 'server' | 'syntax';
+  url: string;
+  v: string;
+  uid?: string;
+  msg?: string;
+};
+
+function asDownloadTelemetry(e: unknown, version: string, uid: string): DownloadTelemetry | null {
+  if (!isDownloadError(e)) {
+    return null;
+  }
+
+  const { url, code } = e;
+  let etype: DownloadTelemetry['etype'];
+
+  if (typeof code === 'string') {
+    switch (code) {
+    }
+  } else {
+  if (code === 404) {
+    etype = 'inaccessible';
+  } else if (code === 403) {
+    etype = 'server';
+  } else if (code === 400) {
+    etype = 'syntax';
+  } else if (code === 408 || code === 504) {
+    etype = 'timeout';
+  } else if (code === 502 || code === 503 || code === 504) {
+    etype = 'network';
+  } else {
+    etype = 'server';
+  }
+
+  return {
+    t: 'dl_failed',
+    etype,
+    url,
+    v: version,
+    uid,
+    msg: e.message,
+  };
 }
