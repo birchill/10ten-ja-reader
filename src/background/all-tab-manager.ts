@@ -394,7 +394,7 @@ export default class AllTabManager implements TabManager {
           //
           // That's fine since presumably this task will get scheduled again
           // eventually.
-          Bugsnag.leaveBreadcrumb('Error cleaning up tabs', e);
+          Bugsnag.leaveBreadcrumb('Error cleaning up tabs', { error: e });
         }
       });
     }

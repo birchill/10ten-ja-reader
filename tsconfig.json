@@ -23,7 +23,8 @@
     "pretty": true,
     "sourceMap": true,
     "strictNullChecks": true,
-    "target": "es2020"
+    "target": "es2020",
+    "useUnknownInCatchVariables": true
   },
   "include": ["./src/**/*", "./scripts/*.ts", "./*.ts", "./*.cjs"]
 }

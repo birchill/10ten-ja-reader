@@ -1,4 +1,5 @@
 import type { JpdictState } from '../background/jpdict';
+import { isError } from '../utils/is-error';
 import { serializeError } from '../utils/serialize-error';
 
 export const queryState = () => ({ type: 'querystate' as const });
@@ -34,13 +35,13 @@ export const notifyError = ({
   error,
   severity = 'error',
 }: {
-  error: Error;
+  error: unknown;
   severity?: 'error' | 'warning';
 }) => ({
   type: 'error' as const,
   severity,
   ...serializeError(error),
-  stack: error.stack,
+  stack: isError(error) ? error.stack : undefined,
 });
 
 export type JpdictEvent =

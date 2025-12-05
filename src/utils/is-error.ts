@@ -27,6 +27,10 @@ const getPrototypeOf = Object.getPrototypeOf;
 const ERROR_TYPE = '[object Error]';
 
 export function isError(a: unknown): a is Error {
+  if (typeof Error.isError === 'function') {
+    return Error.isError(a);
+  }
+
   if (a instanceof Error) {
     return true;
   }
