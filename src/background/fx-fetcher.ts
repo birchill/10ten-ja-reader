@@ -15,21 +15,21 @@ const FxDataSchema = s.type({
   rates: s.record(s.string(), s.number()),
 });
 
-// Hopefully this is sufficiently similar enough to the DownloadError class used
-// by jpdict-idb that our Bugsnag grouping code should treat them as the same.
-class DownloadError extends Error {
-  code: number;
+export type FxDownloadErrorCode = 'Timeout' | 'NetworkError' | 'SyntaxError';
+
+export class FxDownloadError extends Error {
+  code: FxDownloadErrorCode;
   url: string;
 
-  constructor(url: string, code: number, ...params: Array<any>) {
+  constructor(url: string, code: FxDownloadErrorCode, ...params: Array<any>) {
     super(...params);
-    Object.setPrototypeOf(this, DownloadError.prototype);
+    Object.setPrototypeOf(this, FxDownloadError.prototype);
 
     if (typeof (Error as any).captureStackTrace === 'function') {
-      (Error as any).captureStackTrace(this, DownloadError);
+      (Error as any).captureStackTrace(this, FxDownloadError);
     }
 
-    this.name = 'DownloadError';
+    this.name = 'FxDownloadError';
     this.code = code;
     this.url = url;
   }
@@ -131,7 +131,11 @@ export class FxFetcher {
 
       // Check the response
       if (!response.ok) {
-        throw new DownloadError(url, response.status, response.statusText);
+        throw new FxDownloadError(
+          url,
+          'NetworkError',
+          `[${response.status}] ${response.statusText}`
+        );
       }
 
       // Parse the response
@@ -140,34 +144,56 @@ export class FxFetcher {
 
       fxData = result;
     } catch (e) {
-      // Convert network errors disguised as TypeErrors to DownloadErrors
+      // Translate errors
       let error = e;
+      if (isError(e) && e.name === 'NetworkError') {
+        error = new FxDownloadError(url, 'NetworkError', e.message, {
+          cause: e,
+        });
+      }
+
+      if (isError(e) && e.name === 'TimeoutError') {
+        error = new FxDownloadError(url, 'Timeout', e.message, { cause: e });
+      }
+
+      // Translate SyntaxErrors to download errors since they often arise from
+      // firewalls etc. which replace the content with something that doesn't
+      // parse and in that sense they represent download errors.
+      if (isError(e) && e.name === 'SyntaxError') {
+        error = new FxDownloadError(url, 'SyntaxError', e.message, {
+          cause: e,
+        });
+      }
+
+      // Leave StructErrors from validation as-is.
+
+      // Convert network errors disguised as TypeErrors to download errors
       if (
         isError(e) &&
         e instanceof TypeError &&
         (e.message.startsWith('NetworkError') ||
           e.message === 'Failed to fetch')
       ) {
-        // Use 418 just so that we pass the check for a retry-able error below
-        // which looks for a status code in the 4xx~5xx range.
-        error = new DownloadError(url, 418, e.message, { cause: e });
+        error = new FxDownloadError(url, 'NetworkError', e.message, {
+          cause: e,
+        });
       }
 
       // Possibly schedule a retry
-      const retryAbleError =
-        isError(error) &&
-        (error.name === 'TimeoutError' ||
-          error.name === 'NetworkError' ||
-          (error.name === 'DownloadError' &&
-            (error as DownloadError).code >= 400 &&
-            (error as DownloadError).code < 500));
+      const retryableErrorCodes: Array<FxDownloadErrorCode> = [
+        'Timeout',
+        'NetworkError',
+      ];
+      const retryableError =
+        error instanceof FxDownloadError &&
+        retryableErrorCodes.includes(error.code);
 
       const retryCount =
         this.fetchState.type === 'fetching' &&
         typeof this.fetchState.retryCount === 'number'
           ? this.fetchState.retryCount
           : 0;
-      if (retryAbleError && retryCount < 3) {
+      if (retryableError && retryCount < 3) {
         console.warn(error);
         Bugsnag.leaveBreadcrumb(
           `Failed attempt #${retryCount + 1} to fetch FX data. Will retry.`,

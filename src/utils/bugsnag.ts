@@ -14,11 +14,12 @@ import Bugsnag, {
   navigationBreadcrumbs,
   stringifyValues,
 } from '@birchill/bugsnag-zero';
+import { DownloadError } from '@birchill/jpdict-idb';
 import browser from 'webextension-polyfill';
 
 import { ExtensionStorageError } from '../common/extension-storage-error';
 
-import { isObject } from './is-object';
+import { maybeSendTelemetry } from './dl-failed-telemetry';
 import { getReleaseStage } from './release-stage';
 
 const getExtensionInstallId = async (): Promise<string> => {
@@ -122,8 +123,19 @@ export function startBugsnag() {
       // Fill out the user ID
       event.user = { id: await getExtensionInstallId() };
 
+      // See if this is something we should report as telemetry instead of an
+      // unexpected error
+      const sentTelemetry = maybeSendTelemetry(
+        event.originalError,
+        manifest.version_name || manifest.version,
+        event.user.id!
+      );
+      if (sentTelemetry) {
+        return false;
+      }
+
       // Group download errors by URL and error code
-      if (isDownloadError(event.originalError)) {
+      if (event.originalError instanceof DownloadError) {
         event.groupingHash =
           String(event.originalError.code) + event.originalError.url;
         if (!event.request) {
@@ -182,21 +194,4 @@ export function startBugsnag() {
     },
     plugins,
   });
-}
-
-// Common demonimator between jpdict-idb's DownloadError type and
-// fx-fetcher.ts's DownloadError.
-type CommonDownloadError = {
-  name: 'DownloadError';
-  url?: string;
-  code: number | string;
-};
-
-function isDownloadError(error: unknown): error is CommonDownloadError {
-  return (
-    isObject(error) &&
-    error.name === 'DownloadError' &&
-    (typeof error.url === 'string' || typeof error.url === 'undefined') &&
-    (typeof error.code === 'number' || typeof error.code === 'string')
-  );
 }

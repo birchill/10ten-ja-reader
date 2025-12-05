@@ -3,10 +3,15 @@ import type {
   DataSeries,
   DataSeriesState,
   DataVersion,
+  DownloadErrorCode,
   UpdateErrorState,
   UpdateState,
 } from '@birchill/jpdict-idb';
-import { getKanji, getWords as idbGetWords } from '@birchill/jpdict-idb';
+import {
+  DownloadError,
+  getKanji,
+  getWords as idbGetWords,
+} from '@birchill/jpdict-idb';
 import { kanaToHiragana } from '@birchill/normal-jp';
 import browser from 'webextension-polyfill';
 
@@ -194,8 +199,16 @@ export async function initDb({
 
       case 'error':
         {
-          const error = new Error(event.message);
-          error.name = event.name;
+          let error;
+          if (event.url) {
+            error = new DownloadError(
+              { code: event.name as DownloadErrorCode, url: event.url },
+              event.message
+            );
+          } else {
+            error = new Error(event.message);
+            error.name = event.name;
+          }
           error.stack = event.stack;
           void Bugsnag.notify(error, { severity: event.severity });
         }
