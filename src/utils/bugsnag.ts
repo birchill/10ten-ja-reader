@@ -195,8 +195,8 @@ type CommonDownloadError = {
 function isDownloadError(error: unknown): error is CommonDownloadError {
   return (
     isObject(error) &&
-    typeof error.name === 'string' &&
+    error.name === 'DownloadError' &&
     (typeof error.url === 'string' || typeof error.url === 'undefined') &&
-    (typeof error.code === 'number' || typeof error.url === 'string')
+    (typeof error.code === 'number' || typeof error.code === 'string')
   );
 }

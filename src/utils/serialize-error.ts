@@ -1,6 +1,8 @@
-// Convert an error into a form that able to sent with postMessage and that
+import { isObject } from './is-object';
+
+// Convert an error into a form that able to be sent with postMessage and that
 // is also compatible with Bugsnag's NotifiableError type.
-export function serializeError(error: Error): {
+export function serializeError(error: unknown): {
   name: string;
   message: string;
 } {
@@ -18,6 +20,10 @@ export function serializeError(error: Error): {
       stack = (e as Error).stack;
     }
     return { name: '(Unknown error)', message: stack || '' };
+  }
+
+  if (!isObject(error)) {
+    return { name: '(Unknown error)', message: String(error) };
   }
 
   // We need to be careful not to read the 'code' field unless it's a string

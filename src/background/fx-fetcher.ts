@@ -139,7 +139,7 @@ export class FxFetcher {
       s.assert(result, FxDataSchema);
 
       fxData = result;
-    } catch (e: unknown) {
+    } catch (e) {
       // Convert network errors disguised as TypeErrors to DownloadErrors
       let error = e;
       if (
@@ -150,7 +150,7 @@ export class FxFetcher {
       ) {
         // Use 418 just so that we pass the check for a retry-able error below
         // which looks for a status code in the 4xx~5xx range.
-        error = new DownloadError(url, 418, e.message);
+        error = new DownloadError(url, 418, e.message, { cause: e });
       }
 
       // Possibly schedule a retry
@@ -171,7 +171,7 @@ export class FxFetcher {
         console.warn(error);
         Bugsnag.leaveBreadcrumb(
           `Failed attempt #${retryCount + 1} to fetch FX data. Will retry.`,
-          { error }
+          { error: e }
         );
 
         // We're using setTimeout here but in the case of event pages or service
