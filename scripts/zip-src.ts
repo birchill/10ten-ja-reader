@@ -68,13 +68,14 @@ async function main() {
   const files = [
     'CHANGELOG.md',
     'CONTRIBUTING.md',
+    'README.md',
     'manifest.json.src',
     'package.json',
-    'postcss.config.cjs',
-    'README.md',
-    'rspack.config.js',
-    'tsconfig.json',
     'pnpm-lock.yaml',
+    'postcss.config.js',
+    'rspack.config.js',
+    'scripts/postcss-property-to-custom-prop.js',
+    'tsconfig.json',
   ];
   for (const file of files) {
     archive.file(path.join(rootDir, file), { name: file });
