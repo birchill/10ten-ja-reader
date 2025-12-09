@@ -207,8 +207,8 @@ pnpm release --dry-run -V
 ```
 
 After publishing the release, it should automatically be uploaded to AMO
-(Firefox) and the Edge Store but we need to manually upload it to the Chrome Web
-Store and Thunderbird add-ons site.
+(Firefox), the Edge Store, and the Chrome Web Store but we need to manually
+upload it to the Thunderbird add-ons site.
 
 ### Releasing on Safari
 
