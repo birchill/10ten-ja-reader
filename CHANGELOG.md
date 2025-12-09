@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+## [1.26.0] - 2025-12-09
+
 - Added references for
   [The Kodansha Kanji Dictionary](https://www.kanji.org/dictionaries/KKD/kaneirev.htm).
 - Improved scanning of ruby transcription text.
@@ -1290,7 +1292,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.25.1...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.26.0...HEAD
+[1.26.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.25.1...v1.26.0
 [1.25.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.25.0...v1.25.1
 [1.25.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.24.2...v1.25.0
 [1.24.2]: https://github.com/birchill/10ten-ja-reader/compare/v1.24.1...v1.24.2
