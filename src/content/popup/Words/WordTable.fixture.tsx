@@ -44,7 +44,15 @@ const entryData: Array<[string, Array<WordResult>]> = [
             matchRange: [0, 1],
           },
         ],
-        r: [{ ent: 'ひ', p: ['i1', 'n1', 'nf03'], a: 0, match: true }],
+        r: [
+          {
+            ent: 'ひ',
+            romaji: 'hi',
+            p: ['i1', 'n1', 'nf03'],
+            a: 0,
+            match: true,
+          },
+        ],
         s: [
           { g: [{ str: 'day' }, { str: 'days' }], pos: ['n'], match: true },
           {
@@ -78,7 +86,7 @@ const entryData: Array<[string, Array<WordResult>]> = [
       {
         id: 2083100,
         k: [{ ent: '日', p: ['s1'], match: true, matchRange: [0, 1] }],
-        r: [{ ent: 'にち', p: ['s1'], a: 1, match: true }],
+        r: [{ ent: 'にち', romaji: 'nichi', p: ['s1'], a: 1, match: true }],
         s: [
           {
             g: [{ str: 'Sunday' }],
@@ -118,14 +126,15 @@ const entryData: Array<[string, Array<WordResult>]> = [
         r: [
           {
             ent: 'に',
+            romaji: 'ni',
             p: ['i1', 'n1', 'nf01'],
             a: 1,
             match: true,
             bg: { l: 5 },
           },
-          { ent: 'ふた', a: 2, match: true },
-          { ent: 'ふ', a: 1, match: true },
-          { ent: 'ふう', a: 1, match: true },
+          { ent: 'ふた', romaji: 'futa', a: 2, match: true },
+          { ent: 'ふ', romaji: 'fu', a: 1, match: true },
+          { ent: 'ふう', romaji: 'fuu', a: 1, match: true },
         ],
         s: [
           {
@@ -141,8 +150,8 @@ const entryData: Array<[string, Array<WordResult>]> = [
         id: 2728160,
         k: [{ ent: '二', match: true, matchRange: [0, 1] }],
         r: [
-          { ent: 'アル', a: 1, match: true },
-          { ent: 'アール', i: ['ik'], a: 1, match: true },
+          { ent: 'アル', romaji: 'aru', a: 1, match: true },
+          { ent: 'アール', romaji: 'a-ru', i: ['ik'], a: 1, match: true },
         ],
         s: [
           {
@@ -181,7 +190,7 @@ const entryData: Array<[string, Array<WordResult>]> = [
           { ent: '摺硝子', i: ['sK'], match: false },
           { ent: '摺り硝子', i: ['sK'], match: false },
         ],
-        r: [{ ent: 'すりガラス', a: 3, match: true }],
+        r: [{ ent: 'すりガラス', romaji: 'surigarasu', a: 3, match: true }],
         s: [
           {
             g: [{ str: 'ground glass' }, { str: 'frosted glass' }],
@@ -209,6 +218,7 @@ export default Object.fromEntries(
       });
       const [readingOnly] = useFixtureInput('readingOnly', false);
       const [showPriority] = useFixtureInput('showPriority', true);
+      const [showRomaji] = useFixtureInput('showRomaji', false);
       const [waniKaniVocabDisplay] = useFixtureSelect('waniKanjiVocabDisplay', {
         options: ['show-matches', 'hide'],
       });
@@ -238,6 +248,7 @@ export default Object.fromEntries(
             posDisplay,
             readingOnly,
             showPriority,
+            showRomaji,
             waniKaniVocabDisplay,
           }}
           copyState={{ kind: 'inactive' }}

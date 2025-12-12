@@ -21,6 +21,7 @@ export function renderCopyOverlay(props: {
   result?: QueryResult;
   series: MajorDataSeries;
   showKanjiComponents?: boolean;
+  showRomaji?: boolean;
 }): HTMLDivElement {
   const containerElement = html('div', { class: 'tp:flex' });
 

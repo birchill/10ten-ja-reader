@@ -302,12 +302,10 @@ const WORDS_MAX_ENTRIES = 7;
 export async function searchWords({
   input,
   abortSignal,
-  includeRomaji = false,
   max = 0,
 }: {
   input: string;
   abortSignal?: AbortSignal;
-  includeRomaji?: boolean;
   max?: number;
 }): Promise<
   [
@@ -346,7 +344,6 @@ export async function searchWords({
       input: word,
       inputLengths,
       maxResults,
-      includeRomaji,
     }),
     dbStatus !== 'ok' ? dbStatus : undefined,
   ];
@@ -358,13 +355,7 @@ export async function searchWords({
 //
 // ---------------------------------------------------------------------------
 
-export async function translate({
-  text,
-  includeRomaji = false,
-}: {
-  text: string;
-  includeRomaji?: boolean;
-}): Promise<TranslateResult | null> {
+export async function translate(text: string): Promise<TranslateResult | null> {
   const result: TranslateResult = {
     type: 'translate',
     data: [],
@@ -378,7 +369,6 @@ export async function translate({
     const [searchResult, dbStatus] = await searchWords({
       input: text.slice(offset),
       max: 1,
-      includeRomaji,
     });
 
     if (searchResult && searchResult.data) {

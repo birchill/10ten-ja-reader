@@ -29,7 +29,7 @@ export type Overwrite<T, U> = Omit<T, Extract<keyof T, keyof U>> & U;
  * Instead we need a special type that allows us to intersect with the above
  * such that `children` is preserved but no other props are added.
  *
- * Intersestingly this issue doesn't seem to arise if we include any code (i.e.
+ * Interestingly this issue doesn't seem to arise if we include any code (i.e.
  * not just types) from `preact/compat` in the file defining the component so
  * there must be some side effects from that code.
  */

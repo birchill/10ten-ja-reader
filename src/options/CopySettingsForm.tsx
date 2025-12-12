@@ -47,6 +47,7 @@ export function CopySettingsForm(props: Props) {
                 r: [
                   {
                     ent: 'てんてん',
+                    romaji: 'tenten',
                     p: ['n1', 'nf15'],
                     a: [{ i: 0 }, { i: 3 }],
                     match: true,
@@ -68,7 +69,6 @@ export function CopySettingsForm(props: Props) {
                     match: true,
                   },
                 ],
-                romaji: props.showRomaji ? ['tenten'] : undefined,
                 matchLen: 2,
               },
             },
@@ -77,6 +77,7 @@ export function CopySettingsForm(props: Props) {
             includeAllSenses: !props.simplifiedCopy,
             includeLessCommonHeadwords: !props.simplifiedCopy,
             includePartOfSpeech: !props.simplifiedCopy,
+            showRomaji: props.showRomaji,
           })}
         </code>
       </div>

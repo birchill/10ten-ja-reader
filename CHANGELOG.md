@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- Made romaji readings correspond to actually shown romaji
+  ([#2673](https://github.com/birchill/10ten-ja-reader/pull/2673)).
+
 ## [1.26.0] - 2025-12-09
 
 - Added references for

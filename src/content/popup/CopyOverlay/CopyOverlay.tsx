@@ -25,6 +25,7 @@ type Props = {
   result?: QueryResult;
   series: MajorDataSeries;
   showKanjiComponents?: boolean;
+  showRomaji?: boolean;
 };
 
 export function CopyOverlay(props: Props) {
@@ -62,6 +63,7 @@ export function CopyOverlay(props: Props) {
     includePartOfSpeech,
     kanjiReferences,
     showKanjiComponents,
+    showRomaji,
   } = props;
   const entryPreviewText = entryToCopy
     ? getTextToCopy({
@@ -73,6 +75,7 @@ export function CopyOverlay(props: Props) {
         includePartOfSpeech,
         kanjiReferences,
         showKanjiComponents,
+        showRomaji,
       })
     : undefined;
 
@@ -87,6 +90,7 @@ export function CopyOverlay(props: Props) {
         includePartOfSpeech,
         kanjiReferences,
         showKanjiComponents,
+        showRomaji,
       }).replace(/\t/g, ' → ')
     : undefined;
 
@@ -135,7 +139,7 @@ export function CopyOverlay(props: Props) {
           'tp:appearance-none',
           'tp:m-0 tp:py-4 tp:px-10 tp:border-none',
           'tp:flex tp:items-center tp:justify-center tp:gap-1.5',
-          'tp:leading-[1.5]',
+          'tp:leading-normal',
           'tp:bg-transparent tp:text-black/40 tp:text-base tp:cursor-pointer'
         )}
         lang={langTag}

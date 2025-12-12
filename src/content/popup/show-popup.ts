@@ -76,6 +76,7 @@ export type ShowPopupOptions = {
   showDefinitions: boolean;
   showPriority: boolean;
   showKanjiComponents?: boolean;
+  showRomaji: boolean;
   switchDictionaryKeys: ReadonlyArray<string>;
   tabDisplay: 'top' | 'left' | 'right' | 'none';
   waniKaniVocabDisplay: 'hide' | 'show-matches';

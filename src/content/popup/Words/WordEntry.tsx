@@ -23,6 +23,7 @@ export type WordEntryConfig = Pick<
   | 'bunproDisplay'
   | 'posDisplay'
   | 'showPriority'
+  | 'showRomaji'
   | 'waniKaniVocabDisplay'
   | 'readingOnly'
 >;
@@ -276,7 +277,7 @@ export function WordEntry(props: WordEntryProps) {
           </span>
         )}
 
-        {!!entry.romaji?.length && (
+        {props.config.showRomaji && matchingKana.length && (
           <span
             class={classes(
               'tp:text-base',
@@ -287,7 +288,7 @@ export function WordEntry(props: WordEntryProps) {
             )}
             lang="ja"
           >
-            {entry.romaji.join(', ')}
+            {matchingKana.map((r) => r.romaji).join(', ')}
           </span>
         )}
 

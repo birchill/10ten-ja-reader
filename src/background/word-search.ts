@@ -27,14 +27,12 @@ export async function wordSearch({
   input,
   inputLengths,
   maxResults,
-  includeRomaji,
 }: {
   abortSignal?: AbortSignal;
   getWords: GetWordsFunction;
   input: string;
   inputLengths: Array<number>;
   maxResults: number;
-  includeRomaji: boolean;
 }): Promise<WordSearchResult | null> {
   let longestMatch = 0;
   let have = new Set<number>();
@@ -82,7 +80,6 @@ export async function wordSearch({
         getWords,
         input: variant,
         inputLength: currentInputLength,
-        includeRomaji,
         maxResults,
       });
 
@@ -139,7 +136,6 @@ async function lookupCandidates({
   abortSignal,
   existingEntries,
   getWords,
-  includeRomaji,
   input,
   inputLength,
   maxResults,
@@ -147,7 +143,6 @@ async function lookupCandidates({
   abortSignal?: AbortSignal;
   existingEntries: Set<number>;
   getWords: GetWordsFunction;
-  includeRomaji: boolean;
   input: string;
   inputLength: number;
   maxResults: number;
@@ -178,15 +173,11 @@ async function lookupCandidates({
   sortWordResults(candidateResults);
 
   // Convert to a flattened WordResult
-  return candidateResults.map((result) => {
-    const wordResult: WordResult = { ...result, matchLen: inputLength };
-
-    if (includeRomaji) {
-      wordResult.romaji = wordResult.r.map((r) => toRomaji(r.ent));
-    }
-
-    return wordResult;
-  });
+  return candidateResults.map<WordResult>((result) => ({
+    ...result,
+    r: result.r.map((r) => ({ ...r, romaji: toRomaji(r.ent) })),
+    matchLen: inputLength,
+  }));
 }
 
 async function lookupCandidate({

@@ -187,6 +187,7 @@ export function renderPopup(
         result: resultToShow ? result : undefined,
         series: options.dictToShow,
         showKanjiComponents: options.showKanjiComponents,
+        showRomaji: options.showRomaji,
       })
     );
 

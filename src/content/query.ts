@@ -27,7 +27,6 @@ export type QueryResult = {
 export type NamePreview = { names: Array<NameResult>; more: boolean };
 
 export interface QueryOptions {
-  includeRomaji: boolean;
   metaMatchLen?: number;
   wordLookup: boolean;
   updateQueryResult: (result: QueryResult | null) => void;
@@ -128,7 +127,6 @@ async function queryWords(
   const message: BackgroundRequest = {
     type: options.wordLookup ? 'searchWords' : 'translate',
     input: text,
-    includeRomaji: options.includeRomaji,
   };
 
   let searchResult: SearchWordsResult | TranslateResult | 'aborted' | null;
@@ -201,7 +199,6 @@ async function queryOther(
   const message: BackgroundRequest = {
     type: 'searchOther',
     input: text,
-    includeRomaji: options.includeRomaji,
     wordsMatchLen: Math.max(
       words?.words?.matchLen || 0,
       options.metaMatchLen || 0
@@ -303,12 +300,10 @@ function addNamePreview(result: QueryResult): QueryResult {
 
 function getCacheKey({
   text,
-  includeRomaji,
   wordLookup,
 }: {
   text: string;
-  includeRomaji: boolean;
   wordLookup: boolean;
 }): string {
-  return [text, includeRomaji ? '1' : '0', wordLookup ? '1' : '0'].join('-');
+  return [text, wordLookup ? '1' : '0'].join('-');
 }

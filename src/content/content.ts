@@ -430,6 +430,7 @@ export class ContentHandler {
         case 'readingOnly':
         case 'showKanjiComponents':
         case 'showPriority':
+        case 'showRomaji':
         case 'tabDisplay':
           if (this.isTopMostWindow()) {
             this.updatePopup();
@@ -456,23 +457,6 @@ export class ContentHandler {
 
         case 'handedness':
           this.puck?.setHandedness(value);
-          break;
-
-        case 'showRomaji':
-          // Enabling romaji currently means we need to re-run the lookup
-          if (
-            this.isTopMostWindow() &&
-            this.currentLookupParams &&
-            this.currentTargetProps
-          ) {
-            const lookupParams: Parameters<typeof this.lookupText>[0] = {
-              dictMode: 'default',
-              ...this.currentLookupParams,
-              targetProps: this.currentTargetProps,
-            };
-
-            void this.lookupText(lookupParams);
-          }
           break;
 
         case 'popupInteractive':
@@ -1747,6 +1731,7 @@ export class ContentHandler {
       includeLessCommonHeadwords: this.config.copyHeadwords !== 'common',
       kanjiReferences: this.config.kanjiReferences,
       showKanjiComponents: this.config.showKanjiComponents,
+      showRomaji: this.config.showRomaji,
     });
 
     void this.copyString(textToCopy!, copyType);
@@ -2004,7 +1989,6 @@ export class ContentHandler {
     this.isPopupExpanded = false;
 
     const queryResult = await query(text, {
-      includeRomaji: this.config.showRomaji,
       metaMatchLen: meta?.matchLen,
       wordLookup,
       updateQueryResult: (queryResult: QueryResult | null) => {
@@ -2301,6 +2285,7 @@ export class ContentHandler {
       showDefinitions: !this.config.readingOnly,
       showKanjiComponents: this.config.showKanjiComponents,
       showPriority: this.config.showPriority,
+      showRomaji: this.config.showRomaji,
       switchDictionaryKeys: this.config.keys.nextDictionary,
       tabDisplay: this.config.tabDisplay,
       waniKaniVocabDisplay: this.config.waniKaniVocabDisplay,

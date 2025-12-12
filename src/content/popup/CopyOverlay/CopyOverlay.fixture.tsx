@@ -21,8 +21,14 @@ const KOTOBA: QueryResult = {
           { ent: '辞', i: ['rK'], match: false },
         ],
         r: [
-          { ent: 'ことば', p: ['i1', 'n1', 'nf01'], a: 3, match: true },
-          { ent: 'けとば', app: 1, i: ['ok'], match: true },
+          {
+            ent: 'ことば',
+            romaji: 'kotoba',
+            p: ['i1', 'n1', 'nf01'],
+            a: 3,
+            match: true,
+          },
+          { ent: 'けとば', romaji: 'ketoba', app: 1, i: ['ok'], match: true },
         ],
         s: [
           {
@@ -72,8 +78,8 @@ const KOTOBA: QueryResult = {
         id: 1956230,
         k: [{ ent: '言', p: ['n1', 'nf06'], match: true, matchRange: [0, 1] }],
         r: [
-          { ent: 'げん', p: ['n1', 'nf06'], a: 1, match: true },
-          { ent: 'こと', a: 2, match: true },
+          { ent: 'げん', romaji: 'gen', p: ['n1', 'nf06'], a: 1, match: true },
+          { ent: 'こと', romaji: 'koto', a: 2, match: true },
         ],
         s: [
           {
@@ -277,6 +283,7 @@ export default {
       result={KOTOBA}
       series="words"
       showKanjiComponents
+      showRomaji={false}
     />
   ),
 };

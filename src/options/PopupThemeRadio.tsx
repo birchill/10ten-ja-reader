@@ -117,19 +117,22 @@ const demoEntry: WordResult = {
       matchRange: [0, 2],
     },
   ],
-  r: [{ ent: 'りかい', p: ['i1', 'n1', 'nf02'], a: 1, match: true }],
+  r: [
+    {
+      ent: 'りかい',
+      romaji: 'rikai',
+      p: ['i1', 'n1', 'nf02'],
+      a: 1,
+      match: true,
+    },
+  ],
   s: [{ g: [{ str: 'understanding' }], pos: ['n', 'vt'], match: true }],
-  romaji: ['rikai'],
   matchLen: 2,
 };
 
 function PopupPreview(props: PopupPreviewProps) {
   const themeClass = useThemeClass(props.theme);
-
   const entryData = { ...demoEntry };
-  if (!props.showRomaji) {
-    delete entryData.romaji;
-  }
 
   return (
     <div
@@ -149,6 +152,7 @@ function PopupPreview(props: PopupPreviewProps) {
             posDisplay: props.posDisplay,
             readingOnly: !props.showDefinitions,
             showPriority: props.showPriority,
+            showRomaji: props.showRomaji,
             waniKaniVocabDisplay: props.showWaniKaniLevel
               ? 'show-matches'
               : 'hide',

@@ -27,6 +27,7 @@ export function getTextToCopy({
   includePartOfSpeech = true,
   kanjiReferences = [] as Array<ReferenceAbbreviation>,
   showKanjiComponents = true,
+  showRomaji = false,
 }: {
   entry: CopyEntry;
   copyType: CopyType;
@@ -36,6 +37,7 @@ export function getTextToCopy({
   includePartOfSpeech?: boolean;
   kanjiReferences?: Array<ReferenceAbbreviation>;
   showKanjiComponents?: boolean;
+  showRomaji?: boolean;
 }): string {
   switch (copyType) {
     case 'entry':
@@ -46,6 +48,7 @@ export function getTextToCopy({
         includePartOfSpeech,
         kanjiReferences,
         showKanjiComponents,
+        showRomaji,
       });
 
     case 'tab':
@@ -56,6 +59,7 @@ export function getTextToCopy({
         includePartOfSpeech,
         kanjiReferences,
         showKanjiComponents,
+        showRomaji,
       });
 
     case 'word':
@@ -104,6 +108,7 @@ export function getEntryToCopy(
     includePartOfSpeech = true,
     kanjiReferences = [] as Array<ReferenceAbbreviation>,
     showKanjiComponents = true,
+    showRomaji = false,
   }: {
     getMessage: TranslateFunctionType;
     includeAllSenses?: boolean;
@@ -111,6 +116,7 @@ export function getEntryToCopy(
     includePartOfSpeech?: boolean;
     kanjiReferences?: Array<ReferenceAbbreviation>;
     showKanjiComponents?: boolean;
+    showRomaji?: boolean;
   }
 ): string {
   let result: string;
@@ -123,15 +129,16 @@ export function getEntryToCopy(
               includeLessCommonHeadwords,
             }).map((k) => k.ent)
           : [];
-        const kanaHeadwords = filterRelevantKanaHeadwords(entry.data.r, {
+        const matchingReadings = filterRelevantKanaHeadwords(entry.data.r, {
           includeLessCommonHeadwords,
-        }).map((r) => r.ent);
+        });
+        const kanaHeadwords = matchingReadings.map((r) => r.ent);
 
         result = kanjiHeadwords.length
           ? `${kanjiHeadwords.join(', ')} [${kanaHeadwords.join(', ')}]`
           : kanaHeadwords.join(', ');
-        if (entry.data.romaji?.length) {
-          result += ` (${entry.data.romaji.join(', ')})`;
+        if (showRomaji && matchingReadings.length) {
+          result += ` (${matchingReadings.map((r) => r.romaji).join(', ')})`;
         }
 
         result +=
@@ -396,6 +403,7 @@ export function getFieldsToCopy(
     includePartOfSpeech = true,
     kanjiReferences = [] as Array<ReferenceAbbreviation>,
     showKanjiComponents = true,
+    showRomaji = false,
   }: {
     getMessage: TranslateFunctionType;
     includeAllSenses?: boolean;
@@ -403,37 +411,37 @@ export function getFieldsToCopy(
     includePartOfSpeech?: boolean;
     kanjiReferences?: Array<ReferenceAbbreviation>;
     showKanjiComponents?: boolean;
+    showRomaji?: boolean;
   }
 ): string {
   let result: string;
 
   switch (entry.type) {
     case 'word':
-      result = entry.data.k
-        ? filterRelevantKanjiHeadwords(entry.data.k, {
-            includeLessCommonHeadwords,
-          })
-            .map((k) => k.ent)
-            .join('; ')
-        : '';
-      result +=
-        '\t' +
-        filterRelevantKanaHeadwords(entry.data.r, {
+      {
+        result = entry.data.k
+          ? filterRelevantKanjiHeadwords(entry.data.k, {
+              includeLessCommonHeadwords,
+            })
+              .map((k) => k.ent)
+              .join('; ')
+          : '';
+        const matchingReadings = filterRelevantKanaHeadwords(entry.data.r, {
           includeLessCommonHeadwords,
-        })
-          .map((r) => r.ent)
-          .join('; ');
-      if (entry.data.romaji?.length) {
-        result += '\t' + entry.data.romaji.join('; ');
-      }
-
-      result +=
-        '\t' +
-        serializeDefinition(entry.data, {
-          getMessage,
-          includeAllSenses,
-          includePartOfSpeech,
         });
+        result += '\t' + matchingReadings.map((r) => r.ent).join('; ');
+        if (showRomaji) {
+          result += '\t' + matchingReadings.map((r) => r.romaji).join('; ');
+        }
+
+        result +=
+          '\t' +
+          serializeDefinition(entry.data, {
+            getMessage,
+            includeAllSenses,
+            includePartOfSpeech,
+          });
+      }
       break;
 
     case 'name':

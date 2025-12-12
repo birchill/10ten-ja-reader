@@ -396,18 +396,13 @@ function notifyDbListeners(specifiedListener?: Runtime.Port) {
 
 async function searchWords({
   input,
-  includeRomaji,
   abortSignal,
 }: SearchRequest & {
   abortSignal: AbortSignal;
 }): Promise<SearchWordsResult | null> {
   await dbReady;
 
-  const [words, dbStatus] = await jpdictSearchWords({
-    abortSignal,
-    input,
-    includeRomaji,
-  });
+  const [words, dbStatus] = await jpdictSearchWords({ abortSignal, input });
 
   return { words, dbStatus };
 }
@@ -581,12 +576,7 @@ browser.runtime.onMessage.addListener(
           input: 'x'.repeat(request.input.length),
         });
         return dbReady
-          .then(() =>
-            translate({
-              text: request.input,
-              includeRomaji: request.includeRomaji,
-            })
-          )
+          .then(() => translate(request.input))
           .catch((e) => {
             if (isAbortError(e)) {
               return 'aborted';

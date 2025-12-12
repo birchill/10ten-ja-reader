@@ -3,10 +3,7 @@ import * as s from 'superstruct';
 
 import { PopupStateSchema } from '../content/popup-state';
 
-const SearchRequestSchema = s.type({
-  input: s.string(),
-  includeRomaji: s.optional(s.boolean()),
-});
+const SearchRequestSchema = s.type({ input: s.string() });
 
 export type SearchRequest = s.Infer<typeof SearchRequestSchema>;
 
@@ -54,10 +51,7 @@ export const BackgroundRequestSchema = discriminator('type', {
     day: s.optional(s.number()),
   }),
   toggleDefinition: s.type({}),
-  translate: s.type({
-    input: s.string(),
-    includeRomaji: s.optional(s.boolean()),
-  }),
+  translate: s.type({ input: s.string() }),
 
   //
   // Requests to be forwarded to different frames
