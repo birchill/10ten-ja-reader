@@ -47,7 +47,15 @@ describe('getWordToCopy', () => {
         data: {
           id: 1,
           k: [{ ent: '理解', match: true, p: ['i1', 'n1', 'nf02'] }],
-          r: [{ ent: 'りかい', match: true, p: ['i1', 'n1', 'nf02'], a: 1 }],
+          r: [
+            {
+              ent: 'りかい',
+              romaji: 'rikai',
+              match: true,
+              p: ['i1', 'n1', 'nf02'],
+              a: 1,
+            },
+          ],
           s: [
             {
               pos: ['n', 'vs'],
@@ -60,7 +68,6 @@ describe('getWordToCopy', () => {
               match: true,
             },
           ],
-          romaji: ['rikai'],
           matchLen: 2,
         },
       })
@@ -83,7 +90,15 @@ describe('getWordToCopy', () => {
             { ent: '撰ぶ', i: ['oK'], match: false },
             { ent: '択ぶ', i: ['oK'], match: false },
           ],
-          r: [{ ent: 'えらぶ', p: ['i1', 'n1', 'nf02'], a: 2, match: true }],
+          r: [
+            {
+              ent: 'えらぶ',
+              romaji: 'erabu',
+              p: ['i1', 'n1', 'nf02'],
+              a: 2,
+              match: true,
+            },
+          ],
           s: [
             {
               g: [{ str: 'to choose' }, { str: 'to select' }],
@@ -105,7 +120,15 @@ describe('getWordToCopy', () => {
         data: {
           id: 1,
           k: [{ ent: '理解', match: true, p: ['i1', 'n1', 'nf02'] }],
-          r: [{ ent: 'りかい', match: true, p: ['i1', 'n1', 'nf02'], a: 1 }],
+          r: [
+            {
+              ent: 'りかい',
+              romaji: 'rikai',
+              match: true,
+              p: ['i1', 'n1', 'nf02'],
+              a: 1,
+            },
+          ],
           s: [
             {
               pos: ['n', 'vs'],
@@ -118,7 +141,6 @@ describe('getWordToCopy', () => {
               match: true,
             },
           ],
-          romaji: ['rikai'],
           matchLen: 2,
         },
       })
@@ -139,6 +161,7 @@ describe('getWordToCopy', () => {
           r: [
             {
               ent: 'ひきさく',
+              romaji: 'hikisaku',
               p: ['i1'],
               a: 3,
               match: true,
@@ -183,7 +206,15 @@ describe('getWordToCopy', () => {
             { ent: '引裂く', match: false },
             { ent: '引きさく', match: true, i: ['sK'], matchRange: [0, 4] },
           ],
-          r: [{ ent: 'ひきさく', p: ['i1'], a: 3, match: true }],
+          r: [
+            {
+              ent: 'ひきさく',
+              romaji: 'hikisaku',
+              p: ['i1'],
+              a: 3,
+              match: true,
+            },
+          ],
           s: [
             {
               g: [
@@ -219,9 +250,20 @@ describe('getWordToCopy', () => {
           id: 1037940,
           k: [],
           r: [
-            { ent: 'カネロニ', a: 0, match: false, matchRange: [0, 4] },
-            { ent: 'カネローニ', match: false },
-            { ent: 'カネローニー', match: true, i: ['sk'] },
+            {
+              ent: 'カネロニ',
+              romaji: 'kaneroni',
+              a: 0,
+              match: false,
+              matchRange: [0, 4],
+            },
+            { ent: 'カネローニ', romaji: 'kanero-ni', match: false },
+            {
+              ent: 'カネローニー',
+              romaji: 'kanero-ni-',
+              match: true,
+              i: ['sk'],
+            },
           ],
           s: [
             {
@@ -290,13 +332,20 @@ describe('getEntryToCopy', () => {
           data: {
             id: 1,
             k: [{ ent: '韓国語', p: ['s1'], match: true }],
-            r: [{ ent: 'かんこくご', p: ['s1'], a: 0, match: true }],
+            r: [
+              {
+                ent: 'かんこくご',
+                romaji: 'kankokugo',
+                p: ['s1'],
+                a: 0,
+                match: true,
+              },
+            ],
             s: [{ pos: ['n'], g: [{ str: 'Korean (language)' }], match: true }],
-            romaji: ['kankokugo'],
             matchLen: 3,
           },
         },
-        { getMessage }
+        { getMessage, showRomaji: true }
       )
     ).toEqual('韓国語 [かんこくご] (kankokugo)\n(n) Korean (language)');
   });
@@ -309,7 +358,15 @@ describe('getEntryToCopy', () => {
           data: {
             id: 1,
             k: [],
-            r: [{ ent: 'ホルモン', p: ['g1'], a: 1, match: true }],
+            r: [
+              {
+                ent: 'ホルモン',
+                romaji: 'horumon',
+                p: ['g1'],
+                a: 1,
+                match: true,
+              },
+            ],
             s: [
               {
                 g: [{ str: 'hormone' }],
@@ -343,7 +400,7 @@ describe('getEntryToCopy', () => {
           data: {
             id: 1,
             k: [{ ent: '虎嘯', match: true }],
-            r: [{ ent: 'こしょう', a: 0, match: true }],
+            r: [{ ent: 'こしょう', romaji: 'koshou', a: 0, match: true }],
             s: [
               {
                 g: [{ str: "tiger's howling" }],
@@ -386,6 +443,7 @@ describe('getEntryToCopy', () => {
             r: [
               {
                 ent: 'ひきさく',
+                romaji: 'hikisaku',
                 p: ['i1'],
                 a: 3,
                 match: true,
@@ -432,9 +490,20 @@ describe('getEntryToCopy', () => {
             id: 1037940,
             k: [],
             r: [
-              { ent: 'カネロニ', a: 0, match: false, matchRange: [0, 4] },
-              { ent: 'カネローニ', match: false },
-              { ent: 'カネローニー', match: true, i: ['sk'] },
+              {
+                ent: 'カネロニ',
+                romaji: 'kaneroni',
+                a: 0,
+                match: false,
+                matchRange: [0, 4],
+              },
+              { ent: 'カネローニ', romaji: 'kanero-ni', match: false },
+              {
+                ent: 'カネローニー',
+                romaji: 'kanero-ni-',
+                match: true,
+                i: ['sk'],
+              },
             ],
             s: [
               {
@@ -475,7 +544,13 @@ describe('getEntryToCopy', () => {
               { ent: '落付く', i: ['sK'], match: false },
             ],
             r: [
-              { ent: 'おちつく', p: ['i1', 'n2', 'nf36'], a: 0, match: true },
+              {
+                ent: 'おちつく',
+                romaji: 'ochitsuku',
+                p: ['i1', 'n2', 'nf36'],
+                a: 0,
+                match: true,
+              },
             ],
             s: [
               {
@@ -674,7 +749,15 @@ describe('getFieldsToCopy', () => {
           data: {
             id: 1,
             k: [{ ent: '韓国', match: true, p: ['n1', 'nf01'] }],
-            r: [{ ent: 'かんこく', match: true, p: ['n1', 'nf01'], a: 0 }],
+            r: [
+              {
+                ent: 'かんこく',
+                romaji: 'kankoku',
+                match: true,
+                p: ['n1', 'nf01'],
+                a: 0,
+              },
+            ],
             s: [
               {
                 pos: ['n', 'adj-no'],
@@ -689,11 +772,10 @@ describe('getFieldsToCopy', () => {
                 match: true,
               },
             ],
-            romaji: ['kankoku'],
             matchLen: 2,
           },
         },
-        { getMessage }
+        { getMessage, showRomaji: true }
       )
     ).toEqual(
       '韓国\tかんこく\tkankoku\t(1) (n,adj-no) (abbr) South Korea; Republic of Korea (2) (n,adj-no) (abbr) Korean Empire (1897-1910)'
@@ -715,6 +797,7 @@ describe('getFieldsToCopy', () => {
             r: [
               {
                 ent: 'ひきさく',
+                romaji: 'hikisaku',
                 p: ['i1'],
                 a: 3,
                 match: true,
@@ -761,9 +844,20 @@ describe('getFieldsToCopy', () => {
             id: 1037940,
             k: [],
             r: [
-              { ent: 'カネロニ', a: 0, match: false, matchRange: [0, 4] },
-              { ent: 'カネローニ', match: false },
-              { ent: 'カネローニー', match: true, i: ['sk'] },
+              {
+                ent: 'カネロニ',
+                romaji: 'kaneroni',
+                a: 0,
+                match: false,
+                matchRange: [0, 4],
+              },
+              { ent: 'カネローニ', romaji: 'kanero-ni', match: false },
+              {
+                ent: 'カネローニー',
+                romaji: 'kanero-ni-',
+                match: true,
+                i: ['sk'],
+              },
             ],
             s: [
               {
@@ -804,7 +898,13 @@ describe('getFieldsToCopy', () => {
               { ent: '落付く', i: ['sK'], match: false },
             ],
             r: [
-              { ent: 'おちつく', p: ['i1', 'n2', 'nf36'], a: 0, match: true },
+              {
+                ent: 'おちつく',
+                romaji: 'ochitsuku',
+                p: ['i1', 'n2', 'nf36'],
+                a: 0,
+                match: true,
+              },
             ],
             s: [
               {

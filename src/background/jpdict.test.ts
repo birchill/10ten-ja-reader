@@ -214,10 +214,7 @@ describe('searchWords', () => {
   });
 
   it('finds an exact match', async () => {
-    const [result] = await searchWords({
-      input: '蛋白質',
-      includeRomaji: true,
-    });
+    const [result] = await searchWords({ input: '蛋白質' });
 
     expect(result!.matchLen).toBe(3); // 3 characters long
     expect(result!.data.length).toBeGreaterThanOrEqual(1);
@@ -226,7 +223,7 @@ describe('searchWords', () => {
       match: true,
       pos: ['n'],
     });
-    expect(result!.data[0].romaji).toContain('tanpakushitsu');
+    expect(result!.data[0].r[0].romaji).toEqual('tanpakushitsu');
   });
 
   it('finds a match partially using katakana', async () => {
@@ -510,7 +507,7 @@ describe('searchWords', () => {
 
 describe('translate', () => {
   it('translates sentences', async () => {
-    const result = await translate({ text: '期間限定発売 秋の膳' });
+    const result = await translate('期間限定発売 秋の膳');
     expect(result!.textLen).toBe(10); // 10 characters including the space
     expect(result!.data.length).toBe(5);
     expect(result!.more).toBe(false);

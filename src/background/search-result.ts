@@ -4,6 +4,8 @@ import type {
   KanjiResult,
 } from '@birchill/jpdict-idb';
 
+import type { Overwrite } from '../utils/type-helpers';
+
 import type { Reason } from './deinflect';
 
 // Words
@@ -14,9 +16,13 @@ export type CandidateWordResult = DictionaryWordResult & {
   reasonChains?: Array<Array<Reason>>;
 };
 
-export type WordResult = DictionaryWordResult & {
+type ReadingWithRomaji = DictionaryWordResult['r'][number] & { romaji: string };
+
+export type WordResult = Overwrite<
+  DictionaryWordResult,
+  { r: Array<ReadingWithRomaji> }
+> & {
   reasonChains?: Array<Array<Reason>>;
-  romaji?: Array<string>;
   matchLen: number;
   sourceOffset?: number;
 };
