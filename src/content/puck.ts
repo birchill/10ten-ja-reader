@@ -73,8 +73,9 @@ interface ClickStateBase<T extends string> {
   kind: T;
 }
 
-interface ClickStateWithClickTimeout<T extends string>
-  extends ClickStateBase<T> {
+interface ClickStateWithClickTimeout<
+  T extends string,
+> extends ClickStateBase<T> {
   singleClickTimeout: number;
 }
 
@@ -87,8 +88,9 @@ function clickStateHasSingleClickTimeout<T extends ClickState['kind']>(
   );
 }
 
-interface ClickStateWithDoubleClickTimeout<T extends string>
-  extends ClickStateBase<T> {
+interface ClickStateWithDoubleClickTimeout<
+  T extends string,
+> extends ClickStateBase<T> {
   doubleClickTimeout: number;
 }
 
@@ -109,8 +111,9 @@ function clearClickTimeout(clickState: ClickState) {
   }
 }
 
-interface ClickStateWithClickAndHoldTimeout<T extends string>
-  extends ClickStateBase<T> {
+interface ClickStateWithClickAndHoldTimeout<
+  T extends string,
+> extends ClickStateBase<T> {
   clickAndHoldTimeout: number;
 }
 
