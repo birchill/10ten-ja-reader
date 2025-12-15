@@ -306,11 +306,24 @@ export default class AllTabManager implements TabManager {
       return;
     }
 
-    browser.tabs
-      .sendMessage(tabId, { ...message, frame: 'top' }, { frameId })
-      .catch(() => {
-        // Probably just a stale frameId
-      });
+    // Despite the above null check, we have sometimes seen Firefox
+    // synchronously throwing a TypeError here with the following message:
+    //
+    // "Type error for parameter options (Error processing frameId: Expected
+    // integer instead of null) for tabs.sendMessage."
+    try {
+      browser.tabs
+        .sendMessage(tabId, { ...message, frame: 'top' }, { frameId })
+        .catch(() => {
+          // Probably just a stale frameId
+        });
+    } catch (e) {
+      Bugsnag.leaveBreadcrumb(
+        `frameId when sending message to top frame: ${frameId}`,
+        { 'frameId type': typeof frameId }
+      );
+      throw e;
+    }
   }
 
   private getTopFrameId(tabId: number): number | null {
