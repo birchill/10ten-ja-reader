@@ -1,5 +1,6 @@
 /// <reference path="../common/constants.d.ts" />
 /// <reference path="./mail-extensions.d.ts" />
+import Bugsnag from '@birchill/bugsnag-zero';
 import { allMajorDataSeries } from '@birchill/jpdict-idb';
 import type { Action } from 'webextension-polyfill';
 import browser from 'webextension-polyfill';
@@ -211,8 +212,8 @@ async function setIcon(iconFilename: string, tabId?: number): Promise<void> {
     // writing) the Promise returned by setIcon might simply never resolve.
     // No exception is thrown, it just doesn't resolve.
     //
-    // As a result, if we await setIcon we'll by waiting for a long time and all
-    // the while, subsequent calls to updateBrowserAction while see there's an
+    // As a result, if we await setIcon we'll be waiting for a long time and all
+    // the while, subsequent calls to updateBrowserAction will see there's an
     // ongoing call and just queue up their parameters meaning that the end
     // result is that the icon never updates.
     //
@@ -220,7 +221,21 @@ async function setIcon(iconFilename: string, tabId?: number): Promise<void> {
     // really only need to wait on it for Chrome/Edge anyway since setIcon is
     // not FIFO there.
     if (isSafari()) {
-      void action.setIcon({ ...details, tabId });
+      // We've been observing errors from Safari of the form:
+      //
+      //   Invalid call to action.setIcon(). Tab not found.
+      //
+      // I'm not sure if they're being thrown synchronously or as a rejected
+      // promise so we add some logging here to catch these.
+      try {
+        action.setIcon({ ...details, tabId }).catch((error) => {
+          void Bugsnag.notify(error, {
+            metadata: { tabId, errorMode: 'async' },
+          });
+        });
+      } catch (error) {
+        void Bugsnag.notify(error, { metadata: { tabId, errorMode: 'sync' } });
+      }
     } else {
       await action.setIcon({ ...details, tabId });
     }
