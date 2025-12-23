@@ -21,7 +21,7 @@ export const MAX_ALT_TITLE_JP_CONTEXT_LENGTH = 500;
 
 // Max translate input length (background side).
 //
-// This is a defense in depth cap we in case the content process doesn't
+// This is a defense in depth cap in case the content process doesn't
 // sufficiently trim the input.
 export const MAX_TRANSLATE_INPUT_LENGTH =
   MAX_NON_JP_PREFIX_LENGTH + MAX_ALT_TITLE_JP_CONTEXT_LENGTH;
