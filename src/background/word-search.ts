@@ -1,4 +1,3 @@
-import Bugsnag from '@birchill/bugsnag-zero';
 import type { PartOfSpeech } from '@birchill/jpdict-idb';
 import { AbortError } from '@birchill/jpdict-idb';
 import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
@@ -66,36 +65,9 @@ export async function wordSearch({
       variations.push(...expandChoon(input));
 
       // See if there are any 旧字体 we can convert to 新字体
-      try {
-        const toNew = kyuujitaiToShinjitai(input);
-        if (toNew !== input) {
-          variations.push(toNew);
-        }
-      } catch (error) {
-        // We've been seeing RangeErrors arising from the call to
-        // kyuujitaiToShinjitai above due to where it calls String.fromCodePoint:
-        //
-        // https://github.com/birchill/normal-jp/blob/c1ab84cf3b8d4f5ac98bea009a0706b6bf2a3b3e/src/kyuujitai.ts#L19
-        //
-        // MDN[1] says:
-        //
-        // "The consequences of calling a function with too many arguments (that
-        // is, more than tens of thousands of arguments) is unspecified and
-        // varies across engines. (The JavaScriptCore engine has a hard-coded
-        // argument limit of 65536.) Most engines throw an exception
-        //
-        // [1] https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply#using_apply_and_built-in_functions
-        //
-        // That would suggest we're passing a string with 10,000s of characters
-        // which seems wrong. We report the input for now so we can try to
-        // diagnose what's going on.
-        if (error instanceof RangeError) {
-          void Bugsnag.notify(error, {
-            metadata: { input, 'input length': input.length },
-          });
-        } else {
-          void Bugsnag.notify(error);
-        }
+      const toNew = kyuujitaiToShinjitai(input);
+      if (toNew !== input) {
+        variations.push(toNew);
       }
     }
 

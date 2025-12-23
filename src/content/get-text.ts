@@ -1,3 +1,8 @@
+import {
+  MAX_ALT_TITLE_JP_CONTEXT_LENGTH,
+  MAX_NON_JP_PREFIX_LENGTH,
+} from '../common/limits';
+import { japaneseChar } from '../utils/char-range';
 import type { Point } from '../utils/geometry';
 import { bboxIncludesPoint } from '../utils/geometry';
 import {
@@ -140,9 +145,10 @@ export function getTextAtPoint({
   const elem = elements[0];
   if (elem) {
     const text = getTextFromRandomElement({ elem, matchImages, matchText });
-    if (text) {
+    const trimmedText = text ? trimRandomElementText(text) : null;
+    if (trimmedText) {
       const result = {
-        text,
+        text: trimmedText,
         textRange: null,
         startElement: elem,
         sourceContext: null,
@@ -286,6 +292,22 @@ function getTextFromRandomElement({
   }
 
   return null;
+}
+
+function trimRandomElementText(text: string): string | null {
+  const firstJapaneseIndex = text.search(japaneseChar);
+  if (
+    firstJapaneseIndex === -1 ||
+    firstJapaneseIndex > MAX_NON_JP_PREFIX_LENGTH
+  ) {
+    return null;
+  }
+
+  const maxEnd = Math.min(
+    text.length,
+    firstJapaneseIndex + MAX_ALT_TITLE_JP_CONTEXT_LENGTH
+  );
+  return text.slice(0, maxEnd);
 }
 
 function hasTitleAttribute(elem: Element): elem is HTMLElement {
