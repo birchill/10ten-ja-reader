@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+## [1.26.1] - 2025-12-23
+
 - Fixed handling of long alt text
   ([#2690](https://github.com/birchill/10ten-ja-reader/pull/2690)).
 - Made romaji readings correspond to actually shown romaji
@@ -1298,7 +1300,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.26.0...HEAD
+[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.26.1...HEAD
+[1.26.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.26.0...v1.26.1
 [1.26.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.25.1...v1.26.0
 [1.25.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.25.0...v1.25.1
 [1.25.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.24.2...v1.25.0
