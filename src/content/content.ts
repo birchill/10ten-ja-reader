@@ -57,6 +57,7 @@ import type {
 } from '../common/content-config-params';
 import type { CopyType } from '../common/copy-keys';
 import { CopyKeys } from '../common/copy-keys';
+import { MAX_LOOKUP_LENGTH } from '../common/limits';
 import { isEditableNode, isInteractiveElement } from '../utils/dom-utils';
 import type { MarginBox, Point, Rect } from '../utils/geometry';
 import {
@@ -130,15 +131,6 @@ const enum HoldToShowKeyType {
   Images = 1 << 1,
   All = Text | Images,
 }
-
-// This should be enough for most (but not all) entries for now.
-//
-// See https://github.com/birchill/10ten-ja-reader/issues/319#issuecomment-655545971
-// for a snapshot of the entry lengths by frequency.
-//
-// Once we have switched all databases to IndexedDB, we should investigate the
-// performance impact of increasing this further.
-export const MAX_LOOKUP_LENGTH = 16;
 
 export class ContentHandler {
   // The content script is injected into every frame in a page but we delegate

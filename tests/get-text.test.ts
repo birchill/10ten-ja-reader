@@ -1,5 +1,9 @@
 import { assert } from 'chai';
 
+import {
+  MAX_ALT_TITLE_JP_CONTEXT_LENGTH,
+  MAX_NON_JP_PREFIX_LENGTH,
+} from '../src/common/limits';
 import type { GetTextAtPointResult } from '../src/content/get-text';
 import { clearPreviousResult, getTextAtPoint } from '../src/content/get-text';
 import { empty } from '../src/utils/dom-utils';
@@ -1570,6 +1574,41 @@ describe('getTextAtPoint', () => {
     });
 
     assertTextResultEqual(result, 'あいうえお');
+  });
+
+  it('should ignore a title attribute with no Japanese text', () => {
+    testDiv.innerHTML = '<img src="" title="Just some English text">';
+    const imgNode = testDiv.firstChild as HTMLImageElement;
+    imgNode.style.width = '200px';
+    imgNode.style.height = '200px';
+    const bbox = imgNode.getBoundingClientRect();
+
+    const result = getTextAtPoint({
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
+    });
+
+    assert.strictEqual(result, null);
+  });
+
+  it('should trim long title attributes to a bounded length', () => {
+    const prefix = 'a'.repeat(MAX_NON_JP_PREFIX_LENGTH);
+    const title =
+      prefix + '日本語' + 'b'.repeat(MAX_ALT_TITLE_JP_CONTEXT_LENGTH + 200);
+    testDiv.innerHTML = `<img src="" title="${title}">`;
+    const imgNode = testDiv.firstChild as HTMLImageElement;
+    imgNode.style.width = '200px';
+    imgNode.style.height = '200px';
+    const bbox = imgNode.getBoundingClientRect();
+
+    const result = getTextAtPoint({
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
+    });
+
+    const expected = title.slice(
+      0,
+      MAX_NON_JP_PREFIX_LENGTH + MAX_ALT_TITLE_JP_CONTEXT_LENGTH
+    );
+    assertTextResultEqual(result, expected);
   });
 
   it('should pull the text out of a title attribute on an image even when matchText is false', () => {

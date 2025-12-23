@@ -73,7 +73,8 @@ export const WordTable = (props: WordTableProps) => {
         <div
           class={classes(
             'tp:bg-(--title-bg) tp:text-(--title-fg) tp:text-2xs',
-            'tp:-my-2 tp:mb-0.5 tp:py-2 tp:px-4 tp:snap-start tp:scroll-mt-2'
+            'tp:-my-2 tp:mb-0.5 tp:py-2 tp:px-4 tp:snap-start tp:scroll-mt-2',
+            'tp:truncate'
           )}
           lang="ja"
         >

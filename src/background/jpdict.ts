@@ -15,6 +15,11 @@ import {
 import { kanaToHiragana } from '@birchill/normal-jp';
 import browser from 'webextension-polyfill';
 
+import {
+  MAX_LOOKUP_LENGTH,
+  MAX_TRANSLATE_INPUT_LENGTH,
+} from '../common/limits';
+import { japaneseChar } from '../utils/char-range';
 import { normalizeInput } from '../utils/normalize';
 import { JpdictWorkerBackend } from '../worker/jpdict-worker-backend';
 
@@ -356,6 +361,9 @@ export async function searchWords({
 // ---------------------------------------------------------------------------
 
 export async function translate(text: string): Promise<TranslateResult | null> {
+  // Enforce a hard limit on input text in case the content script failed to
+  // trim it sufficiently.
+  text = text.slice(0, MAX_TRANSLATE_INPUT_LENGTH);
   const result: TranslateResult = {
     type: 'translate',
     data: [],
@@ -366,12 +374,20 @@ export async function translate(text: string): Promise<TranslateResult | null> {
   let offset = 0;
 
   while (offset < text.length) {
+    // Skip past any non-Japanese text
+    const nextJapaneseOffset = findNextJapaneseOffset(text, offset);
+    if (nextJapaneseOffset === -1) {
+      break;
+    }
+
+    offset = nextJapaneseOffset;
+
     const [searchResult, dbStatus] = await searchWords({
-      input: text.slice(offset),
+      input: text.slice(offset, offset + MAX_LOOKUP_LENGTH),
       max: 1,
     });
 
-    if (searchResult && searchResult.data) {
+    if (searchResult?.data) {
       if (result.data.length >= WORDS_MAX_ENTRIES) {
         result.more = true;
         break;
@@ -396,6 +412,11 @@ export async function translate(text: string): Promise<TranslateResult | null> {
 
   result.textLen = offset;
   return result;
+}
+
+function findNextJapaneseOffset(text: string, startOffset: number): number {
+  const matchIndex = text.slice(startOffset).search(japaneseChar);
+  return matchIndex === -1 ? -1 : startOffset + matchIndex;
 }
 
 // ---------------------------------------------------------------------------
