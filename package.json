@@ -118,7 +118,7 @@
     "prettier-plugin-packagejson": "2.5.20",
     "prettier-plugin-tailwindcss": "0.7.2",
     "react-cosmos": "7.0.0",
-    "react-cosmos-plugin-boolean-input": "7.0.0",
+    "react-cosmos-plugin-boolean-input": "7.1.0",
     "react-cosmos-plugin-rspack": "2.0.0",
     "release-it": "19.0.6",
     "semver-parser": "4.1.8",
