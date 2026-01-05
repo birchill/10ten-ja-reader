@@ -9,6 +9,7 @@ import {
 } from 'vitest';
 
 import type {
+  GetTextAtPointResult,
   clearPreviousResult as clearPreviousResultFn,
   getTextAtPoint as getTextAtPointFn,
 } from './get-text';
@@ -29,14 +30,19 @@ describe('getTextAtPoint', () => {
   let clearPreviousResult: typeof clearPreviousResultFn;
 
   beforeAll(async () => {
-    previousBrowserObject = globalThis.browser;
-    globalThis.browser = {
-      // Put polyfills for any browser APIs we use in here
-    };
-
-    // Make sure the browser polyfill believes we are in an extension context
+    // Make sure the webextension polyfill believes we are in an extension
+    // context.
     previousChromeObject = globalThis.chrome;
     globalThis.chrome = { runtime: { id: 'test' } };
+
+    // Polyfill any browser APIs we use.
+    //
+    // This is also needed so that the webextension polyfill desn't attempt to
+    // polyfill the browser object.
+    previousBrowserObject = globalThis.browser;
+    globalThis.browser = {
+      // <-- Put polyfills for any browser APIs we use in here
+    };
 
     ({ getTextAtPoint, clearPreviousResult } = await import('./get-text'));
   });
@@ -70,85 +76,31 @@ describe('getTextAtPoint', () => {
       point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
-    // XXX Make up a short-hand custom matcher for this
-    expect(result).toMatchObject({
-      text: 'いうえお',
-      textRange: [{ node: textNode, start: 1, end: 5 }] satisfies TextRange,
-    });
-    // XXX Restore the full functionality of below
-    // assertTextResultEqual(result, 'いうえお', [textNode, 1, 5]);
+    expect(result).toMatchObject(textAtPoint('いうえお', [textNode, 1, 5]));
+    expect(textFromRange(result!.textRange!)).toBe('いうえお');
   });
 });
 
-/*
-function assertTextResultEqual(
-  result: GetTextAtPointResult | null,
+function textAtPoint(
   text: string,
   ...ranges: Array<[Node, number, number]>
-) {
-  assert.isNotNull(result, 'Result should not be null');
-  assert.strictEqual(result.text, text, 'Result text should match');
+): Pick<GetTextAtPointResult, 'text' | 'textRange'> {
+  return { text, textRange: textRange(...ranges) };
+}
 
-  // Title only case
-  if (!ranges.length) {
-    assert.isNull(result.textRange, 'textRange should be null');
-    return;
-  }
+function textRange(...ranges: Array<[Node, number, number]>): TextRange {
+  return ranges.map(([node, start, end]) => ({ node, start, end }));
+}
 
-  assert.isNotNull(result.textRange, 'textRange should NOT be null');
-
-  assert.strictEqual(
-    result.textRange!.length,
-    ranges.length,
-    'number of ranges should match'
-  );
-
-  for (const [i, range] of ranges.entries()) {
-    assert.strictEqual(
-      result.textRange![i].node,
-      range[0],
-      `Range #${i}: node should match`
-    );
-    assert.strictEqual(
-      result.textRange![i].start,
-      range[1],
-      `Range #${i}: start offset should match`
-    );
-    assert.strictEqual(
-      result.textRange![i].end,
-      range[2],
-      `Range #${i}: end offset should match`
-    );
-  }
-
-  // We want to check that a suitable Range object would produce the same text
-  // but we don't create Range objects when the target is an <input> or
-  // <textarea> node.
-  if (
-    result.textRange![0].node instanceof HTMLInputElement ||
-    result.textRange![0].node instanceof HTMLTextAreaElement
-  ) {
-    return;
-  }
-
-  // Consistency check
+function textFromRange(textRange: TextRange): string {
   const range = new Range();
-  range.setStart(result.textRange![0].node, result.textRange![0].start);
-  const lastEndpoint = result.textRange![result.textRange!.length - 1];
+  range.setStart(textRange[0].node, textRange[0].start);
+
+  const lastEndpoint = textRange.at(-1)!;
   range.setEnd(lastEndpoint.node, lastEndpoint.end);
 
-  // If we have ruby text then the range string won't match the text passed so
-  // just skip this check.
-  const containsRuby = (node?: Node) =>
-    node &&
-    node.nodeType === Node.ELEMENT_NODE &&
-    ((node as Element).tagName === 'RUBY' ||
-      (node as Element).querySelector('ruby'));
-  if (!containsRuby(range.commonAncestorContainer)) {
-    assert.strictEqual(range.toString(), text);
-  }
+  return range.toString();
 }
-*/
 
 function getBboxForOffset(node: Node, start: number) {
   const range = new Range();
