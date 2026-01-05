@@ -68,23 +68,28 @@ describe('getTextAtPoint', () => {
   });
 
   it('should find a range in a div', () => {
+    // Arrange
     testDiv.append('あいうえお');
     const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 1);
 
+    // Act
     const result = getTextAtPoint({
       point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
     });
 
+    // Assert
     expect(result).toMatchObject(textAtPoint('いうえお', [textNode, 1, 5]));
     expect(textFromRange(result!.textRange!)).toBe('いうえお');
   });
 
   it('should find a range in a div when the point is part-way through a character', () => {
+    // Arrange
     testDiv.append('あいうえお');
     const textNode = testDiv.firstChild as Text;
     const bbox = getBboxForOffset(textNode, 0);
 
+    // Act
     const result = getTextAtPoint({
       // Add a little extra to make sure we're testing the behavior when we're
       // in the second half of the character.
@@ -94,11 +99,14 @@ describe('getTextAtPoint', () => {
       },
     });
 
+    // Assert
     expect(result).toMatchObject(textAtPoint('あいうえお', [textNode, 0, 5]));
     expect(textFromRange(result!.textRange!)).toBe('あいうえお');
   });
 
   it('should NOT find a range in a div when the point is a long way away (but caretPositionFromPoint lands us in the wrong place)', () => {
+    // Arrange
+
     // Create two divs so we can select the parent div between them
     const div1 = document.createElement('div');
     div1.append('あいうえお');
@@ -119,8 +127,10 @@ describe('getTextAtPoint', () => {
       testDiv
     );
 
+    // Act
     const result = getTextAtPoint({ point: pointToTest });
 
+    // Assert
     expect(result).toBeNull();
   });
 });
