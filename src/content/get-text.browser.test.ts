@@ -79,6 +79,50 @@ describe('getTextAtPoint', () => {
     expect(result).toMatchObject(textAtPoint('いうえお', [textNode, 1, 5]));
     expect(textFromRange(result!.textRange!)).toBe('いうえお');
   });
+
+  it('should find a range in a div when the point is part-way through a character', () => {
+    testDiv.append('あいうえお');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    const result = getTextAtPoint({
+      // Add a little extra to make sure we're testing the behavior when we're
+      // in the second half of the character.
+      point: {
+        x: bbox.left + bbox.width / 2 + 2,
+        y: bbox.top + bbox.height / 2,
+      },
+    });
+
+    expect(result).toMatchObject(textAtPoint('あいうえお', [textNode, 0, 5]));
+    expect(textFromRange(result!.textRange!)).toBe('あいうえお');
+  });
+
+  it('should NOT find a range in a div when the point is a long way away (but caretPositionFromPoint lands us in the wrong place)', () => {
+    // Create two divs so we can select the parent div between them
+    const div1 = document.createElement('div');
+    div1.append('あいうえお');
+
+    const div2 = document.createElement('div');
+    div2.append('あいうえお');
+
+    testDiv.append(div1);
+    testDiv.append(div2);
+
+    // Create some space between them
+    div1.style.marginBottom = '20px';
+
+    // Find the space between them
+    const bbox = div1.getBoundingClientRect();
+    const pointToTest = { x: bbox.left, y: bbox.bottom + 10 };
+    expect(document.elementFromPoint(pointToTest.x, pointToTest.y)).toBe(
+      testDiv
+    );
+
+    const result = getTextAtPoint({ point: pointToTest });
+
+    expect(result).toBeNull();
+  });
 });
 
 function textAtPoint(
