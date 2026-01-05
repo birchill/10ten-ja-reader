@@ -14,28 +14,36 @@ import type {
 } from './get-text';
 import type { TextRange } from './text-range';
 
+declare global {
+  var browser: any;
+  var chrome: any;
+}
+
 describe('getTextAtPoint', () => {
   let testDiv: HTMLDivElement;
 
   let previousChromeObject: any;
+  let previousBrowserObject: any;
+
   let getTextAtPoint: typeof getTextAtPointFn;
   let clearPreviousResult: typeof clearPreviousResultFn;
 
   beforeAll(async () => {
-    // Make sure the browser polyfill believes we are in an extension context
-    // XXX Typings for the following
-    previousChromeObject = (globalThis as any).chrome;
-    (globalThis as any).chrome = { runtime: { id: 'test' } };
+    previousBrowserObject = globalThis.browser;
+    globalThis.browser = {
+      // Put polyfills for any browser APIs we use in here
+    };
 
-    // XXX Once we get the above to work, we should do something similar for
-    // globalThis.browser or else the polyfill will try to polyfill that part.
+    // Make sure the browser polyfill believes we are in an extension context
+    previousChromeObject = globalThis.chrome;
+    globalThis.chrome = { runtime: { id: 'test' } };
 
     ({ getTextAtPoint, clearPreviousResult } = await import('./get-text'));
   });
 
   afterAll(() => {
-    // Clean up the polyfill
-    (globalThis as any).chrome = previousChromeObject;
+    globalThis.browser = previousBrowserObject;
+    globalThis.chrome = previousChromeObject;
   });
 
   beforeEach(async () => {
