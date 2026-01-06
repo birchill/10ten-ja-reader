@@ -46,7 +46,7 @@ jobs:
         if: always()
         with:
           name: test-screenshots
-          path: '**/__screenshots__/*.png'
+          path: '**/__screenshots__/**/*.png'
           if-no-files-found: ignore
           retention-days: 30
 
