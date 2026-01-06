@@ -153,15 +153,8 @@ pnpm test:chromium
 Running a single browser-based test in watch mode:
 
 ```
-npx playwright-test tests/get-text.test.ts --browser firefox --watch
+pnpm test:firefox src/content/get-text.browser.test.ts --watch
 ```
-
-Unfortunately [`playwright-test`](https://github.com/hugomrdias/playwright-test)
-doesn't currently seem to let you configure multiple browsers to run at once.
-
-[`@web/test-runner`](https://modern-web.dev/docs/test-runner/overview/) does but
-it is less diligent about updating the version of Playwright meaning you end up
-testing old browsers.
 
 ## Releasing
 
