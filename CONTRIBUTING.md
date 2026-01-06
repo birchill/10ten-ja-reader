@@ -147,7 +147,7 @@ Browser-based tests only:
 
 ```
 pnpm test:firefox
-pnpm test:chromium
+pnpm test:chrome
 ```
 
 Running a single browser-based test in watch mode:

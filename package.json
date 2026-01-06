@@ -46,7 +46,7 @@
     "start:firefox": "rspack -w",
     "sync-manifest-version": "tsx scripts/sync-manifest-version",
     "test": "vitest run",
-    "test:chromium": "vitest run --project browser --browser chrome",
+    "test:chrome": "vitest run --project browser --browser chrome",
     "test:chromium-legacy": "playwright-test \"tests/**/*.test.ts\"",
     "test:firefox": "vitest run --project browser --browser firefox",
     "test:firefox-legacy": "playwright-test \"tests/**/*.test.ts\" --browser firefox",
