@@ -1589,7 +1589,6 @@ describe('getTextAtPoint', () => {
     const bokuNode = testDiv.querySelector('#boku')!.firstChild as Text;
     const jouNode = testDiv.querySelector('#jou')!.firstChild as Text;
     const bbox = getBboxForOffset(bokuNode, 0);
-    console.log('bbox', bbox);
 
     // Act
     const result = getTextAtPoint({
@@ -1795,7 +1794,7 @@ describe('getTextAtPoint', () => {
     const bbox = textAreaNode.getBoundingClientRect();
 
     // Act
-    const result = getTextAtPoint({ point: { x: bbox.left + 25, y: 5 } });
+    const result = getTextAtPoint({ point: { x: bbox.left + 22, y: 5 } });
 
     // Assert
     expect(result).toMatchObject(textAtPoint('いうえお', [textAreaNode, 1, 5]));
