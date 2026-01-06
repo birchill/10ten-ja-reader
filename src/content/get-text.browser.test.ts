@@ -357,6 +357,583 @@ describe('getTextAtPoint', () => {
     // Assert
     expect(result).toMatchObject(textAtPoint('いうえお', [textNode, 1, 5]));
   });
+
+  it('finds Plex subtitle content', () => {
+    // Arrange
+    //
+    // This doesn't actually properly test Plex subtitle content. In particular,
+    // it doesn't seem to accurately recreate the situation where
+    // document.createPositionFromPoint() fails to pick up `pointer-events:
+    // none` content which is what we observe on the real content. I don't know
+    // why (something to do with abspos?) but it at least covers the hiding of
+    // the overlay element.
+    testDiv.innerHTML = `
+<style>
+.libjass-subs {
+  line-height: 0;
+}
+.libjass-subs, .libjass-subs * {
+  -webkit-animation-fill-mode: both !important;
+  animation-fill-mode: both !important;
+  pointer-events: none;
+}
+.libjass-subs {
+  overflow: hidden;
+}
+</style>
+<div class="PlayerContainer-container-DtCwJl">
+  <div class="Player-fullPlayerContainer-wBDz23">
+    <div class="Subtitles-measure-fffGGG">
+      <div
+        class="Subtitles-renderer-f7uT59 libjass-wrapper"
+        id="id-132"
+        role="alert"
+      >
+        <div
+          class="libjass-subs paused"
+          style="width: 1430px; height: 1013.33px; left: 0px; top: 0px"
+        >
+          <div class="layer layer0">
+            <div class="an an2">
+              <div
+                style="margin: 35.185px 37.24px; min-width: 1355.52px"
+                data-dialogue-id="2-69"
+              >
+                <span style="display: inline-block"
+                  ><span id="testnode" style="font: 48.953px / 56.296px 'Arial', Arial, Helvetica, sans-serif, 'Segoe UI Symbol'; letter-spacing: 0px; opacity: 1; color: rgb(255, 255, 255);">情けなさすぎるわよ</span
+                  ></span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="libjass-font-measure" style="font-family: 'Arial', Arial, Helvetica, sans-serif, 'Segoe UI Symbol'; font-size: 360px;">M</div>
+      </div>
+    </div>
+    <div
+      class="PlayPauseOverlay-overlay-lF71cy PlayPauseOverlay-hiddenCursor-GpErBJ"
+      style="cursor: none; display: block; height: 100%; left: 0; position: absolute; top: 0; width: 100%"
+    ></div>
+  </div>
+</div>`;
+
+    const textNode = testDiv.querySelector('#testnode')!.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(
+      textAtPoint('情けなさすぎるわよ', [textNode, 0, 9])
+    );
+  });
+
+  it('reads shadow DOM content', () => {
+    // Arrange
+
+    // Often custom elements are set to display: contents so we set that here
+    const container = document.createElement('div');
+    container.style.display = 'contents';
+    container.attachShadow({ mode: 'open' });
+    testDiv.append(container);
+
+    container.shadowRoot!.innerHTML = '<div>テスト</div>';
+
+    const textNode = container.shadowRoot!.firstElementChild!
+      .firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(textAtPoint('テスト', [textNode, 0, 3]));
+  });
+
+  it('reads nested shadow DOM content', () => {
+    // Arrange
+    const outerContainer = document.createElement('div');
+    testDiv.append(outerContainer);
+    const outerShadowRoot = outerContainer.attachShadow({ mode: 'open' });
+
+    const innerContainer = document.createElement('div');
+    outerShadowRoot.append(innerContainer);
+    const innerShadowRoot = innerContainer.attachShadow({ mode: 'open' });
+
+    // Add some styles to ensure that we actually copy the styles
+    const styleElem = document.createElement('style');
+    styleElem.append(`
+      sup {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 600;
+        vertical-align: top;
+        top: -1px;
+        margin: 0px 2px;
+        min-width: 14px;
+        height: 14px;
+        border-radius: 3px;
+        text-decoration-color: transparent;
+        outline: transparent solid 1px;
+      }
+    `);
+    innerShadowRoot.append(styleElem);
+
+    // ... and HTML markup
+    const innerElem = document.createElement('div');
+    innerShadowRoot.append(innerElem);
+    innerElem.innerHTML =
+      '<div><div><p><a>今日の天気は曇り、23度です。</a><a href="https://bing.com/search?q=%E4%BB%8A%E6%97%A5%E3%81%AE%E3%81%8A%E5%A4%A9%E6%B0%97" target="_blank"><sup>1</sup></a><a>今日の最高気温は23.49度、最低気温は17.99度です。</a><a href="https://bing.com/search?q=%E4%BB%8A%E6%97%A5%E3%81%AE%E3%81%8A%E5%A4%A9%E6%B0%97" target="_blank"><sup>1</sup></a><a>降水確率は0%です。</a><a href="https://bing.com/search?q=%E4%BB%8A%E6%97%A5%E3%81%AE%E3%81%8A%E5%A4%A9%E6%B0%97" target="_blank"><sup>1</sup></a><a class="target">明日は晴れ、最高気温は23.93度、最低気温は13.13度です。</a></p></div></div>';
+
+    const textNode = innerShadowRoot.querySelector('.target')!
+      .firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 3);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(textAtPoint('晴れ', [textNode, 3, 5]));
+  });
+
+  it('ignores non-Japanese characters', () => {
+    // Arrange
+    testDiv.append('あいabc');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(textAtPoint('あい', [textNode, 0, 2]));
+  });
+
+  it('ignores non-Japanese characters when starting mid-node', () => {
+    // Arrange
+    testDiv.append('abcあいdef');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 3);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(textAtPoint('あい', [textNode, 3, 5]));
+  });
+
+  it('ignores non-Japanese characters even if the first character is such', () => {
+    // Arrange
+    testDiv.append('abcあい');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 2);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toBeNull();
+  });
+
+  it('stops at full-width delimiters', () => {
+    // Arrange
+    testDiv.append('あい。');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(textAtPoint('あい', [textNode, 0, 2]));
+  });
+
+  it('includes halfwidth katakana, rare kanji, compatibility kanji etc.', () => {
+    // Arrange
+    testDiv.append('ｷﾞﾝｺｳ㘆豈');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(textAtPoint('ｷﾞﾝｺｳ㘆豈', [textNode, 0, 7]));
+  });
+
+  it('includes zero-width non-joiner characters', () => {
+    // Arrange
+    testDiv.append('あ\u200cい\u200cう\u200c。');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(
+      textAtPoint('あ\u200cい\u200cう\u200c', [textNode, 0, 6])
+    );
+  });
+
+  it('includes trailing half-width numerals', () => {
+    // Arrange
+    testDiv.append('小1。');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(textAtPoint('小1', [textNode, 0, 2]));
+  });
+
+  it('includes the year when recognizing years', () => {
+    // Arrange
+    testDiv.append('昭和56年に');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(textAtPoint('昭和56年に', [textNode, 0, 6]));
+    expect(result?.meta).toEqual({
+      type: 'era',
+      era: '昭和',
+      reading: 'しょうわ',
+      year: 56,
+      month: undefined,
+      day: undefined,
+      matchLen: 5,
+    });
+  });
+
+  it('includes the year when recognizing years (full-width)', () => {
+    // Arrange
+    testDiv.append('昭和５６年に');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(textAtPoint('昭和５６年に', [textNode, 0, 6]));
+    expect(result?.meta).toEqual({
+      type: 'era',
+      era: '昭和',
+      reading: 'しょうわ',
+      year: 56,
+      month: undefined,
+      day: undefined,
+      matchLen: 5,
+    });
+  });
+
+  it('includes the year when recognizing years (mixed full-width and half-width)', () => {
+    // Arrange
+    testDiv.append('昭和５6年に');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(textAtPoint('昭和５6年に', [textNode, 0, 6]));
+    expect(result?.meta).toEqual({
+      type: 'era',
+      era: '昭和',
+      reading: 'しょうわ',
+      year: 56,
+      month: undefined,
+      day: undefined,
+      matchLen: 5,
+    });
+  });
+
+  it('includes the year when recognizing years and there are spaces', () => {
+    // Arrange
+    // Some publishers like to put spaces around stuffs
+    testDiv.append('昭和 56 年に');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(textAtPoint('昭和 56 年に', [textNode, 0, 8]));
+    expect(result?.meta).toEqual({
+      type: 'era',
+      era: '昭和',
+      reading: 'しょうわ',
+      year: 56,
+      month: undefined,
+      day: undefined,
+      matchLen: 7,
+    });
+  });
+
+  it('includes the year when recognizing years and there is no 年', () => {
+    // Arrange
+    // Who knows, someone might try this...
+    testDiv.append('昭和56に');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(textAtPoint('昭和56に', [textNode, 0, 5]));
+    expect(result?.meta).toEqual({
+      type: 'era',
+      era: '昭和',
+      reading: 'しょうわ',
+      year: 56,
+      month: undefined,
+      day: undefined,
+      matchLen: 4,
+    });
+  });
+
+  it('includes the year when recognizing years and the numbers are in a separate span', () => {
+    // Arrange
+    testDiv.innerHTML = '昭和<span>56</span>年に';
+    const firstTextNode = testDiv.firstChild as Text;
+    const middleTextNode = testDiv.childNodes[1].firstChild as Text;
+    const lastTextNode = testDiv.childNodes[2] as Text;
+    const bbox = getBboxForOffset(firstTextNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(
+      textAtPoint(
+        '昭和56年に',
+        [firstTextNode, 0, 2],
+        [middleTextNode, 0, 2],
+        [lastTextNode, 0, 2]
+      )
+    );
+    expect(textFromRange(result!.textRange!)).toBe('昭和56年に');
+    expect(result?.meta).toEqual({
+      type: 'era',
+      era: '昭和',
+      reading: 'しょうわ',
+      year: 56,
+      month: undefined,
+      day: undefined,
+      matchLen: 5,
+    });
+  });
+
+  it('includes the year when recognizing years and the numbers are in a separate span and there is whitespace too', () => {
+    // Arrange
+    testDiv.innerHTML = '昭和 <span> 56年に</span>';
+    const firstTextNode = testDiv.firstChild as Text;
+    const middleTextNode = testDiv.childNodes[1].firstChild as Text;
+    const bbox = getBboxForOffset(firstTextNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(
+      textAtPoint('昭和  56年に', [firstTextNode, 0, 3], [middleTextNode, 0, 5])
+    );
+    expect(textFromRange(result!.textRange!)).toBe('昭和  56年に');
+    expect(result?.meta).toEqual({
+      type: 'era',
+      era: '昭和',
+      reading: 'しょうわ',
+      year: 56,
+      month: undefined,
+      day: undefined,
+      matchLen: 7,
+    });
+  });
+
+  it('includes the year when recognizing years and era description finishes exactly at the end of a span', () => {
+    // Arrange
+    testDiv.innerHTML = '昭和<span>56年</span>に';
+    const firstTextNode = testDiv.firstChild as Text;
+    const middleTextNode = testDiv.childNodes[1].firstChild as Text;
+    const finalTextNode = testDiv.lastChild as Text;
+    const bbox = getBboxForOffset(firstTextNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(
+      textAtPoint(
+        '昭和56年に',
+        [firstTextNode, 0, 2],
+        [middleTextNode, 0, 3],
+        [finalTextNode, 0, 1]
+      )
+    );
+    expect(textFromRange(result!.textRange!)).toBe('昭和56年に');
+    expect(result?.meta).toEqual({
+      type: 'era',
+      era: '昭和',
+      reading: 'しょうわ',
+      year: 56,
+      month: undefined,
+      day: undefined,
+      matchLen: 5,
+    });
+  });
+
+  it('recognizes 元年 after an era name', () => {
+    // Arrange
+    testDiv.append('令和元年に');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(textAtPoint('令和元年に', [textNode, 0, 5]));
+    expect(result?.meta).toEqual({
+      type: 'era',
+      era: '令和',
+      reading: 'れいわ',
+      year: 0,
+      month: undefined,
+      day: undefined,
+      matchLen: 4,
+    });
+  });
+
+  it('recognizes 元年 after an era name even with interleaving whitespace and spans', () => {
+    // Arrange
+    testDiv.innerHTML = '昭和　<span>元年</span>';
+    const firstTextNode = testDiv.firstChild as Text;
+    const spanTextNode = testDiv.childNodes[1].firstChild as Text;
+    const bbox = getBboxForOffset(firstTextNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(
+      textAtPoint('昭和　元年', [firstTextNode, 0, 3], [spanTextNode, 0, 2])
+    );
+    expect(textFromRange(result!.textRange!)).toBe('昭和　元年');
+    expect(result?.meta).toEqual({
+      type: 'era',
+      era: '昭和',
+      reading: 'しょうわ',
+      year: 0,
+      month: undefined,
+      day: undefined,
+      matchLen: 5,
+    });
+  });
+
+  it('recognizes kanji year numbers when recognizing years', () => {
+    // Arrange
+    testDiv.append('昭和五十六年に');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(
+      textAtPoint('昭和五十六年に', [textNode, 0, 7])
+    );
+    expect(result?.meta).toEqual({
+      type: 'era',
+      era: '昭和',
+      reading: 'しょうわ',
+      year: 56,
+      month: undefined,
+      day: undefined,
+      matchLen: 6,
+    });
+  });
+
+  it('stops at delimiters (even when matching years)', () => {
+    // Arrange
+    testDiv.append('昭和三大馬鹿査定」発言に');
+    const textNode = testDiv.firstChild as Text;
+    const bbox = getBboxForOffset(textNode, 0);
+
+    // Act
+    const result = getTextAtPoint({
+      point: { x: bbox.left, y: bbox.top + bbox.height / 2 },
+    });
+
+    // Assert
+    expect(result).toMatchObject(
+      textAtPoint('昭和三大馬鹿査定', [textNode, 0, 8])
+    );
+    expect(result?.meta).toEqual({
+      type: 'era',
+      era: '昭和',
+      reading: 'しょうわ',
+      year: 3,
+      month: undefined,
+      day: undefined,
+      matchLen: 3,
+    });
+  });
 });
 
 function textAtPoint(
