@@ -1792,9 +1792,21 @@ describe('getTextAtPoint', () => {
 
     makeMonospace(textAreaNode, 20);
     const bbox = textAreaNode.getBoundingClientRect();
+    const testPoint = { x: bbox.left + 25, y: bbox.top + 10 };
+
+    // Add a dot to aid debugging
+    document.body.appendChild(document.createElement('div')).style.cssText = `
+      position: absolute;
+      left: ${testPoint.x - 1}px;
+      top: ${testPoint.y - 1}px;
+      width: 3px;
+      height: 3px;
+      background: red;
+      pointer-events: none;
+    `;
 
     // Act
-    const result = getTextAtPoint({ point: { x: bbox.left + 22, y: 5 } });
+    const result = getTextAtPoint({ point: testPoint });
 
     // Assert
     expect(result).toMatchObject(textAtPoint('いうえお', [textAreaNode, 1, 5]));
