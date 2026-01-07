@@ -70,8 +70,8 @@ importers:
         specifier: 4.1.18
         version: 4.1.18
       '@trivago/prettier-plugin-sort-imports':
-        specifier: 6.0.0
-        version: 6.0.0(prettier@3.7.4)
+        specifier: 6.0.1
+        version: 6.0.1(prettier@3.7.4)
       '@types/archiver':
         specifier: 7.0.0
         version: 7.0.0
@@ -164,7 +164,7 @@ importers:
         version: 2.5.20(prettier@3.7.4)
       prettier-plugin-tailwindcss:
         specifier: 0.7.2
-        version: 0.7.2(@trivago/prettier-plugin-sort-imports@6.0.0(prettier@3.7.4))(prettier-plugin-organize-attributes@1.0.0(prettier@3.7.4))(prettier@3.7.4)
+        version: 0.7.2(@trivago/prettier-plugin-sort-imports@6.0.1(prettier@3.7.4))(prettier-plugin-organize-attributes@1.0.0(prettier@3.7.4))(prettier@3.7.4)
       react-cosmos:
         specifier: 7.1.0
         version: 7.1.0
@@ -1744,8 +1744,8 @@ packages:
   '@tootallnate/quickjs-emscripten@0.23.0':
     resolution: {integrity: sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==}
 
-  '@trivago/prettier-plugin-sort-imports@6.0.0':
-    resolution: {integrity: sha512-Xarx55ow0R8oC7ViL5fPmDsg1EBa1dVhyZFVbFXNtPPJyW2w9bJADIla8YFSaNG9N06XfcklA9O9vmw4noNxkQ==}
+  '@trivago/prettier-plugin-sort-imports@6.0.1':
+    resolution: {integrity: sha512-6B13DCWDfAfh4AEJ43gRgeCSAQmlKG5LHqHzHc0lbUwgBy0rX7o41US+46Fd4XiXBx+JDGEz3NBadCbUls0dUQ==}
     engines: {node: '>= 20'}
     peerDependencies:
       '@vue/compiler-sfc': 3.x
@@ -7305,14 +7305,14 @@ snapshots:
 
   '@tootallnate/quickjs-emscripten@0.23.0': {}
 
-  '@trivago/prettier-plugin-sort-imports@6.0.0(prettier@3.7.4)':
+  '@trivago/prettier-plugin-sort-imports@6.0.1(prettier@3.7.4)':
     dependencies:
       '@babel/generator': 7.28.3
       '@babel/parser': 7.28.3
       '@babel/traverse': 7.28.3
       '@babel/types': 7.28.2
       javascript-natural-sort: 0.7.1
-      lodash-es: 4.17.21
+      lodash-es: 4.17.22
       minimatch: 9.0.5
       parse-imports-exports: 0.2.4
       prettier: 3.7.4
@@ -10773,11 +10773,11 @@ snapshots:
     optionalDependencies:
       prettier: 3.7.4
 
-  prettier-plugin-tailwindcss@0.7.2(@trivago/prettier-plugin-sort-imports@6.0.0(prettier@3.7.4))(prettier-plugin-organize-attributes@1.0.0(prettier@3.7.4))(prettier@3.7.4):
+  prettier-plugin-tailwindcss@0.7.2(@trivago/prettier-plugin-sort-imports@6.0.1(prettier@3.7.4))(prettier-plugin-organize-attributes@1.0.0(prettier@3.7.4))(prettier@3.7.4):
     dependencies:
       prettier: 3.7.4
     optionalDependencies:
-      '@trivago/prettier-plugin-sort-imports': 6.0.0(prettier@3.7.4)
+      '@trivago/prettier-plugin-sort-imports': 6.0.1(prettier@3.7.4)
       prettier-plugin-organize-attributes: 1.0.0(prettier@3.7.4)
 
   prettier@3.7.4: {}
