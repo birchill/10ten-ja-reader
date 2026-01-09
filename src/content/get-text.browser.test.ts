@@ -44,7 +44,7 @@ describe('getTextAtPoint', () => {
 
     // Polyfill any browser APIs we use.
     //
-    // This is also needed so that the webextension polyfill desn't attempt to
+    // This is also needed so that the webextension polyfill doesn't attempt to
     // polyfill the browser object.
     previousBrowserObject = globalThis.browser;
     globalThis.browser = {
