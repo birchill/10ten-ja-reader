@@ -32,7 +32,6 @@ const config: KnipConfig = {
     '@types/mocha',
   ],
   ignoreExportsUsedInFile: { interface: true, type: true },
-  playwright: 'playwright-test.config.js',
 };
 
 export default config;
