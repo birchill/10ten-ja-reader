@@ -147,21 +147,29 @@ Browser-based tests only:
 
 ```
 pnpm test:firefox
-pnpm test:chromium
+pnpm test:chrome
 ```
 
 Running a single browser-based test in watch mode:
 
 ```
-npx playwright-test tests/get-text.test.ts --browser firefox --watch
+pnpm test:firefox src/content/get-text.browser.test.ts --watch
 ```
 
-Unfortunately [`playwright-test`](https://github.com/hugomrdias/playwright-test)
-doesn't currently seem to let you configure multiple browsers to run at once.
+For debugging a test, you may want to turn off headless mode:
 
-[`@web/test-runner`](https://modern-web.dev/docs/test-runner/overview/) does but
-it is less diligent about updating the version of Playwright meaning you end up
-testing old browsers.
+```
+pnpm test:firefox src/content/get-text.browser.test.ts --browser.headless=false
+```
+
+To debug with Chrome, you can add a `debugger` statement and run with:
+
+```
+pnpm test:chrome src/content/get-text.browser.test.ts --browser.headless=false --inspect-brk --no-file-parallelism
+```
+
+That will start the test initially paused and you'll need to open DevTools and
+resume before hitting your actual breakpoint.
 
 ## Releasing
 

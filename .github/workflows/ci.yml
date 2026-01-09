@@ -41,6 +41,15 @@ jobs:
           CI: true
         run: pnpm test
 
+      - name: Upload any failure artifacts
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: test-screenshots
+          path: '**/__screenshots__/**/*.png'
+          if-no-files-found: ignore
+          retention-days: 30
+
       # Check packaging doesn't error. Again, no need to worry about the
       # package:edge target.
       - name: Package
