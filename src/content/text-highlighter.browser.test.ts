@@ -57,14 +57,17 @@ describe('TextHighligher', () => {
   });
 
   it('should highlight text in a textbox', () => {
+    // Arrange
     testDiv.innerHTML = '<input type="text" value="あいうえお">';
     const textBox = testDiv.firstChild as HTMLInputElement;
 
+    // Act
     subject.highlight({
       length: 3,
       textRange: [{ node: textBox, start: 1, end: 5 }],
     });
 
+    // Assert
     expect(textBox.selectionStart).toBe(1);
     expect(textBox.selectionEnd).toBe(4);
   });
