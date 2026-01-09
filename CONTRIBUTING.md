@@ -156,6 +156,21 @@ Running a single browser-based test in watch mode:
 pnpm test:firefox src/content/get-text.browser.test.ts --watch
 ```
 
+For debugging a test, you may want to turn off headless mode:
+
+```
+pnpm test:firefox src/content/get-text.browser.test.ts --browser.headless=false
+```
+
+To debug with Chrome, you can add a `debugger` statement and run with:
+
+```
+pnpm test:chrome src/content/get-text.browser.test.ts --browser.headless=false --inspect-brk --no-file-parallelism
+```
+
+That will start the test initially paused and you'll need to open DevTools and
+resume before hitting your actual breakpoint.
+
 ## Releasing
 
 Pre-release checks:

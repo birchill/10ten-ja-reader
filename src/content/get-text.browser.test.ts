@@ -28,6 +28,7 @@ declare global {
 
 describe('getTextAtPoint', () => {
   let testDiv: HTMLDivElement;
+  let notoSansJp: FontFace | undefined;
 
   let previousChromeObject: any;
   let previousBrowserObject: any;
@@ -51,9 +52,24 @@ describe('getTextAtPoint', () => {
     };
 
     ({ getTextAtPoint, clearPreviousResult } = await import('./get-text'));
+
+    // Make Noto Sans JP available so we have a consistent Japanese font even in
+    // CI.
+    notoSansJp = new FontFace('Noto Sans JP', 'url(/fonts/NotoSansJP.woff2)', {
+      weight: '100 900',
+      style: 'normal',
+      display: 'block',
+    });
+    await notoSansJp.load();
+    document.fonts.add(notoSansJp);
   });
 
   afterAll(() => {
+    if (notoSansJp) {
+      document.fonts.delete(notoSansJp);
+      notoSansJp = undefined;
+    }
+
     globalThis.browser = previousBrowserObject;
     globalThis.chrome = previousChromeObject;
   });
@@ -1792,7 +1808,7 @@ describe('getTextAtPoint', () => {
 
     makeMonospace(textAreaNode, 20);
     const bbox = textAreaNode.getBoundingClientRect();
-    const testPoint = { x: bbox.left + 25, y: bbox.top + 10 };
+    const testPoint = { x: bbox.left + 30, y: bbox.top + 10 };
 
     // Add a dot to aid debugging
     document.body.appendChild(document.createElement('div')).style.cssText = `
@@ -2033,7 +2049,7 @@ function getBboxForOffset(node: Node, start: number) {
 function makeMonospace(elem: HTMLElement, advance: number) {
   elem.style.padding = '0px';
   elem.style.fontSize = `${advance}px`;
-  elem.style.fontFamily = 'monospace';
+  elem.style.fontFamily = 'Noto Sans JP';
   elem.style.fontKerning = 'none';
   elem.style.fontVariantLigatures = 'none';
   elem.style.letterSpacing = `calc(${advance}px - 1ic)`;
