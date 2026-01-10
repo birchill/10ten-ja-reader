@@ -82,6 +82,15 @@ export function scanText({
         return false;
       }
 
+      if (
+        !node.parentElement?.checkVisibility({
+          opacityProperty: true,
+          visibilityProperty: true,
+        })
+      ) {
+        return false;
+      }
+
       if (!node.parentElement?.closest('ruby')) {
         return true;
       }
@@ -91,6 +100,10 @@ export function scanText({
   } else {
     includeNodeText = (node): node is Text =>
       node.nodeType === Node.TEXT_NODE &&
+      node.parentElement?.checkVisibility({
+        opacityProperty: true,
+        visibilityProperty: true,
+      }) !== false &&
       !node.parentElement?.closest('rp, rt');
   }
 
@@ -425,6 +438,15 @@ class SourceContextBuilder {
         this.rubyContext.rtElement = node as HTMLElement;
       }
 
+      return;
+    }
+
+    if (
+      !node.parentElement?.checkVisibility({
+        opacityProperty: true,
+        visibilityProperty: true,
+      })
+    ) {
       return;
     }
 
