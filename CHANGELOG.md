@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- Fixed handling of hidden text
+  ([#2710](https://github.com/birchill/10ten-ja-reader/pull/2710)).
+
 ## [1.26.1] - 2025-12-23
 
 - Fixed handling of long alt text

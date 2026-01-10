@@ -534,6 +534,25 @@ describe('getTextAtPoint', () => {
         textAtPoint('情けなさすぎるわよ', [textNode, 0, 9])
       );
     });
+
+    it('skips text that is display:none', () => {
+      // Arrange
+      testDiv.innerHTML =
+        '<div>履<span style="display: none">｛は｝</span>く</div>';
+      const firstTextNode = testDiv.firstChild!.firstChild as Text;
+      const bbox = getBboxForOffset(firstTextNode, 0);
+      const lastTextNode = testDiv.firstChild!.lastChild as Text;
+
+      // Act
+      const result = getTextAtPoint({
+        point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
+      });
+
+      // Assert
+      expect(result).toMatchObject(
+        textAtPoint('履く', [firstTextNode, 0, 1], [lastTextNode, 0, 1])
+      );
+    });
   });
 
   /* ------------------------------------------------------------------------
