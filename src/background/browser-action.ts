@@ -221,21 +221,15 @@ async function setIcon(iconFilename: string, tabId?: number): Promise<void> {
     // really only need to wait on it for Chrome/Edge anyway since setIcon is
     // not FIFO there.
     if (isSafari()) {
-      // We've been observing errors from Safari of the form:
-      //
-      //   Invalid call to action.setIcon(). Tab not found.
-      //
-      // I'm not sure if they're being thrown synchronously or as a rejected
-      // promise so we add some logging here to catch these.
-      try {
-        action.setIcon({ ...details, tabId }).catch((error) => {
-          void Bugsnag.notify(error, {
-            metadata: { tabId, errorMode: 'async' },
-          });
-        });
-      } catch (error) {
-        void Bugsnag.notify(error, { metadata: { tabId, errorMode: 'sync' } });
-      }
+      action.setIcon({ ...details, tabId }).catch((error) => {
+        // Safari sometimes reports:
+        //
+        //   Invalid call to action.setIcon(). Tab not found.
+        //
+        // I don't think there's anything we can do about it so just ignore it
+        // for now.
+        Bugsnag.leaveBreadcrumb('Safari setIcon error', { error, tabId });
+      });
     } else {
       await action.setIcon({ ...details, tabId });
     }
