@@ -976,15 +976,7 @@ describe('getTextAtPoint', () => {
       const testPoint = { x: bbox.left + 30, y: bbox.top + 10 };
 
       // Add a dot to aid debugging
-      document.body.appendChild(document.createElement('div')).style.cssText = `
-        position: absolute;
-        left: ${testPoint.x - 1}px;
-        top: ${testPoint.y - 1}px;
-        width: 3px;
-        height: 3px;
-        background: red;
-        pointer-events: none;
-      `;
+      using _ = new DebuggingDot(testPoint);
 
       // Act
       const result = getTextAtPoint({ point: testPoint });
@@ -2288,4 +2280,27 @@ function makeMonospace(elem: HTMLElement, advance: number) {
   elem.style.fontKerning = 'none';
   elem.style.fontVariantLigatures = 'none';
   elem.style.letterSpacing = `calc(${advance}px - 1ic)`;
+}
+
+class DebuggingDot {
+  private element: HTMLDivElement;
+
+  constructor(point: { x: number; y: number }) {
+    const element = document.createElement('div');
+    element.style.cssText = `
+      position: absolute;
+      left: ${point.x - 1}px;
+      top: ${point.y - 1}px;
+      width: 3px;
+      height: 3px;
+      background: red;
+      pointer-events: none;
+    `;
+    document.body.appendChild(element);
+    this.element = element;
+  }
+
+  [Symbol.dispose]() {
+    this.element.remove();
+  }
 }

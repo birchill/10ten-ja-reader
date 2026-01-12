@@ -63,6 +63,10 @@ export default [
         { checksVoidReturn: false },
       ],
       '@typescript-eslint/no-non-null-assertion': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
       '@typescript-eslint/triple-slash-reference': [
         'error',
         { path: 'always', types: 'never', lib: 'never' },
