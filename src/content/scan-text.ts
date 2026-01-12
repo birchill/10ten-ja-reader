@@ -442,10 +442,10 @@ class SourceContextBuilder {
     }
 
     if (
-      !node.parentElement?.checkVisibility({
+      node.parentElement?.checkVisibility({
         opacityProperty: true,
         visibilityProperty: true,
-      })
+      }) === false
     ) {
       return;
     }
