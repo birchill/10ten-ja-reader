@@ -85,7 +85,7 @@
     "@rspack/cli": "1.7.1",
     "@rspack/core": "1.7.1",
     "@tailwindcss/postcss": "4.1.18",
-    "@trivago/prettier-plugin-sort-imports": "6.0.1",
+    "@trivago/prettier-plugin-sort-imports": "6.0.2",
     "@types/archiver": "7.0.0",
     "@types/mocha": "10.0.10",
     "@types/webextension-polyfill": "0.12.4",
