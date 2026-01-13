@@ -1,4 +1,3 @@
-/// <reference path="./mail-extensions.d.ts" />
 import Bugsnag from '@birchill/bugsnag-zero';
 import * as s from 'superstruct';
 import type { Runtime, Tabs, Windows } from 'webextension-polyfill';
@@ -306,24 +305,11 @@ export default class AllTabManager implements TabManager {
       return;
     }
 
-    // Despite the above null check, we have sometimes seen Firefox
-    // synchronously throwing a TypeError here with the following message:
-    //
-    // "Type error for parameter options (Error processing frameId: Expected
-    // integer instead of null) for tabs.sendMessage."
-    try {
-      browser.tabs
-        .sendMessage(tabId, { ...message, frame: 'top' }, { frameId })
-        .catch(() => {
-          // Probably just a stale frameId
-        });
-    } catch (e) {
-      Bugsnag.leaveBreadcrumb(
-        `frameId when sending message to top frame: ${frameId}`,
-        { 'frameId type': typeof frameId }
-      );
-      throw e;
-    }
+    browser.tabs
+      .sendMessage(tabId, { ...message, frame: 'top' }, { frameId })
+      .catch(() => {
+        // Probably just a stale frameId
+      });
   }
 
   private getTopFrameId(tabId: number): number | null {
@@ -331,7 +317,13 @@ export default class AllTabManager implements TabManager {
       return null;
     }
 
-    return Number(Object.keys(this.tabs[tabId].frames)[0]);
+    const frameKeys = Object.keys(this.tabs[tabId].frames);
+    if (!frameKeys.length) {
+      return null;
+    }
+
+    const topFrameId = Number(frameKeys[0]);
+    return Number.isNaN(topFrameId) ? null : topFrameId;
   }
 
   getInitialFrameSrc({
@@ -427,7 +419,7 @@ export default class AllTabManager implements TabManager {
     if (typeof frameId === 'number') {
       const tab = this.tabs[tabId];
       delete tab.frames[frameId];
-      if (!tab.frames.length) {
+      if (!Object.keys(tab.frames).length) {
         delete this.tabs[tabId];
       }
     } else {

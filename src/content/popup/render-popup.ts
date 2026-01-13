@@ -1,4 +1,3 @@
-/// <reference path="../../common/css.d.ts" />
 import type { FontFace, FontSize } from '../../common/content-config-params';
 import { html } from '../../utils/builder';
 import { classes } from '../../utils/classes';

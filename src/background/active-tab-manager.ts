@@ -1,4 +1,3 @@
-/// <reference path="../common/constants.d.ts" />
 import Bugsnag from '@birchill/bugsnag-zero';
 import * as s from 'superstruct';
 import type { Runtime, Tabs } from 'webextension-polyfill';
@@ -428,7 +427,7 @@ export default class ActiveTabManager implements TabManager {
     if (frameId) {
       const tab = this.enabledTabs[tabId];
       delete tab.frames[frameId];
-      if (!tab.frames.length) {
+      if (!Object.keys(tab.frames).length) {
         delete this.enabledTabs[tabId];
       }
     } else {
