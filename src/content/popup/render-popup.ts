@@ -89,7 +89,7 @@ export function renderPopup(
 
   const overlayContainer = html('div', {
     class: classes(
-      'tp:stacked tp:grow',
+      'tp:stacked tp:grow tp:overflow-hidden',
       'tp:has-overlay:[&>:first-child]:pointer-events-none',
       'tp:has-overlay:[&>:first-child]:starting:blur-none',
       'tp:has-overlay:[&>:first-child]:blur-[20px]',
