@@ -77,7 +77,7 @@ jobs:
         run: |
           xcodebuild archive \
             -project "xcode13/10ten Japanese Reader.xcodeproj" \
-            -scheme "10ten Japanese Reader (Mac)" \
+            -scheme "10ten Japanese Reader (macOS)" \
             -configuration Release \
             -archivePath $PWD/build/10ten-mac.xcarchive
 
