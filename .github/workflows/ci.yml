@@ -8,9 +8,10 @@ on:
   pull_request:
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    name: Test
+  # XXX This should eventually be included in the release workflow but we're
+  # adding it here for now so we can test it
+  mac-ci:
+    runs-on: macos-latest
 
     steps:
       - name: Checkout code
@@ -27,66 +28,54 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      # Check the build works. No need to run the build:edge target since it's
-      # almost identical to build:chrome
-      - name: Build
+      - name: Build extension code
         run: |-
-          pnpm install --frozen-lockfile
-          pnpm build:firefox
-          pnpm build:chrome
-          pnpm build:thunderbird
+          pnpm install
+          pnpm build:safari
 
-      - name: Run tests
+      - name: Install signing certificate and profile
         env:
-          CI: true
-        run: pnpm test
+          CERT_BASE64: ${{ secrets.APP_STORE_CERT_BASE64 }}
+          P12_PASSWORD: ${{ secrets.APP_STORE_CERT_PASSWORD }}
+          PROFILE_IOS: ${{ secrets.IOS_PROFILE_BASE64 }}
+          PROFILE_MAC: ${{ secrets.MAC_PROFILE_BASE64 }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          # Save the cert and profiles to temp files
+          echo -n "$CERT_BASE64" | base64 --decode > cert.p12
+          echo -n "$PROFILE_IOS" | base64 --decode > ios.mobileprovision
+          echo -n "$PROFILE_MAC" | base64 --decode > mac.provisionprofile
 
-      - name: Upload any failure artifacts
-        uses: actions/upload-artifact@v6
-        if: always()
-        with:
-          name: test-screenshots
-          path: '**/__screenshots__/**/*.png'
-          if-no-files-found: ignore
-          retention-days: 30
+          # Create a temporary keychain and import the .p12 certificate
+          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain-db
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain-db
+          security import cert.p12 -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k build.keychain-db
+          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" build.keychain-db
+          security list-keychain -d user -s build.keychain-db
 
-      # Check packaging doesn't error. Again, no need to worry about the
-      # package:edge target.
-      - name: Package
-        run: |-
-          pnpm package:firefox
-          pnpm package:chrome
+          # Install provisioning profiles
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp ios.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          cp mac.provisionprofile ~/Library/MobileDevice/Provisioning\ Profiles/
 
-      - name: Verify cosmos setup
-        run: pnpm cosmos-export
+      - name: Build iOS app
+        run: |
+          xcodebuild archive \
+            -project "xcode13/10ten Japanese Reader.xcodeproj" \
+            -scheme "10ten Japanese Reader (iOS)" \
+            -configuration Release \
+            -archivePath $PWD/build/10ten-iOS.xcarchive \
+            -destination 'generic/platform=iOS'
 
-  lint:
-    runs-on: ubuntu-latest
-    name: Lint
+      - name: Build Mac app
+        run: |
+          xcodebuild archive \
+            -project "xcode13/10ten Japanese Reader.xcodeproj" \
+            -scheme "10ten Japanese Reader (Mac)" \
+            -configuration Release \
+            -archivePath $PWD/build/10ten-mac.xcarchive'
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+      # XXX Export app packages
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: latest
-
-      - name: Setup node
-        uses: actions/setup-node@v6.2.0
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Install
-        run: pnpm install --frozen-lockfile
-
-      - name: Lint
-        run: pnpm eslint scripts src tests "*.{cjs,js,json,ts}"
-
-      - name: Check formatting
-        run: pnpm prettier --check _locales css scripts src tests "*.{js,json,md,ts}"
-
-      - name: knip
-        run: pnpm knip
+# XXX We've dropped all the other jobs in this file so we can focus on testing
+# the Safari steps without wasting resources on the other jobs
