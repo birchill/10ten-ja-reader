@@ -38,13 +38,17 @@ jobs:
           CERT_BASE64: ${{ secrets.APP_STORE_CERT_BASE64 }}
           P12_PASSWORD: ${{ secrets.APP_STORE_CERT_PASSWORD }}
           PROFILE_IOS: ${{ secrets.IOS_PROFILE_BASE64 }}
+          PROFILE_IOS_EXT: ${{ secrets.IOS_EXT_PROFILE_BASE64 }}
           PROFILE_MAC: ${{ secrets.MAC_PROFILE_BASE64 }}
+          PROFILE_MAC_EXT: ${{ secrets.MAC_EXT_PROFILE_BASE64 }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
         run: |
           # Save the cert and profiles to temp files
           echo -n "$CERT_BASE64" | base64 --decode > cert.p12
           echo -n "$PROFILE_IOS" | base64 --decode > ios.mobileprovision
+          echo -n "$PROFILE_IOS_EXT" | base64 --decode > ios-ext.mobileprovision
           echo -n "$PROFILE_MAC" | base64 --decode > mac.provisionprofile
+          echo -n "$PROFILE_MAC_EXT" | base64 --decode > mac-ext.provisionprofile
 
           # Create a temporary keychain and import the .p12 certificate
           security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain-db
@@ -56,7 +60,9 @@ jobs:
           # Install provisioning profiles
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp ios.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          cp ios-ext.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
           cp mac.provisionprofile ~/Library/MobileDevice/Provisioning\ Profiles/
+          cp mac-ext.provisionprofile ~/Library/MobileDevice/Provisioning\ Profiles/
 
       - name: Build iOS app
         run: |
