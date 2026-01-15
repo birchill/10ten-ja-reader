@@ -79,7 +79,7 @@ jobs:
             -project "xcode13/10ten Japanese Reader.xcodeproj" \
             -scheme "10ten Japanese Reader (Mac)" \
             -configuration Release \
-            -archivePath $PWD/build/10ten-mac.xcarchive'
+            -archivePath $PWD/build/10ten-mac.xcarchive
 
       # XXX Export app packages
 
