@@ -154,8 +154,8 @@ importers:
         specifier: 1.0.0
         version: 1.0.0(prettier@3.8.0)
       prettier-plugin-packagejson:
-        specifier: 2.5.21
-        version: 2.5.21(prettier@3.8.0)
+        specifier: 3.0.0
+        version: 3.0.0(prettier@3.8.0)
       prettier-plugin-tailwindcss:
         specifier: 0.7.2
         version: 0.7.2(@trivago/prettier-plugin-sort-imports@6.0.2(prettier@3.8.0))(prettier-plugin-organize-attributes@1.0.0(prettier@3.8.0))(prettier@3.8.0)
@@ -2706,8 +2706,8 @@ packages:
     resolution: {integrity: sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==}
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
 
-  detect-indent@7.0.1:
-    resolution: {integrity: sha512-Mc7QhQ8s+cLrnUfU/Ji94vG/r8M26m8f++vyres4ZoojaRDpZ1eSIh/EpzLNwlWuvzSZ3UbDFspjFvTDXe6e/g==}
+  detect-indent@7.0.2:
+    resolution: {integrity: sha512-y+8xyqdGLL+6sh0tVeHcfP/QDd8gUgbasolJJpY7NgeQGSZ739bDtSiaiDgtoicy+mtYB81dKLxO9xRhCyIB3A==}
     engines: {node: '>=12.20'}
 
   detect-libc@2.0.4:
@@ -4652,10 +4652,10 @@ packages:
     peerDependencies:
       prettier: ^3.0.0
 
-  prettier-plugin-packagejson@2.5.21:
-    resolution: {integrity: sha512-d9ivsysb1SeRaKDhjf6Hi7jBGnP4TVsh7DeVi8N5HtHJ5vwD7YHcQIuy6jRkr2qGW/VKbrEVDWVMODuqcZuz8Q==}
+  prettier-plugin-packagejson@3.0.0:
+    resolution: {integrity: sha512-z8/QmPSqx/ANvvQMWJSkSq1+ihBXeuwDEYdjX3ZjRJ5Ty1k7vGbFQfhzk2eDe0rwS/TNyRjWK/qnjJEStAOtDw==}
     peerDependencies:
-      prettier: '>= 1.16.0'
+      prettier: ^3
     peerDependenciesMeta:
       prettier:
         optional: true
@@ -5166,8 +5166,8 @@ packages:
   sort-object-keys@2.0.1:
     resolution: {integrity: sha512-R89fO+z3x7hiKPXX5P0qim+ge6Y60AjtlW+QQpRozrrNcR1lw9Pkpm5MLB56HoNvdcLHL4wbpq16OcvGpEDJIg==}
 
-  sort-package-json@3.5.0:
-    resolution: {integrity: sha512-moY4UtptUuP5sPuu9H9dp8xHNel7eP5/Kz/7+90jTvC0IOiPH2LigtRM/aSFSxreaWoToHUVUpEV4a2tAs2oKQ==}
+  sort-package-json@3.6.0:
+    resolution: {integrity: sha512-fyJsPLhWvY7u2KsKPZn1PixbXp+1m7V8NWqU8CvgFRbMEX41Ffw1kD8n0CfJiGoaSfoAvbrqRRl/DcHO8omQOQ==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -8496,7 +8496,7 @@ snapshots:
 
   destroy@1.2.0: {}
 
-  detect-indent@7.0.1: {}
+  detect-indent@7.0.2: {}
 
   detect-libc@2.0.4: {}
 
@@ -10692,9 +10692,9 @@ snapshots:
     dependencies:
       prettier: 3.8.0
 
-  prettier-plugin-packagejson@2.5.21(prettier@3.8.0):
+  prettier-plugin-packagejson@3.0.0(prettier@3.8.0):
     dependencies:
-      sort-package-json: 3.5.0
+      sort-package-json: 3.6.0
     optionalDependencies:
       prettier: 3.8.0
 
@@ -11287,9 +11287,9 @@ snapshots:
 
   sort-object-keys@2.0.1: {}
 
-  sort-package-json@3.5.0:
+  sort-package-json@3.6.0:
     dependencies:
-      detect-indent: 7.0.1
+      detect-indent: 7.0.2
       detect-newline: 4.0.1
       git-hooks-list: 4.1.1
       is-plain-obj: 4.1.0
