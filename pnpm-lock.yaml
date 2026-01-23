@@ -59,7 +59,7 @@ importers:
         version: 9.39.2
       '@release-it/keep-a-changelog':
         specifier: 7.0.0
-        version: 7.0.0(release-it@19.2.3(@types/node@24.3.0))
+        version: 7.0.0(release-it@19.2.4(@types/node@24.3.0))
       '@rspack/cli':
         specifier: 1.7.2
         version: 1.7.2(@rspack/core@1.7.2)(@types/express@4.17.23)(webpack@5.104.1)
@@ -169,8 +169,8 @@ importers:
         specifier: 2.0.0
         version: 2.0.0(@rspack/core@1.7.2)(react-cosmos@7.1.0)(webpack@5.104.1)
       release-it:
-        specifier: 19.2.3
-        version: 19.2.3(@types/node@24.3.0)
+        specifier: 19.2.4
+        version: 19.2.4(@types/node@24.3.0)
       semver-parser:
         specifier: 4.1.8
         version: 4.1.8
@@ -4899,8 +4899,8 @@ packages:
     resolution: {integrity: sha512-+crtS5QjFRqFCoQmvGduwYWEBng99ZvmFvF+cUJkGYF1L1BfU8C6Zp9T7f5vPAwyLkUExpvK+ANVZmGU49qi4Q==}
     engines: {node: '>=12'}
 
-  release-it@19.2.3:
-    resolution: {integrity: sha512-GTSfrKb0cPmssEFliX0+WQBHC6NiDsMR/M8Y2tkvct/TO36BjB5XV6LO5BUTYV12C3+f78Y8aroku7jCyNiDeA==}
+  release-it@19.2.4:
+    resolution: {integrity: sha512-BwaJwQYUIIAKuDYvpqQTSoy0U7zIy6cHyEjih/aNaFICphGahia4cjDANuFXb7gVZ51hIK9W0io6fjNQWXqICg==}
     engines: {node: ^20.12.0 || >=22.0.0}
     hasBin: true
 
@@ -5555,10 +5555,6 @@ packages:
   undici@5.29.0:
     resolution: {integrity: sha512-raqeBD6NQK4SkWhQzeYKd1KmIG6dllBOTt55Rmkt4HtI9mwdWtJljnrXjAFUBLTSN67HWrOIZ3EPF4kjUw80Bg==}
     engines: {node: '>=14.0'}
-
-  undici@6.22.0:
-    resolution: {integrity: sha512-hU/10obOIu62MGYjdskASR3CUAiYaFTtC9Pa6vHyf//mAipSvSQg6od2CnJswq7fvzNS3zJhxoRkgNVaHurWKw==}
-    engines: {node: '>=18.17'}
 
   undici@6.23.0:
     resolution: {integrity: sha512-VfQPToRA5FZs/qJxLIinmU59u0r7LXqoJkCzinq3ckNJp3vKEh7jTWN589YQ5+aoAC/TGRLyJLCPKcLQbM8r9g==}
@@ -6939,10 +6935,10 @@ snapshots:
       - bare-buffer
       - supports-color
 
-  '@release-it/keep-a-changelog@7.0.0(release-it@19.2.3(@types/node@24.3.0))':
+  '@release-it/keep-a-changelog@7.0.0(release-it@19.2.4(@types/node@24.3.0))':
     dependencies:
       detect-newline: 4.0.1
-      release-it: 19.2.3(@types/node@24.3.0)
+      release-it: 19.2.4(@types/node@24.3.0)
       semver: 7.7.2
       string-template: 1.0.0
 
@@ -10941,7 +10937,7 @@ snapshots:
     dependencies:
       rc: 1.2.8
 
-  release-it@19.2.3(@types/node@24.3.0):
+  release-it@19.2.4(@types/node@24.3.0):
     dependencies:
       '@nodeutils/defaults-deep': 1.1.0
       '@octokit/rest': 22.0.1
@@ -10962,7 +10958,7 @@ snapshots:
       proxy-agent: 6.5.0
       semver: 7.7.3
       tinyglobby: 0.2.15
-      undici: 6.22.0
+      undici: 6.23.0
       url-join: 5.0.0
       wildcard-match: 5.1.4
       yargs-parser: 21.1.1
@@ -11707,8 +11703,6 @@ snapshots:
   undici@5.29.0:
     dependencies:
       '@fastify/busboy': 2.1.1
-
-  undici@6.22.0: {}
 
   undici@6.23.0: {}
 
