@@ -12,6 +12,8 @@ app.
   ([#2710](https://github.com/birchill/10ten-ja-reader/pull/2710)).
 - Fixed pop-up being unscrollable in some cases
   (see [#2674](https://github.com/birchill/10ten-ja-reader/pull/2674)).
+- Added support for Daikanwajiten (Morohashi) references
+  ([#2734](https://github.com/birchill/10ten-ja-reader/pull/2734)).
 
 ## [1.26.1] - 2025-12-23
 

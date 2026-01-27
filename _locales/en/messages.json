@@ -2224,6 +2224,14 @@
     "message": "Kanji Kentei",
     "description": "The label used when presenting Kanji Kentei levels"
   },
+  "ref_label_moro": {
+    "message": "Daikanwajiten (Morohashi)",
+    "description": "The label used when presenting Daikanwajiten (Morohashi) references"
+  },
+  "ref_label_moro_short": {
+    "message": "Daikanwajiten",
+    "description": "The short label used when presenting Daikanwajiten (Morohashi) references"
+  },
   "ref_label_nelson_r": {
     "message": "Radical (Nelson)",
     "description": "The label used when presenting Nelson's revised radical numbers. This should generally be a label that will sort directly after ref_label_radical when using String.localCompare."
@@ -2239,6 +2247,15 @@
   "ref_label_unicode": {
     "message": "Unicode",
     "description": "The label used when presenting the Unicode codepoint of the kanji"
+  },
+  "ref_moro_format": {
+    "message": "$index$ (vol. $volume$, p. $page$)",
+    "description": "Formatted Daikanwajiten (Morohashi) reference with volume and page numbers",
+    "placeholders": {
+      "index": { "content": "$1", "example": "12A" },
+      "volume": { "content": "$2", "example": "5" },
+      "page": { "content": "$3", "example": "234" }
+    }
   },
   "shogi_dest_same": { "message": "previous move's position" },
   "shogi_dest_same_suffix": { "message": " (same as previous move)" },
