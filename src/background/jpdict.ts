@@ -250,7 +250,7 @@ async function getLastUpdateTime(): Promise<number | null> {
   try {
     const getResult = await browser.storage.local.get('lastDbUpdateTime');
     if (typeof getResult.lastDbUpdateTime === 'number') {
-      return getResult.lastDbUpdateTime as number;
+      return getResult.lastDbUpdateTime;
     }
   } catch {
     // Extension storage can sometimes randomly fail with 'An unexpected error
