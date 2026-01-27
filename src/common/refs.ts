@@ -39,6 +39,8 @@ const SUPPORTED_REFERENCES = [
   // Yves Maniette's "Les Kanjis dans la tete" French adaptation of Heisig
   // (Only included for lang:fr)
   'maniette',
+  // Daikanwajiten (Morohashi)
+  'moro',
   // "Classic" Nelson - Modern Reader's Japanese-English Character Dictionary
   'nelson_c',
   // The New Nelson Japanese-English Character Dictionary
@@ -84,7 +86,13 @@ export function convertLegacyReference(
     : undefined;
 }
 
-type LocalizedReferences = 'radical' | 'nelson_r' | 'kk' | 'jlpt' | 'unicode';
+type LocalizedReferences =
+  | 'radical'
+  | 'nelson_r'
+  | 'kk'
+  | 'jlpt'
+  | 'moro'
+  | 'unicode';
 type NotLocalizedReferences = Exclude<
   ReferenceAbbreviation,
   LocalizedReferences
@@ -236,6 +244,13 @@ function getLabelForReference(
 
     case 'py':
       return { full: t('ref_label_py'), lang };
+
+    case 'moro':
+      return {
+        full: t('ref_label_moro'),
+        short: t('ref_label_moro_short'),
+        lang,
+      };
 
     case 'unicode':
       return { full: t('ref_label_unicode'), lang };

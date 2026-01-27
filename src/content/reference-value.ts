@@ -32,6 +32,20 @@ export function getReferenceValue(
     case 'py':
       return entry.r.py ? entry.r.py.join(', ') : '';
 
+    case 'moro': {
+      const value = entry.refs.moro;
+      if (!value) {
+        return '';
+      }
+      const valueString = String(value);
+      const parts = valueString.split('.');
+      if (parts.length === 3) {
+        const [index, volume, page] = parts;
+        return t('ref_moro_format', [index, volume, page]);
+      }
+      return valueString;
+    }
+
     case 'unicode':
       return `U+${entry.c.codePointAt(0)!.toString(16).toUpperCase()}`;
 

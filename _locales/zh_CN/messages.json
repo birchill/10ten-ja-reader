@@ -2220,6 +2220,14 @@
     "message": "汉字检定",
     "description": "The label used when presenting Kanji Kentei levels"
   },
+  "ref_label_moro": {
+    "message": "大漢和辭典（諸橋）",
+    "description": "The label used when presenting Daikanwajiten (Morohashi) references"
+  },
+  "ref_label_moro_short": {
+    "message": "大漢和辭典",
+    "description": "The short label used when presenting Daikanwajiten (Morohashi) references"
+  },
   "ref_label_nelson_r": {
     "message": "部首 (Nelson)",
     "description": "The label used when presenting Nelson's revised radical numbers. This should generally be a label that will sort directly after ref_label_radical when using String.localCompare."
@@ -2235,6 +2243,15 @@
   "ref_label_unicode": {
     "message": "Unicode",
     "description": "The label used when presenting the Unicode codepoint of the kanji"
+  },
+  "ref_moro_format": {
+    "message": "$index$​（第⁠$volume$⁠卷 第⁠$page$⁠页）",
+    "description": "Formatted Daikanwajiten (Morohashi) reference with volume and page numbers",
+    "placeholders": {
+      "index": { "content": "$1", "example": "12A" },
+      "volume": { "content": "$2", "example": "5" },
+      "page": { "content": "$3", "example": "234" }
+    }
   },
   "shogi_dest_same": { "message": "同じ場所" },
   "shogi_dest_same_suffix": { "message": "（同じ場所）" },

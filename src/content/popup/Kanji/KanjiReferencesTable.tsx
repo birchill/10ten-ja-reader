@@ -11,7 +11,7 @@ import { getReferenceValue } from '../../reference-value';
 
 type Props = {
   entry: KanjiResult;
-  kanjiReferences: Array<ReferenceAbbreviation>;
+  kanjiReferences: ReadonlyArray<ReferenceAbbreviation>;
 };
 
 export function KanjiReferencesTable({ entry, kanjiReferences }: Props) {
@@ -96,8 +96,10 @@ export function KanjiReferencesTable({ entry, kanjiReferences }: Props) {
           refCode={cellInfo.ref}
           key={cellInfo.name.value}
         >
-          <span lang={cellInfo.name.lang}>{cellInfo.name.value}</span>
-          <span class="tp:ml-2" lang={cellInfo.value.lang}>
+          <span class="tp:break-keep" lang={cellInfo.name.lang}>
+            {cellInfo.name.value}
+          </span>
+          <span class="tp:text-end" lang={cellInfo.value.lang}>
             {cellInfo.value.value}
           </span>
         </ReferenceEntryWrapper>
@@ -121,7 +123,7 @@ function ReferenceEntryWrapper(
       : undefined;
 
   const containerStyles = classes(
-    'tp:flex tp:justify-between',
+    'tp:flex tp:justify-between tp:gap-2',
     'tp:rounded-lg tp:px-(--bg-overhang) tp:py-0.5',
     'tp:text-sm tp:leading-normal',
     href &&
