@@ -79,7 +79,7 @@
   },
   "devDependencies": {
     "@actions/core": "2.0.2",
-    "@actions/github": "7.0.0",
+    "@actions/github": "8.0.1",
     "@eslint/js": "9.39.2",
     "@release-it/keep-a-changelog": "7.0.0",
     "@rspack/cli": "1.7.3",
