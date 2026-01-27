@@ -2221,11 +2221,11 @@
     "description": "The label used when presenting Kanji Kentei levels"
   },
   "ref_label_moro": {
-    "message": "大漢和辭典（諸橋）",
+    "message": "諸橋 - 大漢和辭典",
     "description": "The label used when presenting Daikanwajiten (Morohashi) references"
   },
   "ref_label_moro_short": {
-    "message": "大漢和辭典",
+    "message": "諸橋",
     "description": "The short label used when presenting Daikanwajiten (Morohashi) references"
   },
   "ref_label_nelson_r": {
