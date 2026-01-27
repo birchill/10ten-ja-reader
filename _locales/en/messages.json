@@ -2225,11 +2225,11 @@
     "description": "The label used when presenting Kanji Kentei levels"
   },
   "ref_label_moro": {
-    "message": "Daikanwajiten (Morohashi)",
+    "message": "Morohashi - Daikanwajiten",
     "description": "The label used when presenting Daikanwajiten (Morohashi) references"
   },
   "ref_label_moro_short": {
-    "message": "Daikanwajiten",
+    "message": "Morohashi",
     "description": "The short label used when presenting Daikanwajiten (Morohashi) references"
   },
   "ref_label_nelson_r": {
