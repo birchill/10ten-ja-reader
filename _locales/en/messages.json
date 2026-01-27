@@ -1423,7 +1423,7 @@
     }
   },
   "options_data_series_version_and_date": {
-    "message": "Based on $source$ $version$ from $generated$​.",
+    "message": "Based on $source$ ​$version$ from $generated$​.",
     "placeholders": {
       "source": { "content": "$1", "example": "KANJIDIC" },
       "version": { "content": "$2", "example": "2019-282" },
