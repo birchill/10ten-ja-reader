@@ -12,11 +12,11 @@
     "description": "Tooltip for toolbar button when disabled."
   },
   "command_toggle_downloading": {
-    "message": "$datatype$​を読み込み中 (​$progress$​%)…",
+    "message": "$datatype$を読み込み中 $progress$…",
     "description": "Tooltip for toolbar button when downloading updates.",
     "placeholders": {
       "datatype": { "content": "$1", "example": "radical data" },
-      "progress": { "content": "$2", "example": "12" }
+      "progress": { "content": "$2", "example": "(12%)" }
     }
   },
   "command_toggle_enabled": {
@@ -80,7 +80,7 @@
     "description": "Title shown at the top of the copy overlay when we can't find the word to copy."
   },
   "content_copy_overlay_copy_title_with_word": {
-    "message": "「​$word$​」をコピー",
+    "message": "「 $word$ 」をコピー",
     "description": "Title shown at the top of the copy overlay. It includes the matching headwords / kanji",
     "placeholders": { "word": { "content": "$1", "example": "選ぶ" } }
   },
@@ -101,11 +101,11 @@
     "description": "Message shown when we fail to calculate the corresponding Gregorian date of a pre-Gregorian era"
   },
   "content_kanji_base_radical": {
-    "message": "部 $char$ (​$readings$​)",
+    "message": "部 $char$  $readings$",
     "description": "The string used to describe the base radical",
     "placeholders": {
       "char": { "content": "$1", "example": "⾡" },
-      "readings": { "content": "$2", "example": "しんにょう、しんにゅう" }
+      "readings": { "content": "$2", "example": "(しんにょう、しんにゅう)" }
     }
   },
   "content_kanji_components_label": {
@@ -121,7 +121,7 @@
     "description": "Label for kanji marked as general use"
   },
   "content_kanji_grade_label": {
-    "message": "$grade$​年生",
+    "message": "$grade$年生",
     "description": "The label for kanji in grades 1 - 6",
     "placeholders": { "grade": { "content": "$1", "example": "3" } }
   },
@@ -130,11 +130,11 @@
     "description": "Label for kanji marked as name use"
   },
   "content_kanji_kentei_level": {
-    "message": "$level$​級",
+    "message": "$level$級",
     "placeholders": { "level": { "content": "$1", "example": "3" } }
   },
   "content_kanji_kentei_level_pre": {
-    "message": "準​$level$​級",
+    "message": "準 $level$級",
     "placeholders": { "level": { "content": "$1", "example": "2" } }
   },
   "content_kanji_meta_ghost_kanji": {
@@ -197,7 +197,7 @@
   "content_names_tag_unclass": { "message": "人名" },
   "content_names_tag_work": { "message": "作品" },
   "content_sk_match_src": {
-    "message": "「​$src$​」から",
+    "message": "「 $src$ 」から",
     "description": "The text used to show the sK/sk (search only) text that was used to look up the entry",
     "placeholders": { "src": { "content": "$1", "example": "御久しぶり" } }
   },
@@ -210,12 +210,12 @@
     "description": "Tooltip to show when hovering over the stop button for the stroke animation"
   },
   "content_wk_link_title": {
-    "message": "WaniKaniで「​$content$​」のページを表示",
+    "message": "WaniKaniで「 $content$ 」のページを表示",
     "description": "Tooltip for kanji and vocab links to WaniKani pages.",
     "placeholders": { "content": { "content": "$1", "example": "光" } }
   },
   "currency_data_updated_label": {
-    "message": "$updated$​に更新済み",
+    "message": "$updated$に更新済み",
     "description": "Caption added to popup explaining when the currency data was last refreshed",
     "placeholders": {
       "updated": { "content": "$1", "example": "Sep 16, 2021, 10:03 AM" }
@@ -320,11 +320,11 @@
     "description": "Tooltip label used when user hovers over the unfilled star icon (☆) to indicate a somewhat frequent word"
   },
   "error_command_could_not_parse": {
-    "message": "「​$command$​」の構文解析が失敗しました",
+    "message": "「 $command$ 」の構文解析が失敗しました",
     "placeholders": { "command": { "content": "$1", "example": "Ctrl+T " } }
   },
   "error_command_disallowed_modifier_key": {
-    "message": "「​$modifier$​」という修飾キーは利用できません",
+    "message": "「 $modifier$ 」という修飾キーは利用できません",
     "placeholders": { "modifier": { "content": "$1", "example": "Meta" } }
   },
   "error_command_has_no_key": { "message": "キーを設定してください" },
@@ -332,7 +332,7 @@
     "message": "機能キーまたメディアキーの利用以外の場合、修飾キーも設定してください"
   },
   "error_command_key_is_not_allowed": {
-    "message": "「​$key$​」というキーは利用できません",
+    "message": "「 $key$ 」というキーは利用できません",
     "placeholders": { "key": { "content": "$1", "example": "Enter" } }
   },
   "error_command_media_key_with_modifier_key": {
@@ -1078,7 +1078,7 @@
     "description": "The end of the text used to indicate a source language"
   },
   "lang_lsrc_wasei": {
-    "message": "和製​$lang$",
+    "message": "和製 $lang$",
     "placeholders": { "lang": { "content": "$1", "example": "英語" } }
   },
   "lang_lsrc_wasei_prefix": {
@@ -1414,14 +1414,14 @@
     "description": "Label for the special item to disable currency conversion"
   },
   "options_data_series_date_only": {
-    "message": "$generated$​に生成された​$source$​のデータに基づいている。",
+    "message": "$generated$に生成された $source$ のデータに基づいている。",
     "placeholders": {
       "source": { "content": "$1", "example": "KANJIDIC" },
       "generated": { "content": "$2", "example": "2019-10-19" }
     }
   },
   "options_data_series_version_and_date": {
-    "message": "$generated$​に生成された​$source$ $version$​のデータに基づいている。",
+    "message": "$generated$に生成された $source$  $version$ のデータに基づいている。",
     "placeholders": {
       "source": { "content": "$1", "example": "KANJIDIC" },
       "version": { "content": "$2", "example": "2019-282" },
@@ -1445,14 +1445,14 @@
     "description": "Label when IndexedDB is unusable with Firefox-specific help."
   },
   "options_db_update_error": {
-    "message": "更新失敗しました。「​$errormessage$​」",
+    "message": "更新失敗しました。「 $errormessage$ 」",
     "description": "Label when we failed to update the data for some reason",
     "placeholders": {
       "errormessage": { "content": "$1", "example": "Version file not found" }
     }
   },
   "options_db_update_next_retry": {
-    "message": "$nextretry$​に再試行予定",
+    "message": "$nextretry$に再試行予定",
     "description": "Label used when there is a scheduled retry",
     "placeholders": {
       "nextretry": { "content": "$1", "example": "2019-10-14 17:44" }
@@ -1475,12 +1475,12 @@
     "description": "Label for button to disable the toggle shortcut"
   },
   "options_downloading_data": {
-    "message": "$datatype$​バージョン​$version$​を読み込み中 (​$progress$​%)…",
+    "message": "$datatype$バージョン $version$ を読み込み中 $progress$…",
     "description": "Label while we are downloading updates",
     "placeholders": {
       "datatype": { "content": "$1", "example": "kanji data" },
       "version": { "content": "$2", "example": "1.0.3" },
-      "progress": { "content": "$3", "example": "60" }
+      "progress": { "content": "$3", "example": "(60%)" }
     }
   },
   "options_edrdg_license": {
@@ -1570,9 +1570,9 @@
     "description": "The name for the kanji database data set"
   },
   "options_kanji_data_title": {
-    "message": "漢字データ v​$version$",
+    "message": "漢字データ $version$",
     "description": "The kanji data series title and version",
-    "placeholders": { "version": { "content": "$1", "example": "2.0.0" } }
+    "placeholders": { "version": { "content": "$1", "example": "v2.0.0" } }
   },
   "options_kanji_dictionary_heading": {
     "message": "漢字辞典",
@@ -1636,9 +1636,9 @@
     "description": "The name for the name database data set"
   },
   "options_name_data_title": {
-    "message": "人名データ v​$version$",
+    "message": "人名データ $version$",
     "description": "The name data series title and version",
-    "placeholders": { "version": { "content": "$1", "example": "2.0.0" } }
+    "placeholders": { "version": { "content": "$1", "example": "v2.0.0" } }
   },
   "options_new_badge_text": {
     "message": "新機能！",
@@ -1822,19 +1822,19 @@
     "description": "The name for the words database data set"
   },
   "options_words_data_title": {
-    "message": "単語データ v​$version$",
+    "message": "単語データ $version$",
     "description": "The word data series title and version",
-    "placeholders": { "version": { "content": "$1", "example": "2.0.0" } }
+    "placeholders": { "version": { "content": "$1", "example": "v2.0.0" } }
   },
   "popup_bp_grammar_tag": {
-    "message": "BP N​$level$​ 文法",
+    "message": "BP $level$ 文法",
     "description": "The tag shown alongside a headword that is part of a Bunpro vocab deck indicating what level deck it is from",
-    "placeholders": { "level": { "content": "$1", "example": "5" } }
+    "placeholders": { "level": { "content": "$1", "example": "N5" } }
   },
   "popup_bp_vocab_tag": {
-    "message": "BP N​$level$​ 単語",
+    "message": "BP $level$ 単語",
     "description": "The tag shown alongside a headword that is part of a Bunpro vocab deck indicating what level deck it is from",
-    "placeholders": { "level": { "content": "$1", "example": "5" } }
+    "placeholders": { "level": { "content": "$1", "example": "N5" } }
   },
   "popup_close_label": {
     "message": "閉じる",
@@ -2253,7 +2253,7 @@
     "description": "The label used when presenting the Unicode codepoint of the kanji"
   },
   "ref_moro_format": {
-    "message": "$index$​（第⁠$volume$⁠巻 $page$⁠頁）",
+    "message": "$index$ （ $volume$巻  $page$頁 ）",
     "description": "Formatted Daikanwajiten (Morohashi) reference with volume and page numbers",
     "placeholders": {
       "index": { "content": "$1", "example": "12A" },
@@ -2265,14 +2265,14 @@
   "shogi_dest_same_suffix": { "message": "（同じ場所）" },
   "shogi_label": { "message": "将棋" },
   "shogi_move_piece_dest": {
-    "message": "$piece$​を​$dest$​に",
+    "message": "$piece$を $dest$に",
     "placeholders": {
       "piece": { "content": "$1" },
       "dest": { "content": "$2" }
     }
   },
   "shogi_move_piece_dest_movement": {
-    "message": "$piece$​を​$dest$​に​$movement$",
+    "message": "$piece$を $dest$に $movement$",
     "placeholders": {
       "piece": { "content": "$1" },
       "dest": { "content": "$2" },
@@ -2280,7 +2280,7 @@
     }
   },
   "shogi_move_side_piece_dest": {
-    "message": "$side$​が​$piece$​を​$dest$​に",
+    "message": "$side$が $piece$を $dest$に",
     "placeholders": {
       "side": { "content": "$1" },
       "piece": { "content": "$2" },
@@ -2288,7 +2288,7 @@
     }
   },
   "shogi_move_side_piece_dest_movement": {
-    "message": "$side$​が​$piece$​を​$dest$​に​$movement$",
+    "message": "$side$が $piece$を $dest$に $movement$",
     "placeholders": {
       "side": { "content": "$1" },
       "piece": { "content": "$2" },

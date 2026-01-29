@@ -7,9 +7,9 @@ import { getEntryToCopy, getFieldsToCopy, getWordToCopy } from './copy-text';
 const getMessage = (id: string, replacements?: string | Array<string>) => {
   switch (id) {
     case 'content_kanji_base_radical':
-      return `from ${replacements ? replacements[0] : '?'} (${
+      return `from ${replacements ? replacements[0] : '?'} ${
         replacements ? replacements[1] : '?'
-      })`;
+      }`;
     case 'content_kanji_components_label':
       return 'components';
     case 'content_kanji_radical_label':
