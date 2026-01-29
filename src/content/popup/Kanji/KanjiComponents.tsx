@@ -82,7 +82,10 @@ function BaseRadical(props: NonNullable<KanjiResult['comp'][0]['base']>) {
       lang={langTag}
       class="tp:col-start-2 tp:col-end-4 tp:-mt-1 tp:pl-2 tp:pr-3 tp:italic tp:text-(--cell-highlight-fg)"
     >
-      {t('content_kanji_base_radical', [props.c, props.na[0] || '-'])}
+      {t('content_kanji_base_radical', [
+        props.c,
+        props.na[0] ? `(${props.na[0]})` : '',
+      ])}
     </span>
   );
 }

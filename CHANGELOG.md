@@ -14,6 +14,7 @@ app.
   (see [#2674](https://github.com/birchill/10ten-ja-reader/pull/2674)).
 - Added support for Daikanwajiten (Morohashi) references
   ([#2734](https://github.com/birchill/10ten-ja-reader/pull/2734)).
+- Worked around a [major string substitution bug in Safari](https://bugs.webkit.org/show_bug.cgi?id=306492).
 
 ## [1.26.1] - 2025-12-23
 

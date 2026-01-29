@@ -155,7 +155,7 @@ function DbSummaryStatus(props: {
           {t('options_downloading_data', [
             dbLabel,
             versionString,
-            String(progressAsPercent),
+            `(${progressAsPercent}%)`,
           ])}
         </label>
       </div>
@@ -225,7 +225,7 @@ function IdleStateSummary(props: {
 
   return (
     <DbSummaryContainer>
-      <div class="grid auto-cols-fr grid-flow-col grid-rows-[repeat(2,_auto)] gap-x-2 sm:gap-x-4">
+      <div class="grid auto-cols-fr grid-flow-col grid-rows-[repeat(2,auto)] gap-x-2 sm:gap-x-4">
         {allMajorDataSeries.map((series) => {
           const versionInfo = props.dbState[series].version;
           return versionInfo ? (
@@ -353,7 +353,7 @@ function DataSeriesVersion(props: {
   const { major, minor, patch, lang } = props.version;
   const titleString = t(
     titleKeys[props.series],
-    `${major}.${minor}.${patch} (${lang})`
+    `v${major}.${minor}.${patch} (${lang})`
   );
 
   const sourceNames: { [series in MajorDataSeries]: string } = {

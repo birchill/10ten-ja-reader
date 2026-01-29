@@ -151,7 +151,7 @@ async function doUpdateBrowserAction({
         const progressAsPercent = Math.round(totalProgress * 100);
         tooltip = browser.i18n.getMessage('command_toggle_downloading', [
           dbLabel,
-          String(progressAsPercent),
+          `(${progressAsPercent}%)`,
         ]);
       }
       break;

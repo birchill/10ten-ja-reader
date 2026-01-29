@@ -369,7 +369,7 @@ function BunproTag({
 
   const label = t(
     type === 'vocab' ? 'popup_bp_vocab_tag' : 'popup_bp_grammar_tag',
-    [String(data.l)]
+    ['N' + data.l]
   );
 
   return (

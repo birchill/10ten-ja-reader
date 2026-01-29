@@ -34,10 +34,10 @@ describe('renderShogiInfo', () => {
       'silver general to 83'
     );
     expect(getShogiMove({ dest: [8, 3], piece: 's' }, 'ja')).toBe(
-      '銀将を８三に'
+      '銀将を ８三に'
     );
     expect(getShogiMove({ dest: [8, 3], piece: 's' }, 'zh_CN')).toBe(
-      '銀将を８三に'
+      '銀将を ８三に'
     );
   });
 
@@ -45,8 +45,8 @@ describe('renderShogiInfo', () => {
     expect(getShogiMove({ piece: 's' })).toBe(
       "silver general to previous move's position"
     );
-    expect(getShogiMove({ piece: 's' }, 'ja')).toBe('銀将を同じ場所に');
-    expect(getShogiMove({ piece: 's' }, 'zh_CN')).toBe('銀将を同じ場所に');
+    expect(getShogiMove({ piece: 's' }, 'ja')).toBe('銀将を 同じ場所に');
+    expect(getShogiMove({ piece: 's' }, 'zh_CN')).toBe('銀将を 同じ場所に');
   });
 
   it('renders a shogi move with a destination indicated as being the same', () => {
@@ -54,35 +54,35 @@ describe('renderShogiInfo', () => {
       'silver general to 83 (same as previous move)'
     );
     expect(getShogiMove({ dest: [8, 3, 1], piece: 's' }, 'ja')).toBe(
-      '銀将を８三（同じ場所）に'
+      '銀将を ８三（同じ場所）に'
     );
     expect(getShogiMove({ dest: [8, 3, 1], piece: 's' }, 'zh_CN')).toBe(
-      '銀将を８三（同じ場所）に'
+      '銀将を ８三（同じ場所）に'
     );
   });
 
   it('renders a shogi move where a side is specified', () => {
     expect(getShogiMove({ side: 'black', dest: [2, 5], piece: 'pro_b' })).toBe(
-      'black horse (promoted bishop) to 25'
+      'black  horse (promoted bishop) to 25'
     );
     expect(
       getShogiMove({ side: 'black', dest: [2, 5], piece: 'pro_b' }, 'ja')
-    ).toBe('先手が竜馬を２五に');
+    ).toBe('先手が 竜馬を ２五に');
     expect(
       getShogiMove({ side: 'black', dest: [2, 5], piece: 'pro_b' }, 'zh_CN')
-    ).toBe('先手が竜馬を２五に');
+    ).toBe('先手が 竜馬を ２五に');
   });
 
   it('renders a shogi move where a movement is specified', () => {
     expect(getShogiMove({ dest: [5, 2], piece: 'g', movement: 'right' })).toBe(
-      'gold general moves from the right to 52'
+      'gold general  moves from the right to  52'
     );
     expect(
       getShogiMove({ dest: [5, 2], piece: 'g', movement: 'right' }, 'ja')
-    ).toBe('金将を５二に右から動かす');
+    ).toBe('金将を ５二に 右から動かす');
     expect(
       getShogiMove({ dest: [5, 2], piece: 'g', movement: 'right' }, 'zh_CN')
-    ).toBe('金将を５二に右から動かす');
+    ).toBe('金将を ５二に 右から動かす');
   });
 
   it('renders a shogi move where a movement and side are specified', () => {
@@ -93,19 +93,19 @@ describe('renderShogiInfo', () => {
         piece: 'g',
         movement: 'drop',
       })
-    ).toBe('white gold general dropped at 56');
+    ).toBe('white  gold general  dropped at  56');
     expect(
       getShogiMove(
         { side: 'white', dest: [5, 6], piece: 'g', movement: 'drop' },
         'ja'
       )
-    ).toBe('後手が金将を５六に打つ');
+    ).toBe('後手が 金将を ５六に 打つ');
     expect(
       getShogiMove(
         { side: 'white', dest: [5, 6], piece: 'g', movement: 'drop' },
         'zh_CN'
       )
-    ).toBe('後手が金将を５六に打つ');
+    ).toBe('後手が 金将を ５六に 打つ');
   });
 
   it('renders a shogi move with promotion information', () => {
@@ -116,19 +116,19 @@ describe('renderShogiInfo', () => {
         piece: 's',
         promotion: false,
       })
-    ).toBe('black silver general to 44 without promoting');
+    ).toBe('black  silver general to 44 without promoting');
     expect(
       getShogiMove(
         { side: 'black', dest: [4, 4], piece: 's', promotion: false },
         'ja'
       )
-    ).toBe('先手が銀将を４四に（成らない）');
+    ).toBe('先手が 銀将を ４四に（成らない）');
     expect(
       getShogiMove(
         { side: 'black', dest: [4, 4], piece: 's', promotion: false },
         'zh_CN'
       )
-    ).toBe('先手が銀将を４四に（成らない）');
+    ).toBe('先手が 銀将を ４四に（成らない）');
   });
 });
 
