@@ -81,7 +81,19 @@ jobs:
             -configuration Release \
             -archivePath $PWD/build/10ten-mac.xcarchive
 
-      # XXX Export app packages
+      - name: Export iOS app package
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath $PWD/build/10ten-iOS.xcarchive \
+            -exportOptionsPlist "xcode/ExportOptions-iOS.plist" \
+            -exportPath $PWD/build/10ten-ja-reader.ipa
+
+      - name: Export Mac app package
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath $PWD/build/10ten-mac.xcarchive \
+            -exportOptionsPlist "xcode/ExportOptions-Mac.plist" \
+            -exportPath $PWD/build/10ten-ja-reader.pkg
 
 # XXX We've dropped all the other jobs in this file so we can focus on testing
 # the Safari steps without wasting resources on the other jobs
