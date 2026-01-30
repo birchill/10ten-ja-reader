@@ -12,7 +12,7 @@
         <string>10ten Japanese Reader Extension App Store ConnectM</string>
     </dict>
     <key>signingCertificate</key>
-    <string>Mac Installer Distribution</string>
+    <string>Apple Distribution</string>
     <key>signingStyle</key>
     <string>manual</string>
     <key>teamID</key>

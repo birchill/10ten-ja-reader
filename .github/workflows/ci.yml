@@ -45,6 +45,7 @@ jobs:
         run: |
           # Save the cert and profiles to temp files
           echo -n "$CERT_BASE64" | base64 --decode > cert.p12
+          echo -n "$MAC_INSTALLER_CERT_BASE64" | base64 --decode > mac-installer.p12
           echo -n "$PROFILE_IOS" | base64 --decode > ios.mobileprovision
           echo -n "$PROFILE_IOS_EXT" | base64 --decode > ios-ext.mobileprovision
           echo -n "$PROFILE_MAC" | base64 --decode > mac.provisionprofile
@@ -54,6 +55,7 @@ jobs:
           security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain-db
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain-db
           security import cert.p12 -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k build.keychain-db
+          security import mac-installer.p12 -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k build.keychain-db
           security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" build.keychain-db
           security list-keychain -d user -s build.keychain-db
 
