@@ -955,7 +955,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "3rd Party Mac Developer Application";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Distribution: Birchill, Inc. (H3RB7C8768)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 83;
 				DEAD_CODE_STRIPPING = YES;
@@ -990,7 +990,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "3rd Party Mac Developer Application";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Distribution: Birchill, Inc. (H3RB7C8768)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 83;
 				DEAD_CODE_STRIPPING = YES;
@@ -1028,7 +1028,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "macOS (App)/10ten Japanese Reader.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "3rd Party Mac Developer Application";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Distribution: Birchill, Inc. (H3RB7C8768)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 83;
 				DEAD_CODE_STRIPPING = YES;
@@ -1070,7 +1070,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "macOS (App)/10ten Japanese Reader.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "3rd Party Mac Developer Application";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Distribution: Birchill, Inc. (H3RB7C8768)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 83;
 				DEAD_CODE_STRIPPING = YES;

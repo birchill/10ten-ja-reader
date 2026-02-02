@@ -2,30 +2,28 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>method</key>
-    <string>app-store-connect</string>
-    <key>provisioningProfiles</key>
-    <dict>
-        <key>jp.co.birchill.tenten-ja-reader</key>
-        <string>10ten Japanese Reader App Store Connect (Mac)</string>
-        <key>jp.co.birchill.tenten-ja-reader.Extension</key>
-        <string>10ten Japanese Reader Extension App Store ConnectM</string>
-    </dict>
-    <key>signingCertificate</key>
-    <string>Apple Distribution</string>
-    <key>signingStyle</key>
-    <string>manual</string>
-    <key>teamID</key>
-    <string>H3RB7C8768</string>
-    <key>destination</key>
-    <string>export</string>
-    <key>stripSwiftSymbols</key>
-    <true/>
-    <key>uploadSymbols</key>
-    <true/>
-    <key>compileBitcode</key>
-    <true/>
-    <key>thinning</key>
-    <string>&lt;none&gt;</string>
+  <key>destination</key>
+  <string>export</string>
+  <key>installerSigningCertificate</key>
+  <string>3rd Party Mac Developer Installer</string>
+  <key>manageAppVersionAndBuildNumber</key>
+  <true/>
+  <key>method</key>
+  <string>app-store-connect</string>
+  <key>provisioningProfiles</key>
+  <dict>
+    <key>jp.co.birchill.tenten-ja-reader</key>
+    <string>10ten Japanese Reader App Store Connect (Mac)</string>
+    <key>jp.co.birchill.tenten-ja-reader.Extension</key>
+    <string>10ten Japanese Reader Extension App Store ConnectM</string>
+  </dict>
+  <key>signingCertificate</key>
+  <string>Apple Distribution</string>
+  <key>signingStyle</key>
+  <string>manual</string>
+  <key>teamID</key>
+  <string>H3RB7C8768</string>
+  <key>uploadSymbols</key>
+  <true/>
 </dict>
 </plist>
