@@ -102,7 +102,7 @@
     "fetch-mock": "12.6.0",
     "file-loader": "6.2.0",
     "fork-ts-checker-webpack-plugin": "9.1.0",
-    "globals": "17.2.0",
+    "globals": "17.3.0",
     "if-env": "1.0.4",
     "jsdom": "^28.0.0",
     "knip": "5.82.1",
