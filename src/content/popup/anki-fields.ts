@@ -1,3 +1,15 @@
+/**
+ * Anki field extraction utilities.
+ *
+ * Extracts vocabulary data from a WordResult for creating Anki flashcards.
+ * The four available fields are:
+ * - Expression: The word in kanji (or kana if no kanji)
+ * - Reading: The word's reading in kana
+ * - Meaning: Numbered list of definitions
+ * - Sentence: The context sentence where the word was found
+ *
+ * @module anki-fields
+ */
 import type { WordResult } from '../../background/search-result';
 
 /**

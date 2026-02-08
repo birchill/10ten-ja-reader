@@ -1,3 +1,17 @@
+/**
+ * AnkiConnect integration module.
+ *
+ * This module provides a client for communicating with Anki via the AnkiConnect
+ * add-on (https://ankiweb.net/shared/info/2055492159). AnkiConnect exposes a
+ * local HTTP API at http://127.0.0.1:8765 that allows external applications
+ * to create notes, query decks, and interact with Anki's UI.
+ *
+ * Prerequisites:
+ * - Anki must be running
+ * - AnkiConnect add-on must be installed and enabled
+ *
+ * @module anki-connect
+ */
 import { fetchWithTimeout } from '../utils/fetch';
 
 const ANKI_CONNECT_URL = 'http://127.0.0.1:8765';
@@ -79,7 +93,9 @@ export async function ankiGetNoteTypes(): Promise<Array<string>> {
 }
 
 /** Get the field names for a given note type (model). */
-export async function ankiGetModelFields(modelName: string): Promise<Array<string>> {
+export async function ankiGetModelFields(
+  modelName: string
+): Promise<Array<string>> {
   return invoke<Array<string>>('modelFieldNames', { modelName });
 }
 

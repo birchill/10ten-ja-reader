@@ -1,3 +1,15 @@
+/**
+ * Anki integration settings UI component.
+ *
+ * Allows users to:
+ * - Enable/disable Anki integration
+ * - Test the AnkiConnect connection
+ * - Select which Anki deck to add cards to
+ * - Select which note type to use
+ * - Map 10ten fields (Expression, Reading, Meaning, Sentence) to Anki note fields
+ *
+ * Requires Anki to be running with the AnkiConnect add-on installed.
+ */
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import browser from 'webextension-polyfill';
 
