@@ -44,6 +44,8 @@ export function AnkiSettings(props: Props) {
   const [decks, setDecks] = useState<Array<string>>([]);
   const [noteTypes, setNoteTypes] = useState<Array<string>>([]);
   const [modelFields, setModelFields] = useState<Array<string>>([]);
+  const [fetchError, setFetchError] = useState(false);
+  const [fieldsError, setFieldsError] = useState(false);
 
   // ---------- Connection test ----------
 
@@ -67,10 +69,16 @@ export function AnkiSettings(props: Props) {
 
   useEffect(() => {
     if (!ankiEnabled) {
+      setFetchError(false);
       return;
     }
 
-    (async () => {
+    // Auto-test connection when Anki is first enabled
+    if (connectionStatus === 'idle') {
+      void testConnection();
+    }
+
+    void (async () => {
       try {
         const [deckList, noteTypeList] = (await Promise.all([
           browser.runtime.sendMessage({ type: 'ankiGetDecks' }),
@@ -78,8 +86,11 @@ export function AnkiSettings(props: Props) {
         ])) as [Array<string>, Array<string>];
         setDecks(deckList);
         setNoteTypes(noteTypeList);
+        setFetchError(false);
       } catch {
-        // AnkiConnect not reachable — leave lists empty
+        setDecks([]);
+        setNoteTypes([]);
+        setFetchError(true);
       }
     })();
   }, [ankiEnabled]);
@@ -89,18 +100,21 @@ export function AnkiSettings(props: Props) {
   useEffect(() => {
     if (!ankiNoteType) {
       setModelFields([]);
+      setFieldsError(false);
       return;
     }
 
-    (async () => {
+    void (async () => {
       try {
         const fields = (await browser.runtime.sendMessage({
           type: 'ankiGetModelFields',
           model: ankiNoteType,
         })) as Array<string>;
         setModelFields(fields);
+        setFieldsError(false);
       } catch {
         setModelFields([]);
+        setFieldsError(true);
       }
     })();
   }, [ankiNoteType]);
@@ -192,6 +206,12 @@ export function AnkiSettings(props: Props) {
               <label for="ankiDeck" class="block text-sm font-medium">
                 Deck
               </label>
+              {fetchError && (
+                <p class="text-sm text-red-600">
+                  Could not load decks from AnkiConnect. Make sure Anki is
+                  running with the AnkiConnect add-on installed.
+                </p>
+              )}
               <select
                 id="ankiDeck"
                 class="w-full rounded border p-1.5"
@@ -230,6 +250,12 @@ export function AnkiSettings(props: Props) {
             </div>
 
             {/* Field mapping */}
+            {ankiNoteType && fieldsError && (
+              <p class="text-sm text-red-600">
+                Could not load fields for the selected note type. Make sure Anki
+                is running.
+              </p>
+            )}
             {ankiNoteType && modelFields.length > 0 && (
               <div class="space-y-2">
                 <p class="text-sm font-medium">Field mapping</p>

@@ -76,22 +76,35 @@ export const WordTable = (props: WordTableProps) => {
     new Map()
   );
 
+  // Whether AnkiConnect is reachable (null = still checking)
+  const [ankiConnected, setAnkiConnected] = useState<boolean | null>(null);
+
+  // Set of entry IDs currently being added to Anki
+  const [ankiAddingIds, setAnkiAddingIds] = useState<Set<number>>(new Set());
+
+  // Map from entry ID to error message (auto-cleared after a timeout)
+  const [ankiErrors, setAnkiErrors] = useState<Map<number, string>>(new Map());
+
   const ankiEnabled = props.ankiEnabled ?? false;
   const ankiDeck = props.ankiDeck ?? '';
   const ankiNoteType = props.ankiNoteType ?? '';
   const ankiFieldMapping = props.ankiFieldMapping ?? {};
 
-  // Check note existence for each entry when popup opens
+  // Check note existence for each entry when popup opens.
+  // Also detects whether AnkiConnect is reachable.
   useEffect(() => {
     if (!ankiEnabled || !ankiDeck) {
       setAnkiNoteIds(new Map());
+      setAnkiConnected(null);
       return;
     }
 
     let cancelled = false;
 
-    (async () => {
+    void (async () => {
       const newMap = new Map<number, number | null>();
+      let anySucceeded = false;
+      let anyFailed = false;
 
       // Check all entries in parallel
       const checks = entries.map(async (entry) => {
@@ -108,8 +121,10 @@ export const WordTable = (props: WordTableProps) => {
             expression,
             reading,
           })) as number | null;
+          anySucceeded = true;
           return { id: entry.id, noteId };
         } catch {
+          anyFailed = true;
           return { id: entry.id, noteId: null };
         }
       });
@@ -124,6 +139,14 @@ export const WordTable = (props: WordTableProps) => {
       }
 
       setAnkiNoteIds(newMap);
+
+      // If all calls failed, Anki is unreachable.
+      // If at least one succeeded, it's connected.
+      if (anySucceeded) {
+        setAnkiConnected(true);
+      } else if (anyFailed) {
+        setAnkiConnected(false);
+      }
     })();
 
     return () => {
@@ -136,6 +159,23 @@ export const WordTable = (props: WordTableProps) => {
       if (!ankiDeck || !ankiNoteType) {
         return;
       }
+
+      // Prevent double-clicks
+      if (ankiAddingIds.has(entry.id)) {
+        return;
+      }
+
+      setAnkiAddingIds((prev) => new Set(prev).add(entry.id));
+
+      // Clear any previous error for this entry
+      setAnkiErrors((prev) => {
+        if (!prev.has(entry.id)) {
+          return prev;
+        }
+        const next = new Map(prev);
+        next.delete(entry.id);
+        return next;
+      });
 
       const tentenFields = extractAnkiFields(entry, {
         sentence: props.sentence,
@@ -159,16 +199,69 @@ export const WordTable = (props: WordTableProps) => {
         });
       } catch (e) {
         console.error('[10ten-ja-reader] Failed to add Anki note:', e);
+
+        const message =
+          e instanceof Error ? e.message : 'Failed to add note to Anki';
+        setAnkiErrors((prev) => {
+          const next = new Map(prev);
+          next.set(entry.id, message);
+          return next;
+        });
+
+        // Auto-clear error after 4 seconds
+        const entryId = entry.id;
+        setTimeout(() => {
+          setAnkiErrors((prev) => {
+            if (!prev.has(entryId)) {
+              return prev;
+            }
+            const next = new Map(prev);
+            next.delete(entryId);
+            return next;
+          });
+        }, 4000);
+      } finally {
+        setAnkiAddingIds((prev) => {
+          const next = new Set(prev);
+          next.delete(entry.id);
+          return next;
+        });
       }
     },
-    [ankiDeck, ankiNoteType, ankiFieldMapping, props.sentence, props.url]
+    [
+      ankiDeck,
+      ankiNoteType,
+      ankiFieldMapping,
+      ankiAddingIds,
+      props.sentence,
+      props.url,
+    ]
   );
 
-  const onAnkiOpen = useCallback(async (noteId: number) => {
+  const onAnkiOpen = useCallback(async (noteId: number, entryId: number) => {
     try {
       await browser.runtime.sendMessage({ type: 'ankiOpenNote', noteId });
     } catch (e) {
       console.error('[10ten-ja-reader] Failed to open Anki note:', e);
+
+      const message =
+        e instanceof Error ? e.message : 'Failed to open note in Anki';
+      setAnkiErrors((prev) => {
+        const next = new Map(prev);
+        next.set(entryId, message);
+        return next;
+      });
+
+      setTimeout(() => {
+        setAnkiErrors((prev) => {
+          if (!prev.has(entryId)) {
+            return prev;
+          }
+          const next = new Map(prev);
+          next.delete(entryId);
+          return next;
+        });
+      }, 4000);
     }
   }, []);
 
@@ -253,6 +346,9 @@ export const WordTable = (props: WordTableProps) => {
                   ? (ankiNoteIds.get(entry.id) ?? null)
                   : undefined
               }
+              ankiConnected={ankiConnected ?? undefined}
+              ankiAdding={ankiAddingIds.has(entry.id)}
+              ankiError={ankiErrors.get(entry.id)}
               onAnkiAdd={onAnkiAdd}
               onAnkiOpen={onAnkiOpen}
               onPointerUp={(evt) => {

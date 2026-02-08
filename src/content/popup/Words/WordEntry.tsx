@@ -38,8 +38,11 @@ export type WordEntryProps = {
   onClick?: (evt: MouseEvent) => void;
   // Anki integration
   ankiNoteId?: number | null; // undefined = disabled/loading, null = not found, number = exists
+  ankiConnected?: boolean; // true = reachable, false = unreachable, undefined = still checking
+  ankiAdding?: boolean; // true = add operation in flight
+  ankiError?: string; // error message to display on tooltip
   onAnkiAdd?: (entry: WordResult) => void;
-  onAnkiOpen?: (noteId: number) => void;
+  onAnkiOpen?: (noteId: number, entryId: number) => void;
 };
 
 export function WordEntry(props: WordEntryProps) {
@@ -315,23 +318,60 @@ export function WordEntry(props: WordEntryProps) {
         </div>
 
         {/* Anki button */}
-        {props.ankiNoteId !== undefined && (
-          <button
-            type="button"
-            class="tp:ml-2 tp:mt-0.5 tp:p-0 tp:border-0 tp:bg-transparent tp:cursor-pointer tp:leading-none"
-            onClick={(e) => {
-              e.stopPropagation();
-              if (props.ankiNoteId === null) {
-                props.onAnkiAdd?.(props.entry);
-              } else if (typeof props.ankiNoteId === 'number') {
-                props.onAnkiOpen?.(props.ankiNoteId);
-              }
-            }}
-            title={props.ankiNoteId === null ? 'Add to Anki' : 'Open in Anki'}
-          >
-            {props.ankiNoteId === null ? <AnkiAdd /> : <AnkiOpen />}
-          </button>
-        )}
+        {props.ankiNoteId !== undefined &&
+          (() => {
+            const isDisconnected = props.ankiConnected === false;
+            const isChecking = props.ankiConnected === undefined;
+            const isAdding = props.ankiAdding === true;
+            const hasError = !!props.ankiError;
+            const isDisabled = isDisconnected || isChecking || isAdding;
+
+            let title: string;
+            if (hasError) {
+              title = props.ankiError!;
+            } else if (isDisconnected) {
+              title =
+                'Anki is not available \u2014 is Anki running with AnkiConnect installed?';
+            } else if (isChecking) {
+              title = 'Checking Anki connection\u2026';
+            } else if (isAdding) {
+              title = 'Adding to Anki\u2026';
+            } else if (props.ankiNoteId === null) {
+              title = 'Add to Anki';
+            } else {
+              title = 'Open in Anki';
+            }
+
+            return (
+              <button
+                type="button"
+                class={classes(
+                  'tp:ml-2 tp:mt-0.5 tp:p-0 tp:border-0 tp:bg-transparent tp:leading-none',
+                  'tp:transition-opacity tp:duration-150',
+                  isDisabled
+                    ? 'tp:opacity-30 tp:cursor-not-allowed'
+                    : 'tp:cursor-pointer',
+                  hasError && 'tp:opacity-70'
+                )}
+                disabled={isDisabled}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (props.ankiNoteId === null) {
+                    props.onAnkiAdd?.(props.entry);
+                  } else if (typeof props.ankiNoteId === 'number') {
+                    props.onAnkiOpen?.(props.ankiNoteId, props.entry.id);
+                  }
+                }}
+                title={title}
+              >
+                {props.ankiNoteId === null ? (
+                  <AnkiAdd color={hasError ? '#ef4444' : undefined} />
+                ) : (
+                  <AnkiOpen color={hasError ? '#ef4444' : undefined} />
+                )}
+              </button>
+            );
+          })()}
       </div>
 
       {!props.config.readingOnly && (
