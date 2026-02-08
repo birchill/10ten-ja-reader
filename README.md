@@ -85,6 +85,8 @@
 
   Configure your deck, note type, and field mapping (Expression, Reading, Meaning, Sentence) in the extension settings.
 
+  > **Note:** Anki integration requires desktop Anki with the AnkiConnect add-on and is not available on iOS.
+
 - Smart popup positioning
 - Support for vertical text and text in SVG images
 - Minimal memory usage

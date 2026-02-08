@@ -1,6 +1,7 @@
 import type { ContentConfigParams } from '../common/content-config-params';
 import { getHoverCapabilityMql, getMouseCapabilityMql } from '../utils/device';
 import type { Entries, Overwrite } from '../utils/type-helpers';
+import { isIOS } from '../utils/ua-utils';
 
 export type ContentConfigChange =
   | Overwrite<
@@ -119,6 +120,11 @@ export class ContentConfig implements ContentConfigParams {
     return this.params.accentDisplay;
   }
   get ankiEnabled() {
+    // Anki integration requires desktop Anki + AnkiConnect which is
+    // unavailable on iOS.
+    if (isIOS()) {
+      return false;
+    }
     return this.params.ankiEnabled;
   }
   get ankiDeck() {
