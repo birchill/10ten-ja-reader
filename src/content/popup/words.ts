@@ -50,6 +50,7 @@ export function renderWordEntries({
         ankiNoteType: options.ankiNoteType,
         ankiFieldMapping: options.ankiFieldMapping,
         sentence: options.sentence,
+        url: options.url,
       })
     ),
     containerElement

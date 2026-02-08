@@ -19,7 +19,17 @@ import { SectionHeading } from './SectionHeading';
 import { useConfigValue } from './use-config-value';
 
 /** The 10ten fields available for mapping to Anki note type fields. */
-const TENKEN_FIELDS = ['Expression', 'Reading', 'Meaning', 'Sentence'] as const;
+const TENKEN_FIELDS = [
+  'Expression',
+  'Reading',
+  'Meaning',
+  'Sentence',
+  'Romaji',
+  'Pitch Accent',
+  'Part of Speech',
+  'Deinflection',
+  'URL',
+] as const;
 
 type Props = { config: Config };
 

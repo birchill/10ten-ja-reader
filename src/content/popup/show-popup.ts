@@ -86,6 +86,7 @@ export type ShowPopupOptions = {
   ankiNoteType?: string;
   ankiFieldMapping?: Record<string, string>;
   sentence?: string;
+  url?: string;
 };
 
 export type StartCopyCallback = (

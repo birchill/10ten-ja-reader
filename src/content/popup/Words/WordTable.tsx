@@ -43,6 +43,7 @@ export type WordTableProps = {
   ankiNoteType?: string;
   ankiFieldMapping?: Record<string, string>;
   sentence?: string;
+  url?: string;
 };
 
 export const WordTable = (props: WordTableProps) => {
@@ -136,7 +137,10 @@ export const WordTable = (props: WordTableProps) => {
         return;
       }
 
-      const tentenFields = extractAnkiFields(entry, props.sentence);
+      const tentenFields = extractAnkiFields(entry, {
+        sentence: props.sentence,
+        url: props.url,
+      });
       const fields = mapAnkiFields(tentenFields, ankiFieldMapping);
 
       try {
@@ -157,7 +161,7 @@ export const WordTable = (props: WordTableProps) => {
         console.error('[10ten-ja-reader] Failed to add Anki note:', e);
       }
     },
-    [ankiDeck, ankiNoteType, ankiFieldMapping, props.sentence]
+    [ankiDeck, ankiNoteType, ankiFieldMapping, props.sentence, props.url]
   );
 
   const onAnkiOpen = useCallback(async (noteId: number) => {

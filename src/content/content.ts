@@ -2287,6 +2287,7 @@ export class ContentHandler {
       ankiNoteType: this.config.ankiNoteType,
       ankiFieldMapping: this.config.ankiFieldMapping,
       sentence: this.getSentenceFromContext(),
+      url: window.location.href,
     };
 
     const showPopupResult = showPopup(this.currentSearchResult, popupOptions);
