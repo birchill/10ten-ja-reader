@@ -82,6 +82,11 @@ export const WordTable = (props: WordTableProps) => {
   // Set of entry IDs currently being added to Anki
   const [ankiAddingIds, setAnkiAddingIds] = useState<Set<number>>(new Set());
 
+  // Ref that mirrors ankiAddingIds so the sweep effect can read the latest
+  // value without re-triggering when the user clicks "Add".
+  const ankiAddingIdsRef = useRef(ankiAddingIds);
+  ankiAddingIdsRef.current = ankiAddingIds;
+
   // Map from entry ID to error message (auto-cleared after a timeout)
   const [ankiErrors, setAnkiErrors] = useState<Map<number, string>>(new Map());
 
@@ -93,7 +98,7 @@ export const WordTable = (props: WordTableProps) => {
   // Check note existence for each entry when popup opens.
   // Also detects whether AnkiConnect is reachable.
   useEffect(() => {
-    if (!ankiEnabled || !ankiDeck) {
+    if (!ankiEnabled || !ankiDeck || !ankiNoteType) {
       setAnkiNoteIds(new Map());
       setAnkiConnected(null);
       return;
@@ -102,7 +107,6 @@ export const WordTable = (props: WordTableProps) => {
     let cancelled = false;
 
     void (async () => {
-      const newMap = new Map<number, number | null>();
       let anySucceeded = false;
       let anyFailed = false;
 
@@ -134,11 +138,26 @@ export const WordTable = (props: WordTableProps) => {
         return;
       }
 
-      for (const { id, noteId } of results) {
-        newMap.set(id, noteId);
-      }
-
-      setAnkiNoteIds(newMap);
+      // Merge sweep results into existing state rather than replacing it.
+      // This avoids overwriting noteIds that were set by a concurrent
+      // onAnkiAdd call while the sweep was in flight.
+      const addingIds = ankiAddingIdsRef.current;
+      setAnkiNoteIds((prev) => {
+        const merged = new Map(prev);
+        for (const { id, noteId } of results) {
+          // Never overwrite a real noteId (from a successful add) with null
+          const existing = merged.get(id);
+          if (typeof existing === 'number') {
+            continue;
+          }
+          // Don't write null for entries currently being added
+          if (noteId === null && addingIds.has(id)) {
+            continue;
+          }
+          merged.set(id, noteId);
+        }
+        return merged;
+      });
 
       // If all calls failed, Anki is unreachable.
       // If at least one succeeded, it's connected.
@@ -152,7 +171,7 @@ export const WordTable = (props: WordTableProps) => {
     return () => {
       cancelled = true;
     };
-  }, [ankiEnabled, ankiDeck, entries]);
+  }, [ankiEnabled, ankiDeck, ankiNoteType, entries]);
 
   const onAnkiAdd = useCallback(
     async (entry: WordResult) => {
@@ -342,7 +361,7 @@ export const WordTable = (props: WordTableProps) => {
               config={props.config}
               selectState={selectState}
               ankiNoteId={
-                ankiEnabled && ankiDeck
+                ankiEnabled && ankiDeck && ankiNoteType
                   ? (ankiNoteIds.get(entry.id) ?? null)
                   : undefined
               }
