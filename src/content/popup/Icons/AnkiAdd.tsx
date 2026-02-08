@@ -1,5 +1,5 @@
 /**
- * Placeholder "+" icon for adding an Anki card.
+ * "+" icon for adding an Anki card.
  */
 export function AnkiAdd({ color }: { color?: string }) {
   return (

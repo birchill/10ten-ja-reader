@@ -1,5 +1,5 @@
 /**
- * Placeholder dictionary/book icon for opening an existing Anki card.
+ * dictionary/book icon for opening an existing Anki card.
  */
 export function AnkiOpen({ color }: { color?: string }) {
   return (
