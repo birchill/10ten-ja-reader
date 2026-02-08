@@ -75,6 +75,11 @@
     "storage",
     "unlimitedStorage"
   ],
+  /*#if mv3*/
+  "host_permissions": [
+    "http://127.0.0.1/*"
+  ],
+  /*#endif*/
   "background": {
     /*#if use_event_page */
     "persistent": false,

@@ -118,6 +118,18 @@ export class ContentConfig implements ContentConfigParams {
   get accentDisplay() {
     return this.params.accentDisplay;
   }
+  get ankiEnabled() {
+    return this.params.ankiEnabled;
+  }
+  get ankiDeck() {
+    return this.params.ankiDeck;
+  }
+  get ankiNoteType() {
+    return this.params.ankiNoteType;
+  }
+  get ankiFieldMapping() {
+    return this.params.ankiFieldMapping;
+  }
   get autoExpand() {
     return this.params.autoExpand;
   }

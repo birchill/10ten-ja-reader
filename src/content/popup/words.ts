@@ -45,6 +45,11 @@ export function renderWordEntries({
         },
         copyState: options.copyState,
         onStartCopy: options.onStartCopy,
+        ankiEnabled: options.ankiEnabled,
+        ankiDeck: options.ankiDeck,
+        ankiNoteType: options.ankiNoteType,
+        ankiFieldMapping: options.ankiFieldMapping,
+        sentence: options.sentence,
       })
     ),
     containerElement

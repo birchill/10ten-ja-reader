@@ -18,6 +18,21 @@ export const BackgroundRequestSchema = discriminator('type', {
   //
   // Requests for the background page
   //
+  ankiTestConnection: s.type({}),
+  ankiGetDecks: s.type({}),
+  ankiGetNoteTypes: s.type({}),
+  ankiGetModelFields: s.type({ model: s.string() }),
+  ankiAddNote: s.type({
+    deckName: s.string(),
+    modelName: s.string(),
+    fields: s.record(s.string(), s.string()),
+  }),
+  ankiFindNote: s.type({
+    deckName: s.string(),
+    expression: s.string(),
+    reading: s.string(),
+  }),
+  ankiOpenNote: s.type({ noteId: s.number() }),
   canHoverChanged: s.type({ value: s.boolean() }),
   disabled: s.type({}),
   disableMouseInteraction: s.type({}),

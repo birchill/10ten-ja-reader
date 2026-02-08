@@ -6,6 +6,8 @@ import { useLocale } from '../../../common/i18n';
 import { highPriorityLabels } from '../../../common/priority-labels';
 import { classes } from '../../../utils/classes';
 
+import { AnkiAdd } from '../Icons/AnkiAdd';
+import { AnkiOpen } from '../Icons/AnkiOpen';
 import { Star } from '../Icons/Star';
 import { usePopupOptions } from '../options-context';
 import { serializeReasonChains } from '../serialize-reasons';
@@ -34,6 +36,10 @@ export type WordEntryProps = {
   selectState: SelectState;
   onPointerUp?: (evt: PointerEvent) => void;
   onClick?: (evt: MouseEvent) => void;
+  // Anki integration
+  ankiNoteId?: number | null; // undefined = disabled/loading, null = not found, number = exists
+  onAnkiAdd?: (entry: WordResult) => void;
+  onAnkiOpen?: (noteId: number) => void;
 };
 
 export function WordEntry(props: WordEntryProps) {
@@ -163,147 +169,168 @@ export function WordEntry(props: WordEntryProps) {
       onPointerUp={props.onPointerUp}
       onClick={props.onClick}
     >
-      <div class="tp:space-x-4">
-        {searchOnlyMatch && (
-          <div class="tp:mb-1 tp:text-sm tp:opacity-70">
-            {t('content_sk_match_src', searchOnlyMatch)}
-          </div>
-        )}
+      <div class="tp:flex tp:items-start tp:justify-between">
+        <div class="tp:space-x-4 tp:flex-1">
+          {searchOnlyMatch && (
+            <div class="tp:mb-1 tp:text-sm tp:opacity-70">
+              {t('content_sk_match_src', searchOnlyMatch)}
+            </div>
+          )}
 
-        {matchingKanji.length > 0 && (
-          <span
-            class={classes(
-              'tp:text-1.5xl',
-              'tp:text-(--primary-highlight)',
-              'tp:group-data-selected:text-(--selected-highlight)',
-              interactive && 'tp:group-hover:text-(--selected-highlight)'
-            )}
-            lang="ja"
-          >
-            {matchingKanji.map((kanji, index) => {
-              const ki = new Set(kanji.i || []);
+          {matchingKanji.length > 0 && (
+            <span
+              class={classes(
+                'tp:text-1.5xl',
+                'tp:text-(--primary-highlight)',
+                'tp:group-data-selected:text-(--selected-highlight)',
+                interactive && 'tp:group-hover:text-(--selected-highlight)'
+              )}
+              lang="ja"
+            >
+              {matchingKanji.map((kanji, index) => {
+                const ki = new Set(kanji.i || []);
 
-              const dimmed =
-                // Always dim search-only kanji
-                ki.has('sK') ||
-                // Dim the non-matching kanji unless there are none because we
-                // matched only on search-only kanji headwords.
-                (!kanji.match && !matchedOnlyOnSearchOnlyKanji) ||
-                // If we matched on the reading, dim any kanji headwords that are
-                // irregular, old, or rare.
-                (matchedOnKana &&
-                  (ki.has('iK') || ki.has('oK') || ki.has('rK')));
+                const dimmed =
+                  // Always dim search-only kanji
+                  ki.has('sK') ||
+                  // Dim the non-matching kanji unless there are none because we
+                  // matched only on search-only kanji headwords.
+                  (!kanji.match && !matchedOnlyOnSearchOnlyKanji) ||
+                  // If we matched on the reading, dim any kanji headwords that are
+                  // irregular, old, or rare.
+                  (matchedOnKana &&
+                    (ki.has('iK') || ki.has('oK') || ki.has('rK')));
 
-              return (
-                <Fragment key={kanji.ent}>
-                  {index > 0 && <span class="tp:opacity-60">、</span>}
-                  <span
-                    class={classes('tp:space-x-2', dimmed && 'tp:opacity-60')}
-                  >
-                    <span class="tp:space-x-1">
-                      <span>{kanji.ent}</span>
-                      {!!kanji.i?.length && <HeadwordInfo info={kanji.i} />}
-                      {props.config.showPriority && !!kanji.p?.length && (
-                        <PriorityMark priority={kanji.p} />
-                      )}
-                    </span>
-
-                    {props.config.waniKaniVocabDisplay !== 'hide' &&
-                      kanji.wk && (
-                        <WaniKanjiLevelTag level={kanji.wk} ent={kanji.ent} />
-                      )}
-                    {props.config.bunproDisplay && kanji.bv && (
-                      <BunproTag data={kanji.bv} type="vocab" />
-                    )}
-                    {props.config.bunproDisplay && kanji.bg && (
-                      <BunproTag data={kanji.bg} type="grammar" />
-                    )}
-                  </span>
-                </Fragment>
-              );
-            })}
-          </span>
-        )}
-
-        {matchingKana.length > 0 && (
-          <span
-            class={classes(
-              'tp:text-xl',
-              'tp:text-(--reading-highlight)',
-              'tp:group-data-selected:text-(--selected-reading-highlight)',
-              interactive &&
-                'tp:group-hover:text-(--selected-reading-highlight)'
-            )}
-            lang="ja"
-          >
-            {matchingKana.map((kana, index) => {
-              // Dim irrelevant headwords
-              const dimmed =
-                // If we looked up by kanji, dim any kana headwords that are
-                // irregular, old, or rare.
-                !matchedOnKana &&
-                (kana.i?.includes('ik') ||
-                  kana.i?.includes('ok') ||
-                  kana.i?.includes('rk'));
-
-              return (
-                <Fragment key={kana.ent}>
-                  {index > 0 && <span class="tp:opacity-60">、</span>}
-                  <span
-                    class={classes('tp:space-x-2', dimmed && 'tp:opacity-60')}
-                  >
-                    <span class="tp:space-x-1">
-                      <span>
-                        <Reading
-                          kana={kana}
-                          accentDisplay={props.config.accentDisplay}
-                        />
+                return (
+                  <Fragment key={kanji.ent}>
+                    {index > 0 && <span class="tp:opacity-60">、</span>}
+                    <span
+                      class={classes('tp:space-x-2', dimmed && 'tp:opacity-60')}
+                    >
+                      <span class="tp:space-x-1">
+                        <span>{kanji.ent}</span>
+                        {!!kanji.i?.length && <HeadwordInfo info={kanji.i} />}
+                        {props.config.showPriority && !!kanji.p?.length && (
+                          <PriorityMark priority={kanji.p} />
+                        )}
                       </span>
-                      {!!kana.i?.length && <HeadwordInfo info={kana.i} />}
-                      {props.config.showPriority && !!kana.p?.length && (
-                        <PriorityMark priority={kana.p} />
+
+                      {props.config.waniKaniVocabDisplay !== 'hide' &&
+                        kanji.wk && (
+                          <WaniKanjiLevelTag level={kanji.wk} ent={kanji.ent} />
+                        )}
+                      {props.config.bunproDisplay && kanji.bv && (
+                        <BunproTag data={kanji.bv} type="vocab" />
+                      )}
+                      {props.config.bunproDisplay && kanji.bg && (
+                        <BunproTag data={kanji.bg} type="grammar" />
                       )}
                     </span>
-                    {props.config.bunproDisplay && kana.bv && (
-                      <BunproTag data={kana.bv} type="vocab" />
-                    )}
-                    {props.config.bunproDisplay && kana.bg && (
-                      <BunproTag data={kana.bg} type="grammar" />
-                    )}
-                  </span>
-                </Fragment>
-              );
-            })}
-          </span>
-        )}
+                  </Fragment>
+                );
+              })}
+            </span>
+          )}
 
-        {props.config.showRomaji && matchingKana.length && (
-          <span
-            class={classes(
-              'tp:text-base',
-              'tp:text-(--reading-highlight)',
-              'tp:group-data-selected:text-(--selected-reading-highlight)',
-              interactive &&
-                'tp:group-hover:text-(--selected-reading-highlight)'
-            )}
-            lang="ja"
-          >
-            {matchingKana.map((r) => r.romaji).join(', ')}
-          </span>
-        )}
+          {matchingKana.length > 0 && (
+            <span
+              class={classes(
+                'tp:text-xl',
+                'tp:text-(--reading-highlight)',
+                'tp:group-data-selected:text-(--selected-reading-highlight)',
+                interactive &&
+                  'tp:group-hover:text-(--selected-reading-highlight)'
+              )}
+              lang="ja"
+            >
+              {matchingKana.map((kana, index) => {
+                // Dim irrelevant headwords
+                const dimmed =
+                  // If we looked up by kanji, dim any kana headwords that are
+                  // irregular, old, or rare.
+                  !matchedOnKana &&
+                  (kana.i?.includes('ik') ||
+                    kana.i?.includes('ok') ||
+                    kana.i?.includes('rk'));
 
-        {!!entry.reasonChains?.length && (
-          <span
-            class={classes(
-              'tp:text-sm',
-              'tp:text-(--conj-color)',
-              'tp:group-data-selected:text-(--selected-conj-color)',
-              interactive && 'tp:group-hover:text-(--selected-conj-color)'
-            )}
-            lang={langTag}
+                return (
+                  <Fragment key={kana.ent}>
+                    {index > 0 && <span class="tp:opacity-60">、</span>}
+                    <span
+                      class={classes('tp:space-x-2', dimmed && 'tp:opacity-60')}
+                    >
+                      <span class="tp:space-x-1">
+                        <span>
+                          <Reading
+                            kana={kana}
+                            accentDisplay={props.config.accentDisplay}
+                          />
+                        </span>
+                        {!!kana.i?.length && <HeadwordInfo info={kana.i} />}
+                        {props.config.showPriority && !!kana.p?.length && (
+                          <PriorityMark priority={kana.p} />
+                        )}
+                      </span>
+                      {props.config.bunproDisplay && kana.bv && (
+                        <BunproTag data={kana.bv} type="vocab" />
+                      )}
+                      {props.config.bunproDisplay && kana.bg && (
+                        <BunproTag data={kana.bg} type="grammar" />
+                      )}
+                    </span>
+                  </Fragment>
+                );
+              })}
+            </span>
+          )}
+
+          {props.config.showRomaji && matchingKana.length && (
+            <span
+              class={classes(
+                'tp:text-base',
+                'tp:text-(--reading-highlight)',
+                'tp:group-data-selected:text-(--selected-reading-highlight)',
+                interactive &&
+                  'tp:group-hover:text-(--selected-reading-highlight)'
+              )}
+              lang="ja"
+            >
+              {matchingKana.map((r) => r.romaji).join(', ')}
+            </span>
+          )}
+
+          {!!entry.reasonChains?.length && (
+            <span
+              class={classes(
+                'tp:text-sm',
+                'tp:text-(--conj-color)',
+                'tp:group-data-selected:text-(--selected-conj-color)',
+                interactive && 'tp:group-hover:text-(--selected-conj-color)'
+              )}
+              lang={langTag}
+            >
+              {`(${serializeReasonChains(entry.reasonChains, t)})`}
+            </span>
+          )}
+        </div>
+
+        {/* Anki button */}
+        {props.ankiNoteId !== undefined && (
+          <button
+            type="button"
+            class="tp:ml-2 tp:mt-0.5 tp:p-0 tp:border-0 tp:bg-transparent tp:cursor-pointer tp:leading-none"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (props.ankiNoteId === null) {
+                props.onAnkiAdd?.(props.entry);
+              } else if (typeof props.ankiNoteId === 'number') {
+                props.onAnkiOpen?.(props.ankiNoteId);
+              }
+            }}
+            title={props.ankiNoteId === null ? 'Add to Anki' : 'Open in Anki'}
           >
-            {`(${serializeReasonChains(entry.reasonChains, t)})`}
-          </span>
+            {props.ankiNoteId === null ? <AnkiAdd /> : <AnkiOpen />}
+          </button>
         )}
       </div>
 

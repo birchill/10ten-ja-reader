@@ -56,6 +56,10 @@ type KanjiReferenceFlagsV2 = { [key in ReferenceAbbreviation]?: boolean };
 
 interface Settings {
   accentDisplay?: AccentDisplay;
+  ankiEnabled?: boolean;
+  ankiDeck?: string;
+  ankiNoteType?: string;
+  ankiFieldMapping?: Record<string, string>;
   autoExpand?: Array<AutoExpandableEntry>;
   bunproDisplay?: boolean;
   contextMenuEnable?: boolean;
@@ -457,6 +461,88 @@ export class Config {
 
     this.settings.accentDisplay = value;
     void browser.storage.sync.set({ accentDisplay: value });
+  }
+
+  // ankiEnabled: Defaults to false
+
+  get ankiEnabled(): boolean {
+    return this.settings.ankiEnabled ?? false;
+  }
+
+  set ankiEnabled(value: boolean) {
+    if (this.settings.ankiEnabled === value) {
+      return;
+    }
+
+    if (value) {
+      this.settings.ankiEnabled = value;
+      void browser.storage.sync.set({ ankiEnabled: value });
+    } else {
+      this.settings.ankiEnabled = undefined;
+      void browser.storage.sync.remove('ankiEnabled');
+    }
+  }
+
+  // ankiDeck: Defaults to ''
+
+  get ankiDeck(): string {
+    return this.settings.ankiDeck ?? '';
+  }
+
+  set ankiDeck(value: string) {
+    if (this.settings.ankiDeck === value) {
+      return;
+    }
+
+    if (value) {
+      this.settings.ankiDeck = value;
+      void browser.storage.sync.set({ ankiDeck: value });
+    } else {
+      this.settings.ankiDeck = undefined;
+      void browser.storage.sync.remove('ankiDeck');
+    }
+  }
+
+  // ankiNoteType: Defaults to ''
+
+  get ankiNoteType(): string {
+    return this.settings.ankiNoteType ?? '';
+  }
+
+  set ankiNoteType(value: string) {
+    if (this.settings.ankiNoteType === value) {
+      return;
+    }
+
+    if (value) {
+      this.settings.ankiNoteType = value;
+      void browser.storage.sync.set({ ankiNoteType: value });
+    } else {
+      this.settings.ankiNoteType = undefined;
+      void browser.storage.sync.remove('ankiNoteType');
+    }
+  }
+
+  // ankiFieldMapping: Defaults to {}
+
+  get ankiFieldMapping(): Record<string, string> {
+    return this.settings.ankiFieldMapping ?? {};
+  }
+
+  set ankiFieldMapping(value: Record<string, string>) {
+    if (
+      JSON.stringify(this.settings.ankiFieldMapping) === JSON.stringify(value)
+    ) {
+      return;
+    }
+
+    if (Object.keys(value).length > 0) {
+      this.settings.ankiFieldMapping = value;
+      void browser.storage.sync.set({ ankiFieldMapping: value });
+    } else {
+      this.settings.ankiFieldMapping = undefined;
+      void browser.storage.sync.remove('ankiFieldMapping');
+    }
   }
 
   // autoExpand: Defaults to an empty array
@@ -1359,6 +1445,10 @@ export class Config {
   get contentConfig(): ContentConfigParams {
     return {
       accentDisplay: this.accentDisplay,
+      ankiEnabled: this.ankiEnabled,
+      ankiDeck: this.ankiDeck,
+      ankiNoteType: this.ankiNoteType,
+      ankiFieldMapping: this.ankiFieldMapping,
       autoExpand: this.autoExpand,
       bunproDisplay: this.bunproDisplay,
       copyHeadwords: this.copyHeadwords,

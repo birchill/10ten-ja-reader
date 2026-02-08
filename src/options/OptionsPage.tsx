@@ -2,6 +2,7 @@ import type { Config } from '../common/config';
 import { I18nProvider } from '../common/i18n';
 import { possiblyHasPhysicalKeyboard } from '../utils/device';
 
+import { AnkiSettings } from './AnkiSettings';
 import { CopySettings } from './CopySettings';
 import { CurrencySettings } from './CurrencySettings';
 import { DictionaryDataSettings } from './DictionaryDataSettings';
@@ -29,6 +30,7 @@ export function OptionsPage(props: Props) {
         <UnitSettings config={props.config} />
         {hasKeyboard && <KeyboardSettings config={props.config} />}
         <CopySettings config={props.config} />
+        <AnkiSettings config={props.config} />
         <PuckSettings config={props.config} />
         <DictionaryLanguageSettings config={props.config} />
         <KanjiReferenceSettings config={props.config} />

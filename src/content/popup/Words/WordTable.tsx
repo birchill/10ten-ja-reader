@@ -1,5 +1,6 @@
 import { Fragment } from 'preact';
-import { useRef } from 'preact/hooks';
+import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import browser from 'webextension-polyfill';
 
 import type { WordResult } from '../../../background/search-result';
 import type {
@@ -12,6 +13,7 @@ import type { SelectionMeta } from '../../meta';
 import type { NamePreview as QueryNamePreview } from '../../query';
 
 import { MetadataContainer } from '../Metadata/MetadataContainer';
+import { extractAnkiFields, mapAnkiFields } from '../anki-fields';
 import type { CopyState } from '../copy-state';
 import { usePopupOptions } from '../options-context';
 import { getSelectedIndex } from '../selected-index';
@@ -35,6 +37,12 @@ export type WordTableProps = {
   config: WordTableConfig;
   copyState: CopyState;
   onStartCopy?: StartCopyCallback;
+  // Anki integration
+  ankiEnabled?: boolean;
+  ankiDeck?: string;
+  ankiNoteType?: string;
+  ankiFieldMapping?: Record<string, string>;
+  sentence?: string;
 };
 
 export const WordTable = (props: WordTableProps) => {
@@ -59,6 +67,106 @@ export const WordTable = (props: WordTableProps) => {
 
   const lastPointerType = useRef('touch');
   let longestMatch = 0;
+
+  // ---------- Anki integration ----------
+
+  // Map from entry id to noteId (null = not found, number = exists)
+  const [ankiNoteIds, setAnkiNoteIds] = useState<Map<number, number | null>>(
+    new Map()
+  );
+
+  const ankiEnabled = props.ankiEnabled ?? false;
+  const ankiDeck = props.ankiDeck ?? '';
+  const ankiNoteType = props.ankiNoteType ?? '';
+  const ankiFieldMapping = props.ankiFieldMapping ?? {};
+
+  // Check note existence for each entry when popup opens
+  useEffect(() => {
+    if (!ankiEnabled || !ankiDeck) {
+      setAnkiNoteIds(new Map());
+      return;
+    }
+
+    let cancelled = false;
+
+    (async () => {
+      const newMap = new Map<number, number | null>();
+
+      // Check all entries in parallel
+      const checks = entries.map(async (entry) => {
+        const matchingKanji = entry.k.find((k) => k.match);
+        const firstKana = entry.r[0];
+        const expression =
+          matchingKanji?.ent ?? entry.k[0]?.ent ?? firstKana?.ent ?? '';
+        const reading = (entry.r.find((r) => r.match) ?? firstKana)?.ent ?? '';
+
+        try {
+          const noteId = (await browser.runtime.sendMessage({
+            type: 'ankiFindNote',
+            deckName: ankiDeck,
+            expression,
+            reading,
+          })) as number | null;
+          return { id: entry.id, noteId };
+        } catch {
+          return { id: entry.id, noteId: null };
+        }
+      });
+
+      const results = await Promise.all(checks);
+      if (cancelled) {
+        return;
+      }
+
+      for (const { id, noteId } of results) {
+        newMap.set(id, noteId);
+      }
+
+      setAnkiNoteIds(newMap);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [ankiEnabled, ankiDeck, entries]);
+
+  const onAnkiAdd = useCallback(
+    async (entry: WordResult) => {
+      if (!ankiDeck || !ankiNoteType) {
+        return;
+      }
+
+      const tentenFields = extractAnkiFields(entry, props.sentence);
+      const fields = mapAnkiFields(tentenFields, ankiFieldMapping);
+
+      try {
+        const noteId = (await browser.runtime.sendMessage({
+          type: 'ankiAddNote',
+          deckName: ankiDeck,
+          modelName: ankiNoteType,
+          fields,
+        })) as number;
+
+        // Update state: switch from + to dictionary icon
+        setAnkiNoteIds((prev) => {
+          const next = new Map(prev);
+          next.set(entry.id, noteId);
+          return next;
+        });
+      } catch (e) {
+        console.error('[10ten-ja-reader] Failed to add Anki note:', e);
+      }
+    },
+    [ankiDeck, ankiNoteType, ankiFieldMapping, props.sentence]
+  );
+
+  const onAnkiOpen = useCallback(async (noteId: number) => {
+    try {
+      await browser.runtime.sendMessage({ type: 'ankiOpenNote', noteId });
+    } catch (e) {
+      console.error('[10ten-ja-reader] Failed to open Anki note:', e);
+    }
+  }, []);
 
   const gapClassMap: Record<FontSize, string> = {
     normal: 'tp:gap-1',
@@ -136,6 +244,13 @@ export const WordTable = (props: WordTableProps) => {
               entry={entry}
               config={props.config}
               selectState={selectState}
+              ankiNoteId={
+                ankiEnabled && ankiDeck
+                  ? (ankiNoteIds.get(entry.id) ?? null)
+                  : undefined
+              }
+              onAnkiAdd={onAnkiAdd}
+              onAnkiOpen={onAnkiOpen}
               onPointerUp={(evt) => {
                 lastPointerType.current = evt.pointerType;
               }}
