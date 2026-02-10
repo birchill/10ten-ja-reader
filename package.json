@@ -127,7 +127,7 @@
     "typescript-eslint": "8.54.0",
     "vitest": "4.0.18",
     "web-ext-plugin": "2.12.0",
-    "webpack": "5.104.1",
+    "webpack": "5.105.0",
     "webpack-bugsnag-plugins": "2.2.3",
     "webpack-preprocessor": "0.1.12",
     "webpack-utf8-bom": "1.4.0",
