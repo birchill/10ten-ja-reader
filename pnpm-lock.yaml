@@ -58,8 +58,8 @@ importers:
         specifier: 9.39.2
         version: 9.39.2
       '@release-it/keep-a-changelog':
-        specifier: 7.0.0
-        version: 7.0.0(release-it@19.2.4(@types/node@24.3.0))
+        specifier: 7.0.1
+        version: 7.0.1(release-it@19.2.4(@types/node@24.3.0))
       '@rspack/cli':
         specifier: 1.7.5
         version: 1.7.5(@rspack/core@1.7.5)(@types/express@4.17.23)(webpack@5.105.0)
@@ -1224,8 +1224,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@release-it/keep-a-changelog@7.0.0':
-    resolution: {integrity: sha512-POWxbrMpO/UjphgXku7LYL+BWyiCc0S4tprEMO1+iHSk/CXE8xs6VecfH9KJyQ9Ke3SY4VdHAbMQv/lmizr/lA==}
+  '@release-it/keep-a-changelog@7.0.1':
+    resolution: {integrity: sha512-5K0Z9QynUb77/c9wsLNo05/vOm4Jed10Mo7ZMSEWQtC6v8hAnLSRh9VmvbQaPT27EB4mLd4hQX8sW3yv4uK4qg==}
     engines: {node: ^20.9.0 || >=22.0.0}
     peerDependencies:
       release-it: ^18.0.0 || ^19.0.0
@@ -5016,6 +5016,11 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  semver@7.7.4:
+    resolution: {integrity: sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==}
+    engines: {node: '>=10'}
+    hasBin: true
+
   send@0.19.0:
     resolution: {integrity: sha512-dW41u5VfLXu8SJh5bwRmyYUbAoSB3c9uQh6L8h/KtsFREPWpbX1lrljJo186Jc4nmci/sGUZ9a0a0J2zgfq2hw==}
     engines: {node: '>= 0.8.0'}
@@ -6835,11 +6840,11 @@ snapshots:
       - bare-buffer
       - supports-color
 
-  '@release-it/keep-a-changelog@7.0.0(release-it@19.2.4(@types/node@24.3.0))':
+  '@release-it/keep-a-changelog@7.0.1(release-it@19.2.4(@types/node@24.3.0))':
     dependencies:
       detect-newline: 4.0.1
       release-it: 19.2.4(@types/node@24.3.0)
-      semver: 7.7.2
+      semver: 7.7.4
       string-template: 1.0.0
 
   '@rollup/rollup-android-arm-eabi@4.46.3':
@@ -11041,6 +11046,8 @@ snapshots:
   semver@7.7.2: {}
 
   semver@7.7.3: {}
+
+  semver@7.7.4: {}
 
   send@0.19.0:
     dependencies:
