@@ -133,13 +133,21 @@ jobs:
             -exportOptionsPlist "xcode13/ExportOptions-Mac.plist" \
             -exportPath $GITHUB_WORKSPACE/build/10ten-ja-reader.pkg
 
+      - name: Sanity check 1
+        run: |
+          ls ${{ github.workspace }}/build/
+
+      - name: Sanity check 2
+        run: |
+          ls $GITHUB_WORKSPACE/build/
+
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
           name: mac-packages
           path: |
-            $GITHUB_WORKSPACE/build/*.pkg
-            $GITHUB_WORKSPACE/build/*.ipa
+            ${{ github.workspace }}/build/*.ipa
+            ${{ github.workspace }}/build/*.pkg
           if-no-files-found: error
 
   release:
