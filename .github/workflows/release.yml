@@ -68,6 +68,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.bump.outputs.sha }}
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
