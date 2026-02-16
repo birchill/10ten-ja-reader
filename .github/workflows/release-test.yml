@@ -108,7 +108,7 @@ jobs:
             -project "xcode13/10ten Japanese Reader.xcodeproj" \
             -scheme "10ten Japanese Reader (iOS)" \
             -configuration Release \
-            -archivePath $PWD/build/10ten-iOS.xcarchive \
+            -archivePath $GITHUB_WORKSPACE/build/10ten-iOS.xcarchive \
             -destination 'generic/platform=iOS'
 
       - name: Build Mac app
@@ -117,27 +117,30 @@ jobs:
             -project "xcode13/10ten Japanese Reader.xcodeproj" \
             -scheme "10ten Japanese Reader (macOS)" \
             -configuration Release \
-            -archivePath $PWD/build/10ten-mac.xcarchive
+            -archivePath $GITHUB_WORKSPACE/build/10ten-mac.xcarchive
 
       - name: Export iOS app package
         run: |
           xcodebuild -exportArchive \
-            -archivePath $PWD/build/10ten-iOS.xcarchive \
+            -archivePath $GITHUB_WORKSPACE/build/10ten-iOS.xcarchive \
             -exportOptionsPlist "xcode13/ExportOptions-iOS.plist" \
-            -exportPath $PWD/build/10ten-ja-reader.ipa
+            -exportPath $GITHUB_WORKSPACE/build/10ten-ja-reader.ipa
 
       - name: Export Mac app package
         run: |
           xcodebuild -exportArchive \
-            -archivePath $PWD/build/10ten-mac.xcarchive \
+            -archivePath $GITHUB_WORKSPACE/build/10ten-mac.xcarchive \
             -exportOptionsPlist "xcode13/ExportOptions-Mac.plist" \
-            -exportPath $PWD/build/10ten-ja-reader.pkg
+            -exportPath $GITHUB_WORKSPACE/build/10ten-ja-reader.pkg
 
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
           name: mac-packages
-          path: $PWD/build/*.pkg,$PWD/build/*.ipa
+          path: |
+            $GITHUB_WORKSPACE/build/*.pkg
+            $GITHUB_WORKSPACE/build/*.ipa
+          if-no-files-found: error
 
   release:
     name: Create release
