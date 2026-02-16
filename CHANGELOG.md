@@ -8,6 +8,7 @@ app.
 
 ## [Unreleased]
 
+- Added Anki integration via AnkiConnect. You can now add vocabulary cards directly from the popup to your Anki decks. Configure your deck, note type, and field mapping in the extension settings. (Not available on iOS — requires desktop Anki with AnkiConnect.)
 - Fixed handling of hidden text
   ([#2710](https://github.com/birchill/10ten-ja-reader/pull/2710)).
 - Fixed pop-up being unscrollable in some cases

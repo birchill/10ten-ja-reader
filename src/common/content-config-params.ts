@@ -55,6 +55,19 @@ export interface ContentConfigParams {
   // Indicates the type of display to use for showing pitch accent information.
   accentDisplay: AccentDisplay;
 
+  // Whether Anki integration via AnkiConnect is enabled.
+  ankiEnabled: boolean;
+
+  // The Anki deck to add cards to.
+  ankiDeck: string;
+
+  // The Anki note type (model) to use when creating cards.
+  ankiNoteType: string;
+
+  // Mapping from 10ten field names (Expression, Reading, etc.) to the user's
+  // Anki note type field names.
+  ankiFieldMapping: Record<string, string>;
+
   // Which sections should have their entries expanded automatically rather than
   // being collapsed to show only the top entries.
   autoExpand: Array<AutoExpandableEntry>;

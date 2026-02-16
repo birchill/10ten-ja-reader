@@ -2281,6 +2281,13 @@ export class ContentHandler {
       switchDictionaryKeys: this.config.keys.nextDictionary,
       tabDisplay: this.config.tabDisplay,
       waniKaniVocabDisplay: this.config.waniKaniVocabDisplay,
+      // Anki integration
+      ankiEnabled: this.config.ankiEnabled,
+      ankiDeck: this.config.ankiDeck,
+      ankiNoteType: this.config.ankiNoteType,
+      ankiFieldMapping: this.config.ankiFieldMapping,
+      sentence: this.getSentenceFromContext(),
+      url: window.location.href,
     };
 
     const showPopupResult = showPopup(this.currentSearchResult, popupOptions);
@@ -2587,6 +2594,26 @@ export class ContentHandler {
     if (wasShowing && this.isTopMostWindow()) {
       void browser.runtime.sendMessage({ type: 'children:popupHidden' });
     }
+  }
+
+  /**
+   * Extract a sentence string from the current source context for Anki card
+   * creation. Returns undefined if no context is available.
+   */
+  getSentenceFromContext(): string | undefined {
+    const ctx = this.currentLookupParams?.sourceContext;
+    if (!ctx) {
+      return undefined;
+    }
+
+    const flatten = (parts: Array<string | { base: Array<string> }>): string =>
+      parts.map((p) => (typeof p === 'string' ? p : p.base.join(''))).join('');
+
+    const prelude = flatten(ctx.prelude);
+    const source = flatten(ctx.source);
+
+    const sentence = (prelude + source).trim();
+    return sentence || undefined;
   }
 
   getFixedPosition(): PopupPositionConstraints | undefined {

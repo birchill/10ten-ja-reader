@@ -1,5 +1,6 @@
 import { Fragment } from 'preact';
-import { useRef } from 'preact/hooks';
+import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import browser from 'webextension-polyfill';
 
 import type { WordResult } from '../../../background/search-result';
 import type {
@@ -12,6 +13,8 @@ import type { SelectionMeta } from '../../meta';
 import type { NamePreview as QueryNamePreview } from '../../query';
 
 import { MetadataContainer } from '../Metadata/MetadataContainer';
+import { extractAnkiFields, mapAnkiFields } from '../anki-fields';
+import { isAnkiConnectionError } from '../anki-utils';
 import type { CopyState } from '../copy-state';
 import { usePopupOptions } from '../options-context';
 import { getSelectedIndex } from '../selected-index';
@@ -35,6 +38,13 @@ export type WordTableProps = {
   config: WordTableConfig;
   copyState: CopyState;
   onStartCopy?: StartCopyCallback;
+  // Anki integration
+  ankiEnabled?: boolean;
+  ankiDeck?: string;
+  ankiNoteType?: string;
+  ankiFieldMapping?: Record<string, string>;
+  sentence?: string;
+  url?: string;
 };
 
 export const WordTable = (props: WordTableProps) => {
@@ -59,6 +69,240 @@ export const WordTable = (props: WordTableProps) => {
 
   const lastPointerType = useRef('touch');
   let longestMatch = 0;
+
+  // ---------- Anki integration ----------
+
+  // Map from entry id to noteId (null = not found, number = exists)
+  const [ankiNoteIds, setAnkiNoteIds] = useState<Map<number, number | null>>(
+    new Map()
+  );
+
+  // Whether AnkiConnect is reachable (null = still checking)
+  const [ankiConnected, setAnkiConnected] = useState<boolean | null>(null);
+
+  // Set of entry IDs currently being added to Anki
+  const [ankiAddingIds, setAnkiAddingIds] = useState<Set<number>>(new Set());
+
+  // Ref that mirrors ankiAddingIds so the sweep effect can read the latest
+  // value without re-triggering when the user clicks "Add".
+  const ankiAddingIdsRef = useRef(ankiAddingIds);
+  ankiAddingIdsRef.current = ankiAddingIds;
+
+  // Map from entry ID to error message (auto-cleared after a timeout)
+  const [ankiErrors, setAnkiErrors] = useState<Map<number, string>>(new Map());
+
+  const ankiEnabled = props.ankiEnabled ?? false;
+  const ankiDeck = props.ankiDeck ?? '';
+  const ankiNoteType = props.ankiNoteType ?? '';
+  const ankiFieldMapping = props.ankiFieldMapping ?? {};
+
+  // Check note existence for each entry when popup opens.
+  // Also detects whether AnkiConnect is reachable.
+  useEffect(() => {
+    if (!ankiEnabled || !ankiDeck || !ankiNoteType) {
+      setAnkiNoteIds(new Map());
+      setAnkiConnected(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    void (async () => {
+      let anySucceeded = false;
+      let anyFailed = false;
+
+      // Check all entries in parallel
+      const checks = entries.map(async (entry) => {
+        const matchingKanji = entry.k.find((k) => k.match);
+        const firstKana = entry.r[0];
+        const expression =
+          matchingKanji?.ent ?? entry.k[0]?.ent ?? firstKana?.ent ?? '';
+        const reading = (entry.r.find((r) => r.match) ?? firstKana)?.ent ?? '';
+
+        try {
+          const noteId = (await browser.runtime.sendMessage({
+            type: 'ankiFindNote',
+            deckName: ankiDeck,
+            expression,
+            reading,
+          })) as number | null;
+          // Guard against sendMessage silently returning undefined
+          // (e.g. background script error not propagating)
+          if (noteId === undefined) {
+            anyFailed = true;
+            return { id: entry.id, noteId: null };
+          }
+          anySucceeded = true;
+          return { id: entry.id, noteId };
+        } catch {
+          anyFailed = true;
+          return { id: entry.id, noteId: null };
+        }
+      });
+
+      const results = await Promise.all(checks);
+      if (cancelled) {
+        return;
+      }
+
+      // Merge sweep results into existing state rather than replacing it.
+      // This avoids overwriting noteIds that were set by a concurrent
+      // onAnkiAdd call while the sweep was in flight.
+      const addingIds = ankiAddingIdsRef.current;
+      setAnkiNoteIds((prev) => {
+        const merged = new Map(prev);
+        for (const { id, noteId } of results) {
+          // Never overwrite a real noteId (from a successful add) with null
+          const existing = merged.get(id);
+          if (typeof existing === 'number') {
+            continue;
+          }
+          // Don't write null for entries currently being added
+          if (noteId === null && addingIds.has(id)) {
+            continue;
+          }
+          merged.set(id, noteId);
+        }
+        return merged;
+      });
+
+      // If all calls failed, Anki is unreachable.
+      // If at least one succeeded, it's connected.
+      if (anySucceeded) {
+        setAnkiConnected(true);
+      } else if (anyFailed) {
+        setAnkiConnected(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [ankiEnabled, ankiDeck, ankiNoteType, entries]);
+
+  const onAnkiAdd = useCallback(
+    async (entry: WordResult) => {
+      if (!ankiDeck || !ankiNoteType) {
+        return;
+      }
+
+      // Prevent double-clicks
+      if (ankiAddingIds.has(entry.id)) {
+        return;
+      }
+
+      setAnkiAddingIds((prev) => new Set(prev).add(entry.id));
+
+      // Clear any previous error for this entry
+      setAnkiErrors((prev) => {
+        if (!prev.has(entry.id)) {
+          return prev;
+        }
+        const next = new Map(prev);
+        next.delete(entry.id);
+        return next;
+      });
+
+      const tentenFields = extractAnkiFields(entry, {
+        sentence: props.sentence,
+        url: props.url,
+      });
+      const fields = mapAnkiFields(tentenFields, ankiFieldMapping);
+
+      try {
+        const noteId = (await browser.runtime.sendMessage({
+          type: 'ankiAddNote',
+          deckName: ankiDeck,
+          modelName: ankiNoteType,
+          fields,
+        })) as number;
+
+        // Update state: switch from + to dictionary icon
+        setAnkiNoteIds((prev) => {
+          const next = new Map(prev);
+          next.set(entry.id, noteId);
+          return next;
+        });
+      } catch (e) {
+        console.error('[10ten-ja-reader] Failed to add Anki note:', e);
+
+        const message =
+          e instanceof Error ? e.message : 'Failed to add note to Anki';
+
+        // If this is a connection error, mark Anki as disconnected so the
+        // button stays disabled with the appropriate tooltip for all entries.
+        if (isAnkiConnectionError(message)) {
+          setAnkiConnected(false);
+        } else {
+          // Only show per-entry error (with auto-clear) for non-connection
+          // errors (e.g. duplicate note, invalid field, etc.)
+          setAnkiErrors((prev) => {
+            const next = new Map(prev);
+            next.set(entry.id, message);
+            return next;
+          });
+
+          const entryId = entry.id;
+          setTimeout(() => {
+            setAnkiErrors((prev) => {
+              if (!prev.has(entryId)) {
+                return prev;
+              }
+              const next = new Map(prev);
+              next.delete(entryId);
+              return next;
+            });
+          }, 4000);
+        }
+      } finally {
+        setAnkiAddingIds((prev) => {
+          const next = new Set(prev);
+          next.delete(entry.id);
+          return next;
+        });
+      }
+    },
+    [
+      ankiDeck,
+      ankiNoteType,
+      ankiFieldMapping,
+      ankiAddingIds,
+      props.sentence,
+      props.url,
+    ]
+  );
+
+  const onAnkiOpen = useCallback(async (noteId: number, entryId: number) => {
+    try {
+      await browser.runtime.sendMessage({ type: 'ankiOpenNote', noteId });
+    } catch (e) {
+      console.error('[10ten-ja-reader] Failed to open Anki note:', e);
+
+      const message =
+        e instanceof Error ? e.message : 'Failed to open note in Anki';
+
+      if (isAnkiConnectionError(message)) {
+        setAnkiConnected(false);
+      } else {
+        setAnkiErrors((prev) => {
+          const next = new Map(prev);
+          next.set(entryId, message);
+          return next;
+        });
+
+        setTimeout(() => {
+          setAnkiErrors((prev) => {
+            if (!prev.has(entryId)) {
+              return prev;
+            }
+            const next = new Map(prev);
+            next.delete(entryId);
+            return next;
+          });
+        }, 4000);
+      }
+    }
+  }, []);
 
   const gapClassMap: Record<FontSize, string> = {
     normal: 'tp:gap-1',
@@ -136,6 +380,16 @@ export const WordTable = (props: WordTableProps) => {
               entry={entry}
               config={props.config}
               selectState={selectState}
+              ankiNoteId={
+                ankiEnabled && ankiDeck && ankiNoteType
+                  ? (ankiNoteIds.get(entry.id) ?? null)
+                  : undefined
+              }
+              ankiConnected={ankiConnected ?? undefined}
+              ankiAdding={ankiAddingIds.has(entry.id)}
+              ankiError={ankiErrors.get(entry.id)}
+              onAnkiAdd={onAnkiAdd}
+              onAnkiOpen={onAnkiOpen}
               onPointerUp={(evt) => {
                 lastPointerType.current = evt.pointerType;
               }}

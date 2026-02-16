@@ -80,6 +80,13 @@ export type ShowPopupOptions = {
   switchDictionaryKeys: ReadonlyArray<string>;
   tabDisplay: 'top' | 'left' | 'right' | 'none';
   waniKaniVocabDisplay: 'hide' | 'show-matches';
+  // Anki integration
+  ankiEnabled?: boolean;
+  ankiDeck?: string;
+  ankiNoteType?: string;
+  ankiFieldMapping?: Record<string, string>;
+  sentence?: string;
+  url?: string;
 };
 
 export type StartCopyCallback = (

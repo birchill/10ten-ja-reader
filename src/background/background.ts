@@ -62,6 +62,15 @@ import { omit } from '../utils/omit';
 import type { Split } from '../utils/type-helpers';
 
 import TabManager from './all-tab-manager';
+import {
+  ankiAddNote,
+  ankiFindNote,
+  ankiGetDecks,
+  ankiGetModelFields,
+  ankiGetNoteTypes,
+  ankiOpenNote,
+  ankiTestConnection,
+} from './anki-connect';
 import type { SearchOtherRequest, SearchRequest } from './background-request';
 import { BackgroundRequestSchema } from './background-request';
 import { setDefaultToolbarIcon, updateBrowserAction } from './browser-action';
@@ -486,6 +495,35 @@ browser.runtime.onMessage.addListener(
     }
 
     switch (request.type) {
+      case 'ankiTestConnection':
+        return ankiTestConnection();
+
+      case 'ankiGetDecks':
+        return ankiGetDecks();
+
+      case 'ankiGetNoteTypes':
+        return ankiGetNoteTypes();
+
+      case 'ankiGetModelFields':
+        return ankiGetModelFields(request.model);
+
+      case 'ankiAddNote':
+        return ankiAddNote({
+          deckName: request.deckName,
+          modelName: request.modelName,
+          fields: request.fields,
+        });
+
+      case 'ankiFindNote':
+        return ankiFindNote({
+          deckName: request.deckName,
+          expression: request.expression,
+          reading: request.reading,
+        });
+
+      case 'ankiOpenNote':
+        return ankiOpenNote(request.noteId);
+
       case 'options':
         return browser.runtime.openOptionsPage();
 

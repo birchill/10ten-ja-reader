@@ -81,6 +81,12 @@
 
   <img src="https://raw.githubusercontent.com/birchill/10ten-ja-reader/main/docs/copy-feature-cropped.png" alt="Screenshot showing 河川敷 being selected and the various formats available for copying" title="Copy feature" width="640">
 
+- Anki integration via [AnkiConnect](https://ankiweb.net/shared/info/2055492159). Add vocabulary cards directly from the popup to your Anki decks with a single click. If a card already exists, click to open it in Anki's browser.
+
+  Configure your deck, note type, and field mapping (Expression, Reading, Meaning, Sentence) in the extension settings.
+
+  > **Note:** Anki integration requires desktop Anki with the AnkiConnect add-on and is not available on iOS.
+
 - Smart popup positioning
 - Support for vertical text and text in SVG images
 - Minimal memory usage
