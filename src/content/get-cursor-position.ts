@@ -192,7 +192,7 @@ function getCursorPositionForElement({
   }
 
   if (!isTextNodePosition(position)) {
-    let adjustedPosition: CursorPosition | null = null;
+    let adjustedPosition: CursorPosition | null;
 
     // If we have a non-text node, there are a few things we can try to
     // get a better result.
