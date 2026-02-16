@@ -2097,7 +2097,7 @@ export class ContentHandler {
           dict = nextDict;
           break;
         }
-        next = ++next % cycleOrder.length;
+        next = (next + 1) % cycleOrder.length;
       }
     } else if (dictToShow === 'prev') {
       dict = this.currentDict;
@@ -2115,7 +2115,7 @@ export class ContentHandler {
           dict = prevDict;
           break;
         }
-        prev = mod(--prev, cycleOrder.length);
+        prev = mod(prev - 1, cycleOrder.length);
       }
     } else {
       dict = dictToShow;
