@@ -21,6 +21,11 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.PUSH_TOKEN }}
 
+      - name: Set Git username
+        run: |-
+          git config --global user.name "Release"
+          git config --global user.email "actions@users.noreply.github.com"
+
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -30,11 +35,6 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-
-      - name: Set Git username
-        run: |-
-          git config --global user.name "Release"
-          git config --global user.email "actions@users.noreply.github.com"
 
       - name: Install
         run: pnpm install --frozen-lockfile
@@ -173,6 +173,11 @@ jobs:
           fetch-depth: 0
           ref: ${{ needs.bump.outputs.sha }}
           token: ${{ secrets.PUSH_TOKEN }}
+
+      - name: Set Git username
+        run: |-
+          git config --global user.name "Release"
+          git config --global user.email "actions@users.noreply.github.com"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
