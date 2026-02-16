@@ -34,7 +34,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Bump version
-        run: pnpm release-it --ci -i ${{ inputs.version }} -VV --git.commit=false --no-git.requireBranch
+        run: pnpm release-it --ci -i ${{ inputs.version }} -VV --git.commit=false --git.tag=false --no-git.requireBranch
 
       - name: Output SHA + version
         id: out
