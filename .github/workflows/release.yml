@@ -156,8 +156,8 @@ jobs:
         with:
           name: mac-packages
           path: |
-            $GITHUB_WORKSPACE/build/*.pkg
-            $GITHUB_WORKSPACE/build/*.ipa
+            ${{ github.workspace }}/build/*.ipa
+            ${{ github.workspace }}/build/*.pkg
           if-no-files-found: error
 
   release:
@@ -170,7 +170,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 0
           ref: ${{ needs.bump.outputs.sha }}
           token: ${{ secrets.PUSH_TOKEN }}
 
