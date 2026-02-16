@@ -6,8 +6,6 @@
   <string>export</string>
   <key>installerSigningCertificate</key>
   <string>3rd Party Mac Developer Installer</string>
-  <key>manageAppVersionAndBuildNumber</key>
-  <true/>
   <key>method</key>
   <string>app-store-connect</string>
   <key>provisioningProfiles</key>
