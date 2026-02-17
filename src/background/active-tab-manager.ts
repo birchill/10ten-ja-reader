@@ -23,25 +23,25 @@ type EnabledTab = {
 };
 
 export default class ActiveTabManager implements TabManager {
-  private config: ContentConfigParams | undefined;
+  #config: ContentConfigParams | undefined;
   // It's ok to initialize this to an empty array even if we're being run as an
   // event page that's just been resumed since we only track enabled tabs and
   // any enabled tabs will set up a message port that will keep the background
   // page alive. As a result, if we're being resumed, we must have zero enabled
   // tabs (so far).
-  private enabledTabs: Array<EnabledTab> = [];
-  private listeners: Array<EnabledChangedCallback> = [];
+  #enabledTabs: Array<EnabledTab> = [];
+  #listeners: Array<EnabledChangedCallback> = [];
 
   async init(config: ContentConfigParams): Promise<void> {
-    this.config = config;
+    this.#config = config;
 
     // Notify listeners when the active tab changes
     browser.tabs.onActivated.addListener(({ tabId }) => {
-      const enabled = tabId in this.enabledTabs;
-      this.notifyListeners(enabled, tabId);
+      const enabled = tabId in this.#enabledTabs;
+      this.#notifyListeners(enabled, tabId);
     });
 
-    browser.runtime.onConnect.addListener(this.onConnect.bind(this));
+    browser.runtime.onConnect.addListener(this.#onConnect.bind(this));
 
     // Response to enable?/disabled messages
     browser.runtime.onMessage.addListener(
@@ -61,7 +61,7 @@ export default class ActiveTabManager implements TabManager {
 
         switch (request.type) {
           case 'enable?':
-            this.enablePage(sender.tab.id, sender.frameId).catch((e) =>
+            this.#enablePage(sender.tab.id, sender.frameId).catch((e) =>
               Bugsnag.notify(e)
             );
             break;
@@ -69,9 +69,9 @@ export default class ActiveTabManager implements TabManager {
           case 'enabled':
             if (
               typeof sender.frameId === 'number' &&
-              sender.tab.id in this.enabledTabs
+              sender.tab.id in this.#enabledTabs
             ) {
-              this.updateFrames({
+              this.#updateFrames({
                 tabId: sender.tab.id,
                 frameId: sender.frameId,
                 src: request.src,
@@ -81,7 +81,7 @@ export default class ActiveTabManager implements TabManager {
             break;
 
           case 'disabled':
-            this.onPageDisabled(sender.tab.id, sender.frameId).catch((e) =>
+            this.#onPageDisabled(sender.tab.id, sender.frameId).catch((e) =>
               Bugsnag.notify(e)
             );
             break;
@@ -96,7 +96,7 @@ export default class ActiveTabManager implements TabManager {
   // Port management
   //
 
-  private onConnect(port: Runtime.Port) {
+  #onConnect(port: Runtime.Port) {
     // If we get a connection, store the port. We don't actually use this at
     // the moment, except as a means to keep the background page alive while
     // we have an enabled tab somewhere.
@@ -109,14 +109,14 @@ export default class ActiveTabManager implements TabManager {
       return;
     }
 
-    const tab = this.enabledTabs[id];
+    const tab = this.#enabledTabs[id];
     if (!tab) {
       return;
     }
 
     tab.port = port;
 
-    port.onDisconnect.addListener(() => this.onPageDisabled(id));
+    port.onDisconnect.addListener(() => this.#onPageDisabled(id));
   }
 
   //
@@ -131,7 +131,7 @@ export default class ActiveTabManager implements TabManager {
       const activeTabs = await browser.tabs.query({ active: true });
       for (const tab of activeTabs) {
         const enabled =
-          typeof tab.id !== 'undefined' && tab.id in this.enabledTabs;
+          typeof tab.id !== 'undefined' && tab.id in this.#enabledTabs;
         result.push({ enabled, tabId: tab.id });
       }
     } catch (e) {
@@ -151,29 +151,29 @@ export default class ActiveTabManager implements TabManager {
     }
 
     // First, determine if we want to disable or enable
-    const enable = !(tab.id in this.enabledTabs);
+    const enable = !(tab.id in this.#enabledTabs);
 
     if (enable) {
-      this.config = config;
-      await this.enablePage(tab.id);
+      this.#config = config;
+      await this.#enablePage(tab.id);
     } else {
       // It's important we drop the entry from the enabledTabs array before we
       // notify the content script. Otherwise when the content script
       // disconnects itself we'll think it should still be enabled and try to
       // re-inject ourselves.
-      delete this.enabledTabs[tab.id];
+      delete this.#enabledTabs[tab.id];
       try {
         await browser.tabs.sendMessage(tab.id, { type: 'disable', frame: '*' });
       } catch (e) {
         void Bugsnag.notify(e);
       }
 
-      this.notifyListeners(false, tab.id);
+      this.#notifyListeners(false, tab.id);
     }
   }
 
-  private async enablePage(tabId: number, frameId?: number): Promise<void> {
-    if (!this.config) {
+  async #enablePage(tabId: number, frameId?: number): Promise<void> {
+    if (!this.#config) {
       throw new Error('Should have called init before enablePage');
     }
 
@@ -187,8 +187,8 @@ export default class ActiveTabManager implements TabManager {
     // If we fail to set up the content script we'll drop the entry from
     // enabledTabs at that point.
     const isRootFrame = typeof frameId === 'undefined' || frameId === 0;
-    if (isRootFrame && !(tabId in this.enabledTabs)) {
-      this.enabledTabs[tabId] = { frames: [], port: undefined, src: '' };
+    if (isRootFrame && !(tabId in this.#enabledTabs)) {
+      this.#enabledTabs[tabId] = { frames: [], port: undefined, src: '' };
     }
 
     // If we are dealing with a single frame, try calling to see if the content
@@ -205,11 +205,11 @@ export default class ActiveTabManager implements TabManager {
     let enabled = true;
     if (
       typeof frameId === 'undefined' ||
-      !(await this.tryEnablingFrame(tabId, frameId))
+      !(await this.#tryEnablingFrame(tabId, frameId))
     ) {
       // Looks like we need to try and inject the script instead.
       try {
-        await this.injectScript(tabId, frameId);
+        await this.#injectScript(tabId, frameId);
       } catch (e) {
         void Bugsnag.notify(e);
 
@@ -217,7 +217,7 @@ export default class ActiveTabManager implements TabManager {
         // Drop the enabled tab from our list, but only if we're dealing with
         // the root frame or the whole tab.
         if (isRootFrame) {
-          delete this.enabledTabs[tabId];
+          delete this.#enabledTabs[tabId];
         }
       }
     }
@@ -229,15 +229,12 @@ export default class ActiveTabManager implements TabManager {
     // tab is already in enabledTabs, we may still need to update the browser
     // action to reflect that.
     if (isRootFrame) {
-      this.notifyListeners(enabled, tabId);
+      this.#notifyListeners(enabled, tabId);
     }
   }
 
-  private async tryEnablingFrame(
-    tabId: number,
-    frameId: number
-  ): Promise<boolean> {
-    if (!this.config) {
+  async #tryEnablingFrame(tabId: number, frameId: number): Promise<boolean> {
+    if (!this.#config) {
       throw new Error('Should have called init before isFrameEnabled');
     }
 
@@ -246,7 +243,7 @@ export default class ActiveTabManager implements TabManager {
         tabId,
         {
           type: 'enable',
-          config: this.config,
+          config: this.#config,
           id: tabId,
           // At the point when the listener gets this message it won't know what
           // its frameId is so it's pointless to specify it here.
@@ -262,7 +259,7 @@ export default class ActiveTabManager implements TabManager {
     }
   }
 
-  private async injectScript(tabId: number, frameId?: number): Promise<void> {
+  async #injectScript(tabId: number, frameId?: number): Promise<void> {
     // Inject the script
     if (__MV3__) {
       await browser.scripting.executeScript({
@@ -329,7 +326,7 @@ export default class ActiveTabManager implements TabManager {
     // Now send the enable message.
     await browser.tabs.sendMessage(
       tabId,
-      { type: 'enable', config: this.config, id: tabId, frame: '*' },
+      { type: 'enable', config: this.#config, id: tabId, frame: '*' },
       { frameId }
     );
   }
@@ -357,7 +354,7 @@ export default class ActiveTabManager implements TabManager {
     tabId: number;
     message: T;
   }) {
-    const frameId = this.getTopFrameId(tabId);
+    const frameId = this.#getTopFrameId(tabId);
     if (frameId === null) {
       return;
     }
@@ -369,8 +366,8 @@ export default class ActiveTabManager implements TabManager {
       });
   }
 
-  private getTopFrameId(tabId: number): number | null {
-    return tabId in this.enabledTabs ? 0 : null;
+  #getTopFrameId(tabId: number): number | null {
+    return tabId in this.#enabledTabs ? 0 : null;
   }
 
   getInitialFrameSrc({
@@ -380,14 +377,14 @@ export default class ActiveTabManager implements TabManager {
     tabId: number;
     frameId: number;
   }): string | undefined {
-    if (!(frameId in this.enabledTabs[tabId].frames)) {
+    if (!(frameId in this.#enabledTabs[tabId].frames)) {
       return undefined;
     }
 
-    return this.enabledTabs[tabId].frames[frameId].initialSrc;
+    return this.#enabledTabs[tabId].frames[frameId].initialSrc;
   }
 
-  private updateFrames({
+  #updateFrames({
     tabId,
     frameId,
     src,
@@ -396,11 +393,11 @@ export default class ActiveTabManager implements TabManager {
     frameId: number;
     src: string;
   }) {
-    if (!(tabId in this.enabledTabs)) {
+    if (!(tabId in this.#enabledTabs)) {
       return;
     }
 
-    const tab = this.enabledTabs[tabId];
+    const tab = this.#enabledTabs[tabId];
     if (frameId === 0) {
       // If we have navigated the root frame, blow away all the child frames
       if (tab.src !== '' && tab.src !== src) {
@@ -413,32 +410,32 @@ export default class ActiveTabManager implements TabManager {
     }
   }
 
-  private dropFrame({
+  #dropFrame({
     tabId,
     frameId,
   }: {
     tabId: number;
     frameId: number | undefined;
   }) {
-    if (!this.enabledTabs[tabId]) {
+    if (!this.#enabledTabs[tabId]) {
       return;
     }
 
     if (frameId) {
-      const tab = this.enabledTabs[tabId];
+      const tab = this.#enabledTabs[tabId];
       delete tab.frames[frameId];
       if (!Object.keys(tab.frames).length) {
-        delete this.enabledTabs[tabId];
+        delete this.#enabledTabs[tabId];
       }
     } else {
-      delete this.enabledTabs[tabId];
+      delete this.#enabledTabs[tabId];
     }
   }
 
-  private async onPageDisabled(tabId: number, frameId?: number) {
+  async #onPageDisabled(tabId: number, frameId?: number) {
     // If we already believe the page to be disabled, there's nothing more to
     // do.
-    if (!(tabId in this.enabledTabs)) {
+    if (!(tabId in this.#enabledTabs)) {
       return;
     }
 
@@ -453,23 +450,23 @@ export default class ActiveTabManager implements TabManager {
     // Try to re-inject our content script and see if it works.
     let enabled = false;
     try {
-      await this.injectScript(tabId, frameId);
+      await this.#injectScript(tabId, frameId);
       enabled = true;
     } catch {
       // Check if the tab still exists. Perhaps it finished unloading while we
       // were injecting scripts.
-      if (!(tabId in this.enabledTabs)) {
+      if (!(tabId in this.#enabledTabs)) {
         return;
       }
 
-      this.dropFrame({ tabId, frameId });
+      this.#dropFrame({ tabId, frameId });
     }
 
     // Note that even if we successfully re-injected our content script
     // we still need to notify listeners because browsers will generally
     // automatically reset the browser action icon.
     if (isTabOrRootFrame) {
-      this.notifyListeners(enabled, tabId);
+      this.#notifyListeners(enabled, tabId);
     }
   }
 
@@ -479,13 +476,13 @@ export default class ActiveTabManager implements TabManager {
 
   async updateConfig(config: ContentConfigParams) {
     // Ignore redundant changes
-    if (JSON.stringify(this.config) === JSON.stringify(config)) {
+    if (JSON.stringify(this.#config) === JSON.stringify(config)) {
       return;
     }
 
-    this.config = config;
+    this.#config = config;
 
-    const tabIds = Object.keys(this.enabledTabs).map(Number);
+    const tabIds = Object.keys(this.#enabledTabs).map(Number);
     for (const tabId of tabIds) {
       try {
         // We deliberately omit the 'id' member here since it's only needed
@@ -504,7 +501,7 @@ export default class ActiveTabManager implements TabManager {
   }
 
   async notifyDbUpdated() {
-    const tabIds = Object.keys(this.enabledTabs).map(Number);
+    const tabIds = Object.keys(this.#enabledTabs).map(Number);
     for (const tabId of tabIds) {
       try {
         await browser.tabs.sendMessage(tabId, {
@@ -523,18 +520,18 @@ export default class ActiveTabManager implements TabManager {
   //
 
   addListener(listener: EnabledChangedCallback) {
-    if (!this.listeners.includes(listener)) {
-      this.listeners.push(listener);
+    if (!this.#listeners.includes(listener)) {
+      this.#listeners.push(listener);
     }
   }
 
   removeListener(listener: EnabledChangedCallback) {
-    this.listeners = this.listeners.filter((l) => l !== listener);
+    this.#listeners = this.#listeners.filter((l) => l !== listener);
   }
 
-  private notifyListeners(enabled: boolean, tabId: number) {
-    for (const listener of this.listeners.slice()) {
-      listener({ enabled, tabId, anyEnabled: this.enabledTabs.length > 0 });
+  #notifyListeners(enabled: boolean, tabId: number) {
+    for (const listener of this.#listeners.slice()) {
+      listener({ enabled, tabId, anyEnabled: this.#enabledTabs.length > 0 });
     }
   }
 }

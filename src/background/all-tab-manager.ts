@@ -25,51 +25,51 @@ type Tab = {
 };
 
 export default class AllTabManager implements TabManager {
-  private config: ContentConfigParams | undefined;
-  private initPromise: Promise<void> | undefined;
-  private initComplete = false;
-  private enabled = false;
-  private listeners: Array<EnabledChangedCallback> = [];
-  private tabs: Array<Tab> = [];
-  private tabsCleanupTask: number | undefined;
+  #config: ContentConfigParams | undefined;
+  #initPromise: Promise<void> | undefined;
+  #initComplete = false;
+  #enabled = false;
+  #listeners: Array<EnabledChangedCallback> = [];
+  #tabs: Array<Tab> = [];
+  #tabsCleanupTask: number | undefined;
 
   async init(config: ContentConfigParams): Promise<void> {
-    if (this.initPromise) {
-      if (JSON.stringify(this.config) !== JSON.stringify(config)) {
+    if (this.#initPromise) {
+      if (JSON.stringify(this.#config) !== JSON.stringify(config)) {
         const error = new Error(
           'AllTabManager::init called multiple times with different configurations'
         );
         console.error(error);
         void Bugsnag.notify(error);
       }
-      return this.initPromise;
+      return this.#initPromise;
     }
 
-    this.initPromise = this.doInit(config);
+    this.#initPromise = this.#doInit(config);
 
-    return this.initPromise;
+    return this.#initPromise;
   }
 
-  private async doInit(config: ContentConfigParams): Promise<void> {
-    this.config = config;
+  async #doInit(config: ContentConfigParams): Promise<void> {
+    this.#config = config;
 
     // Try to fetch our previous enabled state from local storage
-    this.enabled = await this.getStoredEnabledState();
+    this.#enabled = await this.#getStoredEnabledState();
 
     // Notify listeners
-    if (this.enabled) {
-      this.notifyListeners(true);
+    if (this.#enabled) {
+      this.#notifyListeners(true);
     }
 
     // Try to enable the active tab in each window
-    if (this.enabled) {
-      this.enableActiveTabs().catch((e) => Bugsnag.notify(e));
+    if (this.#enabled) {
+      this.#enableActiveTabs().catch((e) => Bugsnag.notify(e));
     }
 
     // Since we only enable the content script in the active tabs, if any other
     // tab becomes active we should make sure it gets enabled too.
     browser.tabs.onActivated.addListener(({ tabId }) => {
-      return this.enableTab(tabId);
+      return this.#enableTab(tabId);
     });
 
     // Response to enabling-related messages
@@ -88,7 +88,7 @@ export default class AllTabManager implements TabManager {
               return undefined;
             }
 
-            void this.enableTab(sender.tab.id, sender.frameId);
+            void this.#enableTab(sender.tab.id, sender.frameId);
             break;
 
           case 'enabled':
@@ -100,7 +100,7 @@ export default class AllTabManager implements TabManager {
               return undefined;
             }
 
-            this.updateFrames({
+            this.#updateFrames({
               tabId: sender.tab.id,
               frameId: sender.frameId,
               src: request.src,
@@ -113,7 +113,7 @@ export default class AllTabManager implements TabManager {
               return;
             }
 
-            this.dropFrame({ tabId: sender.tab.id, frameId: sender.frameId });
+            this.#dropFrame({ tabId: sender.tab.id, frameId: sender.frameId });
             break;
         }
 
@@ -121,10 +121,10 @@ export default class AllTabManager implements TabManager {
       }
     );
 
-    this.initComplete = true;
+    this.#initComplete = true;
   }
 
-  private async getStoredEnabledState(): Promise<boolean> {
+  async #getStoredEnabledState(): Promise<boolean> {
     let getEnabledResult;
     try {
       getEnabledResult = await browser.storage.local.get('enabled');
@@ -138,7 +138,7 @@ export default class AllTabManager implements TabManager {
     );
   }
 
-  private async enableActiveTabs(): Promise<void> {
+  async #enableActiveTabs(): Promise<void> {
     // browser.tabs.query sometimes fails with a generic Error with message "An
     // unexpected error occurred". I don't know why. Maybe it should fail? Maybe
     // it's a timing thing? Who knows �‍♂️
@@ -153,7 +153,7 @@ export default class AllTabManager implements TabManager {
 
       for (const tab of tabs) {
         if (typeof tab.id === 'number') {
-          await this.enableTab(tab.id);
+          await this.#enableTab(tab.id);
         }
       }
     };
@@ -176,7 +176,7 @@ export default class AllTabManager implements TabManager {
   //
 
   getEnabledState(): Promise<Array<EnabledState>> {
-    return Promise.resolve([{ enabled: this.enabled, tabId: undefined }]);
+    return Promise.resolve([{ enabled: this.#enabled, tabId: undefined }]);
   }
 
   //
@@ -184,33 +184,33 @@ export default class AllTabManager implements TabManager {
   //
 
   async toggleTab(_tab: Tabs.Tab | undefined, config: ContentConfigParams) {
-    if (!this.initPromise) {
+    if (!this.#initPromise) {
       throw new Error('Should have called init before toggleTab');
     }
 
-    await this.initPromise;
+    await this.#initPromise;
 
     // Update our local copy of the config
-    this.config = config;
+    this.#config = config;
 
-    if (!this.enabled) {
+    if (!this.#enabled) {
       Bugsnag.leaveBreadcrumb('Enabling active tabs from toggle');
     }
 
     // Update local state
-    this.enabled = !this.enabled;
+    this.#enabled = !this.#enabled;
 
     // Update tabs
-    if (this.enabled) {
+    if (this.#enabled) {
       // Enable the active tabs
-      await this.enableActiveTabs();
+      await this.#enableActiveTabs();
     } else {
       // Disable all tabs
       await sendMessageToAllTabs({ type: 'disable', frame: '*' });
     }
 
     // Store our local value
-    if (this.enabled) {
+    if (this.#enabled) {
       browser.storage.local.set({ enabled: true }).catch(() => {
         // Ignore, it's just not that important.
       });
@@ -220,15 +220,15 @@ export default class AllTabManager implements TabManager {
       });
     }
 
-    this.notifyListeners(this.enabled);
+    this.#notifyListeners(this.#enabled);
   }
 
-  private async enableTab(tabId: number, frameId?: number): Promise<void> {
-    if (!this.config) {
+  async #enableTab(tabId: number, frameId?: number): Promise<void> {
+    if (!this.#config) {
       throw new Error('Should have called init before enableTab');
     }
 
-    if (!this.enabled) {
+    if (!this.#enabled) {
       return;
     }
 
@@ -237,7 +237,7 @@ export default class AllTabManager implements TabManager {
         tabId,
         {
           type: 'enable',
-          config: this.config,
+          config: this.#config,
           // At the point when the listener gets this message it won't know what
           // its frameId is so it's pointless to specify it here.
           frame: '*',
@@ -256,13 +256,13 @@ export default class AllTabManager implements TabManager {
 
   async updateConfig(config: ContentConfigParams) {
     // Ignore redundant changes
-    if (JSON.stringify(this.config) === JSON.stringify(config)) {
+    if (JSON.stringify(this.#config) === JSON.stringify(config)) {
       return;
     }
 
-    this.config = config;
+    this.#config = config;
 
-    if (!this.enabled) {
+    if (!this.#enabled) {
       return;
     }
 
@@ -300,7 +300,7 @@ export default class AllTabManager implements TabManager {
     tabId: number;
     message: T;
   }) {
-    const frameId = this.getTopFrameId(tabId);
+    const frameId = this.#getTopFrameId(tabId);
     if (frameId === null) {
       return;
     }
@@ -312,12 +312,12 @@ export default class AllTabManager implements TabManager {
       });
   }
 
-  private getTopFrameId(tabId: number): number | null {
-    if (!(tabId in this.tabs)) {
+  #getTopFrameId(tabId: number): number | null {
+    if (!(tabId in this.#tabs)) {
       return null;
     }
 
-    const frameKeys = Object.keys(this.tabs[tabId].frames);
+    const frameKeys = Object.keys(this.#tabs[tabId].frames);
     if (!frameKeys.length) {
       return null;
     }
@@ -333,10 +333,10 @@ export default class AllTabManager implements TabManager {
     tabId: number;
     frameId: number;
   }): string | undefined {
-    return this.tabs[tabId]?.frames[frameId]?.initialSrc;
+    return this.#tabs[tabId]?.frames[frameId]?.initialSrc;
   }
 
-  private updateFrames({
+  #updateFrames({
     tabId,
     frameId,
     src,
@@ -345,8 +345,8 @@ export default class AllTabManager implements TabManager {
     frameId: number;
     src: string;
   }) {
-    if (tabId in this.tabs) {
-      const tab = this.tabs[tabId];
+    if (tabId in this.#tabs) {
+      const tab = this.#tabs[tabId];
       if (frameId === 0) {
         tab.src = src;
       }
@@ -355,24 +355,27 @@ export default class AllTabManager implements TabManager {
         tab.frames = [];
       }
     } else {
-      this.tabs[tabId] = { src: frameId === 0 ? src : '', frames: [] };
+      this.#tabs[tabId] = { src: frameId === 0 ? src : '', frames: [] };
     }
 
-    const tab = this.tabs[tabId];
+    const tab = this.#tabs[tabId];
     const addedFrame = !(frameId in tab.frames);
     tab.frames[frameId] = { initialSrc: src };
 
     // Try to detect the "no content script in the root window" case
     if (addedFrame && !tab.frames[0] && !tab.rootWindowCheckTimeout) {
       tab.rootWindowCheckTimeout = self.setTimeout(() => {
-        if (!this.tabs[tabId] || !Object.keys(this.tabs[tabId].frames).length) {
+        if (
+          !this.#tabs[tabId] ||
+          !Object.keys(this.#tabs[tabId].frames).length
+        ) {
           return;
         }
 
-        this.tabs[tabId].rootWindowCheckTimeout = undefined;
+        this.#tabs[tabId].rootWindowCheckTimeout = undefined;
 
-        const topMostFrameId = Number(Object.keys(this.tabs[tabId].frames)[0]);
-        if (topMostFrameId !== 0) {
+        const topMostFrameId = this.#getTopFrameId(tabId);
+        if (topMostFrameId !== null && topMostFrameId !== 0) {
           this.sendMessageToFrame({
             tabId,
             message: { type: 'isTopMost' },
@@ -383,15 +386,15 @@ export default class AllTabManager implements TabManager {
     }
 
     // Schedule a task to clean up any tabs that have been closed
-    if (!this.tabsCleanupTask) {
-      this.tabsCleanupTask = requestIdleCallback(async () => {
-        this.tabsCleanupTask = undefined;
+    if (!this.#tabsCleanupTask) {
+      this.#tabsCleanupTask = requestIdleCallback(async () => {
+        this.#tabsCleanupTask = undefined;
         try {
           const allTabs = await browser.tabs.query({});
-          const ourTabs = Object.keys(this.tabs).map(Number);
+          const ourTabs = Object.keys(this.#tabs).map(Number);
           for (const tabId of ourTabs) {
             if (!allTabs.some((t) => t.id === tabId)) {
-              delete this.tabs[tabId];
+              delete this.#tabs[tabId];
             }
           }
         } catch (e) {
@@ -405,25 +408,25 @@ export default class AllTabManager implements TabManager {
     }
   }
 
-  private dropFrame({
+  #dropFrame({
     tabId,
     frameId,
   }: {
     tabId: number;
     frameId: number | undefined;
   }) {
-    if (!this.tabs[tabId]) {
+    if (!this.#tabs[tabId]) {
       return;
     }
 
     if (typeof frameId === 'number') {
-      const tab = this.tabs[tabId];
+      const tab = this.#tabs[tabId];
       delete tab.frames[frameId];
       if (!Object.keys(tab.frames).length) {
-        delete this.tabs[tabId];
+        delete this.#tabs[tabId];
       }
     } else {
-      delete this.tabs[tabId];
+      delete this.#tabs[tabId];
     }
   }
 
@@ -432,12 +435,12 @@ export default class AllTabManager implements TabManager {
   //
 
   addListener(listener: EnabledChangedCallback) {
-    if (!this.listeners.includes(listener)) {
-      this.listeners.push(listener);
+    if (!this.#listeners.includes(listener)) {
+      this.#listeners.push(listener);
     }
 
-    if (this.initComplete) {
-      listener({ enabled: this.enabled, anyEnabled: this.enabled });
+    if (this.#initComplete) {
+      listener({ enabled: this.#enabled, anyEnabled: this.#enabled });
     }
 
     // If we are still initializing, all the listeners will get notified at the
@@ -445,11 +448,11 @@ export default class AllTabManager implements TabManager {
   }
 
   removeListener(listener: EnabledChangedCallback) {
-    this.listeners = this.listeners.filter((l) => l !== listener);
+    this.#listeners = this.#listeners.filter((l) => l !== listener);
   }
 
-  private notifyListeners(enabled: boolean) {
-    for (const listener of this.listeners.slice()) {
+  #notifyListeners(enabled: boolean) {
+    for (const listener of this.#listeners.slice()) {
       listener({ enabled, anyEnabled: enabled });
     }
   }
