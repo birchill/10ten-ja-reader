@@ -233,6 +233,7 @@ jobs:
           node ./scripts/release-notes.js "${{ needs.bump.outputs.version }}" > release-notes.md
           gh release create "v${{ needs.bump.outputs.version }}" \
             --draft \
+            --verify-tag \
             --title "Release ${{ needs.bump.outputs.version }}" \
             --notes-file release-notes.md \
             release-assets/*
