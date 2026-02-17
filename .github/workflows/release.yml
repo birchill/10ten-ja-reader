@@ -84,7 +84,7 @@ jobs:
 
       - name: Build extension code
         run: |-
-          pnpm install
+          pnpm install --frozen-lockfile
           pnpm build:safari
 
       - name: Install signing certificate and profile
@@ -108,6 +108,7 @@ jobs:
           echo -n "$PROFILE_MAC_EXT" | base64 --decode > mac-ext.provisionprofile
 
           # Create a temporary keychain and import the .p12 certificate
+          security delete-keychain build.keychain-db 2>/dev/null || true
           security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain-db
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain-db
           security import cert.p12 -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k build.keychain-db
@@ -144,14 +145,14 @@ jobs:
           xcodebuild -exportArchive \
             -archivePath $GITHUB_WORKSPACE/build/10ten-iOS.xcarchive \
             -exportOptionsPlist "xcode13/ExportOptions-iOS.plist" \
-            -exportPath $GITHUB_WORKSPACE/build/10ten-ja-reader.ipa
+            -exportPath $GITHUB_WORKSPACE/build
 
       - name: Export Mac app package
         run: |
           xcodebuild -exportArchive \
             -archivePath $GITHUB_WORKSPACE/build/10ten-mac.xcarchive \
             -exportOptionsPlist "xcode13/ExportOptions-Mac.plist" \
-            -exportPath $GITHUB_WORKSPACE/build/10ten-ja-reader.pkg
+            -exportPath $GITHUB_WORKSPACE/build
 
       - name: Upload packages
         uses: actions/upload-artifact@v4
@@ -161,6 +162,26 @@ jobs:
             ${{ github.workspace }}/build/*.ipa
             ${{ github.workspace }}/build/*.pkg
           if-no-files-found: error
+
+      - name: Cleanup signing material
+        if: always()
+        shell: bash
+        run: |
+          set +e
+
+          # Remove temp files from workspace
+          rm -f cert.p12 mac-installer.p12 \
+            ios.mobileprovision ios-ext.mobileprovision \
+            mac.provisionprofile mac-ext.provisionprofile
+
+          # Remove installed provisioning profiles
+          rm -f ~/Library/MobileDevice/Provisioning\ Profiles/ios.mobileprovision
+          rm -f ~/Library/MobileDevice/Provisioning\ Profiles/ios-ext.mobileprovision
+          rm -f ~/Library/MobileDevice/Provisioning\ Profiles/mac.provisionprofile
+          rm -f ~/Library/MobileDevice/Provisioning\ Profiles/mac-ext.provisionprofile
+
+          # Remove temporary keychain
+          security delete-keychain build.keychain-db || true
 
   release:
     name: Create release
@@ -192,7 +213,7 @@ jobs:
 
       - name: Build assets
         run: |
-          pnpm install
+          pnpm install --frozen-lockfile
           scripts/build-assets.sh
         env:
           BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY }}
