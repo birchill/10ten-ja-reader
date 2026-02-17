@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>destination</key>
+  <string>export</string>
+  <key>method</key>
+  <string>app-store-connect</string>
+  <key>provisioningProfiles</key>
+  <dict>
+    <key>jp.co.birchill.tenten-ja-reader</key>
+    <string>10ten Japanese Reader App Store Connect</string>
+    <key>jp.co.birchill.tenten-ja-reader.Extension</key>
+    <string>10ten Japanese Reader Extension App Store Connect</string>
+  </dict>
+  <key>signingCertificate</key>
+  <string>Apple Distribution</string>
+  <key>signingStyle</key>
+  <string>manual</string>
+  <key>teamID</key>
+  <string>H3RB7C8768</string>
+  <key>uploadSymbols</key>
+  <true/>
+</dict>
+</plist>

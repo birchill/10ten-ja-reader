@@ -2,19 +2,11 @@
   "git": {
     "commitMessage": "chore: release v${version}",
     "requireBranch": "main",
-    "tagName": "v${version}"
+    "tag": false,
+    "push": true
   },
-  "github": {
-    "draft": true,
-    "release": true,
-    "releaseNotes": "node ./scripts/release-notes.js ${version}",
-    "assets": ["release-assets/*"]
-  },
+  "github": { "release": false },
   "npm": { "publish": false },
-  "hooks": {
-    "after:bump": "./scripts/build-assets.sh",
-    "after:release": "echo 'Draft release: ${releaseUrl}' >> $GITHUB_STEP_SUMMARY"
-  },
   "plugins": {
     "@release-it/keep-a-changelog": {
       "addUnreleased": true,
