@@ -1238,8 +1238,8 @@ packages:
   '@promptbook/utils@0.69.5':
     resolution: {integrity: sha512-xm5Ti/Hp3o4xHrsK9Yy3MS6KbDxYbq485hDsFvxqaNA7equHLPdo8H8faTitTeb14QCDfLW4iwCxdVYu5sn6YQ==}
 
-  '@puppeteer/browsers@2.11.2':
-    resolution: {integrity: sha512-GBY0+2lI9fDrjgb5dFL9+enKXqyOPok9PXg/69NVkjW3bikbK9RQrNrI3qccQXmDNN7ln4j/yL89Qgvj/tfqrw==}
+  '@puppeteer/browsers@2.12.1':
+    resolution: {integrity: sha512-fXa6uXLxfslBlus3MEpW8S6S9fe5RwmAE5Gd8u3krqOwnkZJV3/lQJiY3LaFdTctLLqJtyMgEUGkbDnRNf6vbQ==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -1626,8 +1626,8 @@ packages:
   '@types/node-forge@1.3.13':
     resolution: {integrity: sha512-zePQJSW5QkwSHKRApqWCVKeKoSOt4xvEnLENZPjyvm9Ezdf/EyDeJM7jqLzOwjVICQQzvLZ63T55MKdJB5H6ww==}
 
-  '@types/node@20.19.30':
-    resolution: {integrity: sha512-WJtwWJu7UdlvzEAUm484QNg5eAoq5QR08KDNx7g45Usrs2NtOPiX8ugDqmKdXkyL03rBqU5dYNYVQetEpBHq2g==}
+  '@types/node@20.19.33':
+    resolution: {integrity: sha512-Rs1bVAIdBs5gbTIKza/tgpMuG1k3U/UMJLWecIMxNdJFDMzcM5LOiLVRYh3PilWEYDIeUDv7bpiHPLPsbydGcw==}
 
   '@types/node@24.3.0':
     resolution: {integrity: sha512-aPTXCrfwnDLj4VvXrm+UUCQjNEvJgNA8s5F1cvwQU+3KNltTOkBm1j30uNLyqqPNe7gE3KFzImYoZEfLhp4Yow==}
@@ -1867,8 +1867,8 @@ packages:
   '@xtuc/long@4.2.2':
     resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
 
-  '@zip.js/zip.js@2.8.16':
-    resolution: {integrity: sha512-kCjaXh50GCf9afcof6ekjXPKR//rBVIxNHJLSUaM3VAET2F0+hymgrK1GpInRIIFUpt+wsnUfgx2+bbrmc+7Tw==}
+  '@zip.js/zip.js@2.8.20':
+    resolution: {integrity: sha512-oJzVhK9gnSKD++WLG37QEgeTgm5W8XUYmNv0EhOxytSr85vXn9EMpOoKNTK3yWDLa55Z0MovKW/6RNeh9OUmnA==}
     engines: {bun: '>=0.7.0', deno: '>=1.0.0', node: '>=18.0.0'}
 
   abort-controller@3.0.0:
@@ -2078,6 +2078,14 @@ packages:
   b4a@1.6.7:
     resolution: {integrity: sha512-OnAYlL5b7LEkALw87fUVafQw5rVR9RjwGd4KUwNQ6DrrNmaVaUCgLipfVlzrPQ4tWOR9P0IXGNOx50jYCCdSJg==}
 
+  b4a@1.7.4:
+    resolution: {integrity: sha512-u20zJLDaSWpxaZ+zaAkEIB2dZZ1o+DF4T/MRbmsvGp9nletHOyiai19OzX1fF8xUBYsO1bPXxODvcd0978pnug==}
+    peerDependencies:
+      react-native-b4a: '*'
+    peerDependenciesMeta:
+      react-native-b4a:
+        optional: true
+
   babel-polyfill@6.26.0:
     resolution: {integrity: sha512-F2rZGQnAdaHWQ8YAoeRbukc7HS9QgdgeyJ0rQDd485v9opwuPvjpPFcOOT/WmkKTdgy9ESgSPXDcTNpzrGr6iQ==}
 
@@ -2102,8 +2110,8 @@ packages:
       bare-abort-controller:
         optional: true
 
-  bare-fs@4.5.3:
-    resolution: {integrity: sha512-9+kwVx8QYvt3hPWnmb19tPnh38c6Nihz8Lx3t0g9+4GoIf3/fTgYwM4Z6NxgI+B9elLQA7mLE9PpqcWtOMRDiQ==}
+  bare-fs@4.5.4:
+    resolution: {integrity: sha512-POK4oplfA7P7gqvetNmCs4CNtm9fNsx+IAh7jH7GgU0OJdge2rso0R20TNWVq6VoWcCvsTdlNDaleLHGaKx8CA==}
     engines: {bare: '>=1.16.0'}
     peerDependencies:
       bare-buffer: '*'
@@ -3041,8 +3049,8 @@ packages:
   fast-uri@3.0.6:
     resolution: {integrity: sha512-Atfo14OibSv5wAp4VWNsFYE1AchQRTv9cBGWET4pZWHzYshFSS9NQI6I57rdKn9croWVMbYFbLhJ+yJvmZIIHw==}
 
-  fast-xml-parser@5.3.4:
-    resolution: {integrity: sha512-EFd6afGmXlCx8H8WTZHhAoDaWaGyuIBoZJ2mknrNxug+aZKjkp0a0dlars9Izl+jF+7Gu1/5f/2h68cQpe0IiA==}
+  fast-xml-parser@5.3.6:
+    resolution: {integrity: sha512-QNI3sAvSvaOiaMl8FYU4trnEzCwiRr8XMWgAHzlrWpTSj+QaCSvOf1h82OEP1s4hiAXhnbXSyFWCf4ldZzZRVA==}
     hasBin: true
 
   fastq@1.19.1:
@@ -3753,9 +3761,9 @@ packages:
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
-  isexe@3.1.1:
-    resolution: {integrity: sha512-LpB/54B+/2J5hqQ7imZHfdU31OlgQqx7ZicVlkm9kzg9/w8GKLEcFfJl/t7DCEDueOyBAD6zCCwTO6Fzs0NoEQ==}
-    engines: {node: '>=16'}
+  isexe@4.0.0:
+    resolution: {integrity: sha512-FFUtZMpoZ8RqHS3XeXEmHWLA4thH+ZxCv2lOiPIn1Xc7CxrqhWzNSDzD+/chS/zbYezmiwWLdQC09JdQKmthOw==}
+    engines: {node: '>=20'}
 
   issue-parser@7.0.1:
     resolution: {integrity: sha512-3YZcUUR2Wt1WsapF+S/WiA2WmlW0cWAoPccMqne7AxEBhCdFeTPjfv/Axb8V2gyCgY3nRw+ksZ3xSUX+R47iAg==}
@@ -5372,6 +5380,9 @@ packages:
   text-decoder@1.2.3:
     resolution: {integrity: sha512-3/o9z3X0X0fTupwsYvR03pJ/DjWuqqrfwBgTQzdWDiQSm9KitAyz/9WqsT2JQW7KV2m+bC2ol/zqpW37NHxLaA==}
 
+  text-decoder@1.2.7:
+    resolution: {integrity: sha512-vlLytXkeP4xvEq2otHeJfSQIRyWxo/oZGEbXrtEEF9Hnmrdly59sUbzZ/QgyWuLYHctCHxFF4tRQZNQ9k60ExQ==}
+
   thingies@2.5.0:
     resolution: {integrity: sha512-s+2Bwztg6PhWUD7XMfeYm5qliDdSiZm7M7n8KjTkIsm3l/2lgVRc2/Gx/v+ZX8lT4FMA+i8aQvhcWylldc+ZNw==}
     engines: {node: '>=10.18'}
@@ -5528,6 +5539,10 @@ packages:
 
   undici@7.20.0:
     resolution: {integrity: sha512-MJZrkjyd7DeC+uPZh+5/YaMDxFiiEEaDgbUSVMXayofAkDWF1088CDo+2RPg7B1BuS1qf1vgNE7xqwPxE0DuSQ==}
+    engines: {node: '>=20.18.1'}
+
+  undici@7.22.0:
+    resolution: {integrity: sha512-RqslV2Us5BrllB+JeiZnK4peryVTndy9Dnqq62S3yYRRTj0tFQCwEniUy2167skdGOy3vqRzEvl1Dm4sV2ReDg==}
     engines: {node: '>=20.18.1'}
 
   universal-user-agent@7.0.3:
@@ -5830,8 +5845,8 @@ packages:
     engines: {node: '>= 8'}
     hasBin: true
 
-  which@6.0.0:
-    resolution: {integrity: sha512-f+gEpIKMR9faW/JgAgPK1D7mekkFoqbmiwvNzuhsHetni20QSgzg9Vhn0g2JSJkkfehQnqdUAx7/e15qS1lPxg==}
+  which@6.0.1:
+    resolution: {integrity: sha512-oGLe46MIrCRqX7ytPUf66EAYvdeMIZYn3WaocqqKZAxrBpkqHfL/qvTyJ/bTk5+AqHCjXmrv3CEWgy368zhRUg==}
     engines: {node: ^20.17.0 || >=22.9.0}
     hasBin: true
 
@@ -6845,7 +6860,7 @@ snapshots:
     dependencies:
       spacetrim: 0.11.59
 
-  '@puppeteer/browsers@2.11.2':
+  '@puppeteer/browsers@2.12.1':
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
       extract-zip: 2.0.1
@@ -6857,6 +6872,7 @@ snapshots:
     transitivePeerDependencies:
       - bare-abort-controller
       - bare-buffer
+      - react-native-b4a
       - supports-color
 
   '@release-it/keep-a-changelog@7.0.1(release-it@19.2.4(@types/node@24.3.0))':
@@ -7186,7 +7202,7 @@ snapshots:
     dependencies:
       '@types/node': 24.3.0
 
-  '@types/node@20.19.30':
+  '@types/node@20.19.33':
     dependencies:
       undici-types: 6.21.0
 
@@ -7427,6 +7443,7 @@ snapshots:
     transitivePeerDependencies:
       - bare-abort-controller
       - bare-buffer
+      - react-native-b4a
       - supports-color
 
   '@wdio/logger@9.18.0':
@@ -7441,15 +7458,15 @@ snapshots:
 
   '@wdio/repl@9.16.2':
     dependencies:
-      '@types/node': 20.19.30
+      '@types/node': 20.19.33
 
   '@wdio/types@9.20.0':
     dependencies:
-      '@types/node': 20.19.30
+      '@types/node': 20.19.33
 
   '@wdio/utils@9.22.0':
     dependencies:
-      '@puppeteer/browsers': 2.11.2
+      '@puppeteer/browsers': 2.12.1
       '@wdio/logger': 9.18.0
       '@wdio/types': 9.20.0
       decamelize: 6.0.1
@@ -7466,6 +7483,7 @@ snapshots:
     transitivePeerDependencies:
       - bare-abort-controller
       - bare-buffer
+      - react-native-b4a
       - supports-color
 
   '@webassemblyjs/ast@1.14.1':
@@ -7548,7 +7566,7 @@ snapshots:
 
   '@xtuc/long@4.2.2': {}
 
-  '@zip.js/zip.js@2.8.16': {}
+  '@zip.js/zip.js@2.8.20': {}
 
   abort-controller@3.0.0:
     dependencies:
@@ -7796,6 +7814,9 @@ snapshots:
 
   b4a@1.6.7: {}
 
+  b4a@1.7.4:
+    optional: true
+
   babel-polyfill@6.26.0:
     dependencies:
       babel-runtime: 6.26.0
@@ -7819,7 +7840,7 @@ snapshots:
   bare-events@2.8.2:
     optional: true
 
-  bare-fs@4.5.3:
+  bare-fs@4.5.4:
     dependencies:
       bare-events: 2.8.2
       bare-path: 3.0.0
@@ -7828,6 +7849,7 @@ snapshots:
       fast-fifo: 1.3.2
     transitivePeerDependencies:
       - bare-abort-controller
+      - react-native-b4a
     optional: true
 
   bare-os@3.6.2:
@@ -7845,6 +7867,7 @@ snapshots:
       bare-events: 2.8.2
     transitivePeerDependencies:
       - bare-abort-controller
+      - react-native-b4a
     optional: true
 
   bare-url@2.3.2:
@@ -8044,7 +8067,7 @@ snapshots:
       parse5: 7.3.0
       parse5-htmlparser2-tree-adapter: 7.1.0
       parse5-parser-stream: 7.1.2
-      undici: 7.20.0
+      undici: 7.22.0
       whatwg-mimetype: 4.0.0
 
   chokidar@3.6.0:
@@ -8448,13 +8471,13 @@ snapshots:
   edgedriver@6.3.0:
     dependencies:
       '@wdio/logger': 9.18.0
-      '@zip.js/zip.js': 2.8.16
+      '@zip.js/zip.js': 2.8.20
       decamelize: 6.0.1
       edge-paths: 3.0.5
-      fast-xml-parser: 5.3.4
+      fast-xml-parser: 5.3.6
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
-      which: 6.0.0
+      which: 6.0.1
     transitivePeerDependencies:
       - supports-color
 
@@ -9012,7 +9035,7 @@ snapshots:
 
   fast-uri@3.0.6: {}
 
-  fast-xml-parser@5.3.4:
+  fast-xml-parser@5.3.6:
     dependencies:
       strnum: 2.1.2
 
@@ -9178,7 +9201,7 @@ snapshots:
   geckodriver@6.1.0:
     dependencies:
       '@wdio/logger': 9.18.0
-      '@zip.js/zip.js': 2.8.16
+      '@zip.js/zip.js': 2.8.20
       decamelize: 6.0.1
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
@@ -9713,7 +9736,7 @@ snapshots:
 
   isexe@2.0.0: {}
 
-  isexe@3.1.1: {}
+  isexe@4.0.0: {}
 
   issue-parser@7.0.1:
     dependencies:
@@ -11295,9 +11318,10 @@ snapshots:
     dependencies:
       events-universal: 1.0.1
       fast-fifo: 1.3.2
-      text-decoder: 1.2.3
+      text-decoder: 1.2.7
     transitivePeerDependencies:
       - bare-abort-controller
+      - react-native-b4a
     optional: true
 
   string-argv@0.3.2: {}
@@ -11443,11 +11467,12 @@ snapshots:
       pump: 3.0.3
       tar-stream: 3.1.7
     optionalDependencies:
-      bare-fs: 4.5.3
+      bare-fs: 4.5.4
       bare-path: 3.0.0
     transitivePeerDependencies:
       - bare-abort-controller
       - bare-buffer
+      - react-native-b4a
 
   tar-stream@3.1.7:
     dependencies:
@@ -11474,6 +11499,13 @@ snapshots:
   text-decoder@1.2.3:
     dependencies:
       b4a: 1.6.7
+
+  text-decoder@1.2.7:
+    dependencies:
+      b4a: 1.7.4
+    transitivePeerDependencies:
+      - react-native-b4a
+    optional: true
 
   thingies@2.5.0(tslib@2.8.1):
     dependencies:
@@ -11620,6 +11652,8 @@ snapshots:
   undici@7.19.2: {}
 
   undici@7.20.0: {}
+
+  undici@7.22.0: {}
 
   universal-user-agent@7.0.3: {}
 
@@ -11804,7 +11838,7 @@ snapshots:
 
   webdriver@9.22.0:
     dependencies:
-      '@types/node': 20.19.30
+      '@types/node': 20.19.33
       '@types/ws': 8.18.1
       '@wdio/config': 9.22.0
       '@wdio/logger': 9.18.0
@@ -11819,12 +11853,13 @@ snapshots:
       - bare-abort-controller
       - bare-buffer
       - bufferutil
+      - react-native-b4a
       - supports-color
       - utf-8-validate
 
   webdriverio@9.22.0:
     dependencies:
-      '@types/node': 20.19.30
+      '@types/node': 20.19.33
       '@types/sinonjs__fake-timers': 8.1.5
       '@wdio/config': 9.22.0
       '@wdio/logger': 9.18.0
@@ -11853,6 +11888,7 @@ snapshots:
       - bare-abort-controller
       - bare-buffer
       - bufferutil
+      - react-native-b4a
       - supports-color
       - utf-8-validate
 
@@ -12063,9 +12099,9 @@ snapshots:
     dependencies:
       isexe: 2.0.0
 
-  which@6.0.0:
+  which@6.0.1:
     dependencies:
-      isexe: 3.1.1
+      isexe: 4.0.0
 
   why-is-node-running@2.3.0:
     dependencies:
