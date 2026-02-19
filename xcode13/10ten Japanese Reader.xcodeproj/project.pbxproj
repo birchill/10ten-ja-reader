@@ -194,6 +194,10 @@
 		D3BBFEAF26FCA81B0059B886 /* ipad-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad-2.png"; sourceTree = "<group>"; };
 		D3BBFEB026FCA81B0059B886 /* iphone-pro-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-pro-5.png"; sourceTree = "<group>"; };
 		D3BBFEB126FCA81B0059B886 /* iphone-pro-4b.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-pro-4b.png"; sourceTree = "<group>"; };
+		F17C2BF02F46CC99004A1E76 /* 10ten Japanese Reader (macOS)Release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "10ten Japanese Reader (macOS)Release.entitlements"; sourceTree = "<group>"; };
+		F17C2BF12F46CCBA004A1E76 /* 10ten Japanese Reader Extension (macOS)Release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "10ten Japanese Reader Extension (macOS)Release.entitlements"; sourceTree = "<group>"; };
+		F17C2BF22F46CCC7004A1E76 /* 10ten Japanese Reader (iOS)Release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "10ten Japanese Reader (iOS)Release.entitlements"; sourceTree = "<group>"; };
+		F17C2BF32F46CCD4004A1E76 /* 10ten Japanese Reader Extension (iOS)Release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "10ten Japanese Reader Extension (iOS)Release.entitlements"; sourceTree = "<group>"; };
 		F1A784592BAC226200442DCC /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = fonts; path = ../../fonts; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -232,6 +236,10 @@
 		D306F42A2692C54F002FA4FD = {
 			isa = PBXGroup;
 			children = (
+				F17C2BF32F46CCD4004A1E76 /* 10ten Japanese Reader Extension (iOS)Release.entitlements */,
+				F17C2BF22F46CCC7004A1E76 /* 10ten Japanese Reader (iOS)Release.entitlements */,
+				F17C2BF12F46CCBA004A1E76 /* 10ten Japanese Reader Extension (macOS)Release.entitlements */,
+				F17C2BF02F46CC99004A1E76 /* 10ten Japanese Reader (macOS)Release.entitlements */,
 				D306F42F2692C54F002FA4FD /* Shared (App) */,
 				D306F4382692C552002FA4FD /* Shared (Extension) */,
 				D306F4402692C553002FA4FD /* iOS (App) */,
@@ -835,6 +843,7 @@
 		D306F47F2692C553002FA4FD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "10ten Japanese Reader Extension (iOS)Release.entitlements";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 83;
@@ -909,6 +918,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "10ten Japanese Reader (iOS)Release.entitlements";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 83;
@@ -983,6 +993,7 @@
 		D306F4862692C553002FA4FD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "10ten Japanese Reader Extension (macOS)Release.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Distribution: Birchill, Inc. (H3RB7C8768)";
 				CODE_SIGN_STYLE = Manual;
@@ -1060,7 +1071,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "macOS (App)/10ten Japanese Reader.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "10ten Japanese Reader (macOS)Release.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Distribution: Birchill, Inc. (H3RB7C8768)";
 				CODE_SIGN_STYLE = Manual;
