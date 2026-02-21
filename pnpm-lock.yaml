@@ -1238,8 +1238,8 @@ packages:
   '@promptbook/utils@0.69.5':
     resolution: {integrity: sha512-xm5Ti/Hp3o4xHrsK9Yy3MS6KbDxYbq485hDsFvxqaNA7equHLPdo8H8faTitTeb14QCDfLW4iwCxdVYu5sn6YQ==}
 
-  '@puppeteer/browsers@2.12.1':
-    resolution: {integrity: sha512-fXa6uXLxfslBlus3MEpW8S6S9fe5RwmAE5Gd8u3krqOwnkZJV3/lQJiY3LaFdTctLLqJtyMgEUGkbDnRNf6vbQ==}
+  '@puppeteer/browsers@2.13.0':
+    resolution: {integrity: sha512-46BZJYJjc/WwmKjsvDFykHtXrtomsCIrwYQPOP7VfMJoZY2bsDF9oROBABR3paDjDcmkUye1Pb1BqdcdiipaWA==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -1904,8 +1904,8 @@ packages:
   '@xtuc/long@4.2.2':
     resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
 
-  '@zip.js/zip.js@2.8.20':
-    resolution: {integrity: sha512-oJzVhK9gnSKD++WLG37QEgeTgm5W8XUYmNv0EhOxytSr85vXn9EMpOoKNTK3yWDLa55Z0MovKW/6RNeh9OUmnA==}
+  '@zip.js/zip.js@2.8.21':
+    resolution: {integrity: sha512-fkyzXISE3IMrstDO1AgPkJCx14MYHP/suIGiAovEYEuBjq3mffsuL6aMV7ohOSjW4rXtuACuUfpA3GtITgdtYg==}
     engines: {bun: '>=0.7.0', deno: '>=1.0.0', node: '>=18.0.0'}
 
   abort-controller@3.0.0:
@@ -2115,8 +2115,8 @@ packages:
   b4a@1.6.7:
     resolution: {integrity: sha512-OnAYlL5b7LEkALw87fUVafQw5rVR9RjwGd4KUwNQ6DrrNmaVaUCgLipfVlzrPQ4tWOR9P0IXGNOx50jYCCdSJg==}
 
-  b4a@1.7.4:
-    resolution: {integrity: sha512-u20zJLDaSWpxaZ+zaAkEIB2dZZ1o+DF4T/MRbmsvGp9nletHOyiai19OzX1fF8xUBYsO1bPXxODvcd0978pnug==}
+  b4a@1.8.0:
+    resolution: {integrity: sha512-qRuSmNSkGQaHwNbM7J78Wwy+ghLEYF1zNrSeMxj4Kgw6y33O3mXcQ6Ie9fRvfU/YnxWkOchPXbaLb73TkIsfdg==}
     peerDependencies:
       react-native-b4a: '*'
     peerDependenciesMeta:
@@ -2163,8 +2163,8 @@ packages:
   bare-path@3.0.0:
     resolution: {integrity: sha512-tyfW2cQcB5NN8Saijrhqn0Zh7AnFNsnczRcuWODH0eYAXBsJ5gVxAUuNr7tsHSC6IZ77cA0SitzT+s47kot8Mw==}
 
-  bare-stream@2.7.0:
-    resolution: {integrity: sha512-oyXQNicV1y8nc2aKffH+BUHFRXmx6VrPzlnaEvMhram0nPBrKcEdcyBg5r08D0i8VxngHFAiVyn1QKXpSG0B8A==}
+  bare-stream@2.8.0:
+    resolution: {integrity: sha512-reUN0M2sHRqCdG4lUK3Fw8w98eeUIZHL5c3H7Mbhk2yVBL+oofgaIp0ieLfD5QXwPCypBpmEEKU2WZKzbAk8GA==}
     peerDependencies:
       bare-buffer: '*'
       bare-events: '*'
@@ -3086,8 +3086,8 @@ packages:
   fast-uri@3.0.6:
     resolution: {integrity: sha512-Atfo14OibSv5wAp4VWNsFYE1AchQRTv9cBGWET4pZWHzYshFSS9NQI6I57rdKn9croWVMbYFbLhJ+yJvmZIIHw==}
 
-  fast-xml-parser@5.3.6:
-    resolution: {integrity: sha512-QNI3sAvSvaOiaMl8FYU4trnEzCwiRr8XMWgAHzlrWpTSj+QaCSvOf1h82OEP1s4hiAXhnbXSyFWCf4ldZzZRVA==}
+  fast-xml-parser@5.3.7:
+    resolution: {integrity: sha512-JzVLro9NQv92pOM/jTCR6mHlJh2FGwtomH8ZQjhFj/R29P2Fnj38OgPJVtcvYw6SuKClhgYuwUZf5b3rd8u2mA==}
     hasBin: true
 
   fastq@1.19.1:
@@ -4224,8 +4224,8 @@ packages:
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     hasBin: true
 
-  modern-tar@0.7.3:
-    resolution: {integrity: sha512-4W79zekKGyYU4JXVmB78DOscMFaJth2gGhgfTl2alWE4rNe3nf4N2pqenQ0rEtIewrnD79M687Ouba3YGTLOvg==}
+  modern-tar@0.7.4:
+    resolution: {integrity: sha512-5ixBi7pY+H8z3MKExsipXPq6S/Q27KpSY0K+NnIyLQLr58mNeZVhT9TkYcqa74H52DabOyrmGLhT5D7TZ/x26Q==}
     engines: {node: '>=18.0.0'}
 
   mrmime@2.0.1:
@@ -5388,6 +5388,9 @@ packages:
 
   tar-stream@3.1.7:
     resolution: {integrity: sha512-qJj60CXt7IU1Ffyc3NJMjh6EkuCFej46zUqJ4J7pqYlThyd9bO0XBTmcOIhSzZJVWfsLks0+nle/j538YAW9RQ==}
+
+  teex@1.0.1:
+    resolution: {integrity: sha512-eYE6iEI62Ni1H8oIa7KlDU6uQBtqr4Eajni3wX7rpfXD8ysFx8z0+dri+KWEPWpBsxXfxu58x/0jvTVT1ekOSg==}
 
   terser-webpack-plugin@5.3.16:
     resolution: {integrity: sha512-h9oBFCWrq78NyWWVcSwZarJkZ01c2AyGrzs1crmHZO3QUg9D61Wu4NPjBy69n7JqylFF5y+CsUZYmYEIZ3mR+Q==}
@@ -6893,7 +6896,7 @@ snapshots:
     dependencies:
       spacetrim: 0.11.59
 
-  '@puppeteer/browsers@2.12.1':
+  '@puppeteer/browsers@2.13.0':
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
       extract-zip: 2.0.1
@@ -7550,7 +7553,7 @@ snapshots:
 
   '@wdio/utils@9.22.0':
     dependencies:
-      '@puppeteer/browsers': 2.12.1
+      '@puppeteer/browsers': 2.13.0
       '@wdio/logger': 9.18.0
       '@wdio/types': 9.20.0
       decamelize: 6.0.1
@@ -7650,7 +7653,7 @@ snapshots:
 
   '@xtuc/long@4.2.2': {}
 
-  '@zip.js/zip.js@2.8.20': {}
+  '@zip.js/zip.js@2.8.21': {}
 
   abort-controller@3.0.0:
     dependencies:
@@ -7898,7 +7901,7 @@ snapshots:
 
   b4a@1.6.7: {}
 
-  b4a@1.7.4:
+  b4a@1.8.0:
     optional: true
 
   babel-polyfill@6.26.0:
@@ -7928,7 +7931,7 @@ snapshots:
     dependencies:
       bare-events: 2.8.2
       bare-path: 3.0.0
-      bare-stream: 2.7.0(bare-events@2.8.2)
+      bare-stream: 2.8.0(bare-events@2.8.2)
       bare-url: 2.3.2
       fast-fifo: 1.3.2
     transitivePeerDependencies:
@@ -7944,9 +7947,10 @@ snapshots:
       bare-os: 3.6.2
     optional: true
 
-  bare-stream@2.7.0(bare-events@2.8.2):
+  bare-stream@2.8.0(bare-events@2.8.2):
     dependencies:
       streamx: 2.23.0
+      teex: 1.0.1
     optionalDependencies:
       bare-events: 2.8.2
     transitivePeerDependencies:
@@ -8555,10 +8559,10 @@ snapshots:
   edgedriver@6.3.0:
     dependencies:
       '@wdio/logger': 9.18.0
-      '@zip.js/zip.js': 2.8.20
+      '@zip.js/zip.js': 2.8.21
       decamelize: 6.0.1
       edge-paths: 3.0.5
-      fast-xml-parser: 5.3.6
+      fast-xml-parser: 5.3.7
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
       which: 6.0.1
@@ -9119,7 +9123,7 @@ snapshots:
 
   fast-uri@3.0.6: {}
 
-  fast-xml-parser@5.3.6:
+  fast-xml-parser@5.3.7:
     dependencies:
       strnum: 2.1.2
 
@@ -9285,11 +9289,11 @@ snapshots:
   geckodriver@6.1.0:
     dependencies:
       '@wdio/logger': 9.18.0
-      '@zip.js/zip.js': 2.8.20
+      '@zip.js/zip.js': 2.8.21
       decamelize: 6.0.1
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
-      modern-tar: 0.7.3
+      modern-tar: 0.7.4
     transitivePeerDependencies:
       - supports-color
 
@@ -10252,7 +10256,7 @@ snapshots:
       yargs-parser: 21.1.1
       yargs-unparser: 2.0.0
 
-  modern-tar@0.7.3: {}
+  modern-tar@0.7.4: {}
 
   mrmime@2.0.1: {}
 
@@ -11562,6 +11566,14 @@ snapshots:
       fast-fifo: 1.3.2
       streamx: 2.22.1
 
+  teex@1.0.1:
+    dependencies:
+      streamx: 2.23.0
+    transitivePeerDependencies:
+      - bare-abort-controller
+      - react-native-b4a
+    optional: true
+
   terser-webpack-plugin@5.3.16(webpack@5.105.2):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.30
@@ -11584,7 +11596,7 @@ snapshots:
 
   text-decoder@1.2.7:
     dependencies:
-      b4a: 1.7.4
+      b4a: 1.8.0
     transitivePeerDependencies:
       - react-native-b4a
     optional: true
