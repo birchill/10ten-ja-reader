@@ -88,7 +88,7 @@
     "@trivago/prettier-plugin-sort-imports": "6.0.2",
     "@types/archiver": "7.0.0",
     "@types/mocha": "10.0.10",
-    "@types/webextension-polyfill": "0.12.4",
+    "@types/webextension-polyfill": "0.12.5",
     "@types/yargs": "17.0.35",
     "@typescript-eslint/parser": "8.56.0",
     "@vitest/browser-webdriverio": "4.0.18",
