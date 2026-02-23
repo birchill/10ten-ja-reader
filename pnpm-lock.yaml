@@ -79,8 +79,8 @@ importers:
         specifier: 10.0.10
         version: 10.0.10
       '@types/webextension-polyfill':
-        specifier: 0.12.4
-        version: 0.12.4
+        specifier: 0.12.5
+        version: 0.12.5
       '@types/yargs':
         specifier: 17.0.35
         version: 17.0.35
@@ -1663,8 +1663,8 @@ packages:
   '@types/sockjs@0.3.36':
     resolution: {integrity: sha512-MK9V6NzAS1+Ud7JV9lJLFqW85VbC9dq3LmwZCuBe4wBDgKC0Kj/jd8Xl+nSviU+Qc3+m7umHHyHg//2KSa0a0Q==}
 
-  '@types/webextension-polyfill@0.12.4':
-    resolution: {integrity: sha512-wK8YdSI0pDiaehSLDIvtvonYmLwUUivg4Z6JCJO8rkyssMAG82cFJgwPK/V7NO61mJBLg/tXeoXQL8AFzpXZmQ==}
+  '@types/webextension-polyfill@0.12.5':
+    resolution: {integrity: sha512-uKSAv6LgcVdINmxXMKBuVIcg/2m5JZugoZO8x20g7j2bXJkPIl/lVGQcDlbV+aXAiTyXT2RA5U5mI4IGCDMQeg==}
 
   '@types/which@2.0.2':
     resolution: {integrity: sha512-113D3mDkZDjo+EeUEHCFy0qniNc1ZpecGiAU7WSo7YDoSzolZIQKpYFHrPpjkB2nuyahcKfrmLXeQlh7gqJYdw==}
@@ -7281,7 +7281,7 @@ snapshots:
     dependencies:
       '@types/node': 24.3.0
 
-  '@types/webextension-polyfill@0.12.4': {}
+  '@types/webextension-polyfill@0.12.5': {}
 
   '@types/which@2.0.2': {}
 
