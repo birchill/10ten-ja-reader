@@ -152,7 +152,7 @@ function isInIndivisibleRange(
   indivisibleRanges: IndivisibleRanges | undefined
 ): boolean {
   return !!indivisibleRanges?.some(
-    ({ start, end }) => offset > start && offset < end
+    ([start, end]) => offset > start && offset < end
   );
 }
 

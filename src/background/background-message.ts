@@ -16,7 +16,7 @@ const SourceContextSchema = s.object({
   inTranscription: s.optional(s.boolean()),
 });
 
-const IndivisibleRangeSchema = s.type({ start: s.number(), end: s.number() });
+const IndivisibleRangeSchema = s.tuple([s.number(), s.number()]);
 
 export const BackgroundMessageSchema = discriminator('type', {
   disable: s.type({ frame: s.literal('*') }),
