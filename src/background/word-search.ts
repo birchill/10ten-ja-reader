@@ -1,6 +1,7 @@
 import { AbortError } from '@birchill/jpdict-idb';
 import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
 
+import type { IndivisibleRanges } from '../common/indivisible-range';
 import { isOnlyDigits } from '../utils/char-range';
 import { toRomaji } from '../utils/romaji';
 
@@ -25,12 +26,14 @@ export async function wordSearch({
   getWords,
   input,
   inputLengths,
+  indivisibleRanges,
   maxResults,
 }: {
   abortSignal?: AbortSignal;
   getWords: GetWordsFunction;
   input: string;
   inputLengths: Array<number>;
+  indivisibleRanges?: IndivisibleRanges;
   maxResults: number;
 }): Promise<WordSearchResult | null> {
   let longestMatch = 0;
@@ -118,9 +121,22 @@ export async function wordSearch({
       break;
     }
 
-    // Shorten input, but don't split a ようおん (e.g. きゃ).
-    const lengthToShorten = endsInYoon(input) ? 2 : 1;
-    input = input.substring(0, input.length - lengthToShorten);
+    // Shorten input, but don't split a ようおん (e.g. きゃ), and don't split
+    // any caller-provided indivisible segments (e.g. ruby <rt> text).
+    let nextInputLength = input.length - (endsInYoon(input) ? 2 : 1);
+    while (nextInputLength > 0) {
+      const nextMatchLength = inputLengths[nextInputLength];
+      if (
+        typeof nextMatchLength !== 'number' ||
+        !isInIndivisibleRange(nextMatchLength, indivisibleRanges)
+      ) {
+        break;
+      }
+      nextInputLength -= endsInYoon(input.substring(0, nextInputLength))
+        ? 2
+        : 1;
+    }
+    input = input.substring(0, Math.max(nextInputLength, 0));
   }
 
   if (!result.data.length) {
@@ -129,6 +145,15 @@ export async function wordSearch({
 
   result.matchLen = longestMatch;
   return result;
+}
+
+function isInIndivisibleRange(
+  offset: number,
+  indivisibleRanges: IndivisibleRanges | undefined
+): boolean {
+  return !!indivisibleRanges?.some(
+    ({ start, end }) => offset > start && offset < end
+  );
 }
 
 async function lookupCandidates({
