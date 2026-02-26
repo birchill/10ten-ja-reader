@@ -829,8 +829,8 @@ describe('getTextAtPoint', () => {
       // Assert
       expect(result?.text).toBe('けんせいしてたすけに');
       expect(result?.indivisibleRanges).toEqual([
-        { start: 0, end: 4 },
-        { start: 6, end: 8 },
+        [0, 4],
+        [6, 8],
       ]);
     });
 
@@ -849,9 +849,9 @@ describe('getTextAtPoint', () => {
       // Assert
       expect(result?.text).toBe('シー・イー・オーです');
       expect(result?.indivisibleRanges).toEqual([
-        { start: 0, end: 2 },
-        { start: 3, end: 5 },
-        { start: 6, end: 8 },
+        [0, 2],
+        [3, 5],
+        [6, 8],
       ]);
     });
 

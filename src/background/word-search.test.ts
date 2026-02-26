@@ -20,7 +20,7 @@ describe('wordSearch', () => {
       },
       input: normalized,
       inputLengths,
-      indivisibleRanges: [{ start: 6, end: 8 }],
+      indivisibleRanges: [[6, 8]],
       maxResults: 10,
     });
 
@@ -44,9 +44,9 @@ describe('wordSearch', () => {
       input: normalized,
       inputLengths,
       indivisibleRanges: [
-        { start: 0, end: 1 },
-        { start: 2, end: 3 },
-        { start: 4, end: 5 },
+        [0, 1],
+        [2, 3],
+        [4, 5],
       ],
       maxResults: 10,
     });

@@ -340,10 +340,10 @@ function addIndivisibleRanges({
     const dotOffset = text.indexOf('・', segmentStart);
     const segmentEnd = dotOffset === -1 ? text.length : dotOffset;
     if (segmentEnd > segmentStart) {
-      pushIndivisibleRange(indivisibleRanges, {
-        start: outputOffset + segmentStart,
-        end: outputOffset + segmentEnd,
-      });
+      pushIndivisibleRange(indivisibleRanges, [
+        outputOffset + segmentStart,
+        outputOffset + segmentEnd,
+      ]);
     }
     if (dotOffset === -1) {
       break;
@@ -354,15 +354,15 @@ function addIndivisibleRanges({
 
 function pushIndivisibleRange(
   indivisibleRanges: IndivisibleRanges,
-  range: { start: number; end: number }
+  range: [start: number, end: number]
 ) {
   const lastRange = indivisibleRanges.at(-1);
-  if (!lastRange || lastRange.end < range.start) {
+  if (!lastRange || lastRange[1] < range[0]) {
     indivisibleRanges.push(range);
     return;
   }
 
-  lastRange.end = Math.max(lastRange.end, range.end);
+  lastRange[1] = Math.max(lastRange[1], range[1]);
 }
 
 // ----------------------------------------------------------------------------
