@@ -16,6 +16,8 @@ const SourceContextSchema = s.object({
   inTranscription: s.optional(s.boolean()),
 });
 
+const IndivisibleRangeSchema = s.type({ start: s.number(), end: s.number() });
+
 export const BackgroundMessageSchema = discriminator('type', {
   disable: s.type({ frame: s.literal('*') }),
   enable: s.type({
@@ -53,6 +55,7 @@ export const BackgroundMessageSchema = discriminator('type', {
     targetProps: s.type({}),
     text: s.string(),
     wordLookup: s.boolean(),
+    indivisibleRanges: s.optional(s.array(IndivisibleRangeSchema)),
     // Parameters for designating the iframe source
     source: s.type({
       frameId: s.number(),

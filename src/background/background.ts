@@ -396,13 +396,18 @@ function notifyDbListeners(specifiedListener?: Runtime.Port) {
 
 async function searchWords({
   input,
+  indivisibleRanges,
   abortSignal,
 }: SearchRequest & {
   abortSignal: AbortSignal;
 }): Promise<SearchWordsResult | null> {
   await dbReady;
 
-  const [words, dbStatus] = await jpdictSearchWords({ abortSignal, input });
+  const [words, dbStatus] = await jpdictSearchWords({
+    abortSignal,
+    input,
+    indivisibleRanges,
+  });
 
   return { words, dbStatus };
 }

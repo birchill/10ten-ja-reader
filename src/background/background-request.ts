@@ -3,7 +3,12 @@ import * as s from 'superstruct';
 
 import { PopupStateSchema } from '../content/popup-state';
 
-const SearchRequestSchema = s.type({ input: s.string() });
+const IndivisibleRangeSchema = s.type({ start: s.number(), end: s.number() });
+
+const SearchRequestSchema = s.type({
+  input: s.string(),
+  indivisibleRanges: s.optional(s.array(IndivisibleRangeSchema)),
+});
 
 export type SearchRequest = s.Infer<typeof SearchRequestSchema>;
 

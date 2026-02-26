@@ -814,6 +814,47 @@ describe('getTextAtPoint', () => {
       );
     });
 
+    it('marks rt text as indivisible when scanning across ruby and non-ruby text', () => {
+      // Arrange
+      testDiv.innerHTML =
+        '<ruby>牽制<rt>けんせい</rt></ruby>して<ruby>助<rt>たす</rt></ruby>けに';
+      const firstRtNode = testDiv.firstChild!.childNodes[1].firstChild as Text;
+      const bbox = getBboxForOffset(firstRtNode, 0);
+
+      // Act
+      const result = getTextAtPoint({
+        point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 4 },
+      });
+
+      // Assert
+      expect(result?.text).toBe('けんせいしてたすけに');
+      expect(result?.indivisibleRanges).toEqual([
+        { start: 0, end: 4 },
+        { start: 6, end: 8 },
+      ]);
+    });
+
+    it('splits indivisible ranges at center dots in rt text', () => {
+      // Arrange
+      testDiv.innerHTML =
+        '<ruby>最高経営責任者<rt>シー・イー・オー</rt></ruby>です';
+      const rtNode = testDiv.firstChild!.childNodes[1].firstChild as Text;
+      const bbox = getBboxForOffset(rtNode, 0);
+
+      // Act
+      const result = getTextAtPoint({
+        point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 4 },
+      });
+
+      // Assert
+      expect(result?.text).toBe('シー・イー・オーです');
+      expect(result?.indivisibleRanges).toEqual([
+        { start: 0, end: 2 },
+        { start: 3, end: 5 },
+        { start: 6, end: 8 },
+      ]);
+    });
+
     it('traverses okurigana in inline-block elements too', () => {
       // Arrange
 

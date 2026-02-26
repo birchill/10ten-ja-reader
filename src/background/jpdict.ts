@@ -15,6 +15,7 @@ import {
 import { kanaToHiragana } from '@birchill/normal-jp';
 import browser from 'webextension-polyfill';
 
+import type { IndivisibleRanges } from '../common/indivisible-range';
 import {
   MAX_LOOKUP_LENGTH,
   MAX_TRANSLATE_INPUT_LENGTH,
@@ -306,10 +307,12 @@ const WORDS_MAX_ENTRIES = 7;
 
 export async function searchWords({
   input,
+  indivisibleRanges,
   abortSignal,
   max = 0,
 }: {
   input: string;
+  indivisibleRanges?: IndivisibleRanges;
   abortSignal?: AbortSignal;
   max?: number;
 }): Promise<
@@ -348,6 +351,7 @@ export async function searchWords({
       getWords,
       input: word,
       inputLengths,
+      indivisibleRanges,
       maxResults,
     }),
     dbStatus !== 'ok' ? dbStatus : undefined,
