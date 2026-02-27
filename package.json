@@ -95,7 +95,7 @@
     "@vitest/eslint-plugin": "1.6.9",
     "archiver": "7.0.1",
     "css-loader": "7.1.4",
-    "eslint": "10.0.1",
+    "eslint": "10.0.2",
     "eslint-plugin-react": "7.37.5",
     "fake-indexeddb": "6.2.5",
     "fast-glob": "3.3.3",
