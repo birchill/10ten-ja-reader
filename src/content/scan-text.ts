@@ -1,3 +1,4 @@
+import type { IndivisibleRanges } from '../common/indivisible-range';
 import { nonJapaneseChar } from '../utils/char-range';
 import { normalizeContext } from '../utils/normalize';
 
@@ -35,6 +36,9 @@ export type ScanTextResult = {
 
   // Extra metadata we parsed in the process
   meta?: SelectionMeta;
+
+  // Ranges in `text` that should not be split during lookup.
+  indivisibleRanges?: IndivisibleRanges;
 };
 
 export function scanText({
@@ -204,6 +208,7 @@ export function scanText({
   }
 
   const result: ScanTextResult = { text: '', textRange: [], sourceContext };
+  const indivisibleRanges: IndivisibleRanges = [];
 
   let textDelimiter = nonJapaneseChar;
 
@@ -251,12 +256,25 @@ export function scanText({
     } else if (textEnd !== -1) {
       // The text node has disallowed characters mid-way through so
       // return up to that point.
-      result.text += nodeText.substring(0, textEnd);
+      const textToAppend = nodeText.substring(0, textEnd);
+      addIndivisibleRanges({
+        indivisibleRanges,
+        node,
+        text: textToAppend,
+        outputOffset: result.text.length,
+      });
+      result.text += textToAppend;
       result.textRange.push({ node, start: offset, end: offset + textEnd });
       break;
     }
 
     // The whole text node is allowed characters, keep going.
+    addIndivisibleRanges({
+      indivisibleRanges,
+      node,
+      text: nodeText,
+      outputOffset: result.text.length,
+    });
     result.text += nodeText;
     result.textRange.push({ node, start: offset, end: node.data.length });
 
@@ -292,8 +310,59 @@ export function scanText({
 
   trimSourceContext(sourceContext, result.text.length);
   result.meta = extractGetTextMetadata({ text: result.text, matchCurrency });
+  if (indivisibleRanges.length) {
+    result.indivisibleRanges = indivisibleRanges;
+  }
 
   return result;
+}
+
+function addIndivisibleRanges({
+  indivisibleRanges,
+  node,
+  text,
+  outputOffset,
+}: {
+  indivisibleRanges: IndivisibleRanges;
+  node: Text;
+  text: string;
+  outputOffset: number;
+}) {
+  if (!text.length || !node.parentElement?.closest('rt')) {
+    return;
+  }
+
+  // Treat all content in <rt> as indivisible except around center dots.
+  //
+  // That is, "あ・い" becomes two indivisible segments, "あ" and "い".
+  let segmentStart = 0;
+  while (segmentStart < text.length) {
+    const dotOffset = text.indexOf('・', segmentStart);
+    const segmentEnd = dotOffset === -1 ? text.length : dotOffset;
+    if (segmentEnd > segmentStart) {
+      pushIndivisibleRange(indivisibleRanges, [
+        outputOffset + segmentStart,
+        outputOffset + segmentEnd,
+      ]);
+    }
+    if (dotOffset === -1) {
+      break;
+    }
+    segmentStart = dotOffset + 1;
+  }
+}
+
+function pushIndivisibleRange(
+  indivisibleRanges: IndivisibleRanges,
+  range: [start: number, end: number]
+) {
+  const lastRange = indivisibleRanges.at(-1);
+  if (!lastRange || lastRange[1] < range[0]) {
+    indivisibleRanges.push(range);
+    return;
+  }
+
+  lastRange[1] = Math.max(lastRange[1], range[1]);
 }
 
 // ----------------------------------------------------------------------------

@@ -15,6 +15,9 @@ app.
 - Added support for Daikanwajiten (Morohashi) references
   ([#2734](https://github.com/birchill/10ten-ja-reader/pull/2734)).
 - Worked around a [major string substitution bug in Safari](https://bugs.webkit.org/show_bug.cgi?id=306492).
+- Fixed word lookups splitting ruby (`<rt>`) text incorrectly, while still
+  allowing splits around center dots (`・`)
+  ([#2785](https://github.com/birchill/10ten-ja-reader/issues/2785)).
 
 ## [1.26.1] - 2025-12-23
 
