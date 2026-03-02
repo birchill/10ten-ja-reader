@@ -62,7 +62,7 @@ importers:
         version: 7.0.1(release-it@19.2.4(@types/node@24.3.0))
       '@rspack/cli':
         specifier: 1.7.6
-        version: 1.7.6(@rspack/core@1.7.6)(@types/express@4.17.23)(webpack@5.105.2)
+        version: 1.7.6(@rspack/core@1.7.6)(@types/express@4.17.23)(webpack@5.105.3)
       '@rspack/core':
         specifier: 1.7.6
         version: 1.7.6
@@ -98,7 +98,7 @@ importers:
         version: 7.0.1
       css-loader:
         specifier: 7.1.4
-        version: 7.1.4(@rspack/core@1.7.6)(webpack@5.105.2)
+        version: 7.1.4(@rspack/core@1.7.6)(webpack@5.105.3)
       eslint:
         specifier: 10.0.2
         version: 10.0.2(jiti@2.6.1)
@@ -116,10 +116,10 @@ importers:
         version: 12.6.0
       file-loader:
         specifier: 6.2.0
-        version: 6.2.0(webpack@5.105.2)
+        version: 6.2.0(webpack@5.105.3)
       fork-ts-checker-webpack-plugin:
         specifier: 9.1.0
-        version: 9.1.0(typescript@5.9.3)(webpack@5.105.2)
+        version: 9.1.0(typescript@5.9.3)(webpack@5.105.3)
       globals:
         specifier: 17.3.0
         version: 17.3.0
@@ -146,7 +146,7 @@ importers:
         version: 6.0.1(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(yaml@2.8.1)
       postcss-loader:
         specifier: 8.2.1
-        version: 8.2.1(@rspack/core@1.7.6)(postcss@8.5.6)(typescript@5.9.3)(webpack@5.105.2)
+        version: 8.2.1(@rspack/core@1.7.6)(postcss@8.5.6)(typescript@5.9.3)(webpack@5.105.3)
       prettier:
         specifier: 3.8.1
         version: 3.8.1
@@ -167,7 +167,7 @@ importers:
         version: 7.1.1
       react-cosmos-plugin-rspack:
         specifier: 2.0.0
-        version: 2.0.0(@rspack/core@1.7.6)(react-cosmos@7.1.1)(webpack@5.105.2)
+        version: 2.0.0(@rspack/core@1.7.6)(react-cosmos@7.1.1)(webpack@5.105.3)
       release-it:
         specifier: 19.2.4
         version: 19.2.4(@types/node@24.3.0)
@@ -176,13 +176,13 @@ importers:
         version: 4.1.8
       source-map-loader:
         specifier: 5.0.0
-        version: 5.0.0(webpack@5.105.2)
+        version: 5.0.0(webpack@5.105.3)
       tailwindcss:
         specifier: 4.2.1
         version: 4.2.1
       terser-webpack-plugin:
         specifier: 5.3.16
-        version: 5.3.16(webpack@5.105.2)
+        version: 5.3.16(webpack@5.105.3)
       tsx:
         specifier: 4.21.0
         version: 4.21.0
@@ -196,17 +196,17 @@ importers:
         specifier: 2.12.0
         version: 2.12.0(jiti@2.6.1)
       webpack:
-        specifier: 5.105.2
-        version: 5.105.2
+        specifier: 5.105.3
+        version: 5.105.3
       webpack-bugsnag-plugins:
         specifier: 2.2.3
-        version: 2.2.3(webpack@5.105.2)
+        version: 2.2.3(webpack@5.105.3)
       webpack-preprocessor:
         specifier: 0.1.12
         version: 0.1.12
       webpack-utf8-bom:
         specifier: 1.4.0
-        version: 1.4.0(webpack@5.105.2)
+        version: 1.4.0(webpack@5.105.3)
       xmlbuilder2:
         specifier: 4.0.3
         version: 4.0.3
@@ -1944,11 +1944,6 @@ packages:
   acorn-walk@8.3.4:
     resolution: {integrity: sha512-ueEepnujpqee2o5aIYnvHU6C0A42MNdsIDeqy5BydrkuC5R1ZuUFnm27EeFJGoEHJQgn3uleRvmTXaJgfXbt4g==}
     engines: {node: '>=0.4.0'}
-
-  acorn@8.15.0:
-    resolution: {integrity: sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==}
-    engines: {node: '>=0.4.0'}
-    hasBin: true
 
   acorn@8.16.0:
     resolution: {integrity: sha512-UVJyE9MttOsBQIDKw1skb9nAwQuR5wuGD3+82K6JgJlm/Y+KI92oNsMNGZCYdDsVtRHSak0pcV5Dno5+4jh9sw==}
@@ -5810,8 +5805,8 @@ packages:
   webpack-preprocessor@0.1.12:
     resolution: {integrity: sha512-zqwSznL718VWQuVWyS86kne7C8aJnQVKBzMfsSAt4NHEExqyEPBVZk90aGv0LjKgCJ/Nl0nf0Fo1FnApqm8Hqw==}
 
-  webpack-sources@3.3.3:
-    resolution: {integrity: sha512-yd1RBzSGanHkitROoPFd6qsrxt+oFhg/129YzheDGqeustzX0vTZJZsSsQjVQC4yzBQ56K55XU8gaNCtIzOnTg==}
+  webpack-sources@3.3.4:
+    resolution: {integrity: sha512-7tP1PdV4vF+lYPnkMR0jMY5/la2ub5Fc/8VQrrU+lXkiM6C4TjVfGw7iKfyhnTQOsD+6Q/iKw0eFciziRgD58Q==}
     engines: {node: '>=10.13.0'}
 
   webpack-utf8-bom@1.4.0:
@@ -5819,8 +5814,8 @@ packages:
     peerDependencies:
       webpack: ^4.x.x || ^5.0.0
 
-  webpack@5.105.2:
-    resolution: {integrity: sha512-dRXm0a2qcHPUBEzVk8uph0xWSjV/xZxenQQbLwnwP7caQCYpqG1qddwlyEkIDkYn0K8tvmcrZ+bOrzoQ3HxCDw==}
+  webpack@5.105.3:
+    resolution: {integrity: sha512-LLBBA4oLmT7sZdHiYE/PeVuifOxYyE2uL/V+9VQP7YSYdJU7bSf7H8bZRRxW8kEPMkmVjnrXmoR3oejIdX0xbg==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     peerDependencies:
@@ -6438,7 +6433,7 @@ snapshots:
 
   '@eslint/eslintrc@3.3.1':
     dependencies:
-      ajv: 6.12.6
+      ajv: 6.14.0
       debug: 4.4.3(supports-color@8.1.1)
       espree: 10.4.0
       globals: 14.0.0
@@ -7035,11 +7030,11 @@ snapshots:
       '@rspack/binding-win32-ia32-msvc': 1.7.6
       '@rspack/binding-win32-x64-msvc': 1.7.6
 
-  '@rspack/cli@1.7.6(@rspack/core@1.7.6)(@types/express@4.17.23)(webpack@5.105.2)':
+  '@rspack/cli@1.7.6(@rspack/core@1.7.6)(@types/express@4.17.23)(webpack@5.105.3)':
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
       '@rspack/core': 1.7.6
-      '@rspack/dev-server': 1.1.5(@rspack/core@1.7.6)(@types/express@4.17.23)(webpack@5.105.2)
+      '@rspack/dev-server': 1.1.5(@rspack/core@1.7.6)(@types/express@4.17.23)(webpack@5.105.3)
       exit-hook: 4.0.0
       webpack-bundle-analyzer: 4.10.2
     transitivePeerDependencies:
@@ -7057,13 +7052,13 @@ snapshots:
       '@rspack/binding': 1.7.6
       '@rspack/lite-tapable': 1.1.0
 
-  '@rspack/dev-server@1.1.5(@rspack/core@1.7.6)(@types/express@4.17.23)(webpack@5.105.2)':
+  '@rspack/dev-server@1.1.5(@rspack/core@1.7.6)(@types/express@4.17.23)(webpack@5.105.3)':
     dependencies:
       '@rspack/core': 1.7.6
       chokidar: 3.6.0
       http-proxy-middleware: 2.0.9(@types/express@4.17.23)
       p-retry: 6.2.1
-      webpack-dev-server: 5.2.2(webpack@5.105.2)
+      webpack-dev-server: 5.2.2(webpack@5.105.3)
       ws: 8.19.0
     transitivePeerDependencies:
       - '@types/express'
@@ -7682,9 +7677,9 @@ snapshots:
       mime-types: 2.1.35
       negotiator: 0.6.3
 
-  acorn-import-phases@1.0.4(acorn@8.15.0):
+  acorn-import-phases@1.0.4(acorn@8.16.0):
     dependencies:
-      acorn: 8.15.0
+      acorn: 8.16.0
 
   acorn-jsx@5.3.2(acorn@8.16.0):
     dependencies:
@@ -7693,8 +7688,6 @@ snapshots:
   acorn-walk@8.3.4:
     dependencies:
       acorn: 8.16.0
-
-  acorn@8.15.0: {}
 
   acorn@8.16.0: {}
 
@@ -8367,7 +8360,7 @@ snapshots:
 
   crypt@0.0.2: {}
 
-  css-loader@7.1.4(@rspack/core@1.7.6)(webpack@5.105.2):
+  css-loader@7.1.4(@rspack/core@1.7.6)(webpack@5.105.3):
     dependencies:
       icss-utils: 5.1.0(postcss@8.5.6)
       postcss: 8.5.6
@@ -8379,7 +8372,7 @@ snapshots:
       semver: 7.7.4
     optionalDependencies:
       '@rspack/core': 1.7.6
-      webpack: 5.105.2
+      webpack: 5.105.3
 
   css-select@5.2.2:
     dependencies:
@@ -8910,7 +8903,7 @@ snapshots:
       '@humanwhocodes/module-importer': 1.0.1
       '@humanwhocodes/retry': 0.4.3
       '@types/estree': 1.0.8
-      ajv: 6.12.6
+      ajv: 6.14.0
       chalk: 4.1.2
       cross-spawn: 7.0.6
       debug: 4.4.3(supports-color@8.1.1)
@@ -9132,11 +9125,11 @@ snapshots:
     dependencies:
       flat-cache: 4.0.1
 
-  file-loader@6.2.0(webpack@5.105.2):
+  file-loader@6.2.0(webpack@5.105.3):
     dependencies:
       loader-utils: 2.0.4
       schema-utils: 3.3.0
-      webpack: 5.105.2
+      webpack: 5.105.3
 
   fill-range@7.1.1:
     dependencies:
@@ -9191,7 +9184,7 @@ snapshots:
       cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
-  fork-ts-checker-webpack-plugin@9.1.0(typescript@5.9.3)(webpack@5.105.2):
+  fork-ts-checker-webpack-plugin@9.1.0(typescript@5.9.3)(webpack@5.105.3):
     dependencies:
       '@babel/code-frame': 7.27.1
       chalk: 4.1.2
@@ -9206,7 +9199,7 @@ snapshots:
       semver: 7.7.2
       tapable: 2.2.2
       typescript: 5.9.3
-      webpack: 5.105.2
+      webpack: 5.105.3
 
   formatly@0.3.0:
     dependencies:
@@ -10647,7 +10640,7 @@ snapshots:
       tsx: 4.21.0
       yaml: 2.8.1
 
-  postcss-loader@8.2.1(@rspack/core@1.7.6)(postcss@8.5.6)(typescript@5.9.3)(webpack@5.105.2):
+  postcss-loader@8.2.1(@rspack/core@1.7.6)(postcss@8.5.6)(typescript@5.9.3)(webpack@5.105.3):
     dependencies:
       cosmiconfig: 9.0.0(typescript@5.9.3)
       jiti: 2.6.1
@@ -10655,7 +10648,7 @@ snapshots:
       semver: 7.7.4
     optionalDependencies:
       '@rspack/core': 1.7.6
-      webpack: 5.105.2
+      webpack: 5.105.3
     transitivePeerDependencies:
       - typescript
 
@@ -10832,12 +10825,12 @@ snapshots:
 
   react-cosmos-plugin-boolean-input@7.1.1: {}
 
-  react-cosmos-plugin-rspack@2.0.0(@rspack/core@1.7.6)(react-cosmos@7.1.1)(webpack@5.105.2):
+  react-cosmos-plugin-rspack@2.0.0(@rspack/core@1.7.6)(react-cosmos@7.1.1)(webpack@5.105.3):
     dependencies:
       '@rspack/core': 1.7.6
       react-cosmos: 7.1.1
       react-cosmos-dom: 7.0.0
-      webpack-dev-middleware: 7.4.2(webpack@5.105.2)
+      webpack-dev-middleware: 7.4.2(webpack@5.105.3)
       webpack-hot-middleware: 2.26.1
     transitivePeerDependencies:
       - webpack
@@ -11305,11 +11298,11 @@ snapshots:
 
   source-map-js@1.2.1: {}
 
-  source-map-loader@5.0.0(webpack@5.105.2):
+  source-map-loader@5.0.0(webpack@5.105.3):
     dependencies:
       iconv-lite: 0.6.3
       source-map-js: 1.2.1
-      webpack: 5.105.2
+      webpack: 5.105.3
 
   source-map-support@0.5.21:
     dependencies:
@@ -11556,19 +11549,19 @@ snapshots:
       - react-native-b4a
     optional: true
 
-  terser-webpack-plugin@5.3.16(webpack@5.105.2):
+  terser-webpack-plugin@5.3.16(webpack@5.105.3):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.30
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       serialize-javascript: 6.0.2
       terser: 5.43.1
-      webpack: 5.105.2
+      webpack: 5.105.3
 
   terser@5.43.1:
     dependencies:
       '@jridgewell/source-map': 0.3.11
-      acorn: 8.15.0
+      acorn: 8.16.0
       commander: 2.20.3
       source-map-support: 0.5.21
 
@@ -11963,16 +11956,16 @@ snapshots:
 
   webidl-conversions@8.0.1: {}
 
-  webpack-bugsnag-plugins@2.2.3(webpack@5.105.2):
+  webpack-bugsnag-plugins@2.2.3(webpack@5.105.3):
     dependencies:
       '@bugsnag/cli': 3.2.1
       run-parallel-limit: 1.1.0
-      webpack: 5.105.2
+      webpack: 5.105.3
 
   webpack-bundle-analyzer@4.10.2:
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
-      acorn: 8.15.0
+      acorn: 8.16.0
       acorn-walk: 8.3.4
       commander: 7.2.0
       debounce: 1.2.1
@@ -11987,7 +11980,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  webpack-dev-middleware@7.4.2(webpack@5.105.2):
+  webpack-dev-middleware@7.4.2(webpack@5.105.3):
     dependencies:
       colorette: 2.0.20
       memfs: 4.36.3
@@ -11996,9 +11989,9 @@ snapshots:
       range-parser: 1.2.1
       schema-utils: 4.3.3
     optionalDependencies:
-      webpack: 5.105.2
+      webpack: 5.105.3
 
-  webpack-dev-server@5.2.2(webpack@5.105.2):
+  webpack-dev-server@5.2.2(webpack@5.105.3):
     dependencies:
       '@types/bonjour': 3.5.13
       '@types/connect-history-api-fallback': 1.5.4
@@ -12026,10 +12019,10 @@ snapshots:
       serve-index: 1.9.1
       sockjs: 0.3.24
       spdy: 4.0.2
-      webpack-dev-middleware: 7.4.2(webpack@5.105.2)
+      webpack-dev-middleware: 7.4.2(webpack@5.105.3)
       ws: 8.19.0
     optionalDependencies:
-      webpack: 5.105.2
+      webpack: 5.105.3
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -12046,13 +12039,13 @@ snapshots:
     dependencies:
       lodash: 4.17.21
 
-  webpack-sources@3.3.3: {}
+  webpack-sources@3.3.4: {}
 
-  webpack-utf8-bom@1.4.0(webpack@5.105.2):
+  webpack-utf8-bom@1.4.0(webpack@5.105.3):
     dependencies:
-      webpack: 5.105.2
+      webpack: 5.105.3
 
-  webpack@5.105.2:
+  webpack@5.105.3:
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.8
@@ -12060,8 +12053,8 @@ snapshots:
       '@webassemblyjs/ast': 1.14.1
       '@webassemblyjs/wasm-edit': 1.14.1
       '@webassemblyjs/wasm-parser': 1.14.1
-      acorn: 8.15.0
-      acorn-import-phases: 1.0.4(acorn@8.15.0)
+      acorn: 8.16.0
+      acorn-import-phases: 1.0.4(acorn@8.16.0)
       browserslist: 4.28.1
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.19.0
@@ -12076,9 +12069,9 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.0
-      terser-webpack-plugin: 5.3.16(webpack@5.105.2)
+      terser-webpack-plugin: 5.3.16(webpack@5.105.3)
       watchpack: 2.5.1
-      webpack-sources: 3.3.3
+      webpack-sources: 3.3.4
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild
