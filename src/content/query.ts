@@ -10,6 +10,7 @@ import type {
   TranslateResult,
   WordSearchResult,
 } from '../background/search-result';
+import type { IndivisibleRanges } from '../common/indivisible-range';
 import { hasKatakana } from '../utils/char-range';
 import { omit } from '../utils/omit';
 
@@ -27,6 +28,7 @@ export type QueryResult = {
 export type NamePreview = { names: Array<NameResult>; more: boolean };
 
 export interface QueryOptions {
+  indivisibleRanges?: IndivisibleRanges;
   metaMatchLen?: number;
   wordLookup: boolean;
   updateQueryResult: (result: QueryResult | null) => void;
@@ -124,10 +126,16 @@ async function queryWords(
   text: string,
   options: QueryOptions
 ): Promise<QueryResult | 'aborted' | null> {
-  const message: BackgroundRequest = {
-    type: options.wordLookup ? 'searchWords' : 'translate',
-    input: text,
-  };
+  let message: BackgroundRequest;
+  if (options.wordLookup) {
+    message = {
+      type: 'searchWords',
+      input: text,
+      indivisibleRanges: options.indivisibleRanges,
+    };
+  } else {
+    message = { type: 'translate', input: text };
+  }
 
   let searchResult: SearchWordsResult | TranslateResult | 'aborted' | null;
   try {
@@ -299,11 +307,17 @@ function addNamePreview(result: QueryResult): QueryResult {
 }
 
 function getCacheKey({
+  indivisibleRanges,
   text,
   wordLookup,
 }: {
+  indivisibleRanges?: IndivisibleRanges;
   text: string;
   wordLookup: boolean;
 }): string {
-  return [text, wordLookup ? '1' : '0'].join('-');
+  return [
+    text,
+    wordLookup ? '1' : '0',
+    JSON.stringify(indivisibleRanges || []),
+  ].join('-');
 }
