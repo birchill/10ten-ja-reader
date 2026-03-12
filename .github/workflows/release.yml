@@ -11,9 +11,13 @@ jobs:
   bump:
     name: Bump version
     runs-on: ubuntu-latest
+    concurrency:
+      group: app-store-connect-build-number
+      cancel-in-progress: false
     outputs:
       sha: ${{ steps.out.outputs.sha }}
       version: ${{ steps.out.outputs.version }}
+      build_number: ${{ steps.build_number.outputs.value }}
 
     steps:
       - uses: actions/checkout@v6
@@ -39,6 +43,17 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Compute App Store Connect build number
+        id: build_number
+        env:
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+        run: |
+          build_number=$(node ./scripts/get-app-store-build-number.js jp.co.birchill.tenten-ja-reader)
+          echo "value=${build_number}" >> "$GITHUB_OUTPUT"
+          echo "Using App Store Connect build number: ${build_number}"
+
       - name: Update word snapshot
         run: pnpm update-snapshot
 
@@ -53,6 +68,7 @@ jobs:
         run: pnpm release-it --ci -i ${{ inputs.version }} -VV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEXT_XCODE_BUILD_NUMBER: ${{ steps.build_number.outputs.value }}
 
       - name: Output SHA + version
         id: out
