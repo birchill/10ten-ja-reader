@@ -12,6 +12,7 @@ import UIKit
 typealias PlatformViewController = UIViewController
 #elseif os(macOS)
 import Cocoa
+import OSLog
 import SafariServices
 typealias PlatformViewController = NSViewController
 #endif
@@ -32,6 +33,13 @@ struct Device {
 class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMessageHandler {
 
     @IBOutlet var webView: WKWebView!
+
+#if os(macOS)
+    private let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier ?? "jp.co.birchill.tenten-ja-reader",
+        category: "Welcome"
+    )
+#endif
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,7 +88,15 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
 
         SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionBundleIdentifier) { error in
             if let error = error {
-                print("Error launching extension preferences: \(error)")
+                self.logger.error("Error launching extension preferences: \(error.localizedDescription, privacy: .public)")
+                DispatchQueue.main.async {
+                    let alert = NSAlert()
+                    alert.alertStyle = .warning
+                    alert.messageText = "Couldn’t open Safari extension preferences."
+                    alert.informativeText = error.localizedDescription
+                    alert.addButton(withTitle: "OK")
+                    alert.runModal()
+                }
             } else {
                 DispatchQueue.main.async {
                     NSApplication.shared.terminate(nil)
