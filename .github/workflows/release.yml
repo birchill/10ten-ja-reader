@@ -43,7 +43,7 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Compute App Store Connect build number
+      - name: Get next App Store Connect build number
         id: build_number
         env:
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}

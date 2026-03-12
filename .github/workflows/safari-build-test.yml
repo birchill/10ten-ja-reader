@@ -25,12 +25,10 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      - name: Build extension code
-        run: |-
-          pnpm install --frozen-lockfile
-          pnpm build:safari
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: Compute App Store Connect build number
+      - name: Get next App Store Connect build number
         id: build_number
         env:
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
@@ -40,6 +38,14 @@ jobs:
           build_number=$(node ./scripts/get-app-store-build-number.js jp.co.birchill.tenten-ja-reader)
           echo "value=${build_number}" >> "$GITHUB_OUTPUT"
           echo "Using App Store Connect build number: ${build_number}"
+
+      - name: Set test version and build number
+        env:
+          NEXT_XCODE_BUILD_NUMBER: ${{ steps.build_number.outputs.value }}
+        run: pnpm version 1.26.2 --no-git-tag-version --allow-same-version
+
+      - name: Build extension code
+        run: pnpm build:safari
 
       - name: Install signing certificate and profile
         env:
@@ -84,9 +90,7 @@ jobs:
             -scheme "10ten Japanese Reader (iOS)" \
             -configuration Release \
             -archivePath $GITHUB_WORKSPACE/build/10ten-iOS.xcarchive \
-            -destination 'generic/platform=iOS' \
-            CURRENT_PROJECT_VERSION=${{ steps.build_number.outputs.value }} \
-            INFOPLIST_KEY_CFBundleVersion=${{ steps.build_number.outputs.value }}
+            -destination 'generic/platform=iOS'
 
       - name: Build Mac app
         run: |
@@ -94,9 +98,7 @@ jobs:
             -project "xcode13/10ten Japanese Reader.xcodeproj" \
             -scheme "10ten Japanese Reader (macOS)" \
             -configuration Release \
-            -archivePath $GITHUB_WORKSPACE/build/10ten-mac.xcarchive \
-            CURRENT_PROJECT_VERSION=${{ steps.build_number.outputs.value }} \
-            INFOPLIST_KEY_CFBundleVersion=${{ steps.build_number.outputs.value }}
+            -archivePath $GITHUB_WORKSPACE/build/10ten-mac.xcarchive
 
       - name: Export iOS app package
         run: |
