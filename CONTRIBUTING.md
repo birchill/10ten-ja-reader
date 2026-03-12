@@ -127,8 +127,8 @@ That will use the version of `web-ext` installed by this project.
 As with the build instructions above, after running `pnpm build:safari` you
 should be able to run using Xcode.
 
-Note that Xcode will default to signing Debug builds with Brian Birtles'
-([@birtles](https://github.com/birtles)) team.
+Note that Xcode will default to signing Debug builds with the Birchill, Inc.
+team.
 If you want to run and debug the Safari app or extension locally, you may need
 to override the team to your own personal team in Xcode.
 Please don't commit the resulting project file changes back to this repo.
