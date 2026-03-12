@@ -6,6 +6,9 @@ jobs:
   build_macos:
     name: Build Safari assets
     runs-on: macos-latest
+    concurrency:
+      group: app-store-connect-build-number
+      cancel-in-progress: false
 
     steps:
       - name: Checkout code
@@ -26,6 +29,17 @@ jobs:
         run: |-
           pnpm install --frozen-lockfile
           pnpm build:safari
+
+      - name: Compute App Store Connect build number
+        id: build_number
+        env:
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+        run: |
+          build_number=$(node ./scripts/get-app-store-build-number.js jp.co.birchill.tenten-ja-reader)
+          echo "value=${build_number}" >> "$GITHUB_OUTPUT"
+          echo "Using App Store Connect build number: ${build_number}"
 
       - name: Install signing certificate and profile
         env:
@@ -70,7 +84,9 @@ jobs:
             -scheme "10ten Japanese Reader (iOS)" \
             -configuration Release \
             -archivePath $GITHUB_WORKSPACE/build/10ten-iOS.xcarchive \
-            -destination 'generic/platform=iOS'
+            -destination 'generic/platform=iOS' \
+            CURRENT_PROJECT_VERSION=${{ steps.build_number.outputs.value }} \
+            INFOPLIST_KEY_CFBundleVersion=${{ steps.build_number.outputs.value }}
 
       - name: Build Mac app
         run: |
@@ -78,7 +94,9 @@ jobs:
             -project "xcode13/10ten Japanese Reader.xcodeproj" \
             -scheme "10ten Japanese Reader (macOS)" \
             -configuration Release \
-            -archivePath $GITHUB_WORKSPACE/build/10ten-mac.xcarchive
+            -archivePath $GITHUB_WORKSPACE/build/10ten-mac.xcarchive \
+            CURRENT_PROJECT_VERSION=${{ steps.build_number.outputs.value }} \
+            INFOPLIST_KEY_CFBundleVersion=${{ steps.build_number.outputs.value }}
 
       - name: Export iOS app package
         run: |
