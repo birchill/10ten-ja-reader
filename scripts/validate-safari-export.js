@@ -1,4 +1,7 @@
 import * as childProcess from 'node:child_process';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
 import * as process from 'node:process';
 
 function main() {
@@ -107,11 +110,10 @@ function main() {
     'Extension'
   );
 
-  const pkgSignature = childProcess.execFileSync(
-    'pkgutil',
-    ['--check-signature', pkgPath],
-    { encoding: 'utf8' }
-  );
+  const pkgSignature = runCommandAllowFailure('pkgutil', [
+    '--check-signature',
+    pkgPath,
+  ]).stdout;
   assert(
     pkgSignature.includes(
       '3rd Party Mac Developer Installer: Birchill, Inc. (H3RB7C8768)'
@@ -119,16 +121,111 @@ function main() {
     'Package is not signed with the expected installer certificate'
   );
 
+  validateSignedPayload(pkgPath);
+
   console.log('Validated Safari export metadata successfully.');
 }
 
-function readPlist(path) {
-  const json = childProcess.execFileSync(
-    'plutil',
-    ['-convert', 'json', '-o', '-', path],
-    { encoding: 'utf8' }
+function validateSignedPayload(pkgPath) {
+  const tempRoot = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'validate-safari-export-')
   );
-  return JSON.parse(json);
+  const expandedPath = path.join(tempRoot, 'expanded');
+
+  try {
+    runCommand('pkgutil', ['--expand-full', pkgPath, expandedPath]);
+
+    const expandedPkgPath = findDescendantByName(expandedPath, '.pkg');
+    assert(expandedPkgPath, 'Failed to expand package payload');
+
+    const payloadPath = path.join(expandedPkgPath, 'Payload');
+    const appPath = findDescendantByName(payloadPath, '.app');
+    assert(appPath, 'Failed to find app payload in expanded package');
+
+    const extensionPath = findDescendantByName(
+      path.join(appPath, 'Contents', 'PlugIns'),
+      '.appex'
+    );
+    assert(
+      extensionPath,
+      'Failed to find Safari extension payload in expanded package'
+    );
+
+    assertValidEntitlementsBlob(appPath, 'App');
+    assertValidEntitlementsBlob(extensionPath, 'Extension');
+  } finally {
+    fs.rmSync(tempRoot, { recursive: true, force: true });
+  }
+}
+
+function findDescendantByName(rootPath, suffix) {
+  if (!fs.existsSync(rootPath)) {
+    return null;
+  }
+
+  const queue = [rootPath];
+  while (queue.length) {
+    const currentPath = queue.shift();
+    const stat = fs.statSync(currentPath);
+
+    if (stat.isDirectory()) {
+      if (currentPath.endsWith(suffix)) {
+        return currentPath;
+      }
+
+      for (const entry of fs.readdirSync(currentPath)) {
+        queue.push(path.join(currentPath, entry));
+      }
+    }
+  }
+
+  return null;
+}
+
+function assertValidEntitlementsBlob(binaryPath, label) {
+  const result = runCommand('codesign', [
+    '-d',
+    '--entitlements',
+    ':-',
+    binaryPath,
+  ]);
+  assert(
+    !result.stderr.includes('invalid entitlements blob'),
+    `${label} has an invalid entitlements blob in the signed payload`
+  );
+}
+
+function readPlist(path) {
+  return JSON.parse(
+    runCommand('plutil', ['-convert', 'json', '-o', '-', path]).stdout
+  );
+}
+
+function runCommand(command, args) {
+  const result = runCommandAllowFailure(command, args);
+  if (result.status !== 0) {
+    throw new Error(
+      [
+        `Command failed: ${command} ${args.join(' ')}`,
+        result.stdout,
+        result.stderr,
+      ]
+        .filter(Boolean)
+        .join('\n')
+    );
+  }
+
+  return result;
+}
+
+function runCommandAllowFailure(command, args) {
+  const result = childProcess.spawnSync(command, args, { encoding: 'utf8' });
+
+  return {
+    status: result.status ?? 1,
+    stdout: result.stdout ?? '',
+    stderr: result.stderr ?? '',
+  };
 }
 
 function assert(condition, message) {
