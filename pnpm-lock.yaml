@@ -160,14 +160,14 @@ importers:
         specifier: 0.7.2
         version: 0.7.2(@trivago/prettier-plugin-sort-imports@6.0.2(prettier@3.8.1))(prettier-plugin-organize-attributes@1.0.0(prettier@3.8.1))(prettier@3.8.1)
       react-cosmos:
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.2.0
+        version: 7.2.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-cosmos-plugin-boolean-input:
         specifier: 7.1.1
         version: 7.1.1
       react-cosmos-plugin-rspack:
         specifier: 2.0.0
-        version: 2.0.0(@rspack/core@1.7.7)(react-cosmos@7.1.1)(webpack@5.105.4)
+        version: 2.0.0(@rspack/core@1.7.7)(react-cosmos@7.2.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(webpack@5.105.4)
       release-it:
         specifier: 19.2.4
         version: 19.2.4(@types/node@24.3.0)
@@ -4831,11 +4831,13 @@ packages:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
     hasBin: true
 
-  react-cosmos-core@7.1.0:
-    resolution: {integrity: sha512-QdeKKx9do3C7CLsJ8NGR3bAbzPSeAOqAf7T30nJ+nOPbO44nJp5gPglA/qtlcSR0RpsNQb6Voo6THLNWY4ns0Q==}
-
   react-cosmos-core@7.1.1:
     resolution: {integrity: sha512-5aQ2hq0HzzjONS6qU8pld7HqFh0hWoguMDnvYYmP2wYtBb1jVCiCWVePB4SQUPc0qOOFP0RUvnXv7hd49NiKBQ==}
+
+  react-cosmos-core@7.2.0:
+    resolution: {integrity: sha512-nRT76yN+uhysfnQurWVGJeVEjQyklt9n1HQUh3zrf8l4L/RDixQYsumS+bpm//3dojZdvzcN2V2IAOfK88sEUw==}
+    peerDependencies:
+      react: '>=18'
 
   react-cosmos-dom@7.0.0:
     resolution: {integrity: sha512-8PbCp8Uss3LQK0+HoUjVj0daww/axLS7b0GyTcLLZnLzxYaOXNugWJIr66dyBRFX330IgypCO8DW6auNmJPqvQ==}
@@ -4849,21 +4851,38 @@ packages:
       '@rspack/core': '>=1.0.0'
       react-cosmos: '>=6.0.0'
 
-  react-cosmos-renderer@7.1.0:
-    resolution: {integrity: sha512-mnjLzn7BvVO5X6OO52LhQWhPH+j+PCAet5zbfL5IZH462+ZLRiW/KSe+KrlTDSIiy8H2k37Udh6nrR1I4PiDQw==}
-
   react-cosmos-renderer@7.1.1:
     resolution: {integrity: sha512-Zr/9jdBRaczDT9zOUE1oz6rYnTTmFxmBUDXI/gF4qC/WebXoWkPWMtQwmhvcTTCM1wuI6UvGX+yuxanhPPUHdQ==}
 
-  react-cosmos-ui@7.1.1:
-    resolution: {integrity: sha512-H9GuYpFoRizWCw9LOWVTwj+byK+UrqKo105hS0XPkE8EHV3T5aDHqX3S+muWdMCw2RqIlJ4mNvnnrHc3Bc5NIw==}
+  react-cosmos-renderer@7.2.0:
+    resolution: {integrity: sha512-Cka98RQ7TF8Q1hOWdX/EuW7A7zImVDmQPtuZTDXuP81HCVxk7kIG7RE3lqKEwNtbW5TDKEravPqQxokH+y1U4Q==}
+    peerDependencies:
+      react: '>=18'
 
-  react-cosmos@7.1.1:
-    resolution: {integrity: sha512-9n/xV1JLoln4zph3rEYiYVISuJ7WeF1iexRT32ENWOGUaj9By3jA8mQjT+5PeVXZJHdsB/LWOBNZorTQUeQbrw==}
+  react-cosmos-ui@7.2.0:
+    resolution: {integrity: sha512-X2GtLXzx5M//+rah4+fEgOt6Ic4Z+jVAA/S/W8bnGdvfjXCplVZcZLF0pB7ZNCalmenGzhmUh3/7BgKbOO1DGg==}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+
+  react-cosmos@7.2.0:
+    resolution: {integrity: sha512-8g3ryjIkkk+cBwvTTd3sBP1ecGLuYtIFEpOgGICKOocDnrOgqrhzHEDCrT/yho0puniBxXfhBv90TAPs7GwUmQ==}
     hasBin: true
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+
+  react-dom@19.2.4:
+    resolution: {integrity: sha512-AXJdLo8kgMbimY95O2aKQqsz2iWi9jMgKJhRBAxECE4IFxfcazB2LmzloIoibJI3C12IlY20+KFaLv+71bUJeQ==}
+    peerDependencies:
+      react: ^19.2.4
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+
+  react@19.2.4:
+    resolution: {integrity: sha512-9nfp2hYpCwOjAN+8TZFGhtWEwgvWHXqESH8qT89AT/lWklpLON22Lc8pEtnpsZz7VmawabSU0gCjnj8aC0euHQ==}
+    engines: {node: '>=0.10.0'}
 
   readable-stream@2.3.8:
     resolution: {integrity: sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==}
@@ -5033,6 +5052,9 @@ packages:
   saxes@6.0.0:
     resolution: {integrity: sha512-xAg7SOnEhrm5zI3puOOKyy1OMcMlIJZYNJY7xLBwSze0UjhPLnWfj2GF2EpT0jmzaJKIWKHLsaSSajf35bcYnA==}
     engines: {node: '>=v12.22.7'}
+
+  scheduler@0.27.0:
+    resolution: {integrity: sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==}
 
   schema-utils@3.3.0:
     resolution: {integrity: sha512-pN/yOAvcC+5rQ5nERGuwrjLlYvLTbCibnZ1I7B1LaiAz9BRBlE9GMgE/eqV30P7aJQUf7Ddimy/RsbYO/GrVGg==}
@@ -10805,50 +10827,54 @@ snapshots:
       minimist: 1.2.8
       strip-json-comments: 2.0.1
 
-  react-cosmos-core@7.1.0:
-    dependencies:
-      js-base64: 3.7.8
-      lodash-es: 4.17.22
-
   react-cosmos-core@7.1.1:
     dependencies:
       js-base64: 3.7.8
       lodash-es: 4.17.23
 
+  react-cosmos-core@7.2.0(react@19.2.4):
+    dependencies:
+      js-base64: 3.7.8
+      lodash-es: 4.17.23
+      react: 19.2.4
+
   react-cosmos-dom@7.0.0:
     dependencies:
       lodash-es: 4.17.21
-      react-cosmos-core: 7.1.0
-      react-cosmos-renderer: 7.1.0
+      react-cosmos-core: 7.1.1
+      react-cosmos-renderer: 7.1.1
 
   react-cosmos-plugin-boolean-input@7.1.1: {}
 
-  react-cosmos-plugin-rspack@2.0.0(@rspack/core@1.7.7)(react-cosmos@7.1.1)(webpack@5.105.4):
+  react-cosmos-plugin-rspack@2.0.0(@rspack/core@1.7.7)(react-cosmos@7.2.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(webpack@5.105.4):
     dependencies:
       '@rspack/core': 1.7.7
-      react-cosmos: 7.1.1
+      react-cosmos: 7.2.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-cosmos-dom: 7.0.0
       webpack-dev-middleware: 7.4.2(webpack@5.105.4)
       webpack-hot-middleware: 2.26.1
     transitivePeerDependencies:
       - webpack
 
-  react-cosmos-renderer@7.1.0:
-    dependencies:
-      lodash-es: 4.17.22
-      react-cosmos-core: 7.1.0
-
   react-cosmos-renderer@7.1.1:
     dependencies:
       lodash-es: 4.17.23
       react-cosmos-core: 7.1.1
 
-  react-cosmos-ui@7.1.1:
+  react-cosmos-renderer@7.2.0(react@19.2.4):
     dependencies:
       lodash-es: 4.17.23
-      react-cosmos-core: 7.1.1
+      react: 19.2.4
+      react-cosmos-core: 7.2.0(react@19.2.4)
 
-  react-cosmos@7.1.1:
+  react-cosmos-ui@7.2.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+    dependencies:
+      lodash-es: 4.17.23
+      react: 19.2.4
+      react-cosmos-core: 7.2.0(react@19.2.4)
+      react-dom: 19.2.4(react@19.2.4)
+
+  react-cosmos@7.2.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
       '@skidding/launch-editor': 2.2.3
       chokidar: 3.6.0
@@ -10859,9 +10885,11 @@ snapshots:
       micromatch: 4.0.8
       open: 10.2.0
       pem: 1.15.1
-      react-cosmos-core: 7.1.1
-      react-cosmos-renderer: 7.1.1
-      react-cosmos-ui: 7.1.1
+      react: 19.2.4
+      react-cosmos-core: 7.2.0(react@19.2.4)
+      react-cosmos-renderer: 7.2.0(react@19.2.4)
+      react-cosmos-ui: 7.2.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      react-dom: 19.2.4(react@19.2.4)
       ws: 8.19.0
       yargs: 17.7.2
     transitivePeerDependencies:
@@ -10869,7 +10897,14 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+  react-dom@19.2.4(react@19.2.4):
+    dependencies:
+      react: 19.2.4
+      scheduler: 0.27.0
+
   react-is@16.13.1: {}
+
+  react@19.2.4: {}
 
   readable-stream@2.3.8:
     dependencies:
@@ -11088,6 +11123,8 @@ snapshots:
   saxes@6.0.0:
     dependencies:
       xmlchars: 2.2.0
+
+  scheduler@0.27.0: {}
 
   schema-utils@3.3.0:
     dependencies:
