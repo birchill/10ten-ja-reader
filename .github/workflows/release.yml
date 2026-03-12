@@ -154,6 +154,12 @@ jobs:
             -exportOptionsPlist "xcode13/ExportOptions-Mac.plist" \
             -exportPath $GITHUB_WORKSPACE/build
 
+      - name: Validate exported Safari package
+        run: |
+          node ./scripts/validate-safari-export.js \
+            "$GITHUB_WORKSPACE/build/DistributionSummary.plist" \
+            "$GITHUB_WORKSPACE/build/10ten Japanese Reader.pkg"
+
       - name: Upload packages
         uses: actions/upload-artifact@v7
         with:
@@ -161,6 +167,9 @@ jobs:
           path: |
             ${{ github.workspace }}/build/*.ipa
             ${{ github.workspace }}/build/*.pkg
+            ${{ github.workspace }}/build/DistributionSummary.plist
+            ${{ github.workspace }}/build/ExportOptions.plist
+            ${{ github.workspace }}/build/Packaging.log
           if-no-files-found: error
           retention-days: 3
 
