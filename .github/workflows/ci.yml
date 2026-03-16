@@ -48,7 +48,7 @@ jobs:
           name: test-screenshots
           path: '**/__screenshots__/**/*.png'
           if-no-files-found: ignore
-          retention-days: 30
+          retention-days: 20
 
       # Check packaging doesn't error. Again, no need to worry about the
       # package:edge target.

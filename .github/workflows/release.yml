@@ -162,6 +162,7 @@ jobs:
             ${{ github.workspace }}/build/*.ipa
             ${{ github.workspace }}/build/*.pkg
           if-no-files-found: error
+          retention-days: 3
 
       - name: Cleanup signing material
         if: always()
