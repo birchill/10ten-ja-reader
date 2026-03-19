@@ -83,6 +83,14 @@ jobs:
           cp mac.provisionprofile ~/Library/MobileDevice/Provisioning\ Profiles/
           cp mac-ext.provisionprofile ~/Library/MobileDevice/Provisioning\ Profiles/
 
+      - name: Build Mac app
+        run: |
+          xcodebuild archive \
+            -project "xcode13/10ten Japanese Reader.xcodeproj" \
+            -scheme "10ten Japanese Reader (macOS)" \
+            -configuration Release \
+            -archivePath $GITHUB_WORKSPACE/build/10ten-mac.xcarchive
+
       - name: Build iOS app
         run: |
           xcodebuild archive \
@@ -92,26 +100,18 @@ jobs:
             -archivePath $GITHUB_WORKSPACE/build/10ten-iOS.xcarchive \
             -destination 'generic/platform=iOS'
 
-      - name: Build Mac app
+      - name: Export Mac app package
         run: |
-          xcodebuild archive \
-            -project "xcode13/10ten Japanese Reader.xcodeproj" \
-            -scheme "10ten Japanese Reader (macOS)" \
-            -configuration Release \
-            -archivePath $GITHUB_WORKSPACE/build/10ten-mac.xcarchive
+          xcodebuild -exportArchive \
+            -archivePath $GITHUB_WORKSPACE/build/10ten-mac.xcarchive \
+            -exportOptionsPlist "xcode13/ExportOptions-Mac.plist" \
+            -exportPath $GITHUB_WORKSPACE/build
 
       - name: Export iOS app package
         run: |
           xcodebuild -exportArchive \
             -archivePath $GITHUB_WORKSPACE/build/10ten-iOS.xcarchive \
             -exportOptionsPlist "xcode13/ExportOptions-iOS.plist" \
-            -exportPath $GITHUB_WORKSPACE/build
-
-      - name: Export Mac app package
-        run: |
-          xcodebuild -exportArchive \
-            -archivePath $GITHUB_WORKSPACE/build/10ten-mac.xcarchive \
-            -exportOptionsPlist "xcode13/ExportOptions-Mac.plist" \
             -exportPath $GITHUB_WORKSPACE/build
 
       - name: Validate exported Safari package
@@ -128,29 +128,6 @@ jobs:
         run: |
           xcrun altool --help
 
-      - name: Upload iOS package to App Store Connect
-        env:
-          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
-          APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
-          API_PRIVATE_KEYS_DIR: ${{ runner.temp }}/private_keys
-        run: |
-          mkdir -p "$API_PRIVATE_KEYS_DIR"
-          cat > "$API_PRIVATE_KEYS_DIR/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8" <<'EOF'
-          ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
-          EOF
-
-          xcrun altool --upload-package \
-            "$GITHUB_WORKSPACE/build/10ten Japanese Reader.ipa" \
-            --type ios \
-            --apple-id 1573540634 \
-            --bundle-version "${{ steps.build_number.outputs.value }}" \
-            --bundle-short-version-string "1.26.2" \
-            --bundle-id "jp.co.birchill.tenten\-ja\-reader" \
-            --api-key "$APP_STORE_CONNECT_KEY_ID" \
-            --api-issuer "$APP_STORE_CONNECT_ISSUER_ID" \
-            --show-progress
-
       - name: Upload macOS package to App Store Connect
         env:
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
@@ -166,6 +143,29 @@ jobs:
           xcrun altool --upload-package \
             "$GITHUB_WORKSPACE/build/10ten Japanese Reader.pkg" \
             --type macos \
+            --apple-id 1573540634 \
+            --bundle-version "${{ steps.build_number.outputs.value }}" \
+            --bundle-short-version-string "1.26.2" \
+            --bundle-id "jp.co.birchill.tenten\-ja\-reader" \
+            --api-key "$APP_STORE_CONNECT_KEY_ID" \
+            --api-issuer "$APP_STORE_CONNECT_ISSUER_ID" \
+            --show-progress
+
+      - name: Upload iOS package to App Store Connect
+        env:
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+          API_PRIVATE_KEYS_DIR: ${{ runner.temp }}/private_keys
+        run: |
+          mkdir -p "$API_PRIVATE_KEYS_DIR"
+          cat > "$API_PRIVATE_KEYS_DIR/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8" <<'EOF'
+          ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+          EOF
+
+          xcrun altool --upload-package \
+            "$GITHUB_WORKSPACE/build/10ten Japanese Reader.ipa" \
+            --type ios \
             --apple-id 1573540634 \
             --bundle-version "${{ steps.build_number.outputs.value }}" \
             --bundle-short-version-string "1.26.2" \
