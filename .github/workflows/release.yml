@@ -78,7 +78,7 @@ jobs:
 
   build_macos:
     name: Build Safari assets
-    runs-on: macos-latest
+    runs-on: macos-26
     needs: bump
 
     steps:
@@ -195,8 +195,8 @@ jobs:
             --bundle-version "${{ needs.bump.outputs.build_number }}" \
             --bundle-short-version-string "${{ needs.bump.outputs.version }}" \
             --bundle-id "jp.co.birchill.tenten\-ja\-reader" \
-            --apiKey "$APP_STORE_CONNECT_KEY_ID" \
-            --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID" \
+            --api-key "$APP_STORE_CONNECT_KEY_ID" \
+            --api-issuer "$APP_STORE_CONNECT_ISSUER_ID" \
             --show-progress
 
       - name: Upload macOS package to App Store Connect
@@ -218,8 +218,8 @@ jobs:
             --bundle-version "${{ needs.bump.outputs.build_number }}" \
             --bundle-short-version-string "${{ needs.bump.outputs.version }}" \
             --bundle-id "jp.co.birchill.tenten\-ja\-reader" \
-            --apiKey "$APP_STORE_CONNECT_KEY_ID" \
-            --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID" \
+            --api-key "$APP_STORE_CONNECT_KEY_ID" \
+            --api-issuer "$APP_STORE_CONNECT_ISSUER_ID" \
             --show-progress
 
       - name: Upload packages

@@ -5,7 +5,7 @@ on:
 jobs:
   build_macos:
     name: Build Safari assets
-    runs-on: macos-latest
+    runs-on: macos-26
     concurrency:
       group: app-store-connect-build-number
       cancel-in-progress: false
@@ -147,8 +147,8 @@ jobs:
             --bundle-version "${{ steps.build_number.outputs.value }}" \
             --bundle-short-version-string "1.26.2" \
             --bundle-id "jp.co.birchill.tenten\-ja\-reader" \
-            --apiKey "$APP_STORE_CONNECT_KEY_ID" \
-            --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID" \
+            --api-key "$APP_STORE_CONNECT_KEY_ID" \
+            --api-issuer "$APP_STORE_CONNECT_ISSUER_ID" \
             --show-progress
 
       - name: Upload macOS package to App Store Connect
@@ -170,8 +170,8 @@ jobs:
             --bundle-version "${{ steps.build_number.outputs.value }}" \
             --bundle-short-version-string "1.26.2" \
             --bundle-id "jp.co.birchill.tenten\-ja\-reader" \
-            --apiKey "$APP_STORE_CONNECT_KEY_ID" \
-            --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID" \
+            --api-key "$APP_STORE_CONNECT_KEY_ID" \
+            --api-issuer "$APP_STORE_CONNECT_ISSUER_ID" \
             --show-progress
 
       - name: Upload packages
