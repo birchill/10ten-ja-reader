@@ -120,14 +120,6 @@ jobs:
             -exportOptionsPlist "xcode13/ExportOptions-iOS.plist" \
             -exportPath $GITHUB_WORKSPACE/build
 
-      - name: Print altool version
-        run: |
-          xcrun altool --version
-
-      - name: Print altool help
-        run: |
-          xcrun altool --help
-
       - name: Upload macOS package to App Store Connect
         env:
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
