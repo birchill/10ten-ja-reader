@@ -107,18 +107,18 @@ jobs:
             -exportOptionsPlist "xcode13/ExportOptions-Mac.plist" \
             -exportPath $GITHUB_WORKSPACE/build
 
+      - name: Validate exported Safari package
+        run: |
+          node ./scripts/validate-safari-export.js \
+            "$GITHUB_WORKSPACE/build/DistributionSummary.plist" \
+            "$GITHUB_WORKSPACE/build/10ten Japanese Reader.pkg"
+
       - name: Export iOS app package
         run: |
           xcodebuild -exportArchive \
             -archivePath $GITHUB_WORKSPACE/build/10ten-iOS.xcarchive \
             -exportOptionsPlist "xcode13/ExportOptions-iOS.plist" \
             -exportPath $GITHUB_WORKSPACE/build
-
-      - name: Validate exported Safari package
-        run: |
-          node ./scripts/validate-safari-export.js \
-            "$GITHUB_WORKSPACE/build/DistributionSummary.plist" \
-            "$GITHUB_WORKSPACE/build/10ten Japanese Reader.pkg"
 
       - name: Print altool version
         run: |
