@@ -291,11 +291,6 @@ jobs:
         env:
           BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY }}
 
-      - uses: actions/download-artifact@v8
-        with:
-          name: mac-packages
-          path: release-assets
-
       - name: Tag
         run: |
           git tag -a "v${{ needs.bump.outputs.version }}" -m "Release v${{ needs.bump.outputs.version }}"
