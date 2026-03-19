@@ -191,7 +191,7 @@ jobs:
           xcrun altool \
             --upload-package "$GITHUB_WORKSPACE/build/10ten Japanese Reader.ipa" \
             --platform ios \
-            --apple-id "jp.co.birchill.tenten-ja-reader" \
+            --apple-id 1573540634
             --api-key "$APP_STORE_CONNECT_KEY_ID" \
             --api-issuer "$APP_STORE_CONNECT_ISSUER_ID" \
             --wait \
@@ -213,7 +213,7 @@ jobs:
           xcrun altool \
             --upload-package "$GITHUB_WORKSPACE/build/10ten Japanese Reader.pkg" \
             --platform macos \
-            --apple-id "jp.co.birchill.tenten-ja-reader" \
+            --apple-id 1573540634
             --api-key "$APP_STORE_CONNECT_KEY_ID" \
             --api-issuer "$APP_STORE_CONNECT_ISSUER_ID" \
             --wait \
