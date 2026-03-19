@@ -163,14 +163,15 @@ jobs:
           ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
           EOF
 
-          xcrun altool \
-            --upload-package "$GITHUB_WORKSPACE/build/10ten Japanese Reader.pkg" \
-            --platform macos \
-            --apple-id 1573540634
+          xcrun altool --upload-package \
+            "$GITHUB_WORKSPACE/build/10ten Japanese Reader.pkg" \
+            --type macos \
+            --apple-id 1573540634 \
+            --bundle-version "${{ steps.build_number.outputs.value }}" \
+            --bundle-short-version-string "1.26.2" \
+            --bundle-id "jp.co.birchill.tenten\-ja\-reader" \
             --apiKey "$APP_STORE_CONNECT_KEY_ID" \
             --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID" \
-            --wait \
-            --output-format json \
             --show-progress
 
       - name: Upload packages
