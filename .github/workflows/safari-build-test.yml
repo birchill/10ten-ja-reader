@@ -120,6 +120,14 @@ jobs:
             "$GITHUB_WORKSPACE/build/DistributionSummary.plist" \
             "$GITHUB_WORKSPACE/build/10ten Japanese Reader.pkg"
 
+      - name: Print altool version
+        run: |
+          xcrun altool --version
+
+      - name: Print altool help
+        run: |
+          xcrun altool --help
+
       - name: Upload iOS package to App Store Connect
         env:
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
@@ -132,14 +140,16 @@ jobs:
           ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
           EOF
 
-          xcrun altool \
-            --upload-package "$GITHUB_WORKSPACE/build/10ten Japanese Reader.ipa" \
-            --platform ios \
-            --apple-id 1573540634
+          xcrun altool --upload-package \
+            "$GITHUB_WORKSPACE/build/10ten Japanese Reader.ipa" \
             --apiKey "$APP_STORE_CONNECT_KEY_ID" \
             --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID" \
+            --platform ios \
+            --apple-id 1573540634 \
+            --bundle-id "jp.co.birchill.tenten-ja-reader" \
+            --bundle-version "1.26.2" \
+            --bundle-short-version-string "1.26.2" \
             --wait \
-            --output-format json \
             --show-progress
 
       - name: Upload macOS package to App Store Connect
