@@ -144,7 +144,7 @@ jobs:
             "$GITHUB_WORKSPACE/build/10ten Japanese Reader.ipa" \
             --type ios \
             --apple-id 1573540634 \
-            --bundle-version "1.26.2" \
+            --bundle-version "${{ steps.build_number.outputs.value }}" \
             --bundle-short-version-string "1.26.2" \
             --bundle-id "jp.co.birchill.tenten\-ja\-reader" \
             --apiKey "$APP_STORE_CONNECT_KEY_ID" \
