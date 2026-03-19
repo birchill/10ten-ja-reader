@@ -176,6 +176,50 @@ jobs:
             "$GITHUB_WORKSPACE/build/DistributionSummary.plist" \
             "$GITHUB_WORKSPACE/build/10ten Japanese Reader.pkg"
 
+      - name: Upload iOS package to App Store Connect
+        env:
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+          API_PRIVATE_KEYS_DIR: ${{ runner.temp }}/private_keys
+        run: |
+          mkdir -p "$API_PRIVATE_KEYS_DIR"
+          cat > "$API_PRIVATE_KEYS_DIR/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8" <<'EOF'
+          ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+          EOF
+
+          xcrun altool \
+            --upload-package "$GITHUB_WORKSPACE/build/10ten Japanese Reader.ipa" \
+            --platform ios \
+            --apple-id "jp.co.birchill.tenten-ja-reader" \
+            --api-key "$APP_STORE_CONNECT_KEY_ID" \
+            --api-issuer "$APP_STORE_CONNECT_ISSUER_ID" \
+            --wait \
+            --output-format json \
+            --show-progress
+
+      - name: Upload macOS package to App Store Connect
+        env:
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+          API_PRIVATE_KEYS_DIR: ${{ runner.temp }}/private_keys
+        run: |
+          mkdir -p "$API_PRIVATE_KEYS_DIR"
+          cat > "$API_PRIVATE_KEYS_DIR/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8" <<'EOF'
+          ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+          EOF
+
+          xcrun altool \
+            --upload-package "$GITHUB_WORKSPACE/build/10ten Japanese Reader.pkg" \
+            --platform macos \
+            --apple-id "jp.co.birchill.tenten-ja-reader" \
+            --api-key "$APP_STORE_CONNECT_KEY_ID" \
+            --api-issuer "$APP_STORE_CONNECT_ISSUER_ID" \
+            --wait \
+            --output-format json \
+            --show-progress
+
       - name: Upload packages
         uses: actions/upload-artifact@v7
         with:
@@ -199,6 +243,7 @@ jobs:
           rm -f cert.p12 mac-installer.p12 \
             ios.mobileprovision ios-ext.mobileprovision \
             mac.provisionprofile mac-ext.provisionprofile
+          rm -rf "$RUNNER_TEMP/private_keys"
 
           # Remove installed provisioning profiles
           rm -f ~/Library/MobileDevice/Provisioning\ Profiles/ios.mobileprovision
