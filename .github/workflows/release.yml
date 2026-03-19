@@ -192,8 +192,8 @@ jobs:
             --upload-package "$GITHUB_WORKSPACE/build/10ten Japanese Reader.ipa" \
             --platform ios \
             --apple-id 1573540634
-            --api-key "$APP_STORE_CONNECT_KEY_ID" \
-            --api-issuer "$APP_STORE_CONNECT_ISSUER_ID" \
+            --apiKey "$APP_STORE_CONNECT_KEY_ID" \
+            --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID" \
             --wait \
             --output-format json \
             --show-progress
@@ -214,8 +214,8 @@ jobs:
             --upload-package "$GITHUB_WORKSPACE/build/10ten Japanese Reader.pkg" \
             --platform macos \
             --apple-id 1573540634
-            --api-key "$APP_STORE_CONNECT_KEY_ID" \
-            --api-issuer "$APP_STORE_CONNECT_ISSUER_ID" \
+            --apiKey "$APP_STORE_CONNECT_KEY_ID" \
+            --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID" \
             --wait \
             --output-format json \
             --show-progress
