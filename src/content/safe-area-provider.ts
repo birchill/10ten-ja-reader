@@ -13,18 +13,18 @@ export type SafeAreaChangeListener = (safeArea: PaddingBox | null) => void;
 export class SafeAreaProvider {
   public static readonly id: string = 'tenten-safe-area-provider';
 
-  private cachedSafeArea: PaddingBox | null = null;
+  #cachedSafeArea: PaddingBox | null = null;
 
-  private element: HTMLDivElement | undefined;
-  private resizeObserver: ResizeObserver | undefined;
+  #element: HTMLDivElement | undefined;
+  #resizeObserver: ResizeObserver | undefined;
 
-  private listeners: Array<SafeAreaChangeListener> = [];
+  #listeners: Array<SafeAreaChangeListener> = [];
 
   getSafeArea(): PaddingBox {
-    const safeAreaElem = this.element || this.startListening();
+    const safeAreaElem = this.#element || this.#startListening();
 
-    if (this.cachedSafeArea) {
-      return this.cachedSafeArea;
+    if (this.#cachedSafeArea) {
+      return this.#cachedSafeArea;
     }
 
     const computedStyle = getComputedStyle(safeAreaElem);
@@ -47,13 +47,13 @@ export class SafeAreaProvider {
         ) || 0,
     };
 
-    this.setCachedSafeArea(safeArea);
+    this.#setCachedSafeArea(safeArea);
 
     return safeArea;
   }
 
   destroy() {
-    this.stopListening();
+    this.#stopListening();
   }
 
   //
@@ -61,21 +61,21 @@ export class SafeAreaProvider {
   //
 
   addEventListener(listener: SafeAreaChangeListener) {
-    if (this.listeners.includes(listener)) {
+    if (this.#listeners.includes(listener)) {
       return;
     }
-    this.listeners.push(listener);
+    this.#listeners.push(listener);
   }
 
   removeEventListener(listener: SafeAreaChangeListener) {
-    this.listeners = this.listeners.filter((l) => l !== listener);
+    this.#listeners = this.#listeners.filter((l) => l !== listener);
   }
 
   //
   // Implementation helpers
   //
 
-  private startListening() {
+  #startListening() {
     // Set up shadow tree
     const container = getOrCreateEmptyContainer({
       id: SafeAreaProvider.id,
@@ -83,65 +83,65 @@ export class SafeAreaProvider {
     });
 
     // Create safe area provider element
-    this.element = document.createElement('div');
-    this.element.classList.add('safe-area-provider');
+    this.#element = document.createElement('div');
+    this.#element.classList.add('safe-area-provider');
 
-    container.shadowRoot!.append(this.element);
+    container.shadowRoot!.append(this.#element);
 
     // Listen for changes
     if ('ResizeObserver' in window) {
       // Ideally use ResizeObserver, as it fires updates even whilst the puck
       // is being dragged.
-      this.resizeObserver = new ResizeObserver(this.onResizeObserved);
-      this.resizeObserver.observe(this.element, { box: 'border-box' });
+      this.#resizeObserver = new ResizeObserver(this.#onResizeObserved);
+      this.#resizeObserver.observe(this.#element, { box: 'border-box' });
     } else {
       // Otherwise, fall back to using window "resize" events.
-      (window as Window).addEventListener('resize', this.onWindowResize);
+      (window as Window).addEventListener('resize', this.#onWindowResize);
     }
 
-    return this.element;
+    return this.#element;
   }
 
-  private stopListening() {
+  #stopListening() {
     // Stop listening
-    if (this.resizeObserver) {
-      if (this.element) {
-        this.resizeObserver.unobserve(this.element);
+    if (this.#resizeObserver) {
+      if (this.#element) {
+        this.#resizeObserver.unobserve(this.#element);
       }
-      this.resizeObserver = undefined;
+      this.#resizeObserver = undefined;
     } else {
-      window.removeEventListener('resize', this.onWindowResize);
+      window.removeEventListener('resize', this.#onWindowResize);
     }
 
     // Drop the element
     removeSafeAreaProvider();
-    this.element = undefined;
+    this.#element = undefined;
   }
 
-  private setCachedSafeArea(safeArea: PaddingBox | null) {
-    this.cachedSafeArea = safeArea;
-    this.notifyListeners(safeArea);
+  #setCachedSafeArea(safeArea: PaddingBox | null) {
+    this.#cachedSafeArea = safeArea;
+    this.#notifyListeners(safeArea);
   }
 
-  private notifyListeners(safeArea: PaddingBox | null) {
-    const listenersCopy = [...this.listeners];
+  #notifyListeners(safeArea: PaddingBox | null) {
+    const listenersCopy = [...this.#listeners];
     for (const listener of listenersCopy) {
       listener(safeArea);
     }
   }
 
-  private readonly onResizeObserved = (entries: Array<ResizeObserverEntry>) => {
+  #onResizeObserved = (entries: Array<ResizeObserverEntry>) => {
     for (const entry of entries) {
       if (entry.contentRect) {
         // contentRect has changed, so invalidate our cached safe area insets.
-        this.setCachedSafeArea(null);
+        this.#setCachedSafeArea(null);
         break;
       }
     }
   };
 
-  private readonly onWindowResize = () => {
-    this.setCachedSafeArea(null);
+  #onWindowResize = () => {
+    this.#setCachedSafeArea(null);
   };
 }
 

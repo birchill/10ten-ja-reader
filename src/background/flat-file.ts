@@ -42,20 +42,20 @@ class FlatFileDatabase {
 
   constructor(options: FlatFileDatabaseOptions) {
     this.bugsnag = options.bugsnag;
-    this.loaded = this.loadData();
+    this.loaded = this.#loadData();
   }
 
   //
   // Loading
   //
 
-  private async loadData(): Promise<void> {
+  async #loadData(): Promise<void> {
     try {
       // Read in series to reduce contention
-      this.wordDict = await this.readFileWithAutoRetry(
+      this.wordDict = await this.#readFileWithAutoRetry(
         browser.runtime.getURL('data/words.ljson')
       );
-      this.wordIndex = await this.readFileWithAutoRetry(
+      this.wordIndex = await this.#readFileWithAutoRetry(
         browser.runtime.getURL('data/words.idx')
       );
 
@@ -65,7 +65,7 @@ class FlatFileDatabase {
     }
   }
 
-  private async readFileWithAutoRetry(url: string): Promise<string> {
+  async #readFileWithAutoRetry(url: string): Promise<string> {
     let attempts = 0;
 
     // Bugsnag only gives us 30 characters for the breadcrumb but it's the
@@ -461,17 +461,16 @@ export class FlatFileDatabaseLoader {
   loadState: FlatFileDatabaseLoadState = 'unloaded';
   onUpdate: FlatFileDatabaseLoadCallback | undefined;
 
-  private bugsnag?: BugsnagClient;
-  private flatFileDatabase: FlatFileDatabase | undefined;
-  private loadError: any;
+  #bugsnag?: BugsnagClient;
+  #flatFileDatabase: FlatFileDatabase | undefined;
+  #loadError: any;
 
-  private loadPromise: Promise<FlatFileDatabase> | undefined;
-  private resolveLoad: (db: FlatFileDatabase) => void;
-  private rejectLoad: (e: any) => void;
+  #loadPromise: Promise<FlatFileDatabase> | undefined;
+  #resolveLoad: ((db: FlatFileDatabase) => void) | undefined;
+  #rejectLoad: ((e: any) => void) | undefined;
 
   constructor(options: FlatFileDatabaseOptions) {
-    this.bugsnag = options.bugsnag;
-    this.onFlatFileDatabaseUpdated = this.onFlatFileDatabaseUpdated.bind(this);
+    this.#bugsnag = options.bugsnag;
   }
 
   resetIfNotLoaded(): void {
@@ -479,25 +478,25 @@ export class FlatFileDatabaseLoader {
       return;
     }
 
-    if (this.flatFileDatabase) {
-      this.flatFileDatabase.removeListener(this.onFlatFileDatabaseUpdated);
-      this.flatFileDatabase = undefined;
+    if (this.#flatFileDatabase) {
+      this.#flatFileDatabase.removeListener(this.#onFlatFileDatabaseUpdated);
+      this.#flatFileDatabase = undefined;
     }
 
     this.loadState = 'unloaded';
   }
 
   load(): Promise<FlatFileDatabase> {
-    if (this.flatFileDatabase && this.loadPromise) {
-      return this.loadPromise;
+    if (this.#flatFileDatabase && this.#loadPromise) {
+      return this.#loadPromise;
     }
 
-    this.flatFileDatabase = new FlatFileDatabase({ bugsnag: this.bugsnag });
-    this.flatFileDatabase.addListener(this.onFlatFileDatabaseUpdated);
+    this.#flatFileDatabase = new FlatFileDatabase({ bugsnag: this.#bugsnag });
+    this.#flatFileDatabase.addListener(this.#onFlatFileDatabaseUpdated);
 
-    this.loadPromise = new Promise<FlatFileDatabase>((resolve, reject) => {
-      this.resolveLoad = resolve;
-      this.rejectLoad = reject;
+    this.#loadPromise = new Promise<FlatFileDatabase>((resolve, reject) => {
+      this.#resolveLoad = resolve;
+      this.#rejectLoad = reject;
     });
 
     this.loadState = 'loading';
@@ -505,28 +504,28 @@ export class FlatFileDatabaseLoader {
       this.onUpdate(this.loadState);
     }
 
-    return this.loadPromise;
+    return this.#loadPromise;
   }
 
-  private onFlatFileDatabaseUpdated(event: FlatFileDatabaseEvent) {
+  #onFlatFileDatabaseUpdated = (event: FlatFileDatabaseEvent) => {
     switch (event.type) {
       case 'loaded':
         this.loadState = 'ok';
-        this.loadError = undefined;
+        this.#loadError = undefined;
 
         // If this is the initial load, make sure to resolve the load promise.
         //
         // (If it is NOT the initial load, resolveLoad will be a no-op since
         // rejectLoad will have already been called.)
-        if (this.resolveLoad && this.flatFileDatabase) {
-          this.resolveLoad(this.flatFileDatabase);
+        if (this.#resolveLoad && this.#flatFileDatabase) {
+          this.#resolveLoad(this.#flatFileDatabase);
         }
 
         // If this is not the initial load, make sure to replace the loadPromise
         // so that anyone who waits on it from now on will get the resolved
         // database.
-        if (this.flatFileDatabase) {
-          this.loadPromise = Promise.resolve(this.flatFileDatabase);
+        if (this.#flatFileDatabase) {
+          this.#loadPromise = Promise.resolve(this.#flatFileDatabase);
         }
         break;
 
@@ -537,12 +536,14 @@ export class FlatFileDatabaseLoader {
           this.loadState = 'error';
           // Reset the flat file database so that subsequence calls to load()
           // will retry loading.
-          this.flatFileDatabase?.removeListener(this.onFlatFileDatabaseUpdated);
-          this.flatFileDatabase = undefined;
+          this.#flatFileDatabase?.removeListener(
+            this.#onFlatFileDatabaseUpdated
+          );
+          this.#flatFileDatabase = undefined;
         }
-        this.loadError = event.error;
-        if (this.rejectLoad) {
-          this.rejectLoad(event.error);
+        this.#loadError = event.error;
+        if (this.#rejectLoad) {
+          this.#rejectLoad(event.error);
         }
         break;
     }
@@ -550,7 +551,7 @@ export class FlatFileDatabaseLoader {
     if (this.onUpdate) {
       this.onUpdate(this.loadState);
     }
-  }
+  };
 
   get database(): Promise<FlatFileDatabase> {
     switch (this.loadState) {
@@ -558,17 +559,17 @@ export class FlatFileDatabaseLoader {
         return this.load();
 
       case 'loading':
-        return this.loadPromise!;
+        return this.#loadPromise!;
 
       case 'retrying':
       // This should fail since we don't want the caller to wait on retries so
       // this falls through
 
       case 'error':
-        return Promise.reject(this.loadError);
+        return Promise.reject(this.#loadError);
 
       case 'ok':
-        return Promise.resolve(this.flatFileDatabase!);
+        return Promise.resolve(this.#flatFileDatabase!);
     }
   }
 }

@@ -110,26 +110,25 @@ const OFF_BY_DEFAULT_REFERENCES: Set<ReferenceAbbreviation> = new Set([
 ]);
 
 export class Config {
-  private fxData: FxLocalData | undefined;
-  private settings: Settings = {};
-  private readyPromise: Promise<void>;
-  private changeListeners: Array<ChangeCallback> = [];
-  private previousDefaultLang: DbLanguageId;
+  #fxData: FxLocalData | undefined;
+  #settings: Settings = {};
+  #readyPromise: Promise<void>;
+  #changeListeners: Array<ChangeCallback> = [];
+  #previousDefaultLang: DbLanguageId;
 
   constructor() {
-    this.readyPromise = this.readSettings().then(async () => {
-      this.fxData = await getLocalFxData(this.onFxDataChange.bind(this));
+    this.#readyPromise = this.#readSettings().then(async () => {
+      this.#fxData = await getLocalFxData(this.#onFxDataChange);
     });
-    this.previousDefaultLang = this.getDefaultLang();
+    this.#previousDefaultLang = this.#getDefaultLang();
 
-    this.onChange = this.onChange.bind(this);
-    browser.storage.onChanged.addListener(this.onChange);
+    browser.storage.onChanged.addListener(this.#onChange);
 
     this.onLanguageChange = this.onLanguageChange.bind(this);
     self.addEventListener('languagechange', this.onLanguageChange);
   }
 
-  private async readSettings() {
+  async #readSettings() {
     let settings;
     try {
       settings = await browser.storage.sync.get(null);
@@ -143,19 +142,19 @@ export class Config {
     } catch {
       // Ignore
     }
-    this.settings = settings;
-    await this.upgradeSettings();
+    this.#settings = settings;
+    await this.#upgradeSettings();
   }
 
-  private async upgradeSettings() {
+  async #upgradeSettings() {
     // If we have old kanji reference settings but not new ones, upgrade them.
     if (
-      this.settings.hasOwnProperty('kanjiReferences') &&
-      !this.settings.kanjiReferencesV2
+      this.#settings.hasOwnProperty('kanjiReferences') &&
+      !this.#settings.kanjiReferencesV2
     ) {
       const newSettings: KanjiReferenceFlagsV2 = {};
       const existingSettings: { [key: string]: boolean } = (
-        this.settings as any
+        this.#settings as any
       ).kanjiReferences;
       for (const [ref, enabled] of Object.entries(existingSettings)) {
         const newRef = convertLegacyReference(ref);
@@ -164,7 +163,7 @@ export class Config {
         }
       }
 
-      this.settings.kanjiReferencesV2 = newSettings;
+      this.#settings.kanjiReferencesV2 = newSettings;
       try {
         await browser.storage.sync.set({ kanjiReferencesV2: newSettings });
       } catch {
@@ -177,7 +176,7 @@ export class Config {
     }
 
     // If we have old mouse onboarding prefs, drop them
-    if (this.settings.hasOwnProperty('hasDismissedMouseOnboarding')) {
+    if (this.#settings.hasOwnProperty('hasDismissedMouseOnboarding')) {
       try {
         await browser.storage.sync.remove('hasDismissedMouseOnboarding');
       } catch {
@@ -186,16 +185,16 @@ export class Config {
     }
 
     if (
-      this.settings.localSettings?.hasOwnProperty('hasUpgradedFromPreMouse') ||
-      this.settings.localSettings?.hasOwnProperty(
+      this.#settings.localSettings?.hasOwnProperty('hasUpgradedFromPreMouse') ||
+      this.#settings.localSettings?.hasOwnProperty(
         'numLookupsWithMouseOnboarding'
       )
     ) {
-      const localSettings = { ...this.settings.localSettings };
+      const localSettings = { ...this.#settings.localSettings };
       delete (localSettings as Record<string, unknown>).hasUpgradedFromPreMouse;
       delete (localSettings as Record<string, unknown>)
         .numLookupsWithMouseOnboarding;
-      this.settings.localSettings = localSettings;
+      this.#settings.localSettings = localSettings;
       try {
         await browser.storage.local.set({ settings: localSettings });
       } catch {
@@ -205,10 +204,10 @@ export class Config {
   }
 
   get ready(): Promise<void> {
-    return this.readyPromise;
+    return this.#readyPromise;
   }
 
-  private async onChange(changes: ChangeDict, areaName: string) {
+  #onChange = async (changes: ChangeDict, areaName: string) => {
     // Safari bug https://bugs.webkit.org/show_bug.cgi?id=281644 means that
     // `areaName` is undefined in Safari 18.
     if (!isSafari() && areaName !== 'sync' && areaName !== 'local') {
@@ -217,7 +216,7 @@ export class Config {
 
     // Re-read settings in case the changes were made by a different instance of
     // this class.
-    await this.readSettings();
+    await this.#readSettings();
 
     // Extract the changes in a suitable form
     //
@@ -229,7 +228,7 @@ export class Config {
       delete updatedChanges.settings;
       updatedChanges = {
         ...updatedChanges,
-        ...this.extractLocalSettingChanges(localSettings),
+        ...this.#extractLocalSettingChanges(localSettings),
       };
     }
 
@@ -242,7 +241,7 @@ export class Config {
             updatedChanges.dictLang.newValue = this.dictLang;
           }
           if (!updatedChanges.dictLang.oldValue) {
-            updatedChanges.dictLang.oldValue = this.previousDefaultLang;
+            updatedChanges.dictLang.oldValue = this.#previousDefaultLang;
           }
           break;
 
@@ -278,7 +277,7 @@ export class Config {
             // We are already reporting a change to `keys`, or
             Object.keys(updatedChanges).includes('keys') ||
             // The pinPopup key is already explicitly set and
-            (this.settings.keys?.pinPopup &&
+            (this.#settings.keys?.pinPopup &&
               // The change doesn't involve the shift key
               !(
                 updatedChanges[key].newValue?.includes('Shift') ||
@@ -299,27 +298,25 @@ export class Config {
 
     Bugsnag.leaveBreadcrumb('Settings change', updatedChanges);
 
-    for (const listener of this.changeListeners) {
+    for (const listener of this.#changeListeners) {
       listener(updatedChanges);
     }
-  }
+  };
 
-  private async onFxDataChange(fxData: FxLocalData) {
-    this.fxData = fxData;
+  #onFxDataChange = async (fxData: FxLocalData) => {
+    this.#fxData = fxData;
 
     const updatedChanges: ChangeDict = {
       fxCurrencies: { newValue: this.fxCurrencies },
       fx: { newValue: this.contentConfig.fx },
     };
 
-    for (const listener of this.changeListeners) {
+    for (const listener of this.#changeListeners) {
       listener(updatedChanges);
     }
-  }
+  };
 
-  private extractLocalSettingChanges(
-    settingsChange: StorageChange
-  ): ChangeDict {
+  #extractLocalSettingChanges(settingsChange: StorageChange): ChangeDict {
     if (!isObject(settingsChange)) {
       return {};
     }
@@ -343,18 +340,18 @@ export class Config {
   }
 
   addChangeListener(callback: ChangeCallback) {
-    if (this.changeListeners.indexOf(callback) !== -1) {
+    if (this.#changeListeners.indexOf(callback) !== -1) {
       return;
     }
-    this.changeListeners.push(callback);
+    this.#changeListeners.push(callback);
   }
 
   removeChangeListener(callback: ChangeCallback) {
-    const index = this.changeListeners.indexOf(callback);
+    const index = this.#changeListeners.indexOf(callback);
     if (index === -1) {
       return;
     }
-    this.changeListeners.splice(index, 1);
+    this.#changeListeners.splice(index, 1);
   }
 
   //
@@ -389,17 +386,17 @@ export class Config {
   //       init?: (this: Config, initialValue: T) => T;
   //     } | void => {
   //       return {
-  //         get: () => this.settings[context.name] ?? defaultValue,
+  //         get: () => this.#settings[context.name] ?? defaultValue,
   //         set: (value: T) => {
-  //           if (this.settings[context.name] === value) {
+  //           if (this.#settings[context.name] === value) {
   //             return;
   //           }
   //
   //           if (value === defaultValue) {
-  //             delete this.settings[context.name];
+  //             delete this.#settings[context.name];
   //             void browser.storage.sync.remove(context.name);
   //           } else {
-  //             this.settings[context.name] = value;
+  //             this.#settings[context.name] = value;
   //             void browser.storage.sync.set({ [context.name]: value });
   //           }
   //         },
@@ -413,7 +410,7 @@ export class Config {
   //   accessor copyHeadwords: 'common' | 'regular' | undefined;
   //
   // (Come to think of it, once we do that each accessor will have its own
-  // storage so we can skip writing to this.settings and just use
+  // storage so we can skip writing to this.#settings and just use
   // _value.get.call(this) etc.)
   //
   // (Also, we should make the generated getter/setter exclude `undefined` from
@@ -442,33 +439,33 @@ export class Config {
   // accentDisplay: Defaults to binary
 
   get accentDisplay(): AccentDisplay {
-    return typeof this.settings.accentDisplay === 'undefined'
+    return typeof this.#settings.accentDisplay === 'undefined'
       ? 'binary'
-      : this.settings.accentDisplay;
+      : this.#settings.accentDisplay;
   }
 
   set accentDisplay(value: AccentDisplay) {
     if (
-      typeof this.settings.accentDisplay !== 'undefined' &&
-      this.settings.accentDisplay === value
+      typeof this.#settings.accentDisplay !== 'undefined' &&
+      this.#settings.accentDisplay === value
     ) {
       return;
     }
 
-    this.settings.accentDisplay = value;
+    this.#settings.accentDisplay = value;
     void browser.storage.sync.set({ accentDisplay: value });
   }
 
   // autoExpand: Defaults to an empty array
 
   get autoExpand(): Array<AutoExpandableEntry> {
-    return typeof this.settings.autoExpand === 'undefined'
+    return typeof this.#settings.autoExpand === 'undefined'
       ? []
-      : [...new Set(this.settings.autoExpand)];
+      : [...new Set(this.#settings.autoExpand)];
   }
 
   toggleAutoExpand(type: AutoExpandableEntry, value: boolean) {
-    const enabled = new Set(this.settings.autoExpand);
+    const enabled = new Set(this.#settings.autoExpand);
     if (value === enabled.has(type)) {
       return;
     }
@@ -480,10 +477,10 @@ export class Config {
     }
 
     if (enabled.size) {
-      this.settings.autoExpand = [...enabled];
+      this.#settings.autoExpand = [...enabled];
       void browser.storage.sync.set({ autoExpand: [...enabled] });
     } else {
-      delete this.settings.autoExpand;
+      delete this.#settings.autoExpand;
       void browser.storage.sync.remove('autoExpand');
     }
   }
@@ -491,41 +488,41 @@ export class Config {
   // canHover (local): Defaults to true
 
   get canHover(): boolean {
-    return this.settings.localSettings?.canHover ?? true;
+    return this.#settings.localSettings?.canHover ?? true;
   }
 
   set canHover(value: boolean) {
-    const storedSetting = this.settings.localSettings?.canHover;
+    const storedSetting = this.#settings.localSettings?.canHover;
     if (storedSetting === value || (storedSetting === undefined && value)) {
       return;
     }
 
-    const localSettings = { ...this.settings.localSettings };
+    const localSettings = { ...this.#settings.localSettings };
     if (value) {
       delete localSettings.canHover;
     } else {
       localSettings.canHover = false;
     }
-    this.settings.localSettings = localSettings;
+    this.#settings.localSettings = localSettings;
     void browser.storage.local.set({ settings: localSettings });
   }
 
   // bunproDisplay: Defaults to false
 
   get bunproDisplay(): boolean {
-    return !!this.settings.bunproDisplay;
+    return !!this.#settings.bunproDisplay;
   }
 
   set bunproDisplay(value: boolean) {
-    if (this.settings.bunproDisplay === (value || undefined)) {
+    if (this.#settings.bunproDisplay === (value || undefined)) {
       return;
     }
 
     if (!value) {
-      delete this.settings.bunproDisplay;
+      delete this.#settings.bunproDisplay;
       void browser.storage.sync.remove('bunproDisplay');
     } else {
-      this.settings.bunproDisplay = value;
+      this.#settings.bunproDisplay = value;
       void browser.storage.sync.set({ bunproDisplay: value });
     }
   }
@@ -534,39 +531,39 @@ export class Config {
 
   get contextMenuEnable(): boolean {
     return (
-      typeof this.settings.contextMenuEnable === 'undefined' ||
-      this.settings.contextMenuEnable
+      typeof this.#settings.contextMenuEnable === 'undefined' ||
+      this.#settings.contextMenuEnable
     );
   }
 
   set contextMenuEnable(value: boolean) {
     if (
-      typeof this.settings.contextMenuEnable !== 'undefined' &&
-      this.settings.contextMenuEnable === value
+      typeof this.#settings.contextMenuEnable !== 'undefined' &&
+      this.#settings.contextMenuEnable === value
     ) {
       return;
     }
 
-    this.settings.contextMenuEnable = value;
+    this.#settings.contextMenuEnable = value;
     void browser.storage.sync.set({ contextMenuEnable: value });
   }
 
   // copyHeadwords: Defaults to 'regular'
 
   get copyHeadwords(): 'common' | 'regular' {
-    return this.settings.copyHeadwords || 'regular';
+    return this.#settings.copyHeadwords || 'regular';
   }
 
   set copyHeadwords(value: 'common' | 'regular') {
-    if (this.settings.copyHeadwords === value) {
+    if (this.#settings.copyHeadwords === value) {
       return;
     }
 
     if (value === 'regular') {
-      delete this.settings.copyHeadwords;
+      delete this.#settings.copyHeadwords;
       void browser.storage.sync.remove('copyHeadwords');
     } else {
-      this.settings.copyHeadwords = value;
+      this.#settings.copyHeadwords = value;
       void browser.storage.sync.set({ copyHeadwords: value });
     }
   }
@@ -574,19 +571,19 @@ export class Config {
   // copyPos: Defaults to 'code'
 
   get copyPos(): 'code' | 'none' {
-    return this.settings.copyPos || 'code';
+    return this.#settings.copyPos || 'code';
   }
 
   set copyPos(value: 'code' | 'none') {
-    if (this.settings.copyPos === value) {
+    if (this.#settings.copyPos === value) {
       return;
     }
 
     if (value === 'code') {
-      delete this.settings.copyPos;
+      delete this.#settings.copyPos;
       void browser.storage.sync.remove('copyPos');
     } else {
-      this.settings.copyPos = value;
+      this.#settings.copyPos = value;
       void browser.storage.sync.set({ copyPos: value });
     }
   }
@@ -594,19 +591,19 @@ export class Config {
   // copySenses: Defaults to 'all'
 
   get copySenses(): 'first' | 'all' {
-    return this.settings.copySenses || 'all';
+    return this.#settings.copySenses || 'all';
   }
 
   set copySenses(value: 'first' | 'all') {
-    if (this.settings.copySenses === value) {
+    if (this.#settings.copySenses === value) {
       return;
     }
 
     if (value === 'all') {
-      delete this.settings.copySenses;
+      delete this.#settings.copySenses;
       void browser.storage.sync.remove('copySenses');
     } else {
-      this.settings.copySenses = value;
+      this.#settings.copySenses = value;
       void browser.storage.sync.set({ copySenses: value });
     }
   }
@@ -615,13 +612,13 @@ export class Config {
   // dbLanguages, or 'en' otherwise.
 
   get dictLang(): DbLanguageId {
-    return this.useDefaultLang()
-      ? this.getDefaultLang()
-      : this.settings.dictLang!;
+    return this.#useDefaultLang()
+      ? this.#getDefaultLang()
+      : this.#settings.dictLang!;
   }
 
   set dictLang(value: DbLanguageId) {
-    if (this.settings.dictLang && this.settings.dictLang === value) {
+    if (this.#settings.dictLang && this.#settings.dictLang === value) {
       return;
     }
 
@@ -631,7 +628,7 @@ export class Config {
     // If the value to set matches the default we clear the setting. This is so
     // that if we later support one of the user's more preferred languages we
     // can update them automatically.
-    if (value === this.getDefaultLang()) {
+    if (value === this.#getDefaultLang()) {
       browser.storage.sync.remove('dictLang').catch((e) => {
         void Bugsnag.notify(
           new ExtensionStorageError(
@@ -641,7 +638,7 @@ export class Config {
           { severity: 'warning' }
         );
       });
-      delete this.settings.dictLang;
+      delete this.#settings.dictLang;
     } else {
       browser.storage.sync.set({ dictLang: value }).catch((e) => {
         void Bugsnag.notify(
@@ -652,22 +649,22 @@ export class Config {
           { severity: 'warning' }
         );
       });
-      this.settings.dictLang = value;
+      this.#settings.dictLang = value;
     }
   }
 
-  private useDefaultLang(): boolean {
+  #useDefaultLang(): boolean {
     // Check that the language that is set is valid. It might be invalid if we
     // deprecated a language or we synced a value from a newer version of the
     // extension.
-    if (this.settings.dictLang) {
-      return !dbLanguages.includes(this.settings.dictLang);
+    if (this.#settings.dictLang) {
+      return !dbLanguages.includes(this.#settings.dictLang);
     }
 
     return true;
   }
 
-  private getDefaultLang(): DbLanguageId {
+  #getDefaultLang(): DbLanguageId {
     const availableLanguages = new Set(dbLanguages);
     for (const lang of navigator.languages) {
       const langCode = lang.split('-')[0];
@@ -682,16 +679,16 @@ export class Config {
   onLanguageChange() {
     // If the user's accept-languages setting changed AND we are basing the
     // dictLang value on that we should notify listeners of the change.
-    if (!this.useDefaultLang()) {
+    if (!this.#useDefaultLang()) {
       return;
     }
 
-    const newValue = this.getDefaultLang();
-    if (this.previousDefaultLang !== newValue) {
-      const oldValue = this.previousDefaultLang;
-      this.previousDefaultLang = newValue;
+    const newValue = this.#getDefaultLang();
+    if (this.#previousDefaultLang !== newValue) {
+      const oldValue = this.#previousDefaultLang;
+      this.#previousDefaultLang = newValue;
       const changes: ChangeDict = { dictLang: { newValue, oldValue } };
-      for (const listener of this.changeListeners) {
+      for (const listener of this.#changeListeners) {
         listener(changes);
       }
     }
@@ -700,46 +697,46 @@ export class Config {
   // enableTapLookup: Defaults to true
 
   get enableTapLookup(): boolean {
-    return this.settings.enableTapLookup ?? true;
+    return this.#settings.enableTapLookup ?? true;
   }
 
   set enableTapLookup(value: boolean) {
-    const storedSetting = this.settings.enableTapLookup;
+    const storedSetting = this.#settings.enableTapLookup;
     if (storedSetting === value) {
       return;
     }
 
     if (value) {
       void browser.storage.sync.remove('enableTapLookup');
-      delete this.settings.enableTapLookup;
+      delete this.#settings.enableTapLookup;
     } else {
       void browser.storage.sync.set({ enableTapLookup: value });
-      this.settings.enableTapLookup = value;
+      this.#settings.enableTapLookup = value;
     }
   }
 
   // fontFace: Defaults to 'bundled'
 
   get fontFace(): FontFace {
-    return this.settings.fontFace === undefined
+    return this.#settings.fontFace === undefined
       ? 'bundled'
-      : this.settings.fontFace;
+      : this.#settings.fontFace;
   }
 
   set fontFace(value: FontFace) {
     if (
-      (this.settings.fontFace !== undefined &&
-        this.settings.fontFace === value) ||
-      (typeof this.settings.fontFace === 'undefined' && value === 'bundled')
+      (this.#settings.fontFace !== undefined &&
+        this.#settings.fontFace === value) ||
+      (typeof this.#settings.fontFace === 'undefined' && value === 'bundled')
     ) {
       return;
     }
 
     if (value !== 'bundled') {
-      this.settings.fontFace = value;
+      this.#settings.fontFace = value;
       void browser.storage.sync.set({ fontFace: value });
     } else {
-      this.settings.fontFace = undefined;
+      this.#settings.fontFace = undefined;
       void browser.storage.sync.remove('fontFace');
     }
   }
@@ -747,24 +744,24 @@ export class Config {
   // fontSize: Defaults to normal
 
   get fontSize(): FontSize {
-    return typeof this.settings.fontSize === 'undefined'
+    return typeof this.#settings.fontSize === 'undefined'
       ? 'normal'
-      : this.settings.fontSize;
+      : this.#settings.fontSize;
   }
 
   set fontSize(value: FontSize) {
     if (
-      typeof this.settings.fontSize !== 'undefined' &&
-      this.settings.fontSize === value
+      typeof this.#settings.fontSize !== 'undefined' &&
+      this.#settings.fontSize === value
     ) {
       return;
     }
 
     if (value === 'normal') {
-      this.settings.fontSize = undefined;
+      this.#settings.fontSize = undefined;
       void browser.storage.sync.remove('fontSize');
     } else {
-      this.settings.fontSize = value;
+      this.#settings.fontSize = value;
       void browser.storage.sync.set({ fontSize: value });
     }
   }
@@ -772,13 +769,13 @@ export class Config {
   // fxCurrency: Defaults to USD
 
   get fxCurrency(): string {
-    return typeof this.settings.fxCurrency === 'string'
-      ? this.settings.fxCurrency
+    return typeof this.#settings.fxCurrency === 'string'
+      ? this.#settings.fxCurrency
       : 'USD';
   }
 
   set fxCurrency(value: string) {
-    const storedSetting = this.settings.fxCurrency;
+    const storedSetting = this.#settings.fxCurrency;
     if (value === storedSetting) {
       return;
     }
@@ -788,32 +785,32 @@ export class Config {
     // explicit signal they want currencies displayed in USD even if we later
     // change the default.
     void browser.storage.sync.set({ fxCurrency: value });
-    this.settings.fxCurrency = value;
+    this.#settings.fxCurrency = value;
   }
 
   get fxCurrencies(): Array<string> | undefined {
-    return this.fxData
-      ? Object.keys(this.fxData.rates).sort((a, b) => a.localeCompare(b))
+    return this.#fxData
+      ? Object.keys(this.#fxData.rates).sort((a, b) => a.localeCompare(b))
       : undefined;
   }
 
   // handedness: Defaults to 'unset'
 
   get handedness(): 'unset' | 'left' | 'right' {
-    return this.settings.handedness ?? 'unset';
+    return this.#settings.handedness ?? 'unset';
   }
 
   set handedness(value: 'unset' | 'left' | 'right') {
-    const storedSetting = this.settings.handedness ?? 'unset';
+    const storedSetting = this.#settings.handedness ?? 'unset';
     if (storedSetting === value) {
       return;
     }
 
     if (value === 'unset') {
-      delete this.settings.handedness;
+      delete this.#settings.handedness;
       void browser.storage.sync.remove('handedness');
     } else {
-      this.settings.handedness = value;
+      this.#settings.handedness = value;
       void browser.storage.sync.set({ handedness: value });
     }
   }
@@ -821,7 +818,7 @@ export class Config {
   // highlightStyle: Defaults to 'yellow'
 
   get highlightStyle(): HighlightStyle {
-    return this.settings.highlightStyle ?? 'yellow';
+    return this.#settings.highlightStyle ?? 'yellow';
   }
 
   set highlightStyle(value: HighlightStyle) {
@@ -830,10 +827,10 @@ export class Config {
     }
 
     if (value === 'yellow') {
-      this.settings.highlightStyle = undefined;
+      this.#settings.highlightStyle = undefined;
       void browser.storage.sync.remove('highlightStyle');
     } else {
-      this.settings.highlightStyle = value;
+      this.#settings.highlightStyle = value;
       void browser.storage.sync.set({ highlightStyle: value });
     }
   }
@@ -841,34 +838,34 @@ export class Config {
   // holdToShowKeys: Defaults to null
 
   get holdToShowKeys(): string | null {
-    return typeof this.settings.holdToShowKeys === 'string'
-      ? this.settings.holdToShowKeys
+    return typeof this.#settings.holdToShowKeys === 'string'
+      ? this.#settings.holdToShowKeys
       : null;
   }
 
   set holdToShowKeys(value: string | null) {
-    const storedSetting = this.settings.holdToShowKeys || null;
+    const storedSetting = this.#settings.holdToShowKeys || null;
     if (value === storedSetting) {
       return;
     }
 
     if (value === null) {
       void browser.storage.sync.remove('holdToShowKeys');
-      delete this.settings.holdToShowKeys;
+      delete this.#settings.holdToShowKeys;
     } else {
       void browser.storage.sync.set({ holdToShowKeys: value });
-      this.settings.holdToShowKeys = value;
+      this.#settings.holdToShowKeys = value;
     }
 
     // If holdToShowImageKeys was mirroring this setting, save the previous
     // value as its own value.
-    if (typeof this.settings.holdToShowImageKeys === 'undefined') {
+    if (typeof this.#settings.holdToShowImageKeys === 'undefined') {
       this.holdToShowImageKeys = storedSetting;
     }
     // Otherwise, if we have cleared this setting and holdToShowImageKeys was
     // storing 'none' just to differentiate itself from us, we can clear that
     // stored value now.
-    else if (!value && this.settings.holdToShowImageKeys === 'none') {
+    else if (!value && this.#settings.holdToShowImageKeys === 'none') {
       this.holdToShowImageKeys = null;
     }
   }
@@ -896,10 +893,10 @@ export class Config {
 
   get holdToShowImageKeys(): string | null {
     // If there is an explicit setting for this value, use that.
-    if (typeof this.settings.holdToShowImageKeys === 'string') {
-      return this.settings.holdToShowImageKeys === 'none'
+    if (typeof this.#settings.holdToShowImageKeys === 'string') {
+      return this.#settings.holdToShowImageKeys === 'none'
         ? null
-        : this.settings.holdToShowImageKeys;
+        : this.#settings.holdToShowImageKeys;
     }
 
     // Otherwise, mirror the holdToShowKeys setting
@@ -914,17 +911,17 @@ export class Config {
       value === null && this.holdToShowKeys ? 'none' : value;
 
     // Ignore null-op changes
-    const storedSetting = this.settings.holdToShowImageKeys || null;
+    const storedSetting = this.#settings.holdToShowImageKeys || null;
     if (settingToStore === storedSetting) {
       return;
     }
 
     if (settingToStore === null) {
       void browser.storage.sync.remove('holdToShowImageKeys');
-      delete this.settings.holdToShowImageKeys;
+      delete this.#settings.holdToShowImageKeys;
     } else {
       void browser.storage.sync.set({ holdToShowImageKeys: settingToStore });
-      this.settings.holdToShowImageKeys = settingToStore;
+      this.#settings.holdToShowImageKeys = settingToStore;
     }
   }
 
@@ -932,7 +929,7 @@ export class Config {
   // that were added more recently.
 
   get kanjiReferences(): Array<ReferenceAbbreviation> {
-    const setValues = this.settings.kanjiReferencesV2 || {};
+    const setValues = this.#settings.kanjiReferencesV2 || {};
     const result: Array<ReferenceAbbreviation> = [];
     for (const ref of getReferencesForLang(this.dictLang)) {
       if (typeof setValues[ref] === 'undefined') {
@@ -947,20 +944,20 @@ export class Config {
   }
 
   updateKanjiReferences(updatedReferences: KanjiReferenceFlagsV2) {
-    const existingSettings = this.settings.kanjiReferencesV2 || {};
-    this.settings.kanjiReferencesV2 = {
+    const existingSettings = this.#settings.kanjiReferencesV2 || {};
+    this.#settings.kanjiReferencesV2 = {
       ...existingSettings,
       ...updatedReferences,
     };
     void browser.storage.sync.set({
-      kanjiReferencesV2: this.settings.kanjiReferencesV2,
+      kanjiReferencesV2: this.#settings.kanjiReferencesV2,
     });
   }
 
   // keys: Defaults are defined by DEFAULT_KEY_SETTINGS, and particularly the
   // enabledKeys member.
 
-  private getDefaultEnabledKeys(): StoredKeyboardKeys {
+  #getDefaultEnabledKeys(): StoredKeyboardKeys {
     return PopupKeys.reduce<Partial<StoredKeyboardKeys>>(
       (defaultKeys, setting) => {
         defaultKeys[setting.name] = setting.enabledKeys;
@@ -971,8 +968,8 @@ export class Config {
   }
 
   get keys(): StoredKeyboardKeys {
-    const setValues = this.settings.keys || {};
-    const keys = { ...this.getDefaultEnabledKeys(), ...setValues };
+    const setValues = this.#settings.keys || {};
+    const keys = { ...this.#getDefaultEnabledKeys(), ...setValues };
 
     // If there is no key set for the pin popup key, but there _is_ a suitable
     // hold-to-show key set, we should use that as the default value.
@@ -1045,74 +1042,74 @@ export class Config {
   }
 
   updateKeys(keys: Partial<StoredKeyboardKeys>) {
-    const existingSettings = this.settings.keys || {};
-    this.settings.keys = { ...existingSettings, ...keys };
+    const existingSettings = this.#settings.keys || {};
+    this.#settings.keys = { ...existingSettings, ...keys };
 
-    void browser.storage.sync.set({ keys: this.settings.keys });
+    void browser.storage.sync.set({ keys: this.#settings.keys });
   }
 
   // noTextHighlight: Defaults to false
 
   get noTextHighlight(): boolean {
-    return !!this.settings.noTextHighlight;
+    return !!this.#settings.noTextHighlight;
   }
 
   set noTextHighlight(value: boolean) {
     if (
-      typeof this.settings.noTextHighlight !== 'undefined' &&
-      this.settings.noTextHighlight === value
+      typeof this.#settings.noTextHighlight !== 'undefined' &&
+      this.#settings.noTextHighlight === value
     ) {
       return;
     }
 
-    this.settings.noTextHighlight = value;
+    this.#settings.noTextHighlight = value;
     void browser.storage.sync.set({ noTextHighlight: value });
   }
 
   // popupInteractive (local): Defaults to true
 
   get popupInteractive(): boolean {
-    return this.settings.localSettings?.popupInteractive ?? true;
+    return this.#settings.localSettings?.popupInteractive ?? true;
   }
 
   set popupInteractive(value: boolean) {
-    const storedSetting = this.settings.localSettings?.popupInteractive;
+    const storedSetting = this.#settings.localSettings?.popupInteractive;
     if (storedSetting === value) {
       return;
     }
 
-    const localSettings = { ...this.settings.localSettings };
+    const localSettings = { ...this.#settings.localSettings };
     if (value) {
       delete localSettings.popupInteractive;
     } else {
       localSettings.popupInteractive = false;
     }
-    this.settings.localSettings = localSettings;
+    this.#settings.localSettings = localSettings;
     void browser.storage.local.set({ settings: localSettings });
   }
 
   // popupStyle: Defaults to 'default'
 
   get popupStyle(): string {
-    return typeof this.settings.popupStyle === 'undefined'
+    return typeof this.#settings.popupStyle === 'undefined'
       ? 'default'
-      : this.settings.popupStyle;
+      : this.#settings.popupStyle;
   }
 
   set popupStyle(value: string) {
     if (
-      (typeof this.settings.popupStyle !== 'undefined' &&
-        this.settings.popupStyle === value) ||
-      (typeof this.settings.popupStyle === 'undefined' && value === 'default')
+      (typeof this.#settings.popupStyle !== 'undefined' &&
+        this.#settings.popupStyle === value) ||
+      (typeof this.#settings.popupStyle === 'undefined' && value === 'default')
     ) {
       return;
     }
 
     if (value !== 'default') {
-      this.settings.popupStyle = value;
+      this.#settings.popupStyle = value;
       void browser.storage.sync.set({ popupStyle: value });
     } else {
-      this.settings.popupStyle = undefined;
+      this.#settings.popupStyle = undefined;
       void browser.storage.sync.remove('popupStyle');
     }
   }
@@ -1120,71 +1117,71 @@ export class Config {
   // posDisplay: Defaults to expl
 
   get posDisplay(): PartOfSpeechDisplay {
-    return typeof this.settings.posDisplay === 'undefined'
+    return typeof this.#settings.posDisplay === 'undefined'
       ? 'expl'
-      : this.settings.posDisplay;
+      : this.#settings.posDisplay;
   }
 
   set posDisplay(value: PartOfSpeechDisplay) {
     if (
-      typeof this.settings.posDisplay !== 'undefined' &&
-      this.settings.posDisplay === value
+      typeof this.#settings.posDisplay !== 'undefined' &&
+      this.#settings.posDisplay === value
     ) {
       return;
     }
 
-    this.settings.posDisplay = value;
+    this.#settings.posDisplay = value;
     void browser.storage.sync.set({ posDisplay: value });
   }
 
   // preferredUnits: Defaults to 'metric'
 
   get preferredUnits(): 'metric' | 'imperial' {
-    return this.settings.preferredUnits || 'metric';
+    return this.#settings.preferredUnits || 'metric';
   }
 
   set preferredUnits(value: 'metric' | 'imperial') {
-    if (this.settings.preferredUnits === value) {
+    if (this.#settings.preferredUnits === value) {
       return;
     }
 
-    this.settings.preferredUnits = value;
+    this.#settings.preferredUnits = value;
     void browser.storage.sync.set({ preferredUnits: value });
   }
 
   // readingOnly: Defaults to false
 
   get readingOnly(): boolean {
-    return !!this.settings.readingOnly;
+    return !!this.#settings.readingOnly;
   }
 
   set readingOnly(value: boolean) {
     if (
-      typeof this.settings.readingOnly !== 'undefined' &&
-      this.settings.readingOnly === value
+      typeof this.#settings.readingOnly !== 'undefined' &&
+      this.#settings.readingOnly === value
     ) {
       return;
     }
 
-    this.settings.readingOnly = value;
+    this.#settings.readingOnly = value;
     void browser.storage.sync.set({ readingOnly: value });
   }
 
   toggleReadingOnly() {
-    this.readingOnly = !this.settings.readingOnly;
+    this.readingOnly = !this.#settings.readingOnly;
   }
 
   // showKanjiComponents: Defaults to true
 
   get showKanjiComponents(): boolean {
     return (
-      typeof this.settings.showKanjiComponents === 'undefined' ||
-      this.settings.showKanjiComponents
+      typeof this.#settings.showKanjiComponents === 'undefined' ||
+      this.#settings.showKanjiComponents
     );
   }
 
   set showKanjiComponents(value: boolean) {
-    this.settings.showKanjiComponents = value;
+    this.#settings.showKanjiComponents = value;
     void browser.storage.sync.set({ showKanjiComponents: value });
   }
 
@@ -1192,35 +1189,35 @@ export class Config {
 
   get showPriority(): boolean {
     return (
-      typeof this.settings.showPriority === 'undefined' ||
-      this.settings.showPriority
+      typeof this.#settings.showPriority === 'undefined' ||
+      this.#settings.showPriority
     );
   }
 
   set showPriority(value: boolean) {
-    this.settings.showPriority = value;
+    this.#settings.showPriority = value;
     void browser.storage.sync.set({ showPriority: value });
   }
 
   // showPuck (local): Defaults to 'auto'
 
   get showPuck(): 'show' | 'hide' | 'auto' {
-    return this.settings.localSettings?.showPuck || 'auto';
+    return this.#settings.localSettings?.showPuck || 'auto';
   }
 
   set showPuck(value: 'show' | 'hide' | 'auto') {
-    const storedSetting = this.settings.localSettings?.showPuck || 'auto';
+    const storedSetting = this.#settings.localSettings?.showPuck || 'auto';
     if (storedSetting === value) {
       return;
     }
 
-    const localSettings = { ...this.settings.localSettings };
+    const localSettings = { ...this.#settings.localSettings };
     if (value === 'auto') {
       delete localSettings.showPuck;
     } else {
       localSettings.showPuck = value;
     }
-    this.settings.localSettings = localSettings;
+    this.#settings.localSettings = localSettings;
 
     // If value is 'hide' we should reset the puck state but since that writes
     // to the same key in local storage we should wait for the current write to
@@ -1243,22 +1240,22 @@ export class Config {
   // Puck state (local): Defaults to undefined
 
   get puckState(): PuckState | undefined {
-    return this.settings.localSettings?.puckState;
+    return this.#settings.localSettings?.puckState;
   }
 
   set puckState(value: PuckState | undefined) {
-    const storedSetting = this.settings.localSettings?.puckState;
+    const storedSetting = this.#settings.localSettings?.puckState;
     if (JSON.stringify(storedSetting) === JSON.stringify(value)) {
       return;
     }
 
-    const localSettings = { ...this.settings.localSettings };
+    const localSettings = { ...this.#settings.localSettings };
     if (!value) {
       delete localSettings.puckState;
     } else {
       localSettings.puckState = value;
     }
-    this.settings.localSettings = localSettings;
+    this.#settings.localSettings = localSettings;
 
     void browser.storage.local.set({ settings: localSettings });
   }
@@ -1266,19 +1263,19 @@ export class Config {
   // showRomaji: Defaults to false
 
   get showRomaji(): boolean {
-    return !!this.settings.showRomaji;
+    return !!this.#settings.showRomaji;
   }
 
   set showRomaji(value: boolean) {
-    if (this.settings.showRomaji === value) {
+    if (this.#settings.showRomaji === value) {
       return;
     }
 
     if (!value) {
-      delete this.settings.showRomaji;
+      delete this.#settings.showRomaji;
       void browser.storage.sync.remove('showRomaji');
     } else {
-      this.settings.showRomaji = value;
+      this.#settings.showRomaji = value;
       void browser.storage.sync.set({ showRomaji: value });
     }
   }
@@ -1286,19 +1283,19 @@ export class Config {
   // waniKaniVocabDisplay: Defaults to 'hide'
 
   get waniKaniVocabDisplay(): 'hide' | 'show-matches' {
-    return this.settings.waniKaniVocabDisplay || 'hide';
+    return this.#settings.waniKaniVocabDisplay || 'hide';
   }
 
   set waniKaniVocabDisplay(value: 'hide' | 'show-matches') {
-    if (this.settings.waniKaniVocabDisplay === value) {
+    if (this.#settings.waniKaniVocabDisplay === value) {
       return;
     }
 
     if (value === 'hide') {
-      delete this.settings.waniKaniVocabDisplay;
+      delete this.#settings.waniKaniVocabDisplay;
       void browser.storage.sync.remove('waniKaniVocabDisplay');
     } else {
-      this.settings.waniKaniVocabDisplay = value;
+      this.#settings.waniKaniVocabDisplay = value;
       void browser.storage.sync.set({ waniKaniVocabDisplay: value });
     }
   }
@@ -1306,25 +1303,25 @@ export class Config {
   // tabDisplay: Defaults to 'top'
 
   get tabDisplay(): TabDisplay {
-    return typeof this.settings.tabDisplay === 'undefined'
+    return typeof this.#settings.tabDisplay === 'undefined'
       ? 'top'
-      : this.settings.tabDisplay;
+      : this.#settings.tabDisplay;
   }
 
   set tabDisplay(value: TabDisplay) {
     if (
-      (typeof this.settings.tabDisplay !== 'undefined' &&
-        this.settings.tabDisplay === value) ||
-      (typeof this.settings.tabDisplay === 'undefined' && value === 'top')
+      (typeof this.#settings.tabDisplay !== 'undefined' &&
+        this.#settings.tabDisplay === value) ||
+      (typeof this.#settings.tabDisplay === 'undefined' && value === 'top')
     ) {
       return;
     }
 
     if (value !== 'top') {
-      this.settings.tabDisplay = value;
+      this.#settings.tabDisplay = value;
       void browser.storage.sync.set({ tabDisplay: value });
     } else {
-      this.settings.tabDisplay = undefined;
+      this.#settings.tabDisplay = undefined;
       void browser.storage.sync.remove('tabDisplay');
     }
   }
@@ -1332,25 +1329,25 @@ export class Config {
   // toolbarIcon: Defaults to 'default'
 
   get toolbarIcon(): 'default' | 'sky' {
-    return typeof this.settings.toolbarIcon === 'undefined'
+    return typeof this.#settings.toolbarIcon === 'undefined'
       ? 'default'
-      : this.settings.toolbarIcon;
+      : this.#settings.toolbarIcon;
   }
 
   set toolbarIcon(value: 'default' | 'sky') {
     if (
-      (typeof this.settings.toolbarIcon !== 'undefined' &&
-        this.settings.toolbarIcon === value) ||
-      (typeof this.settings.toolbarIcon === 'undefined' && value === 'default')
+      (typeof this.#settings.toolbarIcon !== 'undefined' &&
+        this.#settings.toolbarIcon === value) ||
+      (typeof this.#settings.toolbarIcon === 'undefined' && value === 'default')
     ) {
       return;
     }
 
     if (value !== 'default') {
-      this.settings.toolbarIcon = value;
+      this.#settings.toolbarIcon = value;
       void browser.storage.sync.set({ toolbarIcon: value });
     } else {
-      this.settings.toolbarIcon = undefined;
+      this.#settings.toolbarIcon = undefined;
       void browser.storage.sync.remove('toolbarIcon');
     }
   }
@@ -1367,11 +1364,11 @@ export class Config {
       dictLang: this.dictLang,
       enableTapLookup: this.enableTapLookup,
       fx:
-        this.fxData && this.fxCurrency in this.fxData.rates
+        this.#fxData && this.fxCurrency in this.#fxData.rates
           ? {
               currency: this.fxCurrency,
-              rate: this.fxData.rates[this.fxCurrency],
-              timestamp: this.fxData.timestamp,
+              rate: this.#fxData.rates[this.fxCurrency],
+              timestamp: this.#fxData.timestamp,
             }
           : undefined,
       fontFace: this.fontFace,

@@ -19,21 +19,18 @@ export type ContentConfigListener = (
 ) => void;
 
 export class ContentConfig implements ContentConfigParams {
-  private params: ContentConfigParams;
-  private mouseCapabilityMql = getMouseCapabilityMql();
-  private hoverCapabilityMql = getHoverCapabilityMql();
+  #params: ContentConfigParams;
+  #mouseCapabilityMql = getMouseCapabilityMql();
+  #hoverCapabilityMql = getHoverCapabilityMql();
   listeners: Array<ContentConfigListener> = [];
 
   constructor(params: Readonly<ContentConfigParams>) {
     this.set(params);
-
-    this.onMouseCapabilityChange = this.onMouseCapabilityChange.bind(this);
-    this.onHoverCapabilityChange = this.onHoverCapabilityChange.bind(this);
   }
 
   set(params: Readonly<ContentConfigParams>) {
     const before: Partial<ContentConfig> = {};
-    if (this.params) {
+    if (this.#params) {
       for (const key of Object.keys(params)) {
         const contentKey = key as keyof ContentConfig;
         if (typeof this[contentKey] === 'undefined') {
@@ -44,7 +41,7 @@ export class ContentConfig implements ContentConfigParams {
       }
     }
 
-    this.params = { ...params };
+    this.#params = { ...params };
 
     const changes: Array<ContentConfigChange> = [];
     const objectKeysWeCareAbout = ['autoExpand', 'puckState'];
@@ -68,7 +65,7 @@ export class ContentConfig implements ContentConfigParams {
     }
 
     if (changes.length) {
-      this.notifyListeners(changes);
+      this.#notifyListeners(changes);
     }
   }
 
@@ -80,13 +77,13 @@ export class ContentConfig implements ContentConfigParams {
     }
 
     if (!hadListeners) {
-      this.mouseCapabilityMql?.addEventListener(
+      this.#mouseCapabilityMql?.addEventListener(
         'change',
-        this.onMouseCapabilityChange
+        this.#onMouseCapabilityChange
       );
-      this.hoverCapabilityMql?.addEventListener(
+      this.#hoverCapabilityMql?.addEventListener(
         'change',
-        this.onHoverCapabilityChange
+        this.#onHoverCapabilityChange
       );
     }
   }
@@ -97,18 +94,18 @@ export class ContentConfig implements ContentConfigParams {
     this.listeners = this.listeners.filter((l) => l !== listener);
 
     if (hadListeners && this.listeners.length === 0) {
-      this.mouseCapabilityMql?.removeEventListener(
+      this.#mouseCapabilityMql?.removeEventListener(
         'change',
-        this.onMouseCapabilityChange
+        this.#onMouseCapabilityChange
       );
-      this.hoverCapabilityMql?.removeEventListener(
+      this.#hoverCapabilityMql?.removeEventListener(
         'change',
-        this.onHoverCapabilityChange
+        this.#onHoverCapabilityChange
       );
     }
   }
 
-  private notifyListeners(changes: ReadonlyArray<ContentConfigChange>) {
+  #notifyListeners(changes: ReadonlyArray<ContentConfigChange>) {
     const listenersCopy = this.listeners.slice();
     for (const listener of listenersCopy) {
       listener(changes);
@@ -116,130 +113,130 @@ export class ContentConfig implements ContentConfigParams {
   }
 
   get accentDisplay() {
-    return this.params.accentDisplay;
+    return this.#params.accentDisplay;
   }
   get autoExpand() {
-    return this.params.autoExpand;
+    return this.#params.autoExpand;
   }
   get copyHeadwords() {
-    return this.params.copyHeadwords;
+    return this.#params.copyHeadwords;
   }
   get copyPos() {
-    return this.params.copyPos;
+    return this.#params.copyPos;
   }
   get copySenses() {
-    return this.params.copySenses;
+    return this.#params.copySenses;
   }
   get bunproDisplay() {
-    return this.params.bunproDisplay;
+    return this.#params.bunproDisplay;
   }
   get dictLang() {
-    return this.params.dictLang;
+    return this.#params.dictLang;
   }
   get enableTapLookup() {
-    return this.params.enableTapLookup;
+    return this.#params.enableTapLookup;
   }
   get fx() {
-    return this.params.fx;
+    return this.#params.fx;
   }
   get fontFace() {
-    return this.params.fontFace;
+    return this.#params.fontFace;
   }
   get fontSize() {
-    return this.params.fontSize;
+    return this.#params.fontSize;
   }
   get highlightStyle() {
-    return this.params.highlightStyle;
+    return this.#params.highlightStyle;
   }
   get handedness() {
-    return this.params.handedness;
+    return this.#params.handedness;
   }
   get holdToShowKeys() {
-    return this.params.holdToShowKeys;
+    return this.#params.holdToShowKeys;
   }
   get holdToShowImageKeys() {
-    return this.params.holdToShowImageKeys;
+    return this.#params.holdToShowImageKeys;
   }
   get kanjiReferences() {
-    return this.params.kanjiReferences;
+    return this.#params.kanjiReferences;
   }
   get keys() {
-    return this.params.keys;
+    return this.#params.keys;
   }
   get noTextHighlight() {
-    return this.params.noTextHighlight;
+    return this.#params.noTextHighlight;
   }
   get popupInteractive() {
     // Even if `this.params.popupInteractive` is false, if there's no mouse we
     // should force it to true.
-    return this.params.popupInteractive || !this.mouseCapabilityMql;
+    return this.#params.popupInteractive || !this.#mouseCapabilityMql;
   }
   get popupStyle() {
-    return this.params.popupStyle;
+    return this.#params.popupStyle;
   }
   get posDisplay() {
-    return this.params.posDisplay;
+    return this.#params.posDisplay;
   }
   get preferredUnits() {
-    return this.params.preferredUnits;
+    return this.#params.preferredUnits;
   }
   get puckState() {
-    return this.params.puckState;
+    return this.#params.puckState;
   }
   get readingOnly() {
-    return this.params.readingOnly;
+    return this.#params.readingOnly;
   }
   set readingOnly(value: boolean) {
-    this.params.readingOnly = value;
+    this.#params.readingOnly = value;
   }
   get showKanjiComponents() {
-    return this.params.showKanjiComponents;
+    return this.#params.showKanjiComponents;
   }
   get showPriority() {
-    return this.params.showPriority;
+    return this.#params.showPriority;
   }
   get showPuck(): 'show' | 'hide' {
-    return this.params.showPuck === 'auto'
+    return this.#params.showPuck === 'auto'
       ? this.canHover
         ? 'hide'
         : 'show'
-      : this.params.showPuck;
+      : this.#params.showPuck;
   }
   get showRomaji() {
-    return this.params.showRomaji;
+    return this.#params.showRomaji;
   }
   get tabDisplay() {
-    return this.params.tabDisplay;
+    return this.#params.tabDisplay;
   }
   get toolbarIcon() {
-    return this.params.toolbarIcon;
+    return this.#params.toolbarIcon;
   }
   get waniKaniVocabDisplay() {
-    return this.params.waniKaniVocabDisplay;
+    return this.#params.waniKaniVocabDisplay;
   }
 
   // Extra computed properties
   get canHover() {
-    return !!this.hoverCapabilityMql?.matches;
+    return !!this.#hoverCapabilityMql?.matches;
   }
 
-  private onMouseCapabilityChange() {
+  #onMouseCapabilityChange = () => {
     // If this.params.popupInteractive is false then any change to the
     // mouseCapabilityMql will cause the computed value of `popupInteractive` to
     // change.
-    if (!this.params.popupInteractive) {
-      this.notifyListeners([
+    if (!this.#params.popupInteractive) {
+      this.#notifyListeners([
         { key: 'popupInteractive', value: this.popupInteractive },
       ]);
     }
-  }
+  };
 
-  private onHoverCapabilityChange(event: MediaQueryListEvent) {
-    if (this.params.showPuck === 'auto') {
-      this.notifyListeners([
+  #onHoverCapabilityChange = (event: MediaQueryListEvent) => {
+    if (this.#params.showPuck === 'auto') {
+      this.#notifyListeners([
         { key: 'showPuck', value: this.showPuck },
         { key: 'canHover', value: event.matches },
       ]);
     }
-  }
+  };
 }

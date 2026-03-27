@@ -153,49 +153,49 @@ const onboardingAutoHideDuration = 8000;
 const verticalModeOnboardingSeenKey = 'tenten-puck-vertical-onboarding-seen';
 
 export class LookupPuck {
-  private puck: HTMLDivElement | undefined;
-  private enabledState: PuckEnabledState = 'disabled';
+  #puck: HTMLDivElement | undefined;
+  #enabledState: PuckEnabledState = 'disabled';
 
-  private clickState: ClickState = { kind: 'idle' };
+  #clickState: ClickState = { kind: 'idle' };
 
-  private puckX: number;
-  private puckY: number;
-  private earthWidth: number;
-  private earthHeight: number;
-  private earthScaleFactorWhenDragging: number;
-  private moonWidth: number;
-  private moonHeight: number;
+  #puckX: number;
+  #puckY: number;
+  #earthWidth: number;
+  #earthHeight: number;
+  #earthScaleFactorWhenDragging: number;
+  #moonWidth: number;
+  #moonHeight: number;
   // The translateY value to apply to the moon when it is orbiting above the
   // earth. Expressed as an absolute (positive) value.
-  private targetAbsoluteOffsetYAbove: number;
+  #targetAbsoluteOffsetYAbove: number;
   // The translateY value to apply to the moon when it is orbiting below the
   // earth. Expressed as an absolute (positive) value.
-  private targetAbsoluteOffsetYBelow: number;
+  #targetAbsoluteOffsetYBelow: number;
   // The translateX value to apply to the moon when it is orbiting to the
   // left or right of earth and on the same side as the user's hand. Expressed
   // as an absolute (positive) value.
-  private targetAbsoluteOffsetXHandSide: number;
+  #targetAbsoluteOffsetXHandSide: number;
   // The translateX value to apply to the moon when it is orbiting to the
   // left or right of earth and on the opposite side from the user's hand (or
   // handedness is unset). Expressed as an absolute (positive) value.
-  private targetAbsoluteOffsetXNonHandSide: number;
+  #targetAbsoluteOffsetXNonHandSide: number;
   // The translate (X and Y) values applied to the moon whilst it is being
   // dragged. They are measured relative to the midpoint of the moon (which is
   // also the midpoint of the earth).
-  private targetOffset: { x: number; y: number } = { x: 0, y: 0 };
-  private targetOrientation: PuckState['orientation'] = {
+  #targetOffset: { x: number; y: number } = { x: 0, y: 0 };
+  #targetOrientation: PuckState['orientation'] = {
     readingDirection: 'horizontal',
     moonSide: 'above',
   };
-  private cachedViewportDimensions: ViewportDimensions | null = null;
-  private ring: SVGElement | undefined;
+  #cachedViewportDimensions: ViewportDimensions | null = null;
+  #ring: SVGElement | undefined;
 
   // Values passed down from user preferences
-  private handedness: ContentConfigParams['handedness'];
-  private toolbarIcon: ContentConfigParams['toolbarIcon'];
-  private theme: string;
-  private fontSize: FontSize;
-  private fontFace: FontFace;
+  #handedness: ContentConfigParams['handedness'];
+  #toolbarIcon: ContentConfigParams['toolbarIcon'];
+  #theme: string;
+  #fontSize: FontSize;
+  #fontFace: FontFace;
 
   // We need to detect if the browser has a buggy position:fixed behavior
   // (as is currently the case for Safari
@@ -207,22 +207,22 @@ export class LookupPuck {
   //
   // undefined means we haven't been able to detect whether or not the bug is
   // present yet.
-  private hasBuggyPositionFixed: boolean | undefined;
+  #hasBuggyPositionFixed: boolean | undefined;
 
   // We sometimes temporarily modify the content so we can look it up. In such
   // a case we register a `restore` function to return the content back
   // to its original state when we have finished with it.
-  private contentToRestore: RestoreContentParams | undefined;
+  #contentToRestore: RestoreContentParams | undefined;
 
-  private safeAreaProvider: SafeAreaProvider;
+  #safeAreaProvider: SafeAreaProvider;
 
   // Callbacks
-  private onLookupDisabled: () => void;
-  private onPuckStateChanged: (puckState: PuckState) => void;
+  #onLookupDisabled: () => void;
+  #onPuckStateChanged: (puckState: PuckState) => void;
 
   // Onboarding tooltip state
-  private onboardingTooltip: HTMLDivElement | undefined;
-  private onboardingTimeout: number | undefined;
+  #onboardingTooltip: HTMLDivElement | undefined;
+  #onboardingTimeout: number | undefined;
 
   constructor({
     initialPosition,
@@ -246,30 +246,30 @@ export class LookupPuck {
     fontFace: FontFace;
   }) {
     if (initialPosition) {
-      this.puckX = initialPosition.x;
-      this.puckY = initialPosition.y;
-      this.targetOrientation = initialPosition.orientation;
+      this.#puckX = initialPosition.x;
+      this.#puckY = initialPosition.y;
+      this.#targetOrientation = initialPosition.orientation;
     } else {
       // Initially position the puck in the bottom-right corner of the screen
-      this.puckX = Number.MAX_SAFE_INTEGER;
-      this.puckY = Number.MAX_SAFE_INTEGER;
+      this.#puckX = Number.MAX_SAFE_INTEGER;
+      this.#puckY = Number.MAX_SAFE_INTEGER;
     }
-    this.safeAreaProvider = safeAreaProvider;
-    this.onLookupDisabled = onLookupDisabled;
-    this.onPuckStateChanged = onPuckStateChanged;
-    this.handedness = handedness;
-    this.toolbarIcon = toolbarIcon;
-    this.theme = theme;
-    this.fontSize = fontSize;
-    this.fontFace = fontFace;
+    this.#safeAreaProvider = safeAreaProvider;
+    this.#onLookupDisabled = onLookupDisabled;
+    this.#onPuckStateChanged = onPuckStateChanged;
+    this.#handedness = handedness;
+    this.#toolbarIcon = toolbarIcon;
+    this.#theme = theme;
+    this.#fontSize = fontSize;
+    this.#fontFace = fontFace;
   }
 
-  private readonly onSafeAreaUpdated = () => {
-    this.cachedViewportDimensions = null;
-    this.setPositionWithinSafeArea(this.puckX, this.puckY);
+  #onSafeAreaUpdated = () => {
+    this.#cachedViewportDimensions = null;
+    this.#setPositionWithinSafeArea(this.#puckX, this.#puckY);
   };
 
-  private setPosition({
+  #setPosition({
     x,
     y,
     safeAreaLeft,
@@ -284,21 +284,21 @@ export class LookupPuck {
     safeAreaTop: number;
     safeAreaBottom: number;
   }) {
-    this.puckX = x;
-    this.puckY = y;
+    this.#puckX = x;
+    this.#puckY = y;
 
     // Update the puck position (that is, the earth)
-    if (this.puck) {
-      this.puck.style.transform = `translate(${this.puckX}px, ${this.puckY}px)`;
+    if (this.#puck) {
+      this.#puck.style.transform = `translate(${this.#puckX}px, ${this.#puckY}px)`;
     }
 
     const isHorizontal =
-      this.targetOrientation.readingDirection === 'horizontal';
+      this.#targetOrientation.readingDirection === 'horizontal';
 
     // First determine the actual range of motion of the moon, taking into
     // account any safe area on either side of the screen.
     const { viewportWidth, viewportHeight } =
-      this.getViewportDimensions(document);
+      this.#getViewportDimensions(document);
     const safeAreaWidthOrHeight = isHorizontal
       ? viewportWidth - safeAreaLeft - safeAreaRight
       : viewportHeight - safeAreaTop - safeAreaBottom;
@@ -315,10 +315,10 @@ export class LookupPuck {
     // or vertical reading direction, respectively.
     const majorPortion = clamp(
       isHorizontal
-        ? (this.puckX - safeAreaLeft) /
-            (safeAreaWidthOrHeight - this.earthWidth)
-        : (this.puckY - safeAreaTop) /
-            (safeAreaWidthOrHeight - this.earthHeight),
+        ? (this.#puckX - safeAreaLeft) /
+            (safeAreaWidthOrHeight - this.#earthWidth)
+        : (this.#puckY - safeAreaTop) /
+            (safeAreaWidthOrHeight - this.#earthHeight),
       0,
       1
     );
@@ -335,7 +335,7 @@ export class LookupPuck {
     //
     // Typically we set this to 10 pixels greater than the radius of the earth
     // itself.
-    const radiusOfEarth = this.earthWidth / 2;
+    const radiusOfEarth = this.#earthWidth / 2;
     const preferredRadius = radiusOfEarth + 10;
 
     // However, we may need to extend that to reach the other side of the safe
@@ -357,20 +357,20 @@ export class LookupPuck {
     // that makes scanning easier and allows us to tweak that offset to make
     // room for the user's thumb.
     const orientationFactor =
-      this.targetOrientation.moonSide === 'above' ||
-      this.targetOrientation.moonSide === 'left'
+      this.#targetOrientation.moonSide === 'above' ||
+      this.#targetOrientation.moonSide === 'left'
         ? -1
         : 1;
 
     const offsetX = !isHorizontal
-      ? (this.handedness === this.targetOrientation.moonSide
-          ? this.targetAbsoluteOffsetXHandSide
-          : this.targetAbsoluteOffsetXNonHandSide) * orientationFactor
+      ? (this.#handedness === this.#targetOrientation.moonSide
+          ? this.#targetAbsoluteOffsetXHandSide
+          : this.#targetAbsoluteOffsetXNonHandSide) * orientationFactor
       : Math.sin(angle) * offsetRadius;
     const offsetY = isHorizontal
-      ? (this.targetOrientation.moonSide === 'above'
-          ? this.targetAbsoluteOffsetYAbove
-          : this.targetAbsoluteOffsetYBelow) * orientationFactor
+      ? (this.#targetOrientation.moonSide === 'above'
+          ? this.#targetAbsoluteOffsetYAbove
+          : this.#targetAbsoluteOffsetYBelow) * orientationFactor
       : Math.sin(angle) * offsetRadius;
 
     // At rest, make the target land on the surface of the puck.
@@ -381,50 +381,50 @@ export class LookupPuck {
       ? Math.cos(angle) * radiusOfEarth * orientationFactor
       : Math.sin(angle) * radiusOfEarth;
 
-    this.targetOffset = { x: offsetX, y: offsetY };
+    this.#targetOffset = { x: offsetX, y: offsetY };
 
     // Update target position in style
-    if (this.puck) {
-      this.puck.style.setProperty('--target-x-offset', `${offsetX}px`);
-      this.puck.style.setProperty('--target-y-offset', `${offsetY}px`);
-      this.puck.style.setProperty('--rest-x-offset', `${restOffsetX}px`);
-      this.puck.style.setProperty('--rest-y-offset', `${restOffsetY}px`);
+    if (this.#puck) {
+      this.#puck.style.setProperty('--target-x-offset', `${offsetX}px`);
+      this.#puck.style.setProperty('--target-y-offset', `${offsetY}px`);
+      this.#puck.style.setProperty('--rest-x-offset', `${restOffsetX}px`);
+      this.#puck.style.setProperty('--rest-y-offset', `${restOffsetY}px`);
     }
   }
 
   // Returns the total clearance to allow arround the target offset for the
   // puck.
   public getPuckClearance(): MarginBox {
-    const moonVerticalClearance = this.moonHeight / 2;
+    const moonVerticalClearance = this.#moonHeight / 2;
     const earthVerticalClearance =
-      Math.abs(this.targetOffset.y) +
-      (this.earthScaleFactorWhenDragging * this.earthHeight) / 2;
+      Math.abs(this.#targetOffset.y) +
+      (this.#earthScaleFactorWhenDragging * this.#earthHeight) / 2;
 
     return {
       top:
-        this.targetOrientation.moonSide === 'above'
+        this.#targetOrientation.moonSide === 'above'
           ? moonVerticalClearance
           : earthVerticalClearance,
       bottom:
-        this.targetOrientation.moonSide === 'above'
+        this.#targetOrientation.moonSide === 'above'
           ? earthVerticalClearance
           : moonVerticalClearance,
       left:
-        (this.earthScaleFactorWhenDragging * this.earthWidth) / 2 +
-        this.targetOffset.x,
+        (this.#earthScaleFactorWhenDragging * this.#earthWidth) / 2 +
+        this.#targetOffset.x,
       right:
-        (this.earthScaleFactorWhenDragging * this.earthWidth) / 2 -
-        this.targetOffset.x,
+        (this.#earthScaleFactorWhenDragging * this.#earthWidth) / 2 -
+        this.#targetOffset.x,
     };
   }
 
   public getTargetOrientation(): PuckState['orientation'] {
-    return this.targetOrientation;
+    return this.#targetOrientation;
   }
 
-  private getViewportDimensions(document: Document): ViewportDimensions {
-    if (this.cachedViewportDimensions) {
-      return this.cachedViewportDimensions;
+  #getViewportDimensions(document: Document): ViewportDimensions {
+    if (this.#cachedViewportDimensions) {
+      return this.#cachedViewportDimensions;
     }
 
     // We'd ideally use document.documentElement.clientWidth and
@@ -448,18 +448,18 @@ export class LookupPuck {
     // window.visualViewport.height). However, if you zoom all the way out and
     // back in again, it will give you the layout viewport. If you zoom
     // partially out and back in, you get something in between.
-    this.cachedViewportDimensions = {
+    this.#cachedViewportDimensions = {
       viewportWidth: document.documentElement.clientWidth,
       viewportHeight:
         document.defaultView?.innerHeight ??
         document.documentElement.clientHeight,
     };
 
-    return this.cachedViewportDimensions;
+    return this.#cachedViewportDimensions;
   }
 
-  private setPositionWithinSafeArea(x: number, y: number) {
-    if (!this.puck) {
+  #setPositionWithinSafeArea(x: number, y: number) {
+    if (!this.#puck) {
       return;
     }
 
@@ -468,15 +468,15 @@ export class LookupPuck {
       right: safeAreaRight,
       bottom: safeAreaBottom,
       left: safeAreaLeft,
-    } = this.safeAreaProvider.getSafeArea();
+    } = this.#safeAreaProvider.getSafeArea();
 
     const { viewportWidth, viewportHeight } =
-      this.getViewportDimensions(document);
+      this.#getViewportDimensions(document);
 
     const minX = safeAreaLeft;
-    const maxX = viewportWidth - safeAreaRight - this.earthWidth;
+    const maxX = viewportWidth - safeAreaRight - this.#earthWidth;
     const minY = safeAreaTop;
-    const maxY = viewportHeight - safeAreaBottom - this.earthHeight;
+    const maxY = viewportHeight - safeAreaBottom - this.#earthHeight;
 
     let clampedX = Math.min(Math.max(minX, x), maxX);
     let clampedY = Math.min(Math.max(minY, y), maxY);
@@ -492,7 +492,7 @@ export class LookupPuck {
       clampedY -= 15;
     }
 
-    this.setPosition({
+    this.#setPosition({
       x: clampedX,
       y: clampedY,
       safeAreaLeft,
@@ -508,15 +508,15 @@ export class LookupPuck {
     }
 
     if (
-      !this.puck ||
-      !this.earthWidth ||
-      !this.earthHeight ||
-      this.enabledState === 'disabled' ||
+      !this.#puck ||
+      !this.#earthWidth ||
+      !this.#earthHeight ||
+      this.#enabledState === 'disabled' ||
       // If we're not being pressed or dragged, ignore
       !(
-        this.clickState.kind === 'dragging' ||
-        this.clickState.kind === 'firstpointerdown' ||
-        this.clickState.kind === 'secondpointerdown'
+        this.#clickState.kind === 'dragging' ||
+        this.#clickState.kind === 'firstpointerdown' ||
+        this.#clickState.kind === 'secondpointerdown'
       )
     ) {
       return;
@@ -525,8 +525,8 @@ export class LookupPuck {
     event.preventDefault();
 
     // Click-and-hold event only triggers if user doesn't start dragging
-    clearClickAndHoldTimeout(this.clickState);
-    this.cancelClickAndHoldAnimation();
+    clearClickAndHoldTimeout(this.#clickState);
+    this.#cancelClickAndHoldAnimation();
 
     let { clientX, clientY } = event;
 
@@ -534,7 +534,7 @@ export class LookupPuck {
     // implementation of position:fixed.
     let viewportOffsetLeft = 0;
     let viewportOffsetTop = 0;
-    if (this.hasBuggyPositionFixed) {
+    if (this.#hasBuggyPositionFixed) {
       viewportOffsetLeft = window.visualViewport?.offsetLeft ?? 0;
       viewportOffsetTop = window.visualViewport?.offsetTop ?? 0;
     }
@@ -543,12 +543,12 @@ export class LookupPuck {
 
     // Translate the midpoint of the earth to the position of the pointer event.
     // This updates the moon offset
-    this.setPositionWithinSafeArea(
-      clientX - this.earthWidth / 2,
-      clientY - this.earthHeight / 2
+    this.#setPositionWithinSafeArea(
+      clientX - this.#earthWidth / 2,
+      clientY - this.#earthHeight / 2
     );
 
-    if (this.enabledState !== 'active') {
+    if (this.#enabledState !== 'active') {
       return;
     }
 
@@ -561,14 +561,14 @@ export class LookupPuck {
     // event handlers we pass these coordinates to will expect an unadjusted
     // value.
     const targetX =
-      this.puckX +
-      this.earthWidth / 2 +
-      this.targetOffset.x -
+      this.#puckX +
+      this.#earthWidth / 2 +
+      this.#targetOffset.x -
       viewportOffsetLeft;
     const targetY =
-      this.puckY +
-      this.earthHeight / 2 +
-      this.targetOffset.y -
+      this.#puckY +
+      this.#earthHeight / 2 +
+      this.#targetOffset.y -
       viewportOffsetTop;
 
     // See what we are pointing at
@@ -578,19 +578,19 @@ export class LookupPuck {
     //
     // But first check we aren't pointing at the same content as we adjusted
     // last time (or one of its descendents).
-    if (!this.contentToRestore?.root.contains(target)) {
+    if (!this.#contentToRestore?.root.contains(target)) {
       // Restore any content we previously adjusted.
-      this.restoreContent();
+      this.#restoreContent();
 
       // Look for hidden textboxes on mokuro reader pages
-      const mokuroResult = LookupPuck.uncoverMokuroText(
+      const mokuroResult = LookupPuck.#uncoverMokuroText(
         target,
         targetX,
         targetY
       );
       if (mokuroResult) {
         target = mokuroResult.newTarget;
-        this.contentToRestore = mokuroResult.contentToRestore;
+        this.#contentToRestore = mokuroResult.contentToRestore;
       }
     }
 
@@ -655,15 +655,15 @@ export class LookupPuck {
     target.dispatchEvent(pointerEvent);
   };
 
-  private restoreContent() {
-    this.contentToRestore?.restore();
-    this.contentToRestore = undefined;
+  #restoreContent() {
+    this.#contentToRestore?.restore();
+    this.#contentToRestore = undefined;
   }
 
   // Look for textBox elements generated by mokuro reader
   // (https://github.com/kha-white/mokuro) since they have hidden paragraph
   // elements that are only shown on hover.
-  private static uncoverMokuroText(
+  static #uncoverMokuroText(
     target: Element | null,
     targetX: number,
     targetY: number
@@ -725,9 +725,9 @@ export class LookupPuck {
     return { newTarget, contentToRestore: { root: target, restore } };
   }
 
-  private readonly checkForBuggyPositionFixed = () => {
+  #checkForBuggyPositionFixed = () => {
     // Check if we've already run this check
-    if (typeof this.hasBuggyPositionFixed !== 'undefined') {
+    if (typeof this.#hasBuggyPositionFixed !== 'undefined') {
       return;
     }
 
@@ -745,7 +745,7 @@ export class LookupPuck {
       typeof window.visualViewport === 'undefined' ||
       window.visualViewport === null
     ) {
-      this.hasBuggyPositionFixed = false;
+      this.#hasBuggyPositionFixed = false;
       return;
     }
 
@@ -760,7 +760,7 @@ export class LookupPuck {
     }
 
     // Check the puck is actually being rendered
-    if (!this.puck) {
+    if (!this.#puck) {
       return;
     }
 
@@ -774,23 +774,23 @@ export class LookupPuck {
     //
     // Furthermore, because the offsets match we know we can work around it
     // by factoring the viewport offset into our calculations.
-    const previousTransform = this.puck.style.transform || 'none';
-    this.puck.style.transform = 'none';
-    const bbox = this.puck.getBoundingClientRect();
-    this.hasBuggyPositionFixed =
+    const previousTransform = this.#puck.style.transform || 'none';
+    this.#puck.style.transform = 'none';
+    const bbox = this.#puck.getBoundingClientRect();
+    this.#hasBuggyPositionFixed =
       Math.abs(bbox.left + window.visualViewport.offsetLeft) < 1 &&
       Math.abs(bbox.top + window.visualViewport.offsetTop) < 1;
-    this.puck.style.transform = previousTransform;
+    this.#puck.style.transform = previousTransform;
 
     // Don't listen for any more viewport resize events
     window.visualViewport.removeEventListener(
       'resize',
-      this.checkForBuggyPositionFixed
+      this.#checkForBuggyPositionFixed
     );
   };
 
-  private readonly onPuckPointerDown = (event: PointerEvent) => {
-    if (this.enabledState === 'disabled' || !this.puck) {
+  #onPuckPointerDown = (event: PointerEvent) => {
+    if (this.#enabledState === 'disabled' || !this.#puck) {
       return;
     }
 
@@ -802,17 +802,17 @@ export class LookupPuck {
     // NOTE: Some of the code in this function is duplicated in onPuckMouseDown
     // so please make sure to keep these two functions in sync.
 
-    if (this.clickState.kind === 'idle') {
+    if (this.#clickState.kind === 'idle') {
       // If no transition to 'pointerup' occurs during the click hysteresis
       // period, then we transition to 'dragging'. This avoids onPuckClick()
       // being fired every time the puck gets parked.
-      this.clickState = {
+      this.#clickState = {
         kind: 'firstpointerdown',
         singleClickTimeout: window.setTimeout(() => {
-          if (this.clickState.kind === 'firstpointerdown') {
-            this.clickState = {
+          if (this.#clickState.kind === 'firstpointerdown') {
+            this.#clickState = {
               kind: 'dragging',
-              clickAndHoldTimeout: this.clickState.clickAndHoldTimeout,
+              clickAndHoldTimeout: this.#clickState.clickAndHoldTimeout,
             };
           }
         }, clickHysteresis),
@@ -820,24 +820,24 @@ export class LookupPuck {
         // drag timeout, we will have already transitioned to the 'dragging'
         // state by the time this timeout triggers.
         clickAndHoldTimeout: window.setTimeout(() => {
-          if (this.clickState.kind === 'dragging') {
+          if (this.#clickState.kind === 'dragging') {
             // We don't want to transition out of the dragging state.
             // User can click-and-hold and then start dragging without
             // lifting up their finger again.
-            this.onPuckClickAndHold();
+            this.#onPuckClickAndHold();
           }
         }, clickAndHoldHysteresis),
       };
-    } else if (this.clickState.kind === 'firstclick') {
+    } else if (this.#clickState.kind === 'firstclick') {
       // Carry across the timeout from 'firstclick', as we still want to
       // transition back to 'idle' if no 'pointerdown' event came within
       // the hysteresis period of the preceding 'firstclick' state.
-      this.clickState = {
-        ...this.clickState,
+      this.#clickState = {
+        ...this.#clickState,
         kind: 'secondpointerdown',
         clickAndHoldTimeout: window.setTimeout(() => {
-          if (this.clickState.kind === 'dragging') {
-            this.onPuckClickAndHold();
+          if (this.#clickState.kind === 'dragging') {
+            this.#onPuckClickAndHold();
           }
         }, clickAndHoldHysteresis),
       };
@@ -846,10 +846,10 @@ export class LookupPuck {
     event.preventDefault();
     event.stopPropagation();
 
-    this.puck.classList.add('dragging');
-    this.puck.setPointerCapture(event.pointerId);
+    this.#puck.classList.add('dragging');
+    this.#puck.setPointerCapture(event.pointerId);
 
-    this.beginDelayedClickAndHoldAnimation();
+    this.#beginDelayedClickAndHoldAnimation();
 
     // We need to register in the capture phase because Bibi reader (which
     // apparently is based on Epub.js) registers a pointermove handler on the
@@ -858,8 +858,8 @@ export class LookupPuck {
     window.addEventListener('pointermove', this.onWindowPointerMove, {
       capture: true,
     });
-    window.addEventListener('pointerup', this.stopDraggingPuck);
-    window.addEventListener('pointercancel', this.stopDraggingPuck);
+    window.addEventListener('pointerup', this.#stopDraggingPuck);
+    window.addEventListener('pointercancel', this.#stopDraggingPuck);
   };
 
   // See notes where we register the following two functions (onPuckMouseDown
@@ -874,7 +874,7 @@ export class LookupPuck {
   // on the pointerdown / pointerup events, these functions should never be
   // called.
 
-  private readonly onPuckMouseDown = (event: MouseEvent) => {
+  #onPuckMouseDown = (event: MouseEvent) => {
     // This is only needed for iOS Safari and on Firefox for Android, calling
     // preventDefault on a pointerdown event will _not_ prevent it from
     // triggering subsequent mousedown/mouseup events (see
@@ -884,7 +884,7 @@ export class LookupPuck {
       return;
     }
 
-    if (this.enabledState === 'disabled' || !this.puck) {
+    if (this.#enabledState === 'disabled' || !this.#puck) {
       return;
     }
 
@@ -894,7 +894,7 @@ export class LookupPuck {
     }
 
     // We only care about detecting the start of a second tap
-    if (this.clickState.kind !== 'firstclick') {
+    if (this.#clickState.kind !== 'firstclick') {
       return;
     }
 
@@ -902,30 +902,30 @@ export class LookupPuck {
     //
     // Eventually we should find a way to share this code better with that
     // function.
-    this.clickState = {
-      ...this.clickState,
+    this.#clickState = {
+      ...this.#clickState,
       kind: 'secondpointerdown',
       clickAndHoldTimeout: window.setTimeout(() => {
-        if (this.clickState.kind === 'dragging') {
-          this.onPuckClickAndHold();
+        if (this.#clickState.kind === 'dragging') {
+          this.#onPuckClickAndHold();
         }
       }, clickAndHoldHysteresis),
     };
 
     event.preventDefault();
 
-    this.beginDelayedClickAndHoldAnimation();
+    this.#beginDelayedClickAndHoldAnimation();
 
     // See note in onPointerDown for why we need to register in the capture
     // phase.
     window.addEventListener('pointermove', this.onWindowPointerMove, {
       capture: true,
     });
-    window.addEventListener('pointerup', this.stopDraggingPuck);
-    window.addEventListener('pointercancel', this.stopDraggingPuck);
+    window.addEventListener('pointerup', this.#stopDraggingPuck);
+    window.addEventListener('pointercancel', this.#stopDraggingPuck);
   };
 
-  private readonly onPuckMouseUp = (event: MouseEvent) => {
+  #onPuckMouseUp = (event: MouseEvent) => {
     // This is only needed for iOS Safari and on Firefox for Android, calling
     // preventDefault on a pointerdown event will _not_ prevent it from
     // triggering subsequent mousedown/mouseup events (see
@@ -935,7 +935,7 @@ export class LookupPuck {
       return;
     }
 
-    if (this.enabledState === 'disabled' || !this.puck) {
+    if (this.#enabledState === 'disabled' || !this.#puck) {
       return;
     }
 
@@ -946,60 +946,60 @@ export class LookupPuck {
 
     // We only care about detecting the end of the second tap in a double-tap
     // gesture.
-    if (this.clickState.kind !== 'secondpointerdown') {
+    if (this.#clickState.kind !== 'secondpointerdown') {
       return;
     }
 
     event.preventDefault();
     event.stopPropagation();
 
-    this.stopDraggingPuck();
-    this.onPuckDoubleClick();
+    this.#stopDraggingPuck();
+    this.#onPuckDoubleClick();
   };
 
-  private readonly onPuckSingleClick = () => {
+  #onPuckSingleClick = () => {
     this.setEnabledState(
-      this.enabledState === 'active' ? 'inactive' : 'active'
+      this.#enabledState === 'active' ? 'inactive' : 'active'
     );
     this.notifyPuckStateChanged();
   };
 
-  private readonly onPuckDoubleClick = () => {
-    if (this.targetOrientation.readingDirection === 'horizontal') {
-      this.targetOrientation.moonSide =
-        this.targetOrientation.moonSide === 'above' ? 'below' : 'above';
+  #onPuckDoubleClick = () => {
+    if (this.#targetOrientation.readingDirection === 'horizontal') {
+      this.#targetOrientation.moonSide =
+        this.#targetOrientation.moonSide === 'above' ? 'below' : 'above';
     } else {
-      this.targetOrientation.moonSide =
-        this.targetOrientation.moonSide === 'left' ? 'right' : 'left';
+      this.#targetOrientation.moonSide =
+        this.#targetOrientation.moonSide === 'left' ? 'right' : 'left';
     }
 
-    this.setPositionWithinSafeArea(this.puckX, this.puckY);
+    this.#setPositionWithinSafeArea(this.#puckX, this.#puckY);
     this.notifyPuckStateChanged();
   };
 
-  private readonly onPuckClickAndHold = () => {
+  #onPuckClickAndHold = () => {
     // Vibrate for touch feedback (note this will only work on Android)
     if ('vibrate' in navigator) {
       navigator.vibrate(50);
     }
 
     const wasHorizontal =
-      this.targetOrientation.readingDirection === 'horizontal';
-    this.targetOrientation = wasHorizontal
+      this.#targetOrientation.readingDirection === 'horizontal';
+    this.#targetOrientation = wasHorizontal
       ? { readingDirection: 'vertical', moonSide: 'left' }
       : { readingDirection: 'horizontal', moonSide: 'above' };
 
     // Show onboarding tooltip if this is the first time switching to vertical
     if (wasHorizontal) {
-      void this.hasSeenOnboarding().then((hasSeen) => {
+      void this.#hasSeenOnboarding().then((hasSeen) => {
         if (!hasSeen) {
-          this.showOnboardingTooltip();
+          this.#showOnboardingTooltip();
         }
       });
     }
 
     this.notifyPuckStateChanged();
-    this.setPositionWithinSafeArea(this.puckX, this.puckY);
+    this.#setPositionWithinSafeArea(this.#puckX, this.#puckY);
     // Temporarily sets the puck icon to a bidirectional arrow
     // that will rotate to show the new reading direction.
     this.setIcon('arrow');
@@ -1007,30 +1007,30 @@ export class LookupPuck {
 
   // May be called manually (without an event), or upon 'pointerup' or
   // 'pointercancel'.
-  private readonly stopDraggingPuck = (event?: PointerEvent) => {
+  #stopDraggingPuck = (event?: PointerEvent) => {
     // Ignore right-clicks
     if (event?.button) {
       return;
     }
 
-    if (this.puck) {
-      this.puck.classList.remove('dragging');
-      this.setPositionWithinSafeArea(this.puckX, this.puckY);
+    if (this.#puck) {
+      this.#puck.classList.remove('dragging');
+      this.#setPositionWithinSafeArea(this.#puckX, this.#puckY);
       this.notifyPuckStateChanged();
     }
 
-    this.cancelClickAndHoldAnimation();
+    this.#cancelClickAndHoldAnimation();
 
     window.removeEventListener('pointermove', this.onWindowPointerMove, {
       capture: true,
     });
-    window.removeEventListener('pointerup', this.stopDraggingPuck);
-    window.removeEventListener('pointercancel', this.stopDraggingPuck);
+    window.removeEventListener('pointerup', this.#stopDraggingPuck);
+    window.removeEventListener('pointercancel', this.#stopDraggingPuck);
 
     if (!event || event.type === 'pointercancel') {
-      clearClickTimeout(this.clickState);
-      clearClickAndHoldTimeout(this.clickState);
-      this.clickState = { kind: 'idle' };
+      clearClickTimeout(this.#clickState);
+      clearClickAndHoldTimeout(this.#clickState);
+      this.#clickState = { kind: 'idle' };
       return;
     }
 
@@ -1038,35 +1038,35 @@ export class LookupPuck {
     event.preventDefault();
     event.stopPropagation();
 
-    if (this.clickState.kind === 'firstpointerdown') {
+    if (this.#clickState.kind === 'firstpointerdown') {
       // Prevent 'firstpointerdown' transitioning to 'dragging' state.
-      clearClickTimeout(this.clickState);
-      clearClickAndHoldTimeout(this.clickState);
+      clearClickTimeout(this.#clickState);
+      clearClickAndHoldTimeout(this.#clickState);
 
       // Wait for the hysteresis period to expire before calling
-      // this.onPuckSingleClick() (to rule out a double-click).
-      this.clickState = {
+      // this.#onPuckSingleClick() (to rule out a double-click).
+      this.#clickState = {
         kind: 'firstclick',
         doubleClickTimeout: window.setTimeout(() => {
-          if (this.clickState.kind === 'firstclick') {
-            this.clickState = { kind: 'idle' };
-            this.onPuckSingleClick();
-          } else if (this.clickState.kind === 'secondpointerdown') {
-            this.clickState = { ...this.clickState, kind: 'dragging' };
+          if (this.#clickState.kind === 'firstclick') {
+            this.#clickState = { kind: 'idle' };
+            this.#onPuckSingleClick();
+          } else if (this.#clickState.kind === 'secondpointerdown') {
+            this.#clickState = { ...this.#clickState, kind: 'dragging' };
           }
         }, clickHysteresis),
       };
-    } else if (this.clickState.kind === 'secondpointerdown') {
-      clearClickTimeout(this.clickState);
-      clearClickAndHoldTimeout(this.clickState);
-      this.clickState = { kind: 'idle' };
-      this.onPuckDoubleClick();
-    } else if (this.clickState.kind === 'dragging') {
-      this.clickState = { kind: 'idle' };
+    } else if (this.#clickState.kind === 'secondpointerdown') {
+      clearClickTimeout(this.#clickState);
+      clearClickAndHoldTimeout(this.#clickState);
+      this.#clickState = { kind: 'idle' };
+      this.#onPuckDoubleClick();
+    } else if (this.#clickState.kind === 'dragging') {
+      this.#clickState = { kind: 'idle' };
     }
   };
 
-  private readonly noOpEventHandler = () => {};
+  #noOpEventHandler = () => {};
 
   render(): void {
     // Set up shadow tree
@@ -1076,8 +1076,8 @@ export class LookupPuck {
     });
 
     // Create puck elem
-    this.puck = document.createElement('div');
-    this.puck.classList.add('puck');
+    this.#puck = document.createElement('div');
+    this.#puck.classList.add('puck');
 
     // This fills as the user begins pressing and holding the puck
     const clickAndHoldRing = document.createElementNS(SVG_NS, 'svg');
@@ -1085,48 +1085,48 @@ export class LookupPuck {
     clickAndHoldRing.setAttribute('width', '120');
     clickAndHoldRing.setAttribute('height', '120');
     clickAndHoldRing.setAttribute('viewBox', '0 0 120 120');
-    this.ring = document.createElementNS(SVG_NS, 'circle');
-    this.ring.classList.add('ring-fill');
-    this.ring.setAttribute('cx', '60');
-    this.ring.setAttribute('cy', '60');
-    this.ring.setAttribute('r', '20');
-    clickAndHoldRing.append(this.ring);
-    this.puck.append(clickAndHoldRing);
+    this.#ring = document.createElementNS(SVG_NS, 'circle');
+    this.#ring.classList.add('ring-fill');
+    this.#ring.setAttribute('cx', '60');
+    this.#ring.setAttribute('cy', '60');
+    this.#ring.setAttribute('r', '20');
+    clickAndHoldRing.append(this.#ring);
+    this.#puck.append(clickAndHoldRing);
 
     const earth = document.createElement('div');
     earth.classList.add('earth');
-    this.puck.append(earth);
+    this.#puck.append(earth);
 
     // Brand the earth
-    const logoSvg = this.renderIcon(this.toolbarIcon);
+    const logoSvg = this.#renderIcon(this.#toolbarIcon);
     logoSvg.classList.add('logo');
     earth.append(logoSvg);
 
     const moon = document.createElement('div');
     moon.classList.add('moon');
-    this.puck.append(moon);
+    this.#puck.append(moon);
 
-    container.shadowRoot!.append(this.puck);
+    container.shadowRoot!.append(this.#puck);
 
     // Set theme styles
-    this.puck.classList.add(getThemeClass(this.theme));
+    this.#puck.classList.add(getThemeClass(this.#theme));
 
     // Calculate the earth size (which is equal to the puck's overall size)
-    if (!this.earthWidth || !this.earthHeight) {
+    if (!this.#earthWidth || !this.#earthHeight) {
       const { width, height } = earth.getBoundingClientRect();
-      this.earthWidth = width;
-      this.earthHeight = height;
+      this.#earthWidth = width;
+      this.#earthHeight = height;
     }
 
     // Calculate the moon size
-    if (!this.moonWidth || !this.moonHeight) {
+    if (!this.#moonWidth || !this.#moonHeight) {
       const { width, height } = moon.getBoundingClientRect();
-      this.moonWidth = width;
-      this.moonHeight = height;
+      this.#moonWidth = width;
+      this.#moonHeight = height;
     }
 
-    if (typeof this.earthScaleFactorWhenDragging === 'undefined') {
-      this.earthScaleFactorWhenDragging =
+    if (typeof this.#earthScaleFactorWhenDragging === 'undefined') {
+      this.#earthScaleFactorWhenDragging =
         parseFloat(
           getComputedStyle(earth).getPropertyValue(
             '--scale-factor-when-dragging'
@@ -1135,8 +1135,8 @@ export class LookupPuck {
     }
 
     if (
-      typeof this.targetAbsoluteOffsetYAbove === 'undefined' ||
-      typeof this.targetAbsoluteOffsetYBelow === 'undefined'
+      typeof this.#targetAbsoluteOffsetYAbove === 'undefined' ||
+      typeof this.#targetAbsoluteOffsetYBelow === 'undefined'
     ) {
       const minimumMoonOffsetY =
         parseFloat(
@@ -1192,53 +1192,53 @@ export class LookupPuck {
           )
         ) || 0;
 
-      this.targetAbsoluteOffsetYAbove =
+      this.#targetAbsoluteOffsetYAbove =
         minimumMoonOffsetY + extraAltitudeToClearAboveThumb;
-      this.targetAbsoluteOffsetYBelow =
+      this.#targetAbsoluteOffsetYBelow =
         minimumMoonOffsetY +
         extraAltitudeToClearBelowThumb +
         extraAltitudeToClearIos15SafariSafeAreaActivationZone;
 
       // Use the same extra altitude value for both the left and right side
       // orbits, since we can't know the handedness of the user.
-      this.targetAbsoluteOffsetXNonHandSide =
+      this.#targetAbsoluteOffsetXNonHandSide =
         minimumMoonOffsetX + extraAltitudeToClearBesideThumbNonHandSide;
-      this.targetAbsoluteOffsetXHandSide =
+      this.#targetAbsoluteOffsetXHandSide =
         minimumMoonOffsetX + extraAltitudeToClearBesideThumbHandSide;
     }
 
-    this.setPositionWithinSafeArea(this.puckX, this.puckY);
+    this.#setPositionWithinSafeArea(this.#puckX, this.#puckY);
 
     // Add event listeners
     //
     // Note: This currently never happens. We always render before enabling.
-    if (this.enabledState !== 'disabled') {
-      this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
-      this.puck.addEventListener('mousedown', this.onPuckMouseDown);
-      this.puck.addEventListener('mouseup', this.onPuckMouseUp);
+    if (this.#enabledState !== 'disabled') {
+      this.#puck.addEventListener('pointerdown', this.#onPuckPointerDown);
+      this.#puck.addEventListener('mousedown', this.#onPuckMouseDown);
+      this.#puck.addEventListener('mouseup', this.#onPuckMouseUp);
     }
 
     // Start trying to detect a buggy position:fixed implementation.
     window.visualViewport?.addEventListener(
       'resize',
-      this.checkForBuggyPositionFixed
+      this.#checkForBuggyPositionFixed
     );
     // If the viewport has already been scaled, we might be able to detect it
     // right away (and avoid mis-positioning the puck before the viewport is
     // next resized).
-    this.checkForBuggyPositionFixed();
+    this.#checkForBuggyPositionFixed();
   }
 
-  private renderIcon(icon: 'default' | 'sky' | 'arrow'): SVGSVGElement {
+  #renderIcon(icon: 'default' | 'sky' | 'arrow'): SVGSVGElement {
     if (icon === 'sky') {
-      return this.renderSkyIcon();
+      return this.#renderSkyIcon();
     } else if (icon === 'arrow') {
-      return this.renderArrowIcon();
+      return this.#renderArrowIcon();
     }
-    return this.renderDefaultIcon();
+    return this.#renderDefaultIcon();
   }
 
-  private renderDefaultIcon(): SVGSVGElement {
+  #renderDefaultIcon(): SVGSVGElement {
     const icon = document.createElementNS(SVG_NS, 'svg');
     icon.setAttribute('viewBox', '0 0 20 20');
 
@@ -1264,7 +1264,7 @@ export class LookupPuck {
     return icon;
   }
 
-  private renderSkyIcon(): SVGSVGElement {
+  #renderSkyIcon(): SVGSVGElement {
     const icon = document.createElementNS(SVG_NS, 'svg');
     icon.setAttribute('viewBox', '0 0 20 20');
 
@@ -1290,7 +1290,7 @@ export class LookupPuck {
     return icon;
   }
 
-  private renderArrowIcon(): SVGSVGElement {
+  #renderArrowIcon(): SVGSVGElement {
     const icon = document.createElementNS(SVG_NS, 'svg');
     icon.setAttribute('viewBox', '0 0 30 30');
 
@@ -1314,27 +1314,27 @@ export class LookupPuck {
   }
 
   setTheme(theme: string) {
-    this.theme = theme;
+    this.#theme = theme;
 
-    if (!this.puck) {
+    if (!this.#puck) {
       return;
     }
 
-    for (const className of this.puck.classList.values()) {
+    for (const className of this.#puck.classList.values()) {
       if (className.startsWith('theme-')) {
-        this.puck.classList.remove(className);
+        this.#puck.classList.remove(className);
       }
     }
 
-    this.puck.classList.add(getThemeClass(theme));
+    this.#puck.classList.add(getThemeClass(theme));
   }
 
   setIcon(icon: 'default' | 'sky' | 'arrow') {
-    if (!this.puck) {
+    if (!this.#puck) {
       return;
     }
 
-    const logo = this.puck.querySelector('.logo');
+    const logo = this.#puck.querySelector('.logo');
     const logoParent = logo?.parentElement;
     if (!logo || !logoParent) {
       return;
@@ -1344,7 +1344,7 @@ export class LookupPuck {
     classes = classes.filter((c) => !c.startsWith('switching-direction-to-'));
 
     logo.remove();
-    const newLogo = this.renderIcon(icon);
+    const newLogo = this.#renderIcon(icon);
 
     // Special case for the arrow icon.
     // The icon only gets set to the arrow when transitioning reading
@@ -1352,16 +1352,16 @@ export class LookupPuck {
     // It does not change the local `toolbarIcon` value.
     if (icon === 'arrow') {
       classes.push(
-        `switching-direction-to-${this.targetOrientation.readingDirection}`
+        `switching-direction-to-${this.#targetOrientation.readingDirection}`
       );
       newLogo.addEventListener('animationend', (e) => {
         if (e.animationName === 'rotate-arrow') {
           // Restore original icon after a delay since last direction switch
-          this.restoreIconAfterDebounce();
+          this.#restoreIconAfterDebounce();
         }
       });
     } else {
-      this.toolbarIcon = icon;
+      this.#toolbarIcon = icon;
     }
 
     newLogo.setAttribute('class', classes.join(' '));
@@ -1369,49 +1369,49 @@ export class LookupPuck {
   }
 
   setHandedness(handedness: ContentConfigParams['handedness']) {
-    this.handedness = handedness;
+    this.#handedness = handedness;
     // Recalculate position in case handedness has changed
-    this.setPositionWithinSafeArea(this.puckX, this.puckY);
+    this.#setPositionWithinSafeArea(this.#puckX, this.#puckY);
   }
 
   setFontFace(fontFace: FontFace) {
-    if (!this.onboardingTooltip) {
+    if (!this.#onboardingTooltip) {
       return;
     }
 
     if (fontFace === 'bundled') {
-      this.onboardingTooltip.classList.remove('system-fonts');
-      this.onboardingTooltip.classList.add('bundled-fonts');
+      this.#onboardingTooltip.classList.remove('system-fonts');
+      this.#onboardingTooltip.classList.add('bundled-fonts');
     } else {
-      this.onboardingTooltip.classList.remove('bundled-fonts');
-      this.onboardingTooltip.classList.add('system-fonts');
+      this.#onboardingTooltip.classList.remove('bundled-fonts');
+      this.#onboardingTooltip.classList.add('system-fonts');
     }
 
-    this.fontFace = fontFace;
+    this.#fontFace = fontFace;
   }
 
   setFontSize(size: FontSize) {
-    if (!this.onboardingTooltip) {
+    if (!this.#onboardingTooltip) {
       return;
     }
 
-    for (const className of this.onboardingTooltip.classList.values()) {
+    for (const className of this.#onboardingTooltip.classList.values()) {
       if (className.startsWith('font-')) {
-        this.onboardingTooltip.classList.remove(className);
+        this.#onboardingTooltip.classList.remove(className);
       }
     }
 
-    this.onboardingTooltip.classList.add(`font-${size}`);
+    this.#onboardingTooltip.classList.add(`font-${size}`);
 
-    this.fontSize = size;
+    this.#fontSize = size;
   }
 
-  private readonly restoreIconAfterDebounce = debounce(() => {
-    this.setIcon(this.toolbarIcon);
+  #restoreIconAfterDebounce = debounce(() => {
+    this.setIcon(this.#toolbarIcon);
   }, clickAndHoldHysteresis * 2.25);
 
-  private beginDelayedClickAndHoldAnimation() {
-    if (!this.ring) {
+  #beginDelayedClickAndHoldAnimation() {
+    if (!this.#ring) {
       return;
     }
 
@@ -1424,27 +1424,27 @@ export class LookupPuck {
     const fill = `fill-ring ${totalDuration}ms ${baseDelay}ms ease-out forwards`;
     const pop = `pop-and-fade ${totalDuration}ms ${popDelay}ms ease-out forwards`;
 
-    this.ring.style.animation = `${fill}, ${pop}`;
+    this.#ring.style.animation = `${fill}, ${pop}`;
   }
 
-  private cancelClickAndHoldAnimation() {
-    if (this.ring) {
-      this.ring.style.animation = 'none';
+  #cancelClickAndHoldAnimation() {
+    if (this.#ring) {
+      this.#ring.style.animation = 'none';
     }
   }
 
-  private async hasSeenOnboarding(): Promise<boolean> {
+  async #hasSeenOnboarding(): Promise<boolean> {
     const results = await browser.storage.local.get(
       verticalModeOnboardingSeenKey
     );
     return results[verticalModeOnboardingSeenKey] === true;
   }
 
-  private markOnboardingSeen() {
+  #markOnboardingSeen() {
     return browser.storage.local.set({ [verticalModeOnboardingSeenKey]: true });
   }
 
-  private showOnboardingTooltip() {
+  #showOnboardingTooltip() {
     const container = getOrCreateEmptyContainer({
       id: OnboardingTooltipId,
       styles: puckOnboardingStyles.toString(),
@@ -1453,7 +1453,7 @@ export class LookupPuck {
     // Tooltip elem
     const tooltip = document.createElement('div');
     tooltip.classList.add('vertical-onboarding-tooltip');
-    tooltip.classList.add(getThemeClass(this.theme));
+    tooltip.classList.add(getThemeClass(this.#theme));
 
     const content = document.createElement('div');
     content.classList.add('vertical-onboarding-content');
@@ -1481,19 +1481,19 @@ export class LookupPuck {
       'vertical_mode_onboarding_tooltip_ok_button_label'
     );
     button.addEventListener('click', () => {
-      this.hideOnboardingTooltip();
+      this.#hideOnboardingTooltip();
     });
 
     tooltip.append(content, button);
     container.shadowRoot!.append(tooltip);
 
-    this.onboardingTooltip = tooltip;
-    this.setFontFace(this.fontFace);
-    this.setFontSize(this.fontSize);
+    this.#onboardingTooltip = tooltip;
+    this.setFontFace(this.#fontFace);
+    this.setFontSize(this.#fontSize);
 
     // Auto-hide the button after a duration
-    this.onboardingTimeout = window.setTimeout(() => {
-      this.hideOnboardingTooltip();
+    this.#onboardingTimeout = window.setTimeout(() => {
+      this.#hideOnboardingTooltip();
     }, onboardingAutoHideDuration);
 
     // Dismiss tooltip on click outside of it
@@ -1501,75 +1501,75 @@ export class LookupPuck {
       'mousedown',
       (event: MouseEvent) => {
         if (
-          this.onboardingTooltip &&
-          !this.onboardingTooltip.contains(event.target as Node)
+          this.#onboardingTooltip &&
+          !this.#onboardingTooltip.contains(event.target as Node)
         ) {
           // Hide with slight delay
-          setTimeout(() => this.hideOnboardingTooltip(), 250);
+          setTimeout(() => this.#hideOnboardingTooltip(), 250);
         }
       },
       { capture: true }
     );
 
-    void this.markOnboardingSeen();
+    void this.#markOnboardingSeen();
   }
 
-  private hideOnboardingTooltip() {
-    if (this.onboardingTimeout) {
-      clearTimeout(this.onboardingTimeout);
-      this.onboardingTimeout = undefined;
+  #hideOnboardingTooltip() {
+    if (this.#onboardingTimeout) {
+      clearTimeout(this.#onboardingTimeout);
+      this.#onboardingTimeout = undefined;
     }
 
-    if (!this.onboardingTooltip) {
+    if (!this.#onboardingTooltip) {
       return;
     }
 
-    this.onboardingTooltip.classList.add('fade-out');
-    this.onboardingTooltip.addEventListener('animationend', (e) => {
+    this.#onboardingTooltip.classList.add('fade-out');
+    this.#onboardingTooltip.addEventListener('animationend', (e) => {
       if (e.animationName === 'fade-out') {
         removeContentContainer(OnboardingTooltipId);
-        this.onboardingTooltip = undefined;
+        this.#onboardingTooltip = undefined;
       }
     });
   }
 
   unmount(): void {
-    this.restoreContent();
-    this.hideOnboardingTooltip();
+    this.#restoreContent();
+    this.#hideOnboardingTooltip();
     removePuck();
     window.visualViewport?.removeEventListener(
       'resize',
-      this.checkForBuggyPositionFixed
+      this.#checkForBuggyPositionFixed
     );
     this.setEnabledState('disabled');
-    this.puck = undefined;
+    this.#puck = undefined;
   }
 
   getEnabledState(): PuckEnabledState {
-    return this.enabledState;
+    return this.#enabledState;
   }
 
   setEnabledState(enabledState: PuckEnabledState): void {
-    const previousState = this.enabledState;
-    this.enabledState = enabledState;
+    const previousState = this.#enabledState;
+    this.#enabledState = enabledState;
 
     if (enabledState === 'disabled') {
-      this.safeAreaProvider.removeEventListener(this.onSafeAreaUpdated);
-      if (this.puck) {
-        this.stopDraggingPuck();
-        this.puck.removeEventListener('pointerdown', this.onPuckPointerDown);
-        this.puck.removeEventListener('mousedown', this.onPuckMouseDown);
-        this.puck.removeEventListener('mouseup', this.onPuckMouseUp);
+      this.#safeAreaProvider.removeEventListener(this.#onSafeAreaUpdated);
+      if (this.#puck) {
+        this.#stopDraggingPuck();
+        this.#puck.removeEventListener('pointerdown', this.#onPuckPointerDown);
+        this.#puck.removeEventListener('mousedown', this.#onPuckMouseDown);
+        this.#puck.removeEventListener('mouseup', this.#onPuckMouseUp);
       }
-      window.removeEventListener('pointerup', this.noOpEventHandler);
-      clearClickTimeout(this.clickState);
-      clearClickAndHoldTimeout(this.clickState);
-      this.clickState = { kind: 'idle' };
+      window.removeEventListener('pointerup', this.#noOpEventHandler);
+      clearClickTimeout(this.#clickState);
+      clearClickAndHoldTimeout(this.#clickState);
+      this.#clickState = { kind: 'idle' };
 
       // Reset puck position
-      this.puckX = Number.MAX_SAFE_INTEGER;
-      this.puckY = Number.MAX_SAFE_INTEGER;
-      this.targetOrientation = {
+      this.#puckX = Number.MAX_SAFE_INTEGER;
+      this.#puckY = Number.MAX_SAFE_INTEGER;
+      this.#targetOrientation = {
         readingDirection: 'horizontal',
         moonSide: 'above',
       };
@@ -1580,9 +1580,9 @@ export class LookupPuck {
     // Avoid redoing any of this setup (that's common between both 'active'
     // and 'inactive').
     if (previousState === 'disabled') {
-      this.safeAreaProvider.addEventListener(this.onSafeAreaUpdated);
-      if (this.puck) {
-        this.puck.addEventListener('pointerdown', this.onPuckPointerDown);
+      this.#safeAreaProvider.addEventListener(this.#onSafeAreaUpdated);
+      if (this.#puck) {
+        this.#puck.addEventListener('pointerdown', this.#onPuckPointerDown);
 
         // The following event handlers are needed to cover the case where iOS
         // Safari sometimes seems to eat the second tap in a double-tap gesture.
@@ -1599,53 +1599,53 @@ export class LookupPuck {
         //
         // Note that the mere _presence_ of the mousedown handler is also needed
         // to prevent double-tap being interpreted as a zoom.
-        this.puck.addEventListener('mousedown', this.onPuckMouseDown);
-        this.puck.addEventListener('mouseup', this.onPuckMouseUp);
+        this.#puck.addEventListener('mousedown', this.#onPuckMouseDown);
+        this.#puck.addEventListener('mouseup', this.#onPuckMouseUp);
       }
       // Needed to stop iOS Safari from stealing pointer events after we finish
       // scrolling.
-      window.addEventListener('pointerup', this.noOpEventHandler);
+      window.addEventListener('pointerup', this.#noOpEventHandler);
     }
 
-    if (this.puck) {
-      this.puck.classList.toggle(
+    if (this.#puck) {
+      this.#puck.classList.toggle(
         'lookup-inactive',
-        this.enabledState === 'inactive'
+        this.#enabledState === 'inactive'
       );
     }
 
-    if (this.enabledState === 'inactive') {
+    if (this.#enabledState === 'inactive') {
       // Calling this callback allows the owner (ContentHandler) to clear any
       // existing popups.
-      this.onLookupDisabled();
+      this.#onLookupDisabled();
       return;
     }
   }
 
   setState(state: PuckState): void {
-    if (this.enabledState === 'disabled') {
+    if (this.#enabledState === 'disabled') {
       return;
     }
 
-    this.targetOrientation = state.orientation;
-    this.setPositionWithinSafeArea(state.x, state.y);
+    this.#targetOrientation = state.orientation;
+    this.#setPositionWithinSafeArea(state.x, state.y);
 
     const updatedEnabledState = state.active ? 'active' : 'inactive';
-    if (this.enabledState !== updatedEnabledState) {
+    if (this.#enabledState !== updatedEnabledState) {
       this.setEnabledState(updatedEnabledState);
     }
   }
 
   notifyPuckStateChanged(): void {
-    if (this.enabledState === 'disabled') {
+    if (this.#enabledState === 'disabled') {
       return;
     }
 
-    this.onPuckStateChanged({
-      x: this.puckX,
-      y: this.puckY,
-      orientation: this.targetOrientation,
-      active: this.enabledState === 'active',
+    this.#onPuckStateChanged({
+      x: this.#puckX,
+      y: this.#puckY,
+      orientation: this.#targetOrientation,
+      active: this.#enabledState === 'active',
     });
   }
 
@@ -1660,11 +1660,11 @@ export class LookupPuck {
       return;
     }
 
-    this.puck?.classList.add('hold-position');
+    this.#puck?.classList.add('hold-position');
   }
 
   clearHighlight(): void {
-    this.puck?.classList.remove('hold-position');
+    this.#puck?.classList.remove('hold-position');
   }
 }
 

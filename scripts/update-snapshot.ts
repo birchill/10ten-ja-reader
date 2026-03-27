@@ -286,45 +286,54 @@ function getHttpsStream(url: string): Promise<Readable> {
 // ---------------------------------------------------------------------------
 
 class StreamConcat extends Transform {
-  private canAddStream = true;
-  private currentStream: Readable | null | Promise<Readable | null> = null;
-  private streamIndex = 0;
+  #canAddStream = true;
+  #currentStream: Readable | null | Promise<Readable | null> = null;
+  #streamIndex = 0;
+  #streams:
+    | Array<Readable>
+    | (() => Readable | null | Promise<Readable | null>);
+  #options: TransformOptions & { advanceOnClose?: boolean };
 
   constructor(
-    private streams:
+    streams:
       | Array<Readable>
       | (() => Readable | null | Promise<Readable | null>),
-    private options: TransformOptions & { advanceOnClose?: boolean } = {}
+    options: TransformOptions & { advanceOnClose?: boolean } = {}
   ) {
     super(options);
+    this.#streams = streams;
+    this.#options = options;
     void this.nextStream();
   }
 
   addStream(newStream: Readable): void {
-    if (!this.canAddStream) {
+    if (!this.#canAddStream) {
       return void this.emit('error', new Error("Can't add stream."));
     }
-    (this.streams as Array<Readable>).push(newStream);
+    (this.#streams as Array<Readable>).push(newStream);
   }
 
   async nextStream() {
-    this.currentStream = null;
-    if (Array.isArray(this.streams) && this.streamIndex < this.streams.length) {
-      this.currentStream = this.streams[this.streamIndex++];
-    } else if (typeof this.streams === 'function') {
-      this.canAddStream = false;
-      this.currentStream = this.streams();
+    this.#currentStream = null;
+    if (
+      Array.isArray(this.#streams) &&
+      this.#streamIndex < this.#streams.length
+    ) {
+      this.#currentStream = this.#streams[this.#streamIndex++];
+    } else if (typeof this.#streams === 'function') {
+      this.#canAddStream = false;
+      this.#currentStream = this.#streams();
     }
 
     const pipeStream = async () => {
-      if (!this.currentStream) {
-        this.canAddStream = false;
+      if (!this.#currentStream) {
+        this.#canAddStream = false;
         this.end();
-      } else if (isAsyncCallback(this.currentStream)) {
-        this.currentStream = await this.currentStream;
+      } else if (isAsyncCallback(this.#currentStream)) {
+        this.#currentStream = await this.#currentStream;
         await pipeStream();
       } else {
-        this.currentStream.pipe(this, { end: false });
+        this.#currentStream.pipe(this, { end: false });
         let streamClosed = false;
         const goNext = async () => {
           if (streamClosed) {
@@ -334,9 +343,9 @@ class StreamConcat extends Transform {
           await this.nextStream();
         };
 
-        this.currentStream.on('end', goNext);
-        if (this.options.advanceOnClose) {
-          this.currentStream.on('close', goNext);
+        this.#currentStream.on('end', goNext);
+        if (this.#options.advanceOnClose) {
+          this.#currentStream.on('close', goNext);
         }
       }
     };

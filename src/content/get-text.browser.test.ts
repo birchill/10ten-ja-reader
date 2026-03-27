@@ -2283,7 +2283,7 @@ function makeMonospace(elem: HTMLElement, advance: number) {
 }
 
 class DebuggingDot {
-  private element: HTMLDivElement;
+  #element: HTMLDivElement;
 
   constructor(point: { x: number; y: number }) {
     const element = document.createElement('div');
@@ -2297,10 +2297,10 @@ class DebuggingDot {
       pointer-events: none;
     `;
     document.body.appendChild(element);
-    this.element = element;
+    this.#element = element;
   }
 
   [Symbol.dispose]() {
-    this.element.remove();
+    this.#element.remove();
   }
 }

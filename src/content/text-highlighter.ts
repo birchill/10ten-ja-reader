@@ -19,12 +19,12 @@ import {
 import type { NodeRange, TextRange } from './text-range';
 
 export class TextHighlighter {
-  private selectedWindow: Window | null = null;
-  private selectedText: string | null = null;
+  #selectedWindow: Window | null = null;
+  #selectedText: string | null = null;
 
   // Used to restore the selection of a textbox after we stop interacting
   // with it (since we clobber the text box selection in order to highlight it).
-  private selectedTextBox: {
+  #selectedTextBox: {
     node: HTMLInputElement | HTMLTextAreaElement;
     previousStart: number | null;
     previousEnd: number | null;
@@ -33,24 +33,23 @@ export class TextHighlighter {
 
   // Used restore the selection of a contenteditable node similar to the way
   // we treat text boxes.
-  private previousSelection: { node: Node; offset: number } | null;
+  #previousSelection: { node: Node; offset: number } | null;
 
   // We need to focus a textbox in order to set its selection so we store the
   // previously focussed node so we can restore it after we're done.
-  private previousFocus: Element | null;
+  #previousFocus: Element | null;
 
   // Gross hack to ignore our own focus events.
-  private updatingFocus = false;
+  #updatingFocus = false;
 
   constructor() {
-    this.onFocusIn = this.onFocusIn.bind(this);
-    window.addEventListener('focusin', this.onFocusIn);
+    window.addEventListener('focusin', this.#onFocusIn);
   }
 
   detach() {
-    window.removeEventListener('focusin', this.onFocusIn);
+    window.removeEventListener('focusin', this.#onFocusIn);
     this.clearHighlight();
-    this.dropHighlightStyles();
+    this.#dropHighlightStyles();
   }
 
   highlight({
@@ -81,7 +80,7 @@ export class TextHighlighter {
       return;
     }
 
-    const canUseHighlightApi = this.canUseHighlightApi({ textRange, length });
+    const canUseHighlightApi = this.#canUseHighlightApi({ textRange, length });
 
     // If there is already something selected in the page that is *not*
     // what we selected then generally we want to leave it alone unless,
@@ -92,15 +91,15 @@ export class TextHighlighter {
     // of textboxes.
     if (isContentEditableNode(selection.anchorNode)) {
       if (
-        !this.previousSelection &&
-        selection.toString() !== this.selectedText
+        !this.#previousSelection &&
+        selection.toString() !== this.#selectedText
       ) {
-        this.storeContentEditableSelection(selectedWindow);
+        this.#storeContentEditableSelection(selectedWindow);
       }
     } else if (
       !canUseHighlightApi &&
       !selection.isCollapsed &&
-      selection.toString() !== this.selectedText
+      selection.toString() !== this.#selectedText
     ) {
       this.clearHighlight();
       return;
@@ -113,7 +112,7 @@ export class TextHighlighter {
 
     const startNode = textRange[0].node;
     if (isTextInputNode(startNode)) {
-      this.highlightTextBox({
+      this.#highlightTextBox({
         length,
         offset: textRange[0].start,
         selectedWindow,
@@ -126,10 +125,10 @@ export class TextHighlighter {
         length,
         style,
       });
-      this.selectedText = null;
-      this.selectedWindow = selectedWindow;
+      this.#selectedText = null;
+      this.#selectedWindow = selectedWindow;
     } else {
-      this.highlightRegularNode({
+      this.#highlightRegularNode({
         canUseHighlightApi,
         length,
         selectedWindow,
@@ -152,12 +151,15 @@ export class TextHighlighter {
   clearHighlight({
     currentElement = null,
   }: { currentElement?: Element | null } = {}) {
-    if (this.selectedWindow && !this.selectedWindow.closed) {
+    if (this.#selectedWindow && !this.#selectedWindow.closed) {
       // Clear the selection if it's something we made.
-      const selection = this.selectedWindow.getSelection();
-      if (selection?.toString() && selection.toString() === this.selectedText) {
-        if (this.previousSelection) {
-          this.restoreContentEditableSelection();
+      const selection = this.#selectedWindow.getSelection();
+      if (
+        selection?.toString() &&
+        selection.toString() === this.#selectedText
+      ) {
+        if (this.#previousSelection) {
+          this.#restoreContentEditableSelection();
         } else {
           selection.removeAllRanges();
         }
@@ -166,46 +168,46 @@ export class TextHighlighter {
       // Delete any highlight we may have added using the CSS Highlight API.
       CSS?.highlights?.delete('tenten-selection');
       CSS?.highlights?.delete('tenten-selection-blue');
-      this.dropHighlightStyles();
+      this.#dropHighlightStyles();
 
       // Likewise any Google docs selection
       clearGdocsHighlight();
 
-      this.clearTextBoxSelection(currentElement);
+      this.#clearTextBoxSelection(currentElement);
     }
 
-    this.selectedWindow = null;
-    this.selectedText = null;
-    this.selectedTextBox = null;
-    this.previousFocus = null;
-    this.previousSelection = null;
+    this.#selectedWindow = null;
+    this.#selectedText = null;
+    this.#selectedTextBox = null;
+    this.#previousFocus = null;
+    this.#previousSelection = null;
   }
 
   isUpdatingFocus() {
-    return this.updatingFocus;
+    return this.#updatingFocus;
   }
 
-  private storeContentEditableSelection(selectedWindow: Window) {
+  #storeContentEditableSelection(selectedWindow: Window) {
     const selection = selectedWindow.getSelection();
     if (selection && isContentEditableNode(selection.anchorNode)) {
       // We don't actually store the full selection, basically because we're
       // lazy. Remembering the cursor position is hopefully good enough for
       // now anyway.
-      this.previousSelection = {
+      this.#previousSelection = {
         node: selection.anchorNode!,
         offset: selection.anchorOffset,
       };
     } else {
-      this.previousSelection = null;
+      this.#previousSelection = null;
     }
   }
 
-  private restoreContentEditableSelection() {
-    if (!this.previousSelection) {
+  #restoreContentEditableSelection() {
+    if (!this.#previousSelection) {
       return;
     }
 
-    const { node, offset } = this.previousSelection;
+    const { node, offset } = this.#previousSelection;
     const range = node.ownerDocument!.createRange();
     range.setStart(node, offset);
     range.setEnd(node, offset);
@@ -215,10 +217,10 @@ export class TextHighlighter {
       selection.removeAllRanges();
       selection.addRange(range);
     }
-    this.previousSelection = null;
+    this.#previousSelection = null;
   }
 
-  private highlightTextBox({
+  #highlightTextBox({
     length,
     offset,
     selectedWindow,
@@ -234,28 +236,28 @@ export class TextHighlighter {
 
     // If we were previously interacting with a different text box, restore
     // its range.
-    if (this.selectedTextBox && textBox !== this.selectedTextBox.node) {
-      this.restoreTextBoxSelection();
+    if (this.#selectedTextBox && textBox !== this.#selectedTextBox.node) {
+      this.#restoreTextBoxSelection();
     }
 
     // If we were not already interacting with this text box, store its
     // existing range and focus it.
-    if (!this.selectedTextBox || textBox !== this.selectedTextBox.node) {
+    if (!this.#selectedTextBox || textBox !== this.#selectedTextBox.node) {
       // Record the original focus if we haven't already, so that we can
       // restore it.
-      if (!this.previousFocus) {
-        this.previousFocus = document.activeElement;
+      if (!this.#previousFocus) {
+        this.#previousFocus = document.activeElement;
       }
 
       // We want to be able to distinguish between changes to focus made by
       // the user/app (which we want to reflect when we go to restore the focus)
       // and changes to focus made by us.
-      const previousUpdatingFocus = this.updatingFocus;
-      this.updatingFocus = true;
+      const previousUpdatingFocus = this.#updatingFocus;
+      this.#updatingFocus = true;
       textBox.focus();
-      this.updatingFocus = previousUpdatingFocus;
+      this.#updatingFocus = previousUpdatingFocus;
 
-      this.selectedTextBox = {
+      this.#selectedTextBox = {
         node: textBox,
         previousStart: textBox.selectionStart,
         previousEnd: textBox.selectionEnd,
@@ -270,8 +272,8 @@ export class TextHighlighter {
     selectedWindow.getSelection()?.removeAllRanges();
 
     textBox.setSelectionRange(start, end);
-    this.selectedText = textBox.value.substring(start, end);
-    this.selectedWindow = selectedWindow;
+    this.#selectedText = textBox.value.substring(start, end);
+    this.#selectedWindow = selectedWindow;
 
     // Restore the scroll range. We need to do this on the next tick or else
     // something else (not sure what) will clobber it.
@@ -280,17 +282,17 @@ export class TextHighlighter {
     });
   }
 
-  private clearTextBoxSelection(currentElement: Element | null) {
-    if (!this.selectedTextBox) {
+  #clearTextBoxSelection(currentElement: Element | null) {
+    if (!this.#selectedTextBox) {
       return;
     }
 
-    const textBox = this.selectedTextBox.node;
+    const textBox = this.#selectedTextBox.node;
 
     // Store the previous scroll position so we can restore it, if need be.
     const { scrollTop, scrollLeft } = textBox;
 
-    this.restoreTextBoxSelection();
+    this.#restoreTextBoxSelection();
 
     // If we are still interacting with the text box, make sure to maintain its
     // scroll position (rather than jumping back to wherever the restored
@@ -312,24 +314,24 @@ export class TextHighlighter {
     // the previous focus when we reset _selectedTextBox and we if we don't
     // restore the focus now, when we next go to set previousFocus we'll end up
     // using `textBox` instead.)
-    if (isFocusable(this.previousFocus) && this.previousFocus !== textBox) {
+    if (isFocusable(this.#previousFocus) && this.#previousFocus !== textBox) {
       // First blur the text box since some Elements' focus() method does
       // nothing.
-      this.selectedTextBox.node.blur();
+      this.#selectedTextBox.node.blur();
 
       // Very hacky approach to filtering out our own focus handling.
-      const previousUpdatingFocus = this.updatingFocus;
-      this.updatingFocus = true;
-      this.previousFocus.focus();
-      this.updatingFocus = previousUpdatingFocus;
+      const previousUpdatingFocus = this.#updatingFocus;
+      this.#updatingFocus = true;
+      this.#previousFocus.focus();
+      this.#updatingFocus = previousUpdatingFocus;
     }
 
-    this.selectedTextBox = null;
-    this.previousFocus = null;
+    this.#selectedTextBox = null;
+    this.#previousFocus = null;
   }
 
-  private restoreTextBoxSelection() {
-    if (!this.selectedTextBox) {
+  #restoreTextBoxSelection() {
+    if (!this.#selectedTextBox) {
       return;
     }
 
@@ -338,11 +340,11 @@ export class TextHighlighter {
       previousStart,
       previousEnd,
       previousDirection,
-    } = this.selectedTextBox;
+    } = this.#selectedTextBox;
     textBox.setSelectionRange(previousStart, previousEnd, previousDirection);
   }
 
-  private canUseHighlightApi({
+  #canUseHighlightApi({
     length,
     textRange,
   }: {
@@ -374,7 +376,7 @@ export class TextHighlighter {
     return true;
   }
 
-  private highlightRegularNode({
+  #highlightRegularNode({
     canUseHighlightApi,
     length,
     style,
@@ -389,7 +391,7 @@ export class TextHighlighter {
   }) {
     // If we were previously interacting with a text box, restore its range
     // and blur it.
-    this.clearTextBoxSelection(null);
+    this.#clearTextBoxSelection(null);
 
     if (canUseHighlightApi) {
       const ranges: Array<StaticRange> = [];
@@ -410,8 +412,8 @@ export class TextHighlighter {
         style === 'blue' ? 'tenten-selection-blue' : 'tenten-selection',
         new Highlight(...ranges)
       );
-      this.ensureHighlightStyles();
-      this.selectedText = null;
+      this.#ensureHighlightStyles();
+      this.#selectedText = null;
     } else {
       const startNode = textRange[0].node;
       const startOffset = textRange[0].start;
@@ -429,40 +431,40 @@ export class TextHighlighter {
       range.setEnd(endNode, endOffset);
 
       // We only call this method if selectedWindow.getSelection() is not null.
-      this.updatingFocus = true;
+      this.#updatingFocus = true;
       const selection = selectedWindow.getSelection()!;
       selection.removeAllRanges();
       selection.addRange(range);
-      this.updatingFocus = false;
+      this.#updatingFocus = false;
 
-      this.selectedText = selection.toString();
+      this.#selectedText = selection.toString();
     }
 
-    this.selectedWindow = selectedWindow;
+    this.#selectedWindow = selectedWindow;
   }
 
-  private onFocusIn(event: FocusEvent) {
-    if (this.updatingFocus) {
+  #onFocusIn = (event: FocusEvent) => {
+    if (this.#updatingFocus) {
       return;
     }
 
     // Update the previous focus but only if we're already tracking the previous
     // focus.
-    if (this.previousFocus && this.previousFocus !== event.target) {
-      this.previousFocus =
+    if (this.#previousFocus && this.#previousFocus !== event.target) {
+      this.#previousFocus =
         event.target instanceof Element ? event.target : null;
 
       // Possibly updating the selection to restore if we're working with a
       // contenteditable element.
-      if (this.previousFocus) {
-        this.storeContentEditableSelection(
-          this.previousFocus.ownerDocument!.defaultView!
+      if (this.#previousFocus) {
+        this.#storeContentEditableSelection(
+          this.#previousFocus.ownerDocument!.defaultView!
         );
       }
     }
-  }
+  };
 
-  private ensureHighlightStyles() {
+  #ensureHighlightStyles() {
     if (document.getElementById('tenten-selection-styles')) {
       return;
     }
@@ -476,17 +478,20 @@ export class TextHighlighter {
     );
   }
 
-  private dropHighlightStyles() {
+  #dropHighlightStyles() {
     document.getElementById('tenten-selection-styles')?.remove();
   }
 }
 
 // Iterator for a TextRange that enforces the supplied length
 class TextRangeWithLength implements Iterable<NodeRange> {
-  constructor(
-    public textRange: TextRange,
-    public length: number
-  ) {}
+  textRange: TextRange;
+  length: number;
+
+  constructor(textRange: TextRange, length: number) {
+    this.textRange = textRange;
+    this.length = length;
+  }
 
   [Symbol.iterator](): Iterator<NodeRange> {
     let i = 0;
