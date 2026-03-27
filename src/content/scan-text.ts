@@ -390,11 +390,11 @@ function getOutermostRuby(node: Node): HTMLElement | null {
 // ----------------------------------------------------------------------------
 
 class SourceContextBuilder {
-  private target: Array<string | SourceRuby> = [];
-  private preferredRtLevel: number;
+  #target: Array<string | SourceRuby> = [];
+  #preferredRtLevel: number;
 
   // Track our ruby state
-  private rubyContext: {
+  #rubyContext: {
     ruby: SourceRuby;
     rubyElement: HTMLElement;
     rtElement: HTMLElement | null;
@@ -402,40 +402,40 @@ class SourceContextBuilder {
   } | null = null;
 
   constructor(target: Array<string | SourceRuby>, rtLevel: number) {
-    this.target = target;
-    this.preferredRtLevel = rtLevel;
+    this.#target = target;
+    this.#preferredRtLevel = rtLevel;
   }
 
   static InheritExistingRubyContext(
     target: Array<string | SourceRuby>,
     other: SourceContextBuilder
   ) {
-    const result = new SourceContextBuilder(target, other.preferredRtLevel);
-    result.rubyContext = other.rubyContext;
-    other.rubyContext = null;
+    const result = new SourceContextBuilder(target, other.#preferredRtLevel);
+    result.#rubyContext = other.#rubyContext;
+    other.#rubyContext = null;
     return result;
   }
 
   flush() {
-    if (this.rubyContext) {
-      this.target.push(this.rubyContext.ruby);
-      this.rubyContext = null;
+    if (this.#rubyContext) {
+      this.#target.push(this.#rubyContext.ruby);
+      this.#rubyContext = null;
     }
   }
 
   add(node: Node, offset: number = 0) {
     if (node.nodeType === Node.ELEMENT_NODE) {
       if (
-        this.rubyContext &&
+        this.#rubyContext &&
         (node as Element).tagName === 'RT' &&
-        getRtLevel(node) === this.rubyContext.rtLevel
+        getRtLevel(node) === this.#rubyContext.rtLevel
       ) {
         // Handle missing base span
-        if (this.rubyContext.rtElement) {
-          this.rubyContext.ruby.base.push('');
+        if (this.#rubyContext.rtElement) {
+          this.#rubyContext.ruby.base.push('');
         }
-        this.rubyContext.ruby.transcription.push('');
-        this.rubyContext.rtElement = node as HTMLElement;
+        this.#rubyContext.ruby.transcription.push('');
+        this.#rubyContext.rtElement = node as HTMLElement;
       }
 
       return;
@@ -456,7 +456,7 @@ class SourceContextBuilder {
     // Case 1: Not inside a ruby
     if (!rubyElement) {
       this.flush();
-      this.target.push(
+      this.#target.push(
         normalizeSourceContextText(textNode.data.substring(offset))
       );
       return;
@@ -472,65 +472,66 @@ class SourceContextBuilder {
 
     // Case 3: Inside ruby base text
     if (nodeRtLevel === 0) {
-      if (!this.rubyContext || this.rubyContext.rubyElement !== rubyElement) {
+      if (!this.#rubyContext || this.#rubyContext.rubyElement !== rubyElement) {
         this.flush();
 
         const rubyLevel = getRubyLevel(node);
-        const rtLevel = Math.min(this.preferredRtLevel, rubyLevel) || rubyLevel;
+        const rtLevel =
+          Math.min(this.#preferredRtLevel, rubyLevel) || rubyLevel;
 
-        this.rubyContext = {
+        this.#rubyContext = {
           ruby: { base: [textContent], transcription: [] },
           rubyElement,
           rtElement: null,
           rtLevel,
         };
-      } else if (this.rubyContext.rtElement) {
-        this.rubyContext.ruby.base.push(textContent);
-        this.rubyContext.rtElement = null;
+      } else if (this.#rubyContext.rtElement) {
+        this.#rubyContext.ruby.base.push(textContent);
+        this.#rubyContext.rtElement = null;
       } else {
-        const last = this.rubyContext.ruby.base.at(-1) || '';
-        this.rubyContext.ruby.base.splice(-1, 1, last + textContent);
+        const last = this.#rubyContext.ruby.base.at(-1) || '';
+        this.#rubyContext.ruby.base.splice(-1, 1, last + textContent);
       }
       return;
     }
 
     // Case 4: Inside ruby transcription text
-    if (this.rubyContext && nodeRtLevel !== this.rubyContext.rtLevel) {
+    if (this.#rubyContext && nodeRtLevel !== this.#rubyContext.rtLevel) {
       // If we started inside an <rt> element but at a different level of
       // nesting, then we ignore this text.
       return;
     }
 
     const rtElement = node.parentElement!.closest('rt') as HTMLElement;
-    if (!this.rubyContext || this.rubyContext.rubyElement !== rubyElement) {
+    if (!this.#rubyContext || this.#rubyContext.rubyElement !== rubyElement) {
       this.flush();
-      this.rubyContext = {
+      this.#rubyContext = {
         ruby: { base: [''], transcription: [textContent] },
         rubyElement,
         rtElement,
-        rtLevel: Math.min(nodeRtLevel, this.preferredRtLevel) || nodeRtLevel,
+        rtLevel: Math.min(nodeRtLevel, this.#preferredRtLevel) || nodeRtLevel,
       };
-    } else if (this.rubyContext.rtElement === rtElement) {
-      const last = this.rubyContext.ruby.transcription.at(-1) || '';
-      this.rubyContext.ruby.transcription.splice(-1, 1, last + textContent);
+    } else if (this.#rubyContext.rtElement === rtElement) {
+      const last = this.#rubyContext.ruby.transcription.at(-1) || '';
+      this.#rubyContext.ruby.transcription.splice(-1, 1, last + textContent);
     } else {
-      this.rubyContext.ruby.transcription.push(textContent);
-      this.rubyContext.rtElement = rtElement;
+      this.#rubyContext.ruby.transcription.push(textContent);
+      this.#rubyContext.rtElement = rtElement;
     }
   }
 
   inSameRubyElement(other: HTMLElement | null) {
-    return this.rubyContext && this.rubyContext.rubyElement === other;
+    return this.#rubyContext && this.#rubyContext.rubyElement === other;
   }
 
   getRubyOffset(inTranscription: boolean) {
-    if (!this.rubyContext) {
+    if (!this.#rubyContext) {
       return 0;
     }
 
     const parts = inTranscription
-      ? this.rubyContext.ruby.transcription
-      : this.rubyContext.ruby.base;
+      ? this.#rubyContext.ruby.transcription
+      : this.#rubyContext.ruby.base;
     return parts.reduce((sum, part) => sum + part.length, 0);
   }
 }

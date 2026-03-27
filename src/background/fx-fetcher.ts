@@ -45,14 +45,14 @@ const ONE_HOUR = 60 * ONE_MINUTE;
 const ONE_DAY = 24 * ONE_HOUR;
 
 export class FxFetcher {
-  private fetchState: FetchState = { type: 'idle' };
-  private updated: number | undefined;
+  #fetchState: FetchState = { type: 'idle' };
+  #updated: number | undefined;
 
   constructor() {
     browser.alarms.onAlarm.addListener((alarm) => {
       if (alarm.name === 'fx-update') {
         Bugsnag.leaveBreadcrumb('Running FX data update from alarm');
-        this.fetchData().catch((e) => Bugsnag.notify(e));
+        this.#fetchData().catch((e) => Bugsnag.notify(e));
       }
     });
 
@@ -64,19 +64,19 @@ export class FxFetcher {
     void getLocalFxData().then((fxData) => {
       if (!fxData) {
         Bugsnag.leaveBreadcrumb('No stored FX data. Doing initial fetch.');
-        this.fetchData().catch((e) => Bugsnag.notify(e));
+        this.#fetchData().catch((e) => Bugsnag.notify(e));
       } else {
         Bugsnag.leaveBreadcrumb(
           `Got stored FX data from ${new Date(
             fxData.timestamp
           )}. Last updated ${new Date(fxData.updated)}.`
         );
-        this.updated = fxData.updated;
+        this.#updated = fxData.updated;
       }
     });
   }
 
-  private async fetchData() {
+  async #fetchData() {
     // Don't try fetching if we are offline
     if (!self.navigator.onLine) {
       Bugsnag.leaveBreadcrumb('Deferring FX data update until we are online');
@@ -84,28 +84,28 @@ export class FxFetcher {
         Bugsnag.leaveBreadcrumb(
           'Fetching FX data update now that we are online'
         );
-        void this.fetchData();
+        void this.#fetchData();
       });
       return;
     }
 
     // Don't try if we are already fetching
-    if (this.fetchState.type === 'fetching') {
+    if (this.#fetchState.type === 'fetching') {
       Bugsnag.leaveBreadcrumb('Overlapping attempt to fetch FX data.');
       return;
     }
 
     // Abort any timeout to retry
-    if (this.fetchState.type === 'waiting to retry') {
-      self.clearTimeout(this.fetchState.timeout);
+    if (this.#fetchState.type === 'waiting to retry') {
+      self.clearTimeout(this.#fetchState.timeout);
     }
 
     // Update our state
-    this.fetchState = {
+    this.#fetchState = {
       type: 'fetching',
       retryCount:
-        this.fetchState.type === 'waiting to retry'
-          ? this.fetchState.retryCount + 1
+        this.#fetchState.type === 'waiting to retry'
+          ? this.#fetchState.retryCount + 1
           : undefined,
     };
 
@@ -189,9 +189,9 @@ export class FxFetcher {
         retryableErrorCodes.includes(error.code);
 
       const retryCount =
-        this.fetchState.type === 'fetching' &&
-        typeof this.fetchState.retryCount === 'number'
-          ? this.fetchState.retryCount
+        this.#fetchState.type === 'fetching' &&
+        typeof this.#fetchState.retryCount === 'number'
+          ? this.#fetchState.retryCount
           : 0;
       if (retryableError && retryCount < 3) {
         console.warn(error);
@@ -206,12 +206,12 @@ export class FxFetcher {
         //
         // That's fine though because if the background page gets killed then
         // when it restarts it will trigger a new fetch anyway.
-        const timeout = self.setTimeout(() => this.fetchData(), 10_000);
-        this.fetchState = { type: 'waiting to retry', retryCount, timeout };
+        const timeout = self.setTimeout(() => this.#fetchData(), 10_000);
+        this.#fetchState = { type: 'waiting to retry', retryCount, timeout };
       } else {
         console.error(error);
         void Bugsnag.notify(error);
-        this.fetchState = { type: 'idle', didFail: true };
+        this.#fetchState = { type: 'idle', didFail: true };
       }
     }
 
@@ -226,12 +226,12 @@ export class FxFetcher {
         await browser.storage.local.set({ fx: { ...fxData, updated } });
 
         // Update our local state now that everything succeeded
-        this.updated = updated;
-        this.fetchState = { type: 'idle' };
+        this.#updated = updated;
+        this.#fetchState = { type: 'idle' };
       } catch {
         // Don't report to Bugsnag because this is really common in Firefox for
         // some reason.
-        this.fetchState = { type: 'idle', didFail: true };
+        this.#fetchState = { type: 'idle', didFail: true };
       }
     }
 
@@ -254,7 +254,7 @@ export class FxFetcher {
 
     // If we are already fetching (or waiting to re-fetch) let it run. It will
     // schedule the next run when it completes.
-    if (this.fetchState.type !== 'idle') {
+    if (this.#fetchState.type !== 'idle') {
       return;
     }
 
@@ -265,10 +265,10 @@ export class FxFetcher {
     // the server unnecessarily.
     const now = Date.now();
     let nextRun: number;
-    if (typeof this.updated === 'undefined' || this.fetchState.didFail) {
+    if (typeof this.#updated === 'undefined' || this.#fetchState.didFail) {
       nextRun = now + ONE_HOUR;
     } else {
-      nextRun = Math.max(this.updated + ONE_DAY, now);
+      nextRun = Math.max(this.#updated + ONE_DAY, now);
     }
 
     // If the next UTC day is before we're scheduled to run next, bring the next
@@ -286,7 +286,7 @@ export class FxFetcher {
       // Don't wait on fetchData -- it does its own error handling and caller's
       // of this function shouldn't have to wait for us to run the fetch, only
       // to schedule it.
-      void this.fetchData();
+      void this.#fetchData();
     } else {
       try {
         Bugsnag.leaveBreadcrumb(
