@@ -92,10 +92,15 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
     }
 
 #if os(macOS)
-    private func showExtensionPreferences(retries: Int) {
+    private func showExtensionPreferences(retries: Int, isRetrying: Bool = false) {
+        if !isRetrying {
+            NSCursor.busyButClickable.push()
+        }
+
         SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionBundleIdentifier) { error in
             guard let error = error else {
                 DispatchQueue.main.async {
+                    NSCursor.pop()
                     NSApplication.shared.terminate(nil)
                 }
                 return
@@ -107,7 +112,7 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
             if isNotFound && retries > 0 {
                 self.logger.info("Extension not found, retrying in 2s (\(retries) retries left)")
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                    self.showExtensionPreferences(retries: retries - 1)
+                    self.showExtensionPreferences(retries: retries - 1, isRetrying: true)
                 }
                 return
             }
@@ -115,6 +120,8 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
             self.logger.error("Error launching extension preferences: \(error.localizedDescription, privacy: .public)")
 
             DispatchQueue.main.async {
+                NSCursor.pop()
+
                 let alert = NSAlert()
                 alert.alertStyle = .warning
                 alert.messageText = "Couldn't open Safari extension preferences."
