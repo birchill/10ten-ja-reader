@@ -19,7 +19,7 @@ export type ContentConfigListener = (
 ) => void;
 
 export class ContentConfig implements ContentConfigParams {
-  #params: ContentConfigParams;
+  #params!: ContentConfigParams;
   #mouseCapabilityMql = getMouseCapabilityMql();
   #hoverCapabilityMql = getHoverCapabilityMql();
   listeners: Array<ContentConfigListener> = [];

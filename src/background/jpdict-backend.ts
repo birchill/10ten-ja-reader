@@ -369,7 +369,10 @@ export class JpdictLocalBackend implements JpdictBackend {
 function getLatestCheckTime(db: JpdictIdb): Date | null {
   const latestCheckAsNumber = Math.max.apply(
     null,
-    allMajorDataSeries.map((series) => db[series].updateState.lastCheck)
+    allMajorDataSeries.map((series) => {
+      const lastCheck = db[series].updateState.lastCheck;
+      return lastCheck instanceof Date ? lastCheck.valueOf() : (lastCheck ?? 0);
+    })
   );
 
   return latestCheckAsNumber !== 0 ? new Date(latestCheckAsNumber) : null;

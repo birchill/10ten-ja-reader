@@ -37,8 +37,8 @@ class FlatFileDatabase {
   listeners: Array<FlatFileDatabaseListener> = [];
   loaded: Promise<any>;
   lookupCache = new LRUMap<string, Array<number>>(500);
-  wordDict: string;
-  wordIndex: string;
+  wordDict!: string;
+  wordIndex!: string;
 
   constructor(options: FlatFileDatabaseOptions) {
     this.bugsnag = options.bugsnag;

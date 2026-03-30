@@ -160,25 +160,25 @@ export class LookupPuck {
 
   #puckX: number;
   #puckY: number;
-  #earthWidth: number;
-  #earthHeight: number;
-  #earthScaleFactorWhenDragging: number;
-  #moonWidth: number;
-  #moonHeight: number;
+  #earthWidth!: number;
+  #earthHeight!: number;
+  #earthScaleFactorWhenDragging!: number;
+  #moonWidth!: number;
+  #moonHeight!: number;
   // The translateY value to apply to the moon when it is orbiting above the
   // earth. Expressed as an absolute (positive) value.
-  #targetAbsoluteOffsetYAbove: number;
+  #targetAbsoluteOffsetYAbove!: number;
   // The translateY value to apply to the moon when it is orbiting below the
   // earth. Expressed as an absolute (positive) value.
-  #targetAbsoluteOffsetYBelow: number;
+  #targetAbsoluteOffsetYBelow!: number;
   // The translateX value to apply to the moon when it is orbiting to the
   // left or right of earth and on the same side as the user's hand. Expressed
   // as an absolute (positive) value.
-  #targetAbsoluteOffsetXHandSide: number;
+  #targetAbsoluteOffsetXHandSide!: number;
   // The translateX value to apply to the moon when it is orbiting to the
   // left or right of earth and on the opposite side from the user's hand (or
   // handedness is unset). Expressed as an absolute (positive) value.
-  #targetAbsoluteOffsetXNonHandSide: number;
+  #targetAbsoluteOffsetXNonHandSide!: number;
   // The translate (X and Y) values applied to the moon whilst it is being
   // dragged. They are measured relative to the midpoint of the moon (which is
   // also the midpoint of the earth).

@@ -1,4 +1,3 @@
-import type { PartOfSpeech } from '@birchill/jpdict-idb';
 import { AbortError } from '@birchill/jpdict-idb';
 import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
 
@@ -212,7 +211,7 @@ async function lookupCandidate({
 
 // Tests if a given entry matches the type of a generated deflection
 function entryMatchesType(entry: DictionaryWordResult, type: number): boolean {
-  const hasMatchingSense = (test: (pos: PartOfSpeech) => boolean) =>
+  const hasMatchingSense = (test: (pos: string) => boolean) =>
     entry.s.some((sense) => sense.pos?.some(test));
 
   if (

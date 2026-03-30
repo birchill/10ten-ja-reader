@@ -32,7 +32,7 @@ if ((self as any).requestIdleCallback && (self as any).cancelIdleCallback) {
 } else {
   requestIdleCallback = (
     callback: IdleRequestCallback,
-    options: IdleRequestOptions
+    options?: IdleRequestOptions
   ): IdleCallbackHandle => {
     // Use half the specified timeout since it probably represents a worst-case
     // scenario.
