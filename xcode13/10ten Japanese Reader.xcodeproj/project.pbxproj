@@ -950,7 +950,6 @@
 		D306F4852692C553002FA4FD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "macOS (Extension)/10ten Japanese Reader Extension.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -984,7 +983,6 @@
 		D306F4862692C553002FA4FD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "macOS (Extension)/10ten Japanese Reader Extension.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Distribution: Birchill, Inc. (H3RB7C8768)";
 				CODE_SIGN_STYLE = Manual;
