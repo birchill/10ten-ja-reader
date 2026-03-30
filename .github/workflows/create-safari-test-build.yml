@@ -8,7 +8,9 @@ on:
         type: string
 
 jobs:
-  build_macos:
+  build:
+    # Keep the Safari build/sign/upload steps in this job in sync with
+    # `.github/workflows/release.yml`'s `build_macos` job.
     name: Build Safari apps
     runs-on: macos-26
     concurrency:

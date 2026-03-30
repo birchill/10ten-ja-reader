@@ -77,6 +77,8 @@ jobs:
           echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
 
   build_macos:
+    # Keep the Safari build/sign/upload steps in this job in sync with
+    # `.github/workflows/create-safari-test-build.yml`'s `build` job.
     name: Build Safari assets
     runs-on: macos-26
     needs: bump
