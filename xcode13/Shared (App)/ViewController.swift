@@ -12,6 +12,7 @@ import UIKit
 typealias PlatformViewController = UIViewController
 #elseif os(macOS)
 import Cocoa
+import OSLog
 import SafariServices
 typealias PlatformViewController = NSViewController
 #endif
@@ -32,6 +33,13 @@ struct Device {
 class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMessageHandler {
 
     @IBOutlet var webView: WKWebView!
+
+#if os(macOS)
+    private let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier ?? "jp.co.birchill.tenten-ja-reader",
+        category: "Welcome"
+    )
+#endif
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -78,17 +86,73 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
             return;
         }
 
-        SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionBundleIdentifier) { error in
-            if let error = error {
-                print("Error launching extension preferences: \(error)")
-            } else {
-                DispatchQueue.main.async {
-                    NSApplication.shared.terminate(nil)
-                }
-            }
-        }
+        self.showExtensionPreferences()
 
 #endif
     }
+
+#if os(macOS)
+    private static let maxExtensionWaitTime: TimeInterval = 15
+    private static let extensionPollInterval: TimeInterval = 1
+
+    private func showExtensionPreferences() {
+        webView.evaluateJavaScript("""
+            (function() {
+                var btn = document.querySelector('button.open-preferences');
+                btn.disabled = true;
+                btn.textContent = 'Opening Safari Extensions Preferences\u{2026}';
+            })()
+        """)
+
+        let startTime = Date()
+        waitForExtensionThenOpenPreferences(startTime: startTime)
+    }
+
+    private func waitForExtensionThenOpenPreferences(startTime: Date) {
+        SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionBundleIdentifier) { error in
+            guard let error = error else {
+                DispatchQueue.main.async {
+                    NSApplication.shared.terminate(nil)
+                }
+                return
+            }
+
+            let sfError = error as NSError
+            let isNotFound = sfError.domain == "SFErrorDomain" && sfError.code == 1
+
+            let elapsed = Date().timeIntervalSince(startTime)
+            if isNotFound && elapsed < Self.maxExtensionWaitTime {
+                self.logger.info("Extension not yet available (\(String(format: "%.1f", elapsed))s elapsed), retrying\u{2026}")
+                DispatchQueue.main.asyncAfter(deadline: .now() + Self.extensionPollInterval) {
+                    self.waitForExtensionThenOpenPreferences(startTime: startTime)
+                }
+                return
+            }
+
+            self.logger.error("Error launching extension preferences after \(String(format: "%.1f", elapsed))s: \(error.localizedDescription, privacy: .public)")
+
+            DispatchQueue.main.async {
+                self.webView.evaluateJavaScript("""
+                    (function() {
+                        var btn = document.querySelector('button.open-preferences');
+                        btn.disabled = false;
+                        btn.textContent = 'Quit and Open Safari Extensions Preferences\u{2026}';
+                    })()
+                """)
+
+                let alert = NSAlert()
+                alert.alertStyle = .warning
+                alert.messageText = "Couldn't open Safari extension preferences."
+                if isNotFound {
+                    alert.informativeText = "Safari could not find the extension. Try quitting Safari and reopening it, then try again."
+                } else {
+                    alert.informativeText = error.localizedDescription
+                }
+                alert.addButton(withTitle: "OK")
+                alert.runModal()
+            }
+        }
+    }
+#endif
 
 }

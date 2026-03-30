@@ -1,4 +1,4 @@
-name: Release
+name: Create Safari Test Build
 on:
   workflow_dispatch:
     inputs:
@@ -8,39 +8,31 @@ on:
         type: string
 
 jobs:
-  bump:
-    name: Bump version
-    runs-on: ubuntu-latest
+  build:
+    # Keep the Safari build/sign/upload steps in this job in sync with
+    # `.github/workflows/release.yml`'s `build_macos` job.
+    name: Build Safari apps
+    runs-on: macos-26
     concurrency:
       group: app-store-connect-build-number
       cancel-in-progress: false
-    outputs:
-      sha: ${{ steps.out.outputs.sha }}
-      version: ${{ steps.out.outputs.version }}
-      build_number: ${{ steps.build_number.outputs.value }}
 
     steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.PUSH_TOKEN }}
-
-      - name: Set Git username
-        run: |-
-          git config --global user.name "Release"
-          git config --global user.email "actions@users.noreply.github.com"
+      - name: Checkout code
+        uses: actions/checkout@v6
 
       - name: Install pnpm
         uses: pnpm/action-setup@v5
         with:
           version: latest
 
-      - uses: actions/setup-node@v6.3.0
+      - name: Setup node
+        uses: actions/setup-node@v6.3.0
         with:
           node-version: 22
           cache: pnpm
 
-      - name: Install
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Get next App Store Connect build number
@@ -54,56 +46,13 @@ jobs:
           echo "value=${build_number}" >> "$GITHUB_OUTPUT"
           echo "Using App Store Connect build number: ${build_number}"
 
-      - name: Update word snapshot
-        run: pnpm update-snapshot
-
-      - name: Commit and push if it changed
-        run: |-
-          git add -A
-          timestamp=$(date -u)
-          git commit -m "chore: Update word snapshot (${timestamp})" || exit 0
-          git push
-
-      - name: Bump version
-        run: pnpm release-it --ci -i ${{ inputs.version }} -VV
+      - name: Set test version and build number
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NEXT_XCODE_BUILD_NUMBER: ${{ steps.build_number.outputs.value }}
-
-      - name: Output SHA + version
-        id: out
-        run: |
-          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-          echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
-
-  build_macos:
-    # Keep the Safari build/sign/upload steps in this job in sync with
-    # `.github/workflows/create-safari-test-build.yml`'s `build` job.
-    name: Build Safari assets
-    runs-on: macos-26
-    needs: bump
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ needs.bump.outputs.sha }}
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v5
-        with:
-          version: latest
-
-      - name: Setup node
-        uses: actions/setup-node@v6.3.0
-        with:
-          node-version: 22
-          cache: pnpm
+        run: pnpm version ${{ inputs.version }} --no-git-tag-version --allow-same-version
 
       - name: Build extension code
-        run: |-
-          pnpm install --frozen-lockfile
-          pnpm build:safari
+        run: pnpm build:safari
 
       - name: Install signing certificate and profile
         env:
@@ -189,8 +138,8 @@ jobs:
             "$GITHUB_WORKSPACE/build/10ten Japanese Reader.pkg" \
             --platform macos \
             --apple-id "$APP_APPLE_ID" \
-            --bundle-version "${{ needs.bump.outputs.build_number }}" \
-            --bundle-short-version-string "${{ needs.bump.outputs.version }}" \
+            --bundle-version "${{ steps.build_number.outputs.value }}" \
+            --bundle-short-version-string "${{ inputs.version }}" \
             --bundle-id "jp.co.birchill.tenten\-ja\-reader" \
             --api-key "$APP_STORE_CONNECT_KEY_ID" \
             --api-issuer "$APP_STORE_CONNECT_ISSUER_ID" \
@@ -213,8 +162,8 @@ jobs:
             "$GITHUB_WORKSPACE/build/10ten Japanese Reader.ipa" \
             --platform ios \
             --apple-id "$APP_APPLE_ID" \
-            --bundle-version "${{ needs.bump.outputs.build_number }}" \
-            --bundle-short-version-string "${{ needs.bump.outputs.version }}" \
+            --bundle-version "${{ steps.build_number.outputs.value }}" \
+            --bundle-short-version-string "${{ inputs.version }}" \
             --bundle-id "jp.co.birchill.tenten\-ja\-reader" \
             --api-key "$APP_STORE_CONNECT_KEY_ID" \
             --api-issuer "$APP_STORE_CONNECT_ISSUER_ID" \
@@ -253,61 +202,3 @@ jobs:
 
           # Remove temporary keychain
           security delete-keychain build.keychain-db || true
-
-  release:
-    name: Create release
-    runs-on: ubuntu-latest
-    needs: [bump, build_macos]
-    permissions:
-      contents: write
-
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          ref: ${{ needs.bump.outputs.sha }}
-          token: ${{ secrets.PUSH_TOKEN }}
-
-      - name: Set Git username
-        run: |-
-          git config --global user.name "Release"
-          git config --global user.email "actions@users.noreply.github.com"
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v5
-        with:
-          version: latest
-
-      - uses: actions/setup-node@v6.3.0
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Build assets
-        run: |
-          pnpm install --frozen-lockfile
-          scripts/build-assets.sh
-        env:
-          BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY }}
-
-      - name: Tag
-        run: |
-          git tag -a "v${{ needs.bump.outputs.version }}" -m "Release v${{ needs.bump.outputs.version }}"
-          git push origin "v${{ needs.bump.outputs.version }}"
-
-      - name: Create draft release + upload assets
-        run: |
-          node ./scripts/release-notes.js "${{ needs.bump.outputs.version }}" > release-notes.md
-          gh release create "v${{ needs.bump.outputs.version }}" \
-            --draft \
-            --verify-tag \
-            --title "Release ${{ needs.bump.outputs.version }}" \
-            --notes-file release-notes.md \
-            release-assets/*
-        # TODO: See if `gh release create` returns a URL to the created release
-        # and, if so, output it to the step summary so we can find it later,
-        #
-        # e.g.
-        #
-        #   echo 'Draft release: ${releaseUrl}' >> $GITHUB_STEP_SUMMARY
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

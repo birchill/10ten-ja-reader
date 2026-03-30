@@ -3,6 +3,12 @@ import * as url from 'node:url';
 
 async function main() {
   console.log('Synchronizing version number in XCode project...');
+  const nextBuildNumber = process.env.NEXT_XCODE_BUILD_NUMBER;
+  if (nextBuildNumber && !/^\d+$/.test(nextBuildNumber)) {
+    throw new Error(
+      `NEXT_XCODE_BUILD_NUMBER must be numeric, got '${nextBuildNumber}'`
+    );
+  }
 
   // Read version
   const packageJsonPath = url.fileURLToPath(
@@ -38,11 +44,16 @@ async function main() {
     process.exit(0);
   }
 
-  // Bump the build ID
+  // Update the build ID
   const buildIdRe = /(?<=CURRENT_PROJECT_VERSION = )[0-9]+(?=;)/g;
   const withBuildIdUpdated = withVersionUpdated.replace(
     buildIdRe,
-    (match: string) => String(parseInt(match, 10) + 1)
+    (match: string) => {
+      if (nextBuildNumber) {
+        return nextBuildNumber;
+      }
+      return String(parseInt(match, 10) + 1);
+    }
   );
 
   // Write the result

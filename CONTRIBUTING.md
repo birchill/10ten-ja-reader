@@ -127,9 +127,29 @@ That will use the version of `web-ext` installed by this project.
 As with the build instructions above, after running `pnpm build:safari` you
 should be able to run using Xcode.
 
-Note that Xcode will default to signing with Brian Birtles' ([@birtles](https://github.com/birtles)) team. Running on Simulator does not require a team set, but to run on a physical device, you may need to override the team name to your personal team—however, please don't commit the configuration files this will change to this repo. This is clunky, but unavoidable for open source projects with Xcode. An [Apple Developer Program](https://developer.apple.com/programs/enroll/) account may also be required.
+Note that Xcode will default to signing Debug builds with the Birchill, Inc.
+team.
+If you want to run and debug the Safari app or extension locally, you may need
+to override the team to your own personal team in Xcode.
+Please don't commit the resulting project file changes back to this repo.
+This is clunky, but unavoidable for open source projects that need Xcode signing
+in order to run locally.
+An [Apple Developer Program](https://developer.apple.com/programs/enroll/)
+account may also be required.
 
-If you already have 10ten Japanese Reader installed on your device, you may get signing errors when trying to test the development version. An uninstall and reinstall should fix these.
+If you already have 10ten Japanese Reader installed on your device, you may get
+signing errors when trying to test the development version.
+An uninstall and reinstall should fix these.
+
+#### Using TestFlight
+
+If you want to test the extension in a state more like what will get shipped to
+users, you can use the "Create Safari Test Build" workflow to trigger a build
+that will get uploaded to App Store Connect where it can be tested via
+TestFlight.
+
+However, the build will currently only be available to internal testers, i.e.
+Birchill team members so it's probably not very useful.
 
 ## Testing
 
@@ -220,39 +240,14 @@ upload it to the Thunderbird add-ons site.
 
 ### Releasing on Safari
 
-Releasing for Safari needs to be done on a Mac.
+The release process will automatically upload the Mac and iOS packages to
+App Store Connect where they will be processed.
 
-First run:
+From there, Birchill team members can test them out with TestFlight if
+necessary.
 
-```
-# git pull & pnpm install etc.
-#
-# NOTE: Make sure we've updated version by publishing a release (see above)
-# first.
-pnpm build:safari
-```
-
-Then:
-
-1. Open Xcode.
-1. Select the target: Mac or iOS. You eventually need to do both.
-   For iOS, you need to set the device to "Any iOS Device" in order to generate
-   a suitable build.
-1. Run Product → Archive.
-1. Choose Distribute App.
-1. App Store Connect.
-1. Upload.
-
-If you get `No Accounts with "App Store Connect" Access for team` at this point
-restarting Xcode should fix it.
-
-1. (Default options for the next couple of dialogs.)
-1. Upload (again).
-
-If that succeeds then it's time to update the App Store.
-
-Note that it will take several minutes to process the uploaded build so there's
-no hurry.
+In order to actually ship a new version though, we currently need to log in to
+App Store Connect:
 
 1. Go to https://appstoreconnect.apple.com/apps and choose 10ten Japanese Reader
 1. Choose the MacOS/iOS app and copy the Promotional Text.
