@@ -86,25 +86,48 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
             return;
         }
 
-        SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionBundleIdentifier) { error in
-            if let error = error {
-                self.logger.error("Error launching extension preferences: \(error.localizedDescription, privacy: .public)")
-                DispatchQueue.main.async {
-                    let alert = NSAlert()
-                    alert.alertStyle = .warning
-                    alert.messageText = "Couldn’t open Safari extension preferences."
-                    alert.informativeText = error.localizedDescription
-                    alert.addButton(withTitle: "OK")
-                    alert.runModal()
-                }
-            } else {
-                DispatchQueue.main.async {
-                    NSApplication.shared.terminate(nil)
-                }
-            }
-        }
+        self.showExtensionPreferences(retries: 2)
 
 #endif
     }
+
+#if os(macOS)
+    private func showExtensionPreferences(retries: Int) {
+        SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionBundleIdentifier) { error in
+            guard let error = error else {
+                DispatchQueue.main.async {
+                    NSApplication.shared.terminate(nil)
+                }
+                return
+            }
+
+            let sfError = error as NSError
+            let isNotFound = sfError.domain == "SFErrorDomain" && sfError.code == 1
+
+            if isNotFound && retries > 0 {
+                self.logger.info("Extension not found, retrying in 2s (\(retries) retries left)")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    self.showExtensionPreferences(retries: retries - 1)
+                }
+                return
+            }
+
+            self.logger.error("Error launching extension preferences: \(error.localizedDescription, privacy: .public)")
+
+            DispatchQueue.main.async {
+                let alert = NSAlert()
+                alert.alertStyle = .warning
+                alert.messageText = "Couldn't open Safari extension preferences."
+                if isNotFound {
+                    alert.informativeText = "Safari could not find the extension. Try quitting Safari and reopening it, then try again."
+                } else {
+                    alert.informativeText = error.localizedDescription
+                }
+                alert.addButton(withTitle: "OK")
+                alert.runModal()
+            }
+        }
+    }
+#endif
 
 }
