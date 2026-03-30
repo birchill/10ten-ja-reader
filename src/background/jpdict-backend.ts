@@ -371,7 +371,7 @@ function getLatestCheckTime(db: JpdictIdb): Date | null {
     null,
     allMajorDataSeries.map((series) => {
       const lastCheck = db[series].updateState.lastCheck;
-      return lastCheck instanceof Date ? lastCheck.valueOf() : (lastCheck ?? 0);
+      return lastCheck instanceof Date ? lastCheck.valueOf() : 0;
     })
   );
 
