@@ -86,23 +86,29 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
             return;
         }
 
-        self.showExtensionPreferences(retries: 2)
+        self.showExtensionPreferences()
 
 #endif
     }
 
 #if os(macOS)
-    private func showExtensionPreferences(retries: Int, isRetrying: Bool = false) {
-        if !isRetrying {
-            webView.evaluateJavaScript("""
-                (function() {
-                    var btn = document.querySelector('button.open-preferences');
-                    btn.disabled = true;
-                    btn.textContent = 'Opening Safari Extensions Preferences\u{2026}';
-                })()
-            """)
-        }
+    private static let maxExtensionWaitTime: TimeInterval = 15
+    private static let extensionPollInterval: TimeInterval = 1
 
+    private func showExtensionPreferences() {
+        webView.evaluateJavaScript("""
+            (function() {
+                var btn = document.querySelector('button.open-preferences');
+                btn.disabled = true;
+                btn.textContent = 'Opening Safari Extensions Preferences\u{2026}';
+            })()
+        """)
+
+        let startTime = Date()
+        waitForExtensionThenOpenPreferences(startTime: startTime)
+    }
+
+    private func waitForExtensionThenOpenPreferences(startTime: Date) {
         SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionBundleIdentifier) { error in
             guard let error = error else {
                 DispatchQueue.main.async {
@@ -114,15 +120,16 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
             let sfError = error as NSError
             let isNotFound = sfError.domain == "SFErrorDomain" && sfError.code == 1
 
-            if isNotFound && retries > 0 {
-                self.logger.info("Extension not found, retrying in 2s (\(retries) retries left)")
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                    self.showExtensionPreferences(retries: retries - 1, isRetrying: true)
+            let elapsed = Date().timeIntervalSince(startTime)
+            if isNotFound && elapsed < Self.maxExtensionWaitTime {
+                self.logger.info("Extension not yet available (\(String(format: "%.1f", elapsed))s elapsed), retrying\u{2026}")
+                DispatchQueue.main.asyncAfter(deadline: .now() + Self.extensionPollInterval) {
+                    self.waitForExtensionThenOpenPreferences(startTime: startTime)
                 }
                 return
             }
 
-            self.logger.error("Error launching extension preferences: \(error.localizedDescription, privacy: .public)")
+            self.logger.error("Error launching extension preferences after \(String(format: "%.1f", elapsed))s: \(error.localizedDescription, privacy: .public)")
 
             DispatchQueue.main.async {
                 self.webView.evaluateJavaScript("""
