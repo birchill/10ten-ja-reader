@@ -94,13 +94,18 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
 #if os(macOS)
     private func showExtensionPreferences(retries: Int, isRetrying: Bool = false) {
         if !isRetrying {
-            NSCursor.busyButClickable.push()
+            webView.evaluateJavaScript("""
+                (function() {
+                    var btn = document.querySelector('button.open-preferences');
+                    btn.disabled = true;
+                    btn.textContent = 'Opening Safari Extensions Preferences\u{2026}';
+                })()
+            """)
         }
 
         SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionBundleIdentifier) { error in
             guard let error = error else {
                 DispatchQueue.main.async {
-                    NSCursor.pop()
                     NSApplication.shared.terminate(nil)
                 }
                 return
@@ -120,7 +125,13 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
             self.logger.error("Error launching extension preferences: \(error.localizedDescription, privacy: .public)")
 
             DispatchQueue.main.async {
-                NSCursor.pop()
+                self.webView.evaluateJavaScript("""
+                    (function() {
+                        var btn = document.querySelector('button.open-preferences');
+                        btn.disabled = false;
+                        btn.textContent = 'Quit and Open Safari Extensions Preferences\u{2026}';
+                    })()
+                """)
 
                 let alert = NSAlert()
                 alert.alertStyle = .warning
