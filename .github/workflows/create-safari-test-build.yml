@@ -1,10 +1,15 @@
-name: Test Safari Build
+name: Create Safari Test Build
 on:
-  pull_request:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'
+        required: true
+        type: string
 
 jobs:
   build_macos:
-    name: Build Safari assets
+    name: Build Safari apps
     runs-on: macos-26
     concurrency:
       group: app-store-connect-build-number
@@ -15,7 +20,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
         with:
           version: latest
 
@@ -42,7 +47,7 @@ jobs:
       - name: Set test version and build number
         env:
           NEXT_XCODE_BUILD_NUMBER: ${{ steps.build_number.outputs.value }}
-        run: pnpm version 1.26.2 --no-git-tag-version --allow-same-version
+        run: pnpm version ${{ inputs.version }} --no-git-tag-version --allow-same-version
 
       - name: Build extension code
         run: pnpm build:safari
@@ -132,7 +137,7 @@ jobs:
             --platform macos \
             --apple-id "$APP_APPLE_ID" \
             --bundle-version "${{ steps.build_number.outputs.value }}" \
-            --bundle-short-version-string "1.26.2" \
+            --bundle-short-version-string "${{ inputs.version }}" \
             --bundle-id "jp.co.birchill.tenten\-ja\-reader" \
             --api-key "$APP_STORE_CONNECT_KEY_ID" \
             --api-issuer "$APP_STORE_CONNECT_ISSUER_ID" \
@@ -156,7 +161,7 @@ jobs:
             --platform ios \
             --apple-id "$APP_APPLE_ID" \
             --bundle-version "${{ steps.build_number.outputs.value }}" \
-            --bundle-short-version-string "1.26.2" \
+            --bundle-short-version-string "${{ inputs.version }}" \
             --bundle-id "jp.co.birchill.tenten\-ja\-reader" \
             --api-key "$APP_STORE_CONNECT_KEY_ID" \
             --api-issuer "$APP_STORE_CONNECT_ISSUER_ID" \
@@ -173,6 +178,7 @@ jobs:
             ${{ github.workspace }}/build/ExportOptions.plist
             ${{ github.workspace }}/build/Packaging.log
           if-no-files-found: error
+          retention-days: 3
 
       - name: Cleanup signing material
         if: always()
