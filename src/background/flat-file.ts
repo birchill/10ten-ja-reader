@@ -35,10 +35,8 @@ type FlatFileDatabaseListener = (event: FlatFileDatabaseEvent) => void;
 class FlatFileDatabase {
   bugsnag?: BugsnagClient;
   listeners: Array<FlatFileDatabaseListener> = [];
-  loaded: Promise<any>;
+  loaded: Promise<{ wordDict: string; wordIndex: string }>;
   lookupCache = new LRUMap<string, Array<number>>(500);
-  wordDict!: string;
-  wordIndex!: string;
 
   constructor(options: FlatFileDatabaseOptions) {
     this.bugsnag = options.bugsnag;
@@ -49,19 +47,22 @@ class FlatFileDatabase {
   // Loading
   //
 
-  async #loadData(): Promise<void> {
+  async #loadData(): Promise<{ wordDict: string; wordIndex: string }> {
     try {
       // Read in series to reduce contention
-      this.wordDict = await this.#readFileWithAutoRetry(
+      const wordDict = await this.#readFileWithAutoRetry(
         browser.runtime.getURL('data/words.ljson')
       );
-      this.wordIndex = await this.#readFileWithAutoRetry(
+      const wordIndex = await this.#readFileWithAutoRetry(
         browser.runtime.getURL('data/words.idx')
       );
 
       this.notifyListeners({ type: 'loaded' });
+
+      return { wordDict, wordIndex };
     } catch (e) {
       this.notifyListeners({ type: 'error', error: e, willRetry: false });
+      throw e;
     }
   }
 
@@ -166,12 +167,12 @@ class FlatFileDatabase {
     input: string;
     maxResults: number;
   }): Promise<Array<DictionaryWordResult>> {
-    await this.loaded;
+    const { wordDict, wordIndex } = await this.loaded;
 
     let offsets = this.lookupCache.get(input);
     if (!offsets) {
       const lookupResult = findLineStartingWith({
-        source: this.wordIndex,
+        source: wordIndex,
         text: input + ',',
       });
       if (!lookupResult) {
@@ -186,7 +187,7 @@ class FlatFileDatabase {
 
     for (const offset of offsets) {
       const entry = JSON.parse(
-        this.wordDict.substring(offset, this.wordDict.indexOf('\n', offset))
+        wordDict.substring(offset, wordDict.indexOf('\n', offset))
       ) as RawWordRecord;
 
       result.push(
