@@ -4,7 +4,7 @@ import { NewBadge } from './NewBadge';
 
 type Props = {
   selectedUnits: 'metric' | 'imperial';
-  onChange: (currency: string) => void;
+  onChange: (units: 'metric' | 'imperial') => void;
 };
 
 export function UnitSettingsForm(props: Props) {
@@ -13,7 +13,7 @@ export function UnitSettingsForm(props: Props) {
   const options = [
     ['metric', t('options_units_metric_label')],
     ['imperial', t('options_units_imperial_label')],
-  ];
+  ] as const;
 
   return (
     <>
@@ -23,7 +23,9 @@ export function UnitSettingsForm(props: Props) {
         id="preferredUnits"
         name="preferredUnits"
         onInput={(event) => {
-          props.onChange(event.currentTarget.value);
+          props.onChange(
+            event.currentTarget.value as (typeof options)[number][0]
+          );
         }}
       >
         {options.map(([value, label]) => (

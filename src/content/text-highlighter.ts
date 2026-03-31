@@ -33,11 +33,11 @@ export class TextHighlighter {
 
   // Used restore the selection of a contenteditable node similar to the way
   // we treat text boxes.
-  #previousSelection: { node: Node; offset: number } | null;
+  #previousSelection: { node: Node; offset: number } | null = null;
 
   // We need to focus a textbox in order to set its selection so we store the
   // previously focussed node so we can restore it after we're done.
-  #previousFocus: Element | null;
+  #previousFocus: Element | null = null;
 
   // Gross hack to ignore our own focus events.
   #updatingFocus = false;

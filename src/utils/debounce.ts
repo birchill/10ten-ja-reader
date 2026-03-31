@@ -1,6 +1,9 @@
-export function debounce(func: (...args: Array<any>) => any, delay: number) {
+export function debounce<T extends (...args: Array<any>) => any>(
+  func: T,
+  delay: number
+) {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
-  return function (...args: Array<any>) {
+  return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const context = this;
     // clearTimeout doesn't throw with invalid timeout, so the ! is harmless

@@ -1,4 +1,3 @@
-/// <reference path="../common/css.d.ts" />
 import browser from 'webextension-polyfill';
 
 import puckOnboardingStyles from '../../css/puck-onboarding.css?inline';
@@ -160,25 +159,25 @@ export class LookupPuck {
 
   #puckX: number;
   #puckY: number;
-  #earthWidth: number;
-  #earthHeight: number;
-  #earthScaleFactorWhenDragging: number;
-  #moonWidth: number;
-  #moonHeight: number;
+  #earthWidth: number | undefined;
+  #earthHeight: number | undefined;
+  #earthScaleFactorWhenDragging: number | undefined;
+  #moonWidth: number | undefined;
+  #moonHeight: number | undefined;
   // The translateY value to apply to the moon when it is orbiting above the
   // earth. Expressed as an absolute (positive) value.
-  #targetAbsoluteOffsetYAbove: number;
+  #targetAbsoluteOffsetYAbove: number | undefined;
   // The translateY value to apply to the moon when it is orbiting below the
   // earth. Expressed as an absolute (positive) value.
-  #targetAbsoluteOffsetYBelow: number;
+  #targetAbsoluteOffsetYBelow: number | undefined;
   // The translateX value to apply to the moon when it is orbiting to the
   // left or right of earth and on the same side as the user's hand. Expressed
   // as an absolute (positive) value.
-  #targetAbsoluteOffsetXHandSide: number;
+  #targetAbsoluteOffsetXHandSide: number | undefined;
   // The translateX value to apply to the moon when it is orbiting to the
   // left or right of earth and on the opposite side from the user's hand (or
   // handedness is unset). Expressed as an absolute (positive) value.
-  #targetAbsoluteOffsetXNonHandSide: number;
+  #targetAbsoluteOffsetXNonHandSide: number | undefined;
   // The translate (X and Y) values applied to the moon whilst it is being
   // dragged. They are measured relative to the midpoint of the moon (which is
   // also the midpoint of the earth).
@@ -295,6 +294,17 @@ export class LookupPuck {
     const isHorizontal =
       this.#targetOrientation.readingDirection === 'horizontal';
 
+    if (
+      typeof this.#earthWidth === 'undefined' ||
+      typeof this.#earthHeight === 'undefined' ||
+      typeof this.#targetAbsoluteOffsetXHandSide === 'undefined' ||
+      typeof this.#targetAbsoluteOffsetXNonHandSide === 'undefined' ||
+      typeof this.#targetAbsoluteOffsetYAbove === 'undefined' ||
+      typeof this.#targetAbsoluteOffsetYBelow === 'undefined'
+    ) {
+      return;
+    }
+
     // First determine the actual range of motion of the moon, taking into
     // account any safe area on either side of the screen.
     const { viewportWidth, viewportHeight } =
@@ -395,6 +405,15 @@ export class LookupPuck {
   // Returns the total clearance to allow arround the target offset for the
   // puck.
   public getPuckClearance(): MarginBox {
+    if (
+      typeof this.#moonHeight === 'undefined' ||
+      typeof this.#earthHeight === 'undefined' ||
+      typeof this.#earthWidth === 'undefined' ||
+      typeof this.#earthScaleFactorWhenDragging === 'undefined'
+    ) {
+      return { top: 0, right: 0, bottom: 0, left: 0 };
+    }
+
     const moonVerticalClearance = this.#moonHeight / 2;
     const earthVerticalClearance =
       Math.abs(this.#targetOffset.y) +
@@ -459,7 +478,11 @@ export class LookupPuck {
   }
 
   #setPositionWithinSafeArea(x: number, y: number) {
-    if (!this.#puck) {
+    if (
+      !this.#puck ||
+      typeof this.#earthWidth === 'undefined' ||
+      typeof this.#earthHeight === 'undefined'
+    ) {
       return;
     }
 
