@@ -193,8 +193,8 @@ importers:
         specifier: 4.0.18
         version: 4.0.18(@types/node@24.3.0)(@vitest/browser-webdriverio@4.0.18)(jiti@2.6.1)(jsdom@29.0.0)(lightningcss@1.32.0)(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.2)
       web-ext-plugin:
-        specifier: 2.12.0
-        version: 2.12.0(jiti@2.6.1)
+        specifier: 2.13.0
+        version: 2.13.0(jiti@2.6.1)
       webpack:
         specifier: 5.105.4
         version: 5.105.4
@@ -1081,9 +1081,6 @@ packages:
 
   '@leichtgewicht/ip-codec@2.0.5':
     resolution: {integrity: sha512-Vo+PSpZG2/fmgmiNzYK9qWRh8h/CHrwD0mo1h1DzL4yzHNSfWYujGTYsWGreD000gcgmZ7K4Ys6Tx9TxtsKdDw==}
-
-  '@mdn/browser-compat-data@7.3.0':
-    resolution: {integrity: sha512-B7X53zLkrQOVNzsWg4d+iE5vbrreOYB9H/2Ikeit9LPb3tqRNRsEAxysQduFLODBJBSgFGr2FkJLq7tMQkqLZQ==}
 
   '@mdn/browser-compat-data@7.3.6':
     resolution: {integrity: sha512-eLTmNSxv2DaDO1Hq7C9lwQbThlF5+vMMUQfIl6xRPSC2q6EcFXhim4Mc9uxHNxcPvDFCdB3qviMFDdAzQVhYcw==}
@@ -2131,30 +2128,8 @@ packages:
     engines: {node: '>=20.0.0'}
     hasBin: true
 
-  addons-linter@9.6.0:
-    resolution: {integrity: sha512-hoZFDg/4Ial7xw2SDrnQJ6iyLtf0KdP/NRhLP1bX+SKNmFLJskDIvWOCbDAC1qUq7cNrt4yCvGlr3UO0VZaluw==}
-    engines: {node: '>=18.0.0'}
-    hasBin: true
-
   addons-moz-compare@1.3.0:
     resolution: {integrity: sha512-/rXpQeaY0nOKhNx00pmZXdk5Mu+KhVlL3/pSBuAYwrxRrNiTvI/9xfQI8Lmm7DMMl+PDhtfAHY/0ibTpdeoQQQ==}
-
-  addons-scanner-utils@10.2.0:
-    resolution: {integrity: sha512-U6XRBTP/2EhLnTN/GHioBWvzaJAKwjVhoGjytwHdA+dIUx8n/9Hr7YTJwsBwJN5GpqV/3Ma87RQh+vEE4X4fwA==}
-    peerDependencies:
-      body-parser: 2.2.2
-      express: 5.2.1
-      node-fetch: 2.6.11
-      safe-compare: 1.1.4
-    peerDependenciesMeta:
-      body-parser:
-        optional: true
-      express:
-        optional: true
-      node-fetch:
-        optional: true
-      safe-compare:
-        optional: true
 
   addons-scanner-utils@13.1.0:
     resolution: {integrity: sha512-4apAnr0xrEVbIJhNPQA6XUnVAiUR0/lt8EvflrPgrmBQYwTwo7z+yv92t7F1iO2Y07lNhDCZEoL8q1H4sLJyGw==}
@@ -2198,9 +2173,6 @@ packages:
 
   ajv@6.14.0:
     resolution: {integrity: sha512-IWrosm/yrn43eiKqkfkHis7QioDleaXQHdDVPKg0FSwwd/DuvyX79TZnFOnYpB7dcsFAMmtFztZuXPDvSePkFw==}
-
-  ajv@8.17.1:
-    resolution: {integrity: sha512-B/gBuNg5SiMTrPkC+A2+cW0RszwxYmn6VYxB/inlBStS5nx6xHIt/ehKRhIMhqusl7a8LjQoZnjCs5vhwxOQ1g==}
 
   ajv@8.18.0:
     resolution: {integrity: sha512-PlXPeEWMXMZ7sPYOHqmDyCJzcfNrUr3fGNKtezX14ykXOEIvyK81d+qydx89KY5O71FKMPaQ2vBfBFI5NHR63A==}
@@ -3117,11 +3089,6 @@ packages:
     engines: {node: '>=6.0'}
     hasBin: true
 
-  eslint-plugin-no-unsanitized@4.1.4:
-    resolution: {integrity: sha512-cjAoZoq3J+5KJuycYYOWrc0/OpZ7pl2Z3ypfFq4GtaAgheg+L7YGxUo2YS3avIvo/dYU5/zR2hXu3v81M9NxhQ==}
-    peerDependencies:
-      eslint: ^8 || ^9
-
   eslint-plugin-no-unsanitized@4.1.5:
     resolution: {integrity: sha512-MSB4hXPVFQrI8weqzs6gzl7reP2k/qSjtCoL2vUMSDejIIq9YL1ZKvq5/ORBXab/PvfBBrWO2jWviYpL+4Ghfg==}
     peerDependencies:
@@ -3153,10 +3120,6 @@ packages:
     resolution: {integrity: sha512-Uhdk5sfqcee/9H/rCOJikYz67o0a2Tw2hGRPOG2Y1R2dg7brRe1uG0yaNQDHu+TO/uQPF/5eCapvYSmHUjt7JQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  eslint-visitor-keys@5.0.0:
-    resolution: {integrity: sha512-A0XeIi7CXU7nPlfHS9loMYEKxUaONu/hTEzHTGba9Huu94Cq1hPivf+DE5erJozZOky0LfvXAyrV/tcswpLI0Q==}
-    engines: {node: ^20.19.0 || ^22.13.0 || >=24}
-
   eslint-visitor-keys@5.0.1:
     resolution: {integrity: sha512-tD40eHxA35h0PEIZNeIjkHoDR4YjjJp34biM0mDvplBe//mB+IHCqHDGV7pxF+7MklTvighcCPPZC7ynWyjdTA==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
@@ -3184,10 +3147,6 @@ packages:
   espree@10.4.0:
     resolution: {integrity: sha512-j6PAQ2uUr79PZhBjP5C5fhl8e39FmRnOjsD5lGnWrFU8i2G776tBK7+nP8KuQUTTyAZUwfQqXAgrVH5MbH9CYQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  espree@11.1.0:
-    resolution: {integrity: sha512-WFWYhO1fV4iYkqOOvq8FbqIhr2pYfoDY0kCotMkDeNtGpiGGkZ1iov2u8ydjtgM8yF8rzK7oaTbw2NAzbAbehw==}
-    engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
   espree@11.2.0:
     resolution: {integrity: sha512-7p3DrVEIopW1B1avAGLuCSh1jubc01H2JHc8B4qqGblmg5gI9yumBgACjWo4JlIc04ufug4xJ3SQI8HkS/Rgzw==}
@@ -4799,10 +4758,6 @@ packages:
   pino-std-serializers@7.0.0:
     resolution: {integrity: sha512-e906FRY0+tV27iq4juKzSYPbUj2do2X2JX4EzSca1631EB2QJQUqGbDuERal7LCtOpxl6x3+nvo9NPZcmjkiFA==}
 
-  pino@10.3.0:
-    resolution: {integrity: sha512-0GNPNzHXBKw6U/InGe79A3Crzyk9bcSyObF9/Gfo9DLEf5qj5RF50RSjsu0W1rZ6ZqRGdzDFCRBQvi9/rSGPtA==}
-    hasBin: true
-
   pino@10.3.1:
     resolution: {integrity: sha512-r34yH/GlQpKZbU1BvFFqOjhISRo1MNx1tWYsYvmj6KIRHSPMT2+yHOEb1SG6NMvRoHRF0a07kCOox/9yakl1vg==}
     hasBin: true
@@ -6021,17 +5976,12 @@ packages:
   wcwidth@1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
 
-  web-ext-plugin@2.12.0:
-    resolution: {integrity: sha512-c5kc7z1bFbyndlpYjx/kZ8Fwlt6U17FWCRqnZRHPhhXrblgD2THpPgv0Km05L5V/+sAxsukwflzSwDEUW6AHbA==}
+  web-ext-plugin@2.13.0:
+    resolution: {integrity: sha512-HjpImsfcTUjpLQRi8YyAbO4bzLcSskOsTrquU33R73a6svB4kJf63BPS7zsTblTMtPvkPfUL+b9BCd48rT9ijg==}
 
   web-ext@10.0.0:
     resolution: {integrity: sha512-Cdr7GELRVOXGdV8NqZAPa9oImXWUMDbzYff+UBx5F6mz4zfIrnF3+iYUsvBfG9VJ/VsqmXKdpt1gBsXbH8Z75A==}
     engines: {node: '>=20.0.0', npm: '>=8.0.0'}
-    hasBin: true
-
-  web-ext@9.3.0:
-    resolution: {integrity: sha512-RDAJvyIyJ/iIFssx2w7VrD7mtkc4X+8VJFPq8Ax3mL2auF4KQsV9ZQmPZOzqP9Ji0k0D6YKAzGZ1Ae67qavDVQ==}
-    engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
   webdriver@9.22.0:
@@ -7074,8 +7024,6 @@ snapshots:
 
   '@leichtgewicht/ip-codec@2.0.5': {}
 
-  '@mdn/browser-compat-data@7.3.0': {}
-
   '@mdn/browser-compat-data@7.3.6': {}
 
   '@module-federation/error-codes@0.22.0': {}
@@ -7767,6 +7715,7 @@ snapshots:
   '@types/yauzl@2.10.3':
     dependencies:
       '@types/node': 24.3.0
+    optional: true
 
   '@typescript-eslint/eslint-plugin@8.56.1(@typescript-eslint/parser@8.56.1(eslint@10.1.0(jiti@2.6.1))(typescript@6.0.2))(eslint@10.1.0(jiti@2.6.1))(typescript@6.0.2)':
     dependencies:
@@ -8131,51 +8080,7 @@ snapshots:
       - safe-compare
       - supports-color
 
-  addons-linter@9.6.0(jiti@2.6.1):
-    dependencies:
-      '@fluent/syntax': 0.19.0
-      '@fregante/relaxed-json': 2.0.0
-      '@mdn/browser-compat-data': 7.3.0
-      addons-moz-compare: 1.3.0
-      addons-scanner-utils: 10.2.0
-      ajv: 8.17.1
-      chalk: 4.1.2
-      cheerio: 1.2.0
-      columnify: 1.6.0
-      common-tags: 1.8.2
-      deepmerge: 4.3.1
-      eslint: 9.39.2(jiti@2.6.1)
-      eslint-plugin-no-unsanitized: 4.1.4(eslint@9.39.2(jiti@2.6.1))
-      eslint-visitor-keys: 5.0.0
-      espree: 11.1.0
-      esprima: 4.0.1
-      fast-json-patch: 3.1.1
-      image-size: 2.0.2
-      json-merge-patch: 1.0.2
-      pino: 10.3.0
-      semver: 7.7.3
-      source-map-support: 0.5.21
-      upath: 2.0.1
-      yargs: 17.7.2
-      yauzl: 2.10.0
-    transitivePeerDependencies:
-      - body-parser
-      - express
-      - jiti
-      - node-fetch
-      - safe-compare
-      - supports-color
-
   addons-moz-compare@1.3.0: {}
-
-  addons-scanner-utils@10.2.0:
-    dependencies:
-      '@types/yauzl': 2.10.3
-      common-tags: 1.8.2
-      first-chunk-stream: 3.0.0
-      strip-bom-stream: 4.0.0
-      upath: 2.0.1
-      yauzl: 2.10.0
 
   addons-scanner-utils@13.1.0:
     dependencies:
@@ -8209,13 +8114,6 @@ snapshots:
       fast-json-stable-stringify: 2.1.0
       json-schema-traverse: 0.4.1
       uri-js: 4.4.1
-
-  ajv@8.17.1:
-    dependencies:
-      fast-deep-equal: 3.1.3
-      fast-uri: 3.0.6
-      json-schema-traverse: 1.0.0
-      require-from-string: 2.0.2
 
   ajv@8.18.0:
     dependencies:
@@ -9243,10 +9141,6 @@ snapshots:
     optionalDependencies:
       source-map: 0.6.1
 
-  eslint-plugin-no-unsanitized@4.1.4(eslint@9.39.2(jiti@2.6.1)):
-    dependencies:
-      eslint: 9.39.2(jiti@2.6.1)
-
   eslint-plugin-no-unsanitized@4.1.5(eslint@9.39.2(jiti@2.6.1)):
     dependencies:
       eslint: 9.39.2(jiti@2.6.1)
@@ -9293,8 +9187,6 @@ snapshots:
   eslint-visitor-keys@3.4.3: {}
 
   eslint-visitor-keys@4.2.1: {}
-
-  eslint-visitor-keys@5.0.0: {}
 
   eslint-visitor-keys@5.0.1: {}
 
@@ -9381,12 +9273,6 @@ snapshots:
       acorn: 8.16.0
       acorn-jsx: 5.3.2(acorn@8.16.0)
       eslint-visitor-keys: 4.2.1
-
-  espree@11.1.0:
-    dependencies:
-      acorn: 8.16.0
-      acorn-jsx: 5.3.2(acorn@8.16.0)
-      eslint-visitor-keys: 5.0.1
 
   espree@11.2.0:
     dependencies:
@@ -11100,20 +10986,6 @@ snapshots:
 
   pino-std-serializers@7.0.0: {}
 
-  pino@10.3.0:
-    dependencies:
-      '@pinojs/redact': 0.4.0
-      atomic-sleep: 1.0.0
-      on-exit-leak-free: 2.1.2
-      pino-abstract-transport: 3.0.0
-      pino-std-serializers: 7.0.0
-      process-warning: 5.0.0
-      quick-format-unescaped: 4.0.4
-      real-require: 0.2.0
-      safe-stable-stringify: 2.5.0
-      sonic-boom: 4.2.0
-      thread-stream: 4.0.0
-
   pino@10.3.1:
     dependencies:
       '@pinojs/redact': 0.4.0
@@ -12398,14 +12270,13 @@ snapshots:
     dependencies:
       defaults: 1.0.4
 
-  web-ext-plugin@2.12.0(jiti@2.6.1):
+  web-ext-plugin@2.13.0(jiti@2.6.1):
     dependencies:
-      web-ext: 9.3.0(jiti@2.6.1)
+      web-ext: 10.0.0(jiti@2.6.1)
     transitivePeerDependencies:
       - body-parser
       - express
       - jiti
-      - node-fetch
       - safe-compare
       - supports-color
 
@@ -12442,43 +12313,6 @@ snapshots:
       - body-parser
       - express
       - jiti
-      - safe-compare
-      - supports-color
-
-  web-ext@9.3.0(jiti@2.6.1):
-    dependencies:
-      '@babel/runtime': 7.28.6
-      '@devicefarmer/adbkit': 3.3.8
-      addons-linter: 9.6.0(jiti@2.6.1)
-      camelcase: 8.0.0
-      chrome-launcher: 1.2.0
-      debounce: 1.2.1
-      decamelize: 6.0.1
-      es6-error: 4.1.1
-      firefox-profile: 4.7.0
-      fx-runner: 1.4.0
-      https-proxy-agent: 7.0.6
-      jose: 5.9.6
-      jszip: 3.10.1
-      multimatch: 6.0.0
-      node-notifier: 10.0.1
-      open: 11.0.0
-      parse-json: 8.3.0
-      pino: 10.3.1
-      promise-toolbox: 0.21.0
-      source-map-support: 0.5.21
-      strip-bom: 5.0.0
-      strip-json-comments: 5.0.3
-      tmp: 0.2.5
-      update-notifier: 7.3.1
-      watchpack: 2.5.1
-      yargs: 17.7.2
-      zip-dir: 2.0.0
-    transitivePeerDependencies:
-      - body-parser
-      - express
-      - jiti
-      - node-fetch
       - safe-compare
       - supports-color
 
