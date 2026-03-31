@@ -148,7 +148,7 @@ jobs:
           fileName: ${{ steps.parse_chrome_release.outputs.addon_asset_name }}
 
       - name: Publish
-        uses: mnao305/chrome-extension-upload@v5.0.0
+        uses: mnao305/chrome-extension-upload@v6.0.0
         if: ${{ !steps.parse_chrome_release.outputs.skip }}
         with:
           file-path: ${{ steps.parse_chrome_release.outputs.addon_asset_name }}
