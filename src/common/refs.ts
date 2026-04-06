@@ -12,6 +12,12 @@ const SUPPORTED_REFERENCES = [
   'wk',
   // Pinyin reading
   'py',
+  // Korean reading (hangul)
+  'kh',
+  // Korean reading (Romanized)
+  'kr',
+  // Vietnamese reading
+  'vi',
   // JLPT level (from misc field)
   'jlpt',
   // Unicode codepoint (generated)
@@ -90,6 +96,10 @@ type LocalizedReferences =
   | 'radical'
   | 'nelson_r'
   | 'kk'
+  | 'py'
+  | 'kh'
+  | 'kr'
+  | 'vi'
   | 'jlpt'
   | 'moro'
   | 'unicode';
@@ -162,7 +172,6 @@ const REFERENCE_LABELS: { [key in NotLocalizedReferences]: ReferenceLabel } = {
     short: 'New Nelson',
     lang: 'en',
   },
-  py: { full: 'Pinyin', lang: 'en' },
   skip: { full: 'SKIP', lang: 'en' },
   sh_desc: {
     full: 'The Kanji Dictionary (Spahn)',
@@ -244,6 +253,15 @@ function getLabelForReference(
 
     case 'py':
       return { full: t('ref_label_py'), lang };
+
+    case 'kh':
+      return { full: t('ref_label_kh'), short: t('ref_label_khr_short'), lang };
+
+    case 'kr':
+      return { full: t('ref_label_kr'), short: t('ref_label_khr_short'), lang };
+
+    case 'vi':
+      return { full: t('ref_label_vi'), lang };
 
     case 'moro':
       return {

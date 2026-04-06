@@ -102,10 +102,13 @@ export type ChangeCallback = (changes: ChangeDict) => void;
 const OFF_BY_DEFAULT_REFERENCES: Set<ReferenceAbbreviation> = new Set([
   'busy_people',
   'halpern_kkd',
+  'kh',
   'kanji_in_context',
   'kodansha_compact',
+  'kr',
   'maniette',
   'moro',
+  'vi',
   'wk',
 ]);
 

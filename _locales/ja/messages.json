@@ -2224,9 +2224,21 @@
     "message": "日本語能力試験",
     "description": "The label used when presenting the level the kanji appears in in the old JLPT system"
   },
+  "ref_label_kh": {
+    "message": "韓国語（ハングル）",
+    "description": "The label used when present the Korean reading in Hangul"
+  },
+  "ref_label_khr_short": {
+    "message": "韓国語",
+    "description": "The short label used when present the Korean reading (either)"
+  },
   "ref_label_kk": {
     "message": "漢検",
     "description": "The label used when presenting Kanji Kentei levels"
+  },
+  "ref_label_kr": {
+    "message": "韓国語（ローマ字）",
+    "description": "The label used when present the romanized Korean reading"
   },
   "ref_label_moro": {
     "message": "諸橋 - 大漢和辞典",
@@ -2241,7 +2253,7 @@
     "description": "The label used when presenting Nelson's revised radical numbers. This should generally be a label that will sort directly after ref_label_radical when using String.localCompare."
   },
   "ref_label_py": {
-    "message": "ピン音",
+    "message": "ピンイン",
     "description": "The label used when present the Pinyin reading"
   },
   "ref_label_radical": {
@@ -2251,6 +2263,10 @@
   "ref_label_unicode": {
     "message": "Unicode",
     "description": "The label used when presenting the Unicode codepoint of the kanji"
+  },
+  "ref_label_vi": {
+    "message": "ベトナム語",
+    "description": "The label used when present the Vietnamese reading"
   },
   "ref_moro_format": {
     "message": "$index$ （ $volume$巻  $page$頁 ）",
