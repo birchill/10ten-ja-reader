@@ -7,7 +7,7 @@ coverage
 node_modules
 tests/content-loader.js
 tests/content-loader.js.map
-tests/_locales_*.js
+tests/_locales_*
 dist-chrome
 dist-chrome-electron
 dist-chrome-package
