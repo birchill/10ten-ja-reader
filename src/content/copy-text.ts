@@ -209,9 +209,19 @@ export function getEntryToCopy(
             ) {
               continue;
             }
-            result += `; ${label.short || label.full} ${
-              getReferenceValue(entry.data, label.ref, getMessage) || '-'
-            }`;
+
+            // When both Korean readings are selected, we merge them into one
+            // row, so we skip the second one in the loop.
+            if (label.ref === 'kr' && kanjiReferences.includes('kh')) {
+              continue;
+            }
+
+            const refValue =
+              label.ref === 'kh' && kanjiReferences.includes('kr')
+                ? `${getReferenceValue(entry.data, 'kh', getMessage) || '-'} / ${getReferenceValue(entry.data, 'kr', getMessage) || '-'}`
+                : getReferenceValue(entry.data, label.ref, getMessage) || '-';
+
+            result += `; ${label.short || label.full} ${refValue}`;
           }
         }
       }
@@ -493,6 +503,12 @@ export function getFieldsToCopy(
             getMessage
           );
           for (const label of labels) {
+            // For Korean readings, when both are selected we merge them into
+            // one row.
+            if (label.ref === 'kr' && kanjiReferences.includes('kh')) {
+              continue;
+            }
+
             // For some common types we don't produce the label
             switch (label.ref) {
               case 'radical':
@@ -505,6 +521,14 @@ export function getFieldsToCopy(
                 result +=
                   '\t' + getReferenceValue(entry.data, label.ref, getMessage);
                 break;
+
+              case 'kh': {
+                const refValue = kanjiReferences.includes('kr')
+                  ? `${getReferenceValue(entry.data, 'kh', getMessage) || '-'} / ${getReferenceValue(entry.data, 'kr', getMessage) || '-'}`
+                  : getReferenceValue(entry.data, 'kh', getMessage) || '-';
+                result += `\t${label.short || label.full} ${refValue}`;
+                break;
+              }
 
               default:
                 result += `\t${label.short || label.full} ${
