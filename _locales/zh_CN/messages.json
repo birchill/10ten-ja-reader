@@ -2216,9 +2216,21 @@
     "message": "JLPT",
     "description": "The label used when presenting the level the kanji appears in in the old JLPT system"
   },
+  "ref_label_kh": {
+    "message": "韩语（谚文）",
+    "description": "The label used when present the Korean reading in Hangul"
+  },
+  "ref_label_khr_short": {
+    "message": "韩语",
+    "description": "The short label used when present the Korean reading (either)"
+  },
   "ref_label_kk": {
     "message": "汉字检定",
     "description": "The label used when presenting Kanji Kentei levels"
+  },
+  "ref_label_kr": {
+    "message": "韩语（罗马字）",
+    "description": "The label used when present the romanized Korean reading"
   },
   "ref_label_moro": {
     "message": "諸橋 - 大漢和辭典",
@@ -2243,6 +2255,10 @@
   "ref_label_unicode": {
     "message": "Unicode",
     "description": "The label used when presenting the Unicode codepoint of the kanji"
+  },
+  "ref_label_vi": {
+    "message": "越南语",
+    "description": "The label used when present the Vietnamese reading"
   },
   "ref_moro_format": {
     "message": "$index$（第 $volume$卷 第 $page$页）",

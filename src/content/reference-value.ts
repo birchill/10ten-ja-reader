@@ -30,7 +30,10 @@ export function getReferenceValue(
       return entry.misc.jlpt ? String(entry.misc.jlpt) : '';
 
     case 'py':
-      return entry.r.py ? entry.r.py.join(', ') : '';
+    case 'kh':
+    case 'kr':
+    case 'vi':
+      return entry.r[ref] ? entry.r[ref].join(', ') : '';
 
     case 'moro': {
       const value = entry.refs.moro;

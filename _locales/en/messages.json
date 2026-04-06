@@ -2220,9 +2220,21 @@
     "message": "JLPT",
     "description": "The label used when presenting the level the kanji appears in in the old JLPT system"
   },
+  "ref_label_kh": {
+    "message": "Korean (Hangul)",
+    "description": "The label used when present the Korean reading in Hangul"
+  },
+  "ref_label_khr_short": {
+    "message": "Korean",
+    "description": "The short label used when present the Korean reading (either)"
+  },
   "ref_label_kk": {
     "message": "Kanji Kentei",
     "description": "The label used when presenting Kanji Kentei levels"
+  },
+  "ref_label_kr": {
+    "message": "Korean (Romanized)",
+    "description": "The label used when present the romanized Korean reading"
   },
   "ref_label_moro": {
     "message": "Morohashi - Daikanwajiten",
@@ -2247,6 +2259,10 @@
   "ref_label_unicode": {
     "message": "Unicode",
     "description": "The label used when presenting the Unicode codepoint of the kanji"
+  },
+  "ref_label_vi": {
+    "message": "Vietnamese",
+    "description": "The label used when present the romanized Korean reading"
   },
   "ref_moro_format": {
     "message": "$index$ (vol. $volume$, p. $page$)",
