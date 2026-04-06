@@ -123,6 +123,17 @@ body {
   font-size: 15px;
   color: #222426;
   margin: 0;
+
+  /*
+   * This should be the default but browsers have yet to implement that due to
+   * performance concerns.
+   *
+   * e.g.
+   *
+   * https://github.com/w3c/csswg-drafts/issues/12386
+   * https://bugzilla.mozilla.org/show_bug.cgi?id=2005624
+   */
+  text-autospace: normal;
 }
 
 @media (max-width: 400px) {
