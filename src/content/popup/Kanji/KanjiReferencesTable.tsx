@@ -31,7 +31,16 @@ export function KanjiReferencesTable({ entry, kanjiReferences }: Props) {
         continue;
       }
 
-      const value = getReferenceValue(entry, ref.ref, t) || '-';
+      // When both Korean readings are selected, merge them into one row.
+      if (ref.ref === 'kr' && kanjiReferences.includes('kh')) {
+        continue;
+      }
+
+      const value =
+        ref.ref === 'kh' && kanjiReferences.includes('kr')
+          ? `${getReferenceValue(entry, 'kh', t) || '-'} / ${getReferenceValue(entry, 'kr', t) || '-'}`
+          : getReferenceValue(entry, ref.ref, t) || '-';
+
       referenceTableInfo.push({
         ref: ref.ref,
         name: { lang: ref.lang, value: ref.short || ref.full },
