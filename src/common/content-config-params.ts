@@ -59,6 +59,10 @@ export interface ContentConfigParams {
   // being collapsed to show only the top entries.
   autoExpand: Array<AutoExpandableEntry>;
 
+  // True if the popup's reading should be read aloud automatically when the
+  // popup is shown on hover, using the browser's Web Speech API.
+  autoSpeak: boolean;
+
   // Whether or not we should show Bunpro deck information alongside headwords.
   bunproDisplay: boolean;
 

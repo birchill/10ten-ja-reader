@@ -2,6 +2,7 @@ import type { Config } from '../common/config';
 import { I18nProvider } from '../common/i18n';
 import { possiblyHasPhysicalKeyboard } from '../utils/device';
 
+import { AudioSettings } from './AudioSettings';
 import { CopySettings } from './CopySettings';
 import { CurrencySettings } from './CurrencySettings';
 import { DictionaryDataSettings } from './DictionaryDataSettings';
@@ -25,6 +26,7 @@ export function OptionsPage(props: Props) {
         <GeneralSettings config={props.config} />
         <PopupStyleSettings config={props.config} />
         <PopupInteractivitySettings config={props.config} />
+        <AudioSettings config={props.config} />
         <CurrencySettings config={props.config} />
         <UnitSettings config={props.config} />
         {hasKeyboard && <KeyboardSettings config={props.config} />}

@@ -2578,6 +2578,53 @@ export class ContentHandler {
       displayMode: 'hover',
       fixPosition: false,
     });
+
+    if (this.#config.autoSpeak) {
+      this.speakCurrentReading();
+    }
+  }
+
+  // Auto-speak: track the most recently spoken text so we don't repeat the
+  // same utterance every time the popup re-renders for the same word.
+  #lastSpokenText: string | undefined;
+
+  speakCurrentReading() {
+    if (
+      typeof window === 'undefined' ||
+      typeof window.speechSynthesis === 'undefined'
+    ) {
+      return;
+    }
+
+    // Prefer the matched text from the page (including any inflection,
+    // e.g. 寄与しませんでした) over the dictionary headword (寄与) so the
+    // user hears the whole word as it appears.
+    const firstWord = this.#currentSearchResult?.words?.data[0];
+    const lookupText = this.#currentLookupParams?.text;
+    const matchLen = firstWord?.matchLen;
+    const matchedSurface =
+      lookupText && matchLen ? lookupText.slice(0, matchLen) : undefined;
+    const text = matchedSurface || firstWord?.r[0]?.ent;
+    if (!text || text === this.#lastSpokenText) {
+      return;
+    }
+
+    this.#lastSpokenText = text;
+
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'ja-JP';
+      const jaVoice = window.speechSynthesis
+        .getVoices()
+        .find((v) => v.lang === 'ja-JP' || v.lang.startsWith('ja'));
+      if (jaVoice) {
+        utterance.voice = jaVoice;
+      }
+      window.speechSynthesis.speak(utterance);
+    } catch {
+      // Speech synthesis is best-effort; ignore failures.
+    }
   }
 
   hidePopup() {
@@ -2586,6 +2633,18 @@ export class ContentHandler {
     this.#currentLookupParams = undefined;
     this.#currentSearchResult = undefined;
     this.#currentTargetProps = undefined;
+    this.#lastSpokenText = undefined;
+
+    if (
+      typeof window !== 'undefined' &&
+      typeof window.speechSynthesis !== 'undefined'
+    ) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch {
+        // Ignore.
+      }
+    }
 
     hidePopup();
 
