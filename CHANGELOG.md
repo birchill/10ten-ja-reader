@@ -17,6 +17,9 @@ app.
 - Added support for Korean and Vietnamese readings
   ([#2808](https://github.com/birchill/10ten-ja-reader/pull/2808)).
 - Worked around a [major string substitution bug in Safari](https://bugs.webkit.org/show_bug.cgi?id=306492).
+- Stop showing the popup for number-only matches in the name dictionary
+  (e.g. 64)
+  ([#811](https://github.com/birchill/10ten-ja-reader/issues/811)).
 
 ## [1.26.1] - 2025-12-23
 

@@ -35,15 +35,13 @@ export async function nameSearch({
   // entries when matching on variants
   const have = new Set<number>();
 
-  let currentString = input;
-
-  while (currentString.length > 0) {
+  while (input.length > 0) {
     // Check if we have been aborted
     if (abortSignal?.aborted) {
       throw new AbortError();
     }
 
-    const currentInputLength = inputLengths[currentString.length];
+    const currentInputLength = inputLengths[input.length];
     if (minInputLength && minInputLength > currentInputLength) {
       break;
     }
@@ -54,11 +52,11 @@ export async function nameSearch({
     }
 
     // Expand ー to its various possibilities
-    const variations = [currentString, ...expandChoon(currentString)];
+    const variations = [input, ...expandChoon(input)];
 
     // See if there are any 旧字体 we can convert to 新字体
-    const toNew = kyuujitaiToShinjitai(currentString);
-    if (toNew !== currentString) {
+    const toNew = kyuujitaiToShinjitai(input);
+    if (toNew !== input) {
       variations.push(toNew);
     }
 
@@ -113,11 +111,8 @@ export async function nameSearch({
     }
 
     // Shorten input, but don't split a ようおん (e.g. きゃ).
-    const lengthToShorten = endsInYoon(currentString) ? 2 : 1;
-    currentString = currentString.substr(
-      0,
-      currentString.length - lengthToShorten
-    );
+    const lengthToShorten = endsInYoon(input) ? 2 : 1;
+    input = input.substring(0, input.length - lengthToShorten);
   }
 
   if (!result.data.length) {
