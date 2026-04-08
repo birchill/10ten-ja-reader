@@ -1,4 +1,5 @@
 import {
+  addNoSplitPoint,
   addRangeToNoSplitMask,
   assertNoSplitMaskLength,
 } from '../common/no-split-mask';
@@ -212,6 +213,10 @@ export function scanText({
 
   const result: ScanTextResult = { text: '', textRange: [], sourceContext };
   let noSplitMask = 0;
+  const noSplitState = {
+    hasOpenRtSegment: false,
+    rtElement: null as Element | null,
+  };
 
   let textDelimiter = nonJapaneseChar;
 
@@ -262,6 +267,7 @@ export function scanText({
       const textToAppend = nodeText.substring(0, textEnd);
       noSplitMask = addNoSplitRanges({
         noSplitMask,
+        noSplitState,
         node,
         text: textToAppend,
         outputOffset: result.text.length,
@@ -274,6 +280,7 @@ export function scanText({
     // The whole text node is allowed characters, keep going.
     noSplitMask = addNoSplitRanges({
       noSplitMask,
+      noSplitState,
       node,
       text: nodeText,
       outputOffset: result.text.length,
@@ -323,17 +330,32 @@ export function scanText({
 
 function addNoSplitRanges({
   noSplitMask,
+  noSplitState,
   node,
   text,
   outputOffset,
 }: {
   noSplitMask: number;
+  noSplitState: { hasOpenRtSegment: boolean; rtElement: Element | null };
   node: Text;
   text: string;
   outputOffset: number;
 }): number {
-  if (!text.length || !node.parentElement?.closest('rt')) {
+  const rtElement = node.parentElement?.closest('rt');
+  if (!text.length || !rtElement) {
+    noSplitState.hasOpenRtSegment = false;
+    noSplitState.rtElement = null;
     return noSplitMask;
+  }
+
+  if (
+    outputOffset > 0 &&
+    noSplitState.hasOpenRtSegment &&
+    noSplitState.rtElement === rtElement
+  ) {
+    // Continue a no-split segment that started in a previous adjacent text
+    // node within the same <rt>.
+    noSplitMask = addNoSplitPoint(noSplitMask, outputOffset - 1);
   }
 
   // Treat all content in <rt> as indivisible except around center dots.
@@ -352,9 +374,13 @@ function addNoSplitRanges({
     }
 
     if (dotOffset === -1) {
+      noSplitState.hasOpenRtSegment = segmentEnd > segmentStart;
+      noSplitState.rtElement = rtElement;
       break;
     }
 
+    noSplitState.hasOpenRtSegment = false;
+    noSplitState.rtElement = rtElement;
     segmentStart = dotOffset + 1;
   }
   return noSplitMask;

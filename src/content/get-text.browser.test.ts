@@ -831,6 +831,24 @@ describe('getTextAtPoint', () => {
       expect(result?.noSplitMask).toBe(71);
     });
 
+    it('does not allow splitting a single rt segment across adjacent text nodes', () => {
+      // Arrange
+      testDiv.innerHTML =
+        '<ruby>牽制<rt><span>けん</span><span>せい</span></rt></ruby>して';
+      const firstRtNode = testDiv.firstChild!.childNodes[1].firstChild!
+        .firstChild as Text;
+      const bbox = getBboxForOffset(firstRtNode, 0);
+
+      // Act
+      const result = getTextAtPoint({
+        point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 4 },
+      });
+
+      // Assert
+      expect(result?.text).toBe('けんせいして');
+      expect(result?.noSplitMask).toBe(7);
+    });
+
     it('splits indivisible ranges at center dots in rt text', () => {
       // Arrange
       testDiv.innerHTML =
