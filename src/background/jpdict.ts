@@ -19,6 +19,7 @@ import {
   MAX_LOOKUP_LENGTH,
   MAX_TRANSLATE_INPUT_LENGTH,
 } from '../common/limits';
+import { remapNoSplitMaskToNormalized } from '../common/no-split-mask';
 import { japaneseChar } from '../utils/char-range';
 import { normalizeInput } from '../utils/normalize';
 import { JpdictWorkerBackend } from '../worker/jpdict-worker-backend';
@@ -322,7 +323,8 @@ export async function searchWords({
   ]
 > {
   let [word, inputLengths] = normalizeInput(input);
-  noSplitMask = addYoonToNoSplitMask(input, noSplitMask);
+  noSplitMask = remapNoSplitMaskToNormalized({ inputLengths, noSplitMask });
+  noSplitMask = addYoonToNoSplitMask({ input: word, noSplitMask });
 
   const maxResults =
     max > 0 ? Math.min(WORDS_MAX_ENTRIES, max) : WORDS_MAX_ENTRIES;
@@ -537,7 +539,8 @@ export async function searchNames({
   }
 
   const [normalized, inputLengths] = normalizeInput(input);
-  noSplitMask = addYoonToNoSplitMask(input, noSplitMask);
+  noSplitMask = remapNoSplitMaskToNormalized({ inputLengths, noSplitMask });
+  noSplitMask = addYoonToNoSplitMask({ input: normalized, noSplitMask });
 
   return nameSearch({
     abortSignal,

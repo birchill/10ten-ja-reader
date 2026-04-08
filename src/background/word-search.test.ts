@@ -41,7 +41,26 @@ describe('wordSearch', () => {
       },
       input: normalized,
       inputLengths,
-      noSplitMask: addYoonToNoSplitMask('きゃ'),
+      noSplitMask: addYoonToNoSplitMask({ input: normalized }),
+      maxResults: 10,
+    });
+
+    expect(lookups).toContain('きゃ');
+    expect(lookups).not.toContain('き');
+  });
+
+  it('does not split a yoon separated by stripped zwnj when shortening', async () => {
+    const [normalized, inputLengths] = normalizeInput('き\u200cゃ');
+    const lookups: Array<string> = [];
+
+    await wordSearch({
+      getWords: async ({ input }) => {
+        lookups.push(input);
+        return [];
+      },
+      input: normalized,
+      inputLengths,
+      noSplitMask: addYoonToNoSplitMask({ input: normalized }),
       maxResults: 10,
     });
 

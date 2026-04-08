@@ -8,7 +8,13 @@ const yoonStart = [
 // ゃゅょ
 const smallY = [0x3083, 0x3085, 0x3087];
 
-export function addYoonToNoSplitMask(input: string, noSplitMask = 0): number {
+export function addYoonToNoSplitMask({
+  input,
+  noSplitMask = 0,
+}: {
+  input: string;
+  noSplitMask?: number;
+}): number {
   for (let offset = 0; offset < input.length - 1; ++offset) {
     if (isYoon(input, offset)) {
       noSplitMask = addNoSplitPoint(noSplitMask, offset);

@@ -41,6 +41,24 @@ export function addNoSplitPoint(
   return (mask | (1 << offset)) >>> 0;
 }
 
+export function remapNoSplitMaskToNormalized({
+  inputLengths,
+  noSplitMask = 0,
+}: {
+  inputLengths: Array<number>;
+  noSplitMask?: number;
+}): NoSplitMask {
+  let normalizedMask = 0;
+
+  for (let offset = 1; offset < inputLengths.length; ++offset) {
+    if (isNoSplitPoint(noSplitMask, inputLengths[offset])) {
+      normalizedMask = addNoSplitPoint(normalizedMask, offset - 1);
+    }
+  }
+
+  return normalizedMask;
+}
+
 export function isNoSplitPoint(
   mask: NoSplitMask | undefined,
   // Represents the offset to check if we can split _before_.

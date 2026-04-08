@@ -115,14 +115,10 @@ export async function nameSearch({
     // Shorten input, but don't split at any blocked boundary such as inside a
     // ようおん (e.g. きゃ).
     let nextInputLength = input.length - 1;
-    while (nextInputLength > 0) {
-      const nextMatchLength = inputLengths[nextInputLength];
-      if (
-        typeof nextMatchLength !== 'number' ||
-        !isNoSplitPoint(noSplitMask, nextMatchLength)
-      ) {
-        break;
-      }
+    while (
+      nextInputLength > 0 &&
+      isNoSplitPoint(noSplitMask, nextInputLength)
+    ) {
       nextInputLength -= 1;
     }
     input = input.substring(0, Math.max(nextInputLength, 0));
