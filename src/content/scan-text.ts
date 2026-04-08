@@ -344,7 +344,7 @@ function addNoSplitRanges({
     const dotOffset = text.indexOf('・', segmentStart);
     const segmentEnd = dotOffset === -1 ? text.length : dotOffset;
     if (segmentEnd > segmentStart) {
-      noSplitMask = pushNoSplitRange(
+      noSplitMask = addRangeToNoSplitMask(
         noSplitMask,
         outputOffset + segmentStart,
         outputOffset + segmentEnd
@@ -356,14 +356,6 @@ function addNoSplitRanges({
     segmentStart = dotOffset + 1;
   }
   return noSplitMask;
-}
-
-function pushNoSplitRange(
-  noSplitMask: number,
-  start: number,
-  end: number
-): number {
-  return addRangeToNoSplitMask(noSplitMask, start, end);
 }
 
 // ----------------------------------------------------------------------------
