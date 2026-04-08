@@ -8,16 +8,6 @@ const yoonStart = [
 // ゃゅょ
 const smallY = [0x3083, 0x3085, 0x3087];
 
-export function isYoon(input: string, offset: number): boolean {
-  const length = input.length;
-  return (
-    offset >= 0 &&
-    offset + 1 < length &&
-    yoonStart.includes(input.charCodeAt(offset)) &&
-    smallY.includes(input.charCodeAt(offset + 1))
-  );
-}
-
 export function addYoonToNoSplitMask(input: string, noSplitMask = 0): number {
   for (let offset = 0; offset < input.length - 1; ++offset) {
     if (isYoon(input, offset)) {
@@ -26,4 +16,14 @@ export function addYoonToNoSplitMask(input: string, noSplitMask = 0): number {
     }
   }
   return noSplitMask;
+}
+
+function isYoon(input: string, offset: number): boolean {
+  const length = input.length;
+  return (
+    offset >= 0 &&
+    offset + 1 < length &&
+    yoonStart.includes(input.charCodeAt(offset)) &&
+    smallY.includes(input.charCodeAt(offset + 1))
+  );
 }

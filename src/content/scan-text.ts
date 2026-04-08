@@ -350,9 +350,11 @@ function addNoSplitRanges({
         outputOffset + segmentEnd
       );
     }
+
     if (dotOffset === -1) {
       break;
     }
+
     segmentStart = dotOffset + 1;
   }
   return noSplitMask;
