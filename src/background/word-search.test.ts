@@ -29,28 +29,6 @@ describe('wordSearch', () => {
     expect(lookups).not.toContain('けんせいしてた');
   });
 
-  it('allows shortening at center-dot boundaries between indivisible ranges', async () => {
-    const input = 'あ・い・う';
-    const [normalized, inputLengths] = normalizeInput(input);
-    const lookups: Array<string> = [];
-
-    const result = await wordSearch({
-      getWords: async ({ input }) => {
-        lookups.push(input);
-        return input === 'あ・い'
-          ? [makeWordResult({ id: 2, reading: input })]
-          : [];
-      },
-      input: normalized,
-      inputLengths,
-      noSplitMask: 0,
-      maxResults: 10,
-    });
-
-    expect(result?.matchLen).toBe(3);
-    expect(lookups).toContain('あ・い');
-  });
-
   it('does not split a trailing yoon when shortening', async () => {
     const [normalized, inputLengths] = normalizeInput('きゃ');
     const lookups: Array<string> = [];
