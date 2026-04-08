@@ -10,7 +10,6 @@ import type {
   TranslateResult,
   WordSearchResult,
 } from '../background/search-result';
-import type { IndivisibleRanges } from '../common/indivisible-range';
 import { hasKatakana } from '../utils/char-range';
 import { omit } from '../utils/omit';
 
@@ -28,7 +27,7 @@ export type QueryResult = {
 export type NamePreview = { names: Array<NameResult>; more: boolean };
 
 export interface QueryOptions {
-  indivisibleRanges?: IndivisibleRanges;
+  noSplitMask?: number;
   metaMatchLen?: number;
   wordLookup: boolean;
   updateQueryResult: (result: QueryResult | null) => void;
@@ -131,7 +130,7 @@ async function queryWords(
     message = {
       type: 'searchWords',
       input: text,
-      indivisibleRanges: options.indivisibleRanges,
+      noSplitMask: options.noSplitMask,
     };
   } else {
     message = { type: 'translate', input: text };
@@ -307,17 +306,15 @@ function addNamePreview(result: QueryResult): QueryResult {
 }
 
 function getCacheKey({
-  indivisibleRanges,
+  noSplitMask,
   text,
   wordLookup,
 }: {
-  indivisibleRanges?: IndivisibleRanges;
+  noSplitMask?: number;
   text: string;
   wordLookup: boolean;
 }): string {
-  return [
-    text,
-    wordLookup ? '1' : '0',
-    JSON.stringify(indivisibleRanges || []),
-  ].join('-');
+  return [text, wordLookup ? '1' : '0', JSON.stringify(noSplitMask || 0)].join(
+    '-'
+  );
 }

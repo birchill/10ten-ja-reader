@@ -828,10 +828,7 @@ describe('getTextAtPoint', () => {
 
       // Assert
       expect(result?.text).toBe('けんせいしてたすけに');
-      expect(result?.indivisibleRanges).toEqual([
-        [0, 4],
-        [6, 8],
-      ]);
+      expect(result?.noSplitMask).toBe(71);
     });
 
     it('splits indivisible ranges at center dots in rt text', () => {
@@ -848,11 +845,7 @@ describe('getTextAtPoint', () => {
 
       // Assert
       expect(result?.text).toBe('シー・イー・オーです');
-      expect(result?.indivisibleRanges).toEqual([
-        [0, 2],
-        [3, 5],
-        [6, 8],
-      ]);
+      expect(result?.noSplitMask).toBe(73);
     });
 
     it('traverses okurigana in inline-block elements too', () => {

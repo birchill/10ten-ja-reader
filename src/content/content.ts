@@ -57,7 +57,6 @@ import type {
 } from '../common/content-config-params';
 import type { CopyType } from '../common/copy-keys';
 import { CopyKeys } from '../common/copy-keys';
-import type { IndivisibleRanges } from '../common/indivisible-range';
 import { MAX_LOOKUP_LENGTH } from '../common/limits';
 import { isEditableNode, isInteractiveElement } from '../utils/dom-utils';
 import type { MarginBox, Point, Rect } from '../utils/geometry';
@@ -237,7 +236,7 @@ export class ContentHandler {
     | {
         text: string;
         wordLookup: boolean;
-        indivisibleRanges?: IndivisibleRanges;
+        noSplitMask?: number;
         meta?: SelectionMeta;
         source: IframeSourceParams | null;
         sourceContext: SourceContext | null;
@@ -1918,7 +1917,7 @@ export class ContentHandler {
 
     const lookupParams = {
       dictMode,
-      indivisibleRanges: textAtPoint.indivisibleRanges,
+      noSplitMask: textAtPoint.noSplitMask,
       meta: textAtPoint.meta,
       source: null,
       sourceContext: textAtPoint.sourceContext,
@@ -1958,7 +1957,7 @@ export class ContentHandler {
 
   async lookupText({
     dictMode,
-    indivisibleRanges,
+    noSplitMask,
     meta,
     source,
     sourceContext,
@@ -1967,7 +1966,7 @@ export class ContentHandler {
     wordLookup,
   }: {
     dictMode: 'default' | 'kanji';
-    indivisibleRanges?: IndivisibleRanges;
+    noSplitMask?: number;
     meta?: SelectionMeta;
     source: IframeSourceParams | null;
     sourceContext: SourceContext | null;
@@ -1979,7 +1978,7 @@ export class ContentHandler {
       text,
       meta,
       wordLookup,
-      indivisibleRanges,
+      noSplitMask,
       source,
       sourceContext,
     };
@@ -1991,13 +1990,13 @@ export class ContentHandler {
     this.#isPopupExpanded = false;
 
     const queryResult = await query(text, {
-      indivisibleRanges,
+      noSplitMask,
       metaMatchLen: meta?.matchLen,
       wordLookup,
       updateQueryResult: (queryResult: QueryResult | null) => {
         void this.applyQueryResult({
           dictMode,
-          indivisibleRanges,
+          noSplitMask,
           meta,
           queryResult,
           targetProps,
@@ -2009,7 +2008,7 @@ export class ContentHandler {
 
     void this.applyQueryResult({
       dictMode,
-      indivisibleRanges,
+      noSplitMask,
       meta,
       queryResult,
       targetProps,
@@ -2020,7 +2019,7 @@ export class ContentHandler {
 
   async applyQueryResult({
     dictMode,
-    indivisibleRanges,
+    noSplitMask,
     meta,
     queryResult,
     targetProps,
@@ -2028,14 +2027,14 @@ export class ContentHandler {
     wordLookup,
   }: {
     dictMode: 'default' | 'kanji';
-    indivisibleRanges?: IndivisibleRanges;
+    noSplitMask?: number;
     meta?: SelectionMeta;
     queryResult: QueryResult | null;
     targetProps: TargetProps;
     text: string;
     wordLookup: boolean;
   }) {
-    const lookupParams = { text, meta, wordLookup, indivisibleRanges };
+    const lookupParams = { text, meta, wordLookup, noSplitMask };
 
     // Check if we have triggered a new query or been disabled while running
     // the previous query.

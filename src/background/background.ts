@@ -396,7 +396,7 @@ function notifyDbListeners(specifiedListener?: Runtime.Port) {
 
 async function searchWords({
   input,
-  indivisibleRanges,
+  noSplitMask,
   abortSignal,
 }: SearchRequest & {
   abortSignal: AbortSignal;
@@ -406,7 +406,7 @@ async function searchWords({
   const [words, dbStatus] = await jpdictSearchWords({
     abortSignal,
     input,
-    indivisibleRanges,
+    noSplitMask,
   });
 
   return { words, dbStatus };

@@ -3,11 +3,9 @@ import * as s from 'superstruct';
 
 import { PopupStateSchema } from '../content/popup-state';
 
-const IndivisibleRangeSchema = s.tuple([s.number(), s.number()]);
-
 const SearchRequestSchema = s.type({
   input: s.string(),
-  indivisibleRanges: s.optional(s.array(IndivisibleRangeSchema)),
+  noSplitMask: s.optional(s.number()),
 });
 
 export type SearchRequest = s.Infer<typeof SearchRequestSchema>;

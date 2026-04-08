@@ -1,4 +1,7 @@
-import type { IndivisibleRanges } from '../common/indivisible-range';
+import {
+  addRangeToNoSplitMask,
+  assertNoSplitMaskLength,
+} from '../common/no-split-mask';
 import { nonJapaneseChar } from '../utils/char-range';
 import { normalizeContext } from '../utils/normalize';
 
@@ -37,8 +40,8 @@ export type ScanTextResult = {
   // Extra metadata we parsed in the process
   meta?: SelectionMeta;
 
-  // Ranges in `text` that should not be split during lookup.
-  indivisibleRanges?: IndivisibleRanges;
+  // Boundaries in `text` that should not be split during lookup.
+  noSplitMask?: number;
 };
 
 export function scanText({
@@ -208,7 +211,7 @@ export function scanText({
   }
 
   const result: ScanTextResult = { text: '', textRange: [], sourceContext };
-  const indivisibleRanges: IndivisibleRanges = [];
+  let noSplitMask = 0;
 
   let textDelimiter = nonJapaneseChar;
 
@@ -257,8 +260,8 @@ export function scanText({
       // The text node has disallowed characters mid-way through so
       // return up to that point.
       const textToAppend = nodeText.substring(0, textEnd);
-      addIndivisibleRanges({
-        indivisibleRanges,
+      noSplitMask = addNoSplitRanges({
+        noSplitMask,
         node,
         text: textToAppend,
         outputOffset: result.text.length,
@@ -269,8 +272,8 @@ export function scanText({
     }
 
     // The whole text node is allowed characters, keep going.
-    addIndivisibleRanges({
-      indivisibleRanges,
+    noSplitMask = addNoSplitRanges({
+      noSplitMask,
       node,
       text: nodeText,
       outputOffset: result.text.length,
@@ -310,26 +313,27 @@ export function scanText({
 
   trimSourceContext(sourceContext, result.text.length);
   result.meta = extractGetTextMetadata({ text: result.text, matchCurrency });
-  if (indivisibleRanges.length) {
-    result.indivisibleRanges = indivisibleRanges;
+  assertNoSplitMaskLength(result.text.length);
+  if (noSplitMask) {
+    result.noSplitMask = noSplitMask;
   }
 
   return result;
 }
 
-function addIndivisibleRanges({
-  indivisibleRanges,
+function addNoSplitRanges({
+  noSplitMask,
   node,
   text,
   outputOffset,
 }: {
-  indivisibleRanges: IndivisibleRanges;
+  noSplitMask: number;
   node: Text;
   text: string;
   outputOffset: number;
-}) {
+}): number {
   if (!text.length || !node.parentElement?.closest('rt')) {
-    return;
+    return noSplitMask;
   }
 
   // Treat all content in <rt> as indivisible except around center dots.
@@ -340,29 +344,26 @@ function addIndivisibleRanges({
     const dotOffset = text.indexOf('・', segmentStart);
     const segmentEnd = dotOffset === -1 ? text.length : dotOffset;
     if (segmentEnd > segmentStart) {
-      pushIndivisibleRange(indivisibleRanges, [
+      noSplitMask = pushNoSplitRange(
+        noSplitMask,
         outputOffset + segmentStart,
-        outputOffset + segmentEnd,
-      ]);
+        outputOffset + segmentEnd
+      );
     }
     if (dotOffset === -1) {
       break;
     }
     segmentStart = dotOffset + 1;
   }
+  return noSplitMask;
 }
 
-function pushIndivisibleRange(
-  indivisibleRanges: IndivisibleRanges,
-  range: [start: number, end: number]
-) {
-  const lastRange = indivisibleRanges.at(-1);
-  if (!lastRange || lastRange[1] < range[0]) {
-    indivisibleRanges.push(range);
-    return;
-  }
-
-  lastRange[1] = Math.max(lastRange[1], range[1]);
+function pushNoSplitRange(
+  noSplitMask: number,
+  start: number,
+  end: number
+): number {
+  return addRangeToNoSplitMask(noSplitMask, start, end);
 }
 
 // ----------------------------------------------------------------------------

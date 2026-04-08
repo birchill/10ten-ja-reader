@@ -6,7 +6,7 @@ import type { DictionaryWordResult } from './search-result';
 import { wordSearch } from './word-search';
 
 describe('wordSearch', () => {
-  it('does not split inside indivisible ranges while shortening', async () => {
+  it('does not split inside indivisible boundaries while shortening', async () => {
     const input = 'けんせいしてたすけに';
     const [normalized, inputLengths] = normalizeInput(input);
     const lookups: Array<string> = [];
@@ -20,7 +20,7 @@ describe('wordSearch', () => {
       },
       input: normalized,
       inputLengths,
-      indivisibleRanges: [[6, 8]],
+      noSplitMask: 1 << 6,
       maxResults: 10,
     });
 
@@ -43,11 +43,7 @@ describe('wordSearch', () => {
       },
       input: normalized,
       inputLengths,
-      indivisibleRanges: [
-        [0, 1],
-        [2, 3],
-        [4, 5],
-      ],
+      noSplitMask: 0,
       maxResults: 10,
     });
 

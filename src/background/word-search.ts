@@ -1,7 +1,7 @@
 import { AbortError } from '@birchill/jpdict-idb';
 import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
 
-import type { IndivisibleRanges } from '../common/indivisible-range';
+import { isNoSplitPoint } from '../common/no-split-mask';
 import { isOnlyDigits } from '../utils/char-range';
 import { toRomaji } from '../utils/romaji';
 
@@ -26,14 +26,14 @@ export async function wordSearch({
   getWords,
   input,
   inputLengths,
-  indivisibleRanges,
+  noSplitMask,
   maxResults,
 }: {
   abortSignal?: AbortSignal;
   getWords: GetWordsFunction;
   input: string;
   inputLengths: Array<number>;
-  indivisibleRanges?: IndivisibleRanges;
+  noSplitMask?: number;
   maxResults: number;
 }): Promise<WordSearchResult | null> {
   let longestMatch = 0;
@@ -128,7 +128,7 @@ export async function wordSearch({
       const nextMatchLength = inputLengths[nextInputLength];
       if (
         typeof nextMatchLength !== 'number' ||
-        !isInIndivisibleRange(nextMatchLength, indivisibleRanges)
+        !isNoSplitPoint(noSplitMask, nextMatchLength)
       ) {
         break;
       }
@@ -145,15 +145,6 @@ export async function wordSearch({
 
   result.matchLen = longestMatch;
   return result;
-}
-
-function isInIndivisibleRange(
-  offset: number,
-  indivisibleRanges: IndivisibleRanges | undefined
-): boolean {
-  return !!indivisibleRanges?.some(
-    ([start, end]) => offset > start && offset < end
-  );
 }
 
 async function lookupCandidates({
