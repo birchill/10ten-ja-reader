@@ -23,7 +23,7 @@ export function addRangeToNoSplitMask(
   end: number
 ): NoSplitMask {
   console.assert(start >= 0, 'NoSplitMask range start should be >= 0');
-  console.assert(end >= start, 'NoSplitMask range end should be >= start');
+  console.assert(end > start, 'NoSplitMask range end should be > start');
   assertNoSplitMaskLength(end);
 
   for (let offset = start + 1; offset < end; ++offset) {
