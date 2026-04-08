@@ -26,8 +26,8 @@ export function addRangeToNoSplitMask(
   console.assert(end > start, 'NoSplitMask range end should be > start');
   assertNoSplitMaskLength(end);
 
-  for (let offset = start + 1; offset < end; ++offset) {
-    mask |= 1 << (offset - 1);
+  for (let offset = start; offset < end - 1; ++offset) {
+    mask |= 1 << offset;
   }
   return mask >>> 0;
 }
