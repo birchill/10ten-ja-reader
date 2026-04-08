@@ -22,6 +22,7 @@ export function addYoonToNoSplitMask(input: string, noSplitMask = 0): number {
   for (let offset = 0; offset < input.length - 1; ++offset) {
     if (isYoon(input, offset)) {
       noSplitMask = addNoSplitPoint(noSplitMask, offset);
+      offset += 1;
     }
   }
   return noSplitMask;
