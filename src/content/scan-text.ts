@@ -351,7 +351,8 @@ function addNoSplitRanges({
   if (
     outputOffset > 0 &&
     noSplitState.hasOpenRtSegment &&
-    noSplitState.rtElement === rtElement
+    noSplitState.rtElement === rtElement &&
+    !text.startsWith('・')
   ) {
     // Continue a no-split segment that started in a previous adjacent text
     // node within the same <rt>.

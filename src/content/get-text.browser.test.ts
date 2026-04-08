@@ -866,6 +866,23 @@ describe('getTextAtPoint', () => {
       expect(result?.noSplitMask).toBe(73);
     });
 
+    it('allows splitting around center dots when rt text is split across nodes', () => {
+      // Arrange
+      testDiv.innerHTML =
+        '<ruby>最高経営責任者<rt>シー<span>・</span>イー</rt></ruby>です';
+      const rtNode = testDiv.firstChild!.childNodes[1].firstChild as Text;
+      const bbox = getBboxForOffset(rtNode, 0);
+
+      // Act
+      const result = getTextAtPoint({
+        point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 4 },
+      });
+
+      // Assert
+      expect(result?.text).toBe('シー・イーです');
+      expect(result?.noSplitMask).toBe(9);
+    });
+
     it('traverses okurigana in inline-block elements too', () => {
       // Arrange
 
