@@ -43,6 +43,10 @@ export function addNoSplitPoint(
 
 export function isNoSplitPoint(
   mask: NoSplitMask | undefined,
+  // Represents the offset to check if we can split _before_.
+  //
+  // i.e. this function returns true if we should not split _before_ this code
+  // unit offset.
   offset: number
 ): boolean {
   if (!mask || offset <= 0) {
