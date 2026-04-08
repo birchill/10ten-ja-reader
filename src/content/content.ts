@@ -2585,8 +2585,10 @@ export class ContentHandler {
   }
 
   // Auto-speak: track the most recently spoken text so we don't repeat the
-  // same utterance every time the popup re-renders for the same word.
+  // same utterance every time the popup re-renders for the same word, and
+  // track the last utterance we created so we only cancel our own speech.
   #lastSpokenText: string | undefined;
+  #lastUtterance: SpeechSynthesisUtterance | undefined;
 
   speakCurrentReading() {
     if (
@@ -2609,10 +2611,10 @@ export class ContentHandler {
       return;
     }
 
-    this.#lastSpokenText = text;
-
     try {
-      window.speechSynthesis.cancel();
+      if (this.#lastUtterance) {
+        window.speechSynthesis.cancel();
+      }
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'ja-JP';
       const jaVoice = window.speechSynthesis
@@ -2622,8 +2624,11 @@ export class ContentHandler {
         utterance.voice = jaVoice;
       }
       window.speechSynthesis.speak(utterance);
+      this.#lastUtterance = utterance;
+      this.#lastSpokenText = text;
     } catch {
       // Speech synthesis is best-effort; ignore failures.
+      this.#lastSpokenText = undefined;
     }
   }
 
@@ -2635,7 +2640,10 @@ export class ContentHandler {
     this.#currentTargetProps = undefined;
     this.#lastSpokenText = undefined;
 
+    // Only cancel speech synthesis if we previously started an utterance
+    // ourselves, to avoid clobbering speech initiated by the page.
     if (
+      this.#lastUtterance &&
       typeof window !== 'undefined' &&
       typeof window.speechSynthesis !== 'undefined'
     ) {
@@ -2644,6 +2652,7 @@ export class ContentHandler {
       } catch {
         // Ignore.
       }
+      this.#lastUtterance = undefined;
     }
 
     hidePopup();
