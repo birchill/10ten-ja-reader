@@ -37,6 +37,7 @@ import type {
 } from './search-result';
 import type { GetWordsFunction } from './word-search';
 import { wordSearch } from './word-search';
+import { addYoonToNoSplitMask } from './yoon';
 
 //
 // Exported types
@@ -321,6 +322,7 @@ export async function searchWords({
   ]
 > {
   let [word, inputLengths] = normalizeInput(input);
+  noSplitMask = addYoonToNoSplitMask(input, noSplitMask);
 
   const maxResults =
     max > 0 ? Math.min(WORDS_MAX_ENTRIES, max) : WORDS_MAX_ENTRIES;
@@ -521,10 +523,12 @@ const NAMES_MAX_ENTRIES = 20;
 export async function searchNames({
   abortSignal,
   input,
+  noSplitMask,
   minLength,
 }: {
   abortSignal?: AbortSignal;
   input: string;
+  noSplitMask?: number;
   minLength?: number;
 }): Promise<NameSearchResult | null | 'unavailable' | 'updating'> {
   const dbStatus = getDataSeriesStatus('names');
@@ -533,11 +537,13 @@ export async function searchNames({
   }
 
   const [normalized, inputLengths] = normalizeInput(input);
+  noSplitMask = addYoonToNoSplitMask(input, noSplitMask);
 
   return nameSearch({
     abortSignal,
     input: normalized,
     inputLengths,
+    noSplitMask,
     minInputLength: minLength,
     maxResults: NAMES_MAX_ENTRIES,
   });

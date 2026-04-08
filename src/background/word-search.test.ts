@@ -4,6 +4,7 @@ import { normalizeInput } from '../utils/normalize';
 
 import type { DictionaryWordResult } from './search-result';
 import { wordSearch } from './word-search';
+import { addYoonToNoSplitMask } from './yoon';
 
 describe('wordSearch', () => {
   it('does not split inside indivisible boundaries while shortening', async () => {
@@ -40,6 +41,7 @@ describe('wordSearch', () => {
       },
       input: normalized,
       inputLengths,
+      noSplitMask: addYoonToNoSplitMask('きゃ'),
       maxResults: 10,
     });
 

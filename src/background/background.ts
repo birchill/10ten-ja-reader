@@ -414,6 +414,7 @@ async function searchWords({
 
 async function searchOther({
   input,
+  noSplitMask,
   wordsMatchLen,
   abortSignal,
 }: SearchOtherRequest & {
@@ -422,7 +423,7 @@ async function searchOther({
   await dbReady;
 
   // Names
-  const nameResult = await searchNames({ abortSignal, input });
+  const nameResult = await searchNames({ abortSignal, input, noSplitMask });
   const names = typeof nameResult === 'string' ? null : nameResult;
 
   if (abortSignal.aborted) {

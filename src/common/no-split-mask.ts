@@ -32,6 +32,15 @@ export function addRangeToNoSplitMask(
   return mask >>> 0;
 }
 
+export function addNoSplitPoint(
+  mask: NoSplitMask,
+  offset: number
+): NoSplitMask {
+  console.assert(offset >= 0, 'NoSplitMask offset should be >= 0');
+  assertNoSplitMaskLength(offset + 2);
+  return (mask | (1 << offset)) >>> 0;
+}
+
 export function isNoSplitPoint(
   mask: NoSplitMask | undefined,
   offset: number

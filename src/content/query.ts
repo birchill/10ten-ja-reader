@@ -206,6 +206,7 @@ async function queryOther(
   const message: BackgroundRequest = {
     type: 'searchOther',
     input: text,
+    noSplitMask: options.noSplitMask,
     wordsMatchLen: Math.max(
       words?.words?.matchLen || 0,
       options.metaMatchLen || 0

@@ -14,7 +14,6 @@ import type {
   WordSearchResult,
 } from './search-result';
 import { sortWordResults } from './word-match-sorting';
-import { endsInYoon } from './yoon';
 
 export type GetWordsFunction = (params: {
   input: string;
@@ -121,9 +120,9 @@ export async function wordSearch({
       break;
     }
 
-    // Shorten input, but don't split a ようおん (e.g. きゃ), and don't split
-    // any caller-provided indivisible segments (e.g. ruby <rt> text).
-    let nextInputLength = input.length - (endsInYoon(input) ? 2 : 1);
+    // Shorten input, but don't split at any blocked boundary such as inside a
+    // ようおん (e.g. きゃ) or caller-provided ruby <rt> text.
+    let nextInputLength = input.length - 1;
     while (nextInputLength > 0) {
       const nextMatchLength = inputLengths[nextInputLength];
       if (
@@ -132,9 +131,7 @@ export async function wordSearch({
       ) {
         break;
       }
-      nextInputLength -= endsInYoon(input.substring(0, nextInputLength))
-        ? 2
-        : 1;
+      nextInputLength -= 1;
     }
     input = input.substring(0, Math.max(nextInputLength, 0));
   }
