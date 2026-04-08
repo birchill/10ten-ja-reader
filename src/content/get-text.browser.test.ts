@@ -814,6 +814,75 @@ describe('getTextAtPoint', () => {
       );
     });
 
+    it('marks rt text as indivisible when scanning across ruby and non-ruby text', () => {
+      // Arrange
+      testDiv.innerHTML =
+        '<ruby>牽制<rt>けんせい</rt></ruby>して<ruby>助<rt>たす</rt></ruby>けに';
+      const firstRtNode = testDiv.firstChild!.childNodes[1].firstChild as Text;
+      const bbox = getBboxForOffset(firstRtNode, 0);
+
+      // Act
+      const result = getTextAtPoint({
+        point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 4 },
+      });
+
+      // Assert
+      expect(result?.text).toBe('けんせいしてたすけに');
+      expect(result?.noSplitMask).toBe(71);
+    });
+
+    it('does not allow splitting a single rt segment across adjacent text nodes', () => {
+      // Arrange
+      testDiv.innerHTML =
+        '<ruby>牽制<rt><span>けん</span><span>せい</span></rt></ruby>して';
+      const firstRtNode = testDiv.firstChild!.childNodes[1].firstChild!
+        .firstChild as Text;
+      const bbox = getBboxForOffset(firstRtNode, 0);
+
+      // Act
+      const result = getTextAtPoint({
+        point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 4 },
+      });
+
+      // Assert
+      expect(result?.text).toBe('けんせいして');
+      expect(result?.noSplitMask).toBe(7);
+    });
+
+    it('splits indivisible ranges at center dots in rt text', () => {
+      // Arrange
+      testDiv.innerHTML =
+        '<ruby>最高経営責任者<rt>シー・イー・オー</rt></ruby>です';
+      const rtNode = testDiv.firstChild!.childNodes[1].firstChild as Text;
+      const bbox = getBboxForOffset(rtNode, 0);
+
+      // Act
+      const result = getTextAtPoint({
+        point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 4 },
+      });
+
+      // Assert
+      expect(result?.text).toBe('シー・イー・オーです');
+      expect(result?.noSplitMask).toBe(73);
+    });
+
+    it('allows splitting around center dots when rt text is split across nodes', () => {
+      // Arrange
+      testDiv.innerHTML =
+        '<ruby>最高経営責任者<rt>シー<span>・</span>イー</rt></ruby>です';
+      const rtNode = testDiv.firstChild!.childNodes[1].firstChild as Text;
+      const bbox = getBboxForOffset(rtNode, 0);
+
+      // Act
+      const result = getTextAtPoint({
+        point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 4 },
+      });
+
+      // Assert
+      expect(result?.text).toBe('シー・イーです');
+      expect(result?.noSplitMask).toBe(9);
+    });
+
     it('traverses okurigana in inline-block elements too', () => {
       // Arrange
 

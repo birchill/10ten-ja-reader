@@ -19,6 +19,7 @@ import {
   MAX_LOOKUP_LENGTH,
   MAX_TRANSLATE_INPUT_LENGTH,
 } from '../common/limits';
+import { remapNoSplitMaskToNormalized } from '../common/no-split-mask';
 import { japaneseChar } from '../utils/char-range';
 import { normalizeInput } from '../utils/normalize';
 import { JpdictWorkerBackend } from '../worker/jpdict-worker-backend';
@@ -37,6 +38,7 @@ import type {
 } from './search-result';
 import type { GetWordsFunction } from './word-search';
 import { wordSearch } from './word-search';
+import { addYoonToNoSplitMask } from './yoon';
 
 //
 // Exported types
@@ -306,10 +308,12 @@ const WORDS_MAX_ENTRIES = 7;
 
 export async function searchWords({
   input,
+  noSplitMask,
   abortSignal,
   max = 0,
 }: {
   input: string;
+  noSplitMask?: number;
   abortSignal?: AbortSignal;
   max?: number;
 }): Promise<
@@ -319,6 +323,8 @@ export async function searchWords({
   ]
 > {
   let [word, inputLengths] = normalizeInput(input);
+  noSplitMask = remapNoSplitMaskToNormalized({ inputLengths, noSplitMask });
+  noSplitMask = addYoonToNoSplitMask({ input: word, noSplitMask });
 
   const maxResults =
     max > 0 ? Math.min(WORDS_MAX_ENTRIES, max) : WORDS_MAX_ENTRIES;
@@ -348,6 +354,7 @@ export async function searchWords({
       getWords,
       input: word,
       inputLengths,
+      noSplitMask,
       maxResults,
     }),
     dbStatus !== 'ok' ? dbStatus : undefined,
@@ -518,10 +525,12 @@ const NAMES_MAX_ENTRIES = 20;
 export async function searchNames({
   abortSignal,
   input,
+  noSplitMask,
   minLength,
 }: {
   abortSignal?: AbortSignal;
   input: string;
+  noSplitMask?: number;
   minLength?: number;
 }): Promise<NameSearchResult | null | 'unavailable' | 'updating'> {
   const dbStatus = getDataSeriesStatus('names');
@@ -530,11 +539,14 @@ export async function searchNames({
   }
 
   const [normalized, inputLengths] = normalizeInput(input);
+  noSplitMask = remapNoSplitMaskToNormalized({ inputLengths, noSplitMask });
+  noSplitMask = addYoonToNoSplitMask({ input: normalized, noSplitMask });
 
   return nameSearch({
     abortSignal,
     input: normalized,
     inputLengths,
+    noSplitMask,
     minInputLength: minLength,
     maxResults: NAMES_MAX_ENTRIES,
   });

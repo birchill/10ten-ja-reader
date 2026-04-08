@@ -3,21 +3,23 @@ import type { NameResult } from '@birchill/jpdict-idb';
 import { AbortError, getNames } from '@birchill/jpdict-idb';
 import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
 
+import { isNoSplitPoint } from '../common/no-split-mask';
 import { isOnlyDigits } from '../utils/char-range';
 
 import type { NameSearchResult } from './search-result';
-import { endsInYoon } from './yoon';
 
 export async function nameSearch({
   abortSignal,
   input,
   inputLengths,
+  noSplitMask,
   minInputLength,
   maxResults,
 }: {
   abortSignal?: AbortSignal;
   input: string;
   inputLengths: Array<number>;
+  noSplitMask?: number;
   minInputLength?: number;
   maxResults: number;
 }): Promise<NameSearchResult | null> {
@@ -110,9 +112,16 @@ export async function nameSearch({
       // for _both_ おうさか and おおさか and name entries.
     }
 
-    // Shorten input, but don't split a ようおん (e.g. きゃ).
-    const lengthToShorten = endsInYoon(input) ? 2 : 1;
-    input = input.substring(0, input.length - lengthToShorten);
+    // Shorten input, but don't split at any blocked boundary such as inside a
+    // ようおん (e.g. きゃ).
+    let nextInputLength = input.length - 1;
+    while (
+      nextInputLength > 0 &&
+      isNoSplitPoint(noSplitMask, nextInputLength)
+    ) {
+      nextInputLength -= 1;
+    }
+    input = input.substring(0, Math.max(nextInputLength, 0));
   }
 
   if (!result.data.length) {

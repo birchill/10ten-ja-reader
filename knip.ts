@@ -19,8 +19,6 @@ const config: KnipConfig = {
   ignore: [
     // Ignore conditionally-compiled i18n polyfill
     'src/common/i18n.polyfill.tsx',
-    // Ignore the locale files compiled by the i18n polyfill
-    'tests/_locales_*.js',
   ],
   ignoreFiles: [
     'css/selection.css',

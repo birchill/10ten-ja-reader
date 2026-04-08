@@ -1,6 +1,7 @@
 import { AbortError } from '@birchill/jpdict-idb';
 import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
 
+import { isNoSplitPoint } from '../common/no-split-mask';
 import { isOnlyDigits } from '../utils/char-range';
 import { toRomaji } from '../utils/romaji';
 
@@ -13,7 +14,6 @@ import type {
   WordSearchResult,
 } from './search-result';
 import { sortWordResults } from './word-match-sorting';
-import { endsInYoon } from './yoon';
 
 export type GetWordsFunction = (params: {
   input: string;
@@ -25,12 +25,14 @@ export async function wordSearch({
   getWords,
   input,
   inputLengths,
+  noSplitMask,
   maxResults,
 }: {
   abortSignal?: AbortSignal;
   getWords: GetWordsFunction;
   input: string;
   inputLengths: Array<number>;
+  noSplitMask?: number;
   maxResults: number;
 }): Promise<WordSearchResult | null> {
   let longestMatch = 0;
@@ -118,9 +120,16 @@ export async function wordSearch({
       break;
     }
 
-    // Shorten input, but don't split a ようおん (e.g. きゃ).
-    const lengthToShorten = endsInYoon(input) ? 2 : 1;
-    input = input.substring(0, input.length - lengthToShorten);
+    // Shorten input, but don't split at any blocked boundary such as inside a
+    // ようおん (e.g. きゃ) or caller-provided ruby <rt> text.
+    let nextInputLength = input.length - 1;
+    while (
+      nextInputLength > 0 &&
+      isNoSplitPoint(noSplitMask, nextInputLength)
+    ) {
+      nextInputLength -= 1;
+    }
+    input = input.substring(0, Math.max(nextInputLength, 0));
   }
 
   if (!result.data.length) {

@@ -3,7 +3,10 @@ import * as s from 'superstruct';
 
 import { PopupStateSchema } from '../content/popup-state';
 
-const SearchRequestSchema = s.type({ input: s.string() });
+const SearchRequestSchema = s.type({
+  input: s.string(),
+  noSplitMask: s.optional(s.number()),
+});
 
 export type SearchRequest = s.Infer<typeof SearchRequestSchema>;
 

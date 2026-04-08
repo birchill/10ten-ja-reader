@@ -1,3 +1,8 @@
+import {
+  addNoSplitPoint,
+  addRangeToNoSplitMask,
+  assertNoSplitMaskLength,
+} from '../common/no-split-mask';
 import { nonJapaneseChar } from '../utils/char-range';
 import { normalizeContext } from '../utils/normalize';
 
@@ -35,6 +40,9 @@ export type ScanTextResult = {
 
   // Extra metadata we parsed in the process
   meta?: SelectionMeta;
+
+  // Boundaries in `text` that should not be split during lookup.
+  noSplitMask?: number;
 };
 
 export function scanText({
@@ -204,6 +212,11 @@ export function scanText({
   }
 
   const result: ScanTextResult = { text: '', textRange: [], sourceContext };
+  let noSplitMask = 0;
+  const noSplitState = {
+    hasOpenRtSegment: false,
+    rtElement: null as Element | null,
+  };
 
   let textDelimiter = nonJapaneseChar;
 
@@ -251,12 +264,27 @@ export function scanText({
     } else if (textEnd !== -1) {
       // The text node has disallowed characters mid-way through so
       // return up to that point.
-      result.text += nodeText.substring(0, textEnd);
+      const textToAppend = nodeText.substring(0, textEnd);
+      noSplitMask = addNoSplitRanges({
+        noSplitMask,
+        noSplitState,
+        node,
+        text: textToAppend,
+        outputOffset: result.text.length,
+      });
+      result.text += textToAppend;
       result.textRange.push({ node, start: offset, end: offset + textEnd });
       break;
     }
 
     // The whole text node is allowed characters, keep going.
+    noSplitMask = addNoSplitRanges({
+      noSplitMask,
+      noSplitState,
+      node,
+      text: nodeText,
+      outputOffset: result.text.length,
+    });
     result.text += nodeText;
     result.textRange.push({ node, start: offset, end: node.data.length });
 
@@ -292,8 +320,71 @@ export function scanText({
 
   trimSourceContext(sourceContext, result.text.length);
   result.meta = extractGetTextMetadata({ text: result.text, matchCurrency });
+  assertNoSplitMaskLength(result.text.length);
+  if (noSplitMask) {
+    result.noSplitMask = noSplitMask;
+  }
 
   return result;
+}
+
+function addNoSplitRanges({
+  noSplitMask,
+  noSplitState,
+  node,
+  text,
+  outputOffset,
+}: {
+  noSplitMask: number;
+  noSplitState: { hasOpenRtSegment: boolean; rtElement: Element | null };
+  node: Text;
+  text: string;
+  outputOffset: number;
+}): number {
+  const rtElement = node.parentElement?.closest('rt');
+  if (!text.length || !rtElement) {
+    noSplitState.hasOpenRtSegment = false;
+    noSplitState.rtElement = null;
+    return noSplitMask;
+  }
+
+  if (
+    outputOffset > 0 &&
+    noSplitState.hasOpenRtSegment &&
+    noSplitState.rtElement === rtElement &&
+    !text.startsWith('・')
+  ) {
+    // Continue a no-split segment that started in a previous adjacent text
+    // node within the same <rt>.
+    noSplitMask = addNoSplitPoint(noSplitMask, outputOffset - 1);
+  }
+
+  // Treat all content in <rt> as indivisible except around center dots.
+  //
+  // That is, "あ・い" becomes two indivisible segments, "あ" and "い".
+  let segmentStart = 0;
+  while (segmentStart < text.length) {
+    const dotOffset = text.indexOf('・', segmentStart);
+    const segmentEnd = dotOffset === -1 ? text.length : dotOffset;
+    if (segmentEnd > segmentStart) {
+      noSplitMask = addRangeToNoSplitMask(
+        noSplitMask,
+        outputOffset + segmentStart,
+        outputOffset + segmentEnd
+      );
+    }
+
+    if (dotOffset === -1) {
+      noSplitState.hasOpenRtSegment = segmentEnd > segmentStart;
+      noSplitState.rtElement = rtElement;
+      break;
+    }
+
+    noSplitState.hasOpenRtSegment = false;
+    noSplitState.rtElement = rtElement;
+    segmentStart = dotOffset + 1;
+  }
+  return noSplitMask;
 }
 
 // ----------------------------------------------------------------------------
