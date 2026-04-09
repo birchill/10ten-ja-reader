@@ -164,6 +164,12 @@ export function PopupStyleForm(props: Props) {
             props.onChangeFontSize(evt.currentTarget.value as FontSize);
           }}
         >
+          <option value="xs" selected={props.fontSize === 'xs'}>
+            {t('options_font_size_xs')}
+          </option>
+          <option value="small" selected={props.fontSize === 'small'}>
+            {t('options_font_size_small')}
+          </option>
           <option value="normal" selected={props.fontSize === 'normal'}>
             {t('options_font_size_normal')}
           </option>
