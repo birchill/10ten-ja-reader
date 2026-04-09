@@ -2,7 +2,6 @@ import type { Config } from '../common/config';
 import { I18nProvider } from '../common/i18n';
 import { possiblyHasPhysicalKeyboard } from '../utils/device';
 
-import { AudioSettings } from './AudioSettings';
 import { CopySettings } from './CopySettings';
 import { CurrencySettings } from './CurrencySettings';
 import { DictionaryDataSettings } from './DictionaryDataSettings';
@@ -26,7 +25,11 @@ export function OptionsPage(props: Props) {
         <GeneralSettings config={props.config} />
         <PopupStyleSettings config={props.config} />
         <PopupInteractivitySettings config={props.config} />
-        <AudioSettings config={props.config} />
+        {/* Audio settings UI is temporarily disabled until the larger audio
+            feature (pre-recorded samples + engine selection) lands. The
+            underlying autoSpeak config + content-script speech logic remains
+            in place so this can be re-enabled by restoring <AudioSettings />
+            here. See PR #2869 for context. */}
         <CurrencySettings config={props.config} />
         <UnitSettings config={props.config} />
         {hasKeyboard && <KeyboardSettings config={props.config} />}
