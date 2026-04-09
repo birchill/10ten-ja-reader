@@ -396,19 +396,25 @@ function notifyDbListeners(specifiedListener?: Runtime.Port) {
 
 async function searchWords({
   input,
+  noSplitMask,
   abortSignal,
 }: SearchRequest & {
   abortSignal: AbortSignal;
 }): Promise<SearchWordsResult | null> {
   await dbReady;
 
-  const [words, dbStatus] = await jpdictSearchWords({ abortSignal, input });
+  const [words, dbStatus] = await jpdictSearchWords({
+    abortSignal,
+    input,
+    noSplitMask,
+  });
 
   return { words, dbStatus };
 }
 
 async function searchOther({
   input,
+  noSplitMask,
   wordsMatchLen,
   abortSignal,
 }: SearchOtherRequest & {
@@ -417,7 +423,7 @@ async function searchOther({
   await dbReady;
 
   // Names
-  const nameResult = await searchNames({ abortSignal, input });
+  const nameResult = await searchNames({ abortSignal, input, noSplitMask });
   const names = typeof nameResult === 'string' ? null : nameResult;
 
   if (abortSignal.aborted) {

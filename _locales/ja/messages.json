@@ -1535,9 +1535,17 @@
     "message": "標準",
     "description": "Label for default font size option."
   },
+  "options_font_size_small": {
+    "message": "小さい",
+    "description": "Label for smaller font size option."
+  },
   "options_font_size_xl": {
     "message": "特大",
     "description": "Label for largest font size option."
+  },
+  "options_font_size_xs": {
+    "message": "極小",
+    "description": "Label for extra small font size option."
   },
   "options_general_heading": {
     "message": "一般",

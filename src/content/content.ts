@@ -236,6 +236,7 @@ export class ContentHandler {
     | {
         text: string;
         wordLookup: boolean;
+        noSplitMask?: number;
         meta?: SelectionMeta;
         source: IframeSourceParams | null;
         sourceContext: SourceContext | null;
@@ -1916,6 +1917,7 @@ export class ContentHandler {
 
     const lookupParams = {
       dictMode,
+      noSplitMask: textAtPoint.noSplitMask,
       meta: textAtPoint.meta,
       source: null,
       sourceContext: textAtPoint.sourceContext,
@@ -1955,6 +1957,7 @@ export class ContentHandler {
 
   async lookupText({
     dictMode,
+    noSplitMask,
     meta,
     source,
     sourceContext,
@@ -1963,6 +1966,7 @@ export class ContentHandler {
     wordLookup,
   }: {
     dictMode: 'default' | 'kanji';
+    noSplitMask?: number;
     meta?: SelectionMeta;
     source: IframeSourceParams | null;
     sourceContext: SourceContext | null;
@@ -1974,6 +1978,7 @@ export class ContentHandler {
       text,
       meta,
       wordLookup,
+      noSplitMask,
       source,
       sourceContext,
     };
@@ -1985,11 +1990,13 @@ export class ContentHandler {
     this.#isPopupExpanded = false;
 
     const queryResult = await query(text, {
+      noSplitMask,
       metaMatchLen: meta?.matchLen,
       wordLookup,
       updateQueryResult: (queryResult: QueryResult | null) => {
         void this.applyQueryResult({
           dictMode,
+          noSplitMask,
           meta,
           queryResult,
           targetProps,
@@ -2001,6 +2008,7 @@ export class ContentHandler {
 
     void this.applyQueryResult({
       dictMode,
+      noSplitMask,
       meta,
       queryResult,
       targetProps,
@@ -2011,6 +2019,7 @@ export class ContentHandler {
 
   async applyQueryResult({
     dictMode,
+    noSplitMask,
     meta,
     queryResult,
     targetProps,
@@ -2018,13 +2027,14 @@ export class ContentHandler {
     wordLookup,
   }: {
     dictMode: 'default' | 'kanji';
+    noSplitMask?: number;
     meta?: SelectionMeta;
     queryResult: QueryResult | null;
     targetProps: TargetProps;
     text: string;
     wordLookup: boolean;
   }) {
-    const lookupParams = { text, meta, wordLookup };
+    const lookupParams = { text, meta, wordLookup, noSplitMask };
 
     // Check if we have triggered a new query or been disabled while running
     // the previous query.

@@ -53,6 +53,7 @@ export const BackgroundMessageSchema = discriminator('type', {
     targetProps: s.type({}),
     text: s.string(),
     wordLookup: s.boolean(),
+    noSplitMask: s.optional(s.number()),
     // Parameters for designating the iframe source
     source: s.type({
       frameId: s.number(),

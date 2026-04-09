@@ -1537,9 +1537,17 @@
     "message": "Normal",
     "description": "Label for default font size option."
   },
+  "options_font_size_small": {
+    "message": "Small",
+    "description": "Label for smaller font size option."
+  },
   "options_font_size_xl": {
     "message": "Extra large",
     "description": "Label for largest font size option."
+  },
+  "options_font_size_xs": {
+    "message": "Extra small",
+    "description": "Label for extra small font size option."
   },
   "options_general_heading": {
     "message": "General",

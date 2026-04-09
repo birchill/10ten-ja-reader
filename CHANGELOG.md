@@ -8,16 +8,21 @@ app.
 
 ## [Unreleased]
 
-- Fixed handling of hidden text
-  ([#2710](https://github.com/birchill/10ten-ja-reader/pull/2710)).
-- Fixed pop-up being unscrollable in some cases
-  (see [#2674](https://github.com/birchill/10ten-ja-reader/pull/2674)).
 - Added support for Daikanwajiten (Morohashi) references
   ([#2734](https://github.com/birchill/10ten-ja-reader/pull/2734)).
 - Added support for Korean and Vietnamese readings
   ([#2808](https://github.com/birchill/10ten-ja-reader/pull/2808)).
+- Added `xs` and `small` popup font size options
+  ([#2774](https://github.com/birchill/10ten-ja-reader/issues/2774)).
+- Fixed handling of hidden text
+  ([#2710](https://github.com/birchill/10ten-ja-reader/pull/2710)).
+- Fixed pop-up being unscrollable in some cases
+  (see [#2674](https://github.com/birchill/10ten-ja-reader/pull/2674)).
 - Worked around a [major string substitution bug in Safari](https://bugs.webkit.org/show_bug.cgi?id=306492).
-- Stop showing the popup for number-only matches in the name dictionary
+- Fixed word lookups splitting ruby (`<rt>`) text incorrectly, while still
+  allowing splits around center dots (`・`)
+  ([#2785](https://github.com/birchill/10ten-ja-reader/issues/2785)).
+- Fixed the popup showing for number-only matches in the name dictionary
   (e.g. 64)
   ([#811](https://github.com/birchill/10ten-ja-reader/issues/811)).
 

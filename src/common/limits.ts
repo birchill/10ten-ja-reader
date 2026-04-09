@@ -9,6 +9,11 @@
 //
 // Once we have switched all databases to IndexedDB, we should investigate the
 // performance impact of increasing this further.
+//
+// If we extend this beyond 32, we will need to update the no-split mask type
+// to use a bigint instead and deal with the resulting
+// serialization issues: custom JSON stringify/parse support and a workaround
+// for extension messaging limitations such as converting it to a Uint8Array.
 export const MAX_LOOKUP_LENGTH = 16;
 
 // Max number of non-Japanese chars before we give up on translating alt/title
