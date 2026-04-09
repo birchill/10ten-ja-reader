@@ -7,10 +7,20 @@
 
 :root,
 :host {
+  --xs-font-size: 9px;
+  --small-font-size: 12px;
   --normal-font-size: 14px;
   --large-font-size: 17px;
   --xl-font-size: 19px;
   --base-font-size: var(--normal-font-size);
+}
+
+.font-xs {
+  --base-font-size: var(--xs-font-size);
+}
+
+.font-small {
+  --base-font-size: var(--small-font-size);
 }
 
 .font-normal {

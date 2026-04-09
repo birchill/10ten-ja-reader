@@ -24,7 +24,7 @@ export default function PopupThemeRadioFixture() {
   });
   const [fontSize] = useSelect<FontSize>('fontSize', {
     defaultValue: 'normal',
-    options: ['normal', 'large', 'xl'],
+    options: ['xs', 'small', 'normal', 'large', 'xl'],
   });
   const [posDisplay] = useSelect<PartOfSpeechDisplay>('posDisplay', {
     defaultValue: 'expl',

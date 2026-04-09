@@ -45,7 +45,7 @@ export type AutoExpandableEntry = 'words' | 'kanji';
 
 export type FontFace = 'bundled' | 'system';
 
-export type FontSize = 'normal' | 'large' | 'xl';
+export type FontSize = 'xs' | 'small' | 'normal' | 'large' | 'xl';
 
 export type PartOfSpeechDisplay = 'expl' | 'code' | 'none';
 

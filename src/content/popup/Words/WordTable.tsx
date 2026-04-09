@@ -61,6 +61,8 @@ export const WordTable = (props: WordTableProps) => {
   let longestMatch = 0;
 
   const gapClassMap: Record<FontSize, string> = {
+    xs: 'tp:gap-0.5',
+    small: 'tp:gap-0.75',
     normal: 'tp:gap-1',
     large: 'tp:gap-1.5',
     xl: 'tp:gap-2',
