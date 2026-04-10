@@ -310,13 +310,46 @@ function lookupPoint({
   point: Point;
   element: Element;
 }): CursorPosition | null {
-  const position = getCaretPosition({ point, element });
+  let position = getCaretPosition({ point, element });
   if (!position) {
     return null;
   }
 
   if (isTextNodePosition(position) && position.offset) {
     position.offset = getVisualOffset({ position, point });
+  }
+
+  // Handle a couple of end-of-line cases.
+  //
+  // This needs to happen after adjusting the visual offset because that
+  // adjustment might mean that we are, for example, no longer at the end of a
+  // text node.
+  while (isTextNodePosition(position)) {
+    // 1. When we're at the end of a text node, we should advance to the next
+    //    text node.
+    //
+    //    This can happen, for example, when a ruby node is at the end of a line
+    //    and the cursor is beyond the end of the line. In that case, browsers
+    //    often return a position at the end of the ruby base text.
+    //
+    //    Failure to advance the position to the next text node (either on the
+    //    next line or in the subsequent transcription) would mean we fail to
+    //    detect that the lookup position up is actually far from the cursor and
+    //    should be skipped.
+    if (position.offset === position.offsetNode.length) {
+      position = getNextVisibleTextNodeStart(position);
+    }
+    // 2. We're at the end of a pre-formatted line. Line breaks are normalized
+    //    to U+000A (LF). We should advance to the next position for the same
+    //    reason as above---so we can correctly detect if the actual text lookup
+    //    position is far from the cursor.
+    else if (
+      position.offsetNode.textContent.codePointAt(position.offset) === 0xa
+    ) {
+      position.offset++;
+    } else {
+      break;
+    }
   }
 
   return position;
@@ -496,6 +529,47 @@ function restoreStyles(styles: Map<Element, string | null>) {
   }
 }
 
+function getNextVisibleTextNodeStart(
+  position: CursorPosition<Text>
+): CursorPosition<Text> | null {
+  const blockAncestor = getInlineTraversalRoot(position.offsetNode);
+  if (!blockAncestor) {
+    return null;
+  }
+
+  const treeWalker = position.offsetNode.ownerDocument.createTreeWalker(
+    blockAncestor,
+    NodeFilter.SHOW_TEXT,
+    (node) =>
+      !node.parentElement || isVisible(node.parentElement)
+        ? NodeFilter.FILTER_ACCEPT
+        : NodeFilter.FILTER_REJECT
+  );
+  treeWalker.currentNode = position.offsetNode;
+
+  const nextNode = treeWalker.nextNode();
+  return isTextNode(nextNode) ? { offset: 0, offsetNode: nextNode } : null;
+}
+
+function getInlineTraversalRoot(node: Node): HTMLElement | null {
+  let ancestor = node.parentElement;
+
+  while (ancestor) {
+    const ancestorDisplay = getComputedStyle(ancestor).display;
+    if (
+      !ancestorDisplay.startsWith('inline') &&
+      !['ruby', 'contents'].includes(ancestorDisplay)
+    ) {
+      // Block ancestor
+      return ancestor;
+    }
+
+    ancestor = ancestor.parentElement;
+  }
+
+  return null;
+}
+
 // --------------------------------------------------------------------------
 //
 // Intersection checking
@@ -599,6 +673,7 @@ function getDistanceFromTextNode(
   // Get bbox of first character in range (since that's where we select from).
   const range = getRangeForSingleCodepoint({ source: node, offset });
   const bbox = getBboxForSingleCodepointRange(range);
+
   if (!bbox) {
     return null;
   }
@@ -1111,16 +1186,7 @@ function getRangeForShadowElement({
 
   // Get the block ancestor, since inline children might be split over several
   // lines.
-  let blockAncestor = shadowElement;
-  while (
-    blockAncestor &&
-    blockAncestor.parentElement &&
-    ['inline', 'ruby', 'contents', 'inline flow'].includes(
-      getComputedStyle(blockAncestor).display
-    )
-  ) {
-    blockAncestor = blockAncestor.parentElement;
-  }
+  const blockAncestor = getInlineTraversalRoot(shadowElement) || shadowElement;
 
   // Make up a mirror element in the light DOM that we can run
   // `document.caretRangeFromPoint` on.
