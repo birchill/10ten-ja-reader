@@ -28,6 +28,7 @@ export default defineConfig({
             enabled: true,
             headless: true,
             instances: [{ browser: 'chrome' }, { browser: 'firefox' }],
+            api: { port: 63400 },
           },
         },
       },
