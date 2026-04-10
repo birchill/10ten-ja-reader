@@ -956,6 +956,46 @@ describe('getTextAtPoint', () => {
         textAtPoint('東京', [tokyoStart, 0, 1], [tokyoNoKyo, 0, 1])
       );
     });
+
+    it('does NOT find text in the space after a ruby element at the end of a line', () => {
+      // Arrange
+      //
+      // Based on https://github.com/birchill/10ten-ja-reader/issues/2813
+      //
+      // Hovering in the empty space to the right of a ruby element at the end
+      // of a line, caretPositionFromPoint returns a position for the text at
+      // the start of the next line.
+      const p = document.createElement('p');
+      p.style.maxWidth = '230px';
+      p.style.fontFamily = 'Noto Sans JP';
+      p.innerHTML =
+        '<ruby>確認<rt>かくにん</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>であった。人の<ruby>命<rt>いのち</rt></ruby>が<ruby>懸<rt>か</rt></ruby>かっている';
+      testDiv.append(p);
+
+      // The 命 ruby element should be the last item on line 1, followed by a
+      // line break before が on line 2
+      const inochiRuby = p.childNodes[4] as Element;
+      const inochiNode = inochiRuby.firstChild as Text;
+      const gaNode = p.childNodes[5] as Text;
+
+      const inochiBbox = getBboxForOffset(inochiNode, 0);
+      const inochiRubyBbox = inochiRuby.getBoundingClientRect();
+      const gaBbox = getBboxForOffset(gaNode, 0);
+
+      // Check we actually got a line wrap
+      expect(inochiBbox.top).toBeLessThan(gaBbox.top);
+
+      // Act: hover in the space to the right of the 命 ruby element, on line 1
+      const result = getTextAtPoint({
+        point: {
+          x: inochiRubyBbox.right + 1,
+          y: inochiBbox.top + inochiBbox.height / 2,
+        },
+      });
+
+      // Assert: the cursor is in empty space, not over text, so no popup
+      expect(result).toBeNull();
+    });
   });
 
   /* ------------------------------------------------------------------------
