@@ -31,7 +31,6 @@ export function useDb(): {
 
   useEffect(() => {
     let browserPort = browser.runtime.connect(undefined, { name: 'options' });
-    browserPortRef.current = browserPort;
 
     const onMessage = (event: unknown) => {
       if (isDbStateUpdatedMessage(event)) {
@@ -95,13 +94,12 @@ export function useDb(): {
             return;
           }
           browserPort = browser.runtime.connect(undefined, { name: 'options' });
+          browserPort.onMessage.addListener(onMessage);
+          browserPort.onDisconnect.addListener(onDisconnect);
           browserPortRef.current = browserPort;
           Bugsnag.leaveBreadcrumb(
             'Options page reconnected to background page'
           );
-
-          browserPort.onMessage.addListener(onMessage);
-          browserPort.onDisconnect.addListener(onDisconnect);
         } catch (e) {
           void Bugsnag.notify(e);
         }
@@ -110,6 +108,7 @@ export function useDb(): {
 
     browserPort.onMessage.addListener(onMessage);
     browserPort.onDisconnect.addListener(onDisconnect);
+    browserPortRef.current = browserPort;
 
     window.addEventListener('unload', () => {
       browserPort?.disconnect();
@@ -123,15 +122,27 @@ export function useDb(): {
   }, []);
 
   const startDatabaseUpdate = useCallback(() => {
-    browserPortRef.current?.postMessage(updateDb());
+    try {
+      browserPortRef.current?.postMessage(updateDb());
+    } catch {
+      browserPortRef.current = undefined;
+    }
   }, []);
 
   const cancelDatabaseUpdate = useCallback(() => {
-    browserPortRef.current?.postMessage(cancelDbUpdate());
+    try {
+      browserPortRef.current?.postMessage(cancelDbUpdate());
+    } catch {
+      browserPortRef.current = undefined;
+    }
   }, []);
 
   const deleteDatabase = useCallback(() => {
-    browserPortRef.current?.postMessage(deleteDb());
+    try {
+      browserPortRef.current?.postMessage(deleteDb());
+    } catch {
+      browserPortRef.current = undefined;
+    }
   }, []);
 
   return { dbState, startDatabaseUpdate, cancelDatabaseUpdate, deleteDatabase };
