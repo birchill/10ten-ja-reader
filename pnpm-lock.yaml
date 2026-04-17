@@ -21,8 +21,8 @@ importers:
         specifier: 1.6.0
         version: 1.6.0
       classname-variants:
-        specifier: 1.7.0
-        version: 1.7.0
+        specifier: 1.7.1
+        version: 1.7.1
       husky:
         specifier: 9.1.7
         version: 9.1.7
@@ -2618,8 +2618,8 @@ packages:
   citty@0.1.6:
     resolution: {integrity: sha512-tskPPKEs8D2KPafUypv2gxwJP8h/OaJmC82QQGGDQcHvXX43xF2VDACcJVmZ0EuSxkpO9Kc4MlrA3q0+FG58AQ==}
 
-  classname-variants@1.7.0:
-    resolution: {integrity: sha512-HSs9K+LBbw/jJIWtm6nPSSTSB3mEI7J4XCB0XOvA4c8bJipSwoZGCN7Zi0Gkdf8NdK4CTxKFLvL+qWLRsffhVQ==}
+  classname-variants@1.7.1:
+    resolution: {integrity: sha512-JB0gB4208VdqvqjdJWwCH07wqziobwe1uAZdk4JNjkLRBL5aSeZQXfT2J2TFhyMrR4GoGtS7CNezNz4GQg09jg==}
 
   cli-boxes@3.0.0:
     resolution: {integrity: sha512-/lzGpEWL/8PfI0BmBOPRwp0c/wFNX1RdUML3jK/RcSBA9T8mZDdQpqYBKtCFTOfQbwPqWEOpjqW+Fnayc0969g==}
@@ -7813,7 +7813,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 20.19.39
+      '@types/node': 24.3.0
     optional: true
 
   '@typescript-eslint/eslint-plugin@8.58.1(@typescript-eslint/parser@8.58.1(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.2))(eslint@10.2.0(jiti@2.6.1))(typescript@6.0.2)':
@@ -8693,7 +8693,7 @@ snapshots:
     dependencies:
       consola: 3.4.2
 
-  classname-variants@1.7.0: {}
+  classname-variants@1.7.1: {}
 
   cli-boxes@3.0.0: {}
 
