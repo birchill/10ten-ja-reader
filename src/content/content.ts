@@ -2588,6 +2588,58 @@ export class ContentHandler {
       displayMode: 'hover',
       fixPosition: false,
     });
+
+    if (this.#config.autoSpeak) {
+      this.speakCurrentReading();
+    }
+  }
+
+  // Auto-speak: track the most recently spoken text so we don't repeat the
+  // same utterance every time the popup re-renders for the same word, and
+  // track the last utterance we created so we only cancel our own speech.
+  #lastSpokenText: string | undefined;
+  #lastUtterance: SpeechSynthesisUtterance | undefined;
+
+  speakCurrentReading() {
+    if (
+      typeof window === 'undefined' ||
+      typeof window.speechSynthesis === 'undefined'
+    ) {
+      return;
+    }
+
+    // Prefer the matched text from the page (including any inflection,
+    // e.g. 寄与しませんでした) over the dictionary headword (寄与) so the
+    // user hears the whole word as it appears.
+    const firstWord = this.#currentSearchResult?.words?.data[0];
+    const lookupText = this.#currentLookupParams?.text;
+    const matchLen = firstWord?.matchLen;
+    const matchedSurface =
+      lookupText && matchLen ? lookupText.slice(0, matchLen) : undefined;
+    const text = matchedSurface || firstWord?.r[0]?.ent;
+    if (!text || text === this.#lastSpokenText) {
+      return;
+    }
+
+    try {
+      if (this.#lastUtterance) {
+        window.speechSynthesis.cancel();
+      }
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'ja-JP';
+      const jaVoice = window.speechSynthesis
+        .getVoices()
+        .find((v) => v.lang === 'ja-JP' || v.lang.startsWith('ja'));
+      if (jaVoice) {
+        utterance.voice = jaVoice;
+      }
+      window.speechSynthesis.speak(utterance);
+      this.#lastUtterance = utterance;
+      this.#lastSpokenText = text;
+    } catch {
+      // Speech synthesis is best-effort; ignore failures.
+      this.#lastSpokenText = undefined;
+    }
   }
 
   hidePopup() {
@@ -2596,6 +2648,22 @@ export class ContentHandler {
     this.#currentLookupParams = undefined;
     this.#currentSearchResult = undefined;
     this.#currentTargetProps = undefined;
+    this.#lastSpokenText = undefined;
+
+    // Only cancel speech synthesis if we previously started an utterance
+    // ourselves, to avoid clobbering speech initiated by the page.
+    if (
+      this.#lastUtterance &&
+      typeof window !== 'undefined' &&
+      typeof window.speechSynthesis !== 'undefined'
+    ) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch {
+        // Ignore.
+      }
+      this.#lastUtterance = undefined;
+    }
 
     hidePopup();
 
