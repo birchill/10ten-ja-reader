@@ -88,8 +88,9 @@ function CurrencyValue({
   // it generally just prepends the currency code (e.g. USD) but that's
   // redundant with our valueCurrencyLabel so we try to detect and drop it in
   // that case.
+  const escapedCurrency = currency.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   formattedValue = formattedValue.replace(
-    new RegExp(`^\\s*${currency}\\s*`),
+    new RegExp(`^\\s*${escapedCurrency}\\s*`),
     ''
   );
 
