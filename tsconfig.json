@@ -12,6 +12,7 @@
       "es2020",
       "ES2020.Intl",
       "es2022",
+      "es2025.regexp",
       "webworker"
     ],
     "module": "es2020",
