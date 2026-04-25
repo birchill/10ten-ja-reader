@@ -52,8 +52,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       '@actions/github':
-        specifier: 9.1.0
-        version: 9.1.0
+        specifier: 9.1.1
+        version: 9.1.1
       '@eslint/js':
         specifier: 10.0.1
         version: 10.0.1(eslint@10.2.1(jiti@2.6.1))
@@ -222,8 +222,8 @@ packages:
   '@actions/exec@3.0.0':
     resolution: {integrity: sha512-6xH/puSoNBXb72VPlZVm7vQ+svQpFyA96qdDBvhB8eNZOE8LtPf9L4oAsfzK/crCL8YZ+19fKYVnM63Sl+Xzlw==}
 
-  '@actions/github@9.1.0':
-    resolution: {integrity: sha512-u0hDGQeCS+7VNoLA8hYG65RLdPLMaPGfka0sZ0up7P0AiShqfX6xcuXNteGkQ7X7Tod7AMNwHd4p7DS63i8zzA==}
+  '@actions/github@9.1.1':
+    resolution: {integrity: sha512-tL5JbYOBZHc0ngEnCsaDcryUizIUIlQyIMwy1Wkx93H5HzbBJ7TbiPx2PnFjBwZW0Vh05JmfFZhecE6gglYegA==}
 
   '@actions/http-client@3.0.2':
     resolution: {integrity: sha512-JP38FYYpyqvUsz+Igqlc/JG6YO9PaKuvqjM3iGvaLqFnJ7TFmcLyy2IDrY0bI0qCQug8E9K+elv5ZNfw62ZJzA==}
@@ -6338,7 +6338,7 @@ snapshots:
     dependencies:
       '@actions/io': 3.0.2
 
-  '@actions/github@9.1.0':
+  '@actions/github@9.1.1':
     dependencies:
       '@actions/http-client': 3.0.2
       '@octokit/core': 7.0.6
