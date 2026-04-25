@@ -163,8 +163,8 @@ importers:
         specifier: 7.3.0
         version: 7.3.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-cosmos-plugin-boolean-input:
-        specifier: 7.2.0
-        version: 7.2.0
+        specifier: 7.3.0
+        version: 7.3.0
       react-cosmos-plugin-rspack:
         specifier: 2.0.2
         version: 2.0.2(@rspack/core@1.7.11)(react-cosmos@7.3.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)(webpack@5.105.4)
@@ -5085,8 +5085,8 @@ packages:
       react: '>=18'
       react-dom: '>=18'
 
-  react-cosmos-plugin-boolean-input@7.2.0:
-    resolution: {integrity: sha512-t+s5ldidK/HNSljfSH+HvZaCcV2c5e/hhVFzpAj1IAjtcJiPemlIknsCQVxQX0/TZGFqMa/JTxuAhT8v4V0tKg==}
+  react-cosmos-plugin-boolean-input@7.3.0:
+    resolution: {integrity: sha512-PFf7UrNt7D67qC7yrInV1uDJtGLZODOxqRoAJHZoNx7frTh0VWbml3Nr2g0iiYjRleDcXTRCOcYcNNfJAyMQjg==}
 
   react-cosmos-plugin-rspack@2.0.2:
     resolution: {integrity: sha512-XBOKmMn+K28kj1oeNLUJIki0cxGjJSIRgQD2yoV3HOE3Ms6ABev/rQBTU83z1c+zWAaghzznSBIFQ7KI3sIOKw==}
@@ -11285,7 +11285,7 @@ snapshots:
       react-cosmos-renderer: 7.2.0(react@19.2.4)
       react-dom: 19.2.4(react@19.2.4)
 
-  react-cosmos-plugin-boolean-input@7.2.0: {}
+  react-cosmos-plugin-boolean-input@7.3.0: {}
 
   react-cosmos-plugin-rspack@2.0.2(@rspack/core@1.7.11)(react-cosmos@7.3.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)(webpack@5.105.4):
     dependencies:
