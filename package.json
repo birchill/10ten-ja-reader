@@ -74,7 +74,7 @@
     "preact": "10.29.1",
     "superstruct": "2.0.2",
     "typescript": "6.0.3",
-    "web-ext": "10.0.0",
+    "web-ext": "10.1.0",
     "webextension-polyfill": "0.12.0"
   },
   "devDependencies": {
