@@ -12,6 +12,12 @@
       "automerge": true,
       "automergeType": "branch"
     },
+    {
+      "matchUpdateTypes": ["patch"],
+      "matchCurrentVersion": "/^0/",
+      "automerge": true,
+      "automergeType": "branch"
+    },
     { "matchDepTypes": ["devDependencies"], "addLabels": ["dev"] },
     {
       "groupName": "rspack",
