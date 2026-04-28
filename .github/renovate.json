@@ -4,19 +4,14 @@
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
-      "minimumReleaseAge": "3 days"
-    },
-    {
-      "matchUpdateTypes": ["minor", "patch"],
-      "matchCurrentVersion": "!/^0/",
+      "minimumReleaseAge": "3 days",
       "automerge": true,
       "automergeType": "branch"
     },
     {
-      "matchUpdateTypes": ["patch"],
+      "matchUpdateTypes": ["minor"],
       "matchCurrentVersion": "/^0/",
-      "automerge": true,
-      "automergeType": "branch"
+      "automerge": false
     },
     { "matchDepTypes": ["devDependencies"], "addLabels": ["dev"] },
     {
