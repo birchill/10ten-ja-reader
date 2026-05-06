@@ -6,7 +6,9 @@ The format is based roughly on [Keep a Changelog](https://keepachangelog.com/en/
 This project does _not_ adhere to semantic versioning—it's a consumer
 app.
 
-## [Unreleased]
+## [Unreleased] (Firefox, Thunderbird only)
+
+- (Firefox, Thunderbird) Fixed generation of source artifacts.
 
 ## [1.27.0] - 2026-05-06
 
