@@ -72,10 +72,12 @@ async function main() {
     'manifest.json.src',
     'package.json',
     'pnpm-lock.yaml',
+    'pnpm-workspace.yaml',
     'postcss.config.js',
     'rspack.config.js',
     'scripts/postcss-property-to-custom-prop.js',
     'tsconfig.json',
+    'vitest.config.ts',
   ];
   for (const file of files) {
     archive.file(path.join(rootDir, file), { name: file });
