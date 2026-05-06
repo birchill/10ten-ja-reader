@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+## [1.27.0] - 2026-05-06
+
 - Added support for Daikanwajiten (Morohashi) references
   ([#2734](https://github.com/birchill/10ten-ja-reader/pull/2734)).
 - Added support for Korean and Vietnamese readings
@@ -1318,7 +1320,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.26.1...HEAD
+[Unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.27.0...HEAD
+[1.27.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.26.1...v1.27.0
 [1.26.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.26.0...v1.26.1
 [1.26.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.25.1...v1.26.0
 [1.25.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.25.0...v1.25.1
