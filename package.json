@@ -134,6 +134,9 @@
     "xmlbuilder2": "4.0.3",
     "yargs": "18.0.0"
   },
+  "engines": {
+    "pnpm": ">=11"
+  },
   "webExt": {
     "sourceDir": "dist-firefox"
   }
