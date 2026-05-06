@@ -6,7 +6,9 @@ The format is based roughly on [Keep a Changelog](https://keepachangelog.com/en/
 This project does _not_ adhere to semantic versioning—it's a consumer
 app.
 
-## [Unreleased] (Firefox, Thunderbird only)
+## [Unreleased]
+
+## [1.27.1] - 2026-05-06 (Firefox, Thunderbird only)
 
 - (Firefox, Thunderbird) Fixed generation of source artifacts.
 
@@ -1322,7 +1324,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[Unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.27.0...HEAD
+[Unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.27.1...HEAD
+[1.27.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.27.0...v1.27.1
 [1.27.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.26.1...v1.27.0
 [1.26.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.26.0...v1.26.1
 [1.26.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.25.1...v1.26.0
