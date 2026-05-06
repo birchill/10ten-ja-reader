@@ -21,6 +21,9 @@
   "license": "GPL-3.0-or-later",
   "author": "Birchill, Inc.",
   "type": "module",
+  "engines": {
+    "pnpm": ">=11"
+  },
   "scripts": {
     "build:chrome": "rspack --env target=chrome",
     "build:chrome-electron": "rspack --env target=chrome-electron",
