@@ -1,7 +1,7 @@
 allowBuilds:
   '@bugsnag/cli': true
   core-js: false
-  edgedriver: true
+  edgedriver: false
   esbuild: true
   geckodriver: true
   spawn-sync: false
