@@ -90,12 +90,7 @@ export function scanText({
         return false;
       }
 
-      if (
-        !node.parentElement?.checkVisibility({
-          opacityProperty: true,
-          visibilityProperty: true,
-        })
-      ) {
+      if (!isVisibleTextNode(node)) {
         return false;
       }
 
@@ -108,10 +103,7 @@ export function scanText({
   } else {
     includeNodeText = (node): node is Text =>
       node.nodeType === Node.TEXT_NODE &&
-      node.parentElement?.checkVisibility({
-        opacityProperty: true,
-        visibilityProperty: true,
-      }) !== false &&
+      isVisibleTextNode(node) &&
       !node.parentElement?.closest('rp, rt');
   }
 
@@ -425,6 +417,15 @@ function isEffectiveInline(element: Element | null): element is Element {
   );
 }
 
+function isVisibleTextNode(node: Text): boolean {
+  const parent = node.parentElement;
+  return (
+    !parent ||
+    !parent.isConnected ||
+    parent.checkVisibility({ opacityProperty: true, visibilityProperty: true })
+  );
+}
+
 // ----------------------------------------------------------------------------
 //
 // Ruby helpers
@@ -532,16 +533,11 @@ class SourceContextBuilder {
       return;
     }
 
-    if (
-      node.parentElement?.checkVisibility({
-        opacityProperty: true,
-        visibilityProperty: true,
-      }) === false
-    ) {
+    const textNode = node as Text;
+    if (!isVisibleTextNode(textNode)) {
       return;
     }
 
-    const textNode = node as Text;
     const rubyElement = getOutermostRuby(node);
 
     // Case 1: Not inside a ruby

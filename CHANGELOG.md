@@ -8,6 +8,9 @@ app.
 
 ## [Unreleased]
 
+- Fixed the popup not appearing for bullet-list text in Google Docs
+  ([#2926](https://github.com/birchill/10ten-ja-reader/issues/2926)).
+
 ## [1.27.1] - 2026-05-06 (Firefox, Thunderbird only)
 
 - (Firefox, Thunderbird) Fixed generation of source artifacts.
