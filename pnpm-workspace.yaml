@@ -8,3 +8,4 @@ allowBuilds:
 minimumReleaseAge: 1440 # 1 day
 minimumReleaseAgeExclude:
   - '@birchill/*'
+  - react-cosmos-plugin-rspack

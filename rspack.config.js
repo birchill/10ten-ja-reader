@@ -558,7 +558,6 @@ function getExtConfig(options) {
       // options page.
       popup: './src/content/popup/popup.css',
     },
-    experiments: { css: true },
     // We turn on production mode simply so we can drop unused code from the
     // bundle -- otherwise we'll end up injecting a bunch of unrelated code like
     // Russian token stopwords into the content script.
