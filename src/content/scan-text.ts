@@ -86,16 +86,7 @@ export function scanText({
   let includeNodeText: (node: Node) => node is Text;
   if (rtLevel > 0) {
     includeNodeText = (node): node is Text => {
-      if (node.nodeType !== Node.TEXT_NODE) {
-        return false;
-      }
-
-      if (
-        !node.parentElement?.checkVisibility({
-          opacityProperty: true,
-          visibilityProperty: true,
-        })
-      ) {
+      if (!isVisibleTextNode(node)) {
         return false;
       }
 
@@ -107,12 +98,7 @@ export function scanText({
     };
   } else {
     includeNodeText = (node): node is Text =>
-      node.nodeType === Node.TEXT_NODE &&
-      node.parentElement?.checkVisibility({
-        opacityProperty: true,
-        visibilityProperty: true,
-      }) !== false &&
-      !node.parentElement?.closest('rp, rt');
+      isVisibleTextNode(node) && !node.parentElement?.closest('rp, rt');
   }
 
   // Setup a node iterator starting at the current node
@@ -425,6 +411,19 @@ function isEffectiveInline(element: Element | null): element is Element {
   );
 }
 
+function isVisibleTextNode(node: Node): node is Text {
+  const parent = node.parentElement;
+  return (
+    node.nodeType === Node.TEXT_NODE &&
+    (!parent ||
+      !parent.isConnected ||
+      parent.checkVisibility({
+        opacityProperty: true,
+        visibilityProperty: true,
+      }))
+  );
+}
+
 // ----------------------------------------------------------------------------
 //
 // Ruby helpers
@@ -532,34 +531,28 @@ class SourceContextBuilder {
       return;
     }
 
-    if (
-      node.parentElement?.checkVisibility({
-        opacityProperty: true,
-        visibilityProperty: true,
-      }) === false
-    ) {
+    if (!isVisibleTextNode(node)) {
       return;
     }
 
-    const textNode = node as Text;
     const rubyElement = getOutermostRuby(node);
 
     // Case 1: Not inside a ruby
     if (!rubyElement) {
       this.flush();
       this.#target.push(
-        normalizeSourceContextText(textNode.data.substring(offset))
+        normalizeSourceContextText(node.data.substring(offset))
       );
       return;
     }
 
     // Case 2: Inside an <rp> element - ignore
-    if (textNode.parentElement?.closest('rp')) {
+    if (node.parentElement?.closest('rp')) {
       return;
     }
 
     const nodeRtLevel = getRtLevel(node);
-    const textContent = normalizeSourceContextText(textNode.data);
+    const textContent = normalizeSourceContextText(node.data);
 
     // Case 3: Inside ruby base text
     if (nodeRtLevel === 0) {
