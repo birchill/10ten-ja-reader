@@ -8,6 +8,8 @@ app.
 
 ## [Unreleased]
 
+## [1.27.2] - 2026-05-08
+
 - Fixed the popup not appearing for bullet-list text in Google Docs
   ([#2926](https://github.com/birchill/10ten-ja-reader/issues/2926)).
 
@@ -1327,7 +1329,8 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
-[Unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.27.1...HEAD
+[Unreleased]: https://github.com/birchill/10ten-ja-reader/compare/v1.27.2...HEAD
+[1.27.2]: https://github.com/birchill/10ten-ja-reader/compare/v1.27.1...v1.27.2
 [1.27.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.27.0...v1.27.1
 [1.27.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.26.1...v1.27.0
 [1.26.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.26.0...v1.26.1
