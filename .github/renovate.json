@@ -1,6 +1,7 @@
 {
   "extends": ["config:recommended", ":dependencyDashboard"],
   "labels": ["dependencies"],
+  "minimumReleaseAge": "1 day",
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
@@ -14,6 +15,10 @@
       "automerge": false
     },
     { "matchDepTypes": ["devDependencies"], "addLabels": ["dev"] },
+    {
+      "matchPackageNames": ["/^@birchill//"],
+      "minimumReleaseAge": "0"
+    },
     {
       "groupName": "rspack",
       "allowedVersions": "!/^1\\.5\\.8$/",
