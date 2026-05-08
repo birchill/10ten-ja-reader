@@ -1,11 +1,10 @@
 {
   "extends": ["config:recommended", ":dependencyDashboard"],
   "labels": ["dependencies"],
-  "minimumReleaseAge": "1 day",
+  "minimumReleaseAge": "3 days",
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
-      "minimumReleaseAge": "3 days",
       "automerge": true,
       "automergeType": "branch"
     },
