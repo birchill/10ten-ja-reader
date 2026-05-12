@@ -5,6 +5,7 @@ allowBuilds:
   esbuild: true
   geckodriver: true
   spawn-sync: false
+fullMetadata: true # needed for minimumReleaseAge to work reliably
 minimumReleaseAge: 1440 # 1 day
 minimumReleaseAgeExclude:
   - '@birchill/*'
