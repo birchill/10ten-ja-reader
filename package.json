@@ -93,7 +93,7 @@
     "@typescript-eslint/parser": "8.59.2",
     "@vitest/browser-webdriverio": "4.1.5",
     "@vitest/eslint-plugin": "1.6.17",
-    "archiver": "7.0.1",
+    "archiver": "8.0.0",
     "css-loader": "7.1.4",
     "eslint": "10.3.0",
     "eslint-plugin-react": "7.37.5",
