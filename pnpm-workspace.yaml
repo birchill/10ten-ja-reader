@@ -6,10 +6,6 @@ allowBuilds:
   geckodriver: true
   spawn-sync: false
 minimumReleaseAge: 1440 # 1 day
-# Required when minimumReleaseAge is set: with the default `lowest-direct`,
-# pnpm needs a `time` entry for every candidate version and fails
-# (ERR_PNPM_MISSING_TIME) when the registry's metadata is incomplete.
-resolutionMode: highest
 minimumReleaseAgeExclude:
   - '@birchill/*'
   - react-cosmos-plugin-rspack
