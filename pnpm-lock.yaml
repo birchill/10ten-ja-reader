@@ -181,8 +181,8 @@ importers:
         specifier: 4.2.4
         version: 4.2.4
       terser-webpack-plugin:
-        specifier: 5.5.0
-        version: 5.5.0(webpack@5.106.2)
+        specifier: 5.6.0
+        version: 5.6.0(lightningcss@1.32.0)(postcss@8.5.14)(webpack@5.106.2)
       tsx:
         specifier: 4.21.0
         version: 4.21.0
@@ -5531,6 +5531,49 @@ packages:
       '@swc/core':
         optional: true
       esbuild:
+        optional: true
+      uglify-js:
+        optional: true
+
+  terser-webpack-plugin@5.6.0:
+    resolution: {integrity: sha512-Eum+5ajkaOhf5KbM26osvv21kLD7BaGqQ1UA4Ami4arYwylmGUQTgHFpHDdmJod1q4QXa66p0to/FBKID+J1vA==}
+    engines: {node: '>= 10.13.0'}
+    peerDependencies:
+      '@minify-html/node': '*'
+      '@swc/core': '*'
+      '@swc/css': '*'
+      '@swc/html': '*'
+      clean-css: '*'
+      cssnano: '*'
+      csso: '*'
+      esbuild: '*'
+      html-minifier-terser: '*'
+      lightningcss: '*'
+      postcss: '*'
+      uglify-js: '*'
+      webpack: ^5.1.0
+    peerDependenciesMeta:
+      '@minify-html/node':
+        optional: true
+      '@swc/core':
+        optional: true
+      '@swc/css':
+        optional: true
+      '@swc/html':
+        optional: true
+      clean-css:
+        optional: true
+      cssnano:
+        optional: true
+      csso:
+        optional: true
+      esbuild:
+        optional: true
+      html-minifier-terser:
+        optional: true
+      lightningcss:
+        optional: true
+      postcss:
         optional: true
       uglify-js:
         optional: true
@@ -11734,6 +11777,17 @@ snapshots:
       schema-utils: 4.3.3
       terser: 5.43.1
       webpack: 5.106.2
+
+  terser-webpack-plugin@5.6.0(lightningcss@1.32.0)(postcss@8.5.14)(webpack@5.106.2):
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.30
+      jest-worker: 27.5.1
+      schema-utils: 4.3.3
+      terser: 5.43.1
+      webpack: 5.106.2
+    optionalDependencies:
+      lightningcss: 1.32.0
+      postcss: 8.5.14
 
   terser@5.43.1:
     dependencies:
