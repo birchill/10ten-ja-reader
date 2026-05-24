@@ -16,7 +16,12 @@ export function mockGetMessage(
     throw new Error(`Could not read messages.json for locale \`${locale}\``);
   }
 
-  const messages = JSON.parse(messageContents);
+  const messages = JSON.parse(messageContents, (key, value) => {
+    if (key === '__proto__' || key === 'constructor') {
+      return undefined;
+    }
+    return value;
+  });
   const stringInfo = messages[id];
   if (!messages) {
     throw new Error(
