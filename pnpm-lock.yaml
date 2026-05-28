@@ -172,8 +172,8 @@ importers:
         specifier: 20.0.1
         version: 20.0.1(@types/node@24.3.0)
       semver-parser:
-        specifier: 4.1.8
-        version: 4.1.8
+        specifier: 4.2.0
+        version: 4.2.0
       source-map-loader:
         specifier: 5.0.0
         version: 5.0.0(webpack@5.106.2)
@@ -5209,8 +5209,8 @@ packages:
     resolution: {integrity: sha512-eflK8wEtyOE6+hsaRVPxvUKYCpRgzLqDTb8krvAsRIwOGlHoSgYLgBXoubGgLd2fT41/OUYdb48v4k4WWHQurA==}
     engines: {node: '>= 10.13.0'}
 
-  semver-parser@4.1.8:
-    resolution: {integrity: sha512-VFJx75RLTS4hHoiFG+JzDP5dE89JUQS0+/h4Zvcqw8djO6HInA5N7BtvbYBOD6W1u9eOfax7v3xf6CoSIAQBSg==}
+  semver-parser@4.2.0:
+    resolution: {integrity: sha512-4/Pru3U/BQed3eCHWLS+lCZLrnNbSjEhP/Bk+0Fu0qLiaAE+T9CM6M/ARBo/V1ZqzcqAtFgFU2MdXjSqJ3XBLw==}
 
   semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
@@ -11422,7 +11422,7 @@ snapshots:
       ajv-formats: 2.1.1(ajv@8.18.0)
       ajv-keywords: 5.1.0(ajv@8.18.0)
 
-  semver-parser@4.1.8: {}
+  semver-parser@4.2.0: {}
 
   semver@6.3.1: {}
 
