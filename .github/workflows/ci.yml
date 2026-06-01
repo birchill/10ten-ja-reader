@@ -7,6 +7,12 @@ on:
       - 'v*'
   pull_request:
 
+env:
+  # Pin until Node 24.16.0's extract-zip/yauzl regression is fixed. It can
+  # leave WebdriverIO's ChromeDriver download partially extracted in CI:
+  # https://github.com/nodejs/node/issues/63487
+  NODE_VERSION: 24.15.0
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -24,7 +30,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v6.4.0
         with:
-          node-version: 24
+          node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
 
       # Check the build works. No need to run the build:edge target since it's
@@ -76,7 +82,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v6.4.0
         with:
-          node-version: 24
+          node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
 
       - name: Install
