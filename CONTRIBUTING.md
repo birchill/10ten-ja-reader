@@ -193,6 +193,23 @@ resume before hitting your actual breakpoint.
 
 ## Releasing
 
+### Adding release notes
+
+We use [Changesets](https://changesets.dev/) to collect release notes and bump
+the extension version.
+
+For user-visible changes, run:
+
+```
+pnpm changeset
+```
+
+Choose the bump type and write the release note text there instead of editing
+`CHANGELOG.md` directly. If a note only applies to specific release targets,
+start the item with the existing target annotation style, e.g. `(Firefox)` or
+`(Chrome, Edge)`. Bare issue references such as `#123` are linked when
+Changesets updates the changelog.
+
 Pre-release checks:
 
 - If we've made changes to the build setup at all, it's good to run
@@ -222,17 +239,28 @@ Pre-release checks:
 - It's also good to check that the release notes are being parsed correctly by
   running `pnpm tsx scripts/release-notes.js`.
 
-We trigger releases by running the release workflow from
-[Actions](https://github.com/birchill/10ten-ja-reader/actions/workflows/release.yml).
+When changesets are merged to `main`, the
+[Changesets workflow](https://github.com/birchill/10ten-ja-reader/actions/workflows/changesets.yml)
+creates or updates a release PR. That PR contains the computed version bump,
+the generated changelog, synced manifest/Xcode marketing versions, and a
+preview comment showing both the GitHub release notes and the store-submission
+notes.
 
-That will create a draft release that you need to publish before anything gets
-uploaded.
+Merge the release PR when you are ready to release. The
+[Release workflow](https://github.com/birchill/10ten-ja-reader/actions/workflows/release.yml)
+then builds the release assets, tags the commit, and creates a draft GitHub
+release that you need to publish before anything gets uploaded.
 
-If you need to test the release process locally, you can use:
+If you need to test the versioning process locally, use a temporary branch and
+run:
 
 ```
-pnpm release --dry-run -V
+pnpm changeset-version
 ```
+
+That command rewrites tracked release files, including the dictionary snapshot,
+so do not run it on a working branch unless you intend to create the release PR
+contents yourself.
 
 After publishing the release, it should automatically be uploaded to AMO
 (Firefox), the Edge Store, and the Chrome Web Store but we need to manually

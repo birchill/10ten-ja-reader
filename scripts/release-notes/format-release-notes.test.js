@@ -65,6 +65,36 @@ Thunderbird:
 -->`);
   });
 
+  it('handles a Changesets-style version heading', () => {
+    expect(
+      formatReleaseNotes({
+        changeLog: `
+## 1.7.1
+
+- Fixed display of the radical meaning in kanji view.
+    `,
+        version: '1.7.1',
+      })
+    ).toEqual(`- Fixed display of the radical meaning in kanji view.
+
+<!--
+Firefox:
+• Fixed display of the radical meaning in kanji view.
+
+Chrome:
+• Fixed display of the radical meaning in kanji view.
+
+Edge:
+• Fixed display of the radical meaning in kanji view.
+
+Safari:
+• Fixed display of the radical meaning in kanji view.
+
+Thunderbird:
+• Fixed display of the radical meaning in kanji view.
+-->`);
+  });
+
   it('merges bullet points that are split across lines', () => {
     expect(
       formatReleaseNotes({

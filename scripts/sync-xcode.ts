@@ -3,6 +3,18 @@ import * as url from 'node:url';
 
 async function main() {
   console.log('Synchronizing version number in XCode project...');
+  const marketingVersionOnly = process.argv.includes(
+    '--marketing-version-only'
+  );
+  const buildNumberOnly = process.argv.includes('--build-number-only');
+  if (marketingVersionOnly && buildNumberOnly) {
+    throw new Error(
+      'Pass only one of --marketing-version-only or --build-number-only'
+    );
+  }
+
+  const updateMarketingVersion = !buildNumberOnly;
+  const updateBuildNumber = !marketingVersionOnly;
   const nextBuildNumber = process.env.NEXT_XCODE_BUILD_NUMBER;
   if (nextBuildNumber && !/^\d+$/.test(nextBuildNumber)) {
     throw new Error(
@@ -32,32 +44,32 @@ async function main() {
     )
   );
   const originalContents = fs.readFileSync(projectPath, 'utf8');
+  let updatedContents = originalContents;
 
   // Update the marketing version
-  const marketingStringRe = /(?<=MARKETING_VERSION = )[0-9.]+(?=;)/g;
-  const withVersionUpdated = originalContents.replace(
-    marketingStringRe,
-    versionString
-  );
-  if (withVersionUpdated === originalContents) {
-    console.log('Version is already up-to-date');
-    process.exit(0);
+  if (updateMarketingVersion) {
+    const marketingStringRe = /(?<=MARKETING_VERSION = )[0-9.]+(?=;)/g;
+    updatedContents = updatedContents.replace(marketingStringRe, versionString);
   }
 
   // Update the build ID
-  const buildIdRe = /(?<=CURRENT_PROJECT_VERSION = )[0-9]+(?=;)/g;
-  const withBuildIdUpdated = withVersionUpdated.replace(
-    buildIdRe,
-    (match: string) => {
+  if (updateBuildNumber) {
+    const buildIdRe = /(?<=CURRENT_PROJECT_VERSION = )[0-9]+(?=;)/g;
+    updatedContents = updatedContents.replace(buildIdRe, (match: string) => {
       if (nextBuildNumber) {
         return nextBuildNumber;
       }
       return String(parseInt(match, 10) + 1);
-    }
-  );
+    });
+  }
+
+  if (updatedContents === originalContents) {
+    console.log('Version is already up-to-date');
+    process.exit(0);
+  }
 
   // Write the result
-  fs.writeFileSync(projectPath, withBuildIdUpdated, 'utf8');
+  fs.writeFileSync(projectPath, updatedContents, 'utf8');
   console.log(`  Wrote result to ${projectPath}`);
 }
 

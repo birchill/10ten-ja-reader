@@ -7,17 +7,18 @@
 export function formatReleaseNotes({ changeLog, version }) {
   // Get the lines of the changelog for the specified version
   const lines = changeLog.split(/\r\n|\r|\n/g);
-  const start = lines.findIndex((line) => line.startsWith(`## [${version}]`));
+  const start = lines.findIndex((line) => getVersionHeading({ line, version }));
   if (start === -1) {
     throw new Error(`Could not find release notes for version ${version}`);
   }
 
   // Parse out any annotation on the version number restricting the set of
   // included browsers.
-  const versionAnnotation = lines[start].match(/\s+\((.+)\)/);
+  const versionAnnotation = getVersionHeading({ line: lines[start], version })
+    ?.groups?.annotation;
   let supportedBrowsers = null;
   if (versionAnnotation) {
-    supportedBrowsers = getSupportedBrowsers(versionAnnotation[1]);
+    supportedBrowsers = getSupportedBrowsers(versionAnnotation);
   }
 
   // Look for the next version or the references section at the end
@@ -80,6 +81,15 @@ export function formatReleaseNotes({ changeLog, version }) {
   })}\n-->`;
 
   return notes;
+}
+
+function getVersionHeading({ line, version }) {
+  const escapedVersion = version.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return line.match(
+    new RegExp(
+      `^##\\s+(?:\\[${escapedVersion}\\]|${escapedVersion})(?:\\s+-\\s+\\d{4}-\\d{2}-\\d{2})?(?:\\s+\\((?<annotation>.+)\\))?\\s*$`
+    )
+  );
 }
 
 const browsers = ['Firefox', 'Chrome', 'Edge', 'Safari', 'Thunderbird'];
