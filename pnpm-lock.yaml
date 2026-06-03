@@ -58,8 +58,8 @@ importers:
         specifier: 10.0.1
         version: 10.0.1(eslint@10.4.1(jiti@2.7.0))
       '@release-it/keep-a-changelog':
-        specifier: 7.0.1
-        version: 7.0.1(release-it@20.0.1(@types/node@24.3.0))
+        specifier: 7.1.0
+        version: 7.1.0(release-it@20.0.1(@types/node@24.3.0))
       '@rspack/cli':
         specifier: 2.0.5
         version: 2.0.5(@rspack/core@2.0.5)
@@ -1461,11 +1461,11 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@release-it/keep-a-changelog@7.0.1':
-    resolution: {integrity: sha512-5K0Z9QynUb77/c9wsLNo05/vOm4Jed10Mo7ZMSEWQtC6v8hAnLSRh9VmvbQaPT27EB4mLd4hQX8sW3yv4uK4qg==}
+  '@release-it/keep-a-changelog@7.1.0':
+    resolution: {integrity: sha512-WJlUHdeRGADe0zNAWmB6cF+yvSG8MnME6QX7RExFemnVk1CKyhppVpGXeAFCeFYuD69PnwGnmUMaBpeCD5O2pw==}
     engines: {node: ^20.9.0 || >=22.0.0}
     peerDependencies:
-      release-it: ^18.0.0 || ^19.0.0
+      release-it: ^18.0.0 || ^19.0.0 || ^20.0.0
 
   '@rollup/rollup-android-arm-eabi@4.60.3':
     resolution: {integrity: sha512-x35CNW/ANXG3hE/EZpRU8MXX1JDN86hBb2wMGAtltkz7pc6cxgjpy1OMMfDosOQ+2hWqIkag/fGok1Yady9nGw==}
@@ -7193,7 +7193,7 @@ snapshots:
       - react-native-b4a
       - supports-color
 
-  '@release-it/keep-a-changelog@7.0.1(release-it@20.0.1(@types/node@24.3.0))':
+  '@release-it/keep-a-changelog@7.1.0(release-it@20.0.1(@types/node@24.3.0))':
     dependencies:
       detect-newline: 4.0.1
       release-it: 20.0.1(@types/node@24.3.0)

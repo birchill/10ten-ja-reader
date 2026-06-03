@@ -81,7 +81,7 @@
     "@actions/core": "3.0.1",
     "@actions/github": "9.1.1",
     "@eslint/js": "10.0.1",
-    "@release-it/keep-a-changelog": "7.0.1",
+    "@release-it/keep-a-changelog": "7.1.0",
     "@rspack/cli": "2.0.5",
     "@rspack/core": "2.0.5",
     "@tailwindcss/postcss": "4.3.0",
