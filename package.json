@@ -118,7 +118,7 @@
     "react-cosmos": "7.3.0",
     "react-cosmos-plugin-boolean-input": "7.3.0",
     "react-cosmos-plugin-rspack": "3.0.0",
-    "release-it": "20.0.1",
+    "release-it": "20.2.0",
     "semver-parser": "4.2.0",
     "source-map-loader": "5.0.0",
     "tailwindcss": "4.3.0",
