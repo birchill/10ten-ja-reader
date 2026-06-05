@@ -27,5 +27,11 @@
     "target": "es2020",
     "useUnknownInCatchVariables": true
   },
-  "include": ["./src/**/*", "./scripts/*.ts", "./*.ts", "./*.cjs"]
+  "include": [
+    "./.changeset/**/*.ts",
+    "./src/**/*",
+    "./scripts/*.ts",
+    "./*.ts",
+    "./*.cjs"
+  ]
 }

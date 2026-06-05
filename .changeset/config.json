@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.1.4/schema.json",
-  "changelog": "./changelog.cjs",
+  "changelog": ["./changelog.ts", { "repo": "birchill/10ten-ja-reader" }],
   "commit": false,
   "fixed": [],
   "linked": [],

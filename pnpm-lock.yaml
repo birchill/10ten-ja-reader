@@ -57,6 +57,9 @@ importers:
       '@changesets/cli':
         specifier: 2.31.0
         version: 2.31.0(@types/node@24.3.0)
+      '@changesets/types':
+        specifier: 6.1.0
+        version: 6.1.0
       '@eslint/js':
         specifier: 10.0.1
         version: 10.0.1(eslint@10.4.1(jiti@2.7.0))

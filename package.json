@@ -85,6 +85,7 @@
     "@actions/core": "3.0.1",
     "@actions/github": "9.1.1",
     "@changesets/cli": "2.31.0",
+    "@changesets/types": "6.1.0",
     "@eslint/js": "10.0.1",
     "@rspack/cli": "2.0.6",
     "@rspack/core": "2.0.6",
