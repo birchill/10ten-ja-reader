@@ -92,7 +92,7 @@
     "@types/yargs": "17.0.35",
     "@typescript-eslint/parser": "8.60.0",
     "@vitest/browser-webdriverio": "4.1.7",
-    "@vitest/eslint-plugin": "1.6.18",
+    "@vitest/eslint-plugin": "1.6.19",
     "archiver": "8.0.0",
     "css-loader": "7.1.4",
     "eslint": "10.4.1",
