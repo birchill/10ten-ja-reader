@@ -11,6 +11,7 @@ on:
 jobs:
   prepare:
     name: Prepare release
+    if: ${{ github.repository == 'birchill/10ten-ja-reader' }}
     runs-on: ubuntu-latest
     concurrency:
       group: app-store-connect-build-number
@@ -100,7 +101,7 @@ jobs:
     name: Build Safari assets
     runs-on: macos-26
     needs: prepare
-    if: ${{ needs.prepare.outputs.should_release == 'true' }}
+    if: ${{ github.repository == 'birchill/10ten-ja-reader' && needs.prepare.outputs.should_release == 'true' }}
 
     steps:
       - name: Checkout code
@@ -283,7 +284,7 @@ jobs:
     name: Create release
     runs-on: ubuntu-latest
     needs: [prepare, build_macos]
-    if: ${{ needs.prepare.outputs.should_release == 'true' }}
+    if: ${{ github.repository == 'birchill/10ten-ja-reader' && needs.prepare.outputs.should_release == 'true' }}
     permissions:
       contents: write
 

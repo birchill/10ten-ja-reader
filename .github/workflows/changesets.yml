@@ -15,6 +15,7 @@ permissions:
 jobs:
   version:
     name: Version packages
+    if: ${{ github.repository == 'birchill/10ten-ja-reader' }}
     runs-on: ubuntu-latest
 
     steps:
