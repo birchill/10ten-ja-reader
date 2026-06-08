@@ -29,7 +29,7 @@ jobs:
         with:
           version: 11
 
-      - uses: actions/setup-node@v6.4.0
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: pnpm
@@ -43,7 +43,7 @@ jobs:
         with:
           github-token: ${{ secrets.PUSH_TOKEN }}
           version: pnpm changeset-version
-          title: 'chore: bump version'
+          title: 'Release next version'
           commit: 'chore: bump version'
           createGithubReleases: false
 
