@@ -1,6 +1,11 @@
 import * as fs from 'node:fs';
 import * as url from 'node:url';
 
+// Normalizes the CHANGELOG.md output from `changeset version` to match this
+// repo's existing changelog format: add the release date to the generated
+// version heading, remove Changesets' change-type section headings, and keep
+// the new release block directly after the Unreleased section.
+
 const CHANGESET_SECTION_HEADINGS = new Set([
   '### Major Changes',
   '### Minor Changes',
