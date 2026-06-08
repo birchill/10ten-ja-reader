@@ -65,6 +65,68 @@ Thunderbird:
 -->`);
   });
 
+  it('handles a Changesets-style version heading', () => {
+    expect(
+      formatReleaseNotes({
+        changeLog: `
+## 1.7.1
+
+- Fixed display of the radical meaning in kanji view.
+    `,
+        version: '1.7.1',
+      })
+    ).toEqual(`- Fixed display of the radical meaning in kanji view.
+
+<!--
+Firefox:
+• Fixed display of the radical meaning in kanji view.
+
+Chrome:
+• Fixed display of the radical meaning in kanji view.
+
+Edge:
+• Fixed display of the radical meaning in kanji view.
+
+Safari:
+• Fixed display of the radical meaning in kanji view.
+
+Thunderbird:
+• Fixed display of the radical meaning in kanji view.
+-->`);
+  });
+
+  it('does not match another version with the requested version as a prefix', () => {
+    const notes = formatReleaseNotes({
+      changeLog: `
+## 1.7.10
+
+- Wrong release.
+
+## 1.7.1
+
+- Right release.
+    `,
+      version: '1.7.1',
+    });
+
+    expect(notes).toContain('- Right release.');
+    expect(notes).not.toContain('- Wrong release.');
+  });
+
+  it('handles punctuation and non-normalized dates in annotated version headings', () => {
+    const notes = formatReleaseNotes({
+      changeLog: `
+## [1.7.1+test] - 2022-2-10 (Firefox only)
+
+- Fixed display of the radical meaning in kanji view.
+    `,
+      version: '1.7.1+test',
+    });
+
+    expect(notes).toContain('Firefox:');
+    expect(notes).not.toContain('Chrome:');
+  });
+
   it('merges bullet points that are split across lines', () => {
     expect(
       formatReleaseNotes({
