@@ -14,8 +14,10 @@ export function formatReleaseNotes({ changeLog, version }) {
 
   // Parse out any annotation on the version number restricting the set of
   // included browsers.
-  const versionAnnotation = getVersionHeading({ line: lines[start], version })
-    ?.groups?.annotation;
+  const versionAnnotation = getVersionHeading({
+    line: lines[start],
+    version,
+  })?.annotation;
   let supportedBrowsers = null;
   if (versionAnnotation) {
     supportedBrowsers = getSupportedBrowsers(versionAnnotation);
@@ -84,12 +86,35 @@ export function formatReleaseNotes({ changeLog, version }) {
 }
 
 function getVersionHeading({ line, version }) {
-  const escapedVersion = version.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return line.match(
-    new RegExp(
-      `^##\\s+(?:\\[${escapedVersion}\\]|${escapedVersion})(?:\\s+-\\s+\\d{4}-\\d{2}-\\d{2})?(?:\\s+\\((?<annotation>.+)\\))?\\s*$`
-    )
-  );
+  const headingMatch = line.match(/^##\s+(.+?)\s*$/);
+  if (!headingMatch) {
+    return null;
+  }
+
+  const headingText = headingMatch[1];
+  if (!hasVersionPrefix({ text: headingText, version })) {
+    return null;
+  }
+
+  return { annotation: getTrailingAnnotation(headingText) };
+}
+
+function hasVersionPrefix({ text, version }) {
+  for (const prefix of [`[${version}]`, version]) {
+    if (!text.startsWith(prefix)) {
+      continue;
+    }
+
+    const nextChar = text[prefix.length];
+    return !nextChar || /\s/.test(nextChar);
+  }
+
+  return false;
+}
+
+function getTrailingAnnotation(text) {
+  const annotationMatch = text.match(/\s+\(([^()]*)\)\s*$/);
+  return annotationMatch?.[1];
 }
 
 const browsers = ['Firefox', 'Chrome', 'Edge', 'Safari', 'Thunderbird'];
