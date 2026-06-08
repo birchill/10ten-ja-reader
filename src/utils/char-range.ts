@@ -84,8 +84,13 @@ export const kanji = /[\u4e00-\u9fff]/;
 // * U+F900~U+FAFF is the CJK Compatibility Ideographs block (random odd
 //   kanji, because standards)
 // * U+20000~U+2A6DF is CJK Unified Ideographs Extension B (more rare kanji)
+// * U+2A700~U+2EE5F is CJK Unified Ideographs Extensions C-F/I (still more
+//   rare kanji)
+// * U+2F800~U+2FA1F is the CJK Compatibility Ideographs Supplement block
+// * U+30000~U+3347F is CJK Unified Ideographs Extensions G/H/J
 /** @public */
-export const rareKanji = /[\u3400-\u4dbf\uf900-\ufaff\u{20000}-\u{2a6df}]/u;
+export const rareKanji =
+  /[\u3400-\u4dbf\uf900-\ufaff\u{20000}-\u{2a6df}\u{2a700}-\u{2ee5f}\u{2f800}-\u{2fa1f}\u{30000}-\u{3347f}]/u;
 
 // U+FF66~U+FF9F is halfwidth katakana
 /** @public */
