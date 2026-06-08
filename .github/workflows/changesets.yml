@@ -42,8 +42,8 @@ jobs:
         with:
           github-token: ${{ secrets.PUSH_TOKEN }}
           version: pnpm changeset-version
-          title: 'chore: release next version'
-          commit: 'chore: release next version'
+          title: 'chore: bump version'
+          commit: 'chore: bump version'
           createGithubReleases: false
 
       - name: Generate release notes preview
