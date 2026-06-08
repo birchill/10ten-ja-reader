@@ -5,6 +5,9 @@ on:
       - 'main'
     tags:
       - 'v*'
+    paths-ignore:
+      - data/words.ljson
+      - data/words.idx
   pull_request:
 
 env:

@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - data/words.ljson
+      - data/words.idx
   workflow_dispatch:
 
 jobs:
@@ -13,7 +16,7 @@ jobs:
       group: app-store-connect-build-number
       cancel-in-progress: false
     outputs:
-      sha: ${{ steps.out.outputs.sha }}
+      sha: ${{ steps.release_ref.outputs.sha }}
       should_release: ${{ steps.out.outputs.should_release }}
       version: ${{ steps.out.outputs.version }}
       build_number: ${{ steps.build_number.outputs.value }}
@@ -22,6 +25,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          token: ${{ secrets.PUSH_TOKEN }}
 
       - uses: actions/setup-node@v6.4.0
         with:
@@ -32,7 +36,6 @@ jobs:
         run: |
           version=$(node -p "require('./package.json').version")
           echo "version=${version}" >> "$GITHUB_OUTPUT"
-          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
           if git rev-parse -q --verify "refs/tags/v${version}" >/dev/null; then
             echo "should_release=false" >> "$GITHUB_OUTPUT"
@@ -53,6 +56,43 @@ jobs:
           build_number=$(node ./scripts/get-app-store-build-number.js jp.co.birchill.tenten-ja-reader)
           echo "value=${build_number}" >> "$GITHUB_OUTPUT"
           echo "Using App Store Connect build number: ${build_number}"
+
+      - name: Set Git username
+        if: ${{ steps.out.outputs.should_release == 'true' }}
+        run: |-
+          git config --global user.name "Release"
+          git config --global user.email "actions@users.noreply.github.com"
+
+      - name: Install pnpm
+        if: ${{ steps.out.outputs.should_release == 'true' }}
+        uses: pnpm/action-setup@v6
+        with:
+          version: 11
+
+      - name: Install dependencies
+        if: ${{ steps.out.outputs.should_release == 'true' }}
+        run: pnpm install --frozen-lockfile
+
+      - name: Update word snapshot
+        if: ${{ steps.out.outputs.should_release == 'true' }}
+        run: pnpm update-snapshot
+
+      - name: Commit and push updated word snapshot
+        if: ${{ steps.out.outputs.should_release == 'true' }}
+        run: |-
+          git add data/words.ljson data/words.idx
+          if git diff --cached --quiet; then
+            echo "Word snapshot is already up to date."
+            exit 0
+          fi
+
+          timestamp=$(date -u)
+          git commit -m "chore: Update word snapshot (${timestamp})"
+          git push
+
+      - name: Set release ref
+        id: release_ref
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
   build_macos:
     # Keep the Safari build/sign/upload steps in this job in sync with

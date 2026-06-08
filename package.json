@@ -30,7 +30,7 @@
     "build:safari": "rspack --env target=safari",
     "build:thunderbird": "rspack --env target=thunderbird",
     "changeset": "changeset",
-    "changeset-version": "changeset version && pnpm postprocess-changeset-changelog && pnpm sync-release-version && pnpm update-snapshot",
+    "changeset-version": "changeset version && pnpm postprocess-changeset-changelog && pnpm sync-release-version",
     "check-keys": "tsx scripts/check-keys",
     "cosmos": "node --import=./cosmos-import.js node_modules/react-cosmos/bin/cosmos.js",
     "cosmos-export": "node --import=./cosmos-import.js node_modules/react-cosmos/bin/cosmos-export.js",

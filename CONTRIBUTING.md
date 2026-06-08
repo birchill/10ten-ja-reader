@@ -242,14 +242,14 @@ Pre-release checks:
 When changesets are merged to `main`, the
 [Changesets workflow](https://github.com/birchill/10ten-ja-reader/actions/workflows/changesets.yml)
 creates or updates a release PR. That PR contains the computed version bump,
-the generated changelog, synced manifest/Xcode marketing versions, and a
-preview comment showing both the GitHub release notes and the store-submission
-notes.
+the generated changelog, synced manifest/Xcode marketing versions, and a preview
+comment showing both the GitHub release notes and the store-submission notes.
 
 Merge the release PR when you are ready to release. The
 [Release workflow](https://github.com/birchill/10ten-ja-reader/actions/workflows/release.yml)
-then builds the release assets, tags the commit, and creates a draft GitHub
-release that you need to publish before anything gets uploaded.
+then updates the dictionary snapshot, builds the release assets from that
+updated commit, tags it, and creates a draft GitHub release that you need to
+publish before anything gets uploaded.
 
 If you need to test the versioning process locally, use a temporary branch and
 run:
@@ -258,9 +258,9 @@ run:
 pnpm changeset-version
 ```
 
-That command rewrites tracked release files, including the dictionary snapshot,
-so do not run it on a working branch unless you intend to create the release PR
-contents yourself.
+That command rewrites tracked release files such as `CHANGELOG.md`,
+`manifest.json.src`, and the Xcode marketing version, so do not run it on a
+working branch unless you intend to create the release PR contents yourself.
 
 After publishing the release, it should automatically be uploaded to AMO
 (Firefox), the Edge Store, and the Chrome Web Store but we need to manually
