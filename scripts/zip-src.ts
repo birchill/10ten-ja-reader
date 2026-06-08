@@ -1,4 +1,4 @@
-import archiver from 'archiver';
+import { ZipArchive } from 'archiver';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as url from 'node:url';
@@ -21,7 +21,7 @@ async function main() {
 
   const zipFile = fs.createWriteStream(path.join(DEST_DIR, zipFilename));
 
-  const archive = archiver('zip', { zlib: { level: 9 } });
+  const archive = new ZipArchive({ zlib: { level: 9 } });
 
   archive.on('warning', (err: any) => {
     if (err?.code === 'ENOENT') {
