@@ -1330,6 +1330,36 @@ describe('getTextAtPoint', () => {
       expect(result).toMatchObject(textAtPoint('ｷﾞﾝｺｳ㘆豈', [textNode, 0, 7]));
     });
 
+    it('includes 𱁬 as Japanese text', () => {
+      // Arrange
+      testDiv.append('𱁬');
+      const textNode = testDiv.firstChild as Text;
+      const bbox = getBboxForCodepointAtOffset(textNode, 0);
+
+      // Act
+      const result = getTextAtPoint({
+        point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
+      });
+
+      // Assert
+      expect(result).toMatchObject(textAtPoint('𱁬', [textNode, 0, 2]));
+    });
+
+    it('includes 𰻞 in 𰻞𰻞麺 as Japanese text', () => {
+      // Arrange
+      testDiv.append('𰻞𰻞麺');
+      const textNode = testDiv.firstChild as Text;
+      const bbox = getBboxForCodepointAtOffset(textNode, 0);
+
+      // Act
+      const result = getTextAtPoint({
+        point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
+      });
+
+      // Assert
+      expect(result).toMatchObject(textAtPoint('𰻞𰻞麺', [textNode, 0, 5]));
+    });
+
     it('includes zero-width non-joiner characters', () => {
       // Arrange
       testDiv.append('あ\u200cい\u200cう\u200c。');
@@ -2336,6 +2366,15 @@ function getBboxForOffset(node: Node, start: number) {
   const range = new Range();
   range.setStart(node, start);
   range.setEnd(node, start + 1);
+  return range.getBoundingClientRect();
+}
+
+function getBboxForCodepointAtOffset(node: Text, start: number) {
+  const codepoint = node.data.codePointAt(start);
+  const end = start + (codepoint && codepoint > 0xffff ? 2 : 1);
+  const range = new Range();
+  range.setStart(node, start);
+  range.setEnd(node, end);
   return range.getBoundingClientRect();
 }
 
