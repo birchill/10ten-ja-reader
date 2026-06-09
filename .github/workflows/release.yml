@@ -6,6 +6,7 @@ on:
     paths-ignore:
       - data/words.ljson
       - data/words.idx
+      - CHANGELOG.md
   workflow_dispatch:
 
 jobs:
@@ -78,17 +79,20 @@ jobs:
         if: ${{ steps.out.outputs.should_release == 'true' }}
         run: pnpm update-snapshot
 
-      - name: Commit and push updated word snapshot
+      - name: Stamp changelog release date
+        if: ${{ steps.out.outputs.should_release == 'true' }}
+        run: pnpm stamp-changelog-date
+
+      - name: Commit and push release preparation
         if: ${{ steps.out.outputs.should_release == 'true' }}
         run: |-
-          git add data/words.ljson data/words.idx
+          git add data/words.ljson data/words.idx CHANGELOG.md
           if git diff --cached --quiet; then
-            echo "Word snapshot is already up to date."
+            echo "Nothing to update for release preparation."
             exit 0
           fi
 
-          timestamp=$(date -u)
-          git commit -m "chore: Update word snapshot (${timestamp})"
+          git commit -m "chore: prepare release v${{ steps.out.outputs.version }}"
           git push
 
       - name: Set release ref

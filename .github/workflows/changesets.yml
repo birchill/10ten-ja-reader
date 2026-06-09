@@ -6,6 +6,7 @@ on:
     paths-ignore:
       - data/words.ljson
       - data/words.idx
+      - CHANGELOG.md
 
 permissions:
   contents: write

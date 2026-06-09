@@ -210,6 +210,17 @@ start the item with the existing target annotation style, e.g. `(Firefox)` or
 `(Chrome, Edge)`. Bare issue references such as `#123` are linked when
 Changesets updates the changelog.
 
+These target annotations also decide which stores a release is published to. An
+unannotated note applies to every browser, so a browser is only skipped if
+_every_ note in the release excludes it. To cut a Firefox-only release, for
+example, annotate every note with `(Firefox)`; the other stores then have no
+applicable notes and are skipped automatically, and the changelog heading is
+stamped with a matching `(Firefox only)` annotation for the historical record.
+
+(Note that the Safari/iOS build is always uploaded to App Store Connect
+regardless of these annotations—uploading a build there does not oblige us to
+actually submit it for release—and Thunderbird is published manually.)
+
 Pre-release checks:
 
 - If we've made changes to the build setup at all, it's good to run
@@ -245,11 +256,16 @@ creates or updates a release PR. That PR contains the computed version bump,
 the generated changelog, synced manifest/Xcode marketing versions, and a preview
 comment showing both the GitHub release notes and the store-submission notes.
 
-Merge the release PR when you are ready to release. The
+Until release, the new version's changelog heading stays in its plain
+`## <version>` form (this is what lets the Changesets action show just the new
+section in the release PR body). Merge the release PR when you are ready to
+release. The
 [Release workflow](https://github.com/birchill/10ten-ja-reader/actions/workflows/release.yml)
-then updates the dictionary snapshot, builds the release assets from that
-updated commit, tags it, and creates a draft GitHub release that you need to
-publish before anything gets uploaded.
+then updates the dictionary snapshot, stamps the release date (and, for a
+browser-restricted release, a `(… only)` annotation) onto the changelog heading
+(`## [<version>] - <date>`), builds the release assets from that updated commit,
+tags it, and creates a draft GitHub release that you need to publish before
+anything gets uploaded.
 
 If you need to test the versioning process locally, use a temporary branch and
 run:
