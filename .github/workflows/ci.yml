@@ -8,6 +8,7 @@ on:
     paths-ignore:
       - data/words.ljson
       - data/words.idx
+      - CHANGELOG.md
   pull_request:
 
 env:

@@ -5,22 +5,42 @@
  * @returns {string}
  */
 export function formatReleaseNotes({ changeLog, version }) {
+  const notes = extractVersionNotes({ changeLog, version });
+  const humanNotes = toHumanNotes(notes);
+
+  // Generate specific notes for each browser
+  return `${notes}\n\n<!--\n${getBrowserNotes({ notes: humanNotes })}\n-->`;
+}
+
+/**
+ * Returns the list of browsers that have at least one applicable note in the
+ * given version's release notes, in canonical order.
+ *
+ * A note with no browser annotation applies to every browser, so this returns
+ * the full set unless _every_ note is annotated to exclude some browser. This
+ * is what determines which stores a release is published to (a browser with no
+ * notes gets no section in the release notes, so its publish step is skipped).
+ *
+ * @param {{ changeLog: string; version: string }} options
+ * @returns {Array<string>}
+ */
+export function getReleaseTargets({ changeLog, version }) {
+  const humanNotes = toHumanNotes(extractVersionNotes({ changeLog, version }));
+  return browsers.filter(
+    (browser) => getNotesForBrowser({ notes: humanNotes, browser }) !== null
+  );
+}
+
+export const browsers = ['Firefox', 'Chrome', 'Edge', 'Safari', 'Thunderbird'];
+
+// Extracts the raw markdown body for the given version, with line-wrapped
+// bullet points merged onto a single line.
+function extractVersionNotes({ changeLog, version }) {
   // Get the lines of the changelog for the specified version
   const lines = changeLog.split(/\r\n|\r|\n/g);
-  const start = lines.findIndex((line) => getVersionHeading({ line, version }));
+  const start = lines.findIndex((line) => isVersionHeading({ line, version }));
   if (start === -1) {
     throw new Error(`Could not find release notes for version ${version}`);
-  }
-
-  // Parse out any annotation on the version number restricting the set of
-  // included browsers.
-  const versionAnnotation = getVersionHeading({
-    line: lines[start],
-    version,
-  })?.annotation;
-  let supportedBrowsers = null;
-  if (versionAnnotation) {
-    supportedBrowsers = getSupportedBrowsers(versionAnnotation);
   }
 
   // Look for the next version or the references section at the end
@@ -47,7 +67,12 @@ export function formatReleaseNotes({ changeLog, version }) {
   // (To whoever has to maintain this, I'm sorry.)
   notes = notes.replaceAll(/(?<=^\s*- [\s\S]*?)\n\s*(?=[^-\s])/gm, ' ');
 
-  // Generate human-friendly release notes
+  return notes;
+}
+
+// Converts the markdown release notes into the human-friendly form used for
+// store submissions.
+function toHumanNotes(notes) {
   let humanNotes = notes;
 
   // 1. Replace markdown bullets with real bullets
@@ -76,27 +101,16 @@ export function formatReleaseNotes({ changeLog, version }) {
   // to keep the text content of all HTML elements.)
   humanNotes = humanNotes.replace(/<kbd>(.+?)<\/kbd>/g, '$1');
 
-  // Generate specific notes for each browser
-  notes += `\n\n<!--\n${getBrowserNotes({
-    notes: humanNotes,
-    supportedBrowsers,
-  })}\n-->`;
-
-  return notes;
+  return humanNotes;
 }
 
-function getVersionHeading({ line, version }) {
+function isVersionHeading({ line, version }) {
   const headingMatch = line.match(/^##\s+(.+?)\s*$/);
   if (!headingMatch) {
-    return null;
+    return false;
   }
 
-  const headingText = headingMatch[1];
-  if (!hasVersionPrefix({ text: headingText, version })) {
-    return null;
-  }
-
-  return { annotation: getTrailingAnnotation(headingText) };
+  return hasVersionPrefix({ text: headingMatch[1], version });
 }
 
 function hasVersionPrefix({ text, version }) {
@@ -112,42 +126,23 @@ function hasVersionPrefix({ text, version }) {
   return false;
 }
 
-function getTrailingAnnotation(text) {
-  const annotationMatch = text.match(/\s+\(([^()]*)\)\s*$/);
-  return annotationMatch?.[1];
-}
-
-const browsers = ['Firefox', 'Chrome', 'Edge', 'Safari', 'Thunderbird'];
-
-function getSupportedBrowsers(annotation) {
-  const listedBrowsers = annotation
-    .replace(/(\s+|-)only$/, '')
-    .split(/\s*,\s*/)
-    .map((b) => b.trim().toLowerCase());
-
-  // Check that it actually is a list of browsers
-  const hasABrowser = browsers.some((browser) =>
-    listedBrowsers.includes(browser.toLowerCase())
-  );
-
-  return hasABrowser ? listedBrowsers : null;
-}
-
-function getBrowserNotes({ notes, supportedBrowsers }) {
+function getBrowserNotes({ notes }) {
   const parts = [];
 
-  const browsersToList = supportedBrowsers
-    ? browsers.filter((b) => supportedBrowsers.includes(b.toLowerCase()))
-    : browsers;
-  for (const browser of browsersToList) {
-    parts.push(`${browser}:\n${getNotesForBrowser({ notes, browser })}`);
+  for (const browser of browsers) {
+    const browserNotes = getNotesForBrowser({ notes, browser });
+    // Omit browsers that have no applicable notes so that the corresponding
+    // store publish step is skipped.
+    if (browserNotes !== null) {
+      parts.push(`${browser}:\n${browserNotes}`);
+    }
   }
 
   return parts.join('\n\n');
 }
 
 // Goes through `notes` and filters out the points that are not relevant to
-// `browser`.
+// `browser`, returning `null` if nothing applies to it.
 function getNotesForBrowser({ notes, browser }) {
   const outputLines = [];
   let droppedParentPoint = false;
@@ -183,11 +178,10 @@ function getNotesForBrowser({ notes, browser }) {
     outputLines.push(line);
   }
 
-  if (!outputLines) {
-    return '(Nothing of interest)';
-  }
-
-  return outputLines.join('\n');
+  // If no actual notes apply to this browser, signal that it should be omitted
+  // entirely.
+  const hasNotes = outputLines.some((line) => /^\s*[•◦]/.test(line));
+  return hasNotes ? outputLines.join('\n') : null;
 }
 
 function filterLine({ line, browser }) {

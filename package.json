@@ -44,6 +44,7 @@
     "package:thunderbird": "rspack --env target=thunderbird --env package",
     "postprocess-changeset-changelog": "node scripts/postprocess-changeset-changelog.js",
     "sort-i18n-keys": "tsx scripts/sort-keys",
+    "stamp-changelog-date": "node scripts/stamp-changelog-release-date.js",
     "start:chrome": "rspack -w --env target=chrome",
     "start:edge": "rspack -w --env target=chrome --env chromium=edge",
     "start:firefox": "rspack -w",

@@ -2,9 +2,15 @@ import * as fs from 'node:fs';
 import * as url from 'node:url';
 
 // Normalizes the CHANGELOG.md output from `changeset version` to match this
-// repo's existing changelog format: add the release date to the generated
-// version heading, remove Changesets' change-type section headings, and keep
-// the new release block directly after the Unreleased section.
+// repo's existing changelog format: remove Changesets' change-type section
+// headings, and keep the new release block directly after the Unreleased
+// section.
+//
+// The version heading is deliberately left in its plain `## <version>` form so
+// that the Changesets action can locate the new release's section when building
+// the release PR body (it matches a heading whose text is exactly the version).
+// The Keep a Changelog date is stamped onto the heading later, at release time,
+// by `scripts/stamp-changelog-release-date.js`.
 
 const CHANGESET_SECTION_HEADINGS = new Set([
   '### Major Changes',
@@ -26,12 +32,7 @@ function main() {
     new URL('../CHANGELOG.md', import.meta.url)
   );
   const original = fs.readFileSync(changeLogPath, 'utf8');
-  const date = new Date().toISOString().slice(0, 10);
   const lines = original
-    .replace(
-      new RegExp(`^## ${escapeRegExp(version)}$`, 'm'),
-      `## [${version}] - ${date}`
-    )
     .split(/\r\n|\r|\n/g)
     .filter((line) => !CHANGESET_SECTION_HEADINGS.has(line));
   const updated = `${moveReleaseBlockAfterUnreleased({ lines, version })
@@ -111,9 +112,9 @@ function trimReleaseBlockEnd({ lines, releaseStart, releaseEnd }) {
 }
 
 function isVersionHeading({ line, version }) {
-  return new RegExp(
-    `^## \\[${escapeRegExp(version)}\\] - \\d{4}-\\d{2}-\\d{2}`
-  ).test(line);
+  // `changeset version` emits a plain `## <version>` heading; the date is added
+  // later at release time.
+  return new RegExp(`^## ${escapeRegExp(version)}\\s*$`).test(line);
 }
 
 function isUnreleasedHeading(line) {

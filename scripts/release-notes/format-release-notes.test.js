@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatReleaseNotes } from './format-release-notes';
+import { formatReleaseNotes, getReleaseTargets } from './format-release-notes';
 
 describe('formatReleaseNotes', () => {
   it('fetches the matching set of notes', () => {
@@ -113,7 +113,7 @@ Thunderbird:
     expect(notes).not.toContain('- Wrong release.');
   });
 
-  it('handles punctuation and non-normalized dates in annotated version headings', () => {
+  it('matches version headings with punctuation and loose dates, ignoring any trailing annotation', () => {
     const notes = formatReleaseNotes({
       changeLog: `
 ## [1.7.1+test] - 2022-2-10 (Firefox only)
@@ -123,8 +123,11 @@ Thunderbird:
       version: '1.7.1+test',
     });
 
+    // The heading is still located despite the punctuation and non-normalized
+    // date, but the trailing annotation is no longer honoured: an unannotated
+    // note applies to every browser.
     expect(notes).toContain('Firefox:');
-    expect(notes).not.toContain('Chrome:');
+    expect(notes).toContain('Chrome:');
   });
 
   it('merges bullet points that are split across lines', () => {
@@ -250,26 +253,68 @@ Thunderbird:
 -->`);
   });
 
-  it('handles browser-specific releases', () => {
+  it('omits browsers that have no applicable notes', () => {
     expect(
       formatReleaseNotes({
-        changeLog: `## [1.7.2] - 2022-02-10 (Firefox only)
+        changeLog: `## [1.7.2] - 2022-02-10
 
-- Fixed display of the radical meaning in kanji view.
-- Fixed text look up for Google docs when the document is scaled.
+- (Firefox) Fixed display of the radical meaning in kanji view.
+- (Firefox) Fixed text look up for Google docs when the document is scaled.
 
 ## [1.7.0] - 2022-02-05
 
 - Point 1`,
         version: '1.7.2',
       })
-    ).toEqual(`- Fixed display of the radical meaning in kanji view.
-- Fixed text look up for Google docs when the document is scaled.
+    ).toEqual(`- (Firefox) Fixed display of the radical meaning in kanji view.
+- (Firefox) Fixed text look up for Google docs when the document is scaled.
 
 <!--
 Firefox:
 • Fixed display of the radical meaning in kanji view.
 • Fixed text look up for Google docs when the document is scaled.
 -->`);
+  });
+});
+
+describe('getReleaseTargets', () => {
+  it('returns all browsers when notes are unannotated', () => {
+    expect(
+      getReleaseTargets({
+        changeLog: `
+## 1.7.1
+
+- A general fix.
+`,
+        version: '1.7.1',
+      })
+    ).toEqual(['Firefox', 'Chrome', 'Edge', 'Safari', 'Thunderbird']);
+  });
+
+  it('returns only the targeted browsers when every note is restricted', () => {
+    expect(
+      getReleaseTargets({
+        changeLog: `
+## 1.7.1
+
+- (Firefox, Thunderbird) Fixed generation of source artifacts.
+`,
+        version: '1.7.1',
+      })
+    ).toEqual(['Firefox', 'Thunderbird']);
+  });
+
+  it('returns all browsers when at least one note is unannotated', () => {
+    expect(
+      getReleaseTargets({
+        changeLog: `
+## 1.7.1
+
+- (Firefox) A Firefox-only fix.
+- A general fix.
+`,
+        version: '1.7.1',
+      })
+    ).toEqual(['Firefox', 'Chrome', 'Edge', 'Safari', 'Thunderbird']);
   });
 });
