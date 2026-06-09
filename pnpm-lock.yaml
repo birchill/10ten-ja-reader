@@ -18,8 +18,8 @@ importers:
         specifier: 3.3.0
         version: 3.3.0
       '@birchill/normal-jp':
-        specifier: 1.6.0
-        version: 1.6.0
+        specifier: 1.7.1
+        version: 1.7.1
       classname-variants:
         specifier: 1.7.1
         version: 1.7.1
@@ -314,6 +314,9 @@ packages:
 
   '@birchill/normal-jp@1.6.0':
     resolution: {integrity: sha512-mYZr4JZElWUwzs8QaOzp9ufi4VzVmi+1ERU+nGb4kSW66s80Te1c88zUx+jnl3RmUzP7Q/WENEvuYNH9+eOPdg==}
+
+  '@birchill/normal-jp@1.7.1':
+    resolution: {integrity: sha512-x3OgMR41f1lVo4QjnyUbZvFHF42nFPzJO7P0gLO83EcwAHdp0JUyt1GAfKQ1pZjt/gE4C7Hb9y9Xvy4WKwfiuA==}
 
   '@blazediff/core@1.9.1':
     resolution: {integrity: sha512-ehg3jIkYKulZh+8om/O25vkvSsXXwC+skXmyA87FFx6A/45eqOkZsBltMw/TVteb0mloiGT8oGRTcjRAz66zaA==}
@@ -6086,6 +6089,8 @@ snapshots:
   '@birchill/kanji-component-string-utils@2.0.0': {}
 
   '@birchill/normal-jp@1.6.0': {}
+
+  '@birchill/normal-jp@1.7.1': {}
 
   '@blazediff/core@1.9.1': {}
 

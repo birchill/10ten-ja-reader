@@ -70,7 +70,7 @@
     "@birchill/bugsnag-zero": "0.8.1",
     "@birchill/discriminator": "0.3.1",
     "@birchill/jpdict-idb": "3.3.0",
-    "@birchill/normal-jp": "1.6.0",
+    "@birchill/normal-jp": "1.7.1",
     "classname-variants": "1.7.1",
     "husky": "9.1.7",
     "lint-staged": "17.0.7",
