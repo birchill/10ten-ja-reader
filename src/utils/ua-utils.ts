@@ -44,3 +44,12 @@ export function isIOS(): boolean {
 export function isThunderbird(): boolean {
   return navigator.userAgent.indexOf('Thunderbird/') !== -1;
 }
+
+/**
+ * Return the major Firefox version parsed from navigator.userAgent, or 0
+ * if Firefox is not detected or the version can't be parsed.
+ */
+export function getFirefoxMajorVersion(): number {
+  const match = navigator.userAgent.match(/\bFirefox\/(\d+)/);
+  return match ? Number(match[1]) : 0;
+}
