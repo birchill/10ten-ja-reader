@@ -6,7 +6,12 @@ type ChangelogOptions = { repo?: unknown; serverUrl?: unknown };
 
 const changelog: ChangelogFunctions = {
   async getReleaseLine(changeset, _type, options) {
-    return `\n\n${formatSummary(changeset.summary, options)}`;
+    // No leading newline, matching the default `@changesets/changelog-git`
+    // formatter: apply-release-plan joins release lines with a single `\n`, so
+    // returning just the summary keeps notes as a contiguous bullet list within
+    // a section. Blank lines that remain between change-type sections are
+    // removed afterwards by `scripts/postprocess-changeset-changelog.js`.
+    return formatSummary(changeset.summary, options);
   },
 
   async getDependencyReleaseLine() {

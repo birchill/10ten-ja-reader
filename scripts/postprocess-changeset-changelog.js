@@ -18,6 +18,25 @@ const CHANGESET_SECTION_HEADINGS = new Set([
   '### Patch Changes',
 ]);
 
+/**
+ * Rewrites the raw `changeset version` changelog into this repo's flat format:
+ * strips the change-type section headings, collapses the release notes into a
+ * single contiguous bullet list, and positions the new release block directly
+ * after the Unreleased section.
+ *
+ * @param {{ changeLog: string; version: string }} options
+ * @returns {string}
+ */
+export function postprocessChangelog({ changeLog, version }) {
+  const lines = changeLog
+    .split(/\r\n|\r|\n/g)
+    .filter((line) => !CHANGESET_SECTION_HEADINGS.has(line));
+  return `${moveReleaseBlockAfterUnreleased({ lines, version })
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trimEnd()}\n`;
+}
+
 function main() {
   const packageJsonPath = url.fileURLToPath(
     new URL('../package.json', import.meta.url)
@@ -32,13 +51,7 @@ function main() {
     new URL('../CHANGELOG.md', import.meta.url)
   );
   const original = fs.readFileSync(changeLogPath, 'utf8');
-  const lines = original
-    .split(/\r\n|\r|\n/g)
-    .filter((line) => !CHANGESET_SECTION_HEADINGS.has(line));
-  const updated = `${moveReleaseBlockAfterUnreleased({ lines, version })
-    .join('\n')
-    .replace(/\n{3,}/g, '\n\n')
-    .trimEnd()}\n`;
+  const updated = postprocessChangelog({ changeLog: original, version });
 
   if (updated !== original) {
     fs.writeFileSync(changeLogPath, updated, 'utf8');
@@ -54,7 +67,9 @@ function moveReleaseBlockAfterUnreleased({ lines, version }) {
   }
 
   const releaseEnd = findReleaseBlockEnd({ lines, releaseStart });
-  const releaseBlock = trimBlankLines(lines.slice(releaseStart, releaseEnd));
+  const releaseBlock = compactReleaseBlock(
+    trimBlankLines(lines.slice(releaseStart, releaseEnd))
+  );
   const withoutReleaseBlock = [
     ...lines.slice(0, releaseStart),
     ...lines.slice(releaseEnd),
@@ -77,6 +92,33 @@ function moveReleaseBlockAfterUnreleased({ lines, version }) {
     '',
     ...trimLeadingBlankLines(withoutReleaseBlock.slice(insertIndex)),
   ];
+}
+
+// Collapses a release block into the repo's flat format: the version heading,
+// one blank line, then the release notes as a single contiguous bullet list.
+//
+// Notes within a single change-type section are already adjacent (see
+// `.changeset/changelog.ts`), but `changeset version` emits each change type as
+// its own `### … Changes` section. Once those headings are stripped, a release
+// spanning multiple change types leaves a blank line where the section boundary
+// used to be, so the raw block looks like:
+//
+//   ## 1.28.0
+//
+//   - A minor note
+//
+//   - A patch note
+//
+// Dropping the interior blank lines merges the sections into one list, matching
+// every other entry in CHANGELOG.md. Indented continuation lines of a
+// multi-line note are non-blank, so they are preserved.
+function compactReleaseBlock(block) {
+  const [heading, ...rest] = block;
+  if (heading === undefined) {
+    return block;
+  }
+  const notes = rest.filter((line) => line.trim());
+  return notes.length ? [heading, '', ...notes] : [heading];
 }
 
 function findReleaseBlockEnd({ lines, releaseStart }) {
@@ -145,9 +187,12 @@ function escapeRegExp(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-try {
-  main();
-} catch (error) {
-  console.error(error);
-  process.exit(1);
+// Only run the CLI when invoked directly (not when imported by tests).
+if (process.argv[1] === url.fileURLToPath(import.meta.url)) {
+  try {
+    main();
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
 }
