@@ -1365,6 +1365,14 @@
     "message": "なし",
     "description": "Label for not showing pitch accent information"
   },
+  "options_audio_heading": {
+    "message": "音声",
+    "description": "Heading for the audio / speech settings section"
+  },
+  "options_auto_speak": {
+    "message": "ホバー時に一致した単語を読み上げる",
+    "description": "Label for the checkbox enabling automatic text-to-speech of the matched word when the popup is shown on hover"
+  },
   "options_browser_commands_no_toggle_key": {
     "message": "お使いになっているブラウザーではこのショートカットキーを変更していただけません。",
     "description": "Descriptive text used for other browsers which do not permit configuring extension keys from the extension itself."

@@ -1367,6 +1367,14 @@
     "message": "None",
     "description": "Label for not showing pitch accent information"
   },
+  "options_audio_heading": {
+    "message": "Audio",
+    "description": "Heading for the audio / speech settings section"
+  },
+  "options_auto_speak": {
+    "message": "Read matched word aloud on hover",
+    "description": "Label for the checkbox enabling automatic text-to-speech of the matched word when the popup is shown on hover"
+  },
   "options_browser_commands_no_toggle_key": {
     "message": "This shortcut key cannot be configured in this browser.",
     "description": "Descriptive text used for other browsers which do not permit configuring extension keys from the extension itself."
