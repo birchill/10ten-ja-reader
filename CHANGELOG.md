@@ -8,6 +8,11 @@ app.
 
 ## [Unreleased]
 
+## 1.28.0
+
+- (Firefox) Enable settings button on popup for Firefox for Android >= 153
+- Recognize CJK extension characters (e.g. 𱁬 and 𰻞𰻞麺) in scanned Japanese text ([#2958](https://github.com/birchill/10ten-ja-reader/issues/2958)).
+
 ## [1.27.2] - 2026-05-08
 
 - Fixed the popup not appearing for bullet-list text in Google Docs
