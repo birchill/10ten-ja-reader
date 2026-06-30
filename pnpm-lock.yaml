@@ -101,7 +101,7 @@ importers:
         version: 8.0.0
       css-loader:
         specifier: 7.1.4
-        version: 7.1.4(@rspack/core@2.0.8)(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15))
+        version: 7.1.4(@rspack/core@2.0.8)(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15))
       eslint:
         specifier: 10.5.0
         version: 10.5.0(jiti@2.7.0)(supports-color@8.1.1)
@@ -119,10 +119,10 @@ importers:
         version: 12.6.0
       file-loader:
         specifier: 6.2.0
-        version: 6.2.0(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15))
+        version: 6.2.0(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15))
       fork-ts-checker-webpack-plugin:
         specifier: 9.1.0
-        version: 9.1.0(typescript@6.0.3)(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15))
+        version: 9.1.0(typescript@6.0.3)(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15))
       globals:
         specifier: 17.7.0
         version: 17.7.0
@@ -149,7 +149,7 @@ importers:
         version: 6.0.1(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)(yaml@2.9.0)
       postcss-loader:
         specifier: 8.2.1
-        version: 8.2.1(@rspack/core@2.0.8)(postcss@8.5.15)(typescript@6.0.3)(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15))
+        version: 8.2.1(@rspack/core@2.0.8)(postcss@8.5.15)(typescript@6.0.3)(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15))
       prettier:
         specifier: 3.8.4
         version: 3.8.4
@@ -170,19 +170,19 @@ importers:
         version: 7.3.0
       react-cosmos-plugin-rspack:
         specifier: 3.0.0
-        version: 3.0.0(@rspack/core@2.0.8)(react-cosmos@7.3.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(supports-color@8.1.1))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15))
+        version: 3.0.0(@rspack/core@2.0.8)(react-cosmos@7.3.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(supports-color@8.1.1))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15))
       semver-parser:
         specifier: 4.2.1
         version: 4.2.1
       source-map-loader:
         specifier: 5.0.0
-        version: 5.0.0(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15))
+        version: 5.0.0(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15))
       tailwindcss:
         specifier: 4.3.1
         version: 4.3.1
       terser-webpack-plugin:
         specifier: 5.6.1
-        version: 5.6.1(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15))
+        version: 5.6.1(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15))
       tsx:
         specifier: 4.22.4
         version: 4.22.4
@@ -196,17 +196,17 @@ importers:
         specifier: 2.13.0
         version: 2.13.0(jiti@2.7.0)
       webpack:
-        specifier: 5.108.0
-        version: 5.108.0(lightningcss@1.32.0)(postcss@8.5.15)
+        specifier: 5.108.1
+        version: 5.108.1(lightningcss@1.32.0)(postcss@8.5.15)
       webpack-bugsnag-plugins:
         specifier: 2.2.3
-        version: 2.2.3(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15))
+        version: 2.2.3(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15))
       webpack-preprocessor:
         specifier: 0.1.12
         version: 0.1.12
       webpack-utf8-bom:
         specifier: 1.4.0
-        version: 1.4.0(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15))
+        version: 1.4.0(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15))
       xmlbuilder2:
         specifier: 4.0.3
         version: 4.0.3
@@ -5817,8 +5817,8 @@ packages:
     peerDependencies:
       webpack: ^4.x.x || ^5.0.0
 
-  webpack@5.108.0:
-    resolution: {integrity: sha512-Ln1JuYGPRTXcHECapSFSvACtHmWEN5sQqFJeLLGQ0057S7qzT2eXUz0MZUedtmIrNy3nJgnITSubIYKGED9jSQ==}
+  webpack@5.108.1:
+    resolution: {integrity: sha512-UUCihHQK3O7483Woa0SulNLDeAiOhHI2PN2PAPU4fVWJqbzhv04EJ8FaWtB9WWh3i8fRt28543U7VfuJTOrpgQ==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     peerDependencies:
@@ -8441,7 +8441,7 @@ snapshots:
 
   crypt@0.0.2: {}
 
-  css-loader@7.1.4(@rspack/core@2.0.8)(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15)):
+  css-loader@7.1.4(@rspack/core@2.0.8)(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15)):
     dependencies:
       icss-utils: 5.1.0(postcss@8.5.14)
       postcss: 8.5.14
@@ -8453,7 +8453,7 @@ snapshots:
       semver: 7.7.4
     optionalDependencies:
       '@rspack/core': 2.0.8
-      webpack: 5.108.0(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.108.1(lightningcss@1.32.0)(postcss@8.5.15)
 
   css-select@5.2.2:
     dependencies:
@@ -9178,11 +9178,11 @@ snapshots:
     dependencies:
       flat-cache: 4.0.1
 
-  file-loader@6.2.0(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15)):
+  file-loader@6.2.0(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15)):
     dependencies:
       loader-utils: 2.0.4
       schema-utils: 3.3.0
-      webpack: 5.108.0(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.108.1(lightningcss@1.32.0)(postcss@8.5.15)
 
   fill-range@7.1.1:
     dependencies:
@@ -9242,7 +9242,7 @@ snapshots:
       cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
-  fork-ts-checker-webpack-plugin@9.1.0(typescript@6.0.3)(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15)):
+  fork-ts-checker-webpack-plugin@9.1.0(typescript@6.0.3)(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15)):
     dependencies:
       '@babel/code-frame': 7.27.1
       chalk: 4.1.2
@@ -9257,7 +9257,7 @@ snapshots:
       semver: 7.7.2
       tapable: 2.2.2
       typescript: 6.0.3
-      webpack: 5.108.0(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.108.1(lightningcss@1.32.0)(postcss@8.5.15)
 
   formatly@0.3.0:
     dependencies:
@@ -10214,13 +10214,13 @@ snapshots:
 
   minimist@1.2.8: {}
 
-  minimizer-webpack-plugin@5.6.1(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15)):
+  minimizer-webpack-plugin@5.6.1(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.30
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       terser: 5.43.1
-      webpack: 5.108.0(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.108.1(lightningcss@1.32.0)(postcss@8.5.15)
     optionalDependencies:
       lightningcss: 1.32.0
       postcss: 8.5.15
@@ -10618,7 +10618,7 @@ snapshots:
       tsx: 4.22.4
       yaml: 2.9.0
 
-  postcss-loader@8.2.1(@rspack/core@2.0.8)(postcss@8.5.15)(typescript@6.0.3)(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15)):
+  postcss-loader@8.2.1(@rspack/core@2.0.8)(postcss@8.5.15)(typescript@6.0.3)(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15)):
     dependencies:
       cosmiconfig: 9.0.0(typescript@6.0.3)
       jiti: 2.6.1
@@ -10626,7 +10626,7 @@ snapshots:
       semver: 7.7.4
     optionalDependencies:
       '@rspack/core': 2.0.8
-      webpack: 5.108.0(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.108.1(lightningcss@1.32.0)(postcss@8.5.15)
     transitivePeerDependencies:
       - typescript
 
@@ -10803,12 +10803,12 @@ snapshots:
 
   react-cosmos-plugin-boolean-input@7.3.0: {}
 
-  react-cosmos-plugin-rspack@3.0.0(@rspack/core@2.0.8)(react-cosmos@7.3.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(supports-color@8.1.1))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15)):
+  react-cosmos-plugin-rspack@3.0.0(@rspack/core@2.0.8)(react-cosmos@7.3.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(supports-color@8.1.1))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15)):
     dependencies:
       '@rspack/core': 2.0.8
       react-cosmos: 7.3.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(supports-color@8.1.1)
       react-cosmos-dom: 7.2.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      webpack-dev-middleware: 7.4.5(tslib@2.8.1)(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15))
+      webpack-dev-middleware: 7.4.5(tslib@2.8.1)(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15))
       webpack-hot-middleware: 2.26.1
     transitivePeerDependencies:
       - react
@@ -11233,11 +11233,11 @@ snapshots:
 
   source-map-js@1.2.1: {}
 
-  source-map-loader@5.0.0(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15)):
+  source-map-loader@5.0.0(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15)):
     dependencies:
       iconv-lite: 0.6.3
       source-map-js: 1.2.1
-      webpack: 5.108.0(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.108.1(lightningcss@1.32.0)(postcss@8.5.15)
 
   source-map-support@0.5.21:
     dependencies:
@@ -11458,13 +11458,13 @@ snapshots:
 
   term-size@2.2.1: {}
 
-  terser-webpack-plugin@5.6.1(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15)):
+  terser-webpack-plugin@5.6.1(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.30
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       terser: 5.43.1
-      webpack: 5.108.0(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.108.1(lightningcss@1.32.0)(postcss@8.5.15)
     optionalDependencies:
       lightningcss: 1.32.0
       postcss: 8.5.15
@@ -11883,13 +11883,13 @@ snapshots:
 
   webidl-conversions@8.0.1: {}
 
-  webpack-bugsnag-plugins@2.2.3(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15)):
+  webpack-bugsnag-plugins@2.2.3(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15)):
     dependencies:
       '@bugsnag/cli': 3.2.1
       run-parallel-limit: 1.1.0
-      webpack: 5.108.0(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.108.1(lightningcss@1.32.0)(postcss@8.5.15)
 
-  webpack-dev-middleware@7.4.5(tslib@2.8.1)(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15)):
+  webpack-dev-middleware@7.4.5(tslib@2.8.1)(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15)):
     dependencies:
       colorette: 2.0.20
       memfs: 4.56.11(tslib@2.8.1)
@@ -11898,7 +11898,7 @@ snapshots:
       range-parser: 1.2.1
       schema-utils: 4.3.3
     optionalDependencies:
-      webpack: 5.108.0(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.108.1(lightningcss@1.32.0)(postcss@8.5.15)
     transitivePeerDependencies:
       - tslib
 
@@ -11914,11 +11914,11 @@ snapshots:
 
   webpack-sources@3.5.0: {}
 
-  webpack-utf8-bom@1.4.0(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15)):
+  webpack-utf8-bom@1.4.0(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15)):
     dependencies:
-      webpack: 5.108.0(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.108.1(lightningcss@1.32.0)(postcss@8.5.15)
 
-  webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15):
+  webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15):
     dependencies:
       '@types/estree': 1.0.8
       '@types/json-schema': 7.0.15
@@ -11936,7 +11936,7 @@ snapshots:
       graceful-fs: 4.2.11
       loader-runner: 4.3.2
       mime-db: 1.54.0
-      minimizer-webpack-plugin: 5.6.1(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.108.0(lightningcss@1.32.0)(postcss@8.5.15))
+      minimizer-webpack-plugin: 5.6.1(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.108.1(lightningcss@1.32.0)(postcss@8.5.15))
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.3
