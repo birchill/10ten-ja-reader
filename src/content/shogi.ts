@@ -37,13 +37,7 @@ export type ShogiPieceType =
   | 'k';
 
 export type ShogiMovementType =
-  | 'drop'
-  | 'down'
-  | 'horiz'
-  | 'up'
-  | 'right'
-  | 'left'
-  | 'vert';
+  'drop' | 'down' | 'horiz' | 'up' | 'right' | 'left' | 'vert';
 
 export type ShogiMeta = {
   type: 'shogi';

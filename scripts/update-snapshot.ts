@@ -290,14 +290,12 @@ class StreamConcat extends Transform {
   #currentStream: Readable | null | Promise<Readable | null> = null;
   #streamIndex = 0;
   #streams:
-    | Array<Readable>
-    | (() => Readable | null | Promise<Readable | null>);
+    Array<Readable> | (() => Readable | null | Promise<Readable | null>);
   #options: TransformOptions & { advanceOnClose?: boolean };
 
   constructor(
     streams:
-      | Array<Readable>
-      | (() => Readable | null | Promise<Readable | null>),
+      Array<Readable> | (() => Readable | null | Promise<Readable | null>),
     options: TransformOptions & { advanceOnClose?: boolean } = {}
   ) {
     super(options);
