@@ -27,8 +27,7 @@ interface FlatFileDatabaseOptions {
 }
 
 type FlatFileDatabaseEvent =
-  | { type: 'loaded' }
-  | { type: 'error'; error: any; willRetry: boolean };
+  { type: 'loaded' } | { type: 'error'; error: any; willRetry: boolean };
 
 type FlatFileDatabaseListener = (event: FlatFileDatabaseEvent) => void;
 
@@ -448,11 +447,7 @@ function expandGlosses(sense: RawWordSense): Array<Gloss> {
 // the database should use the resolved promise.
 
 export type FlatFileDatabaseLoadState =
-  | 'unloaded'
-  | 'loading'
-  | 'retrying'
-  | 'error'
-  | 'ok';
+  'unloaded' | 'loading' | 'retrying' | 'error' | 'ok';
 
 export type FlatFileDatabaseLoadCallback = (
   state: FlatFileDatabaseLoadState

@@ -39,8 +39,7 @@ export class JpdictLocalBackend implements JpdictBackend {
   #db: JpdictIdb | undefined;
   #dbIsInitialized: Promise<boolean>;
   #currentUpdate:
-    | { lang: string; series: MajorDataSeries; forceUpdate: boolean }
-    | undefined;
+    { lang: string; series: MajorDataSeries; forceUpdate: boolean } | undefined;
 
   #lastUpdateError: UpdateErrorState | undefined;
   #listeners: Array<JpdictListener> = [];

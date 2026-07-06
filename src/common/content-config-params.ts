@@ -36,10 +36,7 @@ export type KeyboardKeys = {
 };
 
 export type AccentDisplay =
-  | 'downstep'
-  | 'binary'
-  | 'binary-hi-contrast'
-  | 'none';
+  'downstep' | 'binary' | 'binary-hi-contrast' | 'none';
 
 export type AutoExpandableEntry = 'words' | 'kanji';
 

@@ -6,11 +6,7 @@ import type { Events, Tabs } from 'webextension-polyfill';
 
 declare module 'webextension-polyfill' {
   type OnClickDataModifiersItemEnum =
-    | 'Shift'
-    | 'Alt'
-    | 'Command'
-    | 'Ctrl'
-    | 'MacCtrl';
+    'Shift' | 'Alt' | 'Command' | 'Ctrl' | 'MacCtrl';
 
   interface OnClickData {
     modifiers: Array<OnClickDataModifiersItemEnum>;
@@ -36,10 +32,7 @@ declare module 'webextension-polyfill' {
 
   namespace Windows {
     type MailWindowType =
-      | WindowType
-      | 'addressBook'
-      | 'messageCompose'
-      | 'messageDisplay';
+      WindowType | 'addressBook' | 'messageCompose' | 'messageDisplay';
 
     interface MailGetAllGetInfoType extends GetInfo {
       windowTypes?: Array<MailWindowType>;

@@ -465,11 +465,9 @@ browser.composeAction?.onClicked.addListener(toggle);
 // We can sometimes find ourselves in a situation where we have a backlog of
 // search requests. To avoid that, we simply cancel any previous request.
 let pendingSearchWordsRequest:
-  | { input: string; controller: AbortController }
-  | undefined;
+  { input: string; controller: AbortController } | undefined;
 let pendingSearchOtherRequest:
-  | { input: string; controller: AbortController }
-  | undefined;
+  { input: string; controller: AbortController } | undefined;
 
 browser.runtime.onMessage.addListener(
   (

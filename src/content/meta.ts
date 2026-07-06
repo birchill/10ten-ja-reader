@@ -10,11 +10,7 @@ import type { ShogiMeta } from './shogi';
 import { extractShogiMetadata, lookForShogi } from './shogi';
 
 export type SelectionMeta =
-  | CurrencyMeta
-  | EraMeta
-  | MeasureMeta
-  | NumberMeta
-  | ShogiMeta;
+  CurrencyMeta | EraMeta | MeasureMeta | NumberMeta | ShogiMeta;
 
 export function lookForMetadata({
   currentText,
