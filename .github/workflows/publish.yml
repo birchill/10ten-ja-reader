@@ -15,7 +15,8 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 11
+          # Pinned below 11.12.0: that release's self-update logic crashes (pnpm/pnpm#12959).
+          version: 11.11.0
 
       - name: Setup node
         uses: actions/setup-node@v6
@@ -71,7 +72,8 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 11
+          # Pinned below 11.12.0: that release's self-update logic crashes (pnpm/pnpm#12959).
+          version: 11.11.0
 
       - name: Setup node
         uses: actions/setup-node@v6
@@ -120,7 +122,8 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 11
+          # Pinned below 11.12.0: that release's self-update logic crashes (pnpm/pnpm#12959).
+          version: 11.11.0
 
       - name: Setup node
         uses: actions/setup-node@v6
