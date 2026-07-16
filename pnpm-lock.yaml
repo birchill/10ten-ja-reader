@@ -133,8 +133,8 @@ importers:
         specifier: ^29.0.0
         version: 29.1.1
       knip:
-        specifier: 6.25.0
-        version: 6.25.0
+        specifier: 6.26.0
+        version: 6.26.0
       mocha:
         specifier: 11.7.6
         version: 11.7.6
@@ -3820,8 +3820,8 @@ packages:
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
-  knip@6.25.0:
-    resolution: {integrity: sha512-Q3n41VjOOB/aqsbxb8kallAcFKrUz3b2S5fD5pTODljVpP01t+rvAgy2x3j0Cq8yEpRRHNdar1vHuqFfGuIakQ==}
+  knip@6.26.0:
+    resolution: {integrity: sha512-e9eELEEpBpGTd4H4HB7818/DYj9dMzMyUqAddfYwUN/EbSkgIjOuWEF96W/xHsmV0SDrsdXjIM+oZ2xpPzPsBA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
@@ -6946,7 +6946,7 @@ snapshots:
       extract-zip: 2.0.1
       progress: 2.0.3
       proxy-agent: 6.5.0
-      semver: 7.8.2
+      semver: 7.8.5
       tar-fs: 3.1.2
       yargs: 17.7.2
     transitivePeerDependencies:
@@ -9657,7 +9657,7 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  knip@6.25.0:
+  knip@6.26.0:
     dependencies:
       fdir: 6.5.0(picomatch@4.0.4)
       formatly: 0.3.0
