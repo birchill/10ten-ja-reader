@@ -114,7 +114,7 @@
     "knip": "6.26.0",
     "mocha": "11.7.6",
     "playwright": "1.61.1",
-    "postcss": "8.5.16",
+    "postcss": "8.5.19",
     "postcss-load-config": "6.0.1",
     "postcss-loader": "8.2.1",
     "prettier": "3.9.5",
