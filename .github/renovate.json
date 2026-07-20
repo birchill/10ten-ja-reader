@@ -13,11 +13,13 @@
       "matchCurrentVersion": "/^0/",
       "automerge": false
     },
-    { "matchDepTypes": ["devDependencies"], "addLabels": ["dev"] },
     {
-      "matchPackageNames": ["/^@birchill//"],
-      "minimumReleaseAge": "0"
+      "matchPackageNames": ["oxlint-tsgolint"],
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "automerge": true
     },
+    { "matchDepTypes": ["devDependencies"], "addLabels": ["dev"] },
+    { "matchPackageNames": ["/^@birchill//"], "minimumReleaseAge": "0" },
     {
       "groupName": "rspack",
       "allowedVersions": "!/^1\\.5\\.8$/",

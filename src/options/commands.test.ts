@@ -6,7 +6,7 @@ vi.mock('webextension-polyfill', () => ({
   default: { i18n: { getMessage: (key: string) => key } },
 }));
 
-import { Command } from './commands';
+import { Command, CommandError } from './commands';
 
 describe('Command', () => {
   type Expected = {
@@ -81,7 +81,7 @@ describe('Command', () => {
     for (const test of tests) {
       expect(() => {
         Command.fromString(test);
-      }).toThrow();
+      }).toThrow(CommandError);
     }
   });
 
@@ -147,7 +147,7 @@ describe('Command', () => {
     for (const test of tests) {
       expect(() => {
         Command.fromParams(test);
-      }).toThrow();
+      }).toThrow(CommandError);
     }
   });
 });

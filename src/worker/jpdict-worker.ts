@@ -32,7 +32,7 @@ self.onmessage = async (event: MessageEvent) => {
       break;
 
     case 'cancelupdate':
-      void backend.cancelUpdateDb();
+      backend.cancelUpdateDb();
       break;
 
     case 'delete':

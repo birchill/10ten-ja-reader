@@ -31,7 +31,7 @@ function main() {
   // Generate updated version info
   const versionInfo = pre
     ? `/*#if supports_alpha_version*/
-  "version": "${major}.${minor}.${patch}${pre}",
+  "version": "${major}.${minor}.${patch}${pre.join(',')}",
   /*#else*/
   "version": "${major}.${minor}.${patch}",
   "version_name": "${originalVersionString}",

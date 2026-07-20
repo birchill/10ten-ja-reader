@@ -5,7 +5,7 @@ export function throttle<T extends (...args: Array<any>) => any>(
   let lastInvocationTimeout: number | undefined;
   let lastRan: number | undefined;
   return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
-    /* eslint @typescript-eslint/no-this-alias: 0 */
+    // oxlint-disable-next-line typescript/no-this-alias
     const context = this;
     const run = () => {
       func.apply(context, args);

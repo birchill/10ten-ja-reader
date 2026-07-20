@@ -127,7 +127,6 @@ export class Config {
 
     browser.storage.onChanged.addListener(this.#onChange);
 
-    this.onLanguageChange = this.onLanguageChange.bind(this);
     self.addEventListener('languagechange', this.onLanguageChange);
   }
 
@@ -679,7 +678,7 @@ export class Config {
     return 'en';
   }
 
-  onLanguageChange() {
+  onLanguageChange = () => {
     // If the user's accept-languages setting changed AND we are basing the
     // dictLang value on that we should notify listeners of the change.
     if (!this.#useDefaultLang()) {
@@ -695,7 +694,7 @@ export class Config {
         listener(changes);
       }
     }
-  }
+  };
 
   // enableTapLookup: Defaults to true
 

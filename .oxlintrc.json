@@ -1,0 +1,66 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "vitest", "unicorn", "oxc"],
+  "categories": { "correctness": "error" },
+  "env": { "browser": true },
+  "settings": { "react": { "version": "16.0", "pragma": "h" } },
+  "rules": {
+    "curly": "error",
+    "no-constant-condition": ["error", { "checkLoops": false }],
+    "no-prototype-builtins": "off",
+    "prefer-const": ["error", { "destructuring": "all" }],
+
+    "react/react-in-jsx-scope": "off",
+    "react/no-unknown-property": "off",
+    "react-hooks/exhaustive-deps": "off",
+
+    "vitest/no-conditional-expect": "off",
+    "vitest/no-identical-title": "error",
+
+    "typescript/array-type": ["error", { "default": "generic" }],
+    "typescript/consistent-type-imports": [
+      "error",
+      { "prefer": "type-imports" }
+    ],
+    "typescript/no-empty-function": "off",
+    "typescript/no-explicit-any": "off",
+    "typescript/no-non-null-assertion": "off",
+
+    "typescript/no-floating-promises": ["warn", { "ignoreIIFE": false }],
+    "typescript/no-misused-promises": ["warn", { "checksVoidReturn": false }],
+
+    // We deliberately spread strings in many places as a shortcut for
+    // turning them into an array of Unicode codepoints.
+    "typescript/no-misused-spread": [
+      "error",
+      { "allow": [{ "from": "lib", "name": "string" }] }
+    ],
+
+    "typescript/triple-slash-reference": [
+      "error",
+      { "path": "always", "types": "never", "lib": "never" }
+    ],
+
+    "no-unused-vars": "off",
+    "typescript/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "*.{cjs,js,ts}",
+        "scripts/**/*.{cjs,js,ts}",
+        "tests/**/*.{cjs,js,ts}"
+      ],
+      "rules": {
+        "typescript/no-floating-promises": "off",
+        "typescript/no-misused-promises": "off"
+      }
+    },
+    { "files": ["*.cjs", "scripts/**/*.cjs"], "env": { "node": true } },
+    { "files": ["*.{js,ts}", "scripts/**/*.{js,ts}"], "env": { "node": true } }
+  ],
+  "ignorePatterns": ["tests/content-loader.js", "tests/_locales_*"]
+}

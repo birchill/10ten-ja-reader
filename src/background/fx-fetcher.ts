@@ -69,7 +69,7 @@ export class FxFetcher {
         Bugsnag.leaveBreadcrumb(
           `Got stored FX data from ${new Date(
             fxData.timestamp
-          )}. Last updated ${new Date(fxData.updated)}.`
+          ).toString()}. Last updated ${new Date(fxData.updated).toString()}.`
         );
         this.#updated = fxData.updated;
       }
@@ -290,7 +290,7 @@ export class FxFetcher {
     } else {
       try {
         Bugsnag.leaveBreadcrumb(
-          `Scheduling next FX data update for ${new Date(nextRun)}`
+          `Scheduling next FX data update for ${new Date(nextRun).toString()}`
         );
         await browser.alarms.create('fx-update', { when: nextRun });
       } catch (e) {

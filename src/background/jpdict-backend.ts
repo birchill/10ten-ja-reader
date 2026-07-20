@@ -311,7 +311,7 @@ export class JpdictLocalBackend implements JpdictBackend {
       if (forceUpdate || wasForcedUpdate) {
         clearCachedVersionInfo();
       }
-      void updateWithRetry({
+      updateWithRetry({
         db: this.#db!,
         series: this.#currentUpdate.series,
         lang,

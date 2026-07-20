@@ -20,7 +20,7 @@ declare module 'webextension-polyfill' {
       >;
       setTitle(details: { title: string | null }): Promise<void>;
       setIcon(details: {
-        imageData?: unknown | { [s: string]: unknown };
+        imageData?: unknown;
         path?: string | { [s: string]: string };
       }): Promise<void>;
       setBadgeText(details: { text: string | null }): Promise<void>;
