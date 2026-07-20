@@ -26,7 +26,7 @@ const browser = {
         case 'content_copy_overlay_copy_title':
           return 'Copy';
         case 'content_copy_overlay_copy_title_with_word':
-          return `Copy ${replacements}`;
+          return `Copy ${replacements?.toString()}`;
         case 'content_copy_overlay_entry_button':
           return 'Entry';
         case 'content_copy_overlay_kanji_button':
@@ -114,7 +114,7 @@ const browser = {
         case 'content_hint_switch_dict_keys_3':
           return 'Hint: press %KEY%, %KEY%, or %KEY% to display the next dictionary';
         case 'currency_data_updated_label':
-          return `Updated ${replacements}`;
+          return `Updated ${replacements?.toString()}`;
         case 'gloss_type_label_expl':
           return 'explanation';
         case 'field_label_astron':

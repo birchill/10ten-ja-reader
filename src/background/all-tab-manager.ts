@@ -19,7 +19,7 @@ import type {
 } from './tab-manager';
 
 type Tab = {
-  frames: Array<{ initialSrc: string }>;
+  frames: Record<number, { initialSrc: string }>;
   src: string;
   rootWindowCheckTimeout?: number;
 };
@@ -30,7 +30,7 @@ export default class AllTabManager implements TabManager {
   #initComplete = false;
   #enabled = false;
   #listeners: Array<EnabledChangedCallback> = [];
-  #tabs: Array<Tab> = [];
+  #tabs: Record<number, Tab> = {};
   #tabsCleanupTask: number | undefined;
 
   async init(config: ContentConfigParams): Promise<void> {
@@ -352,10 +352,10 @@ export default class AllTabManager implements TabManager {
       }
       // If we have navigated the root frame, blow away all the child frames
       if (frameId === 0 && tab.src !== src && tab.src !== '') {
-        tab.frames = [];
+        tab.frames = {};
       }
     } else {
-      this.#tabs[tabId] = { src: frameId === 0 ? src : '', frames: [] };
+      this.#tabs[tabId] = { src: frameId === 0 ? src : '', frames: {} };
     }
 
     const tab = this.#tabs[tabId];

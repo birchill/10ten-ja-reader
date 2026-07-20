@@ -23,6 +23,9 @@ export function serializeError(error: unknown): {
   }
 
   if (!isObject(error)) {
+    // String() is a last-resort fallback here so we always return something,
+    // even if it degrades to '[object Object]' for oddly-shaped errors.
+    // oxlint-disable-next-line typescript/no-base-to-string
     return { name: '(Unknown error)', message: String(error) };
   }
 

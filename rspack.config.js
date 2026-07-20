@@ -1,4 +1,3 @@
-/* eslint @typescript-eslint/no-var-requires: 0 */
 import rspack from '@rspack/core';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import * as path from 'node:path';

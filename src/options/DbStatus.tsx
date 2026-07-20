@@ -229,7 +229,11 @@ function IdleStateSummary(props: {
         {allMajorDataSeries.map((series) => {
           const versionInfo = props.dbState[series].version;
           return versionInfo ? (
-            <DataSeriesVersion series={series} version={versionInfo} />
+            <DataSeriesVersion
+              key={series}
+              series={series}
+              version={versionInfo}
+            />
           ) : null;
         })}
       </div>

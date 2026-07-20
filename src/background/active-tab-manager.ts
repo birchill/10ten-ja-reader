@@ -17,7 +17,7 @@ import type {
 } from './tab-manager';
 
 type EnabledTab = {
-  frames: Array<{ initialSrc: string }>;
+  frames: Record<number, { initialSrc: string }>;
   port: Runtime.Port | undefined;
   src: string;
 };
@@ -29,7 +29,7 @@ export default class ActiveTabManager implements TabManager {
   // any enabled tabs will set up a message port that will keep the background
   // page alive. As a result, if we're being resumed, we must have zero enabled
   // tabs (so far).
-  #enabledTabs: Array<EnabledTab> = [];
+  #enabledTabs: Record<number, EnabledTab> = {};
   #listeners: Array<EnabledChangedCallback> = [];
 
   async init(config: ContentConfigParams): Promise<void> {
@@ -188,7 +188,7 @@ export default class ActiveTabManager implements TabManager {
     // enabledTabs at that point.
     const isRootFrame = typeof frameId === 'undefined' || frameId === 0;
     if (isRootFrame && !(tabId in this.#enabledTabs)) {
-      this.#enabledTabs[tabId] = { frames: [], port: undefined, src: '' };
+      this.#enabledTabs[tabId] = { frames: {}, port: undefined, src: '' };
     }
 
     // If we are dealing with a single frame, try calling to see if the content
@@ -401,7 +401,7 @@ export default class ActiveTabManager implements TabManager {
     if (frameId === 0) {
       // If we have navigated the root frame, blow away all the child frames
       if (tab.src !== '' && tab.src !== src) {
-        tab.frames = [];
+        tab.frames = {};
       }
       tab.src = src;
     }
@@ -531,7 +531,11 @@ export default class ActiveTabManager implements TabManager {
 
   #notifyListeners(enabled: boolean, tabId: number) {
     for (const listener of this.#listeners.slice()) {
-      listener({ enabled, tabId, anyEnabled: this.#enabledTabs.length > 0 });
+      listener({
+        enabled,
+        tabId,
+        anyEnabled: Object.keys(this.#enabledTabs).length > 0,
+      });
     }
   }
 }

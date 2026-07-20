@@ -20,7 +20,7 @@ async function main() {
 
   // Write data to a file, sorted by ID, generating an index from the various
   // headwords to the corresponding character offset at the same time.
-  const ids = [...data.keys()].sort();
+  const ids = [...data.keys()].sort((a, b) => a - b);
   const index = new Map<string, Array<number>>();
   let charOffset = 0;
 
@@ -372,7 +372,7 @@ async function* ljsonStreamIterator(
   const decoder = new TextDecoder('utf-8');
 
   const records: Array<Record<string, any>> = [];
-  let error: unknown | undefined;
+  let error: unknown;
   let done = false;
 
   let buffer = '';

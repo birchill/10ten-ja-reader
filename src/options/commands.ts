@@ -48,7 +48,7 @@ export class CommandError extends Error {
 
   constructor(
     code: string,
-    substitutions?: string | Array<string> | undefined,
+    substitutions?: string | Array<string>,
     ...params: Array<any>
   ) {
     super(...params);

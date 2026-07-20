@@ -268,16 +268,6 @@ export class ContentHandler {
     this.#config = new ContentConfig(config);
     this.#textHighlighter = new TextHighlighter();
 
-    this.onPointerMove = this.onPointerMove.bind(this);
-    this.onMouseDown = this.onMouseDown.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
-    this.onKeyUp = this.onKeyUp.bind(this);
-    this.onFocusIn = this.onFocusIn.bind(this);
-    this.onFullScreenChange = this.onFullScreenChange.bind(this);
-    this.onInterFrameMessage = this.onInterFrameMessage.bind(this);
-    this.onBackgroundMessage = this.onBackgroundMessage.bind(this);
-
-    this.onConfigChange = this.onConfigChange.bind(this);
     this.#config.addListener(this.onConfigChange);
 
     window.addEventListener('pointermove', this.onPointerMove, {
@@ -415,7 +405,7 @@ export class ContentHandler {
     return this.#config.canHover;
   }
 
-  onConfigChange(changes: ReadonlyArray<ContentConfigChange>) {
+  onConfigChange = (changes: ReadonlyArray<ContentConfigChange>) => {
     for (const { key, value } of changes) {
       switch (key) {
         case 'accentDisplay':
@@ -488,7 +478,7 @@ export class ContentHandler {
           break;
       }
     }
-  }
+  };
 
   onDbUpdated() {
     // Re-trigger lookup now that the database has been updated (typically going
@@ -589,7 +579,7 @@ export class ContentHandler {
     this.#frameId = frameId;
   }
 
-  onPointerMove(event: PointerEvent) {
+  onPointerMove = (event: PointerEvent) => {
     this.#typingMode = false;
 
     // Safari has an odd bug where it dispatches extra pointermove/mousemove
@@ -791,7 +781,7 @@ export class ContentHandler {
       eventElement: targetElement,
       dictMode,
     });
-  }
+  };
 
   isEnRouteToPopup(event: PointerEvent) {
     if (isPuckPointerEvent(event) || isTouchClickEvent(event)) {
@@ -970,7 +960,7 @@ export class ContentHandler {
     return averageSpeed >= ContentHandler.#MOUSE_SPEED_THRESHOLD;
   }
 
-  onMouseDown(event: MouseEvent) {
+  onMouseDown = (event: MouseEvent) => {
     // Ignore mouse events on the popup window
     if (isPopupWindowHostElem(event.target)) {
       return;
@@ -978,9 +968,9 @@ export class ContentHandler {
 
     // Clear the highlight since it interferes with selection.
     this.clearResult({ currentElement: event.target as Element });
-  }
+  };
 
-  onKeyDown(event: KeyboardEvent) {
+  onKeyDown = (event: KeyboardEvent) => {
     const textBoxInFocus =
       document.activeElement && isEditableNode(document.activeElement);
 
@@ -1093,9 +1083,9 @@ export class ContentHandler {
       this.clearResult({ currentElement: this.#lastPointerTarget });
       this.#typingMode = true;
     }
-  }
+  };
 
-  onKeyUp(event: KeyboardEvent) {
+  onKeyUp = (event: KeyboardEvent) => {
     // If we are showing a popup that required certain hold keys, check if they
     // are now no longer held, and, if they are not, trigger an update of the
     // popup where we mark it as interactive
@@ -1126,7 +1116,7 @@ export class ContentHandler {
       this.#kanjiLookupMode = false;
       event.preventDefault();
     }
-  }
+  };
 
   handleKey(event: KeyboardEvent): boolean {
     // Make an upper-case version of the list of keys so that we can do
@@ -1243,7 +1233,7 @@ export class ContentHandler {
     return true;
   }
 
-  onFocusIn(event: FocusEvent) {
+  onFocusIn = (event: FocusEvent) => {
     if (this.#textHighlighter.isUpdatingFocus()) {
       return;
     }
@@ -1256,7 +1246,7 @@ export class ContentHandler {
     if (this.#typingMode) {
       this.clearResult({ currentElement: this.#lastPointerTarget });
     }
-  }
+  };
 
   // Test if an incoming keyboard event matches the hold-to-show key sequence.
   isHoldToShowKeyStroke(event: KeyboardEvent): HoldToShowKeyType {
@@ -1327,7 +1317,7 @@ export class ContentHandler {
     return this.isTopMostWindow() ? isPopupVisible() : !!this.#popupState;
   }
 
-  onFullScreenChange() {
+  onFullScreenChange = () => {
     if (this.#popupState?.display.mode === 'pinned') {
       this.unpinPopup();
     }
@@ -1341,9 +1331,9 @@ export class ContentHandler {
       this.clearResult();
       this.tearDownPuck();
     }
-  }
+  };
 
-  onInterFrameMessage(event: MessageEvent) {
+  onInterFrameMessage = (event: MessageEvent) => {
     // NOTE: Please do not add additional messages here.
     //
     // We want to avoid using postMessage at all costs. Please see the rationale
@@ -1382,9 +1372,9 @@ export class ContentHandler {
     }
 
     documentBody.dispatchEvent(pointerEvent);
-  }
+  };
 
-  async onBackgroundMessage(request: unknown): Promise<string> {
+  onBackgroundMessage = async (request: unknown): Promise<string> => {
     s.assert(request, BackgroundMessageSchema);
 
     // Most messages are targeted at specific frames and should only arrive
@@ -1580,7 +1570,7 @@ export class ContentHandler {
     }
 
     return 'ok';
-  }
+  };
 
   showNextDictionary() {
     if (!this.isTopMostWindow()) {
