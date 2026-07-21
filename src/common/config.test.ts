@@ -218,6 +218,7 @@ describe('Config', () => {
     expect(config.popupStyle).toEqual('default');
     expect(config.posDisplay).toEqual('expl');
     expect(config.readingOnly).toEqual(false);
+    expect(config.autoSpeak).toEqual(false);
     expect(config.showKanjiComponents).toEqual(true);
     expect(config.showPriority).toEqual(true);
     expect(config.showPuck).toEqual('auto');
