@@ -58,15 +58,6 @@
     "version": "pnpm sync-manifest-version && git add manifest.json.src && tsx scripts/sync-xcode && git add xcode13/\"10ten Japanese Reader\".xcodeproj/project.pbxproj",
     "zip-src": "tsx scripts/zip-src"
   },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "prettier --write",
-      "oxlint --type-aware --fix"
-    ],
-    "_locales/**/messages.json": [
-      "pnpm sort-i18n-keys"
-    ]
-  },
   "dependencies": {
     "@birchill/bugsnag-zero": "0.8.1",
     "@birchill/discriminator": "0.3.1",
@@ -74,7 +65,6 @@
     "@birchill/normal-jp": "1.7.2",
     "classname-variants": "1.7.1",
     "husky": "9.1.7",
-    "lint-staged": "17.0.8",
     "lru_map": "0.4.1",
     "preact": "10.29.7",
     "superstruct": "2.0.2",
@@ -107,6 +97,7 @@
     "jsdom": "^29.0.0",
     "knip": "6.26.0",
     "mocha": "11.7.6",
+    "nano-staged": "1.0.2",
     "oxlint": "1.74.0",
     "oxlint-tsgolint": "0.25.0",
     "playwright": "1.61.1",

@@ -14,9 +14,9 @@ import * as prettier from 'prettier';
 //
 // a) Taking a list of paths (relative or absolute).
 //
-//    This is the primary mode as used by our lint-staged setup.
+//    This is the primary mode as used by our nano-staged setup.
 //
-//    It doesn't support globs (yet) simply because lint-staged always provides
+//    It doesn't support globs (yet) simply because nano-staged always provides
 //    absolute paths to individual files.
 //
 //    It does support relative paths simply because that's useful for testing.
