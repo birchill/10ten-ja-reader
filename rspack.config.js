@@ -1,8 +1,8 @@
 import rspack from '@rspack/core';
-import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import TerserPlugin from 'terser-webpack-plugin';
+import { TsCheckerRspackPlugin } from 'ts-checker-rspack-plugin';
 import WebExtPlugin from 'web-ext-plugin';
 import {
   BugsnagBuildReporterPlugin,
@@ -384,7 +384,7 @@ function getExtConfig(options) {
       __SUPPORTS_TAB_CONTEXT_TYPE__: !!options.supportsTabContextType,
       __VERSION__: `'${pjson.version}'`,
     }),
-    new ForkTsCheckerWebpackPlugin(),
+    new TsCheckerRspackPlugin(),
     new rspack.HtmlRspackPlugin({
       chunks: ['10ten-ja-options'],
       filename: 'options.html',
