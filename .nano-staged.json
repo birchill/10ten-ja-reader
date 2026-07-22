@@ -1,0 +1,4 @@
+{
+  "*.{js,jsx,ts,tsx}": ["prettier --write", "oxlint --type-aware --fix"],
+  "_locales/**/messages.json": ["pnpm sort-i18n-keys"]
+}
