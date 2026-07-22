@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["typescript", "react", "vitest", "unicorn", "oxc"],
+  "plugins": ["eslint", "oxc", "react", "typescript", "unicorn", "vitest"],
   "categories": { "correctness": "error" },
   "env": { "browser": true },
   "settings": { "react": { "version": "16.0", "pragma": "h" } },
