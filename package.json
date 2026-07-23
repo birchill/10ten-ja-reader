@@ -94,7 +94,7 @@
     "file-loader": "6.2.0",
     "if-env": "1.0.4",
     "jsdom": "^29.0.0",
-    "knip": "6.26.0",
+    "knip": "6.27.0",
     "mocha": "11.7.6",
     "nano-staged": "1.0.2",
     "oxlint": "1.74.0",
