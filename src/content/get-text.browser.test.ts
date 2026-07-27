@@ -987,16 +987,31 @@ describe('getTextAtPoint', () => {
       // of a line, caretPositionFromPoint returns a position for the text at
       // the start of the next line.
       const p = document.createElement('p');
-      p.style.maxWidth = '230px';
       p.style.paddingRight = '50px';
       p.style.fontFamily = 'Noto Sans JP';
+      p.style.width = 'max-content';
       p.innerHTML =
         '<ruby>確認<rt>かくにん</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>であった。人の<ruby>命<rt>いのち</rt></ruby>が<ruby>懸<rt>か</rt></ruby>かっている';
       testDiv.append(p);
 
-      // The 命 ruby element should be the last item on line 1, followed by a
-      // line break before が on line 2
+      // We want the 命 ruby element to be the last item on line 1, with a line
+      // break before が on line 2.
+      //
+      // We can't hard-code a width for that. Engines disagree over whether an
+      // annotation wider than its base overhangs the following text (Chrome) or
+      // widens the base (Firefox), and the annotation glyphs can come from a
+      // fallback font, so the width at which this text wraps differs by browser
+      // _and_ platform. Instead, lay it out on one line, measure where the 命
+      // ruby ends, and clamp the paragraph just past that.
       const inochiRuby = p.childNodes[4] as Element;
+      const inochiRubyEnd =
+        inochiRuby.getBoundingClientRect().right -
+        p.getBoundingClientRect().left;
+      p.style.width = '';
+      // The slack here needs to be less than the advance of the following が so
+      // that が still doesn't fit on line 1.
+      p.style.maxWidth = `${inochiRubyEnd + 8}px`;
+
       const inochiNode = inochiRuby.firstChild as Text;
       const gaNode = p.childNodes[5] as Text;
 
