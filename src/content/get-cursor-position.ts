@@ -368,14 +368,15 @@ function getCaretPosition({
       shadowRoots,
     });
 
-    //
-    // Chrome reports the wrong offset for multi-line <textarea> elements so
-    // fall back to caretRangeFromPoint in that case.
+    // Chromium and Firefox 150+ report the wrong offset for some points in
+    // multi-line <textarea> elements, so fall back to caretRangeFromPoint in
+    // that case.
     //
     // https://issues.chromium.org/issues/446475645
-    //
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=2059340
+    // https://github.com/birchill/10ten-ja-reader/issues/3008
     if (
-      isChromium() &&
+      typeof document.caretRangeFromPoint === 'function' &&
       position?.offsetNode.nodeType === Node.ELEMENT_NODE &&
       (position.offsetNode as Element).tagName === 'TEXTAREA'
     ) {
