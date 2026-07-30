@@ -1149,6 +1149,23 @@ describe('getTextAtPoint', () => {
       expect(result).toBeNull();
     });
 
+    it('does NOT report results in blank textarea rows', () => {
+      // Arrange
+      testDiv.innerHTML = '<textarea rows="10" cols="20">かきくけこ</textarea>';
+      const textAreaNode = testDiv.firstChild as HTMLTextAreaElement;
+
+      makeMonospace(textAreaNode, 20);
+      const bbox = textAreaNode.getBoundingClientRect();
+
+      // Act
+      const result = getTextAtPoint({
+        point: { x: bbox.left + bbox.width / 2, y: bbox.bottom - 10 },
+      });
+
+      // Assert
+      expect(result).toBeNull();
+    });
+
     it('does NOT report results in textarea elements when the mouse is outside', () => {
       // Arrange
       testDiv.innerHTML = '<textarea cols=80>あいうえお</textarea>';
