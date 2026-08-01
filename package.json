@@ -123,7 +123,7 @@
     "webpack-preprocessor": "0.1.12",
     "webpack-utf8-bom": "1.4.0",
     "xmlbuilder2": "4.0.3",
-    "yargs": "18.0.0"
+    "yargs": "18.1.0"
   },
   "engines": {
     "pnpm": ">=11"
