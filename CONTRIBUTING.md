@@ -25,6 +25,9 @@ Thank you so much for offering to contribute! Here are a few tips that might hel
   Instead it's worth working out if there's a different approach that will work
   well for (nearly) everyone. So far we've been pretty successful at doing that.
 
+- Wrap extended commit messages to 80 characters. The first-line summary may
+  be longer.
+
 # Development
 
 ## Checking out
