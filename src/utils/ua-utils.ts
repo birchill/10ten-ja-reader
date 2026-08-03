@@ -13,6 +13,15 @@ export function isChromium(): boolean {
   );
 }
 
+/**
+ * Return the major Chromium version parsed from navigator.userAgent, or 0
+ * if Chromium is not detected or the version can't be parsed.
+ */
+export function getChromiumMajorVersion(): number {
+  const match = navigator.userAgent.match(/\b(?:Chrome|Chromium)\/(\d+)/);
+  return match ? Number(match[1]) : 0;
+}
+
 export function isEdge(): boolean {
   return navigator.userAgent.indexOf('Edg/') !== -1;
 }
@@ -38,6 +47,10 @@ export function isIOS(): boolean {
     // iPad on iOS 13 detection
     (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
   );
+}
+
+export function isLinux(): boolean {
+  return navigator.userAgent.indexOf('Linux') !== -1;
 }
 
 /** @public */

@@ -11,7 +11,13 @@ import {
   getBboxForSingleCodepointRange,
   getRangeForSingleCodepoint,
 } from '../utils/range';
-import { isChromium } from '../utils/ua-utils';
+import {
+  getChromiumMajorVersion,
+  isChromium,
+  isFirefox,
+  isLinux,
+  isThunderbird,
+} from '../utils/ua-utils';
 
 import { isGdocsOverlayElem } from './gdocs-canvas';
 import { isPopupWindowHostElem } from './popup/popup-container';
@@ -368,14 +374,16 @@ function getCaretPosition({
       shadowRoots,
     });
 
-    // Chromium and Firefox 150+ report the wrong offset for some points in
-    // multi-line <textarea> elements, so fall back to caretRangeFromPoint in
-    // that case.
+    // Chromium before 142 and Firefox / Thunderbird 150+ on Linux report the
+    // wrong offset for some points in multi-line <textarea> elements, so fall
+    // back to caretRangeFromPoint in those cases.
     //
     // https://issues.chromium.org/issues/446475645
     // https://bugzilla.mozilla.org/show_bug.cgi?id=2059340
     // https://github.com/birchill/10ten-ja-reader/issues/3008
     if (
+      ((isChromium() && getChromiumMajorVersion() < 142) ||
+        ((isFirefox() || isThunderbird()) && isLinux())) &&
       typeof document.caretRangeFromPoint === 'function' &&
       position?.offsetNode.nodeType === Node.ELEMENT_NODE &&
       (position.offsetNode as Element).tagName === 'TEXTAREA'
