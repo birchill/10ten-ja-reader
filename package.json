@@ -99,7 +99,7 @@
     "nano-staged": "1.0.2",
     "oxlint": "1.76.0",
     "oxlint-tsgolint": "7.0.2001",
-    "playwright": "1.62.0",
+    "playwright": "1.62.1",
     "postcss": "8.5.25",
     "postcss-load-config": "6.0.1",
     "postcss-loader": "8.2.1",
