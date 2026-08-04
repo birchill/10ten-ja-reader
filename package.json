@@ -118,7 +118,7 @@
     "tsx": "4.23.1",
     "vitest": "4.1.10",
     "web-ext-plugin": "2.13.0",
-    "webpack": "5.108.4",
+    "webpack": "5.109.2",
     "webpack-bugsnag-plugins": "2.2.3",
     "webpack-preprocessor": "0.1.12",
     "webpack-utf8-bom": "1.4.0",
