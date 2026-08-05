@@ -19,6 +19,7 @@ import browser from 'webextension-polyfill';
 
 import { ExtensionStorageError } from '../common/extension-storage-error';
 
+import { BUGSNAG_NOTIFIER_API_KEY } from './bugsnag-api-key';
 import { maybeSendTelemetry } from './dl-failed-telemetry';
 import { getReleaseStage } from './release-stage';
 
@@ -116,7 +117,7 @@ export function startBugsnag() {
   }
 
   Bugsnag.start({
-    apiKey: 'e707c9ae84265d122b019103641e6462',
+    apiKey: BUGSNAG_NOTIFIER_API_KEY,
     appVersion: manifest.version_name || manifest.version,
     collectUserIp: false,
     onError: async (event: BugsnagEvent) => {
