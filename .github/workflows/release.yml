@@ -317,8 +317,20 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
           scripts/build-assets.sh
+
+      # Both of these run before the release assets go live so that any error
+      # from the new build can be symbolicated as soon as it is installed.
+      # The build API requires the public notifier key, which is baked into the
+      # extension; the script reads it from src/utils/bugsnag-api-key.js.
+      - name: Report the build to Bugsnag
+        run: pnpm bugsnag:report-build
         env:
-          BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY }}
+          BUGSNAG_BUILD_REVISION: ${{ needs.prepare.outputs.sha }}
+
+      - name: Upload sourcemaps to Bugsnag
+        run: pnpm bugsnag:upload-sourcemaps
+        env:
+          BUGSNAG_UPLOAD_API_KEY: ${{ secrets.BUGSNAG_UPLOAD_API_KEY }}
 
       - name: Tag
         run: |

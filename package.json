@@ -23,6 +23,8 @@
   "author": "Birchill, Inc.",
   "type": "module",
   "scripts": {
+    "bugsnag:report-build": "node scripts/bugsnag-ci.js report-build",
+    "bugsnag:upload-sourcemaps": "node scripts/bugsnag-ci.js upload-sourcemaps",
     "build:chrome": "rspack --env target=chrome",
     "build:chrome-electron": "rspack --env target=chrome-electron",
     "build:edge": "rspack --env target=edge",
@@ -75,6 +77,7 @@
   "devDependencies": {
     "@actions/core": "3.0.1",
     "@actions/github": "9.1.1",
+    "@bugsnag/cli": "3.5.1",
     "@changesets/cli": "2.31.1",
     "@changesets/types": "6.1.0",
     "@rspack/cli": "2.1.7",
@@ -119,7 +122,6 @@
     "vitest": "4.1.10",
     "web-ext-plugin": "2.13.0",
     "webpack": "5.109.2",
-    "webpack-bugsnag-plugins": "2.2.3",
     "webpack-preprocessor": "0.1.12",
     "webpack-utf8-bom": "1.4.0",
     "xmlbuilder2": "4.0.3",

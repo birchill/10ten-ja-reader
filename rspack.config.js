@@ -4,10 +4,6 @@ import { fileURLToPath } from 'node:url';
 import TerserPlugin from 'terser-webpack-plugin';
 import { TsCheckerRspackPlugin } from 'ts-checker-rspack-plugin';
 import WebExtPlugin from 'web-ext-plugin';
-import {
-  BugsnagBuildReporterPlugin,
-  BugsnagSourceMapUploaderPlugin,
-} from 'webpack-bugsnag-plugins';
 import BomPlugin from 'webpack-utf8-bom';
 
 import pjson from './package.json' with { type: 'json' };
@@ -249,7 +245,6 @@ export default (env) => {
         supportsSvgIcons: true,
         supportsTabContextType: true,
         target: 'firefox',
-        uploadToBugsnag: !!process.env.RELEASE_BUILD,
         useEventPage: true,
       })
     );
@@ -285,7 +280,6 @@ export default (env) => {
  * @property {boolean} [supportsTabContextType]
  * @property {string} [target]
  * @property {'extension' | 'lazy-modules'} type
- * @property {boolean} [uploadToBugsnag]
  * @property {boolean} [useEventPage]
  * @property {boolean} [useServiceWorker]
  */
@@ -467,36 +461,6 @@ function getExtConfig(options) {
   }
 
   plugins.push(new WebExtPlugin(webExtOptions));
-
-  //
-  // Plugins: Bugsnag
-  //
-
-  if (options.uploadToBugsnag && process.env.BUGSNAG_API_KEY) {
-    plugins.push(
-      new BugsnagBuildReporterPlugin(
-        {
-          apiKey: process.env.BUGSNAG_API_KEY,
-          appVersion: pjson.version,
-          logLevel: 'debug',
-        },
-        {}
-      )
-    );
-    plugins.push(
-      new BugsnagSourceMapUploaderPlugin(
-        {
-          apiKey: process.env.BUGSNAG_API_KEY,
-          appVersion: pjson.version,
-          ignoredBundleExtensions: ['.css', '.json', '.idx', '.svg', '.html'],
-          publicPath: `https://github.com/birchill/10ten-ja-reader/releases/download/v${pjson.version}/`,
-          logLevel: 'debug',
-          overwrite: true,
-        },
-        {}
-      )
-    );
-  }
 
   //
   // Devtools

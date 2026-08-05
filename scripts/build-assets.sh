@@ -1,13 +1,5 @@
 #!/bin/bash
 
-# Check that BUGSNAG_API_KEY is set
-if [ -n "$BUGSNAG_API_KEY" ]; then
-  echo "BUGSNAG_API_KEY set."
-else
-  echo "BUGSNAG_API_KEY is not set."
-  exit 1
-fi
-
 # Check if jq is installed
 if ! command -v jq &>/dev/null; then
   echo "jq is not installed. Please install jq to use this script."
