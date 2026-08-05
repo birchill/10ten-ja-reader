@@ -1363,6 +1363,14 @@
     "message": "无",
     "description": "Label for not showing pitch accent information"
   },
+  "options_audio_heading": {
+    "message": "音频",
+    "description": "Heading for the audio / speech settings section"
+  },
+  "options_auto_speak": {
+    "message": "悬停时朗读匹配的单词",
+    "description": "Label for the checkbox enabling automatic text-to-speech of the matched word when the popup is shown on hover"
+  },
   "options_browser_commands_no_toggle_key": {
     "message": "由于您使用的浏览器的限制，您无法在此处更改此快捷键。",
     "description": "Descriptive text used for other browsers which do not permit configuring extension keys from the extension itself."
