@@ -98,7 +98,7 @@
     "if-env": "1.0.4",
     "jsdom": "^30.0.0",
     "knip": "6.31.0",
-    "mocha": "11.7.6",
+    "mocha": "11.8.0",
     "nano-staged": "1.0.2",
     "oxlint": "1.76.0",
     "oxlint-tsgolint": "7.0.2001",
