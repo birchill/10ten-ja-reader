@@ -1,6 +1,7 @@
 import { AbortError } from '@birchill/jpdict-idb';
 import { expandChoon, kyuujitaiToShinjitai } from '@birchill/normal-jp';
 
+import { MAX_CHOON_VARIANTS } from '../common/limits';
 import { isNoSplitPoint } from '../common/no-split-mask';
 import { isOnlyDigits } from '../utils/char-range';
 import { toRomaji } from '../utils/romaji';
@@ -63,7 +64,9 @@ export async function wordSearch({
     // Generate variations on this substring
     if (includeVariants) {
       // Expand ー to its various possibilities
-      variations.push(...expandChoon(input));
+      variations.push(
+        ...expandChoon(input, { maxVariants: MAX_CHOON_VARIANTS })
+      );
 
       // See if there are any 旧字体 we can convert to 新字体
       const toNew = kyuujitaiToShinjitai(input);

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { MAX_CHOON_VARIANTS } from '../common/limits';
 import { normalizeInput } from '../utils/normalize';
 
 import type { DictionaryWordResult } from './search-result';
@@ -106,6 +107,29 @@ describe('wordSearch', () => {
 
     expect(result?.matchLen).toBe(2);
     expect(lookups).toContain('国語');
+  });
+
+  it('bounds ー expansion for a long run of お-row long vowels', async () => {
+    // Each コー can expand to コウ or コオ, so without a limit this is 2^16
+    // variants at the first substring alone, and several seconds of work.
+    const [normalized, inputLengths] = normalizeInput('コー'.repeat(16));
+    const lookups: Array<string> = [];
+
+    await wordSearch({
+      getWords: async ({ input }) => {
+        lookups.push(input);
+        return [];
+      },
+      input: normalized,
+      inputLengths,
+      maxResults: 10,
+    });
+
+    // MAX_CHOON_VARIANTS (16) expansions plus the input itself, per substring
+    // length, times however many deinflection candidates each produces.
+    expect(lookups.length).toBeLessThan(
+      normalized.length * (MAX_CHOON_VARIANTS + 1) * 4
+    );
   });
 });
 

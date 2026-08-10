@@ -16,6 +16,18 @@
 // for extension messaging limitations such as converting it to a Uint8Array.
 export const MAX_LOOKUP_LENGTH = 16;
 
+// Max number of ー expansions to generate when looking up a substring.
+//
+// expandChoon returns every combination of お-row long vowel expansion so it
+// produces 2^n results for n お-row long vowels. Since we look up every
+// substring of the input, an unbounded expansion of a long katakana run costs
+// us seconds.
+//
+// No headword in the words or names databases has more than three お-row long
+// vowels (and none longer than 16 code units has more than two), so 2^4 is
+// more than enough to expand anything we could actually match.
+export const MAX_CHOON_VARIANTS = 16;
+
 // Max number of non-Japanese chars before we give up on translating alt/title
 // text.
 export const MAX_NON_JP_PREFIX_LENGTH = 500;
