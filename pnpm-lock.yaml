@@ -18,8 +18,8 @@ importers:
         specifier: 3.3.0
         version: 3.3.0
       '@birchill/normal-jp':
-        specifier: 1.7.2
-        version: 1.7.2
+        specifier: 1.8.0
+        version: 1.8.0
       classname-variants:
         specifier: 1.7.1
         version: 1.7.1
@@ -293,8 +293,8 @@ packages:
   '@birchill/kanji-component-string-utils@2.0.0':
     resolution: {integrity: sha512-Rc8+GspPfTmN/TEZaibp0UrkqDDa15fY5ssV/FAT1wnD5PFq6VWxOQUKhKbV4dej+smTtZxw29kMbkzghmLCHw==}
 
-  '@birchill/normal-jp@1.7.2':
-    resolution: {integrity: sha512-tqeEJqnkqpxvcaAq32aMC8B4HaSqgfPLO27eflFxZ3+emlE0BP4W0g+QUuuHklOzmXdFyNy7uZBmXSj6Pbhd2g==}
+  '@birchill/normal-jp@1.8.0':
+    resolution: {integrity: sha512-HEBmg2w3tOKR2JCGh/FFSqZAhrO7r5Tf6p/w1Eyf4gN+ycZieBhTQNneQjaCg64PIiA41IHyI74dEyGoMRFWQg==}
 
   '@blazediff/core@1.9.1':
     resolution: {integrity: sha512-ehg3jIkYKulZh+8om/O25vkvSsXXwC+skXmyA87FFx6A/45eqOkZsBltMw/TVteb0mloiGT8oGRTcjRAz66zaA==}
@@ -5722,7 +5722,7 @@ snapshots:
     dependencies:
       '@birchill/json-equalish': 1.1.2
       '@birchill/kanji-component-string-utils': 2.0.0
-      '@birchill/normal-jp': 1.7.2
+      '@birchill/normal-jp': 1.8.0
       idb: 8.0.3
       superstruct: 2.0.2
 
@@ -5730,7 +5730,7 @@ snapshots:
 
   '@birchill/kanji-component-string-utils@2.0.0': {}
 
-  '@birchill/normal-jp@1.7.2': {}
+  '@birchill/normal-jp@1.8.0': {}
 
   '@blazediff/core@1.9.1': {}
 
