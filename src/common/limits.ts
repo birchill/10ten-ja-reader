@@ -2,19 +2,21 @@
 
 // Max length of text to lookup.
 //
-// This should be enough for most (but not all) entries for now.
+// This is long enough for all but ~0.04% of the headwords in the words and
+// names databases.
 //
-// See https://github.com/birchill/10ten-ja-reader/issues/319#issuecomment-655545971
-// for a snapshot of the entry lengths by frequency.
+// Raising it costs us on every hover, since we look up every substring of the
+// input, and the returns drop away quickly: 24 would leave only ~0.008%
+// unreachable but takes around 1.5x as long per lookup as 16, against around
+// 1.3x for 20.
 //
-// Once we have switched all databases to IndexedDB, we should investigate the
-// performance impact of increasing this further.
+// See https://github.com/birchill/10ten-ja-reader/issues/319 for the analysis.
 //
 // If we extend this beyond 32, we will need to update the no-split mask type
 // to use a bigint instead and deal with the resulting
 // serialization issues: custom JSON stringify/parse support and a workaround
 // for extension messaging limitations such as converting it to a Uint8Array.
-export const MAX_LOOKUP_LENGTH = 16;
+export const MAX_LOOKUP_LENGTH = 20;
 
 // Max number of ー expansions to generate when looking up a substring.
 //
