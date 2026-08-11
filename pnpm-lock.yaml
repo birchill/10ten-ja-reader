@@ -52,8 +52,8 @@ importers:
         specifier: 9.1.1
         version: 9.1.1
       '@bugsnag/cli':
-        specifier: 3.10.3
-        version: 3.10.3
+        specifier: 3.10.4
+        version: 3.10.4
       '@changesets/cli':
         specifier: 2.31.1
         version: 2.31.1(@types/node@24.3.0)
@@ -303,8 +303,8 @@ packages:
     resolution: {integrity: sha512-ctxtJ/eA+t+6q2++vj5j7FYX3nRu311q1wfYH3xjlLOsczhlhxAg2FWNUXhpGvAw3BWo1xBcvOV6/YLc2r5FJw==}
     hasBin: true
 
-  '@bugsnag/cli@3.10.3':
-    resolution: {integrity: sha512-b3+UOEvY+77jM2CT38m+/yzzYSuxlo73q4wWUKfRvFbDUO+cy5rfSoEoITXgUtbmjWBDS8NnjTmINHxzrOWBvQ==}
+  '@bugsnag/cli@3.10.4':
+    resolution: {integrity: sha512-VDz+wHtZDFQxJQi013FXvMb8VjtRtITEJYh3HjnmELbiePt4spR7JUzHJ9sqMb4NGUlAaJMAI2GQCKZ49wK7FA==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -4078,11 +4078,6 @@ packages:
     engines: {node: ^22 || >= 24}
     hasBin: true
 
-  nanoid@3.3.16:
-    resolution: {integrity: sha512-bzlKTyNJ7+LdGIIwy8ijFpIqEQIvafahV7eYykJ8Cvh42EdJeODoJ6gUJXpQJvej1BddH8OqTXZNE/KfbWAu8Q==}
-    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
-    hasBin: true
-
   nanoid@3.3.18:
     resolution: {integrity: sha512-DTg4MJbGMWkfi6VZFdNt2/caMbQy4Ou+Op/hJQvGEWcnVfoA1QA+xzRKAzw9jD6+GVOOeYr/mIcuDSdug6F6+w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -4405,10 +4400,6 @@ packages:
 
   postcss-value-parser@4.2.0:
     resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
-
-  postcss@8.5.25:
-    resolution: {integrity: sha512-DTPx3RWSSnWyzLxQnlH0rJP+EW5ekl16ZU4/psbIhA0e53kJfdgaN5vKM+xP7yJtXVu+nfdVFmlgFDEKAe4Pyw==}
-    engines: {node: ^10 || ^12 || >=14}
 
   postcss@8.5.26:
     resolution: {integrity: sha512-u82N74LFzG8ca+dD8puPnplTXoGH4fTPpVGuIbt36G3qvNlkvfD0lEAZSxaly3KX8TS/L1A1gsCEmvKmBcVbkQ==}
@@ -5747,7 +5738,7 @@ snapshots:
     dependencies:
       css-tree: 3.2.1
 
-  '@bugsnag/cli@3.10.3':
+  '@bugsnag/cli@3.10.4':
     dependencies:
       undici: 6.25.0
       yaml: 2.9.0
@@ -9258,8 +9249,6 @@ snapshots:
 
   nano-staged@1.0.2: {}
 
-  nanoid@3.3.16: {}
-
   nanoid@3.3.18: {}
 
   natural-compare@1.4.0: {}
@@ -9627,12 +9616,6 @@ snapshots:
       util-deprecate: 1.0.2
 
   postcss-value-parser@4.2.0: {}
-
-  postcss@8.5.25:
-    dependencies:
-      nanoid: 3.3.16
-      picocolors: 1.1.1
-      source-map-js: 1.2.1
 
   postcss@8.5.26:
     dependencies:
@@ -10454,7 +10437,7 @@ snapshots:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.5)
       picomatch: 4.0.5
-      postcss: 8.5.25
+      postcss: 8.5.26
       rollup: 4.60.3
       tinyglobby: 0.2.17
     optionalDependencies:

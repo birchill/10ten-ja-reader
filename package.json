@@ -77,7 +77,7 @@
   "devDependencies": {
     "@actions/core": "3.0.1",
     "@actions/github": "9.1.1",
-    "@bugsnag/cli": "3.10.3",
+    "@bugsnag/cli": "3.10.4",
     "@changesets/cli": "2.31.1",
     "@changesets/types": "6.1.0",
     "@rspack/cli": "2.1.8",
