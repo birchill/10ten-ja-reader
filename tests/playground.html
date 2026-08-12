@@ -1,439 +1,928 @@
 <!doctype html>
-<meta charset="utf-8" />
-<body>
-  <p>Mixing 日本語 with イングリッシュ.</p>
-  <p>この言葉を<b>強</b>調してる。</p>
-  <p>
-    <ruby
-      >仙<rp>(</rp><rt>せん</rt><rp>)</rp>台<rp>（</rp><rt>だい</rt
-      ><rp>）</rp></ruby
-    >の<ruby
-      ><ruby>牧<rt>ぼく</rt></ruby
-      ><rt>まき</rt></ruby
-    ><ruby
-      ><ruby>場<rt>じょう</rt></ruby
-      ><rt>ば</rt></ruby
-    >です。
-  </p>
-  <svg height="1.5em" width="200px" style="display: block">
-    <text y="1em">
-      SVGでも日本語
-      <tspan style="text-decoration: underline">でき</tspan>
-      るよ。
-    </text>
-  </svg>
-  <p>これは非BMP文字：𠏹沢</p>
-  <input value="テキストボックスだよ" /><br />
-  <input value="またテキストボックスだ" /><br />
-  <textarea>
-これはテキストエリア
-二行目
-三行目
-いっぱい書くね。もっともっと。
-これぐらいだと、スクロールバーでちゃうね。もうオッケーだと思うよ。
-はい。お疲れさん。
-もういいよ。
-やめてよ！
-</textarea
-  ><br />
-  <input type="password" value="パスワード" /><br />
-  好きなラーメン選んでください
-  <select name="select">
-    <option value="value1">とんかつ</option>
-    <option value="value2" selected>塩</option>
-    <option value="value3">味噌</option>
-  </select>
-  <input id="ネギなし" name="other" type="checkbox" value="ネギなし" />
-  <label for="ネギなし">ネギ抜き</label>
-  <div contenteditable>
-    これはcontenteditableのやつだよ<br />
-    編集してみてネ。
-  </div>
-  <p>with title:</p>
-  <img src="https://placebear.com/200/300" title="タイトル" />
-  <p>with alt:</p>
-  <img src="https://placebear.com/300/200" alt="代替テキスト" />
-  <p>with title and alt:</p>
-  <img src="https://placebear.com/300/300" title="タイトル" alt="テキスト" />
-  <p>&lt;iframe&gt; (タイトル付):</p>
-  <iframe
-    src="playground-iframe.html"
-    style="display: block"
-    title="タイトル"
-    width="400"
-    height="200"
-  ></iframe>
-  <p>
-    <a
-      href="https://10ten.life/reader/tests/iframes/index.html"
-      target="iframe-test"
-      >異なるオリジンiframeテスト</a
-    >
-  </p>
-  <p>Nested &lt;iframe&gt; and &lt;frameset&gt;:</p>
-  <iframe
-    src="playground-frameset.html"
-    style="display: block"
-    width="400"
-    height="200"
-  ></iframe>
-  <p>縦書き</p>
-  <div style="writing-mode: tb-rl; height: 300px; padding: 10px">
-    何故かと云うと、この二三年、京都には、地震とか辻風とか火事とか饑饉とか云う災
-    いがつづいて起こった。そこで洛中のさびれ方は一通りでない。旧記によると、仏像や
-    仏具を打砕いて、その丹がついたり、金銀の<ruby
-      >箔<rp>（</rp><rt>はく</rt><rp>）</rp></ruby
-    >がついたりした木を、路ばたにつみ重ねて薪の<ruby
-      >料<rp>（</rp><rt>しろ</rt><rp>）</rp></ruby
-    >に売っていたと云うことである。洛中がその始末であるから、
-    羅生門の修理などは、元より誰も捨てて顧みる者がなかった。するとその荒れ果てたの
-    をよい事にして、<ruby>狐狸<rp>（</rp><rt>こり</rt><rp>）</rp></ruby
-    >が棲む。盗人が棲む。とうとうしまいには、引取り手の
-    ない死人を、この門へ持って来て、捨てて行くと云う習慣さえ出来た。そこで、日の目
-    が見えなくなると、誰でも気味を悪がって、この門の近所へは足ぶみをしない事になっ
-    てしまったのである。
-  </div>
-  <h3>Era tests</h3>
-  <ul>
-    <li>令和元年に…</li>
-    <li>令和２年に…</li>
-    <li>令和2年</li>
-    <li>令和 2 年</li>
-    <li>令和 ２ 年</li>
-    <li>令和 <span style="color: red">２</span> 年</li>
-    <li>平成３1</li>
-    <li>平成３1に…</li>
-    <li>平成 <span style="color: red">元年</span>に…</li>
-    <li>平成三十一年に…</li>
-    <li>㋿2年</li>
-  </ul>
-  <h3>Measure tests</h3>
-  <ul>
-    <li>面積：6畳。</li>
-    <li>面積：六畳。</li>
-    <li>面積：６畳。</li>
-    <li>面積：六〇畳</li>
-    <li>面積：六十畳</li>
-    <li>面積：四畳半</li>
-    <li>面積：6 畳です</li>
-    <li>面積：1.5 帖</li>
-    <li>面積：6m2</li>
-    <li>面積：6m<sup>2</sup></li>
-    <li>面積：6㎡</li>
-    <li>面積：22.5平方メートル</li>
-    <li>面積：22.5平方ﾒｰﾄﾙ</li>
-    <li>面積：22.5平方㍍</li>
-    <li>面積：22.5平㍍</li>
-    <li>面積：22.5平米</li>
-    <li>面積：十二平方米</li>
-    <li>8万8千平㍍</li>
-  </ul>
-  <h3>Starting/end number tests</h3>
-  <ul>
-    <li>1つ</li>
-    <li>14日</li>
-    <li>小1</li>
-  </ul>
-
-  <h3>Currency tests</h3>
-  <ul>
-    <li>8万8千円</li>
-    <li>￥88、000</li>
-    <li>¥ 88,000.00</li>
-    <li>価格 88,000 <span>円</span>です。</li>
-    <li>9万8800円</li>
-    <li>100億円</li>
-    <li>25.1万円</li>
-    <li><span>39,800</span><span>万円</span></li>
-    <li>1,000,000円＝1,000k円＝1M円です</li>
-    <li>200k Yen</li>
-    <li>1,000yen</li>
-    <li>JPY1,000</li>
-    <li>JPY100</li>
-  </ul>
-
-  <h3>Number tests</h3>
-  <ul>
-    <li>九十八</li>
-    <li>9万8800</li>
-    <li>365億</li>
-    <li>25.103億</li>
-    <li>100億 (should not match - has dictionary entry)</li>
-    <li>二十 (should not match - has dictionary entry)</li>
-    <li>九十 (should not match - has dictionary entry)</li>
-    <li>88、000 (should not match - no kanji)</li>
-  </ul>
-
-  <h3>Shogi tests</h3>
-  <ul>
-    <li>☗８三銀引成です</li>
-    <li>８三銀引成です</li>
-    <li>☖２四同歩</li>
-    <li>２四𠔼歩</li>
-    <li>２四𠔼歩</li>
-    <li>８三↑</li>
-  </ul>
-
-  <h3>Search-only match tests</h3>
-  <ul>
-    <li>磨ガラス</li>
-    <li>ペイチン</li>
-  </ul>
-
-  <h3>Kana-only tests</h3>
-  <ul>
-    <li>
-      はにかむ (<strike
-        >Should <i><b>not</b></i> show "usually kana"</strike
-      >&mdash;this entry now has a visible kanji headword so this test is
-      invalid)
-    </li>
-    <li>含羞む (<i>Should</i> show "usually kana")</li>
-    <li>ほっきょくぐま (<i>Should</i> show "usually kana")</li>
-    <li>北極熊 (<i>Should</i> show "usually kana")</li>
-  </ul>
-
-  <h3>Shadow DOM tests (Blink/WebKit only)</h3>
-  <script>
-    class MyElement extends HTMLElement {
-      constructor() {
-        super();
-
-        const shadowRoot = this.attachShadow({ mode: 'open' });
-        const para = document.createElement('p');
-        shadowRoot.appendChild(para);
-        para.append('日本語 (Custom element)');
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>10ten Japanese Reader playground</title>
+    <style>
+      /* This page is loaded straight out of the source tree, so everything it
+       * needs is local—no network connection required.
+       *
+       * The fonts are the one thing outside this directory. That's fine from a
+       * file:// URL, but if you serve tests/ as the root of a local web server
+       * they will 404 and the page falls back to the system font. Serve the
+       * repository root and open /tests/playground.html if you care. */
+      @font-face {
+        font-family: 'Playground Inter';
+        font-weight: 100 900;
+        font-style: normal italic;
+        font-display: swap;
+        src: url('../fonts/Inter-4.0.woff2') format('woff2');
       }
-    }
 
-    customElements.define('my-elem', MyElement);
-  </script>
-  <my-elem></my-elem>
-  <div id="shadow-dom-container"></div>
-  <script>
-    const groupContainer = document.getElementById('shadow-dom-container');
+      @font-face {
+        font-family: 'Playground Noto Sans JP';
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: swap;
+        src: url('../fonts/NotoSansJP.woff2') format('woff2');
+      }
 
-    // Direct text node children
-    {
-      const container = document.createElement('div');
-      groupContainer.append(container);
-      const shadowRoot = container.attachShadow({ mode: 'open' });
-      shadowRoot.append('日本語の');
-      const styledSpan = document.createElement('span');
-      styledSpan.style.color = 'red';
-      styledSpan.append('特別な');
-      shadowRoot.append(styledSpan);
-      shadowRoot.append('テキスト');
-      shadowRoot.append('(plain text nodes in shadow DOM)');
-    }
+      /* Palette borrowed from 10ten.life */
+      :root {
+        color-scheme: light dark;
 
-    // Various other combinations
-    const cases = [
-      '<p>日本語 (element in shadow DOM element)</p>',
-      '<p style="margin-top: 15px; margin-left: 10px">日本語 (element with margin in shadow DOM)</p>',
-      '<p style="margin-top: 15px; margin-left: 10px; border: 5px solid blue">日本語 (element with margin+border in shadow DOM)</p>',
-      '<p style="margin-top: 15px; margin-left: 10px; border: 5px solid blue; box-sizing: border-box">日本語 (element with margin+border in shadow DOM, box-sizing: border-box)</p>',
-      '<p style="margin-top: 15px; margin-left: 10px; border: 5px solid blue; box-sizing: content-box">日本語 (element with margin in shadow DOM, box-sizing: content-box)</p>',
-      '<p style="width: 80px"><b>これは</b>日本語<span style="color: red">だよ</span>。 (element in shadow DOM with inlines and line wrapping)</p>',
-    ];
+        --gray-50: #fdf8f6;
+        --gray-100: #f6f1f0;
+        --gray-200: #ede8e6;
+        --gray-400: #b9b4b3;
+        --gray-600: #706c6b;
+        --gray-700: #5d5857;
+        --gray-900: #1d1a19;
 
-    for (const source of cases) {
-      const container = document.createElement('div');
-      groupContainer.append(container);
-      const shadowRoot = container.attachShadow({ mode: 'open' });
-      shadowRoot.innerHTML = source;
-    }
+        --bg: light-dark(#fff, var(--gray-900));
+        --bg-sunken: light-dark(var(--gray-50), #171514);
+        --bg-raised: light-dark(var(--gray-100), #292625);
+        --fg: light-dark(var(--gray-900), #fff);
+        --fg-muted: light-dark(var(--gray-600), var(--gray-400));
+        --border: light-dark(var(--gray-200), var(--gray-700));
+        --link: light-dark(#2277d9, #65b7fc);
+        --accent: #2698fb;
+      }
 
-    // The Bing Chat test case
-    {
-      // First nest shadow DOMs to simulate that part (Bing Chat does a _lot_ of
-      // nesting of custom elements)
-      const outerContainer = document.createElement('div');
-      groupContainer.append(outerContainer);
-      const outerShadowRoot = outerContainer.attachShadow({ mode: 'open' });
+      * {
+        box-sizing: border-box;
+      }
 
-      const innerContainer = document.createElement('div');
-      outerShadowRoot.append(innerContainer);
-      const innerShadowRoot = innerContainer.attachShadow({ mode: 'open' });
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font-family: 'Playground Inter', system-ui, sans-serif;
+        font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+        line-height: 1.6;
+      }
 
-      // Now add some styles - this helps to ensure that the footnotes cause
-      // subsequent text to shift in a way that requires us to copy the style of
-      // child elements
-      const style = document.createElement('style');
-      style.append(`
-        sup {
-          position: relative;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 10px;
-          font-weight: 600;
-          vertical-align: top;
-          top: -1px;
-          margin: 0px 2px;
-          min-width: 14px;
-          height: 14px;
-          border-radius: 3px;
-          text-decoration-color: transparent;
-          color: var(--cib-color-brand-tertiary-foreground);
-          background: var(--cib-color-brand-tertiary-background);
-          outline: transparent solid 1px;
-        }
-      `);
-      innerShadowRoot.append(style);
+      :lang(ja) {
+        font-family: 'Playground Noto Sans JP', 'Playground Inter', sans-serif;
+        font-feature-settings: normal;
+      }
 
-      // ... and HTML markup
-      const innerElem = document.createElement('div');
-      innerShadowRoot.append(innerElem);
-      innerElem.innerHTML =
-        '<div class="ac-container ac-adaptiveCard" style=""><div class="ac-textBlock" style=""><p><a class="tooltip-target" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-2-group" h="ID=SERP,5027.1">今日の天気は曇り、23度です。</a><a href="https://bing.com/search?q=%E4%BB%8A%E6%97%A5%E3%81%AE%E3%81%8A%E5%A4%A9%E6%B0%97" class="ac-anchor sup-target" target="_blank" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-2" aria-label="" h="ID=SERP,5027.1"><sup>1</sup></a><a class="tooltip-target" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-4-group" h="ID=SERP,5027.1"> 今日の最高気温は23.49度、最低気温は17.99度です。</a><a href="https://bing.com/search?q=%E4%BB%8A%E6%97%A5%E3%81%AE%E3%81%8A%E5%A4%A9%E6%B0%97" class="ac-anchor sup-target" target="_blank" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-4" aria-label="" h="ID=SERP,5027.1"><sup>1</sup></a><a class="tooltip-target" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-6-group" h="ID=SERP,5027.1"> 降水確率は0%です。</a><a href="https://bing.com/search?q=%E4%BB%8A%E6%97%A5%E3%81%AE%E3%81%8A%E5%A4%A9%E6%B0%97" class="ac-anchor sup-target" target="_blank" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-6" aria-label="" h="ID=SERP,5027.1"><sup>1</sup></a><a class="tooltip-target" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-8-group" h="ID=SERP,5027.1"> 明日は晴れ、最高気温は23.93度、最低気温は13.13度です。</a><a href="https://bing.com/search?q=%E4%BB%8A%E6%97%A5%E3%81%AE%E3%81%8A%E5%A4%A9%E6%B0%97" class="ac-anchor sup-target" target="_blank" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-8" aria-label="" h="ID=SERP,5027.1"><sup>1</sup></a></p></div><div class="ac-horizontal-separator" aria-hidden="true" style=""></div></div>';
+      input,
+      textarea,
+      select,
+      button {
+        font: inherit;
+      }
 
-      const explanationElem = document.createElement('div');
-      innerShadowRoot.append(explanationElem);
-      explanationElem.append(
-        '(In particular we want to check towards the end of the line)'
-      );
-    }
-  </script>
+      a {
+        color: var(--link);
+      }
 
-  <h3>Flickering test</h3>
-  <style>
-    #flicker {
-      border: 1px solid #ddd;
-      transition: all 0.2s ease-in-out;
-    }
-    #flicker:hover {
-      border-color: #000;
-    }
-  </style>
-  <a id="flicker" href="#">This is a link.</a>
-  <div
-    style="
-      max-width: 400px;
-      max-height: 300px;
-      border: 1px dotted grey;
-      overflow: auto;
-    "
-  >
-    <div id="fullscreen" style="padding: 10px; background: white">
-      <button id="fullscreen-btn">Toggle fullscreen</button>
-      <p>
-        何故かと云うと、この二三年、京都には、地震とか辻風とか火事とか饑饉とか云う災
-        いがつづいて起こった。そこで洛中のさびれ方は一通りでない。旧記によると、仏像や
-      </p>
-      <p>
-        ある日の暮方の事である。一人の下人が、羅生門の下で雨やみを待っていた。
-      </p>
-      <p>
-        広い門の下には、この男のほかに誰もいない。ただ、所々丹塗の剥げた、大きな円柱に、蟋蟀が一匹とまっている。羅生門が、朱雀大路にある以上は、この男のほかにも、雨やみをする市女笠や揉烏帽子が、もう二三人はありそうなものである。それが、この男のほかには誰もいない。
-      </p>
-      <p>
-        何故かと云うと、この二三年、京都には、地震とか辻風とか火事とか饑饉とか云う災がつづいて起った。そこで洛中のさびれ方は一通りではない。旧記によると、仏像や仏具を打砕いて、その丹がついたり、金銀の箔がついたりした木を、路ばたにつみ重ねて、薪の料に売っていたと云う事である。洛中がその始末であるから、羅生門の修理などは、元より誰も捨てて顧る者がなかった。するとその荒れ果てたのをよい事にして、狐狸が棲む。盗人が棲む。とうとうしまいには、引取り手のない死人を、この門へ持って来て、棄てて行くと云う習慣さえ出来た。そこで、日の目が見えなくなると、誰でも気味を悪るがって、この門の近所へは足ぶみをしない事になってしまったのである。
-      </p>
-      <p>
-        その代りまた鴉がどこからか、たくさん集って来た。昼間見ると、その鴉が何羽となく輪を描いて、高い鴟尾のまわりを啼きながら、飛びまわっている。ことに門の上の空が、夕焼けであかくなる時には、それが胡麻をまいたようにはっきり見えた。鴉は、勿論、門の上にある死人の肉を、啄みに来るのである。――もっとも今日は、刻限が遅いせいか、一羽も見えない。ただ、所々、崩れかかった、そうしてその崩れ目に長い草のはえた石段の上に、鴉の糞が、点々と白くこびりついているのが見える。下人は七段ある石段の一番上の段に、洗いざらした紺の襖の尻を据えて、右の頬に出来た、大きな面皰を気にしながら、ぼんやり、雨のふるのを眺めていた。
-      </p>
-      <p>
-        作者はさっき、「下人が雨やみを待っていた」と書いた。しかし、下人は雨がやんでも、格別どうしようと云う当てはない。ふだんなら、勿論、主人の家へ帰る可き筈である。所がその主人からは、四五日前に暇を出された。前にも書いたように、当時京都の町は一通りならず衰微していた。今この下人が、永年、使われていた主人から、暇を出されたのも、実はこの衰微の小さな余波にほかならない。だから「下人が雨やみを待っていた」と云うよりも「雨にふりこめられた下人が、行き所がなくて、途方にくれていた」と云う方が、適当である。その上、今日の空模様も少からず、この平安朝の下人の
-        Sentimentalisme
-        に影響した。申の刻下りからふり出した雨は、いまだに上るけしきがない。そこで、下人は、何をおいても差当り明日の暮しをどうにかしようとして――云わばどうにもならない事を、どうにかしようとして、とりとめもない考えをたどりながら、さっきから朱雀大路にふる雨の音を、聞くともなく聞いていたのである。
-      </p>
-      <p>
-        雨は、羅生門をつつんで、遠くから、ざあっと云う音をあつめて来る。夕闇は次第に空を低くして、見上げると、門の屋根が、斜につき出した甍の先に、重たくうす暗い雲を支えている。
-      </p>
-      <p>
-        どうにもならない事を、どうにかするためには、手段を選んでいる遑はない。選んでいれば、築土の下か、道ばたの土の上で、饑死をするばかりである。そうして、この門の上へ持って来て、犬のように棄てられてしまうばかりである。選ばないとすれば――下人の考えは、何度も同じ道を低徊した揚句に、やっとこの局所へ逢着した。しかしこの「すれば」は、いつまでたっても、結局「すれば」であった。下人は、手段を選ばないという事を肯定しながらも、この「すれば」のかたをつけるために、当然、その後に来る可き「盗人になるよりほかに仕方がない」と云う事を、積極的に肯定するだけの、勇気が出ずにいたのである。
-      </p>
-      <p>
-        下人は、大きな嚔をして、それから、大儀そうに立上った。夕冷えのする京都は、もう火桶が欲しいほどの寒さである。風は門の柱と柱との間を、夕闇と共に遠慮なく、吹きぬける。丹塗の柱にとまっていた蟋蟀も、もうどこかへ行ってしまった。
-      </p>
-      <p>
-        下人は、頸をちぢめながら、山吹の汗袗に重ねた、紺の襖の肩を高くして門のまわりを見まわした。雨風の患のない、人目にかかる惧のない、一晩楽にねられそうな所があれば、そこでともかくも、夜を明かそうと思ったからである。すると、幸い門の上の楼へ上る、幅の広い、これも丹を塗った梯子が眼についた。上なら、人がいたにしても、どうせ死人ばかりである。下人はそこで、腰にさげた聖柄の太刀が鞘走らないように気をつけながら、藁草履をはいた足を、その梯子の一番下の段へふみかけた。
-      </p>
-      <p>
-        それから、何分かの後である。羅生門の楼の上へ出る、幅の広い梯子の中段に、一人の男が、猫のように身をちぢめて、息を殺しながら、上の容子を窺っていた。楼の上からさす火の光が、かすかに、その男の右の頬をぬらしている。短い鬚の中に、赤く膿を持った面皰のある頬である。下人は、始めから、この上にいる者は、死人ばかりだと高を括っていた。それが、梯子を二三段上って見ると、上では誰か火をとぼして、しかもその火をそこここと動かしているらしい。これは、その濁った、黄いろい光が、隅々に蜘蛛の巣をかけた天井裏に、揺れながら映ったので、すぐにそれと知れたのである。この雨の夜に、この羅生門の上で、火をともしているからは、どうせただの者ではない。
-      </p>
-      <p>
-        下人は、守宮のように足音をぬすんで、やっと急な梯子を、一番上の段まで這うようにして上りつめた。そうして体を出来るだけ、平にしながら、頸を出来るだけ、前へ出して、恐る恐る、楼の内を覗いて見た。
-      </p>
-      <p>
-        見ると、楼の内には、噂に聞いた通り、幾つかの死骸が、無造作に棄ててあるが、火の光の及ぶ範囲が、思ったより狭いので、数は幾つともわからない。ただ、おぼろげながら、知れるのは、その中に裸の死骸と、着物を着た死骸とがあるという事である。勿論、中には女も男もまじっているらしい。そうして、その死骸は皆、それが、かつて、生きていた人間だと云う事実さえ疑われるほど、土を捏ねて造った人形のように、口を開いたり手を延ばしたりして、ごろごろ床の上にころがっていた。しかも、肩とか胸とかの高くなっている部分に、ぼんやりした火の光をうけて、低くなっている部分の影を一層暗くしながら、永久に唖の如く黙っていた。
-      </p>
-      <p>
-        下人は、それらの死骸の腐爛した臭気に思わず、鼻を掩った。しかし、その手は、次の瞬間には、もう鼻を掩う事を忘れていた。ある強い感情が、ほとんどことごとくこの男の嗅覚を奪ってしまったからだ。
-      </p>
-      <p>
-        下人の眼は、その時、はじめてその死骸の中に蹲っている人間を見た。檜皮色の着物を着た、背の低い、痩せた、白髪頭の、猿のような老婆である。その老婆は、右の手に火をともした松の木片を持って、その死骸の一つの顔を覗きこむように眺めていた。髪の毛の長い所を見ると、多分女の死骸であろう。
-      </p>
-      <p>
-        下人は、六分の恐怖と四分の好奇心とに動かされて、暫時は呼吸をするのさえ忘れていた。旧記の記者の語を借りれば、「頭身の毛も太る」ように感じたのである。すると老婆は、松の木片を、床板の間に挿して、それから、今まで眺めていた死骸の首に両手をかけると、丁度、猿の親が猿の子の虱をとるように、その長い髪の毛を一本ずつ抜きはじめた。髪は手に従って抜けるらしい。
-      </p>
-      <p>
-        その髪の毛が、一本ずつ抜けるのに従って、下人の心からは、恐怖が少しずつ消えて行った。そうして、それと同時に、この老婆に対するはげしい憎悪が、少しずつ動いて来た。――いや、この老婆に対すると云っては、語弊があるかも知れない。むしろ、あらゆる悪に対する反感が、一分毎に強さを増して来たのである。この時、誰かがこの下人に、さっき門の下でこの男が考えていた、饑死をするか盗人になるかと云う問題を、改めて持出したら、恐らく下人は、何の未練もなく、饑死を選んだ事であろう。それほど、この男の悪を憎む心は、老婆の床に挿した松の木片のように、勢いよく燃え上り出していたのである。
-      </p>
-      <p>
-        下人には、勿論、何故老婆が死人の髪の毛を抜くかわからなかった。従って、合理的には、それを善悪のいずれに片づけてよいか知らなかった。しかし下人にとっては、この雨の夜に、この羅生門の上で、死人の髪の毛を抜くと云う事が、それだけで既に許すべからざる悪であった。勿論、下人は、さっきまで自分が、盗人になる気でいた事なぞは、とうに忘れていたのである。
-      </p>
-      <p>
-        そこで、下人は、両足に力を入れて、いきなり、梯子から上へ飛び上った。そうして聖柄の太刀に手をかけながら、大股に老婆の前へ歩みよった。老婆が驚いたのは云うまでもない。
-      </p>
-      <p>
-        老婆は、一目下人を見ると、まるで弩にでも弾かれたように、飛び上った。
-      </p>
-      <p>「おのれ、どこへ行く。」</p>
-      <p>
-        下人は、老婆が死骸につまずきながら、慌てふためいて逃げようとする行手を塞いで、こう罵った。老婆は、それでも下人をつきのけて行こうとする。下人はまた、それを行かすまいとして、押しもどす。二人は死骸の中で、しばらく、無言のまま、つかみ合った。しかし勝敗は、はじめからわかっている。下人はとうとう、老婆の腕をつかんで、無理にそこへ※(「てへん＋丑」、第4水準2-12-93)じ倒した。丁度、鶏の脚のような、骨と皮ばかりの腕である。
-      </p>
-      <p>「何をしていた。云え。云わぬと、これだぞよ。」</p>
-      <p>
-        下人は、老婆をつき放すと、いきなり、太刀の鞘を払って、白い鋼の色をその眼の前へつきつけた。けれども、老婆は黙っている。両手をわなわなふるわせて、肩で息を切りながら、眼を、眼球が※(「目＋匡」、第3水準1-88-81)の外へ出そうになるほど、見開いて、唖のように執拗く黙っている。これを見ると、下人は始めて明白にこの老婆の生死が、全然、自分の意志に支配されていると云う事を意識した。そうしてこの意識は、今までけわしく燃えていた憎悪の心を、いつの間にか冷ましてしまった。後に残ったのは、ただ、ある仕事をして、それが円満に成就した時の、安らかな得意と満足とがあるばかりである。そこで、下人は、老婆を見下しながら、少し声を柔らげてこう云った。
-      </p>
-      <p>
-        「己は検非違使の庁の役人などではない。今し方この門の下を通りかかった旅の者だ。だからお前に縄をかけて、どうしようと云うような事はない。ただ、今時分この門の上で、何をして居たのだか、それを己に話しさえすればいいのだ。」
-      </p>
-      <p>
-        すると、老婆は、見開いていた眼を、一層大きくして、じっとその下人の顔を見守った。※(「目＋匡」、第3水準1-88-81)の赤くなった、肉食鳥のような、鋭い眼で見たのである。それから、皺で、ほとんど、鼻と一つになった唇を、何か物でも噛んでいるように動かした。細い喉で、尖った喉仏の動いているのが見える。その時、その喉から、鴉の啼くような声が、喘ぎ喘ぎ、下人の耳へ伝わって来た。
-      </p>
-      <p>「この髪を抜いてな、この髪を抜いてな、鬘にしようと思うたのじゃ。」</p>
-      <p>
-        下人は、老婆の答が存外、平凡なのに失望した。そうして失望すると同時に、また前の憎悪が、冷やかな侮蔑と一しょに、心の中へはいって来た。すると、その気色が、先方へも通じたのであろう。老婆は、片手に、まだ死骸の頭から奪った長い抜け毛を持ったなり、蟇のつぶやくような声で、口ごもりながら、こんな事を云った。
-      </p>
-      <p>
-        「成程な、死人の髪の毛を抜くと云う事は、何ぼう悪い事かも知れぬ。じゃが、ここにいる死人どもは、皆、そのくらいな事を、されてもいい人間ばかりだぞよ。現在、わしが今、髪を抜いた女などはな、蛇を四寸ばかりずつに切って干したのを、干魚だと云うて、太刀帯の陣へ売りに往んだわ。疫病にかかって死ななんだら、今でも売りに往んでいた事であろ。それもよ、この女の売る干魚は、味がよいと云うて、太刀帯どもが、欠かさず菜料に買っていたそうな。わしは、この女のした事が悪いとは思うていぬ。せねば、饑死をするのじゃて、仕方がなくした事であろ。されば、今また、わしのしていた事も悪い事とは思わぬぞよ。これとてもやはりせねば、饑死をするじゃて、仕方がなくする事じゃわいの。じゃて、その仕方がない事を、よく知っていたこの女は、大方わしのする事も大目に見てくれるであろ。」
-      </p>
-      <p>老婆は、大体こんな意味の事を云った。</p>
-      <p>
-        下人は、太刀を鞘におさめて、その太刀の柄を左の手でおさえながら、冷然として、この話を聞いていた。勿論、右の手では、赤く頬に膿を持った大きな面皰を気にしながら、聞いているのである。しかし、これを聞いている中に、下人の心には、ある勇気が生まれて来た。それは、さっき門の下で、この男には欠けていた勇気である。そうして、またさっきこの門の上へ上って、この老婆を捕えた時の勇気とは、全然、反対な方向に動こうとする勇気である。下人は、饑死をするか盗人になるかに、迷わなかったばかりではない。その時のこの男の心もちから云えば、饑死などと云う事は、ほとんど、考える事さえ出来ないほど、意識の外に追い出されていた。
-      </p>
-      <p>「きっと、そうか。」</p>
-      <p>
-        老婆の話が完ると、下人は嘲るような声で念を押した。そうして、一足前へ出ると、不意に右の手を面皰から離して、老婆の襟上をつかみながら、噛みつくようにこう云った。
-      </p>
-      <p>
-        「では、己が引剥をしようと恨むまいな。己もそうしなければ、饑死をする体なのだ。」
-      </p>
-      <p>
-        下人は、すばやく、老婆の着物を剥ぎとった。それから、足にしがみつこうとする老婆を、手荒く死骸の上へ蹴倒した。梯子の口までは、僅に五歩を数えるばかりである。下人は、剥ぎとった檜皮色の着物をわきにかかえて、またたく間に急な梯子を夜の底へかけ下りた。
-      </p>
-      <p>
-        しばらく、死んだように倒れていた老婆が、死骸の中から、その裸の体を起したのは、それから間もなくの事である。老婆はつぶやくような、うめくような声を立てながら、まだ燃えている火の光をたよりに、梯子の口まで、這って行った。そうして、そこから、短い白髪を倒にして、門の下を覗きこんだ。外には、ただ、黒洞々たる夜があるばかりである。
-      </p>
-      <p>下人の行方は、誰も知らない。</p>
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      /* --- Page furniture ---------------------------------------------- */
+
+      .wrap {
+        max-width: 60rem;
+        margin-inline: auto;
+        padding-inline: 1.5rem;
+      }
+
+      header.site {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        padding-block: 2rem 0.5rem;
+      }
+
+      .logo {
+        display: block;
+        height: 1.75rem;
+        color: var(--fg);
+      }
+
+      .badge {
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 0.0625rem 0.625rem;
+        font-size: 0.8125rem;
+        color: var(--fg-muted);
+      }
+
+      header.site nav {
+        margin-left: auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.875rem;
+      }
+
+      .lede {
+        margin: 1.5rem 0 0;
+        max-width: 44rem;
+        font-size: 1.0625rem;
+        color: var(--fg-muted);
+        text-wrap: pretty;
+      }
+
+      .toc {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1.5rem 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .toc a {
+        display: block;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 0.125rem 0.75rem;
+        font-size: 0.8125rem;
+        color: var(--fg-muted);
+        text-decoration: none;
+      }
+
+      .toc a:hover {
+        color: var(--fg);
+        border-color: var(--fg-muted);
+      }
+
+      footer.site {
+        margin-top: 4rem;
+        border-top: 1px solid var(--border);
+        background: var(--bg-raised);
+        font-size: 0.875rem;
+        color: var(--fg-muted);
+      }
+
+      footer.site .wrap {
+        padding-block: 1rem;
+      }
+
+      /* --- Sections ------------------------------------------------------ */
+
+      main {
+        padding-bottom: 1rem;
+      }
+
+      section {
+        margin-top: 3rem;
+        scroll-margin-top: 1rem;
+      }
+
+      h2 {
+        margin: 0;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+
+      .note {
+        margin: 0.75rem 0 0;
+        max-width: 44rem;
+        font-size: 0.9375rem;
+        color: var(--fg-muted);
+        text-wrap: pretty;
+      }
+
+      .note code {
+        font-size: 0.875em;
+      }
+
+      /* Bordered chips, used for the lists of short recognition samples */
+      ul.samples {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1rem 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      ul.samples > li {
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 0.25rem 0.75rem;
+        background: var(--bg-sunken);
+      }
+
+      ul.samples small {
+        display: block;
+        font-size: 0.6875rem;
+        line-height: 1.4;
+        color: var(--fg-muted);
+      }
+
+      .card {
+        margin-top: 1rem;
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        padding: 1rem 1.25rem;
+        background: var(--bg-sunken);
+      }
+
+      .card > :first-child {
+        margin-top: 0;
+      }
+
+      .card > :last-child {
+        margin-bottom: 0;
+      }
+
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+
+      .stack {
+        display: grid;
+        gap: 0.75rem;
+        justify-items: start;
+      }
+
+      label {
+        margin-inline-start: 0.25rem;
+      }
+
+      textarea {
+        width: min(100%, 26rem);
+        height: 5.5rem;
+      }
+
+      [contenteditable] {
+        border: 1px dashed var(--border);
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        min-width: min(100%, 20rem);
+      }
+
+      figure {
+        margin: 0;
+      }
+
+      figure img {
+        display: block;
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        background: var(--bg-raised);
+      }
+
+      figcaption {
+        margin-top: 0.375rem;
+        font-size: 0.8125rem;
+        color: var(--fg-muted);
+      }
+
+      iframe {
+        display: block;
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        background: var(--bg);
+      }
+
+      /* `height` (not `block-size`) so the text wraps into columns instead of
+       * running off the bottom of the page */
+      .vertical {
+        writing-mode: vertical-rl;
+        height: 20rem;
+        overflow-x: auto;
+      }
+
+      button {
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 0.125rem 0.75rem;
+        background: var(--bg-raised);
+        color: inherit;
+        cursor: pointer;
+      }
+
+      /* Links with transitions used to make the popup flicker */
+      #flicker {
+        display: inline-block;
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 0.125rem 0.75rem;
+        text-decoration: none;
+        transition: all 0.2s ease-in-out;
+      }
+
+      #flicker:hover {
+        border-color: var(--fg);
+      }
+
+      #fullscreen-box {
+        max-width: 40rem;
+        max-height: 20rem;
+        overflow: auto;
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+      }
+
+      /* Needs an opaque background of its own for when it goes fullscreen */
+      #fullscreen {
+        padding: 1rem 1.25rem;
+        background: var(--bg);
+      }
+
+      #fullscreen p:first-of-type {
+        margin-top: 0.75rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="site">
+        <svg class="logo" viewBox="0 0 128 36" role="img" aria-label="10ten">
+          <path
+            fill="#2699fa"
+            d="M127.85,32A3.85,3.85,0,1,1,124,28.15,3.85,3.85,0,0,1,127.85,32"
+          />
+          <path
+            fill="#ffd600"
+            d="M33.1,18a3.85,3.85,0,1,1-3.85-3.85A3.85,3.85,0,0,1,33.1,18"
+          />
+          <g fill="currentColor">
+            <path d="M0,0A13,13,0,0,1,13,12.86V36H5V12.86A5,5,0,0,0,0,7.71" />
+            <path
+              d="M34.5,23.14a5.25,5.25,0,0,1-10.5,0V12.86a5.25,5.25,0,0,1,10.5,0ZM29.25,0A12.79,12.79,0,0,0,16.5,12.86V23.14a12.75,12.75,0,1,0,25.5,0V12.86A12.75,12.75,0,0,0,29.3,0"
+            />
+            <path
+              d="M53.08,14.07l1.77,3.06a5.85,5.85,0,0,1-3,.87A6,6,0,0,1,46,12V2.5h3.5V6H53V8.5H49.5V12a2.42,2.42,0,0,0,2.4,2.38,2.36,2.36,0,0,0,1.18-.31"
+            />
+            <path
+              d="M57.12,11a3.18,3.18,0,0,1,6.26,0Zm9.12,1a6,6,0,1,0-6,6,12,12,0,0,0,1.34-.07A6.89,6.89,0,0,0,64,17.14a5.35,5.35,0,0,0,1.26-.95l-2.1-1.74a5,5,0,0,1-2.94,1.15A3.4,3.4,0,0,1,57.12,13h9a4.09,4.09,0,0,0,.12-1"
+            />
+            <path
+              d="M76,10.91a2.57,2.57,0,0,0-2.6-2.36h-.59A1.8,1.8,0,0,0,71,10.32V18H67.5V8a2,2,0,0,1,1.77-2H73.4a6.24,6.24,0,0,1,6.1,6.09V18H76Z"
+            />
+            <path
+              d="M50,28c2.71,0,4.2-.77,4.2-3s-1.49-3-4.2-3H47v6Zm-4-7h4.29c3,0,5,1.15,5,4,0,2.39-1.51,3.73-3.94,4l4.22,7H54.37l-4.15-7H47v7H46Z"
+            />
+            <polygon
+              points="58 21 66 21 66 22 59 22 59 28 65 28 65 29 59 29 59 35 66 35 66 36 58 36 58 21"
+            />
+            <path
+              d="M71.28,30h5.44l-1-2.88c-.62-1.77-1.14-3.34-1.7-5.19h-.09c-.52,1.85-1,3.42-1.67,5.19Zm2.23-9h1l5.37,15H78.78L77,31H71l-1.82,5h-1Z"
+            />
+            <path
+              d="M85.37,35c4.13,0,5.92-2.56,5.92-6.5S89.5,22,85.37,22H83V35ZM82,21h3.46c4.68,0,6.86,2.94,6.86,7.44S90.14,36,85.48,36H82Z"
+            />
+            <polygon
+              points="95 21 103 21 103 22 96 22 96 28 102 28 102 29 96 29 96 35 103 35 103 36 95 36 95 21"
+            />
+            <path
+              d="M110,28c2.71,0,4.2-.77,4.2-3s-1.49-3-4.2-3h-3v6Zm-4-7h4.29c3,0,4.95,1.15,4.95,4,0,2.39-1.51,3.73-3.94,4l4.22,7h-1.15l-4.15-7H107v7h-1Z"
+            />
+          </g>
+        </svg>
+        <span class="badge">Playground</span>
+        <nav>
+          <a href="playground.txt">Plain text</a>
+          <a href="playground.svg">SVG document</a>
+        </nav>
+      </header>
+
+      <main>
+        <p class="lede">
+          A scratch page of the markup and Japanese text we use while developing
+          10ten Japanese Reader. Point at the Japanese below (holding your
+          hold-to-show key, if you have one configured) and check the popup
+          shows what the notes say it should.
+        </p>
+
+        <nav class="toc" aria-label="Contents">
+          <a href="#text">Inline text</a>
+          <a href="#forms">Form controls</a>
+          <a href="#images">Images</a>
+          <a href="#svg">SVG</a>
+          <a href="#frames">Frames</a>
+          <a href="#vertical">Vertical text</a>
+          <a href="#shadow-dom">Shadow DOM</a>
+          <a href="#eras">Eras</a>
+          <a href="#measurements">Measurements</a>
+          <a href="#numbers">Numbers</a>
+          <a href="#currency">Currency</a>
+          <a href="#shogi">Shogi</a>
+          <a href="#lookup">Lookup quirks</a>
+          <a href="#regressions">Regressions</a>
+        </nav>
+
+        <section id="text">
+          <h2>Inline text</h2>
+          <p class="note">
+            Text runs that span script boundaries, inline elements, ruby
+            annotations and non-BMP characters. Looking up
+            <span lang="ja">強調</span> below should work even though the word
+            is split across a <code>&lt;b&gt;</code>.
+          </p>
+          <div class="card" lang="ja">
+            <p>この文には English と日本語が混ざっています。</p>
+            <p>この言葉を<b>強</b>調しています。</p>
+            <p>これは非BMP文字です：𠏹沢</p>
+            <p>
+              <ruby
+                >仙<rp>(</rp><rt>せん</rt><rp>)</rp>台<rp>（</rp><rt>だい</rt
+                ><rp>）</rp></ruby
+              >の<ruby
+                ><ruby>牧<rt>ぼく</rt></ruby
+                ><rt>まき</rt></ruby
+              ><ruby
+                ><ruby>場<rt>じょう</rt></ruby
+                ><rt>ば</rt></ruby
+              >へ行ってきました。
+            </p>
+          </div>
+        </section>
+
+        <section id="forms">
+          <h2>Form controls</h2>
+          <p class="note">
+            Text inside form controls, including a scrolled
+            <code>&lt;textarea&gt;</code> and a
+            <code>contenteditable</code> region. The password field is here to
+            check we <em>never</em> look up its contents.
+          </p>
+          <div class="card stack" lang="ja">
+            <input size="30" value="テキストボックスの中の日本語" />
+            <input size="30" value="入力欄がもう一つあります" />
+            <textarea>
+これはテキストエリアです。
+二行目です。
+三行目もあります。
+たくさん書くとスクロールバーが出てきます。
+そろそろ出てきたでしょうか。
+はい、これで十分ですね。
+お疲れさまでした。</textarea>
+            <input type="password" size="30" value="ひみつのことば" />
+            <div>
+              <span>好きなラーメンを選んでください：</span>
+              <select name="ramen">
+                <option value="tonkotsu">豚骨</option>
+                <option value="shio" selected>塩</option>
+                <option value="miso">味噌</option>
+                <option value="shoyu">醤油</option>
+              </select>
+            </div>
+            <div>
+              <input id="no-negi" name="negi" type="checkbox" value="negi" />
+              <label for="no-negi">ネギ抜き</label>
+            </div>
+            <div contenteditable>
+              これは編集できる領域です。<br />
+              自由に書き換えてみてください。
+            </div>
+          </div>
+        </section>
+
+        <section id="images">
+          <h2>Images</h2>
+          <p class="note">
+            We look up the <code>title</code> and <code>alt</code> attributes of
+            images, so there is one of each plus one with both.
+          </p>
+          <div class="card row">
+            <figure>
+              <img
+                src="playground-image-1.png"
+                width="96"
+                height="96"
+                title="タイトルだけ"
+              />
+              <figcaption><code>title</code> only</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="playground-image-2.png"
+                width="96"
+                height="96"
+                alt="代替テキストだけ"
+              />
+              <figcaption><code>alt</code> only</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="playground-image-3.png"
+                width="96"
+                height="96"
+                title="タイトル"
+                alt="代替テキスト"
+              />
+              <figcaption><code>title</code> and <code>alt</code></figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section id="svg">
+          <h2>SVG</h2>
+          <p class="note">
+            Text inside inline SVG, including a <code>&lt;tspan&gt;</code> in
+            the middle of a word. See
+            <a href="playground.svg">playground.svg</a> for text on a path in a
+            standalone SVG document.
+          </p>
+          <div class="card">
+            <svg width="100%" height="2em">
+              <text y="1.2em" fill="currentColor" lang="ja">
+                SVGの中の日本語も
+                <tspan style="text-decoration: underline">引けます</tspan>
+                。
+              </text>
+            </svg>
+          </div>
+        </section>
+
+        <section id="frames">
+          <h2>Frames</h2>
+          <p class="note">
+            Popups from inside a frame get forwarded to the topmost window, so
+            we need same-origin iframes, nested iframes, the legacy
+            <code>&lt;frameset&gt;</code> and — if you have a network connection
+            — a cross-origin iframe.
+          </p>
+          <div class="card row">
+            <figure>
+              <iframe
+                src="playground-iframe.html"
+                title="タイトル付きのiframe"
+                width="360"
+                height="200"
+              ></iframe>
+              <figcaption>Same origin, with a <code>title</code></figcaption>
+            </figure>
+            <figure>
+              <iframe
+                src="playground-frameset.html"
+                title="Nested frameset"
+                width="360"
+                height="200"
+              ></iframe>
+              <figcaption>
+                Nested <code>&lt;iframe&gt;</code> and
+                <code>&lt;frameset&gt;</code>
+              </figcaption>
+            </figure>
+          </div>
+          <p class="note">
+            <a
+              href="https://10ten.life/reader/tests/iframes/index.html"
+              target="iframe-test"
+              >Cross-origin iframe test</a
+            >
+            (needs a network connection)
+          </p>
+        </section>
+
+        <section id="vertical">
+          <h2>Vertical text</h2>
+          <p class="note">
+            Vertical writing mode, with ruby, so we can check the popup and the
+            text highlighting land in the right place.
+          </p>
+          <div class="card vertical" lang="ja">
+            <p>
+              何故かと云うと、この二三年、京都には、地震とか辻風とか火事とか饑饉とか云う災いがつづいて起こった。そこで洛中のさびれ方は一通りでない。旧記によると、仏像や仏具を打砕いて、その丹がついたり、金銀の<ruby
+                >箔<rp>（</rp><rt>はく</rt><rp>）</rp></ruby
+              >がついたりした木を、路ばたにつみ重ねて薪の<ruby
+                >料<rp>（</rp><rt>しろ</rt><rp>）</rp></ruby
+              >に売っていたと云うことである。洛中がその始末であるから、羅生門の修理などは、元より誰も捨てて顧みる者がなかった。するとその荒れ果てたのをよい事にして、<ruby
+                >狐狸<rp>（</rp><rt>こり</rt><rp>）</rp></ruby
+              >が棲む。盗人が棲む。とうとうしまいには、引取り手のない死人を、この門へ持って来て、捨てて行くと云う習慣さえ出来た。
+            </p>
+          </div>
+        </section>
+
+        <section id="shadow-dom">
+          <h2>Shadow DOM</h2>
+          <p class="note">
+            The margin/border variants are here because we need to copy the
+            geometry of the shadow content when positioning the highlight; the
+            last one reproduces the deeply nested custom elements Bing Chat used
+            to render.
+          </p>
+          <div id="shadow-dom-container" class="card" lang="ja"></div>
+        </section>
+
+        <section id="eras">
+          <h2>Eras</h2>
+          <p class="note">
+            Japanese era years, in various mixes of half- and full-width digits,
+            kanji numerals, and split across elements.
+          </p>
+          <ul class="samples" lang="ja">
+            <li>令和元年に…</li>
+            <li>令和２年に…</li>
+            <li>令和2年</li>
+            <li>令和 2 年</li>
+            <li>令和 ２ 年</li>
+            <li>令和 <span style="color: #f83540">２</span> 年</li>
+            <li>平成３1</li>
+            <li>平成３1に…</li>
+            <li>平成 <span style="color: #f83540">元年</span>に…</li>
+            <li>平成三十一年に…</li>
+            <li>㋿2年</li>
+          </ul>
+        </section>
+
+        <section id="measurements">
+          <h2>Measurements</h2>
+          <p class="note">
+            <span lang="ja">畳</span>/<span lang="ja">帖</span> and square
+            metres in all the ways they get written, including half-width
+            katakana and the compatibility characters.
+          </p>
+          <ul class="samples" lang="ja">
+            <li>面積：6畳。</li>
+            <li>面積：六畳。</li>
+            <li>面積：６畳。</li>
+            <li>面積：六〇畳</li>
+            <li>面積：六十畳</li>
+            <li>面積：四畳半</li>
+            <li>面積：6 畳です</li>
+            <li>面積：1.5 帖</li>
+            <li>面積：6m2</li>
+            <li>面積：6m<sup>2</sup></li>
+            <li>面積：6㎡</li>
+            <li>面積：22.5平方メートル</li>
+            <li>面積：22.5平方ﾒｰﾄﾙ</li>
+            <li>面積：22.5平方㍍</li>
+            <li>面積：22.5平㍍</li>
+            <li>面積：22.5平米</li>
+            <li>面積：十二平方米</li>
+            <li>8万8千平㍍</li>
+          </ul>
+        </section>
+
+        <section id="numbers">
+          <h2>Numbers</h2>
+          <p class="note">
+            Kanji and mixed-kanji numbers, plus words that happen to start or
+            end with a digit.
+          </p>
+          <ul class="samples" lang="ja">
+            <li>九十八</li>
+            <li>9万8800</li>
+            <li>365億</li>
+            <li>25.103億</li>
+            <li>1つ</li>
+            <li>14日</li>
+            <li>小1</li>
+            <li>100億<small lang="en">no match — dictionary entry</small></li>
+            <li>二十<small lang="en">no match — dictionary entry</small></li>
+            <li>九十<small lang="en">no match — dictionary entry</small></li>
+            <li>88、000<small lang="en">no match — no kanji</small></li>
+          </ul>
+        </section>
+
+        <section id="currency">
+          <h2>Currency</h2>
+          <p class="note">
+            Yen amounts we should recognize (and convert), including metric
+            suffixes, the <code>JPY</code> prefix and the
+            <span lang="ja">円</span>/yen suffixes.
+          </p>
+          <ul class="samples" lang="ja">
+            <li>8万8千円</li>
+            <li>￥88、000</li>
+            <li>¥ 88,000.00</li>
+            <li>価格 88,000 <span>円</span>です。</li>
+            <li>9万8800円</li>
+            <li>100億円</li>
+            <li>25.1万円</li>
+            <li><span>39,800</span><span>万円</span></li>
+            <li>1,000,000円＝1,000k円＝1M円です</li>
+            <li>200k Yen</li>
+            <li>1,000yen</li>
+            <li>JPY1,000</li>
+            <li>JPY100</li>
+          </ul>
+        </section>
+
+        <section id="shogi">
+          <h2>Shogi</h2>
+          <p class="note">
+            Shogi move notation, with and without a leading turn marker, and
+            with each of the characters used to mean “same square as the last
+            move”.
+          </p>
+          <ul class="samples" lang="ja">
+            <li>☗８三銀引成です</li>
+            <li>８三銀引成です</li>
+            <li>☖２四同歩</li>
+            <li>２四仝歩</li>
+            <li>２四𠔼歩</li>
+            <li>８三↑</li>
+          </ul>
+        </section>
+
+        <section id="lookup">
+          <h2>Lookup quirks</h2>
+          <p class="note">
+            Search-only headwords should still produce a direct match, and the
+            “usually kana” annotation should only show when the entry actually
+            has kanji.
+          </p>
+          <ul class="samples" lang="ja">
+            <li>磨ガラス<small lang="en">search-only headword</small></li>
+            <li>ペイチン<small lang="en">search-only headword</small></li>
+            <li>含羞む<small lang="en">shows “usually kana”</small></li>
+            <li>ほっきょくぐま<small lang="en">shows “usually kana”</small></li>
+            <li>北極熊<small lang="en">shows “usually kana”</small></li>
+          </ul>
+        </section>
+
+        <section id="regressions">
+          <h2>Regressions</h2>
+          <p class="note">
+            Links with CSS transitions used to make the popup flicker as the
+            highlight was applied and removed.
+          </p>
+          <div class="card">
+            <a id="flicker" href="#regressions">This is a link.</a>
+          </div>
+
+          <p class="note">
+            A long, scrollable run of text. Used to check the popup shows in
+            fullscreen, and that looking up a character part-way through a very
+            long text node stays fast.
+          </p>
+          <div id="fullscreen-box">
+            <div id="fullscreen">
+              <button id="fullscreen-btn">Toggle fullscreen</button>
+              <div lang="ja">
+                <p>
+                  ある日の暮方の事である。一人の下人が、羅生門の下で雨やみを待っていた。
+                </p>
+                <p>
+                  広い門の下には、この男のほかに誰もいない。ただ、所々丹塗の剥げた、大きな円柱に、蟋蟀が一匹とまっている。羅生門が、朱雀大路にある以上は、この男のほかにも、雨やみをする市女笠や揉烏帽子が、もう二三人はありそうなものである。それが、この男のほかには誰もいない。
+                </p>
+                <p>
+                  何故かと云うと、この二三年、京都には、地震とか辻風とか火事とか饑饉とか云う災がつづいて起った。そこで洛中のさびれ方は一通りではない。旧記によると、仏像や仏具を打砕いて、その丹がついたり、金銀の箔がついたりした木を、路ばたにつみ重ねて、薪の料に売っていたと云う事である。洛中がその始末であるから、羅生門の修理などは、元より誰も捨てて顧る者がなかった。するとその荒れ果てたのをよい事にして、狐狸が棲む。盗人が棲む。とうとうしまいには、引取り手のない死人を、この門へ持って来て、棄てて行くと云う習慣さえ出来た。そこで、日の目が見えなくなると、誰でも気味を悪るがって、この門の近所へは足ぶみをしない事になってしまったのである。
+                </p>
+                <p>
+                  その代りまた鴉がどこからか、たくさん集って来た。昼間見ると、その鴉が何羽となく輪を描いて、高い鴟尾のまわりを啼きながら、飛びまわっている。ことに門の上の空が、夕焼けであかくなる時には、それが胡麻をまいたようにはっきり見えた。鴉は、勿論、門の上にある死人の肉を、啄みに来るのである。――もっとも今日は、刻限が遅いせいか、一羽も見えない。ただ、所々、崩れかかった、そうしてその崩れ目に長い草のはえた石段の上に、鴉の糞が、点々と白くこびりついているのが見える。下人は七段ある石段の一番上の段に、洗いざらした紺の襖の尻を据えて、右の頬に出来た、大きな面皰を気にしながら、ぼんやり、雨のふるのを眺めていた。
+                </p>
+                <p>
+                  作者はさっき、「下人が雨やみを待っていた」と書いた。しかし、下人は雨がやんでも、格別どうしようと云う当てはない。ふだんなら、勿論、主人の家へ帰る可き筈である。所がその主人からは、四五日前に暇を出された。前にも書いたように、当時京都の町は一通りならず衰微していた。今この下人が、永年、使われていた主人から、暇を出されたのも、実はこの衰微の小さな余波にほかならない。だから「下人が雨やみを待っていた」と云うよりも「雨にふりこめられた下人が、行き所がなくて、途方にくれていた」と云う方が、適当である。その上、今日の空模様も少からず、この平安朝の下人の
+                  Sentimentalisme
+                  に影響した。申の刻下りからふり出した雨は、いまだに上るけしきがない。そこで、下人は、何をおいても差当り明日の暮しをどうにかしようとして――云わばどうにもならない事を、どうにかしようとして、とりとめもない考えをたどりながら、さっきから朱雀大路にふる雨の音を、聞くともなく聞いていたのである。
+                </p>
+                <p>
+                  雨は、羅生門をつつんで、遠くから、ざあっと云う音をあつめて来る。夕闇は次第に空を低くして、見上げると、門の屋根が、斜につき出した甍の先に、重たくうす暗い雲を支えている。
+                </p>
+                <p>
+                  どうにもならない事を、どうにかするためには、手段を選んでいる遑はない。選んでいれば、築土の下か、道ばたの土の上で、饑死をするばかりである。そうして、この門の上へ持って来て、犬のように棄てられてしまうばかりである。選ばないとすれば――下人の考えは、何度も同じ道を低徊した揚句に、やっとこの局所へ逢着した。しかしこの「すれば」は、いつまでたっても、結局「すれば」であった。下人は、手段を選ばないという事を肯定しながらも、この「すれば」のかたをつけるために、当然、その後に来る可き「盗人になるよりほかに仕方がない」と云う事を、積極的に肯定するだけの、勇気が出ずにいたのである。
+                </p>
+                <p>
+                  下人は、大きな嚔をして、それから、大儀そうに立上った。夕冷えのする京都は、もう火桶が欲しいほどの寒さである。風は門の柱と柱との間を、夕闇と共に遠慮なく、吹きぬける。丹塗の柱にとまっていた蟋蟀も、もうどこかへ行ってしまった。
+                </p>
+                <p>
+                  下人は、頸をちぢめながら、山吹の汗袗に重ねた、紺の襖の肩を高くして門のまわりを見まわした。雨風の患のない、人目にかかる惧のない、一晩楽にねられそうな所があれば、そこでともかくも、夜を明かそうと思ったからである。すると、幸い門の上の楼へ上る、幅の広い、これも丹を塗った梯子が眼についた。上なら、人がいたにしても、どうせ死人ばかりである。下人はそこで、腰にさげた聖柄の太刀が鞘走らないように気をつけながら、藁草履をはいた足を、その梯子の一番下の段へふみかけた。
+                </p>
+                <p>
+                  それから、何分かの後である。羅生門の楼の上へ出る、幅の広い梯子の中段に、一人の男が、猫のように身をちぢめて、息を殺しながら、上の容子を窺っていた。楼の上からさす火の光が、かすかに、その男の右の頬をぬらしている。短い鬚の中に、赤く膿を持った面皰のある頬である。下人は、始めから、この上にいる者は、死人ばかりだと高を括っていた。それが、梯子を二三段上って見ると、上では誰か火をとぼして、しかもその火をそこここと動かしているらしい。これは、その濁った、黄いろい光が、隅々に蜘蛛の巣をかけた天井裏に、揺れながら映ったので、すぐにそれと知れたのである。この雨の夜に、この羅生門の上で、火をともしているからは、どうせただの者ではない。
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
-  </div>
-  <script>
-    const btn = document.getElementById('fullscreen-btn');
-    btn.addEventListener('click', () => {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        document
-          .getElementById('fullscreen')
-          .requestFullscreen()
-          .catch((err) => {
-            console.error(err);
-          });
+
+    <footer class="site">
+      <div class="wrap">
+        <a href="https://github.com/birchill/10ten-ja-reader/"
+          >10ten-ja-reader</a
+        >
+        — the passages above are from
+        <span lang="ja">芥川龍之介『羅生門』</span> (public domain).
+      </div>
+    </footer>
+
+    <script>
+      // --- Shadow DOM cases -------------------------------------------------
+      const shadowContainer = document.getElementById('shadow-dom-container');
+
+      const addShadowCase = (populate) => {
+        const container = document.createElement('div');
+        shadowContainer.append(container);
+        populate(container.attachShadow({ mode: 'open' }));
+      };
+
+      // A custom element with a shadow root
+      class MyElement extends HTMLElement {
+        constructor() {
+          super();
+
+          const shadowRoot = this.attachShadow({ mode: 'open' });
+          const para = document.createElement('p');
+          shadowRoot.append(para);
+          para.append('日本語 (custom element)');
+        }
       }
-    });
-  </script>
-</body>
+      customElements.define('my-elem', MyElement);
+      shadowContainer.append(document.createElement('my-elem'));
+
+      // Direct text node children
+      addShadowCase((shadowRoot) => {
+        shadowRoot.append('日本語の');
+        const styledSpan = document.createElement('span');
+        styledSpan.style.color = '#f83540';
+        styledSpan.append('特別な');
+        shadowRoot.append(styledSpan);
+        shadowRoot.append('テキスト');
+        shadowRoot.append('(plain text nodes in shadow DOM)');
+      });
+
+      // Various other combinations
+      const cases = [
+        '<p>日本語 (element in shadow DOM element)</p>',
+        '<p style="margin-top: 15px; margin-left: 10px">日本語 (element with margin in shadow DOM)</p>',
+        '<p style="margin-top: 15px; margin-left: 10px; border: 5px solid #2698fb">日本語 (element with margin+border in shadow DOM)</p>',
+        '<p style="margin-top: 15px; margin-left: 10px; border: 5px solid #2698fb; box-sizing: border-box">日本語 (element with margin+border in shadow DOM, box-sizing: border-box)</p>',
+        '<p style="margin-top: 15px; margin-left: 10px; border: 5px solid #2698fb; box-sizing: content-box">日本語 (element with margin in shadow DOM, box-sizing: content-box)</p>',
+        '<p style="width: 80px"><b>これは</b>日本語<span style="color: #f83540">だよ</span>。 (element in shadow DOM with inlines and line wrapping)</p>',
+      ];
+      for (const source of cases) {
+        addShadowCase((shadowRoot) => {
+          shadowRoot.innerHTML = source;
+        });
+      }
+
+      // The Bing Chat test case
+      addShadowCase((outerShadowRoot) => {
+        // First nest shadow DOMs to simulate that part (Bing Chat does a _lot_
+        // of nesting of custom elements)
+        const innerContainer = document.createElement('div');
+        outerShadowRoot.append(innerContainer);
+        const innerShadowRoot = innerContainer.attachShadow({ mode: 'open' });
+
+        // Now add some styles - this helps to ensure that the footnotes cause
+        // subsequent text to shift in a way that requires us to copy the style
+        // of child elements
+        const style = document.createElement('style');
+        style.append(`
+          sup {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            vertical-align: top;
+            top: -1px;
+            margin: 0px 2px;
+            min-width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            text-decoration-color: transparent;
+            color: var(--cib-color-brand-tertiary-foreground);
+            background: var(--cib-color-brand-tertiary-background);
+            outline: transparent solid 1px;
+          }
+        `);
+        innerShadowRoot.append(style);
+
+        // ... and HTML markup
+        const innerElem = document.createElement('div');
+        innerShadowRoot.append(innerElem);
+        innerElem.innerHTML =
+          '<div class="ac-container ac-adaptiveCard" style=""><div class="ac-textBlock" style=""><p><a class="tooltip-target" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-2-group" h="ID=SERP,5027.1">今日の天気は曇り、23度です。</a><a href="https://bing.com/search?q=%E4%BB%8A%E6%97%A5%E3%81%AE%E3%81%8A%E5%A4%A9%E6%B0%97" class="ac-anchor sup-target" target="_blank" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-2" aria-label="" h="ID=SERP,5027.1"><sup>1</sup></a><a class="tooltip-target" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-4-group" h="ID=SERP,5027.1"> 今日の最高気温は23.49度、最低気温は17.99度です。</a><a href="https://bing.com/search?q=%E4%BB%8A%E6%97%A5%E3%81%AE%E3%81%8A%E5%A4%A9%E6%B0%97" class="ac-anchor sup-target" target="_blank" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-4" aria-label="" h="ID=SERP,5027.1"><sup>1</sup></a><a class="tooltip-target" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-6-group" h="ID=SERP,5027.1"> 降水確率は0%です。</a><a href="https://bing.com/search?q=%E4%BB%8A%E6%97%A5%E3%81%AE%E3%81%8A%E5%A4%A9%E6%B0%97" class="ac-anchor sup-target" target="_blank" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-6" aria-label="" h="ID=SERP,5027.1"><sup>1</sup></a><a class="tooltip-target" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-8-group" h="ID=SERP,5027.1"> 明日は晴れ、最高気温は23.93度、最低気温は13.13度です。</a><a href="https://bing.com/search?q=%E4%BB%8A%E6%97%A5%E3%81%AE%E3%81%8A%E5%A4%A9%E6%B0%97" class="ac-anchor sup-target" target="_blank" data-citationid="a6bf2fd0-b106-3a10-dad9-382cd3e88dfa-8" aria-label="" h="ID=SERP,5027.1"><sup>1</sup></a></p></div><div class="ac-horizontal-separator" aria-hidden="true" style=""></div></div>';
+
+        const explanationElem = document.createElement('div');
+        innerShadowRoot.append(explanationElem);
+        explanationElem.append(
+          '(In particular we want to check towards the end of the line)'
+        );
+      });
+
+      // --- Fullscreen toggle ------------------------------------------------
+      document
+        .getElementById('fullscreen-btn')
+        .addEventListener('click', () => {
+          if (document.fullscreenElement) {
+            document.exitFullscreen();
+          } else {
+            document
+              .getElementById('fullscreen')
+              .requestFullscreen()
+              .catch((err) => {
+                console.error(err);
+              });
+          }
+        });
+    </script>
+  </body>
+</html>
