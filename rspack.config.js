@@ -438,6 +438,13 @@ function getExtConfig(options) {
       firefox,
       firefoxProfile,
       keepProfileChanges,
+      // As of Firefox 153 (bug 2034168) file: access is no longer implied by
+      // host permissions. Users grant it with the "Access local files on your
+      // computer" toggle in about:addons, but there's no way to pre-set that
+      // for a temporarily-installed add-on, so restore the old behaviour in the
+      // development profile instead—otherwise the playground below does
+      // nothing.
+      pref: { 'extensions.webextensions.fileSchemeAccess.requireOptIn': false },
       profileCreateIfMissing,
       startUrl: ['tests/playground.html'],
     };
